@@ -1,108 +1,188 @@
-Return-Path: <linux-ext4+bounces-6103-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6104-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8BB0A118A1
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 06:00:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85645A118A9
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 06:00:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 542123A6FF5
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 05:00:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A263C188A383
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 05:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 542841836D9;
-	Wed, 15 Jan 2025 05:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7D4D22F3A3;
+	Wed, 15 Jan 2025 05:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="bNwmx6F+"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dCFsWF+C"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4671876
-	for <linux-ext4@vger.kernel.org>; Wed, 15 Jan 2025 05:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A861876
+	for <linux-ext4@vger.kernel.org>; Wed, 15 Jan 2025 05:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736917230; cv=none; b=m/NNnqNIjTVtqv8pNIrQWte/ifH2dXc6i9CCwE6B27tAK6JeBjYQ7r5MpSS84yVfhsPlEzg4Z4di8ft1z5B3UGegfRiPQ9HHkMWy5VCQznIjYTcSiDJWxchOZd6Dle1bepO3O4yTArdOHvd2cGZSBkjaH+romc3/2n8jn3m26XY=
+	t=1736917233; cv=none; b=o/GaQLJjXnDPtohM1Pl7XaXzA3+GcM+67vCjGL01wDe/GWbhOY+eilg4GblKgoeUAm4klqgQMPfEh6mh94wF6BwarAeaK53nPm0WG3krgv+M0RB9SeWobcwUgYF7aPrX2fa1VanokJlk+kUhMcnPX2suxCFutedxtgp+JkxrMnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736917230; c=relaxed/simple;
-	bh=sePE74wpPWiNXNoxEUN8Ry9H6vpLGlXFeTBBoz+pvwk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hC1m1tvmsf+SnawecXsl2ArIZpZIQCE80j/UMAddD6WiJlFHLVKmYAd+fPHEcDv+HdPojEVepFbVkMa4EhEcRdByL3kfFpKNMnWKju325F8zgLBse4sKa2ZNRh2v1EzcXQCC6CDO0bKrUDQ87xUsh1HxYvpkCIlSkZFoFyB61aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=bNwmx6F+; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-108-26-156-113.bstnma.fios.verizon.net [108.26.156.113])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 50F50FME003928
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 15 Jan 2025 00:00:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1736917218; bh=tkOjXzpY/sSr9F6llPq2ltDP6q1IFjSxyqXSSqzKsMw=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=bNwmx6F+DXjxqmSaNbXbFBDnmvnG5VPktS6tPPEryTDnNBOEqedZn1SzK1kxt8mVY
-	 wZ0uPaovsSX0hR1eSx7pD1ZogONW3Ae9SddBo+GSEEjqqH2VBRRpdk4txG11UbhasO
-	 gblbGArCPKMVzfrtxV+1RP7G4AUux3JfD97Tne6dw5krd5Tkqk3oUzPzVzwdN+aK1y
-	 VHq9nm33sBAJcGM/TQJtGOuGVxXFH371LOXOIMLlP7NHUi0ATFZOgo8nf0y323wYR/
-	 s43zDP5qTHCRaPW2sH/BQr6FbOXD3DyWx4TJZLzLvPhSXgczfIPOUB2ZM2TWcUcUiR
-	 1T6xAtHVsTk4w==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 8E53515C0175; Wed, 15 Jan 2025 00:00:15 -0500 (EST)
-Date: Wed, 15 Jan 2025 00:00:15 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: cheung wall <zzqq0103.hey@gmail.com>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: "WARNING in ext4_destroy_inode" in Linux Kernel v6.12-rc4
-Message-ID: <20250115050015.GB1954680@mit.edu>
-References: <CAKHoSAsxwS1J2fme+6-d84tguJGDYamVCHfcuXZbeGpTGHze0A@mail.gmail.com>
+	s=arc-20240116; t=1736917233; c=relaxed/simple;
+	bh=cIJFpZ2hrk7DGupK9ItVZj3+AgxWS9w13/A0QFIO8OE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n7wsPrZKn3UCPe/fDtgcJfLnwtZ3Us4/SFFS7W8D90b6a+pc/Gr0tI7rgwafy8X99ZUZHq0vD07VttTyIMcFt/izQhfOAXLKpMuESRIU3Mko72sUElO/U661FL9K4SMu2jtHD95Ut1L/1doEN2+7Y2hB1GjujD5XDcZZo3Yq9II=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dCFsWF+C; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5d3ce64e7e5so924068a12.0
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Jan 2025 21:00:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1736917229; x=1737522029; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XJMW9rnub/plt9wklWDGLR+ue2+UySWkbfATgGqVPsw=;
+        b=dCFsWF+Cuh+E0CjbGmCCc4ikY3WgOkG0e1u5zNguZJwcFDKugcSInI3y0W4M8rjkDO
+         G9qElOdEusJXN3goIJSbN9hGWK/g2aISs4WoLMosxjNkR/nXIZwAUFI+f1jrucTelOdy
+         yx4m5VZvfMCo8bVy0GL0pkqdMF8j6WS9BRYbwyUL4UfWlimy3P4nVIBvzTX1Tvx9IL61
+         DBcLnApW13YD7Pzh0gVJjuTeyXEf3WDdC0xnWIaqMAZD20ZnUhKs2MIdZnAq6wgdCC6r
+         X8CJNORr1uPAAkHhLSVqyw1CbZitIrkMZFrGQjKpjNSz6DvkKjqy2ZSErHA8QaiA9Rrk
+         2d7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736917229; x=1737522029;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XJMW9rnub/plt9wklWDGLR+ue2+UySWkbfATgGqVPsw=;
+        b=Hbxy8k8Xi2gaN5vHJJ76TD2EaIwl3969Zrd7tp13u579Rohb0IcwtPcxjnF/V7iJn0
+         /bEUf0csytncSDajr9gkfmSgGHhPs29Nv5WnfxrKwX+Zdawzaa4aMqXgSA0fINtRtfbU
+         Muk8xQGCoKslE9ZVSqxwuljXoLT004g2URvau9uxw8KcqrsoE2vxe2aN3x2IRVHmxW+5
+         amJLBgkr0P2SZ17HGkPBsNQdStU9gvecyKlFaFIw7BetqgX5FXJKlMViuzZavRxr0Lk/
+         /LYwkJeKzTk3+ifguOELAhedj0kfDHkxCRCkwFCJBv7f4fklPNMUtvI/Fd6YDqfNmHh6
+         KGDg==
+X-Forwarded-Encrypted: i=1; AJvYcCXlH5BcHBXjcljF0KKqV1/PejbYwW3MfngFmwa/c58xuQsNRJBYZJhy1gyXbzzAqiwQfeEvS5SbmU0o@vger.kernel.org
+X-Gm-Message-State: AOJu0YzaQr8kx0cWSZzgVukAX71ZeepFM9b2JfyLhj8GxU9oCjzVFZkX
+	Tbk+LQ823kafgo+QzO0UzH+oUKRWKKWdujqG0RgRKa6zQvQK3GrjwVgPodKPIZGdYoww1gi6rde
+	ASKw=
+X-Gm-Gg: ASbGncs/L2WwgcZXJVTiK5GJDAxzAOBkDvPze3kH2sGkmSEIEx8vdwsQAQOeqyucXsC
+	bE4UdA+Luo0p30lcUXucaj+AUX4TTOJXjgkqfpxn/1auyEdFMBnLlR4ctIfm1siSfL6kT4qUfD3
+	+GWScVNFnvpCrlebrohPUKqaiLhz/WDMibHG/mnZv/rtrsr9y6M0Zuqip/g48wSckDIg8tXCkpS
+	u5IoyPfDcDkJSTbyMy69JmtLqX7B4jdDy+IFk9dFl0W7Rn+Z/OB0aNxhe1d
+X-Google-Smtp-Source: AGHT+IGNe+b4wa4MisZ5kr1URc23Ns5uB8BbpHRkS9J8ACHpwmz0gD/aOPF9gHMOwDMMIS/6+ztEGA==
+X-Received: by 2002:a05:6402:2743:b0:5d2:d72a:7803 with SMTP id 4fb4d7f45d1cf-5d972e06b12mr8320833a12.4.1736917229376;
+        Tue, 14 Jan 2025 21:00:29 -0800 (PST)
+Received: from [10.202.32.28] ([202.127.77.110])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-a31ddb9e4b4sm8964243a12.70.2025.01.14.21.00.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jan 2025 21:00:28 -0800 (PST)
+Message-ID: <db4da8db-d501-4181-994b-c25845908161@suse.com>
+Date: Wed, 15 Jan 2025 13:00:23 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKHoSAsxwS1J2fme+6-d84tguJGDYamVCHfcuXZbeGpTGHze0A@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: WARNING in jbd2_journal_update_sb_log_tail
+To: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, li.kai4@h3c.com
+Cc: jack@suse.com, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzkaller@googlegroups.com, Joseph Qi <joseph.qi@linux.alibaba.com>,
+ ocfs2-devel@lists.linux.dev, Liebes Wang <wanghaichi0403@gmail.com>,
+ syzbot <syzbot+96ee12698391289383dd@syzkaller.appspotmail.com>
+References: <CADCV8sq0E9_tmBbedYdUJyD4=yyjSngp2ZGVR2VfZfD0Q1nUFQ@mail.gmail.com>
+ <mzypseklhk6colsb5fh42ya74x43z5mmkzdjdyluesx6hb744a@hycbebanf7mv>
+ <24f378c8-7a27-47b8-bd79-dba4a2e92f6d@suse.com>
+ <20250114133815.GA1997324@mit.edu>
+ <3655551d-b881-4f2b-8419-03efe4d3aca7@suse.com>
+ <CADCV8srwww_--oOvi1sdS4JfUafidPOPr0srG1bWO66py2WTtQ@mail.gmail.com>
+Content-Language: en-US
+From: Heming Zhao <heming.zhao@suse.com>
+In-Reply-To: <CADCV8srwww_--oOvi1sdS4JfUafidPOPr0srG1bWO66py2WTtQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 15, 2025 at 10:34:24AM +0800, cheung wall wrote:
-> Hello,
+Hello Jan,
+
+On 1/15/25 09:32, Liebes Wang wrote:
+> The bisection log shows the first cause commit is a09decff5c32060639a685581c380f51b14e1fc2:
+> a09decff5c32 jbd2: clear JBD2_ABORT flag before journal_reset to update log tail info when load journal
 > 
-> I am writing to report a potential vulnerability identified in the
-> Linux Kernel version v6.12-rc4. This vulnerability was discovered
-> while i was testing the kernel.
+> The full bisection log is attached. Hope this helps.
 
-A WARN_ON is not something I generally consider a "security
-vulnerability".  This is especially if (as I suspect) triggering
-failure requires mounting a maliciously fuzzed file system image,
-which is something I don't consider an interesting threat mode.
+This bisearch commit a09decff5c32 appears to be the root cause
+of this issue. It fixed one issue but introduced another.
 
-And without a reliable reproducer, I'm not likely to waste a lot of
-time on this.  So if you're a researcher trying to mess with Syzkaller
-in some weird proprietary way without runninga proper syzbot
-interface, sorry, this is a super-terrible way to try to demonstrate
-real-world impact.
+Syzbot tested the patch with calling jbd2_journal_wipe() with 'write=1'.
+The Syzbot test result [1] shows that the same WARN_ON() is triggered
+in a subsequent routine – the classic whack-a-mole!
 
-Feel free to do more of your own analysis, and when you have a
-reliable reproucer, please let me know.
+Back to commit a09decff5c32, it opened a door to allow jbd2 to update
+sb regardless of whether the value of sb items are correct.
+
+To fix a09decff5c32, it seems that jbd2 needs to add more sanity check
+codes in a sub-routine of jbd2_journal_load().
+
+btw, in my view, this is a jbd2 issue not ocfs2/ext4 issue.
+
+[1]: https://lore.kernel.org/ocfs2-devel/04a9ad29-51de-4b50-a5bb-56f91817639d@suse.com/T/#m86d01f83d808868bb5e6548d30f79b4f9f889b13
+
+-- Heming
 
 > 
-> Linux Kernel Repository Git Commit:
-> 42f7652d3eb527d03665b09edac47f85fb600924 (tag: v6.12-rc4)
+> Heming Zhao <heming.zhao@suse.com <mailto:heming.zhao@suse.com>> 于2025年1月14日周二 22:51写道：
 > 
-> Bug Location: 0010:ext4_destroy_inode+0x1d0/0x270 fs/ext4/super.c:1465
+>     Hi Ted,
 > 
-> Bug report: https://pastebin.com/YKFyLm5P
+>     On 1/14/25 21:38, Theodore Ts'o wrote:
+>      > On Tue, Jan 14, 2025 at 02:25:21PM +0800, Heming Zhao wrote:
+>      >>
+>      >> The root cause appears to be that the jbd2 bypass recovery logic
+>      >> is incorrect.
+>      >
+>      > Heming, thanks for taking a look.
+>      >
+>      > I'm not convinced the root cause is what you've stated.  When
+>      > jbd2_journal_wipe() calls jbd2_mark_journal_empty(), s_start gets set
+>      > to zero:
 > 
-> Entire Log: https://pastebin.com/fE1tFAUS
+>     Actually, ocfs2 calls jbd2_journal_wipe() with 'write=0' (hard coded),
+>     so jbd2_mark_journal_empty() isn't called during the ocfs2 mount
+>     phase. This means the following deduction won't apply in this case.
+> 
+>     -- Heming
+> 
+>      >
+>      >       sb->s_start    = cpu_to_be32(0);
+>      >
+>      > This then gets checked in jbd2_journal_recovery:
+>      >
+>      >       if (!sb->s_start) {
+>      >               jbd2_debug(1, "No recovery required, last transaction %d, head block %u\n",
+>      >                         be32_to_cpu(sb->s_sequence), be32_to_cpu(sb->s_head));
+>      >               journal->j_transaction_sequence = be32_to_cpu(sb->s_sequence) + 1;
+>      >               journal->j_head = be32_to_cpu(sb->s_head);
+>      >               return 0;
+>      >       }
+>      >
+>      > I suspect that there is something else wrong with jbd2's superblock,
+>      > since this normally works in the absence of malicious fs image
+>      > fuzzing, such that when jbd2_journal_load() calls reset_journal()
+>      > after jbd2_journal_recover() correctly bypasses recovery, the WARN_ON
+>      > gets triggered.
+>      >
+>      > I'd suggest that you enable jbd2 debugging so we can see all of the
+>      > jbd2_debug() message to understand what might be going on.
+>      >
+>      > By the way, given that this is only a WARN_ON, and it involves
+>      > malicious image fuzzing, this is probably a valid jbd2 bug, but it's
+>      > not actually a security bug.  Sure, someone silly enough to pick up a
+>      > maliciously corrupted USB thumb drive dropped in a parking lot and
+>      > insert it into their desktop, and the distribution is silly enoough to
+>      > allow automount, the worse that can happen is that the system to
+>      > reboot if the system is configured to panic on a WARNING.  So feel
+>      > free to prioritize your investigation appropriately.  :-)
+>      >
+>      > Cheers,
+>      >
+>      >                                               - Ted
+> 
 
-For the record, this URL is not accessible; possibly because you
-failed to make it be public.
-
-> Thank you for your time and attention.
-
-Sorry, but you've wasted my time.
-
-					- Ted
 
