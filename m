@@ -1,254 +1,326 @@
-Return-Path: <linux-ext4+bounces-6107-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6108-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D419BA118C3
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 06:10:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7143A11901
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 06:32:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2F3D168201
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 05:10:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C4C13A8518
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 05:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F3D22E40E;
-	Wed, 15 Jan 2025 05:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD43E22F39B;
+	Wed, 15 Jan 2025 05:32:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NA4Pxmwd"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PVN/j+L5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2045.outbound.protection.outlook.com [40.107.237.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD887232423;
-	Wed, 15 Jan 2025 05:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736917829; cv=none; b=gbQKybu6pvJtJD+AX95NfXHifNzunTm/7rrHZZ1EV6AR1Kgfhm+z+Dywj7tObCSF7+ARgRHOHh76wrgeUX4qi49mVqtyo+kszs3eCrvAqQqYz8Tz9PyQcGbAWjirhqbXLwIALiqZdqjNKqeO+sVaXKJOMfdjv5FMWP5RkE8cZAU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736917829; c=relaxed/simple;
-	bh=BSuMZCsoOzKQMEMZkJMQX4MYaNfIMPSWU01+73erjRw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PFdppRw5T3SuqFuQzH0u6IQyX+4blssp3+w4Ix3+7YDFg3GxRfVTG+ikhhucHNrS2Gr50YJwYYW0X10mzSFUIsxGsHYE3KML9JwJ/fK6TsOnbpC8tv+OlXKRYDpUDbEBtmBGGD+87dhUff0bG2odkBZ0XL+T0ocev56kQXm/Roo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NA4Pxmwd; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2163b0c09afso115569015ad.0;
-        Tue, 14 Jan 2025 21:10:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736917827; x=1737522627; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Jm30nj/PYoQLVtdxXBWVFAXbI2tSvP8CATKJm9etVC8=;
-        b=NA4PxmwdKvmXtrWulIAVvtm+uF7G2UrQSwxdW1d5n79cwjViV7zKcJ3h1qhfca22Aw
-         fEKc6PfLri0GHtf5oW0QQ0VyqAufkn0tsYQsq/LqfWl8UrQ/HD++imWz1Bkdep/2lLPL
-         /gvOV0M3odgEKQNRSKwlXfmX6xoH4csgFH+kdgqxTdGR4jf1GJiK9WvwMzVE59D1M4i+
-         K1edmhvS9xjYXavKU1bcaaa9vqRHSCqGwnwxciU+eju84Qf4e41RkjCiCs41NTRzWb9Y
-         +sYzVzY2Gxt9pjzUZJxeB9tolPdbkFmIoWb8FmDeqte1sv4jjhwy9u6pTZBCtk869KCl
-         lwWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736917827; x=1737522627;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jm30nj/PYoQLVtdxXBWVFAXbI2tSvP8CATKJm9etVC8=;
-        b=WvYxpC+72SVWqO5CFQPsjWN0UaTN4gxqOl7uylU5AAZBBS63IfXl0RuRTbzJaE9Ayq
-         pQm5vhmuSnDQwZ4X2UvwbN2BIK2aBycj5yri25wN9t242+2DxtQ3lWeXplSi0dwLSM5n
-         8/AowdlDTE8zYCQEsiTnJQxGE9aDUTaxQAzI5kOwj8+DZ4wC6Q+2rQ402/PpJCrLU0Uj
-         e4lijDq8+7petiEo7nWubyiaR2+xvUlVjO2Uh3xg5oIPWpgSWaFazCXr4OcvLdsw/TSX
-         mV6khDzZ1qd7rG14dBxp6vcvKi8soo+71RqSN4PiW7iDdJJnmcrPtMco2ItO3fvLWhXU
-         S/lw==
-X-Forwarded-Encrypted: i=1; AJvYcCUBhpXiJob0BNzU4kIkhQ1TY0bbOOn3N6h5QQQQ1U/Mlz81uvsGp4g5Pl1gxfZB70sBkrse93CyFpT3@vger.kernel.org, AJvYcCUNJ+eORUE15yJ01i+dKVFJ7kGMIVFl3+HfzLKBcnTLAgbEEbK8GVBrxfZOCH6shLL+/s16dS0tXGx9@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWCiw8uYuKmWKMSvOeUXWfgW90BGo5gj0a+HWYAdOplkMcJtRk
-	zZIU5y39PFU+nO3eL37BrZ1iWc9Ptfw8uoVxyMa67eklyDWFlWiA
-X-Gm-Gg: ASbGnctwCecWMhXvWxmDBUKU2ncdWF8kjHUrJSDCdJ+BsNXj3ZxUu0LAHN33Oybytmi
-	fEJV0P6rdX+bDgXEReOj5peog3p7qd4PrMfdq+AFF16iQvZqjnM4utQmm+NY4V/08mlUB4a6Rm4
-	YdLbwf0J+Z376NDC9afnnZ4s4gqMnWYi6yrlcszv1qhPeBhMBGnj4WTWXZ1EIewmeRMqgaAozon
-	04ECgB7b58gX6tl1Dn805+YrvCA/ozro5lVRiX4ktMFX+pNhNlcybiLHB/7T6N7cMo=
-X-Google-Smtp-Source: AGHT+IEiJgsCu/Q3rdGyT0BghL8+D1RYTCTSOSRl8nvOHv9f1ec6okKY2kTAvSj1RElobdlvwn+Jmg==
-X-Received: by 2002:a17:902:dac6:b0:215:b058:289c with SMTP id d9443c01a7336-21a83f339f2mr391905345ad.8.1736917826961;
-        Tue, 14 Jan 2025 21:10:26 -0800 (PST)
-Received: from [192.168.0.120] ([49.205.33.247])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f10dddfsm75599195ad.23.2025.01.14.21.10.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jan 2025 21:10:26 -0800 (PST)
-Message-ID: <9c6f6f09-d80a-450d-9a41-47de4d88469a@gmail.com>
-Date: Wed, 15 Jan 2025 10:40:22 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82AB1157E82;
+	Wed, 15 Jan 2025 05:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736919162; cv=fail; b=b74s9TlSVEZo51Pmbtk67sL5+BszFpKFhkHYD3odUwzitKx4+WaRITMMjTFvsB1Jb0mzNdGB2awI8fjxENAV2oVxsSacDDPsRO1ciVMElxsHxYMLp28TTIYWjIlL1c5EpkRiIuGXq2ox4WIQQlJrVPe131mqPmwZYzy7FLLEBMM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736919162; c=relaxed/simple;
+	bh=AfQiZYjafVS0WWBUj1cZURM2nSHNV8Xb2ODDAb7257U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=b6hCWpnPucUF+4lX6llv8sB7RbIkNUcnmtcQRP8pVZoKWwSpPBjDses7Gd0HwFeX1SfDXmupnFfwNGdkR2diqgCUTGQD3p+IQIavDQzWDP/+m+RkfcU+oX79wesbL5zDYUC+frccxsRwgCYOmI7yxim8sUFCdWmtBIFEk7DtxGE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PVN/j+L5; arc=fail smtp.client-ip=40.107.237.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=w8ld8sgsBxzK7PaMkI8lXnvAJgwTfpKP2IQxIHRBJgwINico0SznC0uNe46I4XOlyJd8ipfDLPwwI0NCR/Jz+Nu8qECDabgFIhlE23PSvkfKuXuAFfCdMjR61S+S09/Nwathzwwch542pFGsp/zkn0IMreyo7qkFFX19yKCdNtDg5boJf2/UA9LFC2YRfb7SEAyfMGnp/B6uHzR/lSsrbtxNFGt518mmcGPoJncdy//BGs+sTNxRbdZ3uZMiUlxzPR9/7nfQLjZ/3baFILHOad2WumhRGpoIATCP1TIGc8dFmJJufsmOVLLl+gzO/FM8uSVi+4++p+UcMS1IRImmCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l2T1YcxHlZZfNUsk7hl2T25n7FwLvU7/hC5IaBmCswg=;
+ b=NvnxEAVsRV468NyN7/g3oQWtAMeTpv1RpLr8pqK76gn77mcv0nT0pUXU0FpaHh0hYdyPJNZeemcDbYGHzUPS9EFfDOwY8TTXgC6X8uNGixNTpufhMYRK+joCymnwfkbOEoWPP+bCNt1zvlpBdGU/wDYgIPauLt2bT+2T5m5get1DXo5idrMb2kAbL2ui/OBAUdyloXJHeB2D9xKsyi4E2lS8KRPV/qG3pYLnw8onNqG/F+rgLcqNoQd1/1by6FS3mU4q8f27D4fwouI6XhHUB7i0ScMt1Glb4Kq34CKLdhXyP+yAyx1xg3rj0drTILqvK09uUUnuqaFf0u756eKl6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l2T1YcxHlZZfNUsk7hl2T25n7FwLvU7/hC5IaBmCswg=;
+ b=PVN/j+L5YmQ1MnoI6sVJHnHyaFgOCwbJZ2yV91zrLwG0NdUYnqnndZSmjo1SV9v7nKbfFOpPuy/Cqu+RdRUEu9RLfk3q8tZhv+2a9qmlHnMkB/Fr7tagW112hc2B2arpbB0vhCqila2IUJnrlgqx8DV/5WRKuhS/IR8m3QFg1pCUpWyViJEMbyUIqqBOS+zHJJppNXdfh9csbuiwqqNqsTdjnt2qaodpsf/VsDhzsQExacrdH7oAsRvw8YIYqPQqQt7qwnf4ProBiKaXSwYgXYuYnaLb4YezoUL+dktJGvnhJuaFbIaNHt+Ejhv82I0iOGPfhVsfv1Tevsl0JmbAgQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) by
+ CH3PR12MB9022.namprd12.prod.outlook.com (2603:10b6:610:171::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8335.18; Wed, 15 Jan 2025 05:32:37 +0000
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe]) by DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe%7]) with mapi id 15.20.8335.017; Wed, 15 Jan 2025
+ 05:32:37 +0000
+Date: Wed, 15 Jan 2025 16:32:30 +1100
+From: Alistair Popple <apopple@nvidia.com>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
+	alison.schofield@intel.com, lina@asahilina.net, zhang.lyra@gmail.com, 
+	gerald.schaefer@linux.ibm.com, vishal.l.verma@intel.com, dave.jiang@intel.com, 
+	logang@deltatee.com, bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca, 
+	catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com, 
+	dave.hansen@linux.intel.com, ira.weiny@intel.com, willy@infradead.org, djwong@kernel.org, 
+	tytso@mit.edu, linmiaohe@huawei.com, david@redhat.com, peterx@redhat.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com, 
+	chenhuacai@kernel.org, kernel@xen0n.name, loongarch@lists.linux.dev
+Subject: Re: [PATCH v6 08/26] fs/dax: Remove PAGE_MAPPING_DAX_SHARED mapping
+ flag
+Message-ID: <pxpog7xsknwpaqh44vjkg5anegfwxizn6sgpdipntsljx5jg2s@rwqa5zfxooag>
+References: <cover.11189864684e31260d1408779fac9db80122047b.1736488799.git-series.apopple@nvidia.com>
+ <b8b39849e171c120442963d3fd81c49a8f005bf0.1736488799.git-series.apopple@nvidia.com>
+ <6785b5525dd93_20fa294f2@dwillia2-xfh.jf.intel.com.notmuch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6785b5525dd93_20fa294f2@dwillia2-xfh.jf.intel.com.notmuch>
+X-ClientProxiedBy: SY5P282CA0086.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:201::7) To DS0PR12MB7726.namprd12.prod.outlook.com
+ (2603:10b6:8:130::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] check: Fix fs specfic imports when $FSTYPE!=$OLD_FSTYPE
-Content-Language: en-US
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
- Zorro Lang <zlang@redhat.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org,
- zlang@kernel.org
-References: <f49a72d9ee4cfb621c7f3516dc388b4c80457115.1736695253.git.nirjhar.roy.lists@gmail.com>
- <20250113055901.u5e5ghzi3t45hdha@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <4afe80a4-ac6b-4796-b466-c42a95f7225a@gmail.com>
- <20250113131103.tb25jtgkepw4xreo@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <87h662vici.fsf@gmail.com>
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-In-Reply-To: <87h662vici.fsf@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB7726:EE_|CH3PR12MB9022:EE_
+X-MS-Office365-Filtering-Correlation-Id: edcd0d5e-0d60-41fa-c707-08dd3526053f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?L7vT40tU0ds1HQ91nng0Cl2YPBtkLrDMEkfU4FswtOL+PwPk1SA5jFVUqO3e?=
+ =?us-ascii?Q?K2G1KjUusOY7EURW+oTPGSeJNlFmlNJbt3P3SnCWMrSFBmHLe5S/AUG9I2r/?=
+ =?us-ascii?Q?wlj0rRBMEGdXKfE4EEA+Ihs80tLDAHEsyMY1RvBE5t7nfE/0D4yfoIFT6LTm?=
+ =?us-ascii?Q?LIAWamangLI2HRmGxIoZ5+I5kVHzKGNpFfLO47nkPMp+rxepucX8/b0eANZE?=
+ =?us-ascii?Q?pNE/COCMYRx0d3hYdsnnZgwRWNK0LrpiXEhDiAwhsXGvfu82kV3EV0c/TwJ4?=
+ =?us-ascii?Q?yXPvUzxvm2ZszAOxnaCk7H9MIkXQt9zwYVOtKYVQoQy0Pv37ryafRCG0RtOP?=
+ =?us-ascii?Q?6+fpzFV9qQZeCXdoSkW3DTCZ5uh42doyHXKExv1FrBQ1EHLfuGiFei6QggS6?=
+ =?us-ascii?Q?AcPz7q9erFPuMLqh1nT7GrhYVyA4sTdDkZqAdwQGSUiveafRflr/hjqf7Xlk?=
+ =?us-ascii?Q?TGx88wG0nZFj3Y10mn6JdaijhnGTfyoCdBN6ymsJLiM2Grse1tZ776GOVJj7?=
+ =?us-ascii?Q?WNW9EN5Mu++3ngjAGOST3OXJ9ZAS7s0MTeiqNJLA67wvU+j9fvSDQ52WQtWj?=
+ =?us-ascii?Q?a0xd4IArAhq2wN6+Vexkrr2SwRCGEpRN2M1Zjxo8NVgiESV/lptyZLe4AL+P?=
+ =?us-ascii?Q?+DQ44RKimiBF5c/CYrHB48qqtH3hUTvUNdoVN6iWCV67D0ltk6DVG16SW9zz?=
+ =?us-ascii?Q?bBg1UM8EvoiFrOdgJo6PkyA/dMUxlJwM24P213N7iVtFJRs87thOpInHX/AR?=
+ =?us-ascii?Q?34LYxFQJ3vaOsvRKBuf2txdNA+YTuyAUnAsw53uIeTvFmXycamxZBV7ExzxG?=
+ =?us-ascii?Q?ByZOExPzehPxDwGaYPBIRX+fU1Pq8zfOJTg68oLSydxf+/oRE/89GiUeFEQ8?=
+ =?us-ascii?Q?JxC1qSBwsgiYkgxqrDnIeyEiQst85JUMwyX8UJH4ovPNkj2eiFxc5ma1j2TF?=
+ =?us-ascii?Q?+xp/yJJwWe2R6IE0/6b8pdEdflkzdG/tE2KsXeRtuZrVtK8hbEjP4JaR46g3?=
+ =?us-ascii?Q?dSVpBCUUb6a7nxMhdnlsWWc7QVz2u/89HG3+uTorubiRz+pkhQS29yu5aJej?=
+ =?us-ascii?Q?PCZOL7AcXnAHyhHslpDhpXBYQM/3rUwG1NKygJwroKzJjQXOJsfG2WUpCksz?=
+ =?us-ascii?Q?kXyjaY8vQAgqN0tnvcIWCKJ10MlStEo0H4cYByfUE4rPZrZLkxRWVTCXAEMT?=
+ =?us-ascii?Q?+WbI55q07PC33EroOU43PUbSkiWGK/+lXXfZJPew4qjspoN4XQVnAVCWVFYn?=
+ =?us-ascii?Q?Jr6KEnHEVhL7IVeLzIkbimBywOIdh6A0ORx5h1g7/Y+OHeFPEN/TyMkkwKuJ?=
+ =?us-ascii?Q?L4lH2l6dcy/7aw8T3FTAUxiNC9OeMVokyTnUBL64/i+w69affJmAL6ahgrHZ?=
+ =?us-ascii?Q?9OxA3kOWavRQMSzs9FLv+2UrVFsk?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB7726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?+3fzRW6b710jDGz6CdZJjk+7d2dV1LF63nh6JTFu8Sr21YG3O9SR7zJhaZFh?=
+ =?us-ascii?Q?INdAZxE3ZbeUN0orpZ7FOE2aCNPBukS2UXsvGo9A0tDaq/vxHKDarD1ud5wR?=
+ =?us-ascii?Q?myB8V1EyZuZeUEaTvoi0WqgGK4LWz1OnVpq00XmumMQPK1j8CsFJAyN5Polt?=
+ =?us-ascii?Q?i9DlA0mY8IkJZIxZOebF1DprWUhcfcw/CwnN56pf0z7gZgTOMvPVGEAJ6JUa?=
+ =?us-ascii?Q?E66Whvnawfm9zDLS8if6qLbkV+S2KhIFrwAP1hXyqXMm64WitGSl/uP3MCYp?=
+ =?us-ascii?Q?wWuI8D0IZO5Nu+htJFE5TQipDmzeeqbmrgFA5w9DlNYANhUcGuEEu5UDBdUy?=
+ =?us-ascii?Q?XfrfLt98xRwyvjLFgyDi1GBOdKB00sCZkGfVGMbwIAUg0KviqkmeZzDpWtni?=
+ =?us-ascii?Q?crFU0yuwwD0jxpV6gyLYQnFXU4Yi9arRyohrsQrZLPstS6ydFUu1kcfFpS7f?=
+ =?us-ascii?Q?0Q0i0CIkLNBrc1mFBPi0/NbGxKG5LDRfYmHRyboYdp4OdaDlUg1A5q+9MUg0?=
+ =?us-ascii?Q?lNhdOtAH0VbWoSGaD97sokXrw0Mr37DBraiwGefzD2vrz5z86uY8ti3tf41x?=
+ =?us-ascii?Q?OMvVH+gTinmHKhVPRWnJSGXCgQCVw1YqqxpyiyBe09pXWRl0mmQdj53qPxy9?=
+ =?us-ascii?Q?CxcreOXV7Zp2F1f2DQ1jc+JOeIeG/RY4qYQYmQm4PWbirxyrNqjHZrydk/Sy?=
+ =?us-ascii?Q?RPYOtdCnLA9udxYNjCngqb545g85sDHBBqsWeOiylSZ0VvDdeMb0gNVOubps?=
+ =?us-ascii?Q?ObXwzY+kQd7EvBIxabEzFjILpoO8+wf3c/+UJJGZzrjk9lierBixENDJJlfb?=
+ =?us-ascii?Q?2ir3dGz8ZOl+eEOFIDBP/F19FaGBxd2jV95vxKD2L9YAWjA9AWvJAmPUmE2q?=
+ =?us-ascii?Q?PtB1LzmI5KJnMs6bfMmkPECYudpwiLk4blINScVa4mJJRik8OcI+QkeD68gJ?=
+ =?us-ascii?Q?ExY3bjWQZytyG5LLalt0BJwRNXi4OejYLaAOCyDXIDfx9gkR5jvPb5122kR1?=
+ =?us-ascii?Q?GA1bfb86OCGLp1JPoKKvP8/q66tYPF/AfV1++gXswX/QQc6Eu31vMMIHTy2c?=
+ =?us-ascii?Q?Dl+Hyi4eqokbnTR3NvYTa/1fcmNs0y4sR6g7TjJpgKf5dQZ3k8Xi9l2ytC/8?=
+ =?us-ascii?Q?EqO2aW/FcySErA/1vmNuFluL9SOEJ5I68Rs7mtPAYwih2KsDO9foiJUTnB6K?=
+ =?us-ascii?Q?LLLG9dX36n5rg+1RI3hs0qREAiTjfyeqbyAAvLc6WDeiUdHgRnnrvYjpowxX?=
+ =?us-ascii?Q?t6jJbLv7+d853pf4yvgkgYTFAoYV2XxKsegRLmfzYKEAWrQI/Fi6TN9l62nc?=
+ =?us-ascii?Q?iFDzEIS1FGJSDICet6ejPW5qfNm/zqRQlYweT65MSr+AmMTWrSil8/UepgJG?=
+ =?us-ascii?Q?R974VaNASAVL9ORjdEC65YzRzeTX7bpypoXjbmjAaX3LRUD5COMw5bJkkq0w?=
+ =?us-ascii?Q?OGYlwCt06f87DoWCIXERMKhH3qN/b+10hCewzQMF+YCunJfVWxJfBUeHwOsB?=
+ =?us-ascii?Q?y8JfNTlAE1Lg0SKWnoolnn8PdGzuzB5L4OVcItZ1iGH98SXbSf7L+PVuOJBi?=
+ =?us-ascii?Q?eX2f8CRbSCHViPDKhq1/BegLcG8nWQxhZbjMipuD?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: edcd0d5e-0d60-41fa-c707-08dd3526053f
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB7726.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jan 2025 05:32:37.3304
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XeRTJx1yGFydjn9bIrFO9Qb23Z1h1wrOAk/kPpJHrm+HEma6aXtDa0zpudE+sDO2MB3Lc+/KgRBZi9g/ofauOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9022
 
+On Mon, Jan 13, 2025 at 04:52:34PM -0800, Dan Williams wrote:
+> Alistair Popple wrote:
+> > PAGE_MAPPING_DAX_SHARED is the same as PAGE_MAPPING_ANON. 
+> 
+> I think a bit a bit more detail is warranted, how about?
+> 
+> The page ->mapping pointer can have magic values like
+> PAGE_MAPPING_DAX_SHARED and PAGE_MAPPING_ANON for page owner specific
+> usage. In fact, PAGE_MAPPING_DAX_SHARED and PAGE_MAPPING_ANON alias the
+> same value.
 
-On 1/13/25 21:03, Ritesh Harjani (IBM) wrote:
-> Zorro Lang <zlang@redhat.com> writes:
->
->> On Mon, Jan 13, 2025 at 02:22:20PM +0530, Nirjhar Roy (IBM) wrote:
->>> On 1/13/25 11:29, Zorro Lang wrote:
->>>> On Sun, Jan 12, 2025 at 03:21:51PM +0000, Nirjhar Roy (IBM) wrote:
->>>>> Bug Description:
->>>>>
->>>>> _test_mount function is failing with the following error:
->>>>> ./common/rc: line 4716: _xfs_prepare_for_eio_shutdown: command not found
->>>>> check: failed to mount /dev/loop0 on /mnt1/test
->>>>>
->>>>> when the second section in local.config file is xfs and the first section
->>>>> is non-xfs.
->>>>>
->>>>> It can be easily reproduced with the following local.config file
->>>>>
->>>>> [s2]
->>>>> export FSTYP=ext4
->>>>> export TEST_DEV=/dev/loop0
->>>>> export TEST_DIR=/mnt1/test
->>>>> export SCRATCH_DEV=/dev/loop1
->>>>> export SCRATCH_MNT=/mnt1/scratch
->>>>>
->>>>> [s1]
->>>>> export FSTYP=xfs
->>>>> export TEST_DEV=/dev/loop0
->>>>> export TEST_DIR=/mnt1/test
->>>>> export SCRATCH_DEV=/dev/loop1
->>>>> export SCRATCH_MNT=/mnt1/scratch
->>>>>
->>>>> ./check selftest/001
->>>>>
->>>>> Root cause:
->>>>> When _test_mount() is executed for the second section, the FSTYPE has
->>>>> already changed but the new fs specific common/$FSTYP has not yet
->>>>> been done. Hence _xfs_prepare_for_eio_shutdown() is not found and
->>>>> the test run fails.
->>>>>
->>>>> Fix:
->>>>> call _source_specific_fs $FSTYP at the correct call site of  _test_mount()
->>>>>
->>>>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
->>>>> ---
->>>>>    check | 1 +
->>>>>    1 file changed, 1 insertion(+)
->>>>>
->>>>> diff --git a/check b/check
->>>>> index 607d2456..8cdbb68f 100755
->>>>> --- a/check
->>>>> +++ b/check
->>>>> @@ -776,6 +776,7 @@ function run_section()
->>>>>    	if $RECREATE_TEST_DEV || [ "$OLD_FSTYP" != "$FSTYP" ]; then
->>>>>    		echo "RECREATING    -- $FSTYP on $TEST_DEV"
->>>>>    		_test_unmount 2> /dev/null
->>>>> +		[[ "$OLD_FSTYP" != "$FSTYP" ]] && _source_specific_fs $FSTYP
->>>> The _source_specific_fs is called when importing common/rc file:
->>>>
->>>>     # check for correct setup and source the $FSTYP specific functions now
->>>>     _source_specific_fs $FSTYP
->>>>
->>>>   From the code logic of check script:
->>>>
->>>>           if $RECREATE_TEST_DEV || [ "$OLD_FSTYP" != "$FSTYP" ]; then
->>>>                   echo "RECREATING    -- $FSTYP on $TEST_DEV"
->>>>                   _test_unmount 2> /dev/null
->>>>                   if ! _test_mkfs >$tmp.err 2>&1
->>>>                   then
->>>>                           echo "our local _test_mkfs routine ..."
->>>>                           cat $tmp.err
->>>>                           echo "check: failed to mkfs \$TEST_DEV using specified options"
->>>>                           status=1
->>>>                           exit
->>>>                   fi
->>>>                   if ! _test_mount
->>>>                   then
->>>>                           echo "check: failed to mount $TEST_DEV on $TEST_DIR"
->>>>                           status=1
->>>>                           exit
->>>>                   fi
->>>>                   # TEST_DEV has been recreated, previous FSTYP derived from
->>>>                   # TEST_DEV could be changed, source common/rc again with
->>>>                   # correct FSTYP to get FSTYP specific configs, e.g. common/xfs
->>>>                   . common/rc
->>>>                   ^^^^^^^^^^^
->>>> we import common/rc at here.
->>>>
->>>> So I'm wondering if we can move this line upward, to fix the problem you
->>>> hit (and don't bring in regression :) Does that help?
->>>>
->>>> Thanks,
->>>> Zorro
->>> Okay so we can move ". common/rc" upward and then remove the following from
->>> "check" file:
->>>
->>>          if ! _test_mount
->>>          then
->>>              echo "check: failed to mount $TEST_DEV on $TEST_DIR"
->>>              status=1
->>>              exit
->>>          fi
->>>
->>> since . common/rc will call init_rc() in the end, which does a
->>> _test_mount(). Do you agree with this (Zorro and Ritesh)?
->>>
->>> I can make the changes and send a v2?
->> Hmm... the _init_rc doesn't do _test_mkfs,
-> Yes, I had noticed that problem. So I felt sourcing fs specific file
-> before _test_mkfs should be ok.
->
->> so you might need to do ". common/rc" after "_test_mkfs", rather than "_test_unmount".
->>
->> By checking the _init_rc, I think it can replace the _test_mount you metioned
->> above. Some details might need more testing, to make sure we didn't miss
->> anything wrong:)
-> If moving . common/rc above _test_mount works, than that is a better
-> approach than sourcing fs specific config file twice.
+Massaged it slightly but sounds good.
 
-Yes, moving the ". common/rc" just after _test_mkfs and removing the 
-_test_mount after fixes it the issue. I will do additional testing 
-before sending a v2.
+> > This isn't currently a problem because FS DAX pages are treated
+> > specially.
+> 
+> s/are treated specially/are never seen by the anonymous mapping code and
+> vice versa/
+> 
+> > However a future change will make FS DAX pages more like
+> > normal pages, so folio_test_anon() must not return true for a FS DAX
+> > page.
+> > 
+> > We could explicitly test for a FS DAX page in folio_test_anon(),
+> > etc. however the PAGE_MAPPING_DAX_SHARED flag isn't actually
+> > needed. Instead we can use the page->mapping field to implicitly track
+> > the first mapping of a page. If page->mapping is non-NULL it implies
+> > the page is associated with a single mapping at page->index. If the
+> > page is associated with a second mapping clear page->mapping and set
+> > page->share to 1.
+> > 
+> > This is possible because a shared mapping implies the file-system
+> > implements dax_holder_operations which makes the ->mapping and
+> > ->index, which is a union with ->share, unused.
+> > 
+> > The page is considered shared when page->mapping == NULL and
+> > page->share > 0 or page->mapping != NULL, implying it is present in at
+> > least one address space. This also makes it easier for a future change
+> > to detect when a page is first mapped into an address space which
+> > requires special handling.
+> > 
+> > Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> > ---
+> >  fs/dax.c                   | 45 +++++++++++++++++++++++++--------------
+> >  include/linux/page-flags.h |  6 +-----
+> >  2 files changed, 29 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/fs/dax.c b/fs/dax.c
+> > index 4e49cc4..d35dbe1 100644
+> > --- a/fs/dax.c
+> > +++ b/fs/dax.c
+> > @@ -351,38 +351,41 @@ static unsigned long dax_end_pfn(void *entry)
+> >  	for (pfn = dax_to_pfn(entry); \
+> >  			pfn < dax_end_pfn(entry); pfn++)
+> >  
+> > +/*
+> > + * A DAX page is considered shared if it has no mapping set and ->share (which
+> > + * shares the ->index field) is non-zero. Note this may return false even if the
+> > + * page is shared between multiple files but has not yet actually been mapped
+> > + * into multiple address spaces.
+> > + */
+> >  static inline bool dax_page_is_shared(struct page *page)
+> >  {
+> > -	return page->mapping == PAGE_MAPPING_DAX_SHARED;
+> > +	return !page->mapping && page->share;
+> >  }
+> >  
+> >  /*
+> > - * Set the page->mapping with PAGE_MAPPING_DAX_SHARED flag, increase the
+> > - * refcount.
+> > + * Increase the page share refcount, warning if the page is not marked as shared.
+> >   */
+> >  static inline void dax_page_share_get(struct page *page)
+> >  {
+> > -	if (page->mapping != PAGE_MAPPING_DAX_SHARED) {
+> > -		/*
+> > -		 * Reset the index if the page was already mapped
+> > -		 * regularly before.
+> > -		 */
+> > -		if (page->mapping)
+> > -			page->share = 1;
+> > -		page->mapping = PAGE_MAPPING_DAX_SHARED;
+> > -	}
+> > +	WARN_ON_ONCE(!page->share);
+> > +	WARN_ON_ONCE(page->mapping);
+> 
+> Given the only caller of this function is dax_associate_entry() it seems
+> like overkill to check that a function only a few lines away manipulated
+> ->mapping correctly.
 
---NR
+Good call.
 
->
->
-> -ritesh
->
->> Any review points from others?
->>
->> Thanks,
->> Zorro
->>
->>> --NR
->>>
->>>>
->>>>>    		if ! _test_mkfs >$tmp.err 2>&1
->>>>>    		then
->>>>>    			echo "our local _test_mkfs routine ..."
->>>>> -- 
->>>>> 2.34.1
->>>>>
->>>>>
->>> -- 
->>> Nirjhar Roy
->>> Linux Kernel Developer
->>> IBM, Bangalore
->>>
--- 
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
+> I don't see much reason for dax_page_share_get() to exist after your
+> changes.
+> 
+> Perhaps all that is needed is a dax_make_shared() helper that does the
+> initial fiddling of '->mapping = NULL' and '->share = 1'?
 
+Ok. I was going to make the argument that dax_make_shared() was overkill as
+well, but as noted below it's a good place to put the comment describing how
+this all works so have done that.
+
+> >  	page->share++;
+> >  }
+> >  
+> >  static inline unsigned long dax_page_share_put(struct page *page)
+> >  {
+> > +	WARN_ON_ONCE(!page->share);
+> >  	return --page->share;
+> >  }
+> >  
+> >  /*
+> > - * When it is called in dax_insert_entry(), the shared flag will indicate that
+> > - * whether this entry is shared by multiple files.  If so, set the page->mapping
+> > - * PAGE_MAPPING_DAX_SHARED, and use page->share as refcount.
+> > + * When it is called in dax_insert_entry(), the shared flag will indicate
+> > + * whether this entry is shared by multiple files. If the page has not
+> > + * previously been associated with any mappings the ->mapping and ->index
+> > + * fields will be set. If it has already been associated with a mapping
+> > + * the mapping will be cleared and the share count set. It's then up to the
+> > + * file-system to track which mappings contain which pages, ie. by implementing
+> > + * dax_holder_operations.
+> 
+> This feels like a good comment for a new dax_make_shared() not
+> dax_associate_entry().
+> 
+> I would also:
+> 
+> s/up to the file-system to track which mappings contain which pages, ie. by implementing
+>  dax_holder_operations/up to reverse map users like memory_failure() to
+> call back into the filesystem to recover ->mapping and ->index
+> information/
+
+Sounds good, although I left a reference to dax_holder_operations in the comment
+because it's not immediately obvious how file-systems do this currently and I
+had to relearn that more times than I'd care to admit :-)
+
+> >   */
+> >  static void dax_associate_entry(void *entry, struct address_space *mapping,
+> >  		struct vm_area_struct *vma, unsigned long address, bool shared)
+> > @@ -397,7 +400,17 @@ static void dax_associate_entry(void *entry, struct address_space *mapping,
+> >  	for_each_mapped_pfn(entry, pfn) {
+> >  		struct page *page = pfn_to_page(pfn);
+> >  
+> > -		if (shared) {
+> > +		if (shared && page->mapping && page->share) {
+> 
+> How does this case happen? I don't think any page would ever enter with
+> both ->mapping and ->share set, right?
+
+Sigh. You're right - it can't. This patch series is getting a litte bit large
+and unweildy with all the prerequisite bugfixes and cleanups. Obviously I fixed
+this when developing the main fs dax count fixup but forgot to rebase the fix
+further back in the series.
+
+Anyway I have fixed that now, thanks.
+
+> If the file was mapped then reflinked then ->share should be zero at the
+> first mapping attempt. It might not be zero because it is aliased with
+> index until it is converted to a shared page.
 
