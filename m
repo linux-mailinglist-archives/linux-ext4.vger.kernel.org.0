@@ -1,236 +1,248 @@
-Return-Path: <linux-ext4+bounces-6126-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6127-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36C10A12344
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 12:55:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C40E9A12A3D
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 18:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AA283AE274
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 11:55:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9BBE166828
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 17:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761EE28EC73;
-	Wed, 15 Jan 2025 11:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F491A239C;
+	Wed, 15 Jan 2025 17:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oemHJOWQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zU/9scZ6";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oemHJOWQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zU/9scZ6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219522416A0;
-	Wed, 15 Jan 2025 11:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972ED189F5C;
+	Wed, 15 Jan 2025 17:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736941940; cv=none; b=LRhfVDZkau768Kg5038eGMxu+GA3WCwB+RbS4JL9iOQpSDbN/QknWJ6Dbbk+fVNTycgIyBuJEL0QjW9S6j7rGS4ugnMspw280bzrYKMGFL18gYkZQUWnAbvc2G5ye4mRqbOM4gt1V/ZRkP7OTn7W1gt8Urq8tURF2WNdNF62xi4=
+	t=1736963625; cv=none; b=uxdj/TeIlNjgcuNsgfe1b/Phjh57TNaB/zPfyWaWqAC3lT1Kll16kb6EfKjETrXfHUAJ2FSKDnZl5mxx5C3KdPoAUqLDQqYHKaHYefkpeRp8XXoJecGkzpEle8BvniNWFMfBgJXGlVM7X4lYYfPS25KCknE0uoPSoiUBEjYdUHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736941940; c=relaxed/simple;
-	bh=JgsJW573ldrbF6x31hKKXz0mNmXN80sqUcdXYcBP948=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eSeCgTmetuQucKBG8Om0V1K1x570kjub+zUs4hNpVm2gP5Q0egVEORRUVR+jYUdTPwsG88cUE3RGNK2BlkR/0Qh6aKprzoAJtyXX097wTJfykVjcPSqdv0tX9eKiC+gaoZQyo8H3+7AisVyIdBA24GYMowbsKnX2Ymk8RTi7O2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YY4991F4Fz4f3jss;
-	Wed, 15 Jan 2025 19:51:57 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 5C2941A0DBA;
-	Wed, 15 Jan 2025 19:52:12 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgC3Gl9aoYdnvK0ZBA--.21959S12;
-	Wed, 15 Jan 2025 19:52:12 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	dm-devel@lists.linux.dev,
-	linux-nvme@lists.infradead.org,
-	linux-scsi@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	hch@lst.de,
-	tytso@mit.edu,
-	djwong@kernel.org,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com,
-	yangerkun@huawei.com
-Subject: [RFC PATCH v2 8/8] ext4: add FALLOC_FL_WRITE_ZEROES support
-Date: Wed, 15 Jan 2025 19:46:37 +0800
-Message-Id: <20250115114637.2705887-9-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20250115114637.2705887-1-yi.zhang@huaweicloud.com>
-References: <20250115114637.2705887-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1736963625; c=relaxed/simple;
+	bh=sWEri19tFWrg9x/k0QqtnM9RMkhU+X2vqpuoSovB64Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TH97jKbYCKRNCYMGzzBtdm6EnMFDoe1wg4Q/0YyxinqQ+N0O2D/EWKLG4gXPmhMA3bowe+cX058CKwtbSr5RbV1UVLGwL9bij7bC4JhR9P6L7kuOl4/kELjL2Uf4FBcmcIms6FWLGDO9U4AkGwkk9hG6EIY4dS+FyNOOnL9blzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oemHJOWQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zU/9scZ6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oemHJOWQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zU/9scZ6; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CF2F92126E;
+	Wed, 15 Jan 2025 17:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736963621; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w514Fsifov2itNHvnUBqKFDClY1s7qWmgbyDAkHc+cQ=;
+	b=oemHJOWQEwSN8LatTtxyC4LXsQRxfwQnDKeLULrhW+Yf0p4HaS0B49kQ9dJ9lte1f09Gi/
+	xc3Ijlvlcukjrgip8cvkXpEgP37cmJITLU+3S64mUu2UwPwIxecnvELrw1+5ed1Q9wyZcy
+	B6Q+k6YXqayLPm/QQKO78SfDR5IMXjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736963621;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w514Fsifov2itNHvnUBqKFDClY1s7qWmgbyDAkHc+cQ=;
+	b=zU/9scZ6ZsTYoOT//PhSf7EVbxUOvmwdmGcHLGKfZ4FXLJ6rSPpX8xfoDJqZbiC7rqGomP
+	Zo+LctTCFd6kEHAA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736963621; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w514Fsifov2itNHvnUBqKFDClY1s7qWmgbyDAkHc+cQ=;
+	b=oemHJOWQEwSN8LatTtxyC4LXsQRxfwQnDKeLULrhW+Yf0p4HaS0B49kQ9dJ9lte1f09Gi/
+	xc3Ijlvlcukjrgip8cvkXpEgP37cmJITLU+3S64mUu2UwPwIxecnvELrw1+5ed1Q9wyZcy
+	B6Q+k6YXqayLPm/QQKO78SfDR5IMXjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736963621;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w514Fsifov2itNHvnUBqKFDClY1s7qWmgbyDAkHc+cQ=;
+	b=zU/9scZ6ZsTYoOT//PhSf7EVbxUOvmwdmGcHLGKfZ4FXLJ6rSPpX8xfoDJqZbiC7rqGomP
+	Zo+LctTCFd6kEHAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BB73E139CB;
+	Wed, 15 Jan 2025 17:53:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kDaALSX2h2cMNgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 15 Jan 2025 17:53:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 5112FA08E2; Wed, 15 Jan 2025 18:53:41 +0100 (CET)
+Date: Wed, 15 Jan 2025 18:53:41 +0100
+From: Jan Kara <jack@suse.cz>
+To: Heming Zhao <heming.zhao@suse.com>
+Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, 
+	li.kai4@h3c.com, jack@suse.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
+	Joseph Qi <joseph.qi@linux.alibaba.com>, ocfs2-devel@lists.linux.dev, 
+	Liebes Wang <wanghaichi0403@gmail.com>, syzbot <syzbot+96ee12698391289383dd@syzkaller.appspotmail.com>
+Subject: Re: WARNING in jbd2_journal_update_sb_log_tail
+Message-ID: <2htuqhxolgddrwm5ka7ad4axu3gz7nprqnmspdtkwld7mzch3r@tqhjlxfidxsb>
+References: <CADCV8sq0E9_tmBbedYdUJyD4=yyjSngp2ZGVR2VfZfD0Q1nUFQ@mail.gmail.com>
+ <mzypseklhk6colsb5fh42ya74x43z5mmkzdjdyluesx6hb744a@hycbebanf7mv>
+ <24f378c8-7a27-47b8-bd79-dba4a2e92f6d@suse.com>
+ <20250114133815.GA1997324@mit.edu>
+ <3655551d-b881-4f2b-8419-03efe4d3aca7@suse.com>
+ <CADCV8srwww_--oOvi1sdS4JfUafidPOPr0srG1bWO66py2WTtQ@mail.gmail.com>
+ <db4da8db-d501-4181-994b-c25845908161@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgC3Gl9aoYdnvK0ZBA--.21959S12
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xry7Ar13Xw13XFy8XFW3GFg_yoW7GF4UpF
-	Z8XF1rKFWIq3429r4fCw4kurn0q3WkKry5WrWSgry093yUJr1fKFn09Fy8uas0gFW8AF45
-	Xa1Y9ryDK3W7A37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
-	4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBI
-	daVFxhVjvjDU0xZFpf9x0JUljgxUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+In-Reply-To: <db4da8db-d501-4181-994b-c25845908161@suse.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[96ee12698391289383dd];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,mit.edu,h3c.com,suse.com,vger.kernel.org,googlegroups.com,linux.alibaba.com,lists.linux.dev,gmail.com,syzkaller.appspotmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Score: -2.30
+X-Spam-Flag: NO
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Wed 15-01-25 13:00:23, Heming Zhao wrote:
+> Hello Jan,
+> 
+> On 1/15/25 09:32, Liebes Wang wrote:
+> > The bisection log shows the first cause commit is a09decff5c32060639a685581c380f51b14e1fc2:
+> > a09decff5c32 jbd2: clear JBD2_ABORT flag before journal_reset to update log tail info when load journal
+> > 
+> > The full bisection log is attached. Hope this helps.
+> 
+> This bisearch commit a09decff5c32 appears to be the root cause
+> of this issue. It fixed one issue but introduced another.
+> 
+> Syzbot tested the patch with calling jbd2_journal_wipe() with 'write=1'.
+> The Syzbot test result [1] shows that the same WARN_ON() is triggered
+> in a subsequent routine – the classic whack-a-mole!
+> 
+> Back to commit a09decff5c32, it opened a door to allow jbd2 to update
+> sb regardless of whether the value of sb items are correct.
+> 
+> To fix a09decff5c32, it seems that jbd2 needs to add more sanity check
+> codes in a sub-routine of jbd2_journal_load().
+> 
+> btw, in my view, this is a jbd2 issue not ocfs2/ext4 issue.
+> 
+> [1]: https://lore.kernel.org/ocfs2-devel/04a9ad29-51de-4b50-a5bb-56f91817639d@suse.com/T/#m86d01f83d808868bb5e6548d30f79b4f9f889b13
 
-Add support for FALLOC_FL_WRITE_ZEROES. This first allocates blocks as
-unwritten, then issues a zero command outside of the running journal
-handle, and finally converts them to a written state.
+Thanks for debugging this! So I'm not 100% convinced this is only jbd2 bug
+because jbd2_journal_recover() was never intended to be called after
+jbd2_journal_skip_recovery() (called from jbd2_journal_wipe()). You're
+supposed to call either jbd2_journal_wipe() or jbd2_journal_recover() but
+not both. So IMO this needs fixing in OCFS2 code. That being said you've
+also pointed at one bug in jbd2 code - the WARN_ON(!sb->s_sequence) in
+jbd2_journal_update_sb_log_tail() is indeed wrong. We were inconsistent
+inside jbd2 whether TID 0 is considered valid or not and relatively
+recently we've decided to accept TID 0 as valid but this place was left
+out. I'll send a fix for that.
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/extents.c           | 59 ++++++++++++++++++++++++++++++-------
- include/trace/events/ext4.h |  3 +-
- 2 files changed, 50 insertions(+), 12 deletions(-)
+								Honza
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 1b028be19193..e937a714085c 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -4483,6 +4483,8 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 	struct ext4_map_blocks map;
- 	unsigned int credits;
- 	loff_t epos, old_size = i_size_read(inode);
-+	unsigned int blkbits = inode->i_blkbits;
-+	bool alloc_zero = false;
- 
- 	BUG_ON(!ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS));
- 	map.m_lblk = offset;
-@@ -4495,6 +4497,17 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 	if (len <= EXT_UNWRITTEN_MAX_LEN)
- 		flags |= EXT4_GET_BLOCKS_NO_NORMALIZE;
- 
-+	/*
-+	 * Do the actual write zero during a running journal transaction
-+	 * costs a lot. First allocate an unwritten extent and then
-+	 * convert it to written after zeroing it out.
-+	 */
-+	if (flags & EXT4_GET_BLOCKS_ZERO) {
-+		flags &= ~EXT4_GET_BLOCKS_ZERO;
-+		flags |= EXT4_GET_BLOCKS_UNWRIT_EXT;
-+		alloc_zero = true;
-+	}
-+
- 	/*
- 	 * credits to insert 1 extent into extent tree
- 	 */
-@@ -4531,9 +4544,7 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 		 * allow a full retry cycle for any remaining allocations
- 		 */
- 		retries = 0;
--		map.m_lblk += ret;
--		map.m_len = len = len - ret;
--		epos = (loff_t)map.m_lblk << inode->i_blkbits;
-+		epos = (loff_t)(map.m_lblk + ret) << blkbits;
- 		inode_set_ctime_current(inode);
- 		if (new_size) {
- 			if (epos > new_size)
-@@ -4553,6 +4564,21 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 		ret2 = ret3 ? ret3 : ret2;
- 		if (unlikely(ret2))
- 			break;
-+
-+		if (alloc_zero &&
-+		    (map.m_flags & (EXT4_MAP_MAPPED | EXT4_MAP_UNWRITTEN))) {
-+			ret2 = ext4_issue_zeroout(inode, map.m_lblk, map.m_pblk,
-+						  map.m_len);
-+			if (likely(!ret2))
-+				ret2 = ext4_convert_unwritten_extents(NULL,
-+					inode, (loff_t)map.m_lblk << blkbits,
-+					(loff_t)map.m_len << blkbits);
-+			if (ret2)
-+				break;
-+		}
-+
-+		map.m_lblk += ret;
-+		map.m_len = len = len - ret;
- 	}
- 	if (ret == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
- 		goto retry;
-@@ -4618,7 +4644,11 @@ static long ext4_zero_range(struct file *file, loff_t offset,
- 	if (end_lblk > start_lblk) {
- 		ext4_lblk_t zero_blks = end_lblk - start_lblk;
- 
--		flags |= (EXT4_GET_BLOCKS_CONVERT_UNWRITTEN | EXT4_EX_NOCACHE);
-+		if (mode & FALLOC_FL_WRITE_ZEROES)
-+			flags = EXT4_GET_BLOCKS_CREATE_ZERO | EXT4_EX_NOCACHE;
-+		else
-+			flags |= (EXT4_GET_BLOCKS_CONVERT_UNWRITTEN |
-+				  EXT4_EX_NOCACHE);
- 		ret = ext4_alloc_file_blocks(file, start_lblk, zero_blks,
- 					     new_size, flags);
- 		if (ret)
-@@ -4730,8 +4760,8 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 
- 	/* Return error if mode is not supported */
- 	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
--		     FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_ZERO_RANGE |
--		     FALLOC_FL_INSERT_RANGE))
-+		     FALLOC_FL_ZERO_RANGE | FALLOC_FL_COLLAPSE_RANGE |
-+		     FALLOC_FL_INSERT_RANGE | FALLOC_FL_WRITE_ZEROES))
- 		return -EOPNOTSUPP;
- 
- 	inode_lock(inode);
-@@ -4762,16 +4792,23 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 	if (ret)
- 		goto out_invalidate_lock;
- 
--	if (mode & FALLOC_FL_PUNCH_HOLE)
-+	switch (mode & FALLOC_FL_MODE_MASK) {
-+	case FALLOC_FL_PUNCH_HOLE:
- 		ret = ext4_punch_hole(file, offset, len);
--	else if (mode & FALLOC_FL_COLLAPSE_RANGE)
-+		break;
-+	case FALLOC_FL_COLLAPSE_RANGE:
- 		ret = ext4_collapse_range(file, offset, len);
--	else if (mode & FALLOC_FL_INSERT_RANGE)
-+		break;
-+	case FALLOC_FL_INSERT_RANGE:
- 		ret = ext4_insert_range(file, offset, len);
--	else if (mode & FALLOC_FL_ZERO_RANGE)
-+		break;
-+	case FALLOC_FL_ZERO_RANGE:
-+	case FALLOC_FL_WRITE_ZEROES:
- 		ret = ext4_zero_range(file, offset, len, mode);
--	else
-+		break;
-+	default:
- 		ret = -EOPNOTSUPP;
-+	}
- 
- out_invalidate_lock:
- 	filemap_invalidate_unlock(mapping);
-diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-index 156908641e68..6f9cf2811733 100644
---- a/include/trace/events/ext4.h
-+++ b/include/trace/events/ext4.h
-@@ -92,7 +92,8 @@ TRACE_DEFINE_ENUM(ES_REFERENCED_B);
- 	{ FALLOC_FL_KEEP_SIZE,		"KEEP_SIZE"},		\
- 	{ FALLOC_FL_PUNCH_HOLE,		"PUNCH_HOLE"},		\
- 	{ FALLOC_FL_COLLAPSE_RANGE,	"COLLAPSE_RANGE"},	\
--	{ FALLOC_FL_ZERO_RANGE,		"ZERO_RANGE"})
-+	{ FALLOC_FL_ZERO_RANGE,		"ZERO_RANGE"},		\
-+	{ FALLOC_FL_WRITE_ZEROES,	"WRITE_ZEROES"})
- 
- TRACE_DEFINE_ENUM(EXT4_FC_REASON_XATTR);
- TRACE_DEFINE_ENUM(EXT4_FC_REASON_CROSS_RENAME);
+> > Heming Zhao <heming.zhao@suse.com <mailto:heming.zhao@suse.com>> 于2025年1月14日周二 22:51写道：
+> > 
+> >     Hi Ted,
+> > 
+> >     On 1/14/25 21:38, Theodore Ts'o wrote:
+> >      > On Tue, Jan 14, 2025 at 02:25:21PM +0800, Heming Zhao wrote:
+> >      >>
+> >      >> The root cause appears to be that the jbd2 bypass recovery logic
+> >      >> is incorrect.
+> >      >
+> >      > Heming, thanks for taking a look.
+> >      >
+> >      > I'm not convinced the root cause is what you've stated.  When
+> >      > jbd2_journal_wipe() calls jbd2_mark_journal_empty(), s_start gets set
+> >      > to zero:
+> > 
+> >     Actually, ocfs2 calls jbd2_journal_wipe() with 'write=0' (hard coded),
+> >     so jbd2_mark_journal_empty() isn't called during the ocfs2 mount
+> >     phase. This means the following deduction won't apply in this case.
+> > 
+> >     -- Heming
+> > 
+> >      >
+> >      >       sb->s_start    = cpu_to_be32(0);
+> >      >
+> >      > This then gets checked in jbd2_journal_recovery:
+> >      >
+> >      >       if (!sb->s_start) {
+> >      >               jbd2_debug(1, "No recovery required, last transaction %d, head block %u\n",
+> >      >                         be32_to_cpu(sb->s_sequence), be32_to_cpu(sb->s_head));
+> >      >               journal->j_transaction_sequence = be32_to_cpu(sb->s_sequence) + 1;
+> >      >               journal->j_head = be32_to_cpu(sb->s_head);
+> >      >               return 0;
+> >      >       }
+> >      >
+> >      > I suspect that there is something else wrong with jbd2's superblock,
+> >      > since this normally works in the absence of malicious fs image
+> >      > fuzzing, such that when jbd2_journal_load() calls reset_journal()
+> >      > after jbd2_journal_recover() correctly bypasses recovery, the WARN_ON
+> >      > gets triggered.
+> >      >
+> >      > I'd suggest that you enable jbd2 debugging so we can see all of the
+> >      > jbd2_debug() message to understand what might be going on.
+> >      >
+> >      > By the way, given that this is only a WARN_ON, and it involves
+> >      > malicious image fuzzing, this is probably a valid jbd2 bug, but it's
+> >      > not actually a security bug.  Sure, someone silly enough to pick up a
+> >      > maliciously corrupted USB thumb drive dropped in a parking lot and
+> >      > insert it into their desktop, and the distribution is silly enoough to
+> >      > allow automount, the worse that can happen is that the system to
+> >      > reboot if the system is configured to panic on a WARNING.  So feel
+> >      > free to prioritize your investigation appropriately.  :-)
+> >      >
+> >      > Cheers,
+> >      >
+> >      >                                               - Ted
+> > 
+> 
 -- 
-2.39.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
