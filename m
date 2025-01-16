@@ -1,475 +1,482 @@
-Return-Path: <linux-ext4+bounces-6129-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6130-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB3EDA12F78
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2025 01:08:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C8DFA13089
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2025 02:13:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 682E83A576A
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2025 00:08:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3D83165BCE
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2025 01:13:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DC8A50;
-	Thu, 16 Jan 2025 00:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="FlAG15JU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A961CAA4;
+	Thu, 16 Jan 2025 01:13:39 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from omta003.cacentral1.a.cloudfilter.net (omta001.cacentral1.a.cloudfilter.net [3.97.99.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70964EC4
-	for <linux-ext4@vger.kernel.org>; Thu, 16 Jan 2025 00:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACB4BA53
+	for <linux-ext4@vger.kernel.org>; Thu, 16 Jan 2025 01:13:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.97.99.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736986091; cv=none; b=oChbUm95894zzX7r1z9n96Tz23rkofxMPHyS08ixJX9q3oX81W2fVLx93wlOkGQEBuypguABq858MEEzehEXluWFeoncdcNRCbHDkAQKIWNFdR00zjtgWyhoTfilIJZHuTYGAEKb3aWQ+Gd5Zy5U77+GQa+R+C35NBr+0hDpntg=
+	t=1736990019; cv=none; b=eEMLG141vfP/2xxDh7Md4vyTEVZiz1CxyVI5/JZ3TPl7syRpDrku0dA3+UvZNZKj+oa2Dg6bh/dWz/wUJLpz8St8ydwhFGAqBORY4uBFmPzr5yQW96xeFeoYvat2z4FMi3rRGrqkUUwFS9+8qyootvnFs8IL8URA0TDroVmCC5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736986091; c=relaxed/simple;
-	bh=N2Jvn9l6VbqWuwV3+Ji8AjnPeDez/5B/rHGuyAJGWj8=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=qqK8ox9DIG/z3Z2ANuXe7VyZ7rCKXVNgg/+2HMRkB5+xEuahQukZqMRLJstrGb2LdtGZLneqVXFRgG+qOYYJvNGtxpnxgIlJ5TJLZPoIWvM4XuBNy5l+nmrhr2nbBtfz2Adq558F+rnaQtIarRpT5z/IL5WI9V9rCxYjZhHawLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=FlAG15JU; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-218c8aca5f1so6750865ad.0
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Jan 2025 16:08:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1736986088; x=1737590888; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5XhZ4olIBPsoiEWHAuxRlg+Ia8WSD/FJhaP37D81vW4=;
-        b=FlAG15JUArrcIbpSbNEk2AuwpC+rRcr48oOQcOwIIBqdRDcxb2GmZ+uSm+iy4ncJtl
-         MdDij/z2BWa5jj2cf0XTBLKx+odZYzwga5+tnPorUnr64rjm3pjC2V/kBUXxBBGHY4qE
-         SAEwXUh9Anf0l0kwMI618MBD/wxhHnVtN8kGExrnbHE4hRgY/L0TLobaFMD+ANZZj3FH
-         YNAw3kicUF9r3W48NHYHwbNmAAhf2Br4wJ2xuYiZpNqbKRROJ0R1ftOiZydz8jBlEHaY
-         3dzEMeurH7IVthL1I1lR5yE6XmX33JKipJMhaYCnSakvebwcUA/p5VYC/eR5JVzd3Sxn
-         HP4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736986088; x=1737590888;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5XhZ4olIBPsoiEWHAuxRlg+Ia8WSD/FJhaP37D81vW4=;
-        b=Rr6dGHcnw19/bxLE9yp2MfA3vOr55b3hQIUMN9rUQv4pWZR4LcUvWK78YQ1rOOxyA8
-         noHGOjGGo21FuU43FxoFqtAqVASEFGIQC6Pi6pLmseQKENUz/3wfWaXTSflfhWWYKlIC
-         EiPw3Y9kxjvPJwQrjwwC1KSjKNSVoP9bs60ikjqf25xi/H5Gy4ueFX0drx4A5/iSbyAf
-         u1ewjM8Z2OVrBPprUgqevOK7bNtm7Eoi85iSB+lhmEz0lUN1Yp6h4hbNmCHrY26WJnMF
-         Rq31HqMdL/LMFbvJUUIvEfJKw+d+W0gqU4mixh3v9cWNF3byyky5GcsrKuFQx9VZ36hi
-         KZOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVKZK+PQCRf898HVhbixCUVxe9+1hfvpELwP0RAHE3Tc9nNcLeaaoTRBvc5rQiFtb3NU1SG5LBsEcTA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxcw0ctXAh2dOPCWGBeS54szdRApdQy/fX1mXxx47dJOnIPjEAM
-	v/ZC5NMo+OjTol2tYV0ApAiMsGiEcNTIXx89fnyhuaNVZfkuN3FTxKJd0l+2MWT9ikjukE/T6wy
-	/
-X-Gm-Gg: ASbGncvcrQ/hnTN57Sp/h3KGsFMnOaM0YReELEVspLrBgmPc/7/pnKaxhFo96xIS40B
-	xAU1wBL/WH5Zg3GzK4YneG0QXo/gTUg/aNkM64n0A17XY3NLbNA+lpKT1t3BpREswfsJozr9p5r
-	j+LyTW7RkMLx4HS8beLaK5HOZg0Nx9Qwhq05Hp+pznH16rJLuDeihpYj6H0nBNOuaICixaAGHoB
-	H2RvEdQhx58RFtW97Ni6n+Jd9h6itXBhcjflf8B32TRqqN/YrMcnN05cdcdvQ7Z8udZhkeL10PT
-	aXymh5WUTgQ5CB4sZ4fE/Oy/lpICww==
-X-Google-Smtp-Source: AGHT+IFuk/RHYny3bbfaAEdWLGYgzJMk0keqer9nW/oe+EN+UcsQV3z5ICAv835zLd/ytOk/hF8aiA==
-X-Received: by 2002:a17:902:d2d0:b0:216:45b9:439b with SMTP id d9443c01a7336-21a8400a357mr490100285ad.50.1736986087616;
-        Wed, 15 Jan 2025 16:08:07 -0800 (PST)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f21a21csm88069145ad.109.2025.01.15.16.08.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Jan 2025 16:08:06 -0800 (PST)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <C3DE528C-218D-49DD-AF81-3C84CA131ED5@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_87C18749-2439-43F1-9E3C-9F5A8EBBCE8F";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1736990019; c=relaxed/simple;
+	bh=jTugw8wO9TdzNrUGQNzpKS2xMFRCmYFyUBfMHXeI3FU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lbkANowEKkWZSfe7wuE7qxPolp7LCxz+AYM+QiHErajzcOCRXfuoSt6DQpRsJ0Ua4z2cPTZJO5HPFKrNehzcw8JGCaF9G575CMhtNmU9UyLSQpq0S3Oc5FcPoTXbfhHMNIevCbEo3dPthiBK4irVs7D8jIkNpmYYj8Wt8le5Z5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=whamcloud.com; spf=fail smtp.mailfrom=whamcloud.com; arc=none smtp.client-ip=3.97.99.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=whamcloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=whamcloud.com
+Received: from shw-obgw-4002a.ext.cloudfilter.net ([10.228.9.250])
+	by cmsmtp with ESMTPS
+	id Y5e1tILMbxv7PYEQStJCII; Thu, 16 Jan 2025 01:12:00 +0000
+Received: from localhost.localdomain ([70.77.200.158])
+	by cmsmtp with ESMTP
+	id YEQRt2t64l5eGYEQRtGCPb; Thu, 16 Jan 2025 01:12:00 +0000
+X-Authority-Analysis: v=2.4 cv=EO6l0EZC c=1 sm=1 tr=0 ts=67885ce0
+ a=0Thh8+fbYSyN3T2vM72L7A==:117 a=0Thh8+fbYSyN3T2vM72L7A==:17 a=ySfo2T4IAAAA:8
+ a=lB0dNpNiAAAA:8 a=eSbgsXjRR5QAzI9SCtwA:9 a=ZUkhVnNHqyo2at-WnAgH:22
+ a=c-ZiYqmG3AbHTdtsH08C:22
+From: Andreas Dilger <adilger@whamcloud.com>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org,
+	Andreas Dilger <adilger@whamcloud.com>,
+	Li Dongyang <dongyangli@ddn.com>
+Subject: [PATCH 1/2] misc: deduplicate log2/log10 functions
+Date: Wed, 15 Jan 2025 18:11:49 -0700
+Message-Id: <20250116011150.55313-1-adilger@whamcloud.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH V2] jbd2: use rhashtable for revoke records during replay
-Date: Wed, 15 Jan 2025 17:08:03 -0700
-In-Reply-To: <20241113144752.3hzcbrhvh4znrcf7@quack3>
-Cc: Li Dongyang <dongyangli@ddn.com>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- Alex Zhuravlev <bzzz@whamcloud.com>
-To: Jan Kara <jack@suse.cz>,
- Theodore Ts'o <tytso@mit.edu>
-References: <20241105034428.578701-1-dongyangli@ddn.com>
- <20241108103358.ziocxsyapli2pexv@quack3> <20241108161118.GA42603@mit.edu>
- <11AF8D3C-411F-436C-AC8D-B1C057D02091@dilger.ca>
- <20241113144752.3hzcbrhvh4znrcf7@quack3>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfP1SWsKUNHr7f+UdO/E9FH8nfH/XfFa6B+kifFe7bC1e1zi7jczIueo2+6emi0f8b1g9qY4xreOXwe+xqyCRv3SML/a+zAAPslxnMgjMVdsiOLO7qm4H
+ idk4IR1d3DMdU4KrKYtR6jBCw0QhJexNU3ElgZKCbe583dtOUCBWuA6UD3GNKwJSKyFLHHjtq6upj2Hu0GWg2plA8BQbl+abUUgxugrlq1zwWn1KSIEa1W3Y
+ BCJXXlsaT9AlNjRlAyJTYj1mu+rZAeZ5ArBU6MG6FQ/dgJhaWgwgFundt31TFD9R
 
+Remove duplicate log2() and log10() functions and replace them
+with a single pair of functions ext2fs_log2() and ext2fs_log10().
 
---Apple-Mail=_87C18749-2439-43F1-9E3C-9F5A8EBBCE8F
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+Reviewed-by: Li Dongyang <dongyangli@ddn.com>
+Change-Id: Ifc86efe7e5f0243eb914c6d24319cc7dee3ebbe5
+Reviewed-on: https://review.whamcloud.com/52385
+---
+ debugfs/debugfs.c   | 16 ++--------------
+ debugfs/filefrag.c  | 18 +++---------------
+ lib/ext2fs/ext2fs.h | 24 ++++++++++++++++++++++++
+ lib/ext2fs/extent.c | 17 +++--------------
+ misc/e2freefrag.c   | 20 ++++----------------
+ misc/e4crypt.c      | 14 +-------------
+ misc/filefrag.c     | 32 ++++----------------------------
+ misc/mk_hugefiles.c |  2 +-
+ misc/mke2fs.c       | 33 ++++++---------------------------
+ misc/mke2fs.h       |  1 -
+ 10 files changed, 48 insertions(+), 129 deletions(-)
 
-On Nov 13, 2024, at 7:47 AM, Jan Kara <jack@suse.cz> wrote:
->=20
-> On Tue 12-11-24 11:44:11, Andreas Dilger wrote:
->> On Nov 8, 2024, at 9:11 AM, Theodore Ts'o <tytso@mit.edu> wrote:
->>>=20
->>> On Fri, Nov 08, 2024 at 11:33:58AM +0100, Jan Kara wrote:
->>>>> 1048576 records - 95 seconds
->>>>> 2097152 records - 580 seconds
->>>>=20
->>>> These are really high numbers of revoke records. Deleting couple GB =
-of
->>>> metadata doesn't happen so easily. Are they from a real workload or =
-just
->>>> a stress test?
->>>=20
->>> For context, the background of this is that this has been an
->>> out-of-tree that's been around for a very long time, for use with
->>> Lustre servers where apparently, this very large number of revoke
->>> records is a real thing.
->>=20
->> Yes, we've seen this in production if there was a crash after =
-deleting
->> many millions of log records.  This causes remount to take =
-potentially
->> several hours before completing (and this was made worse by HA =
-causing
->> failovers due to mount being "stuck" doing the journal replay).
->=20
-> Thanks for clarification!
->=20
->>>> If my interpretation is correct, then rhashtable is unnecessarily
->>>> huge hammer for this. Firstly, as the big hash is needed only =
-during
->>>> replay, there's no concurrent access to the data
->>>> structure. Secondly, we just fill the data structure in the
->>>> PASS_REVOKE scan and then use it. Thirdly, we know the number of
->>>> elements we need to store in the table in advance (well, currently
->>>> we don't but it's trivial to modify PASS_SCAN to get that number).
->>>>=20
->>>> So rather than playing with rhashtable, I'd modify PASS_SCAN to sum
->>>> up number of revoke records we're going to process and then prepare
->>>> a static hash of appropriate size for replay (we can just use the
->>>> standard hashing fs/jbd2/revoke.c uses, just with differently sized
->>>> hash table allocated for replay and point journal->j_revoke to
->>>> it). And once recovery completes jbd2_journal_clear_revoke() can
->>>> free the table and point journal->j_revoke back to the original
->>>> table. What do you think?
->>>=20
->>> Hmm, that's a really nice idea; Andreas, what do you think?
->>=20
->> Implementing code to manually count and resize the recovery hashtable
->> will also have its own complexity, including possible allocation size
->> limits for a huge hash table.  That could be worked around by =
-kvmalloc(),
->> but IMHO this essentially starts "open coding" something rhashtable =
-was
->> exactly designed to avoid.
->=20
-> Well, I'd say the result is much simpler than rhashtable code since
-> you don't need all that dynamic reallocation and complex locking. =
-Attached is a patch that implements my suggestion. I'd say it is
-> simpler than having two types of revoke block hashing depending on
-> whether we are doing recovery or running the journal.
->=20
-> I've tested it and it seems to work fine (including replay of a
-> journal with sufficiently many revoke blocks) but I'm not sure
-> I can do a meaningful performance testing (I cannot quite reproduce
-> the slow replay times even when shutting down the filesystem after
-> deleting 1000000 directories). So can you please give it a spin?
+diff --git a/debugfs/debugfs.c b/debugfs/debugfs.c
+index 8acb56a4d4..6df8355b82 100644
+--- a/debugfs/debugfs.c
++++ b/debugfs/debugfs.c
+@@ -653,18 +653,6 @@ static void dump_blocks(FILE *f, const char *prefix, ext2_ino_t inode)
+ 	fprintf(f,"\n");
+ }
+ 
+-static int int_log10(unsigned long long arg)
+-{
+-	int     l = 0;
+-
+-	arg = arg / 10;
+-	while (arg) {
+-		l++;
+-		arg = arg / 10;
+-	}
+-	return l;
+-}
+-
+ #define DUMP_LEAF_EXTENTS	0x01
+ #define DUMP_NODE_EXTENTS	0x02
+ #define DUMP_EXTENT_TABLE	0x04
+@@ -1076,11 +1064,11 @@ void do_dump_extents(int argc, ss_argv_t argv, int sci_idx EXT2FS_ATTR((unused))
+ 		return;
+ 	}
+ 
+-	logical_width = int_log10((EXT2_I_SIZE(&inode)+current_fs->blocksize-1)/
++	logical_width = ext2fs_log10((EXT2_I_SIZE(&inode)+current_fs->blocksize-1)/
+ 				  current_fs->blocksize) + 1;
+ 	if (logical_width < 5)
+ 		logical_width = 5;
+-	physical_width = int_log10(ext2fs_blocks_count(current_fs->super)) + 1;
++	physical_width = ext2fs_log10(ext2fs_blocks_count(current_fs->super)) + 1;
+ 	if (physical_width < 5)
+ 		physical_width = 5;
+ 
+diff --git a/debugfs/filefrag.c b/debugfs/filefrag.c
+index 9bda65defe..4ad6057d6f 100644
+--- a/debugfs/filefrag.c
++++ b/debugfs/filefrag.c
+@@ -54,18 +54,6 @@ struct filefrag_struct {
+ 	struct dir_list *dir_list, *dir_last;
+ };
+ 
+-static int int_log10(unsigned long long arg)
+-{
+-	int     l = 0;
+-
+-	arg = arg / 10;
+-	while (arg) {
+-		l++;
+-		arg = arg / 10;
+-	}
+-	return l;
+-}
+-
+ static void print_header(struct filefrag_struct *fs)
+ {
+ 	if (fs->options & VERBOSE_OPT) {
+@@ -135,8 +123,8 @@ static void filefrag(ext2_ino_t ino, struct ext2_inode *inode,
+ 	errcode_t	retval;
+ 	int		blocksize = current_fs->blocksize;
+ 
+-	fs->logical_width = int_log10((EXT2_I_SIZE(inode) + blocksize - 1) /
+-				      blocksize) + 1;
++	fs->logical_width = ext2fs_log10((EXT2_I_SIZE(inode) + blocksize - 1) /
++					 blocksize) + 1;
+ 	if (fs->logical_width < 7)
+ 		fs->logical_width = 7;
+ 	fs->ext = 0;
+@@ -313,7 +301,7 @@ void do_filefrag(int argc, ss_argv_t argv, int sci_idx EXT2FS_ATTR((unused)),
+ 		return;
+ 
+ 	fs.f = open_pager();
+-	fs.physical_width = int_log10(ext2fs_blocks_count(current_fs->super));
++	fs.physical_width = ext2fs_log10(ext2fs_blocks_count(current_fs->super));
+ 	fs.physical_width++;
+ 	if (fs.physical_width < 8)
+ 		fs.physical_width = 8;
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index ff22f66bab..65ec74f093 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -2226,6 +2226,30 @@ _INLINE_ int ext2fs_htree_intnode_maxrecs(ext2_filsys fs, int blocks)
+ 						sizeof(struct ext2_dx_entry));
+ }
+ 
++_INLINE_ int ext2fs_log2(unsigned long long arg)
++{
++	int l = 0;
++
++	arg >>= 1;
++	while (arg) {
++		l++;
++		arg >>= 1;
++	}
++	return l;
++}
++
++_INLINE_ int ext2fs_log10(unsigned long long arg)
++{
++	int l = 0;
++
++	arg /= 10;
++	while (arg) {
++		l++;
++		arg /= 10;
++	}
++	return l;
++}
++
+ /*
+  * This is an efficient, overflow safe way of calculating ceil((1.0 * a) / b)
+  */
+diff --git a/lib/ext2fs/extent.c b/lib/ext2fs/extent.c
+index 82e75ccd7f..f747a56194 100644
+--- a/lib/ext2fs/extent.c
++++ b/lib/ext2fs/extent.c
+@@ -1720,18 +1720,6 @@ errcode_t ext2fs_extent_get_info(ext2_extent_handle_t handle,
+ 	return 0;
+ }
+ 
+-static int ul_log2(unsigned long arg)
+-{
+-	int	l = 0;
+-
+-	arg >>= 1;
+-	while (arg) {
+-		l++;
+-		arg >>= 1;
+-	}
+-	return l;
+-}
+-
+ size_t ext2fs_max_extent_depth(ext2_extent_handle_t handle)
+ {
+ 	size_t iblock_sz = sizeof(((struct ext2_inode *)NULL)->i_block);
+@@ -1746,8 +1734,9 @@ size_t ext2fs_max_extent_depth(ext2_extent_handle_t handle)
+ 	if (last_blocksize && last_blocksize == handle->fs->blocksize)
+ 		return last_result;
+ 
+-	last_result = 1 + ((ul_log2(EXT_MAX_EXTENT_LBLK) - ul_log2(iblock_extents)) /
+-		    ul_log2(extents_per_block));
++	last_result = 1 + ((ext2fs_log2(EXT_MAX_EXTENT_LBLK) -
++			    ext2fs_log2(iblock_extents)) /
++			   ext2fs_log2(extents_per_block));
+ 	last_blocksize = handle->fs->blocksize;
+ 	return last_result;
+ }
+diff --git a/misc/e2freefrag.c b/misc/e2freefrag.c
+index 63a3d43510..eb5abb231e 100644
+--- a/misc/e2freefrag.c
++++ b/misc/e2freefrag.c
+@@ -57,28 +57,16 @@ static void usage(const char *prog)
+ #endif
+ }
+ 
+-static int ul_log2(unsigned long arg)
+-{
+-        int     l = 0;
+-
+-        arg >>= 1;
+-        while (arg) {
+-                l++;
+-                arg >>= 1;
+-        }
+-        return l;
+-}
+-
+ static void init_chunk_info(ext2_filsys fs, struct chunk_info *info)
+ {
+ 	int i;
+ 
+-	info->blocksize_bits = ul_log2((unsigned long)fs->blocksize);
++	info->blocksize_bits = ext2fs_log2(fs->blocksize);
+ 	if (info->chunkbytes) {
+-		info->chunkbits = ul_log2(info->chunkbytes);
++		info->chunkbits = ext2fs_log2(info->chunkbytes);
+ 		info->blks_in_chunk = info->chunkbytes >> info->blocksize_bits;
+ 	} else {
+-		info->chunkbits = ul_log2(DEFAULT_CHUNKSIZE);
++		info->chunkbits = ext2fs_log2(DEFAULT_CHUNKSIZE);
+ 		info->blks_in_chunk = DEFAULT_CHUNKSIZE >> info->blocksize_bits;
+ 	}
+ 
+@@ -97,7 +85,7 @@ static void update_chunk_stats(struct chunk_info *info,
+ {
+ 	unsigned long idx;
+ 
+-	idx = ul_log2(chunk_size) + 1;
++	idx = ext2fs_log2(chunk_size) + 1;
+ 	if (idx >= MAX_HIST)
+ 		idx = MAX_HIST-1;
+ 	info->histogram.fc_chunks[idx]++;
+diff --git a/misc/e4crypt.c b/misc/e4crypt.c
+index af907041c8..b662ea9628 100644
+--- a/misc/e4crypt.c
++++ b/misc/e4crypt.c
+@@ -114,18 +114,6 @@ static const size_t hexchars_size = 16;
+ #define EXT4_IOC_SET_ENCRYPTION_POLICY      _IOR('f', 19, struct ext4_encryption_policy)
+ #define EXT4_IOC_GET_ENCRYPTION_POLICY      _IOW('f', 21, struct ext4_encryption_policy)
+ 
+-static int int_log2(int arg)
+-{
+-	int     l = 0;
+-
+-	arg >>= 1;
+-	while (arg) {
+-		l++;
+-		arg >>= 1;
+-	}
+-	return l;
+-}
+-
+ static void validate_paths(int argc, char *argv[], int path_start_index)
+ {
+ 	int x;
+@@ -386,7 +374,7 @@ static void set_policy(struct salt *set_salt, int pad,
+ 			EXT4_ENCRYPTION_MODE_AES_256_XTS;
+ 		policy.filenames_encryption_mode =
+ 			EXT4_ENCRYPTION_MODE_AES_256_CTS;
+-		policy.flags = int_log2(pad >> 2);
++		policy.flags = ext2fs_log2(pad >> 2);
+ 		memcpy(policy.master_key_descriptor, salt->key_desc,
+ 		       EXT4_KEY_DESCRIPTOR_SIZE);
+ 		rc = ioctl(fd, EXT4_IOC_SET_ENCRYPTION_POLICY, &policy);
+diff --git a/misc/filefrag.c b/misc/filefrag.c
+index eaaa90a8bb..13a533e5ea 100644
+--- a/misc/filefrag.c
++++ b/misc/filefrag.c
+@@ -76,30 +76,6 @@ const char *hex_fmt = "%4d: %*llx..%*llx: %*llx..%*llx: %6llx: %s\n";
+ #define	EXT4_EXTENTS_FL			0x00080000 /* Inode uses extents */
+ #define	EXT3_IOC_GETFLAGS		_IOR('f', 1, long)
+ 
+-static int ulong_log2(unsigned long arg)
+-{
+-	int     l = 0;
+-
+-	arg >>= 1;
+-	while (arg) {
+-		l++;
+-		arg >>= 1;
+-	}
+-	return l;
+-}
+-
+-static int ulong_log10(unsigned long long arg)
+-{
+-	int     l = 0;
+-
+-	arg = arg / 10;
+-	while (arg) {
+-		l++;
+-		arg = arg / 10;
+-	}
+-	return l;
+-}
+-
+ static unsigned int div_ceil(unsigned int a, unsigned int b)
+ {
+ 	if (!a)
+@@ -483,20 +459,20 @@ static int frag_report(const char *filename)
+ 	}
+ 	last_device = st.st_dev;
+ 
+-	width = ulong_log10(fsinfo.f_blocks);
++	width = ext2fs_log10(fsinfo.f_blocks);
+ 	if (width > physical_width)
+ 		physical_width = width;
+ 
+ 	numblocks = (st.st_size + blksize - 1) / blksize;
+ 	if (blocksize != 0)
+-		blk_shift = ulong_log2(blocksize);
++		blk_shift = ext2fs_log2(blocksize);
+ 	else
+-		blk_shift = ulong_log2(blksize);
++		blk_shift = ext2fs_log2(blksize);
+ 
+ 	if (use_extent_cache)
+ 		width = 10;
+ 	else
+-		width = ulong_log10(numblocks);
++		width = ext2fs_log10(numblocks);
+ 	if (width > logical_width)
+ 		logical_width = width;
+ 	if (verbose) {
+diff --git a/misc/mk_hugefiles.c b/misc/mk_hugefiles.c
+index 3caaf1b684..17788bcd9f 100644
+--- a/misc/mk_hugefiles.c
++++ b/misc/mk_hugefiles.c
+@@ -417,7 +417,7 @@ errcode_t mk_hugefiles(ext2_filsys fs, const char *device_name)
+ 	fn_prefix = get_string_from_profile(fs_types, "hugefiles_name",
+ 					    "hugefile");
+ 	idx_digits = get_int_from_profile(fs_types, "hugefiles_digits", 5);
+-	d = int_log10(num_files) + 1;
++	d = ext2fs_log10(num_files) + 1;
+ 	if (idx_digits > d)
+ 		d = idx_digits;
+ 	dsize = strlen(fn_prefix) + d + 16;
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index f24076bc1a..002b838b43 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -147,27 +147,6 @@ static void usage(void)
+ 	exit(1);
+ }
+ 
+-static int int_log2(unsigned long long arg)
+-{
+-	int	l = 0;
+-
+-	arg >>= 1;
+-	while (arg) {
+-		l++;
+-		arg >>= 1;
+-	}
+-	return l;
+-}
+-
+-int int_log10(unsigned long long arg)
+-{
+-	int	l;
+-
+-	for (l=0; arg ; l++)
+-		arg = arg / 10;
+-	return l;
+-}
+-
+ #ifdef __linux__
+ static int parse_version_number(const char *s)
+ {
+@@ -782,7 +761,7 @@ skip_details:
+ 			continue;
+ 		if (i != 1)
+ 			printf(", ");
+-		need = int_log10(group_block) + 2;
++		need = ext2fs_log10(group_block) + 2;
+ 		if (need > col_left) {
+ 			printf("\n\t");
+ 			col_left = 72;
+@@ -1753,7 +1732,7 @@ profile_error:
+ 					blocksize);
+ 			if (blocksize > 0)
+ 				fs_param.s_log_block_size =
+-					int_log2(blocksize >>
++					ext2fs_log2(blocksize >>
+ 						 EXT2_MIN_BLOCK_LOG_SIZE);
+ 			break;
+ 		case 'c':	/* Check for bad blocks */
+@@ -2042,7 +2021,7 @@ profile_error:
+ 		blocksize = jfs->blocksize;
+ 		printf(_("Using journal device's blocksize: %d\n"), blocksize);
+ 		fs_param.s_log_block_size =
+-			int_log2(blocksize >> EXT2_MIN_BLOCK_LOG_SIZE);
++			ext2fs_log2(blocksize >> EXT2_MIN_BLOCK_LOG_SIZE);
+ 		ext2fs_close_free(&jfs);
+ 	}
+ 
+@@ -2297,7 +2276,7 @@ profile_error:
+ 	}
+ 
+ 	fs_param.s_log_block_size =
+-		int_log2(blocksize >> EXT2_MIN_BLOCK_LOG_SIZE);
++		ext2fs_log2(blocksize >> EXT2_MIN_BLOCK_LOG_SIZE);
+ 
+ 	/*
+ 	 * We now need to do a sanity check of fs_blocks_count for
+@@ -2396,7 +2375,7 @@ profile_error:
+ 							    "cluster_size",
+ 							    blocksize*16);
+ 		fs_param.s_log_cluster_size =
+-			int_log2(cluster_size >> EXT2_MIN_CLUSTER_LOG_SIZE);
++			ext2fs_log2(cluster_size >> EXT2_MIN_CLUSTER_LOG_SIZE);
+ 		if (fs_param.s_log_cluster_size &&
+ 		    fs_param.s_log_cluster_size < fs_param.s_log_block_size) {
+ 			com_err(program_name, 0, "%s",
+@@ -2686,7 +2665,7 @@ profile_error:
+ 				  "flex_bg size may not be specified"));
+ 			exit(1);
+ 		}
+-		fs_param.s_log_groups_per_flex = int_log2(flex_bg_size);
++		fs_param.s_log_groups_per_flex = ext2fs_log2(flex_bg_size);
+ 	}
+ 
+ 	if (inode_size && fs_param.s_rev_level >= EXT2_DYNAMIC_REV) {
+diff --git a/misc/mke2fs.h b/misc/mke2fs.h
+index ce72cb3f59..c718fcebaf 100644
+--- a/misc/mke2fs.h
++++ b/misc/mke2fs.h
+@@ -21,7 +21,6 @@ extern char *get_string_from_profile(char **types, const char *opt,
+ 				     const char *def_val);
+ extern int get_int_from_profile(char **types, const char *opt, int def_val);
+ extern int get_bool_from_profile(char **types, const char *opt, int def_val);
+-extern int int_log10(unsigned long long arg);
+ 
+ /* mk_hugefiles.c */
+ extern errcode_t mk_hugefiles(ext2_filsys fs, const char *device_name);
+-- 
+2.39.5 (Apple Git-154)
 
-Alex posted test results on the other rhashtable revoke thread,
-which show both the rhashtable and Jan's dynamically-allocated hash
-table perform much better than the original fixed-size hash table.
-
-On Jan 13, 2025, at 8:31 AM, Alexey Zhuravlev <azhuravlev@ddn.com> =
-wrote:
-> I benchmarked rhashtable based patch vs Jan's patch:
->=20
-> records		vanilla	rhashtable	JK patch
-> 2.5M records	102s	29s		25s
-> 5.0M records	317s	28s		30s
-> 6.0M records	--	35s		44s
->=20
-> The tests were done using 4.18 kernel (I guess this doesn't
-> matter much in this context), using an SSD.
->=20
-> Time to mount after a crash (simulated with read-only device
-> mapper) was measured.
->=20
-> Unfortunately I wasn't able to reproduce with more records
-> as my test node has just 32GB RAM,
-
-I'm OK with either variant landing.  This issue doesn't happen on
-a regular basis, only when a huge amount of data is deleted just
-before the server crashes, so waiting +/-5s for revoke processing
-isn't critical, but waiting for 30h definitely is a problem.
-
-Jan, do you want to resubmit your patch as a standalone email,
-or can Ted just take it from below (or the original attachment on
-your email)?
-
-Note I also have a patch for e2fsprogs to scale the revoke hashtable
-size, to avoid a similar issue with e2fsck. I will submit separately.
-
-Cheers, Andreas
-
-> =46rom db87b1d2cac01bc8336b70a32616388e6ff9fa8f Mon Sep 17 00:00:00 =
-2001
-> From: Jan Kara <jack@suse.cz>
-> Date: Wed, 13 Nov 2024 11:53:13 +0100
-> Subject: [PATCH] jbd2: Avoid long replay times due to high number or =
-revoke
->  blocks
->=20
-> Some users are reporting journal replay takes a long time when there =
-is
-> excessive number of revoke blocks in the journal. Reported times are
-> like:
->=20
-> 1048576 records - 95 seconds
-> 2097152 records - 580 seconds
->=20
-> The problem is that hash chains in the revoke table gets excessively
-> long in these cases. Fix the problem by sizing the revoke table
-> appropriately before the revoke pass.
->=20
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/jbd2/recovery.c   | 54 =
-+++++++++++++++++++++++++++++++++++++-------
->  fs/jbd2/revoke.c     |  8 +++----
->  include/linux/jbd2.h |  2 ++
->  3 files changed, 52 insertions(+), 12 deletions(-)
->=20
-> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-> index 667f67342c52..9845f72e456a 100644
-> --- a/fs/jbd2/recovery.c
-> +++ b/fs/jbd2/recovery.c
-> @@ -39,7 +39,7 @@ struct recovery_info
->=20
->  static int do_one_pass(journal_t *journal,
->  				struct recovery_info *info, enum =
-passtype pass);
-> -static int scan_revoke_records(journal_t *, struct buffer_head *,
-> +static int scan_revoke_records(journal_t *, enum passtype, struct =
-buffer_head *,
->  				tid_t, struct recovery_info *);
->=20
->  #ifdef __KERNEL__
-> @@ -327,6 +327,12 @@ int jbd2_journal_recover(journal_t *journal)
->  		  journal->j_transaction_sequence, journal->j_head);
->=20
->  	jbd2_journal_clear_revoke(journal);
-> +	/* Free revoke table allocated for replay */
-> +	if (journal->j_revoke !=3D journal->j_revoke_table[0] &&
-> +	    journal->j_revoke !=3D journal->j_revoke_table[1]) {
-> +		jbd2_journal_destroy_revoke_table(journal->j_revoke);
-> +		journal->j_revoke =3D journal->j_revoke_table[1];
-> +	}
->  	err2 =3D sync_blockdev(journal->j_fs_dev);
->  	if (!err)
->  		err =3D err2;
-> @@ -517,6 +523,31 @@ static int do_one_pass(journal_t *journal,
->  	first_commit_ID =3D next_commit_ID;
->  	if (pass =3D=3D PASS_SCAN)
->  		info->start_transaction =3D first_commit_ID;
-> +	else if (pass =3D=3D PASS_REVOKE) {
-> +		/*
-> +		 * Would the default revoke table have too long hash =
-chains
-> +		 * during replay?
-> +		 */
-> +		if (info->nr_revokes > JOURNAL_REVOKE_DEFAULT_HASH * 16) =
-{
-> +			unsigned int hash_size;
-> +
-> +			/*
-> +			 * Aim for average chain length of 8, limit at =
-1M
-> +			 * entries to avoid problems with malicious
-> +			 * filesystems.
-> +			 */
-> +			hash_size =3D =
-min(roundup_pow_of_two(info->nr_revokes / 8),
-> +					1U << 20);
-> +			journal->j_revoke =3D
-> +				=
-jbd2_journal_init_revoke_table(hash_size);
-> +			if (!journal->j_revoke) {
-> +				printk(KERN_ERR
-> +				       "JBD2: failed to allocate revoke =
-table for replay with %u entries. "
-> +				       "Journal replay may be slow.\n", =
-hash_size);
-> +				journal->j_revoke =3D =
-journal->j_revoke_table[1];
-> +			}
-> +		}
-> +	}
->=20
->  	jbd2_debug(1, "Starting recovery pass %d\n", pass);
->=20
-> @@ -874,14 +905,16 @@ static int do_one_pass(journal_t *journal,
->  				need_check_commit_time =3D true;
->  			}
->=20
-> -			/* If we aren't in the REVOKE pass, then we can
-> -			 * just skip over this block. */
-> -			if (pass !=3D PASS_REVOKE) {
-> +			/*
-> +			 * If we aren't in the SCAN or REVOKE pass, then =
-we can
-> +			 * just skip over this block.
-> +			 */
-> +			if (pass !=3D PASS_REVOKE && pass !=3D =
-PASS_SCAN) {
->  				brelse(bh);
->  				continue;
->  			}
->=20
-> -			err =3D scan_revoke_records(journal, bh,
-> +			err =3D scan_revoke_records(journal, pass, bh,
->  						  next_commit_ID, info);
->  			brelse(bh);
->  			if (err)
-> @@ -937,8 +970,9 @@ static int do_one_pass(journal_t *journal,
->=20
->  /* Scan a revoke record, marking all blocks mentioned as revoked. */
->=20
-> -static int scan_revoke_records(journal_t *journal, struct buffer_head =
-*bh,
-> -			       tid_t sequence, struct recovery_info =
-*info)
-> +static int scan_revoke_records(journal_t *journal, enum passtype =
-pass,
-> +			       struct buffer_head *bh, tid_t sequence,
-> +			       struct recovery_info *info)
->  {
->  	jbd2_journal_revoke_header_t *header;
->  	int offset, max;
-> @@ -959,6 +993,11 @@ static int scan_revoke_records(journal_t =
-*journal, struct buffer_head *bh,
->  	if (jbd2_has_feature_64bit(journal))
->  		record_len =3D 8;
->=20
-> +	if (pass =3D=3D PASS_SCAN) {
-> +		info->nr_revokes +=3D (max - offset) / record_len;
-> +		return 0;
-> +	}
-> +
->  	while (offset + record_len <=3D max) {
->  		unsigned long long blocknr;
->  		int err;
-> @@ -971,7 +1010,6 @@ static int scan_revoke_records(journal_t =
-*journal, struct buffer_head *bh,
->  		err =3D jbd2_journal_set_revoke(journal, blocknr, =
-sequence);
->  		if (err)
->  			return err;
-> -		++info->nr_revokes;
->  	}
->  	return 0;
->  }
-> diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
-> index 4556e4689024..f4ac308e84c5 100644
-> --- a/fs/jbd2/revoke.c
-> +++ b/fs/jbd2/revoke.c
-> @@ -215,7 +215,7 @@ int __init =
-jbd2_journal_init_revoke_table_cache(void)
->  	return 0;
->  }
->=20
-> -static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int =
-hash_size)
-> +struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int =
-hash_size)
->  {
->  	int shift =3D 0;
->  	int tmp =3D hash_size;
-> @@ -231,7 +231,7 @@ static struct jbd2_revoke_table_s =
-*jbd2_journal_init_revoke_table(int hash_size)
->  	table->hash_size =3D hash_size;
->  	table->hash_shift =3D shift;
->  	table->hash_table =3D
-> -		kmalloc_array(hash_size, sizeof(struct list_head), =
-GFP_KERNEL);
-> +		kvmalloc_array(hash_size, sizeof(struct list_head), =
-GFP_KERNEL);
->  	if (!table->hash_table) {
->  		kmem_cache_free(jbd2_revoke_table_cache, table);
->  		table =3D NULL;
-> @@ -245,7 +245,7 @@ static struct jbd2_revoke_table_s =
-*jbd2_journal_init_revoke_table(int hash_size)
->  	return table;
->  }
->=20
-> -static void jbd2_journal_destroy_revoke_table(struct =
-jbd2_revoke_table_s *table)
-> +void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s =
-*table)
->  {
->  	int i;
->  	struct list_head *hash_list;
-> @@ -255,7 +255,7 @@ static void =
-jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
->  		J_ASSERT(list_empty(hash_list));
->  	}
->=20
-> -	kfree(table->hash_table);
-> +	kvfree(table->hash_table);
->  	kmem_cache_free(jbd2_revoke_table_cache, table);
->  }
->=20
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 8aef9bb6ad57..781615214d47 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -1634,6 +1634,8 @@ extern void	   =
-jbd2_journal_destroy_revoke_record_cache(void);
->  extern void	   jbd2_journal_destroy_revoke_table_cache(void);
->  extern int __init jbd2_journal_init_revoke_record_cache(void);
->  extern int __init jbd2_journal_init_revoke_table_cache(void);
-> +struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int =
-hash_size);
-> +void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s =
-*table);
->=20
->  extern void	   jbd2_journal_destroy_revoke(journal_t *);
->  extern int	   jbd2_journal_revoke (handle_t *, unsigned long long, =
-struct buffer_head *);
-> --
-> 2.35.3
-
-
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_87C18749-2439-43F1-9E3C-9F5A8EBBCE8F
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmeITeQACgkQcqXauRfM
-H+B0qg/8CAc8eP+Q/gywN5iL/mZv9+AgucMeXQG6WzcwiF7fvyWGaWGWvvEUaCxS
-KTA7/C+mhZTvH7kfhixR7b7tjbitsyytMQdVHMgY/5Al26ih7YlcO9JuVQm3W3a5
-RDWynl/0pmmjQDB29B2JjWJd9dPBI1Uik60QuTEkleIhXMt2+ZvOgtlV0lhZYb4R
-In0aqh7X1NIxPLhe5Gimx2KNqQ1dthrvgUb+QpB+4brK9Dg86bfofsxNDpQCx26P
-bmZAPaCeUdO8Tzze/7o2VTTLZ8v+2WmZC9IX0nCygo+Lrrsib3IamD91EwaAnvgK
-TkMHGFGNVD1UZzCrzpCM7gy8CaE6MvTxmkh5ya3xtyvnHvikeNjc4qSvrHam0vz3
-sBXxlogzeE+Sbtr2UgOhNBwDw6rPtXp12lgq6V4gYUitNHnz6AnpL6QYIIODJgKB
-lgyXCY9z/tGG3iXR/rPw3Bkj6FISxCJbCTnC+iOx5aKmjn5THbwCVf+yGwJllW6V
-4Xxjg9VJLGmwoDkpM1IwkWwLdOFR/3rIOdn3UauPzCsXe/BdQ4fnH+u9yX5w9DtA
-vOvebHTIo+7Uj+zX0QpTo8gF9zkKZVjNI7Pm/260RVH2NNulJ5XLRB9I3U6xCbq8
-4IOFUz7tiYt7jA67lzspdtujxSmgGm4rxFJSQu/lBgWjffjNVck=
-=h62+
------END PGP SIGNATURE-----
-
---Apple-Mail=_87C18749-2439-43F1-9E3C-9F5A8EBBCE8F--
 
