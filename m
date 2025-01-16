@@ -1,218 +1,475 @@
-Return-Path: <linux-ext4+bounces-6128-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6129-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57476A12D5E
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 22:11:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB3EDA12F78
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2025 01:08:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90AC91883BFA
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2025 21:11:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 682E83A576A
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2025 00:08:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646BD1DD0D6;
-	Wed, 15 Jan 2025 21:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DC8A50;
+	Thu, 16 Jan 2025 00:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="G1dBD5d+"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="FlAG15JU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2060.outbound.protection.outlook.com [40.107.237.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C7F1D88D7;
-	Wed, 15 Jan 2025 21:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736975255; cv=fail; b=gpO/4FKowe5dQ0k+nnivH7QwJTgfszXSOGJZwIrD1X7+EECa9Kov+ySasbbj9fa7KztVkopP6E8iHze9ECITkebTQWHeLZMDnAg+jShUwRKeTmj+FJvpTgn4UvEWEWYrpo9Sjm01YI1AoTnBXS1OxZZyK61Yo/RL4kKr0LfKhNk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736975255; c=relaxed/simple;
-	bh=q2z0d9AHaYrIa6/u5aTMcZyK6moW/1ZH9kveojHwyMM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=m1jY/pj+sIQYIAWyk30opGlJP/sdcOko+Pc97+sQAeBvQfAOsW9mEUPH7q/CIhDYWX8IlPe+IzMHnQWMDSLhAFRtMhudxlW9TDLCDIQg1bDl3MPSSjDJCRFWdh7RkRjWL32hU9nR3NRq5UWiuFTzmOyoYGTZSwq0mtqhZdH9UAs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=G1dBD5d+; arc=fail smtp.client-ip=40.107.237.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=UCVg8h4zD2mau2r9RD9GLFB81fi/gQOeOMw4efCYk3yzffx9VhmBk6/rJCcibPkhdkwvgkJCH2PJATQpguNwyruCzPfaOeVdnxJHKs6TraPntAbRPOonEPxKq+AC7IsGExWM5q8Fwpd8UFgQUpKkLS7oa1Yvo6MHyhLeRFPMrCuc2R6BOV+BacMiA2zmZ2Y2Jw6Vl8lZMzt39Rzarfg3I0l/dwkcX2u4qThw26lC/srDRjDtCJyxYTblmlZMUJ0EHKcqEGFultV1WqtneqVExaAZBTNXPrhKtykMHcK6zszfRdInY1ubY8NJJL1MPzTqABoAzonqwgqr9WFd/hbzAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q2z0d9AHaYrIa6/u5aTMcZyK6moW/1ZH9kveojHwyMM=;
- b=P3WYIqUcLWXCTBtLHnS4FFlr8b9IJ8k1zPsXMngb7807Z9Q3KuqYzdIs2gdcgg9M3tAZAe61uWHTeAjJnOS9C/Pejw6lAmVgTxKvJ8AdjnbcgrhfsxnyEgGMGrse+VN1YLQRTrq44hzVw/VM2h26vGndgb01A9ftNncY0TEjpurCxLkPmfR3hiEFj2iencppP7AfM3Kk0zYFE8gQivOiRoJL5ECjgtHEmdvOUWK79sXEFSPP7FjpkfFOo3z/rwipDvt+jnR1QJh0nSCP+hwJ/bI0eBihiiWsMLfrYT5C1gW4YFIs5qjwfFvJwBTuhkZIZpo4l7b56oT0fbso0Ndo0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q2z0d9AHaYrIa6/u5aTMcZyK6moW/1ZH9kveojHwyMM=;
- b=G1dBD5d+2LcZ7mVvkTEd/8BfWrphcD/DBsPHUwWG2jLScPMsFoNtg383AJx1XRRw//tdhj/dYvQMl1hAdDy0aGX07tbe0mMGMA8rEKWA3eFbjtvzf7BjJ6v5ZRY1fbBOqhICCutK2izoc1a0GtRzlRb1zRk5Rm2lu0F8GllLOvX3kufHN6LozoFLpREHdYtreJIxm7r+lq8RSJ0GHwBWAx54gnC1PN2LC/M5tLNSRwn/qg07wZQPgc6g2cUC+BJgjD4OkLLPHgrpwzQI7U//PomjLz1ITPGS6KM02iXQuwRWqso8GNoQQo+GV1B35BSNgTjbCr6Cw0t9HXygdqwkLQ==
-Received: from LV3PR12MB9404.namprd12.prod.outlook.com (2603:10b6:408:219::9)
- by MN0PR12MB5714.namprd12.prod.outlook.com (2603:10b6:208:371::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8356.13; Wed, 15 Jan
- 2025 21:07:29 +0000
-Received: from LV3PR12MB9404.namprd12.prod.outlook.com
- ([fe80::57ac:82e6:1ec5:f40b]) by LV3PR12MB9404.namprd12.prod.outlook.com
- ([fe80::57ac:82e6:1ec5:f40b%6]) with mapi id 15.20.8335.017; Wed, 15 Jan 2025
- 21:07:29 +0000
-From: Chaitanya Kulkarni <chaitanyak@nvidia.com>
-To: Zhang Yi <yi.zhang@huaweicloud.com>, "linux-fsdevel@vger.kernel.org"
-	<linux-fsdevel@vger.kernel.org>, "linux-ext4@vger.kernel.org"
-	<linux-ext4@vger.kernel.org>, "linux-block@vger.kernel.org"
-	<linux-block@vger.kernel.org>, "dm-devel@lists.linux.dev"
-	<dm-devel@lists.linux.dev>, "linux-nvme@lists.infradead.org"
-	<linux-nvme@lists.infradead.org>, "linux-scsi@vger.kernel.org"
-	<linux-scsi@vger.kernel.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"hch@lst.de" <hch@lst.de>, "tytso@mit.edu" <tytso@mit.edu>,
-	"djwong@kernel.org" <djwong@kernel.org>, "yi.zhang@huawei.com"
-	<yi.zhang@huawei.com>, "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
-	"yukuai3@huawei.com" <yukuai3@huawei.com>, "yangerkun@huawei.com"
-	<yangerkun@huawei.com>, Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: Re: [RFC PATCH v2 0/8] fallocate: introduce FALLOC_FL_WRITE_ZEROES
- flag
-Thread-Topic: [RFC PATCH v2 0/8] fallocate: introduce FALLOC_FL_WRITE_ZEROES
- flag
-Thread-Index: AQHbZ0QJnN9JMxAGd0WQ00eLUDP5bbMYVG8A
-Date: Wed, 15 Jan 2025 21:07:28 +0000
-Message-ID: <ccebada1-ac72-468e-8342-a9c645e5221e@nvidia.com>
-References: <20250115114637.2705887-1-yi.zhang@huaweicloud.com>
-In-Reply-To: <20250115114637.2705887-1-yi.zhang@huaweicloud.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV3PR12MB9404:EE_|MN0PR12MB5714:EE_
-x-ms-office365-filtering-correlation-id: 26fd8b49-665d-4509-c083-08dd35a89eb9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|7416014|376014|10070799003|366016|1800799024|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?Y1ZrRTNiZmhHckowZWo5bW9QNkdIblFZUXNSMWNzZkpBZ20rOUVzcS9LZFVu?=
- =?utf-8?B?Z2dwVjE0S2dhRXhPbXpWTkxFWE1vc0NOU0ZJNW9YV2JZUHVzT1kydUhxekJt?=
- =?utf-8?B?MldNL2EzRC9GaElNajBsVGZRZWhSNk9ocy9Vc1J3R0puVm0yV3l3Sjh1ZFJP?=
- =?utf-8?B?WmFHRzRmbzdIa3BmT0ZFZi9TTVlFT3Uwby9iNkRQc0lGWlhGRkFVd245YzFE?=
- =?utf-8?B?MnZZZnpkcXBXVXNWMnZTYUdITWwvUXV5ZlNjNk1OMytIbEVMVmp3TDF5OElo?=
- =?utf-8?B?NDRuckhLcnFGYVIvRDBubGR0MW53QXBZdVA3QVlEOWlJcWgzQ0xKMGx0L0xw?=
- =?utf-8?B?OUNvbGdLSVpXQ2lVcngvZytQS0lUTWVlc1BCOU91dlB2OGNtemJyMmM1R2xk?=
- =?utf-8?B?N1R3UmF5N0NxZ0FEeG9jN0tvUk9lTk1DTndoYjl5K25paFR6OW1PWTExSHBB?=
- =?utf-8?B?dnVsYXZjN0ZPc3BFeHdhSzgvMWtJUWE4UFN6VjN2bk1acjhTOUh5N1hnRnFD?=
- =?utf-8?B?bVBlTERDNnEzbzMxL0diMGZXSGdwQzd5dUZLcnlDV3RzdTU0L2ZkNmI2YVpY?=
- =?utf-8?B?OEkyYVVYWDVRc2IrYWlOYzFXY20xQkpjKzJhSWRSdG83V29SOW1raG52NGky?=
- =?utf-8?B?SVc2NnUrODZTSDdvcmZleitvNW91Rk0yVm9YekdoYVVxcHNWOE5pMVRTSHNY?=
- =?utf-8?B?c1dxQUJHSVlPMUxjbStPTnJCNzNJek5ZeDRCeCtJVnFkYzZqL2tKa3p3WkVV?=
- =?utf-8?B?UmxWK2JyYUt4MXo3Mk1Xb3E3TjdyUDVIMFhJbGwwODliMjNGeUpVVzI3R3g1?=
- =?utf-8?B?dnBOVGtwWDFzWnFJRUhnYnltS2lrKzJ3U0xxNUVyeE8rYzVjYkluSW80N1Y1?=
- =?utf-8?B?YTFCZHFXUE5HZDdLUTRiUnVWYWpkdHRpNkdQRS9tKzl0RTE3VGkvdSs4MXpR?=
- =?utf-8?B?eWtDMXZkQWU1eFU0ODE3TXVVR1BscmdwMXR0bXBvbFNWKzBkUndDa1RJckZm?=
- =?utf-8?B?NzZqeFpBdVFBajVEZ0l3ZnRQUlpFbFc2SFZ0QkRiRnBZemdlQWJqTjFTMW1s?=
- =?utf-8?B?d2lnenZXcHpWL2tTcCtOTFg4QXkzQjY4THFFc3NQOTk4SHJTSFErdFhFdldx?=
- =?utf-8?B?Q0ZOd2lod2VsNHJZMTRoQ3RKR1B1TmZZSTVMVVkvMW5zczRSMStJM25HMGxz?=
- =?utf-8?B?MGltVE5xSmpTY05WRnBiVnVEWVlBQllYVzZvNmFUbVNLYytoRHgzK2Mvb0Y5?=
- =?utf-8?B?SndISFNlVXBtU2pyTCthc3N4QjBURGxKS3pyQU5jM2ZvNVlhUjgrd3RjYlVC?=
- =?utf-8?B?VDYzamllNjNucDVxNUE3QzM0QkdmS25XSnNGQ0p5VTBCb050WVcwRk41Ukda?=
- =?utf-8?B?U0ZpWW4vNHEzcDlUNTgyU05vTkNNRUlnNjZwaW5qckhKTnNETmZvVjRlU0h6?=
- =?utf-8?B?OU9WVVhzRzlmTy82TG54ZzN3aXEyQ0cvZVYzRGdxdTdmOVFjWHB6Y3orU1lZ?=
- =?utf-8?B?TytLclptWnhZSlFTbEdpa2tkMGZEL1h1SWJVbXg5Q2t3S0VmOGRRb3BjcStw?=
- =?utf-8?B?NmlJSXhzT1E2SXFVVnBtUHlTYTZSMWJzbHRCcyt5eGwvRnIvTHZoYmZvYStJ?=
- =?utf-8?B?WlFEazF0dEZ1K3BpL1N2MVB5cXlhenYwTi9CK3hOc2NiU2JqSG1LUDBoMndD?=
- =?utf-8?B?NGxENDdlV01KSWVRRXVGQmMwYnBmdDZ2eFlJOFBvVUhjYlUxQVp4OWdPRVJ5?=
- =?utf-8?B?UUN6ZTZJY28zb2ZTWmhHQWREeHFTVW5Wcm1obEZ1UllWdGl1SEdTWXkyWC9J?=
- =?utf-8?B?UlpGeWFnT1hjNmQvRUZmZ0k2YkZKSzFUUlQrcWFLRCtQNUoxTjBjMFltUE1K?=
- =?utf-8?B?YjhtWlpiTS85dXQvUEVFTk5IY3dwc0RpSWYvQ2I2ei9CbGp2TncyV3d0ZjM1?=
- =?utf-8?Q?TEkVGbEvwTsjdRF+ZNz6F8qlObd7U6rz?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR12MB9404.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(10070799003)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?T21xSW1CZ3NNYlZ5bFRUK0l4ODFRd3FUZnYvR2pUUVBvNFlmWFNhRmJXWW9L?=
- =?utf-8?B?cktraG5LaFVIOHo2YndNNW1sWjF6UzI0NjcvQVMwQXZ1Y2FBUXU3TmlRODFs?=
- =?utf-8?B?NDdVdEJZeEVIbzlLa0xINE5TWW1ycmxrblh4Rk4wZ0ZpWUd3OUVHM3lwTWJw?=
- =?utf-8?B?aDV3Vm1XcUZxMDFHUk5CS01HMlpmSE84UDVLSG5zRWp6K2tiTVhTdGhadG9G?=
- =?utf-8?B?SnpOLzlGd3ZGTzJxelloWUtLa0d2RU05cnhaNTAxaXVtbDB0TW1ueCtkYjNa?=
- =?utf-8?B?c2QxTWhjQXNqRndHcThFZTRHeHFoWDZSb1VXVXErZmJSRkNxQ2piRzFjQ0ZC?=
- =?utf-8?B?c2oyNnF3WUJCWVRLZlBVd0F5Wjgrb3c1VHBMZzg1WFhNalRza2JnZmVkSEtE?=
- =?utf-8?B?c2wranIyQndNK1VvdXgrYWdDVzVsbUhacjZzcGZVOXc1UnNMSTgwZTlQKytC?=
- =?utf-8?B?NkFKQ0ZKS0RkNnNtbkVRUUkvQmExL1dkV0duNGhSc2gxZ1VQa2ZVaVU5WCsv?=
- =?utf-8?B?OElXSFgyRHhVQ291L3oxaWl2anVDbmo3ZXhhY3pTL3lIWkx2VVk0dTNCVWRq?=
- =?utf-8?B?Q2Z3UXprUUo3c1hBNjZ3T08wUWc0ZDNVVllwa3M1cVcyTTJ1eTltRkw1clhz?=
- =?utf-8?B?U1MwUDdFVjlXSnFIcDBQOGZuZlpMdHRCRVZ5cXJpUjl6K3ZlWkdvSDJWMWtu?=
- =?utf-8?B?YWs5ZC9HaGk1TW5VRFNaaUtrRHJ5UTFKWVFOTldBRTNwTmJwV2xrNHhQaW9j?=
- =?utf-8?B?K3hsSHNsbGJydjFEMmpJWjAzS1o1alhYZ3NCeDRxWW9zWlRSZGUvaHRYOWtw?=
- =?utf-8?B?SkdqVEorcHc4SWx6RkdWS1B6eXlKRzFWdlVSMDR3Y1ZXVzh0REllR3ovRUFT?=
- =?utf-8?B?RWp5Q2xSbmcvNTdGdWNuK2hpS2twYmxNUmZVMktxMTRCL2hEV3pHZzNzc2pn?=
- =?utf-8?B?RVdWNlNQeUJUT1hHeTF6N0c3Qng1Um5QcFR6VmpMYmFnbi9remthVTBkMzEx?=
- =?utf-8?B?aW9rdjJONDdLZEVyOWRWRUtweW5CMUt6b2N6SVF5Z0swZm9NQ0VNdUR1K3Fa?=
- =?utf-8?B?bk5RSVZqbG5ZUW53REZqTFk1Q2ZKelFPbzNRczMwYVUzK0htZUtZbFFZZXpw?=
- =?utf-8?B?L2lVUFpVeHM0dHhtaW1kWEdDdmNHbHEzUGtQSm5SRFlwUk05eXlKdmpWOG1h?=
- =?utf-8?B?QWVPRlFPcGRqZDRrY1dMTncxakVXMUVjVUNTaVpadFYzcG82L1VUV013cnd1?=
- =?utf-8?B?amo4REFFd2pmTDNLM0EzSzlUVHhEYjVzWHV5bDQ4bnpleXZ6WVlGZ2RiUjdh?=
- =?utf-8?B?UDlBdjNvODlUWk91eGliSHdVRGV0d0ZEeVBZTU5CNlBzSFhqNnBEL21CLzlU?=
- =?utf-8?B?eWVWUUtnSkFrcE9tNzlySlJoVGRsSW91NTNMK1dZaXlmQ1dLQTRYRGNQTUhX?=
- =?utf-8?B?NG5iQzFSY05NZGlYa2ZWK05jaGwrWFcrYitTcEdxTjVtZHNDSENseGl4VVZB?=
- =?utf-8?B?eXJVN1BSNmRRR05nMjE5SDIzQzVLY3pmWGFZQTUyd2ZYMXY0aEU1RTVCSTRP?=
- =?utf-8?B?dGZFRjVrc01LczNMRis0K1RsZEovTlN2Y2NLd0RYM1pMZE01eHZYS20zUEho?=
- =?utf-8?B?bGRKMUlOVFNSMDFiOGNpYTd3UlR6SlI2NDJRUEZBM0c1SXFaelU5Q3dRaVp2?=
- =?utf-8?B?TGcrM0NJdzkzSjYzeVJLNjhvVUtNckMvYUQrMWtZZ3YyVzdpM2ljYkNha0Y0?=
- =?utf-8?B?UDZSZGhvNHcxbWtqRGdNbkVlY2JycDg3UCtxZytORmpYNkx3QUZxMzNOVGQ4?=
- =?utf-8?B?c0lLTlZXeFVza0hjczZ5RGxpbXBqU1RTYnZBOS8rdCt6MUpVR1M2RzhkUHI0?=
- =?utf-8?B?T1l6Mk1wVXJHU1VoV2xmejUxU1RYN2VHSDNWS09LRjJJZFEwZFVPMmlEMXk1?=
- =?utf-8?B?Y0hrT21tSUtpWVJlWlNIWkh5T3lTMFIzZTVmMDBDN3FmUUhOMEdpdm9paFlt?=
- =?utf-8?B?MnhLQk9MRWtkT3hvay9lcFJPb3c4ZDdhQk84dEo2ZTV3UFB1NGcycVVON3lM?=
- =?utf-8?B?bW5wR0NMM2VCSE9tWjhOeTl2b3pieEZ1WTVTdkdZYStUcXdpOEVObWcyd09M?=
- =?utf-8?B?d3M2VEFVRjdWYjBMcWFxWHlHYVl1VElQQm9WRSthdnIydXFDQmEvN1R6anRE?=
- =?utf-8?Q?+5Zh2YE+6wiQXqMi6eO1n7iqqBu0+RQdUhjmC49WX77S?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B800232B8EFEEB48B658525552E22516@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70964EC4
+	for <linux-ext4@vger.kernel.org>; Thu, 16 Jan 2025 00:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736986091; cv=none; b=oChbUm95894zzX7r1z9n96Tz23rkofxMPHyS08ixJX9q3oX81W2fVLx93wlOkGQEBuypguABq858MEEzehEXluWFeoncdcNRCbHDkAQKIWNFdR00zjtgWyhoTfilIJZHuTYGAEKb3aWQ+Gd5Zy5U77+GQa+R+C35NBr+0hDpntg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736986091; c=relaxed/simple;
+	bh=N2Jvn9l6VbqWuwV3+Ji8AjnPeDez/5B/rHGuyAJGWj8=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=qqK8ox9DIG/z3Z2ANuXe7VyZ7rCKXVNgg/+2HMRkB5+xEuahQukZqMRLJstrGb2LdtGZLneqVXFRgG+qOYYJvNGtxpnxgIlJ5TJLZPoIWvM4XuBNy5l+nmrhr2nbBtfz2Adq558F+rnaQtIarRpT5z/IL5WI9V9rCxYjZhHawLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=FlAG15JU; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-218c8aca5f1so6750865ad.0
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Jan 2025 16:08:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1736986088; x=1737590888; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5XhZ4olIBPsoiEWHAuxRlg+Ia8WSD/FJhaP37D81vW4=;
+        b=FlAG15JUArrcIbpSbNEk2AuwpC+rRcr48oOQcOwIIBqdRDcxb2GmZ+uSm+iy4ncJtl
+         MdDij/z2BWa5jj2cf0XTBLKx+odZYzwga5+tnPorUnr64rjm3pjC2V/kBUXxBBGHY4qE
+         SAEwXUh9Anf0l0kwMI618MBD/wxhHnVtN8kGExrnbHE4hRgY/L0TLobaFMD+ANZZj3FH
+         YNAw3kicUF9r3W48NHYHwbNmAAhf2Br4wJ2xuYiZpNqbKRROJ0R1ftOiZydz8jBlEHaY
+         3dzEMeurH7IVthL1I1lR5yE6XmX33JKipJMhaYCnSakvebwcUA/p5VYC/eR5JVzd3Sxn
+         HP4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736986088; x=1737590888;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5XhZ4olIBPsoiEWHAuxRlg+Ia8WSD/FJhaP37D81vW4=;
+        b=Rr6dGHcnw19/bxLE9yp2MfA3vOr55b3hQIUMN9rUQv4pWZR4LcUvWK78YQ1rOOxyA8
+         noHGOjGGo21FuU43FxoFqtAqVASEFGIQC6Pi6pLmseQKENUz/3wfWaXTSflfhWWYKlIC
+         EiPw3Y9kxjvPJwQrjwwC1KSjKNSVoP9bs60ikjqf25xi/H5Gy4ueFX0drx4A5/iSbyAf
+         u1ewjM8Z2OVrBPprUgqevOK7bNtm7Eoi85iSB+lhmEz0lUN1Yp6h4hbNmCHrY26WJnMF
+         Rq31HqMdL/LMFbvJUUIvEfJKw+d+W0gqU4mixh3v9cWNF3byyky5GcsrKuFQx9VZ36hi
+         KZOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVKZK+PQCRf898HVhbixCUVxe9+1hfvpELwP0RAHE3Tc9nNcLeaaoTRBvc5rQiFtb3NU1SG5LBsEcTA@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxcw0ctXAh2dOPCWGBeS54szdRApdQy/fX1mXxx47dJOnIPjEAM
+	v/ZC5NMo+OjTol2tYV0ApAiMsGiEcNTIXx89fnyhuaNVZfkuN3FTxKJd0l+2MWT9ikjukE/T6wy
+	/
+X-Gm-Gg: ASbGncvcrQ/hnTN57Sp/h3KGsFMnOaM0YReELEVspLrBgmPc/7/pnKaxhFo96xIS40B
+	xAU1wBL/WH5Zg3GzK4YneG0QXo/gTUg/aNkM64n0A17XY3NLbNA+lpKT1t3BpREswfsJozr9p5r
+	j+LyTW7RkMLx4HS8beLaK5HOZg0Nx9Qwhq05Hp+pznH16rJLuDeihpYj6H0nBNOuaICixaAGHoB
+	H2RvEdQhx58RFtW97Ni6n+Jd9h6itXBhcjflf8B32TRqqN/YrMcnN05cdcdvQ7Z8udZhkeL10PT
+	aXymh5WUTgQ5CB4sZ4fE/Oy/lpICww==
+X-Google-Smtp-Source: AGHT+IFuk/RHYny3bbfaAEdWLGYgzJMk0keqer9nW/oe+EN+UcsQV3z5ICAv835zLd/ytOk/hF8aiA==
+X-Received: by 2002:a17:902:d2d0:b0:216:45b9:439b with SMTP id d9443c01a7336-21a8400a357mr490100285ad.50.1736986087616;
+        Wed, 15 Jan 2025 16:08:07 -0800 (PST)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f21a21csm88069145ad.109.2025.01.15.16.08.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Jan 2025 16:08:06 -0800 (PST)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <C3DE528C-218D-49DD-AF81-3C84CA131ED5@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_87C18749-2439-43F1-9E3C-9F5A8EBBCE8F";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR12MB9404.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26fd8b49-665d-4509-c083-08dd35a89eb9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2025 21:07:28.9873
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TDbssn+JkdEFfHC2LfDe765AEyMLnAu8tcU+qslTW/nI4osTS8GYKkuk0MAWeP2thaBq8U+VOQqSDS/Ok8S/Vg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5714
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH V2] jbd2: use rhashtable for revoke records during replay
+Date: Wed, 15 Jan 2025 17:08:03 -0700
+In-Reply-To: <20241113144752.3hzcbrhvh4znrcf7@quack3>
+Cc: Li Dongyang <dongyangli@ddn.com>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ Alex Zhuravlev <bzzz@whamcloud.com>
+To: Jan Kara <jack@suse.cz>,
+ Theodore Ts'o <tytso@mit.edu>
+References: <20241105034428.578701-1-dongyangli@ddn.com>
+ <20241108103358.ziocxsyapli2pexv@quack3> <20241108161118.GA42603@mit.edu>
+ <11AF8D3C-411F-436C-AC8D-B1C057D02091@dilger.ca>
+ <20241113144752.3hzcbrhvh4znrcf7@quack3>
+X-Mailer: Apple Mail (2.3273)
 
-T24gMS8xNS8yNSAwMzo0NiwgWmhhbmcgWWkgd3JvdGU6DQo+IEN1cnJlbnRseSwgd2UgY2FuIHVz
-ZSB0aGUgZmFsbG9jYXRlIGNvbW1hbmQgdG8gcXVpY2tseSBjcmVhdGUgYQ0KPiBwcmUtYWxsb2Nh
-dGVkIGZpbGUuIEhvd2V2ZXIsIG9uIG1vc3QgZmlsZXN5c3RlbXMsIHN1Y2ggYXMgZXh0NCBhbmQg
-WEZTLA0KPiBmYWxsb2NhdGUgY3JlYXRlIHByZS1hbGxvY2F0aW9uIGJsb2NrcyBpbiBhbiB1bndy
-aXR0ZW4gc3RhdGUsIGFuZCB0aGUNCj4gRkFMTE9DX0ZMX1pFUk9fUkFOR0UgZmxhZyBhbHNvIGJl
-aGF2ZXMgc2ltaWxhcmx5LiBUaGUgZXh0ZW50IHN0YXRlIG11c3QNCj4gYmUgY29udmVydGVkIHRv
-IGEgd3JpdHRlbiBzdGF0ZSB3aGVuIHRoZSB1c2VyIHdyaXRlcyBkYXRhIGludG8gdGhpcw0KPiBy
-YW5nZSBsYXRlciwgd2hpY2ggY2FuIHRyaWdnZXIgbnVtZXJvdXMgbWV0YWRhdGEgY2hhbmdlcyBh
-bmQgY29uc2VxdWVudA0KPiBqb3VybmFsIEkvTy4gVGhpcyBtYXkgbGVhZHMgdG8gc2lnbmlmaWNh
-bnQgd3JpdGUgYW1wbGlmaWNhdGlvbiBhbmQNCj4gcGVyZm9ybWFuY2UgZGVncmFkYXRpb24gaW4g
-c3luY2hyb25vdXMgd3JpdGUgbW9kZS4gVGhlcmVmb3JlLCB3ZSBuZWVkIGENCj4gbWV0aG9kIHRv
-IGNyZWF0ZSBhIHByZS1hbGxvY2F0ZWQgZmlsZSB3aXRoIHdyaXR0ZW4gZXh0ZW50cyB0aGF0IGNh
-biBiZQ0KPiB1c2VkIGZvciBwdXJlIG92ZXJ3cml0aW5nLiBBdCB0aGUgbW9uZW50LCB0aGUgb25s
-eSBtZXRob2QgYXZhaWxhYmxlIGlzDQo+IHRvIGNyZWF0ZSBhbiBlbXB0eSBmaWxlIGFuZCB3cml0
-ZSB6ZXJvIGRhdGEgaW50byBpdCAoZm9yIGV4YW1wbGUsIHVzaW5nDQo+ICdkZCcgd2l0aCBhIGxh
-cmdlIGJsb2NrIHNpemUpLiBIb3dldmVyLCB0aGlzIG1ldGhvZCBpcyBzbG93IGFuZCBjb25zdW1l
-cw0KPiBhIGNvbnNpZGVyYWJsZSBhbW91bnQgb2YgZGlzayBiYW5kd2lkdGgsIHdlIG11c3QgcHJl
-LWFsbG9jYXRlIGZpbGVzIGluDQo+IGFkdmFuY2UgYnV0IGNhbm5vdCBhZGQgcHJlLWFsbG9jYXRl
-ZCBmaWxlcyB3aGlsZSB1c2VyIGJ1c2luZXNzIHNlcnZpY2VzDQo+IGFyZSBydW5uaW5nLg0KDQpp
-dCB3aWxsIGJlIHZlcnkgdXNlZnVsIGlmIHdlIGNhbiBnZXQgc29tZSBibGt0ZXN0cyBmb3Igc2Nz
-aS9udm1lL2RtLg0KUGxlYXNlIG5vdGUgdGhhdCB0aGlzIG5vdCBhIGJsb2NrZXIgdG8gZ2V0IHRo
-aXMgcGF0aCBzZXJpZXMgdG8gYmUgbWVyZ2VkLA0KYnV0IHRoaXMgd2lsbCBoZWxwIGV2ZXJ5b25l
-IGluY2x1ZGluZyByZWd1bGFyIHRlc3RzIHJ1bnMgd2UgZG8gdG8gZW5zdXJlDQp0aGUgc3RhYmls
-aXR5IG9mIG5ldyBpbnRlcmZhY2UuDQoNCmlmIHlvdSBkbyBwbGVhc2UgQ0MgYW5kIFNoaW5pY2hp
-cm8gKGFkZGVkIHRvIENDIGxpc3QpIHRvIHdlIGNhbiBoZWxwIHRob3NlDQp0ZXN0cyByZXZpZXcg
-YW5kIHBvdGVudGlhbGx5IGFsc28gY2FuIHByb3ZpZGUgdGVzdGVkIGJ5IHRhZyB0aHQgY2FuIGhl
-bHANCnRoaXMgd29yayB0byBtb3ZlIGZvcndhcmQuDQoNCi1jaw0KDQoNCg==
+
+--Apple-Mail=_87C18749-2439-43F1-9E3C-9F5A8EBBCE8F
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Nov 13, 2024, at 7:47 AM, Jan Kara <jack@suse.cz> wrote:
+>=20
+> On Tue 12-11-24 11:44:11, Andreas Dilger wrote:
+>> On Nov 8, 2024, at 9:11 AM, Theodore Ts'o <tytso@mit.edu> wrote:
+>>>=20
+>>> On Fri, Nov 08, 2024 at 11:33:58AM +0100, Jan Kara wrote:
+>>>>> 1048576 records - 95 seconds
+>>>>> 2097152 records - 580 seconds
+>>>>=20
+>>>> These are really high numbers of revoke records. Deleting couple GB =
+of
+>>>> metadata doesn't happen so easily. Are they from a real workload or =
+just
+>>>> a stress test?
+>>>=20
+>>> For context, the background of this is that this has been an
+>>> out-of-tree that's been around for a very long time, for use with
+>>> Lustre servers where apparently, this very large number of revoke
+>>> records is a real thing.
+>>=20
+>> Yes, we've seen this in production if there was a crash after =
+deleting
+>> many millions of log records.  This causes remount to take =
+potentially
+>> several hours before completing (and this was made worse by HA =
+causing
+>> failovers due to mount being "stuck" doing the journal replay).
+>=20
+> Thanks for clarification!
+>=20
+>>>> If my interpretation is correct, then rhashtable is unnecessarily
+>>>> huge hammer for this. Firstly, as the big hash is needed only =
+during
+>>>> replay, there's no concurrent access to the data
+>>>> structure. Secondly, we just fill the data structure in the
+>>>> PASS_REVOKE scan and then use it. Thirdly, we know the number of
+>>>> elements we need to store in the table in advance (well, currently
+>>>> we don't but it's trivial to modify PASS_SCAN to get that number).
+>>>>=20
+>>>> So rather than playing with rhashtable, I'd modify PASS_SCAN to sum
+>>>> up number of revoke records we're going to process and then prepare
+>>>> a static hash of appropriate size for replay (we can just use the
+>>>> standard hashing fs/jbd2/revoke.c uses, just with differently sized
+>>>> hash table allocated for replay and point journal->j_revoke to
+>>>> it). And once recovery completes jbd2_journal_clear_revoke() can
+>>>> free the table and point journal->j_revoke back to the original
+>>>> table. What do you think?
+>>>=20
+>>> Hmm, that's a really nice idea; Andreas, what do you think?
+>>=20
+>> Implementing code to manually count and resize the recovery hashtable
+>> will also have its own complexity, including possible allocation size
+>> limits for a huge hash table.  That could be worked around by =
+kvmalloc(),
+>> but IMHO this essentially starts "open coding" something rhashtable =
+was
+>> exactly designed to avoid.
+>=20
+> Well, I'd say the result is much simpler than rhashtable code since
+> you don't need all that dynamic reallocation and complex locking. =
+Attached is a patch that implements my suggestion. I'd say it is
+> simpler than having two types of revoke block hashing depending on
+> whether we are doing recovery or running the journal.
+>=20
+> I've tested it and it seems to work fine (including replay of a
+> journal with sufficiently many revoke blocks) but I'm not sure
+> I can do a meaningful performance testing (I cannot quite reproduce
+> the slow replay times even when shutting down the filesystem after
+> deleting 1000000 directories). So can you please give it a spin?
+
+Alex posted test results on the other rhashtable revoke thread,
+which show both the rhashtable and Jan's dynamically-allocated hash
+table perform much better than the original fixed-size hash table.
+
+On Jan 13, 2025, at 8:31 AM, Alexey Zhuravlev <azhuravlev@ddn.com> =
+wrote:
+> I benchmarked rhashtable based patch vs Jan's patch:
+>=20
+> records		vanilla	rhashtable	JK patch
+> 2.5M records	102s	29s		25s
+> 5.0M records	317s	28s		30s
+> 6.0M records	--	35s		44s
+>=20
+> The tests were done using 4.18 kernel (I guess this doesn't
+> matter much in this context), using an SSD.
+>=20
+> Time to mount after a crash (simulated with read-only device
+> mapper) was measured.
+>=20
+> Unfortunately I wasn't able to reproduce with more records
+> as my test node has just 32GB RAM,
+
+I'm OK with either variant landing.  This issue doesn't happen on
+a regular basis, only when a huge amount of data is deleted just
+before the server crashes, so waiting +/-5s for revoke processing
+isn't critical, but waiting for 30h definitely is a problem.
+
+Jan, do you want to resubmit your patch as a standalone email,
+or can Ted just take it from below (or the original attachment on
+your email)?
+
+Note I also have a patch for e2fsprogs to scale the revoke hashtable
+size, to avoid a similar issue with e2fsck. I will submit separately.
+
+Cheers, Andreas
+
+> =46rom db87b1d2cac01bc8336b70a32616388e6ff9fa8f Mon Sep 17 00:00:00 =
+2001
+> From: Jan Kara <jack@suse.cz>
+> Date: Wed, 13 Nov 2024 11:53:13 +0100
+> Subject: [PATCH] jbd2: Avoid long replay times due to high number or =
+revoke
+>  blocks
+>=20
+> Some users are reporting journal replay takes a long time when there =
+is
+> excessive number of revoke blocks in the journal. Reported times are
+> like:
+>=20
+> 1048576 records - 95 seconds
+> 2097152 records - 580 seconds
+>=20
+> The problem is that hash chains in the revoke table gets excessively
+> long in these cases. Fix the problem by sizing the revoke table
+> appropriately before the revoke pass.
+>=20
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/jbd2/recovery.c   | 54 =
++++++++++++++++++++++++++++++++++++++-------
+>  fs/jbd2/revoke.c     |  8 +++----
+>  include/linux/jbd2.h |  2 ++
+>  3 files changed, 52 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+> index 667f67342c52..9845f72e456a 100644
+> --- a/fs/jbd2/recovery.c
+> +++ b/fs/jbd2/recovery.c
+> @@ -39,7 +39,7 @@ struct recovery_info
+>=20
+>  static int do_one_pass(journal_t *journal,
+>  				struct recovery_info *info, enum =
+passtype pass);
+> -static int scan_revoke_records(journal_t *, struct buffer_head *,
+> +static int scan_revoke_records(journal_t *, enum passtype, struct =
+buffer_head *,
+>  				tid_t, struct recovery_info *);
+>=20
+>  #ifdef __KERNEL__
+> @@ -327,6 +327,12 @@ int jbd2_journal_recover(journal_t *journal)
+>  		  journal->j_transaction_sequence, journal->j_head);
+>=20
+>  	jbd2_journal_clear_revoke(journal);
+> +	/* Free revoke table allocated for replay */
+> +	if (journal->j_revoke !=3D journal->j_revoke_table[0] &&
+> +	    journal->j_revoke !=3D journal->j_revoke_table[1]) {
+> +		jbd2_journal_destroy_revoke_table(journal->j_revoke);
+> +		journal->j_revoke =3D journal->j_revoke_table[1];
+> +	}
+>  	err2 =3D sync_blockdev(journal->j_fs_dev);
+>  	if (!err)
+>  		err =3D err2;
+> @@ -517,6 +523,31 @@ static int do_one_pass(journal_t *journal,
+>  	first_commit_ID =3D next_commit_ID;
+>  	if (pass =3D=3D PASS_SCAN)
+>  		info->start_transaction =3D first_commit_ID;
+> +	else if (pass =3D=3D PASS_REVOKE) {
+> +		/*
+> +		 * Would the default revoke table have too long hash =
+chains
+> +		 * during replay?
+> +		 */
+> +		if (info->nr_revokes > JOURNAL_REVOKE_DEFAULT_HASH * 16) =
+{
+> +			unsigned int hash_size;
+> +
+> +			/*
+> +			 * Aim for average chain length of 8, limit at =
+1M
+> +			 * entries to avoid problems with malicious
+> +			 * filesystems.
+> +			 */
+> +			hash_size =3D =
+min(roundup_pow_of_two(info->nr_revokes / 8),
+> +					1U << 20);
+> +			journal->j_revoke =3D
+> +				=
+jbd2_journal_init_revoke_table(hash_size);
+> +			if (!journal->j_revoke) {
+> +				printk(KERN_ERR
+> +				       "JBD2: failed to allocate revoke =
+table for replay with %u entries. "
+> +				       "Journal replay may be slow.\n", =
+hash_size);
+> +				journal->j_revoke =3D =
+journal->j_revoke_table[1];
+> +			}
+> +		}
+> +	}
+>=20
+>  	jbd2_debug(1, "Starting recovery pass %d\n", pass);
+>=20
+> @@ -874,14 +905,16 @@ static int do_one_pass(journal_t *journal,
+>  				need_check_commit_time =3D true;
+>  			}
+>=20
+> -			/* If we aren't in the REVOKE pass, then we can
+> -			 * just skip over this block. */
+> -			if (pass !=3D PASS_REVOKE) {
+> +			/*
+> +			 * If we aren't in the SCAN or REVOKE pass, then =
+we can
+> +			 * just skip over this block.
+> +			 */
+> +			if (pass !=3D PASS_REVOKE && pass !=3D =
+PASS_SCAN) {
+>  				brelse(bh);
+>  				continue;
+>  			}
+>=20
+> -			err =3D scan_revoke_records(journal, bh,
+> +			err =3D scan_revoke_records(journal, pass, bh,
+>  						  next_commit_ID, info);
+>  			brelse(bh);
+>  			if (err)
+> @@ -937,8 +970,9 @@ static int do_one_pass(journal_t *journal,
+>=20
+>  /* Scan a revoke record, marking all blocks mentioned as revoked. */
+>=20
+> -static int scan_revoke_records(journal_t *journal, struct buffer_head =
+*bh,
+> -			       tid_t sequence, struct recovery_info =
+*info)
+> +static int scan_revoke_records(journal_t *journal, enum passtype =
+pass,
+> +			       struct buffer_head *bh, tid_t sequence,
+> +			       struct recovery_info *info)
+>  {
+>  	jbd2_journal_revoke_header_t *header;
+>  	int offset, max;
+> @@ -959,6 +993,11 @@ static int scan_revoke_records(journal_t =
+*journal, struct buffer_head *bh,
+>  	if (jbd2_has_feature_64bit(journal))
+>  		record_len =3D 8;
+>=20
+> +	if (pass =3D=3D PASS_SCAN) {
+> +		info->nr_revokes +=3D (max - offset) / record_len;
+> +		return 0;
+> +	}
+> +
+>  	while (offset + record_len <=3D max) {
+>  		unsigned long long blocknr;
+>  		int err;
+> @@ -971,7 +1010,6 @@ static int scan_revoke_records(journal_t =
+*journal, struct buffer_head *bh,
+>  		err =3D jbd2_journal_set_revoke(journal, blocknr, =
+sequence);
+>  		if (err)
+>  			return err;
+> -		++info->nr_revokes;
+>  	}
+>  	return 0;
+>  }
+> diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
+> index 4556e4689024..f4ac308e84c5 100644
+> --- a/fs/jbd2/revoke.c
+> +++ b/fs/jbd2/revoke.c
+> @@ -215,7 +215,7 @@ int __init =
+jbd2_journal_init_revoke_table_cache(void)
+>  	return 0;
+>  }
+>=20
+> -static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int =
+hash_size)
+> +struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int =
+hash_size)
+>  {
+>  	int shift =3D 0;
+>  	int tmp =3D hash_size;
+> @@ -231,7 +231,7 @@ static struct jbd2_revoke_table_s =
+*jbd2_journal_init_revoke_table(int hash_size)
+>  	table->hash_size =3D hash_size;
+>  	table->hash_shift =3D shift;
+>  	table->hash_table =3D
+> -		kmalloc_array(hash_size, sizeof(struct list_head), =
+GFP_KERNEL);
+> +		kvmalloc_array(hash_size, sizeof(struct list_head), =
+GFP_KERNEL);
+>  	if (!table->hash_table) {
+>  		kmem_cache_free(jbd2_revoke_table_cache, table);
+>  		table =3D NULL;
+> @@ -245,7 +245,7 @@ static struct jbd2_revoke_table_s =
+*jbd2_journal_init_revoke_table(int hash_size)
+>  	return table;
+>  }
+>=20
+> -static void jbd2_journal_destroy_revoke_table(struct =
+jbd2_revoke_table_s *table)
+> +void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s =
+*table)
+>  {
+>  	int i;
+>  	struct list_head *hash_list;
+> @@ -255,7 +255,7 @@ static void =
+jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
+>  		J_ASSERT(list_empty(hash_list));
+>  	}
+>=20
+> -	kfree(table->hash_table);
+> +	kvfree(table->hash_table);
+>  	kmem_cache_free(jbd2_revoke_table_cache, table);
+>  }
+>=20
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 8aef9bb6ad57..781615214d47 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -1634,6 +1634,8 @@ extern void	   =
+jbd2_journal_destroy_revoke_record_cache(void);
+>  extern void	   jbd2_journal_destroy_revoke_table_cache(void);
+>  extern int __init jbd2_journal_init_revoke_record_cache(void);
+>  extern int __init jbd2_journal_init_revoke_table_cache(void);
+> +struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int =
+hash_size);
+> +void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s =
+*table);
+>=20
+>  extern void	   jbd2_journal_destroy_revoke(journal_t *);
+>  extern int	   jbd2_journal_revoke (handle_t *, unsigned long long, =
+struct buffer_head *);
+> --
+> 2.35.3
+
+
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_87C18749-2439-43F1-9E3C-9F5A8EBBCE8F
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmeITeQACgkQcqXauRfM
+H+B0qg/8CAc8eP+Q/gywN5iL/mZv9+AgucMeXQG6WzcwiF7fvyWGaWGWvvEUaCxS
+KTA7/C+mhZTvH7kfhixR7b7tjbitsyytMQdVHMgY/5Al26ih7YlcO9JuVQm3W3a5
+RDWynl/0pmmjQDB29B2JjWJd9dPBI1Uik60QuTEkleIhXMt2+ZvOgtlV0lhZYb4R
+In0aqh7X1NIxPLhe5Gimx2KNqQ1dthrvgUb+QpB+4brK9Dg86bfofsxNDpQCx26P
+bmZAPaCeUdO8Tzze/7o2VTTLZ8v+2WmZC9IX0nCygo+Lrrsib3IamD91EwaAnvgK
+TkMHGFGNVD1UZzCrzpCM7gy8CaE6MvTxmkh5ya3xtyvnHvikeNjc4qSvrHam0vz3
+sBXxlogzeE+Sbtr2UgOhNBwDw6rPtXp12lgq6V4gYUitNHnz6AnpL6QYIIODJgKB
+lgyXCY9z/tGG3iXR/rPw3Bkj6FISxCJbCTnC+iOx5aKmjn5THbwCVf+yGwJllW6V
+4Xxjg9VJLGmwoDkpM1IwkWwLdOFR/3rIOdn3UauPzCsXe/BdQ4fnH+u9yX5w9DtA
+vOvebHTIo+7Uj+zX0QpTo8gF9zkKZVjNI7Pm/260RVH2NNulJ5XLRB9I3U6xCbq8
+4IOFUz7tiYt7jA67lzspdtujxSmgGm4rxFJSQu/lBgWjffjNVck=
+=h62+
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_87C18749-2439-43F1-9E3C-9F5A8EBBCE8F--
 
