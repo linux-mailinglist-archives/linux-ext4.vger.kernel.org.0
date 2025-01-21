@@ -1,198 +1,195 @@
-Return-Path: <linux-ext4+bounces-6184-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6185-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97D98A1819A
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 17:00:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C92E6A18254
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 17:55:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 510F07A3D66
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 16:00:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06234165923
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 16:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BBE2AF0A;
-	Tue, 21 Jan 2025 16:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B3A1F470D;
+	Tue, 21 Jan 2025 16:55:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MhX2SNv/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XUQbyQRF";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MhX2SNv/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XUQbyQRF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04081F4E3D
-	for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2025 16:00:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2841192D70;
+	Tue, 21 Jan 2025 16:55:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737475235; cv=none; b=tr5Q73SIwdlMn1bSbVr6lMjj0yyyBAtNySWlBNy84qVddcTnrND6Et+Njwmvp4gPQB2K4uufj/hk0FTjPbqGpftX2smDCIK6kd6umz0UKidVVVxymC3g1fK7q08laueRfnV6v7dT0ogQy17ChhnqAfvLWjrawbEtdbl3amg5NBk=
+	t=1737478527; cv=none; b=cIhq7E47koRSp/rLv1UGBmtm8tOS4HTPBePoWUVuXJbCGOHcStpmb5cc4XeVSiQ2gFG2C+0qkyuG+UyQW8qTe8dYaA6hYgzwS4XDAanK2aeXe8C8KuDxaG9w6wG3cH6clhl38fwxQRUyN26j0T3uQnSat5nr7HvHAUj7RC52bGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737475235; c=relaxed/simple;
-	bh=5zMYgLcdkMmQ6bDIR5Q258Iu2armucT7gOtavj076+A=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pWmzQ9UaCubAFA9OSstT3idZTRLw9Qcdt5aDPwNmKkZY8buVGymXdwDUMJr5GmvqnAddqvnzk6k3iefFhcUlaGe1qN03mq4K+i4H3SVLQ7VOfNIS9ZLdW501Z0GYJLZQE3igITouoKvxiUOOx4R4lf1F7DKf7yLt6lXbzZPrOd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3ce795254afso89518815ab.1
-        for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2025 08:00:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737475233; x=1738080033;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8O5MvLLvuofY4WI2Gb7QAWosrJSFAFqhmFgMNhefPwM=;
-        b=YG2NQ4KQk594HDeMvVj9w9PHZ4xhjUEnoZzNmdfCsdnTEUwKNMeooxMnLoNLsS26Pl
-         VdiFADUidPd7H23p4DogJH2fuPhUcjCi1JpfkF9rCc7C8xG/qNk8XaSSnlcGcM2xKEZW
-         j4UsAlMYwXQDU8Q4Aw1KIvNwDy1RJvwtoBrwYVNwjdfoOY0oHg+lDCmq+SAiQkDJF0jg
-         r4WjChOsFsWibJNb81f5UTZfjEgrV5Cwa7giu1mBVc0ki1fJBbKrDT4wpYqEseuQ4qo5
-         Mzf9G3d37IhYWZv35NciWNU4rzWakGwbYTFvCGKNlfajEp5J0Wb3BnngIayPboZEb4WS
-         lunw==
-X-Forwarded-Encrypted: i=1; AJvYcCV7bU4mRe8kTY76gKA+Sq3xAzRkW6RSXmcOwhqbIqkh2DJuKJBgl81CDbQjvHkFgMwBxzJgs8yNfbKq@vger.kernel.org
-X-Gm-Message-State: AOJu0YwT2UaIaQIIZuZng6eYK30jQzooW+xFJbUx2Fgp4N+EHvL19zjV
-	bwXRMv6RXgG/MikbZGSCxcPK8bFsAe4AkI628d3nGX/EukeHII2rYEObmpuLo8ZYkqX0nByFa+i
-	u0amPjg6A4/VJa3J9PlQTcv5h1Q62ly36L2TMZchC2SwPBWps/GedHfw=
-X-Google-Smtp-Source: AGHT+IFpRjFJHKGYmZwBNSI48Q8xO9kO7EtsP2yzC36VUcnhh7x+o6FwuNBUl2f/BCYBtHFWKwYnWfJpPglUo9x1tSmgPKR3LjAE
+	s=arc-20240116; t=1737478527; c=relaxed/simple;
+	bh=ljot/MZZuF2wOpQ05QCP7Hnrmr/UdFh/DZMXMFbGddg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cahPksu670/vwNUgnWk+oT1Q6pUWUNg5tGn1vVrOZfTR6r9drwUu692Q/LWaBPFpzGjM7ngbMxQDobkhVc6RP6Ntl0o/L9mw1xVE7WyKCcxNoKMD/Sp1hlAGWAHgQmSkWw/YlLtmIBaSxnYizYBeUsijxnGzYqWSTizGM8yDcYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MhX2SNv/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XUQbyQRF; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MhX2SNv/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XUQbyQRF; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C7AE11F391;
+	Tue, 21 Jan 2025 16:55:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1737478523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GZIBl1Ve9LPZa59rjaIvWIZ+XpvUUGcAkpHqg6nfJT4=;
+	b=MhX2SNv/FLdumyga16efWbUAPQ10WytMiYxWJj38cmlPnJhwuntTrh4jaqY6vIpcEelNH/
+	3fEdXobzCxARgSY086FmzJq6WjkAiDt3KsNwf1UN9yqxvHgRF2Cxp0pEC3c8fweelxWKlD
+	A7Iik0zYsamS6TjtjhyTteSrTfQUFeM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1737478523;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GZIBl1Ve9LPZa59rjaIvWIZ+XpvUUGcAkpHqg6nfJT4=;
+	b=XUQbyQRFVhArLk4a4FCjj5BL2/oUjf3ZsGdIZHvz1em7VY0rTzFYH+oqwVXFoVImy95i+u
+	buU3fFzBcL+GHKAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1737478523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GZIBl1Ve9LPZa59rjaIvWIZ+XpvUUGcAkpHqg6nfJT4=;
+	b=MhX2SNv/FLdumyga16efWbUAPQ10WytMiYxWJj38cmlPnJhwuntTrh4jaqY6vIpcEelNH/
+	3fEdXobzCxARgSY086FmzJq6WjkAiDt3KsNwf1UN9yqxvHgRF2Cxp0pEC3c8fweelxWKlD
+	A7Iik0zYsamS6TjtjhyTteSrTfQUFeM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1737478523;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GZIBl1Ve9LPZa59rjaIvWIZ+XpvUUGcAkpHqg6nfJT4=;
+	b=XUQbyQRFVhArLk4a4FCjj5BL2/oUjf3ZsGdIZHvz1em7VY0rTzFYH+oqwVXFoVImy95i+u
+	buU3fFzBcL+GHKAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8C471387C;
+	Tue, 21 Jan 2025 16:55:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tQUaLXvRj2e5DAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 21 Jan 2025 16:55:23 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 60669A0889; Tue, 21 Jan 2025 17:55:19 +0100 (CET)
+Date: Tue, 21 Jan 2025 17:55:19 +0100
+From: Jan Kara <jack@suse.cz>
+To: Heming Zhao <heming.zhao@suse.com>
+Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, 
+	li.kai4@h3c.com, jack@suse.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
+	Joseph Qi <joseph.qi@linux.alibaba.com>, ocfs2-devel@lists.linux.dev, 
+	Liebes Wang <wanghaichi0403@gmail.com>, syzbot <syzbot+96ee12698391289383dd@syzkaller.appspotmail.com>
+Subject: Re: WARNING in jbd2_journal_update_sb_log_tail
+Message-ID: <vxsqorapn2flwqx6ipsye6wf6h5lvciqoywvwrd2w4nwxyuajz@l3mao3pmqikn>
+References: <CADCV8sq0E9_tmBbedYdUJyD4=yyjSngp2ZGVR2VfZfD0Q1nUFQ@mail.gmail.com>
+ <mzypseklhk6colsb5fh42ya74x43z5mmkzdjdyluesx6hb744a@hycbebanf7mv>
+ <24f378c8-7a27-47b8-bd79-dba4a2e92f6d@suse.com>
+ <20250114133815.GA1997324@mit.edu>
+ <3655551d-b881-4f2b-8419-03efe4d3aca7@suse.com>
+ <CADCV8srwww_--oOvi1sdS4JfUafidPOPr0srG1bWO66py2WTtQ@mail.gmail.com>
+ <db4da8db-d501-4181-994b-c25845908161@suse.com>
+ <2htuqhxolgddrwm5ka7ad4axu3gz7nprqnmspdtkwld7mzch3r@tqhjlxfidxsb>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3a11:b0:3ce:6b10:17fc with SMTP id
- e9e14a558f8ab-3cf743ca060mr149803165ab.4.1737475232519; Tue, 21 Jan 2025
- 08:00:32 -0800 (PST)
-Date: Tue, 21 Jan 2025 08:00:32 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <678fc4a0.050a0220.15cac.0060.GAE@google.com>
-Subject: [syzbot] [ext4?] BUG: unable to handle kernel NULL pointer
- dereference in ext4_mb_add_groupinfo (2)
-From: syzbot <syzbot+c41c38d18cb10c84caee@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2htuqhxolgddrwm5ka7ad4axu3gz7nprqnmspdtkwld7mzch3r@tqhjlxfidxsb>
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[96ee12698391289383dd];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,mit.edu,h3c.com,suse.com,vger.kernel.org,googlegroups.com,linux.alibaba.com,lists.linux.dev,gmail.com,syzkaller.appspotmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Hello,
+On Wed 15-01-25 18:53:41, Jan Kara wrote:
+> On Wed 15-01-25 13:00:23, Heming Zhao wrote:
+> > Hello Jan,
+> > 
+> > On 1/15/25 09:32, Liebes Wang wrote:
+> > > The bisection log shows the first cause commit is a09decff5c32060639a685581c380f51b14e1fc2:
+> > > a09decff5c32 jbd2: clear JBD2_ABORT flag before journal_reset to update log tail info when load journal
+> > > 
+> > > The full bisection log is attached. Hope this helps.
+> > 
+> > This bisearch commit a09decff5c32 appears to be the root cause
+> > of this issue. It fixed one issue but introduced another.
+> > 
+> > Syzbot tested the patch with calling jbd2_journal_wipe() with 'write=1'.
+> > The Syzbot test result [1] shows that the same WARN_ON() is triggered
+> > in a subsequent routine – the classic whack-a-mole!
+> > 
+> > Back to commit a09decff5c32, it opened a door to allow jbd2 to update
+> > sb regardless of whether the value of sb items are correct.
+> > 
+> > To fix a09decff5c32, it seems that jbd2 needs to add more sanity check
+> > codes in a sub-routine of jbd2_journal_load().
+> > 
+> > btw, in my view, this is a jbd2 issue not ocfs2/ext4 issue.
+> > 
+> > [1]: https://lore.kernel.org/ocfs2-devel/04a9ad29-51de-4b50-a5bb-56f91817639d@suse.com/T/#m86d01f83d808868bb5e6548d30f79b4f9f889b13
+> 
+> Thanks for debugging this! So I'm not 100% convinced this is only jbd2 bug
+> because jbd2_journal_recover() was never intended to be called after
+> jbd2_journal_skip_recovery() (called from jbd2_journal_wipe()). You're
+> supposed to call either jbd2_journal_wipe() or jbd2_journal_recover() but
+> not both. So IMO this needs fixing in OCFS2 code. That being said you've
+> also pointed at one bug in jbd2 code - the WARN_ON(!sb->s_sequence) in
+> jbd2_journal_update_sb_log_tail() is indeed wrong. We were inconsistent
+> inside jbd2 whether TID 0 is considered valid or not and relatively
+> recently we've decided to accept TID 0 as valid but this place was left
+> out. I'll send a fix for that.
 
-syzbot found the following issue on:
+OK, after checking again OCFS2 is indeed fine here. I'm sorry for the
+confusion. I'll send appropriate jbd2 fixes shortly.
 
-HEAD commit:    95ec54a420b8 Merge tag 'powerpc-6.14-1' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12946964580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=161bb0713bee7bb2
-dashboard link: https://syzkaller.appspot.com/bug?extid=c41c38d18cb10c84caee
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ae4f5b920fb2/disk-95ec54a4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/733fe3f9fdd1/vmlinux-95ec54a4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e1ff7ab4bd3a/bzImage-95ec54a4.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c41c38d18cb10c84caee@syzkaller.appspotmail.com
-
-loop3: detected capacity change from 0 to 512
-BUG: kernel NULL pointer dereference, address: 0000000000000012
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 800000007ee5d067 P4D 800000007ee5d067 PUD 33cf4067 PMD 0 
-Oops: Oops: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 UID: 0 PID: 6142 Comm: syz.3.43 Not tainted 6.13.0-syzkaller-00918-g95ec54a420b8 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
-RIP: 0010:___slab_alloc+0x595/0x14a0 mm/slub.c:3773
-Code: 85 fb 00 00 00 65 4c 8b 2c 25 c0 d4 03 00 4c 89 6b 28 49 83 7e 10 00 0f 85 82 01 00 00 49 8b 5e 18 48 85 db 0f 84 ea 04 00 00 <48> 8b 43 10 49 89 46 18 8b 4c 24 10 83 f9 ff 74 15 48 8b 03 48 83
-RSP: 0018:ffffc9000522f6c8 EFLAGS: 00010002
-RAX: 7513f5baf7a4fb00 RBX: 0000000000000002 RCX: ffff88802fa9a8d8
-RDX: dffffc0000000000 RSI: ffffffff8c0aab60 RDI: ffffffff8c5f49e0
-RBP: 0000000000000202 R08: ffffffff9428e887 R09: 1ffffffff2851d10
-R10: dffffc0000000000 R11: fffffbfff2851d11 R12: ffff888058f948c0
-R13: ffff88802fa99e00 R14: ffffe8ffffd71220 R15: ffffffff81f839cf
-FS:  00007fa654bc36c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000012 CR3: 000000003348a000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __slab_alloc+0x58/0xa0 mm/slub.c:3920
- __slab_alloc_node mm/slub.c:3995 [inline]
- slab_alloc_node mm/slub.c:4156 [inline]
- kmem_cache_alloc_noprof+0x268/0x380 mm/slub.c:4175
- ext4_mb_add_groupinfo+0x6c3/0xfa0 fs/ext4/mballoc.c:3356
- ext4_mb_init_backend fs/ext4/mballoc.c:3435 [inline]
- ext4_mb_init+0x15ab/0x27e0 fs/ext4/mballoc.c:3733
- __ext4_fill_super fs/ext4/super.c:5559 [inline]
- ext4_fill_super+0x5f54/0x6e60 fs/ext4/super.c:5733
- get_tree_bdev_flags+0x48c/0x5c0 fs/super.c:1636
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
- do_new_mount+0x2be/0xb40 fs/namespace.c:3560
- do_mount fs/namespace.c:3900 [inline]
- __do_sys_mount fs/namespace.c:4111 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4088
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fa653d874ca
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fa654bc2e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fa654bc2ef0 RCX: 00007fa653d874ca
-RDX: 0000000020000180 RSI: 0000000020000640 RDI: 00007fa654bc2eb0
-RBP: 0000000020000180 R08: 00007fa654bc2ef0 R09: 0000000000000010
-R10: 0000000000000010 R11: 0000000000000246 R12: 0000000020000640
-R13: 00007fa654bc2eb0 R14: 000000000000047b R15: 0000000020000100
- </TASK>
-Modules linked in:
-CR2: 0000000000000012
----[ end trace 0000000000000000 ]---
-RIP: 0010:___slab_alloc+0x595/0x14a0 mm/slub.c:3773
-Code: 85 fb 00 00 00 65 4c 8b 2c 25 c0 d4 03 00 4c 89 6b 28 49 83 7e 10 00 0f 85 82 01 00 00 49 8b 5e 18 48 85 db 0f 84 ea 04 00 00 <48> 8b 43 10 49 89 46 18 8b 4c 24 10 83 f9 ff 74 15 48 8b 03 48 83
-RSP: 0018:ffffc9000522f6c8 EFLAGS: 00010002
-RAX: 7513f5baf7a4fb00 RBX: 0000000000000002 RCX: ffff88802fa9a8d8
-RDX: dffffc0000000000 RSI: ffffffff8c0aab60 RDI: ffffffff8c5f49e0
-RBP: 0000000000000202 R08: ffffffff9428e887 R09: 1ffffffff2851d10
-R10: dffffc0000000000 R11: fffffbfff2851d11 R12: ffff888058f948c0
-R13: ffff88802fa99e00 R14: ffffe8ffffd71220 R15: ffffffff81f839cf
-FS:  00007fa654bc36c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000012 CR3: 000000003348a000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	85 fb                	test   %edi,%ebx
-   2:	00 00                	add    %al,(%rax)
-   4:	00 65 4c             	add    %ah,0x4c(%rbp)
-   7:	8b 2c 25 c0 d4 03 00 	mov    0x3d4c0,%ebp
-   e:	4c 89 6b 28          	mov    %r13,0x28(%rbx)
-  12:	49 83 7e 10 00       	cmpq   $0x0,0x10(%r14)
-  17:	0f 85 82 01 00 00    	jne    0x19f
-  1d:	49 8b 5e 18          	mov    0x18(%r14),%rbx
-  21:	48 85 db             	test   %rbx,%rbx
-  24:	0f 84 ea 04 00 00    	je     0x514
-* 2a:	48 8b 43 10          	mov    0x10(%rbx),%rax <-- trapping instruction
-  2e:	49 89 46 18          	mov    %rax,0x18(%r14)
-  32:	8b 4c 24 10          	mov    0x10(%rsp),%ecx
-  36:	83 f9 ff             	cmp    $0xffffffff,%ecx
-  39:	74 15                	je     0x50
-  3b:	48 8b 03             	mov    (%rbx),%rax
-  3e:	48                   	rex.W
-  3f:	83                   	.byte 0x83
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+ 
+ 								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
