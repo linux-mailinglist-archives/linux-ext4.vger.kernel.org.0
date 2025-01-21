@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-6163-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6162-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC545A1787D
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 08:18:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8A15A1787E
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 08:18:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53E9C1884078
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 07:18:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1EFC3AC6B9
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 07:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3DF31BFE00;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4C31BEF95;
 	Tue, 21 Jan 2025 07:16:43 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75EE1B87ED;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76431B87F0;
 	Tue, 21 Jan 2025 07:16:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737443803; cv=none; b=lKrJGv07jJhwwYXUaiYGUdkzYJpjMOKjGL1gV5kmzET+T3p24HM38RFaXZ+vf97P/m0C1/r2saVxAxX570xgmSSKwgC1t+L2dRIfCgIG1gy95DJCIvUYOtKZnWEJwN/T0wkJSlu79BFxf5Hmp7OE7rrymPamZJzApXQKlENFwYI=
+	t=1737443803; cv=none; b=kpYGea2XG9cNGjtP9p3/UdnjGKs8V/Sb/yhdCm7KROKqdrfObjum4FXFt24OkyjKutATJvGTXyzatzBuTf7Z4GlfincwuNVdk4s+76gwdAwWG2LXR+5wKH0Jpzq3zoS8qxWxpSPQJtbpfhYHco5xQFeG9UTb1avuOzcpCPj4ecQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737443803; c=relaxed/simple;
-	bh=rtn2QBT2e5oly+T9szh90TRDgiycmTExCYkNJvupyNs=;
+	bh=FQVlNxKEM37oYtJglnt6N+2h7JkbjCYdJY21cDdHci8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pozufYEI570OsGuZMYaxM27Wkhj1MKU6cfseitWhisSx8KzwtnXBymNF6Fy/HGcYkZnll08z0X1Vxc5ydX5YNeKWo1R7Ia4KCZw4OtYnf50tLpqnSo4Aene6jxopmQJFs1q3t8H7lkPK2IhR0TZP0VbpOg8pDS8JGCy6WZiO/k0=
+	 MIME-Version; b=UJoqmYuUbj8RZq8I9TV0X+g4+NbGsz9km09ivPSs5XgKbXb/W/XPGeFET84mOJJ+QijF7cNQXXQ9Usqp5fCnMAB57RR6liSJP447zsHuMR49cyY39nEwZt7ltMLb6zQgTN5UadE+dQIIvSXQGi4EwYRR/WSo83rCmj51nml5zF4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YcdmR0bZrz4f3jqx;
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YcdmR3bFXz4f3jqy;
 	Tue, 21 Jan 2025 15:16:23 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 7C3041A0D8A;
+	by mail.maildlp.com (Postfix) with ESMTP id E23FC1A17D8;
 	Tue, 21 Jan 2025 15:16:38 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgD3W2DNSY9n3Gg+Bg--.34135S11;
+	by APP4 (Coremail) with SMTP id gCh0CgD3W2DNSY9n3Gg+Bg--.34135S12;
 	Tue, 21 Jan 2025 15:16:38 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: tytso@mit.edu,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
 	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH v2 7/8] ext4: remove unused member 'i_unwritten' from 'ext4_inode_info'
-Date: Tue, 21 Jan 2025 15:10:49 +0800
-Message-Id: <20250121071050.3991249-8-libaokun@huaweicloud.com>
+Subject: [PATCH v2 8/8] ext4: pack holes in ext4_inode_info
+Date: Tue, 21 Jan 2025 15:10:50 +0800
+Message-Id: <20250121071050.3991249-9-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250121071050.3991249-1-libaokun@huaweicloud.com>
 References: <20250121071050.3991249-1-libaokun@huaweicloud.com>
@@ -61,10 +61,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3W2DNSY9n3Gg+Bg--.34135S11
-X-Coremail-Antispam: 1UD129KBjvJXoWxur1DArWxGw1fXw4UtF13urg_yoWrWw1kpF
-	WakFy8GF4UXayq9397GFs7ZF1xtw1xKFWDXry7GayUXF9xur9YgF1rtFyrAFyjvFWxAFWx
-	XF40kryUZr13GrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgD3W2DNSY9n3Gg+Bg--.34135S12
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF48Jr1kZF1UJryUCrWruFg_yoW8Ar17pF
+	98Ka4xGr40q3yq9rW8GF45Zr1Iva1Igw47X3yDJw45uryqg34FgF4xtF1FvFyYyFW8CFyI
+	qF1jkr1UZw12y3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPC14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -79,124 +79,60 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxur1DArWxGw1fXw4UtF13urg_yoWrWw1kpF
 	x2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z2
 	80aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI
 	43ZEXa7VUbT7KDUUUUU==
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAPBWeOA-NKzAAAsU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAPBWeOA-NKzQABsU
 
 From: Baokun Li <libaokun1@huawei.com>
 
-After commit 378f32bab371 ("ext4: introduce direct I/O write using iomap
-infrastructure"), no one cares about the value of i_unwritten, so there
-is no need to maintain this variable, remove it, and clean up the
-associated logic.
+When CONFIG_DEBUG_SPINLOCK is not enabled (general case), there are four
+4 bytes holes and one 2 bytes hole in struct ext4_inode_info. Move the
+members to pack the four 4 bytes holes.
 
-Suggested-by: Zhang Yi <yi.zhang@huawei.com>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/ext4.h  | 22 +++-------------------
- fs/ext4/inode.c |  2 +-
- fs/ext4/super.c |  9 +--------
- 3 files changed, 5 insertions(+), 28 deletions(-)
+ fs/ext4/ext4.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index e0b536df8872..6fd550fc0c5c 100644
+index 6fd550fc0c5c..c1693ba836ee 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -1061,7 +1061,6 @@ struct ext4_inode_info {
- 
+@@ -1062,6 +1062,8 @@ struct ext4_inode_info {
  	/* Number of ongoing updates on this inode */
  	atomic_t  i_fc_updates;
--	atomic_t i_unwritten; /* Nr. of inflight conversions pending */
  
++	spinlock_t i_raw_lock;	/* protects updates to the raw inode */
++
  	/* Fast commit wait queue for this inode */
  	wait_queue_head_t i_fc_wait;
-@@ -3788,34 +3787,19 @@ static inline void set_bitmap_uptodate(struct buffer_head *bh)
- 	set_bit(BH_BITMAP_UPTODATE, &(bh)->b_state);
- }
  
--/* For ioend & aio unwritten conversion wait queues */
--#define EXT4_WQ_HASH_SZ		37
--#define ext4_ioend_wq(v)   (&ext4__ioend_wq[((unsigned long)(v)) %\
--					    EXT4_WQ_HASH_SZ])
--extern wait_queue_head_t ext4__ioend_wq[EXT4_WQ_HASH_SZ];
+@@ -1099,8 +1101,6 @@ struct ext4_inode_info {
+ 	struct inode vfs_inode;
+ 	struct jbd2_inode *jinode;
+ 
+-	spinlock_t i_raw_lock;	/* protects updates to the raw inode */
 -
- extern int ext4_resize_begin(struct super_block *sb);
- extern int ext4_resize_end(struct super_block *sb, bool update_backups);
+ 	/*
+ 	 * File creation time. Its function is same as that of
+ 	 * struct timespec64 i_{a,c,m}time in the generic inode.
+@@ -1143,6 +1143,7 @@ struct ext4_inode_info {
+ 	/* quota space reservation, managed internally by quota code */
+ 	qsize_t i_reserved_quota;
+ #endif
++	spinlock_t i_block_reservation_lock;
  
--static inline void ext4_set_io_unwritten_flag(struct inode *inode,
--					      struct ext4_io_end *io_end)
-+static inline void ext4_set_io_unwritten_flag(struct ext4_io_end *io_end)
- {
--	if (!(io_end->flag & EXT4_IO_END_UNWRITTEN)) {
-+	if (!(io_end->flag & EXT4_IO_END_UNWRITTEN))
- 		io_end->flag |= EXT4_IO_END_UNWRITTEN;
--		atomic_inc(&EXT4_I(inode)->i_unwritten);
--	}
- }
+ 	/* Lock protecting lists below */
+ 	spinlock_t i_completed_io_lock;
+@@ -1153,8 +1154,6 @@ struct ext4_inode_info {
+ 	struct list_head i_rsv_conversion_list;
+ 	struct work_struct i_rsv_conversion_work;
  
- static inline void ext4_clear_io_unwritten_flag(ext4_io_end_t *io_end)
- {
--	struct inode *inode = io_end->inode;
+-	spinlock_t i_block_reservation_lock;
 -
--	if (io_end->flag & EXT4_IO_END_UNWRITTEN) {
-+	if (io_end->flag & EXT4_IO_END_UNWRITTEN)
- 		io_end->flag &= ~EXT4_IO_END_UNWRITTEN;
--		/* Wake up anyone waiting on unwritten extent conversion */
--		if (atomic_dec_and_test(&EXT4_I(inode)->i_unwritten))
--			wake_up_all(ext4_ioend_wq(inode));
--	}
- }
- 
- extern const struct iomap_ops ext4_iomap_ops;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 7c54ae5fcbd4..36b1f9fb690a 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -2225,7 +2225,7 @@ static int mpage_map_one_extent(handle_t *handle, struct mpage_da_data *mpd)
- 			mpd->io_submit.io_end->handle = handle->h_rsv_handle;
- 			handle->h_rsv_handle = NULL;
- 		}
--		ext4_set_io_unwritten_flag(inode, mpd->io_submit.io_end);
-+		ext4_set_io_unwritten_flag(mpd->io_submit.io_end);
- 	}
- 
- 	BUG_ON(map->m_len == 0);
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 78f2433f6ca0..187cccb2870a 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1426,7 +1426,6 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
- 	spin_lock_init(&ei->i_completed_io_lock);
- 	ei->i_sync_tid = 0;
- 	ei->i_datasync_tid = 0;
--	atomic_set(&ei->i_unwritten, 0);
- 	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
- 	ext4_fc_init_inode(&ei->vfs_inode);
- 	mutex_init(&ei->i_fc_lock);
-@@ -7393,12 +7392,9 @@ static struct file_system_type ext4_fs_type = {
- };
- MODULE_ALIAS_FS("ext4");
- 
--/* Shared across all ext4 file systems */
--wait_queue_head_t ext4__ioend_wq[EXT4_WQ_HASH_SZ];
--
- static int __init ext4_init_fs(void)
- {
--	int i, err;
-+	int err;
- 
- 	ratelimit_state_init(&ext4_mount_msg_ratelimit, 30 * HZ, 64);
- 	ext4_li_info = NULL;
-@@ -7406,9 +7402,6 @@ static int __init ext4_init_fs(void)
- 	/* Build-time check for flags consistency */
- 	ext4_check_flag_values();
- 
--	for (i = 0; i < EXT4_WQ_HASH_SZ; i++)
--		init_waitqueue_head(&ext4__ioend_wq[i]);
--
- 	err = ext4_init_es();
- 	if (err)
- 		return err;
+ 	/*
+ 	 * Transactions that contain inode's metadata needed to complete
+ 	 * fsync and fdatasync, respectively.
 -- 
 2.39.2
 
