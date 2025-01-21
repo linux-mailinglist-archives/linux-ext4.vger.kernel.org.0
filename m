@@ -1,133 +1,155 @@
-Return-Path: <linux-ext4+bounces-6186-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6187-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15753A1855A
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 19:47:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 338FEA185AC
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 20:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9709C188739E
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 18:47:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66B761654EB
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 19:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2171F4E2C;
-	Tue, 21 Jan 2025 18:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9001F4715;
+	Tue, 21 Jan 2025 19:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b="ZK5rIK5i"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Zf95eyc4"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from vps01.wiesinger.com (vps01.wiesinger.com [46.36.37.179])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C455A1F1527
-	for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2025 18:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.36.37.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4139F1B0F39
+	for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2025 19:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737485257; cv=none; b=jREJFpFw5w7gUnjX2MMXkt1sXV5XBErQneCYQcYwtTzlQNDgyDFpYShMSeCBVpUoQcs0Yo0QThcIme+waczPWGb9HjBSUl++uyiX2wr2DwnHs2LSq2OfR1qsGSDa2rhoH/sM5Z8FnoaHPWV33UZZ203JiIw9CWAwmA+qpPeuW7Y=
+	t=1737488043; cv=none; b=r70TaNKsmtpgxHwiBs4RE1oQ/lle1okImxumerK2d7qOrDvJg4S7CZLTOY2tmDsFehnDCHh8g8ucFMVb1bh47JfYF70t7c0qpLxhQiwz77X5Jwcba3Bo/2N62CvBhFGi+y35RMCcULE8ABeayPcgSb1/ocOX7DYcftsEFmGsLsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737485257; c=relaxed/simple;
-	bh=Mgbh5yKkxCPA9vAsgwaIwaQ/VSx9dRPQPxQlEETS0M8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t08UVw9pJaK+HFpm2dn0UjCutSxUK8JebAinJzbwFZzjkWmDaQHtXbyTtMlNm1xj09bn7DveZYPGby6oRCgM3/Rl6NOoA6ivUOB5iz4o0bjOSoNqbCSEM5V5CCpFQ0XVYuvAq42lgndpS8PDPkXN3YTOGyS2abVeTpw08CXqadM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com; spf=pass smtp.mailfrom=wiesinger.com; dkim=fail (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b=ZK5rIK5i reason="signature verification failed"; arc=none smtp.client-ip=46.36.37.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiesinger.com
-Received: from wiesinger.com (wiesinger.com [84.112.177.114])
-	by vps01.wiesinger.com (Postfix) with ESMTPS id E04699F1C2;
-	Tue, 21 Jan 2025 19:47:25 +0100 (CET)
-Received: from [192.168.0.63] ([192.168.0.63])
+	s=arc-20240116; t=1737488043; c=relaxed/simple;
+	bh=9f4kXQtzEFzweGqrPOgljK2fIk8o5lAkKZVikEb/ypI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AMdAKESjS0JnR3TAtFMO4AfIZ99lxn+ygFNXLR6QYE2qWwsUneQxjPh0ldelbQKRG0QCICbdZsSiZua+uD2ZOubXWV3dGzz6Ra38ZnSwRtXZjYZa52ZYiD4BIWE9RrwixbZ7omZ1shjTruU2OXbn3EJiLUUgeYPo6JFewID4KF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Zf95eyc4; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-114-200.bstnma.fios.verizon.net [173.48.114.200])
 	(authenticated bits=0)
-	by wiesinger.com (8.18.1/8.18.1) with ESMTPSA id 50LIlOLw132404
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Tue, 21 Jan 2025 19:47:25 +0100
-DKIM-Filter: OpenDKIM Filter v2.11.0 wiesinger.com 50LIlOLw132404
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiesinger.com;
-	s=default; t=1737485245;
-	bh=snBL1MUJb/UAxs/Q4p65hesSr2nG5faJzOpt98yaupE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZK5rIK5iC2SVGuLUvFU6AefoCYs6sZ7PNSGn+ypO9rfLJjiypBj6PHXUYJf4EDazg
-	 CBdnZWkILAAHtyCBmdyoFqQW9eXjBs6LHJ7TXzWeH+PukNC77PzX1LiPgDyb5nolAC
-	 c4aursfZg8Ji1PdABHyJX82q3yKb/ksrYdHjQOua+hB/YGox+TwMwlw7jtg+ofkGVl
-	 lySar0epyVIk+GTWwBHTGbtJrXAS03jL+nUY0B9wWjw0NBGNqrXZkNaMq2TNAwjpoV
-	 gXdc/XC0zySVDFRaEXKTn9nSOdpnUFsCvoGotGB7dtuK3n+SY9Se5lamG2ItM4fioA
-	 Noq2YHPMZhN+hYpXqzKI+lunc/8VqD6+Z1pelpitbueF8do+OiRiAWvml8s2LNTmqk
-	 4+D30xQ3K4MGkkszBCvz+RdccMdpKK5L1Pgm2KuwNZzfX2LunF7Wyn2EUWblWgd2AO
-	 NSUmTd7NaJOVHe6Phm1lViTNuTMM6qoVR4OE83ZxyU/jzpt+gzE/bqdKu1ISemhqDu
-	 jOyCEheAHRPI2HNWXou0Ix11jdyGJYB1MvPQLqT8pYgPOQhq4Cqzwa6GNYVFg5vOlI
-	 3AWFA403lE/pJOHTjFaFhXJKSyJ8hNmYjlaiSrhbtrqJ722QS58gnV+88IHX+G/fgu
-	 uz6BWEOU5DBVcCkt/EOf8h9A=
-Message-ID: <213343dc-3911-45de-8195-469da9dd1a91@wiesinger.com>
-Date: Tue, 21 Jan 2025 19:47:24 +0100
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 50LJXpdo001781
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 21 Jan 2025 14:33:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1737488032; bh=wGOpOq4zicm+GssBqGhA8nhHchRbPuRIuAxOhR3njsQ=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=Zf95eyc4Za0zr7fmTovLW7A9fWc3Z2yV7sc830HWHd3s3FXyQTGyxqhkt3TxWsB/P
+	 O2aPm6Bi7kMZ6623gqlVUm8/xd5jCgvg1Q081yxLqdf5PlqCXWAAnQhewtM7ztagAM
+	 N4EquneKi8NMjFQIFxkxS3iIjbQ9laiy6vOG3wDbWLjD7RcPLmRtfotrnnE92an3JQ
+	 py4YZf7bYMRvFNNrbucYyupeawXc58pqqD6EG9UJOHW4GTEyIqq8Z5WkLegHAZN5yD
+	 t129ykIWrpOM73/6n9T9IBOWmBpxiOBDf6xZxLNWD8W7CSZOM03eX4cWdWfoNwIlkj
+	 MeeNCV/vHkcBw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 1026315C01A1; Tue, 21 Jan 2025 14:33:51 -0500 (EST)
+Date: Tue, 21 Jan 2025 14:33:51 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Gerhard Wiesinger <lists@wiesinger.com>
+Cc: linux-ext4@vger.kernel.org
+Subject: Re: Transparent compression with ext4 - especially with zstd
+Message-ID: <20250121193351.GA3820043@mit.edu>
+References: <8cb4d855-6bd8-427f-ac8f-8cf7b91547fb@wiesinger.com>
+ <20250121040125.GC3761769@mit.edu>
+ <213343dc-3911-45de-8195-469da9dd1a91@wiesinger.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Betterbird (Windows)
-Subject: Re: Transparent compression with ext4 - especially with zstd
-Content-Language: en-US
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-References: <8cb4d855-6bd8-427f-ac8f-8cf7b91547fb@wiesinger.com>
- <20250121040125.GC3761769@mit.edu>
-From: Gerhard Wiesinger <lists@wiesinger.com>
-In-Reply-To: <20250121040125.GC3761769@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <213343dc-3911-45de-8195-469da9dd1a91@wiesinger.com>
 
-On 21.01.2025 05:01, Theodore Ts'o wrote:
-> On Sun, Jan 19, 2025 at 03:37:27PM +0100, Gerhard Wiesinger wrote:
->> Are there any plans to include transparent compression with ext4 (especially
->> with zstd)?
-> I'm not aware of anyone in the ext4 deveopment commuity working on
-> something like this.  Fully transparent compression is challenging,
-> since supporting random writes into a compressed file is tricky.
-> There are solutions (for example, the Stac patent which resulted in
-> Microsoft to pay $120 million dollars), but even ignoring the
-> intellectual property issues, they tend to compromise the efficiency
-> of the compression.
->
-> More to the point, given how cheap byte storage tends to be (dollars
-> per IOPS tend to be far more of a constraint than dollars per GB),
-> it's unclear what the business case would be for any company to fund
-> development work in this area, when the cost of a slightly large HDD
-> or SSD is going to be far cheaper than the necessary software
-> engineering investrment needed, even for a hyperscaler cloud company
-> (and even there, it's unclear that transparent compression is really
-> needed).
->
-> What is the business and/or technical problem which you are trying to
-> solve?
->
-Regarding necessity:
-We are talking in some scenarios about some factors of diskspace. E.g. 
-in my database scenario with PostgreSQL around 85% of disk space can be 
-saved (e.g. around factor 7).
+On Tue, Jan 21, 2025 at 07:47:24PM +0100, Gerhard Wiesinger wrote:
+> We are talking in some scenarios about some factors of diskspace. E.g. in
+> my database scenario with PostgreSQL around 85% of disk space can be saved
+> (e.g. around factor 7).
 
-In cloud usage scenarios you can easily reduce that amount of allocated 
-diskspace by around a factor 7 and reduce cost therefore.
+So the problem with using compression with databases is that they need
+to be able to do random writes into the middle of a file.  So that
+means you need to use tricks such as writing into clusters, typically
+32k or 64k.  What this means is that a single 4k random write gets
+amplified into a 32k or 64k write.
 
-You might also get a performance boost by using caching mechanism more 
-efficient (e.g. using less RAM).
+> In cloud usage scenarios you can easily reduce that amount of allocated
+> diskspace by around a factor 7 and reduce cost therefore.
 
-Also with precompressed files (e.g. photo, videos) you can safe around 
-5-10% overall disk space which sounds less but in the area of several 
-hundred Gigabytes or even some Petabytes this is a lot of storage.
+If you are running this on a cloud platform, where you are limited (on
+GCE) or charged (on AWS) by IOPS and throughput, this can be a
+performance bottleneck (or cost you extra).  At the minimum the extra
+I/O throughput will very likely show up on various performance
+benchmarks.
 
-On evenly distributed data store you can save even more.
+Worse, using a transparent compression breaks the ACID properties of
+the database.  If you crash or have a power failure while rewriting
+the 64k compression cluster, all or part of that 64k compression
+cluster can be corrupted.  And if your customers care about (their)
+data integrity, the fact that you cheaped out on disk space might not
+be something that would impress them terribly.
 
-The technical topic is that IMHO no stable and practical usable Linux 
-filesystem which is included in the default kernel exists.
-- ZFS works but is not included in the default kernel
-- BTRFS has stability and repair issues (see mailing lists) and bugs 
-with compression (does not compress on the fly in some scenarios)
-- bcachefs is experimental
+The short version is that transparent compression is not free, even if
+you ignore the SWE development costs of implementing such a feature,
+and then getting that feature to be fit for use in an enterprise use
+case.  No matter what file system you might want to use, I *strongly*
+suggest that you get a power fail rack and try putting the whole stack
+on said power fail rack, and try dropping power while running a stress
+test --- over, and over, and over again.  What you might find would
+surprise you.
 
-Regarding patents: IMHO at least the STAC patents are all no longer 
-valid anymore.
+> The technical topic is that IMHO no stable and practical usable Linux
+> filesystem which is included in the default kernel exists.
+> - ZFS works but is not included in the default kernel
+> - BTRFS has stability and repair issues (see mailing lists) and bugs with
+> compression (does not compress on the fly in some scenarios)
+> - bcachefs is experimental
 
-Thnx.
+When I started work at Google 15 years ago to deploy ext4 into
+production, we did precisely this, and as well as deploying to a small
+percentage of Google's test fleet to do A:B comparisons before we
+deployed to the entire production fleet.
 
-Ciao,
-Gerhard
+Whether or not it is "practical" and "usable" depends on your
+definition, I guess, but from my perspective "stable" and "not losing
+users' data" is job #1.
+
+But hey, if it's worth so much to you, I suggest you cost out what it
+would cost to actually implement the features that you so much want,
+or how much it would cost to make the more complex file systems to be
+stable for production use.  You might decide that paying the extra
+storage costs is way cheaper than software engineering investment
+costs involved.  At Google, and when I was at IBM before that, we were
+always super disciplined about trying to figure out the ROI costs of
+some particular project and not just doing it because it was "cool".
+
+There's a famous story about how the engineers working on ZFS didn't
+ask for management's permission or input from the sales team before
+they started.  Sounds great, and there was some cool technology there
+in ZFS --- but note that Sun had to put the company up for sale
+because they were losing money...
+
+Cheers,
+
+						- Ted
+
+P.S.  Note: using a compression cluster is the only real way to
+support transparent compression if you are using an update-in-place
+file system like ext4 or xfs.  (And that is what was coverd by the
+Stac patents that I mentioned.)
+
+If you are using a log-structed file system, such as ZFS, then you can
+simply rewrite the compression cluster *and* update the file system
+metadata to point at the new compression cluster --- but then the
+garbage collection costs, and the file system metadata update costs
+for each database commit are *huge*, and the I/O throughput hit is
+even higher.  So much so that ZFS recommends that you turn off the
+log-structured write and do update-in-place if you want to use a
+database on ZFS.  But I'm pretty sure that this disables transparent
+compression if you are using update-in-place.  TNSTAAFL.
 
