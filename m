@@ -1,96 +1,140 @@
-Return-Path: <linux-ext4+bounces-6154-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6156-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E74F3A1766D
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 05:01:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEEFBA1786F
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 08:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1CF188A975
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 04:01:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB8817A1742
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 07:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8151527AC;
-	Tue, 21 Jan 2025 04:01:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="SwlnSiXB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8ADC1B0F14;
+	Tue, 21 Jan 2025 07:16:39 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED622F5B
-	for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2025 04:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB4716A395;
+	Tue, 21 Jan 2025 07:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737432093; cv=none; b=Fu/JZykXtSCJmk1bUnZaCohRenKBpZ9D5H5gw2ihitFhwijXnOy0u+8YbOQSNeNhdGMOVTJ+6l3SazFLjz6InuYfzj8PcfyN6u//kOlGV1cQbrlHKPOkVPxfa0xiolpLMDLnYhJMiGb31yF1SFrUXzWjfPGX8ZOETfDiMDiK/zA=
+	t=1737443799; cv=none; b=ToAg35ON+qjy5pB9g3ldK1kp7Quj0v5tKGcb/Lii/3zcRF8IE3YRvaADuPk/t8Xqytjg5ROAJwm9xebng0CUqzBx3+TaIWojaqjfhx7A+7CCK6VO3dmOi8e6DsqGRBz8PLZZsjkfaLfK7Y/vQIvJHp3J3nn50AUvX8Sjx5T+Tus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737432093; c=relaxed/simple;
-	bh=6kY2CfxpxpFZVxQOrTyM+yX7jWlUk6ksvtEHi9lF4nM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mDO/uOVuGg/j5L6cBRMQlqrSgX963/yT5qMcydVwxJi4oLocmjMMgSUWLzuYQf36NnjCI4BM66x/D10dWprKtR0l5riLVl4xSp08+qwNFgmsNumqao4JqDlyae3RZFAdc6OcL6HW0XUiWZKXncJN+Xibmw1ut8l1h3YFE5EkEUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=SwlnSiXB; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-114-200.bstnma.fios.verizon.net [173.48.114.200])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 50L41PAr024662
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 20 Jan 2025 23:01:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1737432087; bh=/tYOhMctsi0J9YpjBd+EYiyBmQD0HYot8R7VxKMT/xw=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=SwlnSiXBnXEIOaAgr1DnaKzgh5lunCqntJ9Uf9I9xLzw/6zyYTcmxPwGAO6oxSqAO
-	 w9IjIuOgzX4X51j7Y84ado+WXwlyBFkg0LfE3hPJ8JtCo/8m9Fxwjsnwy45sKnbUPA
-	 P8qsjLyzj1YNIWTyrqBvprOe8Gl1d+RMbpF6vY/LfyeqaLkLcE4MJoSs4UB8K6YQ4H
-	 KE++IgaXTwqg1EKOO0MzLKEtOgYSBthpF0yY2/SaXZJRvS93tHETWFrEr5hFZzZ0zG
-	 QIF0/7dGVbA+6AMAAwaA0tThB1Ji5ADPMwHkztw5h8bQqp2E4Y+Yk3U3xJPV4MhNd6
-	 BNLt32TaNDRBQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id AC70615C0179; Mon, 20 Jan 2025 23:01:25 -0500 (EST)
-Date: Mon, 20 Jan 2025 23:01:25 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Gerhard Wiesinger <lists@wiesinger.com>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: Transparent compression with ext4 - especially with zstd
-Message-ID: <20250121040125.GC3761769@mit.edu>
-References: <8cb4d855-6bd8-427f-ac8f-8cf7b91547fb@wiesinger.com>
+	s=arc-20240116; t=1737443799; c=relaxed/simple;
+	bh=mqN1GAoOJAzSX9J5i94RKL0VRbHgzzsfU5CDOfV76VE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=IGFuMEGe2BXPgqX1/ODqKVz9+BZnsg6+b8lr/zGWX+9Z+Tz1ex1wLFFImnSdzasdmHA95gL9PME4eaQFiibGMahhQxQD80NsP6l8Qyh19jUXXq7NooJnq7Ipw85JHYXoJFHl/KcNSkVaF2VxKARZvf9G5yfI6egQAElEEeZ7BZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YcdmL26H3z4f3jqw;
+	Tue, 21 Jan 2025 15:16:18 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id AEFF11A07BD;
+	Tue, 21 Jan 2025 15:16:33 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgD3W2DNSY9n3Gg+Bg--.34135S4;
+	Tue, 21 Jan 2025 15:16:31 +0800 (CST)
+From: libaokun@huaweicloud.com
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	libaokun@huaweicloud.com,
+	Baokun Li <libaokun1@huawei.com>
+Subject: [PATCH v2 0/8] ext4: fix issues caused by data write-back failures
+Date: Tue, 21 Jan 2025 15:10:42 +0800
+Message-Id: <20250121071050.3991249-1-libaokun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8cb4d855-6bd8-427f-ac8f-8cf7b91547fb@wiesinger.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgD3W2DNSY9n3Gg+Bg--.34135S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7KrW3GrW8JryxAw1fZFW7twb_yoW5Jr4Dpr
+	ZIkryayry8ZFyxua1fAa1xXryYk3WrAFW7tF17X3WkAw4DAr1SyrW7tFWrCa4jy393Ka4Y
+	qr4DA34fuF47AaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lw4CEc2x0rVAKj4xx
+	MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+	67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
+	IFyTuYvjfUO73vUUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgALBWeKD3kBggAIsc
 
-On Sun, Jan 19, 2025 at 03:37:27PM +0100, Gerhard Wiesinger wrote:
-> 
-> Are there any plans to include transparent compression with ext4 (especially
-> with zstd)?
+From: Baokun Li <libaokun1@huawei.com>
 
-I'm not aware of anyone in the ext4 deveopment commuity working on
-something like this.  Fully transparent compression is challenging,
-since supporting random writes into a compressed file is tricky.
-There are solutions (for example, the Stac patent which resulted in
-Microsoft to pay $120 million dollars), but even ignoring the
-intellectual property issues, they tend to compromise the efficiency
-of the compression.
+Changes since v1:
+ * Patch 5: Make data_err=abort work for all Buffer IO, not just add
+            support in dioread_nolock mode.
+ * Add patch 3,4,6.
+ * Collect RVB from Jan Kara and Zhang Yi.(Thanks for your review!)
 
-More to the point, given how cheap byte storage tends to be (dollars
-per IOPS tend to be far more of a constraint than dollars per GB),
-it's unclear what the business case would be for any company to fund
-development work in this area, when the cost of a slightly large HDD
-or SSD is going to be far cheaper than the necessary software
-engineering investrment needed, even for a hyperscaler cloud company
-(and even there, it's unclear that transparent compression is really
-needed).
+v1: https://lore.kernel.org/r/20241220060757.1781418-1-libaokun@huaweicloud.com
 
-What is the business and/or technical problem which you are trying to
-solve?
+Recently some of our customers remounted ext4 from
+"dioread_nolock,data_err=abort" to "dioread_lock,data_err=abort" and the
+ext4 filesystem became read-only.
 
-Cheers,
+Then I found that "data_err=abort" is not working in dioread_nolock mode,
+when data writeback fails, the error is always recorded in inode mapping,
+but no one will check it, not even when converting unwritten to written,
+which could expose stale data. When remounted with dioread_lock, the error
+recorded in the inode mapping was checked and the journal aborted, and the
+file system became read-only later.
 
-					- Ted
+Patch 1: Clean up duplicate code and ensure that an warning is printed
+         when data may be lost;
+Patch 2: Fix an issue that could expose stale data when data writeback
+         fails;
+Patch 3: Reject data_err=abort in nojournal mode to ensure
+         sbi->s_journal != NULL when DATA_ERR_ABORT set.
+Patch 4: Add the ext4_check_nojournal_options() helper to
+         reduce code duplication.
+Patch 5: Make data_err=abort work for all Buffer IO, not just order mode.
+Patch 6: Update the description of data_err=abort|ignore in the DOC.
+Patch 7: Remove useless i_unwritten and related code.
+Patch 8: Pack holes in ext4_inode_info to save memory.
+
+Comments and questions are, as always, welcome.
+
+Thanks,
+Baokun
+
+Baokun Li (8):
+  ext4: replace opencoded ext4_end_io_end() in ext4_put_io_end()
+  ext4: do not convert the unwritten extents if data writeback fails
+  ext4: reject the 'data_err=abort' option in nojournal mode
+  ext4: extract ext4_check_nojournal_options() from __ext4_fill_super()
+  ext4: abort journal on data writeback failure if in data_err=abort mode
+  ext4: update the descriptions of data_err=abort and data_err=ignore
+  ext4: remove unused member 'i_unwritten' from 'ext4_inode_info'
+  ext4: pack holes in ext4_inode_info
+
+ Documentation/admin-guide/ext4.rst |  7 ++-
+ fs/ext4/ext4.h                     | 34 ++++----------
+ fs/ext4/inode.c                    |  2 +-
+ fs/ext4/page-io.c                  | 75 ++++++++++++++++++++----------
+ fs/ext4/super.c                    | 61 +++++++++++++-----------
+ 5 files changed, 98 insertions(+), 81 deletions(-)
+
+-- 
+2.39.2
+
 
