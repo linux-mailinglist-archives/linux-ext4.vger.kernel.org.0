@@ -1,187 +1,137 @@
-Return-Path: <linux-ext4+bounces-6172-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6173-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0799BA17D83
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 13:08:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CD34A17D9A
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 13:11:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3966A16B6D6
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 12:08:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5EBC16B6E0
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 12:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885021F1908;
-	Tue, 21 Jan 2025 12:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sbGOUjmP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gyuopIOk";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sbGOUjmP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gyuopIOk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6781F191E;
+	Tue, 21 Jan 2025 12:11:54 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826511F152D;
-	Tue, 21 Jan 2025 12:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D32520318;
+	Tue, 21 Jan 2025 12:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737461295; cv=none; b=ZZeekDwfbCGStkS9jUMR3NSvabQNXoVMRUvy8G6GYuzz/1rHcfUSaV4f2a0dhNBhjgkHrnUo/EQulMw5X7kUHrRYTFczt+IoSB10xH/Mz3L+vtmkw7pQxSYg94b7kO4jfA1HWiiIKb4kmu+2sZTHUAgnYyy294DJcJkIKIY33hM=
+	t=1737461513; cv=none; b=UWi/pfJqX6j2OX5x6qbfSuw8cdWKo0CvSseJk/1F1oYMEFc7G9AJuKPy+VK/6O34HAUtVI4DdHMJWK1M4Qy6/MrrJDjFKco8AIEab3oiojkLcEwAgJ8KhxadyO7wa+UajQu3xquMAALH9BcevxYopKoJ6nC3st8bNAwlZ/CEjws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737461295; c=relaxed/simple;
-	bh=FarBAos1yuh1ga4D1ibmNnxMqx9dy7UNAiPaMAmVcRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fKGHNJuSx0+k/rFJtJUGiqgxL7ddSZQmF1Ed2arknBLO7XXQY7WETifychGWwkjuG5IybphxP32HwowFg9tH+iwVub3ZvcqdtQXP77sQ1iCZfucmUwuMrE6zA/AgZ/N+KL5m0wUtZ2dsVThjN5WUxvaGQytnGElFuIwRaI9wXTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sbGOUjmP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gyuopIOk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sbGOUjmP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gyuopIOk; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8A3782117A;
-	Tue, 21 Jan 2025 12:08:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737461291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4/Hyack543TNG+5Zgg/csL58ubgtSTmJF5mYSlCP6xw=;
-	b=sbGOUjmPAKYo+ghoT3NDP79RPip8BAcs2qedKgnUasiFuTsYgFp2ReHEPQyiAMiu8pj3ny
-	eJ7KxcgVISUrOFy1GqxXqKTtnzBuzSUdwM/E251hlWrz4bARS7o6CsfWbSPmC+5PB5x3c+
-	JFxRPbKdgIUJqlCohnODtnG554UsKmg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737461291;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4/Hyack543TNG+5Zgg/csL58ubgtSTmJF5mYSlCP6xw=;
-	b=gyuopIOkmO9QGB0Rzyu311qwfAL9bJR3x8EkToi0ZF1VRHfy8f4msf62zurDize1JgpWNq
-	0Tex5z1AxfFVKTCQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737461291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4/Hyack543TNG+5Zgg/csL58ubgtSTmJF5mYSlCP6xw=;
-	b=sbGOUjmPAKYo+ghoT3NDP79RPip8BAcs2qedKgnUasiFuTsYgFp2ReHEPQyiAMiu8pj3ny
-	eJ7KxcgVISUrOFy1GqxXqKTtnzBuzSUdwM/E251hlWrz4bARS7o6CsfWbSPmC+5PB5x3c+
-	JFxRPbKdgIUJqlCohnODtnG554UsKmg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737461291;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4/Hyack543TNG+5Zgg/csL58ubgtSTmJF5mYSlCP6xw=;
-	b=gyuopIOkmO9QGB0Rzyu311qwfAL9bJR3x8EkToi0ZF1VRHfy8f4msf62zurDize1JgpWNq
-	0Tex5z1AxfFVKTCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E17513963;
-	Tue, 21 Jan 2025 12:08:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Rx7GHiuOj2fGXQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 21 Jan 2025 12:08:11 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 408DBA0889; Tue, 21 Jan 2025 13:08:03 +0100 (CET)
-Date: Tue, 21 Jan 2025 13:08:03 +0100
-From: Jan Kara <jack@suse.cz>
-To: libaokun@huaweicloud.com
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	jack@suse.cz, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
-	yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>
-Subject: Re: [PATCH 2/7] ext4: add EXT4_FLAGS_EMERGENCY_RO bit
-Message-ID: <jlmjgo6xm5t3wuomxgo46c22csv6dlqubb35ctaa3u7qizbqmf@qeum4e6ffyoc>
-References: <20250117082315.2869996-1-libaokun@huaweicloud.com>
- <20250117082315.2869996-3-libaokun@huaweicloud.com>
+	s=arc-20240116; t=1737461513; c=relaxed/simple;
+	bh=9suzRXIyDMOqb6HUy6MP9nL67IRKgi2egRXKD1U/qxU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=KbFlhsV9dFwkkIzN4gN11lOOC64FebNoCkgcs5nfqpcPuQ7Eeb8ars4LsaZtWrnnKFlqbcJ/DkHwtYmPsI3CJciHKz4RIVpCGlN6CQ1Gh/SeY3dfW+ep8rkP3irJ5hm7O/tIZRD0KTOXnXZ9IvmzyQiE9lTrXGDgvqS8D4JYlDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4YcmKn6J2zz20p67;
+	Tue, 21 Jan 2025 20:12:13 +0800 (CST)
+Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
+	by mail.maildlp.com (Postfix) with ESMTPS id A1F631A016C;
+	Tue, 21 Jan 2025 20:11:48 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
+ (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 21 Jan
+ 2025 20:11:47 +0800
+Message-ID: <7e67c369-dbbc-47fd-ace8-2d495f340263@huawei.com>
+Date: Tue, 21 Jan 2025 20:11:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250117082315.2869996-3-libaokun@huaweicloud.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	URIBL_BLOCKED(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,huaweicloud.com:email,huawei.com:email,suse.cz:email];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/8] ext4: reject the 'data_err=abort' option in
+ nojournal mode
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>, <libaokun@huaweicloud.com>, Baokun Li
+	<libaokun1@huawei.com>
+References: <20250121071050.3991249-1-libaokun@huaweicloud.com>
+ <20250121071050.3991249-4-libaokun@huaweicloud.com>
+ <2hr7ifk6f7ojn3iubi3qj2yp5m72fvbch22afkmw2emsypz5kv@uah27xxstly3>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <2hr7ifk6f7ojn3iubi3qj2yp5m72fvbch22afkmw2emsypz5kv@uah27xxstly3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemg500008.china.huawei.com (7.202.181.45)
 
-On Fri 17-01-25 16:23:10, libaokun@huaweicloud.com wrote:
-> From: Baokun Li <libaokun1@huawei.com>
-> 
-> EXT4_FLAGS_EMERGENCY_RO Indicates that the current file system has become
-> read-only due to some error. Compared to SB_RDONLY, setting it does not
-> require a lock because we won't clear it, which avoids over-coupling with
-> vfs freeze. Also, add a helper function ext4_emergency_ro() to check if
-> the bit is set.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Hi Honza,
 
-The same comment about comma after the last enum member. Otherwise looks
-good. Feel free to add:
+On 2025/1/21 19:37, Jan Kara wrote:
+> On Tue 21-01-25 15:10:45, libaokun@huaweicloud.com wrote:
+>> From: Baokun Li <libaokun1@huawei.com>
+>>
+>> data_err=abort aborts the journal on I/O errors. However, this option is
+>> meaningless if journal is disabled, so it is rejected in nojournal mode
+>> to reduce unnecessary checks. Also, this option is ignored upon remount.
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+> Looks good. Feel free to add:
+>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+Thanks for the review!
+>> ---
+>> Or maybe we should make mount and remount consistent?
+>> Rejecting it in both would make things a lot easier.
+> The reason why it is ignored on remount is that we cannot modify
+> JBD2_ABORT_ON_SYNCDATA_ERR on remount. Now that we don't really depend on
+> JBD2_ABORT_ON_SYNCDATA_ERR, we could indeed make mount and remount
+> consistent and probably just drop JBD2_ABORT_ON_SYNCDATA_ERR altogether
+> (and only warn in jbd2 as it used to be long ago).
+>
+> 								Honza
+Okay, I'll add a patch in the next version to clean up
+JBD2_ABORT_ON_SYNCDATA_ERR.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Cheers,
+Baokun
+>>   fs/ext4/super.c | 12 ++++++++++++
+>>   1 file changed, 12 insertions(+)
+>>
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index a50e5c31b937..34a7b6523f8b 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -2785,6 +2785,13 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
+>>   	}
+>>   
+>>   	if (is_remount) {
+>> +		if (!sbi->s_journal &&
+>> +		    ctx_test_mount_opt(ctx, EXT4_MOUNT_DATA_ERR_ABORT)) {
+>> +			ext4_msg(NULL, KERN_WARNING,
+>> +				 "Remounting fs w/o journal so ignoring data_err option");
+>> +			ctx_clear_mount_opt(ctx, EXT4_MOUNT_DATA_ERR_ABORT);
+>> +		}
+>> +
+>>   		if (ctx_test_mount_opt(ctx, EXT4_MOUNT_DAX_ALWAYS) &&
+>>   		    (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)) {
+>>   			ext4_msg(NULL, KERN_ERR, "can't mount with "
+>> @@ -5428,6 +5435,11 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>>   				 "data=, fs mounted w/o journal");
+>>   			goto failed_mount3a;
+>>   		}
+>> +		if (test_opt(sb, DATA_ERR_ABORT)) {
+>> +			ext4_msg(sb, KERN_ERR,
+>> +				 "can't mount with data_err=abort, fs mounted w/o journal");
+>> +			goto failed_mount3a;
+>> +		}
+>>   		sbi->s_def_mount_opt &= ~EXT4_MOUNT_JOURNAL_CHECKSUM;
+>>   		clear_opt(sb, JOURNAL_CHECKSUM);
+>>   		clear_opt(sb, DATA_FLAGS);
+>> -- 
+>> 2.39.2
+>>
 
-								Honza
-
-> ---
->  fs/ext4/ext4.h | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 612208527512..c5b775482897 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -2235,7 +2235,8 @@ extern int ext4_feature_set_ok(struct super_block *sb, int readonly);
->  enum {
->  	EXT4_FLAGS_RESIZING,	/* Avoid superblock update and resize race */
->  	EXT4_FLAGS_SHUTDOWN,	/* Prevent access to the file system */
-> -	EXT4_FLAGS_BDEV_IS_DAX	/* Current block device support DAX */
-> +	EXT4_FLAGS_BDEV_IS_DAX,	/* Current block device support DAX */
-> +	EXT4_FLAGS_EMERGENCY_RO	/* Emergency read-only due to fs errors */
->  };
->  
->  static inline int ext4_forced_shutdown(struct super_block *sb)
-> @@ -2243,6 +2244,11 @@ static inline int ext4_forced_shutdown(struct super_block *sb)
->  	return test_bit(EXT4_FLAGS_SHUTDOWN, &EXT4_SB(sb)->s_ext4_flags);
->  }
->  
-> +static inline int ext4_emergency_ro(struct super_block *sb)
-> +{
-> +	return test_bit(EXT4_FLAGS_EMERGENCY_RO, &EXT4_SB(sb)->s_ext4_flags);
-> +}
-> +
->  /*
->   * Default values for user and/or group using reserved blocks
->   */
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
