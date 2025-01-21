@@ -1,195 +1,133 @@
-Return-Path: <linux-ext4+bounces-6185-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6186-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C92E6A18254
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 17:55:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15753A1855A
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 19:47:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06234165923
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 16:55:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9709C188739E
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 18:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B3A1F470D;
-	Tue, 21 Jan 2025 16:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2171F4E2C;
+	Tue, 21 Jan 2025 18:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MhX2SNv/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XUQbyQRF";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MhX2SNv/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XUQbyQRF"
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b="ZK5rIK5i"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from vps01.wiesinger.com (vps01.wiesinger.com [46.36.37.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2841192D70;
-	Tue, 21 Jan 2025 16:55:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C455A1F1527
+	for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2025 18:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.36.37.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737478527; cv=none; b=cIhq7E47koRSp/rLv1UGBmtm8tOS4HTPBePoWUVuXJbCGOHcStpmb5cc4XeVSiQ2gFG2C+0qkyuG+UyQW8qTe8dYaA6hYgzwS4XDAanK2aeXe8C8KuDxaG9w6wG3cH6clhl38fwxQRUyN26j0T3uQnSat5nr7HvHAUj7RC52bGw=
+	t=1737485257; cv=none; b=jREJFpFw5w7gUnjX2MMXkt1sXV5XBErQneCYQcYwtTzlQNDgyDFpYShMSeCBVpUoQcs0Yo0QThcIme+waczPWGb9HjBSUl++uyiX2wr2DwnHs2LSq2OfR1qsGSDa2rhoH/sM5Z8FnoaHPWV33UZZ203JiIw9CWAwmA+qpPeuW7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737478527; c=relaxed/simple;
-	bh=ljot/MZZuF2wOpQ05QCP7Hnrmr/UdFh/DZMXMFbGddg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cahPksu670/vwNUgnWk+oT1Q6pUWUNg5tGn1vVrOZfTR6r9drwUu692Q/LWaBPFpzGjM7ngbMxQDobkhVc6RP6Ntl0o/L9mw1xVE7WyKCcxNoKMD/Sp1hlAGWAHgQmSkWw/YlLtmIBaSxnYizYBeUsijxnGzYqWSTizGM8yDcYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MhX2SNv/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XUQbyQRF; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MhX2SNv/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XUQbyQRF; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C7AE11F391;
-	Tue, 21 Jan 2025 16:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737478523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GZIBl1Ve9LPZa59rjaIvWIZ+XpvUUGcAkpHqg6nfJT4=;
-	b=MhX2SNv/FLdumyga16efWbUAPQ10WytMiYxWJj38cmlPnJhwuntTrh4jaqY6vIpcEelNH/
-	3fEdXobzCxARgSY086FmzJq6WjkAiDt3KsNwf1UN9yqxvHgRF2Cxp0pEC3c8fweelxWKlD
-	A7Iik0zYsamS6TjtjhyTteSrTfQUFeM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737478523;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GZIBl1Ve9LPZa59rjaIvWIZ+XpvUUGcAkpHqg6nfJT4=;
-	b=XUQbyQRFVhArLk4a4FCjj5BL2/oUjf3ZsGdIZHvz1em7VY0rTzFYH+oqwVXFoVImy95i+u
-	buU3fFzBcL+GHKAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737478523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GZIBl1Ve9LPZa59rjaIvWIZ+XpvUUGcAkpHqg6nfJT4=;
-	b=MhX2SNv/FLdumyga16efWbUAPQ10WytMiYxWJj38cmlPnJhwuntTrh4jaqY6vIpcEelNH/
-	3fEdXobzCxARgSY086FmzJq6WjkAiDt3KsNwf1UN9yqxvHgRF2Cxp0pEC3c8fweelxWKlD
-	A7Iik0zYsamS6TjtjhyTteSrTfQUFeM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737478523;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GZIBl1Ve9LPZa59rjaIvWIZ+XpvUUGcAkpHqg6nfJT4=;
-	b=XUQbyQRFVhArLk4a4FCjj5BL2/oUjf3ZsGdIZHvz1em7VY0rTzFYH+oqwVXFoVImy95i+u
-	buU3fFzBcL+GHKAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8C471387C;
-	Tue, 21 Jan 2025 16:55:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tQUaLXvRj2e5DAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 21 Jan 2025 16:55:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 60669A0889; Tue, 21 Jan 2025 17:55:19 +0100 (CET)
-Date: Tue, 21 Jan 2025 17:55:19 +0100
-From: Jan Kara <jack@suse.cz>
-To: Heming Zhao <heming.zhao@suse.com>
-Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, 
-	li.kai4@h3c.com, jack@suse.com, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
-	Joseph Qi <joseph.qi@linux.alibaba.com>, ocfs2-devel@lists.linux.dev, 
-	Liebes Wang <wanghaichi0403@gmail.com>, syzbot <syzbot+96ee12698391289383dd@syzkaller.appspotmail.com>
-Subject: Re: WARNING in jbd2_journal_update_sb_log_tail
-Message-ID: <vxsqorapn2flwqx6ipsye6wf6h5lvciqoywvwrd2w4nwxyuajz@l3mao3pmqikn>
-References: <CADCV8sq0E9_tmBbedYdUJyD4=yyjSngp2ZGVR2VfZfD0Q1nUFQ@mail.gmail.com>
- <mzypseklhk6colsb5fh42ya74x43z5mmkzdjdyluesx6hb744a@hycbebanf7mv>
- <24f378c8-7a27-47b8-bd79-dba4a2e92f6d@suse.com>
- <20250114133815.GA1997324@mit.edu>
- <3655551d-b881-4f2b-8419-03efe4d3aca7@suse.com>
- <CADCV8srwww_--oOvi1sdS4JfUafidPOPr0srG1bWO66py2WTtQ@mail.gmail.com>
- <db4da8db-d501-4181-994b-c25845908161@suse.com>
- <2htuqhxolgddrwm5ka7ad4axu3gz7nprqnmspdtkwld7mzch3r@tqhjlxfidxsb>
+	s=arc-20240116; t=1737485257; c=relaxed/simple;
+	bh=Mgbh5yKkxCPA9vAsgwaIwaQ/VSx9dRPQPxQlEETS0M8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t08UVw9pJaK+HFpm2dn0UjCutSxUK8JebAinJzbwFZzjkWmDaQHtXbyTtMlNm1xj09bn7DveZYPGby6oRCgM3/Rl6NOoA6ivUOB5iz4o0bjOSoNqbCSEM5V5CCpFQ0XVYuvAq42lgndpS8PDPkXN3YTOGyS2abVeTpw08CXqadM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com; spf=pass smtp.mailfrom=wiesinger.com; dkim=fail (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b=ZK5rIK5i reason="signature verification failed"; arc=none smtp.client-ip=46.36.37.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiesinger.com
+Received: from wiesinger.com (wiesinger.com [84.112.177.114])
+	by vps01.wiesinger.com (Postfix) with ESMTPS id E04699F1C2;
+	Tue, 21 Jan 2025 19:47:25 +0100 (CET)
+Received: from [192.168.0.63] ([192.168.0.63])
+	(authenticated bits=0)
+	by wiesinger.com (8.18.1/8.18.1) with ESMTPSA id 50LIlOLw132404
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Tue, 21 Jan 2025 19:47:25 +0100
+DKIM-Filter: OpenDKIM Filter v2.11.0 wiesinger.com 50LIlOLw132404
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiesinger.com;
+	s=default; t=1737485245;
+	bh=snBL1MUJb/UAxs/Q4p65hesSr2nG5faJzOpt98yaupE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZK5rIK5iC2SVGuLUvFU6AefoCYs6sZ7PNSGn+ypO9rfLJjiypBj6PHXUYJf4EDazg
+	 CBdnZWkILAAHtyCBmdyoFqQW9eXjBs6LHJ7TXzWeH+PukNC77PzX1LiPgDyb5nolAC
+	 c4aursfZg8Ji1PdABHyJX82q3yKb/ksrYdHjQOua+hB/YGox+TwMwlw7jtg+ofkGVl
+	 lySar0epyVIk+GTWwBHTGbtJrXAS03jL+nUY0B9wWjw0NBGNqrXZkNaMq2TNAwjpoV
+	 gXdc/XC0zySVDFRaEXKTn9nSOdpnUFsCvoGotGB7dtuK3n+SY9Se5lamG2ItM4fioA
+	 Noq2YHPMZhN+hYpXqzKI+lunc/8VqD6+Z1pelpitbueF8do+OiRiAWvml8s2LNTmqk
+	 4+D30xQ3K4MGkkszBCvz+RdccMdpKK5L1Pgm2KuwNZzfX2LunF7Wyn2EUWblWgd2AO
+	 NSUmTd7NaJOVHe6Phm1lViTNuTMM6qoVR4OE83ZxyU/jzpt+gzE/bqdKu1ISemhqDu
+	 jOyCEheAHRPI2HNWXou0Ix11jdyGJYB1MvPQLqT8pYgPOQhq4Cqzwa6GNYVFg5vOlI
+	 3AWFA403lE/pJOHTjFaFhXJKSyJ8hNmYjlaiSrhbtrqJ722QS58gnV+88IHX+G/fgu
+	 uz6BWEOU5DBVcCkt/EOf8h9A=
+Message-ID: <213343dc-3911-45de-8195-469da9dd1a91@wiesinger.com>
+Date: Tue, 21 Jan 2025 19:47:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2htuqhxolgddrwm5ka7ad4axu3gz7nprqnmspdtkwld7mzch3r@tqhjlxfidxsb>
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[96ee12698391289383dd];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,mit.edu,h3c.com,suse.com,vger.kernel.org,googlegroups.com,linux.alibaba.com,lists.linux.dev,gmail.com,syzkaller.appspotmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Betterbird (Windows)
+Subject: Re: Transparent compression with ext4 - especially with zstd
+Content-Language: en-US
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+References: <8cb4d855-6bd8-427f-ac8f-8cf7b91547fb@wiesinger.com>
+ <20250121040125.GC3761769@mit.edu>
+From: Gerhard Wiesinger <lists@wiesinger.com>
+In-Reply-To: <20250121040125.GC3761769@mit.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed 15-01-25 18:53:41, Jan Kara wrote:
-> On Wed 15-01-25 13:00:23, Heming Zhao wrote:
-> > Hello Jan,
-> > 
-> > On 1/15/25 09:32, Liebes Wang wrote:
-> > > The bisection log shows the first cause commit is a09decff5c32060639a685581c380f51b14e1fc2:
-> > > a09decff5c32 jbd2: clear JBD2_ABORT flag before journal_reset to update log tail info when load journal
-> > > 
-> > > The full bisection log is attached. Hope this helps.
-> > 
-> > This bisearch commit a09decff5c32 appears to be the root cause
-> > of this issue. It fixed one issue but introduced another.
-> > 
-> > Syzbot tested the patch with calling jbd2_journal_wipe() with 'write=1'.
-> > The Syzbot test result [1] shows that the same WARN_ON() is triggered
-> > in a subsequent routine – the classic whack-a-mole!
-> > 
-> > Back to commit a09decff5c32, it opened a door to allow jbd2 to update
-> > sb regardless of whether the value of sb items are correct.
-> > 
-> > To fix a09decff5c32, it seems that jbd2 needs to add more sanity check
-> > codes in a sub-routine of jbd2_journal_load().
-> > 
-> > btw, in my view, this is a jbd2 issue not ocfs2/ext4 issue.
-> > 
-> > [1]: https://lore.kernel.org/ocfs2-devel/04a9ad29-51de-4b50-a5bb-56f91817639d@suse.com/T/#m86d01f83d808868bb5e6548d30f79b4f9f889b13
-> 
-> Thanks for debugging this! So I'm not 100% convinced this is only jbd2 bug
-> because jbd2_journal_recover() was never intended to be called after
-> jbd2_journal_skip_recovery() (called from jbd2_journal_wipe()). You're
-> supposed to call either jbd2_journal_wipe() or jbd2_journal_recover() but
-> not both. So IMO this needs fixing in OCFS2 code. That being said you've
-> also pointed at one bug in jbd2 code - the WARN_ON(!sb->s_sequence) in
-> jbd2_journal_update_sb_log_tail() is indeed wrong. We were inconsistent
-> inside jbd2 whether TID 0 is considered valid or not and relatively
-> recently we've decided to accept TID 0 as valid but this place was left
-> out. I'll send a fix for that.
+On 21.01.2025 05:01, Theodore Ts'o wrote:
+> On Sun, Jan 19, 2025 at 03:37:27PM +0100, Gerhard Wiesinger wrote:
+>> Are there any plans to include transparent compression with ext4 (especially
+>> with zstd)?
+> I'm not aware of anyone in the ext4 deveopment commuity working on
+> something like this.  Fully transparent compression is challenging,
+> since supporting random writes into a compressed file is tricky.
+> There are solutions (for example, the Stac patent which resulted in
+> Microsoft to pay $120 million dollars), but even ignoring the
+> intellectual property issues, they tend to compromise the efficiency
+> of the compression.
+>
+> More to the point, given how cheap byte storage tends to be (dollars
+> per IOPS tend to be far more of a constraint than dollars per GB),
+> it's unclear what the business case would be for any company to fund
+> development work in this area, when the cost of a slightly large HDD
+> or SSD is going to be far cheaper than the necessary software
+> engineering investrment needed, even for a hyperscaler cloud company
+> (and even there, it's unclear that transparent compression is really
+> needed).
+>
+> What is the business and/or technical problem which you are trying to
+> solve?
+>
+Regarding necessity:
+We are talking in some scenarios about some factors of diskspace. E.g. 
+in my database scenario with PostgreSQL around 85% of disk space can be 
+saved (e.g. around factor 7).
 
-OK, after checking again OCFS2 is indeed fine here. I'm sorry for the
-confusion. I'll send appropriate jbd2 fixes shortly.
+In cloud usage scenarios you can easily reduce that amount of allocated 
+diskspace by around a factor 7 and reduce cost therefore.
 
- 
- 								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+You might also get a performance boost by using caching mechanism more 
+efficient (e.g. using less RAM).
+
+Also with precompressed files (e.g. photo, videos) you can safe around 
+5-10% overall disk space which sounds less but in the area of several 
+hundred Gigabytes or even some Petabytes this is a lot of storage.
+
+On evenly distributed data store you can save even more.
+
+The technical topic is that IMHO no stable and practical usable Linux 
+filesystem which is included in the default kernel exists.
+- ZFS works but is not included in the default kernel
+- BTRFS has stability and repair issues (see mailing lists) and bugs 
+with compression (does not compress on the fly in some scenarios)
+- bcachefs is experimental
+
+Regarding patents: IMHO at least the STAC patents are all no longer 
+valid anymore.
+
+Thnx.
+
+Ciao,
+Gerhard
 
