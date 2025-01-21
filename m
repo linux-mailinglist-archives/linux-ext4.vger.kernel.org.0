@@ -1,329 +1,198 @@
-Return-Path: <linux-ext4+bounces-6183-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6184-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39676A17F70
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 15:10:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97D98A1819A
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 17:00:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6991C169C9A
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 14:10:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 510F07A3D66
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Jan 2025 16:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6921F2C58;
-	Tue, 21 Jan 2025 14:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="woQTJmPH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QixAER1V";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d3h9L0Ml";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QafSo0pJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BBE2AF0A;
+	Tue, 21 Jan 2025 16:00:35 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1509763CF
-	for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2025 14:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04081F4E3D
+	for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2025 16:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737468614; cv=none; b=jaqp2fr5IZ0zfH9nTBPegNpsi71SSzJuydfy+KcWHS4xAbIApd3udwK8ekDMgEbwmDxSUGHLc+0wa0tQeGRKz6cwnTg61Yf/LxRT8WDXhurI/NMWw6BL8wuq7KkG6gEj1lg5hZRuo8+MD00w6JlgBlODvTkqo5O21EaRoSfW5aU=
+	t=1737475235; cv=none; b=tr5Q73SIwdlMn1bSbVr6lMjj0yyyBAtNySWlBNy84qVddcTnrND6Et+Njwmvp4gPQB2K4uufj/hk0FTjPbqGpftX2smDCIK6kd6umz0UKidVVVxymC3g1fK7q08laueRfnV6v7dT0ogQy17ChhnqAfvLWjrawbEtdbl3amg5NBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737468614; c=relaxed/simple;
-	bh=5pE0o8pKxulM39n6W/nDdjDgjVKNN3N5ZhjSz+XjKyc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MqoDj7GdiGGROw2xbfvibEe7gmjl2U+mOAbKT3l6Ikyf3+ijXtH4jTJQMxFSZy11fnb3GdKcqnsmeppBYTyjdWF8yBoehgfUjj+aHC9QOBI6OPWC5c7YILjlgzC9/8M/UqVXFISNxdWPAKZ6HJgIs6Rfm5C98Xk4ka85hh9pQOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=woQTJmPH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QixAER1V; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d3h9L0Ml; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QafSo0pJ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 062741F78D;
-	Tue, 21 Jan 2025 14:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737468610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FsmJP6gn9QYmoxuDUTK0wBOWFU5ur96jt1wa+xV0kp4=;
-	b=woQTJmPHobDfMQx6/MyRHZu8jL9EbOvPaULSlm7aFY8APLAEBLF3truLbA0Tw4iQv4T8nm
-	81clLho2oLstGSGOPilh+GaWeFGb+ROzqYHbhWIrSNAH5YhpKo/GnR0gt935j6aNjbIgHV
-	MLMq8Y46GANGOwXGu4zF9CFSxXjjMg8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737468610;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FsmJP6gn9QYmoxuDUTK0wBOWFU5ur96jt1wa+xV0kp4=;
-	b=QixAER1VulqnT9uA7OpnpiDa6hbQN5PM/iWM2iAH4FLZtxawgt5X50k3ACE5lRErobwUiE
-	B2xRqox4NIpXscDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737468609; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FsmJP6gn9QYmoxuDUTK0wBOWFU5ur96jt1wa+xV0kp4=;
-	b=d3h9L0MlZtm6l8+hS5R76dDJIiCyVhPOdqWABtJmr/aX9BTGReX/kMbdp+9SnLCzcyRYEe
-	z1NAfKa0OUlmhX4cbp9b8z3zco1DnmqzyZ4rMAzQFpP1A0GElsVWxlHhkYH9nT77+Ml1WE
-	IG4N30zqpOILimcS43xf7EXMYkC1Pww=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737468609;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FsmJP6gn9QYmoxuDUTK0wBOWFU5ur96jt1wa+xV0kp4=;
-	b=QafSo0pJ6cUXEEXysMQXRXe9AgOxrMgzVMZye1yV60VkW1y++vMaJ6t4CuN/UVj5Z8TBJh
-	hzklqSK0/IYt6wDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E99DB13963;
-	Tue, 21 Jan 2025 14:10:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pk0FOcCqj2drWgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 21 Jan 2025 14:10:08 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 79C24A0889; Tue, 21 Jan 2025 15:10:08 +0100 (CET)
-From: Jan Kara <jack@suse.cz>
-To: Ted Tso <tytso@mit.edu>
-Cc: <linux-ext4@vger.kernel.org>,
-	Alexey Zhuravlev <azhuravlev@ddn.com>,
-	Andreas Dilger <adilger@dilger.ca>,
-	Zhang Yi <yi.zhang@huawei.com>,
-	Jan Kara <jack@suse.cz>
-Subject: [PATCH v2] jbd2: Avoid long replay times due to high number or revoke blocks
-Date: Tue, 21 Jan 2025 15:09:26 +0100
-Message-ID: <20250121140925.17231-2-jack@suse.cz>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1737475235; c=relaxed/simple;
+	bh=5zMYgLcdkMmQ6bDIR5Q258Iu2armucT7gOtavj076+A=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pWmzQ9UaCubAFA9OSstT3idZTRLw9Qcdt5aDPwNmKkZY8buVGymXdwDUMJr5GmvqnAddqvnzk6k3iefFhcUlaGe1qN03mq4K+i4H3SVLQ7VOfNIS9ZLdW501Z0GYJLZQE3igITouoKvxiUOOx4R4lf1F7DKf7yLt6lXbzZPrOd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3ce795254afso89518815ab.1
+        for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2025 08:00:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737475233; x=1738080033;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8O5MvLLvuofY4WI2Gb7QAWosrJSFAFqhmFgMNhefPwM=;
+        b=YG2NQ4KQk594HDeMvVj9w9PHZ4xhjUEnoZzNmdfCsdnTEUwKNMeooxMnLoNLsS26Pl
+         VdiFADUidPd7H23p4DogJH2fuPhUcjCi1JpfkF9rCc7C8xG/qNk8XaSSnlcGcM2xKEZW
+         j4UsAlMYwXQDU8Q4Aw1KIvNwDy1RJvwtoBrwYVNwjdfoOY0oHg+lDCmq+SAiQkDJF0jg
+         r4WjChOsFsWibJNb81f5UTZfjEgrV5Cwa7giu1mBVc0ki1fJBbKrDT4wpYqEseuQ4qo5
+         Mzf9G3d37IhYWZv35NciWNU4rzWakGwbYTFvCGKNlfajEp5J0Wb3BnngIayPboZEb4WS
+         lunw==
+X-Forwarded-Encrypted: i=1; AJvYcCV7bU4mRe8kTY76gKA+Sq3xAzRkW6RSXmcOwhqbIqkh2DJuKJBgl81CDbQjvHkFgMwBxzJgs8yNfbKq@vger.kernel.org
+X-Gm-Message-State: AOJu0YwT2UaIaQIIZuZng6eYK30jQzooW+xFJbUx2Fgp4N+EHvL19zjV
+	bwXRMv6RXgG/MikbZGSCxcPK8bFsAe4AkI628d3nGX/EukeHII2rYEObmpuLo8ZYkqX0nByFa+i
+	u0amPjg6A4/VJa3J9PlQTcv5h1Q62ly36L2TMZchC2SwPBWps/GedHfw=
+X-Google-Smtp-Source: AGHT+IFpRjFJHKGYmZwBNSI48Q8xO9kO7EtsP2yzC36VUcnhh7x+o6FwuNBUl2f/BCYBtHFWKwYnWfJpPglUo9x1tSmgPKR3LjAE
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7067; i=jack@suse.cz; h=from:subject; bh=5pE0o8pKxulM39n6W/nDdjDgjVKNN3N5ZhjSz+XjKyc=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBnj6qVT6RMt/cipkOEfG4a0r12vwmxJhKXe1fW/tWY M6TkGmCJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZ4+qlQAKCRCcnaoHP2RA2bEsB/ 93GaVvdY2XhGut9nLy5/q3Cd0FS14zk1ZxylkfTN0Y0FY15bWTz/6PnlIuSdqEO5zSTytvoorxUpOC b+EgATzsrl4wnzDtUZ5J7Hq1jFJOblAsPvaxrmx8/43836P19m5Cj6ZcWC5dbLOiX+Wj9JDLZjR4eA F4jJjQV5w42cYydPzEFLP3Sb5WGFixNnRIPjYdiHOAqiOz3/IjxjGQJP5kM298IB52seU4XdVcZQZ/ i5QkCWPDdRfl3YfbeXzmeZKWhgGS6cDqfgmCUtzhKlC86dBnagwnQe9VbwywCzHoJyBoDIiBkq/7eq KB9AOHV1bdXo+U9IC9UiKxxzz7xBxe
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+X-Received: by 2002:a05:6e02:3a11:b0:3ce:6b10:17fc with SMTP id
+ e9e14a558f8ab-3cf743ca060mr149803165ab.4.1737475232519; Tue, 21 Jan 2025
+ 08:00:32 -0800 (PST)
+Date: Tue, 21 Jan 2025 08:00:32 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <678fc4a0.050a0220.15cac.0060.GAE@google.com>
+Subject: [syzbot] [ext4?] BUG: unable to handle kernel NULL pointer
+ dereference in ext4_mb_add_groupinfo (2)
+From: syzbot <syzbot+c41c38d18cb10c84caee@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-Some users are reporting journal replay takes a long time when there is
-excessive number of revoke blocks in the journal. Reported times are
-like:
+Hello,
 
-1048576 records - 95 seconds
-2097152 records - 580 seconds
+syzbot found the following issue on:
 
-The problem is that hash chains in the revoke table gets excessively
-long in these cases. Fix the problem by sizing the revoke table
-appropriately before the revoke pass.
+HEAD commit:    95ec54a420b8 Merge tag 'powerpc-6.14-1' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12946964580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=161bb0713bee7bb2
+dashboard link: https://syzkaller.appspot.com/bug?extid=c41c38d18cb10c84caee
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Thanks to Alexey Zhuravlev <azhuravlev@ddn.com> for benchmarking the
-patch with large numbers of revoke blocks [1].
+Unfortunately, I don't have any reproducer for this issue yet.
 
-[1] https://lore.kernel.org/all/20250113183107.7bfef7b6@x390.bzzz77.ru
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ae4f5b920fb2/disk-95ec54a4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/733fe3f9fdd1/vmlinux-95ec54a4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e1ff7ab4bd3a/bzImage-95ec54a4.xz
 
-Signed-off-by: Jan Kara <jack@suse.cz>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c41c38d18cb10c84caee@syzkaller.appspotmail.com
+
+loop3: detected capacity change from 0 to 512
+BUG: kernel NULL pointer dereference, address: 0000000000000012
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 800000007ee5d067 P4D 800000007ee5d067 PUD 33cf4067 PMD 0 
+Oops: Oops: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 UID: 0 PID: 6142 Comm: syz.3.43 Not tainted 6.13.0-syzkaller-00918-g95ec54a420b8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
+RIP: 0010:___slab_alloc+0x595/0x14a0 mm/slub.c:3773
+Code: 85 fb 00 00 00 65 4c 8b 2c 25 c0 d4 03 00 4c 89 6b 28 49 83 7e 10 00 0f 85 82 01 00 00 49 8b 5e 18 48 85 db 0f 84 ea 04 00 00 <48> 8b 43 10 49 89 46 18 8b 4c 24 10 83 f9 ff 74 15 48 8b 03 48 83
+RSP: 0018:ffffc9000522f6c8 EFLAGS: 00010002
+RAX: 7513f5baf7a4fb00 RBX: 0000000000000002 RCX: ffff88802fa9a8d8
+RDX: dffffc0000000000 RSI: ffffffff8c0aab60 RDI: ffffffff8c5f49e0
+RBP: 0000000000000202 R08: ffffffff9428e887 R09: 1ffffffff2851d10
+R10: dffffc0000000000 R11: fffffbfff2851d11 R12: ffff888058f948c0
+R13: ffff88802fa99e00 R14: ffffe8ffffd71220 R15: ffffffff81f839cf
+FS:  00007fa654bc36c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000012 CR3: 000000003348a000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __slab_alloc+0x58/0xa0 mm/slub.c:3920
+ __slab_alloc_node mm/slub.c:3995 [inline]
+ slab_alloc_node mm/slub.c:4156 [inline]
+ kmem_cache_alloc_noprof+0x268/0x380 mm/slub.c:4175
+ ext4_mb_add_groupinfo+0x6c3/0xfa0 fs/ext4/mballoc.c:3356
+ ext4_mb_init_backend fs/ext4/mballoc.c:3435 [inline]
+ ext4_mb_init+0x15ab/0x27e0 fs/ext4/mballoc.c:3733
+ __ext4_fill_super fs/ext4/super.c:5559 [inline]
+ ext4_fill_super+0x5f54/0x6e60 fs/ext4/super.c:5733
+ get_tree_bdev_flags+0x48c/0x5c0 fs/super.c:1636
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3560
+ do_mount fs/namespace.c:3900 [inline]
+ __do_sys_mount fs/namespace.c:4111 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4088
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fa653d874ca
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa654bc2e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fa654bc2ef0 RCX: 00007fa653d874ca
+RDX: 0000000020000180 RSI: 0000000020000640 RDI: 00007fa654bc2eb0
+RBP: 0000000020000180 R08: 00007fa654bc2ef0 R09: 0000000000000010
+R10: 0000000000000010 R11: 0000000000000246 R12: 0000000020000640
+R13: 00007fa654bc2eb0 R14: 000000000000047b R15: 0000000020000100
+ </TASK>
+Modules linked in:
+CR2: 0000000000000012
+---[ end trace 0000000000000000 ]---
+RIP: 0010:___slab_alloc+0x595/0x14a0 mm/slub.c:3773
+Code: 85 fb 00 00 00 65 4c 8b 2c 25 c0 d4 03 00 4c 89 6b 28 49 83 7e 10 00 0f 85 82 01 00 00 49 8b 5e 18 48 85 db 0f 84 ea 04 00 00 <48> 8b 43 10 49 89 46 18 8b 4c 24 10 83 f9 ff 74 15 48 8b 03 48 83
+RSP: 0018:ffffc9000522f6c8 EFLAGS: 00010002
+RAX: 7513f5baf7a4fb00 RBX: 0000000000000002 RCX: ffff88802fa9a8d8
+RDX: dffffc0000000000 RSI: ffffffff8c0aab60 RDI: ffffffff8c5f49e0
+RBP: 0000000000000202 R08: ffffffff9428e887 R09: 1ffffffff2851d10
+R10: dffffc0000000000 R11: fffffbfff2851d11 R12: ffff888058f948c0
+R13: ffff88802fa99e00 R14: ffffe8ffffd71220 R15: ffffffff81f839cf
+FS:  00007fa654bc36c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000012 CR3: 000000003348a000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	85 fb                	test   %edi,%ebx
+   2:	00 00                	add    %al,(%rax)
+   4:	00 65 4c             	add    %ah,0x4c(%rbp)
+   7:	8b 2c 25 c0 d4 03 00 	mov    0x3d4c0,%ebp
+   e:	4c 89 6b 28          	mov    %r13,0x28(%rbx)
+  12:	49 83 7e 10 00       	cmpq   $0x0,0x10(%r14)
+  17:	0f 85 82 01 00 00    	jne    0x19f
+  1d:	49 8b 5e 18          	mov    0x18(%r14),%rbx
+  21:	48 85 db             	test   %rbx,%rbx
+  24:	0f 84 ea 04 00 00    	je     0x514
+* 2a:	48 8b 43 10          	mov    0x10(%rbx),%rax <-- trapping instruction
+  2e:	49 89 46 18          	mov    %rax,0x18(%r14)
+  32:	8b 4c 24 10          	mov    0x10(%rsp),%ecx
+  36:	83 f9 ff             	cmp    $0xffffffff,%ecx
+  39:	74 15                	je     0x50
+  3b:	48 8b 03             	mov    (%rbx),%rax
+  3e:	48                   	rex.W
+  3f:	83                   	.byte 0x83
+
+
 ---
- fs/jbd2/recovery.c   | 58 ++++++++++++++++++++++++++++++++++++--------
- fs/jbd2/revoke.c     |  8 +++---
- include/linux/jbd2.h |  2 ++
- 3 files changed, 54 insertions(+), 14 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Changes since v1:
-* rebased on 6.13
-* move check in do_one_pass()
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 9192be7c19d8..7c23a8be673f 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -39,7 +39,7 @@ struct recovery_info
- 
- static int do_one_pass(journal_t *journal,
- 				struct recovery_info *info, enum passtype pass);
--static int scan_revoke_records(journal_t *, struct buffer_head *,
-+static int scan_revoke_records(journal_t *, enum passtype, struct buffer_head *,
- 				tid_t, struct recovery_info *);
- 
- #ifdef __KERNEL__
-@@ -327,6 +327,12 @@ int jbd2_journal_recover(journal_t *journal)
- 		  journal->j_transaction_sequence, journal->j_head);
- 
- 	jbd2_journal_clear_revoke(journal);
-+	/* Free revoke table allocated for replay */
-+	if (journal->j_revoke != journal->j_revoke_table[0] &&
-+	    journal->j_revoke != journal->j_revoke_table[1]) {
-+		jbd2_journal_destroy_revoke_table(journal->j_revoke);
-+		journal->j_revoke = journal->j_revoke_table[1];
-+	}
- 	err2 = sync_blockdev(journal->j_fs_dev);
- 	if (!err)
- 		err = err2;
-@@ -612,6 +618,31 @@ static int do_one_pass(journal_t *journal,
- 	first_commit_ID = next_commit_ID;
- 	if (pass == PASS_SCAN)
- 		info->start_transaction = first_commit_ID;
-+	else if (pass == PASS_REVOKE) {
-+		/*
-+		 * Would the default revoke table have too long hash chains
-+		 * during replay?
-+		 */
-+		if (info->nr_revokes > JOURNAL_REVOKE_DEFAULT_HASH * 16) {
-+			unsigned int hash_size;
-+
-+			/*
-+			 * Aim for average chain length of 8, limit at 1M
-+			 * entries to avoid problems with malicious
-+			 * filesystems.
-+			 */
-+			hash_size = min(roundup_pow_of_two(info->nr_revokes / 8),
-+					1U << 20);
-+			journal->j_revoke =
-+				jbd2_journal_init_revoke_table(hash_size);
-+			if (!journal->j_revoke) {
-+				printk(KERN_ERR
-+				       "JBD2: failed to allocate revoke table for replay with %u entries. "
-+				       "Journal replay may be slow.\n", hash_size);
-+				journal->j_revoke = journal->j_revoke_table[1];
-+			}
-+		}
-+	}
- 
- 	jbd2_debug(1, "Starting recovery pass %d\n", pass);
- 
-@@ -851,6 +882,13 @@ static int do_one_pass(journal_t *journal,
- 			continue;
- 
- 		case JBD2_REVOKE_BLOCK:
-+			/*
-+			 * If we aren't in the SCAN or REVOKE pass, then we can
-+			 * just skip over this block.
-+			 */
-+			if (pass != PASS_REVOKE && pass != PASS_SCAN)
-+				continue;
-+
- 			/*
- 			 * Check revoke block crc in pass_scan, if csum verify
- 			 * failed, check commit block time later.
-@@ -863,12 +901,7 @@ static int do_one_pass(journal_t *journal,
- 				need_check_commit_time = true;
- 			}
- 
--			/* If we aren't in the REVOKE pass, then we can
--			 * just skip over this block. */
--			if (pass != PASS_REVOKE)
--				continue;
--
--			err = scan_revoke_records(journal, bh,
-+			err = scan_revoke_records(journal, pass, bh,
- 						  next_commit_ID, info);
- 			if (err)
- 				goto failed;
-@@ -922,8 +955,9 @@ static int do_one_pass(journal_t *journal,
- 
- /* Scan a revoke record, marking all blocks mentioned as revoked. */
- 
--static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
--			       tid_t sequence, struct recovery_info *info)
-+static int scan_revoke_records(journal_t *journal, enum passtype pass,
-+			       struct buffer_head *bh, tid_t sequence,
-+			       struct recovery_info *info)
- {
- 	jbd2_journal_revoke_header_t *header;
- 	int offset, max;
-@@ -944,6 +978,11 @@ static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
- 	if (jbd2_has_feature_64bit(journal))
- 		record_len = 8;
- 
-+	if (pass == PASS_SCAN) {
-+		info->nr_revokes += (max - offset) / record_len;
-+		return 0;
-+	}
-+
- 	while (offset + record_len <= max) {
- 		unsigned long long blocknr;
- 		int err;
-@@ -956,7 +995,6 @@ static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
- 		err = jbd2_journal_set_revoke(journal, blocknr, sequence);
- 		if (err)
- 			return err;
--		++info->nr_revokes;
- 	}
- 	return 0;
- }
-diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
-index 4556e4689024..f4ac308e84c5 100644
---- a/fs/jbd2/revoke.c
-+++ b/fs/jbd2/revoke.c
-@@ -215,7 +215,7 @@ int __init jbd2_journal_init_revoke_table_cache(void)
- 	return 0;
- }
- 
--static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
-+struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
- {
- 	int shift = 0;
- 	int tmp = hash_size;
-@@ -231,7 +231,7 @@ static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
- 	table->hash_size = hash_size;
- 	table->hash_shift = shift;
- 	table->hash_table =
--		kmalloc_array(hash_size, sizeof(struct list_head), GFP_KERNEL);
-+		kvmalloc_array(hash_size, sizeof(struct list_head), GFP_KERNEL);
- 	if (!table->hash_table) {
- 		kmem_cache_free(jbd2_revoke_table_cache, table);
- 		table = NULL;
-@@ -245,7 +245,7 @@ static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
- 	return table;
- }
- 
--static void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
-+void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
- {
- 	int i;
- 	struct list_head *hash_list;
-@@ -255,7 +255,7 @@ static void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
- 		J_ASSERT(list_empty(hash_list));
- 	}
- 
--	kfree(table->hash_table);
-+	kvfree(table->hash_table);
- 	kmem_cache_free(jbd2_revoke_table_cache, table);
- }
- 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 50f7ea8714bf..610841635204 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1634,6 +1634,8 @@ extern void	   jbd2_journal_destroy_revoke_record_cache(void);
- extern void	   jbd2_journal_destroy_revoke_table_cache(void);
- extern int __init jbd2_journal_init_revoke_record_cache(void);
- extern int __init jbd2_journal_init_revoke_table_cache(void);
-+struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size);
-+void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table);
- 
- extern void	   jbd2_journal_destroy_revoke(journal_t *);
- extern int	   jbd2_journal_revoke (handle_t *, unsigned long long, struct buffer_head *);
--- 
-2.43.0
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
