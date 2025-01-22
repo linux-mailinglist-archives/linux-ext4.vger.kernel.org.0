@@ -1,42 +1,43 @@
-Return-Path: <linux-ext4+bounces-6203-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6202-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DEDFA19066
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 12:13:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 869E1A19062
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 12:12:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2AA93ADF45
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 11:12:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B143188C76A
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 11:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4801D2135A8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDD421325A;
 	Wed, 22 Jan 2025 11:11:36 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E425B212B1A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24A8212B15;
 	Wed, 22 Jan 2025 11:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737544296; cv=none; b=aF54wOXWd8GRVSzzjfVBnSxqL4xmRkUN6qzQihxvHMPy/MYye8yOORAmqKajWHZmB9st+B0SqOFwgWGtHXUrb7L08wQHheqXKGZJp8civpeWMGFIdo2NdrS1HP1dEX24BWd9h8emov7zDX50Xh0ZQKoWgwwEiNARmMzeDNe1hXE=
+	t=1737544295; cv=none; b=GZskwTeH2GSOsyPmBXaeG6GkAKtwG4zruV9NZdsPhQj2Orj82jO+8if3S2dtnA+m1CL0ltFMdsCzqaC0d3crOFBpAHfDXF2dwPWh3wu7FKpUtruErdC7eOibGLT/cVDWFSoeMvnRzaeFtW10TegY/bEqlefLjCpwRKC5OrIpKBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737544296; c=relaxed/simple;
-	bh=Yn5LjAYgT1yhYK0kjbbOjOqqYVi2X+oqGvCL7L3LdiE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ELnbtRzEsrIqIhvt6zEOHexcWl1fk+2jBB29khpoF95mAPl2XMNW2bnI5FMgPRX1+RhM6c+llSUdmJuayamoODSIlIhjZRPvxAzPI9pj65hAuyq48a8DHEsB6J5zg0XXTfonXHJ9UshDM5Ij/iD4qbCxHlzGPx6gYe8PIs6evSU=
+	s=arc-20240116; t=1737544295; c=relaxed/simple;
+	bh=8LZEGmtoNBa8NKJDXUkSmn4UUWqFvEX9ES/yP4+IGzc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=R70N1rAT7GTHvvKMR4neozovCQIMdfoMknf8hG1ax91W5yXtkuYm1aCUrSyee3symZWteFEgs5aqqh0U4IClDwRlrui1HkmO/Ap9Qr+ABWfwA1pu9koI5+vAcFIMeHfRGPqYSDHTIEda3ncbU9g+E33if9MDD72TEWGczRSqAeM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YdLwm1dnfz4f3jY1;
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YdLwm4NNKz4f3jdK;
 	Wed, 22 Jan 2025 19:11:04 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id D3FF31A1070;
-	Wed, 22 Jan 2025 19:11:24 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 3E3CF1A1331;
+	Wed, 22 Jan 2025 19:11:25 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgAni19Z0pBnW0KsBg--.50502S4;
-	Wed, 22 Jan 2025 19:11:23 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgAni19Z0pBnW0KsBg--.50502S5;
+	Wed, 22 Jan 2025 19:11:25 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
@@ -47,10 +48,12 @@ Cc: tytso@mit.edu,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
 	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH v3 0/9] ext4: fix issues caused by data write-back failures
-Date: Wed, 22 Jan 2025 19:05:24 +0800
-Message-Id: <20250122110533.4116662-1-libaokun@huaweicloud.com>
+Subject: [PATCH v3 1/9] ext4: replace opencoded ext4_end_io_end() in ext4_put_io_end()
+Date: Wed, 22 Jan 2025 19:05:25 +0800
+Message-Id: <20250122110533.4116662-2-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20250122110533.4116662-1-libaokun@huaweicloud.com>
+References: <20250122110533.4116662-1-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,93 +62,65 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAni19Z0pBnW0KsBg--.50502S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxAr4xArW8tr1fGw1rCry3Arb_yoW5ArW3pr
-	ZIk34ayryF9ryxuFs3Aa17XryYkw1xAFW7KF12qrn7JF45JF1SyrW2yFWrJa4jyrZ3K345
-	Xrn7Aw1fCF12yFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lw4CEc2x0rVAKj4xx
-	MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-	67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-	x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
-	IFyTuYvjfUO73vUUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAQBWeQpvMNKgAAsR
+X-CM-TRANSID:gCh0CgAni19Z0pBnW0KsBg--.50502S5
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF43CF1fAFW8Ar15Cw4Uurg_yoWkurb_Zr
+	yfWrn7Cr4ayw1Ika47Aa17Xr1jkFn5Gr1ruF1rZrsIq3W3A34DtF1kArZ8Ar47WF47Aa1U
+	Cr4kAw1fXF1jqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbgxFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY02
+	0Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+	wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
+	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
+	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
+	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
+	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC0wCY1x0262
+	kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s02
+	6c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw
+	0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvE
+	c7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
+	v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x
+	0JUho7_UUUUU=
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAQBWeQpvMNKwAAsQ
 
 From: Baokun Li <libaokun1@huawei.com>
 
-Changes since v2:
- * Add patch 6.
- * Patch 4: Use the new name ext4_has_journal_option().
- * Patch 5: Use the new name EXT4_IO_END_DEFER_COMPLETION and
-            ext4_io_end_defer_completion().
- * Collect RVB from Jan Kara and Zhang Yi.(Thanks for your review!)
+This reduces duplicate code and ensures that a “potential data loss”
+warning is available if the unwritten conversion fails.
 
-Changes since v1:
- * Patch 5: Make data_err=abort work for all Buffer IO, not just add
-            support in dioread_nolock mode.
- * Add patch 3,4,6.
- * Collect RVB from Jan Kara and Zhang Yi.(Thanks for your review!)
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+---
+ fs/ext4/page-io.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-v1: https://lore.kernel.org/r/20241220060757.1781418-1-libaokun@huaweicloud.com
-v2: https://lore.kernel.org/r/20250121071050.3991249-1-libaokun@huaweicloud.com
-
-Recently some of our customers remounted ext4 from
-"dioread_nolock,data_err=abort" to "dioread_lock,data_err=abort" and the
-ext4 filesystem became read-only.
-
-Then I found that "data_err=abort" is not working in dioread_nolock mode,
-when data writeback fails, the error is always recorded in inode mapping,
-but no one will check it, not even when converting unwritten to written,
-which could expose stale data. When remounted with dioread_lock, the error
-recorded in the inode mapping was checked and the journal aborted, and the
-file system became read-only later.
-
-Patch 1: Clean up duplicate code and ensure that an warning is printed
-         when data may be lost;
-Patch 2: Fix an issue that could expose stale data when data writeback
-         fails;
-Patch 3: Reject data_err=abort in nojournal mode to ensure
-         sbi->s_journal != NULL when DATA_ERR_ABORT set.
-Patch 4: Add the ext4_has_journal_option() helper to reduce
-         code duplication.
-Patch 5: Make data_err=abort work for all Buffer IO, not just order mode.
-Patch 6: Clean up JBD2_ABORT_ON_SYNCDATA_ERR and related logic.
-Patch 7: Update the description of data_err=abort|ignore in the DOC.
-Patch 8: Remove useless i_unwritten and related code.
-Patch 9: Pack holes in ext4_inode_info to save memory.
-
-Comments and questions are, as always, welcome.
-
-Thanks,
-Baokun
-
-Baokun Li (9):
-  ext4: replace opencoded ext4_end_io_end() in ext4_put_io_end()
-  ext4: do not convert the unwritten extents if data writeback fails
-  ext4: reject the 'data_err=abort' option in nojournal mode
-  ext4: extract ext4_has_journal_option() from __ext4_fill_super()
-  ext4: abort journal on data writeback failure if in data_err=abort mode
-  jbd2: drop JBD2_ABORT_ON_SYNCDATA_ERR
-  ext4: update the descriptions of data_err=abort and data_err=ignore
-  ext4: remove unused member 'i_unwritten' from 'ext4_inode_info'
-  ext4: pack holes in ext4_inode_info
-
- Documentation/admin-guide/ext4.rst |  7 ++-
- fs/ext4/ext4.h                     | 34 ++++----------
- fs/ext4/inode.c                    |  2 +-
- fs/ext4/page-io.c                  | 75 ++++++++++++++++++++----------
- fs/ext4/super.c                    | 65 +++++++++++++-------------
- fs/jbd2/commit.c                   |  6 +--
- include/linux/jbd2.h               |  3 --
- 7 files changed, 100 insertions(+), 92 deletions(-)
-
+diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+index 69b8a7221a2b..f53b018ea259 100644
+--- a/fs/ext4/page-io.c
++++ b/fs/ext4/page-io.c
+@@ -299,18 +299,13 @@ void ext4_put_io_end_defer(ext4_io_end_t *io_end)
+ 
+ int ext4_put_io_end(ext4_io_end_t *io_end)
+ {
+-	int err = 0;
+-
+ 	if (refcount_dec_and_test(&io_end->count)) {
+-		if (io_end->flag & EXT4_IO_END_UNWRITTEN) {
+-			err = ext4_convert_unwritten_io_end_vec(io_end->handle,
+-								io_end);
+-			io_end->handle = NULL;
+-			ext4_clear_io_unwritten_flag(io_end);
+-		}
++		if (io_end->flag & EXT4_IO_END_UNWRITTEN)
++			return ext4_end_io_end(io_end);
++
+ 		ext4_release_io_end(io_end);
+ 	}
+-	return err;
++	return 0;
+ }
+ 
+ ext4_io_end_t *ext4_get_io_end(ext4_io_end_t *io_end)
 -- 
 2.39.2
 
