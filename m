@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-6212-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6209-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EEB9A190E8
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 12:49:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82EBFA190E2
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 12:48:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D3EF188B723
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 11:49:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3793E16A172
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 11:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC5BA211A3C;
-	Wed, 22 Jan 2025 11:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D82212F9B;
+	Wed, 22 Jan 2025 11:47:28 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4101213259;
-	Wed, 22 Jan 2025 11:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA4F2116E9;
+	Wed, 22 Jan 2025 11:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737546452; cv=none; b=uJD466oIlgtmyaH2TQVI63/Y/4EBrVde/FBASoDoiXRjAyp4Il7tJ++ZOKeYwSUK++SRszDXjzaikhEsA/0AChVAjn53xFjwUcPOwc8b/YLRJ/NsK5lwk+vmKAuaHIEL+PyMIB38B+VIgLO3jYabFZcDxtgTapdeZfCQ8MQcrJA=
+	t=1737546448; cv=none; b=VbcXeLCgXlX6NhcUie6hKJr3kRib3/6h+wHpJKaBmfXvXKVfnu51KuG0QDmNy8xrvwU4NsZ3aB7m7jbtR7fVILM+Um2OBChXHw+9oDpOsimbnzL785qf8j8gm20QTExqFtVUcYQ4v2Sx+T9rQVwJjwXs1ZReMp1N8Rj94hFh7Yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737546452; c=relaxed/simple;
-	bh=Y5SLBH7WRj6oFXP6VqSS0YJXbX94IIpfq+HcBcgSuqY=;
+	s=arc-20240116; t=1737546448; c=relaxed/simple;
+	bh=7b5O0NvmGWMh8OnvqCD3BXSXC88ueUuHJtbapbt613I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GXpILEbOVScsVfyrR/kNFIQgr+W8OqdwWKhvwBmboP4uE648ODVneWM9RqahLBjssGXTsVmaVdU28FtbFvjj64xv3QPHevE6/EWgHgrBuq81x4LbhHu2unHCJEv9oKgN74ym0oOqlg1gW4+i1BAk+WF24hSXQ3kgXP6YUwUxqKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=krCsDM/Mr1plCNiBsGBjvhPfthAnOLg3uv2RF48xkUj7b3HElIXoZletllfyzqdBmq5KrgmN+zbQkZNSP9uMDWUtRY5sq9Pl6s8ETQAnyQJj3Rjh2t2UFvU2jllq3inGPhXJhJNL78Xf0BAZnQGHdlUF+xuE1t/rUNNpaVtJzSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YdMkL2pm4z4f3jqr;
-	Wed, 22 Jan 2025 19:47:06 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YdMkF4PTjz4f3jdH;
+	Wed, 22 Jan 2025 19:47:01 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id D280D1A0DF0;
-	Wed, 22 Jan 2025 19:47:21 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 4040D1A08FC;
+	Wed, 22 Jan 2025 19:47:22 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgD3Wl_F2pBn0KiuBg--.48765S8;
-	Wed, 22 Jan 2025 19:47:21 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgD3Wl_F2pBn0KiuBg--.48765S9;
+	Wed, 22 Jan 2025 19:47:22 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
@@ -48,9 +48,9 @@ Cc: tytso@mit.edu,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
 	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH v2 4/7] ext4: add more ext4_emergency_state() checks around sb_rdonly()
-Date: Wed, 22 Jan 2025 19:41:27 +0800
-Message-Id: <20250122114130.229709-5-libaokun@huaweicloud.com>
+Subject: [PATCH v2 5/7] ext4: correct behavior under errors=remount-ro mode
+Date: Wed, 22 Jan 2025 19:41:28 +0800
+Message-Id: <20250122114130.229709-6-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250122114130.229709-1-libaokun@huaweicloud.com>
 References: <20250122114130.229709-1-libaokun@huaweicloud.com>
@@ -61,11 +61,11 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3Wl_F2pBn0KiuBg--.48765S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr4UAw47uryfWryftryUtrb_yoWrXw1Dpr
-	nYkFykZFWj9w1DuanrGF15XryFgw4IyFyUurW3ur1rXFyDtrn5AFsrtF1FvF17ZrW5Wr1x
-	WF4jyrZrur47CrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPC14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID:gCh0CgD3Wl_F2pBn0KiuBg--.48765S9
+X-Coremail-Antispam: 1UD129KBjvJXoWxArWfAFyUZw4fZr13Cr4fuFg_yoW5Gr47pF
+	WfC3WkZFWvvF10939xWayxZay2ga1IkayUCr47C34xXrZ8Ar1fZF4xtF1YgFykWrZ7Xa45
+	Zr1xKrW7u3y3CrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
 	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
@@ -75,122 +75,74 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxXr4UAw47uryfWryftryUtrb_yoWrXw1Dpr
 	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0F24lc7
 	CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
 	x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
-	v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
-	x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
-	Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI
-	43ZEXa7VUbT7KDUUUUU==
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAQBWeQpvMO7AAAsU
+	v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IY
+	x2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z2
+	80aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU
+	0xZFpf9x0JU9Aw3UUUUU=
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAQBWeQpvMO7QABsU
 
 From: Baokun Li <libaokun1@huawei.com>
 
-Some functions check sb_rdonly() to make sure the file system isn't
-modified after it's read-only. Since we also don't want the file system
-modified if it's in an emergency state (shutdown or emergency_ro),
-we're adding additional ext4_emergency_state() checks where sb_rdonly()
-is checked.
+And after commit 95257987a638 ("ext4: drop EXT4_MF_FS_ABORTED flag") in
+v6.6-rc1, the EXT4_FLAGS_SHUTDOWN bit is set in ext4_handle_error() under
+errors=remount-ro mode. This causes the read to fail even when the error
+is triggered in errors=remount-ro mode.
 
+To correct the behavior under errors=remount-ro, EXT4_FLAGS_SHUTDOWN is
+replaced by the newly introduced EXT4_FLAGS_EMERGENCY_RO. This new flag
+only prevents writes, matching the previous behavior with SB_RDONLY.
+
+Fixes: 95257987a638 ("ext4: drop EXT4_MF_FS_ABORTED flag")
+Closes: https://lore.kernel.org/all/22d652f6-cb3c-43f5-b2fe-0a4bb6516a04@huawei.com/
 Suggested-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- fs/ext4/file.c  |  3 ++-
- fs/ext4/ioctl.c |  2 +-
- fs/ext4/super.c | 26 +++++++++++++++-----------
- 3 files changed, 18 insertions(+), 13 deletions(-)
+ fs/ext4/super.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index d0c21e6503c6..45fc6586d41b 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -844,7 +844,8 @@ static int ext4_sample_last_mounted(struct super_block *sb,
- 	if (likely(ext4_test_mount_flag(sb, EXT4_MF_MNTDIR_SAMPLED)))
- 		return 0;
- 
--	if (sb_rdonly(sb) || !sb_start_intwrite_trylock(sb))
-+	if (ext4_emergency_state(sb) || sb_rdonly(sb) ||
-+	    !sb_start_intwrite_trylock(sb))
- 		return 0;
- 
- 	ext4_set_mount_flag(sb, EXT4_MF_MNTDIR_SAMPLED);
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 7b9ce71c1c81..0c5ce9c2cdfc 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1705,7 +1705,7 @@ int ext4_update_overhead(struct super_block *sb, bool force)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 
--	if (sb_rdonly(sb))
-+	if (ext4_emergency_state(sb) || sb_rdonly(sb))
- 		return 0;
- 	if (!force &&
- 	    (sbi->s_overhead == 0 ||
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 4b089a5b760a..d8116c9c2bd0 100644
+index d8116c9c2bd0..098e62727aec 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -473,8 +473,9 @@ static void ext4_maybe_update_superblock(struct super_block *sb)
- 	__u64 lifetime_write_kbytes;
- 	__u64 diff_size;
+@@ -708,11 +708,8 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
+ 	if (test_opt(sb, WARN_ON_ERROR))
+ 		WARN_ON_ONCE(1);
  
--	if (sb_rdonly(sb) || !(sb->s_flags & SB_ACTIVE) ||
--	    !journal || (journal->j_flags & JBD2_UNMOUNT))
-+	if (ext4_emergency_state(sb) || sb_rdonly(sb) ||
-+	    !(sb->s_flags & SB_ACTIVE) || !journal ||
-+	    journal->j_flags & JBD2_UNMOUNT)
- 		return;
- 
- 	now = ktime_get_real_seconds();
-@@ -765,7 +766,8 @@ static void update_super_work(struct work_struct *work)
- 	 * We use directly jbd2 functions here to avoid recursing back into
- 	 * ext4 error handling code during handling of previous errors.
- 	 */
--	if (!sb_rdonly(sbi->s_sb) && journal) {
-+	if (!ext4_emergency_state(sbi->s_sb) &&
-+	    !sb_rdonly(sbi->s_sb) && journal) {
- 		struct buffer_head *sbh = sbi->s_sbh;
- 		bool call_notify_err = false;
- 
-@@ -1325,13 +1327,14 @@ static void ext4_put_super(struct super_block *sb)
- 	ext4_mb_release(sb);
- 	ext4_ext_release(sb);
- 
--	if (!sb_rdonly(sb) && !aborted) {
--		ext4_clear_feature_journal_needs_recovery(sb);
--		ext4_clear_feature_orphan_present(sb);
--		es->s_state = cpu_to_le16(sbi->s_mount_state);
+-	if (!continue_fs && !sb_rdonly(sb)) {
+-		set_bit(EXT4_FLAGS_SHUTDOWN, &EXT4_SB(sb)->s_ext4_flags);
+-		if (journal)
+-			jbd2_journal_abort(journal, -EIO);
 -	}
--	if (!sb_rdonly(sb))
-+	if (!ext4_emergency_state(sb) && !sb_rdonly(sb)) {
-+		if (!aborted) {
-+			ext4_clear_feature_journal_needs_recovery(sb);
-+			ext4_clear_feature_orphan_present(sb);
-+			es->s_state = cpu_to_le16(sbi->s_mount_state);
-+		}
- 		ext4_commit_super(sb);
-+	}
++	if (!continue_fs && !ext4_emergency_ro(sb) && journal)
++		jbd2_journal_abort(journal, -EIO);
  
- 	ext4_group_desc_free(sbi);
- 	ext4_flex_groups_free(sbi);
-@@ -3699,7 +3702,8 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
- 		if (group >= elr->lr_next_group) {
- 			ret = 1;
- 			if (elr->lr_first_not_zeroed != ngroups &&
--			    !sb_rdonly(sb) && test_opt(sb, INIT_INODE_TABLE)) {
-+			    !ext4_emergency_state(sb) && !sb_rdonly(sb) &&
-+			    test_opt(sb, INIT_INODE_TABLE)) {
- 				elr->lr_next_group = elr->lr_first_not_zeroed;
- 				elr->lr_mode = EXT4_LI_MODE_ITABLE;
- 				ret = 0;
-@@ -4004,7 +4008,7 @@ int ext4_register_li_request(struct super_block *sb,
- 		goto out;
+ 	if (!bdev_read_only(sb->s_bdev)) {
+ 		save_error_info(sb, error, ino, block, func, line);
+@@ -738,17 +735,17 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
+ 			sb->s_id);
  	}
  
--	if (sb_rdonly(sb) ||
-+	if (ext4_emergency_state(sb) || sb_rdonly(sb) ||
- 	    (test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS) &&
- 	     (first_not_zeroed == ngroups || !test_opt(sb, INIT_INODE_TABLE))))
- 		goto out;
+-	if (sb_rdonly(sb) || continue_fs)
++	if (ext4_emergency_ro(sb) || continue_fs)
+ 		return;
+ 
+ 	ext4_msg(sb, KERN_CRIT, "Remounting filesystem read-only");
+ 	/*
+-	 * EXT4_FLAGS_SHUTDOWN was set which stops all filesystem
+-	 * modifications. We don't set SB_RDONLY because that requires
+-	 * sb->s_umount semaphore and setting it without proper remount
+-	 * procedure is confusing code such as freeze_super() leading to
+-	 * deadlocks and other problems.
++	 * We don't set SB_RDONLY because that requires sb->s_umount
++	 * semaphore and setting it without proper remount procedure is
++	 * confusing code such as freeze_super() leading to deadlocks
++	 * and other problems.
+ 	 */
++	set_bit(EXT4_FLAGS_EMERGENCY_RO, &EXT4_SB(sb)->s_ext4_flags);
+ }
+ 
+ static void update_super_work(struct work_struct *work)
 -- 
 2.39.2
 
