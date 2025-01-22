@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-6198-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6199-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BCF4A19059
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 12:12:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 915B9A1905A
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 12:12:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BC4616BA4F
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 11:12:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63A081880967
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2025 11:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FD8212B2F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42E4818AE2;
 	Wed, 22 Jan 2025 11:11:34 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5D5211708;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E800211A06;
 	Wed, 22 Jan 2025 11:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737544293; cv=none; b=j4AwQegE6uq5eJAjiaBRnfmBVeNaj1WpzJFCkTgOyop/sDB+a+3gtyBLrqxdamAtdxJX9nJAnl6+gaBEb/yMehJIUIny1JtgGa6Aul4bsnRYfi5oYn7HpJA1b7F8zxEun/mXsYNgh/B7tQtiFXYEJ/lPJ9JRjNPRuVMtH/eZECY=
+	t=1737544294; cv=none; b=d7GaxgGjbVMJoEz/HsEiKWyKkBJ3mh7fkZWON83UtsvsTqaPKjdhsUc85j7dwJn1NJWlYC9kH7DGUo+57yvlGPshM3xjFvI3X3pACLkg985weLYcpLXtwvP39/0CGR/RBQiXVxW2tBhBkMXvH3PS5/zueL2qVqSNoKWFxLsJjX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737544293; c=relaxed/simple;
-	bh=fIAkcKYMDllIW6WkfHlYd44GaNc9ji80+BmQsRxIHQk=;
+	s=arc-20240116; t=1737544294; c=relaxed/simple;
+	bh=bXeXie6jOYr/fInmtTUUGlwfdji/GBsMY5Ch2a9PJNg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZFyWEOA5TWC7xRaVkSTCMzqdduC/dymGr1zJpbixVAm5gr9zfmjeL4vyXivbKq35aJkMywO/OfDBhJpvIGsgdHcKUkQiJyp/mu2Na2XuYgIUK32O64ADYTELjBKcJKwmkMZVoUO5d0vt4P0L5MJGPrJH6nnDe5N3DsuAUvZh6kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=P2rfHx+/acxdwf9Q24xAmLX1jXnl0u68mVFRqztnPzFOVCmR2A37agwug8s10+Y4G1QCurf9bG5SAE48v4yNz0HJk2GBoLdy9qflCIxOj9fiz9Ivo4dljZwPV2F9/GhQF3g4MJFPNlrUnl6KMeuzMOXjnw7ygon7mWu6DZVqyWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YdLwx2B9Gz4f3jqw;
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YdLwx5Bn4z4f3jks;
 	Wed, 22 Jan 2025 19:11:13 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id BBDF81A0E59;
-	Wed, 22 Jan 2025 19:11:28 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 2E7791A1197;
+	Wed, 22 Jan 2025 19:11:29 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgAni19Z0pBnW0KsBg--.50502S10;
+	by APP4 (Coremail) with SMTP id gCh0CgAni19Z0pBnW0KsBg--.50502S11;
 	Wed, 22 Jan 2025 19:11:28 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: tytso@mit.edu,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
 	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH v3 6/9] jbd2: drop JBD2_ABORT_ON_SYNCDATA_ERR
-Date: Wed, 22 Jan 2025 19:05:30 +0800
-Message-Id: <20250122110533.4116662-7-libaokun@huaweicloud.com>
+Subject: [PATCH v3 7/9] ext4: update the descriptions of data_err=abort and data_err=ignore
+Date: Wed, 22 Jan 2025 19:05:31 +0800
+Message-Id: <20250122110533.4116662-8-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250122110533.4116662-1-libaokun@huaweicloud.com>
 References: <20250122110533.4116662-1-libaokun@huaweicloud.com>
@@ -61,10 +61,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAni19Z0pBnW0KsBg--.50502S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr13Cw1fWw18CFWrXw48Crg_yoW5JrW7pF
-	95Ga40yrWDZFW8Crs7WFsrArWYq3yFkFWUWFn8uw1Fga17t3WfK3y2qryftas0vrsa9w40
-	qFy7C347u34qvrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgAni19Z0pBnW0KsBg--.50502S11
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFykArWfGF1xXr17CrWruFg_yoW8Xr18pr
+	ZxK3s2qrykuF13CF48Aa1SqFWfK3WxXa13GFs29as7Wws8JrnYqr17t3WYgFyakrWfKay5
+	XrW29w1fuFnFya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPC14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -79,69 +79,43 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Cr13Cw1fWw18CFWrXw48Crg_yoW5JrW7pF
 	x2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z2
 	80aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI
 	43ZEXa7VUbT7KDUUUUU==
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAQBWeQpvMNLgABsU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAQBWeQpvMNLgADsW
 
 From: Baokun Li <libaokun1@huawei.com>
 
-Since ext4's data_err=abort mode doesn't depend on
-JBD2_ABORT_ON_SYNCDATA_ERR anymore, and nobody else uses it, we can
-drop it and only warn in jbd2 as it used to be long ago.
+We now print error messages in ext4_end_bio() when page writeback
+encounters an error. If data_err=abort is set, the journal will also
+be aborted in a kworker. This means that we now check all Buffer I/O
+in all modes and decide whether to abort the journal based on the
+data_err option. Therefore, we remove the ordered mode restriction
+in the descriptions of data_err=abort and data_err=ignore.
 
-Suggested-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/super.c      | 4 ----
- fs/jbd2/commit.c     | 6 ++----
- include/linux/jbd2.h | 3 ---
- 3 files changed, 2 insertions(+), 11 deletions(-)
+ Documentation/admin-guide/ext4.rst | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 8bff0d3f807e..87f5ab48b7f4 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5785,10 +5785,6 @@ static void ext4_init_journal_params(struct super_block *sb, journal_t *journal)
- 		journal->j_flags |= JBD2_BARRIER;
- 	else
- 		journal->j_flags &= ~JBD2_BARRIER;
--	if (test_opt(sb, DATA_ERR_ABORT))
--		journal->j_flags |= JBD2_ABORT_ON_SYNCDATA_ERR;
--	else
--		journal->j_flags &= ~JBD2_ABORT_ON_SYNCDATA_ERR;
- 	/*
- 	 * Always enable journal cycle record option, letting the journal
- 	 * records log transactions continuously between each mount.
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index e8e80761ac73..b7a76ec1463d 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -738,10 +738,8 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 	err = journal_finish_inode_data_buffers(journal, commit_transaction);
- 	if (err) {
- 		printk(KERN_WARNING
--			"JBD2: Detected IO errors while flushing file data "
--		       "on %s\n", journal->j_devname);
--		if (journal->j_flags & JBD2_ABORT_ON_SYNCDATA_ERR)
--			jbd2_journal_abort(journal, err);
-+			"JBD2: Detected IO errors %d while flushing file data on %s\n",
-+			err, journal->j_devname);
- 		err = 0;
- 	}
+diff --git a/Documentation/admin-guide/ext4.rst b/Documentation/admin-guide/ext4.rst
+index 2418b0c2d3df..b857eb6ca1b6 100644
+--- a/Documentation/admin-guide/ext4.rst
++++ b/Documentation/admin-guide/ext4.rst
+@@ -238,11 +238,10 @@ When mounting an ext4 filesystem, the following option are accepted:
+         configured using tune2fs)
  
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 561025b4f3d9..f818bae19abf 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1388,9 +1388,6 @@ JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
- #define JBD2_FLUSHED	0x008	/* The journal superblock has been flushed */
- #define JBD2_LOADED	0x010	/* The journal superblock has been loaded */
- #define JBD2_BARRIER	0x020	/* Use IDE barriers */
--#define JBD2_ABORT_ON_SYNCDATA_ERR	0x040	/* Abort the journal on file
--						 * data write error in ordered
--						 * mode */
- #define JBD2_CYCLE_RECORD		0x080	/* Journal cycled record log on
- 						 * clean and empty filesystem
- 						 * logging area */
+   data_err=ignore(*)
+-        Just print an error message if an error occurs in a file data buffer in
+-        ordered mode.
++        Just print an error message if an error occurs in a file data buffer.
++
+   data_err=abort
+-        Abort the journal if an error occurs in a file data buffer in ordered
+-        mode.
++        Abort the journal if an error occurs in a file data buffer.
+ 
+   grpid | bsdgroups
+         New objects have the group ID of their parent.
 -- 
 2.39.2
 
