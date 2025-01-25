@@ -1,325 +1,258 @@
-Return-Path: <linux-ext4+bounces-6233-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6234-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26512A1BFF3
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2025 01:44:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FC68A1C0EF
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2025 05:35:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9ABE3AB541
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2025 00:44:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AE4E188B43C
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2025 04:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECCC8836;
-	Sat, 25 Jan 2025 00:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803AE207665;
+	Sat, 25 Jan 2025 04:35:27 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from omta004.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C5E8C1E
-	for <linux-ext4@vger.kernel.org>; Sat, 25 Jan 2025 00:44:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.97.99.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A260205ABB
+	for <linux-ext4@vger.kernel.org>; Sat, 25 Jan 2025 04:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737765854; cv=none; b=Qj2fXlngVwDsm5eXFcDu4H7IhiceEVNa7t/g3q4no9GvQy7GAn7jOIwMmepiCztZGfZ8ryccN3uicMZ+qYeHhkmjNCtn8I5dm+EysxSP0m4l4mEXIqyyW+mPcERzdzWao0XkiMjaUoV72UJ57Qb04iQLc85ZEWekCzZZjM4qUxQ=
+	t=1737779727; cv=none; b=VUT4tu6J1uZ/osKtWvM2II0OzZ1gTUjvr+Ny4UWQpNNrt7n4k2/8PNjTstr2aJGQ9U6J6ijJiMRnz4NCjNDtCV8fTO0Lk8PTaEQylePgQ10COf+pNdw/7cffE3S5VyCYD9UK1W2KbLmF1k4+4chI+SLBFZBmk3U4dI+yfqUtFzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737765854; c=relaxed/simple;
-	bh=mrETQ4pERnqgfzqO1vvMEBu8952IVcsQeOGdu300Kxo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pRSpMgy+58w1cjiFRqoMlTlD63dl3Q2MNGcA0EWpHUkr0rHwBe6PTVwOXIH5HFhZIP3ZLwYPDJHhoEQVFiQgBOKaiYMnmnhvqrLzg6hJIrFQPdPwBJKhBoVtha0LcJQxuw6J7Nh70bQGU+SOVWujT+rbI85PYCpxKprknG8PW0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=whamcloud.com; spf=fail smtp.mailfrom=whamcloud.com; arc=none smtp.client-ip=3.97.99.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=whamcloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=whamcloud.com
-Received: from shw-obgw-4001a.ext.cloudfilter.net ([10.228.9.142])
-	by cmsmtp with ESMTPS
-	id bMdVtg90ayLQGbUG0tHb2B; Sat, 25 Jan 2025 00:42:40 +0000
-Received: from localhost.localdomain ([70.77.200.158])
-	by cmsmtp with ESMTP
-	id bUFttKyN54k0obUG0tH4A6; Sat, 25 Jan 2025 00:42:40 +0000
-X-Authority-Analysis: v=2.4 cv=fLKa3oae c=1 sm=1 tr=0 ts=67943380
- a=0Thh8+fbYSyN3T2vM72L7A==:117 a=0Thh8+fbYSyN3T2vM72L7A==:17 a=ySfo2T4IAAAA:8
- a=lB0dNpNiAAAA:8 a=NMOro1g-wDtuI0fEzy0A:9 a=ZUkhVnNHqyo2at-WnAgH:22
- a=c-ZiYqmG3AbHTdtsH08C:22
-From: Andreas Dilger <adilger@whamcloud.com>
-To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org,
-	Andreas Dilger <adilger@whamcloud.com>,
-	Alex Zhuravlev <bzzz@whamcloud.com>,
-	Li Dongyang <dongyangli@ddn.com>
-Subject: [PATCH 2/3] journal: increase revoke block hash size
-Date: Fri, 24 Jan 2025 17:42:19 -0700
-Message-Id: <20250125004220.44607-2-adilger@whamcloud.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250125004220.44607-1-adilger@whamcloud.com>
-References: <20250125004220.44607-1-adilger@whamcloud.com>
+	s=arc-20240116; t=1737779727; c=relaxed/simple;
+	bh=k0gATaVPQRp4MC+dwTc5/FayBiedGKTlvZ52KGmpgPM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=L7DlUBeT2oz+4Ik/ujLbf7w9tFCn/BIoRP34PqznlMA/CoQ64RrBREdxUmCukUXlAmKvZdMT+w8c8mT70EUHVPbtyPTrn2zMzD0ioaqeYUXEwweQAeE66JqheUMV3tz3z43badXTeFQwSgO4iZ+5ksq2iWUULs1BYcgMb6gffZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3a7e0d5899bso50128885ab.0
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Jan 2025 20:35:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737779724; x=1738384524;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6UhLPGDfILXYWH+W657+l+S/+kpRGHhilwMz00vr4dQ=;
+        b=N0zWFjhPA9IO+jTq4T/3/q4PMm6KHjMsnEgg/sKRLPt7rYelcLttIVfoUQZwZknQdF
+         H0bgM2yRTfaA2PgXkD8gn6iFpEOzoffiiXJdMhcH62hagFH6vuMSlDhg0HuZO7u33QBM
+         kvXz+P1fXZSkBcLvOcWKB2QEcO5+cXJ121CeATHoh6NeuJV5VG3n+OPty1IPQrtv7gsa
+         GRyX2mSvPHgEGWLiS2nH7pqBzmhsu1xA2U2T6B+NNJbXa8IU3kKTuF52SQqHlWV9NYbK
+         VG7SmIGvDfrUOrZP3iQUqJK++ZpriDljNcwcgkj4xk8+MPIMxFDFzCo9f98TnjySrOGB
+         yXxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUfY2+tmL5aD5PVEANFCJb2LcG3gcfctLttwNSF5Y08UQZVvlBSvn9fuA843gXm2p9TH7fAIPY612lP@vger.kernel.org
+X-Gm-Message-State: AOJu0YzpRZVMTb9pm8TAOI6+YgH239TRF6aHtvMQ3XTtygNMihKqGfYQ
+	ksMWFyAb3gsB1i2BNeYTW3VtuUje6x3wrJdSs1/hYaC631RufQqzjC9z0qncop5IGLdGWtvYZmM
+	T935UZHztpmZvxqDGNf877VjWUsbwSvf5pN0konKwPqsFKjEfSr5gXb0=
+X-Google-Smtp-Source: AGHT+IHc6FIDw2wfSdyH7kxKh7Iet9eqqp218deiQilcF2Se4tEPjc/Sq25VCS4B8wBQ83PCnKR4kJlfu0YazjhVYvE2TlnXQLww
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfLr7CQtoSVhbY3Bkqcx45qXbju+eFK8EzH0ubppwNYzXzzblRbuOKbzwXkfjXSKY8E5hw4E9TkAL3Fkk3EJv+CHraZwfgqmljJVoWdh2/7NjFgNIDKJK
- OnAZ8ygRXCtrtoER6NyTzfdaLyKZp76w0sTmqXJg9zR3+fcK7h17G4r195JzVUIobdgnF/Dw2QYnRHpdptReHK6mR8kZjf+OPfi8Dtdw+dNvCYPzcSxRlwVM
- ntjVT3V8LR7aCLNOZsKAfv1J3/42Ul9hr9CKJ9Dlf6e8iZKZ135jckNAxPVbcRWFJDeIl0frygbMewKAAZpTISylh1+8YtDm6+Kz0Zv1TfY=
+X-Received: by 2002:a05:6e02:1789:b0:3ce:8e89:90c2 with SMTP id
+ e9e14a558f8ab-3cf7443c362mr275180785ab.13.1737779724627; Fri, 24 Jan 2025
+ 20:35:24 -0800 (PST)
+Date: Fri, 24 Jan 2025 20:35:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67946a0c.050a0220.3ab881.0010.GAE@google.com>
+Subject: [syzbot] [ext4?] INFO: rcu detected stall in sys_mkdir (9)
+From: syzbot <syzbot+21889604e13b9172a50b@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, bp@alien8.de, davem@davemloft.net, hpa@zytor.com, 
+	jhs@mojatatu.com, jiri@resnulli.us, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mingo@redhat.com, netdev@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tytso@mit.edu, 
+	vinicius.gomes@intel.com, x86@kernel.org, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-Increase the size of the revoke block hash table to scale with the
-size of the journal, so that we don't get long hash chains if there
-are a large number of revoke blocks in the journal to replay.
+Hello,
 
-The new hash size will default to 1/16 of the blocks in the journal.
-This is about 1 byte per block in the hash table, but there are two
-allocated.  The total amount of memory allocated for revoke blocks
-depends much more on how many are in the journal, and not on the size
-of the hash table.  The system is regularly using this much memory
-for the journal blocks, so the hash table size is not a big factor.
+syzbot found the following issue on:
 
-Consolidate duplicate code between recover_ext3_journal() and
-ext2fs_open_ext3_journal() in debugfs.c to avoid duplicating logic.
+HEAD commit:    100ceb4817a2 Merge tag 'vfs-6.14-rc1.mount.v2' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13afa824580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=88da85736adb8c92
+dashboard link: https://syzkaller.appspot.com/bug?extid=21889604e13b9172a50b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104509f8580000
 
-Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
-Reviewed-by: Alex Zhuravlev <bzzz@whamcloud.com>
-Reviewed-by: Li Dongyang <dongyangli@ddn.com>
-Change-Id: Ibadf2a28c2f42fa92601f9da39a6ff73a43ebbe5
-Reviewed-on: https://review.whamcloud.com/52386
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1a2911ef47f9/disk-100ceb48.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/17629e04715c/vmlinux-100ceb48.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/26f2225b0be5/bzImage-100ceb48.xz
+
+The issue was bisected to:
+
+commit 5a781ccbd19e4664babcbe4b4ead7aa2b9283d22
+Author: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Date:   Sat Sep 29 00:59:43 2018 +0000
+
+    tc: Add support for configuring the taprio scheduler
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15358ab0580000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17358ab0580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13358ab0580000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+21889604e13b9172a50b@syzkaller.appspotmail.com
+Fixes: 5a781ccbd19e ("tc: Add support for configuring the taprio scheduler")
+
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	1-...!: (3 ticks this GP) idle=160c/1/0x4000000000000000 softirq=14358/14358 fqs=1
+rcu: 	(detected by 0, t=12604 jiffies, g=9565, q=1150 ncpus=2)
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 6070 Comm: syz-executor Not tainted 6.13.0-syzkaller-00164-g100ceb4817a2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
+RIP: 0010:mark_usage kernel/locking/lockdep.c:4616 [inline]
+RIP: 0010:__lock_acquire+0xb2a/0x2100 kernel/locking/lockdep.c:5180
+Code: 24 48 c7 c0 14 32 1a 90 48 c1 e8 03 0f b6 04 10 84 c0 0f 85 fc 11 00 00 83 3d 05 6b 9f 0e 00 0f 84 17 09 00 00 83 7c 24 58 00 <48> 8b 6c 24 38 0f 84 f9 00 00 00 48 8b 5c 24 18 0f b6 04 13 84 c0
+RSP: 0018:ffffc90000a188f0 EFLAGS: 00000002
+RAX: 0000000000000002 RBX: ffffffff93c30ebe RCX: 0000000000000002
+RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffffffff942b3888
+RBP: 0000000000000002 R08: ffffffff942b388f R09: 1ffffffff2856711
+R10: dffffc0000000000 R11: fffffbfff2856712 R12: ffff88802568a8c4
+R13: ffff888025689e00 R14: 0000000000000005 R15: ffff88802568a9c8
+FS:  000055557e8ff500(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f57424a56e8 CR3: 000000005a2f0000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <IRQ>
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+ debug_object_activate+0x17f/0x580 lib/debugobjects.c:818
+ debug_hrtimer_activate kernel/time/hrtimer.c:428 [inline]
+ debug_activate kernel/time/hrtimer.c:469 [inline]
+ enqueue_hrtimer+0x30/0x3c0 kernel/time/hrtimer.c:1076
+ __run_hrtimer kernel/time/hrtimer.c:1756 [inline]
+ __hrtimer_run_queues+0x6cb/0xd30 kernel/time/hrtimer.c:1803
+ hrtimer_interrupt+0x403/0xa40 kernel/time/hrtimer.c:1865
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1038 [inline]
+ __sysvec_apic_timer_interrupt+0x110/0x420 arch/x86/kernel/apic/apic.c:1055
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
+ sysvec_apic_timer_interrupt+0xa1/0xc0 arch/x86/kernel/apic/apic.c:1049
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:160 [inline]
+RIP: 0010:_raw_spin_unlock_irq+0x29/0x50 kernel/locking/spinlock.c:202
+Code: 90 f3 0f 1e fa 53 48 89 fb 48 83 c7 18 48 8b 74 24 08 e8 5a 0a ae f5 48 89 df e8 92 51 af f5 e8 cd 6c da f5 fb bf 01 00 00 00 <e8> 62 c4 a0 f5 65 8b 05 83 03 37 74 85 c0 74 06 5b c3 cc cc cc cc
+RSP: 0018:ffffc900031272b0 EFLAGS: 00000282
+RAX: ace9d390bb8c2800 RBX: ffff888028818370 RCX: ffffffff817b2e5a
+RDX: dffffc0000000000 RSI: ffffffff8c0a9940 RDI: 0000000000000001
+RBP: ffffc90003127470 R08: ffffffff942b392f R09: 1ffffffff2856725
+R10: dffffc0000000000 R11: fffffbfff2856726 R12: 000000000000000c
+R13: ffffc900031276d8 R14: ffff888072aa1680 R15: 1ffff92000624edb
+ mark_inode_dirty include/linux/fs.h:2500 [inline]
+ dquot_alloc_space include/linux/quotaops.h:319 [inline]
+ dquot_alloc_block include/linux/quotaops.h:336 [inline]
+ ext4_mb_new_blocks+0x2edb/0x4e00 fs/ext4/mballoc.c:6183
+ ext4_ext_map_blocks+0x1be0/0x7d30 fs/ext4/extents.c:4379
+ ext4_map_create_blocks fs/ext4/inode.c:516 [inline]
+ ext4_map_blocks+0x8bf/0x1990 fs/ext4/inode.c:702
+ ext4_getblk+0x1fa/0x880 fs/ext4/inode.c:849
+ ext4_bread+0x2e/0x180 fs/ext4/inode.c:912
+ ext4_append+0x327/0x5c0 fs/ext4/namei.c:83
+ ext4_init_new_dir+0x33e/0xa30 fs/ext4/namei.c:2988
+ ext4_mkdir+0x4f7/0xcf0 fs/ext4/namei.c:3034
+ vfs_mkdir+0x2f9/0x4f0 fs/namei.c:4311
+ do_mkdirat+0x264/0x3a0 fs/namei.c:4334
+ __do_sys_mkdir fs/namei.c:4354 [inline]
+ __se_sys_mkdir fs/namei.c:4352 [inline]
+ __x64_sys_mkdir+0x6c/0x80 fs/namei.c:4352
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f57417b9997
+Code: 44 00 00 48 8d 50 ff 83 c1 01 48 21 d0 75 f4 01 cf 48 83 c6 08 4c 39 c6 75 d9 89 f8 c3 31 ff 89 f8 c3 90 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff05fbbfe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 00007fff05fbc132 RCX: 00007f57417b9997
+RDX: 0000000011487a76 RSI: 00000000000001c0 RDI: 00007fff05fbc120
+RBP: f49998db0aa753ff R08: 0000000000000004 R09: 0000000000000001
+R10: 00007f57424cb038 R11: 0000000000000246 R12: 8421084210842109
+R13: 00007fff05fbc132 R14: 00007f574183aca0 R15: 0000000011487a76
+ </TASK>
+rcu: rcu_preempt kthread starved for 10869 jiffies! g9565 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:26264 pid:17    tgid:17    ppid:2      flags:0x00004000
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5369 [inline]
+ __schedule+0x1850/0x4c30 kernel/sched/core.c:6756
+ __schedule_loop kernel/sched/core.c:6833 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6848
+ schedule_timeout+0x15a/0x290 kernel/time/sleep_timeout.c:99
+ rcu_gp_fqs_loop+0x2df/0x1330 kernel/rcu/tree.c:2045
+ rcu_gp_kthread+0xa7/0x3b0 kernel/rcu/tree.c:2247
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+rcu: Stack dump where RCU GP kthread last ran:
+CPU: 0 UID: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.13.0-syzkaller-00164-g100ceb4817a2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
+Workqueue: events_power_efficient gc_worker
+RIP: 0010:seqcount_lockdep_reader_access+0x1e0/0x220 include/linux/seqlock.h:75
+Code: f7 4d 85 ed 75 16 e8 6f 61 be f7 eb 15 e8 68 61 be f7 e8 23 ec e8 01 4d 85 ed 74 ea e8 59 61 be f7 fb 48 c7 04 24 0e 36 e0 45 <4b> c7 04 3c 00 00 00 00 66 43 c7 44 3c 09 00 00 43 c6 44 3c 0b 00
+RSP: 0018:ffffc900000d79a0 EFLAGS: 00000293
+RAX: ffffffff89e123a7 RBX: 0000000000000000 RCX: ffff88801cafda00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc900000d7a50 R08: ffffffff89e1237d R09: 1ffffffff2856724
+R10: dffffc0000000000 R11: fffffbfff2856725 R12: dffffc0000000000
+R13: 0000000000000200 R14: 0000000000000046 R15: 1ffff9200001af34
+FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbdbffa66c0 CR3: 00000000277be000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ </IRQ>
+ <TASK>
+ nf_conntrack_get_ht include/net/netfilter/nf_conntrack.h:345 [inline]
+ gc_worker+0x30f/0x1530 net/netfilter/nf_conntrack_core.c:1534
+ process_one_work kernel/workqueue.c:3236 [inline]
+ process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3317
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3398
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+
+
 ---
- debugfs/journal.c       | 68 +++++++++++++----------------------------
- e2fsck/jfs_user.h       |  2 +-
- e2fsck/journal.c        | 12 +++++++-
- lib/ext2fs/jfs_compat.h |  3 +-
- lib/ext2fs/kernel-jbd.h |  1 +
- misc/util.c             | 21 +++++++------
- 6 files changed, 49 insertions(+), 58 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/debugfs/journal.c b/debugfs/journal.c
-index 04611acf76..a6d8d4c5ad 100644
---- a/debugfs/journal.c
-+++ b/debugfs/journal.c
-@@ -738,10 +738,12 @@ err:
- 	return retval;
- }
- 
--static errcode_t recover_ext3_journal(ext2_filsys fs)
-+#define recover_ext3_journal(fs) ext2fs_open_journal(fs, NULL)
-+errcode_t ext2fs_open_journal(ext2_filsys fs, journal_t **j)
- {
- 	journal_t *journal;
- 	errcode_t retval;
-+	long hash_size;
- 
- 	retval = jbd2_journal_init_revoke_record_cache();
- 	if (retval)
-@@ -759,19 +761,34 @@ static errcode_t recover_ext3_journal(ext2_filsys fs)
- 	if (retval)
- 		goto errout;
- 
--	retval = jbd2_journal_init_revoke(journal, 1024);
-+	/* The hash table defaults to 2 bytes per journal block (average of
-+	 * 8 entries in a hash bucket in absolute worst case), but the total
-+	 * memory usage depends on the number of revoke blocks.  The system
-+	 * should be able to handle this much RAM usage, since it uses at
-+	 * least this much memory for the journal when running.  The max limit
-+	 * check is to avoid problems if the journal size is wrong somehow. */
-+	hash_size = roundup_power_of_two(journal->j_superblock->s_maxlen / 16);
-+	if (hash_size > JBD2_MAX_JOURNAL_BLOCKS / 16)
-+		hash_size = roundup_power_of_two(JBD2_MAX_JOURNAL_BLOCKS / 16);
-+	retval = jbd2_journal_init_revoke(journal, hash_size);
- 	if (retval)
- 		goto errout;
- 
--	retval = -jbd2_journal_recover(journal);
--	if (retval)
--		goto errout;
-+	if (!j) {
-+		retval = -jbd2_journal_recover(journal);
-+		if (retval)
-+			goto errout;
-+	}
- 
- 	if (journal->j_failed_commit) {
- 		journal->j_superblock->s_errno = -EINVAL;
- 		mark_buffer_dirty(journal->j_sb_buffer);
- 	}
- 
-+	if (j) {
-+		*j = journal;
-+		return 0;
-+	}
- 	journal->j_tail_sequence = journal->j_transaction_sequence;
- 
- errout:
-@@ -853,47 +870,6 @@ outfree:
- 	return retval ? retval : recover_retval;
- }
- 
--errcode_t ext2fs_open_journal(ext2_filsys fs, journal_t **j)
--{
--	journal_t *journal;
--	errcode_t retval;
--
--	retval = jbd2_journal_init_revoke_record_cache();
--	if (retval)
--		return retval;
--
--	retval = jbd2_journal_init_revoke_table_cache();
--	if (retval)
--		return retval;
--
--	retval = ext2fs_get_journal(fs, &journal);
--	if (retval)
--		return retval;
--
--	retval = ext2fs_journal_load(journal);
--	if (retval)
--		goto errout;
--
--	retval = jbd2_journal_init_revoke(journal, 1024);
--	if (retval)
--		goto errout;
--
--	if (journal->j_failed_commit) {
--		journal->j_superblock->s_errno = -EINVAL;
--		mark_buffer_dirty(journal->j_sb_buffer);
--	}
--
--	*j = journal;
--	return 0;
--
--errout:
--	jbd2_journal_destroy_revoke(journal);
--	jbd2_journal_destroy_revoke_record_cache();
--	jbd2_journal_destroy_revoke_table_cache();
--	ext2fs_journal_release(fs, journal, 1, 0);
--	return retval;
--}
--
- errcode_t ext2fs_close_journal(ext2_filsys fs, journal_t **j)
- {
- 	journal_t *journal = *j;
-diff --git a/e2fsck/jfs_user.h b/e2fsck/jfs_user.h
-index 5928a8a8ed..804b19a7ba 100644
---- a/e2fsck/jfs_user.h
-+++ b/e2fsck/jfs_user.h
-@@ -306,7 +306,7 @@ extern int	jbd2_journal_recover    (journal_t *journal);
- extern int	jbd2_journal_skip_recovery (journal_t *);
- 
- /* revoke.c */
--extern int	jbd2_journal_init_revoke(journal_t *, int);
-+extern int	jbd2_journal_init_revoke(journal_t *, int hash_size);
- extern void	jbd2_journal_destroy_revoke(journal_t *);
- extern void	jbd2_journal_destroy_revoke_record_cache(void);
- extern void	jbd2_journal_destroy_revoke_table_cache(void);
-diff --git a/e2fsck/journal.c b/e2fsck/journal.c
-index 19d68b4306..d25d60492c 100644
---- a/e2fsck/journal.c
-+++ b/e2fsck/journal.c
-@@ -1632,6 +1632,7 @@ static errcode_t recover_ext3_journal(e2fsck_t ctx)
- 	struct problem_context	pctx;
- 	journal_t *journal;
- 	errcode_t retval;
-+	long hash_size;
- 
- 	clear_problem_context(&pctx);
- 
-@@ -1651,7 +1652,16 @@ static errcode_t recover_ext3_journal(e2fsck_t ctx)
- 	if (retval)
- 		goto errout;
- 
--	retval = jbd2_journal_init_revoke(journal, 1024);
-+	/* The hash table defaults to 2 bytes per journal block (average of
-+	 * 8 entries in a hash chain in absolute worst case), but the total
-+	 * memory usage depends on the number of revoke blocks.  The system
-+	 * should be able to handle this much RAM usage, since it uses at
-+	 * least this much memory for the journal when running.  The max limit
-+	 * check is to avoid problems if the journal size is wrong somehow. */
-+	hash_size = roundup_power_of_two(journal->j_superblock->s_maxlen / 16);
-+	if (hash_size > JBD2_MAX_JOURNAL_BLOCKS / 16)
-+		hash_size = roundup_power_of_two(JBD2_MAX_JOURNAL_BLOCKS / 16);
-+	retval = jbd2_journal_init_revoke(journal, hash_size);
- 	if (retval)
- 		goto errout;
- 
-diff --git a/lib/ext2fs/jfs_compat.h b/lib/ext2fs/jfs_compat.h
-index 0e96b56c15..30b05822b6 100644
---- a/lib/ext2fs/jfs_compat.h
-+++ b/lib/ext2fs/jfs_compat.h
-@@ -58,7 +58,8 @@ typedef __u64 u64;
-                 (__flags), NULL)
- 
- #define blkdev_issue_flush(kdev)	sync_blockdev(kdev)
--#define is_power_of_2(x)	((x) != 0 && (((x) & ((x) - 1)) == 0))
-+#define is_power_of_2(x)		((x) != 0 && (((x) & ((x) - 1)) == 0))
-+#define roundup_power_of_two(n)		(1UL << (ext2fs_log2_u32((n) - 1) + 1))
- #define pr_emerg(fmt)
- #define pr_err(...)
- 
-diff --git a/lib/ext2fs/kernel-jbd.h b/lib/ext2fs/kernel-jbd.h
-index e569500632..4923a78d46 100644
---- a/lib/ext2fs/kernel-jbd.h
-+++ b/lib/ext2fs/kernel-jbd.h
-@@ -58,6 +58,7 @@ extern void * __jbd_kmalloc (char *where, size_t size, int flags, int retry);
- 	__jbd_kmalloc(__FUNCTION__, (size), (flags), 1)
- 
- #define JBD2_MIN_JOURNAL_BLOCKS 1024
-+#define JBD2_MAX_JOURNAL_BLOCKS (JBD2_MIN_JOURNAL_BLOCKS * 10000)
- #define JBD2_DEFAULT_FAST_COMMIT_BLOCKS 256
- 
- /*
-diff --git a/misc/util.c b/misc/util.c
-index 3e83169f11..01c9c5fa1f 100644
---- a/misc/util.c
-+++ b/misc/util.c
-@@ -49,6 +49,7 @@
- #include "e2p/e2p.h"
- #include "ext2fs/ext2_fs.h"
- #include "ext2fs/ext2fs.h"
-+#include "ext2fs/kernel-jbd.h"
- #include "support/nls-enable.h"
- #include "support/devname.h"
- #include "blkid/blkid.h"
-@@ -266,7 +267,7 @@ static inline int fcsize_to_blks(ext2_filsys fs, int size)
- void figure_journal_size(struct ext2fs_journal_params *jparams,
- 		int requested_j_size, int requested_fc_size, ext2_filsys fs)
- {
--	int total_blocks, ret;
-+	int ret;
- 
- 	ret = ext2fs_get_journal_params(jparams, fs);
- 	if (ret) {
-@@ -275,7 +276,9 @@ void figure_journal_size(struct ext2fs_journal_params *jparams,
- 	}
- 
- 	if (requested_j_size > 0 ||
--		(ext2fs_has_feature_fast_commit(fs->super) && requested_fc_size > 0)) {
-+	    (ext2fs_has_feature_fast_commit(fs->super) && requested_fc_size > 0)) {
-+		unsigned int total_blocks;
-+
- 		if (requested_j_size > 0)
- 			jparams->num_journal_blocks =
- 				jsize_to_blks(fs, requested_j_size);
-@@ -286,15 +289,15 @@ void figure_journal_size(struct ext2fs_journal_params *jparams,
- 		else if (!ext2fs_has_feature_fast_commit(fs->super))
- 			jparams->num_fc_blocks = 0;
- 		total_blocks = jparams->num_journal_blocks + jparams->num_fc_blocks;
--		if (total_blocks < 1024 || total_blocks > 10240000) {
--			fprintf(stderr, _("\nThe total requested journal "
--				"size is %d blocks; it must be\n"
--				"between 1024 and 10240000 blocks.  "
--				"Aborting.\n"),
--				total_blocks);
-+		if (total_blocks < JBD2_MIN_JOURNAL_BLOCKS ||
-+		    total_blocks > JBD2_MAX_JOURNAL_BLOCKS) {
-+			fprintf(stderr,
-+				_("\nThe total requested journal size is %d blocks;\nit must be between %d and %u blocks.  Aborting.\n"),
-+				total_blocks, JBD2_MIN_JOURNAL_BLOCKS,
-+				JBD2_MAX_JOURNAL_BLOCKS);
- 			exit(1);
- 		}
--		if ((unsigned int) total_blocks > ext2fs_free_blocks_count(fs->super) / 2) {
-+		if (total_blocks > ext2fs_free_blocks_count(fs->super) / 2) {
- 			fputs(_("\nTotal journal size too big for filesystem.\n"),
- 			      stderr);
- 			exit(1);
--- 
-2.39.5 (Apple Git-154)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
