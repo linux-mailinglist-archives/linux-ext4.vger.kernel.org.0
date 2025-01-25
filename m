@@ -1,52 +1,56 @@
-Return-Path: <linux-ext4+bounces-6232-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6233-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A86FBA1BFF2
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2025 01:44:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26512A1BFF3
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2025 01:44:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA5D61662F8
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2025 00:44:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9ABE3AB541
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2025 00:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF965672;
-	Sat, 25 Jan 2025 00:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECCC8836;
+	Sat, 25 Jan 2025 00:44:14 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from omta004.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A86C8BEE
-	for <linux-ext4@vger.kernel.org>; Sat, 25 Jan 2025 00:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C5E8C1E
+	for <linux-ext4@vger.kernel.org>; Sat, 25 Jan 2025 00:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.97.99.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737765853; cv=none; b=GFqjC1NFu5yuwqgtty1ky4VpYal02abkuVDu15nrWWcePe9xQg9MFl2qyH4slDfm8O+1A3sgsPTYI12yLO+i2MAQdGZ3U1kdZzfKtHql8goPB2/jcs6KCNTtTkLCps2HKIIX93DuW1np53Hm+G2bil0caIvTdrCd7HaoxNObXA4=
+	t=1737765854; cv=none; b=Qj2fXlngVwDsm5eXFcDu4H7IhiceEVNa7t/g3q4no9GvQy7GAn7jOIwMmepiCztZGfZ8ryccN3uicMZ+qYeHhkmjNCtn8I5dm+EysxSP0m4l4mEXIqyyW+mPcERzdzWao0XkiMjaUoV72UJ57Qb04iQLc85ZEWekCzZZjM4qUxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737765853; c=relaxed/simple;
-	bh=Kpk4v5wKR0HCXvmVXRFbhbJYX7d+arQV8GwWihmRpNM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qb0JmFlHa7PJ3QPU4BXbdR5NtyMo2jIrF5rOcdifOid5qoNsPDw1y2bfelZwxLkY4emZnihiQvH5V2678dGXJYo0TNXPSXausnqSd4M8A3i5w41S1o3JJDRkr6CNROPz6/ehOCttAeo3XaPbqChvYRse7QHMKvTt51gmnk/DgJ4=
+	s=arc-20240116; t=1737765854; c=relaxed/simple;
+	bh=mrETQ4pERnqgfzqO1vvMEBu8952IVcsQeOGdu300Kxo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=pRSpMgy+58w1cjiFRqoMlTlD63dl3Q2MNGcA0EWpHUkr0rHwBe6PTVwOXIH5HFhZIP3ZLwYPDJHhoEQVFiQgBOKaiYMnmnhvqrLzg6hJIrFQPdPwBJKhBoVtha0LcJQxuw6J7Nh70bQGU+SOVWujT+rbI85PYCpxKprknG8PW0M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=whamcloud.com; spf=fail smtp.mailfrom=whamcloud.com; arc=none smtp.client-ip=3.97.99.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=whamcloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=whamcloud.com
 Received: from shw-obgw-4001a.ext.cloudfilter.net ([10.228.9.142])
 	by cmsmtp with ESMTPS
-	id bPJrtgKEUyLQGbUFutHax5; Sat, 25 Jan 2025 00:42:34 +0000
+	id bMdVtg90ayLQGbUG0tHb2B; Sat, 25 Jan 2025 00:42:40 +0000
 Received: from localhost.localdomain ([70.77.200.158])
 	by cmsmtp with ESMTP
-	id bUFttKyN54k0obUFttH49N; Sat, 25 Jan 2025 00:42:34 +0000
-X-Authority-Analysis: v=2.4 cv=fLKa3oae c=1 sm=1 tr=0 ts=6794337a
+	id bUFttKyN54k0obUG0tH4A6; Sat, 25 Jan 2025 00:42:40 +0000
+X-Authority-Analysis: v=2.4 cv=fLKa3oae c=1 sm=1 tr=0 ts=67943380
  a=0Thh8+fbYSyN3T2vM72L7A==:117 a=0Thh8+fbYSyN3T2vM72L7A==:17 a=ySfo2T4IAAAA:8
- a=lB0dNpNiAAAA:8 a=9ZWtGkVjf7MwhTMwZ_UA:9 a=ZUkhVnNHqyo2at-WnAgH:22
+ a=lB0dNpNiAAAA:8 a=NMOro1g-wDtuI0fEzy0A:9 a=ZUkhVnNHqyo2at-WnAgH:22
  a=c-ZiYqmG3AbHTdtsH08C:22
 From: Andreas Dilger <adilger@whamcloud.com>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org,
 	Andreas Dilger <adilger@whamcloud.com>,
+	Alex Zhuravlev <bzzz@whamcloud.com>,
 	Li Dongyang <dongyangli@ddn.com>
-Subject: [PATCH 1/3] misc: deduplicate log2/log10 functions
-Date: Fri, 24 Jan 2025 17:42:18 -0700
-Message-Id: <20250125004220.44607-1-adilger@whamcloud.com>
+Subject: [PATCH 2/3] journal: increase revoke block hash size
+Date: Fri, 24 Jan 2025 17:42:19 -0700
+Message-Id: <20250125004220.44607-2-adilger@whamcloud.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <20250125004220.44607-1-adilger@whamcloud.com>
+References: <20250125004220.44607-1-adilger@whamcloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -54,508 +58,267 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfNa/ICCWppoaaGGBwHCuwOzfcB7uhNxHYdOc1mrT1qHs3T/5olaI2fI1Ld7GSf4HKoAa/T97WfiNU9emXKmjIARAKL6RIakO5PEhwv0j9NIVd3xwh1t5
- sgabRERYSuIbnJTkKFzs/A6hAQIbrX2lSYBylzpVsVgRnY19LwsgbhDBFu6qDwaQDXfNiGz+5caOoIiM4geMPvpJR0g8le2JWOgniXJpABRB6XKeER0lWlKp
- ujtG9x0m+AajijweydwG6ifPDW/dtYcwvJip64v927lomzherHpcaEu+9EuYj/hY
+X-CMAE-Envelope: MS4xfLr7CQtoSVhbY3Bkqcx45qXbju+eFK8EzH0ubppwNYzXzzblRbuOKbzwXkfjXSKY8E5hw4E9TkAL3Fkk3EJv+CHraZwfgqmljJVoWdh2/7NjFgNIDKJK
+ OnAZ8ygRXCtrtoER6NyTzfdaLyKZp76w0sTmqXJg9zR3+fcK7h17G4r195JzVUIobdgnF/Dw2QYnRHpdptReHK6mR8kZjf+OPfi8Dtdw+dNvCYPzcSxRlwVM
+ ntjVT3V8LR7aCLNOZsKAfv1J3/42Ul9hr9CKJ9Dlf6e8iZKZ135jckNAxPVbcRWFJDeIl0frygbMewKAAZpTISylh1+8YtDm6+Kz0Zv1TfY=
 
-Remove duplicate log2() and log10() functions and replace them with
-functions ext2fs_log2_u{32,64}() and ext2fs_log10_u{32,64}().
+Increase the size of the revoke block hash table to scale with the
+size of the journal, so that we don't get long hash chains if there
+are a large number of revoke blocks in the journal to replay.
 
-The int_log10() functions in progress.c and mke2fs.c were not like
-the others, since they did not divide by the base before increment,
-effectively rounding up instead of down.  Compensate by adding one
-to the returned ext2fs_log10_u32() value at the callers.
+The new hash size will default to 1/16 of the blocks in the journal.
+This is about 1 byte per block in the hash table, but there are two
+allocated.  The total amount of memory allocated for revoke blocks
+depends much more on how many are in the journal, and not on the size
+of the hash table.  The system is regularly using this much memory
+for the journal blocks, so the hash table size is not a big factor.
+
+Consolidate duplicate code between recover_ext3_journal() and
+ext2fs_open_ext3_journal() in debugfs.c to avoid duplicating logic.
 
 Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+Reviewed-by: Alex Zhuravlev <bzzz@whamcloud.com>
 Reviewed-by: Li Dongyang <dongyangli@ddn.com>
-Change-Id: Ifc86efe7e5f0243eb914c6d24319cc7dee3ebbe5
-Reviewed-on: https://review.whamcloud.com/52385
+Change-Id: Ibadf2a28c2f42fa92601f9da39a6ff73a43ebbe5
+Reviewed-on: https://review.whamcloud.com/52386
 ---
- debugfs/debugfs.c     | 19 +++-----------
- debugfs/filefrag.c    | 18 +++----------
- lib/ext2fs/ext2fs.h   | 60 +++++++++++++++++++++++++++++++++++++++++++
- lib/ext2fs/extent.c   | 17 +++---------
- lib/ext2fs/progress.c | 13 ++--------
- misc/e2freefrag.c     | 20 +++------------
- misc/e4crypt.c        | 14 +---------
- misc/filefrag.c       | 32 +++--------------------
- misc/mk_hugefiles.c   |  2 +-
- misc/mke2fs.c         | 36 ++++++--------------------
- misc/mke2fs.h         |  1 -
- 11 files changed, 90 insertions(+), 142 deletions(-)
+ debugfs/journal.c       | 68 +++++++++++++----------------------------
+ e2fsck/jfs_user.h       |  2 +-
+ e2fsck/journal.c        | 12 +++++++-
+ lib/ext2fs/jfs_compat.h |  3 +-
+ lib/ext2fs/kernel-jbd.h |  1 +
+ misc/util.c             | 21 +++++++------
+ 6 files changed, 49 insertions(+), 58 deletions(-)
 
-diff --git a/debugfs/debugfs.c b/debugfs/debugfs.c
-index 8acb56a4d4..46ff517e05 100644
---- a/debugfs/debugfs.c
-+++ b/debugfs/debugfs.c
-@@ -653,18 +653,6 @@ static void dump_blocks(FILE *f, const char *prefix, ext2_ino_t inode)
- 	fprintf(f,"\n");
+diff --git a/debugfs/journal.c b/debugfs/journal.c
+index 04611acf76..a6d8d4c5ad 100644
+--- a/debugfs/journal.c
++++ b/debugfs/journal.c
+@@ -738,10 +738,12 @@ err:
+ 	return retval;
  }
  
--static int int_log10(unsigned long long arg)
--{
--	int     l = 0;
--
--	arg = arg / 10;
--	while (arg) {
--		l++;
--		arg = arg / 10;
--	}
--	return l;
--}
--
- #define DUMP_LEAF_EXTENTS	0x01
- #define DUMP_NODE_EXTENTS	0x02
- #define DUMP_EXTENT_TABLE	0x04
-@@ -1076,11 +1064,12 @@ void do_dump_extents(int argc, ss_argv_t argv, int sci_idx EXT2FS_ATTR((unused))
- 		return;
+-static errcode_t recover_ext3_journal(ext2_filsys fs)
++#define recover_ext3_journal(fs) ext2fs_open_journal(fs, NULL)
++errcode_t ext2fs_open_journal(ext2_filsys fs, journal_t **j)
+ {
+ 	journal_t *journal;
+ 	errcode_t retval;
++	long hash_size;
+ 
+ 	retval = jbd2_journal_init_revoke_record_cache();
+ 	if (retval)
+@@ -759,19 +761,34 @@ static errcode_t recover_ext3_journal(ext2_filsys fs)
+ 	if (retval)
+ 		goto errout;
+ 
+-	retval = jbd2_journal_init_revoke(journal, 1024);
++	/* The hash table defaults to 2 bytes per journal block (average of
++	 * 8 entries in a hash bucket in absolute worst case), but the total
++	 * memory usage depends on the number of revoke blocks.  The system
++	 * should be able to handle this much RAM usage, since it uses at
++	 * least this much memory for the journal when running.  The max limit
++	 * check is to avoid problems if the journal size is wrong somehow. */
++	hash_size = roundup_power_of_two(journal->j_superblock->s_maxlen / 16);
++	if (hash_size > JBD2_MAX_JOURNAL_BLOCKS / 16)
++		hash_size = roundup_power_of_two(JBD2_MAX_JOURNAL_BLOCKS / 16);
++	retval = jbd2_journal_init_revoke(journal, hash_size);
+ 	if (retval)
+ 		goto errout;
+ 
+-	retval = -jbd2_journal_recover(journal);
+-	if (retval)
+-		goto errout;
++	if (!j) {
++		retval = -jbd2_journal_recover(journal);
++		if (retval)
++			goto errout;
++	}
+ 
+ 	if (journal->j_failed_commit) {
+ 		journal->j_superblock->s_errno = -EINVAL;
+ 		mark_buffer_dirty(journal->j_sb_buffer);
  	}
  
--	logical_width = int_log10((EXT2_I_SIZE(&inode)+current_fs->blocksize-1)/
--				  current_fs->blocksize) + 1;
-+	logical_width = ext2fs_log10_u32((EXT2_I_SIZE(&inode) +
-+					  current_fs->blocksize - 1) /
-+					 current_fs->blocksize) + 1;
- 	if (logical_width < 5)
- 		logical_width = 5;
--	physical_width = int_log10(ext2fs_blocks_count(current_fs->super)) + 1;
-+	physical_width = ext2fs_log10_u64(ext2fs_blocks_count(current_fs->super)) + 1;
- 	if (physical_width < 5)
- 		physical_width = 5;
++	if (j) {
++		*j = journal;
++		return 0;
++	}
+ 	journal->j_tail_sequence = journal->j_transaction_sequence;
  
-diff --git a/debugfs/filefrag.c b/debugfs/filefrag.c
-index 9bda65defe..2a5b6a91af 100644
---- a/debugfs/filefrag.c
-+++ b/debugfs/filefrag.c
-@@ -54,18 +54,6 @@ struct filefrag_struct {
- 	struct dir_list *dir_list, *dir_last;
- };
- 
--static int int_log10(unsigned long long arg)
--{
--	int     l = 0;
--
--	arg = arg / 10;
--	while (arg) {
--		l++;
--		arg = arg / 10;
--	}
--	return l;
--}
--
- static void print_header(struct filefrag_struct *fs)
- {
- 	if (fs->options & VERBOSE_OPT) {
-@@ -135,8 +123,8 @@ static void filefrag(ext2_ino_t ino, struct ext2_inode *inode,
- 	errcode_t	retval;
- 	int		blocksize = current_fs->blocksize;
- 
--	fs->logical_width = int_log10((EXT2_I_SIZE(inode) + blocksize - 1) /
--				      blocksize) + 1;
-+	fs->logical_width = ext2fs_log10_u32((EXT2_I_SIZE(inode) +
-+					      blocksize - 1) / blocksize) + 1;
- 	if (fs->logical_width < 7)
- 		fs->logical_width = 7;
- 	fs->ext = 0;
-@@ -313,7 +301,7 @@ void do_filefrag(int argc, ss_argv_t argv, int sci_idx EXT2FS_ATTR((unused)),
- 		return;
- 
- 	fs.f = open_pager();
--	fs.physical_width = int_log10(ext2fs_blocks_count(current_fs->super));
-+	fs.physical_width = ext2fs_log10_u64(ext2fs_blocks_count(current_fs->super));
- 	fs.physical_width++;
- 	if (fs.physical_width < 8)
- 		fs.physical_width = 8;
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index ff22f66bab..80310b2998 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -2226,6 +2226,66 @@ _INLINE_ int ext2fs_htree_intnode_maxrecs(ext2_filsys fs, int blocks)
- 						sizeof(struct ext2_dx_entry));
+ errout:
+@@ -853,47 +870,6 @@ outfree:
+ 	return retval ? retval : recover_retval;
  }
  
-+/*
-+ * log base 2, rounded down
-+ */
-+_INLINE_ int ext2fs_log2_u32(__u32 arg)
-+{
-+	int l = 0;
-+
-+	arg >>= 1;
-+	while (arg) {
-+		l++;
-+		arg >>= 1;
-+	}
-+	return l;
-+}
-+
-+/*
-+ * log base 2, rounded down
-+ */
-+_INLINE_ int ext2fs_log2_u64(__u64 arg)
-+{
-+	int l = 0;
-+
-+	arg >>= 1;
-+	while (arg) {
-+		l++;
-+		arg >>= 1;
-+	}
-+	return l;
-+}
-+
-+/*
-+ * log base 10, rounded down
-+ */
-+_INLINE_ int ext2fs_log10_u32(__u32 arg)
-+{
-+	int l = 0;
-+
-+	arg /= 10;
-+	while (arg) {
-+		l++;
-+		arg /= 10;
-+	}
-+	return l;
-+}
-+
-+/*
-+ * log base 10, rounded down
-+ */
-+_INLINE_ int ext2fs_log10_u64(__u64 arg)
-+{
-+	int l = 0;
-+
-+	arg /= 10;
-+	while (arg) {
-+		l++;
-+		arg /= 10;
-+	}
-+	return l;
-+}
-+
+-errcode_t ext2fs_open_journal(ext2_filsys fs, journal_t **j)
+-{
+-	journal_t *journal;
+-	errcode_t retval;
+-
+-	retval = jbd2_journal_init_revoke_record_cache();
+-	if (retval)
+-		return retval;
+-
+-	retval = jbd2_journal_init_revoke_table_cache();
+-	if (retval)
+-		return retval;
+-
+-	retval = ext2fs_get_journal(fs, &journal);
+-	if (retval)
+-		return retval;
+-
+-	retval = ext2fs_journal_load(journal);
+-	if (retval)
+-		goto errout;
+-
+-	retval = jbd2_journal_init_revoke(journal, 1024);
+-	if (retval)
+-		goto errout;
+-
+-	if (journal->j_failed_commit) {
+-		journal->j_superblock->s_errno = -EINVAL;
+-		mark_buffer_dirty(journal->j_sb_buffer);
+-	}
+-
+-	*j = journal;
+-	return 0;
+-
+-errout:
+-	jbd2_journal_destroy_revoke(journal);
+-	jbd2_journal_destroy_revoke_record_cache();
+-	jbd2_journal_destroy_revoke_table_cache();
+-	ext2fs_journal_release(fs, journal, 1, 0);
+-	return retval;
+-}
+-
+ errcode_t ext2fs_close_journal(ext2_filsys fs, journal_t **j)
+ {
+ 	journal_t *journal = *j;
+diff --git a/e2fsck/jfs_user.h b/e2fsck/jfs_user.h
+index 5928a8a8ed..804b19a7ba 100644
+--- a/e2fsck/jfs_user.h
++++ b/e2fsck/jfs_user.h
+@@ -306,7 +306,7 @@ extern int	jbd2_journal_recover    (journal_t *journal);
+ extern int	jbd2_journal_skip_recovery (journal_t *);
+ 
+ /* revoke.c */
+-extern int	jbd2_journal_init_revoke(journal_t *, int);
++extern int	jbd2_journal_init_revoke(journal_t *, int hash_size);
+ extern void	jbd2_journal_destroy_revoke(journal_t *);
+ extern void	jbd2_journal_destroy_revoke_record_cache(void);
+ extern void	jbd2_journal_destroy_revoke_table_cache(void);
+diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+index 19d68b4306..d25d60492c 100644
+--- a/e2fsck/journal.c
++++ b/e2fsck/journal.c
+@@ -1632,6 +1632,7 @@ static errcode_t recover_ext3_journal(e2fsck_t ctx)
+ 	struct problem_context	pctx;
+ 	journal_t *journal;
+ 	errcode_t retval;
++	long hash_size;
+ 
+ 	clear_problem_context(&pctx);
+ 
+@@ -1651,7 +1652,16 @@ static errcode_t recover_ext3_journal(e2fsck_t ctx)
+ 	if (retval)
+ 		goto errout;
+ 
+-	retval = jbd2_journal_init_revoke(journal, 1024);
++	/* The hash table defaults to 2 bytes per journal block (average of
++	 * 8 entries in a hash chain in absolute worst case), but the total
++	 * memory usage depends on the number of revoke blocks.  The system
++	 * should be able to handle this much RAM usage, since it uses at
++	 * least this much memory for the journal when running.  The max limit
++	 * check is to avoid problems if the journal size is wrong somehow. */
++	hash_size = roundup_power_of_two(journal->j_superblock->s_maxlen / 16);
++	if (hash_size > JBD2_MAX_JOURNAL_BLOCKS / 16)
++		hash_size = roundup_power_of_two(JBD2_MAX_JOURNAL_BLOCKS / 16);
++	retval = jbd2_journal_init_revoke(journal, hash_size);
+ 	if (retval)
+ 		goto errout;
+ 
+diff --git a/lib/ext2fs/jfs_compat.h b/lib/ext2fs/jfs_compat.h
+index 0e96b56c15..30b05822b6 100644
+--- a/lib/ext2fs/jfs_compat.h
++++ b/lib/ext2fs/jfs_compat.h
+@@ -58,7 +58,8 @@ typedef __u64 u64;
+                 (__flags), NULL)
+ 
+ #define blkdev_issue_flush(kdev)	sync_blockdev(kdev)
+-#define is_power_of_2(x)	((x) != 0 && (((x) & ((x) - 1)) == 0))
++#define is_power_of_2(x)		((x) != 0 && (((x) & ((x) - 1)) == 0))
++#define roundup_power_of_two(n)		(1UL << (ext2fs_log2_u32((n) - 1) + 1))
+ #define pr_emerg(fmt)
+ #define pr_err(...)
+ 
+diff --git a/lib/ext2fs/kernel-jbd.h b/lib/ext2fs/kernel-jbd.h
+index e569500632..4923a78d46 100644
+--- a/lib/ext2fs/kernel-jbd.h
++++ b/lib/ext2fs/kernel-jbd.h
+@@ -58,6 +58,7 @@ extern void * __jbd_kmalloc (char *where, size_t size, int flags, int retry);
+ 	__jbd_kmalloc(__FUNCTION__, (size), (flags), 1)
+ 
+ #define JBD2_MIN_JOURNAL_BLOCKS 1024
++#define JBD2_MAX_JOURNAL_BLOCKS (JBD2_MIN_JOURNAL_BLOCKS * 10000)
+ #define JBD2_DEFAULT_FAST_COMMIT_BLOCKS 256
+ 
  /*
-  * This is an efficient, overflow safe way of calculating ceil((1.0 * a) / b)
-  */
-diff --git a/lib/ext2fs/extent.c b/lib/ext2fs/extent.c
-index 82e75ccd7f..93161914bb 100644
---- a/lib/ext2fs/extent.c
-+++ b/lib/ext2fs/extent.c
-@@ -1720,18 +1720,6 @@ errcode_t ext2fs_extent_get_info(ext2_extent_handle_t handle,
- 	return 0;
- }
- 
--static int ul_log2(unsigned long arg)
--{
--	int	l = 0;
--
--	arg >>= 1;
--	while (arg) {
--		l++;
--		arg >>= 1;
--	}
--	return l;
--}
--
- size_t ext2fs_max_extent_depth(ext2_extent_handle_t handle)
+diff --git a/misc/util.c b/misc/util.c
+index 3e83169f11..01c9c5fa1f 100644
+--- a/misc/util.c
++++ b/misc/util.c
+@@ -49,6 +49,7 @@
+ #include "e2p/e2p.h"
+ #include "ext2fs/ext2_fs.h"
+ #include "ext2fs/ext2fs.h"
++#include "ext2fs/kernel-jbd.h"
+ #include "support/nls-enable.h"
+ #include "support/devname.h"
+ #include "blkid/blkid.h"
+@@ -266,7 +267,7 @@ static inline int fcsize_to_blks(ext2_filsys fs, int size)
+ void figure_journal_size(struct ext2fs_journal_params *jparams,
+ 		int requested_j_size, int requested_fc_size, ext2_filsys fs)
  {
- 	size_t iblock_sz = sizeof(((struct ext2_inode *)NULL)->i_block);
-@@ -1746,8 +1734,9 @@ size_t ext2fs_max_extent_depth(ext2_extent_handle_t handle)
- 	if (last_blocksize && last_blocksize == handle->fs->blocksize)
- 		return last_result;
+-	int total_blocks, ret;
++	int ret;
  
--	last_result = 1 + ((ul_log2(EXT_MAX_EXTENT_LBLK) - ul_log2(iblock_extents)) /
--		    ul_log2(extents_per_block));
-+	last_result = 1 + ((ext2fs_log2_u64(EXT_MAX_EXTENT_LBLK) -
-+			    ext2fs_log2_u64(iblock_extents)) /
-+			   ext2fs_log2_u32(extents_per_block));
- 	last_blocksize = handle->fs->blocksize;
- 	return last_result;
- }
-diff --git a/lib/ext2fs/progress.c b/lib/ext2fs/progress.c
-index 61ab3f04a5..b2eab7ea11 100644
---- a/lib/ext2fs/progress.c
-+++ b/lib/ext2fs/progress.c
-@@ -25,15 +25,6 @@ struct ext2fs_progress_ops ext2fs_numeric_progress_ops = {
- 	.close		= ext2fs_numeric_progress_close,
- };
- 
--static int int_log10(unsigned int arg)
--{
--	int	l;
--
--	for (l=0; arg ; l++)
--		arg = arg / 10;
--	return l;
--}
--
- void ext2fs_numeric_progress_init(ext2_filsys fs,
- 				  struct ext2fs_numeric_progress_struct * progress,
- 				  const char *label, __u64 max)
-@@ -58,10 +49,10 @@ void ext2fs_numeric_progress_init(ext2_filsys fs,
- 
- 
- 	/*
--	 * Figure out how many digits we need
-+	 * Figure out how many digits we need (always at least one)
- 	 */
- 	progress->max = max;
--	progress->log_max = int_log10(max);
-+	progress->log_max = ext2fs_log10_u64(max) + 1;
- 
- 	if (label) {
- 		fputs(label, stdout);
-diff --git a/misc/e2freefrag.c b/misc/e2freefrag.c
-index 63a3d43510..d5d2df428c 100644
---- a/misc/e2freefrag.c
-+++ b/misc/e2freefrag.c
-@@ -57,28 +57,16 @@ static void usage(const char *prog)
- #endif
- }
- 
--static int ul_log2(unsigned long arg)
--{
--        int     l = 0;
--
--        arg >>= 1;
--        while (arg) {
--                l++;
--                arg >>= 1;
--        }
--        return l;
--}
--
- static void init_chunk_info(ext2_filsys fs, struct chunk_info *info)
- {
- 	int i;
- 
--	info->blocksize_bits = ul_log2((unsigned long)fs->blocksize);
-+	info->blocksize_bits = ext2fs_log2_u32(fs->blocksize);
- 	if (info->chunkbytes) {
--		info->chunkbits = ul_log2(info->chunkbytes);
-+		info->chunkbits = ext2fs_log2_u32(info->chunkbytes);
- 		info->blks_in_chunk = info->chunkbytes >> info->blocksize_bits;
- 	} else {
--		info->chunkbits = ul_log2(DEFAULT_CHUNKSIZE);
-+		info->chunkbits = ext2fs_log2_u32(DEFAULT_CHUNKSIZE);
- 		info->blks_in_chunk = DEFAULT_CHUNKSIZE >> info->blocksize_bits;
+ 	ret = ext2fs_get_journal_params(jparams, fs);
+ 	if (ret) {
+@@ -275,7 +276,9 @@ void figure_journal_size(struct ext2fs_journal_params *jparams,
  	}
  
-@@ -97,7 +85,7 @@ static void update_chunk_stats(struct chunk_info *info,
- {
- 	unsigned long idx;
- 
--	idx = ul_log2(chunk_size) + 1;
-+	idx = ext2fs_log2_u32(chunk_size) + 1;
- 	if (idx >= MAX_HIST)
- 		idx = MAX_HIST-1;
- 	info->histogram.fc_chunks[idx]++;
-diff --git a/misc/e4crypt.c b/misc/e4crypt.c
-index af907041c8..eae1965a89 100644
---- a/misc/e4crypt.c
-+++ b/misc/e4crypt.c
-@@ -114,18 +114,6 @@ static const size_t hexchars_size = 16;
- #define EXT4_IOC_SET_ENCRYPTION_POLICY      _IOR('f', 19, struct ext4_encryption_policy)
- #define EXT4_IOC_GET_ENCRYPTION_POLICY      _IOW('f', 21, struct ext4_encryption_policy)
- 
--static int int_log2(int arg)
--{
--	int     l = 0;
--
--	arg >>= 1;
--	while (arg) {
--		l++;
--		arg >>= 1;
--	}
--	return l;
--}
--
- static void validate_paths(int argc, char *argv[], int path_start_index)
- {
- 	int x;
-@@ -386,7 +374,7 @@ static void set_policy(struct salt *set_salt, int pad,
- 			EXT4_ENCRYPTION_MODE_AES_256_XTS;
- 		policy.filenames_encryption_mode =
- 			EXT4_ENCRYPTION_MODE_AES_256_CTS;
--		policy.flags = int_log2(pad >> 2);
-+		policy.flags = ext2fs_log2_u32(pad >> 2);
- 		memcpy(policy.master_key_descriptor, salt->key_desc,
- 		       EXT4_KEY_DESCRIPTOR_SIZE);
- 		rc = ioctl(fd, EXT4_IOC_SET_ENCRYPTION_POLICY, &policy);
-diff --git a/misc/filefrag.c b/misc/filefrag.c
-index eaaa90a8bb..4641714c2e 100644
---- a/misc/filefrag.c
-+++ b/misc/filefrag.c
-@@ -76,30 +76,6 @@ const char *hex_fmt = "%4d: %*llx..%*llx: %*llx..%*llx: %6llx: %s\n";
- #define	EXT4_EXTENTS_FL			0x00080000 /* Inode uses extents */
- #define	EXT3_IOC_GETFLAGS		_IOR('f', 1, long)
- 
--static int ulong_log2(unsigned long arg)
--{
--	int     l = 0;
--
--	arg >>= 1;
--	while (arg) {
--		l++;
--		arg >>= 1;
--	}
--	return l;
--}
--
--static int ulong_log10(unsigned long long arg)
--{
--	int     l = 0;
--
--	arg = arg / 10;
--	while (arg) {
--		l++;
--		arg = arg / 10;
--	}
--	return l;
--}
--
- static unsigned int div_ceil(unsigned int a, unsigned int b)
- {
- 	if (!a)
-@@ -483,20 +459,20 @@ static int frag_report(const char *filename)
- 	}
- 	last_device = st.st_dev;
- 
--	width = ulong_log10(fsinfo.f_blocks);
-+	width = ext2fs_log10_u64(fsinfo.f_blocks);
- 	if (width > physical_width)
- 		physical_width = width;
- 
- 	numblocks = (st.st_size + blksize - 1) / blksize;
- 	if (blocksize != 0)
--		blk_shift = ulong_log2(blocksize);
-+		blk_shift = ext2fs_log2_u32(blocksize);
- 	else
--		blk_shift = ulong_log2(blksize);
-+		blk_shift = ext2fs_log2_u32(blksize);
- 
- 	if (use_extent_cache)
- 		width = 10;
- 	else
--		width = ulong_log10(numblocks);
-+		width = ext2fs_log10_u64(numblocks);
- 	if (width > logical_width)
- 		logical_width = width;
- 	if (verbose) {
-diff --git a/misc/mk_hugefiles.c b/misc/mk_hugefiles.c
-index 3caaf1b684..f2957d8cc1 100644
---- a/misc/mk_hugefiles.c
-+++ b/misc/mk_hugefiles.c
-@@ -417,7 +417,7 @@ errcode_t mk_hugefiles(ext2_filsys fs, const char *device_name)
- 	fn_prefix = get_string_from_profile(fs_types, "hugefiles_name",
- 					    "hugefile");
- 	idx_digits = get_int_from_profile(fs_types, "hugefiles_digits", 5);
--	d = int_log10(num_files) + 1;
-+	d = ext2fs_log10_u32(num_files) + 1;
- 	if (idx_digits > d)
- 		d = idx_digits;
- 	dsize = strlen(fn_prefix) + d + 16;
-diff --git a/misc/mke2fs.c b/misc/mke2fs.c
-index f24076bc1a..fbd81624ab 100644
---- a/misc/mke2fs.c
-+++ b/misc/mke2fs.c
-@@ -147,27 +147,6 @@ static void usage(void)
- 	exit(1);
- }
- 
--static int int_log2(unsigned long long arg)
--{
--	int	l = 0;
--
--	arg >>= 1;
--	while (arg) {
--		l++;
--		arg >>= 1;
--	}
--	return l;
--}
--
--int int_log10(unsigned long long arg)
--{
--	int	l;
--
--	for (l=0; arg ; l++)
--		arg = arg / 10;
--	return l;
--}
--
- #ifdef __linux__
- static int parse_version_number(const char *s)
- {
-@@ -782,7 +761,7 @@ skip_details:
- 			continue;
- 		if (i != 1)
- 			printf(", ");
--		need = int_log10(group_block) + 2;
-+		need = ext2fs_log10_u64(group_block) + 3;
- 		if (need > col_left) {
- 			printf("\n\t");
- 			col_left = 72;
-@@ -1753,8 +1732,8 @@ profile_error:
- 					blocksize);
- 			if (blocksize > 0)
- 				fs_param.s_log_block_size =
--					int_log2(blocksize >>
--						 EXT2_MIN_BLOCK_LOG_SIZE);
-+					ext2fs_log2_u32(blocksize >>
-+						       EXT2_MIN_BLOCK_LOG_SIZE);
- 			break;
- 		case 'c':	/* Check for bad blocks */
- 			cflag++;
-@@ -2042,7 +2021,7 @@ profile_error:
- 		blocksize = jfs->blocksize;
- 		printf(_("Using journal device's blocksize: %d\n"), blocksize);
- 		fs_param.s_log_block_size =
--			int_log2(blocksize >> EXT2_MIN_BLOCK_LOG_SIZE);
-+			ext2fs_log2_u32(blocksize >> EXT2_MIN_BLOCK_LOG_SIZE);
- 		ext2fs_close_free(&jfs);
- 	}
- 
-@@ -2297,7 +2276,7 @@ profile_error:
- 	}
- 
- 	fs_param.s_log_block_size =
--		int_log2(blocksize >> EXT2_MIN_BLOCK_LOG_SIZE);
-+		ext2fs_log2_u32(blocksize >> EXT2_MIN_BLOCK_LOG_SIZE);
- 
- 	/*
- 	 * We now need to do a sanity check of fs_blocks_count for
-@@ -2396,7 +2375,8 @@ profile_error:
- 							    "cluster_size",
- 							    blocksize*16);
- 		fs_param.s_log_cluster_size =
--			int_log2(cluster_size >> EXT2_MIN_CLUSTER_LOG_SIZE);
-+			ext2fs_log2_u32(cluster_size >>
-+					EXT2_MIN_CLUSTER_LOG_SIZE);
- 		if (fs_param.s_log_cluster_size &&
- 		    fs_param.s_log_cluster_size < fs_param.s_log_block_size) {
- 			com_err(program_name, 0, "%s",
-@@ -2686,7 +2666,7 @@ profile_error:
- 				  "flex_bg size may not be specified"));
+ 	if (requested_j_size > 0 ||
+-		(ext2fs_has_feature_fast_commit(fs->super) && requested_fc_size > 0)) {
++	    (ext2fs_has_feature_fast_commit(fs->super) && requested_fc_size > 0)) {
++		unsigned int total_blocks;
++
+ 		if (requested_j_size > 0)
+ 			jparams->num_journal_blocks =
+ 				jsize_to_blks(fs, requested_j_size);
+@@ -286,15 +289,15 @@ void figure_journal_size(struct ext2fs_journal_params *jparams,
+ 		else if (!ext2fs_has_feature_fast_commit(fs->super))
+ 			jparams->num_fc_blocks = 0;
+ 		total_blocks = jparams->num_journal_blocks + jparams->num_fc_blocks;
+-		if (total_blocks < 1024 || total_blocks > 10240000) {
+-			fprintf(stderr, _("\nThe total requested journal "
+-				"size is %d blocks; it must be\n"
+-				"between 1024 and 10240000 blocks.  "
+-				"Aborting.\n"),
+-				total_blocks);
++		if (total_blocks < JBD2_MIN_JOURNAL_BLOCKS ||
++		    total_blocks > JBD2_MAX_JOURNAL_BLOCKS) {
++			fprintf(stderr,
++				_("\nThe total requested journal size is %d blocks;\nit must be between %d and %u blocks.  Aborting.\n"),
++				total_blocks, JBD2_MIN_JOURNAL_BLOCKS,
++				JBD2_MAX_JOURNAL_BLOCKS);
  			exit(1);
  		}
--		fs_param.s_log_groups_per_flex = int_log2(flex_bg_size);
-+		fs_param.s_log_groups_per_flex = ext2fs_log2_u32(flex_bg_size);
- 	}
- 
- 	if (inode_size && fs_param.s_rev_level >= EXT2_DYNAMIC_REV) {
-diff --git a/misc/mke2fs.h b/misc/mke2fs.h
-index ce72cb3f59..c718fcebaf 100644
---- a/misc/mke2fs.h
-+++ b/misc/mke2fs.h
-@@ -21,7 +21,6 @@ extern char *get_string_from_profile(char **types, const char *opt,
- 				     const char *def_val);
- extern int get_int_from_profile(char **types, const char *opt, int def_val);
- extern int get_bool_from_profile(char **types, const char *opt, int def_val);
--extern int int_log10(unsigned long long arg);
- 
- /* mk_hugefiles.c */
- extern errcode_t mk_hugefiles(ext2_filsys fs, const char *device_name);
+-		if ((unsigned int) total_blocks > ext2fs_free_blocks_count(fs->super) / 2) {
++		if (total_blocks > ext2fs_free_blocks_count(fs->super) / 2) {
+ 			fputs(_("\nTotal journal size too big for filesystem.\n"),
+ 			      stderr);
+ 			exit(1);
 -- 
 2.39.5 (Apple Git-154)
 
