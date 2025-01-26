@@ -1,75 +1,75 @@
-Return-Path: <linux-ext4+bounces-6235-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6236-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23E73A1C68C
-	for <lists+linux-ext4@lfdr.de>; Sun, 26 Jan 2025 08:06:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60D01A1C6A0
+	for <lists+linux-ext4@lfdr.de>; Sun, 26 Jan 2025 08:26:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68A1A166FAC
-	for <lists+linux-ext4@lfdr.de>; Sun, 26 Jan 2025 07:06:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA5FC3A66E3
+	for <lists+linux-ext4@lfdr.de>; Sun, 26 Jan 2025 07:26:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4203D154C1D;
-	Sun, 26 Jan 2025 07:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B67C419D083;
+	Sun, 26 Jan 2025 07:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I3uaE59g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kwXfhOVY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE817082F;
-	Sun, 26 Jan 2025 07:06:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED790199935;
+	Sun, 26 Jan 2025 07:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737875196; cv=none; b=IH3cfpDvZkXMjSjaUDW+7ZdvGyp2ttdY8SSDRSwRSEiSba+gezt6pOC7+0sLwAshM6Q4D+yCLtuFZPDOKc1vK2sH6G2/lpVjqC143xQd2ZTC459oSL3NZQ+UdpoJk03j6EK6n3LnFh0Z41sIHWA0T3TA1LUEg9hKb98MFUhNkSI=
+	t=1737876392; cv=none; b=mBVXzNtxYY0rgMsgr+kcnq6Xf6DdzRZ89S5bl9m8IOVuyENeh+Vsk5vZosU3cGoR3kv1HeJPuguqV9aKfC+5q1TzZkXoAWM6Vq0Uv2L3wDaQ+l2PLvRjh9MB+3QdpNNwXeii8bk5csVOtBaXqwHIifCOaguGxnIbq9XPACQPSgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737875196; c=relaxed/simple;
-	bh=DokAvFMYHvCS7wwzqg/QbP3GSVrjtUU72Ulg1mCoC+I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dnb5ymcb6sjdedlZpnvB6Vem+wwTyIv6qaAvA39k071UdUTZc5XxAGSBLb0E8edJptiSzqFhp2ggnVERarv1xnzbFJAht5Udi2s09c1BmteRXUYxq9ESBWimfUHqP3CmBgl17HlCQZ1cPbBEVVvWAGU3UTJIXwyLA6uYjeuGArU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I3uaE59g; arc=none smtp.client-ip=209.85.216.48
+	s=arc-20240116; t=1737876392; c=relaxed/simple;
+	bh=NyRI9Satwu4DQJH+8IfZu6r0UeUiVWZIi2bjDu2lW2M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GCwOgWFL/6sOf2CK/TDzgTOZ0DlRfq7hQwtPWSqFUOAfGUabLFDm9OVxPm+6O5Pvt/4Q6Il0d+PlWvxkmPH+oxNCfI9JMHxWaYK7PDfHXXeBWqkDEuXB6u50p9viiEyMb9Sgi1F6gtTq5EMCtq+0fZmGEH+0Gj0uJuaNNbeksdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kwXfhOVY; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2efe25558ddso4606694a91.2;
-        Sat, 25 Jan 2025 23:06:34 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2163dc5155fso60302915ad.0;
+        Sat, 25 Jan 2025 23:26:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737875194; x=1738479994; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737876390; x=1738481190; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jp7vJlctohKjGrnhTeUGmb5s8Xd2NGxP7ChmuU+0czI=;
-        b=I3uaE59gGNVL+WJAEL/yIGGR4gF8WfBIAHVA5xQnjHCp/QFX0QYoHQFcGhHwuSQ2cA
-         JCHlwg8BCObUVILqMbgEOpkcg2GkI7ve22a9AW6MpmYq04LTSUz4ZG6SjwvBVtc1ZvBd
-         stXHGcAXzXk/rf8nE2+d/I1IOYVHpQlLoSzTnQ5h/Fs+N+niDrDo1pzXfmi9mpYRas9j
-         ytINNv/oyjrQTnLnjrlVnJKB+7F0dc/ozPaDtgtnaAFTeisKkW3UF0gvhdLgKQMRct+/
-         FvrEP4W76xwO8/yFgGlcrWTRmPKsbTb0TA7n+BJww2W2UnD1g+FJNK+N/FCH07H36qEI
-         27/A==
+        bh=ZFI0HaY8q73gv6QwNnnXtgPC3k8vf0PbOjWX90oh3Ew=;
+        b=kwXfhOVY5thwQo7D+37Lxo3vdgpmfFISYFxLJEhX7j4MEfNpGUvPFDVVA5aC5PPDP4
+         5yBSVhiFY+FOrCMUuiUoPqTN3blP7AJGb1xkZNbxGfl5AktYYh9f3HiRoQVf8PaaS1Ty
+         mbpUup/LvhTJEuLhMkB7wSA3PiJGurpgc6CFZVFLQl2fnZqB/+veiC/zuyGldjTGbtWq
+         7f+flAoBUt2qV70eBMHhdMtZIvnBmVsdFUo3MhOdl9cmpwKJAqFQe62TCzDFTJ+Tca/P
+         dEQSTE+P44rm4bLDYmxK/ISUQX97eic5yw7eFkQbICJN/nZfDGltlCqKbRLkKjhNKozR
+         4rEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737875194; x=1738479994;
+        d=1e100.net; s=20230601; t=1737876390; x=1738481190;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Jp7vJlctohKjGrnhTeUGmb5s8Xd2NGxP7ChmuU+0czI=;
-        b=YrS48WXHe0SVarZkBeGJYwmXk12d/hV4Q0uWffxND2msaJ6L5IoUZiPv1kfXYJ1C4q
-         zlVMw7yVPHcab+tx67VJOPiBGDNELIhVAXIF3FhgbNA0bHEhvuEgmy4NqZbRhVEGJCeo
-         EW7dbRaernN1/lYXetl2/NLD2KMnph6EYkYNO/1NUFRusz52VokGfUguVJdmsY+nFj3g
-         6+pQ7bs6uHYpkz3swvkRtJaXWzapVLzH81Rpegb710yQa6bkM3PVz8Acpfx58BHFANWn
-         /ODz1XZtw2Ckq1YzBCv5lT3vSt/XFX+Q+Gxvr/Hf+bD4hk7PZ+Fl/2IeudpSK+E+lhDl
-         DMtA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDw1zFsYiOIXq9NuUvARp0RxwD6S1VbQYrDPc0Q2PB5u27ScrnwJpG1ThY7ZBVST8DoQqVazuk4Or4@vger.kernel.org, AJvYcCUNjBT3jUMSDCm6trdhYMOuAAZ9guJtWN+9zrHkNWlvNd823AJZmJjVIpsAMhX4dyvZ6YBUqEckxT67Spap@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9cFESPOryu/N+NJdJPVVuXOgMyep8kwlX1l2Nnqp78VSp0V3l
-	H6OzL1lzBdv9TzX28Y8tvqmhoRuC8QC8nbeEqLpN64g54NR8hXLIVGCn0cOT
-X-Gm-Gg: ASbGncs4nM8M2gvA0q706qS3fsgSiCnJ8TLfJlkVd7aJnQ8f1aa+cFCbXk5jxJ9ravB
-	Of/55Eh8QM9TR3QoRLLgYJcs2TM55JYP4zH7yVK9RUkGWlIzU9YWMHSWwWfrTfi1PgZTEtPMHqj
-	vMZxlu5Oan96Rb0ja+QXUeZAILhdeyrDhSOkXLjsqPQ6zN6wAcYmP/8vR/YRmr1TweDd7oLd1Q2
-	HA29atrJUj+7ymzORsOMy8JnJ1IAlQY7Skcf4PIRraI2C4nxkm9OrdInFD7+gqwjzEaczZORnQu
-	liRjkDQcS0arrvz2gEi9nGNMxr1v
-X-Google-Smtp-Source: AGHT+IGVUgql88xL7lvmloKC6GraKhyom+fznIVGV33PTFWKzYWPbpAU52q//gQzVZ77A8dSRI3eyw==
-X-Received: by 2002:a17:90b:280e:b0:2ee:7c65:ae8e with SMTP id 98e67ed59e1d1-2f782c700c6mr52588232a91.11.1737875193857;
-        Sat, 25 Jan 2025 23:06:33 -0800 (PST)
+        bh=ZFI0HaY8q73gv6QwNnnXtgPC3k8vf0PbOjWX90oh3Ew=;
+        b=QU9mZizzuNouQ7Bi43RUuo6ZWjFbBkqw1QN5BWhMDeeMm8d2H4mLQOBzSUTHc22l7p
+         Axs1Vax2CxVFceM9wSAcXOGPwqy3saxAyA3kG8kjX52cUmRNse+KaYcX5mogtevKD3FI
+         snZBT/3ArQmNOe36DZAodJvN2Q/Gb+Ce5VX6fTJSGdFcHWrAO3XiIp6PI8Lzxl2IF1j1
+         BOd5Ayv2euTLXAqyICNHVTVFegnQ4gsSR0Hp9/D3GBjFuXg2Cq9fL2/8Gu28fB9IxCZX
+         tmUuwl32xaRrvpWKVJhJVKlQRcRE+ChA0tGCESOKhtl6dmjRQq5pK22MCI+o/Zztr0Ge
+         ikLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV7n57+27k5ato+xDqSugxVIfwkln4J406TGdhUnN0NjuGcR8a6vVF+WQJrp+1vN8IdGT6Gb8PhcuCu@vger.kernel.org, AJvYcCXfYC/QY8dnnvMmkBO3AAlRNRmN6WrhIukvksy3NBwdOM9C+OCe899/CGfOOKbaH50cYTktHy1mt8K8WXxn@vger.kernel.org
+X-Gm-Message-State: AOJu0YyToiu8J8994whdujmGznZYx6T1rDZfhtojUgchcnQKLQ4olda5
+	eX1vwo8FxwWjCcnwCfUqRHZt6xjSMIEm7N/o1TLzHV3QDV/9dppprvFn2nxz
+X-Gm-Gg: ASbGncuzHQAyxKpvcpSFlC8/GP+vGxJKVs+Qk8YgVWAXJ4NcGudY4/+rzDQESlJWg+Z
+	0aplNgineTpFxH/h/vr2wmpPMw0mdDcTtTbEy4mJdMz5AkCjereWowWfaHnv3kVSw/U0Hlx6tR5
+	eXvPyKcYJ5wG4g3SMkgqWA0VVI7lef9pg3Q4QFgBmKS26NhyzhWw8pa1aT/Vcgrs0PdBnYpnPzQ
+	xFpVbPpICyqSqhZ65TlDwRVCA8TeMDpZRK4y3LdGWEkVUvwbqBd7wB1ZuLNMRtBtDT4ieOfmJpa
+	Cj2NeWb6DHTzturIifYsxDFXzRsi
+X-Google-Smtp-Source: AGHT+IHWPwQzogsNSXBVIXjCZN69QYpzzS/w7TRxE9yb6ZQtXD/7HhfNnYiRm8XxIUmD11zSTcGaAA==
+X-Received: by 2002:a17:903:1ce:b0:216:4a06:e87a with SMTP id d9443c01a7336-21c355dc64bmr580552455ad.40.1737876389737;
+        Sat, 25 Jan 2025 23:26:29 -0800 (PST)
 Received: from jren-d3.localdomain ([221.222.59.31])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffa77043sm5209527a91.35.2025.01.25.23.06.26
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da3d9c605sm41804905ad.41.2025.01.25.23.26.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jan 2025 23:06:32 -0800 (PST)
+        Sat, 25 Jan 2025 23:26:29 -0800 (PST)
 From: Imkanmod Khan <imkanmodkhan@gmail.com>
 To: stable@vger.kernel.org
 Cc: luis.henriques@linux.dev,
@@ -81,9 +81,9 @@ Cc: luis.henriques@linux.dev,
 	linux-kernel@vger.kernel.org,
 	stable@kernel.org,
 	Imkanmod Khan <imkanmodkhan@gmail.com>
-Subject: [PATCH 6.1.y] ext4: fix access to uninitialised lock in fc replay path
-Date: Sun, 26 Jan 2025 15:06:20 +0800
-Message-ID: <20250126070620.8071-1-imkanmodkhan@gmail.com>
+Subject: [PATCH 6.6.y] ext4: fix access to uninitialised lock in fc replay path
+Date: Sun, 26 Jan 2025 15:26:20 +0800
+Message-ID: <20250126072620.8474-1-imkanmodkhan@gmail.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -146,10 +146,10 @@ Signed-off-by: Imkanmod Khan <imkanmodkhan@gmail.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 0b2591c07166..53f1deb049ec 100644
+index 71ced0ada9a2..f019ce64eba4 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -5264,6 +5264,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+@@ -5366,6 +5366,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
  	INIT_LIST_HEAD(&sbi->s_orphan); /* unlinked but open files */
  	mutex_init(&sbi->s_orphan_lock);
  
@@ -158,14 +158,14 @@ index 0b2591c07166..53f1deb049ec 100644
  	ext4_fast_commit_init(sb);
  
  	sb->s_root = NULL;
-@@ -5514,7 +5516,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+@@ -5586,7 +5588,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
  	 * Save the original bdev mapping's wb_err value which could be
  	 * used to detect the metadata async write error.
  	 */
 -	spin_lock_init(&sbi->s_bdev_wb_lock);
  	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
  				 &sbi->s_bdev_wb_err);
- 	sb->s_bdev->bd_super = sb;
+ 	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
 -- 
 2.25.1
 
