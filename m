@@ -1,188 +1,218 @@
-Return-Path: <linux-ext4+bounces-6245-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6246-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86EE6A1DC4C
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jan 2025 19:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 059A6A1DD95
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jan 2025 21:53:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4FBE165988
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jan 2025 18:57:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64ED91649AD
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jan 2025 20:52:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B39F190472;
-	Mon, 27 Jan 2025 18:57:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B4E19883C;
+	Mon, 27 Jan 2025 20:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l1f1C9g3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A302A18FDBD
-	for <linux-ext4@vger.kernel.org>; Mon, 27 Jan 2025 18:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6292918E756;
+	Mon, 27 Jan 2025 20:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738004249; cv=none; b=k7n6ohN+qEHqDjJ32YFVE9PIRdj/MhbZSi64LpantMn9uQcjXiGU3+yyY6CjXGK7EEsQqqBMImZanMs1EG48GrXTZnXmsUrjIU1Q9vJvYIm8kPIOCiY113MPWyRsAMH9qpJHLFtNf75s9iiHyGs5BjTO5g5au+LJ6UYRROoGdYE=
+	t=1738011173; cv=none; b=q6RBbV6mOKQz3RjQfZxacvetM2G/FDaRlb39FXmp3epcDDhgTj/ggNYSaK7V3nnRpPF6QfiR1t/IQRk3y/IJBqngXQjC+VVlDmCWEMrs/6OTWNVyaXkIGydRogSiHY94qzhY//SYd23xhhe9I0mIO0nqUKDtt0bIW5ZwRvonUXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738004249; c=relaxed/simple;
-	bh=Irbtvuv3M4iQhQ87ABPC4S+AQ5W12yrTGIMJa66tOos=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=BuBohXZsrA0pBAT70mMSxvt+mkDJwG5FQBF/7hORMNLWWIvYSwXWSOCJU7o9wSvza4TSAasuZlUGfGtbGVmDGr+/Lvek9MZ/odyqq5BJsL113WCmLyNNfC0Hj49X84YJsa+l3nXUaqxj3y5gsn4/seihyFF6kGGJTmfktj2P/DU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3ce7c75cae9so39935365ab.1
-        for <linux-ext4@vger.kernel.org>; Mon, 27 Jan 2025 10:57:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738004246; x=1738609046;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ce4Jel8k5YTpetQniWt3z9fHjK1qO5A/34EZW4fq8po=;
-        b=IpweKfUb9aPDVrkLbR7MNpLrhckNhbO72ac1qlBcJdjL6umBUaebLFRZWJ8QmqDit7
-         gqHzAQBpuQQ2T0CjbtbyNEIJHT9p2GKyjjOXIRnB1jW9n9ZgXHVm9yykQB8kM8aN1ZNs
-         mynk0DNw+EPVWdulgYP5L3BmDwes5Kn6Auz424xEnMsaRKhrYnyz4CvDFIwX6+j+wNeO
-         wrW7yAZ3vQ5nt9duQh6HZsKG0doFX25C3xxIVKFEjdGMsOrpDeIrjNpxRgNjlIulxdTp
-         hyTbn3V+4PQSt4hDNREO3WE3J2WpfqZ1YZasRlGzf/llTyn8cOSIBnF1BPVz7+CTBiKu
-         hi9w==
-X-Forwarded-Encrypted: i=1; AJvYcCV0aEkPZLXljKzR7KJ9Oz07GnKVd4hUO/qqRTHhsrWNUJtF4McxmQdij05zAi466zwmqZX2U7X6fjBr@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVFs6NswHPhglefmGO/XmhnpAfeWNNzVP0VkftL1BmABFyaC8P
-	uXcPlLVsVBWTF4C+xYif6X93qE2R+f6Vq1gwg9Cnu0fPEbRGnFO0W2Y563ulavzt14HqaQjyboh
-	0gL6XGMYUZfHbsc6XZ6aSiwJ4cVY7Wm0G5mEUY3uHz5OLQcF0SbwiTnc=
-X-Google-Smtp-Source: AGHT+IHJ2T98Ld5+vyQfZDQvFZ662KyFf7VTOw+Q5pNmMPXr7w1RmsliXZttRCnEcwuGsg835cY5Nh6w4QC1AGpacu7Kft28EN4H
+	s=arc-20240116; t=1738011173; c=relaxed/simple;
+	bh=T51EV7oWtnzeq2xUVL424UiG8rTTRLgv2HL6D6q2fg0=;
+	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To; b=AH73B91tiyv31JPQ19Zn4GTRML36SkXKY2477S66/gfQHHQEKPSvHM61RAn/j89uFMgEcO7uAbkW/RExrfSjdhqOIMV6Wqbh8FAhMPtgJmS8uy6QCMnFsPOljeMRVJCi/3l8fp0VJIfXbgfO5T2Kf0dNql0+FE+kU/nLbqVxrMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l1f1C9g3; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738011171; x=1769547171;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to;
+  bh=T51EV7oWtnzeq2xUVL424UiG8rTTRLgv2HL6D6q2fg0=;
+  b=l1f1C9g3xQIoFhUmcleZIRSRP4o03lY/f6Ek6k1BTVKans+U/5Fmvc3B
+   j4BxDLpBjLXh5WXlX6NjX85pmhhe1RGbpdANHQddvlRdOS0TqES03VU+a
+   t4HrkFHb/CklCAWolWgpS6y3FJdLLvsGRMF2l2ufTxZNVLU3iJYlGktHT
+   suIe+UmwhNoY94lJH0SNRciCnND699ik3ndS2AZvdg+ECpZH2/8wgp+b1
+   ReGDQoFilJv7HFrXbh/mj8i3syHc0iAsBR8qIV8Z3bsCAci3n8HMzV09Q
+   4jon+Qf0h+Cqf1m27lDWyZ0uAm8H38vtn2fLxup6PR7oZfiw92UkZPI8H
+   w==;
+X-CSE-ConnectionGUID: ASdK+v0CQ66oyOzNqh78tA==
+X-CSE-MsgGUID: 69Y0RLAQTomRDAk4aeSuKQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11328"; a="37689169"
+X-IronPort-AV: E=Sophos;i="6.13,239,1732608000"; 
+   d="scan'208";a="37689169"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2025 12:52:50 -0800
+X-CSE-ConnectionGUID: fSZ43H5NSki9tZzVVNYLYQ==
+X-CSE-MsgGUID: K1yFmy9oRuaIYHLaSbiIEQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,239,1732608000"; 
+   d="scan'208";a="108348881"
+Received: from mdroper-mobl2.amr.corp.intel.com (HELO [10.124.220.126]) ([10.124.220.126])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2025 12:52:50 -0800
+Content-Type: multipart/mixed; boundary="------------0TEcSh69VAAa8CV0XmvFTA5D"
+Message-ID: <76b80fff-0f62-4708-95e6-87de272f35a5@intel.com>
+Date: Mon, 27 Jan 2025 12:52:51 -0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1caf:b0:3cf:c8f0:70f8 with SMTP id
- e9e14a558f8ab-3cff3db9ce6mr4585915ab.4.1738004246734; Mon, 27 Jan 2025
- 10:57:26 -0800 (PST)
-Date: Mon, 27 Jan 2025 10:57:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6797d716.050a0220.ac840.01d6.GAE@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in ext4_es_cache_extent (2)
-From: syzbot <syzbot+3f197ab3ac3fca17f7cf@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: use private version of page_zero_new_buffers() for
+ data=journal mode
+To: Mateusz Guzik <mjguzik@gmail.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+ akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org
+References: <20151007154303.GC24678@thunk.org>
+ <1444363269-25956-1-git-send-email-tytso@mit.edu>
+ <yxyuijjfd6yknryji2q64j3keq2ygw6ca6fs5jwyolklzvo45s@4u63qqqyosy2>
+ <CAHk-=wigdcg+FtWm5Fds5M2P_7GKSfXxpk-m9jkx0C6FMCJ_Jw@mail.gmail.com>
+ <CAGudoHGJah8VNm6V1pZo2-C0P-y6aUbjMedp1SeAGwwDLua2OQ@mail.gmail.com>
+ <CAHk-=wh=UVTC1ayTBTksd+mWiuA+pgLq75Ude2++ybAoSZAX3g@mail.gmail.com>
+ <CAGudoHHyEQ1swCJkFDicb8hYYSMCXyMUcRVrtWkbeYwSChCmpQ@mail.gmail.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <CAGudoHHyEQ1swCJkFDicb8hYYSMCXyMUcRVrtWkbeYwSChCmpQ@mail.gmail.com>
 
-Hello,
+This is a multi-part message in MIME format.
+--------------0TEcSh69VAAa8CV0XmvFTA5D
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-syzbot found the following issue on:
+On 1/26/25 14:45, Mateusz Guzik wrote:
+>>
+>> So if you don't get around to it, and _if_ I remember this when the
+>> merge window is open, I might do it in my local tree, but then it will
+>> end up being too late for this merge window.
+>>
+> The to-be-unreverted change was written by Dave (cc'ed).
+> 
+> I had a brief chat with him on irc, he said he is going to submit an
+> updated patch.
 
-HEAD commit:    21266b8df522 Merge tag 'AT_EXECVE_CHECK-v6.14-rc1' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13775ab0580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f9e008bfc27b14db
-dashboard link: https://syzkaller.appspot.com/bug?extid=3f197ab3ac3fca17f7cf
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+I poked at it a bit today. There's obviously been the page=>folio churn
+and also iov_iter_fault_in_readable() got renamed and got some slightly
+new semantics.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Additionally, I'm doubting the explicit pagefault_disable(). The
+original patch did this:
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-21266b8d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/96d2e2351b97/vmlinux-21266b8d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/df52cb464cba/bzImage-21266b8d.xz
++      pagefault_disable();
+       copied = iov_iter_copy_from_user_atomic(page, i, offset, bytes);
++      pagefault_enable();
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3f197ab3ac3fca17f7cf@syzkaller.appspotmail.com
+and the modern generic_perform_write() is using:
 
-loop0: detected capacity change from 0 to 512
-EXT4-fs: Ignoring removed i_version option
-EXT4-fs: Ignoring removed orlov option
-EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, O_DIRECT and fast_commit support!
-EXT4-fs (loop0): encrypted files will use data=ordered instead of data journaling mode
-EXT4-fs (loop0): 1 truncate cleaned up
-EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: none.
-------------[ cut here ]------------
-kernel BUG at fs/ext4/extents_status.c:203!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5328 Comm: syz.0.0 Not tainted 6.13.0-syzkaller-04858-g21266b8df522 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:ext4_es_end fs/ext4/extents_status.c:203 [inline]
-RIP: 0010:__es_tree_search fs/ext4/extents_status.c:221 [inline]
-RIP: 0010:ext4_es_cache_extent+0x68d/0x7e0 fs/ext4/extents_status.c:985
-Code: ff e9 b1 fe ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 38 fe ff ff 4c 89 f7 e8 fe 53 b0 ff e9 2b fe ff ff e8 24 ce 49 ff 90 <0f> 0b e8 ac a1 7d 09 f3 0f 1e fa 65 8b 1d 2d 3b ae 7d bf 07 00 00
-RSP: 0018:ffffc9000d4bf340 EFLAGS: 00010283
-RAX: ffffffff82559acc RBX: 0000000000000000 RCX: 0000000000100000
-RDX: ffffc9000e502000 RSI: 00000000000008a1 RDI: 00000000000008a2
-RBP: ffffc9000d4bf448 R08: ffffffff82559802 R09: fffff52001a97e58
-R10: dffffc0000000000 R11: fffff52001a97e58 R12: 0000000000000021
-R13: dffffc0000000000 R14: ffff888043da7b0c R15: 1ffff110087b4f61
-FS:  00007fb74f8116c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb74eb96788 CR3: 0000000043882000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ext4_cache_extents fs/ext4/extents.c:540 [inline]
- ext4_find_extent+0x3e8/0xd50 fs/ext4/extents.c:927
- ext4_get_verity_descriptor_location fs/ext4/verity.c:292 [inline]
- ext4_get_verity_descriptor+0x122/0x610 fs/ext4/verity.c:346
- fsverity_get_descriptor+0x8e/0x440 fs/verity/open.c:330
- ensure_verity_info fs/verity/open.c:370 [inline]
- __fsverity_file_open+0x15d/0x2b0 fs/verity/open.c:391
- fsverity_file_open include/linux/fsverity.h:300 [inline]
- ext4_file_open+0x25a/0x8b0 fs/ext4/file.c:892
- do_dentry_open+0xbe1/0x1b70 fs/open.c:938
- vfs_open+0x3e/0x330 fs/open.c:1068
- do_open fs/namei.c:3828 [inline]
- path_openat+0x2c84/0x3590 fs/namei.c:3987
- do_filp_open+0x27f/0x4e0 fs/namei.c:4014
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1395
- do_sys_open fs/open.c:1410 [inline]
- __do_sys_openat fs/open.c:1426 [inline]
- __se_sys_openat fs/open.c:1421 [inline]
- __x64_sys_openat+0x247/0x2a0 fs/open.c:1421
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fb74e98cd29
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb74f811038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00007fb74eba5fa0 RCX: 00007fb74e98cd29
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: ffffffffffffff9c
-RBP: 00007fb74ea0e2a0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000030 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007fb74eba5fa0 R15: 00007fff9c4d19b8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_es_end fs/ext4/extents_status.c:203 [inline]
-RIP: 0010:__es_tree_search fs/ext4/extents_status.c:221 [inline]
-RIP: 0010:ext4_es_cache_extent+0x68d/0x7e0 fs/ext4/extents_status.c:985
-Code: ff e9 b1 fe ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 38 fe ff ff 4c 89 f7 e8 fe 53 b0 ff e9 2b fe ff ff e8 24 ce 49 ff 90 <0f> 0b e8 ac a1 7d 09 f3 0f 1e fa 65 8b 1d 2d 3b ae 7d bf 07 00 00
-RSP: 0018:ffffc9000d4bf340 EFLAGS: 00010283
-RAX: ffffffff82559acc RBX: 0000000000000000 RCX: 0000000000100000
-RDX: ffffc9000e502000 RSI: 00000000000008a1 RDI: 00000000000008a2
-RBP: ffffc9000d4bf448 R08: ffffffff82559802 R09: fffff52001a97e58
-R10: dffffc0000000000 R11: fffff52001a97e58 R12: 0000000000000021
-R13: dffffc0000000000 R14: ffff888043da7b0c R15: 1ffff110087b4f61
-FS:  00007fb74f8116c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb74eb96788 CR3: 0000000043882000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+       copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
 
+But the "atomic" copy is using kmap_atomic() internally which has a
+built-in pagefault_disable(). It wouldn't be super atomic if it were
+handling page faults of course.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+So I don't think generic_perform_write() needs to do its own
+pagefault_disable().
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I actually still had the original decade-old test case sitting around
+compiled on my test box. It still triggers the issue and _will_ livelock
+if fault_in_iov_iter_readable() isn't called somewhere.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Anyway, here's a patch that compiles, boots and doesn't immediately fall
+over on ext4 in case anyone else wants to poke at it. I'll do a real
+changelog, SoB, etc.... and send it out for real tomorrow if it holds up.
+--------------0TEcSh69VAAa8CV0XmvFTA5D
+Content-Type: text/x-patch; charset=UTF-8;
+ name="generic_perform_write-1.patch"
+Content-Disposition: attachment; filename="generic_perform_write-1.patch"
+Content-Transfer-Encoding: base64
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+CmluZGV4IDRmNDc2NDExYTlhMmQuLjk4YjM3ZTRjNmQ0M2MgMTAwNjQ0CgotLS0KCiBiL21t
+L2ZpbGVtYXAuYyB8ICAgMjUgKysrKysrKysrKysrKystLS0tLS0tLS0tLQogMSBmaWxlIGNo
+YW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQoKZGlmZiAtcHVOIG1t
+L2ZpbGVtYXAuY35nZW5lcmljX3BlcmZvcm1fd3JpdGUtMSBtbS9maWxlbWFwLmMKLS0tIGEv
+bW0vZmlsZW1hcC5jfmdlbmVyaWNfcGVyZm9ybV93cml0ZS0xCTIwMjUtMDEtMjcgMDk6NTM6
+MTMuMjE5MTIwOTY5IC0wODAwCisrKyBiL21tL2ZpbGVtYXAuYwkyMDI1LTAxLTI3IDEyOjI4
+OjQwLjMzMzkyMDQzNCAtMDgwMApAQCAtNDAyNywxNyArNDAyNyw2IEBAIHJldHJ5OgogCQli
+eXRlcyA9IG1pbihjaHVuayAtIG9mZnNldCwgYnl0ZXMpOwogCQliYWxhbmNlX2RpcnR5X3Bh
+Z2VzX3JhdGVsaW1pdGVkKG1hcHBpbmcpOwogCi0JCS8qCi0JCSAqIEJyaW5nIGluIHRoZSB1
+c2VyIHBhZ2UgdGhhdCB3ZSB3aWxsIGNvcHkgZnJvbSBfZmlyc3RfLgotCQkgKiBPdGhlcndp
+c2UgdGhlcmUncyBhIG5hc3R5IGRlYWRsb2NrIG9uIGNvcHlpbmcgZnJvbSB0aGUKLQkJICog
+c2FtZSBwYWdlIGFzIHdlJ3JlIHdyaXRpbmcgdG8sIHdpdGhvdXQgaXQgYmVpbmcgbWFya2Vk
+Ci0JCSAqIHVwLXRvLWRhdGUuCi0JCSAqLwotCQlpZiAodW5saWtlbHkoZmF1bHRfaW5faW92
+X2l0ZXJfcmVhZGFibGUoaSwgYnl0ZXMpID09IGJ5dGVzKSkgewotCQkJc3RhdHVzID0gLUVG
+QVVMVDsKLQkJCWJyZWFrOwotCQl9Ci0KIAkJaWYgKGZhdGFsX3NpZ25hbF9wZW5kaW5nKGN1
+cnJlbnQpKSB7CiAJCQlzdGF0dXMgPSAtRUlOVFI7CiAJCQlicmVhazsKQEAgLTQwNTUsNiAr
+NDA0NCwxMSBAQCByZXRyeToKIAkJaWYgKG1hcHBpbmdfd3JpdGFibHlfbWFwcGVkKG1hcHBp
+bmcpKQogCQkJZmx1c2hfZGNhY2hlX2ZvbGlvKGZvbGlvKTsKIAorCQkvKgorCQkgKiBUaGlz
+IG5lZWRzIHRvIGJlIGF0b21pYyBiZWNhdXNlIGFjdHVhbGx5IGhhbmRsaW5nIHBhZ2UKKwkJ
+ICogZmF1bHRzIG9uICdpJyBjYW4gZGVhZGxvY2sgaWYgdGhlIGNvcHkgdGFyZ2V0cyBhCisJ
+CSAqIHVzZXJzcGFjZSBtYXBwaW5nIG9mICdmb2xpbycuCisJCSAqLwogCQljb3BpZWQgPSBj
+b3B5X2ZvbGlvX2Zyb21faXRlcl9hdG9taWMoZm9saW8sIG9mZnNldCwgYnl0ZXMsIGkpOwog
+CQlmbHVzaF9kY2FjaGVfZm9saW8oZm9saW8pOwogCkBAIC00MDgwLDYgKzQwNzQsMTUgQEAg
+cmV0cnk6CiAJCQkJYnl0ZXMgPSBjb3BpZWQ7CiAJCQkJZ290byByZXRyeTsKIAkJCX0KKwkJ
+CS8qCisJCQkgKiAnZm9saW8nIGlzIG5vdyB1bmxvY2tlZCBhbmQgZmF1bHRzIG9uIGl0IGNh
+biBiZQorCQkJICogaGFuZGxlZC4gRW5zdXJlIGZvcndhcmQgcHJvZ3Jlc3MgYnkgdHJ5aW5n
+IHRvCisJCQkgKiBmYXVsdCBpdCBpbiBub3cuCisJCQkgKi8KKyAgICAgICAgICAgICAgICAg
+ICAgICAgIGlmIChmYXVsdF9pbl9pb3ZfaXRlcl9yZWFkYWJsZShpLCBieXRlcykgPT0gYnl0
+ZXMpIHsKKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdHVzID0gLUVGQVVM
+VDsKKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7CisgICAgICAgICAg
+ICAgICAgICAgICAgICB9CiAJCX0gZWxzZSB7CiAJCQlwb3MgKz0gc3RhdHVzOwogCQkJd3Jp
+dHRlbiArPSBzdGF0dXM7Cl8K
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--------------0TEcSh69VAAa8CV0XmvFTA5D--
 
