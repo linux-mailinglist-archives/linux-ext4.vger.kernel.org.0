@@ -1,197 +1,164 @@
-Return-Path: <linux-ext4+bounces-6247-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6248-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43B4DA20013
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jan 2025 22:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 747BBA203DB
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jan 2025 06:08:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88F9D3A3CD8
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jan 2025 21:46:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5D593A3A2F
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jan 2025 05:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7EF1DA60B;
-	Mon, 27 Jan 2025 21:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6652E1DE88D;
+	Tue, 28 Jan 2025 05:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="cgDgaDm3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F6qLkr9V"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FC41A83E4
-	for <linux-ext4@vger.kernel.org>; Mon, 27 Jan 2025 21:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30841DE3C0;
+	Tue, 28 Jan 2025 05:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738014413; cv=none; b=GBMV2SaUVgAjQhoAXW8z2+tS1QZFFl4RVO996OZFpBl8g89e82KR5KujvLBdbNvkaFSgyTpEgL8Q6DsdYsTvTDSIGqrMRram97gmsDxWUVbYj5hNvx4iUosvEE5eMWv8wHNqOuaDd69a96VB8RN5VWju3kLNTjkciXyWUSLwtRE=
+	t=1738040450; cv=none; b=RGhhgr+OB09BW9UhHQy5D63X5h59PTGNsB+cvGw0UpahCt2T6x340M1ydTnGzO6OfegiFkkHeseztZe4kfUK/s4Zz4kyKjBbN0iWauFkmKbUE/j2fsYcHa9c4h+RUSVJa/i1MwnGq8cjwAc8NhE1wqh44VuR7cltM1M9NkMaAS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738014413; c=relaxed/simple;
-	bh=lxgjK/YaP9QEM+cP1snuQp98WWK2Il9QCcHaoiANiKI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hB0XiQaivXR4f5X5Q/0au6fK7+b/WgaIXJDlKEusKJ0LxE64bpRw184EA39+I9dMZIOjSE1R4NL8k8BdNun5M9qkRblrdOb0C5fbDs5zt1HScJo53AtgM9wrgvs6nxE79VT5/sxvqtIfy3IFsd8jyhzR+RkrbPe5Dm47KKPWbxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=cgDgaDm3; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-218c8aca5f1so118843745ad.0
-        for <linux-ext4@vger.kernel.org>; Mon, 27 Jan 2025 13:46:51 -0800 (PST)
+	s=arc-20240116; t=1738040450; c=relaxed/simple;
+	bh=YnMrgM0kAbn7HbwId81HWNeX/UNge8flowFNY+L5siw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sA2GIjVr8bReK+jpV4S3HJE3UyzCbVWHuLMzF5Oz32KU1cX1iNCWIdtAgwM/2VNDoLjZ9zta+JUBB5FuGquvBRokPPLfZ6ROmdzOyAItV6xp6WI1vE8Y6dP7HCzjxGa5Z7d3lPd0yLUQdlTeevXl7C13Unh8Jsc4VGUXuOIqDUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F6qLkr9V; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2efe25558ddso6901100a91.2;
+        Mon, 27 Jan 2025 21:00:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1738014411; x=1738619211; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tE/pKF5Qpj4D13Y1PjIw9zjH1S0tIXaq7kjvEPBHMJ8=;
-        b=cgDgaDm3rzgH0yHnpSdkcQdfoxaF9sdAf0+o4P3KdrS3v3uSKz5W26SQ4L6BaZ2ils
-         Q1j2Q8YAQNomSw0pJBFfqg5aBsuUKc9l7XC/goX9cDdNUecpNpv2Jeh9ImT7u2flTbpT
-         XyjBVv7I/jDMCO4h1rOI976OHJB8xoI4VezMig0c1KpuIwUltGtvCiz4ZfytWH1j19q7
-         BDXz7ckrQEoAgq9b/WgUPNB00SDMnAzwfWHILo6QiiowwlBEVQxuQJ/xM3SUOUm4f7hp
-         06bE+KHwxh+H8NXCtObTuX3jb9rA/jMVu0l2jg2vRmsgZZnSBah6jWTegYSj8z8TP0dy
-         rGxw==
+        d=gmail.com; s=20230601; t=1738040447; x=1738645247; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lI6ZsKdm3CPgRxaFaoLcGi7VSzV9xwpMY9SMD0KXp50=;
+        b=F6qLkr9VKn00MtT3eVo385veO7IYOyF7Y/oCZi1z2mkzrwK1Toj7EA3DxJWh5ZNh22
+         1QcKNruuHW3HkcZe0hBlNeQMFbwwcQF5WX9PsiuUwfnqPmQZLZBGm6Eq5rv2gTB1U8Y/
+         1jASecpEHok2QDVnO+KqxwSDXqNrXyRWnH5If+CuNEOqb36W0Dwcnz5+MbKFEjKvGm+7
+         UswFLtiYQNbd/A3uVJ/CkMcDCR7WCR51F2EsaUKsmGZhXDqoCKbuXg/4NQKLHA3IeFYl
+         f32IpYstFPD5ZjOYgUzxZfTZ3Sr4hjceVlRJxKw4yyFdrQR3t8Z+BvZ0qqpBN94LWdZO
+         HP4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738014411; x=1738619211;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tE/pKF5Qpj4D13Y1PjIw9zjH1S0tIXaq7kjvEPBHMJ8=;
-        b=hrZ/c0E9JBxOs9Uju8aziQPCdlKDsjoul4rwLIp6jke8QW6Dgnvjs18nNe01O02A4J
-         XWAK+qkjB2yHaVcnC1Omp3YzkiEHQK9DwlPPg8/FuWwN9n/uWWYw1O8G73BzhA2HAwm1
-         mvt35mylk1JJkoLDkg+7evB5fS0ryhFMzUUiEulpsrCLjCB+y0M7imiqJ0loyqB7iyc3
-         6dyo5nE9ZhYj0Nh7OEb/tIoG6voLiPrd3vrrNzxnoIG6pveGxPwX5hTeWFQYg88pY1n/
-         r42duwXQMIHYDUNydKXRFEBEcNMNvDA1OZZNcd5HE51dfy2rJJglTts0dbdo3b0C2fNy
-         lk4w==
-X-Forwarded-Encrypted: i=1; AJvYcCV/wm+fn8kh7Ls2BFC7dehbJsv0JC0+03LkyaYjuKCIeV1G+3s5g/K0hahgrkYEGdJEM47Qs24W6mhP@vger.kernel.org
-X-Gm-Message-State: AOJu0YyaLoqWdVxJfHvWSIeaZrpryQJsh6wBKanxSKhB0rr+phZEDoKp
-	+Zb9vIspjJvl4AJ+xGut2EasZVh0Lwx5JXDGIfLJUe4d0qwdhMCboESnw9d+O+xYCAJJtgrVQc+
-	E
-X-Gm-Gg: ASbGncuhQZ7rf4jvrcWQoCJNNf5qhS8opVUVR7vcLFUJch5bzUzL9bXBP84l13cCYf3
-	Ndtkgv0y6Tt0FbBtLSdM1QQvqmTG0WTCWlhwsVGx4BgDTXGCI07diccWUs6fDiZB4cSG+DZB69x
-	QTMaFFrZK9Y/h/hfTAknJ7fPPHVtgFDUH8fhATH8sRIpFMFR7d6BeNlVzzAKpPgIR+ptvza3Egy
-	RhPP7clCjDLtBtSy3Z0JKJIdAuMAOBPDniEGBqBjSxl6C8zC3hWOP+l5pPv1sNaC/t+sNQB9bzY
-	aNVQ9a59K89j49IxMUoyFLA8NwQuE0Ciw9R2udACD6UzO9URs6EqNDWY
-X-Google-Smtp-Source: AGHT+IFOwuNx7AccdAPMTsFd/TrWMswt+hLsvIyhT6c29rKAdR6DsscbjKEXbJOOcqxAD+W5F/S89g==
-X-Received: by 2002:a17:903:2306:b0:216:4676:dfaf with SMTP id d9443c01a7336-21c355eeb01mr670638065ad.34.1738014410766;
-        Mon, 27 Jan 2025 13:46:50 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da414edb3sm67875775ad.202.2025.01.27.13.46.50
+        d=1e100.net; s=20230601; t=1738040447; x=1738645247;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lI6ZsKdm3CPgRxaFaoLcGi7VSzV9xwpMY9SMD0KXp50=;
+        b=Eg3/eL6rutPM4GGtX69xq+fmm1QCzfPKWM03TNA6SybJwyAg2X1LiCUOZLAR1LU1Gf
+         PISpTt5wEiYVuuvx81tR/5Kri5S8VRyhXVcMtKOdQl3Bo4F2GbtAO7rfsKsdLttqMLi7
+         qVTWGChr0RXX3scJlBAvMetGHC8vAhNKtqv11afQTcRRZk9IKbW/pcPNyyG2ipdagdY5
+         No1Jms4TqLo47TLus8Y3q5jhghZAdVNeUyb2LDkAgajvcn4M99jYMKJPAr/wSmvcMAeM
+         43gE+WC22mUy3Xr7/wiidlEoiQ6wkNRMj2aKVGRhYd1jpU1OX7aZ1iKaPhRvSq0xGzYI
+         9otg==
+X-Forwarded-Encrypted: i=1; AJvYcCWFlKH6GIYQhMOdnOhAA3NQGPgzH0TvYY5XGxU2PRpYM1BZbtj0Cj83FWnFWzHBVsjYekKajLXNED0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeCuP+Jx+dEL9jlefEPdZ0UqH65iYm6/oBjkLi7XJzAixnkqGX
+	TeuaPyuVgn2nTgO/0sgOmUfSF2UlZJhwvs0/PFTLpevZwozsma1PUT/C7A==
+X-Gm-Gg: ASbGncuuBBfWB0KkRuxkW30cCh0/YUfO/TGsATr6AamIr/Qx1+sa7xUVieQfflri418
+	5qCibvkdKOquD4RCqFJuIEvqYzN/Y4Zujyw97rgcPgkoSuzfc+8/fkvm1ITB3aC8fN/ruY3uD/3
+	Ey19UjeDt+/2d3887/vvGQU/hlVhQOEJui/W8a7eyf1t0Nvtw2FfYNuBX+eeOuV+0GVGIUmo0Oz
+	RWiGqDlehq3d5teu5U6rDOBSYg8tZ7QHjRxiGgebCAVxVSpNazPXUutfaMpZ/wunJISAqk9iTQ4
+	jYuWcq86n+wwcrT71Ys=
+X-Google-Smtp-Source: AGHT+IEKdrFVDQQHdjT3PhB0R5ZBzQ9rTVUXpRMk7c414rupxSwuOFMs6r7axppA7LTYRZZ0T6t5Gw==
+X-Received: by 2002:a17:90b:5483:b0:2ee:f076:20f1 with SMTP id 98e67ed59e1d1-2f782afebcamr72962321a91.0.1738040446860;
+        Mon, 27 Jan 2025 21:00:46 -0800 (PST)
+Received: from citest-1.. ([49.205.33.247])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffb18b90sm9120915a91.41.2025.01.27.21.00.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2025 13:46:50 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tcWwR-0000000BKHp-2nR9;
-	Tue, 28 Jan 2025 08:46:47 +1100
-Date: Tue, 28 Jan 2025 08:46:47 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Mateusz Guzik <mjguzik@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Ext4 Developers List <linux-ext4@vger.kernel.org>,
-	Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-	akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] ext4: use private version of page_zero_new_buffers() for
- data=journal mode
-Message-ID: <Z5f-x278Z3wTIugL@dread.disaster.area>
-References: <20151007154303.GC24678@thunk.org>
- <1444363269-25956-1-git-send-email-tytso@mit.edu>
- <yxyuijjfd6yknryji2q64j3keq2ygw6ca6fs5jwyolklzvo45s@4u63qqqyosy2>
- <CAHk-=wigdcg+FtWm5Fds5M2P_7GKSfXxpk-m9jkx0C6FMCJ_Jw@mail.gmail.com>
- <CAGudoHGJah8VNm6V1pZo2-C0P-y6aUbjMedp1SeAGwwDLua2OQ@mail.gmail.com>
- <CAHk-=wh=UVTC1ayTBTksd+mWiuA+pgLq75Ude2++ybAoSZAX3g@mail.gmail.com>
- <CAGudoHHyEQ1swCJkFDicb8hYYSMCXyMUcRVrtWkbeYwSChCmpQ@mail.gmail.com>
- <76b80fff-0f62-4708-95e6-87de272f35a5@intel.com>
+        Mon, 27 Jan 2025 21:00:46 -0800 (PST)
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+To: fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com,
+	djwong@kernel.org,
+	zlang@kernel.org,
+	nirjhar.roy.lists@gmail.com
+Subject: [PATCH v2] check: Fix fs specfic imports when $FSTYPE!=$OLD_FSTYPE
+Date: Tue, 28 Jan 2025 05:00:22 +0000
+Message-Id: <3b980d028a8ae1496c13ebe3a6685fbc472c5bc0.1738040386.git.nirjhar.roy.lists@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76b80fff-0f62-4708-95e6-87de272f35a5@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 27, 2025 at 12:52:51PM -0800, Dave Hansen wrote:
-> On 1/26/25 14:45, Mateusz Guzik wrote:
-> >>
-> >> So if you don't get around to it, and _if_ I remember this when the
-> >> merge window is open, I might do it in my local tree, but then it will
-> >> end up being too late for this merge window.
-> >>
-> > The to-be-unreverted change was written by Dave (cc'ed).
-> > 
-> > I had a brief chat with him on irc, he said he is going to submit an
-> > updated patch.
-> 
-> I poked at it a bit today. There's obviously been the page=>folio churn
-> and also iov_iter_fault_in_readable() got renamed and got some slightly
-> new semantics.
-....
+Bug Description:
 
-> Anyway, here's a patch that compiles, boots and doesn't immediately fall
-> over on ext4 in case anyone else wants to poke at it. I'll do a real
-> changelog, SoB, etc.... and send it out for real tomorrow if it holds up.
+_test_mount function is failing with the following error:
+./common/rc: line 4716: _xfs_prepare_for_eio_shutdown: command not found
+check: failed to mount /dev/loop0 on /mnt1/test
 
-> 
-> index 4f476411a9a2d..98b37e4c6d43c 100644
-> 
-> ---
-> 
->  b/mm/filemap.c |   25 ++++++++++++++-----------
->  1 file changed, 14 insertions(+), 11 deletions(-)
-> 
-> diff -puN mm/filemap.c~generic_perform_write-1 mm/filemap.c
-> --- a/mm/filemap.c~generic_perform_write-1	2025-01-27 09:53:13.219120969 -0800
-> +++ b/mm/filemap.c	2025-01-27 12:28:40.333920434 -0800
-> @@ -4027,17 +4027,6 @@ retry:
->  		bytes = min(chunk - offset, bytes);
->  		balance_dirty_pages_ratelimited(mapping);
->  
-> -		/*
-> -		 * Bring in the user page that we will copy from _first_.
-> -		 * Otherwise there's a nasty deadlock on copying from the
-> -		 * same page as we're writing to, without it being marked
-> -		 * up-to-date.
-> -		 */
-> -		if (unlikely(fault_in_iov_iter_readable(i, bytes) == bytes)) {
-> -			status = -EFAULT;
-> -			break;
-> -		}
-> -
->  		if (fatal_signal_pending(current)) {
->  			status = -EINTR;
->  			break;
-> @@ -4055,6 +4044,11 @@ retry:
->  		if (mapping_writably_mapped(mapping))
->  			flush_dcache_folio(folio);
->  
-> +		/*
-> +		 * This needs to be atomic because actually handling page
-> +		 * faults on 'i' can deadlock if the copy targets a
-> +		 * userspace mapping of 'folio'.
-> +		 */
->  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
->  		flush_dcache_folio(folio);
->  
-> @@ -4080,6 +4074,15 @@ retry:
->  				bytes = copied;
->  				goto retry;
->  			}
-> +			/*
-> +			 * 'folio' is now unlocked and faults on it can be
-> +			 * handled. Ensure forward progress by trying to
-> +			 * fault it in now.
-> +			 */
-> +                        if (fault_in_iov_iter_readable(i, bytes) == bytes) {
-> +                                status = -EFAULT;
-> +                                break;
-> +                        }
->  		} else {
->  			pos += status;
->  			written += status;
+when the second section in local.config file is xfs and the first section
+is non-xfs.
 
-Shouldn't all the other places that have exactly the same
-fault_in_iov_iter_readable()/copy_folio_from_iter_atomic() logic
-and comments (e.g.  iomap_write_iter()) be changed to do this the
-same way as this new code in generic_perform_write()?
+It can be easily reproduced with the following local.config file
 
--Dave.
+[s2]
+export FSTYP=ext4
+export TEST_DEV=/dev/loop0
+export TEST_DIR=/mnt1/test
+export SCRATCH_DEV=/dev/loop1
+export SCRATCH_MNT=/mnt1/scratch
+
+[s1]
+export FSTYP=xfs
+export TEST_DEV=/dev/loop0
+export TEST_DIR=/mnt1/test
+export SCRATCH_DEV=/dev/loop1
+export SCRATCH_MNT=/mnt1/scratch
+
+./check selftest/001
+
+Root cause:
+When _test_mount() is executed for the second section, the FSTYPE has
+already changed but the new fs specific common/$FSTYP has not yet
+been done. Hence _xfs_prepare_for_eio_shutdown() is not found and
+the test run fails.
+
+Fix:
+Remove the additional _test_mount in check file just before ". commom/rc"
+since ". commom/rc" is already sourcing fs specific imports and doing a
+_test_mount.
+
+Fixes: 1a49022fab9b4 ("fstests: always use fail-at-unmount semantics for XFS")
+Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+---
+ check | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
+
+diff --git a/check b/check
+index 607d2456..5cb4e7eb 100755
+--- a/check
++++ b/check
+@@ -784,15 +784,9 @@ function run_section()
+ 			status=1
+ 			exit
+ 		fi
+-		if ! _test_mount
+-		then
+-			echo "check: failed to mount $TEST_DEV on $TEST_DIR"
+-			status=1
+-			exit
+-		fi
+-		# TEST_DEV has been recreated, previous FSTYP derived from
+-		# TEST_DEV could be changed, source common/rc again with
+-		# correct FSTYP to get FSTYP specific configs, e.g. common/xfs
++		# Previous FSTYP derived from TEST_DEV could be changed, source
++		# common/rc again with correct FSTYP to get FSTYP specific configs,
++		# e.g. common/xfs
+ 		. common/rc
+ 		_prepare_test_list
+ 	elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then
 -- 
-Dave Chinner
-david@fromorbit.com
+2.34.1
+
 
