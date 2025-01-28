@@ -1,70 +1,82 @@
-Return-Path: <linux-ext4+bounces-6251-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6252-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F372A204B0
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jan 2025 07:49:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24E50A204F1
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jan 2025 08:13:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9595F3A8FFE
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jan 2025 06:47:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60DC77A1CB7
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jan 2025 07:13:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674EB1DE4EF;
-	Tue, 28 Jan 2025 06:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB881C75E2;
+	Tue, 28 Jan 2025 07:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ps2XJS01"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6634A1A;
-	Tue, 28 Jan 2025 06:47:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C863192D84;
+	Tue, 28 Jan 2025 07:13:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738046846; cv=none; b=eTvyqYwf231yhAhuWgPZyzEz8lgvyuNNuZuNc483q4GgyeiT8rsdxAeX0oSb+gYE5ZQ5jh/n/nAXaODmLON4gFwssFRqxLny4z4WF7MrnyclSSYL64nVxB2qQ/GwQlBuEhHcPQLLHaty0ZpODtw3+ZxgDOS4cWDiyvdhbvs8okE=
+	t=1738048401; cv=none; b=YvorePq5jI0qbhZG8ALkeJiV7TRiuDXONLGey9P/NnSfAsl/1h3oZmeqooTg54fROl0dbiEpOQ5rpEX+XpiWp7VuW33oh7iawfg7ibV/DgUINiO0cWOdu0xm/eF7mYnnWuTQvkHMUQfw37xTz+sFpzOeCiJPYxdZaHfTMtMbyLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738046846; c=relaxed/simple;
-	bh=RGTUK9De1R3vjTcwQXi/H24wBkRfW9qvYBiTRD14FRk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KPxdIGWBlpuIJZ3igERJgBNAwQ0UtXQN/yQ6JcPb0UB8VX0HvybwAo7akKrfu+yZgU9ProsvZ3rwDeRjkXfQsWsv8hXfUiftkVxw/Bnl1OvgLiyYRXfC5tJbhneKPgjsYqL8j13GATOA9vAekZhpF0yo4l0DmiDsiqvNoU1SkHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+	s=arc-20240116; t=1738048401; c=relaxed/simple;
+	bh=UOzXf/+YJeSToG9xigCeps8xuPBG2sg1sFZm2kB0nVQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=djA1RtDxsoxGmI42qtXfYjFyt2X8SJ/n1Et6jFwVUJfktjBbEwbQ7zZ0oDddP8faZOnobXvdHAZfszO5gexdpm+7K5ZzmMstqWKFOIcfUxybFfFVG4fKypdf9mL9fV6Px40qpkG+1TnhdkmKQ8tsySJxnuM4rmiQADGVMCgkNoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ps2XJS01; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id DAF5F68D05; Tue, 28 Jan 2025 07:47:20 +0100 (CET)
-Date: Tue, 28 Jan 2025 07:47:20 +0100
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=0fAPBxXriOrlocXY+PgcyMz1JSAr+2M6gpNGaPvcviQ=; b=Ps2XJS01JAW29/Z9sfgdIhfoOu
+	XeJc5vP0eTAstEFTD8yZh0xi3ZInLoBpumYYNcv3OOG85d9YxXFXYgwu5gQASqzDjEqooeYxsGdNp
+	v1DuqMCMOlr8oWgDlmTTYthG3EBbzrm52BG83G1YGEKuEEDEi0ftrrrdvlRmWPLWS5LXu3JROt99M
+	fo/gmPNF1d+1z2Ilo52//e4k1veEwyWX+fC+Gz9AjJSFe4xP/pZuMpw2A5EqONd4e+uLcBqbQzvHA
+	aWZ4RqSCv/aZOts2e52H3HhVTpuoboSZt7eTxfQLG0m4YVTIUbaBLBGh7CLhBYFvvquSeZDUwn8AX
+	Ay2iG8dQ==;
+Received: from 2a02-8389-2341-5b80-d7c6-3fcb-a44b-90d7.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d7c6:3fcb:a44b:90d7] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tcfmh-00000004GOQ-0BwF;
+	Tue, 28 Jan 2025 07:13:19 +0000
 From: Christoph Hellwig <hch@lst.de>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, hch@lst.de, tytso@mit.edu,
-	djwong@kernel.org, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [RFC PATCH v2 3/8] scsi: sd: set BLK_FEAT_WRITE_ZEROES_UNMAP
- if device supports unmap zeroing mode
-Message-ID: <20250128064720.GC21401@lst.de>
-References: <20250115114637.2705887-1-yi.zhang@huaweicloud.com> <20250115114637.2705887-4-yi.zhang@huaweicloud.com>
+To: Zorro Lang <zlang@kernel.org>
+Cc: Brian Foster <bfoster@redhat.com>,
+	fstests@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Subject: remove _supported_fs v2
+Date: Tue, 28 Jan 2025 08:12:57 +0100
+Message-ID: <20250128071315.676272-1-hch@lst.de>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250115114637.2705887-4-yi.zhang@huaweicloud.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Wed, Jan 15, 2025 at 07:46:32PM +0800, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> When the device supports the Write Zeroes command and the zeroing mode
-> is set to SD_ZERO_WS16_UNMAP or SD_ZERO_WS10_UNMAP, this means that the
-> device supports unmap Write Zeroes, so set the corresponding
-> BLK_FEAT_WRITE_ZEROES_UNMAP feature to the device's queue limit.
+Hi all,
 
-Looks good:
+this series removes the remaining _supported_fs calls and replaces them
+with a new _exclude_fs call.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+The first patch removes a _supported_fs for a relatively new test from
+Brian that fails on other file systems.  We should still run it so that
+people have a chance to fix the corruption, so I think this make sense.
 
+Unlike the previous version this does not add a new ext-common directory,
+but instead uses _exclude_fs for those tests as well, which doesn't
+look quite as nice.  Some of the ext4 maintainers said they might want
+to switch this to feature checks, which sounds great but also something
+better done by people familiar with extN.
+
+Changes since v1:
+ - remove the separated ext-common directory previously added
 
