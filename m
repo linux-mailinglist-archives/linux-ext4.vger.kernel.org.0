@@ -1,259 +1,104 @@
-Return-Path: <linux-ext4+bounces-6277-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6278-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59600A24044
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 Jan 2025 17:25:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AE47A24313
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 Jan 2025 20:02:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B4D23A5D56
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 Jan 2025 16:24:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E99887A3981
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 Jan 2025 19:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2EA1E7C3F;
-	Fri, 31 Jan 2025 16:24:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A0841F03D4;
+	Fri, 31 Jan 2025 19:02:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nxgjED/Y"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b="tu/0pYAg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A881E3DD6;
-	Fri, 31 Jan 2025 16:24:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D765914AD3F
+	for <linux-ext4@vger.kernel.org>; Fri, 31 Jan 2025 19:02:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738340698; cv=none; b=i+R/l1fVlNz4vd4+QaibUwXNE7Sl2l6JCbEZTC4aFORnK12+gkEGqB9dbVS5fUuwrfXELI90DTKXbwbUFU1qsMkTuQbOuRsKTKc9IENt1ML9HtUZK/atvWZO0fvCHaYEFG0SebL/z1Hjzu9PjI5V09Bzk39eTDnBjZ7LPJqe72c=
+	t=1738350123; cv=none; b=NkQFA+KxBIzTnzarFICmJq39btzOGO+8ANUPdKPndOD32paEhqfDXWotXfCei8CXyVpfUEnYZh40bgZ1LoF1A4mQ6eMroTr2ThMbSHcoc/8Hj6a4KhQ5FQyGp0AWwtNqt3cs6AFqP+MO0xV/5xzPbPieVfSlqpSQ/6c4IT9XzCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738340698; c=relaxed/simple;
-	bh=rxv/0PwD9wBAo2UfeAdPGZR8B0ZNGqibx3vkhB6mlTA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K0da6Eb5Qadkx+cO6SqJWmXQMrWDNtK/6XG0RAy7ipSxD6+s8EeI3lE9pEZMvCKbn8vQe1WEZY322P3RMKVSCD92myn435x84k2FlwlyigKy+ZHXHKCT9gOxd1oOHIZotQrLS1GIRCYkwZjHub2bWWtpWsO6JoK/7e7wgquDM18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nxgjED/Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A9CFC4CED1;
-	Fri, 31 Jan 2025 16:24:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738340697;
-	bh=rxv/0PwD9wBAo2UfeAdPGZR8B0ZNGqibx3vkhB6mlTA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nxgjED/Y/v/r66vaLxmVe2MLuJRyce+uE0MjBjcOuIGlhUMXVwaBLOehPnADffG0U
-	 C1NmeRtQ5rTdCNzk6wg5wgkvCGo8QgbdyrNt5stt0vc1K/e8DDRW0ACrXLQIvHQWyj
-	 t0CYyQ52Q+VrZTuRefg1nW5eBouhxzT1qcW0IE0GrfE0/ynwrcWywLgdzUxUwS/SVo
-	 PIun99uikxWJDZEj72EBxS2GfR+vxNGuPI2bOmtFBY+YQDFB+64Mi4Xcnyy8rwx0EO
-	 SgpVaAq5i68Rq0j/8p/TzNS6/WzeOLsf/Kw7cfT24fEy4JAl1POpiA8Ajh7JSkKje+
-	 OZACgax84w5fA==
-Date: Fri, 31 Jan 2025 08:24:57 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com, zlang@kernel.org
-Subject: Re: [PATCH v2] check: Fix fs specfic imports when
- $FSTYPE!=$OLD_FSTYPE
-Message-ID: <20250131162457.GV1611770@frogsfrogsfrogs>
-References: <3b980d028a8ae1496c13ebe3a6685fbc472c5bc0.1738040386.git.nirjhar.roy.lists@gmail.com>
- <20250128180917.GA3561257@frogsfrogsfrogs>
- <f89b6b40-8dce-4378-ba56-cf7f29695bdb@gmail.com>
- <20250129160259.GT3557553@frogsfrogsfrogs>
- <dfbd2895-e29a-4e25-bbc6-a83826d14878@gmail.com>
+	s=arc-20240116; t=1738350123; c=relaxed/simple;
+	bh=NfkLnR4L2k8/Aax9092eFWuhnj4Bab51bzrhwbfBZ6c=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=ZIyRkx9f1Jyko533SEsCknEME63yUuXq2/6Gt5ZkTzN0qEJa3SJB8SmBfGudCAGpGKFLzZ9CSZtqC3dMDtPf/zfb7uKWjCdMt4k9VO8MBBPGvP6dBivjcV/pBTd3TvGdeJnrJaNBTjaRX+RABGw5Ngxt/KTp806McAblmHpWmZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b=tu/0pYAg; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1738350119; x=1738954919; i=aros@gmx.com;
+	bh=NfkLnR4L2k8/Aax9092eFWuhnj4Bab51bzrhwbfBZ6c=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=tu/0pYAgvOR1MzxhCULWGL17G3McmrvzHAA8esBRaGAecrf0dgAot/SqyxHbF43E
+	 zT8T1fhRLthf21L3/q4ZHAkniRV5JnpPsahKQWw2WKWK0F4Nha1Inw0kVTs79wtsN
+	 vvfWP79zL59hCZk4ubLZFfLztMomZraomOUV7uS0aY3m3VXV9c5x77mrcxfQpZ/at
+	 VivcYjyQGhBkUZGr9yrK5gVa8V++Izq0qxRiMEhB+kDcvblxqp0u0exVGg8NIb/qu
+	 0JOMNiinr6+Dp2clsosQLkt5yonkSf1G9iiHJ3JQRjaZERyKEIDr6ZiWg3RcsPCRC
+	 rNjWabHX6/8+qlS+Cg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.11.19.12] ([98.159.234.140]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBUm7-1tjjYn20Lf-00BZJ3 for
+ <linux-ext4@vger.kernel.org>; Fri, 31 Jan 2025 20:01:58 +0100
+Message-ID: <8dcf1b6e-633c-4415-9412-6876efc07b50@gmx.com>
+Date: Fri, 31 Jan 2025 19:01:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dfbd2895-e29a-4e25-bbc6-a83826d14878@gmail.com>
+Content-Language: en-US
+To: linux-ext4@vger.kernel.org
+From: "Artem S. Tashkinov" <aros@gmx.com>
+Subject: A possible way to reduce free space fragmentation?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:q0sOVJb9W3V9BWTh3gBLAsSMNLfOmA+9GwQmg5WzjZhnYVWDDcT
+ 9iHt2lIp9AGX0JH2F/LUUri33CozLRO36IRqpcjZm7tiZOZ8W+1vxAqxapoqz5Lja5HysV/
+ pKKXK6Rm14Panrz5CvKJtbO7NAnqnPKoBBKFc+OiPijRfCNtUw4BX0LbWP+VZVr9k6aaxYA
+ 0qi2rZNSW4UdWT+VfPR8g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:aMuCpPdsg1I=;jvSNp+Z2nLWHBvHmITr7Vx2Y8fO
+ aOTgf6BWLsh3V1IyEdYTuCDxEdUsy7sYNTo+LoMZQ7LwfO2YCzKRKcB6VtUntuVR+Ly13pzPQ
+ iBLb5w7/KJYDBpjN1esJjdeQCwjcD/k3INadHIZjMpx+v2ccTW2v5jqtm5XqDSFcfT73HkO/s
+ E0DdK1/jfrFStFYWJOl1JOh4hxpQOJLRHd8yy2eCkwIUTYfPrTlNi87Pt3wPQ4vx4g+Z4YoAw
+ 423ggt5lGy0na/V3z8S+/JKVHcgAtpmTmRk8/p4a3bai3wof7Ks+KKu62Gr1enhTe8Ef7P2TL
+ VlJvVyNS1CLsZSKQ2eya4NxFmOJMOOoK/25o40d1nQFk2kknIRbbrbxMrkkeNBW8+8tuZKt6i
+ chu5yT0N3qDZuWvPo+jgl9iq/+3Tly19Nt0FIT5A4OPpfSfyv42x8byAJWR0ISkazqd35U6Al
+ 1mbmEK7YROdYF/TH4hGUk1fAUX/qkuTkb7LsrAvee2IacZggl/7YvwEfoK3crzVfadI8P4ePv
+ nVNKeYvDAwTeuM/B5FcxWeInfNlE5r46Q+xfzHjobRPj8Vt4qNqVzeEXASmo0hA9jgLUvRQ1A
+ gqNhD5pwN2YG+tC5kZkhPGjGLDKxblZi1KXHESz6pZSzfIKEvTsLUXQtl725Zz2DdwvkFkejI
+ MNjbnSWxRnzncAU5pf5mTWYHaRFKs9+G7Lbyi2Ep6PC5MCyIJSh2rk+n+8+mrvF9F9yKzK0jH
+ sxzDQUlFf2ZZ1/1zNr3cT6xt7ULzi1UPYZKCG892ZSF/hcZobM8EBM5/K+yCW0vQvcmtzYp+p
+ RHq4cJgcpfpTW7S2nM723/1+lK6VYdxhJ+fMUQSxpy35Harpw7Kgaj97fmkukEv8xJkwJkP4S
+ Wr1FIRXTfGrxrinb1Y3iqWFIVmwYHqSW/H5WSJD7VUU2CiwAkt0kjrXh2nhF2pfGVCUbg8z9K
+ 0lb2eWZbFT5i1s9GLoLJTrU+FZvclTn6jtHy1xFJfZ2cdz+/ArUAUm/it/FXZC/rNsRyJHPuz
+ BgRY0NdSnH7i3Vkrl/4vFqWb72h4IEcNSud42iEHrcGYbpeIyQNzG6Thpk49c0E4nbH0xclyA
+ D5zexYfUq8egAPDI1pIYRNWDZIhcUf0VIWGgqYdfLxo7BLnirrRkDRGY+uSesAwSovJPJvxgH
+ Hh7JLfCOZLiTw+kuT5Jl4aAMiirXhtEcfc8svLVGk0uWuD9M5vDDajtfjNawTaozkQmIRjs6k
+ nkUh3qLhgh5ANfleopMZF37E1UmPxxiHmQ2UhToYlyZGc6Bbk3VnpoTY4wOBGdAG1+xSE8dq8
+ IovtGSqVQqLlQwJckTbMeG/jJ1XhluTRD3WjXOYKtOZnUaFBGb6jrLRNrMC5pF2KaeI
 
-On Fri, Jan 31, 2025 at 06:49:50PM +0530, Nirjhar Roy (IBM) wrote:
-> 
-> On 1/29/25 21:32, Darrick J. Wong wrote:
-> > On Wed, Jan 29, 2025 at 04:48:10PM +0530, Nirjhar Roy (IBM) wrote:
-> > > On 1/28/25 23:39, Darrick J. Wong wrote:
-> > > > On Tue, Jan 28, 2025 at 05:00:22AM +0000, Nirjhar Roy (IBM) wrote:
-> > > > > Bug Description:
-> > > > > 
-> > > > > _test_mount function is failing with the following error:
-> > > > > ./common/rc: line 4716: _xfs_prepare_for_eio_shutdown: command not found
-> > > > > check: failed to mount /dev/loop0 on /mnt1/test
-> > > > > 
-> > > > > when the second section in local.config file is xfs and the first section
-> > > > > is non-xfs.
-> > > > > 
-> > > > > It can be easily reproduced with the following local.config file
-> > > > > 
-> > > > > [s2]
-> > > > > export FSTYP=ext4
-> > > > > export TEST_DEV=/dev/loop0
-> > > > > export TEST_DIR=/mnt1/test
-> > > > > export SCRATCH_DEV=/dev/loop1
-> > > > > export SCRATCH_MNT=/mnt1/scratch
-> > > > > 
-> > > > > [s1]
-> > > > > export FSTYP=xfs
-> > > > > export TEST_DEV=/dev/loop0
-> > > > > export TEST_DIR=/mnt1/test
-> > > > > export SCRATCH_DEV=/dev/loop1
-> > > > > export SCRATCH_MNT=/mnt1/scratch
-> > > > > 
-> > > > > ./check selftest/001
-> > > > > 
-> > > > > Root cause:
-> > > > > When _test_mount() is executed for the second section, the FSTYPE has
-> > > > > already changed but the new fs specific common/$FSTYP has not yet
-> > > > > been done. Hence _xfs_prepare_for_eio_shutdown() is not found and
-> > > > > the test run fails.
-> > > > > 
-> > > > > Fix:
-> > > > > Remove the additional _test_mount in check file just before ". commom/rc"
-> > > > > since ". commom/rc" is already sourcing fs specific imports and doing a
-> > > > > _test_mount.
-> > > > > 
-> > > > > Fixes: 1a49022fab9b4 ("fstests: always use fail-at-unmount semantics for XFS")
-> > > > > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> > > > > ---
-> > > > >    check | 12 +++---------
-> > > > >    1 file changed, 3 insertions(+), 9 deletions(-)
-> > > > > 
-> > > > > diff --git a/check b/check
-> > > > > index 607d2456..5cb4e7eb 100755
-> > > > > --- a/check
-> > > > > +++ b/check
-> > > > > @@ -784,15 +784,9 @@ function run_section()
-> > > > >    			status=1
-> > > > >    			exit
-> > > > >    		fi
-> > > > > -		if ! _test_mount
-> > > > Don't we want to _test_mount the newly created filesystem still?  But
-> > > > perhaps after sourcing common/rc ?
-> > > > 
-> > > > --D
-> > > common/rc calls init_rc() in the end and init_rc() already does a
-> > > _test_mount. _test_mount after sourcing common/rc will fail, won't it? Does
-> > > that make sense?
-> > > 
-> > > init_rc()
-> > > {
-> > >      # make some further configuration checks here
-> > >      if [ "$TEST_DEV" = ""  ]
-> > >      then
-> > >          echo "common/rc: Error: \$TEST_DEV is not set"
-> > >          exit 1
-> > >      fi
-> > > 
-> > >      # if $TEST_DEV is not mounted, mount it now as XFS
-> > >      if [ -z "`_fs_type $TEST_DEV`" ]
-> > >      then
-> > >          # $TEST_DEV is not mounted
-> > >          if ! _test_mount
-> > >          then
-> > >              echo "common/rc: retrying test device mount with external set"
-> > >              [ "$USE_EXTERNAL" != "yes" ] && export USE_EXTERNAL=yes
-> > >              if ! _test_mount
-> > >              then
-> > >                  echo "common/rc: could not mount $TEST_DEV on $TEST_DIR"
-> > >                  exit 1
-> > >              fi
-> > >          fi
-> > >      fi
-> > > ...
-> > ahahahaha yes it does.
-> > 
-> > /commit message reading comprehension fail, sorry about that.
-> > 
-> > Though now that you point it out, should check elide the init_rc call
-> > about 12 lines down if it re-sourced common/rc ?
-> 
-> Yes, it should. init_rc() is getting called twice when common/rc is getting
-> re-sourced. Maybe I can do like
-> 
-> 
-> if $RECREATE_TEST_DEV || [ "$OLD_FSTYP" != "$FSTYP" ]; then
-> 
->     <...>
-> 
->     . common/rc # changes in this patch
-> 
->     <...>
-> 
-> elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then
-> 
->     ...
-> 
->     init_rc() # explicitly adding an init_rc() for this condition
-> 
-> else
-> 
->     init_rc() # # explicitly adding an init_rc() for all other conditions.
-> This will prevent init_rc() from getting called twice during re-sourcing
-> common/rc
-> 
-> fi
-> 
-> What do you think?
+Hello,
 
-Sounds fine as a mechanical change, but I wonder, should calling init_rc
-be explicit?  There are not so many places that source common/rc:
+ext4 has no free space defragmentation and at most you can use e4defrag
+to defragment individual files. I now have a 24GB ext4 filesystem that
+has only 7GB of space occupied however it has small files scattered all
+over it and now bigger files occupy more than one extent and I cannot
+reduce fragmentation to zero. One way to approach that would be to
+shrink the volume and then defragment it but that will involve a ton of
+disk writes and unnecessary tear and wear. Is it possible to modify the
+e4degrag utility to move small defragmented files, so that they were
+placed consecutively instead of being randomly spread all over the disk?
 
-$ git grep 'common/rc'
-check:362:if ! . ./common/rc; then
-check:836:              . common/rc
-common/preamble:52:     . ./common/rc
-soak:7:. ./common/rc
-tests/generic/749:18:. ./common/rc
-
-(I filtered out the non-executable matches)
-
-I think the call in generic/749 is unnecessary and I don't know what
-soak does.  But that means that one could insert an explicit call to
-init_rc at line 366 and 837 in check and at line 53 in common/preamble,
-and we can clean up one more of those places where sourcing a common/
-file actually /does/ something quietly under the covers.
-
-(Unless the maintainer is ok with the status quo...?)
-
---D
-
-> 
-> > 
-> > Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-> > 
-> > --D
-> > 
-> > > ...
-> > > 
-> > > --NR
-> > > 
-> > > 
-> > > 
-> > > > > -		then
-> > > > > -			echo "check: failed to mount $TEST_DEV on $TEST_DIR"
-> > > > > -			status=1
-> > > > > -			exit
-> > > > > -		fi
-> > > > > -		# TEST_DEV has been recreated, previous FSTYP derived from
-> > > > > -		# TEST_DEV could be changed, source common/rc again with
-> > > > > -		# correct FSTYP to get FSTYP specific configs, e.g. common/xfs
-> > > > > +		# Previous FSTYP derived from TEST_DEV could be changed, source
-> > > > > +		# common/rc again with correct FSTYP to get FSTYP specific configs,
-> > > > > +		# e.g. common/xfs
-> > > > >    		. common/rc
-> > > > >    		_prepare_test_list
-> > > > >    	elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then
-> > > > > -- 
-> > > > > 2.34.1
-> > > > > 
-> > > > > 
-> > > -- 
-> > > Nirjhar Roy
-> > > Linux Kernel Developer
-> > > IBM, Bangalore
-> > > 
-> -- 
-> Nirjhar Roy
-> Linux Kernel Developer
-> IBM, Bangalore
-> 
-> 
+Regards,
+Artem
 
