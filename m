@@ -1,148 +1,154 @@
-Return-Path: <linux-ext4+bounces-6287-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6288-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BD87A24A06
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2025 16:48:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD6FA24AD6
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2025 17:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E21F3A6145
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2025 15:48:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7B85162464
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2025 16:54:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAB61BEF6D;
-	Sat,  1 Feb 2025 15:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A79F1C5F34;
+	Sat,  1 Feb 2025 16:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b="OHMRnPqJ"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nszgTuo/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0968182
-	for <linux-ext4@vger.kernel.org>; Sat,  1 Feb 2025 15:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C6C9208A9;
+	Sat,  1 Feb 2025 16:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738424904; cv=none; b=SqDjR6Oy6B+wu8rf1DFoASlqJwYaMfLDwIvdqm1QYfi8mTvdl9rSFzkz7H7IqAxwr7yQDRV7sjSkQkSDDAqmNypY52Ilxg9cS3ikVnFMTqFTSS5NtvTgB6wPq7dOPC0Eq0+nrmO+i4WMgzrwkdHE0EHpYTA6Vz06z/pUz+N13iQ=
+	t=1738428840; cv=none; b=MhSDETU2kE/AjQ4XbZ4pwPOWVTCOeQUa5hCaVZWPSC0nhdCskVc/BIVJ1PsGuldueu4Ib8Ku0bMpDAzzG7dZTw+X5ecUip0ThhYa7EpfvcGrGfJCxm/107wGGQLHnisxfd0pkVN75iVnh8IHQs20DrmM25uIbYiJCbigFQcSpug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738424904; c=relaxed/simple;
-	bh=Xv1wG7T12bzwSA/1LawgcD0UbW5p98JC5ov1T24AUN0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=gQwtRMCgLCKK4AOz33cGh1RG5CJJx3HyHyGCbuik7+yeL9lCLFdw4Ulm2FIxR7uiPH3sjmAvjkrHQEW0mzkNFxnfRvw6HeWxSbUqRuyCoQFIGGoxw+5uOX4LVdzJY3gAliVNDQDrRZkktpY8DCO78YnrOylyfzx2LNV2rxFHCvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b=OHMRnPqJ; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1738424899; x=1739029699; i=aros@gmx.com;
-	bh=Xv1wG7T12bzwSA/1LawgcD0UbW5p98JC5ov1T24AUN0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:Cc:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=OHMRnPqJJVRECj5oVL8FfldWjp/HSP1rkwdMt8cJsD7njRvwgNmc3oN+u6sXGv/P
-	 uhQXmfqpfTBYHpEWWmwaacsQ92axxLcoAKe79RZaZwZXHb9jSH07gtt88iSEpQXP7
-	 2CHrOx/FGEosNFr3HAYgBVpHWvx3vjaHp5kcld6Q5mj0AjYwiNNwSEnrqQc9ilo/5
-	 PXGBB9covpsaYFMoa87v0ldeuc09+Dw6TbZ4EcP3yQE6E8pCL6ekno+ngOX7jPY1D
-	 WBtGkLVlFj8ztAFtnEivzXYLYeWQtLxymokksRkfzSegwuZQY6lBWyQFuzhtUQOcr
-	 OSu3bKwKQvEtIsAUNg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.11.19.6] ([98.159.234.94]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdefJ-1t5T8s1kO1-00mmpG; Sat, 01
- Feb 2025 16:48:19 +0100
-Message-ID: <ba25991f-43ff-4412-8978-27ad8198e347@gmx.com>
-Date: Sat, 1 Feb 2025 15:48:16 +0000
+	s=arc-20240116; t=1738428840; c=relaxed/simple;
+	bh=EpQjIwpiqwLbhZDDirRysP8q/HUWGCIYpEHuKsU2DTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=E5RJMTwUAO7DXr7PBryUxYtjEwvV8NYc/Xns2O0Y+dSRU6aqRJCYYSE8Y3tVnDlMAEbKEA4pXp49KJ2P8ZdO3J0A22cU1D+u0fOOo8mNilQcFDQslvLmE5md+Kns91NNnCC9+zOS9oM6BnQjFCIsyysoUptQD3W9NqCMS4lVKj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nszgTuo/; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 511DS93K010152;
+	Sat, 1 Feb 2025 16:53:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:message-id:mime-version:subject:to; s=
+	pp1; bh=dNGVTebc8on0ImUIEjF3PdUCyfFNtktTD0RQty9whBI=; b=nszgTuo/
+	cFjttmP6xB+b6eO1skhflXOG4NCzT3c81T5zXvxZOPqMqY/kvQclxVhT0n5SWtvx
+	J+H5fWB8vxAofO6+t2nVMfZyXNM8gm6C8uKKVP6uMhkMpgMsOx2110ShE5QzQQub
+	Pc9cciK+xMjIO4M+0LL4LjZU5SNLkXx1uQjj5GuMtMJzzZwMjS0Bt0tGT4trHjdo
+	6XinAQ52qkh/bZ7TX0hjYHb4KEt7bkA1S/41PSb/1Kt8x7AqL7rpl3TQIhu7mfDV
+	+tph3uqhd9baGQW8dkZyBH41iwpgxbp60cmZ8m8ZI2xT+JhIl0tXeABz/AHJzKdx
+	MCNv59/iozaL0w==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44hd8k1hyu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 01 Feb 2025 16:53:40 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 511GreP6026762;
+	Sat, 1 Feb 2025 16:53:40 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44hd8k1hys-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 01 Feb 2025 16:53:39 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 511FwGaW008671;
+	Sat, 1 Feb 2025 16:53:38 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 44hdawswh7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 01 Feb 2025 16:53:38 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 511Gra7C37749188
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 1 Feb 2025 16:53:36 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8764F2006A;
+	Sat,  1 Feb 2025 16:53:36 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B750120067;
+	Sat,  1 Feb 2025 16:53:33 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.17.225])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Sat,  1 Feb 2025 16:53:33 +0000 (GMT)
+Date: Sat, 1 Feb 2025 22:23:29 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: lsf-pc@lists.linux-foundation.org
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        djwong@kernel.org, dchinner@redhat.com, ritesh.list@gmail.com,
+        jack@suse.cz, tytso@mit.edu, linux-ext4@vger.kernel.org,
+        nirjhar.roy.lists@gmail.com, zlang@kernel.org
+Subject: [LSF/MM/BPF TOPIC] xfstests: Centralizing filesystem configs and
+ device configs
+Message-ID: <Z55RXUKB5O5l8QjM@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: A possible way to reduce free space fragmentation?
-To: Andreas Dilger <adilger@dilger.ca>
-References: <8dcf1b6e-633c-4415-9412-6876efc07b50@gmx.com>
- <8539EF46-5166-47EE-AB26-01ACA68D6DE3@dilger.ca>
-Content-Language: en-US
-From: "Artem S. Tashkinov" <aros@gmx.com>
-Cc: linux-ext4@vger.kernel.org
-In-Reply-To: <8539EF46-5166-47EE-AB26-01ACA68D6DE3@dilger.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yj02ZXICiqaciWhPDWUPDLSfU0JrekLYYwqnWRqnn7DxXZYSxsc
- 3iNimx/iitTsce7wOHaEyMD1o18Oj04e7kjN3krUMRgVewj/PYSw6Nlb21JwR+jO/w1pI9a
- LmmQzhFtjM0JVMXPn269/tyit73wZkDxwHOx1LbQaOPv2UQ9Z/bJAPgqE84svzR6a0F3ket
- ubwSRcEE1ZuTOvAFBSN+Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:MVTLv/Tn7N0=;V3WIp1H7dLB/HZt7br0uR8R9cCW
- RMqUvIM8HWiiri0ptLOFdJecJhXt+Nrs4vvVN5Iyi0Pg9Sodzg43DVj1otAwyELDLJpXdvkHt
- I28Jmrh6d6Sr7VyWyeMOEuL+lG6UPEYneJkT/SxiLzawBT7E9h27TgT9N0OqXMxyxHfkAcbQB
- SSaLL2UHerGR/ZPDj9q4fmCXVNLyioaT5BWdd3oFLNFJPCF51I06Plb1cB8HTddpR1OdEZdjW
- SBJYgU6lDoXaSgFROZJVAutxUlnyN8F4OLpWFi13Ranz+GRuokOCWTOELHeUlODUrYIjjqB7G
- j1CQ0cRooPUe4e0bT/NybPp453OGsG0I7cX5brQi2ZVPEPMBwyBs1lrAFQo48fY8gDCGZhWcT
- ri88Tb3rOxxljTesFpeenLGXXS9iOGf/OyRUvwBakquKbnznlPw4k9jYTDjF8MHxsns6n+GOl
- piA4IlhdsHltfa4TdznEfJL+JKNOD1Q36HWv8ICAQycC1SIhtNXI4KhqIJt0NAsjGDFAHOjSw
- i6bAq6qPt3U06ttthbx9nHalidQDP2pDDbM0Z6yAyqOgzUIy7Zthbv69dJ/xdz60Pf87eFb21
- r0D34xP+m8OgBZMk9kFI3ieELOyufZ5VVFAU5QP2F2cxoSWjhrW/Rz4jB24BbRfqBh/6jxs/+
- 4YDqChiECOFINgAfvZEBG0Z27W1asc/5SVcmpAVr3U587v0CEg9/BsT2TR2ai2c4TPjln+Vpa
- 0D6Bw9P2AlZjWxQ9+MExg/VQI77PeHWo9ARy4BQ8wEBkoJPhuDfZ/QJNxxGYywW0f/1o5elzP
- t6IWek6vVxEBz2PemMNeAg3Dy05+tfb9klQOb0TZq8YkSeOkZ0xTOYp3dtsXQvroCXmbRvINr
- 9lkLjrr80thHPk68DtLsLJlNMNaHVjM/D6IoMAcHRc8zTJGmvMZGB06WM5WzQDZ74QHIMQQ04
- aIX92Ig0pkrP2QAHBvnAkusWzF7iYlbztTHbTbuLtUCu5ZUwuVqlkllPIGVKTGpOsqmbcqk2s
- 4qbhq1XHguUnzif2lBmkSiWxRxyXUIMnkNdkxK0V/iy/nOsFBjG5eSMXCkTjfUdi0TEI/mdCK
- LduDQJEdPHON5NIFfSkxluqGeCcS2ZQNVZ3a3yE0mrAeHUJpJVHSP89gfKv/k1bFsLLpC3hEL
- y5ctld1T2cY6jw4KT8nzVWeLmaYWUWZTMc6wt2lUlnDkqUnLDQDnJQdgFwxfYgKA7G8kRLf5m
- 7hdVwMRyN7W6UiQxVNIx1E/RtjqW9pf0x1JhHZgxmDxCK/Xi8qxjCWF7ye93Jmq+/oOpY8Sit
- jVX80otaxdCRG90q2+koSXMs5D+eC7R1+0UmcAJaysoM2Qeogo6TymEac3vu4rvoVNw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: gtMQaCfMySc79GNShiqDKBnCXXY9E1Q8
+X-Proofpoint-GUID: fk5DmC9NxPP_CQ7sH2pdR8zYwdtJXnCK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-01_07,2025-01-31_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 mlxscore=0 clxscore=1015
+ malwarescore=0 priorityscore=1501 bulkscore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2501170000
+ definitions=main-2502010143
 
+Greetings,
 
+This proposal is on behalf of Me, Nirjhar and Ritesh. We would like to submit
+a proposal on centralizing filesystem and device configurations within xfstests
+and maybe a further discussion on some of the open ideas listed by Ted here [3].
+More details are mentioned below.
 
-On 2/1/25 3:38 PM, Andreas Dilger wrote:
-> It should be possible to run "find $DIR -type f -size -1M | xargs e4defr=
-ag" to only defragment files below 1MB (or whatever you consider "small").
+** Background ** 
+There was a discussion last year at LSFMM [1] about creating a central fs-config
+store, that can then be used by anyone for testing different FS
+features/configurations. This can also bring an awareness among other developers
+and testers on what is being actively maintained by FS maintainers. We recently
+posted an RFC [2] for centralizing filesystem configuration which is under
+review. The next step we are considering is to centralize device configurations
+within xfstests itself. In line with this, Ted also suggested a similar idea (in
+point A) [3], where he proposed specifying the device size for the TEST and
+SCRATCH devices to reduce costs (especially when using cloud infrastructure) and
+improve the overall runtime of xfstests.
 
-I have smaller files completely defragmented already.
+Recently Dave introduced a feature [4] to run the xfs and generic tests in
+parallel. This patch creates the TEST and SCRATCH devices at runtime without
+requiring them to be specified in any config file. However, at this stage, the
+automatic device initialization appears to be somewhat limited. We believe that
+centralizing device configuration could help enhance this functionality as well.
 
-The issue is a dozen of 50-250MB files that span multiple extents (up to
-30).
+** Proposal ** 
+We would like to propose a discussion at LSFMM on two key features: central
+fsconfig and central device-config within xfstests. We can explore how the
+fsconfig feature can be utilized, and by then, we aim to have a PoC for central
+device-config feature, which we think can also be discussed in more detail. At
+this point, we are hoping to get a PoC working with loop devices by default. It
+will be good to hear from other developers, maintainers, and testers about their
+thoughts and suggestions on these two features.
 
->
-> However, I don't recall if e4defrag will move a file if the new file has=
- the same number of fragments as the original (presumably both "1") or lea=
-ve it in place. That would be possible add an option to change.
->
-> Alternately, just run the "find" above to find small files and then "cp =
-$F $F.tmp && mv $F.tmp $F" to rewrite those files into new blocks, and hop=
-e mballoc will move them to a better location.
+Additionally, we would like to thank Ted for listing several features he uses in
+his custom kvm-xfstests and gce-xfstests [3]. If there is an interest in further
+reducing the burden of maintaining custom test scripts and wrappers around
+xfstests, we can also discuss essential features that could be integrated
+directly into xfstests, whether from Ted's list or suggestions from others.
 
-cp doesn't even support posix_fallocate(), rsync does but this process
-will be a complete guesswork as I have no idea which files are worth
-moving and which are not.
+Thoughts and suggestions are welcome.
 
-Considering there are holes that can include files in their entity, this
-must be done by something that knows what it's doing.
-
-Best regards,
-Artem
-
->
-> Cheers, Andreas
->
->> On Jan 31, 2025, at 14:02, Artem S. Tashkinov <aros@gmx.com> wrote:
->>
->> =EF=BB=BFHello,
->>
->> ext4 has no free space defragmentation and at most you can use e4defrag
->> to defragment individual files. I now have a 24GB ext4 filesystem that
->> has only 7GB of space occupied however it has small files scattered all
->> over it and now bigger files occupy more than one extent and I cannot
->> reduce fragmentation to zero. One way to approach that would be to
->> shrink the volume and then defragment it but that will involve a ton of
->> disk writes and unnecessary tear and wear. Is it possible to modify the
->> e4degrag utility to move small defragmented files, so that they were
->> placed consecutively instead of being randomly spread all over the disk=
-?
->>
->> Regards,
->> Artem
->>
-
+** References **
+[1] https://lore.kernel.org/all/87h6h4sopf.fsf@doe.com/
+[2] https://lore.kernel.org/all/9a6764237b900f40e563d8dee2853f1430245b74.1736496620.git.nirjhar.roy.lists@gmail.com/
+[3] https://lore.kernel.org/all/20250110163859.GB1514771@mit.edu/
+[4] https://lore.kernel.org/all/20241127045403.3665299-1-david@fromorbit.com/
 
