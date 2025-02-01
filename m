@@ -1,161 +1,123 @@
-Return-Path: <linux-ext4+bounces-6285-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6286-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0260AA24988
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2025 15:38:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F2D4A249FC
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2025 16:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BA16165BF3
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2025 14:38:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A8D63A2BA6
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2025 15:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D67D1BEF7E;
-	Sat,  1 Feb 2025 14:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86A41C330D;
+	Sat,  1 Feb 2025 15:38:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WHVcnBTq"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="beu6EYlE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 830B81EF01;
-	Sat,  1 Feb 2025 14:38:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB9810E0
+	for <linux-ext4@vger.kernel.org>; Sat,  1 Feb 2025 15:38:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738420711; cv=none; b=SAxZW/9TROlCUVQPc9m2Gh5AJBnneGy38kg+xtKqwkczy/H6NNz0g41XQ7OHPHKJNdkVw9z+YUCQFS9f/XMrMAOP1fA1ZvxqJ5i0239f3dJwl5htFEjniIFNwBwWzHkTUk/ccAWk+lR7HJVQT2mcMgnvO0UJUQS4xRmDwkOZULI=
+	t=1738424317; cv=none; b=myT9cso8jdIlNEi5c6F/H5Wdg0uwpR1w0dAy+8exxw4dbOwPhJ+TIars4LX5zpdEvB/YKvOnnjR4oVv64kUyeunfGhsLUM8DYNZpaNOMoLEwMPS6I29KkRp2Aco/0dWdg1qQWU2bx6GwnBLdmMuEKQDiuxoCxFevZy0Jng7MBqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738420711; c=relaxed/simple;
-	bh=QiSjG7TvkKqWoaD2aBFrVJnxmPFyXLRgqp8pz0gLUzc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sir0E/nrq4GSzZD1K/Hr6zwMS/KFWTY1dUzg66F2NSymciBIC/Dk2lrojlTz7m7+gl1d94Tn5Hbqy7kGuWhFy8Y6RXdR8gjaIuPHamkSz81OufFhZUR0YnhKe57Ji6VagnGsAMGEXGCUG1I1b9+bD2pycFFwZnfOWvMgSxf3uFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WHVcnBTq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81966C4CED3;
-	Sat,  1 Feb 2025 14:38:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738420710;
-	bh=QiSjG7TvkKqWoaD2aBFrVJnxmPFyXLRgqp8pz0gLUzc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WHVcnBTqerPHgxQCTpImKkHSbu00uWLYWvzmwAtGSlEM5YJZsz+IONl1JAUXaAYeS
-	 UJ9kApP54ppYFtkOEdEpcq3q/cMh6HuYR1mHH/xKj/oPfQVrOmFtSrd8PKELMi9ZKd
-	 aMt49gIWUhJubrKpeqIdvzW/w1uO2UpMYnZh0EB8fqF0FzQhG/nkrRTh0n3uupqhJX
-	 GL6/bojxTFS3yFivQGFxojQ/70DT1M5BSJIYxKerpN3FTZplWkma3sNKC0V8QcHgvv
-	 06dPyDUVaBQCjxiqI0K2TaqPFoWFtdm50CRElJU5ocUYzDcQzY+iGG0rhGd7AyrKNH
-	 jwF5lZf/kuiTQ==
-Date: Sat, 1 Feb 2025 15:38:20 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Peter Xu <peterx@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	Alex Williamson <alex.williamson@redhat.com>, Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, 
-	linux-fsdevel@vger.kernel.org, jack@suse.cz, amir73il@gmail.com, viro@zeniv.linux.org.uk, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [REGRESSION] Re: [PATCH v8 15/19] mm: don't allow huge faults
- for files with pre content watches
-Message-ID: <20250201-legehennen-klopfen-2ab140dc0422@brauner>
-References: <cover.1731684329.git.josef@toxicpanda.com>
- <9035b82cff08a3801cef3d06bbf2778b2e5a4dba.1731684329.git.josef@toxicpanda.com>
- <20250131121703.1e4d00a7.alex.williamson@redhat.com>
- <CAHk-=wjMPZ7htPTzxtF52-ZPShfFOQ4R-pHVxLO+pfOW5avC4Q@mail.gmail.com>
- <Z512mt1hmX5Jg7iH@x1.local>
+	s=arc-20240116; t=1738424317; c=relaxed/simple;
+	bh=nO6Fpd0/MQ2WEHvFuYcR1nx6CJcbKZiuprKnSa0xcao=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=Jf7XQPn3OC59VjLUL8oin2zPUgO8izuyDksFgtABJhJ1czdYdcXl9W4FVNF414Jy6DMRjNp+vYtMlD+qcFKmsVe9IbbTni45xVutfm/dCodnWwMCUlY2e1W8cSjmc3cDlFRr0/axjr/rWggJtaFB3C8WWeYCjsJQ5cG2p2h2XbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=beu6EYlE; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-e46ebe19368so2901700276.0
+        for <linux-ext4@vger.kernel.org>; Sat, 01 Feb 2025 07:38:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1738424313; x=1739029113; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nO6Fpd0/MQ2WEHvFuYcR1nx6CJcbKZiuprKnSa0xcao=;
+        b=beu6EYlEEiRT65Hvv7Ib5XdVJGuNxjsO2ko1XW9yaKXCj2lQbAO3o/k1lWYeMO39m8
+         ktjR3eI4xEUlTXJDazpd/3RRRXrieAj5aF9owuYGvqufXDDp0iT1b/8b8trSV9mO4TN0
+         RmPae5MYw+o7Spod+0Cq9FV40bELPF81+4kV4ZLf1EIemGLMQ7C6Qg2ZJnInXsBVI4p2
+         70BZvBbS7KxQA88wdk2738d7sAwOsIILQp1tM4+XVngTJEbCSpiGd/tjPNMOjop50rMH
+         gN/qL0j8YyUTEN0YyT02mnn+ipFHaeAllQk+2SA1TmH/UYaJYF3VMiZuc6Fbte+TWC3D
+         pMeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738424313; x=1739029113;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nO6Fpd0/MQ2WEHvFuYcR1nx6CJcbKZiuprKnSa0xcao=;
+        b=JH2Z8GtlOhEpZ/PIhmk7dTqKfE8kKhTruMhXbLC0Z7/xqNkDKQHaKU2yxcHiw4DYZl
+         47cUzIzuj52E/EZmp6FIOffWKMsRx1JKaW0tgAz5ZGSzfduWy5PxLyGd42WiDlhPbEMH
+         hJ3L7zAXEP+a4FwMBYNqJJ52nExUMDtYKg9SKqhO0HvkVX5klNQ4U3N95XoRgAl4/5Mn
+         DrhFOTyoH1wQ3AKmd4wE6FnAGWWHJoq8CjSeUmuslIDa2hlY8aDXUBzafh49GHkWsxZU
+         TTEl88fNda0soLiIGb3qwm3nRsD0hUtW1snBmNvDjQYnXdpYpbsN8U9V/nKOxT2xOTu5
+         ve8A==
+X-Gm-Message-State: AOJu0Ywdw8F+D8OAJ5XH/T2RPrsrM51IRMytVYWhoGyOIwt/TiZ+oIMe
+	uVysmh4z4duOo9WwXxysyeR9MmWhfhrDlzGCcrXFuC6WWxmx48TQcqZREO1wSGR6PTds1EDxaEg
+	TFAg=
+X-Gm-Gg: ASbGncvgYxxCZqLI7zdFLCAy/I+Y0Wz8ZH+IsluWVy0myCHI9DpAHA3NQcvAf2tTifK
+	GULN09vhRHU9Xgi3/20kqj5aFGuYZWMcd7h7PhN4ffmi9Cia0avqlmri4nmUlz595GIVCCad/Eb
+	mUcyKFlhHYPU0vDUFG9SDCQXVXB/LJXBJ/xkKL4BBHViVBjcIarGAEl0jhn8W/Z6XJ6guoyHmDw
+	zMkIoYMhhg73jO+CDqrRngMJQqhdSSqPYlheLgR8PGLTbzGH3o++1Ho08XsbPjmWDZ+xtVGtcMi
+	ez1RHJsRRqhgiTdxYd5X1YvzhwE=
+X-Google-Smtp-Source: AGHT+IHJFoKOkO0g+69z0XYsranwfPsKGcqbRQlTpfpD7dWDjMQWYmXm8zwsqUlMQxSzlXpZlkGUNA==
+X-Received: by 2002:a05:6902:707:b0:e58:85c4:bd35 with SMTP id 3f1490d57ef6-e58a4ac37f8mr11720198276.13.1738424312804;
+        Sat, 01 Feb 2025 07:38:32 -0800 (PST)
+Received: from smtpclient.apple ([199.7.157.42])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e5acb27ec7esm1275389276.16.2025.02.01.07.38.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 01 Feb 2025 07:38:31 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Andreas Dilger <adilger@dilger.ca>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Z512mt1hmX5Jg7iH@x1.local>
+Mime-Version: 1.0 (1.0)
+Subject: Re: A possible way to reduce free space fragmentation?
+Date: Sat, 1 Feb 2025 10:38:17 -0500
+Message-Id: <8539EF46-5166-47EE-AB26-01ACA68D6DE3@dilger.ca>
+References: <8dcf1b6e-633c-4415-9412-6876efc07b50@gmx.com>
+Cc: linux-ext4@vger.kernel.org
+In-Reply-To: <8dcf1b6e-633c-4415-9412-6876efc07b50@gmx.com>
+To: "Artem S. Tashkinov" <aros@gmx.com>
+X-Mailer: iPhone Mail (21G93)
 
-On Fri, Jan 31, 2025 at 08:19:22PM -0500, Peter Xu wrote:
-> On Fri, Jan 31, 2025 at 11:59:56AM -0800, Linus Torvalds wrote:
-> > On Fri, 31 Jan 2025 at 11:17, Alex Williamson
-> > <alex.williamson@redhat.com> wrote:
-> > >
-> > > 20bf82a898b6 ("mm: don't allow huge faults for files with pre content watches")
-> > >
-> > > This breaks huge_fault support for PFNMAPs that was recently added in
-> > > v6.12 and is used by vfio-pci to fault device memory using PMD and PUD
-> > > order mappings.
-> > 
-> > Surely only for content watches?
-> > 
-> > Which shouldn't be a valid situation *anyway*.
-> > 
-> > IOW, there must be some unrelated bug somewhere: either somebody is
-> > allowed to set a pre-content match on a special device.
-> > 
-> > That should be disabled by the whole
-> > 
-> >         /*
-> >          * If there are permission event watchers but no pre-content event
-> >          * watchers, set FMODE_NONOTIFY | FMODE_NONOTIFY_PERM to indicate that.
-> >          */
-> > 
-> > thing in file_set_fsnotify_mode() which only allows regular files and
-> > directories to be notified on.
-> > 
-> > Or, alternatively, that check for huge-fault disabling is just
-> > checking the wrong bits.
-> > 
-> > Or - quite possibly - I am missing something obvious?
-> 
-> Is it possible that we have some paths got overlooked in setting up the
-> fsnotify bits in f_mode? Meanwhile since the default is "no bit set" on
-> those bits, I think it means FMODE_FSNOTIFY_HSM() can always return true on
-> those if overlooked..
-> 
-> One thing to mention is, /dev/vfio/* are chardevs, however the PCI bars are
-> not mmap()ed from these fds - whatever under /dev/vfio/* represents IOMMU
-> groups rather than the device fd itself.
-> 
-> The app normally needs to first open the IOMMU group fd under /dev/vfio/*,
-> then using VFIO ioctl(VFIO_GROUP_GET_DEVICE_FD) to get the device fd, which
-> will be the mmap() target, instead of the ones under /dev.
+It should be possible to run "find $DIR -type f -size -1M | xargs e4defrag" t=
+o only defragment files below 1MB (or whatever you consider "small").
 
-Ok, but those "device fds" aren't really device fds in the sense that
-they are character fds. They are regular files afaict from:
+However, I don't recall if e4defrag will move a file if the new file has the=
+ same number of fragments as the original (presumably both "1") or leave it i=
+n place. That would be possible add an option to change.=20
 
-vfio_device_open_file(struct vfio_device *device)
+Alternately, just run the "find" above to find small files and then "cp $F $=
+F.tmp && mv $F.tmp $F" to rewrite those files into new blocks, and hope mbal=
+loc will move them to a better location.
 
-(Well, it's actually worse as anon_inode_getfile() files don't have any
-mode at all but that's beside the point.)?
+Cheers, Andreas
 
-In any case, I think you're right that such files would (accidently?)
-qualify for content watches afaict. So at least that should probably get
-FMODE_NONOTIFY.
-
-> 
-> I checked, those device fds were allocated from vfio_device_open_file()
-> within the ioctl, which internally uses anon_inode_getfile().  I don't see
-> anywhere in that path that will set the fanotify bits..
-> 
-> Further, I'm not sure whether some callers of alloc_file() can also suffer
-
-Sidenote, mm/memfd.c should pretty please rename alloc_file() to
-memfd_alloc_file() or something. That would be great because
-alloc_file() is a local fs/file_table.c helper and grepping for it is
-confusing as I first thought someone made alloc_file() available outside
-of fs/file_table.c
-
-> from similar issue, because at least memfd_create() syscall also uses the
-> API, which (hopefully?) would used to allow THPs for shmem backed memfds on
-> aligned mmap()s, but not sure whether it'll also wrongly trigger the
-> FALLBACK path similarly in create_huge_pmd() just like vfio's VMAs.  I
-> didn't verify it though, nor did I yet check more users.
-> 
-> So I wonder whether we should setup the fanotify bits in at least
-> alloc_file() too (to FMODE_NONOTIFY?).
-> 
-> I'm totally not familiar with fanotify, and it's a bit late to try verify
-> anything (I cannot quickly find my previous huge pfnmap setup, so setup
-> those will also take time..). but maybe above can provide some clues for
-> others..
-> 
-> Thanks,
-> 
-> -- 
-> Peter Xu
-> 
+> On Jan 31, 2025, at 14:02, Artem S. Tashkinov <aros@gmx.com> wrote:
+>=20
+> =EF=BB=BFHello,
+>=20
+> ext4 has no free space defragmentation and at most you can use e4defrag
+> to defragment individual files. I now have a 24GB ext4 filesystem that
+> has only 7GB of space occupied however it has small files scattered all
+> over it and now bigger files occupy more than one extent and I cannot
+> reduce fragmentation to zero. One way to approach that would be to
+> shrink the volume and then defragment it but that will involve a ton of
+> disk writes and unnecessary tear and wear. Is it possible to modify the
+> e4degrag utility to move small defragmented files, so that they were
+> placed consecutively instead of being randomly spread all over the disk?
+>=20
+> Regards,
+> Artem
+>=20
 
