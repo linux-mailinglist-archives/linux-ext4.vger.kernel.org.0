@@ -1,230 +1,305 @@
-Return-Path: <linux-ext4+bounces-6301-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6302-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26364A266EE
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Feb 2025 23:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE89CA271B8
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Feb 2025 13:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B21203A5460
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Feb 2025 22:41:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60CED3A31F2
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Feb 2025 12:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30AC5212FA5;
-	Mon,  3 Feb 2025 22:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9430A20D4ED;
+	Tue,  4 Feb 2025 12:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="hFlAdqE0"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ofdV5L93";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="nn3gicBp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E520F212B04
-	for <linux-ext4@vger.kernel.org>; Mon,  3 Feb 2025 22:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738622368; cv=none; b=pp5vXyfHaOq65gr4UTuryzF0VeYUvfEZ1vTmQIP2A29O4aDloRX0+aFoNcDqPi77xTriSJTU0pzDDgosm3ZHzghYiSX1Jt9dcsXa5Bl+7JtetclGXX0GolOyLd+b0/CEIiBQ9fAaMBi1SdqLGjexEzSJhWQV2SUgtKslM8ZbFZM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738622368; c=relaxed/simple;
-	bh=K1VNqIvXyYYBViLsvU7jTEwkBNtEo6tSllkcYykAnC4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LRiil2jJKVWVD9vmHaKJJNRNkU8BOTGkwcfa+y6BochFjB1na+MO3/GnGJYUBLwKfl+A3wyGTGUHNyrnSEpiqeZJq1iegM7qOzbb6nMMRBfGTuO0TYj0hBissdHeJ8vLbFCJI/93GZdDMAi6hqVslwPLxiZW6iZdNUgjCDx56j8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=hFlAdqE0; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2ee786b3277so6328854a91.1
-        for <linux-ext4@vger.kernel.org>; Mon, 03 Feb 2025 14:39:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718211DC745;
+	Tue,  4 Feb 2025 12:20:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1738671648; cv=fail; b=dXUbeamGK+SCqe1MQQjt+LFrlDVDnys7qPcqyD8iwmfPMe+1jyuivoOgZGJTMy3uH05qtl+SWClUMuizgbvhT3jzz1Lhh5ZdOYrsjJ9f6LcOH0NM23SC9J0OHKjuNgwiV1QHOJunBYUf7UwdGGPOKCtj8iNncxVnkTx/xakMKCQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1738671648; c=relaxed/simple;
+	bh=FKj1AjMmL64MIjvwgAqoLIrV0nvgomfNmeqIE8irGLM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ngnVXwgT91v8NhiT5BLSYSpH4r20xhYDVOmFiwFx29bBfQtQVPzXo6LJgQ2ItYZzPogMXSFGXzX6IB8vetHmeJQ+Tigbe2ZvUgwKXVGClfGYtN/kdqEZTVug5PiPbH5nC5vi3+WXw6XZOO3vIaV0VHe9V0j4MQSk/EEyxmBbZ9o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ofdV5L93; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=nn3gicBp; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 514BfVNK013676;
+	Tue, 4 Feb 2025 12:20:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=zS4jHZ2kt23wEDE+AD09Ak+wiMQ78Zn1s/A9gAKsP0w=; b=
+	ofdV5L93gvJ399rvUmWqZ/cbomPqE4fHMFairsqLI6EbSBKcfIFmvEtnnJ9cpq/J
+	DCmArta66PyO7PKnPIEsMSXM18/vCo+i94IzSVfXCE2UgNxU3EOmZCK5eKzYUX5Y
+	r2Q11EKBAg/psIVvNmKpUGTEGgLybFmgIYdhb9ZrG6HQWaCpxORR5AnFW4hBuSB2
+	oXM4iBS77w4YyZAbZRbs+35uHIQvH2VTRqWKoC2oIj8FRgdsyPOKUN1g93T88U0n
+	mGZOqva86shQC1+51Y1thoaLmJgqiw3vw0fdMkdLkUHzkZJcEepolTQbniufeBqM
+	/WgV1lKuZLJu0RRovKPGZA==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 44hhsv4qny-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 04 Feb 2025 12:20:32 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 514AUpfl030645;
+	Tue, 4 Feb 2025 12:20:31 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 44j8dm60p4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 04 Feb 2025 12:20:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=jcQBb5UgKGXupAjChF1EjfFOLp4L+wf4yNdB8uvyTBp5G9b6DikkfHBrVf7e3A4oMCmCWhe2NvqhB6+GL6YvSl3wH3uyB1y+tvGiUm3B4IgjE5C1b57LHzsyzhWto/r1OS/caLZFyixQ5xgVQ9FlHhVdxVdMJIv6oycYlMmHy21sQWYpKj0Wmo+Dbowt1NlNToL8TI2FNG4bhw9vnSJysTHO62HYEuTjPZ9UtHUY3SVq0Q8GZ9YC53M6/PfEmt6kayHcDQwmWHz193myeXfXOraql6aizFKumP4JNPghYlDT/SYN2NpUEngZdk3sBsuz5FNJqsRCnHDXM0rjSom3rw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zS4jHZ2kt23wEDE+AD09Ak+wiMQ78Zn1s/A9gAKsP0w=;
+ b=GlwtTlfncgYj3kxRpo/xTH9HsMuMPbqDh434CSmFnVnzgIsn+0kO/rKSue+E4X5UlFLSqZHOF/mibiUGAq/Yk983JVTSTZbDAkt72iT/OPblasqhMQwJEcIzFPQGbueaBOKWGcqqRPAJGF7OrIemPqCvLKEJtCNgPhUe32VniQENLwScDsNqbCclYMljwtcf6vDrahzrylTQ9wDC3n1gg9FavhsfEN0RQP2WEgZcLH25nmrTGLbOUpUtkbHyVjNooqnxRO45KYtYd4uKLwljmlBQbQI9qUjVQ8Iq0f0WRLl/Zi5aMcpRofHRsRvPyN1LkwKS5s9xai/eJw4QylJqTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1738622365; x=1739227165; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7KpVGyJ2q1bc5O6QMLcMEUWtGlTAt/NvAxettw3RvKg=;
-        b=hFlAdqE0Ps+xBkFt/kwvpqEmDliL7EctUd/lDWrFGs76+zatNRa050WXpvHmGvp/lW
-         lzXS+vE3Xrngsrv5Ais3d9tXAHJlivO1592p0Wucl8P5hd4Vu0KuL8Wn50wpwQHWqwij
-         pnAQ5892Q6/5uG5MnhlLvAoOYH10UlfQ89VAhVhoZbDOMWpEXZz/cpSJlCfC864pURqH
-         e7Z4BlE5pe8TTi8/Zq04avhEDMyTfmTVVayxLYqw7OjXt7PG10Cy8JJFbm2WpNYZnwNq
-         Cyhk4kXMTz105AI5BKxMgpUgj5EMOUTOFa7izZgfR0WXQyJ2R5FrnFkicFuOaEjKicZd
-         0iIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738622365; x=1739227165;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7KpVGyJ2q1bc5O6QMLcMEUWtGlTAt/NvAxettw3RvKg=;
-        b=wVbVaMGQvQ+jKJrti0SEU0BwB21CTh0BKMpYhNbpUQOEkL/uumlSOCQBdMuo+jxDKN
-         C1suP0QUgij/BFQH1CnfGPQCwKNvvNPnUn7zyP8T96g+OoV7i6hAWECPza7/rcJ89Kbg
-         LBqE+AEggVo+O1B/mz9LqX0FkULQTcdWDyXNyQXtkfffRQut4LhNk81kHmz1lLcnQA8G
-         DIOLATFaX7pzq5xoWAOazXSh+iiwqcaOZtEMUisIUpV8JUOiYVvhCOZoB8Dg+wXnTayF
-         tsYa7WOpCpIcgJZU7qYMYhFa482cuc0+GWt5v5x9FF3s3PzhOI26oy3Lc5OgartX8sRd
-         g2LA==
-X-Forwarded-Encrypted: i=1; AJvYcCVyj7V5owOl4WEe5K7vKPYylbPQK+NQkZ3LW/BTURIZx6o2MtNZYtZS9qetsdfz8IDaTMHOU2a8wKJ2@vger.kernel.org
-X-Gm-Message-State: AOJu0YwchD9J+IEpDWa61/2k0rflad4o3iMn4kEF2K3zwERlzX8ylvDj
-	s3HFjnQeEZD7uKBzd5jqrUfD1XcfHOiqkram4p6NNzBi+v+XvYzRSoMowEJtO+M=
-X-Gm-Gg: ASbGncsetNrj2krTce3sX2LDUfSFzlbiOjXISlod6ZknLE8CF4BYrqrSjH4f144t1to
-	51zlsDSzCjbBnYS33yPFsQr91vFsgkDMD7dugfyU6ZNqNbpSKrUr6+ziTL5DFvpuGXFWvM3g+lg
-	wqot4YZC9spHG7wsRRVtqFflGUOQec4KO4RZpdXKoNgEKvil7/T/iD9M+v5aHpqz1a0L4hwLYhX
-	brtUKXDbUBkd6AXcgoooguVWa6Dt6IfbGw7XGcOsF+U7eK4VbrV/2ZcEtcFzvfk9CqjZu4dgQkh
-	+FB8LcaxrxQQ3+pXg5wDCpiVNvD9bivFY0yZZopviDDmkwDL9BQN5NUqbLsef0OTsD8=
-X-Google-Smtp-Source: AGHT+IEPTrAiWBg1qg9Pn7U4MfER2lZWbpMPOOLGPLK2BHWop9OkWWimId0qcnZrm79vDgsDbkrIXg==
-X-Received: by 2002:a17:90b:524a:b0:2ee:5691:774e with SMTP id 98e67ed59e1d1-2f83ab8baf8mr37128948a91.2.1738622364086;
-        Mon, 03 Feb 2025 14:39:24 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de32ebabasm82038825ad.129.2025.02.03.14.39.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2025 14:39:23 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tf567-0000000EGx6-3IMd;
-	Tue, 04 Feb 2025 09:39:19 +1100
-Date: Tue, 4 Feb 2025 09:39:19 +1100
-From: Dave Chinner <david@fromorbit.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zS4jHZ2kt23wEDE+AD09Ak+wiMQ78Zn1s/A9gAKsP0w=;
+ b=nn3gicBphlw2SEpnMwTBzBFj0Q9/JQOEnZ4/MDGPrHwPOB6Eql/dwMmu70K9MSZZ4pw8eZUI+3jEgdyX00SB9whq24v9X2kBfnabKn8Ik8JP1FQ/N0R5X4iJtgab/6s95NJg6gKN97MOG0UTCYxTRDzIZSgXBrA26sh/XJnEVx0=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by IA0PR10MB6817.namprd10.prod.outlook.com (2603:10b6:208:43a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8398.18; Tue, 4 Feb
+ 2025 12:20:29 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::4f45:f4ab:121:e088]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::4f45:f4ab:121:e088%6]) with mapi id 15.20.8398.021; Tue, 4 Feb 2025
+ 12:20:29 +0000
+Message-ID: <4a492767-ee83-469c-abd1-484d0e3b46cb@oracle.com>
+Date: Tue, 4 Feb 2025 12:20:25 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [LSF/MM/BPF TOPIC] extsize and forcealign design in filesystems
+ for atomic writes
 To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Cc: lsf-pc@lists.linux-foundation.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, djwong@kernel.org,
-	dchinner@redhat.com, ritesh.list@gmail.com, jack@suse.cz,
-	tytso@mit.edu, linux-ext4@vger.kernel.org,
-	nirjhar.roy.lists@gmail.com, zlang@kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] xfstests: Centralizing filesystem configs and
- device configs
-Message-ID: <Z6FFlxFEPfJT0h_P@dread.disaster.area>
-References: <Z55RXUKB5O5l8QjM@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+        linux-fsdevel@vger.kernel.org, djwong@kernel.org, dchinner@redhat.com,
+        hch@lst.de, ritesh.list@gmail.com, jack@suse.cz, tytso@mit.edu,
+        linux-ext4@vger.kernel.org
+References: <Z5nTaQgLGdD6hSvL@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <35939b19-088b-450e-8fa6-49165b95b1d3@oracle.com>
+ <Z5pRzML2jkjL01F5@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <e00bac5d-5b6c-4763-8a76-e128f34dee12@oracle.com>
+ <Z53JVhAzF9s1qJcr@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <Z53JVhAzF9s1qJcr@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0009.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:150::14) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z55RXUKB5O5l8QjM@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|IA0PR10MB6817:EE_
+X-MS-Office365-Filtering-Correlation-Id: 54a69719-c0e0-4921-3b36-08dd45165012
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?Y2M5M292MTQ0c2NBaHRQVk9BMjkzRmFkY3AyZmZLcm9XR1YyNXJDeFNYaHZ1?=
+ =?utf-8?B?d2RtSnR0U3dOem9YWWNqaHU5V0JVN2xib3J5ak9SNHdReTNld3dQUzZhVzY1?=
+ =?utf-8?B?YitsdmlKYVlUMDBuSWJXbzhMZ0NXaCtEbFBvbmJRS2lxYkRXMytGeC9KY0hv?=
+ =?utf-8?B?NTVqNlRBeDhFT1FiU1ZjOXBBeU5JNHZkenZBQTRKSTNlZTg1SzJlU2VNbmVu?=
+ =?utf-8?B?RjMyN25RWjB5R0hiT3VvMnRHbURBQ1hZTUljMEUzZFl2STJtcnVlNWxpQmUx?=
+ =?utf-8?B?b1AzenNaeWpxbUZYaHNYbGNqTlFuWnNNM25NQXJGOWF4TlNnZG42V3dkdmlW?=
+ =?utf-8?B?UmUzbW9aM1FzZlZqN1BJVC9QV0I5UjRqRC9hYytweW1sUmR6UnllODN1eWlp?=
+ =?utf-8?B?TG1KZGw1R2p5dXRiRFhEcEwwbXZTbDc2SWoyM1d2MzAxL1hpdmdjVmxpL3Z6?=
+ =?utf-8?B?ajlLS0N6NnNMcEdITmpqKzFSR1NMT0lpTkw1elkxYXNFbUtlOFRKVFNYYWE5?=
+ =?utf-8?B?UE5PNk16WmtJaVltQS9XMVpvNlNHbk5TR3Zrb0d0eFVjNzdJNUhvTm9PODNX?=
+ =?utf-8?B?bER0QjNyckdFZHgzVGQwT05NbkRlWm5GYjZNbEZSejlqaEk1SDdzQlVwajBQ?=
+ =?utf-8?B?WXFOSE1jT2ppSG9udEM1S2tJTlpIVjQ4TXduVHBiWSs5QTg4dTNlaE51Uy9h?=
+ =?utf-8?B?c2xtUEQveG1NM2kvK2FDd2pWa3ZDaE1zUFdlQlZ5Z2FlcXA1bXU3aFVPVnl6?=
+ =?utf-8?B?RDA1MFJpQThVVW92KzV4bzdUTDRNRTg2cDV3cXdQbDNMYVNtNStrUnNxVDZw?=
+ =?utf-8?B?cEhBU1hJNTlZWDJ6dVNqQ0lZNDNDdW5LZkw5NEczVElRSXQ0MW4wNXgyM0dU?=
+ =?utf-8?B?WDViNjEvYStEU3ZqTjJZYzNZMEh2dEFaeHVUZW5KTVllQWlBWmJhUDZLendB?=
+ =?utf-8?B?RUdmL0dDaGdBVmJkRFlaMzB0emhrOVBvdjd3ak54cGUrajBlM1JlMG9qNTRs?=
+ =?utf-8?B?V24weVdDM3VWOStUOFBEak1JSHdjQU9iNndGOFFNbVpCbytTSmh3T2hwUlVP?=
+ =?utf-8?B?cGdnWVRob2JxbStGajQzOThqTGNaekR3NnZoS1RTQ0dIR1FYUHN6WFNtS01l?=
+ =?utf-8?B?UHpaOGZpQ1RUOXh6cElscXIwdUVMOGFqM2VhdEVCSU1paEplL0IwVUkvSTZI?=
+ =?utf-8?B?cVdwOEVOZkNTQ2t5TndEbEExeEVNazFWZEZBK1c0WWwyakFDM2MwL3FobFFs?=
+ =?utf-8?B?OXdNTUxobUowRUhpN0g5S3VOdk1FVVU3K2hXZERlMjl2MWRJcURtRGQvYXR1?=
+ =?utf-8?B?RnNmNml3aERHZWE1eU1NR0RzK1VvaVIwc3Q0VzhWdExPajYvSlZOVmp6YUh6?=
+ =?utf-8?B?dzZmZFhFb1FGb0xtUEpEa0c2NFV5NVNoc1l4TkZodlNNaUNLZ21zS01jSUxK?=
+ =?utf-8?B?WnFoVVM2THowY2x1d3gvYlR5MUlkUW1ZZWEwRytmK3BmY0VwcCtaQWxoZVJ6?=
+ =?utf-8?B?STdlRGJyU1RwUVpXWDU0VStQbFpSNVBYdHFuVWwxWm8wNDNETisvWGFYd29j?=
+ =?utf-8?B?YWFNcWZMK05BYjFvUFJNRDRLQ3lkSFdKc1FMU3hLWUt5MlF6cU1aRlpZcnMz?=
+ =?utf-8?B?UmlvNldsK04vUTVFdUZneG05QlgwM1pDYUhvZWZselRjL0ozVVVWQW41UDhm?=
+ =?utf-8?B?TEZ4My9VT0piWlBHaUx5Z1ZSRks2dGVsbHJ1L1FYS25DSHNMTFNuU1JzU05k?=
+ =?utf-8?B?TElwZUYzZVBkY2VMa2ZlWDlhRmEwdnVrMGdtMGJCVHE1UHAzalM3YVA0T2Zr?=
+ =?utf-8?B?NG5qYlZhMFZ5SG9XU09LcGUwYUdjck1MREcyMThEVUJsVjA0ZnFNbE9HTVJ4?=
+ =?utf-8?Q?hI3m7K4zjunAD?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OXdQUm1pZ01LTDEvNy9kUE8rZlcwRUZGWjFTalYyS2tWaitTaGFnZDd5bWVL?=
+ =?utf-8?B?QmowS1czeFYrR1JYeXl1VWdHMkZMczlVazFSR0JhUmFUSVpLcXdCSWJCR0Rz?=
+ =?utf-8?B?SkR4L1NVKzVCdzZMSFIxRGFIZTgrZWFkbmp0QnVzZGJVZzJ5U0JNUmZSdnhH?=
+ =?utf-8?B?Y3BGeGVBMDQ2RkpFb2lvNDJHTjB6aGgzTDMwVEZzaFpDOUkwN0haTUJYTWhm?=
+ =?utf-8?B?ZHEveDFZdjVSd2dhRnhEZ1ZHcHl1ZUpGRXBPSFFEa1c5UzU2UE44WE4zSWVh?=
+ =?utf-8?B?SDF3cURjeWlMa2ZwZFRzK0dZbzQyYnpPeXpEd1VueDE1SlI5QWpabThMbmZs?=
+ =?utf-8?B?Z0pmU2pvYTNtN0RVNEY2RU80WjVYb0lvUEtnQ1dTYXNRZGMvNkpUajlZVFI2?=
+ =?utf-8?B?UitIR3pEOVFtbThNa2cyMGhzdXRseVNoaGJhRVdDbStWTzdxOHJ3N2t3UVdL?=
+ =?utf-8?B?bXhxZ2NDT2dwUnI4NmpveEloVy91UGExU01jUGl4azFEd3NTaHJVMFAyV2Z2?=
+ =?utf-8?B?RnFybCtOcHhSQjNxUHNNOFFPUXNHelY2ZGVjV2o4eU50Y21ZUlo0OWI3K1dY?=
+ =?utf-8?B?SnNoNGlzbzVHbStMdTFKZEl0c29ENytoN0w1bXROajhqNXJZTGtINlpGY2FK?=
+ =?utf-8?B?b2Y1RitoVXZkU3IrYkMrdXBxcnFaSzZKYllWZlRqaWlxOGV2VSt5bmQvUFFD?=
+ =?utf-8?B?dmFYNXBoL0Q1SVp1SzFxaXZVZ3c2cGxLeENMTU9FWjgzT2RLM0orWTVpb3NR?=
+ =?utf-8?B?TzZHRVU2YmVoSEM0T3lwWTRPeGxpUTZGeXFqcG5STHNJZWlVRHh4clRYcm9C?=
+ =?utf-8?B?elN1ekQ3SWQ4bEJlRVhiM28vcVMyVVR5Z0p3SW0zNk5FWk5CYVZUNlRoMXky?=
+ =?utf-8?B?aXhQZ1BWZ1UzV3ZFMW1WcUN5d3JnbVAvUFFPRExHNzVaSnEydUVGRjB5cUtj?=
+ =?utf-8?B?TkJpZEV3TkF5NmlSNGVVaVB5VUR4YnFWeTVrU2MvdDl0TEhOeExGc01RRlox?=
+ =?utf-8?B?dXVUajBSZmdha0dVM3RpLzZtQXZJaDdmZzFUK3FYSmd1WE1CeWdaVTdadms2?=
+ =?utf-8?B?SDlERCtSOWJnWW1GQlpVTllXL0Z2c0RYVDhEdHJVNnY3SVh6b3hNdmpiSVBH?=
+ =?utf-8?B?empZQ2FWenRxdVF6V2FwbzA3ZnB1WEQxa2FHVFI2TWxwSDU3SW9rVklHaXlx?=
+ =?utf-8?B?K3FPcUtyQnR3cHlSS3V5TUhmNzdSWWxqMjUyWkRjMm94eHh2cE1sMC9EdmZ2?=
+ =?utf-8?B?RnJacHJHUHpaUFRwK29ZSXlnL1NUM0RsVmhvNEdnVmhIQjJ3UkdyQ1Y3WnVJ?=
+ =?utf-8?B?OEh0a0hjS01HcFI1bVRYZ3hVY21qd3BBNDBSNnN3NXZQQ1pXSmNoV0R1SS9J?=
+ =?utf-8?B?OHZwRGZvMHhhT0N4V0FlMklCTS9jOXNQUWFKSzlrV1FwR05IQnRYNWJ6ZDZh?=
+ =?utf-8?B?U1dKTCtDTEJyMFpKR3VDYnhXOEh6ZU01TWUyMmFJRktwUHRpMCtmcVhqMm5m?=
+ =?utf-8?B?eHZaMFlaVlBaR3J0YjcwV0lXMFRxUUFyaUx5cGR1cFp3NVhjYngwd2g5WjhX?=
+ =?utf-8?B?V2hzV01UWGRKQmE4UngyR3lHaDhRMnpSb1ZBdlRFbkhWRkJmanA2bFRxcVdN?=
+ =?utf-8?B?NDByeVhmUkVBQ0RSUFNPWmc0cVltTUUrK1Q1cDd0eTdzb01JcVhWWjVsYUhZ?=
+ =?utf-8?B?c0VOZGRrZGNhQWI1VVVRMHlrQkM2N0tkNGZNZXJwSHV0QlJ1NVpQM1VnbUFO?=
+ =?utf-8?B?L0pGTHRXQ3lET1hsV3dwQVBEcllUaklsRDlJSCtBRFBVQ0xoeGVYNWl0bU4v?=
+ =?utf-8?B?ZlZUTDZhMlAwK25CbGlFbTBSVnYyODREVWxNMjdQYjdxUWpnc0VwOGRrK3Vw?=
+ =?utf-8?B?KzY0Z09qZ1V1YXZYeHNKYkRDTkpxTk9hc2NkSW9MdkN5RzM1T3Rod1FiQW0x?=
+ =?utf-8?B?RFB1NEZrVHM2REppNjR1emJWcG40NFdBNDBwcDBnN3MrcEE5YmxXVlVlQnZN?=
+ =?utf-8?B?VXJIanZjU3puQ2NieEpMdmFkSE5oSnU5R05PaWJXTVRlYXlwc1Y1a2RHM2tU?=
+ =?utf-8?B?KzVlSzZaSnNBUWNBUE5PMFdBYzR2QW1hVjlUK0NYYWV4WittKzVVM0JadFRr?=
+ =?utf-8?B?T1ROZXdkZ0VCMng4THlwNXQxWjBDTkUvYTdHS0lacTlWdTVJT1BGNnZ6aEw4?=
+ =?utf-8?B?blE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	tpIgsZIyQXADK1ZMCummKe42cbnMkt85uwGPtTUaC0SbFMiYdgQ83k1ikjAS9U1bnV+iBepSGnWJBR/ZGQZUq5H1ZUM9lIVHhcvha2uRc4fwGM3vNlB8HMchsjwKJYBiShQUZ1fV28UKeNWz87trfav/UQwAB1d2xiz9e6HXTN4rvHsaWVdHBDzvi0TPpr7KOOZumj0D1wuOc9Kl7VSsTMhakIvgGKyew6SFJiDsxJFzwooYAihrpfjxk4hCMAOE0mVp5uaLLcpLu3ISm0AhUM5RVQYxwvYnPcxwO2aksY2HQ37W1pDQ/tduMjbeAU9M0kuEBogBsvRxwkoiNgHH97csEkL88JzFn30EpMs1mNOY+9/RujvtPPL/tVVBxkkfzAreabVoseVgcIbTl0GyoJrAGO7A+/PHHS2lcFp36p9cCZM39m/XtWNbC9gQcF41M7aw/f4sPCwT6hTE5coeNE9msQeZAR6d/KnzcSBTZFXrYx5m60s9BFzuC1zdCPJ/hhoMbzR4njszrYj4O178/K7AMG5k3/IQuI48vZAdznP+n9srjNUe+GnbN6RlEeP6+ykREPYCoSFuzq9YWxg1dD7dz1QpDGhlYPdyzapUvB0=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54a69719-c0e0-4921-3b36-08dd45165012
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2025 12:20:29.4243
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 04CrbuVZiYAuQNwSFqKTWybrLuaT+5GlSM2ePNZKayDICnJFUk3Go0OeCrS5A8nhXmEJJXgKDynlz9vmBVjtPA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB6817
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-04_06,2025-01-31_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2501170000
+ definitions=main-2502040098
+X-Proofpoint-GUID: qFytuKrQVqU8mNRQwH2v1yk_8wYErhLK
+X-Proofpoint-ORIG-GUID: qFytuKrQVqU8mNRQwH2v1yk_8wYErhLK
 
-On Sat, Feb 01, 2025 at 10:23:29PM +0530, Ojaswin Mujoo wrote:
-> Greetings,
+On 01/02/2025 07:12, Ojaswin Mujoo wrote:
+
+Hi Ojaswin,
+
+>> For my test case, I am trying 16K atomic writes with 4K FS block size, so I
+>> expect the software fallback to not kick in often after running the system
+>> for a while (as eventually we will get an aligned allocations). I am
+>> concerned of prospect of heavily fragmented files, though.
+> Yes that's true, if the FS is up long enough there is bound to be
+> fragmentation eventually which might make it harder for extsize to
+> get the blocks.
 > 
-> This proposal is on behalf of Me, Nirjhar and Ritesh. We would like to submit
-> a proposal on centralizing filesystem and device configurations within xfstests
-> and maybe a further discussion on some of the open ideas listed by Ted here [3].
-> More details are mentioned below.
+> With software fallback, there's again the point that many FSes will need
+> some sort of COW/exchange_range support before they can support anything
+> like that.
 > 
-> ** Background ** 
-> There was a discussion last year at LSFMM [1] about creating a central fs-config
-> store, that can then be used by anyone for testing different FS
-> features/configurations. This can also bring an awareness among other developers
-> and testers on what is being actively maintained by FS maintainers. We recently
-> posted an RFC [2] for centralizing filesystem configuration which is under
-> review. The next step we are considering is to centralize device configurations
-> within xfstests itself. In line with this, Ted also suggested a similar idea (in
-> point A) [3], where he proposed specifying the device size for the TEST and
-> SCRATCH devices to reduce costs (especially when using cloud infrastructure) and
-> improve the overall runtime of xfstests.
+> Although I;ve not looked at what it will take to add that to
+> ext4 but I'm assuming it will not be trivial at all.
+
+Sure, but then again you may not have issues with getting forcealign 
+support accepted for ext4. However, I would have thought that bigalloc 
+was good enough to use initially.
+
 > 
-> Recently Dave introduced a feature [4] to run the xfs and generic tests in
-> parallel. This patch creates the TEST and SCRATCH devices at runtime without
-> requiring them to be specified in any config file. However, at this stage, the
-> automatic device initialization appears to be somewhat limited. We believe that
-> centralizing device configuration could help enhance this functionality as well.
+>>> I agree that forcealign is not the only way we can have atomic writes
+>>> work but I do feel there is value in having forcealign for FSes and
+>>> hence we should have a discussion around it so we can get the interface
+>>> right.
+>>>
+>> I thought that the interface for forcealign according to the candidate xfs
+>> implementation was quite straightforward. no?
+> As mentioned in the original proposal, there are still a open problems
+> around extsize and forcealign.
+> 
+> - The allocation and deallocation semantics are not completely clear to
+> 	me for example we allow operations like unaligned punch_hole but not
+> 	unaligned insert and collapse range, and I couldn't see that
+> 	documented anywhere.
 
-Right, the point of check-parallel is to take away the need to
-specify devices completely.  I've already added support for the
-LOGWRITES_DEV, and I'm in the process of adding LOGDEV and RTDEV
-support for both test and scratch devices. At this point, the need
-for actual actual device specification in the config files goes
-away.
+For xfs, we were imposing the same restrictions as which we have for 
+rtextsize > 1.
 
-What I am expecting to need is a set of fields that specify the
-*size* of the devices so that the hard-coded image file sizes in
-the check-parallel script go away.
+If you check the following:
+https://lore.kernel.org/linux-xfs/20240813163638.3751939-9-john.g.garry@oracle.com/
 
-From there, I intend to have check-parallel iterate config file run
-sections itself, rather than have it run them internally to check.
-That way check is only ever invoked by check-parallel with all the
-devices completely set up.
+You can see how the large allocunit value is affected by forcealign, and 
+then check callers of xfs_is_falloc_aligned() -> 
+xfs_inode_alloc_unitsize() to see how this affects some fallocate modes.
 
-Hence a typical host independent config file would look like:
+> 
+> - There are challenges in extsize with delayed allocation as well as how
+> 	the tooling should handle forcealigned inodes.
 
-TEST_DEV_SIZE=10g
-TEST_RTDEV_size=10g
-TEST_LOGDEV_SIZE=128m
-SCRATCH_DEV_SIZE=20g
-SCRATCH_RTDEV_size=20g
-SCRATCH_LOGDEV_SIZE=512m
-LOGWRITES_DEV_SIZE=2g
+Yeah, maybe. I was only testing my xfs forcealign solution for dio (and 
+no delayed alloc).
 
-[xfs]
-FSTYP=xfs
-MKFS_OPTIONS="-b size=4k"
-TEST_FS_MOUNT_OPTIONS=
-MOUNT_OPTIONS=
-USE_EXTERNAL=
+> 
+> - How are FSes supposed to behave when forcealign/extsize is used with
+> 	other FS features that change the allocation granularity like bigalloc
+> 	or rtvol.
 
-[xfs-rmapbt]
-MKFS_OPTIONS="-b size=4k -m rmapbt=1"
+As you would expect, they need to be aligned with one another.
 
-[xfs-noreflink]
-MKFS_OPTIONS="-b size=4k -m reflink=0"
+For example, in the case of xfs rtvol, rextsize needs to be a multiple 
+of extsize when forcealign is enabled. Or the other way around, I forget 
+now..
 
-[xfs-n64k]
-MKFS_OPTIONS="-b size=4k -n size=64k"
+> 
+> I agree that XFS's implementation is a good reference but I'm
+> sure as I continue working on the same from ext4 perspective we will have
+> more points of discussion. So I definitely feel that its worth
+> discussing this at LSFMM.
 
-[xfs-ext]
-MKFS_OPTIONS="-b size=4k"
-USE_EXTERNAL=yes
+Understood, but I wait to see what happens to my CoW-based method for 
+XFS to see where that goes before commenting on what needs to be 
+discussed for xfs
 
-[ext4]
-FSTYP="ext4"
-MKFS_OPTIONS=
-USE_EXTERNAL=
+> 
+>> What was not clear was the age-old issue of how to issue an atomic write of
+>> mixed extents, which is really an atomic write issue.
+> Right, btw are you planning any talk for atomic writes at LSFMM?
 
-[btrfs]
-FSTYP="btrfs"
-.....
+I hadn't planned on it, but I guess that Martin will add something to 
+the agenda.
 
+Thanks,
+John
 
-IOWs, all that is different from system to system is the device size
-setup. The actual config sections under test (e.g. [xfs]) never need
-to change from host to host, nor environment to environment. i.e.
-"xfs-n64k" runs the same config filesystem test on every system,
-everywhere...
-
-> ** Proposal ** 
-> We would like to propose a discussion at LSFMM on two key features: central
-
-I'm not going to be at LSFMM, so please discuss this on the list via
-email as we'd normally do so. LSFMM discussions are exclusionary
-whilst, OTOH, the mailing list is inclusive...
-
-> fsconfig and central device-config within xfstests. We can explore how the
-> fsconfig feature can be utilized, and by then, we aim to have a PoC for central
-> device-config feature, which we think can also be discussed in more detail. At
-> this point, we are hoping to get a PoC working with loop devices by default. It
-> will be good to hear from other developers, maintainers, and testers about their
-> thoughts and suggestions on these two features.
-
-I don't really see a need for a new centralised config setup. With
-the above, we can acheived a "zero-config" goal with the existing
-config file formats and infrastructure. All that we need to do is
-update the default config file in the repo to contain a section for
-each of the "standard" test configs we want to define....
-
-> Additionally, we would like to thank Ted for listing several features he uses in
-> his custom kvm-xfstests and gce-xfstests [3]. If there is an interest in further
-> reducing the burden of maintaining custom test scripts and wrappers around
-> xfstests, we can also discuss essential features that could be integrated
-> directly into xfstests, whether from Ted's list or suggestions from others.
-
-On of my goals with check-parallel is to completely remove the need
-for end users to configure fstests. i.e. all you need to do is point
-it at a directory, tell it which filesystem to test, and it "just
-runs" with all the defaults that come direct from the fstests
-repository...
-
-It is also worth keeping in mind that check-parallel can be run with
-a single runner thread, in which case a single check instance runs
-all tests serially. i.e. we can make check-parallel emulate existing
-check behaviour exactly, except it uses all the
-auto-config/auto-setup stuff that comes along with check-parallel...
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
 
