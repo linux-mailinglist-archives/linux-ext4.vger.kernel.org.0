@@ -1,87 +1,58 @@
-Return-Path: <linux-ext4+bounces-6334-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6335-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1A7FA28B25
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2025 14:03:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A16B1A29759
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2025 18:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2D84167C7B
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2025 13:03:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1215B7A1A7F
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2025 17:29:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3810F1519B5;
-	Wed,  5 Feb 2025 13:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8DA1FBEBC;
+	Wed,  5 Feb 2025 17:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SskGHrcb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VY7TFiXV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C96524B0
-	for <linux-ext4@vger.kernel.org>; Wed,  5 Feb 2025 13:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F98149C7D;
+	Wed,  5 Feb 2025 17:29:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738760612; cv=none; b=AS2+YD5nUhya2InRbaVoVsDQltjcd7+v65h6AHZVmcHiYQxeVseMWIYZhick34dhLQE2ugn4Ne8DNUS65g5HIJI3fqTbBL18F94I3K/VIE1HGXdBQwOzUUzaRAmGFP/kmq35jkIKaVaDc9ffIbCFI4Apt6YMnJbgEjeHReklzqg=
+	t=1738776587; cv=none; b=gqlHIv0YThVfZtYmw+WQsW8kPXkfNbnQzrEZeoAjaDoXqJQlH75m5opbD192Nw+9frI6WfunkxeAmB0qbkFlPumzAji8eCP/zOZbXeDVjVB9KkhY8dxPb296t3qgZC61kHkIH61fvJupjilkw5lBgSP8DplHVQpHZPnSwdLOQn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738760612; c=relaxed/simple;
-	bh=BOSJf1U+Nbg5gigVlZ2hnJt3nIMlCZrCwGGWsGl4xAg=;
+	s=arc-20240116; t=1738776587; c=relaxed/simple;
+	bh=dUvfndw7L5/UBHSSZYlyHuGQADUrKhytEvm18Ewp1nI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KTXcg3exXwdYDYV36DuUYR6rhHRelAllgYWyzrkIqupBFzy3xu8efUMUj61FqxZpard5uIXwqYWyHU6Gnwh9qf3qJwfaY0jn9LpoNN/znYP6DOoXS4N4c6nC2ty8QXc3YWWz8Ts4Er9x6anmRl1H4a2XSioQoDU4EvE3fW+s/IE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SskGHrcb; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1738760609;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l83Dw368hueJll8PyntCW0Nb5bpCWlX4zt8mq3uaKys=;
-	b=SskGHrcbqNMVAl919YFlC7a0Zs7HnfdxlAdY3WSUFdxZy1zw28w6qer3FvybI0qcHNJhM8
-	fIJQ3c1oG2k9153mZZDHv4ixPlGCdxUKsI4HIoLav/CgTwbhg/CFRHg2SfAVAuZyppEyrF
-	ILmMy7vBgaU+G97/KyXOZB03vSzXUKU=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-491-1l4K9GaVMGO1d3Se1A4h_Q-1; Wed,
- 05 Feb 2025 08:03:26 -0500
-X-MC-Unique: 1l4K9GaVMGO1d3Se1A4h_Q-1
-X-Mimecast-MFC-AGG-ID: 1l4K9GaVMGO1d3Se1A4h_Q
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5FC961801A0D;
-	Wed,  5 Feb 2025 13:03:19 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.22.80.186])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 72B8C3000197;
-	Wed,  5 Feb 2025 13:03:15 +0000 (UTC)
-Received: by fedora.redhat.com (Postfix, from userid 1000)
-	id A724B6AA37D; Wed,  5 Feb 2025 08:03:13 -0500 (EST)
-Date: Wed, 5 Feb 2025 08:03:13 -0500
-From: Vivek Goyal <vgoyal@redhat.com>
-To: Alistair Popple <apopple@nvidia.com>
-Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, linux-mm@kvack.org,
-	alison.schofield@intel.com, lina@asahilina.net,
-	zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
-	vishal.l.verma@intel.com, dave.jiang@intel.com, logang@deltatee.com,
-	bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca,
-	catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
-	npiggin@gmail.com, dave.hansen@linux.intel.com, ira.weiny@intel.com,
-	willy@infradead.org, djwong@kernel.org, tytso@mit.edu,
-	linmiaohe@huawei.com, david@redhat.com, peterx@redhat.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
-	david@fromorbit.com, chenhuacai@kernel.org, kernel@xen0n.name,
-	loongarch@lists.linux.dev, Hanna Czenczek <hreitz@redhat.com>,
-	German Maglione <gmaglione@redhat.com>
-Subject: Re: [PATCH v6 01/26] fuse: Fix dax truncate/punch_hole fault path
-Message-ID: <Z6NhkR8ZEso4F-Wx@redhat.com>
-References: <cover.11189864684e31260d1408779fac9db80122047b.1736488799.git-series.apopple@nvidia.com>
- <bfae590045c7fc37b7ccef10b9cec318012979fd.1736488799.git-series.apopple@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ASp2+56QLpzHAa/qCULcb6alKU+SccpX0a+ngZs5Jmut7WV89RHeBPsDGEvQNxZNrJHm+XBkZkgYdCtji3AX7c9tN+H55Ax2t+6ImTfSnqXkfi8yq8i4gyqwfEdf9L2562wuLdmHtGY+m3g0Aeq8vfZ7kyRcJRmJt81I/Pl90Ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VY7TFiXV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F685C4CED1;
+	Wed,  5 Feb 2025 17:29:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738776586;
+	bh=dUvfndw7L5/UBHSSZYlyHuGQADUrKhytEvm18Ewp1nI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VY7TFiXVojgpLBSrbx8y4Iy/mvJY9mLJ9IcxU4EUEdzR1vorpXPEPPSYSOTZGd74Z
+	 xKakBhSJZIMOwaRoG99LBystvot71Gi885pkOu/5YU4vJlfkAJ/IHfHhlLPrS8XA/B
+	 wwtqxGhsJ/WGLxgk3A6HspSqrEsh4L9YhDoQcnwKABPMrXjalFRMkC3mUXFAFvTdpx
+	 wQ8SHvZe0RyZ56Et/jxNTtaZa6bp0G+0PEWfLN9WgzSrwz48hSebznaqu/11U2cJsU
+	 P7KdyMZst7OAU+bfnyCBTADi9BQlpZ/FesU4wvVJY4zF4qEoUL3uNSyaG6nWVwDKz1
+	 xQvCsJlhy6i7g==
+Date: Wed, 5 Feb 2025 09:29:46 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: brauner@kernel.org, tytso@mit.edu, kees@kernel.org,
+	viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	syzbot+48a99e426f29859818c0@syzkaller.appspotmail.com,
+	linux-ext4 <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH] ext4: pass strlen() of the symlink instead of i_size to
+ inode_set_cached_link()
+Message-ID: <20250205172946.GD21791@frogsfrogsfrogs>
+References: <20250205162819.380864-1-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,104 +61,96 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bfae590045c7fc37b7ccef10b9cec318012979fd.1736488799.git-series.apopple@nvidia.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+In-Reply-To: <20250205162819.380864-1-mjguzik@gmail.com>
 
-On Fri, Jan 10, 2025 at 05:00:29PM +1100, Alistair Popple wrote:
-> FS DAX requires file systems to call into the DAX layout prior to unlinking
-> inodes to ensure there is no ongoing DMA or other remote access to the
-> direct mapped page. The fuse file system implements
-> fuse_dax_break_layouts() to do this which includes a comment indicating
-> that passing dmap_end == 0 leads to unmapping of the whole file.
+On Wed, Feb 05, 2025 at 05:28:19PM +0100, Mateusz Guzik wrote:
+> The call to nd_terminate_link() clamps the size to min(i_size,
+> sizeof(ei->i_data) - 1), while the subsequent call to
+> inode_set_cached_link() fails the possible update.
 > 
-> However this is not true - passing dmap_end == 0 will not unmap anything
-> before dmap_start, and further more dax_layout_busy_page_range() will not
-> scan any of the range to see if there maybe ongoing DMA access to the
-> range. Fix this by passing -1 for dmap_end to fuse_dax_break_layouts()
-> which will invalidate the entire file range to
-> dax_layout_busy_page_range().
-
-Hi Alistair,
-
-Thanks for fixing DAX related issues for virtiofs. I am wondering how are
-you testing DAX with virtiofs. AFAIK, we don't have DAX support in Rust
-virtiofsd. C version of virtiofsd used to have out of the tree patches
-for DAX. But C version got deprecated long time ago.
-
-Do you have another implementation of virtiofsd somewhere else which
-supports DAX and allows for testing DAX related changes?
-
-Thanks
-Vivek
-
+> The kernel used to always strlen(), so do it now as well.
 > 
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> Co-developed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> Fixes: 6ae330cad6ef ("virtiofs: serialize truncate/punch_hole and dax fault path")
-> Cc: Vivek Goyal <vgoyal@redhat.com>
-> 
+> Reported-by: syzbot+48a99e426f29859818c0@syzkaller.appspotmail.com
+> Fixes: bae80473f7b0 ("ext4: use inode_set_cached_link()")
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
 > ---
 > 
-> Changes for v6:
+> Per my comments in:
+> https://lore.kernel.org/all/CAGudoHEv+Diti3r0x9VmF5ixgRVKk4trYnX_skVJNkQoTMaDHg@mail.gmail.com/#t
 > 
->  - Original patch had a misplaced hunk due to a bad rebase.
->  - Reworked fix based on Dan's comments.
-> ---
->  fs/fuse/dax.c  | 1 -
->  fs/fuse/dir.c  | 2 +-
->  fs/fuse/file.c | 4 ++--
->  3 files changed, 3 insertions(+), 4 deletions(-)
+> There is definitely a pre-existing bug in ext4 which the above happens
+> to run into. I suspect the nd_terminate_link thing will disappear once
+> that gets sorted out.
 > 
-> diff --git a/fs/fuse/dax.c b/fs/fuse/dax.c
-> index 9abbc2f..455c4a1 100644
-> --- a/fs/fuse/dax.c
-> +++ b/fs/fuse/dax.c
-> @@ -681,7 +681,6 @@ static int __fuse_dax_break_layouts(struct inode *inode, bool *retry,
->  			0, 0, fuse_wait_dax_page(inode));
->  }
->  
-> -/* dmap_end == 0 leads to unmapping of whole file */
->  int fuse_dax_break_layouts(struct inode *inode, u64 dmap_start,
->  				  u64 dmap_end)
->  {
-> diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> index 0b2f856..bc6c893 100644
-> --- a/fs/fuse/dir.c
-> +++ b/fs/fuse/dir.c
-> @@ -1936,7 +1936,7 @@ int fuse_do_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->  	if (FUSE_IS_DAX(inode) && is_truncate) {
->  		filemap_invalidate_lock(mapping);
->  		fault_blocked = true;
-> -		err = fuse_dax_break_layouts(inode, 0, 0);
-> +		err = fuse_dax_break_layouts(inode, 0, -1);
->  		if (err) {
->  			filemap_invalidate_unlock(mapping);
->  			return err;
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index 082ee37..cef7a8f 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -253,7 +253,7 @@ static int fuse_open(struct inode *inode, struct file *file)
->  
->  	if (dax_truncate) {
->  		filemap_invalidate_lock(inode->i_mapping);
-> -		err = fuse_dax_break_layouts(inode, 0, 0);
-> +		err = fuse_dax_break_layouts(inode, 0, -1);
->  		if (err)
->  			goto out_inode_unlock;
->  	}
-> @@ -2890,7 +2890,7 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
->  	inode_lock(inode);
->  	if (block_faults) {
->  		filemap_invalidate_lock(inode->i_mapping);
-> -		err = fuse_dax_break_layouts(inode, 0, 0);
-> +		err = fuse_dax_break_layouts(inode, 0, -1);
->  		if (err)
->  			goto out;
->  	}
+> In the meantime the appropriate fix for 6.14 is to restore the original
+> behavior of issuing strlen.
+> 
+> syzbot verified the issue is fixed:
+> https://lore.kernel.org/linux-hardening/67a381a3.050a0220.50516.0077.GAE@google.com/T/#m340e6b52b9547ac85471a1da5980fe0a67c790ac
+
+Again, this is evidence of inconsistent inode metadata, which should be
+dealt with by returning EFSCORRUPTED, not arbitrarily truncating the
+contents of a bad inode.
+
+https://lore.kernel.org/linux-fsdevel/CAGudoHHeHKo6+R86pZTFSzAFRf2v=bc5LOGvbHmC0mCfkjRvgw@mail.gmail.com/T/#mf05b770926225812f8c78c58c6f3b707c7d151d8
+
+To spell this out -- this is ext4_inode_is_fast_symlink:
+
+int ext4_inode_is_fast_symlink(struct inode *inode)
+{
+	if (!(EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL)) {
+		int ea_blocks = EXT4_I(inode)->i_file_acl ?
+				EXT4_CLUSTER_SIZE(inode->i_sb) >> 9 : 0;
+
+		if (ext4_has_inline_data(inode))
+			return 0;
+
+		return (S_ISLNK(inode->i_mode) && inode->i_blocks - ea_blocks == 0);
+	}
+	return S_ISLNK(inode->i_mode) && inode->i_size &&
+	       (inode->i_size < EXT4_N_BLOCKS * 4);
+}
+
+Note in the !EA_INODE and !inlinedata case, the decision is made based
+on the block count of the file, without checking i_size.  The callsite
+should look more like this:
+
+		} else if (ext4_inode_is_fast_symlink(inode)) {
+			if (inode->i_size == 0 ||
+			    inode->i_size > sizeof(ei->i_data) - 1) {
+				ret = -EFSCORRUPTED;
+				ext4_error_inode(..."fast symlink doesn't fit in body??");
+				goto bad_inode;
+			}
+			inode->i_op = &ext4_fast_symlink_inode_operations;
+			nd_terminate_link(ei->i_data, inode->i_size,
+				sizeof(ei->i_data) - 1);
+			inode_set_cached_link(inode, (char *)ei->i_data,
+					      inode->i_size);
+		} else {
+
+And, seriously, cc the ext4 list on ext4 patches please.
+
+--D
+
+>  fs/ext4/inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 7c54ae5fcbd4..30cff983e601 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5010,7 +5010,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+>  			nd_terminate_link(ei->i_data, inode->i_size,
+>  				sizeof(ei->i_data) - 1);
+>  			inode_set_cached_link(inode, (char *)ei->i_data,
+> -					      inode->i_size);
+> +					      strlen((char *)ei->i_data));
+>  		} else {
+>  			inode->i_op = &ext4_symlink_inode_operations;
+>  		}
 > -- 
-> git-series 0.9.1
+> 2.43.0
 > 
-
+> 
 
