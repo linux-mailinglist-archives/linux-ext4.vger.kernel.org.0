@@ -1,143 +1,143 @@
-Return-Path: <linux-ext4+bounces-6336-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6337-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EDD9A2978D
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2025 18:37:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07284A2986D
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2025 19:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3BD01671E9
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2025 17:37:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E14CA7A3546
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2025 18:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76194212B15;
-	Wed,  5 Feb 2025 17:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FFC1FC7D5;
+	Wed,  5 Feb 2025 18:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hktiOsha"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pu6XINbY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89AB220DD7B;
-	Wed,  5 Feb 2025 17:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278C513D897
+	for <linux-ext4@vger.kernel.org>; Wed,  5 Feb 2025 18:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738776822; cv=none; b=btG+lr9zHZw5VNqLmTuMN4pUSFjTVJQuuPMok/VAlwoqjUL+XTSGHXX7sz1mLFpTz/shz9x0ghFZ9FGGroREFRwJAc8u7kQpsksi564UdB7tNsVtpV1nDxqWDWERrtU4PKWlCmnaL+o1IPLW9pOwoOeqypGp99Qj9637tmYF18Q=
+	t=1738778942; cv=none; b=hHbDWDkdmwsDOpFbsVLclt9znS41C+72YFGTFojAvOJoSdSx9hZUpZye59qypADXLAN+XacYaTu1H9/sXcxBI7Fze6kyr9BRLr1SArWxdVz3bT3XgxE/GCd0wr0CFAZihHPXyDS3/WFZTs+eHmGvbRtzEb3RPdnGY3oM2lCaxcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738776822; c=relaxed/simple;
-	bh=MKPHNas19qqkBTI12sz/ovREvZMO3CKZSC9PWh2Xuls=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hhNe11KOZWjU+3gLhdHTPJkdyx7IXj+TGmGOZvvBpiZn1PmdKdDp++sL/tIDidq6WSKkjx5gRyMlY+tKhP7XoPvGglbv1MZ52yBnoaI5HYhQ1YacnkphLoDXsWkp61R+ruEeQwIbC2OuvP9xYnXxr7B0TxafZQbe0Jy9iyQ+D9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hktiOsha; arc=none smtp.client-ip=209.85.208.50
+	s=arc-20240116; t=1738778942; c=relaxed/simple;
+	bh=1LeYxb0WCRHrgMGbHEId9/bugeRTGbgr5TL//a6Fvp0=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=rB1DpuRYZYCuYd220mCVEBpTjshNQpOaFerakPktTg69m8x24mdc8D1zXm0KfsB+O/QXQxoveR9D9FrSz5XbCxCT1BlxjXw9KJ86pe5ZlZKNa5g49ykTxCWO8ZjKxYADJ0t2/3xzzcfRKLrVcJ3nKpy8UtFmhCgrareEImsj600=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pu6XINbY; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5dca4521b95so171071a12.0;
-        Wed, 05 Feb 2025 09:33:37 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2f833af7a09so9642229a91.2
+        for <linux-ext4@vger.kernel.org>; Wed, 05 Feb 2025 10:09:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738776815; x=1739381615; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MKPHNas19qqkBTI12sz/ovREvZMO3CKZSC9PWh2Xuls=;
-        b=hktiOshahu+yNuhQw0z15roKBsA8L/MMt/HULZ0mJclHSIFFgyeZ0L7pjhb/c16Dp5
-         +JomCY3y3WkjP8akSUYLZY+mU6XKzBPRP6zxOzGHakPcbgu670pigXO9E8vAeyqh5gGf
-         MKjWwc1pcHB9rvb6jrzXLkPKdbOtf/gnnFS0WHTv6uqFFCyxGNoma05cLP+Q/l1ZrtTV
-         6nyzWfwRaDdT0LMXQKuBdGe0VFtHN0Wme7YPXhMwIc7vtj8qYgIKNzlf9JK+lJV5tbke
-         aaDG72GJxveDOq18/sjfiM7wwdbE7hi/hD3UjyNHFsFH/CBNi9DTE5Y/TuelfBqfRcUU
-         NRYQ==
+        d=gmail.com; s=20230601; t=1738778939; x=1739383739; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Ons5euMrFEIWudG+vtPF/N7c55WY9JLF8GA846lN3F4=;
+        b=Pu6XINbYcotCSbpSUMs5UnzK1udR2QYu4MlwMSEpwQdtkU2dRKgUt3jd6IvaHaR+0D
+         H/TS87i4E+X1uy1ut92/75AfT0P+jrrYPzwmtv0Md+lQFqOJjvXgpPmQn6zFegtX+rNb
+         1krcOS9vCMg3Bt8vwkTMNjvYIXH3WY7wm5zmu2uvcJ2G6GVpg++XxwfkzZT3rTZpG74I
+         oBvJB1rHClOZzK2Uuz5+pKUiuTNRKov4sQDdNyOVr2dtzT2M+/dkZPM/1GDwFeSmFPom
+         Ih/ABgpczbxdffc3XcTk2cjqD0mMRh/RMmahkFlOErZrEEMmh5tBGmEmsbsDy4WH1HHL
+         hlEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738776815; x=1739381615;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MKPHNas19qqkBTI12sz/ovREvZMO3CKZSC9PWh2Xuls=;
-        b=KlPHzaRF/+S83kkcOJzXvXlRBwY1YoJz95TPClNxuaZ7pRqR7tgiOhsUsl4FRJlAt2
-         /VGz/lJKBsLGhdrGcInfnmbkytJSM5her9u5iiFiIcjbaaABBGNQvJMnF6RbZhr+JFZi
-         jbWFznkn6kx40xK6+k+5uLbJ+lDxNxdVsxiGDWUUSWNLafyykRaF7iYwZpvkJnhPNUjz
-         JA7IuqEn8KbYjekTOpn1LUiWSvnrdgtixQRFAmW5J0lUJCJzCTb8RgyvfFRhon40SS4A
-         az6NUzq2gqwwA7AHfp8AjmcmiGm7roBjpMsCNe+IDdSpvrs/WW73jtIJsEsas3sgG+HW
-         FR9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW1xGD+scm16/6DavZEjJ6Bnl3N/QhXFB3f8uTde4uT/ROZbQaIL06lqte4gbh2CgHxuGo0uHhGaQIBNfF+@vger.kernel.org, AJvYcCWFhnda8O6063zy0TwlcojhiL13+wCZs/M7YYTe2+7WjQ/Etgel/60DtgVv1hbBz7A+ppE5cARgIEXDpR0iOg==@vger.kernel.org, AJvYcCXfbG3iN9pq+nRVXcDo1qYSk7gnfUqrfOkR7jW0mN4K3/HFq6q6J9Tth6C6zyPXt27ywDy75nePGLOt@vger.kernel.org
-X-Gm-Message-State: AOJu0YxcWYX+MIFiDFJ4FynVBRHEUw2i4F5krCA4TRzyt7i1fId/WnyY
-	7pjbVimILtONWIecTuFF33791SSlpB9YwI3JKL9awBXcMbGqi+lPS4VbWD59jfpjps15d/22dBe
-	i1dHKMz38AgJm947mkQzzmxLEFIk=
-X-Gm-Gg: ASbGnct2NBruUWYcMn2WTjbTiz7FcNS3GiSxkZyWKvFEnrlRQIA/o1C6jfjIVBFua9y
-	KWIyi8IB7tiQseFeL6ZtLoxeNJoI7kodh70/ibef/jFtyDAzqKK2cDEp/TGISLjRYnq6t7FE=
-X-Google-Smtp-Source: AGHT+IE8NZGcazIn0O0pjPOEw6NLheDND12VRqK45Gqvfj+bTwKaxCGHt1N/jm+Alk35OWiOR5kb9ySaxfEcZpgP36U=
-X-Received: by 2002:a05:6402:3707:b0:5db:e7eb:1b4a with SMTP id
- 4fb4d7f45d1cf-5dcdb732c6amr4444644a12.10.1738776815351; Wed, 05 Feb 2025
- 09:33:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1738778939; x=1739383739;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ons5euMrFEIWudG+vtPF/N7c55WY9JLF8GA846lN3F4=;
+        b=I0AIZo33FCSviDkOh0VcWaUGH0wYRLaz7Z16YOlAc/IC++SgZ55C4Dm45uOUZyXaLx
+         Rkoy89NzdPHvuzjmo65rQi3NPAw8Ju9W0G4EKMd78c4KTsLcF382vC6TgMcV/SWUnirx
+         BGI28A3/TX8JO8OBxTgm5ZrUGul0Gp7WxlSBEEUKELis527VGnUInBu6b2hxse+Pfpg0
+         0RsChl3GNObWEysLWKk+slmeB+B15H6MwBQehZq2AER7iYUDZQDRUT95siWs2lncSAih
+         JilabBvDljLjfyx5ik5924HHo7iYN097aChWY/kh8wHbGRVD7R9qSay9HC3yx4jtk92s
+         TQUQ==
+X-Gm-Message-State: AOJu0YyJqsr7do7gVegjWz7gQULnloPxNuqEJAg1qAP9r0sjSop7US3y
+	+RdzJcm42klgHQ0Ge3JvTH7M+qglk1FGh0uf0DYnDSweeHNNFpOkczIE4v3F
+X-Gm-Gg: ASbGnctl8z0hegkl5paWAN5c9LuTLvyHrwQin4gVHFeGb5orpYdrJtzPTPHNv4PHz22
+	+qm2fkaszrY+Nsx2bes1EaQV/HPpcS7HpBFGuiXRuWKwA18ZSkDC+olXPF8FyyAQm3oeAvSTApn
+	tnP6n9U59kq7TpEpvFtzZNEPww2iPiN5SdmLEQCXtRg0z3WF5vKXz7xbpY04Yp/vTVBGQWBkU0Z
+	zOVole0mvOYvFQYkVXYInIxd0zT9lbxjoIbHVKTuf+KzV8Rw+e6M7mK/jhXB0uI4z/w08zgKLq6
+	ltz76oo=
+X-Google-Smtp-Source: AGHT+IER57zH6HM1VNBFOYoK8RGkbwLXdlKwLGMs/SSQbj8Z4n+pgmY7CLHcuUl4p0ahqKvuHW/f/w==
+X-Received: by 2002:a17:90b:1d87:b0:2ee:edae:780 with SMTP id 98e67ed59e1d1-2f9e0793401mr6411055a91.15.1738778937823;
+        Wed, 05 Feb 2025 10:08:57 -0800 (PST)
+Received: from dw-tp ([171.76.81.62])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f9e1d77fe3sm1906382a91.19.2025.02.05.10.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Feb 2025 10:08:57 -0800 (PST)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: "lilei.777@bytedance.com" <lilei.777@bytedance.com>
+Cc: "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Re: Inquiry about ext4 atomic write
+In-Reply-To: <CAPbN7U6jP=J7Yb7aSsX-oObYeM1P39T0NERRsZ_fWUb_tc6v8w@mail.gmail.com>
+Date: Wed, 05 Feb 2025 23:26:05 +0530
+Message-ID: <87cyfws2bu.fsf@gmail.com>
+References: <CAPbN7U6jP=J7Yb7aSsX-oObYeM1P39T0NERRsZ_fWUb_tc6v8w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250205162819.380864-1-mjguzik@gmail.com> <20250205172946.GD21791@frogsfrogsfrogs>
-In-Reply-To: <20250205172946.GD21791@frogsfrogsfrogs>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Wed, 5 Feb 2025 18:33:23 +0100
-X-Gm-Features: AWEUYZk_FtZ8QbXuoj7m9fQEbQWlDe9DmnB22U0ngHlCxWb6HRWszue-hycPV2Q
-Message-ID: <CAGudoHENg_G7KaJT15bE0wVOT_yXw0yiPPqTf40zm9YzuaUPkw@mail.gmail.com>
-Subject: Re: [PATCH] ext4: pass strlen() of the symlink instead of i_size to inode_set_cached_link()
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: brauner@kernel.org, tytso@mit.edu, kees@kernel.org, 
-	viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, 
-	syzbot+48a99e426f29859818c0@syzkaller.appspotmail.com, 
-	linux-ext4 <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 5, 2025 at 6:29=E2=80=AFPM Darrick J. Wong <djwong@kernel.org> =
-wrote:
+"lilei.777@bytedance.com" <lilei.777@bytedance.com> writes:
+
+> Hi  Harjani,
 >
-> On Wed, Feb 05, 2025 at 05:28:19PM +0100, Mateusz Guzik wrote:
-> > The call to nd_terminate_link() clamps the size to min(i_size,
-> > sizeof(ei->i_data) - 1), while the subsequent call to
-> > inode_set_cached_link() fails the possible update.
-> >
-> > The kernel used to always strlen(), so do it now as well.
-> >
-> > Reported-by: syzbot+48a99e426f29859818c0@syzkaller.appspotmail.com
-> > Fixes: bae80473f7b0 ("ext4: use inode_set_cached_link()")
-> > Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
-> > ---
-> >
-> > Per my comments in:
-> > https://lore.kernel.org/all/CAGudoHEv+Diti3r0x9VmF5ixgRVKk4trYnX_skVJNk=
-QoTMaDHg@mail.gmail.com/#t
-> >
-> > There is definitely a pre-existing bug in ext4 which the above happens
-> > to run into. I suspect the nd_terminate_link thing will disappear once
-> > that gets sorted out.
-> >
-> > In the meantime the appropriate fix for 6.14 is to restore the original
-> > behavior of issuing strlen.
-> >
-> > syzbot verified the issue is fixed:
-> > https://lore.kernel.org/linux-hardening/67a381a3.050a0220.50516.0077.GA=
-E@google.com/T/#m340e6b52b9547ac85471a1da5980fe0a67c790ac
+> I tend to enable ext4 16kb atomic write on my X86 machine, and read your
+> RFC.
+> https://lwn.net/ml/linux-kernel/cover.1709356594.git.ritesh.list@gmail.com/
+
+Hi Lei, 
+
+This is the final version which got merged [1]
+[1]: https://lore.kernel.org/all/cover.1730437365.git.ritesh.list@gmail.com/
+
+On x86, we don't have bs > ps feature. And as of today iomap restricts
+the atomic write to a single filesystem block. Hence for systems with 4k
+pagesize, we can't have atomic write request of size 16k on a 4k
+blocksize ext4. But on arm64 or powerpc (with 64k ps) we should be
+able to enable this with 16k bs, because ext4 can work with bs < ps. 
+
 >
-> Again, this is evidence of inconsistent inode metadata, which should be
-> dealt with by returning EFSCORRUPTED, not arbitrarily truncating the
-> contents of a bad inode.
+> From the cover patch, it's seems that this feature will be successfully
+> enabled
+> if I enable bigalloc on ext4, and underlying device also supports 16kb
+> write union.
+
+Yes, there are still ongoing discussions around this in the community
+[1][2]. 
+
+[1]: https://lore.kernel.org/all/Z5nTaQgLGdD6hSvL@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com/
+[2]: https://lore.kernel.org/linux-xfs/20241204154344.3034362-1-john.g.garry@oracle.com/
+
+
+-ritesh
+
+> However, after checking xstat result, i found atomic_write_unit_max was
+> always 4096.
 >
-
-I agree, rejecting the inode was something I was advocating for from the ge=
-t go.
-
-I don't know if a real patch(tm) will materialize for 6.14, so in the
-meantime I can at least damage-control this back to the original
-state.
-
-If the ext4 folk do the right fix, I will be delighted to have this
-patch dropped. :)
-
-> And, seriously, cc the ext4 list on ext4 patches please.
-
-Ye that's my bad.
-
---=20
-Mateusz Guzik <mjguzik gmail.com>
+> This snippet below limits s_awu_max to 4096(bs) which is the max value on
+> my platform.
+>
+> ```
+> static void ext4_atomic_write_init(struct super_block *sb)
+> {
+> ...
+> sbi->s_awu_min = max(sb->s_blocksize,
+>      bdev_atomic_write_unit_min_bytes(bdev));
+> sbi->s_awu_max = min(sb->s_blocksize,
+>      bdev_atomic_write_unit_max_bytes(bdev));
+> ...
+> }
+> ```
+>
+> I am wondering if I missed someting? Or if there any other ways could
+> enable 16kb
+> atomic write on my platform?
+>
+> Thanks!
+> Li Lei
 
