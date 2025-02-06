@@ -1,86 +1,167 @@
-Return-Path: <linux-ext4+bounces-6343-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6344-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 028F1A2A4E4
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 10:44:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0256EA2A4EA
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 10:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1024218878E0
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 09:44:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 078E9161202
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 09:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5AF226194;
-	Thu,  6 Feb 2025 09:44:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4816213224;
+	Thu,  6 Feb 2025 09:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="su2sY/QD"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mmdsKblt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7qp+LkZ9";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mmdsKblt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7qp+LkZ9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B19376;
-	Thu,  6 Feb 2025 09:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B007F376
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Feb 2025 09:45:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738835068; cv=none; b=l6jmn2vyWGDgDPkKts55Q4tE531SX4022TUnW4RlFSdj867sTrw9sA4irlgPlLMSZvk60N2TvM6o+PtdI+dhZSBgz1g724GaCpbFU5LHjdZkdRxH3VdkVulb/+QE2PVpTO+Ml1dKzUX2OBJLRhrjH60c3YupICOss0hfEZYbSPY=
+	t=1738835127; cv=none; b=HPcocznOIr8KQGss2Y4rSbr4a4uslqlfKRFVOIwBX0TusvhGuQ8cXbC2gcjcCeE50k8fxXHfVC6gcl266g/zs1KmPbxlV2xntenw5HSGuUZhDg8e0tMaqgCbFmvkMbwzxejSlQSWnlBj8pX+mE/m932WQoOFJNmtJXod5Bi9Ukc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738835068; c=relaxed/simple;
-	bh=Z9knfeqQnDaRB2achqfYxquvB3Tq9ppmemZe6j00bSA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ecWVn8zNAmSR06mWroKUIFVmOvZnGaxlNN3dIqfPmmW8uyoe3D/CKV/Lr2laQgTYO9o5JJyuLk3w2kd/edsbKjHNRfUqID3LAVtX39isoo6pq4+0ooKQioowIBEADKgxDeOLDHq74Kri+sLtXUXCTZavShQlcQOgMvMWHU+dwG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=su2sY/QD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11CDEC4CEDD;
-	Thu,  6 Feb 2025 09:44:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738835067;
-	bh=Z9knfeqQnDaRB2achqfYxquvB3Tq9ppmemZe6j00bSA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=su2sY/QDvpDyc573oBkarOc3gnTTm8RRFz4YgSnkqIikdc9Kj2vdeqOzdWHaVL3GA
-	 dy2+kINT9Di/+SojWJNzWbICMy5g7CeHDbuAvGRHLEyYGrGXTuz4zzcJ5LULHMYd6I
-	 60bCjXveIVHorK1MUg76otw2MSxvG3UulYAXDx4xcamT95Ay2/CxISedmjVIbHGObz
-	 xeqE7fO//uKVgCSj/5z5RwBU8Ia39njTtx8RSrgvu2ZPYQZHL9Mzo9hRZBn5wKeV/A
-	 eCPmDHVLV6oTnFedBe8yZdiTwaHhmbiSUsjR90vmbHA6eCNmbJ3vPPIw0P+lNwPOGm
-	 KEUUdbfi3MysA==
-Date: Thu, 6 Feb 2025 10:44:22 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>, 
-	tytso@mit.edu, kees@kernel.org, viro@zeniv.linux.org.uk, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	syzbot+48a99e426f29859818c0@syzkaller.appspotmail.com, linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] ext4: pass strlen() of the symlink instead of i_size to
- inode_set_cached_link()
-Message-ID: <20250206-sojabohnen-geometrie-bb7aceedd1bc@brauner>
-References: <20250205162819.380864-1-mjguzik@gmail.com>
- <20250205172946.GD21791@frogsfrogsfrogs>
- <CAGudoHENg_G7KaJT15bE0wVOT_yXw0yiPPqTf40zm9YzuaUPkw@mail.gmail.com>
- <vci2ejpu7eirvku6eg5ajrbsdlpztu2wgvm2n75lkiaenuxw7p@7ag5gflkjhus>
- <CAGudoHGjrS30FZAM=Qwqi1vxpdkPQyXGsW7-xONeSE9aw8H3gg@mail.gmail.com>
+	s=arc-20240116; t=1738835127; c=relaxed/simple;
+	bh=ldH4oFnFwYY6FL4L5DSyJxwJBXzk8/t/Qj51E5FMMSQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FPgZabhKH9eMnmOBm55nbDd5CabmdF/ygYVA6F0YQxMHrRNIXus4tfZ0Pj+XdhmlNdshC2QWTptkqLm47vBQEnLnjhj4upVYcIhmD5MnBWrkWFnph/f3wifwy97vbv05COQ+hQTiCssjpTs9jVXtZrZK6DCodY1efEyQsjlb6vA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mmdsKblt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7qp+LkZ9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mmdsKblt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7qp+LkZ9; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A5F5A21108;
+	Thu,  6 Feb 2025 09:45:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738835117; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=3Sw4MqwGQnGLzjqMLoOVF2kDZSSaBYtAMToaAlCVkdw=;
+	b=mmdsKblt6y5s1q5QlDb/aK+B9iUslSh+P4htdrz12RTjg5f2hpfdlD1pioHTo21XkK/i66
+	SdjReZU92Ahj1iy75tP6DqX3KJ+iIaJMyuzKvXXceVFcSnQNiFsW3y/9Qn+Y3N/75Dv3uX
+	a3SM3RN0ueL7ub5C2S6xoDTnRAMPn1E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738835117;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=3Sw4MqwGQnGLzjqMLoOVF2kDZSSaBYtAMToaAlCVkdw=;
+	b=7qp+LkZ93giogudCcLk8Jmzj6o0qIxirsXl0pGPMYXfvnEM92me2bwYGt4RBrKdawEjheL
+	4OY5WlFEhMX458CA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738835117; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=3Sw4MqwGQnGLzjqMLoOVF2kDZSSaBYtAMToaAlCVkdw=;
+	b=mmdsKblt6y5s1q5QlDb/aK+B9iUslSh+P4htdrz12RTjg5f2hpfdlD1pioHTo21XkK/i66
+	SdjReZU92Ahj1iy75tP6DqX3KJ+iIaJMyuzKvXXceVFcSnQNiFsW3y/9Qn+Y3N/75Dv3uX
+	a3SM3RN0ueL7ub5C2S6xoDTnRAMPn1E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738835117;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=3Sw4MqwGQnGLzjqMLoOVF2kDZSSaBYtAMToaAlCVkdw=;
+	b=7qp+LkZ93giogudCcLk8Jmzj6o0qIxirsXl0pGPMYXfvnEM92me2bwYGt4RBrKdawEjheL
+	4OY5WlFEhMX458CA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8C26F13697;
+	Thu,  6 Feb 2025 09:45:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zIguIq2EpGeaSwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 06 Feb 2025 09:45:17 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 4D2D9A0889; Thu,  6 Feb 2025 10:45:17 +0100 (CET)
+From: Jan Kara <jack@suse.cz>
+To: Ted Tso <tytso@mit.edu>
+Cc: <linux-ext4@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	syzbot+48a99e426f29859818c0@syzkaller.appspotmail.com,
+	"Darrick J. Wong" <djwong@kernel.org>
+Subject: [PATCH] ext4: Verify fast symlink length
+Date: Thu,  6 Feb 2025 10:44:55 +0100
+Message-ID: <20250206094454.20522-2-jack@suse.cz>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1465; i=jack@suse.cz; h=from:subject; bh=ldH4oFnFwYY6FL4L5DSyJxwJBXzk8/t/Qj51E5FMMSQ=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBnpISWLhWpQ1oxnzvAWBDPqRnQgUQGOtREGv7TQbts C+B87H2JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZ6SElgAKCRCcnaoHP2RA2eiVB/ 9gWbXUOvHuN+zRbgkq83P+i/tZnbGY+PCG6Rxj20sz+3GFd0RgDnyvJPS97PzYaX1KFUFLcv/w339b ciCGG9a2RfyMRKN8xT2BEVws4RarI7VGFmcGS8hgXEaJuSOfz0G95/fk7jIJg22VJz892NuhkjpkCj W0QUjwJgAB9U+03lVSZjUG+GMFniAuDVQMq6fTl4H7f/eVYkqdHJ9yFPyIAqf0Gz9h6d1YREiPReXR lDQwHrTrwBn6oMky6SU7j3ZUv0Bin+ypwSrw+wS2bJRBZRqPmt7UNdc/OkMF+9GSEj2a9CnIDJkL1k nieR8F49fBkofd2EhDfGb5HjzcSXB2
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGudoHGjrS30FZAM=Qwqi1vxpdkPQyXGsW7-xONeSE9aw8H3gg@mail.gmail.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_LAST(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[48a99e426f29859818c0];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid]
+X-Spam-Score: -1.30
+X-Spam-Flag: NO
 
-On Wed, Feb 05, 2025 at 08:05:20PM +0100, Mateusz Guzik wrote:
-> On Wed, Feb 5, 2025 at 7:10 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Wed 05-02-25 18:33:23, Mateusz Guzik wrote:
-> > > If the ext4 folk do the right fix, I will be delighted to have this
-> > > patch dropped. :)
-> >
-> > Yeah, let me cook up proper ext4 fix for this (currently under testing).
-> >
-> 
-> I see it got posted and tested:
-> https://lore.kernel.org/linux-hardening/67a3b38f.050a0220.19061f.05ea.GAE@google.com/T/#mb782935cc6926dd5642984189d922135f023ec43
-> 
-> So I consider my patch self-NAKed.
+Verify fast symlink length stored in inode->i_size matches the string
+stored in the inode to avoid surprises from corrupted filesystems.
 
-Dropped.
+Reported-by: syzbot+48a99e426f29859818c0@syzkaller.appspotmail.com
+Tested-by: syzbot+48a99e426f29859818c0@syzkaller.appspotmail.com
+Fixes: bae80473f7b0 ("ext4: use inode_set_cached_link()")
+Suggested-by: "Darrick J. Wong" <djwong@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/inode.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 7c54ae5fcbd4..64e280fed911 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5007,8 +5007,16 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 			inode->i_op = &ext4_encrypted_symlink_inode_operations;
+ 		} else if (ext4_inode_is_fast_symlink(inode)) {
+ 			inode->i_op = &ext4_fast_symlink_inode_operations;
+-			nd_terminate_link(ei->i_data, inode->i_size,
+-				sizeof(ei->i_data) - 1);
++			if (inode->i_size == 0 ||
++			    inode->i_size >= sizeof(ei->i_data) ||
++			    strnlen((char *)ei->i_data, inode->i_size + 1) !=
++								inode->i_size) {
++				ext4_error_inode(inode, function, line, 0,
++					"invalid fast symlink length %llu",
++					 (unsigned long long)inode->i_size);
++				ret = -EFSCORRUPTED;
++				goto bad_inode;
++			}
+ 			inode_set_cached_link(inode, (char *)ei->i_data,
+ 					      inode->i_size);
+ 		} else {
+-- 
+2.43.0
+
 
