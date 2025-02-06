@@ -1,321 +1,164 @@
-Return-Path: <linux-ext4+bounces-6359-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6360-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60066A2AFA6
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 19:02:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76882A2AFE9
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 19:11:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4370A188C789
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 18:03:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFDF71884929
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 18:11:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96A3198E65;
-	Thu,  6 Feb 2025 18:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9279819CC1F;
+	Thu,  6 Feb 2025 18:11:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K9RgSaxD"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tqd3elRU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7F0189F39;
-	Thu,  6 Feb 2025 18:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E77919B5A7
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Feb 2025 18:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738864970; cv=none; b=onvQ5Mja7Fp8kLxM5jWPR2neFCZHenxikOFAqYBrX/eDGly0YCZ/QD/unPOtriMK726ZMSTuzFMOEQTEhrY4Y5dENu01mPTLCWYx0E22GOUTkT49OpcDu0WU1/OvQ+sSC8VSgcgnv70wHk5LWrAmyrw1GkkcBEPbXd5wZYQheOY=
+	t=1738865469; cv=none; b=i+n528Y2mlpg192172vWv3RDVsuT2pU2p2hC3+9kUn+jaLYE7lf2kTFdRrFezui5o3BTORk0nTMYGiZ3LJfmg6/VKqrUKdHMS1mTKsVge4tWJLhTnMMB5lSLQg0pNW1VkpnrUVPdWAjE/xsYycU5AeF843Ry+iG8QLGZzO/3D9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738864970; c=relaxed/simple;
-	bh=/P0AdyGEhky8ka/vSg6ZFBPBfnfmBAYtujlaH6lx7Bk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JMYVUfnOyxXCEAaffMc6/dxUWXuNt0b21dnNHLszSb5mwsK/veFXXfHJsDRg5QoHTBcFO/7E7a2kuH5w3exuviAHzVP57NqArTrlVMQN6f1JEQWQxdE1BnJVtIOcPMyceF9aCnZWBPJH2jtoN9iKmXIpkRpBAJMr/2kyzzEveRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K9RgSaxD; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-21f3e2b4eceso15831565ad.2;
-        Thu, 06 Feb 2025 10:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738864968; x=1739469768; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HvK38wiRCrAYcKcwBWX3jYdlpcJqbAIE9iLPlquLiKU=;
-        b=K9RgSaxDA/z7tIkz3KVQKeFIgnZAHxHOymwb5CYi7LlgogIdstlz72YuACO77gjX6G
-         M9sSdA76P4RUX53xDJSZH6OPtTWGaJ8rCv8n034VouD9V+2CgOg+HtyGaaHUCQnml6Hp
-         I6XsENY2CHjNgBdpBkmjirocXTwjQVrAbTNZ1cyhNqiYtzdUcpFSciLR+THSb5FeDUgC
-         nHBN2iqEh18gGrDMIFWrgSSEgkuTYhUmVZkRJaUn1mDL5NvWsmKrbaSu91UmJNHMMXWr
-         IbpnNFiOQgtvue7G4N26TRYqj4QB8cbfypgz1XdcPf6ZMR+55kaR54KgD0WW1kCJ/Sl4
-         JXOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738864968; x=1739469768;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HvK38wiRCrAYcKcwBWX3jYdlpcJqbAIE9iLPlquLiKU=;
-        b=xOuZ6G5UhVmYChqPOw26YbLMbpB6DdE3b0ODX/YZeZIT2wbNVEPkhvsFlJx45N//dz
-         ssVgtyPT5TEqU+rcONdnuSndl9fWsbY/llk67uIJ46+SeuFSuXGCrLLxfNAGuXhlvnTO
-         HQQWrPZua2ODlVnGOzp9HMW4cD8coYWpmEmkr0pkows/IXTJuV2S20JBGd9in6W27+SF
-         eTlZCPSlnWHLKYc/BpYQtFARztJ+JvzGag0b7tjHX95GKxnT4QflLGgTpZ5xbMIhulPR
-         UxGa48SuB/6Hu2rIgaDK4HlGN3BFlRL4wWmoZcLgabsKQ0koSczXecB95gCZVekEXJjT
-         jSUw==
-X-Forwarded-Encrypted: i=1; AJvYcCUvonUGYN+5SxU8nA09TqK5chyi8Wcydhh80ACacRo/gmDSaJVvq57YJkiTMZDeV1CeVYSNBUdhTtGD@vger.kernel.org, AJvYcCX6T4cVmve9FV1g8TXZTXxj+38b/8xSATPjp08o/v9j/BITvcHjNbSPkX5DGUJRLfViEdUO339JEhAR@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcbkbNS4Pd6FpnTwIBITJBMn/7gWovT47z04JTJhQBD7AXJvzZ
-	zo1fH+5iQVPe6AfsW87moJPxmt2C/uzy1yopPURiMFyHjRUkF66l
-X-Gm-Gg: ASbGncuF0UIkrzi2WnCKp4+AfPPAjdnrhm7REAri5ierHyVpiym4hKK60EjP7HFziSV
-	OgGgTgu1ayXma2kKDh906JWJx4p+3XxvrC1cjdbY/GAT48pTzflK1RXCZhtL4bCMQ/O7ZrTFrX0
-	n3P21S8L5V1YRkPlT7phhyVHLdcMRfBEDPGP2vlGtu0knIZqqMi06c1JdDVlzW7N8BikFZw6lpr
-	Yafus5hZBxyoLTH/9U6Pdz1LL/MJxLixV+mfUc0L8LcKI5QV+j5puyA5Hh5x7ZGDOZHk65FfUAE
-	TEejoQSNFWWGVl8K4dGVezEqBg==
-X-Google-Smtp-Source: AGHT+IFYdGXiEo8gWMPZsX9l9DjFOV4J8MhWKi+DtLsbsOT6f7hKkwjDECOj35bZKLej2yNsvuMPqg==
-X-Received: by 2002:a05:6a00:3ccb:b0:72d:8d98:c250 with SMTP id d2e1a72fcca58-7305d43aa90mr327807b3a.4.1738864967864;
-        Thu, 06 Feb 2025 10:02:47 -0800 (PST)
-Received: from [192.168.0.120] ([49.205.33.247])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73048c16676sm1612559b3a.133.2025.02.06.10.02.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Feb 2025 10:02:47 -0800 (PST)
-Message-ID: <ff6b4e2f-dbd3-479b-a522-a1ae4837b3df@gmail.com>
-Date: Thu, 6 Feb 2025 23:32:43 +0530
+	s=arc-20240116; t=1738865469; c=relaxed/simple;
+	bh=L1Ng9lldW/83WhLxtsVxj1Z34scX9+JOOnEphNXYxHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s++GicYJBYG2qFn1TeM4B8bNwxQDgym4MslySBkQqCuljSnD9Zhx9ZdDOyTazipDQOkqkjVJVBfw69tmK5ZG2eQhNT0JxAwzdFnbFq8a3zI7hKzIr6yNn2BorJcgMNV2F7HbwUqULJL76PKhluVA8yhNmTj+jWSQM3jhRh+bEN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Tqd3elRU; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738865466;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L1Ng9lldW/83WhLxtsVxj1Z34scX9+JOOnEphNXYxHw=;
+	b=Tqd3elRUDELExYPgmOcoq2DeGIMv4iJMmXyFgR8l7l7VJ7PFV5JGs3H3I71oHHN4j+DZTW
+	uBqean39KmUK8GMzj93JeDZSQ0t+vjjUidOFEuC8rI3mRxKfA4jzhEQnyYE2TVUEQ4X3s0
+	9BAh+KU746kT0YZfB5++JjXVnSFAW0Y=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-257-8E3rdXJoPkCOp7n7f2PNnw-1; Thu,
+ 06 Feb 2025 13:11:05 -0500
+X-MC-Unique: 8E3rdXJoPkCOp7n7f2PNnw-1
+X-Mimecast-MFC-AGG-ID: 8E3rdXJoPkCOp7n7f2PNnw
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8B6E61955BC0;
+	Thu,  6 Feb 2025 18:10:26 +0000 (UTC)
+Received: from localhost (unknown [10.2.16.145])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id EA005180087A;
+	Thu,  6 Feb 2025 18:10:21 +0000 (UTC)
+Date: Thu, 6 Feb 2025 13:10:19 -0500
+From: Stefan Hajnoczi <stefanha@redhat.com>
+To: Albert Esteve <aesteve@redhat.com>
+Cc: Vivek Goyal <vgoyal@redhat.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org,
+	linux-mm@kvack.org, alison.schofield@intel.com, lina@asahilina.net,
+	zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
+	vishal.l.verma@intel.com, dave.jiang@intel.com, logang@deltatee.com,
+	bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca,
+	catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
+	npiggin@gmail.com, dave.hansen@linux.intel.com, ira.weiny@intel.com,
+	willy@infradead.org, djwong@kernel.org, tytso@mit.edu,
+	linmiaohe@huawei.com, david@redhat.com, peterx@redhat.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
+	david@fromorbit.com, chenhuacai@kernel.org, kernel@xen0n.name,
+	loongarch@lists.linux.dev, Hanna Czenczek <hreitz@redhat.com>,
+	German Maglione <gmaglione@redhat.com>
+Subject: Re: [PATCH v6 01/26] fuse: Fix dax truncate/punch_hole fault path
+Message-ID: <20250206181019.GA413673@fedora>
+References: <cover.11189864684e31260d1408779fac9db80122047b.1736488799.git-series.apopple@nvidia.com>
+ <bfae590045c7fc37b7ccef10b9cec318012979fd.1736488799.git-series.apopple@nvidia.com>
+ <Z6NhkR8ZEso4F-Wx@redhat.com>
+ <67a3fde7da328_2d2c2942b@dwillia2-xfh.jf.intel.com.notmuch>
+ <Z6S7A-51SdPco_3Z@redhat.com>
+ <20250206143032.GA400591@fedora>
+ <CADSE00+2o5Ma0W6FBLHwpUaKut9Tf74GKLCU-377qgxr08EeoQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] check: Fix fs specfic imports when
- $FSTYPE!=$OLD_FSTYPE
-Content-Language: en-US
-To: Zorro Lang <zlang@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
- zlang@kernel.org
-References: <3b980d028a8ae1496c13ebe3a6685fbc472c5bc0.1738040386.git.nirjhar.roy.lists@gmail.com>
- <20250128180917.GA3561257@frogsfrogsfrogs>
- <f89b6b40-8dce-4378-ba56-cf7f29695bdb@gmail.com>
- <20250129160259.GT3557553@frogsfrogsfrogs>
- <dfbd2895-e29a-4e25-bbc6-a83826d14878@gmail.com>
- <20250131162457.GV1611770@frogsfrogsfrogs>
- <20250201063516.gndb7lngpd5afatv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-In-Reply-To: <20250201063516.gndb7lngpd5afatv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9gaKO0MQEl4+jp8i"
+Content-Disposition: inline
+In-Reply-To: <CADSE00+2o5Ma0W6FBLHwpUaKut9Tf74GKLCU-377qgxr08EeoQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
 
-On 2/1/25 12:05, Zorro Lang wrote:
-> On Fri, Jan 31, 2025 at 08:24:57AM -0800, Darrick J. Wong wrote:
->> On Fri, Jan 31, 2025 at 06:49:50PM +0530, Nirjhar Roy (IBM) wrote:
->>> On 1/29/25 21:32, Darrick J. Wong wrote:
->>>> On Wed, Jan 29, 2025 at 04:48:10PM +0530, Nirjhar Roy (IBM) wrote:
->>>>> On 1/28/25 23:39, Darrick J. Wong wrote:
->>>>>> On Tue, Jan 28, 2025 at 05:00:22AM +0000, Nirjhar Roy (IBM) wrote:
->>>>>>> Bug Description:
->>>>>>>
->>>>>>> _test_mount function is failing with the following error:
->>>>>>> ./common/rc: line 4716: _xfs_prepare_for_eio_shutdown: command not found
->>>>>>> check: failed to mount /dev/loop0 on /mnt1/test
->>>>>>>
->>>>>>> when the second section in local.config file is xfs and the first section
->>>>>>> is non-xfs.
->>>>>>>
->>>>>>> It can be easily reproduced with the following local.config file
->>>>>>>
->>>>>>> [s2]
->>>>>>> export FSTYP=ext4
->>>>>>> export TEST_DEV=/dev/loop0
->>>>>>> export TEST_DIR=/mnt1/test
->>>>>>> export SCRATCH_DEV=/dev/loop1
->>>>>>> export SCRATCH_MNT=/mnt1/scratch
->>>>>>>
->>>>>>> [s1]
->>>>>>> export FSTYP=xfs
->>>>>>> export TEST_DEV=/dev/loop0
->>>>>>> export TEST_DIR=/mnt1/test
->>>>>>> export SCRATCH_DEV=/dev/loop1
->>>>>>> export SCRATCH_MNT=/mnt1/scratch
->>>>>>>
->>>>>>> ./check selftest/001
->>>>>>>
->>>>>>> Root cause:
->>>>>>> When _test_mount() is executed for the second section, the FSTYPE has
->>>>>>> already changed but the new fs specific common/$FSTYP has not yet
->>>>>>> been done. Hence _xfs_prepare_for_eio_shutdown() is not found and
->>>>>>> the test run fails.
->>>>>>>
->>>>>>> Fix:
->>>>>>> Remove the additional _test_mount in check file just before ". commom/rc"
->>>>>>> since ". commom/rc" is already sourcing fs specific imports and doing a
->>>>>>> _test_mount.
->>>>>>>
->>>>>>> Fixes: 1a49022fab9b4 ("fstests: always use fail-at-unmount semantics for XFS")
->>>>>>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
->>>>>>> ---
->>>>>>>     check | 12 +++---------
->>>>>>>     1 file changed, 3 insertions(+), 9 deletions(-)
->>>>>>>
->>>>>>> diff --git a/check b/check
->>>>>>> index 607d2456..5cb4e7eb 100755
->>>>>>> --- a/check
->>>>>>> +++ b/check
->>>>>>> @@ -784,15 +784,9 @@ function run_section()
->>>>>>>     			status=1
->>>>>>>     			exit
->>>>>>>     		fi
->>>>>>> -		if ! _test_mount
->>>>>> Don't we want to _test_mount the newly created filesystem still?  But
->>>>>> perhaps after sourcing common/rc ?
->>>>>>
->>>>>> --D
->>>>> common/rc calls init_rc() in the end and init_rc() already does a
->>>>> _test_mount. _test_mount after sourcing common/rc will fail, won't it? Does
->>>>> that make sense?
->>>>>
->>>>> init_rc()
->>>>> {
->>>>>       # make some further configuration checks here
->>>>>       if [ "$TEST_DEV" = ""  ]
->>>>>       then
->>>>>           echo "common/rc: Error: \$TEST_DEV is not set"
->>>>>           exit 1
->>>>>       fi
->>>>>
->>>>>       # if $TEST_DEV is not mounted, mount it now as XFS
->>>>>       if [ -z "`_fs_type $TEST_DEV`" ]
->>>>>       then
->>>>>           # $TEST_DEV is not mounted
->>>>>           if ! _test_mount
->>>>>           then
->>>>>               echo "common/rc: retrying test device mount with external set"
->>>>>               [ "$USE_EXTERNAL" != "yes" ] && export USE_EXTERNAL=yes
->>>>>               if ! _test_mount
->>>>>               then
->>>>>                   echo "common/rc: could not mount $TEST_DEV on $TEST_DIR"
->>>>>                   exit 1
->>>>>               fi
->>>>>           fi
->>>>>       fi
->>>>> ...
->>>> ahahahaha yes it does.
->>>>
->>>> /commit message reading comprehension fail, sorry about that.
->>>>
->>>> Though now that you point it out, should check elide the init_rc call
->>>> about 12 lines down if it re-sourced common/rc ?
->>> Yes, it should. init_rc() is getting called twice when common/rc is getting
->>> re-sourced. Maybe I can do like
->>>
->>>
->>> if $RECREATE_TEST_DEV || [ "$OLD_FSTYP" != "$FSTYP" ]; then
->>>
->>>      <...>
->>>
->>>      . common/rc # changes in this patch
->>>
->>>      <...>
->>>
->>> elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then
->>>
->>>      ...
->>>
->>>      init_rc() # explicitly adding an init_rc() for this condition
->>>
->>> else
->>>
->>>      init_rc() # # explicitly adding an init_rc() for all other conditions.
->>> This will prevent init_rc() from getting called twice during re-sourcing
->>> common/rc
->>>
->>> fi
->>>
->>> What do you think?
->> Sounds fine as a mechanical change, but I wonder, should calling init_rc
->> be explicit?  There are not so many places that source common/rc:
->>
->> $ git grep 'common/rc'
->> check:362:if ! . ./common/rc; then
->> check:836:              . common/rc
->> common/preamble:52:     . ./common/rc
->> soak:7:. ./common/rc
->> tests/generic/749:18:. ./common/rc
->>
->> (I filtered out the non-executable matches)
->>
->> I think the call in generic/749 is unnecessary and I don't know what
->> soak does.  But that means that one could insert an explicit call to
->> init_rc at line 366 and 837 in check and at line 53 in common/preamble,
->> and we can clean up one more of those places where sourcing a common/
->> file actually /does/ something quietly under the covers.
->>
->> (Unless the maintainer is ok with the status quo...?)
-> I think people just hope to import the helpers in common/rc mostly, don't
-> want to run init_rc again. Maybe we can make sure the init_rc is only run
-> once each time?
->
-> E.g.
->
->    if [ _INIT_RC != "done" ];then
-> 	init_rc
-> 	_INIT_RC="done"
->    fi
->
-> Or any better idea.
+--9gaKO0MQEl4+jp8i
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, this idea looks good too. However, after thinking a bit more, I 
-like Darrick's idea to remove the call to init_rc from common/rc and 
-explicitly calling them explicitly whenever necessary makes more sense. 
-This also makes the interface/reason to source common/rc more 
-meaningful, and also not making common/rc do something via init_rc 
-silently. What do you think?
+On Thu, Feb 06, 2025 at 03:59:03PM +0100, Albert Esteve wrote:
+> Hi!
+>=20
+> On Thu, Feb 6, 2025 at 3:30=E2=80=AFPM Stefan Hajnoczi <stefanha@redhat.c=
+om> wrote:
+> >
+> > On Thu, Feb 06, 2025 at 08:37:07AM -0500, Vivek Goyal wrote:
+> > > And then there are challenges at QEMU level. virtiofsd needs addition=
+al
+> > > vhost-user commands to implement DAX and these never went upstream in
+> > > QEMU. I hope these challenges are sorted at some point of time.
+> >
+> > Albert Esteve has been working on QEMU support:
+> > https://lore.kernel.org/qemu-devel/20240912145335.129447-1-aesteve@redh=
+at.com/
+> >
+> > He has a viable solution. I think the remaining issue is how to best
+> > structure the memory regions. The reason for slow progress is not
+> > because it can't be done, it's probably just because this is a
+> > background task.
+>=20
+> It is partially that, indeed. But what has me blocked for now on posting =
+the
+> next version is that I was reworking a bit the MMAP strategy.
+> Following David comments, I am relying more on RAMBlocks and
+> subregions for mmaps. But this turned out more difficult than anticipated.
+>=20
+> I hope I can make it work this month and then post the next version.
+> If there are no major blockers/reworks, further iterations on the
+> patch shall go smoother.
+>=20
+> I have a separate patch for the vhost-user spec which could
+> iterate faster, if that'd help.
 
---NR
+Let's see if anyone needs the vhost-user spec extension now. Otherwise
+it seems fine to merge it together with the implementation of that spec.
 
->
-> Thanks,
-> Zorro
->
->> --D
->>
->>>> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
->>>>
->>>> --D
->>>>
->>>>> ...
->>>>>
->>>>> --NR
->>>>>
->>>>>
->>>>>
->>>>>>> -		then
->>>>>>> -			echo "check: failed to mount $TEST_DEV on $TEST_DIR"
->>>>>>> -			status=1
->>>>>>> -			exit
->>>>>>> -		fi
->>>>>>> -		# TEST_DEV has been recreated, previous FSTYP derived from
->>>>>>> -		# TEST_DEV could be changed, source common/rc again with
->>>>>>> -		# correct FSTYP to get FSTYP specific configs, e.g. common/xfs
->>>>>>> +		# Previous FSTYP derived from TEST_DEV could be changed, source
->>>>>>> +		# common/rc again with correct FSTYP to get FSTYP specific configs,
->>>>>>> +		# e.g. common/xfs
->>>>>>>     		. common/rc
->>>>>>>     		_prepare_test_list
->>>>>>>     	elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then
->>>>>>> -- 
->>>>>>> 2.34.1
->>>>>>>
->>>>>>>
->>>>> -- 
->>>>> Nirjhar Roy
->>>>> Linux Kernel Developer
->>>>> IBM, Bangalore
->>>>>
->>> -- 
->>> Nirjhar Roy
->>> Linux Kernel Developer
->>> IBM, Bangalore
->>>
->>>
--- 
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
+Stefan
+
+--9gaKO0MQEl4+jp8i
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmek+wsACgkQnKSrs4Gr
+c8iv1AgAtw36d3ZukmPTk9VmX0NGRgWskCoroH9Kztfi3UeYUTi5bn/AL9yD+73x
+aQ8w4QvmQQBq/U85J8DNgOJ6hXW4uE2XpHCEtdgVWRFatuEwWtlLNZ46gUMD+AJb
+QtUvCLNwOtMYbADhEDUiIDIZS3DxHUvTI8JZWN6tNCFme7tuoUiJ4hWEhHhQ07yS
+yebWMNRoW2UmDtVWBMsp/v7zhoroqrrIcRvAaLUBTIE/k2myl3zxEPRW7j69jl9S
+7XwGGLC9Odz8ssha4UIg5fbwuUqpbJQA/PwPQVeJWR0a4OXhbFWebWEGdrXiTKP4
+04dxu53buvDo8JePVLkCaQZfazl9Cg==
+=cm2Y
+-----END PGP SIGNATURE-----
+
+--9gaKO0MQEl4+jp8i--
 
 
