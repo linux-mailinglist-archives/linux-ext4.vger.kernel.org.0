@@ -1,231 +1,302 @@
-Return-Path: <linux-ext4+bounces-6341-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6342-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F7EA29DCC
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 01:10:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD1BA2A031
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 06:35:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3631D1888B36
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 00:10:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34D171651D9
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2025 05:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976DD4400;
-	Thu,  6 Feb 2025 00:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3478B22370A;
+	Thu,  6 Feb 2025 05:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cqyWiDyy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ztt+B5xW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34325A2D;
-	Thu,  6 Feb 2025 00:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738800628; cv=fail; b=KOAm1apW4lKHL+P4ViNm8qs8DNdBQ+WIVD8Sykr7DqPLKfSbkgA3GOCjGBGd44S5iSpVPuMuXP6LnrFZJlm3wQShYM6QyhTl9ujNoQZ4HSDRVQKD1pvnKrBBSTh3qjuM4SPcsq6vSKt4WmOnniFLJtaUkJA0HiF6kMRdKuhY9UY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738800628; c=relaxed/simple;
-	bh=hAWeaSDUhuQjxR9TBMQk8nDaRuOV49YjzfNcKRPYCKA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=XRrU48imyhhO/6UoWW5qmiGkjmZTjKdSwH+JwDPijpbwdvTl5hl4mm2TcZzXcm/jGuG1BR2Jpc2EUthxqS+cGWdCZ+7elnxW2iRbPzxrLa6ozX6QwmG5nFQIN3gc0+h3BUbPua+fAuqeqVlm5oRBSepaN+pA41KZ/1odaLUQ2Ag=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cqyWiDyy; arc=fail smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738800627; x=1770336627;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=hAWeaSDUhuQjxR9TBMQk8nDaRuOV49YjzfNcKRPYCKA=;
-  b=cqyWiDyyRYPp0BqEYD0aAHmbMFel+Bx7JAsCDeTqyXRZoboLeKo7qRBe
-   Paei4vX7kuri26fmuv7U8139w21ge3eLunfwZI+O5hyH5W2BLXS3UMYMw
-   vAPYzYnYK9zk4D6PgbQulXACVhgbsBzOTxpMhmHEtOLxKmVHXGh3E/Zy/
-   VhpsZV70dany3ffAZxCza+zryWzP8EC92TxE8hvpzfr4fvLKtGJhjpwg1
-   i8ImYbJWMqEmnLSKb9gEiOHyOUiJCsNRaCKliRuuYyOmE21ly1cEjV5tA
-   wx1xqaDo/kFuOGCcUIjjXbRLnIY7bFZbDZhjB0juX7i6RAvuQs72BodvS
-   w==;
-X-CSE-ConnectionGUID: l8a1XJR6RM6fY5SpI3kVRg==
-X-CSE-MsgGUID: gnqzp0BwQ3iHKtntgHappw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="39522922"
-X-IronPort-AV: E=Sophos;i="6.13,262,1732608000"; 
-   d="scan'208";a="39522922"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 16:10:25 -0800
-X-CSE-ConnectionGUID: vZqSb/V6Rbacv+FBy8vo/A==
-X-CSE-MsgGUID: 0OFgLGEjSW+PTO/omdehbw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="116245106"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Feb 2025 16:10:25 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Wed, 5 Feb 2025 16:10:23 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44 via Frontend Transport; Wed, 5 Feb 2025 16:10:23 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.47) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Wed, 5 Feb 2025 16:10:23 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CAXpkC4eBU0zaxQ7cmJlYmKmU4TeUMTSy9IeguuDnxKLp6hvFZQ0jl0Db7Bo3dNUCXRbjj3PS+SzGgj6Q7UzfFtxayOd8wELKJXsOow5eVHg11wUwkYdV9/j+l/7MsFXQHNyx78RkUJWSN+tsUa5XT6Zn9n1KPL05GAc7w5GsETQPIv+lWLgTM54W39yLKwPuhgDjz2vKUv9tnx2G8mD4mnWoZwGWy/MKPZUnVrBD6zSLOZsYub+r0gsytPu2Tk+kbVo0RC6OABPMKVrihVzFk+v2w+A+0VZkski1PIPP840SOcpl2P4B8RZHbFtzbRiC5PmYVgq0vnd64Dn5sGQng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=i6qxBDQu/p90h4cOQeI8Slzx6GlmQZwCIwPzLe2KxRo=;
- b=UkBdLskk4Ys6CvB1aRY7Sl+pA2ybi5ZL6AF+DfXoYHH7Pt6MStETyu1o6D++mpysv1onERfkaKZYlwNVYKFzpz9Wg+x91iYEFNJ20/DpKvW3JVXQ7vBuotmdZzrnJeyjnYXJ83WDXfw1eD9HZVU6P/f4UGX7bSQ0WbeON5R7SZCBYiEKmOWWq4DJ4dB9AjJDtmYORQbgZdwyF2QCgkh7PIza4h9ZgkWWpaaS8pVp/VQnTeot8lpt9gaAFk/evAIxLwsQbfNhYO0F4cZi5VdGjTxW7v/Nu7s1p8PkixQvsytdZe9IBpSIkfSR3IJ9SAdWk7ZKPdOvGB1z6zDDEad0Ww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by DM4PR11MB5971.namprd11.prod.outlook.com (2603:10b6:8:5e::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8398.26; Thu, 6 Feb 2025 00:10:21 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6b05:74cf:a304:ecd8%4]) with mapi id 15.20.8398.025; Thu, 6 Feb 2025
- 00:10:20 +0000
-Date: Wed, 5 Feb 2025 16:10:15 -0800
-From: Dan Williams <dan.j.williams@intel.com>
-To: Vivek Goyal <vgoyal@redhat.com>, Alistair Popple <apopple@nvidia.com>
-CC: <akpm@linux-foundation.org>, <dan.j.williams@intel.com>,
-	<linux-mm@kvack.org>, <alison.schofield@intel.com>, <lina@asahilina.net>,
-	<zhang.lyra@gmail.com>, <gerald.schaefer@linux.ibm.com>,
-	<vishal.l.verma@intel.com>, <dave.jiang@intel.com>, <logang@deltatee.com>,
-	<bhelgaas@google.com>, <jack@suse.cz>, <jgg@ziepe.ca>,
-	<catalin.marinas@arm.com>, <will@kernel.org>, <mpe@ellerman.id.au>,
-	<npiggin@gmail.com>, <dave.hansen@linux.intel.com>, <ira.weiny@intel.com>,
-	<willy@infradead.org>, <djwong@kernel.org>, <tytso@mit.edu>,
-	<linmiaohe@huawei.com>, <david@redhat.com>, <peterx@redhat.com>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
-	<nvdimm@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
-	<linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-	<linux-xfs@vger.kernel.org>, <jhubbard@nvidia.com>, <hch@lst.de>,
-	<david@fromorbit.com>, <chenhuacai@kernel.org>, <kernel@xen0n.name>,
-	<loongarch@lists.linux.dev>, Hanna Czenczek <hreitz@redhat.com>, "German
- Maglione" <gmaglione@redhat.com>
-Subject: Re: [PATCH v6 01/26] fuse: Fix dax truncate/punch_hole fault path
-Message-ID: <67a3fde7da328_2d2c2942b@dwillia2-xfh.jf.intel.com.notmuch>
-References: <cover.11189864684e31260d1408779fac9db80122047b.1736488799.git-series.apopple@nvidia.com>
- <bfae590045c7fc37b7ccef10b9cec318012979fd.1736488799.git-series.apopple@nvidia.com>
- <Z6NhkR8ZEso4F-Wx@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Z6NhkR8ZEso4F-Wx@redhat.com>
-X-ClientProxiedBy: MW4PR04CA0374.namprd04.prod.outlook.com
- (2603:10b6:303:81::19) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459D21FE45E;
+	Thu,  6 Feb 2025 05:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1738820149; cv=none; b=O94Nm+G0HJgiGq0kD+r+n/+FbxVLRCzk1N7C89Gb39xeRcP2ZofjhQ68csKqP6D3WEKxmjKoTIevvbYTI9dCdY27V33UtavCk+Wod3BLrmJRm9YSYPevqGJti+vBmAhWYXjbgGqvC/fwH5p4S8BJcJpPNirBHl3ESVXWVhr8kLk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1738820149; c=relaxed/simple;
+	bh=BilhGVoyRvt1yPecuGqIkUJ6aQF2+GP4pzLYJe/XlBI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ANafEQb4f/+CUb12DkWJNeFoZtAHeY3SaAnFEkNhoPNyd8tHEKYWd8gKHvLXGq0mfhiHregB+dFhCn6+cfh9HhXP0N75QNBZfriSExW8N0/VqQLIQ2SvjM8IennCRoOySEsFJDTgWQXftHCIGnltOyQiJQlsK7FyXdiFc1F5Mdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ztt+B5xW; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2f9c97af32eso645806a91.2;
+        Wed, 05 Feb 2025 21:35:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738820147; x=1739424947; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=H7w703HwqBgOWr79K15MCTaF81eL4ynHuX79DmzphP8=;
+        b=Ztt+B5xWKp6aVIOv6IatV4XFxdAhdNIeK5Z7lTb3uDsUqRm7pwYRSGl4kJmfHMR7Y8
+         AddITyaGsF99eOYR+x85K1uYgMoJhEjkB0aryHiHwFmt8Yrgk/QoQd/O6st/jQe43vZN
+         xDbAlf2hEvf+wnhxZEGNyEgb2bEkt95f8WTPruZuItysaGMN54gTpFw3CzMaUq1gpU3k
+         yOr7mM6HAGHAR+tevSv1dzqv5LBXJZCe2Ekv2Q6OH0oibOOJBdIV5A9ayrX4Uod8Yh38
+         DbiC9Dto8D1UeEfuP8lA0RE98BR0AjW4tmxVCfHIii/FvGiQqtsQ96zkQcaafjP4E8L5
+         53jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738820147; x=1739424947;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H7w703HwqBgOWr79K15MCTaF81eL4ynHuX79DmzphP8=;
+        b=ETnBkggj94QPHR+BFpU2HVZUwB4gFdBHeJwLYjWcTT30Irdglf7zQXtaBLCOtpBwNl
+         4ysRTab1FlGR3MRkXsyBMziixp2K4tkeOskDVBPuzCDJYYDatpiGgLnAFrJSYhyR0w+o
+         jAgAFm1F3MnTyAEev/7EtNXACLXZfoYWvveuojQ6dEjofa/ORPqHmqmwX+cFRtttlKrc
+         cuhxLvVq6/NIoC1XRDBzgIPw+8VDddJMiSCOqP2kdP3xjflwxOx7u5HizNweYeA3H7Ds
+         +/fXY4zpBoNLccil0nD+hitQ1Bk+yHgKkjfUrz28TIF/0c2HFOnNVBeVHYam7YwoBCMO
+         /rgA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3pw+aIVl7xyIORHrXiFyENd3ycOzLGLAvR6pleZygQ75tnjIT4L9GUgje0mL0kx7IVmdo04gw1crB@vger.kernel.org, AJvYcCWIO2nm1VplHCYMQhW8WtIcwt3AwuTfWLhToKUrTTQYy5JTPPLa6XJgOZuYDkdrr/FayJFDsfuf3AQ7@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZcMkbY2MykFWhb+37lBdadXWX4WKZd60wPjXOTGsJWXR7JyjH
+	LefVERt/EjsI412Gi2a8WX+Q6QUX/B91eEAPtyAmAkOOguTQ0WUD7Cot9w==
+X-Gm-Gg: ASbGnctQ0KYlpYSR8pXU1QbTrmEgizago/x36OsrHc+f+Jvxfot4Ir/ZqgFCEPEULIZ
+	XDhKIEM/QOhAszm/pBfnE9NyUgJ1NLrtn9RL+pirIorovE92wgr18voqlYLlLJFI6LjPNCxVnBG
+	xjoHxTzqY4F5/mpUABA8VmSHR1Nrxvby2hHpbemz3IY4DTogYLRmCvtBddzaNb9gf0FIfUJEwqd
+	mrKD3k9bz3CBqk1TKyYKHuzRiMUhA2c/Wku2dv2dFnVc1QeM3rRpZQ0pXgxq37ZOWHNn4no/k4n
+	sGCWHuxl52zUXOCCHpl/6w==
+X-Google-Smtp-Source: AGHT+IF9srkCPHR0JEUraYhWLtRfQjVoi/whodT6kkzfR1dlXfzqzCS+r8Kc5wRzrJ3TGj9HSqnb3g==
+X-Received: by 2002:a17:90b:38c3:b0:2ee:b2fe:eeee with SMTP id 98e67ed59e1d1-2f9e0792b60mr9419630a91.15.1738820147369;
+        Wed, 05 Feb 2025 21:35:47 -0800 (PST)
+Received: from [9.109.247.80] ([129.41.58.0])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fa09a2743asm410124a91.18.2025.02.05.21.35.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Feb 2025 21:35:46 -0800 (PST)
+Message-ID: <3599e504-8c2f-4196-9ce8-a4c458505888@gmail.com>
+Date: Thu, 6 Feb 2025 11:05:42 +0530
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|DM4PR11MB5971:EE_
-X-MS-Office365-Filtering-Correlation-Id: 544d3815-c84f-4207-f235-08dd4642a4fb
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?OyVzQYNXaLnfcLBXZTk+TJCDLPyoVQlBPaXHb+dDuy9/NETnDk1rQhVG3Jd2?=
- =?us-ascii?Q?3Uzs9A3/Oo88cgbeQ4Lv4vaOYsHBF00/i2x+jpJl1DXowWJL12BEDI41ztUb?=
- =?us-ascii?Q?WNs8yBvi3Bd0C+4yoNlytsgTyLZVUXjIGslWvQJiMle9mXFE/aDi/yZnxeIe?=
- =?us-ascii?Q?29nvs/waLtp7Os3ZBUN3VoBPyg3wM00g0bEl+lUOfu3j2F60+SqiXw/AvStP?=
- =?us-ascii?Q?dl7N8oheVotTvf3iFC2nMjz8MGGqknOJBOvGbhcgbxB4LFX+T2VFHpGCtbqK?=
- =?us-ascii?Q?nMmZgFuwFyux/TSwejG3hHm8KpUxP2XrJB9JNn8cyCFK6BaAtsvMLdc/TEN3?=
- =?us-ascii?Q?2EHYLUAMEPIKktPzXGr84hMLmCsjCH8rnULG2Bp4z7snweyQyq/JQGNZJwBW?=
- =?us-ascii?Q?zSMbLxjU7e5F5UoVFu5QvySxKxwFJyTykArHueFqBBmLk/0iFUquS+hqnjir?=
- =?us-ascii?Q?r1UuGJMmNXS0FSMdpWqEruw2ccRDdJxpEjqpkNJWgw/Rh/xefFtZCxttyUD9?=
- =?us-ascii?Q?fHsrHlRqx6O9YtwrHrTEFF4XQIRC9wRLOqcxHS/33T/OfZ92oXhxxTQa96IS?=
- =?us-ascii?Q?NeMtxUeZV5cB5Fx+quKs6wx9svIbDpGaxVS5HxRlQIbDaEojjnD3KLht7o/x?=
- =?us-ascii?Q?u8IvA1NaL7+RK2NGuXgMbEVHRgtYXep97IF889HR4EMxhNOzEGt5QwGabpfO?=
- =?us-ascii?Q?Q1M98tF3MBlQ+X9fQ/5sgdhh6Cc2O4PUK00JAVcURUufAhZJm+6imbbAkx/L?=
- =?us-ascii?Q?3OL/j6wjyQadrH+PjbLOrgB7PuyDAzcPSbqsXfoUv8DkGx4GAJnh1hupIOuU?=
- =?us-ascii?Q?TZZH8SHftFEvFlNTpkJLOKxCdZRxN2PuUjU7wORejC/alowctwyTMyY8wfuD?=
- =?us-ascii?Q?E4bLI44+QWTssXiLNm59y5fN1ZVzLAvaP7OZPTS5XXbMOu3DhovNEs7abWEa?=
- =?us-ascii?Q?HrBlxTxTLa2Gu3gfuBFFyN0YZ9coWVpkofbchnkpFlgmsqq9PvAqE5nkje3I?=
- =?us-ascii?Q?AbEsQpcNFYGUKfSeqCfkuaC4Vx2fw2QGfO5VnAE9zs6KEylqsf5xb6rwkuHs?=
- =?us-ascii?Q?tazQoLY3YbZqPpbPdyPymQDpZ1MLxutMipl1hx2qBr/j0rjzNhphtMDcpQwb?=
- =?us-ascii?Q?8PmQ4tPt7lb2mChPh5IsmmZD7DdwS4XzYEyvm7berEwZVJZzyNBSlC+L40KU?=
- =?us-ascii?Q?lrOkQf6uUnKUoN7lm09vuY2pXDhQ5FFm0HmKQrBcea0q8NHU+NK2INcXmCci?=
- =?us-ascii?Q?mLwHafgIlZXYIHj7bkPff+8mAlxOTloe0a9LosFwS2DsfjQLhaUBWAKs7bhZ?=
- =?us-ascii?Q?3adyIUYuGu6CSSCMUFR8eKezUgOA6SK+4Qq8SR/L2b8NyveAW2LjWLTEsj1/?=
- =?us-ascii?Q?Ej4rbaAKZwPziyY5H9O7DV4uRijU?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+T5iBUn1qdTtEKp6HCrqaIk2cHoeaDRO4fizQiMpEkZk3c9orOek2ToYVNCk?=
- =?us-ascii?Q?OCTUXCJgLDwWmABzBi/jadbfudG7G2h/ltKFfJ4WXtO3IGky7KDKup+O1SNV?=
- =?us-ascii?Q?8SjYI4v3c8dM2qduOVGLE/Gjg1iZNClbWuKdNhzGliteuodz30ng2Sz88Go7?=
- =?us-ascii?Q?6r3VQhHb2vkf+zNrdXptW0ITn5w+jFctSQrwd2aRqmcdPgJo+GVnfh5tn8Dr?=
- =?us-ascii?Q?ZBd6FzgKjPFpjVKc7wRhH2qrgqgRDoBjSpIPK8e0sCANfEz05CbKfelvOu5S?=
- =?us-ascii?Q?JH3HrVRUiL0Cp5MzhesKWXdxyRdQNiNflPX9YockAJ+0SUr3RHRlBcsoVbLQ?=
- =?us-ascii?Q?0zYYFzl7k9HQmu5uxAcxwLnJG4Ze+oFACdvqSsX5KNfz99kg9ByX0IseaVOg?=
- =?us-ascii?Q?UQVnppq2BZO0Frfl5Ef5nVYPir2/pBFrMenjY27/2A3bxmCFgBrVoMviegNS?=
- =?us-ascii?Q?PRyS4SQDzbUP8CEe2CxquEfID1AHz0NtGFMaBZOZxtRZdV2QIz3ycscZt33h?=
- =?us-ascii?Q?G4cxcS7E5Njb7OvrOSGzpS4QYhe8DEwFBC8EfL53T0s7vpshuBLmLq0nCUT5?=
- =?us-ascii?Q?bLncurZw3P5ZmRPlThQjBfiVNhtQ/W1vh44syVOVBdqMydkZwUwOBOTYOzcj?=
- =?us-ascii?Q?+5FWI68Qxr15J0sflAxwV+fMCw0JseA+pmmxdS1JjRjOPC04omJ1Zm6RKmVH?=
- =?us-ascii?Q?8ASybsL7vQ/gWm6yhryQXekh1YWmtyevTfzOrqeMwUL4wQtvkxS1aOZOBcEZ?=
- =?us-ascii?Q?YYifer/BrWyLXh2qiIS3lkdCKX0upLmvF6lnZ0OCFgrUhnnMcZxVFyI47b5T?=
- =?us-ascii?Q?8LJ8UlCLTGmXr14x4l4XmL9X1ryQgGdrfZBB1vCjOR+X61qGnKP+ZHji9NLF?=
- =?us-ascii?Q?+2cH19xKroC8X6M/9W3nLjVkgFJOZIh8B6B2lnCIn+O6+Bgi/baq7YpN0mwb?=
- =?us-ascii?Q?taUZf69HNQgZX6qNbEvWoA0uldwNT1DRPMmWtdlJb81Fj9TJ1E4IpSOglDb0?=
- =?us-ascii?Q?IUk0daNVfNRWHqU9pvvbLfyValZEHOeeD3LtmDE/xzcd+OweRLJJHlnGwUYy?=
- =?us-ascii?Q?OSjJQv2IBdp55xxuMRyctnoPDjaidBea5rop/+v5ukPRvSPRdy040mgm3XmU?=
- =?us-ascii?Q?AL3qzzmVrrkNAuQPtyhJS7gI1TiCKOwf27lU21H6gh6E27EPbzWdGMNZjHGx?=
- =?us-ascii?Q?9IsWUx4+PGBcjxxL7Qgtof0TJ1yWpqJ56QhUYonhSt0lGeMnMEMV3kd4Zz3w?=
- =?us-ascii?Q?rvOr0xAI4nBRK6Ec1Vr1DIhSMSXRjc0mkMwcadjVugL5ELTCPMszp0/oImSX?=
- =?us-ascii?Q?4B1ybgFOcbsQ6bl+kmPaitg//mOeMaWjP3AK06g2QSJw4tzm8mts/9GDbVKa?=
- =?us-ascii?Q?yurX6KDoOAkrIED3LZM7iBlU96U8dKvCaPNpLlhtMt5JiF9p6UvlV77pCO+0?=
- =?us-ascii?Q?Oip5P71gBJ+W382cqhnofus9x6U9qprDjng7i4GlYeeGbLeaWNads9o5Oz1i?=
- =?us-ascii?Q?kxEKd7SsSeraI4YuG/cxeDgb1clIvpz+qD8foPDpZP5+iHCB661hJx13ylsH?=
- =?us-ascii?Q?kRz7toINxsI4zHwI3sUKwwpumXuatATSKkNpBqL2yq96Sxs4b7EKulsoglVS?=
- =?us-ascii?Q?Sg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 544d3815-c84f-4207-f235-08dd4642a4fb
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2025 00:10:20.8344
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TNsMnUuN1Omf1B/uG3ULfekZ6W1ZmjvvmtdfS8waz/VXUVxh2HEovG6l9QPdTtTsROTsrgRRqtfiPKRR9+0nug47/9du/bhS3FJAfon5gw0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5971
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] check: Fix fs specfic imports when
+ $FSTYPE!=$OLD_FSTYPE
+Content-Language: en-US
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
+ zlang@kernel.org
+References: <3b980d028a8ae1496c13ebe3a6685fbc472c5bc0.1738040386.git.nirjhar.roy.lists@gmail.com>
+ <20250128180917.GA3561257@frogsfrogsfrogs>
+ <f89b6b40-8dce-4378-ba56-cf7f29695bdb@gmail.com>
+ <20250129160259.GT3557553@frogsfrogsfrogs>
+ <dfbd2895-e29a-4e25-bbc6-a83826d14878@gmail.com>
+ <20250131162457.GV1611770@frogsfrogsfrogs>
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+In-Reply-To: <20250131162457.GV1611770@frogsfrogsfrogs>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Vivek Goyal wrote:
-> On Fri, Jan 10, 2025 at 05:00:29PM +1100, Alistair Popple wrote:
-> > FS DAX requires file systems to call into the DAX layout prior to unlinking
-> > inodes to ensure there is no ongoing DMA or other remote access to the
-> > direct mapped page. The fuse file system implements
-> > fuse_dax_break_layouts() to do this which includes a comment indicating
-> > that passing dmap_end == 0 leads to unmapping of the whole file.
-> > 
-> > However this is not true - passing dmap_end == 0 will not unmap anything
-> > before dmap_start, and further more dax_layout_busy_page_range() will not
-> > scan any of the range to see if there maybe ongoing DMA access to the
-> > range. Fix this by passing -1 for dmap_end to fuse_dax_break_layouts()
-> > which will invalidate the entire file range to
-> > dax_layout_busy_page_range().
-> 
-> Hi Alistair,
-> 
-> Thanks for fixing DAX related issues for virtiofs. I am wondering how are
-> you testing DAX with virtiofs. AFAIK, we don't have DAX support in Rust
-> virtiofsd. C version of virtiofsd used to have out of the tree patches
-> for DAX. But C version got deprecated long time ago.
-> 
-> Do you have another implementation of virtiofsd somewhere else which
-> supports DAX and allows for testing DAX related changes?
 
-I have personally never seen a virtiofs-dax test. It sounds like you are
-saying we can deprecate that support if there are no longer any users.
-Or, do you expect that C-virtiofsd is alive in the ecosystem?
+On 1/31/25 21:54, Darrick J. Wong wrote:
+> On Fri, Jan 31, 2025 at 06:49:50PM +0530, Nirjhar Roy (IBM) wrote:
+>> On 1/29/25 21:32, Darrick J. Wong wrote:
+>>> On Wed, Jan 29, 2025 at 04:48:10PM +0530, Nirjhar Roy (IBM) wrote:
+>>>> On 1/28/25 23:39, Darrick J. Wong wrote:
+>>>>> On Tue, Jan 28, 2025 at 05:00:22AM +0000, Nirjhar Roy (IBM) wrote:
+>>>>>> Bug Description:
+>>>>>>
+>>>>>> _test_mount function is failing with the following error:
+>>>>>> ./common/rc: line 4716: _xfs_prepare_for_eio_shutdown: command not found
+>>>>>> check: failed to mount /dev/loop0 on /mnt1/test
+>>>>>>
+>>>>>> when the second section in local.config file is xfs and the first section
+>>>>>> is non-xfs.
+>>>>>>
+>>>>>> It can be easily reproduced with the following local.config file
+>>>>>>
+>>>>>> [s2]
+>>>>>> export FSTYP=ext4
+>>>>>> export TEST_DEV=/dev/loop0
+>>>>>> export TEST_DIR=/mnt1/test
+>>>>>> export SCRATCH_DEV=/dev/loop1
+>>>>>> export SCRATCH_MNT=/mnt1/scratch
+>>>>>>
+>>>>>> [s1]
+>>>>>> export FSTYP=xfs
+>>>>>> export TEST_DEV=/dev/loop0
+>>>>>> export TEST_DIR=/mnt1/test
+>>>>>> export SCRATCH_DEV=/dev/loop1
+>>>>>> export SCRATCH_MNT=/mnt1/scratch
+>>>>>>
+>>>>>> ./check selftest/001
+>>>>>>
+>>>>>> Root cause:
+>>>>>> When _test_mount() is executed for the second section, the FSTYPE has
+>>>>>> already changed but the new fs specific common/$FSTYP has not yet
+>>>>>> been done. Hence _xfs_prepare_for_eio_shutdown() is not found and
+>>>>>> the test run fails.
+>>>>>>
+>>>>>> Fix:
+>>>>>> Remove the additional _test_mount in check file just before ". commom/rc"
+>>>>>> since ". commom/rc" is already sourcing fs specific imports and doing a
+>>>>>> _test_mount.
+>>>>>>
+>>>>>> Fixes: 1a49022fab9b4 ("fstests: always use fail-at-unmount semantics for XFS")
+>>>>>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+>>>>>> ---
+>>>>>>     check | 12 +++---------
+>>>>>>     1 file changed, 3 insertions(+), 9 deletions(-)
+>>>>>>
+>>>>>> diff --git a/check b/check
+>>>>>> index 607d2456..5cb4e7eb 100755
+>>>>>> --- a/check
+>>>>>> +++ b/check
+>>>>>> @@ -784,15 +784,9 @@ function run_section()
+>>>>>>     			status=1
+>>>>>>     			exit
+>>>>>>     		fi
+>>>>>> -		if ! _test_mount
+>>>>> Don't we want to _test_mount the newly created filesystem still?  But
+>>>>> perhaps after sourcing common/rc ?
+>>>>>
+>>>>> --D
+>>>> common/rc calls init_rc() in the end and init_rc() already does a
+>>>> _test_mount. _test_mount after sourcing common/rc will fail, won't it? Does
+>>>> that make sense?
+>>>>
+>>>> init_rc()
+>>>> {
+>>>>       # make some further configuration checks here
+>>>>       if [ "$TEST_DEV" = ""  ]
+>>>>       then
+>>>>           echo "common/rc: Error: \$TEST_DEV is not set"
+>>>>           exit 1
+>>>>       fi
+>>>>
+>>>>       # if $TEST_DEV is not mounted, mount it now as XFS
+>>>>       if [ -z "`_fs_type $TEST_DEV`" ]
+>>>>       then
+>>>>           # $TEST_DEV is not mounted
+>>>>           if ! _test_mount
+>>>>           then
+>>>>               echo "common/rc: retrying test device mount with external set"
+>>>>               [ "$USE_EXTERNAL" != "yes" ] && export USE_EXTERNAL=yes
+>>>>               if ! _test_mount
+>>>>               then
+>>>>                   echo "common/rc: could not mount $TEST_DEV on $TEST_DIR"
+>>>>                   exit 1
+>>>>               fi
+>>>>           fi
+>>>>       fi
+>>>> ...
+>>> ahahahaha yes it does.
+>>>
+>>> /commit message reading comprehension fail, sorry about that.
+>>>
+>>> Though now that you point it out, should check elide the init_rc call
+>>> about 12 lines down if it re-sourced common/rc ?
+>> Yes, it should. init_rc() is getting called twice when common/rc is getting
+>> re-sourced. Maybe I can do like
+>>
+>>
+>> if $RECREATE_TEST_DEV || [ "$OLD_FSTYP" != "$FSTYP" ]; then
+>>
+>>      <...>
+>>
+>>      . common/rc # changes in this patch
+>>
+>>      <...>
+>>
+>> elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then
+>>
+>>      ...
+>>
+>>      init_rc() # explicitly adding an init_rc() for this condition
+>>
+>> else
+>>
+>>      init_rc() # # explicitly adding an init_rc() for all other conditions.
+>> This will prevent init_rc() from getting called twice during re-sourcing
+>> common/rc
+>>
+>> fi
+>>
+>> What do you think?
+> Sounds fine as a mechanical change, but I wonder, should calling init_rc
+> be explicit?  There are not so many places that source common/rc:
+>
+> $ git grep 'common/rc'
+> check:362:if ! . ./common/rc; then
+> check:836:              . common/rc
+> common/preamble:52:     . ./common/rc
+> soak:7:. ./common/rc
+> tests/generic/749:18:. ./common/rc
+>
+> (I filtered out the non-executable matches)
+>
+> I think the call in generic/749 is unnecessary and I don't know what
+> soak does.  But that means that one could insert an explicit call to
+> init_rc at line 366 and 837 in check and at line 53 in common/preamble,
+> and we can clean up one more of those places where sourcing a common/
+> file actually /does/ something quietly under the covers.
+
+Okay just to clear my understanding, do you mean that the call to 
+init_rc() be removed from common/rc file and the places which actually 
+need the call to init_rc, explicitly calls init_rc() instead of sourcing 
+". common/rc" and making common/rc do something under the cover?
+
+--NR
+
+>
+> (Unless the maintainer is ok with the status quo...?)
+>
+> --D
+>
+>>> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+>>>
+>>> --D
+>>>
+>>>> ...
+>>>>
+>>>> --NR
+>>>>
+>>>>
+>>>>
+>>>>>> -		then
+>>>>>> -			echo "check: failed to mount $TEST_DEV on $TEST_DIR"
+>>>>>> -			status=1
+>>>>>> -			exit
+>>>>>> -		fi
+>>>>>> -		# TEST_DEV has been recreated, previous FSTYP derived from
+>>>>>> -		# TEST_DEV could be changed, source common/rc again with
+>>>>>> -		# correct FSTYP to get FSTYP specific configs, e.g. common/xfs
+>>>>>> +		# Previous FSTYP derived from TEST_DEV could be changed, source
+>>>>>> +		# common/rc again with correct FSTYP to get FSTYP specific configs,
+>>>>>> +		# e.g. common/xfs
+>>>>>>     		. common/rc
+>>>>>>     		_prepare_test_list
+>>>>>>     	elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then
+>>>>>> -- 
+>>>>>> 2.34.1
+>>>>>>
+>>>>>>
+>>>> -- 
+>>>> Nirjhar Roy
+>>>> Linux Kernel Developer
+>>>> IBM, Bangalore
+>>>>
+>> -- 
+>> Nirjhar Roy
+>> Linux Kernel Developer
+>> IBM, Bangalore
+>>
+>>
+-- 
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
+
 
