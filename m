@@ -1,207 +1,282 @@
-Return-Path: <linux-ext4+bounces-6379-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6380-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3E17A2BF5D
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 10:32:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FA91A2C225
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 13:02:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 079433A9D28
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 09:31:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ADA21690CC
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 12:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69762192D77;
-	Fri,  7 Feb 2025 09:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 177571DEFFD;
+	Fri,  7 Feb 2025 12:02:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="j7kRLFFt";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="nLr7QbE/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0468A610D
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 09:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738920718; cv=none; b=FLlCCEXQTJy1KayjCC5kZATNWCTQnlPe65SILzCjtXbYqkRj9h3kny6774hESL4QN8WgjSPDAbf7r5vB+/r7ycc655G8znzVgi/ohyrLrYXWrpNh2IimYQfQZmzkwNqQ13ms7vvRLSYlK4EMSymTQN6kh6TqCiFjF1XaIre9AKo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738920718; c=relaxed/simple;
-	bh=8h6cMHF/yjNOH4OV+wcUjnk2tuUmblzXBrInxxuccdk=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=laQjKvHkhlt7yAgQXa7dAFzolxldVpvNYkjBwUaH2TABy9sj5v1wk93aQr+0PR2bFR6Yz5UEH6e5RYofxxnrAJ8MzH6jdUvvsS1F1hycXKGNzk0pWIRngC7gnzhJKcVI7D48O/02ic4aQRZb+NovVwr1ltGvm/tnFFcJHJMj/yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Yq7yV05rFz4f3jHv
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 17:31:30 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 32FA41A0E98
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 17:31:51 +0800 (CST)
-Received: from [10.174.178.185] (unknown [10.174.178.185])
-	by APP4 (Coremail) with SMTP id gCh0CgBHrGAF06VnNIuhDA--.51595S3;
-	Fri, 07 Feb 2025 17:31:51 +0800 (CST)
-Subject: Re: [RESEND PATCH 2/2] ext4: fix out-of-bound read in
- ext4_xattr_inode_dec_ref_all()
-To: "Darrick J. Wong" <djwong@kernel.org>
-References: <20250207032743.882949-1-yebin@huaweicloud.com>
- <20250207032743.882949-3-yebin@huaweicloud.com>
- <20250207041629.GE21787@frogsfrogsfrogs>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- jack@suse.cz
-From: yebin <yebin@huaweicloud.com>
-Message-ID: <67A5D305.9080605@huaweicloud.com>
-Date: Fri, 7 Feb 2025 17:31:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020811DED44;
+	Fri,  7 Feb 2025 12:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1738929753; cv=fail; b=TMl9bZeSbe/q3rsFtziCILp2VWugetkQfqg9MyFQ8mb1mkER992bmVRhEruoRQYrURvC+qJZhgYC1MU3p131OcZ68K79mivg5WyPjyCl/5T49mRauERhCq39J/UZRK+16AkwcxKB6LcZN2sCP9CFdpPY+PLXcCc7fX1BiB4+Lo8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1738929753; c=relaxed/simple;
+	bh=UJluoNChwR6SJLhdANXH7n8eyJ8vUHw2zbiVBgLsK8s=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EL7sjJIbGS3UmMWK5MxWnkBz8uBva2FM5uAtoNH+/sBzlmvuzeZFF4+g04qjKz0PKZPsFzwylHfkv9hRwMX1jy0yL0iDcld8Jwp/+btlj5sl+WmiKOjVKU3oTK2Iz6vZWiJD8EbrzWc4qCTKQDCuCPruaTrTL2NHgl1SoTAGM00=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=j7kRLFFt; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=nLr7QbE/; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5171ubkD032410;
+	Fri, 7 Feb 2025 12:01:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=/yMk0VvRNkVgeSPocz6FiRmcGFem974u5AnwOdxIWL0=; b=
+	j7kRLFFtNebcKDCUkRS+Cno7niNHkFG7Z2iySz2hIXaN74B4c10FPhVky/gYYcuK
+	bG0F0STM9Lq3mPhe/PXWeaIJ1bbwAYFw08ulvwW65ao2K64f13jORBTtV2UxC0A2
+	DYAylnSluY7yGNHRkdK/0QV8hm7D8NtWsRnWk8hUcgR/pR3rUmg5PDiTI9biO8/G
+	+YO8+eJoQfskXDHFt3Nl0r7GNbMvnJp50DdCs0AI6HOTQhMDU0v/5vzLOOYAN6iS
+	sCxhC+Bf3HK30/1V/JdunZlm7NFp2nNZeKo7052CQ+KouGnVvCLLIWsX48juFBvV
+	iDLMTAwu78iufauFRHUfNg==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 44n0nb1jgy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 07 Feb 2025 12:01:39 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 517B69Fl027915;
+	Fri, 7 Feb 2025 12:01:38 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2042.outbound.protection.outlook.com [104.47.58.42])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 44j8drejja-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 07 Feb 2025 12:01:38 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=zWw1gRInLQvQQK4nJL3ixPafh7uTSHiZ0yCt2YBm+z0yKpjeIP85+m3ENT55KlCeH61tT0W9tDp9gg8/89Ov/IF6f7Zq/4VGQQSJ2I4SqYqRP+rX/kaTfrXG8yZzUBLQT1nnPauHOfQCagbQlrMMqOn1K/aO0h9wYsoGWI7+NKSVCRjYmMWdQyUJBuoT67d8twuAEI6EnyMU+UZQ5z3O4RNhirWWkooMQUdOUYHC3df2qUUHjFGTCQLobToiMKCikGYLt8z4ycAYZQg0uwhJXrv0Rua6xmJ2t87pdTZqLC6RyskWMVuJkghCoQoRUdfKhjJ2e/hizAQO3lzDGhC1NA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/yMk0VvRNkVgeSPocz6FiRmcGFem974u5AnwOdxIWL0=;
+ b=ya/AjTiQTY7JWCDuUmIXn8uXxM4LD1CeVE+cp+tTGD27OXxEDZTfQMegt1m69AAlc4Tmx3v1lrBVC6TUdj0HFADvtcToIe8Jf2IdldjjyaV2k5+Qpv/u/iGMB1uPNkTJmIPAXOLRW1e6rcIDfN2Fdib5jzd8jVWm0LE3hPebwxSX9izb1EIfar1y1ichWp0epA3k0O9kXwm39VZhmNbpZhVXx22Smzf3Dwzed0Jk/18TJKsm0CRyKqwBljGpoM7o1U1qgWTGdFw8d42ZXtG1vnixstweV7pnvTf2axlhBYJCkfl2NfA6My8Au1IahlZPlMGKGX4QXz7bKwlytUyyAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/yMk0VvRNkVgeSPocz6FiRmcGFem974u5AnwOdxIWL0=;
+ b=nLr7QbE/t/NHhwNR3/jLtAHFrzK2ptu3D1GK+a5gvKB/10lJwh6YWyhyMiIcndj3pVx/Ucngw/CQNeoicqGQekU3kBrRTNGW5qWVsgpt6K0EdDcb+CjKwjDrpxqw0gK/gvtYzDI206g85wdnJ0Wk3/nL08uKJsAiTECZ/cEiPOE=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by CY8PR10MB6708.namprd10.prod.outlook.com (2603:10b6:930:94::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8398.25; Fri, 7 Feb
+ 2025 12:01:36 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::4f45:f4ab:121:e088]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::4f45:f4ab:121:e088%6]) with mapi id 15.20.8422.009; Fri, 7 Feb 2025
+ 12:01:35 +0000
+Message-ID: <e86ed85f-6941-44ef-96a5-0ca15faaec1d@oracle.com>
+Date: Fri, 7 Feb 2025 12:01:32 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [LSF/MM/BPF TOPIC] extsize and forcealign design in filesystems
+ for atomic writes
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: lsf-pc@lists.linux-foundation.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, djwong@kernel.org, dchinner@redhat.com,
+        hch@lst.de, ritesh.list@gmail.com, jack@suse.cz, tytso@mit.edu,
+        linux-ext4@vger.kernel.org
+References: <Z5nTaQgLGdD6hSvL@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <35939b19-088b-450e-8fa6-49165b95b1d3@oracle.com>
+ <Z5pRzML2jkjL01F5@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <e00bac5d-5b6c-4763-8a76-e128f34dee12@oracle.com>
+ <Z53JVhAzF9s1qJcr@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <4a492767-ee83-469c-abd1-484d0e3b46cb@oracle.com>
+ <Z6WjSJ9EbBt3qbIp@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <Z6WjSJ9EbBt3qbIp@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO2P265CA0181.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a::25) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20250207041629.GE21787@frogsfrogsfrogs>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBHrGAF06VnNIuhDA--.51595S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxuryUtr1DJFW3Cr4Dur4fAFb_yoWrtFW7p3
-	4fJa48Cw40qryj9r4xtr45Zw1j93WxCa1UWrWxGr1UKFyDWwn7tFy8Krn8CFyqvrW8Jr9I
-	qr1DJr4j93WrC3DanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
-	xVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UEQ6
-	JUUUUU=
-X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|CY8PR10MB6708:EE_
+X-MS-Office365-Filtering-Correlation-Id: b5693513-7dbd-49cf-99eb-08dd476f2bac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?bCs2SE9mVFRIcEptd2RjbmVPUXdNeEljR1prcmhhSUN0OW5KRmNzU0ZnL1Vy?=
+ =?utf-8?B?WDhIZHNPNUxrTzNSMTAxVkNjNG41bVlZUjZpWjVQaUFGRnFxTUxkWWorWnkr?=
+ =?utf-8?B?ekRDZUJRYlk4dDlncFp5SXdabGE1WG9IOGdRN3pXT1VHNnAvaWZDYzM1VTZ0?=
+ =?utf-8?B?VERHbDBGZnBNbEdaNGpXb0duYzBpZVpXMjNVM05rR3c3WWhkR3NlajZOZWZ1?=
+ =?utf-8?B?N2ljMHp5bUVhb29xeEp2ZS93aFNybTZBOGw2NEw0Syt6WDF5VFppbDhpSDZD?=
+ =?utf-8?B?UUhLWkMyV3F3Rnl1MFRGVXU5Y2Q3UkNQb0RHcm5LMzhjWXJBVnhQUDVld3BI?=
+ =?utf-8?B?Z2l5WFdmSENKdSsrMUpuRnJIYTY4dzF5WWNJK0RwUlhsZGwwR1V0ZXUvdmQw?=
+ =?utf-8?B?TFNyYit3RHRVVm1Bb0JSQmtROC9oWkhtVWdxVGwvdWoxS0VFaXFxd1NlcHoy?=
+ =?utf-8?B?VWxRMGdZZUxlK1dDRUhsNEZvTW50WVFnMnhGTy9nK3NtcTg2VmIxa2NzMWps?=
+ =?utf-8?B?bS9HR0Y3WkFNVll0NTlxNGQ4S1NSTXFIeTVtWHA3QWZNSTVaUFVRQXlBSUV2?=
+ =?utf-8?B?TUxyU0FkNVlHa3Y4NmJ1Q01Xc1dOamxlZ1cvcHl1OU1FcnZGdWN4VkFvemN5?=
+ =?utf-8?B?RC9HR0E5TWkwcnZQYlVwVmZaTytzRk1zU1JON3hvcStBajhmZmJxYXQ2UVJE?=
+ =?utf-8?B?U0ZoZlBHQjV1S2RPeExRWHFZQzNRTDc5M3VPRDhncDMxUTdLVlJmMlhBMGcr?=
+ =?utf-8?B?cjhrSm9ZWVhCSVZtSWhkQjQ2Vlcwc0RxU0FyN2tYTVpOVHJubmtKTmNXV2hD?=
+ =?utf-8?B?OExRK2pVRTZReTlPQXBNU29OV2tpUVZYM0VSUTNwN2VkNUs3dHl6T054UitE?=
+ =?utf-8?B?enNRaXltVWtsRWxpRG50eFVsemR3Y2grRlRoY3BGaGU2TXJzblFxVlpQQkZp?=
+ =?utf-8?B?ZWpjYjIyWGlubjNkbVhIWWwvWHgvaHN1WkxaWUl1OWdVMDYyTW4wZTk2NFgv?=
+ =?utf-8?B?ZjNhVEllb0ZNSXVLb2ZZNjREcjFBdVZkZmV2eStQRE1LNVprTTdqbXJIdllW?=
+ =?utf-8?B?ek96NFdCZldFZG9oZHJ4djVRNndETmRYWTgvaUU4N0gzVFQyV0xjSDlZaXdo?=
+ =?utf-8?B?cE1wRDJiQ0tFVGMyQitEYlBmVVJ1YU5tMEhIYW1acm8wME02dU9wUkdaSlNJ?=
+ =?utf-8?B?U3lqcFFFUmd6MVlDY3RMZmsrVFp4MW5VNVltQStXa3ViRTZiQ0F5V3BSSStJ?=
+ =?utf-8?B?OUhLdFFwVHo2cnltMzhNQ1NJR1EwazNRRWdnTmcySWpGT3FOd3hLU1JacjNC?=
+ =?utf-8?B?NUY5N0k0SHdyNVdSRkdTYnAvd3RmbU8vb0UxZi9yQ2EvTyt6KzZOTXQzRVhT?=
+ =?utf-8?B?cWxQaG5nRVZHNGVYZGZMY04xMkJ3Vyt0dThoTFcrQ05EUTViaDFaek92YjBF?=
+ =?utf-8?B?T1h2V2MwdXBSM1lCd2dvdmY4amNOcGZzcXdtQ0JMZmlQSDd0WFdNWHlWcFQr?=
+ =?utf-8?B?eGh3SHJ6QjFHYkQxNVB3R0U5emM1Unc3V1hmSSs3ZXEyQ3Myd29NR1hZRVlQ?=
+ =?utf-8?B?bHBrODRFOUphNEVXcHRhOFlVRStRa2UreFVVRkJldThkMW0rbk1oa0lIRU9H?=
+ =?utf-8?B?N2hyZ0R6SU5hVkxmZTg3b0NBOStZSHRyS3pvcHVWaFdBUCtvdTdSd2tSOVdC?=
+ =?utf-8?B?OThQZjYrWFdiZFhYUDhxU3A5b3JJbWIrWnNVV2RvcUg1NlhlYm1Xem9lMUxS?=
+ =?utf-8?B?MWVaMTc3S2NaQzRNWk9EMUZPWmxMUGg2UjJwbGRId3lXRC8yZGNpaFZLR0tE?=
+ =?utf-8?B?RzRickpBT3IyczF1TVViaUp4TDR3OHdBNU1EcFVMTmpxZ2p6L0NMYnNwRi8z?=
+ =?utf-8?B?WmFJWTIrZktKV3VHL2JPakdvODhsWHdDcVhZWHlhRjVjaGc9PQ==?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?U3JUNkV0RW5hMndSMVhqRmNpdGZlZkhzQ3QrZ2xwajZCQXBwN0tGRlFSZnVW?=
+ =?utf-8?B?cVYyWnJqUmFzNWlLQWdvK3YvbzRodmRTS3U1S0Y0aEsvWTdwZUhYbUlUTVBV?=
+ =?utf-8?B?TlVvT2pKUG9OT3BrNHUrUzZyTDVWZ1VjeEMvOE5tcjY5SllqZFE5RVNmZ21W?=
+ =?utf-8?B?MkRGaHNNN2ZMaHdqVWI3UFlYV2M2WFFKbTdaVTRCWjgvWWkrL3VNUzBZbmtC?=
+ =?utf-8?B?OWI1MGZGYTR3THNER01tM0d5RGR6dXFmTkFiZXhaN2Fid0lVSklhL1A0UXhq?=
+ =?utf-8?B?TTFYRTVDYTh3ZllHRXo1NElGaWM1cmZudnpGY294MVJZdGNtMzNjTDh1WUVx?=
+ =?utf-8?B?MjhwdXNHdDR3U1drd0R1UWQrSHFzaDR0ZVBRYlFYR0IzU3pXUzdueE1taUt3?=
+ =?utf-8?B?Kzh6VEdiSVQydnVBUUt2U3AyT3JndWhmaTdJRFVJejkyN01UdElmQng1VlhD?=
+ =?utf-8?B?cmYyK2lGUWZmaEFEUkpiSTF2V0g5M2lNNXpzRmxZczRXTGFENUZFdGlmZ3lS?=
+ =?utf-8?B?NXNiN2x5bDRYL2lCV0dRZ0EyVVN6Vi9ZaGJrTmg0MisxeWtrSDh3eUxtUVRR?=
+ =?utf-8?B?alNsbXdYakxYYlp1YThhSVFubDhRMENDK0VXanRCUnJYNW5wb3ZXVWZwYW5W?=
+ =?utf-8?B?ZXRvYS9NUkJOTW9Hc21DZTdUVk83cVpVTUtERm8xSzdPTnNRbmdzZGpGZmc1?=
+ =?utf-8?B?dmEvN3pyT2E4MWFlT1QvcFh1RU9oL2JnWUNuZXRtNmhQTDVTT09SOWxVRC94?=
+ =?utf-8?B?SWFlYnpNWUJ4d1VoL1daWXhZd0xxTHVnUDY3MnN3bE1sM1ZUWXE1RnNLRVpt?=
+ =?utf-8?B?UDBETG1xWUNYbHFza3RBQkNaajQ1MkZPbmJQN09zemY3dVdnWlpCVE44UUFT?=
+ =?utf-8?B?aDlsTm8xV3BCMEV6WjBtTFNaR1BzOVRrdm5pTXA5YkhiR3FoTlorUjFubUFx?=
+ =?utf-8?B?SVVDOHI4NnlpR2NOSkRGeG5KRDdyZlkxekQydmRndXlXWUs4SDZ4UGc1bmZE?=
+ =?utf-8?B?L1FRY0dXVldXY1NsWkJRQmpFWFJ1Nm9jMVN3VmdoOWJTc3ZYN0FlS29IYWJl?=
+ =?utf-8?B?TTAySXJpbHo5cFZZNU1FdFJ1dEs0aXo5cjRVYkx1bDdOM1JycytxOXhOUnFw?=
+ =?utf-8?B?RFB1MUdyTEZoVHhPRVRTa0tvV3NQN3JXZm5YRWFrOVZQaUp6VXlQTDRKbVRa?=
+ =?utf-8?B?TjYwS2NQV0Nnd0k0WmF3d04wV0xOU3FlRHYxOEpFd2xqRDZOYXIrbXBZTFNE?=
+ =?utf-8?B?ajEwMHVBeTFDbFNuZlJ5WU5uSkEwaVlnT2djM25aWjhCWngvM0dGSDBQSWlC?=
+ =?utf-8?B?QlpGSkNXN290aVU4YmVVc0plb1AzZlord0tjTkptUmJSZlprOUs1V3lsTGtC?=
+ =?utf-8?B?TGlpWkpmbVBoNXloZDkzaVRySEM0a045Tm1HS2VJZTljWXBYUTBaYm1aakhU?=
+ =?utf-8?B?ZXVGa0l4OHd5Z0RpdnJXUlVqd04ya3pQZ1RXckp0bHNHMVNOWWpKc05TODdG?=
+ =?utf-8?B?UERxanh2dXZHb1FhRUl0cHpJMng3NXcrSUZBcFU0bEUzNkdLdmY3M1U5M2kv?=
+ =?utf-8?B?bUlNd2thZ2l4VUZ1WFBnYTZxdmxxc2lrUGZVRWZxblFVcFM2MER5a3JQNVZI?=
+ =?utf-8?B?WUJDcGhqRURJWFY2WUREd0xFeGFyeThOaW5LUWMwTjNDTWZzY2RqYVduZVND?=
+ =?utf-8?B?UmJPZmd2TmJZNG5DcWJPNjBKQS9aUUJtRUJyS2plOUxUOFpUK2ZRT3NFZEZY?=
+ =?utf-8?B?UldaWCtVLzJMNVZBNHdTUjRNVzhZQlBaN1Y3OXlSRTlMbC9pbGhDM3NmRmhU?=
+ =?utf-8?B?NFRRa3lEdnhjdEt5ckpzaEdsRk8yRG5lZGN4d095clRVT0x4WmdzQ0VmRWMw?=
+ =?utf-8?B?dWVEZzV6ZitKdlVFUHpDbU9TdnlZV3l3NDdlb1lvRURkd3B5ZEhMVUc0TCtD?=
+ =?utf-8?B?TXFMWWlGZFRXZFI0NXlkTjhERUdCdWMxNHJrZmIxTUY2ZkxES0p5Y2E4NEhQ?=
+ =?utf-8?B?YW1Rc3g0aFVrL2MvNVBFSVlVSDlCUDJGdGVnN2FvZ1FzTmx2WitWZ3BDWnBP?=
+ =?utf-8?B?RGZMU3FnamFRRXlvK0xVclZmREg5MmxHdjdRNFROSkYvVThUZ1JTSlJ6RVAy?=
+ =?utf-8?B?TlByUG5ieWNxZjBwTUxLbzBlajl1bVhYbHhoUzBERnN1eUgyRkpzdUFxVzBH?=
+ =?utf-8?B?cGc9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	yvQijsxKaSTWKtFkvVhAmDCPTMWR6LnLPb0ePLRE58NRZF19tS+euf7lD7Lbz07cE4eEOkC6wKTgYz5j1qWL6NkHOW4iwZr1hjrRnFNaIU17Z3KzcXfNdHUlVPifxz5jhCZr9+B/rrGYZXnwylc1DhA/AfiHVOI3l2P9yhbiyzV48KCLFyZ+ATQAMpSqscuZL91+AOA2ucPXqmpeVwbkhGkpzGc62DJzQgp83UhLtpEjyZ1rNq7j0VzNqLuTVSjRgIpRMH1tMyA4THwNN2S9rdBLg5z2za3hEsdN7MH3pdYIDRdjHocS+NQPk/z235e/OdGYwbevRkVkunO7b8t/gXwaPyNOOT32J78TKmfh77tZ0mPFB6IG2fyeFBx/cKktBOwMvWMe9eca6IpAWBPYbg5M4zGikCyDj1va9jxrNvPCzBW6GdYQgUCxiclS8E/uVFN6sT8COSGZNgySpNkxiMKa35OjbFkiJYdBBnAsrNzTucqTKY4ryoKS8ohgvR1pkIXzBJw3pheoz/Y0icpRslyA2NXTn8zu884v0bVCuc6JQL1B7bdpqh19e4XNHglq4CJLAjULkYHPrweRnIlEUSohdFXdGu37r7awg4PDxD4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5693513-7dbd-49cf-99eb-08dd476f2bac
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2025 12:01:35.8479
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N6VmiB3Tllvdu/rgVcKM/7Pqq6ZC4g3ODzFogXmfoPA+R1EGmEtChNqZ4DcC7GRCGefZ205b8aqCihL4f8K15g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6708
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-07_05,2025-02-07_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2501170000
+ definitions=main-2502070092
+X-Proofpoint-ORIG-GUID: BicUOa2nJgSSWFI2vsz0_Kp5e3WamTCk
+X-Proofpoint-GUID: BicUOa2nJgSSWFI2vsz0_Kp5e3WamTCk
 
 
+> Yes, bigalloc is indeed good enough as a start but yes eventually
+> something like forcealign will be beneficial as not everyone prefers an
+> FS-wide cluster-size allocation granularity.
+> 
+> We do have a patch for atomic writes with bigalloc that was sent way
+> back in mid 2024 but then we went into the same discussion of mixed
+> mapping[1].
+> 
+> Hmm I think it might be time to revisit that and see if we can do
+> something better there.
+> 
+> [1] https://urldefense.com/v3/__https://lore.kernel.org/linux-ext4/37baa9f4c6c2994df7383d8b719078a527e521b9.1729825985.git.ritesh.list@gmail.com/__;!!ACWV5N9M2RV99hQ!OJKieZJEIvc-M87u_dxAxiEGC4zN0PQmfdLT6k73Y7_Lvr9m-iodyrytRCFxDPbVzsOlk-1kuXXvaKLA-y9kCQ$
 
-On 2025/2/7 12:16, Darrick J. Wong wrote:
-> On Fri, Feb 07, 2025 at 11:27:43AM +0800, Ye Bin wrote:
->> From: Ye Bin <yebin10@huawei.com>
->>
->> There's issue as follows:
->> BUG: KASAN: use-after-free in ext4_xattr_inode_dec_ref_all+0x6ff/0x790
->> Read of size 4 at addr ffff88807b003000 by task syz-executor.0/15172
->>
->> CPU: 3 PID: 15172 Comm: syz-executor.0
->> Call Trace:
->>   __dump_stack lib/dump_stack.c:82 [inline]
->>   dump_stack+0xbe/0xfd lib/dump_stack.c:123
->>   print_address_description.constprop.0+0x1e/0x280 mm/kasan/report.c:400
->>   __kasan_report.cold+0x6c/0x84 mm/kasan/report.c:560
->>   kasan_report+0x3a/0x50 mm/kasan/report.c:585
->>   ext4_xattr_inode_dec_ref_all+0x6ff/0x790 fs/ext4/xattr.c:1137
->>   ext4_xattr_delete_inode+0x4c7/0xda0 fs/ext4/xattr.c:2896
->>   ext4_evict_inode+0xb3b/0x1670 fs/ext4/inode.c:323
->>   evict+0x39f/0x880 fs/inode.c:622
->>   iput_final fs/inode.c:1746 [inline]
->>   iput fs/inode.c:1772 [inline]
->>   iput+0x525/0x6c0 fs/inode.c:1758
->>   ext4_orphan_cleanup fs/ext4/super.c:3298 [inline]
->>   ext4_fill_super+0x8c57/0xba40 fs/ext4/super.c:5300
->>   mount_bdev+0x355/0x410 fs/super.c:1446
->>   legacy_get_tree+0xfe/0x220 fs/fs_context.c:611
->>   vfs_get_tree+0x8d/0x2f0 fs/super.c:1576
->>   do_new_mount fs/namespace.c:2983 [inline]
->>   path_mount+0x119a/0x1ad0 fs/namespace.c:3316
->>   do_mount+0xfc/0x110 fs/namespace.c:3329
->>   __do_sys_mount fs/namespace.c:3540 [inline]
->>   __se_sys_mount+0x219/0x2e0 fs/namespace.c:3514
->>   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
->>   entry_SYSCALL_64_after_hwframe+0x67/0xd1
->>
->> Memory state around the buggy address:
->>   ffff88807b002f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>   ffff88807b002f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>> ffff88807b003000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>                     ^
->>   ffff88807b003080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>   ffff88807b003100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>
->> Above issue happens as ext4_xattr_delete_inode() isn't check xattr
->> is valid if xattr is in inode.
->> To solve above issue call xattr_check_inode() check if xattr if valid
->> in inode.
->>
->> Fixes: e50e5129f384 ("ext4: xattr-in-inode support")
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
->> ---
->>   fs/ext4/xattr.c | 14 +++++++++++---
->>   1 file changed, 11 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
->> index 0e4494863d15..cb724477f8da 100644
->> --- a/fs/ext4/xattr.c
->> +++ b/fs/ext4/xattr.c
->> @@ -2922,7 +2922,6 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
->>   			    int extra_credits)
->>   {
->>   	struct buffer_head *bh = NULL;
->> -	struct ext4_xattr_ibody_header *header;
->>   	struct ext4_iloc iloc = { .bh = NULL };
->>   	struct ext4_xattr_entry *entry;
->>   	struct inode *ea_inode;
->> @@ -2937,6 +2936,9 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
->>
->>   	if (ext4_has_feature_ea_inode(inode->i_sb) &&
->>   	    ext4_test_inode_state(inode, EXT4_STATE_XATTR)) {
->> +		struct ext4_xattr_ibody_header *header;
->> +		struct ext4_inode *raw_inode;
->> +		void *end;
->>
->>   		error = ext4_get_inode_loc(inode, &iloc);
->>   		if (error) {
->> @@ -2952,14 +2954,20 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
->>   			goto cleanup;
->>   		}
->>
->> -		header = IHDR(inode, ext4_raw_inode(&iloc));
->> -		if (header->h_magic == cpu_to_le32(EXT4_XATTR_MAGIC))
->> +		raw_inode = ext4_raw_inode(&iloc);
->> +		header = IHDR(inode, raw_inode);
->> +		end = ITAIL(inode, raw_inode);
->> +		if (header->h_magic == cpu_to_le32(EXT4_XATTR_MAGIC)) {
->
-> This needs to make sure that header + sizeof(h_magic) >= end before
-> checking the magic number in header::h_magic, right?
->
-> --D
-Thank you for your reply.
-There ' s no need to check "header + sizeof(h_magic) >= end" because it 
-has been checked
-when the EXT4_STATE_XATTR flag bit is set:
-__ext4_iget
-   ret = ext4_iget_extra_inode(inode, raw_inode, ei);
-     if (EXT4_INODE_HAS_XATTR_SPACE(inode) && *magic == 
-cpu_to_le32(EXT4_XATTR_MAGIC))
-       ext4_set_inode_state(inode, EXT4_STATE_XATTR);
-It seems that the judgment of "header->h_magic == 
-cpu_to_le32(EXT4_XATTR_MAGIC)"
-should be redundant here.
->
->> +			error = xattr_check_inode(inode, header, end);
->> +			if (error)
->> +				goto cleanup;
->>   			ext4_xattr_inode_dec_ref_all(handle, inode, iloc.bh,
->>   						     IFIRST(header),
->>   						     false /* block_csum */,
->>   						     ea_inode_array,
->>   						     extra_credits,
->>   						     false /* skip_quota */);
->> +		}
->>   	}
->>
->>   	if (EXT4_I(inode)->i_file_acl) {
->> --
->> 2.34.1
->>
->>
->
+Feel free to pick up the iomap patches I had for zeroing when trying to 
+atomic write mixed mappings - that's in my v3 series IIRC.
 
+But you might still get some push back on them...
+
+>>
+>>>
+>>>>> I agree that forcealign is not the only way we can have atomic writes
+>>>>> work but I do feel there is value in having forcealign for FSes and
+>>>>> hence we should have a discussion around it so we can get the interface
+>>>>> right.
+>>>>>
+>>>> I thought that the interface for forcealign according to the candidate xfs
+>>>> implementation was quite straightforward. no?
+>>> As mentioned in the original proposal, there are still a open problems
+>>> around extsize and forcealign.
+>>>
+>>> - The allocation and deallocation semantics are not completely clear to
+>>> 	me for example we allow operations like unaligned punch_hole but not
+>>> 	unaligned insert and collapse range, and I couldn't see that
+>>> 	documented anywhere.
+>>
+>> For xfs, we were imposing the same restrictions as which we have for
+>> rtextsize > 1.
+>>
+>> If you check the following:
+>> https://urldefense.com/v3/__https://lore.kernel.org/linux-xfs/20240813163638.3751939-9-john.g.garry@oracle.com/__;!!ACWV5N9M2RV99hQ!OJKieZJEIvc-M87u_dxAxiEGC4zN0PQmfdLT6k73Y7_Lvr9m-iodyrytRCFxDPbVzsOlk-1kuXXvaKLSPqPbqA$
+>>
+>> You can see how the large allocunit value is affected by forcealign, and
+>> then check callers of xfs_is_falloc_aligned() -> xfs_inode_alloc_unitsize()
+>> to see how this affects some fallocate modes.
+> 
+> True, but it's something that just implicitly happens when we use
+> forcealign. I eventually found out while testing forcealign with
+> different operations but such things can come as a surprise to users
+> especially when we support some operations to be unaligned and then
+> reject some other similar ones.
+> 
+> punch_hole/collapse_range is just an example and yes it might not be
+> very important to support unaligned collapse range but in the long run
+> it would be good to have these things documented/discussed.
+
+Maybe the man pages can be documented for forcealign/rtextsize > 1 punch 
+holes/collapse behaviour - at a quick glance, I could not see anything. 
+Indeed, I am not sure how bigalloc affects punch holes/collapse range 
+either.
+
+Thanks,
+John
 
