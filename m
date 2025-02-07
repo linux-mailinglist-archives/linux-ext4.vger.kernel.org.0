@@ -1,90 +1,815 @@
-Return-Path: <linux-ext4+bounces-6366-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6367-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7B12A2B7F2
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 02:35:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83737A2B987
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 04:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A50CF1889455
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 01:36:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE0527A2AF3
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 03:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F6B41C71;
-	Fri,  7 Feb 2025 01:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77D8188012;
+	Fri,  7 Feb 2025 03:14:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="nFQWE8MB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IevHBjTF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7436E946C
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 01:35:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7731A186615
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 03:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738892152; cv=none; b=cYe3wq3Wns65PzGuHl7m6lKcPSws5mLSxMPv/taeaWxQKWBZ9RUwmP5vvPK4uKgclukt4Qfp7GVRMAGXqx4NLjznvdK/nhusCvozSoPaU0ezs92jJMe2h7HWuiJArRv2h6IaTp/igx/smxTylQ9SUiI+UBYxvYSnFbseNNgqtPk=
+	t=1738898058; cv=none; b=LBIOWMGf+/HXfV+NEJV9wnXbUC/YYTbvIr/l6ITIvXs+NUXbHVIPcVRddh/Pi5JAqdmJ1PTL0sg8iZf67ciuijxj6ZljXh3n77L/R+uFtIhWQEcNae7ni+iE1vgfwUOk0CwrCjUmwsBVZCmJjB55SymmRDwQamktAOdhsD4e7S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738892152; c=relaxed/simple;
-	bh=iWgiLlDxgGfM7+q+SCUzoRrdmc0q4fZ/Oymq/Ltf4bI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K2YXeDe2150K4Cv/+6RYuKMAUJbix7t1XQDxFWkojbz3Jid41z4SWF632I/6Tn7b/lGGDPUqRNVy0bVsG9CL4a5uvLLygLAbSOQJHrZsOJRuo3TjmcLaE7BdO/BZ7/JICgSkfirc7D26LO1rlAfng2Ee6r2n9kOq/Am6yh3BCA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=nFQWE8MB; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-111-148.bstnma.fios.verizon.net [173.48.111.148])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5171ZUjd005801
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 6 Feb 2025 20:35:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1738892132; bh=e5Ff8WEcLvOnWFzrk8mRICz3eOSLM2MeaKE+2momM2I=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=nFQWE8MBVq+7hkFVFDK5uPSHIa34JynXnW6WCEgNyhR+qmWIRMpxMrLyxceQPclyZ
-	 wA7PdNu8woJUkramREOmYIKSY4zeyQ40678teniMo35X4fkX4H2NYbWi8Xr9IXpnhP
-	 bz7C8M4BdoDpa2ym+bUQwhSoTRk1IM4p2xjvsYphFVqfna69iDw025+RebLRfENx+5
-	 /QL2gROzhH/xl6AJjdtoDyjFwGr24eyLtPueBkSFQ69B87l4hjkaWylGQPIQvCB1V1
-	 oZLtkBB+q2IsgItMO3xbCqxU2/cI2eziVEIMAOA+k6MT7GRoyyBXbGAIgtBu1gJqkz
-	 5tefVumE3cHIA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id E1EFB15C013F; Thu, 06 Feb 2025 20:35:29 -0500 (EST)
-Date: Thu, 6 Feb 2025 20:35:29 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] ext4: avoid dozens of
- -Wflex-array-member-not-at-end warnings
-Message-ID: <20250207013529.GI1130956@mit.edu>
-References: <Zz0TEX3GycUEmISN@kspp>
- <20250206150910.GA1130956@mit.edu>
- <09e5992a-46a7-410e-a57f-3d337d282943@embeddedor.com>
+	s=arc-20240116; t=1738898058; c=relaxed/simple;
+	bh=F5YW2+Mepp+1z0dLFdAZXvHT6AYWIOP0oazZeX5GiJY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=d2fnBvPVFfn3tXClqnUpXvXr+R759KOKRkPXAj4VpXJ66MqXMNBF9FKunD8AJ/Bk9SLTs7LNYbmp8sL0abNNYJ/C8pPfvFQqu+FwHXEaPNwFX/Q8impL9ID0jOe+RijZIA0TTDPDzlhxhJciOdTdl2IqT2EUQHUB2JXLfcr1o0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IevHBjTF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E085AC4CED1
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 03:14:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738898058;
+	bh=F5YW2+Mepp+1z0dLFdAZXvHT6AYWIOP0oazZeX5GiJY=;
+	h=From:To:Subject:Date:From;
+	b=IevHBjTF4N9gVVb0s1pif5SnmIas3Cdgj9Lgf82dHJz49CsaNcFqqZL7kDp0ZFNPD
+	 mPcfzWaIbLScCFiQmg5QymzGz4j3dDlAe77U0RNmQdlMcQS2FOJ8lsMxNKZELvqDNr
+	 ILJgALtqTzWYkHRpIaTB0bn92XO9+Ztqwv1gdWpvWiMlQTBPt8uuAdVWhKQ4ly7cU3
+	 5aF+wgPbkLuMEQmGVLbW+e7M3Y3hRRnzSnn7HT0eJNbQcQeT6Gn+xLeVXQLJAroF21
+	 c0AtSsfJigKLNTxYar+7RVFAd5XmTNgrP30j4ozJ8PBGUXuF7bP8il+DWWbllZlZNj
+	 FO7bgLG2M3zpQ==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-ext4@vger.kernel.org
+Subject: [PATCH] ext4: remove redundant function ext4_has_metadata_csum
+Date: Thu,  6 Feb 2025 19:13:35 -0800
+Message-ID: <20250207031335.42637-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09e5992a-46a7-410e-a57f-3d337d282943@embeddedor.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 07, 2025 at 09:39:42AM +1030, Gustavo A. R. Silva wrote:
-> 
-> > Thanks, for this patch!  It appears that this patch has since been
-> > obviated by Eric Bigger's commit f2b4fa19647e (" ext4: switch to using
-> > the crc32c library"), which landed during this merge window, so this
-> > patch should not be needed.
-> 
-> Oh, nice! Thanks for letting me know. :)
+From: Eric Biggers <ebiggers@google.com>
 
-Yeah, apologiues for not getting back to you earlier.  Between travel
-and the holidays, I didn't have time to process patches for the merge
-window which just closed, so I'm not catching up on the backlog.
+Since commit f2b4fa19647e ("ext4: switch to using the crc32c library"),
+ext4_has_metadata_csum() is just an alias for
+ext4_has_feature_metadata_csum().  ext4_has_feature_metadata_csum() is
+generated by EXT4_FEATURE_RO_COMPAT_FUNCS and uses the regular naming
+convention for checking a single ext4 feature.  Therefore, remove
+ext4_has_metadata_csum() and update all its callers to use
+ext4_has_feature_metadata_csum() directly.
 
-In any case, Eric's commit is in 6.14-rc1, so you should see the flex
-array warnings from the ext4 checksum inline function.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/ext4/bitmap.c    |  8 ++++----
+ fs/ext4/dir.c       |  4 ++--
+ fs/ext4/ext4.h      |  8 ++------
+ fs/ext4/ext4_jbd2.c |  6 ++++--
+ fs/ext4/extents.c   |  4 ++--
+ fs/ext4/ialloc.c    |  2 +-
+ fs/ext4/inline.c    |  2 +-
+ fs/ext4/inode.c     |  9 +++++----
+ fs/ext4/ioctl.c     | 11 ++++++-----
+ fs/ext4/mmp.c       |  4 ++--
+ fs/ext4/namei.c     | 32 ++++++++++++++++----------------
+ fs/ext4/orphan.c    |  2 +-
+ fs/ext4/resize.c    |  4 ++--
+ fs/ext4/super.c     | 13 +++++++------
+ fs/ext4/xattr.c     |  4 ++--
+ 15 files changed, 57 insertions(+), 56 deletions(-)
 
-       	     	  	     	     - Ted
+diff --git a/fs/ext4/bitmap.c b/fs/ext4/bitmap.c
+index 2a135075468d3..a4dbaccee6e7b 100644
+--- a/fs/ext4/bitmap.c
++++ b/fs/ext4/bitmap.c
+@@ -23,11 +23,11 @@ int ext4_inode_bitmap_csum_verify(struct super_block *sb,
+ 	__u32 hi;
+ 	__u32 provided, calculated;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	int sz;
+ 
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return 1;
+ 
+ 	sz = EXT4_INODES_PER_GROUP(sb) >> 3;
+ 	provided = le16_to_cpu(gdp->bg_inode_bitmap_csum_lo);
+ 	calculated = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)bh->b_data, sz);
+@@ -46,11 +46,11 @@ void ext4_inode_bitmap_csum_set(struct super_block *sb,
+ {
+ 	__u32 csum;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	int sz;
+ 
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return;
+ 
+ 	sz = EXT4_INODES_PER_GROUP(sb) >> 3;
+ 	csum = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)bh->b_data, sz);
+ 	gdp->bg_inode_bitmap_csum_lo = cpu_to_le16(csum & 0xFFFF);
+@@ -65,11 +65,11 @@ int ext4_block_bitmap_csum_verify(struct super_block *sb,
+ 	__u32 hi;
+ 	__u32 provided, calculated;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	int sz = EXT4_CLUSTERS_PER_GROUP(sb) / 8;
+ 
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return 1;
+ 
+ 	provided = le16_to_cpu(gdp->bg_block_bitmap_csum_lo);
+ 	calculated = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)bh->b_data, sz);
+ 	if (sbi->s_desc_size >= EXT4_BG_BLOCK_BITMAP_CSUM_HI_END) {
+@@ -87,11 +87,11 @@ void ext4_block_bitmap_csum_set(struct super_block *sb,
+ {
+ 	int sz = EXT4_CLUSTERS_PER_GROUP(sb) / 8;
+ 	__u32 csum;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return;
+ 
+ 	csum = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)bh->b_data, sz);
+ 	gdp->bg_block_bitmap_csum_lo = cpu_to_le16(csum & 0xFFFF);
+ 	if (sbi->s_desc_size >= EXT4_BG_BLOCK_BITMAP_CSUM_HI_END)
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index 02d47a64e8d13..d671b2c9eba2f 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -84,11 +84,11 @@ int __ext4_check_dir_entry(const char *function, unsigned int line,
+ 	const char *error_msg = NULL;
+ 	const int rlen = ext4_rec_len_from_disk(de->rec_len,
+ 						dir->i_sb->s_blocksize);
+ 	const int next_offset = ((char *) de - buf) + rlen;
+ 	bool fake = is_fake_dir_entry(de);
+-	bool has_csum = ext4_has_metadata_csum(dir->i_sb);
++	bool has_csum = ext4_has_feature_metadata_csum(dir->i_sb);
+ 
+ 	if (unlikely(rlen < ext4_dir_rec_len(1, fake ? NULL : dir)))
+ 		error_msg = "rec_len is smaller than minimal";
+ 	else if (unlikely(rlen % 4 != 0))
+ 		error_msg = "rec_len % 4 != 0";
+@@ -143,11 +143,11 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
+ 		err = ext4_dx_readdir(file, ctx);
+ 		if (err != ERR_BAD_DX_DIR)
+ 			return err;
+ 
+ 		/* Can we just clear INDEX flag to ignore htree information? */
+-		if (!ext4_has_metadata_csum(sb)) {
++		if (!ext4_has_feature_metadata_csum(sb)) {
+ 			/*
+ 			 * We don't set the inode dirty flag since it's not
+ 			 * critical that it gets flushed back to the disk.
+ 			 */
+ 			ext4_clear_inode_flag(inode, EXT4_INODE_INDEX);
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 4e7de7eaa374a..8eb08ca674dee 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3257,18 +3257,14 @@ extern int ext4_group_desc_csum_verify(struct super_block *sb, __u32 group,
+ extern void ext4_group_desc_csum_set(struct super_block *sb, __u32 group,
+ 				     struct ext4_group_desc *gdp);
+ extern int ext4_register_li_request(struct super_block *sb,
+ 				    ext4_group_t first_not_zeroed);
+ 
+-static inline int ext4_has_metadata_csum(struct super_block *sb)
+-{
+-	return ext4_has_feature_metadata_csum(sb);
+-}
+-
+ static inline int ext4_has_group_desc_csum(struct super_block *sb)
+ {
+-	return ext4_has_feature_gdt_csum(sb) || ext4_has_metadata_csum(sb);
++	return ext4_has_feature_gdt_csum(sb) ||
++	       ext4_has_feature_metadata_csum(sb);
+ }
+ 
+ #define ext4_read_incompat_64bit_val(es, name) \
+ 	(((es)->s_feature_incompat & cpu_to_le32(EXT4_FEATURE_INCOMPAT_64BIT) \
+ 		? (ext4_fsblk_t)le32_to_cpu(es->name##_hi) << 32 : 0) | \
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index da4a824563836..c88d666c972e6 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -242,11 +242,12 @@ int __ext4_journal_get_write_access(const char *where, unsigned int line,
+ 						  handle, err);
+ 			return err;
+ 		}
+ 	} else
+ 		ext4_check_bdev_write_error(sb);
+-	if (trigger_type == EXT4_JTR_NONE || !ext4_has_metadata_csum(sb))
++	if (trigger_type == EXT4_JTR_NONE ||
++	    !ext4_has_feature_metadata_csum(sb))
+ 		return 0;
+ 	BUG_ON(trigger_type >= EXT4_JOURNAL_TRIGGER_COUNT);
+ 	jbd2_journal_set_triggers(bh,
+ 		&EXT4_SB(sb)->s_journal_triggers[trigger_type].tr_triggers);
+ 	return 0;
+@@ -329,11 +330,12 @@ int __ext4_journal_get_create_access(const char *where, unsigned int line,
+ 	if (err) {
+ 		ext4_journal_abort_handle(where, line, __func__, bh, handle,
+ 					  err);
+ 		return err;
+ 	}
+-	if (trigger_type == EXT4_JTR_NONE || !ext4_has_metadata_csum(sb))
++	if (trigger_type == EXT4_JTR_NONE ||
++	    !ext4_has_feature_metadata_csum(sb))
+ 		return 0;
+ 	BUG_ON(trigger_type >= EXT4_JOURNAL_TRIGGER_COUNT);
+ 	jbd2_journal_set_triggers(bh,
+ 		&EXT4_SB(sb)->s_journal_triggers[trigger_type].tr_triggers);
+ 	return 0;
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index a07a98a4b97a5..60075b0e37226 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -61,11 +61,11 @@ static __le32 ext4_extent_block_csum(struct inode *inode,
+ static int ext4_extent_block_csum_verify(struct inode *inode,
+ 					 struct ext4_extent_header *eh)
+ {
+ 	struct ext4_extent_tail *et;
+ 
+-	if (!ext4_has_metadata_csum(inode->i_sb))
++	if (!ext4_has_feature_metadata_csum(inode->i_sb))
+ 		return 1;
+ 
+ 	et = find_ext4_extent_tail(eh);
+ 	if (et->et_checksum != ext4_extent_block_csum(inode, eh))
+ 		return 0;
+@@ -75,11 +75,11 @@ static int ext4_extent_block_csum_verify(struct inode *inode,
+ static void ext4_extent_block_csum_set(struct inode *inode,
+ 				       struct ext4_extent_header *eh)
+ {
+ 	struct ext4_extent_tail *et;
+ 
+-	if (!ext4_has_metadata_csum(inode->i_sb))
++	if (!ext4_has_feature_metadata_csum(inode->i_sb))
+ 		return;
+ 
+ 	et = find_ext4_extent_tail(eh);
+ 	et->et_checksum = ext4_extent_block_csum(inode, eh);
+ }
+diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+index 21d228073d795..cb4f6a86a4e60 100644
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -1280,11 +1280,11 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
+ 		goto out;
+ 	}
+ 	inode->i_generation = get_random_u32();
+ 
+ 	/* Precompute checksum seed for inode metadata */
+-	if (ext4_has_metadata_csum(sb)) {
++	if (ext4_has_feature_metadata_csum(sb)) {
+ 		__u32 csum;
+ 		__le32 inum = cpu_to_le32(inode->i_ino);
+ 		__le32 gen = cpu_to_le32(inode->i_generation);
+ 		csum = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)&inum,
+ 				   sizeof(inum));
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 3536ca7e4fcca..c794eef01bee7 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -1144,11 +1144,11 @@ static int ext4_finish_convert_inline_dir(handle_t *handle,
+ 	header_size = (void *)de - target;
+ 
+ 	memcpy((void *)de, buf + EXT4_INLINE_DOTDOT_SIZE,
+ 		inline_size - EXT4_INLINE_DOTDOT_SIZE);
+ 
+-	if (ext4_has_metadata_csum(inode->i_sb))
++	if (ext4_has_feature_metadata_csum(inode->i_sb))
+ 		csum_size = sizeof(struct ext4_dir_entry_tail);
+ 
+ 	inode->i_size = inode->i_sb->s_blocksize;
+ 	i_size_write(inode, inode->i_sb->s_blocksize);
+ 	EXT4_I(inode)->i_disksize = inode->i_sb->s_blocksize;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 7c54ae5fcbd45..ba669fc49c027 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -91,11 +91,11 @@ static int ext4_inode_csum_verify(struct inode *inode, struct ext4_inode *raw,
+ {
+ 	__u32 provided, calculated;
+ 
+ 	if (EXT4_SB(inode->i_sb)->s_es->s_creator_os !=
+ 	    cpu_to_le32(EXT4_OS_LINUX) ||
+-	    !ext4_has_metadata_csum(inode->i_sb))
++	    !ext4_has_feature_metadata_csum(inode->i_sb))
+ 		return 1;
+ 
+ 	provided = le16_to_cpu(raw->i_checksum_lo);
+ 	calculated = ext4_inode_csum(inode, raw, ei);
+ 	if (EXT4_INODE_SIZE(inode->i_sb) > EXT4_GOOD_OLD_INODE_SIZE &&
+@@ -112,11 +112,11 @@ void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
+ {
+ 	__u32 csum;
+ 
+ 	if (EXT4_SB(inode->i_sb)->s_es->s_creator_os !=
+ 	    cpu_to_le32(EXT4_OS_LINUX) ||
+-	    !ext4_has_metadata_csum(inode->i_sb))
++	    !ext4_has_feature_metadata_csum(inode->i_sb))
+ 		return;
+ 
+ 	csum = ext4_inode_csum(inode, raw, ei);
+ 	raw->i_checksum_lo = cpu_to_le16(csum & 0xFFFF);
+ 	if (EXT4_INODE_SIZE(inode->i_sb) > EXT4_GOOD_OLD_INODE_SIZE &&
+@@ -4798,11 +4798,11 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 		}
+ 	} else
+ 		ei->i_extra_isize = 0;
+ 
+ 	/* Precompute checksum seed for inode metadata */
+-	if (ext4_has_metadata_csum(sb)) {
++	if (ext4_has_feature_metadata_csum(sb)) {
+ 		struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+ 		__u32 csum;
+ 		__le32 inum = cpu_to_le32(inode->i_ino);
+ 		__le32 gen = raw_inode->i_generation;
+ 		csum = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)&inum,
+@@ -4885,11 +4885,12 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 	/*
+ 	 * If dir_index is not enabled but there's dir with INDEX flag set,
+ 	 * we'd normally treat htree data as empty space. But with metadata
+ 	 * checksumming that corrupts checksums so forbid that.
+ 	 */
+-	if (!ext4_has_feature_dir_index(sb) && ext4_has_metadata_csum(sb) &&
++	if (!ext4_has_feature_dir_index(sb) &&
++	    ext4_has_feature_metadata_csum(sb) &&
+ 	    ext4_test_inode_flag(inode, EXT4_INODE_INDEX)) {
+ 		ext4_error_inode(inode, function, line, 0,
+ 			 "iget: Dir with htree data on filesystem without dir_index feature.");
+ 		ret = -EFSCORRUPTED;
+ 		goto bad_inode;
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 7b9ce71c1c815..041306dbadd2e 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -140,19 +140,19 @@ static int ext4_update_backup_sb(struct super_block *sb,
+ 			goto out_bh;
+ 	}
+ 
+ 	es = (struct ext4_super_block *) (bh->b_data + offset);
+ 	lock_buffer(bh);
+-	if (ext4_has_metadata_csum(sb) &&
++	if (ext4_has_feature_metadata_csum(sb) &&
+ 	    es->s_checksum != ext4_superblock_csum(sb, es)) {
+ 		ext4_msg(sb, KERN_ERR, "Invalid checksum for backup "
+ 		"superblock %llu", sb_block);
+ 		unlock_buffer(bh);
+ 		goto out_bh;
+ 	}
+ 	func(es, arg);
+-	if (ext4_has_metadata_csum(sb))
++	if (ext4_has_feature_metadata_csum(sb))
+ 		es->s_checksum = ext4_superblock_csum(sb, es);
+ 	set_buffer_uptodate(bh);
+ 	unlock_buffer(bh);
+ 
+ 	if (handle) {
+@@ -349,11 +349,11 @@ void ext4_reset_inode_seed(struct inode *inode)
+ 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+ 	__le32 inum = cpu_to_le32(inode->i_ino);
+ 	__le32 gen = cpu_to_le32(inode->i_generation);
+ 	__u32 csum;
+ 
+-	if (!ext4_has_metadata_csum(inode->i_sb))
++	if (!ext4_has_feature_metadata_csum(inode->i_sb))
+ 		return;
+ 
+ 	csum = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)&inum, sizeof(inum));
+ 	ei->i_csum_seed = ext4_chksum(sbi, csum, (__u8 *)&gen, sizeof(gen));
+ }
+@@ -1203,11 +1203,12 @@ static int ext4_ioctl_setuuid(struct file *filp,
+ 
+ 	/*
+ 	 * If any checksums (group descriptors or metadata) are being used
+ 	 * then the checksum seed feature is required to change the UUID.
+ 	 */
+-	if (((ext4_has_feature_gdt_csum(sb) || ext4_has_metadata_csum(sb))
++	if (((ext4_has_feature_gdt_csum(sb) ||
++	      ext4_has_feature_metadata_csum(sb))
+ 			&& !ext4_has_feature_csum_seed(sb))
+ 		|| ext4_has_feature_stable_inodes(sb))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (copy_from_user(&fsuuid, ufsuuid, sizeof(fsuuid)))
+@@ -1251,11 +1252,11 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 		int err;
+ 
+ 		if (!inode_owner_or_capable(idmap, inode))
+ 			return -EPERM;
+ 
+-		if (ext4_has_metadata_csum(inode->i_sb)) {
++		if (ext4_has_feature_metadata_csum(inode->i_sb)) {
+ 			ext4_warning(sb, "Setting inode version is not "
+ 				     "supported with metadata_csum enabled.");
+ 			return -ENOTTY;
+ 		}
+ 
+diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+index d64c04ed061ae..b1c1935aea2f1 100644
+--- a/fs/ext4/mmp.c
++++ b/fs/ext4/mmp.c
+@@ -19,19 +19,19 @@ static __le32 ext4_mmp_csum(struct super_block *sb, struct mmp_struct *mmp)
+ 	return cpu_to_le32(csum);
+ }
+ 
+ static int ext4_mmp_csum_verify(struct super_block *sb, struct mmp_struct *mmp)
+ {
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return 1;
+ 
+ 	return mmp->mmp_checksum == ext4_mmp_csum(sb, mmp);
+ }
+ 
+ static void ext4_mmp_csum_set(struct super_block *sb, struct mmp_struct *mmp)
+ {
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return;
+ 
+ 	mmp->mmp_checksum = ext4_mmp_csum(sb, mmp);
+ }
+ 
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 536d56d150726..67695dfd96cb1 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -174,11 +174,11 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
+ 		ext4_error_inode(inode, func, line, block,
+ 		       "directory leaf block found instead of index block");
+ 		brelse(bh);
+ 		return ERR_PTR(-EFSCORRUPTED);
+ 	}
+-	if (!ext4_has_metadata_csum(inode->i_sb) ||
++	if (!ext4_has_feature_metadata_csum(inode->i_sb) ||
+ 	    buffer_verified(bh))
+ 		return bh;
+ 
+ 	/*
+ 	 * An empty leaf block can get mistaken for a index block; for
+@@ -396,11 +396,11 @@ static void __warn_no_space_for_csum(struct inode *inode, const char *func,
+ 
+ int ext4_dirblock_csum_verify(struct inode *inode, struct buffer_head *bh)
+ {
+ 	struct ext4_dir_entry_tail *t;
+ 
+-	if (!ext4_has_metadata_csum(inode->i_sb))
++	if (!ext4_has_feature_metadata_csum(inode->i_sb))
+ 		return 1;
+ 
+ 	t = get_dirent_tail(inode, bh);
+ 	if (!t) {
+ 		warn_no_space_for_csum(inode);
+@@ -417,11 +417,11 @@ int ext4_dirblock_csum_verify(struct inode *inode, struct buffer_head *bh)
+ static void ext4_dirblock_csum_set(struct inode *inode,
+ 				 struct buffer_head *bh)
+ {
+ 	struct ext4_dir_entry_tail *t;
+ 
+-	if (!ext4_has_metadata_csum(inode->i_sb))
++	if (!ext4_has_feature_metadata_csum(inode->i_sb))
+ 		return;
+ 
+ 	t = get_dirent_tail(inode, bh);
+ 	if (!t) {
+ 		warn_no_space_for_csum(inode);
+@@ -492,11 +492,11 @@ static int ext4_dx_csum_verify(struct inode *inode,
+ {
+ 	struct dx_countlimit *c;
+ 	struct dx_tail *t;
+ 	int count_offset, limit, count;
+ 
+-	if (!ext4_has_metadata_csum(inode->i_sb))
++	if (!ext4_has_feature_metadata_csum(inode->i_sb))
+ 		return 1;
+ 
+ 	c = get_dx_countlimit(inode, dirent, &count_offset);
+ 	if (!c) {
+ 		EXT4_ERROR_INODE(inode, "dir seems corrupt?  Run e2fsck -D.");
+@@ -521,11 +521,11 @@ static void ext4_dx_csum_set(struct inode *inode, struct ext4_dir_entry *dirent)
+ {
+ 	struct dx_countlimit *c;
+ 	struct dx_tail *t;
+ 	int count_offset, limit, count;
+ 
+-	if (!ext4_has_metadata_csum(inode->i_sb))
++	if (!ext4_has_feature_metadata_csum(inode->i_sb))
+ 		return;
+ 
+ 	c = get_dx_countlimit(inode, dirent, &count_offset);
+ 	if (!c) {
+ 		EXT4_ERROR_INODE(inode, "dir seems corrupt?  Run e2fsck -D.");
+@@ -610,21 +610,21 @@ static inline unsigned dx_root_limit(struct inode *dir, unsigned infosize)
+ {
+ 	unsigned int entry_space = dir->i_sb->s_blocksize -
+ 			ext4_dir_rec_len(1, NULL) -
+ 			ext4_dir_rec_len(2, NULL) - infosize;
+ 
+-	if (ext4_has_metadata_csum(dir->i_sb))
++	if (ext4_has_feature_metadata_csum(dir->i_sb))
+ 		entry_space -= sizeof(struct dx_tail);
+ 	return entry_space / sizeof(struct dx_entry);
+ }
+ 
+ static inline unsigned dx_node_limit(struct inode *dir)
+ {
+ 	unsigned int entry_space = dir->i_sb->s_blocksize -
+ 			ext4_dir_rec_len(0, dir);
+ 
+-	if (ext4_has_metadata_csum(dir->i_sb))
++	if (ext4_has_feature_metadata_csum(dir->i_sb))
+ 		entry_space -= sizeof(struct dx_tail);
+ 	return entry_space / sizeof(struct dx_entry);
+ }
+ 
+ /*
+@@ -1074,11 +1074,11 @@ static int htree_dirblock_to_tree(struct file *dir_file,
+ {
+ 	struct buffer_head *bh;
+ 	struct ext4_dir_entry_2 *de, *top;
+ 	int err = 0, count = 0;
+ 	struct fscrypt_str fname_crypto_str = FSTR_INIT(NULL, 0), tmp_str;
+-	int csum = ext4_has_metadata_csum(dir->i_sb);
++	int csum = ext4_has_feature_metadata_csum(dir->i_sb);
+ 
+ 	dxtrace(printk(KERN_INFO "In htree dirblock_to_tree: block %lu\n",
+ 							(unsigned long)block));
+ 	bh = ext4_read_dirblock(dir, block, DIRENT_HTREE);
+ 	if (IS_ERR(bh))
+@@ -1318,11 +1318,11 @@ static int dx_make_map(struct inode *dir, struct buffer_head *bh,
+ 	unsigned int buflen = bh->b_size;
+ 	char *base = bh->b_data;
+ 	struct dx_hash_info h = *hinfo;
+ 	int blocksize = EXT4_BLOCK_SIZE(dir->i_sb);
+ 
+-	if (ext4_has_metadata_csum(dir->i_sb))
++	if (ext4_has_feature_metadata_csum(dir->i_sb))
+ 		buflen -= sizeof(struct ext4_dir_entry_tail);
+ 
+ 	while ((char *) de < base + buflen) {
+ 		if (ext4_check_dir_entry(dir, NULL, de, bh, base, buflen,
+ 					 ((char *)de) - base))
+@@ -1943,11 +1943,11 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
+ 	unsigned split, move, size;
+ 	struct ext4_dir_entry_2 *de = NULL, *de2;
+ 	int	csum_size = 0;
+ 	int	err = 0, i;
+ 
+-	if (ext4_has_metadata_csum(dir->i_sb))
++	if (ext4_has_feature_metadata_csum(dir->i_sb))
+ 		csum_size = sizeof(struct ext4_dir_entry_tail);
+ 
+ 	bh2 = ext4_append(handle, dir, &newblock);
+ 	if (IS_ERR(bh2)) {
+ 		brelse(*bh);
+@@ -2141,11 +2141,11 @@ static int add_dirent_to_buf(handle_t *handle, struct ext4_filename *fname,
+ {
+ 	unsigned int	blocksize = dir->i_sb->s_blocksize;
+ 	int		csum_size = 0;
+ 	int		err, err2;
+ 
+-	if (ext4_has_metadata_csum(inode->i_sb))
++	if (ext4_has_feature_metadata_csum(inode->i_sb))
+ 		csum_size = sizeof(struct ext4_dir_entry_tail);
+ 
+ 	if (!de) {
+ 		err = ext4_find_dest_de(dir, inode, bh, bh->b_data,
+ 					blocksize - csum_size, fname, &de);
+@@ -2250,11 +2250,11 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
+ 	unsigned	blocksize;
+ 	ext4_lblk_t  block;
+ 	struct fake_dirent *fde;
+ 	int csum_size = 0;
+ 
+-	if (ext4_has_metadata_csum(inode->i_sb))
++	if (ext4_has_feature_metadata_csum(inode->i_sb))
+ 		csum_size = sizeof(struct ext4_dir_entry_tail);
+ 
+ 	blocksize =  dir->i_sb->s_blocksize;
+ 	dxtrace(printk(KERN_DEBUG "Creating index: inode %lu\n", dir->i_ino));
+ 	BUFFER_TRACE(bh, "get_write_access");
+@@ -2394,11 +2394,11 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+ 	int	dx_fallback=0;
+ 	unsigned blocksize;
+ 	ext4_lblk_t block, blocks;
+ 	int	csum_size = 0;
+ 
+-	if (ext4_has_metadata_csum(inode->i_sb))
++	if (ext4_has_feature_metadata_csum(inode->i_sb))
+ 		csum_size = sizeof(struct ext4_dir_entry_tail);
+ 
+ 	sb = dir->i_sb;
+ 	blocksize = sb->s_blocksize;
+ 
+@@ -2425,11 +2425,11 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+ 	if (is_dx(dir)) {
+ 		retval = ext4_dx_add_entry(handle, &fname, dir, inode);
+ 		if (!retval || (retval != ERR_BAD_DX_DIR))
+ 			goto out;
+ 		/* Can we just ignore htree data? */
+-		if (ext4_has_metadata_csum(sb)) {
++		if (ext4_has_feature_metadata_csum(sb)) {
+ 			EXT4_ERROR_INODE(dir,
+ 				"Directory has corrupted htree index.");
+ 			retval = -EFSCORRUPTED;
+ 			goto out;
+ 		}
+@@ -2731,11 +2731,11 @@ static int ext4_delete_entry(handle_t *handle,
+ 					       &has_inline_data);
+ 		if (has_inline_data)
+ 			return err;
+ 	}
+ 
+-	if (ext4_has_metadata_csum(dir->i_sb))
++	if (ext4_has_feature_metadata_csum(dir->i_sb))
+ 		csum_size = sizeof(struct ext4_dir_entry_tail);
+ 
+ 	BUFFER_TRACE(bh, "get_write_access");
+ 	err = ext4_journal_get_write_access(handle, dir->i_sb, bh,
+ 					    EXT4_JTR_NONE);
+@@ -2971,11 +2971,11 @@ int ext4_init_new_dir(handle_t *handle, struct inode *dir,
+ 	ext4_lblk_t block = 0;
+ 	unsigned int blocksize = dir->i_sb->s_blocksize;
+ 	int csum_size = 0;
+ 	int err;
+ 
+-	if (ext4_has_metadata_csum(dir->i_sb))
++	if (ext4_has_feature_metadata_csum(dir->i_sb))
+ 		csum_size = sizeof(struct ext4_dir_entry_tail);
+ 
+ 	if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)) {
+ 		err = ext4_try_create_inline_dir(handle, dir, inode);
+ 		if (err < 0 && err != -ENOSPC)
+diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
+index e5b47dda33175..c66e0cb29bd45 100644
+--- a/fs/ext4/orphan.c
++++ b/fs/ext4/orphan.c
+@@ -535,11 +535,11 @@ static int ext4_orphan_file_block_csum_verify(struct super_block *sb,
+ 	int inodes_per_ob = ext4_inodes_per_orphan_block(sb);
+ 	struct ext4_orphan_info *oi = &EXT4_SB(sb)->s_orphan_info;
+ 	struct ext4_orphan_block_tail *ot;
+ 	__le64 dsk_block_nr = cpu_to_le64(bh->b_blocknr);
+ 
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return 1;
+ 
+ 	ot = ext4_orphan_block_tail(sb, bh);
+ 	calculated = ext4_chksum(EXT4_SB(sb), oi->of_csum_seed,
+ 				 (__u8 *)&dsk_block_nr, sizeof(dsk_block_nr));
+diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+index 72f77f78ae8df..b7ff0d955f0da 100644
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -1116,11 +1116,11 @@ static inline void ext4_set_block_group_nr(struct super_block *sb, char *data,
+ 					   ext4_group_t group)
+ {
+ 	struct ext4_super_block *es = (struct ext4_super_block *) data;
+ 
+ 	es->s_block_group_nr = cpu_to_le16(group);
+-	if (ext4_has_metadata_csum(sb))
++	if (ext4_has_feature_metadata_csum(sb))
+ 		es->s_checksum = ext4_superblock_csum(sb, es);
+ }
+ 
+ /*
+  * Update the backup copies of the ext4 metadata.  These don't need to be part
+@@ -1313,11 +1313,11 @@ static int ext4_set_bitmap_checksums(struct super_block *sb,
+ 				     struct ext4_group_desc *gdp,
+ 				     struct ext4_new_group_data *group_data)
+ {
+ 	struct buffer_head *bh;
+ 
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return 0;
+ 
+ 	bh = ext4_get_bitmap(sb, group_data->inode_bitmap);
+ 	if (!bh)
+ 		return -EIO;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index a50e5c31b9378..81084d800f722 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -300,21 +300,21 @@ __le32 ext4_superblock_csum(struct super_block *sb,
+ }
+ 
+ static int ext4_superblock_csum_verify(struct super_block *sb,
+ 				       struct ext4_super_block *es)
+ {
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return 1;
+ 
+ 	return es->s_checksum == ext4_superblock_csum(sb, es);
+ }
+ 
+ void ext4_superblock_csum_set(struct super_block *sb)
+ {
+ 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+ 
+-	if (!ext4_has_metadata_csum(sb))
++	if (!ext4_has_feature_metadata_csum(sb))
+ 		return;
+ 
+ 	es->s_checksum = ext4_superblock_csum(sb, es);
+ }
+ 
+@@ -3203,11 +3203,11 @@ static __le16 ext4_group_desc_csum(struct super_block *sb, __u32 block_group,
+ 	int offset = offsetof(struct ext4_group_desc, bg_checksum);
+ 	__u16 crc = 0;
+ 	__le32 le_group = cpu_to_le32(block_group);
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 
+-	if (ext4_has_metadata_csum(sbi->s_sb)) {
++	if (ext4_has_feature_metadata_csum(sbi->s_sb)) {
+ 		/* Use new metadata_csum algorithm */
+ 		__u32 csum32;
+ 		__u16 dummy_csum = 0;
+ 
+ 		csum32 = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)&le_group,
+@@ -4059,11 +4059,11 @@ static int set_journal_csum_feature_set(struct super_block *sb)
+ {
+ 	int ret = 1;
+ 	int compat, incompat;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 
+-	if (ext4_has_metadata_csum(sb)) {
++	if (ext4_has_feature_metadata_csum(sb)) {
+ 		/* journal checksum v3 */
+ 		compat = 0;
+ 		incompat = JBD2_FEATURE_INCOMPAT_CSUM_V3;
+ 	} else {
+ 		/* journal checksum v1 */
+@@ -4347,11 +4347,11 @@ static void ext4_set_def_opts(struct super_block *sb,
+ 	set_opt(sb, POSIX_ACL);
+ #endif
+ 	if (ext4_has_feature_fast_commit(sb))
+ 		set_opt2(sb, JOURNAL_FAST_COMMIT);
+ 	/* don't forget to enable journal_csum when metadata_csum is enabled. */
+-	if (ext4_has_metadata_csum(sb))
++	if (ext4_has_feature_metadata_csum(sb))
+ 		set_opt(sb, JOURNAL_CHECKSUM);
+ 
+ 	if ((def_mount_opts & EXT4_DEFM_JMODE) == EXT4_DEFM_JMODE_DATA)
+ 		set_opt(sb, JOURNAL_DATA);
+ 	else if ((def_mount_opts & EXT4_DEFM_JMODE) == EXT4_DEFM_JMODE_ORDERED)
+@@ -4640,11 +4640,12 @@ static int ext4_init_metadata_csum(struct super_block *sb, struct ext4_super_blo
+ 	}
+ 
+ 	/* Precompute checksum seed for all metadata */
+ 	if (ext4_has_feature_csum_seed(sb))
+ 		sbi->s_csum_seed = le32_to_cpu(es->s_checksum_seed);
+-	else if (ext4_has_metadata_csum(sb) || ext4_has_feature_ea_inode(sb))
++	else if (ext4_has_feature_metadata_csum(sb) ||
++		 ext4_has_feature_ea_inode(sb))
+ 		sbi->s_csum_seed = ext4_chksum(sbi, ~0, es->s_uuid,
+ 					       sizeof(es->s_uuid));
+ 	return 0;
+ }
+ 
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index 7647e9f6e1903..df349d31682aa 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -154,11 +154,11 @@ static int ext4_xattr_block_csum_verify(struct inode *inode,
+ 					struct buffer_head *bh)
+ {
+ 	struct ext4_xattr_header *hdr = BHDR(bh);
+ 	int ret = 1;
+ 
+-	if (ext4_has_metadata_csum(inode->i_sb)) {
++	if (ext4_has_feature_metadata_csum(inode->i_sb)) {
+ 		lock_buffer(bh);
+ 		ret = (hdr->h_checksum == ext4_xattr_block_csum(inode,
+ 							bh->b_blocknr, hdr));
+ 		unlock_buffer(bh);
+ 	}
+@@ -166,11 +166,11 @@ static int ext4_xattr_block_csum_verify(struct inode *inode,
+ }
+ 
+ static void ext4_xattr_block_csum_set(struct inode *inode,
+ 				      struct buffer_head *bh)
+ {
+-	if (ext4_has_metadata_csum(inode->i_sb))
++	if (ext4_has_feature_metadata_csum(inode->i_sb))
+ 		BHDR(bh)->h_checksum = ext4_xattr_block_csum(inode,
+ 						bh->b_blocknr, BHDR(bh));
+ }
+ 
+ static inline const char *ext4_xattr_prefix(int name_index,
+
+base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
+-- 
+2.48.1
+
 
