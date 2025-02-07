@@ -1,226 +1,207 @@
-Return-Path: <linux-ext4+bounces-6378-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6379-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4940AA2BB4E
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 07:26:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3E17A2BF5D
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 10:32:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7AD61676AD
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 06:26:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 079433A9D28
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 09:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF32F18893C;
-	Fri,  7 Feb 2025 06:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SICP8l2q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69762192D77;
+	Fri,  7 Feb 2025 09:31:58 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A8315445D;
-	Fri,  7 Feb 2025 06:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0468A610D
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 09:31:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738909555; cv=none; b=QLlIA7pc3nx5g7108LRLlCgN9+AB5X+PDpTCdWcN5uo8q2a+Ek+kWnK5125aNULYa7mnVN54lcKpTJuRbsCPBc4wK45A7ee2YaZC3601Wx2F9Fqkyg9LKxSSpDZr+oyrXX+BoBbfp2LJY3ToKUNDT1oWU9lQzcmHkpyuEUOXLi0=
+	t=1738920718; cv=none; b=FLlCCEXQTJy1KayjCC5kZATNWCTQnlPe65SILzCjtXbYqkRj9h3kny6774hESL4QN8WgjSPDAbf7r5vB+/r7ycc655G8znzVgi/ohyrLrYXWrpNh2IimYQfQZmzkwNqQ13ms7vvRLSYlK4EMSymTQN6kh6TqCiFjF1XaIre9AKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738909555; c=relaxed/simple;
-	bh=2ZAMUwoXa9jVDZ8qCVxlUHJmvAo7/bFakyN3XEU75Sw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IcA3+H/hNwW4FTFReK2PxOe+i8XTYYWVK2x8OQFVclInAGnX2wMlftxLMojCwwi/MyYgYkGVosrCTlXnGHGQym3XPnZsydfOsEI5xDd0RMUL/ntAn52bA2q9QVZE3P/EQcVSNm2qY3MEeTuAj0S3fW8JDjhechHHyCg5/J8nNyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SICP8l2q; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51717xC9020985;
-	Fri, 7 Feb 2025 06:25:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=yeUJENEyzNNBjE6gqD5nfYnx9JffI2
-	JgN4G9+tK5BsY=; b=SICP8l2qbojV0tPD/rdXRpVKFQB5e0PrkgZbKWLQUTOKmE
-	kWWM1eSCNCct+EISDt4g0xPKT8kq4RNCk5NLhE99G1/O+tqXSCshqNHWPRXqCaeN
-	Ui5MWEHFa1lZCMG8CiL/XZ+qtVXkqxf0qZv4SFARIl+YUZcK9ptDxE7FXd9Nv93g
-	7+Ea5ZBvkezWdQKTgwYSffMRTe4LZgnIAzuuRVS5tkgPcxomXMEmYJDFmsGIWIZw
-	BpDV5PtzIK3hTY4D0P1wVeMVQyCWnTsGD8R1nahtYsElSJa5vkMZUPd5wCvoQC54
-	/rlPfWpyqoqXl/ALIIT1SVam7ZD3Fbzzyaq7G8sg==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44n88994ag-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 07 Feb 2025 06:25:40 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 5176MwrP011324;
-	Fri, 7 Feb 2025 06:25:39 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44n88994ad-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 07 Feb 2025 06:25:39 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51721XBL007158;
-	Fri, 7 Feb 2025 06:25:38 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 44hxb02ama-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 07 Feb 2025 06:25:38 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5176PZEl30671416
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 7 Feb 2025 06:25:35 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5E635200CB;
-	Fri,  7 Feb 2025 06:08:13 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C477E200CA;
-	Fri,  7 Feb 2025 06:08:10 +0000 (GMT)
-Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.220.180])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri,  7 Feb 2025 06:08:10 +0000 (GMT)
-Date: Fri, 7 Feb 2025 11:38:08 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: lsf-pc@lists.linux-foundation.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, djwong@kernel.org, dchinner@redhat.com,
-        hch@lst.de, ritesh.list@gmail.com, jack@suse.cz, tytso@mit.edu,
-        linux-ext4@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] extsize and forcealign design in filesystems
- for atomic writes
-Message-ID: <Z6WjSJ9EbBt3qbIp@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-References: <Z5nTaQgLGdD6hSvL@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <35939b19-088b-450e-8fa6-49165b95b1d3@oracle.com>
- <Z5pRzML2jkjL01F5@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <e00bac5d-5b6c-4763-8a76-e128f34dee12@oracle.com>
- <Z53JVhAzF9s1qJcr@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <4a492767-ee83-469c-abd1-484d0e3b46cb@oracle.com>
+	s=arc-20240116; t=1738920718; c=relaxed/simple;
+	bh=8h6cMHF/yjNOH4OV+wcUjnk2tuUmblzXBrInxxuccdk=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=laQjKvHkhlt7yAgQXa7dAFzolxldVpvNYkjBwUaH2TABy9sj5v1wk93aQr+0PR2bFR6Yz5UEH6e5RYofxxnrAJ8MzH6jdUvvsS1F1hycXKGNzk0pWIRngC7gnzhJKcVI7D48O/02ic4aQRZb+NovVwr1ltGvm/tnFFcJHJMj/yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Yq7yV05rFz4f3jHv
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 17:31:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 32FA41A0E98
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 17:31:51 +0800 (CST)
+Received: from [10.174.178.185] (unknown [10.174.178.185])
+	by APP4 (Coremail) with SMTP id gCh0CgBHrGAF06VnNIuhDA--.51595S3;
+	Fri, 07 Feb 2025 17:31:51 +0800 (CST)
+Subject: Re: [RESEND PATCH 2/2] ext4: fix out-of-bound read in
+ ext4_xattr_inode_dec_ref_all()
+To: "Darrick J. Wong" <djwong@kernel.org>
+References: <20250207032743.882949-1-yebin@huaweicloud.com>
+ <20250207032743.882949-3-yebin@huaweicloud.com>
+ <20250207041629.GE21787@frogsfrogsfrogs>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ jack@suse.cz
+From: yebin <yebin@huaweicloud.com>
+Message-ID: <67A5D305.9080605@huaweicloud.com>
+Date: Fri, 7 Feb 2025 17:31:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a492767-ee83-469c-abd1-484d0e3b46cb@oracle.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: TAdV_FGx9uLLR2FfgYiJxSR0NBz83XNu
-X-Proofpoint-ORIG-GUID: mYPA3wv1jA24pg34ePGN4nON3nEYOt7r
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-07_03,2025-02-07_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 clxscore=1015 suspectscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2501170000 definitions=main-2502070046
+In-Reply-To: <20250207041629.GE21787@frogsfrogsfrogs>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgBHrGAF06VnNIuhDA--.51595S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxuryUtr1DJFW3Cr4Dur4fAFb_yoWrtFW7p3
+	4fJa48Cw40qryj9r4xtr45Zw1j93WxCa1UWrWxGr1UKFyDWwn7tFy8Krn8CFyqvrW8Jr9I
+	qr1DJr4j93WrC3DanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
+	xVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UEQ6
+	JUUUUU=
+X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
 
-On Tue, Feb 04, 2025 at 12:20:25PM +0000, John Garry wrote:
-> On 01/02/2025 07:12, Ojaswin Mujoo wrote:
-> 
-> Hi Ojaswin,
-> 
-> > > For my test case, I am trying 16K atomic writes with 4K FS block size, so I
-> > > expect the software fallback to not kick in often after running the system
-> > > for a while (as eventually we will get an aligned allocations). I am
-> > > concerned of prospect of heavily fragmented files, though.
-> > Yes that's true, if the FS is up long enough there is bound to be
-> > fragmentation eventually which might make it harder for extsize to
-> > get the blocks.
-> > 
-> > With software fallback, there's again the point that many FSes will need
-> > some sort of COW/exchange_range support before they can support anything
-> > like that.
-> > 
-> > Although I;ve not looked at what it will take to add that to
-> > ext4 but I'm assuming it will not be trivial at all.
-> 
-> Sure, but then again you may not have issues with getting forcealign support
-> accepted for ext4. However, I would have thought that bigalloc was good
-> enough to use initially.
 
-Yes, bigalloc is indeed good enough as a start but yes eventually
-something like forcealign will be beneficial as not everyone prefers an
-FS-wide cluster-size allocation granularity.
 
-We do have a patch for atomic writes with bigalloc that was sent way
-back in mid 2024 but then we went into the same discussion of mixed
-mapping[1].
+On 2025/2/7 12:16, Darrick J. Wong wrote:
+> On Fri, Feb 07, 2025 at 11:27:43AM +0800, Ye Bin wrote:
+>> From: Ye Bin <yebin10@huawei.com>
+>>
+>> There's issue as follows:
+>> BUG: KASAN: use-after-free in ext4_xattr_inode_dec_ref_all+0x6ff/0x790
+>> Read of size 4 at addr ffff88807b003000 by task syz-executor.0/15172
+>>
+>> CPU: 3 PID: 15172 Comm: syz-executor.0
+>> Call Trace:
+>>   __dump_stack lib/dump_stack.c:82 [inline]
+>>   dump_stack+0xbe/0xfd lib/dump_stack.c:123
+>>   print_address_description.constprop.0+0x1e/0x280 mm/kasan/report.c:400
+>>   __kasan_report.cold+0x6c/0x84 mm/kasan/report.c:560
+>>   kasan_report+0x3a/0x50 mm/kasan/report.c:585
+>>   ext4_xattr_inode_dec_ref_all+0x6ff/0x790 fs/ext4/xattr.c:1137
+>>   ext4_xattr_delete_inode+0x4c7/0xda0 fs/ext4/xattr.c:2896
+>>   ext4_evict_inode+0xb3b/0x1670 fs/ext4/inode.c:323
+>>   evict+0x39f/0x880 fs/inode.c:622
+>>   iput_final fs/inode.c:1746 [inline]
+>>   iput fs/inode.c:1772 [inline]
+>>   iput+0x525/0x6c0 fs/inode.c:1758
+>>   ext4_orphan_cleanup fs/ext4/super.c:3298 [inline]
+>>   ext4_fill_super+0x8c57/0xba40 fs/ext4/super.c:5300
+>>   mount_bdev+0x355/0x410 fs/super.c:1446
+>>   legacy_get_tree+0xfe/0x220 fs/fs_context.c:611
+>>   vfs_get_tree+0x8d/0x2f0 fs/super.c:1576
+>>   do_new_mount fs/namespace.c:2983 [inline]
+>>   path_mount+0x119a/0x1ad0 fs/namespace.c:3316
+>>   do_mount+0xfc/0x110 fs/namespace.c:3329
+>>   __do_sys_mount fs/namespace.c:3540 [inline]
+>>   __se_sys_mount+0x219/0x2e0 fs/namespace.c:3514
+>>   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+>>   entry_SYSCALL_64_after_hwframe+0x67/0xd1
+>>
+>> Memory state around the buggy address:
+>>   ffff88807b002f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>>   ffff88807b002f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>>> ffff88807b003000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>>                     ^
+>>   ffff88807b003080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>>   ffff88807b003100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>>
+>> Above issue happens as ext4_xattr_delete_inode() isn't check xattr
+>> is valid if xattr is in inode.
+>> To solve above issue call xattr_check_inode() check if xattr if valid
+>> in inode.
+>>
+>> Fixes: e50e5129f384 ("ext4: xattr-in-inode support")
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> ---
+>>   fs/ext4/xattr.c | 14 +++++++++++---
+>>   1 file changed, 11 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+>> index 0e4494863d15..cb724477f8da 100644
+>> --- a/fs/ext4/xattr.c
+>> +++ b/fs/ext4/xattr.c
+>> @@ -2922,7 +2922,6 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
+>>   			    int extra_credits)
+>>   {
+>>   	struct buffer_head *bh = NULL;
+>> -	struct ext4_xattr_ibody_header *header;
+>>   	struct ext4_iloc iloc = { .bh = NULL };
+>>   	struct ext4_xattr_entry *entry;
+>>   	struct inode *ea_inode;
+>> @@ -2937,6 +2936,9 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
+>>
+>>   	if (ext4_has_feature_ea_inode(inode->i_sb) &&
+>>   	    ext4_test_inode_state(inode, EXT4_STATE_XATTR)) {
+>> +		struct ext4_xattr_ibody_header *header;
+>> +		struct ext4_inode *raw_inode;
+>> +		void *end;
+>>
+>>   		error = ext4_get_inode_loc(inode, &iloc);
+>>   		if (error) {
+>> @@ -2952,14 +2954,20 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
+>>   			goto cleanup;
+>>   		}
+>>
+>> -		header = IHDR(inode, ext4_raw_inode(&iloc));
+>> -		if (header->h_magic == cpu_to_le32(EXT4_XATTR_MAGIC))
+>> +		raw_inode = ext4_raw_inode(&iloc);
+>> +		header = IHDR(inode, raw_inode);
+>> +		end = ITAIL(inode, raw_inode);
+>> +		if (header->h_magic == cpu_to_le32(EXT4_XATTR_MAGIC)) {
+>
+> This needs to make sure that header + sizeof(h_magic) >= end before
+> checking the magic number in header::h_magic, right?
+>
+> --D
+Thank you for your reply.
+There ' s no need to check "header + sizeof(h_magic) >= end" because it 
+has been checked
+when the EXT4_STATE_XATTR flag bit is set:
+__ext4_iget
+   ret = ext4_iget_extra_inode(inode, raw_inode, ei);
+     if (EXT4_INODE_HAS_XATTR_SPACE(inode) && *magic == 
+cpu_to_le32(EXT4_XATTR_MAGIC))
+       ext4_set_inode_state(inode, EXT4_STATE_XATTR);
+It seems that the judgment of "header->h_magic == 
+cpu_to_le32(EXT4_XATTR_MAGIC)"
+should be redundant here.
+>
+>> +			error = xattr_check_inode(inode, header, end);
+>> +			if (error)
+>> +				goto cleanup;
+>>   			ext4_xattr_inode_dec_ref_all(handle, inode, iloc.bh,
+>>   						     IFIRST(header),
+>>   						     false /* block_csum */,
+>>   						     ea_inode_array,
+>>   						     extra_credits,
+>>   						     false /* skip_quota */);
+>> +		}
+>>   	}
+>>
+>>   	if (EXT4_I(inode)->i_file_acl) {
+>> --
+>> 2.34.1
+>>
+>>
+>
 
-Hmm I think it might be time to revisit that and see if we can do
-something better there.
-
-[1] https://lore.kernel.org/linux-ext4/37baa9f4c6c2994df7383d8b719078a527e521b9.1729825985.git.ritesh.list@gmail.com/
-> 
-> > 
-> > > > I agree that forcealign is not the only way we can have atomic writes
-> > > > work but I do feel there is value in having forcealign for FSes and
-> > > > hence we should have a discussion around it so we can get the interface
-> > > > right.
-> > > > 
-> > > I thought that the interface for forcealign according to the candidate xfs
-> > > implementation was quite straightforward. no?
-> > As mentioned in the original proposal, there are still a open problems
-> > around extsize and forcealign.
-> > 
-> > - The allocation and deallocation semantics are not completely clear to
-> > 	me for example we allow operations like unaligned punch_hole but not
-> > 	unaligned insert and collapse range, and I couldn't see that
-> > 	documented anywhere.
-> 
-> For xfs, we were imposing the same restrictions as which we have for
-> rtextsize > 1.
-> 
-> If you check the following:
-> https://lore.kernel.org/linux-xfs/20240813163638.3751939-9-john.g.garry@oracle.com/
-> 
-> You can see how the large allocunit value is affected by forcealign, and
-> then check callers of xfs_is_falloc_aligned() -> xfs_inode_alloc_unitsize()
-> to see how this affects some fallocate modes.
-
-True, but it's something that just implicitly happens when we use
-forcealign. I eventually found out while testing forcealign with
-different operations but such things can come as a surprise to users
-especially when we support some operations to be unaligned and then
-reject some other similar ones.
-
-punch_hole/collapse_range is just an example and yes it might not be
-very important to support unaligned collapse range but in the long run
-it would be good to have these things documented/discussed.
-> 
-> > 
-> > - There are challenges in extsize with delayed allocation as well as how
-> > 	the tooling should handle forcealigned inodes.
-> 
-> Yeah, maybe. I was only testing my xfs forcealign solution for dio (and no
-> delayed alloc).
-> 
-> > 
-> > - How are FSes supposed to behave when forcealign/extsize is used with
-> > 	other FS features that change the allocation granularity like bigalloc
-> > 	or rtvol.
-> 
-> As you would expect, they need to be aligned with one another.
-> 
-> For example, in the case of xfs rtvol, rextsize needs to be a multiple of
-> extsize when forcealign is enabled. Or the other way around, I forget now..
-> 
-> > 
-> > I agree that XFS's implementation is a good reference but I'm
-> > sure as I continue working on the same from ext4 perspective we will have
-> > more points of discussion. So I definitely feel that its worth
-> > discussing this at LSFMM.
-> 
-> Understood, but I wait to see what happens to my CoW-based method for XFS to
-> see where that goes before commenting on what needs to be discussed for xfs
-
-Got it.
-> 
-> > 
-> > > What was not clear was the age-old issue of how to issue an atomic write of
-> > > mixed extents, which is really an atomic write issue.
-> > Right, btw are you planning any talk for atomic writes at LSFMM?
-> 
-> I hadn't planned on it, but I guess that Martin will add something to the
-> agenda.
-> 
-> Thanks,
-> John
-> 
 
