@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-6368-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6370-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58CD6A2B989
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 04:14:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3925A2B9B9
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 04:28:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DCD13A5955
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 03:14:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46AAD1677BA
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2025 03:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C24169AE6;
-	Fri,  7 Feb 2025 03:14:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PbwpYLXk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E366185B73;
+	Fri,  7 Feb 2025 03:28:03 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1C81624FF
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 03:14:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157EF17C208
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 03:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738898081; cv=none; b=eE/ZjzK8mrckVmJpVP0/EmetR/SafnlTCiygPsEQvszJm7eOh2cojPbvyV8xkh2kg7MAD+s9a1FHHvBkI7zg8y89flifnub8/zoG/CJWllkcfarb7lcyXNRIK49XpjZKBZaAsJBo7GOVZvAveibZYhAhdohe+SXR4kaagm12FeY=
+	t=1738898882; cv=none; b=DmYkl9FmWV2+r8KpkSe7GQjkS1o6tLOvoJl4UB/e9vXeK9pFFEOvHPIRoc5UtQnqUdh280WNNgVHR00tkWcujbhCm4r2i32cDAbQJvvOKAqpxWwKTG/o4nkoniC7i2ltOXBp36eG3E0RvaVdftuTDNBH55HGPbyKEQWWhv6AweM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738898081; c=relaxed/simple;
-	bh=uMzapWY/BxwvMLMCVvMDleh75+QpXnSqSm9gT6Ii0vU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=RPf7kHUmuBGF1zY9ZlDO8sTsH551V4L69SBi53GYq1sV4wdLBEkSBbyetV0d1E8lp26tD3h15A8SH6w65cyzImP5fOFEqYPAVTf17xHoImFPTH9mtArhqm2ZjfXPBoDjHnc+SunGsezXRzDfWFAqvkNEJ0P3Ybod0nBsiDq0SHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PbwpYLXk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36935C4CED1
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 03:14:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738898081;
-	bh=uMzapWY/BxwvMLMCVvMDleh75+QpXnSqSm9gT6Ii0vU=;
-	h=From:To:Subject:Date:From;
-	b=PbwpYLXk0SehEbsTTqGb25ux7zuLrzedWwTA5y9GihTTqFhXvGtndUPzcJNjxygsO
-	 gMwf0aWWVguoRhan1+Zk8lXaBTN2Ns/rZoBeyjT6sSih/8Gned8KQdlAjm8+yDZhl7
-	 o0rc393iyLyJ1IjcEFWagLvW2h3steFINSWGB8SxsPsAiFJepGXtRt8XDc5vqeZH9+
-	 YcWhzX9c2fAyMsfuOuJd90JygUrpy6brTpwpjfKp4MFN8huSBpG2+2+HQL5qJDIYDT
-	 L3er/Y1VIObOHkF4ORfyxPHG34uGvOAbt/FwjoEERCbQlKnzYYXqz1PasJq4OiMYcl
-	 b+VFR5c+UDfww==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-ext4@vger.kernel.org
-Subject: [PATCH] jbd2: remove redundant function jbd2_journal_has_csum_v2or3_feature
-Date: Thu,  6 Feb 2025 19:14:24 -0800
-Message-ID: <20250207031424.42755-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1738898882; c=relaxed/simple;
+	bh=Zz+ZoHAQ4hymbD5sdGWaqnA5oAcc2TWLmVxPBSHZANs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YKDPTW4vIX9FI/Byf3shctMwlS9jgw4weq9fgKsUpPikKWkSWkdYDnpW7eZoR8R90F5W0Y2gtHDUMqvuWEgSEwKaVTDXpmK6YYECNN3GSrskN4hmgXMYZdFlidNHDACi7PyHK+n9WoNRMDYlPQXBTlDli06Vyohyz3KxQq1X7mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YpztT17Ncz4f3jJ6
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 11:27:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 52ECA1A084F
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Feb 2025 11:27:50 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.101.107])
+	by APP4 (Coremail) with SMTP id gCh0CgDHK2CvfaVn3VOJDA--.47160S4;
+	Fri, 07 Feb 2025 11:27:50 +0800 (CST)
+From: Ye Bin <yebin@huaweicloud.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Cc: jack@suse.cz
+Subject: [RESEND PATCH 0/2] ext4: fix out-of-bound read in ext4_xattr_inode_dec_ref_all()
+Date: Fri,  7 Feb 2025 11:27:41 +0800
+Message-Id: <20250207032743.882949-1-yebin@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -53,74 +53,33 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDHK2CvfaVn3VOJDA--.47160S4
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5Q7kC6x804xWl14x267AKxVWUJVW8JwAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjc
+	xK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+	Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+	W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l
+	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
+	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+	cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
+	8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+	6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
 
-From: Eric Biggers <ebiggers@google.com>
+From: Ye Bin <yebin10@huawei.com>
 
-Since commit dd348f054b24 ("jbd2: switch to using the crc32c library"),
-jbd2_journal_has_csum_v2or3() and jbd2_journal_has_csum_v2or3_feature()
-are the same.  Remove jbd2_journal_has_csum_v2or3_feature() and just
-keep jbd2_journal_has_csum_v2or3().
+Ye Bin (2):
+  ext4: introduce ITAIL helper
+  ext4: fix out-of-bound read in ext4_xattr_inode_dec_ref_all()
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/jbd2/journal.c    | 4 ++--
- include/linux/jbd2.h | 8 ++------
- 2 files changed, 4 insertions(+), 8 deletions(-)
+ fs/ext4/xattr.c | 24 ++++++++++++++++--------
+ fs/ext4/xattr.h |  3 +++
+ 2 files changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index d8084b31b3610..4de74056a3c36 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1359,19 +1359,19 @@ static int journal_check_superblock(journal_t *journal)
- 		printk(KERN_ERR "JBD2: Can't enable checksumming v2 and v3 "
- 		       "at the same time!\n");
- 		return err;
- 	}
- 
--	if (jbd2_journal_has_csum_v2or3_feature(journal) &&
-+	if (jbd2_journal_has_csum_v2or3(journal) &&
- 	    jbd2_has_feature_checksum(journal)) {
- 		/* Can't have checksum v1 and v2 on at the same time! */
- 		printk(KERN_ERR "JBD2: Can't enable checksumming v1 and v2/3 "
- 		       "at the same time!\n");
- 		return err;
- 	}
- 
--	if (jbd2_journal_has_csum_v2or3_feature(journal)) {
-+	if (jbd2_journal_has_csum_v2or3(journal)) {
- 		if (sb->s_checksum_type != JBD2_CRC32C_CHKSUM) {
- 			printk(KERN_ERR "JBD2: Unknown checksum type\n");
- 			return err;
- 		}
- 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 561025b4f3d91..a7e8163637b44 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1734,18 +1734,14 @@ static inline int tid_geq(tid_t x, tid_t y)
- }
- 
- extern int jbd2_journal_blocks_per_page(struct inode *inode);
- extern size_t journal_tag_bytes(journal_t *journal);
- 
--static inline bool jbd2_journal_has_csum_v2or3_feature(journal_t *j)
--{
--	return jbd2_has_feature_csum2(j) || jbd2_has_feature_csum3(j);
--}
--
- static inline int jbd2_journal_has_csum_v2or3(journal_t *journal)
- {
--	return jbd2_journal_has_csum_v2or3_feature(journal);
-+	return jbd2_has_feature_csum2(journal) ||
-+	       jbd2_has_feature_csum3(journal);
- }
- 
- static inline int jbd2_journal_get_num_fc_blks(journal_superblock_t *jsb)
- {
- 	int num_fc_blocks = be32_to_cpu(jsb->s_num_fc_blks);
-
-base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
 -- 
-2.48.1
+2.34.1
 
 
