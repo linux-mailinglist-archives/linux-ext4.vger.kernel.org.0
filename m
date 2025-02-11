@@ -1,144 +1,109 @@
-Return-Path: <linux-ext4+bounces-6408-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6409-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D3B5A2FD35
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Feb 2025 23:35:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7A27A3020A
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 04:13:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0693188AA62
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Feb 2025 22:35:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50014188CF3E
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 03:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58FE253F3F;
-	Mon, 10 Feb 2025 22:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C7OsfaYg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6161CAA89;
+	Tue, 11 Feb 2025 03:13:17 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B798625335B
-	for <linux-ext4@vger.kernel.org>; Mon, 10 Feb 2025 22:34:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7925A1B6CE4;
+	Tue, 11 Feb 2025 03:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739226899; cv=none; b=kNhQmnx7DmJUJ+uBvzTa6lTL+jQVHK7eVCelWG0VhVX7/U8vbRWdxkhYpVyK2kjvXMnnw/TqaqDQa9H8uTIN627bXSQL8Ih3YrdiW60OCKKE7TM8NK0L2sKb30Wx2T0Eao9GFa0l9in+WKl6oJjB18nsXNrWQhrMfFXMIhgMeOE=
+	t=1739243596; cv=none; b=EN4yuPHJLucds5/yULcEUU9ygGS9CJkAlXd43ls7OgsiyhvajmGHxK6UHTp0w6NqryNj0nSL/z+1no8jXTCmyRU5889aX11q2pj+gzSgRvn8wYY1XIfcsO/eSpMGHxPkNrymFc3/TLAb0GsT3OZdxWVDJ9K8PdkbgJ4xX54kqTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739226899; c=relaxed/simple;
-	bh=2fCX5PStn6c4pFlbyyYdlv5KgQBVPS/Qr6PpU3fb0rY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uq9kdJEZD08cXfMTPumu1t4xIN9AcLHdTGWVuDkYgjVWeKYkC5Bu9T2eQWmXkRd2ez7m+405Jhdsh1QzqL2dwHH0b+4I5i61d9MCSqaaoPfyPpRIfOULMH7ppVdEAK1o0rxvlBOHj+zs1sJGC31lfmZUn2Rc0Koh5EWzScqiyCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C7OsfaYg; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739226896;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c5r8B8FRtWj5F/lOwyJCGOrGALFwc+xhMPApnCgm2s8=;
-	b=C7OsfaYgaaEQHgP+YRIP6fFu8lX1xifRjWPnQ6gnOC0IgTt55r+OApbM+qmVge2bKaHwBv
-	sqZQuTkaj9xlIHCTSYLA8RqJewQ57O9vUcopwOjDk2u00os0sNNTUFFnFkaNQ5DkMFdbUt
-	JL5rQfByXI6ZTY1FUSJxYnMaMOpMffY=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-638-kew8mM_LO_ugytJEgig5uw-1; Mon,
- 10 Feb 2025 17:34:50 -0500
-X-MC-Unique: kew8mM_LO_ugytJEgig5uw-1
-X-Mimecast-MFC-AGG-ID: kew8mM_LO_ugytJEgig5uw
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B81111800264;
-	Mon, 10 Feb 2025 22:34:47 +0000 (UTC)
-Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (unknown [10.6.23.247])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EEF0D30001AB;
-	Mon, 10 Feb 2025 22:34:45 +0000 (UTC)
-Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (localhost [127.0.0.1])
-	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.18.1/8.17.1) with ESMTPS id 51AMYifL838184
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Mon, 10 Feb 2025 17:34:44 -0500
-Received: (from bmarzins@localhost)
-	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.18.1/8.18.1/Submit) id 51AMYg0l838182;
-	Mon, 10 Feb 2025 17:34:42 -0500
-Date: Mon, 10 Feb 2025 17:34:42 -0500
-From: Benjamin Marzinski <bmarzins@redhat.com>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hch@lst.de, tytso@mit.edu,
-        djwong@kernel.org, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-        yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [RFC PATCH v2 4/8] dm: add BLK_FEAT_WRITE_ZEROES_UNMAP support
-Message-ID: <Z6p_AsZy41XMCEh5@redhat.com>
-References: <20250115114637.2705887-1-yi.zhang@huaweicloud.com>
- <20250115114637.2705887-5-yi.zhang@huaweicloud.com>
- <Z6aFtJzGWMNhILJW@redhat.com>
- <3b1dcd45-efa6-4aad-9cd4-3302a29eb093@huaweicloud.com>
+	s=arc-20240116; t=1739243596; c=relaxed/simple;
+	bh=cej5WlRsEGBMmh/MFQPwhynlu4p3y8goOYjIDUlRNUs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bBUzbNAjF4VDcZca+75qJ7Uvzi07YEMqXacPWPsppiSnKrSAZwnEizeUlS2/B5h7InEGjacyGLpk9DQ5HWkj2JMC4xDczsD4s5iZ+l6+fU+jKhZ30xtUu3f29JFN/+vY8IuKZRiKDMF6DuGP5rc5XDK7d9K0TzZAceS6uz0PaMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YsRMh1h3tz4f3kj5;
+	Tue, 11 Feb 2025 11:12:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 833981A11CC;
+	Tue, 11 Feb 2025 11:13:09 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgBXu19DwKpn6gEIDg--.45172S3;
+	Tue, 11 Feb 2025 11:13:09 +0800 (CST)
+Message-ID: <56423ecf-3ded-43ed-8270-0f62aa085316@huaweicloud.com>
+Date: Tue, 11 Feb 2025 11:13:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3b1dcd45-efa6-4aad-9cd4-3302a29eb093@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] jbd2: Remove wrong sb->s_sequence check
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, stable@vger.kernel.org,
+ Ted Tso <tytso@mit.edu>
+References: <20250205183930.12787-1-jack@suse.cz>
+ <20250206094657.20865-3-jack@suse.cz>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20250206094657.20865-3-jack@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgBXu19DwKpn6gEIDg--.45172S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrury3urykKr1kAFWrZr45trb_yoWfKrb_Xr
+	40yry8X39Iqr45Ar48uw18ur1akrs7Wrn5Gw1SywsrKr15Ja4UJr1UX34Yvr9ru34vkrWU
+	urn2kw48KF9FvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbOxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
+	AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
+	cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
+	IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVj
+	vjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Sat, Feb 08, 2025 at 11:12:57AM +0800, Zhang Yi wrote:
-> On 2025/2/8 6:14, Benjamin Marzinski wrote:
-> > On Wed, Jan 15, 2025 at 07:46:33PM +0800, Zhang Yi wrote:
-> >> From: Zhang Yi <yi.zhang@huawei.com>
-> >>
-> >> Set the BLK_FEAT_WRITE_ZEROES_UNMAP feature on stacking queue limits by
-> >> default. This feature shall be disabled if any underlying device does
-> >> not support it.
-> >>
-> >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> >> ---
-> >>  drivers/md/dm-table.c | 3 ++-
-> >>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-> >> index bd8b796ae683..58cce31bcc1e 100644
-> >> --- a/drivers/md/dm-table.c
-> >> +++ b/drivers/md/dm-table.c
-> >> @@ -598,7 +598,8 @@ int dm_split_args(int *argc, char ***argvp, char *input)
-> >>  static void dm_set_stacking_limits(struct queue_limits *limits)
-> >>  {
-> >>  	blk_set_stacking_limits(limits);
-> >> -	limits->features |= BLK_FEAT_IO_STAT | BLK_FEAT_NOWAIT | BLK_FEAT_POLL;
-> >> +	limits->features |= BLK_FEAT_IO_STAT | BLK_FEAT_NOWAIT | BLK_FEAT_POLL |
-> >> +			    BLK_FEAT_WRITE_ZEROES_UNMAP;
-> >>  }
-> >>  
-> > 
-> > dm_table_set_restrictions() can set limits->max_write_zeroes_sectors to
-> > 0, and it's called after dm_calculate_queue_limits(), which calls
-> > blk_stack_limits(). Just to avoid having the BLK_FEAT_WRITE_ZEROES_UNMAP
-> > still set while a device's max_write_zeroes_sectors is 0, it seems like
-> > you would want to clear it as well if dm_table_set_restrictions() sets
-> > limits->max_write_zeroes_sectors to 0.
-> > 
+On 2025/2/6 17:46, Jan Kara wrote:
+> Journal emptiness is not determined by sb->s_sequence == 0 but rather by
+> sb->s_start == 0 (which is set a few lines above). Furthermore 0 is a
+> valid transaction ID so the check can spuriously trigger. Remove the
+> invalid WARN_ON.
 > 
-> Hi, Ben!
+> CC: stable@vger.kernel.org
+> Signed-off-by: Jan Kara <jack@suse.cz>
+
+This is indeed subtle, it looks good to me.
+
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+
+> ---
+>  fs/jbd2/journal.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> Yeah, right. Thanks for pointing this out, and I also checked other
-> instances in dm where max_write_zeroes_sectors is set to 0, and it seems
-> we should also clear BLK_FEAT_WRITE_ZEROES_UNMAP in
-> disable_write_zeroes() as well.
-
-Yep. Makes sense.
-
-Thanks
--Ben
-
-> 
-> Thanks,
-> Yi.
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 7e49d912b091..354c9f691df3 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -1879,7 +1879,6 @@ int jbd2_journal_update_sb_log_tail(journal_t *journal, tid_t tail_tid,
+>  
+>  	/* Log is no longer empty */
+>  	write_lock(&journal->j_state_lock);
+> -	WARN_ON(!sb->s_sequence);
+>  	journal->j_flags &= ~JBD2_FLUSHED;
+>  	write_unlock(&journal->j_state_lock);
+>  
 
 
