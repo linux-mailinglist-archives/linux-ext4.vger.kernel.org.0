@@ -1,45 +1,46 @@
-Return-Path: <linux-ext4+bounces-6409-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6410-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7A27A3020A
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 04:13:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DF88A3020B
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 04:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50014188CF3E
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 03:13:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03296163D22
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 03:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6161CAA89;
-	Tue, 11 Feb 2025 03:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BDE21D5ABA;
+	Tue, 11 Feb 2025 03:15:03 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7925A1B6CE4;
-	Tue, 11 Feb 2025 03:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E0BD26BD9E
+	for <linux-ext4@vger.kernel.org>; Tue, 11 Feb 2025 03:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739243596; cv=none; b=EN4yuPHJLucds5/yULcEUU9ygGS9CJkAlXd43ls7OgsiyhvajmGHxK6UHTp0w6NqryNj0nSL/z+1no8jXTCmyRU5889aX11q2pj+gzSgRvn8wYY1XIfcsO/eSpMGHxPkNrymFc3/TLAb0GsT3OZdxWVDJ9K8PdkbgJ4xX54kqTA=
+	t=1739243703; cv=none; b=PLeAJdlOiTGJeml+mFlcmiO8HcZBm1V2HNLFa2qaH9/jH0Tts5f6UacQflkk11iWy0D9Ynh6zwnc0MZIoKltlStCaRkrJDbeeRIS+BT3Wq51w1L3bZ0kQIo4zQZdshOqhLAb4GQVN+EDe+bwcHFgULbqIrrxGZ+L0yQ7HooO6hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739243596; c=relaxed/simple;
-	bh=cej5WlRsEGBMmh/MFQPwhynlu4p3y8goOYjIDUlRNUs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bBUzbNAjF4VDcZca+75qJ7Uvzi07YEMqXacPWPsppiSnKrSAZwnEizeUlS2/B5h7InEGjacyGLpk9DQ5HWkj2JMC4xDczsD4s5iZ+l6+fU+jKhZ30xtUu3f29JFN/+vY8IuKZRiKDMF6DuGP5rc5XDK7d9K0TzZAceS6uz0PaMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YsRMh1h3tz4f3kj5;
-	Tue, 11 Feb 2025 11:12:48 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 833981A11CC;
-	Tue, 11 Feb 2025 11:13:09 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgBXu19DwKpn6gEIDg--.45172S3;
-	Tue, 11 Feb 2025 11:13:09 +0800 (CST)
-Message-ID: <56423ecf-3ded-43ed-8270-0f62aa085316@huaweicloud.com>
-Date: Tue, 11 Feb 2025 11:13:07 +0800
+	s=arc-20240116; t=1739243703; c=relaxed/simple;
+	bh=HcvM6dSxl+3TH4/VkecIaK+VUCyOkL/ME9aJ+vMs/wg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=mFepmH254XIZ8SmKBANOMA5MlTzePShAnlWii/P+tyOWP+NidxqYSzCvM3YzQgq/VW02DX1GZC+s/OOPx90STEgo3urX8s+AT4xQ0TN33Ob9ADV8PA7PrBw/+yS84SGmGYjXinrAyFbKw6yA4ins1ybffynuPGu7n58TZS4u+g4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4YsRKs2Byqz1ltZF;
+	Tue, 11 Feb 2025 11:11:13 +0800 (CST)
+Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4EB061A016C;
+	Tue, 11 Feb 2025 11:14:57 +0800 (CST)
+Received: from [10.174.179.80] (10.174.179.80) by
+ kwepemf100017.china.huawei.com (7.202.181.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 11 Feb 2025 11:14:56 +0800
+Message-ID: <d191d727-2496-4272-8c2a-b97aa5eec3f8@huawei.com>
+Date: Tue, 11 Feb 2025 11:14:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,63 +48,66 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] jbd2: Remove wrong sb->s_sequence check
+Subject: Re: [PATCH 2/2] jbd2: Do not try to recover wiped journal
 To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, stable@vger.kernel.org,
- Ted Tso <tytso@mit.edu>
+CC: <linux-ext4@vger.kernel.org>, Ted Tso <tytso@mit.edu>
 References: <20250205183930.12787-1-jack@suse.cz>
- <20250206094657.20865-3-jack@suse.cz>
+ <20250206094657.20865-4-jack@suse.cz>
 Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20250206094657.20865-3-jack@suse.cz>
-Content-Type: text/plain; charset=UTF-8
+From: Zhang Yi <yi.zhang@huawei.com>
+In-Reply-To: <20250206094657.20865-4-jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBXu19DwKpn6gEIDg--.45172S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrury3urykKr1kAFWrZr45trb_yoWfKrb_Xr
-	40yry8X39Iqr45Ar48uw18ur1akrs7Wrn5Gw1SywsrKr15Ja4UJr1UX34Yvr9ru34vkrWU
-	urn2kw48KF9FvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbOxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-	AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
-	cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-	IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVj
-	vjDU0xZFpf9x07UE-erUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemf100017.china.huawei.com (7.202.181.16)
 
 On 2025/2/6 17:46, Jan Kara wrote:
-> Journal emptiness is not determined by sb->s_sequence == 0 but rather by
-> sb->s_start == 0 (which is set a few lines above). Furthermore 0 is a
-> valid transaction ID so the check can spuriously trigger. Remove the
-> invalid WARN_ON.
+> If a journal is wiped, we will set journal->j_tail to 0. However if
+> 'write' argument is not set (as it happens for read-only device or for
+> ocfs2), the on-disk superblock is not updated accordingly and thus
+> jbd2_journal_recover() cat try to recover the wiped journal. Fix the
+> check in jbd2_journal_recover() to use journal->j_tail for checking
+> empty journal instead.
 > 
-> CC: stable@vger.kernel.org
 > Signed-off-by: Jan Kara <jack@suse.cz>
 
-This is indeed subtle, it looks good to me.
+Ha, right, it looks good to me.
 
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
 > ---
->  fs/jbd2/journal.c | 1 -
->  1 file changed, 1 deletion(-)
+>  fs/jbd2/recovery.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
 > 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 7e49d912b091..354c9f691df3 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -1879,7 +1879,6 @@ int jbd2_journal_update_sb_log_tail(journal_t *journal, tid_t tail_tid,
+> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+> index 9192be7c19d8..23502f1a67c1 100644
+> --- a/fs/jbd2/recovery.c
+> +++ b/fs/jbd2/recovery.c
+> @@ -287,19 +287,20 @@ static int fc_do_one_pass(journal_t *journal,
+>  int jbd2_journal_recover(journal_t *journal)
+>  {
+>  	int			err, err2;
+> -	journal_superblock_t *	sb;
+> -
+>  	struct recovery_info	info;
 >  
->  	/* Log is no longer empty */
->  	write_lock(&journal->j_state_lock);
-> -	WARN_ON(!sb->s_sequence);
->  	journal->j_flags &= ~JBD2_FLUSHED;
->  	write_unlock(&journal->j_state_lock);
+>  	memset(&info, 0, sizeof(info));
+> -	sb = journal->j_superblock;
 >  
+>  	/*
+>  	 * The journal superblock's s_start field (the current log head)
+>  	 * is always zero if, and only if, the journal was cleanly
+> -	 * unmounted.
+> +	 * unmounted. We use its in-memory version j_tail here because
+> +	 * jbd2_journal_wipe() could have updated it without updating journal
+> +	 * superblock.
+>  	 */
+> -	if (!sb->s_start) {
+> +	if (!journal->j_tail) {
+> +		journal_superblock_t *sb = journal->j_superblock;
+> +
+>  		jbd2_debug(1, "No recovery required, last transaction %d, head block %u\n",
+>  			  be32_to_cpu(sb->s_sequence), be32_to_cpu(sb->s_head));
+>  		journal->j_transaction_sequence = be32_to_cpu(sb->s_sequence) + 1;
 
 
