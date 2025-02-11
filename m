@@ -1,209 +1,205 @@
-Return-Path: <linux-ext4+bounces-6413-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6414-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3115A30F5A
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 16:13:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E674A3110D
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 17:17:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8322F163727
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 15:13:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98C283A7A33
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2025 16:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA002512EF;
-	Tue, 11 Feb 2025 15:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fY7aMPoF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Kij4aL7u";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fY7aMPoF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Kij4aL7u"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60FD225D532;
+	Tue, 11 Feb 2025 16:15:26 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C082512C7;
-	Tue, 11 Feb 2025 15:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E2B25C714
+	for <linux-ext4@vger.kernel.org>; Tue, 11 Feb 2025 16:15:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739286820; cv=none; b=bAGFsKiEt0skBuQ4kuKif2FS66b/EpdgjQ+ch+JE0/7cLHzI9m7zQE6QVOEr/OCCqej0yiqur3Ss5Nr4TclFmUW6xwgPq7ZPOSYX7KTF8s74NOGMbO0/f6uFvgncRu63Up1mWm11nD1vTjPpXlR0jHCPeExQy/RZ/NNN+LA2b88=
+	t=1739290526; cv=none; b=khBL80jRzi4iEHxanL0XF2JTqF8e5Vj89bf/09YvkFDCCq1dgotZdT2qyl7FksipP9mgghwWTrsHHR2SPA2j2DITs4QCwpvTvmPzDrLS08+qVI+wbRHJ27yp/dimrnYaFseqUur5kcZPgEgp2Lqob/soVsRysMaEtMZrKS6Lnvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739286820; c=relaxed/simple;
-	bh=3rchmxc6w2X7e6g+kY+aEf5j7mS7EwQMvXvTeDNIY60=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B6wBH/JpqWobjBqJ+XOLg+/8LQfjGgP0/m8zHNKUlIRUWji4M/fb5Z7xbPw3yI/RIl6eqgvQPgVqr4dGF5Wu1SR2wv5RPuO7kkTM5gCCI68rv8QKQxGX0ovspPOou2DREkApkWm12hFpJMoReeooPQ1ObfzdFydtQ3lQMgGBE2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fY7aMPoF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Kij4aL7u; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fY7aMPoF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Kij4aL7u; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4AA69223F9;
-	Tue, 11 Feb 2025 14:31:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739284278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P29SWT9WKmcoXdWr7QD8CSXyU8iw0S3dfYxkCJQQTnA=;
-	b=fY7aMPoFucAS/1/YvosPa59qyNAwMHOJKEGIVgyqYuX1XdDud+goHMlcYzjtCbjcH5Ox4F
-	ZqpDAo4+M5NS6Qh+ErdrKFEY6ZbHOb8Q3al7y8tfTzkg4Jq3s8elJNaeu+amnUXAahd084
-	8vMKrE6frse8ExNp3KeeGWQi+qjedE4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739284278;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P29SWT9WKmcoXdWr7QD8CSXyU8iw0S3dfYxkCJQQTnA=;
-	b=Kij4aL7usxLX0SWUbSe3fGexxYT9BU+lbFt7NgfwZapuErc5qoqmy1uJtJEHWCQNvvf4DR
-	dH4oAkOnkkkrS/BA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739284278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P29SWT9WKmcoXdWr7QD8CSXyU8iw0S3dfYxkCJQQTnA=;
-	b=fY7aMPoFucAS/1/YvosPa59qyNAwMHOJKEGIVgyqYuX1XdDud+goHMlcYzjtCbjcH5Ox4F
-	ZqpDAo4+M5NS6Qh+ErdrKFEY6ZbHOb8Q3al7y8tfTzkg4Jq3s8elJNaeu+amnUXAahd084
-	8vMKrE6frse8ExNp3KeeGWQi+qjedE4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739284278;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P29SWT9WKmcoXdWr7QD8CSXyU8iw0S3dfYxkCJQQTnA=;
-	b=Kij4aL7usxLX0SWUbSe3fGexxYT9BU+lbFt7NgfwZapuErc5qoqmy1uJtJEHWCQNvvf4DR
-	dH4oAkOnkkkrS/BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FEAD13782;
-	Tue, 11 Feb 2025 14:31:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aCyZDzZfq2f/TwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 11 Feb 2025 14:31:18 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A4841A095C; Tue, 11 Feb 2025 15:31:09 +0100 (CET)
-Date: Tue, 11 Feb 2025 15:31:09 +0100
-From: Jan Kara <jack@suse.cz>
-To: libaokun@huaweicloud.com
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	jack@suse.cz, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
-	yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>
-Subject: Re: [PATCH v2 5/7] ext4: correct behavior under errors=remount-ro
- mode
-Message-ID: <v4k7pgwfeaa2drgkdpkyzl2qyemicnwyhvo3zcyn53frj3b2w5@3wpniv2edlfk>
-References: <20250122114130.229709-1-libaokun@huaweicloud.com>
- <20250122114130.229709-6-libaokun@huaweicloud.com>
+	s=arc-20240116; t=1739290526; c=relaxed/simple;
+	bh=e1pk72SxKOhapoX8qJ+Uk/spfCY696+SmOkoPWZo678=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=K/m5SlPy76a/Ynf4W1+MuActnPgxGBr+oMyXfDkTAMxeScw++dV43zQXbS8lInC0YPhu6J+IZdaZvrLLtyY3uFxujz5gMtuiTDsEANffN2hGR8QnPGQL3ixK6IbGzVQ72b0QaA+y91tF8FnwLAgTH3zkksJezbF3EmSXTbbJ66o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3d145b7ba54so29924795ab.2
+        for <linux-ext4@vger.kernel.org>; Tue, 11 Feb 2025 08:15:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739290523; x=1739895323;
+        h=content-transfer-encoding:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gPRawepaneW3X1fdtYnCTmIOgGgCVUpC1k1hSEscb48=;
+        b=jVeQgsfJkrOSQtlAM2VwLIRhAQvRT4qff4AE0qzHqMZvnIIh8qT44vBgUsyaT7KEFz
+         pruQXGhOqOb0f4L4JAAoZ+10y7AXHH3u5RZ3JQuQdBbf4juhm5TPX36XBcHA8TLnhE+O
+         UPutpKvSZimkMdqO8QiFE0JkTXqHWIOp/tSoQCOuEawb0BLKs3eWEi1p6Rl2HtrORyTk
+         X+Na10kRgAx1LTRCQuIgBwqacWXf3OnKIHZzScGyLRKPL1ewOjg6N59ymqvR05wYlQ1m
+         G5dfJZwjrg1iBpK9UhHlNI2R0mVou2GUWOxdUqZl363Pbcx7LlPYXR7qpxB9dLWwUjhR
+         byZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGBTA+3YaJB7LU+dNcSq0oeizavw3E2bPPg2Knhek5DJj+pdcs4Liwwu6vXE5/J5HXajXYj2iEXdUP@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHGID+oSxlSOf7un1jXRWlbufcvKshjCd14diZvIM6fMlP1gPk
+	NWvcYqAoDGjY3HUFALwLqAHAFpJLUQ0Q9vxVVy0aEXQTs2ukdZPOIPQraoxG69qDE06kNPmez9g
+	SQ0/YiLo+lX/IqDdGdMJrd5X10QiCZyj+J/e8AmWCperJJLkwDS6h63Q=
+X-Google-Smtp-Source: AGHT+IGNOcLK1hiNTmGN9BF7BHdWpcIdWRdXMMQQjqLZ1fThahAXIofvpivf1mYHPwMvzMLubNxt7G5FocZqfPW5k417h4Gxs3we
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250122114130.229709-6-libaokun@huaweicloud.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,huaweicloud.com:email,suse.cz:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+X-Received: by 2002:a05:6e02:214a:b0:3d0:124d:99e8 with SMTP id
+ e9e14a558f8ab-3d13dd5ebaamr131887695ab.13.1739290523341; Tue, 11 Feb 2025
+ 08:15:23 -0800 (PST)
+Date: Tue, 11 Feb 2025 08:15:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67ab779b.050a0220.3d72c.0064.GAE@google.com>
+Subject: [syzbot] [ext4?] WARNING in __ext4_iget
+From: syzbot <syzbot+2ff67872645e5b5ebdd5@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, brauner@kernel.org, jack@suse.cz, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mjguzik@gmail.com, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed 22-01-25 19:41:28, libaokun@huaweicloud.com wrote:
-> From: Baokun Li <libaokun1@huawei.com>
-> 
-> And after commit 95257987a638 ("ext4: drop EXT4_MF_FS_ABORTED flag") in
-> v6.6-rc1, the EXT4_FLAGS_SHUTDOWN bit is set in ext4_handle_error() under
-> errors=remount-ro mode. This causes the read to fail even when the error
-> is triggered in errors=remount-ro mode.
-> 
-> To correct the behavior under errors=remount-ro, EXT4_FLAGS_SHUTDOWN is
-> replaced by the newly introduced EXT4_FLAGS_EMERGENCY_RO. This new flag
-> only prevents writes, matching the previous behavior with SB_RDONLY.
-> 
-> Fixes: 95257987a638 ("ext4: drop EXT4_MF_FS_ABORTED flag")
-> Closes: https://lore.kernel.org/all/22d652f6-cb3c-43f5-b2fe-0a4bb6516a04@huawei.com/
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Hello,
 
-Looks good. Feel free to add:
+syzbot found the following issue on:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+HEAD commit:    7ee983c850b4 Merge tag 'drm-fixes-2025-02-08' of https://g.=
+.
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D107e4bdf980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dec3c160c5cabe70=
+b
+dashboard link: https://syzkaller.appspot.com/bug?extid=3D2ff67872645e5b5eb=
+dd5
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Deb=
+ian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12d1e1b058000=
+0
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D14f1ddf8580000
 
-								Honza
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/52091eb5b16c/disk-=
+7ee983c8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4aa605b3aa80/vmlinux-=
+7ee983c8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/af16dc4bb19a/bzI=
+mage-7ee983c8.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/115f05fb40e2=
+/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=3D10=
+f1ddf8580000)
 
-> ---
->  fs/ext4/super.c | 19 ++++++++-----------
->  1 file changed, 8 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index d8116c9c2bd0..098e62727aec 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -708,11 +708,8 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
->  	if (test_opt(sb, WARN_ON_ERROR))
->  		WARN_ON_ONCE(1);
->  
-> -	if (!continue_fs && !sb_rdonly(sb)) {
-> -		set_bit(EXT4_FLAGS_SHUTDOWN, &EXT4_SB(sb)->s_ext4_flags);
-> -		if (journal)
-> -			jbd2_journal_abort(journal, -EIO);
-> -	}
-> +	if (!continue_fs && !ext4_emergency_ro(sb) && journal)
-> +		jbd2_journal_abort(journal, -EIO);
->  
->  	if (!bdev_read_only(sb->s_bdev)) {
->  		save_error_info(sb, error, ino, block, func, line);
-> @@ -738,17 +735,17 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
->  			sb->s_id);
->  	}
->  
-> -	if (sb_rdonly(sb) || continue_fs)
-> +	if (ext4_emergency_ro(sb) || continue_fs)
->  		return;
->  
->  	ext4_msg(sb, KERN_CRIT, "Remounting filesystem read-only");
->  	/*
-> -	 * EXT4_FLAGS_SHUTDOWN was set which stops all filesystem
-> -	 * modifications. We don't set SB_RDONLY because that requires
-> -	 * sb->s_umount semaphore and setting it without proper remount
-> -	 * procedure is confusing code such as freeze_super() leading to
-> -	 * deadlocks and other problems.
-> +	 * We don't set SB_RDONLY because that requires sb->s_umount
-> +	 * semaphore and setting it without proper remount procedure is
-> +	 * confusing code such as freeze_super() leading to deadlocks
-> +	 * and other problems.
->  	 */
-> +	set_bit(EXT4_FLAGS_EMERGENCY_RO, &EXT4_SB(sb)->s_ext4_flags);
->  }
->  
->  static void update_super_work(struct work_struct *work)
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+The issue was bisected to:
+
+commit 37d11cfc63604b3886308e2111d845d148ced8bc
+Author: Mateusz Guzik <mjguzik@gmail.com>
+Date:   Tue Feb 4 21:32:07 2025 +0000
+
+    vfs: sanity check the length passed to inode_set_cached_link()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D12073df85800=
+00
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D11073df85800=
+00
+console output: https://syzkaller.appspot.com/x/log.txt?x=3D16073df8580000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit=
+:
+Reported-by: syzbot+2ff67872645e5b5ebdd5@syzkaller.appspotmail.com
+Fixes: 37d11cfc6360 ("vfs: sanity check the length passed to inode_set_cach=
+ed_link()")
+
+------------[ cut here ]------------
+bad length passed for symlink [/tmp/syz-imagegen2884317625/=08] (got 39, ex=
+pected 29)
+WARNING: CPU: 0 PID: 5828 at ./include/linux/fs.h:802 inode_set_cached_link=
+ include/linux/fs.h:802 [inline]
+WARNING: CPU: 0 PID: 5828 at ./include/linux/fs.h:802 __ext4_iget+0x3aa2/0x=
+4310 fs/ext4/inode.c:5012
+Modules linked in:
+CPU: 0 UID: 0 PID: 5828 Comm: syz-executor385 Not tainted 6.14.0-rc1-syzkal=
+ler-00181-g7ee983c850b4 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
+gle 12/27/2024
+RIP: 0010:inode_set_cached_link include/linux/fs.h:802 [inline]
+RIP: 0010:__ext4_iget+0x3aa2/0x4310 fs/ext4/inode.c:5012
+Code: e8 63 19 49 ff c6 05 e9 1a da 0d 01 90 8b 95 10 ff ff ff 44 89 e1 48 =
+c7 c7 40 4b 85 8b 48 8b b5 f8 fe ff ff e8 8f 57 09 ff 90 <0f> 0b 90 90 e9 2=
+d fd ff ff e8 30 57 ab ff e9 f6 e6 ff ff e8 06 56
+RSP: 0018:ffffc90003ca7810 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff888077bd8ca4 RCX: ffffffff817a1159
+RDX: ffff888034e01e00 RSI: ffffffff817a1166 RDI: 0000000000000001
+RBP: ffffc90003ca7960 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 000000000000001d
+R13: 0000000000000000 R14: 0000000000002000 R15: ffff888077bd8c98
+FS:  00005555696a5380(0000) GS:ffff8880b8600000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005555696be778 CR3: 00000000743ae000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ ext4_lookup+0x37e/0x730 fs/ext4/namei.c:1813
+ __lookup_slow+0x252/0x470 fs/namei.c:1793
+ lookup_slow fs/namei.c:1810 [inline]
+ walk_component+0x350/0x5b0 fs/namei.c:2114
+ lookup_last fs/namei.c:2612 [inline]
+ path_lookupat+0x17f/0x770 fs/namei.c:2636
+ filename_lookup+0x221/0x5f0 fs/namei.c:2665
+ user_path_at+0x3a/0x60 fs/namei.c:3072
+ ksys_umount fs/namespace.c:2071 [inline]
+ __do_sys_umount fs/namespace.c:2079 [inline]
+ __se_sys_umount fs/namespace.c:2077 [inline]
+ __x64_sys_umount+0x10b/0x1a0 fs/namespace.c:2077
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fd6ca0f8487
+Code: 07 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f =
+1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff f=
+f 77 01 c3 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffd3ce25b68 EFLAGS: 00000202 ORIG_RAX: 00000000000000a6
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd6ca0f8487
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffd3ce25c20
+RBP: 00007ffd3ce25c20 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000202 R12: 00007ffd3ce26d10
+R13: 00005555696b6740 R14: 0000000000000001 R15: 431bde82d7b634db
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisectio=
+n
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
