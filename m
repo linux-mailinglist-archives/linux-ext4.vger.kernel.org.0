@@ -1,77 +1,77 @@
-Return-Path: <linux-ext4+bounces-6416-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6417-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B8E1A32605
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2025 13:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 278F1A32608
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2025 13:42:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2D78168F53
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2025 12:41:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFBAD168F5F
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2025 12:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEAF20DD5C;
-	Wed, 12 Feb 2025 12:41:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2210320CCC2;
+	Wed, 12 Feb 2025 12:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dbprxR9Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JKHMv0zw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3420020D4EB;
-	Wed, 12 Feb 2025 12:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67080F4FA;
+	Wed, 12 Feb 2025 12:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739364082; cv=none; b=ns1sDsGvFEdrPPZzUQYFfDxxAT8LMBmRTbvb5izuATl7e9+4KRcOsBC49QLdjfCjjLC64FaSUI25EaMm8jdxid97KAmYkuAfUZKxGzT1sjYy/9a+lPs0vMAgsCTmqFh3N5i9QaIk3GEekN+pKXnygBiatmC9sJzTqfWwkW+14M4=
+	t=1739364116; cv=none; b=cJBteaOUCweD8yNiHFM1ypzshhDzEfyAQqPrIbcsiE+cr1zKIJDzDmlRkEQWwHDKxDzy3Z42o46ZkXd/od36hnuoYYI9R14w98jzr/NQ2m3ZfAiXfIMF2xb8kG0iABAj3so7HBo6Nr6xf5oFl8jGyoDsED6+t+GJQ1o8szpI6ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739364082; c=relaxed/simple;
-	bh=FVl4qpsBCkiQ7iHptGe/shLh+kBwZqvCeA+Pp1t994g=;
+	s=arc-20240116; t=1739364116; c=relaxed/simple;
+	bh=dmMyTcPvItDmcsV4jemz9/YRM8ubGmcT/laThGUZaGM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hgpbz+HEXkbvxd4TuwGm24DFu2OEJZGLvNo43RbpQcRKuE70g91/HaFKKeGkH3sm37MBdgyP8jQvT6vOUDUpyOtM8l6yQ6VPnnW4jN6Or6wGS+BY2lXpGJwl+5PBV1GEENANPKEZXm1MAvv6RsH2Fo4DwdtlrSsdB1D+mQLdr94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dbprxR9Y; arc=none smtp.client-ip=209.85.214.180
+	 MIME-Version; b=l0muInQrvQ2I6/8S3ITldkgKXyPfuY2KRj/ZvSgtEGMdBRvv0d0jPqat8GGBgXj1jZi6SbS0tB3cOfIAWRRVNGZS1nrCRDLaqZVYItdfzy3hxs6g7loXqee2SxllBC5xDxLkAibh8nLPdgQR+66FhMQvk/6/5vRuzIGPJ0YV9L0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JKHMv0zw; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-21f3c119fe6so152794775ad.0;
-        Wed, 12 Feb 2025 04:41:20 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-21f5660c2fdso99024165ad.2;
+        Wed, 12 Feb 2025 04:41:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739364080; x=1739968880; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739364114; x=1739968914; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=635i2LjtKF98CAjAFkvRnIfK/JaseJw09BT2iYnqAmY=;
-        b=dbprxR9YWFbXBRhAlWo1JcKhOSHnvJPl3K+7jyZs7g8Yaeiv5zfPHN2+feAFbPKse3
-         TxWFVEz+bLWaMeMiHwo7fvCq3FkjOxW2fiHkvQYHobX3yRLelzq7NxwYbXTqMRZHdrUZ
-         eaAbp8xH0vfUzffrsckNfiftulXtvuyYTohGVk+FiLUxd0yHtWlAVU3mopZH+UFTXtec
-         EQigrNCMe8FALf2nymfINB+T4Zp7wyHzNTVxvISu0XBv3ryI6GsmatKTL1v881LGuIRT
-         R3eB4OBW8FIVqJs3WzT+vD7MQ1GX0z0Y/TaGzNHFmEpsWbIEcSJ8k0NCmnq1L9mYVTyA
-         /UQg==
+        bh=dROWzQ4SbPmcVIZD9TSbMRy+qyrD3IEz7v6OotFBnJ4=;
+        b=JKHMv0zwDHBR0/pYp0cA0GwASuw+d7HsfZ3TSq7jdw6x2yD1152h1hdXnxE5yiU8UY
+         GEVBZYYCu0gyYDzDC2/59/MlhN/t6xBJqai9Aet6oWQVGFddCW4Zl32JN/Pae1kgIgDb
+         BW70y/21eTcQhn4v34maqdhEuLBxeDcLzF3QiFsa5Ekx0xUebIusmj5ZUKzzd/EGT9HR
+         YyC7ylGGoJ+Tt09RWvAUD3zLq/OQpgGLRkAuDbZTDLBI9D+jIoZ9kuY9ZwUsX4lplSE3
+         /IgMBmwBuwzAUf+VE2XYPGhTrwE58oOWrJ8kPe0hb0JKspKsbc3+GnTeGEUT5t3x6IUH
+         xfiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739364080; x=1739968880;
+        d=1e100.net; s=20230601; t=1739364114; x=1739968914;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=635i2LjtKF98CAjAFkvRnIfK/JaseJw09BT2iYnqAmY=;
-        b=jv7UOlOxYKk0LEHckUL1xXTqlZM4x8QMzwYAZtJA4lNQ7UCuRqlA8PY84CuaKEdAes
-         25VtFFENXgG0GJTXLDMh0YQoXT1UyxFjznoD51l9jAqKEybKfvbUfU1WEfPf/4X+b/ta
-         DjKXENM7SH1Hm8fKEjSF7z57eTHScZSADcwLaHbV65Mh4rxMKyi9nAi+XFIAz+RfDlv5
-         3eLQsA2abEEPl4HelScrypCEoXX+fvQLNQa8Py6bA3Nc7AsRlczJmq+hVNxO/2aurh/L
-         LQ3O0wQ1ObEbwSydrwIa8CFMlzrE/D2IjD2Egr56NLOEntCd3I8WxeIe2fGpLK6HYlv4
-         LyBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXlN3eQshlCqLveH7MclU+M0E0aNWkxUZY7ZWJ/vxKJO28iU+oXmVBj5tx9QXmek2mnDQF9287sCmc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwHhx8JLB2CrwzBJhnw6/ELpJgR2pQD/leLO+Sz16ypRQczNaQC
-	Bu8QzbTS+r4cvUfNm8go2WZpc6Vdj/VTwLwgkAEJ8eTRu70g3N07HCEmQw==
-X-Gm-Gg: ASbGncuG0cEbcssQgImG5OFuQWU5pCEZx2tzT1Pu2+QB0URMAiN12rsU0hPtNzBDydp
-	Uc6UFdcl45x+KaISJuTazFCLVpX+Tp4Cw9yPFh0WdKTd0Fno5Hmnoruj3PwzozM6oxjn+9j5v/5
-	9YL3OGvbGaiY3tbgXO4+BphJzav+8VRmw1r9DCZ//tfQ5aGgC5jjPUGOYZ2zlp5zyL2TGnMbq6W
-	+MEHaxJ7WnmT/67t5Hqy/Dd7+8mABwCkUHnMooE5Cv+SRdN7MVlMSf60vFYALd4wQGs2Fm20Q5Z
-	YTCrLvAuv/Zy1WD/uY8=
-X-Google-Smtp-Source: AGHT+IHjSJ8Sejv0NZYIjBtjTsad9dx9PaLh31VKugeJwIXn8Jaq60Lm663gUnEQ5eFcbBCaMf5XFA==
-X-Received: by 2002:a05:6a00:a90:b0:732:2850:b184 with SMTP id d2e1a72fcca58-7322c3f6c9dmr4146333b3a.18.1739364079522;
-        Wed, 12 Feb 2025 04:41:19 -0800 (PST)
+        bh=dROWzQ4SbPmcVIZD9TSbMRy+qyrD3IEz7v6OotFBnJ4=;
+        b=ej1WL8Qq6wnhNiAYBpSAKe4Z67nNaAJGQ1LeWq5fgvDCw6HPCJ+8exsslBAbcocy6u
+         guGYW9bt3/mM6TJIXLwEYgAF1X5pxUHBBqXLpfsOyCu/jI0zXe4kQ+qRMXIjont0O9l4
+         CZWV9ByP58qgfXbZBzOxDbtx3BsbIG/1qayhgEi7rijDly5q5plnFmfbgCqM+lm6WNFQ
+         suig0s+vOtMfaYignj0yvD1WdOI7AmSpA23UpwbyansRaVibyS3az0Cz4z+oqVtQI3tM
+         o74jngI2XnEwqovNsDAcO19abbR1HDXTS95sgpe5iTVV1B6g5whABHbDGK8Q6atrsOg3
+         mDNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXTYn7Y3EqccVaCyK3/DEeWHAUDmsuNZ174xY1GxjDBC0Ltv+DDLfuvftVNIZ/ZYIoJtlA67YGsRn8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywau6krVsgcZPYXalEFbp0LUUoMb/MDD+Zei+Vp/sB74ajC0dov
+	i03Z4S7lx1Q9p2j0rRrK+/FY2GPYwRcOcnGM+nhO+kyiNzCTQOI56hqK/A==
+X-Gm-Gg: ASbGncvzhXRbe6vZtIoaDv3VOKURZXR259UaYvqLYYPYGQwNTHgSHsh2O52mW9ivTpi
+	k3GpDekJuZJOAtKzd/Nt5hNCFskJrCRowPZJm831iaZP74VkNZ+q5wW9T3ADWucAg+bQACLNBO9
+	S4yAa/F0fAINWaNNSi9CQT/yX11WcpkIaYHkS7aWuGzoBY+B2FZ9Nl0wvSrhpWi/3DOBUv1GQ0l
+	y2zgd8w/r8AllhSgHDvDyTJgvcS/CU7tUsUHdTc/4W0Po7iIiNUV5yerlXIxQPHMwDgV8vMvT1K
+	eMc7SsYchx5sHZzOnm8=
+X-Google-Smtp-Source: AGHT+IHDJcFSrfRQX/F5sM5+pwZD66U1m8HNykq/nH0asUrd8BlBh7en4tGxnJJDkFq5nrEFC1SK/Q==
+X-Received: by 2002:a05:6a20:e613:b0:1e1:cd09:e08d with SMTP id adf61e73a8af0-1ee5c73983cmr5052739637.11.1739364114171;
+        Wed, 12 Feb 2025 04:41:54 -0800 (PST)
 Received: from citest-1.. ([49.205.33.247])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ad53d0c0c19sm6468484a12.57.2025.02.12.04.41.16
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ad53d0c0c19sm6468484a12.57.2025.02.12.04.41.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2025 04:41:19 -0800 (PST)
+        Wed, 12 Feb 2025 04:41:53 -0800 (PST)
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
 To: fstests@vger.kernel.org
 Cc: linux-ext4@vger.kernel.org,
@@ -81,9 +81,9 @@ Cc: linux-ext4@vger.kernel.org,
 	djwong@kernel.org,
 	zlang@kernel.org,
 	nirjhar.roy.lists@gmail.com
-Subject: [PATCH v1 1/3] xfs/539: Skip noattr2 remount option on v5 filesystems
-Date: Wed, 12 Feb 2025 12:39:56 +0000
-Message-Id: <8704e5bd46d9f8dc37cec2781104704fa7213aa3.1739363803.git.nirjhar.roy.lists@gmail.com>
+Subject: [PATCH v1 2/3] common/xfs: Add a new helper function to check v5 XFS
+Date: Wed, 12 Feb 2025 12:39:57 +0000
+Message-Id: <61a7e3f25621548ec3ef795a3cd0724e32afb647.1739363803.git.nirjhar.roy.lists@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1739363803.git.nirjhar.roy.lists@gmail.com>
 References: <cover.1739363803.git.nirjhar.roy.lists@gmail.com>
@@ -95,45 +95,38 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This test is to verify that repeated warnings are not printed
-for default options (attr2, noikeep) and warnings are
-printed for non default options (noattr2, ikeep). Remount
-with noattr2 fails on a v5 filesystem, so skip the mount option.
+This commit adds a new helper to function to check that we can
+create a V5 XFS filesystem in the scratch device
 
 Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 ---
- tests/xfs/539 | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ common/xfs | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/tests/xfs/539 b/tests/xfs/539
-index b9bb7cc1..58eead67 100755
---- a/tests/xfs/539
-+++ b/tests/xfs/539
-@@ -42,7 +42,8 @@ echo "Silence is golden."
+diff --git a/common/xfs b/common/xfs
+index 0417a40a..cc0a62e4 100644
+--- a/common/xfs
++++ b/common/xfs
+@@ -468,6 +468,19 @@ _require_scratch_xfs_crc()
+ 	_scratch_unmount
+ }
  
- # Skip old kernels that did not print the warning yet
- log_tag
--_scratch_mkfs > $seqres.full 2>&1
-+is_v5=true
-+_scratch_mkfs |& grep -q "crc=0" && is_v5=false >> $seqres.full 2>&1
- _scratch_mount -o attr2
- _scratch_unmount
- check_dmesg_for_since_tag "XFS: attr2 mount option is deprecated" || \
-@@ -60,8 +61,13 @@ for VAR in {attr2,noikeep}; do
- 		echo "Should not be able to find deprecation warning for $VAR"
- done
- for VAR in {noattr2,ikeep}; do
-+	if [[ "$VAR" == "noattr2" ]] && $is_v5; then
-+		echo "remount with noattr2 will fail in v5 filesystem. Skip" \
-+			>> $seqres.full
-+		continue
-+	fi
- 	log_tag
--	_scratch_remount $VAR
-+    _scratch_remount $VAR >> $seqres.full 2>&1
- 	check_dmesg_for_since_tag "XFS: $VAR mount option is deprecated" || \
- 		echo "Could not find deprecation warning for $VAR"
- done
++# this test requires the xfs kernel support crc feature on scratch device
++#
++_require_scratch_xfs_v5()
++{
++	_require_scratch_xfs_crc
++	_scratch_mkfs_xfs -m crc=1 > $seqres.full 2>&1 ||
++		_notrun "v5 filesystem isn't supported by the kernel"
++	_try_scratch_mount >/dev/null 2>&1
++	ret="$?"
++	_scratch_unmount
++	[[ "$ret" != "0" ]] && _notrun "couldn't mount a V5 xfs filesystem"
++}
++
+ # this test requires the finobt feature to be available in mkfs.xfs
+ #
+ _require_xfs_mkfs_finobt()
 -- 
 2.34.1
 
