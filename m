@@ -1,121 +1,164 @@
-Return-Path: <linux-ext4+bounces-6420-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6421-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61D2BA3312D
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2025 22:01:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42164A33136
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2025 22:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC0C11883B63
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2025 21:01:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD5F91628C9
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2025 21:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364941FF5EA;
-	Wed, 12 Feb 2025 21:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF385202C51;
+	Wed, 12 Feb 2025 21:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="dXkaMLAi"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="cPilweUY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="NvTmYvBI";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OEmKdRAB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SfKf981G"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2AF20103D
-	for <linux-ext4@vger.kernel.org>; Wed, 12 Feb 2025 21:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31CF201269
+	for <linux-ext4@vger.kernel.org>; Wed, 12 Feb 2025 21:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739394101; cv=none; b=r4drDJkYq1KKvoq0h3o53idNI9LPZcWZ2yOE5meeFrAErpWHu+m/5hc0l9k5o15C6XYvyvfihRZFmXxhdiFPXlynBrPXd+aq4mk7LGyHrHTogIsSQDL5Yh5avSR7j4YDhPk9Rup52yG605NA2p3PARloNIsXg8e3MkpJW9aARi8=
+	t=1739394151; cv=none; b=ulLAACOp6iYDshXOrIdcpVfMOPtWVUUAYKw6dx7E1F/O5cWg3yki3I9Lvo1ah+SxqHKBsTXCYv/Kyb8GLJwvUF1UI4gOlSt8kkbMvaCtsjjh3WSQhTnzwHsrKCsPKEPSzbtexIgwUhOsZCiguijTG1uZmNYsdRNZm6C5toZP6Co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739394101; c=relaxed/simple;
-	bh=1VyAEiQDS2q9VkRGK+qwT+LU5/8emzrXoHFxIXPyBLU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=II98ZtLDl04lcu77B+TEgc0CjgnxpJLwv7aNw7+nbRipqcxGYek0bsZbfHW8kENHYi446/W7u77RZeodEqg4bFm4SRTPKQcIg3qjX2BvD7RKAMVnLyVbXlx46xtSL2JfaqNEyZgxsOjO/6HIpdxGp8I5f3qDpeVNRbgYah0swY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=dXkaMLAi; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-21f92258aa6so2394105ad.3
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Feb 2025 13:01:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1739394099; x=1739998899; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JIR6zZ2LFfRJBDmVHzXDNp6ZFUCOkYJZeyqW+eFjzG8=;
-        b=dXkaMLAiRFcefsSibZnHaWvEIsJnViDbvC4+W3iGzjZxhcLZT4Cxe9mWzWgjiuzIND
-         pTpmDbiquuCq58KfFGME0uGDvFmed2973V033u3wJi/ySi37h5jmL1YUM1z5Rr8i04w2
-         wplHBC7pIoG0Lk0bMH6HlqJmMRVPjyQ+Hn6+T/BkLm48GEE9nYa5wDRLEahW8H4BqG9s
-         ST/IBhVE2F275QdgOJJStNBhB+ZUrtQPxAfv1NvpXyZdO9tiBrScpH9LaCrXO8NL/B6x
-         rJV/69IrpGRA/1aduMAnSxhGQ0R4WQ+dASBSFD4HmwSBAUghZmpnOjHUHMfNxEfIt4ME
-         os0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739394099; x=1739998899;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JIR6zZ2LFfRJBDmVHzXDNp6ZFUCOkYJZeyqW+eFjzG8=;
-        b=I1gxYnh2VXdWqsIvmuu/YFJwLOgtyLYggsExsHj8EwzY7R+G0hiURCOnFVGTdHxGwM
-         d+fm0XI02l6tDAQq/KSW8fG8JStCLHt/i+u5064L2sjHPExgs9U6hEGk39yqMcc7xtrS
-         bdjoQJVsgJtOQ90endDeXa2d5FBSKLeX6y6yBsSvmH2rX3zfRFCzwyxIfXP87rTgey1j
-         dD+TwALNKiT7uyAPtn7iiGV/eYrXYTO7p205WXCOltwwdTREhNmgvfHel70/BP+qiuf1
-         MoFy84UEDDU11rggAUiaA3pqhk+0sz0yMG+KqWON4BTfk9s1XJ7i0Dmir6h3Gdk3wOOW
-         /+bw==
-X-Forwarded-Encrypted: i=1; AJvYcCXYMCqNXInOQa1ycKQEQKwciLAtUeBt6NX972qwsyWK/PSf/1/50fU7io1IiMqBuLBP9vFtCg1pXS0x@vger.kernel.org
-X-Gm-Message-State: AOJu0YwdiTMaaTdtcTx2Qf9PCS/+EzBKjWbkx7I3RKbrr6LJnyqrsLjj
-	ZneY/sc0BrP/lsvoqRCLVmZ06fm7O1H/x7MDge4UJQIwOY65fOPkW5ffrZfhAECq4zRhwOIZb2n
-	m
-X-Gm-Gg: ASbGncuWKFgY/voyYUT67ObpcimUQIk8jIXdOQFL+n6PdJW9F8U8+D74gNZUbWEmYRl
-	Tc/WdthkMwqyP40yuD+eaP+uYoTEezm94Mh7dqFo+lkDOsivRvFsDW8srJwtF4/UqQ6zCYRGBdK
-	j2ap7IMlpHrsUCdl3flNovme7ahV7BmCaAAfolNwhY3NsyXuOGk6l9lc2iD44F0tdS2roRdowuk
-	scFvaCQXb14ouQD+u1Zua6Pcn7zRpAo/nIf/hAt6rdSQBy3GFjveu6UbbxcR4Hj4vQrGS+XaHlp
-	CjeZdYqaGNyv+icMXoZ8o8hZhRi/eM6ucG2sDXZg5mqbYlCcduyIH7gZ+LdyRAqo4L8=
-X-Google-Smtp-Source: AGHT+IFZQ+UkMOepNiqiOeT5081AklEp/hOZMtQlwn6wyDVLQoiCCEa+ujVvRZhLWXYZgNe74j04vQ==
-X-Received: by 2002:a05:6a21:482:b0:1ee:668f:4230 with SMTP id adf61e73a8af0-1ee668f42e9mr5152871637.33.1739394099547;
-        Wed, 12 Feb 2025 13:01:39 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ad6019204c5sm4418595a12.60.2025.02.12.13.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2025 13:01:39 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tiJrU-00000000RG6-1CPB;
-	Thu, 13 Feb 2025 08:01:36 +1100
-Date: Thu, 13 Feb 2025 08:01:36 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
-Subject: Re: [PATCH v1 1/3] xfs/539: Skip noattr2 remount option on v5
- filesystems
-Message-ID: <Z60MMI3mbC9ou6rC@dread.disaster.area>
-References: <cover.1739363803.git.nirjhar.roy.lists@gmail.com>
- <8704e5bd46d9f8dc37cec2781104704fa7213aa3.1739363803.git.nirjhar.roy.lists@gmail.com>
+	s=arc-20240116; t=1739394151; c=relaxed/simple;
+	bh=dx27bQiDzq3UCEg6slDvY2/vRv6WAXt2iPKDmZVQqmk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=FtZhdXnWDsWVm4mXfhs/FxD6i62KC078bsd7wM+t6Wz3kWl3AJ+71KeTOm5JdZHXe2SRJ8qznDWy0kblwRKn23BRE4FYobYFM7WbBYp4UUbVlNY1Xer3GdlsxoeG2s7nA79bmsZ+3mvfpZe5ae9TXLGw7enz0F2u0ThSMifmqmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=cPilweUY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NvTmYvBI; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OEmKdRAB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SfKf981G; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DD0EC1F44E;
+	Wed, 12 Feb 2025 21:02:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1739394148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5xztWGCWOjKjC/VI7pyv+ozcaJ1YxqrHmiXuF8IjQY=;
+	b=cPilweUYmayL/qvpXNWKh55EdkN9yQpzQIZNM2q0V9KKANRP8g/Bh4FGx5g/MMAALOO244
+	SFFQws7IFLR2rekSK4KRqjbt77tyATn7jC1gwugvN6zNO7pefPc/zXpgnDS/FMaScKkvRz
+	v+mr4dU81CDPnSgkmtKh5+Bo+oBl2Pg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1739394148;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5xztWGCWOjKjC/VI7pyv+ozcaJ1YxqrHmiXuF8IjQY=;
+	b=NvTmYvBIv7valSTiGOxoysViYpbwNYrD+TC7w7oq1CsPFw5rnhQYBdh64w3Vemw2Hc6Vc5
+	zLYY0sQT27w/fkAQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1739394147; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5xztWGCWOjKjC/VI7pyv+ozcaJ1YxqrHmiXuF8IjQY=;
+	b=OEmKdRABznxiFBwQ+V9INQi77KsYu402vMl5l12Tdy7N5LeBwKTLEhgmLUNenmPWMl3XpX
+	sfHD9KjPFKD4eXVUPmv38682aLVFs3nytWEyt2+S6c+l7IpFS1lO4cBFsof5EUgNQn2Ddb
+	0dNSp5rbH1b6H6OsV0OIx1LGR02Fu7M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1739394147;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5xztWGCWOjKjC/VI7pyv+ozcaJ1YxqrHmiXuF8IjQY=;
+	b=SfKf981GNDgB8O4CbNqIkJskroKOxzQ1hWXwuVhj9g+uVjuczC9dFuiA8tzNn1FDwC/DmR
+	Cxtiv1BBxlmpPKDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A26A713874;
+	Wed, 12 Feb 2025 21:02:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id B31qG2MMrWewMgAAD6G6ig
+	(envelope-from <krisman@suse.de>); Wed, 12 Feb 2025 21:02:27 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>,  drosen@google.com
+Subject: Re: [PATCH] ext4: introduce linear search for dentries
+In-Reply-To: <20250212164448.111211-1-tytso@mit.edu> (Theodore Ts'o's message
+	of "Wed, 12 Feb 2025 11:44:48 -0500")
+Organization: SUSE
+References: <20250212164448.111211-1-tytso@mit.edu>
+Date: Wed, 12 Feb 2025 16:02:21 -0500
+Message-ID: <87h64yx4f6.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8704e5bd46d9f8dc37cec2781104704fa7213aa3.1739363803.git.nirjhar.roy.lists@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	HAS_ORG_HEADER(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email]
+X-Spam-Score: -4.30
+X-Spam-Flag: NO
 
-On Wed, Feb 12, 2025 at 12:39:56PM +0000, Nirjhar Roy (IBM) wrote:
-> This test is to verify that repeated warnings are not printed
-> for default options (attr2, noikeep) and warnings are
-> printed for non default options (noattr2, ikeep). Remount
-> with noattr2 fails on a v5 filesystem, so skip the mount option.
+"Theodore Ts'o" <tytso@mit.edu> writes:
 
-Why do we care if remount succeeds or fails? That's not what the
-test is exercising.
+> This patch addresses an issue where some files in case-insensitive
+> directories become inaccessible due to changes in how the kernel
+> function, utf8_casefold(), generates case-folded strings from the
+> commit 5c26d2f1d3f5 ("unicode: Don't special case ignorable code
+> points").
+>
+> There are good reasons why this change should be made; it's actually
+> quite stupid that Unicode seems to think that the characters =E2=9D=A4 an=
+d =E2=9D=A4=EF=B8=8F
+> should be casefolded.  Unfortimately because of the backwards
+> compatibility issue, this commit was reverted in 231825b2e1ff.
+>
+> This problem is addressed by instituting a brute-force linear fallback
+> if a lookup fails on case-folded directory, which does result in a
+> performance hit when looking up files affected by the changing how
+> thekernel treats ignorable Uniode characters, or when attempting to
+> look up non-existent file names.  So this fallback can be disabled by
+> setting an encoding flag if in the future, the system administrator or
+> the manufacturer of a mobile handset or tablet can be sure that there
+> was no opportunity for a kernel to insert file names with incompatible
+> encodings.
+>
+> Fixes: 5c26d2f1d3f5 ("unicode: Don't special case ignorable code points")
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-i.e. We are testing to see if the appropriate deprecation warning
-for a deprecated mount option has been issued or not, and that
-should happen regardless of whether the mount option is valid or not
-for the given filesysetm format....
+Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
 
-Hence I don't see any reason for changing the test to exclude
-noattr2 testing on v5 filesystems...
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+--=20
+Gabriel Krisman Bertazi
 
