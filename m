@@ -1,117 +1,102 @@
-Return-Path: <linux-ext4+bounces-6452-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6453-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7A3A34D96
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 19:25:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5931DA34E13
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 19:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5272A162EF0
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 18:23:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1902A16D677
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 18:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A57242917;
-	Thu, 13 Feb 2025 18:23:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aakdUFVo"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32219245AEB;
+	Thu, 13 Feb 2025 18:52:43 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3ADA24292A;
-	Thu, 13 Feb 2025 18:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6D628A2D4
+	for <linux-ext4@vger.kernel.org>; Thu, 13 Feb 2025 18:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739470998; cv=none; b=V9454mGVuPD/aHig/i7VX9/KInvWbHXaz7dDMFQJR70hIjNH7VnFSHyEAg/IjLmcDcJJi+wYBjPadgNAsGBBZ+4k9ywFVULHkhVSRMg6Jshu2sU8YWmg5kmM9ehy98118Wwsh/2RvWUNO4JOlJ8m+gOj192ej6kL6kkgwiaC1EA=
+	t=1739472763; cv=none; b=CfwoWHPpHdE4ZLFi4hXyWaoGkH1EEs7OsB92o1/RXUhOnc1pgPHlTv35RCdTHg7lGxEHPwxqsiIX9APSz+Ra8RyBdZfajqXTTT1TIHknYnptd2zw0T0lnDKn28590ulrUWIFHLdRH87Af+KQ3yKnvQU30tC02GAPP0F2avwQdW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739470998; c=relaxed/simple;
-	bh=i/rfAX0LkReKYTYCGLUCM7KMGLOrXYDASByFgX5ufwc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qQin5pEprBO97olS8Tz40EUYRhuSnszJSDQ3PsUtbQJ33NfufzX+VXYOZXSpXvPhuaOM/HG/O7av3ojOh8rpEl792YAX5wIBuWpGBjUB5EldpqhM7BImwsPzSqXUYrkv6bApykO1AB8783HqY3jQ+AfreLbzCF2fVDhUwW35dbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aakdUFVo; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=h1uZYi6ABbUB9DnVhYscPgvASRPncF2QfFm5tsKbnwI=; b=aakdUFVoWAftqX4H91sKyVpS5/
-	DJZMgd8bM+DzdLpf6B2Qp0R/fDHZNI8gWGCXHpGT1CgZByyb7kfFbF0z5sFfNQkvdynZ3sFz6jxlO
-	e0GnlG6Gu5cUbQFaQdof4/KglBybJev9jcwaHzDQUnO8syy1hPtUJQtZS09+G46s00v7dY4OtmiGA
-	f+EDk2ksVXtr1tImlomp3OOzUy6zfzbOrOe5CT4wcQgoTgD+GJTSTk8mFrdiW+TFe8wS3zcFjtRa6
-	joaZV2wd5T+WsLT4L96vZXunSTYV7CAmGyxeFzQ/CxSFN8fFaQvb0b7E6PxK7IvrV/jrv53f5dSvU
-	S+T9nZ7g==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tidrg-00000008wy3-1Xlu;
-	Thu, 13 Feb 2025 18:23:08 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jan Kara <jack@suse.com>,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH] ext4: Remove references to bh->b_page
-Date: Thu, 13 Feb 2025 18:23:01 +0000
-Message-ID: <20250213182303.2133205-1-willy@infradead.org>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1739472763; c=relaxed/simple;
+	bh=RSALijCH6oG8xA04buFXAlVZne7UppEJdwslExTCEsQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bznvIRu+ZN1+8LcP3R0b/amUMIVioatiJohZQoulDeoqO8QvXIA2gueEwNXb50c9qQRVK1Kq+c+kv54PYtg+A0gICIwwUW+JqrC/mAt1qA5mzCpgXzbbvQwg22mMyXSi0s6Se5xj8vXG8/PGBs/yJh5b0HlbWF3vFQgT27CbwSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-82-224.bstnma.fios.verizon.net [173.48.82.224])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 51DIqMsE001272
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 13 Feb 2025 13:52:23 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 6A78515C0009; Thu, 13 Feb 2025 13:52:22 -0500 (EST)
+Date: Thu, 13 Feb 2025 13:52:22 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Venkat Rao Bagalkote <venkat88@linux.vnet.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [next-20250212] FStests generic/451 on EXT4 FS resulting in
+ kernel OOPs
+Message-ID: <20250213185222.GA398915@mit.edu>
+References: <6f43bd29-d72b-4a39-b931-7b1b47c7cc06@linux.vnet.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6f43bd29-d72b-4a39-b931-7b1b47c7cc06@linux.vnet.ibm.com>
 
-Buffer heads are attached to folios, not to pages.  Also
-flush_dcache_page() is now deprecated in favour of flush_dcache_folio().
+On Thu, Feb 13, 2025 at 11:21:22AM +0530, Venkat Rao Bagalkote wrote:
+> Greetings!!!
+> 
+> I am observing kernel OOPs, while running FStests generic/451 on EXT4 with
+> linux-next kernel(next-20250212) on IBM Power Servers.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/ext4/inode.c   | 2 +-
- fs/ext4/super.c   | 2 +-
- fs/jbd2/journal.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+I'm running daily spinnner tests on the fs-next branch on the
+linux-next tree, via:
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 7c54ae5fcbd4..bd579f46c7f3 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -751,7 +751,7 @@ static void ext4_update_bh_state(struct buffer_head *bh, unsigned long flags)
- 	flags &= EXT4_MAP_FLAGS;
- 
- 	/* Dummy buffer_head? Set non-atomically. */
--	if (!bh->b_page) {
-+	if (!bh->b_folio) {
- 		bh->b_state = (bh->b_state & ~EXT4_MAP_FLAGS) | flags;
- 		return;
- 	}
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index a50e5c31b937..366ce891bcc3 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -7288,7 +7288,7 @@ static ssize_t ext4_quota_write(struct super_block *sb, int type,
- 	}
- 	lock_buffer(bh);
- 	memcpy(bh->b_data+offset, data, len);
--	flush_dcache_page(bh->b_page);
-+	flush_dcache_folio(bh->b_folio);
- 	unlock_buffer(bh);
- 	err = ext4_handle_dirty_metadata(handle, NULL, bh);
- 	brelse(bh);
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index d8084b31b361..e5a4e4ba7837 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -947,7 +947,7 @@ int jbd2_journal_bmap(journal_t *journal, unsigned long blocknr,
-  * descriptor blocks we do need to generate bona fide buffers.
-  *
-  * After the caller of jbd2_journal_get_descriptor_buffer() has finished modifying
-- * the buffer's contents they really should run flush_dcache_page(bh->b_page).
-+ * the buffer's contents they really should run flush_dcache_folio(bh->b_folio).
-  * But we don't bother doing that, so there will be coherency problems with
-  * mmaps of blockdevs which hold live JBD-controlled filesystems.
-  */
--- 
-2.47.2
+   gce-xfstests ltm -c ext4/all,xfs/all,btrfs/all,f2fs/all -g auto --repo \
+       https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next \
+       --watch fs-next
 
+The fs-next branch is a subset of linux-next which only has file
+system related branches.  This avoids instability caused by non-fs
+related changes.  I'm not seeing any kernel oops on today's fs-next
+running on an x86 cloud server, using a standardized config.
+
+Looking at the kernel stack trace of your report, it appears that a
+linked list used by the workqueue handler (in process_one_work) had
+gotten corrupted.  This could be caused by anything (which is one of
+the reasons why I test using fs-next instead of linux-next; we didn't
+want to spend time debugging problems that aren't under our control).
+
+Is this something which you can easily reproduce?  If so, can you try
+seeing if it reproduces on the fs-next branch, and could you try
+bisecting the to find the guilty commit?  If this was something we
+could reproduce in my test infrastructure, the bisection could be
+trivially accomplished via:
+
+   gce-xfstests ltm -c ext4/4k generic/451 --repo linux-next.git \
+      --bisect-bad linux-next --bisect-good v6.14-rc1
+
+... and then wait for an e-mailed report to land in my inbox.   :-)
+
+Can you do something similar using your test infrastructure?
+
+Unfortuantely, given the stack trace, I doubt kernel developers would
+be able to do much more with your report.
+
+Thanks,
+
+					- Ted
 
