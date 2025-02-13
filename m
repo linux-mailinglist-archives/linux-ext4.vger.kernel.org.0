@@ -1,284 +1,191 @@
-Return-Path: <linux-ext4+bounces-6444-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6447-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAD96A3412A
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 15:02:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC02DA34201
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 15:30:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 267313AAF58
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 14:00:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CF0B7A5978
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 14:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B571274257;
-	Thu, 13 Feb 2025 13:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9375281364;
+	Thu, 13 Feb 2025 14:29:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="TKOfS/jm";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="qax1h8Uy"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xxayU8/o";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QOetGoEw";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xxayU8/o";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QOetGoEw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2491727129E;
-	Thu, 13 Feb 2025 13:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739455052; cv=fail; b=ZQ0hTaEeedlLxTnSJYKOoMikmWmAcJ5cPxeMTleLizg7F/y7TS81zjbWfxDI52xm9yyrHv5sFrxpkOQVf7COtSCedvzPZiQhhu3Um1Mii2MMXSQ46qGzbNMBbKkgdVGChoG6RB4+Jca1HZP1fZHCp75aWiQewRgttGize5plnnU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739455052; c=relaxed/simple;
-	bh=b62au7gM/3UaNnpgBcSicz4+ph+erw0KtdH2QBYU0Zc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gQCgQPhh0f6REGN1DvB7ax2BvG9JDUOtkXrhZCv6S3IRqDfnfryNKfOIJtO5ZPTSZtLJvgC75GLwobj52aJDlEweSpN6sRHdQQ4WlMMkuPG7boGFfQb6mlRmKYsVW/d35OuSIDKoRXGwB3m4Go6aWYNfs1GSAr64PwE1C0UV0W8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=TKOfS/jm; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=qax1h8Uy; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51D8fgkm021994;
-	Thu, 13 Feb 2025 13:57:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=cbsfhwIoN6UOoNYU4jj0NZhQTrfD3MciMudVxKNxmUY=; b=
-	TKOfS/jmxlbeUkCtHxwvAPwMqdQCZ2J0TuWQwGDrmQTphc6w2wyD2a+FmYx1bGuI
-	cdEdjR6Hi5XiVTaRzhKHynLewLVbcu5UnUIrLkxCcIdbs0hFPam7UriNzu7PkqaC
-	R8/ojTRa12/MhlGiIUDQgBpv/VpCMsZKJL0EEqTStQZ6Miocgkpq2V3jrMVXMQvX
-	XJfM5MbQXCPR8Pt5nKMvlP0zlFM4HU6W5SPw5TzhFgi4v1IX6dQACtke/vZvjDl8
-	/r0PT+TRQ8tuf7DZzWkGNreIPcQEaYMp3JF/9GKw/zXZ57pJupYxbxHmJ364a7K5
-	ZgQbehSJ3/UxBdKyOOsvpA==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 44p0t49jhp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 13 Feb 2025 13:57:19 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 51DDWqmt009852;
-	Thu, 13 Feb 2025 13:57:17 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 44nwqj1u15-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 13 Feb 2025 13:57:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=x7MyrRT9rvN6m84AmovLEj8E9ldQtQ5Nk/673+8C5zr/yy+8/qQgvx5z6HT27k4JL5O/QnbhxHUZJQ6SrAfQp/GzOiJvzUd3zISToYVyQBUTznITw1Sqj7lZvIeefxGL5iHw/o1Heuim57yCw47lowYmutFlpNAvYELctnOZ2ONdQhX41VoBrM6+Bn2sQiSFKo7n5J50zARUUqxxyu1OJgnfsm+y92k/dx634DvnxWSmyVkesvaoieb1F9zGHtbuTcz9+plGWKZ1ZypLX+Wwpeneg7SO1RnXlNjTqMu+3HyQEVJjfQh2HDvkj13h8oOAjOj/VhbfV91x8n2y7AzLdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cbsfhwIoN6UOoNYU4jj0NZhQTrfD3MciMudVxKNxmUY=;
- b=qyF/+Rwmn9UZ+p2NfnnvS2p68blIpcYq4Gt0RgplMGPbq7RuZxUq6s1frgdVvswA3V7vFD6ebvgdXeTDVKhPEDQjYVJE23nAb5Cp0eAM+wZ6Qgzkpz+rMuLQ9czoSpj2rG7YX8Bf5tRRTm/Mx4FB+AYAKbFqVXnWDsvylTrFhZJexVHMDxVRLewfmBAQALhPp4w81ZhtzYVfDPmsnU8Oh1eq7ks7UyFJfk0+OENPHdvgZZAcy0itWocoIdp9fMVjgecAPxueRTmPbdcxgkmqkGQboP31Roj9nET2MWNgNSQuUKMaKVkmbUdjgqIt+HUeGmtUL/QvBH4GsLV83XXrqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cbsfhwIoN6UOoNYU4jj0NZhQTrfD3MciMudVxKNxmUY=;
- b=qax1h8UyiwSPKYQxLjupOSahQCqeOFQE/bAeJApngFS/VwaePHH1mQ5ANM7JOLe3ZQrplEACANBwJ2cLPBtS0lfV5/g8dYO61wdLpJ3K52JlIpMoGjEQczX4rooILjC/bPB3Tff6I2KI4DPU73Sh2+JVvRrLNEZL1TKgU3sUeL4=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by DS0PR10MB7125.namprd10.prod.outlook.com (2603:10b6:8:f0::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8445.13; Thu, 13 Feb 2025 13:57:15 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088%6]) with mapi id 15.20.8445.013; Thu, 13 Feb 2025
- 13:57:15 +0000
-From: John Garry <john.g.garry@oracle.com>
-To: brauner@kernel.org, djwong@kernel.org, cem@kernel.org, dchinner@redhat.com,
-        hch@lst.de
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com,
-        ritesh.list@gmail.com, martin.petersen@oracle.com, tytso@mit.edu,
-        linux-ext4@vger.kernel.org, John Garry <john.g.garry@oracle.com>
-Subject: [PATCH v2 11/11] xfs: Allow block allocator to take an alignment hint
-Date: Thu, 13 Feb 2025 13:56:19 +0000
-Message-Id: <20250213135619.1148432-12-john.g.garry@oracle.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20250213135619.1148432-1-john.g.garry@oracle.com>
-References: <20250213135619.1148432-1-john.g.garry@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BL6PEPF0001641A.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:22e:400:0:1004:0:6) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8E4281343;
+	Thu, 13 Feb 2025 14:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739456973; cv=none; b=t8wDIY5y33g+cfLBHBs5BjfcKl40nXrvU+i4tARShQ35ytqBhKDsGv6kJt1jpU98BhwfR9Jt5URtDMn0MPllPEUlyF4UKqQE1vOcBY/iX7iLmo++8596Vr2Wy6bhLy71sP3c7pJYtIVePvX/aLailXW7Ee8AGpe5uDv/H/ZPXH8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739456973; c=relaxed/simple;
+	bh=rAiv6TzHkeELsrLuZtk5FUe5Thv+lNBT27iUuGBHh7s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SCsYgkFXVNAFAuPZrMw0AGF9cWVudCTOwo1lVzvsPTy47Z6MEx3TWzDrp6oux8nIxDRdBnbLMBlUpD55emI/RUxzL5tpt/hkiNVr9gn6+DdlOjEDMwop0dcTJobyPVcwWka9XaPaoRSAq1QRcekz0Gy7004kDPbFNmJYct5VP4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=fail smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xxayU8/o; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QOetGoEw; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xxayU8/o; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QOetGoEw; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1B58B22652;
+	Thu, 13 Feb 2025 14:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1739456964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b08r9aID4TkiRVyoZGQPuYyotWopcKELHRkumgjrwAc=;
+	b=xxayU8/o5cFo+GrXPM7qJd4gbNwPD3kf/QoA169ds6tqxxvhqWxNW+TFVTO0AHO+d52C6d
+	4fffugqvXbQ1mDuFgjeDEEBJNfF2aCJnlpJ1qJVkZQ2fyCqKTNkI6hpdGAU/jHeushiqx7
+	lbP+FAwb2F2xOupAtF/Aw7ydg/GH6RY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1739456964;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b08r9aID4TkiRVyoZGQPuYyotWopcKELHRkumgjrwAc=;
+	b=QOetGoEwa4d2cmE9zMTDCWidfZi2Zl2V5cH/PE+mzWMpM5oksGYasXFG/ShYkDKA74KMKQ
+	FUaJNtQW7k75sIAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1739456964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b08r9aID4TkiRVyoZGQPuYyotWopcKELHRkumgjrwAc=;
+	b=xxayU8/o5cFo+GrXPM7qJd4gbNwPD3kf/QoA169ds6tqxxvhqWxNW+TFVTO0AHO+d52C6d
+	4fffugqvXbQ1mDuFgjeDEEBJNfF2aCJnlpJ1qJVkZQ2fyCqKTNkI6hpdGAU/jHeushiqx7
+	lbP+FAwb2F2xOupAtF/Aw7ydg/GH6RY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1739456964;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b08r9aID4TkiRVyoZGQPuYyotWopcKELHRkumgjrwAc=;
+	b=QOetGoEwa4d2cmE9zMTDCWidfZi2Zl2V5cH/PE+mzWMpM5oksGYasXFG/ShYkDKA74KMKQ
+	FUaJNtQW7k75sIAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 00BC2137DB;
+	Thu, 13 Feb 2025 14:29:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id vhwmAMQBrmc1aAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 13 Feb 2025 14:29:24 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id F373DA0A07; Thu, 13 Feb 2025 15:29:18 +0100 (CET)
+Date: Thu, 13 Feb 2025 15:29:18 +0100
+From: Jan Kara <jack@suse.cz>
+To: libaokun@huaweicloud.com
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	jack@suse.cz, bfoster@redhat.com, linux-kernel@vger.kernel.org, 
+	yi.zhang@huawei.com, yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>
+Subject: Re: [PATCH] ext4: goto right label 'out_mmap_sem' in ext4_setattr()
+Message-ID: <c27l5iylz6t3qfd4v6sbwfvb4v6e4rifspbwts2u6w4i2wgqli@yorbu3soqgye>
+References: <20250213112247.3168709-1-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DS0PR10MB7125:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f3c28fa-16b8-479a-04ba-08dd4c3652c5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?IkWQdFbtxcWY8ykNiMXkuIJY2jsjBj8YRglCLp1K6suan9V717aKsGZMtSYk?=
- =?us-ascii?Q?vVBuusgvTlUdlBUugwkFA+cjdcevyiE7EHrfM3jAFeteRIZT6OCeU37f9Mo7?=
- =?us-ascii?Q?tbh7qrqErQ8gehqB194oHvC63dXGN4D/M+60QbFKab6oc6tehgZ0pwY+5/7+?=
- =?us-ascii?Q?8wrsrFQL+73tVDqUeq5qYTZw5R7/ffKH6IZZQHDjuZ5sqZVcitUoNj6I3MZW?=
- =?us-ascii?Q?RlI294xouFw/IFIWi31R3r+gdkjNC4SvRpYeimEWmd7l6QFTHaLNovoq2iJI?=
- =?us-ascii?Q?vrtf+Yx7YIplkf3QcGf1rg0Wf8+wY/53aoPIVh6U1mu6GJjOIX8AT9raQbYK?=
- =?us-ascii?Q?3Kg9HMREXwfQN914sGFPc6J5bgGrrKpzEU0kVCUpMIzcamnZVxvjqVj7973s?=
- =?us-ascii?Q?zmkPcJKAfHT1Plj1kbjdEnP0ea4QMF5DtSjR1eHPElOjxnvQ8lwXZ8r+TjV9?=
- =?us-ascii?Q?AcqF+Piyb+0o9i87TOcZJKo8lwUj0MXr9TbT1mZ9gXW8YW3L2znJPajfPvHJ?=
- =?us-ascii?Q?TTfEBo330sPwn6tDSw/6o1V8KO0BOttRO1RUj/phBWFeFmc6iUT0WLf+7PQa?=
- =?us-ascii?Q?aaEXl56q+DDPTrU7Wi47M7fzUZ5GXFQeTH7vBSnW/PnZv9pUh07RRYao2NoP?=
- =?us-ascii?Q?px7u2ATcYLrP5nUVyoToORr1/VPhNDH+M8FiJ98vsm0lyar1HFKaaANxs0v3?=
- =?us-ascii?Q?zEG6e0BCdFZi0tLgLbarmJ8NOivG0ZhVIgL7Huc7ocTmCwn+vfkOfogji+wW?=
- =?us-ascii?Q?O0eEBnhTE25W2YQCa7HTSXzBI03KVdYa2QFOgWBq8XeqHeZcf3APvse/aeSP?=
- =?us-ascii?Q?ONCrztwMEOJdTRE+zd36qN4yw6a3aGslDgSC4pd2kBiL/KmhmNRrKlXjD7xO?=
- =?us-ascii?Q?1C7A6yul7yAU9XRJk5Nva047Q5hDV4x/Opv4Wdkh4nfx0ZFjEmCLKGVWciAi?=
- =?us-ascii?Q?vztCQwtuf8tNIhLEIJWwsCTo6qiPkI3mROIdKW42cq3ePGyVSTdFOawzSpG3?=
- =?us-ascii?Q?gXO9llCBb9UrPq6GYYCHabMHmQbFpy0/M5dr+fHjRAAj838LN5U4IiSjo9Y5?=
- =?us-ascii?Q?26SV6NF3vGVj++gIZYlfTRRJhIYMb2vEdMmjTHHVN/ebo5uaY01vJr9PExre?=
- =?us-ascii?Q?/mH4Ve5Qa/uqB9H5/slajjHU+CEfChXg3xbh2HA6vOXKsNtUVMQOQ3jCxe6x?=
- =?us-ascii?Q?boeVN4vJM4cegpwvcQcKU7QuFPF+JeW+nFYz+sUqZHLxxnY1Vv0BUhM7cPe9?=
- =?us-ascii?Q?Ppjz0XBHSclh+YHQuDcNnmkWxN4A2KlQMb1sS6hL6aEXcvWs1FsvacsUWGAq?=
- =?us-ascii?Q?8DQvqBxZN3/JRR283/DpDREtwRQyPa03iAamtQtTQFagjfjZ+csullpCEipx?=
- =?us-ascii?Q?3T7lCBe+cMZnQxzWKQGgXiC9dpvR?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Dyd9yWJMyIEN8/OJ/VY9u0OybM1Ie44XwKjH8/bIphdzsFlJbO8v9D1g9PDZ?=
- =?us-ascii?Q?nDuMTIuZS17UnLsy/3l/qAp7hNUrJOBnhD/UOsBd8XVzQ50IKHaSBtd+bubE?=
- =?us-ascii?Q?KYU04+GXwOjdJ7Pr4eYHf4NbrSZP0E2B/2MjtIzSQEyaar0w4eaRrGwq+QiW?=
- =?us-ascii?Q?zmkEWuBh+cMkPLmfWsjazMl9YDT4RRdU/X83eMMg/GL0neHApVno1IieCvEf?=
- =?us-ascii?Q?L/+JF8Aqhdf8M5ZzZ1XRt3mG+Tz89bLUzUhXlfATqIGJJAaHVr2brLdyMQkg?=
- =?us-ascii?Q?KX86pyURILBSUoY2KbbkaKSMab/d+bdQHd7QWCyUIajIg+Tl8+lbBjOYQMxr?=
- =?us-ascii?Q?glFr1HzzKXLmchzKVA40fk9CaEA+iddSluEm0cfh+HYxTItDkp5jjrWD/QuW?=
- =?us-ascii?Q?JJ1grU4EGrj+Zstj3c5a7Z3GHCQ9fVK6FZZRGOxZR4WQKECzI6I+rz0dXiWA?=
- =?us-ascii?Q?DdbayXt7BcNiARzQhnsahKHz7NnDa0ispOhnpTeyNkTiF2xfVcgQOYnjhyNc?=
- =?us-ascii?Q?DiNmu7aEZE2JfR2msCfJ53Nh6UCIjpb1/DceTDXwsAt5V7/KAVIiv3YwI1Xw?=
- =?us-ascii?Q?CDHziCVLSDkdJBxAUxN/iKguLuXu+CWXZ8IZ8zxq6H2IJxfV+kHRAXqdygKT?=
- =?us-ascii?Q?Y3oOfvZj7044bbxOSpxrNZydKAvDZzgSyBcsrk2IFV3bUY+QR8JrgLfUEoYX?=
- =?us-ascii?Q?ebNtqfc02PyDFiJglqgY0Mu7n5Z9vcoAgpsh2NODPZOSd/B8ZNaLIKYS8VfK?=
- =?us-ascii?Q?pheIhcCsALg0IUCkiclH1tj+YtpmxFg5tmF9Tu2simA7J+u5ga5kmSx5IpD0?=
- =?us-ascii?Q?5cuPgcqXEP98GED88ojv+tF8rJctcAonc/LkeVhKs5gxnTkHLXzSMDrzHTTe?=
- =?us-ascii?Q?aypO8jDpG9/c9wMn9FNFt/Mau63ewfA1aCrfOyGOEhuIuud6KR/VWCUSPcKM?=
- =?us-ascii?Q?n2EqMbikxlZFemwXOc7xc89vnRQBxph6yZyrcn1ljRswMJxX3MhBQ+7PBJSN?=
- =?us-ascii?Q?zauieMOExsSWIGaetmuZqX0FAsjuZCfEX4uuBM7npVUDrhhmae/+1UCuI5xy?=
- =?us-ascii?Q?rkMYMobI/oRtxctJzQe4eXMKXL6tO7oS990zwKXmyTgu2InUBchLd0txzu2x?=
- =?us-ascii?Q?66aBnl/AGcO4QdFhDrlv/U8IhBbABd3faW3EwxcXVV91k00hgFlzwaXFqfpt?=
- =?us-ascii?Q?C3ZL5VA4AJF1UpedeFuTTosEMbvSiWN66pdi+XLGNYOATYjFCl1YM4HsSFuf?=
- =?us-ascii?Q?RLphPxkCWQ36n73hp2/jXU/luKNz3GqlRrgLqaTElELZtZTNlZyDK7lsU1KI?=
- =?us-ascii?Q?iBHVOPJa1ZrM7RBw3sxhnjbBJrcuCirP4QeJCQshYaDwm6Nx3SMMorvbNAKm?=
- =?us-ascii?Q?c0t1/K9EJ83tndIVqQF7pR2ILvaiUQTzi6JnkIXtTo3qVoYwvaUmZZJNInYt?=
- =?us-ascii?Q?2Kv2jqM90Kt/yxPWmFhFaG1dUlfR3Bier6qCW7/5tOjF9r/8gQa/E6er4eYn?=
- =?us-ascii?Q?Q9OZxMacFu2FhjkzC9MvXNJsrV3xJqEk0bsX0YbMBM0jVzuhBwdHKIX5mDor?=
- =?us-ascii?Q?n4OKv/NamWUIVJc06LKJCo/F29J4zb2bLNSRfW2QN0QraZshKN9cyC1DJrjl?=
- =?us-ascii?Q?Mw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	AIJCZ0lVLbSi+yvmuMCn5dgxEHvXUIPYkAkG+ag7E7rk98c9rZf/6zotQQJHAV9n0yuqYlvjEOs6AopWQsP0ChgzoGMi1aOVh2INyvTODFW+s5R6ZKUqtaJMTM+HY2xdTsa1Ni/QxbggR7FjOq8dYjqIhg6UDPfL4DP3rCyMDEXoJtPl8nblxiejXHgEKh5+eXGQdxq9pr9DvDqePYDAxMCROwyAexTYDyRZSfD7L67vpnUN8J8JkIr+whkT5Ds/iouxl1utH+WwyecUDXI0GrledxUrELgLGqr4MhGFSxuzU8DXakGCIS+shwTEDyPCPaKHKnVzb/6YSk24fxSkjm/17sf73OncMieqd0nOUPSk55P3v6x5xpBQAsNAzo9A6JPBNnrhNcKlGZkmlOXhANzL8MEIl8DFpzidkFSsz8KsJwKWUzJlgi/CPCjtAdHnGH2sK//z+cf/B75KGPcUXsKim4wZTnilVN5kpbW76neKvx0rPnzi/HCfqcs7AEu3dtYO2RK/h58tqR8C6ghQqZ5Ytkcn6uA57Pp09jVj29LfQbbK/R3AGzFt1m5EFYvslE5LuHVNniAF4QIomaNR8aqlfVOIbgz9aRAxIt36sIc=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f3c28fa-16b8-479a-04ba-08dd4c3652c5
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2025 13:57:15.8335
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z4MnshxYdKTOOG49jpyJtADNXGOonXhwn0ou2vjeDaBrsbdrW31ffPlb8Qj7DPH1x8NuvSOXqhiFEBHQ9GGa9g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7125
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-13_06,2025-02-13_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2501170000 definitions=main-2502130106
-X-Proofpoint-ORIG-GUID: WAKu-5YCBrqDA02RuL9WuRue2RVy9PwU
-X-Proofpoint-GUID: WAKu-5YCBrqDA02RuL9WuRue2RVy9PwU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250213112247.3168709-1-libaokun@huaweicloud.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,huawei.com:email,imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-When issuing an atomic write by the CoW method, give the block allocator a
-hint to naturally align the data blocks.
+On Thu 13-02-25 19:22:47, libaokun@huaweicloud.com wrote:
+> From: Baokun Li <libaokun1@huawei.com>
+> 
+> Otherwise, if ext4_inode_attach_jinode() fails, a hung task will
+> happen because filemap_invalidate_unlock() isn't called to unlock
+> mapping->invalidate_lock. Like this:
+> 
+> EXT4-fs error (device sda) in ext4_setattr:5557: Out of memory
+> INFO: task fsstress:374 blocked for more than 122 seconds.
+>       Not tainted 6.14.0-rc1-next-20250206-xfstests-dirty #726
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:fsstress state:D stack:0     pid:374   tgid:374   ppid:373
+>                                   task_flags:0x440140 flags:0x00000000
+> Call Trace:
+>  <TASK>
+>  __schedule+0x2c9/0x7f0
+>  schedule+0x27/0xa0
+>  schedule_preempt_disabled+0x15/0x30
+>  rwsem_down_read_slowpath+0x278/0x4c0
+>  down_read+0x59/0xb0
+>  page_cache_ra_unbounded+0x65/0x1b0
+>  filemap_get_pages+0x124/0x3e0
+>  filemap_read+0x114/0x3d0
+>  vfs_read+0x297/0x360
+>  ksys_read+0x6c/0xe0
+>  do_syscall_64+0x4b/0x110
+>  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 
+> Fixes: c7fc0366c656 ("ext4: partial zero eof block on unaligned inode size extension")
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-This means that we have a better chance to issuing the atomic write via
-HW offload next time.
+Indeed. Feel free to add:
 
-Signed-off-by: John Garry <john.g.garry@oracle.com>
----
- fs/xfs/libxfs/xfs_bmap.c | 7 ++++++-
- fs/xfs/libxfs/xfs_bmap.h | 6 +++++-
- fs/xfs/xfs_reflink.c     | 8 ++++++--
- 3 files changed, 17 insertions(+), 4 deletions(-)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
-index 0ef19f1469ec..9bfdfb7cdcae 100644
---- a/fs/xfs/libxfs/xfs_bmap.c
-+++ b/fs/xfs/libxfs/xfs_bmap.c
-@@ -3454,6 +3454,12 @@ xfs_bmap_compute_alignments(
- 		align = xfs_get_cowextsz_hint(ap->ip);
- 	else if (ap->datatype & XFS_ALLOC_USERDATA)
- 		align = xfs_get_extsz_hint(ap->ip);
-+
-+	if (align > 1 && ap->flags & XFS_BMAPI_EXTSZALIGN)
-+		args->alignment = align;
-+	else
-+		args->alignment = 1;
-+
- 	if (align) {
- 		if (xfs_bmap_extsize_align(mp, &ap->got, &ap->prev, align, 0,
- 					ap->eof, 0, ap->conv, &ap->offset,
-@@ -3782,7 +3788,6 @@ xfs_bmap_btalloc(
- 		.wasdel		= ap->wasdel,
- 		.resv		= XFS_AG_RESV_NONE,
- 		.datatype	= ap->datatype,
--		.alignment	= 1,
- 		.minalignslop	= 0,
- 	};
- 	xfs_fileoff_t		orig_offset;
-diff --git a/fs/xfs/libxfs/xfs_bmap.h b/fs/xfs/libxfs/xfs_bmap.h
-index 4b721d935994..7a31697331dc 100644
---- a/fs/xfs/libxfs/xfs_bmap.h
-+++ b/fs/xfs/libxfs/xfs_bmap.h
-@@ -87,6 +87,9 @@ struct xfs_bmalloca {
- /* Do not update the rmap btree.  Used for reconstructing bmbt from rmapbt. */
- #define XFS_BMAPI_NORMAP	(1u << 10)
- 
-+/* Try to naturally align allocations to extsz hint */
-+#define XFS_BMAPI_EXTSZALIGN	(1u << 11)
-+
- #define XFS_BMAPI_FLAGS \
- 	{ XFS_BMAPI_ENTIRE,	"ENTIRE" }, \
- 	{ XFS_BMAPI_METADATA,	"METADATA" }, \
-@@ -98,7 +101,8 @@ struct xfs_bmalloca {
- 	{ XFS_BMAPI_REMAP,	"REMAP" }, \
- 	{ XFS_BMAPI_COWFORK,	"COWFORK" }, \
- 	{ XFS_BMAPI_NODISCARD,	"NODISCARD" }, \
--	{ XFS_BMAPI_NORMAP,	"NORMAP" }
-+	{ XFS_BMAPI_NORMAP,	"NORMAP" },\
-+	{ XFS_BMAPI_EXTSZALIGN,	"EXTSZALIGN" }
- 
- 
- static inline int xfs_bmapi_aflag(int w)
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index d097d33dc000..033dff86ecf0 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -445,6 +445,11 @@ xfs_reflink_fill_cow_hole(
- 	int			nimaps;
- 	int			error;
- 	bool			found;
-+	uint32_t		bmapi_flags = XFS_BMAPI_COWFORK |
-+					      XFS_BMAPI_PREALLOC;
-+
-+	if (atomic)
-+		bmapi_flags |= XFS_BMAPI_EXTSZALIGN;
- 
- 	resaligned = xfs_aligned_fsb_count(imap->br_startoff,
- 		imap->br_blockcount, xfs_get_cowextsz_hint(ip));
-@@ -478,8 +483,7 @@ xfs_reflink_fill_cow_hole(
- 	/* Allocate the entire reservation as unwritten blocks. */
- 	nimaps = 1;
- 	error = xfs_bmapi_write(tp, ip, imap->br_startoff, imap->br_blockcount,
--			XFS_BMAPI_COWFORK | XFS_BMAPI_PREALLOC, 0, cmap,
--			&nimaps);
-+			bmapi_flags, 0, cmap, &nimaps);
- 	if (error)
- 		goto out_trans_cancel;
- 
+								Honza
+
+> ---
+>  fs/ext4/inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 3cc8da6357aa..04ffd802dbde 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5452,7 +5452,7 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+>  			    oldsize & (inode->i_sb->s_blocksize - 1)) {
+>  				error = ext4_inode_attach_jinode(inode);
+>  				if (error)
+> -					goto err_out;
+> +					goto out_mmap_sem;
+>  			}
+>  
+>  			handle = ext4_journal_start(inode, EXT4_HT_INODE, 3);
+> -- 
+> 2.39.2
+> 
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
