@@ -1,122 +1,87 @@
-Return-Path: <linux-ext4+bounces-6450-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6451-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2BEDA3490A
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 17:08:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14FE2A34D80
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 19:22:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 239243ABDD7
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 16:02:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57FB43A9652
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 18:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4902B1FFC41;
-	Thu, 13 Feb 2025 16:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00ADB24292A;
+	Thu, 13 Feb 2025 18:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="f7tqWJi+"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6646B1EEA36
-	for <linux-ext4@vger.kernel.org>; Thu, 13 Feb 2025 16:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0566C2036FF;
+	Thu, 13 Feb 2025 18:20:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739462504; cv=none; b=jqgN8fNKEAMf1xJx5KbOE4ZfgkBhGfw98t9m8Bi7OAUtG8s3oJiqfmWY+N2iiZwtJd/c9aEdczjjJKseC2D7K4beu+euZn3aQBO21iloQ5X6/Voe810IF/SU8LY5hHLfclX6DW2LECdt69nyk/lC2GLAMq5tHth5DanA4V7AwVk=
+	t=1739470858; cv=none; b=f3EGyzNqqH8wLWW1u1ETvNTj3+C2rn6fbPOj4dztANkpVCfxvur6UBwZ8MYmEU5+3y1saa6+PiMvNJJcge390E1mp8ocuN4t+hCc9sDuXE8KpuZQtd87/p7EdhO48iE3FbKy8F8l7XuMkA8lIM7pai9dlf24fwyADpmezy3Pd2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739462504; c=relaxed/simple;
-	bh=kHjRefsv4ThbOtqwiuf5n1stwZEZB/5LIQ4AAEYCQqY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iVJvPEF3vjmlaAWrD7Y0w/JoUQ5Y48XUBjOh2BKfn3BvmQUM32yxlelzf6WJ5eKwAhLZk9L4O8/xahgiwyK2/aGE3K93KQL3v/cLPrEoH2t/uVwOV2d1SDicmHH9m25QXlXs3jTUdDC+PFCUvEXBqBPxCQ6h3KQ4GyawvDElvlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-82-224.bstnma.fios.verizon.net [173.48.82.224])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 51DG13NZ005146
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 13 Feb 2025 11:01:05 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id AAA7715C000B; Thu, 13 Feb 2025 11:01:03 -0500 (EST)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        ojaswin@linux.ibm.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-        yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v5 00/10] ext4: clean up and refactor fallocate
-Date: Thu, 13 Feb 2025 11:00:56 -0500
-Message-ID: <173946232424.399068.12866754767074223463.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241220011637.1157197-1-yi.zhang@huaweicloud.com>
-References: <20241220011637.1157197-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1739470858; c=relaxed/simple;
+	bh=4Vg82AC/5gDtPXGykDauQPdymUd43FQ3195zRfcKIko=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tlX6/faMubghZOZVuRE+Wl6nA+8gKH/wndqx/26x6UQPcoTLXJdqoVM/XVeQxLYIqVHnMgcM3QkHGC2fqecxgGqjCFC/bCcLj380dUegsUtVMJ8fxLhwZLk1fz/qtKuobrfabITOiB6AoFdxC2dhusQJkQ5jDQXuc5mSxbtn6io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=f7tqWJi+; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=7/aIj9xuYsDybw9On8Ao7mbYiCDQk1kEHDh39AlhraQ=; b=f7tqWJi+snhkvMGnoM+NwLlSVK
+	kRQ6ikNXNCTdTebrgq07PfmhiahbYmZCx6UN3Kg9TyMMdkliSXLDGf6HJlmc8TE0tWonk4tQJlLDB
+	Wd1X8x+C9EQ6tFLLhluM4lJDRENUEFUblmms3SUz6KqtbUTbkXYb8GyeuKCFwFxFfAm/Ep66sfR61
+	vwwBkboD3EGWmaFaieK+b+IUl6Pz8N4M7jF0eWjg5Db7ufXVeHSqG6ti4X1oujp/MXb7T9biZu16f
+	PBzEeE9mCmF2I2/Ii5SiV5scgN8eO24PVFG4CsLlN8uBr9gSQNt2lLZlFveGwUYI3bwd7DEzYkTpn
+	WuWnmg0A==;
+Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tidpQ-00000008wTr-3E54;
+	Thu, 13 Feb 2025 18:20:48 +0000
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To: Jan Kara <jack@suse.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH] ext2: Remove reference to bh->b_page
+Date: Thu, 13 Feb 2025 18:20:43 +0000
+Message-ID: <20250213182045.2131356-1-willy@infradead.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+Buffer heads are attached to folios, not to pages.  Also
+flush_dcache_page() is now deprecated in favour of flush_dcache_folio().
 
-On Fri, 20 Dec 2024 09:16:27 +0800, Zhang Yi wrote:
-> Changes since v4:
->  - In patch 1, call ext4_truncate_folio() only if truncating range is
->    PAGE_SIZE unaligned, and rename the variable start_boundary to
->    page_boundary.
-> Changes since v3:
->  - In patch 1, rename ext4_truncate_folios_range() and move journalled
->    mode specified handles and truncate_pagecache_range() into this
->    helper.
->  - In patch 3, switch to use ext4_truncate_page_cache_block_range().
->  - In patch 4, use IS_ALIGNED macro to check offset alignments and
->    introduce EXT4_B_TO_LBLK to do the lblk conversion.
->  - In patch 5, keep the first ext4_alloc_file_blocks() call before
->    truncating pagecache.
->  - In patch 9, rename 'out' label to 'out_inode_lock'.
-> Changes since v2:
->  - Add Patch 1 to address a newly discovered data loss issue that occurs
->    when using mmap to write after zeroing out a partial page on a
->    filesystem with the block size smaller than the page size.
->  - Do not write all data before punching hole, zeroing out and
->    collapsing range as Jan suggested, also drop current data writeback
->    in ext4_punch_hole().
->  - Since we don't write back all data in these 4 operations, we only
->    writeback data during inserting range,so do not factor out new
->    helpers in the last two patches, just move common components of
->    sub-operations into ext4_fallocate().
->  - Only keep Jan's review tag on patch 2 and 8, other patches contain
->    many code adaptations, so please review them again.
-> Changes since v1:
->  - Fix an using uninitialized variable problem in the error out path in
->    ext4_do_fallocate() in patch 08.
-> 
-> [...]
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/ext2/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks!
-
-[01/10] ext4: remove writable userspace mappings before truncating page cache
-        commit: 17207d0bb209e8b40f27d7f3f96e82a78af0bf2c
-[02/10] ext4: don't explicit update times in ext4_fallocate()
-        commit: 73ae756ecdfa9684446134590eef32b0f067249c
-[03/10] ext4: don't write back data before punch hole in nojournal mode
-        commit: 43d0105e2c7523cc6b14cad65e2044e829c0a07a
-[04/10] ext4: refactor ext4_punch_hole()
-        commit: 982bf37da09d078570650b691d9084f43805a5de
-[05/10] ext4: refactor ext4_zero_range()
-        commit: 53471e0bedad5891b860d02233819dc0e28189e2
-[06/10] ext4: refactor ext4_collapse_range()
-        commit: 162e3c5ad1672ef41dccfb28ad198c704b8aa9e7
-[07/10] ext4: refactor ext4_insert_range()
-        commit: 49425504376c335c68f7be54ae7c32312afd9475
-[08/10] ext4: factor out ext4_do_fallocate()
-        commit: fd2f764826df5489b849a8937b5a093aae5b1816
-[09/10] ext4: move out inode_lock into ext4_fallocate()
-        commit: ea3f17efd36b56c5839289716ba83eaa85893590
-[10/10] ext4: move out common parts into ext4_fallocate()
-        commit: 2890e5e0f49e10f3dadc5f7b7ea434e3e77e12a6
-
-Best regards,
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index 37f7ce56adce..21bea926e0ee 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -1556,7 +1556,7 @@ static ssize_t ext2_quota_write(struct super_block *sb, int type,
+ 		}
+ 		lock_buffer(bh);
+ 		memcpy(bh->b_data+offset, data, tocopy);
+-		flush_dcache_page(bh->b_page);
++		flush_dcache_folio(bh->b_folio);
+ 		set_buffer_uptodate(bh);
+ 		mark_buffer_dirty(bh);
+ 		unlock_buffer(bh);
 -- 
-Theodore Ts'o <tytso@mit.edu>
+2.47.2
+
 
