@@ -1,54 +1,54 @@
-Return-Path: <linux-ext4+bounces-6448-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6450-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48E3BA34902
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 17:07:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2BEDA3490A
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 17:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93C153AE70F
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 16:01:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 239243ABDD7
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2025 16:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195BA20126C;
-	Thu, 13 Feb 2025 16:01:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4902B1FFC41;
+	Thu, 13 Feb 2025 16:01:44 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E5C200BB7
-	for <linux-ext4@vger.kernel.org>; Thu, 13 Feb 2025 16:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6646B1EEA36
+	for <linux-ext4@vger.kernel.org>; Thu, 13 Feb 2025 16:01:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739462489; cv=none; b=mVKpB4pdn5dgiAv1fp+XAe/D5ko41GfEUcad1ITkToZbXScLdj3fMnF4pGhL8l/0crjgl9+tZo2LZNXpItHeu7dVyS9ngA7b73Zru/vEcEuAZWrtfIG61rsRULi8JYcyp64Uih6nR97BDU/4935g8Kq4PM8pFyfgBL12tQ6vXB8=
+	t=1739462504; cv=none; b=jqgN8fNKEAMf1xJx5KbOE4ZfgkBhGfw98t9m8Bi7OAUtG8s3oJiqfmWY+N2iiZwtJd/c9aEdczjjJKseC2D7K4beu+euZn3aQBO21iloQ5X6/Voe810IF/SU8LY5hHLfclX6DW2LECdt69nyk/lC2GLAMq5tHth5DanA4V7AwVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739462489; c=relaxed/simple;
-	bh=nRz2yzSITsxRQzMh5EL9FOw5VJMeF8SAQBWYANCbNsw=;
+	s=arc-20240116; t=1739462504; c=relaxed/simple;
+	bh=kHjRefsv4ThbOtqwiuf5n1stwZEZB/5LIQ4AAEYCQqY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kfQ1jjSN1+O5CjXq5sctA9jrga4uX88hkA3jMDnGfAfl+onz+KI+5IczMxV9JYkXpzE5gTxz8g2uYT8bdJViS7Vh2khSZ8F62Lv6sbpHDp/yyefKyu4kiLjnozoVWoLEIR3MqtiCnVA66I9pLz5lgNZ3xTTNH05xpH2mh1/hN/0=
+	 MIME-Version:Content-Type; b=iVJvPEF3vjmlaAWrD7Y0w/JoUQ5Y48XUBjOh2BKfn3BvmQUM32yxlelzf6WJ5eKwAhLZk9L4O8/xahgiwyK2/aGE3K93KQL3v/cLPrEoH2t/uVwOV2d1SDicmHH9m25QXlXs3jTUdDC+PFCUvEXBqBPxCQ6h3KQ4GyawvDElvlw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-82-224.bstnma.fios.verizon.net [173.48.82.224])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 51DG137D005145
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 51DG13NZ005146
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 13 Feb 2025 11:01:05 -0500
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id A7BEF15C000A; Thu, 13 Feb 2025 11:01:03 -0500 (EST)
+	id AAA7715C000B; Thu, 13 Feb 2025 11:01:03 -0500 (EST)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: corbet@lwn.net, adilger.kernel@dilger.ca, jack@suse.com,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, dennis.lamerice@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] Minor cleanups to ext4 and jbd2
-Date: Thu, 13 Feb 2025 11:00:55 -0500
-Message-ID: <173946232426.399068.7156785933165072414.b4-ty@mit.edu>
+To: linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        ojaswin@linux.ibm.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+        yukuai3@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v5 00/10] ext4: clean up and refactor fallocate
+Date: Thu, 13 Feb 2025 11:00:56 -0500
+Message-ID: <173946232424.399068.12866754767074223463.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241218145414.1422946-1-shikemeng@huaweicloud.com>
-References: <20241218145414.1422946-1-shikemeng@huaweicloud.com>
+In-Reply-To: <20241220011637.1157197-1-yi.zhang@huaweicloud.com>
+References: <20241220011637.1157197-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,27 +59,62 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Wed, 18 Dec 2024 22:54:11 +0800, Kemeng Shi wrote:
-> v1->v2:
-> -Collect RVB from Yi
-> -Properly remove t_private_list from document.
-> 
-> Patch 1 remove unused ext4 journal callback
-> patch 2 remove transaction->t_private_list which is only used by ext4
-> journal callback
-> Patch 3 remove unneeded forward declaration of
-> ext4_destroy_lazyinit_thread().
+On Fri, 20 Dec 2024 09:16:27 +0800, Zhang Yi wrote:
+> Changes since v4:
+>  - In patch 1, call ext4_truncate_folio() only if truncating range is
+>    PAGE_SIZE unaligned, and rename the variable start_boundary to
+>    page_boundary.
+> Changes since v3:
+>  - In patch 1, rename ext4_truncate_folios_range() and move journalled
+>    mode specified handles and truncate_pagecache_range() into this
+>    helper.
+>  - In patch 3, switch to use ext4_truncate_page_cache_block_range().
+>  - In patch 4, use IS_ALIGNED macro to check offset alignments and
+>    introduce EXT4_B_TO_LBLK to do the lblk conversion.
+>  - In patch 5, keep the first ext4_alloc_file_blocks() call before
+>    truncating pagecache.
+>  - In patch 9, rename 'out' label to 'out_inode_lock'.
+> Changes since v2:
+>  - Add Patch 1 to address a newly discovered data loss issue that occurs
+>    when using mmap to write after zeroing out a partial page on a
+>    filesystem with the block size smaller than the page size.
+>  - Do not write all data before punching hole, zeroing out and
+>    collapsing range as Jan suggested, also drop current data writeback
+>    in ext4_punch_hole().
+>  - Since we don't write back all data in these 4 operations, we only
+>    writeback data during inserting range,so do not factor out new
+>    helpers in the last two patches, just move common components of
+>    sub-operations into ext4_fallocate().
+>  - Only keep Jan's review tag on patch 2 and 8, other patches contain
+>    many code adaptations, so please review them again.
+> Changes since v1:
+>  - Fix an using uninitialized variable problem in the error out path in
+>    ext4_do_fallocate() in patch 08.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/3] ext4: remove unused ext4 journal callback
-      commit: fa1008e3df6220368b8ea3b004eca501ed546973
-[2/3] jbd2: remove unused transaction->t_private_list
-      commit: 06b9e91425b26b5e782f82a043a3f6c6354947c2
-[3/3] ext4: remove unneeded forward declaration
-      commit: 5e22ff3bc9358f994e65c870e2c4a8002ba81791
+[01/10] ext4: remove writable userspace mappings before truncating page cache
+        commit: 17207d0bb209e8b40f27d7f3f96e82a78af0bf2c
+[02/10] ext4: don't explicit update times in ext4_fallocate()
+        commit: 73ae756ecdfa9684446134590eef32b0f067249c
+[03/10] ext4: don't write back data before punch hole in nojournal mode
+        commit: 43d0105e2c7523cc6b14cad65e2044e829c0a07a
+[04/10] ext4: refactor ext4_punch_hole()
+        commit: 982bf37da09d078570650b691d9084f43805a5de
+[05/10] ext4: refactor ext4_zero_range()
+        commit: 53471e0bedad5891b860d02233819dc0e28189e2
+[06/10] ext4: refactor ext4_collapse_range()
+        commit: 162e3c5ad1672ef41dccfb28ad198c704b8aa9e7
+[07/10] ext4: refactor ext4_insert_range()
+        commit: 49425504376c335c68f7be54ae7c32312afd9475
+[08/10] ext4: factor out ext4_do_fallocate()
+        commit: fd2f764826df5489b849a8937b5a093aae5b1816
+[09/10] ext4: move out inode_lock into ext4_fallocate()
+        commit: ea3f17efd36b56c5839289716ba83eaa85893590
+[10/10] ext4: move out common parts into ext4_fallocate()
+        commit: 2890e5e0f49e10f3dadc5f7b7ea434e3e77e12a6
 
 Best regards,
 -- 
