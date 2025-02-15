@@ -1,204 +1,170 @@
-Return-Path: <linux-ext4+bounces-6460-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6461-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08E24A35BB8
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Feb 2025 11:45:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 801B4A36F7F
+	for <lists+linux-ext4@lfdr.de>; Sat, 15 Feb 2025 17:40:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36FE43AD986
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Feb 2025 10:45:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44D6A16E5F8
+	for <lists+linux-ext4@lfdr.de>; Sat, 15 Feb 2025 16:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79B625A64E;
-	Fri, 14 Feb 2025 10:45:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806001A5BAF;
+	Sat, 15 Feb 2025 16:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VJ09KSsm";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NrWNIXue";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VJ09KSsm";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NrWNIXue"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PuNArOiO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B8925E44F
-	for <linux-ext4@vger.kernel.org>; Fri, 14 Feb 2025 10:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6702D529
+	for <linux-ext4@vger.kernel.org>; Sat, 15 Feb 2025 16:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739529912; cv=none; b=aE7NDVn2T/NUZ6Kr8qv68rMekNkCqNS4EaT7w76fRwBC4ezJZSm18cLtNncJLCXbGQM8rpxHTSVhyWn7f9fDIn0P7X9WFGOL0yNDbW8XhPeLxWfNIYMxA3EOqfkUJk7ApzXPU20Aco4XzxWsi7TIsaqUrzgPjNRTjPaDNtJAEBc=
+	t=1739637611; cv=none; b=ZlhWYYRYPLLNvD34R2o/x2kC120nzYqB74Gd/R6bXn2pcTAmmcChNF+OahWteUVCbccF92yisqFsqjXhBGUKnkT8QroRodZTJxBrfLnEmk2Uu2EoJ4l8KcGkdGN0wHp8pwoe7m93TKB5++4v/Yh1oK8OPeR1PMFeDBK93AQMISk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739529912; c=relaxed/simple;
-	bh=le7r6IA9Gp7L1oFDSkXA5oZli+zZK8NjnrUNSpbeAwg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mDHBkoeyEFjmQwA7hpyoSK9KqDGDIdb+XyP4hDO5KwcQ3UV6Q3+HcgmUF5Al+P0Lv3iKmH883YX72Rs81hyJU9nm7uQhFRmdEPlKLD4YDngjr856A+46pyJeq//lig4xlocGJZIyFgPmQRmUbKFISWcZVEJLmfq+BROov/H0LfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=fail smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VJ09KSsm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NrWNIXue; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VJ09KSsm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NrWNIXue; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3B5B01F381;
-	Fri, 14 Feb 2025 10:45:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739529908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C72YKO+lGONxV8VaoImpaJ8SflA0GRGbtpS5Gj3zqEc=;
-	b=VJ09KSsmDfQTkAWohTuFAOzti1Hd+aABS3G4fnGFNmDY4Py4imMEjseJfG7VYyMjxZc8GQ
-	sJsO3z2qK7OVidzefK6Y05A1HCHO5NOdmr2ZoBbUgyEVkPPP2EJonkhN+SKDlt7RmsBKWR
-	2MPxT2x4NHXsAyw9t9kxRRiuzUXjV2s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739529908;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C72YKO+lGONxV8VaoImpaJ8SflA0GRGbtpS5Gj3zqEc=;
-	b=NrWNIXuePRWHrrMR6uU1qbww/jM4Z30FFj9dw1+bcz+A9+FR45yyGScFm95P8mznoMG+aH
-	b+1+VDEcIz9BRmBA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=VJ09KSsm;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=NrWNIXue
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739529908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C72YKO+lGONxV8VaoImpaJ8SflA0GRGbtpS5Gj3zqEc=;
-	b=VJ09KSsmDfQTkAWohTuFAOzti1Hd+aABS3G4fnGFNmDY4Py4imMEjseJfG7VYyMjxZc8GQ
-	sJsO3z2qK7OVidzefK6Y05A1HCHO5NOdmr2ZoBbUgyEVkPPP2EJonkhN+SKDlt7RmsBKWR
-	2MPxT2x4NHXsAyw9t9kxRRiuzUXjV2s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739529908;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C72YKO+lGONxV8VaoImpaJ8SflA0GRGbtpS5Gj3zqEc=;
-	b=NrWNIXuePRWHrrMR6uU1qbww/jM4Z30FFj9dw1+bcz+A9+FR45yyGScFm95P8mznoMG+aH
-	b+1+VDEcIz9BRmBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 30DE4137DB;
-	Fri, 14 Feb 2025 10:45:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AEnkC7Qer2e6UwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 14 Feb 2025 10:45:08 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E6023A07B2; Fri, 14 Feb 2025 11:45:07 +0100 (CET)
-Date: Fri, 14 Feb 2025 11:45:07 +0100
-From: Jan Kara <jack@suse.cz>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Theodore Ts'o <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Remove references to bh->b_page
-Message-ID: <ffxmulhjdl7wjm5kengcwntppgwxdfmvoqxodi6sgwue7nkw5k@v6one4slgjk5>
-References: <20250213182303.2133205-1-willy@infradead.org>
+	s=arc-20240116; t=1739637611; c=relaxed/simple;
+	bh=LSk/nzEnuEtQ9KQ2LKqePtPDnDty5vh5Y1ntavZ114c=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=ZHTFnPfirLsuL//Vc7MmenLgWs/QkGCKUk62PHa8qyxU4I+yEvyOpyQSXja2gWJbNrCpoq7BkfzqtosUmCFDe4C4dmTiNvm5f6fMj6rOj8RDcYZ/VjDu8gfSVvIlXgRXggOcxLOQ5xj7dRTEbNFZiIDpUEvYofKsyKta6RtfmL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PuNArOiO; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739637609; x=1771173609;
+  h=date:from:to:cc:subject:message-id;
+  bh=LSk/nzEnuEtQ9KQ2LKqePtPDnDty5vh5Y1ntavZ114c=;
+  b=PuNArOiOnDDiYN8kZ/Tj6MTXFdku4QzUANt0BbY6PvTmlgypp1KalvSZ
+   QFcKPKj7ChuiTfdh19GXgOkNJ5aVuYmnzOZyDZaKW70zvukMdxIx0tyib
+   k9lpD6908J0f2TkyxIazlC/fELg4Od/yNQOfgpFxL/tzF6uhAmaXuMJ0D
+   1v4BHvA4jK5UNX4593H2phrBUHlaMbXlzrNsyDEMwHDKzz7mNoKQqNqY3
+   kPUfttA3MMZjVnMUFD2cT1ECp2GRoATFABHJL97PciiBwoWyxpQWQlQdW
+   GdGuSiOuwKpQQUFRaHJ5qLwTRQLWnwpGFyJLLaPiYFba6xIp6ecDTBagq
+   Q==;
+X-CSE-ConnectionGUID: WcqzcSLnS7+eoPS3DXXhVA==
+X-CSE-MsgGUID: b41kMIq6Sna87mQZnAKJFQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11346"; a="40295585"
+X-IronPort-AV: E=Sophos;i="6.13,289,1732608000"; 
+   d="scan'208";a="40295585"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2025 08:40:08 -0800
+X-CSE-ConnectionGUID: yR5THfJYTR+iYEVx05iQew==
+X-CSE-MsgGUID: D5MnssM/T5GpgRIeO+RIGg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,289,1732608000"; 
+   d="scan'208";a="113683272"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 15 Feb 2025 08:40:06 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tjLD2-001Azx-1V;
+	Sat, 15 Feb 2025 16:40:04 +0000
+Date: Sun, 16 Feb 2025 00:39:20 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 9e28059d56649a7212d5b3f8751ec021154ba3dd
+Message-ID: <202502160013.zxYcnH4y-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250213182303.2133205-1-willy@infradead.org>
-X-Rspamd-Queue-Id: 3B5B01F381
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MISSING_XM_UA(0.00)[];
-	ARC_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_THREE(0.00)[3];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
-X-Spam-Flag: NO
 
-On Thu 13-02-25 18:23:01, Matthew Wilcox (Oracle) wrote:
-> Buffer heads are attached to folios, not to pages.  Also
-> flush_dcache_page() is now deprecated in favour of flush_dcache_folio().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 9e28059d56649a7212d5b3f8751ec021154ba3dd  ext4: introduce linear search for dentries
 
-Looks good. Feel free to add:
+elapsed time: 1451m
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+configs tested: 77
+configs skipped: 1
 
-								Honza
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> ---
->  fs/ext4/inode.c   | 2 +-
->  fs/ext4/super.c   | 2 +-
->  fs/jbd2/journal.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 7c54ae5fcbd4..bd579f46c7f3 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -751,7 +751,7 @@ static void ext4_update_bh_state(struct buffer_head *bh, unsigned long flags)
->  	flags &= EXT4_MAP_FLAGS;
->  
->  	/* Dummy buffer_head? Set non-atomically. */
-> -	if (!bh->b_page) {
-> +	if (!bh->b_folio) {
->  		bh->b_state = (bh->b_state & ~EXT4_MAP_FLAGS) | flags;
->  		return;
->  	}
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index a50e5c31b937..366ce891bcc3 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -7288,7 +7288,7 @@ static ssize_t ext4_quota_write(struct super_block *sb, int type,
->  	}
->  	lock_buffer(bh);
->  	memcpy(bh->b_data+offset, data, len);
-> -	flush_dcache_page(bh->b_page);
-> +	flush_dcache_folio(bh->b_folio);
->  	unlock_buffer(bh);
->  	err = ext4_handle_dirty_metadata(handle, NULL, bh);
->  	brelse(bh);
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index d8084b31b361..e5a4e4ba7837 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -947,7 +947,7 @@ int jbd2_journal_bmap(journal_t *journal, unsigned long blocknr,
->   * descriptor blocks we do need to generate bona fide buffers.
->   *
->   * After the caller of jbd2_journal_get_descriptor_buffer() has finished modifying
-> - * the buffer's contents they really should run flush_dcache_page(bh->b_page).
-> + * the buffer's contents they really should run flush_dcache_folio(bh->b_folio).
->   * But we don't bother doing that, so there will be coherency problems with
->   * mmaps of blockdevs which hold live JBD-controlled filesystems.
->   */
-> -- 
-> 2.47.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+tested configs:
+alpha                           allyesconfig    gcc-14.2.0
+arc                             allmodconfig    gcc-13.2.0
+arc                             allyesconfig    gcc-13.2.0
+arc                  randconfig-001-20250215    gcc-13.2.0
+arc                  randconfig-002-20250215    gcc-13.2.0
+arm                  randconfig-001-20250215    clang-15
+arm                  randconfig-002-20250215    clang-17
+arm                  randconfig-003-20250215    gcc-14.2.0
+arm                  randconfig-004-20250215    gcc-14.2.0
+arm64                randconfig-001-20250215    clang-21
+arm64                randconfig-002-20250215    gcc-14.2.0
+arm64                randconfig-003-20250215    clang-17
+arm64                randconfig-004-20250215    gcc-14.2.0
+csky                 randconfig-001-20250215    gcc-14.2.0
+csky                 randconfig-002-20250215    gcc-14.2.0
+hexagon                         allmodconfig    clang-21
+hexagon                         allyesconfig    clang-18
+hexagon              randconfig-001-20250215    clang-21
+hexagon              randconfig-002-20250215    clang-21
+i386                            allmodconfig    gcc-12
+i386                             allnoconfig    gcc-12
+i386                            allyesconfig    gcc-12
+i386       buildonly-randconfig-001-20250215    gcc-12
+i386       buildonly-randconfig-002-20250215    clang-19
+i386       buildonly-randconfig-003-20250215    clang-19
+i386       buildonly-randconfig-004-20250215    gcc-12
+i386       buildonly-randconfig-005-20250215    clang-19
+i386       buildonly-randconfig-006-20250215    clang-19
+i386                               defconfig    clang-19
+loongarch            randconfig-001-20250215    gcc-14.2.0
+loongarch            randconfig-002-20250215    gcc-14.2.0
+nios2                randconfig-001-20250215    gcc-14.2.0
+nios2                randconfig-002-20250215    gcc-14.2.0
+openrisc                         allnoconfig    gcc-14.2.0
+parisc                           allnoconfig    gcc-14.2.0
+parisc               randconfig-001-20250215    gcc-14.2.0
+parisc               randconfig-002-20250215    gcc-14.2.0
+powerpc                          allnoconfig    gcc-14.2.0
+powerpc              randconfig-001-20250215    gcc-14.2.0
+powerpc              randconfig-002-20250215    clang-21
+powerpc              randconfig-003-20250215    clang-19
+powerpc64            randconfig-001-20250215    gcc-14.2.0
+powerpc64            randconfig-002-20250215    clang-21
+powerpc64            randconfig-003-20250215    gcc-14.2.0
+riscv                            allnoconfig    gcc-14.2.0
+riscv                randconfig-001-20250215    clang-17
+riscv                randconfig-002-20250215    clang-19
+s390                            allmodconfig    clang-19
+s390                             allnoconfig    clang-21
+s390                            allyesconfig    gcc-14.2.0
+s390                 randconfig-001-20250215    gcc-14.2.0
+s390                 randconfig-002-20250215    gcc-14.2.0
+sh                              allmodconfig    gcc-14.2.0
+sh                              allyesconfig    gcc-14.2.0
+sh                   randconfig-001-20250215    gcc-14.2.0
+sh                   randconfig-002-20250215    gcc-14.2.0
+sparc                           allmodconfig    gcc-14.2.0
+sparc                randconfig-001-20250215    gcc-14.2.0
+sparc                randconfig-002-20250215    gcc-14.2.0
+sparc64              randconfig-001-20250215    gcc-14.2.0
+sparc64              randconfig-002-20250215    gcc-14.2.0
+um                              allmodconfig    clang-21
+um                               allnoconfig    clang-18
+um                              allyesconfig    gcc-12
+um                   randconfig-001-20250215    clang-21
+um                   randconfig-002-20250215    clang-19
+x86_64                           allnoconfig    clang-19
+x86_64                          allyesconfig    clang-19
+x86_64     buildonly-randconfig-001-20250215    gcc-12
+x86_64     buildonly-randconfig-002-20250215    clang-19
+x86_64     buildonly-randconfig-003-20250215    gcc-12
+x86_64     buildonly-randconfig-004-20250215    clang-19
+x86_64     buildonly-randconfig-005-20250215    clang-19
+x86_64     buildonly-randconfig-006-20250215    clang-19
+x86_64                             defconfig    gcc-11
+xtensa               randconfig-001-20250215    gcc-14.2.0
+xtensa               randconfig-002-20250215    gcc-14.2.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
