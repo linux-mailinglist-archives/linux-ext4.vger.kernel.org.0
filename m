@@ -1,367 +1,348 @@
-Return-Path: <linux-ext4+bounces-6512-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6513-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54409A3CEF4
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2025 02:59:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0F5BA3D1F7
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2025 08:18:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE1DD7A48A1
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2025 01:57:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B32AE17D5DC
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2025 07:14:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228501C9DC6;
-	Thu, 20 Feb 2025 01:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="LMj3AjWc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D61C1E7C16;
+	Thu, 20 Feb 2025 07:13:28 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mo-csw.securemx.jp (mo-csw1121.securemx.jp [210.130.202.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A38F1C3C1C
-	for <linux-ext4@vger.kernel.org>; Thu, 20 Feb 2025 01:58:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740016691; cv=none; b=ZzNAQ57ydTVTIepqVbA03rQuX1R+Yrzq+pKTGRcMzw83pxQ+eh4E82ZkkPzWi5U4kMP1M7xlm70PYFD8q+6vOSUlEmigyRSYN6WgLNjK7SYS8FkNJ8C/aUZCko2u1T2i9wh01s2CSHWRJOoZiybVzV9okU+Y9Nzm5HSM2OV1zXY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740016691; c=relaxed/simple;
-	bh=T4VbV8R452H4c8sn/sfHDxR/L5M8AG4h6j+RqhjO9ng=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=ApSVfTG/a0lnWZXvRhvNHSeGQUe0E17y6CBFVyonYxawFLdZ1Wx1KYJ290VfDyzoQnGGHr1SLt/qtTKd8TOeFNG3Dw341BOLP4EYg7jQBq3Nc+3vQhhhCBvI/Kqm1eSn9rHzGHNcTKAWEKAcsifnNNJKUbqEzmswxbcCJ6UgZDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=LMj3AjWc; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-22128b7d587so6382735ad.3
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Feb 2025 17:58:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1740016687; x=1740621487; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=USvqQDkNIqdC675OK3K8CeB4xM5di4JLVBj/3kWuQvQ=;
-        b=LMj3AjWcwZa5dKFM6daKhq18DQo6GgwIRLA5R/rhAHOFwtcsTh+Ba1APe/wWLGxxfj
-         R6gWOzkBAGW7QvKj5fvEMbyMvG0SKfUEZ8roM8GSlO9j5p8hhMbYKY1c4cCClssMct2r
-         djYVWjOVgrSpLT7dkCafgPOqZPgAeLZEgoyuEn5OU83TLgtE316milIEJADpEL+yOwaF
-         69SpJyap19TFAfhFsX4MAqZwiYbN13bdfhAgH9YS2ZfoLFMuXgn4jfhhxH0AWpGH5sX7
-         axTuuht62HXg9kmPRMlcpKz5F0EaxZAC5R2u2k7WP5o1qBAC3XU7QqxhUAh25aGa7Kcg
-         zOsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740016687; x=1740621487;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=USvqQDkNIqdC675OK3K8CeB4xM5di4JLVBj/3kWuQvQ=;
-        b=w6DQzZ47HhSGB5Sz6jcpSQBzafJ81Qm+oyoR504tRexXCcapFUb747GwfoDj5tiVTv
-         iaxdF91dI38e4UktbS53VLGeDiv1/voH0OvTfuTQSIwznJkBhbOQ5wYR+yfgXBSFl8gd
-         KIgaXR/1SKKtw0a+4HYni25A8KZokevzNYoZiBQ1QIhs22PFYn+rdK4hlHNOWBNLMAhD
-         mmtnJfXQQmjHRD00XNhqTCx7SPmZdu6o/ceTorggRS9+QkadXoDnLylgWCmpOu6O6+zw
-         vlYYF+/WNMJ5Q0JUA29Yu2no74fUJl2REMAKisP55Fm0Th88hXcEMlMQMjVUuR4XO0x0
-         Biyg==
-X-Forwarded-Encrypted: i=1; AJvYcCVL+x/g4plsaLlvA1k5gFyUEpxZdYveWIhB9nZjRMHauDLBirduN30PzcferxCO79cYwotlrWLj8MRn@vger.kernel.org
-X-Gm-Message-State: AOJu0YyniIj7eAZmqbQUkR7IfhGWLIkyb5cfaatsPl4KRLD67WgKMf5k
-	pam5SyBXHHEi0rm/FVzx3q6GZ0RmU9SswpujvMjHOyi1cueLwDw8ea1dO9bGjDhOSxXalmNy70h
-	V
-X-Gm-Gg: ASbGnct3UrERpsWXXKI+jWCiu//yejAt400P0v8FlVWEjHMD50qytMdzsiwQbC4+pbx
-	mhcTAoXrzSuuuveefd41JuhEsvF+a3TRUQiPlSmpMFBjlfoCwmUBFwCbcQxClFdtlIVkP4s7nLx
-	HrDVy/5+ujKQ14lWviH4dKj56ttRCF/UTrg7N85oTK2qZ8+OU6tS1CQeCEl3rCzd6x/9SFsovAI
-	+koTciLfilsPYhxkrG82sotZCT5MBWHeR7ZPLUh1zDunFb63orlF6p6w7X/JQeBJ+3qL6mgxZCH
-	mlx8mUaKHDwAJMdloNjEAHNnsjxiUD963uKy0awKG4rLNEMkcyfwt+12N29pJGey
-X-Google-Smtp-Source: AGHT+IF4aCMjGSvZV4KGG8KxRgbPyXcEK3sslQ6oyzuxmVdiquM6qFMo4MmcZ+LOdRh215i3nrWkAw==
-X-Received: by 2002:a05:6a21:62c9:b0:1ee:60fc:a1ba with SMTP id adf61e73a8af0-1eed4e3f1f1mr11730466637.3.1740016685968;
-        Wed, 19 Feb 2025 17:58:05 -0800 (PST)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73276f20c30sm7062122b3a.21.2025.02.19.17.58.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 19 Feb 2025 17:58:04 -0800 (PST)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <007522B4-E6F6-4DCA-9355-B1FBB1C1A6AF@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_29BEA282-9319-4098-AD69-77C299457FA6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08641E6DC5
+	for <linux-ext4@vger.kernel.org>; Thu, 20 Feb 2025 07:13:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.130.202.132
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740035607; cv=fail; b=lhePqswjmK0aPcaUT7wTr1FjxOtsFNBipo2M63reXfMmjFvo9Xml0iR9pksMbwjOoUb4EJMccH0h12ibKLtkbBr/SsUCEMmV1oazjdTmUhs6qKe51zdpJLAwvm7L4Of5l8NdK22qM47PY5Ov7PH/l8O/0lSASoQagIJJUFs8ngk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740035607; c=relaxed/simple;
+	bh=SS751Qx5DM1nX7/g5ypSZ9/YBen9ls+BaRA52Aj4dsg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Gqnbcn0h4+xIR2+f21jkQRsnT/h0RPmawD6PUaCy7Y7SRc5FJaEimuTK+uCMOAo+b4RLoQjUXFwGJZCLP87lhP6WBvUxbrk5vwLz/paKZd+wYoo1/4t2xmnTpllccqfdgpcwBSu9p4Qo5KvqlnYivqDRZ6Jt2UpO3r7bdx+sEfA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toshiba-tsip.com; spf=pass smtp.mailfrom=toshiba-tsip.com; arc=fail smtp.client-ip=210.130.202.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toshiba-tsip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toshiba-tsip.com
+Received: by mo-csw.securemx.jp (mx-mo-csw1121) id 51K7DDWr2539215; Thu, 20 Feb 2025 16:13:13 +0900
+X-Iguazu-Qid: 2rWhEqwpj4pjaTrnO7
+X-Iguazu-QSIG: v=2; s=0; t=1740035593; q=2rWhEqwpj4pjaTrnO7; m=kZ1BMAsxrPDwF2mcEpwFsIcrQ6gMzWdBYXfgvUmv7ok=
+Received: from imx12-a.toshiba.co.jp ([38.106.60.135])
+	by relay.securemx.jp (mx-mr1121) id 51K7DCSS1718867
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Thu, 20 Feb 2025 16:13:12 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YkrN7Hjd5QA9EClbS4rkDyptU+1yetI1mGHPUkr6DQG1AVm5wVShBqNRD+5ySysnkfm4lwhivpps7Vkn6kErHElVCFc7FVTetugJkASk0n1RxAbAlo8hX1ZxeYRRMMIUdLpKH3lxQ8DEeyy45RtrlvZG6EOzhZbqgOMJ6NCpAShlmm7EZWGapIUijHbcxYiyx8/mZJkcqLJAHDGBXQmrTJWLkKzgCbMa1SF6j1XPxmmROnxg4gghiXfpWVPBkOOdidqLJNB2yuD1Z/4hfnSUc6F6KHaHy1ITYX2ZgCt72N5t3b79Bt+vc6ZxqXLPCRAeSY4cEcO+RMmPp+X5AUBVjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zSMl7iAhS+3wNDlIHaUNmZ3It1SfW4ZwxK13TqGqkpQ=;
+ b=WV5lDHFox3ALCRNzJoOytpo8OgENUI8Om8OWcbs/vHfe+5QyFEFHyk/fvsaj02/4aQwOXTwGvv48diTPaaZAfWIuUdCnkMicV0t26pLGr7qoaFXSUoMTrp5wh9JGwWLVM8nAYjIF3XIo7lSJxJBA8CsPEZmU1cscI4XRTc2UTIXFuWuBBFHMv0R9D+D9jRFm62ihPopEipLRzdk+Q1Spg7YrORqVA+CkJmUtcHhf77L9gB/955esncOgGcrUGm1Vwc1hg+pkCgo+qaGbl6qZSgdRYz2XFZqub6VIc7mDUldVKTcrLnrxJWuy7ukQZBZm0I3x91c+hwk23uQcUH4ryQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toshiba-tsip.com; dmarc=pass action=none
+ header.from=toshiba-tsip.com; dkim=pass header.d=toshiba-tsip.com; arc=none
+From: <Adithya.Balakumar@toshiba-tsip.com>
+To: <adilger@dilger.ca>, <linux-ext4@vger.kernel.org>
+CC: <Shivanand.Kunijadar@toshiba-tsip.com>, <dinesh.kumar@toshiba-tsip.com>,
+        <kazuhiro3.hayashi@toshiba.co.jp>, <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: Re: Is it possible to make ext4 images reproducible even after
+ filesystem operations ?
+Thread-Topic: Is it possible to make ext4 images reproducible even after
+ filesystem operations ?
+Thread-Index: AQHbbAAVquWdDiPLDEGVbp6qNXKc6rNPOWuAgAC4vAI=
+Date: Thu, 20 Feb 2025 07:13:09 +0000
+X-TSB-HOP2: ON
+Message-ID: 
+ <TYCPR01MB96692D5D2E01BA7D587B45CAC4C42@TYCPR01MB9669.jpnprd01.prod.outlook.com>
+References: 
+ <TYCPR01MB966943691EBB5DA3F5F85621C4E62@TYCPR01MB9669.jpnprd01.prod.outlook.com>
+ <21C92625-5A8E-430C-8359-A07CE698DE42@dilger.ca>
+In-Reply-To: <21C92625-5A8E-430C-8359-A07CE698DE42@dilger.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=toshiba-tsip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYCPR01MB9669:EE_|OS3PR01MB10168:EE_
+x-ms-office365-filtering-correlation-id: 1d3b6fcc-5979-4d6e-96cf-08dd517e07c5
+x-ld-processed: f109924e-fb71-4ba0-b2cc-65dcdf6fbe4f,ExtAddr,ExtFwd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700018;
+x-microsoft-antispam-message-info: 
+ =?iso-2022-jp?B?aUNwNm1NQ0h1V1QyaU1aUk1aYmVCcjRNUUhDU1JKamU5SU1KOWVZZ3FH?=
+ =?iso-2022-jp?B?YVFnMWN5M2pLakU0Z2xoWTl1OStldVM4bmVMUXU0SGNNK0NnQmNaSFQr?=
+ =?iso-2022-jp?B?emxCb1RiaDRmVXhUNjE4ZnBjdldscjVKa3BoeXM5SmU4OHJ0MmJPdXc3?=
+ =?iso-2022-jp?B?NE1iWlRGdy9CVWlXVU1NbmxmajRXY3gxZjk3V1o1Q2FucGM2UWFadTMw?=
+ =?iso-2022-jp?B?aUJNbmg2K1JUbzhYbFVwYzg2Y1k5Nm4yaW5QdlFYL2t1T1RIY1Z4MXdx?=
+ =?iso-2022-jp?B?OWsvSGhZbHhPU3c0MVkzTnYvV01aOHpQMnVlbzV5cHhyS0hXZFh2SmZT?=
+ =?iso-2022-jp?B?clVRMldVbmtZSDR0d0YwT3NtdG5yZy8yeERETjV2Y0JzSU9RYTVLUFoz?=
+ =?iso-2022-jp?B?Z2FyODlNYXRid2IwOSs3emczVEdsUnA3OTJvR1Ewd3JKVUxuQjlYQmJM?=
+ =?iso-2022-jp?B?VmtlU1dVSUVrMlNqa2ZUb2NuU2N4TE5aZDlQRThyUS92Nk8zeUNCRjlV?=
+ =?iso-2022-jp?B?cWVaNkFSTklrWElVL3Q2QzVUUSt6SG5NYnpyKzFJU05ma2k5TTV5SVA1?=
+ =?iso-2022-jp?B?anM5MkQ4bkIxUmpQUy9ydGlERlM5TUpQQnNqbzltRUI0dktkaEVmWDBl?=
+ =?iso-2022-jp?B?Q0JqSUl6ZVZhRXBGZzdOdzV3TmxBZFNSa25kQ2RiRlUrckxKSzNzeWtm?=
+ =?iso-2022-jp?B?aVBrd0cvZVFwUnNOdjZCeHgrL2ZnRjlRTWJqeHJUUXRZUThCbTVPVDE2?=
+ =?iso-2022-jp?B?YUExMzVqZGUzRFpZV3VnTjhhVDBoZytzbUd6Lzc1eUJzZHpOVU5XZFVT?=
+ =?iso-2022-jp?B?Wkd5UzZ5bXRwKzFBN3A5R3JyTVQ4aGVJVVBCWVdTTDd3ZkJZQnB0SFV1?=
+ =?iso-2022-jp?B?Y0FYeFE3dHdzWHY0MGpoRUdFRklFTHd2VXlXTTRVRGZDdTlGbUo1WUZs?=
+ =?iso-2022-jp?B?NTF1bExTZlhvMVltL1RjWGhjemdOb2pYYzk1SHlNK0VWUm8rMnNlNC9O?=
+ =?iso-2022-jp?B?YnRpYkVuejY0WVJndDMwLzF0NlFUUi9OSnhBcm1QY1JTOFJ5STNjY3gx?=
+ =?iso-2022-jp?B?ZVo4MGVBQ2s2UVRnbDAralgxMDZ2TjJWZXdmYTJDZnp4OVNYb3lkRHR3?=
+ =?iso-2022-jp?B?QVZMek9Jd3lRb3dUYlRVeWVLNU8xZnJRNmV2OHVpZitSaUFOSjFKREFM?=
+ =?iso-2022-jp?B?UjBBbnpHdEZ0dVFXRERDendLZmJSK3ZReCtoUEJITnRSMFF6SGNJRlh6?=
+ =?iso-2022-jp?B?VmtOblY5U3kzMVRObjZoYUE5Q29tcVg3aW5EZWxRQkpFQWQ2TXNMR2VH?=
+ =?iso-2022-jp?B?eEE2Yll5WlhvRHRFRXJvUFV5UTFNL2dWSjlwb1BpVmJZSHZMRUhvU2px?=
+ =?iso-2022-jp?B?ME8za0J6NVVhbzFNd2tPcEpEajN1ZGkxWmVUL1BhQ2wyRnM3ZGsxOVBN?=
+ =?iso-2022-jp?B?ck4rRFhxV2c3aEdUc0U1OU9Zc3NJT3FpU1c5cWFpZDN1dFN6QmMzVmdi?=
+ =?iso-2022-jp?B?YS9BeFJ3VFhDNHI1dFRHMlQyRG9KZ2pZUXE3UzgzOVdZVjNxTlExNG5r?=
+ =?iso-2022-jp?B?L0pTOUwraEhsK25sbnpDWnpPMkU1dGxxMUdMaUx2U250c013OExmb2dS?=
+ =?iso-2022-jp?B?SG1TcEx6VS9KUGh0ZHpyNW0rUFlSNVNZTFRrSlY5UnJSblpDZzk0MzJm?=
+ =?iso-2022-jp?B?WWc2bkprTXJGVzJ5ejAzQzBCeUJ0TnVHZ0Z2LzNGVkJiYnRycjhHSjFh?=
+ =?iso-2022-jp?B?MXptS0JGRjliWW00c2tjY2RFeFR4azZIWHRRcnJNRHdYa0NRby9Rbjg2?=
+ =?iso-2022-jp?B?cHd3QXBGTUdpYUFFY1VFdUpYYkllbS9QSEVIcTlrU2xHcDF6SW40Wmt0?=
+ =?iso-2022-jp?B?eURpRVluRDI0RHNHSXduVVMzanJFYWU2emxsSjJGSFF3RmVSc1RIMGFt?=
+ =?iso-2022-jp?B?dThEeEJiSDBXa0d4QXF6dEsyRDdBQTczYUY2SWR1cWMxYkFvWlpDM2Rx?=
+ =?iso-2022-jp?B?SHJrWkxEMzVXNGs5QVVCWTRIUjdhbjVYSGpEWHRLMlVTQ0NCOTA4N2lR?=
+ =?iso-2022-jp?B?STUvUUI2MmdWczlsOTBwU2tBM2FOSHQ1dUVaVjV3cTJ0Z3VYMWZ3Q1dF?=
+ =?iso-2022-jp?B?R3g=?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB9669.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?iso-2022-jp?B?NTJJSlNPQ09zV2psakJaQ0R4ZGltTnY4cWZveFNoM2NRQXNyWmxycTNo?=
+ =?iso-2022-jp?B?b1NpcGt5VjRJZ2E3TlFCVVJHNW5Pd3RqODJEMk5JYzBDS0lDY0FzTzBr?=
+ =?iso-2022-jp?B?d2VoSURhaFdJRmdXaDdoL0JZK1B2WldVSG1TN0g0YTFJMW9hZWE4b3dp?=
+ =?iso-2022-jp?B?Zk9XcEw4N0s5cjFkYjdhT3dJRFVCZzB3QjhQSmt2N29sNUdkWVVOalpV?=
+ =?iso-2022-jp?B?TGtYUUY4UGVYaGg4MnMwQmY2ZlkyUFVlZ2JxRlllQUtLUnhId3NOZndY?=
+ =?iso-2022-jp?B?dytPV2JLTmZzUlh0djJiNGZuMDRSaDVZRlVJRTZuY3d6WDhvZEVmU09F?=
+ =?iso-2022-jp?B?NWZoNjhmUnVYNkhlWXM4NEN0QzNUdzNpRWhTcmZPYzNxakZCMWhieWtz?=
+ =?iso-2022-jp?B?V0c2akRGa3QyWG1BRktLMmNTWU1lVDFpSHh5T1FyM2VId21ST09pY3Qr?=
+ =?iso-2022-jp?B?OFBweHpyc3pieC9PZWVTZ2dQZWdEaTRzZ1JWUUtNdHg2NElwOEJJWVow?=
+ =?iso-2022-jp?B?NFhYWXdXRDVpaTJGM3FEckRYLzVnZktPelBNbmcvbHhiT3BuZGFSY3U3?=
+ =?iso-2022-jp?B?aEhheEoyTmd1d2M5aGU4Rmo3K0t4OVNDL2FHY0FNREN1SU9OWGEvY2h1?=
+ =?iso-2022-jp?B?dWpGYzBBMDNkclNJdUxBTHpPVHNJMWNva2JFc0wyWUNVSHdzVCtEcjlB?=
+ =?iso-2022-jp?B?ejdGWnlTSEMxOHU0S3lDVXBPNVdiQS9xMkZRRGZZMm9RTkRYeGFsSVo3?=
+ =?iso-2022-jp?B?dzBiNmF6NEZFanllN0pWdUVkU0lIWFZFWWJDSXJrSVZuSVNkRDk2bHFF?=
+ =?iso-2022-jp?B?b1R3SXpzU1ljZUJmZ2V0RDFJT1R1OENZcUpKVnpCR3luWmZoZ0JOWTJT?=
+ =?iso-2022-jp?B?RU1jazA5TXlIcjlZd2pIa2VEOEhYSnpZUXhiUTR4bTI3SHpJVlNyMXRS?=
+ =?iso-2022-jp?B?MG1jUEhNZjU1dVNyZWVwV1hWc0MweWsrSUt1dWJkbnhDZW5LYjd1TUdQ?=
+ =?iso-2022-jp?B?RGUxK0tSSGhWZjZQd0hRMVc1WWJpMUsyZXN4VTRwSFhsVzBmOWhQNDYw?=
+ =?iso-2022-jp?B?dUlaYU01VEVLbFZYYWd1TlhFdFprT21ZcisxV1hHTkZ4VWJrbkVnT3pE?=
+ =?iso-2022-jp?B?NHQxU2YwSjhBT21tWVRpZ0lOTHZYMjhFK0VLcGtSZHYvQ1pxRGZLZTY0?=
+ =?iso-2022-jp?B?U1NrOWpGRzYzRllPcUcwYVVoNkZjMFFOTVZPRncwWUtJOUpXTE5jbnpt?=
+ =?iso-2022-jp?B?NDNxWkd1cjc2ZlNJUVowWjFXOURraVJ2amFUZUxYd1ZhSGJSMDRNUURF?=
+ =?iso-2022-jp?B?NVY5czVUVnJnWFhhdktGQWpXQWcvTzVSLzdkUVk4VTJITVlpTlVPS1FW?=
+ =?iso-2022-jp?B?UjFRYXlrMWc2dkgxRlNGR05FWkVWRmRDd1c2NDIweUJ5Ly91MitGenRl?=
+ =?iso-2022-jp?B?ZXdFRStzblF2YzZEVkdHVFJXTDFmTUVhenhrSEJIUVdYSncyNE1XNWR0?=
+ =?iso-2022-jp?B?NkxBakxDYlVMMHFVVis1eks5ZkNzYmM3cFlHRTFOejMyeHVnNXUvejBi?=
+ =?iso-2022-jp?B?R3JyY3pITDI3M08rWEh3N24yQjNSZXp2S1BIWHF1T0hpVWZpQk5EY2Qv?=
+ =?iso-2022-jp?B?ME9NSkl2WEM1RTBDUWc3emJHSTg0dnpmTWRuYXI3N0hkK3pZa2ZaelRl?=
+ =?iso-2022-jp?B?RXJxMnVlU0RHbU1MMHRsUUhPb0F3UkpYUldrQ2QvSHA2aUFnYnZlN1Nm?=
+ =?iso-2022-jp?B?T0VqNk5XcGpJd0dZNTRsVVp1Q0xIaUZrRHkrc2d0K3RDRDl5VWZiaFVr?=
+ =?iso-2022-jp?B?SXZFOFdoS1hIZWp4K3dNbU54R1F2ZElvcFBQc2YxTTBkMGFMWUY3NFky?=
+ =?iso-2022-jp?B?Szk4MDJvWlVBZ01JZG8ySzVFTkJNQ1djMXNXVWxHemtFUFNFODdLS0gw?=
+ =?iso-2022-jp?B?aUx1b3NsWEFoVUdhdVVMYUtxdTBDcmhRSlNMMWl1SldCakNGcGJ6ellJ?=
+ =?iso-2022-jp?B?Zys4anpCQ1pKV2EzNGQ4TlU4RTFFakttQUdDb1dBU2N0UldDS2VJa1Zs?=
+ =?iso-2022-jp?B?U09mU3Bsd013bEZDalpWdkFQc0k2RVViTlpmTytYV0JzeE80SGpiYWsy?=
+ =?iso-2022-jp?B?V2VjdTZEb3BZbmV1R3NLa1MxY0xoRjNNNndTd0E5T0pSTDZsUzhiNHdh?=
+ =?iso-2022-jp?B?ZDNsYm9JaktoK2ZpbjF4WHgvUDFOR2VqT0FyM0lpSFc5SHZpUStENjNa?=
+ =?iso-2022-jp?B?UmdWMno4SGhRb1prNkpXOWxhS29abXFiYXRJdFNoSmR0NHdOdWFNUUI0?=
+ =?iso-2022-jp?B?eHAvaTlxWEpqcDh3Um1icHZ0NWZ2MmRoVFE9PQ==?=
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH -v2] ext4: introduce linear search for dentries
-Date: Wed, 19 Feb 2025 18:58:00 -0700
-In-Reply-To: <87cyfdvcdc.fsf@mailhost.krisman.be>
-Cc: Theodore Ts'o <tytso@mit.edu>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- drosen@google.com
-To: Gabriel Krisman Bertazi <krisman@suse.de>
-References: <20250212164448.111211-1-tytso@mit.edu>
- <20250213201021.464223-1-tytso@mit.edu>
- <9ED1B796-23FE-422A-B6C9-5BEAE4FAA912@dilger.ca>
- <87cyfdvcdc.fsf@mailhost.krisman.be>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+X-OriginatorOrg: toshiba-tsip.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB9669.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d3b6fcc-5979-4d6e-96cf-08dd517e07c5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2025 07:13:09.4161
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f109924e-fb71-4ba0-b2cc-65dcdf6fbe4f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MBXCUTr8JC5guoD6TcOXjRK2J6jCkZ64DI1NSczgjqb42V28x9Z0ObPoHs5QEzDFr4988ibOe/vOYxiSB6t9MFtscJ4b1c8IItSRQc3wet0kkXAYHI9XyfNJTKD0tbq/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB10168
 
+Hi Andreas,=0A=
+=0A=
+Thanks for the reply. And yes, I did come across the usage of debugfs for u=
+pdating certain metadata and it works fine. =0A=
+=0A=
+On the same note, I also came across another observation. I noticed that nu=
+mber of free blocks in some of the block groups are different for the 2 ext=
+4 images in comparison although the filesystem contents are identical. Is t=
+his an expected behaviour? Any hints on what would lead to this could be he=
+lpful.=0A=
+=0A=
+I am including a diff of dumpe2fs from the 2 ext4 images I am comparing bel=
+ow:=0A=
+=0A=
+host@debian12:~/work/temp$ diff image1.dumpe2fs image2.dumpe2fs=0A=
+< Lifetime writes:          316 MB=0A=
+---=0A=
+> Lifetime writes:          314 MB=0A=
+47c47=0A=
+< Checksum:                 0x6a0e9f0e=0A=
+---=0A=
+> Checksum:                 0xbba8f574=0A=
+53c53=0A=
+< Journal sequence:         0x00000008=0A=
+---=0A=
+> Journal sequence:         0x00000007=0A=
+56c56=0A=
+< Journal checksum:         0x5c50e847=0A=
+---=0A=
+> Journal checksum:         0xba912c29=0A=
+68c68=0A=
+< Group 1: (Blocks 32768-65535) csum 0x9bf2 [ITABLE_ZEROED]=0A=
+---=0A=
+> Group 1: (Blocks 32768-65535) csum 0x98a6 [ITABLE_ZEROED]=0A=
+71c71=0A=
+<   Block bitmap at 65 (bg #0 + 65), csum 0x9ecad502=0A=
+---=0A=
+>   Block bitmap at 65 (bg #0 + 65), csum 0xe702afc8=0A=
+74,75c74,75=0A=
+<   93 free blocks, 6070 free inodes, 1049 directories, 6070 unused inodes=
+=0A=
+<   Free blocks: 33264-33279, 47035, 51832-51839, 52923-52927, 53244-53247,=
+ 54773-54783, 56723-56735, 58622-58623, 62006-62015, 62463, 64752-64767, 65=
+530-65535=0A=
+---=0A=
+>   538 free blocks, 6070 free inodes, 1049 directories, 6070 unused inodes=
+=0A=
+>   Free blocks: 33264-33279, 47035, 52732-52735, 53951, 54782-54783, 54823=
+-55295, 56275-56287, 58622-58623, 59389-59391, 62521-62527, 62975, 65275-65=
+279, 65526-65535=0A=
+77,78c77,78=0A=
+< Group 2: (Blocks 65536-98303) csum 0x0943 [ITABLE_ZEROED]=0A=
+<   Block bitmap at 66 (bg #0 + 66), csum 0xc4b03f5a=0A=
+---=0A=
+> Group 2: (Blocks 65536-98303) csum 0x9332 [ITABLE_ZEROED]=0A=
+>   Block bitmap at 66 (bg #0 + 66), csum 0x8b8b9691=0A=
+81,82c81,82=0A=
+<   328 free blocks, 7996 free inodes, 4 directories, 7996 unused inodes=0A=
+<   Free blocks: 73714-73727, 77307-77311, 79347-79359, 80371-80383, 81404-=
+81407, 82430-82431, 83954-83967, 88575, 90621-90623, 93497-93503, 94719, 95=
+731-95743, 96020-96255, 96670-96671=0A=
+---=0A=
+>   811 free blocks, 7996 free inodes, 4 directories, 7996 unused inodes=0A=
+>   Free blocks: 70652-70655, 72177-72191, 73215, 74239, 75775, 77311, 7855=
+9, 79358-79359, 83959-83967, 85499-85503, 86522-86527, 87257-87263, 88028-8=
+8031, 89586-89599, 90489-90495, 92444-92447, 93694-93695, 94966-94975, 9522=
+6-95231, 95890-95903, 96253-96255, 97531-97791, 97871-98303=0A=
+84c84=0A=
+< Group 3: (Blocks 98304-127999) csum 0xceff [ITABLE_ZEROED]=0A=
+---=0A=
+> Group 3: (Blocks 98304-127999) csum 0xb1ee [ITABLE_ZEROED]=0A=
+87c87=0A=
+<   Block bitmap at 67 (bg #0 + 67), csum 0x2c1ce6ca=0A=
+---=0A=
+>   Block bitmap at 67 (bg #0 + 67), csum 0x4e67b818=0A=
+90,91c90,91=0A=
+<   14411 free blocks, 7994 free inodes, 6 directories, 7994 unused inodes=
+=0A=
+<   Free blocks: 98803-98815, 100852-100863, 102393-102399, 102910-102911, =
+104958-104959, 106487-114687, 116223, 116669-116735, 116914-117247, 117354-=
+122879, 123391, 123688-123903, 126830-126847, 126967-126975, 127487, 127999=
+=0A=
+---=0A=
+>   13483 free blocks, 7994 free inodes, 6 directories, 7994 unused inodes=
+=0A=
+>   Free blocks: 103224-103423, 104447, 109582-110079, 110128-122879, 12696=
+0-126975, 127984-127999=0A=
+=0A=
+=0A=
+Thanks and Regards,=0A=
+Adithya Balakumar=0A=
+________________________________________=0A=
+From: Andreas Dilger=0A=
+Sent: Thursday, February 20, 2025 1:28 AM=0A=
+To: balakumar adithya(=1B$B#T#S#I#P=1B(B DITC_DIT-OST)=0A=
+Cc: linux-ext4@vger.kernel.org; kunijadar shivanand(=1B$B#T#S#I#P=1B(B DITC=
+_DIT-OST); dinesh kumar(=1B$B#T#S#I#P=1B(B DITC_DIT-OST); hayashi kazuhiro(=
+=1B$BNS=1B(B =1B$BOB9(=1B(B =1B$B#D#M#E=1B(B =1B$B!{#D#I#G""#M#P#S!{#M#P#4=
+=1B(B); iwamatsu nobuhiro(=1B$B4d>>=1B(B =1B$B?.MN=1B(B =1B$B!{#D#I#T#C""#D=
+#I#T!{#O#S#T=1B(B)=0A=
+Subject: Re: Is it possible to make ext4 images reproducible even after fil=
+esystem operations ?=0A=
+=0A=
+On Jan 21, 2025, at 5:29 AM, Adithya.Balakumar@toshiba-tsip.com wrote:=0A=
+> I am working towards reproducible builds for a project that I am involved=
+ in. We use a few ext4 partitions in our disk images and I am trying to mak=
+e the ext4 filesystems reproducible.=0A=
+>=0A=
+> I understand that from e2fsprogs v1.47.1 onwards we can create a reproduc=
+ible ext4 filesystem image. We can indeed create a reproducible ext4 filesy=
+stem image when we use the "-d" option in "mke2fs" command to pass the cont=
+ents of the filesystem at the time of creation of the filesystem itself. I =
+understand that there are a few other parameters that needs to passed to th=
+e "mke2fs" command like a deterministic UUID and hash_seed values to make t=
+he filesystem image reproducible.=0A=
+>=0A=
+> In the project that I am working on, there are some mount operations done=
+ on the filesystem to copy certain files into the file system. This updates=
+ the "Last mount" and "Last write" timestamps in the filesystem metadata (c=
+onfirmed this with dumpe2fs) thereby making the images generated not reprod=
+ucible.=0A=
+>=0A=
+> I would like to understand if its possible to make the ext4 images reprod=
+ucible even after filesystem operations like mounting and unmounting the fi=
+lesystem ?=0A=
+=0A=
+It should be possible to use debugfs commands to change the timestamps (and=
+ other=0A=
+fields) in the superblock to an arbitrary value, something like:=0A=
+=0A=
+    {=0A=
+        echo "ssv wtime 123456789"=0A=
+        echo "ssv mtime 123456789"=0A=
+    } | debugfs -w -F /dev/stdin $IMAGE_FILE=0A=
+=0A=
+Depending on what changes are being made while the filesystem is mounted, y=
+ou=0A=
+may also need to modify the inode timestamps directly as well:=0A=
+=0A=
+    {=0A=
+        echo "sif $PATHNAME ctime 123456789"=0A=
+        echo "sif $PATHNAME2 ctime 123456789"=0A=
+        :=0A=
+    } | debugfs -w -F /dev/stdin $IMAGE_FILE=0A=
+=0A=
+The debugfs commands could all be combined into a single debugfs invocation=
+,=0A=
+and are just shown here as separate commands for clarity.  If the commands=
+=0A=
+are always the same, they could also be written into a command file instead=
+=0A=
+of read from stdin each time:=0A=
+=0A=
+    debugfs -w -f $COMMANDS $IMAGE_FILE=0A=
+=0A=
+but for scripting purposes it can be convenient to generate debugfs command=
+s=0A=
+on the fly (e.g. with looping, etc.) and pipe it to debugfs via stdin, and=
+=0A=
+this is not obvious, so I thought it would be good to show an example.=0A=
+=0A=
+Cheers, Andreas=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
 
---Apple-Mail=_29BEA282-9319-4098-AD69-77C299457FA6
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
-
-On Feb 19, 2025, at 2:43 PM, Gabriel Krisman Bertazi <krisman@suse.de> =
-wrote:
->=20
-> Andreas Dilger <adilger@dilger.ca> writes:
->=20
->> On Feb 13, 2025, at 1:10 PM, Theodore Ts'o <tytso@mit.edu> wrote:
->>>=20
->>> This patch addresses an issue where some files in case-insensitive
->>> directories become inaccessible due to changes in how the kernel
->>> function, utf8_casefold(), generates case-folded strings from the
->>> commit 5c26d2f1d3f5 ("unicode: Don't special case ignorable code
->>> points").
->>>=20
->>> There are good reasons why this change should be made; it's actually
->>> quite stupid that Unicode seems to think that the characters =E2=9D=A4=
- and =E2=9D=A4=EF=B8=8F
->>> should be casefolded.  Unfortimately because of the backwards
->>> compatibility issue, this commit was reverted in 231825b2e1ff.
->>>=20
->>> This problem is addressed by instituting a brute-force linear =
-fallback
->>> if a lookup fails on case-folded directory, which does result in a
->>> performance hit when looking up files affected by the changing how
->>> thekernel treats ignorable Uniode characters, or when attempting to
->>> look up non-existent file names.  So this fallback can be disabled =
-by
->>> setting an encoding flag if in the future, the system administrator =
-or
->>> the manufacturer of a mobile handset or tablet can be sure that =
-there
->>> was no opportunity for a kernel to insert file names with =
-incompatible
->>> encodings.
->>=20
->> I don't have the full context here, but falling back to a full =
-directory
->> scan for every failed lookup in a casefolded directory would be =
-*very*
->> expensive for a large directory.
->=20
-> The context is that I made a change in unicode that caused a change in
-> the filename hash of case-insensitive dirents, which are calculated =
-from
-> the casefolded form of the name.  While that change was reverted, =
-users
-> have created files with the broken kernels and there are reports of
-> files inaccessible.
->=20
->> This could be made conditional upon a much narrower set of =
-conditions:
->> - if the filename has non-ASCII characters (already uncommon)
->> - if the filename contains characters that may be case folded
->> (normalized?)
->=20
-> It could be even simpler, by only doing it to filenames that have
-> zero-length characters before normalization.  We can easily check it
-> with utf8nlen or utf8ncursor.  I'm very wary of differentiating ASCII
-> from other characters if we can avoid it.
-
-Sure, my suggestions are aimed at minimizing the impact of this extra
-(and very expensive) fallback mechanism.  If there is a direct way to
-determine which filenames were impacted by the earlier bug, and then
-do only two lookups (one with the "buggy" casefolded name, one with the
-"good" casefolded name) then this would be (at worst) a 2x slowdown for
-the lookup, instead of a 1000x slowdown (or whatever, for large =
-directories).
-
-Also, since the number of users affected by this bug is relatively small
-(only users running kernels >=3D v6.12-rc2-1-g5c26d2f1d3f5 where the =
-broken
-patch landed and v6.13-rc2-36-g231825b2e1ff when it was reverted), but =
-the
-workaround by default affects everyone using the casefold feature, it
-behooves us to minimize the performance impact of the workaround.
-
->=20
->> This avoids a huge performance hit for every name lookup in very =
-common
->> workloads that do not need it (i.e. most computer-generated filenames =
-are
->> still only using ASCII characters).
->=20
-> Right.  But this also only affects case-insensitive filesystems, which
-> have very specific and controlled applications and hardly thousands of
-> files in the same directory.
-
-I think this is a generalization that does not hold true in all cases.
-
-We have been looking at adding casefold support to Lustre, in order to
-improve Samba export performance (which also has a "scan all entries"
-fallback), and we cannot control how many files are in a single =
-directory.
-
-It seems likely that systems have been using casefold directly on ext4
-for Samba as well.  If the performance impact of "scan all entries" is
-noticeable for Samba, then it would be noticeable for this fallback.
-
-> If we really need it, I'd suggest we don't differentiating ASCII from
-> utf8, but only filenames with those sequences.
-
-Even better if the fallback can be limited to the subset of affected =
-names.
-
-> IMO, Ted's patch seems fine as a temporary stopgap to recover those
-> filesystems.
-
-Sure, but it is enabled by default and affects anyone using the casefold
-feature forever into the future, unless the plan is not to land this =
-patch
-and only deploy it in the specific distros where the broken kernel was =
-used?
-
-One option would be to have the kernel re-hash any entries that it finds
-with the old filename, so that the directories repair themselves, and =
-the
-workaround could be removed after some time.  Also, have e2fsck re-hash
-the filenames in this case, so that there is a long-term solution after
-the kernel workaround is removed.
-
-Cheers, Andreas
-
->> Also, depending on the size of the directory vs. the number of =
-case-folded
->> (normalized?) characters in the filename, it might be faster to do
->> 2^(ambiguous_chars) htree lookups instead of a linear scan of the =
-whole dir.
->>=20
->> That could be checked easily whether 2^(ambiguous_chars) < dir =
-blocks, since
->> the htree leaf blocks will always be fully scanned anyway once found. =
- That
->> could be a big win if there are only a few remapped characters in a =
-filename.
->>=20
->> Cheers, Andreas
->>=20
->>>=20
->>> Fixes: 5c26d2f1d3f5 ("unicode: Don't special case ignorable code =
-points")
->>> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
->>> Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
->>> ---
->>> v2:
->>>  * Fix compile failure when CONFIG_UNICODE is not enabled
->>>  * Added reviewed-by from Gabriel Krisman
->>>=20
->>> fs/ext4/namei.c    | 14 ++++++++++----
->>> include/linux/fs.h | 10 +++++++++-
->>> 2 files changed, 19 insertions(+), 5 deletions(-)
->>>=20
->>> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
->>> index 536d56d15072..820e7ab7f3a3 100644
->>> --- a/fs/ext4/namei.c
->>> +++ b/fs/ext4/namei.c
->>> @@ -1462,7 +1462,8 @@ static bool ext4_match(struct inode *parent,
->>> 		 * sure cf_name was properly initialized before
->>> 		 * considering the calculated hash.
->>> 		 */
->>> -		if (IS_ENCRYPTED(parent) && fname->cf_name.name &&
->>> +		if (sb_no_casefold_compat_fallback(parent->i_sb) &&
->>> +		    IS_ENCRYPTED(parent) && fname->cf_name.name &&
->>> 		    (fname->hinfo.hash !=3D EXT4_DIRENT_HASH(de) ||
->>> 		     fname->hinfo.minor_hash !=3D =
-EXT4_DIRENT_MINOR_HASH(de)))
->>> 			return false;
->>> @@ -1595,10 +1596,15 @@ static struct buffer_head =
-*__ext4_find_entry(struct inode *dir,
->>> 		 * return.  Otherwise, fall back to doing a search the
->>> 		 * old fashioned way.
->>> 		 */
->>> -		if (!IS_ERR(ret) || PTR_ERR(ret) !=3D ERR_BAD_DX_DIR)
->>> +		if (IS_ERR(ret) && PTR_ERR(ret) =3D=3D ERR_BAD_DX_DIR)
->>> +			dxtrace(printk(KERN_DEBUG "ext4_find_entry: dx =
-failed, "
->>> +				       "falling back\n"));
->>> +		else if (!sb_no_casefold_compat_fallback(dir->i_sb) &&
->>> +			 *res_dir =3D=3D NULL && IS_CASEFOLDED(dir))
->>> +			dxtrace(printk(KERN_DEBUG "ext4_find_entry: =
-casefold "
->>> +				       "failed, falling back\n"));
->>> +		else
->>> 			goto cleanup_and_exit;
->>> -		dxtrace(printk(KERN_DEBUG "ext4_find_entry: dx failed, "
->>> -			       "falling back\n"));
->>> 		ret =3D NULL;
->>> 	}
->>> 	nblocks =3D dir->i_size >> EXT4_BLOCK_SIZE_BITS(sb);
->>> diff --git a/include/linux/fs.h b/include/linux/fs.h
->>> index 2c3b2f8a621f..aa4ec39202c3 100644
->>> --- a/include/linux/fs.h
->>> +++ b/include/linux/fs.h
->>> @@ -1258,11 +1258,19 @@ extern int send_sigurg(struct file *file);
->>> #define SB_NOUSER       BIT(31)
->>>=20
->>> /* These flags relate to encoding and casefolding */
->>> -#define SB_ENC_STRICT_MODE_FL	(1 << 0)
->>> +#define SB_ENC_STRICT_MODE_FL		(1 << 0)
->>> +#define SB_ENC_NO_COMPAT_FALLBACK_FL	(1 << 1)
->>>=20
->>> #define sb_has_strict_encoding(sb) \
->>> 	(sb->s_encoding_flags & SB_ENC_STRICT_MODE_FL)
->>>=20
->>> +#if IS_ENABLED(CONFIG_UNICODE)
->>> +#define sb_no_casefold_compat_fallback(sb) \
->>> +	(sb->s_encoding_flags & SB_ENC_NO_COMPAT_FALLBACK_FL)
->>> +#else
->>> +#define sb_no_casefold_compat_fallback(sb) (1)
->>> +#endif
->>> +
->>> /*
->>> *	Umount options
->>> */
->>> --
->>> 2.45.2
->>>=20
->>>=20
->>=20
->>=20
->> Cheers, Andreas
->>=20
->>=20
->>=20
->>=20
->>=20
->=20
-> --
-> Gabriel Krisman Bertazi
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_29BEA282-9319-4098-AD69-77C299457FA6
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAme2jCgACgkQcqXauRfM
-H+C/4w/+JlefQjODfg+Nm6M/Rirq8T10s9QDOSQQch6T2XBL2YfbuH11z/DmxT1c
-5PiYoSTxLwBfrLR0RqH8jYIm0oxTSV6VF3cUstI6ZMRu2TPQlpXXHui/rp0AtJ1X
-Pt28PuXJYVamNAypnQCuxvqx6qafcGrMW9xVsufQoLr7Tdj7g49XMVZK9SMl8LeJ
-5KyU31SIAP3/th2L8ya2E6uQEvE4fzsEUV7pCmEmDRDp6kIBA+Iw0Lw+bxzjva1p
-VgCHhK83f5fsCkZQxKFQZD7sTOrOKBnZj++1Ut6Q7UNgw3mYmcosBMvq6wdznATN
-8/ynXRDFDAudf4Upl03stwRD6vc/HziQRvOAND5D9LDl17UhuL0BX2YgijHDkP4i
-lr6Hix1EXxUeMfYSQf4Wib8j8F1LpGnzcHlDgZ752YAaKw1CRN+blut5OrLrtrcb
-Hsllfc3bzu8G2ROOuS1kkZLw1kjLXInL/B0CT4cV7G7M32W2K0wzIl20u4AGrYtN
-NWRn5kYDr4ZGxprqbUeVNr0EhfWXs0z2eOkCTSHQnO6htoQr2l2/CtbmdP3gKBYI
-LSxT5ug6rz3/zYSYcBvG0Fse174kgctN86VKWETHMEi54fUjYu6Iopwft8Xt1LXj
-Jx+RlAP8Ci5z2FDLMb/td7GNWFjcRC9sSmLKKXTKRUHv4wFWCRM=
-=FDVD
------END PGP SIGNATURE-----
-
---Apple-Mail=_29BEA282-9319-4098-AD69-77C299457FA6--
 
