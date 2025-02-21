@@ -1,112 +1,138 @@
-Return-Path: <linux-ext4+bounces-6525-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6526-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0CAFA3F0C1
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2025 10:46:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ED50A3F38B
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2025 12:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F8C916AEB8
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2025 09:45:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 281FD19C29BA
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2025 11:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB24205E20;
-	Fri, 21 Feb 2025 09:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A134209F27;
+	Fri, 21 Feb 2025 11:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Y1U7+FSX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CCC204691
-	for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2025 09:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421EC202F65
+	for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2025 11:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740130884; cv=none; b=N4N23mo0z+AMeJi7rjPuvDOJb843+VYrINmXeDDn5Zuu63YISM8aPsW1aNh/vI0DkUte567ROi97h5UTJe9+RbliboaMmgbQnumdNQziJx2FdHzRwa7G/+c2V/ySktwxs6UJg4oPS0OcSfClQVENaOJSlLJsNo8HJT9JSo1+sNg=
+	t=1740138970; cv=none; b=uCCF+R8glS/bLTNTCrytL+o35c3T/zTrS2t/hpv89yNSPbgMWReFJJJ6JPWWGVnXd+dS6+w6WGJuQ9FlH4zWu1Orcl8kmIdyq4P7On8KyegXlafCbLwwJh+DqnQIew87tyVuryJt6gTfg5fFzegFqQWOGNfET8Od4Kx5G2obQO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740130884; c=relaxed/simple;
-	bh=l3zvIDZMI6ET881AtYmbI3nm5amUHwCGjYOGgh9Xyw4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YXF3350w7niUCvV44CsbMbbHy2suUvW2sowbuFuKdP22mTGNFKE6KshhDk5Gc/S1Pe/r+T/kHtlJMHfDqiPRa7/yvZT7M/ThEdhE6kbcW5It/vnaFSYH7ZS7WFdlm2lAc5rjr1eVINsWoeCoaKN+CLWwnYON89KCk18bVdEV+10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3cf64584097so16861385ab.2
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2025 01:41:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740130881; x=1740735681;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5OsqRYgSCSxtMYToGhG+dYqJv9b218NUxAua9vJ1J8A=;
-        b=WRZ2RY6PkTUTi7+Dv8LA2BjXdELkC2tV6CG1/6GU+QztWCBCywB209in8u7yVmYK5N
-         ZlX1/1XQEV/GO9prRyno/bbC4WW/8wWR0uThpHWdxUzWpwwhH94KL6evn0gkJvA7tWyr
-         MlGn2/Wf8xwgFIE1O3+Ttt3lHjMC05fu4iiYyhJt4kisM/iZV+Pfgq23o6GrsXT8GwUq
-         pw/CViKU12T1o2Q4syuRzIfzasAghVJYPjDl6mC6K04opqSQQaMoxHUZ1aXy+YV2amrU
-         rk+4Mhf0R3xnhwF4ogXPHecwnhFwnBiDIDEH9ZVFRZjNgn80tT62gha1bCX92lzAPjk1
-         lIFA==
-X-Gm-Message-State: AOJu0YwESHgSIM2gOwCs/6pVTnBWx5nGvHLWonLvEDwuL7ko2rywyD6L
-	/n78GTaNCAwTeifJgLtuZu1f9y19hdX9xq+PGqcrc0GXskPZ3JNibe21nsbpp5Ra1DHGMJihBBX
-	dIfJQGh7EVsk9jbko5iICB9i0mSVqjH2LF3/mPpRMxRoVocS7Y8LoLJg=
-X-Google-Smtp-Source: AGHT+IGvcQBb/y8ol5/5gosN1vMmptjmm1MJ4VhyhbDByxh8z9QBFuI6f47r9MMRmH/TQ3GoReKLOUElVmAst1ZlALa3m9/9/v9B
+	s=arc-20240116; t=1740138970; c=relaxed/simple;
+	bh=6ZRpVG4Q3DUcw7u5TvKv4as2r8ddBs+x1Tf6XXIVnnU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=U3QTMwe7FUNgHw9jxBrxSHomMLmnXCEQhC/7jawuxfGwVKZG0zA3yuXc6P7OpZZC97MqNIbYMooQms23juiUp+Fw7GIMhdJDucuvkqpeMH4N2pJl2SdmKi8VIOkxdVPO+dVAWFJPgO+LuVoYjYYKvvG7WJJWYen0+dyQybAA2J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Y1U7+FSX; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51L7Won2025057;
+	Fri, 21 Feb 2025 11:56:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=cYx19BmLigT2xPiJCxioseEB8K9yNZdqTGAl2QLS9
+	zw=; b=Y1U7+FSXCRK3893REnkaeTaEqkEbLrLSxTgO86jN8NTalUUq2zTuyox/C
+	dacAI6kvk13wzNPiX80hsDpPcZ/HWTtfavDk+RqnzylbGFVkIi1HVHtqihp3dWRi
+	28zGS4o7/UoN7KvxlBCf1fnN6I1BAubTA7qjJv8FIROuDG/GCUUGaWbTnwdTjWmI
+	FtW0Bo6J4e12NLpPCVkM6xx/UYxNLHNf7M2TQZJ1Je4xYvbSm4VHsyU6r8rs7Pev
+	DEHjSgcRONVd1sKz/bwwt37LL2jg7CF83SExuLybUJ9PCYEDzrpOrJ9mRu+tstyD
+	pWj6f0fVlsEXv+c4/8XENg4TuXVtQ==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44xn6q17kt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 21 Feb 2025 11:56:05 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51L93Ohu027066;
+	Fri, 21 Feb 2025 11:56:04 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 44w025fsah-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 21 Feb 2025 11:56:04 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 51LBu3N934800112
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 21 Feb 2025 11:56:03 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2641420040;
+	Fri, 21 Feb 2025 11:56:03 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4B8F22004E;
+	Fri, 21 Feb 2025 11:56:02 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.29.169])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 21 Feb 2025 11:56:02 +0000 (GMT)
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH] kvm-xfstests: fix wget progress bar support
+Date: Fri, 21 Feb 2025 17:26:01 +0530
+Message-ID: <20250221115601.170674-1-ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1565:b0:3a7:8720:9de5 with SMTP id
- e9e14a558f8ab-3d2cae4652cmr21360085ab.1.1740130881378; Fri, 21 Feb 2025
- 01:41:21 -0800 (PST)
-Date: Fri, 21 Feb 2025 01:41:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67b84a41.050a0220.14d86d.0357.GAE@google.com>
-Subject: [syzbot] Monthly ext4 report (Feb 2025)
-From: syzbot <syzbot+listf4d7496357876fa24aa1@syzkaller.appspotmail.com>
-To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: caxe5ycI406yRtmqK0iRYGDIrAPzt1aN
+X-Proofpoint-ORIG-GUID: caxe5ycI406yRtmqK0iRYGDIrAPzt1aN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-21_03,2025-02-20_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ mlxscore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
+ impostorscore=0 adultscore=0 phishscore=0 mlxlogscore=856 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502210085
 
-Hello ext4 maintainers/developers,
+On fedora 41, running kvm-xfstest for the first time throws the
+following error:
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+  Unknown option 'show-progress'
 
-During the period, 5 new issues were detected and 0 were fixed.
-In total, 55 issues are still open and 148 have already been fixed.
+This is because fedora uses wget2 where the --show-progress flag
+has been replaced with --force-progress [1]. Hence modify the code
+to detect the wget version and use the appropriate flag.
 
-Some of the still happening issues:
+[1] https://gitlab.com/gnuwget/wget2/-/wikis/Home#differing-cli-options-wgetwget2
 
-Ref  Crashes Repro Title
-<1>  33227   Yes   possible deadlock in dqget
-                   https://syzkaller.appspot.com/bug?extid=6e493c165d26d6fcbf72
-<2>  2203    Yes   INFO: task hung in sync_inodes_sb (5)
-                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-<3>  1943    Yes   kernel BUG in ext4_do_writepages
-                   https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-<4>  1920    Yes   INFO: task hung in jbd2_journal_commit_transaction (5)
-                   https://syzkaller.appspot.com/bug?extid=3071bdd0a9953bc0d177
-<5>  1025    Yes   KASAN: out-of-bounds Read in ext4_xattr_set_entry
-                   https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
-<6>  1019    Yes   WARNING in __ext4_iget
-                   https://syzkaller.appspot.com/bug?extid=2ff67872645e5b5ebdd5
-<7>  201     No    KCSAN: data-race in generic_buffers_fsync_noflush / writeback_single_inode (3)
-                   https://syzkaller.appspot.com/bug?extid=35257a2200785ea628f5
-<8>  173     Yes   kernel BUG in ext4_write_inline_data_end (2)
-                   https://syzkaller.appspot.com/bug?extid=0c89d865531d053abb2d
-<9>  172     Yes   KMSAN: uninit-value in aes_encrypt (5)
-                   https://syzkaller.appspot.com/bug?extid=aeb14e2539ffb6d21130
-<10> 96      Yes   WARNING: locking bug in find_lock_lowest_rq
-                   https://syzkaller.appspot.com/bug?extid=9a3a26ce3bf119f0190b
-
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ run-fstests/kvm-xfstests | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/run-fstests/kvm-xfstests b/run-fstests/kvm-xfstests
+index a53cc89..99e504b 100755
+--- a/run-fstests/kvm-xfstests
++++ b/run-fstests/kvm-xfstests
+@@ -60,7 +60,19 @@ if test -z "$EXPLICIT_ROOT_FS" ; then
+ 	f=root_fs.img.$ARCH
+ 	ROOT_FS="$(dirname $DIR)/test-appliance/$f"
+ 	echo "Downloading $f..."
+-	wget -nv --show-progress -O "$ROOT_FS.new" "$DOWNLOAD_BASE_URL/$f"
++
++	# wget1 and 2 have different flags to show progress bar
++	WGET_VERSION=$(wget --version | head -n1 | awk '{print $3}' | cut -d. -f1)
++	if [[ "$WGET_VERSION" -eq 1 ]]; then
++			PROGRESS_FLAG="--show-progress"
++	elif [[ "$WGET_VERSION" -eq 2 ]]; then
++			PROGRESS_FLAG="--force-progress"
++	else
++			# don't show progress bar if we can't determine version
++			PROGRESS_FLAG=""
++	fi
++	wget -nv $PROGRESS_FLAG -O "$ROOT_FS.new" "$DOWNLOAD_BASE_URL/$f"
++
+ 	mv "$ROOT_FS.new" "$ROOT_FS"
+     fi
+ fi
+-- 
+2.48.1
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
 
