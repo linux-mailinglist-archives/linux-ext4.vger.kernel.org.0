@@ -1,105 +1,103 @@
-Return-Path: <linux-ext4+bounces-6530-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6531-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AD71A40766
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2025 11:32:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77BE1A41177
+	for <lists+linux-ext4@lfdr.de>; Sun, 23 Feb 2025 21:10:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 766F43B6866
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2025 10:31:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 606AE16F3C1
+	for <lists+linux-ext4@lfdr.de>; Sun, 23 Feb 2025 20:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57592080D5;
-	Sat, 22 Feb 2025 10:32:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34D022D7B7;
+	Sun, 23 Feb 2025 20:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B0H/2caV"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OcfkEwUM"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE3B206F1A;
-	Sat, 22 Feb 2025 10:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFC42153C1
+	for <linux-ext4@vger.kernel.org>; Sun, 23 Feb 2025 20:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740220321; cv=none; b=cb179/tblFQmL5CRIU7ER8OIkA6O2pDcKQ6mLoBCgCwxOXdQ+e7Pt3k6RiQ4yondr8YCzmFutFOxKZXP01RXDpoRuijUkfMmg6nIhDx4nxBKHDVgOXHxo8mQ4oawFsF9ENrNrXITScSfTe39Ah8Vv6P+OL5u85pzm3MDEx/O6YA=
+	t=1740341426; cv=none; b=V4/BTFnB+YoQf5sIJVWye212/taGmBCsA540S8BCJxezIeUinNyJxBhsS9NHO61oTl2ZPUgklYJUptzKl69oXKx800sg6BbQuct3ALYMty3CUyrW0oKAeBvBNyFz4khaNQHAt7vaQ6HTMGnun7Qpr82zWC5xL9RwRkog0kfr4fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740220321; c=relaxed/simple;
-	bh=EeDJju08iU1yyZYbMpu1u5CV0TLEVOfnS03nJGV+Qi4=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=qzf/0sW+02rJnHe0wcizBmRgif9bW+uIHpxqmgAfQuZ3CJsG/jOEEnvqkh7rUoQoDByd8pVlB52bZmWX/IDqFCYE94IwpVl1WpdMinTVGLj2Qtc9ePLxBffEb59vI2KBk0xJmW1cp2qvpnwQ6icQLU6VrFqj2HETxIoG7viABoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B0H/2caV; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-220e989edb6so81773505ad.1;
-        Sat, 22 Feb 2025 02:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740220318; x=1740825118; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=G1O0dlsatzka8Rjn2bFVMo/J2mA85sw+K5Yl9fpzwSQ=;
-        b=B0H/2caVTocLnAtbpGjjRE+hREgvBIZzcZ0aMCKwFJJnGc6pUMxgY56PxMavyvtwIQ
-         ITdsEAJwnSnnrm5bMO2TLHP5oXlKxmMo8EyV5yhSAs3soAZ5apUn6D24h+4PBNT/PfCR
-         5jSUVdxRaHtNMpvLujqnMKofw5BJBclb8xMP2LujAtVZFZJOqyfwm+cGyMXzdpiXOymM
-         gXUN6TQLbMd07VCDnLe8YqlUfhrUScWH15vvbgrDP+1XDB7Dq4ZGtmAImRC4nEuOdDiS
-         qjkteRla/lpQuHlSc2JDOD2BU2f4MQRXx70nHamznq6mCKSb9/xHP+a5b46dgN0qKtWe
-         9IvA==
+	s=arc-20240116; t=1740341426; c=relaxed/simple;
+	bh=KDkGd+8EL5eBEFvtbZ+VanMKD6k6utNUpzhgO4nKSQk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uxn9RcVkJcMvqcokqBmDJkSyoKaQUR5kWW+fSelASsmHfsiyv+sLg2Ocj9tPQllG67Ufshq9RR/iMgJBja4JBL4sLQmonskVzCAXEmsr7/S4qyPOZ7eLeZ/VMM4Nu9kQm14rHbWeLybjTj3ICZnE8zwkqUdQ8IdL+hKuQVDKVIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OcfkEwUM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740341423;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=KDkGd+8EL5eBEFvtbZ+VanMKD6k6utNUpzhgO4nKSQk=;
+	b=OcfkEwUMeFPEVxm+h9VhZqi94jssg8ZmQSTRZuutdAbBWyGHJ4g2UgM/e9fW1ZesUwQ198
+	Fj2uIndCpnhfAIEQesHA/wDzc7I6PncBzrYw3FSnlxOKZSVdWmdmjP/SVSAIaV3c5QqcTd
+	p/akhxtik6PtNinFSVlKTPYnhw57dZk=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-422-4lEe3PJYPS2y0tZFkYphPw-1; Sun, 23 Feb 2025 15:10:22 -0500
+X-MC-Unique: 4lEe3PJYPS2y0tZFkYphPw-1
+X-Mimecast-MFC-AGG-ID: 4lEe3PJYPS2y0tZFkYphPw_1740341421
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-8559d67a12dso329134039f.0
+        for <linux-ext4@vger.kernel.org>; Sun, 23 Feb 2025 12:10:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740220318; x=1740825118;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G1O0dlsatzka8Rjn2bFVMo/J2mA85sw+K5Yl9fpzwSQ=;
-        b=jQipNDak9j6OjnmxYh5WOTLi3dOpUdWh6nPoMM6ShUmIq6w/CG5tsTdywS5Qc1n3/n
-         SIhySRCbZ29KglD0QRnsYX4MB+bgpke8bjFEmSJILhz8de7gkXDAg6f2Ol38zFq4ACX2
-         bwcZ278UbE4nqwC0qCPEiwhSObYxThb46jQnMFekQAYmxUttNvFuuY/O73FFeY2Kpf9m
-         MPjysl7d68wUwUymttwLk+7nnblJDMpyg1mxscFbg7U3xeMiNarZsLDpDro1Lv7LZXjz
-         9etgqZ5yutZqlQbjYCxaeohknw/7YidzpYkXx+H/t3oiXmhoV2T0YaiQPSiq3nKQDppz
-         7MJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJz1NoY+cbx2zNp9E8MJx6uec2U+a95XpaDgTRLZFHzXgTIWDXeBhNqXUuDbummgEwX5RFKhWI/Gdd3pmK@vger.kernel.org, AJvYcCWLPjdiLwiV7Jjz0JURY5OqYOwyKfykvCH8yQ/T2OD6aihVW3zfd9Z1S0MGNY/AuWT0zvlrE83GoIOG@vger.kernel.org
-X-Gm-Message-State: AOJu0YwgTkwJqabnOwgtrEd6+KCB3CbAIixU6Grtqz4E9sLFpmI7xh2f
-	Qo4k7tn9duPpaHDlDwFJv+Mu+b2KWKkTBHSOHZvfUshjWUFhPgOjrohC96dg
-X-Gm-Gg: ASbGncs4qcI37aCZM9smVobU2LhwR9wA3o5djh18pwsuvtyYHKWi/dYtRPOjReENMU6
-	8MwEU0gYQ4j4S/DHZzFWVuRrd/YpKeOcDWiNC0p9u/JNDh1T1Dxd9t4gpM2eRjPMPdPzA7Jrk3O
-	H8nTmTX4BB5PTUXRupWhygp/lHLTY802sQJCze/GcGfDPWVuY3hNNpBaWHvFuEyl3Ku7TMq4W1e
-	dDPPK/qxIt40egEbOXVzom/1GRJ9RzoaYirw6Q+w+y2E4rmHAsQTenT2FGq96Q9V9+kovhkQ9m9
-	lGkEJjg58MbrmiIiGw==
-X-Google-Smtp-Source: AGHT+IGEwfJ0QjG7Cr3aFOSZd1YhkxzAeQkeX3PxMyzf9G0qhNgHb1G84ruTloNxlyWBwSq6lOJpDw==
-X-Received: by 2002:a17:902:ce85:b0:21f:f3d:d533 with SMTP id d9443c01a7336-2219ff3354fmr86247825ad.2.1740220318152;
-        Sat, 22 Feb 2025 02:31:58 -0800 (PST)
-Received: from dw-tp ([171.76.82.51])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-add21f2149fsm13478068a12.1.2025.02.22.02.31.55
+        d=1e100.net; s=20230601; t=1740341421; x=1740946221;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KDkGd+8EL5eBEFvtbZ+VanMKD6k6utNUpzhgO4nKSQk=;
+        b=bwy+ya+BG6eqFrZMz+9FC76TvbjpMhjRr1bnaVdUq0yMEGrln3jLPQCExynp7vZKVi
+         pMbYxVWcjgV4hrv+XHUHVHD+A8BojDcBShlo3BtX1XXtQGhxgYy/GqWXozQgRz43MHx0
+         lxYps1WuCAWet1lcacHUzYaZJvo7sIusxCkrZjAeiwPUcfAp1BYSEJpAVm7bHw6FhYBM
+         Z/CULdgP6dIfvqUJbYjULfHK4CAQaubmimtSvInFl2eiyAytzug0yllZFh6V/SM2UZ+F
+         I1LDR3zjKXj2eC0xjSjo/5we0vRXuNQ5MJnAvNbsbMx/zeGhI9Ob4qgJztuZ3ppbMC68
+         XfUA==
+X-Gm-Message-State: AOJu0YxIMAMI+ao1i7L+YLmLVtJMvuziwZShTgmFwG25aZdAfXtGPjqc
+	0sOBI2bt8uUZ+Fe7uao3nmizujdEovnVsnlm9+KhqrlrrXOstbhIz6zrikniKDV0NpXd6c9VrDZ
+	EYM4uSXmQdViZJtMYMG4KkV5CFHxrW3+dqgnQVciI6fOxGhmjRLUeSQexWvw9fn2wgD8WWg==
+X-Gm-Gg: ASbGncsAnvmOhxGfxjb0qqdKOURviQWrRrCZBJNIgPt16Q/zcFghrWeT8U4jUAN5j8g
+	xh0eJXvKIBJpnetIa6NdmVaii/bY1sdBjxTWShmb63rjgaQQsLVT0ZndIL2T7b0c4ywC2d/VR6h
+	/wYlo0JmM9F0iPV27ZJ05razJzIIDgv14U4dfDlCd9YPV5PUm5nicnjbPSNoeQbBy7GKXIawUzU
+	OdPXMBYVtlz+YWc81f09AMsaazjOdUdrfqomzqeuColgxvNZ+PRxxUlFJip88fGbQzoo66XUvVV
+	IABODxemN0JOLZHXz2rpiiLr3Icc5sGMsMG6f3SAok7zFTIXjNLHYqBnuXNcGdl/
+X-Received: by 2002:a05:6602:6d05:b0:855:a283:8231 with SMTP id ca18e2360f4ac-855da9b189dmr1168939639f.1.1740341421226;
+        Sun, 23 Feb 2025 12:10:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFc1BHJyQseC4OAj6ojD7o/hjAxRM8udwodcUFx+GBBAP69rlrHnKokZ/yifaAbn8xnnPBH6Q==
+X-Received: by 2002:a05:6602:6d05:b0:855:a283:8231 with SMTP id ca18e2360f4ac-855da9b189dmr1168939339f.1.1740341420978;
+        Sun, 23 Feb 2025 12:10:20 -0800 (PST)
+Received: from fedora-rawhide.sandeen.net (97-116-166-216.mpls.qwest.net. [97.116.166.216])
+        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-855b8cd2ab7sm215692039f.24.2025.02.23.12.10.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Feb 2025 02:31:57 -0800 (PST)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Cc: Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ext4: Make sb update interval tunable
-In-Reply-To: <86b177b0b0a863362f11afa3fd835c5734e14ef7.1740212945.git.ojaswin@linux.ibm.com>
-Date: Sat, 22 Feb 2025 15:02:39 +0530
-Message-ID: <87y0xygw94.fsf@gmail.com>
-References: <cover.1740212945.git.ojaswin@linux.ibm.com> <86b177b0b0a863362f11afa3fd835c5734e14ef7.1740212945.git.ojaswin@linux.ibm.com>
+        Sun, 23 Feb 2025 12:10:20 -0800 (PST)
+From: Eric Sandeen <sandeen@redhat.com>
+To: jack@suse.com
+Cc: linux-ext4@vger.kernel.org
+Subject: [PATCH 0/2] ext2: convert to the new mount API
+Date: Sun, 23 Feb 2025 13:57:39 -0600
+Message-ID: <20250223201014.7541-1-sandeen@redhat.com>
+X-Mailer: git-send-email 2.48.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Ojaswin Mujoo <ojaswin@linux.ibm.com> writes:
+First patch allows ext2_msg to take a NULL sb since we don't have
+that during option parsing - ext4 does the same.
 
-> Currently, outside error paths, we auto commit the super block after 1
-> hour has passed and 16MB worth of updates have been written since last
-> commit. This is a policy decision so make this tunable while keeping the
-> defaults same. This is useful if user wants to tweak the superblock
-> update behavior or for debugging the codepath by allowing to trigger it
-> more frequently.
->
-> We can now tweak the super block update using sb_update_sec and
-> sb_update_kb files in /sys/fs/ext4/<dev>/
+Second patch lets it take an fc instead; it strikes me as a little
+messy and I won't be offended if it's not wanted. :)
 
+Thanks,
+-Eric
 
-Agree that this could be useful as a tunable knob for various reasons
-rather than being a hardcoded value within kernel. 
-
-The patch also looks good to me. Please feel free to add -
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
