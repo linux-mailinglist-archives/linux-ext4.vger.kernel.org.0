@@ -1,47 +1,47 @@
-Return-Path: <linux-ext4+bounces-6545-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6546-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A3ACA42D3A
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 20:59:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ECAFA42D7D
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 21:15:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEF3F188E405
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 19:59:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB22D3B1560
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 20:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82D220A5CA;
-	Mon, 24 Feb 2025 19:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5773A23BD1D;
+	Mon, 24 Feb 2025 20:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J/pUZjY/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RF/7pBC2"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6030E136327;
-	Mon, 24 Feb 2025 19:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21D01DB346;
+	Mon, 24 Feb 2025 20:13:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740427153; cv=none; b=P2u/ygedKdWh+YjD+Q/tewG/VLJT2dOk5wYu+m9coAIRQzxegXNsf1JxkBMOSAB3OOONol+E2n6h1K5X8nLJAZGVG1U3zgp6F8Pm4KPB5i/Hxx4JQY+ecv3D3KTe5ZtJNPEJ/uZbp0pC594Hj505zd2n0U4nsXBywHGC137XREc=
+	t=1740428014; cv=none; b=hUJxHqhtaVHUPp21WI8ZMyHlKUc0+2crCsyoMNaz/qWu+C9WN0gshJrc8bPSq5Ij6C3yDRjoPlzUPBupO0ZyMrO3sGLEzmKVn2PdGNXdaodQLB4avUR9WbksuRLZs2axxE2zTlHnNPVeEl03DtSBakNjtAf3kM+NhHjddw95r4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740427153; c=relaxed/simple;
-	bh=W6g23xuIssALMbH2xgrfWTmhUTBR2YOv3qZN/bNUQ44=;
+	s=arc-20240116; t=1740428014; c=relaxed/simple;
+	bh=k0vnno4H/q7Y2jWBdxb61/sd4YN5Ft+YYbYrZviEfSo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=biH86SJrimCvjEwlOlq4/sEsYLFRNFr5qDGBDK54UQ64/X8HdKKpmj2WePV4Pg2CDX8CmslWDoaZx5MLqaLTjg8GpMMPztFPXGe47na+RCD8ZmFQwKS3hnIlGCPfRlVqcXiOadkmgv5PzsoFGZ4yMsccEjM5Gfd7Fmr86cTCbR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J/pUZjY/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF325C4CED6;
-	Mon, 24 Feb 2025 19:59:12 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=JAz+M6KL/D3y2p0MJNS/467xEVyTnjSGG+YzrrNcwuveAMfgl/lb7kolZmvUoa+ink1eFniM+8I4d2UP5DtLNRYVzT8gjC8mmVoV2IBvyLWMggDFJ1sG2nAuwI1TlhHfjjx65xoVkced0vQ+xhPIW8iXoi+P3hPXS1pPrTpKgj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RF/7pBC2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7208C4CED6;
+	Mon, 24 Feb 2025 20:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740427152;
-	bh=W6g23xuIssALMbH2xgrfWTmhUTBR2YOv3qZN/bNUQ44=;
+	s=k20201202; t=1740428013;
+	bh=k0vnno4H/q7Y2jWBdxb61/sd4YN5Ft+YYbYrZviEfSo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J/pUZjY/fzMZiEQTtv7utDJgkg28SOgJfShAk1J4ilhBAoA7I1UIR5FdXUHIco9yJ
-	 9UL46T9QaTxKTMpdug43NR1GqXyEiim3snnXMCgqobTH6O6BvBa1MGxfBlHfs7yUnC
-	 FZf7Eg6o0/eAcKX3H/xosl41oIfM4y9qdVpD5m3ZwoZKHKWMOmWBBniZqPonAPGWuY
-	 yZKnzZ3juTC90xzqW59LITd31omUCzhfU8AlA1y1U9Ab+F1U3qp2HShcLKhsVYkztV
-	 /ENS/AXQOnDaILwsCfHK0R+arIkWu4IEJ7x0A2bKkr7UDNUcEcFQaQjpSWQxXhANeJ
-	 UgwX/WfqxqpIA==
-Date: Mon, 24 Feb 2025 11:59:12 -0800
+	b=RF/7pBC2ADRgEK/TrVT0HUeWoPCawBkxesuy8A7OPOYQv+y23CmlW793fz5ndInRu
+	 zAqH0lpArsO7daeKGEhrHqBXH/xT4dn2Q7FR4FZsKpmJENP/4S41Kbqu/xUhs8jYNW
+	 49QqnigEopuBH/hADeK4waGJF7YioOd5NNpCQ6vF2hHdNKjDG17Gwj1MiHDBrDSo3M
+	 iaPr9tzJ9YZBs4a4FTPgEGaTZRzycAC9FcLTvhY8U/C2cHJl6FvAjYS75pJUw4Oj5k
+	 Jl/0k5XRTIISnZW43obYIiECU8+B5l+iylQza5evEVEm/iFQTegSAdw6DSoJpMXxFm
+	 +1RqAoukkdJhA==
+Date: Mon, 24 Feb 2025 12:13:33 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: John Garry <john.g.garry@oracle.com>
 Cc: brauner@kernel.org, cem@kernel.org, dchinner@redhat.com, hch@lst.de,
@@ -49,10 +49,10 @@ Cc: brauner@kernel.org, cem@kernel.org, dchinner@redhat.com, hch@lst.de,
 	linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com,
 	ritesh.list@gmail.com, martin.petersen@oracle.com, tytso@mit.edu,
 	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 04/11] iomap: Support CoW-based atomic writes
-Message-ID: <20250224195912.GC21808@frogsfrogsfrogs>
+Subject: Re: [PATCH v2 07/11] xfs: iomap CoW-based atomic write support
+Message-ID: <20250224201333.GD21808@frogsfrogsfrogs>
 References: <20250213135619.1148432-1-john.g.garry@oracle.com>
- <20250213135619.1148432-5-john.g.garry@oracle.com>
+ <20250213135619.1148432-8-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,119 +61,177 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250213135619.1148432-5-john.g.garry@oracle.com>
+In-Reply-To: <20250213135619.1148432-8-john.g.garry@oracle.com>
 
-On Thu, Feb 13, 2025 at 01:56:12PM +0000, John Garry wrote:
-> Currently atomic write support requires dedicated HW support. This imposes
-> a restriction on the filesystem that disk blocks need to be aligned and
-> contiguously mapped to FS blocks to issue atomic writes.
+On Thu, Feb 13, 2025 at 01:56:15PM +0000, John Garry wrote:
+> In cases of an atomic write occurs for misaligned or discontiguous disk
+> blocks, we will use a CoW-based method to issue the atomic write.
 > 
-> XFS has no method to guarantee FS block alignment for regular non-RT files.
-> As such, atomic writes are currently limited to 1x FS block there.
+> So, for that case, return -EAGAIN to request that the write be issued in
+> CoW atomic write mode. The dio write path should detect this, similar to
+> how misaligned regalar DIO writes are handled.
 > 
-> To allow deal with the scenario that we are issuing an atomic write over
-> misaligned or discontiguous data blocks larger atomic writes - and raise
-> the atomic write limit - support a CoW-based software emulated atomic
-> write mode.
-> 
-> For this special mode, the FS will reserve blocks for that data to be
-> written and then atomically map that data in once the data has been
-> committed to disk.
-> 
-> It is the responsibility of the FS to detect discontiguous atomic writes
-> and switch to IOMAP_DIO_ATOMIC_COW mode and retry the write.
+> For normal HW-based mode, when the range which we are atomic writing to
+> covers a shared data extent, try to allocate a new CoW fork. However, if
+> we find that what we allocated does not meet atomic write requirements
+> in terms of length and alignment, then fallback on the CoW-based mode
+> for the atomic write.
 > 
 > Signed-off-by: John Garry <john.g.garry@oracle.com>
 > ---
->  Documentation/filesystems/iomap/operations.rst | 15 +++++++++++++--
->  fs/iomap/direct-io.c                           |  4 +++-
->  include/linux/iomap.h                          |  6 ++++++
->  3 files changed, 22 insertions(+), 3 deletions(-)
+>  fs/xfs/xfs_iomap.c | 72 ++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 69 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/filesystems/iomap/operations.rst b/Documentation/filesystems/iomap/operations.rst
-> index 82bfe0e8c08e..d30dddc94ef7 100644
-> --- a/Documentation/filesystems/iomap/operations.rst
-> +++ b/Documentation/filesystems/iomap/operations.rst
-> @@ -525,8 +525,19 @@ IOMAP_WRITE`` with any combination of the following enhancements:
->     conversion or copy on write), all updates for the entire file range
->     must be committed atomically as well.
->     Only one space mapping is allowed per untorn write.
-> -   Untorn writes must be aligned to, and must not be longer than, a
-> -   single file block.
-> +   Untorn writes may be longer than a single file block. In all cases,
-> +   the mapping start disk block must have at least the same alignment as
-> +   the write offset.
+> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> index ab79f0080288..c5ecfafbba60 100644
+> --- a/fs/xfs/xfs_iomap.c
+> +++ b/fs/xfs/xfs_iomap.c
+> @@ -795,6 +795,23 @@ imap_spans_range(
+>  	return true;
+>  }
+>  
+> +static bool
+> +imap_range_valid_for_atomic_write(
+
+xfs_bmap_valid_for_atomic_write()
+
+> +	struct xfs_bmbt_irec	*imap,
+> +	xfs_fileoff_t		offset_fsb,
+> +	xfs_fileoff_t		end_fsb)
+> +{
+> +	/* Misaligned start block wrt size */
+> +	if (!IS_ALIGNED(imap->br_startblock, imap->br_blockcount))
+> +		return false;
 > +
-> + * ``IOMAP_ATOMIC_COW``: This write is being issued with torn-write
-> +   protection based on CoW support.
+> +	/* Discontiguous or mixed extents */
+> +	if (!imap_spans_range(imap, offset_fsb, end_fsb))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>  static int
+>  xfs_direct_write_iomap_begin(
+>  	struct inode		*inode,
+> @@ -809,12 +826,20 @@ xfs_direct_write_iomap_begin(
+>  	struct xfs_bmbt_irec	imap, cmap;
+>  	xfs_fileoff_t		offset_fsb = XFS_B_TO_FSBT(mp, offset);
+>  	xfs_fileoff_t		end_fsb = xfs_iomap_end_fsb(mp, offset, length);
+> +	bool			atomic_cow = flags & IOMAP_ATOMIC_COW;
+> +	bool			atomic_hw = flags & IOMAP_ATOMIC_HW;
+>  	int			nimaps = 1, error = 0;
+>  	bool			shared = false;
+>  	u16			iomap_flags = 0;
+> +	xfs_fileoff_t		orig_offset_fsb;
+> +	xfs_fileoff_t		orig_end_fsb;
+> +	bool			needs_alloc;
+>  	unsigned int		lockmode;
+>  	u64			seq;
+>  
+> +	orig_offset_fsb = offset_fsb;
 
-I think using "COW" here results in a misnamed flag.  Consider:
+When does offset_fsb change?
 
-"IOMAP_ATOMIC_SW: This write is being issued with torn-write protection
-via a software fallback provided by the filesystem."
+> +	orig_end_fsb = end_fsb;
 
-iomap itself doesn't care *how* the filesystem guarantees that the
-direct write isn't torn, right?  The fs' io completion handler has to
-ensure that the mapping update(s) are either applied fully or discarded
-fully.
+Set this in the variable declaration?
 
-In theory if you had a bunch of physical space mapped to the same
-file but with different unwritten states, you could gang together all
-the unwritten extent conversions in a single transaction, which would
-provide the necessary tearing prevention without the out of place write.
-Nobody does that right now, but I think that's the only option for ext4.
+> +
+>  	ASSERT(flags & (IOMAP_WRITE | IOMAP_ZERO));
+>  
+>  	if (xfs_is_shutdown(mp))
+> @@ -832,7 +857,7 @@ xfs_direct_write_iomap_begin(
+>  	 * COW writes may allocate delalloc space or convert unwritten COW
+>  	 * extents, so we need to make sure to take the lock exclusively here.
+>  	 */
+> -	if (xfs_is_cow_inode(ip))
+> +	if (xfs_is_cow_inode(ip) || atomic_cow)
+>  		lockmode = XFS_ILOCK_EXCL;
+>  	else
+>  		lockmode = XFS_ILOCK_SHARED;
+> @@ -857,6 +882,22 @@ xfs_direct_write_iomap_begin(
+>  	if (error)
+>  		goto out_unlock;
+>  
+> +	if (flags & IOMAP_ATOMIC_COW) {
+
+	if (atomic_cow) ?
+
+Or really, atomic_sw?
+
+> +		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
+> +				&lockmode,
+> +				(flags & IOMAP_DIRECT) || IS_DAX(inode), true);
+> +		/*
+> +		 * Don't check @shared. For atomic writes, we should error when
+> +		 * we don't get a CoW fork.
+
+"Get a CoW fork"?  What does that mean?  The cow fork should be
+automatically allocated when needed, right?  Or should this really read
+"...when we don't get a COW mapping"?
+
+> +		 */
+> +		if (error)
+> +			goto out_unlock;
+> +
+> +		end_fsb = imap.br_startoff + imap.br_blockcount;
+> +		length = XFS_FSB_TO_B(mp, end_fsb) - offset;
+> +		goto out_found_cow;
+> +	}
+
+Can this be a separate ->iomap_begin (and hence iomap ops)?  I am trying
+to avoid the incohesion (still) plaguing most of the other iomap users.
+
+> +
+>  	if (imap_needs_cow(ip, flags, &imap, nimaps)) {
+>  		error = -EAGAIN;
+>  		if (flags & IOMAP_NOWAIT)
+> @@ -868,13 +909,38 @@ xfs_direct_write_iomap_begin(
+>  				(flags & IOMAP_DIRECT) || IS_DAX(inode), false);
+>  		if (error)
+>  			goto out_unlock;
+> -		if (shared)
+> +		if (shared) {
+> +			if (atomic_hw &&
+> +			    !imap_range_valid_for_atomic_write(&cmap,
+> +					orig_offset_fsb, orig_end_fsb)) {
+> +				error = -EAGAIN;
+> +				goto out_unlock;
+> +			}
+>  			goto out_found_cow;
+> +		}
+>  		end_fsb = imap.br_startoff + imap.br_blockcount;
+>  		length = XFS_FSB_TO_B(mp, end_fsb) - offset;
+>  	}
+>  
+> -	if (imap_needs_alloc(inode, flags, &imap, nimaps))
+> +	needs_alloc = imap_needs_alloc(inode, flags, &imap, nimaps);
+> +
+> +	if (atomic_hw) {
+> +		error = -EAGAIN;
+> +		/*
+> +		 * Use CoW method for when we need to alloc > 1 block,
+> +		 * otherwise we might allocate less than what we need here and
+> +		 * have multiple mappings.
+> +		*/
+> +		if (needs_alloc && orig_end_fsb - orig_offset_fsb > 1)
+> +			goto out_unlock;
+> +
+> +		if (!imap_range_valid_for_atomic_write(&imap, orig_offset_fsb,
+> +						orig_end_fsb)) {
+
+You only need to indent by two more tabs for a continuation line.
 
 --D
 
-> +   All the length, alignment, and single bio restrictions which apply
-> +   to IOMAP_ATOMIC_HW do not apply here.
-> +   CoW-based atomic writes are intended as a fallback for when
-> +   HW-based atomic writes may not be issued, e.g. the range covered in
-> +   the atomic write covers multiple extents.
-> +   All filesystem metadata updates for the entire file range must be
-> +   committed atomically as well.
->  
->  Callers commonly hold ``i_rwsem`` in shared or exclusive mode before
->  calling this function.
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index f87c4277e738..076338397daa 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -644,7 +644,9 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  			iomi.flags |= IOMAP_OVERWRITE_ONLY;
->  		}
->  
-> -		if (iocb->ki_flags & IOCB_ATOMIC)
-> +		if (dio_flags & IOMAP_DIO_ATOMIC_COW)
-> +			iomi.flags |= IOMAP_ATOMIC_COW;
-> +		else if (iocb->ki_flags & IOCB_ATOMIC)
->  			iomi.flags |= IOMAP_ATOMIC_HW;
->  
->  		/* for data sync or sync, we need sync completion processing */
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index e7aa05503763..1b961895678a 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -183,6 +183,7 @@ struct iomap_folio_ops {
->  #define IOMAP_DAX		0
->  #endif /* CONFIG_FS_DAX */
->  #define IOMAP_ATOMIC_HW		(1 << 9) /* HW-based torn-write protection */
-> +#define IOMAP_ATOMIC_COW	(1 << 10)/* CoW-based torn-write protection */
->  
->  struct iomap_ops {
->  	/*
-> @@ -434,6 +435,11 @@ struct iomap_dio_ops {
->   */
->  #define IOMAP_DIO_PARTIAL		(1 << 2)
->  
-> +/*
-> + * Use CoW-based software emulated torn-write protection.
-> + */
-> +#define IOMAP_DIO_ATOMIC_COW		(1 << 3)
+> +			goto out_unlock;
+> +		}
+> +	}
 > +
->  ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
->  		unsigned int dio_flags, void *private, size_t done_before);
+> +	if (needs_alloc)
+>  		goto allocate_blocks;
+>  
+>  	/*
 > -- 
 > 2.31.1
 > 
