@@ -1,101 +1,100 @@
-Return-Path: <linux-ext4+bounces-6542-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6543-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91A20A4257D
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 16:10:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1C08A42752
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 17:06:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC4BA4457A5
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 14:53:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FD16188C898
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 16:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031D517B50B;
-	Mon, 24 Feb 2025 14:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D9625B66A;
+	Mon, 24 Feb 2025 16:02:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IbnGiZmU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cWRaYggq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IbnGiZmU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cWRaYggq"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W3zbVNoD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g5x+Ivx1";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UG20S6Ey";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jWfB3hHg"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCAC61B7F4
-	for <linux-ext4@vger.kernel.org>; Mon, 24 Feb 2025 14:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF89D188CD8
+	for <linux-ext4@vger.kernel.org>; Mon, 24 Feb 2025 16:02:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740408724; cv=none; b=ZUS+QaXkgQy10OMXpNeGinBb836hD5LsMJNlzmQ9KcJAq6Jqaoti3NDt/UI2q0gPTIDO7Fk7fbap7o9qspnlOCxJNV4SB2HkYoizXx51+HumcK2VFvwjnaRJb99PI0WGgzRBMbMWyXAyvFQwU16/U7O9x3BXg2hZNWfMQYcJA1A=
+	t=1740412925; cv=none; b=gF2tjGq1I/KYICVpwSrriWj/N5JBbkeDzJjXvm6FNz3XlFqooHQyCNnR9dxIoinYr4+U3Bvn1Zgq55U6D0EvA3lQSqjx/eG5jZ6lzXKcvVzEWqEBWkbmMDI77QNEDthvGHHUoMaLEnMcvPQOPn9ejhunklLRx6Teb6KbsVbcUkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740408724; c=relaxed/simple;
-	bh=N0rAj0CwYfuQupwASK4RYBKzzj3tcT+p74zaGCG9lSI=;
+	s=arc-20240116; t=1740412925; c=relaxed/simple;
+	bh=GHbAzQSSFioNvRypNrTDWkMqHzuJ7pn4FfBc6uccumA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rNdIY6OlEKihlz5pt4MumnMCwRij8NN+pXa5/486EqD675vIFakfxQQtWZU+/8nmD4Lo5Bki6sivNsra9rJky7ztsT4aLLMBApzg53VK8FBQb5BVU8GQmXVjLbPA7GOOp/vOxYvpSaQ+ujWeWLS6NGAQK10nGMHAw5qu2MUd0po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IbnGiZmU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cWRaYggq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IbnGiZmU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cWRaYggq; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=VUIbLNr67aB+y0YsDtpPJbpb/71BA9xFCUYdHnJqc7B6As36COZRYx2jefb1ZyFHLe1M9UqUF2Cvb3t+HcmXf8sDB+W+t/kBfpWFYf5b+8MMpyNYx9Q+mFxGawJswe7NZ72nCcJn7JP9CGn9LIIWaACF8MNrUHpWlEbm92468sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W3zbVNoD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g5x+Ivx1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UG20S6Ey; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jWfB3hHg; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0D5E71F45A;
-	Mon, 24 Feb 2025 14:52:01 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B34301F441;
+	Mon, 24 Feb 2025 16:02:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1740408721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1740412921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=98Ess9Xi9Tt/i1CFWqq9z57i+lTRznXPlwccb0kNr/I=;
-	b=IbnGiZmUMN5hy7ayozyKKM2kBLIdW/OXDtlEWZBb8S/2l4naiNg1TdLvd971odH920ZHrq
-	E3TA0V2Tol0z+3K2jmsshBDTR0CWg3IXEihsMkoHLb50dx1cK8Wc5aYUcmkb9WWXeGz9gs
-	CVQc/YtCmX68giIIS26T8LzX34JeqnM=
+	bh=ewllgQWPI2oc5xJeL7mpXVvnQV3E4eFa8c5GHvjCzjg=;
+	b=W3zbVNoDXdRZgeDgIVxBJqR+HPzsydhj1mWzgnRnubkh0k+llZWRTTiGqCJX6M34aASSly
+	FrQf2BRkYKkvICZgUQsAjp03VigA1WlflXAEBjY2Okq/j7hiZk1KLzVN6j978ZNUJvHKJu
+	X+CP/qDn3IwTJvNx5qzXwigP1sc4rJM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1740408721;
+	s=susede2_ed25519; t=1740412921;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=98Ess9Xi9Tt/i1CFWqq9z57i+lTRznXPlwccb0kNr/I=;
-	b=cWRaYggq8nRVifyQgDFZ51ttd02Up/o0+x+Yt0EySL7aCkhs5SmMqKqpOOeubGDpM0UZGp
-	5+HG3x3INgwreiBw==
+	bh=ewllgQWPI2oc5xJeL7mpXVvnQV3E4eFa8c5GHvjCzjg=;
+	b=g5x+Ivx1//at7nS0Opj1YRwhMj5S51Gprs/smErIDPXdbmNfRe7mwVUW6d6HPrgb6t+Ssy
+	K6+UCdLxIoRcapAg==
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UG20S6Ey;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jWfB3hHg
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1740408721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1740412920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=98Ess9Xi9Tt/i1CFWqq9z57i+lTRznXPlwccb0kNr/I=;
-	b=IbnGiZmUMN5hy7ayozyKKM2kBLIdW/OXDtlEWZBb8S/2l4naiNg1TdLvd971odH920ZHrq
-	E3TA0V2Tol0z+3K2jmsshBDTR0CWg3IXEihsMkoHLb50dx1cK8Wc5aYUcmkb9WWXeGz9gs
-	CVQc/YtCmX68giIIS26T8LzX34JeqnM=
+	bh=ewllgQWPI2oc5xJeL7mpXVvnQV3E4eFa8c5GHvjCzjg=;
+	b=UG20S6EyX2uaj5c6ud5W7pQloF9ZlC5vMzs1SJ23eukl5LL1lvExjMzTWC8o2Zcu1euvOH
+	hltSzf4ncfdhtkfo2j0uHzG5D8bZ4rwvbaewWn4qn7Gskbpynx1hlAdroZ+aikvcvDNKvF
+	NKjouG7wRd9HGqZaAw5JsFSDepp/Hz8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1740408721;
+	s=susede2_ed25519; t=1740412920;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=98Ess9Xi9Tt/i1CFWqq9z57i+lTRznXPlwccb0kNr/I=;
-	b=cWRaYggq8nRVifyQgDFZ51ttd02Up/o0+x+Yt0EySL7aCkhs5SmMqKqpOOeubGDpM0UZGp
-	5+HG3x3INgwreiBw==
+	bh=ewllgQWPI2oc5xJeL7mpXVvnQV3E4eFa8c5GHvjCzjg=;
+	b=jWfB3hHgRtUSHIPKxmr4RALhUNUzwvx8HY/6ogLtFWNHunX1vcmp5pVQ0y8/BtaZSEDYmE
+	3rmI5YWQE1ZoTIBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 02B6C13332;
-	Mon, 24 Feb 2025 14:52:01 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB92713707;
+	Mon, 24 Feb 2025 16:02:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fKelAJGHvGdVTgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 24 Feb 2025 14:52:01 +0000
+	id iGbdKfiXvGerZgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 24 Feb 2025 16:02:00 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id AF040A0785; Mon, 24 Feb 2025 15:52:00 +0100 (CET)
-Date: Mon, 24 Feb 2025 15:52:00 +0100
+	id 69D85A0851; Mon, 24 Feb 2025 17:01:52 +0100 (CET)
+Date: Mon, 24 Feb 2025 17:01:52 +0100
 From: Jan Kara <jack@suse.cz>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, 
-	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, 
-	Mahesh Kumar <maheshkumar657g@gmail.com>, Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH 1/2] ext4: only defer sb update on error if SB_ACTIVE
-Message-ID: <jnxpphuradrsf73cxfmohfu7wwwckihtulw6ovsitddgt5pqkg@2uoejkr66qnl>
-References: <cover.1740212945.git.ojaswin@linux.ibm.com>
- <da8af2e5170f0d94031b812d7d50c6ec1967db1b.1740212945.git.ojaswin@linux.ibm.com>
+To: Eric Sandeen <sandeen@redhat.com>
+Cc: jack@suse.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 2/2] ext2: create ext2_msg_fc for use during parsing
+Message-ID: <eyqjaiiytiuwuuf5gx2bk6oger2n6sxcco5gdbdxk4ciyk27lr@c4oxd73rg5ve>
+References: <20250223201014.7541-1-sandeen@redhat.com>
+ <20250223201014.7541-3-sandeen@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -104,148 +103,163 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <da8af2e5170f0d94031b812d7d50c6ec1967db1b.1740212945.git.ojaswin@linux.ibm.com>
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
+In-Reply-To: <20250223201014.7541-3-sandeen@redhat.com>
+X-Rspamd-Queue-Id: B34301F441
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[];
+	MX_GOOD(-0.01)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,suse.cz,gmail.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_THREE(0.00)[3];
 	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Sat 22-02-25 14:10:22, Ojaswin Mujoo wrote:
-> Presently we always BUG_ON if trying to start a transaction on a journal
-> marked with JBD2_UNMOUNT, since this should never happen. However while
-> running stress tests it was observed that in case of some error handling
-> paths, it is possible for update_super_work to start a transaction after
-> the journal is destroyed eg:
+On Sun 23-02-25 13:57:41, Eric Sandeen wrote:
+> Rather than send a NULL sb to ext2_msg, which omits the s_id from
+> messages, create a new ext2_msg_fc which is able to provide this
+> information from the filesystem context *fc when parsing.
 > 
-> (umount)
-> ext4_kill_sb
->   kill_block_super
->     generic_shutdown_super
->       sync_filesystem /* commits all txns */
->       evict_inodes
->         /* might start a new txn */
->       ext4_put_super
-> 	flush_work(&sbi->s_sb_upd_work) /* flush the workqueue */
->         jbd2_journal_destroy
->           journal_kill_thread
->             journal->j_flags |= JBD2_UNMOUNT;
->           jbd2_journal_commit_transaction
->             jbd2_journal_get_descriptor_buffer
->               jbd2_journal_bmap
->                 ext4_journal_bmap
->                   ext4_map_blocks
->                     ...
->                     ext4_inode_error
->                       ext4_handle_error
->                         schedule_work(&sbi->s_sb_upd_work)
-> 
->                                                /* work queue kicks in */
->                                                update_super_work
->                                                  jbd2_journal_start
->                                                    start_this_handle
->                                                      BUG_ON(journal->j_flags &
->                                                             JBD2_UNMOUNT)
-> 
-> Hence, make sure we only defer the update of ext4 sb if the sb is still
-> active.  Otherwise, just fallback to an un-journaled commit.
-> 
-> The important thing to note here is that we must only defer sb update if
-> we have not yet flushed the s_sb_update_work queue in umount path else
-> this race can be hit (point 1 below). Since we don't have a direct way
-> to check for that we use SB_ACTIVE instead. The SB_ACTIVE check is a bit
-> subtle so adding some notes below for future reference:
-> 
-> 1. Ideally we would want to have a something like (flags & JBD2_UNMOUNT
-> == 0) however this is not correct since we could end up scheduling work
-> after it has been flushed:
-> 
->  ext4_put_super
->   flush_work(&sbi->s_sb_upd_work)
-> 
->                            **kjournald2**
->                            jbd2_journal_commit_transaction
->                            ...
->                            ext4_inode_error
->                              /* JBD2_UNMOUNT not set */
->                              schedule_work(s_sb_upd_work)
-> 
->    jbd2_journal_destroy
->     journal->j_flags |= JBD2_UNMOUNT;
-> 
->                                       **workqueue**
->                                       update_super_work
->                                        jbd2_journal_start
->                                         start_this_handle
->                                           BUG_ON(JBD2_UNMOUNT)
-> 
-> Something like the above doesn't happen with SB_ACTIVE check because we
-> are sure that the workqueue would be flushed at a later point if we are
-> in the umount path.
-> 
-> 2. We don't need a similar check in ext4_grp_locked_error since it is
-> only called from mballoc and AFAICT it would be always valid to schedule
-> work here.
-> 
-> Fixes: 2d01ddc86606 ("ext4: save error info to sb through journal if available")
-> Reported-by: Mahesh Kumar <maheshkumar657g@gmail.com>
-> Suggested-by: Ritesh Harjani <ritesh.list@gmail.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+...
+> +static void ext2_msg_fc(struct fs_context *fc, const char *prefix,
+> +			const char *fmt, ...)
+> +{
+> +	struct va_format vaf;
+> +	va_list args;
+> +	const char *s_id;
+> +
+> +	if (fc->purpose == FS_CONTEXT_FOR_RECONFIGURE) {
+> +		s_id = fc->root->d_sb->s_id;
 
-Good catch! But I think the solution will have to be slightly different.
-Basing the check on SB_ACTIVE has the problem that you can have racing
-updates of the sb in the still running transaction and in your direct
-update leading to inconsistencies after a crash (that was the reason why
-we've created the s_sb_upd_work in the first place).
+So the remount handling is definitely valuable...
 
-I would solve this by implementing something like
-ext4_update_sb_destroy_journal() which will set a flag in sbi, flush the
-workqueue, and then destroy the journal. And ext4_handle_error() will check
-for the sbi flag.
+> +	} else {
+> +		/* get last path component of source */
+> +		s_id = strrchr(fc->source, '/');
+> +		if (s_id)
+> +			s_id++;
+> +	}
+
+And this isn't too bad but I think it will crash if fc->source has no / in
+it? I'll fix that up on commit.
+
+Thanks for the patch!
 
 								Honza
 
-> ---
->  fs/ext4/super.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index a963ffda692a..b7341e9acf62 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -706,7 +706,7 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
->  		 * constraints, it may not be safe to do it right here so we
->  		 * defer superblock flushing to a workqueue.
->  		 */
-> -		if (continue_fs && journal)
-> +		if (continue_fs && journal && (sb->s_flags & SB_ACTIVE))
->  			schedule_work(&EXT4_SB(sb)->s_sb_upd_work);
->  		else
->  			ext4_commit_super(sb);
+> +	va_start(args, fmt);
+> +
+> +	vaf.fmt = fmt;
+> +	vaf.va = &args;
+> +
+> +	printk("%sEXT2-fs (%s): %pV\n", prefix, s_id, &vaf);
+> +
+> +	va_end(args);
+> +}
+> +
+>  void ext2_msg(struct super_block *sb, const char *prefix,
+>  		const char *fmt, ...)
+>  {
+> @@ -92,10 +117,7 @@ void ext2_msg(struct super_block *sb, const char *prefix,
+>  	vaf.fmt = fmt;
+>  	vaf.va = &args;
+>  
+> -	if (sb)
+> -		printk("%sEXT2-fs (%s): %pV\n", prefix, sb->s_id, &vaf);
+> -	else
+> -		printk("%sEXT2-fs: %pV\n", prefix, &vaf);
+> +	printk("%sEXT2-fs (%s): %pV\n", prefix, sb->s_id, &vaf);
+>  
+>  	va_end(args);
+>  }
+> @@ -544,7 +566,7 @@ static int ext2_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  		ctx_clear_mount_opt(ctx, EXT2_MOUNT_OLDALLOC);
+>  		break;
+>  	case Opt_nobh:
+> -		ext2_msg(NULL, KERN_INFO, "nobh option not supported\n");
+> +		ext2_msg_fc(fc, KERN_INFO, "nobh option not supported\n");
+>  		break;
+>  #ifdef CONFIG_EXT2_FS_XATTR
+>  	case Opt_user_xattr:
+> @@ -555,7 +577,7 @@ static int ext2_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  		break;
+>  #else
+>  	case Opt_user_xattr:
+> -		ext2_msg(NULL, KERN_INFO, "(no)user_xattr options not supported");
+> +		ext2_msg_fc(fc, KERN_INFO, "(no)user_xattr options not supported");
+>  		break;
+>  #endif
+>  #ifdef CONFIG_EXT2_FS_POSIX_ACL
+> @@ -567,20 +589,20 @@ static int ext2_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  		break;
+>  #else
+>  	case Opt_acl:
+> -		ext2_msg(NULL, KERN_INFO, "(no)acl options not supported");
+> +		ext2_msg_fc(fc, KERN_INFO, "(no)acl options not supported");
+>  		break;
+>  #endif
+>  	case Opt_xip:
+> -		ext2_msg(NULL, KERN_INFO, "use dax instead of xip");
+> +		ext2_msg_fc(fc, KERN_INFO, "use dax instead of xip");
+>  		ctx_set_mount_opt(ctx, EXT2_MOUNT_XIP);
+>  		fallthrough;
+>  	case Opt_dax:
+>  #ifdef CONFIG_FS_DAX
+> -		ext2_msg(NULL, KERN_WARNING,
+> +		ext2_msg_fc(fc, KERN_WARNING,
+>  		    "DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
+>  		ctx_set_mount_opt(ctx, EXT2_MOUNT_DAX);
+>  #else
+> -		ext2_msg(NULL, KERN_INFO, "dax option not supported");
+> +		ext2_msg_fc(fc, KERN_INFO, "dax option not supported");
+>  #endif
+>  		break;
+>  
+> @@ -597,16 +619,16 @@ static int ext2_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  	case Opt_quota:
+>  	case Opt_usrquota:
+>  	case Opt_grpquota:
+> -		ext2_msg(NULL, KERN_INFO, "quota operations not supported");
+> +		ext2_msg_fc(fc, KERN_INFO, "quota operations not supported");
+>  		break;
+>  #endif
+>  	case Opt_reservation:
+>  		if (!result.negated) {
+>  			ctx_set_mount_opt(ctx, EXT2_MOUNT_RESERVATION);
+> -			ext2_msg(NULL, KERN_INFO, "reservations ON");
+> +			ext2_msg_fc(fc, KERN_INFO, "reservations ON");
+>  		} else {
+>  			ctx_clear_mount_opt(ctx, EXT2_MOUNT_RESERVATION);
+> -			ext2_msg(NULL, KERN_INFO, "reservations OFF");
+> +			ext2_msg_fc(fc, KERN_INFO, "reservations OFF");
+>  		}
+>  		break;
+>  	case Opt_ignore:
 > -- 
-> 2.48.1
+> 2.48.0
 > 
 -- 
 Jan Kara <jack@suse.com>
