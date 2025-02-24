@@ -1,47 +1,47 @@
-Return-Path: <linux-ext4+bounces-6546-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6547-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ECAFA42D7D
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 21:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EB54A42D9F
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 21:22:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB22D3B1560
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 20:13:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B64D3B1BB1
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2025 20:21:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5773A23BD1D;
-	Mon, 24 Feb 2025 20:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945A024418D;
+	Mon, 24 Feb 2025 20:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RF/7pBC2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IQBYy678"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21D01DB346;
-	Mon, 24 Feb 2025 20:13:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F251219301;
+	Mon, 24 Feb 2025 20:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740428014; cv=none; b=hUJxHqhtaVHUPp21WI8ZMyHlKUc0+2crCsyoMNaz/qWu+C9WN0gshJrc8bPSq5Ij6C3yDRjoPlzUPBupO0ZyMrO3sGLEzmKVn2PdGNXdaodQLB4avUR9WbksuRLZs2axxE2zTlHnNPVeEl03DtSBakNjtAf3kM+NhHjddw95r4g=
+	t=1740428436; cv=none; b=aS/1ZWdJwRD2kB9ptF1D2/ULakRqAHtm2xxnqDXThTIeKcPNmGasRRhfJsY34MxCvxxoK64VDXhITjsSsWnvz2KTplDU0VjpmqxNC+J8owBhuyrOStp0AbuZTdE8yVHWqx2zcTGY1P0lAmvJnXs61n6fJex/UXIJ494nJXOv2QE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740428014; c=relaxed/simple;
-	bh=k0vnno4H/q7Y2jWBdxb61/sd4YN5Ft+YYbYrZviEfSo=;
+	s=arc-20240116; t=1740428436; c=relaxed/simple;
+	bh=6VAqcp8i/KksTRnjFl8hZ1PVyC+q8YxP3Kyhwai1Ibs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JAz+M6KL/D3y2p0MJNS/467xEVyTnjSGG+YzrrNcwuveAMfgl/lb7kolZmvUoa+ink1eFniM+8I4d2UP5DtLNRYVzT8gjC8mmVoV2IBvyLWMggDFJ1sG2nAuwI1TlhHfjjx65xoVkced0vQ+xhPIW8iXoi+P3hPXS1pPrTpKgj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RF/7pBC2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7208C4CED6;
-	Mon, 24 Feb 2025 20:13:33 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=M7U/vMurP2Rm0huVhA2/JzU9I1KGlnw42ag6jBv7rqmG64+HKfEzfQri3a//WuwMPDGSw8riPpZDbMXBs7OyHQXJ2nq5ea+xQ2UfVFclMKmBxlgN+Vu3MX/LyMRSJELxJY891PfJqPWLLVQ8DBHvHoCCYvVqAkEHYCjrAABINRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IQBYy678; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 808A5C4CEDD;
+	Mon, 24 Feb 2025 20:20:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740428013;
-	bh=k0vnno4H/q7Y2jWBdxb61/sd4YN5Ft+YYbYrZviEfSo=;
+	s=k20201202; t=1740428435;
+	bh=6VAqcp8i/KksTRnjFl8hZ1PVyC+q8YxP3Kyhwai1Ibs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RF/7pBC2ADRgEK/TrVT0HUeWoPCawBkxesuy8A7OPOYQv+y23CmlW793fz5ndInRu
-	 zAqH0lpArsO7daeKGEhrHqBXH/xT4dn2Q7FR4FZsKpmJENP/4S41Kbqu/xUhs8jYNW
-	 49QqnigEopuBH/hADeK4waGJF7YioOd5NNpCQ6vF2hHdNKjDG17Gwj1MiHDBrDSo3M
-	 iaPr9tzJ9YZBs4a4FTPgEGaTZRzycAC9FcLTvhY8U/C2cHJl6FvAjYS75pJUw4Oj5k
-	 Jl/0k5XRTIISnZW43obYIiECU8+B5l+iylQza5evEVEm/iFQTegSAdw6DSoJpMXxFm
-	 +1RqAoukkdJhA==
-Date: Mon, 24 Feb 2025 12:13:33 -0800
+	b=IQBYy678jd44jdnG4APN0sq4DrqtNqvjjyui5kWyGLPH18QZpNUyvuN3yCUwfPPKj
+	 Oe+E+cwzCIiaL2mw+VOOyeoOLuRKWd95cD+JUQuyJSOgZLFZvlNga+A8BgGpmLwU4p
+	 cE+3K8RUrf/XYQcrMFXohjfgPivA25T2k7zwZJdS3/Jd8iRoqrFvzJxR0gRLf57JHB
+	 buv7TRQeLux1FLmzfl8YvXUamn5toFAHbaiXhjLQQ+cS/+eHo7KXWFY6oiuS4mJbxk
+	 DAfOHb+Jz/+GW8nuM3RBh1YQziFuAYZ4mNHLe8vpCZZhxnkymGr6f8JorFmEeRfP+h
+	 1IjUFP57O0xnA==
+Date: Mon, 24 Feb 2025 12:20:34 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: John Garry <john.g.garry@oracle.com>
 Cc: brauner@kernel.org, cem@kernel.org, dchinner@redhat.com, hch@lst.de,
@@ -49,10 +49,10 @@ Cc: brauner@kernel.org, cem@kernel.org, dchinner@redhat.com, hch@lst.de,
 	linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com,
 	ritesh.list@gmail.com, martin.petersen@oracle.com, tytso@mit.edu,
 	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 07/11] xfs: iomap CoW-based atomic write support
-Message-ID: <20250224201333.GD21808@frogsfrogsfrogs>
+Subject: Re: [PATCH v2 09/11] xfs: Commit CoW-based atomic writes atomically
+Message-ID: <20250224202034.GE21808@frogsfrogsfrogs>
 References: <20250213135619.1148432-1-john.g.garry@oracle.com>
- <20250213135619.1148432-8-john.g.garry@oracle.com>
+ <20250213135619.1148432-10-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,177 +61,127 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250213135619.1148432-8-john.g.garry@oracle.com>
+In-Reply-To: <20250213135619.1148432-10-john.g.garry@oracle.com>
 
-On Thu, Feb 13, 2025 at 01:56:15PM +0000, John Garry wrote:
-> In cases of an atomic write occurs for misaligned or discontiguous disk
-> blocks, we will use a CoW-based method to issue the atomic write.
+On Thu, Feb 13, 2025 at 01:56:17PM +0000, John Garry wrote:
+> When completing a CoW-based write, each extent range mapping update is
+> covered by a separate transaction.
 > 
-> So, for that case, return -EAGAIN to request that the write be issued in
-> CoW atomic write mode. The dio write path should detect this, similar to
-> how misaligned regalar DIO writes are handled.
-> 
-> For normal HW-based mode, when the range which we are atomic writing to
-> covers a shared data extent, try to allocate a new CoW fork. However, if
-> we find that what we allocated does not meet atomic write requirements
-> in terms of length and alignment, then fallback on the CoW-based mode
-> for the atomic write.
+> For a CoW-based atomic write, all mappings must be changed at once, so
+> change to use a single transaction.
 > 
 > Signed-off-by: John Garry <john.g.garry@oracle.com>
 > ---
->  fs/xfs/xfs_iomap.c | 72 ++++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 69 insertions(+), 3 deletions(-)
+>  fs/xfs/xfs_file.c    |  5 ++++-
+>  fs/xfs/xfs_reflink.c | 45 ++++++++++++++++++++++++++++++++++++++++++++
+>  fs/xfs/xfs_reflink.h |  3 +++
+>  3 files changed, 52 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index ab79f0080288..c5ecfafbba60 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -795,6 +795,23 @@ imap_spans_range(
->  	return true;
->  }
+> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> index 9762fa503a41..243640fe4874 100644
+> --- a/fs/xfs/xfs_file.c
+> +++ b/fs/xfs/xfs_file.c
+> @@ -527,7 +527,10 @@ xfs_dio_write_end_io(
+>  	nofs_flag = memalloc_nofs_save();
 >  
-> +static bool
-> +imap_range_valid_for_atomic_write(
-
-xfs_bmap_valid_for_atomic_write()
-
-> +	struct xfs_bmbt_irec	*imap,
-> +	xfs_fileoff_t		offset_fsb,
-> +	xfs_fileoff_t		end_fsb)
-> +{
-> +	/* Misaligned start block wrt size */
-> +	if (!IS_ALIGNED(imap->br_startblock, imap->br_blockcount))
-> +		return false;
-> +
-> +	/* Discontiguous or mixed extents */
-> +	if (!imap_spans_range(imap, offset_fsb, end_fsb))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  static int
->  xfs_direct_write_iomap_begin(
->  	struct inode		*inode,
-> @@ -809,12 +826,20 @@ xfs_direct_write_iomap_begin(
->  	struct xfs_bmbt_irec	imap, cmap;
->  	xfs_fileoff_t		offset_fsb = XFS_B_TO_FSBT(mp, offset);
->  	xfs_fileoff_t		end_fsb = xfs_iomap_end_fsb(mp, offset, length);
-> +	bool			atomic_cow = flags & IOMAP_ATOMIC_COW;
-> +	bool			atomic_hw = flags & IOMAP_ATOMIC_HW;
->  	int			nimaps = 1, error = 0;
->  	bool			shared = false;
->  	u16			iomap_flags = 0;
-> +	xfs_fileoff_t		orig_offset_fsb;
-> +	xfs_fileoff_t		orig_end_fsb;
-> +	bool			needs_alloc;
->  	unsigned int		lockmode;
->  	u64			seq;
->  
-> +	orig_offset_fsb = offset_fsb;
-
-When does offset_fsb change?
-
-> +	orig_end_fsb = end_fsb;
-
-Set this in the variable declaration?
-
-> +
->  	ASSERT(flags & (IOMAP_WRITE | IOMAP_ZERO));
->  
->  	if (xfs_is_shutdown(mp))
-> @@ -832,7 +857,7 @@ xfs_direct_write_iomap_begin(
->  	 * COW writes may allocate delalloc space or convert unwritten COW
->  	 * extents, so we need to make sure to take the lock exclusively here.
->  	 */
-> -	if (xfs_is_cow_inode(ip))
-> +	if (xfs_is_cow_inode(ip) || atomic_cow)
->  		lockmode = XFS_ILOCK_EXCL;
->  	else
->  		lockmode = XFS_ILOCK_SHARED;
-> @@ -857,6 +882,22 @@ xfs_direct_write_iomap_begin(
->  	if (error)
->  		goto out_unlock;
->  
-> +	if (flags & IOMAP_ATOMIC_COW) {
-
-	if (atomic_cow) ?
-
-Or really, atomic_sw?
-
-> +		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
-> +				&lockmode,
-> +				(flags & IOMAP_DIRECT) || IS_DAX(inode), true);
-> +		/*
-> +		 * Don't check @shared. For atomic writes, we should error when
-> +		 * we don't get a CoW fork.
-
-"Get a CoW fork"?  What does that mean?  The cow fork should be
-automatically allocated when needed, right?  Or should this really read
-"...when we don't get a COW mapping"?
-
-> +		 */
-> +		if (error)
-> +			goto out_unlock;
-> +
-> +		end_fsb = imap.br_startoff + imap.br_blockcount;
-> +		length = XFS_FSB_TO_B(mp, end_fsb) - offset;
-> +		goto out_found_cow;
-> +	}
-
-Can this be a separate ->iomap_begin (and hence iomap ops)?  I am trying
-to avoid the incohesion (still) plaguing most of the other iomap users.
-
-> +
->  	if (imap_needs_cow(ip, flags, &imap, nimaps)) {
->  		error = -EAGAIN;
->  		if (flags & IOMAP_NOWAIT)
-> @@ -868,13 +909,38 @@ xfs_direct_write_iomap_begin(
->  				(flags & IOMAP_DIRECT) || IS_DAX(inode), false);
+>  	if (flags & IOMAP_DIO_COW) {
+> -		error = xfs_reflink_end_cow(ip, offset, size);
+> +		if (iocb->ki_flags & IOCB_ATOMIC)
+> +			error = xfs_reflink_end_atomic_cow(ip, offset, size);
+> +		else
+> +			error = xfs_reflink_end_cow(ip, offset, size);
 >  		if (error)
->  			goto out_unlock;
-> -		if (shared)
-> +		if (shared) {
-> +			if (atomic_hw &&
-> +			    !imap_range_valid_for_atomic_write(&cmap,
-> +					orig_offset_fsb, orig_end_fsb)) {
-> +				error = -EAGAIN;
-> +				goto out_unlock;
-> +			}
->  			goto out_found_cow;
-> +		}
->  		end_fsb = imap.br_startoff + imap.br_blockcount;
->  		length = XFS_FSB_TO_B(mp, end_fsb) - offset;
+>  			goto out;
 >  	}
->  
-> -	if (imap_needs_alloc(inode, flags, &imap, nimaps))
-> +	needs_alloc = imap_needs_alloc(inode, flags, &imap, nimaps);
+> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
+> index 3dab3ba900a3..d097d33dc000 100644
+> --- a/fs/xfs/xfs_reflink.c
+> +++ b/fs/xfs/xfs_reflink.c
+> @@ -986,6 +986,51 @@ xfs_reflink_end_cow(
+>  		trace_xfs_reflink_end_cow_error(ip, error, _RET_IP_);
+>  	return error;
+>  }
+> +int
+> +xfs_reflink_end_atomic_cow(
+> +	struct xfs_inode		*ip,
+> +	xfs_off_t			offset,
+> +	xfs_off_t			count)
+> +{
+> +	xfs_fileoff_t			offset_fsb;
+> +	xfs_fileoff_t			end_fsb;
+> +	int				error = 0;
+> +	struct xfs_mount		*mp = ip->i_mount;
+> +	struct xfs_trans		*tp;
+> +	unsigned int			resblks;
 > +
-> +	if (atomic_hw) {
-> +		error = -EAGAIN;
-> +		/*
-> +		 * Use CoW method for when we need to alloc > 1 block,
-> +		 * otherwise we might allocate less than what we need here and
-> +		 * have multiple mappings.
-> +		*/
-> +		if (needs_alloc && orig_end_fsb - orig_offset_fsb > 1)
-> +			goto out_unlock;
+> +	trace_xfs_reflink_end_cow(ip, offset, count);
 > +
-> +		if (!imap_range_valid_for_atomic_write(&imap, orig_offset_fsb,
-> +						orig_end_fsb)) {
+> +	offset_fsb = XFS_B_TO_FSBT(ip->i_mount, offset);
+> +	end_fsb = XFS_B_TO_FSB(ip->i_mount, offset + count);
 
-You only need to indent by two more tabs for a continuation line.
+Use @mp here instead of walking the pointer.
+
+> +
+> +	resblks = (end_fsb - offset_fsb) *
+> +			XFS_NEXTENTADD_SPACE_RES(mp, 1, XFS_DATA_FORK);
+
+How did you arrive at this computation?  The "b" parameter to
+XFS_NEXTENTADD_SPACE_RES is usually the worst case number of mappings
+that you're going to change on this file.  I think that quantity is
+(end_fsb - offset_fsb)?
+
+> +
+> +	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_write, resblks, 0,
+> +			XFS_TRANS_RESERVE, &tp);
+> +	if (error)
+> +		return error;
+> +
+> +	xfs_ilock(ip, XFS_ILOCK_EXCL);
+> +	xfs_trans_ijoin(tp, ip, 0);
+> +
+> +	while (end_fsb > offset_fsb && !error)
+> +		error = xfs_reflink_end_cow_extent_locked(tp, ip, &offset_fsb,
+> +							end_fsb);
+
+Overly long line, and the continuation line only needs to be indented
+two more tabs.
+
+> +
+> +	if (error) {
+> +		trace_xfs_reflink_end_cow_error(ip, error, _RET_IP_);
+> +		goto out_cancel;
+> +	}
+> +	error = xfs_trans_commit(tp);
+> +	xfs_iunlock(ip, XFS_ILOCK_EXCL);
+> +	return 0;
+
+Why is it ok to drop @error here?  Shouldn't a transaction commit error
+should be reported to the writer thread?
 
 --D
 
-> +			goto out_unlock;
-> +		}
-> +	}
-> +
-> +	if (needs_alloc)
->  		goto allocate_blocks;
+> +out_cancel:
+> +	xfs_trans_cancel(tp);
+> +	xfs_iunlock(ip, XFS_ILOCK_EXCL);
+> +	return error;
+> +}
 >  
->  	/*
+>  /*
+>   * Free all CoW staging blocks that are still referenced by the ondisk refcount
+> diff --git a/fs/xfs/xfs_reflink.h b/fs/xfs/xfs_reflink.h
+> index 754d2bb692d3..ca945d98e823 100644
+> --- a/fs/xfs/xfs_reflink.h
+> +++ b/fs/xfs/xfs_reflink.h
+> @@ -43,6 +43,9 @@ extern int xfs_reflink_cancel_cow_range(struct xfs_inode *ip, xfs_off_t offset,
+>  		xfs_off_t count, bool cancel_real);
+>  extern int xfs_reflink_end_cow(struct xfs_inode *ip, xfs_off_t offset,
+>  		xfs_off_t count);
+> +		int
+> +xfs_reflink_end_atomic_cow(struct xfs_inode *ip, xfs_off_t offset,
+> +		xfs_off_t count);
+>  extern int xfs_reflink_recover_cow(struct xfs_mount *mp);
+>  extern loff_t xfs_reflink_remap_range(struct file *file_in, loff_t pos_in,
+>  		struct file *file_out, loff_t pos_out, loff_t len,
 > -- 
 > 2.31.1
 > 
