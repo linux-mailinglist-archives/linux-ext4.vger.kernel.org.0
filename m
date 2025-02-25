@@ -1,172 +1,325 @@
-Return-Path: <linux-ext4+bounces-6555-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6556-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11C52A432AA
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2025 02:53:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2C43A43527
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2025 07:24:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02E60165F69
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2025 01:53:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D2CF18921FE
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2025 06:24:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4CBC7DA73;
-	Tue, 25 Feb 2025 01:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93D62580F8;
+	Tue, 25 Feb 2025 06:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YGSkuknc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2063.outbound.protection.outlook.com [40.107.96.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CAA8450FE;
-	Tue, 25 Feb 2025 01:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740448397; cv=none; b=iAgV1TUglCAh0wdiX/R06S6OZUfd7E/8XxJwFjtiA22iDv5KcViuZM1jWayVyaXDGgN35JoWJLoYeq79ExdAX5KdO15xEfJ+7NdZYC/AYbO4WQ3SM5hgWyBUcwZAtMlKxJeTkpQGw9ltjRZLvFJAUyecEy3NH758nmBOcmfuCU8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740448397; c=relaxed/simple;
-	bh=gKtdkH/FUJhSmNeXPSQGpNJZSyRDX4r/ZF51CLUAd9k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HhGAMDnlxVXdAscLea9UZcdrZl0lnTi+GWEKBmUVZiKGcafXO6oCOVHgVvn46uTM35Dm9A1ALoOqOv/vF4ZlTn6INzWRtlKhG2RqunKNYPWxgRZ4QZ1PG1lLm6K6Y1a7fEfgMU778JenOVe9G5qmSdTAyyh6W/oXWj35tDKy1NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Z20vZ11RPz1HLxh;
-	Tue, 25 Feb 2025 09:51:38 +0800 (CST)
-Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7C38D1A016C;
-	Tue, 25 Feb 2025 09:53:12 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
- (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 25 Feb
- 2025 09:53:11 +0800
-Message-ID: <3f9a67e2-ef08-47d4-b35e-41841e24bb71@huawei.com>
-Date: Tue, 25 Feb 2025 09:53:10 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ECF5256C9F;
+	Tue, 25 Feb 2025 06:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740464624; cv=fail; b=eMjEPcFiVSFUvDUCzWVs8zW3B2Mdh6TIj9eN5H2GhP4c994DvPM9JfWCDCx9VhjK0TtniJMk+rQA5PHmvQo/RybsHLlI97UPWlsBv8Etq2S1Fyk3eLtJDdMDsZowrNIsZILi+GbuVaQfqckMmX4dXLvaP5rTowxGlszgeg4CnKs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740464624; c=relaxed/simple;
+	bh=y4TsAWAMgfQO+snjM0LpSbZuIZoIfgvONZY0qHsuXMs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=DziLIBHtXHjq1LpFrU+aI7WhwvCM9D++usXaTbJOrbQAKPce8/32JpVKGRUc62iWsKu/hP3NZVWPrOXFfvfBo1/i8URCSMOaZMhFAWzoDYdZOEHysFfSLZEM4sE/4hsWmpIOST3Q2YqvQRgCeyy1csB9YyvgLj/dLK7NP6GD4VM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YGSkuknc; arc=fail smtp.client-ip=40.107.96.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=s1yLYXOtg5B4M6A1Lp5qqMIZkEZxe6utMO3hX7MI9rQw4d14hekNyjcNRr/Rz/qSx5biWJEJpHv8/lY4k6qGpG4aeJFY7hczDb4b2dUrzukjeSBzT7yfquTB1W9C5RetR8BWkK3MQsldyLvmq5fferYIlasGIrwGFFlC6PyK3Km3TWD+zGcINfG/pJKwDqLmgYFhf2NCAk2VgXhGg9uBleLQ7kfOdFpMReiaIqAxPqr66jQyhs4LqLqsWWfr2e4ZI2pzyGarVVTm+K09kosH5c6YRWYy7+VRANslAedCkFIe19TC5py9YnSn2NHsQDAlA1dTtsZZ373ryCr6hEnkpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PAQDT6oY5OcgdSN1C7jHGCMlq8FGau1ZD6szWSbL8XY=;
+ b=WpynXwWUEz9McvmL48J+3VPSvVuRmZ8VRMPLzfGOEtj8n5q9YxCAJ7vueOtyD2y/RLS/lXrAiSRE5VaCsnIgIsGtdsTOQka/MZHFP6SPKaNbzOBtxmqR5pLHiDM6oye8rUc4bxu2RymMVkRQq3978+a4iyAUv3KoSzbYwA6oBM98/NGQM+yoGxi1l3yPT/4W8iQCTwtEB2ck3ZL4YGPYKjNzRJq78zOIq1pTscBuRcswsXXjyhOwtXnHHzC0BfWRgR9rBOD75gTkt6CfX9WK8R34H2tx2VIQ4XnVVJBWzGAL53vG1soCCebi+/pLyU8sR1ea5G/fa9g3FcwWCRKajw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PAQDT6oY5OcgdSN1C7jHGCMlq8FGau1ZD6szWSbL8XY=;
+ b=YGSkukncqxbaaCWA1UlkVkYpVnXJGY2F0ZQEYHeLRwAmFP9h1O6nUuoUvcjifwgRpEhY3QwqbZgBF3hBqz1KKhWYfrlOdDCf1lU41OIMRhBOO+YUqiGJzeqDNHNhp35Ljdi2yOwyu0G+BsSr7/O0a506AjaRjpvZNjhvsfdxd4AK2AXK8UgJwvTrvreFPmttrFFvSNiVJ2keZ8YeC2V8fayFG1rb7DbB8aN4TG3KLvAuEHEvVGD3835mYQbOhUcMlgCvOHsyRVBoEPEHw2G4qjItUKcU1feKFl4RwFn2IBS1NEDe3ronfq8Wp0Hkxt+BrWZuyaMSNWNL6xbEv7y53g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) by
+ SA0PR12MB7076.namprd12.prod.outlook.com (2603:10b6:806:2d5::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.20; Tue, 25 Feb
+ 2025 06:23:40 +0000
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe]) by DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe%7]) with mapi id 15.20.8489.018; Tue, 25 Feb 2025
+ 06:23:40 +0000
+Date: Tue, 25 Feb 2025 17:23:35 +1100
+From: Alistair Popple <apopple@nvidia.com>
+To: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, 
+	linux-mm@kvack.org, Alison Schofield <alison.schofield@intel.com>, 
+	lina@asahilina.net, zhang.lyra@gmail.com, vishal.l.verma@intel.com, 
+	dave.jiang@intel.com, logang@deltatee.com, bhelgaas@google.com, jack@suse.cz, 
+	jgg@ziepe.ca, catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au, 
+	npiggin@gmail.com, dave.hansen@linux.intel.com, ira.weiny@intel.com, 
+	willy@infradead.org, djwong@kernel.org, tytso@mit.edu, linmiaohe@huawei.com, 
+	david@redhat.com, peterx@redhat.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com, chenhuacai@kernel.org, 
+	kernel@xen0n.name, loongarch@lists.linux.dev, vgoyal@redhat.com, 
+	stefanha@redhat.com
+Subject: Re: [PATCH v8 20/20] device/dax: Properly refcount device dax pages
+ when mapping
+Message-ID: <asvyejblo43qscvoqv5wpbpdhrjyf6o2tmj2qait2dmqpj7jnw@eqihgijwrkf5>
+References: <cover.a782e309b1328f961da88abddbbc48e5b4579021.1739850794.git-series.apopple@nvidia.com>
+ <9d9d33b418dd1aab9323203488305085389f62c1.1739850794.git-series.apopple@nvidia.com>
+ <20250220193334.0f7f4071@thinkpad-T15>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250220193334.0f7f4071@thinkpad-T15>
+X-ClientProxiedBy: SYCPR01CA0011.ausprd01.prod.outlook.com
+ (2603:10c6:10:31::23) To CY8PR12MB7705.namprd12.prod.outlook.com
+ (2603:10b6:930:84::9)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ext4: only defer sb update on error if SB_ACTIVE
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-CC: <linux-ext4@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>, Jan Kara
-	<jack@suse.cz>, <linux-kernel@vger.kernel.org>, Mahesh Kumar
-	<maheshkumar657g@gmail.com>, Ritesh Harjani <ritesh.list@gmail.com>, Yang
- Erkun <yangerkun@huawei.com>
-References: <cover.1740212945.git.ojaswin@linux.ibm.com>
- <da8af2e5170f0d94031b812d7d50c6ec1967db1b.1740212945.git.ojaswin@linux.ibm.com>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <da8af2e5170f0d94031b812d7d50c6ec1967db1b.1740212945.git.ojaswin@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemg500008.china.huawei.com (7.202.181.45)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB7726:EE_|SA0PR12MB7076:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48137162-3acb-403f-f57b-08dd5564f17a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?kDiscbIc/TMogWEkacpAxOKtdhbNbYxh96mc6yJp19O4KnLokDdHidMTCtnT?=
+ =?us-ascii?Q?w3f+p7hyBvExy1BfviNNWCL+CzaU6AFYWImW/wiVjAvBDW8Bp5ET5jzsU6EA?=
+ =?us-ascii?Q?pYTIFC9AONL8E0YuBROYP4+N4RsWGugbzCXH0ih4Q1dOhC8Mz6Fz0+cHN4mW?=
+ =?us-ascii?Q?B4Vz/KVFO4Ye/9YDykiLQ01YCrBKwHLGQug3GLngTgKTJcVssLuUpHZ05AeE?=
+ =?us-ascii?Q?pXULbQEO68LnEPDaqnyP2uKb6deLvKVpErbMff81wqWmKR6jip2LCXESAiQ0?=
+ =?us-ascii?Q?Uy+pFePe4u+4UEqKFUykeWokvNfpAHI9aJyg+faFnympp4Xy4KN3N6oozcrG?=
+ =?us-ascii?Q?Ku82SjiqqDJVWNzgZ0q8GmmYTuzcI2qsvWiPckfQjLNpIz0NP85iaEOAsDlp?=
+ =?us-ascii?Q?nOabidojdPfvgKZG3VaNptzI3ix+133QYaVlNsFeN5YaLdf+FJfqewCnX94e?=
+ =?us-ascii?Q?CgYM6ups/SClDbXzsGLbYKUGQx6TCnpVBNzYEcgNi9E2i4pIs82LqxhPdmyy?=
+ =?us-ascii?Q?5rTXnNuuVSafoyNsVNeiGU8w/JK+yS/XsvtJrg62DC1VH7xTDFDOanF6iW0/?=
+ =?us-ascii?Q?h6IxN3k6/4NVoivIBkho0eDmKhKIzoVmoqMRyVpOPfchFTshTl48mFwICvOW?=
+ =?us-ascii?Q?l/ahe5mfTUstzFjtwkgiqL9CyCMstSaaIghRgCXCd6ASCLVP8ae+rel1yb+P?=
+ =?us-ascii?Q?pCFT8vSpmdOEgOnO0pRXishocoCBZO6eX1f6eKyQ5OPPY62Txqt+gSN1xExj?=
+ =?us-ascii?Q?tcRm0M2vxvUX62oyKND4axY8RkEMLPZ4fRj9VmWsjR9Ohuw6DlJSwzQrLc98?=
+ =?us-ascii?Q?JBd7CzqW/+Y7DYbGAEHrzktpjBI9FGI+m/JxePjKDUCfh2aWbpUzB7V6Eif8?=
+ =?us-ascii?Q?yDoPdvbYCNCJPYbzALHHeauItW5E1co+kw1ljnzJ4qSoZ/wbB6+rcZTTEiL0?=
+ =?us-ascii?Q?xbcCdi9CmV5h5LxDZbnnj4WC44nT6Vve2iTgJNQkfl9YmNmeX3ovY2KFij57?=
+ =?us-ascii?Q?CIi+OqCczgUJvIQY1I9LQyAj1FYT58DfLTHAai6Chmjf9+8c74jEoKrSnnvl?=
+ =?us-ascii?Q?M7ppF2P/l6hGNS4lErzTAdlPM9RdbHZfcRBcm4w1/sGvb6gXUndTtdREgyLt?=
+ =?us-ascii?Q?KQ0kX77kTfgG1Lu63Pr1fyuItxPW5/Rm4i5iVbLysSEaiBuul2fTlUae1fei?=
+ =?us-ascii?Q?ae0+7aMbibEsSpt6Hqwyw3NBfxG4qj9huDteHiuti6amvmj7zqtFkSC5du49?=
+ =?us-ascii?Q?XZKQbWi/nJqkhASkJpjGYx3sxL22uEyutWtWXhUQoh6XH2n2NEIJ7KTQ53Kz?=
+ =?us-ascii?Q?MdrrlGTqx7RF82N9qL1NuAdNEhX3XNoXJaNyzCmV6dL0ZOfldvhOqnTyYz78?=
+ =?us-ascii?Q?LREjKyhaOv/tcpCRJ9fkWEcprx10?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB7726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?K0BHBbo7rHv2DIee0rRFwnef7NRpc+gqFBM57jl9TQ89zJCnPpAvx4fmcMe7?=
+ =?us-ascii?Q?w3QpklRHkdk5UuNemsco0/OQ19W35o4FVN26YycpRoXkrhq62KFIcymEgjfa?=
+ =?us-ascii?Q?cOGEY/5Qi0tBwXkamKABLYPFFDxNBjWfTAr2DySPiLjlml8kK65ukFrR1c92?=
+ =?us-ascii?Q?5YcoqdgUWQO06xnm7j2P2+T5odXDt4Awp7UPm7+xN6yxY2+EIW9N8KhmX0pS?=
+ =?us-ascii?Q?MEULP7gKZ5LvL0DIZegK6ABIccYQZG1vGJCpPvFnASDmzcnWHoVv2RCMJNMJ?=
+ =?us-ascii?Q?t5S7tybhejJFETpnSaCyELqFWCkeAsJP6i2hW/xhXuQEU2vTR/JfaImnJGya?=
+ =?us-ascii?Q?YhSUYArrsvg4VdWEHbY5QMgmnx7NGMz5gG8Aw7ZkL34bjPoCccaLVuO59EzW?=
+ =?us-ascii?Q?d2CmVOgnFH11LzAE7dXH0x+cDafGQl5b9HUruBa6Qf0MWD8vMi3B6onfk04P?=
+ =?us-ascii?Q?3+zCIlHkViklwinjgcMfE7fEyHAzJo1tb3OtBhcs9F19k65m5aSviqyOSfcw?=
+ =?us-ascii?Q?kSI982tQ5Pn80jGCM/Wswe1Jquxe/577+5k7hn5pIhsiTp53/qR3xyimeCnP?=
+ =?us-ascii?Q?OWNvlmLLOY2ZuvhPdUCNSK3fG1NWY48ju3Wrx+PuuZB1VJKTOeKqPwB85znU?=
+ =?us-ascii?Q?CbqdTZ7s4wLc7aJ/VH1hNRbfwhb9Ib558iZ65O/IBkfO8xiwmo/Jc0cLhY05?=
+ =?us-ascii?Q?W6ZJEkyuLqN10zdcKzAkph4EcPWtb3sufX3SkO0zK3ZcPIMTUtTJldxOICVC?=
+ =?us-ascii?Q?UhuIEUJHY9mjyIQsnmnnMncrQ25xMEydBZNDtXyaXW/zQTA/wbb8Ar+1vhIr?=
+ =?us-ascii?Q?BwldMrt/y3GdLiMyx5pOP+qxhvWMnPx3obfurtF3f6sLyiZ4VJuHz/yru1Ey?=
+ =?us-ascii?Q?oWrtlZIpU46KBzjSG6LXDrgvI2feP3T1uhvJM5oYtp3NOo84+9lvxz+DWbhC?=
+ =?us-ascii?Q?9tlH9HjzoqruEWIMv2rSEfEkVRXOoBYn+IQQ7h83wN9Xo1Q5TbEsLLloeSbs?=
+ =?us-ascii?Q?8kLOlMyT5FwVRWdx9Hj3pK3puG2a8ZiratQealwVUZuQtkvsT3dpO7GBVTTw?=
+ =?us-ascii?Q?Jyw7KcUszKm2dz++WnLegKlhl/uxjg21gBAJQG994va7lViCqLa5ZACj7gS9?=
+ =?us-ascii?Q?T3k5HI/0TmSSpGOO/Mxc50hXBGCifh96aYRUsk6E+oANJpAtGo90cUbMs1WW?=
+ =?us-ascii?Q?ZE2uKkyHMKYURjx5kXEkCBWqF4hjR81VLnKzcDLSwOq5I7ar0Kr6VyOlhI9X?=
+ =?us-ascii?Q?INx+mY3EcIR8LTVMdpXufYOZX8Kqmv1mIBJUFlvzqtbIjYi2fEYqpwU6AiYA?=
+ =?us-ascii?Q?rl4xW4RqGFjtZ/cpDNXLGJ0O3w9JpHDOnxlVMEgHtllo754ZOSvkXDwT4WAo?=
+ =?us-ascii?Q?60kkYbxrM6cxwzLV7sKUBt13czLVbECpbQ7Jt2k8eE+/2dw6+Hl0BZ5WXpPl?=
+ =?us-ascii?Q?UsWfWR/6HYQfpzKGFjsjqiO+/NDROEYZSsoVG69DZOkJE2SXEkknvXe2UfV+?=
+ =?us-ascii?Q?F4HSlCvys0StzVVnbDPX1mQvrszaajCLWoJOs1hFW7OW+uex3rKWqivj0HUa?=
+ =?us-ascii?Q?4iTa1iFsx/QBZRwAuOm8bllr990DP9ahSYWNIZow?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48137162-3acb-403f-f57b-08dd5564f17a
+X-MS-Exchange-CrossTenant-AuthSource: CY8PR12MB7705.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2025 06:23:39.9737
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /PvPd10RDT7xwb8wqf3VkLsOrCUbeBkIIS0HqmXND10Eu9MB6pPYaQ8vaTHqBQJyVuZClzFdhbVUurl2uMrCZw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB7076
 
-On 2025/2/22 16:40, Ojaswin Mujoo wrote:
-> Presently we always BUG_ON if trying to start a transaction on a journal
-> marked with JBD2_UNMOUNT, since this should never happen. However while
-> running stress tests it was observed that in case of some error handling
-> paths, it is possible for update_super_work to start a transaction after
-> the journal is destroyed eg:
->
-> (umount)
-> ext4_kill_sb
->    kill_block_super
->      generic_shutdown_super
->        sync_filesystem /* commits all txns */
->        evict_inodes
->          /* might start a new txn */
->        ext4_put_super
-> 	flush_work(&sbi->s_sb_upd_work) /* flush the workqueue */
->          jbd2_journal_destroy
->            journal_kill_thread
->              journal->j_flags |= JBD2_UNMOUNT;
->            jbd2_journal_commit_transaction
->              jbd2_journal_get_descriptor_buffer
->                jbd2_journal_bmap
->                  ext4_journal_bmap
->                    ext4_map_blocks
->                      ...
->                      ext4_inode_error
-Just curious, since jbd2_journal_bmap() only queries the map and does not
-create it, how does it fail here? Is there more information in dmesg?
-Is s_journal_inum normal after file system corruption?
+On Thu, Feb 20, 2025 at 07:33:34PM +0100, Gerald Schaefer wrote:
+> On Tue, 18 Feb 2025 14:55:36 +1100
+> Alistair Popple <apopple@nvidia.com> wrote:
+> 
+> [...]
+> > diff --git a/mm/memremap.c b/mm/memremap.c
+> > index 9a8879b..532a52a 100644
+> > --- a/mm/memremap.c
+> > +++ b/mm/memremap.c
+> > @@ -460,11 +460,10 @@ void free_zone_device_folio(struct folio *folio)
+> >  {
+> >  	struct dev_pagemap *pgmap = folio->pgmap;
+> >  
+> > -	if (WARN_ON_ONCE(!pgmap->ops))
+> > -		return;
+> > -
+> > -	if (WARN_ON_ONCE(pgmap->type != MEMORY_DEVICE_FS_DAX &&
+> > -			 !pgmap->ops->page_free))
+> > +	if (WARN_ON_ONCE((!pgmap->ops &&
+> > +			  pgmap->type != MEMORY_DEVICE_GENERIC) ||
+> > +			 (pgmap->ops && !pgmap->ops->page_free &&
+> > +			  pgmap->type != MEMORY_DEVICE_FS_DAX)))
+> 
+> Playing around with dcssblk, adding devm_memremap_pages() and
+> pgmap.type = MEMORY_DEVICE_FS_DAX, similar to the other two existing
+> FS_DAX drivers drivers/nvdimm/pmem.c and fs/fuse/virtio_fs.c, I hit
+> this warning when executing binaries from DAX-mounted fs.
+> 
+> I do not set up pgmap->ops, similar to fs/fuse/virtio_fs.c, and I don't see
+> why they would be needed here anyway, at least for MEMORY_DEVICE_FS_DAX.
+> drivers/nvdimm/pmem.c does set up pgmap->ops, but only ->memory_failure,
+> which is still good enough to not trigger the warning here, probably just
+> by chance.
 
-Thanks,
-Baokun
->                        ext4_handle_error
->                          schedule_work(&sbi->s_sb_upd_work)
->
->                                                 /* work queue kicks in */
->                                                 update_super_work
->                                                   jbd2_journal_start
->                                                     start_this_handle
->                                                       BUG_ON(journal->j_flags &
->                                                              JBD2_UNMOUNT)
->
-> Hence, make sure we only defer the update of ext4 sb if the sb is still
-> active.  Otherwise, just fallback to an un-journaled commit.
->
-> The important thing to note here is that we must only defer sb update if
-> we have not yet flushed the s_sb_update_work queue in umount path else
-> this race can be hit (point 1 below). Since we don't have a direct way
-> to check for that we use SB_ACTIVE instead. The SB_ACTIVE check is a bit
-> subtle so adding some notes below for future reference:
->
-> 1. Ideally we would want to have a something like (flags & JBD2_UNMOUNT
-> == 0) however this is not correct since we could end up scheduling work
-> after it has been flushed:
->
->   ext4_put_super
->    flush_work(&sbi->s_sb_upd_work)
->
->                             **kjournald2**
->                             jbd2_journal_commit_transaction
->                             ...
->                             ext4_inode_error
->                               /* JBD2_UNMOUNT not set */
->                               schedule_work(s_sb_upd_work)
->
->     jbd2_journal_destroy
->      journal->j_flags |= JBD2_UNMOUNT;
->
->                                        **workqueue**
->                                        update_super_work
->                                         jbd2_journal_start
->                                          start_this_handle
->                                            BUG_ON(JBD2_UNMOUNT)
->
-> Something like the above doesn't happen with SB_ACTIVE check because we
-> are sure that the workqueue would be flushed at a later point if we are
-> in the umount path.
->
-> 2. We don't need a similar check in ext4_grp_locked_error since it is
-> only called from mballoc and AFAICT it would be always valid to schedule
-> work here.
->
-> Fixes: 2d01ddc86606 ("ext4: save error info to sb through journal if available")
-> Reported-by: Mahesh Kumar <maheshkumar657g@gmail.com>
-> Suggested-by: Ritesh Harjani <ritesh.list@gmail.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
->   fs/ext4/super.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index a963ffda692a..b7341e9acf62 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -706,7 +706,7 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
->   		 * constraints, it may not be safe to do it right here so we
->   		 * defer superblock flushing to a workqueue.
->   		 */
-> -		if (continue_fs && journal)
-> +		if (continue_fs && journal && (sb->s_flags & SB_ACTIVE))
->   			schedule_work(&EXT4_SB(sb)->s_sb_upd_work);
->   		else
->   			ext4_commit_super(sb);
+Yes, I think so. And you can guess which driver I've done all my testing
+with.
 
+> Now I wonder:
+> 1) What is this check / warning good for, when this function only ever
+>    calls pgmap->ops->page_free(), but not for MEMORY_DEVICE_FS_DAX and
+>    not for MEMORY_DEVICE_GENERIC (the latter only after this patch)?
+> 2) Is the warning also seen for virtio DAX mappings (added Vivek and
+>    Stefan on CC)? No pgmap->ops set up there, so I would guess "yes",
+>    and already before this series, with the old check / warning.
 
+Right, I simply updated the warning to reflect what should have been
+happening prior to this change. However looking again I don't think
+free_zone_device_folio() is ever called for MEMORY_DEVICE_FS_DAX pages. Instead
+put_devmap_managed_folio_refs() would have returned false and cause most paths
+to skip calling free_zone_device_folio().
+
+The only path that doesn't do that appears to be `folio_put()`. That probably
+should also be calling put_devmap_managed_folio_refs(), I'm not sure why it
+doesn't.
+
+> 3) Could this be changed to only check / warn if pgmap->ops (or maybe
+>    rather pgmap->ops->page_free) is not set up, but not for
+>    MEMORY_DEVICE_GENERIC and MEMORY_DEVICE_FS_DAX where this is not
+>    being called?
+
+Oh I think I know what actually happened. Earlier versions of my patch series
+did define a pgmap->ops->page_free() callback for MEMORY_DEVICE_FS_DAX but
+review comments suggested I just do all the was required directly in the switch
+statement. Obviously I forgot to update the check when I removed the need
+for pgmap->ops->page_free and having pgmap->ops->memory_failure defined was
+sufficient to (accidentally) get past the check.
+
+So yeah, the check is wrong. It shouldn't require pgmap->ops to be defined for
+MEMORY_DEVICE_FS_DAX or MEMORY_DEVICE_GENERIC.
+
+> 4) Or is there any reason why pgmap->ops would be required for
+>    MEMORY_DEVICE_FS_DAX?
+
+Nope.
+
+> Apart from the warning, we would also miss out on the
+> wake_up_var(&folio->page) in the MEMORY_DEVICE_FS_DAX case, when no
+> pgmap->ops was set up. IIUC, even before this change / series (i.e.
+> for virtio DAX only, since dcssblk was not using ZONE_DEVICE before,
+> and pmem seems to work by chance because they have ops->memory_failure).
+
+See __put_devmap_managed_folio_refs() - the wake_up_var() was there to intercept
+the 2->1 refcount transition. Now the wake_up_var() needs to happen on 1->0,
+hence why it got moved to free_zone_device_page().
+
+> >  		return;
+> >  
+> >  	mem_cgroup_uncharge(folio);
+> > @@ -494,7 +493,8 @@ void free_zone_device_folio(struct folio *folio)
+> >  	 * zero which indicating the page has been removed from the file
+> >  	 * system mapping.
+> >  	 */
+> > -	if (pgmap->type != MEMORY_DEVICE_FS_DAX)
+> > +	if (pgmap->type != MEMORY_DEVICE_FS_DAX &&
+> > +	    pgmap->type != MEMORY_DEVICE_GENERIC)
+> >  		folio->mapping = NULL;
+> >  
+> >  	switch (pgmap->type) {
+> > @@ -509,7 +509,6 @@ void free_zone_device_folio(struct folio *folio)
+> >  		 * Reset the refcount to 1 to prepare for handing out the page
+> >  		 * again.
+> >  		 */
+> > -		pgmap->ops->page_free(folio_page(folio, 0));
+> 
+> Ok, this is probably the reason why you adjusted the check above, since
+> no more pgmap->ops needed for MEMORY_DEVICE_GENERIC.
+> Still, the MEMORY_DEVICE_FS_DAX case also does not seem to need
+> pgmap->ops, and at least the existing virtio DAX should already be
+> affected, and of course future dcssblk DAX.
+> 
+> But maybe that should be addressed in a separate patch, since your changes
+> here seem consistent, and not change or worsen anything wrt !pgmap->ops
+> and MEMORY_DEVICE_FS_DAX.
+
+Nah, I think the check is wrong and needs fixing here.
+
+> >  		folio_set_count(folio, 1);
+> >  		break;
+> >  
+> 
+> For reference, this is call trace I see when I hit the warning:
+
+Well thanks for testing this and for posting these results.
+
+> [  283.567945] ------------[ cut here ]------------
+> [  283.567947] WARNING: CPU: 12 PID: 878 at mm/memremap.c:436 free_zone_device_folio+0x6e/0x140
+> [  283.567959] Modules linked in:
+> [  283.567963] CPU: 12 UID: 0 PID: 878 Comm: ls Not tainted 6.14.0-rc3-next-20250220-00012-gd072dabf62e8-dirty #44
+> [  283.567968] Hardware name: IBM 3931 A01 704 (z/VM 7.4.0)
+> [  283.567971] Krnl PSW : 0704d00180000000 000001ec0548b44a (free_zone_device_folio+0x72/0x140)
+> [  283.567978]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:1 PM:0 RI:0 EA:3
+> [  283.567982] Krnl GPRS: 0000000000000038 0000000000000000 0000000000000003 000001ec06cc42e8
+> [  283.567986]            00000004cc38e400 0000000000000000 0000000000000003 0000000093eacd00
+> [  283.567990]            000000009a68413f 0000016614010940 000000009553a640 0000016614010940
+> [  283.567994]            0000000000000000 0000000000000000 000001ec0548b416 0000016c05da3bf8
+> [  283.568004] Krnl Code: 000001ec0548b43e: a70e0003		chi	%r0,3
+>                           000001ec0548b442: a7840006		brc	8,000001ec0548b44e
+>                          #000001ec0548b446: af000000		mc	0,0
+>                          >000001ec0548b44a: a7f4005f		brc	15,000001ec0548b508
+>                           000001ec0548b44e: c00400000008	brcl	0,000001ec0548b45e
+>                           000001ec0548b454: b904002b		lgr	%r2,%r11
+>                           000001ec0548b458: c0e5001dcd84	brasl	%r14,000001ec05844f60
+>                           000001ec0548b45e: 9101b01f		tm	31(%r11),1
+> [  283.568035] Call Trace:
+> [  283.568038]  [<000001ec0548b44a>] free_zone_device_folio+0x72/0x140 
+> [  283.568042] ([<000001ec0548b416>] free_zone_device_folio+0x3e/0x140)
+> [  283.568045]  [<000001ec057a4c1c>] wp_page_copy+0x34c/0x6e0 
+> [  283.568050]  [<000001ec057ac640>] __handle_mm_fault+0x220/0x4d0 
+> [  283.568054]  [<000001ec057ac97e>] handle_mm_fault+0x8e/0x160 
+> [  283.568057]  [<000001ec054ca006>] do_exception+0x1a6/0x450 
+> [  283.568061]  [<000001ec06264992>] __do_pgm_check+0x132/0x1e0 
+> [  283.568065]  [<000001ec0627057e>] pgm_check_handler+0x11e/0x170 
+> [  283.568069] Last Breaking-Event-Address:
+> [  283.568070]  [<000001ec0548b428>] free_zone_device_folio+0x50/0x140
+> [  283.568074] ---[ end trace 0000000000000000 ]---
+> 
 
