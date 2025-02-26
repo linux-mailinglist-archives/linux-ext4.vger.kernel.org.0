@@ -1,130 +1,163 @@
-Return-Path: <linux-ext4+bounces-6577-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6578-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEF47A466D2
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2025 17:42:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F42A4675C
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2025 18:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 036F33AAAB2
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2025 16:42:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D980C7A98F4
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2025 17:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC018218823;
-	Wed, 26 Feb 2025 16:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26EDA2248B3;
+	Wed, 26 Feb 2025 17:03:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sandeen.net header.i=@sandeen.net header.b="LMvrj6zQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OKtZLbtD"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zCxcJ9hx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bzBiBK1y";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zCxcJ9hx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bzBiBK1y"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0530DEED7
-	for <linux-ext4@vger.kernel.org>; Wed, 26 Feb 2025 16:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7971DE2A9
+	for <linux-ext4@vger.kernel.org>; Wed, 26 Feb 2025 17:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740588136; cv=none; b=FA2hZFL07lcUK75G3lr97vSziqWkdOSKA5TkVEVvdYPGlpL4VD2aOv00nF3ZUw6dTxvTBktMWRZ11HAZ7MTBF6q7dhM9NB1um50zaxcnmcCdFxaQWIJd/SmjY2A3GXWfkDG9Y+zV+KZiHndlJoWHj3ZrYk8+Y5GF/PKDpem9nUw=
+	t=1740589438; cv=none; b=oalUTSe4Wy41JjBmQhf79u2lSjTzj7gihivvGrzAeCIDBDgWLcrfm8ntDv8zWC3ftc6SN+rDUnuNKVLRL6k+H5/bmn08FeN/MYQHtEJyDB4a+dmNvFBGiQE12fcBRq66msiQ84y89QA4SnvoX7joiX+pAby/u+aNt9oQO1YeE+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740588136; c=relaxed/simple;
-	bh=SQgjHuXC9WLAwkGFl04R22lGd94y81G6zyP4gDEAjg8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bLcXHzO694A3hu7wnYdZyhfqKcI6TRZj+lj7KWp43LsfMZmqX7ori3yV4oSwnm71glQGBiGquSJlsZT1zpin2haoluNXhvGBatmQlVzneUnQJJEcemNGviwSsXUQvMHvJ9eaFC6Vau0sShiVakM2A6muLapFgO/lo4FxgjQ7Vhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sandeen.net; spf=pass smtp.mailfrom=sandeen.net; dkim=pass (2048-bit key) header.d=sandeen.net header.i=@sandeen.net header.b=LMvrj6zQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OKtZLbtD; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sandeen.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sandeen.net
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id DAD3111400B4;
-	Wed, 26 Feb 2025 11:42:12 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Wed, 26 Feb 2025 11:42:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandeen.net; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1740588132;
-	 x=1740674532; bh=zfZakCVWYH1Ddk8QRTGWjUhv0pMCBS50aFKsDSW6yRw=; b=
-	LMvrj6zQQdikxMO4Uk9vrn2L1Q6SMe9+piOIq607V84D6siJbbPpPSiRXOyBo5+S
-	u4YWz2pwK503VJgXZEfCMTody3Q7y/aSFM2cMtCDlkm/NzZ5M0PJnkYTVb7YKBJb
-	E5mIfbNrLZc9/Ll0QR67+V8gatosA3iJRuvLAtpabSnJgffncsy2mOb9beN/h7a0
-	4g7P6OXLtakRtKsXF2spBWPypbrwZbFWPZHpFSuREH1Dh21xcKTT9YSUuEojMCIa
-	y09OzIDoBnouW6jr2WAwOw/UkRA2AdZ25GwHwBdnhupGvsLvk+D4TeI7vd6sm9NE
-	ODptSCk9pPpl0bnocLXI8w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1740588132; x=
-	1740674532; bh=zfZakCVWYH1Ddk8QRTGWjUhv0pMCBS50aFKsDSW6yRw=; b=O
-	KtZLbtDoV2zjHtlLhgkzQAeiwUowOmp3R73F4TWdCMvtoPoqsCRb4Aq5IA/H8SK6
-	5HDF6wwa+Y7wx31oRBGTPDXmsQMER1g5x5PW6036jwb1ovxE2wWAnyOtpiy2s6BJ
-	lfzEL4JqwE+wn947q9eugq6jWDWSpv786ymwsN9QsWqAhRD5AFjcZ39egB3AF/n3
-	HM3bdGxYRk0lWYSbFyrVLhE4S2qjeYHn1rc56NFGlY4FK4RYbNz+/dgz1fzzMDR7
-	6o5t8yqV3raciFhNgtjGWKErRkcsuVzFlyBt3C7spah5CZ+CH12epiC49BzwZ7vR
-	dbG7QoOAYyW4SScI02BHQ==
-X-ME-Sender: <xms:ZES_Z-fg1C2lLWsICBmTi9rjlUmsJ-2Gov43TwcHkcnhvutz4Z_8cw>
-    <xme:ZES_Z4NonbQ15GmEJqLBaf0Q-gNdE_Keul-Y60oiz64vWU6Dpf7X66feYpRc7gJVW
-    b7NPj4qrbdoYwqAlRg>
-X-ME-Received: <xmr:ZES_Z_iJDz03u7leH4hVdZJZZuVmjf7Dp5mQz6lPIueU5GNTTsrcErt7elvfAa38w3BR>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdekhedtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhepkfffgg
-    gfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpefgrhhitgcuufgrnhguvggv
-    nhcuoehsrghnuggvvghnsehsrghnuggvvghnrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    evieekueetfeeujedtheeffedvgeffiedvjeejleffhfeggeejuedtjeeulefhvdenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghnuggvvg
-    hnsehsrghnuggvvghnrdhnvghtpdhnsggprhgtphhtthhopeegpdhmohguvgepshhmthhp
-    ohhuthdprhgtphhtthhopehjrggtkhesshhushgvrdgtiidprhgtphhtthhopehsrghnug
-    gvvghnsehrvgguhhgrthdrtghomhdprhgtphhtthhopehjrggtkhesshhushgvrdgtohhm
-    pdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:ZES_Z7_6FXtI13HDk99IbwNZoPRkN35SV0em4CkC03j9jrOuqclUcQ>
-    <xmx:ZES_Z6sh-y2lNDnE6W4D7Kbnn4Z5cn5YbTLtwEpxt3IIZhXlNQK55A>
-    <xmx:ZES_ZyGUtwhFm-y_8U7QVBDdvjl-Vf5zmF2LK4vYzNwik9SqzyCwrw>
-    <xmx:ZES_Z5NJSUQetBfM5zcjDFy1xWLqjAHvsGq6WRRu-o2eaaezIVK_FA>
-    <xmx:ZES_Z8JXVZYJia8MxYwGYOLlpiBCRFxQAwoAJbvpXzDAfR_DNN7fZZ8H>
-Feedback-ID: i2b59495a:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 26 Feb 2025 11:42:11 -0500 (EST)
-Message-ID: <ca1f1899-455f-4e69-a302-c01acfd565f3@sandeen.net>
-Date: Wed, 26 Feb 2025 10:42:11 -0600
+	s=arc-20240116; t=1740589438; c=relaxed/simple;
+	bh=vCN/BAa0LBpqW9hAtWwnZlpWuyb28VcZXp8WHid+WyI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KHpCn439grWj1J39IEtXBiGjSIS9EXCSoypMyyq5ZuNpVc/I/eC/Vy8lVLPEKETlZx8oUdYwg23sZikIEUDd4qpbQWNzAZ3bzNvFY0upYoVct6ZPm8OE9cRPKbdoJ6MqxgUjUXstpY2BUkHEy/NtnTkpwxGilaMNg9CHvqm99GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zCxcJ9hx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bzBiBK1y; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zCxcJ9hx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bzBiBK1y; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C2E3F1F38A;
+	Wed, 26 Feb 2025 17:03:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740589433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yySr0gLCaV9Evf3yp5Yv/r0cooh0lEPYRAz8B+Am8e8=;
+	b=zCxcJ9hxBXbOENQOi/AKNI1S0wiLL6aYLqM8BIad6imfGMneUj0sR+EGvGOjCqNokIBfVn
+	x7mILKTfhhd6DnKu6ixwT9+N/4cgR7dq1RytPa6g1hbbCBIFg8rJPqbjbF5Z1T/6WnKTeG
+	Dp5raggCT93vuwGk4luCnY4xrwkbMG0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740589433;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yySr0gLCaV9Evf3yp5Yv/r0cooh0lEPYRAz8B+Am8e8=;
+	b=bzBiBK1yO0E8XBEBtYN7p8GzRBX5WHZcwG8WWqRwhYJUq8GjG8RBTJaG5Sh5R6Mpb7QOsn
+	XXdKf1x/U/oUnJDw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740589433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yySr0gLCaV9Evf3yp5Yv/r0cooh0lEPYRAz8B+Am8e8=;
+	b=zCxcJ9hxBXbOENQOi/AKNI1S0wiLL6aYLqM8BIad6imfGMneUj0sR+EGvGOjCqNokIBfVn
+	x7mILKTfhhd6DnKu6ixwT9+N/4cgR7dq1RytPa6g1hbbCBIFg8rJPqbjbF5Z1T/6WnKTeG
+	Dp5raggCT93vuwGk4luCnY4xrwkbMG0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740589433;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yySr0gLCaV9Evf3yp5Yv/r0cooh0lEPYRAz8B+Am8e8=;
+	b=bzBiBK1yO0E8XBEBtYN7p8GzRBX5WHZcwG8WWqRwhYJUq8GjG8RBTJaG5Sh5R6Mpb7QOsn
+	XXdKf1x/U/oUnJDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B9EC51377F;
+	Wed, 26 Feb 2025 17:03:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 2bZiLXlJv2eregAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 26 Feb 2025 17:03:53 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 71E9FA08B5; Wed, 26 Feb 2025 18:03:53 +0100 (CET)
+Date: Wed, 26 Feb 2025 18:03:53 +0100
+From: Jan Kara <jack@suse.cz>
+To: Eric Sandeen <sandeen@sandeen.net>
+Cc: Jan Kara <jack@suse.cz>, Eric Sandeen <sandeen@redhat.com>, 
+	jack@suse.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/2] ext2: convert to the new mount API
+Message-ID: <icjrsdd2irambcw4woz7p7m2ebwonpr6dqwzczyalz5d2iwmie@wn25mu252mcr>
+References: <20250223201014.7541-1-sandeen@redhat.com>
+ <20250223201014.7541-2-sandeen@redhat.com>
+ <goynv3cssrrdpykmtwon63xiye4qdzbmvpwq6gjzwine63r25n@4mfgf2ycqzql>
+ <ca1f1899-455f-4e69-a302-c01acfd565f3@sandeen.net>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ext2: convert to the new mount API
-To: Jan Kara <jack@suse.cz>, Eric Sandeen <sandeen@redhat.com>
-Cc: jack@suse.com, linux-ext4@vger.kernel.org
-References: <20250223201014.7541-1-sandeen@redhat.com>
- <20250223201014.7541-2-sandeen@redhat.com>
- <goynv3cssrrdpykmtwon63xiye4qdzbmvpwq6gjzwine63r25n@4mfgf2ycqzql>
-Content-Language: en-US
-From: Eric Sandeen <sandeen@sandeen.net>
-In-Reply-To: <goynv3cssrrdpykmtwon63xiye4qdzbmvpwq6gjzwine63r25n@4mfgf2ycqzql>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca1f1899-455f-4e69-a302-c01acfd565f3@sandeen.net>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-On 2/24/25 8:02 AM, Jan Kara wrote:
-> On Sun 23-02-25 13:57:40, Eric Sandeen wrote:
->> Convert ext2 to the new mount API.
->>
->> Note that this makes the sb= option more accepting than it was before;
->> previosly, sb= was only accepted if it was the first specified option.
->> Now it can exist anywhere, and if respecified, the last specified value
->> is used.
->>
->> Parse-time messages here are sent to ext2_msg with a NULL sb, and
->> ext2_msg is adjusted to accept that, as ext4 does today as well.
->>
->> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+On Wed 26-02-25 10:42:11, Eric Sandeen wrote:
+> On 2/24/25 8:02 AM, Jan Kara wrote:
+> > On Sun 23-02-25 13:57:40, Eric Sandeen wrote:
+> >> Convert ext2 to the new mount API.
+> >>
+> >> Note that this makes the sb= option more accepting than it was before;
+> >> previosly, sb= was only accepted if it was the first specified option.
+> >> Now it can exist anywhere, and if respecified, the last specified value
+> >> is used.
+> >>
+> >> Parse-time messages here are sent to ext2_msg with a NULL sb, and
+> >> ext2_msg is adjusted to accept that, as ext4 does today as well.
+> >>
+> >> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+> > 
+> > Looks good to me. Thanks!
 > 
-> Looks good to me. Thanks!
+> Thanks Jan - You probably saw the minor nit from the kernel test robot,
+> "const struct fs_parameter_spec ext2_param_spec" should be static, too.
 
-Thanks Jan - You probably saw the minor nit from the kernel test robot,
-"const struct fs_parameter_spec ext2_param_spec" should be static, too.
+Yep, fixed now.
 
-Sorry about that! 
+> Sorry about that! 
 
--Eric
+No problem :).
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
