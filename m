@@ -1,244 +1,172 @@
-Return-Path: <linux-ext4+bounces-6575-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6576-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AEF6A45278
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2025 02:56:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C427BA45C0E
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2025 11:43:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AF733A531F
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2025 01:56:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C627717233C
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2025 10:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD4819D06B;
-	Wed, 26 Feb 2025 01:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDF324E00C;
+	Wed, 26 Feb 2025 10:43:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91B6EBE;
-	Wed, 26 Feb 2025 01:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E2E2459D5
+	for <linux-ext4@vger.kernel.org>; Wed, 26 Feb 2025 10:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740534960; cv=none; b=G+mzjPf1fgThwkVoiH+Z+Q+hd+/6W75y8Jk+4TGKFXxaXAVj6pPYOwcefoSQFW3ZigGDlkIbNJqM2YJf0aOb/Yorjpzrs+wQ3/4OUxpyf8sHCdrKDdpvwRM+C513NmOxBnvTaCmWA1v2D5qtQD46rCGEJo0tXbYBLRBKWNNVTys=
+	t=1740566604; cv=none; b=EiE44ZDekE2ksjX43dNmjD6Q5EMoVHNZwXr5lXNl11G0UupyQ3W9Kl4rnS9eQa6keLOJCUbhy+UOAXuGuMxKek2ba2vlE+EvmvOk3Uyvpi0L1FF4Wt5C8drF1gx0EmBHPmbyqfCVJ5gUenNFPZvA6dwnm220HjjEGhGR33yrSi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740534960; c=relaxed/simple;
-	bh=X2A7UwowDWu/Qmzix8RvMOFH9CCjbmuFESHKLu4VyVk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=f2YBhEayxjY3QFbCZ4YD8RDmdi+NMCKXEMlWS2PM2V6XFcacdkJ0HiOV+1/x6N93ltL9jo9iv241BHsMPc1FDmypJUNXSpeHaW9AXlId4CJxg3sTkIEDm9Qu588I0fPdmCm/O2WYRLLJd6kUaGgfNWfBmbXPzmp4YcPN8iLjm2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Z2crY2Zctzdb7f;
-	Wed, 26 Feb 2025 09:51:09 +0800 (CST)
-Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
-	by mail.maildlp.com (Postfix) with ESMTPS id 43C22140795;
-	Wed, 26 Feb 2025 09:55:54 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
- (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 26 Feb
- 2025 09:55:53 +0800
-Message-ID: <1a1ff87b-6f75-4d43-ad7b-54883bea13f8@huawei.com>
-Date: Wed, 26 Feb 2025 09:55:52 +0800
+	s=arc-20240116; t=1740566604; c=relaxed/simple;
+	bh=/1D2hWZ33Wvm8tZchRpvwsmFkPCAijJoSs7d8EyqLjg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=NFwZNwhAaZYTt3hUbr6J8FlIYXzbKeoTkqunknrmhYSTs0Jup74Ux8W+WVcw5HkoGzV18GHtT4uyvw5ifiiag54CYexPu00WyBOP058EYbbOl60REnAfmB8+ty/wlxkh4hJu09wSwnYvHfYHkwYoY+ub+PfAHcLYkq6zbMcUTCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3d289bf6c39so5554905ab.1
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Feb 2025 02:43:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740566602; x=1741171402;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CLamul0Qy1bSNuPWUSE2AWn8j3h3sPf3L6/qyPeSfR8=;
+        b=OJ5xqQ3Vm/7Ab4x8Jff0abBOCAhJXCDxGvBDHsG1MoLr8O3xYsRrqXzX4r8g+VyITR
+         4kApf7RwaDyDs8mxmMwkPCUwBOPG/t0IAJ2YU8OteBb95MhOYPHNWZypOiQImrbxQKVH
+         jmECTF2lljYh1Ab2bHjRao2llfQVjZDHZHkAfouOVVz160dZkL69LaYmv1y6MVyh2pAb
+         7FzcyZgS4ZVOg/sBMPXfUUIJIO6md1VDzNTtfIWsYCoYwj+nRtZ7AqJGT9UTRTn4ozKf
+         Et0Ayq9fQDCpRbEjkDdB1F9NPOLeG0eLqj9wWLYIl6oyxYHzZru+FRqgfjt1Y20TG9Gl
+         B+qQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXtPLe9l4CL6PIu597HC6OIZ6WPSLVVVqifaND+dD+/vjymMqudf3KJ5d5RSUuMZswtEZqSq8KUlKuP@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyzibfEDLiOuMjirjFO0Rx6Rhc3Q1LouHDbjQe4DFNxVHg7qPb
+	Ln8gTX8IizAGLoAfNZPxc92v0mVpBzn4MVP85BYgUWJsN9zc8CK+9mOK2GgoaSIlLtas8iRjcYd
+	/nFnzmxTWNjTjpRvw2Xy/GK+rUUne5xuvbmourYp5Timoho3ckrfXX3M=
+X-Google-Smtp-Source: AGHT+IEozNnp1RtmNrcxO3YpCynOBqGVr75Ha2A7UsRZoGZ85WoOwK1VOHFxodkoYYhmcdFTIg3Tv6nG2Vgy81FdzccUMzmPTSz9
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ext4: only defer sb update on error if SB_ACTIVE
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-CC: <linux-ext4@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>, Jan Kara
-	<jack@suse.cz>, <linux-kernel@vger.kernel.org>, Mahesh Kumar
-	<maheshkumar657g@gmail.com>, Ritesh Harjani <ritesh.list@gmail.com>, Yang
- Erkun <yangerkun@huawei.com>
-References: <cover.1740212945.git.ojaswin@linux.ibm.com>
- <da8af2e5170f0d94031b812d7d50c6ec1967db1b.1740212945.git.ojaswin@linux.ibm.com>
- <3f9a67e2-ef08-47d4-b35e-41841e24bb71@huawei.com>
- <Z72yUqGWHdRyCE25@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <Z72yUqGWHdRyCE25@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemg500008.china.huawei.com (7.202.181.45)
+X-Received: by 2002:a92:cb4e:0:b0:3d1:84ad:165e with SMTP id
+ e9e14a558f8ab-3d2c020ccabmr203896295ab.7.1740566601966; Wed, 26 Feb 2025
+ 02:43:21 -0800 (PST)
+Date: Wed, 26 Feb 2025 02:43:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67bef049.050a0220.38b081.00ef.GAE@google.com>
+Subject: [syzbot] [mm?] [ext4?] WARNING in get_dump_page
+From: syzbot <syzbot+0b544778e9923a3de766@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, akpm@linux-foundation.org, cem@kernel.org, 
+	clm@fb.com, djwong@kernel.org, dsterba@suse.com, jack@suse.cz, 
+	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-xfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On 2025/2/25 20:06, Ojaswin Mujoo wrote:
-> On Tue, Feb 25, 2025 at 09:53:10AM +0800, Baokun Li wrote:
->> On 2025/2/22 16:40, Ojaswin Mujoo wrote:
->>> Presently we always BUG_ON if trying to start a transaction on a journal
->>> marked with JBD2_UNMOUNT, since this should never happen. However while
->>> running stress tests it was observed that in case of some error handling
->>> paths, it is possible for update_super_work to start a transaction after
->>> the journal is destroyed eg:
->>>
->>> (umount)
->>> ext4_kill_sb
->>>     kill_block_super
->>>       generic_shutdown_super
->>>         sync_filesystem /* commits all txns */
->>>         evict_inodes
->>>           /* might start a new txn */
->>>         ext4_put_super
->>> 	flush_work(&sbi->s_sb_upd_work) /* flush the workqueue */
->>>           jbd2_journal_destroy
->>>             journal_kill_thread
->>>               journal->j_flags |= JBD2_UNMOUNT;
->>>             jbd2_journal_commit_transaction
->>>               jbd2_journal_get_descriptor_buffer
->>>                 jbd2_journal_bmap
->>>                   ext4_journal_bmap
->>>                     ext4_map_blocks
->>>                       ...
->>>                       ext4_inode_error
->> Just curious, since jbd2_journal_bmap() only queries the map and does not
->> create it, how does it fail here? Is there more information in dmesg?
->> Is s_journal_inum normal after file system corruption?
-> Hey Baokun,
-Hello Ojaswin,
+Hello,
 
-Thanks for your detailed explanation!
->
-> So I dug a bit more into the vmcore. The error information in sbi looks
-> like this:
->
->    s_add_error_count = 1,
->    s_first_error_code = 117,
->    s_first_error_line = 475,
->    s_first_error_ino = 0,
->    s_first_error_block = 0,
->    s_first_error_func = 0xc0080000055300d0 <__func__.6> "ext4_read_block_bitmap_nowait",
->    s_first_error_time = 1737023235,
->
->    s_last_error_code = 117,
->    s_last_error_line = 609,
->    s_last_error_ino = 8,
->    s_last_error_block = 783,
->    s_last_error_func = 0xc008000005531b10 <__func__.41> "ext4_map_blocks",
->    s_last_error_time = 1737023236,
->
->    The first error is here:
->
->        if ((bitmap_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
->       474               (bitmap_blk >= ext4_blocks_count(sbi->s_es))) {
->    *  475                   ext4_error(sb, "Invalid block bitmap block %llu in "
->       476                              "block_group %u", bitmap_blk, block_group);
->       477                   ext4_mark_group_bitmap_corrupted(sb, block_group,
->       478                                           EXT4_GROUP_INFO_BBITMAP_CORRUPT);
->       479                   return ERR_PTR(-EFSCORRUPTED);
->       480           }
->
-> and the last error is here:
->
->      608           if (retval > 0 && map->m_flags & EXT4_MAP_MAPPED) {
->   *  609                   ret = check_block_validity(inode, map);
->      610                   if (ret != 0)
->      611                           return ret;
->      612           }
->
->
-> And indeed we have the traces of the first error in dmesg:
->
-> [75284.713463] EXT4-fs error (device loop36): ext4_read_block_bitmap_nowait:475: comm proc01: Invalid block bitmap block 0 in block_group 0
-> [75284.713470] EXT4-fs error (device loop36): ext4_read_block_bitmap_nowait:475: comm proc01: Invalid block bitmap block 0 in block_group 0
-> [75284.713476] EXT4-fs error (device loop36): ext4_read_block_bitmap_nowait:475: comm proc01: Invalid block bitmap block 0 in block_group 0
->
-> However, the last error seems strange. It seems like check_block_validity
-> should ideally never fail for a journal inode.Unfortunately, sbi->s_es page is
-> not recorded in the crash dump for some reason so idk the exact value at the
-> time of the check, but looking in journal->j_inode->i_ino, the inode num is 8,
-> which seems fine to me. So yeah, I'm a bit unsure what caused the corruption.
-> I'll look a bit more into the proc01 ltp to see if we can recreate the failure
-> to get more info.
-Right, check_block_validity() skips the journal inode check. If
-the journal inode check fails, that shows s_es->s_journal_inum and
-journal->j_inode->i_ino are different. The file system doesn't modify
-s_journal_inum, so it should be modified by some other writer bypassing
-the file system (i.e. writing to bare disk).
+syzbot found the following issue on:
 
-If that's how it is, we could avoid this issue by using EXT4_JOURNAL_INO
-directly or saving s_journal_inum to ext4_sb_info (which offers better
-compatibility).
+HEAD commit:    d082ecbc71e9 Linux 6.14-rc4
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=107eec98580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5b4c41bdaeea1964
+dashboard link: https://syzkaller.appspot.com/bug?extid=0b544778e9923a3de766
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=176626e4580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147eec98580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1e5dabe499e7/disk-d082ecbc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1e0f27be469a/vmlinux-d082ecbc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7e058c08d6c9/bzImage-d082ecbc.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/24600c6adfb8/mount_0.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=16397fdf980000)
+
+The issue was bisected to:
+
+commit 5121711eb8dbcbed70b1db429a4665f413844164
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Fri Nov 15 15:30:32 2024 +0000
+
+    fs: enable pre-content events on supported file systems
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10ae1db0580000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12ae1db0580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14ae1db0580000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0b544778e9923a3de766@syzkaller.appspotmail.com
+Fixes: 5121711eb8db ("fs: enable pre-content events on supported file systems")
+
+WARNING: CPU: 0 PID: 5840 at mm/gup.c:1856 __get_user_pages_locked mm/gup.c:1856 [inline]
+WARNING: CPU: 0 PID: 5840 at mm/gup.c:1856 get_dump_page+0x242/0x2f0 mm/gup.c:2275
+Modules linked in:
+CPU: 0 UID: 0 PID: 5840 Comm: syz-executor267 Not tainted 6.14.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+RIP: 0010:__get_user_pages_locked mm/gup.c:1856 [inline]
+RIP: 0010:get_dump_page+0x242/0x2f0 mm/gup.c:2275
+Code: 00 00 00 48 3b 8c 24 80 00 00 00 0f 85 a3 00 00 00 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d e9 1f 37 03 ff e8 0f b4 b4 ff 90 <0f> 0b 90 eb ae 44 89 c9 80 e1 07 80 c1 03 38 c1 0f 8c db fe ff ff
+RSP: 0018:ffffc900032c7180 EFLAGS: 00010293
+RAX: ffffffff820d09f1 RBX: 0000000000000000 RCX: ffff8880346f0000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc900032c7250 R08: ffffffff820d0968 R09: 1ffffd4000399126
+R10: dffffc0000000000 R11: fffff94000399127 R12: 1ffff92000658e38
+R13: dffffc0000000000 R14: 1ffff92000658e34 R15: 0000000000000000
+FS:  0000555587160380(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff9150b8f8 CR3: 0000000075dae000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ dump_user_range+0x14d/0x970 fs/coredump.c:943
+ elf_core_dump+0x4054/0x4a80 fs/binfmt_elf.c:2129
+ do_coredump+0x232c/0x32c0 fs/coredump.c:758
+ get_signal+0x13e5/0x1720 kernel/signal.c:3021
+ arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:337
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
+ irqentry_exit_to_user_mode+0x7e/0x250 kernel/entry/common.c:231
+ exc_page_fault+0x590/0x8b0 arch/x86/mm/fault.c:1541
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+RIP: 0033:0x7ff653b312d1
+Code: c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 48 3d 01 f0 ff ff 73 01 <c3> 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
+RSP: 002b:00000000fffffe10 EFLAGS: 00010217
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00007ff653b312c9
+RDX: 0000000000000000 RSI: 00000000fffffe10 RDI: 0000000000000000
+RBP: 00007fff9150b940 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000000f4240
+R13: 00007ff653b7f9dc R14: 00007ff653b7a0e2 R15: 00007fff9150b930
+ </TASK>
 
 
-Cheers,
-Baokun
->> Thanks,
->> Baokun
->>>                         ext4_handle_error
->>>                           schedule_work(&sbi->s_sb_upd_work)
->>>
->>>                                                  /* work queue kicks in */
->>>                                                  update_super_work
->>>                                                    jbd2_journal_start
->>>                                                      start_this_handle
->>>                                                        BUG_ON(journal->j_flags &
->>>                                                               JBD2_UNMOUNT)
->>>
->>> Hence, make sure we only defer the update of ext4 sb if the sb is still
->>> active.  Otherwise, just fallback to an un-journaled commit.
->>>
->>> The important thing to note here is that we must only defer sb update if
->>> we have not yet flushed the s_sb_update_work queue in umount path else
->>> this race can be hit (point 1 below). Since we don't have a direct way
->>> to check for that we use SB_ACTIVE instead. The SB_ACTIVE check is a bit
->>> subtle so adding some notes below for future reference:
->>>
->>> 1. Ideally we would want to have a something like (flags & JBD2_UNMOUNT
->>> == 0) however this is not correct since we could end up scheduling work
->>> after it has been flushed:
->>>
->>>    ext4_put_super
->>>     flush_work(&sbi->s_sb_upd_work)
->>>
->>>                              **kjournald2**
->>>                              jbd2_journal_commit_transaction
->>>                              ...
->>>                              ext4_inode_error
->>>                                /* JBD2_UNMOUNT not set */
->>>                                schedule_work(s_sb_upd_work)
->>>
->>>      jbd2_journal_destroy
->>>       journal->j_flags |= JBD2_UNMOUNT;
->>>
->>>                                         **workqueue**
->>>                                         update_super_work
->>>                                          jbd2_journal_start
->>>                                           start_this_handle
->>>                                             BUG_ON(JBD2_UNMOUNT)
->>>
->>> Something like the above doesn't happen with SB_ACTIVE check because we
->>> are sure that the workqueue would be flushed at a later point if we are
->>> in the umount path.
->>>
->>> 2. We don't need a similar check in ext4_grp_locked_error since it is
->>> only called from mballoc and AFAICT it would be always valid to schedule
->>> work here.
->>>
->>> Fixes: 2d01ddc86606 ("ext4: save error info to sb through journal if available")
->>> Reported-by: Mahesh Kumar <maheshkumar657g@gmail.com>
->>> Suggested-by: Ritesh Harjani <ritesh.list@gmail.com>
->>> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->>> ---
->>>    fs/ext4/super.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->>> index a963ffda692a..b7341e9acf62 100644
->>> --- a/fs/ext4/super.c
->>> +++ b/fs/ext4/super.c
->>> @@ -706,7 +706,7 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
->>>    		 * constraints, it may not be safe to do it right here so we
->>>    		 * defer superblock flushing to a workqueue.
->>>    		 */
->>> -		if (continue_fs && journal)
->>> +		if (continue_fs && journal && (sb->s_flags & SB_ACTIVE))
->>>    			schedule_work(&EXT4_SB(sb)->s_sb_upd_work);
->>>    		else
->>>    			ext4_commit_super(sb);
->>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
