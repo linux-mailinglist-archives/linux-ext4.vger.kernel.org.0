@@ -1,47 +1,47 @@
-Return-Path: <linux-ext4+bounces-6595-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6596-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85BEEA48DA9
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2025 02:08:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B45CA48DAF
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2025 02:13:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0739E3B492C
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2025 01:08:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 998901890CC0
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2025 01:13:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A681D554;
-	Fri, 28 Feb 2025 01:08:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2571CA8D;
+	Fri, 28 Feb 2025 01:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RHJdtDvm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s536YGJC"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831E917741;
-	Fri, 28 Feb 2025 01:08:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C478C4409;
+	Fri, 28 Feb 2025 01:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740704901; cv=none; b=tVeSYvH0F5LT9hu9R20L16Bt6Rhak/eEoDP5KG59C7i1rwPFwa69mAdS/asTRxavSoSsYVnKmXwIJtGcim4VwmA9irn3aGMAYAe5tSQ6fhI75mK/f5V6Fz/H+woYj/jWIlNBGD1AMQXxt/J2YKIjOnlGj/qOFzyCvdcyt32zaNw=
+	t=1740705185; cv=none; b=bBPmVgGUaSYza8W6LGfW9NyMHxs6jQ7PDSsBV6uDIWzQJyldpp7mBC7efZunolYW+dp2qxM+dVCKjzLJYFmuFyGq1BsEG6mLa4B1Mj18JnkfGFqQEzgnSrAb3ify20knhzNBDeoa2ZbhX849FYqLX9rKd4ANPKJcy5tSO0X2pk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740704901; c=relaxed/simple;
-	bh=r204P3/o5tj0rdMt2fYtelvoijFFzJ47ze5idBCOS9U=;
+	s=arc-20240116; t=1740705185; c=relaxed/simple;
+	bh=iibeqmxcNk4k1THp5xIlxdco9/RD68czTK+36Ph5pnE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pad3YVKRT1uOuDIolKbd0RXVrxmaiBZZjDj8jFalb3wmewOriGZX+QjJPPORq+GGXyNiNm5F7RRb4PVyrxMIzgJgdIbEGGkh3rlr7YvIQ5WfCdl3fqjv/w2TCYyZ/H7fIRMc0SseqNEKkuQSpadiTbpBXVXV/Duvfx9vC84anTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RHJdtDvm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D46B3C4CEDD;
-	Fri, 28 Feb 2025 01:08:20 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=l1ZhVHxY4Ma1i4NAZaQuHRb1fkau0VbBoz7EPlQhhXlP0BjEP0EidqRxUXnW2M1JvosA027YZvZuYHXjwyUGPTj6A0w4JdV3uo5jTv9KKDTcpQkXrxpkJ4fbZQC68fwrKUC2sIM0xTN8MBvOj6g+RqtsDzJxP8G2oj55zWYaRSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s536YGJC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48E0AC4CEDD;
+	Fri, 28 Feb 2025 01:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740704900;
-	bh=r204P3/o5tj0rdMt2fYtelvoijFFzJ47ze5idBCOS9U=;
+	s=k20201202; t=1740705185;
+	bh=iibeqmxcNk4k1THp5xIlxdco9/RD68czTK+36Ph5pnE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RHJdtDvmzOr7jxlj+heg4PLyT24i+BDwsC1VHcEYHWDKQnK4ahjgWkduJe0Abp8dT
-	 LZO722W1Ks8lWVZbWua5cGKv9b9D3hq7pe9RBHoPRM+hCDAVmyoYJG2Pg8dFUuM48i
-	 Lk4aOPH3tXcSWn2mzbhtsbCl7GBhpcNwMaae0b0r2kuLOuYWy6aYjP+T+VHwKEMV1R
-	 H8zSJjAfRVEYKfm1ly1rizwIV2z9x7jf6QAyyzjxqLNjj7tS8iFRn1Ei3vbMWju5oq
-	 shIpwAIEyfTUuj3Zug4VpzjQliSNAhckxSfSZqWc+yZOL070XsnvvAmiaWWnYuSzmj
-	 sVjqD0W1RDaHg==
-Date: Thu, 27 Feb 2025 17:08:20 -0800
+	b=s536YGJC+pzpFwJ6KVBYH4lnIIAPz4Xfk4TGkZ8VTVpDK7b9KUwU/WbkyByZqrfuT
+	 ObAMiOBr5wCxRzpdvjTRXQZhDYdFdv/bN8JwZTAotV2oOvjES3s6zBziFKt7udMb5A
+	 iWWoy/je1kvl5ccHCUbjbtqWWxuDpLWk4W2Jr+Z75HzoNpn+8fNHItTmCTB7FzZgvO
+	 Mb+RwRIA0/+y+dyD58Ro8pwtYloxTL224Zr9NbebWghDoavsJ4xpLGlOK76ufMwdXp
+	 xF22/WWtuzqdG1Qo8ZYmp7enGmvIqy8eLDz4tDQ92n/+a10eALxBRcq1qOyNM0HCBl
+	 HNdhGsF4ls5sg==
+Date: Thu, 27 Feb 2025 17:13:04 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: John Garry <john.g.garry@oracle.com>
 Cc: brauner@kernel.org, cem@kernel.org, linux-xfs@vger.kernel.org,
@@ -49,10 +49,10 @@ Cc: brauner@kernel.org, cem@kernel.org, linux-xfs@vger.kernel.org,
 	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
 	martin.petersen@oracle.com, tytso@mit.edu,
 	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 05/12] iomap: Support SW-based atomic writes
-Message-ID: <20250228010820.GB1124788@frogsfrogsfrogs>
+Subject: Re: [PATCH v3 10/12] xfs: Commit CoW-based atomic writes atomically
+Message-ID: <20250228011304.GC1124788@frogsfrogsfrogs>
 References: <20250227180813.1553404-1-john.g.garry@oracle.com>
- <20250227180813.1553404-6-john.g.garry@oracle.com>
+ <20250227180813.1553404-11-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,108 +61,130 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250227180813.1553404-6-john.g.garry@oracle.com>
+In-Reply-To: <20250227180813.1553404-11-john.g.garry@oracle.com>
 
-On Thu, Feb 27, 2025 at 06:08:06PM +0000, John Garry wrote:
-> Currently atomic write support requires dedicated HW support. This imposes
-> a restriction on the filesystem that disk blocks need to be aligned and
-> contiguously mapped to FS blocks to issue atomic writes.
+On Thu, Feb 27, 2025 at 06:08:11PM +0000, John Garry wrote:
+> When completing a CoW-based write, each extent range mapping update is
+> covered by a separate transaction.
 > 
-> XFS has no method to guarantee FS block alignment for regular,
-> non-RT files. As such, atomic writes are currently limited to 1x FS block
-> there.
-> 
-> To deal with the scenario that we are issuing an atomic write over
-> misaligned or discontiguous data blocks - and raise the atomic write size
-> limit - support a SW-based software emulated atomic write mode. For XFS,
-> this SW-based atomic writes would use CoW support to issue emulated untorn
-> writes.
-> 
-> It is the responsibility of the FS to detect discontiguous atomic writes
-> and switch to IOMAP_DIO_ATOMIC_SW mode and retry the write. Indeed,
-> SW-based atomic writes could be used always when the mounted bdev does
-> not support HW offload, but this strategy is not initially expected to be
-> used.
+> For a CoW-based atomic write, all mappings must be changed at once, so
+> change to use a single transaction.
 > 
 > Signed-off-by: John Garry <john.g.garry@oracle.com>
 
-Looks good now, thank you.
+Looks good to me now,
 Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
 --D
 
 > ---
->  Documentation/filesystems/iomap/operations.rst | 16 ++++++++++++++--
->  fs/iomap/direct-io.c                           |  4 +++-
->  include/linux/iomap.h                          |  6 ++++++
->  3 files changed, 23 insertions(+), 3 deletions(-)
+>  fs/xfs/xfs_file.c    |  5 ++++-
+>  fs/xfs/xfs_reflink.c | 49 ++++++++++++++++++++++++++++++++++++++++++++
+>  fs/xfs/xfs_reflink.h |  3 +++
+>  3 files changed, 56 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/filesystems/iomap/operations.rst b/Documentation/filesystems/iomap/operations.rst
-> index 82bfe0e8c08e..b9757fe46641 100644
-> --- a/Documentation/filesystems/iomap/operations.rst
-> +++ b/Documentation/filesystems/iomap/operations.rst
-> @@ -525,8 +525,20 @@ IOMAP_WRITE`` with any combination of the following enhancements:
->     conversion or copy on write), all updates for the entire file range
->     must be committed atomically as well.
->     Only one space mapping is allowed per untorn write.
-> -   Untorn writes must be aligned to, and must not be longer than, a
-> -   single file block.
-> +   Untorn writes may be longer than a single file block. In all cases,
-> +   the mapping start disk block must have at least the same alignment as
-> +   the write offset.
+> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> index 76ea59c638c3..44e11c433569 100644
+> --- a/fs/xfs/xfs_file.c
+> +++ b/fs/xfs/xfs_file.c
+> @@ -527,7 +527,10 @@ xfs_dio_write_end_io(
+>  	nofs_flag = memalloc_nofs_save();
+>  
+>  	if (flags & IOMAP_DIO_COW) {
+> -		error = xfs_reflink_end_cow(ip, offset, size);
+> +		if (iocb->ki_flags & IOCB_ATOMIC)
+> +			error = xfs_reflink_end_atomic_cow(ip, offset, size);
+> +		else
+> +			error = xfs_reflink_end_cow(ip, offset, size);
+>  		if (error)
+>  			goto out;
+>  	}
+> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
+> index 97dc38841063..844e2b43357b 100644
+> --- a/fs/xfs/xfs_reflink.c
+> +++ b/fs/xfs/xfs_reflink.c
+> @@ -987,6 +987,55 @@ xfs_reflink_end_cow(
+>  		trace_xfs_reflink_end_cow_error(ip, error, _RET_IP_);
+>  	return error;
+>  }
+> +int
+> +xfs_reflink_end_atomic_cow(
+> +	struct xfs_inode		*ip,
+> +	xfs_off_t			offset,
+> +	xfs_off_t			count)
+> +{
+> +	xfs_fileoff_t			offset_fsb;
+> +	xfs_fileoff_t			end_fsb;
+> +	int				error = 0;
+> +	struct xfs_mount		*mp = ip->i_mount;
+> +	struct xfs_trans		*tp;
+> +	unsigned int			resblks;
 > +
-> + * ``IOMAP_ATOMIC_SW``: This write is being issued with torn-write
-> +   protection via a software mechanism provided by the filesystem.
-> +   All the disk block alignment and single bio restrictions which apply
-> +   to IOMAP_ATOMIC_HW do not apply here.
-> +   SW-based untorn writes would typically be used as a fallback when
-> +   HW-based untorn writes may not be issued, e.g. the range of the write
-> +   covers multiple extents, meaning that it is not possible to issue
-> +   a single bio.
-> +   All filesystem metadata updates for the entire file range must be
-> +   committed atomically as well.
->  
->  Callers commonly hold ``i_rwsem`` in shared or exclusive mode before
->  calling this function.
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index f87c4277e738..575bb69db00e 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -644,7 +644,9 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  			iomi.flags |= IOMAP_OVERWRITE_ONLY;
->  		}
->  
-> -		if (iocb->ki_flags & IOCB_ATOMIC)
-> +		if (dio_flags & IOMAP_DIO_ATOMIC_SW)
-> +			iomi.flags |= IOMAP_ATOMIC_SW;
-> +		else if (iocb->ki_flags & IOCB_ATOMIC)
->  			iomi.flags |= IOMAP_ATOMIC_HW;
->  
->  		/* for data sync or sync, we need sync completion processing */
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index e7aa05503763..4fa716241c46 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -183,6 +183,7 @@ struct iomap_folio_ops {
->  #define IOMAP_DAX		0
->  #endif /* CONFIG_FS_DAX */
->  #define IOMAP_ATOMIC_HW		(1 << 9) /* HW-based torn-write protection */
-> +#define IOMAP_ATOMIC_SW		(1 << 10)/* SW-based torn-write protection */
->  
->  struct iomap_ops {
->  	/*
-> @@ -434,6 +435,11 @@ struct iomap_dio_ops {
->   */
->  #define IOMAP_DIO_PARTIAL		(1 << 2)
->  
-> +/*
-> + * Use software-based torn-write protection.
-> + */
-> +#define IOMAP_DIO_ATOMIC_SW		(1 << 3)
+> +	trace_xfs_reflink_end_cow(ip, offset, count);
 > +
->  ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
->  		unsigned int dio_flags, void *private, size_t done_before);
+> +	offset_fsb = XFS_B_TO_FSBT(mp, offset);
+> +	end_fsb = XFS_B_TO_FSB(mp, offset + count);
+> +
+> +	/*
+> +	 * Each remapping operation could cause a btree split, so in the worst
+> +	 * case that's one for each block.
+> +	 */
+> +	resblks = (end_fsb - offset_fsb) *
+> +			XFS_NEXTENTADD_SPACE_RES(mp, 1, XFS_DATA_FORK);
+> +
+> +	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_write, resblks, 0,
+> +			XFS_TRANS_RESERVE, &tp);
+> +	if (error)
+> +		return error;
+> +
+> +	xfs_ilock(ip, XFS_ILOCK_EXCL);
+> +	xfs_trans_ijoin(tp, ip, 0);
+> +
+> +	while (end_fsb > offset_fsb && !error) {
+> +		error = xfs_reflink_end_cow_extent_locked(tp, ip, &offset_fsb,
+> +				end_fsb);
+> +	}
+> +	if (error) {
+> +		trace_xfs_reflink_end_cow_error(ip, error, _RET_IP_);
+> +		goto out_cancel;
+> +	}
+> +	error = xfs_trans_commit(tp);
+> +	xfs_iunlock(ip, XFS_ILOCK_EXCL);
+> +	return error;
+> +out_cancel:
+> +	xfs_trans_cancel(tp);
+> +	xfs_iunlock(ip, XFS_ILOCK_EXCL);
+> +	return error;
+> +}
+>  
+>  /*
+>   * Free all CoW staging blocks that are still referenced by the ondisk refcount
+> diff --git a/fs/xfs/xfs_reflink.h b/fs/xfs/xfs_reflink.h
+> index dfd94e51e2b4..4cb2ee53cd8d 100644
+> --- a/fs/xfs/xfs_reflink.h
+> +++ b/fs/xfs/xfs_reflink.h
+> @@ -49,6 +49,9 @@ extern int xfs_reflink_cancel_cow_range(struct xfs_inode *ip, xfs_off_t offset,
+>  		xfs_off_t count, bool cancel_real);
+>  extern int xfs_reflink_end_cow(struct xfs_inode *ip, xfs_off_t offset,
+>  		xfs_off_t count);
+> +		int
+> +xfs_reflink_end_atomic_cow(struct xfs_inode *ip, xfs_off_t offset,
+> +		xfs_off_t count);
+
+Nit: return type should be at column 0 and the name should be right
+after.
+
+int xfs_reflink_end_atomic_cow(struct xfs_inode *ip, xfs_off_t offset,
+		xfs_off_t count);
+
+With that fixed,
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+
+--D
+
+>  extern int xfs_reflink_recover_cow(struct xfs_mount *mp);
+>  extern loff_t xfs_reflink_remap_range(struct file *file_in, loff_t pos_in,
+>  		struct file *file_out, loff_t pos_out, loff_t len,
 > -- 
 > 2.31.1
 > 
