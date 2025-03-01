@@ -1,170 +1,196 @@
-Return-Path: <linux-ext4+bounces-6632-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6633-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73460A4AD28
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Mar 2025 18:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C0E7A4AD8B
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Mar 2025 20:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17D0F3AAA00
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Mar 2025 17:46:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FEFE3B5B63
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Mar 2025 19:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 388A61E51EB;
-	Sat,  1 Mar 2025 17:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A031E501C;
+	Sat,  1 Mar 2025 19:45:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IcKGZAvh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LD1Tu4N6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79EF71A841F;
-	Sat,  1 Mar 2025 17:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8FB1BD01F;
+	Sat,  1 Mar 2025 19:45:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740851178; cv=none; b=NbErHgYWiCGmIZrxwZ4gNLXNchCbF/zrew1bJ+ZILOAXub1MjFe85iWnHLG/JgcbbBSuULJoIUcJ+mpBYwbUq4PoFhx3QFJxVzvGARuZfxZctF+TIhV0PiEgqFZ4s36P1y6zS9zdJ9Id0iLlNfJX4dAROJop3e0Woaam9R+YXBo=
+	t=1740858355; cv=none; b=hVYuRWvJ9rbnrmxFyu2CvzkfvTTmycopxIUmwQct4Uqanu+B5AWXjSJAgocwcev7lJWLGQxH+3eHutCQzcTyJD3cr9ZN5kCjylowSIOsd+ums/M34XPdzI+BNRWpr9/ncDKQQaFIL7mSFwwCzhyH/YNZzHz4Cw78dZ/AW19+c24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740851178; c=relaxed/simple;
-	bh=Gtgm+HfkQpBAKcEGPTOlQARCrxJQv1VFX2vnqly2Bm8=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
-	 MIME-version:Content-type; b=hk/BsK48srPuMbg73jRMx2ezjB1Zb+JVU1qxKACz78j7Lt7rkPaS6rCpHWmgoqhUr/hv2ruBVYTzb1iFvUDoZGN1nZXRdC77GDaXo7nL0lpOlN0RHb+Ke96GbVbmhK1eP3FWpktxD8LGo9k0rd1Zo5HSe7dnRZuNdl9NDG2PhOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IcKGZAvh; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2238e884f72so5605805ad.3;
-        Sat, 01 Mar 2025 09:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740851176; x=1741455976; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:message-id:date
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S5EMC4QTPsTfx7rf08ONLES150yxmA4ww7kM1gnGqK0=;
-        b=IcKGZAvhn6LXqO3NJcSxthOfGSjpK6QdKEeb/QpX1iw3nIQ5T+RGXYExvfdLFmYuqE
-         K8+09fk8P1Qvya+KeGIN1rkPjm0pSou/yT6LNvysXqeg35OHywppTNLE3DSIey85tLV5
-         4U2LcyoeVXTwydm2XXo17mZNyTQVqbmVaRITLy7cOx/exijnKkOvfCThV8PJXsOKzkrk
-         Mtr989ACDtgGdWlrO8onat/ziX8+znECzlVIk6SSqIq+BRqRRcaCK0QPw20LoA660Dwi
-         5ZYj/MANc9dEQXnkYk4cnmdZq6vho7NDu8PN545QC/HM4JaibuxzVw7+bcUzbJh+bPWG
-         uYtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740851176; x=1741455976;
-        h=content-transfer-encoding:mime-version:references:message-id:date
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S5EMC4QTPsTfx7rf08ONLES150yxmA4ww7kM1gnGqK0=;
-        b=HcaM+NSHX2SmDdqz398UhXCNVztEQAo+FTFYR4YqLDwzQXeX2tEYHWPKqve52b8ysL
-         ncINdcapJJ5mfmavqdbVcTBQPLWaORkkHWvW+W4NSPN0bNZHv6tH4UOzMcay15Ha5Q2M
-         qCvfiJP/27TGdr0EG3exmTKv1EkqAs26TzHe9pJR0bj4YUjr0B9ttZknzL2qgWuEDAkZ
-         kYiQG5D502m5V4tkQsKUdPWxbUtMMRoIaqGRw/KWJe+aTl659jswDiO9ElhmJjYpkPpF
-         ov/j5FcFUiFxUO/+Zm2Pzlu+tzu3Qq8Tg8efnzFqzqt1MsXp5+dEtlsx6S8+p/FBRZr7
-         KJ0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUyjm/DlEL3R6AhR7eVS0nCCU+LXc+Qbz9rE/8ZnIXCo25AWveBxHgicNQkwn+Sf1c5/tijOz8jZDgP@vger.kernel.org, AJvYcCXWrlkOE1pOMWE6ycWwlSaMLC4u2SrqJwNFfv8pRWm0CsPpo9YhRFw6CiLofkPPobWyfuwr0ZLl@vger.kernel.org
-X-Gm-Message-State: AOJu0YwfOoD7//y7D8VMMMjzfV3oO3Ewv8xzrzddGp1kHzDO/TMP8pfF
-	SkClx9PI+MZRGFEh6wBlcrfG3BBRWcVTG23KJncZ57QytWkQDSV7
-X-Gm-Gg: ASbGncvcMlT38S9YrFK9/Ue1ipYxC+GQAz4TeWKIrGWnxFFfprr5Ji7l7tyDPDBuBwo
-	k4l1/8gtWohe0PTXrEc9ZmLbCz1gt5b7KETNWbdIqV/h2ALONsuzoV/XtBGNfQ/Z6fYEmCu4RYw
-	+t1L9AifLpiy5QSHS/ioAz2i9Ngnl2/qg+68jM1K/YSqX8pqo99GXfTNmrDFw3d16430H/bi6JU
-	VExcGwUIFSqP/C4x+zDMLfjszNRDDGot8Yzutyu5c2O9gGFR6bOqNWlEf7++Vc0EX/pGrb/qod5
-	9Tg/tycP0E0K/buh8X+nICFmKGp8Qdn01q0n8Q==
-X-Google-Smtp-Source: AGHT+IGLYa1RZ5t0cuEAVsiCUoSiG35w5JXi8zPh4yvcaqsvxMkzNHS2n7S/luxzuvx7NMCDstghxw==
-X-Received: by 2002:a17:902:fc8d:b0:223:44dc:3f36 with SMTP id d9443c01a7336-2236925eef4mr125123875ad.43.1740851176520;
-        Sat, 01 Mar 2025 09:46:16 -0800 (PST)
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22355773b58sm47985605ad.234.2025.03.01.09.46.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Mar 2025 09:46:15 -0800 (PST)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Anand Jain <anand.jain@oracle.com>, "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
-Subject: Re: [RFC 4/5] check,common/config: Add support for central fsconfig
-In-Reply-To: <4c951390-400a-48ce-824c-f075a37496a9@oracle.com>
-Date: Sat, 01 Mar 2025 23:00:17 +0530
-Message-ID: <87mse4hd5i.fsf@gmail.com>
-References: <cover.1736496620.git.nirjhar.roy.lists@gmail.com> <9a6764237b900f40e563d8dee2853f1430245b74.1736496620.git.nirjhar.roy.lists@gmail.com> <4c951390-400a-48ce-824c-f075a37496a9@oracle.com>
+	s=arc-20240116; t=1740858355; c=relaxed/simple;
+	bh=7RHZLlYISYOOa3uduTet2ow5tjmMF06rhNmws47c1BA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QXtptTX+ScuU9ZIUPhlsl2+ngCpPLo9TUD/yaIVywqeTmMVNhEMW0gF4QVM1S2Z2dzbX8x1ws54MG65YxcsTbGENK50OV/lYmt/iVxaQFdWkWJAJLQZt1guLdYvXeXJZZ1A/jliXwKuWyTwZZ92T5W4hh01cLKk70EOAFbCg2M0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LD1Tu4N6; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740858353; x=1772394353;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7RHZLlYISYOOa3uduTet2ow5tjmMF06rhNmws47c1BA=;
+  b=LD1Tu4N6P9GKcX+uwaRHoW2/FLc4MX7zs0thsEVBtMr9i69PuwP6zC8Z
+   SC1OjyGMe6RtXp6z73ZrUK3sNZbXY+DgE7LnUXu6lzx2e3lCBMRNuUqGi
+   mP4M9QeLKFqc4iLeAqDmfrcDzM/MJZzmDLTWsBCgsASyqBHgF9yyYcGdt
+   aLqX+b05OGgW0Hg+WWw6KSK5PEeRIsZ4+jqHQpEC0WSRtF10LRndSNHGP
+   S9wbnDeIjG1GOCfUFkEVjUXQFwwrmRU2//0RodovI18wcgktLCt7T9SDj
+   DAcebzo0iUBbKjAFuGjOuo0uFahq5O0+8sWTQdmpp/PARb8+nt9ulBeW1
+   Q==;
+X-CSE-ConnectionGUID: 73fVMWznTBqZ8aKW7vU9AA==
+X-CSE-MsgGUID: /dfF785cQKOU6UzEhrR9dw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11360"; a="41795675"
+X-IronPort-AV: E=Sophos;i="6.13,326,1732608000"; 
+   d="scan'208";a="41795675"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2025 11:45:52 -0800
+X-CSE-ConnectionGUID: DPGE4HeRQOum/28skPyxlQ==
+X-CSE-MsgGUID: 0B5sZDrTRqCYBgUdNpzkhQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,326,1732608000"; 
+   d="scan'208";a="117415055"
+Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
+  by fmviesa006.fm.intel.com with ESMTP; 01 Mar 2025 11:45:48 -0800
+Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1toSmL-000GdC-0S;
+	Sat, 01 Mar 2025 19:45:41 +0000
+Date: Sun, 2 Mar 2025 03:44:41 +0800
+From: kernel test robot <lkp@intel.com>
+To: John Garry <john.g.garry@oracle.com>, brauner@kernel.org,
+	djwong@kernel.org, cem@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com,
+	ritesh.list@gmail.com, martin.petersen@oracle.com, tytso@mit.edu,
+	linux-ext4@vger.kernel.org, John Garry <john.g.garry@oracle.com>
+Subject: Re: [PATCH v3 08/12] xfs: Iomap SW-based atomic write support
+Message-ID: <202503020355.fr9QWxQJ-lkp@intel.com>
+References: <20250227180813.1553404-9-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250227180813.1553404-9-john.g.garry@oracle.com>
 
-Anand Jain <anand.jain@oracle.com> writes:
+Hi John,
 
-> On 10/1/25 17:10, Nirjhar Roy (IBM) wrote:
->> This adds support to pick and use any existing FS config from
->> configs/<fstype>/<config>. e.g.
->> 
->> configs/xfs/1k
->> configs/xfs/4k
->> configs/ext4/4k
->> configs/ext4/64k
->> 
->> This should help us maintain and test different fs test
->> configurations from a central place. We also hope that
->> this will be useful for both developers and testers to
->> look into what is being actively maintained and tested
->> by FS Maintainers.
->> 
->> When we will have fsconfigs set, then will be another subdirectory created
->> in results/<section>. For example let's look at the following:
->> 
->> The directory tree structure on running
->> sudo ./check -q 2 -R xunit-quiet -c xfs/4k,configs/xfs/1k selftest/001 selftest/007
->> 
->
->
-> The -c option check makes sense to me. Is it possible to get this
-> feature implemented first while the -q option is still under discussion?
+kernel test robot noticed the following build warnings:
 
-Hi Anand, 
+[auto build test WARNING on xfs-linux/for-next]
+[also build test WARNING on tytso-ext4/dev linus/master v6.14-rc4]
+[cannot apply to brauner-vfs/vfs.all next-20250228]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks for trying the patches. The design of -c option is still under
-discussion [1]. But it will be helpful if you could help us understand
-your reasons for finding -c option useful :) 
+url:    https://github.com/intel-lab-lkp/linux/commits/John-Garry/xfs-Pass-flags-to-xfs_reflink_allocate_cow/20250228-021818
+base:   https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git for-next
+patch link:    https://lore.kernel.org/r/20250227180813.1553404-9-john.g.garry%40oracle.com
+patch subject: [PATCH v3 08/12] xfs: Iomap SW-based atomic write support
+config: hexagon-randconfig-001-20250302 (https://download.01.org/0day-ci/archive/20250302/202503020355.fr9QWxQJ-lkp@intel.com/config)
+compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project 14170b16028c087ca154878f5ed93d3089a965c6)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250302/202503020355.fr9QWxQJ-lkp@intel.com/reproduce)
 
-[1]: https://lore.kernel.org/linux-fsdevel/Z55RXUKB5O5l8QjM@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com/
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202503020355.fr9QWxQJ-lkp@intel.com/
 
->
-> That said, I have a suggestion for the -c option—
->   Global config variables should be overridden by file system-specific 
-> config files.
->
-> For example, if configs/localhost.config contains:
->
-> MKFS_OPTIONS="--sectorsize 64K"
->
-> but configs/<fstype>/some_config sets:
->
-> MKFS_OPTIONS=""
->
-> then the value from configs/<fstype>/some_config should take priority.
->
-> I ran some tests with btrfs, and I don’t see this behavior happening yet.
+All warnings (new ones prefixed by >>):
 
-I think that was intentional. I guess the reasoning was, we don't want to
-break use cases for folks who still wanted to use local.config file
-option.
+>> fs/xfs/xfs_iomap.c:1029:8: warning: variable 'iomap_flags' set but not used [-Wunused-but-set-variable]
+    1029 |         u16                     iomap_flags = 0;
+         |                                 ^
+   1 warning generated.
 
-However, in the new proposed design [2] we are thinking of having 1
-large config per filesystem. e.g. configs/btrfs/config.btrfs which will
-define all of the relevant sections e.g. btrfs_4k, btrfs_64k, ...  Then
-on invokking "make", it will generate a single large fs config file i.e.
-configs/.all-sections-configs which will club all filesystems section
-configs together.
 
-Now when someone invokes check script with different -s options, it will
-first look into local.config file, if local.config not found, then it
-will look into configs/.all-sections-configs to get the relevant section
-defines.
+vim +/iomap_flags +1029 fs/xfs/xfs_iomap.c
 
-This hopefully should address all the other concerns which were raised
-on the current central fs config design.
+  1011	
+  1012	static int
+  1013	xfs_atomic_write_sw_iomap_begin(
+  1014		struct inode		*inode,
+  1015		loff_t			offset,
+  1016		loff_t			length,
+  1017		unsigned		flags,
+  1018		struct iomap		*iomap,
+  1019		struct iomap		*srcmap)
+  1020	{
+  1021		struct xfs_inode	*ip = XFS_I(inode);
+  1022		struct xfs_mount	*mp = ip->i_mount;
+  1023		struct xfs_bmbt_irec	imap, cmap;
+  1024		xfs_fileoff_t		offset_fsb = XFS_B_TO_FSBT(mp, offset);
+  1025		xfs_fileoff_t		end_fsb = xfs_iomap_end_fsb(mp, offset, length);
+  1026		int			nimaps = 1, error;
+  1027		unsigned int		reflink_flags;
+  1028		bool			shared = false;
+> 1029		u16			iomap_flags = 0;
+  1030		unsigned int		lockmode = XFS_ILOCK_EXCL;
+  1031		u64			seq;
+  1032	
+  1033		if (xfs_is_shutdown(mp))
+  1034			return -EIO;
+  1035	
+  1036		reflink_flags = XFS_REFLINK_CONVERT | XFS_REFLINK_ATOMIC_SW;
+  1037	
+  1038		/*
+  1039		 * Set IOMAP_F_DIRTY similar to xfs_atomic_write_iomap_begin()
+  1040		 */
+  1041		if (offset + length > i_size_read(inode))
+  1042			iomap_flags |= IOMAP_F_DIRTY;
+  1043	
+  1044		error = xfs_ilock_for_iomap(ip, flags, &lockmode);
+  1045		if (error)
+  1046			return error;
+  1047	
+  1048		error = xfs_bmapi_read(ip, offset_fsb, end_fsb - offset_fsb, &imap,
+  1049				&nimaps, 0);
+  1050		if (error)
+  1051			goto out_unlock;
+  1052	
+  1053		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
+  1054				&lockmode, reflink_flags);
+  1055		/*
+  1056		 * Don't check @shared. For atomic writes, we should error when
+  1057		 * we don't get a COW mapping
+  1058		 */
+  1059		if (error)
+  1060			goto out_unlock;
+  1061	
+  1062		end_fsb = imap.br_startoff + imap.br_blockcount;
+  1063	
+  1064		length = XFS_FSB_TO_B(mp, cmap.br_startoff + cmap.br_blockcount);
+  1065		trace_xfs_iomap_found(ip, offset, length - offset, XFS_COW_FORK, &cmap);
+  1066		if (imap.br_startblock != HOLESTARTBLOCK) {
+  1067			seq = xfs_iomap_inode_sequence(ip, 0);
+  1068			error = xfs_bmbt_to_iomap(ip, srcmap, &imap, flags, 0, seq);
+  1069			if (error)
+  1070				goto out_unlock;
+  1071		}
+  1072		seq = xfs_iomap_inode_sequence(ip, IOMAP_F_SHARED);
+  1073		xfs_iunlock(ip, lockmode);
+  1074		return xfs_bmbt_to_iomap(ip, iomap, &cmap, flags, IOMAP_F_SHARED, seq);
+  1075	
+  1076	out_unlock:
+  1077		if (lockmode)
+  1078			xfs_iunlock(ip, lockmode);
+  1079		return error;
+  1080	}
+  1081	
 
-[2]: https://lore.kernel.org/linux-fsdevel/87plj0hp7e.fsf@gmail.com/
-
--ritesh
-
->
-> Thanks, Anand
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
