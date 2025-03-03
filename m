@@ -1,189 +1,210 @@
-Return-Path: <linux-ext4+bounces-6636-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6637-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A398A4BA18
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Mar 2025 09:58:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89CAFA4BAB5
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Mar 2025 10:24:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28259188E3C0
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Mar 2025 08:58:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68FA07A57F3
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Mar 2025 09:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE701EFF9D;
-	Mon,  3 Mar 2025 08:58:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99DD1F0E2B;
+	Mon,  3 Mar 2025 09:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FlLTRNph"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FSz0Xm2N"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0391EFFA7
-	for <linux-ext4@vger.kernel.org>; Mon,  3 Mar 2025 08:58:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA84B13C8E8;
+	Mon,  3 Mar 2025 09:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740992304; cv=none; b=q2e1h8LfcHWC0e2c87tDdb5F9hQOGsvUwe6hMkiDT8VmRNr35n6EczCPWBcNpHI0scOUH+B2DnWM1dtXKZouE0Wm5IRIS6Jpkj5fWBeJ75/StYWpwbbsD4UmIQfz47pDQrnlvvWusw0/TcGvXiSs0k49hwevKLifLj1/um/Xhkw=
+	t=1740993860; cv=none; b=ZRwPMXqDXOLlv2hXmFimfD5QGhN+2QQdz422lcvnoxLnMhT3lWYsx9r19LsNerhjWUS1c3KLaw+qJcSE23byNl9UTASnLC0YIJkpyOziVZDasfZ3jl3MVNED6utBoeMYyiN/JQBY4HHFbZrHpNu6FUtU0a+iUz4os5jIherSNeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740992304; c=relaxed/simple;
-	bh=eXllzOnoRt5/aqD3OK5q+LXzVWXzKgBZPq0p3jULFrA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ws0H0oAX+TBEIQRKouV+zEIbeRHuWOfcHoswp2c7No6v4nGbG0HzY0Bxytq4JRM9n7XQqqPiK6R3yUTnEcwBUFf2GYunEviTF2yp8d6bTmxeKO0V7QdjwH+XBAGFX/w5OgNNXvEqYu1eF3VJJO38xmwq/hFQQYd59JhmxruuXZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FlLTRNph; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1740992301;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yhKA0PWZzkHsCkSvRw6WIRSjH0fQoXRBt2BANeFnGaI=;
-	b=FlLTRNphcbOuuY9Lk+b+bJ3bQi0912o4Xn3MpyCyRB2nHnJSy8lH/5o+MnVUXN4l8gEXN8
-	zG+HB87chsKAO4Rzy2BRyu//4Fo1oEVSfXmopwGYxnmWSUYpafB8U9Th3dlj1BgpcjgGED
-	Dt8lli1sskf9ONOHdFPu/eu+JD0DBu8=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-683-i1F7YcsoNieAbS6T3WTtdQ-1; Mon, 03 Mar 2025 03:58:19 -0500
-X-MC-Unique: i1F7YcsoNieAbS6T3WTtdQ-1
-X-Mimecast-MFC-AGG-ID: i1F7YcsoNieAbS6T3WTtdQ_1740992299
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-390eefb2913so1717293f8f.0
-        for <linux-ext4@vger.kernel.org>; Mon, 03 Mar 2025 00:58:19 -0800 (PST)
+	s=arc-20240116; t=1740993860; c=relaxed/simple;
+	bh=jv8QNOnGRtS9x1BC651dA4iBv2EFIu2vDnFzfk0OtiM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=K2s6KcjyMRCesLhee0K6ExEh+FR4KmDB90JGg+42/ZBj6lrr6FAcF+GVTctnWLAe/7sbm61rGar8kuftqDi9+e+Rn+HF5J5s8FwIOgsNCo4kjUC/mxCI3seO1uxTk59hrCTGip5x2I3HSs5MqPcDvmDZzTl3OwOk1f0GnY+Nvjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FSz0Xm2N; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-2bcc5c887efso2066605fac.2;
+        Mon, 03 Mar 2025 01:24:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740993857; x=1741598657; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=StT21v5HBuVlAjcwwtmfuWVN4spL/bYiZH8r7Pf+vYo=;
+        b=FSz0Xm2NA0m6Lpi7CnMZ46yRlBFoJAesydVPriutGpuCBlejgTZaTI8tin/9WZDHFp
+         zbcKpdQbu2LNyJupQklemscxFkq64wTLYcJL6NcWAv/i9SYpYIbKc2gc4ZFNZRCfgTcV
+         uMLj5lFr8kJPozdy+xg5J6soTRlIOEm0oGv5vM9RfkE3+JsCeWIMHIR9p+r9jdVu5s6x
+         9nsp5W5ESIPIPjpAyzW5tjip7s75TPHKkXl79gjA78Ky7n4ybLtSE6bzlLUHTMN/Lu9V
+         yuONhIwprbgUb/G1kPGrEte3QEWhWftx4j2wBx9Zh9ShYgbf/DkwvNAne5KMgwXDYEV7
+         5YOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740992298; x=1741597098;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yhKA0PWZzkHsCkSvRw6WIRSjH0fQoXRBt2BANeFnGaI=;
-        b=RT5Aju8TPP/1u8OWiPqENXnXSQI653CyRkNAr2s0ffEl5Ar5pbQx8nFJ0HX5kbKPal
-         UmrlC16IUYhFrOKss5Qp/dRPcUk046p7O6s6HxMlK1kKnqnwWq2rkmyMQIcSxrMdBVE5
-         Qhqg83Prjs7Ql2E1ZB6hIaAZkB0IKgUcv7Y3+9wMdCdnZa7Y3lsyN3c2c92m5o29JOZ7
-         88Vp2o9k2Eu0MW5I2AXVGgwObuCIH//o5hdhnB7juvvkmrgAZKNw2NEAaY9Y2nTI0IUk
-         ccyfbBJLXKG0nvwmEDdoWsurNTbxh44CyUas7k2jnYZlKfo8bId8a0X1LiIIMkCu1GBj
-         l4vg==
-X-Forwarded-Encrypted: i=1; AJvYcCUp9ohDzd+OmBq+IBYTwpGU1gPj9ey8+sMvc1j69TLrYq2zludhUebKvNw4uCh7TsaAIUP7V71jaHyU@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBc8fM+yGPdo9Bn/p18wT6XMGE68gw5ryz9Wjy/4YXSMPY399R
-	xnDv6yIj8aNenQxCmqb2e3istsOXNinQjckqEElqKBO+R1trsXF2YehkDOZoptKkgfEbj71iYnw
-	m83BIKhWj2+mSvcFEOzaiU/DG18sSULhb8joU5rpEZEpNSVcmFb/NWi+yD7c=
-X-Gm-Gg: ASbGncsixECzZCkCu5iu3Cyp5p5c2iETaaKYj82MYQ3TC8T1YfYwcukCPsHP6o4Yd0t
-	sReCn8GIU3nyqYTZZln4rFp5AG6pwr0lsyoQ6+Tr1QOp4U6aq+hfBjbbRzA8C7IAbQmI1dWeLvJ
-	Hql+p5I0KXFluBFcsz1SuobBUI3EQgX9sSSSQazwnO07Skf9YPvGSKRxgGpCMqMQBxq7cUiH67z
-	tJjIEpsgeWhAZjZAOQ/+/kP9RK24eEs0a7nMvqX+z5V6xuM2pvx2MA/cSIWnU5dkDXEl3xZE5WR
-	aI+SD3wcVb6qE9ZmWelhW1oyflmZRLi+L+3X/oX+FCM120Xa7tMqPm29MBR9ms5EeyiSfxKrYZN
-	hD3bXgBPVQ1KH6YtYJrERKoP8t4JM3KO/fa1WxKHreEU=
-X-Received: by 2002:a5d:59ae:0:b0:391:10f9:f3a1 with SMTP id ffacd0b85a97d-39110f9f4ffmr1082137f8f.35.1740992298645;
-        Mon, 03 Mar 2025 00:58:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHrOB8TUQnl8FpqKRAFyy2zHk+Etq0hy84HKx7V6iLK+hyXpCu8bZkk/epZdl6ibKYIEl0N0g==
-X-Received: by 2002:a5d:59ae:0:b0:391:10f9:f3a1 with SMTP id ffacd0b85a97d-39110f9f4ffmr1082091f8f.35.1740992298255;
-        Mon, 03 Mar 2025 00:58:18 -0800 (PST)
-Received: from ?IPV6:2003:cb:c734:9600:af27:4326:a216:2bfb? (p200300cbc7349600af274326a2162bfb.dip0.t-ipconnect.de. [2003:cb:c734:9600:af27:4326:a216:2bfb])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e485e61csm13948947f8f.98.2025.03.03.00.58.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Mar 2025 00:58:17 -0800 (PST)
-Message-ID: <964e8991-44c0-4ff7-91cc-033ed7c09835@redhat.com>
-Date: Mon, 3 Mar 2025 09:58:15 +0100
+        d=1e100.net; s=20230601; t=1740993857; x=1741598657;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=StT21v5HBuVlAjcwwtmfuWVN4spL/bYiZH8r7Pf+vYo=;
+        b=HB0io2UYa1Io9OSumzKTcCaY/zOhnDzjjS+1N37NvZBQvyohC36Ryx7Y31iheZ0pej
+         VnlSAue7VOAGe/s5y54z12sHF809Mme88L7LR0ygGYGSiwYVCnBp2Dg0uFnab9Zrapj2
+         8vbVoeF8vuhciCnJp3JBeaqydGdzgS3YERGLcCtLrrFdIJl/+3qp5XmW0b3kwnyyyoyb
+         1JgKxvRNgNo64ekchn1jCBuNgFUON5kHPheF71kxAi5mkfe8yeZNdBWh8DGpkb5+IQw9
+         qXKVJ6pv2vcHFpRfDsLI7O2Tt5jkKooJQwAB/nXYm1wS0B9w0DKnJNJwiaf7jXqjykHs
+         zRMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUX7Dq3ycgFdHDF8Nfx+WtePqJMa4QZM5Th14SUghj4KD/l/mvgsA0HrA8QpfVUEfYvKJ5PvRcF+/5sc5KY@vger.kernel.org, AJvYcCWs0W4BZOob2J5UF0XCTQnMi4Dc+8InQApZeGjZv1SBoNIqm8fNsE3Oj3rIuvGXo3a6SDer/vIfna2g@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxo9ilaHwGpnVCyuU9QG/6wtYoqqJgP7SM0iybkQyb0l0vHcM4p
+	f4Vrl/vhf3ooKXgRELjqWeAxJHgLLDRI/rJOsY40JVPr3S6PQdxIpXLqV/gBWpm2+Tf6qcl5HJ1
+	RHTtvK8ubqQU4WjFPbOs/vHFMeTc=
+X-Gm-Gg: ASbGncuouSb6g7z2bnA2KXt4J4/lJX9a2VplfPf8ZKaopHcaYqGWBRh98q9evJYuFqJ
+	cI218Xb2IGzAjJyTPmSbSrHxKL/x0LULoeXfFA3y6tVPqH6sG4ImY4IymUb8qBXaDUx5GjNlvLY
+	Rz0u5swBB6rxxC+zOFgVUQKAER5A==
+X-Google-Smtp-Source: AGHT+IF16/kJli1v2uTtADRoHDtMAoUcPO2J+zPdLjC8SofWOkXju3fPYSbHZB7Jnjo8/j/zSdOmfzK79E/Gia8vEc4=
+X-Received: by 2002:a05:6871:6285:b0:29e:6394:fd4a with SMTP id
+ 586e51a60fabf-2c178317c67mr7686734fac.2.1740993856737; Mon, 03 Mar 2025
+ 01:24:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 19/20] fs/dax: Properly refcount fs dax pages
-To: Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org,
- dan.j.williams@intel.com, linux-mm@kvack.org
-Cc: Alison Schofield <alison.schofield@intel.com>, lina@asahilina.net,
- zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
- vishal.l.verma@intel.com, dave.jiang@intel.com, logang@deltatee.com,
- bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com,
- will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
- dave.hansen@linux.intel.com, ira.weiny@intel.com, willy@infradead.org,
- djwong@kernel.org, tytso@mit.edu, linmiaohe@huawei.com, peterx@redhat.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
- david@fromorbit.com, chenhuacai@kernel.org, kernel@xen0n.name,
- loongarch@lists.linux.dev
-References: <cover.8068ad144a7eea4a813670301f4d2a86a8e68ec4.1740713401.git-series.apopple@nvidia.com>
- <c7d886ad7468a20452ef6e0ddab6cfe220874e7c.1740713401.git-series.apopple@nvidia.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <c7d886ad7468a20452ef6e0ddab6cfe220874e7c.1740713401.git-series.apopple@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Strforexc yn <strforexc@gmail.com>
+Date: Mon, 3 Mar 2025 17:24:06 +0800
+X-Gm-Features: AQ5f1JoPn6AnvkWK8AKFf6LPWhDzHWifc3pnJcAlMqH7z6CRxab0PmEVW2HxQDE
+Message-ID: <CA+HokZqTi7=ossgk7gKqJY_pViaso=Hy0-iRj8v3H5A35Bxhqw@mail.gmail.com>
+Subject: [BUG] Kernel BUG in ext4_write_inline_data (Ext4) on 6.14.0-rc4 -
+ Possible Regression**
+To: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Dear Linux Kernel Developers,
+I=E2=80=99ve encountered a kernel BUG in the Ext4 filesystem on Linux
+6.14.0-rc4 during an inline data write, which may indicate a
+regression from prior fixes. Here are the details:
 
-> -static inline unsigned long dax_folio_share_put(struct folio *folio)
-> +static inline unsigned long dax_folio_put(struct folio *folio)
->   {
-> -	return --folio->page.share;
-> +	unsigned long ref;
-> +	int order, i;
-> +
-> +	if (!dax_folio_is_shared(folio))
-> +		ref = 0;
-> +	else
-> +		ref = --folio->share;
-> +
+Kernel commit: v6.14-rc4 (Commits on Feb 24, 2025)
+Kernel Config : https://github.com/Strforexc/LinuxKernelbug/blob/main/.conf=
+ig
+Kernel Log=EF=BC=9A https://github.com/Strforexc/LinuxKernelbug/blob/main/b=
+ug_ext4_write_inline_data/log0
+Reproduce.c: https://github.com/Strforexc/LinuxKernelbug/blob/main/bug_ext4=
+_write_inline_data/repro.cprog
 
-It would still be good to learn how this non-atomic update here is safe 
-(@Dan?), but that's independent of this series.
+A kernel BUG is triggered at fs/ext4/inline.c:235 in
+ext4_write_inline_data, causing an invalid opcode exception. This
+occurs during a sendfile64 operation writing inline data, likely due
+to an assertion failure (BUG_ON).
 
-Staring at it, I would have thought we have to us an atomic_t here.
+Location: The BUG occurs at a BUG_ON in ext4_write_inline_data, likely
+BUG_ON(pos + len > EXT4_I(inode)->i_inline_size) (line 231), with
+pos=3D96 and len=3D97 (total 193 bytes).
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Cause: The write exceeds the inode=E2=80=99s inline size , triggering the
+assertion. Higher-level calls  fail to validate the size, allowing an
+oversized request.
+Context: Syzkaller=E2=80=99s sendfile64 crafted a write to an inline Ext4
+inode, exposing this issue.
+Regression: Ext4 inline data handling has had prior fixes . This BUG
+suggests a regression where size validation was weakened, allowing
+invalid writes to reach the assertion.
 
--- 
-Cheers,
+Impact: The BUG causes a kernel panic (DoS). While not directly
+exploitable beyond that, it indicates a validation gap.
+Request: Could Ext4 maintainers investigate? This appears to be a
+regression from prior inline data fixes. Suggested  Add size
+validation in ext4_da_write_end or ext4_file_write_iter before calling
+ext4_write_inline_data.
 
-David / dhildenb
+Our knowledge of the kernel is somewhat limited, and we'd appreciate
+it if you could determine if there is such an issue. If this issue
+doesn't have an impact, please ignore it =E2=98=BA.
 
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Zhizhuo Tang strforexctzzchange@foxmail.com, Jianzhou
+Zhao xnxc22xnxc22@qq.com, Haoran Liu <cherest_san@163.com>
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inline.c:235!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 UID: 0 PID: 12157 Comm: syz.0.58 Not tainted 6.14.0-rc4 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
+2014
+RIP: 0010:ext4_write_inline_data+0x346/0x3e0 fs/ext4/inline.c:235
+Code: d0 f6 4b ff e8 cb f6 4b ff 42 8d 6c 25 c4 41 bd 3c 00 00 00 45
+29 e5 e9 e8 fe ff ff e8 b3 f6 4b ff 90 0f 0b e8 ab f6 4b ff 90 <0f> 0b
+e8 63 95 ac ff e9 fb fd ff ff 4c 89 f7 e8 56 95 ac ff e9 96
+RSP: 0018:ffffc900043e7628 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff888012c251f0 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000060
+R13: 0000000000000061 R14: ffff888012c2579a R15: ffffc900043e76c0
+FS:  00007f2c042b2640(0000) GS:ffff88807ee00000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc99327fc00 CR3: 000000006a448000 CR4: 00000000000006f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_write_inline_data_end+0x25f/0xc20 fs/ext4/inline.c:774
+ ext4_da_write_end+0x201/0x2d0 fs/ext4/inode.c:3080
+ generic_perform_write+0x51c/0x910 mm/filemap.c:4204
+ ext4_buffered_write_iter+0x11a/0x440 fs/ext4/file.c:299
+ ext4_file_write_iter+0x350/0x420 fs/ext4/file.c:717
+ iter_file_splice_write+0xa0a/0x1080 fs/splice.c:743
+ do_splice_from fs/splice.c:941 [inline]
+ direct_splice_actor+0x194/0x6f0 fs/splice.c:1164
+ splice_direct_to_actor+0x343/0x9c0 fs/splice.c:1108
+ do_splice_direct_actor fs/splice.c:1207 [inline]
+ do_splice_direct+0x176/0x250 fs/splice.c:1233
+ do_sendfile+0xa79/0xd90 fs/read_write.c:1363
+ __do_sys_sendfile64 fs/read_write.c:1424 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1410 [inline]
+ __x64_sys_sendfile64+0x1de/0x220 fs/read_write.c:1410
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcb/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f2c033b85ad
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f2c042b1f98 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f2c03646080 RCX: 00007f2c033b85ad
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000006
+RBP: 00007f2c0346a8d6 R08: 0000000000000000 R09: 0000000000000000
+R10: 000080001d00c0d0 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f2c03646080 R15: 00007f2c04292000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_write_inline_data+0x346/0x3e0 fs/ext4/inline.c:235
+Code: d0 f6 4b ff e8 cb f6 4b ff 42 8d 6c 25 c4 41 bd 3c 00 00 00 45
+29 e5 e9 e8 fe ff ff e8 b3 f6 4b ff 90 0f 0b e8 ab f6 4b ff 90 <0f> 0b
+e8 63 95 ac ff e9 fb fd ff ff 4c 89 f7 e8 56 95 ac ff e9 96
+RSP: 0018:ffffc900043e7628 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff888012c251f0 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000060
+R13: 0000000000000061 R14: ffff888012c2579a R15: ffffc900043e76c0
+FS:  00007f2c042b2640(0000) GS:ffff88802b600000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2680f65e70 CR3: 000000006a448000 CR4: 00000000000006f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Regards,
+Strforexc
 
