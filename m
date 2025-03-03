@@ -1,288 +1,248 @@
-Return-Path: <linux-ext4+bounces-6651-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6653-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CA29A4C9A2
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Mar 2025 18:34:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0B52A4CA0D
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Mar 2025 18:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF727189EA84
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Mar 2025 17:28:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8094A188124C
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Mar 2025 17:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6874625D524;
-	Mon,  3 Mar 2025 17:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55C48250C00;
+	Mon,  3 Mar 2025 17:31:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="hKC7ntAs";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="CxlrrNxK"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GVfk1qaR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DE825CC8F;
-	Mon,  3 Mar 2025 17:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741021947; cv=fail; b=aXKFxMZTOt2AFH/S0ROthzRps15tjsmnfsL2urIkMy4oJ9veFUZa86nUP4bqED6XlLPoHkB8I9+/KQuSiy9FsoEo6ryQUjanePWBhvLsyuJlf8bDIZwEwomhbrX/HlYbf54DWKN/lQ67pC2sSybFlwYo4WfXogz54T786WWSDqw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741021947; c=relaxed/simple;
-	bh=Ew5mmVK8Q58H3hyOE3GF/xUDrrAIp6SiKFKY0WOHiKA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=RxttwbjWqKKGd4ZenSpIRf6TpLSXIWEvs6RHH1vgcBBjtsdrJzgxORT7+jX3ndz8nXscH3Rpi8N97nh31hQVBq/FvYWeWAUqfxGlwYB0h2ElhbMER1sedWiK9wVLOZo1IO/1qt8aEzg1Qlm77maK9bO79h7P0M00FN+twfeuRdY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=hKC7ntAs; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=CxlrrNxK; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 523G2WPk030312;
-	Mon, 3 Mar 2025 17:12:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43679250BEB;
+	Mon,  3 Mar 2025 17:31:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741023075; cv=none; b=GaNgefKbHjPwnP2RF5mdP1V6ITVPri5cL1SZvQTcu3T/TiqyyvlKBpjj7Qhe1lFUkReNTUZYAS2rV5smr8r/92jL/YtSaSOBJEk7Qdj1nby7EqOAJXHiO8emb7nDPwqPe2cs+yADMDTdMvKI6xPM8BcIiOGSbzpze4TM71b5h9Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741023075; c=relaxed/simple;
+	bh=w6uOTSX/VPzJEMePulP99FzCwhpsVIcs+/wyKHhDP3k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mWHVRrQjivDOxB1uoZdgad4ng84f1UCPjpVwXT22CFM/xNQSoojP/dTZyB9tIFL+FzVXdX/722V4yOFfoxKIeZLRjZxVLBWtwBkcT4De9TE7TVTlQrdD+t3TfennUwpNJy3Po2pC6SCY0U/6cenzQg02dguDw28ZYdXTEqPI0Ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GVfk1qaR; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 523E361D022672;
+	Mon, 3 Mar 2025 17:30:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=NyicfsSOcVUe3XC4hGKHkWG7h23c6u9MWAkfr3bmx6E=; b=
-	hKC7ntAs7b9Oe8zRiIuibLxniNVL6mdJmo+oSP+zPiNzjeiacCE+lt9uuKOzTgOD
-	gNe++lPRUEejqumYOidA/SYccnYcqz4ihUEcVRDRaap4hHoip128RIXePQJcnxBT
-	CtysWKbdUoAZCtbot8JeFavv3647fLuxIztYYJNT3pWOvo0+yfs3+mAJq/XgSQLq
-	/y4bLHKd9EqiNDUJCULupNx+ouS/V4Pdx3xhFyQ9OIgMjYDCCjvz67dYMT0fPCJu
-	fQl2AZHS/b0EALQVy8ssBPiaVNK0hzJ2Fj3BOHUGmV6Ws8Mn0CANk270H36B8VcR
-	hLjctYFogXW5NW8X9mMUzg==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 453u86k61x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 03 Mar 2025 17:12:18 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 523GmEkY039110;
-	Mon, 3 Mar 2025 17:12:17 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2046.outbound.protection.outlook.com [104.47.58.46])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 453rp8g9xv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 03 Mar 2025 17:12:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mpIrLhV1y6fezkTOiu6nUD4lIy2wyy4ODRWeRRMlHkCu2HAi7SeoIHxEamBus79eE4iCD06r5WkxiefsBWOSojYOO73BC+yD5/HBJkLNIRivulMO8C0sFuiDetVl1pXJdL5RiVdHnkB9n3pGMixiJasqzu91md2v/5fAzRMKDFOykyIa+JCRg9Axm0pDTml9FXIASe0jNuXy58z/kBJZYMAXUyF65ST/7vm0bNGTASiTcesqcsVsfXLzvmT5/76aFP9i2LM10zbovp4h/Df6qTvAdFg5WmtAkDnt0sbd2JPvaX9v8WrNPdegoT2IrTQHDwvvafwcDupVG+5spmewyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NyicfsSOcVUe3XC4hGKHkWG7h23c6u9MWAkfr3bmx6E=;
- b=dPvdRczlLkiOgWyzCAXDGkJXccmrJu7gEcfxy7xrkC0KQ7yS+pxL3f9a7CN7782w4Mmocs0Hj/AhKBMCD/9Qpm9X0pwdjEUiGhZBT/y6/IoklBaWMHIrTZIKym2GMLGcsJQYigdZYfd2rJYXdOu5SQ7kfuDOCU1+j6PBvup+A6zBeagqxOuefqnjsyFpTGhaqNQReMtV5d2Q+erJSlcwTaaXCEga+1glIZndaaFSeZPPdWhVkM5TN2FkvOKGeBS3YsAXxeGWN3ro5Nd0FFeYdlrT84ukVH7I9bKz/O50CGsA3eBmlqbFN2Ychn/nbefrE99R8fqD07WJJbLa2XY4uA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NyicfsSOcVUe3XC4hGKHkWG7h23c6u9MWAkfr3bmx6E=;
- b=CxlrrNxKCpGlzq/X5zLV3aBN/+bcy5hgiDLtSGgOv/ZQq0T5ZE8++wc+RrmLl8u9s1EOEkoODksiOhUg+5QyH5XnDqCltRe6WHyQpxErcSZlzYZXxqV9+v6b+Bo/nB/KGNNvsQsAoI0KtbsVQN4tAyk5wjGuLB7FSKR3pHtSL/M=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by PH0PR10MB4696.namprd10.prod.outlook.com (2603:10b6:510:3d::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.20; Mon, 3 Mar
- 2025 17:12:15 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088%6]) with mapi id 15.20.8489.028; Mon, 3 Mar 2025
- 17:12:15 +0000
-From: John Garry <john.g.garry@oracle.com>
-To: brauner@kernel.org, djwong@kernel.org, cem@kernel.org
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com,
-        ritesh.list@gmail.com, martin.petersen@oracle.com, tytso@mit.edu,
-        linux-ext4@vger.kernel.org, John Garry <john.g.garry@oracle.com>
-Subject: [PATCH v4 12/12] xfs: Allow block allocator to take an alignment hint
-Date: Mon,  3 Mar 2025 17:11:20 +0000
-Message-Id: <20250303171120.2837067-13-john.g.garry@oracle.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20250303171120.2837067-1-john.g.garry@oracle.com>
-References: <20250303171120.2837067-1-john.g.garry@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO2P123CA0007.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:a6::19) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+	:message-id:mime-version:references:subject:to; s=pp1; bh=LCr6pU
+	IsgsVXQTAZXfqxcc+mF9zf7Zl8i5wrr90EN08=; b=GVfk1qaRArbJF2/TC/zrmI
+	Z+kwZJFuU0y2OiTdd0BhdLN2g8OU600u+1qD0rfs7twaEEnPyKHuIOhEIEGSyzh7
+	5Kdm7i9s8rg5U9VEIZSk0w2jnPrVdwXIscGyBsg3uArmpv24Gp1sgHG1UWMBB3yc
+	Wii3G9YE5zVnPtwdFvgvaJ1xhg1taj82PvgZdgBAcwJL1neROFQUDkBk8LzYb3VK
+	KwNy9Igf8z7ja2WJIUP05wzkcstUGao7kGA+AKRI+FCflThzC99uBtWfO2I9vw3z
+	xr+jmAIghAbjY0egQHY0V4ztTM22EAexYGmSXui9gjqR/gLb08GCEOTpukxPfiJw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 455dunsuv1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 03 Mar 2025 17:30:58 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 523H77q7029492;
+	Mon, 3 Mar 2025 17:30:57 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 455dunsuuw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 03 Mar 2025 17:30:57 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 523HA61o020928;
+	Mon, 3 Mar 2025 17:30:56 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 454esjrv8t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 03 Mar 2025 17:30:56 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 523HUtH559441516
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 3 Mar 2025 17:30:55 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 185A72004B;
+	Mon,  3 Mar 2025 17:30:55 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3D00520043;
+	Mon,  3 Mar 2025 17:30:53 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.215.79])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon,  3 Mar 2025 17:30:53 +0000 (GMT)
+Date: Mon, 3 Mar 2025 23:00:50 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+        Mahesh Kumar <maheshkumar657g@gmail.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        Yang Erkun <yangerkun@huawei.com>
+Subject: Re: [PATCH 1/2] ext4: only defer sb update on error if SB_ACTIVE
+Message-ID: <Z8XnMOT1LNzgjwaN@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <cover.1740212945.git.ojaswin@linux.ibm.com>
+ <da8af2e5170f0d94031b812d7d50c6ec1967db1b.1740212945.git.ojaswin@linux.ibm.com>
+ <3f9a67e2-ef08-47d4-b35e-41841e24bb71@huawei.com>
+ <Z72yUqGWHdRyCE25@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <1a1ff87b-6f75-4d43-ad7b-54883bea13f8@huawei.com>
+ <Z8BP4luSfyvz-V4T@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <84ebed94-d4ab-4b8c-962c-f10ebaca5a75@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|PH0PR10MB4696:EE_
-X-MS-Office365-Filtering-Correlation-Id: 349b54dc-a83a-43d3-e3f5-08dd5a768b71
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?XUPkx25fZEvWYMb5oHv2g9hteBaKrzzIgWhNhQdbskK1MNV42+iUbHlgOob7?=
- =?us-ascii?Q?Lm0DpooeJPobN2uPGKW5nRysdPa6+Xjt6Ao8/bMMlCYAwyMNeauXYX/9h4Se?=
- =?us-ascii?Q?ZU1Jappa7F3q2YN66D/G+nBYpt3r2QmU0kng8Qi09niwNk/xY0YUK5oDMluK?=
- =?us-ascii?Q?Vtw5PIkLG/vAssLG3x2jj84fDbkY+yDtrcTMbNNx6RzD4cYMcwhYU596+30l?=
- =?us-ascii?Q?Qf50VbDQch5uD6xeDpGiFH654VcE8DXuNnuRLSXZizqePri3If1WwIUGkuGw?=
- =?us-ascii?Q?GMxukCV6Wk81EdYKneTprbEJ/07AHyZaTer13BfcFNxTeSbuqpUVpYFZY9Kk?=
- =?us-ascii?Q?WixE9eDs83P0gR9sUnhIo84NNOf5V/fA+0xlhCpr6pGqxlScnk8LE45ZGIw5?=
- =?us-ascii?Q?MAv2pZMbTECov6qoXG7qqjrVYGbH59IykX387FlDG4+xogCNGE7OpqsQTX4d?=
- =?us-ascii?Q?dPyADjj8HFXVB3ILJYjuxmcyTLZwfcibNprXNoVfpEcSBUSh+5au2cA/ItnZ?=
- =?us-ascii?Q?K/rXy5cPRJlO+WlUcNWpGS4S1LclfBWjjcYVqnh4KTw7kjjWtKtp3ld8nrDa?=
- =?us-ascii?Q?1H3HT0dsvEhC6H/B+egOeJBlKAnFMMeKjkb1Udj+UxJ0OTGPIASLyPXDjnT6?=
- =?us-ascii?Q?pnQXrSEtvQ5opsTwQoP2nUzwPglanqvxAyNcWiyGj8Ep+aclamJlMVy/O4hQ?=
- =?us-ascii?Q?if9TRi9rcOA7p0n/tV2oENMn7EcPYNo5EvYgOhtivnNA8M0qsFVbGGnpQOEC?=
- =?us-ascii?Q?B733uefDQ+xkpHp4dWHx+ZRDVFOEFwwyGKONoL1I94xCukpoTzJhTgaWrngW?=
- =?us-ascii?Q?i4OUAlweQ/K6LEbuuIXNBQbAkzfsV5n05jno9zf+zChAq6e/5gwBTZk8D1iL?=
- =?us-ascii?Q?28yI0oFftkRxtr4txwTQ54ly+5HrtgCWuxAzTJl5U25wox6oOH0uOFD76QTN?=
- =?us-ascii?Q?E9WNSeXGP+Y4Tz9Hw3FAbMbbkOT5IHcYEpV0VJAjl4fHGyVb/b0hlc5FmThK?=
- =?us-ascii?Q?4BVY9BTSFaLI/KPZHL5nwmGGw06Fav5n19PrWeKE1EtctcOHv0p+Creybud2?=
- =?us-ascii?Q?ACKi4sn5d30+HaCIK6jYclACIFl9OhnIVG+hPs/NJ+Ds33+SuG8kW6PL6kW6?=
- =?us-ascii?Q?n61qWtAEOXlB+YFL6/egr/d3gz6ebiVrUJL0e42sr3Jk2qH/Iq9Qg9dSQIOu?=
- =?us-ascii?Q?AmTwrwy/4Q+xa7kRUCemVEjRZCeWVieC4IYdUDQ0cBoYB4YE7NfwQ1ZWOOXq?=
- =?us-ascii?Q?rcU6IJoJlJFP4z90xNNSV7NrebHCvo+ikj73LfAV9kAvq3w5H8zUetcxmMkH?=
- =?us-ascii?Q?4nfxENl2gPSfbhYy4jnFSqzfBvXXxfceZDigML/L5qY4lLTOCei8v5Zak5is?=
- =?us-ascii?Q?qLZALrKU6s98T+I53M5P8OvhJvBg?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ALcMha15tVYbGZBCNQLzQTmAv+SFlhvDvxoUWEaQoK6fS77meYEH8c3E/r2E?=
- =?us-ascii?Q?Bb/DRXgiBCbxJXKnBjEJFFwsdy38+WiKXl0yORwOGjtTE4eEjtcFvKWXLX21?=
- =?us-ascii?Q?1OEJ9OYE8csfnFWQZmCCoOU6B8qaZN4KEkRm31sQtqVkRb0FBGd2fTPLOSnl?=
- =?us-ascii?Q?RBQJ1Zka77pO7dOkqxspHD4rOcdyao8pg1pHRVZp19nTKkZVx/FmdlU1WDNR?=
- =?us-ascii?Q?IgbRrtIfgndweps/B44FT5eBMtBwlljW4RX+1zzV+vkixvyMU2K9LH7KeJCf?=
- =?us-ascii?Q?5Ji1hmCmFealbw1qWZEwNytXsofuRIIzx3FJuMAkHSAk+I3zr040Xmprd2K8?=
- =?us-ascii?Q?dQJOuj9VZG0vbuha7S9U7dEnuoTr3GxYonof/7EI2ifOt10+lh/5kt0se4rB?=
- =?us-ascii?Q?rF/zW/3oHj7TiU0NkJSN2S2aVtZdY36T89Rbh8wa1VqegObVyD46l9doI+M1?=
- =?us-ascii?Q?xINuAcvm6cC18bJPeQSCckz91HAuTxTpbwI0+QeWzX0t/Q/ttb1sYTqh5WY5?=
- =?us-ascii?Q?XFtRppDMmOqAhMlhuC0zSbA5E5TUzfYGx3CO8KomdbEFmQLrvrl0NHjURPb6?=
- =?us-ascii?Q?QJhn7jWxUmFtqYtBDJLg+Xto0XS+MxvLvJwBE3xAirvV6iK9OwPN4C8NjxWb?=
- =?us-ascii?Q?AN/Pqha6t6z55WvxxX/HZJZcGAqooiK3QRj5Yfh8h2ccrKRgA2MiEtZ+ooKM?=
- =?us-ascii?Q?uZKkI8wu/VomHgeJ86codIWLF7Ih4FySiqHJt45DxMYtYydhbHHy4bNLwisV?=
- =?us-ascii?Q?YzLztQupvaVS7r45SCmXT0JH/sFaNZB6sIm9JicMnYK1akpZjCvgkkH7C8Jj?=
- =?us-ascii?Q?u3amN7EvMwO8vM1ATHdDYjU0pWKnz1IuPpMIbhl1Rt+DiRQl13E7LjDsnBhY?=
- =?us-ascii?Q?UKH/ItmCYN69vduuNf+rHFOPQP0lssBcmXlYUXjmiO4HIlKMfS+OLCY+ysDN?=
- =?us-ascii?Q?vGJ5mHvTPfQHCQrDLObk1o2RE1i13BRvn8TRf3xC0fOF1AtaCtUsDbP39QUZ?=
- =?us-ascii?Q?OhQ4E56blr4BKX7pDuZt+8RhFFzbJRtf+kHMiaHKkVlJTW7ouJGWyQ4FAXF9?=
- =?us-ascii?Q?IUVtcHgAmk7iCJqkphU/Gaoh07En5VyZuQbLAIfYXAxx2goF2q8xzVoSL1/w?=
- =?us-ascii?Q?VdozqigbnNES8qjvvD3uUE4U3GMWT2Z9pzFVslDUUHs5COAq4PuuutYMKNTi?=
- =?us-ascii?Q?4y7LNuM4jc/yhpfZKGEOuQcwzfkW5n3kAeA1U+rn7jbvZ23/7ez6PlOjyCKh?=
- =?us-ascii?Q?jpAc7KH5Riv4I6kADarGvgePpLgHS+qWNl9gLqAG4xVJGX4u9qu078Xnzed7?=
- =?us-ascii?Q?5Z70W7/GGbdcSWEuvIjdRCd/eSjMMC6+joU1+cMfyTjI77umY8u1io+ZXIq8?=
- =?us-ascii?Q?kwT1qqqQLzvQ6L7XzHhteOwcpecKhl+65fVYYjUqYIMHwWPSNUG2BTzZ8FC2?=
- =?us-ascii?Q?9Tb6cuD6iM6+OzU9K0TQe61eRqof4TlSwvWgJltA5yooKnCWuVnId6oRJ8g4?=
- =?us-ascii?Q?wI9UD1QPg9kfgvlvJSCtsoUEjY7Xe01sjrjqqawCjQLr4jL4HgPnbwqceVPT?=
- =?us-ascii?Q?U2THfhR11n30qfSZ9Vy1ksWdA1sQdiWzeeYtEyDk57LHEA7v6hGFdC0/k1EU?=
- =?us-ascii?Q?IA=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	CVSKpfCwEy1i53Lw33QV5o4pNg9PghY5hnZa+dxKAIa/NezYLZjkd+MKD2FnwqoT1iHsO/qsTZ86aIUTiib5c+rQNoZ9OeRL5JXB5g4LRo4VSCn43RQFv9iteiemcRa+477EqQFuy8yjRXuOjjgCUsVmQ8C0EEdQ7kqKD2qLn48l96UhnQ32FUDLXTDPB/AyZW5RohpSzXEin6SQhAMB7AUxLx7tyT9Vrr88lHiPO9C/FECd42lDJKl8x9VldRLr3QbNN27P7SAKCJjuzNLkpF3GoHRd3T9m6MpbEqgGsWKMR7yQ/EDRtzttmbPz3mMW6LFzFHJ4kRHtKMUjt9fdHDhydjdnPgIMu7FItzkOLe/K1h0FPuzDi4mzh/AyT8N8TPLFTNnLxWLpuwSE2Nn/IFdNHz1clPdIiYsAu0pzDFciW2nh1BmSt7X7rqXXSSHgWolIh7Fdw2NCbwzi8uHDtJzgFYFoDrpxhheRLWlwvJ7ACZhToZnxCB2ftUSIU9yQDSJS1a1A8+xlh/fiDVQMEGZxRCsErRyhCluaLEyFgYqg4L2hxQXKqCotoix2SnhrN8rct57ZUR+ZSOX0JrMcPTrf2NARFQsh2SrY0Gm0NmY=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 349b54dc-a83a-43d3-e3f5-08dd5a768b71
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2025 17:12:15.0618
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7xHOSGEBn6f7Pl5NwHCKiwibLejHM5bv81Z3bKn7VjIjdcKNZxObpZ1gcYDlTwCgN1j+JKXLXL13FaQOyjFpxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4696
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <84ebed94-d4ab-4b8c-962c-f10ebaca5a75@huawei.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: oXwgmBByK124_ABNKnXygQNMWV_MpwZ9
+X-Proofpoint-GUID: eh3u1pGDNo_2LwPiT_df1YunPZ9pV067
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-03-03_08,2025-03-03_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2502100000
- definitions=main-2503030131
-X-Proofpoint-ORIG-GUID: uY8M5dGTeK4OXk8qhK5uJ-X6gasGUid1
-X-Proofpoint-GUID: uY8M5dGTeK4OXk8qhK5uJ-X6gasGUid1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 malwarescore=0 bulkscore=0 spamscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 clxscore=1015 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2503030133
 
-When issuing an atomic write by the CoW method, give the block allocator a
-hint to align to the extszhint.
+On Thu, Feb 27, 2025 at 08:51:11PM +0800, Baokun Li wrote:
+> On 2025/2/27 19:43, Ojaswin Mujoo wrote:
+> > On Wed, Feb 26, 2025 at 09:55:52AM +0800, Baokun Li wrote:
+> > > On 2025/2/25 20:06, Ojaswin Mujoo wrote:
+> > > > On Tue, Feb 25, 2025 at 09:53:10AM +0800, Baokun Li wrote:
+> > > > > On 2025/2/22 16:40, Ojaswin Mujoo wrote:
+> > > > > > Presently we always BUG_ON if trying to start a transaction on a journal
+> > > > > > marked with JBD2_UNMOUNT, since this should never happen. However while
+> > > > > > running stress tests it was observed that in case of some error handling
+> > > > > > paths, it is possible for update_super_work to start a transaction after
+> > > > > > the journal is destroyed eg:
+> > > > > > 
+> > > > > > (umount)
+> > > > > > ext4_kill_sb
+> > > > > >      kill_block_super
+> > > > > >        generic_shutdown_super
+> > > > > >          sync_filesystem /* commits all txns */
+> > > > > >          evict_inodes
+> > > > > >            /* might start a new txn */
+> > > > > >          ext4_put_super
+> > > > > > 	flush_work(&sbi->s_sb_upd_work) /* flush the workqueue */
+> > > > > >            jbd2_journal_destroy
+> > > > > >              journal_kill_thread
+> > > > > >                journal->j_flags |= JBD2_UNMOUNT;
+> > > > > >              jbd2_journal_commit_transaction
+> > > > > >                jbd2_journal_get_descriptor_buffer
+> > > > > >                  jbd2_journal_bmap
+> > > > > >                    ext4_journal_bmap
+> > > > > >                      ext4_map_blocks
+> > > > > >                        ...
+> > > > > >                        ext4_inode_error
+> > > > > Just curious, since jbd2_journal_bmap() only queries the map and does not
+> > > > > create it, how does it fail here? Is there more information in dmesg?
+> > > > > Is s_journal_inum normal after file system corruption?
+> > > > Hey Baokun,
+> > > Hello Ojaswin,
+> > > 
+> > > Thanks for your detailed explanation!
+> > > > So I dug a bit more into the vmcore. The error information in sbi looks
+> > > > like this:
+> > > > 
+> > > >     s_add_error_count = 1,
+> > > >     s_first_error_code = 117,
+> > > >     s_first_error_line = 475,
+> > > >     s_first_error_ino = 0,
+> > > >     s_first_error_block = 0,
+> > > >     s_first_error_func = 0xc0080000055300d0 <__func__.6> "ext4_read_block_bitmap_nowait",
+> > > >     s_first_error_time = 1737023235,
+> > > > 
+> > > >     s_last_error_code = 117,
+> > > >     s_last_error_line = 609,
+> > > >     s_last_error_ino = 8,
+> > > >     s_last_error_block = 783,
+> > > >     s_last_error_func = 0xc008000005531b10 <__func__.41> "ext4_map_blocks",
+> > > >     s_last_error_time = 1737023236,
+> > > > 
+> > > >     The first error is here:
+> > > > 
+> > > >         if ((bitmap_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
+> > > >        474               (bitmap_blk >= ext4_blocks_count(sbi->s_es))) {
+> > > >     *  475                   ext4_error(sb, "Invalid block bitmap block %llu in "
+> > > >        476                              "block_group %u", bitmap_blk, block_group);
+> > > >        477                   ext4_mark_group_bitmap_corrupted(sb, block_group,
+> > > >        478                                           EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+> > > >        479                   return ERR_PTR(-EFSCORRUPTED);
+> > > >        480           }
+> > > > 
+> > > > and the last error is here:
+> > > > 
+> > > >       608           if (retval > 0 && map->m_flags & EXT4_MAP_MAPPED) {
+> > > >    *  609                   ret = check_block_validity(inode, map);
+> > > >       610                   if (ret != 0)
+> > > >       611                           return ret;
+> > > >       612           }
+> > > > 
+> > > > 
+> > > > And indeed we have the traces of the first error in dmesg:
+> > > > 
+> > > > [75284.713463] EXT4-fs error (device loop36): ext4_read_block_bitmap_nowait:475: comm proc01: Invalid block bitmap block 0 in block_group 0
+> > > > [75284.713470] EXT4-fs error (device loop36): ext4_read_block_bitmap_nowait:475: comm proc01: Invalid block bitmap block 0 in block_group 0
+> > > > [75284.713476] EXT4-fs error (device loop36): ext4_read_block_bitmap_nowait:475: comm proc01: Invalid block bitmap block 0 in block_group 0
+> > > > 
+> > > > However, the last error seems strange. It seems like check_block_validity
+> > > > should ideally never fail for a journal inode.Unfortunately, sbi->s_es page is
+> > > > not recorded in the crash dump for some reason so idk the exact value at the
+> > > > time of the check, but looking in journal->j_inode->i_ino, the inode num is 8,
+> > > > which seems fine to me. So yeah, I'm a bit unsure what caused the corruption.
+> > > > I'll look a bit more into the proc01 ltp to see if we can recreate the failure
+> > > > to get more info.
+> > > Right, check_block_validity() skips the journal inode check. If
+> > > the journal inode check fails, that shows s_es->s_journal_inum and
+> > > journal->j_inode->i_ino are different. The file system doesn't modify
+> > > s_journal_inum, so it should be modified by some other writer bypassing
+> > > the file system (i.e. writing to bare disk).
+> > > 
+> > > If that's how it is, we could avoid this issue by using EXT4_JOURNAL_INO
+> > > directly or saving s_journal_inum to ext4_sb_info (which offers better
+> > > compatibility).
+> > Hey Baokun,
+> > 
+> > So I'm wondering if modifying the check in __check_block_validity the
+> > right thing to do. The fact that something has changed the on disk
+> > journal inode number is itself concerning and maybe stopping IO here is
+> > the right thing to do instead of using a cached journal inode number and
+> > silently ignoring the issue.
+> Because the cached journal inode is fine (it was checked when mounting),
+> and the data we're committing is good too, I think it's okay to keep
+> committing.  The actual problem is someone modified the superblock
+> directly, bypassing the file system, and the file system can't protect
+> against that.
+> > 
+> > Anyways now that the journal inode is corrupted on disk, will the
+> > recovery tooling even be able to read the journal anymore?
+> Actually, the journal inode on disk could still be okay. This just tells us
+> s_es->s_journal_inum is abnormal, meaning part of the superblock on disk
+> got changed. If only the superblock was modified, we can use the backup
+> superblock or grab the latest superblock copy from the journal.
 
-This means that we have a better chance to issuing the atomic write via
-HW offload next time.
+Ahh right thats true idk why I missed that. Although it's very unlikely 
+someone would have modified/corrupted the journal inode num in sb in the
+tests we are running (mostly syscall tests in ltp), but yes your
+suggestion does make sense. I'll try to look into it and add it in the
+next revision.
 
-It does mean that the inode extszhint should be set appropriately for the
-expected atomic write size.
+Regards,
+ojaswin
 
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-Signed-off-by: John Garry <john.g.garry@oracle.com>
----
- fs/xfs/libxfs/xfs_bmap.c | 7 ++++++-
- fs/xfs/libxfs/xfs_bmap.h | 6 +++++-
- fs/xfs/xfs_reflink.c     | 8 ++++++--
- 3 files changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
-index 0ef19f1469ec..9bfdfb7cdcae 100644
---- a/fs/xfs/libxfs/xfs_bmap.c
-+++ b/fs/xfs/libxfs/xfs_bmap.c
-@@ -3454,6 +3454,12 @@ xfs_bmap_compute_alignments(
- 		align = xfs_get_cowextsz_hint(ap->ip);
- 	else if (ap->datatype & XFS_ALLOC_USERDATA)
- 		align = xfs_get_extsz_hint(ap->ip);
-+
-+	if (align > 1 && ap->flags & XFS_BMAPI_EXTSZALIGN)
-+		args->alignment = align;
-+	else
-+		args->alignment = 1;
-+
- 	if (align) {
- 		if (xfs_bmap_extsize_align(mp, &ap->got, &ap->prev, align, 0,
- 					ap->eof, 0, ap->conv, &ap->offset,
-@@ -3782,7 +3788,6 @@ xfs_bmap_btalloc(
- 		.wasdel		= ap->wasdel,
- 		.resv		= XFS_AG_RESV_NONE,
- 		.datatype	= ap->datatype,
--		.alignment	= 1,
- 		.minalignslop	= 0,
- 	};
- 	xfs_fileoff_t		orig_offset;
-diff --git a/fs/xfs/libxfs/xfs_bmap.h b/fs/xfs/libxfs/xfs_bmap.h
-index 4b721d935994..e6baa81e20d8 100644
---- a/fs/xfs/libxfs/xfs_bmap.h
-+++ b/fs/xfs/libxfs/xfs_bmap.h
-@@ -87,6 +87,9 @@ struct xfs_bmalloca {
- /* Do not update the rmap btree.  Used for reconstructing bmbt from rmapbt. */
- #define XFS_BMAPI_NORMAP	(1u << 10)
- 
-+/* Try to align allocations to the extent size hint */
-+#define XFS_BMAPI_EXTSZALIGN	(1u << 11)
-+
- #define XFS_BMAPI_FLAGS \
- 	{ XFS_BMAPI_ENTIRE,	"ENTIRE" }, \
- 	{ XFS_BMAPI_METADATA,	"METADATA" }, \
-@@ -98,7 +101,8 @@ struct xfs_bmalloca {
- 	{ XFS_BMAPI_REMAP,	"REMAP" }, \
- 	{ XFS_BMAPI_COWFORK,	"COWFORK" }, \
- 	{ XFS_BMAPI_NODISCARD,	"NODISCARD" }, \
--	{ XFS_BMAPI_NORMAP,	"NORMAP" }
-+	{ XFS_BMAPI_NORMAP,	"NORMAP" },\
-+	{ XFS_BMAPI_EXTSZALIGN,	"EXTSZALIGN" }
- 
- 
- static inline int xfs_bmapi_aflag(int w)
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index 844e2b43357b..72fb60df9a53 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -445,6 +445,11 @@ xfs_reflink_fill_cow_hole(
- 	int			error;
- 	bool			found;
- 	bool			atomic_sw = flags & XFS_REFLINK_ATOMIC_SW;
-+	uint32_t		bmapi_flags = XFS_BMAPI_COWFORK |
-+					      XFS_BMAPI_PREALLOC;
-+
-+	if (atomic_sw)
-+		bmapi_flags |= XFS_BMAPI_EXTSZALIGN;
- 
- 	resaligned = xfs_aligned_fsb_count(imap->br_startoff,
- 		imap->br_blockcount, xfs_get_cowextsz_hint(ip));
-@@ -478,8 +483,7 @@ xfs_reflink_fill_cow_hole(
- 	/* Allocate the entire reservation as unwritten blocks. */
- 	nimaps = 1;
- 	error = xfs_bmapi_write(tp, ip, imap->br_startoff, imap->br_blockcount,
--			XFS_BMAPI_COWFORK | XFS_BMAPI_PREALLOC, 0, cmap,
--			&nimaps);
-+			bmapi_flags, 0, cmap, &nimaps);
- 	if (error)
- 		goto out_trans_cancel;
- 
--- 
-2.31.1
-
+> 
+> 
+> Cheers,
+> Baokun
 
