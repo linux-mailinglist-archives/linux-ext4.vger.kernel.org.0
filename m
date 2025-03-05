@@ -1,192 +1,260 @@
-Return-Path: <linux-ext4+bounces-6668-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6669-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A108A4EF83
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Mar 2025 22:45:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E43A4F607
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Mar 2025 05:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD21B3A9FA9
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Mar 2025 21:45:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D532B188F495
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Mar 2025 04:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F762263C91;
-	Tue,  4 Mar 2025 21:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706AF1B4248;
+	Wed,  5 Mar 2025 04:21:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="fixPYamt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDqIJiBT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BD81FC10E
-	for <linux-ext4@vger.kernel.org>; Tue,  4 Mar 2025 21:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7920519258E;
+	Wed,  5 Mar 2025 04:21:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741124712; cv=none; b=ndjaV+LYdhGauaHrBXHDDOe1tAmQKtoZksJRq/9E5fBQGA3LhJw5fG73c1X/cs4UmLfgrM1uQBuacBexGCia2ZgL1gQdMECwgg85zv5u0NEi6mZ79fOaCvb8j9a78qCuK/GsB4pUOQHxn+Ct0qEp6Cs35DYfnifPAmuCl1EbI0o=
+	t=1741148511; cv=none; b=BpKtxzlMGcN/Vn3FSQxHdD04tMr6S/YaCeGuynOyRUnUAXyrkaNSoI6P6mj9wLPJf6xZzPTEZMFUs64pIeQbyYoAojp89V4JlSZ9QAq/ltKtbFrW4CpyzdbkzXjpPFiybXmsiUgs1jynNGNHWGHAxa8D3wlGHE8lbOesu445V/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741124712; c=relaxed/simple;
-	bh=HXyjWg0UIo59qPK6UzYC2apM98yYxeM76hoxQYCmhuM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HNYFbq6lsfqnyoelL7ht05DpFi219A7pMTc10HUXvyyozGAQ0zFEtfkPVBBEaIVbgURSTXu4pr4oRNgtbeQvDp+2UCNwmwqqXer/+kM1kj4BkdcfhcjUV2Z5NL2XSBjWiDs+7wfQFKaPu3twVZJHiRKgb+TGZpQVPa8FaWxM/4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=fixPYamt; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-22398e09e39so56307145ad.3
-        for <linux-ext4@vger.kernel.org>; Tue, 04 Mar 2025 13:45:10 -0800 (PST)
+	s=arc-20240116; t=1741148511; c=relaxed/simple;
+	bh=r39igoZl7dgIk8L4GFCd6S0dc7M/x4ffj5p5QjTfUF4=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=GmWzc66O+Sa8OCCrBZmX7vynV4rGU/qMNaRHpA3uY3d4xRXwq+RMojHBzCnpZVfTTo05cUD2spoeFmM12AjxN8WqWmOZhJDM98uFNMLUwsy/yrSfCUffEDg9PEu/pwZz0zEgTf1RfoJZ3OA3yf6a1nGCj7Qk/swnT/S9oGUAV+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CDqIJiBT; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-22328dca22fso95343565ad.1;
+        Tue, 04 Mar 2025 20:21:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1741124710; x=1741729510; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JXlvr0AuCIt7jLa/lGvPs7yWirPuSQnv0IzpBQ8cC80=;
-        b=fixPYamt8r561SAUipv921X5TNx2q0nlVPMBwGcpl23eZZCYCKG9Btkoo9ACpn6D6r
-         /zgkxOE/3NzqNXQCF4OCvzPZZLv0oOjKXMhiyKFLYoYmvXH0P6uIrDwC9HKE9660yGBh
-         zuySPWk9bH2g22WKg4Z3przcsSxVYNL8Cth6KPvul8KzeBr3vkMO4F1tE//T9b964Hzk
-         41ZscldFWXld9nx/SYUdLoDT7K/JP9SE9LknAvN+tqcRM98TWyL5CjsFtIMOD2XKduDP
-         TZ+zmOxHyEG00gQ4r2uNq9UUDZsL+abo5nuNkDXI/mBHomWycaj5lMKXLGsk3ODmvo0D
-         KhVQ==
+        d=gmail.com; s=20230601; t=1741148509; x=1741753309; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UAh53tm7x5vjG0oU8skw4hzinBeRfI2F4BZXkPhkiXk=;
+        b=CDqIJiBTVhkGpz/E9qeX8d07Iiw6i0IH54q+deXERLqIkcYWWYlgdjEYJ54YdJbD4g
+         a6dBcJvaSfCMlVPOY1M/9BC0eU9XyttXv9TFkI2/lKVJC4UvLc9dPRn98leDUg2QdQes
+         S6Hpsx+HerpbTNXjDB2i/v8BnfWwCz0QRqVotV/v+Q4seOt2VN5M/Phl/y064400Y4a7
+         NFAD8R1FLfI+F2V+o+aCNZwFvUJZd2ivLxeZv+AfDiIrjOmPJS6spCiuqgCzKbq3hS4B
+         7MZ0zkPCkPdjShoVQjgzY+xPDxR2Q5NlQKHJsNWPxiGly6RFROUlz/dwp5dwMP9wwQrm
+         KYUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741124710; x=1741729510;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JXlvr0AuCIt7jLa/lGvPs7yWirPuSQnv0IzpBQ8cC80=;
-        b=usQg/rW0FopAGtv5OE7Zz6FJMqbzrRa18cXQY8i74PWV6GHS+zW0Y1hBkqU4EbsFyJ
-         dD7apSl5cw5LFy5PDqZwD5qnypnvTxagxmtFEVwr44nTemPDAKc0eYdT19WJx6a6mFev
-         iZQ/9fGIgZZ2C32zmMF5yku8/EFOl7CbaOmaa48NJp1IoemlvSQeAjStIHWf46sa+prk
-         +2gkbzrhODv+62d5osvt3PzAxWJqQ/zef9RKdHzLo2qx4IgSJk//oTueWywdP1Df457c
-         9ZOgV3+ZMlx8ga45L0BEguEGvTm5eZWC4F62qObB68M0WRA/A0DB4yQ0D0eU6kYiclvt
-         gKqA==
-X-Forwarded-Encrypted: i=1; AJvYcCXK+bz7UxA7W60QPEIrsKY2PPHrIoc+ZLZjeeai7ojfkcEGxTPdlIlsw+HEF2tUsoaJte+KSoBy+322@vger.kernel.org
-X-Gm-Message-State: AOJu0YxISNEkdQiqbB24RzmLQLCJipnga2FFYzu34mOVgiJ7deHNIUHl
-	4QS9Lp5d49Gd+tf3eLhVR/psUW7B42c7S1WUwfTDbCVNOks8hOHdW/JdyvybwIg=
-X-Gm-Gg: ASbGncuo70qcpPKlo4ko3Csgthye0QJTp5ZdaQcA0kLvJwChN/hFubocBOJXyFztkFu
-	KmR/mjJrH5riq+OvaoFR0FFjBi3JRItsS6P+GEHxpgM1kVpwY1oMAiHIyZbF6U7BwV8ujGnems4
-	KSG7blHAvTIy2CsUFHnCPaPmlKiWA4nBDNe1tI54VPwFZQgc6SV2yq9H6t7TcJzpwPpcGh799RQ
-	f+8ZAFS8S80hZKOS9pcF7zczQfDpnm1tIYr4o5f84IID6QOVGrblNGdZR0sGa3Kr8GHuE1OK+55
-	dzKAbpeDSW3/v2NB1Qjq3mTFEjwD85eBlj6nNVYR0ge1JKqciVhDEZGcgnpndj77Ba6JAuqdmsN
-	YMPmCjUih0l4T92tYcCn6
-X-Google-Smtp-Source: AGHT+IGNwy59VhNQY+L/AmQpCxxA1/Mp+YoBvn03hGdzhtDUWymDRf7aWS1Y1DjJmIdSpj7CoWsAbw==
-X-Received: by 2002:a17:902:f548:b0:220:ee5e:6bb with SMTP id d9443c01a7336-223f1c95914mr11075785ad.20.1741124710362;
-        Tue, 04 Mar 2025 13:45:10 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-734a003dd31sm11416022b3a.152.2025.03.04.13.45.09
+        d=1e100.net; s=20230601; t=1741148509; x=1741753309;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UAh53tm7x5vjG0oU8skw4hzinBeRfI2F4BZXkPhkiXk=;
+        b=hC5AlkpfGRkrO+DPjLnE0H+AB86sNm3LxxDrWVfOaAnq6fO5SlbkFsTEVuv/3y+ztD
+         KUHP/Ty/LDtbGT7Qtp1c3ORxNM+SUpXu0FqihLMuuoy17CyH/wxzRjvVPA9vf/slXmv+
+         5mNpD8v7zuqPXzBBGrPB+Sb6kxPw7EbuSsA6nfl7gBHpoKp5nc79t+JGcJAzUThLrX82
+         18uRS4wfJQBjfggECeT4PW2fS3buq8Bgts/c7/2h7uWM4KRtAc74frEQgRGbbd1SIY+R
+         x0oIM9GZkkoFYK3AmuVY1QJh36qlwyi1tTloJAizw+nKtLNi6IxL5Z4ExxlxjSQEZ0iO
+         dSCA==
+X-Forwarded-Encrypted: i=1; AJvYcCUowd9ltnSVymET3XFCtZ7fdRpuF9S4XE2+IrN2Mr1wIB65l3BbI73r5JNcDd+mfZDxRx61tbmzmgmK@vger.kernel.org, AJvYcCX+gF0Ua3yHb6z6yaXYZkAUTdOoi/yw1IMNDkEdat9iFGkS8YAJdgdJlQ8b1KXQMpjQB5XtvVbg1g21H9nc@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWNivlLNgNAQCD4kMeBlhbMzEFobd3I2K/ypPYANWjkDB9l5S+
+	dKkvCll367l7k1uRdO0seQiFCrSgwMU4mVJfsD8t+/i4EXXI0gTs
+X-Gm-Gg: ASbGncuuOvg1bjqWp7wUmiB/July+q+kuyibaN38nOckViZeSMNJnX0R4xCgb8MCSua
+	cdWNTUdlv3FvSIimSOTW2bMktI+kIu31Hsl1nfdgxwxSanSwe6Set1CTTiOYoeMAb+5EmNZEQe4
+	11n7EuHV+xTAi6Y75XtCWvNcK8PilKiGP2slVmH1KTbKSRkTr5AEJBTDs2omYdTRcvD3yWW1N13
+	MecBTcCHI3UO4IlPBXkmUngFb1L5bLHPPKnAN2hZpbpmd+R39mFa1/2VGjtXdH2eNvgnCkD8jwK
+	BKeD+jV6c/iO4VlYJw5xtFUhgDgUDTc+WIk8bg==
+X-Google-Smtp-Source: AGHT+IGoBkcH/43EbZ0MvtYc8TWxOHbWCha9H3ge0TtLf882lJlPh2lYjS+JuhCtecXTELqXJbjQJA==
+X-Received: by 2002:a05:6a00:244f:b0:736:5c8e:bab8 with SMTP id d2e1a72fcca58-73682b5510amr2833593b3a.3.1741148508594;
+        Tue, 04 Mar 2025 20:21:48 -0800 (PST)
+Received: from dw-tp ([171.76.80.250])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-734a003ebe7sm12244010b3a.134.2025.03.04.20.21.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Mar 2025 13:45:09 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tpa4Z-00000008uUy-1ykB;
-	Wed, 05 Mar 2025 08:45:07 +1100
-Date: Wed, 5 Mar 2025 08:45:07 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	lsf-pc@lists.linux-foundation.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, djwong@kernel.org,
-	dchinner@redhat.com, jack@suse.cz, tytso@mit.edu,
-	linux-ext4@vger.kernel.org, nirjhar.roy.lists@gmail.com,
-	zlang@kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] xfstests: Centralizing filesystem configs and
- device configs
-Message-ID: <Z8d0Y0yvlgngKsgo@dread.disaster.area>
-References: <Z55RXUKB5O5l8QjM@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <Z6FFlxFEPfJT0h_P@dread.disaster.area>
- <87ed0erxl3.fsf@gmail.com>
- <Z6KRJ3lcKZGJE9sX@dread.disaster.area>
- <87plj0hp7e.fsf@gmail.com>
+        Tue, 04 Mar 2025 20:21:47 -0800 (PST)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Jan Kara <jack@suse.cz>, Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org, Mahesh Kumar <maheshkumar657g@gmail.com>
+Subject: Re: [PATCH 1/2] ext4: only defer sb update on error if SB_ACTIVE
+In-Reply-To: <mpm3x7uonxoc73lgva72vaiydc76cmr5niapm45ipk6ts5voab@e7zundhoui6i>
+Date: Wed, 05 Mar 2025 09:44:54 +0530
+Message-ID: <87eczc6rlt.fsf@gmail.com>
+References: <cover.1740212945.git.ojaswin@linux.ibm.com> <da8af2e5170f0d94031b812d7d50c6ec1967db1b.1740212945.git.ojaswin@linux.ibm.com> <jnxpphuradrsf73cxfmohfu7wwwckihtulw6ovsitddgt5pqkg@2uoejkr66qnl> <Z8BKdo5IAHJRdMkp@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com> <mpm3x7uonxoc73lgva72vaiydc76cmr5niapm45ipk6ts5voab@e7zundhoui6i>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87plj0hp7e.fsf@gmail.com>
 
-On Sat, Mar 01, 2025 at 06:39:57PM +0530, Ritesh Harjani wrote:
-> > Why is having hundreds of tiny single-config-only files
-> > better than having all the configs in a single file that is
-> > easily browsed and searched?
-> >
-> > Honestly, I really don't see any advantage to re-implementing config
-> > sections as a "file per config" object farm. Yes, you can store
-> > information that way, but that doesn't make it an improvement over a
-> > single file...
-> >
-> > All that is needed is for the upstream repository to maintain a
-> > config file with all the config sections defined that people need.
-> > We don't need any new infrastructure to implement a "centralised
-> > configs" feature - all we need is an agreement that upstream will
-> > ship an update-to-date default config file instead of the ancient,
-> > stale example.config/localhost.config files....
-> >
-> 
-> If we can create 1 config for every filesystem instead of creating a lot
-> of smaller config files. i.e.  
-> - configs/ext4/config.ext4
-> - configs/xfs/config.xfs
+Jan Kara <jack@suse.cz> writes:
 
-Why are directories that contain a single file needed here?
+> On Thu 27-02-25 16:50:22, Ojaswin Mujoo wrote:
+>> On Mon, Feb 24, 2025 at 03:52:00PM +0100, Jan Kara wrote:
+>> > On Sat 22-02-25 14:10:22, Ojaswin Mujoo wrote:
+>> > > Presently we always BUG_ON if trying to start a transaction on a journal
+>> > > marked with JBD2_UNMOUNT, since this should never happen. However while
+>> > > running stress tests it was observed that in case of some error handling
+>> > > paths, it is possible for update_super_work to start a transaction after
+>> > > the journal is destroyed eg:
+>> > > 
+>> > > (umount)
+>> > > ext4_kill_sb
+>> > >   kill_block_super
+>> > >     generic_shutdown_super
+>> > >       sync_filesystem /* commits all txns */
+>> > >       evict_inodes
+>> > >         /* might start a new txn */
+>> > >       ext4_put_super
+>> > > 	flush_work(&sbi->s_sb_upd_work) /* flush the workqueue */
+>> > >         jbd2_journal_destroy
+>> > >           journal_kill_thread
+>> > >             journal->j_flags |= JBD2_UNMOUNT;
+>> > >           jbd2_journal_commit_transaction
+>> > >             jbd2_journal_get_descriptor_buffer
+>> > >               jbd2_journal_bmap
+>> > >                 ext4_journal_bmap
+>> > >                   ext4_map_blocks
+>> > >                     ...
+>> > >                     ext4_inode_error
+>> > >                       ext4_handle_error
+>> > >                         schedule_work(&sbi->s_sb_upd_work)
+>> > > 
+>> > >                                                /* work queue kicks in */
+>> > >                                                update_super_work
+>> > >                                                  jbd2_journal_start
+>> > >                                                    start_this_handle
+>> > >                                                      BUG_ON(journal->j_flags &
+>> > >                                                             JBD2_UNMOUNT)
+>> > > 
+>> > > Hence, make sure we only defer the update of ext4 sb if the sb is still
+>> > > active.  Otherwise, just fallback to an un-journaled commit.
+>> > > 
+>> > > The important thing to note here is that we must only defer sb update if
+>> > > we have not yet flushed the s_sb_update_work queue in umount path else
+>> > > this race can be hit (point 1 below). Since we don't have a direct way
+>> > > to check for that we use SB_ACTIVE instead. The SB_ACTIVE check is a bit
+>> > > subtle so adding some notes below for future reference:
+>> > > 
+>> > > 1. Ideally we would want to have a something like (flags & JBD2_UNMOUNT
+>> > > == 0) however this is not correct since we could end up scheduling work
+>> > > after it has been flushed:
+>> > > 
+>> > >  ext4_put_super
+>> > >   flush_work(&sbi->s_sb_upd_work)
+>> > > 
+>> > >                            **kjournald2**
+>> > >                            jbd2_journal_commit_transaction
+>> > >                            ...
+>> > >                            ext4_inode_error
+>> > >                              /* JBD2_UNMOUNT not set */
+>> > >                              schedule_work(s_sb_upd_work)
+>> > > 
+>> > >    jbd2_journal_destroy
+>> > >     journal->j_flags |= JBD2_UNMOUNT;
+>> > > 
+>> > >                                       **workqueue**
+>> > >                                       update_super_work
+>> > >                                        jbd2_journal_start
+>> > >                                         start_this_handle
+>> > >                                           BUG_ON(JBD2_UNMOUNT)
+>> > > 
+>> > > Something like the above doesn't happen with SB_ACTIVE check because we
+>> > > are sure that the workqueue would be flushed at a later point if we are
+>> > > in the umount path.
+>> > > 
+>> > > 2. We don't need a similar check in ext4_grp_locked_error since it is
+>> > > only called from mballoc and AFAICT it would be always valid to schedule
+>> > > work here.
+>> > > 
+>> > > Fixes: 2d01ddc86606 ("ext4: save error info to sb through journal if available")
+>> > > Reported-by: Mahesh Kumar <maheshkumar657g@gmail.com>
+>> > > Suggested-by: Ritesh Harjani <ritesh.list@gmail.com>
+>> > > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>> > 
+>> > Good catch! But I think the solution will have to be slightly different.
+>> > Basing the check on SB_ACTIVE has the problem that you can have racing
+>> > updates of the sb in the still running transaction and in your direct
+>> > update leading to inconsistencies after a crash (that was the reason why
+>> > we've created the s_sb_upd_work in the first place).
+>> > 
+>> > I would solve this by implementing something like
+>> > ext4_update_sb_destroy_journal() which will set a flag in sbi, flush the
+>> > workqueue, and then destroy the journal. And ext4_handle_error() will check
+>> > for the sbi flag.
+>> > 
+>> > 								Honza
+>> 
+>> Hey Jan,
+>> 
+>> Thanks for the review. So earlier I did go through different code paths to see
+>> if we will have a direct sb write clash with a journalled one it wouldn't but,
+>> relooking at it, seems like we might have a scenario as follows:
+>> 
+>> generic_super_shutdown
+>>  sync_filesytems
+>>   /* running txns committed. executing ext4_journal_commit_callback */
+>>   ext4_maybe_update_superblock
+>>    /* schedules work */
+>>    schedule_work(&sbi->s_sb_upd_work)
+>>                                           update_super_work
+>>                                           /* start a txn and add sb to it */
+>>  sb->s_flags &= ~SB_ACTIVE;
+>>  evict_inode
+>>    ext4_evict_inode
+>>     ext4_std_error
+>>      ext4_handle_error
+>>       /* direct commit of sb (Not good!) */
+>> 
 
-> Each of above can contain sections like (e.g.)
-> 
-> [xfs-b4k]
-> MKFS_OPTIONS="-b size=4k"
-> ddUNT_OPTIdd    d=""dd
-> 
-> [xfs-b64k]
-> MKFS_OPTIONS="-b size=64k"
-> MOUNT_OPTIONS=""
-> 
-> 
-> Then during make we can merge all these configs into a common config file
-> i.e. configs/.all-section-configs. We can update the current check script to
-> look for either local.config file or configs/.all-section-configs file
-> for location the section passed in the command line. 
+Ohk. So even after clearing SB_ACTIVE flag, we still have FS operations
+running like ext4_evict_inode which can race with the super block update
+work starting a txn. 
 
-What does this complexity gain us?
+Thanks for catching that scenario.
 
-> This will help solve all the listed problems:
-> 1. We don't have to add a new parsing logic for configs
 
-We don't need new config files and makefile/build time shenanigans
-to do this.
+>> 
+>> Now with the 'setting the flag in sbi' approach, I'm not sure if that will be
+>> enough to handle this as well. For example, if we add a flag like
+>> sbi->s_journal_destroying, then:
+>> 
+>> ext4_put_super
+>>  sbi->s_journal_destroying = true
+>>  flush_workqueue()
+>>   /* sb is now journalled */
+>>  jbd2_journal_destory
+>>   jbd2_journal_commit_transaction
+>>    /* add tag for sb in descriptor and add buffer to wbufs[] */
+>>    /* Later from some other buffer in the txn: */
+>>    jbd2_journal_next_log_block
+>>     /* hits error in ext4_journal_bmap */
+>>     ext4_handle_error
+>>       sbi->s_journal_destroying == true
+>>       /* update and commit sb directly causing a checksum mismatch b/w entry in descriptor */
+>>    jbd2_journal_abort
+>>    /* after abort everything in wbufs[] is written to journal */
+>> 
+>> In the above we will have a checksum mismatch but then maybe its not really
+>> an issue. Maybe since we never commit the txn it is understood that the contents
+>> can't be trusted and it should be fine to have a mismatch b/w the decriptor tag
+>> and the actual super block contents? In which case the sbi flag approach should
+>> be fine.
+>> 
+>> Does my understanding sound correct?
+>
+> Yes. Since the transaction does not get committed, its contents will be
+> (and must be) ignored. So although you are correct that the superblock
+> content in the transaction need to match the content we write directly, it
+> does not matter because whatever is in the uncommitted transaction must
+> never be written to the final position on disk.
+>
+> 								Honza
 
-> 2. We don't need to create 1 file per config
+Thanks Jan for the suggestion. I now see what you meant by having an sbi
+flag. Since that is local to ext4, we can set it just before flushing
+the workqueue and we know that there won't be any update super block
+work which can start a txn after flushing is complete. This flag can
+then be used to check in any of the error handling paths to decide on
+whether to schedule a new update work or not for updating sb.
 
-Ditto.
+This makes sense. Thanks for the review!
 
-> 3. We still can get all sections listed in one place under which check
-> script can parse.
-
-Ditto.
-
-> 4. Calling different filesystem sections from a common config file can work.
-
-Yes, that's the whole point of have config sections: one config file
-that supports lots of different test configurations!
-
-> So as you mentioned calling something like below should work. 
-> 
-> ./check -s xfs_4k -s ext4_4k -g quick
-> 
-> Hopefully this will require minimal changes to work. Does this sound
-> good to you?
-
-You haven't explained why we need new infrastructure to do something
-we can already do with the existing infrastructure. What problem are
-you trying to solve that the current infrastructure does not handle?
-
-i.e. we won't need to change the global config file very often once the
-common configs are defined in it; it'll only get modified when
-filesystems add new features that need specific mkfs or mount option
-support to be added, and that's fairly rare.
-
-Hence I still don't understand what new problem multiple config files
-and new infrastructure to support them is supposed to solve...
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+-ritesh
 
