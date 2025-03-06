@@ -1,242 +1,166 @@
-Return-Path: <linux-ext4+bounces-6687-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6688-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CE7EA54558
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 09:50:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CA35A54DC7
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 15:29:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B535B188C86F
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 08:51:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 320DE3B281C
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 14:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495962080DB;
-	Thu,  6 Mar 2025 08:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB3A16C687;
+	Thu,  6 Mar 2025 14:28:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ild6cuZq"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GdVMkld5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C002B207A05;
-	Thu,  6 Mar 2025 08:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B7F17BEBF;
+	Thu,  6 Mar 2025 14:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741251049; cv=none; b=gzn4cLbYB+wQe0XGSP5NRkUI9sggLvakwEKq6Qz9ZPEaF8qpG2XFUuvu7018xAcqZC50i/OxGBwdST0iZfqomI+IeI6dgg/RQ1cCwiuFtsjdin+oIAv1APONF9DP5Aw9cqwOiFMJkBGSV9mf5aXzcNzkJLQlg/YCcq1Yrj8p15U=
+	t=1741271332; cv=none; b=GsfNxBzjQLZB+wf/GDYA5Y4A2POZdM9b8LvWwlsXgosR8/HWz8z7ueSwQw0RFVRJ6bY0Z3/wmnBdV8OUflMxS2xdhRvf6mMycYYruABzpQPQPDtt9jDWcUp2GizREigffRniaUM2Wd4Twx+qjsi0CiNSocg2gxSMifRXC+YfLH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741251049; c=relaxed/simple;
-	bh=vKM1MMSoy2IDAm4XNuPTAz/yyPszNBX0fQkGrN6Ybm0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fxeIwYd3Vy2RAEUCfO8Z0DgZdkc/UInvABvwpcNNjSxlBmmvYy/aOLVwvQNX6RD/KBmvBnZZ1YK2PHXnPWh5h7bxYvAzN2YyJEJymbSPz/IqtoW+9TY4pN2xJLCcgJ7B3c7WqUMjKIQYRuHIOwfCLu/vDNeZIGRR6syBXxW6IrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ild6cuZq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 958FDC4CEE0;
-	Thu,  6 Mar 2025 08:50:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741251049;
-	bh=vKM1MMSoy2IDAm4XNuPTAz/yyPszNBX0fQkGrN6Ybm0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ild6cuZqrqhRSccQN+axzjgQyJkdNe1tFss8POiFyTbaMn4az8WhsrukeusDJHcBc
-	 N9B7p0mRIKWTL2/lHzP28YHGimTgRAMlFbMVuinZsOsmWWxBsifmrePDq24z8df82k
-	 Gwid2BmvFrn0cN/qwnruuVkhMsMuJa4GpChVgRuRvPF0F5F6q1ezXk/uQOoHN5HRV+
-	 udoopgt3O/pzogFv89aSLMDEdT6Lj1pTAvuhxTNjSNG+LrHD6k5V6h6zggDjpk9YCE
-	 ElgMp3dW209PavhdcD1qZ6j+dhl/YJqLo5jVdc6tr8BMhFHrJZDD22N+oBmTO12eCn
-	 rM9LV305fKVzw==
-Date: Thu, 6 Mar 2025 09:50:43 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Carlos Maiolino <cem@kernel.org>
-Cc: djwong@kernel.org, linux-xfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, 
-	ritesh.list@gmail.com, martin.petersen@oracle.com, tytso@mit.edu, 
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v4 02/12] iomap: Rename IOMAP_ATOMIC -> IOMAP_ATOMIC_HW
-Message-ID: <20250306-parabel-lernprogramm-abb674f8f75f@brauner>
-References: <20250303171120.2837067-1-john.g.garry@oracle.com>
- <UQF0E8blbU4wMo9RdB7-nRkNAIJHtPkzDsTrQEOkNRLjG2CGbKe97G8XenXN1DSkhoWhipJrN956Enqgk9Ewkg==@protonmail.internalid>
- <20250303171120.2837067-3-john.g.garry@oracle.com>
- <mefv3axgsk567xwwwuoonvo7bncvdgu547ycvin5zjlztslotm@qu4fxqi3fave>
+	s=arc-20240116; t=1741271332; c=relaxed/simple;
+	bh=VsEHTryIvSCPfyyGMRqkYROKP7sRwl209LDHew4UU1A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ioXPQP+0DDz22a1W6VNIh3IJv4Yw09zjrBJS+g4wNBNw7NFwlcsSuqX1b+8DB+FiEbxoBVaavslIRjRxCfl2Hfo3Y05ZmPzb2TOdQmBnF0jCnNvWI7Zokrv1EWALFOFkk+kkAwBx2P17JMUC0poGmXAfGBSYoDKoZtFllO/ephw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GdVMkld5; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5269UdMX028465;
+	Thu, 6 Mar 2025 14:28:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=0Ex4FGZjL2uJXW0TEhQ5OqQtiGEib/q9COn03voWG
+	ks=; b=GdVMkld5S0kcWWLpM8chCx3RwE4idV+jeZUUoyKw8u0OVMWBOAR+kynXH
+	/GXpqGHBymzyaAcAsMJ/EpJyJuG133tzIaX78P91kPbxQUTTu4ESncPWrVEt0ji1
+	yB08svji32Uegb9rr3tNL/PEHE02unLBVYFDscs7rxI6Qg10iGJrybLNt2uc9nOy
+	sXDh0qQN/jG1TilM2Fy0ynxNUzQXTPMOC2L/O8XV5Ao9sbhaYKosG3u0fWbRzlvD
+	SmIrqgWL+91fELV2rWmBbhnk6sFZ3sPmIRwKsWOTGHznNwhIyeCDt3xPIe3REhUo
+	TGJHOdv3rIQ+eI47/yPRHh9vtg+qw==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 456wu04b7q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Mar 2025 14:28:40 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 526DhYTj020800;
+	Thu, 6 Mar 2025 14:28:39 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 454esk8uxg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Mar 2025 14:28:39 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 526ESbEi46399834
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 6 Mar 2025 14:28:37 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A928B20049;
+	Thu,  6 Mar 2025 14:28:37 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5320E20040;
+	Thu,  6 Mar 2025 14:28:36 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.in.ibm.com (unknown [9.109.219.249])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  6 Mar 2025 14:28:36 +0000 (GMT)
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>, Baokun Li <libaokun1@huawei.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Fix a BUG_ON crashing the kernel in start_this_handle
+Date: Thu,  6 Mar 2025 19:58:31 +0530
+Message-ID: <cover.1741270780.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <mefv3axgsk567xwwwuoonvo7bncvdgu547ycvin5zjlztslotm@qu4fxqi3fave>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: vWuTaPUW8JQ_YP2kaWVI8lzSS7tM3Gg4
+X-Proofpoint-ORIG-GUID: vWuTaPUW8JQ_YP2kaWVI8lzSS7tM3Gg4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-06_05,2025-03-06_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 spamscore=0 mlxlogscore=892 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2503060110
 
-On Wed, Mar 05, 2025 at 01:57:26PM +0100, Carlos Maiolino wrote:
-> Hi Christian,
-> On Mon, Mar 03, 2025 at 05:11:10PM +0000, John Garry wrote:
-> > In future xfs will support a SW-based atomic write, so rename
-> > IOMAP_ATOMIC -> IOMAP_ATOMIC_HW to be clear which mode is being used.
-> > 
-> > Also relocate setting of IOMAP_ATOMIC_HW to the write path in
-> > __iomap_dio_rw(), to be clear that this flag is only relevant to writes.
-> > 
-> > Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-> > Signed-off-by: John Garry <john.g.garry@oracle.com>
-> 
-> I pushed the patches in this series into this branch:
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git xfs-6.15-atomicwrites
-> 
-> Do you plan to send the iomap patches in this series yourself or is it ok with
-> you if they go through xfs tree?
+** Changes since v1 [1] **
 
-Ok, so this will have merge conflicts with vfs-6.15.iomap. I put the
-preliminary iomap patches of this series onto vfs-6.15.iomap.
+ * Picked up RVBs from Jan and Ritesh
+ * In patch 2/3, we now use a flag in sbi instead of SB_ACITVE
+   to determine when to journal sb vs when to commit directly.
+ * Added a prep patch 1/3
 
-Please simply pull vfs-6.15.iomap instead of vfs-6.15.shared.iomap.
-Nothing changes for you as everything has been kept stable. There'll be
-no merge conflicts for us afterwards.
+[1] https://lore.kernel.org/linux-ext4/cover.1740212945.git.ojaswin@linux.ibm.com/T/#m5e659425b8c8fe2ac01e7242b77fed315ff89db4
 
-Thanks for the ping!
+@Baokun, I didn't get a chance to look into the journal_inode
+modifications we were discussing in [2]. I'll try to spend some time and
+send that as a separate patch. Hope that's okay
 
-> 
-> Cheers,
-> Carlos
-> 
-> > ---
-> >  Documentation/filesystems/iomap/operations.rst |  4 ++--
-> >  fs/ext4/inode.c                                |  2 +-
-> >  fs/iomap/direct-io.c                           | 18 +++++++++---------
-> >  fs/iomap/trace.h                               |  2 +-
-> >  include/linux/iomap.h                          |  2 +-
-> >  5 files changed, 14 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/Documentation/filesystems/iomap/operations.rst b/Documentation/filesystems/iomap/operations.rst
-> > index d1535109587a..0b9d7be23bce 100644
-> > --- a/Documentation/filesystems/iomap/operations.rst
-> > +++ b/Documentation/filesystems/iomap/operations.rst
-> > @@ -514,8 +514,8 @@ IOMAP_WRITE`` with any combination of the following enhancements:
-> >     if the mapping is unwritten and the filesystem cannot handle zeroing
-> >     the unaligned regions without exposing stale contents.
-> > 
-> > - * ``IOMAP_ATOMIC``: This write is being issued with torn-write
-> > -   protection.
-> > + * ``IOMAP_ATOMIC_HW``: This write is being issued with torn-write
-> > +   protection based on HW-offload support.
-> >     Only a single bio can be created for the write, and the write must
-> >     not be split into multiple I/O requests, i.e. flag REQ_ATOMIC must be
-> >     set.
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index 7c54ae5fcbd4..ba2f1e3db7c7 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -3467,7 +3467,7 @@ static inline bool ext4_want_directio_fallback(unsigned flags, ssize_t written)
-> >  		return false;
-> > 
-> >  	/* atomic writes are all-or-nothing */
-> > -	if (flags & IOMAP_ATOMIC)
-> > +	if (flags & IOMAP_ATOMIC_HW)
-> >  		return false;
-> > 
-> >  	/* can only try again if we wrote nothing */
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index e1e32e2bb0bf..c696ce980796 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -317,7 +317,7 @@ static int iomap_dio_zero(const struct iomap_iter *iter, struct iomap_dio *dio,
-> >   * clearing the WRITE_THROUGH flag in the dio request.
-> >   */
-> >  static inline blk_opf_t iomap_dio_bio_opflags(struct iomap_dio *dio,
-> > -		const struct iomap *iomap, bool use_fua, bool atomic)
-> > +		const struct iomap *iomap, bool use_fua, bool atomic_hw)
-> >  {
-> >  	blk_opf_t opflags = REQ_SYNC | REQ_IDLE;
-> > 
-> > @@ -329,7 +329,7 @@ static inline blk_opf_t iomap_dio_bio_opflags(struct iomap_dio *dio,
-> >  		opflags |= REQ_FUA;
-> >  	else
-> >  		dio->flags &= ~IOMAP_DIO_WRITE_THROUGH;
-> > -	if (atomic)
-> > +	if (atomic_hw)
-> >  		opflags |= REQ_ATOMIC;
-> > 
-> >  	return opflags;
-> > @@ -340,8 +340,8 @@ static int iomap_dio_bio_iter(struct iomap_iter *iter, struct iomap_dio *dio)
-> >  	const struct iomap *iomap = &iter->iomap;
-> >  	struct inode *inode = iter->inode;
-> >  	unsigned int fs_block_size = i_blocksize(inode), pad;
-> > +	bool atomic_hw = iter->flags & IOMAP_ATOMIC_HW;
-> >  	const loff_t length = iomap_length(iter);
-> > -	bool atomic = iter->flags & IOMAP_ATOMIC;
-> >  	loff_t pos = iter->pos;
-> >  	blk_opf_t bio_opf;
-> >  	struct bio *bio;
-> > @@ -351,7 +351,7 @@ static int iomap_dio_bio_iter(struct iomap_iter *iter, struct iomap_dio *dio)
-> >  	u64 copied = 0;
-> >  	size_t orig_count;
-> > 
-> > -	if (atomic && length != fs_block_size)
-> > +	if (atomic_hw && length != fs_block_size)
-> >  		return -EINVAL;
-> > 
-> >  	if ((pos | length) & (bdev_logical_block_size(iomap->bdev) - 1) ||
-> > @@ -428,7 +428,7 @@ static int iomap_dio_bio_iter(struct iomap_iter *iter, struct iomap_dio *dio)
-> >  			goto out;
-> >  	}
-> > 
-> > -	bio_opf = iomap_dio_bio_opflags(dio, iomap, use_fua, atomic);
-> > +	bio_opf = iomap_dio_bio_opflags(dio, iomap, use_fua, atomic_hw);
-> > 
-> >  	nr_pages = bio_iov_vecs_to_alloc(dio->submit.iter, BIO_MAX_VECS);
-> >  	do {
-> > @@ -461,7 +461,7 @@ static int iomap_dio_bio_iter(struct iomap_iter *iter, struct iomap_dio *dio)
-> >  		}
-> > 
-> >  		n = bio->bi_iter.bi_size;
-> > -		if (WARN_ON_ONCE(atomic && n != length)) {
-> > +		if (WARN_ON_ONCE(atomic_hw && n != length)) {
-> >  			/*
-> >  			 * This bio should have covered the complete length,
-> >  			 * which it doesn't, so error. We may need to zero out
-> > @@ -652,9 +652,6 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >  	if (iocb->ki_flags & IOCB_NOWAIT)
-> >  		iomi.flags |= IOMAP_NOWAIT;
-> > 
-> > -	if (iocb->ki_flags & IOCB_ATOMIC)
-> > -		iomi.flags |= IOMAP_ATOMIC;
-> > -
-> >  	if (iov_iter_rw(iter) == READ) {
-> >  		/* reads can always complete inline */
-> >  		dio->flags |= IOMAP_DIO_INLINE_COMP;
-> > @@ -689,6 +686,9 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >  			iomi.flags |= IOMAP_OVERWRITE_ONLY;
-> >  		}
-> > 
-> > +		if (iocb->ki_flags & IOCB_ATOMIC)
-> > +			iomi.flags |= IOMAP_ATOMIC_HW;
-> > +
-> >  		/* for data sync or sync, we need sync completion processing */
-> >  		if (iocb_is_dsync(iocb)) {
-> >  			dio->flags |= IOMAP_DIO_NEED_SYNC;
-> > diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-> > index 9eab2c8ac3c5..69af89044ebd 100644
-> > --- a/fs/iomap/trace.h
-> > +++ b/fs/iomap/trace.h
-> > @@ -99,7 +99,7 @@ DEFINE_RANGE_EVENT(iomap_dio_rw_queued);
-> >  	{ IOMAP_FAULT,		"FAULT" }, \
-> >  	{ IOMAP_DIRECT,		"DIRECT" }, \
-> >  	{ IOMAP_NOWAIT,		"NOWAIT" }, \
-> > -	{ IOMAP_ATOMIC,		"ATOMIC" }
-> > +	{ IOMAP_ATOMIC_HW,	"ATOMIC_HW" }
-> > 
-> >  #define IOMAP_F_FLAGS_STRINGS \
-> >  	{ IOMAP_F_NEW,		"NEW" }, \
-> > diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> > index ea29388b2fba..87cd7079aaf3 100644
-> > --- a/include/linux/iomap.h
-> > +++ b/include/linux/iomap.h
-> > @@ -189,7 +189,7 @@ struct iomap_folio_ops {
-> >  #else
-> >  #define IOMAP_DAX		0
-> >  #endif /* CONFIG_FS_DAX */
-> > -#define IOMAP_ATOMIC		(1 << 9)
-> > +#define IOMAP_ATOMIC_HW		(1 << 9)
-> >  #define IOMAP_DONTCACHE		(1 << 10)
-> > 
-> >  struct iomap_ops {
-> > --
-> > 2.31.1
-> > 
+[2] https://lore.kernel.org/linux-ext4/cover.1740212945.git.ojaswin@linux.ibm.com/T/#mad8feb44d9b6ddadf87830b92caa7b78d902dc05
+ 
+** Original Cover **
+
+When running LTP stress tests on ext4, after a multiday run we seemed to
+have hit the following BUG_ON:
+
+ [NIP  : start_this_handle+268]
+ #3 [c000001067c27a40] start_this_handle at c008000004d40f74 [jbd2]  (unreliable)
+ #4 [c000001067c27b60] jbd2__journal_start at c008000004d415cc [jbd2]
+ #5 [c000001067c27be0] update_super_work at c0080000053f9758 [ext4]
+ #6 [c000001067c27c70] process_one_work at c000000000188790
+ #7 [c000001067c27d20] worker_thread at c00000000018973c
+ #8 [c000001067c27dc0] kthread at c000000000196c84
+ #9 [c000001067c27e10] ret_from_kernel_thread at c00000000000cd64
+
+Which comes out to
+
+  382   repeat:
+  383           read_lock(&journal->j_state_lock);
+* 384           BUG_ON(journal->j_flags & JBD2_UNMOUNT);
+  385           if (is_journal_aborted(journal) ||
+  386               (journal->j_errno != 0 && !(journal->j_flags & JBD2_ACK_ERR))) {
+  387                   read_unlock(&journal->j_state_lock);
+
+
+Initially this seemed like it should never happen but upon crash
+analysis it seems like it could indeed be hit as described in patch 1/2.
+
+I would like to add that through the logs we only knew that:
+
+- ext4_journal_bmap -> ext4_map_blocks is failing with EFSCORRUPTED.
+- update_super_work had hit the BUG_ON
+
+I was not able to hit this bug again (without modifying the kernel to
+inject errors) but the above backtrace seems to be one possible paths
+where this BUG_ON can be hit. Rest of the analysis and fix is in patch
+2/3. Patch 3 is just a small tweak that i found helpful while debugging.
+
+That being said, journalling is something I'm not very familiar with and
+there might be gaps in my understanding so thoughts and suggestions are
+welcome.
+
+Ojaswin Mujoo (3):
+  ext4: define ext4_journal_destroy wrapper
+  ext4: avoid journaling sb update on error if journal is destroying
+  ext4: Make sb update interval tunable
+
+ fs/ext4/ext4.h      | 11 +++++++++++
+ fs/ext4/ext4_jbd2.h | 22 ++++++++++++++++++++++
+ fs/ext4/super.c     | 35 +++++++++++++++++------------------
+ fs/ext4/sysfs.c     |  4 ++++
+ 4 files changed, 54 insertions(+), 18 deletions(-)
+
+-- 
+2.48.1
+
 
