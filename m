@@ -1,58 +1,95 @@
-Return-Path: <linux-ext4+bounces-6696-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6697-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D74BA554E1
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 19:26:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F967A55878
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 22:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABD6D3B8711
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 18:22:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81F84189396D
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 21:14:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D303819CC0C;
-	Thu,  6 Mar 2025 18:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7771B207E04;
+	Thu,  6 Mar 2025 21:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ecVWJsoa"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FHLkqpJs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F24A255E54;
-	Thu,  6 Mar 2025 18:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A54D2063EB
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Mar 2025 21:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741285339; cv=none; b=k4EYyYqms2N8VZHxF1ntq8+atAqS8dzkIgHQ5F+uQtZDx/HznVYgAO/v9vqcbG3x+XXZS3MNIHiYwqRGhoRzVZvkGmZsJNTkK78sH4kDaRyuxNaVAVzEyxuj4XDDu2gifCrDQbSM5WzQkeNIPnKh/q0zFXTxkiNVuNWl5l2xg4U=
+	t=1741295648; cv=none; b=jN6O5T5H24SydHO1qSHzOqeM5KO97Oe2/oUFxS946Qwz4GpbiO9JR3UCYHTmKg/6TTsMsir7t6abOoWua74tcPcS8ePkdSbP6OcOcPneJAr0x1dq/jiCp0FWj9fPKm9IzzNDdTXT+5y1Cmo0qqSgPuoE45IEMV0Xrr10XmlCtkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741285339; c=relaxed/simple;
-	bh=f/DAyFRfrcxycuNo+j6HqGGnFsiZgkCkDeeRtaUS+j0=;
+	s=arc-20240116; t=1741295648; c=relaxed/simple;
+	bh=7M/TI2OSjR5YHIJN0VEW3G7sZxrEleNeYTf8aGUuXHI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VzvHikBJMhBaKf92VIZr9jgq2djfmecZ65rZqcStzn7QjBOGpIgYBurh/o+irmlUQDBApbsREHAznZnY5DDtU3x4pBcBAootqXPhb+W0D1NhOoFTCKvXgmhq4BFwLRrNXOxPxte9sJm937yfCrVqldo1P/69EzHWxaq3A+EFjjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ecVWJsoa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8814C4CEE0;
-	Thu,  6 Mar 2025 18:22:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741285338;
-	bh=f/DAyFRfrcxycuNo+j6HqGGnFsiZgkCkDeeRtaUS+j0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ecVWJsoar/PsiGE2bBYrH6s5aTX6dM83afvDWAuEGw2U6YeB5w4cAvhXhEwS0pN5C
-	 +xuHx1yEJ1sFKq8V5y+MVm7A7o3f8kSMGPdolfIDIB8W8nESaKG7BbuxnTpb+ijYMd
-	 Ns5hzJwzsBC42LYkmURAtC+EmlhPnxfQGt/2+Qbf2rTQmHLOzEKUxqZpmXWpr1X96+
-	 /EpSbo/2BigofuGHDdu4hpQeCNX/lu196edGTtd7+QC+bTtZj/z4PvmZ7QkmlsoJxs
-	 bN6kmwBN58ILxrbRd+SV4FAVfUUuMs6PBF2BLtD2Y2USkJW6GLU5pDtqrMI6/mVnu7
-	 5/FbPj8sFlMXw==
-Date: Thu, 6 Mar 2025 10:22:17 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: lsf-pc@lists.linux-foundation.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
-	ritesh.list@gmail.com, jack@suse.cz, tytso@mit.edu,
-	linux-ext4@vger.kernel.org, nirjhar.roy.lists@gmail.com,
-	zlang@kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] xfstests: Centralizing filesystem configs and
- device configs
-Message-ID: <20250306182217.GB2803730@frogsfrogsfrogs>
-References: <Z55RXUKB5O5l8QjM@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gOYQVz1eEt3DlyDG6iu0gOkIKTyTM3o2M8J9uuHzoOniaxEOeD0GpESItL1l++BE9vngsb0rKhwwq5q1yGTlLZuJ8TAE6136ur33p906DkIP0/5piHE2KXG8EEZMcoyG+zgV8aGLxTHnbFy1aDHYa7MyGb/q1B2IXFiDt5llu74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FHLkqpJs; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1741295645;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b/+jMnMag8/dlG/SpTCd1rW6bdR/hxWoP7cHVfdj/Rk=;
+	b=FHLkqpJslZDLg8TeEEtPIQQMcUgruMralOWviDkZjriJo7GF2gb3HtqWlV/j8VEqLPVLju
+	jf3b6uRXUSPJEloJ2Z+l4zaNJERYkOO7+BKuXHZIuyz8khOULA9sFSzdYPBSoDu+RND9Ue
+	1EYlc0hfOdcyc/zP5yrzrwFWrTPseyo=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-683-suCSlRJQOROaeSa0RfznSA-1; Thu, 06 Mar 2025 16:14:04 -0500
+X-MC-Unique: suCSlRJQOROaeSa0RfznSA-1
+X-Mimecast-MFC-AGG-ID: suCSlRJQOROaeSa0RfznSA_1741295643
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-2233b154004so20628165ad.0
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Mar 2025 13:14:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741295643; x=1741900443;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b/+jMnMag8/dlG/SpTCd1rW6bdR/hxWoP7cHVfdj/Rk=;
+        b=gZyaz79H4lElTVuKuuQr9qRTfQfjWp9PStcHUwx7lAQNtEsBcdcz/JJjI8jZJEdWq/
+         6d5/+7r5DZOft0b1oCcyivUjy1v0Rv6p/5MVafmXv2L1eK48LnV6EeZggasYJG1HPWZj
+         gUMPo192uDeRI+x4o53XaV9RHd+NLFKKcaP3dDdAo5H9/G7pRmbYhfEu+6Ul6HSaO7Gu
+         6VEQPchPUTyubK4oC7Q1CDN2kDMkncurLhRytTUiiJzNj2qlcz/ZuwcA9l/pN3+C8dIX
+         1eTjDG/8zJq2nzmc1poUMZB6uvrAu0Cpf27PXw/0u8/+Dj+IQq5fZB8eEsoVDQ40r/vR
+         tPfg==
+X-Forwarded-Encrypted: i=1; AJvYcCXvaAuB3xy/5MAgHySVY7jN4DXr3pYOjazyXmHdOyVi9oVighzJc9LfQwdBEDAfCLkmBzR82fAAB4F7@vger.kernel.org
+X-Gm-Message-State: AOJu0YwviM3NWlijQSQtApNPW7zY2AUoZuJJU2KdG8MkadKdbaTIRztB
+	u541rluXXqTW9q58BM6puDW8Si/fujKqT+A5mr5Y/zJ1AxRcYS4I4Dg1aliWNXkWiFdSqGgw4S6
+	okBcxjaVrrh0f8OVQc5//mBLSLmHdbu2ZEfF1Nx7rESxnnlfNjit/2BOBgGY=
+X-Gm-Gg: ASbGnctskxOMCSVDmNo0sKrerckMvkLkO37KCtIqDua8iM5MNA3G05qikuWrnZmAowq
+	l8U/WtgbFwsiYyQgThsYbXv8hvCUBB2AKjv/AZ+gaUrjiP6I0fuP0dNoy8zHv4DjrO+Ej9f7UVQ
+	iP8DTOwBmBsJ/VTwjySqWYfzgSJJEwPNXEz51xodyKvY5gH4J3i/5YuknHWgGp26H9Pxlp0SfJu
+	LBjAlvFTi/TpmaxwnTMJRtyTIK2+Fl3BmOtVVM/xu/O5B5wcqHwmPkOrHDxwAT8wHAo+n99F6z+
+	cou4ZPA9N5VZyq6apQyYb+qG0lIYS3VCgw1KTFqRE3rQ9juX26LLl0aA
+X-Received: by 2002:a17:903:22c8:b0:224:a74:28d2 with SMTP id d9443c01a7336-22428a890a3mr13014515ad.26.1741295643005;
+        Thu, 06 Mar 2025 13:14:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE23EgO7EHnOotbD3brWjYmfJC8xgM4/UCHnXOoF54NF4nSSXUIDJ7IZei75So4jsQeKLecCQ==
+X-Received: by 2002:a17:903:22c8:b0:224:a74:28d2 with SMTP id d9443c01a7336-22428a890a3mr13014125ad.26.1741295642533;
+        Thu, 06 Mar 2025 13:14:02 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22410a7f7efsm17034525ad.132.2025.03.06.13.14.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Mar 2025 13:14:02 -0800 (PST)
+Date: Fri, 7 Mar 2025 05:13:57 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
+	david@fromorbit.com
+Subject: Re: [PATCH v1 2/2] check,common/{preamble,rc},soak: Decoupling
+ init_rc() call from sourcing common/rc
+Message-ID: <20250306211357.fnruffn2nkbiyx5b@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <cover.1741248214.git.nirjhar.roy.lists@gmail.com>
+ <1d07e5657c2817c74e939894bb554424199fd290.1741248214.git.nirjhar.roy.lists@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,80 +98,121 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z55RXUKB5O5l8QjM@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+In-Reply-To: <1d07e5657c2817c74e939894bb554424199fd290.1741248214.git.nirjhar.roy.lists@gmail.com>
 
-On Sat, Feb 01, 2025 at 10:23:29PM +0530, Ojaswin Mujoo wrote:
-> Greetings,
+On Thu, Mar 06, 2025 at 08:17:41AM +0000, Nirjhar Roy (IBM) wrote:
+> Silently executing scripts during sourcing common/rc doesn't look good
+> and also causes unnecessary script execution. Decouple init_rc() call
+> and call init_rc() explicitly where required.
 > 
-> This proposal is on behalf of Me, Nirjhar and Ritesh. We would like to submit
-> a proposal on centralizing filesystem and device configurations within xfstests
-> and maybe a further discussion on some of the open ideas listed by Ted here [3].
-> More details are mentioned below.
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+> ---
+>  check           | 10 ++--------
+>  common/preamble |  1 +
+>  common/rc       |  2 --
+>  soak            |  1 +
+>  4 files changed, 4 insertions(+), 10 deletions(-)
 > 
-> ** Background ** 
-> There was a discussion last year at LSFMM [1] about creating a central fs-config
-> store, that can then be used by anyone for testing different FS
-> features/configurations. This can also bring an awareness among other developers
-> and testers on what is being actively maintained by FS maintainers. We recently
-> posted an RFC [2] for centralizing filesystem configuration which is under
-> review. The next step we are considering is to centralize device configurations
-> within xfstests itself. In line with this, Ted also suggested a similar idea (in
-> point A) [3], where he proposed specifying the device size for the TEST and
-> SCRATCH devices to reduce costs (especially when using cloud infrastructure) and
-> improve the overall runtime of xfstests.
+> diff --git a/check b/check
+> index ea92b0d6..d30af1ba 100755
+> --- a/check
+> +++ b/check
+> @@ -840,16 +840,8 @@ function run_section()
+>  		_prepare_test_list
+>  	elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then
+>  		_test_unmount 2> /dev/null
+> -		if ! _test_mount
+> -		then
+> -			echo "check: failed to mount $TEST_DEV on $TEST_DIR"
+> -			status=1
+> -			exit
+> -		fi
+
+Why remove these lines?
+
+>  	fi
+>  
+> -	init_rc
+
+Doesn't the "check" need init_rc at here?
+
+> -
+>  	seq="check.$$"
+>  	check="$RESULT_BASE/check"
+>  
+> @@ -870,6 +862,8 @@ function run_section()
+>  	needwrap=true
+>  
+>  	if [ ! -z "$SCRATCH_DEV" ]; then
+> +		_check_mounted_on SCRATCH_DEV $SCRATCH_DEV SCRATCH_MNT $SCRATCH_MNT
+> +		[ $? -le 1 ] || exit 1
+         ^^^^^^^
+         Different indent with below code.
+
+This looks like part of init_rc. If you don't remove above init_rc, can this
+change be saved? 
+
+>  	  _scratch_unmount 2> /dev/null
+>  	  # call the overridden mkfs - make sure the FS is built
+>  	  # the same as we'll create it later.
+> diff --git a/common/preamble b/common/preamble
+> index 0c9ee2e0..c92e55bb 100644
+> --- a/common/preamble
+> +++ b/common/preamble
+> @@ -50,6 +50,7 @@ _begin_fstest()
+>  	_register_cleanup _cleanup
+>  
+>  	. ./common/rc
+> +	init_rc
+>  
+>  	# remove previous $seqres.full before test
+>  	rm -f $seqres.full $seqres.hints
+> diff --git a/common/rc b/common/rc
+> index d2de8588..f153ad81 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -5754,8 +5754,6 @@ _require_program() {
+>  	_have_program "$1" || _notrun "$tag required"
+>  }
+>  
+> -init_rc
+> -
+>  ################################################################################
+>  # make sure this script returns success
+>  /bin/true
+> diff --git a/soak b/soak
+> index d5c4229a..5734d854 100755
+> --- a/soak
+> +++ b/soak
+> @@ -5,6 +5,7 @@
+>  
+>  # get standard environment, filters and checks
+>  . ./common/rc
+> +# ToDo: Do we need an init_rc() here? How is soak used?
+
+I never noticed we have this file... this file was create by:
+
+  commit 27fba05e66981c239c3be7a7e5a3aa0d8dc59247
+  Author: Nathan Scott <nathans@sgi.com>
+  Date:   Mon Jan 15 05:01:19 2001 +0000
+
+      cmd/xfs/stress/001 1.6 Renamed to cmd/xfstests/001
+
+I can't understand the relationship of this commit with this file. Does
+anyone learn about the history of it.
+
+I tried to "grep" the whole fstests, looks like nothing uses this file.
+Maybe we should remove it?
+
+Thanks,
+Zorro
+
+>  . ./common/filter
+>  
+>  tmp=/tmp/$$
+> -- 
+> 2.34.1
 > 
-> Recently Dave introduced a feature [4] to run the xfs and generic tests in
-> parallel. This patch creates the TEST and SCRATCH devices at runtime without
-> requiring them to be specified in any config file. However, at this stage, the
-> automatic device initialization appears to be somewhat limited. We believe that
-> centralizing device configuration could help enhance this functionality as well.
 > 
-> ** Proposal ** 
-> We would like to propose a discussion at LSFMM on two key features: central
-> fsconfig and central device-config within xfstests. We can explore how the
-> fsconfig feature can be utilized, and by then, we aim to have a PoC for central
-> device-config feature, which we think can also be discussed in more detail. At
-> this point, we are hoping to get a PoC working with loop devices by default. It
-> will be good to hear from other developers, maintainers, and testers about their
-> thoughts and suggestions on these two features.
-> 
-> Additionally, we would like to thank Ted for listing several features he uses in
-> his custom kvm-xfstests and gce-xfstests [3]. If there is an interest in further
-> reducing the burden of maintaining custom test scripts and wrappers around
-> xfstests, we can also discuss essential features that could be integrated
-> directly into xfstests, whether from Ted's list or suggestions from others.
-> 
-> Thoughts and suggestions are welcome.
 
-Considering all the questions downthread, I'm wondering, are you just
-going to stuff all the known configs into a single configs/default file
-and then modify known_hosts() to set HOST_OPTIONS to that?
-
-	[ -f /etc/xfsqa.config ]             && export HOST_OPTIONS=/etc/xfsqa.config
-	[ -f $HOST_CONFIG_DIR/default ]      && export HOST_OPTIONS=$HOST_CONFIG_DIR/default
-	[ -f $HOST_CONFIG_DIR/$HOST ]        && export HOST_OPTIONS=$HOST_CONFIG_DIR/$HOST
-	[ -f $HOST_CONFIG_DIR/$HOST.config ] && export HOST_OPTIONS=$HOST_CONFIG_DIR/$HOST.config
-
-Then configs/default contains things like:
-
-[xfs_nocrc]
-MKFS_OPTIONS="-m crc=0"
-
-Would that work for running configurations in this manner:
-
-	./check -s xfs_nocrc -g all
-
-?
-
-(I am completely ignorant of config files and never use them.)
-
---D
-
-> 
-> ** References **
-> [1] https://lore.kernel.org/all/87h6h4sopf.fsf@doe.com/
-> [2] https://lore.kernel.org/all/9a6764237b900f40e563d8dee2853f1430245b74.1736496620.git.nirjhar.roy.lists@gmail.com/
-> [3] https://lore.kernel.org/all/20250110163859.GB1514771@mit.edu/
-> [4] https://lore.kernel.org/all/20241127045403.3665299-1-david@fromorbit.com/
-> 
 
