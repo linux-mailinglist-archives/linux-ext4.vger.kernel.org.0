@@ -1,54 +1,57 @@
-Return-Path: <linux-ext4+bounces-6693-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6694-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75E7A55027
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 17:06:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2DD6A5533F
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 18:42:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB0F617574E
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 16:05:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4425D1894AC3
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Mar 2025 17:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA5B211A02;
-	Thu,  6 Mar 2025 16:05:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F9B25C716;
+	Thu,  6 Mar 2025 17:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QPJqBjnB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AFC0211294
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Mar 2025 16:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D8825BAC4;
+	Thu,  6 Mar 2025 17:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741277104; cv=none; b=KULyHc5bq5BWMAL/vu+IKaSB7Fxo6dkL9obs2GnyiUjhKz2KHi7dtkahPUGYjHJ4KY1lgcIvp28K9IeUI9G4JSi4ouT10Tkl73XXf1oDuSTmIczBq3kOJDcZR5hAzbTBQjo+6/l5bTqe56pnam9NyoOw1CvKAXg90YSsHtzih9A=
+	t=1741282919; cv=none; b=ml/OBmiAKwNAF3Xpi0YyEIGpb7rPzsuP2jWY0ZHSrZvVH7ln4SaFlhjQaJnLMCEQQpldS84sXpKP3kmSl2vDB//2srY6BIivMTh5dO3mvua+lueEjs8L/ajdiqTrYUn88ETRh0vX58Sr7kr8C3xiGiDoI12WvQSjRg4QJpqmbu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741277104; c=relaxed/simple;
-	bh=cOoGxtcebT3u8VgggsX55aYM+nUJo9Wlfp8eesUGY+M=;
+	s=arc-20240116; t=1741282919; c=relaxed/simple;
+	bh=MyYrjPsir3kbQH21QKS573iEO2prM4xeSOkTWRMb1zA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CnJx6SgeWAYOYereBomxqJYXjecRQgmh2SnFdr0D1E51dl6dWf9yhJipaIGpXn7ptCIs9aO8RinUgtuBjabLVcOhP0DuZDSlPW+NOCDKUoxmuxl0hIkv+wFbA0liyFWIDNUattSEYETw4z4NkuxMxl+WeVzikgVzdNI+pYjLVyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-112-92.bstnma.fios.verizon.net [173.48.112.92])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 526FxGlE006357
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 6 Mar 2025 10:59:16 -0500
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 3D1372E010B; Thu, 06 Mar 2025 10:59:16 -0500 (EST)
-Date: Thu, 6 Mar 2025 10:59:16 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Baokun Li <libaokun1@huawei.com>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v2 2/2] ext4: protect ext4_release_dquot against freezing
-Message-ID: <20250306155916.GA279274@mit.edu>
-References: <20241121123855.645335-1-ojaswin@linux.ibm.com>
- <20241121123855.645335-3-ojaswin@linux.ibm.com>
- <Z8lBGaJGnM3SZZ-g@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=h3QRlQGsewPafrL9We++VWzC4H0oFByKGQ1mlobW2gGlMJgyj+j6Jl5WWHhFdwZa8gA6yCZZrDBNrqy3aJBIh9+d4IQXxejlMWGFnaY0V5W2n/HTa4neS85mGwxrjRTibpq7XcfqGcQk3VShqsoxMDDDta9Q1+htYVZ5ahFM5Ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QPJqBjnB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AA03C4CEE0;
+	Thu,  6 Mar 2025 17:41:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741282918;
+	bh=MyYrjPsir3kbQH21QKS573iEO2prM4xeSOkTWRMb1zA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QPJqBjnB2NyRAdeioTJx8tfCVRYVLoa6poNivzApg5lXwQf1/dK2El/t8OImbSJM3
+	 ysfAEJwK+J5H+XrKZvPJcX1CO6Pjjp4NzJXgAWKhiasOqQzLSkKkVjQTspRS94P1Qv
+	 RpFFl2K764QKprMTjdG568OQhYUdUhPG/O9O2TOxsOMnpSmxxgPPobDrZHNRqZOUYf
+	 uRVAxfP8qdcZR0fqh2XPIYZfP14+kO5IXTeXuLg3inUP4OeaxsqFdPBt3zfmJE6Qj4
+	 SFZSOCjycPykpqvYlPYW4kujl+05p1PtJdObcM4OmGyhiPLxLjxoay7pp6IqPfFWBL
+	 EBSiSUs+pIpbw==
+Date: Thu, 6 Mar 2025 09:41:57 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, zlang@kernel.org, david@fromorbit.com
+Subject: Re: [PATCH v1 1/2] generic/749: Remove redundant sourcing of
+ common/rc
+Message-ID: <20250306174157.GO2803749@frogsfrogsfrogs>
+References: <cover.1741248214.git.nirjhar.roy.lists@gmail.com>
+ <149c6c0678803e07e7f31f23df4b3036f7daf17f.1741248214.git.nirjhar.roy.lists@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,30 +60,37 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z8lBGaJGnM3SZZ-g@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+In-Reply-To: <149c6c0678803e07e7f31f23df4b3036f7daf17f.1741248214.git.nirjhar.roy.lists@gmail.com>
 
-On Thu, Mar 06, 2025 at 12:00:49PM +0530, Ojaswin Mujoo wrote:
-> On Thu, Nov 21, 2024 at 06:08:55PM +0530, Ojaswin Mujoo wrote:
-> > Protect ext4_release_dquot against freezing so that we
-> > don't try to start a transaction when FS is frozen, leading
-> > to warnings.
-> > 
-> > Further, avoid taking the freeze protection if a transaction
-> > is already running so that we don't need end up in a deadlock
-> > as described in
-> > 
-> >   46e294efc355 ext4: fix deadlock with fs freezing and EA inodes
-> > 
-> > Suggested-by: Jan Kara <jack@suse.cz>
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+On Thu, Mar 06, 2025 at 08:17:40AM +0000, Nirjhar Roy (IBM) wrote:
+> common/rc is already sourced before the test starts running
+> in _begin_fstest() preamble.
 > 
-> Hey Ted,
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+
+Yeah, that sourceing shouldn't be necessary.
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+
+--D
+
+> ---
+>  tests/generic/749 | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> Just a ping, I think you might have missed this patch. Let me know if
-> anything else is needed from my side.
-
-Yes, I did miss this patch; thanks for the reminder. It looks good
-and I've added it to my tree.
-
-				- Ted
+> diff --git a/tests/generic/749 b/tests/generic/749
+> index fc747738..451f283e 100755
+> --- a/tests/generic/749
+> +++ b/tests/generic/749
+> @@ -15,7 +15,6 @@
+>  # boundary and ensures we get a SIGBUS if we write to data beyond the system
+>  # page size even if the block size is greater than the system page size.
+>  . ./common/preamble
+> -. ./common/rc
+>  _begin_fstest auto quick prealloc
+>  
+>  # Import common functions.
+> -- 
+> 2.34.1
+> 
+> 
 
