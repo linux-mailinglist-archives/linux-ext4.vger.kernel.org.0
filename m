@@ -1,410 +1,287 @@
-Return-Path: <linux-ext4+bounces-6718-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6719-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA638A577BD
-	for <lists+linux-ext4@lfdr.de>; Sat,  8 Mar 2025 03:57:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9AB4A57838
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Mar 2025 05:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F04E1189A3E1
-	for <lists+linux-ext4@lfdr.de>; Sat,  8 Mar 2025 02:57:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12D491724D8
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Mar 2025 04:05:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920ED14B965;
-	Sat,  8 Mar 2025 02:57:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C69717A2EA;
+	Sat,  8 Mar 2025 04:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GmJ4/ay1"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33F7C8EB;
-	Sat,  8 Mar 2025 02:57:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E1717A2E1;
+	Sat,  8 Mar 2025 04:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741402647; cv=none; b=oBlhSVaZmoO3tyEUymeB2ujdfpGOp4FEO/ulOhg+ScOYzL36Qn9Ley//TiOudxfBQHwWdx88HqvhdjNR3jfcsjVUFpR5I0q4zA8g9Rhbj5x76tAjNlZlGt6M5WvsrZSo9mN6Hu3PWKzILVrOohvgz5zOu3v33q85LqT3WkpWdTY=
+	t=1741406744; cv=none; b=VLFl+Ft0OsLbj559ISRlJjFwZ9z0dP+hksM1Nl0eljoIVgAK/BK4gjAhdQaME3H1L9IoDwUbJPdpRODmsFxurngTVuF4lKFqBpnIxNSB1SgxIDsnEfYZ7gXCIQ1Xne1zQ8oKPP5kUfYTItmN+EplSSRbG2YiZYe5AnNrDRAOmPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741402647; c=relaxed/simple;
-	bh=eeevZJqPB8EWuZQE0O4ld6ZOPtrsGxgb1rwzbMuBnQ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jgKjdQVbwA+7ywFWPy8O22ijDaesXWe/obYno36skhdD4rSXEFKglr4ic0PZoR0MHa2xLppCha57HVDisqULwlgsKjZRqE0tQwhlQbEB5VJuli26VqiNSj4yOmDkmBrjUYeISTt7ktF24UBGfbIM7k9rH4yoomxlpW8z2EU7NKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Z8nqq0YWnz4f3m6r;
-	Sat,  8 Mar 2025 10:56:55 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id BC3CF1A06DC;
-	Sat,  8 Mar 2025 10:57:18 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgBHrGANsstnjkRzFw--.41517S3;
-	Sat, 08 Mar 2025 10:57:18 +0800 (CST)
-Message-ID: <4f61a0fb-dd9f-4c0e-b872-31e5474ac799@huaweicloud.com>
-Date: Sat, 8 Mar 2025 10:57:16 +0800
+	s=arc-20240116; t=1741406744; c=relaxed/simple;
+	bh=HYefr4k5XyU7cfDSknDMDx3HKGQ8ox7nvqUGfndUsxY=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=qPdKZziOGNMVcJhrlrbl8btE+UO25sQ90Spgw8MHioMQClshk9fnqcZs7IvjcltbKpv91mVoKZcIh+UoqMDQj9P76jq5yZwex6yxIYAKwhCLLwdl7B9zs9/D20jJZ1Mwu/BwJDnycg5PxPgOJvc8vUWj0St5Ut16iE0gFCjd36s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GmJ4/ay1; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22355618fd9so48496775ad.3;
+        Fri, 07 Mar 2025 20:05:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741406741; x=1742011541; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fWV+sekDRGDYiyLZsHUM3yuR7GPqEHNFn7Xp+X+661Y=;
+        b=GmJ4/ay10eKtjPoqGCUOdxIqrnPnCAPbZZVL2w8mUONd9pbskqmT3Uaf64svGMRYcI
+         vnPpoFiQ+Chwn3JB8aJPx/SAEioAaceaaWiT0lGmQBcedKxbXIWNO6qjNUHQP6TLoK51
+         BhTtbOfm3y9iftvmwjGi3Xw+H5n7OaCHPjlabAKxaAf9kmeA30Xd8zOKQ8zPj9e3rIX9
+         GYsvg0RxztlTqoUIagrbdJsN17poviezB8qhTn7LbHMOiQEzSFIhGE1jfM8QdRvhiQRo
+         +DTCPLY4XcKDPuliQ1lBZ1tt1hu/nqH1iUYLqgbgxxS1X5DutAh600x8e2AJjJzA+89Y
+         aAtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741406741; x=1742011541;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fWV+sekDRGDYiyLZsHUM3yuR7GPqEHNFn7Xp+X+661Y=;
+        b=qErTAGGYNnXacMYQqdhLt1KJvKEkOl2PyxiYdGcWUsMdLnW4MbI793EIhn1mjbEFqi
+         OuMLy81/9yLlkM4JHt2rJQp6iN2ICHj3BZ2KnbXpGCuXWR8ZY7pY5uaWRO/yYjL1AYmY
+         bstvnLAPPZ4IOjj/2d2L/lB0Hf76TXUxipeG5Xf1Ome/Mq+AI9K0Bxjj2XIAPT7uBGM7
+         OGyasJ+qK4W7XeQjc8Z9LOwFHM+cTsJhqXeFk8i8GRQqIJfomRfxyR649NFIY2P+AWhe
+         KZFynDrIu7mE1hhqBIbDubogWK9Ak2SulQV8YdMy8HmVQVuusHi+kB+KFIKaNdK7KmgV
+         ZWsw==
+X-Forwarded-Encrypted: i=1; AJvYcCU9uynBcEHygxLMH4ShfKZMW1RGbsWuyJJokIxPqZGB22L1+GeE+1O8lDH/bDfEdkQGUQhrY9n4StXr@vger.kernel.org, AJvYcCXGCwo8ez/SfKxIrKhS5D4pL+4ZUzBfsTsxzZXBgk98RU81WrVUA/+CSgYRRXlpG62c6b42y4RrHhs6@vger.kernel.org, AJvYcCXNozAY/PgTrQkK/qGIo/wqwlAUQnyorbuJPAhwx/dArSdbKIsvZdBcbL5jmGxSKF3f7gGxni89NvoVG+NEUg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQEtmhr6iaAuTMNr3kbfJowDBC0W2G94uh3tiCsRZRsJVJdpnL
+	uoE0kb8iWyvB2vt1XFR6PEsf39jBqEgTnD0smTt/HGqxmOyCA9ZB
+X-Gm-Gg: ASbGncsAq5P73Ze/8X5pBFwrXwObkpH0RPEqhl29v7Bp9V7C5OetYqXaOmvlaQJg7hm
+	ghkd50nTNN5NMQ5XTPyuQVrF0Pd7CCmNDImmLPTvFm7BE81AEqv2n3/akXGeYavp9iPeVLALcz6
+	8BBqD3NHNogAX1dLbtz7ldFa3UaPdhZS4StsBBY2GjHCwV4p9gA2LMFc0jKjJaSnRTqhY+JoO54
+	I5ttPmHnLw1EmtJFjLlBAiJNE/QRnFAAycKE3sb8Lx2scgBhR/aZI4GLhR+hdJ/jjmRhWNWv8x1
+	agLZrf+fdmQIlC57mjSXPPs1AusWgNqnbp0=
+X-Google-Smtp-Source: AGHT+IHDmo3EFmu+rj7Fot7nL/Ky7sPpZnwpBkSsG6pm6IZPSspvMCOhzIbp+6ya1exoac+Kzc0Alg==
+X-Received: by 2002:a17:903:283:b0:224:2201:84da with SMTP id d9443c01a7336-2242887ffa8mr84818645ad.6.1741406740920;
+        Fri, 07 Mar 2025 20:05:40 -0800 (PST)
+Received: from dw-tp ([171.76.82.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-224109eb4b0sm38517425ad.88.2025.03.07.20.05.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Mar 2025 20:05:40 -0800 (PST)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>, lsf-pc@lists.linux-foundation.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, djwong@kernel.org, dchinner@redhat.com, jack@suse.cz, tytso@mit.edu, linux-ext4@vger.kernel.org, nirjhar.roy.lists@gmail.com, zlang@kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] xfstests: Centralizing filesystem configs and device configs
+In-Reply-To: <Z8jcJaUvNfPy_B1V@dread.disaster.area>
+Date: Sat, 08 Mar 2025 08:56:57 +0530
+Message-ID: <874j046w3i.fsf@gmail.com>
+References: <Z55RXUKB5O5l8QjM@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com> <Z6FFlxFEPfJT0h_P@dread.disaster.area> <87ed0erxl3.fsf@gmail.com> <Z6KRJ3lcKZGJE9sX@dread.disaster.area> <87plj0hp7e.fsf@gmail.com> <Z8d0Y0yvlgngKsgo@dread.disaster.area> <87frjs6t23.fsf@gmail.com> <Z8jcJaUvNfPy_B1V@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] ext4: avoid journaling sb update on error if
- journal is destroying
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: Jan Kara <jack@suse.cz>, Baokun Li <libaokun1@huawei.com>,
- linux-kernel@vger.kernel.org, Mahesh Kumar <maheshkumar657g@gmail.com>,
- linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-References: <cover.1741270780.git.ojaswin@linux.ibm.com>
- <1bf59095d87e5dfae8f019385ba3ce58973baaff.1741270780.git.ojaswin@linux.ibm.com>
- <5b3864c3-bcfd-4f45-b427-224d32aca478@huaweicloud.com>
- <Z8qTciy49b7LSHqr@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <Z8qqna0BEDT5ZD82@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <e9e92601-53bc-42a2-b428-e61bff6153c5@huaweicloud.com>
- <Z8rKAsmIuBlOo4T1@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <e3172770-9b39-4105-966f-faf64a6b6515@huaweicloud.com>
- <Z8ssR7BtBVP1zif2@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <Z8ssR7BtBVP1zif2@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBHrGANsstnjkRzFw--.41517S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3CrykGFWkGr43Kw48CryrtFb_yoWkXF4xpr
-	W5Aa4jyrWUZr1jyr10qr45XrWqgF10yry2gr1UGr18tws8twn7KFy7tFyYkFyUJr45GF18
-	ZF4UA397Gw1jyrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUymb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2NtUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2025/3/8 1:26, Ojaswin Mujoo wrote:
-> On Fri, Mar 07, 2025 at 08:36:08PM +0800, Zhang Yi wrote:
->> On 2025/3/7 18:27, Ojaswin Mujoo wrote:
->>> On Fri, Mar 07, 2025 at 04:43:24PM +0800, Zhang Yi wrote:
->>>> On 2025/3/7 16:13, Ojaswin Mujoo wrote:
->>>>> On Fri, Mar 07, 2025 at 12:04:26PM +0530, Ojaswin Mujoo wrote:
->>>>>> On Fri, Mar 07, 2025 at 10:49:28AM +0800, Zhang Yi wrote:
->>>>>>> On 2025/3/6 22:28, Ojaswin Mujoo wrote:
->>>>>>>> Presently we always BUG_ON if trying to start a transaction on a journal marked
->>>>>>>> with JBD2_UNMOUNT, since this should never happen. However, while ltp running
->>>>>>>> stress tests, it was observed that in case of some error handling paths, it is
->>>>>>>> possible for update_super_work to start a transaction after the journal is
->>>>>>>> destroyed eg:
->>>>>>>>
->>>>>>>> (umount)
->>>>>>>> ext4_kill_sb
->>>>>>>>   kill_block_super
->>>>>>>>     generic_shutdown_super
->>>>>>>>       sync_filesystem /* commits all txns */
->>>>>>>>       evict_inodes
->>>>>>>>         /* might start a new txn */
->>>>>>>>       ext4_put_super
->>>>>>>> 	flush_work(&sbi->s_sb_upd_work) /* flush the workqueue */
->>>>>>>>         jbd2_journal_destroy
->>>>>>>>           journal_kill_thread
->>>>>>>>             journal->j_flags |= JBD2_UNMOUNT;
->>>>>>>>           jbd2_journal_commit_transaction
->>>>>>>>             jbd2_journal_get_descriptor_buffer
->>>>>>>>               jbd2_journal_bmap
->>>>>>>>                 ext4_journal_bmap
->>>>>>>>                   ext4_map_blocks
->>>>>>>>                     ...
->>>>>>>>                     ext4_inode_error
->>>>>>>>                       ext4_handle_error
->>>>>>>>                         schedule_work(&sbi->s_sb_upd_work)
->>>>>>>>
->>>>>>>>                                                /* work queue kicks in */
->>>>>>>>                                                update_super_work
->>>>>>>>                                                  jbd2_journal_start
->>>>>>>>                                                    start_this_handle
->>>>>>>>                                                      BUG_ON(journal->j_flags &
->>>>>>>>                                                             JBD2_UNMOUNT)
->>>>>>>>
->>>>>>>> Hence, introduce a new sbi flag s_journal_destroying to indicate journal is
->>>>>>>> destroying only do a journaled (and deferred) update of sb if this flag is not
->>>>>>>> set. Otherwise, just fallback to an un-journaled commit.
->>>>>>>>
->>>>>>>> We set sbi->s_journal_destroying = true only after all the FS updates are done
->>>>>>>> during ext4_put_super() (except a running transaction that will get commited
->>>>>>>> during jbd2_journal_destroy()). After this point, it is safe to commit the sb
->>>>>>>> outside the journal as it won't race with a journaled update (refer
->>>>>>>> 2d01ddc86606).
->>>>>>>>
->>>>>>>> Also, we don't need a similar check in ext4_grp_locked_error since it is only
->>>>>>>> called from mballoc and AFAICT it would be always valid to schedule work here.
->>>>>>>>
->>>>>>>> Fixes: 2d01ddc86606 ("ext4: save error info to sb through journal if available")
->>>>>>>> Reported-by: Mahesh Kumar <maheshkumar657g@gmail.com>
->>>>>>>> Suggested-by: Jan Kara <jack@suse.cz>
->>>>>>>> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->>>>>>>> ---
->>>>>>>>  fs/ext4/ext4.h      | 2 ++
->>>>>>>>  fs/ext4/ext4_jbd2.h | 8 ++++++++
->>>>>>>>  fs/ext4/super.c     | 4 +++-
->>>>>>>>  3 files changed, 13 insertions(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->>>>>>>> index 2b7d781bfcad..d48e93bd5690 100644
->>>>>>>> --- a/fs/ext4/ext4.h
->>>>>>>> +++ b/fs/ext4/ext4.h
->>>>>>>> @@ -1728,6 +1728,8 @@ struct ext4_sb_info {
->>>>>>>>  	 */
->>>>>>>>  	struct work_struct s_sb_upd_work;
->>>>>>>>  
->>>>>>>> +	bool s_journal_destorying;
->>>>>>>> +
->>>>>>>>  	/* Atomic write unit values in bytes */
->>>>>>>>  	unsigned int s_awu_min;
->>>>>>>>  	unsigned int s_awu_max;
->>>>>>>> diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
->>>>>>>> index 9b3c9df02a39..6bd3ca84410d 100644
->>>>>>>> --- a/fs/ext4/ext4_jbd2.h
->>>>>>>> +++ b/fs/ext4/ext4_jbd2.h
->>>>>>>> @@ -437,6 +437,14 @@ static inline int ext4_journal_destroy(struct ext4_sb_info *sbi, journal_t *jour
->>>>>>>>  {
->>>>>>>>  	int err = 0;
->>>>>>>>  
->>>>>>>> +	/*
->>>>>>>> +	 * At this point all pending FS updates should be done except a possible
->>>>>>>> +	 * running transaction (which will commit in jbd2_journal_destroy). It
->>>>>>>> +	 * is now safe for any new errors to directly commit superblock rather
->>>>>>>> +	 * than going via journal.
->>>>>>>> +	 */
->>>>>>>> +	sbi->s_journal_destorying = true;
->>>>>>>> +
->>>>>>>
->>>>>>> Hi, Ojaswin!
->>>>>>>
->>>>>>> I'm afraid you still need to flush the superblock update work here,
->>>>>>> otherwise I guess the race condition you mentioned in v1 could still
->>>>>>> occur.
->>>>>>>
->>>>>>>  ext4_put_super()
->>>>>>>   flush_work(&sbi->s_sb_upd_work)
->>>>>>>
->>>>>>>                     **kjournald2**
->>>>>>>                     jbd2_journal_commit_transaction()
->>>>>>>                     ...
->>>>>>>                     ext4_inode_error()
->>>>>>>                       /* JBD2_UNMOUNT not set */
->>>>>>>                       schedule_work(s_sb_upd_work)
->>>>>>>
->>>>>>>                                   **workqueue**
->>>>>>>                                    update_super_work
->>>>>>>                                    /* s_journal_destorying is not set */
->>>>>>>                             	   if (journal && !s_journal_destorying)
->>>>>>>
->>>>>>>   ext4_journal_destroy()
->>>>>>>    /* set s_journal_destorying */
->>>>>>>    sbi->s_journal_destorying = true;
->>>>>>>    jbd2_journal_destroy()
->>>>>>>     journal->j_flags |= JBD2_UNMOUNT;
->>>>>>>
->>>>>>>                                        jbd2_journal_start()
->>>>>>>                                         start_this_handle()
->>>>>>>                                           BUG_ON(JBD2_UNMOUNT)
->>>>>>>
->>>>>>> Thanks,
->>>>>>> Yi.
->>>>>> Hi Yi,
->>>>>>
->>>>>> Yes you are right, somehow missed this edge case :(
->>>>>>
->>>>>> Alright then, we have to move out sbi->s_journal_destroying outside the
->>>>>> helper. Just wondering if I should still let it be in
->>>>>> ext4_journal_destroy and just add an extra s_journal_destroying = false
->>>>>> before schedule_work(s_sb_upd_work), because it makes sense.
->>>>>>
->>>>>> Okay let me give it some thought but thanks for pointing this out!
->>>>>>
->>>>>> Regards,
->>>>>> ojaswin
->>>>>
->>>>> Okay so thinking about it a bit more, I see you also suggested to flush
->>>>> the work after marking sbi->s_journal_destroying. But will that solve
->>>>> it?
->>>>>
->>>>>   ext4_put_super()
->>>>>    flush_work(&sbi->s_sb_upd_work)
->>>>>  
->>>>>                      **kjournald2**
->>>>>                      jbd2_journal_commit_transaction()
->>>>>                      ...
->>>>>                      ext4_inode_error()
->>>>>                        /* JBD2_UNMOUNT not set */
->>>>>                        schedule_work(s_sb_upd_work)
->>>>>  
->>>>>                                     **workqueue**
->>>>>                                     update_super_work
->>>>>                                     /* s_journal_destorying is not set */
->>>>>                              	      if (journal && !s_journal_destorying)
->>>>>  
->>>>>    ext4_journal_destroy()
->>>>>     /* set s_journal_destorying */
->>>>>     sbi->s_journal_destorying = true;
->>>>>     flush_work(&sbi->s_sb_upd_work)
->>>>>                                       schedule_work()
->>>>                                         ^^^^^^^^^^^^^^^
->>>>                                         where does this come from?
->>>>
->>>> After this flush_work, we can guarantee that the running s_sb_upd_work
->>>> finishes before we set JBD2_UNMOUNT. Additionally, the journal will
->>>> not commit transaction or call schedule_work() again because it has
->>>> been aborted due to the previous error. Am I missing something?
->>>>
->>>> Thanks,
->>>> Yi.
->>>
->>> Hmm, so I am thinking of a corner case in ext4_handle_error() where 
->>>
->>>  if(journal && !is_journal_destroying) 
->>>
->>> is computed but schedule_work() not called yet, which is possible cause
->>> the cmp followed by jump is not atomic in nature. If the schedule_work
->>> is only called after we have done the flush then we end up with this:
->>>
->>>                               	      if (journal && !s_journal_destorying)
->>>     ext4_journal_destroy()
->>>      /* set s_journal_destorying */
->>>      sbi->s_journal_destorying = true;
->>>      flush_work(&sbi->s_sb_upd_work)
->>>                                        schedule_work()
->>>
->>> Which is possible IMO, although the window is tiny.
->>
->> Yeah, right!
->> Sorry for misread the location where you add the "!s_journal_destorying"
->> check, the graph I provided was in update_super_work(), which was wrong.
-> 
-> Oh right, I also misread your trace but yes as discussed, even 
-> 
->     sbi->s_journal_destorying = true;
-> 		flush_work()
->     jbd2_journal_destroy()
-> 
-> doesn't work.
-> 
->> The right one should be:
->>
->>  ext4_put_super()
->>   flush_work(&sbi->s_sb_upd_work)
->>
->>                     **kjournald2**
->>                     jbd2_journal_commit_transaction()
->>                     ...
->>                     ext4_inode_error()
->>                       /* s_journal_destorying is not set */
->>                       if (journal && !s_journal_destorying)
->>                         (schedule_work(s_sb_upd_work))  //can be here
->>
->>   ext4_journal_destroy()
->>    /* set s_journal_destorying */
->>    sbi->s_journal_destorying = true;
->>    jbd2_journal_destroy()
->>     journal->j_flags |= JBD2_UNMOUNT;
->>
->>                         (schedule_work(s_sb_upd_work))  //also can be here
->>
->>                                   **workqueue**
->>                                    update_super_work()
->>                                    journal = sbi->s_journal //get journal
->>     kfree(journal)
->>                                      jbd2_journal_start(journal) //journal UAF
->>                                        start_this_handle()
->>                                          BUG_ON(JBD2_UNMOUNT) //bugon here
->>
->>
->> So there are two problems here, the first one is the 'journal' UAF,
->> the second one is triggering JBD2_UNMOUNT flag BUGON.
-> 
-> Indeed, there's a possible UAF here as well.
-> 
->>
->>>>>
->>>>> As for the fix, how about we do something like this:
->>>>>
->>>>>   ext4_put_super()
->>>>>
->>>>>    flush_work(&sbi->s_sb_upd_work)
->>>>>    destroy_workqueue(sbi->rsv_conversion_wq);
->>>>>
->>>>>    ext4_journal_destroy()
->>>>>     /* set s_journal_destorying */
->>>>>     sbi->s_journal_destorying = true;
->>>>>
->>>>>    /* trigger a commit and wait for it to complete */
->>>>>
->>>>>     flush_work(&sbi->s_sb_upd_work)
->>>>>
->>>>>     jbd2_journal_destroy()
->>>>>      journal->j_flags |= JBD2_UNMOUNT;
->>>>>  
->>>>>                                         jbd2_journal_start()
->>>>>                                          start_this_handle()
->>>>>                                            BUG_ON(JBD2_UNMOUNT)
->>>>>
->>>>> Still giving this codepath some thought but seems like this might just
->>>>> be enough to fix the race. Thoughts on this?
->>>>>
->>
->> I think this solution should work, the forced commit and flush_work()
->> should ensure that the last transaction is committed and that the
->> potential work is done.
->>
->> Besides, the s_journal_destorying flag is set and check concurrently
->> now, so we need WRITE_ONCE() and READ_ONCE() for it. Besides, what
->> about adding a new flag into sbi->s_mount_state instead of adding
->> new s_journal_destorying?
-> 
-> Right, that makes sence. I will incorporate these changes in the next 
-> revision.
-> 
+Dave Chinner <david@fromorbit.com> writes:
 
-Think about this again, it seems that we no longer need the destroying
-flag. Because we force to commit and wait for the **last** transaction to
-complete, and the flush work should also ensure that the last sb_update
-work to complete. Regardless of whether it starts a new handle in the
-last update_super_work(), it will not commit since the journal should
-have aborted. What are your thoughts?
+> On Wed, Mar 05, 2025 at 09:13:32AM +0530, Ritesh Harjani wrote:
+>> Dave Chinner <david@fromorbit.com> writes:
+>> 
+>> > On Sat, Mar 01, 2025 at 06:39:57PM +0530, Ritesh Harjani wrote:
+>> >> > Why is having hundreds of tiny single-config-only files
+>> >> > better than having all the configs in a single file that is
+>> >> > easily browsed and searched?
+>> >> >
+>> >> > Honestly, I really don't see any advantage to re-implementing config
+>> >> > sections as a "file per config" object farm. Yes, you can store
+>> >> > information that way, but that doesn't make it an improvement over a
+>> >> > single file...
+>> >> >
+>> >> > All that is needed is for the upstream repository to maintain a
+>> >> > config file with all the config sections defined that people need.
+>> >> > We don't need any new infrastructure to implement a "centralised
+>> >> > configs" feature - all we need is an agreement that upstream will
+>> >> > ship an update-to-date default config file instead of the ancient,
+>> >> > stale example.config/localhost.config files....
+>
+> .....
+>
+>> > You haven't explained why we need new infrastructure to do something
+>> > we can already do with the existing infrastructure. What problem are
+>> > you trying to solve that the current infrastructure does not handle?
+>> >
+>> > i.e. we won't need to change the global config file very often once the
+>> > common configs are defined in it; it'll only get modified when
+>> > filesystems add new features that need specific mkfs or mount option
+>> > support to be added, and that's fairly rare.
+>> >
+>> > Hence I still don't understand what new problem multiple config files
+>> > and new infrastructure to support them is supposed to solve...
+>> 
+>> 
+>> I will try and explain our reasoning here: 
+>> 
+>> 1. Why have per-fs config file i.e. configs/ext4.config or 
+>> configs/xfs.config...
+> .....
+>> 2. Why then add the infrastructure to create a new common
+>> configs/all-fs.config file during make?
+> .....
+>
+> These aren't problems that need to be solved. These are "solutions"
+> posed as a questions.
+>
+> Let's look at 1):
+>
+>> Instead of 1 large config file it's easier if we have FS specific
+>> sections in their own .config file.  I agree we don't need configs/<fs>
+>> directories for each filesystem. But it's much easier if we have
+>> configs/<fs>.config with the necessary sections defined in it.
+>
+> I disagree with both these "it is easier" assertions.
+>
+> That same argument was made for splitting up MAINTAINERS in the
+> kernel tree, which sees far more concurrent changes than a test
+> config file would in fstests. The "split files are easier to
+> use/maintain" argument wasn't persuasive there, and I don't really
+> see that this is any different. We just aren't going to have a lot
+> of change to common test configs once the initial set is defined
+> and committed...
+>
 
- ext4_put_super()
-  flush_work(&sbi->s_sb_upd_work)
-  destroy_workqueue(sbi->rsv_conversion_wq)
+Ok. 1 central config file for all fs sections then.
+Not really fond of the idea, but I see your point. Since there isn't
+going to be much of the modifications to this, maybe 1 file should do.
 
-  ext4_journal_destroy()
-   /* trigger a commit (it will commit the last trnasaction) */
+>> That
+>> will be easy to maintain by their respective FS maintainers rather than
+>> maintaining all sections defined in 1 large common config file.
+>
+> Again, it is no more difficult to add a new section config for a new
+> btrfs config to a configs/default.config file than it is to add it
+> to configs/default-btrfs.config.
+>
+> The config sections are already namespaced by naming convention
+> (i.e. ["FSTYP"-"config description"]), so the argument that we need
+> to add a config namespace to an already namespaced config setup
+> to make it "easier to manage" isn't convincing - it's a subjective
+> opinion.
+>
+> I'm saying subjective analysis is insufficient justification for a
+> change, because the subjective analysis of the situation done by
+> different people can result in (and often does) completely opposed
+> stances. Both subjective opinions are as valid as each other, so the
+> only way to address the situation is to look at the technical merits
+> of the proposal. The requires all parties to understand the problem
+> that needs to be solved.
+>
+> I still don't know what problem is solved by shipping lots of config
+> files and additional code, build infrastructure and CLI interfaces
+> to address.  I'm probably still missing something important, but I'm
+> not going to learn what that might be from subjective opinion
+> statements like "X will be easier if ...."
+>
+>> This is a combined configs/all-fs.config file which need not be
+>> maintained in git version control. It gets generated for our direct
+>> use. This is also needed to run different cross filesystem tests from a
+>> single ./check script. i.e. 
+>> 
+>>         ./check -s ext4_4k -s xfs_4k -g quick
+>> 
+>> (otherwise one cannot run ext4_4k and xfs_4k from a single ./check invocation)
+>
+> Well, yes, and therein lies the problem with this approach. Where do
+> custom configs go? Are you proposing that everyone with custom
+> configs will be forced to run or manage fstests in some new,
+> different way?
+>
+>> I don't think this is too much burden for "make" to generate this file.
+>> And it's easier than, for people to use configs/all-fs.config to run
+>> cross filesystem tests (as mentioned above).
+>>
+>> e.g. 
+>> 1. "make" will generate configs/all-fs.config
+>> 2. Define your devices.config in configs/devices.config
+>> 3. Then run 
+>>    (. configs/devices.config; ./check -s ext4_4k -s xfs_4k -g quick)
+>
+> <looks at code providec>
+>
+> Yup, and now this is all ignored and doesn't work because the test
+> machine has a custom config setup in <hostname>.config and that
+> overrides using configs/all-fs.config.
+>
+> That is not ideal.
 
-                    **kjournald2**
-                    jbd2_journal_commit_transaction()
-                    ...
-                     ext4_inode_error()
-                      schedule_work(s_sb_upd_work))
+That was intentionally put to not break any of the existing users custom
+config setup.
 
-                                     **workqueue**
-                                      update_super_work()
-                                        jbd2_journal_start(journal)
-                                          start_this_handle()
-                                          //This new trans will
-                                          //not be committed.
+>
+> Of course, we could add a "configs/local.configs" file for local
+> configs that get included via the make rule.
+>
+> However, now we need both a per-machine configs/local.config to be
+> exist or be distributed at the fstests source code update time (i.e.
+> before build), as well as also needing an additional static
+> per-machine configs/devices.config to be defined before fstests is
+> run.
+>
+> This is much more convoluted that setting up in
+> configs/<hostname>.config once at machine setup time and almost
+> never having to touch it again. The build time requirement also
+> makes it hard to install packaged fstests (e.g. in a rpm or deb)
+> because now there's a configure and build step needed after package
+> installation...
+>
+> Part of the problem is that you've treated the fstests-provided
+> section definitions as exclusive w.r.t. local custom config
+> definitions.  i.e. We can't have both fstest defined sections and
+> custom sections at the same time.
+>
+> This restriction essentially forces anyone with a custom config to
+> have to copy the built config file into their custom config file so
+> that they can run both fstests provided and custom configs in the
+> same test run.
+>
 
-                     jbd2_journal_abort()
+The current solution faces this problem because we were using
+HOST_OPTIONS method to define the config file. That in fstests forces to
+use only 1 config file which can be either local.config or <host>.config
+or use configs/all-fs.config.
 
-   /* wait for it to complete */
+So the problem then is where do the users define their device settings. 
 
-   flush_work(&sbi->s_sb_upd_work)
-   jbd2_journal_destroy()
-    journal->j_flags |= JBD2_UNMOUNT;
-   jbd2_journal_commit_transaction() //it will commit nothing
+> That is not ideal.
+>
 
-Thanks,
-Yi.
+Yes, I see the problem. Could you please suggest a better alternative
+then?
 
+One approach which I am thinking is to provide a custom -c option to
+pass the section config file. That might require some changes in check
+script. But the idea is that fstests will use more than 1 defined config
+file i.e. it  will first look into it's HOST_OPTIONS provided config
+file and also take into account -c <all-fs.config-file>, if passed from
+cmdline, to find the additional section definitions. i.e. 
+
+./check -c <all-fs.config-file-path> -s ext4_4k -s xfs_4k -g quick
+
+I guess that will allow the users to use local.config or host.config as
+is to define their device settings and also be able to use -c config
+file for testing any additional sections.
+
+Thoughts? 
+
+-ritesh
+
+
+> Maybe this is an oversight, but I still don't know what problem you
+> are trying to solve and so I can't make any judgement on whether it
+> is a simple mistake or intended behaviour...
+>
+> -Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
 
