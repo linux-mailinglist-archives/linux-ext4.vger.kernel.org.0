@@ -1,201 +1,145 @@
-Return-Path: <linux-ext4+bounces-6714-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6715-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56728A56F5E
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Mar 2025 18:43:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C871EA57718
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Mar 2025 02:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1B69189A293
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Mar 2025 17:43:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D7EA17826F
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Mar 2025 01:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B1A242937;
-	Fri,  7 Mar 2025 17:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wt1IBl0X"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576EADDCD;
+	Sat,  8 Mar 2025 01:09:43 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFA9242910;
-	Fri,  7 Mar 2025 17:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB37D2F30;
+	Sat,  8 Mar 2025 01:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741369247; cv=none; b=DFIUelT+yN1AD/4G+XFMiqZ7od/DVhX8dGmfVMK1SUDiMfdlWXEa/Bo5QeDM1tqx4vO5nAGgYd//9tDV2sGB09uGcxkGxL9DCtJNBYEYZQ7eY4KO4CisLNCwrS10B6qh5ifqMLjz1xVGGBhT8rJrPq3OUKBkOPg3qAsJ+nDg6tE=
+	t=1741396183; cv=none; b=VP7lFLX+47vYv2s4sSpIGyTtcFh4Klt70Y6N5jnAaqdOVI1H2GDYPzdiYRP8Vi63XT0nWy6Ep8pS6OaUWKZP8VxjD9wLW1DS1Wo2+HwIqVWEs2QzV+9HQw/FlNDWA9SBIsgRgNxZFwb7NOuyjfKaNXaWwt8IIc5Cre1B5yYdYc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741369247; c=relaxed/simple;
-	bh=+NmlaSsErqnbxtvOSwjLfNHWTnd/3qjiCEKhTCZHKo4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wh02nY8p3QVRCGUduBG6nhAj+QkGroFMp8BhHQbdZlsspSZF2olqy+WXGqFk2gI1XzjbqArr9zbmeZJGKLBajrwi1po3D90KqeEjRirzwfEntn3DgNv2uElgcSstTeeb2DmWdHDqbxMwMeIP1ayfhXyj5UzW03tKgkFjC0RyKQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wt1IBl0X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0F82C4CED1;
-	Fri,  7 Mar 2025 17:40:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741369246;
-	bh=+NmlaSsErqnbxtvOSwjLfNHWTnd/3qjiCEKhTCZHKo4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Wt1IBl0Xqmib2Sv0t192/mKVbF0k0fTIjnY8pP/WfLxrYDa4iOuxfrhH2o43WtffJ
-	 OpCn3l1Q0YJm9o+iRq3YBM0iPQD3qhaGAN0tUiUpW3utmHIgBiP9OAO2HIvABPtRV3
-	 +RhqE4pGmREQ1+IxJgMuTmECI8AC2YfiohIHEeolLQzXuqCXCpBJgSEOXXrcH58Dsl
-	 e2b17WWN20TWqPsgeW/0SJ5saH669kJ7gp2VujvTTHBFOmr1mq9Tj4zoe7fIFjgt4N
-	 NprLjBDfqevN9ttFGy+JLrH5ZDGLhDLlMRDJB/13xJ7Y8ijQqcI7NMWI7ytwghvpvb
-	 yBndMR+BChpMg==
-Date: Fri, 7 Mar 2025 09:40:45 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com, zlang@kernel.org, david@fromorbit.com
-Subject: Re: [PATCH v1 2/2] check,common/{preamble,rc},soak: Decoupling
- init_rc() call from sourcing common/rc
-Message-ID: <20250307174045.GR2803749@frogsfrogsfrogs>
-References: <cover.1741248214.git.nirjhar.roy.lists@gmail.com>
- <1d07e5657c2817c74e939894bb554424199fd290.1741248214.git.nirjhar.roy.lists@gmail.com>
- <20250306174653.GP2803749@frogsfrogsfrogs>
- <716e0d26-7728-42bb-981d-aae89ef50d7f@gmail.com>
+	s=arc-20240116; t=1741396183; c=relaxed/simple;
+	bh=XoL3MCMqaSyBFiZUsFNBsRSZqQJXhK/OZFNeft7zbI0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=bSrJhwi5Va9ALj3aOh8f4XlFCBc+qRtyzrDM6mR1JZfb46nNFDy/pbcyj++VlSIGwhloeHEqEr8BrdI41PEcckyCjLXrICVYpqJIYs+xLWL1lyzlf4TW8cNMSLFnJSsHMaAstoe0Zc/su9rmccq1aqNGpmh/ONl37iTUEWVZqtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Z8lSW4jQcz17NTH;
+	Sat,  8 Mar 2025 09:10:03 +0800 (CST)
+Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
+	by mail.maildlp.com (Postfix) with ESMTPS id 86E241402CC;
+	Sat,  8 Mar 2025 09:09:29 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
+ (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Sat, 8 Mar
+ 2025 09:09:28 +0800
+Message-ID: <692ab4aa-ff90-4b6f-980d-bfd6c1ca7619@huawei.com>
+Date: Sat, 8 Mar 2025 09:09:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <716e0d26-7728-42bb-981d-aae89ef50d7f@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] Fix a BUG_ON crashing the kernel in
+ start_this_handle
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+CC: <linux-ext4@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>, Jan Kara
+	<jack@suse.cz>, <linux-kernel@vger.kernel.org>, Yang Erkun
+	<yangerkun@huawei.com>
+References: <cover.1741270780.git.ojaswin@linux.ibm.com>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <cover.1741270780.git.ojaswin@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemg500008.china.huawei.com (7.202.181.45)
 
-On Fri, Mar 07, 2025 at 11:21:15AM +0530, Nirjhar Roy (IBM) wrote:
-> 
-> On 3/6/25 23:16, Darrick J. Wong wrote:
-> > On Thu, Mar 06, 2025 at 08:17:41AM +0000, Nirjhar Roy (IBM) wrote:
-> > > Silently executing scripts during sourcing common/rc doesn't look good
-> > > and also causes unnecessary script execution. Decouple init_rc() call
-> > > and call init_rc() explicitly where required.
-> > > 
-> > > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> > > ---
-> > >   check           | 10 ++--------
-> > >   common/preamble |  1 +
-> > >   common/rc       |  2 --
-> > >   soak            |  1 +
-> > >   4 files changed, 4 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/check b/check
-> > > index ea92b0d6..d30af1ba 100755
-> > > --- a/check
-> > > +++ b/check
-> > > @@ -840,16 +840,8 @@ function run_section()
-> > >   		_prepare_test_list
-> > >   	elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then
-> > >   		_test_unmount 2> /dev/null
-> > > -		if ! _test_mount
-> > > -		then
-> > > -			echo "check: failed to mount $TEST_DEV on $TEST_DIR"
-> > > -			status=1
-> > > -			exit
-> > > -		fi
-> > Unrelated change?  I was expecting a mechanical ". ./common/rc" =>
-> > ". ./common/rc ; init_rc" change in this patch.
-> This patch adds an init_rc() call to _begin_fstests() in common/preamble and
-> hence the above _test_mount() will be executed during that call. So this
-> _test_mount isn't necessary here, right? _test_mount() will be executed (as
-> a part of init_rc() call) before every test run. Please let me know if my
-> understanding isn't correct.
+On 2025/3/6 22:28, Ojaswin Mujoo wrote:
+> ** Changes since v1 [1] **
+>
+>   * Picked up RVBs from Jan and Ritesh
+>   * In patch 2/3, we now use a flag in sbi instead of SB_ACITVE
+>     to determine when to journal sb vs when to commit directly.
+>   * Added a prep patch 1/3
+>
+> [1] https://lore.kernel.org/linux-ext4/cover.1740212945.git.ojaswin@linux.ibm.com/T/#m5e659425b8c8fe2ac01e7242b77fed315ff89db4
+>
+> @Baokun, I didn't get a chance to look into the journal_inode
+> modifications we were discussing in [2]. I'll try to spend some time and
+> send that as a separate patch. Hope that's okay
+>
+> [2] https://lore.kernel.org/linux-ext4/cover.1740212945.git.ojaswin@linux.ibm.com/T/#mad8feb44d9b6ddadf87830b92caa7b78d902dc05
+>   
+That's fine, it's not a priority. And if this patch set makes sure we
+don't crash when things go wrong, I'm okay with leaving it as is.
 
-It's true that in terms of getting the test filesystem mounted, the
-_test_mount here and in init_rc are redundant.  But look at what happens
-on error here -- we print "check: failed to mount..." to signal that the
-new section's TEST_FS_MOUNT_OPTS are not valid, and exit the ./check
-process.
+It's possible that jbd2_journal_commit_transaction() could call
+ext4_handle_error() in other places as the code evolves. Fixing known
+problems and protecting against potential ones is always a good thing.
 
-By deferring the mount to the init_rc in _preamble, that means that
-we'll run the whole section with bad mount options, most likely
-resulting in every test spewing "common/rc: could not mount..." and
-appearing to fail.
 
-I think.  I'm not sure what "status=1; exit" does as compared to
-"exit 1"; AFAICT the former actually results in an exit code of 0
-because the (otherwise pointless) assignment succeeds.
+Cheers,
+Baokun
+> ** Original Cover **
+>
+> When running LTP stress tests on ext4, after a multiday run we seemed to
+> have hit the following BUG_ON:
+>
+>   [NIP  : start_this_handle+268]
+>   #3 [c000001067c27a40] start_this_handle at c008000004d40f74 [jbd2]  (unreliable)
+>   #4 [c000001067c27b60] jbd2__journal_start at c008000004d415cc [jbd2]
+>   #5 [c000001067c27be0] update_super_work at c0080000053f9758 [ext4]
+>   #6 [c000001067c27c70] process_one_work at c000000000188790
+>   #7 [c000001067c27d20] worker_thread at c00000000018973c
+>   #8 [c000001067c27dc0] kthread at c000000000196c84
+>   #9 [c000001067c27e10] ret_from_kernel_thread at c00000000000cd64
+>
+> Which comes out to
+>
+>    382   repeat:
+>    383           read_lock(&journal->j_state_lock);
+> * 384           BUG_ON(journal->j_flags & JBD2_UNMOUNT);
+>    385           if (is_journal_aborted(journal) ||
+>    386               (journal->j_errno != 0 && !(journal->j_flags & JBD2_ACK_ERR))) {
+>    387                   read_unlock(&journal->j_state_lock);
+>
+>
+> Initially this seemed like it should never happen but upon crash
+> analysis it seems like it could indeed be hit as described in patch 1/2.
+>
+> I would like to add that through the logs we only knew that:
+>
+> - ext4_journal_bmap -> ext4_map_blocks is failing with EFSCORRUPTED.
+> - update_super_work had hit the BUG_ON
+>
+> I was not able to hit this bug again (without modifying the kernel to
+> inject errors) but the above backtrace seems to be one possible paths
+> where this BUG_ON can be hit. Rest of the analysis and fix is in patch
+> 2/3. Patch 3 is just a small tweak that i found helpful while debugging.
+>
+> That being said, journalling is something I'm not very familiar with and
+> there might be gaps in my understanding so thoughts and suggestions are
+> welcome.
+>
+> Ojaswin Mujoo (3):
+>    ext4: define ext4_journal_destroy wrapper
+>    ext4: avoid journaling sb update on error if journal is destroying
+>    ext4: Make sb update interval tunable
+>
+>   fs/ext4/ext4.h      | 11 +++++++++++
+>   fs/ext4/ext4_jbd2.h | 22 ++++++++++++++++++++++
+>   fs/ext4/super.c     | 35 +++++++++++++++++------------------
+>   fs/ext4/sysfs.c     |  4 ++++
+>   4 files changed, 54 insertions(+), 18 deletions(-)
+>
 
-Granted, the init_rc that you remove below would also catch that case
-and exit ./check
-
-> > >   	fi
-> > > -	init_rc
-> > Why remove init_rc here?
-> Same reason as above.
-
-But that's an additional change in behavior.  If there's no reason for
-calling init_rc() from run_section() then that should be a separate
-patch with a separate justification.
-
---D
-
-> > 
-> > > -
-> > >   	seq="check.$$"
-> > >   	check="$RESULT_BASE/check"
-> > > @@ -870,6 +862,8 @@ function run_section()
-> > >   	needwrap=true
-> > >   	if [ ! -z "$SCRATCH_DEV" ]; then
-> > > +		_check_mounted_on SCRATCH_DEV $SCRATCH_DEV SCRATCH_MNT $SCRATCH_MNT
-> > > +		[ $? -le 1 ] || exit 1
-> > >   	  _scratch_unmount 2> /dev/null
-> > >   	  # call the overridden mkfs - make sure the FS is built
-> > >   	  # the same as we'll create it later.
-> > > diff --git a/common/preamble b/common/preamble
-> > > index 0c9ee2e0..c92e55bb 100644
-> > > --- a/common/preamble
-> > > +++ b/common/preamble
-> > > @@ -50,6 +50,7 @@ _begin_fstest()
-> > >   	_register_cleanup _cleanup
-> > >   	. ./common/rc
-> > > +	init_rc
-> > >   	# remove previous $seqres.full before test
-> > >   	rm -f $seqres.full $seqres.hints
-> > > diff --git a/common/rc b/common/rc
-> > > index d2de8588..f153ad81 100644
-> > > --- a/common/rc
-> > > +++ b/common/rc
-> > > @@ -5754,8 +5754,6 @@ _require_program() {
-> > >   	_have_program "$1" || _notrun "$tag required"
-> > >   }
-> > > -init_rc
-> > > -
-> > >   ################################################################################
-> > >   # make sure this script returns success
-> > >   /bin/true
-> > > diff --git a/soak b/soak
-> > > index d5c4229a..5734d854 100755
-> > > --- a/soak
-> > > +++ b/soak
-> > > @@ -5,6 +5,7 @@
-> > >   # get standard environment, filters and checks
-> > >   . ./common/rc
-> > > +# ToDo: Do we need an init_rc() here? How is soak used?
-> > I have no idea what soak does and have never used it, but I think for
-> > continuity's sake you should call init_rc here.
-> 
-> Okay. I think Dave has suggested removing this file[1]. This doesn't seem to
-> used anymore.
-> 
-> [1] https://lore.kernel.org/all/Z8oT_tBYG-a79CjA@dread.disaster.area/
-> 
-> --NR
-> 
-> > 
-> > --D
-> > 
-> > >   . ./common/filter
-> > >   tmp=/tmp/$$
-> > > -- 
-> > > 2.34.1
-> > > 
-> > > 
-> -- 
-> Nirjhar Roy
-> Linux Kernel Developer
-> IBM, Bangalore
-> 
-> 
 
