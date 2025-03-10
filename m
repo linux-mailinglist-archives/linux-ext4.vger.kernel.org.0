@@ -1,118 +1,119 @@
-Return-Path: <linux-ext4+bounces-6743-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6744-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3E96A58FCE
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 10:36:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F36FBA590BC
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 11:06:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1ADD168027
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 09:36:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 747F5188FE71
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 10:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926CB224B08;
-	Mon, 10 Mar 2025 09:36:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6A122576A;
+	Mon, 10 Mar 2025 10:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u9GKbAz7"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9371C5F34;
-	Mon, 10 Mar 2025 09:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56732253EC;
+	Mon, 10 Mar 2025 10:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741599363; cv=none; b=DLveUX/ymw2B20LBEu9FCItX9HprN8igWaY49cAtkbG5RjewVKrNtk3cpxZiq4BvlaQqW2wjQHWfnothWabCkWapvRNhxpHIfbChbAjalMub+f8nxVZSLkpEGRfjaw3ifhQbfM/+X7mUIZDbqy2ePvuX476yqlJ+Wp6B3NIQ3LU=
+	t=1741601174; cv=none; b=OP6f6EhOoPTTuOmw5DiD0al4RjvY3ducF2NuF0COw56pXMGkdEPvi1UBKou3VfNMfx9Bo4n8NLiWrbpG2uLIPMFbZwpLMjcIoW58Qm3i8gKjQbmA87FRGx99bOyjx+VrcK1OHkjRwuuOJtBj+GKeKa86fvnW+FbrMy4vcVfUWrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741599363; c=relaxed/simple;
-	bh=kNb2JQdgpmQuQ04YabLBxOjcWUhVsjdPLsrTQR3QvZk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=fsrKJrSe6XsJYZaoeV23rcFBZR6tEgX3GqBoXZ51qrcpLz2xr2QN5iBdPrN9YdGnTY9zui6S8d+EsIRrodp2ORJACklx6MCFLIkDkYVB/29uHq4OcwLdd9XDOsBVD5Pq6yfaR2u/H+IvBERr0mij2GM7NuWZEHmHSkz7NPTUsmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZBBZz2stNz4f3kkF;
-	Mon, 10 Mar 2025 17:35:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 5806E1A1176;
-	Mon, 10 Mar 2025 17:35:56 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP2 (Coremail) with SMTP id Syh0CgAX1Wd6ss5nFPMwGA--.11533S2;
-	Mon, 10 Mar 2025 17:35:56 +0800 (CST)
-Subject: Re: [PATCH] ext4: Fix potential null dereference in ext4 test
-To: Charles Han <hanchunchao@inspur.com>, tytso@mit.edu,
- adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250307115432.2112-1-hanchunchao@inspur.com>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <db5726b6-9320-8f53-7e26-31c1a755dc12@huaweicloud.com>
-Date: Mon, 10 Mar 2025 17:35:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+	s=arc-20240116; t=1741601174; c=relaxed/simple;
+	bh=hP2uUw8I8mbMn2yNz3/uwyIxABFOv5u58HBG32GXAl0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y/og09s4zi6mFXDLs1276zukpz8YgvTajSfsQdtXsn0lfGjouj5KTXJDcNHmS1AZdZOPc/+zLnBToYlMZvISfCCbw9/L7NgZcQCTdTn/k1opA3LCgtIrC7dJ3TOdkOKZbHwcWCprwGEWEZnKW22FmO2YjaDKlCzzByh/LsdzJgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u9GKbAz7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C343DC4CEE5;
+	Mon, 10 Mar 2025 10:06:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741601174;
+	bh=hP2uUw8I8mbMn2yNz3/uwyIxABFOv5u58HBG32GXAl0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=u9GKbAz70zpGllrnCpfsX2csmTb4K9W/vm7OhjijcPXbQES+OwRob6jgbbDN/PU0m
+	 tD7Cd201qFfaCebbzoAFaztXjhlE/G7Ebl7UTbtYNqGVp15bBK/BoCsylzysw8ddRF
+	 BzerdPTJwit9QiydxEEMVxMViLGl1pLOXJQKcwyKGoFCvF7Tw8kUL164GZcMLZrnAF
+	 gXCeMkKpDwPiEif48MlMftai2X2PYEUspi+ub90AdpT2qRMugMVLTbaYw5gfwJhsyV
+	 q3gFV0p7sXX+ZQzheW8ZuFhnyFBh2opWmnPJqsPxjcCijxHw5Onoii0QYmtAbcBvSg
+	 jYs+f05xe7iPA==
+Date: Mon, 10 Mar 2025 11:06:08 +0100
+From: Carlos Maiolino <cem@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: brauner@kernel.org, djwong@kernel.org, linux-xfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, 
+	ritesh.list@gmail.com, martin.petersen@oracle.com, tytso@mit.edu, 
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v4 11/12] xfs: Update atomic write max size
+Message-ID: <bed7wptkueyxnjvaq4isizybxsagh7vb7nx7efcyamvtzbot5p@oqrij3ahq3vl>
+References: <20250303171120.2837067-1-john.g.garry@oracle.com>
+ <2LEUjvzJ3RO3jyirsnti2pPKtOuVZZt-wKhzIi2mfCPwOESoN_SuN9GjHA4Iu_C4LRZQxiZ6dF__eT6u-p8CdQ==@protonmail.internalid>
+ <20250303171120.2837067-12-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20250307115432.2112-1-hanchunchao@inspur.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgAX1Wd6ss5nFPMwGA--.11533S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr43Zry5uFyDCr4UWw15Jwb_yoW8XF4Upw
-	s5KF1jkr4rWr1j9w47ur48WFWIqws8Kan8WryfWw4YvF9xJFyfC3ZIyw1UGr1kAFWxWa15
-	Za4aqF47Ga17WwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
-	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU80fO7
-	UUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250303171120.2837067-12-john.g.garry@oracle.com>
 
+Hi John.
 
-
-on 3/7/2025 7:54 PM, Charles Han wrote:
-> kunit_kzalloc() may return a NULL pointer, dereferencing it without
-> NULL check may lead to NULL dereference.
-> Add a NULL check for test_state
+On Mon, Mar 03, 2025 at 05:11:19PM +0000, John Garry wrote:
+> Now that CoW-based atomic writes are supported, update the max size of an
+> atomic write.
 > 
-> Fixes: b7098e1fa7bc ("ext4: Add unit test for mb_free_blocks")
-> Fixes: ac96b56a2fbd ("ext4: Add unit test for mb_mark_used")
-> Signed-off-by: Charles Han <hanchunchao@inspur.com>
+> For simplicity, limit at the max of what the mounted bdev can support in
+> terms of atomic write limits. Maybe in future we will have a better way
+> to advertise this optimised limit.
+> 
+> In addition, the max atomic write size needs to be aligned to the agsize.
+> Limit the size of atomic writes to the greatest power-of-two factor of the
+> agsize so that allocations for an atomic write will always be aligned
+> compatibly with the alignment requirements of the storage.
+> 
+> For RT inode, just limit to 1x block, even though larger can be supported
+> in future.
+> 
+> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
 > ---
->  fs/ext4/mballoc-test.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  fs/xfs/xfs_iops.c  | 13 ++++++++++++-
+>  fs/xfs/xfs_mount.c | 28 ++++++++++++++++++++++++++++
+>  fs/xfs/xfs_mount.h |  1 +
+>  3 files changed, 41 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-> index bb2a223b207c..d634c12f1984 100644
-> --- a/fs/ext4/mballoc-test.c
-> +++ b/fs/ext4/mballoc-test.c
-> @@ -796,6 +796,7 @@ static void test_mb_mark_used(struct kunit *test)
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buddy);
->  	grp = kunit_kzalloc(test, offsetof(struct ext4_group_info,
->  				bb_counters[MB_NUM_ORDERS(sb)]), GFP_KERNEL);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, grp);
->  
->  	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
->  	KUNIT_ASSERT_EQ(test, ret, 0);
-> @@ -860,6 +861,7 @@ static void test_mb_free_blocks(struct kunit *test)
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buddy);
->  	grp = kunit_kzalloc(test, offsetof(struct ext4_group_info,
->  				bb_counters[MB_NUM_ORDERS(sb)]), GFP_KERNEL);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, grp);
->  
->  	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
->  	KUNIT_ASSERT_EQ(test, ret, 0);
+
+> diff --git a/fs/xfs/xfs_mount.h b/fs/xfs/xfs_mount.h
+> index fbed172d6770..bc96b8214173 100644
+> --- a/fs/xfs/xfs_mount.h
+> +++ b/fs/xfs/xfs_mount.h
+> @@ -198,6 +198,7 @@ typedef struct xfs_mount {
+>  	bool			m_fail_unmount;
+>  	bool			m_finobt_nores; /* no per-AG finobt resv. */
+>  	bool			m_update_sb;	/* sb needs update in mount */
+> +	xfs_extlen_t		awu_max;	/* data device max atomic write */
+
+Could you please rename this to something else? All fields within xfs_mount
+follows the same pattern m_<name>. Perhaps m_awu_max?
+
+I was going to send a patch replacing it once I had this merged, but giving
+Dave's new comments, and the conflicts with zoned devices, you'll need to send a
+V5, so, please include this change if nobody else has any objections on keeping
+the xfs_mount naming convention.
+
+Carlos.
+
 > 
-Good catch, looks good to me.
-
-Reviewed-by: Kemeng Shi <shikemeng@huaweicloud.com>
-
+>  	/*
+>  	 * Bitsets of per-fs metadata that have been checked and/or are sick.
+> --
+> 2.31.1
+> 
 
