@@ -1,234 +1,180 @@
-Return-Path: <linux-ext4+bounces-6741-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6742-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4E11A58D75
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 09:00:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C938A58DA7
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 09:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E3E9188DA37
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 08:00:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9A81636D7
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 08:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C01F222588;
-	Mon, 10 Mar 2025 07:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607AC222593;
+	Mon, 10 Mar 2025 08:06:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="npYs6iPD"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fJy0hO++"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323791D432D;
-	Mon, 10 Mar 2025 07:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBA92222A5
+	for <linux-ext4@vger.kernel.org>; Mon, 10 Mar 2025 08:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741593576; cv=none; b=e7FFW68xGql+Y4y0wmVc69hdmLfOiY8IxJK8WYAg6Ot42jC9hs3zzhphDYPZ7HzkvvJhumJ2vx3C3FcY9cPoh24V+HIPIFiCReKglClXAXNTGZCBmZUtjUE4EGV4ddUbFd5xX2LdMXQ5yrUN85ZfntSM9Gy+lye1CS2+u2JDmAo=
+	t=1741594002; cv=none; b=ROxDXoqKcgwT+QSHpI9/aemHdSLAIxpk1ey61qfUXq882dSHyDyOKaH60bQWP+c3rbFbLP5hjH45bmqlDxRw2LHpK2hLEcRwVB6rFzK03Zd18OPVH9L/c6I1kebZngqkGgplfDFStgQ8EMo3Gpio4tU+isVJp9nxJhiSXHBYSC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741593576; c=relaxed/simple;
-	bh=hrfyWyfU7hL4/yB2MI0jgRRNnZpqC4KUKiKVex1CDug=;
+	s=arc-20240116; t=1741594002; c=relaxed/simple;
+	bh=93W6ybCwcYA7AqE4AGQacqgIe8KHvftkYc5f4XtCDwk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IfOJRbAoMQ67jXoKHClhHzVLXJJoXHf5tiptIyADi3xLWs0iB/Z0CNy9XZU3vJKz0GyJ+xyvDFthcrGjbRC8SebkbEonx+RNcucVmo2902EftRKEUie7C8oOyXWMjPe3mLThMhMtxktSVczvAq2Tck+8MYLzwROCVIUcdG82FI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=npYs6iPD; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52A3jlcL016934;
-	Mon, 10 Mar 2025 07:59:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=OQG59l
-	QOGr0uco6SMi/hMmUMG2NERHmXLi2EltnlBSs=; b=npYs6iPDztAey/KRdWD6wc
-	SrmZTM/vzHfOs2rGK1zWt2x7fKjuwD1ckW8U8IHDQvI0KrsHmffZF/lHEYF7Xk9/
-	SA8v5U188//gV+tolPMgtvHy56N2nkMhuM9DSTnZvjFyLzVcC6ommSpugAfJZ16b
-	IfZIPSCLx7XUp43UWku49qurnER4NCiY+hLrWAke1IB75guvhRZ+J4ZdCbaqWiCK
-	aG0zBpBhCLOALwibSxAef398vsWDKI1JqsJUNjvb6ZIgNprvJEV31/pZ9VMyTkz1
-	ylmYl9F4iCVApuN3jdzPRFOfsm54AUvMU7FL6qY9e6YkHaVtncH0X8t3SJRypWdg
-	==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 459rf910rk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 10 Mar 2025 07:59:21 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52A4BBhP014024;
-	Mon, 10 Mar 2025 07:59:20 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4592x1n3x4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 10 Mar 2025 07:59:20 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52A7xIml34865824
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 10 Mar 2025 07:59:18 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 79C892004F;
-	Mon, 10 Mar 2025 07:59:18 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B8B87200DF;
-	Mon, 10 Mar 2025 07:59:16 +0000 (GMT)
-Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.219.66])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 10 Mar 2025 07:59:16 +0000 (GMT)
-Date: Mon, 10 Mar 2025 13:29:13 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        Yang Erkun <yangerkun@huawei.com>
-Subject: Re: [PATCH v2 0/3] Fix a BUG_ON crashing the kernel in
- start_this_handle
-Message-ID: <Z86b0c_qTURBBkOW@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-References: <cover.1741270780.git.ojaswin@linux.ibm.com>
- <692ab4aa-ff90-4b6f-980d-bfd6c1ca7619@huawei.com>
- <Z8xBHVU1vChK2rMO@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <Z8xgY07XJuIi49Q9@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <098bbcba-c7ba-4527-9486-1d89c902c594@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=h3bT3d9pgdRid84FgYst2pIgCFBOr/lYPo0Z9T6I5sgVo2wBtaGqte7INLkPa41D+jJ8c0a9bNQrRvkalWR+IFMRvVgRbxnHRm4hQxePRTcaRZuGADzjgYNHw3zBbicC55fiK/XHaZK3GTdvZVmoQrBNdxnW1mgcC4UELHhL/tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fJy0hO++; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1741593999;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RCOLOU56jiLb/4wdgy3TIcrzpp/26Wu5xoarM9qeWc0=;
+	b=fJy0hO++RT0JWEWjjt08Eks6V8UTUNYbkY4+LBvdaEuJU03PYpxFnlY13iHpV9OkxI3kFH
+	U2hZAFVu64fl/4m5z3MpWSVbDAsmwYywXyxjm0cz9dAmg7e7T7C4+Gg62PGdOdlepngPqZ
+	+Pmp9p+cSI8dGWKJtYh0YF+FlSW8zkI=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-343-rJ-57va-NCOoslQ52dKn2A-1; Mon, 10 Mar 2025 04:06:37 -0400
+X-MC-Unique: rJ-57va-NCOoslQ52dKn2A-1
+X-Mimecast-MFC-AGG-ID: rJ-57va-NCOoslQ52dKn2A_1741593996
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-223d86b4df0so114673945ad.3
+        for <linux-ext4@vger.kernel.org>; Mon, 10 Mar 2025 01:06:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741593996; x=1742198796;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RCOLOU56jiLb/4wdgy3TIcrzpp/26Wu5xoarM9qeWc0=;
+        b=Nb3kK9oY0qy3m4tMOMElOTVbb578GztscvNBeRJfKx9bzn1fcXfrcx6bDBomMYkGze
+         Qg3maYgYTzPfoz32Yx0PN4sABdwQyEyVbQzTM2sGqNe4MbC9lC0RdwbyOpWqnEpKetMW
+         aOv9mVrO4ijvAGXpW49x4QXuc9CX7EIY4xANQ9FmpDXuVT6Ir2gfIFm5IMpkeoh2ljUs
+         +0wv7smV7tpjhn2XN20fDOnFd8MtTZkXDwsHwa4V9hYGUlxYUq5rZlyIuevmW1YAMX1Z
+         zRHLkj8URDHCpVZasppnrItXWie27XTDllkOvkvWabs5oieVDPgiiAcPh7w/eCFjqzLf
+         A/NQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXgNXlh2rqrLmlzxjRhskBSnQvOTsPEgwkUhjq3CZ4GZY9kuxmftdvEe9yct1zBnnSMILqjT1YO2K5u@vger.kernel.org
+X-Gm-Message-State: AOJu0YwougasaLcJJ/1yNa+YGyUtMYX/jsChE09RgSuV9du3mrDMOUHa
+	cwBl9SVj7gNm59dJzD7SPhr3vTvmyT325hpJ4OA5xbgtDURauYYUOdUVaVoXjRknJOvok2pFAC5
+	NgyWYJZ1ybR/CrScqU4moEKgZQXnuyhERSDcAHuoUDec5B2yC4Y9XkPeclfE=
+X-Gm-Gg: ASbGncuvHhbV8usOs7Etgb4nnr8qL2Z8c9C0OA9XHewfppeQOuO65NLobmvbHGAkx9i
+	1RIbombemZXh+W415iRYCt4sC/OOmMzAIMKI7n7aSzRAbCHNpYmnb8by9/yu/h+dusikEaWImT4
+	mo7l5x9xRhszGJ/NcJtGvuePBhLhtgyxVWEP3KpN0AnOQ2rJuxLSg2/v5oiL8S7yViBixMtnSEJ
+	gjyZOB0ER+J+brGB0ocVuxv0NWAvJZ4w2BLM6kaUTYynCICmvotgZatMesh8jzt1ZFrcv9I3CDS
+	mRdg68dgusehgPwqFvSW56s5+YJZcq+gJ9jvr+D7QLOY+Pu5P8u5KIwe
+X-Received: by 2002:a05:6a00:3d55:b0:736:52d7:daca with SMTP id d2e1a72fcca58-736aaadf019mr20663418b3a.18.1741593996265;
+        Mon, 10 Mar 2025 01:06:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF3zepBp9E0MRImticocc6MTl8Bx7wo5uHRMcLdiudFO4r9G/SfjZxODbq9kG76X31x/uUrMQ==
+X-Received: by 2002:a05:6a00:3d55:b0:736:52d7:daca with SMTP id d2e1a72fcca58-736aaadf019mr20663391b3a.18.1741593995950;
+        Mon, 10 Mar 2025 01:06:35 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-736cd220c5fsm2495334b3a.55.2025.03.10.01.06.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Mar 2025 01:06:35 -0700 (PDT)
+Date: Mon, 10 Mar 2025 16:06:30 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+Cc: Dave Chinner <david@fromorbit.com>, fstests@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+	ritesh.list@gmail.com, ojaswin@linux.ibm.com, djwong@kernel.org,
+	zlang@kernel.org
+Subject: Re: [PATCH v1 2/2] check,common/{preamble,rc},soak: Decoupling
+ init_rc() call from sourcing common/rc
+Message-ID: <20250310080630.4lnscrcbaputlocv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <cover.1741248214.git.nirjhar.roy.lists@gmail.com>
+ <1d07e5657c2817c74e939894bb554424199fd290.1741248214.git.nirjhar.roy.lists@gmail.com>
+ <Z8oT_tBYG-a79CjA@dread.disaster.area>
+ <5c38f84d-cc60-49e7-951e-6a7ef488f9df@gmail.com>
+ <20250308072034.t7y2d3u4wgxvrhgd@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <098bbcba-c7ba-4527-9486-1d89c902c594@huawei.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: uUFhjE8z7PY8vVszdXe3jaB7juXOjd58
-X-Proofpoint-GUID: uUFhjE8z7PY8vVszdXe3jaB7juXOjd58
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-10_03,2025-03-07_03,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502100000 definitions=main-2503100062
+In-Reply-To: <20250308072034.t7y2d3u4wgxvrhgd@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 
-On Mon, Mar 10, 2025 at 11:10:26AM +0800, Baokun Li wrote:
-> On 2025/3/8 23:21, Ojaswin Mujoo wrote:
-> > On Sat, Mar 08, 2025 at 06:37:41PM +0530, Ojaswin Mujoo wrote:
-> > > On Sat, Mar 08, 2025 at 09:09:28AM +0800, Baokun Li wrote:
-> > > > On 2025/3/6 22:28, Ojaswin Mujoo wrote:
-> > > > > ** Changes since v1 [1] **
-> > > > > 
-> > > > >    * Picked up RVBs from Jan and Ritesh
-> > > > >    * In patch 2/3, we now use a flag in sbi instead of SB_ACITVE
-> > > > >      to determine when to journal sb vs when to commit directly.
-> > > > >    * Added a prep patch 1/3
-> > > > > 
-> > > > > [1] https://lore.kernel.org/linux-ext4/cover.1740212945.git.ojaswin@linux.ibm.com/T/#m5e659425b8c8fe2ac01e7242b77fed315ff89db4
-> > > > > 
-> > > > > @Baokun, I didn't get a chance to look into the journal_inode
-> > > > > modifications we were discussing in [2]. I'll try to spend some time and
-> > > > > send that as a separate patch. Hope that's okay
-> > > > > 
-> > > > > [2] https://lore.kernel.org/linux-ext4/cover.1740212945.git.ojaswin@linux.ibm.com/T/#mad8feb44d9b6ddadf87830b92caa7b78d902dc05
-> > > > That's fine, it's not a priority. And if this patch set makes sure we
-> > > > don't crash when things go wrong, I'm okay with leaving it as is.
+On Sat, Mar 08, 2025 at 03:20:34PM +0800, Zorro Lang wrote:
+> On Fri, Mar 07, 2025 at 01:35:02PM +0530, Nirjhar Roy (IBM) wrote:
+> > 
+> > On 3/7/25 03:00, Dave Chinner wrote:
+> > > On Thu, Mar 06, 2025 at 08:17:41AM +0000, Nirjhar Roy (IBM) wrote:
+> > > > Silently executing scripts during sourcing common/rc doesn't look good
+> > > > and also causes unnecessary script execution. Decouple init_rc() call
+> > > > and call init_rc() explicitly where required.
 > > > > 
-> > > > It's possible that jbd2_journal_commit_transaction() could call
-> > > > ext4_handle_error() in other places as the code evolves. Fixing known
-> > > > problems and protecting against potential ones is always a good thing.
-> > > Yep thats true, I did spend some time on this since the codepath was a
-> > > bit unfamiliar to me. Seems like a straighforward enough change. I'll
-> > > add it to the next patch.
+> > > > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+> > > FWIW, I've just done somethign similar for check-parallel. I need to
+> > > decouple common/config from common/rc and not run any code from
+> > > either common/config or common/rc.
 > > > 
-> > > thanks,
-> > > ojaswin
-> > Hey Baokun,
+> > > I've included the patch below (it won't apply because there's all
+> > > sorts of refactoring for test list and config-section parsing in the
+> > > series before it), but it should give you an idea of how I think we
+> > > should be separating one-off initialisation environment varaibles,
+> > > common code inclusion and the repeated initialisation of section
+> > > specific parameters....
+> > Thank you so much. I can a look at this.
+> > > 
+> > > .....
+> > > > diff --git a/soak b/soak
+> > > > index d5c4229a..5734d854 100755
+> > > > --- a/soak
+> > > > +++ b/soak
+> > > > @@ -5,6 +5,7 @@
+> > > >   # get standard environment, filters and checks
+> > > >   . ./common/rc
+> > > > +# ToDo: Do we need an init_rc() here? How is soak used?
+> > > >   . ./common/filter
+> > > I've also go a patch series that removes all these old 2000-era SGI
+> > > QE scripts that have not been used by anyone for the last 15
+> > > years. I did that to get rid of the technical debt that these
+> > > scripts have gathered over years of neglect. They aren't used, we
+> > > shouldn't even attempt to maintain them anymore.
 > > 
-> > So while coding this up, I started looking at some codepaths and it got
-> > me wondering when can we actually change the sbi->s_es->s_journal_inum
-> > (or sbi->s_sbh) from the time it gets populated to the umount time?
+> > Okay. What do you mean by SGI QE script (sorry, not familiar with this)? Do
+> > you mean some kind of CI/automation-test script?
+> 
+> SGI is Silicon Graphics International Corp. :
+> https://en.wikipedia.org/wiki/Silicon_Graphics_International
+> 
+> xfstests was created to test xfs on IRIX (https://en.wikipedia.org/wiki/IRIX)
+> of SGI. Dave Chinner worked in SGI company long time ago, so he's the expert
+> of all these things, and knows lots of past details :)
+
+Hi Nirjhar,
+
+I've merged Dave's "[PATCH 0/5] fstests: remove old SGI QE scripts" into
+patches-in-queue branch. You can base on that to write your V2, to avoid
+dealing with the "soak" file.
+
+Thanks,
+Zorro
+
+> 
+> Thanks,
+> Zorro
+> 
 > > 
-> > Since the sbi->s_sbh buffer head is always in memory and never reclaimed
-> > due the elevated reference, the only way to modify it should be if we
-> > modify the memory page somehow. Or is there some codepath/tooling magic
-> > I'm missing that can modify this value?
-> For the ext4 file system, s_journal_inum is fixed after mkfs and is not
-> expected to be modified. However, the sbi->s_sbh buffer head belongs to
-> the block device, so direct write operations to the file system's block
-> device /dev/xxx may directly modify sbi->s_sbh.
-
-Right got it, now I get the full picture of the change you are
-suggesting. Thanks Baokun, I'll do that in next revision.
-
-Regards,
-ojaswin
-
-> 
-> For example, you can use the following script to trigger a journal bmap
-> failure:
-> 
-> mkfs.ext4 -F /dev/sda
-> mount /dev/sda /tmp/test
-> dd if=/dev/zero of=/dev/sda bs=4096 count=1
-> echo 1 > /tmp/test/file
-> umount /tmp/test
-> 
-> (Adding a delay in put_super and performing the script during the delay
->  can trigger the issue described in the patch.)
-> 
-> 
-> Cheers,
-> Baokun
+> > --NR
 > > 
-> > Regards,
-> > ojaswin
-> > > > 
-> > > > Cheers,
-> > > > Baokun
-> > > > > ** Original Cover **
-> > > > > 
-> > > > > When running LTP stress tests on ext4, after a multiday run we seemed to
-> > > > > have hit the following BUG_ON:
-> > > > > 
-> > > > >    [NIP  : start_this_handle+268]
-> > > > >    #3 [c000001067c27a40] start_this_handle at c008000004d40f74 [jbd2]  (unreliable)
-> > > > >    #4 [c000001067c27b60] jbd2__journal_start at c008000004d415cc [jbd2]
-> > > > >    #5 [c000001067c27be0] update_super_work at c0080000053f9758 [ext4]
-> > > > >    #6 [c000001067c27c70] process_one_work at c000000000188790
-> > > > >    #7 [c000001067c27d20] worker_thread at c00000000018973c
-> > > > >    #8 [c000001067c27dc0] kthread at c000000000196c84
-> > > > >    #9 [c000001067c27e10] ret_from_kernel_thread at c00000000000cd64
-> > > > > 
-> > > > > Which comes out to
-> > > > > 
-> > > > >     382   repeat:
-> > > > >     383           read_lock(&journal->j_state_lock);
-> > > > > * 384           BUG_ON(journal->j_flags & JBD2_UNMOUNT);
-> > > > >     385           if (is_journal_aborted(journal) ||
-> > > > >     386               (journal->j_errno != 0 && !(journal->j_flags & JBD2_ACK_ERR))) {
-> > > > >     387                   read_unlock(&journal->j_state_lock);
-> > > > > 
-> > > > > 
-> > > > > Initially this seemed like it should never happen but upon crash
-> > > > > analysis it seems like it could indeed be hit as described in patch 1/2.
-> > > > > 
-> > > > > I would like to add that through the logs we only knew that:
-> > > > > 
-> > > > > - ext4_journal_bmap -> ext4_map_blocks is failing with EFSCORRUPTED.
-> > > > > - update_super_work had hit the BUG_ON
-> > > > > 
-> > > > > I was not able to hit this bug again (without modifying the kernel to
-> > > > > inject errors) but the above backtrace seems to be one possible paths
-> > > > > where this BUG_ON can be hit. Rest of the analysis and fix is in patch
-> > > > > 2/3. Patch 3 is just a small tweak that i found helpful while debugging.
-> > > > > 
-> > > > > That being said, journalling is something I'm not very familiar with and
-> > > > > there might be gaps in my understanding so thoughts and suggestions are
-> > > > > welcome.
-> > > > > 
-> > > > > Ojaswin Mujoo (3):
-> > > > >     ext4: define ext4_journal_destroy wrapper
-> > > > >     ext4: avoid journaling sb update on error if journal is destroying
-> > > > >     ext4: Make sb update interval tunable
-> > > > > 
-> > > > >    fs/ext4/ext4.h      | 11 +++++++++++
-> > > > >    fs/ext4/ext4_jbd2.h | 22 ++++++++++++++++++++++
-> > > > >    fs/ext4/super.c     | 35 +++++++++++++++++------------------
-> > > > >    fs/ext4/sysfs.c     |  4 ++++
-> > > > >    4 files changed, 54 insertions(+), 18 deletions(-)
-> > > > > 
-> 
+> > > 
+> > > -Dave.
+> > > 
+> > -- 
+> > Nirjhar Roy
+> > Linux Kernel Developer
+> > IBM, Bangalore
+> > 
+> > 
+
 
