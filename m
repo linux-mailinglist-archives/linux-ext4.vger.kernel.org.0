@@ -1,180 +1,118 @@
-Return-Path: <linux-ext4+bounces-6742-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6743-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C938A58DA7
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 09:06:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3E96A58FCE
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 10:36:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9A81636D7
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 08:06:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1ADD168027
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 09:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607AC222593;
-	Mon, 10 Mar 2025 08:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fJy0hO++"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926CB224B08;
+	Mon, 10 Mar 2025 09:36:03 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBA92222A5
-	for <linux-ext4@vger.kernel.org>; Mon, 10 Mar 2025 08:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9371C5F34;
+	Mon, 10 Mar 2025 09:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741594002; cv=none; b=ROxDXoqKcgwT+QSHpI9/aemHdSLAIxpk1ey61qfUXq882dSHyDyOKaH60bQWP+c3rbFbLP5hjH45bmqlDxRw2LHpK2hLEcRwVB6rFzK03Zd18OPVH9L/c6I1kebZngqkGgplfDFStgQ8EMo3Gpio4tU+isVJp9nxJhiSXHBYSC0=
+	t=1741599363; cv=none; b=DLveUX/ymw2B20LBEu9FCItX9HprN8igWaY49cAtkbG5RjewVKrNtk3cpxZiq4BvlaQqW2wjQHWfnothWabCkWapvRNhxpHIfbChbAjalMub+f8nxVZSLkpEGRfjaw3ifhQbfM/+X7mUIZDbqy2ePvuX476yqlJ+Wp6B3NIQ3LU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741594002; c=relaxed/simple;
-	bh=93W6ybCwcYA7AqE4AGQacqgIe8KHvftkYc5f4XtCDwk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h3bT3d9pgdRid84FgYst2pIgCFBOr/lYPo0Z9T6I5sgVo2wBtaGqte7INLkPa41D+jJ8c0a9bNQrRvkalWR+IFMRvVgRbxnHRm4hQxePRTcaRZuGADzjgYNHw3zBbicC55fiK/XHaZK3GTdvZVmoQrBNdxnW1mgcC4UELHhL/tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fJy0hO++; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741593999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RCOLOU56jiLb/4wdgy3TIcrzpp/26Wu5xoarM9qeWc0=;
-	b=fJy0hO++RT0JWEWjjt08Eks6V8UTUNYbkY4+LBvdaEuJU03PYpxFnlY13iHpV9OkxI3kFH
-	U2hZAFVu64fl/4m5z3MpWSVbDAsmwYywXyxjm0cz9dAmg7e7T7C4+Gg62PGdOdlepngPqZ
-	+Pmp9p+cSI8dGWKJtYh0YF+FlSW8zkI=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-343-rJ-57va-NCOoslQ52dKn2A-1; Mon, 10 Mar 2025 04:06:37 -0400
-X-MC-Unique: rJ-57va-NCOoslQ52dKn2A-1
-X-Mimecast-MFC-AGG-ID: rJ-57va-NCOoslQ52dKn2A_1741593996
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-223d86b4df0so114673945ad.3
-        for <linux-ext4@vger.kernel.org>; Mon, 10 Mar 2025 01:06:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741593996; x=1742198796;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RCOLOU56jiLb/4wdgy3TIcrzpp/26Wu5xoarM9qeWc0=;
-        b=Nb3kK9oY0qy3m4tMOMElOTVbb578GztscvNBeRJfKx9bzn1fcXfrcx6bDBomMYkGze
-         Qg3maYgYTzPfoz32Yx0PN4sABdwQyEyVbQzTM2sGqNe4MbC9lC0RdwbyOpWqnEpKetMW
-         aOv9mVrO4ijvAGXpW49x4QXuc9CX7EIY4xANQ9FmpDXuVT6Ir2gfIFm5IMpkeoh2ljUs
-         +0wv7smV7tpjhn2XN20fDOnFd8MtTZkXDwsHwa4V9hYGUlxYUq5rZlyIuevmW1YAMX1Z
-         zRHLkj8URDHCpVZasppnrItXWie27XTDllkOvkvWabs5oieVDPgiiAcPh7w/eCFjqzLf
-         A/NQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXgNXlh2rqrLmlzxjRhskBSnQvOTsPEgwkUhjq3CZ4GZY9kuxmftdvEe9yct1zBnnSMILqjT1YO2K5u@vger.kernel.org
-X-Gm-Message-State: AOJu0YwougasaLcJJ/1yNa+YGyUtMYX/jsChE09RgSuV9du3mrDMOUHa
-	cwBl9SVj7gNm59dJzD7SPhr3vTvmyT325hpJ4OA5xbgtDURauYYUOdUVaVoXjRknJOvok2pFAC5
-	NgyWYJZ1ybR/CrScqU4moEKgZQXnuyhERSDcAHuoUDec5B2yC4Y9XkPeclfE=
-X-Gm-Gg: ASbGncuvHhbV8usOs7Etgb4nnr8qL2Z8c9C0OA9XHewfppeQOuO65NLobmvbHGAkx9i
-	1RIbombemZXh+W415iRYCt4sC/OOmMzAIMKI7n7aSzRAbCHNpYmnb8by9/yu/h+dusikEaWImT4
-	mo7l5x9xRhszGJ/NcJtGvuePBhLhtgyxVWEP3KpN0AnOQ2rJuxLSg2/v5oiL8S7yViBixMtnSEJ
-	gjyZOB0ER+J+brGB0ocVuxv0NWAvJZ4w2BLM6kaUTYynCICmvotgZatMesh8jzt1ZFrcv9I3CDS
-	mRdg68dgusehgPwqFvSW56s5+YJZcq+gJ9jvr+D7QLOY+Pu5P8u5KIwe
-X-Received: by 2002:a05:6a00:3d55:b0:736:52d7:daca with SMTP id d2e1a72fcca58-736aaadf019mr20663418b3a.18.1741593996265;
-        Mon, 10 Mar 2025 01:06:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF3zepBp9E0MRImticocc6MTl8Bx7wo5uHRMcLdiudFO4r9G/SfjZxODbq9kG76X31x/uUrMQ==
-X-Received: by 2002:a05:6a00:3d55:b0:736:52d7:daca with SMTP id d2e1a72fcca58-736aaadf019mr20663391b3a.18.1741593995950;
-        Mon, 10 Mar 2025 01:06:35 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-736cd220c5fsm2495334b3a.55.2025.03.10.01.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Mar 2025 01:06:35 -0700 (PDT)
-Date: Mon, 10 Mar 2025 16:06:30 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-Cc: Dave Chinner <david@fromorbit.com>, fstests@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	ritesh.list@gmail.com, ojaswin@linux.ibm.com, djwong@kernel.org,
-	zlang@kernel.org
-Subject: Re: [PATCH v1 2/2] check,common/{preamble,rc},soak: Decoupling
- init_rc() call from sourcing common/rc
-Message-ID: <20250310080630.4lnscrcbaputlocv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1741248214.git.nirjhar.roy.lists@gmail.com>
- <1d07e5657c2817c74e939894bb554424199fd290.1741248214.git.nirjhar.roy.lists@gmail.com>
- <Z8oT_tBYG-a79CjA@dread.disaster.area>
- <5c38f84d-cc60-49e7-951e-6a7ef488f9df@gmail.com>
- <20250308072034.t7y2d3u4wgxvrhgd@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+	s=arc-20240116; t=1741599363; c=relaxed/simple;
+	bh=kNb2JQdgpmQuQ04YabLBxOjcWUhVsjdPLsrTQR3QvZk=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=fsrKJrSe6XsJYZaoeV23rcFBZR6tEgX3GqBoXZ51qrcpLz2xr2QN5iBdPrN9YdGnTY9zui6S8d+EsIRrodp2ORJACklx6MCFLIkDkYVB/29uHq4OcwLdd9XDOsBVD5Pq6yfaR2u/H+IvBERr0mij2GM7NuWZEHmHSkz7NPTUsmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZBBZz2stNz4f3kkF;
+	Mon, 10 Mar 2025 17:35:39 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 5806E1A1176;
+	Mon, 10 Mar 2025 17:35:56 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP2 (Coremail) with SMTP id Syh0CgAX1Wd6ss5nFPMwGA--.11533S2;
+	Mon, 10 Mar 2025 17:35:56 +0800 (CST)
+Subject: Re: [PATCH] ext4: Fix potential null dereference in ext4 test
+To: Charles Han <hanchunchao@inspur.com>, tytso@mit.edu,
+ adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250307115432.2112-1-hanchunchao@inspur.com>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <db5726b6-9320-8f53-7e26-31c1a755dc12@huaweicloud.com>
+Date: Mon, 10 Mar 2025 17:35:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250308072034.t7y2d3u4wgxvrhgd@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+In-Reply-To: <20250307115432.2112-1-hanchunchao@inspur.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgAX1Wd6ss5nFPMwGA--.11533S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr43Zry5uFyDCr4UWw15Jwb_yoW8XF4Upw
+	s5KF1jkr4rWr1j9w47ur48WFWIqws8Kan8WryfWw4YvF9xJFyfC3ZIyw1UGr1kAFWxWa15
+	Za4aqF47Ga17WwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
+	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU80fO7
+	UUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On Sat, Mar 08, 2025 at 03:20:34PM +0800, Zorro Lang wrote:
-> On Fri, Mar 07, 2025 at 01:35:02PM +0530, Nirjhar Roy (IBM) wrote:
-> > 
-> > On 3/7/25 03:00, Dave Chinner wrote:
-> > > On Thu, Mar 06, 2025 at 08:17:41AM +0000, Nirjhar Roy (IBM) wrote:
-> > > > Silently executing scripts during sourcing common/rc doesn't look good
-> > > > and also causes unnecessary script execution. Decouple init_rc() call
-> > > > and call init_rc() explicitly where required.
-> > > > 
-> > > > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> > > FWIW, I've just done somethign similar for check-parallel. I need to
-> > > decouple common/config from common/rc and not run any code from
-> > > either common/config or common/rc.
-> > > 
-> > > I've included the patch below (it won't apply because there's all
-> > > sorts of refactoring for test list and config-section parsing in the
-> > > series before it), but it should give you an idea of how I think we
-> > > should be separating one-off initialisation environment varaibles,
-> > > common code inclusion and the repeated initialisation of section
-> > > specific parameters....
-> > Thank you so much. I can a look at this.
-> > > 
-> > > .....
-> > > > diff --git a/soak b/soak
-> > > > index d5c4229a..5734d854 100755
-> > > > --- a/soak
-> > > > +++ b/soak
-> > > > @@ -5,6 +5,7 @@
-> > > >   # get standard environment, filters and checks
-> > > >   . ./common/rc
-> > > > +# ToDo: Do we need an init_rc() here? How is soak used?
-> > > >   . ./common/filter
-> > > I've also go a patch series that removes all these old 2000-era SGI
-> > > QE scripts that have not been used by anyone for the last 15
-> > > years. I did that to get rid of the technical debt that these
-> > > scripts have gathered over years of neglect. They aren't used, we
-> > > shouldn't even attempt to maintain them anymore.
-> > 
-> > Okay. What do you mean by SGI QE script (sorry, not familiar with this)? Do
-> > you mean some kind of CI/automation-test script?
+
+
+on 3/7/2025 7:54 PM, Charles Han wrote:
+> kunit_kzalloc() may return a NULL pointer, dereferencing it without
+> NULL check may lead to NULL dereference.
+> Add a NULL check for test_state
 > 
-> SGI is Silicon Graphics International Corp. :
-> https://en.wikipedia.org/wiki/Silicon_Graphics_International
+> Fixes: b7098e1fa7bc ("ext4: Add unit test for mb_free_blocks")
+> Fixes: ac96b56a2fbd ("ext4: Add unit test for mb_mark_used")
+> Signed-off-by: Charles Han <hanchunchao@inspur.com>
+> ---
+>  fs/ext4/mballoc-test.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> xfstests was created to test xfs on IRIX (https://en.wikipedia.org/wiki/IRIX)
-> of SGI. Dave Chinner worked in SGI company long time ago, so he's the expert
-> of all these things, and knows lots of past details :)
-
-Hi Nirjhar,
-
-I've merged Dave's "[PATCH 0/5] fstests: remove old SGI QE scripts" into
-patches-in-queue branch. You can base on that to write your V2, to avoid
-dealing with the "soak" file.
-
-Thanks,
-Zorro
-
+> diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
+> index bb2a223b207c..d634c12f1984 100644
+> --- a/fs/ext4/mballoc-test.c
+> +++ b/fs/ext4/mballoc-test.c
+> @@ -796,6 +796,7 @@ static void test_mb_mark_used(struct kunit *test)
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buddy);
+>  	grp = kunit_kzalloc(test, offsetof(struct ext4_group_info,
+>  				bb_counters[MB_NUM_ORDERS(sb)]), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, grp);
+>  
+>  	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
+>  	KUNIT_ASSERT_EQ(test, ret, 0);
+> @@ -860,6 +861,7 @@ static void test_mb_free_blocks(struct kunit *test)
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buddy);
+>  	grp = kunit_kzalloc(test, offsetof(struct ext4_group_info,
+>  				bb_counters[MB_NUM_ORDERS(sb)]), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, grp);
+>  
+>  	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
+>  	KUNIT_ASSERT_EQ(test, ret, 0);
 > 
-> Thanks,
-> Zorro
-> 
-> > 
-> > --NR
-> > 
-> > > 
-> > > -Dave.
-> > > 
-> > -- 
-> > Nirjhar Roy
-> > Linux Kernel Developer
-> > IBM, Bangalore
-> > 
-> > 
+Good catch, looks good to me.
+
+Reviewed-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
 
