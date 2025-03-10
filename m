@@ -1,202 +1,119 @@
-Return-Path: <linux-ext4+bounces-6758-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6759-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 712D6A59DF8
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 18:27:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D786A5A6C8
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 23:12:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 893733A8AD6
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 17:26:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C7BC16FBF5
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Mar 2025 22:12:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F164235C04;
-	Mon, 10 Mar 2025 17:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D66F1E520E;
+	Mon, 10 Mar 2025 22:12:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JLKxfv7T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OkNae5p5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E6F22D4C3;
-	Mon, 10 Mar 2025 17:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896581D514E;
+	Mon, 10 Mar 2025 22:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741627507; cv=none; b=Ae0CxxMrMraTb6HhIJyOqkgq4v+eJGTgr1S3i0JkXFbOcX93J7WnEW64YWxFJK9V+f0qGZC6pUTa1N8hExOU4u1ZbOcjYqpmH26Yzs5HPL7uks7kW/SfFNSN55Qh75HT5+SnBlQ4Lb5EWAFlJvp9r3SPBZx34l74jDboNkG/n7k=
+	t=1741644769; cv=none; b=KyKyqXVAUQbuCzDJOpHo7s4ny76LsDvW38FjFYqqj+T4+uHQC1dAjvNlJ7XRXOPJ4x8Yh9t/D6skMsjRMejqbYPY3x9Aw/lE4w9cTbaxA1L1YcqhRf/I6MBLavfbBomcowt+VHMzb/A+BpOGnJFxHAF3vQHoEBwtMRTwFU6ENeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741627507; c=relaxed/simple;
-	bh=BghEd2GQW3wTIlHStsjpZEDMB9FucNbdaiZrISQmQN8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mF/RIEzLwwxJy907HppyABktyBSuDnrL8tGTjI86VduU2R75DiOegnbeHS5zo/E4KlwlIw7bzcm65iqYkKfxF+28C9ewmDz0uHjVeDGAKdaiIZFvdAn3Mg3PMZhZGBzWEQptpapV155cxkzuh4aFD+ua5NkPw+8fOkP/DMGsKO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JLKxfv7T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EF18C4CEED;
-	Mon, 10 Mar 2025 17:25:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741627507;
-	bh=BghEd2GQW3wTIlHStsjpZEDMB9FucNbdaiZrISQmQN8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JLKxfv7TquaSQVj6pduRdJDLTKPzknb5tkgsZMzpLvUTvE9PEYMQsIjrM4VFFgYIN
-	 veK3Jwsfb3aoCpCdWqKhvnl4zMBDJHVUR0jca3yqUZ8zH5UkMHxrnBUtHZlyquNf9h
-	 oe4WgGBn9PoHeBGiFmq9gcv+Q1NvEL63XpQrx53yLCRmhUciVfY6nGvnLfP12N0Zo4
-	 iYEwCZAQVnCT40WqIKXo4ZaV6RNvCJz6+Yugzn27g1jzuyUHWHQnHprenZENXDlpr8
-	 pFqP/yG7Jhf9+nzn3j2o3mzEND2mwXgXGu8yJ6CUYm8ekFhSQBej/CiazZVpKJiijW
-	 Qc+CSbiSKKWiA==
-Date: Mon, 10 Mar 2025 10:25:07 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, brauner@kernel.org,
-	cem@kernel.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ojaswin@linux.ibm.com, martin.petersen@oracle.com, tytso@mit.edu,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v4 09/12] xfs: Add xfs_file_dio_write_atomic()
-Message-ID: <20250310172507.GU2803749@frogsfrogsfrogs>
-References: <20250303171120.2837067-1-john.g.garry@oracle.com>
- <20250303171120.2837067-10-john.g.garry@oracle.com>
- <877c4x57j8.fsf@gmail.com>
- <5e6795b1-305c-40a0-84d0-43dfb4ee6cd7@oracle.com>
+	s=arc-20240116; t=1741644769; c=relaxed/simple;
+	bh=lTyqSLVLZ0kWBMHA53v7K6UIdBAn3oBWgOG9pMZ6oR8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LdAt8NPQBvHm6TAgW14N1LQKYVH6xeM/x3gYFIdp81esHa3HyMMjPNkpwsK3T6mtRE4UeZtSWKeFKqIwpmIMyc47tgGcNW4nKPnEo1x7fT5e7IQOwY47qTmQMhQ6KOowvsQetcmprqz0vl+MaT1V7GtDaRxdb0MVWiCXpCF00kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OkNae5p5; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-391342fc148so2193431f8f.2;
+        Mon, 10 Mar 2025 15:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741644766; x=1742249566; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LcVXYzW6QMhtHVD+R6znA27GOFN+fRqBX35PKQ7T1MU=;
+        b=OkNae5p5lGO5GI4VaWE8vnju2ITKA3PWiy0mc8lpu+4bHxXMCuqEIp2blEYR564qf8
+         TVdX/RJVp64BTz83p0mt6R5TsN5XwvGoLlyAM0EbzXUl1M+oqFRl7qpkwLdrQ+L+pWyu
+         y2IH9LMeG6f1e9NI6dpu9vMyLLX1czTCVZrSkAzDWtsVzAkHo23LnGM/bWqhQtzetjse
+         q7YBYURZPLSA6RUJN/JveFOp4W4qbNpvhUKH1vO6y1v3R9UjrgW3cM1MsfESrfRBpb5g
+         Q4/gVLgARdHUCam2YAztkc/g239tXwf9OgXkK99LhA188w/PVnRUJsqa++NFUtQQ0wj4
+         DTZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741644766; x=1742249566;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LcVXYzW6QMhtHVD+R6znA27GOFN+fRqBX35PKQ7T1MU=;
+        b=jncG0cCHpkB4affNFgekBi08wIXWvy6rnMb8aplLFbUYGmUp9XtdWOtgdXKu21mXSh
+         WxrQC3GIhqvCC7UgpI4nf9RYKn0dIxuJLszNJXy46akIgzgU5pJBE84dVBj/bC1W0IvV
+         ZWgbgQ9geaRpIIYOIlzVWufbVtKaT/zFvEqEKvtEa0eABQibOgQYG7/3E0ld2O2v06DQ
+         Lvx2QiDJAFNirJ2mI4dHa5tWgy51DJAbX2gNxQIjTrOtJejOBHPH94/xnpGbQQkT458q
+         ftLTGbkxFhXIA9N1S91WGDVuvNK4mS9uLoisOIBO39NnCYor9WLEhVCw5vkKXEKyegAN
+         Ickg==
+X-Forwarded-Encrypted: i=1; AJvYcCX5PAK9LGq0aYBqVBY3H9znLRjq/rWu98Rw6/8rTHhYThhoxHqldwrv1cnpEG3SBW2zemDy2qhKOQLn@vger.kernel.org, AJvYcCXUcIXD10c9MgKsKKe582LXPME402aNugdjDptl7Vwp6xvLFFL3n1h15r3fmma5Wx8vGhSuoxfF+n8AMNfw@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwkjebyT/uaSVJOOG4wtkLcEsJQyTXJ2WDJyoSosI7SS8gTgY8
+	ubPlQJJY0eEXVqcIswAvRBQuASM5Vm/0UNZWid4gzWtKl++YWgJ5
+X-Gm-Gg: ASbGnctBIsfyBIQF+F630yhxEesiHI4GpWOGjNbdByABVfmCrevGVYSXNMN1yU6TiK3
+	K62mnskOy82nvTAuvYZDU8gw+KaYQkOL6Y1FZhBTya+Rkxwivs/81eqaRBbLzz6BWzU7TCqCTcx
+	SdtpEeEMKXKVmo8cZGPble8BRmKOxY8inMed8Nht5au+x4Fvd1m+3jbUqxLhf8gUnJc4Gnb8Bom
+	5m0+Pz4yztWKC+eQiZ8QBh+lMBmFWtvDZivmTTeIkFVlJzzmErUnPJ0hCf+EmoQZ70Pj0FAXuWU
+	fziq3a4iiMK5CTYsMEocENciBW4K1IwLZ/5DKeM5oQjNOjgos3cHdQAua2BiR358oj35kuS2/Z8
+	vFQeaLYo=
+X-Google-Smtp-Source: AGHT+IHGRnGHmjeW/QrfiL1VK1BAnH7qXDOZkSRYFW1+/V2MmFUb9TgOXFcqlPCSC6bj7yZ+Hxrp3A==
+X-Received: by 2002:a05:6000:156a:b0:391:3fd2:610f with SMTP id ffacd0b85a97d-392641bcbfcmr1696778f8f.13.1741644765695;
+        Mon, 10 Mar 2025 15:12:45 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912c0e2b8bsm16226413f8f.64.2025.03.10.15.12.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Mar 2025 15:12:45 -0700 (PDT)
+Date: Mon, 10 Mar 2025 22:12:43 +0000
+From: David Laight <david.laight.linux@gmail.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: "Artem S. Tashkinov" <aros@gmx.com>, linux-ext4@vger.kernel.org, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: A syscall for changing birth time
+Message-ID: <20250310221243.0d5db7b3@pumpkin>
+In-Reply-To: <20250310135828.GB8837@mit.edu>
+References: <bda3fa3f-dd12-40de-841a-e4c216ab533f@gmx.com>
+	<20250310135828.GB8837@mit.edu>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e6795b1-305c-40a0-84d0-43dfb4ee6cd7@oracle.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 10, 2025 at 03:24:23PM +0000, John Garry wrote:
-> On 10/03/2025 13:39, Ritesh Harjani (IBM) wrote:
-> > John Garry <john.g.garry@oracle.com> writes:
-> > 
-> > > Add xfs_file_dio_write_atomic() for dedicated handling of atomic writes.
-> > > 
-> > > In case of -EAGAIN being returned from iomap_dio_rw(), reissue the write
-> > > in CoW-based atomic write mode.
-> > > 
-> > > For CoW-based mode, ensure that we have no outstanding IOs which we
-> > > may trample on.
-> > > 
-> > > Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-> > > Signed-off-by: John Garry <john.g.garry@oracle.com>
-> > > ---
-> > >   fs/xfs/xfs_file.c | 42 ++++++++++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 42 insertions(+)
-> > > 
-> > > diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> > > index 51b4a43d15f3..70eb6928cf63 100644
-> > > --- a/fs/xfs/xfs_file.c
-> > > +++ b/fs/xfs/xfs_file.c
-> > > @@ -619,6 +619,46 @@ xfs_file_dio_write_aligned(
-> > >   	return ret;
-> > >   }
-> > > +static noinline ssize_t
-> > > +xfs_file_dio_write_atomic(
-> > > +	struct xfs_inode	*ip,
-> > > +	struct kiocb		*iocb,
-> > > +	struct iov_iter		*from)
-> > > +{
-> > > +	unsigned int		iolock = XFS_IOLOCK_SHARED;
-> > > +	unsigned int		dio_flags = 0;
-> > > +	ssize_t			ret;
-> > > +
-> > > +retry:
-> > > +	ret = xfs_ilock_iocb_for_write(iocb, &iolock);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = xfs_file_write_checks(iocb, from, &iolock);
-> > > +	if (ret)
-> > > +		goto out_unlock;
-> > > +
-> > > +	if (dio_flags & IOMAP_DIO_FORCE_WAIT)
-> > > +		inode_dio_wait(VFS_I(ip));
-> > > +
-> > > +	trace_xfs_file_direct_write(iocb, from);
-> > > +	ret = iomap_dio_rw(iocb, from, &xfs_atomic_write_iomap_ops,
-> > > +			&xfs_dio_write_ops, dio_flags, NULL, 0);
-> > > +
-> > > +	if (ret == -EAGAIN && !(iocb->ki_flags & IOCB_NOWAIT) &&
-> > > +	    !(dio_flags & IOMAP_DIO_ATOMIC_SW)) {
-> > > +		xfs_iunlock(ip, iolock);
-> > > +		dio_flags = IOMAP_DIO_ATOMIC_SW | IOMAP_DIO_FORCE_WAIT;
-> > > +		iolock = XFS_IOLOCK_EXCL;
-> > > +		goto retry;
-> > > +	}
-> > 
-> > IIUC typically filesystems can now implement support for IOMAP_ATOMIC_SW
-> > as a fallback mechanism, by returning -EAGAIN error during
-> > IOMAP_ATOMIC_HW handling from their ->iomap_begin() routine.  They can
-> > then retry the entire DIO operation of iomap_dio_rw() by passing
-> > IOMAP_DIO_ATOMIC_SW flag in their dio_flags argument and handle
-> > IOMAP_ATOMIC_SW fallback differently in their ->iomap_begin() routine.
-> > 
-> > However, -EAGAIN can also be returned when there is a race with mmap
-> > writes for the same range. We return the same -EAGAIN error during page
-> > cache invalidation failure for IOCB_ATOMIC writes too.  However, current
-> > code does not differentiate between these two types of failures. Therefore,
-> > we always retry by falling back to SW CoW based atomic write even for
-> > page cache invalidation failures.
-> > 
-> > __iomap_dio_rw()
-> > {
-> > <...>
-> > 		/*
-> > 		 * Try to invalidate cache pages for the range we are writing.
-> > 		 * If this invalidation fails, let the caller fall back to
-> > 		 * buffered I/O.
-> > 		 */
-> > 		ret = kiocb_invalidate_pages(iocb, iomi.len);
-> > 		if (ret) {
-> > 			if (ret != -EAGAIN) {
-> > 				trace_iomap_dio_invalidate_fail(inode, iomi.pos,
-> > 								iomi.len);
-> > 				if (iocb->ki_flags & IOCB_ATOMIC) {
-> > 					/*
-> > 					 * folio invalidation failed, maybe
-> > 					 * this is transient, unlock and see if
-> > 					 * the caller tries again.
-> > 					 */
-> > 					ret = -EAGAIN;
-> > 				} else {
-> > 					/* fall back to buffered write */
-> > 					ret = -ENOTBLK;
-> > 				}
-> > 			}
-> > 			goto out_free_dio;
-> > 		}
-> > <...>
-> > }
-> > 
-> > It's easy to miss such error handling conditions. If this is something
-> > which was already discussed earlier, then perhaps it is better if
-> > document this.  BTW - Is this something that we already know of and has
-> > been kept as such intentionally?
-> > 
-> 
-> On mainline, for kiocb_invalidate_pages() error for IOCB_ATOMIC, we always
-> return -EAGAIN to userspace.
-> 
-> Now if we have any kiocb_invalidate_pages() error for IOCB_ATOMIC, we retry
-> with SW CoW mode - and if it fails again, we return -EAGAIN to userspace.
-> 
-> If we choose some other error code to trigger the SW-based COW retry (so
-> that we don't always retry for kiocb_invalidate_pages() error when
-> !IOMAP_DIO_ATOMIC_HW), then kiocb_invalidate_pages() could still return that
-> same error code and we still retry in SW-based COW mode - is that better? Or
-> do we need to choose some error code which kiocb_invalidate_pages() would
-> never return?
-> 
-> Note that -EAGAIN is used by xfs_file_dio_unwrite_unaligned(), so would be
-> nice to use the same error code.
+On Mon, 10 Mar 2025 09:58:28 -0400
+"Theodore Ts'o" <tytso@mit.edu> wrote:
 
-Frankly I don't see why it's a problem that EAGAIN triggers the software
-fallback no matter what tripped that.  Maybe the writer would be ok with
-the retry even if it came from an (unlikely) mmap write collision.
-
---D
-
-> Thanks,
-> John
+> On Mon, Mar 10, 2025 at 07:26:00AM +0000, Artem S. Tashkinov wrote:
+> > 
+> > Why is it that the Linux kernel supports reading btime, but there's no
+> > syscall to change it? At least for ext4 there's the debugfs utility, but
+> > for other filesystems there's just nothing. And even debugfs is not a
+> > solution, since it requires root privileges and an unmounted/mounted RO
+> > filesystem.  
 > 
+> POSIX and Single Unix Specification also doesn't provide a way to
+> allow userspace to set ctime (inode change time).  That's because the
+> definition of "change time" is defined to include the time to change
+> anything about the inode metadata --- including the inode timestamps.
+> 
+
+I'm sure that hadn't used to be the case.
+But as some point the 'ctime' changed from something that was usually
+the file create time (for some definition of create) to a pretty useless
+time that is almost a waste of disk space.
+
+	David
 
