@@ -1,52 +1,61 @@
-Return-Path: <linux-ext4+bounces-6762-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6763-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 110F5A5B812
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Mar 2025 05:49:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E9EDA5B81E
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Mar 2025 05:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A80493B00F6
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Mar 2025 04:49:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B91003B01B2
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Mar 2025 04:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BC81EA7FC;
-	Tue, 11 Mar 2025 04:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5C41EB5E7;
+	Tue, 11 Mar 2025 04:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Tm5a3prc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80FBC1E832E
-	for <linux-ext4@vger.kernel.org>; Tue, 11 Mar 2025 04:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583151E9B0C;
+	Tue, 11 Mar 2025 04:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741668586; cv=none; b=hywSGSQxJTvOTtsYl8YtQqTBXrnj+M2WXPtBr+WxTKPI8u0G+KjQbL0wqOjlgfW++xY79pOgkP7+gXEKv1CvpDUiGQylobteSr9PQyWJeS1Wj+JP3XAc/DnOEy0Hdrg6m0cXubrLcAsN4wfQL+V/72FhsOtcKbjly7BRi84sBQA=
+	t=1741668999; cv=none; b=BhPASklFWASeE7ctpGzOBD/oUrSO1FFmpIbO/st6APnuQHdOyFiELH346ziZL2SJ29luD3E2SaiHHLDJigUX80Dx3QsuvBHokhP0FQYxqZbMZelA0Pgyj7Z6+34V/do6ZKDnaUNy50HeZzHzKN4HLp3UpjhlsXFdffLGV+X1uOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741668586; c=relaxed/simple;
-	bh=eDMFEDfXMpdk5FoJ5a9RrjL/o3Ylg8uTSZQg+3TKPqg=;
+	s=arc-20240116; t=1741668999; c=relaxed/simple;
+	bh=d/5MouCRr/qW0fG76vd4I3/tAMZvWoBcXC8VVi3OkhA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zj4dbwumJweq+BAVFpwtBnvVKGtHaLalIjbGvZN0Lzx2g5xv/7Zc+AMU9HhvXITfE5o0AMTNHbCJp61NzibQFAZex4+PLPnxGfCtkt1/lGkeEfHGLJOeg/pfvF8YVmeId6n6x5126sMqfSjZcFP8ZT0ntepI1B4Cj7Hf+uzv3sE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-112-29.bstnma.fios.verizon.net [173.48.112.29])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52B4nZCp019327
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Mar 2025 00:49:36 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 16DD62E010B; Tue, 11 Mar 2025 00:49:35 -0400 (EDT)
-Date: Tue, 11 Mar 2025 00:49:35 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: David Laight <david.laight.linux@gmail.com>
-Cc: "Artem S. Tashkinov" <aros@gmx.com>, linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cRtgzngzYf4YRB+rbmMELbhVjpcgEX2CwcHY7ULDyNDrjeuRXZ+FbO79EqKqAuu4j6YLvGMdIZzarFdpEu+F6JxMEGzfSg3t+nMZbT1YVFLjEc/pdlHDmKI7Ja4NyKBbO7XNnxEZt55EcFsHhHBaGNJlGkTxNzPmz/iQcL8YKbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=Tm5a3prc; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=oG7gBUj5SmM7ezRaqRZGb2H5niz3NZIyO/1enjvp21U=; b=Tm5a3prcLUihWb4jW1Fxia+Aws
+	PAWWstiS7eTrc0HLmC4CYlm1Imm7KKzy4hdSyDLAFHZ5i+M/eA+VlW6HqAWl4myYerpxE+z93M9FA
+	THUx0i6+F5JgDYlAr5C4xkqBEhV1lbRjKLTMfIJsVQYCdhx6dOEZQrt4pj5FzFHCuTGpJOdiC4ZtV
+	wKhDIs7Jo7MPPRCpCoShJYySHskaPi7HQ9YajEJACuTOJ+oh57L7x6zPZ5ayTRVbj/dqVg+h6Evl3
+	6C7dXgQXqUIAQhtcUyMxcm71qpMJad03Q8rF4G+eGfDVgQF13Fy2XA8HHME9RYNPBtSptQsEQAN9d
+	lyQ4+KFQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1trrfP-00000003aQS-1x5i;
+	Tue, 11 Mar 2025 04:56:35 +0000
+Date: Tue, 11 Mar 2025 04:56:35 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: David Laight <david.laight.linux@gmail.com>,
+	"Artem S. Tashkinov" <aros@gmx.com>, linux-ext4@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Subject: Re: A syscall for changing birth time
-Message-ID: <20250311044935.GD69932@mit.edu>
+Message-ID: <20250311045635.GP2023217@ZenIV>
 References: <bda3fa3f-dd12-40de-841a-e4c216ab533f@gmx.com>
  <20250310135828.GB8837@mit.edu>
  <20250310221243.0d5db7b3@pumpkin>
+ <20250311044935.GD69932@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -55,53 +64,20 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250310221243.0d5db7b3@pumpkin>
+In-Reply-To: <20250311044935.GD69932@mit.edu>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Mon, Mar 10, 2025 at 10:12:43PM +0000, David Laight wrote:
-> 
-> I'm sure that hadn't used to be the case.
-> But as some point the 'ctime' changed from something that was usually
-> the file create time (for some definition of create) to a pretty useless
-> time that is almost a waste of disk space.
+On Tue, Mar 11, 2025 at 12:49:35AM -0400, Theodore Ts'o wrote:
 
-ctime was "inode change time" in BSD 4.2, released in 1983.  So it's
-been "change time" and not "creation time" for at least 42 years.
+> This really goes to my question of exactly how useful the file
+> creation time concept really is.  Perhaps that's why the developers at
+> the UC Berkley made ctime be "inode change time", I suspect when they
+> authored the BSD Fast File System 42 years ago.  Personally, while I
+> don't find "change time" to be all that useful --- I find "creation
+> time" an order of magnitude *more* useless.  :-)
 
-It might have been "creation time" back in the V7 Unix days, but I'd
-gently suggest that after over four decades, arguing that we get to
-change the semantics of an inode timestamp because we think know
-better.... is not really justification for breaking backwards
-compatibility.
-
-
-I'd also note that trying to add "creation time" has all sorts of
-interesting questions.  The way all pretty much all text editors work
-when you save some file, at least if they are compotently implemented,
-is to *NOT* truncate the existing file, and then rewrite it with the
-new contents, but rather, to write the contents to "foo.c.new", then
-rename "foo.c" to "foo.c.old", and then rename "foo.c.new" to "foo.c".
-
-So pretty much all text editors that exist in Unix today will result
-in the "creation time" to be pretty much the same "last moification
-time" (within a few milliseconds; however long it takes to write the
-file).
-
-So without changing pretty much all userspace tools which rewrite
-files, adding a "creation time" to Linux would be pretty much useless.
-For example, what should git do when you run "git checkout"?  Should
-itfigure out which git commit a file was first tracked in git, and use
-that time stamp for the file's "creation time".  That would take a
-fairly large effort for git, especially if it needs to be performant
---- and is it *really* all that useful to know when a file was first
-created in the git history and to make it available as a file system
-timestamp?
-
-This really goes to my question of exactly how useful the file
-creation time concept really is.  Perhaps that's why the developers at
-the UC Berkley made ctime be "inode change time", I suspect when they
-authored the BSD Fast File System 42 years ago.  Personally, while I
-don't find "change time" to be all that useful --- I find "creation
-time" an order of magnitude *more* useless.  :-)
-
-					- Ted
+The third timestamp had been introduced in v7 and it had been "change
+time" from the very beginning, with incremental backups as stated
+rationale in filesys(5).  "I'm sure that" from David means "I couldn't
+be arsed to check my WAG"...
 
