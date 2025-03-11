@@ -1,123 +1,107 @@
-Return-Path: <linux-ext4+bounces-6761-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6762-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05CD1A5B689
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Mar 2025 03:13:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 110F5A5B812
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Mar 2025 05:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2295116F243
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Mar 2025 02:13:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A80493B00F6
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Mar 2025 04:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45AD1E51E3;
-	Tue, 11 Mar 2025 02:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="bhwMc9I7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BC81EA7FC;
+	Tue, 11 Mar 2025 04:49:46 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6F51C6F55
-	for <linux-ext4@vger.kernel.org>; Tue, 11 Mar 2025 02:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80FBC1E832E
+	for <linux-ext4@vger.kernel.org>; Tue, 11 Mar 2025 04:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741659201; cv=none; b=ZiQTT54AELqn5lv3tjtgQpvidZ35oiL0C38uhyYk0bwdjkmdtG+C7/2pWA47DVEPsUmP+HOeJFHvkjk63qH45Na/xeFDvOIt1x4ZzGTkg8ebfEewJhSz+q9s3sQXs4uKvKiACduoz7rpH44Mvl08Pu0tqvjqhlfuvO+l/Ritpqk=
+	t=1741668586; cv=none; b=hywSGSQxJTvOTtsYl8YtQqTBXrnj+M2WXPtBr+WxTKPI8u0G+KjQbL0wqOjlgfW++xY79pOgkP7+gXEKv1CvpDUiGQylobteSr9PQyWJeS1Wj+JP3XAc/DnOEy0Hdrg6m0cXubrLcAsN4wfQL+V/72FhsOtcKbjly7BRi84sBQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741659201; c=relaxed/simple;
-	bh=udy8jRbGI1xRGhqFWBbV+CYLNO8MxK1GHbq47bU8y3Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YOAsRsLPxbS2w6XI8aFd8C/dEELFKPTWewJKIoU0CfVjbcX3jIHryp8tyMQHmAa/ELO2KVLMflbsay0RnvrlMK64BTg7XeLbTAl6dnsVvpeZiNk0M3hQIgcBE2qy5OEocttFxmbtsl8D3NQIr44iYA6528oKjszrcvp6WsMEGuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=bhwMc9I7; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-22349bb8605so90068885ad.0
-        for <linux-ext4@vger.kernel.org>; Mon, 10 Mar 2025 19:13:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1741659198; x=1742263998; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eEx1nNscCBpj8PvDfq9jNWOzGRxlbE/gLhvOGDUNIIs=;
-        b=bhwMc9I7pKKyC28TA5/PVy9ed3bcLQ1DSTLEolKAnI39CIRIZ5szwnxaWp5qI7TXhb
-         IeDd1BplwJVnmgm3DpGuxoqls3Io/Jd0WVA6z7BMWeuVXwODT/1KuNoUtGJa03XK/ba0
-         lglqr4X0xiYVD+1/+IOBwC7GeEmC0/odi+Rjf8JDICLbZ/0zGL4E1qe1H8hWgYrPA6Cz
-         1K2Ul4NTMaUf9yrIEKsPLRMdIcAcrfQWB/DrDm+hH+6HMxhWZpAkLlRRFNPGaomQvdaR
-         v+CEy7iL0q8N8KrXdcNoBRozJjlCmV5cWwkgQNh8x7zriYPZGUMexsA07FBoi+tgmX/6
-         BHJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741659198; x=1742263998;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eEx1nNscCBpj8PvDfq9jNWOzGRxlbE/gLhvOGDUNIIs=;
-        b=QGa0o2T1Fkc5Wi4gjwXmNPi/HVbUH/QTPJS6QOPE2ZNtyTTJXJvxt0TAP9q28X+cXM
-         oAoHJB0avBEJGiWJfkB1xl2dYfYgZaMnS6MguZtlgMjnnNQzrP81m/mJXlCRo3pklUC9
-         C7Zig5L6Iv7FlOFByyH8yVhnnlvie8anMTTqP2oVjwXdrph4SzIfFzCIBJUXAn/HLWUP
-         JrOy4pTRqPtEWagWofNLWkxWP0YIf330e4punNqer18UY/Ot8/RfnBcSUBRlYTdvcdnd
-         TEZHOsOu29HBq7v4IPYnIB41DWVllg5WlwX8kN+UGzg4vhNpJI3j7ZayRze/71uS/CXH
-         E1Zg==
-X-Gm-Message-State: AOJu0YxFdJtRGElEIIDZBg87IeuQolXyYLa3jt3TyHL6KXS2/76MT1wh
-	v3x8c+X3NGfc+cOWNIOvHcWbRWVr4gDBfepKD4o32GN3OTX8lXFW6y+MIcE09/w=
-X-Gm-Gg: ASbGnct+SSnQa1ITAnaMDlP8x0fIfUKkFuD9ijVw8DrWwn9a8+zsNffmLg6m3I0pKzO
-	2eE2fziHuxQGdr03hmTbxILEtoFHXmwdyYJz7oQK+FQqtkhU8TDNQF1fO8+XgjMF/pukvj/+Imq
-	yKlhcrE9CsBfYzyWVZH9zoQIB6zSBg2BVN5Cf+i1nKq5rSnlz6YLOFqA6nMp0mrhPjjNs0+QuiD
-	vs/QgDRCPXlzsLyyyTtdOtWoRULgPkyJT1nI6FYE1lry6kj6QRzGPQi1FlMLtccKYq60VFCJWQR
-	6yh9wKk9qxQcetlfuG3GY2UvePKAkNAWY5YGkcp5m82vww3WWn+FGw9Gx+hOY4TStQ==
-X-Google-Smtp-Source: AGHT+IEAV3kSCGbgGRfNs1o/R+ErPgdvcNrYhYzTSAbHfjdRjgn5bgiqiwCUDib6f5F0APcd1aFqXw==
-X-Received: by 2002:aa7:88cd:0:b0:736:621d:fd32 with SMTP id d2e1a72fcca58-736aaae44efmr21428387b3a.22.1741659197793;
-        Mon, 10 Mar 2025 19:13:17 -0700 (PDT)
-Received: from n13-144-013.byted.org ([36.110.131.117])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73698204fbesm9132193b3a.36.2025.03.10.19.13.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Mar 2025 19:13:17 -0700 (PDT)
-From: Diangang Li <lidiangang@bytedance.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Diangang Li <lidiangang@bytedance.com>
-Subject: [PATCH] ext4: clear DISCARD flag if device does not support discard
-Date: Tue, 11 Mar 2025 10:13:10 +0800
-Message-Id: <20250311021310.669524-1-lidiangang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
+	s=arc-20240116; t=1741668586; c=relaxed/simple;
+	bh=eDMFEDfXMpdk5FoJ5a9RrjL/o3Ylg8uTSZQg+3TKPqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zj4dbwumJweq+BAVFpwtBnvVKGtHaLalIjbGvZN0Lzx2g5xv/7Zc+AMU9HhvXITfE5o0AMTNHbCJp61NzibQFAZex4+PLPnxGfCtkt1/lGkeEfHGLJOeg/pfvF8YVmeId6n6x5126sMqfSjZcFP8ZT0ntepI1B4Cj7Hf+uzv3sE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-112-29.bstnma.fios.verizon.net [173.48.112.29])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52B4nZCp019327
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 11 Mar 2025 00:49:36 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 16DD62E010B; Tue, 11 Mar 2025 00:49:35 -0400 (EDT)
+Date: Tue, 11 Mar 2025 00:49:35 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: David Laight <david.laight.linux@gmail.com>
+Cc: "Artem S. Tashkinov" <aros@gmx.com>, linux-ext4@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: A syscall for changing birth time
+Message-ID: <20250311044935.GD69932@mit.edu>
+References: <bda3fa3f-dd12-40de-841a-e4c216ab533f@gmx.com>
+ <20250310135828.GB8837@mit.edu>
+ <20250310221243.0d5db7b3@pumpkin>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250310221243.0d5db7b3@pumpkin>
 
-commit 79add3a3f795e ("ext4: notify when discard is not supported")
-noted that keeping the DISCARD flag is for possibility that the underlying
-device might change in future even without file system remount. However,
-this scenario has rarely occurred in practice on the device side. Even if
-it does occur, it can be resolved with remount. Clearing the DISCARD flag
-not only prevents confusion caused by mount options but also avoids
-sending unnecessary discard commands.
+On Mon, Mar 10, 2025 at 10:12:43PM +0000, David Laight wrote:
+> 
+> I'm sure that hadn't used to be the case.
+> But as some point the 'ctime' changed from something that was usually
+> the file create time (for some definition of create) to a pretty useless
+> time that is almost a waste of disk space.
 
-Signed-off-by: Diangang Li <lidiangang@bytedance.com>
----
- fs/ext4/super.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ctime was "inode change time" in BSD 4.2, released in 1983.  So it's
+been "change time" and not "creation time" for at least 42 years.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index a50e5c31b937..1b4d8475a08c 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5616,9 +5616,11 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 			goto failed_mount9;
- 	}
- 
--	if (test_opt(sb, DISCARD) && !bdev_max_discard_sectors(sb->s_bdev))
-+	if (test_opt(sb, DISCARD) && !bdev_max_discard_sectors(sb->s_bdev)) {
- 		ext4_msg(sb, KERN_WARNING,
- 			 "mounting with \"discard\" option, but the device does not support discard");
-+		clear_opt(sb, DISCARD);
-+	}
- 
- 	if (es->s_error_count)
- 		mod_timer(&sbi->s_err_report, jiffies + 300*HZ); /* 5 minutes */
--- 
-2.20.1
+It might have been "creation time" back in the V7 Unix days, but I'd
+gently suggest that after over four decades, arguing that we get to
+change the semantics of an inode timestamp because we think know
+better.... is not really justification for breaking backwards
+compatibility.
 
+
+I'd also note that trying to add "creation time" has all sorts of
+interesting questions.  The way all pretty much all text editors work
+when you save some file, at least if they are compotently implemented,
+is to *NOT* truncate the existing file, and then rewrite it with the
+new contents, but rather, to write the contents to "foo.c.new", then
+rename "foo.c" to "foo.c.old", and then rename "foo.c.new" to "foo.c".
+
+So pretty much all text editors that exist in Unix today will result
+in the "creation time" to be pretty much the same "last moification
+time" (within a few milliseconds; however long it takes to write the
+file).
+
+So without changing pretty much all userspace tools which rewrite
+files, adding a "creation time" to Linux would be pretty much useless.
+For example, what should git do when you run "git checkout"?  Should
+itfigure out which git commit a file was first tracked in git, and use
+that time stamp for the file's "creation time".  That would take a
+fairly large effort for git, especially if it needs to be performant
+--- and is it *really* all that useful to know when a file was first
+created in the git history and to make it available as a file system
+timestamp?
+
+This really goes to my question of exactly how useful the file
+creation time concept really is.  Perhaps that's why the developers at
+the UC Berkley made ctime be "inode change time", I suspect when they
+authored the BSD Fast File System 42 years ago.  Personally, while I
+don't find "change time" to be all that useful --- I find "creation
+time" an order of magnitude *more* useless.  :-)
+
+					- Ted
 
