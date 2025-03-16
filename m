@@ -1,323 +1,188 @@
-Return-Path: <linux-ext4+bounces-6811-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6812-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D05ACA63466
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Mar 2025 08:15:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B067AA635AC
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 Mar 2025 13:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E56003AF2D3
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Mar 2025 07:15:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98CB3188DD22
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 Mar 2025 12:54:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3A918B47D;
-	Sun, 16 Mar 2025 07:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1191A4F3C;
+	Sun, 16 Mar 2025 12:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EO0i6jIJ"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="Ld8tWdC/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A0E15C140;
-	Sun, 16 Mar 2025 07:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073DF1A3151
+	for <linux-ext4@vger.kernel.org>; Sun, 16 Mar 2025 12:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742109344; cv=none; b=uivHuhVycalGj1QTmJXuazB8+bKa5xSPKN+Mkfv0Oy80XQc/HXogxgOuyJqPP1pRgMIhtJ+zBTHHNZMOwQIXSR3z1WJtKC7WarzNSCRYKKpcON771qRNWehh2brEhcIezSC9qorT5dHilog0nr23+j+GoafEeTVuksvw/Au6KIo=
+	t=1742129674; cv=none; b=mBwQgJmQaLWZUFrHQlb/+1SnBw534ri+r7El0WubdPedCHQMKVadn+XFckyQb16v0vbUTPaxrWXmLz8GX1nB08/XmmLgst0zdhzbRwp06m0wqCh6+FuyTUVaNIQ6vna0TTYlp5fecbQOqysK9Srpwz2hhgNToeQ4wSRj4WISTj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742109344; c=relaxed/simple;
-	bh=lu3qvsfUh6l/Lq9LC1hyOXIy2trWRiJd9d72CECHmx0=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=EkVqYE5ue2XYekVXXoutlQRWCdoPuWySN8rmuCgv2SyLCkxxfhvcwRYMTG7nxU6S34nswgvfHrx4IU3w6jYfHkx+PLe7f8SRrRoNCnORWxvWFP9sNODAgMYVh3qZy32MHy1hoXZ2G/8bifxhYcI7y8nzp+RQT7Ghek69DCO8C4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EO0i6jIJ; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2fe9759e5c1so1735453a91.0;
-        Sun, 16 Mar 2025 00:15:42 -0700 (PDT)
+	s=arc-20240116; t=1742129674; c=relaxed/simple;
+	bh=OxA9qjBJqKakYnBRGso9o9ug7I0v0v6fw9kJZL/v/EQ=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=jkhUdtHxkA4bL831UbM7Ez35qxOoYiHPWuh2jhLz6DVFZLA/tmlpoSGpnO3IjIEeLx0BE1kAdab+7M894iHh7rsTTSdI1Q/GIqYaX335gP+GAdBS2Gn8//FgnoAiqqq4jaXKVtBg4DYZ5aQEbhp4VHAdpec4GhAxGLIA6SOZB+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=Ld8tWdC/; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-223fd89d036so69119445ad.1
+        for <linux-ext4@vger.kernel.org>; Sun, 16 Mar 2025 05:54:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742109342; x=1742714142; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bjcObISMHQZ+Fg1muKY5MRZIaUfjvyeHrPpcVz3xSs4=;
-        b=EO0i6jIJ1ZL05DhgQp31Zh5WpzIDEjTVFXv7UVYwB8VcrZXOQxO/5GZ1MyHpPrhmuj
-         A5NetT1YEErIqFSt9gFyA8qVTcHdaXOlDjHRx4SL6SzYxVwyr4x1hDvYqD24Bp160nda
-         UKj0mFK7YQrCmKjfp31153yqe4gzFF15VUVcSlBqhc6WGdD/4VlVtIYVOZj3sXFFbn7G
-         pJba/yxdqy/R5b7FKg/U72PQS2LHh8CUe2qB+3mXTyU56Xs2TUgmPo7WLDUyI7xM058L
-         y2CzZkzUae/POpq1nMCmOG17OPJYhwy0H2475v0j4t+ys07B7TZKi1WwuaFgWfbQJDHC
-         5xqA==
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1742129670; x=1742734470; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DNgoIYRjmwaaNFGCS9H1CvEFT1qMkwLF12E6od/1rOs=;
+        b=Ld8tWdC/eOY6w1F+Fnc/5pk2MW7JvwwhAuT4snjfVVTFRKSj9GWyKF60SQ8s6/c83a
+         Oeo7RVzYpsCGk0JddN7Pgmv9sGjV3vh0SnYi432XaBi7bhJsCTkSv3vByoYemkmsbdFt
+         TSxWZBtT/YC2BRYHudBk/Jl5ROQYU3ixpIjv3ucTF4FLtddKo3SOtonLLWqlU6aRCqrG
+         9Qfl9MJPyujYhtElGkk6gU6j3a2K33lcEiw9TLMrPeKebdyMCdB+rrsxk0Nbk/6MfVOX
+         mvZiqlBYRzitSNRQJFIU9Xlw2xoSvmMy1zgCN/ySq79mKSlnM4dv+zEU3uNtPtyjMixU
+         VPwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742109342; x=1742714142;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bjcObISMHQZ+Fg1muKY5MRZIaUfjvyeHrPpcVz3xSs4=;
-        b=Xf/6YSW+1HVs4JxiirQ2SPEwQQMJ9P+ot0LIpvl2EmJ4WmSpgtgHhT0tfHNwNPXuJj
-         7mwgEDsbaijt/yjKVhmZD9DRq2KiVICdHVTJ/Id2dKtLft2rfUzVmTOgU6frygAuRK9U
-         TRLfbFCtkJqYaJOLeuDlf578qbGFKokBtPovScpLVrkSzi25CjRI+VVPvosGt1H8zLyt
-         6K7JBqTX+fN4kiXMWfYuyButSS4bTTxsi4BWikK7RrsxEPDHL2FTtA5AmY0shx/zqpkg
-         aPklsMNZTRwJ16te4QVN4LyOZ6L0Y5TFwvAZbZ/KBMpl0Ogy5A02CxLrvR4l+hLe4otp
-         qzhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV39E/4TL5U7FL40wt0i9d7qUBZd6ENEu3qiEUIVTKUlMqN/SXyqmdqalYsVrfBOg8Wy9t2Q0GtWpcr@vger.kernel.org, AJvYcCVurELfPFU/DmIby/s8MXefeUuYhTETU6fqhZdoR5GB6+GqRvBOPQpfoVON//29cM329IrN9Q2R/AKgqQ1kKg==@vger.kernel.org, AJvYcCW1z9s2S8FWBLIwxJud1v3HmLYFgqtHIX+AgrBnOOecvsLSebZGcVTUlx1wUiYmi5kuAXQrRRILaHknmZwo@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywmp82QfklwC0vDGM2tPQIKOwjV7eaXYIIiXh2TVAbtXjwFR/te
-	AU+GAgVlmmkUeR1n78nrHVn5e0WjQebQ3eVuV4s8+wkOFvnUGCQZPgOJbw==
-X-Gm-Gg: ASbGncsdPhP4qrbSlHFbA3cfNLyMBJgqQnu8BofJgvaLzTc9WyYIgyxWPF0io1O5S/r
-	GmgCGKtNyH89cz45MgzgO6JOMY/wjpHbUEJuo86YdHEgyLAKRFymLEn+WmCpGxnJwznk06G5ue3
-	NdhPEQUXP+KAMRWRzFWiRLmq4KA/TBe+cFN44DRdLXwPSlUGtNUTkajWKI8PcmaRh0F/EnTxNbR
-	31+edUiSXBL7XZ8cnWPWVmPXdLUSX7aT1J8OqIV8bX5ysBatApBsqmjjyavPu7ijxIYZkTUfDYt
-	k0WI3HxjYLC8FarEHWIzkn+bu6qwjxaaTzXdcg==
-X-Google-Smtp-Source: AGHT+IE7H4raGlFXoKfcQaj6Wtc7nXW7cUYucho3UtQrEbSafIrgFPj3EgC+0L0cavSARR4MJtiPEg==
-X-Received: by 2002:a17:90b:5387:b0:2ff:4a8d:74f8 with SMTP id 98e67ed59e1d1-30151c9a341mr8609833a91.6.1742109341749;
-        Sun, 16 Mar 2025 00:15:41 -0700 (PDT)
-Received: from dw-tp ([171.76.81.247])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30153bc301esm3721187a91.49.2025.03.16.00.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Mar 2025 00:15:41 -0700 (PDT)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, brauner@kernel.org, djwong@kernel.org, cem@kernel.org, dchinner@redhat.com, hch@lst.de
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, martin.petersen@oracle.com, tytso@mit.edu, linux-ext4@vger.kernel.org, John Garry <john.g.garry@oracle.com>
-Subject: Re: [PATCH v6 10/13] xfs: iomap COW-based atomic write support
-In-Reply-To: <20250313171310.1886394-11-john.g.garry@oracle.com>
-Date: Sun, 16 Mar 2025 12:23:34 +0530
-Message-ID: <8734fd79g1.fsf@gmail.com>
-References: <20250313171310.1886394-1-john.g.garry@oracle.com> <20250313171310.1886394-11-john.g.garry@oracle.com>
+        d=1e100.net; s=20230601; t=1742129670; x=1742734470;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DNgoIYRjmwaaNFGCS9H1CvEFT1qMkwLF12E6od/1rOs=;
+        b=GtyZC6C8qjVCZT/mJs/sz//qRIi2Zyur97xY7xiWlJ7k5SaVcmcLy5zLMCnO3RimHO
+         YhhJjMroBqNBmW8y1SG6HLK/pin3qcok1Rq3EUlMvZTfGIq9lRkJLYcZl6kwp5+c9Ehv
+         3L/PUj4+84ncs8UgCGprg2Qx35HrNU8DW/lrqEY9bvMG75ik41EKxYJd2IZdnyc3k0z9
+         13q3e+MWlsELdiHfWbe884VFM/3zCbsZVkkXEH93cMj5ngfvLectdCOrLXQN5XWRxQ13
+         E4l3dpBrfeGXUxw4ScIEbmzP41ERtkSNXb+c0SdbjvD4rBWKhhKIcmsgqvgFw6FNph5J
+         tgcg==
+X-Forwarded-Encrypted: i=1; AJvYcCWAs5MJ/SdTXLHHY5FIBHIsfCdapeDcDUpZtYyeBiyUB6K2RmDCD7kPBRGyGXhzVO6J8JLBxcWIzjgH@vger.kernel.org
+X-Gm-Message-State: AOJu0YwpLLQfh2gEkfb6swixN2RHe49JZaZ4DM1c9xfi29xmwazJxQvX
+	PLwCAy3gaAS77/Hr+mdJAFeQDsn0uTc5RNmioKVwPJMIAdiCzwxlx+7hvoVSpc4=
+X-Gm-Gg: ASbGnctCYd8cpQSvk4cLa4m5VMjtyx3WDT1ThTS9PNh/wlgot96d8l/YtjqbWHAoy+8
+	+RwxtpObiVsNJ6y902nkPJquy9RhgeMaYj8i/s8LvyH/cj8wUc6e5cajitbKlwgVmagVgv7AnFf
+	0esBpdeOU0heFY4AmHUDIaTd/cfMipH3YMhfbF+7cGva0oJZFbtYliuWFmPuBKwZX7gjqkNqmxH
+	B1rxmEqhjrYp055XwoUUJIOo80REBqKn2YcNecXrzqAqxt9mrwbmUliF7fZGqC47CJOZKM2KHY1
+	Vs28Vr54nfHRQMYLbG3mZdV1AZwHyfqtOLQrRoEbnT4CA87mqQnYbaTBZHNaYqqlumgmkHDNUpi
+	cK1AKC2jmpjwWvwmesw==
+X-Google-Smtp-Source: AGHT+IFzsFhOYNXxQ4P0xXMx/sSODUbQClgIcbHZhWjx33vG1Z2MB70E9uzcFuoB9hQ2s+qFlx9SMA==
+X-Received: by 2002:a17:902:dacc:b0:224:1c95:451e with SMTP id d9443c01a7336-225e0af5c09mr90792615ad.33.1742129670186;
+        Sun, 16 Mar 2025 05:54:30 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c6bbeb94sm57281945ad.199.2025.03.16.05.54.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 16 Mar 2025 05:54:29 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <1AFB99D7-8C35-4011-8A76-8D5099963C00@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_39AAF613-7FCD-49C2-BDB1-1F3EA6BDDDA2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] ext4: hash: simplify kzalloc(n * 1, ...) to kzalloc(n,
+ ...)
+Date: Sun, 16 Mar 2025 06:54:11 -0600
+In-Reply-To: <20250316-ext4-hash-kcalloc-v2-1-2a99e93ec6e0@ethancedwards.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+ Theodore Ts'o <tytso@mit.edu>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ linux-hardening@vger.kernel.org
+To: Ethan Carter Edwards <ethan@ethancedwards.com>
+References: <20250316-ext4-hash-kcalloc-v2-1-2a99e93ec6e0@ethancedwards.com>
+X-Mailer: Apple Mail (2.3273)
 
 
-Hello,
+--Apple-Mail=_39AAF613-7FCD-49C2-BDB1-1F3EA6BDDDA2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-John Garry <john.g.garry@oracle.com> writes:
+On Mar 15, 2025, at 11:33 PM, Ethan Carter Edwards =
+<ethan@ethancedwards.com> wrote:
+>=20
+> sizeof(char) evaluates to 1. Remove the churn.
+>=20
+> Signed-off-by: Ethan Carter Edwards <ethan@ethancedwards.com>
 
-> In cases of an atomic write covering misaligned or discontiguous disk
-> blocks, we will use a CoW-based method to issue the atomic write.
+Thanks,
 
-Looks like the 1st time write to a given logical range of a file (e.g an
-append write or writes on a hole), will also result into CoW based
-fallback method, right?. More on that ask below. The commit msg should
-capture that as well IMO.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
->
-> So, for that case, return -EAGAIN to request that the write be issued in
-> CoW atomic write mode. The dio write path should detect this, similar to
-> how misaligned regular DIO writes are handled.
->
-> For normal REQ_ATOMIC-based mode, when the range which we are atomic
-> writing to covers a shared data extent, try to allocate a new CoW fork.
-> However, if we find that what we allocated does not meet atomic write
-> requirements in terms of length and alignment, then fallback on the
-> CoW-based mode for the atomic write.
->
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
 > ---
->  fs/xfs/xfs_iomap.c | 131 ++++++++++++++++++++++++++++++++++++++++++++-
->  fs/xfs/xfs_iomap.h |   1 +
->  2 files changed, 130 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index 8196e66b099b..88d86cabb8a1 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -798,6 +798,23 @@ imap_spans_range(
->  	return true;
->  }
->  
-> +static bool
-> +xfs_bmap_valid_for_atomic_write(
-> +	struct xfs_bmbt_irec	*imap,
-> +	xfs_fileoff_t		offset_fsb,
-> +	xfs_fileoff_t		end_fsb)
-> +{
-> +	/* Misaligned start block wrt size */
-> +	if (!IS_ALIGNED(imap->br_startblock, imap->br_blockcount))
-> +		return false;
-> +
-> +	/* Discontiguous extents */
-> +	if (!imap_spans_range(imap, offset_fsb, end_fsb))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  static int
->  xfs_direct_write_iomap_begin(
->  	struct inode		*inode,
-> @@ -812,10 +829,12 @@ xfs_direct_write_iomap_begin(
->  	struct xfs_bmbt_irec	imap, cmap;
->  	xfs_fileoff_t		offset_fsb = XFS_B_TO_FSBT(mp, offset);
->  	xfs_fileoff_t		end_fsb = xfs_iomap_end_fsb(mp, offset, length);
-> +	xfs_fileoff_t		orig_end_fsb = end_fsb;
->  	int			nimaps = 1, error = 0;
->  	unsigned int		reflink_flags = 0;
->  	bool			shared = false;
->  	u16			iomap_flags = 0;
-> +	bool			needs_alloc;
->  	unsigned int		lockmode;
->  	u64			seq;
->  
-> @@ -877,13 +896,44 @@ xfs_direct_write_iomap_begin(
->  				&lockmode, reflink_flags);
->  		if (error)
->  			goto out_unlock;
-> -		if (shared)
-> +		if (shared) {
-> +			/*
-> +			 * Since we got a CoW fork extent mapping, ensure that
-> +			 * the mapping is actually suitable for an
-> +			 * REQ_ATOMIC-based atomic write, i.e. properly aligned
-> +			 * and covers the full range of the write. Otherwise,
-> +			 * we need to use the COW-based atomic write mode.
-> +			 */
-> +			if ((flags & IOMAP_ATOMIC) &&
-> +			    !xfs_bmap_valid_for_atomic_write(&cmap,
-> +					offset_fsb, end_fsb)) {
-> +				error = -EAGAIN;
-> +				goto out_unlock;
-> +			}
->  			goto out_found_cow;
-> +		}
->  		end_fsb = imap.br_startoff + imap.br_blockcount;
->  		length = XFS_FSB_TO_B(mp, end_fsb) - offset;
->  	}
->  
-> -	if (imap_needs_alloc(inode, flags, &imap, nimaps))
-> +	needs_alloc = imap_needs_alloc(inode, flags, &imap, nimaps);
-> +
-> +	if (flags & IOMAP_ATOMIC) {
-> +		error = -EAGAIN;
-> +		/*
-> +		 * If we allocate less than what is required for the write
-> +		 * then we may end up with multiple mappings, which means that
-> +		 * REQ_ATOMIC-based cannot be used, so avoid this possibility.
-> +		 */
-> +		if (needs_alloc && orig_end_fsb - offset_fsb > 1)
-> +			goto out_unlock;
+> Changes in v2:
+> - change back to kzalloc because sizeof(char) is 1. Nice catch. =
+Thanks.
+> - Link to v1: =
+https://lore.kernel.org/r/20250315-ext4-hash-kcalloc-v1-1-a9132cb49276@eth=
+ancedwards.com
+> ---
+> fs/ext4/hash.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/fs/ext4/hash.c b/fs/ext4/hash.c
+> index =
+deabe29da7fbc3d35f674ff861a2f3b579ffdea2..33cd5b6b02d59fb749844fe481022f5f=
+44244bb6 100644
+> --- a/fs/ext4/hash.c
+> +++ b/fs/ext4/hash.c
+> @@ -302,7 +302,7 @@ int ext4fs_dirhash(const struct inode *dir, const =
+char *name, int len,
+>=20
+> 	if (len && IS_CASEFOLDED(dir) &&
+> 	   (!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir))) {
+> -		buff =3D kzalloc(sizeof(char) * PATH_MAX, GFP_KERNEL);
+> +		buff =3D kzalloc(PATH_MAX, GFP_KERNEL);
+> 		if (!buff)
+> 			return -ENOMEM;
+>=20
+>=20
+> ---
+> base-commit: da920b7df701770e006928053672147075587fb2
+> change-id: 20250315-ext4-hash-kcalloc-203033977bd9
+>=20
+> Best regards,
+> --
+> Ethan Carter Edwards <ethan@ethancedwards.com>
+>=20
 
-I have a quick question here. Based on above check it looks like
-allocation requests on a hole or the 1st time allocation (append writes)
-for a given logical range will always be done using CoW fallback
-mechanism, isn't it? So that means HW based multi-fsblock atomic write
-request will only happen for over writes (non-discontigous extent),
-correct? 
 
-Now, it's not always necessary that if we try to allocate an extent for
-the given range, it results into discontiguous extents. e.g. say, if the
-entire range being written to is a hole or append writes, then it might
-just allocate a single unwritten extent which is valid for doing an
-atomic write using HW/BIOs right? 
-And it is valid to write using unwritten extent as long as we don't have
-mixed mappings i.e. the entire range should either be unwritten or
-written for the atomic write to be untorned, correct?
+Cheers, Andreas
 
-I am guessing this is kept intentional?
 
--ritesh
 
-> +
-> +		if (!xfs_bmap_valid_for_atomic_write(&imap, offset_fsb,
-> +				orig_end_fsb))
-> +			goto out_unlock;
-> +	}
-> +
-> +	if (needs_alloc)
->  		goto allocate_blocks;
->  
->  	/*
-> @@ -1024,6 +1074,83 @@ const struct iomap_ops xfs_zoned_direct_write_iomap_ops = {
->  };
->  #endif /* CONFIG_XFS_RT */
->  
-> +static int
-> +xfs_atomic_write_cow_iomap_begin(
-> +	struct inode		*inode,
-> +	loff_t			offset,
-> +	loff_t			length,
-> +	unsigned		flags,
-> +	struct iomap		*iomap,
-> +	struct iomap		*srcmap)
-> +{
-> +	ASSERT(flags & IOMAP_WRITE);
-> +	ASSERT(flags & IOMAP_DIRECT);
-> +
-> +	struct xfs_inode	*ip = XFS_I(inode);
-> +	struct xfs_mount	*mp = ip->i_mount;
-> +	struct xfs_bmbt_irec	imap, cmap;
-> +	xfs_fileoff_t		offset_fsb = XFS_B_TO_FSBT(mp, offset);
-> +	xfs_fileoff_t		end_fsb = xfs_iomap_end_fsb(mp, offset, length);
-> +	int			nimaps = 1, error;
-> +	bool			shared = false;
-> +	unsigned int		lockmode = XFS_ILOCK_EXCL;
-> +	u64			seq;
-> +
-> +	if (xfs_is_shutdown(mp))
-> +		return -EIO;
-> +
-> +	if (!xfs_has_reflink(mp))
-> +		return -EINVAL;
-> +
-> +	error = xfs_ilock_for_iomap(ip, flags, &lockmode);
-> +	if (error)
-> +		return error;
-> +
-> +	error = xfs_bmapi_read(ip, offset_fsb, end_fsb - offset_fsb, &imap,
-> +			&nimaps, 0);
-> +	if (error)
-> +		goto out_unlock;
-> +
-> +	 /*
-> +	  * Use XFS_REFLINK_ALLOC_EXTSZALIGN to hint at aligning new extents
-> +	  * according to extszhint, such that there will be a greater chance
-> +	  * that future atomic writes to that same range will be aligned (and
-> +	  * don't require this COW-based method).
-> +	  */
-> +	error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
-> +			&lockmode, XFS_REFLINK_CONVERT_UNWRITTEN |
-> +			XFS_REFLINK_FORCE_COW | XFS_REFLINK_ALLOC_EXTSZALIGN);
-> +	/*
-> +	 * Don't check @shared. For atomic writes, we should error when
-> +	 * we don't get a COW fork extent mapping.
-> +	 */
-> +	if (error)
-> +		goto out_unlock;
-> +
-> +	end_fsb = imap.br_startoff + imap.br_blockcount;
-> +
-> +	length = XFS_FSB_TO_B(mp, cmap.br_startoff + cmap.br_blockcount);
-> +	trace_xfs_iomap_found(ip, offset, length - offset, XFS_COW_FORK, &cmap);
-> +	if (imap.br_startblock != HOLESTARTBLOCK) {
-> +		seq = xfs_iomap_inode_sequence(ip, 0);
-> +		error = xfs_bmbt_to_iomap(ip, srcmap, &imap, flags, 0, seq);
-> +		if (error)
-> +			goto out_unlock;
-> +	}
-> +	seq = xfs_iomap_inode_sequence(ip, IOMAP_F_SHARED);
-> +	xfs_iunlock(ip, lockmode);
-> +	return xfs_bmbt_to_iomap(ip, iomap, &cmap, flags, IOMAP_F_SHARED, seq);
-> +
-> +out_unlock:
-> +	if (lockmode)
-> +		xfs_iunlock(ip, lockmode);
-> +	return error;
-> +}
-> +
-> +const struct iomap_ops xfs_atomic_write_cow_iomap_ops = {
-> +	.iomap_begin		= xfs_atomic_write_cow_iomap_begin,
-> +};
-> +
->  static int
->  xfs_dax_write_iomap_end(
->  	struct inode		*inode,
-> diff --git a/fs/xfs/xfs_iomap.h b/fs/xfs/xfs_iomap.h
-> index d330c4a581b1..674f8ac1b9bd 100644
-> --- a/fs/xfs/xfs_iomap.h
-> +++ b/fs/xfs/xfs_iomap.h
-> @@ -56,5 +56,6 @@ extern const struct iomap_ops xfs_read_iomap_ops;
->  extern const struct iomap_ops xfs_seek_iomap_ops;
->  extern const struct iomap_ops xfs_xattr_iomap_ops;
->  extern const struct iomap_ops xfs_dax_write_iomap_ops;
-> +extern const struct iomap_ops xfs_atomic_write_cow_iomap_ops;
->  
->  #endif /* __XFS_IOMAP_H__*/
-> -- 
-> 2.31.1
+
+
+
+--Apple-Mail=_39AAF613-7FCD-49C2-BDB1-1F3EA6BDDDA2
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmfWygAACgkQcqXauRfM
+H+BQ0BAAsNaIw3vgIaT+xh7yJw5BH45EMg3Ku3GEXEt1acV4lFDZhcF1LVfC0vsa
+M74lEHtETKjJWBIcYZLqXHZGLne/JpFbt6g1HfTjaV4MMfooNNrA44VnZYLUUA2+
+RZM3HrlWFUhgvqP+j8nY8pO/1x6KuStnv2FiitZbAFeKyw+HjrGF3hZD9BZU3tds
+AG0jpP6rindOWFzQFgIBB88Tl09BUSDsq4twC3vdkJ69fxYtuEhVqrQsQTRSG5oQ
+Xp8OaKkgUsOr+AqWSqtqYLBH96Ogp61qsjQH1Ax7aYvt63hTlsVLCjwa+vMz1gTf
+ji6BYvz7SP/4lFJJfDqVlvUlPhFKd2StdFn8WhAUqgkseIVA+GCaSGlcXuC+lFaG
+pimvYEKQ6kNETl7aop+tMn2ijy1Nb8XFO9mf7PpuIDFIjtdvCNEj+vbnMbdI1VLm
+CymVdzVeQENPg78GqlumiJm7BIX8FjdA4yH3enUueXDoAlT/3eNu9a+kfLBngqci
+HxYzThWlICLdSQhnX1ciIaB3P9b5e8+4vEE5j8AXbaVJYURdEr2UDQUnXRYBL0Zo
+zE9MbxpxXwVju3m7khAj5L/XQOIK3cC9HUcYA+/CPTZ8O9d2EkYHQYc6bqXOs+7t
+ldMLrwbbyRBVSZjHoR/wsr8TD3budCa9f6A8/rw7um/MBqWIXJU=
+=jEr/
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_39AAF613-7FCD-49C2-BDB1-1F3EA6BDDDA2--
 
