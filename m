@@ -1,121 +1,323 @@
-Return-Path: <linux-ext4+bounces-6810-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6811-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36906A63421
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Mar 2025 06:34:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D05ACA63466
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 Mar 2025 08:15:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B5DC1892EBF
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Mar 2025 05:34:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E56003AF2D3
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 Mar 2025 07:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4D8152196;
-	Sun, 16 Mar 2025 05:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3A918B47D;
+	Sun, 16 Mar 2025 07:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b="rET6U5aV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EO0i6jIJ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF1D85270;
-	Sun, 16 Mar 2025 05:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A0E15C140;
+	Sun, 16 Mar 2025 07:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742103255; cv=none; b=l9tvssy6qwGRKbroL6QuOymXMk6MMh5Fda5GciOJ5doTqFG4UkPaGgzDJMxUaUgTiiFhdxHhFnGHozM8EG4XQS4kMLG22LKlgMbPxIdidYYHpuFmdxCfIgndXDKSmx9wz9lH7hnzoJ5ee+HDA4jBcxGOgF7yPTc/9e5QLbXexHw=
+	t=1742109344; cv=none; b=uivHuhVycalGj1QTmJXuazB8+bKa5xSPKN+Mkfv0Oy80XQc/HXogxgOuyJqPP1pRgMIhtJ+zBTHHNZMOwQIXSR3z1WJtKC7WarzNSCRYKKpcON771qRNWehh2brEhcIezSC9qorT5dHilog0nr23+j+GoafEeTVuksvw/Au6KIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742103255; c=relaxed/simple;
-	bh=oGD1s/xNa6TBgsHChGC+t1D6VjHoYtHDt6gNPcPBSHg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=S8GOa7A8GViwCDpsFHlYxtSdykFAaczhtaDfVl4ZgElWltfX9YxE3Za7w/CcOwFmoku7ORNxYrrFKecZ4cP8rGLPen4vAeTDnjf4r7efKGbP2Aqd4GGU2dEOemqpqt5Axq9xGeyQ3Ncbmu4muU0U3PS2jroQ38trQlNmJA9ME6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com; spf=pass smtp.mailfrom=ethancedwards.com; dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b=rET6U5aV; arc=none smtp.client-ip=80.241.56.161
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ethancedwards.com
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4ZFmxR1Rmvz9sQ0;
-	Sun, 16 Mar 2025 06:34:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ethancedwards.com;
-	s=MBO0001; t=1742103243;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=w7sA28uhI2pO2WI83oBigupHnrWlvDC82flU/T+GvL8=;
-	b=rET6U5aV5NdgHJxCDAFm5ix8iT3kxN70ItALnYsAIYOTerORS+deqO7URe8+43EvvT69dq
-	Z4A6L4Xi3Y94rF1weikZ9f+DeBAQzFxrIIcocIHl0T1oIt7jhBKu0z+Ys9Mkh+lwfa6903
-	2DTuNiXwjMNS5tSO+43w5cEk8qp1rMXnxpYQwFh4X6QLVbWVBOVI5eUmaBQbiE5N5i0ELf
-	biKOu5Hk5AVTQ+TDx1RoQQ4FgQeVA2S2+JDKaFLa4TvufZIzu1GC1j6FIZ1/VhyV7FDNvG
-	JtwO84LKROgKpGHZILfC2sflOcXrbKL8QZMpYTm4u6THqcZlMBqdBFXJiDpJ+A==
-From: Ethan Carter Edwards <ethan@ethancedwards.com>
-Date: Sun, 16 Mar 2025 01:33:59 -0400
-Subject: [PATCH v2] ext4: hash: simplify kzalloc(n * 1, ...) to kzalloc(n,
- ...)
+	s=arc-20240116; t=1742109344; c=relaxed/simple;
+	bh=lu3qvsfUh6l/Lq9LC1hyOXIy2trWRiJd9d72CECHmx0=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=EkVqYE5ue2XYekVXXoutlQRWCdoPuWySN8rmuCgv2SyLCkxxfhvcwRYMTG7nxU6S34nswgvfHrx4IU3w6jYfHkx+PLe7f8SRrRoNCnORWxvWFP9sNODAgMYVh3qZy32MHy1hoXZ2G/8bifxhYcI7y8nzp+RQT7Ghek69DCO8C4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EO0i6jIJ; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2fe9759e5c1so1735453a91.0;
+        Sun, 16 Mar 2025 00:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742109342; x=1742714142; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bjcObISMHQZ+Fg1muKY5MRZIaUfjvyeHrPpcVz3xSs4=;
+        b=EO0i6jIJ1ZL05DhgQp31Zh5WpzIDEjTVFXv7UVYwB8VcrZXOQxO/5GZ1MyHpPrhmuj
+         A5NetT1YEErIqFSt9gFyA8qVTcHdaXOlDjHRx4SL6SzYxVwyr4x1hDvYqD24Bp160nda
+         UKj0mFK7YQrCmKjfp31153yqe4gzFF15VUVcSlBqhc6WGdD/4VlVtIYVOZj3sXFFbn7G
+         pJba/yxdqy/R5b7FKg/U72PQS2LHh8CUe2qB+3mXTyU56Xs2TUgmPo7WLDUyI7xM058L
+         y2CzZkzUae/POpq1nMCmOG17OPJYhwy0H2475v0j4t+ys07B7TZKi1WwuaFgWfbQJDHC
+         5xqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742109342; x=1742714142;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bjcObISMHQZ+Fg1muKY5MRZIaUfjvyeHrPpcVz3xSs4=;
+        b=Xf/6YSW+1HVs4JxiirQ2SPEwQQMJ9P+ot0LIpvl2EmJ4WmSpgtgHhT0tfHNwNPXuJj
+         7mwgEDsbaijt/yjKVhmZD9DRq2KiVICdHVTJ/Id2dKtLft2rfUzVmTOgU6frygAuRK9U
+         TRLfbFCtkJqYaJOLeuDlf578qbGFKokBtPovScpLVrkSzi25CjRI+VVPvosGt1H8zLyt
+         6K7JBqTX+fN4kiXMWfYuyButSS4bTTxsi4BWikK7RrsxEPDHL2FTtA5AmY0shx/zqpkg
+         aPklsMNZTRwJ16te4QVN4LyOZ6L0Y5TFwvAZbZ/KBMpl0Ogy5A02CxLrvR4l+hLe4otp
+         qzhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV39E/4TL5U7FL40wt0i9d7qUBZd6ENEu3qiEUIVTKUlMqN/SXyqmdqalYsVrfBOg8Wy9t2Q0GtWpcr@vger.kernel.org, AJvYcCVurELfPFU/DmIby/s8MXefeUuYhTETU6fqhZdoR5GB6+GqRvBOPQpfoVON//29cM329IrN9Q2R/AKgqQ1kKg==@vger.kernel.org, AJvYcCW1z9s2S8FWBLIwxJud1v3HmLYFgqtHIX+AgrBnOOecvsLSebZGcVTUlx1wUiYmi5kuAXQrRRILaHknmZwo@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywmp82QfklwC0vDGM2tPQIKOwjV7eaXYIIiXh2TVAbtXjwFR/te
+	AU+GAgVlmmkUeR1n78nrHVn5e0WjQebQ3eVuV4s8+wkOFvnUGCQZPgOJbw==
+X-Gm-Gg: ASbGncsdPhP4qrbSlHFbA3cfNLyMBJgqQnu8BofJgvaLzTc9WyYIgyxWPF0io1O5S/r
+	GmgCGKtNyH89cz45MgzgO6JOMY/wjpHbUEJuo86YdHEgyLAKRFymLEn+WmCpGxnJwznk06G5ue3
+	NdhPEQUXP+KAMRWRzFWiRLmq4KA/TBe+cFN44DRdLXwPSlUGtNUTkajWKI8PcmaRh0F/EnTxNbR
+	31+edUiSXBL7XZ8cnWPWVmPXdLUSX7aT1J8OqIV8bX5ysBatApBsqmjjyavPu7ijxIYZkTUfDYt
+	k0WI3HxjYLC8FarEHWIzkn+bu6qwjxaaTzXdcg==
+X-Google-Smtp-Source: AGHT+IE7H4raGlFXoKfcQaj6Wtc7nXW7cUYucho3UtQrEbSafIrgFPj3EgC+0L0cavSARR4MJtiPEg==
+X-Received: by 2002:a17:90b:5387:b0:2ff:4a8d:74f8 with SMTP id 98e67ed59e1d1-30151c9a341mr8609833a91.6.1742109341749;
+        Sun, 16 Mar 2025 00:15:41 -0700 (PDT)
+Received: from dw-tp ([171.76.81.247])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30153bc301esm3721187a91.49.2025.03.16.00.15.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Mar 2025 00:15:41 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: John Garry <john.g.garry@oracle.com>, brauner@kernel.org, djwong@kernel.org, cem@kernel.org, dchinner@redhat.com, hch@lst.de
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, martin.petersen@oracle.com, tytso@mit.edu, linux-ext4@vger.kernel.org, John Garry <john.g.garry@oracle.com>
+Subject: Re: [PATCH v6 10/13] xfs: iomap COW-based atomic write support
+In-Reply-To: <20250313171310.1886394-11-john.g.garry@oracle.com>
+Date: Sun, 16 Mar 2025 12:23:34 +0530
+Message-ID: <8734fd79g1.fsf@gmail.com>
+References: <20250313171310.1886394-1-john.g.garry@oracle.com> <20250313171310.1886394-11-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250316-ext4-hash-kcalloc-v2-1-2a99e93ec6e0@ethancedwards.com>
-X-B4-Tracking: v=1; b=H4sIAMZi1mcC/32OTQ7CIBSEr9K8tc/w00pw5T1MFxSeQqzFQIM1T
- e8u9gAuv0nmm1khUwqU4dyskKiEHOJUQRwasN5Md8LgKoNgomOSd0jL3KI32ePDmnGMFgWTTEq
- t1OA01N4r0S0su/PaV/YhzzF99onCf+k/W+HI0WguhR1aLdTpQnM9Ysm9TXL5aOMT+m3bvlc18
- PO6AAAA
-X-Change-ID: 20250315-ext4-hash-kcalloc-203033977bd9
-To: Matthew Wilcox <willy@infradead.org>, 
- Andreas Dilger <adilger@dilger.ca>
-Cc: Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- linux-hardening@vger.kernel.org, 
- Ethan Carter Edwards <ethan@ethancedwards.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1095;
- i=ethan@ethancedwards.com; h=from:subject:message-id;
- bh=oGD1s/xNa6TBgsHChGC+t1D6VjHoYtHDt6gNPcPBSHg=;
- b=LS0tLS1CRUdJTiBQR1AgTUVTU0FHRS0tLS0tCgpvd0o0bkp2QXk4ekFKWGJEOXFoNThlVGp6e
- GhQcXlVeHBGOUxPcjc2YitFYjA3dXJMMFY0TmNROTlOZysyelB2ClpLTDBwTmVwcmsraUQ1eko5
- UkhzS0dWaEVPTmlrQlZUWlBtZm81ejJVSE9Hd3M2L0xrMHdjMWlaUUlZd2NIRUsKd0VSS3RCbit
- xVC9iMkxNalpzcm5JMnRYSEtsNlgvS0pyYjl5WFZvMDk2bWQzTzJHdS9pRFZqTXlIRTdOVERpNQ
- phdDdsQlo5bnNFck1GR2xZMFZ0MjRXcW8raHo3dnhyMzc1MFM1UVVBTGVoUnl3PT0KPWJMRm4KL
- S0tLS1FTkQgUEdQIE1FU1NBR0UtLS0tLQo=
-X-Developer-Key: i=ethan@ethancedwards.com; a=openpgp;
- fpr=2E51F61839D1FA947A7300C234C04305D581DBFE
-X-Rspamd-Queue-Id: 4ZFmxR1Rmvz9sQ0
 
-sizeof(char) evaluates to 1. Remove the churn.
 
-Signed-off-by: Ethan Carter Edwards <ethan@ethancedwards.com>
----
-Changes in v2:
-- change back to kzalloc because sizeof(char) is 1. Nice catch. Thanks.
-- Link to v1: https://lore.kernel.org/r/20250315-ext4-hash-kcalloc-v1-1-a9132cb49276@ethancedwards.com
----
- fs/ext4/hash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hello,
 
-diff --git a/fs/ext4/hash.c b/fs/ext4/hash.c
-index deabe29da7fbc3d35f674ff861a2f3b579ffdea2..33cd5b6b02d59fb749844fe481022f5f44244bb6 100644
---- a/fs/ext4/hash.c
-+++ b/fs/ext4/hash.c
-@@ -302,7 +302,7 @@ int ext4fs_dirhash(const struct inode *dir, const char *name, int len,
- 
- 	if (len && IS_CASEFOLDED(dir) &&
- 	   (!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir))) {
--		buff = kzalloc(sizeof(char) * PATH_MAX, GFP_KERNEL);
-+		buff = kzalloc(PATH_MAX, GFP_KERNEL);
- 		if (!buff)
- 			return -ENOMEM;
- 
+John Garry <john.g.garry@oracle.com> writes:
 
----
-base-commit: da920b7df701770e006928053672147075587fb2
-change-id: 20250315-ext4-hash-kcalloc-203033977bd9
+> In cases of an atomic write covering misaligned or discontiguous disk
+> blocks, we will use a CoW-based method to issue the atomic write.
 
-Best regards,
--- 
-Ethan Carter Edwards <ethan@ethancedwards.com>
+Looks like the 1st time write to a given logical range of a file (e.g an
+append write or writes on a hole), will also result into CoW based
+fallback method, right?. More on that ask below. The commit msg should
+capture that as well IMO.
 
+>
+> So, for that case, return -EAGAIN to request that the write be issued in
+> CoW atomic write mode. The dio write path should detect this, similar to
+> how misaligned regular DIO writes are handled.
+>
+> For normal REQ_ATOMIC-based mode, when the range which we are atomic
+> writing to covers a shared data extent, try to allocate a new CoW fork.
+> However, if we find that what we allocated does not meet atomic write
+> requirements in terms of length and alignment, then fallback on the
+> CoW-based mode for the atomic write.
+>
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  fs/xfs/xfs_iomap.c | 131 ++++++++++++++++++++++++++++++++++++++++++++-
+>  fs/xfs/xfs_iomap.h |   1 +
+>  2 files changed, 130 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> index 8196e66b099b..88d86cabb8a1 100644
+> --- a/fs/xfs/xfs_iomap.c
+> +++ b/fs/xfs/xfs_iomap.c
+> @@ -798,6 +798,23 @@ imap_spans_range(
+>  	return true;
+>  }
+>  
+> +static bool
+> +xfs_bmap_valid_for_atomic_write(
+> +	struct xfs_bmbt_irec	*imap,
+> +	xfs_fileoff_t		offset_fsb,
+> +	xfs_fileoff_t		end_fsb)
+> +{
+> +	/* Misaligned start block wrt size */
+> +	if (!IS_ALIGNED(imap->br_startblock, imap->br_blockcount))
+> +		return false;
+> +
+> +	/* Discontiguous extents */
+> +	if (!imap_spans_range(imap, offset_fsb, end_fsb))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>  static int
+>  xfs_direct_write_iomap_begin(
+>  	struct inode		*inode,
+> @@ -812,10 +829,12 @@ xfs_direct_write_iomap_begin(
+>  	struct xfs_bmbt_irec	imap, cmap;
+>  	xfs_fileoff_t		offset_fsb = XFS_B_TO_FSBT(mp, offset);
+>  	xfs_fileoff_t		end_fsb = xfs_iomap_end_fsb(mp, offset, length);
+> +	xfs_fileoff_t		orig_end_fsb = end_fsb;
+>  	int			nimaps = 1, error = 0;
+>  	unsigned int		reflink_flags = 0;
+>  	bool			shared = false;
+>  	u16			iomap_flags = 0;
+> +	bool			needs_alloc;
+>  	unsigned int		lockmode;
+>  	u64			seq;
+>  
+> @@ -877,13 +896,44 @@ xfs_direct_write_iomap_begin(
+>  				&lockmode, reflink_flags);
+>  		if (error)
+>  			goto out_unlock;
+> -		if (shared)
+> +		if (shared) {
+> +			/*
+> +			 * Since we got a CoW fork extent mapping, ensure that
+> +			 * the mapping is actually suitable for an
+> +			 * REQ_ATOMIC-based atomic write, i.e. properly aligned
+> +			 * and covers the full range of the write. Otherwise,
+> +			 * we need to use the COW-based atomic write mode.
+> +			 */
+> +			if ((flags & IOMAP_ATOMIC) &&
+> +			    !xfs_bmap_valid_for_atomic_write(&cmap,
+> +					offset_fsb, end_fsb)) {
+> +				error = -EAGAIN;
+> +				goto out_unlock;
+> +			}
+>  			goto out_found_cow;
+> +		}
+>  		end_fsb = imap.br_startoff + imap.br_blockcount;
+>  		length = XFS_FSB_TO_B(mp, end_fsb) - offset;
+>  	}
+>  
+> -	if (imap_needs_alloc(inode, flags, &imap, nimaps))
+> +	needs_alloc = imap_needs_alloc(inode, flags, &imap, nimaps);
+> +
+> +	if (flags & IOMAP_ATOMIC) {
+> +		error = -EAGAIN;
+> +		/*
+> +		 * If we allocate less than what is required for the write
+> +		 * then we may end up with multiple mappings, which means that
+> +		 * REQ_ATOMIC-based cannot be used, so avoid this possibility.
+> +		 */
+> +		if (needs_alloc && orig_end_fsb - offset_fsb > 1)
+> +			goto out_unlock;
+
+I have a quick question here. Based on above check it looks like
+allocation requests on a hole or the 1st time allocation (append writes)
+for a given logical range will always be done using CoW fallback
+mechanism, isn't it? So that means HW based multi-fsblock atomic write
+request will only happen for over writes (non-discontigous extent),
+correct? 
+
+Now, it's not always necessary that if we try to allocate an extent for
+the given range, it results into discontiguous extents. e.g. say, if the
+entire range being written to is a hole or append writes, then it might
+just allocate a single unwritten extent which is valid for doing an
+atomic write using HW/BIOs right? 
+And it is valid to write using unwritten extent as long as we don't have
+mixed mappings i.e. the entire range should either be unwritten or
+written for the atomic write to be untorned, correct?
+
+I am guessing this is kept intentional?
+
+-ritesh
+
+> +
+> +		if (!xfs_bmap_valid_for_atomic_write(&imap, offset_fsb,
+> +				orig_end_fsb))
+> +			goto out_unlock;
+> +	}
+> +
+> +	if (needs_alloc)
+>  		goto allocate_blocks;
+>  
+>  	/*
+> @@ -1024,6 +1074,83 @@ const struct iomap_ops xfs_zoned_direct_write_iomap_ops = {
+>  };
+>  #endif /* CONFIG_XFS_RT */
+>  
+> +static int
+> +xfs_atomic_write_cow_iomap_begin(
+> +	struct inode		*inode,
+> +	loff_t			offset,
+> +	loff_t			length,
+> +	unsigned		flags,
+> +	struct iomap		*iomap,
+> +	struct iomap		*srcmap)
+> +{
+> +	ASSERT(flags & IOMAP_WRITE);
+> +	ASSERT(flags & IOMAP_DIRECT);
+> +
+> +	struct xfs_inode	*ip = XFS_I(inode);
+> +	struct xfs_mount	*mp = ip->i_mount;
+> +	struct xfs_bmbt_irec	imap, cmap;
+> +	xfs_fileoff_t		offset_fsb = XFS_B_TO_FSBT(mp, offset);
+> +	xfs_fileoff_t		end_fsb = xfs_iomap_end_fsb(mp, offset, length);
+> +	int			nimaps = 1, error;
+> +	bool			shared = false;
+> +	unsigned int		lockmode = XFS_ILOCK_EXCL;
+> +	u64			seq;
+> +
+> +	if (xfs_is_shutdown(mp))
+> +		return -EIO;
+> +
+> +	if (!xfs_has_reflink(mp))
+> +		return -EINVAL;
+> +
+> +	error = xfs_ilock_for_iomap(ip, flags, &lockmode);
+> +	if (error)
+> +		return error;
+> +
+> +	error = xfs_bmapi_read(ip, offset_fsb, end_fsb - offset_fsb, &imap,
+> +			&nimaps, 0);
+> +	if (error)
+> +		goto out_unlock;
+> +
+> +	 /*
+> +	  * Use XFS_REFLINK_ALLOC_EXTSZALIGN to hint at aligning new extents
+> +	  * according to extszhint, such that there will be a greater chance
+> +	  * that future atomic writes to that same range will be aligned (and
+> +	  * don't require this COW-based method).
+> +	  */
+> +	error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
+> +			&lockmode, XFS_REFLINK_CONVERT_UNWRITTEN |
+> +			XFS_REFLINK_FORCE_COW | XFS_REFLINK_ALLOC_EXTSZALIGN);
+> +	/*
+> +	 * Don't check @shared. For atomic writes, we should error when
+> +	 * we don't get a COW fork extent mapping.
+> +	 */
+> +	if (error)
+> +		goto out_unlock;
+> +
+> +	end_fsb = imap.br_startoff + imap.br_blockcount;
+> +
+> +	length = XFS_FSB_TO_B(mp, cmap.br_startoff + cmap.br_blockcount);
+> +	trace_xfs_iomap_found(ip, offset, length - offset, XFS_COW_FORK, &cmap);
+> +	if (imap.br_startblock != HOLESTARTBLOCK) {
+> +		seq = xfs_iomap_inode_sequence(ip, 0);
+> +		error = xfs_bmbt_to_iomap(ip, srcmap, &imap, flags, 0, seq);
+> +		if (error)
+> +			goto out_unlock;
+> +	}
+> +	seq = xfs_iomap_inode_sequence(ip, IOMAP_F_SHARED);
+> +	xfs_iunlock(ip, lockmode);
+> +	return xfs_bmbt_to_iomap(ip, iomap, &cmap, flags, IOMAP_F_SHARED, seq);
+> +
+> +out_unlock:
+> +	if (lockmode)
+> +		xfs_iunlock(ip, lockmode);
+> +	return error;
+> +}
+> +
+> +const struct iomap_ops xfs_atomic_write_cow_iomap_ops = {
+> +	.iomap_begin		= xfs_atomic_write_cow_iomap_begin,
+> +};
+> +
+>  static int
+>  xfs_dax_write_iomap_end(
+>  	struct inode		*inode,
+> diff --git a/fs/xfs/xfs_iomap.h b/fs/xfs/xfs_iomap.h
+> index d330c4a581b1..674f8ac1b9bd 100644
+> --- a/fs/xfs/xfs_iomap.h
+> +++ b/fs/xfs/xfs_iomap.h
+> @@ -56,5 +56,6 @@ extern const struct iomap_ops xfs_read_iomap_ops;
+>  extern const struct iomap_ops xfs_seek_iomap_ops;
+>  extern const struct iomap_ops xfs_xattr_iomap_ops;
+>  extern const struct iomap_ops xfs_dax_write_iomap_ops;
+> +extern const struct iomap_ops xfs_atomic_write_cow_iomap_ops;
+>  
+>  #endif /* __XFS_IOMAP_H__*/
+> -- 
+> 2.31.1
 
