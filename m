@@ -1,53 +1,51 @@
-Return-Path: <linux-ext4+bounces-6857-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6847-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C66D2A667A1
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 04:44:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD77A6678A
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 04:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D3333B5373
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 03:42:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6E9F189AA13
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 03:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8052C1CAA7A;
-	Tue, 18 Mar 2025 03:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 535091A08B1;
+	Tue, 18 Mar 2025 03:41:57 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C561C5F3A
-	for <linux-ext4@vger.kernel.org>; Tue, 18 Mar 2025 03:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A39E1865E5
+	for <linux-ext4@vger.kernel.org>; Tue, 18 Mar 2025 03:41:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742269333; cv=none; b=HOey8wwRJPLVNg0iDERqzfvnOUW85fVbMOAh9bY8hRgSpArIfq29E7oFIXCnQC6XMZ470Ty3m32aPGwylZaIxCis3QnvNVGvglroZ5kaePZmA1QcMypcWPUplua0gnqk9Mnd5jwpQNKswKXngLXDPTGDkunraUkwXT6W8efS4S8=
+	t=1742269317; cv=none; b=nvdQNQf11E14SD7NC4AInQsBiinbZWLBsBchAQ/pEtGHEOAWv/n5q8VlwuKxTb6E8wsSG36c+iGojcdm8DDp58fnYfesi6WswN17OkWVIZZkfyys9wc+Iz6X8QOkFSpkHrjR5DZ2BCLKMBymnGbsODxWR2DQ2LzF/5o35IvbpTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742269333; c=relaxed/simple;
-	bh=KxXiiRpdcj2qTFLPlX26QNgkeQEjYv4biOT4q5PE3+4=;
+	s=arc-20240116; t=1742269317; c=relaxed/simple;
+	bh=RIWLI4MuTo1lhqjZZ5aKwIGYDvk/D+YBxwhT62p+nAw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Yr8bc+9piQ6iszcDtLmLPd2IrvkYb61WhaHjlIq3CvBHFbXxVuqBHmY9rLcnmt0O9TBmnSbCiqc6CfnSYuq7iKbMnIwgPvq6xEqxUwPVg8EDP/gqF9pVHsJyIwJF/VrvEZ/DbMaETkdar3DEF6kj0keXAg4uSUFXQ0lfph/jpWk=
+	 MIME-Version:Content-Type; b=JOKdJt6DfB628Fka8yGZ40O7kBPgAfl/00voiwEE60I375BX0yAMkXVP2h/iWC0OWYZjz9MLXCkqUdmLpSq54TtD3u8MB9k5JlDrUZXKF2dtcCs1l4ekHjx/atsJWoAzwPm21TufE2i+KyuoB6sFB4I7CVHFOjX4fLwGiNKoZ6Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-111-34.bstnma.fios.verizon.net [173.48.111.34])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52I3fnK7012163
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52I3fnfq012162
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Mon, 17 Mar 2025 23:41:49 -0400
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id ECC7D2E0118; Mon, 17 Mar 2025 23:41:45 -0400 (EDT)
+	id EF6F52E0119; Mon, 17 Mar 2025 23:41:45 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: jack@suse.com, yi.zhang@huaweicloud.com,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] Minor cleanups to jbd2
-Date: Mon, 17 Mar 2025 23:41:26 -0400
-Message-ID: <174226639133.1025346.17805331764618272859.b4-ty@mit.edu>
+To: linux-ext4@vger.kernel.org, Julian Sun <sunjunchao2870@gmail.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca, jack@suse.cz
+Subject: Re: [PATCH v2 0/5] Some cleanups and refactoring of the inline data code
+Date: Mon, 17 Mar 2025 23:41:27 -0400
+Message-ID: <174226639131.1025346.17184173928017965569.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250123155014.2097920-1-shikemeng@huaweicloud.com>
-References: <20250123155014.2097920-1-shikemeng@huaweicloud.com>
+In-Reply-To: <20250107044702.1836852-1-sunjunchao2870@gmail.com>
+References: <20250107044702.1836852-1-sunjunchao2870@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -58,31 +56,32 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 23 Jan 2025 23:50:08 +0800, Kemeng Shi wrote:
-> v1->v2:
-> -Collect RVB from Jan and Yi.
-> -Remove more stale comment in patch 4/6 as Yi suggested.
+On Tue, 07 Jan 2025 12:46:57 +0800, Julian Sun wrote:
+> Here are some cleanups and refactoring of the inline data code. Please see
+> patches for details.
 > 
-> This series contains some random minor cleanups to jbd2. No funtional
-> change is intended. More details can be found in respective patches.
-> Thanks.
+> Julian Sun (5):
+>   ext4: Remove a redundant return statement
+>   ext4: Don't set EXT4_STATE_MAY_INLINE_DATA for ea inodes
+>   ext4: Introduce a new helper function ext4_generic_write_inline_data()
+>   ext4: Replace ext4_da_write_inline_data_begin() with
+>     ext4_generic_write_inline_data().
+>   ext4: Refactor out ext4_try_to_write_inline_data()
 > 
 > [...]
 
 Applied, thanks!
 
-[1/6] jbd2: remove unused h_jdata flag of handle
-      commit: ec22493849247d60d595c93573ac3b01534b1965
-[2/6] jbd2: remove unused return value of jbd2_journal_cancel_revoke
-      commit: 9e6d3f9c8a85ed0db0ed1586049321e6b2ac5138
-[3/6] jbd2: remove unused return value of do_readahead
-      commit: 0d26708d8ec488da96a64eb1c6c47a8b3252edc5
-[4/6] jbd2: remove stale comment of update_t_max_wait
-      commit: 6c146277903f1826729bfb4817947d97a97b07cd
-[5/6] jbd2: correct stale function name in comment
-      commit: da5803391e377a39d655d55b4ebf2e416f88a8d6
-[6/6] jbd2: Correct stale comment of release_buffer_page
-      commit: fd3b3d7f51e628f54329738e736a154f6929daab
+[1/5] ext4: Remove a redundant return statement
+      commit: f896776a7019ebc6403504262cd4239aaa9b99ba
+[2/5] ext4: Don't set EXT4_STATE_MAY_INLINE_DATA for ea inodes
+      commit: 90c764b4b7f683ca62dbeeceea0ea3a0c6831200
+[3/5] ext4: Introduce a new helper function ext4_generic_write_inline_data()
+      commit: 3db572f780e9dd7be33d5ac3fb3f0e70a9d4a82d
+[4/5] ext4: Replace ext4_da_write_inline_data_begin() with ext4_generic_write_inline_data().
+      commit: f9bdb042dfae981d34911a6184157a720fce5e3d
+[5/5] ext4: Refactor out ext4_try_to_write_inline_data()
+      commit: 30cbe84d48d7d704fdaaf5179a0f4e0764ca35ab
 
 Best regards,
 -- 
