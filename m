@@ -1,53 +1,51 @@
-Return-Path: <linux-ext4+bounces-6861-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6849-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0495A6679F
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 04:43:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A947BA6678D
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 04:42:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E92619A3C2C
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 03:43:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A4973A9733
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 03:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC6B1D8DFE;
-	Tue, 18 Mar 2025 03:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91CBE1865E5;
+	Tue, 18 Mar 2025 03:42:02 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686661D0F5A
-	for <linux-ext4@vger.kernel.org>; Tue, 18 Mar 2025 03:42:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C831A8409
+	for <linux-ext4@vger.kernel.org>; Tue, 18 Mar 2025 03:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742269336; cv=none; b=nm/pT+XJDsM5PnTLcpzp44qXUkie5/vYQqWirVLkxbEkU/LfTMYNz563sRqPSJrMGh0yWZ70hPHQrkbUEBS8BpjUdre+r4yIqGKz3olWi9BwAbGJ1ANWVVKHnXZTSf8cF4NaT2sEzbCM3qWBXScJ2lTtVOj+J/98gMDFe6o2Ss8=
+	t=1742269322; cv=none; b=JM0IYsEDTV3MuGMavzTNLju0LFod9aUL/dnk0Dxs1ZIKwbqFAyYezz8sEFqhDUb+e+otxHubogeMH90uMCxx+VcXt0vntd/TcjiklFG8JFHvXmhvZ2K2oqTh3+di5XLoQx81GEGAr71gnLLs48EBdfhppUoHpf4RAYPEciIBYlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742269336; c=relaxed/simple;
-	bh=yy357oTBrx7rBB5s67K7o4s7AIZ375/lMXuhAXP/BYM=;
+	s=arc-20240116; t=1742269322; c=relaxed/simple;
+	bh=A4MqNkgZkZpFKxPmZmJAcSg0hqb/obbEcmjRqdOQyXI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=V76w226B8/srGwPAT6yIS/cVwT9BlbubDkFPSp52nZeZ704A0PoszdjZ1rLidQnNOUJyTf08K2K8trnPUVBecyaj5lwwx8kWNOrwkKm5H5TUHGP9VEJWwt0rk0fJZ19QvRphp772DNX4cUZwJ44+IwSc9mvVZMyqKFbQCtGdMWY=
+	 MIME-Version:Content-Type; b=ls3fFDjI1McC0RpBOLYbImi+T5NTNsSbO54FXnur3a/L8Fv+QNK+RMMlPF7Wh5mUZuoXCRF80cKxlXfFfkW7OQDX/SkDpKSKjD+KQce9W4tt76RgV5Um3jCFh4WWJ7cuky5r1zQ+uiliFBxQc5zK6d1FEf9pnpF19V5KVHN9LU0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-111-34.bstnma.fios.verizon.net [173.48.111.34])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52I3fjhF012113
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52I3fj0n012116
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 17 Mar 2025 23:41:48 -0400
+	Mon, 17 Mar 2025 23:41:46 -0400
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id C906B2E010B; Mon, 17 Mar 2025 23:41:45 -0400 (EDT)
+	id CDCB62E010D; Mon, 17 Mar 2025 23:41:45 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, Bhupesh <bhupesh@igalia.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org, revest@google.com,
-        adilger.kernel@dilger.ca, cascardo@igalia.com
-Subject: Re: [PATCH v2 0/2] fs/ext4/xattr: Fix issues seen while deleting xattr inode(s)
-Date: Mon, 17 Mar 2025 23:41:13 -0400
-Message-ID: <174226639134.1025346.10423819005675734722.b4-ty@mit.edu>
+To: linux-ext4@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Subject: Re: [PATCH] ext4: remove redundant function ext4_has_metadata_csum
+Date: Mon, 17 Mar 2025 23:41:15 -0400
+Message-ID: <174226639135.1025346.13711278641714155380.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250128082751.124948-1-bhupesh@igalia.com>
-References: <20250128082751.124948-1-bhupesh@igalia.com>
+In-Reply-To: <20250207031335.42637-1-ebiggers@kernel.org>
+References: <20250207031335.42637-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -58,23 +56,21 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 28 Jan 2025 13:57:49 +0530, Bhupesh wrote:
-> Changes since v1:
-> ----------------
-> - v1 can be seen here: https://lore.kernel.org/lkml/1dddb237-1460-8122-7caf-f0acd7c91b5c@igalia.com/T/
-> - As suggested by Cascardo while reviewing v1, there are two
->   patches in v2:
->   [PATCH 1/2] Ignores xattr entries past the end entry.
->   [PATCH 2/2] Hold 'EXT4_I(inode)->xattr_sem' semaphore while deleting the inode.
+On Thu, 06 Feb 2025 19:13:35 -0800, Eric Biggers wrote:
+> Since commit f2b4fa19647e ("ext4: switch to using the crc32c library"),
+> ext4_has_metadata_csum() is just an alias for
+> ext4_has_feature_metadata_csum().  ext4_has_feature_metadata_csum() is
+> generated by EXT4_FEATURE_RO_COMPAT_FUNCS and uses the regular naming
+> convention for checking a single ext4 feature.  Therefore, remove
+> ext4_has_metadata_csum() and update all its callers to use
+> ext4_has_feature_metadata_csum() directly.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] fs/ext4/xattr: Ignore xattrs past end
-      commit: c8e008b60492cf6fd31ef127aea6d02fd3d314cd
-[2/2] fs/ext4/xattr: Check for 'xattr_sem' inside 'ext4_xattr_delete_inode'
-      (dropped because it breaks ext4/026)
+[1/1] ext4: remove redundant function ext4_has_metadata_csum
+      commit: e224fa3b8a0351834fe310ccac61a5aab941ee22
 
 Best regards,
 -- 
