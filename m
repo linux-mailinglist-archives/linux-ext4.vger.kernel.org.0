@@ -1,103 +1,95 @@
-Return-Path: <linux-ext4+bounces-6844-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6845-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FB6DA65D83
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Mar 2025 20:05:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 100C7A6651E
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 02:31:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC12B17C8B8
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Mar 2025 19:05:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D323B5D80
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 01:30:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B4A11C5F3F;
-	Mon, 17 Mar 2025 19:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V4TcGuZZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC9A85626;
+	Tue, 18 Mar 2025 01:31:03 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1EB4A06;
-	Mon, 17 Mar 2025 19:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A824A1E;
+	Tue, 18 Mar 2025 01:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742238320; cv=none; b=faflcP0BuehY0QJOfbl4gd+++dfMjVGA9sKoXGrxHgLmWQQbzkXOynyhjBMRjIXwHA5UAAKeDe1Cl8SskS2Hj2ZRLz/bQdTqtsQZ02l6+HsxDM4b+tcqsngimbLn0hhrneOyAoEig854DSXxWezPbRd3b9+qvKs53xQlEeHfVUo=
+	t=1742261463; cv=none; b=tSDaLjdPHZAvpvSVjvGT2P4UVX+3RikFj0U/2OXf2i/cpLny7fZu/citF8d5XMdwXtPbijY5BIxCmK80lUu/UZjOhPzOuxGIPAWnQa/fo0B7oyZVMclT8y9P+qnUirZDNLJfj/DnM/ivsIKvQjWfCWOWW+a9hBQN23tc1BheGIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742238320; c=relaxed/simple;
-	bh=JBw3Wjf8yqbmGxgCAMZq5QigwZKcg8V2X1MG68/rLXk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kXyf/5fvec5H9MNBHny49ZtFgyUqgn8A9VkWr2S0siiWG3Cxnfg2e23c8L+5rxxe3v6HXpEzhnh6jU/CVrW7Svn69Snh5H/kobv+zyQbN6cMDCRyFuaquqf3IQ24UsCcN4Upqp4O2xcvUgxCjANLVBnBBQhDS/tjU2YLCVbKcCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V4TcGuZZ; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1742238318; x=1773774318;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=JBw3Wjf8yqbmGxgCAMZq5QigwZKcg8V2X1MG68/rLXk=;
-  b=V4TcGuZZlA8SFsoBf2HTG6Kf5mCdxRCCo6JIsvHjvJl8iahAsaWGOKfx
-   d3gzvW2QBNuyn7LjjnZwiVETseiQjGIiYliE5nvgeioZhs9IHxDHirp4p
-   5CEUcC4A3NMWcozp4+jwCzWwCeUQ88gxp7SXiP9Ink9XHhDLNnc5SK4IY
-   YaAHWEjKU/S1OWaLi63TepOZAxBZUA6q5yDL7tAvsE0+D4ObVR8+iJrIw
-   3Css+F6hKexCFNDP8PnP1u0oxnHmBZ5NSpLJ1PiZ+E33Lx/Z9Mv+HzRN0
-   cOf0wC46bDQ49nBqslOhT2sijGoCxFLWFHOKOEW14AXaWykXOqsxaCP4D
-   Q==;
-X-CSE-ConnectionGUID: xvbsp59LRDqJt/YAQnAPsQ==
-X-CSE-MsgGUID: oVVTqQ1aT5GSZq3Se5yaDg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11376"; a="43548833"
-X-IronPort-AV: E=Sophos;i="6.14,254,1736841600"; 
-   d="scan'208";a="43548833"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2025 12:05:16 -0700
-X-CSE-ConnectionGUID: +r+KuAHSTU6yqq68jsM8Qg==
-X-CSE-MsgGUID: 0Bi7elKwREW56fOZjjuH3A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,254,1736841600"; 
-   d="scan'208";a="159186746"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO [10.125.109.110]) ([10.125.109.110])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2025 12:05:17 -0700
-Message-ID: <92d0e215879f153331084722375dda57517d49f4.camel@linux.intel.com>
+	s=arc-20240116; t=1742261463; c=relaxed/simple;
+	bh=GqOqPhNmpDOOBJ70eh1A+FKAbrzAzBJOSmr6fthvsnE=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=BOUg/xDHZmH1Smjabv0we6PI9UoSJS7gPmJAiLzgdPoYr6BpcLdiU64d2BHpw7YKWcCiI7psN4RWz/Oc55xbk5yrtd6g+g2tYsZfEKLIhG1ddBqTn7S9xRQokFqdmPZcTsGRerHbWlbZyuWt0Ldkzq4q9BrhmPq7hk1r0zJs3zI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZGvRf5ktDz4f3jkr;
+	Tue, 18 Mar 2025 09:30:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 078F91A01A6;
+	Tue, 18 Mar 2025 09:30:56 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP2 (Coremail) with SMTP id Syh0CgAnMGPPzNhnGXEYGw--.15476S2;
+	Tue, 18 Mar 2025 09:30:55 +0800 (CST)
 Subject: Re: [PATCH RESEND] ext4: Fix potential NULL pointer dereferences in
  test_mb_mark_used() and test_mb_free_blocks()
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: Qasim Ijaz <qasdev00@gmail.com>, adilger.kernel@dilger.ca,
- tytso@mit.edu,  shikemeng@huaweicloud.com
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Date: Mon, 17 Mar 2025 12:05:15 -0700
-In-Reply-To: <20250313000021.18170-1-qasdev00@gmail.com>
+To: Qasim Ijaz <qasdev00@gmail.com>, adilger.kernel@dilger.ca, tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 References: <20250313000021.18170-1-qasdev00@gmail.com>
-Autocrypt: addr=tim.c.chen@linux.intel.com; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <cb138f5d-2470-bfcc-9939-fcaec24de100@huaweicloud.com>
+Date: Tue, 18 Mar 2025 09:30:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20250313000021.18170-1-qasdev00@gmail.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgAnMGPPzNhnGXEYGw--.15476S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFWkJw4DAr4kJr4DCFyUJrb_yoW8AFy5pw
+	s5KF1jkr15Wr18uw47uw48Wa4xK3yFkr45WrWfWw1jvF9xJFyfC3ZIvw1UWF18AFWxXa15
+	Z3WaqrWDWr4IkrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
+	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwz
+	uWDUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On Thu, 2025-03-13 at 00:00 +0000, Qasim Ijaz wrote:
-> test_mb_mark_used() and test_mb_free_blocks() call kunit_kzalloc() to=20
-> allocate memory, however both fail to ensure that the allocations=20
-> succeeded. If kunit_kzalloc() returns NULL, then dereferencing the=20
-> corresponding pointer without checking for NULL will lead to=20
+
+
+on 3/13/2025 8:00 AM, Qasim Ijaz wrote:
+> test_mb_mark_used() and test_mb_free_blocks() call kunit_kzalloc() to 
+> allocate memory, however both fail to ensure that the allocations 
+> succeeded. If kunit_kzalloc() returns NULL, then dereferencing the 
+> corresponding pointer without checking for NULL will lead to 
 > a NULL pointer dereference.
->=20
-> To fix this call KUNIT_ASSERT_NOT_ERR_OR_NULL() to ensure=20
+> 
+> To fix this call KUNIT_ASSERT_NOT_ERR_OR_NULL() to ensure 
 > the allocation succeeded.
->=20
-
-Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
-
+Reviewed-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> 
 > Fixes: ac96b56a2fbd ("ext4: Add unit test for mb_mark_used")
 > Fixes: b7098e1fa7bc ("ext4: Add unit test for mb_free_blocks")
 > Cc: stable@vger.kernel.org
@@ -105,26 +97,27 @@ Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
 > ---
 >  fs/ext4/mballoc-test.c | 2 ++
 >  1 file changed, 2 insertions(+)
->=20
+> 
 > diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
 > index bb2a223b207c..d634c12f1984 100644
 > --- a/fs/ext4/mballoc-test.c
 > +++ b/fs/ext4/mballoc-test.c
 > @@ -796,6 +796,7 @@ static void test_mb_mark_used(struct kunit *test)
 >  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buddy);
->  	grp =3D kunit_kzalloc(test, offsetof(struct ext4_group_info,
+>  	grp = kunit_kzalloc(test, offsetof(struct ext4_group_info,
 >  				bb_counters[MB_NUM_ORDERS(sb)]), GFP_KERNEL);
 > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, grp);
-> =20
->  	ret =3D ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
+>  
+>  	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
 >  	KUNIT_ASSERT_EQ(test, ret, 0);
 > @@ -860,6 +861,7 @@ static void test_mb_free_blocks(struct kunit *test)
 >  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buddy);
->  	grp =3D kunit_kzalloc(test, offsetof(struct ext4_group_info,
+>  	grp = kunit_kzalloc(test, offsetof(struct ext4_group_info,
 >  				bb_counters[MB_NUM_ORDERS(sb)]), GFP_KERNEL);
 > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, grp);
-> =20
->  	ret =3D ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
+>  
+>  	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
 >  	KUNIT_ASSERT_EQ(test, ret, 0);
+> 
 
 
