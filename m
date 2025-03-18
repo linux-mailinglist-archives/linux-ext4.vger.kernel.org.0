@@ -1,45 +1,79 @@
-Return-Path: <linux-ext4+bounces-6865-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6866-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2367A6686E
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 05:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DCC29A668CA
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 05:57:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A3B83B07E7
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 04:37:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F1DD3B2396
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Mar 2025 04:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB441B81C1;
-	Tue, 18 Mar 2025 04:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53881B87D7;
+	Tue, 18 Mar 2025 04:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wwi4NFxN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC1D19ABAB;
-	Tue, 18 Mar 2025 04:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1D817A306;
+	Tue, 18 Mar 2025 04:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742272652; cv=none; b=pBRDbLgo0SAg4zQVyJj5eB1O0mEFD/rZhUeyDJDuSAol9BR0P0Hh6MrPrOeEdfEoq5W6VvfePn+m3rx1Orww7N0nRsyCXdVv0eG28aIwh3iHLGJmMTz4br4Txg2YGfkEHkoTJoo0ZBIASEs2Yz27RHsUBoyCBXtPs6VppD2PG54=
+	t=1742273868; cv=none; b=NSIlgFHlziuqXgXwosUHvqdcqfiTJ2eIDlpnkIBA9RgnLbuPej8oH/05GLVQLdYqOADaB2IgoKz6A6Ju61xJfvX0/9xN8aT5UASlfRQSlwU4hkOp65VpZqDmLdKMdIhlTTqYsQ/lxWiU/3WrpGDzzogUTyOuAC+aBt9kT+py4Fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742272652; c=relaxed/simple;
-	bh=Qh7kP66RGTGxKhNObUyde6HxN3TQhHvkFPc6LTNlBZU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uZJuCO1iv/1tWpVTBMF2mk/YiBB4IlySC0a34ZeWJZTPvqZbCE5Zhwj/1Vm6Kq70I2J3sBkqIjPqlpsZCHjL7OcAXITd1t+0i3hA6gEXN9dgo122lAvqtT7VxohODbUbuCpbvLtOzKP6fUVyZcmsh1Xtlq+gWZL/nWKrmvWLcng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ZGzZc6407z4f3jY9;
-	Tue, 18 Mar 2025 12:36:56 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 7090D1A058E;
-	Tue, 18 Mar 2025 12:37:19 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgAni199+NhnGRVMGw--.2509S3;
-	Tue, 18 Mar 2025 12:37:19 +0800 (CST)
-Message-ID: <81ae9161-8403-4e6d-a3da-1b52bd989ac9@huaweicloud.com>
-Date: Tue, 18 Mar 2025 12:37:17 +0800
+	s=arc-20240116; t=1742273868; c=relaxed/simple;
+	bh=yztmOKD3SLpnS0T8GgvIHpWVYpYaooKZlOy249jY08I=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=fApQJryk5QtbHB/LX0vVGl1GEWPcqx4ZuMto610NZJIzpnXu66fm1wFkiU+tlDu7AKqlNDFsJIgDK4r3KaVb/uwxi6H5HLS+ydBHb5c3Bo8BCjuTGB9BAXj9hZ9ICbzpOrSor4MIOfsT+v2yx7A+ECEe0aTZYNFj3jEh0SfZ+NI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wwi4NFxN; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ff797f8f1bso4232227a91.3;
+        Mon, 17 Mar 2025 21:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742273866; x=1742878666; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7aOY/QNOvKdBds5xa30uRge0gY7C1e3vW/fVPvvuSng=;
+        b=Wwi4NFxNXVspuIMJLiivvs7sjrEgocyvJ/XYKJkTtW0oblcSVUUSF2Vbeh8d6mH/pN
+         sp0O7/bECW3mfAdKfHaFqcXDbtX5WQJHMAF9F3d0msLwv1//vot99BUATICW9TUDhQp4
+         /1IBxAH/ZYIvgT3nlDutUz6v1vVyNS3XB+5/h8yUqmyiyjD1yLlqO1xDSRWTZ+B+1RS6
+         EtniCNGlb22m1i6c6wFlR/hYidNszx9mH7mw5j6qfyQuOuO/2EIScvD/8pvLl68urxXV
+         gPY4bfYmCT4LBzzPY16CeSq4odCY/N5V0Z1YrTqV3cylMFbrCneGo6nSwPxQzWiuD4QJ
+         KENg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742273866; x=1742878666;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7aOY/QNOvKdBds5xa30uRge0gY7C1e3vW/fVPvvuSng=;
+        b=Jk+4Ss7g+BmblNff+reZvF4nuHHtdhmprwfJBL7cuxOw1tZ3BCd5rQH643rfwRapJc
+         VJJ2qSa81iVCk/7b+0NZbAE05kA6Q0HV8THe16OC80fzG3XLAb8cBQIjsO4soCYikCj3
+         ZqFf4fB5GHwxWwN20JC7sr09Vawba6po0OR47j0TUS9S30t8wTGWiANi9vT1gHSMx3uP
+         cA2yTXg+V3rdPp9Lb6jraGRei657a4YR7mQ6QMAX8nfg2bt3WJweuYTejdN3EjsLAzm+
+         XkdW+jqO/aIuq+YSWwv52myZzQ3nInaIxmVcTWFfhyMAYnVat4e6c5NZdCsdIgXAZWcP
+         IMRg==
+X-Forwarded-Encrypted: i=1; AJvYcCUoPmNn6GnGYgFxwElofZCGBNMBB6svGE4ZNQI6rr+eFVdBVb3nn98x55tjpHMxEq9jzc8hsgEpa4+S@vger.kernel.org, AJvYcCXKJywp6AL5EVZOxwb/ysPxKcGbVnzmAbUJZs3V/YRqw3yB3bytmfSR7QpFvkAJQJVNjBfU15vPkmg1@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy1HN1yIT3+XPzoUsKnu2WinU3FNJ5089cK1F9c2UD318zA7Zi1
+	FTLwcmpKgfcb4iwI60NvVYtD2fUONrERG8es+e7zfz90yMP5icD7WKPScw==
+X-Gm-Gg: ASbGnctGprE/EEUO0mdM9c9O8st8I/FdNsjUtriibmOhOmBCPTnnMGF4t1f1bkwR2QE
+	sESS4JC11ViWYQqlug9GO+u+Vh3CD75v0ssKJhJ5sMRzB7kDlFBxBTTsDnW/e9VEABE/fVcl8TA
+	U1070E41t7CoxogQH9qAr56O/jMEbf+aTInIHADggcKZXQF/LJIT9cB5o4BM3ljE7oLiqLCxQfy
+	BLKK4ADdv6ZwF/AdlezK7Kc1AaN3Elc2iQjH7BkrMjEXV2Ez0UpLZVjaNqs9fbGNdHiZ+BXV8cv
+	gwOv0fa9VKRfTmzkAHrIMRJ1USQ8YjJgmT/MP9KFF5+uX7C0K0AjkMM=
+X-Google-Smtp-Source: AGHT+IFi+t9yHNgIZqk37uBKiTk2zVMF7+phUwI9R9GjFbXDD+cBSn5GXX/05+vDw/jeoSuksf8tYg==
+X-Received: by 2002:a17:90a:ec90:b0:2ee:d371:3227 with SMTP id 98e67ed59e1d1-301a5b1cf96mr1224415a91.17.1742273865891;
+        Mon, 17 Mar 2025 21:57:45 -0700 (PDT)
+Received: from [192.168.0.120] ([49.205.39.113])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-301536320d4sm7957751a91.30.2025.03.17.21.57.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Mar 2025 21:57:45 -0700 (PDT)
+Message-ID: <807bb98f-4aa6-4e15-8dd4-5d27914f9910@gmail.com>
+Date: Tue, 18 Mar 2025 10:27:41 +0530
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,102 +81,266 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] jbd2: add a missing data flush during file and fs
- synchronization
-To: tytso@mit.edu
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com,
- linux-ext4@vger.kernel.org
-References: <20241206111327.4171337-1-yi.zhang@huaweicloud.com>
+Subject: Re: [PATCH v1 2/2] check,common/{preamble,rc},soak: Decoupling
+ init_rc() call from sourcing common/rc
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
+ zlang@kernel.org, david@fromorbit.com
+References: <cover.1741248214.git.nirjhar.roy.lists@gmail.com>
+ <1d07e5657c2817c74e939894bb554424199fd290.1741248214.git.nirjhar.roy.lists@gmail.com>
+ <20250306174653.GP2803749@frogsfrogsfrogs>
+ <716e0d26-7728-42bb-981d-aae89ef50d7f@gmail.com>
+ <20250307174045.GR2803749@frogsfrogsfrogs>
+ <61e3d66b-7cb0-4392-af96-10c2b011738f@gmail.com>
 Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20241206111327.4171337-1-yi.zhang@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAni199+NhnGRVMGw--.2509S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrWkuF1kurykKw15Zw13urg_yoW5Gry7pr
-	W8C3WYkrWvvFyxAr18XF4fJFWF9F40y34UWry09Fn8tw43Xwn2krWftr1Yy3WqkFs5Ww4r
-	Xw1UC34qg34qk3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwI
-	DUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+In-Reply-To: <61e3d66b-7cb0-4392-af96-10c2b011738f@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi, Ted.
 
-Just wanted to kindly check if this patch might have been
-overlooked?
+On 3/12/25 11:16, Nirjhar Roy (IBM) wrote:
+>
+> On 3/7/25 23:10, Darrick J. Wong wrote:
+>> On Fri, Mar 07, 2025 at 11:21:15AM +0530, Nirjhar Roy (IBM) wrote:
+>>> On 3/6/25 23:16, Darrick J. Wong wrote:
+>>>> On Thu, Mar 06, 2025 at 08:17:41AM +0000, Nirjhar Roy (IBM) wrote:
+>>>>> Silently executing scripts during sourcing common/rc doesn't look 
+>>>>> good
+>>>>> and also causes unnecessary script execution. Decouple init_rc() call
+>>>>> and call init_rc() explicitly where required.
+>>>>>
+>>>>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+>>>>> ---
+>>>>>    check           | 10 ++--------
+>>>>>    common/preamble |  1 +
+>>>>>    common/rc       |  2 --
+>>>>>    soak            |  1 +
+>>>>>    4 files changed, 4 insertions(+), 10 deletions(-)
+>>>>>
+>>>>> diff --git a/check b/check
+>>>>> index ea92b0d6..d30af1ba 100755
+>>>>> --- a/check
+>>>>> +++ b/check
+>>>>> @@ -840,16 +840,8 @@ function run_section()
+>>>>>            _prepare_test_list
+>>>>>        elif [ "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" 
+>>>>> ]; then
+>>>>>            _test_unmount 2> /dev/null
+>>>>> -        if ! _test_mount
+>>>>> -        then
+>>>>> -            echo "check: failed to mount $TEST_DEV on $TEST_DIR"
+>>>>> -            status=1
+>>>>> -            exit
+>>>>> -        fi
+>>>> Unrelated change?  I was expecting a mechanical ". ./common/rc" =>
+>>>> ". ./common/rc ; init_rc" change in this patch.
+>>> This patch adds an init_rc() call to _begin_fstests() in 
+>>> common/preamble and
+>>> hence the above _test_mount() will be executed during that call. So 
+>>> this
+>>> _test_mount isn't necessary here, right? _test_mount() will be 
+>>> executed (as
+>>> a part of init_rc() call) before every test run. Please let me know 
+>>> if my
+>>> understanding isn't correct.
+>> It's true that in terms of getting the test filesystem mounted, the
+>> _test_mount here and in init_rc are redundant.  But look at what happens
+>> on error here -- we print "check: failed to mount..." to signal that the
+>> new section's TEST_FS_MOUNT_OPTS are not valid, and exit the ./check
+>> process.
+>>
+>> By deferring the mount to the init_rc in _preamble, that means that
+>> we'll run the whole section with bad mount options, most likely
+>> resulting in every test spewing "common/rc: could not mount..." and
+>> appearing to fail.
+> Aah, right. The exit should be at the check level if some parameter is 
+> not correct in a section. I will make the change in v2.
+>>
+>> I think.  I'm not sure what "status=1; exit" does as compared to
+>> "exit 1"; AFAICT the former actually results in an exit code of 0
+>> because the (otherwise pointless) assignment succeeds.
+>
+> I think "status=0; exit" has a reason. If we see the following trap 
+> handler registration in the check script:
+>
+> if $OPTIONS_HAVE_SECTIONS; then
+>     trap "_kill_seq; _summary; exit \$status" 0 1 2 3 15
+> else
+>     trap "_kill_seq; _wrapup; exit \$status" 0 1 2 3 15
+> fi
+>
+> So, "exit 1" will exit the check script without setting the correct 
+> return value. I ran with the following local.config file:
+>
+> [xfs_4k_valid]
+> FSTYP=xfs
+> TEST_DEV=/dev/loop0
+> TEST_DIR=/mnt1/test
+> SCRATCH_DEV=/dev/loop1
+> SCRATCH_MNT=/mnt1/scratch
+>
+> [xfs_4k_invalid]
+> FSTYP=xfs
+> TEST_DEV=/dev/loop0
+> TEST_DIR=/mnt1/invalid_dir
+> SCRATCH_DEV=/dev/loop1
+> SCRATCH_MNT=/mnt1/scratch
+>
+> This caused the init_rc() to catch the case of invalid _test_mount 
+> options. Although the check script correctly failed during the 
+> execution of the "xfs_4k_invalid" section, the return value was 0, i.e 
+> "echo $?" returned 0. This is because init_rc exits with "exit 1" 
+> without correctly setting the value of "status".
+>
+> However, when I executed with the following local.config file:
+>
+> [xfs_4k_valid]
+> FSTYP=xfs
+> TEST_DEV=/dev/loop0
+> TEST_DIR=/mnt1/test
+> SCRATCH_DEV=/dev/loop1
+> SCRATCH_MNT=/mnt1/scratch
+>
+> [xfs_4k_invalid]
+> FSTYP=xfs
+> TEST_DEV=/dev/loop0
+> TEST_DIR=/mnt1/invalid_dir
+> SCRATCH_DEV=/dev/loop1
+> SCRATCH_MNT=/mnt1/scratch
+> TEST_FS_MOUNT_OPTS="-o invalidss"
+>
+> This caused the "elif [ "$OLD_TEST_FS_MOUNT_OPTS" != 
+> "$TEST_FS_MOUNT_OPTS" ]; then" to be executed. Now, when I checked the 
+> value of "echo $?", it showed 1. IMO, this is the correct behavior, 
+> and we should always use "status=<value>; exit" and NOT "exit 1" 
+> directly. Even if 1 section fails,   "./check <test-list>" command 
+> should return a non-zero value. Can you please let me know if my 
+> understanding is correct? If yes, maybe we can have a function like
+>
+> _set_status_and_exit()
+> {
+>
+>     status="$1"
+>     exit
+> }
+>
+> and replace all the "status <value>; exit" and "exit <value>" with 
+> "_set_status_and_exit <value>"
 
-Thanks,
-Yi.
+Hi Darrick, any feedback on the above?
 
-On 2024/12/6 19:13, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> When the filesystem performs file or filesystem synchronization (e.g.,
-> ext4_sync_file()), it queries the journal to determine whether to flush
-> the file device through jbd2_trans_will_send_data_barrier(). If the
-> target transaction has not started committing, it assumes that the
-> journal will submit the flush command, allowing the filesystem to bypass
-> a redundant flush command. However, this assumption is not always valid.
-> If the journal is not located on the filesystem device, the journal
-> commit thread will not submit the flush command unless the variable
-> ->t_need_data_flush is set to 1. Consequently, the flush may be missed,
-> and data may be lost following a power failure or system crash, even if
-> the synchronization appears to succeed.
-> 
-> Unfortunately, we cannot determine with certainty whether the target
-> transaction will flush to the filesystem device before it commits.
-> However, if it has not started committing, it must be the running
-> transaction. Therefore, fix it by always set its t_need_data_flush to 1,
-> ensuring that the committing thread will flush the filesystem device.
-> 
-> Fixes: bbd2be369107 ("jbd2: Add function jbd2_trans_will_send_data_barrier()")
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
->  fs/jbd2/journal.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 97f487c3d8fc..37632ae18a4e 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -609,7 +609,7 @@ int jbd2_journal_start_commit(journal_t *journal, tid_t *ptid)
->  int jbd2_trans_will_send_data_barrier(journal_t *journal, tid_t tid)
->  {
->  	int ret = 0;
-> -	transaction_t *commit_trans;
-> +	transaction_t *commit_trans, *running_trans;
->  
->  	if (!(journal->j_flags & JBD2_BARRIER))
->  		return 0;
-> @@ -619,6 +619,16 @@ int jbd2_trans_will_send_data_barrier(journal_t *journal, tid_t tid)
->  		goto out;
->  	commit_trans = journal->j_committing_transaction;
->  	if (!commit_trans || commit_trans->t_tid != tid) {
-> +		running_trans = journal->j_running_transaction;
-> +		/*
-> +		 * The query transaction hasn't started committing,
-> +		 * it must still be running.
-> +		 */
-> +		if (WARN_ON_ONCE(!running_trans ||
-> +				 running_trans->t_tid != tid))
-> +			goto out;
-> +
-> +		running_trans->t_need_data_flush = 1;
->  		ret = 1;
->  		goto out;
->  	}
+--NR
+
+>
+> --NR
+>
+>
+>>
+>> Granted, the init_rc that you remove below would also catch that case
+>> and exit ./check
+> Yes. init_rc can catch that case with an additional difference that it 
+> will attempt another mount "retrying test device mount with external set"
+>>
+>>>>>        fi
+>>>>> -    init_rc
+>>>> Why remove init_rc here?
+>>> Same reason as above.
+>> But that's an additional change in behavior.  If there's no reason for
+>> calling init_rc() from run_section() then that should be a separate
+>> patch with a separate justification.
+>
+> Since the check for _test_mount should be at the check script level 
+> and not at the _begin_fstest(), maybe we should
+>
+> 1. Keep the init_rc call here
+>
+> 2. Remove the _test_mount above (the one with "elif [ 
+> "$OLD_TEST_FS_MOUNT_OPTS" != "$TEST_FS_MOUNT_OPTS" ]; then" ) and have 
+> a separate patch for it with proper justification.
+>
+> 3. NOT have any init_rc call in _begin_fstest(), since the _test_mount 
+> related checks would already been done by the time _begin_fstests() 
+> gets executed.
+>
+> The above changes will also not change any existing behavior. Can you 
+> please let me know your thoughts and I can send a V2 accordingly?
+>
+> --NR
+>
+>>
+>> --D
+>>
+>>>>> -
+>>>>>        seq="check.$$"
+>>>>>        check="$RESULT_BASE/check"
+>>>>> @@ -870,6 +862,8 @@ function run_section()
+>>>>>        needwrap=true
+>>>>>        if [ ! -z "$SCRATCH_DEV" ]; then
+>>>>> +        _check_mounted_on SCRATCH_DEV $SCRATCH_DEV SCRATCH_MNT 
+>>>>> $SCRATCH_MNT
+>>>>> +        [ $? -le 1 ] || exit 1
+>>>>>          _scratch_unmount 2> /dev/null
+>>>>>          # call the overridden mkfs - make sure the FS is built
+>>>>>          # the same as we'll create it later.
+>>>>> diff --git a/common/preamble b/common/preamble
+>>>>> index 0c9ee2e0..c92e55bb 100644
+>>>>> --- a/common/preamble
+>>>>> +++ b/common/preamble
+>>>>> @@ -50,6 +50,7 @@ _begin_fstest()
+>>>>>        _register_cleanup _cleanup
+>>>>>        . ./common/rc
+>>>>> +    init_rc
+>>>>>        # remove previous $seqres.full before test
+>>>>>        rm -f $seqres.full $seqres.hints
+>>>>> diff --git a/common/rc b/common/rc
+>>>>> index d2de8588..f153ad81 100644
+>>>>> --- a/common/rc
+>>>>> +++ b/common/rc
+>>>>> @@ -5754,8 +5754,6 @@ _require_program() {
+>>>>>        _have_program "$1" || _notrun "$tag required"
+>>>>>    }
+>>>>> -init_rc
+>>>>> -
+>>>>> ################################################################################
+>>>>>    # make sure this script returns success
+>>>>>    /bin/true
+>>>>> diff --git a/soak b/soak
+>>>>> index d5c4229a..5734d854 100755
+>>>>> --- a/soak
+>>>>> +++ b/soak
+>>>>> @@ -5,6 +5,7 @@
+>>>>>    # get standard environment, filters and checks
+>>>>>    . ./common/rc
+>>>>> +# ToDo: Do we need an init_rc() here? How is soak used?
+>>>> I have no idea what soak does and have never used it, but I think for
+>>>> continuity's sake you should call init_rc here.
+>>> Okay. I think Dave has suggested removing this file[1]. This doesn't 
+>>> seem to
+>>> used anymore.
+>>>
+>>> [1] https://lore.kernel.org/all/Z8oT_tBYG-a79CjA@dread.disaster.area/
+>>>
+>>> --NR
+>>>
+>>>> --D
+>>>>
+>>>>>    . ./common/filter
+>>>>>    tmp=/tmp/$$
+>>>>> -- 
+>>>>> 2.34.1
+>>>>>
+>>>>>
+>>> -- 
+>>> Nirjhar Roy
+>>> Linux Kernel Developer
+>>> IBM, Bangalore
+>>>
+>>>
+-- 
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
 
 
