@@ -1,128 +1,149 @@
-Return-Path: <linux-ext4+bounces-6924-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6925-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1138EA69609
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Mar 2025 18:12:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3BD8A699CB
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Mar 2025 20:51:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 439DC465A4A
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Mar 2025 17:10:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 203EB19C1720
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Mar 2025 19:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBBC81E3DCD;
-	Wed, 19 Mar 2025 17:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C539214A9E;
+	Wed, 19 Mar 2025 19:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MnN5FcZ/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fo7qbJp6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392D8257D
-	for <linux-ext4@vger.kernel.org>; Wed, 19 Mar 2025 17:10:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0567421480E
+	for <linux-ext4@vger.kernel.org>; Wed, 19 Mar 2025 19:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742404219; cv=none; b=ZVqfD8eSqMAGRz5lLQJsMpFZ98RQO4n6hgIMDkiGSWW6NQeb4KqJ0aFnv76QrbTaQePvTFXiXwM++3NbeGkl+NqwXYS65oSCO4dkqUMXStIgQBOo0wtfF4T2ZUgF/6CK+KAQe1moFki/NPiK3DvfX6M4+iq+WBKGc25H820CyfU=
+	t=1742413847; cv=none; b=Wxp+TTlrONKCm5j/aOjiBCZ30C4TE8qpObbcWZvjbJYirhPpuFXh+YqsDboqKqeSikGPl65wJ8ViUWakkMNJMxXSeYGQohJTJYzuSKDMhFl6DGjIlnxK6pcgdL57RoaBudTViIm7cTm53BknGWHYLiiphFhb1h17K9XSNPgimu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742404219; c=relaxed/simple;
-	bh=4HyK30fXj8jmmWqbOQWkXLt3uhY5uVrPZrm/l/RsMg4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MtGsZlqEF9X7LVPJsaZyVojkdVtrylUb56CaaycXc/aNrXWxvtqRWiBAEJOvusabcDo41TNRDL0aOwph/n8sAx4hZ51uBredejjIGA7Wx708kSRXlc9Vk4QZeZGhCdZx2W/6O4R2SRYbpTJY6A34MvQEddEY+QKSSxcaJPjmCO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MnN5FcZ/; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-22398e09e39so160250985ad.3
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Mar 2025 10:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742404216; x=1743009016; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wAMDty2lGXMF6kT5UaoWL6sYMpJK5FPZx76CJefODNQ=;
-        b=MnN5FcZ/5QwvOTos/qg1Ps2oJjQEaO9Ad0Gz/u0C/C+PSr0oyfUCKYzfxEDPXvOuz8
-         yNfbREFEfrLza3RolquLRteFqSTf4ieZTgtr7bYpkSPVApqtwfo8Q4AFosgGpBW+mhyE
-         CT9cVE76lSa5lK0gWGfgXTSpnlnylBFj9cIkvs8YOn7NriDxgEBV1JXtU0EPU/VgCiRa
-         8HNSTrIWLWEuuZX5Hcwdl30E5Z8TGtlB1Nea4vtk9Lav912+EYheKjhEBSp3kNHvJPz5
-         UaaPOCYYAkwwOj7Re/tH7gzVMs0tvCQ6IDjUFYiPzwc1YFP7mpNWW65OKq2sd90NTo7o
-         /43w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742404216; x=1743009016;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wAMDty2lGXMF6kT5UaoWL6sYMpJK5FPZx76CJefODNQ=;
-        b=j4TTAJnD2NdCpp15WBP7afchjkQgTDJYIo2ZGXbNLwYE3dKN0NhTcmbPJgrGBUaLWG
-         57BN3w0B1QMqI4KbPhKtZDchPESeC689OQFsVi/wMcaNdvC85szj9A5mkYzbja/qvHBp
-         fJG+oSO8V4tPvYCEwUwKtRgTPlo0y9+eSaunocI7Q1r6ypbehigUU6n2LWwm3L6LgGvR
-         6Vl49pgB7IgCWmLnpOao11Su762hdIdyDnnzVrXH5ZJabWvhwKRgTMXNiC3N/t/ptzfN
-         pP1Pp03DxYAcW1xPRvLkTB15CTl2g+MV70hT1H2I1kBuF91qdgplh7NBf4nSOa9cIPJC
-         h85w==
-X-Gm-Message-State: AOJu0YzrYJkJwbQ6RB8EQq9WwNdKX2GFgrYAgtAxRe8+kemVpsMaXNMG
-	DapSwJJ1xL1i5TCTaMdm8yqDirHpLod5/fF13LT/SmcgsGX0+bhy
-X-Gm-Gg: ASbGnctbc2wm/nczhWK4nF2A5ttvpafTtpeXDxgn9AZpLhYW7aw2CZZo0IWUOUhqXd0
-	hB/440YiX8+nOY8PstW9LuTL/y2EWx99Qs/fjufTTqQUuWBcLo9be/leiuLRMcmZiPc3Lw3SgEj
-	um0hLGdlm/0png1FiVTzv40pTZ+g4gC9zsZhIbuEz0Tc8inNb7hLfa1inSOnPGrvClvUwpQgskX
-	8DKDSEQ5rABCZoCXVe9cjA7pGUcZsxh4qFsYxRyr/nRNvmbh57iLI2ivDNUfFu8ZkjHDLvuV5H0
-	qeASDcLtEmFktlCWYBUcy1aM6SeXxZp8ndjNb9DHvF0N9bMJNvuShisIH3PQ6WknMvM4Tyg7E4c
-	Flg==
-X-Google-Smtp-Source: AGHT+IEn4YL33aFmpufF1RNQqdbHuc8K6J7qxlASh0NuyBlHhc8QsognW/uTbKK8S+xYegZ5H9v0lA==
-X-Received: by 2002:a05:6a00:8d5:b0:736:4d44:8b77 with SMTP id d2e1a72fcca58-7377a83e9bemr58471b3a.8.1742404215986;
-        Wed, 19 Mar 2025 10:10:15 -0700 (PDT)
-Received: from debianLT.lan (67-61-129-104.cpe.sparklight.net. [67.61.129.104])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-737116b10edsm12264270b3a.171.2025.03.19.10.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Mar 2025 10:10:15 -0700 (PDT)
-From: Nicolas Bretz <bretznic@gmail.com>
-To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org,
-	Nicolas Bretz <bretznic@gmail.com>
-Subject: [RESEND PATCH] ext4: log rorw on remount only when state changes
-Date: Wed, 19 Mar 2025 11:10:11 -0600
-Message-Id: <20250319171011.8372-1-bretznic@gmail.com>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1742413847; c=relaxed/simple;
+	bh=sExoy8pqp0ariENfKfzxL5q5xGicuuhF34RlyGSM2pc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sf42aMMkDHRLATE5fdRE3ebMuKFR7WF80Lx8yMHK8lOz6Vdwr5tc+p3x+9bBBh8/adZ2EirbFT2Rfctk22UucE5BbawDgXZiGvDnOKXHfP0xb/PhWnyTMZcT2jG3m1PW1J1GIbsQNn4nQeXAYSfpvHnW3yIouYLEBgapNDajuQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fo7qbJp6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1742413844;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UoMsJz6uQ9Xsq6hoAcbPVlQz7ODTaS5nZ9IsZpDthKQ=;
+	b=fo7qbJp6mTZXrn7vlLUeRjNkyjaV39JGnfrWavRiTYeDsBi7CyEF57Tg1ERZi3OVcyL90h
+	Z3u0B1dk8BgsXlhdusxFYYFrkunEpE/u+p9CtJZqFnYip9cY3Zx7iAZIK9eFXsgLnhMjQ9
+	VG7CwCW1X2RyWpNyMXFNBujswymo3O0=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-550-pc5hPzSgOM-Mh3OFUt2lmQ-1; Wed,
+ 19 Mar 2025 15:50:38 -0400
+X-MC-Unique: pc5hPzSgOM-Mh3OFUt2lmQ-1
+X-Mimecast-MFC-AGG-ID: pc5hPzSgOM-Mh3OFUt2lmQ_1742413836
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7B028180AB19;
+	Wed, 19 Mar 2025 19:50:33 +0000 (UTC)
+Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (unknown [10.6.23.247])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4E6C11956095;
+	Wed, 19 Mar 2025 19:50:31 +0000 (UTC)
+Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (localhost [127.0.0.1])
+	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.18.1/8.17.1) with ESMTPS id 52JJoUdr2309780
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Wed, 19 Mar 2025 15:50:30 -0400
+Received: (from bmarzins@localhost)
+	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.18.1/8.18.1/Submit) id 52JJoRRp2309779;
+	Wed, 19 Mar 2025 15:50:27 -0400
+Date: Wed, 19 Mar 2025 15:50:27 -0400
+From: Benjamin Marzinski <bmarzins@redhat.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de,
+        tytso@mit.edu, djwong@kernel.org, john.g.garry@oracle.com,
+        chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com,
+        yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+        yangerkun@huawei.com
+Subject: Re: [RFC PATCH -next v3 06/10] dm: add BLK_FEAT_WRITE_ZEROES_UNMAP
+ support
+Message-ID: <Z9sgAxM-hZZJtZu9@redhat.com>
+References: <20250318073545.3518707-1-yi.zhang@huaweicloud.com>
+ <20250318073545.3518707-7-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250318073545.3518707-7-yi.zhang@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-it logs ro/rw on remount only when state changes
-removes "Quota mode" as it is obsolete
+On Tue, Mar 18, 2025 at 03:35:41PM +0800, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> Set the BLK_FEAT_WRITE_ZEROES_UNMAP feature on stacking queue limits by
+> default. This feature shall be disabled if any underlying device does
+> not support it.
+> 
+Reviewed-by: Benjamin Marzinski <bmarzins@redhat.com>
 
-Implemented the suggested solutions in:
-https://bugzilla.kernel.org/show_bug.cgi?id=219132
-
-Signed-off-by: Nicolas Bretz <bretznic@gmail.com>
----
- fs/ext4/super.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index a09f4621b10d..0067184aa599 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -6760,6 +6760,7 @@ static int ext4_reconfigure(struct fs_context *fc)
- {
- 	struct super_block *sb = fc->root->d_sb;
- 	int ret;
-+	bool old_ro = sb_rdonly(sb);
- 
- 	fc->s_fs_info = EXT4_SB(sb);
- 
-@@ -6771,9 +6772,9 @@ static int ext4_reconfigure(struct fs_context *fc)
- 	if (ret < 0)
- 		return ret;
- 
--	ext4_msg(sb, KERN_INFO, "re-mounted %pU %s. Quota mode: %s.",
--		 &sb->s_uuid, sb_rdonly(sb) ? "ro" : "r/w",
--		 ext4_quota_mode(sb));
-+	ext4_msg(sb, KERN_INFO, "re-mounted %pU%s.",
-+		 &sb->s_uuid,
-+		 (old_ro != sb_rdonly(sb)) ? (sb_rdonly(sb) ? " ro" : " r/w") : "");
- 
- 	return 0;
- }
--- 
-2.39.5
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  drivers/md/dm-table.c | 7 +++++--
+>  drivers/md/dm.c       | 1 +
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+> index 453803f1edf5..d4a483287e26 100644
+> --- a/drivers/md/dm-table.c
+> +++ b/drivers/md/dm-table.c
+> @@ -598,7 +598,8 @@ int dm_split_args(int *argc, char ***argvp, char *input)
+>  static void dm_set_stacking_limits(struct queue_limits *limits)
+>  {
+>  	blk_set_stacking_limits(limits);
+> -	limits->features |= BLK_FEAT_IO_STAT | BLK_FEAT_NOWAIT | BLK_FEAT_POLL;
+> +	limits->features |= BLK_FEAT_IO_STAT | BLK_FEAT_NOWAIT | BLK_FEAT_POLL |
+> +			    BLK_FEAT_WRITE_ZEROES_UNMAP;
+>  }
+>  
+>  /*
+> @@ -1848,8 +1849,10 @@ int dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
+>  		limits->discard_alignment = 0;
+>  	}
+>  
+> -	if (!dm_table_supports_write_zeroes(t))
+> +	if (!dm_table_supports_write_zeroes(t)) {
+>  		limits->max_write_zeroes_sectors = 0;
+> +		limits->features &= ~BLK_FEAT_WRITE_ZEROES_UNMAP;
+> +	}
+>  
+>  	if (!dm_table_supports_secure_erase(t))
+>  		limits->max_secure_erase_sectors = 0;
+> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+> index 5ab7574c0c76..b59c3dbeaaf1 100644
+> --- a/drivers/md/dm.c
+> +++ b/drivers/md/dm.c
+> @@ -1096,6 +1096,7 @@ void disable_write_zeroes(struct mapped_device *md)
+>  
+>  	/* device doesn't really support WRITE ZEROES, disable it */
+>  	limits->max_write_zeroes_sectors = 0;
+> +	limits->features &= ~BLK_FEAT_WRITE_ZEROES_UNMAP;
+>  }
+>  
+>  static bool swap_bios_limit(struct dm_target *ti, struct bio *bio)
+> -- 
+> 2.46.1
 
 
