@@ -1,74 +1,110 @@
-Return-Path: <linux-ext4+bounces-6914-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6915-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7BC9A6832E
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Mar 2025 03:34:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5399AA68345
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Mar 2025 03:44:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 993493B9CDE
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Mar 2025 02:33:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8DBF1892EB1
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Mar 2025 02:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB86824DFF6;
-	Wed, 19 Mar 2025 02:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC9224E4CB;
+	Wed, 19 Mar 2025 02:44:28 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DECA31CF284
-	for <linux-ext4@vger.kernel.org>; Wed, 19 Mar 2025 02:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3284324E4B3;
+	Wed, 19 Mar 2025 02:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742351633; cv=none; b=DIcquCHTFhela0fTLUw4tydmEYEyQ8T30fAfMxYODZ2uPw5+OWKAdBlLTnPv0b+kqUeIbGhD+jGULpqhw81XGO3+HapziqX1C52jO693beXXL+QASUuA2TPJ53UjVIb6295y7lwc2WHFuVT2H+FIi2fJj7f2R4fFXClFYoRVQ4w=
+	t=1742352268; cv=none; b=ejGtN4zTBn2lqLx7vzoWkBXYMa5BblQ+7E7+OQd0qGbY1xRooe8ukdvQNLIPW3B9nVF/kYB/tOskWI/r57mO2U4mFv6crJHe6YsIxs/WuGR8KG8zOWPVugV56gKwLdmrU3fSh6RJlIA3qOxPb3CylQvt4ktS9qDsdZP0/d6pqmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742351633; c=relaxed/simple;
-	bh=pN4eCyKXTLYZ7VNKyoF7qW3oGBKZhbwvpeeM5v/LZ48=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kHbmsU9gGq65nBo/297gLabhYACGDBFJ73YoG4xq4nqJOv5cC4gkHejxm2wD/2n3/F8+VsFfUbWwqqmHNRCLoT1nh4eTF+NCMPN6cnIalcvDJqFR2gUQlMjg8mr0CyMIVLwZ1XNC2pV4bXfimGpvVNqCltl+NmVT2vhKE/NDp0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-222.bstnma.fios.verizon.net [173.48.82.222])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52J2VTHn031919
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 18 Mar 2025 22:31:30 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 6592A2E010B; Tue, 18 Mar 2025 22:31:29 -0400 (EDT)
-Date: Tue, 18 Mar 2025 22:31:29 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Baokun Li <libaokun1@huawei.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: cache es->s_journal_inum in ext4_sb_info
-Message-ID: <20250319023129.GF787758@mit.edu>
-References: <d1a9328a41029f6210a1924b192a59afcd3c5cee.1741952406.git.ojaswin@linux.ibm.com>
- <20250316014128.GA787758@mit.edu>
- <Z9kq744Q1zbbxOKH@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+	s=arc-20240116; t=1742352268; c=relaxed/simple;
+	bh=L4ulcOS7GCKn+YrYuDMf8QtN622G6UZFpbIe2jeJhRs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h+EL5Yzs0cuSPBVNTcGMtZfpiqw3+ox8rtTqyGsqGmWXfVe8i2EuxLhcrfpYguA264WB08ZfPBvH2Cbff84GCnKllEMObmXhdtDyTUntFQkwgJustXpd/J3fBAk+hDOyg+kJaJtpu6qGTPmihZUJczXwXuls9uPLeuSDCOw7hk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ZHY1p5XMpz4f3khl;
+	Wed, 19 Mar 2025 10:43:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 661281A0EC1;
+	Wed, 19 Mar 2025 10:44:21 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.112.188])
+	by APP4 (Coremail) with SMTP id gCh0CgBXu198L9pnG5ymGw--.11145S4;
+	Wed, 19 Mar 2025 10:44:21 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	libaokun1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH -next] ext4: correct the error handle in ext4_fallocate()
+Date: Wed, 19 Mar 2025 10:35:57 +0800
+Message-ID: <20250319023557.2785018-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z9kq744Q1zbbxOKH@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBXu198L9pnG5ymGw--.11145S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XFykZr45Gw4xKFyDJryrJFb_yoWfJrg_Ca
+	yUur4kWrWftFs293yrur1SyF12kw1kGr4rWFs3Xrs3ZF1UJ3yvka4vyr17ZFZ8Wr47Grsx
+	CFn2qF18AF1IqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb3kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUZYFZUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Tue, Mar 18, 2025 at 01:42:31PM +0530, Ojaswin Mujoo wrote:
-> > So this is something we need to do if the journal is actived, and if
-> > it's active, then sbi->s_journal will be non-NULL, and so we can just
-> > check to see if inode == sbi->s_journal instead.  This will simplify
-> 
-> I believe you mean inode == sbi->s_journal->j_inode here right?
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Yes, that's what I meant; sorry for the not catching this before I
-sent my reply.
+The error out label of file_modified() should be out_inode_lock in
+ext4_fallocate().
 
-Cheers,
+Fixes: 2890e5e0f49e ("ext4: move out common parts into ext4_fallocate()")
+Reported-by: Baokun Li <libaokun1@huawei.com>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+---
+ fs/ext4/extents.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-					- Ted
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 1b028be19193..dcc49df190ed 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4744,7 +4744,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+ 
+ 	ret = file_modified(file);
+ 	if (ret)
+-		return ret;
++		goto out_inode_lock;
+ 
+ 	if ((mode & FALLOC_FL_MODE_MASK) == FALLOC_FL_ALLOCATE_RANGE) {
+ 		ret = ext4_do_fallocate(file, offset, len, mode);
+-- 
+2.46.1
+
 
