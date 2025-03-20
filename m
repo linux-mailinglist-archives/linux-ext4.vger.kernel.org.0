@@ -1,82 +1,82 @@
-Return-Path: <linux-ext4+bounces-6937-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6938-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46DFDA6AE8E
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Mar 2025 20:32:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AA03A6AE94
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Mar 2025 20:33:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9653218973FE
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Mar 2025 19:32:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B041897872
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Mar 2025 19:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA52227EB4;
-	Thu, 20 Mar 2025 19:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B6922838F;
+	Thu, 20 Mar 2025 19:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sok8ZV/S"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsK9QkXp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208821E3DD0;
-	Thu, 20 Mar 2025 19:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF77C1E3DDB;
+	Thu, 20 Mar 2025 19:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742499116; cv=none; b=OW4CXU+gUpwOvTQEKriR8gF3OznOC4EMMoZwFJ1c2qn/yzJF9pA+8CUPG522fCwDRd2qoY0LEOBPURmtbvib0gQEFmBIPaETSeP8q64bOQJ7icioVDZjFIMowgSJnSdLhtqusMA6Y/GE0p9CTyvAyY89wfj5dFpjynb2WE8iDrc=
+	t=1742499193; cv=none; b=INq0L3SInxZwiUiKB7hl2qO3PG8TXx9pbqwjTvC+SrxL5JLm2zPp4zZ0orJ1B1FlrDxyvDG0bcVfWrSfrjK9yRhZffm3VZVE8PQAk3UCxaLfTBD3OU/nLUQfCybNCPRQ/yIEsHr1gN8pVuSglOk/t8+dj/hEJ47XyEgPQQwyFGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742499116; c=relaxed/simple;
-	bh=pgc28rm9Fcoj3tkL9OCRsTq4u5xLA3dlv8j5jx+g9Ok=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=lLuycH6c/UBOKiri6rT1j0H8YbJTJhUXxRBKlUpYIMLB88k0UuPMBRjOER1kGYyVstP7pv/w+JkSSNRQgKgOw4c2/kTnrTmhQipdWMuhP5rhZTZS3K8MJOZj56EonwfMAVRCUvYoa3O+FSx/LVvi/HhhsrMqA+p8xtwOxaHYUoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sok8ZV/S; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1742499193; c=relaxed/simple;
+	bh=67Rli1aMINRhNsEK6vbiKzUJhYIb+DD/lRRVWBz/1Yk=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=qGcPWlWVGAoMTlNxZW0cuF9xhQ25PUJnZHxSR4hA6tsM81N5uuf73/mblgK0s0vKAZed/Je+bhiCu5MhUPjhnPiOVGufE6yFUI4/c9QuRJAvmF2vgovPBq4Wy4hPPEm3qCdqr+V4D9YtX+X7IBXOSouNbQDxc6a683KCcpI9jrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsK9QkXp; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-22438c356c8so23862495ad.1;
-        Thu, 20 Mar 2025 12:31:54 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-22580c9ee0aso25645615ad.2;
+        Thu, 20 Mar 2025 12:33:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742499114; x=1743103914; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742499191; x=1743103991; darn=vger.kernel.org;
         h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Rzqpj/EVEuP5YOgMQGcNjyK3eiHm30f9WtqRIqo0B4g=;
-        b=Sok8ZV/SE72hqyEr6jI0tWy6qRpRof3HSc9QkTnraWHbgmNAtxmjKxou9KHdWAMJ1v
-         EOHiIKQ9kbuV7uyY/+mwFJ2TEnx4b1ZdP5Lnf34z61+81utIxwCiD64eeu8gTphjB572
-         WMx8UvpJfADBw1RyzfBXPl6VdsAyReo+apaMUZhd65rKjpKoPfIlGreCIy4i7B24M9tz
-         UnRvITpbxODtS05EWboNbEV+8AEyFotTwu1+x4iC+loL3ZdEuNZzkDpNzkYhAywuy1Mc
-         rzT/jzdLAe2OvaODaB1IdGcI42K11Ocq0WALnbwRy5JfBNkHcNFLtGCyYpIJoq3jsoVc
-         LE9w==
+        bh=zHVmJxf9G38/fiYNmkpuUJFgM3KpXEnE/rPC5REGcCM=;
+        b=RsK9QkXphHlIMrkQIT0XlIqRFu9N/BBnh2tT/kfciCR5uzA8XWA/aMq42sqhItHyPa
+         HM3kwKrQPjIpd93sVKk5YLQ33IP2G4tQeWRfFLJE629EKviYZwyzL99tk/HdGHvCjo7C
+         NuKxUPjuM5IlASNmur2sJIIKa6NIaVpppwDkKo20nlrj6MA0Q4iAhfIYQcKH3IAUrQ0O
+         7Sv9qgsaqXt+YD+fvSS4OXb+Bo4kK4Xb8XEKmWRo628Se4F3vFCuOpGNlxEsuEOxjF5G
+         LYv1jPX8p5CKPmKdo9Q8hkVHfreCTQ6yDgkFeGbNENbczwYmYFFskw37Sub7QVBqu0QK
+         bloQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742499114; x=1743103914;
+        d=1e100.net; s=20230601; t=1742499191; x=1743103991;
         h=references:message-id:date:in-reply-to:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rzqpj/EVEuP5YOgMQGcNjyK3eiHm30f9WtqRIqo0B4g=;
-        b=aI+s7lYSiGsHa+pG/uLTRZ1yb8OcoQs0ypSmT25BbI0zg7j3HHxSy0rC5lm3tvcjfy
-         yl7hpZuVUynOrEadooSPbadtusToGGH5JSQtseeXnaof2cmDLQ2HoPuACJZvcyEDpydo
-         W8P1N9cPe68XJ6+smIYYVVWJecNJL209GjLyQSvSG7IkXBR5UyVKtc6ZtN7FsBlm0eBQ
-         kDY5RtbQeKSTJcnG/p7JwVquBkZUQJmjwwOs9xVI7OAg+Tje5D+eHnO3C780lugeJfS3
-         xG3BlOp+1CuRh3KlGSl1ZUMxEui6Bye5tijS5l+Z2epE88scGYxLBKc2/twjZ1wrwy+F
-         xDhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWb3uxqPmMSmZhUC+Q7VtyIm6N3TyjGUbq+EMTPgW3XGZQptad51iPIEBgiHM06WUONxzamx02rHTHPKqJb@vger.kernel.org, AJvYcCXNLVWQh0tGFp6MsikWktEnoKDBTw3IPyfEZ+ASV1Fu6aY4yMha6Y2YpdIjRV29IzBlq6AFNsSNIY8z@vger.kernel.org, AJvYcCXg7gEgMFi3SOpw55ii7cshn3axm+mBqGS8xNEGeygPBQGQhm0g1GKuNqKl0hrYEsyzGK2DtwxSWFK9@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBctXPsYR3t08rQqlzjeZf1H/qkGxtWIRKEU7Dff5NP57ih19o
-	fRT/tYcDpqHYrSLubPvb5A2vs6r1WUrVHafr/4Qp2OFO0SkDI34v
-X-Gm-Gg: ASbGncvuXpOzh0Mn0RvS7uyKAhRvKUzdRUsqolPZ5FYOAY9vwSJUlRxHCoPRcjoWQX6
-	qJLeSHPC6hoe1d2P7N04YecICb0ZxWEFxfWA37pYW/e8Yh6ePTyBrMfXNlvXqPuZHl9k5YJX0Cm
-	TOzCyh37g334Ex3DCTGLQCzUe0fZWVhSqA1pA2aVAvcMXcQQWzCqANAntXFtPCBU0kjXsIC6KWQ
-	VusXyTFKLZ42RzZXMPVpsNhhOxMH8RZqVN/Rv1snXJpNCs3IsfLQ4iE/Sr/vDmIK6d9xBNaj6zd
-	A2tAZU+d478pMysATLowHuAXi9j1LpbNHj2neBLKfxGqPvwi
-X-Google-Smtp-Source: AGHT+IHBppvG01BOrV5g8QAjBeAi/dOLo/+t1Ad7dypedZ8adLf7Wqe8oiMFbXgzNf+Ww9DQY0lOTQ==
-X-Received: by 2002:a17:902:cf04:b0:224:5b4:b3b9 with SMTP id d9443c01a7336-22780e12a7dmr9595375ad.33.1742499114223;
-        Thu, 20 Mar 2025 12:31:54 -0700 (PDT)
+        bh=zHVmJxf9G38/fiYNmkpuUJFgM3KpXEnE/rPC5REGcCM=;
+        b=wuU2msu/Fk3t124DnPUZehRxtoPheGIrql0pdxd2Dhv/FAh1xd6+Ai6VLQS7fcTWtk
+         ZfrpuMGNZK6Ef5bVSLOlezW/hULxvjSOMe4pDQt5oQsOMkVLh3ZcUkYkmJQ4yd2rRA3w
+         jXnqqAYW4Myvf2RW4HQyG7dXNBl25EqQMagIw1AA7nuXEzn+m44km3IIMJUSieARJBFj
+         1t9nC2K0vrZvYJ4g/7Yz4WRN/cgno1nUjyEKHi75eJJDr2ZPTJz3ioRSBJ7Jpr4malBr
+         yQM7P+3UZfAKsCMhhw5C9q7H3bC9eJ2c4GN+Ekv9qC6HgoIAvuAKrkXe7wLBmHMz8f9Q
+         O5SA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIvy1qEzI8u50CBoCU0dhfRfvWCx2TTlbN5yuS0+Y1Ms2NvslZ9v8vzjElYOEmX4Lk3A7XYGwm5fam5yT2@vger.kernel.org, AJvYcCVVwBF7CnDbPMrPkIgUvhrrcXtWjnf6mEHwP69JUjGaVpvpqelWx/DTmEb7xo0TgwtbtFbLxl7nxAZ9@vger.kernel.org, AJvYcCW4Me0nbBteDU1ggSp4xeoH9thhyyD9ZVfyzr/arJmOm7wUBnBHBxxB39bCja26R/ZM2KZC8/e7LZ1e@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPpycMFbMNHXNHW1MvBYtpP0IGNcgiARFa8fedhkSDTHCpoYC4
+	v0LP0PwR9STadGz7PWWl9pNetLaivWV2BwlbqIIfYVuk2CfqJuPm
+X-Gm-Gg: ASbGncu9vDdwGUzXEaeAOI09/H4inPxVYA8vRytiXUEsuvFALIAhNGe5B3F4H/eFDe9
+	d22cApmoSGx5lW3yf+4JtpT49BdTxlfwNxJlu6vTMlmJa+zRhgNkwN4oKHbTaBwrn2i0SUadjUS
+	gLUCwig0YmwqSHlu9WeWvEOs/PIu/EaisZLE608ll8vdLBV4h/6DTdo7650HJCdTGfglBjc65sW
+	bozEgVvnNolTHA5FmdAqZa0R/BpGForVi63C3T/eYt41c3ee40d8qrfh3PFc+vrSmbjnT5jJ4su
+	8HZpF1MfCJPhYkWc4tvKDU3O33UwguvoqXWG+Q==
+X-Google-Smtp-Source: AGHT+IHGOMDIgVFAm5eHa6xBoB4g60AmPE2lbPYGqoWBuwkqeKe/nKrFEMTBiXvluqrnWb5TXYd+KA==
+X-Received: by 2002:a17:902:ecd0:b0:223:325c:89de with SMTP id d9443c01a7336-22780c5467fmr8489935ad.1.1742499191155;
+        Thu, 20 Mar 2025 12:33:11 -0700 (PDT)
 Received: from dw-tp ([171.76.82.198])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22780f3a2b5sm1804325ad.50.2025.03.20.12.31.50
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-227811daa6esm1661575ad.163.2025.03.20.12.33.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Mar 2025 12:31:53 -0700 (PDT)
+        Thu, 20 Mar 2025 12:33:10 -0700 (PDT)
 From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 To: John Garry <john.g.garry@oracle.com>, brauner@kernel.org, djwong@kernel.org, hch@lst.de
 Cc: linux-fsdevel@vger.kernel.org, dchinner@redhat.com, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, martin.petersen@oracle.com, tytso@mit.edu, linux-ext4@vger.kernel.org, John Garry <john.g.garry@oracle.com>
-Subject: Re: [PATCH 3/3] iomap: rework IOMAP atomic flags
-In-Reply-To: <20250320120250.4087011-4-john.g.garry@oracle.com>
-Date: Fri, 21 Mar 2025 00:59:51 +0530
-Message-ID: <87msdfsdow.fsf@gmail.com>
-References: <20250320120250.4087011-1-john.g.garry@oracle.com> <20250320120250.4087011-4-john.g.garry@oracle.com>
+Subject: Re: [PATCH 2/3] iomap: comment on atomic write checks in iomap_dio_bio_iter()
+In-Reply-To: <20250320120250.4087011-3-john.g.garry@oracle.com>
+Date: Fri, 21 Mar 2025 01:02:05 +0530
+Message-ID: <87ldszsdl6.fsf@gmail.com>
+References: <20250320120250.4087011-1-john.g.garry@oracle.com> <20250320120250.4087011-3-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -85,214 +85,47 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 
 John Garry <john.g.garry@oracle.com> writes:
 
-> Flag IOMAP_ATOMIC_SW is not really required. The idea of having this flag
-> is that the FS ->iomap_begin callback could check if this flag is set to
-> decide whether to do a SW (FS-based) atomic write. But the FS can set
-> which ->iomap_begin callback it wants when deciding to do a FS-based
-> atomic write.
+> Help explain the code.
 >
-> Furthermore, it was thought that IOMAP_ATOMIC_HW is not a proper name, as
-> the block driver can use SW-methods to emulate an atomic write. So change
-> back to IOMAP_ATOMIC.
->
-> The ->iomap_begin callback needs though to indicate to iomap core that
-> REQ_ATOMIC needs to be set, so add IOMAP_F_ATOMIC_BIO for that.
->
-> These changes were suggested by Christoph Hellwig and Dave Chinner.
+> Also clarify the comment for bio size check.
 
-Looks good to me. Thanks for updating the iomap design document as well.
-Feel free to add:
+Looks good to me. Feel free to add:
 
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
 
 
 >
 > Signed-off-by: John Garry <john.g.garry@oracle.com>
 > ---
->  .../filesystems/iomap/operations.rst          | 35 ++++++++++---------
->  fs/ext4/inode.c                               |  6 +++-
->  fs/iomap/direct-io.c                          |  8 ++---
->  fs/iomap/trace.h                              |  2 +-
->  fs/xfs/xfs_iomap.c                            |  4 +++
->  include/linux/iomap.h                         | 12 +++----
->  6 files changed, 37 insertions(+), 30 deletions(-)
+>  fs/iomap/direct-io.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 >
-> diff --git a/Documentation/filesystems/iomap/operations.rst b/Documentation/filesystems/iomap/operations.rst
-> index b08a79d11d9f..3b628e370d88 100644
-> --- a/Documentation/filesystems/iomap/operations.rst
-> +++ b/Documentation/filesystems/iomap/operations.rst
-> @@ -514,29 +514,32 @@ IOMAP_WRITE`` with any combination of the following enhancements:
->     if the mapping is unwritten and the filesystem cannot handle zeroing
->     the unaligned regions without exposing stale contents.
->  
-> - * ``IOMAP_ATOMIC_HW``: This write is being issued with torn-write
-> -   protection based on HW-offload support.
-> -   Only a single bio can be created for the write, and the write must
-> -   not be split into multiple I/O requests, i.e. flag REQ_ATOMIC must be
-> -   set.
-> + * ``IOMAP_ATOMIC``: This write is being issued with torn-write
-> +   protection.
-> +   Torn-write protection may be provided based on HW-offload or by a
-> +   software mechanism provided by the filesystem.
-> +
-> +   For HW-offload based support, only a single bio can be created for the
-> +   write, and the write must not be split into multiple I/O requests, i.e.
-> +   flag REQ_ATOMIC must be set.
->     The file range to write must be aligned to satisfy the requirements
->     of both the filesystem and the underlying block device's atomic
->     commit capabilities.
->     If filesystem metadata updates are required (e.g. unwritten extent
-> -   conversion or copy on write), all updates for the entire file range
-> +   conversion or copy-on-write), all updates for the entire file range
->     must be committed atomically as well.
-> -   Only one space mapping is allowed per untorn write.
-> -   Untorn writes may be longer than a single file block. In all cases,
-> +   Untorn-writes may be longer than a single file block. In all cases,
->     the mapping start disk block must have at least the same alignment as
->     the write offset.
-> -
-> - * ``IOMAP_ATOMIC_SW``: This write is being issued with torn-write
-> -   protection via a software mechanism provided by the filesystem.
-> -   All the disk block alignment and single bio restrictions which apply
-> -   to IOMAP_ATOMIC_HW do not apply here.
-> -   SW-based untorn writes would typically be used as a fallback when
-> -   HW-based untorn writes may not be issued, e.g. the range of the write
-> -   covers multiple extents, meaning that it is not possible to issue
-> +   The filesystems must set IOMAP_F_ATOMIC_BIO to inform iomap core of an
-> +   untorn-write based on HW-offload.
-> +
-> +   For untorn-writes based on a software mechanism provided by the
-> +   filesystem, all the disk block alignment and single bio restrictions
-> +   which apply for HW-offload based untorn-writes do not apply.
-> +   The mechanism would typically be used as a fallback for when
-> +   HW-offload based untorn-writes may not be issued, e.g. the range of the
-> +   write covers multiple extents, meaning that it is not possible to issue
->     a single bio.
->     All filesystem metadata updates for the entire file range must be
->     committed atomically as well.
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index ba2f1e3db7c7..d04d8a7f12e7 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3290,6 +3290,10 @@ static void ext4_set_iomap(struct inode *inode, struct iomap *iomap,
->  	if (map->m_flags & EXT4_MAP_NEW)
->  		iomap->flags |= IOMAP_F_NEW;
->  
-> +	/* HW-offload atomics are always used */
-> +	if (flags & IOMAP_ATOMIC)
-> +		iomap->flags |= IOMAP_F_ATOMIC_BIO;
-> +
->  	if (flags & IOMAP_DAX)
->  		iomap->dax_dev = EXT4_SB(inode->i_sb)->s_daxdev;
->  	else
-> @@ -3467,7 +3471,7 @@ static inline bool ext4_want_directio_fallback(unsigned flags, ssize_t written)
->  		return false;
->  
->  	/* atomic writes are all-or-nothing */
-> -	if (flags & IOMAP_ATOMIC_HW)
-> +	if (flags & IOMAP_ATOMIC)
->  		return false;
->  
->  	/* can only try again if we wrote nothing */
 > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index b9f59ca43c15..6ac7a1534f7c 100644
+> index 8c1bec473586..b9f59ca43c15 100644
 > --- a/fs/iomap/direct-io.c
 > +++ b/fs/iomap/direct-io.c
-> @@ -349,7 +349,7 @@ static int iomap_dio_bio_iter(struct iomap_iter *iter, struct iomap_dio *dio)
->  	if (dio->flags & IOMAP_DIO_WRITE) {
+> @@ -350,6 +350,11 @@ static int iomap_dio_bio_iter(struct iomap_iter *iter, struct iomap_dio *dio)
 >  		bio_opf |= REQ_OP_WRITE;
 >  
-> -		if (iter->flags & IOMAP_ATOMIC_HW) {
-> +		if (iomap->flags & IOMAP_F_ATOMIC_BIO) {
+>  		if (iter->flags & IOMAP_ATOMIC_HW) {
+> +			/*
+> +			 * Ensure that the mapping covers the full write
+> +			 * length, otherwise it won't be submitted as a single
+> +			 * bio, which is required to use hardware atomics.
+> +			 */
+>  			if (length != iter->len)
+>  				return -EINVAL;
+>  			bio_opf |= REQ_ATOMIC;
+> @@ -449,7 +454,7 @@ static int iomap_dio_bio_iter(struct iomap_iter *iter, struct iomap_dio *dio)
+>  		n = bio->bi_iter.bi_size;
+>  		if (WARN_ON_ONCE((bio_opf & REQ_ATOMIC) && n != length)) {
 >  			/*
->  			 * Ensure that the mapping covers the full write
->  			 * length, otherwise it won't be submitted as a single
-> @@ -677,10 +677,8 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  			iomi.flags |= IOMAP_OVERWRITE_ONLY;
->  		}
->  
-> -		if (dio_flags & IOMAP_DIO_ATOMIC_SW)
-> -			iomi.flags |= IOMAP_ATOMIC_SW;
-> -		else if (iocb->ki_flags & IOCB_ATOMIC)
-> -			iomi.flags |= IOMAP_ATOMIC_HW;
-> +		if (iocb->ki_flags & IOCB_ATOMIC)
-> +			iomi.flags |= IOMAP_ATOMIC;
->  
->  		/* for data sync or sync, we need sync completion processing */
->  		if (iocb_is_dsync(iocb)) {
-> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-> index 69af89044ebd..9eab2c8ac3c5 100644
-> --- a/fs/iomap/trace.h
-> +++ b/fs/iomap/trace.h
-> @@ -99,7 +99,7 @@ DEFINE_RANGE_EVENT(iomap_dio_rw_queued);
->  	{ IOMAP_FAULT,		"FAULT" }, \
->  	{ IOMAP_DIRECT,		"DIRECT" }, \
->  	{ IOMAP_NOWAIT,		"NOWAIT" }, \
-> -	{ IOMAP_ATOMIC_HW,	"ATOMIC_HW" }
-> +	{ IOMAP_ATOMIC,		"ATOMIC" }
->  
->  #define IOMAP_F_FLAGS_STRINGS \
->  	{ IOMAP_F_NEW,		"NEW" }, \
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index 5dd0922fe2d1..ee40dc509413 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -828,6 +828,10 @@ xfs_direct_write_iomap_begin(
->  	if (offset + length > i_size_read(inode))
->  		iomap_flags |= IOMAP_F_DIRTY;
->  
-> +	/* HW-offload atomics are always used in this path */
-> +	if (flags & IOMAP_ATOMIC)
-> +		iomap_flags |= IOMAP_F_ATOMIC_BIO;
-> +
->  	/*
->  	 * COW writes may allocate delalloc space or convert unwritten COW
->  	 * extents, so we need to make sure to take the lock exclusively here.
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 9cd93530013c..02fe001feebb 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -60,6 +60,9 @@ struct vm_fault;
->   * IOMAP_F_ANON_WRITE indicates that (write) I/O does not have a target block
->   * assigned to it yet and the file system will do that in the bio submission
->   * handler, splitting the I/O as needed.
-> + *
-> + * IOMAP_F_ATOMIC_BIO indicates that (write) I/O will be issued as an atomic
-> + * bio, i.e. set REQ_ATOMIC.
->   */
->  #define IOMAP_F_NEW		(1U << 0)
->  #define IOMAP_F_DIRTY		(1U << 1)
-> @@ -73,6 +76,7 @@ struct vm_fault;
->  #define IOMAP_F_XATTR		(1U << 5)
->  #define IOMAP_F_BOUNDARY	(1U << 6)
->  #define IOMAP_F_ANON_WRITE	(1U << 7)
-> +#define IOMAP_F_ATOMIC_BIO	(1U << 8)
->  
->  /*
->   * Flags set by the core iomap code during operations:
-> @@ -189,9 +193,8 @@ struct iomap_folio_ops {
->  #else
->  #define IOMAP_DAX		0
->  #endif /* CONFIG_FS_DAX */
-> -#define IOMAP_ATOMIC_HW		(1 << 9) /* HW-based torn-write protection */
-> +#define IOMAP_ATOMIC		(1 << 9) /* torn-write protection */
->  #define IOMAP_DONTCACHE		(1 << 10)
-> -#define IOMAP_ATOMIC_SW		(1 << 11)/* SW-based torn-write protection */
->  
->  struct iomap_ops {
->  	/*
-> @@ -503,11 +506,6 @@ struct iomap_dio_ops {
->   */
->  #define IOMAP_DIO_PARTIAL		(1 << 2)
->  
-> -/*
-> - * Use software-based torn-write protection.
-> - */
-> -#define IOMAP_DIO_ATOMIC_SW		(1 << 3)
-> -
->  ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
->  		unsigned int dio_flags, void *private, size_t done_before);
+> -			 * This bio should have covered the complete length,
+> +			 * An atomic write bio must cover the complete length,
+>  			 * which it doesn't, so error. We may need to zero out
+>  			 * the tail (complete FS block), similar to when
+>  			 * bio_iov_iter_get_pages() returns an error, above.
 > -- 
 > 2.31.1
 
