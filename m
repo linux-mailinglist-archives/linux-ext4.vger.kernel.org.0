@@ -1,96 +1,139 @@
-Return-Path: <linux-ext4+bounces-6950-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6951-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D072A6CE1D
-	for <lists+linux-ext4@lfdr.de>; Sun, 23 Mar 2025 07:53:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 836EEA6CE23
+	for <lists+linux-ext4@lfdr.de>; Sun, 23 Mar 2025 08:00:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDED2189B435
-	for <lists+linux-ext4@lfdr.de>; Sun, 23 Mar 2025 06:53:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 139EB7A4A72
+	for <lists+linux-ext4@lfdr.de>; Sun, 23 Mar 2025 06:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA565201266;
-	Sun, 23 Mar 2025 06:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0BC201032;
+	Sun, 23 Mar 2025 07:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ih52ne1C"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213641FECA3
-	for <linux-ext4@vger.kernel.org>; Sun, 23 Mar 2025 06:53:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278053FD1;
+	Sun, 23 Mar 2025 07:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742712785; cv=none; b=ivU7qEqwPHU3l6hOjWcmO+cMeEd/xvqDp7olxOQy+OgQD2gPK7G4CBGUxNqnH0hHhjsQEBQXpPHn16/wTAO+jiwkHY1UfODtezy9BlWkVq2XPWMwnYJ+SJCrxi1hJSG0nPYrnv7tZYh+tNvVBEehWfSYL5e1jNnyQDPmLTMsf5Y=
+	t=1742713237; cv=none; b=Im2dKCWs76QgW+OZbwylP75UKdVCDDMHEV/5TcCSUsFxylaIBr1XvvXhzbd0pfgdByMwuRH10gmQq5YKEUSYfkPqXhg0l5NjPljuCsbIpnHMLjM3puz+x8j3TwWQkEtsRz8hNUJCKSH5OLEpCr9TpnCAhVADr29Wh+2WC053/ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742712785; c=relaxed/simple;
-	bh=Bf7yka2w1VVpUuX6J7h+vWCKWalB2ArNcjPpVEqVGZc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=eKiW2cSTnmxxjZ+Q+E/HmFl0MyEYx4NhdB96XA44Y25mHNXFXbTKevoG4r+39fHdA7eiPA6IpEMMdyWJ7u9orEKf6UyyFqaWu30ekh5Y4qrxp7qmDwxdU76U4R5epbbX9AVJOw3PQOfYpgcee7jbL6cQon2qzOTP2Ky5PwnzW4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-85b5a7981ccso263852739f.2
-        for <linux-ext4@vger.kernel.org>; Sat, 22 Mar 2025 23:53:03 -0700 (PDT)
+	s=arc-20240116; t=1742713237; c=relaxed/simple;
+	bh=eRj7ZyYdHApUuqrgnDlrZoak4fEqCjIc9LNCmw5Ib8o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Fnj/EvK/k13Ti+DdJU/uzg/lZ4BgQeiqSIOUDW4RGER4GD8yXdYxx1YXdAOIMnsYJCgtouGJRtPztj/RCgh692iS2L4InfkxWpwY7f6H2G7l4pjmWcVeymXQy3E9+lp3nRC145UoVPyZxcKBxAZwHF5ZCW3DYCTx+xUZRTgRb+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ih52ne1C; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-226185948ffso64207525ad.0;
+        Sun, 23 Mar 2025 00:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742713234; x=1743318034; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PmGMB0N7I4U2fl8kJydMFtAwhymEfbcfkap4BCaT23g=;
+        b=ih52ne1CLgl36pO2Ra3wEsoxjHpgbAFCkxSrbbLczL9j8hyOL4XVGZZ3sL94zsSdJL
+         2AGb03cb4xN1NuIbyIBG0Yk+GaC0orSdIeChBg2JffaJYZPcET/bOcGerDAY2zizyA2g
+         uxfRGwN+wnbd3/jeU/HV5NzqwXIgEBKtvSPYcn5wWcYdopHkRCMDV7eeKZsFqDeAH+rI
+         3AiusZjaROI+mDlAjGRCjnkVMZGiSuelbh2dPf9fEemNiEY9zm6g73KQKJCd4BH/Q+ov
+         wkXKHs4l1es5R5Vh4/ets1C/Dz9XbNcsNEMHGRFrEM2n8jBxHzPGqUASYMAV54sGV5ia
+         hAyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742712783; x=1743317583;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uuTtDdQllfqVQdTnY1GFjo08/XepPL02PHTKNSl5Nyk=;
-        b=iAsf07EY+Y+X8JKxsRt6EB+ghJkGEq+HIwnoDzOO/6mLCTvwPzBPJ0xT4QmFz9zXZ6
-         HNWcukCvybYoybb+8vzR6f67oUjk71tBVFXRWCY02WmoNYYvrJokB6+ieWVusUf+G9V7
-         bn/bbXjLW9ZpCjLF3kWf+mzSZaZ0NZFYb5LXCmHD+vHByws3gwYNEqIU3S+ilcXnglZu
-         AddUxx/bZQtnPwMgPrvzIVL1dh0mIHVVMVSTCGC4rKfn+6KsPV/b+EpmuNoSvZZQG6jh
-         ZWxk7EUxyiPm8Q3fuw9tTPiW4rg05H4/o3jwwU52yXZX4Any8SgtbeNqfHTeInWhNLPY
-         hgwg==
-X-Forwarded-Encrypted: i=1; AJvYcCUy5OKU+VBuLzm6ij6N6Q3+l04CTlzDSHQHK25ZOaeJCI7XHXl9AxWoMdxEh5zqKym7IC1JH3Gufjoz@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxh3RdF9U9WBBtV6TddauA/pyzBik/tb7TofrPH2BccxxFYF5ha
-	IjjM2P6YaXmbkMrvjeyO0/Cnk73TbzX3XBbcUxLcD9O1YJ0/BzUgsBhL1y7czOmY6W85+7x9XvF
-	iRRPL/foRZXf1g48iV9HPV6c4Wk0iqTbN3JOW6+7TYqlzMI8gjWXV4Yo=
-X-Google-Smtp-Source: AGHT+IFomXej1RrN6WELV4Qii9/yxfjxlWnmlmMb+ysYA1j31F3Z04e+3d3vMyCUXzjVvvz9y1wv7XB/R6rxL+wT2R6HvXmksUMF
+        d=1e100.net; s=20230601; t=1742713234; x=1743318034;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PmGMB0N7I4U2fl8kJydMFtAwhymEfbcfkap4BCaT23g=;
+        b=I/FKA8+cHylMxnMJ4OLMPAuzRB6flNaSzmm9+fAfBDn8/B1pgsv3uG+YOGAkQJi7wr
+         aHm4vPD82IxZQcgb5c+0iqek/hMA51qyTibCt9Rj4dSCmoSCQqRSVqVqvknSe5i7VcuL
+         7eGL1f/s7eBZfhnziU8omRdJXawEyXYY15UMy+K1a1e2dhn3c+0bdQ7/9QlWdf0KGrAu
+         U+4AZ4ALS1EXuUpgop70ZSoWJ2iQfNiC/D6Pk/bGsSSntOJpBhkslYlasKnIKVsKXmQb
+         ESJLZfQJ321dQlrRoJa/Ps73Itoa0jfr7w8otL+pMkQ0yEfAEHzr+eOfi4AhLWadmXms
+         8RAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUEbRVqRPUJtMabjPMvNzu372Ob1Rt96WIxov0TI+bMU9C9pTMEQHmzx3X298cPAWoZgCYYhva7ATM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywrq9jRJhW/uVYKpxB9z5GkK0RWdfrkoJoLKqGE05mtn/D0Ytsp
+	68OrQYfyxTU671FfN0AInX2KDLFpfPXfi36c8QLOSVOCoFM4rUUdeJl0gQ==
+X-Gm-Gg: ASbGncv+EBK7uihY1SVBUpXxx+xCzHVyVxNG9kV2GRhXpwm8ElBjpi5nh5MwlUOlC0p
+	RWKnm+3CZx6uqcsLquhsexT2metPV0mRecCruptJ4MkcHh9d6F/Ea26vc16tCPaAHz89FAnxYEZ
+	QWZ8I/Em/ho3huPec+ZoQBbdzXPTQuUxmqPH5O9Z4nbt3r1YiDP1zetqigXM6bJEjMNcsjpyrNg
+	CsazyTh+sru15EHtC+oSSeyKFawI6LcxvtYfWzrpKnzpyyMkoaQ0scAJADd9er0U/8s2oL3Fhvv
+	eYJOtqc9SCGp7+ne9asjdCY4qx2lsPgK0vipV/IJd1e8eHukjPc=
+X-Google-Smtp-Source: AGHT+IGXcZVKTGQcTJ9vF9fuL563f/7jX7j63B5aelTw0DiAlqKRY7jWfkq1zWwAVQopQCEHT2lVFw==
+X-Received: by 2002:a05:6a00:4b12:b0:736:755b:8317 with SMTP id d2e1a72fcca58-73905a501e4mr12816549b3a.21.1742713234143;
+        Sun, 23 Mar 2025 00:00:34 -0700 (PDT)
+Received: from dw-tp.. ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7390611d21dsm5168717b3a.118.2025.03.23.00.00.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Mar 2025 00:00:33 -0700 (PDT)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	John Garry <john.g.garry@oracle.com>,
+	djwong@kernel.org,
+	linux-xfs@vger.kernel.org,
+	Theodore Ts'o <tytso@mit.edu>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [RFCv1 0/1] EXT4 support of multi-fsblock atomic write with bigalloc
+Date: Sun, 23 Mar 2025 12:30:09 +0530
+Message-ID: <cover.1742699765.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.48.1
+In-Reply-To: <Z5nTaQgLGdD6hSvL@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <Z5nTaQgLGdD6hSvL@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:378c:b0:3d3:cdb0:a227 with SMTP id
- e9e14a558f8ab-3d5960f4d68mr77368565ab.9.1742712783188; Sat, 22 Mar 2025
- 23:53:03 -0700 (PDT)
-Date: Sat, 22 Mar 2025 23:53:03 -0700
-In-Reply-To: <6707499c.050a0220.1139e6.0017.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67dfafcf.050a0220.31a16b.0058.GAE@google.com>
-Subject: Re: [syzbot] [net] INFO: rcu detected stall in sys_getdents64
-From: syzbot <syzbot+17bc8c5157022e18da8b@syzkaller.appspotmail.com>
-To: apparmor-owner@lists.ubuntu.com, apparmor@lists.ubuntu.com, 
-	edumazet@google.com, jmorris@namei.org, john.johansen@canonical.com, 
-	john@apparmor.net, kuba@kernel.org, kuniyu@amazon.com, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, netdev@vger.kernel.org, 
-	paul@paul-moore.com, penguin-kernel@i-love.sakura.ne.jp, razor@blackwall.org, 
-	serge@hallyn.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot suspects this issue was fixed by commit:
+This is an RFC patch before LSFMM to preview the change of how multi-fsblock atomic write
+support with bigalloc look like. There is a scope of improvement in the
+implementation, however this shows the general idea of the design. More details
+are provided in the actual patch. There are still todos and more testing is
+needed. But with iomap limitation of single fsblock atomic write now lifted,
+the patch has definitely started to look better.
 
-commit e759e1e4a4bd2926d082afe56046a90224433a31
-Author: Eric Dumazet <edumazet@google.com>
-Date:   Wed Jan 29 14:27:26 2025 +0000
+This is based out of vfs.all tree [1] for 6.15, which now has the necessary
+iomap changes required for the bigalloc support in ext4.
 
-    net: revert RTNL changes in unregister_netdevice_many_notify()
+TODOs:
+1. Add better testcases to test atomic write support with bigalloc.
+2. Discuss the approach of keeping the jbd2 txn open while zeroing the short
+   underlying unwritten extents or short holes to create a single mapped type
+   extent mapping. This anyway should be a non-perfomance critical path.
+3. We use ext4_map_blocks() in loop instead of modifying the block allocator.
+   Again since it's non-performance sensitive path, so hopefully it should ok?
+   Because otherwise one can argue why take and release
+   EXT4_I(inode)->i_data_sem multiple times. We won't take & release any group
+   lock for this, since we know that with bigalloc the cluster is anyway
+   available to us.
+4. Once when we start supporting file/inode marked with atomic writes attribute,
+   maybe we can add some optimizations like zero out the entire underlying
+   cluster when someone forcefully wants to fzero or fpunch an underlying disk
+   block, to keep the mapped extent intact.
+5. Stress test of this is still pending through fsx and xfstests.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1084f004580000
-start commit:   fc20a3e57247 Merge tag 'for-linus-6.12a-rc2-tag' of git://..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ba92623fdea824c9
-dashboard link: https://syzkaller.appspot.com/bug?extid=17bc8c5157022e18da8b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=135f7d27980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1483b380580000
+Reviews are appreciated.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+[1]: https://web.git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs.all&id=4f76518956c037517a4e4b120186075d3afb8266
 
-#syz fix: net: revert RTNL changes in unregister_netdevice_many_notify()
+Ritesh Harjani (IBM) (1):
+  ext4: Add atomic write support for bigalloc
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+ fs/ext4/inode.c | 90 +++++++++++++++++++++++++++++++++++++++++++++++--
+ fs/ext4/super.c |  8 +++--
+ 2 files changed, 93 insertions(+), 5 deletions(-)
+
+--
+2.48.1
+
 
