@@ -1,87 +1,90 @@
-Return-Path: <linux-ext4+bounces-6958-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6959-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CE8DA6D52F
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Mar 2025 08:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43965A6D532
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Mar 2025 08:38:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9C853AA069
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Mar 2025 07:37:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CF653AA355
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Mar 2025 07:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB06B257459;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D932D257AC3;
 	Mon, 24 Mar 2025 07:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WzsoDhti"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Z2YBvfly"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DDF25742D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBD57257438;
 	Mon, 24 Mar 2025 07:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742801852; cv=none; b=m3EXv9qG1EkttTZgKniCM+bRKd/JfmEZb5gcVse/B7+bbP4UiksCGFDSiS0gwUwJNYcOePXw/mBZ2m6iSGRUSB1lD7fZwkEkvlncvqN1d6gxtNgk7xd/YV7+h2BUxQZn6EpvLvHGcZ+Txwqgph+n+ep0ChVxcQfEzCfleJhKqXg=
+	t=1742801852; cv=none; b=dH8lz99VI40nkEGtMFvjUBlt7gVnf5zDKaYGKW2DALZVwTuDqNjQgDKHghzgURFNnJswZWBxJ7gpL2XQNEuoWE8XKLMHiNtxaK1YVB0CmHnBo7N+i3UbwIX096g6eqOaJsx6G05JdGmbj6QrC9Kpgtty6JtOqxxK5DzyHW+XCKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1742801852; c=relaxed/simple;
-	bh=e3AoWLYNPTFZnz86iaVTUGPwvS+iqfeIOPNwxgo7smE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F4G3/OrQ2HvKXh8O+13kZZ9TUQ66HzkkHQBd16IcLwN+KIxcroZaeD8bC/S6Sf4RfNFfFRBOpTkHlehb6mopB+q2FVNiZSFSZye9CmAIcWvbAfRcWJfDGyIJSWp65ylcg/z9jRG74thMcPcqfTbxnNV6BKcO9n5ISEtjYrvjgVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WzsoDhti; arc=none smtp.client-ip=148.163.158.5
+	bh=VD+PwGe5tmvrGlAfNJro4FDnmcFwJtTakB63Kd/xTQ8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=HfTd869zWNDL+UF6LOyItffnBTrLFkLV436KBfGNPHGlLzzct81ZX/s0xJg0ekOy07cayoVkYOMHx0M6QYJHUBlgSLi2UIAaFDMCdrSN6XjK89bZ46CDltjCwDWeALBbRqZjgF1KtyfDGr3bzNupbMDMlB9/0fpaT1NhBtnjsDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Z2YBvfly; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52NNSmSp009728;
-	Mon, 24 Mar 2025 07:37:16 GMT
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52O5K7gk023160;
+	Mon, 24 Mar 2025 07:37:18 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=G+8DRrZFR05yC73toKSnJnS0F8v+CsMnumFAJhpHp
-	Io=; b=WzsoDhtiGfPl95yzEH+wsahiBNzaVHXXgrL1s0J84e6NpjCI0xzd/4JmC
-	KojQt71R2Ykksa9sHE0+KSSGFn8vTo90TEBVZk4E2lgFyv7SGXX3z3+TltINJOIA
-	2/5ALV9sQKv92R59kElB7MIDAAvFL/W0lgXAQeaZYpHEcSW3IYA0XQ+mgSc39hYl
-	nhffPhfQ502MjrRgsssbpiKiXNxImi4uk+ccAzLOKJj7BG0+zxkuyvnH8Pr1RNYm
-	k4apNvY2VclysByiEfsE+SjR6IaU2JuYuaOTSCE86ZferiovxXvMzHSp71Wj1XzK
-	C0zmyrcd41OOBqAN7hq3a5AQm99Ng==
+	:content-transfer-encoding:date:from:in-reply-to:message-id
+	:mime-version:references:subject:to; s=pp1; bh=5ZpwIYnRwKDFz/DfW
+	xShmUTTGBe9YrODk96vZraZ31s=; b=Z2YBvflyGjwZSgUcGJVlHmUvbbalP53VD
+	a1ktXn5PonYnlvaUwwkDz7RJ/LtWQOgpF1xG13cWXbGVlhhvjr9NfNXgxtOQSbgr
+	ke9i5FOlA+rLZ3n/8T+YC68KIm0ksVqDUxE72qjDmSIoh5gz2JbznL57j2cPkg+w
+	MwygyGHEYMdeNQ78JowVboDwwHpwDekK+f5t1IGc27JYZtbiXpTYY3OmpLmBsNud
+	E5PzSjy3okylKo6fvIK1hPXg7MnraV3524xchoYg2iYi/SZrz2hO16gDsCyx/YPN
+	P1f4ra/Ex3OTI3Q36AL/5GYVZbK9GzDLSx/9pzCVZltE65uegCArw==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45jsfpa15g-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45jjb4ueg7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 24 Mar 2025 07:37:15 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 52O7bFSm008864;
-	Mon, 24 Mar 2025 07:37:15 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45jsfpa15b-1
+	Mon, 24 Mar 2025 07:37:18 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 52O7X8Tr013752;
+	Mon, 24 Mar 2025 07:37:17 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45jjb4ueg0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 24 Mar 2025 07:37:15 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52O3uOgt012245;
-	Mon, 24 Mar 2025 07:37:14 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 45j91kw3cn-1
+	Mon, 24 Mar 2025 07:37:17 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52O3bFX9020029;
+	Mon, 24 Mar 2025 07:37:16 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 45j8hnn5ha-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 24 Mar 2025 07:37:14 +0000
+	Mon, 24 Mar 2025 07:37:16 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52O7bC1055116112
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52O7bE6Q38470060
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 24 Mar 2025 07:37:12 GMT
+	Mon, 24 Mar 2025 07:37:14 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9DD2020043;
+	by IMSVA (Postfix) with ESMTP id 6DB4720040;
+	Mon, 24 Mar 2025 07:37:14 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E437D20043;
 	Mon, 24 Mar 2025 07:37:12 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 022062004E;
-	Mon, 24 Mar 2025 07:37:11 +0000 (GMT)
 Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.29.200])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 24 Mar 2025 07:37:10 +0000 (GMT)
+	Mon, 24 Mar 2025 07:37:12 +0000 (GMT)
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
 Cc: John Garry <john.g.garry@oracle.com>, dchinner@redhat.com,
         "Darrick J . Wong" <djwong@kernel.org>,
         Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [RFC v3 00/11] ext4: Add extsize and forcealign support (groundwork for multi block atomic writes)
-Date: Mon, 24 Mar 2025 13:06:58 +0530
-Message-ID: <cover.1742800203.git.ojaswin@linux.ibm.com>
+Subject: [RFC v3 01/11] ext4: add aligned allocation hint in mballoc
+Date: Mon, 24 Mar 2025 13:06:59 +0530
+Message-ID: <70fcaa59709f4fc30223b9d0e33b5cbda74209c6.1742800203.git.ojaswin@linux.ibm.com>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <cover.1742800203.git.ojaswin@linux.ibm.com>
+References: <cover.1742800203.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,136 +93,187 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: E4qrm2tcfPhpdfBV4k5bDL5Epyk8einZ
-X-Proofpoint-GUID: QZ490p1iBWt23sZaVpaIwFuPY1p9T7N1
+X-Proofpoint-GUID: 1ftvGmEpYbtbILO8xybkKSnkLtFXyiq_
+X-Proofpoint-ORIG-GUID: 5KwNZUzYxxhRIUfXpFSvhnrP3LCDqg0C
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-03-24_03,2025-03-21_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 clxscore=1015 suspectscore=0 adultscore=0
- lowpriorityscore=0 bulkscore=0 impostorscore=0 phishscore=0 malwarescore=0
- mlxlogscore=764 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=999 suspectscore=0 bulkscore=0 adultscore=0 spamscore=0
+ mlxscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2502280000 definitions=main-2503240053
 
-These patches lay the ground work for supporting multi block
-HW-accelerated atomic writes without the use of bigalloc. Multiblock
-atomic write support with bigalloc is already posted as an RFC here [3].
-Without bigalloc, we need a mechanism to get aligned blocks from the
-allocator so that HW accelerated atomic writes can be performed. extsize
-+ forcealign provide this mechanism in ext4.
+Add support in mballoc for allocating blocks that are aligned
+to a certain power-of-2 offset.
 
-[3] https://lore.kernel.org/linux-ext4/cover.1742699765.git.ritesh.list@gmail.com/
+1. We define a new flag EXT4_MB_ALIGNED_HINT to indicate that we want
+an aligned allocation. This is just a hint, mballoc tries its best to
+provide aligned blocks but if it can't then it'll fallback to normal
+allocation
 
-- extsize is a per inode hint to physically and logically align blocks
-  to a certain value.
+2. The alignment is determined by the length of the allocation, for
+example if we ask for 8192 bytes, then the alignment of physical blocks
+will also be 8192 bytes aligned (ie 2 blocks aligned on 4k blocksize).
 
-- forcealign gives a **strict guarantee** that allocator will physically
-  as well as logically align blocks to the extsize value
+3. We dont yet support arbitrary alignment. For aligned writes, the
+length/alignment must be power of 2 in blocks, ie for 4k blocksize we
+can get 4k byte aligned, 8k byte aligned, 16k byte aligned ...
+allocation but not 12k byte aligned.
 
-The extsize support is almost same as v2 with rebase to latest ext4 dev
-branch. Patches 7 - 11 adds the new forcealign feature that can be
-seen like a sort of per file bigalloc. Some points about forcealign:
+4. We use CR_POWER2_ALIGNED criteria for aligned allocation which by
+design allocates in an aligned manner. Since CR_POWER2_ALIGNED needs the
+ac->ac_g_ex.fe_len to be power of 2, thats where the restriction in
+point 3 above comes from. Since right now aligned allocation support is
+added mainly for atomic writes use case, this restriction should be fine
+since atomic write capable devices usually support only power of 2
+alignments
 
- * Allocation on a forcealign inode is guaranteed to get an extent
-   aligned to extsize physicall and logically, else error is returned. 
-   This mimicks bigalloc but on a per file level
+5. For ease of review enabling inode preallocation support is done in
+upcoming patches and is disabled in this patch.
 
- * Deallocations are also only allowed in extsize aligned units. This is
-   pretty strict and can be relaxed in later revisions.
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+---
+ fs/ext4/ext4.h              |  2 ++
+ fs/ext4/mballoc.c           | 60 +++++++++++++++++++++++++++++++++----
+ include/trace/events/ext4.h |  1 +
+ 3 files changed, 58 insertions(+), 5 deletions(-)
 
- * FS_XFLAG_FORCEALIGN can be set via FS_IOC_GET/SETXATTR ioctl to
-   enable forcealign. As of now, we can only enable forcealign if
-   extsize is set on the inode
-
- * Reused the EXT4_EOFBLOCKS_FL flag for forcealig since it is no longer
-   used. Incase this is not feasible, we can explore other ways to set
-   the flag (eg xattr or overriding a field)
-
-Some of the TODOs and open questions regarding the design:
-
-1. I want to design forcealign in such a way that FS formatting is not
-  required. For that Im exploring 2 options:
-
-  - Add an RO_COMPAT feature flag. tune2fs can be used to enable it on
-    existing filesystems without formatting. Simplest but this has a
-    drawback that even for a single forcealign file, the FS would become
-    RO on older kernels
-
-  - To avoid that, we can instead expose an ioctl to fix a misaligned
-    forcealign file. However this is an overhead for sys admins/end
-    users. Maybe fsck can help with this?
-
-2. For extsize, I'm not planning to support FS-wide tunable since we
-   already have bigalloc for that.
-
-3. Also, we are not supporting non-power-of-2 extsizes (atleast for now)
-   as there are no clear use cases to justify the added complexity 
-
-4. directory wide extsize is not yet supported however can be added in 
-   future revision
-
-We are passing quick xfstests with these patches along with a lot of
-custom allocation scenarios that I'll eventually add to xfstest, however
-this series is still largely an RFC and might have bugs.
-
-Posting this here for review and suggestions on the design as well as
-implementation. 
-
-
-** Changes since rfc v2 [2] **
-
- - Patch 0-6 are same as v2 just rebased. Patch 7-11 are new in this
-   series.
- - Patch 7 adds a wrapper on ext4_map_blocks to better handle some
-   allocation scenarios
- - Patch 8-11 Add a new called forcealign. More about it below.
-
-[2] https://lore.kernel.org/linux-ext4/cover.1733901374.git.ojaswin@linux.ibm.com/
-
-** Changes since rfc v1 [1] **
-
-1. Allocations beyond EOF also respect extsize hint however we 
-   unlink XFS, we don't trim the blocks allocated beyond EOF due
-   to extsize hints. The reasoning behind this is explained in 
-   patch 6/6.
-
-2. Minor fixes in extsize ioctl handling logic.
-
-Rest of the design detials can be in individual patches as well as
-the original cover leter which can be found here:
-
-[1]
-https://lore.kernel.org/linux-ext4/cover.1726034272.git.ojaswin@linux.ibm.com/
-
-Comments and suggestions are welcome!
-
-Regards,
-ojaswin
-
-Ojaswin Mujoo (11):
-  ext4: add aligned allocation hint in mballoc
-  ext4: allow inode preallocation for aligned alloc
-  ext4: support for extsize hint using FS_IOC_FS(GET/SET)XATTR
-  ext4: pass lblk and len explicitly to ext4_split_extent*()
-  ext4: add extsize hint support
-  ext4: make extsize work with EOF allocations
-  ext4: add ext4_map_blocks_extsize() wrapper to handle overwrites
-  ext4: add forcealign support of mballoc
-  ext4: add forcealign support to ext4_map_blocks
-  ext4: add support for adding focealign via SETXATTR ioctl
-  ext4: disallow unaligned deallocations on forcealign inodes
-
- fs/ext4/ext4.h              |  20 +-
- fs/ext4/ext4_jbd2.h         |  23 ++
- fs/ext4/extents.c           | 294 ++++++++++++++++---
- fs/ext4/inode.c             | 543 +++++++++++++++++++++++++++++++++---
- fs/ext4/ioctl.c             | 191 +++++++++++++
- fs/ext4/mballoc.c           | 141 ++++++++--
- fs/ext4/super.c             |   1 +
- include/trace/events/ext4.h |   3 +
- include/uapi/linux/fs.h     |   6 +-
- 9 files changed, 1111 insertions(+), 111 deletions(-)
-
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 5a20e9cd7184..2c83275d2ad4 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -222,6 +222,8 @@ enum criteria {
+ /* Avg fragment size rb tree lookup succeeded at least once for
+  * CR_BEST_AVAIL_LEN */
+ #define EXT4_MB_CR_BEST_AVAIL_LEN_OPTIMIZED		0x00020000
++/* mballoc will try to align physical start to length (aka natural alignment) */
++#define EXT4_MB_HINT_ALIGNED	      	0x40000
+ 
+ struct ext4_allocation_request {
+ 	/* target inode for block we're allocating */
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 0d523e9fb3d5..ca51581573e3 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2177,8 +2177,11 @@ static void ext4_mb_use_best_found(struct ext4_allocation_context *ac,
+ 	 * user requested originally, we store allocated
+ 	 * space in a special descriptor.
+ 	 */
+-	if (ac->ac_o_ex.fe_len < ac->ac_b_ex.fe_len)
++	if (ac->ac_o_ex.fe_len < ac->ac_b_ex.fe_len) {
++		/* Aligned allocation doesn't have preallocation support */
++		WARN_ON(ac->ac_flags & EXT4_MB_HINT_ALIGNED);
+ 		ext4_mb_new_preallocation(ac);
++	}
+ 
+ }
+ 
+@@ -2814,10 +2817,15 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+ 
+ 	BUG_ON(ac->ac_status == AC_STATUS_FOUND);
+ 
+-	/* first, try the goal */
+-	err = ext4_mb_find_by_goal(ac, &e4b);
+-	if (err || ac->ac_status == AC_STATUS_FOUND)
+-		goto out;
++	/*
++	 * first, try the goal. Skip trying goal for aligned allocations since
++	 * goal determination logic is not alignment aware (yet)
++	 */
++	if (!(ac->ac_flags & EXT4_MB_HINT_ALIGNED)) {
++		err = ext4_mb_find_by_goal(ac, &e4b);
++		if (err || ac->ac_status == AC_STATUS_FOUND)
++			goto out;
++	}
+ 
+ 	if (unlikely(ac->ac_flags & EXT4_MB_HINT_GOAL_ONLY))
+ 		goto out;
+@@ -2858,9 +2866,22 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+ 	 */
+ 	if (ac->ac_2order)
+ 		cr = CR_POWER2_ALIGNED;
++	else
++		WARN_ON_ONCE(ac->ac_g_ex.fe_len > 1 &&
++			     ac->ac_flags & EXT4_MB_HINT_ALIGNED);
+ repeat:
+ 	for (; cr < EXT4_MB_NUM_CRS && ac->ac_status == AC_STATUS_CONTINUE; cr++) {
+ 		ac->ac_criteria = cr;
++
++		if (ac->ac_criteria > CR_POWER2_ALIGNED &&
++		    ac->ac_flags & EXT4_MB_HINT_ALIGNED &&
++		    ac->ac_g_ex.fe_len > 1) {
++			ext4_warning_inode(
++				ac->ac_inode,
++				"Aligned allocation not possible, using unaligned allocation");
++			ac->ac_flags &= ~EXT4_MB_HINT_ALIGNED;
++		}
++
+ 		/*
+ 		 * searching for the right group start
+ 		 * from the goal value specified
+@@ -2993,6 +3014,24 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+ 	if (!err && ac->ac_status != AC_STATUS_FOUND && first_err)
+ 		err = first_err;
+ 
++	if (ac->ac_flags & EXT4_MB_HINT_ALIGNED && ac->ac_status == AC_STATUS_FOUND) {
++		ext4_fsblk_t start = ext4_grp_offs_to_block(sb, &ac->ac_b_ex);
++		ext4_grpblk_t len = EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
++
++		if (!len) {
++			ext4_warning_inode(ac->ac_inode,
++					   "Expected a non zero len extent");
++			ac->ac_status = AC_STATUS_BREAK;
++			goto exit;
++		}
++
++		WARN_ON_ONCE(!is_power_of_2(len));
++		WARN_ON_ONCE(start % len);
++		/* We don't support preallocation yet */
++		WARN_ON_ONCE(ac->ac_b_ex.fe_len != ac->ac_o_ex.fe_len);
++	}
++
++ exit:
+ 	mb_debug(sb, "Best len %d, origin len %d, ac_status %u, ac_flags 0x%x, cr %d ret %d\n",
+ 		 ac->ac_b_ex.fe_len, ac->ac_o_ex.fe_len, ac->ac_status,
+ 		 ac->ac_flags, cr, err);
+@@ -4440,6 +4479,13 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+ 	if (ac->ac_flags & EXT4_MB_HINT_NOPREALLOC)
+ 		return;
+ 
++	/*
++	 * caller may have strict alignment requirements. In this case, avoid
++	 * normalization since it is not alignment aware.
++	 */
++	if (ac->ac_flags & EXT4_MB_HINT_ALIGNED)
++		return;
++
+ 	if (ac->ac_flags & EXT4_MB_HINT_GROUP_ALLOC) {
+ 		ext4_mb_normalize_group_request(ac);
+ 		return ;
+@@ -4794,6 +4840,10 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
+ 	if (!(ac->ac_flags & EXT4_MB_HINT_DATA))
+ 		return false;
+ 
++	/* using preallocated blocks is not alignment aware. */
++	if (ac->ac_flags & EXT4_MB_HINT_ALIGNED)
++		return false;
++
+ 	/*
+ 	 * first, try per-file preallocation by searching the inode pa rbtree.
+ 	 *
+diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
+index 156908641e68..79cc4224fbbd 100644
+--- a/include/trace/events/ext4.h
++++ b/include/trace/events/ext4.h
+@@ -36,6 +36,7 @@ struct partial_cluster;
+ 	{ EXT4_MB_STREAM_ALLOC,		"STREAM_ALLOC" },	\
+ 	{ EXT4_MB_USE_ROOT_BLOCKS,	"USE_ROOT_BLKS" },	\
+ 	{ EXT4_MB_USE_RESERVED,		"USE_RESV" },		\
++	{ EXT4_MB_HINT_ALIGNED,		"HINT_ALIGNED" }, \
+ 	{ EXT4_MB_STRICT_CHECK,		"STRICT_CHECK" })
+ 
+ #define show_map_flags(flags) __print_flags(flags, "|",			\
 -- 
 2.48.1
 
