@@ -1,112 +1,140 @@
-Return-Path: <linux-ext4+bounces-6970-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6971-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A558A6E2CD
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Mar 2025 19:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD477A6E667
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Mar 2025 23:11:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 515BF18921F8
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Mar 2025 18:56:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2195A1894DBC
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Mar 2025 22:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F4726738F;
-	Mon, 24 Mar 2025 18:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 848571EF088;
+	Mon, 24 Mar 2025 22:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="UAWpwE8/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from 003.mia.mailroute.net (003.mia.mailroute.net [199.89.3.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A572266F0F
-	for <linux-ext4@vger.kernel.org>; Mon, 24 Mar 2025 18:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334A71EE7BB;
+	Mon, 24 Mar 2025 22:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.3.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742842592; cv=none; b=HH0Uog8f6aw/3g7T3CCkwfL5166IXTt8YETn/NUogni7x/E9SzCD2R8uZMbwYtq1JOdB9mgp3Qu6+YedjN8p68s1ZKp6bEqVbIUjy2o7zDSZkSBx3bH25EzKxQphdCJJ5E+dkurKmgmmFZHjJV+rzu/B9SxsxYOmO2xMHPR4YPc=
+	t=1742854238; cv=none; b=lfGYKb1seDj6Sp9Pw53z0RVmECO6UTZexIXCFCuIhuKrMEXZtftCm5oUj6Q+pS3nDvcqHZQ8dGZ6kBNBy4/LBStscWXpCLEZwHoY9m9qLkgqv4YfVxyG11J2bZUDUOhlQKplBzpIOSGWZHUM8b5NSe5aiu4z9hHLZfsbQ4J2dss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742842592; c=relaxed/simple;
-	bh=4N83Lv/dJjTbxIJ6UW4GnzSJqjXzRnH7BxrEt4Md1nM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=dv5r/GzcQv5HNLbAgHlqnTWxyOJXaF4s1EMCF+AsWe8ZWBCsa+Cw/jVYhcitm77GbvYSSqpmowqyGK7fvoEUWerpskzcpecJcmSTaKBR5BDJMn4Td+P/SX2WRHMfXJ9MXsRIh6dlAN/9ZPHnIGo+e1q2IUrp9MCFH0w11V+QugY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-85b3a6c37e2so491470439f.0
-        for <linux-ext4@vger.kernel.org>; Mon, 24 Mar 2025 11:56:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742842589; x=1743447389;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6x8ZDgndIipZ3DDy99jzbvkLrPvBM8PEqSlHKbromLk=;
-        b=ETyb3jWDeFjIQGCBdKBEdH24aaHviBerft9SDQKxrltsxFv4p8ngkmcnOsznPJjfMj
-         R8HrSD+aipvvDnZXWGKElAZbQ8uY1ZgOafnz/s74vHrmlAy11kW3QSj1MTN4t+BeZn0U
-         GnifT8LGG+zhSqmOISvfP1t68wmTLd5Td/vBsfns2McL45FUTadWMXr67eNksbVU0CwS
-         dbcrpxzK5iB/R6YozAu9fg7IDz4m38Jtik6tYM43mjKgCVKDF8si28jp7dk2IIJiBzQe
-         mpqiL5BpNhzokKXB2UruRQBItEsgX6TpUqho/C8jGcmt3/05k+4Q7Y77DpKNxtIF+vD+
-         cgFg==
-X-Gm-Message-State: AOJu0Yxu71vvrsY3kJ7ANAboG9LXhswMc/yDWX/KG+/V3NGg8kZmtIjp
-	6Wg8R1ymbitrBR+PEUcHckC6ejxtDj+0YkxjNDTgzjESLaGN7ZNB4HZfpLXxDpO/0QR3vRU/FqD
-	aM4GwUgOIZVWywuP6UzEb0V5zzbrGSVxj+qTPdvHedMJEVEo09XT7yjg=
-X-Google-Smtp-Source: AGHT+IHWM+5Paj9CM0S3LiB14mk2myB2cwnVTiBAqyY0LO/MLem87joVtRO/3gGg2+NzkK5zR/d0eMomyh6FFV3iFR5HBR+oD5FJ
+	s=arc-20240116; t=1742854238; c=relaxed/simple;
+	bh=zsWY8qS8zuIETSt8iIrsOojgHvXhoycAQbZSI9tCAuM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bcU4IxCF7PvW8KhQ1kDENX2hBWdcmjTxHZBAVPN/P6h4ep3w2lC/kBPAhx8cSFALHCO3O0TbdjeH5lRy9GiJ79rXJiySbTNTwzgZcZsmlkXU/5LJJHdbIwaYIClM5ucwlnE2dIPqe0hF2DJef0SnkK5WeFiBupkUMllKwzNHLLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=UAWpwE8/; arc=none smtp.client-ip=199.89.3.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 003.mia.mailroute.net (Postfix) with ESMTP id 4ZM6gZ6qypzm0R45;
+	Mon, 24 Mar 2025 22:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:mime-version:x-mailer:message-id:date
+	:date:subject:subject:from:from:received:received; s=mr01; t=
+	1742854233; x=1745446234; bh=J5mEtuUm0A7K6yocRivKWzDqx8ynCyjDU/P
+	eLFthzKc=; b=UAWpwE8/aVYkTkvCti1zIvXCJC9rBnTKyCZtjyHO48hBbtfUmTt
+	Ajiu2Np6i51op4W+oEhVGCbOljGxiKFxkL30jtWzUy5aMnWiOf8SdwzZPcFryHir
+	QRU5dyGNgvHH1tIkWah8g1reQ1I/TcShttzBq+CmIKtwmJhW97wTutj47a3vtD2n
+	OyUazBF1tZp+1+bkURgWDNw1jpdtr0HcY8FdrDONp1QJFChOe6Qp7uZg2YZdjhYX
+	hwGb5TEn35sHQd+GnjTGbHX/EORMlr3FPgl0Nv6o7PdbWwt27HNyd2PcVYl9zH/Q
+	0hQyerKQxpcv2F05PQBetkyOFX6PQXQfiAA==
+X-Virus-Scanned: by MailRoute
+Received: from 003.mia.mailroute.net ([127.0.0.1])
+ by localhost (003.mia [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id fHeKHxPkWptN; Mon, 24 Mar 2025 22:10:33 +0000 (UTC)
+Received: from localhost.localdomain (dslb-002-206-092-185.002.206.pools.vodafone-ip.de [2.206.92.185])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: tom.vierjahn@acm.org)
+	by 003.mia.mailroute.net (Postfix) with ESMTPSA id 4ZM6gP0zwmzlfnBq;
+	Mon, 24 Mar 2025 22:10:23 +0000 (UTC)
+From: Tom Vierjahn <tom.vierjahn@acm.org>
+To: "Theodore Ts'o" <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: dirk.gouders@w-hs.de,
+	Tom Vierjahn <tom.vierjahn@acm.org>,
+	linux-ext4@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] Documentation: ext4: Add fields to ext4_super_block documentation
+Date: Mon, 24 Mar 2025 23:09:30 +0100
+Message-ID: <20250324221004.5268-1-tom.vierjahn@acm.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:370c:b0:3d3:e284:afbb with SMTP id
- e9e14a558f8ab-3d596118403mr135061415ab.11.1742842589478; Mon, 24 Mar 2025
- 11:56:29 -0700 (PDT)
-Date: Mon, 24 Mar 2025 11:56:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67e1aadd.050a0220.a7ebc.002e.GAE@google.com>
-Subject: [syzbot] Monthly ext4 report (Mar 2025)
-From: syzbot <syzbot+lista0009dd96368e51bfdc6@syzkaller.appspotmail.com>
-To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello ext4 maintainers/developers,
+Documentation and implementation of the ext4 super block have
+slightly diverged: Padding has been removed in order to make room for
+new fields that are still missing in the documentation.
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+Add the new fields s_encryption_level, s_first_error_errorcode,
+s_last_error_errorcode to the documentation of the ext4 super block.
 
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 57 issues are still open and 148 have already been fixed.
+Fixes: f542fbe8d5e8 ("ext4 crypto: reserve codepoints used by the ext4 en=
+cryption feature")
+Fixes: 878520ac45f9 ("ext4: save the error code which triggered an ext4_e=
+rror() in the superblock")
 
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  72595   Yes   WARNING in inode_set_cached_link
-                   https://syzkaller.appspot.com/bug?extid=2cca5ef7e5ed862c0799
-<2>  41454   Yes   possible deadlock in dqget
-                   https://syzkaller.appspot.com/bug?extid=6e493c165d26d6fcbf72
-<3>  4909    Yes   WARNING in __ext4_iget
-                   https://syzkaller.appspot.com/bug?extid=2ff67872645e5b5ebdd5
-<4>  2297    Yes   INFO: task hung in sync_inodes_sb (5)
-                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-<5>  2060    Yes   kernel BUG in ext4_do_writepages
-                   https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-<6>  1944    Yes   INFO: task hung in jbd2_journal_commit_transaction (5)
-                   https://syzkaller.appspot.com/bug?extid=3071bdd0a9953bc0d177
-<7>  1226    Yes   KASAN: out-of-bounds Read in ext4_xattr_set_entry
-                   https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
-<8>  243     No    KCSAN: data-race in generic_buffers_fsync_noflush / writeback_single_inode (3)
-                   https://syzkaller.appspot.com/bug?extid=35257a2200785ea628f5
-<9>  183     Yes   KMSAN: uninit-value in aes_encrypt (5)
-                   https://syzkaller.appspot.com/bug?extid=aeb14e2539ffb6d21130
-<10> 132     Yes   INFO: task hung in do_get_write_access (3)
-                   https://syzkaller.appspot.com/bug?extid=e7c786ece54bad9d1e43
-
+Signed-off-by: Tom Vierjahn <tom.vierjahn@acm.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ Documentation/filesystems/ext4/super.rst | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/Documentation/filesystems/ext4/super.rst b/Documentation/fil=
+esystems/ext4/super.rst
+index a1eb4a11a1d0..1b240661bfa3 100644
+--- a/Documentation/filesystems/ext4/super.rst
++++ b/Documentation/filesystems/ext4/super.rst
+@@ -328,9 +328,13 @@ The ext4 superblock is laid out as follows in
+      - s_checksum_type
+      - Metadata checksum algorithm type. The only valid value is 1 (crc3=
+2c).
+    * - 0x176
+-     - __le16
+-     - s_reserved_pad
+-     -
++     - \_\_u8
++     - s\_encryption\_level
++     - Versioning level for encryption.
++   * - 0x177
++     - \_\_u8
++     - s\_reserved\_pad
++     - Padding to next 32bits.
+    * - 0x178
+      - __le64
+      - s_kbytes_written
+@@ -466,9 +470,13 @@ The ext4 superblock is laid out as follows in
+      - s_last_error_time_hi
+      - Upper 8 bits of the s_last_error_time field.
+    * - 0x27A
+-     - __u8
+-     - s_pad[2]
+-     - Zero padding.
++     - \_\_u8
++     - s\_first\_error\_errcode
++     -
++   * - 0x27B
++     - \_\_u8
++     - s\_last\_error\_errcode
++     -
+    * - 0x27C
+      - __le16
+      - s_encoding
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+base-commit: d5e206778e96e8667d3bde695ad372c296dc9353
+--=20
+2.49.0
 
-You may send multiple commands in a single email message.
 
