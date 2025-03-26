@@ -1,98 +1,98 @@
-Return-Path: <linux-ext4+bounces-6977-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6976-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E0FCA70EA1
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Mar 2025 02:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E414CA70E9F
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Mar 2025 02:51:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DD57189493F
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Mar 2025 01:50:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D4F21897D88
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Mar 2025 01:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B863D12DD95;
-	Wed, 26 Mar 2025 01:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92DC82D98;
+	Wed, 26 Mar 2025 01:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="JJzTpUBM";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="hR44L3jx"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="S+FbbYLU";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zLocp/W9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3769E7DA73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D82578F43
 	for <linux-ext4@vger.kernel.org>; Wed, 26 Mar 2025 01:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742953787; cv=fail; b=RvGLiA+3QQ2k36+zZqKFl5C1EZGZBmvKe4XadHBHXC2MP6SATop/hHet4zIyVeSN4Gu8s8Q4ergskFjUoOQrAg8H1NDoiozewTEpTJNIYRoQNJj5aS8Y7RBHbk71ZSKqswdPKeYDLJ2xS7pm1hKLuHV7PqMR2VKU7e9mnt6M4f8=
+	t=1742953786; cv=fail; b=ojMehmgFBfgUw1xrZ1Bbv9oAvgucTdquS6LGN7MFp/cyfsjMHD6iwsiwjZkZucAU6i8DZJu/iYFmM8KC/dCq+3VzH1bWDGBTwdExtijlfg+eKjd4S/ZGKQ321RdLl/hIXRNfyRVm21J7oZbZnSe6yWfTj+RUzP2frgNh40Jr4vQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742953787; c=relaxed/simple;
-	bh=kYt6muJhe0siFS0CyCmRZn+bC6ZUAJoS+8WEzFqI6kY=;
+	s=arc-20240116; t=1742953786; c=relaxed/simple;
+	bh=bXkYyWF1Gpxhujm//H0ns/HNhO+tqoXmOXuv5VQKx2c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Pug5X43EHkvl09gPejLVZxUvhtVFndKdwWvwcZOh6TaM13u5S6s2fF5uC6IHYiOF3CPvggu8lfOT6604LCvw15+hMHHetztjyboTxPrCnL2kPknlQws2ECai1+nJzTOJ6MbZQ9MceZl8dSeZS4CmRsZDVs/5YCfv77xIzxZujOM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=JJzTpUBM; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=hR44L3jx; arc=fail smtp.client-ip=205.220.177.32
+	 Content-Type:MIME-Version; b=SpPCqJUg8HCtif/komLelxv0or+5ONu1I3XulWvIKDhPwj9dt0DKHi6nPtOKDEW2ESVF37/FCYZXbeXf0dRpOOMJg+RJsZFZGFaapC+MmhiMowvvxXh6Bg0+QZTA+vihhWwbyz2nw/XCwcwb+UOPiDDGIc71xANozv0LHtTW1DU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=S+FbbYLU; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zLocp/W9; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52PLu9Nk020526;
-	Wed, 26 Mar 2025 01:49:40 GMT
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52PLtw17025382;
+	Wed, 26 Mar 2025 01:49:41 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=mMvWohFG21N3iDWG33fi9aUWuhV/ugr0NZTB2Sz2l2A=; b=
-	JJzTpUBMnlQQqX5k/kDXrkFZs7/KlR4ZH0z76C7AevgWNzdo9hs+sZFn+XlID4WQ
-	I3jfdITa6as9ese+0u1j6UR9YZq6e/OeY5bWzVlUn/ilJBnlk/yH3WJ+T/0q/EEr
-	GstnvAYWyRznos8xxeSXxxH4ftvjLRiDTdWClSdA3lxb7GnCO77GaFpKnkVxDWdz
-	El5SDm9r3px4XMWroW/oRwWS61fSCwW0Y0zu79qfpfg2k3c0ocz9+lJwWjmHPFV1
-	mWyY02u+7VJUrAHaXGofwh/o3y5jJ9qYD3jJxdeaZsegTH2vBorUknFsnxf1blAc
-	DTtJHC7r8FE5VWPGWNVIZQ==
+	corp-2023-11-20; bh=wtvQahwYdLyECpZQGL0CuWjQdQxkVK4S0tvm8fSdbmM=; b=
+	S+FbbYLUx7W3/GTv4ikDXSLaJzi+b5AtO0+hZjZ5z3pSSMP5EF1Z3RXWquLogiTI
+	eil5+UdrFqrq5Al6n4eMbSpbhcWwJGDmxdcJiIJ1TvyjnAkt5BsIg5ftEx4HbIS0
+	VUoaUSeRNvjiUQu6WQjjNPXYucaYoTwHGfYL3+vQghqum/ujxKI+wPWfUNEU1TO+
+	QRKkAsMxMojS8DeKxExWA9lHG2IyuxMjKUspBYufW8V428sCVX/odoceUK/UYXvU
+	VctwjpmHNwZx0WNd+bYP2CCoMTdaDyu4Xw0TFcBtiQiB1Ts21sZp+JSOE6DgCw15
+	4C28GI05wVrrKaPx/0AMIg==
 Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 45hn9c0fk0-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 45hn870c02-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 26 Mar 2025 01:49:39 +0000 (GMT)
+	Wed, 26 Mar 2025 01:49:41 +0000 (GMT)
 Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 52Q0KFSf036487;
-	Wed, 26 Mar 2025 01:49:38 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2170.outbound.protection.outlook.com [104.47.58.170])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 45jj5d6hns-1
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 52Q0RfLZ036457;
+	Wed, 26 Mar 2025 01:49:40 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 45jj5d6hph-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 26 Mar 2025 01:49:38 +0000
+	Wed, 26 Mar 2025 01:49:40 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hABoJiIA2ql3KG4+GHw7oc0exyKIc/vXunC3nsTZ4Eo9aS2fQzQLZ3M0A0JNdnW0OPXUfW8LVZVxWSnZeml/MNZee4x3rZKoNwyphyTBo+dWBBtLGyBkafgsyI/M5XtTjA+7EvG5KTOaEEEwqNy5tjOsUxf0MQj1zFbnT43U2CeHH8BCVHxQI+4vpQOeHlLAKnWKh3XL51dfzJ0oJsoD2q/oiTlFfe0SYSLJmJVYv0cFXjhWrfznJyBeadeUUM69C2jXynfGPF1LhEY0Lp6dVEA2jiyEWfJqwh9/JCdBC2SIrh6WB8RUNmfI+JQe/umSacSU1E7SsNIFlbumQfkD0w==
+ b=TL8hPgGYPvYljWpcf9ejf5aExrktCaKPvMlVXJd6L9QtzDaf3/YNLBNwRWlm/B7pbMpkU14P8Bd++/1qRhvGHgEhJSoBybqwbMrIfj4TntaYilCTbGAb+e94GtXb9g5mAr5YrO5RDiwihkAcbQYJcobFzr02uIHJSwuWGweeB4ONKNmfmrYIy3rlTpxLM/7OdxkioSmfOA8uUaG0n60solcXGRDiK/Pmfs0nH1EfUJvaKUEQwhXGdQ0e5eiFjxlMrRfcvWgQN2641NGE17gKNIRKUdfgy5ast5tvMLYN9lFCm575NEsaTL3frKy+7lFA1+xIAHK+DMn4UCqeZvQU/g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mMvWohFG21N3iDWG33fi9aUWuhV/ugr0NZTB2Sz2l2A=;
- b=GRQa8252btH+UKP4ErfpvHm60VpOSfeHkin74Bvrr89QyQNaXK5Zf5JnqdfG0xGYtjV/mNi1O9Lu+9KDacFoPqrnV9+CkXwP+W1Gg8c7PlHdwczw3eIzHg3E3RiL/AoWMuJaxjYUVW00hNQh+ldFmRnAnoA3qsaZkD92lYNR6GxpMgGU8cpVjYE1ECxhhHZqdi/COsj7JGZ1QJ98SR9wixdoIBkMlreCq59ae/bwMXC7GqJUJdsK4dM9DY3eWhzRoKlhND+zDMLzk4RHGsV0X9jOsIK8fih0DyVTCL1cv6MsZNP6alhspVQkvmNc852hIXVxXtLjVfPkNmFLbUF47g==
+ bh=wtvQahwYdLyECpZQGL0CuWjQdQxkVK4S0tvm8fSdbmM=;
+ b=NUh9NlVSLeDsaz68x1SzfV1Ol1RnFvGz07ca5yFYZ59UYwzqhIPKL24h4Zq/hA0VjEUy42NT2jNGRcCrtq/uoPfbFLUX9FZe1vHJ+xj3x3adGP16A/ImKdhpEqJBQ3vh+J+Z4HT0Aw+qE4Zt91sp70KpA9Wuih5yqnwhfWaZZCXG/lYY8acNMjNRUn8/OSiwSQIK/wRhD6io7BI/3/BzRwqdXqS7n1WXrFcqUP8UgCt4eV7OjlxNZk++3hNiBjlYGx51Dzol8RncDk2HO0NOQpVeNSxR4dMJwdHJ+dE5YtSoQsYa04f7sFghOMUMWArGcV3TvrScaBgWQIeFyA1VbQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mMvWohFG21N3iDWG33fi9aUWuhV/ugr0NZTB2Sz2l2A=;
- b=hR44L3jxjgqGTtw2W19L3mibyJ+k6/8KFLc0iv7ZW75n7kPUFk5eYqgcR151e/Za+BHsOpA/q44NCsna901LKUQG8s7QkbnhNb9K0mkuhsBlIU4DYkM1fmy9sJ5kUUlz910AqekkPsIU3JF1JPIAxS1Pg0TExGOKASyM2WhYW70=
+ bh=wtvQahwYdLyECpZQGL0CuWjQdQxkVK4S0tvm8fSdbmM=;
+ b=zLocp/W9hCejxLSZGRnQacdUVbS1hzYMofXFkvVsy/RxS8NqO70st6tT6dolm/eQjIriYTLEX5sZ4R7SHXmiArtZFWpXeyUd43C8Fg2EK+OKaAr0UlAPpZfeqeGz+Gv8ZMK6ejf7eIB4sQW+L8okalEf8jrjRnLeYe/wFuniyt8=
 Received: from BLAPR10MB5316.namprd10.prod.outlook.com (2603:10b6:208:326::6)
  by CH3PR10MB7744.namprd10.prod.outlook.com (2603:10b6:610:1ba::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Wed, 26 Mar
- 2025 01:49:36 +0000
+ 2025 01:49:38 +0000
 Received: from BLAPR10MB5316.namprd10.prod.outlook.com
  ([fe80::a63b:c94b:7ed8:4142]) by BLAPR10MB5316.namprd10.prod.outlook.com
  ([fe80::a63b:c94b:7ed8:4142%4]) with mapi id 15.20.8534.040; Wed, 26 Mar 2025
- 01:49:36 +0000
+ 01:49:38 +0000
 From: Catherine Hoang <catherine.hoang@oracle.com>
 To: linux-ext4@vger.kernel.org
 Cc: djwong@kernel.org
-Subject: [RFC PATCH v2 1/4] ext2: remove buffer heads from superblock
-Date: Tue, 25 Mar 2025 18:49:25 -0700
-Message-Id: <20250326014928.61507-2-catherine.hoang@oracle.com>
+Subject: [RFC PATCH v2 2/4] ext2: remove buffer heads from group descriptors
+Date: Tue, 25 Mar 2025 18:49:26 -0700
+Message-Id: <20250326014928.61507-3-catherine.hoang@oracle.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 In-Reply-To: <20250326014928.61507-1-catherine.hoang@oracle.com>
 References: <20250326014928.61507-1-catherine.hoang@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: PH7P221CA0058.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:510:33c::28) To BLAPR10MB5316.namprd10.prod.outlook.com
+X-ClientProxiedBy: PH7PR17CA0065.namprd17.prod.outlook.com
+ (2603:10b6:510:325::9) To BLAPR10MB5316.namprd10.prod.outlook.com
  (2603:10b6:208:326::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -102,81 +102,81 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BLAPR10MB5316:EE_|CH3PR10MB7744:EE_
-X-MS-Office365-Filtering-Correlation-Id: 658a1da8-bce6-43ae-aee3-08dd6c087655
+X-MS-Office365-Filtering-Correlation-Id: 1c378d23-0868-4662-b27b-08dd6c0877a4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|10070799003|366016|376014|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Zg27NWI8jrEjDRtZzPEDbK71bNid14wXEpvnAYGPTOYEBRmf+fYy9SqhFm7/?=
- =?us-ascii?Q?+KOAwbS8TUpiUw5LbQ+mUCRtPFT7dKzORDUQ1mgPFmuOO+jTgyu5/gyOsrvr?=
- =?us-ascii?Q?O+ybYOO8oV0OBt96JfQ+F690ebyELC3Ofgdl24f/QrgDRmjFT6jz8mTZOhD/?=
- =?us-ascii?Q?m5SFG/fgg0hF1cjLXRsW5PpV36t4kdfUcV5ujh2n+Mnblhx8mmbu9kPPCM2L?=
- =?us-ascii?Q?CcFD4VgAOr9A2n0xky6G4wzHsPinTzGA3ZkSLqSICerhvRJ0sdY2BIHxfT1q?=
- =?us-ascii?Q?4oJQmkOQ1jkUA1MtmaLiETWxBNzXGweox3kDL3bBZXbAw0pY2qhQseXir+iO?=
- =?us-ascii?Q?iar69RFGgpO4lDBtKRhSEPrLyK0xtj7zSPsBj5ZrRaGQ+twIU8emQavEuAgd?=
- =?us-ascii?Q?VxB91aZyCzoj5q3i1z5PmDsY9ja+iDr81vPCs7ageoPEnmEcgIkOK0FltHPu?=
- =?us-ascii?Q?JZk3smO02QSCsZSeaA39nkgSBXQdHQBmi5k0i2rmMigoTK5VQN4d5DtJG/Yf?=
- =?us-ascii?Q?OaEyXhSokG9pGsD22u4hXUNzk2fZ1gPOeKYHsrwFZ0nCIVxwe1IYm6scC0U3?=
- =?us-ascii?Q?8AM1B3t6t12NTf+KmuNadmc49iJ9DBP0eijI3R68SHyx1dJXKmRZ/LVSv1Gk?=
- =?us-ascii?Q?ThlRw2a9oQMh2ELswgwYELqstDgcGJyW32hO/Rtl21zY8pPEAi9RQBUEcFMl?=
- =?us-ascii?Q?Lo93mzMLAv/9aAYfMONetZL16p2bpQyjEqNiPlScxiGdCpkBnXMoko8xDl+F?=
- =?us-ascii?Q?UoZ1M/PWL+3nVJoljAauGVZivOuZdzB7zdXlJHJ64Ep5Dg4oe4KdYJMVYcOr?=
- =?us-ascii?Q?V2bKvUb/n1uTgG0LpDRT50+QZvYzjQJUyQXh1qaB4ttpyFLJylt6PTpYR+RZ?=
- =?us-ascii?Q?zfbeXD01JQTWXyUVTOLw96R5DXheH3mRS+JL5oRJzg2inlREwfIlwKYRX+JC?=
- =?us-ascii?Q?JvD/WACQZMEekFmhQBLQC2pW1D7nBtx/45seUYqqU7U/tlZQKJantwrG+ZBT?=
- =?us-ascii?Q?OgBSAYSBak9txB7QUR3+0SK/lG1g404ocnIYVcEaC2IL8HXPN+zYMzR0qjNz?=
- =?us-ascii?Q?pTMWVgHpDmbfFXk100ieGXKIEfmKdTVksGQTMR8Y5wZ97TQT3XBj24zgGjUC?=
- =?us-ascii?Q?AfYOxljY8kuG7gv3n1tbo/CBfPru0sWPGnGpkXDpNOrYq+axfh1NophSV2yA?=
- =?us-ascii?Q?LGUPqzl8vataJKfcJUhSC++YqPr9OCOPJv3iqINIz4dw/BLfER9slJSDDL4A?=
- =?us-ascii?Q?A0yYx9YQFfC8FkuKM9aYZ1C22xSrwiehWc1/gtnq//A2T74VrIuho76Hqyjj?=
- =?us-ascii?Q?ZhWG321D595gzzBi11/Kx9Qw9nKCevIoz3QQq4jLCkGL3KZXrhhO6bdBP5lw?=
- =?us-ascii?Q?kkvtrHOXQQE7U2m1KbHimArJQqYA?=
+	=?us-ascii?Q?0YgTfDo5sxRoT6LSM0W9ncJmejJO27ciIedHvONjnGHqzSujkzzarBEfeJsQ?=
+ =?us-ascii?Q?YdQTuaXtGciNMHqvWgIF2inXIyWEhLfYu5Zb8aqSctAm+RQxKUhrYxqHZNn/?=
+ =?us-ascii?Q?33DjQ7g/znTBJr0RTfqoEnz/F5Y3QXetdNIRIWktQHFPyPUV8AApidw669+M?=
+ =?us-ascii?Q?M0gScgbo1jEjpQ445ykIsqY1/WPp3jQkeXUDRfF0av3IfltLvcBK0ED0wPYq?=
+ =?us-ascii?Q?D65uMwvVKVwoVa0EEZrc/7hpHL/lkcgl7HjwChKA4aWNlPHTd7ncIvWpXtrl?=
+ =?us-ascii?Q?E7wM2c1YF0XpI4FDc+d6onBWSSSWwbg6VwUCC5ciySrmDqXkvsl1+4jCC834?=
+ =?us-ascii?Q?6T8AVqc7si1oRFyK31/YR3afbgR5P0r70ca8QfLi2dwilK+fcSh73yL9eMVj?=
+ =?us-ascii?Q?z/oMtsgTPaQvegxtLPKMaL0/YR8UBHi8iAcYgPQAeyfl+s80hMQVQnyoyLf2?=
+ =?us-ascii?Q?3w81WDrLZtAJD8kgiVmwg+0bvRyoAcf919cHiij1zK32oAINYiBwo4z+O/WL?=
+ =?us-ascii?Q?uzqNHuOnhw3eAcbDFLoBhmH9MmCMaCEgDDGeC2WER60yeyXf3WtMa+2a+b2b?=
+ =?us-ascii?Q?3JvrRKn8bPGHysPDVbAamshiFGIoDoiFZZH2hbGgrSuKHFOELdxM6gaHSNN5?=
+ =?us-ascii?Q?buefMMwKFHrX0xhcMi+eAH593AmWO1S46WJBxQNdOU72ocQ2DfhxLdEHnErf?=
+ =?us-ascii?Q?pN2uZoFovDLXrSMdkvKKwFOYAF0bV2gUWU4mXostfdFUeEDz6ebwKsDboghp?=
+ =?us-ascii?Q?wb6VD6XjwaTy6V/dZYAptiB0MMi8GNd80TkPg6Mu/8Aam90v5Fd/Q0i9Y3EM?=
+ =?us-ascii?Q?kri9GaluxxeS8u7xILz5Dp5asoRexhP1WHbrp9rt6XRIj8CChVQSNRdFpwA5?=
+ =?us-ascii?Q?HXf5u5fTtOFlzHYv6Ss7njFQrIzBT0NXsfntWIPYOoDZm2/hTJarIclMOKZr?=
+ =?us-ascii?Q?JNG/GmC545HO556PJ2SDyCAT3pQc+4gojd4ORH1EsJ19WpO9vpoyFhUkzkgy?=
+ =?us-ascii?Q?mYcImJ+lrZ5i8EiZIQn53BOHV8IVPxq1rOvFxvRxIvl3Z3PY17BOau+qQrRm?=
+ =?us-ascii?Q?QICQIqzbyADSw8AgEK6lDgJXY8Cqw0mWF3Ds9y/53WTq+tO6b2zBlt1xGOYB?=
+ =?us-ascii?Q?O4wh9+YNgKBRQm9DOq1JG/CBv77j+0RxcxG5IpzRHp6B5nK63R8pq8/U5VSa?=
+ =?us-ascii?Q?imULhn+OhAMW9NybzD95GGaCSDXMMA5Y3r5a8zyHVl0MR3+Ui8trQwYG9SpH?=
+ =?us-ascii?Q?dEoZKqvh50ih3OVfwr0KZ8JOXPdcPuI5kvOuC33C0odL2qNLC6+1g9fL1/jb?=
+ =?us-ascii?Q?LDyq4J6IC2YugHY3sLOB2iTDFJlhJfnDdZlchjPo8ZA/InvNzLU3S2VIwdIu?=
+ =?us-ascii?Q?SrB3qaQNDqCTz8St7vbKBG+YJVrC?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5316.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Kow9MYM5xifXA8z9d1wYyLhGIvhxp43Mz1X1PWEN6NEeUwnvRNprwXG/ts7y?=
- =?us-ascii?Q?0dkgQ0dVqljNoATbQLuGNGbaTYNqYKLW6aghrnd80o5PyTYODWxrTYRMkLLS?=
- =?us-ascii?Q?3dAQ+HKGg1uG5O2du5dTo0mPzOuYKTQx2Kw5+zjf3EhhsEScYRMIBcUKX+V4?=
- =?us-ascii?Q?QNdJQjacwDInD+JwMAESwA2+Vcxuidg59KfyLFBxgVAVp9VnAHRsq10OUfXp?=
- =?us-ascii?Q?Prs+Eeg8rZAnXP/3B6S8sbTouAkIA2PBslu+RFul0LP1NBgxN4VgF7P0Zobm?=
- =?us-ascii?Q?Q9mFjD/vv7NppEzPIvYOx3MmCNUiRDnvgbP/A08H5VswyP+vVegRQXJw4PMj?=
- =?us-ascii?Q?TpLhxsyfvsDS7wY6Njx7gXEeWjONueP5TkPo0m2uPJCVl+oSs9rfRAEierLU?=
- =?us-ascii?Q?rvYqSoiXpPwD/mJPVzqBV5ad0W2+VfneHReUxfC8FNRr9yDqeUnYzIKvjDHq?=
- =?us-ascii?Q?4N913l38Xle0IM3tNDUJ2g0IRNU5g9nxMF51A+AVzJY+N9WwpLjwjxzzgCWc?=
- =?us-ascii?Q?gzCSriG1HMrKkmQ8GKJA9+quhw5SOB23hD+M2N056CKYZnLFxBK1VG6Q4MVA?=
- =?us-ascii?Q?V1MuXnmRo8GdJx4YozNg7t26+1xH5sUIAsAEmFGl7g0YbWJOZ472hAiwZRgD?=
- =?us-ascii?Q?pRDSWUbpmz43A7aprk7znQnsR60bl9tjoOMdE6pI2maGsJ1F6rxCD1Wn9+kC?=
- =?us-ascii?Q?q96fq3Yd1Q7KG4C3FlH4hwcJeKI/EDa+OOQHkLKTcg8z3Pmang7608HyYOHl?=
- =?us-ascii?Q?Pf1fWHbK1gtm+jxUo5cFZD+9nec4TA7uJ8CHg+SRZSTNcYhQfw5C7HLbKd0a?=
- =?us-ascii?Q?Q/RCk3jcZre2PWP3cEfQBN+9r5hddsbjKdZxazYfOyUlTyxsEZ6J8JUAKeBR?=
- =?us-ascii?Q?pCCU045xzJvZ0yu41OCkiOlVSwp+9mI2qXv1A1qfVmtss41neetc+QqwlUNZ?=
- =?us-ascii?Q?DP+quKj663vZpFqMEwWXff3zNtmhx6aCFH0Zh3cFpBcqYGueYx43YQ/UlWa4?=
- =?us-ascii?Q?61r11A1WOMmx+zx5H5Vk8kHtKkZml+5Xfaow2uEQlHx/6D3FqeMGqylrV7FS?=
- =?us-ascii?Q?EFZo9GwTeIYHksREG+vTe/JJNu35tmgDWUjuNK16txiA/gyFRwWkoqU40DXU?=
- =?us-ascii?Q?QROK9kex9i+8ZJt0g9PlOiVKdrve5ZtSS0KqC1E/ufvgdyDMX5rbQ346WaTa?=
- =?us-ascii?Q?CZBWQSn15IHvYEK5wAIZJF7zE2LJOCrpzWF101cZTzP0O0bffJmtycuEJ+Hy?=
- =?us-ascii?Q?gMtFH8I24sPjWpC01Y/zJChVAJsPyHyFDOcDMrvxQ7gC2QwhVvAJPN9BGx1H?=
- =?us-ascii?Q?/nmYQ8YvF5Xlh1j4MXxBTDHJvLgFbpTARFv4x22Mt1C/Asfbs1e9sdjkAPFJ?=
- =?us-ascii?Q?4yTPyxN673fOSCmI/LwatTWDaIn17Tu8+LJo/vmmRtGewU31cg00EA9VSmz3?=
- =?us-ascii?Q?sOgYvWJw6mLLqGOKOi60FmoIdM/C4g7pBhO9uuNjvempahAyCdl7Nei1yDHR?=
- =?us-ascii?Q?5FW63h+C5rU0Hk7owLaEfhHsTuFWyAb1SDh09+Ob6H4ufE7ihrfM3mb19jn2?=
- =?us-ascii?Q?1lRBWACNp+t6dZ773NsZ2ZX+yKD2lM9gBEILDDf4dRI9hJRa6kuHfcIKHB6C?=
- =?us-ascii?Q?Z5J/zi+Dit2IBQ6HXn83xHAyJb5Soq+83XF9nFTc88dwM2JR7b4OoTwHLR7I?=
- =?us-ascii?Q?LTtznA=3D=3D?=
+	=?us-ascii?Q?z9CmuzTViW88Br1WtSY+WZMe6gtTyyE71Dx8egEBtSXO69R2zG5XSLAHHDlt?=
+ =?us-ascii?Q?Z1bNtDqL1UtFhzKfAkY91t3ChsBOzXfcZF6SE2NaqGInDBWrJNteEVDgq3gS?=
+ =?us-ascii?Q?aaoGsfoNpkxGv1AAYfP7R06xHY9m8bORW5utqYcPtkI9omHLI+pWFumSumez?=
+ =?us-ascii?Q?8gPHgAh0XuUNu3guafHNHD32u4rPONRUjVe4btmZX575jgvAzZRoB/MgFoC9?=
+ =?us-ascii?Q?s+ofPaYipjFyC8+ZZUbE6bsghGp1VvLGQGo9YIkDgqKt98yUZ3LHnLw5/fvD?=
+ =?us-ascii?Q?lFL+2SDsoYoXlLArn7ExVEavW1J9Eh2MzdEkJG50vHD54Bi0A5RzNNffcWuM?=
+ =?us-ascii?Q?AEf5gQ8YcSTz2oX/g9lDFJnSAVwLS1XlLJQFd5YEL+K2F/gaY+TblLGln0Xj?=
+ =?us-ascii?Q?DkEHJRJNzQidU2Zw/1ca89dhKV34RaTCsWya2jlMKocOAX1FH59n+jnFILeT?=
+ =?us-ascii?Q?rXe/cLlpBwU2n91rJdsiIj9f14Zr7dTMoJp5u2UmOnSN72ZwlF28664NiGjR?=
+ =?us-ascii?Q?jxsvhFxJ11rIYWrvc2s990PHNQ5phG+kFus/0kJQCi8HkUl1zVNUQ5+Wrwgd?=
+ =?us-ascii?Q?W7TA7ESYMLS8i0xo78wlO4nfbgakBg+s5mcHH+maXYHzGdCiqaWPUKUziB9B?=
+ =?us-ascii?Q?/OHOgWnj6JoDH+bKlBti/T78GBFsmI2rAvjfDUJgfsVcjBBqPQTLveQMAk0H?=
+ =?us-ascii?Q?zQEBiL/NvDJ1Wa1P69JKXO2hu2PhjgrTh1sYnUUodSoB4TL7D2pdV8AjO2mq?=
+ =?us-ascii?Q?YHWJ6u8s7MUlQqmPfmpmUdcswUpF1ZFscQR9lfAGhze8FBv3b/Sbq50oZyyA?=
+ =?us-ascii?Q?nPhdaByRVGXU4AgfO1xfp2ssaAd+l4csNhf0nUKrHyRLEV+2woqUoZFyi3b4?=
+ =?us-ascii?Q?QXufsPfO13zkO10s3fnJC0BkVJMwTQHmiAAidalg/9SB9VZIw7G+rGTbEmRH?=
+ =?us-ascii?Q?WEDK0SW149dfnwY029mfv9M+dKGPfCR9KpvWyTW6+J/PBpt2mtdUccYZCR3G?=
+ =?us-ascii?Q?yxOSx3hCg0Lk1YOwdj1Gt4zoEPR25w9EeqXhape/C0SvorLoLmeD8cfVBeVq?=
+ =?us-ascii?Q?Ex0PFI7HnHDapanaATvFCDTuI103tiQErIXXc0D8tlFKZomd+QBDf2EB3eIo?=
+ =?us-ascii?Q?NozU5Nan9KgUAWpCv1Qs9h+vgEe3fKITfuWGeV4LvBJH4AwlJn5fk1isOvwk?=
+ =?us-ascii?Q?YV1Ca897dLtmrwmPoqTrckn11SzxqrYHXG2pQ2D4rjwOPyV3RU8Y4GmlPnmP?=
+ =?us-ascii?Q?T5sgfiAzUZALLqFTFEXktCKR4/HMThL2NqWMcYKex/7lXGJ67H1LTYRvCyza?=
+ =?us-ascii?Q?3KacgLtmCQR+ZP78Rmg5tr84bTwPDBNzy0AGeqsa4XRer3p/2256w4ecOg1M?=
+ =?us-ascii?Q?XWd2Ir1WhmBdvSI+h7dSErff6evytOjgmULYXZmMiHb2YSQyQ+2iL/MFZa9d?=
+ =?us-ascii?Q?YiMAj6b2UEKkKsFvM41cQTCCekXY/vOKQqLTUjthqGUY9iWjNgiS9bDfP9wM?=
+ =?us-ascii?Q?XW6bccA8+rumjIlKZG2SpHAFmhDE8xTYWfsWo0dfI6cF1GILX/YKFE07RIH+?=
+ =?us-ascii?Q?X+YrNJ7eHiLaWMCeazWrHnAk3k1Zns9JSLA/DQHyq7iEjk+M1VhNXYeCJXqq?=
+ =?us-ascii?Q?xCHjlUJ682TRmSSyoRZL6I+7M7+0sZU8rAZFJPNPqGOXJk9pNb04wV2cZp/Z?=
+ =?us-ascii?Q?KuQ3LQ=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	H5p/QMpqzW32hCXe31rRyDA4ByUI6uE6TNUimImD0ndKkioURLWFt2Qjcfo4WvVvdiZ8WDuKl/wCIzfL2btX9dCoLykLPCg2Ft74F18fR47ePw4NIUlpvhN0C+IEDcUw0QuDRHPSmLbW7Oi/1C1XYS2ZupavdfM5mvVoAT1vnR57qA3a9hyhc6Lp3z4WZcM1rHpwbaIr3ShcAElPcoiGh6GCSVbvkG/HTxurjHO+bxUn0rlFyH6fJJviFAJv8JTRBSa2b5ToyHGldQig0N39RPql98c4XZz9w3SaLCI6etA6tqtkePNUFN1nBjmQHgcG32NbpWYlfVH0DqdHed4MqKhAiWEkAH4cTEGn8OQRucY/Xf+mzyBeH5rxus9/b1Gnwgtsso4D08RNzzoeXEZtRrRR0Sf5LPYSUKZ6S93v35/YWglCI6xO+dHp7OHJz1TMoUQYVUK3CsdlRzj+FpJcvyhjh9MIJnBUEjb+e9f4BGAvoeA+OSg10ZX9hxA3wk/+Ftv5L35h8XySTswxrLJSllIM0VbXcQhBfyq45zCaWZTqqzyF85MSt/ufcIagWdf3d20b0Yz9rUClUQjPxltSo3tgqgNAuHKhpk/u5Sw9XLM=
+	MuBx5CDdrql/sScPxS/YmvXQEjsDnOA4oLdo6mkNNS0lEpqgLnTcZmzuNfCyB5i6bcHXN7laxmeY9PvVR2nG56wEytH90YfuKbLTGFdQsVLhOt6XYgRp1NOqOG19BNUcPHdQMHnohqNkK+5AZ/zPyFwmeNAyZJFg3gcv9Wpa7MiJsiE5WldqyRr/mDWiTUeAIo8OTo2bsu11nXpMgRvKv1Re1MtLI6b7vjjDM6U6T/IQnVy+cSgXtVAJkw1hVFmysEPbsCTlNMGP0Soc2Tlcsv+oVY7MR0Pt+vWjSTzwXGIfg0WP2pxzEKXT644o30tHHrW/JabaVvOuHSSyMO6AzhxuNNZ2BwVpyykWs9nmUreFt0qLIKKSCc0coZJailroWv7Xfv/sfzyMP24A26aHPYcFD/s2Q66HX+Pfq9z9pCVly4oxlDLh994e6slLKkqbWs229MK8OXWDE6yjAWcDfwHb/6eMv3IfQmW+fzozrlHUnL87n8WPDZfiQJU2MKntqL8c8Wir9o2BhBlCpnInSmlwYDiHCVEg7lgeMnCpIYeqbDAVec9H2zWwM/ogDS1G/WtPwN9a/KD5BfGsGi4irWgga5sVfIGM+99VC0IMJB8=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 658a1da8-bce6-43ae-aee3-08dd6c087655
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c378d23-0868-4662-b27b-08dd6c0877a4
 X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5316.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2025 01:49:36.2861
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2025 01:49:38.4745
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sMOXidwyHXdtXWD2qSb46b0x3Bxw0X1DECaNtcJc93YGcKGEJZ5CAr3GDm/iadH/7yWYGddNFKWK/FgRVbhrm+BV2l1qD0teD9ZKgytZC0s=
+X-MS-Exchange-CrossTenant-UserPrincipalName: KyooYc3XwvqTagpOy8Uw27XJP2HWGFkKNvoLod33MNgb7+YKQjh/bAdb/4R2VIg+ifZaDSHMGbtbYySIXJAAHrAznBczRVZN+efChe6xb4w=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7744
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
@@ -185,613 +185,244 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamsc
  malwarescore=0 mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2502280000
  definitions=main-2503260009
-X-Proofpoint-GUID: HEfRcjzXdz-RKep6nNbgGXrzT927uv5Z
-X-Proofpoint-ORIG-GUID: HEfRcjzXdz-RKep6nNbgGXrzT927uv5Z
+X-Proofpoint-GUID: e_W98WXoDGPgU_3imX3t7U8xJRuetltR
+X-Proofpoint-ORIG-GUID: e_W98WXoDGPgU_3imX3t7U8xJRuetltR
 
-The superblock is stored in the buffer_head s_sbh in struct ext2_sb_info.
-Replace this buffer head with the new ext2_buffer and update the buffer
-functions accordingly. This patch also introduces new buffer cache code
-needed for future patches.
+The group descriptors are stored as an array of buffer_heads
+s_group_desc in struct ext2_sb_info. Replace these buffer heads with the
+new ext2_buffer and update the buffer functions accordingly.
 
 Signed-off-by: Catherine Hoang <catherine.hoang@oracle.com>
 ---
- fs/ext2/Makefile |   2 +-
- fs/ext2/cache.c  | 302 +++++++++++++++++++++++++++++++++++++++++++++++
- fs/ext2/ext2.h   |  43 ++++++-
- fs/ext2/super.c  |  52 +++++---
- fs/ext2/xattr.c  |   2 +-
- 5 files changed, 379 insertions(+), 22 deletions(-)
- create mode 100644 fs/ext2/cache.c
+ fs/ext2/balloc.c | 24 ++++++++++++------------
+ fs/ext2/ext2.h   |  4 ++--
+ fs/ext2/ialloc.c | 12 ++++++------
+ fs/ext2/super.c  | 10 +++++-----
+ 4 files changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/fs/ext2/Makefile b/fs/ext2/Makefile
-index 8860948ef9ca..e8b38243058f 100644
---- a/fs/ext2/Makefile
-+++ b/fs/ext2/Makefile
-@@ -5,7 +5,7 @@
+diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
+index b8cfab8f98b9..21dafa9ae2ea 100644
+--- a/fs/ext2/balloc.c
++++ b/fs/ext2/balloc.c
+@@ -38,7 +38,7 @@
  
- obj-$(CONFIG_EXT2_FS) += ext2.o
+ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
+ 					     unsigned int block_group,
+-					     struct buffer_head ** bh)
++					     struct ext2_buffer ** buf)
+ {
+ 	unsigned long group_desc;
+ 	unsigned long offset;
+@@ -63,8 +63,8 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
+ 	}
  
--ext2-y := balloc.o dir.o file.o ialloc.o inode.o \
-+ext2-y := balloc.o cache.o dir.o file.o ialloc.o inode.o \
- 	  ioctl.o namei.o super.o symlink.o trace.o
+ 	desc = (struct ext2_group_desc *) sbi->s_group_desc[group_desc]->b_data;
+-	if (bh)
+-		*bh = sbi->s_group_desc[group_desc];
++	if (buf)
++		*buf = sbi->s_group_desc[group_desc];
+ 	return desc + offset;
+ }
  
- # For tracepoints to include our trace.h from tracepoint infrastructure
-diff --git a/fs/ext2/cache.c b/fs/ext2/cache.c
-new file mode 100644
-index 000000000000..464c506ba1b6
---- /dev/null
-+++ b/fs/ext2/cache.c
-@@ -0,0 +1,302 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Oracle. All rights reserved.
-+ */
-+
-+#include "ext2.h"
-+#include <linux/bio.h>
-+#include <linux/blkdev.h>
-+#include <linux/rhashtable.h>
-+#include <linux/mm.h>
-+#include <linux/types.h>
-+
-+static const struct rhashtable_params buffer_cache_params = {
-+	.key_len     = sizeof(sector_t),
-+	.key_offset  = offsetof(struct ext2_buffer, b_block),
-+	.head_offset = offsetof(struct ext2_buffer, b_rhash),
-+	.automatic_shrinking = true,
-+};
-+
-+void ext2_buffer_lock(struct ext2_buffer *buf)
-+{
-+	mutex_lock(&buf->b_lock);
-+}
-+
-+void ext2_buffer_unlock(struct ext2_buffer *buf)
-+{
-+	mutex_unlock(&buf->b_lock);
-+}
-+
-+void ext2_buffer_set_dirty(struct ext2_buffer *buf)
-+{
-+    set_bit(EXT2_BUF_DIRTY_BIT, &buf->b_flags);
-+}
-+
-+static int ext2_buffer_uptodate(struct ext2_buffer *buf)
-+{
-+    return test_bit(EXT2_BUF_UPTODATE_BIT, &buf->b_flags);
-+}
-+
-+void ext2_buffer_set_uptodate(struct ext2_buffer *buf)
-+{
-+    set_bit(EXT2_BUF_UPTODATE_BIT, &buf->b_flags);
-+}
-+
-+void ext2_buffer_clear_uptodate(struct ext2_buffer *buf)
-+{
-+    clear_bit(EXT2_BUF_UPTODATE_BIT, &buf->b_flags);
-+}
-+
-+int ext2_buffer_error(struct ext2_buffer *buf)
-+{
-+       return buf->b_error;
-+}
-+
-+void ext2_buffer_clear_error(struct ext2_buffer *buf)
-+{
-+       buf->b_error = 0;
-+}
-+
-+static struct ext2_buffer *ext2_insert_buffer_cache(struct super_block *sb, struct ext2_buffer *new_buf)
-+{
-+	struct ext2_sb_info *sbi = EXT2_SB(sb);
-+	struct ext2_buffer_cache *bc = &sbi->s_buffer_cache;
-+	struct rhashtable *buffer_cache = &bc->bc_hash;
-+	struct ext2_buffer *old_buf;
-+
-+	rcu_read_lock();
-+	old_buf = rhashtable_lookup_get_insert_fast(buffer_cache,
-+				&new_buf->b_rhash, buffer_cache_params);
-+
-+	if (old_buf) {
-+		refcount_inc(&old_buf->b_refcount);
-+		rcu_read_unlock();
-+		return old_buf;
-+	}
-+
-+	refcount_inc(&new_buf->b_refcount);
-+	rcu_read_unlock();
-+	return new_buf;
-+}
-+
-+static void ext2_buf_write_end_io(struct bio *bio)
-+{
-+	struct ext2_buffer *buf = bio->bi_private;
-+	int err = blk_status_to_errno(bio->bi_status);
-+
-+	buf->b_error = err;
-+	complete(&buf->b_complete);
-+	mutex_unlock(&buf->b_lock);
-+	bio_put(bio);
-+}
-+
-+static int ext2_submit_buffer_read(struct super_block *sb, struct ext2_buffer *buf)
-+{
-+	struct bio_vec bio_vec;
-+	struct bio bio;
-+	sector_t sector = buf->b_block * (sb->s_blocksize >> 9);
-+	int error;
-+
-+	bio_init(&bio, sb->s_bdev, &bio_vec, 1, REQ_OP_READ);
-+	bio.bi_iter.bi_sector = sector;
-+
-+	buf->b_size = sb->s_blocksize;
-+	__bio_add_page(&bio, buf->b_page, buf->b_size, 0);
-+
-+	mutex_lock(&buf->b_lock);
-+	error = submit_bio_wait(&bio);
-+	ext2_buffer_set_uptodate(buf);
-+	mutex_unlock(&buf->b_lock);
-+
-+	return error;
-+}
-+
-+static void ext2_submit_buffer_write(struct super_block *sb, struct ext2_buffer *buf)
-+{
-+	struct bio *bio;
-+	sector_t sector = buf->b_block * (sb->s_blocksize >> 9);
-+
-+	bio = bio_alloc(sb->s_bdev, 1, REQ_OP_WRITE, GFP_KERNEL);
-+
-+	bio->bi_iter.bi_sector = sector;
-+	bio->bi_end_io = ext2_buf_write_end_io;
-+	bio->bi_private = buf;
-+
-+	__bio_add_page(bio, buf->b_page, buf->b_size, 0);
-+
-+	mutex_lock(&buf->b_lock);
-+	submit_bio(bio);
-+}
-+
-+static int ext2_sync_buffer_cache_wait(struct list_head *submit_list)
-+{
-+	struct ext2_buffer *buf, *n;
-+	int error = 0, error2;
-+
-+	list_for_each_entry_safe(buf, n, submit_list, b_list) {
-+		wait_for_completion(&buf->b_complete);
-+		refcount_dec(&buf->b_refcount);
-+		error2 = buf->b_error;
-+		if (!error)
-+			error = error2;
-+	}
-+
-+	return error;
-+}
-+
-+int ext2_sync_buffer_wait(struct super_block *sb, struct ext2_buffer *buf)
-+{
-+	if (test_and_clear_bit(EXT2_BUF_DIRTY_BIT, &buf->b_flags)) {
-+		ext2_submit_buffer_write(sb, buf);
-+		wait_for_completion(&buf->b_complete);
-+		return buf->b_error;
-+	}
-+
-+	return 0;
-+}
-+
-+int ext2_sync_buffer_cache(struct super_block *sb)
-+{
-+	struct ext2_sb_info *sbi = EXT2_SB(sb);
-+	struct ext2_buffer_cache *bc = &sbi->s_buffer_cache;
-+	struct rhashtable *buffer_cache = &bc->bc_hash;
-+	struct rhashtable_iter iter;
-+	struct ext2_buffer *buf, *n;
-+	struct blk_plug plug;
-+	LIST_HEAD(submit_list);
-+
-+	rhashtable_walk_enter(buffer_cache, &iter);
-+	rhashtable_walk_start(&iter);
-+	while ((buf = rhashtable_walk_next(&iter)) != NULL) {
-+		if (IS_ERR(buf))
-+			continue;
-+		if (test_and_clear_bit(EXT2_BUF_DIRTY_BIT, &buf->b_flags)) {
-+			refcount_inc(&buf->b_refcount);
-+			list_add(&buf->b_list, &submit_list);
-+		}
-+	}
-+	rhashtable_walk_stop(&iter);
-+	rhashtable_walk_exit(&iter);
-+
-+	blk_start_plug(&plug);
-+	list_for_each_entry_safe(buf, n, &submit_list, b_list) {
-+		ext2_submit_buffer_write(sb, buf);
-+	}
-+	blk_finish_plug(&plug);
-+
-+	return ext2_sync_buffer_cache_wait(&submit_list);
-+}
-+
-+static struct ext2_buffer *ext2_lookup_buffer_cache(struct super_block *sb, sector_t block)
-+{
-+	struct ext2_sb_info *sbi = EXT2_SB(sb);
-+	struct ext2_buffer_cache *bc = &sbi->s_buffer_cache;
-+	struct rhashtable *buffer_cache = &bc->bc_hash;
-+	struct ext2_buffer *found = NULL;
-+
-+	rcu_read_lock();
-+	found = rhashtable_lookup(buffer_cache, &block, buffer_cache_params);
-+	if (found && !refcount_inc_not_zero(&found->b_refcount))
-+		found = NULL;
-+	rcu_read_unlock();
-+
-+	return found;
-+}
-+
-+static struct ext2_buffer *ext2_init_buffer(struct super_block *sb, sector_t block, bool need_uptodate)
-+{
-+	struct ext2_buffer *buf;
-+	gfp_t gfp = GFP_KERNEL;
-+
-+	buf = kmalloc(sizeof(struct ext2_buffer), GFP_KERNEL);
-+	if (!buf)
-+		return NULL;
-+
-+	buf->b_block = block;
-+	buf->b_size = sb->s_blocksize;
-+	buf->b_flags = 0;
-+	buf->b_error = 0;
-+
-+	mutex_init(&buf->b_lock);
-+	refcount_set(&buf->b_refcount, 1);
-+	init_completion(&buf->b_complete);
-+
-+	if (!need_uptodate)
-+		gfp |= __GFP_ZERO;
-+
-+	buf->b_page = alloc_page(gfp);
-+	if (!buf->b_page) {
-+		kfree_rcu(buf, b_rcu);
-+		return NULL;
-+	}
-+
-+	buf->b_data = page_address(buf->b_page);
-+
-+	return buf;
-+}
-+
-+static void ext2_destroy_buffer(void *ptr, void *arg)
-+{
-+	struct ext2_buffer *buf = ptr;
-+
-+	WARN_ON(test_bit(EXT2_BUF_DIRTY_BIT, &buf->b_flags));
-+	__free_page(buf->b_page);
-+	kfree(buf);
-+}
-+
-+void ext2_put_buffer(struct super_block *sb, struct ext2_buffer *buf)
-+{
-+	if (!buf)
-+		return;
-+
-+	WARN_ON(refcount_read(&buf->b_refcount) < 1);
-+	refcount_dec(&buf->b_refcount);
-+}
-+
-+
-+static struct ext2_buffer *ext2_find_get_buffer(struct super_block *sb, sector_t block, bool need_uptodate)
-+{
-+	int err;
-+	struct ext2_buffer *buf;
-+	struct ext2_buffer *new_buf;
-+
-+	buf = ext2_lookup_buffer_cache(sb, block);
-+
-+	if (!buf) {
-+		new_buf = ext2_init_buffer(sb, block, need_uptodate);
-+		if (!new_buf)
-+			return ERR_PTR(-ENOMEM);
-+
-+		buf = ext2_insert_buffer_cache(sb, new_buf);
-+		if (IS_ERR(buf) || buf != new_buf)
-+			ext2_destroy_buffer(new_buf, NULL);
-+	}
-+
-+	if (need_uptodate && !ext2_buffer_uptodate(buf)) {
-+		err = ext2_submit_buffer_read(sb, buf);
-+		if (err)
-+			return ERR_PTR(err);
-+	}
-+
-+	return buf;
-+}
-+
-+struct ext2_buffer *ext2_get_buffer(struct super_block *sb, sector_t bno)
-+{
-+	return ext2_find_get_buffer(sb, bno, false);
-+}
-+
-+struct ext2_buffer *ext2_read_buffer(struct super_block *sb, sector_t bno)
-+{
-+	return ext2_find_get_buffer(sb, bno, true);
-+}
-+
-+int ext2_init_buffer_cache(struct ext2_buffer_cache *bc)
-+{
-+	return rhashtable_init(&bc->bc_hash, &buffer_cache_params);
-+}
-+
-+void ext2_destroy_buffer_cache(struct ext2_buffer_cache *bc)
-+{
-+	rhashtable_free_and_destroy(&bc->bc_hash, ext2_destroy_buffer, NULL);
-+}
+@@ -166,7 +166,7 @@ read_block_bitmap(struct super_block *sb, unsigned int block_group)
+ }
+ 
+ static void group_adjust_blocks(struct super_block *sb, int group_no,
+-	struct ext2_group_desc *desc, struct buffer_head *bh, int count)
++	struct ext2_group_desc *desc, struct ext2_buffer *buf, int count)
+ {
+ 	if (count) {
+ 		struct ext2_sb_info *sbi = EXT2_SB(sb);
+@@ -176,7 +176,7 @@ static void group_adjust_blocks(struct super_block *sb, int group_no,
+ 		free_blocks = le16_to_cpu(desc->bg_free_blocks_count);
+ 		desc->bg_free_blocks_count = cpu_to_le16(free_blocks + count);
+ 		spin_unlock(sb_bgl_lock(sbi, group_no));
+-		mark_buffer_dirty(bh);
++		ext2_buffer_set_dirty(buf);
+ 	}
+ }
+ 
+@@ -483,7 +483,7 @@ void ext2_free_blocks(struct inode * inode, ext2_fsblk_t block,
+ 		      unsigned long count)
+ {
+ 	struct buffer_head *bitmap_bh = NULL;
+-	struct buffer_head * bh2;
++	struct ext2_buffer * buf2;
+ 	unsigned long block_group;
+ 	unsigned long bit;
+ 	unsigned long i;
+@@ -522,7 +522,7 @@ void ext2_free_blocks(struct inode * inode, ext2_fsblk_t block,
+ 	if (!bitmap_bh)
+ 		goto error_return;
+ 
+-	desc = ext2_get_group_desc (sb, block_group, &bh2);
++	desc = ext2_get_group_desc (sb, block_group, &buf2);
+ 	if (!desc)
+ 		goto error_return;
+ 
+@@ -553,7 +553,7 @@ void ext2_free_blocks(struct inode * inode, ext2_fsblk_t block,
+ 	if (sb->s_flags & SB_SYNCHRONOUS)
+ 		sync_dirty_buffer(bitmap_bh);
+ 
+-	group_adjust_blocks(sb, block_group, desc, bh2, group_freed);
++	group_adjust_blocks(sb, block_group, desc, buf2, group_freed);
+ 	freed += group_freed;
+ 
+ 	if (overflow) {
+@@ -1209,7 +1209,7 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
+ 		    unsigned long *count, int *errp, unsigned int flags)
+ {
+ 	struct buffer_head *bitmap_bh = NULL;
+-	struct buffer_head *gdp_bh;
++	struct ext2_buffer *gdp_buf;
+ 	int group_no;
+ 	int goal_group;
+ 	ext2_grpblk_t grp_target_blk;	/* blockgroup relative goal block */
+@@ -1274,7 +1274,7 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
+ 			EXT2_BLOCKS_PER_GROUP(sb);
+ 	goal_group = group_no;
+ retry_alloc:
+-	gdp = ext2_get_group_desc(sb, group_no, &gdp_bh);
++	gdp = ext2_get_group_desc(sb, group_no, &gdp_buf);
+ 	if (!gdp)
+ 		goto io_error;
+ 
+@@ -1319,7 +1319,7 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
+ 		group_no++;
+ 		if (group_no >= ngroups)
+ 			group_no = 0;
+-		gdp = ext2_get_group_desc(sb, group_no, &gdp_bh);
++		gdp = ext2_get_group_desc(sb, group_no, &gdp_buf);
+ 		if (!gdp)
+ 			goto io_error;
+ 
+@@ -1403,7 +1403,7 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
+ 		goto out;
+ 	}
+ 
+-	group_adjust_blocks(sb, group_no, gdp, gdp_bh, -num);
++	group_adjust_blocks(sb, group_no, gdp, gdp_buf, -num);
+ 	percpu_counter_sub(&sbi->s_freeblocks_counter, num);
+ 
+ 	mark_buffer_dirty(bitmap_bh);
 diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-index f38bdd46e4f7..bfed70fd6430 100644
+index bfed70fd6430..5857d5ce7641 100644
 --- a/fs/ext2/ext2.h
 +++ b/fs/ext2/ext2.h
-@@ -18,6 +18,7 @@
- #include <linux/rbtree.h>
- #include <linux/mm.h>
- #include <linux/highmem.h>
-+#include <linux/rhashtable.h>
- 
- /* XXX Here for now... not interested in restructing headers JUST now */
- 
-@@ -61,6 +62,29 @@ struct ext2_block_alloc_info {
- 	ext2_fsblk_t		last_alloc_physical_block;
- };
- 
-+struct ext2_buffer {
-+	sector_t b_block;
-+	struct rhash_head b_rhash;
-+	struct rcu_head b_rcu;
-+	struct page *b_page;
-+	size_t b_size;
-+	char *b_data;
-+	unsigned long b_flags;
-+	refcount_t b_refcount;
-+	struct mutex b_lock;
-+	struct completion b_complete;
-+	struct list_head b_list;
-+	int b_error;
-+};
-+
-+/* ext2_buffer flags */
-+#define EXT2_BUF_DIRTY_BIT 0
-+#define EXT2_BUF_UPTODATE_BIT 1
-+
-+struct ext2_buffer_cache {
-+	struct rhashtable bc_hash;
-+};
-+
- #define rsv_start rsv_window._rsv_start
- #define rsv_end rsv_window._rsv_end
- 
-@@ -79,7 +103,7 @@ struct ext2_sb_info {
- 	unsigned long s_groups_count;	/* Number of groups in the fs */
- 	unsigned long s_overhead_last;  /* Last calculated overhead */
+@@ -105,7 +105,7 @@ struct ext2_sb_info {
  	unsigned long s_blocks_last;    /* Last seen block count */
--	struct buffer_head * s_sbh;	/* Buffer containing the super block */
-+	struct ext2_buffer * s_sbuf;	/* Buffer containing the super block */
+ 	struct ext2_buffer * s_sbuf;	/* Buffer containing the super block */
  	struct ext2_super_block * s_es;	/* Pointer to the super block in the buffer */
- 	struct buffer_head ** s_group_desc;
+-	struct buffer_head ** s_group_desc;
++	struct ext2_buffer ** s_group_desc;
  	unsigned long  s_mount_opt;
-@@ -116,6 +140,7 @@ struct ext2_sb_info {
- 	struct mb_cache *s_ea_block_cache;
- 	struct dax_device *s_daxdev;
- 	u64 s_dax_part_off;
-+	struct ext2_buffer_cache s_buffer_cache;
- };
- 
- static inline spinlock_t *
-@@ -716,6 +741,22 @@ extern int ext2_should_retry_alloc(struct super_block *sb, int *retries);
+ 	unsigned long s_sb_block;
+ 	kuid_t s_resuid;
+@@ -735,7 +735,7 @@ extern unsigned long ext2_count_free_blocks (struct super_block *);
+ extern unsigned long ext2_count_dirs (struct super_block *);
+ extern struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
+ 						    unsigned int block_group,
+-						    struct buffer_head ** bh);
++						    struct ext2_buffer ** buf);
+ extern void ext2_discard_reservation (struct inode *);
+ extern int ext2_should_retry_alloc(struct super_block *sb, int *retries);
  extern void ext2_init_block_alloc_info(struct inode *);
- extern void ext2_rsv_window_add(struct super_block *sb, struct ext2_reserve_window_node *rsv);
+diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
+index fdf63e9c6e7c..36fe7975b2d6 100644
+--- a/fs/ext2/ialloc.c
++++ b/fs/ext2/ialloc.c
+@@ -66,9 +66,9 @@ read_inode_bitmap(struct super_block * sb, unsigned long block_group)
+ static void ext2_release_inode(struct super_block *sb, int group, int dir)
+ {
+ 	struct ext2_group_desc * desc;
+-	struct buffer_head *bh;
++	struct ext2_buffer *buf;
  
-+/* cache.c */
-+extern void ext2_buffer_lock(struct ext2_buffer *);
-+extern void ext2_buffer_unlock(struct ext2_buffer *);
-+extern int ext2_init_buffer_cache(struct ext2_buffer_cache *);
-+extern void ext2_destroy_buffer_cache(struct ext2_buffer_cache *);
-+extern int ext2_sync_buffer_wait(struct super_block *, struct ext2_buffer *);
-+extern int ext2_sync_buffer_cache(struct super_block *);
-+extern struct ext2_buffer *ext2_get_buffer(struct super_block *, sector_t);
-+extern struct ext2_buffer *ext2_read_buffer(struct super_block *, sector_t);
-+extern void ext2_put_buffer(struct super_block *, struct ext2_buffer *);
-+extern void ext2_buffer_set_dirty(struct ext2_buffer *);
-+extern void ext2_buffer_set_uptodate(struct ext2_buffer *);
-+extern void ext2_buffer_clear_uptodate(struct ext2_buffer *);
-+extern int ext2_buffer_error(struct ext2_buffer *);
-+extern void ext2_buffer_clear_error(struct ext2_buffer *);
-+
- /* dir.c */
- int ext2_add_link(struct dentry *, struct inode *);
- int ext2_inode_by_name(struct inode *dir,
+-	desc = ext2_get_group_desc(sb, group, &bh);
++	desc = ext2_get_group_desc(sb, group, &buf);
+ 	if (!desc) {
+ 		ext2_error(sb, "ext2_release_inode",
+ 			"can't get descriptor for group %d", group);
+@@ -83,7 +83,7 @@ static void ext2_release_inode(struct super_block *sb, int group, int dir)
+ 	percpu_counter_inc(&EXT2_SB(sb)->s_freeinodes_counter);
+ 	if (dir)
+ 		percpu_counter_dec(&EXT2_SB(sb)->s_dirs_counter);
+-	mark_buffer_dirty(bh);
++	ext2_buffer_set_dirty(buf);
+ }
+ 
+ /*
+@@ -421,7 +421,7 @@ struct inode *ext2_new_inode(struct inode *dir, umode_t mode,
+ {
+ 	struct super_block *sb;
+ 	struct buffer_head *bitmap_bh = NULL;
+-	struct buffer_head *bh2;
++	struct ext2_buffer *buf2;
+ 	int group, i;
+ 	ino_t ino = 0;
+ 	struct inode * inode;
+@@ -453,7 +453,7 @@ struct inode *ext2_new_inode(struct inode *dir, umode_t mode,
+ 	}
+ 
+ 	for (i = 0; i < sbi->s_groups_count; i++) {
+-		gdp = ext2_get_group_desc(sb, group, &bh2);
++		gdp = ext2_get_group_desc(sb, group, &buf2);
+ 		if (!gdp) {
+ 			if (++group == sbi->s_groups_count)
+ 				group = 0;
+@@ -536,7 +536,7 @@ struct inode *ext2_new_inode(struct inode *dir, umode_t mode,
+ 	}
+ 	spin_unlock(sb_bgl_lock(sbi, group));
+ 
+-	mark_buffer_dirty(bh2);
++	ext2_buffer_set_dirty(buf2);
+ 	if (test_opt(sb, GRPID)) {
+ 		inode->i_mode = mode;
+ 		inode->i_uid = current_fsuid();
 diff --git a/fs/ext2/super.c b/fs/ext2/super.c
-index 37f7ce56adce..ac53f587d140 100644
+index ac53f587d140..4323448bf64b 100644
 --- a/fs/ext2/super.c
 +++ b/fs/ext2/super.c
-@@ -168,7 +168,8 @@ static void ext2_put_super (struct super_block * sb)
- 	percpu_counter_destroy(&sbi->s_freeblocks_counter);
- 	percpu_counter_destroy(&sbi->s_freeinodes_counter);
- 	percpu_counter_destroy(&sbi->s_dirs_counter);
--	brelse (sbi->s_sbh);
-+	ext2_put_buffer (sb, sbi->s_sbuf);
-+	ext2_destroy_buffer_cache(&sbi->s_buffer_cache);
- 	sb->s_fs_info = NULL;
- 	kfree(sbi->s_blockgroup_lock);
- 	fs_put_dax(sbi->s_daxdev, NULL);
-@@ -803,7 +804,7 @@ static unsigned long descriptor_loc(struct super_block *sb,
- 
- static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- {
--	struct buffer_head * bh;
-+	struct ext2_buffer * buf;
- 	struct ext2_sb_info * sbi;
- 	struct ext2_super_block * es;
- 	struct inode *root;
-@@ -835,6 +836,12 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 	sbi->s_daxdev = fs_dax_get_by_bdev(sb->s_bdev, &sbi->s_dax_part_off,
- 					   NULL, NULL);
- 
-+	ret = ext2_init_buffer_cache(&sbi->s_buffer_cache);
-+	if (ret) {
-+		ext2_msg(sb, KERN_ERR, "error: unable to create buffer cache");
-+		goto failed_sbi;
-+	}
-+
- 	spin_lock_init(&sbi->s_lock);
- 	ret = -EINVAL;
- 
-@@ -862,7 +869,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 		logic_sb_block = sb_block;
+@@ -162,7 +162,7 @@ static void ext2_put_super (struct super_block * sb)
  	}
- 
--	if (!(bh = sb_bread(sb, logic_sb_block))) {
-+	if (IS_ERR(buf = ext2_read_buffer(sb, logic_sb_block))) {
- 		ext2_msg(sb, KERN_ERR, "error: unable to read superblock");
- 		goto failed_sbi;
- 	}
-@@ -870,7 +877,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 	 * Note: s_es must be initialized as soon as possible because
- 	 *       some ext2 macro-instructions depend on its value
- 	 */
--	es = (struct ext2_super_block *) (((char *)bh->b_data) + offset);
-+	es = (struct ext2_super_block *) (((char *)buf->b_data) + offset);
- 	sbi->s_es = es;
- 	sb->s_magic = le16_to_cpu(es->s_magic);
- 
-@@ -966,7 +973,8 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 
- 	/* If the blocksize doesn't match, re-read the thing.. */
- 	if (sb->s_blocksize != blocksize) {
--		brelse(bh);
-+		ext2_buffer_clear_uptodate(buf);
-+		ext2_put_buffer(sb, buf);
- 
- 		if (!sb_set_blocksize(sb, blocksize)) {
- 			ext2_msg(sb, KERN_ERR,
-@@ -976,13 +984,13 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 
- 		logic_sb_block = (sb_block*BLOCK_SIZE) / blocksize;
- 		offset = (sb_block*BLOCK_SIZE) % blocksize;
--		bh = sb_bread(sb, logic_sb_block);
--		if(!bh) {
-+		buf = ext2_read_buffer(sb, logic_sb_block);
-+		if(IS_ERR(buf)) {
- 			ext2_msg(sb, KERN_ERR, "error: couldn't read"
- 				"superblock on 2nd try");
- 			goto failed_sbi;
- 		}
--		es = (struct ext2_super_block *) (((char *)bh->b_data) + offset);
-+		es = (struct ext2_super_block *) (((char *)buf->b_data) + offset);
- 		sbi->s_es = es;
- 		if (es->s_magic != cpu_to_le16(EXT2_SUPER_MAGIC)) {
- 			ext2_msg(sb, KERN_ERR, "error: magic mismatch");
-@@ -1021,7 +1029,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 					sbi->s_inodes_per_block;
- 	sbi->s_desc_per_block = sb->s_blocksize /
- 					sizeof (struct ext2_group_desc);
--	sbi->s_sbh = bh;
-+	sbi->s_sbuf = buf;
- 	sbi->s_mount_state = le16_to_cpu(es->s_state);
- 	sbi->s_addr_per_block_bits =
- 		ilog2 (EXT2_ADDR_PER_BLOCK(sb));
-@@ -1031,7 +1039,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 	if (sb->s_magic != EXT2_SUPER_MAGIC)
- 		goto cantfind_ext2;
- 
--	if (sb->s_blocksize != bh->b_size) {
-+	if (sb->s_blocksize != buf->b_size) {
- 		if (!silent)
- 			ext2_msg(sb, KERN_ERR, "error: unsupported blocksize");
- 		goto failed_mount;
-@@ -1213,7 +1221,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+ 	db_count = sbi->s_gdb_count;
+ 	for (i = 0; i < db_count; i++)
+-		brelse(sbi->s_group_desc[i]);
++		ext2_put_buffer(sb, sbi->s_group_desc[i]);
  	kvfree(sbi->s_group_desc);
  	kfree(sbi->s_debts);
- failed_mount:
--	brelse(bh);
-+	ext2_put_buffer(sb, buf);
- failed_sbi:
- 	fs_put_dax(sbi->s_daxdev, NULL);
- 	sb->s_fs_info = NULL;
-@@ -1224,9 +1232,9 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 
- static void ext2_clear_super_error(struct super_block *sb)
- {
--	struct buffer_head *sbh = EXT2_SB(sb)->s_sbh;
-+	struct ext2_buffer *sbuf = EXT2_SB(sb)->s_sbuf;
- 
--	if (buffer_write_io_error(sbh)) {
-+	if (ext2_buffer_error(sbuf)) {
- 		/*
- 		 * Oh, dear.  A previous attempt to write the
- 		 * superblock failed.  This could happen because the
-@@ -1237,8 +1245,8 @@ static void ext2_clear_super_error(struct super_block *sb)
- 		 */
- 		ext2_msg(sb, KERN_ERR,
- 		       "previous I/O error to superblock detected");
--		clear_buffer_write_io_error(sbh);
--		set_buffer_uptodate(sbh);
-+		ext2_buffer_clear_error(sbuf);
-+		ext2_buffer_set_uptodate(sbuf);
+ 	percpu_counter_destroy(&sbi->s_freeblocks_counter);
+@@ -1093,7 +1093,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+ 	db_count = (sbi->s_groups_count + EXT2_DESC_PER_BLOCK(sb) - 1) /
+ 		   EXT2_DESC_PER_BLOCK(sb);
+ 	sbi->s_group_desc = kvmalloc_array(db_count,
+-					   sizeof(struct buffer_head *),
++					   sizeof(struct ext2_buffer *),
+ 					   GFP_KERNEL);
+ 	if (sbi->s_group_desc == NULL) {
+ 		ret = -ENOMEM;
+@@ -1109,10 +1109,10 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
  	}
- }
- 
-@@ -1252,9 +1260,9 @@ void ext2_sync_super(struct super_block *sb, struct ext2_super_block *es,
- 	es->s_wtime = cpu_to_le32(ktime_get_real_seconds());
- 	/* unlock before we do IO */
- 	spin_unlock(&EXT2_SB(sb)->s_lock);
--	mark_buffer_dirty(EXT2_SB(sb)->s_sbh);
-+	ext2_buffer_set_dirty(EXT2_SB(sb)->s_sbuf);
- 	if (wait)
--		sync_dirty_buffer(EXT2_SB(sb)->s_sbh);
-+		ext2_sync_buffer_wait(sb, EXT2_SB(sb)->s_sbuf);
- }
- 
- /*
-@@ -1271,13 +1279,19 @@ static int ext2_sync_fs(struct super_block *sb, int wait)
- {
- 	struct ext2_sb_info *sbi = EXT2_SB(sb);
- 	struct ext2_super_block *es = EXT2_SB(sb)->s_es;
-+	int err = 0;
- 
- 	/*
- 	 * Write quota structures to quota file, sync_blockdev() will write
- 	 * them to disk later
- 	 */
--	dquot_writeback_dquots(sb, -1);
-+	err = dquot_writeback_dquots(sb, -1);
-+	if (err)
-+		goto out;
-+
-+	err = ext2_sync_buffer_cache(sb);
- 
-+out:
- 	spin_lock(&sbi->s_lock);
- 	if (es->s_state & cpu_to_le16(EXT2_VALID_FS)) {
- 		ext2_debug("setting valid to 0\n");
-@@ -1285,7 +1299,7 @@ static int ext2_sync_fs(struct super_block *sb, int wait)
- 	}
- 	spin_unlock(&sbi->s_lock);
- 	ext2_sync_super(sb, es, wait);
--	return 0;
-+	return err;
- }
- 
- static int ext2_freeze(struct super_block *sb)
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index c885dcc3bd0d..1eb4a8607f67 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -387,7 +387,7 @@ static void ext2_xattr_update_super_block(struct super_block *sb)
- 	ext2_update_dynamic_rev(sb);
- 	EXT2_SET_COMPAT_FEATURE(sb, EXT2_FEATURE_COMPAT_EXT_ATTR);
- 	spin_unlock(&EXT2_SB(sb)->s_lock);
--	mark_buffer_dirty(EXT2_SB(sb)->s_sbh);
-+	ext2_buffer_set_dirty(EXT2_SB(sb)->s_sbuf);
- }
- 
- /*
+ 	for (i = 0; i < db_count; i++) {
+ 		block = descriptor_loc(sb, logic_sb_block, i);
+-		sbi->s_group_desc[i] = sb_bread(sb, block);
++		sbi->s_group_desc[i] = ext2_read_buffer(sb, block);
+ 		if (!sbi->s_group_desc[i]) {
+ 			for (j = 0; j < i; j++)
+-				brelse (sbi->s_group_desc[j]);
++				ext2_put_buffer (sb, sbi->s_group_desc[j]);
+ 			ext2_msg(sb, KERN_ERR,
+ 				"error: unable to read group descriptors");
+ 			goto failed_mount_group_desc;
+@@ -1216,7 +1216,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+ 	percpu_counter_destroy(&sbi->s_dirs_counter);
+ failed_mount2:
+ 	for (i = 0; i < db_count; i++)
+-		brelse(sbi->s_group_desc[i]);
++		ext2_put_buffer(sb, sbi->s_group_desc[i]);
+ failed_mount_group_desc:
+ 	kvfree(sbi->s_group_desc);
+ 	kfree(sbi->s_debts);
 -- 
 2.43.0
 
