@@ -1,90 +1,86 @@
-Return-Path: <linux-ext4+bounces-6995-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6996-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07ECBA737A0
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 18:01:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 383FAA73CB4
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 18:48:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D3BD1885335
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 17:01:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1398B189BB6B
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 17:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787A81AAA1C;
-	Thu, 27 Mar 2025 17:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEB315B102;
+	Thu, 27 Mar 2025 17:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VrZu7i0y"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MFNMyCtZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C660E14AA9;
-	Thu, 27 Mar 2025 17:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F169C1A3150;
+	Thu, 27 Mar 2025 17:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743094902; cv=none; b=RY0gn8Jmzsxz27I2HIIMNVBEkox2mjUJAv/VMM2gA2wsK9IuZGi770KJxeg2S3J8lBxC8b0BKEl2vWab2sIUqP8vElVr8MSCHG2yvUEO+tktutWqdc4IOCY428qlODUE7xHxG87DirX7Z9FLa56mxeOPxTjAcGgatun7BN74pXI=
+	t=1743097711; cv=none; b=JhAC4apw1Mno1KWJ0Q3Aca8XkFvquleS1uYH29ZEO+yFeK9m2DhluPhrH8T/YhIP63nQ2IoazXoLSr3uzjfXyw947aolYa/q/LmQXfee003WgvHzV+BakCLe2KT1443SPTiBBhe3o++3JiPLFBEQ3nyJ54+99hqj4Paxjw7jHLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743094902; c=relaxed/simple;
-	bh=yDp5v2+EtKv7vIooGT7aK2o6WBhVIV8zl9ZQR/gjQiY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A+4CBxCo4DQeNLC6gLiye+VHNKt/RkoGBtrgGB+5CqMx1ZcVkMuxq/wPf/4/QOMuWuhZXhNXAN8Vn4xQGGVAoH5ARBXLNssPrPcFcE4lsekvh3QbGj87tgrWHLV/Rrs2sNW7WgoUEYUS0oxQ7aDtieirCqbs1kGtCSQjAaIGYKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VrZu7i0y; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-301302a328bso2172671a91.2;
-        Thu, 27 Mar 2025 10:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743094899; x=1743699699; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ro7wdwaqUs2f5wAR7wtoF+lx+yF3AkxnaK0zSEVn14o=;
-        b=VrZu7i0ygBtabUr4T7u/PGEU8KhWie4xlvMEP6Z2PXL8yEKCsTwo8kAC3Z0xHrpYoz
-         dtJyMGZLe3CQL2v1yktp32cyISQIjAvfwbnHhiMMYPXMuEl+/rZvM6+zBfM4lm+qnqSA
-         BV2/CZCrQO6zA9OAHXcSiB83FNOnz5VjKZfDTuE+zM97nL7Irrm2JS89nDDIFZA26lG1
-         WahtsaT++7zpcY3rYyu1Z8/Xp3fJTe+bOutKMO+bNH5WHLuhxFD3cpkwm5P96+vDvfI2
-         eFbdur31Kbq+qkDHn7Ut6QJIijx75RBxg36TchgWo62Yp0PEvDjNPPZyYtdM2Z6UxRgI
-         Gbqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743094899; x=1743699699;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ro7wdwaqUs2f5wAR7wtoF+lx+yF3AkxnaK0zSEVn14o=;
-        b=ilssSQhvnK659GMzaqhuQ49HUUn61D8CPmu566hRcFNPRqJqD4NqEL75QIrljD0h0V
-         Ai9CMWLmeYtaG8I3Webd22brJVWB9Dr9x4eXT51XjtgwuLMuW2DVqKffKmP8s9y7GfvM
-         qDM0PBgngMS8cj2hrLBDPr9k+SvwU8jlLn/xcL6tjx5D0WBiRUW3ovU07Vi3sF7M01n4
-         sXdRhAzbVNHJ8M24H2CAiakSJqCX+ro4rOdGqTCxCH4bDuy783eN/q+oikldbMW+6xNJ
-         FGGemeBKP7XD2vYxlH2rJns5m9qfQIWqC63bYm37WkVlSWdVgJdLTePLJ83+OReeavEv
-         EYqA==
-X-Forwarded-Encrypted: i=1; AJvYcCVuDCZWmlM6CG1piIkg1uOW2QUEhsbGzdQK9bwYxJkhl5jzqXOOzyHYeoYV/+vwPOV5iF+otujj8Q/1i7jG@vger.kernel.org, AJvYcCXXKQWZkqNBqMS5IG5Jof44NN2xG1XC+BqEu7CGoPhymjubZ8AFcT43UeGJbdHSRNqVe6JpWzex+5Za@vger.kernel.org
-X-Gm-Message-State: AOJu0YzjCvbIqvt4ksKyc1n5MzMSDoLEk8dXURqLqtgS9xPQeKGBZ4gN
-	HufreyNJe4tsf3dMW+GKOWoRbHgy0BZv3ySJBeu9p+xMmEOnBwytH1zu6ob6
-X-Gm-Gg: ASbGncsHcdYkMLczXC3WE81EzQKg2rI3fQ6UsjxxUlPqkSjIsyfnfLZ3k4xUG2o04bW
-	PDhhDW/S3n0J0GudHvetv2FahrAQuW/JKf+LSUURPA2qsO8iEprH51b4G8WnH5FdNqAKu1gCwcK
-	Kk5x2VtXTEM1uPwO29/C4Nl9Ad4frXo1lLbPUAnzjUDHHyn8OyRIArqjrxvbjbcdXlHFj5iXyEg
-	QHj85S/DlLlISdc7QMAbZoip0+dm0QDmbRMQj8IfuuYDg9tqmp8rBmdibBCcsdWgnPh1iOPlypp
-	RaIxFWRVjY+GcWMRs3xY6ipTsQhilgjdcgjBBJhAcci/PXN4unCaquRGz1i4Jw==
-X-Google-Smtp-Source: AGHT+IHQM/Pp/PibTbh/PCo5gLJC81Gdm5sJP68OC1Cj7UsrJA+UFQlDiFaPCECD9hR0PiABxPXOrQ==
-X-Received: by 2002:a17:90b:3eca:b0:2ff:592d:23bc with SMTP id 98e67ed59e1d1-303a7c5a48amr6562193a91.4.1743094899030;
-        Thu, 27 Mar 2025 10:01:39 -0700 (PDT)
-Received: from localhost.localdomain ([129.126.185.185])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2291f1df4acsm1860195ad.199.2025.03.27.10.01.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Mar 2025 10:01:38 -0700 (PDT)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: linux-xfs@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>,
-	John Garry <john.g.garry@oracle.com>,
-	brauner@kernel.org,
-	djwong@kernel.org,
-	dchinner@redhat.com,
-	linux-kernel@vger.kernel.org,
-	ojaswin@linux.ibm.com,
-	linux-ext4@vger.kernel.org,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCH] iomap: Fix conflicting values of iomap flags
-Date: Fri, 28 Mar 2025 01:01:19 +0800
-Message-ID: <20250327170119.61045-1-ritesh.list@gmail.com>
+	s=arc-20240116; t=1743097711; c=relaxed/simple;
+	bh=n5Fgyxwm/3OJhV9wcL6Q3xhIZkO171ATh9/xVS/7iCA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dbfcgBhgcjTS1hv4ofyMPb0XM2S3p+7mui/T45GamQykMvUsF3uMk900lW23HJWTP0eKd+406zFpq9zli0dc1EXqM1iI3sfajPgFYifqfwfthl3TdfHXPFaHLeSDmAuM1FFv04Z6vX2wxYVN+Euwliu65AzMk21HkzwcpLcxt2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MFNMyCtZ; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52RDLLC3029908;
+	Thu, 27 Mar 2025 17:48:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=49rk5v8MEFhz//kPC0D7Mb2Oyq2KyjRDj30MErMoW
+	mM=; b=MFNMyCtZycV5O2cQpkygJsTeLycyZUtMHkGH914bnOphaWIen71xkpvhN
+	l6Ug4L7Elq9kqzf0ds/nGWKdCnnM2C4lvx0BhNHy7lzKUCMGt7sbeB+YPOagtfOL
+	2xCoXAM4zusQu0AuJBIYGsoNhYSBvbGqceb9QVZKzjbCPLF+ukfVRL8TRlekE/EB
+	1vulaan+UGSU54LZ+oAx5gMasYHdGkUzh141vPEyH0WL9Z9CADbau6bD8rvEIhF+
+	cJz08HmCBkSWk7c3iKv6ow16B+gv/aOWDpUKzD0mZ7syVR0iZtCuzakKBLyoEfyC
+	ssuDW0o++slxrYqgqLWS8WHBQ4wHQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45my29c9mh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 27 Mar 2025 17:48:15 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 52RHmF5E022686;
+	Thu, 27 Mar 2025 17:48:15 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45my29c9me-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 27 Mar 2025 17:48:15 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52REbqOd030325;
+	Thu, 27 Mar 2025 17:48:14 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 45j7htpq81-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 27 Mar 2025 17:48:14 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52RHmCSG46268900
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 27 Mar 2025 17:48:12 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 754AD20043;
+	Thu, 27 Mar 2025 17:48:12 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B2E8120040;
+	Thu, 27 Mar 2025 17:48:10 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.215.70])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 27 Mar 2025 17:48:10 +0000 (GMT)
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>, Baokun Li <libaokun1@huawei.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>, Zhang Yi <yi.zhang@huawei.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ext4: Make block validity check resistent to sb bh corruption
+Date: Thu, 27 Mar 2025 23:18:09 +0530
+Message-ID: <c434eb50ee5161e23036d58a6166a7e216f6d6a0.1743097281.git.ojaswin@linux.ibm.com>
 X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -93,51 +89,90 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: NS8pO99WOpbBs9d1vwYYBuBlxRyP6Q1n
+X-Proofpoint-ORIG-GUID: B7eaVkTv9x_7fArkdXN1_QQlY7GkXAf5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-27_02,2025-03-26_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 clxscore=1015 phishscore=0 bulkscore=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=948 suspectscore=0 impostorscore=0
+ spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502280000 definitions=main-2503270116
 
-IOMAP_F_ATOMIC_BIO mistakenly took the same value as of IOMAP_F_SIZE_CHANGED
-in patch '370a6de7651b ("iomap: rework IOMAP atomic flags")'.
-Let's fix this and let's also create some more space for filesystem reported
-flags to avoid this in future. This patch makes the core iomap flags to start
-from bit 15, moving downwards. Note that "flags" member within struct iomap
-is of type u16.
+Block validity checks need to be skipped in case they are called
+for journal blocks since they are part of system's protected
+zone.
 
-Fixes: 370a6de7651b ("iomap: rework IOMAP atomic flags")
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Currently, this is done by checking inode->ino against
+sbi->s_es->s_journal_inum, which is a direct read from the ext4 sb
+buffer head. If someone modifies this underneath us then the
+s_journal_inum field might get corrupted. To prevent against this,
+change the check to directly compare the inode with journal->j_inode.
+
+**Slight change in behavior**: During journal init path,
+check_block_validity etc might be called for journal inode when
+sbi->s_journal is not set yet. In this case we now proceed with
+ext4_inode_block_valid() instead of returning early. Since systems zones
+have not been set yet, it is okay to proceed so we can perform basic
+checks on the blocks.
+
+Suggested-by: Baokun Li <libaokun1@huawei.com>
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- include/linux/iomap.h | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 02fe001feebbd4..68416b135151d7 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -78,6 +78,11 @@ struct vm_fault;
- #define IOMAP_F_ANON_WRITE	(1U << 7)
- #define IOMAP_F_ATOMIC_BIO	(1U << 8)
+** Changes since v1 [1] **
 
-+/*
-+ * Flag reserved for file system specific usage
-+ */
-+#define IOMAP_F_PRIVATE		(1U << 12)
+- instead of using an sbi field direction check against jorunal->j_inode
+- let block validity perform basic checks on journal blocks as well
+	during init path
+- kvm-xfstests quick tests are passing
+
+[1] https://lore.kernel.org/linux-ext4/d1a9328a41029f6210a1924b192a59afcd3c5cee.1741952406.git.ojaswin@linux.ibm.com/
+
+ fs/ext4/block_validity.c | 5 ++---
+ fs/ext4/inode.c          | 9 +++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+index 87ee3a17bd29..e8c5525afc67 100644
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -351,10 +351,9 @@ int ext4_check_blockref(const char *function, unsigned int line,
+ {
+ 	__le32 *bref = p;
+ 	unsigned int blk;
++	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+ 
+-	if (ext4_has_feature_journal(inode->i_sb) &&
+-	    (inode->i_ino ==
+-	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum)))
++	if (journal && inode == journal->j_inode)
+ 		return 0;
+ 
+ 	while (bref < p+max) {
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 365d31004bd0..8b048be14008 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -384,10 +384,11 @@ static int __check_block_validity(struct inode *inode, const char *func,
+ 				unsigned int line,
+ 				struct ext4_map_blocks *map)
+ {
+-	if (ext4_has_feature_journal(inode->i_sb) &&
+-	    (inode->i_ino ==
+-	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum)))
+-		return 0;
++	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
 +
- /*
-  * Flags set by the core iomap code during operations:
-  *
-@@ -88,14 +93,8 @@ struct vm_fault;
-  * range it covers needs to be remapped by the high level before the operation
-  * can proceed.
-  */
--#define IOMAP_F_SIZE_CHANGED	(1U << 8)
--#define IOMAP_F_STALE		(1U << 9)
--
--/*
-- * Flags from 0x1000 up are for file system specific usage:
-- */
--#define IOMAP_F_PRIVATE		(1U << 12)
--
-+#define IOMAP_F_SIZE_CHANGED	(1U << 14)
-+#define IOMAP_F_STALE		(1U << 15)
++	if (journal && inode == journal->j_inode)
++			return 0;
++
+ 	if (!ext4_inode_block_valid(inode, map->m_pblk, map->m_len)) {
+ 		ext4_error_inode(inode, func, line, map->m_pblk,
+ 				 "lblock %lu mapped to illegal pblock %llu "
+-- 
+2.48.1
 
- /*
-  * Magic value for addr:
 
