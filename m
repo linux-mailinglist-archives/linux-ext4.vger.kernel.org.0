@@ -1,373 +1,171 @@
-Return-Path: <linux-ext4+bounces-6992-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6993-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 944DDA72E6A
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 12:05:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9325CA736D2
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 17:27:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B72E33B605F
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 11:04:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B1F77A56E1
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 16:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EEA20FA91;
-	Thu, 27 Mar 2025 11:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gbZDG9RS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ONHwBw2m";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gbZDG9RS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ONHwBw2m"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2151A3159;
+	Thu, 27 Mar 2025 16:27:27 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909361C5F0C
-	for <linux-ext4@vger.kernel.org>; Thu, 27 Mar 2025 11:04:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162BB19F111
+	for <linux-ext4@vger.kernel.org>; Thu, 27 Mar 2025 16:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743073482; cv=none; b=WESpjuRTDzFt850x9tfoF1dqTT0AO5pXBPUpTbzzfSLK6bxMeubXN22wBzKVuU2scwfCgTtt+1UGvFl3duVVyMRDeFTJIHLx0riEYsMOXN8aF2XTl48g8JrYnwcPgTf9JtKblEMz6wKBT5kM4DDbnWXKzHgVfgTmI3HYMmUmuFY=
+	t=1743092847; cv=none; b=AxCpaUH9sxsBxgcsrUEex+fG/MG61VE+BONsE22yWGZeB33bmCIsHIwPh9g7nDCHNWrJj6nS7BelebUIM3jDatNic0eJlxg+zRJgkN2noZdl/SgmrwcBOWU9CEge4G2IsCNn93VKMy7gkkhVu3Kd5fzYkSPWPXH3VlRmeSWykKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743073482; c=relaxed/simple;
-	bh=pTzcdMX2gKKmeQ7EjG7dR7gGzZ3E2KhEcNsyUbHHs1g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rmJNHMNt+Rl3rnDlmDiwpjjLqoHyBdi43eByq/OlUvR0G0V5WYZQnp3Wh0XobIIdcQ/TbQzOB8sZPX9c+eLjFpfbsV7v05j44XDY0WABifiDd0SHTcZ+70u1xX96a8lGKLPwcv2l+w7zIkypPiVAGqoUQYWDcbc8om/LfFJXhS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gbZDG9RS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ONHwBw2m; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gbZDG9RS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ONHwBw2m; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A6B5B210F9;
-	Thu, 27 Mar 2025 11:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743073478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F2hRXtlJSPaFBXmmZEjPBl/lgNeemTaLhpMFN3k2MTo=;
-	b=gbZDG9RSDzJlvTQksk+5MiYyDOyVEi/4LrjhZtw+XcYbk7FOdi1nMsdOv7BEgK8KDDXwwT
-	ip757sKdbJX20sdHewxl4vI4vHa0DhSC33UZSHHjhuCpC4DuIXMBZtE1QTguA1dPJEE6ft
-	R9j7tuFsePZdZ/khHzrrIVre/+4pBYc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743073478;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F2hRXtlJSPaFBXmmZEjPBl/lgNeemTaLhpMFN3k2MTo=;
-	b=ONHwBw2myu3wRE8gy7esgAadSF2g8isgfN1qv5skPJSsrGJ6ULUSkJW2UCh+ozgNmhedVw
-	yb7kz3Qn1c29EfAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743073478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F2hRXtlJSPaFBXmmZEjPBl/lgNeemTaLhpMFN3k2MTo=;
-	b=gbZDG9RSDzJlvTQksk+5MiYyDOyVEi/4LrjhZtw+XcYbk7FOdi1nMsdOv7BEgK8KDDXwwT
-	ip757sKdbJX20sdHewxl4vI4vHa0DhSC33UZSHHjhuCpC4DuIXMBZtE1QTguA1dPJEE6ft
-	R9j7tuFsePZdZ/khHzrrIVre/+4pBYc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743073478;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F2hRXtlJSPaFBXmmZEjPBl/lgNeemTaLhpMFN3k2MTo=;
-	b=ONHwBw2myu3wRE8gy7esgAadSF2g8isgfN1qv5skPJSsrGJ6ULUSkJW2UCh+ozgNmhedVw
-	yb7kz3Qn1c29EfAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A47B1376E;
-	Thu, 27 Mar 2025 11:04:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Q2aoJcYw5WfwIAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 27 Mar 2025 11:04:38 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 42985A082A; Thu, 27 Mar 2025 12:04:38 +0100 (CET)
-Date: Thu, 27 Mar 2025 12:04:38 +0100
-From: Jan Kara <jack@suse.cz>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Jann Horn <jannh@google.com>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] ext4: don't treat fhandle lookup of ea_inode as FS
- corruption
-Message-ID: <auitbbb56g2mpb52irzcfh3qfob3qjot3326qpigdvhw7wyw6b@p624krjopkc7>
-References: <20241129-ext4-ignore-ea-fhandle-v1-1-e532c0d1cee0@google.com>
+	s=arc-20240116; t=1743092847; c=relaxed/simple;
+	bh=gxcp3C3RjkXJaaC/Gq4nuv6aUM+LeFK+geRX1psd+wc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=nXCD/u+Q3gUd4elYD68QUjevsmuX9wrT9hgFc8DDU2/MeNIzcvam4wEW/Uvr25NkG0+hagioeBdYPcpQpOXZS00fJFMTHG4jDTUmVLDlRJWXMCXGaSbWFwCx9hxWpq2j+RnpATcDijir4B1IPeo6YoMheNDJlVhkp2uJnVOkzJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d2a63dc62aso10973625ab.2
+        for <linux-ext4@vger.kernel.org>; Thu, 27 Mar 2025 09:27:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743092845; x=1743697645;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OD7xtORABi7RIXnIds+9tXzGC7tz09BXcSsAmRi5wqI=;
+        b=fq70N1VbQdeSDyrBwWXJQgFONjwULEiRnoJRLp/fNPQJARuIj8IWxLtYBPVlRCML06
+         TxqwmMmbDaYy5XS08tHMZ60ZNcAqSk/HhqM9nXhixdwjAqY5ny9MrpxT2bxxpsbwqRwZ
+         rRVH0MzL9v1918zngczsdyoSFW6qv33MYYl8OyvcdotOUeTKzV/m+ci/Jfv4kltNsONw
+         TGMCgr1fdc1JnCpsPs54d09KhsD+mxw1FjcK+FxvtgLNZTmNPZqJBAFVRg0l1XZ2UZYP
+         PaRGZDL0ph2rZZwX6mu49czpeM7FIKx2NQcAMzfWWbkUhui4oLQQ9Pz661jR0lryQKrF
+         myFw==
+X-Forwarded-Encrypted: i=1; AJvYcCUMjyKmMQbITjYoVlrpyOGZk6pL8sR2vJ9OfrbHZVl4SuujXm/iXTn/79X1NHJGqfx68RbS8yaQqr1J@vger.kernel.org
+X-Gm-Message-State: AOJu0YziSVTefu6JX9vrLKr76UpviMajddI2mkG/HK5cDzWJtlYflJgB
+	0rSZv0t2WC9gHIb0UGS4SFizav4l0l41aWuYLgZcVGl3sQVHt8EZxrF0G7P3tvb8rmotm1HSfqL
+	EXnvGtUhNbp7DsvK+31iesYCpssGr6xeRKyxML+84phUwIrcB7qE4gTY=
+X-Google-Smtp-Source: AGHT+IEJfI9e1HRFH+GUnqGFLUYoPPiiOTxANSYwe6DrVEIn2Z8ZWFqD/KyHs3EjRcofJ4xmsCy3keGV8QHX4ytxg+LX3fIzOFr1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241129-ext4-ignore-ea-fhandle-v1-1-e532c0d1cee0@google.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+X-Received: by 2002:a05:6e02:2192:b0:3d3:ddb3:fe4e with SMTP id
+ e9e14a558f8ab-3d5ccdd7400mr46355105ab.13.1743092844997; Thu, 27 Mar 2025
+ 09:27:24 -0700 (PDT)
+Date: Thu, 27 Mar 2025 09:27:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67e57c6c.050a0220.2f068f.0037.GAE@google.com>
+Subject: [syzbot] [ext4?] kernel BUG in ext4_alloc_file_blocks
+From: syzbot <syzbot+d14b2bea87fe2aaffa3b@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Ted!
+Hello,
 
-was this fix missed?
+syzbot found the following issue on:
 
-On Fri 29-11-24 21:20:53, Jann Horn wrote:
-> A file handle that userspace provides to open_by_handle_at() can
-> legitimately contain an outdated inode number that has since been reused
-> for another purpose - that's why the file handle also contains a generation
-> number.
-> 
-> But if the inode number has been reused for an ea_inode, check_igot_inode()
-> will notice, __ext4_iget() will go through ext4_error_inode(), and if the
-> inode was newly created, it will also be marked as bad by iget_failed().
-> This all happens before the point where the inode generation is checked.
-> 
-> ext4_error_inode() is supposed to only be used on filesystem corruption; it
-> should not be used when userspace just got unlucky with a stale file
-> handle. So when this happens, let __ext4_iget() just return an error.
-> 
-> Fixes: b3e6bcb94590 ("ext4: add EA_INODE checking to ext4_iget()")
-> Signed-off-by: Jann Horn <jannh@google.com>
+HEAD commit:    38fec10eb60d Linux 6.14
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14e2c804580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d09c42ff97b8ce6d
+dashboard link: https://syzkaller.appspot.com/bug?extid=d14b2bea87fe2aaffa3b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e2c804580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16548bb0580000
 
-The patch looks good to me. Feel free to add:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/cbcaba398075/disk-38fec10e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7fb19649d944/vmlinux-38fec10e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3481a0b0218e/bzImage-38fec10e.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/47937005d435/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=13d1a43f980000)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d14b2bea87fe2aaffa3b@syzkaller.appspotmail.com
 
-								Honza
+------------[ cut here ]------------
+kernel BUG at fs/ext4/extents.c:4487!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 UID: 0 PID: 5851 Comm: syz-executor285 Not tainted 6.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+RIP: 0010:ext4_alloc_file_blocks+0xeb5/0xec0 fs/ext4/extents.c:4487
+Code: b0 ff e9 86 f3 ff ff 44 89 e9 80 e1 07 fe c1 38 c1 0f 8c d3 f3 ff ff 4c 89 ef e8 96 16 b0 ff e9 c6 f3 ff ff e8 6c 5e 4b ff 90 <0f> 0b e8 14 ac 8a 09 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc9000409fae0 EFLAGS: 00010293
+RAX: ffffffff82768104 RBX: 0000000000000000 RCX: ffff888034465a00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc9000409fca0 R08: ffffffff827673ea R09: 1ffff1100f07400a
+R10: dffffc0000000000 R11: ffffed100f07400b R12: ffff8880783a02b0
+R13: 0000000000000003 R14: 0000000000000011 R15: 0000004210000000
+FS:  00007f6218e926c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055db3ed07680 CR3: 000000007c366000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_zero_range+0x48a/0xd70 fs/ext4/extents.c:4637
+ ext4_fallocate+0x54a/0x1ea0 fs/ext4/extents.c:4787
+ vfs_fallocate+0x623/0x7a0 fs/open.c:338
+ ksys_fallocate fs/open.c:362 [inline]
+ __do_sys_fallocate fs/open.c:367 [inline]
+ __se_sys_fallocate fs/open.c:365 [inline]
+ __x64_sys_fallocate+0xbc/0x110 fs/open.c:365
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f6218efc939
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6218e92218 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+RAX: ffffffffffffffda RBX: 00007f6218f836d8 RCX: 00007f6218efc939
+RDX: 0000000000000002 RSI: 0000000000000010 RDI: 0000000000000004
+RBP: 00007f6218f836d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000007fff R11: 0000000000000246 R12: 00007f6218f5089c
+R13: 0000200000001000 R14: 0000200000000000 R15: 0000200000000f80
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_alloc_file_blocks+0xeb5/0xec0 fs/ext4/extents.c:4487
+Code: b0 ff e9 86 f3 ff ff 44 89 e9 80 e1 07 fe c1 38 c1 0f 8c d3 f3 ff ff 4c 89 ef e8 96 16 b0 ff e9 c6 f3 ff ff e8 6c 5e 4b ff 90 <0f> 0b e8 14 ac 8a 09 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc9000409fae0 EFLAGS: 00010293
+RAX: ffffffff82768104 RBX: 0000000000000000 RCX: ffff888034465a00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc9000409fca0 R08: ffffffff827673ea R09: 1ffff1100f07400a
+R10: dffffc0000000000 R11: ffffed100f07400b R12: ffff8880783a02b0
+R13: 0000000000000003 R14: 0000000000000011 R15: 0000004210000000
+FS:  00007f6218e926c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6210aff000 CR3: 000000007c366000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-> ---
-> I'm sending this as an RFC patch because the patch I came up with is
-> pretty ugly; I think it would be ideal if someone else comes up with a
-> nicer patch that can be used instead of this one.  I'm also not sure
-> whether it actually matters if we call iget_failed() when this happens
-> with a new inode.
-> 
-> The following testcase demonstrates this issue, and shows that a filesystem
-> mounted with errors=remount-ro is remounted to read-only when hitting it.
-> Run this as root.
-> 
-> ```
-> #define _GNU_SOURCE
-> #include <err.h>
-> #include <stdarg.h>
-> #include <stdio.h>
-> #include <sched.h>
-> #include <stddef.h>
-> #include <unistd.h>
-> #include <fcntl.h>
-> #include <string.h>
-> #include <stdlib.h>
-> #include <sys/mount.h>
-> #include <sys/mman.h>
-> #include <sys/xattr.h>
-> #include <sys/stat.h>
-> 
-> #define SYSCHK(x) ({          \
->   typeof(x) __res = (x);      \
->   if (__res == (typeof(x))-1) \
->     err(1, "SYSCHK(" #x ")"); \
->   __res;                      \
-> })
-> 
-> static int systemf(const char *cmd, ...) {
->   char *full_cmd;
->   va_list ap;
->   va_start(ap, cmd);
->   if (vasprintf(&full_cmd, cmd, ap) == -1)
->     err(1, "vasprintf");
->   int res = system(full_cmd);
->   free(full_cmd);
->   return res;
-> }
-> 
-> int main(void) {
->   // avoid messing with the main mount hierarchy
->   SYSCHK(unshare(CLONE_NEWNS));
->   SYSCHK(mount(NULL, "/", NULL, MS_PRIVATE|MS_REC, NULL));
-> 
->   // create and mount new ext4 fs
->   int fs_fd = SYSCHK(memfd_create("ext4-image", 0));
->   SYSCHK(ftruncate(fs_fd, 1024*1024));
->   if (systemf("mkfs.ext4 -O ea_inode /proc/self/fd/%d", fs_fd))
->     errx(1, "mkfs failed");
->   if (systemf("mount -o errors=remount-ro -t ext4 /proc/self/fd/%d /mnt", fs_fd))
->     errx(1, "mount failed");
-> 
->   // create file with inode xattr
->   char xattr_body[8192];
->   memset(xattr_body, 'A', sizeof(xattr_body));
->   int file_fd = SYSCHK(open("/mnt/file", O_RDWR|O_CREAT, 0600));
->   SYSCHK(fsetxattr(file_fd, "user.foo", xattr_body, sizeof(xattr_body), XATTR_CREATE));
->   struct stat st;
->   SYSCHK(fstat(file_fd, &st));
-> 
->   // trigger bug: do fhandle lookup on inode of file plus one (which will be
->   // the xattr inode)
->   struct handle {
->     unsigned int handle_bytes;
->     unsigned int handle_type;
->     unsigned int ino, gen, parent_ino, parent_gen;
->   } handle = {
->     .handle_bytes = sizeof(handle) - offsetof(struct handle, ino),
->     .handle_type = 1/*FILEID_INO32_GEN*/,
->     .ino = st.st_ino+1,
->     .gen = 0
->   };
->   // this should fail
->   SYSCHK(open_by_handle_at(file_fd, (void*)&handle, O_RDONLY));
-> }
-> ```
-> 
-> resulting dmesg:
-> ```
-> EXT4-fs (loop0): mounted filesystem 13b7e98f-901a-41a4-ba59-4cc58d597798 r/w without journal. Quota mode: none.
-> EXT4-fs error (device loop0): ext4_nfs_get_inode:1545: inode #13: comm ext4-ea-inode-f: unexpected EA_INODE flag
-> EXT4-fs (loop0): Remounting filesystem read-only
-> EXT4-fs (loop0): unmounting filesystem 13b7e98f-901a-41a4-ba59-4cc58d597798.
-> ```
-> ---
->  fs/ext4/inode.c | 68 ++++++++++++++++++++++++++++++++++++++++-----------------
->  1 file changed, 48 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 89aade6f45f62d9fd6300ef84c118c6b919cddc9..8a8cc29b211c875a1d22b943004dc3f10b9c4d79 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -4705,22 +4705,43 @@ static inline void ext4_inode_set_iversion_queried(struct inode *inode, u64 val)
->  		inode_set_iversion_queried(inode, val);
->  }
->  
-> -static const char *check_igot_inode(struct inode *inode, ext4_iget_flags flags)
-> -
-> +static int check_igot_inode(struct inode *inode, ext4_iget_flags flags,
-> +			    const char *function, unsigned int line)
->  {
-> +	const char *err_str;
-> +
->  	if (flags & EXT4_IGET_EA_INODE) {
-> -		if (!(EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL))
-> -			return "missing EA_INODE flag";
-> +		if (!(EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL)) {
-> +			err_str = "missing EA_INODE flag";
-> +			goto error;
-> +		}
->  		if (ext4_test_inode_state(inode, EXT4_STATE_XATTR) ||
-> -		    EXT4_I(inode)->i_file_acl)
-> -			return "ea_inode with extended attributes";
-> +		    EXT4_I(inode)->i_file_acl) {
-> +			err_str = "ea_inode with extended attributes";
-> +			goto error;
-> +		}
->  	} else {
-> -		if ((EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL))
-> -			return "unexpected EA_INODE flag";
-> +		if ((EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL)) {
-> +			/*
-> +			 * open_by_handle_at() could provide an old inode number
-> +			 * that has since been reused for an ea_inode; this does
-> +			 * not indicate filesystem corruption
-> +			 */
-> +			if (flags & EXT4_IGET_HANDLE)
-> +				return -ESTALE;
-> +			err_str = "unexpected EA_INODE flag";
-> +			goto error;
-> +		}
-> +	}
-> +	if (is_bad_inode(inode) && !(flags & EXT4_IGET_BAD)) {
-> +		err_str = "unexpected bad inode w/o EXT4_IGET_BAD";
-> +		goto error;
->  	}
-> -	if (is_bad_inode(inode) && !(flags & EXT4_IGET_BAD))
-> -		return "unexpected bad inode w/o EXT4_IGET_BAD";
-> -	return NULL;
-> +	return 0;
-> +
-> +error:
-> +	ext4_error_inode(inode, function, line, 0, err_str);
-> +	return -EFSCORRUPTED;
->  }
->  
->  struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
-> @@ -4732,7 +4753,6 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
->  	struct ext4_inode_info *ei;
->  	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
->  	struct inode *inode;
-> -	const char *err_str;
->  	journal_t *journal = EXT4_SB(sb)->s_journal;
->  	long ret;
->  	loff_t size;
-> @@ -4761,10 +4781,10 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
->  	if (!inode)
->  		return ERR_PTR(-ENOMEM);
->  	if (!(inode->i_state & I_NEW)) {
-> -		if ((err_str = check_igot_inode(inode, flags)) != NULL) {
-> -			ext4_error_inode(inode, function, line, 0, err_str);
-> +		ret = check_igot_inode(inode, flags, function, line);
-> +		if (ret) {
->  			iput(inode);
-> -			return ERR_PTR(-EFSCORRUPTED);
-> +			return ERR_PTR(ret);
->  		}
->  		return inode;
->  	}
-> @@ -5036,13 +5056,21 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
->  		ret = -EFSCORRUPTED;
->  		goto bad_inode;
->  	}
-> -	if ((err_str = check_igot_inode(inode, flags)) != NULL) {
-> -		ext4_error_inode(inode, function, line, 0, err_str);
-> -		ret = -EFSCORRUPTED;
-> -		goto bad_inode;
-> +	ret = check_igot_inode(inode, flags, function, line);
-> +	/*
-> +	 * -ESTALE here means there is nothing inherently wrong with the inode,
-> +	 * it's just not an inode we can return for an fhandle lookup.
-> +	 */
-> +	if (ret == -ESTALE) {
-> +		brelse(iloc.bh);
-> +		unlock_new_inode(inode);
-> +		iput(inode);
-> +		return ERR_PTR(-ESTALE);
->  	}
-> -
-> +	if (ret)
-> +		goto bad_inode;
->  	brelse(iloc.bh);
-> +
->  	unlock_new_inode(inode);
->  	return inode;
->  
-> 
-> ---
-> base-commit: b86545e02e8c22fb89218f29d381fa8e8b91d815
-> change-id: 20241129-ext4-ignore-ea-fhandle-743d3723c5e9
-> 
-> -- 
-> Jann Horn <jannh@google.com>
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
