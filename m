@@ -1,171 +1,227 @@
-Return-Path: <linux-ext4+bounces-6993-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6994-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9325CA736D2
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 17:27:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78BA7A73719
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 17:41:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B1F77A56E1
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 16:26:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 391A43A496F
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 16:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2151A3159;
-	Thu, 27 Mar 2025 16:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773D91AA782;
+	Thu, 27 Mar 2025 16:40:42 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162BB19F111
-	for <linux-ext4@vger.kernel.org>; Thu, 27 Mar 2025 16:27:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168D7148857
+	for <linux-ext4@vger.kernel.org>; Thu, 27 Mar 2025 16:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743092847; cv=none; b=AxCpaUH9sxsBxgcsrUEex+fG/MG61VE+BONsE22yWGZeB33bmCIsHIwPh9g7nDCHNWrJj6nS7BelebUIM3jDatNic0eJlxg+zRJgkN2noZdl/SgmrwcBOWU9CEge4G2IsCNn93VKMy7gkkhVu3Kd5fzYkSPWPXH3VlRmeSWykKI=
+	t=1743093642; cv=none; b=QmyYtPrF3gTsAd6W8isMiQTgHGX7RwpT2Z0aW2JXPfIEnS9m12ywLglQEl2uagMspvA+GrirBf1crjHhT2yA3WEFfbhrBAxt20+UFh0hC3X3YhCqI9v7tJcp32qaCLkGTRMCYAMjJxRMCCMWh+KaOctcBielXB9I0rxNQt4pT+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743092847; c=relaxed/simple;
-	bh=gxcp3C3RjkXJaaC/Gq4nuv6aUM+LeFK+geRX1psd+wc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=nXCD/u+Q3gUd4elYD68QUjevsmuX9wrT9hgFc8DDU2/MeNIzcvam4wEW/Uvr25NkG0+hagioeBdYPcpQpOXZS00fJFMTHG4jDTUmVLDlRJWXMCXGaSbWFwCx9hxWpq2j+RnpATcDijir4B1IPeo6YoMheNDJlVhkp2uJnVOkzJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d2a63dc62aso10973625ab.2
-        for <linux-ext4@vger.kernel.org>; Thu, 27 Mar 2025 09:27:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743092845; x=1743697645;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OD7xtORABi7RIXnIds+9tXzGC7tz09BXcSsAmRi5wqI=;
-        b=fq70N1VbQdeSDyrBwWXJQgFONjwULEiRnoJRLp/fNPQJARuIj8IWxLtYBPVlRCML06
-         TxqwmMmbDaYy5XS08tHMZ60ZNcAqSk/HhqM9nXhixdwjAqY5ny9MrpxT2bxxpsbwqRwZ
-         rRVH0MzL9v1918zngczsdyoSFW6qv33MYYl8OyvcdotOUeTKzV/m+ci/Jfv4kltNsONw
-         TGMCgr1fdc1JnCpsPs54d09KhsD+mxw1FjcK+FxvtgLNZTmNPZqJBAFVRg0l1XZ2UZYP
-         PaRGZDL0ph2rZZwX6mu49czpeM7FIKx2NQcAMzfWWbkUhui4oLQQ9Pz661jR0lryQKrF
-         myFw==
-X-Forwarded-Encrypted: i=1; AJvYcCUMjyKmMQbITjYoVlrpyOGZk6pL8sR2vJ9OfrbHZVl4SuujXm/iXTn/79X1NHJGqfx68RbS8yaQqr1J@vger.kernel.org
-X-Gm-Message-State: AOJu0YziSVTefu6JX9vrLKr76UpviMajddI2mkG/HK5cDzWJtlYflJgB
-	0rSZv0t2WC9gHIb0UGS4SFizav4l0l41aWuYLgZcVGl3sQVHt8EZxrF0G7P3tvb8rmotm1HSfqL
-	EXnvGtUhNbp7DsvK+31iesYCpssGr6xeRKyxML+84phUwIrcB7qE4gTY=
-X-Google-Smtp-Source: AGHT+IEJfI9e1HRFH+GUnqGFLUYoPPiiOTxANSYwe6DrVEIn2Z8ZWFqD/KyHs3EjRcofJ4xmsCy3keGV8QHX4ytxg+LX3fIzOFr1
+	s=arc-20240116; t=1743093642; c=relaxed/simple;
+	bh=p0Vod0x1soEuBq1XMYiCO0+hHhpQoQCTRZ+kCxrh8So=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=IiRup+XDJLxEGp5EbBo92nInp0EDpc1z0qfokjFlLTviBiA+AH9UNI3W860lHVtFvXiYT7ZBQob1DGDca9nloHOhLZg09qxQbxIbluCws502iv4Cn5BynXJxhauvZRBBBEbLs/nEziVs9ByfjLoso3DwHUCo8xEyfpuNsuMyYZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-108-26-156-195.bstnma.fios.verizon.net [108.26.156.195])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 52RGeU9p019258
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 27 Mar 2025 12:40:30 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id CFCA82E010B; Thu, 27 Mar 2025 12:40:29 -0400 (EDT)
+Date: Thu, 27 Mar 2025 12:40:29 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Developers List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] ext4 updates for v6.15-rc1
+Message-ID: <20250327164029.GA1423119@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2192:b0:3d3:ddb3:fe4e with SMTP id
- e9e14a558f8ab-3d5ccdd7400mr46355105ab.13.1743092844997; Thu, 27 Mar 2025
- 09:27:24 -0700 (PDT)
-Date: Thu, 27 Mar 2025 09:27:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67e57c6c.050a0220.2f068f.0037.GAE@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in ext4_alloc_file_blocks
-From: syzbot <syzbot+d14b2bea87fe2aaffa3b@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello,
+The following changes since commit a64dcfb451e254085a7daee5fe51bf22959d52d3:
 
-syzbot found the following issue on:
+  Linux 6.14-rc2 (2025-02-09 12:45:03 -0800)
 
-HEAD commit:    38fec10eb60d Linux 6.14
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e2c804580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d09c42ff97b8ce6d
-dashboard link: https://syzkaller.appspot.com/bug?extid=d14b2bea87fe2aaffa3b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e2c804580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16548bb0580000
+are available in the Git repository at:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cbcaba398075/disk-38fec10e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7fb19649d944/vmlinux-38fec10e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3481a0b0218e/bzImage-38fec10e.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/47937005d435/mount_0.gz
-  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=13d1a43f980000)
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4-for_linus-6.15-rc1
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d14b2bea87fe2aaffa3b@syzkaller.appspotmail.com
+for you to fetch changes up to d5e206778e96e8667d3bde695ad372c296dc9353:
 
-------------[ cut here ]------------
-kernel BUG at fs/ext4/extents.c:4487!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 0 UID: 0 PID: 5851 Comm: syz-executor285 Not tainted 6.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-RIP: 0010:ext4_alloc_file_blocks+0xeb5/0xec0 fs/ext4/extents.c:4487
-Code: b0 ff e9 86 f3 ff ff 44 89 e9 80 e1 07 fe c1 38 c1 0f 8c d3 f3 ff ff 4c 89 ef e8 96 16 b0 ff e9 c6 f3 ff ff e8 6c 5e 4b ff 90 <0f> 0b e8 14 ac 8a 09 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc9000409fae0 EFLAGS: 00010293
-RAX: ffffffff82768104 RBX: 0000000000000000 RCX: ffff888034465a00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc9000409fca0 R08: ffffffff827673ea R09: 1ffff1100f07400a
-R10: dffffc0000000000 R11: ffffed100f07400b R12: ffff8880783a02b0
-R13: 0000000000000003 R14: 0000000000000011 R15: 0000004210000000
-FS:  00007f6218e926c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055db3ed07680 CR3: 000000007c366000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ext4_zero_range+0x48a/0xd70 fs/ext4/extents.c:4637
- ext4_fallocate+0x54a/0x1ea0 fs/ext4/extents.c:4787
- vfs_fallocate+0x623/0x7a0 fs/open.c:338
- ksys_fallocate fs/open.c:362 [inline]
- __do_sys_fallocate fs/open.c:367 [inline]
- __se_sys_fallocate fs/open.c:365 [inline]
- __x64_sys_fallocate+0xbc/0x110 fs/open.c:365
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f6218efc939
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6218e92218 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
-RAX: ffffffffffffffda RBX: 00007f6218f836d8 RCX: 00007f6218efc939
-RDX: 0000000000000002 RSI: 0000000000000010 RDI: 0000000000000004
-RBP: 00007f6218f836d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000007fff R11: 0000000000000246 R12: 00007f6218f5089c
-R13: 0000200000001000 R14: 0000200000000000 R15: 0000200000000f80
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_alloc_file_blocks+0xeb5/0xec0 fs/ext4/extents.c:4487
-Code: b0 ff e9 86 f3 ff ff 44 89 e9 80 e1 07 fe c1 38 c1 0f 8c d3 f3 ff ff 4c 89 ef e8 96 16 b0 ff e9 c6 f3 ff ff e8 6c 5e 4b ff 90 <0f> 0b e8 14 ac 8a 09 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc9000409fae0 EFLAGS: 00010293
-RAX: ffffffff82768104 RBX: 0000000000000000 RCX: ffff888034465a00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc9000409fca0 R08: ffffffff827673ea R09: 1ffff1100f07400a
-R10: dffffc0000000000 R11: ffffed100f07400b R12: ffff8880783a02b0
-R13: 0000000000000003 R14: 0000000000000011 R15: 0000004210000000
-FS:  00007f6218e926c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f6210aff000 CR3: 000000007c366000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  ext4: fix OOB read when checking dotdot dir (2025-03-21 01:33:11 -0400)
 
+----------------------------------------------------------------
+Ext4 bug fixes and cleanups, including:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+  * hardening against maliciously fuzzed file systems
+  * backwards compatibility for the brief period when we attempted to
+     ignore zero-width characters
+  * avoid potentially BUG'ing if there is a file system corruption found
+    during the file system unmount
+  * fix free space reporting by statfs when project quotas are enabled
+    and the free space is less than the remaining project quota
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Also improve performance when replaying a journal with a very large
+number of revoke records (applicable for Lustre volumes).
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+----------------------------------------------------------------
+Acs, Jakub (1):
+      ext4: fix OOB read when checking dotdot dir
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Baokun Li (18):
+      ext4: replace opencoded ext4_end_io_end() in ext4_put_io_end()
+      ext4: do not convert the unwritten extents if data writeback fails
+      ext4: reject the 'data_err=abort' option in nojournal mode
+      ext4: extract ext4_has_journal_option() from __ext4_fill_super()
+      ext4: abort journal on data writeback failure if in data_err=abort mode
+      jbd2: drop JBD2_ABORT_ON_SYNCDATA_ERR
+      ext4: update the descriptions of data_err=abort and data_err=ignore
+      ext4: remove unused member 'i_unwritten' from 'ext4_inode_info'
+      ext4: pack holes in ext4_inode_info
+      ext4: convert EXT4_FLAGS_* defines to enum
+      ext4: add EXT4_FLAGS_EMERGENCY_RO bit
+      ext4: add ext4_emergency_state() helper function
+      ext4: add more ext4_emergency_state() checks around sb_rdonly()
+      ext4: correct behavior under errors=remount-ro mode
+      ext4: show 'emergency_ro' when EXT4_FLAGS_EMERGENCY_RO is set
+      ext4: show 'shutdown' hint when ext4 is forced to shutdown
+      ext4: goto right label 'out_mmap_sem' in ext4_setattr()
+      jbd2: remove jbd2_journal_unfile_buffer()
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Bhupesh (1):
+      ext4: ignore xattrs past end
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Charles Han (1):
+      ext4: fix potential null dereference in ext4 kunit test
 
-If you want to undo deduplication, reply with:
-#syz undup
+Christian Göttsche (1):
+      ext4: reorder capability check last
+
+Diangang Li (1):
+      ext4: clear DISCARD flag if device does not support discard
+
+Eric Biggers (2):
+      ext4: remove redundant function ext4_has_metadata_csum
+      jbd2: remove redundant function jbd2_journal_has_csum_v2or3_feature
+
+Ethan Carter Edwards (1):
+      ext4: hash: simplify kzalloc(n * 1, ...) to kzalloc(n, ...)
+
+Jan Kara (4):
+      jbd2: Avoid long replay times due to high number or revoke blocks
+      ext4: verify fast symlink length
+      jbd2: remove wrong sb->s_sequence check
+      jbd2: do not try to recover wiped journal
+
+Julian Sun (5):
+      ext4: Remove a redundant return statement
+      ext4: Don't set EXT4_STATE_MAY_INLINE_DATA for ea inodes
+      ext4: Introduce a new helper function ext4_generic_write_inline_data()
+      ext4: Replace ext4_da_write_inline_data_begin() with ext4_generic_write_inline_data().
+      ext4: Refactor out ext4_try_to_write_inline_data()
+
+Kemeng Shi (12):
+      ext4: remove unused ext4 journal callback
+      jbd2: remove unused transaction->t_private_list
+      ext4: remove unneeded forward declaration
+      jbd2: remove unused h_jdata flag of handle
+      jbd2: remove unused return value of jbd2_journal_cancel_revoke
+      jbd2: remove unused return value of do_readahead
+      jbd2: remove stale comment of update_t_max_wait
+      jbd2: correct stale function name in comment
+      jbd2: Correct stale comment of release_buffer_page
+      ext4: add missing brelse() for bh2 in ext4_dx_add_entry()
+      ext4: remove unneeded forward declaration in namei.c
+      ext4: remove unused input "inode" in ext4_find_dest_de
+
+Matthew Wilcox (Oracle) (1):
+      ext4: remove references to bh->b_page
+
+Nicolas Bretz (1):
+      ext4: on a remount, only log the ro or r/w state when it has changed
+
+Ojaswin Mujoo (4):
+      ext4: protect ext4_release_dquot against freezing
+      ext4: define ext4_journal_destroy wrapper
+      ext4: avoid journaling sb update on error if journal is destroying
+      ext4: Make sb update interval tunable
+
+Theodore Ts'o (2):
+      ext4: introduce linear search for dentries
+      ext4: don't over-report free space or inodes in statvfs
+
+Ye Bin (2):
+      ext4: introduce ITAIL helper
+      ext4: fix out-of-bound read in ext4_xattr_inode_dec_ref_all()
+
+Zhang Yi (13):
+      ext4: remove writable userspace mappings before truncating page cache
+      ext4: don't explicit update times in ext4_fallocate()
+      ext4: don't write back data before punch hole in nojournal mode
+      ext4: refactor ext4_punch_hole()
+      ext4: refactor ext4_zero_range()
+      ext4: refactor ext4_collapse_range()
+      ext4: refactor ext4_insert_range()
+      ext4: factor out ext4_do_fallocate()
+      ext4: move out inode_lock into ext4_fallocate()
+      ext4: move out common parts into ext4_fallocate()
+      jbd2: fix off-by-one while erasing journal
+      jbd2: add a missing data flush during file and fs synchronization
+      ext4: correct the error handle in ext4_fallocate()
+
+Zizhi Wo (1):
+      ext4: update the comment about mb_optimize_scan
+
+ Documentation/admin-guide/ext4.rst        |   7 +-
+ Documentation/filesystems/journalling.rst |   4 +-
+ fs/ext4/balloc.c                          |   4 +-
+ fs/ext4/bitmap.c                          |   8 +-
+ fs/ext4/dir.c                             |   7 +-
+ fs/ext4/ext4.h                            |  94 ++++----
+ fs/ext4/ext4_jbd2.c                       |  12 +-
+ fs/ext4/ext4_jbd2.h                       | 113 +++------
+ fs/ext4/extents.c                         | 531 ++++++++++++++++---------------------------
+ fs/ext4/extents_status.c                  |   1 -
+ fs/ext4/file.c                            |  27 ++-
+ fs/ext4/fsync.c                           |  12 +-
+ fs/ext4/hash.c                            |   2 +-
+ fs/ext4/ialloc.c                          |   9 +-
+ fs/ext4/inline.c                          | 205 ++++++-----------
+ fs/ext4/inode.c                           | 288 +++++++++++++----------
+ fs/ext4/ioctl.c                           |  13 +-
+ fs/ext4/mballoc-test.c                    |   2 +
+ fs/ext4/mballoc.c                         |   8 +-
+ fs/ext4/mmp.c                             |   6 +-
+ fs/ext4/namei.c                           | 117 +++++-----
+ fs/ext4/orphan.c                          |   2 +-
+ fs/ext4/page-io.c                         |  75 ++++--
+ fs/ext4/resize.c                          |   4 +-
+ fs/ext4/super.c                           | 267 ++++++++++++----------
+ fs/ext4/sysfs.c                           |   4 +
+ fs/ext4/xattr.c                           |  47 ++--
+ fs/ext4/xattr.h                           |  10 +
+ fs/jbd2/commit.c                          |  10 +-
+ fs/jbd2/journal.c                         |  34 +--
+ fs/jbd2/recovery.c                        |  80 +++++--
+ fs/jbd2/revoke.c                          |  21 +-
+ fs/jbd2/transaction.c                     |  21 +-
+ include/linux/fs.h                        |  10 +-
+ include/linux/jbd2.h                      |  24 +-
+ 35 files changed, 967 insertions(+), 1112 deletions(-)
 
