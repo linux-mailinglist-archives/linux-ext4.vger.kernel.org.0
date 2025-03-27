@@ -1,56 +1,48 @@
-Return-Path: <linux-ext4+bounces-6990-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6991-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 937B9A72DD7
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 11:33:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 093D8A72E12
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 11:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4D2E3B09EF
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 10:32:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E0B01781D3
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Mar 2025 10:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE68B20B818;
-	Thu, 27 Mar 2025 10:32:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IkxfCnGG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35E520E702;
+	Thu, 27 Mar 2025 10:46:39 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D311CAA85
-	for <linux-ext4@vger.kernel.org>; Thu, 27 Mar 2025 10:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1894D22615;
+	Thu, 27 Mar 2025 10:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743071564; cv=none; b=RyhQm/ZSq7AWXHDIUOz36LCB4naC73guiYxHnMozc8Mst6up7pshajdn/2AX+IFy3MYFGz6Uy7G/AcR3SIfM2jJ02cHxAI//Zu2J6i+KkI9TOv2P2Fx8lXjCusioPFGUtOb4pD+q6EuBo7ENP8X36JGoMH57Wgp7vL5lmtc9IlE=
+	t=1743072399; cv=none; b=Ymx1cfaRgmKayEk1bTsqkiNShc2peoEvXDKnbb6Qi1S2ESg5/pZEyhOEkQjDCLN7HmgGa6OJ5BtJBqBmEQKZjfG6SYC95TmU/vwYUEAeBeZHYPHGjuh7YKs/hASwvLL9T4Q3qjSh2kdNigfIKThVw6siQXj4Ied2UwUf8D15l1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743071564; c=relaxed/simple;
-	bh=DBj2B2tN7D3AYapCT51ZV6bW0DNSCbHF2QdskpOMfY4=;
+	s=arc-20240116; t=1743072399; c=relaxed/simple;
+	bh=CKMMwORL/7e171LK3vZmTi2HBGLdvefbMJzbjzQiBQI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dJdeTsV3jho32oRRCUkBGjfDdAK/VBTlbSLscL5cP9Q4iPCjaQc4H6AVZ/DocodjPUnQACX55wV2+rbvO7Ouab4F3MPbpqlIRZ6PcYMMwfHdHoq0eX9b5eblNGY8g2tiKhmBY6dhW7JUm8XwcWa60dFnAe4E3Gku/i7AYpn522Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IkxfCnGG; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=fQiXHj+wNtKiEX9FqAZQMgreHp7onDEdJWNXtMuGREk=; b=IkxfCnGGHwA9/t/oOiQZ3kOkAI
-	+5SgWwGVzynxLIWGcZD9MZ7FGUVAdQCBq87bisN2RfhH+GitjGiRHvMWYmfc+IZc82kpBNBZUxBWR
-	FBluDvHOrZ76/cECVbOUbGLR6klmMFTjwEF+858KKICHKdM69Se1iE7xGI/lW08kq9Q2xvE3wGZRh
-	PXba2OS/joNaPZwUEnRa/mNjWunkjJZ7o0YijVHtvnsdXo4jUq6aCRFXHzoosrnpt84u/v4L0Rk9C
-	CaEm/wf8SS6svnGxQKazee5cXbtWbzz9RJ5rWcaKdY4NmTSqkYOQurJRxKvJP6m3uzEMKDpq8Q9sb
-	OK+blwaQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1txkXS-0000000AiDo-0UZf;
-	Thu, 27 Mar 2025 10:32:42 +0000
-Date: Thu, 27 Mar 2025 03:32:42 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Catherine Hoang <catherine.hoang@oracle.com>
-Cc: linux-ext4@vger.kernel.org, djwong@kernel.org
-Subject: Re: [RFC PATCH v2 0/4] remove buffer heads from ext2
-Message-ID: <Z-UpSq8jLIUXMf-Z@infradead.org>
-References: <20250326014928.61507-1-catherine.hoang@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=j1x+TrW3vZ5oKF+/AuaQ4QMtgz6QSFIdhWk0A8yEM63fVX4zuqohCYeWTWQHwYEldi55QQ+VNNEH9BSW2mlfYy2YmqTzZgv9qO31Y2M5Rfi9y1YQrl4xSuwH3ZiO6wbtcbwBFMjsgJMuL18JJ/HIoSz8Aef0RWVSgfUnR8aZUkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id D9B8268C4E; Thu, 27 Mar 2025 11:46:32 +0100 (CET)
+Date: Thu, 27 Mar 2025 11:46:32 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Ritesh Harjani <ritesh.list@gmail.com>
+Cc: Christoph Hellwig <hch@lst.de>, John Garry <john.g.garry@oracle.com>,
+	brauner@kernel.org, djwong@kernel.org,
+	linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
+	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ojaswin@linux.ibm.com, martin.petersen@oracle.com, tytso@mit.edu,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 3/3] iomap: rework IOMAP atomic flags
+Message-ID: <20250327104632.GD10068@lst.de>
+References: <20250320120250.4087011-1-john.g.garry@oracle.com> <20250320120250.4087011-4-john.g.garry@oracle.com> <87cye8sv9f.fsf@gmail.com> <20250323063850.GA30703@lst.de> <87bjtrsw2d.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,14 +51,16 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250326014928.61507-1-catherine.hoang@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <87bjtrsw2d.fsf@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Tue, Mar 25, 2025 at 06:49:24PM -0700, Catherine Hoang wrote:
-> Hi all,
+On Sun, Mar 23, 2025 at 07:12:02PM +0530, Ritesh Harjani wrote:
+> flags in struct iomap is of type u16. So will make core iomap flags
+> starting from bit 15, moving downwards. 
 > 
-> This series is an effort to begin removing buffer heads from ext2. 
+> Here is a diff of what I think you meant - let me know if this diff
+> looks good to you? 
 
-Why is that desirable?
+Yes, this looks good to me.
 
 
