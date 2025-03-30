@@ -1,113 +1,131 @@
-Return-Path: <linux-ext4+bounces-7011-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7015-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C71A75064
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Mar 2025 19:29:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F17A758CD
+	for <lists+linux-ext4@lfdr.de>; Sun, 30 Mar 2025 08:48:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAD4518930EA
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Mar 2025 18:29:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37A153ACDD5
+	for <lists+linux-ext4@lfdr.de>; Sun, 30 Mar 2025 06:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1EB71DEFEC;
-	Fri, 28 Mar 2025 18:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C16F18858A;
+	Sun, 30 Mar 2025 06:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uN9kn+pM"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="wLMgxrFk"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4449D1C8615
-	for <linux-ext4@vger.kernel.org>; Fri, 28 Mar 2025 18:29:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B841487ED;
+	Sun, 30 Mar 2025 06:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743186568; cv=none; b=mc7oeELhPCjpQDUUE03ohm4g056ArP7JA9n9L/qC+jAEwWvUQIwV3OWWaol5u1DdKKbFrFJ0V6dznI0eT/uYECHr/vsqUb8b22kGB5mAQbJQsmkGbO1KUfTK55I95BrIhbMOB4f6TSwLktkTWcMlvdK8Wg8KFBsYcA/ziHxJHWs=
+	t=1743317268; cv=none; b=HyjhoVCB3dTql5aU9WLCXQzSPHBFHPlHaIxfoqKQ6/Sq9rksFivvnZueLvTAV5clWYfUhPVce8bUeD/M7TazKGyTIlUj6nXBS0tPgA7K1fooHSPchj7K9e+oAZH5moIPrzGOXdCIyNWH5mFvJBIVV5HeOemLnHfZ4/tXreGNzGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743186568; c=relaxed/simple;
-	bh=R4WLChsmbZ8xUp244YW02q5tm4jeuZm+/2yO+YsE7z0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gulxFzmoJQCINiz6gyYqwb6qT6ct0lYoiVdNk0Zx0XfIbYgCLpai/oykt8nDruZJUDqW6kfV6wozeNJI9aMxzciu8glHpp7RIEs7dVVnmFPayUlXhXlv+Ki/tLPZ1ftWUnDKcwIGeVlIbN1iUypAsAUPZ8MpE3clgArBfrmt5vY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uN9kn+pM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADA7FC4CEE4;
-	Fri, 28 Mar 2025 18:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743186567;
-	bh=R4WLChsmbZ8xUp244YW02q5tm4jeuZm+/2yO+YsE7z0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uN9kn+pMdRyyGsCCwtJgxJBlWwoubkZ/Ay3WNDz8+n4ACKHdK0Qu1Nyo357TeDpRC
-	 /JbuTd9HFljpyU5woMmBKrb9E/A17Eo+hlSa4yeL4NtY7Frne3xAQCX1D1zMUVboT/
-	 DMAPC5qENM63/MnLKSORuXdpdB1bYJbvaZOuNsdtVCLZI4xnWK0x3rCc3QUtymB8G3
-	 3LP7p6pOX8aNfPURXcUmzueQICkWe7SolPnsbkJAGZUG4mS4Xl5uKjsulcSmLV0u/R
-	 Hw5rYF/XelHOAiedwg5wsK3oVR2GZdX1Mmi67gO9tGklluaWXClLMHGwOqSquGUubv
-	 7MaPVK3z5GiPA==
-Date: Fri, 28 Mar 2025 11:29:27 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Catherine Hoang <catherine.hoang@oracle.com>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: [RFC PATCH v2 2/4] ext2: remove buffer heads from group
- descriptors
-Message-ID: <20250328182927.GE2803723@frogsfrogsfrogs>
-References: <20250326014928.61507-1-catherine.hoang@oracle.com>
- <20250326014928.61507-3-catherine.hoang@oracle.com>
+	s=arc-20240116; t=1743317268; c=relaxed/simple;
+	bh=S0yYGnICLAFP8vO8D9NkY4L3AoBOC/H7qrYdcLOST3w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Uuia6p9V9uRgdkaap1d+XTEjHMsw4peurTV6x1c3yxU1aivK7ShWOftH2+CXZF1V6eMlnDrPSzhzhKofAH/rrY55uCPIEy2rcVWWmSLIS6ELfQATIHF8TKhL82NZGq1RFGqqcY0MCbqNk/XBIusGKvqMBj695zOQEjOJlxiBFr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=wLMgxrFk; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=onIgRtrD6Nz7xiHJP06V1b9T8bhfAqun/9iFQD7ExnE=; b=wLMgxrFkz6RqAFPXNuvnYeq12f
+	5bSya1Py6vwHH0CVpx39eIsb6/UXSOBGCbMJW8R6L3ndD9p9F2thqCvw/1YMqFLbvqJG0ty5TXQV+
+	JEiBumJAXM5KdYy5/BZpf2aijL5v1+dl+AN0TOGqrkmdrJiCLHggSJgUPTiSaGMCBhrohClOwL1N/
+	NB8V+OmymtA4tru3MvjmAqAFqEVOmXc2pEskzexy7e9GKR2n85+03P5rxLFrlrY+2vFKlOMLy12n/
+	gxpQhvAGP1EDtkbjD80PuOEW51KMtKo+50LGKQDA/lj1QobP65W4CjrzqEinA5wxs4JTdgrK3KGlZ
+	eXsohaEw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1tymSJ-0000000Fre8-1xZf;
+	Sun, 30 Mar 2025 06:47:39 +0000
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: brauner@kernel.org,
+	jack@suse.cz,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	riel@surriel.com
+Cc: willy@infradead.org,
+	hannes@cmpxchg.org,
+	oliver.sang@intel.com,
+	dave@stgolabs.net,
+	david@redhat.com,
+	axboe@kernel.dk,
+	hare@suse.de,
+	david@fromorbit.com,
+	djwong@kernel.org,
+	ritesh.list@gmail.com,
+	linux-fsdevel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-mm@kvack.org,
+	gost.dev@samsung.com,
+	p.raghav@samsung.com,
+	da.gomez@samsung.com,
+	mcgrof@kernel.org
+Subject: [PATCH 0/3] mm: move migration work around to buffer-heads
+Date: Sat, 29 Mar 2025 23:47:29 -0700
+Message-ID: <20250330064732.3781046-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250326014928.61507-3-catherine.hoang@oracle.com>
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Tue, Mar 25, 2025 at 06:49:26PM -0700, Catherine Hoang wrote:
-> The group descriptors are stored as an array of buffer_heads
-> s_group_desc in struct ext2_sb_info. Replace these buffer heads with the
-> new ext2_buffer and update the buffer functions accordingly.
-> 
-> Signed-off-by: Catherine Hoang <catherine.hoang@oracle.com>
-> ---
->  fs/ext2/balloc.c | 24 ++++++++++++------------
->  fs/ext2/ext2.h   |  4 ++--
->  fs/ext2/ialloc.c | 12 ++++++------
->  fs/ext2/super.c  | 10 +++++-----
->  4 files changed, 25 insertions(+), 25 deletions(-)
-> 
-> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-> index b8cfab8f98b9..21dafa9ae2ea 100644
-> --- a/fs/ext2/balloc.c
-> +++ b/fs/ext2/balloc.c
-> @@ -38,7 +38,7 @@
->  
->  struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
->  					     unsigned int block_group,
-> -					     struct buffer_head ** bh)
-> +					     struct ext2_buffer ** buf)
->  {
->  	unsigned long group_desc;
->  	unsigned long offset;
-> @@ -63,8 +63,8 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
->  	}
->  
->  	desc = (struct ext2_group_desc *) sbi->s_group_desc[group_desc]->b_data;
-> -	if (bh)
-> -		*bh = sbi->s_group_desc[group_desc];
-> +	if (buf)
-> +		*buf = sbi->s_group_desc[group_desc];
+We have an eye-sore of a spin lock held during page migration which
+was added for a ext4 jbd corruption fix for which we have no clear
+public corruption data. We want to remove the spin lock on mm/migrate
+so to help buffer-head filesystems embrace large folios, since we
+can cond_resched() on large folios on folio_mc_copy(). I've managed
+to reproduce a corruption by just removing the spinlock and stressing
+ext4 with generic/750, a corruption happens after 3 hours.
 
-Yeah, these patches would be less long if you'd stuck with the "bh"
-name.  I hate how this sounds like busy work, but please put it back to
-make reviewing easier.
+The spin lock was added to help ext4 jbd and other users of
+buffer_migrate_folio_norefs(), so the block device cache and nilfs2.
+This does the work to move the heuristic needed to avoid page migration
+to back to the buffere-head code on __find_get_block_slow() and only
+to users of buffer_migrate_folio_norefs(). I have ran generic/750 over
+20 hours and don't see the corruption issue.
 
-> @@ -1109,10 +1109,10 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
->  	}
->  	for (i = 0; i < db_count; i++) {
->  		block = descriptor_loc(sb, logic_sb_block, i);
-> -		sbi->s_group_desc[i] = sb_bread(sb, block);
-> +		sbi->s_group_desc[i] = ext2_read_buffer(sb, block);
+I've also ran this patchset against all the following ext4 profiles on
+all fstests tests and have found no regression, I've published the
+baseline based on linux-next tag next-20250328 onto kdevops [0]. For
+further sanity I've also tested this patchset against blktests as well
+and found no regressions.
 
-ext2_read_buffer can return an ERR_PTR, you need to check for errors
-here, not just null pointers.
+ext4-defaults
+ext4-1k
+ext4-2k
+ext4-4k
+ext4-bigalloc16k-4k
+ext4-bigalloc32k-4k
+ext4-bigalloc64k-4k
+ext4-bigalloc1024k-4k
+ext4-bigalloc2048k-4k
+ext4-advanced-features
 
---D
+[0] https://github.com/linux-kdevops/kdevops/commit/3ecd638e67b14162b76b733a120e6e1b55698cc9
+
+Luis Chamberlain (3):
+  mm/migrate: add might_sleep() on __migrate_folio()
+  fs/buffer: avoid races with folio migrations on
+    __find_get_block_slow()
+  mm/migrate: avoid atomic context on buffer_migrate_folio_norefs()
+    migration
+
+ fs/buffer.c  | 9 +++++++++
+ mm/migrate.c | 6 +++---
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+-- 
+2.47.2
+
 
