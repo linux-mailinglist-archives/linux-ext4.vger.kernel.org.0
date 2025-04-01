@@ -1,133 +1,240 @@
-Return-Path: <linux-ext4+bounces-7032-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7033-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86417A78417
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Apr 2025 23:37:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD8C1A78423
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Apr 2025 23:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F80B188C242
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Apr 2025 21:38:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F17C16C40A
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Apr 2025 21:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7011E207A28;
-	Tue,  1 Apr 2025 21:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1951EE7DD;
+	Tue,  1 Apr 2025 21:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="wD9VTKdw"
+	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="Tpv1vXyP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5035B20F078
-	for <linux-ext4@vger.kernel.org>; Tue,  1 Apr 2025 21:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743543461; cv=none; b=CauS2w3uCHYRp1VQpveKWyhWtBkyg/K2o8sS0Rr8tym6MFvz0RsSN+tcmvFh4GNCUFA7CODbrjEE0chkuT5peBgBg+mTQ8dEucyXQT9VJaVY7fpwa2zKXZ7S+YVFdmYx5rWXSVsL1BbVjZ/n7KyOciHCR0gCerhPi2wBW7tQK9c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743543461; c=relaxed/simple;
-	bh=Zfq+e90kIJYmWlLbfTBqcfsN5jfJzfqB3zrpKTonHg8=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915461E571A;
+	Tue,  1 Apr 2025 21:49:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.209.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743544199; cv=pass; b=cnf/bThPyqKxskh5l5ZFvAJAIWvIg6dXbJtkJaL4mvjAR98YDkQfVqeKJqU5r4dNt1MtnfxNdziJ2yMIrVTK39GGE9poff92p0exNEJWm44Gv5qNJBlA92kUpeoCrj4IBigKruFQZ3Hg/9KstoxaJo/otbiziepbQQ8HcR0Bamo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743544199; c=relaxed/simple;
+	bh=Ee7ZhrYrrPHbAR83ceWSSd6J0FdhYVvcZcaZgQUsS6g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nn8GojCX9hejxIXt+DmebPnVHkKlv1udXU4VIif6LVw1WhujaMdQt/YZzrj5rIDkEeUw5gFtf0OfeKfU7PNLf+j0POqi4oknmMY9Eyn6W1dSgYCxTg5GmTZgs6BXB7BGgMlqrzqzfyT4/m3H61C+OMJI70CnWTVEUDjuORBgdng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=wD9VTKdw; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-227b828de00so106405135ad.1
-        for <linux-ext4@vger.kernel.org>; Tue, 01 Apr 2025 14:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1743543457; x=1744148257; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ULn61q6MozZnynxCXcCepY0O1QeWkpcYUhiO0MIBGX0=;
-        b=wD9VTKdw0Ess2HUvGuruaCBIiZrgjqSIxm8qfA0Ufb2SUJxTUft2tZQp4rcDsLl/YA
-         k4nh+VklUgxRLszhSgLXOBBdtTe5xjmBDsTP7CPCNBh4pdd4rQ/3XGGlOc1Zzg+tI/Aa
-         os43+2e9QZFi0+q2H46wjnkjDjTK4B5H04vSnmfJWAB4ebrnB6oPBJFk0UfQ0A0COY+x
-         mGJHLcrfJrOFEXMoveE3bAj0fzz89J4EuQ7yZdDL6jgk1YXP7jzTljjRkN5Q40l8yTZd
-         SIA6sbZC01SIYhVEYDjZNmpNBqtribAxWxOTEiihLu9m3mW0cT72Po6U3uHre+Nlcov/
-         OB7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743543457; x=1744148257;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ULn61q6MozZnynxCXcCepY0O1QeWkpcYUhiO0MIBGX0=;
-        b=Znubq0dJnuqOzO0AGhWoJT95g1WLpAZDtzzJ76zn+f0A5vY6X5yE9H3qfC+aKlgKO4
-         fpAOq9WkKh4vkKHOOUKSZTmtc0XUEdaHf4pmV55sBTCPpbT0v9f6dytNf65LZ99uJqHk
-         GddH2XOM+e1FRFKHaxwFZkJCUCovrXahzszBd+8GoxCLSuUh6jMyOjUF4d//yYV3nvhm
-         dqawQd4m9GM9WxYaw4Tu2S8VodbV5Q65o9k9SSoslk+ZNGkGB5HrnHTxCfaMIu7KgKR0
-         Q2q060HjmUYv7xtI3HHH+CJzK+fqvZHihgfwKT6RBw7/egvwNLMzmW93I1lZ7Okjpp58
-         dXwA==
-X-Forwarded-Encrypted: i=1; AJvYcCUYtXy6+8pfrMjI15KuRROTQE6LRli1jj/+WjoKY3oJ/OPgjaj4sbcxz6bRb+Kdwv37994qq4I74sQ2@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7mzUMzBWiUEcp5yI30nD9TnvN2F/+zEUOxE2t9fmkkzMEERiC
-	vLcemkwafPC3tDT3DjcFpF+EaFbcHFkSrX+H7plNZc6Tu8pX8Rdh3ZYBiPKJdao=
-X-Gm-Gg: ASbGncsvb4EAgAj1PmxJNdlNZ85fA8oh2xLTDDhttlwNKQtg7VfJOjpDdsuakzX76xX
-	YOACkQGv73B3TW6uTdYGyVZ/QlsdLpWOJKpGDas3ZhkX6k+j8HyPnIbZWBmqYk9U4gXw+rXQeNY
-	KUwEWOFmhcwd5xTgnBzgV12047UtMw6/yfJ9WeFgtCnYurM49ykZPrxe2eQREOo6E4QYknkTOta
-	m30GectuiiQQIDmXrqdfZAy7mDd2CJM3aH1PeIaMpWtRCVZJf08CtsLUPLHreqVpXN/MGV3tjO7
-	YK/CKuJbrTLgDA9+xg6fvUkWwYDVfKqtIpSd5ntiscS7TinJ2tGee9xAe+KhEDL/bS+qbV+S50N
-	v09NXyD0uhRZUktpNrw==
-X-Google-Smtp-Source: AGHT+IE3QYgeXg6/2MlJM1fZCmUe7aBtYQAosAh70NXGSZ1t+mEm/dDygBcG4sqjQ9ucj+eb0t4h2A==
-X-Received: by 2002:a17:903:19ee:b0:223:4d7e:e52c with SMTP id d9443c01a7336-2296c60537fmr719425ad.5.1743543457550;
-        Tue, 01 Apr 2025 14:37:37 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-60-96.pa.nsw.optusnet.com.au. [49.181.60.96])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2291eec533csm94712635ad.36.2025.04.01.14.37.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Apr 2025 14:37:37 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tzjIb-00000003GtN-3ov3;
-	Wed, 02 Apr 2025 08:37:33 +1100
-Date: Wed, 2 Apr 2025 08:37:33 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
-Subject: Re: [PATCH v2 0/5] Minor cleanups in common/
-Message-ID: <Z-xcne3f5Klvuxcq@dread.disaster.area>
-References: <cover.1743487913.git.nirjhar.roy.lists@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CQccWjslaXpnmP+zCFp9bGz5Fp5m5oMgmx7BnerC716ZJfDQkBUK2KSbLA9utJYCHRZjFbp9zOIlEoOpZdRTBG3JZft2qyL6AAJB46TvH7u+x5FT3oNgKvaz4atotlaGFpTN8sS097TATHB7py955drHpD8unAows5jkZdtywjE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=Tpv1vXyP; arc=pass smtp.client-ip=23.83.209.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id B403E182C1C;
+	Tue,  1 Apr 2025 21:49:56 +0000 (UTC)
+Received: from pdx1-sub0-mail-a218.dreamhost.com (trex-1.trex.outbound.svc.cluster.local [100.125.203.131])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 24643182A7B;
+	Tue,  1 Apr 2025 21:49:56 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1743544196; a=rsa-sha256;
+	cv=none;
+	b=nichnOZxr1pyxuOeQ+iX6n/n3yRMk73ZWDnCx4p1tzBUqZWUjmZfJDXQe4BYVPooYiWPgo
+	iWR74060YGORvfdPgijP1hTCHX3tUfIb86pbA8RATZfs2p4xHpxF7dYuhKpCS7QvdONua0
+	Iyx6DvqnM70pyY37c2Y/ujeTOPnaUDNQf+b0egh9C4BEbs0JwPZfxK9DOpO60mkG/LaPoM
+	bde1WbyHb4F1xa+UI3yg+2WzwUQhUGXJSykoQrLkSgqci0iRg5N8jKQEdomEgCAqTi3xjz
+	tXDb4cW1YsBqoJUNjGtj3sUS8u4aXGBQZ1jK0zLsytHRkTyMdDroS0Kal1ToKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1743544196;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:dkim-signature;
+	bh=sGlWmBOhS2CwuQbgKM4hR9ROVp92Ooxj6PLZQlRbhm4=;
+	b=ye//Cm2L8aQZ0+DhVtlEacagJmMjBP2Tnx4d8fveuFzyQgd/7i6mACjRETwUKhR2WvYhdQ
+	sy/GwdwBJhWz7snEqwje0yfq7v8z8aF3ZoNeRHnmw0h1QwzUC5gQs+wCVt6yl7AsCTA3JR
+	jM7JXqg3wmQiZ1IvsNCUB1J1XGq71LHh7+2dnTBAqMBvGJedfi8KJncaVXIAbpc9/OldK2
+	I4c/XOodj9wT+AdyqfMdQlS89NDHG7LH7TGVHjb8Nut5ks8zkKcdqMr+AjPEO9BDDTLMXF
+	bZYlIi0hbHn1DODHX+OwFEURusTXdhQli6udQ1RZV2iI+thK1qel7y+dwbbxjg==
+ARC-Authentication-Results: i=1;
+	rspamd-7668cf9b8d-8g8x5;
+	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Absorbed-Left: 768fd03f78a578da_1743544196578_3753900963
+X-MC-Loop-Signature: 1743544196578:1801671722
+X-MC-Ingress-Time: 1743544196578
+Received: from pdx1-sub0-mail-a218.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.125.203.131 (trex/7.0.3);
+	Tue, 01 Apr 2025 21:49:56 +0000
+Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dave@stgolabs.net)
+	by pdx1-sub0-mail-a218.dreamhost.com (Postfix) with ESMTPSA id 4ZS1r25qzFzK5;
+	Tue,  1 Apr 2025 14:49:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+	s=dreamhost; t=1743544196;
+	bh=sGlWmBOhS2CwuQbgKM4hR9ROVp92Ooxj6PLZQlRbhm4=;
+	h=Date:From:To:Cc:Subject:Content-Type;
+	b=Tpv1vXyPmlYXrkZB6HH2lFjD1Ul4RH/H7pNsJmiOjDiQYQgb+QhJYhYsTB56Bu6cS
+	 FE6AiFUBIJpUFD8x1fdSHuRTdSpSdTe8pSUxKNIstEmp9FtRXRSdEMIJimM1EZHfQ0
+	 KbymcGPVJAId3EIfDw8vBX6yARkZm2mLaC09GmDfytO9rXlgpyi0850wK1JQadcuPK
+	 KZ2MY+1VUIIjsHnL7ZGOlyt9vPqITfPx060uUnGwaqklpbmyBdsOlnbIBEKYUCFToi
+	 MLRwfQc6zddBq7YHe06qwKlP9pxq9wZgb+8nU25wdnIXRb41VmMe+c/G9uuO6WGX4Y
+	 ZM8SdIs8UvRTg==
+Date: Tue, 1 Apr 2025 14:49:51 -0700
+From: Davidlohr Bueso <dave@stgolabs.net>
+To: Jan Kara <jack@suse.cz>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, brauner@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	riel@surriel.com, willy@infradead.org, hannes@cmpxchg.org,
+	oliver.sang@intel.com, david@redhat.com, axboe@kernel.dk,
+	hare@suse.de, david@fromorbit.com, djwong@kernel.org,
+	ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-mm@kvack.org,
+	gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com
+Subject: Re: [PATCH 2/3] fs/buffer: avoid races with folio migrations on
+ __find_get_block_slow()
+Message-ID: <20250401214951.kikcrmu5k3q6qmcr@offworld>
+Mail-Followup-To: Jan Kara <jack@suse.cz>,
+	Luis Chamberlain <mcgrof@kernel.org>, brauner@kernel.org,
+	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	riel@surriel.com, willy@infradead.org, hannes@cmpxchg.org,
+	oliver.sang@intel.com, david@redhat.com, axboe@kernel.dk,
+	hare@suse.de, david@fromorbit.com, djwong@kernel.org,
+	ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-mm@kvack.org,
+	gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com
+References: <20250330064732.3781046-1-mcgrof@kernel.org>
+ <20250330064732.3781046-3-mcgrof@kernel.org>
+ <lj6o73q6nev776uvy7potqrn5gmgtm4o2cev7dloedwasxcsmn@uanvqp3sm35p>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <cover.1743487913.git.nirjhar.roy.lists@gmail.com>
+In-Reply-To: <lj6o73q6nev776uvy7potqrn5gmgtm4o2cev7dloedwasxcsmn@uanvqp3sm35p>
+User-Agent: NeoMutt/20220429
 
-On Tue, Apr 01, 2025 at 06:43:55AM +0000, Nirjhar Roy (IBM) wrote:
-> This patch series removes some unnecessary sourcing of common/rc
-> and decouples the call to init_rc() from the sourcing of common/rc.
-> This is proposed in [1] and [2]. It also removes direct usage of exit command
-> with a _exit wrapper. The individual patches have the details.
-> 
-> [v1] --> v[2]
->  1. Added R.B from Darrick in patch 1 of [v1]
->  2. Kept the init_rc call that was deleted in the v1.
->  3. Introduced _exit wrapper around exit command. This will help us get correct
->     exit codes ("$?") on failures.
-> 
-> [1] https://lore.kernel.org/all/20250206155251.GA21787@frogsfrogsfrogs/
-> 
-> [2] https://lore.kernel.org/all/20250210142322.tptpphdntglsz4eq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com/
-> 
-> [v1] https://lore.kernel.org/all/cover.1741248214.git.nirjhar.roy.lists@gmail.com/
-> 
-> Nirjhar Roy (IBM) (5):
->   generic/749: Remove redundant sourcing of common/rc
->   check: Remove redundant _test_mount in check
->   check,common{rc,preamble}: Decouple init_rc() call from sourcing
->     common/rc
->   common/config: Introduce _exit wrapper around exit command
->   common: exit --> _exit
+On Tue, 01 Apr 2025, Jan Kara wrote:
 
-Whole series looks fine to me. I've got similar patches in my
-current check-parallel stack, as well as changing common/config to
-match the "don't run setup code when sourcing the file" behaviour.
+>I find this problematic. It fixes the race with migration, alright
+>(although IMO we should have a comment very well explaining the interplay
+>of folio lock and mapping->private_lock to make this work - probably in
+>buffer_migrate_folio_norefs() - and reference it from here), but there are
+>places which expect that if __find_get_block() doesn't return anything,
+>this block is not cached in the buffer cache. And your change breaks this
+>assumption. Look for example at write_boundary_block(), that will fail to
+>write the block it should write if it races with someone locking the folio
+>after your changes. Similarly the code tracking state of deleted metadata
+>blocks in fs/jbd2/revoke.c will fail to properly update buffer's state if
+>__find_get_block() suddently starts returning NULL although the buffer is
+>present in cache.
 
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Yeah - one thing I was thinking about, _iff_ failing lookups (__find_get_block()
+returning nil) during migration is in fact permitted, was adding a BH_migrate
+flag and serialize vs __buffer_migrate_folio() entirely. Semantically there
+are no users, and none are added during this window, but as a consequence I
+suppose one thread could see the page not cached, act upon that, then see it
+cached once the migration is done and get confused(?). So I don't see a problem
+here for write_boundary_block() specifically, but I'm probably overlooking others.
 
--- 
-Dave Chinner
-david@fromorbit.com
+Now, if bailing on the lookup is not an option, meaning it must wait for the
+migration to complete, I'm not sure large folios will ever be compatible with
+the "Various filesystems appear to want __find_get_block to be non-blocking."
+comment.
+
+So the below could be tucked in for norefs only (because this is about the addr
+space i_private_lock), but this also shortens the hold time; if that matters
+at all, of course, vs changing the migration semantics.
+
+Thanks,
+Davidlohr
+
+---8<----------------------------
+diff --git a/fs/buffer.c b/fs/buffer.c
+index cc8452f60251..f585339ae2e4 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -208,6 +208,14 @@ __find_get_block_slow(struct block_device *bdev, sector_t block)
+	head = folio_buffers(folio);
+	if (!head)
+		goto out_unlock;
++
++	bh = head;
++	do {
++		if (test_bit(BH_migrate, &bh->b_state))
++			goto out_unlock;
++		bh = bh->b_this_page;
++	} while (bh != head);
++
+	bh = head;
+	do {
+		if (!buffer_mapped(bh))
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index 932139c5d46f..e956a1509a05 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -34,6 +34,7 @@ enum bh_state_bits {
+	BH_Meta,	/* Buffer contains metadata */
+	BH_Prio,	/* Buffer should be submitted with REQ_PRIO */
+	BH_Defer_Completion, /* Defer AIO completion to workqueue */
++	BH_migrate,     /* Buffer is being migrated */
+
+	BH_PrivateStart,/* not a state bit, but the first bit available
+			 * for private allocation by other entities
+diff --git a/mm/migrate.c b/mm/migrate.c
+index a073eb6c5009..0ffa8b478fd3 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -846,6 +846,12 @@ static int __buffer_migrate_folio(struct address_space *mapping,
+	if (!buffer_migrate_lock_buffers(head, mode))
+		return -EAGAIN;
+
++	bh = head;
++	do {
++		set_bit(BH_migrate, &bh->b_state);
++		bh = bh->b_this_page;
++	} while (bh != head);
++
+	if (check_refs) {
+		bool busy;
+		bool invalidated = false;
+@@ -861,12 +867,12 @@ static int __buffer_migrate_folio(struct address_space *mapping,
+			}
+			bh = bh->b_this_page;
+		} while (bh != head);
++		spin_unlock(&mapping->i_private_lock);
+		if (busy) {
+			if (invalidated) {
+				rc = -EAGAIN;
+				goto unlock_buffers;
+			}
+-			spin_unlock(&mapping->i_private_lock);
+			invalidate_bh_lrus();
+			invalidated = true;
+			goto recheck_buffers;
+@@ -884,10 +890,9 @@ static int __buffer_migrate_folio(struct address_space *mapping,
+	} while (bh != head);
+
+  unlock_buffers:
+-	if (check_refs)
+-		spin_unlock(&mapping->i_private_lock);
+	bh = head;
+	do {
++		clear_bit(BH_migrate, &bh->b_state)
+		unlock_buffer(bh);
+		bh = bh->b_this_page;
+	} while (bh != head);
 
