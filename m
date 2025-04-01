@@ -1,134 +1,136 @@
-Return-Path: <linux-ext4+bounces-7023-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7024-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D087AA77393
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Apr 2025 06:40:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA8B6A774A6
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Apr 2025 08:44:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD6FD188D5F0
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Apr 2025 04:40:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08ADF3A97A7
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Apr 2025 06:44:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF7C1A2390;
-	Tue,  1 Apr 2025 04:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367F51E47DD;
+	Tue,  1 Apr 2025 06:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C21sTt0u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="js+vVb9H"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334A585C5E;
-	Tue,  1 Apr 2025 04:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 849921DF73B;
+	Tue,  1 Apr 2025 06:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743482437; cv=none; b=knyeE+4hA9mdWc0bnUmJGO+D64izIAK7tXkflZk2LavlI0vKk99ZnIcP4GMiuNtC9ux3O+veDSnQr/JyqfPFhagijnhloc17oUt8mOstMP46XGjtl/CDUdkVELcfNxgekrhx39XmAZXTEzTZcnCu0J5CMNCmfrHQVCvPtC3dZc4=
+	t=1743489862; cv=none; b=m+XMVK0I+C7HJWFqOTktvHrbjtBIPa7KCZM/ekD5eJteDJ7rW+ARI8mVe4JF41Tr1iRftqOZHEr9AkcFECLt7CGF2Wz3Y3cZU76FJpyvolyYUYB0ySh55ciBt1ANOizSn8Juwv7alpHUohwP5CS1IPEOEPSnz+E0+tKdKvqpdmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743482437; c=relaxed/simple;
-	bh=arekcMQaaF+N0rDC8tzRIfBPFHle1Bxxd24l+Vg7dms=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E7ygj5QFwa4ansHgHSZH35zUZVROiD4eScAERQRiMSQjQ8DWxG0pbzENXejnCIa8j4BJQM8tR5rbNJqBkGrL96c/4xvoqO7mOYD5+p9+OOTjzU05qswYrRRltKEe12nSJLkPk0+/pWHyVFXZWuCfyJQJKas8pbvGPN3JvGWoQzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C21sTt0u; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1743489862; c=relaxed/simple;
+	bh=pqyuiXctopdL45kPAN8q9Vk0TMk1imWPOTpqO9u/tto=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OB/1YmXB3Fu+D4f/1qYtEJBqnxCev0FCujTm92sf25lttTIs2MJjm1OvQG0hhwsPyfHnTsAUcKvsp8S4qvwZvYQsUWupNafefKzFPLxYPkIo4uLqjOOVg9x6kbUrEzS92E70eGJUWctWzZeANCGFch0YKTOZnt2Il8VnaVR2qPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=js+vVb9H; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2295d78b45cso7585365ad.0;
-        Mon, 31 Mar 2025 21:40:35 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-224171d6826so73953495ad.3;
+        Mon, 31 Mar 2025 23:44:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743482435; x=1744087235; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AJkFwWmRzcDGJZz1csRZFzzoSzvmOWpO/9ocKmyISGI=;
-        b=C21sTt0u0Cc2wUC1MMUC7dBpcSMLlAKYo4cX/KcYPZ0NqQAsbfk9iyQ7j3e2IbUE/s
-         gLjPyJPIg9DlQn8YSiD5G2Q/PQMd/3S8hO15kIFy68iHAe+ws/TiLsnWLC7TqN+FzUMS
-         amimfX/O+Svh+ftNfRgtTWUW4V9s5b7JYJdHDHYdBxZ9X8jBzhJBxpQfkEDL0x/O8feH
-         q4s3/ws/Y7ltMjv+/6RaCLng3b/2LGn37Awy2WcPsCYBO5rfgBNOw67XIfx7IBpmdVf4
-         LY7ZJm4q6yas04sR7O7kmAR3D5pWPUsQwavp/HxPq6/v7UrixhhcwdTuppfpOP24x8jd
-         23Pw==
+        d=gmail.com; s=20230601; t=1743489859; x=1744094659; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LUlm2nuzsQpJwZehgy4BHgOFTRHAHUfFsd30F277e7A=;
+        b=js+vVb9HJCtx5j7I8j5ziQEmh7SiSzd6OozP1zfxnVd4rNZGnVSIdoZBiesK+VUJfI
+         tRjVk1UmNA7iBlLQ21UX3E5lsVBj82zS11a8So8VmDprDyD3aSaaVEzK9nijzOqTWw2P
+         8ChQ8Qjb8cFbPEFtDyGCvynaOG+xbWsrsANKxIK3qjJq0IE5FB2SLcEjGfWfZzdIWhM7
+         bJ1f86fBr0RSwUq2VfjMiv3Pagdq9WB9czCPiF9U4hhXEO9Wd49ARABuc+tfTeuiGqpG
+         Y4RStcoNu17+EhMN3z8p/pqRezhXKsNkB2CzfpFWpYhBILN1WGvW0Rx/eOYz4JUO70hb
+         otCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743482435; x=1744087235;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AJkFwWmRzcDGJZz1csRZFzzoSzvmOWpO/9ocKmyISGI=;
-        b=go9TYIEK5eMiKOKswylEu4xr7z+kSRmSZyddVP9BZ2XPhcZ+hBCl1a4kcfosvrCIyr
-         kQrQj566kDU2dz6mH1vFHrsVY326N+my1fT248WhIMcV3EG8ZifvmvHINc7KVFLIheWb
-         bDDbb0jXujBCkbV+/lXQ/N82NfBPBfh17NguiTcNLpo5E7mTAH18MiLSf5IPZWdK2J5h
-         n63xTyY47RgEdBdcG4HWJjPUa/gHhYXMOb7lGEko2Maxxc75Dy6rpL5mmb2FKXPlpRK6
-         UMmk6xb56NmwwUJCkqw4uKnbkx+SerkHrxOzWcwEiOQ2Qvw8wYGQIsehlj9b6vhfy635
-         n5CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXj2BY6uHqck5n9KfU5zEf572O9UJ121bbpY/wpHiDX2xXvd7r62WqxBNFF/cXAlEEU+BnAKCxiRZg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9RTaBJWSV0lSbjyLB8uz2HCEslkM0LUQWDFVDOfV4Ng5fewvp
-	TJX+aAmQZak6Pz1W87AsWxdb8u7VdriyAC+DLj+e+Uxc9qt0Z9c0nmS0qw==
-X-Gm-Gg: ASbGncuI87EGhjFygUeSwikKXvSZDBSZvwADdbifmxR9Wt9VwC8S9Q3cnP7oa1usdoX
-	zd2iQdXXAHwf71/1025C6SbwKl5GuNFRpIrwFv60L+HL9b0efcW5R/D6jckziO03dQdpYM7jjf6
-	9jD88kbOYNOf4tK0ppA2xPQq2jMQ1s9yDvu1Kus5VgTBizi1QcML4PNITsr7S6n+I1Tkg+krsHu
-	ljvXjXVsoON7al2TMF07omjdqpl6p30lLaK1fWsdYceDjTBOesUDMnsYV7xmVyNWRamI9veXxXD
-	1r1ZGAUnuKNZzxo5CMTLkhiWf6aRHuW7xqvDItsZwm1sGXRX5ZNS5vk=
-X-Google-Smtp-Source: AGHT+IFzE3JrZTusGursAyudiJZbvaSPPU14NJ8ZZ43u62KIUT/sH5DfhURzmIZeXRcJPS0qHS+lsA==
-X-Received: by 2002:a17:902:f64f:b0:224:1ef:1e00 with SMTP id d9443c01a7336-2292f95d075mr197426795ad.19.1743482434958;
-        Mon, 31 Mar 2025 21:40:34 -0700 (PDT)
-Received: from [192.168.0.120] ([49.205.34.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2291eee0bafsm78375005ad.90.2025.03.31.21.40.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Mar 2025 21:40:34 -0700 (PDT)
-Message-ID: <7ff6d710-e102-465b-b0f8-b9fbed358aad@gmail.com>
-Date: Tue, 1 Apr 2025 10:10:30 +0530
+        d=1e100.net; s=20230601; t=1743489859; x=1744094659;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LUlm2nuzsQpJwZehgy4BHgOFTRHAHUfFsd30F277e7A=;
+        b=sv9yOokh46V66B2tyKSFzWfYc3sDNVc44g9X5t5o+gajcgHl8gwURcxnH/OiiTN2xG
+         /Yt2GjlNxecc83QEzA7d7uklb/R/HBRcFZse+yhhtXOtSe83O7JRpCBvoal8kcxd7jDt
+         IzrqcZOy0n0dQGk1ksWXNrDnV7ADTUI7qd/ZMHuS5Ohx7kUTx1gjuKEZTrBRmi+K5WtG
+         bejlern3MFH5ayXYq/Tre6UWPfzEuIeyL7pIQjP+MHXQsharaDe0rjNKsU6KwOYxj0A8
+         8wW5BF3thlOrq/2rh9OzthA4UFX9BpY4ZcOEPMyFh8knqq938TsE8p0iKRL9P9Mffgtq
+         sKOg==
+X-Forwarded-Encrypted: i=1; AJvYcCWlzLKfehYKjcF8SJ9nITfWOoeLyKR7B2dQBu6MAbXg78TQ3KmHZ86hJ5oOP6TPjeSQtpZozgLauBk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxREDFNRv9qtjciKdMeayedW/WtsqUaKc56cbtEkAvAlXyapnS
+	zDhbwNWpdNKCl37IETTkGF6YtRPyBKBgqH485GTJ16oCl49VahUfL/uTWw==
+X-Gm-Gg: ASbGnctOL/FPQWt05xkqu0xpgB9RdYKurjN+pZRuWBNWjAZSIa1t/+xqsh5V7EC5TDV
+	X8l8IGjJO0h4H7gIAIJMI0Yh/o/5YAi8gajbLpFpVmi0s7CdUQE8lFeKKuOxalfS2tqOvehEbB5
+	mKJkRCDzMsKjRzFEOdQxiTx+ARQoe+io45queiOjTHOYFLyjtEqH5qJqdZIJ4wRyk9evxE8elQl
+	iTUeYrJJ8oCGYl7SyhYkxwuc49YSMpuaRTVrzinDzGv4BhyQ5LSvjc+SseDlF9gCollVER1+Ygu
+	kpmrbV9C2QE3ZFZqIJyNR4HAoTONZnFKtPhJk6QNic4fDFhR
+X-Google-Smtp-Source: AGHT+IG16OwlDGp1lDWBbwCp8ES2erJvvKiuX/9rl7aqJjvI0apZZuQo/BJHW/htjrLsuVdvdt14sA==
+X-Received: by 2002:a05:6a21:3482:b0:1f5:5b2a:f629 with SMTP id adf61e73a8af0-2009f75b1damr23077882637.30.1743489859336;
+        Mon, 31 Mar 2025 23:44:19 -0700 (PDT)
+Received: from citest-1.. ([49.205.34.162])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7397106ae4asm8135092b3a.110.2025.03.31.23.44.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Mar 2025 23:44:18 -0700 (PDT)
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+To: fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com,
+	djwong@kernel.org,
+	zlang@kernel.org,
+	david@fromorbit.com,
+	nirjhar.roy.lists@gmail.com
+Subject: [PATCH v2 0/5] Minor cleanups in common/
+Date: Tue,  1 Apr 2025 06:43:55 +0000
+Message-Id: <cover.1743487913.git.nirjhar.roy.lists@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] xfs/539: Ignore remount failures on v5 xfs
-To: fstests@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
- ritesh.list@gmail.com, ojaswin@linux.ibm.com, djwong@kernel.org,
- zlang@kernel.org, david@fromorbit.com
-References: <cover.1741094926.git.nirjhar.roy.lists@gmail.com>
- <5cd91683c8eec72a6016914d3f9e631909e99da8.1741094926.git.nirjhar.roy.lists@gmail.com>
-Content-Language: en-US
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-In-Reply-To: <5cd91683c8eec72a6016914d3f9e631909e99da8.1741094926.git.nirjhar.roy.lists@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+This patch series removes some unnecessary sourcing of common/rc
+and decouples the call to init_rc() from the sourcing of common/rc.
+This is proposed in [1] and [2]. It also removes direct usage of exit command
+with a _exit wrapper. The individual patches have the details.
 
-On 3/4/25 19:18, Nirjhar Roy (IBM) wrote:
-> Remount with noattr2 fails on a v5 filesystem, however the deprecation
-> warnings still get printed and that is exactly what the test
-> is checking. So ignore the mount failures in this case.
+[v1] --> v[2]
+ 1. Added R.B from Darrick in patch 1 of [v1]
+ 2. Kept the init_rc call that was deleted in the v1.
+ 3. Introduced _exit wrapper around exit command. This will help us get correct
+    exit codes ("$?") on failures.
 
-Hi,
+[1] https://lore.kernel.org/all/20250206155251.GA21787@frogsfrogsfrogs/
 
-Can I please get some review on this?
+[2] https://lore.kernel.org/all/20250210142322.tptpphdntglsz4eq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com/
 
---NR
+[v1] https://lore.kernel.org/all/cover.1741248214.git.nirjhar.roy.lists@gmail.com/
 
->
-> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> ---
->   tests/xfs/539 | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tests/xfs/539 b/tests/xfs/539
-> index b9bb7cc1..5098be4a 100755
-> --- a/tests/xfs/539
-> +++ b/tests/xfs/539
-> @@ -61,7 +61,7 @@ for VAR in {attr2,noikeep}; do
->   done
->   for VAR in {noattr2,ikeep}; do
->   	log_tag
-> -	_scratch_remount $VAR
-> +	_scratch_remount $VAR >> $seqres.full 2>&1
->   	check_dmesg_for_since_tag "XFS: $VAR mount option is deprecated" || \
->   		echo "Could not find deprecation warning for $VAR"
->   done
+Nirjhar Roy (IBM) (5):
+  generic/749: Remove redundant sourcing of common/rc
+  check: Remove redundant _test_mount in check
+  check,common{rc,preamble}: Decouple init_rc() call from sourcing
+    common/rc
+  common/config: Introduce _exit wrapper around exit command
+  common: exit --> _exit
 
--- 
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
+ check             |   8 +---
+ common/btrfs      |   6 +--
+ common/ceph       |   2 +-
+ common/config     |  15 +++++--
+ common/ext4       |   2 +-
+ common/populate   |   2 +-
+ common/preamble   |   3 +-
+ common/punch      |  12 +++---
+ common/rc         | 105 ++++++++++++++++++++++------------------------
+ common/xfs        |   8 ++--
+ tests/generic/749 |   1 -
+ 11 files changed, 81 insertions(+), 83 deletions(-)
+
+--
+2.34.1
 
 
