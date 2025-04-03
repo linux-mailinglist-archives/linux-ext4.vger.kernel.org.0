@@ -1,90 +1,128 @@
-Return-Path: <linux-ext4+bounces-7052-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7053-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84317A7A7A6
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 18:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A081A7A86D
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 19:13:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 862A73A818F
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 16:13:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F5DE3AA7A0
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 17:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 535E8250C18;
-	Thu,  3 Apr 2025 16:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B789525178F;
+	Thu,  3 Apr 2025 17:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Lff1NApR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74CAB250C15
-	for <linux-ext4@vger.kernel.org>; Thu,  3 Apr 2025 16:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C336E2505BC;
+	Thu,  3 Apr 2025 17:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743696800; cv=none; b=qjO4siRXWTqtao4rqOC3z0jN5GXkaJkAX1jVDTESN/okXC63MWMSH3x/OiwkYip5vV1tV/HW7p9FGBoK06Y5tJLVWnE1FiKONIKaJ/kXgiQ9ywS9KtQDTQ10HR74wfoBQ78kQCqYsn5TDCkYrB1Ipgm1k3k3wZPrCDMOkJZfww8=
+	t=1743700360; cv=none; b=ptpJnkeioBvDSc5beNvIpLlUWswb1W5UItZ3maHLJysKzHwkbegLJZSfUypA5DcGC3xyAV9oCpAs6BnUBqREvaS0QxIeG1969+BvYtgcPCMVpOjYkF5pi1jYbolXIhX62A3+SmloP1SdvEUNZEgi6Bs+sFnfdqXc129irLJNvUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743696800; c=relaxed/simple;
-	bh=ZxlrAciEoWVbQD1CtbCSoNvl5hTx6xGK12SlTdXCDIU=;
+	s=arc-20240116; t=1743700360; c=relaxed/simple;
+	bh=n3MLm048L/1tThdw/l7NAqBQKdRTct3UQQPeLerYNkE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xs7I8ER/xLxM3ziwN6Vq6bCw67dBG0gjLOYqjkqSQKKHXHoXe9HgqYBPB3trvHrW0bUijcrnjY81LWVkHtgKv18KjY4ZSvpmMxUPhHUqBrJduTlSCi9R1Yt6EM+U5/hyuWwyrzbrH+qhVvsOjccyJ/JMfqakzLIeutdaHaILhgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-119-246.bstnma.fios.verizon.net [173.48.119.246])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 533GBsv8001822
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 3 Apr 2025 12:11:54 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id B7F192E0019; Thu, 03 Apr 2025 12:11:53 -0400 (EDT)
-Date: Thu, 3 Apr 2025 12:11:53 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Jan Kara <jack@suse.cz>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        brauner@kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, riel@surriel.com, hannes@cmpxchg.org,
-        oliver.sang@intel.com, david@redhat.com, axboe@kernel.dk, hare@suse.de,
-        david@fromorbit.com, djwong@kernel.org, ritesh.list@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, gost.dev@samsung.com, p.raghav@samsung.com,
-        da.gomez@samsung.com
-Subject: Re: [PATCH 2/3] fs/buffer: avoid races with folio migrations on
- __find_get_block_slow()
-Message-ID: <20250403161153.GA3051250@mit.edu>
-References: <20250330064732.3781046-1-mcgrof@kernel.org>
- <20250330064732.3781046-3-mcgrof@kernel.org>
- <lj6o73q6nev776uvy7potqrn5gmgtm4o2cev7dloedwasxcsmn@uanvqp3sm35p>
- <20250401214951.kikcrmu5k3q6qmcr@offworld>
- <Z-yZxMVJgqOOpjHn@casper.infradead.org>
- <Z-3spxNHYe_CbLgP@bombadil.infradead.org>
- <2jrcw4mtwcophanqmi2y74ffgf247m6ap44u3gedpylsjl3bz6@yueuwkmcwm66>
+	 Content-Type:Content-Disposition:In-Reply-To; b=P2oKVskZeY3XiB+LwrydQTnfx2kCKoPDrlKDBUkfI3LUR/N2TPwAe8IeWzOgoIOklsVQzmWRZbRd2wOXnrDX57dQgW6RmwbgKvNuwQQiXuEIvhpdL8P3bgLAJ+SFkoE2ybh5VihUb9UJAalmQSCyji79ovmia0qXfie+S4C5kFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Lff1NApR; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=F/Huv1u3N8Ic31zYcjSkVat6RRJDswmpX0g1d52/EhY=; b=Lff1NApRveWFI0pHa7VtFfnSIL
+	YonUoUpFlqcynPi+DSS5aZ0uLB1NlbC8JB8YynvwvDpFnj4GawFv9pOPtaSeSaxkMkNxez62iitoR
+	EGDbRyhQciYbKDm9la7lGll9DZpY1oBCE0S8a/zh6C29reHXyzugC/cvfQa+uws1ft97SuRAdakMD
+	AfJgkHa+pxL6mlN+YmivT++4mfax91L2OA83qGV8i/XhbMXgYzolnQP+GZz524JPSw5qeBEyZAWVD
+	co0rkj4yRcCk4JsB/Yq9IgWBKlKcg/0mtu3sG86wckKXTI6X2joIolQYIYS9YsLj0uqLn23R4mWrF
+	mDapSljg==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1u0O78-0000000DMVH-41Zr;
+	Thu, 03 Apr 2025 17:12:27 +0000
+Date: Thu, 3 Apr 2025 18:12:26 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Matt Fleming <matt@readmodwrite.com>
+Cc: adilger.kernel@dilger.ca, akpm@linux-foundation.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	luka.2016.cs@gmail.com, tytso@mit.edu,
+	Barry Song <baohua@kernel.org>, kernel-team@cloudflare.com,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Dave Chinner <david@fromorbit.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>
+Subject: Re: Potential Linux Crash: WARNING in ext4_dirty_folio in Linux
+ kernel v6.13-rc5
+Message-ID: <Z-7BengoC1j6WQBE@casper.infradead.org>
+References: <Z8kvDz70Wjh5By7c@casper.infradead.org>
+ <20250326105914.3803197-1-matt@readmodwrite.com>
+ <CAENh_SSbkoa3srjkAMmJuf-iTFxHOtwESHoXiPAu6bO7MLOkDA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2jrcw4mtwcophanqmi2y74ffgf247m6ap44u3gedpylsjl3bz6@yueuwkmcwm66>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAENh_SSbkoa3srjkAMmJuf-iTFxHOtwESHoXiPAu6bO7MLOkDA@mail.gmail.com>
 
-On Thu, Apr 03, 2025 at 03:43:12PM +0200, Jan Kara wrote:
->   fs/ext4/ialloc.c:recently_deleted() - this one is the most problematic
->     place. It must bail rather than sleeping (called under a spinlock) but
->     it depends on the fact that if bh is not returned, then the data has been
->     written out and evicted from memory. Luckily, the usage of
->     recently_deleted() is mostly an optimization to reduce damage in case
->     of crash so rare false failure should be OK. Ted, what is your opinion?
+On Thu, Apr 03, 2025 at 01:29:44PM +0100, Matt Fleming wrote:
+> On Wed, Mar 26, 2025 at 10:59 AM Matt Fleming <matt@readmodwrite.com> wrote:
+> >
+> > Hi there,
+> >
+> > I'm also seeing this PF_MEMALLOC WARN triggered from kswapd in 6.12.19.
+> >
+> > Does overlayfs need some kind of background inode reclaim support?
+> 
+> Hey everyone, I know there was some off-list discussion last week at
+> LSFMM, but I don't think a definite solution has been proposed for the
+> below stacktrace.
 
-Yes, if we can just assume that inode has not been recently deleted in
-the rare case where a miogration is taking place, that should be fine.
-So in practice, recently_deleted() could just call some variant of
-find_get_block() (with some flag ) which returns NULL if we need to
-sleep (e.g., if it is not in the buffer cache so a read would need to
-take place, or we need to wait for the page migration to complete),
-that should work fine.
+Hi Matt,
 
-Thanks,
+We did have a substantial discussion at LSFMM and we just had another
+discussion on the ext4 call.  I'm going to try to summarise those
+discussions here, and people can jump in to correct me (I'm not really
+an expert on this part of MM-FS interaction).
 
-					- Ted
+At LSFMM, we came up with a solution that doesn't work, so let's start
+with ideas that don't work:
+
+ - Allow PF_MEMALLOC to dip into the atomic reserves.  With large block
+   devices, we might end up doing emergency high-order allocations, and
+   that makes everybody nervous
+ - Only allow inode reclaim from kswapd and not from direct reclaim.
+   Your stack trace here is from kswapd, so obviously that doesn't work.
+ - Allow ->evict_inode to return an error.  At this point the inode has
+   been taken off the lists which means that somebody else may have
+   started to start constructing it again, and we can't just put it back
+   on the lists.
+
+Jan explained that _usually_ the reclaim path is not the last holder of
+a reference to the inode.  What's happening here is that we've lost a
+race where the dentry is being turned negative by somebody else at the
+same time, and usually they'd have the last reference and call evict.
+But if the shrinker has the last reference, it has to do the eviction.
+
+Jan does not think that Overlayfs is a factor here.  It may change the
+timing somewhat but should not make the race wider (nor narrower).
+
+Ideas still on the table:
+
+ - Convert all filesystems to use the XFS inode management scheme.
+   Nobody is thrilled by this large amount of work.
+ - Find a simpler version of the XFS scheme to implement for other
+   filesystems.
+
 
