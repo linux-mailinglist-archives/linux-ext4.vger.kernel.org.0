@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-7067-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7069-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E287CA7AD6D
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 22:04:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 636F9A7AD87
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 22:07:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA3593BADB9
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 19:58:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F3E13B898B
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 20:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 583FC2D3A6F;
-	Thu,  3 Apr 2025 19:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BE4728C5B7;
+	Thu,  3 Apr 2025 19:10:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B0pNatXg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oMwfD/rv"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0E12D1F75;
-	Thu,  3 Apr 2025 19:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FEB28C5A6;
+	Thu,  3 Apr 2025 19:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743707426; cv=none; b=HDJqhtmQJoeVIJUJ1elpZ1U4xTubXskWOdNAbsVtZwVPbTwhocvQ0Woouua3l2EC66tpfqRkY/oB6DN5dlxTdVy5rZNVBvmP/BH+9ym5E6M+BRR8dsoquIfZ92o25ZOQT0hxDTtKKJNu/C/N8YORDmSKu/1ussTDUgin7gDVfvM=
+	t=1743707459; cv=none; b=grm9A4iNi8cJtXGL7N/Hkjmjm6sJMebxGpoulFsU5lMez5ewQW8/kL1Pw89d5bHI8HDU4h5RVGxe1y2rccTWJCkgG03mhQk3+TiUw63Lb+07m54sO3oUoE0dA4oIza5T1c1a0Wa+y2N+sue6CECb+0Su/z3azms2AaeFy9H7NDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743707426; c=relaxed/simple;
-	bh=Ax85XbRVpF48NcRCQBswReGdH+tyl+tttVKCug89gpg=;
+	s=arc-20240116; t=1743707459; c=relaxed/simple;
+	bh=orlZzE6F90+mKEG4LC7/xb21b1erZCviTbFPJNvEUWU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SNCr+1PoL/AWY9OVlt41fHZCatxSh4WWSWr9S7eqrdh8otZEBtrmsNVU8OrwVzJBcc9opt3oTzUQTXqp1ALcsW8VtsPp1MvzgObGRnkYpkyL7dF2pt/JltQUMdcv0XTgeQC00ZI1rVIgWNcVTqC/hGNFmdKbXYad38mlHRY2v/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B0pNatXg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90586C4CEE9;
-	Thu,  3 Apr 2025 19:10:24 +0000 (UTC)
+	 MIME-Version; b=t2krJFHqGBqbEu9UsoyG/fmzMbrHoe7E/lt4RRC0gTTNfZ6WgY/a4AWWtBfaPq9zVKwqaMBR1gAtJ9IEFgbLhzgZApSyOQ51HH9v+1lO6SK5N68YDs7p6W8cDtOyEa/UZF6nlkMw6pleIlMMWmbA4uMwlk2NfrqRBSOJk9orBY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oMwfD/rv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62307C4CEE8;
+	Thu,  3 Apr 2025 19:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743707425;
-	bh=Ax85XbRVpF48NcRCQBswReGdH+tyl+tttVKCug89gpg=;
+	s=k20201202; t=1743707458;
+	bh=orlZzE6F90+mKEG4LC7/xb21b1erZCviTbFPJNvEUWU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=B0pNatXgER2ZVOqZCUYhzN44/UoSFOyy90rw2B844PYjcxfg3plvMetfrfMP/zJsv
-	 9dwPHIBz/Karvj61SwyW5sp5A7MAxPx45wG35ntt5o+MWF2MEhlc1AVv+7Z5zzxdCx
-	 C8BBXocFvuQDsWabAJgQFoG6clTrDc8Hp3Qp0vEt3MBo9vtEGvoNmfbp7cN3DUo2zI
-	 3k7hQeB8NG3hskG7DX9XyEVGzO1w4MwTjpQ60ImFbBnK/uhWnGFGdVPpfExEc4jYLq
-	 4xpi/8R32An9/2UGPdNU7i16NdJWOhQ/DlQAmWyL+cy1SJo6gXwtss3Gjv2weZVvjW
-	 vpzoinMVVoYJA==
+	b=oMwfD/rvy6Gc5LsJ7k14W8IzzgqPlXOgi4KBNp0ORFIKdGyEC16I463tH7ce9UO1n
+	 B9xMJdfHt+ff9U1QA/D/cvq9yWXaU28uE+vOtV2Btlr57y405/fHqB/C7HdvkBycho
+	 7CoEWW8vBS89O3WUPcqRM5OTiRn0WYeq1lV07XknWtned9MLW5i4PTlDWjywQ2Jnlf
+	 R6h/PvhYE/TmlBrEXJt5gnBaRTClclhWKffDkwWmZd8HyOyphX5M3Wh7ZC6xp7vcdE
+	 0/0FBoKvJYZ2Xiw+ugOWjIlfnhZhQkWEP4ky9N0b82iQgrxUuYGMluKk2bbcOi9oSE
+	 zMKI6xwMgTv9g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -53,12 +53,12 @@ Cc: Bhupesh <bhupesh@igalia.com>,
 	kees@kernel.org,
 	linux-ext4@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 10/15] ext4: ignore xattrs past end
-Date: Thu,  3 Apr 2025 15:09:57 -0400
-Message-Id: <20250403191002.2678588-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 09/14] ext4: ignore xattrs past end
+Date: Thu,  3 Apr 2025 15:10:31 -0400
+Message-Id: <20250403191036.2678799-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250403191002.2678588-1-sashal@kernel.org>
-References: <20250403191002.2678588-1-sashal@kernel.org>
+In-Reply-To: <20250403191036.2678799-1-sashal@kernel.org>
+References: <20250403191036.2678799-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -67,7 +67,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.235
+X-stable-base: Linux 5.4.291
 Content-Transfer-Encoding: 8bit
 
 From: Bhupesh <bhupesh@igalia.com>
@@ -179,10 +179,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index d1d930d09cb8a..4eb75216218a0 100644
+index 19982a682b9c1..f32e720e9e202 100644
 --- a/fs/ext4/xattr.c
 +++ b/fs/ext4/xattr.c
-@@ -1123,15 +1123,24 @@ ext4_xattr_inode_dec_ref_all(handle_t *handle, struct inode *parent,
+@@ -1152,15 +1152,24 @@ ext4_xattr_inode_dec_ref_all(handle_t *handle, struct inode *parent,
  {
  	struct inode *ea_inode;
  	struct ext4_xattr_entry *entry;
