@@ -1,64 +1,62 @@
-Return-Path: <linux-ext4+bounces-7061-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7062-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B45FA7ACD3
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 21:51:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFD5AA7AD03
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 21:55:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D936B17EE81
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 19:45:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76984189DC78
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 19:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CF0283C81;
-	Thu,  3 Apr 2025 19:08:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72DA6293B44;
+	Thu,  3 Apr 2025 19:09:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="peIlU+V8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J3nzrdhh"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914302836B4;
-	Thu,  3 Apr 2025 19:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C83293472;
+	Thu,  3 Apr 2025 19:09:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743707307; cv=none; b=STZaAOyiUDuDzq+3vBpKQTYrElWoEjVl2E8MPo+fpyGsD0tni723Kb57ukFiLYfbqsf/eS7Sa+MzSxBoMboGOrRZbyG7yrzsrucZxIiMJ7i6StviIBgJLZBME+RwhsP1LNe+xNvcxTPJKj3lk5qpyp7AJ3Z7DdDX0u23Baq+0Yg=
+	t=1743707351; cv=none; b=mFO0k4CkJNSRHb9XncOfnrjbOgEVlJb8JkdQzet/WFC1lVt6emGnPhT4PbRItbAAspe0ybU24jdketIU5Na/62SWGoCpaQmOo9Ao0JVwMh6hrxLDW5YQRbeb9nrHpPuq5bz3KUtjSH1z7GqgqeWlkXJvwY5bDm3wVsfD4JbfC1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743707307; c=relaxed/simple;
-	bh=w2JAYpV5gq5FFih3htkzNyzWhw3BKjjQmD6NIruvfTI=;
+	s=arc-20240116; t=1743707351; c=relaxed/simple;
+	bh=ZS7M7N2IQeYHPQp+JnKBoxVs27nXGw/71AJZZjUtL10=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rtfCr8FgQ+KcSeP+iaHeE37sczKI1kJnnp6O3KfUFBW+ijSCe1KqmiBX0Qyh0QJnktjgwk22DaEXDzNd8ZlMprDDG/ajlgfUes/GVDOQgvqfI9P0fkA4Fm2V1/Mprc6CJ0wffGsZxAYrdyTJohAWNzb23qx/zuVRXx/sc2fkRkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=peIlU+V8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D74CAC4CEEA;
-	Thu,  3 Apr 2025 19:08:25 +0000 (UTC)
+	 MIME-Version; b=B1v/t3WJiS/f3Zezf4wHICp6rSZ80zpHeQrx/qyc/0mJhzPHGW/lOuzEidposg5ccPJjBnvodEfCRVcSF4Rjp9TwrKeFk5tVJSvVcx+A8AQKq13OLtfsFxLDc5ltfBrvT5s5pfA8cKGlt+R4HWyel/i1QVqpwctoypDtSxoild8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J3nzrdhh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91F3C4CEE9;
+	Thu,  3 Apr 2025 19:09:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743707307;
-	bh=w2JAYpV5gq5FFih3htkzNyzWhw3BKjjQmD6NIruvfTI=;
+	s=k20201202; t=1743707350;
+	bh=ZS7M7N2IQeYHPQp+JnKBoxVs27nXGw/71AJZZjUtL10=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=peIlU+V8fVujp4TmUE5Vyfaz0C+p7ne7FqAKdidtCkFb/azfWJavWA1gWEc3HOpXd
-	 14j4Xbi/2ldkHKYQu3bFKqLS1rCV3ovpf2UrLlmCCO4nh2kWthnTiRPeg+14pFdRIp
-	 6B4EKyPyuSN0AFQglInsPiAID+wd1tx1G+Iux1caBabrbXhFZr1v1zfV2DVZy379V+
-	 pht0VKrv3+fS2X5atL6PGSzk05kj3vORR7wJtE85GxoOQd7JGTPCm9LQrkt+Z6YOui
-	 6npbeaMhL+wF5eNGCxvUY98U5NRAd9sqA3JRi1cpMClHAf+Ua6o/4eXNC8KUptH6Z/
-	 /WB3YTuu6bgZg==
+	b=J3nzrdhhV6LFLY9Qcao7+rUuyA90M8XYn23rcIgeD+H/0rmbkQGcQza75W/um2l8Y
+	 rlM0NGwGUx9x9uqlu/5AEhP8LTESP/9hA4ryLlMGnkjmovf+lLosDgb4P6etW8ur09
+	 bii9yg5rZiOW+gR0e2POD9OnGoMlXyayRjvcsp8LnFKsstuO0I+3XGWvkPfDH4AvxW
+	 /hZrVpdsek7OFeaYq0PeQFIyv46kaDOvbRW/9m1kMR4OA7Yk1XKb+cD2VsHo0ZjI3J
+	 1Xvz3aGIXvcPxzAnJsQcwxqhQ/awNVckjbCn/P6M3EGuDGGVOqV1WnIxmolKCPUIUv
+	 +rVEtYyU1/i1A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Bhupesh <bhupesh@igalia.com>,
-	syzbot+b244bda78289b00204ed@syzkaller.appspotmail.com,
-	Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Jan Kara <jack@suse.cz>,
+	Baokun Li <libaokun1@huawei.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
-	kees@kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 19/26] ext4: ignore xattrs past end
-Date: Thu,  3 Apr 2025 15:07:38 -0400
-Message-Id: <20250403190745.2677620-19-sashal@kernel.org>
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 11/18] ext4: protect ext4_release_dquot against freezing
+Date: Thu,  3 Apr 2025 15:08:37 -0400
+Message-Id: <20250403190845.2678025-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250403190745.2677620-1-sashal@kernel.org>
-References: <20250403190745.2677620-1-sashal@kernel.org>
+In-Reply-To: <20250403190845.2678025-1-sashal@kernel.org>
+References: <20250403190845.2678025-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -67,147 +65,75 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.85
+X-stable-base: Linux 6.1.132
 Content-Transfer-Encoding: 8bit
 
-From: Bhupesh <bhupesh@igalia.com>
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-[ Upstream commit c8e008b60492cf6fd31ef127aea6d02fd3d314cd ]
+[ Upstream commit 530fea29ef82e169cd7fe048c2b7baaeb85a0028 ]
 
-Once inside 'ext4_xattr_inode_dec_ref_all' we should
-ignore xattrs entries past the 'end' entry.
+Protect ext4_release_dquot against freezing so that we
+don't try to start a transaction when FS is frozen, leading
+to warnings.
 
-This fixes the following KASAN reported issue:
+Further, avoid taking the freeze protection if a transaction
+is already running so that we don't need end up in a deadlock
+as described in
 
-==================================================================
-BUG: KASAN: slab-use-after-free in ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
-Read of size 4 at addr ffff888012c120c4 by task repro/2065
+  46e294efc355 ext4: fix deadlock with fs freezing and EA inodes
 
-CPU: 1 UID: 0 PID: 2065 Comm: repro Not tainted 6.13.0-rc2+ #11
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x1fd/0x300
- ? tcp_gro_dev_warn+0x260/0x260
- ? _printk+0xc0/0x100
- ? read_lock_is_recursive+0x10/0x10
- ? irq_work_queue+0x72/0xf0
- ? __virt_addr_valid+0x17b/0x4b0
- print_address_description+0x78/0x390
- print_report+0x107/0x1f0
- ? __virt_addr_valid+0x17b/0x4b0
- ? __virt_addr_valid+0x3ff/0x4b0
- ? __phys_addr+0xb5/0x160
- ? ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
- kasan_report+0xcc/0x100
- ? ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
- ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
- ? ext4_xattr_delete_inode+0xd30/0xd30
- ? __ext4_journal_ensure_credits+0x5f0/0x5f0
- ? __ext4_journal_ensure_credits+0x2b/0x5f0
- ? inode_update_timestamps+0x410/0x410
- ext4_xattr_delete_inode+0xb64/0xd30
- ? ext4_truncate+0xb70/0xdc0
- ? ext4_expand_extra_isize_ea+0x1d20/0x1d20
- ? __ext4_mark_inode_dirty+0x670/0x670
- ? ext4_journal_check_start+0x16f/0x240
- ? ext4_inode_is_fast_symlink+0x2f2/0x3a0
- ext4_evict_inode+0xc8c/0xff0
- ? ext4_inode_is_fast_symlink+0x3a0/0x3a0
- ? do_raw_spin_unlock+0x53/0x8a0
- ? ext4_inode_is_fast_symlink+0x3a0/0x3a0
- evict+0x4ac/0x950
- ? proc_nr_inodes+0x310/0x310
- ? trace_ext4_drop_inode+0xa2/0x220
- ? _raw_spin_unlock+0x1a/0x30
- ? iput+0x4cb/0x7e0
- do_unlinkat+0x495/0x7c0
- ? try_break_deleg+0x120/0x120
- ? 0xffffffff81000000
- ? __check_object_size+0x15a/0x210
- ? strncpy_from_user+0x13e/0x250
- ? getname_flags+0x1dc/0x530
- __x64_sys_unlinkat+0xc8/0xf0
- do_syscall_64+0x65/0x110
- entry_SYSCALL_64_after_hwframe+0x67/0x6f
-RIP: 0033:0x434ffd
-Code: 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 8
-RSP: 002b:00007ffc50fa7b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-RAX: ffffffffffffffda RBX: 00007ffc50fa7e18 RCX: 0000000000434ffd
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000005
-RBP: 00007ffc50fa7be0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffc50fa7e08 R14: 00000000004bbf30 R15: 0000000000000001
- </TASK>
-
-The buggy address belongs to the object at ffff888012c12000
- which belongs to the cache filp of size 360
-The buggy address is located 196 bytes inside of
- freed 360-byte region [ffff888012c12000, ffff888012c12168)
-
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12c12
-head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x40(head|node=0|zone=0)
-page_type: f5(slab)
-raw: 0000000000000040 ffff888000ad7640 ffffea0000497a00 dead000000000004
-raw: 0000000000000000 0000000000100010 00000001f5000000 0000000000000000
-head: 0000000000000040 ffff888000ad7640 ffffea0000497a00 dead000000000004
-head: 0000000000000000 0000000000100010 00000001f5000000 0000000000000000
-head: 0000000000000001 ffffea00004b0481 ffffffffffffffff 0000000000000000
-head: 0000000000000002 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888012c11f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888012c12000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff888012c12080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                           ^
- ffff888012c12100: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
- ffff888012c12180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-Reported-by: syzbot+b244bda78289b00204ed@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=b244bda78289b00204ed
-Suggested-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Signed-off-by: Bhupesh <bhupesh@igalia.com>
-Link: https://patch.msgid.link/20250128082751.124948-2-bhupesh@igalia.com
+Suggested-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Reviewed-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://patch.msgid.link/20241121123855.645335-3-ojaswin@linux.ibm.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/xattr.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ fs/ext4/super.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index df5ab1a75fc48..ca22aa9e04b4b 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1176,15 +1176,24 @@ ext4_xattr_inode_dec_ref_all(handle_t *handle, struct inode *parent,
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 53f1deb049ec1..7bd672f8cc995 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -6803,12 +6803,25 @@ static int ext4_release_dquot(struct dquot *dquot)
  {
- 	struct inode *ea_inode;
- 	struct ext4_xattr_entry *entry;
-+	struct ext4_iloc iloc;
- 	bool dirty = false;
- 	unsigned int ea_ino;
- 	int err;
- 	int credits;
-+	void *end;
+ 	int ret, err;
+ 	handle_t *handle;
++	bool freeze_protected = false;
 +
-+	if (block_csum)
-+		end = (void *)bh->b_data + bh->b_size;
-+	else {
-+		ext4_get_inode_loc(parent, &iloc);
-+		end = (void *)ext4_raw_inode(&iloc) + EXT4_SB(parent->i_sb)->s_inode_size;
++	/*
++	 * Trying to sb_start_intwrite() in a running transaction
++	 * can result in a deadlock. Further, running transactions
++	 * are already protected from freezing.
++	 */
++	if (!ext4_journal_current_handle()) {
++		sb_start_intwrite(dquot->dq_sb);
++		freeze_protected = true;
 +	}
  
- 	/* One credit for dec ref on ea_inode, one for orphan list addition, */
- 	credits = 2 + extra_credits;
+ 	handle = ext4_journal_start(dquot_to_inode(dquot), EXT4_HT_QUOTA,
+ 				    EXT4_QUOTA_DEL_BLOCKS(dquot->dq_sb));
+ 	if (IS_ERR(handle)) {
+ 		/* Release dquot anyway to avoid endless cycle in dqput() */
+ 		dquot_release(dquot);
++		if (freeze_protected)
++			sb_end_intwrite(dquot->dq_sb);
+ 		return PTR_ERR(handle);
+ 	}
+ 	ret = dquot_release(dquot);
+@@ -6819,6 +6832,10 @@ static int ext4_release_dquot(struct dquot *dquot)
+ 	err = ext4_journal_stop(handle);
+ 	if (!ret)
+ 		ret = err;
++
++	if (freeze_protected)
++		sb_end_intwrite(dquot->dq_sb);
++
+ 	return ret;
+ }
  
--	for (entry = first; !IS_LAST_ENTRY(entry);
-+	for (entry = first; (void *)entry < end && !IS_LAST_ENTRY(entry);
- 	     entry = EXT4_XATTR_NEXT(entry)) {
- 		if (!entry->e_value_inum)
- 			continue;
 -- 
 2.39.5
 
