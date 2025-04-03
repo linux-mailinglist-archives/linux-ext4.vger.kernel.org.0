@@ -1,214 +1,110 @@
-Return-Path: <linux-ext4+bounces-7069-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7070-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 636F9A7AD87
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 22:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ECA4A7AFA8
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 22:57:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F3E13B898B
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 20:01:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F6CC3BAA4B
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 20:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BE4728C5B7;
-	Thu,  3 Apr 2025 19:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC94264A92;
+	Thu,  3 Apr 2025 19:32:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oMwfD/rv"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="xt7ulVY8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FEB28C5A6;
-	Thu,  3 Apr 2025 19:10:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F139B257422;
+	Thu,  3 Apr 2025 19:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743707459; cv=none; b=grm9A4iNi8cJtXGL7N/Hkjmjm6sJMebxGpoulFsU5lMez5ewQW8/kL1Pw89d5bHI8HDU4h5RVGxe1y2rccTWJCkgG03mhQk3+TiUw63Lb+07m54sO3oUoE0dA4oIza5T1c1a0Wa+y2N+sue6CECb+0Su/z3azms2AaeFy9H7NDI=
+	t=1743708770; cv=none; b=f7Iq5/R83TNWr394unJ7mjVvfBvxLLL/yXbY2Q8Wqt3QZMk1KgAaGQY2S+WS2n6VHAONgXtR7uekRgnmwf+QtTymlfctJe/4yD0sYONoAQRn1iAQS1dRZUQoRhl5zR77RYvKNWBaLRZfRjpHX7p9w6aV/ifXG3VdIUtthSNre/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743707459; c=relaxed/simple;
-	bh=orlZzE6F90+mKEG4LC7/xb21b1erZCviTbFPJNvEUWU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t2krJFHqGBqbEu9UsoyG/fmzMbrHoe7E/lt4RRC0gTTNfZ6WgY/a4AWWtBfaPq9zVKwqaMBR1gAtJ9IEFgbLhzgZApSyOQ51HH9v+1lO6SK5N68YDs7p6W8cDtOyEa/UZF6nlkMw6pleIlMMWmbA4uMwlk2NfrqRBSOJk9orBY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oMwfD/rv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62307C4CEE8;
-	Thu,  3 Apr 2025 19:10:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743707458;
-	bh=orlZzE6F90+mKEG4LC7/xb21b1erZCviTbFPJNvEUWU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oMwfD/rvy6Gc5LsJ7k14W8IzzgqPlXOgi4KBNp0ORFIKdGyEC16I463tH7ce9UO1n
-	 B9xMJdfHt+ff9U1QA/D/cvq9yWXaU28uE+vOtV2Btlr57y405/fHqB/C7HdvkBycho
-	 7CoEWW8vBS89O3WUPcqRM5OTiRn0WYeq1lV07XknWtned9MLW5i4PTlDWjywQ2Jnlf
-	 R6h/PvhYE/TmlBrEXJt5gnBaRTClclhWKffDkwWmZd8HyOyphX5M3Wh7ZC6xp7vcdE
-	 0/0FBoKvJYZ2Xiw+ugOWjIlfnhZhQkWEP4ky9N0b82iQgrxUuYGMluKk2bbcOi9oSE
-	 zMKI6xwMgTv9g==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Bhupesh <bhupesh@igalia.com>,
-	syzbot+b244bda78289b00204ed@syzkaller.appspotmail.com,
-	Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
-	kees@kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 09/14] ext4: ignore xattrs past end
-Date: Thu,  3 Apr 2025 15:10:31 -0400
-Message-Id: <20250403191036.2678799-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250403191036.2678799-1-sashal@kernel.org>
-References: <20250403191036.2678799-1-sashal@kernel.org>
+	s=arc-20240116; t=1743708770; c=relaxed/simple;
+	bh=/3vZBz8mb9e/43Gp/0jj0mNEmMgxCYK0VClp7bMxv3A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=uROHTMNPxG6U8x7qIW7V6iWWhia5S/mIEmEjonDIImeJyf1Ta9tVkojksHm5MPTDO3LIp81gBE5oUQyS13Ic1Vpv8s79nbs/mbY5QLEipUVv6nQglhDB7WyuIWhTrfWYXv4uCJGKMU4DIH/AKOHmd7rs86CGNaGVxICIU1WJBu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=xt7ulVY8; arc=none smtp.client-ip=198.37.111.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1743708766;
+	bh=/3vZBz8mb9e/43Gp/0jj0mNEmMgxCYK0VClp7bMxv3A=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=xt7ulVY88f1T/qIGtIOKJjJNa3pix1+dK3rROb8KHSvcIIdvlvlb3shfSQ5D55nUp
+	 F7bl/hRsqzGHAoUXFuj6Vca+bW2uDXocbMh2H3qd3I7HjIcnAbkEmPDwbnVZpSGbBC
+	 zOigmhJB5IuDQJKH/6v8U3qFVQkHdrZkuu9jfK+A=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 124631C032A;
+	Thu, 03 Apr 2025 15:32:46 -0400 (EDT)
+Message-ID: <bcccb7452b6683c235452b810c964950acbb0e08.camel@HansenPartnership.com>
+Subject: Re: Potential Linux Crash: WARNING in ext4_dirty_folio in Linux
+ kernel v6.13-rc5
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Matthew Wilcox <willy@infradead.org>, Matt Fleming
+ <matt@readmodwrite.com>
+Cc: adilger.kernel@dilger.ca, akpm@linux-foundation.org, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, luka.2016.cs@gmail.com, 
+	tytso@mit.edu, Barry Song <baohua@kernel.org>, kernel-team@cloudflare.com, 
+	Vlastimil Babka
+	 <vbabka@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein
+	 <amir73il@gmail.com>, Dave Chinner <david@fromorbit.com>, Qi Zheng
+	 <zhengqi.arch@bytedance.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>
+Date: Thu, 03 Apr 2025 15:32:45 -0400
+In-Reply-To: <Z-7BengoC1j6WQBE@casper.infradead.org>
+References: <Z8kvDz70Wjh5By7c@casper.infradead.org>
+	 <20250326105914.3803197-1-matt@readmodwrite.com>
+	 <CAENh_SSbkoa3srjkAMmJuf-iTFxHOtwESHoXiPAu6bO7MLOkDA@mail.gmail.com>
+	 <Z-7BengoC1j6WQBE@casper.infradead.org>
+Autocrypt: addr=James.Bottomley@HansenPartnership.com;
+ prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.291
-Content-Transfer-Encoding: 8bit
 
-From: Bhupesh <bhupesh@igalia.com>
+On Thu, 2025-04-03 at 18:12 +0100, Matthew Wilcox wrote:
+[...]
+> Ideas still on the table:
+>=20
+> =C2=A0- Convert all filesystems to use the XFS inode management scheme.
+> =C2=A0=C2=A0 Nobody is thrilled by this large amount of work.
+> =C2=A0- Find a simpler version of the XFS scheme to implement for other
+> =C2=A0=C2=A0 filesystems.
 
-[ Upstream commit c8e008b60492cf6fd31ef127aea6d02fd3d314cd ]
+What's wrong with a simpler fix: if we're in PF_MEMALLOC when we try to
+run inode.c:evict(), send it through a workqueue?  It will require some
+preallocation (say using a superblock based work entry ... or simply
+reuse the destroy_work)  but it should be doable.  The analysis says
+that evicting from reclaim is very rare because it's a deletion race,
+so it shouldn't matter that it's firing once per inode with this
+condition.
 
-Once inside 'ext4_xattr_inode_dec_ref_all' we should
-ignore xattrs entries past the 'end' entry.
+Regards,
 
-This fixes the following KASAN reported issue:
+James
 
-==================================================================
-BUG: KASAN: slab-use-after-free in ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
-Read of size 4 at addr ffff888012c120c4 by task repro/2065
-
-CPU: 1 UID: 0 PID: 2065 Comm: repro Not tainted 6.13.0-rc2+ #11
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x1fd/0x300
- ? tcp_gro_dev_warn+0x260/0x260
- ? _printk+0xc0/0x100
- ? read_lock_is_recursive+0x10/0x10
- ? irq_work_queue+0x72/0xf0
- ? __virt_addr_valid+0x17b/0x4b0
- print_address_description+0x78/0x390
- print_report+0x107/0x1f0
- ? __virt_addr_valid+0x17b/0x4b0
- ? __virt_addr_valid+0x3ff/0x4b0
- ? __phys_addr+0xb5/0x160
- ? ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
- kasan_report+0xcc/0x100
- ? ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
- ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
- ? ext4_xattr_delete_inode+0xd30/0xd30
- ? __ext4_journal_ensure_credits+0x5f0/0x5f0
- ? __ext4_journal_ensure_credits+0x2b/0x5f0
- ? inode_update_timestamps+0x410/0x410
- ext4_xattr_delete_inode+0xb64/0xd30
- ? ext4_truncate+0xb70/0xdc0
- ? ext4_expand_extra_isize_ea+0x1d20/0x1d20
- ? __ext4_mark_inode_dirty+0x670/0x670
- ? ext4_journal_check_start+0x16f/0x240
- ? ext4_inode_is_fast_symlink+0x2f2/0x3a0
- ext4_evict_inode+0xc8c/0xff0
- ? ext4_inode_is_fast_symlink+0x3a0/0x3a0
- ? do_raw_spin_unlock+0x53/0x8a0
- ? ext4_inode_is_fast_symlink+0x3a0/0x3a0
- evict+0x4ac/0x950
- ? proc_nr_inodes+0x310/0x310
- ? trace_ext4_drop_inode+0xa2/0x220
- ? _raw_spin_unlock+0x1a/0x30
- ? iput+0x4cb/0x7e0
- do_unlinkat+0x495/0x7c0
- ? try_break_deleg+0x120/0x120
- ? 0xffffffff81000000
- ? __check_object_size+0x15a/0x210
- ? strncpy_from_user+0x13e/0x250
- ? getname_flags+0x1dc/0x530
- __x64_sys_unlinkat+0xc8/0xf0
- do_syscall_64+0x65/0x110
- entry_SYSCALL_64_after_hwframe+0x67/0x6f
-RIP: 0033:0x434ffd
-Code: 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 8
-RSP: 002b:00007ffc50fa7b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-RAX: ffffffffffffffda RBX: 00007ffc50fa7e18 RCX: 0000000000434ffd
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000005
-RBP: 00007ffc50fa7be0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffc50fa7e08 R14: 00000000004bbf30 R15: 0000000000000001
- </TASK>
-
-The buggy address belongs to the object at ffff888012c12000
- which belongs to the cache filp of size 360
-The buggy address is located 196 bytes inside of
- freed 360-byte region [ffff888012c12000, ffff888012c12168)
-
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12c12
-head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x40(head|node=0|zone=0)
-page_type: f5(slab)
-raw: 0000000000000040 ffff888000ad7640 ffffea0000497a00 dead000000000004
-raw: 0000000000000000 0000000000100010 00000001f5000000 0000000000000000
-head: 0000000000000040 ffff888000ad7640 ffffea0000497a00 dead000000000004
-head: 0000000000000000 0000000000100010 00000001f5000000 0000000000000000
-head: 0000000000000001 ffffea00004b0481 ffffffffffffffff 0000000000000000
-head: 0000000000000002 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888012c11f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888012c12000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff888012c12080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                           ^
- ffff888012c12100: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
- ffff888012c12180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-Reported-by: syzbot+b244bda78289b00204ed@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=b244bda78289b00204ed
-Suggested-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Signed-off-by: Bhupesh <bhupesh@igalia.com>
-Link: https://patch.msgid.link/20250128082751.124948-2-bhupesh@igalia.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/xattr.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 19982a682b9c1..f32e720e9e202 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1152,15 +1152,24 @@ ext4_xattr_inode_dec_ref_all(handle_t *handle, struct inode *parent,
- {
- 	struct inode *ea_inode;
- 	struct ext4_xattr_entry *entry;
-+	struct ext4_iloc iloc;
- 	bool dirty = false;
- 	unsigned int ea_ino;
- 	int err;
- 	int credits;
-+	void *end;
-+
-+	if (block_csum)
-+		end = (void *)bh->b_data + bh->b_size;
-+	else {
-+		ext4_get_inode_loc(parent, &iloc);
-+		end = (void *)ext4_raw_inode(&iloc) + EXT4_SB(parent->i_sb)->s_inode_size;
-+	}
- 
- 	/* One credit for dec ref on ea_inode, one for orphan list addition, */
- 	credits = 2 + extra_credits;
- 
--	for (entry = first; !IS_LAST_ENTRY(entry);
-+	for (entry = first; (void *)entry < end && !IS_LAST_ENTRY(entry);
- 	     entry = EXT4_XATTR_NEXT(entry)) {
- 		if (!entry->e_value_inum)
- 			continue;
--- 
-2.39.5
 
 
