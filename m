@@ -1,128 +1,140 @@
-Return-Path: <linux-ext4+bounces-7053-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7054-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A081A7A86D
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 19:13:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04EBCA7AA77
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 21:13:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F5DE3AA7A0
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 17:12:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD8A0175C88
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Apr 2025 19:09:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B789525178F;
-	Thu,  3 Apr 2025 17:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D1D25A334;
+	Thu,  3 Apr 2025 19:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Lff1NApR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tv0dqA0h"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C336E2505BC;
-	Thu,  3 Apr 2025 17:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B5225A328;
+	Thu,  3 Apr 2025 19:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743700360; cv=none; b=ptpJnkeioBvDSc5beNvIpLlUWswb1W5UItZ3maHLJysKzHwkbegLJZSfUypA5DcGC3xyAV9oCpAs6BnUBqREvaS0QxIeG1969+BvYtgcPCMVpOjYkF5pi1jYbolXIhX62A3+SmloP1SdvEUNZEgi6Bs+sFnfdqXc129irLJNvUY=
+	t=1743707008; cv=none; b=OGG1rDQ+XH0OGmYUQ7dWy8HhEux2j8l1DTii0HE7id9osEwUXABnJAEoAlvsexdMb1PSj8ZxrnOAbhvGw1ZCXiir0Pc413ylRBXaAxFzLcj+pSZhY18wGu8yk0A9feGeNZuXQGf6Pi7BY/TNG8F2qjUEp3KBxnnNLvNhYsDzxLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743700360; c=relaxed/simple;
-	bh=n3MLm048L/1tThdw/l7NAqBQKdRTct3UQQPeLerYNkE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P2oKVskZeY3XiB+LwrydQTnfx2kCKoPDrlKDBUkfI3LUR/N2TPwAe8IeWzOgoIOklsVQzmWRZbRd2wOXnrDX57dQgW6RmwbgKvNuwQQiXuEIvhpdL8P3bgLAJ+SFkoE2ybh5VihUb9UJAalmQSCyji79ovmia0qXfie+S4C5kFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Lff1NApR; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=F/Huv1u3N8Ic31zYcjSkVat6RRJDswmpX0g1d52/EhY=; b=Lff1NApRveWFI0pHa7VtFfnSIL
-	YonUoUpFlqcynPi+DSS5aZ0uLB1NlbC8JB8YynvwvDpFnj4GawFv9pOPtaSeSaxkMkNxez62iitoR
-	EGDbRyhQciYbKDm9la7lGll9DZpY1oBCE0S8a/zh6C29reHXyzugC/cvfQa+uws1ft97SuRAdakMD
-	AfJgkHa+pxL6mlN+YmivT++4mfax91L2OA83qGV8i/XhbMXgYzolnQP+GZz524JPSw5qeBEyZAWVD
-	co0rkj4yRcCk4JsB/Yq9IgWBKlKcg/0mtu3sG86wckKXTI6X2joIolQYIYS9YsLj0uqLn23R4mWrF
-	mDapSljg==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0O78-0000000DMVH-41Zr;
-	Thu, 03 Apr 2025 17:12:27 +0000
-Date: Thu, 3 Apr 2025 18:12:26 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Matt Fleming <matt@readmodwrite.com>
-Cc: adilger.kernel@dilger.ca, akpm@linux-foundation.org,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	luka.2016.cs@gmail.com, tytso@mit.edu,
-	Barry Song <baohua@kernel.org>, kernel-team@cloudflare.com,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Dave Chinner <david@fromorbit.com>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>
-Subject: Re: Potential Linux Crash: WARNING in ext4_dirty_folio in Linux
- kernel v6.13-rc5
-Message-ID: <Z-7BengoC1j6WQBE@casper.infradead.org>
-References: <Z8kvDz70Wjh5By7c@casper.infradead.org>
- <20250326105914.3803197-1-matt@readmodwrite.com>
- <CAENh_SSbkoa3srjkAMmJuf-iTFxHOtwESHoXiPAu6bO7MLOkDA@mail.gmail.com>
+	s=arc-20240116; t=1743707008; c=relaxed/simple;
+	bh=AVFPqrvCtjaJEIsbr+lDl8F+WtNS9uohUYPwSzmaP3k=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=DbjyeX+NSgzxF/G3LkReqIfLP6jxftWmMCf31Vd6RQ9sIHjcgUBecIV4S4pf9TTyh+7DASp8jmJ5siNCX2eyLRA8ifpgWqErnf5qeO+m7Ob4l4VhEhNcKjzpUbfP4LF/r8gcumb3dL/bBz0lAQ8jwHmlT6hp1VnFEYaupoyitrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tv0dqA0h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2983FC4CEE9;
+	Thu,  3 Apr 2025 19:03:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743707008;
+	bh=AVFPqrvCtjaJEIsbr+lDl8F+WtNS9uohUYPwSzmaP3k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Tv0dqA0hXmfEQkJo0Ck+WfpRNhvqP/qFaFi8Pq2chYftpZfk+9GPyKPtfnmuvHHKO
+	 2T/oPTloIY0MQ+9wno5BiVQfVOOD07ppl7ls+BxoYROtW86YgI1oHZyJ6hppPoiyNm
+	 ePrclUM8JHIPmcIK12qT0PZNTVYqLkDIt7dzB8UvOZnVHGjDfqM7uk9X89V+aKcphE
+	 +fzXDQMIJk6n6uCFVtbAo/xlk3PmB1P++WHsjdB1MF1ddwI8aLh0u+UnfGyB4OuTRa
+	 mRkbV3uh1JFZacwMjmsB23rP0QPqJ5LHI9jxcU7F8XlFSA8A3QxYm7TbAWkSQ3eHzX
+	 Rfw+FpKZi9/Yw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Jan Kara <jack@suse.cz>,
+	Baokun Li <libaokun1@huawei.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Sasha Levin <sashal@kernel.org>,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.14 33/54] ext4: protect ext4_release_dquot against freezing
+Date: Thu,  3 Apr 2025 15:01:48 -0400
+Message-Id: <20250403190209.2675485-33-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250403190209.2675485-1-sashal@kernel.org>
+References: <20250403190209.2675485-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.14
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAENh_SSbkoa3srjkAMmJuf-iTFxHOtwESHoXiPAu6bO7MLOkDA@mail.gmail.com>
 
-On Thu, Apr 03, 2025 at 01:29:44PM +0100, Matt Fleming wrote:
-> On Wed, Mar 26, 2025 at 10:59 AM Matt Fleming <matt@readmodwrite.com> wrote:
-> >
-> > Hi there,
-> >
-> > I'm also seeing this PF_MEMALLOC WARN triggered from kswapd in 6.12.19.
-> >
-> > Does overlayfs need some kind of background inode reclaim support?
-> 
-> Hey everyone, I know there was some off-list discussion last week at
-> LSFMM, but I don't think a definite solution has been proposed for the
-> below stacktrace.
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-Hi Matt,
+[ Upstream commit 530fea29ef82e169cd7fe048c2b7baaeb85a0028 ]
 
-We did have a substantial discussion at LSFMM and we just had another
-discussion on the ext4 call.  I'm going to try to summarise those
-discussions here, and people can jump in to correct me (I'm not really
-an expert on this part of MM-FS interaction).
+Protect ext4_release_dquot against freezing so that we
+don't try to start a transaction when FS is frozen, leading
+to warnings.
 
-At LSFMM, we came up with a solution that doesn't work, so let's start
-with ideas that don't work:
+Further, avoid taking the freeze protection if a transaction
+is already running so that we don't need end up in a deadlock
+as described in
 
- - Allow PF_MEMALLOC to dip into the atomic reserves.  With large block
-   devices, we might end up doing emergency high-order allocations, and
-   that makes everybody nervous
- - Only allow inode reclaim from kswapd and not from direct reclaim.
-   Your stack trace here is from kswapd, so obviously that doesn't work.
- - Allow ->evict_inode to return an error.  At this point the inode has
-   been taken off the lists which means that somebody else may have
-   started to start constructing it again, and we can't just put it back
-   on the lists.
+  46e294efc355 ext4: fix deadlock with fs freezing and EA inodes
 
-Jan explained that _usually_ the reclaim path is not the last holder of
-a reference to the inode.  What's happening here is that we've lost a
-race where the dentry is being turned negative by somebody else at the
-same time, and usually they'd have the last reference and call evict.
-But if the shrinker has the last reference, it has to do the eviction.
+Suggested-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Reviewed-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://patch.msgid.link/20241121123855.645335-3-ojaswin@linux.ibm.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/super.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-Jan does not think that Overlayfs is a factor here.  It may change the
-timing somewhat but should not make the race wider (nor narrower).
-
-Ideas still on the table:
-
- - Convert all filesystems to use the XFS inode management scheme.
-   Nobody is thrilled by this large amount of work.
- - Find a simpler version of the XFS scheme to implement for other
-   filesystems.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index a50e5c31b9378..8e5cf68a82a17 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -6935,12 +6935,25 @@ static int ext4_release_dquot(struct dquot *dquot)
+ {
+ 	int ret, err;
+ 	handle_t *handle;
++	bool freeze_protected = false;
++
++	/*
++	 * Trying to sb_start_intwrite() in a running transaction
++	 * can result in a deadlock. Further, running transactions
++	 * are already protected from freezing.
++	 */
++	if (!ext4_journal_current_handle()) {
++		sb_start_intwrite(dquot->dq_sb);
++		freeze_protected = true;
++	}
+ 
+ 	handle = ext4_journal_start(dquot_to_inode(dquot), EXT4_HT_QUOTA,
+ 				    EXT4_QUOTA_DEL_BLOCKS(dquot->dq_sb));
+ 	if (IS_ERR(handle)) {
+ 		/* Release dquot anyway to avoid endless cycle in dqput() */
+ 		dquot_release(dquot);
++		if (freeze_protected)
++			sb_end_intwrite(dquot->dq_sb);
+ 		return PTR_ERR(handle);
+ 	}
+ 	ret = dquot_release(dquot);
+@@ -6951,6 +6964,10 @@ static int ext4_release_dquot(struct dquot *dquot)
+ 	err = ext4_journal_stop(handle);
+ 	if (!ret)
+ 		ret = err;
++
++	if (freeze_protected)
++		sb_end_intwrite(dquot->dq_sb);
++
+ 	return ret;
+ }
+ 
+-- 
+2.39.5
 
 
