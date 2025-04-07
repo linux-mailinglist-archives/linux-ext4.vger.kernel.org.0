@@ -1,154 +1,128 @@
-Return-Path: <linux-ext4+bounces-7085-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7086-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C355A7D3F4
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 08:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DB80A7D986
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 11:24:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DA05169BEE
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 06:25:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6945317B673
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 09:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4795224B1E;
-	Mon,  7 Apr 2025 06:25:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48E0237705;
+	Mon,  7 Apr 2025 09:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XmvEwK3C"
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="KT/DDOs5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 649AF224B14
-	for <linux-ext4@vger.kernel.org>; Mon,  7 Apr 2025 06:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A966B237194
+	for <linux-ext4@vger.kernel.org>; Mon,  7 Apr 2025 09:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744007116; cv=none; b=QguhkFXI407jhTlI7hj/AqTyyPA/ZJozuh3C/DojjzqXIJ6hG7GLy3XR5lgmDYbiUhSLdWfuIZVtMnUwEwKPDQ8BuNTGtLXN4FjsF56E3mrilDM9rCiy1+xner7mQc8PVcVcJ+Hb/zL9GSDAss5spkC64UQFtl6r4a9nKlRDWsg=
+	t=1744017556; cv=none; b=k2AYZT3UWoTIZVsu43IYmmUgzEfU+sXicM4ueM/1d6PDSLgZs1w9J3uoX5s61yJtExMK7XkNeM9x8ZnZExfDC/CosfLrkS7kT4I9o3c+ZlCTewIuI2YLyxFaIaVx7GJlsYyMEZh1EpC1QxkxUjal/W+mTin8/bf6vLSIacd2aWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744007116; c=relaxed/simple;
-	bh=yGykrx+keMaD0trFbufW1ZmTQATCQCGPzQfRx4P9v/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LAsYzPxwQSRJFbNk5gJk5XmMi+DAlFIFvg0Veh9jOF1GC75lmJdWa1lq0Du9iFF915ltlKghgTejHmx1329zNHyA5Bq/tJDKOCA2IWlPiU09cZtllH47BqXJGU2Lqce18XVvkcUjPkZ7IC++ythLrW5aFR+RC2hLr/fTRsnDS20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XmvEwK3C; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=bvHxt9dsvhwTb3/2nb7chAj5q6wMKV2kmIdkROSZ6z4=; b=XmvEwK3Cn9ALM9EbjacJXs0owo
-	UmodIGRJBatR3SFwI9+ofaSfrlpaa3r/4l0UP92HygyodNwW0AuQFJL4sKeeoItHoxug5rjB+bU2q
-	yqEZ599IhYUeOVTG5CEdGUSP9KuCzIK6MuluRCmGeNS0kmM/dGCn+ElZdZCVNevvNUMP9rmczt1X4
-	hb/hkxMBC41Z1GSPlsTts7ihqYzqUI59HJ2v9cXNAsCMU1keQdBmw0AKM8NuMn2lxiacmkIBcPsYu
-	8S/Ie0gxmgjt1FJfDclteyLsgBiN4VFGMpT8y87RXZAYtHWv+vNEF7MtXilWhRw3PBT1bkiEI8zBF
-	5ny5NWaA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1fuv-0000000GYwN-3v27;
-	Mon, 07 Apr 2025 06:25:09 +0000
-Date: Sun, 6 Apr 2025 23:25:09 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Catherine Hoang <catherine.hoang@oracle.com>,
-	linux-ext4@vger.kernel.org
-Subject: Re: [RFC PATCH v2 0/4] remove buffer heads from ext2
-Message-ID: <Z_NvxebhNgXSIWkQ@infradead.org>
-References: <20250326014928.61507-1-catherine.hoang@oracle.com>
- <Z-UpSq8jLIUXMf-Z@infradead.org>
- <20250404164322.GB6307@frogsfrogsfrogs>
+	s=arc-20240116; t=1744017556; c=relaxed/simple;
+	bh=Tkr+VkgfcatvOGK2CcI4k8Lgblz5OGwYpc4Rt8EzxPE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MJshUowuaSwwaFWNYIEPnsA+tO005CUz5PxpMtPLZ0wxhBTgpI1EqzTEc9frcnt6EocQXLA1gl1iVaJH/v2zLuHkqGH17zCUaUyA2V59+eSUFIDDDSJP3u75n1STbm1uMiPqENV/CbscCugaagcN8XQTe1v80C+TR8MY/98f9c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=KT/DDOs5; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7c592764e54so536428885a.3
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Apr 2025 02:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1744017552; x=1744622352; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0ds8ZeR6+lvLMS3Q8LQ2S5216HWjNwnvoE8o9qfIJEc=;
+        b=KT/DDOs5ObFJ1RiCja3/K39RGIULizsBhCvr7ew+0PaiDVciyX57/8oYh5EdQGyloQ
+         JtLLXz8yIWj6/Bw9atfneqjkcTUxwgq6kz/rmLYh984/1MoTtCl3FQU8gmQEqS88X9CC
+         DubvkZeReCCkG8RvM9G+L6YQpEc90Ej7/xVUs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744017552; x=1744622352;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0ds8ZeR6+lvLMS3Q8LQ2S5216HWjNwnvoE8o9qfIJEc=;
+        b=lVbbc/ZH3vc34TnJfCDvnZXO/v1EyH1LHkejXSMv3nz1bI7zjinfrdR1JSckNTGmCN
+         oJBN3YW2wAZgihggX3vcVb2mIHtDYZoNcSTY/UOO5XUrIzW5chKHF5rDRupm3GSF2Zq+
+         PnDNnFHKe7p03W1bprC5K+zKtQ7x1FxSyLX/njTe7Dkz63zTlADhwGTME65ZbcJwqTbY
+         4dRveJWqdOcWSHkbzE/n3OtXrW+rz2/a4ASBMtyVk4Nkh7cqUsmgmp/wzCB/wt+Wg1Du
+         anKGhCGGMe6qLN64IHNdqXt47zOwt+bDePwhe66pliO4qRZJmMkKweIjiXj/nNDCzXxf
+         0JAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXKyjcqZbYDMueDK5hxaPAPQYREgsGVZbKqu94Np7Y0EEu8k3UNUuf9CResmAagjCX/f0xb1rDj8v3K@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywn+EQTVMy3yZ+toTV3LSwV2WL6aXILtJo879Yi8323iLX4yhyy
+	HHv1Dlr/aFyXmosSLcyl4RDEH+rz2ixRVTBRbOQ9SRwfNYkqwyl9/cHICM1DRq5HyKs2Gtf2NSW
+	gpqi7MeUShyV2g3i7GY1ohmP5GY8vJuzI+ft9iQ==
+X-Gm-Gg: ASbGncsnVqZYzIYHjCmFEgtgdiw3g8PXEOrDBt3t3wAsSYnCRKpSbGbBJcJyOPH/hlz
+	9HpFeQYEj9ODDeIHO1EiOuB2ayz2Em+L5Zqe0XhM3JvTRLGrwsp7e5a8mnmJJlxNU+52kxuHV7H
+	vZYque9IuhMMbCBEB0ccr56q7Qbxc=
+X-Google-Smtp-Source: AGHT+IFCtLA+gZhyiLnF3PJgKmfPCouEKwTHmWyX/EjhKM6lZbWo0pjzfhlBNMSDCtBMubAuWZYFO3GyBdpYEiWKScw=
+X-Received: by 2002:a05:620a:450a:b0:7c5:5a51:d2c0 with SMTP id
+ af79cd13be357-7c775b17e0cmr1707617685a.52.1744017552449; Mon, 07 Apr 2025
+ 02:19:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250404164322.GB6307@frogsfrogsfrogs>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <67f34d24.050a0220.0a13.027c.GAE@google.com>
+In-Reply-To: <67f34d24.050a0220.0a13.027c.GAE@google.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Mon, 7 Apr 2025 11:18:59 +0200
+X-Gm-Features: ATxdqUGPjYEhmO3guEkv_Uk_UNgq-v6h_uBbWK9b9Dl-HBK2d9h-7340TMg9-Is
+Message-ID: <CAJfpegvsi9SaeVdykBFhhwoOrsNQzy3C8HcJjn16uHdkzZ-EVQ@mail.gmail.com>
+Subject: Re: [syzbot] [ext4?] [overlayfs?] WARNING in file_seek_cur_needs_f_lock
+To: syzbot <syzbot+4036165fc595a74b09b2@syzkaller.appspotmail.com>
+Cc: adilger.kernel@dilger.ca, amir73il@gmail.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: multipart/mixed; boundary="000000000000b2665406322cbac6"
 
-On Fri, Apr 04, 2025 at 09:43:22AM -0700, Darrick J. Wong wrote:
-> On Thu, Mar 27, 2025 at 03:32:42AM -0700, Christoph Hellwig wrote:
-> > On Tue, Mar 25, 2025 at 06:49:24PM -0700, Catherine Hoang wrote:
-> > > Hi all,
-> > > 
-> > > This series is an effort to begin removing buffer heads from ext2. 
-> > 
-> > Why is that desirable?
-> 
-> struct buffer_head is a mismash of things -- originally it was a landing
-> place for the old buffer cache, right?
+--000000000000b2665406322cbac6
+Content-Type: text/plain; charset="UTF-8"
 
-Yes.
+On Mon, 7 Apr 2025 at 05:57, syzbot
+<syzbot+4036165fc595a74b09b2@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    16cd1c265776 Merge tag 'timers-cleanups-2025-04-06' of git..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=12e7923f980000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c79406130aa88d22
+> dashboard link: https://syzkaller.appspot.com/bug?extid=4036165fc595a74b09b2
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14f9bd98580000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1571c7e4580000
 
-> So it has the necessary things
-> like a pointer to a memory page, the disk address, a length, buffer
-> state flags (uptodate/dirty), and some locks.
 
-Yes. (although the page to folio migration is almost done).
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+v6.15-rc1
 
-> For filesystem metadata
-> blocks I think that's all that most filesystems really need.
+--000000000000b2665406322cbac6
+Content-Type: text/x-patch; charset="US-ASCII"; name="ovl-dont-seek_cur-on-realfile.patch"
+Content-Disposition: attachment; 
+	filename="ovl-dont-seek_cur-on-realfile.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_m96uyqc70>
+X-Attachment-Id: f_m96uyqc70
 
-Yes.
-
-> Assuming
-> that filesystems /never/ want overlapping metadata buffers, I think it's
-> more efficient to look up buffer objects via an rhashtable instead of
-> walking the address_space xarray to find a folio, and then walking a
-> linked list from that folio to find the particular bh.
-
-Probably.  But does it make a practical difference for ext2?
-
-> Unfortunately, it also has a bunch of file mapping state information
-> (e.g. BH_Delalloc) that aren't needed for caching metadata blocks.  All
-> the confusion that results from the incohesive mixing of these two
-> usecases goes away by separating out the metadata buffers into a
-> separate cache and (ha) leaving the filesystems to port the file IO
-> paths to iomap.
-
-Exactly.
-
-> Separating filesystem metadata buffers into a private datastructure
-> instead of using the blockdev pagecache also closes off an entire class
-> of attack surface where evil userspace can wait for a filesystem to load
-> a metadata block into memory and validate it;
-
-It does close that window.  OTOH that behavior has traditionally been
-expected very much for extN for use with some tools (IIRC tunefs), so
-changing that would actually break existing userspace.
-
-> and then scribble on the
-> pagecache block to cause the filesystem driver to make the wrong
-> decisions -- look at all the ext4 metadata_csum bugs where syzkaller
-> discovered that the decision to call the crc32c driver was gated on a
-> bit in a bufferhead, and setting that bit having not initialized the
-> crc32c driver would lead to a kernel crash.  Nowadays we have
-> CONFIG_BLK_DEV_WRITE_MOUNTED to shut that down, though it defaults to y
-> and I think that might actually break leased layout things like pnfs.
-
-pNFS scsi/nvme only works for remote nodes, so it's not affected by
-this.  The block layout could theoretically work locally, but it's
-a pretty broken protocol to start with.
-
-> So the upsides are: faster lookups, a more cohesive data structure that
-> only tries to do one thing, and closing attack surfaces.
-> 
-> The downsides: this new buffer cache code still needs: an explicit hook
-> into the dirty pagecache timeout to start its own writeback; to provide
-> its own shrinker; and some sort of solution for file mapping metadata so
-> that fsync can flush just those blocks and not the whole cache.
-
-The other major downside is instead of one maintained code base we now
-have one per file system.  That's probably okay for well maintained
-file systems with somewhat special needs (say btrfs or xfs), but I'd
-rather not have that for every misc file system using buffer_heads
-right now.
-
-So if we want to reduce problems with buffer_heads I'd much rather see
-all data path usage go away ASAP.  After that the weird entanglement
-with jbd2 would be the next step (and maybe a private buffer cache for
-ext4/gfs2 is the answer there).  But copy and pasting a new buffer cache
-into simple and barely maintained file systems like ext2 feels at least
-a bit questionable.
-
+ZGlmZiAtLWdpdCBhL2ZzL292ZXJsYXlmcy9maWxlLmMgYi9mcy9vdmVybGF5ZnMvZmlsZS5jCmlu
+ZGV4IDk2OWI0NTgxMDBmZS4uNTQ4ZjBlNmFlZDU0IDEwMDY0NAotLS0gYS9mcy9vdmVybGF5ZnMv
+ZmlsZS5jCisrKyBiL2ZzL292ZXJsYXlmcy9maWxlLmMKQEAgLTI3Myw2ICsyNzMsMTIgQEAgc3Rh
+dGljIGxvZmZfdCBvdmxfbGxzZWVrKHN0cnVjdCBmaWxlICpmaWxlLCBsb2ZmX3Qgb2Zmc2V0LCBp
+bnQgd2hlbmNlKQogCW92bF9pbm9kZV9sb2NrKGlub2RlKTsKIAlyZWFsZmlsZS0+Zl9wb3MgPSBm
+aWxlLT5mX3BvczsKIAorCS8qIFByZXZlbnQgV0FSTklORyBpbiBmaWxlX3NlZWtfY3VyX25lZWRz
+X2ZfbG9jaygpICovCisJaWYgKHdoZW5jZSA9PSBTRUVLX0NVUiAmJiBvZmZzZXQpIHsKKwkJb2Zm
+c2V0ICs9IGZpbGUtPmZfcG9zOworCQl3aGVuY2UgPSBTRUVLX1NFVDsKKwl9CisKIAlvbGRfY3Jl
+ZCA9IG92bF9vdmVycmlkZV9jcmVkcyhpbm9kZS0+aV9zYik7CiAJcmV0ID0gdmZzX2xsc2Vlayhy
+ZWFsZmlsZSwgb2Zmc2V0LCB3aGVuY2UpOwogCW92bF9yZXZlcnRfY3JlZHMob2xkX2NyZWQpOwo=
+--000000000000b2665406322cbac6--
 
