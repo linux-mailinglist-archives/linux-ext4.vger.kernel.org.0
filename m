@@ -1,167 +1,102 @@
-Return-Path: <linux-ext4+bounces-7096-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7097-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A7FAA7ED6E
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 21:35:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7CFBA7EF81
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 23:03:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAB66188A10A
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 19:30:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71A777A529B
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 21:02:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163F9253F08;
-	Mon,  7 Apr 2025 19:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94889221D88;
+	Mon,  7 Apr 2025 21:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mZ359qr5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZZjTx9Yj"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AF9F222596;
-	Mon,  7 Apr 2025 19:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB212153C2
+	for <linux-ext4@vger.kernel.org>; Mon,  7 Apr 2025 21:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744053585; cv=none; b=NQGj3kc3rw7OTZnBbGifHhmgylXyvu1V6aHu4nPFjLxGS2q8VOe0W9PphDkdep11VZjrQcZePQukUa9dwlN7jTGy6bxenaBYy4VX/OFITPAZchisjZB3DoT1BIw8iMS33YbX6SIO1V8BGKw6SGzHNJjsGuRsMViPn8IUysrLuQc=
+	t=1744059785; cv=none; b=DYnmMnqzdIyZ7RrlT13U3d2SOb/6T37LypCnGY/2PUiUZVwAzsjTiTiRbPsfLvUPEraMQRjyjMrPVtTv3pxaQOU0aJVZKo/Iu0cTHGtttgdJ3r4ZQoScdlj9N/nelDkupT3kMqnypi/+15Tlsrk/LLj6M8B3tS2WOUfJ2phQRzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744053585; c=relaxed/simple;
-	bh=JvyuFXZsK0xRmCXRLKdFwttlYhm1KxJIKLDh6gkb4g0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VwRI+kH4aUoXSe1pMeu4Sarax86XwwfT3i9d4TavyLvY+4caWyASlGcZE2601H4s944etEgrN4MPbcPBwRbyLkqpzpH4ocKDRSzVrQoS1WgTw3wEcP6nZWRG+0qQDea6PkeT2kama2/cmkV2PMT0Q2q8Q72YleB9NMmWxfsC8kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mZ359qr5; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-739b3fe7ce8so4038078b3a.0;
-        Mon, 07 Apr 2025 12:19:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744053583; x=1744658383; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kJIU9OPcaq3jp9kr0YRIuLsH63tKnb2woCTTN4F+W2E=;
-        b=mZ359qr5yX8vv1L93hp08seg+ULXeYWaMr2w5IB+xeXiE7xpZldD64dgTIDdqMV/0g
-         0FzglhUlNvexneF/fH0Q2ROcutrJPPzgooP1+cfuu2e4JsAaaXGPlt4dJBQ5ebc3svQj
-         pcDwNdhnS7iNbqz+WpzPVwxKiZZxtV90puDRN1pxMqsMFw8RgVOiz2ZWKlS+6fXErF2a
-         7unb/vTBwic2CQ812DX3x3oaVe57oJKtiGSEojeVOOxDfZp1x6BFQh1qXSEF4fiUchM5
-         KBVys89iEEXs3sYicZoTbAlHSI5pZ3N3i0gAgL0e9XWvTKCv3/JDshLSay+UhKicMatQ
-         sBAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744053583; x=1744658383;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kJIU9OPcaq3jp9kr0YRIuLsH63tKnb2woCTTN4F+W2E=;
-        b=P/oUW86x55TeDozZXYwd8bcXRjGQbFsabAGkVGMh6oo9nBOXvQKNJ4jXartvlAJLps
-         0WfXFL23QFZ7DCS8O88oi4qY7ToOxLyNCcoL2yJbqmOGeeKBQPY5LkAxwGRAuEuMnadG
-         Vk6zIjxkEvRul14oC2lvSYpZtQZUBKaIfbFkb75/rgtbo/tMPoTpwHx/dQZ8RfXVYyEC
-         9vNVnLhBEkho5Zd1IbO13S245a3TMpjsF16urght8mPp5EZvX09Tg9C1broHY2p6JIBl
-         KHjY5x5/dfPW/W3ha7NE5omn1OJ3L5+vyfHr0BfXMxh3glyNyWDati+OUz/LRoh3wGmi
-         IUYw==
-X-Forwarded-Encrypted: i=1; AJvYcCVaTk6lvIyalnMp9GbP0nTckbsiu6mNk+lGKMP1IdSgTq0EETaVZAit1edMQXTUGWyPK9W2eTTQbagQzg==@vger.kernel.org, AJvYcCXFmLKzuKltvDEhcoVZLsFE9+QajMzZtrEyyRwsT/eltk76YBKTb4fQuuflUvHniYCV497Hx61uzhRT@vger.kernel.org, AJvYcCXpQDg1AfmFcdBP7ooUozD65XwpuxcatR81ATgHevsmdX2sReizQXkjfiVshrNiDQZE1EvCL5dx@vger.kernel.org
-X-Gm-Message-State: AOJu0YypdgMCUAKJU2Gne1U/YR8g8i3uAsw87rsrAWM+2jGBzd4OOkQs
-	Ezg3e3BNBivdN1GPXxcF2rBNclFpnvezr0A9UG75YHe2Y03FAYh0
-X-Gm-Gg: ASbGncu9MdqMih1N5yVV41TvrbKqox6S16ipC6VafCQGKqMbAW+T/DEgfAl1UBui6dE
-	DSlrfAFBIQUSKwx/IPVFJAb7r14wzhOC2Y6r8pAiiFbkcE/zR/JY+U5J6GmRXYPFfJU6JGhaaKQ
-	bgwCs9aO0PZLJ4eufUKK7sh0UjX0dhtpTxlGKkSLq0SETPo4dXKNDW4nL7moBW0InoFnYJifNX+
-	0jcMuS0ncCHMk5bvfYCE7SEK6YRZMeGpZzL1BWfNf+vrsNsdLl8/ml2rSRHXOS50aUIydYtHD3j
-	yztj1YGtq/pZl3ZVzIkXqKqQdcP8S+jo+5pVK/xOIHt5itAe/jsNvEY=
-X-Google-Smtp-Source: AGHT+IHWdcpOQQM0t8gzFgNW+qNs1S2yMekXX7JNZrHkDbSoqceMBI2X2Z+wCpEsMp4tyjCvatu+xA==
-X-Received: by 2002:a05:6a21:32a2:b0:1f5:75a9:5257 with SMTP id adf61e73a8af0-20113c57dfcmr12931177637.13.1744053583440;
-        Mon, 07 Apr 2025 12:19:43 -0700 (PDT)
-Received: from [192.168.0.120] ([49.205.34.162])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af9bc35137csm7583519a12.44.2025.04.07.12.19.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Apr 2025 12:19:43 -0700 (PDT)
-Message-ID: <46e9b9f0-8ab5-41d6-989b-b1a010d0587a@gmail.com>
-Date: Tue, 8 Apr 2025 00:49:38 +0530
+	s=arc-20240116; t=1744059785; c=relaxed/simple;
+	bh=4ulWWTELilIWBTizVyum5eEbje/DjScnsb3jO0gNZAA=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=Mgovi22PBV1OU9dzFHfRZxpjyDmgk81hlx2pT3AtDDoeEEVCdDk25AE4fZAjbN4+19i1IWRjGc9TMWAIGb/ZO0apjTtvxGLCKZm4C7DuTwxixgZ0r4invg/Dq044OCJI3S54p+0DRsJmIiiUrK40BsUHUszmpbX3p1Nj6nK2Ytw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZZjTx9Yj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744059782;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4ulWWTELilIWBTizVyum5eEbje/DjScnsb3jO0gNZAA=;
+	b=ZZjTx9Yj+5slN76dPz5dX0wfVA92M4o+pfxQAzMt9XXNAXYFzzusKZ9j/x2cZ1j0YPpWVz
+	fh/2VMnPYSxoz8Lm60fZrQHEmciamoWs9RiPXIFnL08U1fOxj8vcEK9hZUSfLps2nVft6m
+	YL+RXtPJVai/COpAqM3nC86KB3umXqQ=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-587-BHyOQiXOPQmKzRiPOJjl9A-1; Mon,
+ 07 Apr 2025 17:02:25 -0400
+X-MC-Unique: BHyOQiXOPQmKzRiPOJjl9A-1
+X-Mimecast-MFC-AGG-ID: BHyOQiXOPQmKzRiPOJjl9A_1744059743
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A958D180AF4D;
+	Mon,  7 Apr 2025 21:02:23 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.40])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C6578180B486;
+	Mon,  7 Apr 2025 21:02:20 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <67f3dc05.050a0220.107db6.059d.GAE@google.com>
+References: <67f3dc05.050a0220.107db6.059d.GAE@google.com>
+To: syzbot <syzbot+4036165fc595a74b09b2@syzkaller.appspotmail.com>
+Cc: dhowells@redhat.com, adilger.kernel@dilger.ca, amir73il@gmail.com,
+    linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+    linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+    syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Subject: Re: [syzbot] [ext4?] [overlayfs?] WARNING in file_seek_cur_needs_f_lock
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] common: exit --> _exit
-Content-Language: en-US
-To: "Darrick J. Wong" <djwong@kernel.org>,
- Ritesh Harjani <ritesh.list@gmail.com>
-Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
- ojaswin@linux.ibm.com, zlang@kernel.org, david@fromorbit.com
-References: <cover.1743487913.git.nirjhar.roy.lists@gmail.com>
- <f6c7e5647d5839ff3a5c7d34418ec56aba22bbc1.1743487913.git.nirjhar.roy.lists@gmail.com>
- <87mscwv7o0.fsf@gmail.com>
- <20250407161914.mfnqef2vqghgy3c2@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <877c3vzu5p.fsf@gmail.com> <20250407191206.GD6307@frogsfrogsfrogs>
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-In-Reply-To: <20250407191206.GD6307@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1465442.1744059739.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 07 Apr 2025 22:02:19 +0100
+Message-ID: <1465443.1744059739@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
+syzbot <syzbot+4036165fc595a74b09b2@syzkaller.appspotmail.com> wrote:
 
-On 4/8/25 00:42, Darrick J. Wong wrote:
-> On Tue, Apr 08, 2025 at 12:16:42AM +0530, Ritesh Harjani wrote:
->> Zorro Lang <zlang@redhat.com> writes:
-> <snip>
->
->>> Yeah, nice catch! As the defination of _exit:
->>>
->>>    _exit()
->>>    {
->>>         status="$1"
->>>         exit "$status"
->>>    }
->>>
->>> The
->>>    "
->>>    status=1
->>>    exit
->>>    "
->>> should be equal to:
->>>    "
->>>    _exit 1
->>>    "
->>>
->>> And "_exit" looks not make sense, due to it gives null to status.
->>>
->>> Same problem likes below:
->>>
->>>
->>> @@ -3776,7 +3773,7 @@ _get_os_name()
->>>                  echo 'linux'
->>>          else
->>>                  echo Unknown operating system: `uname`
->>> -               exit
->>> +               _exit
->>>
->>>
->>> The "_exit" without argument looks not make sense.
->>>
->> That's right. _exit called with no argument could make status as null.
->> To prevent such misuse in future, should we add a warning/echo message
->> if the no. of arguments passed to _exit() is not 1?
-> Why not set status only if the caller provides an argument?
->
-> 	test -n "$1" && status="$1"
+> syzbot has tested the proposed patch but the reproducer is still trigger=
+ing an issue:
+> unregister_netdevice: waiting for DEV to become free
+> =
 
-And if the caller doesn't provide any, should status hold some default 
-value? I have suggested something in [1]
+> unregister_netdevice: waiting for batadv0 to become free. Usage count =3D=
+ 3
 
-[1] 
-https://lore.kernel.org/all/3c1d608d-4ea0-4e24-9abc-95eb226101c2@gmail.com/
+I've seen this in a bunch of different syzbot tests also where, as far as =
+I
+can tell, the patch I've offered fixes the actual bug.
 
---NR
-
->
-> perhaps?
->
-> --D
->
->> -ritesh
-
--- 
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
+David
 
 
