@@ -1,95 +1,57 @@
-Return-Path: <linux-ext4+bounces-7089-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7090-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 863EEA7E67F
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 18:30:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5785FA7E796
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 19:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8D70179838
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 16:22:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 233ED188ED0D
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Apr 2025 16:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9B720370D;
-	Mon,  7 Apr 2025 16:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32EE5215769;
+	Mon,  7 Apr 2025 16:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fSL+iPv3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYnExifR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D147207E0B
-	for <linux-ext4@vger.kernel.org>; Mon,  7 Apr 2025 16:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92C3215760
+	for <linux-ext4@vger.kernel.org>; Mon,  7 Apr 2025 16:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744042765; cv=none; b=alEYM6UCzp8NxpWGabIgsSFzORLzmqzw0f+8p9WjThCjGhkC0+dafg1tHqD2EadHoS46HBfwv4sYz3wJwbXHwf8foHtTWaeW7Sr7Wxikf1fazVQMuT9Kfu4JVmxy+/iOd0YD6EEm8T0BHGSNLTWMW933httvkm7c0tAF8asp0tE=
+	t=1744044851; cv=none; b=YGQKw9qQUR43qdcinXMcf1MVpjWP0+jhJ7uBdq7J52eHPtbPEyA29TOF3KxDibKpseql3/2iEY1RZ3gwijBEi7eEqkS4hp9dKmBbJY3zFplukgykW6skh1Q/XXNcDbcHzP5COZ/qdASmDsy5RBIKEsXuU4Ut3ENGpNdbPqjkNYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744042765; c=relaxed/simple;
-	bh=vLFaSyk6sWXjYEwkM9T5XG3vYHT5MtPUPXEdSHtKDyk=;
+	s=arc-20240116; t=1744044851; c=relaxed/simple;
+	bh=dgr9J0K/CqGr2SAlhwinuIlXx9KPijFCFY7bsPr3vvU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YOu5awWf6W/dcN+Pd4Eh19Bpqj5w/jhAVw3mmjP9GolEwWkLfCzrdJ/6wf21miH0CAkrgjT46rL+dUhjPYXDi8UwZD+DGQyKYjZeVOXset0SVw2fY7afIgXGakw3KFuUgTD4udlN+zHvbWGHo0bGTIraw/TONKaja6PCd9kZZXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fSL+iPv3; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744042761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/O5U86Y3WW6mgW47JNbSK3ilKTH03qmJFfErR0X+qvM=;
-	b=fSL+iPv31+HyUOWE20gIulKYKY2DyzjPQFhIjIA2+zDp68K4EnpLH+qIsEbf2iD2NwZnPd
-	X4BpVBJuqU4vPMkva9I0Rcw430U/Fz0XKQv1p32v2EY28Q0c2+VcCvakvDPGeplpRiGokz
-	V9iFUU/zecD5bYMtA5SjX4hoMZ9VYiM=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-120-n7QDmjzxPbCz1i6-vZymlQ-1; Mon, 07 Apr 2025 12:19:20 -0400
-X-MC-Unique: n7QDmjzxPbCz1i6-vZymlQ-1
-X-Mimecast-MFC-AGG-ID: n7QDmjzxPbCz1i6-vZymlQ_1744042759
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-225429696a9so65945345ad.1
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Apr 2025 09:19:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744042759; x=1744647559;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/O5U86Y3WW6mgW47JNbSK3ilKTH03qmJFfErR0X+qvM=;
-        b=a4xvRdGysjoxpo9nY+7ZujR2y9pedmE3KdfkNuaBGBpJtdspG9UnDXJfGCE2r0oy5n
-         4xgY7VQ7jOfe3StdUQpj/rRfH1jXmStRZpHXcn+XgVp/Cwcxn84mEVgUzSnd5gtn4wdP
-         rQdDdEUH3QpQ8sORDnJVS8npY1S1BcAKr6yxSKWgyBOJjF95QK2uYQj3VJBSNSdyZA/C
-         knnG5QPHvMgvWsv8MwIwg/Sjf+ky/BZfH09AhlpGGDVUmmrjdfh5VbsbuFFCyhX81DKC
-         aAxw6nEx2RZQZbBX9JQaWNCqck76ixrKMQ/WDc3DCnVH+AKY8mVB+e8j/xazQ+5dDcRO
-         L1TQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVkaAjRTwkWJyRcl22mnZjJbZMhEzQdl6EY6pg4WJ3ioIMerTAgUqxZ6dijF71SFKrfgdp2fGnNLafr@vger.kernel.org
-X-Gm-Message-State: AOJu0YzL1ed90Jh787VTRmJK7rSluEw5tvrwdEVF9/74pVmZCMZoTGrf
-	79yXZkmUYzXaVfNQrXxSVnWaeE2qpr5kFs/i7PB2lPROtyFnwTM7W2XtV2TBIzZs0+75fCr9XPw
-	vP8l3Wg5ZBcnAM9A5cHxUYi9qf48+4OEUBRVpnKWp/pAchgty+EWgz7GFKzw=
-X-Gm-Gg: ASbGncsV+vz5Vjkg0XSlonrXf9btjodx2/lfO3+11GiUquHXheqJlhcRiq9J8czefNl
-	KaIy9r3AVT0BCvjoFam+eeqYPUd92n9f3zdRpIEk+gieEshTijBXh8E1zTJFRVDn+5WLZv0ngs/
-	kYEUL0zotFWYNamiuuQZHmkyD6sfkB3U5+W0GoeGdlYWjb7nqBOVCVgRFYJlOhon1jJqyn7lauY
-	JtvQ7jIs/zfVrLzvRn615GTWZx1rOCHVyGbBxXrcTV50u9/ZVXxjUrJBCsl6kHrMdbx8kFSMcLO
-	fEkbZEGZTn6imqZfF4ahEhHN7oVKbTOBbo+qJwFbpxBpdxeEI/6bQOiM
-X-Received: by 2002:a17:902:e952:b0:223:37ec:63d5 with SMTP id d9443c01a7336-22a8a0659fcmr191658635ad.28.1744042759146;
-        Mon, 07 Apr 2025 09:19:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEGlSRbRg+QrM0+xuEKWs08wLJNL1lp/YtXP90VI/LkeBCTUHnPXB/060ATzEC3fv57TY60fw==
-X-Received: by 2002:a17:902:e952:b0:223:37ec:63d5 with SMTP id d9443c01a7336-22a8a0659fcmr191658295ad.28.1744042758753;
-        Mon, 07 Apr 2025 09:19:18 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-229785ad84csm83572285ad.44.2025.04.07.09.19.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Apr 2025 09:19:18 -0700 (PDT)
-Date: Tue, 8 Apr 2025 00:19:14 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>,
-	fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org,
-	zlang@kernel.org, david@fromorbit.com
-Subject: Re: [PATCH v2 5/5] common: exit --> _exit
-Message-ID: <20250407161914.mfnqef2vqghgy3c2@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1743487913.git.nirjhar.roy.lists@gmail.com>
- <f6c7e5647d5839ff3a5c7d34418ec56aba22bbc1.1743487913.git.nirjhar.roy.lists@gmail.com>
- <87mscwv7o0.fsf@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dUNAPcV//plwj5u929cCIz3opFAzsjGbh4In9OFYRSaMgF7EOyNzrq+92ZIXNLhWD/sPie6BdKO1C6TkRD0txjH9SK3UPA1h62Hqa0iPZRzjcN835EO+D20Zm4zEdbE0KhJd7i47qg8hxfgetdTh0khn/2sM3rgkzq+5Mtebzxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYnExifR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A07B5C4CEDD;
+	Mon,  7 Apr 2025 16:54:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744044851;
+	bh=dgr9J0K/CqGr2SAlhwinuIlXx9KPijFCFY7bsPr3vvU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dYnExifROPFlqdBhQFqCV0cAqt/ATNFp1ybR0RNOBZ4ey38qkJS4FMjQthsI0WTMM
+	 q5TwPqgie8RXr+f35LgvuWaTeNMcltV9YW9+2aZsOL/AGP0apzYmUG+rYTCcfv4r8X
+	 yukZtCDJ8FELb09KNEPxwhQjv2nVuCm5Flxbd3kYoF7YNWb+UJowkgqJd9sXMz2YzL
+	 NBdzpvtna3YnMnxYJ5ggC+05uaE25jX/463e+VWQM6t1oxjtrJmHOH42rMwJNbJJfl
+	 OkFQkUsfvH/AXLXElbkl5Tudk014eQswGIOWQVcPg2GP3eSKDZxNBPOzjZGhBL84r5
+	 YrZramhxwoQxQ==
+Date: Mon, 7 Apr 2025 09:54:11 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Catherine Hoang <catherine.hoang@oracle.com>,
+	linux-ext4@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/4] remove buffer heads from ext2
+Message-ID: <20250407165411.GA6262@frogsfrogsfrogs>
+References: <20250326014928.61507-1-catherine.hoang@oracle.com>
+ <Z-UpSq8jLIUXMf-Z@infradead.org>
+ <20250404164322.GB6307@frogsfrogsfrogs>
+ <Z_NvxebhNgXSIWkQ@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -98,216 +60,109 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87mscwv7o0.fsf@gmail.com>
+In-Reply-To: <Z_NvxebhNgXSIWkQ@infradead.org>
 
-On Fri, Apr 04, 2025 at 10:34:47AM +0530, Ritesh Harjani wrote:
-> "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
+On Sun, Apr 06, 2025 at 11:25:09PM -0700, Christoph Hellwig wrote:
+> On Fri, Apr 04, 2025 at 09:43:22AM -0700, Darrick J. Wong wrote:
+> > On Thu, Mar 27, 2025 at 03:32:42AM -0700, Christoph Hellwig wrote:
+> > > On Tue, Mar 25, 2025 at 06:49:24PM -0700, Catherine Hoang wrote:
+> > > > Hi all,
+> > > > 
+> > > > This series is an effort to begin removing buffer heads from ext2. 
+> > > 
+> > > Why is that desirable?
+> > 
+> > struct buffer_head is a mismash of things -- originally it was a landing
+> > place for the old buffer cache, right?
 > 
-> > Replace exit <return-val> with _exit <return-val> which
-> > is introduced in the previous patch.
-> >
-> > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> > ---
-> >  common/btrfs    |   6 +--
-> >  common/ceph     |   2 +-
-> >  common/config   |   7 ++--
-> >  common/ext4     |   2 +-
-> >  common/populate |   2 +-
-> >  common/preamble |   2 +-
-> >  common/punch    |  12 +++---
-> >  common/rc       | 103 +++++++++++++++++++++++-------------------------
-> >  common/xfs      |   8 ++--
-> >  9 files changed, 70 insertions(+), 74 deletions(-)
-> >
-> > diff --git a/common/btrfs b/common/btrfs
-> > index a3b9c12f..3725632c 100644
-> > --- a/common/btrfs
-> > +++ b/common/btrfs
-> > @@ -80,7 +80,7 @@ _require_btrfs_mkfs_feature()
-> >  {
-> >  	if [ -z $1 ]; then
-> >  		echo "Missing feature name argument for _require_btrfs_mkfs_feature"
-> > -		exit 1
-> > +		_exit 1
-> >  	fi
-> >  	feat=$1
-> >  	$MKFS_BTRFS_PROG -O list-all 2>&1 | \
-> > @@ -104,7 +104,7 @@ _require_btrfs_fs_feature()
-> >  {
-> >  	if [ -z $1 ]; then
-> >  		echo "Missing feature name argument for _require_btrfs_fs_feature"
-> > -		exit 1
-> > +		_exit 1
-> >  	fi
-> >  	feat=$1
-> >  	modprobe btrfs > /dev/null 2>&1
-> > @@ -214,7 +214,7 @@ _check_btrfs_filesystem()
-> >  	if [ $ok -eq 0 ]; then
-> >  		status=1
-> >  		if [ "$iam" != "check" ]; then
-> > -			exit 1
-> > +			_exit 1
-> >  		fi
-> >  		return 1
-> >  	fi
-> > diff --git a/common/ceph b/common/ceph
-> > index d6f24df1..df7a6814 100644
-> > --- a/common/ceph
-> > +++ b/common/ceph
-> > @@ -14,7 +14,7 @@ _ceph_create_file_layout()
-> >  
-> >  	if [ -e $fname ]; then
-> >  		echo "File $fname already exists."
-> > -		exit 1
-> > +		_exit 1
-> >  	fi
-> >  	touch $fname
-> >  	$SETFATTR_PROG -n ceph.file.layout \
-> > diff --git a/common/config b/common/config
-> > index eb6af35a..4c5435b7 100644
-> > --- a/common/config
-> > +++ b/common/config
-> > @@ -123,8 +123,7 @@ set_mkfs_prog_path_with_opts()
-> >  _fatal()
-> >  {
-> >      echo "$*"
-> > -    status=1
-> > -    exit 1
-> > +    _exit 1
-> >  }
-> >  
-> >  export MKFS_PROG="$(type -P mkfs)"
-> > @@ -868,7 +867,7 @@ get_next_config() {
-> >  		echo "Warning: need to define parameters for host $HOST"
-> >  		echo "       or set variables:"
-> >  		echo "       $MC"
-> > -		exit 1
-> > +		_exit 1
-> >  	fi
-> >  
-> >  	_check_device TEST_DEV required $TEST_DEV
-> > @@ -879,7 +878,7 @@ get_next_config() {
-> >  	if [ ! -z "$SCRATCH_DEV_POOL" ]; then
-> >  		if [ ! -z "$SCRATCH_DEV" ]; then
-> >  			echo "common/config: Error: \$SCRATCH_DEV ($SCRATCH_DEV) should be unset when \$SCRATCH_DEV_POOL ($SCRATCH_DEV_POOL) is set"
-> > -			exit 1
-> > +			_exit 1
-> >  		fi
-> >  		SCRATCH_DEV=`echo $SCRATCH_DEV_POOL | awk '{print $1}'`
-> >  		export SCRATCH_DEV
-> > diff --git a/common/ext4 b/common/ext4
-> > index e1b336d3..f88fa532 100644
-> > --- a/common/ext4
-> > +++ b/common/ext4
-> > @@ -182,7 +182,7 @@ _require_scratch_ext4_feature()
-> >  {
-> >      if [ -z "$1" ]; then
-> >          echo "Usage: _require_scratch_ext4_feature feature"
-> > -        exit 1
-> > +        _exit 1
-> >      fi
-> >      $MKFS_EXT4_PROG -F $MKFS_OPTIONS -O "$1" \
-> >  		    $SCRATCH_DEV 512m >/dev/null 2>&1 \
-> > diff --git a/common/populate b/common/populate
-> > index 7352f598..50dc75d3 100644
-> > --- a/common/populate
-> > +++ b/common/populate
-> > @@ -1003,7 +1003,7 @@ _fill_fs()
-> >  
-> >  	if [ $# -ne 4 ]; then
-> >  		echo "Usage: _fill_fs filesize dir blocksize switch_user"
-> > -		exit 1
-> > +		_exit 1
-> >  	fi
-> >  
-> >  	if [ $switch_user -eq 0 ]; then
-> > diff --git a/common/preamble b/common/preamble
-> > index c92e55bb..ba029a34 100644
-> > --- a/common/preamble
-> > +++ b/common/preamble
-> > @@ -35,7 +35,7 @@ _begin_fstest()
-> >  {
-> >  	if [ -n "$seq" ]; then
-> >  		echo "_begin_fstest can only be called once!"
-> > -		exit 1
-> > +		_exit 1
-> >  	fi
-> >  
-> >  	seq=`basename $0`
-> > diff --git a/common/punch b/common/punch
-> > index 43ccab69..6567b9d1 100644
-> > --- a/common/punch
-> > +++ b/common/punch
-> > @@ -172,16 +172,16 @@ _filter_fiemap_flags()
-> >  	$AWK_PROG -e "$awk_script" | _coalesce_extents
-> >  }
-> >  
-> > -# Filters fiemap output to only print the 
-> > +# Filters fiemap output to only print the
-> >  # file offset column and whether or not
-> >  # it is an extent or a hole
-> >  _filter_hole_fiemap()
-> >  {
-> >  	$AWK_PROG '
-> >  		$3 ~ /hole/ {
-> > -			print $1, $2, $3; 
-> > +			print $1, $2, $3;
-> >  			next;
-> > -		}   
-> > +		}
-> >  		$5 ~ /0x[[:xdigit:]]+/ {
-> >  			print $1, $2, "extent";
-> >  		}' |
-> > @@ -225,7 +225,7 @@ _filter_bmap()
-> >  die_now()
-> >  {
-> >  	status=1
-> > -	exit
-> > +	_exit
+> Yes.
 > 
-> Why not remove status=1 too and just do _exit 1 here too?
-> Like how we have done at other places?
-
-Yeah, nice catch! As the defination of _exit:
-
-  _exit()
-  {
-       status="$1"
-       exit "$status"
-  }
-
-The
-  "
-  status=1
-  exit
-  "
-should be equal to:
-  "
-  _exit 1
-  "
-
-And "_exit" looks not make sense, due to it gives null to status.
-
-Same problem likes below:
-
-
-@@ -3776,7 +3773,7 @@ _get_os_name()
-                echo 'linux'
-        else
-                echo Unknown operating system: `uname`
--               exit
-+               _exit
-
-
-The "_exit" without argument looks not make sense.
-
-Thanks,
-Zorro
-
+> > So it has the necessary things
+> > like a pointer to a memory page, the disk address, a length, buffer
+> > state flags (uptodate/dirty), and some locks.
 > 
-> Rest looks good to me. 
-> 
-> -ritesh
-> 
+> Yes. (although the page to folio migration is almost done).
 
+Yeah, now that your folio conversion has landed for xfs_buf, Catherine
+should crib your implementation into this one.  Though at least ext2
+doesn't have all the discontiguous multi-fsblock stuff to deal with.
+
+> > For filesystem metadata
+> > blocks I think that's all that most filesystems really need.
+> 
+> Yes.
+> 
+> > Assuming
+> > that filesystems /never/ want overlapping metadata buffers, I think it's
+> > more efficient to look up buffer objects via an rhashtable instead of
+> > walking the address_space xarray to find a folio, and then walking a
+> > linked list from that folio to find the particular bh.
+> 
+> Probably.  But does it make a practical difference for ext2?
+
+Not really, ext2 is just the test vehicle for getting this going.
+
+> > Unfortunately, it also has a bunch of file mapping state information
+> > (e.g. BH_Delalloc) that aren't needed for caching metadata blocks.  All
+> > the confusion that results from the incohesive mixing of these two
+> > usecases goes away by separating out the metadata buffers into a
+> > separate cache and (ha) leaving the filesystems to port the file IO
+> > paths to iomap.
+> 
+> Exactly.
+> 
+> > Separating filesystem metadata buffers into a private datastructure
+> > instead of using the blockdev pagecache also closes off an entire class
+> > of attack surface where evil userspace can wait for a filesystem to load
+> > a metadata block into memory and validate it;
+> 
+> It does close that window.  OTOH that behavior has traditionally been
+> expected very much for extN for use with some tools (IIRC tunefs), so
+> changing that would actually break existing userspace.
+
+Ted at least would like to get rid of tune2fs' scribbling on the block
+device.  It's really gross in ext4 since tune2fs can race with the
+kernel to update sb fields and recalculate the checksum.
+
+> > and then scribble on the
+> > pagecache block to cause the filesystem driver to make the wrong
+> > decisions -- look at all the ext4 metadata_csum bugs where syzkaller
+> > discovered that the decision to call the crc32c driver was gated on a
+> > bit in a bufferhead, and setting that bit having not initialized the
+> > crc32c driver would lead to a kernel crash.  Nowadays we have
+> > CONFIG_BLK_DEV_WRITE_MOUNTED to shut that down, though it defaults to y
+> > and I think that might actually break leased layout things like pnfs.
+> 
+> pNFS scsi/nvme only works for remote nodes, so it's not affected by
+> this.  The block layout could theoretically work locally, but it's
+> a pretty broken protocol to start with.
+
+Ah.
+
+> > So the upsides are: faster lookups, a more cohesive data structure that
+> > only tries to do one thing, and closing attack surfaces.
+> > 
+> > The downsides: this new buffer cache code still needs: an explicit hook
+> > into the dirty pagecache timeout to start its own writeback; to provide
+> > its own shrinker; and some sort of solution for file mapping metadata so
+> > that fsync can flush just those blocks and not the whole cache.
+> 
+> The other major downside is instead of one maintained code base we now
+> have one per file system.  That's probably okay for well maintained
+> file systems with somewhat special needs (say btrfs or xfs), but I'd
+> rather not have that for every misc file system using buffer_heads
+> right now.
+> 
+> So if we want to reduce problems with buffer_heads I'd much rather see
+> all data path usage go away ASAP.  After that the weird entanglement
+> with jbd2 would be the next step (and maybe a private buffer cache for
+> ext4/gfs2 is the answer there).  But copy and pasting a new buffer cache
+> into simple and barely maintained file systems like ext2 feels at least
+> a bit questionable.
+
+The next step is to yank all that code up to fs/ and port another
+filesystem (e.g. fat) to it.  But let's let Catherine get it working for
+all the metadata types within the confines of ext2.
+
+--D
 
