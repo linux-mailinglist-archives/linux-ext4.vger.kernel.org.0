@@ -1,170 +1,187 @@
-Return-Path: <linux-ext4+bounces-7130-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7128-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D881AA80302
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 13:52:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89FB5A801AF
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 13:42:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18CFB7AB43C
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 11:49:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B50E882C93
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 11:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD121265602;
-	Tue,  8 Apr 2025 11:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49675268C41;
+	Tue,  8 Apr 2025 11:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="XgS7vynZ"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="idFiXEYI"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584142690CC;
-	Tue,  8 Apr 2025 11:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE3C224234
+	for <linux-ext4@vger.kernel.org>; Tue,  8 Apr 2025 11:35:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744112991; cv=none; b=brltYzAg42sTidn68CWzo4S7FZyvwTVLCU9Du3EljURLw8C2ES93unIqyYAcUx45vve5AoyBqGkonTKQ9/6JRO/xxegTOck1/AuK2VO7KaICXCjC4dkmGLDIfyLkhbsT7d9PqLf6jtpQqQOXQxVDn9BItyjCMbfCH9lkqNLVkGo=
+	t=1744112115; cv=none; b=ib4KAHgr97dv8q8PApzQU5DBnQ05H1gai5kSe+rlRc6muwVQXamKHSqkctyB/4Csvp8hNOrnKA7KnNyCc2N/781N1NPOmVqfLI0/zZT7o39sJ/uuXjHsyXV/AsKcEbdRe7vh+rR++O7EPrjCq0obTB7LQ0MuAFzfC4apcIXCDoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744112991; c=relaxed/simple;
-	bh=TQiBCRnilEAahdx3q+6rWHzBXxPiVB/mHNHRGjVWVb8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gSxHFnwZik8fukIu+J1tkL8GyVoVWao6jiUoKI4ktrLMZGN5Kx+iZAGJtYlsR4IbnNAF2q1MyCV8sQttPbeO7lbqUT4D3JwxrRsu9QKmxI7l+2mTccnV1ZvqDEzcYPJTQ76zFo0/2yDG4fJwQU7KSgA+bjvp2py1GtZNTM2YnEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=XgS7vynZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63452C4CEEA;
-	Tue,  8 Apr 2025 11:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1744112990;
-	bh=TQiBCRnilEAahdx3q+6rWHzBXxPiVB/mHNHRGjVWVb8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XgS7vynZ16ebAvIYkYh918T2DroRtSLeDfhHwu40W9rCIFdo63Ohnv7/XT86KTapw
-	 y/BA6J21Ml5AGM2deRReAdPGCCgGfFoJCMRoYBIN7kJA/RrOSS11zahfkMR/GCfcne
-	 uzJC1Z9riIrGRk0GwCOwlPB2aJ24ABiNyLTAyeOk=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Jakub Acs <acsjakub@amazon.de>,
-	Theodore Tso <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Mahmoud Adam <mngyadam@amazon.com>,
-	security@kernel.org
-Subject: [PATCH 5.15 273/279] ext4: fix OOB read when checking dotdot dir
-Date: Tue,  8 Apr 2025 12:50:56 +0200
-Message-ID: <20250408104833.762857969@linuxfoundation.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250408104826.319283234@linuxfoundation.org>
-References: <20250408104826.319283234@linuxfoundation.org>
-User-Agent: quilt/0.68
-X-stable: review
-X-Patchwork-Hint: ignore
+	s=arc-20240116; t=1744112115; c=relaxed/simple;
+	bh=C9YvH7XlcPYpjKw8uXimII7CBva/vXHgTIRSn2xqOl8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CXm9PVwUGso3tcYSwXNrpUvxrrTv6G5qlZSvozZBdUp6XHHBOt/n+qgYAuxY6KzxNqgdxBu3mOcXSk3tMjMPTj2EIoUKr5mhTqVmwvq7ROBgK6wV5K7Xc1/h0UNvGOAnQTnF2zg3/meIs1cSjLLt4F0bS8s9NtaFbm0a2UvSEcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=idFiXEYI; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22580c9ee0aso57443435ad.2
+        for <linux-ext4@vger.kernel.org>; Tue, 08 Apr 2025 04:35:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1744112113; x=1744716913; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GP4lUn3SHwIRBNTqZq1gQk1IWBwcK7l2423XKWE6vK8=;
+        b=idFiXEYI6TEwHHhtK4bHUdj5JZUIef+dbI+dzXToCrmJ6X3CpGQ9I35diy2Xe2LOkS
+         f6yiwMIaar3rHMIHbiwvwdUnNS6sjJ6YzWkQ5BY6mQhIEeFnkNNGVnxpu5WlMe9xKqlD
+         XYIyCGbY2GE391s8a0fhnJZHvU2vFkW2vZ53sb1Xgpb4dRMu1LPKT123ssyNxDkHzAo0
+         OLWwwggAwrRTCRMtQFyFraX0qfu2pdrmYiwFQRSJ9xdAosKopEjemzvDexWl2KUssuTR
+         2uTjubJOevoVc9kAbN5up+iiLxO2YwVGCN204mT6R/ApWZLgR2L1lm+bMUx1bbIlOk0H
+         RAog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744112113; x=1744716913;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GP4lUn3SHwIRBNTqZq1gQk1IWBwcK7l2423XKWE6vK8=;
+        b=uNa6z++5zGqCgX9A9mXSchx3gm0SVrF4K383waQ0a9tjRRZedS8qjuGLJnUJOe7dXZ
+         JQZK16Wf+xpSFB6UFAPkUkjrxBZowqX2419JoHlqYAicYCR2vW/CPLHI/+dmYuxEIIe6
+         7NYXS/+rzIbRcbj+UPpdNRKs94qLupcRQdkW+WrrDTj6xBLTvcAmghtlrTpLtge6lx1Y
+         osyLBOnMVwxf1own60F8mD8iSSch0ltUpo2vkO/NACnjXN6sBdIP34JRqmHUoDhRF2vZ
+         vJkWSZzJvaWYpsrTeOpQ5CiipCltamf6SJZTFRYKfzi1UmlKNIDnKQtR9I2bP8prOYbA
+         R16A==
+X-Forwarded-Encrypted: i=1; AJvYcCXYpMgLRrAI6DTF4tpUs6mt0dw+7NYk1rmOC7ft3D6+9bzbfa1U2rGLdfd/59Pt5VPXz/0OrFSswfWZ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTK1b0oSrNruMGiUHpY/lhuLqxoiHQWgslUtpm08o9oiGrzGRO
+	S91taGlXybIFRL4/9eu49Ghb13S7PZjK2nAiPrkbRhUuBAX4lKp/2y5YgAaJBnA=
+X-Gm-Gg: ASbGncvjUW2k0SSb0gNrKn2jCxM/6MumP3oAyWQYMaEvBphpv/5QMH1hVNOO7T9eOhL
+	YytTAFo7f5F4TzQJhU7tOCU58FCpWsK9nNEX9k50hTXakjTpez9dUThV8R4ftETfw7T621y39T8
+	tZ0bK9w1KrgWMKQx5s3S5DdA7gYFZqvqagB8Jw0Tx66u8FAvQR6YxgEW8chpnvnxNBE/yYKaSP1
+	Ae6hFuBTpHlFL889O8OxrRZzMMbw3UKVr3dKkmn6EAiQ3VEdTZZN6w9jpJFXeVkyZXe24YDRDy5
+	r1M36YcWBDahHqXb2EnYT5EXR8clHJu/EGq+2xRONcEmyTv1laOWm3Zp5tQbD3acaz2IrdQLNTR
+	F1C6lZf3HwBwH35+KJQ==
+X-Google-Smtp-Source: AGHT+IG28xARa2STv7WTLeZqoAmrW3aYGB5m4ixF3sGJZ82QXo1zrHqnT5gVctW2sDfM39GBKdLAVQ==
+X-Received: by 2002:a17:902:e550:b0:223:5a6e:b20 with SMTP id d9443c01a7336-22a8a85a4c8mr211129605ad.7.1744112113464;
+        Tue, 08 Apr 2025 04:35:13 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-60-96.pa.nsw.optusnet.com.au. [49.181.60.96])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-229785ad831sm98021815ad.11.2025.04.08.04.35.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Apr 2025 04:35:13 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.98)
+	(envelope-from <david@fromorbit.com>)
+	id 1u27ET-000000063AC-420h;
+	Tue, 08 Apr 2025 21:35:09 +1000
+Date: Tue, 8 Apr 2025 21:35:09 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
+Subject: Re: [PATCH v3 5/6] common/config: Introduce _exit wrapper around
+ exit command
+Message-ID: <Z_UJ7XcpmtkPRhTr@dread.disaster.area>
+References: <cover.1744090313.git.nirjhar.roy.lists@gmail.com>
+ <352a430ecbcb4800d31dc5a33b2b4a9f97fc810a.1744090313.git.nirjhar.roy.lists@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <352a430ecbcb4800d31dc5a33b2b4a9f97fc810a.1744090313.git.nirjhar.roy.lists@gmail.com>
 
-5.15-stable review patch.  If anyone has any objections, please let me know.
+On Tue, Apr 08, 2025 at 05:37:21AM +0000, Nirjhar Roy (IBM) wrote:
+> We should always set the value of status correctly when we are exiting.
+> Else, "$?" might not give us the correct value.
+> If we see the following trap
+> handler registration in the check script:
+> 
+> if $OPTIONS_HAVE_SECTIONS; then
+>      trap "_kill_seq; _summary; exit \$status" 0 1 2 3 15
+> else
+>      trap "_kill_seq; _wrapup; exit \$status" 0 1 2 3 15
+> fi
+> 
+> So, "exit 1" will exit the check script without setting the correct
+> return value. I ran with the following local.config file:
+> 
+> [xfs_4k_valid]
+> FSTYP=xfs
+> TEST_DEV=/dev/loop0
+> TEST_DIR=/mnt1/test
+> SCRATCH_DEV=/dev/loop1
+> SCRATCH_MNT=/mnt1/scratch
+> 
+> [xfs_4k_invalid]
+> FSTYP=xfs
+> TEST_DEV=/dev/loop0
+> TEST_DIR=/mnt1/invalid_dir
+> SCRATCH_DEV=/dev/loop1
+> SCRATCH_MNT=/mnt1/scratch
+> 
+> This caused the init_rc() to catch the case of invalid _test_mount
+> options. Although the check script correctly failed during the execution
+> of the "xfs_4k_invalid" section, the return value was 0, i.e "echo $?"
+> returned 0. This is because init_rc exits with "exit 1" without
+> correctly setting the value of "status". IMO, the correct behavior
+> should have been that "$?" should have been non-zero.
+> 
+> The next patch will replace exit with _exit.
+> 
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Reviewed-by: Dave Chinner <dchinner@redhat.com>
+> ---
+>  common/config | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/common/config b/common/config
+> index 79bec87f..eb6af35a 100644
+> --- a/common/config
+> +++ b/common/config
+> @@ -96,6 +96,14 @@ export LOCAL_CONFIGURE_OPTIONS=${LOCAL_CONFIGURE_OPTIONS:=--enable-readline=yes}
+>  
+>  export RECREATE_TEST_DEV=${RECREATE_TEST_DEV:=false}
+>  
+> +# This functions sets the exit code to status and then exits. Don't use
+> +# exit directly, as it might not set the value of "status" correctly.
+> +_exit()
+> +{
+> +	status="$1"
+> +	exit "$status"
+> +}
 
-------------------
+The only issue with putting this helper in common/config is that
+calling _exit() requires sourcing common/config from the shell
+context that calls it.
 
-From: Acs, Jakub <acsjakub@amazon.de>
+This means every test must source common/config and re-execute the
+environment setup, even though we already have all the environment
+set up because it was exported from check when it sourced
+common/config.
 
-commit d5e206778e96e8667d3bde695ad372c296dc9353 upstream.
+We have the same problem with _fatal() - it is defined in
+common/config instead of an independent common file. If we put such
+functions in their own common file, they can be sourced
+without dependencies on any other common file being included first.
 
-Mounting a corrupted filesystem with directory which contains '.' dir
-entry with rec_len == block size results in out-of-bounds read (later
-on, when the corrupted directory is removed).
+e.g. we create common/exit and place all the functions that
+terminate tests in it - _fatal, _notrun, _exit, etc and source that
+file once per shell context before we source common/config,
+common/rc, etc. This means we can source and call those termination
+functions from any context without having to worry about
+dependencies...
 
-ext4_empty_dir() assumes every ext4 directory contains at least '.'
-and '..' as directory entries in the first data block. It first loads
-the '.' dir entry, performs sanity checks by calling ext4_check_dir_entry()
-and then uses its rec_len member to compute the location of '..' dir
-entry (in ext4_next_entry). It assumes the '..' dir entry fits into the
-same data block.
+-Dave.
 
-If the rec_len of '.' is precisely one block (4KB), it slips through the
-sanity checks (it is considered the last directory entry in the data
-block) and leaves "struct ext4_dir_entry_2 *de" point exactly past the
-memory slot allocated to the data block. The following call to
-ext4_check_dir_entry() on new value of de then dereferences this pointer
-which results in out-of-bounds mem access.
-
-Fix this by extending __ext4_check_dir_entry() to check for '.' dir
-entries that reach the end of data block. Make sure to ignore the phony
-dir entries for checksum (by checking name_len for non-zero).
-
-Note: This is reported by KASAN as use-after-free in case another
-structure was recently freed from the slot past the bound, but it is
-really an OOB read.
-
-This issue was found by syzkaller tool.
-
-Call Trace:
-[   38.594108] BUG: KASAN: slab-use-after-free in __ext4_check_dir_entry+0x67e/0x710
-[   38.594649] Read of size 2 at addr ffff88802b41a004 by task syz-executor/5375
-[   38.595158]
-[   38.595288] CPU: 0 UID: 0 PID: 5375 Comm: syz-executor Not tainted 6.14.0-rc7 #1
-[   38.595298] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-[   38.595304] Call Trace:
-[   38.595308]  <TASK>
-[   38.595311]  dump_stack_lvl+0xa7/0xd0
-[   38.595325]  print_address_description.constprop.0+0x2c/0x3f0
-[   38.595339]  ? __ext4_check_dir_entry+0x67e/0x710
-[   38.595349]  print_report+0xaa/0x250
-[   38.595359]  ? __ext4_check_dir_entry+0x67e/0x710
-[   38.595368]  ? kasan_addr_to_slab+0x9/0x90
-[   38.595378]  kasan_report+0xab/0xe0
-[   38.595389]  ? __ext4_check_dir_entry+0x67e/0x710
-[   38.595400]  __ext4_check_dir_entry+0x67e/0x710
-[   38.595410]  ext4_empty_dir+0x465/0x990
-[   38.595421]  ? __pfx_ext4_empty_dir+0x10/0x10
-[   38.595432]  ext4_rmdir.part.0+0x29a/0xd10
-[   38.595441]  ? __dquot_initialize+0x2a7/0xbf0
-[   38.595455]  ? __pfx_ext4_rmdir.part.0+0x10/0x10
-[   38.595464]  ? __pfx___dquot_initialize+0x10/0x10
-[   38.595478]  ? down_write+0xdb/0x140
-[   38.595487]  ? __pfx_down_write+0x10/0x10
-[   38.595497]  ext4_rmdir+0xee/0x140
-[   38.595506]  vfs_rmdir+0x209/0x670
-[   38.595517]  ? lookup_one_qstr_excl+0x3b/0x190
-[   38.595529]  do_rmdir+0x363/0x3c0
-[   38.595537]  ? __pfx_do_rmdir+0x10/0x10
-[   38.595544]  ? strncpy_from_user+0x1ff/0x2e0
-[   38.595561]  __x64_sys_unlinkat+0xf0/0x130
-[   38.595570]  do_syscall_64+0x5b/0x180
-[   38.595583]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-
-Fixes: ac27a0ec112a0 ("[PATCH] ext4: initial copy of files from ext3")
-Signed-off-by: Jakub Acs <acsjakub@amazon.de>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Mahmoud Adam <mngyadam@amazon.com>
-Cc: stable@vger.kernel.org
-Cc: security@kernel.org
-Link: https://patch.msgid.link/b3ae36a6794c4a01944c7d70b403db5b@amazon.de
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/ext4/dir.c |    3 +++
- 1 file changed, 3 insertions(+)
-
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -104,6 +104,9 @@ int __ext4_check_dir_entry(const char *f
- 	else if (unlikely(le32_to_cpu(de->inode) >
- 			le32_to_cpu(EXT4_SB(dir->i_sb)->s_es->s_inodes_count)))
- 		error_msg = "inode out of bounds";
-+	else if (unlikely(next_offset == size && de->name_len == 1 &&
-+			  de->name[0] == '.'))
-+		error_msg = "'.' directory cannot be the last in data block";
- 	else
- 		return 0;
- 
-
-
+-- 
+Dave Chinner
+david@fromorbit.com
 
