@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-7127-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7129-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A4FDA7FE68
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 13:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 87B24A8019E
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 13:41:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE0CE19E2D9D
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 11:06:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DDF8189459C
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 11:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830D8269D0D;
-	Tue,  8 Apr 2025 11:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7953266B54;
+	Tue,  8 Apr 2025 11:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="h6B0Jzrj"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="TtfvRx4z"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17325269CF0;
-	Tue,  8 Apr 2025 11:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E65135973;
+	Tue,  8 Apr 2025 11:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744110244; cv=none; b=LQSURtsHjlpzQv/yaHMqH+ksXxNb2/6bGajNz0zIitHZUG7FwgooYWiLH3n/TI5GFaRYyRQpSoLtRePXUmEnhfkgEVDPBpsmzQzYeY5PwbdBPl3iAZeVqVckX5ibifSuM4pAdiJ0E1/JAfz3MAPOKs2ntMTQA7eiVEUrjEe/4F0=
+	t=1744112216; cv=none; b=OOIXQPenMfax4E0KIFfWdUXc8QLOUTRTg+d5ag7HK6KqRLYRQ3YAl1LPNeqJMBxGY32QZuadKiXl5DiH0Xbypo9o/0Op13ODxsK+2ujPvybviCAYm382jeFmgjh7zhG87G7dxn3bj2X/urLy0aKG/WdDEKlvz8PNjVy26hIpfI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744110244; c=relaxed/simple;
-	bh=eF8ykuB3zv9H36H3ho5AqA1fkqlQywk4736N5EJ2uVM=;
+	s=arc-20240116; t=1744112216; c=relaxed/simple;
+	bh=zyxuP9lwY9UnwfkY5Yt0QiiadPQQxpchsmY4OJqlTiA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kc7p19yv2Xyqna2zbYqfUxhn+WiDjk/XGN+0iMjFUss3qcdOdOTlazjgPstfwkch+v8jRRQz4+gqHGxZfROMFM1zYbjbhNrpxW2+I6acF07lHVtK1YEA7FLRPivx21vOELov2Me1g6KjNGRiFdEsoD8c1iUNyZuskO/JmavgrZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=h6B0Jzrj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35C8CC4CEE5;
-	Tue,  8 Apr 2025 11:04:03 +0000 (UTC)
+	 MIME-Version; b=t3nSCzolmnrivwm+YQUyL5QRGr0NpaP/i4/WkPCMLVEY+E/5YVMx/G0piiZ2nK0krVZAKpYYnGyT+wCvf4JtpQF+Zjj7pe9GmX9kUfvZFgXv7TnGG/J+lW2Zeb0eye7zriOiVKPzkS+YOEOfkWDUUXlkpaztxkUshkCUa2d5n8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=TtfvRx4z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3263C4CEE5;
+	Tue,  8 Apr 2025 11:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1744110243;
-	bh=eF8ykuB3zv9H36H3ho5AqA1fkqlQywk4736N5EJ2uVM=;
+	s=korg; t=1744112216;
+	bh=zyxuP9lwY9UnwfkY5Yt0QiiadPQQxpchsmY4OJqlTiA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=h6B0JzrjLdW1aaQX/sBoTjFHeefoXkJPG4hutp3k721udh3TBJhqYBFzc875BzTWA
-	 P7sGWFJwVqY2W4jJtK9tkh+0FAJxl6i2pTo/4d7M1NdMyYuhCbCMKy0fg3T5b826jd
-	 f63A1xgZ6P1gNJIJ8vEQx/lydT29LEUpNQ4C1Ox4=
+	b=TtfvRx4zv2c3j6vdT5a9iLQm+j1vk/KESvoDkv8uXEXhXvCbXgBfyh9inIwXpztfO
+	 znylo1S6PWY+8m+iQGbZICnbe0PB35CZWX0oIZuHdKFB0Ax2XO7gM2vBu9aXGojTSs
+	 8LU3XakxelmuRBcbJ4nSkauNeezMBLUH2uG55o9I=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -49,12 +49,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-kernel@vger.kernel.org,
 	Mahmoud Adam <mngyadam@amazon.com>,
 	security@kernel.org
-Subject: [PATCH 5.10 221/227] ext4: fix OOB read when checking dotdot dir
-Date: Tue,  8 Apr 2025 12:49:59 +0200
-Message-ID: <20250408104826.925865160@linuxfoundation.org>
+Subject: [PATCH 6.14 716/731] ext4: fix OOB read when checking dotdot dir
+Date: Tue,  8 Apr 2025 12:50:13 +0200
+Message-ID: <20250408104930.928950471@linuxfoundation.org>
 X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250408104820.353768086@linuxfoundation.org>
-References: <20250408104820.353768086@linuxfoundation.org>
+In-Reply-To: <20250408104914.247897328@linuxfoundation.org>
+References: <20250408104914.247897328@linuxfoundation.org>
 User-Agent: quilt/0.68
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-5.10-stable review patch.  If anyone has any objections, please let me know.
+6.14-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -155,7 +155,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/ext4/dir.c
 +++ b/fs/ext4/dir.c
-@@ -88,6 +88,9 @@ int __ext4_check_dir_entry(const char *f
+@@ -104,6 +104,9 @@ int __ext4_check_dir_entry(const char *f
  	else if (unlikely(le32_to_cpu(de->inode) >
  			le32_to_cpu(EXT4_SB(dir->i_sb)->s_es->s_inodes_count)))
  		error_msg = "inode out of bounds";
