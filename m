@@ -1,80 +1,80 @@
-Return-Path: <linux-ext4+bounces-7141-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7142-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DDC5A81289
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 18:38:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F36C5A812B4
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 18:45:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6485318840C1
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 16:35:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA8AE4E2257
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 16:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9194122F152;
-	Tue,  8 Apr 2025 16:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8D1231CB1;
+	Tue,  8 Apr 2025 16:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cccxcjq5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gZmna3Vz"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87DC1CB501;
-	Tue,  8 Apr 2025 16:35:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B251D5CF8;
+	Tue,  8 Apr 2025 16:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744130138; cv=none; b=sVKKbT5R4OhWl40L4XX87o60FlSWXXo+vXzAZTv+CD13UBK0A1HOmHO1cwXSwts8BoTy/3IvYhrjXhnRfXTEGc+RkXfa+eMEVNaGYDgaRdp0GU4yi2PhKD4lCczrzJR4skElkR2d1gQbJvGt5mRpv3wFLJzhvLykj/Gl3nst5gs=
+	t=1744130642; cv=none; b=DGR+Dp4+r/uvT7cdfM4w1ucJGwWGWOurwfE7QIRg/w+ujxus+vTTf7px8kRSBrSR2m9T/OAwIC1oIsCJftAqJpjUSAZr/mXneeF4QBiO2YlKTOtW0tuGCESpThIIXGtT7OOtdgbN0MT4e7kZgtu/gqYgzqp9TS2iMmDwt5SsdF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744130138; c=relaxed/simple;
-	bh=MzXLgFjot5MLrqkIhtaFOJUnQ2r4uB408d67S2hgs0c=;
+	s=arc-20240116; t=1744130642; c=relaxed/simple;
+	bh=Ojk5OViEKUCcr3YUWTJco5zlv1sFpKvptFMWlLMi+l4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hli2KEE/frRTho1DJ04X7i4YhsGQHzrRzw+YHGHwxkWlIVPvfQ6ZQsPEGf2RgV7SWu78KcCJnpe4bqSDVYLFE4InUPJDM8f6km2VqTW9WkXSh1zgTFv0IgWRVny5Dxq9XMlAccfnLPEJLHqkVkon6bgk9g7jFjbDjKrx3IguzPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cccxcjq5; arc=none smtp.client-ip=209.85.210.176
+	 In-Reply-To:Content-Type; b=oU+1E0xjrAV8WoVvE04Du4zswBvbuDqtTEX8alm3hUwwrAhAndUFdU47f48xMmcht5W0ek+E7nWszeK327rH1qAp5jgKlOkAnItMkaxnaSkSXaLknYx1fW6HJd0FdeLiiXaXBGG/CUoTup/5mH4qjj8vdEUkB0q9zvC7Vzs+BcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gZmna3Vz; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-736ad42dfd6so4766745b3a.3;
-        Tue, 08 Apr 2025 09:35:36 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-af6b02d9e5eso4044271a12.0;
+        Tue, 08 Apr 2025 09:44:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744130136; x=1744734936; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744130640; x=1744735440; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xiC6J0IDcQn6FUFQpRktZ0NjARVBfwhMm3Smewc5FZM=;
-        b=Cccxcjq5oZryJYyo3ydHSRZP1pr8GLzMjiaiZ2e/yAfNhEvwpD3znBufmn+POhVDlS
-         Sa/R0cKhrewlI78E0qqq5jzPFyELr3aVXdry+nxQz+igPTDCAiJGHOmH26abEW0FP8XW
-         1VZOe3+toK4AtrUKNCNuDBTur54xRMcqQ0lzroOvfjSzyzuFCb0tREJ0ctaPVHUl3rPG
-         zFNMYDrBaAbu5/JnC5u+qkqAy+JnQTb08pyFShjPubshnbrDzCzWLnYW02NrqMHe8+Fl
-         4sILHAWPfDgGKm0d0r0nCTk4XvybvmERp4lqJRCHVOoiS7jij3FyCbLUiEuzMjAVPcQl
-         q81A==
+        bh=EMzApreeBbDaWRj5R3KuZRrnpsLYeSAfDX1fgiqxEX0=;
+        b=gZmna3VzyS7Hi+NiX54Jr9p5XJIQyCVU4h3nNwf/CQ2e6GqkKOqIFjEYt68x82fvyJ
+         ZV/kvtvkaNZEO2IBgwke0SkSQVqH1NSeICnHA56uhnaIS48It5cdryiODPAOVYqyCLj/
+         2KgMZwMi77+nVrdsCcCTXmjSqViAHFOT8WfO9Z335wCNLX1eLcZga0izlq4MKsYxjcP1
+         oby6SrvEa7A+nQXsKJQx64zEE30FVSj41qvYkOsxvRAKotavWoJvwcBo00TMD7ZfOn7g
+         O/zjb8q5ynDSONoIRrwn/y6PnLKe50ON+Oq7Bm28N1WCuL0EbuxLg+ScAceo+UY7rlLo
+         DhLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744130136; x=1744734936;
+        d=1e100.net; s=20230601; t=1744130640; x=1744735440;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xiC6J0IDcQn6FUFQpRktZ0NjARVBfwhMm3Smewc5FZM=;
-        b=ZLBgSdbnP+UBrfL/Dxg5x0uCvxI+Ys+A8itmFN31HSyNbTdXAsu1MmtdYXvglnhMQ0
-         gziBkSGlG0YSLl5ibGd9e8BW2KW7bsmgmUn7ig4ZfBsaX5WbBVIpQS03wShpQfxV1tHn
-         s5AU4gRQg2o2OQBVma0bSz7Oy91vfSdds8aRxCB4k6zow4lT+s3keJVaFAUAP5u4dKbs
-         pmX7vqVYkILNAR4ZTFtKFRX3z3hrsjNsd31jLDxxioCB0ew/9P93jGxpDSQVtI59DxV1
-         uund9bcKGm74dBKDfASu8xdqI5j7U6exKgPUy70vHggmPDfhhzqPODbpKDz3fgcSt/Bz
-         LH2g==
-X-Forwarded-Encrypted: i=1; AJvYcCU096lKumo2SQeh8kFogb1kr0Knjfd3j5PJ8h1keZ2ZjFIRVzi8Tcbqa+01djJLo+vTSnn962FA@vger.kernel.org, AJvYcCWIfkWV6LQ4SsELshDzWt6eCR7t5Eoro3Mb8EOYtJYXR9Cu29J3VIlBb4sk+p9IZVDeOKkqLwWh6Cgl/w==@vger.kernel.org, AJvYcCWPeagwWlsCopTNFjbySaG/3xsL5Ud8WO0CLeHTDtKzlsI/vLghMZ0Dv7XJ7qy7Niz/8taS+1nWc7y/@vger.kernel.org
-X-Gm-Message-State: AOJu0YyP2xv/r75Aprhz54joyUsu7NrD5iV96qzrFKMe6EdWUznEP/je
-	cZrRSfAHUdqSEt+lsgFaklVIbrCsvKLuR2SnlNMB8RUC87E/atL3
-X-Gm-Gg: ASbGncuE+fHzQOTampho61W61IoL8JzNmefpukwBtJgkkoN2HMUVau0SjvrZYi5hOfC
-	rv7z9KrmUhBuruy7v//dHlR+5UYGH3TS4ZXevF9lZtSKyZdHi6f8b2Ohj9gf/MFBvJ6+sLa3qRM
-	x6QP0u3LJ8WxeOYEBNw4Enm1k7qvcBzsJFRv4mobdj4TQfNgEO2OUfns7Xc94dCgbDWKKd5nTCS
-	Q9sUfiTF4QjDCn+XlBwF4z3mJXJSbEgj1myKcJBSplFjNMc99pSCbD2WUJFbXeXsAWBafznor9T
-	U55+Y0qaJ3pvkdeCv0hdiAERgiZM9i2qRYg1SWuijdXwvrJ1k8i6LMznrw6YnzOfpQPtPGPF1B5
-	9AfNAu7y9Z2F4eJPZ4XEfR9bmTKZ8Lt2QjIUVk0s=
-X-Google-Smtp-Source: AGHT+IF+LctoHLYbFqAQgqCG9RSw62hwy8hkXLTLfJumVgOMhLVU4uD6r5hST7UokYBtK4m6mvGJUw==
-X-Received: by 2002:a05:6a00:14d4:b0:736:476b:fcd3 with SMTP id d2e1a72fcca58-73b6b8fd296mr21160763b3a.24.1744130135585;
-        Tue, 08 Apr 2025 09:35:35 -0700 (PDT)
+        bh=EMzApreeBbDaWRj5R3KuZRrnpsLYeSAfDX1fgiqxEX0=;
+        b=SMJa7CElDSPuzFDogYCXpibGuzDIheQbR2DYGVn66MtrEVo8UEPejnx4DKxaEGA057
+         xXy6nWw1tcDODFia4Z+jXCtoifvNPeDaQevv9JjrZQsd1MltDoapwvNq7PVHuMBfj0rM
+         i0c6qUO0cSLkUbJ7d14qKSW9eBdke81/aU4QWXa9MfBuWAWRURUbSgkE2KTuasezlxA+
+         F8Fh9ynN2irFgI1kCBUcO7SwMeVBZjmdC9uEJjX3cjv0ja3mLXEdSN8kn34qHk9tvO5D
+         LhSPKR/rJTa5zsdGnTPlkv2V5s5rJLiyECjybfhdoJ6omfH5XlFh2WzUQLUbynwO2i3X
+         aSHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwDww2pXTFTgKZ/0MA1Pk0D51uaUpEdRb5vYDfs5Ftr3CnQPfJsVl0/pKev5s+REiePoJnW/yDVFy9@vger.kernel.org, AJvYcCXxqbEH55uDR29ij0DNJT4Kv7rIMFN4FLx8Xu0tyJI84nrHqijaIG2LXnoH1rzRidOORU+o+k4O+wmB@vger.kernel.org
+X-Gm-Message-State: AOJu0YzV5FeHZWc2Sa3K62UYCN2NGWly8xGM0lL/iGKwV4jygeL1rDpv
+	e6R4sSCw6LsEzuVXpysfthQwATErxCyZAZXPvTCf1AnwpbjoKez+
+X-Gm-Gg: ASbGncvc9U1NjxKeR6sIK+jErGrVGyNH8ftl32xK+xNOJPOKu+D8x/8OvW0cCPVcRn4
+	x1is1vhszeSafy/3ve/v1IOgT6RGMZ/AEKi1/858j7TN1NIKDHU1zpV1Scb2XW6xMHOjkAiaXv6
+	18itHzsb6OKaVUEHWOambpkto2r6AjFoIL4NPFaa63XXS53uhxiREI1jkPj3+uV6XtN0W7IRFn1
+	ef1M1rvqcrtztPU8ZEq4fbu9CBkCVeJ6W+L3zeZIU2pZH5hAN0tnk4FuiX2kvUcG/vD+GqguQmg
+	Fl6tiYw7aM88vYrcHc/fZKabas59/7Q6X3IXOHbTaX3JCmmj8GhIK8eHUP6QVksxnyyL10gEczl
+	6W3xv1tv7KVuXfutcAkbZphqlM08D
+X-Google-Smtp-Source: AGHT+IGtgfuJoR0WAzMzmd0kcigb62CvlzLHsFYBHc3ixOP809i80HsiVHGpsVS9z3DCBIOHCCfJcA==
+X-Received: by 2002:a17:902:f690:b0:224:912:153 with SMTP id d9443c01a7336-22a8a04ab76mr245870495ad.5.1744130639786;
+        Tue, 08 Apr 2025 09:43:59 -0700 (PDT)
 Received: from ?IPV6:2401:4900:1f2a:4b1d:fee1:8dac:3556:836f? ([2401:4900:1f2a:4b1d:fee1:8dac:3556:836f])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-739d97d1b9esm11147290b3a.18.2025.04.08.09.35.32
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-229785bfffasm102951585ad.61.2025.04.08.09.43.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Apr 2025 09:35:35 -0700 (PDT)
-Message-ID: <1b923260-2879-40d1-8543-15272a296ca6@gmail.com>
-Date: Tue, 8 Apr 2025 22:05:30 +0530
+        Tue, 08 Apr 2025 09:43:59 -0700 (PDT)
+Message-ID: <37155b56-34ba-4d5d-a023-242abbe525b5@gmail.com>
+Date: Tue, 8 Apr 2025 22:13:54 +0530
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -85,130 +85,110 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 5/6] common/config: Introduce _exit wrapper around exit
  command
 Content-Language: en-US
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, fstests@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
- ojaswin@linux.ibm.com, zlang@kernel.org, david@fromorbit.com
+To: Dave Chinner <david@fromorbit.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
+ djwong@kernel.org, zlang@kernel.org
 References: <cover.1744090313.git.nirjhar.roy.lists@gmail.com>
  <352a430ecbcb4800d31dc5a33b2b4a9f97fc810a.1744090313.git.nirjhar.roy.lists@gmail.com>
- <87y0wbj9ru.fsf@gmail.com> <0e4817b5-bd20-4ea6-93f4-ec0bee9bf833@gmail.com>
- <20250408163244.GH6307@frogsfrogsfrogs>
+ <Z_UJ7XcpmtkPRhTr@dread.disaster.area>
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-In-Reply-To: <20250408163244.GH6307@frogsfrogsfrogs>
+In-Reply-To: <Z_UJ7XcpmtkPRhTr@dread.disaster.area>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 
-On 4/8/25 22:02, Darrick J. Wong wrote:
-> On Tue, Apr 08, 2025 at 09:45:53PM +0530, Nirjhar Roy (IBM) wrote:
->> On 4/8/25 14:43, Ritesh Harjani (IBM) wrote:
->>> "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
->>>
->>>> We should always set the value of status correctly when we are exiting.
->>>> Else, "$?" might not give us the correct value.
->>>> If we see the following trap
->>>> handler registration in the check script:
->>>>
->>>> if $OPTIONS_HAVE_SECTIONS; then
->>>>        trap "_kill_seq; _summary; exit \$status" 0 1 2 3 15
->>>> else
->>>>        trap "_kill_seq; _wrapup; exit \$status" 0 1 2 3 15
->>>> fi
->>>>
->>>> So, "exit 1" will exit the check script without setting the correct
->>>> return value. I ran with the following local.config file:
->>>>
->>>> [xfs_4k_valid]
->>>> FSTYP=xfs
->>>> TEST_DEV=/dev/loop0
->>>> TEST_DIR=/mnt1/test
->>>> SCRATCH_DEV=/dev/loop1
->>>> SCRATCH_MNT=/mnt1/scratch
->>>>
->>>> [xfs_4k_invalid]
->>>> FSTYP=xfs
->>>> TEST_DEV=/dev/loop0
->>>> TEST_DIR=/mnt1/invalid_dir
->>>> SCRATCH_DEV=/dev/loop1
->>>> SCRATCH_MNT=/mnt1/scratch
->>>>
->>>> This caused the init_rc() to catch the case of invalid _test_mount
->>>> options. Although the check script correctly failed during the execution
->>>> of the "xfs_4k_invalid" section, the return value was 0, i.e "echo $?"
->>>> returned 0. This is because init_rc exits with "exit 1" without
->>>> correctly setting the value of "status". IMO, the correct behavior
->>>> should have been that "$?" should have been non-zero.
->>>>
->>>> The next patch will replace exit with _exit.
->>>>
->>>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
->>>> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->>>> Reviewed-by: Dave Chinner <dchinner@redhat.com>
->>>> ---
->>>>    common/config | 8 ++++++++
->>>>    1 file changed, 8 insertions(+)
->>>>
->>>> diff --git a/common/config b/common/config
->>>> index 79bec87f..eb6af35a 100644
->>>> --- a/common/config
->>>> +++ b/common/config
->>>> @@ -96,6 +96,14 @@ export LOCAL_CONFIGURE_OPTIONS=${LOCAL_CONFIGURE_OPTIONS:=--enable-readline=yes}
->>>>    export RECREATE_TEST_DEV=${RECREATE_TEST_DEV:=false}
->>>> +# This functions sets the exit code to status and then exits. Don't use
->>>> +# exit directly, as it might not set the value of "status" correctly.
->>> ...as it might not set the value of "$status" correctly, which is used
->>> as an exit code in the trap handler routine set up by the check script.
->>>
->>>> +_exit()
->>>> +{
->>>> +	status="$1"
->>>> +	exit "$status"
->>>> +}
->>>> +
->>> I agree with Darrick’s suggestion here. It’s safer to update status only
->>> when an argument is passed - otherwise, it’s easy to trip over this.
->>>
->>> Let’s also avoid defaulting status to 0 inside _exit(). That way, if the
->>> caller forgets to pass an argument but has explicitly set status
->>> earlier, we preserve the intended value.
->>>
->>> We should update _exit() with...
->>>
->>> test -n "$1" && status="$1"
->> Okay, so in that case if someone does "status=<value>;_exit", we should end
->> up with the "<value>" instead of something else, right?
-> Right.  I think.  AFAICT the following simple program actually does
-> return 5 despite the cleanup:
+On 4/8/25 17:05, Dave Chinner wrote:
+> On Tue, Apr 08, 2025 at 05:37:21AM +0000, Nirjhar Roy (IBM) wrote:
+>> We should always set the value of status correctly when we are exiting.
+>> Else, "$?" might not give us the correct value.
+>> If we see the following trap
+>> handler registration in the check script:
+>>
+>> if $OPTIONS_HAVE_SECTIONS; then
+>>       trap "_kill_seq; _summary; exit \$status" 0 1 2 3 15
+>> else
+>>       trap "_kill_seq; _wrapup; exit \$status" 0 1 2 3 15
+>> fi
+>>
+>> So, "exit 1" will exit the check script without setting the correct
+>> return value. I ran with the following local.config file:
+>>
+>> [xfs_4k_valid]
+>> FSTYP=xfs
+>> TEST_DEV=/dev/loop0
+>> TEST_DIR=/mnt1/test
+>> SCRATCH_DEV=/dev/loop1
+>> SCRATCH_MNT=/mnt1/scratch
+>>
+>> [xfs_4k_invalid]
+>> FSTYP=xfs
+>> TEST_DEV=/dev/loop0
+>> TEST_DIR=/mnt1/invalid_dir
+>> SCRATCH_DEV=/dev/loop1
+>> SCRATCH_MNT=/mnt1/scratch
+>>
+>> This caused the init_rc() to catch the case of invalid _test_mount
+>> options. Although the check script correctly failed during the execution
+>> of the "xfs_4k_invalid" section, the return value was 0, i.e "echo $?"
+>> returned 0. This is because init_rc exits with "exit 1" without
+>> correctly setting the value of "status". IMO, the correct behavior
+>> should have been that "$?" should have been non-zero.
+>>
+>> The next patch will replace exit with _exit.
+>>
+>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+>> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>> Reviewed-by: Dave Chinner <dchinner@redhat.com>
+>> ---
+>>   common/config | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/common/config b/common/config
+>> index 79bec87f..eb6af35a 100644
+>> --- a/common/config
+>> +++ b/common/config
+>> @@ -96,6 +96,14 @@ export LOCAL_CONFIGURE_OPTIONS=${LOCAL_CONFIGURE_OPTIONS:=--enable-readline=yes}
+>>   
+>>   export RECREATE_TEST_DEV=${RECREATE_TEST_DEV:=false}
+>>   
+>> +# This functions sets the exit code to status and then exits. Don't use
+>> +# exit directly, as it might not set the value of "status" correctly.
+>> +_exit()
+>> +{
+>> +	status="$1"
+>> +	exit "$status"
+>> +}
+> The only issue with putting this helper in common/config is that
+> calling _exit() requires sourcing common/config from the shell
+> context that calls it.
 >
-> trap 'echo cleanup' INT QUIT TERM EXIT
-> exit 5
+> This means every test must source common/config and re-execute the
+> environment setup, even though we already have all the environment
+> set up because it was exported from check when it sourced
+> common/config.
 >
-> But since fstests set a variable named "status" and then "exit $status"
-> from cleanup, I think it doesn't matter how status gets set as long as
-> it /does/ get set somewhere.
+> We have the same problem with _fatal() - it is defined in
+> common/config instead of an independent common file. If we put such
+> functions in their own common file, they can be sourced
+> without dependencies on any other common file being included first.
+>
+> e.g. we create common/exit and place all the functions that
+> terminate tests in it - _fatal, _notrun, _exit, etc and source that
+> file once per shell context before we source common/config,
+> common/rc, etc. This means we can source and call those termination
+> functions from any context without having to worry about
+> dependencies...
 
-Right, I have got the idea. I will make the changes in next revision.
+Yes, I agree to the above. Do you want this refactoring to be done as a 
+part of this patch series in the further revisions, or can this be sent 
+as a separate series?
 
 --NR
 
 >
-> --D
+> -Dave.
 >
->> --NR
->>
->>> -ritesh
->>>
->>>
->>>>    # Handle mkfs.$fstyp which does (or does not) require -f to overwrite
->>>>    set_mkfs_prog_path_with_opts()
->>>>    {
->>>> -- 
->>>> 2.34.1
->> -- 
->> Nirjhar Roy
->> Linux Kernel Developer
->> IBM, Bangalore
->>
 -- 
 Nirjhar Roy
 Linux Kernel Developer
