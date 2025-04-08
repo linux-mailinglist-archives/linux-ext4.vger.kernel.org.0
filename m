@@ -1,162 +1,198 @@
-Return-Path: <linux-ext4+bounces-7137-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7138-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A686DA80EA9
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 16:44:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A79A811D8
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 18:16:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 585148A1D8B
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 14:37:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 386C27B9520
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 16:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F3921A9B52;
-	Tue,  8 Apr 2025 14:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E7E22D4C1;
+	Tue,  8 Apr 2025 16:16:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y+Wsd4uF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IT4LFHV3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C4D1DBB0C;
-	Tue,  8 Apr 2025 14:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6B322A7F1;
+	Tue,  8 Apr 2025 16:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744122827; cv=none; b=PvcaKZ6lYNA2Mv4UTI1yUBXH0nAH8PhFgaFn3ubxOgjZ24/nnKP62LHaptnGu2xZ0EyWxmDp6Qacph2MtivzeXkTE+GK6WpJ7GVe2B8j86U9G7g4hOU/QnpnV8MAgFVs+xRgluk1f9uKfTvUxNZGdnnmWtNfp8UbUj8Phh6p3Co=
+	t=1744128960; cv=none; b=gh7z+Jl1gNbJC/UWC9GKft+38ya7Dbb/ZnPTvV9Dg409O43gQzQamfKnwuHc+uWCdRrYpFJHfIS1WRfZdhYKREz7IyL0ebuKqPEh6s8oV1mRwkbIbyBHebC2o8RNGWxuZvtPk18qaDv6xOA3kRMuWTipV2c73D4XbIxbrsFzg4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744122827; c=relaxed/simple;
-	bh=aEfx6RkU/Tu2k8S2tBQr8QBzC2LFzW6gVbGKB908vOw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=duuQsJi67HDhotY8GYWC7+65mF3oXq9Ry9kRtJnMyxD9bSplA9AKWI4aGhZ8RKHE0H2qQvIGRtyuyRprpUE66XC6VlAz+a/vvD02vrG7SmWX49ozQAZO9ePlTytXWA/LQTYx/mGpQ/4KR1uM1fWFYRZXnm5p2aGwbqRjc8LGfDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y+Wsd4uF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D5F8C4CEE5;
-	Tue,  8 Apr 2025 14:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744122826;
-	bh=aEfx6RkU/Tu2k8S2tBQr8QBzC2LFzW6gVbGKB908vOw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y+Wsd4uFxkefVyM0Rcp0TuN+gwpTIMtSSLaIkCzk3iWbn0P8QFMm7P1NPsk+p+QNr
-	 RwUEbiSOVsUTPgY/llpADBQ4LKVgPwpmXVVbe2e7jgl7BtL7MJX8wE3DFUawDZ5HBu
-	 8RQUGaGkPeKbw1+QPjGRIuDzGjWVOjUCSuTjYA7RSriBP1jIc9BRvF4EhSb8ZHemCF
-	 6KcjqcO39DD+3bdMSbkosN9MnLa7y6sV4TxGx90TJWqRkYTJtpZNBfH3Mhr+xzHGlg
-	 p+/KV8rF6vmQUsLgBLeIfJzuT07evGopX/iLESfrlA9xA2AXJwWWz5fuvYWsM1iSXe
-	 MKoEgI7CJzU2w==
-Date: Tue, 8 Apr 2025 07:33:46 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Zorro Lang <zlang@redhat.com>
-Cc: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, zlang@kernel.org,
-	david@fromorbit.com
-Subject: Re: [PATCH v2 5/5] common: exit --> _exit
-Message-ID: <20250408143346.GD6274@frogsfrogsfrogs>
-References: <cover.1743487913.git.nirjhar.roy.lists@gmail.com>
- <f6c7e5647d5839ff3a5c7d34418ec56aba22bbc1.1743487913.git.nirjhar.roy.lists@gmail.com>
- <87mscwv7o0.fsf@gmail.com>
- <20250407161914.mfnqef2vqghgy3c2@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <877c3vzu5p.fsf@gmail.com>
- <3c1d608d-4ea0-4e24-9abc-95eb226101c2@gmail.com>
- <20250408142747.tojq7dhv3ad2mzaq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+	s=arc-20240116; t=1744128960; c=relaxed/simple;
+	bh=jMbAUfVzSNQk5Ihi8vbFiGB8kuJXsshSh1t5APcKqF4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m+4pKSs51TjTeJPiJ497FCYs+Alv+lbWPk8HuRT8AGOp3ikdkQr23c796RTWKxd+l5GdkR3BxETeAc8EZEUemB2NlFavb3F+WzYuaqDh/BGE21/XmbXtHUv/+yNlAnka26Vwm1FDLht2VDC1DiWFdJGoXVFtqHkEoYZW5VUWYEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IT4LFHV3; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-736a72220edso5917374b3a.3;
+        Tue, 08 Apr 2025 09:15:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744128958; x=1744733758; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2o2VWJn8/GbhyPU/E3WQ4qOkPcUXW8Wy0LE0pd3784w=;
+        b=IT4LFHV3UspBHKuLZ+Jkj5tf+hNQOIgQut0oDcQewZ+C8Bv7HTFvJDjIhGqjFLv9kI
+         533REH4DUfgxNeGof0c9rGH6NWrXLs7w4aWFDsEgjn6pMgE0cfvyz+NWIt8PUnFHCsct
+         cE5yUZmOPgSUQMLKgKwzIy/LH+WypNrFIgZ6+0TAfhjNdXGp/IqOeQpPOiRgeZSKNAH5
+         MSWK1mDCKKdzo5j9hDpe2wAow4hotbq9f+GGhnGDHDZxccsmB0Xn99w+Ky4/vc1WSsQH
+         CPd2AQcXNVWcxnMQX3jtYOVAxrrDLTKtF6BvlZjuVXoJGDOiIchvSoTNgxEa2aJ5J4rm
+         OZzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744128958; x=1744733758;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2o2VWJn8/GbhyPU/E3WQ4qOkPcUXW8Wy0LE0pd3784w=;
+        b=UquXNqvMnVwUNJXmZJ6oA6J+kw+NS6iHyQmueKB4aJi4fOK5w9jTlp7L7ch2ORkzK+
+         eqnZvLxhfy0QJQnYnB12SXNKQoxCXNjkXTsMM8kd4ltE+KGzhjnzWoMCcCeLVRIyEEdR
+         kNt1CKrdAv+WtEYdaUQz3sitzdBBOpMcKzBMMyyzMq7dNIbGSIp+ntV3s/KrX9/TZ6/T
+         saUtknHh51VqSg1VszOJeLwCOnr01XtjBcfPHUgKlqvmarbZ85md70rYuJxdfTzvsIGu
+         X/WR8Q2m2uZixr90m7uQOhOtgzI8v7utwMp1efm789KbGWdmhxAhw47NZGYOxoqYmSSY
+         JZmA==
+X-Forwarded-Encrypted: i=1; AJvYcCU3dA5Fkd9Le4wpI1/LgnpApo3trMA7VkT+vvyteWJwEw8Kp+POuJS334esE8YaBdpFxAIJ4mWxKlWm@vger.kernel.org, AJvYcCXeffgNksFNWKuKe7K24WrgRL6qDv6+zUv9SVefZ3qWChw+b6bu6djcIGqNcn2sRdnQ91wB/llt@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjOLPOp1cCPNbmX1di9DtCAf2ROi6LHOC1kvHjvxSbQhoxaKRQ
+	lV2jEclVv+3XcsBTqkBcubzHaogF8QknoFpGTcxF6hhDrAQA+6VA
+X-Gm-Gg: ASbGncu/0J2w2rDGmGnlaOBeURppwTrtDQWKxosnkOzcNEbQpr+g7uMSG3B+cL5ZlCd
+	XXJ65Bwa6Ca0ZCE5g99s1k7XOiABkqF1UWYKTKYU+waB83cvE3dhsebpQpWymLWFDWWOgQfyoES
+	5H/3Zfomi29M1+hbJFkVCAdvAdv5PFIqBhfrziQgGg3FEpNueCmOPUGqSdc5spJqJLXi49Kq/8N
+	qXuKMmXkcXMGFMubYmYPFD2K98RAJRlpx/JHk+9VZXiFTXBrCgd8LVx+AByvaYHcnP8mO0NxrtL
+	h++HIjYGbrSvoKecu79orP7+xVXrpVtMB4gtFNbzAN7jjp6bD430qm0hzTaJvjZHr1tcvNcAamN
+	PmwgsfPqWX6INXk5j4R2M5zfmy59H
+X-Google-Smtp-Source: AGHT+IHTY9jipPKHFJfXmSpBFz5laTCTHFJUNflsN2udZWTKkJT9r/HCR/cPmM5KIBGov338noS8nA==
+X-Received: by 2002:a05:6a00:ccc:b0:736:6202:3530 with SMTP id d2e1a72fcca58-73b6b8f7617mr15959480b3a.22.1744128958164;
+        Tue, 08 Apr 2025 09:15:58 -0700 (PDT)
+Received: from ?IPV6:2401:4900:1f2a:4b1d:fee1:8dac:3556:836f? ([2401:4900:1f2a:4b1d:fee1:8dac:3556:836f])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-739d97d17absm11095522b3a.17.2025.04.08.09.15.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Apr 2025 09:15:57 -0700 (PDT)
+Message-ID: <0e4817b5-bd20-4ea6-93f4-ec0bee9bf833@gmail.com>
+Date: Tue, 8 Apr 2025 21:45:53 +0530
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250408142747.tojq7dhv3ad2mzaq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 5/6] common/config: Introduce _exit wrapper around exit
+ command
+Content-Language: en-US
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+ ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
+ david@fromorbit.com
+References: <cover.1744090313.git.nirjhar.roy.lists@gmail.com>
+ <352a430ecbcb4800d31dc5a33b2b4a9f97fc810a.1744090313.git.nirjhar.roy.lists@gmail.com>
+ <87y0wbj9ru.fsf@gmail.com>
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+In-Reply-To: <87y0wbj9ru.fsf@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 08, 2025 at 10:27:48PM +0800, Zorro Lang wrote:
-> On Tue, Apr 08, 2025 at 12:43:32AM +0530, Nirjhar Roy (IBM) wrote:
-> > 
-> > On 4/8/25 00:16, Ritesh Harjani (IBM) wrote:
-> > > Zorro Lang <zlang@redhat.com> writes:
-> > > 
-> > > > On Fri, Apr 04, 2025 at 10:34:47AM +0530, Ritesh Harjani wrote:
-> > > > > "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
-> > > > > 
-> > > > > > Replace exit <return-val> with _exit <return-val> which
-> > > > > > is introduced in the previous patch.
-> > > > > > 
-> > > > > > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> > > <...>
-> > > > > > ---
-> > > > > > @@ -225,7 +225,7 @@ _filter_bmap()
-> > > > > >   die_now()
-> > > > > >   {
-> > > > > >   	status=1
-> > > > > > -	exit
-> > > > > > +	_exit
-> > > > > Why not remove status=1 too and just do _exit 1 here too?
-> > > > > Like how we have done at other places?
-> > > > Yeah, nice catch! As the defination of _exit:
-> > > > 
-> > > >    _exit()
-> > > >    {
-> > > >         status="$1"
-> > > >         exit "$status"
-> > > >    }
-> > > > 
-> > > > The
-> > > >    "
-> > > >    status=1
-> > > >    exit
-> > > >    "
-> > > > should be equal to:
-> > > >    "
-> > > >    _exit 1
-> > > >    "
-> > > > 
-> > > > And "_exit" looks not make sense, due to it gives null to status.
-> > > > 
-> > > > Same problem likes below:
-> > > > 
-> > > > 
-> > > > @@ -3776,7 +3773,7 @@ _get_os_name()
-> > > >                  echo 'linux'
-> > > >          else
-> > > >                  echo Unknown operating system: `uname`
-> > > > -               exit
-> > > > +               _exit
-> > > > 
-> > > > 
-> > > > The "_exit" without argument looks not make sense.
-> > > > 
-> > > That's right. _exit called with no argument could make status as null.
-> > Yes, that is correct.
-> > > To prevent such misuse in future, should we add a warning/echo message
-> > 
-> > Yeah, the other thing that we can do is 'status=${1:-0}'. In that case, for
->                                            ^^^^^^^^^^^^^^
-> That's good to me, I'm just wondering if the default value should be "1", to
-> tell us "hey, there's an unknown exit status" :)
 
-I think status=1 usually means failure...
+On 4/8/25 14:43, Ritesh Harjani (IBM) wrote:
+> "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
+>
+>> We should always set the value of status correctly when we are exiting.
+>> Else, "$?" might not give us the correct value.
+>> If we see the following trap
+>> handler registration in the check script:
+>>
+>> if $OPTIONS_HAVE_SECTIONS; then
+>>       trap "_kill_seq; _summary; exit \$status" 0 1 2 3 15
+>> else
+>>       trap "_kill_seq; _wrapup; exit \$status" 0 1 2 3 15
+>> fi
+>>
+>> So, "exit 1" will exit the check script without setting the correct
+>> return value. I ran with the following local.config file:
+>>
+>> [xfs_4k_valid]
+>> FSTYP=xfs
+>> TEST_DEV=/dev/loop0
+>> TEST_DIR=/mnt1/test
+>> SCRATCH_DEV=/dev/loop1
+>> SCRATCH_MNT=/mnt1/scratch
+>>
+>> [xfs_4k_invalid]
+>> FSTYP=xfs
+>> TEST_DEV=/dev/loop0
+>> TEST_DIR=/mnt1/invalid_dir
+>> SCRATCH_DEV=/dev/loop1
+>> SCRATCH_MNT=/mnt1/scratch
+>>
+>> This caused the init_rc() to catch the case of invalid _test_mount
+>> options. Although the check script correctly failed during the execution
+>> of the "xfs_4k_invalid" section, the return value was 0, i.e "echo $?"
+>> returned 0. This is because init_rc exits with "exit 1" without
+>> correctly setting the value of "status". IMO, the correct behavior
+>> should have been that "$?" should have been non-zero.
+>>
+>> The next patch will replace exit with _exit.
+>>
+>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+>> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>> Reviewed-by: Dave Chinner <dchinner@redhat.com>
+>> ---
+>>   common/config | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/common/config b/common/config
+>> index 79bec87f..eb6af35a 100644
+>> --- a/common/config
+>> +++ b/common/config
+>> @@ -96,6 +96,14 @@ export LOCAL_CONFIGURE_OPTIONS=${LOCAL_CONFIGURE_OPTIONS:=--enable-readline=yes}
+>>   
+>>   export RECREATE_TEST_DEV=${RECREATE_TEST_DEV:=false}
+>>   
+>> +# This functions sets the exit code to status and then exits. Don't use
+>> +# exit directly, as it might not set the value of "status" correctly.
+> ...as it might not set the value of "$status" correctly, which is used
+> as an exit code in the trap handler routine set up by the check script.
+>
+>> +_exit()
+>> +{
+>> +	status="$1"
+>> +	exit "$status"
+>> +}
+>> +
+> I agree with Darrick’s suggestion here. It’s safer to update status only
+> when an argument is passed - otherwise, it’s easy to trip over this.
+>
+> Let’s also avoid defaulting status to 0 inside _exit(). That way, if the
+> caller forgets to pass an argument but has explicitly set status
+> earlier, we preserve the intended value.
+>
+> We should update _exit() with...
+>
+> test -n "$1" && status="$1"
 
-/usr/include/stdlib.h:92:#define        EXIT_FAILURE    1       /* Failing exit status.  */
-/usr/include/stdlib.h:93:#define        EXIT_SUCCESS    0       /* Successful exit status.  */
+Okay, so in that case if someone does "status=<value>;_exit", we should 
+end up with the "<value>" instead of something else, right?
 
---D
+--NR
 
-> Thanks,
-> Zorro
-> 
-> > cases where the return value is a success, we simply use "_exit". Which one
-> > do you think adds more value and flexibility to the usage?
-> > 
-> > --NR
-> > 
-> > > if the no. of arguments passed to _exit() is not 1?
-> > > 
-> > > -ritesh
-> > 
-> > -- 
-> > Nirjhar Roy
-> > Linux Kernel Developer
-> > IBM, Bangalore
-> > 
-> 
-> 
+>
+> -ritesh
+>
+>
+>>   # Handle mkfs.$fstyp which does (or does not) require -f to overwrite
+>>   set_mkfs_prog_path_with_opts()
+>>   {
+>> -- 
+>> 2.34.1
+
+-- 
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
+
 
