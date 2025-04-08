@@ -1,103 +1,114 @@
-Return-Path: <linux-ext4+bounces-7111-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7112-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79825A7F4DB
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 08:19:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EEE0A7F90E
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 11:13:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 754FB188B336
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 06:17:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A23D23AECA7
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Apr 2025 09:11:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A6E215066;
-	Tue,  8 Apr 2025 06:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F856846C;
+	Tue,  8 Apr 2025 09:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="b9pcGPhc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cxqLj2We"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6569C198A08
-	for <linux-ext4@vger.kernel.org>; Tue,  8 Apr 2025 06:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65ED02641C2;
+	Tue,  8 Apr 2025 09:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744093059; cv=none; b=MR6hNZQEKJaJFz9XlShtDycQ4obV2P0N6JfqyR+u/Yvm/Y5P7GGjFV46nnI1BAt8OYHv6jWswP6B12jeTvdRInbMjqiVH/JW2eofjYFM3ryv9vHPfT3ma3s52Or9kh47mDXvxv2N5ODUlKLKp6YjERkP+w9b1svah1hbz6XsQ2U=
+	t=1744103529; cv=none; b=I2GcUzhN0ebgf7i+5Ee0kIAnU2G4A76rOYNiD/ImcGKB3ZIK7C+uvRK3kxtiu838y4BZtWlBFufvCJk/eMFfxPGq+nplbGa3YnWJQQYRJEgmr76a2nkrl9lVYvWGUK3lGhaJTM5ThagMwfctmqVdKZbA1CNUa8GpcbCo6Up9JpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744093059; c=relaxed/simple;
-	bh=VW+RsJJRpNN89PxvKgUJK1GGasY5iK6flMlTkynIT2M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JxAmNlH3E1PjlC/e/Sw0fpDZndzYGPvzQqh16kOqDP4xFf9NzIhTQ4Z0cEwR1WMY6zMbNQt3SyEDntzcvw3OYXIPYe/0xLipvQKzEKb4vz3k61EhSxBKrbkJ1iYVuYXoFTYUIwYW1qO5IQUh6Ct5/HuB2xzeQrLx2jhpzEeH3aU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=b9pcGPhc; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-47664364628so52042121cf.1
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Apr 2025 23:17:36 -0700 (PDT)
+	s=arc-20240116; t=1744103529; c=relaxed/simple;
+	bh=YirglLgWBFF0qfJs3ffvKSg2WkCDvxyqAZh6NrDJ2vg=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=DQdqLdJO0uq5I5iLiuxvRYvXv4w6bRYpluI1bAnunQbLbpqBBN1YNyktfHIbM5fLHmlImb6Y00iCn5U/WyrRBghohGH9jScEvKPSXD8w2NSZJG5oAIBMCQ0iVxhiR8G64R8dydx0utNm3vsbvt5p1ALbkhcVxP+rnc7Adt3i4Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cxqLj2We; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-736c062b1f5so4343761b3a.0;
+        Tue, 08 Apr 2025 02:12:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1744093056; x=1744697856; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nS5SAKrFs9L3a7bg9Pf2lyrhub99zp14T9x9IO3i5/s=;
-        b=b9pcGPhcGEOcqGDWMudRHPYphk1lVLBJqaQYr5QK9mEKrjiw9vWO/w49x1tUTB2hhm
-         WZltNtxI54toK4cvK8lebAzM/m2L4s/KeWW7Iux1V42fdNeuzbcvIjq+y9zlnPXiB9Wo
-         MX3WsGGopiMR9+d+ZtIiBGOITIIoSx70S3YfE=
+        d=gmail.com; s=20230601; t=1744103527; x=1744708327; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uq8hjxnX37tKxBSuH0zUWkPG1Hr3Hz/M3qER/pEY84k=;
+        b=cxqLj2WeylAKIejI4b+McdirfqnhWd0Im4pumThsPyhJ2sJj8OytkXCCQv88rECtJ+
+         VeJLolrGt0Z0pccZuL86n1bWDd+YvRAdrPIhDGKDChMLsRAIeWHu7/uqERBsIBXOIQND
+         bOTESiaQIaaVKMXKeApe5bUPgtm5y5LhYcsUBEsGw0gnjSYxvlp3GxQL8jfH23++nnFD
+         RtBguZOgmrSWYGDLYwgpBUoGF3zbunOqP2U/kglER8rAShrgSrmY9UDa64l29q+5Ome/
+         0gATEV8D2TWjlyHSRcNKjzb24zFa2xe1fESI7pjvudKdkBk+2z3O1yUv4qy+yAGAk+CF
+         16gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744093056; x=1744697856;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nS5SAKrFs9L3a7bg9Pf2lyrhub99zp14T9x9IO3i5/s=;
-        b=Qjnf9dprl7Kiny53fbzWDs53IKDTLPxjq6cJ5lrQkrQTTHtBUWGvl+kqYBe/ypGvLY
-         hWHl6JAtwZILka6CA4ocPIRKrbXFaDGpLSTmYpbWY2l/KhrQbbL0qVvk4Q1t2s7xohs1
-         iMTJ2fweRsY2tP+rTlQ67FSeGrUe7JaxgVLA5UHCUzrVxIv6imiCpp3169Wik11XAM38
-         0/nkbvw2Des7AG2kTCtMG7sxD7M5KTKxrg1bSjuOBRNTZxtcy8LYlfC2nKi0eVhY4nx+
-         HJi32RW52ujXcjmaVqH8Tgq4N+aB/77njGOTi26IZvFnyt1JYofPAtWXK5KHgT4P8kSB
-         gI2A==
-X-Forwarded-Encrypted: i=1; AJvYcCU5xTI2GXD7P0GL/E9fa1iSJypFDtslcHCgesOvzqL7fS8n/4TC60GwhmEgKfF6RJNpK4TMRbpx8z/I@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw13c0viT/UfAzyI2BJnz612LoChEEHlcUYKH8QzwgEwq2yG0bl
-	CPH1fV5/aFzGb3DtFHNfGHpukqHkIRLADTttHokFtBNMBrHH6OjX35g7rRYE/HnqasYSvUVA55X
-	YOgo3ePm/PRLuuACLYAsT9yq8FVgKXz3fdZvYSw==
-X-Gm-Gg: ASbGnct8JmrD0FZ/udGsIJrUXM5LLjbOehN5rYIzHUgpvjtpMjerBf0gZqXCLD2B1td
-	16pRnxYXg9vPv15eum7KWrmQfIFDLvuooIiEm8p03QUqQVlu3/WjVdYxuNExSd4ETan4AP5wCdE
-	UjZOk0xMyu/xPiRZzeoBqeyr40PY0=
-X-Google-Smtp-Source: AGHT+IGN08NztWSyO7oZY1PKzyq5lt8yT3Bg7u9DzpatY8aRQSviQxIWIRLmXD23CvcOoXDn1LuSBR6ZSex14gtyN48=
-X-Received: by 2002:ac8:5a8a:0:b0:476:6df0:954f with SMTP id
- d75a77b69052e-47953ed2b21mr36161891cf.10.1744093056143; Mon, 07 Apr 2025
- 23:17:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1744103527; x=1744708327;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uq8hjxnX37tKxBSuH0zUWkPG1Hr3Hz/M3qER/pEY84k=;
+        b=BR7t7wxDqinYrWPixl90E+dxo8fgrclld/pVCLHI5KeD57d2mSwF3BT+X6w3b7E8se
+         FOsbVBEeOr9G+TPyeq9Ci48RPcoDBtPVV3KvurTIQgkN6dtkJCUHIiev3kV2poP5ztSg
+         xqpjcZ5DxP9YZyOEkvjpbT62wjj1wZGLQMetLoK7fAOl3gvCVt3QnhSsJdtbhqVicMmq
+         u6kQXAcoLv4sFmlvzJsYp9hhKGPZ4vyR1XLMuWD9ft85sgVEHVyMyRW7EnLIbjpbUPx5
+         Zq/nPpQN+VHJc9g7mFSCbUBhABvXvSETXahqL0R2IYBIXe/mO1L0tpYSls47/obmlXgy
+         DXcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWWRHPNp2R8kaGo88DgSxphsOH1y/PTR+RwdYw+A9bj/qlQZgZgVTGvvR8qwVTpK/yFk4wED7laOCu7@vger.kernel.org, AJvYcCXwDNXQTwWo/c6tZjPttb3jAvuYHTtTSE8Gxeo1/5Ehcqs6LC7AymnKbCvxDWhZmE1yjSzKepGZ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjM0lex1AfhipDutyOzr3FXp+FMGDRIOT9IqBoXnC0vzb7jmNj
+	slQPQt1ZW/rflnbMGgCROaIxu9uJZf0HFJG2sQ7Ii6k81gtSoJH6
+X-Gm-Gg: ASbGncsX581Axe330ctcnYuBvS4myRB2yCOrSAC0Xuj6dUpxIFZH15p8zvvnhWAi4tR
+	9ZGZYEV16phJjdVuWZEZDebSU4xjfrLfvRuQcK9mgvJqiOZHLAnkJnGOW1Tieg1VByCMrYMg1EY
+	q7NXiNFEoYNyp46Y/GmjHangnJUi6baulNZ4zSwTnLQMFDcpf+mz4+yUlfDBVCvK19fWIDSquW5
+	C3xKt62B3yGioTsPqAlF0uA5SmJhQN+RE2hXwP0xt53cX9gUSuFtubansH8Duf37I259yhA4l51
+	T8N7qNfDYVjYcgTg94Xk4KnGoVzsoM71zpI=
+X-Google-Smtp-Source: AGHT+IFHG6OT/uU3V1mGre6jptl1dwSZWNC5CgaEH63KXZ8fKUX1DJXpJIxUa0rwArZ/PW+56ygEYg==
+X-Received: by 2002:a05:6a20:561a:b0:1f5:9330:2a18 with SMTP id adf61e73a8af0-2010801c42emr19259765637.23.1744103527563;
+        Tue, 08 Apr 2025 02:12:07 -0700 (PDT)
+Received: from dw-tp ([171.76.81.0])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af9bc40098dsm8715919a12.48.2025.04.08.02.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Apr 2025 02:12:06 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org, david@fromorbit.com, nirjhar.roy.lists@gmail.com
+Subject: Re: [PATCH v3 2/6] generic/367: Remove redundant sourcing if common/config
+In-Reply-To: <ffefbe485f71206dd2a0a27256d1101d2b0c7a64.1744090313.git.nirjhar.roy.lists@gmail.com>
+Date: Tue, 08 Apr 2025 14:36:53 +0530
+Message-ID: <87zfgrja36.fsf@gmail.com>
+References: <cover.1744090313.git.nirjhar.roy.lists@gmail.com> <ffefbe485f71206dd2a0a27256d1101d2b0c7a64.1744090313.git.nirjhar.roy.lists@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <67f3dc05.050a0220.107db6.059d.GAE@google.com> <1465443.1744059739@warthog.procyon.org.uk>
-In-Reply-To: <1465443.1744059739@warthog.procyon.org.uk>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Tue, 8 Apr 2025 08:17:25 +0200
-X-Gm-Features: ATxdqUHATzE8R7-GtRDaTuVwk64W_yazPWFWR845MefAQpWOnCnETGl6AzmpLJ8
-Message-ID: <CAJfpeguEd49YhmbsZYPgKJ4=BYpgEEhF7gnH2Cp1yRouQUUMWQ@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] [overlayfs?] WARNING in file_seek_cur_needs_f_lock
-To: David Howells <dhowells@redhat.com>
-Cc: syzbot <syzbot+4036165fc595a74b09b2@syzkaller.appspotmail.com>, 
-	adilger.kernel@dilger.ca, amir73il@gmail.com, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 7 Apr 2025 at 23:03, David Howells <dhowells@redhat.com> wrote:
->
-> syzbot <syzbot+4036165fc595a74b09b2@syzkaller.appspotmail.com> wrote:
->
-> > syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> > unregister_netdevice: waiting for DEV to become free
-> >
-> > unregister_netdevice: waiting for batadv0 to become free. Usage count = 3
->
-> I've seen this in a bunch of different syzbot tests also where, as far as I
-> can tell, the patch I've offered fixes the actual bug.
+"Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
 
-Which one is that?  I can't seem to find it.
+> common/config will be source by _begin_fstest
+>
 
-Thanks,
-Miklos
+Looks good to me. Please feel free to add:
+
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+> ---
+>  tests/generic/367 | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/tests/generic/367 b/tests/generic/367
+> index ed371a02..567db557 100755
+> --- a/tests/generic/367
+> +++ b/tests/generic/367
+> @@ -11,7 +11,6 @@
+>  # check if the extsize value and the xflag bit actually got reflected after
+>  # setting/re-setting the extsize value.
+>  
+> -. ./common/config
+>  . ./common/filter
+>  . ./common/preamble
+>  
+> -- 
+> 2.34.1
 
