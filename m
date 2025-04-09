@@ -1,143 +1,177 @@
-Return-Path: <linux-ext4+bounces-7181-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7182-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B186EA82CA6
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 18:38:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 899F7A83433
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Apr 2025 00:50:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E548B8825BF
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 16:34:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52D728A2AED
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 22:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A3826FDB4;
-	Wed,  9 Apr 2025 16:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270C421B9F0;
+	Wed,  9 Apr 2025 22:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M1k3vKS/"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="TB0GYylp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A8226FD9C;
-	Wed,  9 Apr 2025 16:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264188BEA
+	for <linux-ext4@vger.kernel.org>; Wed,  9 Apr 2025 22:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744216463; cv=none; b=qbQZqZSgpMEy4LQq675tvtoqpXShIizq0wCxuiO6GmJIXOGDOM0+8BLIw+wGCeR4A3NCNTAyFvh3GaGiZK5DtluSn27GrZdwp9DNMfTVa1y2VdMZE9xMxCBxI8CkOn4ZUm/GByHQ+dnCi7oylYQ557E27mF7FN7R9AkeVc3AUu8=
+	t=1744238954; cv=none; b=pXfFeE6ixxyrq+D5M0YGB+zD2+CA3bQCOPSInTEY70im6aSPfCuudBnH761T8BcKYLXeMVd+95KUacxYZqAQG7gSZzsqUIHRwzi/XKGtgP7LXvxdj5UDQ3ebNuq0Uh6atar1/5B4MykoqAGXjqitZYyRELRski0Tv62JEtBABAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744216463; c=relaxed/simple;
-	bh=EremEWMasVlJk3LTL6PjVKmV0xokZhfa/uoTRrk4g9U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gIFgDOGMgqP0syJNaIvhv60NgX5sBTO19O+Ugk9fjgUdGTskv2kp5PsXTGgV6V4qihovcziT2CulwlYbp5IMDyZjv90ocjJwPtPMrgIlbauXZ2FKFT2YKZBVULuY9Tohw/pNthHogqKCGrLChNM8E/wyYD54TG8kNefa9Ik/VjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M1k3vKS/; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-af55b7d56a1so5157539a12.2;
-        Wed, 09 Apr 2025 09:34:21 -0700 (PDT)
+	s=arc-20240116; t=1744238954; c=relaxed/simple;
+	bh=ra3g0WSTHGlONWh4dVaSP8Ga7ymiMHvVu5Uub8yg9PI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mdVmMa/BtR+Wap9gYEpIClMC7tVOnQrKIDjHnV3ZPDu39L8eo5cdtmZHa+DGn/tPupbS5ov2gNmMhCAMiu63sbjeVIs2wiK2TaFD0m9Up1klFVtDtm4kYXEjfDYiU/UGSbN6hbPJ/Nt+HYUO2pGXnQ55sJDkbKwSRh4JW0VdV7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=TB0GYylp; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-22580c9ee0aso1716865ad.2
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Apr 2025 15:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744216461; x=1744821261; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MZ2C8tIFmAu5kEooWenazNsrY2NtLDuu+KlEV618Zn4=;
-        b=M1k3vKS/JdcFzSGZCVYYE3OQFy8bYwktVPmnPStqyc32NuHndrc7cYOd1CO9tTED4W
-         PVqbqc7FqmiMmrOzD0+emOUT1f6krw1y3CeV556IhOCONgXtwy4UsY0SnEwidTcV9ohp
-         vryi14YCqNLFNLw0dm6h3WhvIMOb7cxqNHrfNoJ0B6AhbFnfrcHossHK+xbZOoctucKk
-         2/9baDX3OX0yIsW4LUvdeHFIV6f7ot9lnRxFCk9y/2WAvI+plpUteWeX9NzHZqotXhjN
-         adCNSbn3errKtbMaGV92JLFwxpubm2BmzaiKK41YETTg6kA90Ey5+2bEdQGXF0uGUcg8
-         Fbug==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1744238952; x=1744843752; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ZvDkyQnbebY09h0oUEJJQU6pkyHBZyFHnTgbadKnrA=;
+        b=TB0GYylpD61oQAjoYujCTPG0AekLJaOji4HDSxlkoe5py0JcjebZuMjSr0BuBYE55C
+         8cMQUApFTM49Z1kVJLXWMP6mOBqfU7noKGCvPO/ALVFDbVy6VDf0W7Y53gQ2cl7Vemap
+         5CxLEA3OK/E9LvwQfdiLukXirqRmgBJW1bauVrVmhIrmNZtQBktTczNj/FHAkS3b2JlT
+         rc/U9FNyWK5/pEJhXhqnnGpsamf/mgQ3UeruJV5bPDiTancYsXWMlJfhMV21pCCQ4iX4
+         I+AtDQpG8P+QAcica3H9BYVWNJJ5Lt8hmUEXvKgBcNuc+YLs1j6G5nCRtPl/zZt2Iq/I
+         tvqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744216461; x=1744821261;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MZ2C8tIFmAu5kEooWenazNsrY2NtLDuu+KlEV618Zn4=;
-        b=MnL1hDqEV9K/fNto5xohbQB3KTWUwfvUR9yTCrrrnudK+lrCBQDX7APgYbFpxySjap
-         ONP7gjnuqJgyX5qOH0tIO0RxmiFDE0jZcgEsU56nov9GbHGyeEpm5fctNvc3TwHuh9ZD
-         8l15RS6gcsaloq3LgqovoubHMXRkQW7E67r4NIPEK0Eq5GuLrGGnruy2bYpxa/NcxaAy
-         NewuH+NANe/tIQwXy8/VuoQlDe/iQp034WdBtNYh1aMKUVt6rKdL7u7sH8cHmSRS/fLH
-         qOFIDmtQepIv1zA2PSxE2YSYEEa6+uNRxSbtlIgdW+T7eOHF0+rAnPtT6CSo5avLjGwD
-         4pDA==
-X-Forwarded-Encrypted: i=1; AJvYcCUrxkFTBnI/O6pK+JP5RB6ivK74JPlhss61TPM+L63yaqnKejwV0tCcL2rh5LWUJ+XSgrilBslHrj0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2LyXiqiK/ess9hCaFU1x2PcfOhmXkvea2udNGMCtXTiZ70Axi
-	o8h1RPrOecigmxYLuytplskQOo9jy7Lp13PiUx5P28C07zZGG0VmLSr+xg==
-X-Gm-Gg: ASbGncuZlsjbVXMMumzLm8uDI8gWuhegkpdE/3bgPRVZEz/OgAY1VcgP4N1KKEtD9aY
-	MaPKKME04dNt/od0J6C2zMvljNbHRmyEBqjBYvUZ34Y+MtXFiDm81xoSIVsee0T0DfLEgz8tgRM
-	/NuxkW7FFs7G46V5lS7cpJ3tNZ1nu3ufrZs9MG44A5vsuAEiiRWg4i40SynoLFKRe3op1bpcU2+
-	Sxm4JAIWkL8tYpeuqn+d+35ElBzmLauoDyl76ZTSKmTFy0oqHcEjtokij31UCeyBFcVGyvY0Ot+
-	YlFu59RCKNNRWnragYPAnA4ZcYSesWXLF+Il2QbWp1MaD7CfX3+CdsYv1MIPTwHN27nRCY4SQni
-	mSuzEfGwyS2mT17srd8FqImQl
-X-Google-Smtp-Source: AGHT+IHvhfLK8skiyLL79m+oiKF/yHha0xeNSGpW2szrTw8cF1fKp/yNKAOHWUaSovtXFLX3dJ3xLQ==
-X-Received: by 2002:a05:6a20:e306:b0:1f5:6e71:e45 with SMTP id adf61e73a8af0-201592b0deamr5439456637.27.1744216460818;
-        Wed, 09 Apr 2025 09:34:20 -0700 (PDT)
-Received: from ?IPV6:2401:4900:1f2a:4b1d:fee1:8dac:3556:836f? ([2401:4900:1f2a:4b1d:fee1:8dac:3556:836f])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b02a0cf1d6csm1460437a12.18.2025.04.09.09.34.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Apr 2025 09:34:20 -0700 (PDT)
-Message-ID: <5fe56381-72c4-41ed-a4b6-d13eff1e427a@gmail.com>
-Date: Wed, 9 Apr 2025 22:04:14 +0530
+        d=1e100.net; s=20230601; t=1744238952; x=1744843752;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2ZvDkyQnbebY09h0oUEJJQU6pkyHBZyFHnTgbadKnrA=;
+        b=PHqMymrPFp2H8TmnRrJ7yFt0x+LcGvi40oFNozW422bog1cWZGaXrSxysFTElJzQtB
+         2f3ana17z5DRzlONO4G5ag0eLExh3Z2mlDD3KaYbREKqHlBGJax8upF4b+1JTAbeT6MR
+         ivItEtUBkCiCCwJ0HpvbM/rae4B8ym5qy1J0VJp0Y4KraPx+8/92S1zd6CLMEI9LMTCd
+         FlEIzqq1EG2/CqeIZDPleKkwWsMOZe7aIYWBd9pKRSWThg7WUYsbGDyBzvwvAR78yjLr
+         3RjUfMPAAxAFO353FLAudDVrNgAl8If6wMGwxYYQnfKz4fd+wdgIwjJAb3b/l7Y6kEqd
+         Czcg==
+X-Forwarded-Encrypted: i=1; AJvYcCXVoXKV9UnNOxOZ/rndDaErIQEZpBosmJxXYmujXGpfPpPZo0NVuf3rKgpZvGSDGHRmeQ7dfgN0klNY@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxkwCD/B0nMSp1bJHLOx6yrx5RXW0ldJEhmRUmyPzjzLmyvGjZ
+	3bCLSS00b+uXsg4yk/T4VW3LJgJS9NU+SiySj+EggMqNfDkEQeuqlpeLE6hz4ms=
+X-Gm-Gg: ASbGncuHhNKcCGEGqOPwU+50Pt4J1DJhnHQnJYZkVwkpVe7YhJSSRiSH6rbvVMY3XHN
+	YuycTPlPNGoQ1UoaHlzn08EV2f8iDPpoMOxOR76ymXDCoOeQoL2i4CY84r/Y+EE3NkKcUkox5LC
+	OihvjkovDnzwmd3AMiGAVd4ITDgB2cQvlF5A4ArgcBO+ZA9pu04kqvaxoKWD9WqXXh2v0KXKZ0b
+	HTOsdlYnuxrxHO+4+bXFag8HJRD+fcPeyXNggUN72QPn74u+NsEHdUMyu108L80S4di14D9v7dF
+	emHDW/JDrVV/f9Lc5INRUPEe7EdDiVpap1882125rr2Nx1iT8qwtHHA5yP3/1JAelRJzGLIzxcv
+	aY0E/0t0giwm/agjaIq2ktMVS
+X-Google-Smtp-Source: AGHT+IGjJAjcitAQAv4Chk4T0tkE8kfKdHQ/aWkSJyTOTVip/fuhtkcZ66iizlmv+Slne03pX68yaw==
+X-Received: by 2002:a17:903:440d:b0:223:5ca1:3b0b with SMTP id d9443c01a7336-22be0388787mr34105ad.40.1744238952293;
+        Wed, 09 Apr 2025 15:49:12 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-60-96.pa.nsw.optusnet.com.au. [49.181.60.96])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7cb5463sm17613765ad.195.2025.04.09.15.49.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Apr 2025 15:49:11 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.98)
+	(envelope-from <david@fromorbit.com>)
+	id 1u2eEG-00000006eLH-2B66;
+	Thu, 10 Apr 2025 08:49:08 +1000
+Date: Thu, 10 Apr 2025 08:49:08 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, brauner@kernel.org, hch@lst.de,
+	viro@zeniv.linux.org.uk, jack@suse.cz, cem@kernel.org,
+	linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
+	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
+	martin.petersen@oracle.com, linux-ext4@vger.kernel.org,
+	linux-block@vger.kernel.org, catherine.hoang@oracle.com
+Subject: Re: [PATCH v6 11/12] xfs: add xfs_compute_atomic_write_unit_max()
+Message-ID: <Z_b5ZK8H0pK0Saga@dread.disaster.area>
+References: <20250408104209.1852036-1-john.g.garry@oracle.com>
+ <20250408104209.1852036-12-john.g.garry@oracle.com>
+ <Z_WnbfRhKR6RQsSA@dread.disaster.area>
+ <20250409004156.GL6307@frogsfrogsfrogs>
+ <Z_YF9HpdbkJDLeuR@dread.disaster.area>
+ <ed53dc33-c811-4c20-8713-8d2d32cb81d7@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] Add support for -q <n> unconditional loop
-Content-Language: en-US
-To: fstests@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
- ritesh.list@gmail.com, ojaswin@linux.ibm.com, djwong@kernel.org,
- zlang@kernel.org, david@fromorbit.com
-References: <cover.1743670253.git.nirjhar.roy.lists@gmail.com>
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-In-Reply-To: <cover.1743670253.git.nirjhar.roy.lists@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed53dc33-c811-4c20-8713-8d2d32cb81d7@oracle.com>
 
+On Wed, Apr 09, 2025 at 09:15:23AM +0100, John Garry wrote:
+> On 09/04/2025 06:30, Dave Chinner wrote:
+> > > This is why I don't agree with adding a static 16MB limit -- we clearly
+> > > don't need it to emulate current hardware, which can commit up to 64k
+> > > atomically.  Future hardware can increase that by 64x and we'll still be
+> > > ok with using the existing tr_write transaction type.
+> > > 
+> > > By contrast, adding a 16MB limit would result in a much larger minimum
+> > > log size.  If we add that to struct xfs_trans_resv for all filesystems
+> > > then we run the risk of some ancient filesystem with a 12M log failing
+> > > suddenly failing to mount on a new kernel.
+> > > 
+> > > I don't see the point.
+> > You've got stuck on ithe example size of 16MB I gave, not
+> > the actual reason I gave that example.
+> 
+> You did provide a relatively large value in 16MB. When I say relative, I
+> mean relative to what can be achieved with HW offload today.
+> 
+> The target user we see for this feature is DBs, and they want to do writes
+> in the 16/32/64KB size range. Indeed, these are the sort of sizes we see
+> supported in terms of disk atomic write support today.
 
-On 4/3/25 14:28, Nirjhar Roy (IBM) wrote:
-> This series introduces "-q <n>" option to support unconditional looping.
-> Along with this, it also brings some improvements to output data both, in stdout
-> and in result.log.
->
-> -q <n> option can be useful for fast unconditional looping (compared to
-> -I <n>) to test a certain flakey test and get it's pass/fail metrics.
->
-> This is similar to -L <n>, although with -L the test only loops if it
-> fails the 1st time.
-> The individual patches can provide more details about other changes and
-> improvements.
+The target user I see for RWF_ATOMIC write is applications
+overwriting files safely (e.g. config files, documents, etc).
 
-Can I please get some reviews on this patch series?
+This requires an atomic write operation that is large enough to
+overwrite the file entirely in one go.
 
---NR
+i.e. we need to think about how RWF_ATOMIC is applicable to the
+entire userspace ecosystem, not just a narrow database specific
+niche. Databases really want atomic writes to avoid the need for
+WAL, whereas application developers that keep asking us for safe
+file overwrite without fsync() for arbitrary sized files and IO.
 
->
-> [v1] -> [v2]
->   1. This patch series removes the central config fs feature from [v1] (patch 4
->      patch 5) so that this can be reviewed separately. No functional changes.
->   2. Added R.B tag of Darrick is patch  1/5.
->
-> [v1] https://lore.kernel.org/all/cover.1736496620.git.nirjhar.roy.lists@gmail.com/
->
-> Nirjhar Roy (IBM) (3):
->    tests/selftest: Add a new pseudo flaky test.
->    check: Add -q <n> option to support unconditional looping.
->    check: Improve pass/fail metrics and section config output
->
->   check                  | 113 ++++++++++++++++++++++++++++++-----------
->   tests/selftest/007     |  21 ++++++++
->   tests/selftest/007.out |   2 +
->   3 files changed, 105 insertions(+), 31 deletions(-)
->   create mode 100755 tests/selftest/007
->   create mode 100644 tests/selftest/007.out
->
-> --
-> 2.34.1
->
+> Furthermore, they (DBs) want fast and predictable performance which HW
+> offload provides. They do not want to use a slow software-based solution.
+> Such a software-based solution will always be slower, as we need to deal
+> with block alloc/de-alloc and extent remapping for every write.
+
+"slow" is relative to the use case for atomic writes.
+
+> So are there people who really want very large atomic write support and will
+> tolerate slow performance, i.e. slower than what can be achieved with
+> double-write buffer or some other application logging?
+
+Large atomic write support solves the O_PONIES problem, which is
+fundamentally a performance problem w.r.t. ensuring data integrity.
+I'll quote myself when you asked this exact same question back about
+4 months ago:
+
+| "At this point we actually provide app developers with what they've
+| been repeatedly asking kernel filesystem engineers to provide them
+| for the past 20 years: a way of overwriting arbitrary file data
+| safely without needing an expensive fdatasync operation on every
+| file that gets modified.
+| 
+| Put simply: atomic writes have a huge potential to fundamentally
+| change the way applications interact with Linux filesystems and to
+| make it *much* simpler for applications to safely overwrite user
+| data.  Hence there is an imperitive here to make the foundational
+| support for this technology solid and robust because atomic writes
+| are going to be with us for the next few decades..."
+
+https://lwn.net/Articles/1001770/
+
+-Dave.
 -- 
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
-
+Dave Chinner
+david@fromorbit.com
 
