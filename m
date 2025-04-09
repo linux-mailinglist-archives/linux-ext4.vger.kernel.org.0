@@ -1,77 +1,77 @@
-Return-Path: <linux-ext4+bounces-7158-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7159-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66E42A81DBE
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 09:02:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52500A81DBF
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 09:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5261A1BA593C
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 07:03:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E67C1BA5ACB
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 07:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7053D22A7FA;
-	Wed,  9 Apr 2025 07:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736A522A4EC;
+	Wed,  9 Apr 2025 07:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lC9T5tvp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JmJYOD9m"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA9822256A;
-	Wed,  9 Apr 2025 07:02:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43E2189B84;
+	Wed,  9 Apr 2025 07:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744182165; cv=none; b=POHZ7rR84vw3WpSDMkmeuqXPSQP6XmuyRRMY7HYqG/ffDf4zPGxxn+LPPhqT27HpZravxINGqi+AIuMeh1HE4lpV6dducghjegHZP2dUWiR890xO4UQCOdc5AlDgw0b8T5twjln/L43FDzHtuYX5aDcr+SpzgjuUWzKAWA1AYBA=
+	t=1744182176; cv=none; b=MGScwwTjp56g++RJ8bEdGawuwPL4FFMKAe3PhlDB7SDOC4kffSenJDVcQQJI/vGMUGk6qc6m2r88egRNphdE+C6yBQP2ZKF1fEcZs8xFs8Vi74ZwJqdrRFhj6OIcYx+aYDYco8PGfR3j/nujnRqssi2kGLxeRWc2lQy+PyPLYyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744182165; c=relaxed/simple;
-	bh=4VaCDEgeA0Rd4f7KfqUGsFouFa4h9tI2QZy9Csley8o=;
+	s=arc-20240116; t=1744182176; c=relaxed/simple;
+	bh=NScYKfZiukSHpYD7qhRdkKSy1meCPCFQ3/cUV+Mv8t4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=e0r4rP2yCYIPjXX0vES2HDAAsE2CuRBnQB75gbhcwSY/FNwZG7KmHaLPwFlbrz8VVEwA3ZFzgCiTi1FjpO1p6dbkUuECFuISp2YQ1DBaKxSX+k4Bx/KT04xodrCu18FR8z7KdUVyba6TXg6qkkALkEjEVicxbIjbtIfy3s9j7JI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lC9T5tvp; arc=none smtp.client-ip=209.85.214.173
+	 MIME-Version; b=AZpt0RLfoZV4cZfhiyo6zzHZDhRPm53IFE1mdWdF2qhNIWuc438W0PHsqqnvwN567ycYJc2s2canxGvi9Hpz3+8hf49sf/bYrRg9Yunm4L9ZvcDaqfFGZFxkSE9hjekMKsfeqoOK2goWj53FxfunwE+KGWoUtbigjm/30xdw4Tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JmJYOD9m; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-22435603572so62339985ad.1;
-        Wed, 09 Apr 2025 00:02:43 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-22409077c06so78895385ad.1;
+        Wed, 09 Apr 2025 00:02:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744182162; x=1744786962; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744182174; x=1744786974; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=F8ERU5g7D2gDuRDnp7J1MdvgJ9zmzGpnA9/o9Hz+OBo=;
-        b=lC9T5tvpaDqG8YLWEG51hqNJWwm6wL/Vb97WO48GBmD+xDDsHgi91D4Mtw+o94Jzki
-         QjAS0mlfxnQfiNdcBY9zU79rssvFUXiRK1wICSTJIEQjJ/JbvSc/phr0x+qn7niuj5W1
-         twAqyfF820YN390G3HUVPX0W6NZK30WGwPSUyXRXC9VOx04KM4IeBHHD+x5R11OLth3C
-         4dVyqLIt+O25E8IeBdYXPhTbPmRukENNiqm50VMLvlDz/9o5YM5+76RsyY8btaWXTT9L
-         iLlJvxwcQmNSRunRfjPhjKfrGwlVMXyDlBwoUqyPQuPWj24U/gQe9ZzBRbSq2aDQNxah
-         nxGw==
+        bh=9dGydz7wudeyPdprvaLADMuw3e5GdkMcvYs3YCTWanU=;
+        b=JmJYOD9mhmHXaHYVvYov2iOsxvijNdjJGnMEe3vwrztK6xPWd00ksHBn6jkQblXRwG
+         56RA+1E/HBcPjX3Xgg2NpIvXjgK4SXZyuiiA2NySQx4GwtdO92Sgl7cvgS+DbRkboQbi
+         1+6phsKZX0eT6AQli2xjiQlk8WR5/LWx2fwru++wBSg7eLTwshdcYAJVGq2w+iwjqIV1
+         /LjeQEFKFmync6y648TnWSwAQOUQIg1/RfU4JLaBfeUNdb2fhk6g2A6R12mvli6WeeXo
+         xG1Et3anFwJPk0Jt/y2ov+jOW8Yf2wjRfcZrQVTPD8+34One7pl7h/iDKkerKb/dmwIm
+         jX0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744182162; x=1744786962;
+        d=1e100.net; s=20230601; t=1744182174; x=1744786974;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F8ERU5g7D2gDuRDnp7J1MdvgJ9zmzGpnA9/o9Hz+OBo=;
-        b=d/xru4jH356LCCVyXep3fNBH9ffjEE81yN0akn1VWr5yEPp9hApaES4QbZ3gF4HVui
-         C9CBTnRl8OxnV3dbGoKtuX4wkG0DTqsb7H+5k/EXa7Zp51xtRB0rf0n8hVm9dcANGpBD
-         rwGgmAIXUqmcyqwL7CaMwDjjyZZwcTbSdUjyUidGiTFJv07zMqu44k9KICkusEUSyWkz
-         wc3Uk92oFQq0JCEFu86bT5SqSb8U7rIzaesiP6D6OAbxgOnQuZ+hrhFOUA/aL5sGyyjI
-         s9lM8TX98kqA7YCu7FCmNWbyYh3MvxTanin4Mh+RtZ0FMH++pc7+M+EQxi/9wyGDrGNW
-         oCYw==
-X-Forwarded-Encrypted: i=1; AJvYcCVzhDrnINHH7J4zWHq47aLwHmlqwA3fJBTMe7fXNrDTkAWYJuzK70BrGMTC7WOfuGAbSShvkPM7qBk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw0WFhVNGDidjCNpPriwYImdy5H82fm3DTZvXpnbPUtClUXca4U
-	gDOTo+TlQY2rQ8KJ/guvtayi2lh2G5AgEO0H0F1i4HfOfi86D2+hjPZzIuyP
-X-Gm-Gg: ASbGncspFcZ2TudtZBl7SW6baXsI5+8C4aTKnaVW1UxrHh0LUMpHM5fx/DNohzU1Thy
-	4uCoDJNSmuNZAWGCENqexYbqMC/BMuCGYSfWpCXkJPlioKAcMvjtBz2PFyJ5dbBCEDn1wkuQxKc
-	F6WIKsFbXh1wwKI3Nf3o9PCWoVSRTdydjZSq0JJU126lrKUyoNVeAI6jLkAWYlGCulaehdktdlK
-	/6r7qdy7UfDf9qWt8RAH3ussuJcvJE/mTFp1Ick/tvGVqTOCOjSjRbepfH0FAf5KnLEPWi1Z/UQ
-	FXe1lDT2wsDx16dNhScPvKl/CtfAhPNXT4r+2WkkW9pjIGghay3BLqI=
-X-Google-Smtp-Source: AGHT+IFRj7GyzXlB1hbWuISU+i+6Q24YJZebqp3zTvyb7HGcl1ZRWHLzmm/e1gePbeAOvgOvZD6Kjw==
-X-Received: by 2002:a17:903:2f45:b0:220:e63c:5b13 with SMTP id d9443c01a7336-22ac2a2dbfbmr25794595ad.46.1744182162087;
-        Wed, 09 Apr 2025 00:02:42 -0700 (PDT)
+        bh=9dGydz7wudeyPdprvaLADMuw3e5GdkMcvYs3YCTWanU=;
+        b=orwtbAoj5gvjz6hr2RBuHK/pbtuLm6pkDb41dzGhY0A0ZGAUtEDR+0MkkJNx5YhMZ/
+         b3KyfotvnPevV9Srp1vda7nF4Y0ucyTB0FTeMdYYUz4CdvH0VXm5JvYxnuHEmtBqJKHQ
+         4kzqSV1NkfRHAUBHY4q8O63yBC3IpBGNx+q+XHbwcatogjthRgCkl1sxJTil92J80FAW
+         lmquMquhwx5Ki4Wdz6ESaj9KHGwP7owSRd4iPZxeeQ+2nG7dGUPKkI45HJMCGpGqZoft
+         Qe9LeqFo9/CIu8KPg2F2zetFSF+4srKXrhsb1AZ1DN+PSeK8ym4R0Z7HPVf1HJWaCF87
+         6QPg==
+X-Forwarded-Encrypted: i=1; AJvYcCVUyk3QQkL7Z2AvAKEKmMBWZYPqY/xkdFBCU/1XTCguJlGVLAKvTr1zvqyOtgsnjH+CRP9Z+B6eBts=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyI8yp8bqcd+RhfLJxQQ5l0qM0PkDb8bUivmq3GYY7Mbjleyikq
+	7ZrQdrkF5Iw6sIYxbg0VnX1EgBwwyZ7mlVKWQmIhATHkK/h5FK49Re4OQkRQ
+X-Gm-Gg: ASbGncvF2IeQDVKbwKgZhsb9tdBjdVte7T07HI96xF3Snvd/m5Jl37kPpkMzGFaCKi4
+	MNO0tagtAnALe1oIO6z5IQOWd+v0pxn8VfwqnzAMB0aWKUThuHJMPLm31bTeSW1OG5ZdgF8Tfq2
+	P5jyPSJhkwgSGkMTXn/MDgXTYJHgoIvkDpW6NO5T6IvWL2EPai/OK+yGBpqRRjZixMZmhMTyl3r
+	abiY6ni9xEsyyR7XH5l3qZiQWqgREvwIfTlv6r4ruzp2mhzn00/MLRvxps2zgjUZygX2mWziXn+
+	SF75TuV3ynO1wcrHr/exyrszMrefkeRzIpoOfPJNOCSCA6DvuahKJjc=
+X-Google-Smtp-Source: AGHT+IHt0SjHveTK9PQOyYg/QqBrNsLetzY2wkg+Zyr40yqsxHL+YkulPJ3vF1thapgDmKl0a/qqfQ==
+X-Received: by 2002:a17:902:d4cf:b0:224:a96:e39 with SMTP id d9443c01a7336-22ac295d279mr23978385ad.9.1744182173436;
+        Wed, 09 Apr 2025 00:02:53 -0700 (PDT)
 Received: from citest-1.. ([122.164.80.96])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7c939a3sm4491985ad.117.2025.04.09.00.02.39
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7c939a3sm4491985ad.117.2025.04.09.00.02.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 00:02:41 -0700 (PDT)
+        Wed, 09 Apr 2025 00:02:53 -0700 (PDT)
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
 To: fstests@vger.kernel.org
 Cc: linux-ext4@vger.kernel.org,
@@ -82,9 +82,9 @@ Cc: linux-ext4@vger.kernel.org,
 	zlang@kernel.org,
 	david@fromorbit.com,
 	nirjhar.roy.lists@gmail.com
-Subject: [PATCH v4 1/6] generic/749: Remove redundant sourcing of common/rc
-Date: Wed,  9 Apr 2025 07:00:47 +0000
-Message-Id: <959d5f63e0343683f534da09d902138a927fdfb2.1744181682.git.nirjhar.roy.lists@gmail.com>
+Subject: [PATCH v4 2/6] generic/367: Remove redundant sourcing of common/config
+Date: Wed,  9 Apr 2025 07:00:48 +0000
+Message-Id: <022be73df43379408c355cc18e1a3243f2ee7faf.1744181682.git.nirjhar.roy.lists@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1744181682.git.nirjhar.roy.lists@gmail.com>
 References: <cover.1744181682.git.nirjhar.roy.lists@gmail.com>
@@ -96,29 +96,27 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-common/rc is already sourced before the test starts running
-in _begin_fstest() preamble.
+common/config will be source by _begin_fstest
 
 Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 ---
- tests/generic/749 | 1 -
+ tests/generic/367 | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/tests/generic/749 b/tests/generic/749
-index fc747738..451f283e 100755
---- a/tests/generic/749
-+++ b/tests/generic/749
-@@ -15,7 +15,6 @@
- # boundary and ensures we get a SIGBUS if we write to data beyond the system
- # page size even if the block size is greater than the system page size.
- . ./common/preamble
--. ./common/rc
- _begin_fstest auto quick prealloc
+diff --git a/tests/generic/367 b/tests/generic/367
+index ed371a02..567db557 100755
+--- a/tests/generic/367
++++ b/tests/generic/367
+@@ -11,7 +11,6 @@
+ # check if the extsize value and the xflag bit actually got reflected after
+ # setting/re-setting the extsize value.
  
- # Import common functions.
+-. ./common/config
+ . ./common/filter
+ . ./common/preamble
+ 
 -- 
 2.34.1
 
