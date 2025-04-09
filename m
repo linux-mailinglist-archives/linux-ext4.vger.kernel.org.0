@@ -1,60 +1,95 @@
-Return-Path: <linux-ext4+bounces-7154-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7155-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F29EA81AE9
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 04:26:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6A2A81C03
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 07:05:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA477885D94
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 02:25:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2556C4A77BB
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 05:05:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093D6199FAC;
-	Wed,  9 Apr 2025 02:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D141D89F0;
+	Wed,  9 Apr 2025 05:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XedzIwDv"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OUf5AQm/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD1A86347;
-	Wed,  9 Apr 2025 02:25:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F1A14F117
+	for <linux-ext4@vger.kernel.org>; Wed,  9 Apr 2025 05:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744165551; cv=none; b=dHPdI0zGMp1K5tXXT1oX9vz2AWub8C/I0BKNQeicTHRhDhZetlISllwPpQgQJi3HeBkeD6zPZleDnkUOXZEp+1jodfQzJzOWIwN603zFYbSZVwFQtg0p0P1RRZMiKgTe9/J/511bXMdPtNlhLT/El+kjT+8b/A07Y+GGOGErxCQ=
+	t=1744175101; cv=none; b=uGmWc1lpLcx+o/W3cpCxZJSIb3HEpC1vp6myjGZd46MMhyK4TJeftJpIig2MCSNxOyBzCmWfooGYgYtd9HZ3swI8CP8cbT5PHQuQYcX4E+4QeIJrlfDo2YEJ/GEY4g41eYAGBCZ6c49mlVaTMnmFvytohf2Ui21b+NULLpT5JAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744165551; c=relaxed/simple;
-	bh=ikSFbdx1k6x9wOlRvuqes78WmgYkyOgciTGApzavE3Q=;
+	s=arc-20240116; t=1744175101; c=relaxed/simple;
+	bh=UqMD5apIFlDteCOIyX/lwa0HCAXVdzeqy/bejU0wBtQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CkClG5e7nFcXme1jl6uyVbHHWLViTGzia9jrCHQPdKcs1Tllvt2Rtg3AdoPPedjD5XlMdnCJF2rEVTNJ/MkIlIJxvbhKxhool6JyKfJnvcnholnlVblJFoc9K00OD5xwCcNJ/CDkVPEsEqxWlqo8KHlVcRwt9vxmXzkn7UkJPEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XedzIwDv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E526DC4CEE5;
-	Wed,  9 Apr 2025 02:25:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744165551;
-	bh=ikSFbdx1k6x9wOlRvuqes78WmgYkyOgciTGApzavE3Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XedzIwDv4UzELyb5Fn3/pbZYtjAHKP7t2DuzgLCo6ng1NaktkMFdPNSbP7aT9mlAd
-	 x1YWcm1xAn0R9noKjMdM2gAIqXWwyvZjHcu7Gg7XGlXbCQjQ/R49lp7/XXQZ3dvjQp
-	 k5YgyddMkYXFu8LrC1AdueklQ74MIn2+Xdxvm+uGX6dlkydnaoGThypNikRrrOgJAA
-	 iREIpgzoi4NkU8k89GKl4WMGQk17eBvxDupD5+TZC8YdLF3j2PuAhG6uRnQBjqTxqJ
-	 B8/J/bWha4NBKvQwr2X3ISYH3Bj6TOR8gnMFlLLw9gBigAduttoX4p7SzUzeDg40Ad
-	 //pLgleiwESwQ==
-Date: Tue, 8 Apr 2025 19:25:50 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: brauner@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk, jack@suse.cz,
-	cem@kernel.org, linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
-	martin.petersen@oracle.com, linux-ext4@vger.kernel.org,
-	linux-block@vger.kernel.org, catherine.hoang@oracle.com
-Subject: [PATCH v6.1 RFC 02.1/12] xfs: add helpers to compute transaction
- reservation for finishing intent items
-Message-ID: <20250409022550.GL6283@frogsfrogsfrogs>
-References: <20250408104209.1852036-1-john.g.garry@oracle.com>
- <20250408104209.1852036-3-john.g.garry@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UM0DWXGJ7auvj5p6T7v44OBLqIXyPx/FWsRoSfm5rTzoytDhHRCTiVTOIHH3G+3rjxy69N/vcssLXdNMeXSiqKrcbfJWp+CWMPcwYNgICmZ+lYV7zTRloKxOtwDbhxVQHuSd5LMS31Vd99Od7fpeUZj4Ne9jK/YjvTgHiK8TLO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OUf5AQm/; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744175098;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1y3iAg9Agds/Ogx11q6UpGaQVkkfD7b35TZnTxtdUOA=;
+	b=OUf5AQm/rud5i4xRWtwXfQjG7+q1nmBulEHErVzSnSnSPCMfNNGN1/YZvKOJYXzu1bjrnR
+	bxoOpr/QZIdxZFjCLIhdCM2Qysip76ySu3vGItsuxl2qVo30tZbRo8Ma1VAm6Rr//0j+CX
+	DObQFH65iZOrzjrZiRCs3MCvF7qqVCo=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-392-uuUnv-ioPtOB0EnHFcNV5Q-1; Wed, 09 Apr 2025 01:04:57 -0400
+X-MC-Unique: uuUnv-ioPtOB0EnHFcNV5Q-1
+X-Mimecast-MFC-AGG-ID: uuUnv-ioPtOB0EnHFcNV5Q_1744175096
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2ff7aecba07so6188804a91.2
+        for <linux-ext4@vger.kernel.org>; Tue, 08 Apr 2025 22:04:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744175096; x=1744779896;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1y3iAg9Agds/Ogx11q6UpGaQVkkfD7b35TZnTxtdUOA=;
+        b=rRcd9x63BqVM/6nuMkw+zeoeichIgW+pvnY+6LW3gjIv4iu1QqbcDDfB9wRkgmK+ZD
+         ewT2TjkVXW1FD+Xpbl3u7IWJqSBOBimXsWmcPS6v3aYIn8/yPx8tQ89NntyLNQt/9x/c
+         rRPMRxjOjHG06rtWwjV3LYUFzKNFHJcZLKyq27VDTmSvi0TSzgAY5SSqgNWeLXufZk2s
+         SM5JoL8UWf4FrGPUWqNjORKsqEWJoR2MjOWlXs0q+KCau5guAPipvOyNCxX7V8FDjwkw
+         5nBI5OlBHoRmwi8IbWI0FsSat+kWjG2ku8bCgiXQ+RJEWAw9eo0JHvf6oVXSdiesppLE
+         SA4g==
+X-Forwarded-Encrypted: i=1; AJvYcCV+1LCcYKEVocicC6BD4dwcxSxWL2JKiA0u8G9owmIFdYbmKprJJzElHXJb3cx1qmx2AXImZyZ3xh0a@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw6GCaD6pdxTZB4J3jTA3LA7hfi9CnfZb8/n2wKM1y/5D1h9crT
+	UpBa4otHFjA69eVX9Qkf0q6dH+YGxPKp2LKJKxrsUoFwEpe6DbtY+Zob8DScinfaRcQaC7wW7M/
+	KxUKcbjJQ2TXBluL/EZLEMSvu1mxPRyKlaBTnP37edPfqwpqA3A0UgoFtSNbTXVPbaJseQg==
+X-Gm-Gg: ASbGncvH+wN0Kp/c3BQmYjiU4iW5oMyqzykQ2gJulE9hdrRsSFJwS4RyhaxuD2tiwUT
+	X6eflEWOoqxIdrJemihBlPgs513N6ZgdoXeDU4HgeI2fgYUSpPwFX7+hIVQBnrRjAcdwJpzzj4z
+	zRiwpuZczpCEmZOAaxmvOPPtiU+0y4rWNJZiEDxISEO4/UVhmJ5vvUQ76MkKlQ/i3FuMiBIbOW0
+	+zF2cqknW1MFJg/46jqEaUCHYqn7SS5R+TdTEtihwvlp/4UDjOhP3Pqk8GEHbKcxGXHe/KLwnnA
+	a5GyNYue/B3EI1QxnhaOsaHs+uLRasDMSLwegNHG/KbuZ5PFJPm8Jms6
+X-Received: by 2002:a17:90b:5488:b0:2ff:6488:e01c with SMTP id 98e67ed59e1d1-306dbc390e9mr2115573a91.29.1744175096037;
+        Tue, 08 Apr 2025 22:04:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFDcrE2k0N742zHbBe7oI20IFqxVkjJZoXi1LOt1Rkg6ayMeaOnkhcBhB907+V8zBE2CUb15g==
+X-Received: by 2002:a17:90b:5488:b0:2ff:6488:e01c with SMTP id 98e67ed59e1d1-306dbc390e9mr2115544a91.29.1744175095663;
+        Tue, 08 Apr 2025 22:04:55 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7cb544csm2383045ad.167.2025.04.08.22.04.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Apr 2025 22:04:55 -0700 (PDT)
+Date: Wed, 9 Apr 2025 13:04:51 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
+	david@fromorbit.com
+Subject: Re: [PATCH v3 2/6] generic/367: Remove redundant sourcing if
+ common/config
+Message-ID: <20250409050451.tzw5e2g5fpk3ktne@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <cover.1744090313.git.nirjhar.roy.lists@gmail.com>
+ <ffefbe485f71206dd2a0a27256d1101d2b0c7a64.1744090313.git.nirjhar.roy.lists@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -63,268 +98,34 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250408104209.1852036-3-john.g.garry@oracle.com>
+In-Reply-To: <ffefbe485f71206dd2a0a27256d1101d2b0c7a64.1744090313.git.nirjhar.roy.lists@gmail.com>
 
-From: Darrick J. Wong <djwong@kernel.org>
+On Tue, Apr 08, 2025 at 05:37:18AM +0000, Nirjhar Roy (IBM) wrote:
+> common/config will be source by _begin_fstest
+> 
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+> ---
 
-In the transaction reservation code, hoist the logic that computes the
-reservation needed to finish one log intent item into separate helper
-functions.  These will be used in subsequent patches to estimate the
-number of blocks that an online repair can commit to reaping in the same
-transaction as the change committing the new data structure.
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
----
- fs/xfs/libxfs/xfs_trans_resv.h |   18 ++++
- fs/xfs/libxfs/xfs_trans_resv.c |  165 ++++++++++++++++++++++++++++++++--------
- 2 files changed, 152 insertions(+), 31 deletions(-)
+>  tests/generic/367 | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/tests/generic/367 b/tests/generic/367
+> index ed371a02..567db557 100755
+> --- a/tests/generic/367
+> +++ b/tests/generic/367
+> @@ -11,7 +11,6 @@
+>  # check if the extsize value and the xflag bit actually got reflected after
+>  # setting/re-setting the extsize value.
+>  
+> -. ./common/config
+>  . ./common/filter
+>  . ./common/preamble
+>  
+> -- 
+> 2.34.1
+> 
+> 
 
-diff --git a/fs/xfs/libxfs/xfs_trans_resv.h b/fs/xfs/libxfs/xfs_trans_resv.h
-index 0554b9d775d269..d9d0032cbbc5d4 100644
---- a/fs/xfs/libxfs/xfs_trans_resv.h
-+++ b/fs/xfs/libxfs/xfs_trans_resv.h
-@@ -98,6 +98,24 @@ struct xfs_trans_resv {
- void xfs_trans_resv_calc(struct xfs_mount *mp, struct xfs_trans_resv *resp);
- uint xfs_allocfree_block_count(struct xfs_mount *mp, uint num_ops);
- 
-+unsigned int xfs_calc_finish_bui_reservation(struct xfs_mount *mp,
-+		unsigned int nr_ops);
-+
-+unsigned int xfs_calc_finish_efi_reservation(struct xfs_mount *mp,
-+		unsigned int nr_ops);
-+unsigned int xfs_calc_finish_rt_efi_reservation(struct xfs_mount *mp,
-+		unsigned int nr_ops);
-+
-+unsigned int xfs_calc_finish_rui_reservation(struct xfs_mount *mp,
-+		unsigned int nr_ops);
-+unsigned int xfs_calc_finish_rt_rui_reservation(struct xfs_mount *mp,
-+		unsigned int nr_ops);
-+
-+unsigned int xfs_calc_finish_cui_reservation(struct xfs_mount *mp,
-+		unsigned int nr_ops);
-+unsigned int xfs_calc_finish_rt_cui_reservation(struct xfs_mount *mp,
-+		unsigned int nr_ops);
-+
- unsigned int xfs_calc_itruncate_reservation_minlogsize(struct xfs_mount *mp);
- unsigned int xfs_calc_write_reservation_minlogsize(struct xfs_mount *mp);
- unsigned int xfs_calc_qm_dqalloc_reservation_minlogsize(struct xfs_mount *mp);
-diff --git a/fs/xfs/libxfs/xfs_trans_resv.c b/fs/xfs/libxfs/xfs_trans_resv.c
-index 13d00c7166e178..580d00ae28573d 100644
---- a/fs/xfs/libxfs/xfs_trans_resv.c
-+++ b/fs/xfs/libxfs/xfs_trans_resv.c
-@@ -263,6 +263,42 @@ xfs_rtalloc_block_count(
-  * register overflow from temporaries in the calculations.
-  */
- 
-+/*
-+ * Finishing a data device refcount updates (t1):
-+ *    the agfs of the ags containing the blocks: nr_ops * sector size
-+ *    the refcount btrees: nr_ops * 1 trees * (2 * max depth - 1) * block size
-+ */
-+inline unsigned int
-+xfs_calc_finish_cui_reservation(
-+	struct xfs_mount	*mp,
-+	unsigned int		nr_ops)
-+{
-+	if (!xfs_has_reflink(mp))
-+		return 0;
-+
-+	return xfs_calc_buf_res(nr_ops, mp->m_sb.sb_sectsize) +
-+	       xfs_calc_buf_res(xfs_refcountbt_block_count(mp, nr_ops),
-+			       mp->m_sb.sb_blocksize);
-+}
-+
-+/*
-+ * Realtime refcount updates (t2);
-+ *    the rt refcount inode
-+ *    the rtrefcount btrees: nr_ops * 1 trees * (2 * max depth - 1) * block size
-+ */
-+inline unsigned int
-+xfs_calc_finish_rt_cui_reservation(
-+	struct xfs_mount	*mp,
-+	unsigned int		nr_ops)
-+{
-+	if (!xfs_has_rtreflink(mp))
-+		return 0;
-+
-+	return xfs_calc_inode_res(mp, 1) +
-+	       xfs_calc_buf_res(xfs_rtrefcountbt_block_count(mp, nr_ops),
-+				     mp->m_sb.sb_blocksize);
-+}
-+
- /*
-  * Compute the log reservation required to handle the refcount update
-  * transaction.  Refcount updates are always done via deferred log items.
-@@ -280,19 +316,10 @@ xfs_calc_refcountbt_reservation(
- 	struct xfs_mount	*mp,
- 	unsigned int		nr_ops)
- {
--	unsigned int		blksz = XFS_FSB_TO_B(mp, 1);
--	unsigned int		t1, t2 = 0;
-+	unsigned int		t1, t2;
- 
--	if (!xfs_has_reflink(mp))
--		return 0;
--
--	t1 = xfs_calc_buf_res(nr_ops, mp->m_sb.sb_sectsize) +
--	     xfs_calc_buf_res(xfs_refcountbt_block_count(mp, nr_ops), blksz);
--
--	if (xfs_has_realtime(mp))
--		t2 = xfs_calc_inode_res(mp, 1) +
--		     xfs_calc_buf_res(xfs_rtrefcountbt_block_count(mp, nr_ops),
--				     blksz);
-+	t1 = xfs_calc_finish_cui_reservation(mp, nr_ops);
-+	t2 = xfs_calc_finish_rt_cui_reservation(mp, nr_ops);
- 
- 	return max(t1, t2);
- }
-@@ -379,6 +406,96 @@ xfs_calc_write_reservation_minlogsize(
- 	return xfs_calc_write_reservation(mp, true);
- }
- 
-+/*
-+ * Finishing an EFI can free the blocks and bmap blocks (t2):
-+ *    the agf for each of the ags: nr * sector size
-+ *    the agfl for each of the ags: nr * sector size
-+ *    the super block to reflect the freed blocks: sector size
-+ *    worst case split in allocation btrees per extent assuming nr extents:
-+ *		nr exts * 2 trees * (2 * max depth - 1) * block size
-+ */
-+inline unsigned int
-+xfs_calc_finish_efi_reservation(
-+	struct xfs_mount	*mp,
-+	unsigned int		nr)
-+{
-+	return xfs_calc_buf_res((2 * nr) + 1, mp->m_sb.sb_sectsize) +
-+	       xfs_calc_buf_res(xfs_allocfree_block_count(mp, nr),
-+			       mp->m_sb.sb_blocksize);
-+}
-+
-+/*
-+ * Or, if it's a realtime file (t3):
-+ *    the agf for each of the ags: 2 * sector size
-+ *    the agfl for each of the ags: 2 * sector size
-+ *    the super block to reflect the freed blocks: sector size
-+ *    the realtime bitmap:
-+ *		2 exts * ((XFS_BMBT_MAX_EXTLEN / rtextsize) / NBBY) bytes
-+ *    the realtime summary: 2 exts * 1 block
-+ *    worst case split in allocation btrees per extent assuming 2 extents:
-+ *		2 exts * 2 trees * (2 * max depth - 1) * block size
-+ */
-+inline unsigned int
-+xfs_calc_finish_rt_efi_reservation(
-+	struct xfs_mount	*mp,
-+	unsigned int		nr)
-+{
-+	if (!xfs_has_realtime(mp))
-+		return 0;
-+
-+	return xfs_calc_buf_res((2 * nr) + 1, mp->m_sb.sb_sectsize) +
-+	       xfs_calc_buf_res(xfs_rtalloc_block_count(mp, nr),
-+			       mp->m_sb.sb_blocksize) +
-+	       xfs_calc_buf_res(xfs_allocfree_block_count(mp, nr),
-+			       mp->m_sb.sb_blocksize);
-+}
-+
-+/*
-+ * Finishing an RUI is the same as an EFI.  We can split the rmap btree twice
-+ * on each end of the record, and that can cause the AGFL to be refilled or
-+ * emptied out.
-+ */
-+inline unsigned int
-+xfs_calc_finish_rui_reservation(
-+	struct xfs_mount	*mp,
-+	unsigned int		nr)
-+{
-+	if (!xfs_has_rmapbt(mp))
-+		return 0;
-+	return xfs_calc_finish_efi_reservation(mp, nr);
-+}
-+
-+/*
-+ * Finishing an RUI is the same as an EFI.  We can split the rmap btree twice
-+ * on each end of the record, and that can cause the AGFL to be refilled or
-+ * emptied out.
-+ */
-+inline unsigned int
-+xfs_calc_finish_rt_rui_reservation(
-+	struct xfs_mount	*mp,
-+	unsigned int		nr)
-+{
-+	if (!xfs_has_rtrmapbt(mp))
-+		return 0;
-+	return xfs_calc_finish_rt_efi_reservation(mp, nr);
-+}
-+
-+/*
-+ * In finishing a BUI, we can modify:
-+ *    the inode being truncated: inode size
-+ *    dquots
-+ *    the inode's bmap btree: (max depth + 1) * block size
-+ */
-+inline unsigned int
-+xfs_calc_finish_bui_reservation(
-+	struct xfs_mount	*mp,
-+	unsigned int		nr)
-+{
-+	return xfs_calc_inode_res(mp, 1) + XFS_DQUOT_LOGRES +
-+	       xfs_calc_buf_res(XFS_BM_MAXLEVELS(mp, XFS_DATA_FORK) + 1,
-+			       mp->m_sb.sb_blocksize);
-+}
-+
- /*
-  * In truncating a file we free up to two extents at once.  We can modify (t1):
-  *    the inode being truncated: inode size
-@@ -411,16 +528,8 @@ xfs_calc_itruncate_reservation(
- 	t1 = xfs_calc_inode_res(mp, 1) +
- 	     xfs_calc_buf_res(XFS_BM_MAXLEVELS(mp, XFS_DATA_FORK) + 1, blksz);
- 
--	t2 = xfs_calc_buf_res(9, mp->m_sb.sb_sectsize) +
--	     xfs_calc_buf_res(xfs_allocfree_block_count(mp, 4), blksz);
--
--	if (xfs_has_realtime(mp)) {
--		t3 = xfs_calc_buf_res(5, mp->m_sb.sb_sectsize) +
--		     xfs_calc_buf_res(xfs_rtalloc_block_count(mp, 2), blksz) +
--		     xfs_calc_buf_res(xfs_allocfree_block_count(mp, 2), blksz);
--	} else {
--		t3 = 0;
--	}
-+	t2 = xfs_calc_finish_efi_reservation(mp, 4);
-+	t3 = xfs_calc_finish_rt_efi_reservation(mp, 2);
- 
- 	/*
- 	 * In the early days of reflink, we included enough reservation to log
-@@ -501,9 +610,7 @@ xfs_calc_rename_reservation(
- 	     xfs_calc_buf_res(2 * XFS_DIROP_LOG_COUNT(mp),
- 			XFS_FSB_TO_B(mp, 1));
- 
--	t2 = xfs_calc_buf_res(7, mp->m_sb.sb_sectsize) +
--	     xfs_calc_buf_res(xfs_allocfree_block_count(mp, 3),
--			XFS_FSB_TO_B(mp, 1));
-+	t2 = xfs_calc_finish_efi_reservation(mp, 3);
- 
- 	if (xfs_has_parent(mp)) {
- 		unsigned int	rename_overhead, exchange_overhead;
-@@ -611,9 +718,7 @@ xfs_calc_link_reservation(
- 	overhead += xfs_calc_iunlink_remove_reservation(mp);
- 	t1 = xfs_calc_inode_res(mp, 2) +
- 	     xfs_calc_buf_res(XFS_DIROP_LOG_COUNT(mp), XFS_FSB_TO_B(mp, 1));
--	t2 = xfs_calc_buf_res(3, mp->m_sb.sb_sectsize) +
--	     xfs_calc_buf_res(xfs_allocfree_block_count(mp, 1),
--			      XFS_FSB_TO_B(mp, 1));
-+	t2 = xfs_calc_finish_efi_reservation(mp, 1);
- 
- 	if (xfs_has_parent(mp)) {
- 		t3 = resp->tr_attrsetm.tr_logres;
-@@ -676,9 +781,7 @@ xfs_calc_remove_reservation(
- 
- 	t1 = xfs_calc_inode_res(mp, 2) +
- 	     xfs_calc_buf_res(XFS_DIROP_LOG_COUNT(mp), XFS_FSB_TO_B(mp, 1));
--	t2 = xfs_calc_buf_res(4, mp->m_sb.sb_sectsize) +
--	     xfs_calc_buf_res(xfs_allocfree_block_count(mp, 2),
--			      XFS_FSB_TO_B(mp, 1));
-+	t2 = xfs_calc_finish_efi_reservation(mp, 2);
- 
- 	if (xfs_has_parent(mp)) {
- 		t3 = resp->tr_attrrm.tr_logres;
 
