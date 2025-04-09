@@ -1,81 +1,97 @@
-Return-Path: <linux-ext4+bounces-7174-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7175-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56BC6A822BE
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 12:51:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E74DEA82A35
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 17:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 952DF8A276E
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 10:50:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DD10170CD3
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Apr 2025 15:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239B325DAF8;
-	Wed,  9 Apr 2025 10:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C1B266F1A;
+	Wed,  9 Apr 2025 15:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSJhimxH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jgor3xc9"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B8825D8E7;
-	Wed,  9 Apr 2025 10:50:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1DF266B5B;
+	Wed,  9 Apr 2025 15:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744195857; cv=none; b=WpokI2+0cv31016YyJkfIqNOZ96ZmzoZRewtF5GqCR5vGnov4Bn7IvRxMGy4zeAcaDdA70/aO/dF3aM1KYDevOQU1KGzi5wqSnIr9iamxtpdzPkzzhsfAbhPcTUkFL/PPcCo4uXwmrf8jmmFNC/3NfNU71KOnSCttu8M6CJK5c4=
+	t=1744212066; cv=none; b=TGQM7YIMVKpzSMRLFhWUTAUo4bocRe9qRj5pqumhSrvm0lcbb6KA9m3/jKtB24GUYLizqvQI6eau2Aejiqc2FwFCo3PlHM9XF8B+w6Pm6JboqEzPOxhqGIXzndwFdcurUSaSp7cMpc7Kin4//djflHXs+qQD05b8VNUW2/LDaSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744195857; c=relaxed/simple;
-	bh=HlVtWoj3LWyiBcoZxrPmX0QXi/NYax4CcC6lrawTBbc=;
+	s=arc-20240116; t=1744212066; c=relaxed/simple;
+	bh=jNROT0ywWLtuqbrPSS5F1bmkNkKl+7e0QLNWYOD/fC8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f4XjV6a1g9reVfh/imMpReTRufdjbKHpBxlRuyMn5HzDrpOsekC/6aKnrqRa8CqRe02Yv4BhKC1SgqF3DhUxQgwGcwfPst3JjqZfglTzETT92B1csHpPmBcUDB4a4OK9SVRxxOaEj4uXWXknqm2hcwGvSzZaQ4/dhlbA/D+bCxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSJhimxH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92AD3C4CEE3;
-	Wed,  9 Apr 2025 10:50:52 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=DMZOzS/vKPM9MRzIy3KlQ/ED5/VQME2a/Q/B8xAXaTuJ2GM+ZRGRaB3pdy9Cl1irHfllSe8lebBmISq8Zn1bL+cnWQdBlL8/Cyrj+3pMIFgL7HH3P310yNL5zraPgi9J796hjykscNu2JkNF0Y2F43mNanVhBON79zqZNqjNkys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jgor3xc9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D28C1C4CEE2;
+	Wed,  9 Apr 2025 15:21:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744195857;
-	bh=HlVtWoj3LWyiBcoZxrPmX0QXi/NYax4CcC6lrawTBbc=;
+	s=k20201202; t=1744212064;
+	bh=jNROT0ywWLtuqbrPSS5F1bmkNkKl+7e0QLNWYOD/fC8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fSJhimxHin3y/ZB3Pleu3u8j+qCxOs5pQ/MD8yAXnWGAwLdK53UFp1b313UBRUubo
-	 dL6+a1zQv8pgmZj8HjD2a1G+jcTbYICqmdN1rV9kVlwdEwoAfu+XD8HbiXXKHEYk+B
-	 4386xVetZP27Cza1J3J/vATMiaisNlGll5kax3pkPKkd8gCed0PhzE/7ZfhKKZeJUQ
-	 CFLn82aDMJg+Mlt9MnoiFh3Dtc79YiLEknPFI7TvLjmg6i9TGfX+UHYAPu/m0G4P90
-	 Oma/Fv0wwv8+DxDOQqxtpBVaUGyOykCwkf55QGjoukB+JbQ+iKkPNJ5IxCldgWyW/6
-	 PxmDAhNKr3RXg==
-Date: Wed, 9 Apr 2025 12:50:49 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-fsdevel@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-block@vger.kernel.org, dm-devel@lists.linux.dev, 
-	linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, tytso@mit.edu, djwong@kernel.org, john.g.garry@oracle.com, 
-	bmarzins@redhat.com, chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com, 
-	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com, 
-	yangerkun@huawei.com
-Subject: Re: [RFC PATCH -next v3 07/10] fs: introduce FALLOC_FL_WRITE_ZEROES
- to fallocate
-Message-ID: <20250409-ausdauer-weingut-4025b274ee63@brauner>
-References: <20250318073545.3518707-1-yi.zhang@huaweicloud.com>
- <20250318073545.3518707-8-yi.zhang@huaweicloud.com>
- <20250409103548.GC4950@lst.de>
+	b=Jgor3xc9xwqlATQl6PP4ywBUS3hMjpuAq3e2wiCYRGY1o8t58umCNyvj18D5buwuD
+	 0q45Pc1Y/EfKnI++rOg4y9HMebQMKERhqE0KtF9eeuicUW1ADKqzX4vpYHBAAW8Jc/
+	 I27YYOLcNTzr5R7DrK+wyYMDElgLU8VHOWfqnozGVCLay37y6/0+WYsDWwDyUrSwrE
+	 xYuCpopRiQF4UG80rVLltDTxcfju1W3h5CIRsgl2U5hnll1ZRdreo41nuiytuvOvbA
+	 VaAjq2qiZu5woqYZ0b568R0waLDmP/gP0NZDaElwxt1EPsZVe0rlyLDumIeoJPkev9
+	 NMJm/NQ6LFlgw==
+Date: Wed, 9 Apr 2025 08:21:03 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, zlang@kernel.org, david@fromorbit.com
+Subject: Re: [PATCH v4 2/6] generic/367: Remove redundant sourcing of
+ common/config
+Message-ID: <20250409152103.GM6283@frogsfrogsfrogs>
+References: <cover.1744181682.git.nirjhar.roy.lists@gmail.com>
+ <022be73df43379408c355cc18e1a3243f2ee7faf.1744181682.git.nirjhar.roy.lists@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250409103548.GC4950@lst.de>
+In-Reply-To: <022be73df43379408c355cc18e1a3243f2ee7faf.1744181682.git.nirjhar.roy.lists@gmail.com>
 
-On Wed, Apr 09, 2025 at 12:35:48PM +0200, Christoph Hellwig wrote:
-> On Tue, Mar 18, 2025 at 03:35:42PM +0800, Zhang Yi wrote:
-> > Users can check the disk support of unmap write zeroes command by
-> > querying:
-> > 
-> >     /sys/block/<disk>/queue/write_zeroes_unmap
+On Wed, Apr 09, 2025 at 07:00:48AM +0000, Nirjhar Roy (IBM) wrote:
+> common/config will be source by _begin_fstest
 > 
-> No, that is not in any way a good user interface.  Users need to be
-> able to query this on a per-file basis.
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-Agreed. This should get a statx attribute most likely.
+Yep, confirmed.
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+
+--D
+
+> ---
+>  tests/generic/367 | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/tests/generic/367 b/tests/generic/367
+> index ed371a02..567db557 100755
+> --- a/tests/generic/367
+> +++ b/tests/generic/367
+> @@ -11,7 +11,6 @@
+>  # check if the extsize value and the xflag bit actually got reflected after
+>  # setting/re-setting the extsize value.
+>  
+> -. ./common/config
+>  . ./common/filter
+>  . ./common/preamble
+>  
+> -- 
+> 2.34.1
+> 
+> 
 
