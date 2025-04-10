@@ -1,105 +1,52 @@
-Return-Path: <linux-ext4+bounces-7204-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7205-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD161A8468C
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Apr 2025 16:40:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EDBFA84732
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Apr 2025 17:02:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D079217127D
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Apr 2025 14:38:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA5CE9A4955
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Apr 2025 14:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C7A28C5DB;
-	Thu, 10 Apr 2025 14:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WC/SgvIy";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="i6tUqsvd";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JU+hH6VE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B2m2WZbt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B8D2857E5;
+	Thu, 10 Apr 2025 14:55:48 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37301F930
-	for <linux-ext4@vger.kernel.org>; Thu, 10 Apr 2025 14:38:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213B870830
+	for <linux-ext4@vger.kernel.org>; Thu, 10 Apr 2025 14:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744295920; cv=none; b=mSqnLwf302RW79N7DmsWxXryiLAXE9xp93KrKjLaL9n5ExCNny0b9gglyWajb+OIX9j9X1mBi9BGEwAMVkXrWpAGKpVpVCdBLcEstS0ZO2THmOQ67u1Zi1difhqeXQLgTIO48drQqsI7gtSTbRj0gSX0/+riV1N+bHt4TLilMSQ=
+	t=1744296947; cv=none; b=jSQ+TRigaGemT+nhDLgss9zYazpwU31QJUS/BgkUFYViqykL5m9olrLhz+GEsRexgA9ct0MnSQgfcqZ9tcjfPJgvzHthVMFCJzHdpYn8wj1hC4NYcnbMpJo6iTdcQ7Dn8G3wCe/paMDOYnnCitZ5okV5I3goBbv23KpEm9AlIsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744295920; c=relaxed/simple;
-	bh=GFRHcan0MxZfin3qnUtIo9yeaZkOhpMpmBF2lK/RJMg=;
+	s=arc-20240116; t=1744296947; c=relaxed/simple;
+	bh=OBcyd7UqWXZ4ps/4EYJDmB6P/bKOk7nyXS0LA5Zv/yE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BvUXsTK5lasaLmQL/Sq5QcbqQikUMD+HeY75uDoCovPe1Lputlb2DE/nqfOZIlt7r+RoVi81PIORAo+/3qtQThfO+ZT9GoB8TfBcwaggPxdu38ol8gT6FpbhQrJOphNvnJHPlq2JnWBzsUVQdBS20D8xYNdLiuZ893Q7NtiTWeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WC/SgvIy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=i6tUqsvd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JU+hH6VE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B2m2WZbt; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D3E5C21164;
-	Thu, 10 Apr 2025 14:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744295916; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CU5ScoH+7UlhrYAQP6ak2OPq7M4zSmzWu8pSjfnrvkg=;
-	b=WC/SgvIyNSeYBd6tKbYkdnCZkVBeEPO0SPZg1HZDQlcxer6rA3ope+Ci52owutHqzddfCg
-	OoLq7NE30dZmUeAoQD8KV542krQB9fyuvEyj6a20c6HUbRLHyvzizsCH7Zv60crnn5qZox
-	a79fRZdpcH5lT9/hG6d05LkIaBn+mlI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744295916;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CU5ScoH+7UlhrYAQP6ak2OPq7M4zSmzWu8pSjfnrvkg=;
-	b=i6tUqsvdtxKiWoZGx11+Evk83U+67+43WjCVvZC7ATyCm82BJ9vGXHxoXoZ/hfTTH+HyYv
-	x8ABpFSwajS/tCAA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744295915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CU5ScoH+7UlhrYAQP6ak2OPq7M4zSmzWu8pSjfnrvkg=;
-	b=JU+hH6VEzW+1J7sGX6bI6F9ze22i6ENNW/MEb8z1gtKGbVDezZIg4cRflK1Q2dWzil74yv
-	7xbyLpLwRht7xfcHWNnAo2FhhtiRwaZp5e7DtV3ZaL3zVtB0ET5gUs5c/8QYG3Eelf+Lda
-	f2zoURxsz633GFRzqfiSihnIvdCtddk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744295915;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CU5ScoH+7UlhrYAQP6ak2OPq7M4zSmzWu8pSjfnrvkg=;
-	b=B2m2WZbtJKSCmtj2t6MlfvZdRMenks/oADjKbNb+OFJUWNJeuvBMHJ9U2e5fwLdv8dRWkq
-	7Ae56jSV15vrKEBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C170113886;
-	Thu, 10 Apr 2025 14:38:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ZVEsL+vX92eFfgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 10 Apr 2025 14:38:35 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 316AAA07A7; Thu, 10 Apr 2025 16:38:35 +0200 (CEST)
-Date: Thu, 10 Apr 2025 16:38:35 +0200
-From: Jan Kara <jack@suse.cz>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: brauner@kernel.org, jack@suse.cz, tytso@mit.edu, 
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, riel@surriel.com, dave@stgolabs.net, 
-	willy@infradead.org, hannes@cmpxchg.org, oliver.sang@intel.com, david@redhat.com, 
-	axboe@kernel.dk, hare@suse.de, david@fromorbit.com, djwong@kernel.org, 
-	ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-mm@kvack.org, gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com
-Subject: Re: [PATCH v2 2/8] fs/buffer: try to use folio lock for pagecache
- lookups
-Message-ID: <plt72kbiee2sz32mqslvhmmlny6dqfeccnf2d325cus45qpo3t@m6t563ijkvr5>
-References: <20250410014945.2140781-1-mcgrof@kernel.org>
- <20250410014945.2140781-3-mcgrof@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=n12d4fwLcXaZ/hFE2CQ8BpXX8bJsT/m5rCukBvw0k0WZAQJQPDPAf0xgQYf7hoSSYa/jl2/q5HqmXWqPMaY8RVSBUkhr7ycZEiPNCvgX2l+DTBmRC1Tbqn995lue78AJbyBcfufNlzCWfa9r/A8VNzk9DzcJzQfy/AkF0SyQCG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-82-137.bstnma.fios.verizon.net [173.48.82.137])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 53AEtbrc023234
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Apr 2025 10:55:38 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 892212E00E9; Thu, 10 Apr 2025 10:55:37 -0400 (EDT)
+Date: Thu, 10 Apr 2025 10:55:37 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Jan Kara <jack@suse.cz>
+Cc: Jann Horn <jannh@google.com>, Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] ext4: don't treat fhandle lookup of ea_inode as FS
+ corruption
+Message-ID: <20250410145537.GD13132@mit.edu>
+References: <20241129-ext4-ignore-ea-fhandle-v1-1-e532c0d1cee0@google.com>
+ <auitbbb56g2mpb52irzcfh3qfob3qjot3326qpigdvhw7wyw6b@p624krjopkc7>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -108,152 +55,14 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250410014945.2140781-3-mcgrof@kernel.org>
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,suse.cz,mit.edu,dilger.ca,vger.kernel.org,surriel.com,stgolabs.net,infradead.org,cmpxchg.org,intel.com,redhat.com,kernel.dk,suse.de,fromorbit.com,gmail.com,kvack.org,samsung.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <auitbbb56g2mpb52irzcfh3qfob3qjot3326qpigdvhw7wyw6b@p624krjopkc7>
 
-On Wed 09-04-25 18:49:39, Luis Chamberlain wrote:
-> From: Davidlohr Bueso <dave@stgolabs.net>
+On Thu, Mar 27, 2025 at 12:04:38PM +0100, Jan Kara wrote:
+> Hi Ted!
 > 
-> Callers of __find_get_block() may or may not allow for blocking
-> semantics, and is currently assumed that it will not. Layout
-> two paths based on this. Ultimately the i_private_lock scheme will
-> be used as a fallback in non-blocking contexts. Otherwise
-> always take the folio lock instead. The suggested trylock idea
-> is implemented, thereby potentially reducing i_private_lock
-> contention in addition to later enabling future migration support
-> around with large folios and noref migration.
-> 
-> No change in semantics. All lookup users are non-blocking.
-> 
-> Signed-off-by: Davidlohr Bueso <dave@stgolabs.net>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> was this fix missed?
 
-...
+Yes, oops.   I've applied it now.
 
-> @@ -204,7 +195,19 @@ __find_get_block_slow(struct block_device *bdev, sector_t block)
->  	if (IS_ERR(folio))
->  		goto out;
->  
-> -	spin_lock(&bd_mapping->i_private_lock);
-> +	/*
-> +	 * Folio lock protects the buffers. Callers that cannot block
-> +	 * will fallback to serializing vs try_to_free_buffers() via
-> +	 * the i_private_lock.
-> +	 */
-> +	if (!folio_trylock(folio)) {
-> +		if (atomic) {
-> +			spin_lock(&bd_mapping->i_private_lock);
-> +			folio_locked = false;
-> +		} else
-> +			folio_lock(folio);
-> +	}
-
-Ewww, this is going to be pain. You will mostly use the folio_trylock() for
-protecting the lookup, except when some insane workload / fuzzer manages to
-trigger the other path which will lead to completely unreproducible bugs...
-I'd rather do:
-
-	if (atomic) {
-		spin_lock(&bd_mapping->i_private_lock);
-		folio_locked = false;
-	} else {
-		folio_lock(folio);
-	}
-
-I'd actually love to do something like:
-
-	if (atomic) {
-		if (!folio_trylock(folio))
-			bail...
-	} else {
-		folio_lock(folio);
-	}
-
-but that may be just too radical this point and would need some serious
-testing how frequent the trylock failures are. No point in blocking this
-series with it. So just go with the deterministic use of i_private_lock for
-atomic users for now.
-
-								Honza
-
-> +
->  	head = folio_buffers(folio);
->  	if (!head)
->  		goto out_unlock;
-> @@ -236,7 +239,10 @@ __find_get_block_slow(struct block_device *bdev, sector_t block)
->  		       1 << blkbits);
->  	}
->  out_unlock:
-> -	spin_unlock(&bd_mapping->i_private_lock);
-> +	if (folio_locked)
-> +		folio_unlock(folio);
-> +	else
-> +		spin_unlock(&bd_mapping->i_private_lock);
->  	folio_put(folio);
->  out:
->  	return ret;
-> @@ -1388,14 +1394,15 @@ lookup_bh_lru(struct block_device *bdev, sector_t block, unsigned size)
->   * it in the LRU and mark it as accessed.  If it is not present then return
->   * NULL
->   */
-> -struct buffer_head *
-> -__find_get_block(struct block_device *bdev, sector_t block, unsigned size)
-> +static struct buffer_head *
-> +find_get_block_common(struct block_device *bdev, sector_t block,
-> +			unsigned size, bool atomic)
->  {
->  	struct buffer_head *bh = lookup_bh_lru(bdev, block, size);
->  
->  	if (bh == NULL) {
->  		/* __find_get_block_slow will mark the page accessed */
-> -		bh = __find_get_block_slow(bdev, block);
-> +		bh = __find_get_block_slow(bdev, block, atomic);
->  		if (bh)
->  			bh_lru_install(bh);
->  	} else
-> @@ -1403,6 +1410,12 @@ __find_get_block(struct block_device *bdev, sector_t block, unsigned size)
->  
->  	return bh;
->  }
-> +
-> +struct buffer_head *
-> +__find_get_block(struct block_device *bdev, sector_t block, unsigned size)
-> +{
-> +	return find_get_block_common(bdev, block, size, true);
-> +}
->  EXPORT_SYMBOL(__find_get_block);
->  
->  /**
-> -- 
-> 2.47.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+					- Ted
 
