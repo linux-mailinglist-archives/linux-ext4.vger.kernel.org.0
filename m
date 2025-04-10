@@ -1,96 +1,92 @@
-Return-Path: <linux-ext4+bounces-7200-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7201-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05B00A84276
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Apr 2025 14:06:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69925A84511
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Apr 2025 15:41:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A07F16EB67
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Apr 2025 12:05:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 713C24E1B3C
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Apr 2025 13:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574362836BC;
-	Thu, 10 Apr 2025 12:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CAD28A405;
+	Thu, 10 Apr 2025 13:36:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TVhROIqS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FKs34CSh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TVhROIqS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FKs34CSh"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lnFwWNrJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="m2543pVU";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lnFwWNrJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="m2543pVU"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C59204F80
-	for <linux-ext4@vger.kernel.org>; Thu, 10 Apr 2025 12:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB1F2853E9
+	for <linux-ext4@vger.kernel.org>; Thu, 10 Apr 2025 13:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744286751; cv=none; b=BI+qnurL6O6dVDhnaZgVVEbRvbkc5C1+LepShyphz/VhjfLr9Z97f+6l1RWUbtDTjoGHZgB47RSkhU3S1v2GD4dgzpVMdoQYZIawUgZx8YcjSe7Ghdt/I13S2PUO7/M5o2lHsU2tultbVMS2msRFjGAyjsL3eK/ziYNvSK3TMLs=
+	t=1744292194; cv=none; b=bACt0VEdBnlu0a/AXOjNjZcwvGmg+QTIk4LWaDOYhACCb2qForrOGHuOAyQb5Gc1Wggw/Kez6oonCnu9uimRHCqmsJDtPXtcKxbbRMlPTg7qq7iSOJTAwN8W8u8FwirZkvbBqZuf/37KkPOmTdVGWAkn1mxSY3erWIhenQpFVRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744286751; c=relaxed/simple;
-	bh=l0QpljsybPV6b5xWsCu1e6i0Jb4XYg9Ai+DDs5vGD+k=;
+	s=arc-20240116; t=1744292194; c=relaxed/simple;
+	bh=G3JCsHTEIDMSrzwxuJNVbrGum619sm/V+oMoFrGL6q4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BYIrp3ZVDCV45Uizt3PUedzNG26f1/GBofs0xVGzoX6SdQCbEyBAGUG+2NBRLE8zEFXewKEfYZUkhK5o0ydRSMUe5OmxFFxFoMNgIyHVy/F7T0JvIpN281ekst+wjS/RN/Trvg15GwxuyHavILwlHOHhrxz95u4KKODrrZZtiUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TVhROIqS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FKs34CSh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TVhROIqS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FKs34CSh; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=qfuH87ianA05VWMC4Ur0M7G06ZHsd+ecHblh7p1rWmHgEJJDV4J8SRSliZlD1dvZztOCuEFiFVDwEs7BclXOZNPGWB4t+lnBnNADO1umkW56+/vO3e8j8SfIlCRh4BtrUMQ0mrQjXNtExBfxE4kNKGibcGX4D+9EOAgfW9F5OJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lnFwWNrJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=m2543pVU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lnFwWNrJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=m2543pVU; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2F65D1F38C;
-	Thu, 10 Apr 2025 12:05:47 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BB3891F395;
+	Thu, 10 Apr 2025 13:36:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744286747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1744292190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TpD6XcpCBTjU8K7kBL2j3kkwigpBcTWrEVm7Rj4zBXE=;
-	b=TVhROIqSVI5PErHC8rtgFD1WOJ9u43JASsEZutKqr16cw8PvuM4+q0UGr1YXrdTRnKp23F
-	K0qOjIiT9EODNU7HvCYiLc2bsDBFjmS9WhG8pcT8QPWKiqk0/QbIHmknNUJZABEo0KCXHJ
-	zJ/Ifa8qCGct+Zrdkm1m+vPjjMvBFAs=
+	bh=6X3ZizTCtne9HGkeErFZvJrpS/23t7UWALSWxnxHkPg=;
+	b=lnFwWNrJbWGFz+wygGgWYJe6+phUedIcMwJZN8NrkUzaOvYvwvOIX4eF8IqbUG2x5a6EdL
+	r15/fdvxBplYKXxhaxA388elj4zmLXci1rG6PcJHrtWvfxuY9y6dNAkT+ziJbHjkDCDjFQ
+	rwyBpSBZS1/a8Ne/6pug3GxqSIsC498=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744286747;
+	s=susede2_ed25519; t=1744292190;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TpD6XcpCBTjU8K7kBL2j3kkwigpBcTWrEVm7Rj4zBXE=;
-	b=FKs34CShwrFCJOxyMWwf6eULdrzu6B4np08h+Jq3icJRhvvQgstoTQJrCy3sLjeRe5Ev9B
-	dr39pdOOTylacIDQ==
+	bh=6X3ZizTCtne9HGkeErFZvJrpS/23t7UWALSWxnxHkPg=;
+	b=m2543pVUozaVCe53yZQh25q4eN+MyjMrKJyM2grOmtVY3XaoFEaaOtFXZJPQ/ZOuozIokD
+	flJc+v8dylpROsAQ==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744286747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1744292190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TpD6XcpCBTjU8K7kBL2j3kkwigpBcTWrEVm7Rj4zBXE=;
-	b=TVhROIqSVI5PErHC8rtgFD1WOJ9u43JASsEZutKqr16cw8PvuM4+q0UGr1YXrdTRnKp23F
-	K0qOjIiT9EODNU7HvCYiLc2bsDBFjmS9WhG8pcT8QPWKiqk0/QbIHmknNUJZABEo0KCXHJ
-	zJ/Ifa8qCGct+Zrdkm1m+vPjjMvBFAs=
+	bh=6X3ZizTCtne9HGkeErFZvJrpS/23t7UWALSWxnxHkPg=;
+	b=lnFwWNrJbWGFz+wygGgWYJe6+phUedIcMwJZN8NrkUzaOvYvwvOIX4eF8IqbUG2x5a6EdL
+	r15/fdvxBplYKXxhaxA388elj4zmLXci1rG6PcJHrtWvfxuY9y6dNAkT+ziJbHjkDCDjFQ
+	rwyBpSBZS1/a8Ne/6pug3GxqSIsC498=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744286747;
+	s=susede2_ed25519; t=1744292190;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TpD6XcpCBTjU8K7kBL2j3kkwigpBcTWrEVm7Rj4zBXE=;
-	b=FKs34CShwrFCJOxyMWwf6eULdrzu6B4np08h+Jq3icJRhvvQgstoTQJrCy3sLjeRe5Ev9B
-	dr39pdOOTylacIDQ==
+	bh=6X3ZizTCtne9HGkeErFZvJrpS/23t7UWALSWxnxHkPg=;
+	b=m2543pVUozaVCe53yZQh25q4eN+MyjMrKJyM2grOmtVY3XaoFEaaOtFXZJPQ/ZOuozIokD
+	flJc+v8dylpROsAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2010D132D8;
-	Thu, 10 Apr 2025 12:05:47 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 974B8132D8;
+	Thu, 10 Apr 2025 13:36:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id nE3SBxu092crTQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 10 Apr 2025 12:05:47 +0000
+	id U6fmJF7J92fkagAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 10 Apr 2025 13:36:30 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 585A8A0910; Thu, 10 Apr 2025 14:05:38 +0200 (CEST)
-Date: Thu, 10 Apr 2025 14:05:38 +0200
+	id E23B9A0910; Thu, 10 Apr 2025 15:36:25 +0200 (CEST)
+Date: Thu, 10 Apr 2025 15:36:25 +0200
 From: Jan Kara <jack@suse.cz>
 To: Luis Chamberlain <mcgrof@kernel.org>
 Cc: brauner@kernel.org, jack@suse.cz, tytso@mit.edu, 
@@ -98,154 +94,115 @@ Cc: brauner@kernel.org, jack@suse.cz, tytso@mit.edu,
 	willy@infradead.org, hannes@cmpxchg.org, oliver.sang@intel.com, david@redhat.com, 
 	axboe@kernel.dk, hare@suse.de, david@fromorbit.com, djwong@kernel.org, 
 	ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-mm@kvack.org, gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com, 
-	syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
- migration
-Message-ID: <dpn6pb7hwpmajoh5k5zla6x7fsmh4rlttstj3hkuvunp6tok3j@ikz2fxpikfv4>
+	linux-mm@kvack.org, gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com
+Subject: Re: [PATCH v2 6/8] fs/ext4: use sleeping version of
+ __find_get_block()
+Message-ID: <g2xj2du3t226jve57mw4wiig4zpqqsvomtbzeu4wk37dfqbp47@3l66fjg736yy>
 References: <20250410014945.2140781-1-mcgrof@kernel.org>
- <20250410014945.2140781-2-mcgrof@kernel.org>
+ <20250410014945.2140781-7-mcgrof@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250410014945.2140781-2-mcgrof@kernel.org>
-X-Spam-Score: -2.30
+In-Reply-To: <20250410014945.2140781-7-mcgrof@kernel.org>
+X-Spam-Level: 
 X-Spamd-Result: default: False [-2.30 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	RCVD_TLS_LAST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	RCVD_COUNT_THREE(0.00)[3];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,suse.cz,mit.edu,dilger.ca,vger.kernel.org,surriel.com,stgolabs.net,infradead.org,cmpxchg.org,intel.com,redhat.com,kernel.dk,suse.de,fromorbit.com,gmail.com,kvack.org,samsung.com];
 	TO_DN_SOME(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[f3c6fda1297c748a7076];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,suse.cz,mit.edu,dilger.ca,vger.kernel.org,surriel.com,stgolabs.net,infradead.org,cmpxchg.org,intel.com,redhat.com,kernel.dk,suse.de,fromorbit.com,gmail.com,kvack.org,samsung.com,syzkaller.appspotmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Score: -2.30
 X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Wed 09-04-25 18:49:38, Luis Chamberlain wrote:
-> Filesystems which use buffer-heads where it cannot guarantees that there
-> are no other references to the folio, for example with a folio
-> lock, must use buffer_migrate_folio_norefs() for the address space
-> mapping migrate_folio() callback. There are only 3 filesystems which use
-> this callback:
+On Wed 09-04-25 18:49:43, Luis Chamberlain wrote:
+> From: Davidlohr Bueso <dave@stgolabs.net>
 > 
->   1) the block device cache
-
-Well, but through this also all simple filesystems that use buffer_heads
-for metadata handling...
-
->   2) ext4 for its ext4_journalled_aops, ie, jbd2
->   3) nilfs2
+> Trivially introduce the wrapper and enable ext4_free_blocks() to use
+> it, which has a cond_resched to begin with. Convert to the new nonatomic
+> flavor to benefit from potential performance benefits and adapt in the
+> future vs migration such that semantics are kept.
 > 
-> jbd2's use of this however callback however is very race prone, consider
-> folio migration while reviewing jbd2_journal_write_metadata_buffer()
-> and the fact that jbd2:
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Davidlohr Bueso <dave@stgolabs.net>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  fs/ext4/inode.c             | 2 ++
+>  fs/ext4/mballoc.c           | 3 ++-
+>  include/linux/buffer_head.h | 6 ++++++
+>  3 files changed, 10 insertions(+), 1 deletion(-)
 > 
->   - does not hold the folio lock
->   - does not have have page writeback bit set
->   - does not lock the buffer
->
-> And so, it can race with folio_set_bh() on folio migration. The commit
-> ebdf4de5642fb6 ("mm: migrate: fix reference  check race between
-> __find_get_block() and migration") added a spin lock to prevent races
-> with page migration which ext4 users were reporting through the SUSE
-> bugzilla (bnc#1137609 [0]). Although we don't have exact traces of the
-> original filesystem corruption we can can reproduce fs corruption on
-> ext4 by just removing the spinlock and stress testing the filesystem
-> with generic/750, we eventually end up after 3 hours of testing with
-> kdevops using libvirt on the ext4 profiles ext4-4k and ext4-2k.
-
-Correct, jbd2 holds bh reference (its private jh structure attached to
-bh->b_private holds it) and that is expected to protect jbd2 from anybody
-else mucking with the bh.
-
-> It turns out that the spin lock doesn't in the end protect against
-> corruption, it *helps* reduce the possibility, but ext4 filesystem
-> corruption can still happen even with the spin lock held. A test was
-> done using vanilla Linux and adding a udelay(2000) right before we
-> spin_lock(&bd_mapping->i_private_lock) on __find_get_block_slow() and
-> we can reproduce the same exact filesystem corruption issues as observed
-> without the spinlock with generic/750 [1].
-
-This is unexpected.
-
-> ** Reproduced on vanilla Linux with udelay(2000) **
-> 
-> Call trace (ENOSPC journal failure):
->   do_writepages()
->     → ext4_do_writepages()
->       → ext4_map_blocks()
->         → ext4_ext_map_blocks()
->           → ext4_ext_insert_extent()
->             → __ext4_handle_dirty_metadata()
->               → jbd2_journal_dirty_metadata() → ERROR -28 (ENOSPC)
-
-Curious. Did you try running e2fsck after the filesystem complained like
-this? This complains about journal handle not having enough credits for
-needed metadata update. Either we've lost some update to the journal_head
-structure (b_modified got accidentally cleared) or some update to extent
-tree.
-
-> And so jbd2 still needs more work to avoid races with folio migration.
-> So replace the current spin lock solution by just skipping jbd buffers
-> on folio migration. We identify jbd buffers as its the only user of
-> set_buffer_meta() on __ext4_handle_dirty_metadata(). By checking for
-> buffer_meta() and bailing on migration we fix the existing racy ext4
-> corruption while also removing the spin lock to be held while sleeping
-> complaints originally reported by 0-day [5], and paves the way for
-> buffer-heads for more users of large folios other than the block
-> device cache.
-
-I think we need to understand why private_lock protection does not protect
-bh users holding reference like jbd2 from folio migration before papering
-over this problem with the hack. Because there are chances other simple
-filesystems suffer from the same problem...
-
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index f3ee6d8d5e2e..32fa72ba10b4 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -841,6 +841,9 @@ static int __buffer_migrate_folio(struct address_space *mapping,
->  	if (folio_ref_count(src) != expected_count)
->  		return -EAGAIN;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 1dc09ed5d403..b7acb5d3adcb 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -860,6 +860,8 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+>  		return sb_find_get_block(inode->i_sb, map.m_pblk);
 >  
-> +	if (buffer_meta(head))
-> +		return -EAGAIN;
+>  	/*
+> +	 * Potential TODO: use sb_find_get_block_nonatomic() instead.
+> +	 *
+
+Yes, please. Since we are behind nowait check, we are fine with blocking...
+
+								Honza
+
+>  	 * Since bh could introduce extra ref count such as referred by
+>  	 * journal_head etc. Try to avoid using __GFP_MOVABLE here
+>  	 * as it may fail the migration when journal_head remains.
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 0d523e9fb3d5..6f4265b21e19 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -6644,7 +6644,8 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+>  		for (i = 0; i < count; i++) {
+>  			cond_resched();
+>  			if (is_metadata)
+> -				bh = sb_find_get_block(inode->i_sb, block + i);
+> +				bh = sb_find_get_block_nonatomic(inode->i_sb,
+> +								 block + i);
+>  			ext4_forget(handle, is_metadata, inode, bh, block + i);
+>  		}
+>  	}
+> diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+> index 2b5458517def..8db10ca288fc 100644
+> --- a/include/linux/buffer_head.h
+> +++ b/include/linux/buffer_head.h
+> @@ -399,6 +399,12 @@ sb_find_get_block(struct super_block *sb, sector_t block)
+>  	return __find_get_block(sb->s_bdev, block, sb->s_blocksize);
+>  }
+>  
+> +static inline struct buffer_head *
+> +sb_find_get_block_nonatomic(struct super_block *sb, sector_t block)
+> +{
+> +	return __find_get_block_nonatomic(sb->s_bdev, block, sb->s_blocksize);
+> +}
 > +
->  	if (!buffer_migrate_lock_buffers(head, mode))
->  		return -EAGAIN;
->  
-> @@ -859,12 +862,12 @@ static int __buffer_migrate_folio(struct address_space *mapping,
->  			}
->  			bh = bh->b_this_page;
->  		} while (bh != head);
-> +		spin_unlock(&mapping->i_private_lock);
 
-No, you've just broken all simple filesystems (like ext2) with this patch.
-You can reduce the spinlock critical section only after providing
-alternative way to protect them from migration. So this should probably
-happen at the end of the series.
+This hunk probably belongs to some introductory patch implementing
+nonatomic helpers.
 
 								Honza
 -- 
