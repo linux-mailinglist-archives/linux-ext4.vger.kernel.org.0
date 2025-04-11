@@ -1,180 +1,205 @@
-Return-Path: <linux-ext4+bounces-7211-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7212-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E35A86547
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Apr 2025 20:15:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8952FA86902
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 00:58:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 404B71B80BEF
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Apr 2025 18:15:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D027446EC7
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Apr 2025 22:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D83BD25949A;
-	Fri, 11 Apr 2025 18:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E198278E7D;
+	Fri, 11 Apr 2025 22:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ME+p+mhu"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=proton.me header.i=@proton.me header.b="UCj14d9u"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1066E21B19F;
-	Fri, 11 Apr 2025 18:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828FA1C8639
+	for <linux-ext4@vger.kernel.org>; Fri, 11 Apr 2025 22:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744395322; cv=none; b=enaZJZXaRGZkCI345jwrbDZfP4Cl0nH12W6lWsrhScSyRnpytopYzxs/dj9S2gKTqE/3lIWVb2gCth6apgZvvxM8zcirHGKPcfTM+emNMl48RSpW41jFfjIaJhyBB3pvYPofGgy3U/U5HsVzxlIDykhyxwNeO/EMCki1SA12hkE=
+	t=1744412331; cv=none; b=uavBe8EXnSvJ3IXgpUrgk0Ecs9l15xhKO0qcLh/KA4YrrEVXe1gRuwRbIEWmgmeee943MU8VMqK1PaDIRUClTUwwcgNnFbS4qqHWFFSJ0WRUVndsaLDEeJD0VD+ug1AAC8apd/k4ZrCFOkcWICJxrciIBIpmZT4QoHADwVOvvzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744395322; c=relaxed/simple;
-	bh=2tTLSS7hd2iNGOseEFZ6CV/rFq88VhsNhBgpU1nTch0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uhCdiipxwIYE7avQ0quWmpLiKHifvxmc6q1E8x5lVEB7jF64VcOfiJWRw1ziAkAmdZowKJZ4O324fhDqjTyI29UcjMVnSpOHnCioypPf/oNWMkljleB5QaDx5O6skksM9V7a5nF3dLxAr3cjWgMrxY4iJ2z89SS7qKuH0PiX14A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ME+p+mhu; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-b0322b6f974so1699939a12.1;
-        Fri, 11 Apr 2025 11:15:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744395320; x=1745000120; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BylA5TuS0yUjTwF/wPt8WD7f3x+BV08iih02ZxtM5NI=;
-        b=ME+p+mhuzFyI9BS/o357HcL+YyWVJnNEd0sYbk+TmaKuVFLh+sS50H/onCjKeCDhA/
-         ryFo4HGeea/gk3o4S6hG4s9pE2Y61l/jV1V+7F2qDbPIv4V0gzweqWKWUm2GPGvyn46M
-         Sf+PvC6X/bYLH0Uf0nK2fDwabxm5Jx7yd+QgZz5UrStvZTV/nNU21IaCLTJ4RQyTC/Eb
-         LEmveyNHBgm6AOvvdiF1+fpVx/X5vt+sNoH91bGuxzZYXLfBgakkUZTHeIHy7x6xgSFT
-         krg8dl+1OjbLUqwCHwYnzPKiX+KF7lqADPLufhcVQP2grKCJbJMGFVc8HGJJsnF48vqg
-         dNqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744395320; x=1745000120;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BylA5TuS0yUjTwF/wPt8WD7f3x+BV08iih02ZxtM5NI=;
-        b=tIJOm6GWrVJWqGjuE5MPl+tfqLRvkugmmp7k9xxmnIbT2Fc6GXtIzVx+J+0LiShpnq
-         lZRgam6iSiasESc1lSZm9RSEYMrBsn8MhNZnI27WzxPArSeqtS8yQOvnv14BtM0FzLKR
-         SvDb750LwGwtvSSmcppXPfWAbQISqE2bgusB5kBwkkKzpF7VpBFgDkD7X5CRtgeshEPO
-         KWokDzGW0OBoXzIYMUTuNW+/SAOUKxQTW9gxRnwd2Hj68E9Ohu2NxBf4wgME0Dc86I2d
-         G7rah8IDiRGDjMvCKAmPf0aJ+gAUJbyvR2piiH/xK6Zpk75X2O2nq5+X+XZ4PF92mI+D
-         l5HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNLRtUxk5/+ppw8fdolb3pIv86izT6V5FfOXM4wXcdYk7XMNCPEm3k3Vem/l8wwqH04zDDty8r@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywr1cphKwMeMFfutyGee9GU3Q9q+NXhbCI2zZtNyNQP93Agm6Gv
-	22sFKyIFm2In+LWx+V4Vp/yWNHqOLar1n8O08JzG7OOvwIaNzp5BAM63xw==
-X-Gm-Gg: ASbGncvNwoLC+sI02YBiK0aj1+O/uTzow4QMOsLqc359rLtRY3f61uJBF/XqgOvGYvu
-	8u7G0BK8XaEYi3DBv5Wk9Voh4guNvbOn/1+kXnVq1DcvpU4zfToxsVHACPrFuvUF1PnzSXIswzF
-	8gEDiNMIQrb+kQ0ACUozsCV+lib/ZBagBlfkUA7r7VY9cNxUN7mWavkHGzQyg5hGm7AZ+sON/YQ
-	pp+qLz/Gx55Qfqhw2IaPiLLLPTgYmssNp+DgJWJWpGSrPZ/yqTAPcomYcpwPCCNPUSl7s6eLXzT
-	YnVUm2IiSYATBMOUr0tOLnrAMujgUwEaCb+mu0yCsaiTEw5af6XlyT49aHgHqPxhf/LLCxff/HP
-	aJ0c6x+Ub/Kocm8qCetT2tny/vg==
-X-Google-Smtp-Source: AGHT+IHjP7lBCLzYhprsrSNT3veinax7VEshXeiXIgdk/yN7YTt+fdJ14tGy1Or6vkWehYQ4Y4V/Tw==
-X-Received: by 2002:a05:6a21:3943:b0:1f5:70af:a32a with SMTP id adf61e73a8af0-2017996f1d9mr7193332637.32.1744395319749;
-        Fri, 11 Apr 2025 11:15:19 -0700 (PDT)
-Received: from li-5d80d4cc-2782-11b2-a85c-bed59fe4c9e5.ibm.com ([2405:201:e030:380d:7994:78a5:fd96:99de])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b02a322184fsm5179326a12.74.2025.04.11.11.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Apr 2025 11:15:19 -0700 (PDT)
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-To: linux-xfs@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org,
-	fstests@vger.kernel.org,
-	ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com,
-	djwong@kernel.org,
-	zlang@kernel.org,
-	david@fromorbit.com,
-	nirjhar.roy.lists@gmail.com
-Subject: [PATCH v1] xfs: Fail remount with noattr2 on a v5 xfs with CONFIG_XFS_SUPPORT_V4=y
-Date: Fri, 11 Apr 2025 23:44:52 +0530
-Message-ID: <7c4202348f67788db55c7ec445cbe3f2d587daf2.1744394929.git.nirjhar.roy.lists@gmail.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1744412331; c=relaxed/simple;
+	bh=Rvwz6B7WjQ9aS+mIrbXocavpS12R/CsRW6l3SMPPqfc=;
+	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=fRsMtPNeyIqxyC9hpGb0gG9H+f2xTN1QO8l4v6nAxj4J/8ANEPD7YydjeBFnsdzCrU80TSR2CkEOF77xXF+Jra9RcNfckopwxZu+miI15pEV3YzyzmrfqpQK5oxrqBqTA6JcdpyFdktWbMk74VppVGBpntpQvd/7BYTiOH3kNik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=UCj14d9u; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=ji3x6277x5bxxml7rukr6767uy.protonmail; t=1744412320; x=1744671520;
+	bh=WiyRGCHozQCIhlkks3OkNbFo4ayxAfDGHp7A6vFvypQ=;
+	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
+	 List-Unsubscribe:List-Unsubscribe-Post;
+	b=UCj14d9udVhZI2/AfzbJ/ElUEZolshM8DXHoO/yhn1wEvA2Hf02V4jEMGe4xpr3/J
+	 uOxqkbff0UsIOqIS3XaRLSuVFzufJVV89LNtWlYwBKMXSu5OOrD1XmYRr/ZR99ga+H
+	 IbBuU5f0usPUpvrE1pH/+PlgALx3d+8rJX8zH6uGmsPpKYE0avz97rkZvNpAzizjtp
+	 oTffnagdsLxmAWTE81Vk2UUdmUvi1SSxv67KxxZwwD6iVRl62tVxiu/3MnPkJRvj1I
+	 gcPMAPolHzU3tT4X8hmJYlyY2nLw5TzCuYEYy7+06k8XOv2UnFubw8R36V60/4oJCs
+	 kT3om0kBwi4cQ==
+Date: Fri, 11 Apr 2025 22:58:36 +0000
+To: "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+From: Charith Amarasinghe <char8@proton.me>
+Subject: 6.12 stuck jbd2 kernel task
+Message-ID: <66m4l71s4ANfMiUZejbuy4I10428c0I-mROXkkvtD_frTsEzhb7xgh-H3ugGl_K5wr3IOo3hjfNKerH_70pQ5MO1w34m-12cIPacpZMi9Cg=@proton.me>
+Feedback-ID: 49408879:user:proton
+X-Pm-Message-ID: 5bcc32143fe4cf93388f8d05a5985ea896bc39ef
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Bug: When we compile the kernel with CONFIG_XFS_SUPPORT_V4=y, remount
-with "-o remount,noattr2" on a v5 XFS does not fail explicitly.
+Hi,
 
-Reproduction:
-mkfs.xfs -f /dev/loop0
-mount /dev/loop0 /mnt/scratch
-mount -o remount,noattr2 /dev/loop0 /mnt/scratch # This should fail but it doesn't
+We're running ext4 filesystems on top ZFS Zvols on top of a Ceph RBD. This =
+is a weird/convoluted configuration, but works for the most part.
 
-However, with CONFIG_XFS_SUPPORT_V4=n, the remount correctly fails explicitly.
-This is because the way the following 2 functions are defined:
+We've recently seen lockups of processes on specific ext4 file systems (low=
+ %es). We see various tasks stuck in uninterruptible sleep (D process state=
+ flag), all of them with stacktraces in ext4 functions.
 
-static inline bool xfs_has_attr2 (struct xfs_mount *mp)
-{
-	return !IS_ENABLED(CONFIG_XFS_SUPPORT_V4) ||
-		(mp->m_features & XFS_FEAT_ATTR2);
-}
-static inline bool xfs_has_noattr2 (const struct xfs_mount *mp)
-{
-	return mp->m_features & XFS_FEAT_NOATTR2;
-}
+We got these with=C2=A0`echo w > /proc/sysrq-trigger`. We think this starts=
+ in a [jbd2/zbd-XXX] kernel task, stack trace below:
 
-xfs_has_attr2() returns true when CONFIG_XFS_SUPPORT_V4=n and hence, the
-the following if condition in xfs_fs_validate_params() succeeds and returns -EINVAL:
+Any help in isolating/identifying/mitigating this problem would be apprecia=
+ted.
 
-/*
- * We have not read the superblock at this point, so only the attr2
- * mount option can set the attr2 feature by this stage.
- */
+We can't find any indicators to relate this to ZFS or Ceph so we think its =
+a ext4 issue. We don't know what triggers it.
 
-if (xfs_has_attr2(mp) && xfs_has_noattr2(mp)) {
-	xfs_warn(mp, "attr2 and noattr2 cannot both be specified.");
-	return -EINVAL;
-}
-With CONFIG_XFS_SUPPORT_V4=y, xfs_has_attr2() always return false and hence no error
-is returned.
+-------- log extract --------
+[425499.839903] task:jbd2/zd4512-8   state:D stack:0     pid:79548 tgid:795=
+48 ppid:2      flags:0x00004000
+[425499.841648] Call Trace:
+[425499.842266]  <TASK>
+[425499.842781]  __schedule+0x403/0xbf0
+[425499.843593]  schedule+0x27/0xf0
+[425499.844245]  jbd2_journal_wait_updates+0x76/0xe0
+[425499.845252]  ? __pfx_autoremove_wake_function+0x10/0x10
+[425499.846425]  jbd2_journal_commit_transaction+0x26d/0x1b90
+[425499.847538]  ? kvm_sched_clock_read+0x11/0x20
+[425499.848449]  ? kvm_sched_clock_read+0x11/0x20
+[425499.849385]  ? sched_clock+0x10/0x30
+[425499.850137]  ? sched_clock_cpu+0xf/0x190
+[425499.850913]  ? psi_task_switch+0xb7/0x200
+[425499.851705]  ? __timer_delete_sync+0x85/0xf0
+[425499.852557]  kjournald2+0xac/0x250
+[425499.853271]  ? __pfx_autoremove_wake_function+0x10/0x10
+[425499.854254]  ? __pfx_kjournald2+0x10/0x10
+[425499.855048]  kthread+0xcf/0x100
+[425499.855699]  ? __pfx_kthread+0x10/0x10
+[425499.856444]  ret_from_fork+0x31/0x50
+[425499.857175]  ? __pfx_kthread+0x10/0x10
+[425499.857917]  ret_from_fork_asm+0x1a/0x30
+[425499.858719]  </TASK>
+-------- end --------
 
-Fix: Check if the existing mount is has crc enabled(i.e, of type v5 and has attr2 enabled)
-and the remount has noattr2, if yes, return -EINVAL.
+We see the process that was writing into this zvol also stuck, stacktrace b=
+elow
+-------- log extract --------
+[425499.859242] task:mysqld          state:D stack:0     pid:79670 tgid:796=
+70 ppid:79555  flags:0x00004006
+[425499.860904] Call Trace:
+[425499.861454]  <TASK>
+[425499.861961]  __schedule+0x403/0xbf0
+[425499.862704]  schedule+0x27/0xf0
+[425499.863364]  jbd2_log_wait_commit+0xd7/0x140
+[425499.864192]  ? __pfx_autoremove_wake_function+0x10/0x10
+[425499.865179]  ext4_sync_file+0x1cb/0x370                                =
+                                                                           =
+                                                                [425499.865=
+937]  do_fsync+0x3a/0x70
+[425499.866626]  ? syscall_trace_enter+0x90/0x190
+[425499.867475]  __x64_sys_fdatasync+0x16/0x20
+[425499.870633]  do_syscall_64+0x82/0x160
+[425499.871376]  ? do_fault+0x281/0x4d0
+[425499.872073]  ? __handle_mm_fault+0x7b8/0xfd0
+[425499.872909]  ? __count_memcg_events+0x53/0xf0
+[425499.873742]  ? count_memcg_events.constprop.0+0x1a/0x30
+[425499.874744]  ? handle_mm_fault+0xae/0x2d0
+[425499.875517]  ? do_user_addr_fault+0x379/0x670
+[425499.876341]  ? clear_bhb_loop+0x55/0xb0
+[425499.877099]  ? clear_bhb_loop+0x55/0xb0
+[425499.877852]  ? clear_bhb_loop+0x55/0xb0
+[425499.878634]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[425499.879575] RIP: 0033:0x7ff3a8b9b177
+[425499.880279] RSP: 002b:00007ffe8cda2dd8 EFLAGS: 00000246 ORIG_RAX: 00000=
+0000000004b
+[425499.881645] RAX: ffffffffffffffda RBX: 00007ffe8cda2f10 RCX: 00007ff3a8=
+b9b177
+[425499.882966] RDX: 0000000000000000 RSI: 0000000000000010 RDI: 0000000000=
+000003
+[425499.884257] RBP: 00007ffe8cda2ea0 R08: 0000000000000038 R09: 0000000000=
+000014
+[425499.885554] R10: 00007ff3a8aa5348 R11: 0000000000000246 R12: 0000000000=
+000003
+[425499.888869] R13: 0000000000000010 R14: 00000000024972ac R15: 00007ffe8c=
+da3220
+[425499.890795]  </TASK>
+------ end ------
 
-I have tested xfs/{189,539} in fstests with v4 and v5 XFS with both CONFIG_XFS_SUPPORT_V4=y/n
-and they both behave as expected.
+Any other processes that attempt to touch this device, eg processes calling=
+ the mount syscall are also stuck in uninterruptible sleep.
+------- log ---------
+[425634.387016] task:appl state:D stack:0     pid:5486  tgid:48022 ppid:1  =
+    flags:0x00000006
+[425634.391820] Call Trace:
+[425634.392598]  <TASK>
+[425634.393288]  __schedule+0x403/0xbf0
+[425634.394299]  schedule+0x27/0xf0
+[425634.395241]  schedule_preempt_disabled+0x15/0x30
+[425634.396507]  rwsem_down_write_slowpath+0x282/0x600
+[425634.397682]  ? __pfx_super_s_dev_set+0x10/0x10
+[425634.398984]  down_write+0x5a/0x60
+[425634.399984]  super_lock+0x5b/0x150
+[425634.401007]  ? __pfx_super_s_dev_test+0x10/0x10
+[425634.402328]  ? __pfx_super_s_dev_set+0x10/0x10
+[425634.403214]  grab_super+0x42/0x170
+[425634.403925]  ? mntput_no_expire+0x4a/0x260
+[425634.404721]  ? __pfx_super_s_dev_test+0x10/0x10
+[425634.405618]  sget_fc+0x22e/0x410
+[425634.406335]  ? __pfx_ext4_fill_super+0x10/0x10
+[425634.407216]  get_tree_bdev_flags+0xb1/0x1d0
+[425634.408041]  vfs_get_tree+0x26/0xf0
+[425634.408743]  path_mount+0x4b1/0xae0
+[425634.409460]  __x64_sys_mount+0x117/0x150
+[425634.410262]  do_syscall_64+0x82/0x160
+[425634.410982]  ? do_syscall_64+0x8e/0x160
+[425634.411738]  ? count_memcg_events.constprop.0+0x1a/0x30
+[425634.412762]  ? handle_mm_fault+0xae/0x2d0
+[425634.413559]  ? do_user_addr_fault+0x379/0x670
+[425634.414397]  ? clear_bhb_loop+0x55/0xb0
+[425634.415161]  ? clear_bhb_loop+0x55/0xb0
+[425634.415927]  ? clear_bhb_loop+0x55/0xb0
+[425634.416665]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[425634.417616] RIP: 0033:0x40a58e
+[425634.418262] RSP: 002b:000000c0067931b0 EFLAGS: 00000216 ORIG_RAX: 00000=
+000000000a5
+[425634.419686] RAX: ffffffffffffffda RBX: 000000c009b0a6f0 RCX: 0000000000=
+40a58e
+[425634.423215] RDX: 000000c003ee68a0 RSI: 000000c007d590a0 RDI: 000000c009=
+b0a6f0
+[425634.424880] RBP: 000000c0067931f0 R08: 000000c003ee6888 R09: 0000000000=
+000000
+[425634.426698] R10: 0000000000000000 R11: 0000000000000216 R12: 0000000000=
+00008a
+[425634.428812] R13: 000000c006880800 R14: 000000c004a9dba0 R15: 0000000000=
+000026
+[425634.431684]  </TASK>
+--------- end --------
 
-This patch also fixes remount from noattr2 -> attr2 (on a v4 xfs).
+Thanks,
+C.
 
-Related discussion in [1]
 
-[1] https://lore.kernel.org/all/Z65o6nWxT00MaUrW@dread.disaster.area/
-
-Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
----
- fs/xfs/xfs_super.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index b2dd0c0bf509..fd72c8fcd3a7 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -2114,6 +2114,23 @@ xfs_fs_reconfigure(
- 	if (error)
- 		return error;
- 
-+	/* attr2 -> noattr2 */
-+	if (xfs_has_noattr2(new_mp)) {
-+		if (xfs_has_crc(mp)) {
-+			xfs_warn(mp, "attr2 and noattr2 cannot both be specified.");
-+			return -EINVAL;
-+		}
-+		else {
-+			mp->m_features &= ~XFS_FEAT_ATTR2;
-+			mp->m_features |= XFS_FEAT_NOATTR2;
-+		}
-+
-+	} else if (xfs_has_attr2(new_mp)) {
-+			/* noattr2 -> attr2 */
-+			mp->m_features &= ~XFS_FEAT_NOATTR2;
-+			mp->m_features |= XFS_FEAT_ATTR2;
-+	}
-+
- 	/* inode32 -> inode64 */
- 	if (xfs_has_small_inums(mp) && !xfs_has_small_inums(new_mp)) {
- 		mp->m_features &= ~XFS_FEAT_SMALL_INUMS;
--- 
-2.43.5
 
 
