@@ -1,139 +1,140 @@
-Return-Path: <linux-ext4+bounces-7218-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7219-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7E68A87039
-	for <lists+linux-ext4@lfdr.de>; Sun, 13 Apr 2025 01:13:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F21FA87045
+	for <lists+linux-ext4@lfdr.de>; Sun, 13 Apr 2025 01:55:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA29D176361
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 23:13:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 570ED17BA72
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 23:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA4622FF33;
-	Sat, 12 Apr 2025 23:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="U/C+ckdc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFB11B3F3D;
+	Sat, 12 Apr 2025 23:55:50 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633B038385
-	for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 23:12:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD0B17A586
+	for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 23:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744499579; cv=none; b=u5kgVOWpdBptKgg/AqWO0O9zRcUGZdFfBY/Gxw8sll6mTIppcMm6ZNS8dJdZSmA7LNIiy35HWe1uCKll/FlGy5q3Voac5r5rs6vl2MDU3sU2e73fYlYsWDKHjx1e9gs+jnZW0yonxnW0kf5yR2YFDHehAWFc/4cvsTz7fOL/mBQ=
+	t=1744502150; cv=none; b=scl5N7vKgRPhwUNKnirZUfmGBkVGxo5WT/r7ksF6NRODWWszimylp8r6xMHxZkJGMG64zdet/EXGKFTBH77DRNZ+fhsvoFcoAk6Fa5wytcRff/qLTuWDijmKF7i/oBGnNFvNmkFr6CE4V/aJoalmtNTqUu2jEYhMRT7Sf3hvpuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744499579; c=relaxed/simple;
-	bh=erErZ5IWo7k/p9GhH7CXHkyC+Mrxu7hz35nBRVmyQ94=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tE8EVZLS6Lb8ddXIO3swisH1V6HkfHg+XtonpOxR7eCC5CT2XloAJeOJb42TI2wtkkJWH48yPu4iLuMF4XTb79P/ODo/igEmfpirXQKVa4wgojkQPrNjsl6vNruBY13hy5AEoof/NLY2JvbMPg+nSYdiWMCG21VCgmzjb/FAMgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=U/C+ckdc; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ac2a9a74d9cso608835766b.1
-        for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 16:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1744499574; x=1745104374; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FzVk3Vfm0xN6fR9iJk/fZ+HRS66Ighe4iqo3hM0TvD8=;
-        b=U/C+ckdchtSaUbmAH8+RvUY+5ttLoVMuuMjvxuXnXbsMkwtOEuGmQIpqGzefMtEQDm
-         aTRarfodf9K84Nmqa7QnrtWFX+v+hWA57yJfJlm5NExPH3zkKbGSgnK2Oz5Yc5B9kusD
-         RGhjyhlEqQR+g3vjVqY6xL0nOl6+qlqIigbK4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744499574; x=1745104374;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FzVk3Vfm0xN6fR9iJk/fZ+HRS66Ighe4iqo3hM0TvD8=;
-        b=u037VdqGGEeX0MmfpYowg293CqsPr/3pTKMm3BhmGBTbjYuTQ7qJhwiXFM0QLYaV8G
-         at5zHqoRvXUoTrFUxie1D8IxncJGbHpNGExMGOstPVnb54+/66J2EiAbBplEFOcKxEYB
-         3iGv3FKy7NPM9ha2o5pQPU/jLBKP2xDCxNvRJQZs93Ah6oG5Kyh2/3LuACzRK3LAKLpo
-         n4n8DGBgJMIET43WUgsd617/iRaAOK2edzNgeNEy3TIVAipurlxKbq03Hp/Smw4llz8H
-         cTZS17IIAf8eJpgZ2SzWjxNqEXhVnR2qPdhiYIhQPFaIhOfjnwRJSUXov61ewwddLlBS
-         xHWg==
-X-Forwarded-Encrypted: i=1; AJvYcCUTl12CIRntNbvSb6119c+o3MmlQrQAKSSzQKB+iswTbG7Mj2a8bwZ4Dapp5IjN74L4Ts56x/nFk9zY@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/QiSn/+Ql25KmV6TUrI3Ran+9MljT/GkDvzdRju1xgawuVbN3
-	PwPIggwFUnuAGRLiCdBrJR1Htakq+oK1WgYVRNTIiEhmSE7ENEyXVSI35QMAumm6jKnNTxf5rgt
-	eNsc=
-X-Gm-Gg: ASbGncuh5BzCiyycSYDbWt9BRTuRwKwJ0zVCQ9zXWdktNl0Zk6NKOGjrXXf5kOTFgEw
-	mMRFIAPuC7JiAb9EY570c4nXBqSFMeONPGQyiB2YifCP9yWR9t9WcPFdhNcd4j/KYtrqfMrqS9E
-	vKZ+0pTgTTOlVdUfbpPDmCLUn91pHvQYzWzxEfaqXRHQgT/Vjupu2INlsUnjTq/lObvoZkFgnYw
-	bgH7pu2s57QRxSeG5JAMYTxsfbWIzfRwuvvI1OXozgoXRp7S5LIui00oQKB3GmdwlH6/4Chxr60
-	JbjgJsBt7OSwYTOSwTsr8Gt4ZHxH6kBej7dXOT030qiog5x0kwCBK3HagZec7mvsnoDfGXR7MkL
-	Eo1u4sCtYNxw2Qi0=
-X-Google-Smtp-Source: AGHT+IHPdZC8miWaHV+3O12LQP2PCMPJeFbRYoMhg8uPj0V8Pz4+MIhpdow9Buz7tmuLnCPqYgRkVA==
-X-Received: by 2002:a17:907:1b22:b0:ac1:f002:d85d with SMTP id a640c23a62f3a-acad3457ccbmr611445266b.6.1744499574356;
-        Sat, 12 Apr 2025 16:12:54 -0700 (PDT)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acaa1ccc141sm665617666b.144.2025.04.12.16.12.53
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Apr 2025 16:12:53 -0700 (PDT)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-ac3eb3fdd2eso615630666b.0
-        for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 16:12:53 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVbhQxZT5xsn2wvybtxJ8TFmM5eKElPTEBMFlzQiMUStBuvd+rGxXGjX53DfJdNDl8/1Me8KitvGZpU@vger.kernel.org
-X-Received: by 2002:a17:907:3e0b:b0:ac2:dc00:b34d with SMTP id
- a640c23a62f3a-acad36d943bmr647780666b.53.1744499572869; Sat, 12 Apr 2025
- 16:12:52 -0700 (PDT)
-Precedence: bulk
-X-Mailing-List: linux-ext4@vger.kernel.org
-List-Id: <linux-ext4.vger.kernel.org>
-List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CAHk-=whJgRDtxTudTQ9HV8BFw5-bBsu+c8Ouwd_PrPqPB6_KEQ@mail.gmail.com>
- <20241031-klaglos-geldmangel-c0e7775d42a7@brauner> <CAHk-=wjwNkQXLvAM_CKn2YwrCk8m4ScuuhDv2Jzr7YPmB8BOEA@mail.gmail.com>
+	s=arc-20240116; t=1744502150; c=relaxed/simple;
+	bh=abXuAYgvwr1Ws5Hl6ZuttWEMtuZQf666Ofjlrrpz3Ak=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rMBcfCKqAz8HtXAOD11zpYVGCuHoPpfIngNlASbK04T9xi+GKV/rUqQHPRpW8yq2Kt89mVIb/iJ8cCzqNRFMghkmz7TLR5+5fkwkHiJbrQnr+Sws9UTI9hljTombxliCWRHpK+osWw8LkbPaT2URVN8UUJw9XYfzc+0AoFSuxyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-82-137.bstnma.fios.verizon.net [173.48.82.137])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 53CNtZA6010237
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 12 Apr 2025 19:55:36 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 74D772E00E9; Sat, 12 Apr 2025 19:55:35 -0400 (EDT)
+Date: Sat, 12 Apr 2025 19:55:35 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Mateusz Guzik <mjguzik@gmail.com>, Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: generic_permission() optimization
+Message-ID: <20250412235535.GH13132@mit.edu>
+References: <20241031-klaglos-geldmangel-c0e7775d42a7@brauner>
+ <CAHk-=wjwNkQXLvAM_CKn2YwrCk8m4ScuuhDv2Jzr7YPmB8BOEA@mail.gmail.com>
  <CAHk-=wiKyMzE26G7KMa_D1KXa6hCPu5+3ZEPUN0zB613kc5g4Q@mail.gmail.com>
  <CAHk-=wiB6vJNexDzBhc3xEwPTJ8oYURvcRLsRKDNNDeFTSTORg@mail.gmail.com>
  <CAHk-=whSzc75TLLPWskV0xuaHR4tpWBr=LduqhcCFr4kCmme_w@mail.gmail.com>
  <a7gys7zvegqwj2box4cs56bvvgb5ft3o3kn4e7iz43hojd4c6g@d3hihtreqdoy>
  <CAHk-=wgEvF3_+sa5BOuYG2J_hXv72iOiQ8kpmSzCpegUhqg4Zg@mail.gmail.com>
  <CAGudoHGxr5gYb0JqPqF_J0MoSAb_qqoF4gaJMEdOhp51yobbLw@mail.gmail.com>
- <20250412215257.GF13132@mit.edu> <CAHk-=wifig365Ej8JQrXBzK1_BzU9H9kqvvbBGuboF7CzR28VQ@mail.gmail.com>
+ <20250412215257.GF13132@mit.edu>
+ <CAHk-=wifig365Ej8JQrXBzK1_BzU9H9kqvvbBGuboF7CzR28VQ@mail.gmail.com>
+Precedence: bulk
+X-Mailing-List: linux-ext4@vger.kernel.org
+List-Id: <linux-ext4.vger.kernel.org>
+List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <CAHk-=wifig365Ej8JQrXBzK1_BzU9H9kqvvbBGuboF7CzR28VQ@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 12 Apr 2025 16:12:18 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whAi-La-PaktC83QhMWXyE4v3u6mzPwpE0bX7jhtRaitg@mail.gmail.com>
-X-Gm-Features: ATxdqUGBBgcp2Yt3W7EErIVkfyH75cMOpLdKjddWRCzYAf_XyWMHN29s807rB00
-Message-ID: <CAHk-=whAi-La-PaktC83QhMWXyE4v3u6mzPwpE0bX7jhtRaitg@mail.gmail.com>
-Subject: Re: generic_permission() optimization
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Mateusz Guzik <mjguzik@gmail.com>, Christian Brauner <brauner@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
-	Jan Kara <jack@suse.cz>, Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 
-On Sat, 12 Apr 2025 at 15:36, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
+On Sat, Apr 12, 2025 at 03:36:00PM -0700, Linus Torvalds wrote:
 > Indeed. I sent a query to the ext4 list (and I think you) about
 > whether my test was even the right one.
 
-.. I went back to my email archives, and it turns out that I _only_
-sent it to you, not to the ext4 lists at all.
+Sorry, I must have not seen that message; at least, I don't have any
+memory of it.
 
-Oh well. It was this patch:
+> Also, while I did a "getfattr -dR" to see if there are any *existing*
+> attributes (and couldn't find any), I also assume that if a file has
+> ever *had* any attributes, the filesystem may have the attribute block
+> allocated even if it's now empty.
 
-  --- a/fs/ext4/inode.c
-  +++ b/fs/ext4/inode.c
-  @@ -5011,6 +5011,11 @@ struct inode *__ext4_iget(...
-        }
+Well, getfattr will only show user xattrs.  It won't show security.*
+xattr's that might have been set by SELinux, or a
+system.posix_acl_access xattr.
 
-        brelse(iloc.bh);
-  +
-  +     /* Initialize the "no ACL's" state for the simple cases */
-  +     if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_file_acl)
-  +             cache_no_acl(inode);
-  +
-        unlock_new_inode(inode);
-        return inode;
+> I assume there's some trivial e2fstools thing to show things like
+> that, but it needs more ext4 specific knowledge than I have.
 
-and I think that's pretty much exactly the same patch as the one
-Mateusz posted, just one line down (and the line numbers are different
-because that patch was from five months ago and there's been some
-unrelated changes since.
+Yes, we can test for this using the debugfs command.  For exaple:
 
-            Linus
+root@kvm-xfstests:~# debugfs /dev/vdc
+debugfs 1.47.2-rc1 (28-Nov-2024)
+debugfs:  stat <13>
+Inode: 13   Type: regular    Mode:  0644   Flags: 0x80000
+Generation: 1672288850    Version: 0x00000000:00000003
+User:     0   Group:     0   Project:     0   Size: 286
+File ACL: 0
+Links: 1   Blockcount: 8
+Fragment:  Address: 0    Number: 0    Size: 0
+ ctime: 0x67faf5d0:30d0b2e4 -- Sat Apr 12 19:22:56 2025
+ atime: 0x67faf571:7064bd50 -- Sat Apr 12 19:21:21 2025
+ mtime: 0x67faf571:71236aa8 -- Sat Apr 12 19:21:21 2025
+crtime: 0x67faf571:7064bd50 -- Sat Apr 12 19:21:21 2025
+Size of extra inode fields: 32
+Extended attributes:
+  system.posix_acl_access (28) = 01 00 00 00 01 00 06 00 02 00 04 00 b7 7a 00 00 04 00 04 00 10 00 04 00 20 00 04 00 
+Inode checksum: 0xc8f7f1a7
+EXTENTS:
+(0):33792
+
+(If you know the pathname instead of the inode number, you can also
+give that to debugfs's stat command, e.g., "stat /lost+found")
+
+I tested it with a simple variant of your patch, and seems to do the right
+thing.  Mateusz, if you want, try the following patch, and then mount
+your test file system with "mount -o debug".  (The test_opt is to
+avoid a huge amount of noise on your root file system; you can skip it
+if it's more trouble than it's worth.)  The patch has a reversed
+seense of the test, so it will print a message for every one where
+cache_no_acl *wouldn't* be called.  You casn then use debugfs's "stat
+<ino#>" to verify whether it has some kind of extended attribute.
+
+	   	  	     	      - Ted
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index f386de8c12f6..3e0ba7c4723a 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5109,6 +5109,11 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 		goto bad_inode;
+ 	brelse(iloc.bh);
+ 
++	if (test_opt(sb, DEBUG) &&
++	    (ext4_test_inode_state(inode, EXT4_STATE_XATTR) ||
++	     ei->i_file_acl))
++		ext4_msg(sb, KERN_DEBUG, "has xattr ino %lu", inode->i_ino);
++
+ 	unlock_new_inode(inode);
+ 	return inode;
+ 
 
