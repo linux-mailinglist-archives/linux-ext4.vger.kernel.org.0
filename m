@@ -1,73 +1,82 @@
-Return-Path: <linux-ext4+bounces-7214-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7215-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6742EA86E22
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 18:26:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA8AA86F55
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 22:23:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42B7619E3CE9
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 16:26:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5897319E176F
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 20:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0866E1FECBD;
-	Sat, 12 Apr 2025 16:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75D91FF1D9;
+	Sat, 12 Apr 2025 20:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jHx8h9Ce"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NfDPamOs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4011F8691;
-	Sat, 12 Apr 2025 16:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCEBC19E965
+	for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 20:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744475185; cv=none; b=j8nOFsnOjOqnkvu7k4xdsR5/2Hdkw214vTV2qimqTFD0UlYT9aIznEiMIK1zT7PTBrgKPFD9cgRdqUKaEbRlZUyNenstUwrRQ5XbFzW7jWjY9vcM9WEiOAbgQBcJH2s0E1D38Ggi3MiUL+B31aKBl2e+3uH6Yv/ShO7KwTqGwoQ=
+	t=1744489381; cv=none; b=KvLkK2HpJl03zzF+qBufDvcZGgLP0PGjcq7G/lBcCCAF9oubbD7WYriejwO+OOgNqENFBLTmqHE9nGsY8sYIr0iJ/qTNuVnUXF7ZlZQVQWEQhgRRiXxo877gRrV884hDqudR7asxOHUMoX1mwe8NTg9slhxl0lIQ/oz7D9rj/6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744475185; c=relaxed/simple;
-	bh=TgOepuTRab8lxv8vZ5W6tjHvakxfbUJ6Z3G1oGXFK8U=;
+	s=arc-20240116; t=1744489381; c=relaxed/simple;
+	bh=6Y5KdDVzjvazrOIApCipo1B6aUyEJJR4k42kybjK5BA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nfqrRttpkDnyhp+ttdJCNAvmXTrLxi694Y5Yrmp9moYOIVXUMtB0NvGP2nYe90murSw8I5/rdIdmphG57XogYRJC5QQDXXE9A/49Ni2F5ShrEnJqmEq+i9YvBJUDfLDd/hP72C+4lb6rSOL78BmZHxZ5wuUfOvj/fYsmf2GuVdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jHx8h9Ce; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5e686d39ba2so5406337a12.2;
-        Sat, 12 Apr 2025 09:26:23 -0700 (PDT)
+	 To:Cc:Content-Type; b=DcHz5YzWgXQ3ODIhGwU0QebfdS0Mk2XI7Pmt1qI9esMCBvoeeO/yXyx3cxlcTEG35xQ4ZJoj0tCV5mtBIOVb7UaAl+XD091emQfDtk001q3WMPJ5NaocBSuhv5sbwKgF7nVY9LiqLG919Yf63FtOU+mT+SlqL5WSbhhuytKBQNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NfDPamOs; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5e66407963fso5630735a12.2
+        for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 13:22:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744475182; x=1745079982; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=szkj8CDkf0ug43a6Nf+d4w7o4nOixURK7uDCQKDdfkA=;
-        b=jHx8h9CegjyNq0fJ/Dasiv6cC3nB4Biz+ZlhocTjLZVhQlz8U9/iQJNhGungEgzq82
-         XJGhMFxjvF4f9IkaVZTnQz5KPId+LK6W8igCTKsr4rM4VAhv1Bay6srnXz5b/u/zLGKj
-         G/qe/P98ZjWrlqImvgeR5cfSyUVmtpHZosNfuw1Pp1DNxlnJVbaNjKXWIEHsSf//a9cS
-         wBZsD7uuE+854mKe2viiJJtslADWuW6uDWKKKWg1ngrkNbCmEstCBxLlCVJ/Pf5Y50u7
-         NSzbEoHtm0JOQyyUmkMji+BB57fsdAjWuW8DjTilnIlxo9AI5XyTrgWZ/+Uz4OnwruNs
-         /qlA==
+        d=linux-foundation.org; s=google; t=1744489377; x=1745094177; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=d/539aLu+mB+lczaep/CgFHmero7rpBQwrzIrFuK2HQ=;
+        b=NfDPamOsUabEm9iE9b6aLdHvLQC2tvdugdDwmWxgWqyPa4pIBU1OG/PB4g4c/P6i+O
+         0ahazAIpiNddUbYStSOO2Fte9G2Qu0FwgT9geheyJXvwLlSApBXLP9dCoSlsc2p2DAUI
+         3oj9C5sF1NmeI/cI4rqxttWfxelW1l3UK9ZXw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744475182; x=1745079982;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=szkj8CDkf0ug43a6Nf+d4w7o4nOixURK7uDCQKDdfkA=;
-        b=H/KxRsfvIYinE15QwjORtuAAGGWHU+Sd2NVyjnxdf5LTOB6/29z6k2VNQbHPmxX8AL
-         d+UNzXPlPGRTHWGiefA/9i3tT4rCwaRT/v3dea2bGJILccnLTXTsb42bZOvk52jecKaC
-         NI0x0LoWprb5Y/5ebfbOlGdmxGy5uxsmPuQUu9PcJqjKXNaCmDnUI6AUUQ5Si2CJ2yMH
-         P+1L6koIvjts2hUm2WoSDziOd742vVuKKmZ6RFN0+qN9VQnYZ/ZwK2kVnkl5Xf6zgWjX
-         VpFbrChnNNXsXvo2ufx7iJ9zWa4+yIxv00VykF9oeMB3MMqzPHU97xDlYqlv13iA0Jwd
-         oY8A==
-X-Forwarded-Encrypted: i=1; AJvYcCV55oTaUmWMT9B7hROWdUu+Qu37IFUbRAcOSSOmcbrawxGaOr4ZOd1v6q9h0BzPvNGbVxexAtxQZE0NkdddJw==@vger.kernel.org, AJvYcCViGCcidNCu4p8OBzrPZYZZ9dEH5lVJRT0N8jWEKiDr8jf2kHQg3Jn/gSNnQcsz9cartu5b24zvZaFb@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNBAxn/2PWyolvnAd8Ub/Hu9kClZFKcSkpKTifLVRz0iIV3+Ii
-	wdgsQt6nbHLyDpiMLP3m0Bk910UAsJFKDJYgWMpY1pPLblOP3DJ5gqV1dQBLUdLB8qXa5M/tEVS
-	MXijEjYWTPgZUS9MvEuEmLKIx/RU=
-X-Gm-Gg: ASbGncuxZfQQm6xF0AGnhR9ml5NJsu13nK5pSu6lYKnIMhuVd8P28IhLUqjjlPpG4F4
-	LqwzkPcAak5BZCAYt6fgmf26frIMU1UKeBJQ348Ljvflda6nEb/nvIFlITn/aZE8Eu7vKbMeQy9
-	FaYOrXRdNNXQATBS/Y2wjA
-X-Google-Smtp-Source: AGHT+IHp7OMLw6VbFGxBeYonrEdt5mPvROXjfDcy3Y9ZMwE7aT835X+3Gzyjbt+ICCHpIr6C54iZq2fon49//DxyCgs=
-X-Received: by 2002:a17:906:6a27:b0:ac8:1bb3:35b0 with SMTP id
- a640c23a62f3a-acad34a184dmr555126166b.20.1744475181825; Sat, 12 Apr 2025
- 09:26:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1744489377; x=1745094177;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d/539aLu+mB+lczaep/CgFHmero7rpBQwrzIrFuK2HQ=;
+        b=dBxTtV4MfV7Hg0mqBSg1gP+pLq5czmPLJBpR431GlZ6d/oNTOukKq69Kh06QRxKara
+         GkLkHUJ1X1lbxkL7J/mVsvduBYWl8zn/kmx5EA15+RCTWV/tXymqwx7kcwxLun4QiGKB
+         YdlTRwCgbSF830l212LjD6oMNQbVV122NRJs87ZDd2XNj7lG0++9VKTvwfcKn3ZGDol9
+         WE+j00PKDOLQc8gRG+Oht+HnZrTay6IbCs9AYDrSYvC320NXyFwvPcIsAz9cK5CKsk+V
+         P0ZSnm0b+mB9f1dPlVc6iP58IIHcVJAZQNxO+ytnpjxZ3Lj9tLos6mw9jeV/zjkfXZVq
+         ecvA==
+X-Forwarded-Encrypted: i=1; AJvYcCWv23tBRNQJ+tlRdFt6fi5tsQtZlT3ai0Uv52Xex9seuVC6695D8aOVGd2dBh186dCOPAdzCeNUoYn7@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyum7QNjfipbHtVM0pCRVJhIdWyI0K3p2C7/icdhx+c5fvoPc4O
+	asMZZpPCAABDiMzGzwA27IMQXuGI/dmNSp2YwzCapbj2DnTPMX/I2psSDRM2c9tHKpOBRja0fn6
+	9suo=
+X-Gm-Gg: ASbGncurgN41T35tscOEfGvjAf13DGp68gPAGKBBG04iwzGunNhEOC6hIuBJDj1vJXp
+	UY1JfZ9U29fOP6woFddzl2pmDbPpnGZsw//JuLCfgvuov98YhqUSEQcv/DmpnEoyJPa9vtgQnfF
+	q2UbolDkMAdSDK+QHY3Vv5K6jfsowGIHPw+XL+RFkkyYLFvGStqFxM6YJDDrR440n9qHIbARct3
+	zDKvmQ9XSioX/tEdNFybut16MtIjrc/VlEnF+rgpBLPPZQ9tXrxkvh6MGEm8/eVnEcjn3Ata4Pk
+	0D7Mp8hA7ZH2ypFq5blwa0EY3EkNfYoP3Izefzw11nv4/7jb2Q3ojmWinTbu11mbcqnd9kYdNVK
+	PYbXof7pief/2dQONnpP55QeBMA==
+X-Google-Smtp-Source: AGHT+IEvgz1cEZ0VvMTL+VMA7UwlRg+Q+mqEfC/1nc5mGlgKUS1U94E6+1hpwJjUIbkPK7IwIx/r0w==
+X-Received: by 2002:a05:6402:448e:b0:5f3:7f32:3b04 with SMTP id 4fb4d7f45d1cf-5f37f32430fmr4961443a12.29.1744489376683;
+        Sat, 12 Apr 2025 13:22:56 -0700 (PDT)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f36f5056b9sm2545833a12.51.2025.04.12.13.22.55
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Apr 2025 13:22:55 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5e66407963fso5630713a12.2
+        for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 13:22:55 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUHe7xw7n2KmgftW88259fRX+pQb8IRP4EZbZoA+XoPJytwy8oaYDrcquSHHaS1rh5x7ZzpxnKfKt/t@vger.kernel.org
+X-Received: by 2002:a17:907:f1e0:b0:aca:e220:8ebc with SMTP id
+ a640c23a62f3a-acae22090efmr370708266b.25.1744489375035; Sat, 12 Apr 2025
+ 13:22:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -79,97 +88,72 @@ References: <CAHk-=whJgRDtxTudTQ9HV8BFw5-bBsu+c8Ouwd_PrPqPB6_KEQ@mail.gmail.com>
  <CAHk-=wiKyMzE26G7KMa_D1KXa6hCPu5+3ZEPUN0zB613kc5g4Q@mail.gmail.com>
  <CAHk-=wiB6vJNexDzBhc3xEwPTJ8oYURvcRLsRKDNNDeFTSTORg@mail.gmail.com>
  <CAHk-=whSzc75TLLPWskV0xuaHR4tpWBr=LduqhcCFr4kCmme_w@mail.gmail.com>
- <a7gys7zvegqwj2box4cs56bvvgb5ft3o3kn4e7iz43hojd4c6g@d3hihtreqdoy> <CAHk-=wgEvF3_+sa5BOuYG2J_hXv72iOiQ8kpmSzCpegUhqg4Zg@mail.gmail.com>
-In-Reply-To: <CAHk-=wgEvF3_+sa5BOuYG2J_hXv72iOiQ8kpmSzCpegUhqg4Zg@mail.gmail.com>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Sat, 12 Apr 2025 18:26:09 +0200
-X-Gm-Features: ATxdqUH8rE9aqiS888HvXSF1A7JDSnPNjYFrY_Qx5nI-OCGKG1BW9PA6KLrusEQ
-Message-ID: <CAGudoHGxr5gYb0JqPqF_J0MoSAb_qqoF4gaJMEdOhp51yobbLw@mail.gmail.com>
+ <a7gys7zvegqwj2box4cs56bvvgb5ft3o3kn4e7iz43hojd4c6g@d3hihtreqdoy>
+ <CAHk-=wgEvF3_+sa5BOuYG2J_hXv72iOiQ8kpmSzCpegUhqg4Zg@mail.gmail.com> <CAGudoHGxr5gYb0JqPqF_J0MoSAb_qqoF4gaJMEdOhp51yobbLw@mail.gmail.com>
+In-Reply-To: <CAGudoHGxr5gYb0JqPqF_J0MoSAb_qqoF4gaJMEdOhp51yobbLw@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 12 Apr 2025 13:22:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh+pk72FM+a7PoW2s46aU9OQZrY-oApMZSUH0Urg9bsMA@mail.gmail.com>
+X-Gm-Features: ATxdqUFGJ-r2ok5MOh_Re055tlx2zhUC_4ZHvO5jGJV_FifGa7Yruu_r-HNtF4w
+Message-ID: <CAHk-=wh+pk72FM+a7PoW2s46aU9OQZrY-oApMZSUH0Urg9bsMA@mail.gmail.com>
 Subject: Re: generic_permission() optimization
-To: Linus Torvalds <torvalds@linux-foundation.org>
+To: Mateusz Guzik <mjguzik@gmail.com>
 Cc: Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
 	linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, 
 	Ext4 Developers List <linux-ext4@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 7, 2024 at 11:49=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Sat, 12 Apr 2025 at 09:26, Mateusz Guzik <mjguzik@gmail.com> wrote:
 >
-> On Thu, 7 Nov 2024 at 12:22, Mateusz Guzik <mjguzik@gmail.com> wrote:
-> >
-> > How about filesystems maintaing a flag: IOP_EVERYONECANTRAREVERSE?
->
-> It's actually just easier if a filesystem just does
->
->         cache_no_acl(inode);
->
-> in its read-inode function if it knows it has no ACL's.
->
-> Some filesystems already do that, eg btrfs has
->
->         /*
->          * try to precache a NULL acl entry for files that don't have
->          * any xattrs or acls
->          */
->         ....
->         if (!maybe_acls)
->                 cache_no_acl(inode);
->
-> in btrfs_read_locked_inode(). If that 'maybe' is just reliable enough,
-> that's all it takes.
->
-> I tried to do the same thing for ext4, and failed miserably, but
-> that's probably because my logic for "maybe_acls" was broken since I'm
-> not familiar enough with ext4 at that level, and I made it do just
->
->         /* Initialize the "no ACL's" state for the simple cases */
->         if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_fil=
-e_acl)
->                 cache_no_acl(inode);
->
-> which doesn't seem to be a strong enough text.
->
+> I plopped your snippet towards the end of __ext4_iget:
 
-[ roping in ext4 people ]
+That's literally where I did the same thing, except I put it right after the
 
-I plopped your snippet towards the end of __ext4_iget:
+          brelse(iloc.bh);
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 4008551bbb2d..34189d85e363 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5071,7 +5071,12 @@ struct inode *__ext4_iget(struct super_block
-*sb, unsigned long ino,
-                goto bad_inode;
-        }
+line, rather than before as you did.
 
-+       /* Initialize the "no ACL's" state for the simple cases */
-+       if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_file_=
-acl)
-+               cache_no_acl(inode);
-+
-        brelse(iloc.bh);
+And it made no difference for me, but I didn't try to figure out why.
+Maybe some environment differences? Or maybe I just screwed up my
+testing...
 
-bpftrace over a kernel build shows almost everything is sorted out:
- bpftrace -e 'kprobe:security_inode_permission { @[((struct inode
-*)arg0)->i_acl] =3D count(); }'
+As mentioned earlier in the thread, I had this bi-modal distribution
+of results, because if I had a load where the *non*-owner of the inode
+looked up the pathnames, then the ACL information would get filled in
+when the VFS layer would do the lookup, and then once the ACLs were
+cached, everything worked beautifully.
 
-@[0xffffffffffffffff]: 23810
-@[0x0]: 65984202
+But if the only lookups of a path were done by the owner of the inodes
+(which is typical for at least my normal kernel build tree - nothing
+but my build will look at the files, and they are obviously always
+owned by me) then the ACL caches will never be filled because there
+will never be any real ACL lookups.
 
-That's just shy of 66 mln calls where the acls were explicitly set to
-empty, compared to less than 24k where it was the default "uncached"
-state.
+And then rather than doing the nice efficient "no ACLs anywhere, no
+need to even look", it ends up having to actually do the vfsuid
+comparison for the UID equality check.
 
-So indeed *something* is missed, but the patch does cover almost everything=
-.
+Which then does the extra accesses to look up the idmap etc, and is
+visible in the profiles due to that whole dance:
 
-Perhaps the ext4 guys would chime in and see it through? :)
+        /* Are we the owner? If so, ACL's don't matter */
+        vfsuid = i_uid_into_vfsuid(idmap, inode);
+        if (likely(vfsuid_eq_kuid(vfsuid, current_fsuid()))) {
 
-The context is speeding path lookup by avoiding some of the branches
-during permission checking.
+even when idmap is 'nop_mnt_idmap' and it is reasonably cheap. Just
+because it ends up calling out to different functions and does extra
+D$ accesses to the inode and the suberblock (ie i_user_ns() is this
 
---=20
-Mateusz Guzik <mjguzik gmail.com>
+        return inode->i_sb->s_user_ns;
+
+so just to *see* that it's nop_mnt_idmap takes effort.
+
+One improvement might be to cache that 'nop_mnt_idmap' thing in the
+inode as a flag.
+
+But it would be even better if the filesystem just initializes the
+inode at inode read time to say "I have no ACL's for this inode" and
+none of this code will even trigger.
+
+                  Linus
 
