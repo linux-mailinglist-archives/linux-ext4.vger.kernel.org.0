@@ -1,93 +1,175 @@
-Return-Path: <linux-ext4+bounces-7213-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7214-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B3A8A86D91
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 16:12:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6742EA86E22
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 18:26:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0BC77B3AC7
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 14:11:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42B7619E3CE9
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 16:26:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65CDD1E835C;
-	Sat, 12 Apr 2025 14:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0866E1FECBD;
+	Sat, 12 Apr 2025 16:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jHx8h9Ce"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF4EA1DFED
-	for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 14:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4011F8691;
+	Sat, 12 Apr 2025 16:26:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744467126; cv=none; b=PV3J+rAvoj7OOShDz393/xZ/Jmnb3Uus02by4mJZe603nK3lIM8y2YYXMLOuoMTQOv/xX+ZAguT7JdWv/11v6tCM7VTqmkyqx/P5ZOf2YjjrP+Da7rPJZS91UMyonMChCwnksKZf/71xyGnleY/xY1rjR81AKekIm+exm+cM6e0=
+	t=1744475185; cv=none; b=j8nOFsnOjOqnkvu7k4xdsR5/2Hdkw214vTV2qimqTFD0UlYT9aIznEiMIK1zT7PTBrgKPFD9cgRdqUKaEbRlZUyNenstUwrRQ5XbFzW7jWjY9vcM9WEiOAbgQBcJH2s0E1D38Ggi3MiUL+B31aKBl2e+3uH6Yv/ShO7KwTqGwoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744467126; c=relaxed/simple;
-	bh=SW9baJwU90rv2J08hxwWTXYAPDJHnlNUogyQNt3kCn0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=jTR58mHC+gvTXDPhQif1D9uH8E8LbgXCEIhCpNpiRIsRdCQbQnmBklAEGx9MEZSHwZb7efticedrv4joHULS4rF3IWCyPw1H1EWrRqJne3nvLRJq/mouws+f+xaqAAqS45DaNyDEsCAXzJm7IZI8ds30Z8InVDwByGEUTofmRB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3d5da4fd944so19077035ab.2
-        for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 07:12:04 -0700 (PDT)
+	s=arc-20240116; t=1744475185; c=relaxed/simple;
+	bh=TgOepuTRab8lxv8vZ5W6tjHvakxfbUJ6Z3G1oGXFK8U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nfqrRttpkDnyhp+ttdJCNAvmXTrLxi694Y5Yrmp9moYOIVXUMtB0NvGP2nYe90murSw8I5/rdIdmphG57XogYRJC5QQDXXE9A/49Ni2F5ShrEnJqmEq+i9YvBJUDfLDd/hP72C+4lb6rSOL78BmZHxZ5wuUfOvj/fYsmf2GuVdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jHx8h9Ce; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5e686d39ba2so5406337a12.2;
+        Sat, 12 Apr 2025 09:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744475182; x=1745079982; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=szkj8CDkf0ug43a6Nf+d4w7o4nOixURK7uDCQKDdfkA=;
+        b=jHx8h9CegjyNq0fJ/Dasiv6cC3nB4Biz+ZlhocTjLZVhQlz8U9/iQJNhGungEgzq82
+         XJGhMFxjvF4f9IkaVZTnQz5KPId+LK6W8igCTKsr4rM4VAhv1Bay6srnXz5b/u/zLGKj
+         G/qe/P98ZjWrlqImvgeR5cfSyUVmtpHZosNfuw1Pp1DNxlnJVbaNjKXWIEHsSf//a9cS
+         wBZsD7uuE+854mKe2viiJJtslADWuW6uDWKKKWg1ngrkNbCmEstCBxLlCVJ/Pf5Y50u7
+         NSzbEoHtm0JOQyyUmkMji+BB57fsdAjWuW8DjTilnIlxo9AI5XyTrgWZ/+Uz4OnwruNs
+         /qlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744467124; x=1745071924;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vVtPfFRZtMU+7c6m3Lu81ACxShZ6xV2tolYQ458rPJE=;
-        b=ZfMzuo7V4zkOKpez9mMVZOtrPVkGnhV3/kkrz5hFS1fdAquU21X/koeLKsrD+5chbj
-         HochBP2fMdmMbXnmOJC+mcP94/wTqYkBD2IpJ8AvcZ/nGQO2Yv6IJQm0l8K7DLajEZ4y
-         eYdZr2pFytf0CSSNL1Vl1V4vGgKrv7dILHT7FDYfbyW3ZFBHI92gnZhQjJJtI+d+Ktki
-         K2SZJySVkYk3092XPHgBCn0xGdprIypEugUIg7P5u+m8velCr5hhxgNW2xcfqA/G/lZ0
-         sttfvtJt6OM2TRHFAgcsaORNQIcoIN+0iS7bSxmBcrFBkum1m8Uln15Svs9MjJXM+SjJ
-         Fw8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVctpUMF744IvNb+B/p4fqrgfP1O/OuQefRRStIH+Nt0cEYp6tMKT9D16Q9fFooHPg7jRtMKbpHEAp5@vger.kernel.org
-X-Gm-Message-State: AOJu0YxuiX/IYHLaoCWiVtkEow09SU4BLVXGbvQwPnJElcpElm13FRsJ
-	kj5MEpw081UVqaU/rjm/O6qKtA9w48vEljKktBbkf4ZJojSZXM8VhhQODX6zz7nGiKNLUAq8kHL
-	kjseQ34GLYkLEVDAChukIj6eqifgjOhqMS7HsFbrHzHldoe5Det5/EBU=
-X-Google-Smtp-Source: AGHT+IG7VQEkjMn9Fh81REVLoIjtUnO2qusesDv6QWiP6EtGelZywJ0/A6uJ9MaxHB1wgUUFcIRhP/tzWHTQpVud7sauboNK6hLB
+        d=1e100.net; s=20230601; t=1744475182; x=1745079982;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=szkj8CDkf0ug43a6Nf+d4w7o4nOixURK7uDCQKDdfkA=;
+        b=H/KxRsfvIYinE15QwjORtuAAGGWHU+Sd2NVyjnxdf5LTOB6/29z6k2VNQbHPmxX8AL
+         d+UNzXPlPGRTHWGiefA/9i3tT4rCwaRT/v3dea2bGJILccnLTXTsb42bZOvk52jecKaC
+         NI0x0LoWprb5Y/5ebfbOlGdmxGy5uxsmPuQUu9PcJqjKXNaCmDnUI6AUUQ5Si2CJ2yMH
+         P+1L6koIvjts2hUm2WoSDziOd742vVuKKmZ6RFN0+qN9VQnYZ/ZwK2kVnkl5Xf6zgWjX
+         VpFbrChnNNXsXvo2ufx7iJ9zWa4+yIxv00VykF9oeMB3MMqzPHU97xDlYqlv13iA0Jwd
+         oY8A==
+X-Forwarded-Encrypted: i=1; AJvYcCV55oTaUmWMT9B7hROWdUu+Qu37IFUbRAcOSSOmcbrawxGaOr4ZOd1v6q9h0BzPvNGbVxexAtxQZE0NkdddJw==@vger.kernel.org, AJvYcCViGCcidNCu4p8OBzrPZYZZ9dEH5lVJRT0N8jWEKiDr8jf2kHQg3Jn/gSNnQcsz9cartu5b24zvZaFb@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNBAxn/2PWyolvnAd8Ub/Hu9kClZFKcSkpKTifLVRz0iIV3+Ii
+	wdgsQt6nbHLyDpiMLP3m0Bk910UAsJFKDJYgWMpY1pPLblOP3DJ5gqV1dQBLUdLB8qXa5M/tEVS
+	MXijEjYWTPgZUS9MvEuEmLKIx/RU=
+X-Gm-Gg: ASbGncuxZfQQm6xF0AGnhR9ml5NJsu13nK5pSu6lYKnIMhuVd8P28IhLUqjjlPpG4F4
+	LqwzkPcAak5BZCAYt6fgmf26frIMU1UKeBJQ348Ljvflda6nEb/nvIFlITn/aZE8Eu7vKbMeQy9
+	FaYOrXRdNNXQATBS/Y2wjA
+X-Google-Smtp-Source: AGHT+IHp7OMLw6VbFGxBeYonrEdt5mPvROXjfDcy3Y9ZMwE7aT835X+3Gzyjbt+ICCHpIr6C54iZq2fon49//DxyCgs=
+X-Received: by 2002:a17:906:6a27:b0:ac8:1bb3:35b0 with SMTP id
+ a640c23a62f3a-acad34a184dmr555126166b.20.1744475181825; Sat, 12 Apr 2025
+ 09:26:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:338f:b0:3d4:3fbf:966e with SMTP id
- e9e14a558f8ab-3d7ec265c39mr67322365ab.14.1744467123757; Sat, 12 Apr 2025
- 07:12:03 -0700 (PDT)
-Date: Sat, 12 Apr 2025 07:12:03 -0700
-In-Reply-To: <6702c4bb.050a0220.49194.04d9.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67fa74b3.050a0220.379d84.000e.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] KASAN: use-after-free Read in
- __ext4_check_dir_entry (3)
-From: syzbot <syzbot+09921540dd04aba82a35@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, jack@suse.cz, libaokun1@huawei.com, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu, yi.zhang@huawei.com
+References: <CAHk-=whJgRDtxTudTQ9HV8BFw5-bBsu+c8Ouwd_PrPqPB6_KEQ@mail.gmail.com>
+ <20241031-klaglos-geldmangel-c0e7775d42a7@brauner> <CAHk-=wjwNkQXLvAM_CKn2YwrCk8m4ScuuhDv2Jzr7YPmB8BOEA@mail.gmail.com>
+ <CAHk-=wiKyMzE26G7KMa_D1KXa6hCPu5+3ZEPUN0zB613kc5g4Q@mail.gmail.com>
+ <CAHk-=wiB6vJNexDzBhc3xEwPTJ8oYURvcRLsRKDNNDeFTSTORg@mail.gmail.com>
+ <CAHk-=whSzc75TLLPWskV0xuaHR4tpWBr=LduqhcCFr4kCmme_w@mail.gmail.com>
+ <a7gys7zvegqwj2box4cs56bvvgb5ft3o3kn4e7iz43hojd4c6g@d3hihtreqdoy> <CAHk-=wgEvF3_+sa5BOuYG2J_hXv72iOiQ8kpmSzCpegUhqg4Zg@mail.gmail.com>
+In-Reply-To: <CAHk-=wgEvF3_+sa5BOuYG2J_hXv72iOiQ8kpmSzCpegUhqg4Zg@mail.gmail.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Sat, 12 Apr 2025 18:26:09 +0200
+X-Gm-Features: ATxdqUH8rE9aqiS888HvXSF1A7JDSnPNjYFrY_Qx5nI-OCGKG1BW9PA6KLrusEQ
+Message-ID: <CAGudoHGxr5gYb0JqPqF_J0MoSAb_qqoF4gaJMEdOhp51yobbLw@mail.gmail.com>
+Subject: Re: generic_permission() optimization
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, 
+	Ext4 Developers List <linux-ext4@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot suspects this issue was fixed by commit:
+On Thu, Nov 7, 2024 at 11:49=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, 7 Nov 2024 at 12:22, Mateusz Guzik <mjguzik@gmail.com> wrote:
+> >
+> > How about filesystems maintaing a flag: IOP_EVERYONECANTRAREVERSE?
+>
+> It's actually just easier if a filesystem just does
+>
+>         cache_no_acl(inode);
+>
+> in its read-inode function if it knows it has no ACL's.
+>
+> Some filesystems already do that, eg btrfs has
+>
+>         /*
+>          * try to precache a NULL acl entry for files that don't have
+>          * any xattrs or acls
+>          */
+>         ....
+>         if (!maybe_acls)
+>                 cache_no_acl(inode);
+>
+> in btrfs_read_locked_inode(). If that 'maybe' is just reliable enough,
+> that's all it takes.
+>
+> I tried to do the same thing for ext4, and failed miserably, but
+> that's probably because my logic for "maybe_acls" was broken since I'm
+> not familiar enough with ext4 at that level, and I made it do just
+>
+>         /* Initialize the "no ACL's" state for the simple cases */
+>         if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_fil=
+e_acl)
+>                 cache_no_acl(inode);
+>
+> which doesn't seem to be a strong enough text.
+>
 
-commit 26343ca0df715097065b02a6cddb4a029d5b9327
-Author: Baokun Li <libaokun1@huawei.com>
-Date:   Wed Jan 22 11:05:27 2025 +0000
+[ roping in ext4 people ]
 
-    ext4: reject the 'data_err=abort' option in nojournal mode
+I plopped your snippet towards the end of __ext4_iget:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15734870580000
-start commit:   e32cde8d2bd7 Merge tag 'sched_ext-for-6.12-rc1-fixes-1' of..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1f009dd80b3799c2
-dashboard link: https://syzkaller.appspot.com/bug?extid=09921540dd04aba82a35
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102f23d0580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1082e580580000
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 4008551bbb2d..34189d85e363 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5071,7 +5071,12 @@ struct inode *__ext4_iget(struct super_block
+*sb, unsigned long ino,
+                goto bad_inode;
+        }
 
-If the result looks correct, please mark the issue as fixed by replying with:
++       /* Initialize the "no ACL's" state for the simple cases */
++       if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_file_=
+acl)
++               cache_no_acl(inode);
++
+        brelse(iloc.bh);
 
-#syz fix: ext4: reject the 'data_err=abort' option in nojournal mode
+bpftrace over a kernel build shows almost everything is sorted out:
+ bpftrace -e 'kprobe:security_inode_permission { @[((struct inode
+*)arg0)->i_acl] =3D count(); }'
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+@[0xffffffffffffffff]: 23810
+@[0x0]: 65984202
+
+That's just shy of 66 mln calls where the acls were explicitly set to
+empty, compared to less than 24k where it was the default "uncached"
+state.
+
+So indeed *something* is missed, but the patch does cover almost everything=
+.
+
+Perhaps the ext4 guys would chime in and see it through? :)
+
+The context is speeding path lookup by avoiding some of the branches
+during permission checking.
+
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
