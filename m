@@ -1,140 +1,130 @@
-Return-Path: <linux-ext4+bounces-7219-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7220-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F21FA87045
-	for <lists+linux-ext4@lfdr.de>; Sun, 13 Apr 2025 01:55:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60F68A870CC
+	for <lists+linux-ext4@lfdr.de>; Sun, 13 Apr 2025 06:58:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 570ED17BA72
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Apr 2025 23:55:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7031A3BDD12
+	for <lists+linux-ext4@lfdr.de>; Sun, 13 Apr 2025 04:57:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFB11B3F3D;
-	Sat, 12 Apr 2025 23:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0270374059;
+	Sun, 13 Apr 2025 04:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="glh+/bGK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD0B17A586
-	for <linux-ext4@vger.kernel.org>; Sat, 12 Apr 2025 23:55:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41283145B25;
+	Sun, 13 Apr 2025 04:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744502150; cv=none; b=scl5N7vKgRPhwUNKnirZUfmGBkVGxo5WT/r7ksF6NRODWWszimylp8r6xMHxZkJGMG64zdet/EXGKFTBH77DRNZ+fhsvoFcoAk6Fa5wytcRff/qLTuWDijmKF7i/oBGnNFvNmkFr6CE4V/aJoalmtNTqUu2jEYhMRT7Sf3hvpuY=
+	t=1744520257; cv=none; b=WaGxnxCnVCmAWhw+btaeDowKMRnI0DDMGR2nsNTTXJW/wQb9uPhzA9EtsH+U0nkhtGy2tmE//PeLFvDVGaPsrdlMsoP75HYNqZukde//T8w5T3edsv1bLs3n1iUbRO6H7NF5ptmyw9lDFD/xnelJTZURAzAODTLYCb+FwCKT4bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744502150; c=relaxed/simple;
-	bh=abXuAYgvwr1Ws5Hl6ZuttWEMtuZQf666Ofjlrrpz3Ak=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rMBcfCKqAz8HtXAOD11zpYVGCuHoPpfIngNlASbK04T9xi+GKV/rUqQHPRpW8yq2Kt89mVIb/iJ8cCzqNRFMghkmz7TLR5+5fkwkHiJbrQnr+Sws9UTI9hljTombxliCWRHpK+osWw8LkbPaT2URVN8UUJw9XYfzc+0AoFSuxyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-137.bstnma.fios.verizon.net [173.48.82.137])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 53CNtZA6010237
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 12 Apr 2025 19:55:36 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 74D772E00E9; Sat, 12 Apr 2025 19:55:35 -0400 (EDT)
-Date: Sat, 12 Apr 2025 19:55:35 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Mateusz Guzik <mjguzik@gmail.com>, Christian Brauner <brauner@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: generic_permission() optimization
-Message-ID: <20250412235535.GH13132@mit.edu>
-References: <20241031-klaglos-geldmangel-c0e7775d42a7@brauner>
- <CAHk-=wjwNkQXLvAM_CKn2YwrCk8m4ScuuhDv2Jzr7YPmB8BOEA@mail.gmail.com>
- <CAHk-=wiKyMzE26G7KMa_D1KXa6hCPu5+3ZEPUN0zB613kc5g4Q@mail.gmail.com>
- <CAHk-=wiB6vJNexDzBhc3xEwPTJ8oYURvcRLsRKDNNDeFTSTORg@mail.gmail.com>
- <CAHk-=whSzc75TLLPWskV0xuaHR4tpWBr=LduqhcCFr4kCmme_w@mail.gmail.com>
- <a7gys7zvegqwj2box4cs56bvvgb5ft3o3kn4e7iz43hojd4c6g@d3hihtreqdoy>
- <CAHk-=wgEvF3_+sa5BOuYG2J_hXv72iOiQ8kpmSzCpegUhqg4Zg@mail.gmail.com>
- <CAGudoHGxr5gYb0JqPqF_J0MoSAb_qqoF4gaJMEdOhp51yobbLw@mail.gmail.com>
- <20250412215257.GF13132@mit.edu>
- <CAHk-=wifig365Ej8JQrXBzK1_BzU9H9kqvvbBGuboF7CzR28VQ@mail.gmail.com>
+	s=arc-20240116; t=1744520257; c=relaxed/simple;
+	bh=V+OdSpChXxFdeuDfkZFCWnwFgJIm7CgcfzpC8IzAVwA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=knAAgTx0XUC68CklQw9hKMxVLTyJ1Z38D6L3t8w89BRWC9MXtyGu9m/mCb01lXT8irS/CenHfGc0EcYXge8WLHJbqRBtaCBH2Uiu4QyCyLoBe9uChhyaidTDbDFzslBt8LWjwnqc2b8AyUY7k+ve7GpBubdmJor4N6PlbG62hV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=glh+/bGK; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-739b3fe7ce8so2944853b3a.0;
+        Sat, 12 Apr 2025 21:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744520255; x=1745125055; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7qDXC5q4ASpK/ILgh5KtIP/kBQ8UqX67C9eLZIduHV4=;
+        b=glh+/bGKKBjjPPpqTsI8jbVnksM09m96eCs+TaR9UO5l3zf9O7Nfx1eDmXl5k8t3sO
+         db9eqNla9k2FQcHbd+shDJ3EJASX3dV33QYC/6gSX2otCXutxff1tM0++T2cwPg4VXae
+         zok0Q5BarZrFuEPHtpg+B/t22zcpExxTA5PZ2xIPCgPWjiISPSSSZAJ4+ItGQTzbSfq2
+         52gjd2mUISfKJf6MZPjGwFmAxQ1m3gQRaDGsm+GvBdqxhkp7MfZ1wXFxb/PAmGkNB1Z2
+         FLRef2ZeEBvKGWLGtvRCVCfX07Zo6rlF2JHZrNTJ1NPsN7WtYw0sfNKO/t9lJovRWfOX
+         KA+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744520255; x=1745125055;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7qDXC5q4ASpK/ILgh5KtIP/kBQ8UqX67C9eLZIduHV4=;
+        b=eWsEYWgcDyYRZuVLp6AUGTJIVHKtfyUVKeCr8Jj4pw/eVE5CNlXDIn7xTFyLvNqfuQ
+         VZJ/jl5K35qbc2b08l0QlfPHdAw+GcxmkXyune161FhAgnYjp3p/caBi2hqcSpktUdjo
+         5fHABiz0Bsp9OSBMYZvfpGh3F8YqO7frZiPP+QJM2Ehf+v0rZ5BRcRe7zZwOmk3ECQ6y
+         va5jgGCracN4yfQdUoNT2CX/kvWSVJHcW9rpDLUCbwmlS0GIDMD5GrnuaeWg3r0EA35H
+         7dcQih9CHO+5Bgj8xdw95IIl/cadBBm36VF8f8D5UqC40QhjC7D8E9Q2TYe6fZgbfXbG
+         N3Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2qU0tjMq3WXg8KZSJkUJnMsICWoFP/E9fp3sJDf+StfW4QPXqZLyGlL7G89AFx8jPP8Kf5KqpDrbKHgjF@vger.kernel.org, AJvYcCXMRnQKfIGIenJXTsYVAEnXt4r8tD4yQHvVGmnsNNypsAEtKYs9kdFSog7YZCZ7UyDOaos+mX+x4HmU@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOPieQwPf1HMKC3yozxG33SUNx4x1xz/sxg1t0PvX/FCE8DUAp
+	FGbV9UJkptoG+dfBvtyyJrGMWhEDEULu4M/rxD2ZZbvgdxciBRpz
+X-Gm-Gg: ASbGncvAijt3jqlXlE5Hf/X53f6xxdM2LmudEUoyOJ3zXBdsfKdL9RXr7Gypitdruc8
+	rgyPBC03chSJju9aBU9waIbxgWoo+khJRB36VfNJ2ZikbwllaDdScohK0gcXGaOYdYVlTHTzF6L
+	MmMS39qpxMqO9FI8NxL5xHsn3xZJvysowXe8p2zn0d7jSTRPLkKG34DNWt6h/Uq2+ZMPgDmFK5p
+	LA63cuiGhUo6C1KovVHR23uYdyFgccnbJjz16/wqwPJAsruH4F8U6GUTr8ANnk5NH7UOMM7AEOe
+	CqtWtUrim8hud/MuLjLL8BIJXA7yL/Vtn/fsZ8p/nzlU8QPaS+kEsCBV/CE=
+X-Google-Smtp-Source: AGHT+IEC6KkIXJw/IeQCpPR3Yo19Wxe/bJ42Xl6Fl2ZoGtxsioyf3pkIYy/+4uaSBqS1TLeXOVkr7Q==
+X-Received: by 2002:a05:6a00:22cd:b0:736:a8db:93bb with SMTP id d2e1a72fcca58-73bd119ea62mr10936177b3a.5.1744520255132;
+        Sat, 12 Apr 2025 21:57:35 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c408:a0b5:6154:df3d:5cdc:6ad])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd230e305sm4451350b3a.140.2025.04.12.21.57.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Apr 2025 21:57:34 -0700 (PDT)
+From: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: kevinpaul468@gmail.com,
+	skhan@linuxfoundation.org
+Subject: [PATCH] ext4: filesystems without casefold feature cannot be mounted 
+Date: Sun, 13 Apr 2025 10:27:18 +0530
+Message-Id: <20250413045718.150126-1-kevinpaul468@gmail.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wifig365Ej8JQrXBzK1_BzU9H9kqvvbBGuboF7CzR28VQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 12, 2025 at 03:36:00PM -0700, Linus Torvalds wrote:
-> Indeed. I sent a query to the ext4 list (and I think you) about
-> whether my test was even the right one.
+commit 985b67cd8639 ("ext4: filesystems without casefold feature cannot be
+mounted with siphash") upstream
 
-Sorry, I must have not seen that message; at least, I don't have any
-memory of it.
+CONFLICT: A condition above this was wrapped in #ifdef making git not
+able to merge them: Merge conflict
 
-> Also, while I did a "getfattr -dR" to see if there are any *existing*
-> attributes (and couldn't find any), I also assume that if a file has
-> ever *had* any attributes, the filesystem may have the attribute block
-> allocated even if it's now empty.
+When mounting the ext4 filesystem, if the default hash version is set to
+DX_HASH_SIPHASH but the casefold feature is not set, exit the mounting.
 
-Well, getfattr will only show user xattrs.  It won't show security.*
-xattr's that might have been set by SELinux, or a
-system.posix_acl_access xattr.
+compile tested
+Signed-off-by: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
+---
+ fs/ext4/super.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> I assume there's some trivial e2fstools thing to show things like
-> that, but it needs more ext4 specific knowledge than I have.
-
-Yes, we can test for this using the debugfs command.  For exaple:
-
-root@kvm-xfstests:~# debugfs /dev/vdc
-debugfs 1.47.2-rc1 (28-Nov-2024)
-debugfs:  stat <13>
-Inode: 13   Type: regular    Mode:  0644   Flags: 0x80000
-Generation: 1672288850    Version: 0x00000000:00000003
-User:     0   Group:     0   Project:     0   Size: 286
-File ACL: 0
-Links: 1   Blockcount: 8
-Fragment:  Address: 0    Number: 0    Size: 0
- ctime: 0x67faf5d0:30d0b2e4 -- Sat Apr 12 19:22:56 2025
- atime: 0x67faf571:7064bd50 -- Sat Apr 12 19:21:21 2025
- mtime: 0x67faf571:71236aa8 -- Sat Apr 12 19:21:21 2025
-crtime: 0x67faf571:7064bd50 -- Sat Apr 12 19:21:21 2025
-Size of extra inode fields: 32
-Extended attributes:
-  system.posix_acl_access (28) = 01 00 00 00 01 00 06 00 02 00 04 00 b7 7a 00 00 04 00 04 00 10 00 04 00 20 00 04 00 
-Inode checksum: 0xc8f7f1a7
-EXTENTS:
-(0):33792
-
-(If you know the pathname instead of the inode number, you can also
-give that to debugfs's stat command, e.g., "stat /lost+found")
-
-I tested it with a simple variant of your patch, and seems to do the right
-thing.  Mateusz, if you want, try the following patch, and then mount
-your test file system with "mount -o debug".  (The test_opt is to
-avoid a huge amount of noise on your root file system; you can skip it
-if it's more trouble than it's worth.)  The patch has a reversed
-seense of the test, so it will print a message for every one where
-cache_no_acl *wouldn't* be called.  You casn then use debugfs's "stat
-<ino#>" to verify whether it has some kind of extended attribute.
-
-	   	  	     	      - Ted
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index f386de8c12f6..3e0ba7c4723a 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5109,6 +5109,11 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 		goto bad_inode;
- 	brelse(iloc.bh);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 541cfd118fbc..9bf073bec190 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3192,6 +3192,15 @@ int ext4_feature_set_ok(struct super_block *sb, int readonly)
+ 	}
+ #endif
  
-+	if (test_opt(sb, DEBUG) &&
-+	    (ext4_test_inode_state(inode, EXT4_STATE_XATTR) ||
-+	     ei->i_file_acl))
-+		ext4_msg(sb, KERN_DEBUG, "has xattr ino %lu", inode->i_ino);
++	if (EXT4_SB(sb)->s_es->s_def_hash_version == DX_HASH_SIPHASH &&
++			!ext4_has_feature_casefold(sb)) {
++		ext4_msg(sb, KERN_ERR,
++				"Filesystem without casefold feature cannot be "
++				"mounted with siphash");
++		return 0;
++	}
 +
- 	unlock_new_inode(inode);
- 	return inode;
++
+ 	if (readonly)
+ 		return 1;
  
+-- 
+2.39.5
+
 
