@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-7236-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7237-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A7CA8837D
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Apr 2025 15:59:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17895A883AC
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Apr 2025 16:04:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91AE01886504
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Apr 2025 13:55:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D363163F46
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Apr 2025 13:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 217412D191C;
-	Mon, 14 Apr 2025 13:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE46A2D9970;
+	Mon, 14 Apr 2025 13:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UHrfuLGo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cRhdlKO1"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EEF72D190E;
-	Mon, 14 Apr 2025 13:30:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FAC82D86A1;
+	Mon, 14 Apr 2025 13:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744637447; cv=none; b=f7cXUazjNRWyIeeqZjCtGfMW/pa/1SzS24sHWNjBntw/Lee1Zgiir7EwOWgxCaXZeSMSmsTuwUV+OWBRBCDNaFPrssrns494p5mSaf0WBJPZ+SX3pA4VlHh4dEbo6wloGBZRaP2PjImhPL/MnFVULDUYVf98yl8MJfioy9lHohA=
+	t=1744637485; cv=none; b=tGIr6MFcRrQJXzpxF+U+TsPHDiMQPb0UvdcmbfRgVo1UjqHr/e4XGBFLIg2yyDe/STLXZ939bbRyhh+5lk2ebV1YLZzeLnPSx/9zqqOKSFsu5GOWuH9HtdkbwTSuldTzR6zF+OzmMwtKS2lcHxR1Y0I0coPwShZXMUPVgYMnQ5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744637447; c=relaxed/simple;
-	bh=59CHl/3Rr3MZ05Cu4IVJhV3eZOc20kXIXu6v/3LDkpM=;
+	s=arc-20240116; t=1744637485; c=relaxed/simple;
+	bh=ggw6y9wYyDusOcB2I7FoItKfXhK3nWxH/+sm5StJD1k=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eMkAh1jwUNiDzvyl5MU5QtRUxV+bu1e8UkW6FdbNngk3N6mCuSr2ZeNeJHQUhzY/6EI9dsNwUeZplS4hKrngkTjklnF644E7iKtWqUgjvTZRE9vL3wYEpq/NTJGPAgrzC/n7aE7CeSdtUPJuPTpbgC9j38CpbDVknoxAc/WGsOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UHrfuLGo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22972C4CEE9;
-	Mon, 14 Apr 2025 13:30:46 +0000 (UTC)
+	 MIME-Version; b=hWFzlTT1vcIZmsDG5rm1f5z/AGgTZBOMDlJiYCh9ubSt1O3BW0iIbjsoo6IEnLuoNS5OZX4JRYBPmzIwZN1LiENdBC/grBXyUOJzRYfKCJt3+iKRyIUcQg2aOLCKsfNSEOAYt8bYMU1kfJVowp/kcRJkwB0mSHXb4hu/DXuE/Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cRhdlKO1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E69DDC4CEEE;
+	Mon, 14 Apr 2025 13:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744637447;
-	bh=59CHl/3Rr3MZ05Cu4IVJhV3eZOc20kXIXu6v/3LDkpM=;
+	s=k20201202; t=1744637485;
+	bh=ggw6y9wYyDusOcB2I7FoItKfXhK3nWxH/+sm5StJD1k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UHrfuLGoEZ+1Por26X4AJBNm625DF0nvHwfsH9NEGiimi9IZXOkEa5uUJZUW9t5Aj
-	 wuBrnheW5KhWsyJHwTe7v0JlfNHZp+JLtWQBPqOJ3Q29S2cuMufn+T0CyQzTP05Dhk
-	 A2aIpHnzS3KeR4SQUSDVkD6DaxCSYuJZeswcDMAjndMUhLZom1DiEW7H0qgURs5Ukw
-	 /704g9dKFQQcIqCEmrtQOzDkJxoJu1AA59M+QIiIRfAtR6gmSB2xA8OcbZBVY7/XqJ
-	 bJ5fdSV80UIRpUWdSr1rfohkFAuJI0jwupLtAhRwpGgjTeyfp6Zl2NhkEWfg04JR4z
-	 mKYS1zFo++CoQ==
+	b=cRhdlKO13yUK88MSBFav2o/GyfAZMH3BhxNxSmwC4uIO4yWwB9PjkUNVs8qtWqLwC
+	 d82YkrTPub0SFyoBt6O9qBlVGyeqr/1auHSxB0NgXvv72oAQilNGKAS2iYFnBrd2yB
+	 KKmTYqeyfpB/b9iJhez6FlgF6ny0ReDJAtFwPeGWX7nuU23dFAD2p7vTgucOz2OBr0
+	 FOFecq9LYOhQxspvYq4OdmnQRYBAJE0xWzXhlzTY/WNCHh5loW/V6kokmBT3OPz0vH
+	 +7R5ZqEFqredm14St3onc1+Dx/mpRjgkYGBOTCQanamMbGhhdGCws6Ih2zhkdKaKs+
+	 NpN3G5FEgsjBw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,12 +52,12 @@ Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 24/24] ext4: make block validity check resistent to sb bh corruption
-Date: Mon, 14 Apr 2025 09:29:57 -0400
-Message-Id: <20250414132957.680250-24-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 17/17] ext4: make block validity check resistent to sb bh corruption
+Date: Mon, 14 Apr 2025 09:30:48 -0400
+Message-Id: <20250414133048.680608-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250414132957.680250-1-sashal@kernel.org>
-References: <20250414132957.680250-1-sashal@kernel.org>
+In-Reply-To: <20250414133048.680608-1-sashal@kernel.org>
+References: <20250414133048.680608-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.87
+X-stable-base: Linux 6.1.134
 Content-Transfer-Encoding: 8bit
 
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
@@ -121,10 +121,10 @@ index 6fe3c941b5651..4d6ba140276b5 100644
  
  	while (bref < p+max) {
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 19d7bcf16ebb8..731660bf2203e 100644
+index 694af768ac5b4..a99f25f629994 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -378,10 +378,11 @@ static int __check_block_validity(struct inode *inode, const char *func,
+@@ -406,10 +406,11 @@ static int __check_block_validity(struct inode *inode, const char *func,
  				unsigned int line,
  				struct ext4_map_blocks *map)
  {
