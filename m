@@ -1,309 +1,71 @@
-Return-Path: <linux-ext4+bounces-7288-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7289-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35E6BA8A4C3
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 18:58:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30B78A8A59F
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 19:34:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7C8F3BBFED
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 16:58:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB37E3BD09F
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 17:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3207629B774;
-	Tue, 15 Apr 2025 16:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B050235BF0;
+	Tue, 15 Apr 2025 17:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="lj6B1/tS"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="nAfrYpn+"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA9C29899D
-	for <linux-ext4@vger.kernel.org>; Tue, 15 Apr 2025 16:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3994221DB7;
+	Tue, 15 Apr 2025 17:29:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744736328; cv=none; b=cUiQNZCONlVA6me5iLT41yDoZVgZoFYZo8LASBiUYAsIQvVXCKIg1xE2K6/hAoZVyXCYbbJlJr+qONALQglK15r+rc+V2KzqIB2oYHOPG4xvfskwy5eb5Qhfd/+LK1nBDliWT3gvqWCn7h6muPZeF/Ppg7/hMZpApMNLd3Vlr0U=
+	t=1744738189; cv=none; b=WuqSCsjUuJwGCymnF2FEuwTxSfP4ZN6xA8MKONn7hlPOxDoTXDUrwAlJ7JRqO+VL4YO64Xi4rGrffUFhHtHFG8JowpAfexnraN7YuWwGJT6VJGGGosDiQiFbI3/aHAlM9rWUL76FhMMKgsqLe0d1x1xd4nNatpOzjuYGtwwlFjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744736328; c=relaxed/simple;
-	bh=PwOYin/M89oJCAmOFawBNjPUKiaJAkazAKO3lsCdr1A=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=Ii9dAtNXRV/kDCxzmlkgd15iMnlNN7I3DKbE072Z+U8eHZP8eCL7BvOegs1Mbuf4y2VIXq4ycr7N5GWMn8kyXGcdrNcDUPkB962n5sd/hmetUx83FfnZj8Gn+v+kyI134TM/6g6F+5IGkXIGOKbfsoVJ+HH6DiyN/NY7oTeBeg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=lj6B1/tS; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2ff6e91cff5so5949980a91.2
-        for <linux-ext4@vger.kernel.org>; Tue, 15 Apr 2025 09:58:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1744736325; x=1745341125; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d4N0GbCfLHO59eB1QCB5kpwpQjnRZnji86liGp99znY=;
-        b=lj6B1/tSKzTZ1gAKJj9Rw+TImBIzeDTtJQkG2ZLw4rrUEbr/sZeFizRZYX0YKkJDEF
-         MpKdDC+8WA+2dEiOcojS7ORwDsahiSwDc4TsDfDscwLZzVselJnCGhcThOwD+WSCQnAj
-         nhsQpGQcPwJWOLGYrkkAdMBQX02SHep4ixvgGU4vef99W6UtWZlZ4cjDsS/IKQ2Hq/9E
-         ufQAzyBkbYGDRJ5Mf7qZlSMbmAKUhoLusPwKl+8/umg6j9pNl7tc8OfobwJtR6QSErHt
-         1KTobwPp1Yd291ZkthceQ36FV0ZyR/BnKFnhZ0BAYnLsZarRUA75qc8eTlELRPfntfOZ
-         Hmhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744736325; x=1745341125;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d4N0GbCfLHO59eB1QCB5kpwpQjnRZnji86liGp99znY=;
-        b=cLccxce5oTvS96ZectgUUpNwIEfzV+etRk2y/8zlt0BVETXsu2bVzEXryY5uYMZaVI
-         7252z0ySzJRtu6EF2QaNP1GP6bHbQxnxNUn0QcLsGZ/CKGPViqpTs+2KrGQWqCgFzvwK
-         NyTsf8O2DXR8VxZlDEJwyrswmwrPI65hJatpqtDTZSJsFvKqNrHhfu/0J/zdtrxdW4B4
-         hOooCazHtTibp763hu2Afw8RrzK9IPES4ZDObCXnaVcOvm9lr+jSHb9OC+U1GEQG4hD3
-         oEeM3BabY7i2xFUQ3v+tqXIPdDeNqP0apS8SS1ZxjVM6YNZciwVnmrzKRnPnT2XmBR57
-         qxlA==
-X-Forwarded-Encrypted: i=1; AJvYcCWWw644kqhh3tkrAUkh1YY2BZkbwWVv5EIq55PAKxEjG46KU6+XdFac3lSJKntMoP3CN+dvhvbg+3Uy@vger.kernel.org
-X-Gm-Message-State: AOJu0YyabG6ZyYanQvHpeMqLag1xgANuv2l6ojRtxkL6Qjd5V/1JfT1j
-	fBAbTGoANrTvTkHfsB0jfQ5BomXlZ9NK8XT4pRYEVyvI8tfiGq6AIzubX4HeHbc=
-X-Gm-Gg: ASbGncto+Ma1uzYIwMRXhzR5xXHHnSIk32T0EO/D1BD2mtLlcN+f4m8U1adhqG7KwNq
-	VdGdpVNaEtsnBNpnssw0qAmbE4IW95Wxa7DvANm6pZSLq9FBy3mv4fFose8Cuoj5t8lfleRqEjm
-	bYuRQ6N6fqT0LhcPQrgVdOWL8jLXnq+odU+dG8B35kEY/GJ+T+cNESd30ECPkqCy6ijtSEvAQLq
-	EyoErLh0QFTTlCTNFTCTSw2qokL/Du5u3ltXwhIFw2CYSF3yetql2hOEsa6PJ80zi6KdoCkAwsf
-	W4cS4kqbRVSK2u689dLaZBQJOICpI54fG0syk/5OBvIa8IdguH9ax654EMBDXNiHvLI492gJMPU
-	JwvngEIgdV6mX0A==
-X-Google-Smtp-Source: AGHT+IHWLBcMK2aikj4+V5lXXYsh4Y7jhcTSssSkuGmWzzsbfiWGA8LrTh3jgyZvi0NTVXjpRbFkIw==
-X-Received: by 2002:a17:90b:57e8:b0:2ee:ab29:1a63 with SMTP id 98e67ed59e1d1-30823624894mr22531834a91.3.1744736325209;
-        Tue, 15 Apr 2025 09:58:45 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306dd1717c3sm13575842a91.30.2025.04.15.09.58.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Apr 2025 09:58:44 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <B1333FB3-D44F-407F-AD02-A2A93BB1E53B@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_BCC47921-4CA5-490E-973D-1DCFA8BB70C3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1744738189; c=relaxed/simple;
+	bh=S9XIVsAtv9ZvySpTXNmklIj3dCEZDBJtKPlbeZscMlc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cEVzjThar/GpO1rhhvx+0tHYIUTwsbAnearsPK7NpLMtqiZyzK0BPG0Zz2OEv/9uTNttcitPVzn64wrPFRn7Z5EI5DjJkOu3Brw+Y8RH2GwJXIJg8DEPKcQkVNaUDK/vbVPRzh9c+1ycV6N9QfukMRMWNqqghAX/eZiyWh14MAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=nAfrYpn+; arc=none smtp.client-ip=178.60.130.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=S9XIVsAtv9ZvySpTXNmklIj3dCEZDBJtKPlbeZscMlc=; b=nAfrYpn+EH35wsb4MLQ6p/PDDF
+	zOFQG1WwkS0rI2Ik5a1xtmtHbS/8FmGMveZezvs5NdHB5IAOkO88E72Oxmz8DEE6GbnYhOyBlVnid
+	UkUJBQP/CFn33zCQY+XfQh2gKCRYGh0biOZS8u+aKphLXctFwioKoZFtD2OQUMGabTKI5MBGcfd8D
+	YNLO2kOwx4rGUw1sI+K/+L/NiHFVCzPretOedaFWvRwjg6OVkGb+SPTM1aiu5/Y1sNQ/ao+UG8hD9
+	jmxZ7Tf9nYWWLFJ6MZV5l0CoaAWRq3kUZMYtpbaU1X5b8Whp594kAe7yWA7HyvL94CFhwdV2caSaL
+	A1Q4xX1Q==;
+Received: from 179-125-92-204-dinamico.pombonet.net.br ([179.125.92.204] helo=quatroqueijos)
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1u4k6M-00H20J-M8; Tue, 15 Apr 2025 19:29:39 +0200
+Date: Tue, 15 Apr 2025 14:29:34 -0300
+From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+To: syzbot <syzbot+0c99c3f90699936c1e77@syzkaller.appspotmail.com>
+Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+	tytso@mit.edu
+Subject: Re: [syzbot] [ext4?] KASAN: use-after-free Write in
+ ext4_insert_dentry
+Message-ID: <Z_6XfhN083ctkQHj@quatroqueijos>
+References: <671c2223.050a0220.2fdf0c.021c.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: inline: fix len overflow in
- ext4_prepare_inline_data
-Date: Tue, 15 Apr 2025 10:58:38 -0600
-In-Reply-To: <20250415-ext4-prepare-inline-overflow-v1-1-f4c13d900967@igalia.com>
-Cc: Theodore Ts'o <tytso@mit.edu>,
- Tao Ma <boyu.mt@taobao.com>,
- Jan Kara <jack@suse.com>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- kernel-dev@igalia.com,
- syzbot+fe2a25dae02a207717a0@syzkaller.appspotmail.com,
- stable@vger.kernel.org
-To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-References: <20250415-ext4-prepare-inline-overflow-v1-1-f4c13d900967@igalia.com>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <671c2223.050a0220.2fdf0c.021c.GAE@google.com>
 
-
---Apple-Mail=_BCC47921-4CA5-490E-973D-1DCFA8BB70C3
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-On Apr 15, 2025, at 8:53 AM, Thadeu Lima de Souza Cascardo =
-<cascardo@igalia.com> wrote:
->=20
-> When running the following code on an ext4 filesystem with inline_data
-> feature enabled, it will lead to the bug below.
->=20
->        fd =3D open("file1", O_RDWR | O_CREAT | O_TRUNC, 0666);
->        ftruncate(fd, 30);
->        pwrite(fd, "a", 1, (1UL << 40) + 5UL);
->=20
-> That happens because write_begin will succeed as when
-> ext4_generic_write_inline_data calls ext4_prepare_inline_data, pos + =
-len
-> will be truncated, leading to ext4_prepare_inline_data parameter to be =
-6
-> instead of 0x10000000006.
->=20
-> Then, later when write_end is called, we hit:
->=20
->        BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
->=20
-> at ext4_write_inline_data.
->=20
-> Fix it by using a loff_t type for the len parameter in
-> ext4_prepare_inline_data instead of an unsigned int.
-
-Thanks for the patch. Looks good.
-
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-
->=20
-> [   44.545164] ------------[ cut here ]------------
-> [   44.545530] kernel BUG at fs/ext4/inline.c:240!
-> [   44.545834] Oops: invalid opcode: 0000 [#1] SMP NOPTI
-> [   44.546172] CPU: 3 UID: 0 PID: 343 Comm: test Not tainted =
-6.15.0-rc2-00003-g9080916f4863 #45 PREEMPT(full)  =
-112853fcebfdb93254270a7959841d2c6aa2c8bb
-> [   44.546523] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), =
-BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> [   44.546523] RIP: 0010:ext4_write_inline_data+0xfe/0x100
-> [   44.546523] Code: 3c 0e 48 83 c7 48 48 89 de 5b 41 5c 41 5d 41 5e =
-41 5f 5d e9 e4 fa 43 01 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc cc =
-0f 0b <0f> 0b 0f 1f 44 00 00 55 41 57 41 56 41 55 41 54 53 48 83 ec 20 =
-49
-> [   44.546523] RSP: 0018:ffffb342008b79a8 EFLAGS: 00010216
-> [   44.546523] RAX: 0000000000000001 RBX: ffff9329c579c000 RCX: =
-0000010000000006
-> [   44.546523] RDX: 000000000000003c RSI: ffffb342008b79f0 RDI: =
-ffff9329c158e738
-> [   44.546523] RBP: 0000000000000001 R08: 0000000000000001 R09: =
-0000000000000000
-> [   44.546523] R10: 00007ffffffff000 R11: ffffffff9bd0d910 R12: =
-0000006210000000
-> [   44.546523] R13: fffffc7e4015e700 R14: 0000010000000005 R15: =
-ffff9329c158e738
-> [   44.546523] FS:  00007f4299934740(0000) GS:ffff932a60179000(0000) =
-knlGS:0000000000000000
-> [   44.546523] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   44.546523] CR2: 00007f4299a1ec90 CR3: 0000000002886002 CR4: =
-0000000000770eb0
-> [   44.546523] PKRU: 55555554
-> [   44.546523] Call Trace:
-> [   44.546523]  <TASK>
-> [   44.546523]  ext4_write_inline_data_end+0x126/0x2d0
-> [   44.546523]  generic_perform_write+0x17e/0x270
-> [   44.546523]  ext4_buffered_write_iter+0xc8/0x170
-> [   44.546523]  vfs_write+0x2be/0x3e0
-> [   44.546523]  __x64_sys_pwrite64+0x6d/0xc0
-> [   44.546523]  do_syscall_64+0x6a/0xf0
-> [   44.546523]  ? __wake_up+0x89/0xb0
-> [   44.546523]  ? xas_find+0x72/0x1c0
-> [   44.546523]  ? next_uptodate_folio+0x317/0x330
-> [   44.546523]  ? set_pte_range+0x1a6/0x270
-> [   44.546523]  ? filemap_map_pages+0x6ee/0x840
-> [   44.546523]  ? ext4_setattr+0x2fa/0x750
-> [   44.546523]  ? do_pte_missing+0x128/0xf70
-> [   44.546523]  ? security_inode_post_setattr+0x3e/0xd0
-> [   44.546523]  ? ___pte_offset_map+0x19/0x100
-> [   44.546523]  ? handle_mm_fault+0x721/0xa10
-> [   44.546523]  ? do_user_addr_fault+0x197/0x730
-> [   44.546523]  ? do_syscall_64+0x76/0xf0
-> [   44.546523]  ? arch_exit_to_user_mode_prepare+0x1e/0x60
-> [   44.546523]  ? irqentry_exit_to_user_mode+0x79/0x90
-> [   44.546523]  entry_SYSCALL_64_after_hwframe+0x55/0x5d
-> [   44.546523] RIP: 0033:0x7f42999c6687
-> [   44.546523] Code: 48 89 fa 4c 89 df e8 58 b3 00 00 8b 93 08 03 00 =
-00 59 5e 48 83 f8 fc 74 1a 5b c3 0f 1f 84 00 00 00 00 00 48 8b 44 24 10 =
-0f 05 <5b> c3 0f 1f 80 00 00 00 00 83 e2 39 83 fa 08 75 de e8 23 ff ff =
-ff
-> [   44.546523] RSP: 002b:00007ffeae4a7930 EFLAGS: 00000202 ORIG_RAX: =
-0000000000000012
-> [   44.546523] RAX: ffffffffffffffda RBX: 00007f4299934740 RCX: =
-00007f42999c6687
-> [   44.546523] RDX: 0000000000000001 RSI: 000055ea6149200f RDI: =
-0000000000000003
-> [   44.546523] RBP: 00007ffeae4a79a0 R08: 0000000000000000 R09: =
-0000000000000000
-> [   44.546523] R10: 0000010000000005 R11: 0000000000000202 R12: =
-0000000000000000
-> [   44.546523] R13: 00007ffeae4a7ac8 R14: 00007f4299b86000 R15: =
-000055ea61493dd8
-> [   44.546523]  </TASK>
-> [   44.546523] Modules linked in:
-> [   44.568501] ---[ end trace 0000000000000000 ]---
-> [   44.568889] RIP: 0010:ext4_write_inline_data+0xfe/0x100
-> [   44.569328] Code: 3c 0e 48 83 c7 48 48 89 de 5b 41 5c 41 5d 41 5e =
-41 5f 5d e9 e4 fa 43 01 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc cc =
-0f 0b <0f> 0b 0f 1f 44 00 00 55 41 57 41 56 41 55 41 54 53 48 83 ec 20 =
-49
-> [   44.570931] RSP: 0018:ffffb342008b79a8 EFLAGS: 00010216
-> [   44.571356] RAX: 0000000000000001 RBX: ffff9329c579c000 RCX: =
-0000010000000006
-> [   44.571959] RDX: 000000000000003c RSI: ffffb342008b79f0 RDI: =
-ffff9329c158e738
-> [   44.572571] RBP: 0000000000000001 R08: 0000000000000001 R09: =
-0000000000000000
-> [   44.573148] R10: 00007ffffffff000 R11: ffffffff9bd0d910 R12: =
-0000006210000000
-> [   44.573748] R13: fffffc7e4015e700 R14: 0000010000000005 R15: =
-ffff9329c158e738
-> [   44.574335] FS:  00007f4299934740(0000) GS:ffff932a60179000(0000) =
-knlGS:0000000000000000
-> [   44.575027] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   44.575520] CR2: 00007f4299a1ec90 CR3: 0000000002886002 CR4: =
-0000000000770eb0
-> [   44.576112] PKRU: 55555554
-> [   44.576338] Kernel panic - not syncing: Fatal exception
-> [   44.576517] Kernel Offset: 0x1a600000 from 0xffffffff81000000 =
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
->=20
-> Reported-by: syzbot+fe2a25dae02a207717a0@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3Dfe2a25dae02a207717a0
-> Fixes: f19d5870cbf7 ("ext4: add normal write support for inline data")
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-> Cc: stable@vger.kernel.org
-> ---
-> fs/ext4/inline.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index =
-2c9b762925c72f2ff5a402b02500370bc1eb0eb1..e5e6bf0d338b965a885fb99581f9ed5e=
-51c5257c 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -397,7 +397,7 @@ static int ext4_update_inline_data(handle_t =
-*handle, struct inode *inode,
-> }
->=20
-> static int ext4_prepare_inline_data(handle_t *handle, struct inode =
-*inode,
-> -				    unsigned int len)
-> +				    loff_t len)
-> {
-> 	int ret, size, no_expand;
-> 	struct ext4_inode_info *ei =3D EXT4_I(inode);
->=20
-> ---
-> base-commit: 8ffd015db85fea3e15a77027fda6c02ced4d2444
-> change-id: 20250415-ext4-prepare-inline-overflow-8db0e747cb16
->=20
-> Best regards,
-> --
-> Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_BCC47921-4CA5-490E-973D-1DCFA8BB70C3
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmf+kD4ACgkQcqXauRfM
-H+BgTw/7BfgemHBt7vu6OuQBunmjB1Aa7t+RzuO4FDwCbFAPgpjlM6jbt2QH1a4w
-xOhOnGI7EFBlk5eCM0UTHNKNUYgFzJsXcb+oeE3MsyxVqWNLpK2wbt7hvLs9B70L
-PZxzAL41zfLVs26PrnEZqkqdGKw+70QkRcFTBr5r08bdoOL5W3BTcgbPa/MG/vPm
-5CeTZS/zvtW/7k+tSCeEkngKi/1GwHCdGsKFMdODWbt79HYOvtHzs3CToWjBUp43
-N8WcpIswAjaFFKdWipYOcispwCoVEIOf/wbp+M1B4G/HIfvkrPe7f9IXfRnggtbH
-tCxjWjGANJciRjBbDcUXWBP+iKEO8Ktp+qhihNY5L+RrCAKNHW2aVJA9XtoXw6bk
-ODErmXLSByTsrZJ4NUuIYbv0+aIwmdlvov94jYOu1snQK2Kkh2Gg+1RArO9LXxe9
-czW5EFlGCFnpi7NVU2it2IQ1+roTnZPPOJG+mTFt/2Wynn9MH4zZihAAnerXvi16
-fycpifTXKXggDdaw3D/XUAW7OwSJB4zLWWa9jFys+oZi4Kqy2Ov3TbvfI8zTTrjg
-uc3UfOi0qdo67KvASOUuOLc9w4H/wEG+tR17/NfF5GJ+U71IPg5OB12VS5/ZWbCZ
-rK0rSVuX+d7ERfQdY2jttJEbHnu0K724CmQYowq1CQtEIvA2Hu8=
-=6gMn
------END PGP SIGNATURE-----
-
---Apple-Mail=_BCC47921-4CA5-490E-973D-1DCFA8BB70C3--
+#syz fix: ext4: fix off-by-one error in do_split
 
