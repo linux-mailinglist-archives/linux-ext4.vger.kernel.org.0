@@ -1,198 +1,199 @@
-Return-Path: <linux-ext4+bounces-7254-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7255-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81752A89189
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 03:43:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81FB1A894C0
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 09:19:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0EA2189C167
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 01:43:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E817C17CB46
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 07:19:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37FEF1A5BA8;
-	Tue, 15 Apr 2025 01:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4BA279900;
+	Tue, 15 Apr 2025 07:18:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="TUCkccYq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="caIFBZyz"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from iguana.tulip.relay.mailchannels.net (iguana.tulip.relay.mailchannels.net [23.83.218.253])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB8F1D52B;
-	Tue, 15 Apr 2025 01:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.253
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744681405; cv=pass; b=AjnaW47+xn3GkqLEDoOqKI79xI9ItbnWG8tyDsZc9se700Laxkc6FahDb6H/lw/EKWKr3MI5kIQ/yz9R+PvcMBFk535I8/UJ1TkWvFMgw6raiT0hUI9OQ5XFpm2GzIrFfBZ3UbEQf/BtZvdjWIKfFVW+gjGgLRt8kGjHD+F8Fgg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744681405; c=relaxed/simple;
-	bh=l2eAEpr2jmdEcxL4U8LcqJHOZIzwoezZVEdRxK9LTUk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gVVgi5ecQdQmDtP3UL9HPF7qlVD3n9ebGM1lIXa0vhQMwVimsPnXZvyoygebrABKaczGWkAOz/Xah2EaTvpe7ELq9i1G+Uq3pdXFVydKx95qIat5YobuETlgWOmvNZI0+hrYIQcBaMaAd6FjlVwspTtID3aj7JVECglHBm9d86U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=TUCkccYq; arc=pass smtp.client-ip=23.83.218.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 88D4C4E4A9D;
-	Tue, 15 Apr 2025 01:36:46 +0000 (UTC)
-Received: from pdx1-sub0-mail-a316.dreamhost.com (100-110-51-173.trex-nlb.outbound.svc.cluster.local [100.110.51.173])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 066F64E3AD9;
-	Tue, 15 Apr 2025 01:36:46 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1744681006; a=rsa-sha256;
-	cv=none;
-	b=P/GhzsEz5f9ceO38nSheIaNLR+4Mkv1VkDy7ninjeDx/G23ylMuyjoxWjHfK56KO45x9X8
-	s6Y4se+5xk9e8uhizLjyHRh6iQOay+vjlLPNc+MyyTWhxVcAS51WN/TKkm6vPeZASS6wjR
-	XqIDL8LDZMLWwgKYcJDj8rqqGL6tjnx4LPYcV3P8i+qVZRT0hUoFh2/V2Zn4vwIodiUG0B
-	Sqxrp0ob/Tx7UDFCVa0OtIcEFo8wwMPYUoR4n2k1Vtd7TMu6V725fixNMLzkoOefAkB4YG
-	CEbseikqTgutQuklA0AmHJm1CVpBji48Xh94FCW/icQz+5aOri8wpyKJjZP/MA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1744681006;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=jlfvjRzAtxfUTZ9I3wbiorK0UEQiipXG/ieXwtFY7M8=;
-	b=4+sh4iX1YJzXWIOdWBn3zBOhgpFdWAic+C2oDY7jiLGkPSRsJG2pBLfuaw+LmacMqQNmbt
-	EG4d8qneVGTS5gKCC3fY8ZwBxULL6Fym7yMlk/S58NWDSonQ6K51FEGLGidC0x5E6mMvWH
-	VvFJSYMGEbitMSCQjTIxJU4Syri5oKXtv2YhCMpf31wloOq1tMyY9bMM+KmAiLG68XhrfP
-	rL9VbS7hq9jD/CWW3/d8tG2+vDG6tdTL+sNhhvSC7XO6zxVETtBNoN382molLi/p0W1mJ5
-	37WXHIcbeEhSWlJB61VgtPBkRlx66mWQRkSz6lem26ni8yuA2wu58ICcUhoDSA==
-ARC-Authentication-Results: i=1;
-	rspamd-865c984fb5-w772g;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Shade-Bitter: 0415a5496692aa68_1744681006409_492724278
-X-MC-Loop-Signature: 1744681006409:3535641005
-X-MC-Ingress-Time: 1744681006409
-Received: from pdx1-sub0-mail-a316.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.110.51.173 (trex/7.0.3);
-	Tue, 15 Apr 2025 01:36:46 +0000
-Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a316.dreamhost.com (Postfix) with ESMTPSA id 4Zc6Fm457Tz49;
-	Mon, 14 Apr 2025 18:36:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1744681005;
-	bh=jlfvjRzAtxfUTZ9I3wbiorK0UEQiipXG/ieXwtFY7M8=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=TUCkccYqtzJaKksj1NWAxf9lhTQO9W+/6e6pzjlWrrLuEThkO2MjGdyCxE8/CfmvJ
-	 wuqiK9EIncEpRQAMcTAH0Fyx0DSe2lgX3/a5Ez1/D4iXRAigLuNg4KrvzcvyetYcwD
-	 44ksUcIuQ1Nr50dASjJnPsl7B/ILRzoIw4hGa+En+j5k9+0IU8qZhtLBUcvCZ+OH9O
-	 /Ik0JYVKfb78VbQ1KSEJsFrMc8pZHIGMSLf/Jyyxyx4g89K736YOz2lNPBQ6egx9Of
-	 jMB2juYqfyL/6GhpC5TPIPY1MAkua8Fk7fhUbBA6HqbBeNESDQU5p4KB+wnQKD5iSZ
-	 YcluHuV2gK9PA==
-Date: Mon, 14 Apr 2025 18:36:41 -0700
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: brauner@kernel.org, jack@suse.cz, tytso@mit.edu,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	riel@surriel.com, willy@infradead.org, hannes@cmpxchg.org,
-	oliver.sang@intel.com, david@redhat.com, axboe@kernel.dk,
-	hare@suse.de, david@fromorbit.com, djwong@kernel.org,
-	ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-mm@kvack.org,
-	gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com,
-	syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
- migration
-Message-ID: <20250415013641.f2ppw6wov4kn4wq2@offworld>
-Mail-Followup-To: Luis Chamberlain <mcgrof@kernel.org>, brauner@kernel.org,
-	jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, riel@surriel.com, willy@infradead.org,
-	hannes@cmpxchg.org, oliver.sang@intel.com, david@redhat.com,
-	axboe@kernel.dk, hare@suse.de, david@fromorbit.com,
-	djwong@kernel.org, ritesh.list@gmail.com,
-	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-mm@kvack.org, gost.dev@samsung.com, p.raghav@samsung.com,
-	da.gomez@samsung.com,
-	syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
-References: <20250410014945.2140781-1-mcgrof@kernel.org>
- <20250410014945.2140781-2-mcgrof@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9F7110F2;
+	Tue, 15 Apr 2025 07:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744701532; cv=none; b=IyT8sYlnXwt1zBSsPA/lq2EJeJI3MUn1UpA74oGWL0mm6fOyYwCnspYdnwJynLxNwvzAt6ybmPL5+/gLp8LJT5pNC6eocmAtML3YXlLyGot693Y+Rzmy5pyJhnzod3IYqikqhJwkeYpV0yFENXa81Punnv8mCzYntsAKvaL4RFw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744701532; c=relaxed/simple;
+	bh=3/FoWHVKZh/yPaCYtvpJoxmmZ1q8bKtB9XiX+8j7Biw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QeIq84wAk6Bf0KpmAmwOtXkZFuKaBjHkBtY0Hx8AKatwIrhnXf4A0+kBtPPt1Sd4UmsemSwMWJLtTvMRcsFtWtLiMvO5/faXlpAlrJGgMxDk6A7JvpODCd1y/oeCU4QoNiIl60TbGUfplT74jvSKa0ZCL/HPmo7I1TdYqSNpPVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=caIFBZyz; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2260c91576aso43731915ad.3;
+        Tue, 15 Apr 2025 00:18:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744701530; x=1745306330; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9XrxwBk8Ts1N+UMcqULEleYRY3IW8ZPJ/uHBTdCm0Uk=;
+        b=caIFBZyzOdmtp9ajkZxiUQgAzwejHXxDm2W5yxTS70tEjvLlc7Nej3+LQ5woBE+xEF
+         Y/8cppXRXuai5/lGlApjEid6iw2E47v6Cr3TfriDMbquJBW4A1gOkPUx4r0QOTXMwUKV
+         yls/KZ+qkwKZlOgMgwaPNoAycZLZChZ5kfYory5zSvXYuJTQQP8cXX9A/gBnvkEwcHrx
+         IRsdq0yIo45Ae2esBuHv9kHyi856J15X9uID+ydzOyRtjUwsgAe6J2xCNCnKXhFbwUDS
+         cF638WgoYu6p6J9IN4YFQo4yZEJb//dOTfbPw62KgI8P/JSFzw9uDire5Gl9hCGCxVVl
+         ApMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744701530; x=1745306330;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9XrxwBk8Ts1N+UMcqULEleYRY3IW8ZPJ/uHBTdCm0Uk=;
+        b=iG16u0dS+cPNzq34IEU8kW2XaflF06dFn2MWHcy0nIIUi4vVyqrUzJ4DY2IVtnEPlS
+         NgmrrxrvXBSBOQtJr9FnlbbXcz3S5JmLRqW4T3H5+CJhi53smQUrLOXi874x4i1AAVgj
+         bNjScywLFwz5z0MhSLJsi17BQr/2dQ+sfcOVVN4zDcBef/nF7lDa33pM7fGv8/IDLLAI
+         rDQaOVeIxysQX3Dw2lcyM7gRuK5/3QhMuJm/4DkwTAIH2MoFu2OczzY74kvWsYDbPoLK
+         kUejhldGIojpDSHkr+QJGndPy3zWCTN6W99hJ1EbsfFKsZKCYn9DFpodNXzIOTf7nRDT
+         4jsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWp+3ElEJcaUYpeQhOGBVJ6r9UDtGdZkHz9GsrzQXPyekQ8QWCPFvlLfesfVjrYFmA83uRjl3poiigxng==@vger.kernel.org, AJvYcCXioNJxzzWMA2fGV/NMSjUfot7V0yQjSdn9EuCob4/t8U3AdIAJ1zE2phYBn8vCtDPYpHJyPK2Q@vger.kernel.org
+X-Gm-Message-State: AOJu0YwLK1iDKUYbsMP5U7UMDIgYuVd/xhkcQ0V7mPj48hGR6swstOE2
+	VMO7KossUH8aa1L10EVUhkAUZWpn4unfysVOX4zTgIqZx3hcR5dj
+X-Gm-Gg: ASbGncsvqCSi156heU9yFN/xnhkgrre+v1Pu0rsYEvexZegqjfdBbZJ2YGSkXEIEzAi
+	eAcxasRS1kLiZce5r9HMeYpxRaKT93Hg+kpYUoYwJsG1ag3whnQ+zF3fkJGMsyZXgyUAgfFPZV2
+	OxRjfe/mmogd0XqdbFMs7n4tEygHPftTidqwI+spuTVX6xLbgAv1fgguRW0XeHm/VcOpEF7XqA1
+	ppuiWMLmQOFE9tRgGXUcHmuRuYNlMaPvQuZkIKFmNwWDQQrj6qiy8wEoMc6A2M2BzeYQLuv/5D9
+	0+00Y0gKokgRxZOyOwq3ahFwA7a1hFlH2bEdb0EuQULPvkVR
+X-Google-Smtp-Source: AGHT+IGIAg+rcECIoc+F1984QEgUHOanUmc6wVHxPqhdy6TjnbASlhuQMTgSJo/ZepIgEJzy7h+DGw==
+X-Received: by 2002:a17:902:ef03:b0:21f:2ded:76ea with SMTP id d9443c01a7336-22bea4effefmr231488005ad.36.1744701529728;
+        Tue, 15 Apr 2025 00:18:49 -0700 (PDT)
+Received: from [192.168.1.13] ([60.243.3.154])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7b8c60csm110536565ad.93.2025.04.15.00.18.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Apr 2025 00:18:49 -0700 (PDT)
+Message-ID: <0d1d7e6f-d2b9-4c38-9c8e-a25671b6380c@gmail.com>
+Date: Tue, 15 Apr 2025 12:48:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20250410014945.2140781-2-mcgrof@kernel.org>
-User-Agent: NeoMutt/20220429
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] xfs: Fail remount with noattr2 on a v5 xfs with
+ CONFIG_XFS_SUPPORT_V4=y
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ fstests@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
+ djwong@kernel.org, zlang@kernel.org, david@fromorbit.com
+References: <7c4202348f67788db55c7ec445cbe3f2d587daf2.1744394929.git.nirjhar.roy.lists@gmail.com>
+ <Z_yhpwBQz7Xs4WLI@infradead.org>
+Content-Language: en-US
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+In-Reply-To: <Z_yhpwBQz7Xs4WLI@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 09 Apr 2025, Luis Chamberlain wrote:
 
->corruption can still happen even with the spin lock held. A test was
->done using vanilla Linux and adding a udelay(2000) right before we
->spin_lock(&bd_mapping->i_private_lock) on __find_get_block_slow() and
->we can reproduce the same exact filesystem corruption issues as observed
->without the spinlock with generic/750 [1].
+On 4/14/25 11:18, Christoph Hellwig wrote:
+> On Fri, Apr 11, 2025 at 11:44:52PM +0530, Nirjhar Roy (IBM) wrote:
+>> mkfs.xfs -f /dev/loop0
+>> mount /dev/loop0 /mnt/scratch
+>> mount -o remount,noattr2 /dev/loop0 /mnt/scratch # This should fail but it doesn't
+> Please reflow your commit log to not exceed the standard 73 characters
+Noted. I will update this in the next revision.
+>
+>> xfs_has_attr2() returns true when CONFIG_XFS_SUPPORT_V4=n and hence, the
+>> the following if condition in xfs_fs_validate_params() succeeds and returns -EINVAL:
+>>
+>> /*
+>>   * We have not read the superblock at this point, so only the attr2
+>>   * mount option can set the attr2 feature by this stage.
+>>   */
+>>
+>> if (xfs_has_attr2(mp) && xfs_has_noattr2(mp)) {
+>> 	xfs_warn(mp, "attr2 and noattr2 cannot both be specified.");
+>> 	return -EINVAL;
+>> }
+>> With CONFIG_XFS_SUPPORT_V4=y, xfs_has_attr2() always return false and hence no error
+>> is returned.
+> But that also means the mount time check is wrong as well.
 
-fyi I was actually able to trigger this on a vanilla 6.15-rc1 kernel,
-not even having to add the artificial delay.
+So during mount, xfs_fs_fill_super() calls the following functions are 
+called in sequence :
 
-[336534.157119] ------------[ cut here ]------------
-[336534.158911] WARNING: CPU: 3 PID: 87221 at fs/jbd2/transaction.c:1552 jbd2_journal_dirty_metadata+0x21c/0x230 [jbd2]
-[336534.160771] Modules linked in: loop sunrpc 9p kvm_intel nls_iso8859_1 nls_cp437 vfat fat crc32c_generic kvm ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3 aesni_intel gf128mul crypto_simd 9pnet_virtio cryptd virtio_balloon virtio_console evdev joydev button nvme_fabrics nvme_core dm_mod drm nfnetlink vsock_loopback vmw_vsock_virtio_transport_common vsock autofs4 ext4 crc16 mbcache jbd2 btrfs blake2b_generic efivarfs raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq raid1 raid0 md_mod virtio_net net_failover virtio_blk failover psmouse serio_raw virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev virtio virtio_ring
-[336534.173218] CPU: 3 UID: 0 PID: 87221 Comm: kworker/u36:8 Not tainted 6.15.0-rc1 #2 PREEMPT(full)
-[336534.175146] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 2025.02-5 03/28/2025
-[336534.176947] Workqueue: writeback wb_workfn (flush-7:5)
-[336534.178183] RIP: 0010:jbd2_journal_dirty_metadata+0x21c/0x230 [jbd2]
-[336534.179626] Code: 30 0f 84 5b fe ff ff 0f 0b 41 bc 8b ff ff ff e9 69 fe ff ff 48 8b 04 24 4c 8b 48 70 4d 39 cf 0f 84 53 ff ff ff e9 32 c3 00 00 <0f> 0b 41 bc e4 ff ff ff e9 41 ff ff ff 0f 0b 90 0f 1f 40 00 90 90
-[336534.183983] RSP: 0018:ffff9f168d38f548 EFLAGS: 00010246
-[336534.185194] RAX: 0000000000000001 RBX: ffff8c0ae8244e10 RCX: 00000000000000fd
-[336534.186810] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-[336534.188399] RBP: ffff8c09db0d8618 R08: ffff8c09db0d8618 R09: 0000000000000000
-[336534.189977] R10: ffff8c0b2671a83c R11: 0000000000006989 R12: 0000000000000000
-[336534.191243] R13: ffff8c09cc3b33f0 R14: ffff8c0ae8244e18 R15: ffff8c0ad5e0ef00
-[336534.192469] FS:  0000000000000000(0000) GS:ffff8c0b95b8d000(0000) knlGS:0000000000000000
-[336534.193840] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[336534.194831] CR2: 00007f0ebab4f000 CR3: 000000011e616005 CR4: 0000000000772ef0
-[336534.196044] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[336534.197274] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[336534.198473] PKRU: 55555554
-[336534.198927] Call Trace:
-[336534.199350]  <TASK>
-[336534.199701]  __ext4_handle_dirty_metadata+0x5c/0x190 [ext4]
-[336534.200626]  ext4_ext_insert_extent+0x575/0x1440 [ext4]
-[336534.201465]  ? ext4_cache_extents+0x5a/0xd0 [ext4]
-[336534.202243]  ? ext4_find_extent+0x37c/0x3a0 [ext4]
-[336534.203024]  ext4_ext_map_blocks+0x50e/0x18d0 [ext4]
-[336534.203803]  ? mpage_map_and_submit_buffers+0x23f/0x270 [ext4]
-[336534.204723]  ext4_map_blocks+0x11a/0x4d0 [ext4]
-[336534.205442]  ? ext4_alloc_io_end_vec+0x1f/0x70 [ext4]
-[336534.206239]  ? kmem_cache_alloc_noprof+0x310/0x3d0
-[336534.206982]  ext4_do_writepages+0x762/0xd40 [ext4]
-[336534.207706]  ? __pfx_block_write_full_folio+0x10/0x10
-[336534.208451]  ? ext4_writepages+0xc6/0x1a0 [ext4]
-[336534.209161]  ext4_writepages+0xc6/0x1a0 [ext4]
-[336534.209834]  do_writepages+0xdd/0x250
-[336534.210378]  ? filemap_get_read_batch+0x170/0x310
-[336534.211069]  __writeback_single_inode+0x41/0x330
-[336534.211738]  writeback_sb_inodes+0x21b/0x4d0
-[336534.212375]  __writeback_inodes_wb+0x4c/0xe0
-[336534.212998]  wb_writeback+0x19c/0x320
-[336534.213546]  wb_workfn+0x30e/0x440
-[336534.214039]  process_one_work+0x188/0x340
-[336534.214650]  worker_thread+0x246/0x390
-[336534.215196]  ? _raw_spin_lock_irqsave+0x23/0x50
-[336534.215879]  ? __pfx_worker_thread+0x10/0x10
-[336534.216522]  kthread+0x104/0x250
-[336534.217004]  ? __pfx_kthread+0x10/0x10
-[336534.217554]  ? _raw_spin_unlock+0x15/0x30
-[336534.218140]  ? finish_task_switch.isra.0+0x94/0x290
-[336534.218979]  ? __pfx_kthread+0x10/0x10
-[336534.220347]  ret_from_fork+0x2d/0x50
-[336534.221086]  ? __pfx_kthread+0x10/0x10
-[336534.221703]  ret_from_fork_asm+0x1a/0x30
-[336534.222415]  </TASK>
-[336534.222775] ---[ end trace 0000000000000000 ]---
+xfs_fs_validate_params()
+
+<...>
+
+xfs_readsb()
+
+xfs_finish_flags().
+
+If I am trying to "mount -o noattr2 /dev/loop0 /mnt1/test", then the 
+invalid condition(noattr2 on v5) is not caught in 
+xfs_fs_validate_params() because the superblock isn't read yet and 
+"struct xfs_mount    *mp" is still not aware of whether the underlying 
+filesystem is v5 or v4 (i.e, whether crc=0 or crc=1). So, even if the 
+underlying filesystem is v5, xfs_has_attr2() will return false, because 
+the m_features isn't populated yet. However, once xfs_readsb() is done, 
+m_features is populated (mp->m_features |= 
+xfs_sb_version_to_features(sbp); called at the end of xfs_readsb()). 
+After that, when xfs_finish_flags() is called, the invalid mount option 
+(i.e, noattr2 with crc=1) is caught, and the mount fails correctly. So, 
+m_features is partially populated while xfs_fs_validate_params() is 
+getting executed, I am not sure if that is done intentionally. IMO, we 
+should have read the superblock, made sure that the m_features is fully 
+populated within xfs_fs_validate_params() with the existing 
+configurations of the underlying disk/fs and the ones supplied the by 
+mount program - this can avoid such false negatives. Can you please let 
+me know if my understanding is correct?
+
+>
+>> +	/* attr2 -> noattr2 */
+>> +	if (xfs_has_noattr2(new_mp)) {
+>> +		if (xfs_has_crc(mp)) {
+>> +			xfs_warn(mp, "attr2 and noattr2 cannot both be specified.");
+>> +			return -EINVAL;
+>> +		}
+> So this check should probably go into xfs_fs_validate_params, and
+> also have a more useful warning like:
+>
+> 	if (xfs_has_crc(mp) && xfs_has_noattr2(new_mp)) {
+> 		xfs_warn(mp,
+> "noattr2 cannot be specified for v5 file systems.");
+>                  return -EINVAL;
+> 	}
+xfs_fs_validate_params() takes only one parameter. Are you suggesting to 
+add another optional (NULLable) parameter "new_mp" and add the above 
+check there? In that case, all other remount related checks in 
+xfs_fs_reconfigure() qualify to be moved to xfs_fs_validate_params(), 
+right? Is my understanding correct?
+>
+>
+>> +		else {
+>> +			mp->m_features &= ~XFS_FEAT_ATTR2;
+>> +			mp->m_features |= XFS_FEAT_NOATTR2;
+>> +		}
+>> +
+>> +	} else if (xfs_has_attr2(new_mp)) {
+>> +			/* noattr2 -> attr2 */
+>> +			mp->m_features &= ~XFS_FEAT_NOATTR2;
+>> +			mp->m_features |= XFS_FEAT_ATTR2;
+>> +	}
+> Some of the indentation here looks broken.  Please always use one
+> tab per indentation level, places the closing brace before the else,
+> and don't use else after a return statement.
+
+Okay, I will fix this in the next revision. Thank you for pointing this 
+out.
+
+--NR
+
+-- 
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
+
 
