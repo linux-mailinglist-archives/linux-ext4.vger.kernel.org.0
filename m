@@ -1,163 +1,112 @@
-Return-Path: <linux-ext4+bounces-7256-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7257-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36F4DA8952D
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 09:33:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD1E2A8976D
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 11:05:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4606C17E3D5
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 07:33:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8811F16496D
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 09:05:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD451DC185;
-	Tue, 15 Apr 2025 07:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F33227B4F5;
+	Tue, 15 Apr 2025 09:05:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NhFtvdQk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EnDaFjao"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E4F22417C8;
-	Tue, 15 Apr 2025 07:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52E927EC89;
+	Tue, 15 Apr 2025 09:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744702380; cv=none; b=qI+JmfFE3adXw3lh/v35ZSdZs1kYUyXqul5M6kuWFf251CQ/ZNF36Yn91XmZpaO504x2ydJ0Y1ymAQvXnJXKYoubtkata/cr1HPWOEojIKu3hanyUIbnqi8z0gRj5RL3luy1ju8UwAZ8L7q3DH56FPh8rRv7hznyyv6zsQeeamc=
+	t=1744707946; cv=none; b=hQBJIeF1q0lafGVzkkWItUovRSI1G6JAhOREOnmXsEG1U4MO5aL3s2dBsNUYa/uYUnwN07pikeVu38pqivGxfzCQeOud02rfHbt+qrENRvAuwyLa9E1iuGwr+ot3gweXvjAmU9FLyjZOZacNzv4L1BubW01lvtv/PnxkVQq+JNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744702380; c=relaxed/simple;
-	bh=dRa7U50k7zlGiFNhGjsL8BiwV/iToruZ/EK4vr7CDcM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nle7206zEk49H9fK7ebp/J4s97Vf1meKQsJjLF8am7Hm+Mi7PwAcGk3hsbzbu5QjLIhJy40qSCdAnS8YJRvH2pAH+n8Jh8uvvfRZmBy6mFAt1SNK1a4WRfOxDm6GG8diCQUi3VPvqxpaFacuV0DrO4vaV+MoyHqVeB1GXThdyHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NhFtvdQk; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-301302a328bso5095860a91.2;
-        Tue, 15 Apr 2025 00:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744702379; x=1745307179; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WI6WVR10Hp7er7JtN8anSpyRNsNLQ+CYvMTaV0pTxcY=;
-        b=NhFtvdQksSzcq04PpPqID9clBSLUnXs1v9vSdCaruH9Sm5o1mTiZOFgOsuuAXjnJMb
-         qEew1mbulpQ53uBSyek+QIfgsUgYofUFSFbtzm/IMHMI7i9zretEzP/TROcMqOJpt15c
-         DHkUhq9w0ovcJMdRK9zTacOxxoHYJ6eFPiWuWHNtfComTWoCStIvIHVreO1E7qHIToSi
-         fHRo8OBRBDlZyDSM8lphImLBu4Y4WJV0kYrpaxDqzqYg2IyHgvorgZTfqMS6JkjcYbBb
-         G9iBwIObF1GvR/5NeHGkYs2kdLKio5S61zKGRaepy4kpjRPsLFNSIHnu/V8AyaNlvz0X
-         RNSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744702379; x=1745307179;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WI6WVR10Hp7er7JtN8anSpyRNsNLQ+CYvMTaV0pTxcY=;
-        b=bFVawmIx9jaheyRTUm8t4b0wo/JvShb4h2eQXEZoJdv3VYdE74rjn/U+tedD3jp/E1
-         WvprOzCJXnOkIqUlk6XqFaZwNnIBfk+o3egXpdH1PeqrxsmuMDiGZwXKuh+7mb/ctNqw
-         vA5FYO61dmEQjORHYWcNgjm4nmFxEDtFazmJcdFOCXPu3a2JXkVBuWVzaYHKgDRA3s/4
-         A90qXXFapfOgnhDPPhhqC9UGjmYJjuGUR6eX2jqSHbuzTWoEgZVE50cys625BCvny0i+
-         Kp29QscClKLwmo17atFxTkPmPfkgS6/m5dP5qVjCPf2jmBKg0EaZu9vRqJonS1i9bT7e
-         l4Og==
-X-Forwarded-Encrypted: i=1; AJvYcCUruJt8zcQKx4MJM6U5JOyjDfKdEYzYe6wk3zcxiGWbhZy8Jq9QKNRB8e0W3NDqYQzVcgH9jcnW5nb6@vger.kernel.org, AJvYcCXmPglsj0Ma+ykCvaitTCHLLmv+8sLKZIOySsVH+lq4+3cmidvqu2e80l0wzn/gZXnVUjAxqLt4KXhU@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIP1Q/dT6JcFfhEYJQ6OfDN6jTZ7o+/aFYuXJOvFnT9gET1Bvp
-	SpVki/B3YaOIvONu3V3Mv8OkCp+rEea7vyozVUOoKNtmbN9LRcnTwnGULA==
-X-Gm-Gg: ASbGncuBhH0OpWTnnpNPKntI6ug+5M5aR27FmvO9bN5zkd+3Ce4TioKm+9kYO6q6gfP
-	ZCGSeG/hTyksD7k0nPFEd9MVti69pqYiSJNBUL8uOjmSWNeGv7NUJ2FwIObLAUBfaJv4DRNcSfJ
-	8EOS+AJIj84ZhEmto2RZ02Za2vAaM/493t7Wvx7yEOAcL0WCp0mpBHH+ssKN6wp6e6wuHIknvgz
-	mtGoVIO14X81oWWUqdGB1hbAmQGYbTnululWS8HTk1jFcOXB/FnGvDOcZaUFBQaqYFkhAMquww6
-	WbYgu2ZebRKlLfuIZjdvSKRzCgoEvoVbwG4rWweTM0CLQaZZ
-X-Google-Smtp-Source: AGHT+IGITOXsdb6/to2gllPINuVI05qRfT0qiJ3rKWP2gX2cZW92Y05w/SZ/NdIA2iIb6eqK6T+7UQ==
-X-Received: by 2002:a17:90b:254d:b0:2fa:137f:5c61 with SMTP id 98e67ed59e1d1-30823639ca2mr28839546a91.12.1744702378682;
-        Tue, 15 Apr 2025 00:32:58 -0700 (PDT)
-Received: from [192.168.1.13] ([60.243.3.154])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7ce503dsm110402365ad.259.2025.04.15.00.32.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Apr 2025 00:32:58 -0700 (PDT)
-Message-ID: <9619fb07-1d2c-4f23-8a62-3c73ca37bec3@gmail.com>
-Date: Tue, 15 Apr 2025 13:02:49 +0530
+	s=arc-20240116; t=1744707946; c=relaxed/simple;
+	bh=Jk1eZdnZg7G5vh0w7ZZMU2B0/djohjlF/9UhwnoXVqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sl24PJfeP+i/7+hi9qXvOwy8hJkiN04ROFOy0dpgKVPqnW1TTjHO+jq1s2Lb8oeNZWr3vD7mveVtdf4iE8rncFpgYOAX2N2DcDx9xmR6dIlKtvcyZrhOoHfOH316aP7LsRnSFx2oxG6rAYUfU/b7DHph5fEz70eeaZVhXa0x+LA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EnDaFjao; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D349C4CEDD;
+	Tue, 15 Apr 2025 09:05:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744707946;
+	bh=Jk1eZdnZg7G5vh0w7ZZMU2B0/djohjlF/9UhwnoXVqM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EnDaFjaoBbP4Ukx95bRanjXNjAhy3CPInDT7xMQPQ9yzQiJf4C55jyHbKIXkNhxVl
+	 hJysns7LjdmPe0fO2wmPSEbzyBco46UODoD0j+j+kl3v3SU44XIrnewY70CWY37OeK
+	 pfLLQ72QvzY1o9jaww271/RexBEWW2Dl2FA48OmMXBYk28jE3aJtnOQxnsAPsIchGC
+	 pfwPrGPaUGI5eSOZZxjBYpPhQyunRS/kpgzS9eXFsfU4F3k3uVEEOzlVcLpJLcKmmP
+	 /j5uUgwzbKjkCVPJL18oLf9pDxhAsBPH7tvvbjaZVAi9mx15ZVUEYXjLdU1fB9dN69
+	 /jeeXnNuBORqw==
+Date: Tue, 15 Apr 2025 11:05:38 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	linux-ext4@vger.kernel.org, riel@surriel.com, dave@stgolabs.net, willy@infradead.org, 
+	hannes@cmpxchg.org, oliver.sang@intel.com, david@redhat.com, axboe@kernel.dk, 
+	hare@suse.de, david@fromorbit.com, djwong@kernel.org, ritesh.list@gmail.com, 
+	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org, linux-mm@kvack.org, 
+	gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com, 
+	syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
+ migration
+Message-ID: <20250415-freihalten-tausend-a9791b9c3a03@brauner>
+References: <20250410014945.2140781-1-mcgrof@kernel.org>
+ <20250410014945.2140781-2-mcgrof@kernel.org>
+ <dpn6pb7hwpmajoh5k5zla6x7fsmh4rlttstj3hkuvunp6tok3j@ikz2fxpikfv4>
+ <Z_15mCAv6nsSgRTf@bombadil.infradead.org>
+ <Z_2J9bxCqAUPgq42@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] check: Add -q <n> option to support unconditional
- looping.
-Content-Language: en-US
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
- djwong@kernel.org, zlang@kernel.org, david@fromorbit.com
-References: <cover.1743670253.git.nirjhar.roy.lists@gmail.com>
- <762d80d522724f975df087c1e92cdd202fd18cae.1743670253.git.nirjhar.roy.lists@gmail.com>
- <20250413214858.GA3219283@mit.edu>
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-In-Reply-To: <20250413214858.GA3219283@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Z_2J9bxCqAUPgq42@bombadil.infradead.org>
 
+On Mon, Apr 14, 2025 at 03:19:33PM -0700, Luis Chamberlain wrote:
+> On Mon, Apr 14, 2025 at 02:09:46PM -0700, Luis Chamberlain wrote:
+> > On Thu, Apr 10, 2025 at 02:05:38PM +0200, Jan Kara wrote:
+> > > > @@ -859,12 +862,12 @@ static int __buffer_migrate_folio(struct address_space *mapping,
+> > > >  			}
+> > > >  			bh = bh->b_this_page;
+> > > >  		} while (bh != head);
+> > > > +		spin_unlock(&mapping->i_private_lock);
+> > > 
+> > > No, you've just broken all simple filesystems (like ext2) with this patch.
+> > > You can reduce the spinlock critical section only after providing
+> > > alternative way to protect them from migration. So this should probably
+> > > happen at the end of the series.
+> > 
+> > So you're OK with this spin lock move with the other series in place?
+> > 
+> > And so we punt the hard-to-reproduce corruption issue as future work
+> > to do? Becuase the other alternative for now is to just disable
+> > migration for jbd2:
+> > 
+> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > index 1dc09ed5d403..ef1c3ef68877 100644
+> > --- a/fs/ext4/inode.c
+> > +++ b/fs/ext4/inode.c
+> > @@ -3631,7 +3631,6 @@ static const struct address_space_operations ext4_journalled_aops = {
+> >  	.bmap			= ext4_bmap,
+> >  	.invalidate_folio	= ext4_journalled_invalidate_folio,
+> >  	.release_folio		= ext4_release_folio,
+> > -	.migrate_folio		= buffer_migrate_folio_norefs,
+> >  	.is_partially_uptodate  = block_is_partially_uptodate,
+> >  	.error_remove_folio	= generic_error_remove_folio,
+> >  	.swap_activate		= ext4_iomap_swap_activate,
+> 
+> BTW I ask because.. are your expectations that the next v3 series also
+> be a target for Linus tree as part of a fix for this spinlock
+> replacement?
 
-On 4/14/25 03:18, Theodore Ts'o wrote:
-> On Thu, Apr 03, 2025 at 08:58:19AM +0000, Nirjhar Roy (IBM) wrote:
->> This patch adds -q <n> option through which one can run a given test <n>
->> times unconditionally. It also prints pass/fail metrics at the end.
->>
->> The advantage of this over -L <n> and -i/-I <n> is that:
->>      a. -L <n> will not re-run a flakey test if the test passes for the first time.
->>      b. -I/-i <n> sets up devices during each iteration and hence slower.
->> Note -q <n> will override -L <n>.
-> I'm wondering if we need to keep the current behavior of -I/-i.  The
-> primary difference between them and how your proposed -q works is that
-> instead of iterating over the section, your proposed option iterates
-> over each test.  So for example, if a section contains generic/001 and
-> generic/002, iterating using -i 3 will do this:
-
-Yes, the motivation to introduce -q was to:
-
-1. Make the re-run faster and not re-format the device. -i re-formats 
-the device and hence is slightly slower.
-
-2. To unconditionally loop a test - useful for scenarios when a flaky 
-test doesn't fail for the first time (something that -L) does.
-
-So, are saying that re-formatting a disk on every run, something that -i 
-does, doesn't have much value and can be removed?
-
->
-> generic/001
-> generic/002
-> generic/001
-> generic/002
-> generic/001
-> generic/002
->
-> While generic -q 3 would do this instead:
->
-> generic/001
-> generic/001
-> generic/001
-> generic/002
-> generic/002
-> generic/002
->
->
-> At least for all of the use cases that I can think of where I might
-> use -i 3, -q 3 is strictly better.  So instead of adding more options
-> which change how we might do iterations, could we perhaps just replace
-> -i with your new -q?  And change -I so that it also works like -q,
-> except if any test fails, that we stop?
-
-So -I won't re-format the devices during the loop? is that what your 
-suggestion is?
-
---NR
-
->
-> 					- Ted
-
--- 
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
-
+Since this is fixing potential filesystem corruption I will upstream
+whatever we need to do to fix this. Ideally we have a minimal fix to
+upstream now and a comprehensive fix and cleanup for v6.16.
 
