@@ -1,112 +1,144 @@
-Return-Path: <linux-ext4+bounces-7257-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7258-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1E2A8976D
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 11:05:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77EE1A89996
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 12:14:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8811F16496D
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 09:05:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E8E13B8CCE
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Apr 2025 10:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F33227B4F5;
-	Tue, 15 Apr 2025 09:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C34125F99C;
+	Tue, 15 Apr 2025 10:14:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EnDaFjao"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MVJJvGpG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52E927EC89;
-	Tue, 15 Apr 2025 09:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED425A79B;
+	Tue, 15 Apr 2025 10:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744707946; cv=none; b=hQBJIeF1q0lafGVzkkWItUovRSI1G6JAhOREOnmXsEG1U4MO5aL3s2dBsNUYa/uYUnwN07pikeVu38pqivGxfzCQeOud02rfHbt+qrENRvAuwyLa9E1iuGwr+ot3gweXvjAmU9FLyjZOZacNzv4L1BubW01lvtv/PnxkVQq+JNw=
+	t=1744712042; cv=none; b=bCuifCvzZ79SNT0XJUJ5lzTUXxKpHbgJ+NZPnyHOA5BtxKTxMcRpgV+ylYcRcbCBz5ApqKA+seiI7AYXlTgT31xZLyF9nqLaEqdjiqIBXK6xwpQs0REMD5nSGj5PxKc0QkLSRkOGIzCa1oM+Usg8uEYtsdY9mDSfYXqJe3ebk4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744707946; c=relaxed/simple;
-	bh=Jk1eZdnZg7G5vh0w7ZZMU2B0/djohjlF/9UhwnoXVqM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sl24PJfeP+i/7+hi9qXvOwy8hJkiN04ROFOy0dpgKVPqnW1TTjHO+jq1s2Lb8oeNZWr3vD7mveVtdf4iE8rncFpgYOAX2N2DcDx9xmR6dIlKtvcyZrhOoHfOH316aP7LsRnSFx2oxG6rAYUfU/b7DHph5fEz70eeaZVhXa0x+LA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EnDaFjao; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D349C4CEDD;
-	Tue, 15 Apr 2025 09:05:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744707946;
-	bh=Jk1eZdnZg7G5vh0w7ZZMU2B0/djohjlF/9UhwnoXVqM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EnDaFjaoBbP4Ukx95bRanjXNjAhy3CPInDT7xMQPQ9yzQiJf4C55jyHbKIXkNhxVl
-	 hJysns7LjdmPe0fO2wmPSEbzyBco46UODoD0j+j+kl3v3SU44XIrnewY70CWY37OeK
-	 pfLLQ72QvzY1o9jaww271/RexBEWW2Dl2FA48OmMXBYk28jE3aJtnOQxnsAPsIchGC
-	 pfwPrGPaUGI5eSOZZxjBYpPhQyunRS/kpgzS9eXFsfU4F3k3uVEEOzlVcLpJLcKmmP
-	 /j5uUgwzbKjkCVPJL18oLf9pDxhAsBPH7tvvbjaZVAi9mx15ZVUEYXjLdU1fB9dN69
-	 /jeeXnNuBORqw==
-Date: Tue, 15 Apr 2025 11:05:38 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	linux-ext4@vger.kernel.org, riel@surriel.com, dave@stgolabs.net, willy@infradead.org, 
-	hannes@cmpxchg.org, oliver.sang@intel.com, david@redhat.com, axboe@kernel.dk, 
-	hare@suse.de, david@fromorbit.com, djwong@kernel.org, ritesh.list@gmail.com, 
-	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org, linux-mm@kvack.org, 
-	gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com, 
-	syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
- migration
-Message-ID: <20250415-freihalten-tausend-a9791b9c3a03@brauner>
-References: <20250410014945.2140781-1-mcgrof@kernel.org>
- <20250410014945.2140781-2-mcgrof@kernel.org>
- <dpn6pb7hwpmajoh5k5zla6x7fsmh4rlttstj3hkuvunp6tok3j@ikz2fxpikfv4>
- <Z_15mCAv6nsSgRTf@bombadil.infradead.org>
- <Z_2J9bxCqAUPgq42@bombadil.infradead.org>
+	s=arc-20240116; t=1744712042; c=relaxed/simple;
+	bh=JuBCKkJaM3hmsEjaT1kgYwdjyRkGh72CJZBJOY1YxDE=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=QuoV67u8xn4aG9kCN3yfmyrOItcU/I0xwWgaiId38E0ownn1smL58u4heZYVOq7hqx9qW6jWPBzPuwYDewJ2iFcPCG2pomiLBTxIX9ZmGp/+vDSuiphZoB2MBL+fOmKADOLWnKCM3jF8TlRUNLMB+2rpIjNVaA/JiQAUg6+I02A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MVJJvGpG; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2240b4de12bso72081305ad.2;
+        Tue, 15 Apr 2025 03:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744712040; x=1745316840; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2yat5Q2ro2VdU/edk/vSlsoVMBmysgz9dlNkdYrGb7g=;
+        b=MVJJvGpGwUhog0gLulETz4MH8KBqe69j7XeMNDQCsH4Y+30t/zBw8SUvz7d4m4B8xX
+         Gc7AYwmgioK0X1ItXMEOTOsVQ792F/jV5QHHQGJM+0BsO2stkoKSV5ScNK2W8jMoB2gk
+         OhJkI1p6JlRG5KRiLqsDv4iLlq0J7o7XH0p5h045e1i+KuggfxPW75I1zPJOzN4dh68e
+         2Q+Nc6GBX8HTvxLG/MGEmmdV0rxZ1Pz3yG9krEMELtAbMkDG+/+D01/JfsaP7VnCkGih
+         EU0pU3WdNjeVzBUvcH/8k1n3S0E10/goLaL4WopoVI7okXfCIRbsBWgakIhRnB76Bhxv
+         9i7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744712040; x=1745316840;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2yat5Q2ro2VdU/edk/vSlsoVMBmysgz9dlNkdYrGb7g=;
+        b=eqmUI7EjAjx1RgqjwCmVE8kVanGDR0o9TNEUm3/+KZ3CdwS58FmBt8qeBAvAkVMMAX
+         Ojaoe6ynXP5lagi+qXJGm1uXwv08XkBwWV+91/nMbyWsOiN12yEPAKUpxVvVP3Y6ibiw
+         Z/tB2YsamFQkISsHn+9bwI6POzDqg6hufKlYgeDnE1hSMo6WvW4rQa39xV00EkYUp7WH
+         lotdjtvHVkFVh4KUjg0yhw97uUcFv4jKbWtMdEdpQy/uIiwCH2t/IofhW11J2w+04EwL
+         x6LIW7jVZ6/Fem6zKx0qw/t184tNVv0DlaWaW5Sapg5AqH5ti8gQ2Ha5ka+bnjzqcnii
+         NkGA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUyjK/QSqFkarrq/CzCENxvZcci4lqctLOX/UHdLp3/3zaB1NOeloyFtXQUxP1FnxwvBvKknTEUdy+@vger.kernel.org, AJvYcCWs+jcjpPxWZLbp5slWcWeHQkgdSo0cj0Ar62u+8gIH92EmkGNCk3PB5FIwwmOvqovmnMXYj696uDnP@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzn5QuhPQUrUcE/KhdDX872jhotC0wJwosmxrk736d1rER4cqEr
+	75uNwXkAGROJj4Y2wstbm6wy9B6QCchA7dYJkvD3o7B/ZQ/lgVl9
+X-Gm-Gg: ASbGncvoj84b4KTOJIHfh5aPWjP9TL77hmQaw6EdYmQeb5DHTWqqLZjiXrUDLO61tkB
+	OTfPMAJqe/SZIJaivEs/b2c9oK7XDKroDOLQb/mNs9HG0d+SuaSSnmIcQbjlKwdvwJTMg7Uj/17
+	+SvzNPDzGpfgmuU+A2Mew9PtANQj9XjLBojpCBtFVWYdaC1iMzm+sE8sfSznc+s78povdEtfNVt
+	CKWP2ixQ2FOPOy8oWreZCNTFzGGzkEPciKVXiit6eGWK9JkIiL0PRopWMvn8H7fZINPkkSAGepx
+	tvV2knU6LVZC9SeowuEw/hSVe3WPxcBVbg==
+X-Google-Smtp-Source: AGHT+IGVfEllxuwtyc1XzUKuSeTGsI+WI4RmVEcc1rP4Bl/ErN+obxeqncn3zygjzpfF9fdhNzIJoQ==
+X-Received: by 2002:a17:903:985:b0:216:2bd7:1c4a with SMTP id d9443c01a7336-22bea4c6897mr227721835ad.26.1744712040529;
+        Tue, 15 Apr 2025 03:14:00 -0700 (PDT)
+Received: from dw-tp ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7b62943sm113511595ad.28.2025.04.15.03.13.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Apr 2025 03:13:59 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Theodore Ts'o <tytso@mit.edu>, "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org, david@fromorbit.com
+Subject: Re: [PATCH v2 2/3] check: Add -q <n> option to support unconditional looping.
+In-Reply-To: <20250413214858.GA3219283@mit.edu>
+Date: Tue, 15 Apr 2025 14:36:06 +0530
+Message-ID: <87ikn523r5.fsf@gmail.com>
+References: <cover.1743670253.git.nirjhar.roy.lists@gmail.com> <762d80d522724f975df087c1e92cdd202fd18cae.1743670253.git.nirjhar.roy.lists@gmail.com> <20250413214858.GA3219283@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Z_2J9bxCqAUPgq42@bombadil.infradead.org>
 
-On Mon, Apr 14, 2025 at 03:19:33PM -0700, Luis Chamberlain wrote:
-> On Mon, Apr 14, 2025 at 02:09:46PM -0700, Luis Chamberlain wrote:
-> > On Thu, Apr 10, 2025 at 02:05:38PM +0200, Jan Kara wrote:
-> > > > @@ -859,12 +862,12 @@ static int __buffer_migrate_folio(struct address_space *mapping,
-> > > >  			}
-> > > >  			bh = bh->b_this_page;
-> > > >  		} while (bh != head);
-> > > > +		spin_unlock(&mapping->i_private_lock);
-> > > 
-> > > No, you've just broken all simple filesystems (like ext2) with this patch.
-> > > You can reduce the spinlock critical section only after providing
-> > > alternative way to protect them from migration. So this should probably
-> > > happen at the end of the series.
-> > 
-> > So you're OK with this spin lock move with the other series in place?
-> > 
-> > And so we punt the hard-to-reproduce corruption issue as future work
-> > to do? Becuase the other alternative for now is to just disable
-> > migration for jbd2:
-> > 
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index 1dc09ed5d403..ef1c3ef68877 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -3631,7 +3631,6 @@ static const struct address_space_operations ext4_journalled_aops = {
-> >  	.bmap			= ext4_bmap,
-> >  	.invalidate_folio	= ext4_journalled_invalidate_folio,
-> >  	.release_folio		= ext4_release_folio,
-> > -	.migrate_folio		= buffer_migrate_folio_norefs,
-> >  	.is_partially_uptodate  = block_is_partially_uptodate,
-> >  	.error_remove_folio	= generic_error_remove_folio,
-> >  	.swap_activate		= ext4_iomap_swap_activate,
-> 
-> BTW I ask because.. are your expectations that the next v3 series also
-> be a target for Linus tree as part of a fix for this spinlock
-> replacement?
+"Theodore Ts'o" <tytso@mit.edu> writes:
 
-Since this is fixing potential filesystem corruption I will upstream
-whatever we need to do to fix this. Ideally we have a minimal fix to
-upstream now and a comprehensive fix and cleanup for v6.16.
+> On Thu, Apr 03, 2025 at 08:58:19AM +0000, Nirjhar Roy (IBM) wrote:
+>> This patch adds -q <n> option through which one can run a given test <n>
+>> times unconditionally. It also prints pass/fail metrics at the end.
+>> 
+>> The advantage of this over -L <n> and -i/-I <n> is that:
+>>     a. -L <n> will not re-run a flakey test if the test passes for the first time.
+>>     b. -I/-i <n> sets up devices during each iteration and hence slower.
+>> Note -q <n> will override -L <n>.
+
+First things first -q is similar to -L except that it loops
+unconditionaly even when there is no failure. (Bad choice of -q naming,
+since -l was in use for something else)
+
+>
+> I'm wondering if we need to keep the current behavior of -I/-i.  The
+> primary difference between them and how your proposed -q works is that
+> instead of iterating over the section, your proposed option iterates
+> over each test.  So for example, if a section contains generic/001 and
+> generic/002, iterating using -i 3 will do this:
+>
+> generic/001
+> generic/002
+> generic/001
+> generic/002
+> generic/001
+> generic/002
+>
+> While generic -q 3 would do this instead:
+>
+> generic/001
+> generic/001
+> generic/001
+> generic/002
+> generic/002
+> generic/002
+>
+
+Yes, that's correct. Since it iterates at the top level, it also sources
+some common configs, re-formats and does a mount re-cycle of the scratch
+device during each iteration.
+
+This mostly should not matter, since each test can anyways re-format the
+scratch device when it needs to mount/test it.
+
+>
+> At least for all of the use cases that I can think of where I might
+> use -i 3, -q 3 is strictly better.  So instead of adding more options
+> which change how we might do iterations, could we perhaps just replace
+> -i with your new -q?  And change -I so that it also works like -q,
+> except if any test fails, that we stop?
+
+I agree that in this case it make more sense to replace the underlying
+functionality of -i/-I with what -q <n> is doing here. But maybe others
+can comment, if anyone has any objection on this.
+
+-ritesh
 
