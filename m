@@ -1,66 +1,53 @@
-Return-Path: <linux-ext4+bounces-7317-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7318-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6948FA9097F
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 18:59:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 672A4A90A93
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 19:56:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 197DB1692F3
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 16:59:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B51A91906F3E
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 17:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169AB21519F;
-	Wed, 16 Apr 2025 16:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA9DC218AC4;
+	Wed, 16 Apr 2025 17:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ws4WbEiD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sZ3NqI1S"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17FB2135C5;
-	Wed, 16 Apr 2025 16:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F6E189B8C;
+	Wed, 16 Apr 2025 17:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744822713; cv=none; b=gJMSosoURm/Aypn4lZ7ZRGIjz4PPoN7aTCHbTzX/wBrGDH0KUIwo//8vAqdP6UqRUhhAUNbV0ylqHodaOLCggBkiqYdCkQMAopjSs5C6dC+lURE6MOnQuH7L8bWsqdTxGnQZSDnbsiO10aPitKJRsclYL8I6EsBGJK4uiuQXokc=
+	t=1744826179; cv=none; b=ZW3cLcnzx2AGvdfnYPhHY0B50cFy84bLsK/AeLh160NcD4yUe2YEFtt+ulL0bL0bx1Jeher57P+7QnYCQZuga//wzb/GgchCF3mGS832EBaKkwpfvS/dtALwUYKmnSP2WAllts9EYHxbNU4laepE8/RXT6bWbO+S5ZhiVYkclMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744822713; c=relaxed/simple;
-	bh=t29fiwuZzzbt+7E7k2lgexW+wHlU4j24IKia/2TW6/Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HgBTqEiq2Y80wZPouOOu7KJTtxtD1xENcq11BicfPcD8himo3J0rEjniedHB+54qq6VnhxAiSGAfTs+G/PVBFpSx5aE1xeRo8nVHTJ8JPgCqNnBEUhBj8214Y2QgWySHo8hxUuAvrUqGQrOaPGIOkLm4yIUGR9yKRAcH22a8xSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ws4WbEiD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57417C4CEE4;
-	Wed, 16 Apr 2025 16:58:32 +0000 (UTC)
+	s=arc-20240116; t=1744826179; c=relaxed/simple;
+	bh=H0WXh36ys7jck0mPQQ9zQ+ukjOzF7jVDWWVZjc70wOo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=swthoT8XAs/x7cUU56d7Q7qq1NWR+09TF1D1Q3l21yMpVgnQQh1CEkbwDPVk/vbhI+MHLix3Y/wnv2u80h/oRSkc7ONMlWK7U2b4BQz6uC35jDGvrk9BLsMSnZNyQgZEGHGfzBpRxeM7rZaEE60SAYAvBh0TDSWPBahqwoX0Q+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sZ3NqI1S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0DB5C4CEE4;
+	Wed, 16 Apr 2025 17:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744822713;
-	bh=t29fiwuZzzbt+7E7k2lgexW+wHlU4j24IKia/2TW6/Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ws4WbEiDr7BhF0OHP4qxpv2o14+0HotsfuKCMMu5Px769VLD5sAGJXKf3i8JzMHFs
-	 JWftel5AhiJvCEqDK7coG9fWVtmywVgHOughUMK8lmjgf6lcOWwBcW/WWpKconJ0dg
-	 uSsbAOLwy0bPuKMmzkvdatDwYiFM5fyuFQx91yIC8+ijvbe/stFox8xdr1l1WH/Vpb
-	 YR5OhKNzBTFeBuYRugfNEGvN+ZXU2RcwMdoE0ewxFvj3w7n3GFSv/gaOD2anEtlLrb
-	 xttH1ofzE72gopjvMGvOdThZsYoiA66EhZ5fYKj+ENSDdTEzLV5tmjDfJJwEdVdDDj
-	 TBk7MbwUIAmKA==
-Date: Wed, 16 Apr 2025 09:58:30 -0700
+	s=k20201202; t=1744826179;
+	bh=H0WXh36ys7jck0mPQQ9zQ+ukjOzF7jVDWWVZjc70wOo=;
+	h=Date:From:To:Cc:Subject:From;
+	b=sZ3NqI1SOnKWWq3RSrekOWmPRzAmUxJ3n9uk9VED032vqEa4jP43M6OrCTGV1jsOF
+	 tZ5zhOOL+pgfXaCJ45A3uL+ZQ59u4sYVOZDU+AlCxjGk1HL2tQW+GSlo6EEt60RtkK
+	 rCrESqkXtOfWPBJIq9K32t/mJJOVY2QaB7oGuY9rWMScZiBqh+GPu91Cfg6fnDB8lS
+	 7j7wcRRcLv0ZTOSA9qgq/UOZzcgcnnaO6zEaL/+mLOk/QoMC1Tvl0ABa7mFPwiBFt8
+	 D69jjE/qhBQDnxoME7cQNsMh4r0PpsWSlBCqgCWE5eXw906HRBnoHKBxEMHKEZvyFS
+	 v/7Z1Sz3xpYIw==
+Date: Wed, 16 Apr 2025 10:56:17 -0700
 From: Luis Chamberlain <mcgrof@kernel.org>
-To: Jan Kara <jack@suse.cz>, dave@stgolabs.net
-Cc: brauner@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, riel@surriel.com, willy@infradead.org,
-	hannes@cmpxchg.org, oliver.sang@intel.com, david@redhat.com,
-	axboe@kernel.dk, hare@suse.de, david@fromorbit.com,
-	djwong@kernel.org, ritesh.list@gmail.com,
-	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-mm@kvack.org, gost.dev@samsung.com, p.raghav@samsung.com,
-	da.gomez@samsung.com,
-	syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
- migration
-Message-ID: <Z__hthNd2nj9QjrM@bombadil.infradead.org>
-References: <20250410014945.2140781-1-mcgrof@kernel.org>
- <20250410014945.2140781-2-mcgrof@kernel.org>
- <dpn6pb7hwpmajoh5k5zla6x7fsmh4rlttstj3hkuvunp6tok3j@ikz2fxpikfv4>
- <Z_6Gwl6nowYnsO3w@bombadil.infradead.org>
- <mxmnbr6gni2lupljf7pzkhs6f3hynr2lq2nshbgcmzg77jduwk@wn76alaoxjts>
+To: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Cc: Luis Chamberlain <mcgrof@kernel.org>, kdevops@lists.linux.dev,
+	dave@stgolabs.net, jack@suse.cz
+Subject: ext4 v6.15-rc2 baseline
+Message-ID: <Z__vQcCF9xovbwtT@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -69,24 +56,121 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <mxmnbr6gni2lupljf7pzkhs6f3hynr2lq2nshbgcmzg77jduwk@wn76alaoxjts>
 
-On Tue, Apr 15, 2025 at 06:28:55PM +0200, Jan Kara wrote:
-> > So I tried:
-> > 
-> > root@e1-ext4-2k /var/lib/xfstests # fsck /dev/loop5 -y 2>&1 > log
-> > e2fsck 1.47.2 (1-Jan-2025)
-> > root@e1-ext4-2k /var/lib/xfstests # wc -l log
-> > 16411 log
-> 
-> Can you share the log please?
+ext4 developers,
 
-Sure, here you go:
+kdevops has run fstests on v6.15-rc2 across the different ext4 profiles
+it currently defines, and the results are below.
 
-https://github.com/linux-kdevops/20250416-ext4-jbd2-bh-migrate-corruption
+The profiles which kdevops currently supports are:
 
-The last trace-0004.txt is a fresh one with Davidlohr's patches
-applied. It has trace-0004-fsck.txt.
+ - ext4_defaults
+ - ext4_1k
+ - ext4_2k
+ - ext4_4k
+ - ext4_advanced_features
+ - ext4_bigalloc32k_4k
+ - ext4_bigalloc64k_4k
+ - ext4_bigalloc1024k_4k
+ - ext4_bigalloc2048k_4k
 
-  Luis
+These are defined in the ext4 jinja2 template on kdevops [0] and described
+on the ext4 kconfig [1]. Adding support for more profiles is just a matter
+of editing these two files, please feel free to send a patch if you'd like
+kdevops to test more profiles. A full tarball of the fstests results are
+available on kdevops-results-archive [2]. Since we leverage git-lfs, you can
+opt to only download this single tarball as follows:
+
+GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/linux-kdevops/kdevops-results-archive.git
+cd kdevops-results-archive
+git lfs fetch --include "fstests/gh/linux-ext4-kpd/20250415/0001/linux-6-15-rc2/8ffd015db85f.xz
+git lfs checkout "fstests/gh/linux-ext4-kpd/20250415/0001/linux-6-15-rc2/8ffd015db85f.xz
+
+Few questions:
+
+ - Is this useful information?
+ - Do you want results for each rc release posted to the mailing list?
+
+[0] https://github.com/linux-kdevops/kdevops/blob/main/playbooks/roles/fstests/templates/ext4/ext4.config
+[1] https://github.com/linux-kdevops/kdevops/blob/main/workflows/fstests/ext4/Kconfig
+[2] https://github.com/linux-kdevops/kdevops-results-archive/commit/a74831cc4300e702eef9bafd31cc5dc4b8dda5e8
+
+  workflow: fstests
+  tree: linux
+  ref: 8ffd015db85f
+  test number: 0001
+
+Detailed test report:
+
+KERNEL:    6.15.0-rc2-g8ffd015db85f
+CPUS:      8
+MEMORY:    4 GiB
+
+ext4_defaults: 793 tests, 20 failures, 271 skipped, 10397 seconds
+  Failures: ext4/034 ext4/055 generic/082 generic/219 generic/223
+    generic/230 generic/231 generic/232 generic/233 generic/235
+    generic/270 generic/381 generic/382 generic/566 generic/587
+    generic/600 generic/601 generic/681 generic/682 generic/741
+ext4_1k: 793 tests, 19 failures, 326 skipped, 10898 seconds
+  Failures: ext4/034 ext4/055 generic/082 generic/219 generic/223
+    generic/230 generic/231 generic/232 generic/233 generic/235
+    generic/381 generic/382 generic/566 generic/587 generic/600
+    generic/601 generic/681 generic/682 generic/741
+ext4_2k: 793 tests, 19 failures, 323 skipped, 9737 seconds
+  Failures: ext4/034 ext4/055 generic/082 generic/219 generic/223
+    generic/230 generic/231 generic/232 generic/233 generic/235
+    generic/381 generic/382 generic/566 generic/587 generic/600
+    generic/601 generic/681 generic/682 generic/741
+ext4_4k: 793 tests, 19 failures, 320 skipped, 9026 seconds
+  Failures: ext4/034 ext4/055 generic/082 generic/219 generic/223
+    generic/230 generic/231 generic/232 generic/233 generic/235
+    generic/381 generic/382 generic/566 generic/587 generic/600
+    generic/601 generic/681 generic/682 generic/741
+ext4_bigalloc2048k_4k: 793 tests, 43 failures, 357 skipped, 7481 seconds
+  Failures: ext4/033 ext4/034 ext4/045 ext4/055 generic/075
+    generic/082 generic/091 generic/112 generic/127 generic/219
+    generic/230 generic/231 generic/232 generic/233 generic/234
+    generic/235 generic/251 generic/263 generic/280 generic/365
+    generic/381 generic/382 generic/435 generic/471 generic/566
+    generic/587 generic/600 generic/601 generic/614 generic/629
+    generic/634 generic/635 generic/643 generic/645 generic/676
+    generic/681 generic/682 generic/698 generic/732 generic/736
+    generic/738 generic/741 generic/754
+ext4_bigalloc1024k_4k: 793 tests, 39 failures, 350 skipped, 7800 seconds
+  Failures: ext4/033 ext4/034 ext4/045 ext4/055 generic/075
+    generic/082 generic/091 generic/112 generic/127 generic/219
+    generic/230 generic/231 generic/232 generic/233 generic/234
+    generic/235 generic/251 generic/263 generic/280 generic/365
+    generic/381 generic/382 generic/435 generic/566 generic/587
+    generic/600 generic/601 generic/614 generic/629 generic/634
+    generic/635 generic/643 generic/681 generic/682 generic/698
+    generic/732 generic/738 generic/741 generic/754
+ext4_bigalloc32k_4k: 793 tests, 27 failures, 350 skipped, 8434 seconds
+  Failures: ext4/033 ext4/034 ext4/055 generic/075 generic/082
+    generic/091 generic/112 generic/127 generic/219 generic/223
+    generic/230 generic/231 generic/232 generic/233 generic/234
+    generic/235 generic/263 generic/280 generic/381 generic/382
+    generic/566 generic/587 generic/600 generic/601 generic/681
+    generic/682 generic/741
+ext4_bigalloc64k_4k: 793 tests, 27 failures, 350 skipped, 8575 seconds
+  Failures: ext4/033 ext4/034 ext4/055 generic/075 generic/082
+    generic/091 generic/112 generic/127 generic/219 generic/223
+    generic/230 generic/231 generic/232 generic/233 generic/234
+    generic/235 generic/263 generic/280 generic/381 generic/382
+    generic/566 generic/587 generic/600 generic/601 generic/681
+    generic/682 generic/741
+ext4_bigalloc16k_4k: 793 tests, 27 failures, 350 skipped, 8755 seconds
+  Failures: ext4/033 ext4/034 ext4/055 generic/075 generic/082
+    generic/091 generic/112 generic/127 generic/219 generic/223
+    generic/230 generic/231 generic/232 generic/233 generic/234
+    generic/235 generic/263 generic/280 generic/381 generic/382
+    generic/566 generic/587 generic/600 generic/601 generic/681
+    generic/682 generic/741
+ext4_advanced_features: 793 tests, 21 failures, 279 skipped, 10373 seconds
+  Failures: ext4/034 ext4/055 generic/082 generic/219 generic/223
+    generic/230 generic/231 generic/232 generic/233 generic/235
+    generic/270 generic/381 generic/382 generic/477 generic/566
+    generic/587 generic/600 generic/601 generic/681 generic/682
+    generic/741
+Totals: 7930 tests, 3276 skipped, 261 failures, 0 errors, 82423s
 
