@@ -1,435 +1,148 @@
-Return-Path: <linux-ext4+bounces-7319-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7320-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD60A90C4F
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 21:28:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77FC3A90FA9
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Apr 2025 01:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54F84189B29A
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 19:28:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC6F13BB0DB
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 23:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C2A224B1C;
-	Wed, 16 Apr 2025 19:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tp4SGGLQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48DE82356C3;
+	Wed, 16 Apr 2025 23:35:30 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C576224250;
-	Wed, 16 Apr 2025 19:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57DC02309AF
+	for <linux-ext4@vger.kernel.org>; Wed, 16 Apr 2025 23:35:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744831679; cv=none; b=Qt2FxiS4s9ARz03MGEFv86GxuH/abzIViZVscASN2AXqAZ19YixOjjtD6J5EM2is+iXqxs2LcB/jsyHiJ5s4RIys8Y1FEtB2LZO4KazQGXNVZaAcsUBOEGjIRg5KGcQm7kDNMRFMKat/a0tU/lQ+ixKYJyp9QztSZWSEZitNzXY=
+	t=1744846530; cv=none; b=nr9UqSnEgjZnVaGND25JFG+YncIHipOXV+G37AM2fQrX+JuIU7c1dSCcnIHou2oTQQoxp9Xk0pAGLAWc9honO6a52jEwi8QEXGBDOT7ezKGjnqLciZCJ7NBtED7HHcKt5uoQiA4cuXeZkUZtT0tY1GWN32Y8S+V5L4rHHYC2J7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744831679; c=relaxed/simple;
-	bh=XH5BFbpOH07XYn9dfTAjIgoCoLGv9FMrkKS2XgAYvoo=;
+	s=arc-20240116; t=1744846530; c=relaxed/simple;
+	bh=qunDa/3rAisoNuQT59Wgv/d6fYkkkGHGdiVzHa5bS9o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Blz5AHhxInod0TwDaOK+UsOdmNsPUoltiTHLUL9BzvbYat1iFfzZAtz3dc7+4Oa9H6b3RQbt7HzvDY7tyNpUNql2aeAiGqoVRyVApJBoB/YRy7l8KL4xNQkkMG7+BeQtsrDuu7+y0xsSb6lktTWqFFYpa6j4uVLarMeL52RT7AQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tp4SGGLQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 839D2C4CEE2;
-	Wed, 16 Apr 2025 19:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744831678;
-	bh=XH5BFbpOH07XYn9dfTAjIgoCoLGv9FMrkKS2XgAYvoo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Tp4SGGLQREAiPkkEKFVxZd1k/XeW6At6uioB//5nPm80VYSQ7o7FZW0AQQ+QNCKJA
-	 2AGPDyqUqPND8kRXWRweTxTPZC14Keela2Sql68pb+J5oKBWSprznM1svUoiv178ew
-	 sSJazYli091wwKZeJYLoINkX5IfeCaMWrZpLpCD0G/nAeBIzx78inZzCUaYFTQ0WNl
-	 oDOALCoyICdKuwjm2+51JAllSU4wDndt+UFPE4kHnNpdSN/hUUNBQEcx8zJlJPDYsC
-	 sMVBDZJlDUAwJbuPoRyfEfyO1F+kKptiWVIYdk7CAkNlA/yLWGenjdLvJxhhm4phEp
-	 LNm174QjbkWvQ==
-Date: Wed, 16 Apr 2025 12:27:57 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Davidlohr Bueso <dave@stgolabs.net>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Cc: jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
-	brauner@kernel.org, willy@infradead.org, hare@suse.de,
-	djwong@kernel.org, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH -next 0/7] fs/buffer: split pagecache lookups into atomic
- or blocking
-Message-ID: <aAAEvcrmREWa1SKF@bombadil.infradead.org>
-References: <20250415231635.83960-1-dave@stgolabs.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jo7ZaiCCMRbel/LuS9aY8sCC3wP29x2ZPqLebrzWgTXUh64IAFPz0ULF0BPwt7WUoBRPn+zEGOirnoq5osl5cCawoVL6zqnt9QR05ktUmfqyUSgr+Xq0rIIsmlQYTdxvPTvBgFX4xcuLJRaSNiA7aeXODU6nZ+Fw7/WCUqxFPRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org ([204.26.30.8])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 53GNYvhW012145
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 16 Apr 2025 19:34:59 -0400
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id E3DBD340298; Wed, 16 Apr 2025 19:34:15 -0400 (EDT)
+Date: Wed, 16 Apr 2025 18:34:15 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        kdevops@lists.linux.dev, dave@stgolabs.net, jack@suse.cz
+Subject: Re: ext4 v6.15-rc2 baseline
+Message-ID: <20250416233415.GA3779528@mit.edu>
+References: <Z__vQcCF9xovbwtT@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="SatIC/TzEOAOjj/1"
+Content-Disposition: inline
+In-Reply-To: <Z__vQcCF9xovbwtT@bombadil.infradead.org>
+
+
+--SatIC/TzEOAOjj/1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250415231635.83960-1-dave@stgolabs.net>
 
-On Tue, Apr 15, 2025 at 04:16:28PM -0700, Davidlohr Bueso wrote:
-> Hello,
+On Wed, Apr 16, 2025 at 10:56:17AM -0700, Luis Chamberlain wrote:
+> ext4 developers,
 > 
-> This is a respin of the series[0] to address the sleep in atomic scenarios for
-> noref migration with large folios, introduced in:
-> 
->       3c20917120ce61 ("block/bdev: enable large folio support for large logical block sizes")
-> 
-> The main difference is that it removes the first patch and moves the fix (reducing
-> the i_private_lock critical region in the migration path) to the final patch, which
-> also introduces the new BH_Migrate flag. It also simplifies the locking scheme in
-> patch 1 to avoid folio trylocking in the atomic lookup cases. So essentially blocking
-> users will take the folio lock and hence wait for migration, and otherwise nonblocking
-> callers will bail the lookup if a noref migration is on-going. Blocking callers
-> will also benefit from potential performance gains by reducing contention on the
-> spinlock for bdev mappings.
-> 
-> It is noteworthy that this series is probably too big for Linus' tree, so there are
-> two options:
-> 
->  1. Revert 3c20917120ce61, add this series + 3c20917120ce61 for next. Or,
+> kdevops has run fstests on v6.15-rc2 across the different ext4 profiles
+> it currently defines, and the results are below.
 
-Reverting due to a fix series is odd, I'd advocate this series as a set
-of fixes to Linus' tree because clearly folio migration was not complete
-for buffer_migrate_folio_norefs() and this is part of the loose bits to help
-it for large folios. This issue was just hard to reproduce. The enabler
-of large folios on the block device cache is actually commit
-47dd67532303 ("block/bdev: lift block size restrictions to 64k") which
-goes later after 3c20917120ce61.
+Hmm, there are quite a lot of failures that aren't in my baseline.  In
+particular, I work very hard to make sure the 4k profile is clean, and
+as you can see in the attached file, it is.  But here's a short
+summary (for the full set, including the versions used for the full
+test run, see the attached file.)
 
-Jan Kara, since you've already added your Reviewed-by for all patches
-do you have any preference how this trickles to Linus?
+ext4/4k: 587 tests, 55 skipped, 5340 seconds
+ext4/1k: 581 tests, 59 skipped, 5700 seconds
+ext4/ext3: 579 tests, 1 failures, 149 skipped, 4715 seconds
+  Failures: ext4/028
+ext4/encrypt: 562 tests, 175 skipped, 2982 seconds
+ext4/nojournal: 579 tests, 127 skipped, 3955 seconds
+   ...
 
->  2. Cherry pick patch 7 as a fix for Linus' tree, and leave the rest for next.
->     But that could break lookup callers that have been deemed unfit to bail.
-> 
-> Patch 1: carves a path for callers that can block to take the folio lock.
-> Patch 2: adds sleeping flavors to pagecache lookups, no users.
-> Patches 3-6: converts to the new call, where possible.
-> Patch 7: does the actual sleep in atomic fix.
-> 
-> Thanks!
+I'll have to take a look at your test results tarball (I assume it
+includes the NNN.out.bad and NNN.full files, right) to see what's
+going on.
 
-kdevops has tested this patch series and compared it to the baseline [0]
-and has found no regressions on ext4.
+There are some exclude files[1][2] which I use to reduce noise, but
+that doesn't seem to explain many of your failures that you have reported.
 
-Tested-by: kdevops@lists.linux.dev
+[1] https://github.com/tytso/xfstests-bld/blob/master/test-appliance/files/root/fs/global_exclude
+[2] https://github.com/tytso/xfstests-bld/blob/master/test-appliance/files/root/fs/ext4/exclude
 
-Detailed test results below:
+>  - Is this useful information?
 
-Comparing commits:
-Baseline:      a74831cc4300 | linux-ext4-kpd: Linux 6.15-rc2
-Test:          6b337686249b | 6.15-rc2 + these patches
+Maybe; the question is why are your results so different from my results.
 
-Baseline Kernel:6.15.0-rc2-g8ffd015db85f
-Test Kernel:   6.15.0-rc2-00006-g89e084d709fc
+       	   	       	       	    	    - Ted
 
-Verbose Test Results Comparison:
-================================================================================
+--SatIC/TzEOAOjj/1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="ext4-baseline-6.15-rc2"
 
-Profile: ext4_1k
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/034            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/223         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
+TESTRUNID: ltm-20250414133140
+KERNEL:    kernel 6.15.0-rc2-xfstests #22 SMP PREEMPT_DYNAMIC Mon Apr 14 12:18:46 EDT 2025 x86_64
+CMDLINE:   --kernel gs://gce-xfstests/kernel.deb -c ext4/all -g auto
+CPUS:      2
+MEM:       7680
 
-Profile: ext4_2k
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/034            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/223         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
+ext4/4k: 587 tests, 55 skipped, 5340 seconds
+ext4/1k: 581 tests, 59 skipped, 5700 seconds
+ext4/ext3: 579 tests, 1 failures, 149 skipped, 4715 seconds
+  Failures: ext4/028
+ext4/encrypt: 562 tests, 175 skipped, 2982 seconds
+ext4/nojournal: 579 tests, 127 skipped, 3955 seconds
+ext4/ext3conv: 584 tests, 57 skipped, 5164 seconds
+ext4/adv: 580 tests, 2 failures, 63 skipped, 4873 seconds
+  Failures: generic/757 generic/764
+ext4/dioread_nolock: 585 tests, 55 skipped, 5538 seconds
+ext4/data_journal: 592 tests, 8 failures, 1 errors, 135 skipped, 4464 seconds
+  Failures: generic/127
+  Flaky: generic/032: 20% (1/5)   generic/475: 40% (2/5)
+  Errors: generic/475
+ext4/bigalloc_4k: 558 tests, 1 failures, 58 skipped, 5128 seconds
+  Flaky: generic/234: 20% (1/5)
+ext4/bigalloc_1k: 559 tests, 69 skipped, 4965 seconds
+ext4/dax: 571 tests, 2 failures, 160 skipped, 3111 seconds
+  Failures: generic/344 generic/363
+Totals: 6941 tests, 1162 skipped, 34 failures, 1 errors, 52426s
 
-Profile: ext4_4k
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/034            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/223         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
+FSTESTIMG: gce-xfstests/xfstests-amd64-202504110828
+FSTESTPRJ: gce-xfstests
+FSTESTVER: blktests 236edfd (Tue, 18 Mar 2025 12:56:26 +0900)
+FSTESTVER: fio  fio-3.39 (Tue, 18 Feb 2025 08:36:57 -0700)
+FSTESTVER: fsverity v1.6-2-gee7d74d (Mon, 17 Feb 2025 11:41:58 -0800)
+FSTESTVER: ima-evm-utils v1.5 (Mon, 6 Mar 2023 07:40:07 -0500)
+FSTESTVER: libaio   libaio-0.3.108-82-gb8eadc9 (Thu, 2 Jun 2022 13:33:11 +0200)
+FSTESTVER: ltp  20250130-195-ge2bbba0c1 (Fri, 11 Apr 2025 18:06:15 +0800)
+FSTESTVER: quota  v4.05-69-g68952f1 (Mon, 7 Oct 2024 15:45:56 -0400)
+FSTESTVER: util-linux v2.41 (Tue, 18 Mar 2025 13:50:51 +0100)
+FSTESTVER: xfsprogs v6.13.0-2-gf0d16c9e (Tue, 1 Apr 2025 20:23:42 -0400)
+FSTESTVER: xfstests-bld 42bcd9aa (Wed, 9 Apr 2025 07:51:57 -0400)
+FSTESTVER: xfstests v2025.03.30-11-g344015670 (Mon, 31 Mar 2025 13:50:06 -0400)
+FSTESTVER: zz_build-distro bookworm
+FSTESTSET: -g auto
+FSTESTOPT: aex
 
-Profile: ext4_advanced_features
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/034            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/223         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/270         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/477         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
-
-Profile: ext4_bigalloc1024k_4k
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/033            | [fail]       | [fail]       
-ext4/034            | [fail]       | [fail]       
-ext4/045            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/075         | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/091         | [fail]       | [fail]       
-generic/112         | [fail]       | [fail]       
-generic/127         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/234         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/251         | [fail]       | [fail]       
-generic/263         | [fail]       | [fail]       
-generic/280         | [fail]       | [fail]       
-generic/365         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/435         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/614         | [fail]       | [fail]       
-generic/629         | [fail]       | [fail]       
-generic/634         | [fail]       | [fail]       
-generic/635         | [fail]       | [fail]       
-generic/643         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/698         | [fail]       | [fail]       
-generic/732         | [fail]       | [fail]       
-generic/738         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
-generic/754         | [fail]       | [fail]       
-
-Profile: ext4_bigalloc16k_4k
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/033            | [fail]       | [fail]       
-ext4/034            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/075         | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/091         | [fail]       | [fail]       
-generic/112         | [fail]       | [fail]       
-generic/127         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/223         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/234         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/263         | [fail]       | [fail]       
-generic/280         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
-
-Profile: ext4_bigalloc2048k_4k
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/033            | [fail]       | [fail]       
-ext4/034            | [fail]       | [fail]       
-ext4/045            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/075         | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/091         | [fail]       | [fail]       
-generic/112         | [fail]       | [fail]       
-generic/127         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/234         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/251         | [fail]       | [fail]       
-generic/263         | [fail]       | [fail]       
-generic/280         | [fail]       | [fail]       
-generic/365         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/435         | [fail]       | [fail]       
-generic/471         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/614         | [fail]       | [fail]       
-generic/629         | [fail]       | [fail]       
-generic/634         | [fail]       | [fail]       
-generic/635         | [fail]       | [fail]       
-generic/643         | [fail]       | [fail]       
-generic/645         | [fail]       | [fail]       
-generic/676         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/698         | [fail]       | [fail]       
-generic/732         | [fail]       | [fail]       
-generic/736         | [fail]       | [fail]       
-generic/738         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
-generic/754         | [fail]       | [fail]       
-
-Profile: ext4_bigalloc32k_4k
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/033            | [fail]       | [fail]       
-ext4/034            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/075         | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/091         | [fail]       | [fail]       
-generic/112         | [fail]       | [fail]       
-generic/127         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/223         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/234         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/263         | [fail]       | [fail]       
-generic/280         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
-
-Profile: ext4_bigalloc64k_4k
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/033            | [fail]       | [fail]       
-ext4/034            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/075         | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/091         | [fail]       | [fail]       
-generic/112         | [fail]       | [fail]       
-generic/127         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/223         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/234         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/263         | [fail]       | [fail]       
-generic/280         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
-
-Profile: ext4_defaults
-                    | BASELINE     | TEST        
--------------------|--------------|--------------
-ext4/034            | [fail]       | [fail]       
-ext4/055            | [fail]       | [fail]       
-generic/082         | [fail]       | [fail]       
-generic/219         | [fail]       | [fail]       
-generic/223         | [fail]       | [fail]       
-generic/230         | [fail]       | [fail]       
-generic/231         | [fail]       | [fail]       
-generic/232         | [fail]       | [fail]       
-generic/233         | [fail]       | [fail]       
-generic/235         | [fail]       | [fail]       
-generic/270         | [fail]       | [fail]       
-generic/381         | [fail]       | [fail]       
-generic/382         | [fail]       | [fail]       
-generic/566         | [fail]       | [fail]       
-generic/587         | [fail]       | [fail]       
-generic/600         | [fail]       | [fail]       
-generic/601         | [fail]       | [fail]       
-generic/681         | [fail]       | [fail]       
-generic/682         | [fail]       | [fail]       
-generic/741         | [fail]       | [fail]       
-
-Summary:
-  - Total regressions: 0
-  - Total fixes: 0
-  - Unchanged failures: 261
-
-[0] https://lore.kernel.org/all/Z__vQcCF9xovbwtT@bombadil.infradead.org/
-
-  Luis
+--SatIC/TzEOAOjj/1--
 
