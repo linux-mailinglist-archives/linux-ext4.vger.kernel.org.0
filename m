@@ -1,156 +1,98 @@
-Return-Path: <linux-ext4+bounces-7305-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7306-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 106D7A8ADD2
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 04:07:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6ECFA8B00C
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 08:10:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E69D1903C19
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 02:07:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A5D43BB5BA
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Apr 2025 06:09:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36A51A3155;
-	Wed, 16 Apr 2025 02:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F3722DFA5;
+	Wed, 16 Apr 2025 06:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="CQPJelMk"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="h5B6vUaP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dog.birch.relay.mailchannels.net (dog.birch.relay.mailchannels.net [23.83.209.48])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18A4915E96;
-	Wed, 16 Apr 2025 02:07:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.209.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744769250; cv=pass; b=XPDNvT86IlV2mZ6aVxWaNpkeodTP2cLKZEio7E2eyYkOVhFdT1JrQrhZoo+0yv76CkfPdIXejsQbyUFMTGHimzEtRIZq9rMKNfsvvMJRY5K0HKSc8Nqhm3q1PD4YOg5r57qD1eTCwdeYrLDHSKsleQsmL5tdLyZD0d0XxSFAXyA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744769250; c=relaxed/simple;
-	bh=EgFwQezJYypIPTLjbAO7+wgBDKuxG1DACqpgT5oKBE4=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6235222B8D4;
+	Wed, 16 Apr 2025 06:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744783771; cv=none; b=QTIR3gon299pNvB7ng+DPZAl9T6o56I9qd4sXSWkyxhGisHacIHno6WaFPvYJrWipB+4mO6z4yhQ6Bpn4H5I6whko6RJNMFz4GO1QvlbjJKZQr9BECF8EIoT6QiUqrG3udSlKkqW1J+az1ZY6GDH5VO28wnerHB/QBLrpOl6nrg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744783771; c=relaxed/simple;
+	bh=atjs9xnnTb8NrElVWESWkmJT4LsGCO0VIogOIOZ7FRo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ufEc2l+bQpWXKT5I+oDN8u7vVrRkpSYMUteAFH9ibaloWavTmpFAs9OhHsJUJC66oRzEmd8vUloGeGFnNcy2cfkZnpKePXQWj22VPpnuoBOYeE++ye4n6xso2OZa4k1IbfK4LK5f0rXc+QT56XmKILzCNKPPAbCaNSJJI4MsR8s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=CQPJelMk; arc=pass smtp.client-ip=23.83.209.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 8FCA8458B5;
-	Wed, 16 Apr 2025 02:02:13 +0000 (UTC)
-Received: from pdx1-sub0-mail-a270.dreamhost.com (trex-6.trex.outbound.svc.cluster.local [100.110.51.53])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id E44A645942;
-	Wed, 16 Apr 2025 02:02:12 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1744768933; a=rsa-sha256;
-	cv=none;
-	b=ShPKZgvbJsioWDJ6zr+jN3RuXQx3pXzihIoxXcdZaSyjN9R5n1ACCkvuyN7X1ynEKwIIGY
-	R8GLEc4WHPGi2YxHjgspbU56rRPhzKKeMOhaS3HOIxlSSTIWWXJmDKgW6g8jueiTB+5MOS
-	0b5be/c6VN4uAVl8LeDqWz9iTfaOK8HP39Wn4J0ZhH10leg8DbSoew4l5g5Xxgfe9b1hhv
-	w+nIn0fb8z9cV6LnelyJ2Sr1Q4CAaxrL7Qn4i3hjNw/0+AmXAnmCZ7M7t6UAp7HmTrGpma
-	ogtNCT/bxQXwq+HYkQZ0VY8t4ro3prNAHPfWKpOvwLo+hIyWNNiXI/xr87ARPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1744768933;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=EgFwQezJYypIPTLjbAO7+wgBDKuxG1DACqpgT5oKBE4=;
-	b=w1Vi/dc5LKt/pF3kalouhzHVe1gKlaQAefi7r4+A6nPgdr/Vcv+OEFNcFeVZprLl10Ehmk
-	xxG41EPehHgismJsEC2a4EyNj8TaSN46COqL6jgv4uvnxKkTxn3mN4z/Pgb41dnmq19u5E
-	hv1PDrdutvORtuSdzhIxjeXkCivOD17/tQd0BWsgk73Ys9RBPaX+74hfz0bj0RvO93ZwW7
-	0Fpzja0Vz8YGHS4C8xHLWbJ+IEsUl/7njEELgFasx0YpUETwi63Fk2RDr1I5cvMtmJbA1n
-	v5+O4LWQ3bE8rHAcSqL1Fm/W5NVFSDPCri4/wcG66b68BWgtjhaA8jvKAk+tgQ==
-ARC-Authentication-Results: i=1;
-	rspamd-5dd7f8b4cd-2pb8p;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Spot-Thread: 23261b3b7b19990f_1744768933328_4128009771
-X-MC-Loop-Signature: 1744768933328:3434343757
-X-MC-Ingress-Time: 1744768933328
-Received: from pdx1-sub0-mail-a270.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.110.51.53 (trex/7.0.3);
-	Wed, 16 Apr 2025 02:02:13 +0000
-Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a270.dreamhost.com (Postfix) with ESMTPSA id 4Zckmg3Gr7z2c;
-	Tue, 15 Apr 2025 19:02:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1744768932;
-	bh=EgFwQezJYypIPTLjbAO7+wgBDKuxG1DACqpgT5oKBE4=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=CQPJelMkHR9c9PwOQz1qB9oLMoQ0ijerkO/7sTliU3wShQdMiumwtZeUz8qKG4hQH
-	 P/+Ba9DrECHulLQADswnJQAn7N7p6JgJOjhObbZsvwzjl1ctJj9h4ZCrzAkqDRFUXu
-	 p0S045L32lw1PwuZUJqHayjEwt1ltr9Rp+CEuY1ayAOdHWv190+04JcmqhwNHhuIhK
-	 0/2MpjusbdsgGViBxeOeRKPuszsMvIgUOy21txdcZrW66eV/RDnRe9TOYDbaf6ZziO
-	 fxFGoIfQeyeU/EDzaCZ+mmP69qqdonxNJRnFc4V8OBjj/3+x97Y7HdQmSxM8hXxUi1
-	 VFDZD9KTPnAzw==
-Date: Tue, 15 Apr 2025 19:02:07 -0700
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>,
-	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	riel@surriel.com, willy@infradead.org, hannes@cmpxchg.org,
-	oliver.sang@intel.com, david@redhat.com, axboe@kernel.dk,
-	hare@suse.de, david@fromorbit.com, djwong@kernel.org,
-	ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-mm@kvack.org,
-	gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com,
-	syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
- migration
-Message-ID: <20250415232501.iypezdhizhttidpc@offworld>
-Mail-Followup-To: Luis Chamberlain <mcgrof@kernel.org>,
-	Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>,
-	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	riel@surriel.com, willy@infradead.org, hannes@cmpxchg.org,
-	oliver.sang@intel.com, david@redhat.com, axboe@kernel.dk,
-	hare@suse.de, david@fromorbit.com, djwong@kernel.org,
-	ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-mm@kvack.org,
-	gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com,
-	syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
-References: <20250410014945.2140781-1-mcgrof@kernel.org>
- <20250410014945.2140781-2-mcgrof@kernel.org>
- <dpn6pb7hwpmajoh5k5zla6x7fsmh4rlttstj3hkuvunp6tok3j@ikz2fxpikfv4>
- <Z_15mCAv6nsSgRTf@bombadil.infradead.org>
- <Z_2J9bxCqAUPgq42@bombadil.infradead.org>
- <20250415-freihalten-tausend-a9791b9c3a03@brauner>
- <Z_5_p3t_fNUBoG7Y@bombadil.infradead.org>
- <dkjq2c57du34wq7ocvtk37a5gkcondxfedgnbdxse55nhlfioy@v6tx45lkopfm>
- <Z_7KTEKEzC9Fh2rn@bombadil.infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZWzu4PKzlylSNNaAIJyx3FdYLl4jM8ELf4r9tAadDLSreJZRT24T7L75beELJxevLT64phz+JqJ+tJMbF72ljx1XY9WvC3RlfgefkuV83ArHZTdJEyvZb5SEaGkGhlmIsQLF4EIDXdiTPciSBEWeE1B5g+NWEQhPb4X7R80bSBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=h5B6vUaP; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=IbjssDbDw4fbWENvdS0KvfimTbvuxyw7pTODQ6w8VYc=; b=h5B6vUaP9nBicHML0o1nO0GmeE
+	QzMSCqPyrmX9DLxlVDL3LivdmUQgcpIq4O+RD7ebNUEciFmiCZC4jeM9jadDJ7IG9C6y4TJEzcg7/
+	MjcSf2SS0f1+7yiPuyo0LBTtGFyP3oJuwU5sQ2mRNQyFmRG2JItfMzs/e7q7eYYKETvRdsvW1dBtm
+	AvhH92UUgWNkXR7ByxniOQAU0KPt0ABo0BimXR960R6Ekjng+6jZ69cJfqQ0muMk4kYPffdf/K5II
+	vtQAdzBTmhK4MR+3DVZi0u7xkKKiA7b7OwSiT4s+Zutd7pZ20ekSfIUkGx4VS1rlbMYd4pL7YyHkt
+	Tue3T6Sw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1u4vxh-00000008Mmg-3PR4;
+	Wed, 16 Apr 2025 06:09:29 +0000
+Date: Tue, 15 Apr 2025 23:09:29 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, fstests@vger.kernel.org,
+	ritesh.list@gmail.com, ojaswin@linux.ibm.com, djwong@kernel.org,
+	zlang@kernel.org, david@fromorbit.com
+Subject: Re: [PATCH v1] xfs: Fail remount with noattr2 on a v5 xfs with
+ CONFIG_XFS_SUPPORT_V4=y
+Message-ID: <Z_9JmaXJJVJFJ2Yl@infradead.org>
+References: <7c4202348f67788db55c7ec445cbe3f2d587daf2.1744394929.git.nirjhar.roy.lists@gmail.com>
+ <Z_yhpwBQz7Xs4WLI@infradead.org>
+ <0d1d7e6f-d2b9-4c38-9c8e-a25671b6380c@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <Z_7KTEKEzC9Fh2rn@bombadil.infradead.org>
-User-Agent: NeoMutt/20220429
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0d1d7e6f-d2b9-4c38-9c8e-a25671b6380c@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue, 15 Apr 2025, Luis Chamberlain wrote:
+On Tue, Apr 15, 2025 at 12:48:39PM +0530, Nirjhar Roy (IBM) wrote:
+> condition(noattr2 on v5) is not caught in xfs_fs_validate_params() because
+> the superblock isn't read yet and "struct xfs_mount    *mp" is still not
+> aware of whether the underlying filesystem is v5 or v4 (i.e, whether crc=0
+> or crc=1). So, even if the underlying filesystem is v5, xfs_has_attr2() will
+> return false, because the m_features isn't populated yet.
 
->On Tue, Apr 15, 2025 at 06:23:54PM +0200, Jan Kara wrote:
->> So I don't like removing that commit because it makes a
->> "reproducible with a heavy stress test" problem become a "reproduced by
->> real world workloads" problem.
->
->So how about just patch 2 and 8 in this series, with the spin lock
->removal happening on the last patch for Linus tree?
+Yes.
 
-fyi I sent out a new series (trimmed some recipients), addressing the concerns
-laid out in this approach.
+> However, once
+> xfs_readsb() is done, m_features is populated (mp->m_features |=
+> xfs_sb_version_to_features(sbp); called at the end of xfs_readsb()). After
+> that, when xfs_finish_flags() is called, the invalid mount option (i.e,
+> noattr2 with crc=1) is caught, and the mount fails correctly. So, m_features
+> is partially populated while xfs_fs_validate_params() is getting executed, I
+> am not sure if that is done intentionally.
 
-https://lore.kernel.org/all/20250415231635.83960-1-dave@stgolabs.net/
+As you pointed out above it can't be fully populated becaue we don't
+have all the information.  And that can't be fixed because some of the
+options are needed to even get to reading the superblock.
 
-Similar to adding artificial delays to a vanilla kernel, the only behavior
-these modifications cause is a quicker triggering of the aforementioned
-(yet independent) ext4 warning splat/corruption.
+So we do need a second pass of verification for everything that depends
+on informationtion from the superblock.  The fact that m_features
+mixes user options and on-disk feature bits is unfortunately not very
+helpful for a clear structure here.
+
 
