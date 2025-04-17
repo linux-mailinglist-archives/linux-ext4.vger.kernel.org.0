@@ -1,53 +1,56 @@
-Return-Path: <linux-ext4+bounces-7326-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7327-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3249DA92922
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Apr 2025 20:40:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF559A92C52
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Apr 2025 22:35:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82CC61B62B8D
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Apr 2025 18:40:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 663391B651B9
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Apr 2025 20:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21E2D257459;
-	Thu, 17 Apr 2025 18:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4886F2063DD;
+	Thu, 17 Apr 2025 20:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="awksi0wX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3AB25743D
-	for <linux-ext4@vger.kernel.org>; Thu, 17 Apr 2025 18:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA261FF1CE;
+	Thu, 17 Apr 2025 20:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744915049; cv=none; b=Qo2Loy7gaXGQGt1S+L55m7IZ+rN4xsV9Pa0m0buVj5tNsj0tYBVEV19Pq4wESNPMi4lBWsfFDROZELnmEvgtf6wJPX+gB4En96BzwzYGmLftQ6MmxADU075Lf9B/DRsmoZ+11Ow+hAVnrX/E6g+4Dh3DCOCUCFmW/Ssnb0Y2xgQ=
+	t=1744922129; cv=none; b=Q2ia9LW0qL02WTdyjlEWI1RrvQH+9aVwuBpvSe3rRC3HHUsyFKkrqF+9TDVrCBOpV3VKKZK+pciyQXeKycV2yX05gOyjBph+dYqoWaiAMja7FCv/4Y2hhw4727hMT+troDYMiJJCLozWtz41qhlB1FagXYDHid7XcHrNSZ+Mvok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744915049; c=relaxed/simple;
-	bh=7/TYR7hjxw8uI7CKx4Li6ruOBe6Uxmmo1zXWVc4ImzY=;
+	s=arc-20240116; t=1744922129; c=relaxed/simple;
+	bh=9g7VSe4GPs0t1aTM8Y3REKtX5xNSUrZEZQxXyCyrB0g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TwDe7+PBDK+g9CUWR0HNkatPK1QVuUxWq7u4B1njQktznz3lwpoKEj4iAcIo/BBcUkttVTPZn/6EOvVSgEsDXvov3x95hruw5xH0JJPTnsgnZzxiZeAITvAam875rmECByP4D3svGS9fbTt/NCEV67WuuyZ/IOkPTnYwTZuJH/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org (c-73-9-28-129.hsd1.il.comcast.net [73.9.28.129])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 53HIbBa8025010
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 17 Apr 2025 14:37:13 -0400
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id 302F2340A4B; Thu, 17 Apr 2025 13:37:11 -0500 (CDT)
-Date: Thu, 17 Apr 2025 13:37:11 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, kdevops@lists.linux.dev, dave@stgolabs.net,
-        jack@suse.cz
+	 Content-Type:Content-Disposition:In-Reply-To; b=o0n/iwk6N9n+aQxnJbgiEi8e4a7RyAsW3FBaxiueGHS5/UThZ01S9N1t5AvdiFoKsQSgbMlAI54PdXP7ZNWQfcud+3wO3jdz1fW6PaWWRXMU2pWXT/TCuWuIO5sfRzoO1FqVjB0uilSMM6dXAgGmS+duxPU1zZPuBfcecAfTp8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=awksi0wX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31C80C4CEE4;
+	Thu, 17 Apr 2025 20:35:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744922128;
+	bh=9g7VSe4GPs0t1aTM8Y3REKtX5xNSUrZEZQxXyCyrB0g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=awksi0wXsBL8vTc4IQKDCTTHjwJ9hxcfyAQUxC12iAA3COzg8a71GxuvoP1LQncfQ
+	 uFn95Hb8OOje3Q7Mo1fmtkUs/h470YFno6/2qNb9QHInRbl7+syAcqEML9cj74m9P3
+	 vZY2xEv4uzcKZKsHcBq6esoCdDTl1vh4YTSEQAQ85ld/S99erssEkZ8Eb1c9889ax5
+	 bEnBAgN+wdqgX8SLr0IyOa7MMzpI63HrP+WRYVUJRij5WG9o5Ri/1p65AlYhSTMM67
+	 XJDZd6jXnPBValTesj1f+v+RhlddNsNfix6/n0wTL2DJyfCu+xWtyaQYY5Biyz26cz
+	 9weQMNsC4+o0A==
+Date: Thu, 17 Apr 2025 13:35:26 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	kdevops@lists.linux.dev, dave@stgolabs.net, jack@suse.cz
 Subject: Re: ext4 v6.15-rc2 baseline
-Message-ID: <20250417183711.GB6008@mit.edu>
+Message-ID: <aAFmDjDtZBzxiN66@bombadil.infradead.org>
 References: <Z__vQcCF9xovbwtT@bombadil.infradead.org>
  <20250416233415.GA3779528@mit.edu>
- <20250417163820.GA25655@frogsfrogsfrogs>
+ <20250417164907.GA6008@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -56,70 +59,28 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250417163820.GA25655@frogsfrogsfrogs>
+In-Reply-To: <20250417164907.GA6008@mit.edu>
 
-
-On Thu, Apr 17, 2025 at 09:38:20AM -0700, Darrick J. Wong wrote:
+On Thu, Apr 17, 2025 at 11:49:07AM -0500, Theodore Ts'o wrote:
+> On Wed, Apr 16, 2025 at 06:34:15PM -0500, Theodore Ts'o wrote:
 > 
-> generic/04[456] fail with a bunch of...
-
-Yeah, this is known.   I have an ext4-specific exclude file:
-
-// generic/04[456] tests how truncate and delayed allocation works
-// ext4 uses the data=ordered to avoid exposing stale data, and
-// so it uses a different mechanism than xfs.  So these tests will fail
-generic/044
-generic/045
-generic/046
-
-
-> ext4/043 seems to fail because it tries to create 128b inodes with
-> project ids and fails.
-
-Yeah, I don't enable project id quotas by default in my test setups.
-
-And _scratch_mkfs will fallback to using just the tests's mkfs option,
-so if -O quota,project are specified in MKFS_OPTS, then the fallback works:
-
-Start test timestamps with 128 inode size one device /dev/vdc
-** mkfs failed with extra mkfs options added to "-q -O quota,project" by test 043 **
-** attempting to mkfs using only test 043 options: -I 128 **
-
-I suppose we could explicitly add something like -O ^project to the
-test, but enabling -O project isn't in the default e2fsprogs
-mke2fs.conf, and there are probably all sorts of oddball mke2fs.conf
-configurations that might cause tesets to fail.
-
-
-> ext4/053 I suspect fails because built-in quota conflicts with the quota
-> mount options.
-
-Hmm, I can't reproduce this with "kvm-xfstests -c ext4/quota
-ext4/053", which will configure xfstests with:
-
-MKFS_OPTIONS  -- -F -q -O quota,project /dev/vdc
-MOUNT_OPTIONS -- -o acl,user_xattr -o block_validity /dev/vdc /vdc
-
-Can you send me the out.bad and full files for that test?
-
-Hmm... maybe this is another one of these "it fails if a non-standard
-mke2fs.conf is used, although I don't see how."
-
-
-> generic/{633,697,696} fails with:
+> > >  - Is this useful information?
+> > 
+> > Maybe; the question is why are your results so different from my results.
 > 
-> --- /run/fstests/bin/tests/generic/697.out	2025-01-30 10:00:16.953276275 -0800
-> +++ /var/tmp/fstests/generic/697.out.bad	2025-04-16 15:54:39.173837150 -0700
-> @@ -1,2 +1,4 @@
->  QA output created by 697
-> +utils.c: 928: openat_tmpfile_supported - Invalid argument - failure: create
-> +utils.c: 928: openat_tmpfile_supported - Invalid argument - failure: create
->  Silence is golden
+> It looks like the problem is that your kernel config doesn't enable
+> CONFIG_QFMT_V2.  As a result, the quota feature is not supported in
+> the kernel under test.   From ext4/033.full file:
 > 
-> No idea what that's about.
+> mount: /media/scratch: wrong fs type, bad option, bad superblock on /dev/loop5, missing codepage or helper program, or other error.
+>        dmesg(1) may have more information after failed mount system call.
+> mount -o acl,user_xattr -o dioread_nolock,nodelalloc /dev/loop5 /media/scratch failed
+> 
+> And from the ext4/034.dmesg file:
+> 
+> [  297.969763] EXT4-fs (loop5): The kernel was not built with CONFIG_QUOTA and CONFIG_QFMT_V2
 
-I don't have any idea either.  I assume there's nothing in the dmesg
-for that test?  Those tests are passing for me, so I got nothing.
+Let' see what happens when I enable quotas, pushed.
 
-    	 	      	    		    - Ted
+  Luis
 
