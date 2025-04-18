@@ -1,164 +1,167 @@
-Return-Path: <linux-ext4+bounces-7329-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7330-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEA4BA92F6F
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Apr 2025 03:44:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 779EEA92F8E
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Apr 2025 03:59:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47CB27AE546
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Apr 2025 01:42:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C33819E6EE7
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Apr 2025 02:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C18207A11;
-	Fri, 18 Apr 2025 01:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21FB263C71;
+	Fri, 18 Apr 2025 01:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NztAGl1w"
+	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="nx/mo3SO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from buffalo.ash.relay.mailchannels.net (buffalo.ash.relay.mailchannels.net [23.83.222.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C274A20458A;
-	Fri, 18 Apr 2025 01:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744940547; cv=none; b=PRq3e+yWUAMzoNDmzE+aO4H4+m/PoGk2mjrX6RYLjcIrTGXpxAaEbGqv4ktpLagiVBvg3UOnBVSZLKEBzGSNOK199GMFAaXjRTbFiaj8JrJCMT50HE6TjswgZ5lNswkjiO6wxO0YfU8j/fs6LkIQDipQ+OUh2dZl6TRR8Faxy2I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744940547; c=relaxed/simple;
-	bh=gG+1/T/riWKqGr/DmbNVZcKxEKPWNmg6qfUUOFoYwCw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D5p0/ifx9RRBQylY2epdQRlxkgk4NDQSXIqhGCxJuXFMAH+mR64P1o1Sd+sy79LE1bepobPOWYquFmuprvd38C5lDVIXoLv6xrMmGkd/aq1KMW31H3+r/y3kT6Uoyh/d3Poj94RTLgkzJtWRX1gMuyBfhngNSMls6V3PaQefKm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NztAGl1w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CB3CC4CEE4;
-	Fri, 18 Apr 2025 01:42:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744940547;
-	bh=gG+1/T/riWKqGr/DmbNVZcKxEKPWNmg6qfUUOFoYwCw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NztAGl1wqpL1VyvqGzG1zFzTcSpkTaZeaDddneuL9GwG2flGrMjjW6KoZxmkKTicM
-	 LteHDepL1snbG7/klW++hQJmDI8hxFemrZktr9gWmJPoRtPYillUNYCWP9z+Xc7pDi
-	 jxcmlkloxDOn3crXj9/Gt6GG/eOJqDCG7K6hAVeTKgMSACGVHlvXOsu5/Ex3XZZCL+
-	 hruL4epoBgh5kmk4gAU9mDkEabQ/FRpcoTdNWog1LrBuW++IdNKSxMX5Nmy3HcAKYm
-	 fG34XxnCJ/f1NyOs2coAkChTJNY8VJfEX/nr8mf2ZiNc0L+lfGCUH85fQxOZjP3W6q
-	 9fboFN2WHXTKw==
-Date: Thu, 17 Apr 2025 18:42:25 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	kdevops@lists.linux.dev, dave@stgolabs.net, jack@suse.cz
-Subject: Re: ext4 v6.15-rc2 baseline
-Message-ID: <aAGuAYGZfpUSabSf@bombadil.infradead.org>
-References: <Z__vQcCF9xovbwtT@bombadil.infradead.org>
- <20250416233415.GA3779528@mit.edu>
- <20250417164907.GA6008@mit.edu>
- <aAFmDjDtZBzxiN66@bombadil.infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64CD25E820;
+	Fri, 18 Apr 2025 01:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.222.24
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744941584; cv=pass; b=ib8CNCrlIxiMvu5RHJW5xGTFa9yKxS82uJIVyc1jUV+BHqUuSb4D46xhUSpDjtlQRNssD6ghThAXgJ6bw7jK9SQnd3egQFXvh8IPWuJXSXHAeDS++7iqv+JgJIdgSfCcvbw6mTZukjicjNZmF5B4XYN3z5tuRzkw+/DRlyCyb4Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744941584; c=relaxed/simple;
+	bh=LKBtEzqeMV0deJd58dXfl0HHlLeK50qj83WOVY2Gmss=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fWFy2uonqPqj+27im7AvJlswGod9+MRfu4GEN4x4UoZSl4I2A0T0bL6eTxluezHpfk/06RvkIOliAVRgCef13vcPZX3EbLm1vvaLIIccDyrx12EVhG0+nlun2RtL4elEfkw0NEoSFj+vRF0d3pcjmX1IgqouOKLJOF3TG5AvCYU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=nx/mo3SO; arc=pass smtp.client-ip=23.83.222.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 03C881616BF;
+	Fri, 18 Apr 2025 01:59:34 +0000 (UTC)
+Received: from pdx1-sub0-mail-a285.dreamhost.com (trex-2.trex.outbound.svc.cluster.local [100.109.34.158])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 88823161851;
+	Fri, 18 Apr 2025 01:59:33 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1744941573; a=rsa-sha256;
+	cv=none;
+	b=ExVDzOjZKaeTR8gi/JVqBKPXvusbaA01+0Dq+DY/xcUap0/1/UyUs5471j7xFj4nKn+jQZ
+	WkvRfiF4eu1L3RCtwAgOm3MDc3RQRU7KIXtClHTLrfhTYKaucxDiED7OrzqDlTOxhx0hKE
+	Z4l73BstflY+Pr+uOlAf1902AviNBzzoy67aN3H4Thfz/9zyKFaDv1wfVzajHL8pO33F5F
+	dR3WWT+kusVkKzrP4NP0U1AlWiC1X9/+80f1/0ivt1Tom52xDc5MT90illPKNZurBSQDAi
+	+Dt+GXOboeUMsMSxX5D1a9AFZprQfYgCHXx7i7jPdOmv+7ygGTmMJ7j+/dAUHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1744941573;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:dkim-signature;
+	bh=DqkM8F2/SD65YUArF5AEfZBkQPAmA5Kpq2ps1+aBLBg=;
+	b=ttI+pUBBLI8/74dzbadbHMFHT8RjK8SA+ZN/+4HGFxFl1J3E2PNxEQ8BTyeASp0z68+9JA
+	2sC/JaOo5TklHn/ThEvrkuk/xpY2qeOmfB3TZ94u7pbi/r6zxdtH+6tZEAyyp1TsKsAgUv
+	zRNWkE2bXmkIz4v/4va3RoPpJdr2JHXn1j1PopFOAFCcHL2Gmg45m1GIHTurG/lsKMlpn1
+	zOLB95p1GHGbthCM2R/inPypBoIhneY6kCfsaEatQcmJeGmJza6OkqdKXAWkT2VJRvBCJs
+	SfLzvTFIFp5ZPMklUP1ZaLcHo+bGRFnKWe6DaWuKIEkawW8DtT+siUOmqfZV6A==
+ARC-Authentication-Results: i=1;
+	rspamd-7bd9ff6c58-xxcc2;
+	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Tart-Cure: 78d4b7ca06ee9704_1744941573854_4064517488
+X-MC-Loop-Signature: 1744941573854:2683204789
+X-MC-Ingress-Time: 1744941573853
+Received: from pdx1-sub0-mail-a285.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.109.34.158 (trex/7.0.3);
+	Fri, 18 Apr 2025 01:59:33 +0000
+Received: from localhost.localdomain (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dave@stgolabs.net)
+	by pdx1-sub0-mail-a285.dreamhost.com (Postfix) with ESMTPSA id 4Zdych55ZXz88;
+	Thu, 17 Apr 2025 18:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+	s=dreamhost; t=1744941573;
+	bh=DqkM8F2/SD65YUArF5AEfZBkQPAmA5Kpq2ps1+aBLBg=;
+	h=From:To:Cc:Subject:Date:Content-Transfer-Encoding;
+	b=nx/mo3SOhBiSbQ4UbuEYiS03sw0BaL+D0WKNtxjiKYjS2MvTtvSitRBkfahKZdRRs
+	 x/Y2e8kXo25aJKgbRgGu6DqNjWfDajmOoVMhHFcPKO7u34YC8T8uqsLI36M60cg86E
+	 kGySmz+gBWgJij0b+t2x5Ayccq1HVMWcStHj1ntwx+/b9Vhqx4nmqfgz4fOXfxM/M9
+	 xAXwFu6q1cP39hysdv+M6OpMJJYqNY3KsCVbvpRTWcvn9B39f5KeAcYuugX2Zk6msR
+	 xfc14iFdi57r4VCG/CuU0Hy24JKxIdR5h3HLUWXI3upEfw1J8D8uuFeemIQgfXdW6n
+	 +pCosi9hOrgHA==
+From: Davidlohr Bueso <dave@stgolabs.net>
+To: jack@suse.cz,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	brauner@kernel.org
+Cc: mcgrof@kernel.org,
+	willy@infradead.org,
+	hare@suse.de,
+	djwong@kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	Davidlohr Bueso <dave@stgolabs.net>
+Subject: [PATCH v2 0/7] fs/buffer: split pagecache lookups into atomic or blocking
+Date: Thu, 17 Apr 2025 18:59:14 -0700
+Message-Id: <20250418015921.132400-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aAFmDjDtZBzxiN66@bombadil.infradead.org>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 17, 2025 at 01:35:28PM -0700, Luis Chamberlain wrote:
-> On Thu, Apr 17, 2025 at 11:49:07AM -0500, Theodore Ts'o wrote:
-> > On Wed, Apr 16, 2025 at 06:34:15PM -0500, Theodore Ts'o wrote:
-> > 
-> > > >  - Is this useful information?
-> > > 
-> > > Maybe; the question is why are your results so different from my results.
-> > 
-> > It looks like the problem is that your kernel config doesn't enable
-> > CONFIG_QFMT_V2.  As a result, the quota feature is not supported in
-> > the kernel under test.   From ext4/033.full file:
-> > 
-> > mount: /media/scratch: wrong fs type, bad option, bad superblock on /dev/loop5, missing codepage or helper program, or other error.
-> >        dmesg(1) may have more information after failed mount system call.
-> > mount -o acl,user_xattr -o dioread_nolock,nodelalloc /dev/loop5 /media/scratch failed
-> > 
-> > And from the ext4/034.dmesg file:
-> > 
-> > [  297.969763] EXT4-fs (loop5): The kernel was not built with CONFIG_QUOTA and CONFIG_QFMT_V2
-> 
-> Let' see what happens when I enable quotas, pushed.
+Hello,
 
-That helped, it brought down the test failures from 261 to 170 with a
-success rate improvement from 55.4% to 57.9%.
+Changes from v1: rebased on top of vfs.fixes (Christian).
 
-Dashboards for both results, the old one:
+This is a respin of the series[0] to address the sleep in atomic scenarios for
+noref migration with large folios, introduced in:
 
-https://kdevops.org/ext4/v6.15-rc2-a74831cc.html
+      3c20917120ce61 ("block/bdev: enable large folio support for large logical block sizes")
 
-The latest one:
+The main difference is that it removes the first patch and moves the fix (reducing
+the i_private_lock critical region in the migration path) to the final patch, which
+also introduces the new BH_Migrate flag. It also simplifies the locking scheme in
+patch 1 to avoid folio trylocking in the atomic lookup cases. So essentially blocking
+users will take the folio lock and hence wait for migration, and otherwise nonblocking
+callers will bail the lookup if a noref migration is on-going. Blocking callers
+will also benefit from potential performance gains by reducing contention on the
+spinlock for bdev mappings.
 
-https://kdevops.org/ext4/v6.15-rc2.html
+Applies against latest vfs.fixes. Please consider for Linus' tree.
 
-Detailed test results:
+Patch 1: carves a path for callers that can block to take the folio lock.
+Patch 2: adds sleeping flavors to pagecache lookups, no users.
+Patches 3-6: converts to the new call, where possible.
+Patch 7: does the actual sleep in atomic fix.
 
-https://github.com/linux-kdevops/kdevops-results-archive/commit/a051dea3db9fcc7e164c1d027264e181b68833e0
+Thanks!
 
-And so the new file name for results is
+[0] https://lore.kernel.org/all/20250410014945.2140781-1-mcgrof@kernel.org/
 
-fstests/gh/linux-ext4-kpd/20250417/0001/linux-6-15-rc2/8ffd015db85f.xz
+Davidlohr Bueso (7):
+  fs/buffer: split locking for pagecache lookups
+  fs/buffer: introduce sleeping flavors for pagecache lookups
+  fs/buffer: use sleeping version of __find_get_block()
+  fs/ocfs2: use sleeping version of __find_get_block()
+  fs/jbd2: use sleeping version of __find_get_block()
+  fs/ext4: use sleeping version of sb_find_get_block()
+  mm/migrate: fix sleep in atomic for large folios and buffer heads
 
-Detailed test results below:
+ fs/buffer.c                 | 73 +++++++++++++++++++++++++++----------
+ fs/ext4/ialloc.c            |  3 +-
+ fs/ext4/mballoc.c           |  3 +-
+ fs/jbd2/revoke.c            | 15 +++++---
+ fs/ocfs2/journal.c          |  2 +-
+ include/linux/buffer_head.h |  9 +++++
+ mm/migrate.c                |  8 ++--
+ 7 files changed, 82 insertions(+), 31 deletions(-)
 
-KERNEL:    6.15.0-rc2-g8ffd015db85f
-CPUS:      8
+--
+2.39.5
 
-ext4_defaults: 793 tests, 2 failures, 259 skipped, 10521 seconds
-  Failures: generic/223 generic/741
-ext4_4k: 793 tests, 2 failures, 308 skipped, 9837 seconds
-  Failures: generic/223 generic/741
-ext4_2k: 793 tests, 2 failures, 311 skipped, 10017 seconds
-  Failures: generic/223 generic/741
-ext4_advanced_features: 793 tests, 3 failures, 267 skipped, 10416 seconds
-  Failures: generic/223 generic/477 generic/741
-ext4_1k: 793 tests, 2 failures, 314 skipped, 10813 seconds
-  Failures: generic/223 generic/741
-ext4_bigalloc16k_4k: 793 tests, 26 failures, 341 skipped, 8856 seconds
-  Failures: ext4/033 generic/075 generic/082 generic/091 generic/112
-    generic/127 generic/219 generic/223 generic/230 generic/231
-    generic/232 generic/233 generic/234 generic/235 generic/263
-    generic/280 generic/381 generic/382 generic/566 generic/587
-    generic/600 generic/601 generic/681 generic/682 generic/691
-    generic/741
-ext4_bigalloc32k_4k: 793 tests, 26 failures, 341 skipped, 8678 seconds
-  Failures: ext4/033 generic/075 generic/082 generic/091 generic/112
-    generic/127 generic/219 generic/223 generic/230 generic/231
-    generic/232 generic/233 generic/234 generic/235 generic/263
-    generic/280 generic/381 generic/382 generic/566 generic/587
-    generic/600 generic/601 generic/681 generic/682 generic/691
-    generic/741
-ext4_bigalloc64k_4k: 793 tests, 26 failures, 341 skipped, 8554 seconds
-  Failures: ext4/033 generic/075 generic/082 generic/091 generic/112
-    generic/127 generic/219 generic/223 generic/230 generic/231
-    generic/232 generic/233 generic/234 generic/235 generic/263
-    generic/280 generic/381 generic/382 generic/566 generic/587
-    generic/600 generic/601 generic/681 generic/682 generic/691
-    generic/741
-ext4_bigalloc1024k_4k: 793 tests, 38 failures, 341 skipped, 8019 seconds
-  Failures: ext4/033 ext4/045 generic/075 generic/082 generic/091
-    generic/112 generic/127 generic/219 generic/230 generic/231
-    generic/232 generic/233 generic/234 generic/235 generic/251
-    generic/263 generic/280 generic/365 generic/381 generic/382
-    generic/435 generic/566 generic/587 generic/600 generic/601
-    generic/614 generic/629 generic/634 generic/635 generic/643
-    generic/681 generic/682 generic/691 generic/698 generic/732
-    generic/738 generic/741 generic/754
-ext4_bigalloc2048k_4k: 793 tests, 43 failures, 348 skipped, 7961 seconds
-  Failures: ext4/033 ext4/045 generic/075 generic/082 generic/091
-    generic/112 generic/127 generic/219 generic/230 generic/231
-    generic/232 generic/233 generic/234 generic/235 generic/251
-    generic/263 generic/280 generic/365 generic/381 generic/382
-    generic/435 generic/471 generic/566 generic/587 generic/600
-    generic/601 generic/603 generic/614 generic/629 generic/634
-    generic/635 generic/643 generic/645 generic/676 generic/681
-    generic/682 generic/691 generic/698 generic/732 generic/736
-    generic/738 generic/741 generic/754
-Totals: 7930 tests, 3171 skipped, 170 failures, 0 errors, 83862s
-
-  Luis
 
