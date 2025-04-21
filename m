@@ -1,55 +1,57 @@
-Return-Path: <linux-ext4+bounces-7366-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7367-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D788EA953C7
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 17:56:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1B9EA95413
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 18:31:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A74A16EA33
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 15:56:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 988C61894C0D
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 16:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D8D1DEFDD;
-	Mon, 21 Apr 2025 15:56:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i3Gidkq3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D439E1DF977;
+	Mon, 21 Apr 2025 16:31:08 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8824D7D3F4
-	for <linux-ext4@vger.kernel.org>; Mon, 21 Apr 2025 15:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF4D1DF98D
+	for <linux-ext4@vger.kernel.org>; Mon, 21 Apr 2025 16:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745250965; cv=none; b=sDbndD2LmwKW3f34GY0hTp6gPyu/eOF7xdYuIG0QkczPxOnAAXjXT7lcKK87qYa6d0qxZKQ2QeBydrqTg2u4YOZ61FosuyuTRrTlIMjr+jWbEm2dwlCLwNrPQieTytdjefHRmJfTbcnNHyvdOifcFJ1Ho9q2mxrZoY+6QvJKMp8=
+	t=1745253068; cv=none; b=V1jNyVHRPFo49jrXot7XX/IMMZZNfO5hc1tZsVTUp1hKi8iU7Ye7vyF3zDHMajJwaiiXIz2B3fEoY182Nd2oF2/AlOoRxJjq+EAiAs2B7Dmxcm9uB6iZuLzsKnISK0C2HoqyEqqvGTuoK2QarF0m3U9JHLhkq6zekGLYEDYfJF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745250965; c=relaxed/simple;
-	bh=SB7tPH38oQbn3xC2xqYqN44OAIcLL/WQ30Whw04JByE=;
+	s=arc-20240116; t=1745253068; c=relaxed/simple;
+	bh=IFBrOGhuz5lZXdQiE1OfbkxzUlOYhSK+LBKZ54Y1NeM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YR9E6gydxu5CFm+We3ioGAY9skzElawZiQl+hirFFg2OhsIndIwCEBtTiUaVXH3+0+8pnjsv+hTMVMWVxXvRWlnWCrZ93u1aObgin1rDDaK0WNtAa43B83m0s9WGH603s15zOtSsQiOTKE6cIRXe1kwHeleA4phUOnBKCmiyvH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i3Gidkq3; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 21 Apr 2025 11:55:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745250951;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UoSZJKDzfaKsirHVQWZr7LOj5trZ+TFj4jwsaD9UBbk=;
-	b=i3Gidkq3wzL0nc3C6ICt+faxIb/HU+7DNm0WnMTfZn7OjRRhyqOSuQBm5G+YmdAt6MzKFP
-	kRtT6IzVMA9OmEVrfP1GX6M4Sa2EXWf1b6vKWnKB9vMFdHcl5++aziYGxtxRCc7r+Q8oH2
-	02lUGZlxpz/VVLs6sqDal/cI+ePoJhw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Raghavendra K T <raghavendra.kt@amd.com>
-Cc: linux-mm@kvack.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, wqu@suse.com
-Subject: Re: scheduling while atomic on rc3 - migration + buffer heads
-Message-ID: <uy55hkjdrlnotqzb6rdjktgwv4abp2qxhspi3o63lnj2qjoreu@aegvqlbnfe2p>
-References: <hdqfrw2zii53qgyqnq33o4takgmvtgihpdeppkcsayn5wrmpyu@o77ad4o5gjlh>
- <7b395468-d72d-42c1-b891-75f127a1c534@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RhZS5947sq5roGWFt0BEdWMPskRAoW2MizwokVQ4naszEGIlFrHdTx5YbOQr7FGtx1TzyUOLmIJv8faqJ5Amqoq4v0hg9GF9DWINBrFg4wACTLGOexfK5XFyskTMl6wIxgST0cxYcamMM0JteLgOLRMpbqNk5mUviIbvqgwLG2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org ([204.26.30.8])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 53LGUX5m011561
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 21 Apr 2025 12:30:34 -0400
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 7F9B73463AE; Mon, 21 Apr 2025 11:29:52 -0500 (CDT)
+Date: Mon, 21 Apr 2025 11:29:52 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, kdevops@lists.linux.dev, dave@stgolabs.net,
+        jack@suse.cz
+Subject: Re: ext4 v6.15-rc2 baseline
+Message-ID: <20250421162952.GC569616@mit.edu>
+References: <Z__vQcCF9xovbwtT@bombadil.infradead.org>
+ <20250416233415.GA3779528@mit.edu>
+ <20250417163820.GA25655@frogsfrogsfrogs>
+ <20250417183711.GB6008@mit.edu>
+ <aAFq_bef9liguosY@bombadil.infradead.org>
+ <20250419182249.GC210438@mit.edu>
+ <20250421155433.GC25700@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -58,79 +60,45 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7b395468-d72d-42c1-b891-75f127a1c534@amd.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20250421155433.GC25700@frogsfrogsfrogs>
 
-On Mon, Apr 21, 2025 at 09:17:18PM +0530, Raghavendra K T wrote:
-> On 4/21/2025 8:44 PM, Kent Overstreet wrote:
+On Mon, Apr 21, 2025 at 08:54:33AM -0700, Darrick J. Wong wrote:
 > 
-> +Qu as I see similar report from him
-> 
-> > This just popped up in one of my test runs.
-> > 
-> > Given that it's buffer heads, it has to be the ext4 root filesystem, not
-> > bcachefs.
-> > 
-> > 00465 ========= TEST   lz4_buffered
-> > 00465
-> > 00465 WATCHDOG 360
-> > 00466 bcachefs (vdb): starting version 1.25: extent_flags opts=errors=panic,compression=lz4
-> > 00466 bcachefs (vdb): initializing new filesystem
-> > 00466 bcachefs (vdb): going read-write
-> > 00466 bcachefs (vdb): marking superblocks
-> > 00466 bcachefs (vdb): initializing freespace
-> > 00466 bcachefs (vdb): done initializing freespace
-> > 00466 bcachefs (vdb): reading snapshots table
-> > 00466 bcachefs (vdb): reading snapshots done
-> > 00466 bcachefs (vdb): done starting filesystem
-> > 00466 starting copy
-> > 00515 BUG: sleeping function called from invalid context at mm/util.c:743
-> > 00515 in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 120, name: kcompactd0
-> > 00515 preempt_count: 1, expected: 0
-> > 00515 RCU nest depth: 0, expected: 0
-> > 00515 1 lock held by kcompactd0/120:
-> > 00515  #0: ffffff80c0c558f0 (&mapping->i_private_lock){+.+.}-{3:3}, at: __buffer_migrate_folio+0x114/0x298
-> > 00515 Preemption disabled at:
-> > 00515 [<ffffffc08025fa84>] __buffer_migrate_folio+0x114/0x298
-> > 00515 CPU: 11 UID: 0 PID: 120 Comm: kcompactd0 Not tainted 6.15.0-rc3-ktest-gb2a78fdf7d2f #20530 PREEMPT
-> > 00515 Hardware name: linux,dummy-virt (DT)
-> > 00515 Call trace:
-> > 00515  show_stack+0x1c/0x30 (C)
-> > 00515  dump_stack_lvl+0xb0/0xc0
-> > 00515  dump_stack+0x14/0x20
-> > 00515  __might_resched+0x180/0x288
-> > 00515  folio_mc_copy+0x54/0x98
-> > 00515  __migrate_folio.isra.0+0x68/0x168
-> > 00515  __buffer_migrate_folio+0x280/0x298
-> > 00515  buffer_migrate_folio_norefs+0x18/0x28
-> > 00515  migrate_pages_batch+0x94c/0xeb8
-> > 00515  migrate_pages_sync+0x84/0x240
-> > 00515  migrate_pages+0x284/0x698
-> > 00515  compact_zone+0xa40/0x10f8
-> > 00515  kcompactd_do_work+0x204/0x498
-> > 00515  kcompactd+0x3c4/0x400
-> > 00515  kthread+0x13c/0x208
-> > 00515  ret_from_fork+0x10/0x20
-> > 00518 starting sync
-> > 00519 starting rm
-> > 00520 ========= FAILED TIMEOUT lz4_buffered in 360s
-> > 
-> 
-> I have also seen similar stack with folio_mc_copy() while testing
-> PTE A bit patches.
-> 
-> IIUC, it has something to do with cond_resched() called from
-> folio_mc_copy().
-> 
-> (Thomas (tglx) mentioned long back that cond_resched() does not have the
-> scope awareness), not sure where should the fix be done in these
-> cases..
+> I might be wading in deeper than I know, but it seems to me that
+> after a crash recovery it's not great to see 64k files with no blocks
+> allocated to them at all.
 
-That's true, calling cond_resched() while a spinlock held is a bug.
+Well, what ext4 in no dioread_nolock mode will do is to allocate
+blocks marked as unitializationed, and then write the data blocks, and
+then change them to be marked as initialized.  So it's not that there
+are no blocks allocated at all; but that there are blocks allocated
+but attempts to read from the file will return all zeros.
 
-> (I mean caller of the migrate_folio should call with no spinlock held
-> but with mutex? )
+This is non-ideal, but my main concern is a performance issue, not a
+correctness one.  We're modifying the metadata blocks twice, and while
+most of the time the two modifications happen within a single
+transaction (so the user won't actually see the zero blocks after the
+crash _most_ of the time), the extra journal handles means extra CPU
+and extra jbd2 spinlocks getting taken and released.
 
-Yes. migrate_folio() does large data copies, so we don't want all that
-running in atomic context.
+So it's on my todo list to fix, in my copious spare time.....
+
+> (I don't care about the others whining about _exclude_fs-- if
+> you make the design decision that the current ext4 behavior is
+> good enough, then the test cannot ever be satisfied so let's
+> capture that in the test > itself, not in everyone's scattered
+> exclusion lists.)
+
+Fair enough, I can try, and see if we get people attempting to NACK
+the changes this time around.  Support beating back the whiners would
+be appreciated.
+
+I can also see if Luis's LBS changes might it easier to deal with the
+bigalloc test bugs.  It will mean exposing the concept of cluster
+allocation size (as distinct from block size) to the core xfstests
+infrastructure, and again, we can see if people try to NACK the
+changes.  This will require a bit more work, however as this is a big
+difference between XFS's LBS feature and ext4's bigalloc feature.
+
+						- Ted
 
