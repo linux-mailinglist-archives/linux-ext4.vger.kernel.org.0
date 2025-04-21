@@ -1,62 +1,54 @@
-Return-Path: <linux-ext4+bounces-7369-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7370-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7275EA954E3
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 18:48:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC8A2A95547
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 19:27:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97FCC17425A
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 16:48:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E8053B3DB0
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 17:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 689FD1DF977;
-	Mon, 21 Apr 2025 16:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB2E1E5210;
+	Mon, 21 Apr 2025 17:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tvr9bVaN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EH66sC6G"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0140224EA;
-	Mon, 21 Apr 2025 16:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994EC1DE8A8;
+	Mon, 21 Apr 2025 17:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745254081; cv=none; b=bBG6H5wNaS9QbYE5sqhS1njZsko2x8yJD+JqPInUs9SLYpT/WP/GR3ve6AZBe41GXf1bctzoWRxsaGigUFSd7cKzoNviTJrq4/pesb/3cpYYNOgzluRDpl1n03ahuSTQeOHRXb/NdX/w9WnAlc++VTrmKAyXlzaAiC0X0oUYakc=
+	t=1745256423; cv=none; b=b++83+f9KKqueSPfhv/LiHi2LVnLVzE1HlZrEBkraxtkab2rcL9AifSzNgeY/3LXXDGMSzZfmfrG0NfcCvIlskMqYFNiqmcJzWzm5Uh24coTAKFG6KXUE8jk9YuD93IC0NeTEpjhtHlGsOLOhKIoCHZvSOsWgBjKgKDKB72ZWL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745254081; c=relaxed/simple;
-	bh=cUGssDusKLdis92WjnrnBFRgq5wjzgSEaaVaefAdvSA=;
+	s=arc-20240116; t=1745256423; c=relaxed/simple;
+	bh=aQsaCHIxyz5gzrUTjpK7zQ18kiLdHmZy8I1O5Z7GO0w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=msKcWaS7idjPPHkymQJOFZuB7+nAihRh399QUWEviAmAQhVcsmDyJsvXno3cauYB2A+dhL24IvevSGA3IcI0sk3ie9ueJgB5Mg0CsBNao6UQYc3LDSbfFT6wuR+YNlxkYJwhAYfQ+BIF0XGL/N+Duq0xQa/wvuowUH310ITuqXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tvr9bVaN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 654F6C4CEE4;
-	Mon, 21 Apr 2025 16:48:00 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=aPCTqN8nGQHcj2mNNzHznpufbtiTPLPRz8fV0o/2emKypRZapzPv3HOeGGLZinwmNIEiymtOCnf1rscW6D3CN/cHcVdU1Ato+c/hynrpVeHVg7s5B2yBlGf55NNksMOUGsKJL/D57v1qL6mwGj98pXnLhafaUaHkY1yzTdj1pgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EH66sC6G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D005C4CEE4;
+	Mon, 21 Apr 2025 17:27:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745254080;
-	bh=cUGssDusKLdis92WjnrnBFRgq5wjzgSEaaVaefAdvSA=;
+	s=k20201202; t=1745256423;
+	bh=aQsaCHIxyz5gzrUTjpK7zQ18kiLdHmZy8I1O5Z7GO0w=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Tvr9bVaN266jnoTyKaKJ7KSxbe3Dphseh3BdQ0owiTfPys8HTT3+TkXyIcJiJmC/4
-	 Afrk1lph80cRt9yt7/LlkMw63Re0f5Sy9RaeTbqVcoGqM/pt2wS08dl6PShvIBx5lz
-	 FSrPbj4tAHpCP5QVQlS6vXm89KM67PdIK3YFkIYxbpcdx/1A3xnq816J/bkAi87pi+
-	 U+LOo8aql37cFifiCoAeyI15NL9NuU3UtKjyjCii70SHgjNVezjnHgHIR4FSo0s5EF
-	 lR99uionAZrLhQFJ7AUFDCu+ikMsIJmo3yIIUkjaB96YEy6GgLQtzM1qSIQD5zECBV
-	 7ovzLb05DRAdw==
-Date: Mon, 21 Apr 2025 09:47:59 -0700
+	b=EH66sC6GZy9RBUo2HNGiqpTy0NgIbXEfFkGLdkvgZsqC1zQkeyJriQP1w/Q1GRSBC
+	 cm6pMjCEPqmrW9T1vOtqXkDqjdrZd1tltF4nLqqEc1y8Qx2Y0D0Va5CK4IzlFehT7H
+	 ZRAjGXyM3nhCOZJ1D8una0eOPbIu78Z7zhETUL78hx7UET/uZM/kgfHx/Kzkw7zX/9
+	 K7+OUOGWJWta9ZltQrSt5c1H2r6anjmD8/nYuBTKRqPCMumII/Z0o25PmEd+265hAD
+	 xdMSMPvGu93a11vnk6g7Y/9xS97t3wuTwL9nH05CKw02VvU+Yi/oW8EgYq3yaXNuEs
+	 ZTUM9YJfFqJGA==
+Date: Mon, 21 Apr 2025 10:27:02 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, kdevops@lists.linux.dev,
-	dave@stgolabs.net, jack@suse.cz
-Subject: Re: ext4 v6.15-rc2 baseline
-Message-ID: <20250421164759.GE25700@frogsfrogsfrogs>
-References: <Z__vQcCF9xovbwtT@bombadil.infradead.org>
- <20250416233415.GA3779528@mit.edu>
- <20250417163820.GA25655@frogsfrogsfrogs>
- <20250417183711.GB6008@mit.edu>
- <aAFq_bef9liguosY@bombadil.infradead.org>
- <20250419182249.GC210438@mit.edu>
- <20250421155433.GC25700@frogsfrogsfrogs>
- <20250421162952.GC569616@mit.edu>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: scheduling while atomic on rc3 - migration + buffer heads
+Message-ID: <20250421172702.GB25655@frogsfrogsfrogs>
+References: <hdqfrw2zii53qgyqnq33o4takgmvtgihpdeppkcsayn5wrmpyu@o77ad4o5gjlh>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,76 +57,69 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250421162952.GC569616@mit.edu>
+In-Reply-To: <hdqfrw2zii53qgyqnq33o4takgmvtgihpdeppkcsayn5wrmpyu@o77ad4o5gjlh>
 
-On Mon, Apr 21, 2025 at 11:29:52AM -0500, Theodore Ts'o wrote:
-> On Mon, Apr 21, 2025 at 08:54:33AM -0700, Darrick J. Wong wrote:
-> > 
-> > I might be wading in deeper than I know, but it seems to me that
-> > after a crash recovery it's not great to see 64k files with no blocks
-> > allocated to them at all.
+On Mon, Apr 21, 2025 at 11:14:44AM -0400, Kent Overstreet wrote:
+> This just popped up in one of my test runs.
 > 
-> Well, what ext4 in no dioread_nolock mode will do is to allocate
-> blocks marked as unitializationed, and then write the data blocks, and
-> then change them to be marked as initialized.  So it's not that there
-> are no blocks allocated at all; but that there are blocks allocated
-> but attempts to read from the file will return all zeros.
+> Given that it's buffer heads, it has to be the ext4 root filesystem, not
+> bcachefs.
 
-But that's not what I see -- on my system, I get files with i_size ==
-65536, but no mappings at all:
+Wrong.  udev calling libblkid reading the (mounted) bdev to figure out
+there's a bcachefs filesystem will still create bufferheads, and
+possibly very large ones.
 
---- /run/fstests/bin/tests/generic/044.out      2025-04-17 14:52:53.521658441 -0700
-+++ /var/tmp/fstests/generic/044.out.bad        2025-04-21 08:46:15.328757541 -0700
-@@ -1 +1,95 @@
- QA output created by 044
-+corrupt file /opt/906 - non-zero size but no extents
-+corrupt file /opt/907 - non-zero size but no extents
+willy's temporary workaround in
+https://lore.kernel.org/linux-fsdevel/Z_VwF1MA-R7MgDVG@casper.infradead.org/
 
-# mount /opt/
-# ls /opt/906
--rw------- 1 root root 65536 Apr 21 08:45 /opt/906
-# filefrag -v !$
-filefrag -v /opt/906
-Filesystem type is: ef53
-File size of /opt/906 is 65536 (16 blocks of 4096 bytes)
-/opt/906: 0 extents found
-
-...unless ext4 is removing those unwritten blocks during recovery?
-
-> This is non-ideal, but my main concern is a performance issue, not a
-> correctness one.  We're modifying the metadata blocks twice, and while
-> most of the time the two modifications happen within a single
-> transaction (so the user won't actually see the zero blocks after the
-> crash _most_ of the time), the extra journal handles means extra CPU
-> and extra jbd2 spinlocks getting taken and released.
-> 
-> So it's on my todo list to fix, in my copious spare time.....
-> 
-> > (I don't care about the others whining about _exclude_fs-- if
-> > you make the design decision that the current ext4 behavior is
-> > good enough, then the test cannot ever be satisfied so let's
-> > capture that in the test > itself, not in everyone's scattered
-> > exclusion lists.)
-> 
-> Fair enough, I can try, and see if we get people attempting to NACK
-> the changes this time around.  Support beating back the whiners would
-> be appreciated.
-
-Ok, I'll chime in whenever I see patches. :)
-
-> I can also see if Luis's LBS changes might it easier to deal with the
-> bigalloc test bugs.  It will mean exposing the concept of cluster
-> allocation size (as distinct from block size) to the core xfstests
-> infrastructure, and again, we can see if people try to NACK the
-> changes.  This will require a bit more work, however as this is a big
-> difference between XFS's LBS feature and ext4's bigalloc feature.
-
-That shouldn't be a problem; _xfs_get_file_block_size has returned the
-allocation unit size for XFS files for quite some time, despite being
-badly named.
+shuts all that up enough to move on to triaging the rest of the
+bleeding.
 
 --D
 
+> 00465 ========= TEST   lz4_buffered
+> 00465 
+> 00465 WATCHDOG 360
+> 00466 bcachefs (vdb): starting version 1.25: extent_flags opts=errors=panic,compression=lz4
+> 00466 bcachefs (vdb): initializing new filesystem
+> 00466 bcachefs (vdb): going read-write
+> 00466 bcachefs (vdb): marking superblocks
+> 00466 bcachefs (vdb): initializing freespace
+> 00466 bcachefs (vdb): done initializing freespace
+> 00466 bcachefs (vdb): reading snapshots table
+> 00466 bcachefs (vdb): reading snapshots done
+> 00466 bcachefs (vdb): done starting filesystem
+> 00466 starting copy
+> 00515 BUG: sleeping function called from invalid context at mm/util.c:743
+> 00515 in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 120, name: kcompactd0
+> 00515 preempt_count: 1, expected: 0
+> 00515 RCU nest depth: 0, expected: 0
+> 00515 1 lock held by kcompactd0/120:
+> 00515  #0: ffffff80c0c558f0 (&mapping->i_private_lock){+.+.}-{3:3}, at: __buffer_migrate_folio+0x114/0x298
+> 00515 Preemption disabled at:
+> 00515 [<ffffffc08025fa84>] __buffer_migrate_folio+0x114/0x298
+> 00515 CPU: 11 UID: 0 PID: 120 Comm: kcompactd0 Not tainted 6.15.0-rc3-ktest-gb2a78fdf7d2f #20530 PREEMPT 
+> 00515 Hardware name: linux,dummy-virt (DT)
+> 00515 Call trace:
+> 00515  show_stack+0x1c/0x30 (C)
+> 00515  dump_stack_lvl+0xb0/0xc0
+> 00515  dump_stack+0x14/0x20
+> 00515  __might_resched+0x180/0x288
+> 00515  folio_mc_copy+0x54/0x98
+> 00515  __migrate_folio.isra.0+0x68/0x168
+> 00515  __buffer_migrate_folio+0x280/0x298
+> 00515  buffer_migrate_folio_norefs+0x18/0x28
+> 00515  migrate_pages_batch+0x94c/0xeb8
+> 00515  migrate_pages_sync+0x84/0x240
+> 00515  migrate_pages+0x284/0x698
+> 00515  compact_zone+0xa40/0x10f8
+> 00515  kcompactd_do_work+0x204/0x498
+> 00515  kcompactd+0x3c4/0x400
+> 00515  kthread+0x13c/0x208
+> 00515  ret_from_fork+0x10/0x20
+> 00518 starting sync
+> 00519 starting rm
+> 00520 ========= FAILED TIMEOUT lz4_buffered in 360s
 > 
-> 						- Ted
+> 
 
