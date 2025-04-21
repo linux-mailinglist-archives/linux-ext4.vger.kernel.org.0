@@ -1,60 +1,55 @@
-Return-Path: <linux-ext4+bounces-7365-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7366-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE2DA953C5
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 17:54:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D788EA953C7
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 17:56:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FC157A5890
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 15:53:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A74A16EA33
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 15:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5D11DEFDD;
-	Mon, 21 Apr 2025 15:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D8D1DEFDD;
+	Mon, 21 Apr 2025 15:56:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GeFLx0gP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i3Gidkq3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986077D3F4;
-	Mon, 21 Apr 2025 15:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8824D7D3F4
+	for <linux-ext4@vger.kernel.org>; Mon, 21 Apr 2025 15:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745250874; cv=none; b=nd79phxuvDtwdYpvRJOLZixZ8AvJT9Utzu10tzwQeIYOzNZP8AVcylYAwKe5zhlzzhJjMffo7HgPcJ/sWxD1/RH6i2nj2G978sLNJlPTd63++8PzObOmXqPl5dW5PNelR3mAApp6Wkvc9kSZ/f9a1m8dTfops56tLj0/E0WfhRY=
+	t=1745250965; cv=none; b=sDbndD2LmwKW3f34GY0hTp6gPyu/eOF7xdYuIG0QkczPxOnAAXjXT7lcKK87qYa6d0qxZKQ2QeBydrqTg2u4YOZ61FosuyuTRrTlIMjr+jWbEm2dwlCLwNrPQieTytdjefHRmJfTbcnNHyvdOifcFJ1Ho9q2mxrZoY+6QvJKMp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745250874; c=relaxed/simple;
-	bh=H8IYcNld+2Uzf+iL0mwPExwljYsFP8aS3lNcy5lYoHo=;
+	s=arc-20240116; t=1745250965; c=relaxed/simple;
+	bh=SB7tPH38oQbn3xC2xqYqN44OAIcLL/WQ30Whw04JByE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SfbAWXkSaHO68lOat3BXAiVaF/OricHZ3Ejav+CRM5ybWj0WTbwkSuddEDfD5oqPWREE0JSsOEuYEZz5qIs08J3HNQg+IfepmJS4k88PdovEHLraQROJdvJ7cybQzPX/SbY0JA+pZV5dpDPSZ8E2Ar48+RKNZUcIegr5p+ZRC7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GeFLx0gP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAFC8C4CEE4;
-	Mon, 21 Apr 2025 15:54:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745250874;
-	bh=H8IYcNld+2Uzf+iL0mwPExwljYsFP8aS3lNcy5lYoHo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GeFLx0gP+/pnVS0nF2zWexjZm5H1kfOaaRS/PT/apgZFgH7I1k+dqXIdVztTAkZND
-	 TGSoEG0Ggxe+vfwWZSt6BkqfvkMT0Ug8TLjNcn5PIXB4OJZJZ2OVGHWivaqhOKzDtE
-	 iSjYG9DHmzRQ6LWdjtFwA/4JAuAlccWY5MnXyOgiWcvbFkFrLj2+bG0YqiSY8BOB/Y
-	 s2Ndhe5N0XTAKdc3rZKlMcq6KfU5rHsQdWjrzmiR4DStEBWRqnUGMDnVK0zqpkRpZy
-	 Vi3X8Jlmb2qgBXB1TxL4/KKHPuMWPk3DB7YcxkNLMlHgRwwdJJJrsYa5mndJ795XbR
-	 XasEx81twAjXg==
-Date: Mon, 21 Apr 2025 08:54:33 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, kdevops@lists.linux.dev,
-	dave@stgolabs.net, jack@suse.cz
-Subject: Re: ext4 v6.15-rc2 baseline
-Message-ID: <20250421155433.GC25700@frogsfrogsfrogs>
-References: <Z__vQcCF9xovbwtT@bombadil.infradead.org>
- <20250416233415.GA3779528@mit.edu>
- <20250417163820.GA25655@frogsfrogsfrogs>
- <20250417183711.GB6008@mit.edu>
- <aAFq_bef9liguosY@bombadil.infradead.org>
- <20250419182249.GC210438@mit.edu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YR9E6gydxu5CFm+We3ioGAY9skzElawZiQl+hirFFg2OhsIndIwCEBtTiUaVXH3+0+8pnjsv+hTMVMWVxXvRWlnWCrZ93u1aObgin1rDDaK0WNtAa43B83m0s9WGH603s15zOtSsQiOTKE6cIRXe1kwHeleA4phUOnBKCmiyvH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i3Gidkq3; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 21 Apr 2025 11:55:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745250951;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UoSZJKDzfaKsirHVQWZr7LOj5trZ+TFj4jwsaD9UBbk=;
+	b=i3Gidkq3wzL0nc3C6ICt+faxIb/HU+7DNm0WnMTfZn7OjRRhyqOSuQBm5G+YmdAt6MzKFP
+	kRtT6IzVMA9OmEVrfP1GX6M4Sa2EXWf1b6vKWnKB9vMFdHcl5++aziYGxtxRCc7r+Q8oH2
+	02lUGZlxpz/VVLs6sqDal/cI+ePoJhw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Raghavendra K T <raghavendra.kt@amd.com>
+Cc: linux-mm@kvack.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, wqu@suse.com
+Subject: Re: scheduling while atomic on rc3 - migration + buffer heads
+Message-ID: <uy55hkjdrlnotqzb6rdjktgwv4abp2qxhspi3o63lnj2qjoreu@aegvqlbnfe2p>
+References: <hdqfrw2zii53qgyqnq33o4takgmvtgihpdeppkcsayn5wrmpyu@o77ad4o5gjlh>
+ <7b395468-d72d-42c1-b891-75f127a1c534@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -63,53 +58,79 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250419182249.GC210438@mit.edu>
+In-Reply-To: <7b395468-d72d-42c1-b891-75f127a1c534@amd.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Apr 19, 2025 at 01:22:49PM -0500, Theodore Ts'o wrote:
-> On Thu, Apr 17, 2025 at 01:56:29PM -0700, Luis Chamberlain wrote:
-> > 
-> > Perhaps something like (not tested):
-> > 
-> > From a9386348701e387942e3eaaef8ee9daac8ace16a Mon Sep 17 00:00:00 2001
-> > From: Luis Chamberlain <mcgrof@kernel.org>
-> > Date: Thu, 17 Apr 2025 13:54:25 -0700
-> > Subject: [PATCH] ext4: add ordered requirement for generic/04[456]
-> > 
-> > generic/04[456] tests how truncate and delayed allocation works.
-> > ext4 uses the data=ordered to avoid exposing stale data, and
-> > so it uses a different mechanism than xfs. So these tests will fail
-> > on it.
+On Mon, Apr 21, 2025 at 09:17:18PM +0530, Raghavendra K T wrote:
+> On 4/21/2025 8:44 PM, Kent Overstreet wrote:
 > 
-> No, you misunderstand the problem.  The generic/04[456] tests are
-> checking for a specific implementation detail in how xfs works to
-> prevent stale data from being exposing data after a crash.  Ext4 has a
-> different method for achieving the same goal, using data=ordered,
-> which is the default.  So checking for data=ordered isn't necessary,
-> because it is the default.  But how it achieves thinigs means that
-> these tests, which tests for a specific implementation, doesn't work.
+> +Qu as I see similar report from him
 > 
-> Fundamentally, these tests check what happens when you are writing to
-> a file and the file system is shutdown (simulating a power failure).
-> Exaclty how this handled is not guaranteed by POSIX, so testing for a
-> specific behaviour is in my opinion, not really that great of an idea.
-> In any case, the fact that we don't do exactly what these tests are
-> expecting is not a problem as far as I'm concerned, and so we skip
-> them.
-
-I might be wading in deeper than I know, but it seems to me that
-after a crash recovery it's not great to see 64k files with no blocks
-allocated to them at all.  That probably falls into "fs crash behavior
-isn't guaranteed by POSIX", but if that's the case then these three
-tests (generic/044-046) should _exclude_fs ext3 ext4 and explain why.
-
-(I don't care about the others whining about _exclude_fs-- if you make
-the design decision that the current ext4 behavior is good enough, then
-the test cannot ever be satisfied so let's capture that in the test
-itself, not in everyone's scattered exclusion lists.)
-
---D
-
-> Cheers,
+> > This just popped up in one of my test runs.
+> > 
+> > Given that it's buffer heads, it has to be the ext4 root filesystem, not
+> > bcachefs.
+> > 
+> > 00465 ========= TEST   lz4_buffered
+> > 00465
+> > 00465 WATCHDOG 360
+> > 00466 bcachefs (vdb): starting version 1.25: extent_flags opts=errors=panic,compression=lz4
+> > 00466 bcachefs (vdb): initializing new filesystem
+> > 00466 bcachefs (vdb): going read-write
+> > 00466 bcachefs (vdb): marking superblocks
+> > 00466 bcachefs (vdb): initializing freespace
+> > 00466 bcachefs (vdb): done initializing freespace
+> > 00466 bcachefs (vdb): reading snapshots table
+> > 00466 bcachefs (vdb): reading snapshots done
+> > 00466 bcachefs (vdb): done starting filesystem
+> > 00466 starting copy
+> > 00515 BUG: sleeping function called from invalid context at mm/util.c:743
+> > 00515 in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 120, name: kcompactd0
+> > 00515 preempt_count: 1, expected: 0
+> > 00515 RCU nest depth: 0, expected: 0
+> > 00515 1 lock held by kcompactd0/120:
+> > 00515  #0: ffffff80c0c558f0 (&mapping->i_private_lock){+.+.}-{3:3}, at: __buffer_migrate_folio+0x114/0x298
+> > 00515 Preemption disabled at:
+> > 00515 [<ffffffc08025fa84>] __buffer_migrate_folio+0x114/0x298
+> > 00515 CPU: 11 UID: 0 PID: 120 Comm: kcompactd0 Not tainted 6.15.0-rc3-ktest-gb2a78fdf7d2f #20530 PREEMPT
+> > 00515 Hardware name: linux,dummy-virt (DT)
+> > 00515 Call trace:
+> > 00515  show_stack+0x1c/0x30 (C)
+> > 00515  dump_stack_lvl+0xb0/0xc0
+> > 00515  dump_stack+0x14/0x20
+> > 00515  __might_resched+0x180/0x288
+> > 00515  folio_mc_copy+0x54/0x98
+> > 00515  __migrate_folio.isra.0+0x68/0x168
+> > 00515  __buffer_migrate_folio+0x280/0x298
+> > 00515  buffer_migrate_folio_norefs+0x18/0x28
+> > 00515  migrate_pages_batch+0x94c/0xeb8
+> > 00515  migrate_pages_sync+0x84/0x240
+> > 00515  migrate_pages+0x284/0x698
+> > 00515  compact_zone+0xa40/0x10f8
+> > 00515  kcompactd_do_work+0x204/0x498
+> > 00515  kcompactd+0x3c4/0x400
+> > 00515  kthread+0x13c/0x208
+> > 00515  ret_from_fork+0x10/0x20
+> > 00518 starting sync
+> > 00519 starting rm
+> > 00520 ========= FAILED TIMEOUT lz4_buffered in 360s
+> > 
 > 
-> 						- Ted
+> I have also seen similar stack with folio_mc_copy() while testing
+> PTE A bit patches.
+> 
+> IIUC, it has something to do with cond_resched() called from
+> folio_mc_copy().
+> 
+> (Thomas (tglx) mentioned long back that cond_resched() does not have the
+> scope awareness), not sure where should the fix be done in these
+> cases..
+
+That's true, calling cond_resched() while a spinlock held is a bug.
+
+> (I mean caller of the migrate_folio should call with no spinlock held
+> but with mutex? )
+
+Yes. migrate_folio() does large data copies, so we don't want all that
+running in atomic context.
 
