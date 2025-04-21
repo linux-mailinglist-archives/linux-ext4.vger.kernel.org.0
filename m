@@ -1,62 +1,62 @@
-Return-Path: <linux-ext4+bounces-7368-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7369-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBA88A954C0
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 18:44:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7275EA954E3
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 18:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CD793AE07D
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 16:43:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97FCC17425A
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Apr 2025 16:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856C91EB5D8;
-	Mon, 21 Apr 2025 16:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 689FD1DF977;
+	Mon, 21 Apr 2025 16:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FeKMtDRP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tvr9bVaN"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055671E0E1A;
-	Mon, 21 Apr 2025 16:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0140224EA;
+	Mon, 21 Apr 2025 16:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745253763; cv=none; b=Rbdtskl0lAehD5esrLw08Yx8IRWdL+3z8iAhFg9/eR7g1nHR+nzn2yZqFcUHnqQYkP2lv9vmFFeaAuPnSeLn8JvC9T7jeOJTXgChAp/52zMfFbdwMOm4oVsOjHPdJlMDHCEBi3fYcKsur/Nc0RZ63T3WasuvfmwYVheVSbkfh84=
+	t=1745254081; cv=none; b=bBG6H5wNaS9QbYE5sqhS1njZsko2x8yJD+JqPInUs9SLYpT/WP/GR3ve6AZBe41GXf1bctzoWRxsaGigUFSd7cKzoNviTJrq4/pesb/3cpYYNOgzluRDpl1n03ahuSTQeOHRXb/NdX/w9WnAlc++VTrmKAyXlzaAiC0X0oUYakc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745253763; c=relaxed/simple;
-	bh=m3m6glZ88p1UicyITupTeA+hfX/BSoFrF6K0y4udo00=;
+	s=arc-20240116; t=1745254081; c=relaxed/simple;
+	bh=cUGssDusKLdis92WjnrnBFRgq5wjzgSEaaVaefAdvSA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=scTSEiOuSm2l69WwFzw7QlH70NIVt/WlYE6DE5gmwc/QeAeFL8ql+3ZiHDiGITGMFS5OnCee/1v4qlfH8Dd3jXdAolC8hRKWm0FuEKPRNi1FWqEMSVHBUOsdNIdW/+91o4/b+/gddsfSCblRl8Vg+MWwIPqq8hHsy54SUiTpDrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FeKMtDRP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 661C9C4CEF0;
-	Mon, 21 Apr 2025 16:42:42 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=msKcWaS7idjPPHkymQJOFZuB7+nAihRh399QUWEviAmAQhVcsmDyJsvXno3cauYB2A+dhL24IvevSGA3IcI0sk3ie9ueJgB5Mg0CsBNao6UQYc3LDSbfFT6wuR+YNlxkYJwhAYfQ+BIF0XGL/N+Duq0xQa/wvuowUH310ITuqXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tvr9bVaN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 654F6C4CEE4;
+	Mon, 21 Apr 2025 16:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745253762;
-	bh=m3m6glZ88p1UicyITupTeA+hfX/BSoFrF6K0y4udo00=;
+	s=k20201202; t=1745254080;
+	bh=cUGssDusKLdis92WjnrnBFRgq5wjzgSEaaVaefAdvSA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FeKMtDRPmgXNmdhOA2xuD1QtibJmcPrU2MV3eJXwpFfhIQw+NCP/LjD+7WTJfTrLZ
-	 VyXdxSX6qP2Bb961hC0FJn3ZqerqqplYKwIhUnbAW8fLneHGm1lcA+vTlj4pmNBZhp
-	 +3EEg7d6NI6mryu6B9O8Cp7eFn12cu0iRgAAC+uFM1xIhY6Gv5A2BKlSC+bLkaWnoL
-	 PPoHHiDSmAJA6xr4IPmYwR3+nA69HxDAeJ93AMGLY+ERqa7oExNJXK+WjRWDZnXUFY
-	 /d3XLatgTugglsFLw5yzg2WQuJit58K9D3U1x89Z6fRLnAWYextGfQfV6KyM1lmGU2
-	 Lh0+VjqHWGzcA==
-Date: Mon, 21 Apr 2025 09:42:41 -0700
+	b=Tvr9bVaN266jnoTyKaKJ7KSxbe3Dphseh3BdQ0owiTfPys8HTT3+TkXyIcJiJmC/4
+	 Afrk1lph80cRt9yt7/LlkMw63Re0f5Sy9RaeTbqVcoGqM/pt2wS08dl6PShvIBx5lz
+	 FSrPbj4tAHpCP5QVQlS6vXm89KM67PdIK3YFkIYxbpcdx/1A3xnq816J/bkAi87pi+
+	 U+LOo8aql37cFifiCoAeyI15NL9NuU3UtKjyjCii70SHgjNVezjnHgHIR4FSo0s5EF
+	 lR99uionAZrLhQFJ7AUFDCu+ikMsIJmo3yIIUkjaB96YEy6GgLQtzM1qSIQD5zECBV
+	 7ovzLb05DRAdw==
+Date: Mon, 21 Apr 2025 09:47:59 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: brauner@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk, jack@suse.cz,
-	cem@kernel.org, linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
-	martin.petersen@oracle.com, linux-ext4@vger.kernel.org,
-	linux-block@vger.kernel.org, catherine.hoang@oracle.com,
-	linux-api@vger.kernel.org
-Subject: Re: [PATCH v7 11/14] xfs: add xfs_file_dio_write_atomic()
-Message-ID: <20250421164241.GD25700@frogsfrogsfrogs>
-References: <20250415121425.4146847-1-john.g.garry@oracle.com>
- <20250415121425.4146847-12-john.g.garry@oracle.com>
- <20250421040002.GU25675@frogsfrogsfrogs>
- <2467484b-382b-47c2-ae70-4a41d63cf4fc@oracle.com>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org, kdevops@lists.linux.dev,
+	dave@stgolabs.net, jack@suse.cz
+Subject: Re: ext4 v6.15-rc2 baseline
+Message-ID: <20250421164759.GE25700@frogsfrogsfrogs>
+References: <Z__vQcCF9xovbwtT@bombadil.infradead.org>
+ <20250416233415.GA3779528@mit.edu>
+ <20250417163820.GA25655@frogsfrogsfrogs>
+ <20250417183711.GB6008@mit.edu>
+ <aAFq_bef9liguosY@bombadil.infradead.org>
+ <20250419182249.GC210438@mit.edu>
+ <20250421155433.GC25700@frogsfrogsfrogs>
+ <20250421162952.GC569616@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,57 +65,76 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2467484b-382b-47c2-ae70-4a41d63cf4fc@oracle.com>
+In-Reply-To: <20250421162952.GC569616@mit.edu>
 
-On Mon, Apr 21, 2025 at 06:47:44AM +0100, John Garry wrote:
-> On 21/04/2025 05:00, Darrick J. Wong wrote:
-> > > @@ -843,6 +909,8 @@ xfs_file_dio_write(
-> > >   		return xfs_file_dio_write_unaligned(ip, iocb, from);
-> > >   	if (xfs_is_zoned_inode(ip))
-> > >   		return xfs_file_dio_write_zoned(ip, iocb, from);
-> > What happens to an IOCB_ATOMIC write to a zoned file?  I think the
-> > ioend for an atomic write to a zoned file involves a similar change as
-> > an outofplace atomic write to a file (one big transaction to absorb
-> > all the mapping changes) but I don't think the zoned code quite does
-> > that...?
+On Mon, Apr 21, 2025 at 11:29:52AM -0500, Theodore Ts'o wrote:
+> On Mon, Apr 21, 2025 at 08:54:33AM -0700, Darrick J. Wong wrote:
+> > 
+> > I might be wading in deeper than I know, but it seems to me that
+> > after a crash recovery it's not great to see 64k files with no blocks
+> > allocated to them at all.
 > 
-> Correct. For now, I don't think that we should try to support zoned device
-> atomic writes. However we don't have proper checks for this. How about
-> adding a xfs_has_zoned() check in xfs_get_atomic_write_{min, max, opt}()?
+> Well, what ext4 in no dioread_nolock mode will do is to allocate
+> blocks marked as unitializationed, and then write the data blocks, and
+> then change them to be marked as initialized.  So it's not that there
+> are no blocks allocated at all; but that there are blocks allocated
+> but attempts to read from the file will return all zeros.
 
-Well it turns out that was a stupid question -- zoned=1 can't be enabled
-with reflink, which means there's no cow fallback so atomic writes just
-plain don't work:
+But that's not what I see -- on my system, I get files with i_size ==
+65536, but no mappings at all:
 
-$ xfs_info /mnt
-meta-data=/dev/sda               isize=512    agcount=4, agsize=32768 blks
-         =                       sectsz=512   attr=2, projid32bit=1
-         =                       crc=1        finobt=1, sparse=1, rmapbt=1
-         =                       reflink=0    bigtime=1 inobtcount=1 nrext64=1
-         =                       exchange=1   metadir=1
-data     =                       bsize=4096   blocks=131072, imaxpct=25
-         =                       sunit=0      swidth=0 blks
-naming   =version 2              bsize=4096   ascii-ci=0, ftype=1, parent=1
-log      =internal log           bsize=4096   blocks=16384, version=2
-         =                       sectsz=512   sunit=0 blks, lazy-count=1
-realtime =internal               extsz=4096   blocks=5061632, rtextents=5061632
-         =                       rgcount=78   rgsize=65536 extents
-         =                       zoned=1      start=131072 reserved=0
-$ xfs_io -c 'statx -r -m 0x10000' /mnt/a | grep atomic
-stat.atomic_write_unit_min = 0
-stat.atomic_write_unit_max = 0
-stat.atomic_write_segments_max = 0
-stat.atomic_write_unit_max_opt = 0
+--- /run/fstests/bin/tests/generic/044.out      2025-04-17 14:52:53.521658441 -0700
++++ /var/tmp/fstests/generic/044.out.bad        2025-04-21 08:46:15.328757541 -0700
+@@ -1 +1,95 @@
+ QA output created by 044
++corrupt file /opt/906 - non-zero size but no extents
++corrupt file /opt/907 - non-zero size but no extents
 
-I /think/ all you'd have to do is create an xfs_zoned_end_atomic_io
-function that does what xfs_zoned_end_io but with a single
-tr_atomic_ioend transaction; figure out how to convey "this is an
-atomic out of place write" to xfs_end_ioend so that it knows to call
-xfs_zoned_end_atomic_io; and then update the xfs_get_atomic_write*
-helpers.
+# mount /opt/
+# ls /opt/906
+-rw------- 1 root root 65536 Apr 21 08:45 /opt/906
+# filefrag -v !$
+filefrag -v /opt/906
+Filesystem type is: ef53
+File size of /opt/906 is 65536 (16 blocks of 4096 bytes)
+/opt/906: 0 extents found
+
+...unless ext4 is removing those unwritten blocks during recovery?
+
+> This is non-ideal, but my main concern is a performance issue, not a
+> correctness one.  We're modifying the metadata blocks twice, and while
+> most of the time the two modifications happen within a single
+> transaction (so the user won't actually see the zero blocks after the
+> crash _most_ of the time), the extra journal handles means extra CPU
+> and extra jbd2 spinlocks getting taken and released.
+> 
+> So it's on my todo list to fix, in my copious spare time.....
+> 
+> > (I don't care about the others whining about _exclude_fs-- if
+> > you make the design decision that the current ext4 behavior is
+> > good enough, then the test cannot ever be satisfied so let's
+> > capture that in the test > itself, not in everyone's scattered
+> > exclusion lists.)
+> 
+> Fair enough, I can try, and see if we get people attempting to NACK
+> the changes this time around.  Support beating back the whiners would
+> be appreciated.
+
+Ok, I'll chime in whenever I see patches. :)
+
+> I can also see if Luis's LBS changes might it easier to deal with the
+> bigalloc test bugs.  It will mean exposing the concept of cluster
+> allocation size (as distinct from block size) to the core xfstests
+> infrastructure, and again, we can see if people try to NACK the
+> changes.  This will require a bit more work, however as this is a big
+> difference between XFS's LBS feature and ext4's bigalloc feature.
+
+That shouldn't be a problem; _xfs_get_file_block_size has returned the
+allocation unit size for XFS files for quite some time, despite being
+badly named.
 
 --D
 
-> Thanks,
-> John
+> 
+> 						- Ted
 
