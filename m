@@ -1,77 +1,77 @@
-Return-Path: <linux-ext4+bounces-7401-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7402-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 088E6A97F6D
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 08:42:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51B00A97F71
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 08:42:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B62853B5914
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 06:42:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F94B189B252
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 06:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEBAF266F1B;
-	Wed, 23 Apr 2025 06:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C092676DE;
+	Wed, 23 Apr 2025 06:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V9oA3iZa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PeMdjVTt"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5A1264602;
-	Wed, 23 Apr 2025 06:42:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C60C264602;
+	Wed, 23 Apr 2025 06:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745390537; cv=none; b=a4kq2yTijD/2Lw9BjXjOKXszHMMkTUJHYH+hPT0FciCthq2tapnffJrQmoZ2n4kE6GHHpaIgkDhCk9S/NVaQ9Zf28TyjSUCrDFYwV8YyeMqztatL0dWZYkmo1q4LNuxsxte30klL/2Yg/nS+oWz2vi5g0fEq70Z5gXcHyaEszK8=
+	t=1745390547; cv=none; b=iZZI8d4VvmoUWh+XZepNZ5AFbZdkT7FTi+cTe5CdnBoSZnPoOyV6+As1an6rnHNv4qmYuTAW+TBKcQauw0bzExb+ngkMSqgYQALZyR6g6ibynl6bQsV8JynWXBanQjw2f8nK08ALXbAJYvvQvamw03FAfwXjVthU2+018FNYuuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745390537; c=relaxed/simple;
-	bh=3VxIuXFl2ytwRowrLZ0PdPz/7egrytRaVJpFr76s8/k=;
+	s=arc-20240116; t=1745390547; c=relaxed/simple;
+	bh=3sHmtH/fcuqr6uhoWuT2SST1v+xQWAtds51Od6RXPck=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eQj6CGzsESg/m66A1Fv0LAFOTyWYf1M9M+QXLbThc3zZg4IDSv8bpR8hE0pWipPnWQGWAsb4L3Sox329rnb6oUXze8TUOCSWCYwXzHzlFFqp1Rtl3NFunKTC0bN69iLOMh8zjJ+/LYmRiookMHbTheBs63PCY+df3HgXOMOhDRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V9oA3iZa; arc=none smtp.client-ip=209.85.216.54
+	 MIME-Version; b=ekIpW8cyvgpQrZm3MhVJJS35JH96uFUrgu0Bw8W9NFqA2J1WZE9Z7iA17Hex9YLfZ3b46ZPF1oTbiTwFa4TH2RdYtXW+uHm5mXlmwyXDcsnFDzVGaaUjW/R+CMMHEOt6bgM28A99xfRHhCQJKHZsb47krtPXxX9jLpINZ+whqug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PeMdjVTt; arc=none smtp.client-ip=209.85.215.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3014678689aso4750758a91.0;
-        Tue, 22 Apr 2025 23:42:15 -0700 (PDT)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b0b2d0b2843so4807101a12.2;
+        Tue, 22 Apr 2025 23:42:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745390535; x=1745995335; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745390545; x=1745995345; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fSeNH4gc+wouF2utUEjF2WmOFa/LNnPpsNuFtN9l9UE=;
-        b=V9oA3iZa2SKTv584RvVXjbPTI12Hj2vPpZsZj2sp5Ra97XA7rjfSn/hWoTwmB+OLE0
-         /7R0vdXeh06eglz3e1DzCN6x9Hg1AFZrFA2ca9jBuDxaU9fWl5ZENVNjsKz2RC8erhCB
-         uf/XjyeaSPxPJJG/hg2x4aa1pJ5L657g7maikj3B9ZkjJbyM92I5sHqKNdVYPV71hCAf
-         Ue55mPIhpssIfSFDyb6Tmakp58FxrRyanbO2PKcnnZUzCtfxS2UeEGAhps3aetdlUoyB
-         hAt24FWIzMNnDya8sldPDsT6uN/Zk+eUI3c0ONGea195E//+crYgf//AikI6Jvhlw4QI
-         T+Aw==
+        bh=g27k7RYdORpTeRKrTufSRWiTfEwEp85jDt+1SSkTjiM=;
+        b=PeMdjVTtUGLByPJ12PKsIAK4SLa7wFWBvRhRLOIJeFjggoLO2IPVTzgQmOIJItL4B/
+         kacpqQkzYo5fRVNVLVgVUUe5MkWrXf7JFeqkGqanzByaVrjZ8t15g6Ib4RZBf51LAXWA
+         DNHxWJORngZP9ecYjmBQJ0ZY9e2Sroeycsdwyrmm1GznW7xW4AF9rFKsxcSKmUzij+Ux
+         qys/TN/FK0PUGIo0Om9r5P2WG65DMFsvXKgoM902tktpwwxy0R86lXOweS2HCRshUQfm
+         +Ws24ULhr9vSOEtR2RWLZg1aVGvuuUFdPrWF+ptoXJ5XG8PDsCQ79yMzvfmbMvopkL9s
+         CK1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745390535; x=1745995335;
+        d=1e100.net; s=20230601; t=1745390545; x=1745995345;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fSeNH4gc+wouF2utUEjF2WmOFa/LNnPpsNuFtN9l9UE=;
-        b=XhadA3SmNBmD1KVDWWACbIOBUxIxjWmIWfwXK+RcrTnIryfXOkHqn2mYJWOQW36cfX
-         24zc6hVI3AhZr/WCdmB+d69ImcKitDWNv4Vc9jIyXEkN5apMaqwumAQdwdZUqLF0JRRp
-         B58WQxah8aqEKeoCf4Sz6AczvYBc5RhXmiq2g0FSdwAIm9ufu0PQTypHd7rlolzm1ylU
-         a0I+6mQRwfxktxpJRaKbPjZK2/W40V8He6wvCXjJYFc1Qh7l4m8yi0YoQ/M+2t/ccSoq
-         zcamxBaBw7MOFcaTQPajVyF0G93s3LiV/2U1A8SZ/UJKP9WquBQm5eY2hZlFEfaeE9+u
-         BS3w==
-X-Forwarded-Encrypted: i=1; AJvYcCWxJwIrBwnxQgiElDgteRHNYfMLbot5yYy94QqJJhhz3cPPdBzFt1wUtDKjNstRm1G3bmJcv2uqe1s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw38y7oX6lkhrinJZdwCGF+47uQCKr24dDrfgm2nDDKIexeTn3P
-	jHpFuSIhg1HPsDPds9fc1zKXrowCNqmb9jVVnr3v5zHBXHBgVsq76SpkpQ==
-X-Gm-Gg: ASbGncsnJHG7oeHkSZ56bcvwWK55y3uvkL5BEJdKBztcjK1bQ1S10UWHXUa9ZP2bvaS
-	Cj1LHkKrKWqsUy4YztkfLpz+WGogVxrgtO+eI9RUt88N4lmQcrnHSMheajOUxGX0bbUK6ONP7TF
-	/feXSm245o/xmJusstXk2eJgLGcKv35ZNhTz65lBdLmVVegS/meJ5NJ0zDbZ58YV4/UnI6gwFj0
-	tKf1HtGSb3n9HICs8NU/HOkvHQLT/GnjOFf4wrbGkt2pt/GWK+aUhupOkOlpyD3X0GM+QtmKPa5
-	8Om/xTJyvIynf5vpwTF3Yo2bYnn63+CF644CBNBIEtN9
-X-Google-Smtp-Source: AGHT+IGAWFXxhL9BlAvalZtne94uoR1HKsIwm7vZPMmcLMSD4bmxBSD4tZN1DppLOyVJLyF14YNq8A==
-X-Received: by 2002:a17:90b:270d:b0:2ff:5357:1c7e with SMTP id 98e67ed59e1d1-3087bb6954amr25780086a91.20.1745390534444;
-        Tue, 22 Apr 2025 23:42:14 -0700 (PDT)
+        bh=g27k7RYdORpTeRKrTufSRWiTfEwEp85jDt+1SSkTjiM=;
+        b=IWusN9RxE9eAz/1VhET4lTSFAOh8gdyAdCgvlxJbHxBq6SnZtfc71CbsLa4VsD7L0B
+         Cl+FvK7RjbjtxUW+zm5KJa+uyJ7YM/pRDrswOUJ90etLDi4ijz5ZQpPR2mSo3QkZusqc
+         xkM4TTO2MjftERHgJkTtFFZaOKOxCus3mjSmpjghE+3a1Jj3/L/1uPLJPXHXuRf5vSVN
+         u1xBAmqQICEavphdt5ZVGxy1tr/pEPR5r/77qppccuv97RHsu1pbGm+3Y6T0Si3PzHxS
+         giiOoR9O6gVpEM9nfZTs1Z6ahH8gFJETuLofvw6Gg/mnKETiztQEopvn5JcghXP2eEfF
+         578A==
+X-Forwarded-Encrypted: i=1; AJvYcCX+qvusd8JbRdBXH6scilzMcIYF8ouFPgIKCRXfD1+/2p9DSMXd4s3S2w+lLBiKikRHY1CHBKDUC/4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWZ1dTwXxprgY+OilzQobnzMQeAd/Kql2jweg/NEYn4wQYmas1
+	m5UkcroQhu+aRN2GqikyR1L+/rtWTJr2qibw3KH6TFiwiDMgUNLPCwzBXQ==
+X-Gm-Gg: ASbGncuoIFPVphrCbyUzIJz0h65nl4F+rN4OdSjgxufb8PliOm8OR7zaGSnpOUj9MJF
+	pRZQVc2reErWMr73j6ejqrG5ZED8Fhz8uPrxSQTjCogzdmzjbYetAHLL313LJYMgetQnLQ5vQS+
+	kjsJ7MNkYlUkyTXb72V2cNEdxEZCCdKhyxCwHm0BBF7AesV/OLqiaQv7rWjxlXjOc+oP4cNQEng
+	nV20urEX3QizeMTUXFatmgrQf+exOF5lZH6KgbO1DGPzCg6kXOmdhVRqcXymnErWspr8bUqBwZb
+	kLzXMBgeTeYeTsAXCq3qOJJTllnJpprCwa99nf0h5JBo
+X-Google-Smtp-Source: AGHT+IE2ksOZAMjPFCRblotYyVZE5eWd+S7wBhFabH0fFByfxwyBRPweOnKrkOiigeFyVvafceLVqg==
+X-Received: by 2002:a17:90b:51d1:b0:2ff:6788:cc67 with SMTP id 98e67ed59e1d1-3087bbbb5damr21865487a91.34.1745390545005;
+        Tue, 22 Apr 2025 23:42:25 -0700 (PDT)
 Received: from citest-1.. ([49.205.34.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-309df9f051csm897705a91.4.2025.04.22.23.42.11
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-309df9f051csm897705a91.4.2025.04.22.23.42.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Apr 2025 23:42:14 -0700 (PDT)
+        Tue, 22 Apr 2025 23:42:24 -0700 (PDT)
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
 To: fstests@vger.kernel.org
 Cc: linux-ext4@vger.kernel.org,
@@ -82,9 +82,9 @@ Cc: linux-ext4@vger.kernel.org,
 	zlang@kernel.org,
 	david@fromorbit.com,
 	nirjhar.roy.lists@gmail.com
-Subject: [PATCH v1 1/2] common: Move exit related functions to a common/exit
-Date: Wed, 23 Apr 2025 06:41:34 +0000
-Message-Id: <d0b7939a277e8a16566f04e449e9a1f97da28b9d.1745390030.git.nirjhar.roy.lists@gmail.com>
+Subject: [PATCH v1 2/2] check: Replace exit with _exit in check
+Date: Wed, 23 Apr 2025 06:41:35 +0000
+Message-Id: <7d8587b8342ee2cbe226fb691b372ac7df5fdb71.1745390030.git.nirjhar.roy.lists@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1745390030.git.nirjhar.roy.lists@gmail.com>
 References: <cover.1745390030.git.nirjhar.roy.lists@gmail.com>
@@ -96,319 +96,156 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce a new file common/exit that will contain all the exit
-related functions. This will remove the dependencies these functions
-have on other non-related helper files and they can be indepedently
-sourced. This was suggested by Dave Chinner[1].
+Some of the "status=<val>;exit" and "exit <val>" were not
+replace with _exit <val>. Doing it now.
 
-[1] https://lore.kernel.org/linux-xfs/Z_UJ7XcpmtkPRhTr@dread.disaster.area/
-Suggested-by: Dave Chinner <david@fromorbit.com>
 Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 ---
- check           |  1 +
- common/btrfs    |  2 +-
- common/ceph     |  2 ++
- common/config   | 17 +----------------
- common/dump     |  1 +
- common/exit     | 50 +++++++++++++++++++++++++++++++++++++++++++++++++
- common/ext4     |  2 +-
- common/populate |  2 +-
- common/preamble |  1 +
- common/punch    |  6 +-----
- common/rc       | 29 +---------------------------
- common/repair   |  1 +
- common/xfs      |  1 +
- 13 files changed, 63 insertions(+), 52 deletions(-)
- create mode 100644 common/exit
+ check | 39 +++++++++++++++------------------------
+ 1 file changed, 15 insertions(+), 24 deletions(-)
 
 diff --git a/check b/check
-index 9451c350..67355c52 100755
+index 67355c52..30d44c0e 100755
 --- a/check
 +++ b/check
-@@ -51,6 +51,7 @@ rm -f $tmp.list $tmp.tmp $tmp.grep $here/$iam.out $tmp.report.* $tmp.arglist
- 
- SRC_GROUPS="generic"
- export SRC_DIR="tests"
-+. common/exit
- 
- usage()
- {
-diff --git a/common/btrfs b/common/btrfs
-index 3725632c..9e91ee71 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -1,7 +1,7 @@
- #
- # Common btrfs specific functions
- #
--
-+. common/exit
- . common/module
- 
- # The recommended way to execute simple "btrfs" command.
-diff --git a/common/ceph b/common/ceph
-index df7a6814..89e36403 100644
---- a/common/ceph
-+++ b/common/ceph
-@@ -2,6 +2,8 @@
- # CephFS specific common functions.
- #
- 
-+. common/exit
-+
- # _ceph_create_file_layout <filename> <stripe unit> <stripe count> <object size>
- # This function creates a new empty file and sets the file layout according to
- # parameters.  It will exit if the file already exists.
-diff --git a/common/config b/common/config
-index eada3971..6a60d144 100644
---- a/common/config
-+++ b/common/config
-@@ -38,7 +38,7 @@
- # - this script shouldn't make any assertions about filesystem
- #   validity or mountedness.
- #
--
-+. common/exit
- . common/test_names
- 
- # all tests should use a common language setting to prevent golden
-@@ -96,15 +96,6 @@ export LOCAL_CONFIGURE_OPTIONS=${LOCAL_CONFIGURE_OPTIONS:=--enable-readline=yes}
- 
- export RECREATE_TEST_DEV=${RECREATE_TEST_DEV:=false}
- 
--# This functions sets the exit code to status and then exits. Don't use
--# exit directly, as it might not set the value of "$status" correctly, which is
--# used as an exit code in the trap handler routine set up by the check script.
--_exit()
--{
--	test -n "$1" && status="$1"
--	exit "$status"
--}
--
- # Handle mkfs.$fstyp which does (or does not) require -f to overwrite
- set_mkfs_prog_path_with_opts()
- {
-@@ -121,12 +112,6 @@ set_mkfs_prog_path_with_opts()
- 	fi
+@@ -122,7 +122,7 @@ examples:
+  check -X .exclude -g auto
+  check -E ~/.xfstests.exclude
+ '
+-	    exit 1
++	    _exit 1
  }
  
--_fatal()
--{
--    echo "$*"
--    _exit 1
--}
--
- export MKFS_PROG="$(type -P mkfs)"
- [ "$MKFS_PROG" = "" ] && _fatal "mkfs not found"
+ get_sub_group_list()
+@@ -232,7 +232,7 @@ _prepare_test_list()
+ 			list=$(get_group_list $group)
+ 			if [ -z "$list" ]; then
+ 				echo "Group \"$group\" is empty or not defined?"
+-				exit 1
++				_exit 1
+ 			fi
  
-diff --git a/common/dump b/common/dump
-index 09859006..4701a956 100644
---- a/common/dump
-+++ b/common/dump
-@@ -3,6 +3,7 @@
- # Copyright (c) 2000-2002,2005 Silicon Graphics, Inc.  All Rights Reserved.
- #
- # Functions useful for xfsdump/xfsrestore tests
-+. common/exit
- 
- # --- initializations ---
- rm -f $seqres.full
-diff --git a/common/exit b/common/exit
-new file mode 100644
-index 00000000..ad7e7498
---- /dev/null
-+++ b/common/exit
-@@ -0,0 +1,50 @@
-+##/bin/bash
-+
-+# This functions sets the exit code to status and then exits. Don't use
-+# exit directly, as it might not set the value of "$status" correctly, which is
-+# used as an exit code in the trap handler routine set up by the check script.
-+_exit()
-+{
-+	test -n "$1" && status="$1"
-+	exit "$status"
-+}
-+
-+_fatal()
-+{
-+    echo "$*"
-+    _exit 1
-+}
-+
-+_die()
-+{
-+        echo $@
-+        _exit 1
-+}
-+
-+die_now()
-+{
+ 			for t in $list; do
+@@ -317,14 +317,14 @@ while [ $# -gt 0 ]; do
+ 	-r)
+ 		if $exact_order; then
+ 			echo "Cannot specify -r and --exact-order."
+-			exit 1
++			_exit 1
+ 		fi
+ 		randomize=true
+ 		;;
+ 	--exact-order)
+ 		if $randomize; then
+ 			echo "Cannnot specify --exact-order and -r."
+-			exit 1
++			_exit 1
+ 		fi
+ 		exact_order=true
+ 		;;
+@@ -362,7 +362,7 @@ done
+ # after processing args, overlay needs FSTYP set before sourcing common/config
+ if ! . ./common/rc; then
+ 	echo "check: failed to source common/rc"
+-	exit 1
 +	_exit 1
-+}
-+
-+# just plain bail out
-+#
-+_fail()
-+{
-+    echo "$*" | tee -a $seqres.full
-+    echo "(see $seqres.full for details)"
+ fi
+ 
+ init_rc
+@@ -374,8 +374,7 @@ if [ -n "$SOAK_DURATION" ]; then
+ 		sed -e 's/^\([.0-9]*\)\([a-z]\)*/\1 \2/g' | \
+ 		$AWK_PROG -f $here/src/soak_duration.awk)"
+ 	if [ $? -ne 0 ]; then
+-		status=1
+-		exit 1
++		_exit 1
+ 	fi
+ fi
+ 
+@@ -386,8 +385,7 @@ if [ -n "$FUZZ_REWRITE_DURATION" ]; then
+ 		sed -e 's/^\([.0-9]*\)\([a-z]\)*/\1 \2/g' | \
+ 		$AWK_PROG -f $here/src/soak_duration.awk)"
+ 	if [ $? -ne 0 ]; then
+-		status=1
+-		exit 1
++		_exit 1
+ 	fi
+ fi
+ 
+@@ -405,8 +403,7 @@ if $have_test_arg; then
+ 	while [ $# -gt 0 ]; do
+ 		case "$1" in
+ 		-*)	echo "Arguments before tests, please!"
+-			status=1
+-			exit $status
++			_exit 1
+ 			;;
+ 		*)	# Expand test pattern (e.g. xfs/???, *fs/001)
+ 			list=$(cd $SRC_DIR; echo $1)
+@@ -439,7 +436,7 @@ fi
+ if [ `id -u` -ne 0 ]
+ then
+     echo "check: QA must be run as root"
+-    exit 1
 +    _exit 1
-+}
-+
-+# bail out, setting up .notrun file. Need to kill the filesystem check files
-+# here, otherwise they are set incorrectly for the next test.
-+#
-+_notrun()
-+{
-+    echo "$*" > $seqres.notrun
-+    echo "$seq not run: $*"
-+    rm -f ${RESULT_DIR}/require_test*
-+    rm -f ${RESULT_DIR}/require_scratch*
-+
-+    _exit 0
-+}
-+
-diff --git a/common/ext4 b/common/ext4
-index f88fa532..ab566c41 100644
---- a/common/ext4
-+++ b/common/ext4
-@@ -1,7 +1,7 @@
- #
- # ext4 specific common functions
- #
--
-+. common/exit
- __generate_ext4_report_vars() {
- 	__generate_blockdev_report_vars TEST_LOGDEV
- 	__generate_blockdev_report_vars SCRATCH_LOGDEV
-diff --git a/common/populate b/common/populate
-index 50dc75d3..a17acc9e 100644
---- a/common/populate
-+++ b/common/populate
-@@ -4,7 +4,7 @@
- #
- # Routines for populating a scratch fs, and helpers to exercise an FS
- # once it's been fuzzed.
--
-+. common/exit
- . ./common/quota
+ fi
  
- _require_populate_commands() {
-diff --git a/common/preamble b/common/preamble
-index ba029a34..0f306412 100644
---- a/common/preamble
-+++ b/common/preamble
-@@ -3,6 +3,7 @@
- # Copyright (c) 2021 Oracle.  All Rights Reserved.
+ _wipe_counters()
+@@ -768,8 +765,7 @@ function run_section()
+ 	mkdir -p $RESULT_BASE
+ 	if [ ! -d $RESULT_BASE ]; then
+ 		echo "failed to create results directory $RESULT_BASE"
+-		status=1
+-		exit
++		_exit 1
+ 	fi
  
- # Boilerplate fstests functionality
-+. common/exit
+ 	if $OPTIONS_HAVE_SECTIONS; then
+@@ -785,8 +781,7 @@ function run_section()
+ 			echo "our local _test_mkfs routine ..."
+ 			cat $tmp.err
+ 			echo "check: failed to mkfs \$TEST_DEV using specified options"
+-			status=1
+-			exit
++			_exit 1
+ 		fi
+ 		# Previous FSTYP derived from TEST_DEV could be changed, source
+ 		# common/rc again with correct FSTYP to get FSTYP specific configs,
+@@ -830,8 +825,7 @@ function run_section()
+ 	      echo "our local _scratch_mkfs routine ..."
+ 	      cat $tmp.err
+ 	      echo "check: failed to mkfs \$SCRATCH_DEV using specified options"
+-	      status=1
+-	      exit
++	      _exit 1
+ 	  fi
  
- # Standard cleanup function.  Individual tests can override this.
- _cleanup()
-diff --git a/common/punch b/common/punch
-index 64d665d8..637f463f 100644
---- a/common/punch
-+++ b/common/punch
-@@ -3,6 +3,7 @@
- # Copyright (c) 2007 Silicon Graphics, Inc.  All Rights Reserved.
- #
- # common functions for excersizing hole punches with extent size hints etc.
-+. common/exit
+ 	  # call the overridden mount - make sure the FS mounts with
+@@ -841,8 +835,7 @@ function run_section()
+ 	      echo "our local mount routine ..."
+ 	      cat $tmp.err
+ 	      echo "check: failed to mount \$SCRATCH_DEV using specified options"
+-	      status=1
+-	      exit
++	      _exit 1
+ 	  else
+ 	      _scratch_unmount
+ 	  fi
+@@ -1105,12 +1098,10 @@ for ((iters = 0; iters < $iterations; iters++)) do
+ 		run_section $section
+ 		if [ "$sum_bad" != 0 ] && [ "$istop" = true ]; then
+ 			interrupt=false
+-			status=`expr $sum_bad != 0`
+-			exit
++			_exit `expr $sum_bad != 0`
+ 		fi
+ 	done
+ done
  
- _spawn_test_file() {
- 	echo "# spawning test file with $*"
-@@ -222,11 +223,6 @@ _filter_bmap()
- 	_coalesce_extents
- }
- 
--die_now()
--{
--	_exit 1
--}
--
- # test the different corner cases for zeroing a range:
- #
- #	1. into a hole
-diff --git a/common/rc b/common/rc
-index 9bed6dad..945f5134 100644
---- a/common/rc
-+++ b/common/rc
-@@ -2,6 +2,7 @@
- # SPDX-License-Identifier: GPL-2.0+
- # Copyright (c) 2000-2006 Silicon Graphics, Inc.  All Rights Reserved.
- 
-+. common/exit
- . common/config
- 
- BC="$(type -P bc)" || BC=
-@@ -1798,28 +1799,6 @@ _do()
-     return $ret
- }
- 
--# bail out, setting up .notrun file. Need to kill the filesystem check files
--# here, otherwise they are set incorrectly for the next test.
--#
--_notrun()
--{
--    echo "$*" > $seqres.notrun
--    echo "$seq not run: $*"
--    rm -f ${RESULT_DIR}/require_test*
--    rm -f ${RESULT_DIR}/require_scratch*
--
--    _exit 0
--}
--
--# just plain bail out
--#
--_fail()
--{
--    echo "$*" | tee -a $seqres.full
--    echo "(see $seqres.full for details)"
--    _exit 1
--}
--
- #
- # Tests whether $FSTYP should be exclude from this test.
- #
-@@ -3835,12 +3814,6 @@ _link_out_file()
- 	_link_out_file_named $seqfull.out "$features"
- }
- 
--_die()
--{
--        echo $@
--        _exit 1
--}
--
- # convert urandom incompressible data to compressible text data
- _ddt()
- {
-diff --git a/common/repair b/common/repair
-index fd206f8e..db6a1b5c 100644
---- a/common/repair
-+++ b/common/repair
-@@ -3,6 +3,7 @@
- # Copyright (c) 2000-2002 Silicon Graphics, Inc.  All Rights Reserved.
- #
- # Functions useful for xfs_repair tests
-+. common/exit
- 
- _zero_position()
- {
-diff --git a/common/xfs b/common/xfs
-index 96c15f3c..c236146c 100644
---- a/common/xfs
-+++ b/common/xfs
-@@ -1,6 +1,7 @@
- #
- # XFS specific common functions.
- #
-+. common/exit
- 
- __generate_xfs_report_vars() {
- 	__generate_blockdev_report_vars TEST_RTDEV
+ interrupt=false
+-status=`expr $sum_bad != 0`
+-exit
++_exit `expr $sum_bad != 0`
 -- 
 2.34.1
 
