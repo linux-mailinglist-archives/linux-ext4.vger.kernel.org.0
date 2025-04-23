@@ -1,102 +1,262 @@
-Return-Path: <linux-ext4+bounces-7442-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7443-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D911FA995A6
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 18:45:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 374F2A99612
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 19:09:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D143B9A54
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 16:43:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC6C51B82FCF
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 17:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDBC283C82;
-	Wed, 23 Apr 2025 16:44:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A3928A409;
+	Wed, 23 Apr 2025 17:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z0NkUkM1"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CO06bkUk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aGH2myP6";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CO06bkUk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aGH2myP6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C72E27FD71;
-	Wed, 23 Apr 2025 16:43:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939DF22D4C0
+	for <linux-ext4@vger.kernel.org>; Wed, 23 Apr 2025 17:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745426640; cv=none; b=o6BdYyoch/Q7yKVacyCe+2kXoD+g3PxdxSQgjLP3/S3ZQxTgG0AZBiDM/6kANzuMFc7c2CSvr6FLP5hE3kq9wbBdYVDdo3GH1XDuU395t2K9HsNMRa46s9o/xAbmNZNJN4Gkm7KPHJ3vcJvki03sA3lJfCYhc9kBCjbalPEmVxM=
+	t=1745428172; cv=none; b=JYGJ+ZrYo/Yes0MbTOpudg91WY5LC2KMpuOMPkORS+ZCuwp6sZPSlQ4a9dBmkNcFe8okArdkZnaCjMXbircjQWt0JY83djjBZ6VMo2OO96L/YoqVgNrkhwdWknT3B2aUmQDFgU58nkOyX1n2K4IHydtDv7Cv2NS4KFrlquKS6Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745426640; c=relaxed/simple;
-	bh=TmsFT/k12epNq9WbCUQlZuVOv21gEQBz/+cdNiERNiI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Vm2MprSue0OtOfNpMMgzr9NJFwI2hxctYy9wI6j8BI/WSgj9ZSdpisRp+VBHsiny9Kpu1ZxJNkimQ1xMf1iqFVl/RS6BXalEZY2Fov+8LdUwKpC4ruYPxXIC0R5xZPGzq9MnrnweBMQpUI3ZGX5reGvhjcNKmGtFf5YEo5E4iZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z0NkUkM1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91C83C4CEE2;
-	Wed, 23 Apr 2025 16:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745426639;
-	bh=TmsFT/k12epNq9WbCUQlZuVOv21gEQBz/+cdNiERNiI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Z0NkUkM1gS05G7ZhhzLOynJtCcpxr1SUirwv5yFZ7WT3+MXuhtT9zBzxL2n/DgF/A
-	 h70A1xojccbukVxLejEoR1ovHnh5A9nWRYSPQGt2Rv0tPBKFeGrxmk2cU/9uu/US5X
-	 ydx25KmOJdURwmv726dCeInBVLuX9ml2RRwT7KvICwMowis+/fXZz3b/K5uEAt1bHH
-	 qsL7FfEIR3KcEFNKZDlmMOHEKK4gkCuEo5mnsL+6jyUcCK8xKzQ9nEFjnnnws0iBHD
-	 Cjwjav15sZu4fLYeIvKZQiHT/rgZf14D8rR1LTHp7DJb0AAFdMBAJVQtxjVZSAlvFj
-	 e9gUeFfeGtDlg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Jan Kara <jack@suse.cz>,
-	Zhang Yi <yi.zhang@huawei.com>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	Shida Zhang <zhangshida@kylinos.cn>,
-	Baokun Li <libaokun1@huawei.com>,
-	Jann Horn <jannh@google.com>,
-	Brian Foster <bfoster@redhat.com>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: avoid -Wformat-security warning
-Date: Wed, 23 Apr 2025 18:43:49 +0200
-Message-Id: <20250423164354.2780635-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1745428172; c=relaxed/simple;
+	bh=5m1PZHd0dsdAhcA38VPsPYltHVZPTrSClAHxkMd6OA0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=awK9f5FOknVAk1rAXB9svgQvLm0t5mkwINcygklfuDTu+Fvq5FDHGFaU4kKkiFFkI7QqWHqOaetwNzrhP3ie4TqnPsmo9qwe0QYdC0iLBt0yrGlLz/6rWeRYKfRpZUy9C/ol+FEdYVE7aig8m3S1ixIznDlpDi9MNN4WH5TkpHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CO06bkUk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aGH2myP6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CO06bkUk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aGH2myP6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8C5881F449;
+	Wed, 23 Apr 2025 17:09:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745428168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UokPV57Q89xRAxxA7GjXgjX2aUYQnotNsdxc/ZHHrKE=;
+	b=CO06bkUkXHVAbGl8DvWmpRJkYgUd7fNvWa2jMCogBG7bw17GinK+YCJAdm+zcohqOJRqFF
+	EE6mxXHk0sEfQf6PTpgoPjaKdupiTyXBnEX0vYGv/r4+OvyMjEJIEyAO0RTfkeZpALem3p
+	Ii6S5iq8BZI0VJkQQw/ojYXhSJ0akwM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745428168;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UokPV57Q89xRAxxA7GjXgjX2aUYQnotNsdxc/ZHHrKE=;
+	b=aGH2myP62Ln+0PYOVqR721kCl5prNt9Qm9wBuNSj9dINbOA9W702N6sHejb6kwHWXLXb42
+	nghq/W56hrSci+CQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=CO06bkUk;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=aGH2myP6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745428168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UokPV57Q89xRAxxA7GjXgjX2aUYQnotNsdxc/ZHHrKE=;
+	b=CO06bkUkXHVAbGl8DvWmpRJkYgUd7fNvWa2jMCogBG7bw17GinK+YCJAdm+zcohqOJRqFF
+	EE6mxXHk0sEfQf6PTpgoPjaKdupiTyXBnEX0vYGv/r4+OvyMjEJIEyAO0RTfkeZpALem3p
+	Ii6S5iq8BZI0VJkQQw/ojYXhSJ0akwM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745428168;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UokPV57Q89xRAxxA7GjXgjX2aUYQnotNsdxc/ZHHrKE=;
+	b=aGH2myP62Ln+0PYOVqR721kCl5prNt9Qm9wBuNSj9dINbOA9W702N6sHejb6kwHWXLXb42
+	nghq/W56hrSci+CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7BBE513A3D;
+	Wed, 23 Apr 2025 17:09:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qPrxHcgeCWgXHQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 23 Apr 2025 17:09:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 0F268A0949; Wed, 23 Apr 2025 19:09:28 +0200 (CEST)
+Date: Wed, 23 Apr 2025 19:09:28 +0200
+From: Jan Kara <jack@suse.cz>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, dave@stgolabs.net, brauner@kernel.org, 
+	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	riel@surriel.com, willy@infradead.org, hannes@cmpxchg.org, oliver.sang@intel.com, 
+	david@redhat.com, axboe@kernel.dk, hare@suse.de, david@fromorbit.com, 
+	djwong@kernel.org, ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-mm@kvack.org, gost.dev@samsung.com, p.raghav@samsung.com, 
+	da.gomez@samsung.com, syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
+ migration
+Message-ID: <jwciumjkfwwjeoklsi6ubcspcjswkz5s5gtttzpjqft6dtb7sp@c4ae6y5pix5w>
+References: <20250410014945.2140781-1-mcgrof@kernel.org>
+ <20250410014945.2140781-2-mcgrof@kernel.org>
+ <dpn6pb7hwpmajoh5k5zla6x7fsmh4rlttstj3hkuvunp6tok3j@ikz2fxpikfv4>
+ <Z_6Gwl6nowYnsO3w@bombadil.infradead.org>
+ <mxmnbr6gni2lupljf7pzkhs6f3hynr2lq2nshbgcmzg77jduwk@wn76alaoxjts>
+ <Z__hthNd2nj9QjrM@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="4v4cuvrwajlncncp"
+Content-Disposition: inline
+In-Reply-To: <Z__hthNd2nj9QjrM@bombadil.infradead.org>
+X-Rspamd-Queue-Id: 8C5881F449
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[multipart/mixed,text/plain,text/x-patch];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	MIME_TRACE(0.00)[0:+,1:+,2:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[suse.cz,stgolabs.net,kernel.org,mit.edu,dilger.ca,vger.kernel.org,surriel.com,infradead.org,cmpxchg.org,intel.com,redhat.com,kernel.dk,suse.de,fromorbit.com,gmail.com,kvack.org,samsung.com,syzkaller.appspotmail.com];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[f3c6fda1297c748a7076];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	HAS_ATTACHMENT(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -2.51
+X-Spam-Flag: NO
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-check_igot_inode() prints a variable string, which causes a harmless
-warning with 'make W=1':
+--4v4cuvrwajlncncp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-fs/ext4/inode.c:4763:45: error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
- 4763 |         ext4_error_inode(inode, function, line, 0, err_str);
+On Wed 16-04-25 09:58:30, Luis Chamberlain wrote:
+> On Tue, Apr 15, 2025 at 06:28:55PM +0200, Jan Kara wrote:
+> > > So I tried:
+> > > 
+> > > root@e1-ext4-2k /var/lib/xfstests # fsck /dev/loop5 -y 2>&1 > log
+> > > e2fsck 1.47.2 (1-Jan-2025)
+> > > root@e1-ext4-2k /var/lib/xfstests # wc -l log
+> > > 16411 log
+> > 
+> > Can you share the log please?
+> 
+> Sure, here you go:
+> 
+> https://github.com/linux-kdevops/20250416-ext4-jbd2-bh-migrate-corruption
+> 
+> The last trace-0004.txt is a fresh one with Davidlohr's patches
+> applied. It has trace-0004-fsck.txt.
 
-Use a trivial "%s" format string instead.
+Thanks for the data! I was staring at them for some time and at this point
+I'm leaning towards a conclusion that this is actually not a case of
+metadata corruption but rather a bug in ext4 transaction credit computation
+that is completely independent of page migration.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/ext4/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Based on the e2fsck log you've provided the only damage in the filesystem
+is from the aborted transaction handle in the middle of extent tree growth.
+So nothing points to a lost metadata write or anything like that. And the
+credit reservation for page writeback is indeed somewhat racy - we reserve
+number of transaction credits based on current tree depth. However by the
+time we get to ext4_ext_map_blocks() another process could have modified
+the extent tree so we may need to modify more blocks than we originally
+expected and reserved credits for.
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 94c7d2d828a6..3cfb1b670ea4 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4760,7 +4760,7 @@ static int check_igot_inode(struct inode *inode, ext4_iget_flags flags,
- 	return 0;
- 
- error:
--	ext4_error_inode(inode, function, line, 0, err_str);
-+	ext4_error_inode(inode, function, line, 0, "%s", err_str);
- 	return -EFSCORRUPTED;
- }
- 
+Can you give attached patch a try please?
+
+								Honza
 -- 
-2.39.5
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
+--4v4cuvrwajlncncp
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-ext4-Fix-calculation-of-credits-for-extent-tree-modi.patch"
+
+From 4c53fb9f4b9b3eb4a579f69b7adcb6524d55629c Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Wed, 23 Apr 2025 18:10:54 +0200
+Subject: [PATCH] ext4: Fix calculation of credits for extent tree modification
+
+Luis and David are reporting that after running generic/750 test for 90+
+hours on 2k ext4 filesystem, they are able to trigger a warning in
+jbd2_journal_dirty_metadata() complaining that there are not enough
+credits in the running transaction started in ext4_do_writepages().
+
+Indeed the code in ext4_do_writepages() is racy and the extent tree can
+change between the time we compute credits necessary for extent tree
+computation and the time we actually modify the extent tree. Thus it may
+happen that the number of credits actually needed is higher. Modify
+ext4_ext_index_trans_blocks() to count with the worst case of maximum
+tree depth.
+
+Link: https://lore.kernel.org/all/20250415013641.f2ppw6wov4kn4wq2@offworld
+Reported-by: Davidlohr Bueso <dave@stgolabs.net>
+Reported-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/extents.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index c616a16a9f36..43286632e650 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -2396,18 +2396,19 @@ int ext4_ext_calc_credits_for_single_extent(struct inode *inode, int nrblocks,
+ int ext4_ext_index_trans_blocks(struct inode *inode, int extents)
+ {
+ 	int index;
+-	int depth;
+ 
+ 	/* If we are converting the inline data, only one is needed here. */
+ 	if (ext4_has_inline_data(inode))
+ 		return 1;
+ 
+-	depth = ext_depth(inode);
+-
++	/*
++	 * Extent tree can change between the time we estimate credits and
++	 * the time we actually modify the tree. Assume the worst case.
++	 */
+ 	if (extents <= 1)
+-		index = depth * 2;
++		index = EXT4_MAX_EXTENT_DEPTH * 2;
+ 	else
+-		index = depth * 3;
++		index = EXT4_MAX_EXTENT_DEPTH * 3;
+ 
+ 	return index;
+ }
+-- 
+2.43.0
+
+
+--4v4cuvrwajlncncp--
 
