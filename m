@@ -1,61 +1,65 @@
-Return-Path: <linux-ext4+bounces-7395-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7396-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FDB9A97BB8
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 02:38:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB93BA97E06
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 07:18:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FAAD189F9C1
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 00:38:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E464F167845
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 05:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B94F2566C5;
-	Wed, 23 Apr 2025 00:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D8B266569;
+	Wed, 23 Apr 2025 05:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ow7v5UA3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGdGVkrC"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B156F2701BA;
-	Wed, 23 Apr 2025 00:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C324EA95E;
+	Wed, 23 Apr 2025 05:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745368704; cv=none; b=sDgo8ueWUHMGF05ilo+kegph2aiISCfgO3Wqgptz3tH8xuHH73BjtFp6Rif2W9LYAI3Bx8BcHYhwQjn/2JGrhrP0Tl0MYTy5gRB5VDb7as/9WCKF3Hfa0PnQXahHKAlPG6HJWjS514XyYDBKRkMkSje3ffjuBNqnDj9WTZOFPPA=
+	t=1745385523; cv=none; b=HJTX8r5N2ubWvtVRG7tbfOInMjB3tBFlb+VB3saJef1FZTtb3GJVXzE/NEjzMn+9JA5UfmZq0lhxmRcQBOE1fh2UVje19elr2csmj+DDSFXLu3FDE0dPAERrdxZIvOuswAQczX3RuivUcG7+mp8udZ/fZy7wEkBLUOkey+2HmXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745368704; c=relaxed/simple;
-	bh=GAvP7ZgHqWRFZdNovhTeJsx4VHpa/TNAyoNDl8z69bY=;
+	s=arc-20240116; t=1745385523; c=relaxed/simple;
+	bh=rg4MqTe0LYLHT84qw4MF59gwYThCwYUSpTGxLQGysXs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b6k9ahBsbU+YoMIUMmHSlUTPDjCd4V2TnrukU8Yz5p4A8UgSwWQCgVd48F2f39dASqF26f0qiRGvIhEaumsQjFjfWP8ZbBF6lg+csBwJ4IR3eb0ybvTGcGigpabmSiwNC0Ru1r/yWVBvC4Jlicg5aLa53WYmiJ8Dzn+fqeQ9HKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ow7v5UA3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 210A5C4CEE9;
-	Wed, 23 Apr 2025 00:38:24 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=HGT6ADtFLbhxXhfaxLQsUcCO8QEIP1Qf2QrvdilQLi6G2J/5Jb00UyuP0vOvX3OM5qsZ7RSJtm4+CD6ySa/D38SVvmYrAzpwX7RUDUsLUGtvWSQTlReuieFTT4xtaguTSBuTXzIXnyJ2rxKu9w9mr9bj8bi+b6lGMEvo6QY4FoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGdGVkrC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99613C4CEE2;
+	Wed, 23 Apr 2025 05:18:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745368704;
-	bh=GAvP7ZgHqWRFZdNovhTeJsx4VHpa/TNAyoNDl8z69bY=;
+	s=k20201202; t=1745385521;
+	bh=rg4MqTe0LYLHT84qw4MF59gwYThCwYUSpTGxLQGysXs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ow7v5UA32dQxWVjm8s1HDy+NOhwB12mK76gAc/NBmLzaPgNNqVxlW7V9npGNd80Jh
-	 Ub1BRz7qZrCQ69OaWvxFQZTfEbZeXkJCqnabaX4O4FZkjBCiEpROLz+UVjQBNMNLmn
-	 Cxk3qB2+r1+61pzdS58nnK9SLnHMIky0+Jv8a+pMPT3Bot/zkox5cY4IzkE2i1ijNM
-	 xdW6O7kPlh8oHzFtwXm4tQso295AVSLjnRlO3dS1PEzc6ECQCalU/akFfbFv63/jtI
-	 hMZdUCHmsREdurfTkl9/CPA955b2v5r8iPvtWXJ9oZthMCDCcNhHaoEkcsUwNYk1nz
-	 T41AYHcO1nFEA==
-Date: Tue, 22 Apr 2025 17:38:23 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
+	b=hGdGVkrCs92SpdAAX5OrMJ82y8MGPQRRPHycSeZ+GZBMF6W5yuWeInTnLwykLX5Je
+	 4zs0FOwfMZcaZyylw238WSdwm3H2NWSrUkyfM3dIdcna7It1W2pcTlx0DFigLr4Mjk
+	 asGxWFuTjgFNTYA1qWzQhqWsXzCmxuXni8lx0GxgnwNt0NGckX4N/jxAMs0d8xaUWZ
+	 GbRBlqzdN6G+/dTeBDSooCYzOXfCRS1VzZW/SOy4xkTJLwzWAaZhn8Coj8fkEo8C81
+	 dpV1iFi1mkM3DnL+T6edOmrj+6TIid8dMk+XruSWXcNRepqVqnDnpoHY6bY5U3OMSt
+	 lNAXt9DkpHPAg==
+Date: Tue, 22 Apr 2025 22:18:39 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
 To: John Garry <john.g.garry@oracle.com>
-Cc: brauner@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk, jack@suse.cz,
-	cem@kernel.org, linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	brauner@kernel.org, djwong@kernel.org, hch@lst.de,
+	viro@zeniv.linux.org.uk, jack@suse.cz, cem@kernel.org,
+	linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
 	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
 	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
 	martin.petersen@oracle.com, linux-ext4@vger.kernel.org,
 	linux-block@vger.kernel.org, catherine.hoang@oracle.com,
-	linux-api@vger.kernel.org
-Subject: Re: [PATCH v8 05/15] xfs: ignore HW which cannot atomic write a
- single block
-Message-ID: <20250423003823.GW25675@frogsfrogsfrogs>
-References: <20250422122739.2230121-1-john.g.garry@oracle.com>
- <20250422122739.2230121-6-john.g.garry@oracle.com>
+	linux-api@vger.kernel.org, Pankaj Raghav <p.raghav@samsung.com>,
+	Daniel Gomez <da.gomez@samsung.com>
+Subject: Re: [PATCH v7 11/14] xfs: add xfs_file_dio_write_atomic()
+Message-ID: <aAh4L9crlnEf3uuJ@bombadil.infradead.org>
+References: <20250415121425.4146847-1-john.g.garry@oracle.com>
+ <20250415121425.4146847-12-john.g.garry@oracle.com>
+ <aAa2HMvKcIGdbJlF@bombadil.infradead.org>
+ <69302bf1-78b4-4b95-8e9b-df56dd1091c0@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,137 +68,55 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250422122739.2230121-6-john.g.garry@oracle.com>
+In-Reply-To: <69302bf1-78b4-4b95-8e9b-df56dd1091c0@oracle.com>
 
-On Tue, Apr 22, 2025 at 12:27:29PM +0000, John Garry wrote:
-> Currently only HW which can write at least 1x block is supported.
+On Tue, Apr 22, 2025 at 07:08:32AM +0100, John Garry wrote:
+> On 21/04/2025 22:18, Luis Chamberlain wrote:
+> > > /*
+> > > +	 * The retry mechanism is based on the ->iomap_begin method returning
+> > > +	 * -ENOPROTOOPT, which would be when the REQ_ATOMIC-based write is not
+> > > +	 * possible. The REQ_ATOMIC-based method typically not be possible if
+> > > +	 * the write spans multiple extents or the disk blocks are misaligned.
+> > > +	 */
+> > > +	if (ret == -ENOPROTOOPT && dops == &xfs_direct_write_iomap_ops) {
+> > Based on feedback from LSFMM, due to the performance variaibility this
+> > can introduce, it sounded like some folks would like to opt-in to not
+> > have a software fallback and just require an error out.
+> > > Could an option be added to not allow the software fallback?
 > 
-> For supporting atomic writes > 1x block, a CoW-based method will also be
-> used and this will not be resticted to using HW which can write >= 1x
-> block.
+> I still don't see the use in this.
+
+Its not the use, its the concern for underdeterminism in performance.
+
+> So consider userspace wants to write something atomically and we fail as a
+> HW-based atomic write is not possible.
+
+Sounds like a terrible predicant for those that want hw atomics and
+reliability for it.
+
+> What is userspace going to do next?
+
+It would seem that would depend on their analysis on the number of
+software fallbacks where a software atomic based solution is used and
+the impact on performance.
+
+> I heard something like "if HW-based atomics are not possible, then something
+> has not been configured properly for the FS" - that something would be
+> extent granularity and alignment, but we don't have a method to ensure this.
+> That is the whole point of having a FS fallback.
+
+We do with LBS. Its perfectly deterministic to be aligned with a sector
+size matching the block size, even for metadata writes.
+
+> > If so, then I think the next patch would also need updating.
+> > 
+> > Or are you suggesting that without the software fallback atomic writes
+> > greater than fs block size are not possible?
 > 
-> However for deciding if HW-based atomic writes can be used, we need to
-> start adding checks for write length < HW min, which complicates the code.
-> Indeed, a statx field similar to unit_max_opt should also be added for this
-> minimum, which is undesirable.
-> 
-> HW which can only write > 1x blocks would be uncommon and quite weird, so
-> let's just not support it.
-> 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  fs/xfs/xfs_inode.h | 17 ++++++++---------
->  fs/xfs/xfs_mount.c | 14 ++++++++++++++
->  fs/xfs/xfs_mount.h |  4 ++++
->  3 files changed, 26 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-> index cff643cd03fc..725cd7c16a6e 100644
-> --- a/fs/xfs/xfs_inode.h
-> +++ b/fs/xfs/xfs_inode.h
-> @@ -355,20 +355,19 @@ static inline bool xfs_inode_has_bigrtalloc(const struct xfs_inode *ip)
->  #define xfs_inode_buftarg(ip) \
->  	(XFS_IS_REALTIME_INODE(ip) ? \
->  		(ip)->i_mount->m_rtdev_targp : (ip)->i_mount->m_ddev_targp)
-> +/*
-> + * Return max atomic write unit for a given inode.
-> + */
-> +#define xfs_inode_hw_atomicwrite_max(ip) \
-> +	(XFS_IS_REALTIME_INODE(ip) ? \
-> +		(ip)->i_mount->m_rt_awu_hw_max : \
-> +		(ip)->i_mount->m_dd_awu_hw_max)
->  
->  static inline bool
->  xfs_inode_can_hw_atomicwrite(
->  	struct xfs_inode	*ip)
->  {
-> -	struct xfs_mount	*mp = ip->i_mount;
-> -	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
-> -
-> -	if (mp->m_sb.sb_blocksize < target->bt_bdev_awu_min)
-> -		return false;
-> -	if (mp->m_sb.sb_blocksize > target->bt_bdev_awu_max)
-> -		return false;
-> -
-> -	return true;
-> +	return xfs_inode_hw_atomicwrite_max(ip);
->  }
->  
->  /*
-> diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
-> index 00b53f479ece..ee68c026e6cd 100644
-> --- a/fs/xfs/xfs_mount.c
-> +++ b/fs/xfs/xfs_mount.c
-> @@ -1082,6 +1082,20 @@ xfs_mountfs(
->  		xfs_zone_gc_start(mp);
->  	}
->  
-> +	/*
-> +	 * Set atomic write unit max for mp. Ignore devices which cannot atomic
-> +	 * a single block, as they would be uncommon and more difficult to
-> +	 * support.
-> +	 */
-> +	if (mp->m_ddev_targp->bt_bdev_awu_min <= mp->m_sb.sb_blocksize &&
-> +	    mp->m_ddev_targp->bt_bdev_awu_max >= mp->m_sb.sb_blocksize)
-> +		mp->m_dd_awu_hw_max = mp->m_ddev_targp->bt_bdev_awu_max;
+> Yes, as XFS has no method to guarantee extent granularity and alignment.
 
-If we don't want to use the device's atomic write capabilities due to
-fsblock alignment problems, why not just zero out bt_bdev_awu_min/max?
-That would cut down on the number of "awu" variables around the
-codebase.
+Ah, I think the documentation for this featuer should make this clear,
+it was not clear up to this point in patch review.
 
-/*
- * Ignore hardware atomic writes if the device can't handle a single
- * fsblock for us.  Most devices set the min_awu to the LBA size, but
- * the spec allows for a functionality gap.
- */
-static void
-xfs_buftarg_reconcile_awu(
-	struct xfs_buftarg	*btp)
-{
-	struct xfs_mount	*mp = btp->bt_mount;
-
-	if (btp->bt_bdev_awu_min > mp->m_sb.sb_blocksize ||
-	    btp->bt_bdev_awu_max < mp->m_sb.sb_blocksize) {
-		btp->bt_bdev_awu_min = 0;
-		btp->bt_bdev_awu_max = 0;
-	}
-}
-
-	xfs_buftarg_reconcile_awu(mp->m_ddev_targp);
-	if (mp->m_rtdev_targp)
-		xfs_buftarg_reconcile_awu(mp->m_rtdev_targp);
-
-Hrm?
-
---D
-
-> +
-> +	if (mp->m_rtdev_targp &&
-> +	    mp->m_rtdev_targp->bt_bdev_awu_min <= mp->m_sb.sb_blocksize &&
-> +	    mp->m_rtdev_targp->bt_bdev_awu_max >= mp->m_sb.sb_blocksize)
-> +		mp->m_rt_awu_hw_max = mp->m_rtdev_targp->bt_bdev_awu_max;
-> +
->  	return 0;
->  
->   out_agresv:
-> diff --git a/fs/xfs/xfs_mount.h b/fs/xfs/xfs_mount.h
-> index e5192c12e7ac..2819e160f0e9 100644
-> --- a/fs/xfs/xfs_mount.h
-> +++ b/fs/xfs/xfs_mount.h
-> @@ -231,6 +231,10 @@ typedef struct xfs_mount {
->  	unsigned int		m_max_open_zones;
->  	unsigned int		m_zonegc_low_space;
->  
-> +	/* ddev and rtdev HW max atomic write size */
-> +	unsigned int		m_dd_awu_hw_max;
-> +	unsigned int		m_rt_awu_hw_max;
-> +
->  	/*
->  	 * Bitsets of per-fs metadata that have been checked and/or are sick.
->  	 * Callers must hold m_sb_lock to access these two fields.
-> -- 
-> 2.31.1
-> 
-> 
+  Luis
 
