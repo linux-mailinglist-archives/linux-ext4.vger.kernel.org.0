@@ -1,40 +1,40 @@
-Return-Path: <linux-ext4+bounces-7411-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7412-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E3D2A98352
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 10:29:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F650A9836E
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 10:32:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E8AF7B0325
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 08:28:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDB6C7A478A
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Apr 2025 08:31:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33B827BF87;
-	Wed, 23 Apr 2025 08:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0C82820AF;
+	Wed, 23 Apr 2025 08:23:14 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B17E27935D;
-	Wed, 23 Apr 2025 08:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC4AE1FE45D;
+	Wed, 23 Apr 2025 08:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745396350; cv=none; b=AaKx4xsFHY67R5bzkzvHEteSX5Hfe+9PlKa100POk4dpM9wSKfmukZwK0qpbc812xDa0rit/jI/NGG25KLc6H9BdGe3LiIv310dzi6hQH6YQCJbeMh+PRiIgwPy4IwL5iYokx5GtqGbOwbUvWUs9N78JDW7Cjfe5168BH5Yx3Qs=
+	t=1745396594; cv=none; b=KEOENt8Nwv07aSQttu1LGPBP/eSWRVlsjhUB8tPTQOeLNb5E6azVfwSsTXN2S7NHu4LnoICIFe8tOK0DflOzBnKm9FFsWI2lTkJfttyjvPmFv+HsR+uwRWvoOcHA4rUgktwQwCbTP0vCq4tJY7sgMg3T4EVeUSRp6eNZuEX9uQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745396350; c=relaxed/simple;
-	bh=lgSGQleS8nlGKrOWWS9LmY+nF3u22Ri85AHSqBlXTyI=;
+	s=arc-20240116; t=1745396594; c=relaxed/simple;
+	bh=sa40OfymsM+wntfudnwDbfz9beKE9D1/QVwSLdySqa8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=elxLpuQ9Q0f/ba4Mi3O3gxjPLu0TNeEvB/hRBG8qY2dkV1EqjTloKBxBBHEvTs+nN8DOmsnFYHNXKSO5B4hnhamY1NnNkhh7a2rQDIdCBpIhBy9S3T+kdUlMOEoTy/+cT6Nl/yJ+em2OLN6SFVxwVjk68Ejikn4OllmhcgfQK6o=
+	 Content-Type:Content-Disposition:In-Reply-To; b=JaYZWzXeXRSA3meD60ZCdpoEvY3xsqeUPJDsJeFLiRocXdzKO7qHd2/LjRAaMXF3IaSZNoM2aEPxFWYdjnsenN7x/7mEM4hTVfo+GSHDVInitgnQ/UZNPeQp3rqYZAom+ytPyYywB2n0NkI2Ex65dUUpHoj7Sw0Gm3S/IuNC7Ow=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 15CED68C4E; Wed, 23 Apr 2025 10:19:03 +0200 (CEST)
-Date: Wed, 23 Apr 2025 10:19:02 +0200
+	id C470168BFE; Wed, 23 Apr 2025 10:23:07 +0200 (CEST)
+Date: Wed, 23 Apr 2025 10:23:07 +0200
 From: Christoph Hellwig <hch@lst.de>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: John Garry <john.g.garry@oracle.com>, brauner@kernel.org, hch@lst.de,
+To: John Garry <john.g.garry@oracle.com>
+Cc: brauner@kernel.org, djwong@kernel.org, hch@lst.de,
 	viro@zeniv.linux.org.uk, jack@suse.cz, cem@kernel.org,
 	linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
 	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -42,9 +42,9 @@ Cc: John Garry <john.g.garry@oracle.com>, brauner@kernel.org, hch@lst.de,
 	martin.petersen@oracle.com, linux-ext4@vger.kernel.org,
 	linux-block@vger.kernel.org, catherine.hoang@oracle.com,
 	linux-api@vger.kernel.org
-Subject: Re: [PATCH v7 11/14] xfs: add xfs_file_dio_write_atomic()
-Message-ID: <20250423081902.GD28307@lst.de>
-References: <20250415121425.4146847-1-john.g.garry@oracle.com> <20250415121425.4146847-12-john.g.garry@oracle.com> <20250421040002.GU25675@frogsfrogsfrogs> <2467484b-382b-47c2-ae70-4a41d63cf4fc@oracle.com> <20250421164241.GD25700@frogsfrogsfrogs> <20250423054251.GA23087@lst.de>
+Subject: Re: [PATCH v8 11/15] xfs: commit CoW-based atomic writes atomically
+Message-ID: <20250423082307.GA29539@lst.de>
+References: <20250422122739.2230121-1-john.g.garry@oracle.com> <20250422122739.2230121-12-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -53,22 +53,31 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250423054251.GA23087@lst.de>
+In-Reply-To: <20250422122739.2230121-12-john.g.garry@oracle.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Wed, Apr 23, 2025 at 07:42:51AM +0200, Christoph Hellwig wrote:
-> On Mon, Apr 21, 2025 at 09:42:41AM -0700, Darrick J. Wong wrote:
-> > Well it turns out that was a stupid question -- zoned=1 can't be enabled
-> > with reflink, which means there's no cow fallback so atomic writes just
-> > plain don't work:
-> 
-> Exactly.  It is still on my todo list to support it, but there are a
-> few higher priority items on it as well, in addition to constant
-> interruptions for patch reviews :)
+On Tue, Apr 22, 2025 at 12:27:35PM +0000, John Garry wrote:
+> +STATIC void
 
-Actually, for zoned we don't need reflink support - as we always write
-out place only the stuffing of multiple remaps into a single transaction
-is needed.  Still no need to force John to do this work, I can look into
-this (probably fairly trivial) work once we have good enough test cases
-in xfstests that I can trust them to verify I got things right.
+Didn't we phase out STATIC for new code?
+
+> +xfs_calc_default_atomic_ioend_reservation(
+> +	struct xfs_mount	*mp,
+> +	struct xfs_trans_resv	*resp)
+> +{
+> +	if (xfs_has_reflink(mp))
+> +		resp->tr_atomic_ioend = resp->tr_itruncate;
+> +	else
+> +		memset(&resp->tr_atomic_ioend, 0,
+> +				sizeof(resp->tr_atomic_ioend));
+> +}
+
+What is the point of zeroing out the structure for the non-reflink
+case?  Just as a poision for not using it when not supported as no
+code should be doing that?  Just thinking of this because it is a
+potentially nasty landmine for the zoned atomic support.
+
+Otherwise looks good:
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
