@@ -1,52 +1,53 @@
-Return-Path: <linux-ext4+bounces-7487-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7488-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B2C7A9BA1B
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Apr 2025 23:46:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3049A9BA1C
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Apr 2025 23:46:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 256613B566A
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Apr 2025 21:45:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 421E7925A52
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Apr 2025 21:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAED11A317D;
-	Thu, 24 Apr 2025 21:46:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726D61BD9E3;
+	Thu, 24 Apr 2025 21:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q0llDjEX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="caXZ+NhE"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FCBC13213E
-	for <linux-ext4@vger.kernel.org>; Thu, 24 Apr 2025 21:46:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C5A13213E
+	for <linux-ext4@vger.kernel.org>; Thu, 24 Apr 2025 21:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745531160; cv=none; b=tAsdO1O3zOT3EQVGC+EjaLib3gxIFgwWCPo7vOuKFYuykrEqzpyzc5sztAKy37cjd3IFqZZEByBl+eLsWBeFXrKVIegefp9TnbVqVoHnF2OoBMwviWQDQgTGFLI6waUbiq4XBCMaXmzfRPRjuEe0NFcsGUKchY1Um6FhFci732g=
+	t=1745531179; cv=none; b=CCp3znbp+CakkcWieGJxYDYS3eLqNEF+Y5NgCWCVBtXpVDX0X6jG8M/+1DT0UN8acanFSEgMi28yZpBVCX2c6prz0XAO34tLm1ux6iTasRgOMNU4xGi4nSin8v2jTCqUZykgYdOS8Wq0YhrwGe5nU5LZohbSQIlkG9LJJiva44A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745531160; c=relaxed/simple;
-	bh=VJ1FoAQDtmwf9+bLW28pJiAalcZcTQe1SD1baohBxKE=;
+	s=arc-20240116; t=1745531179; c=relaxed/simple;
+	bh=vZaO3J2KFiQBNPGQtmiiGbjBDPOFXmAarW4ZEthvwMM=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SvcBUTiXBENfdUKc/bq17x0hUX/Vsqa1vVlNFfFRFxY1sAljUYDDcH5W75quf4hzLy7seYfC2jFTFSpZWdciXRhErYGg/auUPGFoBLnFMKajir4Lr0qNHRzCmx4TH4Lq2s9WCB+u6cWaIuhBFt8jF1FbH6Hgn0GcenKgXg7Bo2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q0llDjEX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE0E9C4CEE4;
-	Thu, 24 Apr 2025 21:45:59 +0000 (UTC)
+	 MIME-Version:Content-Type; b=NAQLt7qUDiUxCTOYfvpGy+z4vIhjJlsV5JSdh/ehbhXfW9QaBln0tRYx6Z6NWXgUBvU1PkhqWDXA1485oaPs5sDQfRMJlWunQuWoJNprdsboQCvISAeSGxi7peE0ty/jHRY5+3GZjjvFxLEdW0RiHnFpjfuH+dAXWbJZmKv/HXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=caXZ+NhE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DE1FC4CEE3;
+	Thu, 24 Apr 2025 21:46:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745531159;
-	bh=VJ1FoAQDtmwf9+bLW28pJiAalcZcTQe1SD1baohBxKE=;
+	s=k20201202; t=1745531178;
+	bh=vZaO3J2KFiQBNPGQtmiiGbjBDPOFXmAarW4ZEthvwMM=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=q0llDjEXYisJI/7LPcna6S/qPotQVVWZitnyaBS+XAdkdGRLkk8trGEe+lJQmR+EM
-	 UALMl8fhIr4e3+oPvbbx2uZP5KCeV6OUhVjF19UnNVTd6hC3QWjZAtx4IKDvImDN7A
-	 FufAsSynSfg7UIo72Ui7u6EoZYHUpLf4aj2EflqpfdVSCqfDUfayZWsdcxZEr6vEZY
-	 0E8SB7jjJ1KoueLPUWpTlOeKgfg9iA2unRNQSmhRIypmqks9XAHWonJGM53/AhGRPT
-	 vJxjLdrMQCowA9tZnCsgvSASfd3pawUwBCj/CJpmOrIsKM2hi0pQvpEUnzAMeAEgyG
-	 FJUfhz/qY7JaA==
-Date: Thu, 24 Apr 2025 14:45:59 -0700
-Subject: [PATCH 2/5] libext2fs: make unix_io cache size configurable
+	b=caXZ+NhERxxRrwgrPN5nF/NO6MDgQVoyPUaK6tpJI+V3YsezHCldI0MA5okKtBHTF
+	 dGgFgu0CEJkxr1D1rwsupnDPfx1wDu2Ng8KryBcb7dNq99oNLV+8mb3PzJjQ/co5br
+	 GjqtBtR2GZEgS5Meum66AWM6Xkg+Nivq1gCzcYGp5GxBE4Iv2QzOZQzImtHbvHMbzR
+	 +F0eXbsCTCtxt1YuRZmO2HLHMf4n6ELwYON+uY3EW4nwIbu1iYkY7yXYQ23G9Qga8O
+	 Qq6rN9ERuzXq0wt0ZTlvc/jjoeShJgNAO2x519U8lOzfPEWeLQhUA0Zkf4Z4Z9PcVL
+	 zlmCe6iZ5cU8g==
+Date: Thu, 24 Apr 2025 14:46:15 -0700
+Subject: [PATCH 3/5] libext2fs: use hashing for cache lookups in unix IO
+ manager
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <174553065546.1161238.2653341081512215032.stgit@frogsfrogsfrogs>
+Message-ID: <174553065563.1161238.5896022194303080059.stgit@frogsfrogsfrogs>
 In-Reply-To: <174553065491.1161238.812958177319322832.stgit@frogsfrogsfrogs>
 References: <174553065491.1161238.812958177319322832.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,229 +61,150 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Make it so that we can reconfigure the unix IO manager cache size.
-fuse2fs might want more than 32 blocks.
+Use a hash to avoid the linear scan.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- lib/ext2fs/unix_io.c |  127 +++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 120 insertions(+), 7 deletions(-)
+ lib/ext2fs/unix_io.c |   81 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 80 insertions(+), 1 deletion(-)
 
 
 diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
-index 207a8e63b77fd4..f8be1fe6f8d2c0 100644
+index f8be1fe6f8d2c0..7078f3e2e30175 100644
 --- a/lib/ext2fs/unix_io.c
 +++ b/lib/ext2fs/unix_io.c
-@@ -91,7 +91,7 @@ struct unix_cache {
- 	unsigned		write_err:1;
- };
+@@ -75,6 +75,40 @@
+ #include "ext2fs.h"
+ #include "ext2fsP.h"
  
--#define CACHE_SIZE 8
-+#define DEFAULT_CACHE_SIZE 8
- #define WRITE_DIRECT_SIZE 4	/* Must be smaller than CACHE_SIZE */
- #define READ_DIRECT_SIZE 4	/* Should be smaller than CACHE_SIZE */
- 
-@@ -102,7 +102,8 @@ struct unix_private_data {
- 	int	align;
- 	int	access_time;
++static inline int fls(int x)
++{
++	int r = 32;
++
++	if (!x)
++		return 0;
++	if (!(x & 0xffff0000u)) {
++		x = (x & 0xffffu) << 16;
++		r -= 16;
++	}
++	if (!(x & 0xff000000u)) {
++		x = (x & 0xffffffu) << 8;
++		r -= 8;
++	}
++	if (!(x & 0xf0000000u)) {
++		x = (x & 0xfffffffu) << 4;
++		r -= 4;
++	}
++	if (!(x & 0xc0000000u)) {
++		x = (x & 0x3fffffffu) << 2;
++		r -= 2;
++	}
++	if (!(x & 0x80000000u)) {
++		r -= 1;
++	}
++	return r;
++}
++
++/* Get high bit set out of 32-bit argument, -1 if none set */
++static inline int highbit32(uint32_t v)
++{
++	return fls(v) - 1;
++}
++
+ /*
+  * For checking structure magic numbers...
+  */
+@@ -104,6 +138,7 @@ struct unix_private_data {
  	ext2_loff_t offset;
--	struct unix_cache cache[CACHE_SIZE];
-+	struct unix_cache *cache;
-+	unsigned int cache_size;
+ 	struct unix_cache *cache;
+ 	unsigned int cache_size;
++	unsigned int cache_hash_shift;
  	void	*bounce;
  	struct struct_io_stats io_stats;
  #ifdef HAVE_PTHREAD
-@@ -476,7 +477,7 @@ static errcode_t alloc_cache(io_channel channel,
- 	int			i;
+@@ -516,6 +551,27 @@ static void free_cache(struct unix_private_data *data)
+ }
  
- 	data->access_time = 0;
--	for (i=0, cache = data->cache; i < CACHE_SIZE; i++, cache++) {
-+	for (i=0, cache = data->cache; i < data->cache_size; i++, cache++) {
- 		cache->block = 0;
- 		cache->access_time = 0;
- 		cache->dirty = 0;
-@@ -502,7 +503,7 @@ static void free_cache(struct unix_private_data *data)
- 	int			i;
- 
- 	data->access_time = 0;
--	for (i=0, cache = data->cache; i < CACHE_SIZE; i++, cache++) {
-+	for (i=0, cache = data->cache; i < data->cache_size; i++, cache++) {
- 		cache->block = 0;
- 		cache->access_time = 0;
- 		cache->dirty = 0;
-@@ -528,7 +529,7 @@ static struct unix_cache *find_cached_block(struct unix_private_data *data,
+ #ifndef NO_IO_CACHE
++
++/*  2^63 + 2^61 - 2^57 + 2^54 - 2^51 - 2^18 + 1 */
++#define GOLDEN_RATIO_PRIME	0x9e37fffffffc0001UL
++#define CACHE_LINE_SIZE		64
++
++/* buffer cache hashing function, crudely stolen from xfsprogs */
++unsigned int
++cache_hash(struct unix_private_data *data, blk64_t blkno)
++{
++	uint64_t	hashval = blkno;
++	uint64_t	tmp;
++
++	/* the default cache size is small, just do a linear scan */
++	if (data->cache_size <= DEFAULT_CACHE_SIZE)
++		return 0;
++
++	tmp = hashval ^ (GOLDEN_RATIO_PRIME + hashval) / CACHE_LINE_SIZE;
++	tmp = tmp ^ ((tmp ^ GOLDEN_RATIO_PRIME) >> data->cache_hash_shift);
++	return tmp % data->cache_size;
++}
++
+ /*
+  * Try to find a block in the cache.  If the block is not found, and
+  * eldest is a non-zero pointer, then fill in eldest with the cache
+@@ -526,10 +582,30 @@ static struct unix_cache *find_cached_block(struct unix_private_data *data,
+ 					    struct unix_cache **eldest)
+ {
+ 	struct unix_cache	*cache, *unused_cache, *oldest_cache;
++	unsigned int		hash = cache_hash(data, block);
  	int			i;
  
  	unused_cache = oldest_cache = 0;
--	for (i=0, cache = data->cache; i < CACHE_SIZE; i++, cache++) {
-+	for (i=0, cache = data->cache; i < data->cache_size; i++, cache++) {
+-	for (i=0, cache = data->cache; i < data->cache_size; i++, cache++) {
++	/* walk [hash..] cache elements */
++	for (i = hash, cache = data->cache + hash;
++	     i < data->cache_size;
++	     i++, cache++) {
++		if (!cache->in_use) {
++			if (!unused_cache)
++				unused_cache = cache;
++			continue;
++		}
++		if (cache->block == block) {
++			cache->access_time = ++data->access_time;
++			data->io_stats.cache_hits++;
++			return cache;
++		}
++		if (!oldest_cache ||
++		    (cache->access_time < oldest_cache->access_time))
++			oldest_cache = cache;
++	}
++	/* walk [..hash] since we didnt find a good slot yet */
++	for (i = 0, cache = data->cache; i < hash; i++, cache++) {
  		if (!cache->in_use) {
  			if (!unused_cache)
  				unused_cache = cache;
-@@ -592,7 +593,7 @@ static errcode_t flush_cached_blocks(io_channel channel,
+@@ -685,6 +761,7 @@ static errcode_t shrink_cache(io_channel channel,
  
- 	if ((flags & FLUSH_NOLOCK) == 0)
- 		mutex_lock(data, CACHE_MTX);
--	for (i=0, cache = data->cache; i < CACHE_SIZE; i++, cache++) {
-+	for (i=0, cache = data->cache; i < data->cache_size; i++, cache++) {
- 		if (!cache->in_use || !cache->dirty)
- 			continue;
- 		retval = raw_write_blk(channel, data,
-@@ -616,7 +617,7 @@ static errcode_t flush_cached_blocks(io_channel channel,
- 		if ((flags & FLUSH_NOLOCK) == 0)
- 			mutex_lock(data, CACHE_MTX);
- 		errors_found = 0;
--		for (i=0, cache = data->cache; i < CACHE_SIZE; i++, cache++) {
-+		for (i=0, cache = data->cache; i < data->cache_size; i++, cache++) {
- 			if (!cache->in_use || !cache->write_err)
- 				continue;
- 			errors_found = 1;
-@@ -648,6 +649,89 @@ static errcode_t flush_cached_blocks(io_channel channel,
- 	}
- 	return retval2;
- }
-+
-+/* Shrink the cache buffers */
-+static errcode_t shrink_cache(io_channel channel,
-+			      struct unix_private_data *data,
-+			      unsigned int new_size)
-+{
-+	struct unix_cache	*cache, *new_cache;
-+	int			i;
-+	errcode_t		retval;
-+
-+	mutex_lock(data, CACHE_MTX);
-+
-+	retval = flush_cached_blocks(channel, data,
-+			FLUSH_INVALIDATE | FLUSH_NOLOCK);
-+	if (retval)
-+		goto unlock;
-+
-+	for (i = new_size, cache = data->cache + new_size;
-+	     i < data->cache_size;
-+	     i++, cache++) {
-+		cache->block = 0;
-+		cache->access_time = 0;
-+		cache->dirty = 0;
-+		cache->in_use = 0;
-+		if (cache->buf)
-+			ext2fs_free_mem(&cache->buf);
-+	}
-+
-+	new_cache = realloc(data->cache, new_size * sizeof(struct unix_cache));
-+	if (!new_cache) {
-+		retval = EXT2_ET_NO_MEMORY;
-+		goto unlock;
-+	}
-+
-+	data->cache = new_cache;
-+	data->cache_size = new_size;
-+
-+unlock:
-+	mutex_unlock(data, CACHE_MTX);
-+	return retval;
-+}
-+
-+/* Grow the cache buffers */
-+static errcode_t grow_cache(io_channel channel,
-+			    struct unix_private_data *data,
-+			    unsigned int new_size)
-+{
-+	struct unix_cache	*cache, *new_cache;
-+	int			i;
-+	errcode_t		retval;
-+
-+	mutex_lock(data, CACHE_MTX);
-+
-+	retval = flush_cached_blocks(channel, data,
-+			FLUSH_INVALIDATE | FLUSH_NOLOCK);
-+	if (retval)
-+		goto unlock;
-+
-+	new_cache = realloc(data->cache, new_size * sizeof(struct unix_cache));
-+	if (!new_cache) {
-+		retval = EXT2_ET_NO_MEMORY;
-+		goto unlock;
-+	}
-+
-+	for (i = data->cache_size, cache = new_cache + data->cache_size;
-+	     i < new_size;
-+	     i++, cache++) {
-+		cache->block = 0;
-+		cache->access_time = 0;
-+		cache->dirty = 0;
-+		cache->in_use = 0;
-+		retval = io_channel_alloc_buf(channel, 0, &cache->buf);
-+		if (retval)
-+			goto unlock;
-+	}
-+
-+	data->cache = new_cache;
-+	data->cache_size = new_size;
-+
-+unlock:
-+	mutex_unlock(data, CACHE_MTX);
-+	return retval;
-+}
- #endif /* NO_IO_CACHE */
+ 	data->cache = new_cache;
+ 	data->cache_size = new_size;
++	data->cache_hash_shift = highbit32(data->cache_size);
  
- #ifdef __linux__
-@@ -743,6 +827,13 @@ static errcode_t unix_open_channel(const char *name, int fd,
- 	data->flags = flags;
+ unlock:
+ 	mutex_unlock(data, CACHE_MTX);
+@@ -727,6 +804,7 @@ static errcode_t grow_cache(io_channel channel,
+ 
+ 	data->cache = new_cache;
+ 	data->cache_size = new_size;
++	data->cache_hash_shift = highbit32(data->cache_size);
+ 
+ unlock:
+ 	mutex_unlock(data, CACHE_MTX);
+@@ -828,6 +906,7 @@ static errcode_t unix_open_channel(const char *name, int fd,
  	data->dev = fd;
  
-+	data->cache_size = DEFAULT_CACHE_SIZE;
-+	data->cache = calloc(DEFAULT_CACHE_SIZE, sizeof(struct unix_cache));
-+	if (!data->cache) {
-+		retval = EXT2_ET_NO_MEMORY;
-+		goto cleanup;
-+	}
-+
- #if defined(O_DIRECT)
- 	if (flags & IO_FLAG_DIRECT_IO)
- 		io->align = ext2fs_get_dio_alignment(data->dev);
-@@ -869,6 +960,8 @@ static errcode_t unix_open_channel(const char *name, int fd,
- 		if (data->dev >= 0)
- 			close(data->dev);
- 		free_cache(data);
-+		if (data->cache)
-+			free(data->cache);
- 		ext2fs_free_mem(&data);
- 	}
- 	if (io) {
-@@ -953,6 +1046,7 @@ static errcode_t unix_close(io_channel channel)
- 	if (close(data->dev) < 0)
- 		retval = errno;
- 	free_cache(data);
-+	free(data->cache);
- #ifdef HAVE_PTHREAD
- 	if (data->flags & IO_FLAG_THREADS) {
- 		pthread_mutex_destroy(&data->cache_mutex);
-@@ -1308,6 +1402,25 @@ static errcode_t unix_set_option(io_channel channel, const char *option,
- 		}
- 		return EXT2_ET_INVALID_ARGUMENT;
- 	}
-+#ifndef NO_IO_CACHE
-+	if (!strcmp(option, "cache_blocks")) {
-+		unsigned long long	size;
-+
-+		if (!arg)
-+			return EXT2_ET_INVALID_ARGUMENT;
-+
-+		errno = 0;
-+		size = strtoll(arg, NULL, 0);
-+		if (errno || size == 0 || size > INT32_MAX)
-+			return EXT2_ET_INVALID_ARGUMENT;
-+
-+		if (data->cache_size == size)
-+			return 0;
-+		if (data->cache_size > size)
-+			return shrink_cache(channel, data, size);
-+		return grow_cache(channel, data, size);
-+	}
-+#endif
- 	return EXT2_ET_INVALID_ARGUMENT;
- }
- 
+ 	data->cache_size = DEFAULT_CACHE_SIZE;
++	data->cache_hash_shift = highbit32(data->cache_size);
+ 	data->cache = calloc(DEFAULT_CACHE_SIZE, sizeof(struct unix_cache));
+ 	if (!data->cache) {
+ 		retval = EXT2_ET_NO_MEMORY;
 
 
