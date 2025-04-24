@@ -1,51 +1,54 @@
-Return-Path: <linux-ext4+bounces-7459-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7460-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4820A9B9F9
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Apr 2025 23:38:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FABEA9B9FB
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Apr 2025 23:39:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C65D71B82ABD
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Apr 2025 21:39:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3E755A2E20
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Apr 2025 21:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B41D21ADCB;
-	Thu, 24 Apr 2025 21:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE7F21CC46;
+	Thu, 24 Apr 2025 21:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R6pqRu4G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JTOywXO4"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF14198851
-	for <linux-ext4@vger.kernel.org>; Thu, 24 Apr 2025 21:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D203C218ACA
+	for <linux-ext4@vger.kernel.org>; Thu, 24 Apr 2025 21:38:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745530733; cv=none; b=bJAPLeid5N6VdIzX3ktmbh07NRmOXVgE2Iii4ehiIoc0av8eWIyKFqdkWK4UkSrsOkUKjFSR2WtxaFueJIm5IHn751GqpjL93AvgjHIOSGlLQTqDwUDH1tSivWhA7hz8ERtBxA280E5yOjJ4yht7/wemv+8V1aPcyZ/WwiTapa8=
+	t=1745530738; cv=none; b=Kvwx6IJQadj7pq/rY+Zn9vwIumEgII3v0WvNmbc6dMtZ9Meh9+HVGPRR7kXCiw1Or0WZND8JuX3l07KBaW0a41SC0bZPsJpCPvXCMtwENymco8KvVfbRhhDKCH8saX4kyPeOFciK5PxTJJBquAOMio7DU1/JcWQArmeUMVhiThM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745530733; c=relaxed/simple;
-	bh=Xpi2zMUnOltX0ibfG2O5YwFRAXve1J6NZ19eyotKSsc=;
-	h=Date:Subject:From:To:Cc:Message-ID:MIME-Version:Content-Type; b=ULthEuNwhbhGJtKnnrTRnbpcGVuTHY7k/SkRJeEKKypT+NM883HmD8NZXJZ0suaSPjw4YZqq6zJ8ZxVx3dnqptaUSZWI24afOQW0dRMoi6p6s2yfNN2H/Y4XimFPt9qYhQrWHTLArIpMCXLDQ9VMnuCrfBCdbauXrzB4Kv5RY2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R6pqRu4G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1370C4CEE3;
-	Thu, 24 Apr 2025 21:38:52 +0000 (UTC)
+	s=arc-20240116; t=1745530738; c=relaxed/simple;
+	bh=zdOe9MSdgW1n7t9IIRAXArpmNLZHQTD0s3gesOhu4dU=;
+	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nuvWTZTcVWIhIQqREcDKhT7ryYxAQq++PJNZcV//rYh2ZpZSxuOf/SI21mPU1btFjLTbrVILOL3uJquK+tG0LdjAHCIKKuUdQBQKJ7IzepdvKNe0isb7SQzj5+NYk815THhzp0r7K5jv4hgAeO+M8P/uAWRXnbgi58kGsoelpno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JTOywXO4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48349C4CEE3;
+	Thu, 24 Apr 2025 21:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745530732;
-	bh=Xpi2zMUnOltX0ibfG2O5YwFRAXve1J6NZ19eyotKSsc=;
-	h=Date:Subject:From:To:Cc:From;
-	b=R6pqRu4GuWH+E5BBO0U1+yorNz9ZvSeo20zafr50Cxk7wRXL+YB1M9tCrZwVYX9RT
-	 XxU2sjWJnZxSFd6TAFzImhrXq84CNYl9/bVdU6fikeGOTtI7S+Cd9vPha83MDsfsvF
-	 Pbsh/rKgEBVSmxnEVa6wK3DK2RKiEmhDTEX6Qh8kQ5OTq71XUBXu0H+QQSkhzRjBji
-	 XuU4jz+/r9+zNPCr16BdF6iBO4SCfqYPSoNHDtj7vc4jc/Q+JTp0N+8NSE64SFSO1E
-	 5MOB8/4cEJBqeRKFmCC7uuDSKOGS71/LXsJEfol5npzxiv1mssZ2IItPu8KAANDxfX
-	 R/Dn947SHiE3w==
-Date: Thu, 24 Apr 2025 14:38:52 -0700
-Subject: [PATCHSET 5/5] fuse2fs: better disk cache
+	s=k20201202; t=1745530738;
+	bh=zdOe9MSdgW1n7t9IIRAXArpmNLZHQTD0s3gesOhu4dU=;
+	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
+	b=JTOywXO4Xm5hFJX9U+YB52RDtSFC9RjxQ57RMyjQRDrh/GPIjFzvE3abD7Azyw98H
+	 CDR+H8lgPA2LlDm+WTYEEHVx2rWG8F2jhIR4uwDwflQF2jdwRARyqIBjN+FfhXJEbw
+	 Yh+S0R7LVKkbD18abwtOT9Mu/tRdQiuw0l/1w5TH8KvMqfjs62xOlyS31EgK2SF3rI
+	 Esj3D5rE8w7FMDgy6gfZGG/e202y4CcYL7qx6nQ5Hhd5tte3e4sLkpTTMbDQ2KwP0v
+	 vZscXTkHly97RbDW7HEn2CUicDvq1F1FIDrnVMxvxsrycgbkkMUY+D3jJjDhW/+5m1
+	 iyPPF6kHCaCsw==
+Date: Thu, 24 Apr 2025 14:38:57 -0700
+Subject: [PATCH 1/5] fuse2fs: enable runtime debugging
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <174553065491.1161238.812958177319322832.stgit@frogsfrogsfrogs>
+Message-ID: <174553064473.1160047.16179858742889092063.stgit@frogsfrogsfrogs>
+In-Reply-To: <174553064436.1160047.577374015997116030.stgit@frogsfrogsfrogs>
+References: <174553064436.1160047.577374015997116030.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -55,32 +58,697 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-Hi all,
+From: Darrick J. Wong <djwong@kernel.org>
 
-Improve the libext2fs unix io manager's disk cache by allowing clients
-to make it bigger and allowing hashed lookups, then make fuse2fs ask
-for a much bigger cache.
+Whenever fuse2fs is started with -o fuse2fs_debug, we should log all the
+debugging messages generated by fuse2fs itself and libfuse.
 
-If you're going to start using this code, I strongly recommend pulling
-from my git trees, which are linked below.
-
-Comments and questions are, as always, welcome.
-
-e2fsprogs git tree:
-https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-disk-cache
+Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
-Commits in this patchset:
- * fuse2fs: report cache hits and misses at unmount time
- * libext2fs: make unix_io cache size configurable
- * libext2fs: use hashing for cache lookups in unix IO manager
- * fuse2fs: allow use of direct io for disk access
- * fuse2fs: allow setting of the cache size
----
- lib/ext2fs/ext2_io.h |    2 
- lib/ext2fs/unix_io.c |  210 ++++++++++++++++++++++++++++++++++++++++++++++++--
- misc/Makefile.in     |    7 +-
- misc/fuse2fs.1.in    |    9 ++
- misc/fuse2fs.c       |   69 ++++++++++++++++
- 5 files changed, 286 insertions(+), 11 deletions(-)
+ misc/fuse2fs.c |  174 ++++++++++++++++++++++++++++++--------------------------
+ 1 file changed, 92 insertions(+), 82 deletions(-)
+
+
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index a6390ab5d8c61b..18ae442c7ece03 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -82,15 +82,12 @@
+ 
+ static ext2_filsys global_fs; /* Try not to use this directly */
+ 
+-#undef DEBUG
+-
+-#ifdef DEBUG
+-# define dbg_printf(f, a...)  do {printf("FUSE2FS-" f, ## a); \
+-	fflush(stdout); \
+-} while (0)
+-#else
+-# define dbg_printf(f, a...)
+-#endif
++#define dbg_printf(fuse2fs, format, ...) \
++	while ((fuse2fs)->debug) { \
++		printf("FUSE2FS (%s): " format, (fuse2fs)->shortdev, ##__VA_ARGS__); \
++		fflush(stdout); \
++		break; \
++	}
+ 
+ #if FUSE_VERSION >= FUSE_MAKE_VERSION(2, 8)
+ # ifdef _IOR
+@@ -337,6 +334,7 @@ struct fuse2fs {
+ 	ext2_filsys fs;
+ 	pthread_mutex_t bfl;
+ 	char *device;
++	char *shortdev;
+ 	int ro;
+ 	int debug;
+ 	int no_default_opts;
+@@ -623,7 +621,7 @@ static int fs_can_allocate(struct fuse2fs *ff, blk64_t num)
+ 	ext2_filsys fs = ff->fs;
+ 	blk64_t reserved;
+ 
+-	dbg_printf("%s: Asking for %llu; alloc_all=%d total=%llu free=%llu "
++	dbg_printf(ff, "%s: Asking for %llu; alloc_all=%d total=%llu free=%llu "
+ 		   "rsvd=%llu\n", __func__, num, ff->alloc_all_blocks,
+ 		   ext2fs_blocks_count(fs->super),
+ 		   ext2fs_free_blocks_count(fs->super),
+@@ -667,7 +665,7 @@ static int check_inum_access(ext2_filsys fs, ext2_ino_t ino, mode_t mask)
+ 		return translate_error(fs, ino, err);
+ 	perms = inode.i_mode & 0777;
+ 
+-	dbg_printf("access ino=%d mask=e%s%s%s perms=0%o fuid=%d fgid=%d "
++	dbg_printf(ff, "access ino=%d mask=e%s%s%s perms=0%o fuid=%d fgid=%d "
+ 		   "uid=%d gid=%d\n", ino,
+ 		   (mask & R_OK ? "r" : ""), (mask & W_OK ? "w" : ""),
+ 		   (mask & X_OK ? "x" : ""), perms, inode_uid(inode),
+@@ -732,7 +730,7 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
+ 		return;
+ 	}
+ 	fs = ff->fs;
+-	dbg_printf("%s: dev=%s\n", __func__, fs->device_name);
++	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
+ 	if (fs->flags & EXT2_FLAG_RW) {
+ 		fs->super->s_state |= EXT2_VALID_FS;
+ 		if (fs->super->s_error_count)
+@@ -764,7 +762,7 @@ static void *op_init(struct fuse_conn_info *conn
+ 		return NULL;
+ 	}
+ 	fs = ff->fs;
+-	dbg_printf("%s: dev=%s\n", __func__, fs->device_name);
++	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
+ #ifdef FUSE_CAP_IOCTL_DIR
+ 	conn->want |= FUSE_CAP_IOCTL_DIR;
+ #endif
+@@ -777,6 +775,8 @@ static void *op_init(struct fuse_conn_info *conn
+ 		if (err)
+ 			translate_error(fs, 0, err);
+ 	}
++	if (ff->debug)
++		cfg->debug = 1;
+ 	return ff;
+ }
+ 
+@@ -837,7 +837,7 @@ static int op_getattr(const char *path, struct stat *statbuf
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: path=%s\n", __func__, path);
++	dbg_printf(ff, "%s: path=%s\n", __func__, path);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	err = ext2fs_namei(fs, EXT2_ROOT_INO, EXT2_ROOT_INO, path, &ino);
+ 	if (err) {
+@@ -864,7 +864,7 @@ static int op_readlink(const char *path, char *buf, size_t len)
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: path=%s\n", __func__, path);
++	dbg_printf(ff, "%s: path=%s\n", __func__, path);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	err = ext2fs_namei(fs, EXT2_ROOT_INO, EXT2_ROOT_INO, path, &ino);
+ 	if (err || ino == 0) {
+@@ -941,7 +941,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: path=%s mode=0%o dev=0x%x\n", __func__, path, mode,
++	dbg_printf(ff, "%s: path=%s mode=0%o dev=0x%x\n", __func__, path, mode,
+ 		   (unsigned int)dev);
+ 	temp_path = strdup(path);
+ 	if (!temp_path) {
+@@ -995,7 +995,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+ 		goto out2;
+ 	}
+ 
+-	dbg_printf("%s: create ino=%d/name=%s in dir=%d\n", __func__, child,
++	dbg_printf(ff, "%s: create ino=%d/name=%s in dir=%d\n", __func__, child,
+ 		   node_name, parent);
+ 	err = ext2fs_link(fs, parent, node_name, child, filetype);
+ 	if (err == EXT2_ET_DIR_NO_SPACE) {
+@@ -1073,7 +1073,7 @@ static int op_mkdir(const char *path, mode_t mode)
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: path=%s mode=0%o\n", __func__, path, mode);
++	dbg_printf(ff, "%s: path=%s mode=0%o\n", __func__, path, mode);
+ 	temp_path = strdup(path);
+ 	if (!temp_path) {
+ 		ret = -ENOMEM;
+@@ -1142,7 +1142,7 @@ static int op_mkdir(const char *path, mode_t mode)
+ 		ret = translate_error(fs, 0, err);
+ 		goto out2;
+ 	}
+-	dbg_printf("%s: created ino=%d/path=%s in dir=%d\n", __func__, child,
++	dbg_printf(ff, "%s: created ino=%d/path=%s in dir=%d\n", __func__, child,
+ 		   node_name, parent);
+ 
+ 	memset(&inode, 0, sizeof(inode));
+@@ -1198,8 +1198,9 @@ static int op_mkdir(const char *path, mode_t mode)
+ 	return ret;
+ }
+ 
+-static int unlink_file_by_name(ext2_filsys fs, const char *path)
++static int unlink_file_by_name(struct fuse2fs *ff, const char *path)
+ {
++	ext2_filsys fs = ff->fs;
+ 	errcode_t err;
+ 	ext2_ino_t dir;
+ 	char *filename = strdup(path);
+@@ -1226,7 +1227,7 @@ static int unlink_file_by_name(ext2_filsys fs, const char *path)
+ 		return ret;
+ 	}
+ 
+-	dbg_printf("%s: unlinking name=%s from dir=%d\n", __func__,
++	dbg_printf(ff, "%s: unlinking name=%s from dir=%d\n", __func__,
+ 		   base_name, dir);
+ 	err = ext2fs_unlink(fs, dir, base_name, 0, 0);
+ 	free(filename);
+@@ -1250,7 +1251,7 @@ static int remove_inode(struct fuse2fs *ff, ext2_ino_t ino)
+ 		ret = translate_error(fs, ino, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: put ino=%d links=%d\n", __func__, ino,
++	dbg_printf(ff, "%s: put ino=%d links=%d\n", __func__, ino,
+ 		   inode.i_links_count);
+ 
+ 	switch (inode.i_links_count) {
+@@ -1312,7 +1313,7 @@ static int __op_unlink(struct fuse2fs *ff, const char *path)
+ 		goto out;
+ 	}
+ 
+-	ret = unlink_file_by_name(fs, path);
++	ret = unlink_file_by_name(ff, path);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -1378,7 +1379,7 @@ static int __op_rmdir(struct fuse2fs *ff, const char *path)
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: rmdir path=%s ino=%d\n", __func__, path, child);
++	dbg_printf(ff, "%s: rmdir path=%s ino=%d\n", __func__, path, child);
+ 
+ 	rds.parent = 0;
+ 	rds.empty = 1;
+@@ -1394,7 +1395,7 @@ static int __op_rmdir(struct fuse2fs *ff, const char *path)
+ 		goto out;
+ 	}
+ 
+-	ret = unlink_file_by_name(fs, path);
++	ret = unlink_file_by_name(ff, path);
+ 	if (ret)
+ 		goto out;
+ 	/* Directories have to be "removed" twice. */
+@@ -1406,7 +1407,7 @@ static int __op_rmdir(struct fuse2fs *ff, const char *path)
+ 		goto out;
+ 
+ 	if (rds.parent) {
+-		dbg_printf("%s: decr dir=%d link count\n", __func__,
++		dbg_printf(ff, "%s: decr dir=%d link count\n", __func__,
+ 			   rds.parent);
+ 		err = ext2fs_read_inode_full(fs, rds.parent,
+ 					     (struct ext2_inode *)&inode,
+@@ -1460,7 +1461,7 @@ static int op_symlink(const char *src, const char *dest)
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: symlink %s to %s\n", __func__, src, dest);
++	dbg_printf(ff, "%s: symlink %s to %s\n", __func__, src, dest);
+ 	temp_path = strdup(dest);
+ 	if (!temp_path) {
+ 		ret = -ENOMEM;
+@@ -1517,7 +1518,7 @@ static int op_symlink(const char *src, const char *dest)
+ 		ret = translate_error(fs, 0, err);
+ 		goto out2;
+ 	}
+-	dbg_printf("%s: symlinking ino=%d/name=%s to dir=%d\n", __func__,
++	dbg_printf(ff, "%s: symlinking ino=%d/name=%s to dir=%d\n", __func__,
+ 		   child, node_name, parent);
+ 
+ 	memset(&inode, 0, sizeof(inode));
+@@ -1589,7 +1590,7 @@ static int op_rename(const char *from, const char *to
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: renaming %s to %s\n", __func__, from, to);
++	dbg_printf(ff, "%s: renaming %s to %s\n", __func__, from, to);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	if (!fs_can_allocate(ff, 5)) {
+ 		ret = -ENOSPC;
+@@ -1687,7 +1688,7 @@ static int op_rename(const char *from, const char *to
+ 			goto out2;
+ 		}
+ 
+-		dbg_printf("%s: unlinking %s ino=%d\n", __func__,
++		dbg_printf(ff, "%s: unlinking %s ino=%d\n", __func__,
+ 			   LINUX_S_ISDIR(inode.i_mode) ? "dir" : "file",
+ 			   to_ino);
+ 		if (LINUX_S_ISDIR(inode.i_mode))
+@@ -1706,7 +1707,7 @@ static int op_rename(const char *from, const char *to
+ 	}
+ 
+ 	/* Link in the new file */
+-	dbg_printf("%s: linking ino=%d/path=%s to dir=%d\n", __func__,
++	dbg_printf(ff, "%s: linking ino=%d/path=%s to dir=%d\n", __func__,
+ 		   from_ino, cp + 1, to_dir_ino);
+ 	err = ext2fs_link(fs, to_dir_ino, cp + 1, from_ino,
+ 			  ext2_file_type(inode.i_mode));
+@@ -1734,7 +1735,7 @@ static int op_rename(const char *from, const char *to
+ 
+ 	if (LINUX_S_ISDIR(inode.i_mode)) {
+ 		ud.new_dotdot = to_dir_ino;
+-		dbg_printf("%s: updating .. entry for dir=%d\n", __func__,
++		dbg_printf(ff, "%s: updating .. entry for dir=%d\n", __func__,
+ 			   to_dir_ino);
+ 		err = ext2fs_dir_iterate2(fs, from_ino, 0, NULL,
+ 					  update_dotdot_helper, &ud);
+@@ -1744,7 +1745,7 @@ static int op_rename(const char *from, const char *to
+ 		}
+ 
+ 		/* Decrease from_dir_ino's links_count */
+-		dbg_printf("%s: moving linkcount from dir=%d to dir=%d\n",
++		dbg_printf(ff, "%s: moving linkcount from dir=%d to dir=%d\n",
+ 			   __func__, from_dir_ino, to_dir_ino);
+ 		err = ext2fs_read_inode(fs, from_dir_ino, &inode);
+ 		if (err) {
+@@ -1782,7 +1783,7 @@ static int op_rename(const char *from, const char *to
+ 		goto out2;
+ 
+ 	/* Remove the old file */
+-	ret = unlink_file_by_name(fs, from);
++	ret = unlink_file_by_name(ff, from);
+ 	if (ret)
+ 		goto out2;
+ 
+@@ -1813,7 +1814,7 @@ static int op_link(const char *src, const char *dest)
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: src=%s dest=%s\n", __func__, src, dest);
++	dbg_printf(ff, "%s: src=%s dest=%s\n", __func__, src, dest);
+ 	temp_path = strdup(dest);
+ 	if (!temp_path) {
+ 		ret = -ENOMEM;
+@@ -1873,7 +1874,7 @@ static int op_link(const char *src, const char *dest)
+ 		goto out2;
+ 	}
+ 
+-	dbg_printf("%s: linking ino=%d/name=%s to dir=%d\n", __func__, ino,
++	dbg_printf(ff, "%s: linking ino=%d/name=%s to dir=%d\n", __func__, ino,
+ 		   node_name, parent);
+ 	err = ext2fs_link(fs, parent, node_name, ino,
+ 			  ext2_file_type(inode.i_mode));
+@@ -1925,7 +1926,7 @@ static int op_chmod(const char *path, mode_t mode
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: path=%s mode=0%o ino=%d\n", __func__, path, mode, ino);
++	dbg_printf(ff, "%s: path=%s mode=0%o ino=%d\n", __func__, path, mode, ino);
+ 
+ 	memset(&inode, 0, sizeof(inode));
+ 	err = ext2fs_read_inode_full(fs, ino, (struct ext2_inode *)&inode,
+@@ -1988,7 +1989,7 @@ static int op_chown(const char *path, uid_t owner, gid_t group
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: path=%s owner=%d group=%d ino=%d\n", __func__,
++	dbg_printf(ff, "%s: path=%s owner=%d group=%d ino=%d\n", __func__,
+ 		   path, owner, group, ino);
+ 
+ 	memset(&inode, 0, sizeof(inode));
+@@ -2062,7 +2063,7 @@ static int op_truncate(const char *path, off_t len
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: ino=%d len=%jd\n", __func__, ino, len);
++	dbg_printf(ff, "%s: ino=%d len=%jd\n", __func__, ino, len);
+ 
+ 	ret = check_inum_access(fs, ino, W_OK);
+ 	if (ret)
+@@ -2125,7 +2126,7 @@ static int __op_open(struct fuse2fs *ff, const char *path,
+ 	struct fuse2fs_file_handle *file;
+ 	int check = 0, ret = 0;
+ 
+-	dbg_printf("%s: path=%s\n", __func__, path);
++	dbg_printf(ff, "%s: path=%s\n", __func__, path);
+ 	err = ext2fs_get_mem(sizeof(*file), &file);
+ 	if (err)
+ 		return translate_error(fs, 0, err);
+@@ -2156,7 +2157,7 @@ static int __op_open(struct fuse2fs *ff, const char *path,
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: ino=%d\n", __func__, file->ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, file->ino);
+ 
+ 	ret = check_inum_access(fs, file->ino, check);
+ 	if (ret) {
+@@ -2214,7 +2215,7 @@ static int op_read(const char *path EXT2FS_ATTR((unused)), char *buf,
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d off=%jd len=%jd\n", __func__, fh->ino, offset,
++	dbg_printf(ff, "%s: ino=%d off=%jd len=%jd\n", __func__, fh->ino, offset,
+ 		   len);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	err = ext2fs_file_open(fs, fh->ino, fh->open_flags, &efp);
+@@ -2271,7 +2272,7 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d off=%jd len=%jd\n", __func__, fh->ino, offset,
++	dbg_printf(ff, "%s: ino=%d off=%jd len=%jd\n", __func__, fh->ino, offset,
+ 		   len);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	if (!fs_writeable(fs)) {
+@@ -2341,7 +2342,7 @@ static int op_release(const char *path EXT2FS_ATTR((unused)),
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d\n", __func__, fh->ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	if (fs_writeable(fs) && fh->open_flags & EXT2_FILE_WRITE) {
+ 		err = ext2fs_flush2(fs, EXT2_FLAG_FLUSH_NO_SYNC);
+@@ -2371,7 +2372,7 @@ static int op_fsync(const char *path EXT2FS_ATTR((unused)),
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d\n", __func__, fh->ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
+ 	/* For now, flush everything, even if it's slow */
+ 	pthread_mutex_lock(&ff->bfl);
+ 	if (fs_writeable(fs) && fh->open_flags & EXT2_FILE_WRITE) {
+@@ -2395,7 +2396,7 @@ static int op_statfs(const char *path EXT2FS_ATTR((unused)),
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: path=%s\n", __func__, path);
++	dbg_printf(ff, "%s: path=%s\n", __func__, path);
+ 	buf->f_bsize = fs->blocksize;
+ 	buf->f_frsize = 0;
+ 
+@@ -2483,7 +2484,7 @@ static int op_getxattr(const char *path, const char *key, char *value,
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: ino=%d\n", __func__, ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, ino);
+ 
+ 	ret = check_inum_access(fs, ino, R_OK);
+ 	if (ret)
+@@ -2585,7 +2586,7 @@ static int op_listxattr(const char *path, char *names, size_t len)
+ 		ret = translate_error(fs, ino, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: ino=%d\n", __func__, ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, ino);
+ 
+ 	ret = check_inum_access(fs, ino, R_OK);
+ 	if (ret)
+@@ -2665,7 +2666,7 @@ static int op_setxattr(const char *path EXT2FS_ATTR((unused)),
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: ino=%d\n", __func__, ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, ino);
+ 
+ 	ret = check_inum_access(fs, ino, W_OK);
+ 	if (ret == -EACCES) {
+@@ -2744,7 +2745,7 @@ static int op_removexattr(const char *path, const char *key)
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: ino=%d\n", __func__, ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, ino);
+ 
+ 	ret = check_inum_access(fs, ino, W_OK);
+ 	if (ret)
+@@ -2829,7 +2830,7 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d\n", __func__, fh->ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	i.buf = buf;
+ 	i.func = fill_func;
+@@ -2860,7 +2861,7 @@ static int op_access(const char *path, int mask)
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: path=%s mask=0x%x\n", __func__, path, mask);
++	dbg_printf(ff, "%s: path=%s mask=0x%x\n", __func__, path, mask);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	err = ext2fs_namei(fs, EXT2_ROOT_INO, EXT2_ROOT_INO, path, &ino);
+ 	if (err || ino == 0) {
+@@ -2892,7 +2893,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+-	dbg_printf("%s: path=%s mode=0%o\n", __func__, path, mode);
++	dbg_printf(ff, "%s: path=%s mode=0%o\n", __func__, path, mode);
+ 	temp_path = strdup(path);
+ 	if (!temp_path) {
+ 		ret = -ENOMEM;
+@@ -2934,7 +2935,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
+ 		goto out2;
+ 	}
+ 
+-	dbg_printf("%s: creating ino=%d/name=%s in dir=%d\n", __func__, child,
++	dbg_printf(ff, "%s: creating ino=%d/name=%s in dir=%d\n", __func__, child,
+ 		   node_name, parent);
+ 	err = ext2fs_link(fs, parent, node_name, child, filetype);
+ 	if (err == EXT2_ET_DIR_NO_SPACE) {
+@@ -3019,7 +3020,7 @@ static int op_ftruncate(const char *path EXT2FS_ATTR((unused)),
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d len=%jd\n", __func__, fh->ino, len);
++	dbg_printf(ff, "%s: ino=%d len=%jd\n", __func__, fh->ino, len);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	if (!fs_writeable(fs)) {
+ 		ret = -EROFS;
+@@ -3070,7 +3071,7 @@ static int op_fgetattr(const char *path EXT2FS_ATTR((unused)),
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d\n", __func__, fh->ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
+ 	pthread_mutex_lock(&ff->bfl);
+ 	ret = stat_inode(fs, fh->ino, statbuf);
+ 	pthread_mutex_unlock(&ff->bfl);
+@@ -3102,7 +3103,7 @@ static int op_utimens(const char *path, const struct timespec ctv[2]
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: ino=%d\n", __func__, ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, ino);
+ 
+ 	ret = check_inum_access(fs, ino, W_OK);
+ 	if (ret)
+@@ -3147,14 +3148,15 @@ static int op_utimens(const char *path, const struct timespec ctv[2]
+ }
+ 
+ #ifdef SUPPORT_I_FLAGS
+-static int ioctl_getflags(ext2_filsys fs, struct fuse2fs_file_handle *fh,
++static int ioctl_getflags(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
+ 			  void *data)
+ {
++	ext2_filsys fs = ff->fs;
+ 	errcode_t err;
+ 	struct ext2_inode_large inode;
+ 
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d\n", __func__, fh->ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
+ 	memset(&inode, 0, sizeof(inode));
+ 	err = ext2fs_read_inode_full(fs, fh->ino, (struct ext2_inode *)&inode,
+ 				     sizeof(inode));
+@@ -3170,18 +3172,18 @@ static int ioctl_getflags(ext2_filsys fs, struct fuse2fs_file_handle *fh,
+ 	 EXT2_NOATIME_FL | EXT3_JOURNAL_DATA_FL | EXT2_DIRSYNC_FL | \
+ 	 EXT2_TOPDIR_FL)
+ 
+-static int ioctl_setflags(ext2_filsys fs, struct fuse2fs_file_handle *fh,
++static int ioctl_setflags(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
+ 			  void *data)
+ {
++	ext2_filsys fs = ff->fs;
+ 	errcode_t err;
+ 	struct ext2_inode_large inode;
+ 	int ret;
+ 	__u32 flags = *(__u32 *)data;
+ 	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+ 
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d\n", __func__, fh->ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
+ 	memset(&inode, 0, sizeof(inode));
+ 	err = ext2fs_read_inode_full(fs, fh->ino, (struct ext2_inode *)&inode,
+ 				     sizeof(inode));
+@@ -3209,14 +3211,15 @@ static int ioctl_setflags(ext2_filsys fs, struct fuse2fs_file_handle *fh,
+ 	return 0;
+ }
+ 
+-static int ioctl_getversion(ext2_filsys fs, struct fuse2fs_file_handle *fh,
++static int ioctl_getversion(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
+ 			    void *data)
+ {
++	ext2_filsys fs = ff->fs;
+ 	errcode_t err;
+ 	struct ext2_inode_large inode;
+ 
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d\n", __func__, fh->ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
+ 	memset(&inode, 0, sizeof(inode));
+ 	err = ext2fs_read_inode_full(fs, fh->ino, (struct ext2_inode *)&inode,
+ 				     sizeof(inode));
+@@ -3227,18 +3230,18 @@ static int ioctl_getversion(ext2_filsys fs, struct fuse2fs_file_handle *fh,
+ 	return 0;
+ }
+ 
+-static int ioctl_setversion(ext2_filsys fs, struct fuse2fs_file_handle *fh,
++static int ioctl_setversion(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
+ 			    void *data)
+ {
++	ext2_filsys fs = ff->fs;
+ 	errcode_t err;
+ 	struct ext2_inode_large inode;
+ 	int ret;
+ 	__u32 generation = *(__u32 *)data;
+ 	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+ 
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: ino=%d\n", __func__, fh->ino);
++	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
+ 	memset(&inode, 0, sizeof(inode));
+ 	err = ext2fs_read_inode_full(fs, fh->ino, (struct ext2_inode *)&inode,
+ 				     sizeof(inode));
+@@ -3264,16 +3267,17 @@ static int ioctl_setversion(ext2_filsys fs, struct fuse2fs_file_handle *fh,
+ #endif /* SUPPORT_I_FLAGS */
+ 
+ #ifdef FITRIM
+-static int ioctl_fitrim(ext2_filsys fs, struct fuse2fs_file_handle *fh,
++static int ioctl_fitrim(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
+ 			void *data)
+ {
++	ext2_filsys fs = ff->fs;
+ 	struct fstrim_range *fr = data;
+ 	blk64_t start, end, max_blocks, b, cleared;
+ 	errcode_t err = 0;
+ 
+ 	start = fr->start / fs->blocksize;
+ 	end = (fr->start + fr->len - 1) / fs->blocksize;
+-	dbg_printf("%s: start=%llu end=%llu\n", __func__, start, end);
++	dbg_printf(ff, "%s: start=%llu end=%llu\n", __func__, start, end);
+ 
+ 	if (start < fs->super->s_first_data_block)
+ 		start = fs->super->s_first_data_block;
+@@ -3331,34 +3335,32 @@ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
+ 	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+ 	struct fuse2fs_file_handle *fh =
+ 		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
+-	ext2_filsys fs;
+ 	int ret = 0;
+ 
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+-	fs = ff->fs;
+ 	pthread_mutex_lock(&ff->bfl);
+ 	switch ((unsigned long) cmd) {
+ #ifdef SUPPORT_I_FLAGS
+ 	case EXT2_IOC_GETFLAGS:
+-		ret = ioctl_getflags(fs, fh, data);
++		ret = ioctl_getflags(ff, fh, data);
+ 		break;
+ 	case EXT2_IOC_SETFLAGS:
+-		ret = ioctl_setflags(fs, fh, data);
++		ret = ioctl_setflags(ff, fh, data);
+ 		break;
+ 	case EXT2_IOC_GETVERSION:
+-		ret = ioctl_getversion(fs, fh, data);
++		ret = ioctl_getversion(ff, fh, data);
+ 		break;
+ 	case EXT2_IOC_SETVERSION:
+-		ret = ioctl_setversion(fs, fh, data);
++		ret = ioctl_setversion(ff, fh, data);
+ 		break;
+ #endif
+ #ifdef FITRIM
+ 	case FITRIM:
+-		ret = ioctl_fitrim(fs, fh, data);
++		ret = ioctl_fitrim(ff, fh, data);
+ 		break;
+ #endif
+ 	default:
+-		dbg_printf("%s: Unknown ioctl %d\n", __func__, cmd);
++		dbg_printf(ff, "%s: Unknown ioctl %d\n", __func__, cmd);
+ 		ret = -ENOTTY;
+ 	}
+ 	pthread_mutex_unlock(&ff->bfl);
+@@ -3385,7 +3387,7 @@ static int op_bmap(const char *path, size_t blocksize EXT2FS_ATTR((unused)),
+ 		ret = translate_error(fs, 0, err);
+ 		goto out;
+ 	}
+-	dbg_printf("%s: ino=%d blk=%"PRIu64"\n", __func__, ino, *idx);
++	dbg_printf(ff, "%s: ino=%d blk=%"PRIu64"\n", __func__, ino, *idx);
+ 
+ 	err = ext2fs_bmap2(fs, ino, NULL, NULL, 0, *idx, 0, (blk64_t *)idx);
+ 	if (err) {
+@@ -3419,7 +3421,7 @@ static int fallocate_helper(struct fuse_file_info *fp, int mode, off_t offset,
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+ 	start = offset / fs->blocksize;
+ 	end = (offset + len - 1) / fs->blocksize;
+-	dbg_printf("%s: ino=%d mode=0x%x start=%jd end=%llu\n", __func__,
++	dbg_printf(ff, "%s: ino=%d mode=0x%x start=%jd end=%llu\n", __func__,
+ 		   fh->ino, mode, offset / fs->blocksize, end);
+ 	if (!fs_can_allocate(ff, len / fs->blocksize))
+ 		return -ENOSPC;
+@@ -3552,7 +3554,7 @@ static int punch_helper(struct fuse_file_info *fp, int mode, off_t offset,
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+ 	fs = ff->fs;
+ 	FUSE2FS_CHECK_MAGIC(fs, fh, FUSE2FS_FILE_MAGIC);
+-	dbg_printf("%s: offset=%jd len=%jd\n", __func__, offset, len);
++	dbg_printf(ff, "%s: offset=%jd len=%jd\n", __func__, offset, len);
+ 
+ 	/* kernel ext4 punch requires this flag to be set */
+ 	if (!(mode & FL_KEEP_SIZE_FLAG))
+@@ -3561,7 +3563,7 @@ static int punch_helper(struct fuse_file_info *fp, int mode, off_t offset,
+ 	/* Punch out a bunch of blocks */
+ 	start = (offset + fs->blocksize - 1) / fs->blocksize;
+ 	end = (offset + len - fs->blocksize) / fs->blocksize;
+-	dbg_printf("%s: ino=%d mode=0x%x start=%llu end=%llu\n", __func__,
++	dbg_printf(ff, "%s: ino=%d mode=0x%x start=%llu end=%llu\n", __func__,
+ 		   fh->ino, mode, start, end);
+ 
+ 	memset(&inode, 0, sizeof(inode));
+@@ -3813,6 +3815,13 @@ int main(int argc, char *argv[])
+ 		exit(1);
+ 	}
+ 
++	/* /dev/sda -> sda for reporting */
++	fctx.shortdev = strrchr(fctx.device, '/');
++	if (fctx.shortdev)
++		fctx.shortdev++;
++	else
++		fctx.shortdev = fctx.device;
++
+ 	if (fctx.norecovery)
+ 		fctx.ro = 1;
+ 	if (fctx.ro)
+@@ -3947,10 +3956,11 @@ int main(int argc, char *argv[])
+ 	if (fctx.debug) {
+ 		int	i;
+ 
+-		printf("fuse arguments:");
++		printf("FUSE2FS (%s): fuse arguments:", fctx.shortdev);
+ 		for (i = 0; i < args.argc; i++)
+ 			printf(" '%s'", args.argv[i]);
+ 		printf("\n");
++		fflush(stdout);
+ 	}
+ 
+ 	pthread_mutex_init(&fctx.bfl, NULL);
 
 
