@@ -1,324 +1,469 @@
-Return-Path: <linux-ext4+bounces-7519-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7520-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13706A9EA6E
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 10:14:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 805D1A9EAF1
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 10:39:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 299723B1104
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 08:13:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6D051891144
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 08:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D5F25DCED;
-	Mon, 28 Apr 2025 08:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE281BD01D;
+	Mon, 28 Apr 2025 08:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="QWZNYZMe";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="ybkry2pF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FAwkeeR/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C6E019CC02;
-	Mon, 28 Apr 2025 08:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745828034; cv=fail; b=Vfdi0zgTC1t/HgUV3PDvfw4g7G3T9IbtVElA76DjQ2iKjnnn4tApsk3ttAqEQk5rL0ui/CPW5mjp0tUzuesD0EqwxZwdo2Ps2eiXj436myGlfb10wtk31Jus2wH11Up1HUuTlhE+VUwmeDuxdALpcKFe1jWnvFlgKkzx1jBHp9M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745828034; c=relaxed/simple;
-	bh=BX8KUK57GRpDpO4aBs/S6kTt7injAiBM0zkGMQDlTKE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=kaR46QGbUbxSu+PGdKVsXznyndNGPifkmsXtMez8tdAq6lZ04lojDK/yNTzduylz1mEbDJqLuML4doS6ElP+1hNvI71qqyWW8ktKkoL3S96NJsZqNt5QC8sWEpPX7MzFZkgtkB7PDZjsgth551iiv0Qys5LsVZcD3y8T+VDvoAE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=QWZNYZMe; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=ybkry2pF; arc=fail smtp.client-ip=216.71.154.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1745828032; x=1777364032;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=BX8KUK57GRpDpO4aBs/S6kTt7injAiBM0zkGMQDlTKE=;
-  b=QWZNYZMepV5/KFVY0pOZbhG3kV/bAMGNH15aCw5YgIoDmDH0Mb7sVpcj
-   oryT6QaTKPhOo43rsL5e2WvGiEhFuwN4GUPTR+gpxZC9Tc70th0HLmd2Y
-   IwDh/Pr8mY6XM48Fd4Qzgdszu4YhvNzjqFuGCdfkJdJsH+hVIfWMkJsmK
-   oEP6O1OKeGzxEcecUnHBej7VPf7oBkFrApD6e7MDXTmHAUmlsYwmHereo
-   3KqXfZQUJeTXx8YON20cnruPtKNo2QdH0vVOwsoDwvuyBo0PnStytIsMR
-   Fm04M5ZHAZNfAalCe8kqQentuovoQHr4zBRiqe0xGwxsTyaPA7xl3v+PK
-   w==;
-X-CSE-ConnectionGUID: GyG5ROxYSdyV2AtQ9w4KhQ==
-X-CSE-MsgGUID: 1rEiUhG9ROONVzQeArvtvQ==
-X-IronPort-AV: E=Sophos;i="6.15,245,1739808000"; 
-   d="scan'208";a="82625075"
-Received: from mail-co1nam11lp2175.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.175])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Apr 2025 16:13:43 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=EflGW405nEaxAG57lj2Xl+C9mR6SB4jwILK6cB1CbnCHSfg21OKVO+QPc4EtTKJgXRHXc/0Q53aEyEgsnv3fy5L0dAEWXgRGzsd0RhaG8CC7kPwG9bEwa6PQB4/TNi5kPRDZEG6TAPnL8XeRcsb4xJI9wsCd548WvGBKds61J58e2ocZIPbO/PvXnYGHrTBvqRae5Hz44Etzl18gaXvBYCaDrB2Wrij0tTpwLasbVFeVBh/nAv9NkNRseVxMmOerfNE+YtgvAPskxz543e2TuAByPhuYPs2NJ0OleNQT1k8c3tLk5KTdtuswiTBmuMw8bTpPZlQ2ax/SRLShOlsaog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kfKu2fVtxQy14EZpTl34Ep/v5Qxtki06llhlpg/25eY=;
- b=N1z0yrreyAuBMCTdBO2it35DCNuz/BfZOThoCy2lMRkTcRmEqKEEcPByzt+PtQU4Ae+o8P1bgIuU9VWD8G8yUZ5MikR53y3k7I18TBMBXINE6s+aAygrwgT1os4+xfGRYAq8MkqBu9Qsip2yLQaKQsew1KwrKBl14DFxTD0RKx2rwcxnX7a/vg5ItD4Qu04Js8LfxuRx4w4vAgtl1FRXaMI+Sdf5XU75/X6TPljm8Q3A61EJL/vL0R+SOu0i/uv9z2Bq60Ye5rvSsUZuCeZzpcFkYW974YM8ewEwFXZVztK+IWBXhVErmWCBmqOhma2c8qwb3muBbx9M6FnB4awtjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4CF6253F02;
+	Mon, 28 Apr 2025 08:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745829566; cv=none; b=gOtDaeE/0KzR1TSIrknxXHyDBB82+1Ryad7d69uYf7kaDtTdQh8k9xoQ4N6ojeoOAHIZX7hYrASze1GHE68xy1iHq9Z4EWpYjesgqMapYFwKJbmIzbpF9jm/jsh7bfVcKQMCCZED83IupL94OvoYmynIQ2IbOHi4qIQsM+PHotU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745829566; c=relaxed/simple;
+	bh=dyvVzieNVLHx9TOwKnHXM4+0cPAgpKW1Lw4R0dMYcsk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KoJomxHjuZdK76PYVKH2NHIQjVQ1cbKTonxRX0oALXHpYPRd0dQcwN3UYFBtTLf1WXrLC9E7gK4ImfuFNjRA2U6x8TQ/Y09tbOHOf4bjgwxV20l4wCwNLW9nJ0BvDpaDi2YbXhgnZ1YdHh9KwLe+pyK3eziKIRNFz1s8u/YcEQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FAwkeeR/; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-739be717eddso3606315b3a.2;
+        Mon, 28 Apr 2025 01:39:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kfKu2fVtxQy14EZpTl34Ep/v5Qxtki06llhlpg/25eY=;
- b=ybkry2pFqjX/jeaigTDHv4x1ihswrcshLldUvvbXahOA899TLI7AoTnXOyk5WX9RmbVtPA0T3wDb3cxUCFWD+nDPsW2s31ubZn2pkCbVhUyhqsZ2Jcn811m9Ke9nB3fNScszGbOMxHWW4pehHDcNz9I/8iKM5arDEA1sCtQAKME=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- BN0PR04MB8031.namprd04.prod.outlook.com (2603:10b6:408:15a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.29; Mon, 28 Apr
- 2025 08:13:42 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a%7]) with mapi id 15.20.8678.028; Mon, 28 Apr 2025
- 08:13:41 +0000
-From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-CC: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, hch
-	<hch@lst.de>, "tytso@mit.edu" <tytso@mit.edu>, "djwong@kernel.org"
-	<djwong@kernel.org>, "john.g.garry@oracle.com" <john.g.garry@oracle.com>,
-	"bmarzins@redhat.com" <bmarzins@redhat.com>, "chaitanyak@nvidia.com"
-	<chaitanyak@nvidia.com>, "yi.zhang@huawei.com" <yi.zhang@huawei.com>,
-	"chengzhihao1@huawei.com" <chengzhihao1@huawei.com>, "yukuai3@huawei.com"
-	<yukuai3@huawei.com>, "yangerkun@huawei.com" <yangerkun@huawei.com>
-Subject: Re: [PATCH blktests 2/3] dm/003: add unmap write zeroes tests
-Thread-Topic: [PATCH blktests 2/3] dm/003: add unmap write zeroes tests
-Thread-Index: AQHbl9iSuzW1B+y3X0qB2g4C3g3UvLORqIwAgCcUv4CAAD3pAA==
-Date: Mon, 28 Apr 2025 08:13:41 +0000
-Message-ID: <6p2dh577oiqe7lfaexv4fzct4aqhc56lxrz2ecwwctvbuxrjx3@oual7hmxfiqc>
-References: <20250318072835.3508696-1-yi.zhang@huaweicloud.com>
- <20250318072835.3508696-3-yi.zhang@huaweicloud.com>
- <t4vmmsupkbffrp3p33okbdjtf6il2ahp5omp2s5fvuxkngipeo@4thxzp4zlcse>
- <7b0319ac-cad4-4285-800c-b1e18ee4d92b@huaweicloud.com>
-In-Reply-To: <7b0319ac-cad4-4285-800c-b1e18ee4d92b@huaweicloud.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|BN0PR04MB8031:EE_
-x-ms-office365-filtering-correlation-id: fd50e60c-09d5-4c05-cdab-08dd862c968b
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|366016|7416014|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?aVZPOCq0+YOfBGQp8Xped2HSyjz6L0/2YiCJR77A895YkhNBFL09ueci6viR?=
- =?us-ascii?Q?tMT3XJYP13l3QlZlAFphynBuPDuAzA0nGdAT3ig7Yzkf+TFSwz7PD4tXrOO4?=
- =?us-ascii?Q?8dA3a8z+pGZMeM8IYnGOltfZp1oYZOXdQi7Wz/BWKGL7Tus7VqJWPzuQSm4P?=
- =?us-ascii?Q?LThBMrfW+1jNjAX75B5uZ9rhyCcKCRW1SRohxti+Atelhuol3ubZTZldUltB?=
- =?us-ascii?Q?8g1lY6gj4XhuCCwKojFXggqCNX0TkRZMn6XOBNYG1dtBUJ6vtI5hEEatuzMs?=
- =?us-ascii?Q?tHcvKXCD8XrhAH6d19EbMXXmnusVywqx3O6E+6x9xlaxsaSVyGdhw6p5822f?=
- =?us-ascii?Q?MQAOB40y6N6h+jZFSvxQgkg/rsi2G8GgqSRbiKbBjatf6QZvZ6Eo205tXf+A?=
- =?us-ascii?Q?/fPM6aMMcLFDF2olRk+ZKG47c7gafY7UHZXDHMIOPEJIjpq8auKPFY+zvI6e?=
- =?us-ascii?Q?tDbpqEO4Kcnzl5RUSU6g6N09GfYIm0rpaiDTXgOpTbMAHm8TNjakq2PuBpjp?=
- =?us-ascii?Q?IrkrAym8p+K7TiXqQWvpak4sinDXlUEORSNLeQXh8unLfp4eDQ4WdJHMot4d?=
- =?us-ascii?Q?IXnj83I1aB73m9LWrV0szcVSuo/tuGkuUbkoLBMhtmDamuhDA6exDZLp58Eh?=
- =?us-ascii?Q?u9z5O206pKWyH1U8lgvJfTgdj6m6iEwW/uQHGkJV8HcO6rKP9z825QNiFwf0?=
- =?us-ascii?Q?TJGNdXznAP86eTOiy9VrtUvxQCJdHAmBjoS22pFuW8G8/ahUdcK+Csq5ZYMf?=
- =?us-ascii?Q?5MppR7Eld+MG2ikqdQCOJkQMNQOmfekqh+3Frn2DUL7Avk3+rlLCixVUZu66?=
- =?us-ascii?Q?XI6YCHIKlWsiLrwFAXlEehLiFNj5j/c2mRtsNrL698vTsfuhQCKQ8T4l+hns?=
- =?us-ascii?Q?WrNb8RamV39E3l1BvwyOqTvrUD9KjH2ZXz5gDMqrn07d7VOYxQ+lcYj54VD2?=
- =?us-ascii?Q?hZtcKLqhtQw+ggFZmuwHUll/s4WbOk0MBVqvXcLnforagBAY40DRq3S1fwZo?=
- =?us-ascii?Q?ywqw2lTVIoL5fUr6YOEYINPLKtbpkm0esQr+A9M3wxyCGLxPodUpftxzWZ0x?=
- =?us-ascii?Q?XcQiEWJHZsOALfi4hWekKUV4K3gSup/Jiw4/+8pwHw3PR8OE4W1q6rfJVBwI?=
- =?us-ascii?Q?x1pAu9zeI6/swY/Kkx6ya3qQs1xV3+0kFin/eJlYQi40gCbA9ZLJmsvOadgk?=
- =?us-ascii?Q?qSNnE49AMNpvI3ulIC2piId4ZFCk23JMU9DXvvSgp5F2GcAy72cP/tSY3JQ1?=
- =?us-ascii?Q?owLsh+ZLiO+YOykEJ/+WPyYIXAXUGLYnBeSyuVv/TXhyls5Zzwz81bV5m1ln?=
- =?us-ascii?Q?vkoqUk9MKrPl97VVetqF8ITD9Ot9GwJZoYLTr5xNwcEs1BFnTWGOv7pEnldG?=
- =?us-ascii?Q?DUQ/dDMOufvluPLGfD14wpvfRXgfyCjIpkcVs+ajhK8utdpbTWm9imQWJall?=
- =?us-ascii?Q?KjJtm+eh2rRoYZ2XfMvhPS7HxuDGECGus5IWxHDz0RDIdLtrETM16Q=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?boIfkJEDjOY1mJ1ZHkeHQS358D7gFe/FaKRn/LtgGmRy9b3ulvIf2wkfbjZ8?=
- =?us-ascii?Q?o7bNRIkuUtKZBm/C3YXYVt8RHzW1WJzBdKwvedlOOumpvJC5AA/o2VJewHox?=
- =?us-ascii?Q?PAPoSqTwKQ0nl9XTFHnbnXFPOivI5L2h9MANBdQGZEklyce3+uvkNHfrZZSH?=
- =?us-ascii?Q?W1fnNw3yxsXd41hCdU9XWJlDU/wQcK614F0kJ0QR4a9+nUH0P3Zz+7ws+lBk?=
- =?us-ascii?Q?JM6F4VyzYB7cNspSIpFYeSVtYpzmjJec61GbcTE3Pgrb7S18BCZVJQtSI/hT?=
- =?us-ascii?Q?gOr1lT/HNNO7TdDP/ktp25us6ASwlxgBB8PYv/GK5hZ3dw4WabB6RAoRm+N0?=
- =?us-ascii?Q?L2vS3GiEnzZ/+w+z1yv2u/hegzmipLBi4AIKJLmImk35kABTuemCmKinjKPl?=
- =?us-ascii?Q?d6+NVK4xGuP4GbwMJcvlScx2EKnq7LHmYNick3+HNxb6aSSkvdoyoys4CBoO?=
- =?us-ascii?Q?FSHJ2Ncq16GyEC0N8kdRsmjhe1w4Sgi+K84BELXiGtSkpdDUIxzzhUwSo7j9?=
- =?us-ascii?Q?irrZVDuWSjLmGHE/wDcfgslpceVSftaA3CrqXlnhLFsSp3x3yGtST2A5jfo8?=
- =?us-ascii?Q?AhmZK2D7NaWc75JP5xOu1i/zKNtLYRnAJAGCphDXpTqIaYes4c4OMVyzTRWA?=
- =?us-ascii?Q?CkFUTCxIu/fSDy3tvUIxf22bOW2J3oN+OFhDS7ypsuvv3vuwOJ+bQ2R7OTzt?=
- =?us-ascii?Q?HwxFhMiMPEyH07SrPbKyec4GoFxDJ5oEQ/1w2JuSpjUKJLwXkYa1YyRqbynS?=
- =?us-ascii?Q?8Zeovmi2RtCildnx/v7BrHYuKdf2KvtsFgWbl1iiOTAu/HejF3Aj4RLn6F6n?=
- =?us-ascii?Q?47O21BXA5Vp6aqKr3pctq5WJKV+hTQBB25mP7yYsr+hf4nRDIkO9iT06hBn1?=
- =?us-ascii?Q?Lt0HyHwJBSPcM1CBfIcgmK5wLt0AAw1PffMA3K2TUUF2CPIif6SAx4Lu67Lz?=
- =?us-ascii?Q?54hiFLyas1wQAu1Q443GQ8fTaS0K/b7LWzup75+CamUX0VXFF7iAnkoySV7r?=
- =?us-ascii?Q?vHXVdxBc+ATnnpI5qitnVQGsGopKZurGOOYv5Us8Kuqt9GeMC0Uhh9xTUdzn?=
- =?us-ascii?Q?LBaRdmWQhADzmWAQT2cAWlw1GlZuZWw7Ov6fGiMuANMnE1XQ2cgk2LOvPRd/?=
- =?us-ascii?Q?UR1qCrM5xTfG50CcMFesDK5K0yo6xoYLl2VLboRpXxyO899javFMeJezEbc+?=
- =?us-ascii?Q?M9kF2KFS2F+je/GU0O5D8XjJtF6SSZFeFMacpYEYusDS4Ne/F43RiEVgDNf9?=
- =?us-ascii?Q?PBNwNHI/E+IjbULB2iCvcbZmsGFaZCUcd9FhZqof9TuusHlx7DPzDc9z3tSF?=
- =?us-ascii?Q?BcoOpS/xuzrZBdNrLXCE0sGhOyjqpkHVLPpe+p703ThrIgmAH0roGYHGeyd/?=
- =?us-ascii?Q?JzUn9cnypVM984bCp2SH+QbXVgFSDf/2C7+8EX/yjOJRcHtHShk6pWfsEP8g?=
- =?us-ascii?Q?TCyotrRo+aWerApIJUSLpnIpQxOE4RzftxNdTNrzP7v2Uzp6p3zXFnyE2xPP?=
- =?us-ascii?Q?ffK9vwhzRdhCwj1Sp7Vn5sF9T7tmHj6wxnK7PUuOj4WWoZSwfsapI238XRIJ?=
- =?us-ascii?Q?wYQ4opu7lqKEGhInoV5BXEyLjKB0O/CnK16E62JaghVq7eycuH/TrcJVsYla?=
- =?us-ascii?Q?rdGLCKXdbeN6HnhtD6X5x2w=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <76954AC95BF2414FA1FB4ADF099E6AA8@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20230601; t=1745829564; x=1746434364; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BSMqbYhbu12yh2ez0ipOG5SjAc9kvDU8lhNm8t4ttSE=;
+        b=FAwkeeR/NPC9Y1VETbxrsYR4X46nT0pGQljdV1Jhl3sqZRbjekhAmgpkW9HqdGGYOh
+         j5l8g2FJIy3E/1rnkmbjLA6ARCZ8h06EvianhrQsaIV2JcYgzQ3QcucH/MJYItynx2LT
+         4uiCn8ud/qK0u4QIHKIYPF0TNM2A0qrKUl7GBlZ6m7BroJR4abPLgCzTfkiG7nca/dTJ
+         b8ULvnHdlK5v5Sx/rC9nAbd6k0B1PIaFLkpWSaIPz0mBbZhRYjtaabHf8hgbCgXe0IMb
+         EXZzoJNW0EItZ5RPgdPRU3VqjENyfvXyKfYP804+tiDiEUqev7mmUF0BO0kh2KZ0XVZT
+         QcOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745829564; x=1746434364;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BSMqbYhbu12yh2ez0ipOG5SjAc9kvDU8lhNm8t4ttSE=;
+        b=oBXX0dr5Yvupz/nAE1xDWrIE6be63qIbZSZADxW6BqhWWC5LHI1oHovfJHcoqaYdFQ
+         D2m1HtoYu0FMtJ2isBF1Na2jl1p/Q/gIBVMNu9l1u9JN6+AXBgLdLlPVZZ7tvZHoxKDS
+         tSex7U6e/y6v8XxQTGqPxEB0+SxZwJObZKaEo8Xh2PIq6dj5/srbUZzc6CLz2YnC46NZ
+         +7JZntwQ19MHXAgn4LBNBxsHyzU1qxP2dQpGvwyIu9Zc7Mv/NyeyWGA+KK72ccIAvA8P
+         FtpuZ/sXiqujN+kXB0OAq8vFubZypk0yWCKitL3MNxjFxd06EafRA+XVSo11gDH1CjhZ
+         1euA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5n+pZQ/Zw9Kk8Go2dy3ZIQEbTQ69dwKw1Jan3Kfk54qmel2zUNBVpolVHAFWY9ZEKSNEh/8wyfQEs@vger.kernel.org, AJvYcCVysrGkAyqaqopnCM5PP8+fBCOEknDj4bRUHgmlMZzIetWXXLy0E2hu7UOsQxzEd7ppTCXAexKoBJYn@vger.kernel.org
+X-Gm-Message-State: AOJu0YwTmudafA5aR1yt+qGCvWDMjlOSFzoFIk6SyPvKSijiILnp6jb+
+	3siv6pvS05Rfe5U35+UdRWdTPGoJjRM3THcW3X+Zd4uNjvHbgZh19c0ZZA==
+X-Gm-Gg: ASbGncsFW5yaKNSEZ6Pl7ypvgdY7/p7/QZi8zDczHZQ+37gT3xVHZqBcqW83LZEWSzA
+	cB3zwVQAFnD1FulXFrpn3MmsRvBPfa1F8MhYQcy0WtBz7X62kuAdZ3PX2WOR+TSEfxLs0jaonWh
+	aXO3lPaQIC+lsiPgZMdDgg2Oe4kXMh1yxPP+braRTZVL9eqZakud11LleMMnDyzwEg73b5DbTyd
+	tKLu40Jeipl8g01cNix/16kZrpzdZx//hc7CRT93dlNz0036YOrLAJ93qLsKNtwdZAYtl6rZOlR
+	qkuSo3Q1GpJTOf0RIFnX4aSyI67GPq2wb+wRWhZHgsC/F/DUCuQ=
+X-Google-Smtp-Source: AGHT+IEvu6dlrLD2qfMZTkDeIJ6gXFD8uJUCqvL81/Lbd7KPlt/ciZ/O9gRrBQdhSqEVn/0SzvtpXw==
+X-Received: by 2002:a05:6a00:4fcc:b0:730:9801:d3e2 with SMTP id d2e1a72fcca58-73fd71cfbc9mr18005311b3a.8.1745829563782;
+        Mon, 28 Apr 2025 01:39:23 -0700 (PDT)
+Received: from [192.168.0.120] ([49.205.34.162])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73e25a6a415sm7420370b3a.85.2025.04.28.01.39.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Apr 2025 01:39:23 -0700 (PDT)
+Message-ID: <ccb82360-d9ae-46c5-a579-ae1be8d013ce@gmail.com>
+Date: Mon, 28 Apr 2025 14:09:18 +0530
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	zpGiZAfrpHcPamDeyhXHXuV0EGcHJSdIEYIurnXR0140soWuV9DM9Fuct0LIyJptGooNKJPNI2yJy3c/nNPipCARrZrCxsdBaamO+Hfx/Tm1XkxdFySpwpLp0aAzTBrc4D741vok1SG7wJ6thm33Rr5w5uWroSJmlm+QufILAJfrxnlTtzLLbEFsNDvlSKZK2bnwy3WXfTg83OGbDNbUg0GORBNzgV4B8mnMMc1+F6KuWoVAQOazibAZvaHpxt+E6kZutSUBp0de13clYPt5mEIkDVMckyepPoHIwin1fKC4+Jsld7AXC6c770jHLTCydEu2uA5cUfJuY1PKohMzTVFICRk1kTVnbYqPzRt+XkiaqRmq/o3ujeEt1uWdxlPjagkjU0aQX8RbbiGkbnaIG0q8U4h3dbY7Ws+O9sbBnAO0wXWDEMEq/MtzJHvsRyvB1I6jkiBVFZtS/Yo82pPax3fwpqbBBaJBoDn1MrQ1XHp1Y16sZ06zdLXXIgTcjsXecVE4ah6Meq3sUVTEbz01+m4v+Lu4wO4MfMmklPlXR3QUzfdb+eHqWe0dF7UJKiP17qpgFs5rLWK3MHcAI5NQR72y2mYVlOXSNClGRL3nt6FQTEqc6rk1RnO6E1tH/YXl
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd50e60c-09d5-4c05-cdab-08dd862c968b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2025 08:13:41.8570
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Jqmo9httSuQSLL64tGfJjzIKcT0JKNOmnc5+NM2FOsalpRKlgP3L4Ux9B9mCzm9GN/sYfudXP+bdbtVjFmn4mutZEQHvIRE7WjuAD4Jzch4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR04MB8031
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] common: Move exit related functions to a
+ common/exit
+To: Zorro Lang <zlang@redhat.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
+ djwong@kernel.org, zlang@kernel.org, david@fromorbit.com
+References: <cover.1745390030.git.nirjhar.roy.lists@gmail.com>
+ <d0b7939a277e8a16566f04e449e9a1f97da28b9d.1745390030.git.nirjhar.roy.lists@gmail.com>
+ <20250423141808.2qdmacsyxu3rtrwh@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <054fa772-360e-4f90-bc4d-ea7ef954d5a2@gmail.com>
+ <20250425112745.aaamjdvhqtlx7vpd@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <175d064b-76a5-4ff8-a34f-358f0e0d6baa@gmail.com>
+ <20250425133648.5uygihyqo7vqofi3@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Language: en-US
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+In-Reply-To: <20250425133648.5uygihyqo7vqofi3@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Apr 28, 2025 / 12:32, Zhang Yi wrote:
-> On 2025/4/3 15:43, Shinichiro Kawasaki wrote:
-[...]
-> >> +
-> >> +setup_test_device() {
-> >> +	if ! _configure_scsi_debug "$@"; then
-> >> +		return 1
-> >> +	fi
-> >=20
-> > In same manner as the 1st patch, I suggest to check /queue/write_zeroes=
-_unmap
-> > here.
-> >=20
-> > 	if [[ ! -f /sys/block/${SCSI_DEBUG_DEVICES[0]}/queue/write_zeroes_unma=
-p ]]; then
-> > 		_exit_scsi_debug
-> > 		SKIP_REASONS+=3D("kernel does not support unmap write zeroes sysfs in=
-terface")
-> > 		return 1
-> > 	fi
-> >=20
-> > The caller will need to check setup_test_device() return value.
->=20
-> Sure.
->=20
-> >=20
-> >> +
-> >> +	local dev=3D"/dev/${SCSI_DEBUG_DEVICES[0]}"
-> >> +	local blk_sz=3D"$(blockdev --getsz "$dev")"
-> >> +	dmsetup create test --table "0 $blk_sz linear $dev 0"
-> >=20
-> > I suggest to call _real_dev() here, and echo back the device name.
-> >=20
-> > 	dpath=3D$(_real_dev /dev/mapper/test)
-> > 	echo ${dpath##*/}
-> >=20
-> > The bash parameter expansion ${xxx##*/} works in same manner as the bas=
-ename
-> > command. The caller can receive the device name in a local variable. Th=
-is will
-> > avoid a bit of code duplication, and allow to avoid _short_dev().
-> >=20
->=20
-> I'm afraid this approach will not work since we may set the
-> SKIP_REASONS parameter. We cannot pass the device name in this
-> manner as it will overlook the SKIP_REASONS setting when the caller
-> invokes $(setup_test_device xxx), this function runs in a subshell.
 
-Ah, that's right. SKIP_REASONS modification in subshell won't work.
+On 4/25/25 19:06, Zorro Lang wrote:
+> On Fri, Apr 25, 2025 at 05:33:24PM +0530, Nirjhar Roy (IBM) wrote:
+>> On 4/25/25 16:57, Zorro Lang wrote:
+>>> On Thu, Apr 24, 2025 at 02:39:39PM +0530, Nirjhar Roy (IBM) wrote:
+>>>> On 4/23/25 19:48, Zorro Lang wrote:
+>>>>> On Wed, Apr 23, 2025 at 06:41:34AM +0000, Nirjhar Roy (IBM) wrote:
+>>>>>> Introduce a new file common/exit that will contain all the exit
+>>>>>> related functions. This will remove the dependencies these functions
+>>>>>> have on other non-related helper files and they can be indepedently
+>>>>>> sourced. This was suggested by Dave Chinner[1].
+>>>>>>
+>>>>>> [1] https://lore.kernel.org/linux-xfs/Z_UJ7XcpmtkPRhTr@dread.disaster.area/
+>>>>>> Suggested-by: Dave Chinner <david@fromorbit.com>
+>>>>>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+>>>>>> ---
+>>>>>>     check           |  1 +
+>>>>>>     common/btrfs    |  2 +-
+>>>>>>     common/ceph     |  2 ++
+>>>>>>     common/config   | 17 +----------------
+>>>>>>     common/dump     |  1 +
+>>>>>>     common/exit     | 50 +++++++++++++++++++++++++++++++++++++++++++++++++
+>>>>>>     common/ext4     |  2 +-
+>>>>>>     common/populate |  2 +-
+>>>>>>     common/preamble |  1 +
+>>>>>>     common/punch    |  6 +-----
+>>>>>>     common/rc       | 29 +---------------------------
+>>>>>>     common/repair   |  1 +
+>>>>>>     common/xfs      |  1 +
+>>>>> I think if you define exit helpers in common/exit, and import common/exit
+>>>>> in common/config, then you don't need to source it(common/exit) in other
+>>>>> common files (.e.g common/xfs, common/rc, etc). Due to when we call the
+>>>>> helpers in these common files, the process should already imported
+>>>>> common/rc -> common/config -> common/exit. right?
+>>>> Oh, right. I can remove the redundant imports from
+>>>> common/{btrfs,ceph,dump,ext4,populate,preamble,punch,rc,repair,xfs} in v2. I
+>>>> will keep ". common/exit" only in common/config and check. The reason for me
+>>>> to keep it in check is that before common/rc is sourced in check, we might
+>>>> need _exit() (which is present is common/exit). Do you agree?
+>>> I thought "check" might not need that either. I didn't give it a test, but I found
+>>> before importing common/rc, there're only command arguments initialization, and
+>>> "check" calls "exit" directly if the initialization fails (except you want to call
+>>> _exit, but I didn't see you change that).
+>> Yes, I have changed the exit() to _exit() in "check" in the next patch [1]
+>> of this series. Can you please take a look at that patch[1] and suggest
+>> whether I should have ". common/exit" in "check" or not?
+>>
+>>
+>> [1] https://lore.kernel.org/all/7d8587b8342ee2cbe226fb691b372ac7df5fdb71.1745390030.git.nirjhar.roy.lists@gmail.com/
+> Oh, as "check" has:
+>
+>    if $OPTIONS_HAVE_SECTIONS; then
+>            trap "_summary; exit \$status" 0 1 2 3 15
+>    else
+>            trap "_wrapup; exit \$status" 0 1 2 3 15
+>    fi
+>
+> So I think it makes sense to use _exit() to deal with status variable :)
 
->=20
-> If you don't like _short_dev(), I think we can pass dname through a
-> global variable, something like below:
->=20
-> setup_test_device() {
-> 	...
-> 	dpath=3D$(_real_dev /dev/mapper/test)
-> 	dname=3D${dpath##*/}
-> }
->=20
-> if ! setup_test_device lbprz=3D0; then
-> 	return 1
-> fi
-> umap=3D"$(< "/sys/block/${dname}/queue/write_zeroes_unmap")"
->=20
-> What do you think?
+Oh, right. Yes, I can replace this "exit \$status" with "_exit". I will 
+make the changes in v2. Any thoughts on the next patch[2]?
 
-I think global variable is a bit dirty. So my suggestion is to still echo b=
-ack
-the short device name from the helper, and set the SKIP_REASONS after calli=
-ng
-the helper, as follows:
+[2] 
+https://lore.kernel.org/all/7d8587b8342ee2cbe226fb691b372ac7df5fdb71.1745390030.git.nirjhar.roy.lists@gmail.com/
 
-diff --git a/tests/dm/003 b/tests/dm/003
-index 1013eb5..e00fa99 100755
---- a/tests/dm/003
-+++ b/tests/dm/003
-@@ -20,13 +20,23 @@ device_requries() {
- }
-=20
- setup_test_device() {
-+	local dev blk_sz dpath
-+
- 	if ! _configure_scsi_debug "$@"; then
- 		return 1
- 	fi
-=20
--	local dev=3D"/dev/${SCSI_DEBUG_DEVICES[0]}"
--	local blk_sz=3D"$(blockdev --getsz "$dev")"
-+        if [[ ! -f /sys/block/${SCSI_DEBUG_DEVICES[0]}/queue/write_zeroes_=
-unmap ]]; then
-+		_exit_scsi_debug
-+                return 1
-+        fi
-+
-+	dev=3D"/dev/${SCSI_DEBUG_DEVICES[0]}"
-+	blk_sz=3D"$(blockdev --getsz "$dev")"
- 	dmsetup create test --table "0 $blk_sz linear $dev 0"
-+
-+	dpath=3D$(_real_dev /dev/mapper/test)
-+	echo ${dpath##*/}
- }
-=20
- cleanup_test_device() {
-@@ -38,17 +48,21 @@ test() {
- 	echo "Running ${TEST_NAME}"
-=20
- 	# disable WRITE SAME with unmap
--	setup_test_device lbprz=3D0
--	umap=3D"$(cat "/sys/block/$(_short_dev /dev/mapper/test)/queue/write_zero=
-es_unmap")"
-+	local dname
-+	if ! dname=3D$(setup_test_device lbprz=3D0); then
-+		SKIP_REASONS+=3D("kernel does not support unmap write zeroes sysfs inter=
-face")
-+		return 1
-+	fi
-+	umap=3D"$(cat "/sys/block/${dname}/queue/zoned")"
- 	if [[ $umap -ne 0 ]]; then
- 		echo "Test disable WRITE SAME with unmap failed."
- 	fi
- 	cleanup_test_device
+--NR
+
+>
+>> --NR
+>>
+>>> Thanks,
+>>> Zorro
+>>>
+>>>> --NR
+>>>>
+>>>>> Thanks,
+>>>>> Zorro
+>>>>>
+>>>>>>     13 files changed, 63 insertions(+), 52 deletions(-)
+>>>>>>     create mode 100644 common/exit
+>>>>>>
+>>>>>> diff --git a/check b/check
+>>>>>> index 9451c350..67355c52 100755
+>>>>>> --- a/check
+>>>>>> +++ b/check
+>>>>>> @@ -51,6 +51,7 @@ rm -f $tmp.list $tmp.tmp $tmp.grep $here/$iam.out $tmp.report.* $tmp.arglist
+>>>>>>     SRC_GROUPS="generic"
+>>>>>>     export SRC_DIR="tests"
+>>>>>> +. common/exit
+>>>>>>     usage()
+>>>>>>     {
+>>>>>> diff --git a/common/btrfs b/common/btrfs
+>>>>>> index 3725632c..9e91ee71 100644
+>>>>>> --- a/common/btrfs
+>>>>>> +++ b/common/btrfs
+>>>>>> @@ -1,7 +1,7 @@
+>>>>>>     #
+>>>>>>     # Common btrfs specific functions
+>>>>>>     #
+>>>>>> -
+>>>>>> +. common/exit
+>>>>>>     . common/module
+>>>>>>     # The recommended way to execute simple "btrfs" command.
+>>>>>> diff --git a/common/ceph b/common/ceph
+>>>>>> index df7a6814..89e36403 100644
+>>>>>> --- a/common/ceph
+>>>>>> +++ b/common/ceph
+>>>>>> @@ -2,6 +2,8 @@
+>>>>>>     # CephFS specific common functions.
+>>>>>>     #
+>>>>>> +. common/exit
+>>>>>> +
+>>>>>>     # _ceph_create_file_layout <filename> <stripe unit> <stripe count> <object size>
+>>>>>>     # This function creates a new empty file and sets the file layout according to
+>>>>>>     # parameters.  It will exit if the file already exists.
+>>>>>> diff --git a/common/config b/common/config
+>>>>>> index eada3971..6a60d144 100644
+>>>>>> --- a/common/config
+>>>>>> +++ b/common/config
+>>>>>> @@ -38,7 +38,7 @@
+>>>>>>     # - this script shouldn't make any assertions about filesystem
+>>>>>>     #   validity or mountedness.
+>>>>>>     #
+>>>>>> -
+>>>>>> +. common/exit
+>>>>>>     . common/test_names
+>>>>>>     # all tests should use a common language setting to prevent golden
+>>>>>> @@ -96,15 +96,6 @@ export LOCAL_CONFIGURE_OPTIONS=${LOCAL_CONFIGURE_OPTIONS:=--enable-readline=yes}
+>>>>>>     export RECREATE_TEST_DEV=${RECREATE_TEST_DEV:=false}
+>>>>>> -# This functions sets the exit code to status and then exits. Don't use
+>>>>>> -# exit directly, as it might not set the value of "$status" correctly, which is
+>>>>>> -# used as an exit code in the trap handler routine set up by the check script.
+>>>>>> -_exit()
+>>>>>> -{
+>>>>>> -	test -n "$1" && status="$1"
+>>>>>> -	exit "$status"
+>>>>>> -}
+>>>>>> -
+>>>>>>     # Handle mkfs.$fstyp which does (or does not) require -f to overwrite
+>>>>>>     set_mkfs_prog_path_with_opts()
+>>>>>>     {
+>>>>>> @@ -121,12 +112,6 @@ set_mkfs_prog_path_with_opts()
+>>>>>>     	fi
+>>>>>>     }
+>>>>>> -_fatal()
+>>>>>> -{
+>>>>>> -    echo "$*"
+>>>>>> -    _exit 1
+>>>>>> -}
+>>>>>> -
+>>>>>>     export MKFS_PROG="$(type -P mkfs)"
+>>>>>>     [ "$MKFS_PROG" = "" ] && _fatal "mkfs not found"
+>>>>>> diff --git a/common/dump b/common/dump
+>>>>>> index 09859006..4701a956 100644
+>>>>>> --- a/common/dump
+>>>>>> +++ b/common/dump
+>>>>>> @@ -3,6 +3,7 @@
+>>>>>>     # Copyright (c) 2000-2002,2005 Silicon Graphics, Inc.  All Rights Reserved.
+>>>>>>     #
+>>>>>>     # Functions useful for xfsdump/xfsrestore tests
+>>>>>> +. common/exit
+>>>>>>     # --- initializations ---
+>>>>>>     rm -f $seqres.full
+>>>>>> diff --git a/common/exit b/common/exit
+>>>>>> new file mode 100644
+>>>>>> index 00000000..ad7e7498
+>>>>>> --- /dev/null
+>>>>>> +++ b/common/exit
+>>>>>> @@ -0,0 +1,50 @@
+>>>>>> +##/bin/bash
+>>>>>> +
+>>>>>> +# This functions sets the exit code to status and then exits. Don't use
+>>>>>> +# exit directly, as it might not set the value of "$status" correctly, which is
+>>>>>> +# used as an exit code in the trap handler routine set up by the check script.
+>>>>>> +_exit()
+>>>>>> +{
+>>>>>> +	test -n "$1" && status="$1"
+>>>>>> +	exit "$status"
+>>>>>> +}
+>>>>>> +
+>>>>>> +_fatal()
+>>>>>> +{
+>>>>>> +    echo "$*"
+>>>>>> +    _exit 1
+>>>>>> +}
+>>>>>> +
+>>>>>> +_die()
+>>>>>> +{
+>>>>>> +        echo $@
+>>>>>> +        _exit 1
+>>>>>> +}
+>>>>>> +
+>>>>>> +die_now()
+>>>>>> +{
+>>>>>> +	_exit 1
+>>>>>> +}
+>>>>>> +
+>>>>>> +# just plain bail out
+>>>>>> +#
+>>>>>> +_fail()
+>>>>>> +{
+>>>>>> +    echo "$*" | tee -a $seqres.full
+>>>>>> +    echo "(see $seqres.full for details)"
+>>>>>> +    _exit 1
+>>>>>> +}
+>>>>>> +
+>>>>>> +# bail out, setting up .notrun file. Need to kill the filesystem check files
+>>>>>> +# here, otherwise they are set incorrectly for the next test.
+>>>>>> +#
+>>>>>> +_notrun()
+>>>>>> +{
+>>>>>> +    echo "$*" > $seqres.notrun
+>>>>>> +    echo "$seq not run: $*"
+>>>>>> +    rm -f ${RESULT_DIR}/require_test*
+>>>>>> +    rm -f ${RESULT_DIR}/require_scratch*
+>>>>>> +
+>>>>>> +    _exit 0
+>>>>>> +}
+>>>>>> +
+>>>>>> diff --git a/common/ext4 b/common/ext4
+>>>>>> index f88fa532..ab566c41 100644
+>>>>>> --- a/common/ext4
+>>>>>> +++ b/common/ext4
+>>>>>> @@ -1,7 +1,7 @@
+>>>>>>     #
+>>>>>>     # ext4 specific common functions
+>>>>>>     #
+>>>>>> -
+>>>>>> +. common/exit
+>>>>>>     __generate_ext4_report_vars() {
+>>>>>>     	__generate_blockdev_report_vars TEST_LOGDEV
+>>>>>>     	__generate_blockdev_report_vars SCRATCH_LOGDEV
+>>>>>> diff --git a/common/populate b/common/populate
+>>>>>> index 50dc75d3..a17acc9e 100644
+>>>>>> --- a/common/populate
+>>>>>> +++ b/common/populate
+>>>>>> @@ -4,7 +4,7 @@
+>>>>>>     #
+>>>>>>     # Routines for populating a scratch fs, and helpers to exercise an FS
+>>>>>>     # once it's been fuzzed.
+>>>>>> -
+>>>>>> +. common/exit
+>>>>>>     . ./common/quota
+>>>>>>     _require_populate_commands() {
+>>>>>> diff --git a/common/preamble b/common/preamble
+>>>>>> index ba029a34..0f306412 100644
+>>>>>> --- a/common/preamble
+>>>>>> +++ b/common/preamble
+>>>>>> @@ -3,6 +3,7 @@
+>>>>>>     # Copyright (c) 2021 Oracle.  All Rights Reserved.
+>>>>>>     # Boilerplate fstests functionality
+>>>>>> +. common/exit
+>>>>>>     # Standard cleanup function.  Individual tests can override this.
+>>>>>>     _cleanup()
+>>>>>> diff --git a/common/punch b/common/punch
+>>>>>> index 64d665d8..637f463f 100644
+>>>>>> --- a/common/punch
+>>>>>> +++ b/common/punch
+>>>>>> @@ -3,6 +3,7 @@
+>>>>>>     # Copyright (c) 2007 Silicon Graphics, Inc.  All Rights Reserved.
+>>>>>>     #
+>>>>>>     # common functions for excersizing hole punches with extent size hints etc.
+>>>>>> +. common/exit
+>>>>>>     _spawn_test_file() {
+>>>>>>     	echo "# spawning test file with $*"
+>>>>>> @@ -222,11 +223,6 @@ _filter_bmap()
+>>>>>>     	_coalesce_extents
+>>>>>>     }
+>>>>>> -die_now()
+>>>>>> -{
+>>>>>> -	_exit 1
+>>>>>> -}
+>>>>>> -
+>>>>>>     # test the different corner cases for zeroing a range:
+>>>>>>     #
+>>>>>>     #	1. into a hole
+>>>>>> diff --git a/common/rc b/common/rc
+>>>>>> index 9bed6dad..945f5134 100644
+>>>>>> --- a/common/rc
+>>>>>> +++ b/common/rc
+>>>>>> @@ -2,6 +2,7 @@
+>>>>>>     # SPDX-License-Identifier: GPL-2.0+
+>>>>>>     # Copyright (c) 2000-2006 Silicon Graphics, Inc.  All Rights Reserved.
+>>>>>> +. common/exit
+>>>>>>     . common/config
+>>>>>>     BC="$(type -P bc)" || BC=
+>>>>>> @@ -1798,28 +1799,6 @@ _do()
+>>>>>>         return $ret
+>>>>>>     }
+>>>>>> -# bail out, setting up .notrun file. Need to kill the filesystem check files
+>>>>>> -# here, otherwise they are set incorrectly for the next test.
+>>>>>> -#
+>>>>>> -_notrun()
+>>>>>> -{
+>>>>>> -    echo "$*" > $seqres.notrun
+>>>>>> -    echo "$seq not run: $*"
+>>>>>> -    rm -f ${RESULT_DIR}/require_test*
+>>>>>> -    rm -f ${RESULT_DIR}/require_scratch*
+>>>>>> -
+>>>>>> -    _exit 0
+>>>>>> -}
+>>>>>> -
+>>>>>> -# just plain bail out
+>>>>>> -#
+>>>>>> -_fail()
+>>>>>> -{
+>>>>>> -    echo "$*" | tee -a $seqres.full
+>>>>>> -    echo "(see $seqres.full for details)"
+>>>>>> -    _exit 1
+>>>>>> -}
+>>>>>> -
+>>>>>>     #
+>>>>>>     # Tests whether $FSTYP should be exclude from this test.
+>>>>>>     #
+>>>>>> @@ -3835,12 +3814,6 @@ _link_out_file()
+>>>>>>     	_link_out_file_named $seqfull.out "$features"
+>>>>>>     }
+>>>>>> -_die()
+>>>>>> -{
+>>>>>> -        echo $@
+>>>>>> -        _exit 1
+>>>>>> -}
+>>>>>> -
+>>>>>>     # convert urandom incompressible data to compressible text data
+>>>>>>     _ddt()
+>>>>>>     {
+>>>>>> diff --git a/common/repair b/common/repair
+>>>>>> index fd206f8e..db6a1b5c 100644
+>>>>>> --- a/common/repair
+>>>>>> +++ b/common/repair
+>>>>>> @@ -3,6 +3,7 @@
+>>>>>>     # Copyright (c) 2000-2002 Silicon Graphics, Inc.  All Rights Reserved.
+>>>>>>     #
+>>>>>>     # Functions useful for xfs_repair tests
+>>>>>> +. common/exit
+>>>>>>     _zero_position()
+>>>>>>     {
+>>>>>> diff --git a/common/xfs b/common/xfs
+>>>>>> index 96c15f3c..c236146c 100644
+>>>>>> --- a/common/xfs
+>>>>>> +++ b/common/xfs
+>>>>>> @@ -1,6 +1,7 @@
+>>>>>>     #
+>>>>>>     # XFS specific common functions.
+>>>>>>     #
+>>>>>> +. common/exit
+>>>>>>     __generate_xfs_report_vars() {
+>>>>>>     	__generate_blockdev_report_vars TEST_RTDEV
+>>>>>> -- 
+>>>>>> 2.34.1
+>>>>>>
+>>>> -- 
+>>>> Nirjhar Roy
+>>>> Linux Kernel Developer
+>>>> IBM, Bangalore
+>>>>
+>> -- 
+>> Nirjhar Roy
+>> Linux Kernel Developer
+>> IBM, Bangalore
+>>
+-- 
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
+
 
