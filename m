@@ -1,79 +1,45 @@
-Return-Path: <linux-ext4+bounces-7521-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7522-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A86B7A9EAFD
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 10:42:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C78BA9EB69
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 11:04:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE161188BAB6
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 08:42:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5429A3A88CA
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 09:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A5425E81B;
-	Mon, 28 Apr 2025 08:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WQcok7Ev"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC52625F789;
+	Mon, 28 Apr 2025 09:04:44 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E9CD530;
-	Mon, 28 Apr 2025 08:42:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A94B19C54B;
+	Mon, 28 Apr 2025 09:04:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745829722; cv=none; b=sV+dsi8xkz1MoSUpVuI+S6USX5zKJfQrRTY34qW++GcReid+6RqD1Qo3Bsv0w1RTW4WGWcQHdvDGDuvov5xBwk7zyMmVkn4/oYdSgyyZAw1YHJZaw5b7TMIftKnG7Jt9Oh4C4bIS8SEbK8ad4CUdP3tx7GyPaO0T4ltHaz92fK0=
+	t=1745831084; cv=none; b=qEV79fZqJiQStfuYmg9hro1l3GwsJJ+dPFv7P1pvmsmIN/6oUm6nKDph8/YifD/bI0OvLDClKsiL62hY1+90KLnvVHB5HLmY7JxgZsvCtEzlJA45S/7zf7zlHKU7ZRL9DdFbNMmWnsdM2KscPiWyNqpQhU9xYOfdQitfCsofoEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745829722; c=relaxed/simple;
-	bh=6wVjNnshTCAoQoQqT5T2QQYKqEXwmctTJ4Kd10bABco=;
+	s=arc-20240116; t=1745831084; c=relaxed/simple;
+	bh=WX5MAHNpgcyH1hkVPmK8gYDhlT25wMqZzAOKCkr+DHY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tHbGEGOjboRN8a5Xe+BcB4ebXSIXf+NE0P2NuyDK+HrYatDDZjwnKsI7mBHFX2iHhtWbZvIBZojk6UmCaf+JxSZQHIhfkWwIZiTEGyNgOUW779JGM9mUwfDOloRhZQ50NofOz1PB/C6IypZPLI+GIR0nqAvmAduVmox1fKCk5h8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WQcok7Ev; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-22c336fcdaaso51909665ad.3;
-        Mon, 28 Apr 2025 01:42:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745829720; x=1746434520; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Jl7SkQ6bwqME3ZfVsrbU3UEoFPmnxH6bqtlU1i02ubQ=;
-        b=WQcok7EvOPautxQksA9PFpAKA1BvDXuOqYF1h7pehYQm81xHR3rTh+P+1KgT9csCQ+
-         LW0dpGYiY76Amk4DCbO+M5LI2TtkuA+Ovby4u2L+KoEkx179ZHi1/h1SOyYCf85kl233
-         qGWTeCj2ie1zvtL/vgjwQPIjTwlQjAweg9bIExnFZ5S7uWj6DQIrYKacqOAoJKiuDLoK
-         jGyQWRVBUmqeeDmwcY3qahKg+hVG2cDKySH3lgdrUH2NleTf6NZRLco5bcx9iHHJojc0
-         YWW3F/QC1olIbiZ+EjyTLRdyHF+6CpzhIw1n0FzmonwJ1sZfrZd+FbTGS4t985sJl+zQ
-         DDvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745829720; x=1746434520;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jl7SkQ6bwqME3ZfVsrbU3UEoFPmnxH6bqtlU1i02ubQ=;
-        b=EK4F2EMXka6y29T41MmoTzvnfRZkv0t274V0PMr8Er0zG0+sp3tywriS991Vj3YJC4
-         nsLarn33bz/lyOPRj0oIJ4KIBwS9iTRLWfLwkk4L3BfxToWLWQnr9ym7W37/2fABsWL7
-         Co+Fp00zA2EkBwVOISwNDLgDNBCRux7jx7RgJfuiUClMWEbYDLIiaNQyHQjQj0hImVje
-         Pr81jQAMiqcnrh8DGBuqYsmGajmQKaj/zNvzHUa53s1HPIetYAExEMIRGJ+iA3MOMH8z
-         w+wPoDVvKZdRe0ooVJZOZIKtodX9dJvVQ/eT2+FDayBLtn7Ra0isPQ2lW67PY80c2k3I
-         F82Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUX86SAFc5kEkHCJEAXkqYkNtS1UJJ6SL7cexUffKBLCJdPVcyGgCFrkRhiwXWIoflOAWFoda5FlYPNvA==@vger.kernel.org, AJvYcCWpBAXTA87wcSmp3lxZb+WrpijQ95JMJl/jbacvKEbMehYk5DA4Iotr8b6eHxMfhzR94ZhMia67@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3VS+RQQbZUJ3YhgsQh3QZzG5FJ3ax7k7DPNnMgKsPmdc+ob5R
-	HLUqphtJkg3nm999phCmansA0kCd+dW0RsG5ZxQLPOk8vz1Pd9VL
-X-Gm-Gg: ASbGncsrf3xkqkv5X7L76RziQ43frSQxRbFyIjOAFjpxnOOieHl75h0P5Po5qsck9f+
-	Ho8+qi73GJHcfaAmZLnPCYp9T8pRZO4bgQcAu9uCYz9191LZvPdyTulQIw1i0yi/VWor9YQ/KRl
-	ADaXnE0OYlLjf64EwUMUn3BM9zNSsSITY6YtD8Xs9KXuGJmHq5Uo4rfpz6lkZ0CIDyZ9IcFf/Re
-	3IzXblbxAGi8Hr9Asct0H74VMWkRIhUuDS9e0rpkD851E2zWglz4mghRiZkRCbp8QhvPl4cwA1h
-	r7KiO6QWBxBwfCeuqHUFp7fgxnifqjNJeaxWrnZ+eMPP2g5NoMs=
-X-Google-Smtp-Source: AGHT+IEihZ/WOivxhajbJxZ5S/Ab6LeajS4srSHToBYrKggv82sg414no37PbyuA/XokqfIC8xpk3A==
-X-Received: by 2002:a17:902:d591:b0:224:162:a3e0 with SMTP id d9443c01a7336-22dbf640949mr166221075ad.49.1745829719778;
-        Mon, 28 Apr 2025 01:41:59 -0700 (PDT)
-Received: from [192.168.0.120] ([49.205.34.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-309f77641eesm6526835a91.25.2025.04.28.01.41.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Apr 2025 01:41:59 -0700 (PDT)
-Message-ID: <4e9e20f3-6908-4969-90ee-8eb6b6d53e3f@gmail.com>
-Date: Mon, 28 Apr 2025 14:11:55 +0530
+	 In-Reply-To:Content-Type; b=UwJvtvpn1KlFPriwXrh/wF6DEXVVVGuL+uIsi6g9K9dQWQbXK+vBojrFepbmKUfk/wiOZjbACIKIquqorDfTmFaUySMfaWRkvurQcyU0au+gsYRmkeg0NYMLDwu70spesrs8fzOEWQ+vsnpzY9cbrniKTjH4rUDceCh4ki7Ivt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZmHZ32lD6z4f3jMF;
+	Mon, 28 Apr 2025 17:04:11 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 090511A018D;
+	Mon, 28 Apr 2025 17:04:37 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgDHK2CiRA9o7nM7Kw--.50307S3;
+	Mon, 28 Apr 2025 17:04:36 +0800 (CST)
+Message-ID: <a5d847d1-9799-4294-ac8f-e78d73e3733d@huaweicloud.com>
+Date: Mon, 28 Apr 2025 17:04:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -81,59 +47,174 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] xfs: Fail remount with noattr2 on a v5 xfs with
- CONFIG_XFS_SUPPORT_V4=y
+Subject: Re: [PATCH blktests 2/3] dm/003: add unmap write zeroes tests
+To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ hch <hch@lst.de>, "tytso@mit.edu" <tytso@mit.edu>,
+ "djwong@kernel.org" <djwong@kernel.org>,
+ "john.g.garry@oracle.com" <john.g.garry@oracle.com>,
+ "bmarzins@redhat.com" <bmarzins@redhat.com>,
+ "chaitanyak@nvidia.com" <chaitanyak@nvidia.com>,
+ "yi.zhang@huawei.com" <yi.zhang@huawei.com>,
+ "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
+ "yukuai3@huawei.com" <yukuai3@huawei.com>,
+ "yangerkun@huawei.com" <yangerkun@huawei.com>
+References: <20250318072835.3508696-1-yi.zhang@huaweicloud.com>
+ <20250318072835.3508696-3-yi.zhang@huaweicloud.com>
+ <t4vmmsupkbffrp3p33okbdjtf6il2ahp5omp2s5fvuxkngipeo@4thxzp4zlcse>
+ <7b0319ac-cad4-4285-800c-b1e18ee4d92b@huaweicloud.com>
+ <6p2dh577oiqe7lfaexv4fzct4aqhc56lxrz2ecwwctvbuxrjx3@oual7hmxfiqc>
 Content-Language: en-US
-To: Christoph Hellwig <hch@infradead.org>
-Cc: linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- fstests@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
- djwong@kernel.org, zlang@kernel.org, david@fromorbit.com
-References: <7c4202348f67788db55c7ec445cbe3f2d587daf2.1744394929.git.nirjhar.roy.lists@gmail.com>
- <Z_yhpwBQz7Xs4WLI@infradead.org>
- <0d1d7e6f-d2b9-4c38-9c8e-a25671b6380c@gmail.com>
- <Z_9JmaXJJVJFJ2Yl@infradead.org>
- <757190c8-f7e4-404b-88cd-772e0b62dea5@gmail.com>
- <aAuIn7zbSNRzQ3WH@infradead.org>
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-In-Reply-To: <aAuIn7zbSNRzQ3WH@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <6p2dh577oiqe7lfaexv4fzct4aqhc56lxrz2ecwwctvbuxrjx3@oual7hmxfiqc>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgDHK2CiRA9o7nM7Kw--.50307S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF4DXFWxKw1xCw17Xr1kKrg_yoW5KF4kpr
+	yfAFyvyrW7KF12qr1jvF1fZr1ayw4rGw17Xw13Jry0y3yDZr1agFZ7KF4Uuas7XrW3uF40
+	vay7Wa9I9w15tFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
+On 2025/4/28 16:13, Shinichiro Kawasaki wrote:
+> On Apr 28, 2025 / 12:32, Zhang Yi wrote:
+>> On 2025/4/3 15:43, Shinichiro Kawasaki wrote:
+> [...]
+>>>> +
+>>>> +setup_test_device() {
+>>>> +	if ! _configure_scsi_debug "$@"; then
+>>>> +		return 1
+>>>> +	fi
+>>>
+>>> In same manner as the 1st patch, I suggest to check /queue/write_zeroes_unmap
+>>> here.
+>>>
+>>> 	if [[ ! -f /sys/block/${SCSI_DEBUG_DEVICES[0]}/queue/write_zeroes_unmap ]]; then
+>>> 		_exit_scsi_debug
+>>> 		SKIP_REASONS+=("kernel does not support unmap write zeroes sysfs interface")
+>>> 		return 1
+>>> 	fi
+>>>
+>>> The caller will need to check setup_test_device() return value.
+>>
+>> Sure.
+>>
+>>>
+>>>> +
+>>>> +	local dev="/dev/${SCSI_DEBUG_DEVICES[0]}"
+>>>> +	local blk_sz="$(blockdev --getsz "$dev")"
+>>>> +	dmsetup create test --table "0 $blk_sz linear $dev 0"
+>>>
+>>> I suggest to call _real_dev() here, and echo back the device name.
+>>>
+>>> 	dpath=$(_real_dev /dev/mapper/test)
+>>> 	echo ${dpath##*/}
+>>>
+>>> The bash parameter expansion ${xxx##*/} works in same manner as the basename
+>>> command. The caller can receive the device name in a local variable. This will
+>>> avoid a bit of code duplication, and allow to avoid _short_dev().
+>>>
+>>
+>> I'm afraid this approach will not work since we may set the
+>> SKIP_REASONS parameter. We cannot pass the device name in this
+>> manner as it will overlook the SKIP_REASONS setting when the caller
+>> invokes $(setup_test_device xxx), this function runs in a subshell.
+> 
+> Ah, that's right. SKIP_REASONS modification in subshell won't work.
+> 
+>>
+>> If you don't like _short_dev(), I think we can pass dname through a
+>> global variable, something like below:
+>>
+>> setup_test_device() {
+>> 	...
+>> 	dpath=$(_real_dev /dev/mapper/test)
+>> 	dname=${dpath##*/}
+>> }
+>>
+>> if ! setup_test_device lbprz=0; then
+>> 	return 1
+>> fi
+>> umap="$(< "/sys/block/${dname}/queue/write_zeroes_unmap")"
+>>
+>> What do you think?
+> 
+> I think global variable is a bit dirty. So my suggestion is to still echo back
+> the short device name from the helper, and set the SKIP_REASONS after calling
+> the helper, as follows:
+> 
+> diff --git a/tests/dm/003 b/tests/dm/003
+> index 1013eb5..e00fa99 100755
+> --- a/tests/dm/003
+> +++ b/tests/dm/003
+> @@ -20,13 +20,23 @@ device_requries() {
+>  }
+>  
+>  setup_test_device() {
+> +	local dev blk_sz dpath
+> +
+>  	if ! _configure_scsi_debug "$@"; then
+>  		return 1
 
-On 4/25/25 18:35, Christoph Hellwig wrote:
-> Hi Nirjhar,
->
-> sorry for the delay, I dropped the ball while on vacation.
->
-> On Wed, Apr 16, 2025 at 01:05:46PM +0530, Nirjhar Roy (IBM) wrote:
->> Yes, we need a second pass and I think that is already being done by
->> xfs_finish_flags() in xfs_fs_fill_super(). However, in xfs_fs_reconfigure(),
->> we still need a check to make a transition from /* attr2 -> noattr2 */ and
->> /* noattr2 -> attr2 */ (only if it is permitted to) and update
->> mp->m_features accordingly, just like it is being done for inode32 <->
->> inode64, right?
-> Yes.
-Okay.
->
->> Also, in your previous reply[1], you did suggest moving the
->> crc+noattr2 check to xfs_fs_validate_params() - Are you suggesting to add
->> another optional (NULLable) parameter "new_mp" to xfs_fs_validate_params()
->> and then moving the check to xfs_fs_validate_params()?
-> No, let's skip that.
->
-> But we really should share the code for the validation.  So while a lot
-> of the checks in xfs_finish_flags are uselss in remount, it might still
-> be a good idea to just use that for the option validation so that we
-> don't miss checks in remount.
+Hmm, if we encounter an error here, the test will be skipped instead of
+returning a failure. This is not the expected outcome.
 
-Okay. I will make the changes in v2. Thank you for your suggestions.
+Thanks,
+Yi.
 
---NR
-
->
--- 
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
+>  	fi
+>  
+> -	local dev="/dev/${SCSI_DEBUG_DEVICES[0]}"
+> -	local blk_sz="$(blockdev --getsz "$dev")"
+> +        if [[ ! -f /sys/block/${SCSI_DEBUG_DEVICES[0]}/queue/write_zeroes_unmap ]]; then
+> +		_exit_scsi_debug
+> +                return 1
+> +        fi
+> +
+> +	dev="/dev/${SCSI_DEBUG_DEVICES[0]}"
+> +	blk_sz="$(blockdev --getsz "$dev")"
+>  	dmsetup create test --table "0 $blk_sz linear $dev 0"
+> +
+> +	dpath=$(_real_dev /dev/mapper/test)
+> +	echo ${dpath##*/}
+>  }
+>  
+>  cleanup_test_device() {
+> @@ -38,17 +48,21 @@ test() {
+>  	echo "Running ${TEST_NAME}"
+>  
+>  	# disable WRITE SAME with unmap
+> -	setup_test_device lbprz=0
+> -	umap="$(cat "/sys/block/$(_short_dev /dev/mapper/test)/queue/write_zeroes_unmap")"
+> +	local dname
+> +	if ! dname=$(setup_test_device lbprz=0); then
+> +		SKIP_REASONS+=("kernel does not support unmap write zeroes sysfs interface")
+> +		return 1
+> +	fi
+> +	umap="$(cat "/sys/block/${dname}/queue/zoned")"
+>  	if [[ $umap -ne 0 ]]; then
+>  		echo "Test disable WRITE SAME with unmap failed."
+>  	fi
+>  	cleanup_test_device
+> 
 
 
