@@ -1,45 +1,45 @@
-Return-Path: <linux-ext4+bounces-7516-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7517-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05D36A9E690
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 05:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8E76A9E70F
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 06:32:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 379CC17894F
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 03:33:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02784175003
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 04:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852E218F2DF;
-	Mon, 28 Apr 2025 03:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B23E1A5BBA;
+	Mon, 28 Apr 2025 04:32:14 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00F14A11;
-	Mon, 28 Apr 2025 03:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA67757F3;
+	Mon, 28 Apr 2025 04:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745811181; cv=none; b=ca4CWR0fwazAo/JDw5/ZGlow81shiXUpeqjjeCd/lyh3H1fAZGL5BBoU1vCS7q9z0jfR9vXwBFhEwQ1dPkfqXbZ0e3XdpDZE8gspg0YNb1FSdcbnYhjxQhl1Dl7/PYEDEiWFP5L8fHK8NUmc9JfOxyQ81aDsksi4Ivpcv8aL9h4=
+	t=1745814734; cv=none; b=oeeT/1cepcq03/BPKrE9rpYGoKv0C0MkbXpOEduL4q5gdNg0o95ej3XjdVrgn3gvSBqZ+W+CAIcl70uO9p1s9GLDMnzaui12ZaROXCNmrU1x4o+51RhX9bQxaT8dMAbmGTyATQC4AAmqq632Osrx8DRwVf2wm+AED86CT55ONDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745811181; c=relaxed/simple;
-	bh=rZPb+nYyN6fqWnBmjxisPyPRLgUVCz2sdtg+z7gQqTk=;
+	s=arc-20240116; t=1745814734; c=relaxed/simple;
+	bh=M9Mtf264J+Mb3cNVqR5CP6GjGyjzcGOdvAIaG/ht+Os=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YrMNRzSPwh6WMIfgOgD/o4RBGxiibJAuwgdVb7OUg/GsqXpN+Id62Rlhu7nPh9R8bNOjKWBUBTRnBPCF6bz5Z+w/91HZ7wb6ncDHx/OSZ6MqrrpMhheG13MSgjPvbxjPTYPzSCnQvjE5k8gM76nE92L5xfsP718gxyYvpmaaWSY=
+	 In-Reply-To:Content-Type; b=KG0ecmYxN/NGKv0nftvTzLF4OI+Ax2Abf6CPZcTzogH78HzrN/d8bZy9XyGnFhxl22eJ/4Vd2A+OX/Myd/UHapp0G8F8z/yVHDUFsjoXDNDHRiluSXPb3PdmFVHAMGgAyxpv6UF0GM1VHsbWbrOajsMadinYjqq4EaVY1fm66zM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Zm8CB3ynMz4f3kvw;
-	Mon, 28 Apr 2025 11:32:22 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4Zm9X81FTszYQv5S;
+	Mon, 28 Apr 2025 12:32:08 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 344901A1AF2;
-	Mon, 28 Apr 2025 11:32:48 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 9EB9F1A0904;
+	Mon, 28 Apr 2025 12:32:07 +0800 (CST)
 Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgBXu1_d9g5ov1YkKw--.49750S3;
-	Mon, 28 Apr 2025 11:32:47 +0800 (CST)
-Message-ID: <6db8d3e6-44ce-4b2b-b496-ec0104aee997@huaweicloud.com>
-Date: Mon, 28 Apr 2025 11:32:45 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgD3W2DFBA9o93coKw--.41236S3;
+	Mon, 28 Apr 2025 12:32:07 +0800 (CST)
+Message-ID: <7b0319ac-cad4-4285-800c-b1e18ee4d92b@huaweicloud.com>
+Date: Mon, 28 Apr 2025 12:32:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,7 +47,7 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH blktests 1/3] scsi/010: add unmap write zeroes tests
+Subject: Re: [PATCH blktests 2/3] dm/003: add unmap write zeroes tests
 To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
  "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
@@ -67,17 +67,17 @@ Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
  "yukuai3@huawei.com" <yukuai3@huawei.com>,
  "yangerkun@huawei.com" <yangerkun@huawei.com>
 References: <20250318072835.3508696-1-yi.zhang@huaweicloud.com>
- <20250318072835.3508696-2-yi.zhang@huaweicloud.com>
- <krhbty6cnaj3zv4bka4jmpwmm74v7k3cts6csp6yoc7xjexoyu@6yrwd7rr2rip>
+ <20250318072835.3508696-3-yi.zhang@huaweicloud.com>
+ <t4vmmsupkbffrp3p33okbdjtf6il2ahp5omp2s5fvuxkngipeo@4thxzp4zlcse>
 Content-Language: en-US
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <krhbty6cnaj3zv4bka4jmpwmm74v7k3cts6csp6yoc7xjexoyu@6yrwd7rr2rip>
+In-Reply-To: <t4vmmsupkbffrp3p33okbdjtf6il2ahp5omp2s5fvuxkngipeo@4thxzp4zlcse>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBXu1_d9g5ov1YkKw--.49750S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFy8Cw48GryUuFyUZFWrXwb_yoW5Gry5pF
-	WxGa9Ykr1ktr17G3WSvF45Wr13J3yfAr47AFWxCw1UCr98Zryakr1IgrWUWa4fGrZ8Gw1F
-	y3WUXFySkryUt3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgD3W2DFBA9o93coKw--.41236S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr13XFyxAF1fXF1rAw4kCrg_yoWrZF18pF
+	W5CF90yrZrKF17tw13ZF13Xr15Aws5Aw47Jw47J34jy398ZrySgFyxKF1UCa4xXrZ3ua10
+	yay2qa4rCr1UtaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
@@ -93,47 +93,75 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxXFy8Cw48GryUuFyUZFWrXwb_yoW5Gry5pF
 	s2-5UUUUU==
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Hello Shinichiro！
-
-I apologize for the significant delay, and I greatly appreciate your
-review and suggestions.
-
-On 2025/4/3 15:26, Shinichiro Kawasaki wrote:
-> Hello Zhang, thank you for the patches.
-> 
+On 2025/4/3 15:43, Shinichiro Kawasaki wrote:
 > On Mar 18, 2025 / 15:28, Zhang Yi wrote:
 >> From: Zhang Yi <yi.zhang@huawei.com>
 >>
->> Test block device unmap write zeroes sysfs interface with various SCSI
->> debug devices. The /sys/block/<disk>/queue/write_zeroes_unmap interface
->> should return 1 if the SCSI device enable the WRITE SAME command with
->> unmap functionality, and it should return 0 otherwise.
+>> Test block device unmap write zeroes sysfs interface with device-mapper
+>> stacked devices. The /sys/block/<disk>/queue/write_zeroes_unmap
+>> interface should return 1 if the underlying devices support the unmap
+>> write zeroes command, and it should return 0 otherwise.
 >>
 >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 >> ---
->>  tests/scsi/010     | 56 ++++++++++++++++++++++++++++++++++++++++++++++
->>  tests/scsi/010.out |  2 ++
->>  2 files changed, 58 insertions(+)
->>  create mode 100755 tests/scsi/010
->>  create mode 100644 tests/scsi/010.out
+>>  common/rc        | 16 ++++++++++++++
+>>  tests/dm/003     | 57 ++++++++++++++++++++++++++++++++++++++++++++++++
+>>  tests/dm/003.out |  2 ++
+>>  3 files changed, 75 insertions(+)
+>>  create mode 100755 tests/dm/003
+>>  create mode 100644 tests/dm/003.out
 >>
->> diff --git a/tests/scsi/010 b/tests/scsi/010
+>> diff --git a/common/rc b/common/rc
+>> index bc6c2e4..60c21f2 100644
+>> --- a/common/rc
+>> +++ b/common/rc
+>> @@ -615,3 +615,19 @@ _io_uring_restore()
+>>  		echo "$IO_URING_DISABLED" > /proc/sys/kernel/io_uring_disabled
+>>  	fi
+>>  }
+>> +
+>> +# get real device path name by following link
+>> +_real_dev()
+>> +{
+>> +	local dev=$1
+>> +	if [ -b "$dev" ] && [ -L "$dev" ]; then
+>> +		dev=`readlink -f "$dev"`
+>> +	fi
+>> +	echo $dev
+>> +}
+> 
+> This helper function looks useful, and it looks reasonable to add it.
+> 
+>> +
+>> +# basename of a device
+>> +_short_dev()
+>> +{
+>> +	echo `basename $(_real_dev $1)`
+>> +}
+> 
+> But I'm not sure about this one. The name "_short_dev" is not super
+> clear for me.
+> 
+
+I copied these two helpers form the xfstests. :)
+
+>> diff --git a/tests/dm/003 b/tests/dm/003
 >> new file mode 100755
->> index 0000000..27a672c
+>> index 0000000..1013eb5
 >> --- /dev/null
->> +++ b/tests/scsi/010
->> @@ -0,0 +1,56 @@
+>> +++ b/tests/dm/003
+>> @@ -0,0 +1,57 @@
 >> +#!/bin/bash
 >> +# SPDX-License-Identifier: GPL-3.0+
 >> +# Copyright (C) 2025 Huawei.
 >> +#
->> +# Test block device unmap write zeroes sysfs interface with various scsi
->> +# devices.
+>> +# Test block device unmap write zeroes sysfs interface with device-mapper
+>> +# stacked devices.
 >> +
->> +. tests/scsi/rc
+>> +. tests/dm/rc
 >> +. common/scsi_debug
 >> +
->> +DESCRIPTION="test unmap write zeroes sysfs interface with scsi devices"
+>> +DESCRIPTION="test unmap write zeroes sysfs interface with dm devices"
 >> +QUICK=1
 >> +
 >> +requires() {
@@ -144,25 +172,16 @@ On 2025/4/3 15:26, Shinichiro Kawasaki wrote:
 >> +	_require_test_dev_sysfs queue/write_zeroes_unmap
 >> +}
 > 
-> The device_requries() hook does not work for test cases which implement test().
-> It is rather dirty, but I think we need to delay the check for
-> write_zeroes_unmap sysfs attribute availability until test() gets called.
-> See below for my idea.
+> Same comment as the 1st patch: device_requries() does not work here.
 > 
-
-Indeed, I completely missed that.
-
 >> +
->> +test() {
->> +	echo "Running ${TEST_NAME}"
->> +
->> +	# disable WRITE SAME with unmap
->> +	if ! _configure_scsi_debug lbprz=0; then
+>> +setup_test_device() {
+>> +	if ! _configure_scsi_debug "$@"; then
 >> +		return 1
 >> +	fi
 > 
-> I suggest to check queue/write_zeroes_unmap here. If it's not available, set
-> SKIP_REASONS and return like this (totally untested):
+> In same manner as the 1st patch, I suggest to check /queue/write_zeroes_unmap
+> here.
 > 
 > 	if [[ ! -f /sys/block/${SCSI_DEBUG_DEVICES[0]}/queue/write_zeroes_unmap ]]; then
 > 		_exit_scsi_debug
@@ -170,14 +189,73 @@ Indeed, I completely missed that.
 > 		return 1
 > 	fi
 > 
+> The caller will need to check setup_test_device() return value.
 
-Yeah, I agree with you. For now, there is no helper available for
-checking the sysfs interface of the SCSI debugging device.
+Sure.
 
-I will add a new helper setup_test_device() in this test as the
-following two patches do, and put this check into that helper.
+> 
+>> +
+>> +	local dev="/dev/${SCSI_DEBUG_DEVICES[0]}"
+>> +	local blk_sz="$(blockdev --getsz "$dev")"
+>> +	dmsetup create test --table "0 $blk_sz linear $dev 0"
+> 
+> I suggest to call _real_dev() here, and echo back the device name.
+> 
+> 	dpath=$(_real_dev /dev/mapper/test)
+> 	echo ${dpath##*/}
+> 
+> The bash parameter expansion ${xxx##*/} works in same manner as the basename
+> command. The caller can receive the device name in a local variable. This will
+> avoid a bit of code duplication, and allow to avoid _short_dev().
+> 
+
+I'm afraid this approach will not work since we may set the
+SKIP_REASONS parameter. We cannot pass the device name in this
+manner as it will overlook the SKIP_REASONS setting when the caller
+invokes $(setup_test_device xxx), this function runs in a subshell.
+
+If you don't like _short_dev(), I think we can pass dname through a
+global variable, something like below:
+
+setup_test_device() {
+	...
+	dpath=$(_real_dev /dev/mapper/test)
+	dname=${dpath##*/}
+}
+
+if ! setup_test_device lbprz=0; then
+	return 1
+fi
+umap="$(< "/sys/block/${dname}/queue/write_zeroes_unmap")"
+
+What do you think?
 
 Thanks,
 Yi.
+
+>> +}
+>> +
+>> +cleanup_test_device() {
+>> +	dmsetup remove test
+>> +	_exit_scsi_debug
+>> +}
+>> +
+>> +test() {
+>> +	echo "Running ${TEST_NAME}"
+>> +
+>> +	# disable WRITE SAME with unmap
+>> +	setup_test_device lbprz=0
+>> +	umap="$(cat "/sys/block/$(_short_dev /dev/mapper/test)/queue/write_zeroes_unmap")"
+> 
+> I suggest to modify the two lines above as follows, to match with the other
+> suggested changes:
+> 
+> 	local dname umap
+> 	if ! dname=$(setup_test_device lbprz=0); then
+> 		return 1
+> 	fi
+> 	umap="$(< "/sys/block/${dname}/queue/write_zeroes_unmap")"
+> 
+> (Please note that the suggested changes are untested)
 
 
