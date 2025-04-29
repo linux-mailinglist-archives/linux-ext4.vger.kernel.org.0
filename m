@@ -1,206 +1,233 @@
-Return-Path: <linux-ext4+bounces-7532-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7533-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AB5FAA0694
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 11:05:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1CBAA0767
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 11:34:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BE01188733B
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 09:04:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C508B3BBFEC
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 09:32:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A46B229E075;
-	Tue, 29 Apr 2025 09:03:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321152BE0E2;
+	Tue, 29 Apr 2025 09:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DQv6tmsF"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BS8TXisa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qork3uvg";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xvu3U+V7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vL0J2oIh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D078A70800;
-	Tue, 29 Apr 2025 09:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3DCB2BD59D
+	for <linux-ext4@vger.kernel.org>; Tue, 29 Apr 2025 09:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745917409; cv=none; b=JH2pCay0k7GnR+F9HQmArskbd9pbC1PayL/SAodP5/5CtxNqFUFfoIah3q1tmCZn/YdgR9OiX92AeuBOu457vgTpuqjQ48kpkCulCiLU2HdqJXdTeWdmXM2TahW1ZxNQJL/8kNnLkwcuOGoHuZ4Ug8gGnL1Dj0pGzistIXY8O4k=
+	t=1745919173; cv=none; b=pZQq1nfmUtQj219mpQHQKKqrCpwR/1CNxCU8QOgVkMBA7ohKdoe779emDQtV8pWcN+ZKQGqqW6t031X+/QQlhH7CGNLprYl/PoZlZ8vVk94yKNBFGjLfgYk6ECJM37xrzupCDh615aLk2Hjztd0X01SNbw43rD1HaLObXlR5vWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745917409; c=relaxed/simple;
-	bh=YfwOl/Apt0Ww0l0wBUxiUguq34+bBlhf53vHcub4MYI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SK8oGzAlxT3H9Gr1yZ9Q3KD7zR8/66YJkyVS6uARwOwpTwxJK42SHwss5TTzUHogcfHmFej4zdqu57q28qx6MAT0JuhRBbDDj4VlgrOKTy647bjucXS+1TGH/4u2pepX+1KUiABmC6yOM6FnYSwpNxicHjz/Ba6ABeSxgPkivcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DQv6tmsF; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-736c062b1f5so4829948b3a.0;
-        Tue, 29 Apr 2025 02:03:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745917407; x=1746522207; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ms755xbKCpd+/sKco8M1N+WIlI7nHIfhLDNPYdncmRI=;
-        b=DQv6tmsFNe5F1dcTwLucAK63mlstmO+gCrDcyZe+2k7Kd3NAD0dCCW0nlZw5IwtxUl
-         ceVsErjp4O0BRcvTTdZ/7W8rLUuOfVCEJ6drAsqjzvi6eZVWRaFlcSAqQnwSBG5ukzAx
-         n6ltagkoSUeRC+Ai8vGHlZgoTcGhpl8Jb56IGp/IQ2vlBJeQV4+sgY/Udhe2R8uwBmJl
-         H0y2ZNuKmwycOQQWSccG72O+QoBCv3rrfrW0N2oLT3WfL7jNpSorTu2IZOuotdF+76Ub
-         FmOL4wyS8bVBiEtp3rgr8AvdCdDjPfyVmGPHXr9+7wK1W9bpKOXpsueuPAMYl9b2TNoy
-         5iQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745917407; x=1746522207;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ms755xbKCpd+/sKco8M1N+WIlI7nHIfhLDNPYdncmRI=;
-        b=ATy5eBro4L6FvaIWiupgD90lCGb2V74/+DUG2gsbE9QJAYHARPmVoQ6fSc2eQJ05Af
-         eNMPUyII9GtrvjU7RMLswaAgCeiP/cH3GjVW4408258orAqPYbGkiIOWfBM+EfIRAOvv
-         2aOS/I7DTSFIrx3amrwo5eztOW5foFWJ3bVgJg9tlH3b8aT6F5VJUMHV2aqkTF3GLRN+
-         IKTe9cOw2hiwdt2ALO3pc1+QN37fIodhMlmwx36K1DIS+OPcycrebc6ikzK9qn3ychhJ
-         f7O5ReIqs1twGmr5KFnR4lqWP59Gwh4DOrZStAvSwU3u3/EALFlklKR0QjyzWqVceBI7
-         zMuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUS4LW6nU2TQv+QPGYAecXx/AHbkSy8GTBZsMwryCPEUFb0a31ZPbSOnaYC/1+pNmnjDnH83W4M@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy19YOey6cIdtF0vW9XyPWe0oMmRCefxRRul8f9JSSii+DEUP4K
-	kbDxkUvBKYsEmSdZlcmIckvz0ex2AxYkyduDOhTRnl2mcor6dhgloBlHYg==
-X-Gm-Gg: ASbGnctao720C75jUVKgXCExbJzjhkYv3Ona7Qq18ImPdf2Ns6RXBVFQkWw4847ycgs
-	MxQsBFP5aQWcXQRy8w3CsPsCVJ7PF1DZldpIbp1dnq9D8jdEsSPbb1oBd7ZzHUm62JbVbYRZ1lt
-	l4qt8Eg8a0v3gHeVkpKtDwFhQIsS6u6CuutR9WAAEvNI1Zn74ENbBqa8n5T5ot7qFF+lYdOKIA4
-	7gp56BO8Oy3raFcNigiUf29Rvfnicqvx+LtqD3adkITcP4slgexI8X5vQLUkQ9tvFwVCVvtQDS+
-	PgB8Xyqbq8gghdwdt7K8zzVC+UNSmt6UtayMN1DFsQdl+brEEFHmgRfXYkoQ5bvnFnFUK1QAcMe
-	Pzh8MEZnzBxQLYkyTeQ==
-X-Google-Smtp-Source: AGHT+IFNhGWCCwA/n8JbnkxCS7usv0RPKofyAnayoBVShQQYckuI75xFzCWshG0du4d7/MIDIvpzaw==
-X-Received: by 2002:a05:6a20:7f87:b0:1f5:8072:d7f3 with SMTP id adf61e73a8af0-2093e724297mr3927963637.30.1745917406656;
-        Tue, 29 Apr 2025 02:03:26 -0700 (PDT)
-Received: from li-5d80d4cc-2782-11b2-a85c-bed59fe4c9e5.ibm.com ([49.205.34.162])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73e25acaba0sm9341237b3a.169.2025.04.29.02.03.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Apr 2025 02:03:26 -0700 (PDT)
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-To: linux-xfs@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org,
-	fstests@vger.kernel.org,
-	ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com,
-	djwong@kernel.org,
-	zlang@kernel.org,
-	david@fromorbit.com,
-	hch@infradead.org,
-	nirjhar.roy.lists@gmail.com
-Subject: [PATCH v2 1/1] xfs: Fail remount with noattr2 on a v5 with v4 enabled
-Date: Tue, 29 Apr 2025 14:32:08 +0530
-Message-ID: <94a5d92139aef3a42929325bc61584437957190e.1745916682.git.nirjhar.roy.lists@gmail.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <cover.1745916682.git.nirjhar.roy.lists@gmail.com>
-References: <cover.1745916682.git.nirjhar.roy.lists@gmail.com>
+	s=arc-20240116; t=1745919173; c=relaxed/simple;
+	bh=6fSEk0nLasi2XFVqdsw5B9ozTlL2MMdrAJ1hOnwswUI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YroJ2wqc25fWdRebZpPIqrTPLcrJeLN0VN5KIZdq5EtYhlM7UmJNFu/ujkoH0n/13stxoclTknoQJ9Mg07xDgAb1xJqI/0KqF+22mGvUE1C30FhHvwXHAmD8KnTHE+htt/wcHQ+yGaK62u8JDW7BBrdiy86QzvdLDdOpcSx0ipg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BS8TXisa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qork3uvg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xvu3U+V7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vL0J2oIh; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E919B1F7A5;
+	Tue, 29 Apr 2025 09:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745919170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=axQ6VDg/2Q3mj72ydC4+gODgLwSF9HxyukFyq6pOaPA=;
+	b=BS8TXisaeb9OFwqumRCpQEgoHRlSuPMpoZZByPZfoZNJ3XjhwLVTHDmRkiHquEEV9GhkiK
+	xkuzfxO77dcbsYYHXupLqsN3qlJAHDW6GYdrMl3PIP33rdRmIzl/NZKVctk4g0R5OthTK/
+	3iJFuun1byFkHhGnQm7xFXrNEgYBhxc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745919170;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=axQ6VDg/2Q3mj72ydC4+gODgLwSF9HxyukFyq6pOaPA=;
+	b=qork3uvg4Ll56BM/EIU7uCygstkmZqKY0UYoyMsFetKzIH+2riMJRQOvBkXSTNU+pxUEoh
+	886R+FXIXCvTpvDg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745919169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=axQ6VDg/2Q3mj72ydC4+gODgLwSF9HxyukFyq6pOaPA=;
+	b=xvu3U+V7t7tcS3Xma8xdhnk9Jf5U+Q67C+8Ui7JknY9WC/gkYr9cjczOeMd0GAdEpoacIR
+	fpgyv6GAA0giuhG5WlXaNTQLqeqNZAB17ZVzF1oJPJy3sQfY8fj1TPMR2NmsDPB9kwfWbh
+	2dkPwsn6BPHVzJYMn4O1Sbrco8yjXCk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745919169;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=axQ6VDg/2Q3mj72ydC4+gODgLwSF9HxyukFyq6pOaPA=;
+	b=vL0J2oIh7+CY/g4Y1cpG4MzrRLxLs3tqR5I8zIxDl/T0g17n4eoLfLYrpbMGGXV0ZJ8fH/
+	Lb5ysxHWfXo4WKCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D8AA21340C;
+	Tue, 29 Apr 2025 09:32:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id bErgNMGcEGisGwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 29 Apr 2025 09:32:49 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 7D67DA0952; Tue, 29 Apr 2025 11:32:41 +0200 (CEST)
+Date: Tue, 29 Apr 2025 11:32:41 +0200
+From: Jan Kara <jack@suse.cz>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, dave@stgolabs.net, brauner@kernel.org, 
+	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	riel@surriel.com, willy@infradead.org, hannes@cmpxchg.org, oliver.sang@intel.com, 
+	david@redhat.com, axboe@kernel.dk, hare@suse.de, david@fromorbit.com, 
+	djwong@kernel.org, ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-mm@kvack.org, gost.dev@samsung.com, p.raghav@samsung.com, 
+	da.gomez@samsung.com, syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
+ migration
+Message-ID: <s7w2zocbvucjmgrio2pzfqnur2jr6ra7vxm7zklqk4v2igc23q@k7nelbt7moim>
+References: <20250410014945.2140781-1-mcgrof@kernel.org>
+ <20250410014945.2140781-2-mcgrof@kernel.org>
+ <dpn6pb7hwpmajoh5k5zla6x7fsmh4rlttstj3hkuvunp6tok3j@ikz2fxpikfv4>
+ <Z_6Gwl6nowYnsO3w@bombadil.infradead.org>
+ <mxmnbr6gni2lupljf7pzkhs6f3hynr2lq2nshbgcmzg77jduwk@wn76alaoxjts>
+ <Z__hthNd2nj9QjrM@bombadil.infradead.org>
+ <jwciumjkfwwjeoklsi6ubcspcjswkz5s5gtttzpjqft6dtb7sp@c4ae6y5pix5w>
+ <aAlN4-pMHoc-PZ1G@bombadil.infradead.org>
+ <aAwSCSG1c-t8ATr3@bombadil.infradead.org>
+ <aBAKhPBAdGVrII2Y@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aBAKhPBAdGVrII2Y@bombadil.infradead.org>
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[f3c6fda1297c748a7076];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,stgolabs.net,kernel.org,mit.edu,dilger.ca,vger.kernel.org,surriel.com,infradead.org,cmpxchg.org,intel.com,redhat.com,kernel.dk,suse.de,fromorbit.com,gmail.com,kvack.org,samsung.com,syzkaller.appspotmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Bug: When we compile the kernel with CONFIG_XFS_SUPPORT_V4=y,
-remount with "-o remount,noattr2" on a v5 XFS does not
-fail explicitly.
+On Mon 28-04-25 16:08:52, Luis Chamberlain wrote:
+> On Fri, Apr 25, 2025 at 03:51:55PM -0700, Luis Chamberlain wrote:
+> > On Wed, Apr 23, 2025 at 01:30:29PM -0700, Luis Chamberlain wrote:
+> > > On Wed, Apr 23, 2025 at 07:09:28PM +0200, Jan Kara wrote:
+> > > > On Wed 16-04-25 09:58:30, Luis Chamberlain wrote:
+> > > > > On Tue, Apr 15, 2025 at 06:28:55PM +0200, Jan Kara wrote:
+> > > > > > > So I tried:
+> > > > > > > 
+> > > > > > > root@e1-ext4-2k /var/lib/xfstests # fsck /dev/loop5 -y 2>&1 > log
+> > > > > > > e2fsck 1.47.2 (1-Jan-2025)
+> > > > > > > root@e1-ext4-2k /var/lib/xfstests # wc -l log
+> > > > > > > 16411 log
+> > > > > > 
+> > > > > > Can you share the log please?
+> > > > > 
+> > > > > Sure, here you go:
+> > > > > 
+> > > > > https://github.com/linux-kdevops/20250416-ext4-jbd2-bh-migrate-corruption
+> > > > > 
+> > > > > The last trace-0004.txt is a fresh one with Davidlohr's patches
+> > > > > applied. It has trace-0004-fsck.txt.
+> > > > 
+> > > > Thanks for the data! I was staring at them for some time and at this point
+> > > > I'm leaning towards a conclusion that this is actually not a case of
+> > > > metadata corruption but rather a bug in ext4 transaction credit computation
+> > > > that is completely independent of page migration.
+> > > > 
+> > > > Based on the e2fsck log you've provided the only damage in the filesystem
+> > > > is from the aborted transaction handle in the middle of extent tree growth.
+> > > > So nothing points to a lost metadata write or anything like that. And the
+> > > > credit reservation for page writeback is indeed somewhat racy - we reserve
+> > > > number of transaction credits based on current tree depth. However by the
+> > > > time we get to ext4_ext_map_blocks() another process could have modified
+> > > > the extent tree so we may need to modify more blocks than we originally
+> > > > expected and reserved credits for.
+> > > > 
+> > > > Can you give attached patch a try please?
+> > > > 
+> > > > 								Honza
+> > > > -- 
+> > > > Jan Kara <jack@suse.com>
+> > > > SUSE Labs, CR
+> > > 
+> > > > From 4c53fb9f4b9b3eb4a579f69b7adcb6524d55629c Mon Sep 17 00:00:00 2001
+> > > > From: Jan Kara <jack@suse.cz>
+> > > > Date: Wed, 23 Apr 2025 18:10:54 +0200
+> > > > Subject: [PATCH] ext4: Fix calculation of credits for extent tree modification
+> > > > 
+> > > > Luis and David are reporting that after running generic/750 test for 90+
+> > > > hours on 2k ext4 filesystem, they are able to trigger a warning in
+> > > > jbd2_journal_dirty_metadata() complaining that there are not enough
+> > > > credits in the running transaction started in ext4_do_writepages().
+> > > > 
+> > > > Indeed the code in ext4_do_writepages() is racy and the extent tree can
+> > > > change between the time we compute credits necessary for extent tree
+> > > > computation and the time we actually modify the extent tree. Thus it may
+> > > > happen that the number of credits actually needed is higher. Modify
+> > > > ext4_ext_index_trans_blocks() to count with the worst case of maximum
+> > > > tree depth.
+> > > > 
+> > > > Link: https://lore.kernel.org/all/20250415013641.f2ppw6wov4kn4wq2@offworld
+> > > > Reported-by: Davidlohr Bueso <dave@stgolabs.net>
+> > > > Reported-by: Luis Chamberlain <mcgrof@kernel.org>
+> > > > Signed-off-by: Jan Kara <jack@suse.cz>
+> > > 
+> > > I kicked off tests! Let's see after ~ 90 hours!
+> > 
+> > Tested-by: kdevops@lists.linux.dev
+> > 
+> > I have run the test over 3 separate guests and each one has tested this
+> > over 48 hours each. There is no ext4 fs corruption reported, all is
+> > good, so I do believe thix fixes the issue. One of the guests was on
+> > Linus't tree which didn't yet have Davidlorh's fixes for folio migration.
+> > And so I believe this patch should have a stable tag fix so stable gets it.
+> 
+> Jan, my testing has passed 120 hours now on multiple guests. This is
+> certainly a fixed bug with your patch.
 
-Reproduction:
-mkfs.xfs -f /dev/loop0
-mount /dev/loop0 /mnt/scratch
-mount -o remount,noattr2 /dev/loop0 /mnt/scratch
+Thanks for testing! I'll do an official submission of the fix.
 
-However, with CONFIG_XFS_SUPPORT_V4=n, the remount
-correctly fails explicitly. This is because the way the
-following 2 functions are defined:
-
-static inline bool xfs_has_attr2 (struct xfs_mount *mp)
-{
-	return !IS_ENABLED(CONFIG_XFS_SUPPORT_V4) ||
-		(mp->m_features & XFS_FEAT_ATTR2);
-}
-static inline bool xfs_has_noattr2 (const struct xfs_mount *mp)
-{
-	return mp->m_features & XFS_FEAT_NOATTR2;
-}
-
-xfs_has_attr2() returns true when CONFIG_XFS_SUPPORT_V4=n
-and hence, the the following if condition in
-xfs_fs_validate_params() succeeds and returns -EINVAL:
-
-/*
- * We have not read the superblock at this point, so only the attr2
- * mount option can set the attr2 feature by this stage.
- */
-
-if (xfs_has_attr2(mp) && xfs_has_noattr2(mp)) {
-	xfs_warn(mp, "attr2 and noattr2 cannot both be specified.");
-	return -EINVAL;
-}
-
-With CONFIG_XFS_SUPPORT_V4=y, xfs_has_attr2() always return
-false and hence no error is returned.
-
-Fix: Check if the existing mount has crc enabled(i.e, of
-type v5 and has attr2 enabled) and the
-remount has noattr2, if yes, return -EINVAL.
-
-I have tested xfs/{189,539} in fstests with v4
-and v5 XFS with both CONFIG_XFS_SUPPORT_V4=y/n and
-they both behave as expected.
-
-This patch also fixes remount from noattr2 -> attr2 (on a v4 xfs).
-
-Related discussion in [1]
-
-[1] https://lore.kernel.org/all/Z65o6nWxT00MaUrW@dread.disaster.area/
-
-Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
----
- fs/xfs/xfs_super.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index b2dd0c0bf509..1fd45567ae00 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -2114,6 +2114,22 @@ xfs_fs_reconfigure(
- 	if (error)
- 		return error;
- 
-+	/* attr2 -> noattr2 */
-+	if (xfs_has_noattr2(new_mp)) {
-+		if (xfs_has_crc(mp)) {
-+			xfs_warn(mp, "attr2 and noattr2 cannot both be specified.");
-+			return -EINVAL;
-+		}
-+		else {
-+			mp->m_features &= ~XFS_FEAT_ATTR2;
-+			mp->m_features |= XFS_FEAT_NOATTR2;
-+		}
-+	} else if (xfs_has_attr2(new_mp)) {
-+		/* noattr2 -> attr2 */
-+		mp->m_features &= ~XFS_FEAT_NOATTR2;
-+		mp->m_features |= XFS_FEAT_ATTR2;
-+	}
-+
- 	/* inode32 -> inode64 */
- 	if (xfs_has_small_inums(mp) && !xfs_has_small_inums(new_mp)) {
- 		mp->m_features &= ~XFS_FEAT_SMALL_INUMS;
-@@ -2126,6 +2142,15 @@ xfs_fs_reconfigure(
- 		mp->m_maxagi = xfs_set_inode_alloc(mp, mp->m_sb.sb_agcount);
- 	}
- 
-+	/* Now that mp has been modified according to the remount options, we do a
-+	 * final option validation with xfs_finish_flags() just like it is done
-+	 * during mount. We cannot use xfs_finish_flags() on new_mp as it contains
-+	 * only the user given options.
-+	 */
-+	error = xfs_finish_flags(mp);
-+	if (error)
-+		return error;
-+
- 	/* ro -> rw */
- 	if (xfs_is_readonly(mp) && !(flags & SB_RDONLY)) {
- 		error = xfs_remount_rw(mp);
+								Honza
 -- 
-2.43.5
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
