@@ -1,156 +1,126 @@
-Return-Path: <linux-ext4+bounces-7525-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7526-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E56A8A9FD87
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 01:09:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEF64AA03C4
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 08:53:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C21E16E43F
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Apr 2025 23:09:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66D901A81FAB
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 06:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054AB213255;
-	Mon, 28 Apr 2025 23:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0602750FE;
+	Tue, 29 Apr 2025 06:53:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iAo2m5kD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="naJv4z5E"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942A51FDE33;
-	Mon, 28 Apr 2025 23:08:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B751E515;
+	Tue, 29 Apr 2025 06:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745881734; cv=none; b=p0ujX1j8tEtMaLnh1HpiqE/OU4nBiMB+4B8sMexUDXHM/4o4VI39OVHb68MOdP/Nld/zdpMX4ROzzmjeDsv4/0vCD8iXcxM5S7hoQV61zVZz+Stxg8xq1DHFYl9KhI8DpVlz6BnQYvsEi2V7QLMZDAppL8Oq4Miced57aHrLbJw=
+	t=1745909597; cv=none; b=e5wl9KfFtl9LNr1bSUGHzYte6o4Nnr3QwDIe53eoMO+Bu0I6M9/h3u9tvtulCCRP9F1gjC1xdo12YKcDs0RVbuH3C7m12//5VVMNofJwkc0Ifx/iJTNmJ4xl9iMeufCN3o5bfmcbIQDDVp6Hd0IP8RlEuVsDUtQr6F/kGtYY6po=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745881734; c=relaxed/simple;
-	bh=vqxx5ITJdSbi8gq6eMAJPI6323cJXEPOZV0uX68kTH8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HMDvgKKDVLWdgod4YnuUx/8UoK54+Y/pJoFu+avEyvl8wvPROmFRSJ/lqJF2e8WAIyUIEcvMinmC874lyQWuN7gB+Ly9f02YZX1QLi8a3NnI4lS6cRNQUTRjQpAv+PmIXUfnvBHPe2UY0OzLwwLWEVPkw4mwkCMPJQLsiUepJ5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iAo2m5kD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 758BEC4CEEA;
-	Mon, 28 Apr 2025 23:08:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745881734;
-	bh=vqxx5ITJdSbi8gq6eMAJPI6323cJXEPOZV0uX68kTH8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iAo2m5kDb/pyyuC1rocXxoL0N1J5litPpu4IU4vvH9RlaSurRgMiRuC0StJYwJ6ZX
-	 Q1I0GxiJP02d1MFtoUl9pIlXptXQyJ2X9XqF6jAH++8FsnuYu4V36TsMG3GG5HMK3k
-	 n91FsddH55UK4FiM12V+6iRlQTSUXLjGuCw4MVwqScW6T0TSxTl1vsJ9MWlHNasAUJ
-	 q/Jaw/mD4HJtSHOu5rpx/hNziVnnZCnj6+RcGXaNcueNqwzfTTCKL32m2Doe0t5fnV
-	 AUhQ6ESgl/O4EI59CoEIXtx/PIZ7OnE590VpI1x6QJ1rLGuowPdRY28JebcVDePVNg
-	 0xMYFw45xkBpw==
-Date: Mon, 28 Apr 2025 16:08:52 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: dave@stgolabs.net, brauner@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	riel@surriel.com, willy@infradead.org, hannes@cmpxchg.org,
-	oliver.sang@intel.com, david@redhat.com, axboe@kernel.dk,
-	hare@suse.de, david@fromorbit.com, djwong@kernel.org,
-	ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-mm@kvack.org,
-	gost.dev@samsung.com, p.raghav@samsung.com, da.gomez@samsung.com,
-	syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
- migration
-Message-ID: <aBAKhPBAdGVrII2Y@bombadil.infradead.org>
-References: <20250410014945.2140781-1-mcgrof@kernel.org>
- <20250410014945.2140781-2-mcgrof@kernel.org>
- <dpn6pb7hwpmajoh5k5zla6x7fsmh4rlttstj3hkuvunp6tok3j@ikz2fxpikfv4>
- <Z_6Gwl6nowYnsO3w@bombadil.infradead.org>
- <mxmnbr6gni2lupljf7pzkhs6f3hynr2lq2nshbgcmzg77jduwk@wn76alaoxjts>
- <Z__hthNd2nj9QjrM@bombadil.infradead.org>
- <jwciumjkfwwjeoklsi6ubcspcjswkz5s5gtttzpjqft6dtb7sp@c4ae6y5pix5w>
- <aAlN4-pMHoc-PZ1G@bombadil.infradead.org>
- <aAwSCSG1c-t8ATr3@bombadil.infradead.org>
+	s=arc-20240116; t=1745909597; c=relaxed/simple;
+	bh=H0DxWQxT/vt6vtTmMMkLS4orhiBpJnW0Wwz/Aaj2jJY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L/T0UsetEPY9ZXtVSi07awx5YmX2HxnH7mqA6pLhogOZEmkG3X2dsyKDA5GG+E8jRjJkLzA63+T2qO7qOOTh5JbshFc1x2suwy25d0p4RZLTx7+SapMH1qOvdQ2FUlb2CyzbiGRQsJHrVuMvBHKX8HfA0VuAQ0BHN+Zrin2vKRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=naJv4z5E; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-224341bbc1dso60265605ad.3;
+        Mon, 28 Apr 2025 23:53:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745909594; x=1746514394; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PWytkNwNq3JbjY0CzfguN3i2miVxpmHE2yuThu/jf84=;
+        b=naJv4z5ECL4CKFfzuDp08xaOlwcz5LzS6h+m/tR5M8UY1nAJnGgIquVm7G1n4R+8yH
+         JCIlR+nGjGel31zCwNQ/jfeoJBFiTwayoeQpVPGvL7H9C2uEcXqaXfPZYIRsPdJ3KW6M
+         rZKl4RepNpSzw3mneCgswpK4qQxlBqXpiBBotDjDyqBUPCR1fo3Guli7luEm1NRxG2ii
+         E+0L1tfSh0ps0//2mQc0Mq5BlygLh5E4IZUVBGNAaBuhQFml8fhUYqec7CEMFsMbn5Gt
+         rBdNzctxGpTKiWBwlGjyy4Zg6/DzA6B6IXr09NE/CWazJMMjy6BiSH87l4n6f/JmePwr
+         6f1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745909594; x=1746514394;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PWytkNwNq3JbjY0CzfguN3i2miVxpmHE2yuThu/jf84=;
+        b=tO2UgGssjnDdfmfC/RsnvBd6WR1lr4EhZssuHrQON80lNTUxc9gctRXJ6r1gHnn4Wu
+         /a/vz+VddUParSP1WsMoAgrzLwAqck7tUa7zNeA97b6x/hgV/R6Snn4cqnXK2Ketax44
+         QMxkSG8M+DDM4pf+fqH0cdQeLMZu8hGEPVuxSXgcTYQx6wiD3325LtpuaPtdUROPHMtz
+         DOGXMBNZTPkAbMVStgxN2nQS+kphwrVn3twxOh5gzrJcCXsG6q5LZFS0YjeBbLcVRe52
+         P1x8Tl10Dlzjmuvd0ONoHeiQIWZwvoSnHtKuZ+JIMCXnkLHB6yF8uoj3oGPW5hoT9tMP
+         nvZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWC7H7dDMvjYP9/yJbF+xYkmWbuTsWEE+BlZom65WfK7dZuojTN5+LpbTHcMY6Hm2OOW7DUagugyVM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzcfEap83+B+kl8xjVqG7zscqC0eNEJWjxSEmYWqCL1JwvJfvKM
+	5BPku/+A/b8iWG/BcBBhAyX3LddKG1VksEwelpdveDsNVAiaqbaSKW4jJw==
+X-Gm-Gg: ASbGnctMMYquOtD5NnjekbW2uT84mVq485vO9CKyz5rop0/7emqzST2FcdWsGgmK8qG
+	iiUycxGF+dFwEEMoo/WHFW3c6Y7PmCDz20obOVOZ1SbGUD+x3F9gEnnBYmQ/PoLbQEhELv86Ohm
+	RBZj0HFA2Os0rMYGJpujPwTlVhQQ4rBr6dyTqAAa7fe5PV9oI7NWjz41cb9g8OaoCbhIgB3vkTr
+	aL3H1eGb+oP4JsEQb1J/Jcmg3S6//WUK7Dl5jhntrRB4pUVKAcP75Tt+B1IyS5h0okmQLxvr8q9
+	SbDmwkiPhOaK2qplPWCzeQ/fRpy/bwiL1a2MqERlgGVo
+X-Google-Smtp-Source: AGHT+IE5/Q1OZ08KMNBNop+c4JGIRcQl4Da8KTZnPr6fDqtmFjDF67AMcykFCJvEcqdubEj37lslfA==
+X-Received: by 2002:a17:902:d4c3:b0:220:e156:63e0 with SMTP id d9443c01a7336-22de7009e81mr24101555ad.8.1745909593699;
+        Mon, 28 Apr 2025 23:53:13 -0700 (PDT)
+Received: from citest-1.. ([49.205.34.162])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ddf3c9d1dsm24149805ad.244.2025.04.28.23.53.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Apr 2025 23:53:13 -0700 (PDT)
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+To: fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com,
+	djwong@kernel.org,
+	zlang@kernel.org,
+	david@fromorbit.com,
+	nirjhar.roy.lists@gmail.com
+Subject: [PATCH v2 0/2] common: Move exit related functions to common/exit
+Date: Tue, 29 Apr 2025 06:52:52 +0000
+Message-Id: <cover.1745908976.git.nirjhar.roy.lists@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aAwSCSG1c-t8ATr3@bombadil.infradead.org>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 25, 2025 at 03:51:55PM -0700, Luis Chamberlain wrote:
-> On Wed, Apr 23, 2025 at 01:30:29PM -0700, Luis Chamberlain wrote:
-> > On Wed, Apr 23, 2025 at 07:09:28PM +0200, Jan Kara wrote:
-> > > On Wed 16-04-25 09:58:30, Luis Chamberlain wrote:
-> > > > On Tue, Apr 15, 2025 at 06:28:55PM +0200, Jan Kara wrote:
-> > > > > > So I tried:
-> > > > > > 
-> > > > > > root@e1-ext4-2k /var/lib/xfstests # fsck /dev/loop5 -y 2>&1 > log
-> > > > > > e2fsck 1.47.2 (1-Jan-2025)
-> > > > > > root@e1-ext4-2k /var/lib/xfstests # wc -l log
-> > > > > > 16411 log
-> > > > > 
-> > > > > Can you share the log please?
-> > > > 
-> > > > Sure, here you go:
-> > > > 
-> > > > https://github.com/linux-kdevops/20250416-ext4-jbd2-bh-migrate-corruption
-> > > > 
-> > > > The last trace-0004.txt is a fresh one with Davidlohr's patches
-> > > > applied. It has trace-0004-fsck.txt.
-> > > 
-> > > Thanks for the data! I was staring at them for some time and at this point
-> > > I'm leaning towards a conclusion that this is actually not a case of
-> > > metadata corruption but rather a bug in ext4 transaction credit computation
-> > > that is completely independent of page migration.
-> > > 
-> > > Based on the e2fsck log you've provided the only damage in the filesystem
-> > > is from the aborted transaction handle in the middle of extent tree growth.
-> > > So nothing points to a lost metadata write or anything like that. And the
-> > > credit reservation for page writeback is indeed somewhat racy - we reserve
-> > > number of transaction credits based on current tree depth. However by the
-> > > time we get to ext4_ext_map_blocks() another process could have modified
-> > > the extent tree so we may need to modify more blocks than we originally
-> > > expected and reserved credits for.
-> > > 
-> > > Can you give attached patch a try please?
-> > > 
-> > > 								Honza
-> > > -- 
-> > > Jan Kara <jack@suse.com>
-> > > SUSE Labs, CR
-> > 
-> > > From 4c53fb9f4b9b3eb4a579f69b7adcb6524d55629c Mon Sep 17 00:00:00 2001
-> > > From: Jan Kara <jack@suse.cz>
-> > > Date: Wed, 23 Apr 2025 18:10:54 +0200
-> > > Subject: [PATCH] ext4: Fix calculation of credits for extent tree modification
-> > > 
-> > > Luis and David are reporting that after running generic/750 test for 90+
-> > > hours on 2k ext4 filesystem, they are able to trigger a warning in
-> > > jbd2_journal_dirty_metadata() complaining that there are not enough
-> > > credits in the running transaction started in ext4_do_writepages().
-> > > 
-> > > Indeed the code in ext4_do_writepages() is racy and the extent tree can
-> > > change between the time we compute credits necessary for extent tree
-> > > computation and the time we actually modify the extent tree. Thus it may
-> > > happen that the number of credits actually needed is higher. Modify
-> > > ext4_ext_index_trans_blocks() to count with the worst case of maximum
-> > > tree depth.
-> > > 
-> > > Link: https://lore.kernel.org/all/20250415013641.f2ppw6wov4kn4wq2@offworld
-> > > Reported-by: Davidlohr Bueso <dave@stgolabs.net>
-> > > Reported-by: Luis Chamberlain <mcgrof@kernel.org>
-> > > Signed-off-by: Jan Kara <jack@suse.cz>
-> > 
-> > I kicked off tests! Let's see after ~ 90 hours!
-> 
-> Tested-by: kdevops@lists.linux.dev
-> 
-> I have run the test over 3 separate guests and each one has tested this
-> over 48 hours each. There is no ext4 fs corruption reported, all is
-> good, so I do believe thix fixes the issue. One of the guests was on
-> Linus't tree which didn't yet have Davidlorh's fixes for folio migration.
-> And so I believe this patch should have a stable tag fix so stable gets it.
+This patch series moves all the exit related functions to a separate file -
+common/exit. This will remove the dependency to source non-related files to use
+these exit related functions. Thanks to Dave for suggesting this[1]. The second
+patch replaces exit with _exit in check file - I missed replacing them in [2].
 
-Jan, my testing has passed 120 hours now on multiple guests. This is
-certainly a fixed bug with your patch.
+[v1] -> v2
+ - Removed redundant sourcing of common/exit from common/{btrfs,ceph,dump,ext4,populate,punch,rc,repair,xfs}. Thanks to Zorro for pointing this out.
+ - Moved the sourcing of common/exit in common/preamble from the beginning of the file to inside the function _begin_fstest()
+ - Moved the sourcing of common/exit in check script from the patch 1 to patch 2 since patch 2 uses _exit().
+ - Replaced exit() with _exit in the trap handler registration in the check script. Thanks to Zorro for pointing this out.
 
-  Luis
+[v1] https://lore.kernel.org/all/cover.1745390030.git.nirjhar.roy.lists@gmail.com/
+[1] https://lore.kernel.org/all/Z_UJ7XcpmtkPRhTr@dread.disaster.area/
+[2] https://lore.kernel.org/all/48dacdf636be19ae8bff66cc3852d27e28030613.1744181682.git.nirjhar.roy.lists@gmail.com/
+
+Nirjhar Roy (IBM) (2):
+  common: Move exit related functions to a common/exit
+  check: Replace exit with _exit in check
+
+ check           | 44 ++++++++++++++++++-------------------------
+ common/config   | 17 +----------------
+ common/exit     | 50 +++++++++++++++++++++++++++++++++++++++++++++++++
+ common/preamble |  1 +
+ common/punch    |  5 -----
+ common/rc       | 28 ---------------------------
+ 6 files changed, 70 insertions(+), 75 deletions(-)
+ create mode 100644 common/exit
+
+--
+2.34.1
+
 
