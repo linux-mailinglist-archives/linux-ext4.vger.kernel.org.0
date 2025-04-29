@@ -1,233 +1,127 @@
-Return-Path: <linux-ext4+bounces-7533-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7534-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF1CBAA0767
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 11:34:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CE5DAA0964
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 13:17:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C508B3BBFEC
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 09:32:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01E261A85030
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Apr 2025 11:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321152BE0E2;
-	Tue, 29 Apr 2025 09:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4A22BD5B0;
+	Tue, 29 Apr 2025 11:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BS8TXisa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qork3uvg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xvu3U+V7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vL0J2oIh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O/lr6bi5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3DCB2BD59D
-	for <linux-ext4@vger.kernel.org>; Tue, 29 Apr 2025 09:32:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E6A1E515;
+	Tue, 29 Apr 2025 11:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745919173; cv=none; b=pZQq1nfmUtQj219mpQHQKKqrCpwR/1CNxCU8QOgVkMBA7ohKdoe779emDQtV8pWcN+ZKQGqqW6t031X+/QQlhH7CGNLprYl/PoZlZ8vVk94yKNBFGjLfgYk6ECJM37xrzupCDh615aLk2Hjztd0X01SNbw43rD1HaLObXlR5vWA=
+	t=1745925447; cv=none; b=ls5tVzxi/7eOJ1Enz3B69kIMxAfri2aAik3LUctnk5bTYhL6XMdV6Nc48DAHAdY3bwKlKKA4phf9ugA2B9cmtLJlORBBWxBQ6CCylUVhtSxQfYCt9nVdN1pXTsxjLf1hlJfLfr6MzKMT65lZrcPBw8T7AqjuLt+ZKxnhHAcmzO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745919173; c=relaxed/simple;
-	bh=6fSEk0nLasi2XFVqdsw5B9ozTlL2MMdrAJ1hOnwswUI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YroJ2wqc25fWdRebZpPIqrTPLcrJeLN0VN5KIZdq5EtYhlM7UmJNFu/ujkoH0n/13stxoclTknoQJ9Mg07xDgAb1xJqI/0KqF+22mGvUE1C30FhHvwXHAmD8KnTHE+htt/wcHQ+yGaK62u8JDW7BBrdiy86QzvdLDdOpcSx0ipg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BS8TXisa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qork3uvg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xvu3U+V7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vL0J2oIh; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E919B1F7A5;
-	Tue, 29 Apr 2025 09:32:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1745919170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=axQ6VDg/2Q3mj72ydC4+gODgLwSF9HxyukFyq6pOaPA=;
-	b=BS8TXisaeb9OFwqumRCpQEgoHRlSuPMpoZZByPZfoZNJ3XjhwLVTHDmRkiHquEEV9GhkiK
-	xkuzfxO77dcbsYYHXupLqsN3qlJAHDW6GYdrMl3PIP33rdRmIzl/NZKVctk4g0R5OthTK/
-	3iJFuun1byFkHhGnQm7xFXrNEgYBhxc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1745919170;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=axQ6VDg/2Q3mj72ydC4+gODgLwSF9HxyukFyq6pOaPA=;
-	b=qork3uvg4Ll56BM/EIU7uCygstkmZqKY0UYoyMsFetKzIH+2riMJRQOvBkXSTNU+pxUEoh
-	886R+FXIXCvTpvDg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1745919169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=axQ6VDg/2Q3mj72ydC4+gODgLwSF9HxyukFyq6pOaPA=;
-	b=xvu3U+V7t7tcS3Xma8xdhnk9Jf5U+Q67C+8Ui7JknY9WC/gkYr9cjczOeMd0GAdEpoacIR
-	fpgyv6GAA0giuhG5WlXaNTQLqeqNZAB17ZVzF1oJPJy3sQfY8fj1TPMR2NmsDPB9kwfWbh
-	2dkPwsn6BPHVzJYMn4O1Sbrco8yjXCk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1745919169;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=axQ6VDg/2Q3mj72ydC4+gODgLwSF9HxyukFyq6pOaPA=;
-	b=vL0J2oIh7+CY/g4Y1cpG4MzrRLxLs3tqR5I8zIxDl/T0g17n4eoLfLYrpbMGGXV0ZJ8fH/
-	Lb5ysxHWfXo4WKCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D8AA21340C;
-	Tue, 29 Apr 2025 09:32:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bErgNMGcEGisGwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 29 Apr 2025 09:32:49 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7D67DA0952; Tue, 29 Apr 2025 11:32:41 +0200 (CEST)
-Date: Tue, 29 Apr 2025 11:32:41 +0200
-From: Jan Kara <jack@suse.cz>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, dave@stgolabs.net, brauner@kernel.org, 
-	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	riel@surriel.com, willy@infradead.org, hannes@cmpxchg.org, oliver.sang@intel.com, 
-	david@redhat.com, axboe@kernel.dk, hare@suse.de, david@fromorbit.com, 
-	djwong@kernel.org, ritesh.list@gmail.com, linux-fsdevel@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-mm@kvack.org, gost.dev@samsung.com, p.raghav@samsung.com, 
-	da.gomez@samsung.com, syzbot+f3c6fda1297c748a7076@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/8] migrate: fix skipping metadata buffer heads on
- migration
-Message-ID: <s7w2zocbvucjmgrio2pzfqnur2jr6ra7vxm7zklqk4v2igc23q@k7nelbt7moim>
-References: <20250410014945.2140781-1-mcgrof@kernel.org>
- <20250410014945.2140781-2-mcgrof@kernel.org>
- <dpn6pb7hwpmajoh5k5zla6x7fsmh4rlttstj3hkuvunp6tok3j@ikz2fxpikfv4>
- <Z_6Gwl6nowYnsO3w@bombadil.infradead.org>
- <mxmnbr6gni2lupljf7pzkhs6f3hynr2lq2nshbgcmzg77jduwk@wn76alaoxjts>
- <Z__hthNd2nj9QjrM@bombadil.infradead.org>
- <jwciumjkfwwjeoklsi6ubcspcjswkz5s5gtttzpjqft6dtb7sp@c4ae6y5pix5w>
- <aAlN4-pMHoc-PZ1G@bombadil.infradead.org>
- <aAwSCSG1c-t8ATr3@bombadil.infradead.org>
- <aBAKhPBAdGVrII2Y@bombadil.infradead.org>
+	s=arc-20240116; t=1745925447; c=relaxed/simple;
+	bh=wS+kZb5XdPpO92yeSr7T7CAW1gR9Y4RtpOS4qgkAl0I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fWHlZkdtPHBxjJ7WEVFoUVwSsVJYwr+NB0ByYBtDOL24VM4S/atVML2P8O2e4e35X9UMmV9VEr/k7m6YGjKTIaQpsy9AMWYI9Dvk0A/oQAReVv9wsJe4Py+AskuzA/ZJv9Zzfco/Qt6i7h6cCa1NV1TkX6HMf/tDFk7SccOWiOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O/lr6bi5; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-22423adf751so58066275ad.2;
+        Tue, 29 Apr 2025 04:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745925445; x=1746530245; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wDj+YHGSgEin/gvHkYs0MK30VoXW5locsP1Inn6bkdU=;
+        b=O/lr6bi5Mh7KaWBrKGgZPA3KLBy3qnUpARAZIFOldK0FX7b2YyaiEsCzln+UnxJVkQ
+         3yUlQNMNWJsEit1xTMy0rYFcb3b1Vwpb/cK6+FBoncmmTHJ3wO910a8QUJxKHOAtNzBM
+         PyIAa31J8s2pr9/CU+Up/vPoQPmSs/S/CE/a4OZE+3kLsKroAKKQpV5JTJlDMkMZFSfr
+         qkLXZ3ETL0qLvsmsJ6wMANjoMq44dCBLzK7pDrkwtQbHHuR3VoyDtRMd8FkFLpH1krtJ
+         2fW57ybidbSbdsaBMOZX9YC16+ZXdTHxnUtm/ODOnh8WT6ReEqagsuukMzPFPe+ncMmy
+         auGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745925445; x=1746530245;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wDj+YHGSgEin/gvHkYs0MK30VoXW5locsP1Inn6bkdU=;
+        b=hl+8KnlqV9NhQ3DK7JWhYF8ViGj2+Ev1QAlwsJmMlwqBkLKwh83tQ5ngYwci/kbHyn
+         YSoqCkUz5I9CmfIqrgF1fNslV3sqgM4y3F6Gt5PeMz/b6JbeW8dgYD9+Vb0CmP+IrZl4
+         smCmnSHo2hlpxJ9c7OhLq6+vqKzcbbWf8OANOcRnZ80OFmcCJVytcQieZTppiWAS/q7s
+         MzH+lO/6cFVgjzn7lDhpMBnK54hIaXmuXB0JYejZ/3saxnUC1RMu/0eT6MlvYiJVmZvh
+         sGugOxNzlK0Zt+Jl5taGYhRMKe9fD1Kolm0NcegAMJfG6pR7TRaF1Ba7iyyCQI61n5Hu
+         ZWCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXo4w3qUZHENrgvcEs0/2VZRBoSBvvHueNKaq6r1woaI2Jc08s/h6TrgLILkxtstxG9xAur2YYMYQus8PI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxCeSIFLgAHFdC3XKxsKU5cft9zH1jm3PU9g4WA5UDgFaiAQ1Wa
+	LlA/jsdn1Gk+cKILntH9/8jHDTErTFlB0dlpgNxCIjiOL34FhLyw
+X-Gm-Gg: ASbGncvcUG81FhF09wd5TpDR6WhNAXEqX3kYuhoTa8xD3qTY/fJ0MN46LC5Sxue4M8x
+	/CZ55O384bPpOTupjyLywlI5rXnQo+zN7IZSqBEqyoDziQ+mMYWo07kDiGMaPB3lsa3rbEiOc8Q
+	KBEg85gATw/K7vsDd0N8ZcHLMTokkaH2WlQQ3VUCMskq7Qs7CRuQN+eKZhDIkxzhYxDSnJ5qvhX
+	J5gbch/B80CwNt+m7Il2BSwtGpxyD4WI5fas6YlP+lux9JbyUtM+GoRGIcfov8zb6MjUKB4UXML
+	4gnlzCl4pBxuqqQs3JCMQOPMVGNcZrta5CwEzmjrzIhTtwanCssWeMDPnakm6A==
+X-Google-Smtp-Source: AGHT+IEmHFakLf+kh+tFQbmBSRHtSeSUIBpP4jjV3qVkqeSJv0J3lZp61vywhSvnlkL2IxlBEuUdFA==
+X-Received: by 2002:a17:903:1948:b0:22c:3609:97ed with SMTP id d9443c01a7336-22de6eb552bmr32869095ad.30.1745925445591;
+        Tue, 29 Apr 2025 04:17:25 -0700 (PDT)
+Received: from VM-16-38-fedora.. ([43.135.149.86])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db5104cd5sm99581105ad.199.2025.04.29.04.17.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Apr 2025 04:17:25 -0700 (PDT)
+From: alexjlzheng@gmail.com
+X-Google-Original-From: alexjlzheng@tencent.com
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	yi.zhang@huawei.com
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jinliang Zheng <alexjlzheng@tencent.com>
+Subject: [RESEND PATCH] ext4: remove duplicate check for EXT4_FC_REPLAY
+Date: Tue, 29 Apr 2025 19:17:22 +0800
+Message-ID: <20250429111722.294975-1-alexjlzheng@tencent.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aBAKhPBAdGVrII2Y@bombadil.infradead.org>
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[f3c6fda1297c748a7076];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,stgolabs.net,kernel.org,mit.edu,dilger.ca,vger.kernel.org,surriel.com,infradead.org,cmpxchg.org,intel.com,redhat.com,kernel.dk,suse.de,fromorbit.com,gmail.com,kvack.org,samsung.com,syzkaller.appspotmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 
-On Mon 28-04-25 16:08:52, Luis Chamberlain wrote:
-> On Fri, Apr 25, 2025 at 03:51:55PM -0700, Luis Chamberlain wrote:
-> > On Wed, Apr 23, 2025 at 01:30:29PM -0700, Luis Chamberlain wrote:
-> > > On Wed, Apr 23, 2025 at 07:09:28PM +0200, Jan Kara wrote:
-> > > > On Wed 16-04-25 09:58:30, Luis Chamberlain wrote:
-> > > > > On Tue, Apr 15, 2025 at 06:28:55PM +0200, Jan Kara wrote:
-> > > > > > > So I tried:
-> > > > > > > 
-> > > > > > > root@e1-ext4-2k /var/lib/xfstests # fsck /dev/loop5 -y 2>&1 > log
-> > > > > > > e2fsck 1.47.2 (1-Jan-2025)
-> > > > > > > root@e1-ext4-2k /var/lib/xfstests # wc -l log
-> > > > > > > 16411 log
-> > > > > > 
-> > > > > > Can you share the log please?
-> > > > > 
-> > > > > Sure, here you go:
-> > > > > 
-> > > > > https://github.com/linux-kdevops/20250416-ext4-jbd2-bh-migrate-corruption
-> > > > > 
-> > > > > The last trace-0004.txt is a fresh one with Davidlohr's patches
-> > > > > applied. It has trace-0004-fsck.txt.
-> > > > 
-> > > > Thanks for the data! I was staring at them for some time and at this point
-> > > > I'm leaning towards a conclusion that this is actually not a case of
-> > > > metadata corruption but rather a bug in ext4 transaction credit computation
-> > > > that is completely independent of page migration.
-> > > > 
-> > > > Based on the e2fsck log you've provided the only damage in the filesystem
-> > > > is from the aborted transaction handle in the middle of extent tree growth.
-> > > > So nothing points to a lost metadata write or anything like that. And the
-> > > > credit reservation for page writeback is indeed somewhat racy - we reserve
-> > > > number of transaction credits based on current tree depth. However by the
-> > > > time we get to ext4_ext_map_blocks() another process could have modified
-> > > > the extent tree so we may need to modify more blocks than we originally
-> > > > expected and reserved credits for.
-> > > > 
-> > > > Can you give attached patch a try please?
-> > > > 
-> > > > 								Honza
-> > > > -- 
-> > > > Jan Kara <jack@suse.com>
-> > > > SUSE Labs, CR
-> > > 
-> > > > From 4c53fb9f4b9b3eb4a579f69b7adcb6524d55629c Mon Sep 17 00:00:00 2001
-> > > > From: Jan Kara <jack@suse.cz>
-> > > > Date: Wed, 23 Apr 2025 18:10:54 +0200
-> > > > Subject: [PATCH] ext4: Fix calculation of credits for extent tree modification
-> > > > 
-> > > > Luis and David are reporting that after running generic/750 test for 90+
-> > > > hours on 2k ext4 filesystem, they are able to trigger a warning in
-> > > > jbd2_journal_dirty_metadata() complaining that there are not enough
-> > > > credits in the running transaction started in ext4_do_writepages().
-> > > > 
-> > > > Indeed the code in ext4_do_writepages() is racy and the extent tree can
-> > > > change between the time we compute credits necessary for extent tree
-> > > > computation and the time we actually modify the extent tree. Thus it may
-> > > > happen that the number of credits actually needed is higher. Modify
-> > > > ext4_ext_index_trans_blocks() to count with the worst case of maximum
-> > > > tree depth.
-> > > > 
-> > > > Link: https://lore.kernel.org/all/20250415013641.f2ppw6wov4kn4wq2@offworld
-> > > > Reported-by: Davidlohr Bueso <dave@stgolabs.net>
-> > > > Reported-by: Luis Chamberlain <mcgrof@kernel.org>
-> > > > Signed-off-by: Jan Kara <jack@suse.cz>
-> > > 
-> > > I kicked off tests! Let's see after ~ 90 hours!
-> > 
-> > Tested-by: kdevops@lists.linux.dev
-> > 
-> > I have run the test over 3 separate guests and each one has tested this
-> > over 48 hours each. There is no ext4 fs corruption reported, all is
-> > good, so I do believe thix fixes the issue. One of the guests was on
-> > Linus't tree which didn't yet have Davidlorh's fixes for folio migration.
-> > And so I believe this patch should have a stable tag fix so stable gets it.
-> 
-> Jan, my testing has passed 120 hours now on multiple guests. This is
-> certainly a fixed bug with your patch.
+From: Jinliang Zheng <alexjlzheng@tencent.com>
 
-Thanks for testing! I'll do an official submission of the fix.
+EXT4_FC_REPLAY will be checked in ext4_es_lookup_extent(). If it is
+set, ext4_es_lookup_extent() will return 0.
 
-								Honza
+Remove the repeated check for EXT4_FC_REPLAY in ext4_map_blocks()
+to simplify the code.
+
+Signed-off-by: Jinliang Zheng <alexjlzheng@tencent.com>
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+---
+Just resend, and the first send email is:
+- https://lore.kernel.org/linux-ext4/20241113044158.1609384-1-alexjlzheng@tencent.com/
+---
+ fs/ext4/inode.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 94c7d2d828a6..c87dd4ed39f0 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -623,8 +623,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 		return -EFSCORRUPTED;
+ 
+ 	/* Lookup extent status tree firstly */
+-	if (!(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) &&
+-	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
++	if (ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
+ 		if (ext4_es_is_written(&es) || ext4_es_is_unwritten(&es)) {
+ 			map->m_pblk = ext4_es_pblock(&es) +
+ 					map->m_lblk - es.es_lblk;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.49.0
+
 
