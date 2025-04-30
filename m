@@ -1,104 +1,239 @@
-Return-Path: <linux-ext4+bounces-7562-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7563-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1D5DAA4169
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Apr 2025 05:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2323CAA422B
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Apr 2025 07:18:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF82C7B7371
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Apr 2025 03:31:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDBE67A4547
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Apr 2025 05:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2DF1A83F9;
-	Wed, 30 Apr 2025 03:32:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 772331DED63;
+	Wed, 30 Apr 2025 05:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gcxCoyOZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3092DC779;
-	Wed, 30 Apr 2025 03:32:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F43A921;
+	Wed, 30 Apr 2025 05:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745983934; cv=none; b=TYejyHJVI6i36L9KD+uteL2ZiE80njc4GXeXbfRvX7kEIImr8zxcnOdcl9/lDbzyHppI/lPIpsghp44aDq59bq1tI5XoFvTFIW5Pyi1gpruCDXW/esSjrcWZViO5yxaZ14q3WPExShkHoqa9cGwZEQCBOqGxXY6YACeKxQ6DFcg=
+	t=1745990304; cv=none; b=H+3uHe5ARlV4Lqf2PZOyS4I06bbQpJZxAdX4PAhuY7XqItbD9qzaEfwS/PQWi3+5Cf6TtUY0Ze7BfrbxKz8D9EoA9gNYVxr21tAaaHwvHyHRaiy2jb5mQEYdRI09FNwVXbZ7Exm87gx9j9hZYKmGjEGfudGHzWZHM44LAiNnci4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745983934; c=relaxed/simple;
-	bh=H2UhrZEQZYSQD8PmoSwzZt/cwIH9CInE+ZKnFlyBor8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SNql1w+AbRRPo/4yAv/MHLcB7VKPEAE3q2oF6bWjnIH6S4Om4Omd8QJXFx8AGc7QXBKVpzEVbfOeyiy1Euzdy0nEqhOjTgC/D3fD4ulq1KbJ/no66a9tEKhNUvBH4pCp/VgTzKHhAZst6zQKQwQWsUxf/uiLBFQhMi6lbudbf7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ZnN5V5l9Vz4f3knp;
-	Wed, 30 Apr 2025 11:31:42 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 0330E1A1A62;
-	Wed, 30 Apr 2025 11:32:07 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgDHKl+1mRFoU3PtKw--.8628S3;
-	Wed, 30 Apr 2025 11:32:06 +0800 (CST)
-Message-ID: <bbe602bd-c421-4dd6-ad17-9cff39a3c097@huaweicloud.com>
-Date: Wed, 30 Apr 2025 11:32:04 +0800
+	s=arc-20240116; t=1745990304; c=relaxed/simple;
+	bh=gArsuC6TY1f02PCoxGsHqNCpkz9m/aoI+JRflmC5Afo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZHMosoO3RW4p97gDw/zJ2Q8asuvCW4CrPy01u5xCnj2eW6YzMBQwmcXuyg7FEmmhX6zTFpjRunqN9ZhJ6Rw4Xkg9KdJa8eaDkWda7UIc0PLxCRAgmvq7VNnxFV3StNVENi9aAuBowqOm+w5H40ZTaGrcMNZM9AbvNHwHSB0TNOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gcxCoyOZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20DA4C4CEE9;
+	Wed, 30 Apr 2025 05:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745990303;
+	bh=gArsuC6TY1f02PCoxGsHqNCpkz9m/aoI+JRflmC5Afo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gcxCoyOZy84JGHyzBchpGoalQsA7G6SL9C15Exjb3Yo2eGQU8lUdDyGZVMjbdMstZ
+	 gMu3W4jJTsc5uiXoBPTafp4O5dWi1Be/53uUGtbn29FnzCTJD+DktnWNPGamPKo+o0
+	 r6wAEvEM3NdCNt8TCI9HrXi8vT+qcH+yALlz+t7sq+YssnpQDkNqoc7zAwFz7k6dwS
+	 bIT7nZD+XxOnm+Nh2LNVE7cRoAoOhUi98ABhbzqBcYaXmM11c4Aq9pF0tgpdIZCEHE
+	 vWOFTR5+IX9FUOYSRc253YOa94QQm5+aUUQ/vznu7bkH+hWY5mVrlZi+cVvTlN00ZN
+	 qgMC19Rb86m5g==
+Date: Tue, 29 Apr 2025 22:18:22 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: brauner@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk, jack@suse.cz,
+	cem@kernel.org, linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
+	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
+	martin.petersen@oracle.com, linux-ext4@vger.kernel.org,
+	linux-block@vger.kernel.org, catherine.hoang@oracle.com,
+	linux-api@vger.kernel.org
+Subject: [PATCH v9.1 05/15] xfs: ignore HW which cannot atomic write a single
+ block
+Message-ID: <20250430051822.GY25675@frogsfrogsfrogs>
+References: <20250425164504.3263637-1-john.g.garry@oracle.com>
+ <20250425164504.3263637-6-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] ext4: ensure i_size is smaller than maxbytes
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- jack@suse.cz, wanghaichi0403@gmail.com, yi.zhang@huawei.com,
- libaokun1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
-References: <20250430011301.1106457-1-yi.zhang@huaweicloud.com>
- <20250430011301.1106457-4-yi.zhang@huaweicloud.com>
- <aBGW4TsUM5yOCf_8@casper.infradead.org>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <aBGW4TsUM5yOCf_8@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgDHKl+1mRFoU3PtKw--.8628S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYs7kC6x804xWl14x267AKxVW8JVW5JwAF
-	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
-	wVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
-	xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-	FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-	0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-	04v7MxAIw28IcxkI7VAKI48JMxAqzxv26xkF7I0En4kS14v26r1q6r43MxC20s026xCaFV
-	Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
-	x4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r
-	1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_
-	JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250425164504.3263637-6-john.g.garry@oracle.com>
 
-On 2025/4/30 11:20, Matthew Wilcox wrote:
-> On Wed, Apr 30, 2025 at 09:13:01AM +0800, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> The inode i_size cannot be larger than maxbytes, check it while loading
->> inode from the disk.
-> 
-> With this patch, why do we need patch 1?
+From: Darrick J. Wong <djwong@kernel.org>
 
-The max_end in ext4_punch_hole() is maxbytes - blocksize. Therefore,
-without the patch 1, it is still possible to encounter a negative
-length if the offset exceeds max_end but is less than an i_size that
-also exceeds max_end.
+Currently only HW which can write at least 1x block is supported.
 
-                 max_end    i_size  max_bytes
-                    |         |        |
-   0------------------------------------
-                            |
-                         offset
+For supporting atomic writes > 1x block, a CoW-based method will also be
+used and this will not be resticted to using HW which can write >= 1x
+block.
 
-Thanks,
-Yi.
+However for deciding if HW-based atomic writes can be used, we need to
+start adding checks for write length < HW min, which complicates the
+code.  Indeed, a statx field similar to unit_max_opt should also be
+added for this minimum, which is undesirable.
 
+HW which can only write > 1x blocks would be uncommon and quite weird,
+so let's just not support it.
+
+Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+---
+v9.1: move the atomic hw geometry calls to xfs_setup_devices
+---
+ fs/xfs/xfs_buf.h   |    3 ++-
+ fs/xfs/xfs_inode.h |   14 ++------------
+ fs/xfs/xfs_buf.c   |   41 ++++++++++++++++++++++++++++++++++-------
+ fs/xfs/xfs_super.c |    6 +++++-
+ 4 files changed, 43 insertions(+), 21 deletions(-)
+
+diff --git a/fs/xfs/xfs_buf.h b/fs/xfs/xfs_buf.h
+index d0b065a9a9f0d2..6f691779887f77 100644
+--- a/fs/xfs/xfs_buf.h
++++ b/fs/xfs/xfs_buf.h
+@@ -112,7 +112,7 @@ struct xfs_buftarg {
+ 	struct percpu_counter	bt_readahead_count;
+ 	struct ratelimit_state	bt_ioerror_rl;
+ 
+-	/* Atomic write unit values */
++	/* Atomic write unit values, bytes */
+ 	unsigned int		bt_bdev_awu_min;
+ 	unsigned int		bt_bdev_awu_max;
+ 
+@@ -375,6 +375,7 @@ extern void xfs_free_buftarg(struct xfs_buftarg *);
+ extern void xfs_buftarg_wait(struct xfs_buftarg *);
+ extern void xfs_buftarg_drain(struct xfs_buftarg *);
+ extern int xfs_setsize_buftarg(struct xfs_buftarg *, unsigned int);
++void xfs_buftarg_config_atomic_writes(struct xfs_buftarg *btp);
+ 
+ #define xfs_getsize_buftarg(buftarg)	block_size((buftarg)->bt_bdev)
+ #define xfs_readonly_buftarg(buftarg)	bdev_read_only((buftarg)->bt_bdev)
+diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
+index bdbbff0d8d9920..d7e2b902ef5c97 100644
+--- a/fs/xfs/xfs_inode.h
++++ b/fs/xfs/xfs_inode.h
+@@ -356,19 +356,9 @@ static inline bool xfs_inode_has_bigrtalloc(const struct xfs_inode *ip)
+ 	(XFS_IS_REALTIME_INODE(ip) ? \
+ 		(ip)->i_mount->m_rtdev_targp : (ip)->i_mount->m_ddev_targp)
+ 
+-static inline bool
+-xfs_inode_can_hw_atomic_write(
+-	struct xfs_inode	*ip)
++static inline bool xfs_inode_can_hw_atomic_write(const struct xfs_inode *ip)
+ {
+-	struct xfs_mount	*mp = ip->i_mount;
+-	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
+-
+-	if (mp->m_sb.sb_blocksize < target->bt_bdev_awu_min)
+-		return false;
+-	if (mp->m_sb.sb_blocksize > target->bt_bdev_awu_max)
+-		return false;
+-
+-	return true;
++	return xfs_inode_buftarg(ip)->bt_bdev_awu_max > 0;
+ }
+ 
+ /*
+diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+index 5ae77ffdc947b1..c1bd5654c3afa8 100644
+--- a/fs/xfs/xfs_buf.c
++++ b/fs/xfs/xfs_buf.c
+@@ -1779,6 +1779,40 @@ xfs_init_buftarg(
+ 	return -ENOMEM;
+ }
+ 
++/*
++ * Configure this buffer target for hardware-assisted atomic writes if the
++ * underlying block device supports is congruent with the filesystem geometry.
++ */
++void
++xfs_buftarg_config_atomic_writes(
++	struct xfs_buftarg	*btp)
++{
++	struct xfs_mount	*mp = btp->bt_mount;
++	unsigned int		min_bytes, max_bytes;
++
++	ASSERT(btp->bt_bdev != NULL);
++
++	if (!bdev_can_atomic_write(btp->bt_bdev))
++		return;
++
++	min_bytes = bdev_atomic_write_unit_min_bytes(btp->bt_bdev);
++	max_bytes = bdev_atomic_write_unit_max_bytes(btp->bt_bdev);
++
++	/*
++	 * Ignore atomic write geometry that is nonsense or doesn't even cover
++	 * a single fsblock.
++	 */
++	if (min_bytes > max_bytes ||
++	    min_bytes > mp->m_sb.sb_blocksize ||
++	    max_bytes < mp->m_sb.sb_blocksize) {
++		min_bytes = 0;
++		max_bytes = 0;
++	}
++
++	btp->bt_bdev_awu_min = min_bytes;
++	btp->bt_bdev_awu_max = max_bytes;
++}
++
+ struct xfs_buftarg *
+ xfs_alloc_buftarg(
+ 	struct xfs_mount	*mp,
+@@ -1799,13 +1833,6 @@ xfs_alloc_buftarg(
+ 	btp->bt_daxdev = fs_dax_get_by_bdev(btp->bt_bdev, &btp->bt_dax_part_off,
+ 					    mp, ops);
+ 
+-	if (bdev_can_atomic_write(btp->bt_bdev)) {
+-		btp->bt_bdev_awu_min = bdev_atomic_write_unit_min_bytes(
+-						btp->bt_bdev);
+-		btp->bt_bdev_awu_max = bdev_atomic_write_unit_max_bytes(
+-						btp->bt_bdev);
+-	}
+-
+ 	/*
+ 	 * When allocating the buftargs we have not yet read the super block and
+ 	 * thus don't know the file system sector size yet.
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index b2dd0c0bf50979..af4c541251d859 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -520,7 +520,8 @@ xfs_open_devices(
+ }
+ 
+ /*
+- * Setup xfs_mount buffer target pointers based on superblock
++ * Setup xfs_mount buffer target pointers based on superblock, and configure
++ * the atomic write capabilities now that we've validated the blocksize.
+  */
+ STATIC int
+ xfs_setup_devices(
+@@ -531,6 +532,7 @@ xfs_setup_devices(
+ 	error = xfs_setsize_buftarg(mp->m_ddev_targp, mp->m_sb.sb_sectsize);
+ 	if (error)
+ 		return error;
++	xfs_buftarg_config_atomic_writes(mp->m_ddev_targp);
+ 
+ 	if (mp->m_logdev_targp && mp->m_logdev_targp != mp->m_ddev_targp) {
+ 		unsigned int	log_sector_size = BBSIZE;
+@@ -541,6 +543,7 @@ xfs_setup_devices(
+ 					    log_sector_size);
+ 		if (error)
+ 			return error;
++		xfs_buftarg_config_atomic_writes(mp->m_logdev_targp);
+ 	}
+ 
+ 	if (mp->m_sb.sb_rtstart) {
+@@ -555,6 +558,7 @@ xfs_setup_devices(
+ 					    mp->m_sb.sb_sectsize);
+ 		if (error)
+ 			return error;
++		xfs_buftarg_config_atomic_writes(mp->m_rtdev_targp);
+ 	}
+ 
+ 	return 0;
 
