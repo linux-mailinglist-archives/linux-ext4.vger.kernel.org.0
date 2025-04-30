@@ -1,77 +1,77 @@
-Return-Path: <linux-ext4+bounces-7580-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7581-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C984AA4B83
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Apr 2025 14:46:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C19AA4B85
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Apr 2025 14:46:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8188517B1D2
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Apr 2025 12:46:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49607175CDA
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Apr 2025 12:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E7E2586E2;
-	Wed, 30 Apr 2025 12:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8BB2586E2;
+	Wed, 30 Apr 2025 12:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EqQAMJjC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m7TPhEUf"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F4D231847;
-	Wed, 30 Apr 2025 12:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661E82DC768;
+	Wed, 30 Apr 2025 12:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746017175; cv=none; b=GtrZT/DlxLLToB5eNul6ccIe9KgEHwxn4FAiwhzn649/8ngcu4SUnszsTne4RempaRwx0FJ70ZZ3l1jtcLAVF76+DbkM5cTFHlAReFak2/SM2SHHhuvHLEZoHuLAEv6xdtZDOrJ3oxL/PJgKaCtBb547sa8XmljBC3nVY+AVuRU=
+	t=1746017193; cv=none; b=HkMDXloRhYFlplWd0IV/3TjInrDAPMXifamWZRmJIC/imAeKmzcPgDFUu9+VPPrGlHw1N7Tu2QBrWfBlCsfaVtKh/XDsEhhh8JG7ism91XfBcW0xQfVA69YQKkDF2PLHosllwjDsCQ2R4tfwyltSDiNQz7V/NLopPxIeuUDQoC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746017175; c=relaxed/simple;
-	bh=QW1xU/MWVgKnRf+1WAIksoJWGOlTxTsAs3j2NFoJXwM=;
+	s=arc-20240116; t=1746017193; c=relaxed/simple;
+	bh=05wmw0PNlW+lshHBZbxuRHF/HIb+22Yu/4FYn/3oy3U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=m4idOr2KG0G7r+ZR/15AybUENxCrteqoOy5e/cT8bm3rUlw28LgAU86XGOVoRLthtqSMZ/5DekaVRVop1bQbq22G5zV3lWC4X4yjUFpdEfpxkohiraeZ13deehVUPNtfYXKcroSppr7LsIo4hsoB0WrKsVDdDJZsNgrvm7fNC2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EqQAMJjC; arc=none smtp.client-ip=209.85.215.180
+	 MIME-Version; b=gUiOd9G/kRE4HmWIEGbBmzJ089iLcfJ+IEpaGM4+rpUD0nmsCtRZbpo7jiTDmOJQIofSf/WafXUYDBk/YNNJ0mFp5M2c9OSoOhVdThd5SKzThWBqnedHknMLzZb6iEuJCNV2Ja6Rpm2D9vIuLmi6dbg4RWqQrH2lwFseU/Y0XYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m7TPhEUf; arc=none smtp.client-ip=209.85.215.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-7fd581c2bf4so5779768a12.3;
-        Wed, 30 Apr 2025 05:46:13 -0700 (PDT)
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-af5085f7861so5393107a12.3;
+        Wed, 30 Apr 2025 05:46:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746017173; x=1746621973; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1746017191; x=1746621991; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z3mKcYYOZ8zeQR7W/dGnPrX6u9yRnOjXXsCqq42klaU=;
-        b=EqQAMJjCktd+W0ZTT7H4RoHwoDGCJRU3WX0QAJrxj9HBsIGF4wHmWAlsP4dzRqzszy
-         lv/ZXqKkQ1PIL5F4oiUS3RIM6zJCUWzzTSQIvDmB92EERelRajbgNum5vucoiHNQpeo/
-         VLpqFQFMW1OGgVdhEqgFvHRQSiaA5Rx01KQl5QX6BN0qdJixsoBZIyQEKwO4Lx6k4X7l
-         NUFPrF7b8M7/pf6PRM60okS9hVu28IICyQQbO3nMlIn0xONjNJ5E9SiZMZLq5hfO8pTo
-         7HE+UClK+NrcfQuBLjLBRPFpomuC+bNfXDikNZtHgJBiigDud5sYcp25mSodYtBqyXcQ
-         8Tsg==
+        bh=BbHA87LFH4GaNzFVBuJSnPYBoYVkkcanETe2Vt96c9c=;
+        b=m7TPhEUfM786K+pOt6r42BeOMdQpHtmnqfu00RMXuf0k/lO3sMS6nynVrJqESYCmUQ
+         rL9YoBRvjFh48NggOqPeBzGJ841g9cyAbEW27bRzhJb2giINaIBAdQv/kJUbx9Fjis9v
+         1hKouslL4ZLpQA6lYu5+3bDLxsmMZZ0NeUndPyOprE3IuwTvx9SH8KW5gvXGiLOPnv/o
+         ed4aMx5c1X8csL1/bwrFFjWqvgcjRHaIxkN1GuV7gmu+5FIWvrj22617DCzx5wvHbPL+
+         CToELckQvAolVKD4actYX8JFjIMXO1p528TJtLiAvqCZf2NIYtTJC4AKNUAWgaPglteo
+         numw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746017173; x=1746621973;
+        d=1e100.net; s=20230601; t=1746017191; x=1746621991;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z3mKcYYOZ8zeQR7W/dGnPrX6u9yRnOjXXsCqq42klaU=;
-        b=OtYSxbM/tQgECsoLpAWXPfqOW5Y0R40X5zyFfNiev1+jjGdD99GTS0OQev9C6ZF7t4
-         II2X+qptzO2aYVBOoD8Yn4h20PnqxvkTjImIJgVddNHRHGc0ssdSfSb0l7ZY8yn+UntL
-         jFAvPm2d3Yz3UIBr/x5QbwemFaUaNj8Qw+SoYTvmndgvgyd93E/l7b8Q7Z5orGgapBJT
-         8QMzMDruAf/OXwFg40SkoKv3kIzmd2l7olEJ8Bgfqh5uWjEsHvMkof03J0rPE3DI0sIg
-         TOdleWQhB4PlUfVZZ17C9JVYAGjtuqyy+8Y+ii9HFc2gEHJWCEckl/slRcwXzIOvoYOp
-         2lNw==
-X-Forwarded-Encrypted: i=1; AJvYcCXTSTDtcjIh0JmS+dzuLXMsiHO+ycEMoHPLkQWYi5+S2G2CWrFDhoTVnXH1EvGfRnjd6aa6th5XXeg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx7MxiPeNv0sW9d5RBG/RiY0i68JxJebDAlbBoHAnSMGuCZfV7v
-	Zcy/Zpabjr8rHg/NC3vSzj93yU96ryKbgdykNHBPfSTftHe8iUEFirIJWA==
-X-Gm-Gg: ASbGncuGypd+45thoJMzb2ByflltvdPU/Qkp098E43kPwAG+2W67NhbCLUiLk/QwW0E
-	HRQHfylR0LDl0A1MW6bdSe89zxbtKYyKbWZMd7s9Uj109ANp3QnLVKgqa9vrxlXMFoTTY0diC9o
-	jbEEj7krt0YTYyB1c6LcixdZR21GtEwdGoHb3SfF8/LnTz26j0dwa7n50H9ylYF5cV0VAwxbRDC
-	PU2ar1Rn6gszFArV4r8gYTaPjrqAUUO/K1uIoyC5OOIrFQiXqZtpDQllVJW9FD8ZPdB2ouYUSxc
-	ZD1pOVEKL7RFyf7QnVylqmTqJZIbuuqMkxhasGJ2GAc3
-X-Google-Smtp-Source: AGHT+IFVBoSaO+FpP2IZjbes5fAkbGpNG0PWblZJydZL0lnqkPByszUT1cdIFK69gHRRZ+Dgv5+QLA==
-X-Received: by 2002:a17:90b:5249:b0:2fe:e0a9:49d4 with SMTP id 98e67ed59e1d1-30a332e1e1cmr4609312a91.2.1746017172431;
-        Wed, 30 Apr 2025 05:46:12 -0700 (PDT)
+        bh=BbHA87LFH4GaNzFVBuJSnPYBoYVkkcanETe2Vt96c9c=;
+        b=gEdV/jBAfZOaLk4Nuy+fIq1NafuB1f2zRl61SJ5O1wB16h0Gx+WfafTmqYvaajNCiK
+         hh85PM7exoDI4Iq9PhKX/Z//y3memfRciWHqu9rUykIVB+8F4P576+r7bhlfvdmjhnZP
+         3UDy0JiK6FuOlHZ0BtAvfpVx0E9QK4B+72/S+FV8xI1P9DT1NwkUux188XLoHaMGPwdC
+         /jrBjWWIgkbCJ4dW6VdM8RlEXjT/JPNNQKWOka3wUrK+UMV1zl8ZeVhx1KdvDsHO4TiL
+         hXrJ6GalqQ006a1F2fGDkxzpfyh4ZoMMLfopsafPrM2kMO05qfNE2WqEmJ9OYHcm2PUU
+         xR7w==
+X-Forwarded-Encrypted: i=1; AJvYcCWlT+SnL05p+NyJYhOpwVrGKYvxnNHJOrpOqD1952qyEVHXWnSpPwsq3TKkiIGPqXGy4XmJ3tX41kA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJAXfOGl2u07rYTNJI5rkmDHa9E/3O8+1NmjABn0/g4OU4uO9H
+	1o6O6QP87JZWHGZcpaK7Dw+HE3DtR3+SO1xz1ez3WvnbJAQ5rrVO9D4w8Q==
+X-Gm-Gg: ASbGncubVk+8aZTSOF/Y2JygcTKP+4Cf3TrSK5PUWZHEPeJLGpJ1ihy3GqCxJMIOEXt
+	53f2fWsLVFM1ppZ7NfMcQhirIqFr6NS8WzvsUAJNSM8GIeIZPs2OT9YgChxZp5i/DqctneASToZ
+	K0zFYxIWGHo3M/xChZul/ES7LpqsY4Uno14ugTQeX7NdLTQ2Xz/0p9gO+l9S5R/wrRoYPGps9cy
+	8NK8m+1kZxIUJxC0GN/WUiRRyTYtnN8gFMOd1jOoJOzhFyFaO0iZAe4UMK34oh0YEV/WEk82mMZ
+	DG0kpDlTVQphUZnqbzPL29/dCcIs/tCZl7qL01HgYElw
+X-Google-Smtp-Source: AGHT+IHpef0TJYwljbgWsRzkDi98MY7IUWjSFtw4rwzTFJUhU9SXKJvIuU/EZMqXO++bq/wc9N/TNA==
+X-Received: by 2002:a17:90b:3d84:b0:309:f5c6:4c5c with SMTP id 98e67ed59e1d1-30a34450c14mr3765350a91.25.1746017190577;
+        Wed, 30 Apr 2025 05:46:30 -0700 (PDT)
 Received: from citest-1.. ([49.205.34.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30a349e4a40sm1476540a91.6.2025.04.30.05.46.09
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30a349e4a40sm1476540a91.6.2025.04.30.05.46.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Apr 2025 05:46:12 -0700 (PDT)
+        Wed, 30 Apr 2025 05:46:30 -0700 (PDT)
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
 To: fstests@vger.kernel.org
 Cc: linux-ext4@vger.kernel.org,
@@ -83,9 +83,9 @@ Cc: linux-ext4@vger.kernel.org,
 	david@fromorbit.com,
 	hch@infradead.org,
 	nirjhar.roy.lists@gmail.com
-Subject: [PATCH v3 1/2] common: Move exit related functions to a common/exit
-Date: Wed, 30 Apr 2025 12:45:22 +0000
-Message-Id: <7363438118ab8730208ba9f35e81449b2549f331.1746015588.git.nirjhar.roy.lists@gmail.com>
+Subject: [PATCH v3 2/2] check: Replace exit with _fatal and _exit in check
+Date: Wed, 30 Apr 2025 12:45:23 +0000
+Message-Id: <34273527dab73c9e03415a7c3d6d118980929396.1746015588.git.nirjhar.roy.lists@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1746015588.git.nirjhar.roy.lists@gmail.com>
 References: <cover.1746015588.git.nirjhar.roy.lists@gmail.com>
@@ -97,356 +97,175 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce a new file common/exit that will contain all the exit
-related functions. This will remove the dependencies these functions
-have on other non-related helper files and they can be indepedently
-sourced. This was suggested by Dave Chinner[1].
-While moving the exit related functions, remove _die() and die_now()
-and replace die_now with _fatal(). It is of no use to keep the
-unnecessary wrappers.
+Some of the "status=<val>;exit" and "exit <val>" were not
+replaced with _exit <val> and _fatal. Doing it now.
 
-[1] https://lore.kernel.org/linux-xfs/Z_UJ7XcpmtkPRhTr@dread.disaster.area/
-Suggested-by: Dave Chinner <david@fromorbit.com>
 Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 ---
- check           |  2 ++
- common/config   | 17 -----------------
- common/exit     | 39 +++++++++++++++++++++++++++++++++++++++
- common/preamble |  3 +++
- common/punch    | 39 +++++++++++++++++----------------------
- common/rc       | 28 ----------------------------
- 6 files changed, 61 insertions(+), 67 deletions(-)
- create mode 100644 common/exit
+ check | 52 ++++++++++++++++++----------------------------------
+ 1 file changed, 18 insertions(+), 34 deletions(-)
 
 diff --git a/check b/check
-index 9451c350..bd84f213 100755
+index bd84f213..ede54f69 100755
 --- a/check
 +++ b/check
-@@ -46,6 +46,8 @@ export DIFF_LENGTH=${DIFF_LENGTH:=10}
- 
- # by default don't output timestamps
- timestamp=${TIMESTAMP:=false}
-+. common/exit
-+. common/test_names
- 
- rm -f $tmp.list $tmp.tmp $tmp.grep $here/$iam.out $tmp.report.* $tmp.arglist
- 
-diff --git a/common/config b/common/config
-index eada3971..22b52432 100644
---- a/common/config
-+++ b/common/config
-@@ -39,8 +39,6 @@
- #   validity or mountedness.
- #
- 
--. common/test_names
--
- # all tests should use a common language setting to prevent golden
- # output mismatches.
- export LANG=C
-@@ -96,15 +94,6 @@ export LOCAL_CONFIGURE_OPTIONS=${LOCAL_CONFIGURE_OPTIONS:=--enable-readline=yes}
- 
- export RECREATE_TEST_DEV=${RECREATE_TEST_DEV:=false}
- 
--# This functions sets the exit code to status and then exits. Don't use
--# exit directly, as it might not set the value of "$status" correctly, which is
--# used as an exit code in the trap handler routine set up by the check script.
--_exit()
--{
--	test -n "$1" && status="$1"
--	exit "$status"
--}
--
- # Handle mkfs.$fstyp which does (or does not) require -f to overwrite
- set_mkfs_prog_path_with_opts()
- {
-@@ -121,12 +110,6 @@ set_mkfs_prog_path_with_opts()
- 	fi
+@@ -123,7 +123,7 @@ examples:
+  check -X .exclude -g auto
+  check -E ~/.xfstests.exclude
+ '
+-	    exit 1
++	    _fatal
  }
  
--_fatal()
--{
--    echo "$*"
--    _exit 1
--}
--
- export MKFS_PROG="$(type -P mkfs)"
- [ "$MKFS_PROG" = "" ] && _fatal "mkfs not found"
+ get_sub_group_list()
+@@ -232,8 +232,7 @@ _prepare_test_list()
+ 		for group in $GROUP_LIST; do
+ 			list=$(get_group_list $group)
+ 			if [ -z "$list" ]; then
+-				echo "Group \"$group\" is empty or not defined?"
+-				exit 1
++				_fatal "Group \"$group\" is empty or not defined?"
+ 			fi
  
-diff --git a/common/exit b/common/exit
-new file mode 100644
-index 00000000..222c79b7
---- /dev/null
-+++ b/common/exit
-@@ -0,0 +1,39 @@
-+##/bin/bash
-+
-+# This functions sets the exit code to status and then exits. Don't use
-+# exit directly, as it might not set the value of "$status" correctly, which is
-+# used as an exit code in the trap handler routine set up by the check script.
-+_exit()
-+{
-+	test -n "$1" && status="$1"
-+	exit "$status"
-+}
-+
-+_fatal()
-+{
-+    echo "$*"
-+    _exit 1
-+}
-+
-+# just plain bail out
-+#
-+_fail()
-+{
-+    echo "$*" | tee -a $seqres.full
-+    echo "(see $seqres.full for details)"
-+    _exit 1
-+}
-+
-+# bail out, setting up .notrun file. Need to kill the filesystem check files
-+# here, otherwise they are set incorrectly for the next test.
-+#
-+_notrun()
-+{
-+    echo "$*" > $seqres.notrun
-+    echo "$seq not run: $*"
-+    rm -f ${RESULT_DIR}/require_test*
-+    rm -f ${RESULT_DIR}/require_scratch*
-+
-+    _exit 0
-+}
-+
-diff --git a/common/preamble b/common/preamble
-index ba029a34..51d03396 100644
---- a/common/preamble
-+++ b/common/preamble
-@@ -33,6 +33,9 @@ _register_cleanup()
- # explicitly as a member of the 'all' group.
- _begin_fstest()
- {
-+	. common/exit
-+	. common/test_names
-+
- 	if [ -n "$seq" ]; then
- 		echo "_begin_fstest can only be called once!"
- 		_exit 1
-diff --git a/common/punch b/common/punch
-index 64d665d8..ddbe757a 100644
---- a/common/punch
-+++ b/common/punch
-@@ -222,11 +222,6 @@ _filter_bmap()
- 	_coalesce_extents
- }
+ 			for t in $list; do
+@@ -317,15 +316,13 @@ while [ $# -gt 0 ]; do
+ 	-n)	showme=true ;;
+ 	-r)
+ 		if $exact_order; then
+-			echo "Cannot specify -r and --exact-order."
+-			exit 1
++			_fatal "Cannot specify -r and --exact-order."
+ 		fi
+ 		randomize=true
+ 		;;
+ 	--exact-order)
+ 		if $randomize; then
+-			echo "Cannnot specify --exact-order and -r."
+-			exit 1
++			_fatal "Cannnot specify --exact-order and -r."
+ 		fi
+ 		exact_order=true
+ 		;;
+@@ -362,8 +359,7 @@ done
+ # we need common/rc, that also sources common/config. We need to source it
+ # after processing args, overlay needs FSTYP set before sourcing common/config
+ if ! . ./common/rc; then
+-	echo "check: failed to source common/rc"
+-	exit 1
++	_fatal "check: failed to source common/rc"
+ fi
  
--die_now()
--{
--	_exit 1
--}
--
- # test the different corner cases for zeroing a range:
- #
- #	1. into a hole
-@@ -305,7 +300,7 @@ _test_generic_punch()
- 	$XFS_IO_PROG -f -c "truncate $_20k" \
- 		-c "$zero_cmd $_4k $_8k" \
- 		-c "$map_cmd -v" $testfile | $filter_cmd
--	[ $? -ne 0 ] && die_now
-+	[ $? -ne 0 ] && _fatal
- 	_md5_checksum $testfile
+ init_rc
+@@ -375,8 +371,7 @@ if [ -n "$SOAK_DURATION" ]; then
+ 		sed -e 's/^\([.0-9]*\)\([a-z]\)*/\1 \2/g' | \
+ 		$AWK_PROG -f $here/src/soak_duration.awk)"
+ 	if [ $? -ne 0 ]; then
+-		status=1
+-		exit 1
++		_fatal
+ 	fi
+ fi
  
- 	echo "	2. into allocated space"
-@@ -316,7 +311,7 @@ _test_generic_punch()
- 		-c "pwrite 0 $_20k" $sync_cmd \
- 		-c "$zero_cmd $_4k $_8k" \
- 		-c "$map_cmd -v" $testfile | $filter_cmd
--	[ $? -ne 0 ] && die_now
-+	[ $? -ne 0 ] && _fatal
- 	_md5_checksum $testfile
+@@ -387,8 +382,7 @@ if [ -n "$FUZZ_REWRITE_DURATION" ]; then
+ 		sed -e 's/^\([.0-9]*\)\([a-z]\)*/\1 \2/g' | \
+ 		$AWK_PROG -f $here/src/soak_duration.awk)"
+ 	if [ $? -ne 0 ]; then
+-		status=1
+-		exit 1
++		_fatal
+ 	fi
+ fi
  
- 	if [ "$unwritten_tests" ]; then
-@@ -328,7 +323,7 @@ _test_generic_punch()
- 			-c "$alloc_cmd 0 $_20k" \
- 			-c "$zero_cmd $_4k $_8k" \
- 			-c "$map_cmd -v" $testfile | $filter_cmd
--		[ $? -ne 0 ] && die_now
-+		[ $? -ne 0 ] && _fatal
- 		_md5_checksum $testfile
+@@ -405,9 +399,7 @@ fi
+ if $have_test_arg; then
+ 	while [ $# -gt 0 ]; do
+ 		case "$1" in
+-		-*)	echo "Arguments before tests, please!"
+-			status=1
+-			exit $status
++		-*)	_fatal "Arguments before tests, please!"
+ 			;;
+ 		*)	# Expand test pattern (e.g. xfs/???, *fs/001)
+ 			list=$(cd $SRC_DIR; echo $1)
+@@ -439,8 +431,7 @@ fi
+ 
+ if [ `id -u` -ne 0 ]
+ then
+-    echo "check: QA must be run as root"
+-    exit 1
++    _fatal "check: QA must be run as root"
+ fi
+ 
+ _wipe_counters()
+@@ -722,6 +713,9 @@ _detect_kmemleak
+ _prepare_test_list
+ fstests_start_time="$(date +"%F %T")"
+ 
++# We are not using _exit in the trap handler so that it is obvious to the reader
++# that we are using the last set value of "status" before we finally exit
++# from the check script.
+ if $OPTIONS_HAVE_SECTIONS; then
+ 	trap "_summary; exit \$status" 0 1 2 3 15
+ else
+@@ -768,9 +762,7 @@ function run_section()
+ 
+ 	mkdir -p $RESULT_BASE
+ 	if [ ! -d $RESULT_BASE ]; then
+-		echo "failed to create results directory $RESULT_BASE"
+-		status=1
+-		exit
++		_fatal "failed to create results directory $RESULT_BASE"
  	fi
  
-@@ -340,7 +335,7 @@ _test_generic_punch()
- 		-c "pwrite $_8k $_8k" $sync_cmd \
- 		-c "$zero_cmd $_4k $_8k" \
- 		-c "$map_cmd -v" $testfile | $filter_cmd
--	[ $? -ne 0 ] && die_now
-+	[ $? -ne 0 ] && _fatal
- 	_md5_checksum $testfile
+ 	if $OPTIONS_HAVE_SECTIONS; then
+@@ -785,9 +777,7 @@ function run_section()
+ 		then
+ 			echo "our local _test_mkfs routine ..."
+ 			cat $tmp.err
+-			echo "check: failed to mkfs \$TEST_DEV using specified options"
+-			status=1
+-			exit
++			_fatal "check: failed to mkfs \$TEST_DEV using specified options"
+ 		fi
+ 		# Previous FSTYP derived from TEST_DEV could be changed, source
+ 		# common/rc again with correct FSTYP to get FSTYP specific configs,
+@@ -830,9 +820,7 @@ function run_section()
+ 	  then
+ 	      echo "our local _scratch_mkfs routine ..."
+ 	      cat $tmp.err
+-	      echo "check: failed to mkfs \$SCRATCH_DEV using specified options"
+-	      status=1
+-	      exit
++	      _fatal "check: failed to mkfs \$SCRATCH_DEV using specified options"
+ 	  fi
  
- 	if [ "$unwritten_tests" ]; then
-@@ -352,7 +347,7 @@ _test_generic_punch()
- 			-c "$alloc_cmd $_8k $_8k" \
- 			-c "$zero_cmd $_4k $_8k" \
- 			-c "$map_cmd -v" $testfile | $filter_cmd
--		[ $? -ne 0 ] && die_now
-+		[ $? -ne 0 ] && _fatal
- 		_md5_checksum $testfile
- 	fi
+ 	  # call the overridden mount - make sure the FS mounts with
+@@ -841,9 +829,7 @@ function run_section()
+ 	  then
+ 	      echo "our local mount routine ..."
+ 	      cat $tmp.err
+-	      echo "check: failed to mount \$SCRATCH_DEV using specified options"
+-	      status=1
+-	      exit
++	      _fatal "check: failed to mount \$SCRATCH_DEV using specified options"
+ 	  else
+ 	      _scratch_unmount
+ 	  fi
+@@ -1106,12 +1092,10 @@ for ((iters = 0; iters < $iterations; iters++)) do
+ 		run_section $section
+ 		if [ "$sum_bad" != 0 ] && [ "$istop" = true ]; then
+ 			interrupt=false
+-			status=`expr $sum_bad != 0`
+-			exit
++			_exit `expr $sum_bad != 0`
+ 		fi
+ 	done
+ done
  
-@@ -364,7 +359,7 @@ _test_generic_punch()
- 		-c "pwrite 0 $_8k" $sync_cmd \
- 		 -c "$zero_cmd $_4k $_8k" \
- 		-c "$map_cmd -v" $testfile | $filter_cmd
--	[ $? -ne 0 ] && die_now
-+	[ $? -ne 0 ] && _fatal
- 	_md5_checksum $testfile
- 
- 	if [ "$unwritten_tests" ]; then
-@@ -377,7 +372,7 @@ _test_generic_punch()
- 			-c "$alloc_cmd $_8k $_8k" \
- 			-c "$zero_cmd $_4k $_8k" \
- 			-c "$map_cmd -v" $testfile | $filter_cmd
--		[ $? -ne 0 ] && die_now
-+		[ $? -ne 0 ] && _fatal
- 		_md5_checksum $testfile
- 
- 		echo "	8. unwritten -> hole"
-@@ -388,7 +383,7 @@ _test_generic_punch()
- 			-c "$alloc_cmd 0 $_8k" \
- 			-c "$zero_cmd $_4k $_8k" \
- 			-c "$map_cmd -v" $testfile | $filter_cmd
--		[ $? -ne 0 ] && die_now
-+		[ $? -ne 0 ] && _fatal
- 		_md5_checksum $testfile
- 
- 		echo "	9. unwritten -> data"
-@@ -400,7 +395,7 @@ _test_generic_punch()
- 			-c "pwrite $_8k $_8k" $sync_cmd \
- 			-c "$zero_cmd $_4k $_8k" \
- 			-c "$map_cmd -v" $testfile | $filter_cmd
--		[ $? -ne 0 ] && die_now
-+		[ $? -ne 0 ] && _fatal
- 		_md5_checksum $testfile
- 	fi
- 
-@@ -412,7 +407,7 @@ _test_generic_punch()
- 		-c "pwrite $_8k $_4k" $sync_cmd \
- 		-c "$zero_cmd $_4k $_12k" \
- 		-c "$map_cmd -v" $testfile | $filter_cmd
--	[ $? -ne 0 ] && die_now
-+	[ $? -ne 0 ] && _fatal
- 	_md5_checksum $testfile
- 
- 	echo "	11. data -> hole -> data"
-@@ -426,7 +421,7 @@ _test_generic_punch()
- 		-c "$punch_cmd $_8k $_4k" \
- 		-c "$zero_cmd $_4k $_12k" \
- 		-c "$map_cmd -v" $testfile | $filter_cmd
--	[ $? -ne 0 ] && die_now
-+	[ $? -ne 0 ] && _fatal
- 	_md5_checksum $testfile
- 
- 	if [ "$unwritten_tests" ]; then
-@@ -439,7 +434,7 @@ _test_generic_punch()
- 			-c "pwrite $_8k $_4k" $sync_cmd \
- 			-c "$zero_cmd $_4k $_12k" \
- 			-c "$map_cmd -v" $testfile | $filter_cmd
--		[ $? -ne 0 ] && die_now
-+		[ $? -ne 0 ] && _fatal
- 		_md5_checksum $testfile
- 
- 		echo "	13. data -> unwritten -> data"
-@@ -452,7 +447,7 @@ _test_generic_punch()
- 			-c "pwrite $_12k $_8k" -c "fsync" \
- 			-c "$zero_cmd $_4k $_12k" \
- 			-c "$map_cmd -v" $testfile | $filter_cmd
--		[ $? -ne 0 ] && die_now
-+		[ $? -ne 0 ] && _fatal
- 		_md5_checksum $testfile
- 	fi
- 
-@@ -466,7 +461,7 @@ _test_generic_punch()
- 			-c "pwrite 0 $_20k" $sync_cmd \
- 			-c "$zero_cmd $_12k $_8k" \
- 			-c "$map_cmd -v" $testfile | $filter_cmd
--		[ $? -ne 0 ] && die_now
-+		[ $? -ne 0 ] && _fatal
- 		_md5_checksum $testfile
- 	fi
- 
-@@ -483,7 +478,7 @@ _test_generic_punch()
- 		-c "pwrite 0 $_20k" $sync_cmd \
- 		-c "$zero_cmd 0 $_8k" \
- 		-c "$map_cmd -v" $testfile | $filter_cmd
--	[ $? -ne 0 ] && die_now
-+	[ $? -ne 0 ] && _fatal
- 	_md5_checksum $testfile
- 
- 	# If zero_cmd is fcollpase, don't check unaligned offsets
-@@ -512,7 +507,7 @@ _test_generic_punch()
- 		-c "fadvise -d" \
- 		-c "$map_cmd -v" $testfile | $filter_cmd
- 	diff $testfile $testfile.2
--	[ $? -ne 0 ] && die_now
-+	[ $? -ne 0 ] && _fatal
- 	rm -f $testfile.2
- 	_md5_checksum $testfile
- 
-@@ -532,7 +527,7 @@ _test_generic_punch()
- 		-c "$zero_cmd 128 128" \
- 		-c "$map_cmd -v" $testfile | $filter_cmd | \
- 			 sed -e "s/\.\.[0-9]*\]/..7\]/"
--	[ $? -ne 0 ] && die_now
-+	[ $? -ne 0 ] && _fatal
- 	od -x $testfile | head -n -1
- }
- 
-diff --git a/common/rc b/common/rc
-index 9bed6dad..fac9b6da 100644
---- a/common/rc
-+++ b/common/rc
-@@ -1798,28 +1798,6 @@ _do()
-     return $ret
- }
- 
--# bail out, setting up .notrun file. Need to kill the filesystem check files
--# here, otherwise they are set incorrectly for the next test.
--#
--_notrun()
--{
--    echo "$*" > $seqres.notrun
--    echo "$seq not run: $*"
--    rm -f ${RESULT_DIR}/require_test*
--    rm -f ${RESULT_DIR}/require_scratch*
--
--    _exit 0
--}
--
--# just plain bail out
--#
--_fail()
--{
--    echo "$*" | tee -a $seqres.full
--    echo "(see $seqres.full for details)"
--    _exit 1
--}
--
- #
- # Tests whether $FSTYP should be exclude from this test.
- #
-@@ -3835,12 +3813,6 @@ _link_out_file()
- 	_link_out_file_named $seqfull.out "$features"
- }
- 
--_die()
--{
--        echo $@
--        _exit 1
--}
--
- # convert urandom incompressible data to compressible text data
- _ddt()
- {
+ interrupt=false
+-status=`expr $sum_bad != 0`
+-exit
++_exit `expr $sum_bad != 0`
 -- 
 2.34.1
 
