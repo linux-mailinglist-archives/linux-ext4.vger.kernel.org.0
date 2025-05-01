@@ -1,51 +1,61 @@
-Return-Path: <linux-ext4+bounces-7591-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7592-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60C96AA5A2E
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 06:14:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02CBDAA5A4E
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 06:31:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13D0F1C003CC
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 04:14:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B61103B7D80
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 04:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39A322F773;
-	Thu,  1 May 2025 04:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE3B2309AF;
+	Thu,  1 May 2025 04:30:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OEMM4ItZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9BDD1EE7DC
-	for <linux-ext4@vger.kernel.org>; Thu,  1 May 2025 04:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6512D4C85;
+	Thu,  1 May 2025 04:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746072853; cv=none; b=RTTHefKngS4z9qbWx70lhd9J9Zm0/DdxFn9SdlVM6ATxKafx7ineVBuOeG7YZaN7U5aji4CDxxil2ywVmiFM6Th7bMb53usKMCOlHsotcyHTcnQ54d7aNtJBW8SgDI9H3tx2tC/IY7rm/+ZaehpDEB7L4k3wVtrLcSyN8DM57Hs=
+	t=1746073855; cv=none; b=Svwt27nnqWC1qMAXR09rppivrOJuUhgSMlE7M0xT3QrLAxYyOgFZ3ZlHnluQgyhaEkr50dhpmGWjO2tuqHHHOkfY87wDfR9rGWl/Q4n4havpxwqNQw0P8lBZTdlZgB/fJfbIapKbMMPmPTeg1kIclqEmTEwASd5luHLWow6j/ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746072853; c=relaxed/simple;
-	bh=gRxrcTmexcUwmDFtYdzrgnX6og4L+CvWmh7RjgSMJqg=;
+	s=arc-20240116; t=1746073855; c=relaxed/simple;
+	bh=lXs90SKBYnw4vhtrdlv7Pt+u57vH2VVBsnX6vGGu2bs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=otfxG+JtKyl2Wk9RVFx1nOvGZbXNx6aPLICZVM0+CktGnxR1FKcpMLLyiLDtA0hUASnmkkzW1Sj7yhNoG/QcfiFkJwLr0TmJK4ReZRM0i1LDI6pDjX+2FR130vpRzYqqYUpz65v+QhDByoocqpDNF0fBPudFCke7Gs6TY8jjrgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-112-201.bstnma.fios.verizon.net [173.48.112.201])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5414E4dj023418
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 May 2025 00:14:05 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 7C1242E00E9; Thu, 01 May 2025 00:14:04 -0400 (EDT)
-Date: Thu, 1 May 2025 00:14:04 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc: linux-ext4@vger.kernel.org, jack@suse.cz, harshads@google.com
-Subject: Re: [PATCH v8 0/9] Ext4 Fast Commit Performance Patchset
-Message-ID: <20250501041404.GA205188@mit.edu>
-References: <20250414165416.1404856-1-harshadshirwadkar@gmail.com>
- <20250424145911.GC765145@mit.edu>
- <CAD+ocbzqihJidUkanZLwUfHFNyEs0SO_Tbx4ABr_9W3dRVbArg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=awyMqot5JaiTvacsegZRXL7xIGEySrSalPgKE5mD1d6HsVJ4sLLnjArOI4CDcgrmg8IJ70CP6tGLjE3Fcvf/qHfncgdo8AD2LOOPf4OGFAuW2CpiN77D52H67Ci/r0S3vRAktJoKPbQ8WDE5Z8oxhGff/ieic82yyN8QJzqUfbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OEMM4ItZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7730C4CEE3;
+	Thu,  1 May 2025 04:30:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746073853;
+	bh=lXs90SKBYnw4vhtrdlv7Pt+u57vH2VVBsnX6vGGu2bs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OEMM4ItZdopdosiaSYbCa9zn9FLKsXaYLkuZ9/1DDoB9pKGOzLyLblGmMTmoB2iON
+	 l4eLBewZ/2mJwB9jjIEc8N38zYGvkw6IVNUJYzg6mKOz5B+7qEs32Zcf76ab76k8le
+	 OrKNXfWO3i84eNC8c8JX+/6lNTdrhzag3dN3RI9bi7sB8CcP5ON2AVbOkt+kj9/V/W
+	 Ao8foGYGxmfpc5Ln3wthIk9oN5kltiV43vKPl+3dVmwe/y9Go/pZMf6obzC7YHi2df
+	 6vjz1SBE2N69O43eV8K3KdH/eq9+r/ZwcOt7x3GS7Z09wzh9XDSHCdfubdpI1s2WGc
+	 UdwFriTArIAlw==
+Date: Wed, 30 Apr 2025 21:30:53 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: brauner@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk, jack@suse.cz,
+	cem@kernel.org, linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
+	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
+	martin.petersen@oracle.com, linux-ext4@vger.kernel.org,
+	linux-block@vger.kernel.org, catherine.hoang@oracle.com,
+	linux-api@vger.kernel.org
+Subject: Re: [PATCH v9 13/15] xfs: add xfs_compute_atomic_write_unit_max()
+Message-ID: <20250501043053.GD1035866@frogsfrogsfrogs>
+References: <20250425164504.3263637-1-john.g.garry@oracle.com>
+ <20250425164504.3263637-14-john.g.garry@oracle.com>
+ <a8ef548a-b83e-4910-9178-7b3fd35bca14@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -54,24 +64,24 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD+ocbzqihJidUkanZLwUfHFNyEs0SO_Tbx4ABr_9W3dRVbArg@mail.gmail.com>
+In-Reply-To: <a8ef548a-b83e-4910-9178-7b3fd35bca14@oracle.com>
 
-On Wed, Apr 30, 2025 at 11:55:48AM -0700, harshad shirwadkar wrote:
+On Wed, Apr 30, 2025 at 08:52:00AM +0100, John Garry wrote:
+> On 25/04/2025 17:45, John Garry wrote:
+> > +static inline xfs_extlen_t xfs_calc_perag_awu_max(struct xfs_mount *mp)
+> > +{
+> > +	if (mp->m_ddev_targp->bt_bdev_awu_min > 0)
+> > +		return max_pow_of_two_factor(mp->m_sb.sb_agblocks);
+> > +	return mp->m_ag_max_usable;
 > 
-> I tried to run this on my end, and I didn't see the errors that you
-> pointed out. Here's my run:
+> I think that this should be rounddown_pow_of_two(mp->m_ag_max_usable)
 > 
-> -------------------- Summary report
-> KERNEL:    kernel 6.14.0-rc2-xfstests-perf-gff9ebf4dde0d #31 SMP
-> PREEMPT_DYNAMIC Sat Apr 12 19:35:39 UTC 2025 x86_64
-> CMDLINE:   -c fast_commit -g auto
+> ditto for rt
+> 
+> I will fix (unless disagree).
 
-I was applying your patches on 6.15-rc3 and this evening I tried
-applying them against 6.15-rc2, which has been failing as well.
+I don't think this needs fixing.  If there's no hardware support on the
+device, then we can do any size of atomic write that we want.
 
-There's nothing else on the ext4 dev branch yet, but there were a
-large number of ext4 patches which landed between 6.14-rc2 and
-6.15-rc2.
-
-							- Ted
+--D
 
