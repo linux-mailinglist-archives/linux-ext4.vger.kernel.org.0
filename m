@@ -1,96 +1,105 @@
-Return-Path: <linux-ext4+bounces-7596-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7597-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7449EAA5C82
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 11:11:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9331AA5DB8
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 13:19:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1F823B948D
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 09:10:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ADC14632F9
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 11:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D2122192F5;
-	Thu,  1 May 2025 09:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50ED122172C;
+	Thu,  1 May 2025 11:19:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C8oc5eLo"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dXfUnF0Y";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iyfX+hyD";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dXfUnF0Y";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iyfX+hyD"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE22213255
-	for <linux-ext4@vger.kernel.org>; Thu,  1 May 2025 09:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B15344C7C
+	for <linux-ext4@vger.kernel.org>; Thu,  1 May 2025 11:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746090667; cv=none; b=IiSdY8tG1nevhUivpR2xG4Cr/JsXPA3Ix63cIBk+mLx/FxtIWAxdTAtgkycBeY5NNzbOaWs7XmSv/y7yOsxr2GdFz2IMJEEjAiGrkknbiv4ff4NrLKFAzhs29UxMCF6MQ4o4g3/y1WOmXn+40oh35Kj9I6fOkRV0LsN7v72br4s=
+	t=1746098358; cv=none; b=hCz15zjMlhZwm4qZeHoB2ZNX6wdGXQ51SxRgntzI44qNqSBRBd5OreDO3QFGRtRWkQxfnW90vdfpgud+eZkElDf6UMrHtYdYjVKTacWIv3wQIpAlFICXIf+L1t8uJfbXzAKIHNdu1u9doQxL0y96MRLCi4vU2yNniDZilc9IGBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746090667; c=relaxed/simple;
-	bh=QEmXOiaRmXnU0Pvpj2r5Tc5dFQl/2TPO2eRzIxZTpSY=;
+	s=arc-20240116; t=1746098358; c=relaxed/simple;
+	bh=V1hbDxY+Xl0TX989SzsmUJCW2KJudQ05NUJwcgVc9i8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C8MwHviMCmG+0ig0n9eKAXmWUrNqnMcs1KSNJG0TKW38FWwsvVvy8VZeQYyqrvH9Q7QZnEjpJaJnk6WoH3GSLzC7WO2FVbsbR2j4qKhNpXN/n0ZYeaGOqV6Z1bMFSrpp0RE6f7KRVqgZVZam5xV0iAfed+abmhj/WLXrzAWHW0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C8oc5eLo; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1746090664;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p/oEfdkRYkFR+em70LcXjrMP0VqQvAIDMbj9D6B7qsmrPNWfIQvufPHRoxyAKXOAOQm85JD4vhQHaKHHtysRVYOYXgwlCYr8D/3KVeFwCWLm0ITa5e9EHqd20cRjygfPVz2zMz39ikuTObzBg3sFmOwhvAw19aE+eoJwFrW3PYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dXfUnF0Y; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iyfX+hyD; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dXfUnF0Y; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iyfX+hyD; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5FEC41F76B;
+	Thu,  1 May 2025 11:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746098354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QxhIn1Sw5963uslvOW25nDRRIDUs0PbP3KlVBu7IStA=;
-	b=C8oc5eLotFhcFt4pENeaCHFr+ZmEQCIShUieTO/IhSpKLVC5m20QQzLVrMX55pdhcT03Wh
-	HNvAh1huCjVdAkzfZ561CVdLdcrDUwyFasKS3j2cNyvnndXdfYRq+eCYbEm9EdlS/HC1n6
-	5NUsngG7mPVzrwsxFdADZ8FXPT+Sau4=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-0F5mH_ZPONOChQjOk6ci7Q-1; Thu, 01 May 2025 05:11:01 -0400
-X-MC-Unique: 0F5mH_ZPONOChQjOk6ci7Q-1
-X-Mimecast-MFC-AGG-ID: 0F5mH_ZPONOChQjOk6ci7Q_1746090660
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-736cd27d51fso698350b3a.2
-        for <linux-ext4@vger.kernel.org>; Thu, 01 May 2025 02:11:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746090660; x=1746695460;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QxhIn1Sw5963uslvOW25nDRRIDUs0PbP3KlVBu7IStA=;
-        b=N9kxjy9apResZPZVZh8lQMGKS3V5wHN3tcSxSthuWapa8hgQtp59dWFcFzf5GRrg3A
-         i+pzE/OKFxl/bB9ViKhraaRwfA5xXorVXmyqulHbHg1nVISkWrM/nC+DQ1rll5kIoq/Z
-         +s3WGjOQgDofChzpsEi6e+OIoIf+H3O8n/JVMSKtWUJR7mxiss43x8c9qjyPatxI/F5Y
-         QMeyrLa3DYbjJsHTHMy1Uef14eWL7RLXMONpkQqMNEibC0Peh7GKKNaepI5hsTRot7L6
-         0XhUkZPfEcB2v2qwjS/T9VPadfhFLpypYO5A7sYy457sKGAwMQGErSubAVEhVpVWOlMh
-         HGdg==
-X-Forwarded-Encrypted: i=1; AJvYcCVSZ6Hqf7y0zuNkGkw2umX0Ak9f48n7tvctPbw5Mikn4FVdVCto9ZGtsQxNZWiNHxVJTKuJNWDGpSR4@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTqleEl0TIRJ6+H85BePlcSDUmlCrg7aWRZg0gBcRvDWgjyWSh
-	KpuL3VtcWPvGbQ2VF8rU97myKK3sqKb0QwRa9YGviBZSyCa/HORaM7WGdXydoqXVDfdPMLf+Apb
-	PA9yMh/XG0h0FzSRP1iJn/qQsQoMHulhhlVZc2k0KMJA6guIDvcHs+m/0h7A=
-X-Gm-Gg: ASbGnct56SJKFZJrlyxT1IqB9INt28vYpzW2VNwWcE4aqtYDHUOpP7zO8SwYd1dIC9G
-	ENE1eZf5WXJR2lR0Sap6GnyzfCJVFseGFy6UmM15kQeNxuiJPetdIomYLU020yayIaoYqHPHHb6
-	LCIXNuVfTe26QgF2RAatbsfPCN0yC+NSpn3VDMOezopDU1tqFZkQ1Cfwap0mOfjw4TdTyJhEB/7
-	ACI2hqEJsg0hyLyOYkpCbQUXohC3Gg++xmENKShdxnNsBYO7pX3b2EtdYvKe8wBS8Gg5+xYjDzV
-	8S6hSUKBiAuF2cT7mAoXRnl/Jt9MA9+CSgznU+SGZTQHgBfJzH9D
-X-Received: by 2002:a05:6a00:399f:b0:736:b9f5:47c6 with SMTP id d2e1a72fcca58-74049254c95mr2293521b3a.16.1746090659928;
-        Thu, 01 May 2025 02:10:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFb5/7x8ZBKSA+i2VN4Rh2/jV2SOh0H2mngKBWWKI7BKImnX6gIaLln1uDeV0hnSozdCGsAzw==
-X-Received: by 2002:a05:6a00:399f:b0:736:b9f5:47c6 with SMTP id d2e1a72fcca58-74049254c95mr2293497b3a.16.1746090659522;
-        Thu, 01 May 2025 02:10:59 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7404fa42fb0sm353535b3a.166.2025.05.01.02.10.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 May 2025 02:10:59 -0700 (PDT)
-Date: Thu, 1 May 2025 17:10:53 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>,
-	fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org,
-	zlang@kernel.org, david@fromorbit.com, hch@infradead.org
-Subject: Re: [PATCH v3 1/2] common: Move exit related functions to a
- common/exit
-Message-ID: <20250501091053.ghovsgjb52yvb7rj@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1746015588.git.nirjhar.roy.lists@gmail.com>
- <7363438118ab8730208ba9f35e81449b2549f331.1746015588.git.nirjhar.roy.lists@gmail.com>
- <87cyctqasl.fsf@gmail.com>
+	bh=d5BePWJyYsVW7m8KObraTr4ogH1NSnvnLdbstl56ihI=;
+	b=dXfUnF0Y68Yhu7N6AyGbQvEybOZ/TYRz4s7eRqMneYVdky/AtTvG8PG0G3dsNykkjLVjC4
+	AWvyqZ4CYEyfJ7jiWJcFVQgTptptHZAspRMnkxv7T61UpGHOscdZS7u5tccIQaU/gn6E+y
+	SRPd12quug8SzTVpo9mcsbFkX0BOLyw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746098354;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d5BePWJyYsVW7m8KObraTr4ogH1NSnvnLdbstl56ihI=;
+	b=iyfX+hyDKxq8EWH6DyyJq+clWQMmCnRbaEaO3bxj8Ox2F7zaoLm9+fb8lnG5Xn4PWyGoT2
+	lOH1Y3apuokJCQCA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dXfUnF0Y;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=iyfX+hyD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746098354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d5BePWJyYsVW7m8KObraTr4ogH1NSnvnLdbstl56ihI=;
+	b=dXfUnF0Y68Yhu7N6AyGbQvEybOZ/TYRz4s7eRqMneYVdky/AtTvG8PG0G3dsNykkjLVjC4
+	AWvyqZ4CYEyfJ7jiWJcFVQgTptptHZAspRMnkxv7T61UpGHOscdZS7u5tccIQaU/gn6E+y
+	SRPd12quug8SzTVpo9mcsbFkX0BOLyw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746098354;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d5BePWJyYsVW7m8KObraTr4ogH1NSnvnLdbstl56ihI=;
+	b=iyfX+hyDKxq8EWH6DyyJq+clWQMmCnRbaEaO3bxj8Ox2F7zaoLm9+fb8lnG5Xn4PWyGoT2
+	lOH1Y3apuokJCQCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 51618139E7;
+	Thu,  1 May 2025 11:19:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id CjWVE7JYE2hTMAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 01 May 2025 11:19:14 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D333AA0AF0; Thu,  1 May 2025 13:19:13 +0200 (CEST)
+Date: Thu, 1 May 2025 13:19:13 +0200
+From: Jan Kara <jack@suse.cz>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Zhang Yi <yi.zhang@huawei.com>, Liebes Wang <wanghaichi0403@gmail.com>, 
+	Jan Kara <jack@suse.cz>, ojaswin@linux.ibm.com, Theodore Ts'o <tytso@mit.edu>, 
+	linux-fsdevel@vger.kernel.org, syzkaller@googlegroups.com, 
+	Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: kernel BUG in zero_user_segments
+Message-ID: <znfg4s5ysxqvrzeevkmtgixj5vztcyqbuny7waqkugnzkpg2zx@2vxwh57flvva>
+References: <CADCV8spm=TtW_Lu6p-5q-jdHv1ryLcx45mNBEcYdELbHv_4TnQ@mail.gmail.com>
+ <uxweupjmz7pzbj77cciiuxduxnbuk33mx75bimynzcjmq664zo@xqrdf6ouf5v6>
+ <ac3a58f6-e686-488b-a9ee-fc041024e43d@huawei.com>
+ <aBGVmIin8YxRyFDp@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -99,78 +108,77 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87cyctqasl.fsf@gmail.com>
+In-Reply-To: <aBGVmIin8YxRyFDp@casper.infradead.org>
+X-Rspamd-Queue-Id: 5FEC41F76B
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[huawei.com,gmail.com,suse.cz,linux.ibm.com,mit.edu,vger.kernel.org,googlegroups.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Thu, May 01, 2025 at 08:47:46AM +0530, Ritesh Harjani wrote:
-> "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
+On Wed 30-04-25 04:14:32, Matthew Wilcox wrote:
+> On Tue, Apr 29, 2025 at 03:55:18PM +0800, Zhang Yi wrote:
+> > After debugging, I found that this problem is caused by punching a hole
+> > with an offset variable larger than max_end on a corrupted ext4 inode,
+> > whose i_size is larger than maxbyte. It will result in a negative length
+> > in the truncate_inode_partial_folio(), which will trigger this problem.
 > 
-> > Introduce a new file common/exit that will contain all the exit
-> > related functions. This will remove the dependencies these functions
-> > have on other non-related helper files and they can be indepedently
-> > sourced. This was suggested by Dave Chinner[1].
-> > While moving the exit related functions, remove _die() and die_now()
-> > and replace die_now with _fatal(). It is of no use to keep the
-> > unnecessary wrappers.
-> >
-> > [1] https://lore.kernel.org/linux-xfs/Z_UJ7XcpmtkPRhTr@dread.disaster.area/
-> > Suggested-by: Dave Chinner <david@fromorbit.com>
-> > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> > ---
-> >  check           |  2 ++
-> >  common/config   | 17 -----------------
-> >  common/exit     | 39 +++++++++++++++++++++++++++++++++++++++
-> >  common/preamble |  3 +++
-> >  common/punch    | 39 +++++++++++++++++----------------------
-> >  common/rc       | 28 ----------------------------
-> >  6 files changed, 61 insertions(+), 67 deletions(-)
-> >  create mode 100644 common/exit
-> >
-> > diff --git a/check b/check
-> > index 9451c350..bd84f213 100755
-> > --- a/check
-> > +++ b/check
-> > @@ -46,6 +46,8 @@ export DIFF_LENGTH=${DIFF_LENGTH:=10}
-> >  
-> >  # by default don't output timestamps
-> >  timestamp=${TIMESTAMP:=false}
-> > +. common/exit
-> > +. common/test_names
-> 
-> So this gets sourced at the beginning of check script here.
-> 
-> >  
-> >  rm -f $tmp.list $tmp.tmp $tmp.grep $here/$iam.out $tmp.report.* $tmp.arglist
-> >  
-> <...>
-> > diff --git a/common/preamble b/common/preamble
-> > index ba029a34..51d03396 100644
-> > --- a/common/preamble
-> > +++ b/common/preamble
-> > @@ -33,6 +33,9 @@ _register_cleanup()
-> >  # explicitly as a member of the 'all' group.
-> >  _begin_fstest()
-> >  {
-> > +	. common/exit
-> > +	. common/test_names
-> > +
-> 
-> Why do we need to source these files here again? 
-> Isn't check script already sourcing both of this in the beginning
-> itself?
+> It seems to me like we're asking for trouble when we allow an inode with
+> an i_size larger than max_end to be instantiated.  There are probably
+> other places which assume it is smaller than max_end.  We should probably
+> decline to create the bad inode in the first place?
 
-The _begin_fstest is called at the beginning of each test case (e.g. generic/001).
-And "check" run each test cases likes:
+Indeed somewhat less quirky fix could be to make ext4_max_bitmap_size()
+return one block smaller limit. Something like:
 
-  cmd="generic/001"
-  ./$cmd
+        /* Compute how many blocks we can address by block tree */
+        res += ppb;
+        res += ppb * ppb;
+        res += ((loff_t)ppb) * ppb * ppb;
++	/*
++	 * Hole punching assumes it can map the block past end of hole to
++	 * tree offsets
++	 */
++	res -= 1;
+        /* Compute how many metadata blocks are needed */
+        meta_blocks = 1;
+        meta_blocks += 1 + ppb;
 
-So the imported things (by "check") can't help sub-case running
+The slight caveat is that in theory there could be filesystems out there
+with so large files and then we'd stop allowing access to such files. But I
+guess the chances are so low that it's probably worth trying.
 
-Thanks,
-Zorro
-
-> 
-> -ritesh
-> 
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
