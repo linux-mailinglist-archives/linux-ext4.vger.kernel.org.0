@@ -1,122 +1,158 @@
-Return-Path: <linux-ext4+bounces-7620-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7621-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A2AFAA6476
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 21:54:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5AFDAA69D2
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 May 2025 06:29:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAD5A168792
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 May 2025 19:53:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A90DE7A2937
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 May 2025 04:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460992367AD;
-	Thu,  1 May 2025 19:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8AB1A23A5;
+	Fri,  2 May 2025 04:28:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FvxxJahx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XPA0qyp2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DF5235069;
-	Thu,  1 May 2025 19:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9538219D07B;
+	Fri,  2 May 2025 04:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746129229; cv=none; b=tVKVT0ckchcf3hUEcRsO7ioFYLL06F9jSNf2wFvzUadRQJhz0nru+dC9HuUULT0kCzyuNPqTSgrAoL4tzAsn15Azef8QV9cxD13QMBZEorpLydbh6Ns5r9YIBT8+X3uuBi1rjOmNQHXEx+MANjQtt/s7XswLhqc6veznZEEdLng=
+	t=1746160138; cv=none; b=q45XBNfkS77VkRqG4S/glxE4mHR6+z65qsVli2XkJupRa1GNTlgGqGUCnyt0Hm6niV/yxeNzua6f6ol2dYE4IAtegDC9t+St45xxCQNc2Bu5ws/VpmeWnXr1WUWEe7eC3vmaQCsVKBfZk0BBIUFWbK7ykeiY+T3IxSSW9QPMyz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746129229; c=relaxed/simple;
-	bh=yseky+6nMqu8zW66EyDaMuMbkyGJiRf5HJSmPi71rhU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kxvumCUXWqVG1nFGNyeRj2KmGQjZy2Ju2cdEvff3/eTAAOwCGbwQMvMhRbaIsK4oUA5xCJr6FWecADDD2lQjSC/jaz9++U75V7PCF3T4mK/t6VHhxdgxe9RTfW/P6k7sApxfU9TdhiFacMRST5tG/ciNDtRFmIAf0zM77PyRxdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FvxxJahx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FE4BC4CEE3;
-	Thu,  1 May 2025 19:53:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746129229;
-	bh=yseky+6nMqu8zW66EyDaMuMbkyGJiRf5HJSmPi71rhU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FvxxJahxj98DdcATmX2NuCi1yRRapON+UkQuq2EiTPHM66kagvudZv0QRTYPgb1bo
-	 tpTeKwW86JGfmy9YzQLp8bkghVS7xDB3GtIRJO6tJxE8ofebqIsY88kvldxgEXhOuG
-	 jN0xaG0APqnaXZA6oGT7uM80Ejk8Rfw73E9Z74BMt/pAUKybG97jyNyRgUwb7qB4rI
-	 1XiNEbIDwlwzjEucfPcx8yQcWqfJd9KI6RvIwXddeMZoKtv5jJ7VXEg/q5MBQQhRJo
-	 178cgoqG/UlzaBM/sic9EjAZ7QdiWh6dk8SmGzav4BSf1NZIIFZv/nvWKISh6BLkUI
-	 m17w/bJ4ZMKsg==
-Date: Thu, 1 May 2025 12:53:48 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: John Garry <john.g.garry@oracle.com>, brauner@kernel.org,
-	viro@zeniv.linux.org.uk, jack@suse.cz, cem@kernel.org,
-	linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
-	martin.petersen@oracle.com, linux-ext4@vger.kernel.org,
-	linux-block@vger.kernel.org, catherine.hoang@oracle.com,
-	linux-api@vger.kernel.org
-Subject: Re: [PATCH v9 05/15] xfs: ignore HW which cannot atomic write a
- single block
-Message-ID: <20250501195348.GH25675@frogsfrogsfrogs>
-References: <20250425164504.3263637-1-john.g.garry@oracle.com>
- <20250425164504.3263637-6-john.g.garry@oracle.com>
- <20250429122105.GA12603@lst.de>
- <20250429144446.GD25655@frogsfrogsfrogs>
- <20250430125906.GB834@lst.de>
- <20250501162216.GB25675@frogsfrogsfrogs>
+	s=arc-20240116; t=1746160138; c=relaxed/simple;
+	bh=7orG9dZFrQELGGvUoY4zYyrw3ztyTbLK7Y75RPsrlwU=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=jg1SBcI+a9jEXFFmOJj75r+9sQ4z9gRxgf0TEGGIiU+6DuRdmLDP/rAswABzd3fr8u2wIghsKfcJRrQgBk04OuL6u/G4mM+/BGtKvFS/pDRtLuUAN3ZkACx07QM8aBu9Ux7B5kAAqYb0+ICNswKbp9/oAf7zGNIJa3J8PG1uwpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XPA0qyp2; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-301918a4e3bso1855639a91.3;
+        Thu, 01 May 2025 21:28:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746160136; x=1746764936; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nICllbPrXc2EBQBnG+6btLl3oHenOUIrwyECtKpec80=;
+        b=XPA0qyp2IPlpufwaozE67sQnH4EdBM7H+aZ99h+5Tohj/nQAqhlpnSXbhsEnWIeXE8
+         42U1EMIGejEaLMclM+Esf37Hhodj75vunsY7e2g86VVeHoeTbFphsiueniPEgnfkceRO
+         flKOjndlaCMscP5vnbaRW2KwaGuUvQslh2INv1agkFr+yqN/XVef994pa5CrqNDF3eFU
+         UI45Nt/Pnjyd2pkr3mS7neVTunXjXdA8ya9spXoN8+WsZ2b52kXTCR2je94zlVVR8WsO
+         8bF2PYi0fUWsb+mHpfYvOGRhFSNixe9F/rFpZhHKSKM5WyieryG9QL3ntqfi9KJ+8NAU
+         B1rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746160136; x=1746764936;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nICllbPrXc2EBQBnG+6btLl3oHenOUIrwyECtKpec80=;
+        b=V4G8Ru0Xq2EYTlSDlHxeCbB6iq+ReWtlteGJL/RWQIgfNnlHuRdJVJCgnKa5uXrx3E
+         65/XsZo05SarEWt21W34YE8765cyO751dz7A33j+8wmXFeJ7R3SxOyq3A3t11gU7JaPl
+         +af1AWEW8X2SzuSLH7V9IwLHkVT1I4rZ3QK8Ez7vVSrhkDUHoAPLZdNSU4IhV477exuK
+         nde55edWadvfNbsahv/8PQjbDmHAjdpanTlXkjjKzDs4ZDpMzo6O5fqBDjY6VloofVG7
+         julARC3wzvrr7AACQBfe4hAKRjBBeDjkmxrn8/tfH1hmJOrEk2Qun8QCSu3ODIRYr6Zj
+         NG/w==
+X-Forwarded-Encrypted: i=1; AJvYcCXCyMuT/jHJBHftF7tMGbtSlTJkCu0NBGAO8mbWrcxWjNLPPq9kLEIsH5oDbkG5y2KdSdQkjutr@vger.kernel.org, AJvYcCXYswwSBsEJ066hvBJtklCyTMLw12+PUL3txXU8rk4yp/a00ljdIw0P0psL2qiSR1BJyiLyQ2vacFV/fg==@vger.kernel.org, AJvYcCXq/6pvNnf0sNqvEV5bYJBV1Va6SX52TMX/tbg4VQ2wEjlE2WVdnapXBv0GTJHNSTy564vxkzqe9MCy@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2cCnylK3PxBcB2Eu+ZsgAD8gltCw8PgMaD8qXtsMc2Ux72TQh
+	pMXQs1u8WXE8VW+4bwCCuyk+7rwUNgwXuK5eBXhvXJCc9iLNt4ad
+X-Gm-Gg: ASbGncuIqCHFdBLCoDyhqPdEaoD0vT8xSehoXVZSQINI318BMa1iKHPg8nMWB24sCv8
+	1VvRJHx2nrF/o03V2t/Zh0zfzBmWS90JM+wX//c+fGdrKKaVYqZr+UApQD8Zsh2CGl73eZ0ppG/
+	fSAXqBHxdwuLwb2bfbjyo6e6/bM3H+zIAa4/YZCjJq+/Lly+D1AyTGpi2Uu6IjoRQ218qbWke/X
+	j+wK74UpwF+fWV1yy6Z0mWxRy5cQ/J8jAj3MXkBtzz94SBcVZVu6BGyB/3T25I3r5jN79Fonzvp
+	rpCKu+2quy4l17Wj45Vwje+UXK7AwTg2Cg==
+X-Google-Smtp-Source: AGHT+IFUStdApO5eqkJRR6pViDWXnfmB0N0ZvuUrQOZ10WmoGS0rkEd0wBLoMly0tSlHHl6uG2Cg7Q==
+X-Received: by 2002:a17:90b:51d1:b0:2fe:6942:3710 with SMTP id 98e67ed59e1d1-30a4e578b72mr2309724a91.3.1746160135699;
+        Thu, 01 May 2025 21:28:55 -0700 (PDT)
+Received: from dw-tp ([171.76.84.163])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e10938cd8sm4791775ad.225.2025.05.01.21.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 May 2025 21:28:55 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Zorro Lang <zlang@redhat.com>
+Cc: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org, david@fromorbit.com, hch@infradead.org
+Subject: Re: [PATCH v3 1/2] common: Move exit related functions to a common/exit
+In-Reply-To: <20250501091053.ghovsgjb52yvb7rj@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Date: Fri, 02 May 2025 09:53:42 +0530
+Message-ID: <878qnfr67l.fsf@gmail.com>
+References: <cover.1746015588.git.nirjhar.roy.lists@gmail.com> <7363438118ab8730208ba9f35e81449b2549f331.1746015588.git.nirjhar.roy.lists@gmail.com> <87cyctqasl.fsf@gmail.com> <20250501091053.ghovsgjb52yvb7rj@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250501162216.GB25675@frogsfrogsfrogs>
 
-On Thu, May 01, 2025 at 09:22:16AM -0700, Darrick J. Wong wrote:
-> On Wed, Apr 30, 2025 at 02:59:06PM +0200, Christoph Hellwig wrote:
-> > On Tue, Apr 29, 2025 at 07:44:46AM -0700, Darrick J. Wong wrote:
-> > > > So this can't be merged into xfs_setsize_buftarg as suggeted last round
-> > > > instead of needing yet another per-device call into the buftarg code?
-> > > 
-> > > Oh, heh, I forgot that xfs_setsize_buftarg is called a second time by
-> > > xfs_setup_devices at the end of fill_super.
-> > 
-> > That's actually the real call.  The first is just a dummy to have
-> > bt_meta_sectorsize/bt_meta_sectormask initialized because if we didn't
-> > do that some assert in the block layer triggered.  We should probably
-> > remove that call and open code the two assignments..
-> > 
-> > > I don't like the idea of merging the hw atomic write detection into
-> > > xfs_setsize_buftarg itself because (a) it gets called for the data
-> > > device before we've read the fs blocksize so the validation is
-> > > meaningless and (b) that makes xfs_setsize_buftarg's purpose less
-> > > cohesive.
-> > 
-> > As explained last round this came up I'd of course rename it if
-> > we did that.  But I can do that later.
-> 
-> <nod> Would you be willing to review this patch as it is now and either
-> you or me can just tack a new cleanup patch on the end?  I tried writing
-> a patch to clean this up, but ran into questions:
-> 
-> At first I thought that the xfs_setsize_buftarg call in
-> xfs_alloc_buftarg could be replaced by open-coding the bt_meta_sector*
-> assignment, checking that bdev_validate_blocksize is ok, and dropping
-> the sync_blockdev.
-> 
-> Once we get to xfs_setup_devices, we can call xfs_setsize_buftarg on the
-> three buftargs, and xfs_setsize_buftarg will configure the atomic writes
-> geometry.
-> 
-> But then as I was reading the patch, it occurred to me that at least for
-> the data device, we actually /do/ want that sync_blockdev call so that
-> any dirty pagecache for the superblock actually get written to disk.
-> Maybe that can go at the end of xfs_open_devices?  But would it be
-> preferable to sync all the devices prior to trying to read the primary
-> sb?  I don't think there's a need, but maybe someone else has a
-> different viewpoint?
+Zorro Lang <zlang@redhat.com> writes:
 
-Eh, since John posted a V10 I'll just tack my new patches on the end of
-that so everyone can look at them.
+> On Thu, May 01, 2025 at 08:47:46AM +0530, Ritesh Harjani wrote:
+>> "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
+>> 
+>> > Introduce a new file common/exit that will contain all the exit
+>> > related functions. This will remove the dependencies these functions
+>> > have on other non-related helper files and they can be indepedently
+>> > sourced. This was suggested by Dave Chinner[1].
+>> > While moving the exit related functions, remove _die() and die_now()
+>> > and replace die_now with _fatal(). It is of no use to keep the
+>> > unnecessary wrappers.
+>> >
+>> > [1] https://lore.kernel.org/linux-xfs/Z_UJ7XcpmtkPRhTr@dread.disaster.area/
+>> > Suggested-by: Dave Chinner <david@fromorbit.com>
+>> > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+>> > ---
+>> >  check           |  2 ++
+>> >  common/config   | 17 -----------------
+>> >  common/exit     | 39 +++++++++++++++++++++++++++++++++++++++
+>> >  common/preamble |  3 +++
+>> >  common/punch    | 39 +++++++++++++++++----------------------
+>> >  common/rc       | 28 ----------------------------
+>> >  6 files changed, 61 insertions(+), 67 deletions(-)
+>> >  create mode 100644 common/exit
+>> >
+>> > diff --git a/check b/check
+>> > index 9451c350..bd84f213 100755
+>> > --- a/check
+>> > +++ b/check
+>> > @@ -46,6 +46,8 @@ export DIFF_LENGTH=${DIFF_LENGTH:=10}
+>> >  
+>> >  # by default don't output timestamps
+>> >  timestamp=${TIMESTAMP:=false}
+>> > +. common/exit
+>> > +. common/test_names
+>> 
+>> So this gets sourced at the beginning of check script here.
+>> 
+>> >  
+>> >  rm -f $tmp.list $tmp.tmp $tmp.grep $here/$iam.out $tmp.report.* $tmp.arglist
+>> >  
+>> <...>
+>> > diff --git a/common/preamble b/common/preamble
+>> > index ba029a34..51d03396 100644
+>> > --- a/common/preamble
+>> > +++ b/common/preamble
+>> > @@ -33,6 +33,9 @@ _register_cleanup()
+>> >  # explicitly as a member of the 'all' group.
+>> >  _begin_fstest()
+>> >  {
+>> > +	. common/exit
+>> > +	. common/test_names
+>> > +
+>> 
+>> Why do we need to source these files here again? 
+>> Isn't check script already sourcing both of this in the beginning
+>> itself?
+>
+> The _begin_fstest is called at the beginning of each test case (e.g. generic/001).
+> And "check" run each test cases likes:
+>
+>   cmd="generic/001"
+>   ./$cmd
+>
+> So the imported things (by "check") can't help sub-case running
 
---D
+aah right. Each testcase is inoked by "exec ./$seq" and it won't have
+the function definitions sourced from the previous shell process. So we
+will need to source the necessary files again within the test execution.
+
+-ritesh
 
