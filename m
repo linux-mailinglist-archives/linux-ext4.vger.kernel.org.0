@@ -1,112 +1,192 @@
-Return-Path: <linux-ext4+bounces-7629-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7630-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95A47AA78BD
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 May 2025 19:40:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73128AA7AA0
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 May 2025 22:12:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56CCB1C06E89
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 May 2025 17:40:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DACA6466F25
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 May 2025 20:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941B4255E30;
-	Fri,  2 May 2025 17:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14971F585C;
+	Fri,  2 May 2025 20:12:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AqJ5OnEf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z1zXSQCA"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1581A3174
-	for <linux-ext4@vger.kernel.org>; Fri,  2 May 2025 17:40:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F7B1EBFFF;
+	Fri,  2 May 2025 20:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746207620; cv=none; b=d5YAxOmmspBffhezRZ7NYbbcaJv6z0tSSGKT5fAg5aM3NxdsQ35P3JhB7OopRlIa/F2XcAEbml6gDbKFYr5sXAj1I6jpK9R1ZB+mE7+R9R06iBUVZMo5Y5VOnP91wHj8b/Et1Kyw5h0yH8nU7XnZ7Qv2MciKUzP9jN9Wd9XQIh8=
+	t=1746216721; cv=none; b=qEOpiBJe2RNuSPhiYQLvRAUC8j1jvQ5A0ka/PKtjbk4slK/p8UyzwMjyYCCtwL6psCgGN4FxY2V2j6ExlNxmDmf0RdYof4OH/5xuhRsk+SHyEGFv+me9pq0oxD7MnqH48UI5x+DM92Q1fk0oTxQYTwC4RFrNkjf1oA0dfAPWLnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746207620; c=relaxed/simple;
-	bh=OQf5DBNzrjZZveLFbCLTW1PYqaxmpDmD+UYMeLSo6tU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T4wBwj+WKrPDTlS4wguNaIigFuVQgVts5tJ60T5Ua2lS1gEa0Dyva0Gjq2bwfG6aq60YZK/vdjLTJJ7I48zxKgOr6iKcVFylKuQqrZ3SqfbDsH6cJivWv81W7VohJ4lX8of4fPKtSghbcA9567ZNSREvDJZ05ICzU9gh2gqJ3UQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AqJ5OnEf; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7399838db7fso2625428b3a.0
-        for <linux-ext4@vger.kernel.org>; Fri, 02 May 2025 10:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746207617; x=1746812417; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=j5MqQORpDGnb6rW9RxtQi+w24ATaTq1lRSf11YHJPJA=;
-        b=AqJ5OnEf/lWQhltyJNQWf/bdNXxxEE4oM56Q6kyPFTYy/hWse88PSKM+0SsAgqnqHq
-         o50oIH4TEHYV1KW4wQPBccVFE9+IMdUq/A0yGH3oHJD0Wq2Rl1819rmEcCCLLuMvyXE8
-         BGfObSH/slU9Bn4Ejy7k26PvJGuds8qKFfXE+Qt+ADQspo8NNpsRlX7/+gyLUA5R/gby
-         M0XMOwIAzfrxEFB4je7w0kg+SNuAuqt1Yc2t4VWUcmDHcT/94w478C0ozs7c5JyTkF+O
-         7cnI3mDbBBxHYzVy2SqQrEtZlKyOp3cVFO7Wi2+3m29GWsAU/5gPaGkY9sSk7v4/I47n
-         zEYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746207617; x=1746812417;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j5MqQORpDGnb6rW9RxtQi+w24ATaTq1lRSf11YHJPJA=;
-        b=ql8U0hP1c86h5MdT5fsiuxUiSXGJ7z5LLPS16XGL2V1JJHojWKXOXSTpf3qhB5wZSW
-         yMXGyFdTxTd9Wqluw6xo694OVz/yrT41xBFbsa84d7vng+8qmhS7WPbz1oEBAQXjc9tY
-         76VUoro/bNEz9X9MXMWku0cXPeeqKWnMxt4YQzqkmT8a+lMXF43I1WDlf8hok6jAOLT2
-         8B4rPXu1bB3s196VPHSvYlkkJMaLafuJb44gfGsGy/2aGUipsz2NNOQOxxki1dYcCIZa
-         VSH8u8H5vdJQUYiqPH5gs9HyrvPZVEEV5C93qYsDrXcTGsmbJV3lPjf1yTtNPJeGSIP6
-         QL4g==
-X-Gm-Message-State: AOJu0YwDh0TtmdeG43uPgweKxB2FdP+6e+6E8Ks6GF7w5gCvnBH0Rqx8
-	e2lNsor1eK77EtQfX7Iz/pp7Uj9RKROWh6QuOiMQxEM2Z0wGsW4V846DSpkF
-X-Gm-Gg: ASbGncuaQ4NYco5O0HrxafKrmVRTmvF3vHNGLBDjSYxgDnkeUlvvmq22/YPEOBEINEq
-	j2i6fdOTFV6xfnCviNyWOpErwjEKCRGlbFoo/PIziwIFv5tCVuGhrKOlihS5R+oYMDsOKNSRNLA
-	4nP0sh+OiVNFYQkdPrjmcmRS4JqlIjWLsHM5SxZj32JzqY1T6t4oKhRrJC7Jn5ZN0BiOQmWU0Ww
-	MZthTztN4Kcqon9GP80YGVlo6ua8KZwxvNe84DwCZktQ4bxKLrVoRtm763k1081jVnbAGYHAoNL
-	m79FPtF3Pt0aNmLVp6GtNZbZImJwkRAvLndyDbITYW6DTgHA+cCmKszQ0pAXlIbukTU=
-X-Google-Smtp-Source: AGHT+IFdErCrnOv3CTaNOF98V8WE+Aot2SM00LNHN6dV7x6sWWfcwtc0sSa1Md8gIHdmDtq+GE617g==
-X-Received: by 2002:a05:6a00:8c01:b0:736:4d05:2e35 with SMTP id d2e1a72fcca58-74057afb16amr6108355b3a.3.1746207617001;
-        Fri, 02 May 2025 10:40:17 -0700 (PDT)
-Received: from virt1.. (67-61-129-104.cpe.sparklight.net. [67.61.129.104])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7405909c883sm1858067b3a.165.2025.05.02.10.40.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 May 2025 10:40:16 -0700 (PDT)
-From: Nicolas Bretz <bretznic@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	jack@suse.cz,
-	adilger.kernel@dilger.ca,
-	Nicolas Bretz <bretznic@gmail.com>
-Subject: [PATCH] ext4: added missing kfree
-Date: Fri,  2 May 2025 10:40:12 -0700
-Message-ID: <20250502174012.18597-1-bretznic@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1746216721; c=relaxed/simple;
+	bh=u5Z8wpvFxHNyn281JUcC5aJjExa9fXKR0LlwurFoJOo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=sqSAPZncN33naM7TGdeMmoBzhTot+MOmeIvMt/9fapZGHF2ZbGMrBTNAoGPtSYf04tTRoq6oUqDqitz1dCXroFhyzq07L4NJn7NLsgzQXTUlI/8Kayvj+WSJzAJ3gkq4BVfWMVRyoAdEAbDME4uwBGgpcO0ZZ7aekhvN0yIPg6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z1zXSQCA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DE2AC4CEE4;
+	Fri,  2 May 2025 20:12:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746216720;
+	bh=u5Z8wpvFxHNyn281JUcC5aJjExa9fXKR0LlwurFoJOo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=Z1zXSQCA6uvZog8m73AsLZiKFKCo/9ZgdhCii6J5RUCUt2HIxFvCq6DiA7/W+8foD
+	 DH7NXB5sgdG046YyxnOxDDEx5qpRWQAzFICFm2YO98Lf61l71s2iO8PUn4rLUsLtA4
+	 AtUyHDZXcXd/r/tyF6h4eQ+9Gb2GgzmEfAHNemv7AwMjdxp/GwZkAZAjnld40MOFML
+	 sR0E8bGJJU1dQDkmJEPbcMtjtefojiU7YTTWmatlY6maRZFm0gywcMaAfHYNUtPlHI
+	 yHhLrX1U4i16+k8L9DNEeChBsXdNYdNly2tUxZEnpmzhKlh9RyqWPsFTIINt3yq/EH
+	 TEMV3sj9OGU6A==
+Date: Fri, 2 May 2025 13:12:00 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: brauner@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk, jack@suse.cz,
+	cem@kernel.org, linux-fsdevel@vger.kernel.org, dchinner@redhat.com,
+	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
+	martin.petersen@oracle.com, linux-ext4@vger.kernel.org,
+	linux-block@vger.kernel.org, catherine.hoang@oracle.com,
+	linux-api@vger.kernel.org
+Subject: [PATCH v10.1 1.1/15] xfs: only call xfs_setsize_buftarg once per
+ buffer target
+Message-ID: <20250502201200.GU25675@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250501165733.1025207-2-john.g.garry@oracle.com>
 
-Added one missing kfree to fsmap.c
+From: Darrick J. Wong <djwong@kernel.org>
 
-Signed-off-by: Nicolas Bretz <bretznic@gmail.com>
+It's silly to call xfs_setsize_buftarg from xfs_alloc_buftarg with the
+block device LBA size because we don't need to ask the block layer to
+validate a geometry number that it provided us.  Instead, set the
+preliminary bt_meta_sector* fields to the LBA size in preparation for
+reading the primary super.
+
+However, we still want to flush and invalidate the pagecache for all
+three block devices before we start reading metadata from those devices.
+Move the sync_blockdev calls into a separate helper function, and call
+it immediately after xfs_open_devices creates the buftargs.
+
+This will enable a subsequent patch to validate hw atomic write geometry
+against the filesystem geometry.
+
+Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- fs/ext4/fsmap.c | 1 +
- 1 file changed, 1 insertion(+)
+v10.1: call sync_blockdev on open for all the devices and move this to
+immediately after the vfs change
+---
+ fs/xfs/xfs_buf.h   |    5 +++++
+ fs/xfs/xfs_buf.c   |   14 +++++---------
+ fs/xfs/xfs_super.c |   33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 43 insertions(+), 9 deletions(-)
 
-diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
-index b232c2767534..d41210abea0c 100644
---- a/fs/ext4/fsmap.c
-+++ b/fs/ext4/fsmap.c
-@@ -304,6 +304,7 @@ static inline int ext4_getfsmap_fill(struct list_head *meta_list,
- 	fsm->fmr_length = len;
- 	list_add_tail(&fsm->fmr_list, meta_list);
+diff --git a/fs/xfs/xfs_buf.h b/fs/xfs/xfs_buf.h
+index d0b065a9a9f0d2..132210705602b4 100644
+--- a/fs/xfs/xfs_buf.h
++++ b/fs/xfs/xfs_buf.h
+@@ -383,6 +383,11 @@ int xfs_buf_reverify(struct xfs_buf *bp, const struct xfs_buf_ops *ops);
+ bool xfs_verify_magic(struct xfs_buf *bp, __be32 dmagic);
+ bool xfs_verify_magic16(struct xfs_buf *bp, __be16 dmagic);
  
-+	kfree(fsm);
- 	return 0;
++static inline int xfs_buftarg_sync(struct xfs_buftarg *btp)
++{
++	return sync_blockdev(btp->bt_bdev);
++}
++
+ /* for xfs_buf_mem.c only: */
+ int xfs_init_buftarg(struct xfs_buftarg *btp, size_t logical_sectorsize,
+ 		const char *descr);
+diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+index 5ae77ffdc947b1..292891d6ff69ac 100644
+--- a/fs/xfs/xfs_buf.c
++++ b/fs/xfs/xfs_buf.c
+@@ -1733,11 +1733,7 @@ xfs_setsize_buftarg(
+ 		return -EINVAL;
+ 	}
+ 
+-	/*
+-	 * Flush the block device pagecache so our bios see anything dirtied
+-	 * before mount.
+-	 */
+-	return sync_blockdev(btp->bt_bdev);
++	return 0;
  }
  
--- 
-2.43.0
-
+ int
+@@ -1810,10 +1806,10 @@ xfs_alloc_buftarg(
+ 	 * When allocating the buftargs we have not yet read the super block and
+ 	 * thus don't know the file system sector size yet.
+ 	 */
+-	if (xfs_setsize_buftarg(btp, bdev_logical_block_size(btp->bt_bdev)))
+-		goto error_free;
+-	if (xfs_init_buftarg(btp, bdev_logical_block_size(btp->bt_bdev),
+-			mp->m_super->s_id))
++	btp->bt_meta_sectorsize = bdev_logical_block_size(btp->bt_bdev);
++	btp->bt_meta_sectormask = btp->bt_meta_sectorsize - 1;
++
++	if (xfs_init_buftarg(btp, btp->bt_meta_sectorsize, mp->m_super->s_id))
+ 		goto error_free;
+ 
+ 	return btp;
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index b2dd0c0bf50979..83de3ac39ae53b 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -519,6 +519,35 @@ xfs_open_devices(
+ 	return error;
+ }
+ 
++/*
++ * Flush and invalidate all devices' pagecaches before reading any metadata
++ * because XFS doesn't use the bdev pagecache.
++ */
++STATIC int
++xfs_preflush_devices(
++	struct xfs_mount	*mp)
++{
++	int			error;
++
++	error = xfs_buftarg_sync(mp->m_ddev_targp);
++	if (error)
++		return error;
++
++	if (mp->m_logdev_targp && mp->m_logdev_targp != mp->m_ddev_targp) {
++		error = xfs_buftarg_sync(mp->m_ddev_targp);
++		if (error)
++			return error;
++	}
++
++	if (mp->m_rtdev_targp) {
++		error = xfs_buftarg_sync(mp->m_rtdev_targp);
++		if (error)
++			return error;
++	}
++
++	return 0;
++}
++
+ /*
+  * Setup xfs_mount buffer target pointers based on superblock
+  */
+@@ -1671,6 +1700,10 @@ xfs_fs_fill_super(
+ 	if (error)
+ 		return error;
+ 
++	error = xfs_preflush_devices(mp);
++	if (error)
++		goto out_shutdown_devices;
++
+ 	if (xfs_debugfs) {
+ 		mp->m_debugfs = xfs_debugfs_mkdir(mp->m_super->s_id,
+ 						  xfs_debugfs);
 
