@@ -1,127 +1,166 @@
-Return-Path: <linux-ext4+bounces-7633-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7634-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32B01AA7C2A
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 May 2025 00:26:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E1CFAA7E3B
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 May 2025 05:08:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A8331747F1
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 May 2025 22:26:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A8221BA14E7
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 May 2025 03:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F62C215F6C;
-	Fri,  2 May 2025 22:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956F615B102;
+	Sat,  3 May 2025 03:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/i2C2Xg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQa6sj+X"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780D51E32D5
-	for <linux-ext4@vger.kernel.org>; Fri,  2 May 2025 22:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45411128816;
+	Sat,  3 May 2025 03:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746224796; cv=none; b=hU/TOoyUW2Py0A4UdTiW6TYnu0szbAj/P3+fze36OB383qHXJupkW3xGyET2QN9WgQlkWNKyneS6zGK++3QRVgoaflkO6QGkB05kvODYMqkaNpsjxcQFJTWTyTZCGtF32T5/HpZzbxUVutF1s578d5PwqZkW0IA5inkF7ZPdRP4=
+	t=1746241728; cv=none; b=SmJPoHEoe40tuQT+0469kHWzrMmmuK1XRtDglLESEksAfwL06ItHapXLGOec/C3fhsitCPon2GJfr37g4/pyvrVCBaAdHZcHDJF6Q9CKCvB96KqYY7gj2EcGLXjyrt4PxH1D0DpVUHRnYpdRblz4ilyHO0cZ2KEcfJo8hsaF9SM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746224796; c=relaxed/simple;
-	bh=CbaXCZ6zuC/6U11jWLzYXpjqcT8e3TLhJ47B5Oru3Ks=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jsBWrhBjmjOAZ2eZJa/13hbcdc5mfuAKZw6SOA9t+Jyd3GglINtu5jmqhajJHKcfYPVXcsTSNQsHw3NIhkPl+YSXe+UyWa0/I4e0lljgmdBaDRhXOBQPeJtfYEQQjfU7xznG1MmZK4Pz+eLdh36gCIuGoNGLZKiyKLpVdrXOlf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/i2C2Xg; arc=none smtp.client-ip=209.85.160.49
+	s=arc-20240116; t=1746241728; c=relaxed/simple;
+	bh=rQnStuc5a2kIok/ioAReZgBqDdgrldUKNzAKN5ccTBE=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=T34WofmtlA7DItYLP6IumgUAtVsGPc8E+S9+/QJxiDBO6ch8C1mLGltWIjF2MioEkqMlg4ZsiDQIw0jF63ZxFR1yDf/Vowe8JYhbtgoR1AhgZ9ptLCf8KhheuE1alkYdygXbnPs1b3CDLHbFAte4Ww7ENiZf5cWxmmdBeZ4BNjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YQa6sj+X; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-2d54b936ad9so1236319fac.1
-        for <linux-ext4@vger.kernel.org>; Fri, 02 May 2025 15:26:35 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-22c33e4fdb8so28700065ad.2;
+        Fri, 02 May 2025 20:08:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746224794; x=1746829594; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yLd70+9D2vmBiF0PdpzaOpgsDiIXN+L7WedXVQd8iY8=;
-        b=I/i2C2XgTCS4wuY20Bb5F8zxtTQjoklm1XV2TgvjWGu2YhMnvFgkPaoYw3NVmUts8k
-         WJcl+vyD3G4BHb5GBbtvG75gV6JalaTSCUlJDS6B3Vz0s8RXkP8PNuWHzq1iMGTQNDph
-         JpL929MI+CuoCTItb0vSLtTHlA7ibBZrS08b4Mx1+64DAUfDDmgCfwL7yr0uSZ7gNkZL
-         /9T9y1bW6fjaRIGAtlG09bPG4PjIDJ8uIr4yoXmK/6ndAr3m6rB8nAvAd+o7/hh82w0T
-         q8PZ1oyEXjRbZJVZyP4qSD2HcDm5EG2fS7Qvapw9wG6zuU6beRZSPdgmWCDw9Lw5Gtk/
-         BmHA==
+        d=gmail.com; s=20230601; t=1746241725; x=1746846525; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ohBr7B7TzXFUzsbzk39OFrbATOwKxfYyQBsGv+i7gVM=;
+        b=YQa6sj+XRcKi4NHOyW4KBFHe66+CxStLIwb6+2Uh31ZSWJOh+Rg05+jtQKpFZ0HlYc
+         jghuNNDVyxUS5e3jPpnY9sOvEU4oJ/Lz8gIuDZ7Z1oUCairpExfEVxQBAmkOnLRuOANb
+         sO/ISH/deWP8ktskzTNdClV2tJZJDKvGVG/yL9uinLtuqEIA1EzSDdhWcfUDQuv8Aye3
+         sOuOjAOKzfvlrhYAbxARa6LQ/M/GIkw406ZKdr5gXnk9JVvwPjpn+mTIPRkU90RbgiA0
+         D1MiIrkZw90yLHIpIkMY689PHF5ZRuLf4yRY50evEB63zG/5nWUWyweMG6NA7UAZt/pw
+         QmHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746224794; x=1746829594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yLd70+9D2vmBiF0PdpzaOpgsDiIXN+L7WedXVQd8iY8=;
-        b=jaquc8abswgH1zZyVNcfwr7RpZNKK7yoeSDHkZ62g5POejPmyLKoy5G471Fywrtdd0
-         LQEMsYeJQ8ZhlqFkrjjup0ks1nypsfyAGi1vdEKImVxrsK6bTfEloae0FMmkO3UBbQLi
-         X6yh90jh+crtP4HphC2FNSkSlh4i7cdOs4wlGhi0KD0rBlalrxKXfwRiVrnX3Vkltvv8
-         U8I3oxPLplpup2TayzmiBgWiAcwA6DMQB9v0hnS9l9+SW9C/MzZzAK4ywaDQFByxYk7z
-         mc6HPe0jVMoc8I9PIAm0tBj6/vwYSaAGUyNzxGw/83rz2hJ4CSaQuxkZ3MiMSem6MsI4
-         pkCw==
-X-Gm-Message-State: AOJu0Yz9JFELtp+/QQY9WhVBj8qW2lZe7YqzuAtWpaGQWrtDVdeRZzGx
-	K/Wp1bmQuLqei95W4SMPe43GrZm3Nhc1w/MmrKPVLhMl7UTRraA1nFyejhbjf80oKdX7Ht357p2
-	mvXUIDnR903G8KTJtpEJ/gHOWbKo=
-X-Gm-Gg: ASbGncvrPMabwIzfuCHud6sScGPuYw4YYaV0az6UwHsfGOqP1U2YRE3G0SUkbJxq3l0
-	w2ZTksWT/xkeut3aU/BtutAET/7iBx3CPsnHyPzwr7oJSa0F40VpuvEJGU+KCE9QoQGXTS05iZ3
-	dMhph3bz1NZ2bohJy7jLeAZg==
-X-Google-Smtp-Source: AGHT+IFbot1rEV11jEsJO+4PZqXtHgifikzARcPShT2j3bziFa54/6igrbadAd/fAFza6EHPD6uUHybpENtzA+eWr9o=
-X-Received: by 2002:a05:6870:c0c8:b0:2cf:bc73:7bb2 with SMTP id
- 586e51a60fabf-2dad6938903mr527947fac.14.1746224794391; Fri, 02 May 2025
- 15:26:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1746241725; x=1746846525;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ohBr7B7TzXFUzsbzk39OFrbATOwKxfYyQBsGv+i7gVM=;
+        b=aJnVUaYDhGVmh09Tzh/1MPUW/lx6QHyou2iY8b2mJhpXL2fi2AOVNYW38OHPsl69lF
+         V7hubQk/dF8IZ+6roO03uJTJoC6uhfnGopE0lKH5mbLYz8DLftLmDplE2IKAGo6fx7Mm
+         wJ6MgQltczPMJeo+xeTaF5kejrHGTcEzCm7YgupOTxDHLAnaB/jIAjsKaUX5FyfcF5NT
+         pMgttvsmY5nOKMhgPL8Bn6qbrNyYkeh+mvGEctOj8gjyaiaykZmXZgWTgn1KyFHX35c6
+         pcns3eiW/E3jvR49YcdxvJFCT63YbcyaVp3WXqGVaEZLM2LtemMfH3B7q9iO5NDtVVD1
+         EPvA==
+X-Forwarded-Encrypted: i=1; AJvYcCUWIrY2mAR1GqhVGfHh+X5/r+AUV/m74YU87B7LJ2Xkr/nmGiLY3OT17W5H+og4sgMEe+bhKzXaZJBUHA==@vger.kernel.org, AJvYcCX/hadbDQgBzkwf6GshcVehShylC65kuWioxl9zKvESMaG5XZKGG3EAya4i4sOm+Oo1HzuOrxeByEjH@vger.kernel.org, AJvYcCXnbZqOz+aIMxRJ8jEn0YCyJSWJQbaNLm28WCW8d5V0E6j4UyG7QRi7Lq4WtYpOvPgA7ibizJ7M@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqgsdQqzkYuGIyk+IeyeFI9dCarTyZJELSO8dctfVOV2oNZX8W
+	mrPDaE1gZfaGuuJTgXToQLvdmh6QHzG4Lo4lhpOjxT4aZ54DizDR
+X-Gm-Gg: ASbGncs9QrmGDjMSbf+t8G7nFcE2B2d2KCyxsFfGjHbQh6LIxxUIDkmH4Me3ZNE4faD
+	ZkTmTfBAozI2iDdpJsvqIN1nAKIPxpoP3PJ4uz3BdaYH/JNkGS3yUC9LrmCE5FnGhspP/YQ3TJ8
+	nmaJXoy6MRsphrXHxshvWx/ecJSBt64U/zELhnxBF5L+NtgIlquD+6YK5z6nwwe9WBfdgk1hrk2
+	tHSG51Uy7WN2j4/R54IJjdLQb3d4424iYUQPBLy9fL2N8pNp7jL1dXLcwnDtk+E1mX4xp7yFvxD
+	FtaQSV4Potzdd5S1EDmSxD5O/8bD11am+w==
+X-Google-Smtp-Source: AGHT+IETZac4TjMuuDsYed/kfbcVh7a9/Yd02ihtD6/WHApYi/EYBepcT2rtTOrQh4SOeT0vzr5p6A==
+X-Received: by 2002:a17:903:f90:b0:224:11fc:40c0 with SMTP id d9443c01a7336-22e1030c7b4mr76242925ad.11.1746241725340;
+        Fri, 02 May 2025 20:08:45 -0700 (PDT)
+Received: from dw-tp ([171.76.84.163])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e15228cf4sm15222785ad.176.2025.05.02.20.08.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 May 2025 20:08:44 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Zorro Lang <zlang@redhat.com>
+Cc: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org, david@fromorbit.com, hch@infradead.org
+Subject: Re: [PATCH v3 1/2] common: Move exit related functions to a common/exit
+In-Reply-To: <878qnfr67l.fsf@gmail.com>
+Date: Sat, 03 May 2025 08:36:00 +0530
+Message-ID: <8734dmqtpj.fsf@gmail.com>
+References: <cover.1746015588.git.nirjhar.roy.lists@gmail.com> <7363438118ab8730208ba9f35e81449b2549f331.1746015588.git.nirjhar.roy.lists@gmail.com> <87cyctqasl.fsf@gmail.com> <20250501091053.ghovsgjb52yvb7rj@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com> <878qnfr67l.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250502174012.18597-1-bretznic@gmail.com> <20250502203742.GF25655@frogsfrogsfrogs>
-In-Reply-To: <20250502203742.GF25655@frogsfrogsfrogs>
-From: Nicolas Bretz <bretznic@gmail.com>
-Date: Fri, 2 May 2025 15:26:22 -0700
-X-Gm-Features: ATxdqUFJnbSm3_rzV0eLNrbBe1R4vZjkNARQVZ8a5tPElBQSv3povAoekeS6AKk
-Message-ID: <CAPXz4EO8vbVxksgftCaSXb3UgWa_oxrsiYVCkOQTz+4gYZ5k_A@mail.gmail.com>
-Subject: Re: [PATCH] ext4: added missing kfree
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz, 
-	adilger.kernel@dilger.ca
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 2, 2025 at 1:37=E2=80=AFPM Darrick J. Wong <djwong@kernel.org> =
-wrote:
->
-> On Fri, May 02, 2025 at 10:40:12AM -0700, Nicolas Bretz wrote:
-> > Added one missing kfree to fsmap.c
-> >
-> > Signed-off-by: Nicolas Bretz <bretznic@gmail.com>
-> > ---
-> >  fs/ext4/fsmap.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
-> > index b232c2767534..d41210abea0c 100644
-> > --- a/fs/ext4/fsmap.c
-> > +++ b/fs/ext4/fsmap.c
-> > @@ -304,6 +304,7 @@ static inline int ext4_getfsmap_fill(struct list_he=
-ad *meta_list,
-> >       fsm->fmr_length =3D len;
-> >       list_add_tail(&fsm->fmr_list, meta_list);
-> >
-> > +     kfree(fsm);
->
-> OI: UAF, NAK.
->
-> --D
+Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
 
-I apologize, it definitely wasn't my intention. I guess not really
-putting my best foot forward...
-I don't yet fully get the UAF in this instance, but I'm studying it.
-
+> Zorro Lang <zlang@redhat.com> writes:
 >
-> >       return 0;
-> >  }
-> >
-> > --
-> > 2.43.0
-> >
-> >
+>> On Thu, May 01, 2025 at 08:47:46AM +0530, Ritesh Harjani wrote:
+>>> "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
+>>> 
+>>> > Introduce a new file common/exit that will contain all the exit
+>>> > related functions. This will remove the dependencies these functions
+>>> > have on other non-related helper files and they can be indepedently
+>>> > sourced. This was suggested by Dave Chinner[1].
+>>> > While moving the exit related functions, remove _die() and die_now()
+>>> > and replace die_now with _fatal(). It is of no use to keep the
+>>> > unnecessary wrappers.
+>>> >
+>>> > [1] https://lore.kernel.org/linux-xfs/Z_UJ7XcpmtkPRhTr@dread.disaster.area/
+>>> > Suggested-by: Dave Chinner <david@fromorbit.com>
+>>> > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+>>> > ---
+>>> >  check           |  2 ++
+>>> >  common/config   | 17 -----------------
+>>> >  common/exit     | 39 +++++++++++++++++++++++++++++++++++++++
+>>> >  common/preamble |  3 +++
+>>> >  common/punch    | 39 +++++++++++++++++----------------------
+>>> >  common/rc       | 28 ----------------------------
+>>> >  6 files changed, 61 insertions(+), 67 deletions(-)
+>>> >  create mode 100644 common/exit
+>>> >
+>>> > diff --git a/check b/check
+>>> > index 9451c350..bd84f213 100755
+>>> > --- a/check
+>>> > +++ b/check
+>>> > @@ -46,6 +46,8 @@ export DIFF_LENGTH=${DIFF_LENGTH:=10}
+>>> >  
+>>> >  # by default don't output timestamps
+>>> >  timestamp=${TIMESTAMP:=false}
+>>> > +. common/exit
+>>> > +. common/test_names
+>>> 
+>>> So this gets sourced at the beginning of check script here.
+>>> 
+>>> >  
+>>> >  rm -f $tmp.list $tmp.tmp $tmp.grep $here/$iam.out $tmp.report.* $tmp.arglist
+>>> >  
+>>> <...>
+>>> > diff --git a/common/preamble b/common/preamble
+>>> > index ba029a34..51d03396 100644
+>>> > --- a/common/preamble
+>>> > +++ b/common/preamble
+>>> > @@ -33,6 +33,9 @@ _register_cleanup()
+>>> >  # explicitly as a member of the 'all' group.
+>>> >  _begin_fstest()
+>>> >  {
+>>> > +	. common/exit
+>>> > +	. common/test_names
+>>> > +
+>>> 
+>>> Why do we need to source these files here again? 
+>>> Isn't check script already sourcing both of this in the beginning
+>>> itself?
+>>
+>> The _begin_fstest is called at the beginning of each test case (e.g. generic/001).
+>> And "check" run each test cases likes:
+>>
+>>   cmd="generic/001"
+>>   ./$cmd
+>>
+>> So the imported things (by "check") can't help sub-case running
+>
+> aah right. Each testcase is inoked by "exec ./$seq" and it won't have
+
+Ok. To be accurate, it is... 
+
+bash -c "<...>; exec ./$seq"
+
+& not just 
+
+exec ./$seq
+
+-ritesh
 
