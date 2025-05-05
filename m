@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-7707-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7708-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EC75AAB4C9
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 07:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9172EAAB5BD
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 07:35:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 646887B6AEA
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 05:12:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7AE37A5E15
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 05:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364212F2C50;
-	Tue,  6 May 2025 00:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9101434D2AD;
+	Tue,  6 May 2025 00:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EN5Nd2Mt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zea7wgyc"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9344A28983B;
-	Mon,  5 May 2025 23:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE6A3BA89A;
+	Mon,  5 May 2025 23:22:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746486867; cv=none; b=YvPUutW6kZAQcb81fotsSPVVw7NfPWYDzdY2gjJDjOCxCVJiZonqThJX23C1gX1vs6MlDG8BzfafPbqOiMP577EDQmrMi6FVLUd2uxq0LsCWc9Y7krOkUXCc2u543ab097Z09lv3jRBiWNSfr5nIr2zhh2Mt0X6pYESpDfzHuj0=
+	t=1746487345; cv=none; b=Lx8NrPJ4zNYabNKwO+3rC2omfwWO9jfHyb4U6giWelR266nuA6KQD68+Qtk7VJdVBjykxbWvNwJBXiuH9dosYmkc5zh6RiaEWUirylBXGWcKgsppWyVu0JNeEYk2nuaeXcWtlbW+e9CAMP47h/DBL0LCsiLTGrANzfQj/0yXQc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746486867; c=relaxed/simple;
-	bh=BFGZvz3m0NrOmtEShPyDLDmAHNH1RMEpCvqr26JPKEM=;
+	s=arc-20240116; t=1746487345; c=relaxed/simple;
+	bh=AFK/OQ0OUylW3kDlFFn7G+WF7ksViGgUTGH+b4cqYfg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LugkWSnM9qgNt7TMiNIWPUfeiU72aGc3zjxC68jTuPsVyEaALb5rJiN/zns/0z7ceftogyeNXATAveX2OBcCy935mI1zloWoCUS1cSxbmoPLkmBkKV34PhmF/KsZHqbv170XMX5iE8A61SZ7weKoGiaTUOpV9QArhN3JFJu6jws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EN5Nd2Mt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EC30C4CEEF;
-	Mon,  5 May 2025 23:14:25 +0000 (UTC)
+	 MIME-Version:Content-Type; b=T9oUcVkeZWQxankRbeH2ZEBuxOeTcFnrNNup69Z2v9YtMfLUwTdFkHJN2jgYCBMVzLtbjIamdUd0fIMSUveKMCOy3PYSyGJbjtbpR6IWOJl8tERWK5MxdLuSJP2FWa09mye6Mye5jmvL84nXQ/1vicawu+DIuyudHjNy6G8qd2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zea7wgyc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 543F1C4CEEE;
+	Mon,  5 May 2025 23:22:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746486866;
-	bh=BFGZvz3m0NrOmtEShPyDLDmAHNH1RMEpCvqr26JPKEM=;
+	s=k20201202; t=1746487344;
+	bh=AFK/OQ0OUylW3kDlFFn7G+WF7ksViGgUTGH+b4cqYfg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EN5Nd2MtAeJkuJwauvQbnLn/xGSpef9t22WqLmj6aAHTGXtVwzcB/dDYAdpm4WceY
-	 NVfdSvrgK4+j9/AV0B6+6ByTFYJPVBFQ37xtsE//fh5fYwswF0JDaFfCKtYJiqX1s/
-	 E00uaG6L8295mv289KjsnxGdsYvJBDwe1/ggxJy0Sg46qWmswTjYEw69nPrn89H+iM
-	 bWoRuys8MP3FyAOG9vyycvdXWf7oZ1kcV2D2RY48kEeIOoFOnRKqdSZlijj3ZqtyU0
-	 vHWItSzSPgqfEL2DdhgZrKRAqh6EodzezmnRSovNereVd4fm18f91HJQ946A6It6ba
-	 svyPd8NqzG1EA==
+	b=Zea7wgych5rVnyVPI+LBsLUYcNyex0GKvMsvs5+DrLzW9mMUYKCVKj7a5yLIKDLuU
+	 zwyiFkJpTRmRamvE9//TfmTMGGegd/f/poac6Sjwpz8lNRA4hgaooiXKhC6S4WAT0+
+	 zrpBWNnwCp+pglmrf+HkBRRgMjoGjDTxXMAqbZ1IDR3uDLrWCgdDF3FvSvJO5GNxY1
+	 zg/siYruPUkHwi/6j8jMCsLeYT5fVKLAbppZnwwHmnkdDEKav8OrP98iTfhA788UkA
+	 SJCl9lS8BWfdUZJC4Rt03KRpa4TTIwhOSLpwbqO4sXkmIOLSFRHOmGoS97oeoZHNFV
+	 8mwoIBQ5f3pOw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 033/153] ext4: reorder capability check last
-Date: Mon,  5 May 2025 19:11:20 -0400
-Message-Id: <20250505231320.2695319-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 18/79] ext4: reorder capability check last
+Date: Mon,  5 May 2025 19:20:50 -0400
+Message-Id: <20250505232151.2698893-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505231320.2695319-1-sashal@kernel.org>
-References: <20250505231320.2695319-1-sashal@kernel.org>
+In-Reply-To: <20250505232151.2698893-1-sashal@kernel.org>
+References: <20250505232151.2698893-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -66,7 +66,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.181
+X-stable-base: Linux 5.4.293
 Content-Transfer-Encoding: 8bit
 
 From: Christian Göttsche <cgzones@googlemail.com>
@@ -99,10 +99,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index c23ac149601e5..d6872b71657b6 100644
+index b68cee75f5c58..a32eb67a8f0e2 100644
 --- a/fs/ext4/balloc.c
 +++ b/fs/ext4/balloc.c
-@@ -637,8 +637,8 @@ static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
+@@ -609,8 +609,8 @@ static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
  	/* Hm, nope.  Are (enough) root reserved clusters available? */
  	if (uid_eq(sbi->s_resuid, current_fsuid()) ||
  	    (!gid_eq(sbi->s_resgid, GLOBAL_ROOT_GID) && in_group_p(sbi->s_resgid)) ||
