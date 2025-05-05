@@ -1,58 +1,59 @@
-Return-Path: <linux-ext4+bounces-7684-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7685-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D34AAA163
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 00:47:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1281DAAA20E
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 00:54:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CAE4165C1D
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 May 2025 22:46:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 027351884119
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 May 2025 22:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F1627E7FA;
-	Mon,  5 May 2025 22:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD33E2D47C7;
+	Mon,  5 May 2025 22:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PEyPYI/X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pJ8svbjT"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194922BD916;
-	Mon,  5 May 2025 22:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F972D47B9;
+	Mon,  5 May 2025 22:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746483589; cv=none; b=S1J9iPI1tA9S9L0ois7qYBWz0jfW4YENc6soccG9Zibex7LMikR4scw+w/u4I4/9pWyjGd60s8btnVadsQZldz4Rkm0vyABc5l4HSujRmT3SMV5ZtQ1NVo/7isYkXL3NN4T2j4EsXNNr/XQt400WqE5HGyB8Dp1N88d5CEUGYHE=
+	t=1746483647; cv=none; b=JjMnWR0ueOOLYpNY7YFUw6iK5oAleqPFFQDU54fsxq/7DyA0T4jndX+2lE0E5seWswGaqAI9D/309ikypdPy/PXEcaUzqYN6hDiVYbeAjUvdrcX/8fsWoOnkN9Y+6ZUuMv92QmS7XfL0iaghHFTbK8a4EPmCKBvTL59alLXJxJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746483589; c=relaxed/simple;
-	bh=goOUvNbS/RQth9KF4WQ0hpR6MLHKqnRLOupGS7yXOq0=;
+	s=arc-20240116; t=1746483647; c=relaxed/simple;
+	bh=ToCSZrIFppiSThaLQyWf32m0rR7l7NXfN05e9FhqSpc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UA1tgvCNwchv5Ey+l72XINTn87m+xU/nTlq6e2lZ8JFIZtkW3IrffBW9mqGko0t4BStyhws/s3oY8+tRGk9oICRbeyYV/3UT+m4x/4ef2K2RupB7M7vaEqFyAsueNZ1tNZxsyCzVQ6ZRBKKz88RGgUlsS9Atr6yVZIiKwEnMCkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PEyPYI/X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E63CDC4CEE4;
-	Mon,  5 May 2025 22:19:47 +0000 (UTC)
+	 MIME-Version; b=NnUgwuhi3eEaP9CXNIuubqqn5ZbSfeIMDc+ts6Bd/ar0ZiG+nX274HVPg7auWXZbeSqrKx9OV2vUYbIBgrGsDV/Qu666Emp0BtPO86kGQaaOIi0FiaKkMzXQtp4h8YsjTrZ+J5DvMT3HHYf+wE+xNvi/LTvTUShp/B1itymKRjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pJ8svbjT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43C74C4CEEE;
+	Mon,  5 May 2025 22:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746483588;
-	bh=goOUvNbS/RQth9KF4WQ0hpR6MLHKqnRLOupGS7yXOq0=;
+	s=k20201202; t=1746483647;
+	bh=ToCSZrIFppiSThaLQyWf32m0rR7l7NXfN05e9FhqSpc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PEyPYI/X0T7X/5r6J7fRSuHcTR8L9VMHd7f+K7KCUGGV1zMoqo+BxRvOUtQ9YDpSd
-	 QISo413XfZuWESdx6pqGX96SqYjYd90dVgoK76eKnyQ+XSNsLGL065RddbFrD4MP0a
-	 A5q44clRVGY5+jaPIhFWWq7uPQU3YJhcMxJdzNsz7cRylFPm3FGbEoPFi49GtwWC0y
-	 N54hwW6fqBqiLaC2b2XgAlNtdNZCBCffR7jE+ktUUT+c2RlmXAKQFVQ57FooEOyF4n
-	 9HSz+WA2C8eWWinqEGXBeyOLTxie5Jgf5//sDT4mYynxGD6l5W/QFcfXDkXZr+m2nq
-	 kQAKFTa4GPsDQ==
+	b=pJ8svbjTBeU9DAKrg9gwrjeMXwDuJ3sGadAUqLBGM/FDPVG2TMqGFWWD/CdiJQvoi
+	 vR5hVVteqbKTlGzy/JYRQG9mhpqNPIpTFtdHwusoVqrOiZHuJikoj8Ni4P8lruEBJN
+	 7DXaiA3VVuslDLLSnWBfdeHN6UDLll4FCP5uzcZvOF6MdzbTGH6CROHQFZfI5wiy1H
+	 mp6LIz9/JY1n3d7qU6tBAfLnmUPbpuhd+frqhi96w5ImIKu3/MCygRLUNENhb+sKV3
+	 xa6GRH9BiBgJXVZQFcc1uB1jOKWc07KzyXaEd6XtkRokM58DzhBA1EIt696Fx4wsHG
+	 JcWGI70VGDg4g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>,
+Cc: Baokun Li <libaokun1@huawei.com>,
 	Zhang Yi <yi.zhang@huawei.com>,
+	Jan Kara <jack@suse.cz>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	jack@suse.com,
+	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 129/642] jbd2: do not try to recover wiped journal
-Date: Mon,  5 May 2025 18:05:45 -0400
-Message-Id: <20250505221419.2672473-129-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.14 159/642] ext4: reject the 'data_err=abort' option in nojournal mode
+Date: Mon,  5 May 2025 18:06:15 -0400
+Message-Id: <20250505221419.2672473-159-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -67,56 +68,54 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.14.5
 Content-Transfer-Encoding: 8bit
 
-From: Jan Kara <jack@suse.cz>
+From: Baokun Li <libaokun1@huawei.com>
 
-[ Upstream commit a662f3c03b754e1f97a2781fa242e95bdb139798 ]
+[ Upstream commit 26343ca0df715097065b02a6cddb4a029d5b9327 ]
 
-If a journal is wiped, we will set journal->j_tail to 0. However if
-'write' argument is not set (as it happens for read-only device or for
-ocfs2), the on-disk superblock is not updated accordingly and thus
-jbd2_journal_recover() cat try to recover the wiped journal. Fix the
-check in jbd2_journal_recover() to use journal->j_tail for checking
-empty journal instead.
+data_err=abort aborts the journal on I/O errors. However, this option is
+meaningless if journal is disabled, so it is rejected in nojournal mode
+to reduce unnecessary checks. Also, this option is ignored upon remount.
 
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-Link: https://patch.msgid.link/20250206094657.20865-4-jack@suse.cz
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://patch.msgid.link/20250122110533.4116662-4-libaokun@huaweicloud.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/recovery.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ fs/ext4/super.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 9192be7c19d83..23502f1a67c1e 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -287,19 +287,20 @@ static int fc_do_one_pass(journal_t *journal,
- int jbd2_journal_recover(journal_t *journal)
- {
- 	int			err, err2;
--	journal_superblock_t *	sb;
--
- 	struct recovery_info	info;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b4a02be2eacf6..b956e1ee98290 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2785,6 +2785,13 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
+ 	}
  
- 	memset(&info, 0, sizeof(info));
--	sb = journal->j_superblock;
- 
- 	/*
- 	 * The journal superblock's s_start field (the current log head)
- 	 * is always zero if, and only if, the journal was cleanly
--	 * unmounted.
-+	 * unmounted. We use its in-memory version j_tail here because
-+	 * jbd2_journal_wipe() could have updated it without updating journal
-+	 * superblock.
- 	 */
--	if (!sb->s_start) {
-+	if (!journal->j_tail) {
-+		journal_superblock_t *sb = journal->j_superblock;
+ 	if (is_remount) {
++		if (!sbi->s_journal &&
++		    ctx_test_mount_opt(ctx, EXT4_MOUNT_DATA_ERR_ABORT)) {
++			ext4_msg(NULL, KERN_WARNING,
++				 "Remounting fs w/o journal so ignoring data_err option");
++			ctx_clear_mount_opt(ctx, EXT4_MOUNT_DATA_ERR_ABORT);
++		}
 +
- 		jbd2_debug(1, "No recovery required, last transaction %d, head block %u\n",
- 			  be32_to_cpu(sb->s_sequence), be32_to_cpu(sb->s_head));
- 		journal->j_transaction_sequence = be32_to_cpu(sb->s_sequence) + 1;
+ 		if (ctx_test_mount_opt(ctx, EXT4_MOUNT_DAX_ALWAYS) &&
+ 		    (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)) {
+ 			ext4_msg(NULL, KERN_ERR, "can't mount with "
+@@ -5428,6 +5435,11 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 				 "data=, fs mounted w/o journal");
+ 			goto failed_mount3a;
+ 		}
++		if (test_opt(sb, DATA_ERR_ABORT)) {
++			ext4_msg(sb, KERN_ERR,
++				 "can't mount with data_err=abort, fs mounted w/o journal");
++			goto failed_mount3a;
++		}
+ 		sbi->s_def_mount_opt &= ~EXT4_MOUNT_JOURNAL_CHECKSUM;
+ 		clear_opt(sb, JOURNAL_CHECKSUM);
+ 		clear_opt(sb, DATA_FLAGS);
 -- 
 2.39.5
 
