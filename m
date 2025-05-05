@@ -1,155 +1,118 @@
-Return-Path: <linux-ext4+bounces-7696-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7694-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F0F5AAAA9D
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 03:41:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A682FAAADDB
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 04:44:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A6ED4C0C9B
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 01:41:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97A7F7B852A
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 02:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE89237AAC1;
-	Mon,  5 May 2025 23:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841F736AD13;
+	Mon,  5 May 2025 22:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SJuOXt/m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="txlV3Jd4"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C2837B344;
-	Mon,  5 May 2025 22:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCC3299512;
+	Mon,  5 May 2025 22:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746485950; cv=none; b=Waqowx+luevhjcghX/BO9bjfZUVaVtYuMsXTusc6Jrnf8rH1d+CWCCcBpyGq02kV6mBtioWxq2K4VOBpgxMneCKmf9wbXa+38ZhDud/1RV//zH0us2NLduf/TBmhjJZ6O4BwCSTb7aSCeGl+2dF3RlhyjcDgnDysYUiCNNt8cMw=
+	t=1746484957; cv=none; b=rtnOmTf4QYAC0vqC4Qt2pZTxWkxdZ9AdECHZvwibdU2ZI9DtSV7yBCJQoxz5V5YfHHuuENbly9iQ43JMdlGp6+OMt9qPZvpWUqjEo0aP2xIWm+CluP+jATPN3gKu+Y2vw2CO9ptptDu8DSf1vA4xFKv9e2CGVKrvd2kN0ynbB4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746485950; c=relaxed/simple;
-	bh=lODut3LNkB3/xWPUiXkilDiXF3fdbLQXrrE9PSmH8Rs=;
+	s=arc-20240116; t=1746484957; c=relaxed/simple;
+	bh=IFxjyUy9p939cgdSn8JtjShI/xj2DKazY5LneB9PH38=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hUHQdoC7W8cb0O2AicXZt9W8Vrtww1eO/kyJfUM0UzHW66WRDbKY00RRRrzKHYFHm0ayA63+PaGJGLwnFRZRpuHNoOgKNFbd+M9rfFcZ5g5/HIK7CmuJVKWR3R6jLJlr2M1s7ymQfOvUrKSvzz9AzhbQNu9Q5v+Ws5oxyPqP8dM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SJuOXt/m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4B20C4CEEE;
-	Mon,  5 May 2025 22:59:07 +0000 (UTC)
+	 MIME-Version:Content-Type; b=GdKiWHeiNXAwL2KHyp48rGKF2Y4eweoSFpk26QrSkfdjZx+IwhjbK7qqXUcGohIS/7YEAavPeTOxsvu8iyB59a25i08BdDLRSEGreHFWBl+lNBqflm1crf3gkHFESIterbmoFm2qDMm8SQCbuN2PwPS3Q92b4YEnVmoC1cxlrB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=txlV3Jd4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFE14C4CEF1;
+	Mon,  5 May 2025 22:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746485948;
-	bh=lODut3LNkB3/xWPUiXkilDiXF3fdbLQXrrE9PSmH8Rs=;
+	s=k20201202; t=1746484955;
+	bh=IFxjyUy9p939cgdSn8JtjShI/xj2DKazY5LneB9PH38=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SJuOXt/m2hTNuIL/qkzeN2G/qlXTcf6C5hP9YJAtQrUI/ARWq9EmkbmFqt6rPyVy4
-	 KNdWhE9qGzIg5+FTPT9Z96Ft5Nq9XEZcw8OY/DsouUmIkPZpk/6AsCCFsFHitqjyve
-	 oSjqylHiF+xecEvuLL4+IbDNhPeFGLjba0z6FL0qasooBsF8TkljNQ5DkytkKf1qlC
-	 nUydChLUYXCZ0bLkzT+8Odrrs5fSFpPWNdjvh0f43Zt6aTHSWWd9tbXNVrHZiAlmYc
-	 3fBlBi7K/X8JBHc21eBO3qvom3yGjtVT8eSkRiTc6HgeIJRssRYMjpIWGlC6vszvHw
-	 jxIcKRSsavjxQ==
+	b=txlV3Jd4iSQqHQrncond5Z6YvFtiBAKjyYalXB1PDBLJbARVFALVUnSYKncqpXjPZ
+	 KfyUpnSpSZkjTKGXUR8ns/XEUBGOH7pNujay4R2yphANFXQ8gLw72Bh/uRQZhdJ8/X
+	 xW/z37V91eiktZ8U3h1Szet1MiiQ6ffGJKLITIKbjCy1qqV1AUzIMLapBTELHSU15Z
+	 1OSt+GfSHw7jF0TpNfql5pBWTQjtUvVcFDPgKU2RT6SEoY8GydRprLX9bn6VdesMKw
+	 eQNnmy+lCXeSbxxJyuiQrcnCKqGPrMQug+k+x42A8pnClOxyh//PWe4hNCR29QMi5L
+	 yzamakSwdPdLw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baokun Li <libaokun1@huawei.com>,
+Cc: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
+	Serge Hallyn <serge@hallyn.com>,
 	Jan Kara <jack@suse.cz>,
-	Zhang Yi <yi.zhang@huawei.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 080/294] ext4: do not convert the unwritten extents if data writeback fails
-Date: Mon,  5 May 2025 18:53:00 -0400
-Message-Id: <20250505225634.2688578-80-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 094/486] ext4: reorder capability check last
+Date: Mon,  5 May 2025 18:32:50 -0400
+Message-Id: <20250505223922.2682012-94-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
-References: <20250505225634.2688578-1-sashal@kernel.org>
+In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
+References: <20250505223922.2682012-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.89
+X-stable-base: Linux 6.12.26
 Content-Transfer-Encoding: 8bit
 
-From: Baokun Li <libaokun1@huawei.com>
+From: Christian Göttsche <cgzones@googlemail.com>
 
-[ Upstream commit e856f93e0fb249955f7d5efb18fe20500a9ccc6d ]
+[ Upstream commit 1b419c889c0767a5b66d0a6c566cae491f1cb0f7 ]
 
-When dioread_nolock is turned on (the default), it will convert unwritten
-extents to written at ext4_end_io_end(), even if the data writeback fails.
+capable() calls refer to enabled LSMs whether to permit or deny the
+request.  This is relevant in connection with SELinux, where a
+capability check results in a policy decision and by default a denial
+message on insufficient permission is issued.
+It can lead to three undesired cases:
+  1. A denial message is generated, even in case the operation was an
+     unprivileged one and thus the syscall succeeded, creating noise.
+  2. To avoid the noise from 1. the policy writer adds a rule to ignore
+     those denial messages, hiding future syscalls, where the task
+     performs an actual privileged operation, leading to hidden limited
+     functionality of that task.
+  3. To avoid the noise from 1. the policy writer adds a rule to permit
+     the task the requested capability, while it does not need it,
+     violating the principle of least privilege.
 
-It leads to the possibility that stale data may be exposed when the
-physical block corresponding to the file data is read-only (i.e., writes
-return -EIO, but reads are normal).
-
-Therefore a new ext4_io_end->flags EXT4_IO_END_FAILED is added, which
-indicates that some bio write-back failed in the current ext4_io_end.
-When this flag is set, the unwritten to written conversion is no longer
-performed. Users can read the data normally until the caches are dropped,
-after that, the failed extents can only be read to all 0.
-
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+Reviewed-by: Serge Hallyn <serge@hallyn.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-Link: https://patch.msgid.link/20250122110533.4116662-3-libaokun@huaweicloud.com
+Link: https://patch.msgid.link/20250302160657.127253-2-cgoettsche@seltendoof.de
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/ext4.h    |  3 ++-
- fs/ext4/page-io.c | 16 ++++++++++++++--
- 2 files changed, 16 insertions(+), 3 deletions(-)
+ fs/ext4/balloc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 60455c84a9374..bf62c3dab4fa2 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -273,7 +273,8 @@ struct ext4_system_blocks {
- /*
-  * Flags for ext4_io_end->flags
-  */
--#define	EXT4_IO_END_UNWRITTEN	0x0001
-+#define EXT4_IO_END_UNWRITTEN	0x0001
-+#define EXT4_IO_END_FAILED	0x0002
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index 8042ad8738089..c48fd36b2d74c 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -649,8 +649,8 @@ static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
+ 	/* Hm, nope.  Are (enough) root reserved clusters available? */
+ 	if (uid_eq(sbi->s_resuid, current_fsuid()) ||
+ 	    (!gid_eq(sbi->s_resgid, GLOBAL_ROOT_GID) && in_group_p(sbi->s_resgid)) ||
+-	    capable(CAP_SYS_RESOURCE) ||
+-	    (flags & EXT4_MB_USE_ROOT_BLOCKS)) {
++	    (flags & EXT4_MB_USE_ROOT_BLOCKS) ||
++	    capable(CAP_SYS_RESOURCE)) {
  
- struct ext4_io_end_vec {
- 	struct list_head list;		/* list of io_end_vec */
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index 7ab4f5a9bf5b8..7287dbfe13f12 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -181,14 +181,25 @@ static int ext4_end_io_end(ext4_io_end_t *io_end)
- 		   "list->prev 0x%p\n",
- 		   io_end, inode->i_ino, io_end->list.next, io_end->list.prev);
- 
--	io_end->handle = NULL;	/* Following call will use up the handle */
--	ret = ext4_convert_unwritten_io_end_vec(handle, io_end);
-+	/*
-+	 * Do not convert the unwritten extents if data writeback fails,
-+	 * or stale data may be exposed.
-+	 */
-+	io_end->handle = NULL;  /* Following call will use up the handle */
-+	if (unlikely(io_end->flag & EXT4_IO_END_FAILED)) {
-+		ret = -EIO;
-+		if (handle)
-+			jbd2_journal_free_reserved(handle);
-+	} else {
-+		ret = ext4_convert_unwritten_io_end_vec(handle, io_end);
-+	}
- 	if (ret < 0 && !ext4_forced_shutdown(inode->i_sb)) {
- 		ext4_msg(inode->i_sb, KERN_EMERG,
- 			 "failed to convert unwritten extents to written "
- 			 "extents -- potential data loss!  "
- 			 "(inode %lu, error %d)", inode->i_ino, ret);
- 	}
-+
- 	ext4_clear_io_unwritten_flag(io_end);
- 	ext4_release_io_end(io_end);
- 	return ret;
-@@ -344,6 +355,7 @@ static void ext4_end_bio(struct bio *bio)
- 			     bio->bi_status, inode->i_ino,
- 			     (unsigned long long)
- 			     bi_sector >> (inode->i_blkbits - 9));
-+		io_end->flag |= EXT4_IO_END_FAILED;
- 		mapping_set_error(inode->i_mapping,
- 				blk_status_to_errno(bio->bi_status));
- 	}
+ 		if (free_clusters >= (nclusters + dirty_clusters +
+ 				      resv_clusters))
 -- 
 2.39.5
 
