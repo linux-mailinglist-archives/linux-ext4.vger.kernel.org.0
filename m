@@ -1,59 +1,59 @@
-Return-Path: <linux-ext4+bounces-7685-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7686-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1281DAAA20E
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 00:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AD7DAAA212
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 00:54:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 027351884119
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 May 2025 22:53:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA46E188595D
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 May 2025 22:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD33E2D47C7;
-	Mon,  5 May 2025 22:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5792D4B51;
+	Mon,  5 May 2025 22:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pJ8svbjT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4ZbLJGK"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F972D47B9;
-	Mon,  5 May 2025 22:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2322D4B43;
+	Mon,  5 May 2025 22:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746483647; cv=none; b=JjMnWR0ueOOLYpNY7YFUw6iK5oAleqPFFQDU54fsxq/7DyA0T4jndX+2lE0E5seWswGaqAI9D/309ikypdPy/PXEcaUzqYN6hDiVYbeAjUvdrcX/8fsWoOnkN9Y+6ZUuMv92QmS7XfL0iaghHFTbK8a4EPmCKBvTL59alLXJxJM=
+	t=1746483649; cv=none; b=MWyVe5o2d+Ibw1f2c9qZ1MX5MbyJS+xUFKeAOQkE8dD0hO+Eupl6vyVAko8JIwPO5rhpuqj2ZXpC4Nii8HSWipFlz2Ty/ts7fbkZz/lB/doj7P2qYSi6ug65YXwJ03vDlb9sVeN6mX86ApHws7JxMUONrozlIXcRBXObt7fzgwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746483647; c=relaxed/simple;
-	bh=ToCSZrIFppiSThaLQyWf32m0rR7l7NXfN05e9FhqSpc=;
+	s=arc-20240116; t=1746483649; c=relaxed/simple;
+	bh=3Z870NbVFP4nPjd/CWYzLcAOrBoFq1ASiV1g8udNDH0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NnUgwuhi3eEaP9CXNIuubqqn5ZbSfeIMDc+ts6Bd/ar0ZiG+nX274HVPg7auWXZbeSqrKx9OV2vUYbIBgrGsDV/Qu666Emp0BtPO86kGQaaOIi0FiaKkMzXQtp4h8YsjTrZ+J5DvMT3HHYf+wE+xNvi/LTvTUShp/B1itymKRjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pJ8svbjT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43C74C4CEEE;
-	Mon,  5 May 2025 22:20:46 +0000 (UTC)
+	 MIME-Version; b=YjuETS3u+G6jlZx84O/Q+FQlygins0TLf69GxxmXjl2u3BV+Mc0AX5xmwGGAGROiHvXpqBAaacWJAQrgFzhi5ExiAO4f20vdCm7ucvQR7XHZWFZeT/EGZ+LUgM7xP5PenxvcWSh2sHOw78gPDhN0msNkO3IRwWH30FTHJsawVRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4ZbLJGK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A732FC4CEED;
+	Mon,  5 May 2025 22:20:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746483647;
-	bh=ToCSZrIFppiSThaLQyWf32m0rR7l7NXfN05e9FhqSpc=;
+	s=k20201202; t=1746483648;
+	bh=3Z870NbVFP4nPjd/CWYzLcAOrBoFq1ASiV1g8udNDH0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pJ8svbjTBeU9DAKrg9gwrjeMXwDuJ3sGadAUqLBGM/FDPVG2TMqGFWWD/CdiJQvoi
-	 vR5hVVteqbKTlGzy/JYRQG9mhpqNPIpTFtdHwusoVqrOiZHuJikoj8Ni4P8lruEBJN
-	 7DXaiA3VVuslDLLSnWBfdeHN6UDLll4FCP5uzcZvOF6MdzbTGH6CROHQFZfI5wiy1H
-	 mp6LIz9/JY1n3d7qU6tBAfLnmUPbpuhd+frqhi96w5ImIKu3/MCygRLUNENhb+sKV3
-	 xa6GRH9BiBgJXVZQFcc1uB1jOKWc07KzyXaEd6XtkRokM58DzhBA1EIt696Fx4wsHG
-	 JcWGI70VGDg4g==
+	b=j4ZbLJGKSmn4zjPE+QQEFicRh8JFRJ1rP0PyvSWO5OjSOGWdNwKhiM/hrQ4tb2lk+
+	 r6LyaLOvLOkXcZaFmMU9IhQh6hv8X5VCQbWsjimomx4IHETLrBdnkx5M2psM+uo3Fp
+	 IsI5qvtyyLBqEmjfCe0NfHnrtfQmd3OviXN4z1GJ6+4k1bIXp1d26cQKPoN+Nto2zD
+	 y8wumUUJ1VZawHiaPok92cnTPR802uogSMFeK+hdId8MVZ1RpbG5DIltdmv7i0Ae4U
+	 hf/wOk3/nPCBofzQcdtubnB+tpXyDn87DboknmoEAi+DQxxgRt0Otx6NoW8HPv8jYT
+	 NuLqIWRGk/Q3Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Baokun Li <libaokun1@huawei.com>,
-	Zhang Yi <yi.zhang@huawei.com>,
 	Jan Kara <jack@suse.cz>,
+	Zhang Yi <yi.zhang@huawei.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 159/642] ext4: reject the 'data_err=abort' option in nojournal mode
-Date: Mon,  5 May 2025 18:06:15 -0400
-Message-Id: <20250505221419.2672473-159-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.14 160/642] ext4: do not convert the unwritten extents if data writeback fails
+Date: Mon,  5 May 2025 18:06:16 -0400
+Message-Id: <20250505221419.2672473-160-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -70,52 +70,86 @@ Content-Transfer-Encoding: 8bit
 
 From: Baokun Li <libaokun1@huawei.com>
 
-[ Upstream commit 26343ca0df715097065b02a6cddb4a029d5b9327 ]
+[ Upstream commit e856f93e0fb249955f7d5efb18fe20500a9ccc6d ]
 
-data_err=abort aborts the journal on I/O errors. However, this option is
-meaningless if journal is disabled, so it is rejected in nojournal mode
-to reduce unnecessary checks. Also, this option is ignored upon remount.
+When dioread_nolock is turned on (the default), it will convert unwritten
+extents to written at ext4_end_io_end(), even if the data writeback fails.
+
+It leads to the possibility that stale data may be exposed when the
+physical block corresponding to the file data is read-only (i.e., writes
+return -EIO, but reads are normal).
+
+Therefore a new ext4_io_end->flags EXT4_IO_END_FAILED is added, which
+indicates that some bio write-back failed in the current ext4_io_end.
+When this flag is set, the unwritten to written conversion is no longer
+performed. Users can read the data normally until the caches are dropped,
+after that, the failed extents can only be read to all 0.
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://patch.msgid.link/20250122110533.4116662-4-libaokun@huaweicloud.com
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Link: https://patch.msgid.link/20250122110533.4116662-3-libaokun@huaweicloud.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/super.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/ext4/ext4.h    |  3 ++-
+ fs/ext4/page-io.c | 16 ++++++++++++++--
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index b4a02be2eacf6..b956e1ee98290 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2785,6 +2785,13 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
- 	}
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index df30d9f235123..d4d285d999311 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -278,7 +278,8 @@ struct ext4_system_blocks {
+ /*
+  * Flags for ext4_io_end->flags
+  */
+-#define	EXT4_IO_END_UNWRITTEN	0x0001
++#define EXT4_IO_END_UNWRITTEN	0x0001
++#define EXT4_IO_END_FAILED	0x0002
  
- 	if (is_remount) {
-+		if (!sbi->s_journal &&
-+		    ctx_test_mount_opt(ctx, EXT4_MOUNT_DATA_ERR_ABORT)) {
-+			ext4_msg(NULL, KERN_WARNING,
-+				 "Remounting fs w/o journal so ignoring data_err option");
-+			ctx_clear_mount_opt(ctx, EXT4_MOUNT_DATA_ERR_ABORT);
-+		}
+ struct ext4_io_end_vec {
+ 	struct list_head list;		/* list of io_end_vec */
+diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+index 69b8a7221a2b1..f041a5d93716f 100644
+--- a/fs/ext4/page-io.c
++++ b/fs/ext4/page-io.c
+@@ -181,14 +181,25 @@ static int ext4_end_io_end(ext4_io_end_t *io_end)
+ 		   "list->prev 0x%p\n",
+ 		   io_end, inode->i_ino, io_end->list.next, io_end->list.prev);
+ 
+-	io_end->handle = NULL;	/* Following call will use up the handle */
+-	ret = ext4_convert_unwritten_io_end_vec(handle, io_end);
++	/*
++	 * Do not convert the unwritten extents if data writeback fails,
++	 * or stale data may be exposed.
++	 */
++	io_end->handle = NULL;  /* Following call will use up the handle */
++	if (unlikely(io_end->flag & EXT4_IO_END_FAILED)) {
++		ret = -EIO;
++		if (handle)
++			jbd2_journal_free_reserved(handle);
++	} else {
++		ret = ext4_convert_unwritten_io_end_vec(handle, io_end);
++	}
+ 	if (ret < 0 && !ext4_forced_shutdown(inode->i_sb)) {
+ 		ext4_msg(inode->i_sb, KERN_EMERG,
+ 			 "failed to convert unwritten extents to written "
+ 			 "extents -- potential data loss!  "
+ 			 "(inode %lu, error %d)", inode->i_ino, ret);
+ 	}
 +
- 		if (ctx_test_mount_opt(ctx, EXT4_MOUNT_DAX_ALWAYS) &&
- 		    (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)) {
- 			ext4_msg(NULL, KERN_ERR, "can't mount with "
-@@ -5428,6 +5435,11 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 				 "data=, fs mounted w/o journal");
- 			goto failed_mount3a;
- 		}
-+		if (test_opt(sb, DATA_ERR_ABORT)) {
-+			ext4_msg(sb, KERN_ERR,
-+				 "can't mount with data_err=abort, fs mounted w/o journal");
-+			goto failed_mount3a;
-+		}
- 		sbi->s_def_mount_opt &= ~EXT4_MOUNT_JOURNAL_CHECKSUM;
- 		clear_opt(sb, JOURNAL_CHECKSUM);
- 		clear_opt(sb, DATA_FLAGS);
+ 	ext4_clear_io_unwritten_flag(io_end);
+ 	ext4_release_io_end(io_end);
+ 	return ret;
+@@ -344,6 +355,7 @@ static void ext4_end_bio(struct bio *bio)
+ 			     bio->bi_status, inode->i_ino,
+ 			     (unsigned long long)
+ 			     bi_sector >> (inode->i_blkbits - 9));
++		io_end->flag |= EXT4_IO_END_FAILED;
+ 		mapping_set_error(inode->i_mapping,
+ 				blk_status_to_errno(bio->bi_status));
+ 	}
 -- 
 2.39.5
 
