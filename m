@@ -1,59 +1,59 @@
-Return-Path: <linux-ext4+bounces-7686-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7687-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD7DAAA212
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 00:54:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE739AAA60E
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 02:04:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA46E188595D
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 May 2025 22:54:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67CF24A07CC
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 00:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5792D4B51;
-	Mon,  5 May 2025 22:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C224529241B;
+	Mon,  5 May 2025 22:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4ZbLJGK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q6n16xcy"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2322D4B43;
-	Mon,  5 May 2025 22:20:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60DBA29240F;
+	Mon,  5 May 2025 22:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746483649; cv=none; b=MWyVe5o2d+Ibw1f2c9qZ1MX5MbyJS+xUFKeAOQkE8dD0hO+Eupl6vyVAko8JIwPO5rhpuqj2ZXpC4Nii8HSWipFlz2Ty/ts7fbkZz/lB/doj7P2qYSi6ug65YXwJ03vDlb9sVeN6mX86ApHws7JxMUONrozlIXcRBXObt7fzgwU=
+	t=1746484325; cv=none; b=XjQJdjIph0lnagpBi6wTz3FeIIEUi/Ij2p2pWZQWSiXhSjx+zFEbuqkmu9n8zUFFccjn5zie10ziN6g8ENr4mkv3GV+1f3IQyd2EPWRa8kpeEfCqhTneHIBNOJLDxkZVJfHjVidw9xZEbpUidCmDu87fJMYl/npetZvV9jhjxO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746483649; c=relaxed/simple;
-	bh=3Z870NbVFP4nPjd/CWYzLcAOrBoFq1ASiV1g8udNDH0=;
+	s=arc-20240116; t=1746484325; c=relaxed/simple;
+	bh=kr9HLrdre2mnePfmkxTeKNOQosPAwdSnq6v7nhxRkdw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YjuETS3u+G6jlZx84O/Q+FQlygins0TLf69GxxmXjl2u3BV+Mc0AX5xmwGGAGROiHvXpqBAaacWJAQrgFzhi5ExiAO4f20vdCm7ucvQR7XHZWFZeT/EGZ+LUgM7xP5PenxvcWSh2sHOw78gPDhN0msNkO3IRwWH30FTHJsawVRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4ZbLJGK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A732FC4CEED;
-	Mon,  5 May 2025 22:20:47 +0000 (UTC)
+	 MIME-Version; b=oP1rxUsjfgx3Re6gUbtCBbzaFn5Zez9jlVCJ6I0pkqUMAMOLCyRJ7SKOvbZTjJHkx2QnZnI1QWrW+h0vvUliuxzHBX5NGpDBi3C3Aqgce84VuNTI2lLtjcHeRVIeyPgiC37NcZQHvno3YgPAEUa1nEh7GIl40W7ioZVJKpRe6ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q6n16xcy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7DAC4CEEF;
+	Mon,  5 May 2025 22:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746483648;
-	bh=3Z870NbVFP4nPjd/CWYzLcAOrBoFq1ASiV1g8udNDH0=;
+	s=k20201202; t=1746484325;
+	bh=kr9HLrdre2mnePfmkxTeKNOQosPAwdSnq6v7nhxRkdw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=j4ZbLJGKSmn4zjPE+QQEFicRh8JFRJ1rP0PyvSWO5OjSOGWdNwKhiM/hrQ4tb2lk+
-	 r6LyaLOvLOkXcZaFmMU9IhQh6hv8X5VCQbWsjimomx4IHETLrBdnkx5M2psM+uo3Fp
-	 IsI5qvtyyLBqEmjfCe0NfHnrtfQmd3OviXN4z1GJ6+4k1bIXp1d26cQKPoN+Nto2zD
-	 y8wumUUJ1VZawHiaPok92cnTPR802uogSMFeK+hdId8MVZ1RpbG5DIltdmv7i0Ae4U
-	 hf/wOk3/nPCBofzQcdtubnB+tpXyDn87DboknmoEAi+DQxxgRt0Otx6NoW8HPv8jYT
-	 NuLqIWRGk/Q3Q==
+	b=Q6n16xcyDOklDDTLT9l7FsPcqFhW0W5fzHpaEVr/eHrAKaMXG5m+xeXL9irJaclJd
+	 Qi0sEGGXHyO+BUKVRWGU7w0+iX/yaw75tteOYfvNbnykaAuHsh0MwGzd3mOBsGmpQO
+	 LPUbps4lLcJ+WfJMbmZzzIa2LrA4sR9YU4Kf54EbUgk4uQBO/X3k/1vrVL1AKrB9Rv
+	 XlXke9clRznA7P1Pp8GzHjhbNsaLwFBmkjFJAx9m7TSuYfJDtWXEv7cYFyZ6+JgXMW
+	 icNCcSYLkt6A//yPQFMFH5fXfHPIuzVH3Z92+DEdQW4MsC4n/V6XNazsviZIrUo0d3
+	 skHmqWFUR03RQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baokun Li <libaokun1@huawei.com>,
-	Jan Kara <jack@suse.cz>,
+Cc: Jan Kara <jack@suse.cz>,
+	Andreas Dilger <adilger@dilger.ca>,
 	Zhang Yi <yi.zhang@huawei.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
+	jack@suse.com,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 160/642] ext4: do not convert the unwritten extents if data writeback fails
-Date: Mon,  5 May 2025 18:06:16 -0400
-Message-Id: <20250505221419.2672473-160-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.14 455/642] jbd2: Avoid long replay times due to high number or revoke blocks
+Date: Mon,  5 May 2025 18:11:11 -0400
+Message-Id: <20250505221419.2672473-455-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -68,88 +68,209 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.14.5
 Content-Transfer-Encoding: 8bit
 
-From: Baokun Li <libaokun1@huawei.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit e856f93e0fb249955f7d5efb18fe20500a9ccc6d ]
+[ Upstream commit a399af4e3b1ab2c5d83292d4487c4d18de551659 ]
 
-When dioread_nolock is turned on (the default), it will convert unwritten
-extents to written at ext4_end_io_end(), even if the data writeback fails.
+Some users are reporting journal replay takes a long time when there is
+excessive number of revoke blocks in the journal. Reported times are
+like:
 
-It leads to the possibility that stale data may be exposed when the
-physical block corresponding to the file data is read-only (i.e., writes
-return -EIO, but reads are normal).
+1048576 records - 95 seconds
+2097152 records - 580 seconds
 
-Therefore a new ext4_io_end->flags EXT4_IO_END_FAILED is added, which
-indicates that some bio write-back failed in the current ext4_io_end.
-When this flag is set, the unwritten to written conversion is no longer
-performed. Users can read the data normally until the caches are dropped,
-after that, the failed extents can only be read to all 0.
+The problem is that hash chains in the revoke table gets excessively
+long in these cases. Fix the problem by sizing the revoke table
+appropriately before the revoke pass.
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
+Thanks to Alexey Zhuravlev <azhuravlev@ddn.com> for benchmarking the
+patch with large numbers of revoke blocks [1].
+
+[1] https://lore.kernel.org/all/20250113183107.7bfef7b6@x390.bzzz77.ru
+
+Signed-off-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-Link: https://patch.msgid.link/20250122110533.4116662-3-libaokun@huaweicloud.com
+Link: https://patch.msgid.link/20250121140925.17231-2-jack@suse.cz
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/ext4.h    |  3 ++-
- fs/ext4/page-io.c | 16 ++++++++++++++--
- 2 files changed, 16 insertions(+), 3 deletions(-)
+ fs/jbd2/recovery.c   | 58 ++++++++++++++++++++++++++++++++++++--------
+ fs/jbd2/revoke.c     |  8 +++---
+ include/linux/jbd2.h |  2 ++
+ 3 files changed, 54 insertions(+), 14 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index df30d9f235123..d4d285d999311 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -278,7 +278,8 @@ struct ext4_system_blocks {
- /*
-  * Flags for ext4_io_end->flags
-  */
--#define	EXT4_IO_END_UNWRITTEN	0x0001
-+#define EXT4_IO_END_UNWRITTEN	0x0001
-+#define EXT4_IO_END_FAILED	0x0002
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index 23502f1a67c1e..a3c39a71c4ad3 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -39,7 +39,7 @@ struct recovery_info
  
- struct ext4_io_end_vec {
- 	struct list_head list;		/* list of io_end_vec */
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index 69b8a7221a2b1..f041a5d93716f 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -181,14 +181,25 @@ static int ext4_end_io_end(ext4_io_end_t *io_end)
- 		   "list->prev 0x%p\n",
- 		   io_end, inode->i_ino, io_end->list.next, io_end->list.prev);
+ static int do_one_pass(journal_t *journal,
+ 				struct recovery_info *info, enum passtype pass);
+-static int scan_revoke_records(journal_t *, struct buffer_head *,
++static int scan_revoke_records(journal_t *, enum passtype, struct buffer_head *,
+ 				tid_t, struct recovery_info *);
  
--	io_end->handle = NULL;	/* Following call will use up the handle */
--	ret = ext4_convert_unwritten_io_end_vec(handle, io_end);
-+	/*
-+	 * Do not convert the unwritten extents if data writeback fails,
-+	 * or stale data may be exposed.
-+	 */
-+	io_end->handle = NULL;  /* Following call will use up the handle */
-+	if (unlikely(io_end->flag & EXT4_IO_END_FAILED)) {
-+		ret = -EIO;
-+		if (handle)
-+			jbd2_journal_free_reserved(handle);
-+	} else {
-+		ret = ext4_convert_unwritten_io_end_vec(handle, io_end);
+ #ifdef __KERNEL__
+@@ -328,6 +328,12 @@ int jbd2_journal_recover(journal_t *journal)
+ 		  journal->j_transaction_sequence, journal->j_head);
+ 
+ 	jbd2_journal_clear_revoke(journal);
++	/* Free revoke table allocated for replay */
++	if (journal->j_revoke != journal->j_revoke_table[0] &&
++	    journal->j_revoke != journal->j_revoke_table[1]) {
++		jbd2_journal_destroy_revoke_table(journal->j_revoke);
++		journal->j_revoke = journal->j_revoke_table[1];
 +	}
- 	if (ret < 0 && !ext4_forced_shutdown(inode->i_sb)) {
- 		ext4_msg(inode->i_sb, KERN_EMERG,
- 			 "failed to convert unwritten extents to written "
- 			 "extents -- potential data loss!  "
- 			 "(inode %lu, error %d)", inode->i_ino, ret);
- 	}
+ 	err2 = sync_blockdev(journal->j_fs_dev);
+ 	if (!err)
+ 		err = err2;
+@@ -613,6 +619,31 @@ static int do_one_pass(journal_t *journal,
+ 	first_commit_ID = next_commit_ID;
+ 	if (pass == PASS_SCAN)
+ 		info->start_transaction = first_commit_ID;
++	else if (pass == PASS_REVOKE) {
++		/*
++		 * Would the default revoke table have too long hash chains
++		 * during replay?
++		 */
++		if (info->nr_revokes > JOURNAL_REVOKE_DEFAULT_HASH * 16) {
++			unsigned int hash_size;
 +
- 	ext4_clear_io_unwritten_flag(io_end);
- 	ext4_release_io_end(io_end);
- 	return ret;
-@@ -344,6 +355,7 @@ static void ext4_end_bio(struct bio *bio)
- 			     bio->bi_status, inode->i_ino,
- 			     (unsigned long long)
- 			     bi_sector >> (inode->i_blkbits - 9));
-+		io_end->flag |= EXT4_IO_END_FAILED;
- 		mapping_set_error(inode->i_mapping,
- 				blk_status_to_errno(bio->bi_status));
++			/*
++			 * Aim for average chain length of 8, limit at 1M
++			 * entries to avoid problems with malicious
++			 * filesystems.
++			 */
++			hash_size = min(roundup_pow_of_two(info->nr_revokes / 8),
++					1U << 20);
++			journal->j_revoke =
++				jbd2_journal_init_revoke_table(hash_size);
++			if (!journal->j_revoke) {
++				printk(KERN_ERR
++				       "JBD2: failed to allocate revoke table for replay with %u entries. "
++				       "Journal replay may be slow.\n", hash_size);
++				journal->j_revoke = journal->j_revoke_table[1];
++			}
++		}
++	}
+ 
+ 	jbd2_debug(1, "Starting recovery pass %d\n", pass);
+ 
+@@ -852,6 +883,13 @@ static int do_one_pass(journal_t *journal,
+ 			continue;
+ 
+ 		case JBD2_REVOKE_BLOCK:
++			/*
++			 * If we aren't in the SCAN or REVOKE pass, then we can
++			 * just skip over this block.
++			 */
++			if (pass != PASS_REVOKE && pass != PASS_SCAN)
++				continue;
++
+ 			/*
+ 			 * Check revoke block crc in pass_scan, if csum verify
+ 			 * failed, check commit block time later.
+@@ -864,12 +902,7 @@ static int do_one_pass(journal_t *journal,
+ 				need_check_commit_time = true;
+ 			}
+ 
+-			/* If we aren't in the REVOKE pass, then we can
+-			 * just skip over this block. */
+-			if (pass != PASS_REVOKE)
+-				continue;
+-
+-			err = scan_revoke_records(journal, bh,
++			err = scan_revoke_records(journal, pass, bh,
+ 						  next_commit_ID, info);
+ 			if (err)
+ 				goto failed;
+@@ -923,8 +956,9 @@ static int do_one_pass(journal_t *journal,
+ 
+ /* Scan a revoke record, marking all blocks mentioned as revoked. */
+ 
+-static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
+-			       tid_t sequence, struct recovery_info *info)
++static int scan_revoke_records(journal_t *journal, enum passtype pass,
++			       struct buffer_head *bh, tid_t sequence,
++			       struct recovery_info *info)
+ {
+ 	jbd2_journal_revoke_header_t *header;
+ 	int offset, max;
+@@ -945,6 +979,11 @@ static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
+ 	if (jbd2_has_feature_64bit(journal))
+ 		record_len = 8;
+ 
++	if (pass == PASS_SCAN) {
++		info->nr_revokes += (max - offset) / record_len;
++		return 0;
++	}
++
+ 	while (offset + record_len <= max) {
+ 		unsigned long long blocknr;
+ 		int err;
+@@ -957,7 +996,6 @@ static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
+ 		err = jbd2_journal_set_revoke(journal, blocknr, sequence);
+ 		if (err)
+ 			return err;
+-		++info->nr_revokes;
  	}
+ 	return 0;
+ }
+diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
+index ce63d5fde9c3a..e157e890ff207 100644
+--- a/fs/jbd2/revoke.c
++++ b/fs/jbd2/revoke.c
+@@ -215,7 +215,7 @@ int __init jbd2_journal_init_revoke_table_cache(void)
+ 	return 0;
+ }
+ 
+-static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
++struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
+ {
+ 	int shift = 0;
+ 	int tmp = hash_size;
+@@ -231,7 +231,7 @@ static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
+ 	table->hash_size = hash_size;
+ 	table->hash_shift = shift;
+ 	table->hash_table =
+-		kmalloc_array(hash_size, sizeof(struct list_head), GFP_KERNEL);
++		kvmalloc_array(hash_size, sizeof(struct list_head), GFP_KERNEL);
+ 	if (!table->hash_table) {
+ 		kmem_cache_free(jbd2_revoke_table_cache, table);
+ 		table = NULL;
+@@ -245,7 +245,7 @@ static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
+ 	return table;
+ }
+ 
+-static void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
++void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
+ {
+ 	int i;
+ 	struct list_head *hash_list;
+@@ -255,7 +255,7 @@ static void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
+ 		J_ASSERT(list_empty(hash_list));
+ 	}
+ 
+-	kfree(table->hash_table);
++	kvfree(table->hash_table);
+ 	kmem_cache_free(jbd2_revoke_table_cache, table);
+ }
+ 
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 561025b4f3d91..469c4a191ced4 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1627,6 +1627,8 @@ extern void	   jbd2_journal_destroy_revoke_record_cache(void);
+ extern void	   jbd2_journal_destroy_revoke_table_cache(void);
+ extern int __init jbd2_journal_init_revoke_record_cache(void);
+ extern int __init jbd2_journal_init_revoke_table_cache(void);
++struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size);
++void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table);
+ 
+ extern void	   jbd2_journal_destroy_revoke(journal_t *);
+ extern int	   jbd2_journal_revoke (handle_t *, unsigned long long, struct buffer_head *);
 -- 
 2.39.5
 
