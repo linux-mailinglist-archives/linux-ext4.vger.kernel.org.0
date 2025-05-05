@@ -1,59 +1,59 @@
-Return-Path: <linux-ext4+bounces-7695-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7697-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AACADAAAE82
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 04:58:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04259AAAF1A
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 05:10:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E6EF7B5DD2
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 02:56:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF4877B1B52
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 03:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A650F28150A;
-	Mon,  5 May 2025 23:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD5E3B0A0C;
+	Mon,  5 May 2025 23:20:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q6DcJeJJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eLy9c0Xf"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A939435D794;
-	Mon,  5 May 2025 22:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B4528152D;
+	Mon,  5 May 2025 23:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746485903; cv=none; b=IcnSTDuJfKemb26PuyGquRxnItrkiVLX5MhggJn98N2VBxS9+t07tZUTm32RiphgR/1KSsmHSHPUySXDPeeQX54YvDkjT1gjamE7FYHkDrnyDUvCmL4rvucDiyJnZXMgyq2O2PNH6TswoLGkxrW8u0AGPBbiOqzvFE+aEQejB7w=
+	t=1746486300; cv=none; b=cucn9cSk9+86ykXEZ1CyLU1+Uf4rDkFHDoIFQFrGpgelu46K5T76qsBb1uZH/2OvshWSZpnRxlliiFJiz0rFFVMLhI9NyR2w7/xj2Rp/Qq6I8TK8Z0+jqDg00uqMRsXKO+QRWrMzxlOTTqZklCHLqE6g/nAZfwoEWT6ncXVks9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746485903; c=relaxed/simple;
-	bh=qSgfxMf0t+AJZRB84N9nDSjPGFk8pimZAGPHfZDaF7k=;
+	s=arc-20240116; t=1746486300; c=relaxed/simple;
+	bh=mEdk8wNwFMaBiA/xZ4GWQaf/cVHfpSJsFqr1MvmX5U8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hrKs8MweajY3toDpJFpauDZwGtegA2ctTU4MkEWD0STOlpwaGXrN2pVdEvm9qAT7/DTtJuTxfkBlhVl7kCQSplEegERHtDCwXhBljpVKDUqbbjezq3vkwQOi9ep/1GxIqJdp0crMWEJ9G5UlsE8I7fWpfCmkRfmVwr/zkbI6or8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q6DcJeJJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86066C4CEED;
-	Mon,  5 May 2025 22:58:21 +0000 (UTC)
+	 MIME-Version; b=DeYDNNlU4WfofpuSJK0fjUGQl99eRqu1fpfNXi6zGZ8US9nohSVbBsDgkuYWTMdTtNhJaNyxfyurI3Ucx5CdJeSuHbwdrz7v0bZeXo841AekZyyg1B24Lkw1iottLTa4kXCzW76CAShs1cApsYJtLFAj6yJJlo6TG4Pr3Yt/Qs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eLy9c0Xf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B227CC4CEEF;
+	Mon,  5 May 2025 23:04:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746485902;
-	bh=qSgfxMf0t+AJZRB84N9nDSjPGFk8pimZAGPHfZDaF7k=;
+	s=k20201202; t=1746486300;
+	bh=mEdk8wNwFMaBiA/xZ4GWQaf/cVHfpSJsFqr1MvmX5U8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q6DcJeJJ0U+pWEd5PmNDnHCGggf7tcyt2Oulcmu/kRUrEk2VfyNxsbGcQUgVoDcsY
-	 JtVHtaLwqknpRsQQLDPf5Zw5B8hkE7VOIFN+wd0LLo4SoBflrtwToX7HGtdJadCEUw
-	 ULliDcaDk1z2wr4rXgy3qrpp6V0Q2NlahJg0QdvObQGy7K0tsTIgHv0tw0tQYDa+Yf
-	 H2tQL5m/2dojFhqG8l0yrZAyenU3DjycxCXVRmvF2vEqMSIbnKduEueRYvaCy+nHeo
-	 5gtOFKydrWl8ePPkwEvcUWKZGGO4Io5fEg+JUWdB5cmvJ5YLPczrGUZjlxlb9fH8fB
-	 q612TGiNK+DzA==
+	b=eLy9c0Xfxe1ySbGjGK3cYnHEXZmEF/B1xnwdZhnQH97i5rEIM/rkrxJXjSqgoTVrv
+	 K1LLv6z2tm2TzWDCsa0nUKwOHPXYgs6Uv5iwRzrmmd48c1UDtnM4J5ZpHldXqIB+4K
+	 WRhxSU/kyke5BX8uTkq2cYLyfKV5hNll0Ng1pYO/dpg6y/Pb+Y5J3VwH1zl1ndUOwQ
+	 kmMZs+C6nPsXaFgLaEpRD90IpBSUSOA/qR+hOQ0Fx4tY33uh/Xxzd5cVm4Air1sUt6
+	 fzgCX3KM/zbeynu6Tq0ttwA4pv1QqXth6deI9eUJ/Kt02P7vtKRr017MUmXKcz4v4K
+	 Y6L0Uwiyk+gsw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
-	Serge Hallyn <serge@hallyn.com>,
+Cc: Zhang Yi <yi.zhang@huawei.com>,
 	Jan Kara <jack@suse.cz>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 056/294] ext4: reorder capability check last
-Date: Mon,  5 May 2025 18:52:36 -0400
-Message-Id: <20250505225634.2688578-56-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 246/294] ext4: don't write back data before punch hole in nojournal mode
+Date: Mon,  5 May 2025 18:55:46 -0400
+Message-Id: <20250505225634.2688578-246-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
 References: <20250505225634.2688578-1-sashal@kernel.org>
@@ -63,56 +63,74 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.89
 Content-Transfer-Encoding: 8bit
 
-From: Christian Göttsche <cgzones@googlemail.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-[ Upstream commit 1b419c889c0767a5b66d0a6c566cae491f1cb0f7 ]
+[ Upstream commit 43d0105e2c7523cc6b14cad65e2044e829c0a07a ]
 
-capable() calls refer to enabled LSMs whether to permit or deny the
-request.  This is relevant in connection with SELinux, where a
-capability check results in a policy decision and by default a denial
-message on insufficient permission is issued.
-It can lead to three undesired cases:
-  1. A denial message is generated, even in case the operation was an
-     unprivileged one and thus the syscall succeeded, creating noise.
-  2. To avoid the noise from 1. the policy writer adds a rule to ignore
-     those denial messages, hiding future syscalls, where the task
-     performs an actual privileged operation, leading to hidden limited
-     functionality of that task.
-  3. To avoid the noise from 1. the policy writer adds a rule to permit
-     the task the requested capability, while it does not need it,
-     violating the principle of least privilege.
+There is no need to write back all data before punching a hole in
+non-journaled mode since it will be dropped soon after removing space.
+Therefore, the call to filemap_write_and_wait_range() can be eliminated.
+Besides, similar to ext4_zero_range(), we must address the case of
+partially punched folios when block size < page size. It is essential to
+remove writable userspace mappings to ensure that the folio can be
+faulted again during subsequent mmap write access.
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
-Reviewed-by: Serge Hallyn <serge@hallyn.com>
+In journaled mode, we need to write dirty pages out before discarding
+page cache in case of crash before committing the freeing data
+transaction, which could expose old, stale data, even if synchronization
+has been performed.
+
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://patch.msgid.link/20250302160657.127253-2-cgoettsche@seltendoof.de
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Link: https://patch.msgid.link/20241220011637.1157197-4-yi.zhang@huaweicloud.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/balloc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ext4/inode.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index 396474e9e2bff..3a2dfc59fb40f 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -641,8 +641,8 @@ static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
- 	/* Hm, nope.  Are (enough) root reserved clusters available? */
- 	if (uid_eq(sbi->s_resuid, current_fsuid()) ||
- 	    (!gid_eq(sbi->s_resgid, GLOBAL_ROOT_GID) && in_group_p(sbi->s_resgid)) ||
--	    capable(CAP_SYS_RESOURCE) ||
--	    (flags & EXT4_MB_USE_ROOT_BLOCKS)) {
-+	    (flags & EXT4_MB_USE_ROOT_BLOCKS) ||
-+	    capable(CAP_SYS_RESOURCE)) {
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index d3d28e6587202..456f686136fc5 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3946,17 +3946,6 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
  
- 		if (free_clusters >= (nclusters + dirty_clusters +
- 				      resv_clusters))
+ 	trace_ext4_punch_hole(inode, offset, length, 0);
+ 
+-	/*
+-	 * Write out all dirty pages to avoid race conditions
+-	 * Then release them.
+-	 */
+-	if (mapping_tagged(mapping, PAGECACHE_TAG_DIRTY)) {
+-		ret = filemap_write_and_wait_range(mapping, offset,
+-						   offset + length - 1);
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	inode_lock(inode);
+ 
+ 	/* No need to punch hole beyond i_size */
+@@ -4018,8 +4007,11 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+ 		ret = ext4_update_disksize_before_punch(inode, offset, length);
+ 		if (ret)
+ 			goto out_dio;
+-		truncate_pagecache_range(inode, first_block_offset,
+-					 last_block_offset);
++
++		ret = ext4_truncate_page_cache_block_range(inode,
++				first_block_offset, last_block_offset + 1);
++		if (ret)
++			goto out_dio;
+ 	}
+ 
+ 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
 -- 
 2.39.5
 
