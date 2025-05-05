@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-7692-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7696-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC1D7AAA98A
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 03:16:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F0F5AAAA9D
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 03:41:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53B7C5A2A85
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 01:11:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A6ED4C0C9B
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 01:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396D13628EE;
-	Mon,  5 May 2025 22:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE89237AAC1;
+	Mon,  5 May 2025 23:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dOGxJaUO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SJuOXt/m"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2CAA27E1C9;
-	Mon,  5 May 2025 22:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C2837B344;
+	Mon,  5 May 2025 22:59:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746485021; cv=none; b=MUgcYSAQfrgbGM7EU9uxwqdZ7XPu2/EWPnC1nqceXR29bruAwqhxXWf2/X4ArkQ49kTJje+T1f0IdCu+DGksUnpzbzeuRRANpHuup3+Wwz2HPoiEailZjsyi24ZUDamgixhyIHMhFA/tMSzOWBZSV520gUsidWP4U+EkLj7/iok=
+	t=1746485950; cv=none; b=Waqowx+luevhjcghX/BO9bjfZUVaVtYuMsXTusc6Jrnf8rH1d+CWCCcBpyGq02kV6mBtioWxq2K4VOBpgxMneCKmf9wbXa+38ZhDud/1RV//zH0us2NLduf/TBmhjJZ6O4BwCSTb7aSCeGl+2dF3RlhyjcDgnDysYUiCNNt8cMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746485021; c=relaxed/simple;
-	bh=tEVxtUjgU9X6SNIFS64nms3QrNZHyfQin2c79+iXotA=;
+	s=arc-20240116; t=1746485950; c=relaxed/simple;
+	bh=lODut3LNkB3/xWPUiXkilDiXF3fdbLQXrrE9PSmH8Rs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UaReljzY4hsuwwQ89YOeMgmNKywHaR3cD/h99wqiU23HEp/sFpeBEkpw+Qv+BNeYSSUKnCuREL3wMdxy98MQsDW/6mFFq0bKLU1tyxAHTTlwGYj2Z5T6NiYxd5jOQZfqJYl+l6VYWxFx9YEz9tAxXXHXHBasYz59ow4O1m+Oj0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dOGxJaUO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99709C4CEED;
-	Mon,  5 May 2025 22:43:39 +0000 (UTC)
+	 MIME-Version; b=hUHQdoC7W8cb0O2AicXZt9W8Vrtww1eO/kyJfUM0UzHW66WRDbKY00RRRrzKHYFHm0ayA63+PaGJGLwnFRZRpuHNoOgKNFbd+M9rfFcZ5g5/HIK7CmuJVKWR3R6jLJlr2M1s7ymQfOvUrKSvzz9AzhbQNu9Q5v+Ws5oxyPqP8dM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SJuOXt/m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4B20C4CEEE;
+	Mon,  5 May 2025 22:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746485020;
-	bh=tEVxtUjgU9X6SNIFS64nms3QrNZHyfQin2c79+iXotA=;
+	s=k20201202; t=1746485948;
+	bh=lODut3LNkB3/xWPUiXkilDiXF3fdbLQXrrE9PSmH8Rs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dOGxJaUOFDTXKb2hL/uAO9ZPJzPas4nzW4LK2IpK4zHtu8YuiY8z8VjZYDt6SVGlG
-	 AQnzPuNek7lciWYHJDQEl8yzuCLL+ifmhPXSF2kBHh/xKds6oo5iad2+j4hsDfY6tw
-	 +WQ917nbefmHHGLVuPA7J+z08D3aJbvaJUVuhU15RgHmVjxi3uRg3wA5q4uCKvaXQU
-	 0iVJsrKeFVrmeQjCTo6vUJj4j5ygMCDJCBBEV3Uo1b8tWHVqekp2hmULmZ9miyIte5
-	 4J/NNUzScIblLDJLrB1nMPpqD2kfH8izCfu89edNalR0p9YQz0+nwjNooHR39elBlU
-	 nqP7TwIurGSjQ==
+	b=SJuOXt/m2hTNuIL/qkzeN2G/qlXTcf6C5hP9YJAtQrUI/ARWq9EmkbmFqt6rPyVy4
+	 KNdWhE9qGzIg5+FTPT9Z96Ft5Nq9XEZcw8OY/DsouUmIkPZpk/6AsCCFsFHitqjyve
+	 oSjqylHiF+xecEvuLL4+IbDNhPeFGLjba0z6FL0qasooBsF8TkljNQ5DkytkKf1qlC
+	 nUydChLUYXCZ0bLkzT+8Odrrs5fSFpPWNdjvh0f43Zt6aTHSWWd9tbXNVrHZiAlmYc
+	 3fBlBi7K/X8JBHc21eBO3qvom3yGjtVT8eSkRiTc6HgeIJRssRYMjpIWGlC6vszvHw
+	 jxIcKRSsavjxQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: Baokun Li <libaokun1@huawei.com>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 127/486] ext4: do not convert the unwritten extents if data writeback fails
-Date: Mon,  5 May 2025 18:33:23 -0400
-Message-Id: <20250505223922.2682012-127-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 080/294] ext4: do not convert the unwritten extents if data writeback fails
+Date: Mon,  5 May 2025 18:53:00 -0400
+Message-Id: <20250505225634.2688578-80-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
-References: <20250505223922.2682012-1-sashal@kernel.org>
+In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
+References: <20250505225634.2688578-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.26
+X-stable-base: Linux 6.6.89
 Content-Transfer-Encoding: 8bit
 
 From: Baokun Li <libaokun1@huawei.com>
@@ -97,10 +97,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 16 insertions(+), 3 deletions(-)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index bbffb76d9a904..75df7eeee50d8 100644
+index 60455c84a9374..bf62c3dab4fa2 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -278,7 +278,8 @@ struct ext4_system_blocks {
+@@ -273,7 +273,8 @@ struct ext4_system_blocks {
  /*
   * Flags for ext4_io_end->flags
   */
@@ -111,7 +111,7 @@ index bbffb76d9a904..75df7eeee50d8 100644
  struct ext4_io_end_vec {
  	struct list_head list;		/* list of io_end_vec */
 diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index b7b9261fec3b5..cb023922c93c8 100644
+index 7ab4f5a9bf5b8..7287dbfe13f12 100644
 --- a/fs/ext4/page-io.c
 +++ b/fs/ext4/page-io.c
 @@ -181,14 +181,25 @@ static int ext4_end_io_end(ext4_io_end_t *io_end)
