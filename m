@@ -1,115 +1,126 @@
-Return-Path: <linux-ext4+bounces-7711-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7714-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF510AAB911
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 08:49:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBE1AAB93F
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 08:53:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9D0A1C40A34
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 06:43:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56BD54659BF
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 06:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F322550CF;
-	Tue,  6 May 2025 04:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F77298274;
+	Tue,  6 May 2025 04:01:46 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDED82641C3;
-	Tue,  6 May 2025 01:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB4B1386DA;
+	Tue,  6 May 2025 02:25:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746495079; cv=none; b=tRjdmUWcADU2u8hbyXlDt0RUHRtRXTDmQyZEjhMer1e2mG+Q7lhTZNfFneYmCQ63u7T80Irf9R9qf8ktVzvoAnykddBAxvmLxLC1QB77Ws0o7XIVCtDWecQa6i3VDs1fZILPn2tvDUmbREatFt9GMyXN7/IABZ7O2hfXjRf/C4o=
+	t=1746498314; cv=none; b=rLqJbJLau16g8f/D1wiWvNrCNlc3rQT2oXZ7JsjJ/HRPKHYDxDrYzYrv4rNTaHp9F+4064yvZLPV3nOre2fW5FqUPCJIOzB4Dg0+npxI+80qnvTb8qffsOZlQr8jC2+kWBoTEUta7yk1HRdlk/O3z9V5uuJn05zEwg768ks7JTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746495079; c=relaxed/simple;
-	bh=IgTqTn1SmhN+56W5viaEzU+LRmWnaKsRb9zCEEzz+xU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qcShJco1KRCCTVzd1tMJ1FrtfUCfoqzDZP26ge8Xf9g5W21fgvQPvEocB9orharLyZxVz5N7xvQ5/vERVF19woUYEtXPg4ZCTh+2iOJWP9eyDfg9broyJBVUS5L6W3+kere4WQnZ10AvE9KTKGnKk/ZU2c0YP2zv97H5AC033ps=
+	s=arc-20240116; t=1746498314; c=relaxed/simple;
+	bh=yEpidYVsK6d7u4CVEdAvzxNONuSeJ4rBRYQkAnE47VU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=buI/pyRaHrncxTekHyg3sLZ7ljOMIbYajO9kCM6bXOJCxey1bS/vN/baECyMyLJJz3gOYB14n5U/PJMR8D4UrFGN2x9C/z7n3rPcmG9vo76Xm0GbYjUkt/df3EzlfFnqy2VfSEYSfvViXsYOHrWFdVCDZiCC6wE+a8Mb3hKDkao=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4Zs17n103WzKHMTY;
-	Tue,  6 May 2025 09:31:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id E7C3F1A1A9B;
-	Tue,  6 May 2025 09:31:15 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.112.188])
-	by APP3 (Coremail) with SMTP id _Ch0CgAne8VbZhloHx2MLQ--.59787S7;
-	Tue, 06 May 2025 09:31:15 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	wanghaichi0403@gmail.com,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	libaokun1@huawei.com,
-	yukuai3@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH v2 4/4] ext4: ensure i_size is smaller than maxbytes
-Date: Tue,  6 May 2025 09:20:09 +0800
-Message-ID: <20250506012009.3896990-4-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20250506012009.3896990-1-yi.zhang@huaweicloud.com>
-References: <20250506012009.3896990-1-yi.zhang@huaweicloud.com>
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Zs2KR62dBz4f3jdt;
+	Tue,  6 May 2025 10:24:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 49BD21A12DD;
+	Tue,  6 May 2025 10:25:08 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgCnCl8CcxloBMVDLg--.27787S3;
+	Tue, 06 May 2025 10:25:07 +0800 (CST)
+Message-ID: <d93e69d0-8145-40ac-8afc-f1e8ccbe2052@huaweicloud.com>
+Date: Tue, 6 May 2025 10:25:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgAne8VbZhloHx2MLQ--.59787S7
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrWrCr1kCr18Jw1fuFW5GFg_yoWfCFbEva
-	4Ivr48Wr45Z3Z2krZ3Ar13Kr1qkw48Gr15uF1Ikr15urW8Za9xCrn5ZryIkr1UW3yjgrZ8
-	Ar18JFy7tr1IgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbkxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY02
-	0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-	wVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-	6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-	AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
-	2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
-	C2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
-	nUUI43ZEXa7VUbN6pPUUUUU==
+User-Agent: Mozilla Thunderbird
+Subject: Re: kernel BUG in zero_user_segments
+To: Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
+Cc: Liebes Wang <wanghaichi0403@gmail.com>, ojaswin@linux.ibm.com,
+ Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
+ syzkaller@googlegroups.com, Ext4 Developers List <linux-ext4@vger.kernel.org>
+References: <CADCV8spm=TtW_Lu6p-5q-jdHv1ryLcx45mNBEcYdELbHv_4TnQ@mail.gmail.com>
+ <uxweupjmz7pzbj77cciiuxduxnbuk33mx75bimynzcjmq664zo@xqrdf6ouf5v6>
+ <ac3a58f6-e686-488b-a9ee-fc041024e43d@huawei.com>
+ <aBGVmIin8YxRyFDp@casper.infradead.org>
+ <znfg4s5ysxqvrzeevkmtgixj5vztcyqbuny7waqkugnzkpg2zx@2vxwh57flvva>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <znfg4s5ysxqvrzeevkmtgixj5vztcyqbuny7waqkugnzkpg2zx@2vxwh57flvva>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCnCl8CcxloBMVDLg--.27787S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr1xCw4UGr47WF45CF45KFg_yoW8WF4UpF
+	WxAryrtF4DtFWIkan7Zr1Iqrnaq3s8CFWUXF95Gr4fArZ8WFn29rn0kF4YkasF9r4xuw1j
+	qFyjg3srJ3sIyaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On 2025/5/1 19:19, Jan Kara wrote:
+> On Wed 30-04-25 04:14:32, Matthew Wilcox wrote:
+>> On Tue, Apr 29, 2025 at 03:55:18PM +0800, Zhang Yi wrote:
+>>> After debugging, I found that this problem is caused by punching a hole
+>>> with an offset variable larger than max_end on a corrupted ext4 inode,
+>>> whose i_size is larger than maxbyte. It will result in a negative length
+>>> in the truncate_inode_partial_folio(), which will trigger this problem.
+>>
+>> It seems to me like we're asking for trouble when we allow an inode with
+>> an i_size larger than max_end to be instantiated.  There are probably
+>> other places which assume it is smaller than max_end.  We should probably
+>> decline to create the bad inode in the first place?
+> 
+> Indeed somewhat less quirky fix could be to make ext4_max_bitmap_size()
+> return one block smaller limit. Something like:
+> 
+>         /* Compute how many blocks we can address by block tree */
+>         res += ppb;
+>         res += ppb * ppb;
+>         res += ((loff_t)ppb) * ppb * ppb;
+> +	/*
+> +	 * Hole punching assumes it can map the block past end of hole to
+> +	 * tree offsets
+> +	 */
+> +	res -= 1;
+>         /* Compute how many metadata blocks are needed */
+>         meta_blocks = 1;
+>         meta_blocks += 1 + ppb;
+> 
+> The slight caveat is that in theory there could be filesystems out there
+> with so large files and then we'd stop allowing access to such files. But I
+> guess the chances are so low that it's probably worth trying.
+> 
 
-The inode i_size cannot be larger than maxbytes, check it while loading
-inode from the disk.
+Hmm, I suppose this approach could pose some risks to our legacy products,
+and it makes me feel uneasy. Personally, I am more inclined toward the
+current solution, unless we decide to fix the ext4_ind_remove_space()
+directly. :)
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks,
+Yi.
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 5691966a19e1..072b61140d12 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4922,7 +4922,8 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 		ei->i_file_acl |=
- 			((__u64)le16_to_cpu(raw_inode->i_file_acl_high)) << 32;
- 	inode->i_size = ext4_isize(sb, raw_inode);
--	if ((size = i_size_read(inode)) < 0) {
-+	size = i_size_read(inode);
-+	if (size < 0 || size > ext4_get_maxbytes(inode)) {
- 		ext4_error_inode(inode, function, line, 0,
- 				 "iget: bad i_size value: %lld", size);
- 		ret = -EFSCORRUPTED;
--- 
-2.46.1
 
 
