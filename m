@@ -1,51 +1,65 @@
-Return-Path: <linux-ext4+bounces-7719-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7720-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BE9DAABA7C
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 09:21:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80EB9AABAAD
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 09:26:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABE1E1C41DF6
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 07:16:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99A2C7B44F3
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 07:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F2D2405EB;
-	Tue,  6 May 2025 05:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A007628EFEE;
+	Tue,  6 May 2025 05:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mhuoWC9y"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24339235BF4;
-	Tue,  6 May 2025 05:02:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1723672629;
+	Tue,  6 May 2025 05:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746507767; cv=none; b=Nlf7KvAmvpnFt/bTbYCX41jjRwbo4rWlaIlRwvdTOhKzYEE+EWLuorXlxzH6ENYHtEjpyKBuoogxlintZc73g4yn6958SoEmgX/XymyKiYY+5WeKbNLuMm3yJ8n+pgBtQx2DMACpGu0M2X8KEAc5f5OXh1SmvW6MtppJ6l1jFE8=
+	t=1746509816; cv=none; b=fPijXw7JG/JJ3et4MSdEkND+MJJ3eekwHS3evBUfVi6WP6NK5v/9EyNJLDsUqlQpY4Nf0XYlgGNORCbdUKBCQCbniMipB6znErjw9isNjk+UKqYTEKDH88asAbvYdtHp3Ut336XOy8ULyrRn7bfeTgnX7tv1MOAeLJ8RPYvrq0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746507767; c=relaxed/simple;
-	bh=WpiL9RUKgpw4IAWGl2V9dyiwaKBSUahbWcqFMg2jLmA=;
+	s=arc-20240116; t=1746509816; c=relaxed/simple;
+	bh=UVuy9ogA8kbxN31PqG2ogdS080rmyL1HXX6AhQqmcnU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JOU6oi/vRLjUY8vDYxklKALq+TjYqt7zqPD/iaW2AI59gvGMi4XlilgQCrMnVusgV2cc1l5jLHWo15/+GXIzTYtyeNbrRoGLzr2BRoJUIx5OJWEQXD7tUTqXfZSybyXI40wzMSejtnd/A9HriZQMhMUZ+GxYMV1zZXhhAY4LZd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 9C5A767373; Tue,  6 May 2025 07:02:39 +0200 (CEST)
-Date: Tue, 6 May 2025 07:02:39 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Zhang Yi <yi.zhang@huaweicloud.com>,
-	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tytso@mit.edu, john.g.garry@oracle.com, bmarzins@redhat.com,
-	chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com,
-	brauner@kernel.org, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com, yangerkun@huawei.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=iDORfY0Jc08+0Y1cR2Ms/cqoMgpDcUJXlpI1wLrIWShypCqh9uKqX5RzOnjAjQ4XRJGAxU6XaGjqdLI6YdSejEmBrOlz+2GQqE/f9cFj6Ev8VqowjrSgvR55xp49BBXXfZpze2H7A6S8+vMGhIAK2065StahpomNDpM7fxU8aJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mhuoWC9y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C383C4CEF0;
+	Tue,  6 May 2025 05:36:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746509815;
+	bh=UVuy9ogA8kbxN31PqG2ogdS080rmyL1HXX6AhQqmcnU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mhuoWC9yPuKYxQ/EmkpumPF/OMvdDEn0ZOt2eABGZszCs9GkLyi3ecQepcp2rWj/x
+	 wFKiLMD3llXUiNqheph9fmutbUvp3ABiPKvR6+j1/C3PnAJzXDM0BdYyV1SDKFuLf1
+	 ZX2RmwkYj0NY6RH+uwkKQ1DKSHuSkgC0VcbFKJjIg+n7IvWIPRMOysPxQ75BmHqenI
+	 W0G8v7YRjGEbcDmHpgb0BZRTxDak8ZW06Hry5zqz3ryzlYvOIJed3YsBz12nLEwRBK
+	 A8zmixdDoSmYbAbxCdbncqfsxOh5dHZhi3XnWaubezymoQZXz8VMHQCTnTsrFBqRCl
+	 IkccwrvcUqMcQ==
+Date: Mon, 5 May 2025 22:36:54 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-block@vger.kernel.org,
+	dm-devel@lists.linux.dev, linux-nvme@lists.infradead.org,
+	linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tytso@mit.edu,
+	john.g.garry@oracle.com, bmarzins@redhat.com, chaitanyak@nvidia.com,
+	shinichiro.kawasaki@wdc.com, brauner@kernel.org,
+	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+	yangerkun@huawei.com
 Subject: Re: [RFC PATCH v4 07/11] fs: statx add write zeroes unmap attribute
-Message-ID: <20250506050239.GA27687@lst.de>
-References: <20250421021509.2366003-1-yi.zhang@huaweicloud.com> <20250421021509.2366003-8-yi.zhang@huaweicloud.com> <20250505132208.GA22182@lst.de> <20250505142945.GJ1035866@frogsfrogsfrogs>
+Message-ID: <20250506053654.GA25700@frogsfrogsfrogs>
+References: <20250421021509.2366003-1-yi.zhang@huaweicloud.com>
+ <20250421021509.2366003-8-yi.zhang@huaweicloud.com>
+ <20250505132208.GA22182@lst.de>
+ <20250505142945.GJ1035866@frogsfrogsfrogs>
+ <20250506050239.GA27687@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -54,23 +68,44 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250505142945.GJ1035866@frogsfrogsfrogs>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20250506050239.GA27687@lst.de>
 
-On Mon, May 05, 2025 at 07:29:45AM -0700, Darrick J. Wong wrote:
-> attributes_mask contains attribute flags known to the filesystem,
-> whereas attributes contains flags actually set on the file.
-> "known_attributes" would have been a better name, but that's water under
-> the bridge. :P
+On Tue, May 06, 2025 at 07:02:39AM +0200, Christoph Hellwig wrote:
+> On Mon, May 05, 2025 at 07:29:45AM -0700, Darrick J. Wong wrote:
+> > attributes_mask contains attribute flags known to the filesystem,
+> > whereas attributes contains flags actually set on the file.
+> > "known_attributes" would have been a better name, but that's water under
+> > the bridge. :P
+> 
+> Oooh.  I think I was very confused at what this patch does, and what
+> it does seems confused as well.
+> 
+> The patch adds a new flag to the STATX_ATTR_* namespace, which
+> historically was used for persistent on-disk flags like immutable,
+> not the STATX_* namespace where I assumed it, and which has no
+> support mask.  Which seems really odd for a pure kernel feature.
+> Then again it seems to follow STATX_ATTR_WRITE_ATOMIC which seems
+> just as wrongly place unless I'm missing something?
 
-Oooh.  I think I was very confused at what this patch does, and what
-it does seems confused as well.
+I think STATX_* (i.e. not STATX_ATTR_*) flags have two purposes: 1) to
+declare that specific fields in struct statx actually have meaning, most
+notably in scenarios where zeroes are valid field contents; and 2) if
+filling out the field is expensive, userspace can elect not to have it
+filled by leaving the bit unset.  I don't know how userspace is supposed
+to figure out which fields are expensive.
 
-The patch adds a new flag to the STATX_ATTR_* namespace, which
-historically was used for persistent on-disk flags like immutable,
-not the STATX_* namespace where I assumed it, and which has no
-support mask.  Which seems really odd for a pure kernel feature.
-Then again it seems to follow STATX_ATTR_WRITE_ATOMIC which seems
-just as wrongly place unless I'm missing something?
+STATX_ATTR_* are supposed to be reflect persistent inode state.  I think
+STATX_ATTR_WRITE_ATOMIC is a (now unremovable) artifact of the era when
+we were going to have a new iflag and feature bit for all the new
+forcealign functionality.  For XFS it's not necessary anymore because we
+always have software fallback and the statx::atomic_write_* fields being
+nonzero is sufficient to detect the functionality.
 
+(I'm confused about the whole premise of /this/ patch -- it's a "fast
+zeroing" fallocate flag that causes the *device* to unmap, so that the
+filesystem can preallocate and avoid unwritten extent conversions?
+What happens if the block device is thinp and it runs out of space?
+That seems antithetical to fallocate...)
+
+--D
 
