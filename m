@@ -1,180 +1,168 @@
-Return-Path: <linux-ext4+bounces-7709-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7713-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B05C7AAB86B
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 08:34:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23F8FAAB84E
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 08:31:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5FCC3AF308
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 06:22:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 794B917E94E
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 May 2025 06:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D958290DA9;
-	Tue,  6 May 2025 01:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51557257AC8;
+	Tue,  6 May 2025 04:00:33 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4812A290D95
-	for <linux-ext4@vger.kernel.org>; Mon,  5 May 2025 23:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF5C2641F3;
+	Tue,  6 May 2025 01:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746489207; cv=none; b=MigvoD7bDucyzx9B8qs3ydUSk5r+KH9vPYsBiknuCo64soM4c2JCstfli3Rybaf7c+8oidkittd9z7olqdIAqaRTL8ECfFza+ONrNyCrThSoTQzfnW/Pw3uinslqwykCKoJSrpBuLy1NFBLwZJOSk9Ml1EwtrY3lOTvTMriRPRY=
+	t=1746495080; cv=none; b=SUcclx+NIFfgx1xPk+4CZhLjUk8V/KbyJx+hRYqex0HyhX6KmB7tXohhC2NxrZylEBc6tCuwLKUnyJa19zVBq+zwOMrcScw0s2HUmIeImiNDgP7gbP8vwhrXGi8lT2XNCJ38KOhjwE9GdMZMUGHAYfxHVc2wdKyJTLGTlvn0juM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746489207; c=relaxed/simple;
-	bh=4szCwPKUAWPCALZNQCt1FT3sTgBhoRie1V8vTB4SGZo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=P1GKNbmk6Nk8z9qO0MiLgJTPTRIZ5vZFCuZ/R02spFngZc9Hhy5VbpDd0wXXPvYtPkq0LU0+QiQKahWbb09JctDoT5+fAYoMcyciJHs7cnOAokEjjvyi5dFsqJwDljtvB7vSg+Sy/uPSM0BiGDBXDK3IaF76Nnm1iIrgtCJ2fnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d94fe1037cso65548045ab.0
-        for <linux-ext4@vger.kernel.org>; Mon, 05 May 2025 16:53:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746489203; x=1747094003;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lVvfQB2gd1o++AE5Iug9x1lhI2tv16s5HMfxraXsjOc=;
-        b=qZY3Jww9A6iRrGOseik2P9u0DwUutCdUBeTMv9JexCcGvhz/ivolBemqzfv1RLagM0
-         bOJD/BhAYGRXJ1O2EFkZOrRn2b7En73XgZ6Cw8dfrAGOmChaUlSX3q/SHJca9EN/yUMp
-         V8vOk0avUIfABifbmLcNeQx8Jfk7TUhNbX6u0MsD5s/qP4CsLGIGUfH9LxBmjdFwlQ8P
-         Pm+CiCl2ihYpOfxzf2xmSFMTjBwrF4iuy9Hm2n2NBb2bxz7nSzsEluoEMl2JVF/qhFOD
-         WV3GTqe+qitFrF4SqRE3dj5OspjO47FfxwazVdK/VbMiF1e4BarizNvE0Y1Pr7MdWe2I
-         Zaew==
-X-Forwarded-Encrypted: i=1; AJvYcCV2x9Zfobhre0xxlgE0euPkJM61M6bLV1EnXt3FtwG5JHV2074ZHybu/HrxoeUYyoqR81qfINqCUYCN@vger.kernel.org
-X-Gm-Message-State: AOJu0YwyExlYtgL9ggyYLRzyMoe1fqa4UI4ZsRIpW5JuKOjGrlcj67Dn
-	wPUkRkvkYp1tD5zXSxYQBTNGqFSxFMXdLY44RARrjm0/loRy64ePyts2bFShO49E2bQg3d53t1z
-	ZfdWEx/XdHHcmTYPIC5IWCDgPKSltZS6deGTgTI8WIIo3aAf5wddTYZ8=
-X-Google-Smtp-Source: AGHT+IHFWRP2ubrDOHG2yQxffmplmBna/WWvzM/wBGg1xiw1HNcYYS4LHSGpsBSYKjmOrTiRUb30nVJ2Pn8USxw1fDGeQFGLso/O
+	s=arc-20240116; t=1746495080; c=relaxed/simple;
+	bh=WrIvAnOyLAu8N4RMSX5hG/YhPArgaiAlWOYjFdbHS9g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W6gPQX68g2strzR0k9nIy4HbE/6Y0d/fQl2hb0POJuFposNnyIJXWD0SzftWheiN0nqvG7ILcn2dO/tCFjEYkigUJKk/c2KMdh5j0JVo0B9qXvvL2p/ia5yjoQBDUHSb9jriWoeseaUiWSrdDYh4bvwVetMFbRYCzBKGoPyzbXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Zs17F74NCz4f3jdt;
+	Tue,  6 May 2025 09:30:49 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 6D2571A16B7;
+	Tue,  6 May 2025 09:31:14 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.112.188])
+	by APP3 (Coremail) with SMTP id _Ch0CgAne8VbZhloHx2MLQ--.59787S4;
+	Tue, 06 May 2025 09:31:13 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	wanghaichi0403@gmail.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	libaokun1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v2 1/4] ext4: fix out of bounds punch offset
+Date: Tue,  6 May 2025 09:20:06 +0800
+Message-ID: <20250506012009.3896990-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a41:b0:3d8:7a02:a67b with SMTP id
- e9e14a558f8ab-3da6cdd6201mr14788035ab.8.1746489203173; Mon, 05 May 2025
- 16:53:23 -0700 (PDT)
-Date: Mon, 05 May 2025 16:53:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68194f73.050a0220.a19a9.0005.GAE@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in ext4_mb_normalize_request
-From: syzbot <syzbot+7fc5cde5fbe19897a469@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgAne8VbZhloHx2MLQ--.59787S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGw4fXryxAF4xXr4DWw1DAwb_yoW5uw1xpr
+	y7GrWUGr48Wr1DCF48Jr17Jr4Uta17CFW7XF1IgrWUAF1fZ3WjgF1UKr429F1UJr48Xr1S
+	qF1DXw10qw1YyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoWlkDUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Hello,
+From: Zhang Yi <yi.zhang@huawei.com>
 
-syzbot found the following issue on:
+Punching a hole with a start offset that exceeds max_end is not
+permitted and will result in a negative length in the
+truncate_inode_partial_folio() function while truncating the page cache,
+potentially leading to undesirable consequences.
 
-HEAD commit:    4f79eaa2ceac kbuild: Properly disable -Wunterminated-strin..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=148b3774580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a42a9d552788177b
-dashboard link: https://syzkaller.appspot.com/bug?extid=7fc5cde5fbe19897a469
-compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
+A simple reproducer:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+  truncate -s 9895604649994 /mnt/foo
+  xfs_io -c "pwrite 8796093022208 4096" /mnt/foo
+  xfs_io -c "fpunch 8796093022213 25769803777" /mnt/foo
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/edbf5e3df590/disk-4f79eaa2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e9ed2fe174f6/vmlinux-4f79eaa2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c11b2a37db5c/bzImage-4f79eaa2.xz
+  kernel BUG at include/linux/highmem.h:275!
+  Oops: invalid opcode: 0000 [#1] SMP PTI
+  CPU: 3 UID: 0 PID: 710 Comm: xfs_io Not tainted 6.15.0-rc3
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-2.fc40 04/01/2014
+  RIP: 0010:zero_user_segments.constprop.0+0xd7/0x110
+  RSP: 0018:ffffc90001cf3b38 EFLAGS: 00010287
+  RAX: 0000000000000005 RBX: ffffea0001485e40 RCX: 0000000000001000
+  RDX: 000000000040b000 RSI: 0000000000000005 RDI: 000000000040b000
+  RBP: 000000000040affb R08: ffff888000000000 R09: ffffea0000000000
+  R10: 0000000000000003 R11: 00000000fffc7fc5 R12: 0000000000000005
+  R13: 000000000040affb R14: ffffea0001485e40 R15: ffff888031cd3000
+  FS:  00007f4f63d0b780(0000) GS:ffff8880d337d000(0000)
+  knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 000000001ae0b038 CR3: 00000000536aa000 CR4: 00000000000006f0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   <TASK>
+   truncate_inode_partial_folio+0x3dd/0x620
+   truncate_inode_pages_range+0x226/0x720
+   ? bdev_getblk+0x52/0x3e0
+   ? ext4_get_group_desc+0x78/0x150
+   ? crc32c_arch+0xfd/0x180
+   ? __ext4_get_inode_loc+0x18c/0x840
+   ? ext4_inode_csum+0x117/0x160
+   ? jbd2_journal_dirty_metadata+0x61/0x390
+   ? __ext4_handle_dirty_metadata+0xa0/0x2b0
+   ? kmem_cache_free+0x90/0x5a0
+   ? jbd2_journal_stop+0x1d5/0x550
+   ? __ext4_journal_stop+0x49/0x100
+   truncate_pagecache_range+0x50/0x80
+   ext4_truncate_page_cache_block_range+0x57/0x3a0
+   ext4_punch_hole+0x1fe/0x670
+   ext4_fallocate+0x792/0x17d0
+   ? __count_memcg_events+0x175/0x2a0
+   vfs_fallocate+0x121/0x560
+   ksys_fallocate+0x51/0xc0
+   __x64_sys_fallocate+0x24/0x40
+   x64_sys_call+0x18d2/0x4170
+   do_syscall_64+0xa7/0x220
+   entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7fc5cde5fbe19897a469@syzkaller.appspotmail.com
+Fix this by filtering out cases where the punching start offset exceeds
+max_end.
 
-EXT4-fs: Ignoring removed nobh option
-EXT4-fs: Ignoring removed bh option
-EXT4-fs (loop9): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: writeback.
-EXT4-fs (loop9): start 0, size 131072, fe_logical 131136
-------------[ cut here ]------------
-kernel BUG at fs/ext4/mballoc.c:4555!
-Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
-CPU: 1 UID: 0 PID: 8509 Comm: syz.9.234 Not tainted 6.15.0-rc4-syzkaller-00052-g4f79eaa2ceac #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/19/2025
-RIP: 0010:ext4_mb_normalize_request+0x1cc9/0x1d00 fs/ext4/mballoc.c:4555
-Code: f5 ac ff 48 8b 44 24 38 48 8b 38 48 c7 c6 80 37 7e 8b 48 c7 c2 80 4d 7e 8b 48 8b 4c 24 28 4d 89 f0 49 89 d9 e8 38 a5 09 00 90 <0f> 0b e8 60 26 4d ff 90 0f 0b e8 58 26 4d ff 90 0f 0b e8 50 26 4d
-RSP: 0018:ffffc9000496ed40 EFLAGS: 00010246
-RAX: a8a732223c46f100 RBX: 0000000000020040 RCX: a8a732223c46f100
-RDX: ffffc9000dd70000 RSI: 0000000000023bd3 RDI: 0000000000023bd4
-RBP: 0000000000000000 R08: ffffc9000496e8e7 R09: 1ffff9200092dd1c
-R10: dffffc0000000000 R11: fffff5200092dd1d R12: ffffffff00020800
-R13: dffffc0000000000 R14: 0000000000020000 R15: 0000000000020000
-FS:  00007fec5d95a6c0(0000) GS:ffff888126200000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f9695f6e270 CR3: 00000000207e0000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ext4_mb_new_blocks+0xc59/0x46a0 fs/ext4/mballoc.c:6208
- ext4_ext_map_blocks+0x1618/0x67c0 fs/ext4/extents.c:4379
- ext4_map_create_blocks fs/ext4/inode.c:520 [inline]
- ext4_map_blocks+0x807/0x1740 fs/ext4/inode.c:706
- _ext4_get_block+0x200/0x4c0 fs/ext4/inode.c:785
- ext4_get_block_unwritten+0x2e/0x100 fs/ext4/inode.c:818
- ext4_block_write_begin+0x543/0x1290 fs/ext4/inode.c:1067
- ext4_write_begin+0x6f6/0x12c0 fs/ext4/ext4_jbd2.h:-1
- ext4_da_write_begin+0x33a/0xa60 fs/ext4/inode.c:2932
- generic_perform_write+0x2c4/0x910 mm/filemap.c:4103
- ext4_buffered_write_iter+0xce/0x3a0 fs/ext4/file.c:299
- ext4_file_write_iter+0x298/0x1bc0 fs/ext4/file.c:-1
- new_sync_write fs/read_write.c:591 [inline]
- vfs_write+0x548/0xa90 fs/read_write.c:684
- ksys_pwrite64 fs/read_write.c:791 [inline]
- __do_sys_pwrite64 fs/read_write.c:799 [inline]
- __se_sys_pwrite64 fs/read_write.c:796 [inline]
- __x64_sys_pwrite64+0x193/0x220 fs/read_write.c:796
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fec5cb8e969
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fec5d95a038 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-RAX: ffffffffffffffda RBX: 00007fec5cdb6080 RCX: 00007fec5cb8e969
-RDX: 00000000000155c2 RSI: 0000200000000140 RDI: 000000000000000a
-RBP: 00007fec5cc10ab1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000008000c64 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007fec5cdb6080 R15: 00007fffed56a588
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_mb_normalize_request+0x1cc9/0x1d00 fs/ext4/mballoc.c:4555
-Code: f5 ac ff 48 8b 44 24 38 48 8b 38 48 c7 c6 80 37 7e 8b 48 c7 c2 80 4d 7e 8b 48 8b 4c 24 28 4d 89 f0 49 89 d9 e8 38 a5 09 00 90 <0f> 0b e8 60 26 4d ff 90 0f 0b e8 58 26 4d ff 90 0f 0b e8 50 26 4d
-RSP: 0018:ffffc9000496ed40 EFLAGS: 00010246
-RAX: a8a732223c46f100 RBX: 0000000000020040 RCX: a8a732223c46f100
-RDX: ffffc9000dd70000 RSI: 0000000000023bd3 RDI: 0000000000023bd4
-RBP: 0000000000000000 R08: ffffc9000496e8e7 R09: 1ffff9200092dd1c
-R10: dffffc0000000000 R11: fffff5200092dd1d R12: ffffffff00020800
-R13: dffffc0000000000 R14: 0000000000020000 R15: 0000000000020000
-FS:  00007fec5d95a6c0(0000) GS:ffff888126200000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000562fcaf64131 CR3: 00000000207e0000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Fixes: 982bf37da09d ("ext4: refactor ext4_punch_hole()")
+Reported-by: Liebes Wang <wanghaichi0403@gmail.com>
+Closes: https://lore.kernel.org/linux-ext4/ac3a58f6-e686-488b-a9ee-fc041024e43d@huawei.com/
+Tested-by: Liebes Wang <wanghaichi0403@gmail.com>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/ext4/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 94c7d2d828a6..4ec4a80b6879 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4016,7 +4016,7 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+ 	WARN_ON_ONCE(!inode_is_locked(inode));
+ 
+ 	/* No need to punch hole beyond i_size */
+-	if (offset >= inode->i_size)
++	if (offset >= inode->i_size || offset >= max_end)
+ 		return 0;
+ 
+ 	/*
+-- 
+2.46.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
