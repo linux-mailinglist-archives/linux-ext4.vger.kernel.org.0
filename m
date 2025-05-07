@@ -1,45 +1,46 @@
-Return-Path: <linux-ext4+bounces-7758-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7759-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2764EAADA0D
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 May 2025 10:23:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B965AADDDC
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 May 2025 13:57:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 942DF4E590C
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 May 2025 08:23:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 346E41B6857D
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 May 2025 11:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7DF221D93;
-	Wed,  7 May 2025 08:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0718F2580C2;
+	Wed,  7 May 2025 11:57:30 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC6B221287;
-	Wed,  7 May 2025 08:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4042586D5
+	for <linux-ext4@vger.kernel.org>; Wed,  7 May 2025 11:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746606195; cv=none; b=KzFhqhaSUrqQMJoK/r1qxQ2VTpc/Fi8RDxhHqJqkCClH+QDVNONXTdMUQYnBRJH0/ns0i9+MVJQw/lzIWJehppvnYA3PBLkk6tSf2cVAhk8p5Zdby7wLHIDORnjQwMJmhC2K42vJ2mzwgRdiKYqTCSEDo2sLnOCX1xXAt6lHFmY=
+	t=1746619049; cv=none; b=FR9TgWb5kHWzfiA+lAktDI7m1PNaYcfwcWRua9b+kk8i6bVLE9k+MFt1rb2yysN4c8xij0QDDeyiQurByc0EssniK2aR8eVj79lk6Nc4KMhpic2Ysj6mDgfPq6MQ7xFsxS7EvSpRNPCE6cBD/C4h96xtn1qB49IIYEK44QPKO6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746606195; c=relaxed/simple;
-	bh=dKQSYssCqjab+VThR2A6t9EL5/fdsI5w0NftenKqgO8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ibWIb95PO3EaJJ/ByiG3lHgsKX15j1qGqKZaC6Dc4LKEDm/jpb38ip7Lkg/HFIzkJ0LX9mApPhyOL4ZVg3PloSyxrne0uuvQKjJaLcEEaom6lCYY1wQjBO+attNr0xXVFuOZrC4byyMXm1Zm86HoDCfW6j7r2CewVNK0dMfY4MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ZspD501PTz4f3jXv;
-	Wed,  7 May 2025 16:22:44 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 7419B1A018C;
-	Wed,  7 May 2025 16:23:09 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP1 (Coremail) with SMTP id cCh0CgAXfHxqGBto+dv_LQ--.31348S3;
-	Wed, 07 May 2025 16:23:08 +0800 (CST)
-Message-ID: <6fc62631-fb6f-4207-badb-1964b20fa89a@huaweicloud.com>
-Date: Wed, 7 May 2025 16:23:06 +0800
+	s=arc-20240116; t=1746619049; c=relaxed/simple;
+	bh=xCGdZjPK86tIa6ZsNQi7JykhoToN2ZVGVey87SCI6ZM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ac2T3dugE+PfcKkSx5j5ROvrI2/wAC3DOaVyhk2AoCnCrwG7+IlnDzgslIKWlEt8tlg9cSWzXTSDiACKvLRUwmFoVUpkEbwIR80t3H/P/u5+F4xZpMXAvt13tkp4NR77v1EzfLVa0Aa7SXMK+d+fjMZrWC/Kn1eZZJGq9EXiWIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ZstvZ5JxTz2CdcN;
+	Wed,  7 May 2025 19:53:46 +0800 (CST)
+Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
+	by mail.maildlp.com (Postfix) with ESMTPS id 646F01A0188;
+	Wed,  7 May 2025 19:57:22 +0800 (CST)
+Received: from [10.174.179.80] (10.174.179.80) by
+ kwepemf100017.china.huawei.com (7.202.181.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 7 May 2025 19:57:21 +0800
+Message-ID: <fb9f3524-6940-4649-9d10-5cfed10fca48@huawei.com>
+Date: Wed, 7 May 2025 19:57:20 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,87 +48,91 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v4 07/11] fs: statx add write zeroes unmap attribute
-To: "Darrick J. Wong" <djwong@kernel.org>, Christoph Hellwig <hch@lst.de>
-Cc: dhowells@redhat.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-block@vger.kernel.org,
- dm-devel@lists.linux.dev, linux-nvme@lists.infradead.org,
- linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, john.g.garry@oracle.com,
- bmarzins@redhat.com, chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com,
- yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
- yangerkun@huawei.com
-References: <20250421021509.2366003-1-yi.zhang@huaweicloud.com>
- <20250421021509.2366003-8-yi.zhang@huaweicloud.com>
- <20250505132208.GA22182@lst.de> <20250505142945.GJ1035866@frogsfrogsfrogs>
- <20250506050239.GA27687@lst.de> <20250506053654.GA25700@frogsfrogsfrogs>
- <20250506054722.GA28781@lst.de>
- <c3105509-9d63-4fa2-afaf-5b508ddeeaca@huaweicloud.com>
- <20250506121012.GA21705@lst.de> <20250506155515.GL1035866@frogsfrogsfrogs>
+Subject: Re: [PATCH] ext4: Fix calculation of credits for extent tree
+ modification
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, Luis
+ Chamberlain <mcgrof@kernel.org>, <kdevops@lists.linux.dev>, Ted Tso
+	<tytso@mit.edu>
+References: <20250429175535.23125-2-jack@suse.cz>
 Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20250506155515.GL1035866@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8
+From: Zhang Yi <yi.zhang@huawei.com>
+In-Reply-To: <20250429175535.23125-2-jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgAXfHxqGBto+dv_LQ--.31348S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw1ktr18Gr17CFy8Kw48Zwb_yoW8CFWDpF
-	WjgF4UGFWUKry3Jw1kuw1Igr15ZFn5GFy3C39Ykr18Zws0qr1kKF95W3ZYkF9ruryrAa1U
-	ta9xK3sxWws3A37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemf100017.china.huawei.com (7.202.181.16)
 
-On 2025/5/6 23:55, Darrick J. Wong wrote:
-> On Tue, May 06, 2025 at 02:10:12PM +0200, Christoph Hellwig wrote:
->> On Tue, May 06, 2025 at 07:25:06PM +0800, Zhang Yi wrote:
->>> +       if (request_mask & STATX_WRITE_ZEROES_UNMAP &&
->>> +           bdev_write_zeroes_unmap(bdev))
->>> +               stat->result_mask |= STATX_WRITE_ZEROES_UNMAP;
->>
->> That would be my expectation.  But then again this area seems to
->> confuse me a lot, so maybe we'll get Christian or Dave to chim in.
+Hi, Jan!
+
+On 2025/4/30 1:55, Jan Kara wrote:
+> Luis and David are reporting that after running generic/750 test for 90+
+> hours on 2k ext4 filesystem, they are able to trigger a warning in
+> jbd2_journal_dirty_metadata() complaining that there are not enough
+> credits in the running transaction started in ext4_do_writepages().
 > 
-> Um... does STATX_WRITE_ZEROES_UNMAP protect a field somewhere?
-> It might be nice to expose the request alignment granularity/max
-> size/etc.
-
-I think that simply returning the support state is sufficient at the
-moment. __blkdev_issue_write_zeroes() will send write zeroes through
-multiple iterations, and there are no specific restrictions on the
-parameters provided by users.
-
-> Or does this flag exist solely to support discovering that
-> FALLOC_FL_WRITE_ZEROES is supported?  In which case, why not discover
-> its existence by calling fallocate(fd, WRITE_ZEROES, 0, 0) like the
-> other modes?
+> Indeed the code in ext4_do_writepages() is racy and the extent tree can
+> change between the time we compute credits necessary for extent tree
+> computation and the time we actually modify the extent tree. Thus it may
+> happen that the number of credits actually needed is higher. Modify
+> ext4_ext_index_trans_blocks() to count with the worst case of maximum
+> tree depth. This can reduce the possible number of writers that can
+> operate in the system in parallel (because the credit estimates now won't
+> fit in one transaction) but for reasonably sized journals this shouldn't
+> really be an issue. So just go with a safe and simple fix.
 > 
+> Link: https://lore.kernel.org/all/20250415013641.f2ppw6wov4kn4wq2@offworld
+> Reported-by: Davidlohr Bueso <dave@stgolabs.net>
+> Reported-by: Luis Chamberlain <mcgrof@kernel.org>
+> Tested-by: kdevops@lists.linux.dev
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-Current STATX_WRITE_ZEROES_UNMAP and FALLOC_FL_WRITE_ZEROES are
-inconsistent, we allow users to call fallocate(FALLOC_FL_WRITE_ZEROES) on
-files that STATX_WRITE_ZEROES_UNMAP is not set. Users can check whether
-the device supports unmap write zeroes through STATX_WRITE_ZEROES_UNMAP
-and then decide to call fallocate(FALLOC_FL_WRITE_ZEROES) if it is
-supported. Please see this explanation for details.
+This overall looks good to me now. However, the credit calculation in
+ext4_ext_index_trans_blocks() seems still appears to be incorrect
+because it does not include the leaf extent blocks. I discovered this
+problem while attempting to enable large folios for ext4. It can easily
+trigger problems when writing back a 2MB folio with a 1K block size,
+and each block is discontinuous.
 
-  https://lore.kernel.org/linux-fsdevel/20250421021509.2366003-1-yi.zhang@huaweicloud.com/T/#mc1618822bc27d486296216fc1643d5531fee03e1
+  https://lore.kernel.org/linux-ext4/20241125114419.903270-7-yi.zhang@huaweicloud.com/
 
-However, removing STATX_WRITE_ZEROES_UNMAP also seems good to me(Perhaps
-it would be better.).It means we do not allow to call
-fallocate(FALLOC_FL_WRITE_ZEROES) if the device does not explicitly
-support unmap write zeroes.
+Fortunately, this problem can only triggered after we support large
+folio.
 
-Thanks,
-Yi.
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+
+> ---
+>  fs/ext4/extents.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index c616a16a9f36..43286632e650 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -2396,18 +2396,19 @@ int ext4_ext_calc_credits_for_single_extent(struct inode *inode, int nrblocks,
+>  int ext4_ext_index_trans_blocks(struct inode *inode, int extents)
+>  {
+>  	int index;
+> -	int depth;
+>  
+>  	/* If we are converting the inline data, only one is needed here. */
+>  	if (ext4_has_inline_data(inode))
+>  		return 1;
+>  
+> -	depth = ext_depth(inode);
+> -
+> +	/*
+> +	 * Extent tree can change between the time we estimate credits and
+> +	 * the time we actually modify the tree. Assume the worst case.
+> +	 */
+>  	if (extents <= 1)
+> -		index = depth * 2;
+> +		index = EXT4_MAX_EXTENT_DEPTH * 2;
+>  	else
+> -		index = depth * 3;
+> +		index = EXT4_MAX_EXTENT_DEPTH * 3;
+>  
+>  	return index;
+>  }
 
 
