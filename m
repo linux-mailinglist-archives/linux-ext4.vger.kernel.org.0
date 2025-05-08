@@ -1,231 +1,203 @@
-Return-Path: <linux-ext4+bounces-7777-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7778-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E389AB01F9
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 20:00:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D54FAB0491
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 22:26:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0DCD4C0537
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 18:00:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08F8F1C06A6F
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 20:26:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326212874F4;
-	Thu,  8 May 2025 17:59:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OrIQyurP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8AA828C03F;
+	Thu,  8 May 2025 20:25:32 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673E0286D76
-	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 17:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D689F28C5CF
+	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 20:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746727179; cv=none; b=X/CjQj8NbYMX5X+OeUFjpXjgmUBiq9t+5i6T7MKN2PFpWREVqGl0+BcmnXwJXDToiPuQoyA9uAw9QL9wI2nCTHI5lmUTVQtAdtU+Y0VhV4hqJCEi5xqB4Hee85dGnn1qrjh8LnlMuQduqFkxL6XkK9KHoH6910+GfHuDLL4zqvM=
+	t=1746735932; cv=none; b=iQir8Tk5nxF5qVXsnUuX2XTJYOs1pOpOh9nsmheHNBzys2UtkYZXCVAYGWCjnLPvZhnuG+cc+mAFzTFRQpr7aDnRxYR13CfjFzNfWSFTMbWfwtriuTEG1VAlGLRkJ9iqK0FdGKD9Z3GWKDwPoCLPiVCyVMM8qtvZYF/3hb2j5PE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746727179; c=relaxed/simple;
-	bh=X7n7Wtq2qhB5VaRW7EcFGNoLqtyyUYK8On7Cm9uoqKg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=chIXZksORTJQz+bT5yGGTE/wjpLFjh8oQPzlLalTFBATQJWUpHwit6GOb+SzvZ6DdnCzHdrRSLRUvRD5PZrXGuP3obTS+W/G+HzM3cWPOl2cz2adNlkN8fTw/UQNRzrjFqTPyaZ1WeX8C4wNSL4PsnV+A6T/ghKAUC2DYNH2JLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OrIQyurP; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-739be717eddso1177598b3a.2
-        for <linux-ext4@vger.kernel.org>; Thu, 08 May 2025 10:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746727177; x=1747331977; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TkNakbZ3I/jJnUJlrPFtE58abfJJ8pR6wAdHQWq6G/A=;
-        b=OrIQyurPh2dpt2KDBaoZPPbTZKLv8XbuBgw9Hi5ynhHeefetV9Fzo2Y/p4L6QNPDEE
-         0BCJwIUDF1ofSTH9ldZTRrA5YpuSs8oz3mD/zhiLClzeKbsk0TvU4gU6QMSqwRobyL+H
-         4LWP/XKx4P0yxh+Jj55VbvFHdRWpF/LRS2NKgdyZjc7ZvAaJq7uv/WN2r5lkCmsDO2CV
-         uDGn90A+eLY/1NQPpLw2xBNH0at4DrbOYjEep0rNcXSDue/xvquRuv4EcbIsD20OubY+
-         xuqp9qw9OOH5JnGKBgE9k6Mazo4eZ+V4G+1++cTQ2NfWsfO4KAF+9esDfkoGDDDeqGhA
-         lmyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746727177; x=1747331977;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TkNakbZ3I/jJnUJlrPFtE58abfJJ8pR6wAdHQWq6G/A=;
-        b=rYsP3U6nuMC8ZQ6KtBltDpcxsFHI3e8F9ZAZ5gvA39dV32dfCSA+68+TgzgWnKx733
-         A2PxirbMyv8cEkYleMLyWDLy/dYk+1oW/tFkvh15tBd//kpy4IWqVsWllCWsusQN0YDu
-         XZzDzYA+0v5vnAsrc4EhsZHtmsvPA2Ud7Dn0olZTtjcrDU5XPEhmxI4Ex/HZk1SiuduQ
-         ZDseZtrGprpIiC4NcNYnbsk9PWlqR5yII3DQfIRC4a8RvsyneZysoE0JXnFRIbcpVnH+
-         LUT9KJmA21476SQxyUIO6A1WpXlkHhA87DFxkzDOBeraiqvTgzBCt7RLFvYmg4XxVVva
-         7QQQ==
-X-Gm-Message-State: AOJu0Yzdhw9zrzmTBADSAIAhD+A4SWMOkUniRKOCBnp+5S83AFbWPUJa
-	nAXUIBMx+Q1zRjR/OZb3v25634rahTAu2175vbplRNkYkd60IsmTj8oNuL0T6P8=
-X-Gm-Gg: ASbGnct+I/Xj/uxvp84W76lwV60geFMzvw/2vms3yLjWEYWrS3aRy8uQpMAHpkNM04Z
-	PrPcAs5jgfxYHoLQKbLczFkLXDTJzFHDL5f9W6sMOYaCJg/Y4C02dZbTcpi3bfd49HCXmgdCg3T
-	ZImWNT66Ia8BbIf6FF87boHac4BkpoBYYB5jXfbK5nCcygWHXvqzXqiDYTYNsbtBDohdYifGhBk
-	6xKrYayl6hNQd2kXxHDtJuaEBwNv2TZxk/iRAVmMeSmFAaDKJz0Jy+pN4pEjHyL97Cvx3hlYwg3
-	/+j2Q43ou79WFnve3+PYHx46X/HfAl5nssnfAz1Ds+q9b3c4AxgA4xStxpTK58T1dNCGDnJH671
-	qBOED9p99xgmT/8/242pg3bW4vRviXBs1poAX
-X-Google-Smtp-Source: AGHT+IGFVNXSf39l43wTFSEfAXg4KsmuHPg0dweGrNzB/vCG1+IY/Sfyi3wPVEHp0XAEawTxFZ0a2w==
-X-Received: by 2002:a17:903:230e:b0:223:325c:89f6 with SMTP id d9443c01a7336-22fc8b1b1a6mr4024815ad.10.1746727177251;
-        Thu, 08 May 2025 10:59:37 -0700 (PDT)
-Received: from harshads.c.googlers.com.com (156.242.82.34.bc.googleusercontent.com. [34.82.242.156])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22fc828939asm2153535ad.164.2025.05.08.10.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 May 2025 10:59:36 -0700 (PDT)
-From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	jack@suse.cz,
-	harshads@google.com,
-	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v9 9/9] ext4: hold s_fc_lock while during fast commit
-Date: Thu,  8 May 2025 17:59:08 +0000
-Message-ID: <20250508175908.1004880-10-harshadshirwadkar@gmail.com>
-X-Mailer: git-send-email 2.49.0.1045.g170613ef41-goog
-In-Reply-To: <20250508175908.1004880-1-harshadshirwadkar@gmail.com>
-References: <20250508175908.1004880-1-harshadshirwadkar@gmail.com>
+	s=arc-20240116; t=1746735932; c=relaxed/simple;
+	bh=GkFms8Q6aKyCL3Gr2QweKHG4yGXfIq2w7/Eg1rsvABA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y8OyOhX7OLgtsPBbc+U7/FffvvmkTiBBOsx7Lmj0c7clJtvuyM6cCG2GIZ7egddMgWPYx6M8Z1YgykWyCoJuGF3dP25UYeDs06WTyXCnkjXYhP0mQBpQKaf2MSW/roBe0Ox803JvBaDuQ9n/kb/0vhdLjUcSMC9EpiyJ76rlNqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-82-148.bstnma.fios.verizon.net [173.48.82.148])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 548KOOaX022511
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 8 May 2025 16:24:25 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 371DE2E00E1; Thu, 08 May 2025 16:24:24 -0400 (EDT)
+Date: Thu, 8 May 2025 16:24:24 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Christoph Hellwig <hch@lst.de>, "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        john.g.garry@oracle.com, bmarzins@redhat.com, chaitanyak@nvidia.com,
+        shinichiro.kawasaki@wdc.com, brauner@kernel.org, yi.zhang@huawei.com,
+        chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
+Subject: Re: [RFC PATCH v4 07/11] fs: statx add write zeroes unmap attribute
+Message-ID: <20250508202424.GA30222@mit.edu>
+References: <20250421021509.2366003-8-yi.zhang@huaweicloud.com>
+ <20250505132208.GA22182@lst.de>
+ <20250505142945.GJ1035866@frogsfrogsfrogs>
+ <c7d8d0c3-7efa-4ee6-b518-f8b09ec87b73@huaweicloud.com>
+ <20250506043907.GA27061@lst.de>
+ <64c8b62a-83ba-45be-a83e-62b6ad8d6f22@huaweicloud.com>
+ <20250506121102.GA21905@lst.de>
+ <a39a6612-89ac-4255-b737-37c7d16b3185@huaweicloud.com>
+ <20250508050147.GA26916@lst.de>
+ <68172a9e-cf68-4962-8229-68e283e894e1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68172a9e-cf68-4962-8229-68e283e894e1@huaweicloud.com>
 
-Leaving s_fc_lock in between during commit in ext4_fc_perform_commit()
-function leaves room for subtle concurrency bugs where ext4_fc_del() may
-delete an inode from the fast commit list, leaving list in an inconsistent
-state.
+On Thu, May 08, 2025 at 08:17:14PM +0800, Zhang Yi wrote:
+> On 2025/5/8 13:01, Christoph Hellwig wrote:
+> >>
+> >> My idea is not to strictly limiting the use of FALLOC_FL_WRITE_ZEROES to
+> >> only bdev or files where bdev_unmap_write_zeroes() returns true. In
+> >> other words, STATX_ATTR_WRITE_ZEROES_UNMAP and FALLOC_FL_WRITE_ZEROES
+> >> are not consistent, they are two independent features. Even if some
+> >> devices STATX_ATTR_WRITE_ZEROES_UNMAP are not set, users should still be
+> >> allowed to call fallcoate(FALLOC_FL_WRITE_ZEROES). This is because some
+> >> devices and drivers currently cannot reliably ascertain whether they
+> >> support the unmap write zero command; however, certain devices, such as
+> >> specific cloud storage devices, do support it. Users of these devices
+> >> may also wish to use FALLOC_FL_WRITE_ZEROES to expedite the zeroing
+> >> process.
+> > 
+> > What are those "cloud storage devices" where you set it reliably,
+> > i.e.g what drivers?
+> 
+> I don't have these 'cloud storage devices' now, but Ted had mentioned
+> those cloud-emulated block devices such as Google's Persistent Desk or
+> Amazon's Elastic Block Device in. I'm not sure if they can accurately
+> report the BLK_FEAT_WRITE_ZEROES_UNMAP feature, maybe Ted can give more
+> details.
+> 
+> https://lore.kernel.org/linux-fsdevel/20250106161732.GG1284777@mit.edu/
 
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/fast_commit.c | 44 +++++++++++++------------------------------
- 1 file changed, 13 insertions(+), 31 deletions(-)
+There's nothing really exotic about what I was referring to in terms
+of "cloud storage devices".  Perhaps a better way of describing them
+is to consider devices such as dm-thin, or a Ceph Block Device, which
+is being exposed as a SCSI or NVME device.
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index eb888e522..7ac672e35 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -424,6 +424,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
- 	node->fcd_ino = inode->i_ino;
- 	take_dentry_name_snapshot(&node->fcd_name, dentry);
- 	INIT_LIST_HEAD(&node->fcd_dilist);
-+	INIT_LIST_HEAD(&node->fcd_list);
- 	mutex_lock(&sbi->s_fc_lock);
- 	if (sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
- 		sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING)
-@@ -985,8 +986,6 @@ static int ext4_fc_flush_data(journal_t *journal)
- 
- /* Commit all the directory entry updates */
- static int ext4_fc_commit_dentry_updates(journal_t *journal, u32 *crc)
--__acquires(&sbi->s_fc_lock)
--__releases(&sbi->s_fc_lock)
- {
- 	struct super_block *sb = journal->j_private;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
-@@ -1000,26 +999,22 @@ __releases(&sbi->s_fc_lock)
- 	list_for_each_entry_safe(fc_dentry, fc_dentry_n,
- 				 &sbi->s_fc_dentry_q[FC_Q_MAIN], fcd_list) {
- 		if (fc_dentry->fcd_op != EXT4_FC_TAG_CREAT) {
--			mutex_unlock(&sbi->s_fc_lock);
--			if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry)) {
--				ret = -ENOSPC;
--				goto lock_and_exit;
--			}
--			mutex_lock(&sbi->s_fc_lock);
-+			if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry))
-+				return -ENOSPC;
- 			continue;
- 		}
- 		/*
- 		 * With fcd_dilist we need not loop in sbi->s_fc_q to get the
--		 * corresponding inode pointer
-+		 * corresponding inode. Also, the corresponding inode could have been
-+		 * deleted, in which case, we don't need to do anything.
- 		 */
--		WARN_ON(list_empty(&fc_dentry->fcd_dilist));
-+		if (list_empty(&fc_dentry->fcd_dilist))
-+			continue;
- 		ei = list_first_entry(&fc_dentry->fcd_dilist,
- 				struct ext4_inode_info, i_fc_dilist);
- 		inode = &ei->vfs_inode;
- 		WARN_ON(inode->i_ino != fc_dentry->fcd_ino);
- 
--		mutex_unlock(&sbi->s_fc_lock);
--
- 		/*
- 		 * We first write the inode and then the create dirent. This
- 		 * allows the recovery code to create an unnamed inode first
-@@ -1029,23 +1024,14 @@ __releases(&sbi->s_fc_lock)
- 		 */
- 		ret = ext4_fc_write_inode(inode, crc);
- 		if (ret)
--			goto lock_and_exit;
--
-+			return ret;
- 		ret = ext4_fc_write_inode_data(inode, crc);
- 		if (ret)
--			goto lock_and_exit;
--
--		if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry)) {
--			ret = -ENOSPC;
--			goto lock_and_exit;
--		}
--
--		mutex_lock(&sbi->s_fc_lock);
-+			return ret;
-+		if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry))
-+			return -ENOSPC;
- 	}
- 	return 0;
--lock_and_exit:
--	mutex_lock(&sbi->s_fc_lock);
--	return ret;
- }
- 
- static int ext4_fc_perform_commit(journal_t *journal)
-@@ -1148,10 +1134,8 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	/* Step 6.2: Now write all the dentry updates. */
- 	mutex_lock(&sbi->s_fc_lock);
- 	ret = ext4_fc_commit_dentry_updates(journal, &crc);
--	if (ret) {
--		mutex_unlock(&sbi->s_fc_lock);
-+	if (ret)
- 		goto out;
--	}
- 
- 	/* Step 6.3: Now write all the changed inodes to disk. */
- 	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
-@@ -1159,7 +1143,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 		if (!ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
- 			continue;
- 
--		mutex_unlock(&sbi->s_fc_lock);
- 		ret = ext4_fc_write_inode_data(inode, &crc);
- 		if (ret)
- 			goto out;
-@@ -1171,6 +1154,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	ret = ext4_fc_write_tail(sb, crc);
- 
- out:
-+	mutex_unlock(&sbi->s_fc_lock);
- 	blk_finish_plug(&plug);
- 	return ret;
- }
-@@ -1353,11 +1337,9 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 					     fcd_list);
- 		list_del_init(&fc_dentry->fcd_list);
- 		list_del_init(&fc_dentry->fcd_dilist);
--		mutex_unlock(&sbi->s_fc_lock);
- 
- 		release_dentry_name_snapshot(&fc_dentry->fcd_name);
- 		kmem_cache_free(ext4_fc_dentry_cachep, fc_dentry);
--		mutex_lock(&sbi->s_fc_lock);
- 	}
- 
- 	list_splice_init(&sbi->s_fc_dentry_q[FC_Q_STAGING],
--- 
-2.49.0.1045.g170613ef41-goog
+The distinction I was trying to make is performance-related.  Suppose
+you call WRITE_ZEROS on a 14TB region.  After the WRITES_ZEROS
+complete, a read anywhere on that 14TB region will return zeros.
+That's easy.  But the question is when you call WRITE_ZEROS, will the
+storage device (a) go away for a day or more before it completes (which
+would be the case if it is a traditional spinning rust platter), or
+(b) will it be basically instaneous, because all dm-thin or a Ceph Block
+Device needs to do is to delete one or more entries in its mapping
+table.
 
+The problem is two-fold.  First, there's no way for the kernel to know
+whether a storage device will behave as (a) or (b), because SCSI and
+other storage specifications say that performance is out of scope.
+They only talk about the functional results (afterwards, if yout try
+to read from the region, you will get zeros), and are utterly silent
+about how long it migt take.  The second problem is that if you are an
+application program, there is no way you will be willing to call
+fallocate(WRITE_ZEROS, 14TB) if you don't know whether the disk will
+go away for a day or whether it will be instaneous.
+
+But because there is no way for the kernel to know whether WRITE_ZEROS
+will be fast or not, how would you expect the kernel to expose
+STATX_ATTR_WRITE_ZEROES_UNMAP?  Cristoph's formulation "breaking the
+abstraction" perfectly encapsulate the SCSI specification's position
+on the matter, and I agree it's a valid position.  It's just not
+terribly useful for the application programmer.
+
+Things which some programs/users might want to know or rely upon, but which is normally quite impossible are: 
+
+* Will the write zero / discard operation take a "reasonable" amount
+  of time?  (Yes, not necessarilly well defined, but we know it when
+  we see it, and hours or days is generally not reasonable.)
+
+* Is the operation reliable --- i.e., is the device allowed to
+  randomly decide that it won't actually zero the requested blocks (as
+  is the case of discard) whenever it feels like it.
+
+* Is the operation guaranteed to make the data irretreviable even in
+  face of an attacker with low-level access to the device.  (And this
+  is also not necessarily well defined; does the attacker have access
+  to a scanning electronic microscope, or can do a liquid nitrogen
+  destructive access of the flash device?)
+
+The UFS (Universal Flash Storage) spec comes the closest to providing
+commands that distinguish between these various cases, but for most
+storage specifications, like SCSI, it is absolutely requires peaking
+behind the abstraction barrier defined by the specification, and so
+ultimately, the kernel can't know.
+
+About the best you can do is to require manual configuration; perhaps a
+config file at the database or userspace cluster file system level
+because the system adminsitrator knows --- maybe because the hyperscale
+cloud provider has leaned on the storage vendor to tell them under
+NDA, storage specs be damned or they won't spend $$$ millions with
+that storage vendor ---  or because the database administrator discovers
+that using fallocate(WRITE_ZEROS) causes performance to tank, so they
+manually disable the use of WRITE_ZEROS.
+
+Could this be done in the kernel?  Sure.  We could have a file, say,
+/sys/block/sdXX/queue/write_zeros where the write_zeros file is
+writeable, and so the administrator can force-disable WRITES_ZERO by
+writing 0 into the file.  And could this be queried via a STATX
+attribute?  I suppose, although to be honest, I'm used to doing this
+by looking at the sysfs files.  For example, just recently I coded up
+the following:
+
+static int is_rotational (const char *device_name EXT2FS_ATTR((unused)))
+{
+	int		rotational = -1;
+#ifdef __linux__
+	char		path[1024];
+	struct stat	st;
+	FILE		*f;
+
+	if ((stat(device_name, &st) < 0) || !S_ISBLK(st.st_mode))
+		return -1;
+
+	snprintf(path, sizeof(path), "/sys/dev/block/%d:%d/queue/rotational",
+		major(st.st_rdev), minor(st.st_rdev));
+	f = fopen(path, "r");
+	if (!f) {
+		snprintf(path, sizeof(path),
+			"/sys/dev/block/%d:%d/../queue/rotational",
+			major(st.st_rdev), minor(st.st_rdev));
+		f = fopen(path, "r");
+	}
+	if (f) {
+		if (fscanf(f, "%d", &rotational) != 1)
+			rotational = -1;
+		fclose(f);
+	}
+#endif
+	return rotational;
+}
+
+Easy-peasy!   Who needs statx?   :-)
+
+
+						- Ted
 
