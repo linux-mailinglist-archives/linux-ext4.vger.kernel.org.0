@@ -1,73 +1,73 @@
-Return-Path: <linux-ext4+bounces-7773-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7775-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC07AB01F6
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 20:00:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74CA3AB01F2
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 20:00:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8139C7BBA77
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 17:58:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80B2F1BA7A3B
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 18:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E060286D7D;
-	Thu,  8 May 2025 17:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48628286D52;
+	Thu,  8 May 2025 17:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bbw6lYfg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BFNse3V9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23CC286D5F
-	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 17:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DAB9286D40
+	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 17:59:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746727178; cv=none; b=JU0vr1WQtFgrZQuRfUY+YRng8evM0Yv48GrOWlAnSWOq4pXXI1mWMuWFjvOahf4rZCmWvWHOSwI2nYDdy2D2sjGIJgdm+OrXdESzEWamRhG6LX0VU2Y/hl/osXVwaN9cbZHmiz4OgxvVM8IQpWA5vnK5k4/TcF3TIXtih12DAno=
+	t=1746727179; cv=none; b=Umwrj5riyjpMHdILNrYkmANQOlHZa++LxqzY3AwmGMYEXowY6CyPCRztbb0U9W0csC0tK6pm5rBqW4C3hbrps2MAC57AHVRz3UW5wk6/FZxk764NmNCdO8CqMUmG4mV600JZg2gyCkcb+cC12AJuPy2w9b+juUpTHcNRXf+lPsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746727178; c=relaxed/simple;
-	bh=wPm2PnFaFqJdG+tou6tHu0ps+um9SO/2Dq48HVSDnGw=;
+	s=arc-20240116; t=1746727179; c=relaxed/simple;
+	bh=iaKZh34dqAf/iJCU/8vqAQyADLdr7vSyN18P90kqMOw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rn2YXI+IEZUsee2kcA14qVWm4klm3z+WE0JxwIVskcaX6iZM7xUt7C/yDkaAAff6rw1KRLChLzjEitC50d7CVL8iq+uN2jPk1gLedjX5nQlI9RjB/DQXP03h2pMp36PQ7gt1GP5ilEHVp8f+yiY+1ZkfWLPAnLRX1Ty0J0nlrlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bbw6lYfg; arc=none smtp.client-ip=209.85.210.181
+	 MIME-Version; b=W6gyNtzTB4qZLmQqIV+G9XTDTrzfdwFdTohl06nDQ2nxlyaFTEVrmYrSl/lO5HjM0+NMR8YftV3FnRJiDhCsaf9RiFh/l67DWznWknxMQrWD0UNVOjZtRDqv+e1hVJtmv3GuZkyZ0HJZltDS+v5Xjyqhq6oju0HD5L1zkFPJdNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BFNse3V9; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-736a7e126c7so1339964b3a.3
-        for <linux-ext4@vger.kernel.org>; Thu, 08 May 2025 10:59:36 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-227b828de00so14068185ad.1
+        for <linux-ext4@vger.kernel.org>; Thu, 08 May 2025 10:59:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1746727176; x=1747331976; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FN7NgPynjQ2ZAvz3OmbqzXIzdZx7B5ob1vAJEalfJdo=;
-        b=Bbw6lYfgkbKozeBUCvVadAKjXOH0qW9k8cC85RTU21myxJbzktDLvprTpcTigwowxi
-         +EMiGPneYVhiXS2yUYqBLk/79YZ4hijIBD/AcNwoNjjmGDZqvDdVHcgvZeKyyrj+V/f/
-         AtLTwt31iv3sonJZHSPLUBKgdZ8rIKywZaGpTEr8f+lzcN+C0JYtjDPNawXbVnlGRbld
-         UCUa2Q0bFK3G2aGiMQEj2BPLsSCr9BBmt5a40qx5m9R1vXIrQNHeHVJyvL8DaCnJorWo
-         PocbytPadJwjpHRNPbeHH8hvZzrSrFRxIDsqxGDy1ZxHHOeJS8k3fWjdcSb56/IDYAbb
-         vQmQ==
+        bh=g2VrrzhdHZB2eILkScO2krV2YHpCCjmqI0kTB/bqnlA=;
+        b=BFNse3V9jr8V8Qp0lKKb9+IiUbGflcqhEKRCBpI8GQISBR0fkzjvsjma+HsQhJGpbB
+         dX5+RheHSFQazpuiMsK11+SbT+uCyfMzjC54oruAQK6BTmll5iAp7HKv5nGXnhfB/ho+
+         0ZXg7DVYCfqD+E2NttrPzwmxKxQnaeAx/dB1IHe3tfbgaK025cEEHyGnCoc+U0ipm1cA
+         q8w1S1wWleiWvSqPHhAe6meNWrohLRxh8ddK9SYjhHtjq9uvEBC/lpbtm6wVsPtu4Ziz
+         uTwX2ij0ktiWt3q33uA3I75OablhmYsKJcWx460TQuvZ+QXMDjFhqzePuEGFlEN0TQ1q
+         0rOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1746727176; x=1747331976;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FN7NgPynjQ2ZAvz3OmbqzXIzdZx7B5ob1vAJEalfJdo=;
-        b=XDkhkMd8ku+HfUzlSghU2GUL0bPmlu82iZPjwZ9Obhdezh4pz7r3I+1Ay8oYVOOrP5
-         e5fyCuXD/EIhpaXpb/5kNH2f4KrXG1+otkPvNoqKyrsEXeteDas/eWnXHGcWwtzyumOS
-         JYFhkRwyRCbwUGy33/za71cBK/qxAelgF6fw72sNA3LeXDldfH+HV6k1aFFnX1r+F67E
-         FCkyhaQ/6nz3qrVXT/9ZvWua9Kbh/KvmpFhOFq9KIs9olkSie1Q0CL/D5/6YKtiEeGkm
-         ucaTwNteU/wvu1u18dwT1mTgXv2tfzB0tc6MUdQXBS3ER3wOh1szClaRKmBZJ1rdjOc3
-         6kIQ==
-X-Gm-Message-State: AOJu0YxxNMqaajlowvLwkHHtwUwT3++nAyIXlG9GWyO1ZJM33cgdaXTK
-	Mog6ir7g4hnPGGJdQbs0/tjtmeRDYfOmh5xO6BaIwHoTzy4nFIorp1oW9rBQv/4=
-X-Gm-Gg: ASbGnctflFTAdthThcq3fLyYTlIz24nt6KS6lMPknl7k8zzuc+mreNGGdQBasUggRn5
-	4h+1GhZnLDKb5cOSUdm2sOQ3elPbsw7H+Ix2sWA6xxDIfyjkFx/1bx0jExcbZTlNfZalZV2JMoG
-	7nVWYIGKmCv4EqPpItuHMDs8PTS9PjDwnlyRJlrs4/LBJsrdZw+PgFCd2iB6RThpDQJrS0ARCwu
-	fnt/TtJpa89dyPNkwKxjLZQrMhgDf8QHwOGGrLweRuQDnQ83/dCbY2oHy4d+ShH697OQx5jGQtg
-	iErlsPjp384eNPvXuRC2GnvA5I119XJ1j8aUa+NsfSVjwsJChlMpSU/QkjVfj2Xs0OZMUFE7Xsc
-	Aga7t+37bbHLXp0B2mltW0aLOXXnXMogigjB8gZO4rwVyAJc=
-X-Google-Smtp-Source: AGHT+IFO8fgUYaNrBt+19U8pJ21LpsMDzZm2fTdI/ktB0rbRIa6Cj3au11ga075UbbxsDXg3Sc+mkA==
-X-Received: by 2002:a17:903:2351:b0:223:2cae:4a96 with SMTP id d9443c01a7336-22fc918c11emr3575515ad.42.1746727175587;
-        Thu, 08 May 2025 10:59:35 -0700 (PDT)
+        bh=g2VrrzhdHZB2eILkScO2krV2YHpCCjmqI0kTB/bqnlA=;
+        b=IuITPkOgka9CTh7iw1xMHCGyVPzkqb8TFZ5gilSNlbC7M5qrCoVfugldnhnsKCMh/q
+         M+ES/euHCdyTqG1UaaKUY+8/y9KRYpX8xOF8f3QE+9dOAC6mMryr2qhFOi4jUA16lWpR
+         3mlneRF1Gd9BJRJsOgL/wV6+2uLFCu8NjmkSxP2Qpz3bLsG3y9GaU5Oza9fKG3WBLzYC
+         JDQJGnEOXrR3Y4tV9UaQRh2w/DHJ/7ATeYC7mMKFeZap1+DvDtS4aRjMQI6aCyJmX1iQ
+         dWZ3syrQgmMK30/7of8ttS7uLi4MrY3BLSrTPlOgAjUDLXiF54zkiaQ95Yoa3rFXozmM
+         l7zg==
+X-Gm-Message-State: AOJu0YzJxw+ffg0e3NX0+2RzqHVqpgP5FtVxlj1RGWm5ONe+5DezI1H8
+	THoyDLfpLppkKq8irtBLFEqxvQDM5oCNvxS4t7YCUmNuvftZ4kUqhrS6JxCDCPw=
+X-Gm-Gg: ASbGnct8Oixu/J7KdLTBhLZNqLT2olBg14zWRaxjLBQ8PCAnPbF8+T8eYYrEKYkZG1K
+	Tul/M/k4lLpWK4TXk3pLQAsXGHubqxJhy0ixCDpVGdm6QYuL9V4f53TPVLGtDt2WYD/29HQmCGx
+	GgvbghVtyskFeUow5/Tc00wKN2srnCtMKAN7DpfKiYFH59Y/cKJSnmHrwSJU52rQhrsxnM1FTa6
+	UHzsZOjz32o4IVRuqiCY/ZnG8lWcQk6JmFl8ElppHO63kgLtMxPfBCQSjA/s0i8KC0z4CFZU1Qp
+	AMFiPohpU9ab53Iwtm4MCnd+cQ6ycXP8fi1JG/qNr+elxcqqptATLW2hJY1c7nhDoOpg+i4QtbG
+	aoWc6XZ4yW1TWYm0ucjcQBbxO+L1b4uIvy16L
+X-Google-Smtp-Source: AGHT+IGED7PmwUnJIj1Ecwo4Ov2DGAeEQHMP6eo73j521u/YvmQGTZSoFVw/QJW1R81jnKophjCTcA==
+X-Received: by 2002:a17:903:194b:b0:223:fb3a:8647 with SMTP id d9443c01a7336-22fc918fe99mr3815015ad.41.1746727176044;
+        Thu, 08 May 2025 10:59:36 -0700 (PDT)
 Received: from harshads.c.googlers.com.com (156.242.82.34.bc.googleusercontent.com. [34.82.242.156])
         by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22fc828939asm2153535ad.164.2025.05.08.10.59.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -78,9 +78,9 @@ Cc: tytso@mit.edu,
 	jack@suse.cz,
 	harshads@google.com,
 	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v9 6/9] ext4: update code documentation
-Date: Thu,  8 May 2025 17:59:05 +0000
-Message-ID: <20250508175908.1004880-7-harshadshirwadkar@gmail.com>
+Subject: [PATCH v9 7/9] ext4: temporarily elevate commit thread priority
+Date: Thu,  8 May 2025 17:59:06 +0000
+Message-ID: <20250508175908.1004880-8-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.49.0.1045.g170613ef41-goog
 In-Reply-To: <20250508175908.1004880-1-harshadshirwadkar@gmail.com>
 References: <20250508175908.1004880-1-harshadshirwadkar@gmail.com>
@@ -92,93 +92,120 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch updates code documentation to reflect the commit path changes
-made in this series.
+Unlike JBD2 based full commits, there is no dedicated journal thread
+for fast commits. Thus to reduce scheduling delays between IO
+submission and completion, temporarily elevate the committer thread's
+priority to match the configured priority of the JBD2 journal
+thread.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
-
-code docs
 ---
- fs/ext4/fast_commit.c | 48 ++++++++++++++++++++++++++++---------------
- 1 file changed, 31 insertions(+), 17 deletions(-)
+ fs/ext4/ext4.h        |  4 +++-
+ fs/ext4/fast_commit.c | 13 +++++++++++++
+ fs/ext4/super.c       |  5 ++---
+ 3 files changed, 18 insertions(+), 4 deletions(-)
 
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 0cb34a06e..3987c5bf2 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2296,10 +2296,12 @@ static inline int ext4_emergency_state(struct super_block *sb)
+ #define EXT4_DEFM_NODELALLOC	0x0800
+ 
+ /*
+- * Default journal batch times
++ * Default journal batch times and ioprio.
+  */
+ #define EXT4_DEF_MIN_BATCH_TIME	0
+ #define EXT4_DEF_MAX_BATCH_TIME	15000 /* 15ms */
++#define EXT4_DEF_JOURNAL_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
++
+ 
+ /*
+  * Default values for superblock update
 diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index f2e8a5f22..06dda3932 100644
+index 06dda3932..5f6a8ec24 100644
 --- a/fs/ext4/fast_commit.c
 +++ b/fs/ext4/fast_commit.c
-@@ -50,19 +50,27 @@
-  * that need to be committed during a fast commit in another in memory queue of
-  * inodes. During the commit operation, we commit in the following order:
-  *
-- * [1] Lock inodes for any further data updates by setting COMMITTING state
-- * [2] Submit data buffers of all the inodes
-- * [3] Wait for [2] to complete
-- * [4] Commit all the directory entry updates in the fast commit space
-- * [5] Commit all the changed inode structures
-- * [6] Write tail tag (this tag ensures the atomicity, please read the following
-+ * [1] Prepare all the inodes to write out their data by setting
-+ *     "EXT4_STATE_FC_FLUSHING_DATA". This ensures that inode cannot be
-+ *     deleted while it is being flushed.
-+ * [2] Flush data buffers to disk and clear "EXT4_STATE_FC_FLUSHING_DATA"
-+ *     state.
-+ * [3] Lock the journal by calling jbd2_journal_lock_updates. This ensures that
-+ *     all the exsiting handles finish and no new handles can start.
-+ * [4] Mark all the fast commit eligible inodes as undergoing fast commit
-+ *     by setting "EXT4_STATE_FC_COMMITTING" state.
-+ * [5] Unlock the journal by calling jbd2_journal_unlock_updates. This allows
-+ *     starting of new handles. If new handles try to start an update on
-+ *     any of the inodes that are being committed, ext4_fc_track_inode()
-+ *     will block until those inodes have finished the fast commit.
-+ * [6] Commit all the directory entry updates in the fast commit space.
-+ * [7] Commit all the changed inodes in the fast commit space and clear
-+ *     "EXT4_STATE_FC_COMMITTING" for these inodes.
-+ * [8] Write tail tag (this tag ensures the atomicity, please read the following
-  *     section for more details).
-- * [7] Wait for [4], [5] and [6] to complete.
-  *
-- * All the inode updates must call ext4_fc_start_update() before starting an
-- * update. If such an ongoing update is present, fast commit waits for it to
-- * complete. The completion of such an update is marked by
-- * ext4_fc_stop_update().
-+ * All the inode updates must be enclosed within jbd2_jounrnal_start()
-+ * and jbd2_journal_stop() similar to JBD2 journaling.
-  *
-  * Fast Commit Ineligibility
-  * -------------------------
-@@ -143,6 +151,13 @@
-  * similarly. Thus, by converting a non-idempotent procedure into a series of
-  * idempotent outcomes, fast commits ensured idempotence during the replay.
-  *
-+ * Locking
-+ * -------
-+ * sbi->s_fc_lock protects the fast commit inodes queue and the fast commit
-+ * dentry queue. ei->i_fc_lock protects the fast commit related info in a given
-+ * inode. Most of the code avoids acquiring both the locks, but if one must do
-+ * that then sbi->s_fc_lock must be acquired before ei->i_fc_lock.
-+ *
-  * TODOs
-  * -----
-  *
-@@ -157,13 +172,12 @@
-  *    fast commit recovery even if that area is invalidated by later full
-  *    commits.
-  *
-- * 1) Fast commit's commit path locks the entire file system during fast
-- *    commit. This has significant performance penalty. Instead of that, we
-- *    should use ext4_fc_start/stop_update functions to start inode level
-- *    updates from ext4_journal_start/stop. Once we do that we can drop file
-- *    system locking during commit path.
-+ * 1) Handle more ineligible cases.
-  *
-- * 2) Handle more ineligible cases.
-+ * 2) Change ext4_fc_commit() to lookup logical to physical mapping using extent
-+ *    status tree. This would get rid of the need to call ext4_fc_track_inode()
-+ *    before acquiring i_data_sem. To do that we would need to ensure that
-+ *    modified extents from the extent status tree are not evicted from memory.
-  */
+@@ -1216,6 +1216,7 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 	int subtid = atomic_read(&sbi->s_fc_subtid);
+ 	int status = EXT4_FC_STATUS_OK, fc_bufs_before = 0;
+ 	ktime_t start_time, commit_time;
++	int old_ioprio, journal_ioprio;
  
- #include <trace/events/ext4.h>
+ 	if (!test_opt2(sb, JOURNAL_FAST_COMMIT))
+ 		return jbd2_complete_transaction(journal, commit_tid);
+@@ -1223,6 +1224,7 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 	trace_ext4_fc_commit_start(sb, commit_tid);
+ 
+ 	start_time = ktime_get();
++	old_ioprio = get_current_ioprio();
+ 
+ restart_fc:
+ 	ret = jbd2_fc_begin_commit(journal, commit_tid);
+@@ -1253,6 +1255,15 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 		goto fallback;
+ 	}
+ 
++	/*
++	 * Now that we know that this thread is going to do a fast commit,
++	 * elevate the priority to match that of the journal thread.
++	 */
++	if (journal->j_task->io_context)
++		journal_ioprio = sbi->s_journal->j_task->io_context->ioprio;
++	else
++		journal_ioprio = EXT4_DEF_JOURNAL_IOPRIO;
++	set_task_ioprio(current, journal_ioprio);
+ 	fc_bufs_before = (sbi->s_fc_bytes + bsize - 1) / bsize;
+ 	ret = ext4_fc_perform_commit(journal);
+ 	if (ret < 0) {
+@@ -1267,6 +1278,7 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 	}
+ 	atomic_inc(&sbi->s_fc_subtid);
+ 	ret = jbd2_fc_end_commit(journal);
++	set_task_ioprio(current, old_ioprio);
+ 	/*
+ 	 * weight the commit time higher than the average time so we
+ 	 * don't react too strongly to vast changes in the commit time
+@@ -1276,6 +1288,7 @@ int ext4_fc_commit(journal_t *journal, tid_t commit_tid)
+ 	return ret;
+ 
+ fallback:
++	set_task_ioprio(current, old_ioprio);
+ 	ret = jbd2_fc_end_commit_fallback(journal);
+ 	ext4_fc_update_stats(sb, status, 0, 0, commit_tid);
+ 	return ret;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index ed8166fe2..356a96269 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1809,7 +1809,6 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
+ 	{}
+ };
+ 
+-#define DEFAULT_JOURNAL_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
+ 
+ #define MOPT_SET	0x0001
+ #define MOPT_CLEAR	0x0002
+@@ -5255,7 +5254,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 
+ 	/* Set defaults for the variables that will be set during parsing */
+ 	if (!(ctx->spec & EXT4_SPEC_JOURNAL_IOPRIO))
+-		ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
++		ctx->journal_ioprio = EXT4_DEF_JOURNAL_IOPRIO;
+ 
+ 	sbi->s_inode_readahead_blks = EXT4_DEF_INODE_READAHEAD_BLKS;
+ 	sbi->s_sectors_written_start =
+@@ -6495,7 +6494,7 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+ 			ctx->journal_ioprio =
+ 				sbi->s_journal->j_task->io_context->ioprio;
+ 		else
+-			ctx->journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
++			ctx->journal_ioprio = EXT4_DEF_JOURNAL_IOPRIO;
+ 
+ 	}
+ 
 -- 
 2.49.0.1045.g170613ef41-goog
 
