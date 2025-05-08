@@ -1,203 +1,151 @@
-Return-Path: <linux-ext4+bounces-7778-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7779-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D54FAB0491
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 22:26:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0FCCAB04F0
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 22:51:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08F8F1C06A6F
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 20:26:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F4097B6485
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 20:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8AA828C03F;
-	Thu,  8 May 2025 20:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C76920ADD6;
+	Thu,  8 May 2025 20:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZfZMq1Zs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D689F28C5CF
-	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 20:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC2B4B1E72;
+	Thu,  8 May 2025 20:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746735932; cv=none; b=iQir8Tk5nxF5qVXsnUuX2XTJYOs1pOpOh9nsmheHNBzys2UtkYZXCVAYGWCjnLPvZhnuG+cc+mAFzTFRQpr7aDnRxYR13CfjFzNfWSFTMbWfwtriuTEG1VAlGLRkJ9iqK0FdGKD9Z3GWKDwPoCLPiVCyVMM8qtvZYF/3hb2j5PE=
+	t=1746737464; cv=none; b=kFWx+AdjVOGogZQQeLo745z0GYK9RG+lr07yMjqUxVUS2nVH0W41HRurxvx6TzqKLvzvcR+Wpz14C9wTzZmX6iLbvOnx0LNuoY625fsXefVqV5ISm6RxFN4ioztEiQ99WhwNNW6Y6GdjARailkpHmfXb9f2UQNuRB7twTJmGoMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746735932; c=relaxed/simple;
-	bh=GkFms8Q6aKyCL3Gr2QweKHG4yGXfIq2w7/Eg1rsvABA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y8OyOhX7OLgtsPBbc+U7/FffvvmkTiBBOsx7Lmj0c7clJtvuyM6cCG2GIZ7egddMgWPYx6M8Z1YgykWyCoJuGF3dP25UYeDs06WTyXCnkjXYhP0mQBpQKaf2MSW/roBe0Ox803JvBaDuQ9n/kb/0vhdLjUcSMC9EpiyJ76rlNqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-148.bstnma.fios.verizon.net [173.48.82.148])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 548KOOaX022511
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 8 May 2025 16:24:25 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 371DE2E00E1; Thu, 08 May 2025 16:24:24 -0400 (EDT)
-Date: Thu, 8 May 2025 16:24:24 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Christoph Hellwig <hch@lst.de>, "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        john.g.garry@oracle.com, bmarzins@redhat.com, chaitanyak@nvidia.com,
-        shinichiro.kawasaki@wdc.com, brauner@kernel.org, yi.zhang@huawei.com,
-        chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [RFC PATCH v4 07/11] fs: statx add write zeroes unmap attribute
-Message-ID: <20250508202424.GA30222@mit.edu>
-References: <20250421021509.2366003-8-yi.zhang@huaweicloud.com>
- <20250505132208.GA22182@lst.de>
- <20250505142945.GJ1035866@frogsfrogsfrogs>
- <c7d8d0c3-7efa-4ee6-b518-f8b09ec87b73@huaweicloud.com>
- <20250506043907.GA27061@lst.de>
- <64c8b62a-83ba-45be-a83e-62b6ad8d6f22@huaweicloud.com>
- <20250506121102.GA21905@lst.de>
- <a39a6612-89ac-4255-b737-37c7d16b3185@huaweicloud.com>
- <20250508050147.GA26916@lst.de>
- <68172a9e-cf68-4962-8229-68e283e894e1@huaweicloud.com>
+	s=arc-20240116; t=1746737464; c=relaxed/simple;
+	bh=qhyrbR0eVUh0DJSa3k/gNVCkLP9sreuJqWLhJokDCzE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IUd6unmGucEc3HNsAka3k1hKtmr1rxRSepPIb9NHpejqe09yP4kfY8ICI/MKIdRGOcgUsDmKRbtOmScdWKdsvJYBACeVHpMds8BnMuOMRa0YqdBiPqPj8Sno2ztDLhfeFnH6sjDys/pJqmogSC5YKEuDCoaNaEvvkscM1bG2Nc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZfZMq1Zs; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7411f65811cso1025722b3a.1;
+        Thu, 08 May 2025 13:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746737461; x=1747342261; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fuNn4qXCymqY8mGLnT4Ald580/wR1S81yyedMtxxNt4=;
+        b=ZfZMq1ZsQ42K+p3jmoRum3BOlkkKp9VZZ3u6cP2I1198ftsuoFnR2qKlIP1zqGr25T
+         cwOT55k7RkTADFpS5MKe2VpXiVfbsjpFFj1/0VyRFc1gvSELPNsN/GEg8HuTtMllUGUz
+         XToySoeKpeNXlEo7zx2qHf8Dru4N8kaX+NmPLCSyvmzQj6p1not3Rj8TKPuxB/BtzVaN
+         Dzyrs4XTeNxsTYqmCT90gCYQcG4l4Lu77dy0JuajBW89PZyh4JxmGW3jg9Zj7H++9RVS
+         XhE9LitBjV0MRpImRMl1ppkEnDtivXTuKTlINsue4+BKzl/4pDafZWupS7M4Rctt29pf
+         f4aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746737461; x=1747342261;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fuNn4qXCymqY8mGLnT4Ald580/wR1S81yyedMtxxNt4=;
+        b=wf7Rb54K8yexRJcNCoBA6wm66z8QRWkRzX8Nf9sswUqSqI5cnU/n9m837vlBl2uhUM
+         5SAO/b0904XkDbhJPsrH0oBiJqPsf/GyqnToclcjJmN98tkwAYBlxDVH+2cCPaKSctKK
+         vN6KgLekR392z8TBRpW+SYfT6nVWhGbuu/azsZf6/pM6PtEeNBQy9qhS5ssTRn8JIGQ8
+         YKjUAJ1uFu6HhBULNsa1rMvTAKhPje5iHGm1vZyP2EdlG0OmdFqYM3IJSkooa3Fmpa8/
+         w8SxPPq/kqG6+ZpxKLMRmKZy/rABjsG1u4+uMEJcE9nyrxtiHvZY3xW/0GcFWy5ob3mk
+         SNCg==
+X-Forwarded-Encrypted: i=1; AJvYcCV3z7rnKczu34LxQ3aj1Qozw/nD81eZREbQ4omcO85O0ZbwVBBY0IjgQm8u3MvTCiO9DVdJwq3iJ4EmsL7S@vger.kernel.org
+X-Gm-Message-State: AOJu0YxB66Jp5UxXIamodW6tQKIJDgi2CebTZGUjkjIwGa4lxBDFuWer
+	If5EcHj6tkdxZdJgb5SoE2EpSm0AUfNc/an8yEb2OZKa5BgvPCkc9Bj5Fg==
+X-Gm-Gg: ASbGncuQfL94WCO9o0x6BP5Lf/h8VxoLDEmEXVpnXZ2oJOVwtz3BUjVT0cjvOpfiZ4U
+	G/hLGTp41XCSt5XtVUCbFH8dBbU+enrH3/oHUieHJL53Dk2axFL814D3GqMS2EcdYVVsNXvnq+J
+	Amy0QOw2D9dnkJebtbW+l8h2bD0G+KwJZiZ6qvdW1OYqSRZKC2YSXmknTjxuaOzTLHrQgEb1N9G
+	O07+8GuPsaK/75xRlr6D+V1df9rY/NVRvtgu37ICye0uyioyT1hRPaPHZ+mNfLaSQxuIvx+8XIO
+	los62T4VPkT0Hvpcqc5Lv52ntYNTyzP4EVHM1tVvlLsIeQs=
+X-Google-Smtp-Source: AGHT+IHggmq7fFqftQDEg8jUgpd6oJYXi/ZiGKQijd62x2x+HlU4oJGWCyKLY6oDs21wzxqowTtfQQ==
+X-Received: by 2002:a05:6a21:3293:b0:1f5:9208:3ad6 with SMTP id adf61e73a8af0-215abce7aacmr846084637.41.1746737460800;
+        Thu, 08 May 2025 13:51:00 -0700 (PDT)
+Received: from dw-tp.ibmuc.com ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74237a97de2sm463763b3a.175.2025.05.08.13.50.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 May 2025 13:51:00 -0700 (PDT)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: linux-ext4@vger.kernel.org
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	Jan Kara <jack@suse.cz>,
+	John Garry <john.g.garry@oracle.com>,
+	djwong@kernel.org,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	linux-fsdevel@vger.kernel.org,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [PATCH v3 0/7] ext4: Add multi-fsblock atomic write support with bigalloc
+Date: Fri,  9 May 2025 02:20:30 +0530
+Message-ID: <cover.1746734745.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68172a9e-cf68-4962-8229-68e283e894e1@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 08, 2025 at 08:17:14PM +0800, Zhang Yi wrote:
-> On 2025/5/8 13:01, Christoph Hellwig wrote:
-> >>
-> >> My idea is not to strictly limiting the use of FALLOC_FL_WRITE_ZEROES to
-> >> only bdev or files where bdev_unmap_write_zeroes() returns true. In
-> >> other words, STATX_ATTR_WRITE_ZEROES_UNMAP and FALLOC_FL_WRITE_ZEROES
-> >> are not consistent, they are two independent features. Even if some
-> >> devices STATX_ATTR_WRITE_ZEROES_UNMAP are not set, users should still be
-> >> allowed to call fallcoate(FALLOC_FL_WRITE_ZEROES). This is because some
-> >> devices and drivers currently cannot reliably ascertain whether they
-> >> support the unmap write zero command; however, certain devices, such as
-> >> specific cloud storage devices, do support it. Users of these devices
-> >> may also wish to use FALLOC_FL_WRITE_ZEROES to expedite the zeroing
-> >> process.
-> > 
-> > What are those "cloud storage devices" where you set it reliably,
-> > i.e.g what drivers?
-> 
-> I don't have these 'cloud storage devices' now, but Ted had mentioned
-> those cloud-emulated block devices such as Google's Persistent Desk or
-> Amazon's Elastic Block Device in. I'm not sure if they can accurately
-> report the BLK_FEAT_WRITE_ZEROES_UNMAP feature, maybe Ted can give more
-> details.
-> 
-> https://lore.kernel.org/linux-fsdevel/20250106161732.GG1284777@mit.edu/
+This is v3 of multi-fsblock atomic write support using bigalloc. This has
+started looking into much better shape now. The major chunk of the design
+changes has been kept in Patch-4 & 5.
 
-There's nothing really exotic about what I was referring to in terms
-of "cloud storage devices".  Perhaps a better way of describing them
-is to consider devices such as dm-thin, or a Ceph Block Device, which
-is being exposed as a SCSI or NVME device.
+This series can now be carefully reviewed, as all the error handling related
+code paths should be properly taken care of.
 
-The distinction I was trying to make is performance-related.  Suppose
-you call WRITE_ZEROS on a 14TB region.  After the WRITES_ZEROS
-complete, a read anywhere on that 14TB region will return zeros.
-That's easy.  But the question is when you call WRITE_ZEROS, will the
-storage device (a) go away for a day or more before it completes (which
-would be the case if it is a traditional spinning rust platter), or
-(b) will it be basically instaneous, because all dm-thin or a Ceph Block
-Device needs to do is to delete one or more entries in its mapping
-table.
+v2 -> v3:
+=========
+1. Improved error handling at several places.
+2. Further fixed some worst case journal credits estimation.
+3. Added better checks in the slow path allocation loop for atomic writes.
 
-The problem is two-fold.  First, there's no way for the kernel to know
-whether a storage device will behave as (a) or (b), because SCSI and
-other storage specifications say that performance is out of scope.
-They only talk about the functional results (afterwards, if yout try
-to read from the region, you will get zeros), and are utterly silent
-about how long it migt take.  The second problem is that if you are an
-application program, there is no way you will be willing to call
-fallocate(WRITE_ZEROS, 14TB) if you don't know whether the disk will
-go away for a day or whether it will be instaneous.
+v3 testing so far:
+===============
+- This has survived "quick" & "auto" group testing with bigalloc on x86 and Power.
+- We have also tested atomic write related tests using fio and some data integrity
+  tests with sudden power off during writes on scsi_debug module.
+  (Will clean up these tests and try to post them out soon!)
 
-But because there is no way for the kernel to know whether WRITE_ZEROS
-will be fast or not, how would you expect the kernel to expose
-STATX_ATTR_WRITE_ZEROES_UNMAP?  Cristoph's formulation "breaking the
-abstraction" perfectly encapsulate the SCSI specification's position
-on the matter, and I agree it's a valid position.  It's just not
-terribly useful for the application programmer.
-
-Things which some programs/users might want to know or rely upon, but which is normally quite impossible are: 
-
-* Will the write zero / discard operation take a "reasonable" amount
-  of time?  (Yes, not necessarilly well defined, but we know it when
-  we see it, and hours or days is generally not reasonable.)
-
-* Is the operation reliable --- i.e., is the device allowed to
-  randomly decide that it won't actually zero the requested blocks (as
-  is the case of discard) whenever it feels like it.
-
-* Is the operation guaranteed to make the data irretreviable even in
-  face of an attacker with low-level access to the device.  (And this
-  is also not necessarily well defined; does the attacker have access
-  to a scanning electronic microscope, or can do a liquid nitrogen
-  destructive access of the flash device?)
-
-The UFS (Universal Flash Storage) spec comes the closest to providing
-commands that distinguish between these various cases, but for most
-storage specifications, like SCSI, it is absolutely requires peaking
-behind the abstraction barrier defined by the specification, and so
-ultimately, the kernel can't know.
-
-About the best you can do is to require manual configuration; perhaps a
-config file at the database or userspace cluster file system level
-because the system adminsitrator knows --- maybe because the hyperscale
-cloud provider has leaned on the storage vendor to tell them under
-NDA, storage specs be damned or they won't spend $$$ millions with
-that storage vendor ---  or because the database administrator discovers
-that using fallocate(WRITE_ZEROS) causes performance to tank, so they
-manually disable the use of WRITE_ZEROS.
-
-Could this be done in the kernel?  Sure.  We could have a file, say,
-/sys/block/sdXX/queue/write_zeros where the write_zeros file is
-writeable, and so the administrator can force-disable WRITES_ZERO by
-writing 0 into the file.  And could this be queried via a STATX
-attribute?  I suppose, although to be honest, I'm used to doing this
-by looking at the sysfs files.  For example, just recently I coded up
-the following:
-
-static int is_rotational (const char *device_name EXT2FS_ATTR((unused)))
-{
-	int		rotational = -1;
-#ifdef __linux__
-	char		path[1024];
-	struct stat	st;
-	FILE		*f;
-
-	if ((stat(device_name, &st) < 0) || !S_ISBLK(st.st_mode))
-		return -1;
-
-	snprintf(path, sizeof(path), "/sys/dev/block/%d:%d/queue/rotational",
-		major(st.st_rdev), minor(st.st_rdev));
-	f = fopen(path, "r");
-	if (!f) {
-		snprintf(path, sizeof(path),
-			"/sys/dev/block/%d:%d/../queue/rotational",
-			major(st.st_rdev), minor(st.st_rdev));
-		f = fopen(path, "r");
-	}
-	if (f) {
-		if (fscanf(f, "%d", &rotational) != 1)
-			rotational = -1;
-		fclose(f);
-	}
-#endif
-	return rotational;
-}
-
-Easy-peasy!   Who needs statx?   :-)
+Appreciate any review comments / feedback!
 
 
-						- Ted
+v1 -> v2:
+==========
+1. Handled review comments from Ojaswin to optimize the ext4_map_block() calls
+   in ext4_iomap_alloc().
+2. Fixed the journal credits calculation for both:
+	- during block allocation in ext4_iomap_alloc()
+	- during dio completion in ->end_io callback.
+   Earlier we were starting multiple txns in ->end_io callback for unwritten to
+   written conversion. But since in case of atomic writes, we want a single jbd2
+   txn, hence made the necessary changes there.
+[v2]: https://lore.kernel.org/linux-ext4/cover.1745987268.git.ritesh.list@gmail.com/
+
+Ritesh Harjani (IBM) (7):
+  ext4: Document an edge case for overwrites
+  ext4: Check if inode uses extents in ext4_inode_can_atomic_write()
+  ext4: Make ext4_meta_trans_blocks() non-static for later use
+  ext4: Add support for EXT4_GET_BLOCKS_QUERY_LEAF_BLOCKS
+  ext4: Add multi-fsblock atomic write support with bigalloc
+  ext4: Enable support for ext4 multi-fsblock atomic write using bigalloc
+  ext4: Add atomic block write documentation
+
+ .../filesystems/ext4/atomic_writes.rst        | 208 +++++++++++++
+ Documentation/filesystems/ext4/overview.rst   |   1 +
+ fs/ext4/ext4.h                                |  26 +-
+ fs/ext4/extents.c                             |  99 ++++++
+ fs/ext4/file.c                                |   7 +-
+ fs/ext4/inode.c                               | 291 ++++++++++++++++--
+ fs/ext4/super.c                               |   7 +-
+ 7 files changed, 614 insertions(+), 25 deletions(-)
+ create mode 100644 Documentation/filesystems/ext4/atomic_writes.rst
+
+--
+2.49.0
+
 
