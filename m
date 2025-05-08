@@ -1,168 +1,125 @@
-Return-Path: <linux-ext4+bounces-7762-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7763-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 606C4AAF13C
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 04:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7894AAF287
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 07:07:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C7941B60094
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 02:49:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F7AC188B4F8
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 05:07:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 831E31D416E;
-	Thu,  8 May 2025 02:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE8B2356B2;
+	Thu,  8 May 2025 05:01:56 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46EA1BDCF
-	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 02:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E041623498F;
+	Thu,  8 May 2025 05:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746672532; cv=none; b=Q3AGl3yXV4qxr6eWbBTrEH4EU83GuE59U1s62wSSYpH6CH/b+AUMYZNXuWalO2vsMSCEQFnvpLXUbgmj4GL8nn+kaN1RGAqPwyrYXrntO5A3bNy4ObvsxI1yfw1+xX2nVVQ0oMtq4Eya8C9lrv3CdE5NnZW3JWqLdOvScUqBLes=
+	t=1746680516; cv=none; b=s5bCJSvaf8dr9oPPhvA+WuHfEHDJ5WoWefJAErZl/6ldl64Vu35D5VgECEJPy/mq1Wf6pW8uk3lPpC7Xo9boiYYRMe14z6vS7c4AQn9AW0Nuq04t2+Q/4rh6UJqBLUv3wdit0gKB7nWj9bFQ/rtJC1rn+kDa7NTXCOj8S3lbtMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746672532; c=relaxed/simple;
-	bh=/q9HaymT9dPE+6LCpn3459WjXZPx4h1B24jC9Ls9/vI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m7fgCbfszoJCZdCfSvhcsQkVkt7vWrOS5amTrGmTBjI41rmzTuB1LG02bWEvok/sIuykpMAFZgxvycvsvK498UCP/aW+N7t8VZMziiDxFZYM95BTZHWSQM3WfekfL/NC24QeW9nQaH8IdpF/IL74f/aO2vAI3279RIDvpV9/RVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZtGll5mLLz4f3kvq
-	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 10:48:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id CF3331A0359
-	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 10:48:45 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgB32l6MGxxowGUNLw--.55231S3;
-	Thu, 08 May 2025 10:48:45 +0800 (CST)
-Message-ID: <f35c4ecd-48ca-4f41-8457-4b5bfc1e83b8@huaweicloud.com>
-Date: Thu, 8 May 2025 10:48:44 +0800
+	s=arc-20240116; t=1746680516; c=relaxed/simple;
+	bh=AwhhZ2wBTFfk+q7m2bEqg8jP8mcot7mr9qk1rjjHN4s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YUsJOTlO75FlF4utm5B09QRhU067zUvCUsJuxGHeBAx7xO6k8tbR2QRopwRT/VPaVJLJAwjwwD+eHvEPGJdG+EfrZ/JPJ9amV20oihCmIFSOcqADwwTmPcQ4yiMBeVRihWflV9vWbl5LS3wtADw8tzrA536OO8RfKLi/9Q4Acyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 7F69868B05; Thu,  8 May 2025 07:01:47 +0200 (CEST)
+Date: Thu, 8 May 2025 07:01:47 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Christoph Hellwig <hch@lst.de>, "Darrick J. Wong" <djwong@kernel.org>,
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	tytso@mit.edu, john.g.garry@oracle.com, bmarzins@redhat.com,
+	chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com,
+	brauner@kernel.org, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com, yangerkun@huawei.com
+Subject: Re: [RFC PATCH v4 07/11] fs: statx add write zeroes unmap attribute
+Message-ID: <20250508050147.GA26916@lst.de>
+References: <20250421021509.2366003-1-yi.zhang@huaweicloud.com> <20250421021509.2366003-8-yi.zhang@huaweicloud.com> <20250505132208.GA22182@lst.de> <20250505142945.GJ1035866@frogsfrogsfrogs> <c7d8d0c3-7efa-4ee6-b518-f8b09ec87b73@huaweicloud.com> <20250506043907.GA27061@lst.de> <64c8b62a-83ba-45be-a83e-62b6ad8d6f22@huaweicloud.com> <20250506121102.GA21905@lst.de> <a39a6612-89ac-4255-b737-37c7d16b3185@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: use writeback_iter in
- ext4_journalled_submit_inode_data_buffers
-To: Christoph Hellwig <hch@lst.de>
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, tytso@mit.edu
-References: <20250505091604.3449879-1-hch@lst.de>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20250505091604.3449879-1-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgB32l6MGxxowGUNLw--.55231S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAr43CFW5JF48CFW8Kr48Zwb_yoW5ArW7pF
-	W3C3ZrAr4jvFy7urn7Wa1qvF4Yga4SyFW2yFy7Kan3X3Z8G3sFkFyktw1F9FWUtrW8Ww4r
-	XF4jkr17WwnFq3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUgvb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-	6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-	CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-	0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-	AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
-	Ja73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a39a6612-89ac-4255-b737-37c7d16b3185@huaweicloud.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On 2025/5/5 17:16, Christoph Hellwig wrote:
-> Use writeback_iter directly instead of write_cache_pages for a nicer
-> code structure and less indirect calls.
+On Wed, May 07, 2025 at 03:33:23PM +0800, Zhang Yi wrote:
+> On 2025/5/6 20:11, Christoph Hellwig wrote:
+> > On Tue, May 06, 2025 at 07:16:56PM +0800, Zhang Yi wrote:
+> >> Sorry, but I don't understand your suggestion. The
+> >> STATX_ATTR_WRITE_ZEROES_UNMAP attribute only indicate whether the bdev
+> >> and the block device that under the specified file support unmap write
+> >> zeroes commoand. It does not reflect whether the bdev and the
+> >> filesystems support FALLOC_FL_WRITE_ZEROES. The implementation of
+> >> FALLOC_FL_WRITE_ZEROES doesn't fully rely on the unmap write zeroes
+> >> commoand now, users simply refer to this attribute flag to determine
+> >> whether to use FALLOC_FL_WRITE_ZEROES when preallocating a file.
+> >> So, STATX_ATTR_WRITE_ZEROES_UNMAP and FALLOC_FL_WRITE_ZEROES doesn't
+> >> have strong relations, why do you suggested to put this into the ext4
+> >> and bdev patches that adding FALLOC_FL_WRITE_ZEROES?
+> > 
+> > So what is the point of STATX_ATTR_WRITE_ZEROES_UNMAP?
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> My idea is not to strictly limiting the use of FALLOC_FL_WRITE_ZEROES to
+> only bdev or files where bdev_unmap_write_zeroes() returns true. In
+> other words, STATX_ATTR_WRITE_ZEROES_UNMAP and FALLOC_FL_WRITE_ZEROES
+> are not consistent, they are two independent features. Even if some
+> devices STATX_ATTR_WRITE_ZEROES_UNMAP are not set, users should still be
+> allowed to call fallcoate(FALLOC_FL_WRITE_ZEROES). This is because some
+> devices and drivers currently cannot reliably ascertain whether they
+> support the unmap write zero command; however, certain devices, such as
+> specific cloud storage devices, do support it. Users of these devices
+> may also wish to use FALLOC_FL_WRITE_ZEROES to expedite the zeroing
+> process.
 
-It looks clearer now.
+What are those "cloud storage devices" where you set it reliably,
+i.e.g what drivers?
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+> Therefore, I think that the current point of
+> STATX_ATTR_WRITE_ZEROES_UNMAP (possibly STATX_WRITE_ZEROES_UNMAP) should
+> be to just indicate whether a bdev or file supports the unmap write zero
+> command (i.e., whether bdev_unmap_write_zeroes() returns true). If we
+> use standard SCSI and NVMe storage devices, and the
+> STATX_ATTR_WRITE_ZEROES_UNMAP attribute is set, users can be assured
+> that FALLOC_FL_WRITE_ZEROES is fast and can choose to use
+> fallocate(FALLOC_FL_WRITE_ZEROES) immediately.
 
-> ---
->  fs/ext4/super.c | 46 ++++++++++++++++++++++------------------------
->  1 file changed, 22 insertions(+), 24 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 181934499624..6a0a3493ee43 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -508,21 +508,9 @@ static void ext4_journal_commit_callback(journal_t *journal, transaction_t *txn)
->  	ext4_maybe_update_superblock(sb);
->  }
->  
-> -/*
-> - * This writepage callback for write_cache_pages()
-> - * takes care of a few cases after page cleaning.
-> - *
-> - * write_cache_pages() already checks for dirty pages
-> - * and calls clear_page_dirty_for_io(), which we want,
-> - * to write protect the pages.
-> - *
-> - * However, we may have to redirty a page (see below.)
-> - */
-> -static int ext4_journalled_writepage_callback(struct folio *folio,
-> -					      struct writeback_control *wbc,
-> -					      void *data)
-> +static bool ext4_journalled_writepage_needs_redirty(struct jbd2_inode *jinode,
-> +		struct folio *folio)
->  {
-> -	transaction_t *transaction = (transaction_t *) data;
->  	struct buffer_head *bh, *head;
->  	struct journal_head *jh;
->  
-> @@ -543,15 +531,12 @@ static int ext4_journalled_writepage_callback(struct folio *folio,
->  		 */
->  		jh = bh2jh(bh);
->  		if (buffer_dirty(bh) ||
-> -		    (jh && (jh->b_transaction != transaction ||
-> -			    jh->b_next_transaction))) {
-> -			folio_redirty_for_writepage(wbc, folio);
-> -			goto out;
-> -		}
-> +		    (jh && (jh->b_transaction != jinode->i_transaction ||
-> +			    jh->b_next_transaction)))
-> +			return true;
->  	} while ((bh = bh->b_this_page) != head);
->  
-> -out:
-> -	return AOP_WRITEPAGE_ACTIVATE;
-> +	return false;
->  }
->  
->  static int ext4_journalled_submit_inode_data_buffers(struct jbd2_inode *jinode)
-> @@ -563,10 +548,23 @@ static int ext4_journalled_submit_inode_data_buffers(struct jbd2_inode *jinode)
->  		.range_start = jinode->i_dirty_start,
->  		.range_end = jinode->i_dirty_end,
->          };
-> +	struct folio *folio = NULL;
-> +	int error;
->  
-> -	return write_cache_pages(mapping, &wbc,
-> -				 ext4_journalled_writepage_callback,
-> -				 jinode->i_transaction);
-> +	/*
-> +	 * writeback_iter() already checks for dirty pages and calls
-> +	 * folio_clear_dirty_for_io(), which we want to write protect the
-> +	 * folios.
-> +	 *
-> +	 * However, we may have to redirty a folio sometimes.
-> +	 */
-> +	while ((folio = writeback_iter(mapping, &wbc, folio, &error))) {
-> +		if (ext4_journalled_writepage_needs_redirty(jinode, folio))
-> +			folio_redirty_for_writepage(&wbc, folio);
-> +		folio_unlock(folio);
-> +	}
-> +
-> +	return error;
->  }
->  
->  static int ext4_journal_submit_inode_data_buffers(struct jbd2_inode *jinode)
+That's breaking the abstracton again.  An attribute must say something
+about the specific file, not about some underlying semi-related feature.
+
+> Would you prefer to make STATX_ATTR_WRITE_ZEROES_UNMAP and
+> FALLOC_FL_WRITE_ZEROES consistent, which means
+> fallcoate(FALLOC_FL_WRITE_ZEROES) will return -EOPNOTSUPP if the block
+> device doesn't set STATX_ATTR_WRITE_ZEROES_UNMAP ?
+
+Not sure where the block device comes from here, both of these operate
+on a file.
+
+> If so, I'd suggested we need to:
+> 1) Remove STATX_ATTR_WRITE_ZEROES_UNMAP since users can check the
+>    existence by calling fallocate(FALLOC_FL_WRITE_ZEROES) directly, this
+>    statx flag seems useless.
+
+Yes, that was my inital thought.
+
+> 2) Make the BLK_FEAT_WRITE_ZEROES_UNMAP sysfs interface to RW, allowing
+>    users to adjust the block device's support state according to the
+>    real situation.
+
+No, it's a feature and not a flag.
 
 
