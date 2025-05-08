@@ -1,85 +1,89 @@
-Return-Path: <linux-ext4+bounces-7768-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7769-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E039AB01EF
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 19:59:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 887A9AB01F0
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 19:59:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 621463AB5DD
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 17:59:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B94271BA785B
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 17:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FDB3286D46;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956A3286D50;
 	Thu,  8 May 2025 17:59:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c09Cz5eR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G0fFSCgd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0751E3DE8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF59F2868B9
 	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 17:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746727175; cv=none; b=EZmchhbcfl8Sg+ZbV6RzzW4liZFTuh5crIObOs9eU0KzkbkNHZKbdv8ZxInZfZmKrmKSxsdpm1Xnr3ko0WqvhyGGtUUfHNf5IHkA15V24qRoKaLsvEev5hTaKpy4Sg/bZDlBs55m7uKQtn0MOJP0b/+UnXlj/nbPVg6wnkdrnCo=
+	t=1746727175; cv=none; b=ZVDmsCApVqpLd3yVByWAMJRbwC/uiqKkJYdF0N0pFe1bIuTZHb2LUqTu/SUq5O6wCn1wPpEKVTJN+X0paWWtPkL+aQrP0fWJk/Ozo/cKzd0jTOAewTsczLqeHSyGNGKBbwCKJaqXrva+tS5fgXjYEgfh0zJW6DvzhnwK3XsV0jE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1746727175; c=relaxed/simple;
-	bh=w1JOZ9lmcbk7cIpwI54cfvdwfHn04J4SVblOyRwvibo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MfPz8CC9thMeNR9RgTn+34DBqeC/xLl7vtIT5kJJp7R0RjjVl8fSmqnPs+aJIxP5PNLZk9bIy6XEuo+e9Yj8AyeUlmdN+D+nIN6r+G53o41FrfPl4iYMioCtVfAXdoh89wSp4yFoUSbqNHq6AYqQJtdlUzG/ixPRGQm6y2mGtvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c09Cz5eR; arc=none smtp.client-ip=209.85.210.174
+	bh=UMhJptDCoxFbOr/DgzplbaSy1iUoHDY7iVhruCdi2Qk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jlx8vQO2FF4x/MLK1tgBZ1OYmcZkh5U9DvhdCANrmVGJQ+GMX8ZvAgbAYisg2W1LweKjjlh/TN4MNaVZ64vYJs6nOGh4XgHZGAPVlx0N5nYwHGK1GhR5M+DA/g4Ejg0/m0C8Mw3hfkukgR/bNpCebg56tP6N1Pd+2d56cjbHOxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G0fFSCgd; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7415d28381dso721753b3a.1
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-22e3b069f23so14544465ad.2
         for <linux-ext4@vger.kernel.org>; Thu, 08 May 2025 10:59:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746727172; x=1747331972; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/haF0raaQpszTQOGZYcILfSZscOO9vS7K6pykG3wEQw=;
-        b=c09Cz5eRUxzYu32FHra6ZJKeXhuc3MSiHAMGm+ANRB5cCMxB1+wBV3OyP3O7wqEGfF
-         vVPy5dCduNl26SiRlMl0/c7kKfaR0zFB+2dpd4tp91oN1zyLrKhqhusOtKXLC08NU6RF
-         hxTPJ6Ypsi87WzQFBUsuQqhUkdJe5BlPYuBPN9ShmPOGX2zrnM2grKePfswEIL4aZoSj
-         ucHkhQX6VDNBFtpO0gk2EO5AigMYBfa/xrxm3icekqJtRP+ZPDLrvalvKvRPmXCAkcg8
-         n5CzRnq0rIHB6kgoa01gipLLLsac8lzL42C7YgcxoMir5zqEIBcV8XlMNlOLBdVQ8F05
-         M6Ag==
+        d=gmail.com; s=20230601; t=1746727173; x=1747331973; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PHYPtr7EGhcmivZjeZ/FSny71tLJ11EFlKC1kKH5xzs=;
+        b=G0fFSCgdXv8TDDPnobUPxfMY5eLXSEw7fjdHmBwANzleynSFRydj1aiNgnGCJm6b06
+         b4VY4MItJDFcuwcnmqEygCXyVk0SFfm/TQ79X2jynMiUxVRdLk+9YK7NdeOHN1yVv2AH
+         w6k9NlEA1+LsAFPnLhw2v9MyY04qq1OQ6VcgNU5BImt7MqWB484x0d6VDgeKCU2z5TPg
+         Is1YLMVQm6xeqBAAV3nG6rWc3Wm5d55kRHIXpmx2FmndV7yBtvYnCYJlyEnBQ2b4EGZ8
+         q6yd0C7d8U+iyIZ+qilMf76yuDBVqUEGT2buXP/CYw/tV6TGU8TpYAcI7XguZeb1img3
+         d8PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746727172; x=1747331972;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/haF0raaQpszTQOGZYcILfSZscOO9vS7K6pykG3wEQw=;
-        b=DsyNHLHe7kHgRnfwrhqJ2F/DykZ4pd9zKGxoVjk+s2xOhEApb6+uXgO2Z3/46hcbln
-         J/olC/wLMdotI8aWJl/sLK5qLts38eB1oE+sj18q9Jt0ThT/rcPWrVzL1jCUpzS2B66d
-         s26U60HgNXN53wtL6w+n37MqRnnQaegic/GAtuhE+r3M51kV2bF9Bu84CWTeSqh7LksV
-         7+rQH8+VCO3YBrCKpahkpRel1j5lE9O7AXKnzI0MiG0a9kRdYO573/S/3FTCw5LTsNf+
-         8Sm+65fOoUbzn6JCxQflpqJuZTMlnzgEoVZEEiZorxdP/ghddx4FsMnjsJDpXLLmcDii
-         ukRw==
-X-Gm-Message-State: AOJu0Yx4jC4e7EZmJhb68t8gDx5IilZTELfxjov8Sjd5bYcyHleJDxPG
-	0qko6h18MF0sfiwQxKlsRMTKlAmr16y9XtBMGBnqQm/tlfqrom91dGGEp9E9iS8=
-X-Gm-Gg: ASbGncsMIPJPzeAjHiteaw5G811vyvVe+rHq0es3op0fNl7XKP0VMTrxhemrHO9lRrH
-	6UNV/JO0e27eXBGW/lJcAihsq51wRDCzSIUlYmTj5gZUCUtoyo8DH5zkEk+Sx5HNmr80/m0pr+q
-	v4W8hGCDz9Tn8sIg+eaR7QjZmwMADfp+Teb13uicGWlSsJnVp/lD+rbu+vBEYLDRIGtJrWADavR
-	/AmKsEi1E6NoujWM/VjbxL0obOKDmuhciN2/kMTaVDlCKMNmwu9EeJ1HJA783bqoJkWC+cnn91m
-	L6TE/xrAVDo49I40AplhVFd/atAg5+WuNtRRPN9M2DRyGIFsC6PrDlaFwwa8v4Ku6I4pHwv1k2n
-	xSe18yhqbnqdX4qvOx3NkI2UAjFku7pPfgJVV
-X-Google-Smtp-Source: AGHT+IEAfvSjdCf3WVjIUEr25DJAPysO9LVWXgXYqVnkjmtdntLlLT/Syu4QH1dpAIv9Sk1SsKi0EA==
-X-Received: by 2002:a17:903:32d1:b0:22e:6bb1:f717 with SMTP id d9443c01a7336-22fc918dcb4mr4381735ad.41.1746727172054;
+        d=1e100.net; s=20230601; t=1746727173; x=1747331973;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PHYPtr7EGhcmivZjeZ/FSny71tLJ11EFlKC1kKH5xzs=;
+        b=oTD1AadA+xBkKfa6+rsx/h68KvNhNNpQxwgt4PW8gGi2j6nf8Ff9PrC8asXlNwb3zt
+         06DVHGiDTCAZRwOFGD3PQEzHr/RTkmeMtMPLIhep1byWl6rekeJC/P/kQne63vY8sKLm
+         P45tOV3CF3FLfQ7HGWIeoekKSQhO/SlOMrfGL3czJxrHC//DNeSxYEjNzwgg90a5QY+0
+         J3WMSYvzXAWUuh70q5LQpXZ/czjnTnQ+BL6Q6F9oE3IUwtH5AjuIzN7llobXp6sQ6c7R
+         Q6yijGVW3QEhvpeh1nh0WpJ7C7GPZY0SuLDKmX/xZXKHFuvS37A5MLM+n1Gi6f3j3NKt
+         aJZQ==
+X-Gm-Message-State: AOJu0YwlG3BLgXoPpnb+4UmqqYVvDKmHxhyi59j0rEY2A/6yKeNEkkTP
+	fd7ZsAU7Ei4Ktnt2BfO1MXPjnFVacP7Xl7tNtcTwuQmhoDA7nyxf1btquxNk
+X-Gm-Gg: ASbGnctxJxg8b5127FjrmANGlMcsGZ7H6FDWa/siDKFIHA6H5r802WThkNEBHNgOQ/G
+	6niFWRpZRY0PxyB6vZQXZX/WNlSdG8KihJ8vhgij6GBOqyxtkw7yhO2CQxOJ+GwrY4H//4WIM+X
+	3ww88zUbEnf1RNUE0LLwp9nUmY3VW7MwwgW33YSf8UIehhAGvO0H4ETgxxlSPWj9IxWvvBzKcDe
+	GaIU6IJ+hu0fyIE3MeFPL5kF/cdOU0CJkp+J16nwVeFlgDn2DjQZgw9fG/inc50vULBO7bwPhvE
+	pbKLbN3nXb1eK9ZKTmEbgW/w8tSLFoJUhrvhebrip8lEy7aISPFAFdrG3s3Y6wdH7c9ophQMr+F
+	HK2eWmXFEwASP2V6i1lcpqXuKSjAt0/ChoGTO
+X-Google-Smtp-Source: AGHT+IFtora0wLy7ObSusPxsaDuQExvi7KgA7S61jDLUJEo97ej42tcShAPCFmLY4tuCNScjgpUxkw==
+X-Received: by 2002:a17:902:e94d:b0:224:c46:d166 with SMTP id d9443c01a7336-22fc9185e22mr4356285ad.40.1746727172542;
         Thu, 08 May 2025 10:59:32 -0700 (PDT)
 Received: from harshads.c.googlers.com.com (156.242.82.34.bc.googleusercontent.com. [34.82.242.156])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22fc828939asm2153535ad.164.2025.05.08.10.59.31
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22fc828939asm2153535ad.164.2025.05.08.10.59.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 May 2025 10:59:31 -0700 (PDT)
+        Thu, 08 May 2025 10:59:32 -0700 (PDT)
 From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
 	jack@suse.cz,
 	harshads@google.com,
 	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v9 0/9] Ext4 fast commit performance patchset
-Date: Thu,  8 May 2025 17:58:59 +0000
-Message-ID: <20250508175908.1004880-1-harshadshirwadkar@gmail.com>
+Subject: [PATCH v9 1/9] ext4: convert i_fc_lock to spinlock
+Date: Thu,  8 May 2025 17:59:00 +0000
+Message-ID: <20250508175908.1004880-2-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.49.0.1045.g170613ef41-goog
+In-Reply-To: <20250508175908.1004880-1-harshadshirwadkar@gmail.com>
+References: <20250508175908.1004880-1-harshadshirwadkar@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -88,153 +92,122 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-V9 Cover Letter
----------------
+Convert ext4_inode_info->i_fc_lock to spinlock to avoid sleeping
+in invalid contexts.
 
-This is the V9 of the patch series. This patch series is rebased on
-6.15-rc3. This patch series fixes FSTests errors introduced patchset
-8. To fix these errors, I have added a few more fixes to "ext4: rework
-fast commit commit path" patch. The summary of the changes is as
-follows:
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+---
+ fs/ext4/ext4.h        |  7 +++++--
+ fs/ext4/fast_commit.c | 19 +++++++++----------
+ fs/ext4/super.c       |  2 +-
+ 3 files changed, 15 insertions(+), 13 deletions(-)
 
-- The new commit path first flushes all the data from all the inodes
-  before marking inodes as being committed by setting bit
-  "EXT4_STATE_FC_COMMITTING". This gets rid of a deadlock between:
-
-  - `ext4_do_writepages()` which ends up waiting for fast commit to
-    finish
-
-  - `ext4_fc_perform_commit()` which triggers writeback path while
-    submitting inode data.
-
-- The fix to the race above, introduces a new race between
-  ext4_fc_del() and ext4_fc_perform_commit(). Since now we delay
-  setting "EXT4_STATE_FC_COMMITTING" until after data flush has
-  finished, it is now possible that the inode being flushed may get
-  deleted by a competing ext4_fc_del(). To fix this race, I introduced
-  a new inode state called
-  "EXT4_STATE_FC_FLUSHING_DATA". ext4_fc_del() now waits for
-  "EXT4_STATE_FC_FLUSHING_DATA" bit to clear.
-
-Verified that no new regression are introduced in -g auto and -g log
-groups with fast_commit config.
-
-V8 Cover Letter
---------------
-
-This is the V8 of the patch series. This patch series contains fixes to
-review comments by Jan Kara (<jack@suse.cz>). The main changes are as
-follows:
-
-- sbi->s_fc_lock is now a mutex type, and it is not released during
-  commit path. This gets rid of a number of soft lockups due to race
-  with ext4_fc_del().
-
-- I have dropped "ext4: make fast commit ineligible on
-  ext4_reserve_inode_write failure" patch.
-
-- I have split "ext4: hold s_fc_lock while during fast commit" into
-  two patches: "ext4: convert s_fc_lock to mutex type" and "ext4: hold
-  s_fc_lock while during fast commit" to make reviewing easy.
-
-V7 Cover Letter
----------------
-
-This is the V7 of the patch series. This patch series contains fixes to
-review comments by Jan Kara (<jack@suse.cz>). The main changes are as
-follows:
-
-- As discussed in V6 review, I have dropped "ext4: add nolock mode to
-  ext4_map_blocks()" patch given that we now ensure that i_data_sem is
-  always grabbed before ext4_mark_inode_dirty() is called.
-
-- I have also dropped "ext4: introduce selective flushing in fast commit"
-  given that correctly implementing that would require more changes, and I
-  think they would be best done outside of this series.
-
-- I added "ext4: introduce selective flushing in fast commit" as the last
-  patch in the series. While testing log group tests I found a few failures
-  which get fixed due to this patch.
-
-V6 Cover Letter
----------------
-
-This is the V6 of the patch series. This patch series contains fixes to a
-bunch of kernel build warnings reported by Kernel Test Robot
-(lkp@intel.com) and Dan Carpenter (dan.carpenter@linaro.org). Thank you!
-
-V5 Cover Letter
----------------
-
-This patch series supersedes the patch series "ext4: remove journal barrier
-during fast commit" sent in July 2022[1].  Except following three patches
-all the other patches are newly introduced in this series.
-
-* ext4: convert i_fc_lock to spinlock
-* ext4: for committing inode, make ext4_fc_track_inode wait
-* ext4: drop i_fc_updates from inode fc info
-
-This patchset does not introduce any on-disk format and / or user visible
-API change. This patchset reworks fast-commit's commit path improve overall
-performance of the commit path. Following optimizations have been added in
-this series:
-
-* Avoid having to lock the journal throughout the fast commit.
-* Remove tracking of open handles per inode.
-* Avoid issuing cache flushes when fast commits are contained within a
-  single FUA writes and there is no data that needs flushing.
-* Temporarily lift committing thread's priority to match that of the
-  journal thread to reduce scheduling delays.
-
-With the changes introduced in this patch series, now the commit path for
-fast commits is as follows:
-
-1. Lock the journal by calling jbd2_journal_lock_updates_no_rsv(). This
-   ensures that all the exsiting handles finish and no new handles can
-   start.
-2. Mark all the fast commit eligible inodes as undergoing fast commit by
-   setting "EXT4_STATE_FC_COMMITTING" state.
-3. Unlock the journal by calling jbd2_journal_unlock_updates. This allows
-   starting of new handles. If new handles try to start an update on any of
-   the inodes that are being committed, ext4_fc_track_inode() will block
-   until those inodes have finished the fast commit.
-4. Submit data buffers of all the committing inodes.
-5. Wait for [4] to complete.
-6. Commit all the directory entry updates in the fast commit space.
-7. Commit all the changed inodes in the fast commit space and clear
-   "EXT4_STATE_FC_COMMITTING" for all the inodes.
-8. Write tail tag to ensure atomicity of commits.
-
-(The above flow has been documented in the code as well)
-
-I verified that the patch series introduces no regressions in "log" groups
-when "fast_commit" feature is enabled.
-
-Also, we have a paper on fast commits in USENIX ATC 2024 this year which
-should become available on the website[2] in a few months.
-
-[1] https://lwn.net/Articles/902022/
-[2] https://www.usenix.org/conference/atc24
-
-Harshad Shirwadkar (9):
-  ext4: convert i_fc_lock to spinlock
-  ext4: for committing inode, make ext4_fc_track_inode wait
-  ext4: mark inode dirty before grabbing i_data_sem in ext4_setattr
-  ext4: rework fast commit commit path
-  ext4: drop i_fc_updates from inode fc info
-  ext4: update code documentation
-  ext4: temporarily elevate commit thread priority
-  ext4: convert s_fc_lock to mutex type
-  ext4: hold s_fc_lock while during fast commit
-
- fs/ext4/ext4.h        |  19 +-
- fs/ext4/fast_commit.c | 446 ++++++++++++++++++++++--------------------
- fs/ext4/inline.c      |   1 +
- fs/ext4/inode.c       |  12 +-
- fs/ext4/super.c       |   9 +-
- fs/jbd2/journal.c     |   2 -
- 6 files changed, 260 insertions(+), 229 deletions(-)
-
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 5a20e9cd7..79dfb57a7 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1069,8 +1069,11 @@ struct ext4_inode_info {
+ 	/* Fast commit wait queue for this inode */
+ 	wait_queue_head_t i_fc_wait;
+ 
+-	/* Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len */
+-	struct mutex i_fc_lock;
++	/*
++	 * Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len
++	 * and inode's EXT4_FC_STATE_COMMITTING state bit.
++	 */
++	spinlock_t i_fc_lock;
+ 
+ 	/*
+ 	 * i_disksize keeps track of what the inode size is ON DISK, not
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index da4263a14..63859ec6d 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -385,7 +385,7 @@ static int ext4_fc_track_template(
+ 	int ret;
+ 
+ 	tid = handle->h_transaction->t_tid;
+-	mutex_lock(&ei->i_fc_lock);
++	spin_lock(&ei->i_fc_lock);
+ 	if (tid == ei->i_sync_tid) {
+ 		update = true;
+ 	} else {
+@@ -393,8 +393,7 @@ static int ext4_fc_track_template(
+ 		ei->i_sync_tid = tid;
+ 	}
+ 	ret = __fc_track_fn(handle, inode, args, update);
+-	mutex_unlock(&ei->i_fc_lock);
+-
++	spin_unlock(&ei->i_fc_lock);
+ 	if (!enqueue)
+ 		return ret;
+ 
+@@ -428,19 +427,19 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
+ 	struct super_block *sb = inode->i_sb;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 
+-	mutex_unlock(&ei->i_fc_lock);
++	spin_unlock(&ei->i_fc_lock);
+ 
+ 	if (IS_ENCRYPTED(dir)) {
+ 		ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_ENCRYPTED_FILENAME,
+ 					handle);
+-		mutex_lock(&ei->i_fc_lock);
++		spin_lock(&ei->i_fc_lock);
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+ 	node = kmem_cache_alloc(ext4_fc_dentry_cachep, GFP_NOFS);
+ 	if (!node) {
+ 		ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_NOMEM, handle);
+-		mutex_lock(&ei->i_fc_lock);
++		spin_lock(&ei->i_fc_lock);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -471,7 +470,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
+ 		list_add_tail(&node->fcd_dilist, &ei->i_fc_dilist);
+ 	}
+ 	spin_unlock(&sbi->s_fc_lock);
+-	mutex_lock(&ei->i_fc_lock);
++	spin_lock(&ei->i_fc_lock);
+ 
+ 	return 0;
+ }
+@@ -893,15 +892,15 @@ static int ext4_fc_write_inode_data(struct inode *inode, u32 *crc)
+ 	struct ext4_extent *ex;
+ 	int ret;
+ 
+-	mutex_lock(&ei->i_fc_lock);
++	spin_lock(&ei->i_fc_lock);
+ 	if (ei->i_fc_lblk_len == 0) {
+-		mutex_unlock(&ei->i_fc_lock);
++		spin_unlock(&ei->i_fc_lock);
+ 		return 0;
+ 	}
+ 	old_blk_size = ei->i_fc_lblk_start;
+ 	new_blk_size = ei->i_fc_lblk_start + ei->i_fc_lblk_len - 1;
+ 	ei->i_fc_lblk_len = 0;
+-	mutex_unlock(&ei->i_fc_lock);
++	spin_unlock(&ei->i_fc_lock);
+ 
+ 	cur_lblk_off = old_blk_size;
+ 	ext4_debug("will try writing %d to %d for inode %ld\n",
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 181934499..ed8166fe2 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1415,7 +1415,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
+ 	ei->i_datasync_tid = 0;
+ 	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
+ 	ext4_fc_init_inode(&ei->vfs_inode);
+-	mutex_init(&ei->i_fc_lock);
++	spin_lock_init(&ei->i_fc_lock);
+ 	return &ei->vfs_inode;
+ }
+ 
 -- 
 2.49.0.1045.g170613ef41-goog
 
