@@ -1,73 +1,73 @@
-Return-Path: <linux-ext4+bounces-7769-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7770-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 887A9AB01F0
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 19:59:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44DD0AB01F1
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 19:59:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B94271BA785B
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 17:59:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 742761BA793B
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 May 2025 17:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956A3286D50;
-	Thu,  8 May 2025 17:59:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E889286D59;
+	Thu,  8 May 2025 17:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G0fFSCgd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XIerUTvw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF59F2868B9
-	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 17:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879CA286D40
+	for <linux-ext4@vger.kernel.org>; Thu,  8 May 2025 17:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746727175; cv=none; b=ZVDmsCApVqpLd3yVByWAMJRbwC/uiqKkJYdF0N0pFe1bIuTZHb2LUqTu/SUq5O6wCn1wPpEKVTJN+X0paWWtPkL+aQrP0fWJk/Ozo/cKzd0jTOAewTsczLqeHSyGNGKBbwCKJaqXrva+tS5fgXjYEgfh0zJW6DvzhnwK3XsV0jE=
+	t=1746727176; cv=none; b=Z2O91sHX6JVaI0A5tm1iI//93L9FxiWxGEUSCX2GB94itxUhHTVVPXha74wdiOpt13ENccsn13JmPrumI5SEJ5RpfDJIbrec0qZntGCbHI6STRnJkCG/ViIlXhuEx9ORKRFtjbzuBlsLg4aRQgFwaDgtx3+mvn7EE/jwCUYZR7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746727175; c=relaxed/simple;
-	bh=UMhJptDCoxFbOr/DgzplbaSy1iUoHDY7iVhruCdi2Qk=;
+	s=arc-20240116; t=1746727176; c=relaxed/simple;
+	bh=z345HmiXRblzh9RR3dTjnXWi5tMWsvqosRjz4pAnSbI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jlx8vQO2FF4x/MLK1tgBZ1OYmcZkh5U9DvhdCANrmVGJQ+GMX8ZvAgbAYisg2W1LweKjjlh/TN4MNaVZ64vYJs6nOGh4XgHZGAPVlx0N5nYwHGK1GhR5M+DA/g4Ejg0/m0C8Mw3hfkukgR/bNpCebg56tP6N1Pd+2d56cjbHOxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G0fFSCgd; arc=none smtp.client-ip=209.85.214.175
+	 MIME-Version; b=R55d1JFfaHkIxRqxbU/x5Daoo/cgqI5aUjjiXw4DQpSpQ7/PzwpkFHlJbFQEXHiibRuaIdzD1o/Bp5Wm8dIyOGB7ctyE9iEpNfYR1XQmW4b74V6Cpp5pht2MAKXuwALVDuPVGF9DbUU93qwAxs/y+/0+U/aX1Aufvyhjmmw1sBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XIerUTvw; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-22e3b069f23so14544465ad.2
-        for <linux-ext4@vger.kernel.org>; Thu, 08 May 2025 10:59:33 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7390d21bb1cso1417495b3a.2
+        for <linux-ext4@vger.kernel.org>; Thu, 08 May 2025 10:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1746727173; x=1747331973; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PHYPtr7EGhcmivZjeZ/FSny71tLJ11EFlKC1kKH5xzs=;
-        b=G0fFSCgdXv8TDDPnobUPxfMY5eLXSEw7fjdHmBwANzleynSFRydj1aiNgnGCJm6b06
-         b4VY4MItJDFcuwcnmqEygCXyVk0SFfm/TQ79X2jynMiUxVRdLk+9YK7NdeOHN1yVv2AH
-         w6k9NlEA1+LsAFPnLhw2v9MyY04qq1OQ6VcgNU5BImt7MqWB484x0d6VDgeKCU2z5TPg
-         Is1YLMVQm6xeqBAAV3nG6rWc3Wm5d55kRHIXpmx2FmndV7yBtvYnCYJlyEnBQ2b4EGZ8
-         q6yd0C7d8U+iyIZ+qilMf76yuDBVqUEGT2buXP/CYw/tV6TGU8TpYAcI7XguZeb1img3
-         d8PQ==
+        bh=F3v4Uu7RM19taHKPPYlIfAPfDGMsscwFvhEcFJtV9Ek=;
+        b=XIerUTvwvwIJH6FrOwVYT1MtWZEiiUzYeFc3w1Rp77SGKK7wRRq1hhimcUFr2/OAVA
+         45XWSp1NoLfaYBxQYbglWCAn2+UNVqSsWyAfs6OyAesgfbBJtJFByM4VcKS9DfXbeVfW
+         xHyeTh5GMegOebxdiJPvdTdZGkvAeP/1f7QEcDPzHGn7SN+IbEBfLBatBPQ3UdPOJ8yR
+         eoQvQ5hxJZ8DqyXUHnk1wnfLKZRuF7Es7/CWbvEbyTEzTYm0p1j0d7mUbmau5dLzFXla
+         1b0fJsbhjspGBM6qKZp2VXCxzEcu9GHwBS/mvK5kMhzhtd3aKU6CMhIx8I7pL3hFeWaN
+         AMwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1746727173; x=1747331973;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PHYPtr7EGhcmivZjeZ/FSny71tLJ11EFlKC1kKH5xzs=;
-        b=oTD1AadA+xBkKfa6+rsx/h68KvNhNNpQxwgt4PW8gGi2j6nf8Ff9PrC8asXlNwb3zt
-         06DVHGiDTCAZRwOFGD3PQEzHr/RTkmeMtMPLIhep1byWl6rekeJC/P/kQne63vY8sKLm
-         P45tOV3CF3FLfQ7HGWIeoekKSQhO/SlOMrfGL3czJxrHC//DNeSxYEjNzwgg90a5QY+0
-         J3WMSYvzXAWUuh70q5LQpXZ/czjnTnQ+BL6Q6F9oE3IUwtH5AjuIzN7llobXp6sQ6c7R
-         Q6yijGVW3QEhvpeh1nh0WpJ7C7GPZY0SuLDKmX/xZXKHFuvS37A5MLM+n1Gi6f3j3NKt
-         aJZQ==
-X-Gm-Message-State: AOJu0YwlG3BLgXoPpnb+4UmqqYVvDKmHxhyi59j0rEY2A/6yKeNEkkTP
-	fd7ZsAU7Ei4Ktnt2BfO1MXPjnFVacP7Xl7tNtcTwuQmhoDA7nyxf1btquxNk
-X-Gm-Gg: ASbGnctxJxg8b5127FjrmANGlMcsGZ7H6FDWa/siDKFIHA6H5r802WThkNEBHNgOQ/G
-	6niFWRpZRY0PxyB6vZQXZX/WNlSdG8KihJ8vhgij6GBOqyxtkw7yhO2CQxOJ+GwrY4H//4WIM+X
-	3ww88zUbEnf1RNUE0LLwp9nUmY3VW7MwwgW33YSf8UIehhAGvO0H4ETgxxlSPWj9IxWvvBzKcDe
-	GaIU6IJ+hu0fyIE3MeFPL5kF/cdOU0CJkp+J16nwVeFlgDn2DjQZgw9fG/inc50vULBO7bwPhvE
-	pbKLbN3nXb1eK9ZKTmEbgW/w8tSLFoJUhrvhebrip8lEy7aISPFAFdrG3s3Y6wdH7c9ophQMr+F
-	HK2eWmXFEwASP2V6i1lcpqXuKSjAt0/ChoGTO
-X-Google-Smtp-Source: AGHT+IFtora0wLy7ObSusPxsaDuQExvi7KgA7S61jDLUJEo97ej42tcShAPCFmLY4tuCNScjgpUxkw==
-X-Received: by 2002:a17:902:e94d:b0:224:c46:d166 with SMTP id d9443c01a7336-22fc9185e22mr4356285ad.40.1746727172542;
-        Thu, 08 May 2025 10:59:32 -0700 (PDT)
+        bh=F3v4Uu7RM19taHKPPYlIfAPfDGMsscwFvhEcFJtV9Ek=;
+        b=MDB7qjn7lZphW2ZbKWs8k1n8L+MDObFageuNHbAjG6eKYhDK7Vvd3Ux0uRkHO454jZ
+         7ONpIa6vZgfY44RBuIxuFNP0z/syvQRvRijT6HB0eN9ZF0akoNShVfEphTGw1bylHrct
+         eRuZmeUtAx5bA7ZS2qmXa+vu9OXMhnaIFAgcUHTYgODs5N55nGwdB3rIgMA3EMUoeXHR
+         QcI0rU6oJB3NxodZizcchGuHjv37bwgcLAcns9Xenebi5K5XSIxbfNm7feWh0bPbW2Ch
+         Poil1GeDfVW1XClQoINYIK3iApeO+hagyCFfUH5ZKbFmH2TtHMLH5pa21vfxe5PdW8bN
+         f3iw==
+X-Gm-Message-State: AOJu0Yz+0S5b4g9B1R5ggSTDh52sjNWNzXBqLCRmlFAq2Jl6ngu4nbF3
+	3lCSgtxr5wVllxtmr1ZxF6Cj8W/r4eXLaCrFu7SmqNmZoFH4KsKQ5Lib3/8Q
+X-Gm-Gg: ASbGncuUiviLdznnku7frS6BtrNNC5OrmDWSzKJCTbOhls7f0dCIlLOS/bOgYOdtzaj
+	t7cqZruEJ0I6L/zb+LtgamVoJ15HnxHtLI5n4oxbJxdhOsHgogupsFiZYsGXx4aIk6XdS/6hV4X
+	8uSjAdFT5sTUcAeW7I63CROfVBxD2jJv+23ewLHm8/wrOSPZh/Sc/M4/iBCc2i76ELeR6dD2Dr7
+	roNQSce9OmUA2ZZWnHXgegjvkFAPr9dXvWVcsJYQZa4JH2+Vk9gYkO/LfDwIKQ/LP59wt4pfaK+
+	3nCcBVS+VvGbYD0Oi5MTnzcferEfL8UGQ3rcIYWA5OnYDKQ2HdmePP4VqTrESW4UH2VJMyor0vf
+	3qQQFwog8DNOB7/OmhL5p2TEz6HcjA6VKBhjH
+X-Google-Smtp-Source: AGHT+IHAEZOfcR0nigbt5Mgl0RXYnZ9UjdaobEamaPuKxjxH4DEtPh99YbJ9jEzAc8qxxoVmPe9xvw==
+X-Received: by 2002:a17:902:f709:b0:224:1af1:87f4 with SMTP id d9443c01a7336-22fc8b73b24mr4619785ad.22.1746727173148;
+        Thu, 08 May 2025 10:59:33 -0700 (PDT)
 Received: from harshads.c.googlers.com.com (156.242.82.34.bc.googleusercontent.com. [34.82.242.156])
         by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22fc828939asm2153535ad.164.2025.05.08.10.59.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -78,9 +78,9 @@ Cc: tytso@mit.edu,
 	jack@suse.cz,
 	harshads@google.com,
 	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v9 1/9] ext4: convert i_fc_lock to spinlock
-Date: Thu,  8 May 2025 17:59:00 +0000
-Message-ID: <20250508175908.1004880-2-harshadshirwadkar@gmail.com>
+Subject: [PATCH v9 2/9] ext4: for committing inode, make ext4_fc_track_inode wait
+Date: Thu,  8 May 2025 17:59:01 +0000
+Message-ID: <20250508175908.1004880-3-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.49.0.1045.g170613ef41-goog
 In-Reply-To: <20250508175908.1004880-1-harshadshirwadkar@gmail.com>
 References: <20250508175908.1004880-1-harshadshirwadkar@gmail.com>
@@ -92,122 +92,135 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Convert ext4_inode_info->i_fc_lock to spinlock to avoid sleeping
-in invalid contexts.
+If the inode that's being requested to track using ext4_fc_track_inode
+is being committed, then wait until the inode finishes the
+commit. Also, add calls to ext4_fc_track_inode at the right places.
+With this patch, now calling ext4_reserve_inode_write() results in
+inode being tracked for next fast commit. This ensures that by the
+time ext4_reserve_inode_write() returns, it is ready to be modified
+and won't be committed until the corresponding handle is open.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+A subtle lock ordering requirement with i_data_sem (which is
+documented in the code) requires that ext4_fc_track_inode() be called
+before grabbing i_data_sem. So, this patch also adds explicit
+ext4_fc_track_inode() calls in places where i_data_sem grabbed.
+
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/ext4/ext4.h        |  7 +++++--
- fs/ext4/fast_commit.c | 19 +++++++++----------
- fs/ext4/super.c       |  2 +-
- 3 files changed, 15 insertions(+), 13 deletions(-)
+ fs/ext4/fast_commit.c | 35 +++++++++++++++++++++++++++++++++++
+ fs/ext4/inline.c      |  1 +
+ fs/ext4/inode.c       |  5 +++++
+ 3 files changed, 41 insertions(+)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 5a20e9cd7..79dfb57a7 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1069,8 +1069,11 @@ struct ext4_inode_info {
- 	/* Fast commit wait queue for this inode */
- 	wait_queue_head_t i_fc_wait;
- 
--	/* Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len */
--	struct mutex i_fc_lock;
-+	/*
-+	 * Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len
-+	 * and inode's EXT4_FC_STATE_COMMITTING state bit.
-+	 */
-+	spinlock_t i_fc_lock;
- 
- 	/*
- 	 * i_disksize keeps track of what the inode size is ON DISK, not
 diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index da4263a14..63859ec6d 100644
+index 63859ec6d..c4d3c71d5 100644
 --- a/fs/ext4/fast_commit.c
 +++ b/fs/ext4/fast_commit.c
-@@ -385,7 +385,7 @@ static int ext4_fc_track_template(
+@@ -12,6 +12,7 @@
+ #include "ext4_extents.h"
+ #include "mballoc.h"
+ 
++#include <linux/lockdep.h>
+ /*
+  * Ext4 Fast Commits
+  * -----------------
+@@ -570,6 +571,8 @@ static int __track_inode(handle_t *handle, struct inode *inode, void *arg,
+ 
+ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
+ {
++	struct ext4_inode_info *ei = EXT4_I(inode);
++	wait_queue_head_t *wq;
  	int ret;
  
- 	tid = handle->h_transaction->t_tid;
--	mutex_lock(&ei->i_fc_lock);
-+	spin_lock(&ei->i_fc_lock);
- 	if (tid == ei->i_sync_tid) {
- 		update = true;
- 	} else {
-@@ -393,8 +393,7 @@ static int ext4_fc_track_template(
- 		ei->i_sync_tid = tid;
- 	}
- 	ret = __fc_track_fn(handle, inode, args, update);
--	mutex_unlock(&ei->i_fc_lock);
--
-+	spin_unlock(&ei->i_fc_lock);
- 	if (!enqueue)
- 		return ret;
+ 	if (S_ISDIR(inode->i_mode))
+@@ -587,6 +590,38 @@ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
+ 	if (ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE))
+ 		return;
  
-@@ -428,19 +427,19 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
- 	struct super_block *sb = inode->i_sb;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 
--	mutex_unlock(&ei->i_fc_lock);
-+	spin_unlock(&ei->i_fc_lock);
- 
- 	if (IS_ENCRYPTED(dir)) {
- 		ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_ENCRYPTED_FILENAME,
- 					handle);
--		mutex_lock(&ei->i_fc_lock);
-+		spin_lock(&ei->i_fc_lock);
- 		return -EOPNOTSUPP;
- 	}
- 
- 	node = kmem_cache_alloc(ext4_fc_dentry_cachep, GFP_NOFS);
- 	if (!node) {
- 		ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_NOMEM, handle);
--		mutex_lock(&ei->i_fc_lock);
-+		spin_lock(&ei->i_fc_lock);
- 		return -ENOMEM;
- 	}
- 
-@@ -471,7 +470,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
- 		list_add_tail(&node->fcd_dilist, &ei->i_fc_dilist);
- 	}
- 	spin_unlock(&sbi->s_fc_lock);
--	mutex_lock(&ei->i_fc_lock);
-+	spin_lock(&ei->i_fc_lock);
- 
- 	return 0;
++	if (!list_empty(&ei->i_fc_list))
++		return;
++
++	/*
++	 * If we come here, we may sleep while waiting for the inode to
++	 * commit. We shouldn't be holding i_data_sem when we go to sleep since
++	 * the commit path needs to grab the lock while committing the inode.
++	 */
++	lockdep_assert_not_held(&ei->i_data_sem);
++
++	while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
++#if (BITS_PER_LONG < 64)
++		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
++				EXT4_STATE_FC_COMMITTING);
++		wq = bit_waitqueue(&ei->i_state_flags,
++				   EXT4_STATE_FC_COMMITTING);
++#else
++		DEFINE_WAIT_BIT(wait, &ei->i_flags,
++				EXT4_STATE_FC_COMMITTING);
++		wq = bit_waitqueue(&ei->i_flags,
++				   EXT4_STATE_FC_COMMITTING);
++#endif
++		prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
++		if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
++			schedule();
++		finish_wait(wq, &wait.wq_entry);
++	}
++
++	/*
++	 * From this point on, this inode will not be committed either
++	 * by fast or full commit as long as the handle is open.
++	 */
+ 	ret = ext4_fc_track_template(handle, inode, __track_inode, NULL, 1);
+ 	trace_ext4_fc_track_inode(handle, inode, ret);
  }
-@@ -893,15 +892,15 @@ static int ext4_fc_write_inode_data(struct inode *inode, u32 *crc)
- 	struct ext4_extent *ex;
- 	int ret;
- 
--	mutex_lock(&ei->i_fc_lock);
-+	spin_lock(&ei->i_fc_lock);
- 	if (ei->i_fc_lblk_len == 0) {
--		mutex_unlock(&ei->i_fc_lock);
-+		spin_unlock(&ei->i_fc_lock);
- 		return 0;
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 2c9b76292..fbc1c84b5 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -601,6 +601,7 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
+ 			goto out;
  	}
- 	old_blk_size = ei->i_fc_lblk_start;
- 	new_blk_size = ei->i_fc_lblk_start + ei->i_fc_lblk_len - 1;
- 	ei->i_fc_lblk_len = 0;
--	mutex_unlock(&ei->i_fc_lock);
-+	spin_unlock(&ei->i_fc_lock);
  
- 	cur_lblk_off = old_blk_size;
- 	ext4_debug("will try writing %d to %d for inode %ld\n",
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 181934499..ed8166fe2 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1415,7 +1415,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
- 	ei->i_datasync_tid = 0;
- 	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
- 	ext4_fc_init_inode(&ei->vfs_inode);
--	mutex_init(&ei->i_fc_lock);
-+	spin_lock_init(&ei->i_fc_lock);
- 	return &ei->vfs_inode;
- }
++	ext4_fc_track_inode(handle, inode);
+ 	ret = ext4_destroy_inline_data_nolock(handle, inode);
+ 	if (ret)
+ 		goto out;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 94c7d2d82..d58b99407 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -696,6 +696,8 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 		if (!(flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN))
+ 			return retval;
  
++
++	ext4_fc_track_inode(handle, inode);
+ 	/*
+ 	 * New blocks allocate and/or writing to unwritten extent
+ 	 * will possibly result in updating i_data, so we take
+@@ -4072,6 +4074,7 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+ 	if (end_lblk > start_lblk) {
+ 		ext4_lblk_t hole_len = end_lblk - start_lblk;
+ 
++		ext4_fc_track_inode(handle, inode);
+ 		down_write(&EXT4_I(inode)->i_data_sem);
+ 		ext4_discard_preallocations(inode);
+ 
+@@ -4224,6 +4227,7 @@ int ext4_truncate(struct inode *inode)
+ 	if (err)
+ 		goto out_stop;
+ 
++	ext4_fc_track_inode(handle, inode);
+ 	down_write(&EXT4_I(inode)->i_data_sem);
+ 
+ 	ext4_discard_preallocations(inode);
+@@ -5895,6 +5899,7 @@ ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
+ 			brelse(iloc->bh);
+ 			iloc->bh = NULL;
+ 		}
++		ext4_fc_track_inode(handle, inode);
+ 	}
+ 	ext4_std_error(inode->i_sb, err);
+ 	return err;
 -- 
 2.49.0.1045.g170613ef41-goog
 
