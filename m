@@ -1,172 +1,110 @@
-Return-Path: <linux-ext4+bounces-7789-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7790-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E25D7AB09A9
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 May 2025 07:21:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 695C8AB0B4B
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 May 2025 09:11:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7950188B5AC
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 May 2025 05:21:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A930E3AF4E5
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 May 2025 07:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7559D267B95;
-	Fri,  9 May 2025 05:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C665126B2DF;
+	Fri,  9 May 2025 07:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="F4Vq/W/X"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S0zro9vk"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B3B267B6F;
-	Fri,  9 May 2025 05:21:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4CE26D4C4
+	for <linux-ext4@vger.kernel.org>; Fri,  9 May 2025 07:11:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746768100; cv=none; b=GRPudq0794mZDloMINKr3EKeFYxy51rE/SVkY/SOrgor8oKfZ+st/RqyZa2rIgC+4rjl54IzGZSbmCI9tQNsqI0mdG+MlOUFWygck6GhHfflyHpgbVpsR99rnwf54WEvv+3M5wn0qHtNzKReSFDok2ux2L8Faz/8+cI7ZR0AGMs=
+	t=1746774679; cv=none; b=jeKI5kLV1kafZ1QI3t9OBpT955HLVm+39I/icXcg7BdqV1b1PcNyOoWfTc6PZyrHfZ6jAWTHJ24kKx/lELjBi0Ic/ALZJ2sMJOX7BKfIRlvi7FW+V/impkMNbwQ7Og3qLWn/w91eT5CEEaJ+fLpsGZWvBNlt6Bbh3EhC1g20jAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746768100; c=relaxed/simple;
-	bh=NxeyCefMKzU9iG88ojXPIB7wjPcFv82KoV0E0GkDlPM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bknrks0Mf7WSICyFz08YRHADvHhWNs5NpURYJqG1DvFgqdF4A3L3YrOyWvwitSGGKzN0c5KrUAyNP9jkni4X6O5/Xt29opnxnIljlIjgWt+9rgb2NUaiQK8bMcddmENHJZBFJNHkHF4JUcw91dWvYQQS9CPe1LBQqT6apI0xJPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=F4Vq/W/X; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5494BvSC022124;
-	Fri, 9 May 2025 05:21:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=ijKHZBeKgBb+LvKKxHi0IN//TGodfQ
-	K55rA4lQTcJVs=; b=F4Vq/W/Xf4INMWS9kC25Kl9J5oTHd8cIzwpm6IxNvw5D6M
-	tOZeygdO8be4sxXO68y1J3K9U90UqEwPAt3WJw0YgD5sdI1z11MEnlAc/ngnbkSU
-	NCu07da1tsCZ5OLSVty1Jwbrp8DwtkhOUliAgbjJ43PlrGtmbWP1jJxWJ1xju4jj
-	5MOwoSIaBPvbzCft6zH+vRSImHQo6w9g+jHV/cenqOH3MCKs9WeHM2hqN1EsWP2d
-	MN4Lim9g/Vr11NAZKsQyKg28uNET9larnn2Us55WZVB1i7ZCTPsPqZ3FMKry+jUa
-	QJehFI/4FH6Ob/G+tAyMai7jUMW6VshV8xEhCDXQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46gu2t4qg8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 May 2025 05:21:29 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 54959FIO006717;
-	Fri, 9 May 2025 05:21:28 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46gu2t4qg4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 May 2025 05:21:28 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5494WonA026011;
-	Fri, 9 May 2025 05:21:28 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46dwv09pqj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 May 2025 05:21:28 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5495LQcH56557872
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 9 May 2025 05:21:26 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0C5922004E;
-	Fri,  9 May 2025 05:21:26 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3BF862004B;
-	Fri,  9 May 2025 05:21:24 +0000 (GMT)
-Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.209.93])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri,  9 May 2025 05:21:24 +0000 (GMT)
-Date: Fri, 9 May 2025 10:51:20 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Jan Kara <jack@suse.cz>, John Garry <john.g.garry@oracle.com>,
-        djwong@kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] ext4: Make ext4_meta_trans_blocks() non-static
- for later use
-Message-ID: <aB2Q0A64l79MaAuR@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-References: <cover.1746734745.git.ritesh.list@gmail.com>
- <53dd687535024df91147d1c30124330d1a5c985c.1746734745.git.ritesh.list@gmail.com>
+	s=arc-20240116; t=1746774679; c=relaxed/simple;
+	bh=zG/7gQlj0kjyAgJcpFEhmHu0qP3z3w0rHHkQ5oLLh8E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dVPcHKJBsYnYW+wRzc0WjUpaVDhof2q/0QET9RbVca3yL7t4SqQPjrU4QuC1KseOfOfyc9UqZWVZLo6poOWzN7Ft2JuZkuDSf/s/TAFswxpZ4Y+8x+tT4iAIIRYTOa3v0rsslFyZ2Gky5HZ/DM4f75EHVkT91EtT3MWZoFBh0Cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S0zro9vk; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7398d65476eso1584759b3a.1
+        for <linux-ext4@vger.kernel.org>; Fri, 09 May 2025 00:11:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746774676; x=1747379476; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zG/7gQlj0kjyAgJcpFEhmHu0qP3z3w0rHHkQ5oLLh8E=;
+        b=S0zro9vkDTVpdPtdJzbFLECScudh3bA67HJ1OEP0Kikf4mPS6p1SODFBJzt2E8z/Al
+         MhlAbbXHhTuA0a4J+7KH/JRrLx0u43M9RSA2jHIn1ss8t8e9qzVFuGj5pjqYpwEtxtOl
+         V3+WKuQEE2hREH4Cad/mjoL9yaUOaxlMuXdvofhDSDTfK1IicAgjEGaRif/HSIWqpVaB
+         d0eV6dE/x8v2/fZSFOdCiH3yA+uHKukhQVMDG50WY97mfnwTWrzyNjMNngopgyHQhMXZ
+         56Qn24J6BKEsY6wNtGLM5d1GjI/+es9ACSVMlW+nk9Yv4qSs1RELeHM02zB3/tMw7rPD
+         /yRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746774676; x=1747379476;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zG/7gQlj0kjyAgJcpFEhmHu0qP3z3w0rHHkQ5oLLh8E=;
+        b=glDoal7aowX4by7xnwoRREJXLMcTva0zF8NJROYYX9rBTQMDUSzdo1POERRhqGgc7T
+         0yt+3i6/vd++AnaaEqAFYlNNImlheUtiBAGJDws1a/6Rsf2j042rANo4H181WZtECiNm
+         2jdMKqF2kx8eC1LsZnrjm3NuqDiqnchvDOE35sDCKg09XlBLwQfU1ybRe4NCEWs0RY+p
+         qoCGlh9cJPw0OAqhU4UdaQQhTzImGYhT1jGdY76d67aCljCK18D7iwfFtCtnTDnQ2Bzc
+         Kx4covSy0fFlZWvYTpdLG0cNtU0t/6NZYELbN+o9hFiSfDt5ZtNA4wFyNHMbhFtqF1I5
+         sHxg==
+X-Forwarded-Encrypted: i=1; AJvYcCWsyoem2WroENPNASd6CcATayEIn8dbahGx5Rr6VnC5xb3pwOVMnJgKxr49Wmvx62238fFRsPOPyPN4@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeadvnzihpDgyUqz7LOpp2cqwmwBCv1H82dD2eaeB+gEcHoyyP
+	2ViH9HWRD8J/o3hRmXdoTAVfUL7ZruPVamtrWfiys2XB3ZxQPSMS
+X-Gm-Gg: ASbGnctCHAITMFCiy+XDpDdIpAljvvF+DxKwqnrRe426p42/i+b/p4AgVuEbVQVSncv
+	DKU+khwXT8k5SMlSZ2G6j5jHSjb0CnKHJt1m5Ah8f8Qve+bJeDYLkcLKX83C95Pgo3HWbmYMSwy
+	y9iKkqt9JrOk/Z7FCaMAluKTguZGW/AHhInBuT390fiJbWPpTC0Q35072fV3AQxCPpOKu4ICGea
+	rjSST6ut3xD5FuMSMiKfFwSTxx/izT9RwWkxB87R18rU/f3h4dypnhoS2ScCoahMLKLfvWZlIW5
+	8qhFkJ13IGRddizwQmTnEskQW0WGFXVsZkdA9lrlw8QXnMvP98a3q5JyXwJN+reY6gwHqbk=
+X-Google-Smtp-Source: AGHT+IHY6xDad8AYeOlr4pS1YNtzlTxtKEQVmMM89Q4oLxnbFgNgf3WiGWy78xDDRumuIjzPiN1TgQ==
+X-Received: by 2002:a05:6a00:9286:b0:736:3ea8:4813 with SMTP id d2e1a72fcca58-7423bc1d4d7mr3246176b3a.2.1746774676090;
+        Fri, 09 May 2025 00:11:16 -0700 (PDT)
+Received: from vaxr-ASUSPRO-D840MB-M840MB.. ([2001:288:7001:2703:b136:43ca:5f8d:1736])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-742377278cesm1185423b3a.50.2025.05.09.00.11.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 May 2025 00:11:15 -0700 (PDT)
+From: I Hsin Cheng <richard120310@gmail.com>
+To: syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	I Hsin Cheng <richard120310@gmail.com>
+Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
+Date: Fri,  9 May 2025 15:11:06 +0800
+Message-ID: <20250509071106.383057-1-richard120310@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
+References: <0000000000006fd14305f00bdc84@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53dd687535024df91147d1c30124330d1a5c985c.1746734745.git.ritesh.list@gmail.com>
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=NLnV+16g c=1 sm=1 tr=0 ts=681d90d9 cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=kj9zAlcOel0A:10 a=dt9VzEwgFbYA:10 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8 a=2dvoARLY7QW6gT7WcqQA:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-ORIG-GUID: QxhYxrTFzHf8gKMxJVZ0nlZ219JiJGyi
-X-Proofpoint-GUID: YRUnT8noMcuBndz_OpbNLs-myjF7sslF
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA5MDA0NyBTYWx0ZWRfX63GNS58nwVt6 Svlur359W7zK9zCfuO/wY2eQc+KzvXHiljSOVpOVZcobY8ho1sUL7z/0emwiDzUaRvbdi20kU10 1se6CY9h4IOAYfJMf7ksPi0CvUxhlc+9GfRk1AUJOpPRLoKq46x7z5qwR9pAkyn3TJUz7M6miDM
- BK6Ip3eRIxBSpmPb0kXl9WF8Y6KcfQiMMpG+Sakyduwr+ZIA9Y8ScW6N6TPu0ktHtevYGRU9fIA pB79g7vFBFJb6Kq1/wLXzu0MmZpjDEtnpv34kOCGZBB9KpMdXu+ho5IwDExiFFw9m2rAXbEoU+P jwJFKdRR6Y4f6PNKvYO4mqG/oHUQ/0PeAjobP2/Q1s/Yn36+74QQdheiEzmzBo7qc7Uvr98y7ia
- lSiV5MK+9iQYm6IeZl/eZ8akIXUSkFJHzNifgYJpwgkcfrSLwV5JKeqxiDfC8c9Wfci46LZR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-09_01,2025-05-08_04,2025-02-21_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- mlxlogscore=693 phishscore=0 mlxscore=0 impostorscore=0 clxscore=1015
- lowpriorityscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- adultscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
- definitions=main-2505090047
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 09, 2025 at 02:20:33AM +0530, Ritesh Harjani (IBM) wrote:
-> Let's make ext4_meta_trans_blocks() non-static for use in later
-> functions during ->end_io conversion for atomic writes.
-> We will need this function to estimate journal credits for a special
-> case. Instead of adding another wrapper around it, let's make this
-> non-static.
-> 
-> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Hello,
 
-Looks good Ritesh. Feel free to add:
+I've been looking into the problem so far, may I ask why
+EXT4_STATE_MAY_INLINE_DATA isn't supposed to be set when
+the inode has inline data ?
 
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+In context such as ext4_conver_inline_data(), the code there
+implies it is possible for an inode to have both EXT4_INODE_INLINE_DATA
+set and EXT4_STATE_MAY_INLINE_DATA set isn't it ? or my understanding
+is wrong, please correct me, I woud love to learn.
 
-> ---
->  fs/ext4/ext4.h  | 2 ++
->  fs/ext4/inode.c | 6 +-----
->  2 files changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index c0240f6f6491..e2b36a3c1b0f 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -3039,6 +3039,8 @@ extern void ext4_set_aops(struct inode *inode);
->  extern int ext4_writepage_trans_blocks(struct inode *);
->  extern int ext4_normal_submit_inode_data_buffers(struct jbd2_inode *jinode);
->  extern int ext4_chunk_trans_blocks(struct inode *, int nrblocks);
-> +extern int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
-> +				  int pextents);
->  extern int ext4_zero_partial_blocks(handle_t *handle, struct inode *inode,
->  			     loff_t lstart, loff_t lend);
->  extern vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf);
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index b10e5cd5bb5c..2f99b087a5d8 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -142,9 +142,6 @@ static inline int ext4_begin_ordered_truncate(struct inode *inode,
->  						   new_size);
->  }
->  
-> -static int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
-> -				  int pextents);
-> -
->  /*
->   * Test whether an inode is a fast symlink.
->   * A fast symlink has its symlink data stored in ext4_inode_info->i_data.
-> @@ -5777,8 +5774,7 @@ static int ext4_index_trans_blocks(struct inode *inode, int lblocks,
->   *
->   * Also account for superblock, inode, quota and xattr blocks
->   */
-> -static int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
-> -				  int pextents)
-> +int ext4_meta_trans_blocks(struct inode *inode, int lblocks, int pextents)
->  {
->  	ext4_group_t groups, ngroups = ext4_get_groups_count(inode->i_sb);
->  	int gdpblocks;
-> -- 
-> 2.49.0
-> 
+Best regards,
+I Hsin Cheng.
+
 
