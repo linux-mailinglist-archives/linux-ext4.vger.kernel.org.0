@@ -1,184 +1,196 @@
-Return-Path: <linux-ext4+bounces-7802-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7804-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CE0DAB3007
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 May 2025 08:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9991AAB32CB
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 May 2025 11:11:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C14643ABC3F
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 May 2025 06:46:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C848C3A8CD9
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 May 2025 09:11:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAB97259CAD;
-	Mon, 12 May 2025 06:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819E025B1C3;
+	Mon, 12 May 2025 09:11:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFCF2561BF;
-	Mon, 12 May 2025 06:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E98E25A328
+	for <linux-ext4@vger.kernel.org>; Mon, 12 May 2025 09:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747032297; cv=none; b=cFTOfTar/dWxUt3mqn/aynwBTdonR/gfOFJsdSwyjTWxBTiZItSwX5sO8VXSlWN3XzNHtrRbIum2fJxsEzBHQHK0+j+5rDZXu2zsrsPANY98t3xu4TZivtvQ5TmuVa1dmilGOuySm6KBkTF2tRj56VJtdsYtfIQY8YnGtdx1Lrw=
+	t=1747041084; cv=none; b=QEjDu3TPq4Yfvy4WP5n7Vdd1SnrCeId4N7uxhDNrnVgoU/q7Xuh95nGwhk4yp/dZoMH+kPiJmBK1OmB6S7nrskti96BYr1iL3QsPQD6oiQdUAbYCmh0qhhG/CjXMBxrBcT6F9CI7YFcfKGEENHFtWnw7Zhtw4QObsDh8CBQsUt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747032297; c=relaxed/simple;
-	bh=/QHM0b8IQexwJXPk5mDecCae6vIO/KpZKjBNsnEQX2k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oEUkdz6ymD3pXGdkD1/oYZrohl7GWqA4l6lvtjuFnAgHM3TScxR4qJCorydKX8ggY4pyDdKq1qsMvWJLlSGNT7yFPQP1QmdzQhaG9SEc/vWWb+J1gzf1wVrzIP6XsZ/wW5VHic6EiG7c8EQ/W/Qh4JYeaJ0nqS0xFjafXMNYx10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4Zwqps5nHpzKHMmt;
-	Mon, 12 May 2025 14:44:53 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 7BD2A1A07BD;
-	Mon, 12 May 2025 14:44:52 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.112.188])
-	by APP4 (Coremail) with SMTP id gCh0CgDHK2DXmCFoxF6sMA--.62010S12;
-	Mon, 12 May 2025 14:44:52 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	willy@infradead.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	libaokun1@huawei.com,
-	yukuai3@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH v2 8/8] ext4: enable large folio for regular file
-Date: Mon, 12 May 2025 14:33:19 +0800
-Message-ID: <20250512063319.3539411-9-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20250512063319.3539411-1-yi.zhang@huaweicloud.com>
-References: <20250512063319.3539411-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1747041084; c=relaxed/simple;
+	bh=lYVHLSFZ30uPD9HCKWzeRsxqM7TREbjRmxECdkqqcV4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bcYybYL1+ZShBZT5brR0a/FGmaAZAMth39NmcT/PyGdYcolxtk0doHUg/M03HiZ7/2o0rJsSSyYYyEeL5u2PPuw9m/3ikGgeO4yet0t9qP4iA8hIimesD31P+cPNDNqUrrcZNrZ5/ve+3sAtSP84qrRQNSgrt5GPCSlvU33/ifA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-85e7e0413c2so352929139f.3
+        for <linux-ext4@vger.kernel.org>; Mon, 12 May 2025 02:11:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747041080; x=1747645880;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8+uzMLrjggZhRqmqQSIictD5XwFtooJPv3otZj8Vyzk=;
+        b=A8R+pXprHgo+pOlcyFbHskytPJ4jbI0RquxSTeQo28RdUOZ6NiVLtrmRqpnNh13Zty
+         Lmy8HLOFyowNIfqGHwXTqv7/ZKM9IDXJAqNWrzNGPwCj9Ey/AvIul912As1IYgMIknz3
+         my8qInl5B5e5uB6BPa46uunY8+pdyRdztsmdditwPW0SlN4jU2cDdaVCkOiz084AV/rZ
+         Fd5RLxUvUPeaTM8JABlEE0UHfwbnQe3dd97V3P2dg9IAU9QdDMz/wgHkYTCru2VvU4wo
+         hjpYUUHEx/l2b4X8ESnG16+ud6cG6DmWGS7/OMtfLLAUlHBZyoWaMISoNSOIuqZJU4LH
+         pTCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUyB2sH0fdcKCVBoIy2gQdgBQ/wxneiFRqI/d34a4oN6luQKaJih5aJyJPMgKl5xFlSUv6oFRLXzIXe@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEpAt5yJ3v8b8HXQ1ubtr5BBFaUznekCwkCE6iC0yrmbvrsLV3
+	PMKG/aQ4KcMKC6UcfL60ZvsUgSJZlCmEEIc8TH2dERr70HbBvNbnVrrzCMs6QNflUqHUA0Vmrzz
+	I3sDeGFWPWFi1LAqNuHCfsZtk5OkiAQp+bMFkVmRpaP5bfu0wZkqRN+c=
+X-Google-Smtp-Source: AGHT+IGMn4kHfoXlb0gHYMU6NGzwSXl9HDa5qUR8JrxhkCiq40wtClztX121VRsQGqdrm2gz/wLoGEWpUT+A2YxlmLMpznVphnxe
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDHK2DXmCFoxF6sMA--.62010S12
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrW3Jry3ZFW5WrWfAr4UCFg_yoW5Kr1DpF
-	y3Ga4rGr4Dua4q9w4xKr4UZr1aq3WxGw4UC3yfuws8Xay7X34IqF4jyF1rA3W5trWkWa1S
-	qF1jkr1UuanxC37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
-	4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBI
-	daVFxhVjvjDU0xZFpf9x0JUljgxUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-Received: by 2002:a05:6602:29d3:b0:862:fe54:df4e with SMTP id
+ ca18e2360f4ac-867635af384mr1265132339f.7.1747041080644; Mon, 12 May 2025
+ 02:11:20 -0700 (PDT)
+Date: Mon, 12 May 2025 02:11:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6821bb38.050a0220.f2294.0056.GAE@google.com>
+Subject: [syzbot] [mm?] [ext4?] INFO: rcu detected stall in
+ ext4_end_io_rsv_work (3)
+From: syzbot <syzbot+bb842a51b5abbae5a245@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Zhang Yi <yi.zhang@huawei.com>
+Hello,
 
-Besides fsverity, fscrypt, and the data=journal mode, ext4 now supports
-large folios for regular files. Enable this feature by default. However,
-since we cannot change the folio order limitation of mappings on active
-inodes, setting the journal=data mode via ioctl on an active inode will
-not take immediate effect in non-delalloc mode.
+syzbot found the following issue on:
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+HEAD commit:    707df3375124 Merge tag 'media/v6.15-2' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c2a82f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b39cb28b0a399ed3
+dashboard link: https://syzkaller.appspot.com/bug?extid=bb842a51b5abbae5a245
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1050b8f4580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12a169b3980000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1920aeaaff98/disk-707df337.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5a54d789a59a/vmlinux-707df337.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e40767312770/bzImage-707df337.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bb842a51b5abbae5a245@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	0-...!: (3 ticks this GP) idle=1d3c/1/0x4000000000000000 softirq=14732/14732 fqs=0
+rcu: 	(detected by 1, t=10502 jiffies, g=6677, q=10638 ncpus=2)
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 3557 Comm: kworker/u8:8 Not tainted 6.15.0-rc5-syzkaller-00038-g707df3375124 #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/29/2025
+Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work
+RIP: 0010:__kasan_check_write+0x8/0x20 mm/kasan/shadow.c:37
+Code: f0 ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 48 8b 0c 24 <89> f6 ba 01 00 00 00 e9 4c f0 ff ff 66 66 2e 0f 1f 84 00 00 00 00
+RSP: 0018:ffffc90000007da0 EFLAGS: 00000086
+RAX: 0000000000000000 RBX: ffff8880b8427840 RCX: ffffffff81985b4d
+RDX: 00000000ffffffff RSI: 0000000000000004 RDI: ffff8880b8427840
+RBP: 1ffff92000000fb6 R08: 4d4df099ab2b819a R09: 0000000000000001
+R10: 0000000000000002 R11: 0000000000000000 R12: ffff8880b8427848
+R13: ffff8880b8427850 R14: ffff888070874340 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8881249df000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055558c02f650 CR3: 000000000e180000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+ atomic_try_cmpxchg_acquire include/linux/atomic/atomic-instrumented.h:1300 [inline]
+ queued_spin_lock include/asm-generic/qspinlock.h:111 [inline]
+ do_raw_spin_lock+0x11d/0x2b0 kernel/locking/spinlock_debug.c:116
+ __run_hrtimer kernel/time/hrtimer.c:1765 [inline]
+ __hrtimer_run_queues+0x2bc/0xad0 kernel/time/hrtimer.c:1825
+ hrtimer_interrupt+0x397/0x8e0 kernel/time/hrtimer.c:1887
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1038 [inline]
+ __sysvec_apic_timer_interrupt+0x108/0x3f0 arch/x86/kernel/apic/apic.c:1055
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
+ sysvec_apic_timer_interrupt+0x9f/0xc0 arch/x86/kernel/apic/apic.c:1049
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:folio_zone include/linux/mm.h:1967 [inline]
+RIP: 0010:zone_stat_mod_folio include/linux/vmstat.h:432 [inline]
+RIP: 0010:__folio_end_writeback+0x186/0xe60 mm/page-writeback.c:3068
+Code: 89 e2 be 15 00 00 00 48 89 df e8 05 0b 33 00 9c 5d 81 e5 00 02 00 00 31 ff 48 89 ee e8 73 50 c5 ff 48 85 ed 0f 85 90 07 00 00 <e8> f5 54 c5 ff 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03
+RSP: 0018:ffffc9000cea7950 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: ffffea0001f6ec40 RCX: ffffffff81f5e1a4
+RDX: ffff888032bb2440 RSI: ffffffff81f5e1b2 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 00000000ffffffff
+R13: 0000000000000001 R14: ffffffffffffffff R15: ffffea0001f6ec00
+ folio_end_writeback+0x18f/0x560 mm/filemap.c:1648
+ ext4_finish_bio+0x78f/0xa20 fs/ext4/page-io.c:144
+ ext4_release_io_end+0x119/0x3a0 fs/ext4/page-io.c:159
+ ext4_end_io_end+0x13e/0x4a0 fs/ext4/page-io.c:210
+ ext4_do_flush_completed_IO fs/ext4/page-io.c:287 [inline]
+ ext4_end_io_rsv_work+0x205/0x380 fs/ext4/page-io.c:302
+ process_one_work+0x9cc/0x1b70 kernel/workqueue.c:3238
+ process_scheduled_works kernel/workqueue.c:3319 [inline]
+ worker_thread+0x6c8/0xf10 kernel/workqueue.c:3400
+ kthread+0x3c2/0x780 kernel/kthread.c:464
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:153
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+rcu: rcu_preempt kthread timer wakeup didn't happen for 10501 jiffies! g6677 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+rcu: 	Possible timer handling issue on cpu=0 timer-softirq=4991
+rcu: rcu_preempt kthread starved for 10502 jiffies! g6677 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:I stack:28728 pid:16    tgid:16    ppid:2      task_flags:0x208040 flags:0x00004000
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x116f/0x5de0 kernel/sched/core.c:6767
+ __schedule_loop kernel/sched/core.c:6845 [inline]
+ schedule+0xe7/0x3a0 kernel/sched/core.c:6860
+ schedule_timeout+0x123/0x290 kernel/time/sleep_timeout.c:99
+ rcu_gp_fqs_loop+0x1ea/0xb00 kernel/rcu/tree.c:2046
+ rcu_gp_kthread+0x270/0x380 kernel/rcu/tree.c:2248
+ kthread+0x3c2/0x780 kernel/kthread.c:464
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:153
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
 ---
- fs/ext4/ext4.h      |  1 +
- fs/ext4/ext4_jbd2.c |  3 ++-
- fs/ext4/ialloc.c    |  3 +++
- fs/ext4/inode.c     | 20 ++++++++++++++++++++
- 4 files changed, 26 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 5a20e9cd7184..2fad90c30493 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2993,6 +2993,7 @@ int ext4_walk_page_buffers(handle_t *handle,
- 				     struct buffer_head *bh));
- int do_journal_get_write_access(handle_t *handle, struct inode *inode,
- 				struct buffer_head *bh);
-+bool ext4_should_enable_large_folio(struct inode *inode);
- #define FALL_BACK_TO_NONDELALLOC 1
- #define CONVERT_INLINE_DATA	 2
- 
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index 135e278c832e..b3e9b7bd7978 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -16,7 +16,8 @@ int ext4_inode_journal_mode(struct inode *inode)
- 	    ext4_test_inode_flag(inode, EXT4_INODE_EA_INODE) ||
- 	    test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
- 	    (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA) &&
--	    !test_opt(inode->i_sb, DELALLOC))) {
-+	    !test_opt(inode->i_sb, DELALLOC) &&
-+	    !mapping_large_folio_support(inode->i_mapping))) {
- 		/* We do not support data journalling for encrypted data */
- 		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode))
- 			return EXT4_INODE_ORDERED_DATA_MODE;  /* ordered */
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index e7ecc7c8a729..4938e78cbadc 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -1336,6 +1336,9 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 		}
- 	}
- 
-+	if (ext4_should_enable_large_folio(inode))
-+		mapping_set_large_folios(inode->i_mapping);
-+
- 	ext4_update_inode_fsync_trans(handle, inode, 1);
- 
- 	err = ext4_mark_inode_dirty(handle, inode);
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 29eccdf8315a..7fd3921cfe46 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4774,6 +4774,23 @@ static int check_igot_inode(struct inode *inode, ext4_iget_flags flags,
- 	return -EFSCORRUPTED;
- }
- 
-+bool ext4_should_enable_large_folio(struct inode *inode)
-+{
-+	struct super_block *sb = inode->i_sb;
-+
-+	if (!S_ISREG(inode->i_mode))
-+		return false;
-+	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
-+	    ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
-+		return false;
-+	if (ext4_has_feature_verity(sb))
-+		return false;
-+	if (ext4_has_feature_encrypt(sb))
-+		return false;
-+
-+	return true;
-+}
-+
- struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 			  ext4_iget_flags flags, const char *function,
- 			  unsigned int line)
-@@ -5096,6 +5113,9 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 		ret = -EFSCORRUPTED;
- 		goto bad_inode;
- 	}
-+	if (ext4_should_enable_large_folio(inode))
-+		mapping_set_large_folios(inode->i_mapping);
-+
- 	ret = check_igot_inode(inode, flags, function, line);
- 	/*
- 	 * -ESTALE here means there is nothing inherently wrong with the inode,
--- 
-2.46.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
