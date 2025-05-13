@@ -1,109 +1,90 @@
-Return-Path: <linux-ext4+bounces-7811-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7812-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E91FAB49D6
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 05:03:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8433AB4B11
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 07:39:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02D8B4A0C22
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 03:03:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43D5B7ADEE8
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 05:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0041A8419;
-	Tue, 13 May 2025 03:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FFD1E5B6A;
+	Tue, 13 May 2025 05:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tmNvaXrk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JDTj3BBv"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1077225771
-	for <linux-ext4@vger.kernel.org>; Tue, 13 May 2025 03:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764F81DDA1B
+	for <linux-ext4@vger.kernel.org>; Tue, 13 May 2025 05:38:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747105381; cv=none; b=FlkyDnDo0LtI3K0i9zdaPqTFHdNDZu3jG0kUKf54/4x/7ekCdl9Z8ZvGKNhgOKZwT6J8E71im4xlSH3pVQhtifSa9k+PilS8tMhQz6toYscBH+8wG7DCXg7GBQNbsmj3SGv8rAKHonaEPjaRVnsG1/T2Zy+YurllzO9GfPNwB2I=
+	t=1747114734; cv=none; b=M/tiH53chmHHb4CYk104K2R0I+/W3/3siC6rv1Q+9tNpWztpdfDYdSsxVNusmb8tUM50XTiHrxvOCtckDBsdHjQv3T831OJWjYPIiZ32I9WTXK3O7hATBYEMr3qHI3o3fvyvSFfR1YlzjLxjfHjfEo4QiWmhr2l1MJo/9Dr8c/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747105381; c=relaxed/simple;
-	bh=6jexxCRaNTJiZWgye5jR9SYYVdX+2LaA4pgjYAw2FTo=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HTsP5BM2gYjxJK/CrLKJtvdR+k5mskLDZ0L1VDrzO6wZqYUNyZEKk1x0O70CwgYtIpshP+qs9mPFIzmlDCZIl41rYKl8dRnEg5SGmBtN8v3c5TzsM7byyMhxDfIebxBkhydLkHbUgh24NNd8XiGA3QYqp/SQzYNitQI65B23osI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tmNvaXrk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 79356C4CEF1
-	for <linux-ext4@vger.kernel.org>; Tue, 13 May 2025 03:03:00 +0000 (UTC)
+	s=arc-20240116; t=1747114734; c=relaxed/simple;
+	bh=DYjA0ovWAOW4O37nzwjhU5+3HWRp+aK+dQ+/O5M8vCQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=pS1djjEj2M594M2UD+oFjk2p7E+Z+1kHMKFJ7HyXajyxeoMfC67B1MQ8v/hukG6TK0u87+yKkr76I//QbCY8U3uU8drx0HS9jW4dAhxV3JdNm6E3yDZbATC1eSS4oFuHzBH2i1CxmIOr91dMI95YTZ7hPpBs36YIsTwtiBWzUGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JDTj3BBv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C96ABC4CEE4
+	for <linux-ext4@vger.kernel.org>; Tue, 13 May 2025 05:38:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747105380;
-	bh=6jexxCRaNTJiZWgye5jR9SYYVdX+2LaA4pgjYAw2FTo=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=tmNvaXrk93kbyM52cewl1XTWu1p8xEusGYSqgVn/j3bVmUnSmKZV84UI4H2z65JEX
-	 Tur5oULYN7AXo8QvMYbDUUuMuwb/txd9kwRFpx13CTiVVQKtSDYSTssG3GD2OOareY
-	 hYrRXV49ROfrcdk4cGJZl9JoAyvjryCF4+6miVJave17USXjeme5E1WxKSEEGOiD6W
-	 GfDSj9VFODpyLtAEknzsAkLyffG93q5CA8kS1+r9c7thZUl6Gz4lwhkXo3f2pGTaMb
-	 ZpAn/LV0mWTo1y25U58gr3+DttlTjHmT30pj6P1ucdYAwOdv/YRVjWR6x0BgAQrX4c
-	 Tuv1ZLWsUlZrA==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 6C380C53BBF; Tue, 13 May 2025 03:03:00 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
+	s=k20201202; t=1747114733;
+	bh=DYjA0ovWAOW4O37nzwjhU5+3HWRp+aK+dQ+/O5M8vCQ=;
+	h=From:To:Subject:Date:From;
+	b=JDTj3BBvXwIyqtz8pqPJ1GdBPdGIbqQObsKh8o057G0sghMjHs6xL0Skj4dZ/6uUK
+	 QC7nIVlSsGLOybwP6Yg78YPF+qKquz+faFfn23iBCtKeHq23T94L9xeZ/IHD9l8Ae3
+	 m+0oHh+jRxKYtcxsjTX8iAdA1wMFC3EEnP9ccMwx9L89KRo2I4rd8uEBBcJPf5NaRZ
+	 ESPHeqtBbmBrE9YyXHLtx8/F0lIbIXfsywquB80kHPmDzMxLXMPv7dUocGkCSlX0T8
+	 gdl8kMvHXOsVmylMN6KBNhf/CB853OFYCxHna7Z6CVM7dyDwCSZg7NC07PlyJ5HpFB
+	 e4sNfBD5DIOVQ==
+From: Eric Biggers <ebiggers@kernel.org>
 To: linux-ext4@vger.kernel.org
-Subject: [Bug 205197] kernel BUG at fs/ext4/extents_status.c:884
-Date: Tue, 13 May 2025 03:03:00 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: lichuan1@hisense.com
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: INVALID
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-205197-13602-pEubYZblf0@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-205197-13602@https.bugzilla.kernel.org/>
-References: <bug-205197-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+Subject: [PATCH 0/4] ext4,jbd2: clean up unused arguments to checksum functions
+Date: Mon, 12 May 2025 22:38:05 -0700
+Message-ID: <20250513053809.699974-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D205197
+Since ext4_chksum() and jbd2_chksum() now call crc32c() directly, they
+no longer use their ext4_sb_info and journal_t arguments.  Remove these
+unnecessary arguments.  No functional changes.
 
-Andrew.C.Lee (lichuan1@hisense.com) changed:
+Eric Biggers (4):
+  ext4: remove sbi argument from ext4_chksum()
+  ext4: remove sb argument from ext4_superblock_csum()
+  jbd2: remove journal_t argument from jbd2_chksum()
+  jbd2: remove journal_t argument from jbd2_superblock_csum()
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |lichuan1@hisense.com
+ fs/ext4/bitmap.c      |  8 ++++----
+ fs/ext4/ext4.h        |  6 ++----
+ fs/ext4/extents.c     |  3 +--
+ fs/ext4/fast_commit.c | 10 +++++-----
+ fs/ext4/ialloc.c      |  5 ++---
+ fs/ext4/inode.c       | 19 ++++++++-----------
+ fs/ext4/ioctl.c       |  8 ++++----
+ fs/ext4/mmp.c         |  2 +-
+ fs/ext4/namei.c       | 10 ++++------
+ fs/ext4/orphan.c      | 13 ++++++-------
+ fs/ext4/resize.c      |  2 +-
+ fs/ext4/super.c       | 22 ++++++++++------------
+ fs/ext4/xattr.c       | 10 +++++-----
+ fs/jbd2/commit.c      |  6 +++---
+ fs/jbd2/journal.c     | 14 +++++++-------
+ fs/jbd2/recovery.c    | 10 +++++-----
+ include/linux/jbd2.h  |  3 +--
+ 17 files changed, 69 insertions(+), 82 deletions(-)
 
---- Comment #12 from Andrew.C.Lee (lichuan1@hisense.com) ---
-(In reply to Antony Amburose from comment #9)
-> Sorry for the very late reply. We have worked on this issue further and
-> understand that, the issue happen when an ongoing encryption is interrupt=
-ed.
-> In the next boot, when the system tries to mount the partition which is in
-> partially encrypted state hits a bug on. This is fixed in AOSP by
-> implementing a logic to identify interrupted encrypted partition. This is
-> not a ext4 bug. Thanks for all the hints.
-> I will close this bug.
+base-commit: 94824ac9a8aaf2fb3c54b4bdde842db80ffa555d
+-- 
+2.49.0
 
-Hi Antony, could you please let us know which patch was used to resolve it?
-
-Thank you for your assistance.
-
-Best regards,
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
 
