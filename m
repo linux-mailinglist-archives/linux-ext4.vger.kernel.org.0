@@ -1,226 +1,169 @@
-Return-Path: <linux-ext4+bounces-7869-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7870-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83B26AB5AC7
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 19:08:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 879FDAB5FAA
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 00:50:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47D8419E170B
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 17:08:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DBED19E0E07
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 22:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6851A2BE7D6;
-	Tue, 13 May 2025 17:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E9E21767D;
+	Tue, 13 May 2025 22:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="egkiV0DY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ejae8Xw/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E9D2BE110;
-	Tue, 13 May 2025 17:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFAD420B7F9;
+	Tue, 13 May 2025 22:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747156065; cv=none; b=cYHxhfZDOml0MuaLP5F03MZE6j6+cf95SDlM0Uh1zpJ1FgL/iRoZg4Sbb41nb+5FoIFhklzQDxdCP9mrO9Ni6iiXaqyJQWr2BvCtUALM9e4sVDrHEhmp65qw2pqYKF22q3c8xHs0YvIiJ3nIQOxP8DfpAU7VF6N8f24LzSIcqYc=
+	t=1747176622; cv=none; b=gnIIzPOgjqXVjonial2DZ7OdZp2M94pohrORX4Aw/AZB0Hb7dRpL1lNZYxv+6CULoA5zeTTI5F+aj6dJ9BOxD6IGHfEtXXQwOffs6+VYukUlG0xb1OO/hD5GJpYNTdp4ZEIsvFvu4ZllT+fp57rFWxgnb0lu1KqqjxCWLw+5GZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747156065; c=relaxed/simple;
-	bh=uanJLByxQFW3gbTPTgvXVKnJwMqfoxW0i7mA6lk5O9E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Uv61hEdzp19AD1R+qxJEe9JbrcGQXsMWs/ksmxGTToYlWtJlkH8hSym0JGCs8OprbZe3YfS7q/50TKo406TGaIEbG/V4jbbSjTz8HRCuNhVpJ2+InaumYieMYgB2lVu6fn5hId0wpUcUEQ7PipIJ+/KUhUOkBIVCZbjPJOB1Y94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=egkiV0DY; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-30a99e2bdd4so5248459a91.0;
-        Tue, 13 May 2025 10:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747156063; x=1747760863; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MfL86GdlhnBK3jXx8LFujEcI9N5sypqjwqtS1nmW2i8=;
-        b=egkiV0DY99hgUVYh5j6LU5NzuheVJ3z7m/T1B/eS46UwSfztNnAK1SDRrkoF3ALCGR
-         JhBGVneemhlmEXw9haPM7+bGR9f0hZEfDFDuytyeSQKFGHVBbsNhnasD0trPS5h4Pljn
-         XFgrqcF+nbY86Zb/LSFNJi4HF9nLvMwMW/4DXBt5cbVH4oQMAiialEssLStnFEdRWUUl
-         HnEdsVqHAv0c7FW3A8MR2OnL6DSf6QZmG+BrjDMX4tHBFFFh7N/N0AQeOF9J5XF5AZvw
-         uYy/DE6uaWL1uqOmU8j6/0ArrU0Ng5TYAzVfxImtWreDNRMIS38q41t+oYDgKM/zO9/Q
-         2RrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747156063; x=1747760863;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MfL86GdlhnBK3jXx8LFujEcI9N5sypqjwqtS1nmW2i8=;
-        b=uAP2vJHZ6VoudXrF5ftvMaKGJf9GrVYgxZMcCMB9sQ75VeuuXc1p4UfSjFIJbqPp0L
-         fvZBv0/ap2LNcpWGALy6ooZO5zPYeufB3XQR+JmijnyAX6JrScHKk3KOYnWc3zDuPIta
-         vxFtAzOnpCSM33bEHz1gQwRrnRimhrGXNTgPKr34xBDY5KuGf9SFslDikXrHv/ItER0/
-         w3jZXg/2m9vI1eYXTS2i5mem4bqwcLLgkIzbctzk9lY2KWqjpCX3SnMfSEyEC9EHHkl/
-         am5GS8u+xdjavgKi2QZQr4yaTvgzq3pto7koxdKGzyul/pmhKyf6LtZtjRQzDh8gbd+0
-         9boA==
-X-Forwarded-Encrypted: i=1; AJvYcCUJn16IEEuJ8qFI1zF2kGz2rmqxIEAbjKuHwesQ01oQLFBLaFk9wANFXkGBXkN2NVvqsvwmMUmxoC1EUgA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxcNfF0usXHxUXwbpnxnEDJU4GwSn0CwCOGFw95PMpcu/lcDASQ
-	T0xe1pxpryuX5JOchuRUa3aT1QgUDZ9vHm64AHptUtdQF96x94eS
-X-Gm-Gg: ASbGncuJmDOGcx5KoEdDKI0bQ6YTP/fod6wmZpMz4gq0kHjqPuM4jlzibc8Qaw4a2nS
-	ir4/5RE+OGTqc6UH4B1v42rg659l9wPNCp4jwULsE4uVc27JCT1j2/NF9HHOZ7sKeDi6VdEMg38
-	a+w0lmmi2hg+4+8LNZQdTdloZ40I7qEn7CUyW1bNzn4G+dXrdoyiy7bHEYtvLXocmQqw40OBr7Q
-	hD+fEAYgm9pzvUBhcQOCuEXMtGg6DS2gP4wzn1nNtjxV5liJYIFUyJQ3hkRKIr2p3dpBNrCqJ9c
-	NeKAxZVmWyDy4hW2VzQq3lOdKyp8XhBtsrZHW5khChkwa2FDfphWziQc5KxpsPrpEuR/aVX87pN
-	uah6a
-X-Google-Smtp-Source: AGHT+IE550DTZxU0fAa0iB/XH8wB1LPuYOfBQ7sf4z66ubJSzSBXCrqXU7OTN2wRAWtJzZbWszP1Zw==
-X-Received: by 2002:a17:90b:58ef:b0:2ff:64c3:3bd9 with SMTP id 98e67ed59e1d1-30e2e625f04mr394350a91.23.1747156062426;
-        Tue, 13 May 2025 10:07:42 -0700 (PDT)
-Received: from localhost.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30c39e75dbfsm8756276a91.41.2025.05.13.10.07.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 May 2025 10:07:42 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: tytso@mit.edu,
-	jack@suse.cz
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH] jbd2: fix data-race and null-ptr-deref in jbd2_journal_dirty_metadata()
-Date: Wed, 14 May 2025 02:04:41 +0900
-Message-ID: <20250513170441.54658-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1747176622; c=relaxed/simple;
+	bh=YOm9j2GGESAbT4Kw5OSrV1pC85uJg3KLTfhUK9HOpsc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GlOg8CW5U2MlrACpGNuRsDORRMZixVhG3f5Rk+4aILNIWVrL5jQ90UpsMm+DGyKf9FH6W4EIZc5J9jCdJCtkkczNI7Yqjb/Zl8vP5SVTsj0u8QCeJJW3Pfx8JKcvhSTL+4ubVv23KWfsAh33aiCoWdN9NIln/3uHSkCvQ42sERQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ejae8Xw/; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1747176621; x=1778712621;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YOm9j2GGESAbT4Kw5OSrV1pC85uJg3KLTfhUK9HOpsc=;
+  b=ejae8Xw/fku34DEr3ClrGnI0i2aZKfoBCLhasf3zIsLHsEYYzBwPNKsW
+   paKn9gMkZQdVyFgEGoy6BlK3XUFEg2kMZ8V1M34XVQBTaW8qcDB+zSwFM
+   D2ycYKaLl/n7s+nkFnZnu3nHwjJAFZG7ppBkuDT5Vh63kGuLlcKiXAGZp
+   dD8luUaf5swSq8g6P6cKPCCGN+2GqLsD9HCGTaNdHTP7mX1P1n/n532AG
+   ciMj1VV9wAMHIyrYNG0OJA4Fg8LNApPRX1KQEHIhYI68zpDxlORqngCQI
+   XjsKyvz2N92o6vHVnhb2jzWZosboKP9pfylyh474An7oqnN+JAm43wWNt
+   Q==;
+X-CSE-ConnectionGUID: nmU8DWVTRVePDit7x2y/VQ==
+X-CSE-MsgGUID: K0t2Fb/zTbyqAKZEX1qfVw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11432"; a="48303093"
+X-IronPort-AV: E=Sophos;i="6.15,286,1739865600"; 
+   d="scan'208";a="48303093"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2025 15:50:20 -0700
+X-CSE-ConnectionGUID: wHziW06rRHShu89ZmiEO1Q==
+X-CSE-MsgGUID: LxdgacP5Ql+b1a9n6NGwPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,286,1739865600"; 
+   d="scan'208";a="138832650"
+Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
+  by fmviesa009.fm.intel.com with ESMTP; 13 May 2025 15:50:13 -0700
+Received: from kbuild by 1992f890471c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uEyRu-000GTD-38;
+	Tue, 13 May 2025 22:50:10 +0000
+Date: Wed, 14 May 2025 06:49:42 +0800
+From: kernel test robot <lkp@intel.com>
+To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	kernel_team@skhynix.com, torvalds@linux-foundation.org,
+	damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	mingo@redhat.com, peterz@infradead.org, will@kernel.org,
+	tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
+	sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
+	johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+	willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+	gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
+	akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
+	hannes@cmpxchg.org, vdavydov.dev@gmail.com
+Subject: Re: [PATCH v15 33/43] dept: assign unique dept_key to each distinct
+ dma fence caller
+Message-ID: <202505140631.FOWO8B5L-lkp@intel.com>
+References: <20250513100730.12664-34-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250513100730.12664-34-byungchul@sk.com>
 
-Since handle->h_transaction may be a NULL pointer, so we should change it
-to call is_handle_aborted(handle) first before dereferencing it.
+Hi Byungchul,
 
-And the following data-race was reported in my fuzzer:
+kernel test robot noticed the following build warnings:
 
-==================================================================
-BUG: KCSAN: data-race in jbd2_journal_dirty_metadata / jbd2_journal_dirty_metadata
+[auto build test WARNING on 82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3]
 
-write to 0xffff888011024104 of 4 bytes by task 10881 on cpu 1:
- jbd2_journal_dirty_metadata+0x2a5/0x770 fs/jbd2/transaction.c:1556
- __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
- ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
- ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
- __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
- ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
-....
+url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/llist-move-llist_-head-node-definition-to-types-h/20250513-181346
+base:   82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3
+patch link:    https://lore.kernel.org/r/20250513100730.12664-34-byungchul%40sk.com
+patch subject: [PATCH v15 33/43] dept: assign unique dept_key to each distinct dma fence caller
+config: arm-randconfig-002-20250514 (https://download.01.org/0day-ci/archive/20250514/202505140631.FOWO8B5L-lkp@intel.com/config)
+compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project f819f46284f2a79790038e1f6649172789734ae8)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250514/202505140631.FOWO8B5L-lkp@intel.com/reproduce)
 
-read to 0xffff888011024104 of 4 bytes by task 10880 on cpu 0:
- jbd2_journal_dirty_metadata+0xf2/0x770 fs/jbd2/transaction.c:1512
- __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
- ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
- ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
- __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
- ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
-....
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202505140631.FOWO8B5L-lkp@intel.com/
 
-value changed: 0x00000000 -> 0x00000001
-==================================================================
+All warnings (new ones prefixed by >>):
 
-According to this crash report, there is a read/write data-race in
-jh->b_modified.
+>> drivers/dma-buf/dma-fence.c:503: warning: expecting prototype for dma_fence_wait_timeout(). Prototype was for __dma_fence_wait_timeout() instead
+>> drivers/dma-buf/dma-fence.c:763: warning: expecting prototype for dma_fence_default_wait(). Prototype was for __dma_fence_default_wait() instead
+>> drivers/dma-buf/dma-fence.c:853: warning: expecting prototype for dma_fence_wait_any_timeout(). Prototype was for __dma_fence_wait_any_timeout() instead
 
-This is because the b_state_lock is locked too late.
 
-For some reason, jbd2_journal_dirty_metadata() has been written in a way
-that it does not lock b_state_lock before checking jh->b_transaction.
+vim +503 drivers/dma-buf/dma-fence.c
 
-However, This makes the code that checks jh->b_transaction messy and
-causes a data-race in jh->b_* variables. Since locking b_state_lock
-earlier is not enough to significantly affect performance and most of the
-functions defined in transaction.c lock b_state_lock before
-reading/writing jh->b_*.
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  482  
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  483  /**
+f54d1867005c33 drivers/dma-buf/dma-fence.c Chris Wilson      2016-10-25  484   * dma_fence_wait_timeout - sleep until the fence gets signaled
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  485   * or until timeout elapses
+4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  486   * @fence: the fence to wait on
+4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  487   * @intr: if true, do an interruptible wait
+4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  488   * @timeout: timeout value in jiffies, or MAX_SCHEDULE_TIMEOUT
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  489   *
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  490   * Returns -ERESTARTSYS if interrupted, 0 if the wait timed out, or the
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  491   * remaining timeout in jiffies on success. Other error values may be
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  492   * returned on custom implementations.
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  493   *
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  494   * Performs a synchronous wait on this fence. It is assumed the caller
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  495   * directly or indirectly (buf-mgr between reservation and committing)
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  496   * holds a reference to the fence, otherwise the fence might be
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  497   * freed before return, resulting in undefined behavior.
+4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  498   *
+4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  499   * See also dma_fence_wait() and dma_fence_wait_any_timeout().
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  500   */
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  501  signed long
+15fe92c1e1cf69 drivers/dma-buf/dma-fence.c Byungchul Park    2025-05-13  502  __dma_fence_wait_timeout(struct dma_fence *fence, bool intr, signed long timeout)
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01 @503  {
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  504  	signed long ret;
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  505  
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  506  	if (WARN_ON(timeout < 0))
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  507  		return -EINVAL;
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  508  
+ef8255506f6682 drivers/dma-buf/dma-fence.c Simona Vetter     2020-05-19  509  	might_sleep();
+ef8255506f6682 drivers/dma-buf/dma-fence.c Simona Vetter     2020-05-19  510  
+5fbff813a4a328 drivers/dma-buf/dma-fence.c Simona Vetter     2020-07-07  511  	__dma_fence_might_wait();
+5fbff813a4a328 drivers/dma-buf/dma-fence.c Simona Vetter     2020-07-07  512  
+b96fb1e724ae68 drivers/dma-buf/dma-fence.c Arvind Yadav      2022-09-14  513  	dma_fence_enable_sw_signaling(fence);
+b96fb1e724ae68 drivers/dma-buf/dma-fence.c Arvind Yadav      2022-09-14  514  
+f54d1867005c33 drivers/dma-buf/dma-fence.c Chris Wilson      2016-10-25  515  	trace_dma_fence_wait_start(fence);
+418cc6ca06071e drivers/dma-buf/dma-fence.c Simona Vetter     2018-05-03  516  	if (fence->ops->wait)
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  517  		ret = fence->ops->wait(fence, intr, timeout);
+418cc6ca06071e drivers/dma-buf/dma-fence.c Simona Vetter     2018-05-03  518  	else
+418cc6ca06071e drivers/dma-buf/dma-fence.c Simona Vetter     2018-05-03  519  		ret = dma_fence_default_wait(fence, intr, timeout);
+f54d1867005c33 drivers/dma-buf/dma-fence.c Chris Wilson      2016-10-25  520  	trace_dma_fence_wait_end(fence);
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  521  	return ret;
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  522  }
+15fe92c1e1cf69 drivers/dma-buf/dma-fence.c Byungchul Park    2025-05-13  523  EXPORT_SYMBOL(__dma_fence_wait_timeout);
+e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  524  
 
-Thereforce, I think it would be appropriate to modify 
-jbd2_journal_dirty_metadata() to lock b_state_lock earlier as well.
-
-Reported-by: syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=de24c3fe3c4091051710
-Fixes: 6e06ae88edae ("jbd2: speedup jbd2_journal_dirty_metadata()")
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
----
- fs/jbd2/transaction.c | 49 +++++++++++++++----------------------------
- 1 file changed, 17 insertions(+), 32 deletions(-)
-
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index cbc4785462f5..7e6dbf37396f 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -1496,41 +1496,25 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 	jbd2_debug(5, "journal_head %p\n", jh);
- 	JBUFFER_TRACE(jh, "entry");
- 
--	/*
--	 * This and the following assertions are unreliable since we may see jh
--	 * in inconsistent state unless we grab bh_state lock. But this is
--	 * crucial to catch bugs so let's do a reliable check until the
--	 * lockless handling is fully proven.
--	 */
--	if (data_race(jh->b_transaction != transaction &&
--	    jh->b_next_transaction != transaction)) {
--		spin_lock(&jh->b_state_lock);
--		J_ASSERT_JH(jh, jh->b_transaction == transaction ||
--				jh->b_next_transaction == transaction);
--		spin_unlock(&jh->b_state_lock);
--	}
-+	spin_lock(&jh->b_state_lock);
-+
-+	J_ASSERT_JH(jh, jh->b_transaction == transaction ||
-+			jh->b_next_transaction == transaction);
-+
- 	if (jh->b_modified == 1) {
- 		/* If it's in our transaction it must be in BJ_Metadata list. */
--		if (data_race(jh->b_transaction == transaction &&
--		    jh->b_jlist != BJ_Metadata)) {
--			spin_lock(&jh->b_state_lock);
--			if (jh->b_transaction == transaction &&
--			    jh->b_jlist != BJ_Metadata)
--				pr_err("JBD2: assertion failure: h_type=%u "
--				       "h_line_no=%u block_no=%llu jlist=%u\n",
--				       handle->h_type, handle->h_line_no,
--				       (unsigned long long) bh->b_blocknr,
--				       jh->b_jlist);
--			J_ASSERT_JH(jh, jh->b_transaction != transaction ||
--					jh->b_jlist == BJ_Metadata);
--			spin_unlock(&jh->b_state_lock);
--		}
--		goto out;
-+		if (jh->b_transaction == transaction &&
-+			jh->b_jlist != BJ_Metadata)
-+			pr_err("JBD2: assertion failure: h_type=%u "
-+			       "h_line_no=%u block_no=%llu jlist=%u\n",
-+			       handle->h_type, handle->h_line_no,
-+			       (unsigned long long) bh->b_blocknr,
-+			       jh->b_jlist);
-+		J_ASSERT_JH(jh, jh->b_transaction != transaction ||
-+				jh->b_jlist == BJ_Metadata);
-+		goto out_unlock_bh;
- 	}
- 
--	journal = transaction->t_journal;
--	spin_lock(&jh->b_state_lock);
--
- 	if (is_handle_aborted(handle)) {
- 		/*
- 		 * Check journal aborting with @jh->b_state_lock locked,
-@@ -1543,6 +1527,8 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 		goto out_unlock_bh;
- 	}
- 
-+	journal = transaction->t_journal;
-+
- 	if (jh->b_modified == 0) {
- 		/*
- 		 * This buffer's got modified and becoming part
-@@ -1628,7 +1614,6 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 	spin_unlock(&journal->j_list_lock);
- out_unlock_bh:
- 	spin_unlock(&jh->b_state_lock);
--out:
- 	JBUFFER_TRACE(jh, "exit");
- 	return ret;
- }
---
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
