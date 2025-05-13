@@ -1,198 +1,226 @@
-Return-Path: <linux-ext4+bounces-7864-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7869-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8053DAB5275
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 12:29:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83B26AB5AC7
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 19:08:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E438E985326
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 10:24:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47D8419E170B
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 May 2025 17:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8ECC28EA43;
-	Tue, 13 May 2025 10:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6851A2BE7D6;
+	Tue, 13 May 2025 17:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="egkiV0DY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9512A28B4E2;
-	Tue, 13 May 2025 10:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E9D2BE110;
+	Tue, 13 May 2025 17:07:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747130897; cv=none; b=EoHXwnDi80QGHF9ensY24P6bbNFNCx0twTB0Cd/0mFhcEi1Ch3DKXECrQPKm6BSVErljQr9h0EnXhbdB/dPebGyP21X9Pm59Erb2c+CNnP2StQC6eaReXaPMOBx9C7OTrnhTQYrcM3W2+65OCDPmGbgSP6VT1Km0eW795NO4/rY=
+	t=1747156065; cv=none; b=cYHxhfZDOml0MuaLP5F03MZE6j6+cf95SDlM0Uh1zpJ1FgL/iRoZg4Sbb41nb+5FoIFhklzQDxdCP9mrO9Ni6iiXaqyJQWr2BvCtUALM9e4sVDrHEhmp65qw2pqYKF22q3c8xHs0YvIiJ3nIQOxP8DfpAU7VF6N8f24LzSIcqYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747130897; c=relaxed/simple;
-	bh=QsfbRnxCWDXHvX6Jz9hxwcCFfOh5Fy5Hk/37cuZHV9I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=oTXfSwTGg4GfCv2KbwcxdYhSVKdLzJ472Sj7mmsYug1FSBVd9ragx5QLwDFn5dUBp35SAgtnKyDkDJez7XEHDmKLwBxDzfu/WORJMw9kx86yVM0/n4Zp/dq8+GzQfCcixXszNu1dFPFElXWC0uO5eEetW4B9vilbOSmoAt4oDGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-6e-682319f3d65e
-From: Byungchul Park <byungchul@sk.com>
-To: linux-kernel@vger.kernel.org
-Cc: kernel_team@skhynix.com,
-	torvalds@linux-foundation.org,
-	damien.lemoal@opensource.wdc.com,
-	linux-ide@vger.kernel.org,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	will@kernel.org,
-	tglx@linutronix.de,
-	rostedt@goodmis.org,
-	joel@joelfernandes.org,
-	sashal@kernel.org,
-	daniel.vetter@ffwll.ch,
-	duyuyang@gmail.com,
-	johannes.berg@intel.com,
-	tj@kernel.org,
-	tytso@mit.edu,
-	willy@infradead.org,
-	david@fromorbit.com,
-	amir73il@gmail.com,
-	gregkh@linuxfoundation.org,
-	kernel-team@lge.com,
-	linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	mhocko@kernel.org,
-	minchan@kernel.org,
-	hannes@cmpxchg.org,
-	vdavydov.dev@gmail.com,
-	sj@kernel.org,
-	jglisse@redhat.com,
-	dennis@kernel.org,
-	cl@linux.com,
-	penberg@kernel.org,
-	rientjes@google.com,
-	vbabka@suse.cz,
-	ngupta@vflare.org,
-	linux-block@vger.kernel.org,
-	josef@toxicpanda.com,
-	linux-fsdevel@vger.kernel.org,
-	jack@suse.cz,
-	jlayton@kernel.org,
-	dan.j.williams@intel.com,
-	hch@infradead.org,
-	djwong@kernel.org,
-	dri-devel@lists.freedesktop.org,
-	rodrigosiqueiramelo@gmail.com,
-	melissa.srw@gmail.com,
-	hamohammed.sa@gmail.com,
-	harry.yoo@oracle.com,
-	chris.p.wilson@intel.com,
-	gwan-gyeong.mun@intel.com,
-	max.byungchul.park@gmail.com,
-	boqun.feng@gmail.com,
-	longman@redhat.com,
-	yskelg@gmail.com,
-	yunseong.kim@ericsson.com,
-	yeoreum.yun@arm.com,
-	netdev@vger.kernel.org,
-	matthew.brost@intel.com,
-	her0gyugyu@gmail.com
-Subject: [PATCH v15 43/43] dept: call dept_hardirqs_off() in local_irq_*() regardless of irq state
-Date: Tue, 13 May 2025 19:07:30 +0900
-Message-Id: <20250513100730.12664-44-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20250513100730.12664-1-byungchul@sk.com>
-References: <20250513100730.12664-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSW0xTaRSF+f9zK9XKSb0d1HjpSDR4xajZkwxqMonz+2AyUTMPo4ke5Wgr
-	V4simEjogAZBCDgDjVycUpjSQLlYTASlihAQRAG1IhJAQTFUihiwpQjoFIwvOyvf2mvtly2j
-	lM3MMpkm4qykjRDDVKyclo/ML9g07v+Teuvjxg3g+pxMQ16FhYWO8lIElls6DI7G3+Cl24lg
-	6kk7BfqsDgQF/b0U3GrqQ2Az/8XC83cLwO4aZaElK5WFxMIKFp4OT2Poyb6GodS6H16b3tPQ
-	mmHEoHewkKtPxN4xhGHSVMKBKSEABsw5HEz3B0FLXycDtu4NcP1GDwu1thYamqoHMDy/k8dC
-	n+UbA61NzTS405dDR2YaA2UfjSwMu00UmFyjHDyrM2BoMiyByiRv4eXxrww8TKvDcLnoJgb7
-	q7sI7iW/wWC1dLLQ4HJiqLJmUfCluBHBQPoIB5euTnKQq0tHkHopm4aknh0w5fFezv8cBLp/
-	K2kom+lEe4KJ5YYFkQbnKEWSqs6TL64XLLG5DTR5ZBRITU4vR5LudXPEYD1HqsyBpLDWgUnB
-	mIsh1pIrLLGOXeNIyogdk49tbdzvK/6U/xIihWliJO2WXcfk6v72QRyl84t9O+niEtDIvBTk
-	KxP47YIz8yvzQw8WDONZzfLrhK6uSWpWL+JXC1Vp7707chnFd84TXua/QrPGQv64UNQ3NRem
-	+QDB6LHOBRT8TkFvv09/L10llFbWzXFfL58pbpvjSn6HkGEopWdLBf5vX+G/ijfU94C/8MDc
-	RWcghQH5lCClJiImXNSEbd+sjovQxG4+ERluRd7/Ml2cPlyNxjoO1iNehlTzFc2ONWolI8ZE
-	x4XXI0FGqRYpdLe9SBEixl2QtJFHtefCpOh6tFxGq5YqtrnPhyj5U+JZKVSSoiTtDxfLfJcl
-	oCKz32Cau2Fo64d/YvSP0RFnfPvRjNvm0J89r9NX6JaqHMHB6xdPlLean6SKsa1lgZHjVyZ8
-	svwPGgNWRi3+lHgg9NDeBYE5Z6ZnBu9PvLUcymcy/wj/JsYPVfvYi9UnN/oVxqXk1cR7ds+U
-	rfUk55avFk9n13ssv9r2kcOgYYaiVHS0WgwKpLTR4v9PDQHqWwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0iTYRTHe5736mz1tsTebpgLCZQuQsbBrkTSS1D4qSiKXPXSVrpiM80i
-	cGlhmrICtTJrmkxxq9kmZRdNXG0zy1mulWGmVtLw1sVJ81JNoy+HH78/53++HJaQVVMLWJU6
-	VdSoFclyWkJKdqzNWv5z/lLlql53OPhHcki4bjHT0HbHhMBcq8Pge7YV3o4OIBh/6SaguLAN
-	QVnPBwJqHV0I6qvO0tD+eRZ4/MM0NBfm0ZB1y0LDq/4JDJ1FlzGYrNvho7GPhBZ9OYZiHw0l
-	xVk4OL5iCBirGTBmRkFv1TUGJnpiobnLS4G9tJmC+vcxcPVGJw2P65tJcNT1Ymh/eJ2GLvMf
-	ClocLhJGCxZC26V8Cm4PldPQP2okwOgfZuB1owGDwxAONdnB1vM/f1PgzG/EcL7iLgZPxyME
-	DTndGKxmLw12/wAGm7WQgLHKZwh6CwYZOHcxwECJrgBB3rkiErI742D8V/By6Ugs6G7WkHB7
-	0os2bRDMN8xIsA8ME0K2LV0Y87+hhfpRAyk8L+eFB9c+MEJ2w3tGMFhPCLaqaOHWYx8Wyn74
-	KcFafYEWrD8uM0LuoAcLQ62tTOLiPZJ1h8RkVZqoWbkhSaLscX/Bx3WzT34K+JlMNBiai0JY
-	nlvNfynrx1NMc8v4d+8CxBSHcUt4W34flYskLMF5Q/m3pR1oKpjLHeArusapKSa5KL78l3V6
-	Qcqt4Ys9T8h/pRG8qaZx2ocE/WRl67SXcXG83mAi9UhiQDOqUZhKnZaiUCXHrdAeVWaoVSdX
-	HDyWYkXBDzKembhUh0batzYhjkXymVKXL1IpoxRp2oyUJsSzhDxMqrsfVNJDioxToubYfs2J
-	ZFHbhBaypHyedNsuMUnGHVakikdF8bio+Z9iNmRBJqpcNvFSt0a3c16dy9GoutfntK1vSYiP
-	UEckvAqtTX+60Xl6bmfDi83606v5xMNG92tf3aRsUUJ3zEf07VRhIPJM+N5V+/6MHYzscMXE
-	q2u2zDENuY+4LNvWl0WzOZbdbZaO31j3Iu/h0gsl8fYrTkV34rhnssLt7Cmyf5+dqk/3ykmt
-	UhEbTWi0ir8OZ96uPQMAAA==
-X-CFilter-Loop: Reflected
+	s=arc-20240116; t=1747156065; c=relaxed/simple;
+	bh=uanJLByxQFW3gbTPTgvXVKnJwMqfoxW0i7mA6lk5O9E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Uv61hEdzp19AD1R+qxJEe9JbrcGQXsMWs/ksmxGTToYlWtJlkH8hSym0JGCs8OprbZe3YfS7q/50TKo406TGaIEbG/V4jbbSjTz8HRCuNhVpJ2+InaumYieMYgB2lVu6fn5hId0wpUcUEQ7PipIJ+/KUhUOkBIVCZbjPJOB1Y94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=egkiV0DY; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-30a99e2bdd4so5248459a91.0;
+        Tue, 13 May 2025 10:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747156063; x=1747760863; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MfL86GdlhnBK3jXx8LFujEcI9N5sypqjwqtS1nmW2i8=;
+        b=egkiV0DY99hgUVYh5j6LU5NzuheVJ3z7m/T1B/eS46UwSfztNnAK1SDRrkoF3ALCGR
+         JhBGVneemhlmEXw9haPM7+bGR9f0hZEfDFDuytyeSQKFGHVBbsNhnasD0trPS5h4Pljn
+         XFgrqcF+nbY86Zb/LSFNJi4HF9nLvMwMW/4DXBt5cbVH4oQMAiialEssLStnFEdRWUUl
+         HnEdsVqHAv0c7FW3A8MR2OnL6DSf6QZmG+BrjDMX4tHBFFFh7N/N0AQeOF9J5XF5AZvw
+         uYy/DE6uaWL1uqOmU8j6/0ArrU0Ng5TYAzVfxImtWreDNRMIS38q41t+oYDgKM/zO9/Q
+         2RrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747156063; x=1747760863;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MfL86GdlhnBK3jXx8LFujEcI9N5sypqjwqtS1nmW2i8=;
+        b=uAP2vJHZ6VoudXrF5ftvMaKGJf9GrVYgxZMcCMB9sQ75VeuuXc1p4UfSjFIJbqPp0L
+         fvZBv0/ap2LNcpWGALy6ooZO5zPYeufB3XQR+JmijnyAX6JrScHKk3KOYnWc3zDuPIta
+         vxFtAzOnpCSM33bEHz1gQwRrnRimhrGXNTgPKr34xBDY5KuGf9SFslDikXrHv/ItER0/
+         w3jZXg/2m9vI1eYXTS2i5mem4bqwcLLgkIzbctzk9lY2KWqjpCX3SnMfSEyEC9EHHkl/
+         am5GS8u+xdjavgKi2QZQr4yaTvgzq3pto7koxdKGzyul/pmhKyf6LtZtjRQzDh8gbd+0
+         9boA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJn16IEEuJ8qFI1zF2kGz2rmqxIEAbjKuHwesQ01oQLFBLaFk9wANFXkGBXkN2NVvqsvwmMUmxoC1EUgA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxcNfF0usXHxUXwbpnxnEDJU4GwSn0CwCOGFw95PMpcu/lcDASQ
+	T0xe1pxpryuX5JOchuRUa3aT1QgUDZ9vHm64AHptUtdQF96x94eS
+X-Gm-Gg: ASbGncuJmDOGcx5KoEdDKI0bQ6YTP/fod6wmZpMz4gq0kHjqPuM4jlzibc8Qaw4a2nS
+	ir4/5RE+OGTqc6UH4B1v42rg659l9wPNCp4jwULsE4uVc27JCT1j2/NF9HHOZ7sKeDi6VdEMg38
+	a+w0lmmi2hg+4+8LNZQdTdloZ40I7qEn7CUyW1bNzn4G+dXrdoyiy7bHEYtvLXocmQqw40OBr7Q
+	hD+fEAYgm9pzvUBhcQOCuEXMtGg6DS2gP4wzn1nNtjxV5liJYIFUyJQ3hkRKIr2p3dpBNrCqJ9c
+	NeKAxZVmWyDy4hW2VzQq3lOdKyp8XhBtsrZHW5khChkwa2FDfphWziQc5KxpsPrpEuR/aVX87pN
+	uah6a
+X-Google-Smtp-Source: AGHT+IE550DTZxU0fAa0iB/XH8wB1LPuYOfBQ7sf4z66ubJSzSBXCrqXU7OTN2wRAWtJzZbWszP1Zw==
+X-Received: by 2002:a17:90b:58ef:b0:2ff:64c3:3bd9 with SMTP id 98e67ed59e1d1-30e2e625f04mr394350a91.23.1747156062426;
+        Tue, 13 May 2025 10:07:42 -0700 (PDT)
+Received: from localhost.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30c39e75dbfsm8756276a91.41.2025.05.13.10.07.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 May 2025 10:07:42 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: tytso@mit.edu,
+	jack@suse.cz
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com,
+	Jeongjun Park <aha310510@gmail.com>
+Subject: [PATCH] jbd2: fix data-race and null-ptr-deref in jbd2_journal_dirty_metadata()
+Date: Wed, 14 May 2025 02:04:41 +0900
+Message-ID: <20250513170441.54658-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-For dept to function properly, dept_task()->hardirqs_enabled must be set
-correctly.  If it fails to set this value to false, for example, dept
-may mistakenly think irq is still enabled even when it's not.
+Since handle->h_transaction may be a NULL pointer, so we should change it
+to call is_handle_aborted(handle) first before dereferencing it.
 
-Do dept_hardirqs_off() regardless of irq state not to miss any
-unexpected cases by any chance e.g. changes of the state by asm code.
+And the following data-race was reported in my fuzzer:
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
+==================================================================
+BUG: KCSAN: data-race in jbd2_journal_dirty_metadata / jbd2_journal_dirty_metadata
+
+write to 0xffff888011024104 of 4 bytes by task 10881 on cpu 1:
+ jbd2_journal_dirty_metadata+0x2a5/0x770 fs/jbd2/transaction.c:1556
+ __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
+ ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
+ ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
+ __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
+ ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
+....
+
+read to 0xffff888011024104 of 4 bytes by task 10880 on cpu 0:
+ jbd2_journal_dirty_metadata+0xf2/0x770 fs/jbd2/transaction.c:1512
+ __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
+ ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
+ ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
+ __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
+ ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
+....
+
+value changed: 0x00000000 -> 0x00000001
+==================================================================
+
+According to this crash report, there is a read/write data-race in
+jh->b_modified.
+
+This is because the b_state_lock is locked too late.
+
+For some reason, jbd2_journal_dirty_metadata() has been written in a way
+that it does not lock b_state_lock before checking jh->b_transaction.
+
+However, This makes the code that checks jh->b_transaction messy and
+causes a data-race in jh->b_* variables. Since locking b_state_lock
+earlier is not enough to significantly affect performance and most of the
+functions defined in transaction.c lock b_state_lock before
+reading/writing jh->b_*.
+
+Thereforce, I think it would be appropriate to modify 
+jbd2_journal_dirty_metadata() to lock b_state_lock earlier as well.
+
+Reported-by: syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=de24c3fe3c4091051710
+Fixes: 6e06ae88edae ("jbd2: speedup jbd2_journal_dirty_metadata()")
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
 ---
- include/linux/irqflags.h | 14 ++++++++++++++
- kernel/dependency/dept.c |  1 +
- 2 files changed, 15 insertions(+)
+ fs/jbd2/transaction.c | 49 +++++++++++++++----------------------------
+ 1 file changed, 17 insertions(+), 32 deletions(-)
 
-diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
-index d8b9cf093f83..586f5bad4da7 100644
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -214,6 +214,13 @@ extern void warn_bogus_irq_restore(void);
- 		raw_local_irq_disable();		\
- 		if (!was_disabled)			\
- 			trace_hardirqs_off();		\
-+		/*					\
-+		 * Just in case that C code has missed	\
-+		 * trace_hardirqs_off() at the first	\
-+		 * place e.g. disabling irq at asm code.\
-+		 */					\
-+		else					\
-+			dept_hardirqs_off();		\
- 	} while (0)
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index cbc4785462f5..7e6dbf37396f 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -1496,41 +1496,25 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
+ 	jbd2_debug(5, "journal_head %p\n", jh);
+ 	JBUFFER_TRACE(jh, "entry");
  
- #define local_irq_save(flags)				\
-@@ -221,6 +228,13 @@ extern void warn_bogus_irq_restore(void);
- 		raw_local_irq_save(flags);		\
- 		if (!raw_irqs_disabled_flags(flags))	\
- 			trace_hardirqs_off();		\
-+		/*					\
-+		 * Just in case that C code has missed	\
-+		 * trace_hardirqs_off() at the first	\
-+		 * place e.g. disabling irq at asm code.\
-+		 */					\
-+		else					\
-+			dept_hardirqs_off();		\
- 	} while (0)
+-	/*
+-	 * This and the following assertions are unreliable since we may see jh
+-	 * in inconsistent state unless we grab bh_state lock. But this is
+-	 * crucial to catch bugs so let's do a reliable check until the
+-	 * lockless handling is fully proven.
+-	 */
+-	if (data_race(jh->b_transaction != transaction &&
+-	    jh->b_next_transaction != transaction)) {
+-		spin_lock(&jh->b_state_lock);
+-		J_ASSERT_JH(jh, jh->b_transaction == transaction ||
+-				jh->b_next_transaction == transaction);
+-		spin_unlock(&jh->b_state_lock);
+-	}
++	spin_lock(&jh->b_state_lock);
++
++	J_ASSERT_JH(jh, jh->b_transaction == transaction ||
++			jh->b_next_transaction == transaction);
++
+ 	if (jh->b_modified == 1) {
+ 		/* If it's in our transaction it must be in BJ_Metadata list. */
+-		if (data_race(jh->b_transaction == transaction &&
+-		    jh->b_jlist != BJ_Metadata)) {
+-			spin_lock(&jh->b_state_lock);
+-			if (jh->b_transaction == transaction &&
+-			    jh->b_jlist != BJ_Metadata)
+-				pr_err("JBD2: assertion failure: h_type=%u "
+-				       "h_line_no=%u block_no=%llu jlist=%u\n",
+-				       handle->h_type, handle->h_line_no,
+-				       (unsigned long long) bh->b_blocknr,
+-				       jh->b_jlist);
+-			J_ASSERT_JH(jh, jh->b_transaction != transaction ||
+-					jh->b_jlist == BJ_Metadata);
+-			spin_unlock(&jh->b_state_lock);
+-		}
+-		goto out;
++		if (jh->b_transaction == transaction &&
++			jh->b_jlist != BJ_Metadata)
++			pr_err("JBD2: assertion failure: h_type=%u "
++			       "h_line_no=%u block_no=%llu jlist=%u\n",
++			       handle->h_type, handle->h_line_no,
++			       (unsigned long long) bh->b_blocknr,
++			       jh->b_jlist);
++		J_ASSERT_JH(jh, jh->b_transaction != transaction ||
++				jh->b_jlist == BJ_Metadata);
++		goto out_unlock_bh;
+ 	}
  
- #define local_irq_restore(flags)			\
-diff --git a/kernel/dependency/dept.c b/kernel/dependency/dept.c
-index 50ba3e1c3fd5..9993222af73c 100644
---- a/kernel/dependency/dept.c
-+++ b/kernel/dependency/dept.c
-@@ -2258,6 +2258,7 @@ void noinstr dept_hardirqs_off(void)
- 	 */
- 	dept_task()->hardirqs_enabled = false;
+-	journal = transaction->t_journal;
+-	spin_lock(&jh->b_state_lock);
+-
+ 	if (is_handle_aborted(handle)) {
+ 		/*
+ 		 * Check journal aborting with @jh->b_state_lock locked,
+@@ -1543,6 +1527,8 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
+ 		goto out_unlock_bh;
+ 	}
+ 
++	journal = transaction->t_journal;
++
+ 	if (jh->b_modified == 0) {
+ 		/*
+ 		 * This buffer's got modified and becoming part
+@@ -1628,7 +1614,6 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
+ 	spin_unlock(&journal->j_list_lock);
+ out_unlock_bh:
+ 	spin_unlock(&jh->b_state_lock);
+-out:
+ 	JBUFFER_TRACE(jh, "exit");
+ 	return ret;
  }
-+EXPORT_SYMBOL_GPL(dept_hardirqs_off);
- 
- void noinstr dept_update_cxt(void)
- {
--- 
-2.17.1
-
+--
 
