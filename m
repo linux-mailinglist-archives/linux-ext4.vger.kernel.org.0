@@ -1,58 +1,86 @@
-Return-Path: <linux-ext4+bounces-7889-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7890-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23B65AB710E
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 18:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00CDAAB711C
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 18:21:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 465DA3A2595
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 16:19:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F3583A7DB2
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 16:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A545270EC5;
-	Wed, 14 May 2025 16:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E0F27B501;
+	Wed, 14 May 2025 16:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LRtLcxLV"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UdKYknY2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382C11E3762;
-	Wed, 14 May 2025 16:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6436227A44E;
+	Wed, 14 May 2025 16:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747239554; cv=none; b=ioKhHKZk/rHhCje4yH2ATj1QQQX2g3gyDbwBYX66o+NtGUyfUTfx/LYTV0hiZTZ5fJfISAkppCDNxtkqaRmA2uccG8KaA7e7jN2eXSnjIqrTv4QSTUK29LrlgJ1fe8kH5+zvCqlU3k6H7DwT1MDMqzGkUTINleDh6hjUgMM5c5I=
+	t=1747239657; cv=none; b=kZgP89y10tfXd9Yfz/sOxqKGU5sUI8AuxqM2U+UOXg64r7/TAScUsatcCvFP7/mX5wB8W2OC7987co7pIAhbi1MUCm0AeiGSbIkcOUS3xv+RSW3UY5YNjMQ+jFGhEVZo9aBZTNDXzW91VdZzRf+dya1Ofv1+4MVcC+ZfsJ8G0hI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747239554; c=relaxed/simple;
-	bh=bxT7tkxgC6deT2UIP7tx4993TaswUXWKhENMilZ9+1Y=;
+	s=arc-20240116; t=1747239657; c=relaxed/simple;
+	bh=Y8GIyFWlbCJO3k6maUmLChS3pM+763sRG0puUGzYrtQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B8MNWUz7kD5hCOvvTGMLms8DT6wSZdGwVrQXkyHjN6sQH+J+rLoNhhiYXajZ9ZP/8rsuQmsca78l9dM8/N0GurLj/GnIrIvGc9vAAb5fehTTYNdmruKDGgx2sB5j7joezgqVsPvrJx4twM3/EDzItJ1wGYTcIE/T/ZsWTpQ4iC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LRtLcxLV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A25B1C4CEE9;
-	Wed, 14 May 2025 16:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747239553;
-	bh=bxT7tkxgC6deT2UIP7tx4993TaswUXWKhENMilZ9+1Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LRtLcxLVTMx9/qUIf1RVK3EZWZg5y0iKQUjtQ/1wNju1vg7SEAsg67qFS9kJts1Bo
-	 bJt0CdIPIt9JAYmXstOF/10LLlKbp30CJ8ud4jh7LZOtrcUXoxtrWvnEgx4F26Gra8
-	 Zg4sTbsv+NTFPvTiNsAUNZbejTwdR27/j6v0hUEbUXEzHapsZLfeH88WerADHcILC+
-	 FyRJBf4N+3bBBHdZKEVQaaztEYfFBGhne3ppK5c6D5/koCFHlLGpktnfdBqwljjT3Z
-	 W+lkobj1h/66fq8TMDSFXrIkuKrJrzvi/R11N3bZk8ykkfuoYENe+owRpXJ1pDNeWP
-	 ZXPJARy1ME1JA==
-Date: Wed, 14 May 2025 09:19:13 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-	Jan Kara <jack@suse.cz>, John Garry <john.g.garry@oracle.com>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 5/7] ext4: Add multi-fsblock atomic write support with
- bigalloc
-Message-ID: <20250514161913.GH25655@frogsfrogsfrogs>
-References: <cover.1746734745.git.ritesh.list@gmail.com>
- <dc97b425ba7f88f18ef175b014d25d9d6e074278.1746734746.git.ritesh.list@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=phoMNbOfkkCjqfSrlyziGcvxRYSJcP79plvwq5YSe470ojlsaKL4Y0kzRQl16uyHa85c3vpoxV811YuXsRzm3DTcHg2sZbZlHPbZXU4rP/xoo3XG4RyWFnV1jsps6O7nvq8XZD4A8F73oaiQKdT2t2TvpYO8zW0W6QdSh0TGWKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UdKYknY2; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1747239655; x=1778775655;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Y8GIyFWlbCJO3k6maUmLChS3pM+763sRG0puUGzYrtQ=;
+  b=UdKYknY2Ym3ZxA9mqHq8svOo3PctvZEOurbJKelMu4J3uNVdl+NPjPYc
+   9oDR2kJ8XS9oSmk82rPw3eviHLpgkyjA99KlwPyxQ9EBNdn5w4TVhzEmB
+   CkhU6KCOoaxQTAMD7e5RM06uc4a0Q4M654i1HiSD86zSOPHK7EFUJLKr+
+   MO6OPZoiSJtfFk9FyEe9J/LdW5BF2wb2AGF6FouM6qks8W9dyHAjLq1v8
+   Suj2d8XUASd4LTD2vmhYTbZ6WYTY6Z5tB98Nz7Q4Yd10ghgPH3lvmiRQ7
+   K9NsNbCgOvIjLoAMihqR8y3QWRJ4qYO+SXY1Y0mxqTQyS28LkA7LJgch8
+   w==;
+X-CSE-ConnectionGUID: RW/6iDw5TvOKv9/1IJielw==
+X-CSE-MsgGUID: +ulUJlDFRgqKjeZobX7QxQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11433"; a="49128374"
+X-IronPort-AV: E=Sophos;i="6.15,288,1739865600"; 
+   d="scan'208";a="49128374"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2025 09:20:54 -0700
+X-CSE-ConnectionGUID: f1OrtovNTi+KcOkAyn5WJw==
+X-CSE-MsgGUID: SPG5zt9qSfe+SvhPmtgPhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,288,1739865600"; 
+   d="scan'208";a="142973150"
+Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 14 May 2025 09:20:48 -0700
+Received: from kbuild by 1992f890471c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uFEqb-000HKl-1F;
+	Wed, 14 May 2025 16:20:45 +0000
+Date: Thu, 15 May 2025 00:20:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	kernel_team@skhynix.com, torvalds@linux-foundation.org,
+	damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	mingo@redhat.com, peterz@infradead.org, will@kernel.org,
+	tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
+	sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
+	johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+	willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+	gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
+	akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
+	hannes@cmpxchg.org, vdavydov.dev@gmail.com
+Subject: Re: [PATCH v15 34/43] dept: make dept aware of
+ lockdep_set_lock_cmp_fn() annotation
+Message-ID: <202505150014.6SbTtVaA-lkp@intel.com>
+References: <20250513100730.12664-35-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,320 +89,118 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dc97b425ba7f88f18ef175b014d25d9d6e074278.1746734746.git.ritesh.list@gmail.com>
+In-Reply-To: <20250513100730.12664-35-byungchul@sk.com>
 
-On Fri, May 09, 2025 at 02:20:35AM +0530, Ritesh Harjani (IBM) wrote:
-> EXT4 supports bigalloc feature which allows the FS to work in size of
-> clusters (group of blocks) rather than individual blocks. This patch
-> adds atomic write support for bigalloc so that systems with bs = ps can
-> also create FS using -
->     mkfs.ext4 -F -O bigalloc -b 4096 -C 16384 <dev>
-> 
-> With bigalloc ext4 can support multi-fsblock atomic writes. We will have to
-> adjust ext4's atomic write unit max value to cluster size. This can then support
-> atomic write of size anywhere between [blocksize, clustersize]. This
-> patch adds the required changes to enable multi-fsblock atomic write
-> support using bigalloc in the next patch.
-> 
-> In this patch for block allocation:
-> we first query the underlying region of the requested range by calling
-> ext4_map_blocks() call. Here are the various cases which we then handle
-> depending upon the underlying mapping type:
-> 1. If the underlying region for the entire requested range is a mapped extent,
->    then we don't call ext4_map_blocks() to allocate anything. We don't need to
->    even start the jbd2 txn in this case.
-> 2. For an append write case, we create a mapped extent.
-> 3. If the underlying region is entirely a hole, then we create an unwritten
->    extent for the requested range.
-> 4. If the underlying region is a large unwritten extent, then we split the
->    extent into 2 unwritten extent of required size.
-> 5. If the underlying region has any type of mixed mapping, then we call
->    ext4_map_blocks() in a loop to zero out the unwritten and the hole regions
->    within the requested range. This then provide a single mapped extent type
->    mapping for the requested range.
-> 
-> Note: We invoke ext4_map_blocks() in a loop with the EXT4_GET_BLOCKS_ZERO
-> flag only when the underlying extent mapping of the requested range is
-> not entirely a hole, an unwritten extent, or a fully mapped extent. That
-> is, if the underlying region contains a mix of hole(s), unwritten
-> extent(s), and mapped extent(s), we use this loop to ensure that all the
-> short mappings are zeroed out. This guarantees that the entire requested
-> range becomes a single, uniformly mapped extent. It is ok to do so
-> because we know this is being done on a bigalloc enabled filesystem
-> where the block bitmap represents the entire cluster unit.
-> 
-> Note having a single contiguous underlying region of type mapped,
-> unwrittn or hole is not a problem. But the reason to avoid writing on
-> top of mixed mapping region is because, atomic writes requires all or
-> nothing should get written for the userspace pwritev2 request. So if at
-> any point in time during the write if a crash or a sudden poweroff
-> occurs, the region undergoing atomic write should read either complete
-> old data or complete new data. But it should never have a mix of both
-> old and new data.
-> So, we first convert any mixed mapping region to a single contiguous
-> mapped extent before any data gets written to it. This is because
-> normally FS will only convert unwritten extents to written at the end of
-> the write in ->end_io() call. And if we allow the writes over a mixed
-> mapping and if a sudden power off happens in between, we will end up
-> reading mix of new data (over mapped extents) and old data (over
-> unwritten extents), because unwritten to written conversion never went
-> through.
-> So to avoid this and to avoid writes getting torned due to mixed
-> mapping, we first allocate a single contiguous block mapping and then
-> do the write.
-> 
-> Co-developed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Hi Byungchul,
 
-Looks fine (I don't like the pre-zeroing but options are limited on
-ext4) except for one thing...
+kernel test robot noticed the following build warnings:
 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 8b86b1a29bdc..2642e1ef128f 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3412,6 +3412,136 @@ static void ext4_set_iomap(struct inode *inode, struct iomap *iomap,
->  	}
->  }
->  
-> +static int ext4_map_blocks_atomic_write_slow(handle_t *handle,
-> +			struct inode *inode, struct ext4_map_blocks *map)
-> +{
-> +	ext4_lblk_t m_lblk = map->m_lblk;
-> +	unsigned int m_len = map->m_len;
-> +	unsigned int mapped_len = 0, m_flags = 0;
-> +	ext4_fsblk_t next_pblk;
-> +	bool check_next_pblk = false;
-> +	int ret = 0;
-> +
-> +	WARN_ON_ONCE(!ext4_has_feature_bigalloc(inode->i_sb));
-> +
-> +	/*
-> +	 * This is a slow path in case of mixed mapping. We use
-> +	 * EXT4_GET_BLOCKS_CREATE_ZERO flag here to make sure we get a single
-> +	 * contiguous mapped mapping. This will ensure any unwritten or hole
-> +	 * regions within the requested range is zeroed out and we return
-> +	 * a single contiguous mapped extent.
-> +	 */
-> +	m_flags = EXT4_GET_BLOCKS_CREATE_ZERO;
-> +
-> +	do {
-> +		ret = ext4_map_blocks(handle, inode, map, m_flags);
-> +		if (ret < 0 && ret != -ENOSPC)
-> +			goto out_err;
-> +		/*
-> +		 * This should never happen, but let's return an error code to
-> +		 * avoid an infinite loop in here.
-> +		 */
-> +		if (ret == 0) {
-> +			ret = -EFSCORRUPTED;
-> +			ext4_warning_inode(inode,
-> +				"ext4_map_blocks() couldn't allocate blocks m_flags: 0x%x, ret:%d",
-> +				m_flags, ret);
-> +			goto out_err;
-> +		}
-> +		/*
-> +		 * With bigalloc we should never get ENOSPC nor discontiguous
-> +		 * physical extents.
-> +		 */
-> +		if ((check_next_pblk && next_pblk != map->m_pblk) ||
-> +				ret == -ENOSPC) {
-> +			ext4_warning_inode(inode,
-> +				"Non-contiguous allocation detected: expected %llu, got %llu, "
-> +				"or ext4_map_blocks() returned out of space ret: %d",
-> +				next_pblk, map->m_pblk, ret);
-> +			ret = -ENOSPC;
-> +			goto out_err;
+[auto build test WARNING on 82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3]
 
-If you get physically discontiguous mappings within a cluster, the
-extent tree is corrupt.
+url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/llist-move-llist_-head-node-definition-to-types-h/20250513-181346
+base:   82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3
+patch link:    https://lore.kernel.org/r/20250513100730.12664-35-byungchul%40sk.com
+patch subject: [PATCH v15 34/43] dept: make dept aware of lockdep_set_lock_cmp_fn() annotation
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20250515/202505150014.6SbTtVaA-lkp@intel.com/config)
+compiler: clang version 20.1.2 (https://github.com/llvm/llvm-project 58df0ef89dd64126512e4ee27b4ac3fd8ddf6247)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250515/202505150014.6SbTtVaA-lkp@intel.com/reproduce)
 
---D
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202505150014.6SbTtVaA-lkp@intel.com/
 
-> +		}
-> +		next_pblk = map->m_pblk + map->m_len;
-> +		check_next_pblk = true;
-> +
-> +		mapped_len += map->m_len;
-> +		map->m_lblk += map->m_len;
-> +		map->m_len = m_len - mapped_len;
-> +	} while (mapped_len < m_len);
-> +
-> +	/*
-> +	 * We might have done some work in above loop, so we need to query the
-> +	 * start of the physical extent, based on the origin m_lblk and m_len.
-> +	 * Let's also ensure we were able to allocate the required range for
-> +	 * mixed mapping case.
-> +	 */
-> +	map->m_lblk = m_lblk;
-> +	map->m_len = m_len;
-> +	map->m_flags = 0;
-> +
-> +	ret = ext4_map_blocks(handle, inode, map,
-> +			      EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF);
-> +	if (ret != m_len) {
-> +		ext4_warning_inode(inode,
-> +			"allocation failed for atomic write request m_lblk:%u, m_len:%u, ret:%d\n",
-> +			m_lblk, m_len, ret);
-> +		ret = -EINVAL;
-> +	}
-> +	return ret;
-> +
-> +out_err:
-> +	/* reset map before returning an error */
-> +	map->m_lblk = m_lblk;
-> +	map->m_len = m_len;
-> +	map->m_flags = 0;
-> +	return ret;
-> +}
-> +
-> +/*
-> + * ext4_map_blocks_atomic: Helper routine to ensure the entire requested
-> + * range in @map [lblk, lblk + len) is one single contiguous extent with no
-> + * mixed mappings.
-> + *
-> + * We first use m_flags passed to us by our caller (ext4_iomap_alloc()).
-> + * We only call EXT4_GET_BLOCKS_ZERO in the slow path, when the underlying
-> + * physical extent for the requested range does not have a single contiguous
-> + * mapping type i.e. (Hole, Mapped, or Unwritten) throughout.
-> + * In that case we will loop over the requested range to allocate and zero out
-> + * the unwritten / holes in between, to get a single mapped extent from
-> + * [m_lblk, m_lblk +  m_len). Note that this is only possible because we know
-> + * this can be called only with bigalloc enabled filesystem where the underlying
-> + * cluster is already allocated. This avoids allocating discontiguous extents
-> + * in the slow path due to multiple calls to ext4_map_blocks().
-> + * The slow path is mostly non-performance critical path, so it should be ok to
-> + * loop using ext4_map_blocks() with appropriate flags to allocate & zero the
-> + * underlying short holes/unwritten extents within the requested range.
-> + */
-> +static int ext4_map_blocks_atomic_write(handle_t *handle, struct inode *inode,
-> +				struct ext4_map_blocks *map, int m_flags)
-> +{
-> +	ext4_lblk_t m_lblk = map->m_lblk;
-> +	unsigned int m_len = map->m_len;
-> +	int ret = 0;
-> +
-> +	WARN_ON_ONCE(m_len > 1 && !ext4_has_feature_bigalloc(inode->i_sb));
-> +
-> +	ret = ext4_map_blocks(handle, inode, map, m_flags);
-> +	if (ret < 0 || ret == m_len)
-> +		goto out;
-> +	/*
-> +	 * This is a mixed mapping case where we were not able to allocate
-> +	 * a single contiguous extent. In that case let's reset requested
-> +	 * mapping and call the slow path.
-> +	 */
-> +	map->m_lblk = m_lblk;
-> +	map->m_len = m_len;
-> +	map->m_flags = 0;
-> +
-> +	return ext4_map_blocks_atomic_write_slow(handle, inode, map);
-> +out:
-> +	return ret;
-> +}
-> +
->  static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
->  			    unsigned int flags)
->  {
-> @@ -3425,7 +3555,30 @@ static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
->  	 */
->  	if (map->m_len > DIO_MAX_BLOCKS)
->  		map->m_len = DIO_MAX_BLOCKS;
-> -	dio_credits = ext4_chunk_trans_blocks(inode, map->m_len);
-> +
-> +	/*
-> +	 * journal credits estimation for atomic writes. We call
-> +	 * ext4_map_blocks(), to find if there could be a mixed mapping. If yes,
-> +	 * then let's assume the no. of pextents required can be m_len i.e.
-> +	 * every alternate block can be unwritten and hole.
-> +	 */
-> +	if (flags & IOMAP_ATOMIC) {
-> +		unsigned int orig_mlen = map->m_len;
-> +
-> +		ret = ext4_map_blocks(NULL, inode, map, 0);
-> +		if (ret < 0)
-> +			return ret;
-> +		if (map->m_len < orig_mlen) {
-> +			map->m_len = orig_mlen;
-> +			dio_credits = ext4_meta_trans_blocks(inode, orig_mlen,
-> +							     map->m_len);
-> +		} else {
-> +			dio_credits = ext4_chunk_trans_blocks(inode,
-> +							      map->m_len);
-> +		}
-> +	} else {
-> +		dio_credits = ext4_chunk_trans_blocks(inode, map->m_len);
-> +	}
->  
->  retry:
->  	/*
-> @@ -3456,7 +3609,10 @@ static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
->  	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
->  		m_flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
->  
-> -	ret = ext4_map_blocks(handle, inode, map, m_flags);
-> +	if (flags & IOMAP_ATOMIC)
-> +		ret = ext4_map_blocks_atomic_write(handle, inode, map, m_flags);
-> +	else
-> +		ret = ext4_map_blocks(handle, inode, map, m_flags);
->  
->  	/*
->  	 * We cannot fill holes in indirect tree based inodes as that could
-> @@ -3480,6 +3636,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  	int ret;
->  	struct ext4_map_blocks map;
->  	u8 blkbits = inode->i_blkbits;
-> +	unsigned int orig_mlen;
->  
->  	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
->  		return -EINVAL;
-> @@ -3493,6 +3650,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  	map.m_lblk = offset >> blkbits;
->  	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
->  			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
-> +	orig_mlen = map.m_len;
->  
->  	if (flags & IOMAP_WRITE) {
->  		/*
-> @@ -3503,8 +3661,16 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  		 */
->  		if (offset + length <= i_size_read(inode)) {
->  			ret = ext4_map_blocks(NULL, inode, &map, 0);
-> -			if (ret > 0 && (map.m_flags & EXT4_MAP_MAPPED))
-> -				goto out;
-> +			/*
-> +			 * For atomic writes the entire requested length should
-> +			 * be mapped.
-> +			 */
-> +			if (map.m_flags & EXT4_MAP_MAPPED) {
-> +				if ((!(flags & IOMAP_ATOMIC) && ret > 0) ||
-> +				   (flags & IOMAP_ATOMIC && ret >= orig_mlen))
-> +					goto out;
-> +			}
-> +			map.m_len = orig_mlen;
->  		}
->  		ret = ext4_iomap_alloc(inode, &map, flags);
->  	} else {
-> @@ -3525,6 +3691,16 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  	 */
->  	map.m_len = fscrypt_limit_io_blocks(inode, map.m_lblk, map.m_len);
->  
-> +	/*
-> +	 * Before returning to iomap, let's ensure the allocated mapping
-> +	 * covers the entire requested length for atomic writes.
-> +	 */
-> +	if (flags & IOMAP_ATOMIC) {
-> +		if (map.m_len < (length >> blkbits)) {
-> +			WARN_ON(1);
-> +			return -EINVAL;
-> +		}
-> +	}
->  	ext4_set_iomap(inode, iomap, &map, offset, length, flags);
->  
->  	return 0;
-> -- 
-> 2.49.0
-> 
-> 
+All warnings (new ones prefixed by >>):
+
+   In file included from drivers/net/ethernet/microchip/vcap/vcap_api.c:3610:
+>> drivers/net/ethernet/microchip/vcap/vcap_api_kunit.c:1921:13: warning: stack frame size (2104) exceeds limit (2048) in 'vcap_api_next_lookup_advanced_test' [-Wframe-larger-than]
+    1921 | static void vcap_api_next_lookup_advanced_test(struct kunit *test)
+         |             ^
+   1 warning generated.
+
+
+vim +/vcap_api_next_lookup_advanced_test +1921 drivers/net/ethernet/microchip/vcap/vcap_api_kunit.c
+
+c956b9b318d903 Steen Hegelund 2022-11-09  1920  
+c956b9b318d903 Steen Hegelund 2022-11-09 @1921  static void vcap_api_next_lookup_advanced_test(struct kunit *test)
+c956b9b318d903 Steen Hegelund 2022-11-09  1922  {
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1923  	struct vcap_admin admin[] = {
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1924  	{
+c956b9b318d903 Steen Hegelund 2022-11-09  1925  		.vtype = VCAP_TYPE_IS0,
+c956b9b318d903 Steen Hegelund 2022-11-09  1926  		.vinst = 0,
+c956b9b318d903 Steen Hegelund 2022-11-09  1927  		.first_cid = 1000000,
+c956b9b318d903 Steen Hegelund 2022-11-09  1928  		.last_cid =  1199999,
+c956b9b318d903 Steen Hegelund 2022-11-09  1929  		.lookups = 6,
+c956b9b318d903 Steen Hegelund 2022-11-09  1930  		.lookups_per_instance = 2,
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1931  	}, {
+c956b9b318d903 Steen Hegelund 2022-11-09  1932  		.vtype = VCAP_TYPE_IS0,
+c956b9b318d903 Steen Hegelund 2022-11-09  1933  		.vinst = 1,
+c956b9b318d903 Steen Hegelund 2022-11-09  1934  		.first_cid = 1200000,
+c956b9b318d903 Steen Hegelund 2022-11-09  1935  		.last_cid =  1399999,
+c956b9b318d903 Steen Hegelund 2022-11-09  1936  		.lookups = 6,
+c956b9b318d903 Steen Hegelund 2022-11-09  1937  		.lookups_per_instance = 2,
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1938  	}, {
+c956b9b318d903 Steen Hegelund 2022-11-09  1939  		.vtype = VCAP_TYPE_IS0,
+c956b9b318d903 Steen Hegelund 2022-11-09  1940  		.vinst = 2,
+c956b9b318d903 Steen Hegelund 2022-11-09  1941  		.first_cid = 1400000,
+c956b9b318d903 Steen Hegelund 2022-11-09  1942  		.last_cid =  1599999,
+c956b9b318d903 Steen Hegelund 2022-11-09  1943  		.lookups = 6,
+c956b9b318d903 Steen Hegelund 2022-11-09  1944  		.lookups_per_instance = 2,
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1945  	}, {
+c956b9b318d903 Steen Hegelund 2022-11-09  1946  		.vtype = VCAP_TYPE_IS2,
+c956b9b318d903 Steen Hegelund 2022-11-09  1947  		.vinst = 0,
+c956b9b318d903 Steen Hegelund 2022-11-09  1948  		.first_cid = 8000000,
+c956b9b318d903 Steen Hegelund 2022-11-09  1949  		.last_cid = 8199999,
+c956b9b318d903 Steen Hegelund 2022-11-09  1950  		.lookups = 4,
+c956b9b318d903 Steen Hegelund 2022-11-09  1951  		.lookups_per_instance = 2,
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1952  	}, {
+c956b9b318d903 Steen Hegelund 2022-11-09  1953  		.vtype = VCAP_TYPE_IS2,
+c956b9b318d903 Steen Hegelund 2022-11-09  1954  		.vinst = 1,
+c956b9b318d903 Steen Hegelund 2022-11-09  1955  		.first_cid = 8200000,
+c956b9b318d903 Steen Hegelund 2022-11-09  1956  		.last_cid = 8399999,
+c956b9b318d903 Steen Hegelund 2022-11-09  1957  		.lookups = 4,
+c956b9b318d903 Steen Hegelund 2022-11-09  1958  		.lookups_per_instance = 2,
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1959  	}
+c956b9b318d903 Steen Hegelund 2022-11-09  1960  	};
+c956b9b318d903 Steen Hegelund 2022-11-09  1961  	bool ret;
+c956b9b318d903 Steen Hegelund 2022-11-09  1962  
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1963  	vcap_test_api_init(&admin[0]);
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1964  	list_add_tail(&admin[1].list, &test_vctrl.list);
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1965  	list_add_tail(&admin[2].list, &test_vctrl.list);
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1966  	list_add_tail(&admin[3].list, &test_vctrl.list);
+129ff4de58ff0c Arnd Bergmann  2023-02-17  1967  	list_add_tail(&admin[4].list, &test_vctrl.list);
+c956b9b318d903 Steen Hegelund 2022-11-09  1968  
+c956b9b318d903 Steen Hegelund 2022-11-09  1969  	ret = vcap_is_next_lookup(&test_vctrl, 1000000, 1001000);
+c956b9b318d903 Steen Hegelund 2022-11-09  1970  	KUNIT_EXPECT_EQ(test, false, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1971  	ret = vcap_is_next_lookup(&test_vctrl, 1000000, 1101000);
+c956b9b318d903 Steen Hegelund 2022-11-09  1972  	KUNIT_EXPECT_EQ(test, true, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1973  
+c956b9b318d903 Steen Hegelund 2022-11-09  1974  	ret = vcap_is_next_lookup(&test_vctrl, 1100000, 1201000);
+c956b9b318d903 Steen Hegelund 2022-11-09  1975  	KUNIT_EXPECT_EQ(test, true, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1976  	ret = vcap_is_next_lookup(&test_vctrl, 1100000, 1301000);
+784c3067d094dd Steen Hegelund 2023-01-14  1977  	KUNIT_EXPECT_EQ(test, true, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1978  	ret = vcap_is_next_lookup(&test_vctrl, 1100000, 8101000);
+784c3067d094dd Steen Hegelund 2023-01-14  1979  	KUNIT_EXPECT_EQ(test, true, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1980  	ret = vcap_is_next_lookup(&test_vctrl, 1300000, 1401000);
+c956b9b318d903 Steen Hegelund 2022-11-09  1981  	KUNIT_EXPECT_EQ(test, true, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1982  	ret = vcap_is_next_lookup(&test_vctrl, 1400000, 1501000);
+c956b9b318d903 Steen Hegelund 2022-11-09  1983  	KUNIT_EXPECT_EQ(test, true, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1984  	ret = vcap_is_next_lookup(&test_vctrl, 1500000, 8001000);
+c956b9b318d903 Steen Hegelund 2022-11-09  1985  	KUNIT_EXPECT_EQ(test, true, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1986  
+c956b9b318d903 Steen Hegelund 2022-11-09  1987  	ret = vcap_is_next_lookup(&test_vctrl, 8000000, 8001000);
+c956b9b318d903 Steen Hegelund 2022-11-09  1988  	KUNIT_EXPECT_EQ(test, false, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1989  	ret = vcap_is_next_lookup(&test_vctrl, 8000000, 8101000);
+c956b9b318d903 Steen Hegelund 2022-11-09  1990  	KUNIT_EXPECT_EQ(test, true, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1991  
+c956b9b318d903 Steen Hegelund 2022-11-09  1992  	ret = vcap_is_next_lookup(&test_vctrl, 8300000, 8301000);
+c956b9b318d903 Steen Hegelund 2022-11-09  1993  	KUNIT_EXPECT_EQ(test, false, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1994  	ret = vcap_is_next_lookup(&test_vctrl, 8300000, 8401000);
+784c3067d094dd Steen Hegelund 2023-01-14  1995  	KUNIT_EXPECT_EQ(test, false, ret);
+c956b9b318d903 Steen Hegelund 2022-11-09  1996  }
+c956b9b318d903 Steen Hegelund 2022-11-09  1997  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
