@@ -1,279 +1,166 @@
-Return-Path: <linux-ext4+bounces-7881-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7882-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1F45AB6BB5
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 14:46:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BD86AB6C35
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 15:09:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86EB0169DF6
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 12:46:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45B1B3B85FF
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 13:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB5927991F;
-	Wed, 14 May 2025 12:46:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D9E276038;
+	Wed, 14 May 2025 13:09:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d6UbKUSJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iwxsP7Jm"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E70A2798F0;
-	Wed, 14 May 2025 12:46:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA8727A455;
+	Wed, 14 May 2025 13:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747226793; cv=none; b=Pyf1vFFdv3mEMxmuwU8ykPBiqL1wDL/3sy9ek3gQgrEJ9e9UFFZYx/JV+6A4n9zoT+Zjri2HaSjd3MFZo2/ry30rme9WeG659q0FWd4eAIzwfXcNIMIT3z8SqJsJOFcx5k7AIfWsk1MLsf06mweT09Bc4u5nOA8QWEYStOnNoW0=
+	t=1747228168; cv=none; b=Tg9u55F2odFAAsPsAGa6FrdOzIrfOQr63Ad6Z4feg/1Z4DbFly3wUC0GS2Ads5899myHkirUN9gXVYKDzzAZwf7smnTCJyTWLWDa4V1PYleoOR2gVQWH3w3ucmiSV2iuG3fNZxc9uFw6XZcthazA+OijJttfZUZo3fDHe3eo0bM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747226793; c=relaxed/simple;
-	bh=BUgSEOK7zJn4CATqu59tiupdNB3czkL+OCUJvfXe/1U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XmgzUzI6sIF8hvZbGkR6MXihk1DPgrwLbE9tFw2egIBuVmQduBsM5j3oiar7ujG2dpsnofooSFklxJhjelghjbyYqpePJVOGBv/Eou86Yo9+Q2P8FZRHd0bzcjWpJkYhr5GeciOOkpEye+Xn/tpB9KGzMkf1RUeSX0uiORy2fuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d6UbKUSJ; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747226790; x=1778762790;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=BUgSEOK7zJn4CATqu59tiupdNB3czkL+OCUJvfXe/1U=;
-  b=d6UbKUSJB5yEbfk3ajTt+aG8p79O8YOeHbgtRrQm8YZU04YQ3ki6BSls
-   KH5YeNH2WUaJghnQ2IbySabcgMnwOtVeYmih4V+kp/SKv1no2KkAYmooH
-   VTWZc8UouJKIhxsSOsZcOZgKmNaeafPJq5S/7i+73GK8QeJgcvqYo8TsR
-   ftde1PWJZ08cKI59qKxos7QcWoecJrGKLqu3TrkMW7/9PDoWklyin/P0G
-   kLQi83+kDOIVvMZalCKjKqrs0R8Px+gozBEwxNWONyYOR19gMqUH9jvC6
-   3Rr8g4EY9Vl2KpXyqBbACoLaqR5pt9DJPN3oGINd2U7sPaX3Ae+xOeF5m
-   A==;
-X-CSE-ConnectionGUID: sZ+y3uFrTcKBqf+jdD7xpA==
-X-CSE-MsgGUID: pBvpslkFR1yg56rG59mnLw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11433"; a="48992264"
-X-IronPort-AV: E=Sophos;i="6.15,288,1739865600"; 
-   d="scan'208";a="48992264"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2025 05:46:29 -0700
-X-CSE-ConnectionGUID: rUXdi+5SR7qQyzL3Wy2ykQ==
-X-CSE-MsgGUID: x2SA57B0SQaTgc5J+7zhNg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,288,1739865600"; 
-   d="scan'208";a="169118792"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 14 May 2025 05:46:23 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uFBV6-000H7N-2B;
-	Wed, 14 May 2025 12:46:20 +0000
-Date: Wed, 14 May 2025 20:46:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	kernel_team@skhynix.com, torvalds@linux-foundation.org,
-	damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	mingo@redhat.com, peterz@infradead.org, will@kernel.org,
-	tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
-	sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
-	johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-	willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-	gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
-	akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
-	hannes@cmpxchg.org, vdavydov.dev@gmail.com
-Subject: Re: [PATCH v15 33/43] dept: assign unique dept_key to each distinct
- dma fence caller
-Message-ID: <202505142049.8vYH34nZ-lkp@intel.com>
-References: <20250513100730.12664-34-byungchul@sk.com>
+	s=arc-20240116; t=1747228168; c=relaxed/simple;
+	bh=zeD8unXVnMUvwwF3GajVSv3NzHyHRhKQAwJ7usN+htk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T/asDtqhky3N0FD40Mxb3vjToy6KnK0O6dpEYP2LqA0fCX9gAFgNZabcDX2JydojwJiV8R3EhNpQsToaMlOPdIDuYerXRmR41yQFZaBmHbF1PN3ZgCA+z3RXJ6D9ViLpJGH2IruUm/jyyagRxn//VvebCQf/Yfn+ZDl7o/pFf0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iwxsP7Jm; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-74019695377so5038277b3a.3;
+        Wed, 14 May 2025 06:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747228166; x=1747832966; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ny7IJUDWkdRyrhuT9oc4WLLYxl4iVGqYTbLsxT55JRw=;
+        b=iwxsP7Jm6xeen/+vFV3d2iJ1jJ/G08BsXwkfnxCr9GpNBMm1ALQl4EazncWCiT+bZt
+         dh+zlTC/WEkj+mivoidQSke5dOMAXUG7DmMXlgsPsIX9uKOlzfWAluDsUQL/ASzSZJZx
+         Ae6DlgIBYexkqU7bWrdf+d/0AJ+dhfDKJs9B6rgOdWa9K8HwfmiZ6Ra1hi95NoR91sDQ
+         mJeIn/c8rvJ4Trqt962AfrC+bPl1XORaHdJYYJvQK8mhpOEnpOTBUzpfTkGrxWIVftn4
+         OGdTcPOotDvXDwfolPaBi1mgpa6GIz7SCjEh8vs7dGsw56qrifvotoeDImTnHKrABtc3
+         7neQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747228166; x=1747832966;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ny7IJUDWkdRyrhuT9oc4WLLYxl4iVGqYTbLsxT55JRw=;
+        b=odwSOMUijAE7438oXIMU3RE61CvHtwF58syNlz8YU6lmjVKXyufvgsGuLxpnux/NPA
+         lOGyVpzG3LTNajHQvMSE9chc21+uXe6bTCb/2q49EufZPaOBWbui8mH6qowqA7xGMqSr
+         qdba6F6hhO1gmyvRYpSsSJRswCRCozsgWu5e93FbvayedYENglCwA8oRqoRdo3hXSO4s
+         SzdBpzK1l8SnmQyCYHkhycyOEAxZt4Py4bnrcpDixYBNkGkxiloHrljIXfLCvSBjqTQz
+         gsj2xnGv4IDN2dLYmc2t+Fmr3VZbzjsTCqk8cGpBBuh+DnMPltJKzTkmk6j+Zt1xF5TC
+         gbYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUaFHFBiwLrHZOfdiNDqOW1p/fmTc1knqOb5r4s77FQBceBkBPO4WeYGJdPsZHKiq342hIIkHH9PSm2soY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4ZHAhSpm5XMwAMLhYJGNy84rBugv9wPNOfl+bo7mAi3l7Gppz
+	0oFeN3pa0mN9JrrOWeLDeCcTvlQ5vPsHzB8uqgo4QYL4YTvKt+vc
+X-Gm-Gg: ASbGncuu6DvdVt3jfD4GRribVXdg/tv5LdaYr7/bd4ihG4hZqK5jh7eGkNE5Kcw7JDm
+	JqsxMQ708Jx+lX/8JID/FIgWFmF6Gu0zc1iIcRcWL0pgNvx7f1wwQRamZ0vCEZuOXb3h/flLTAM
+	sJ1zfgtQjWuJjTl7O/1kXK4sb3ONwLEVnYzqEVLTJgi/eHWX18PRPlHG7XHNU3IT+P10JcLvftc
+	nmzVDTS9OEI3tRbzk+JlcIdo/lN325O507qVe5tgBTwIs2U6oRwEqCtBLVSs++fz6jVo6qmFPg8
+	LLNXKK+uOCDePzo2BSY69B3Rtxl6xy0BdeeWTCOFiRvkY1/wzbHuJwlX8lUkPrJ4
+X-Google-Smtp-Source: AGHT+IHarGSfq8DTpiGk2i6P06np/kn23owSm18E/NQdeaxxSTuaZVzr+43mg9RGVy/dZcIsmD+ZXQ==
+X-Received: by 2002:a05:6a00:ccc:b0:736:4ebd:e5a with SMTP id d2e1a72fcca58-7428936af7fmr5175222b3a.20.1747228166160;
+        Wed, 14 May 2025 06:09:26 -0700 (PDT)
+Received: from localhost.localdomain ([2001:e60:a413:5fa1:d8a8:267:bf52:3c78])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74283586d57sm2407646b3a.116.2025.05.14.06.09.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 May 2025 06:09:25 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: tytso@mit.edu,
+	jack@suse.cz
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com,
+	Jeongjun Park <aha310510@gmail.com>
+Subject: [PATCH v2] jbd2: fix data-race and null-ptr-deref in jbd2_journal_dirty_metadata()
+Date: Wed, 14 May 2025 22:08:55 +0900
+Message-ID: <20250514130855.99010-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250513100730.12664-34-byungchul@sk.com>
 
-Hi Byungchul,
+Since handle->h_transaction may be a NULL pointer, so we should change it
+to call is_handle_aborted(handle) first before dereferencing it.
 
-kernel test robot noticed the following build errors:
+And the following data-race was reported in my fuzzer:
 
-[auto build test ERROR on 82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3]
+==================================================================
+BUG: KCSAN: data-race in jbd2_journal_dirty_metadata / jbd2_journal_dirty_metadata
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/llist-move-llist_-head-node-definition-to-types-h/20250513-181346
-base:   82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3
-patch link:    https://lore.kernel.org/r/20250513100730.12664-34-byungchul%40sk.com
-patch subject: [PATCH v15 33/43] dept: assign unique dept_key to each distinct dma fence caller
-config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20250514/202505142049.8vYH34nZ-lkp@intel.com/config)
-compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250514/202505142049.8vYH34nZ-lkp@intel.com/reproduce)
+write to 0xffff888011024104 of 4 bytes by task 10881 on cpu 1:
+ jbd2_journal_dirty_metadata+0x2a5/0x770 fs/jbd2/transaction.c:1556
+ __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
+ ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
+ ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
+ __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
+ ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
+....
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202505142049.8vYH34nZ-lkp@intel.com/
+read to 0xffff888011024104 of 4 bytes by task 10880 on cpu 0:
+ jbd2_journal_dirty_metadata+0xf2/0x770 fs/jbd2/transaction.c:1512
+ __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
+ ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
+ ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
+ __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
+ ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
+....
 
-All errors (new ones prefixed by >>):
+value changed: 0x00000000 -> 0x00000001
+==================================================================
 
->> drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c:1372:3: error: cannot jump from this indirect goto statement to one of its possible targets
-    1372 |                 drm_exec_retry_on_contention(&exec);
-         |                 ^
-   include/drm/drm_exec.h:123:4: note: expanded from macro 'drm_exec_retry_on_contention'
-     123 |                         goto *__drm_exec_retry_ptr;             \
-         |                         ^
-   drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c:1399:2: note: possible target of indirect goto statement
-    1399 |         dma_fence_wait(fence, false);
-         |         ^
-   include/linux/dma-fence.h:679:2: note: expanded from macro 'dma_fence_wait'
-     679 |         sdt_might_sleep_start_timeout(NULL, MAX_SCHEDULE_TIMEOUT);      \
-         |         ^
-   include/linux/dept_sdt.h:45:45: note: expanded from macro 'sdt_might_sleep_start_timeout'
-      45 |                 dept_stage_wait(__m, __m ? NULL : &__key, _THIS_IP_, __func__, t);\
-         |                                                           ^
-   include/linux/instruction_pointer.h:10:41: note: expanded from macro '_THIS_IP_'
-      10 | #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
-         |                                         ^
-   drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c:1399:2: note: jump enters a statement expression
-   include/linux/dma-fence.h:679:2: note: expanded from macro 'dma_fence_wait'
-     679 |         sdt_might_sleep_start_timeout(NULL, MAX_SCHEDULE_TIMEOUT);      \
-         |         ^
-   include/linux/dept_sdt.h:45:45: note: expanded from macro 'sdt_might_sleep_start_timeout'
-      45 |                 dept_stage_wait(__m, __m ? NULL : &__key, _THIS_IP_, __func__, t);\
-         |                                                           ^
-   include/linux/instruction_pointer.h:10:20: note: expanded from macro '_THIS_IP_'
-      10 | #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
-         |                    ^
-   drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c:1399:2: note: jump enters a statement expression
-   include/linux/dma-fence.h:675:38: note: expanded from macro 'dma_fence_wait'
-     675 | #define dma_fence_wait(f, intr)                                         \
-         |                                                                         ^
-   1 error generated.
+This issue is caused by missing data-race annotation for jh->b_modified.
+Therefore, the missing annotation needs to be added.
+
+Reported-by: syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=de24c3fe3c4091051710
+Fixes: 6e06ae88edae ("jbd2: speedup jbd2_journal_dirty_metadata()")
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+---
+v2: Changed to annotate jh->b_modified to avoid performance overhead
+- Link to v1: https://lore.kernel.org/all/20250513170441.54658-1-aha310510@gmail.com/
+---
+ fs/jbd2/transaction.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index cbc4785462f5..c7867139af69 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -1509,7 +1509,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
+ 				jh->b_next_transaction == transaction);
+ 		spin_unlock(&jh->b_state_lock);
+ 	}
+-	if (jh->b_modified == 1) {
++	if (data_race(jh->b_modified == 1)) {
+ 		/* If it's in our transaction it must be in BJ_Metadata list. */
+ 		if (data_race(jh->b_transaction == transaction &&
+ 		    jh->b_jlist != BJ_Metadata)) {
+@@ -1528,7 +1528,6 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
+ 		goto out;
+ 	}
+ 
+-	journal = transaction->t_journal;
+ 	spin_lock(&jh->b_state_lock);
+ 
+ 	if (is_handle_aborted(handle)) {
+@@ -1543,6 +1542,8 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
+ 		goto out_unlock_bh;
+ 	}
+ 
++	journal = transaction->t_journal;
++
+ 	if (jh->b_modified == 0) {
+ 		/*
+ 		 * This buffer's got modified and becoming part
 --
->> drivers/gpu/drm/xe/xe_svm.c:807:3: error: cannot jump from this indirect goto statement to one of its possible targets
-     807 |                 drm_exec_retry_on_contention(&exec);
-         |                 ^
-   include/drm/drm_exec.h:123:4: note: expanded from macro 'drm_exec_retry_on_contention'
-     123 |                         goto *__drm_exec_retry_ptr;             \
-         |                         ^
-   drivers/gpu/drm/xe/xe_svm.c:831:2: note: possible target of indirect goto statement
-     831 |         dma_fence_wait(fence, false);
-         |         ^
-   include/linux/dma-fence.h:679:2: note: expanded from macro 'dma_fence_wait'
-     679 |         sdt_might_sleep_start_timeout(NULL, MAX_SCHEDULE_TIMEOUT);      \
-         |         ^
-   include/linux/dept_sdt.h:45:45: note: expanded from macro 'sdt_might_sleep_start_timeout'
-      45 |                 dept_stage_wait(__m, __m ? NULL : &__key, _THIS_IP_, __func__, t);\
-         |                                                           ^
-   include/linux/instruction_pointer.h:10:41: note: expanded from macro '_THIS_IP_'
-      10 | #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
-         |                                         ^
-   drivers/gpu/drm/xe/xe_svm.c:831:2: note: jump enters a statement expression
-   include/linux/dma-fence.h:679:2: note: expanded from macro 'dma_fence_wait'
-     679 |         sdt_might_sleep_start_timeout(NULL, MAX_SCHEDULE_TIMEOUT);      \
-         |         ^
-   include/linux/dept_sdt.h:45:45: note: expanded from macro 'sdt_might_sleep_start_timeout'
-      45 |                 dept_stage_wait(__m, __m ? NULL : &__key, _THIS_IP_, __func__, t);\
-         |                                                           ^
-   include/linux/instruction_pointer.h:10:20: note: expanded from macro '_THIS_IP_'
-      10 | #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
-         |                    ^
-   drivers/gpu/drm/xe/xe_svm.c:831:2: note: jump enters a statement expression
-   include/linux/dma-fence.h:675:38: note: expanded from macro 'dma_fence_wait'
-     675 | #define dma_fence_wait(f, intr)                                         \
-         |                                                                         ^
-   1 error generated.
---
->> drivers/gpu/drm/xe/xe_gt_pagefault.c:164:3: error: cannot jump from this indirect goto statement to one of its possible targets
-     164 |                 drm_exec_retry_on_contention(&exec);
-         |                 ^
-   include/drm/drm_exec.h:123:4: note: expanded from macro 'drm_exec_retry_on_contention'
-     123 |                         goto *__drm_exec_retry_ptr;             \
-         |                         ^
-   drivers/gpu/drm/xe/xe_gt_pagefault.c:181:2: note: possible target of indirect goto statement
-     181 |         dma_fence_wait(fence, false);
-         |         ^
-   include/linux/dma-fence.h:679:2: note: expanded from macro 'dma_fence_wait'
-     679 |         sdt_might_sleep_start_timeout(NULL, MAX_SCHEDULE_TIMEOUT);      \
-         |         ^
-   include/linux/dept_sdt.h:45:45: note: expanded from macro 'sdt_might_sleep_start_timeout'
-      45 |                 dept_stage_wait(__m, __m ? NULL : &__key, _THIS_IP_, __func__, t);\
-         |                                                           ^
-   include/linux/instruction_pointer.h:10:41: note: expanded from macro '_THIS_IP_'
-      10 | #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
-         |                                         ^
-   drivers/gpu/drm/xe/xe_gt_pagefault.c:181:2: note: jump enters a statement expression
-   include/linux/dma-fence.h:679:2: note: expanded from macro 'dma_fence_wait'
-     679 |         sdt_might_sleep_start_timeout(NULL, MAX_SCHEDULE_TIMEOUT);      \
-         |         ^
-   include/linux/dept_sdt.h:45:45: note: expanded from macro 'sdt_might_sleep_start_timeout'
-      45 |                 dept_stage_wait(__m, __m ? NULL : &__key, _THIS_IP_, __func__, t);\
-         |                                                           ^
-   include/linux/instruction_pointer.h:10:20: note: expanded from macro '_THIS_IP_'
-      10 | #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
-         |                    ^
-   drivers/gpu/drm/xe/xe_gt_pagefault.c:181:2: note: jump enters a statement expression
-   include/linux/dma-fence.h:675:38: note: expanded from macro 'dma_fence_wait'
-     675 | #define dma_fence_wait(f, intr)                                         \
-         |                                                                         ^
-   1 error generated.
-
-
-vim +1372 drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c
-
-f1d93c9c2722a2 Jack Xiao       2020-03-27  1357  
-737dad0b5d609f Jack Xiao       2020-09-09  1358  int amdgpu_mes_ctx_unmap_meta_data(struct amdgpu_device *adev,
-737dad0b5d609f Jack Xiao       2020-09-09  1359  				   struct amdgpu_mes_ctx_data *ctx_data)
-737dad0b5d609f Jack Xiao       2020-09-09  1360  {
-737dad0b5d609f Jack Xiao       2020-09-09  1361  	struct amdgpu_bo_va *bo_va = ctx_data->meta_data_va;
-737dad0b5d609f Jack Xiao       2020-09-09  1362  	struct amdgpu_bo *bo = ctx_data->meta_data_obj;
-737dad0b5d609f Jack Xiao       2020-09-09  1363  	struct amdgpu_vm *vm = bo_va->base.vm;
-2acc73f81f2500 Christian König 2022-08-16  1364  	struct dma_fence *fence;
-2acc73f81f2500 Christian König 2022-08-16  1365  	struct drm_exec exec;
-2acc73f81f2500 Christian König 2022-08-16  1366  	long r;
-2acc73f81f2500 Christian König 2022-08-16  1367  
-05d249352f1ae9 Rob Clark       2023-11-20  1368  	drm_exec_init(&exec, 0, 0);
-2acc73f81f2500 Christian König 2022-08-16  1369  	drm_exec_until_all_locked(&exec) {
-2acc73f81f2500 Christian König 2022-08-16  1370  		r = drm_exec_lock_obj(&exec,
-2acc73f81f2500 Christian König 2022-08-16  1371  				      &ctx_data->meta_data_obj->tbo.base);
-2acc73f81f2500 Christian König 2022-08-16 @1372  		drm_exec_retry_on_contention(&exec);
-2acc73f81f2500 Christian König 2022-08-16  1373  		if (unlikely(r))
-2acc73f81f2500 Christian König 2022-08-16  1374  			goto out_unlock;
-737dad0b5d609f Jack Xiao       2020-09-09  1375  
-2acc73f81f2500 Christian König 2022-08-16  1376  		r = amdgpu_vm_lock_pd(vm, &exec, 0);
-2acc73f81f2500 Christian König 2022-08-16  1377  		drm_exec_retry_on_contention(&exec);
-2acc73f81f2500 Christian König 2022-08-16  1378  		if (unlikely(r))
-2acc73f81f2500 Christian König 2022-08-16  1379  			goto out_unlock;
-737dad0b5d609f Jack Xiao       2020-09-09  1380  	}
-737dad0b5d609f Jack Xiao       2020-09-09  1381  
-737dad0b5d609f Jack Xiao       2020-09-09  1382  	amdgpu_vm_bo_del(adev, bo_va);
-737dad0b5d609f Jack Xiao       2020-09-09  1383  	if (!amdgpu_vm_ready(vm))
-737dad0b5d609f Jack Xiao       2020-09-09  1384  		goto out_unlock;
-737dad0b5d609f Jack Xiao       2020-09-09  1385  
-2acc73f81f2500 Christian König 2022-08-16  1386  	r = dma_resv_get_singleton(bo->tbo.base.resv, DMA_RESV_USAGE_BOOKKEEP,
-2acc73f81f2500 Christian König 2022-08-16  1387  				   &fence);
-737dad0b5d609f Jack Xiao       2020-09-09  1388  	if (r)
-737dad0b5d609f Jack Xiao       2020-09-09  1389  		goto out_unlock;
-737dad0b5d609f Jack Xiao       2020-09-09  1390  	if (fence) {
-737dad0b5d609f Jack Xiao       2020-09-09  1391  		amdgpu_bo_fence(bo, fence, true);
-737dad0b5d609f Jack Xiao       2020-09-09  1392  		fence = NULL;
-737dad0b5d609f Jack Xiao       2020-09-09  1393  	}
-737dad0b5d609f Jack Xiao       2020-09-09  1394  
-737dad0b5d609f Jack Xiao       2020-09-09  1395  	r = amdgpu_vm_clear_freed(adev, vm, &fence);
-737dad0b5d609f Jack Xiao       2020-09-09  1396  	if (r || !fence)
-737dad0b5d609f Jack Xiao       2020-09-09  1397  		goto out_unlock;
-737dad0b5d609f Jack Xiao       2020-09-09  1398  
-737dad0b5d609f Jack Xiao       2020-09-09  1399  	dma_fence_wait(fence, false);
-737dad0b5d609f Jack Xiao       2020-09-09  1400  	amdgpu_bo_fence(bo, fence, true);
-737dad0b5d609f Jack Xiao       2020-09-09  1401  	dma_fence_put(fence);
-737dad0b5d609f Jack Xiao       2020-09-09  1402  
-737dad0b5d609f Jack Xiao       2020-09-09  1403  out_unlock:
-737dad0b5d609f Jack Xiao       2020-09-09  1404  	if (unlikely(r < 0))
-737dad0b5d609f Jack Xiao       2020-09-09  1405  		dev_err(adev->dev, "failed to clear page tables (%ld)\n", r);
-2acc73f81f2500 Christian König 2022-08-16  1406  	drm_exec_fini(&exec);
-737dad0b5d609f Jack Xiao       2020-09-09  1407  
-737dad0b5d609f Jack Xiao       2020-09-09  1408  	return r;
-737dad0b5d609f Jack Xiao       2020-09-09  1409  }
-737dad0b5d609f Jack Xiao       2020-09-09  1410  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
