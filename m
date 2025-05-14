@@ -1,101 +1,58 @@
-Return-Path: <linux-ext4+bounces-7887-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7888-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57A9AAB709B
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 18:00:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC3FAB70FA
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 18:16:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 407181893AC3
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 15:58:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F6AF8C031A
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 16:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8558220F25;
-	Wed, 14 May 2025 15:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED1819EED2;
+	Wed, 14 May 2025 16:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MK7wLptE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tw8YG1t8";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PrxcIFC9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PNLdDYp+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A1n7T+N0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C788C270EDD
-	for <linux-ext4@vger.kernel.org>; Wed, 14 May 2025 15:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A0941C7F;
+	Wed, 14 May 2025 16:16:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747238245; cv=none; b=A+kkQLwaX+JaY3HaNIhrdNaTiQ67+3uD/q06iD/DqlGYee8keZk6W7YkU98YCR6vOGAVwHySiuqJrwGh6wAhOIH0og9EYMCto/2eHrasn9r3GojaO6OBozwYaoo3/T6yEp34s06CofOGiHhd2NPhnC5LC89K56sl7Iz9QEkbl64=
+	t=1747239364; cv=none; b=UwOW3y92J18YhC0wXBLrEVo6T+BFG9kgqLKoZihbbK266ycREPxN73gdbCJlke6OL7JY+dy/Xb2h3hxGGdI5HygQTKcTEpFwd9o3n4VHXKv05IyoxSW4mfNsPilxh0oXbzMkj+H6p4GK3eaK71rzL2XxgqG/yOZY1W39om9igWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747238245; c=relaxed/simple;
-	bh=052pumwJl93KDknodrpqNZt/3prp83O92+ghmdrVrc8=;
+	s=arc-20240116; t=1747239364; c=relaxed/simple;
+	bh=oqRkXdDYgoE8CplhU1w8F37+ysAKOe5az/ifaAjSHQM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qrzujhDkBP5esc2305a9DRy3w4VXjqUCs/bStncwxU4egT8WBL5FCmZF2f6G1tsOJVVZc/TYkhPYZqdaMVUmg6IQS9ssRRiiFZmimyACBu3mqVM3TnKbcLX/fxvXpdHT9S3P/W93VNWiJTaOoz5YN+CF3Sn9/pAYWr9MZXkvIRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MK7wLptE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tw8YG1t8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PrxcIFC9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PNLdDYp+; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B0AA421243;
-	Wed, 14 May 2025 15:57:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747238242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZQ/S4HV8U5n0J1FpazsbH8kk/GBZuPkWvT2S6ox5eqc=;
-	b=MK7wLptEpLkn4oa8S4ooOe14BHfMIGkdZx5FCzE8qVIFIUmVPfB9kZPmiUZFt4UWdqJ3RF
-	fRKT59VTUMIPUGYsqXMi07JUF+YgLh8oSZBTtY5RyAOtr8V9LRsyD4UfVBvAXMJ4Xc5DsY
-	9Bi4b+nB/zBojPMflHCjgQsB0z5KdBk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747238242;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZQ/S4HV8U5n0J1FpazsbH8kk/GBZuPkWvT2S6ox5eqc=;
-	b=tw8YG1t8N6kFTU5y2/EOdQDu9XGkTnsLKOEJerJ9xt9OsrFOLRfdHRgVFtadzJWChdTACj
-	LxbXd1ACIE+nfkBA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PrxcIFC9;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PNLdDYp+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747238240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZQ/S4HV8U5n0J1FpazsbH8kk/GBZuPkWvT2S6ox5eqc=;
-	b=PrxcIFC9pQxA7y9CusA71kc537VIWdnPJ7Vgd6s/hvze+AFYILlnhNqtrKcR4M1mdQQ4zF
-	ppMrkYP2EyrKq9/RMaNixgyvOIHQINp7tqYvWc7aNcZBzXxL72DE1g0JIgyMIjgcboamFe
-	Gr8FChVxS7y2rz+ClndGkDAoIWXM6Hk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747238240;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZQ/S4HV8U5n0J1FpazsbH8kk/GBZuPkWvT2S6ox5eqc=;
-	b=PNLdDYp+moUsgV7OB7pnXZrbtrXp4n/t93HYaFok41G19q7sOuW6Vtq1OlCeHa1I41fjCB
-	QRXXdavbzn6Th9CA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 931E313306;
-	Wed, 14 May 2025 15:57:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id P2LgI2C9JGjVMgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 14 May 2025 15:57:20 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C340FA0A02; Wed, 14 May 2025 17:57:15 +0200 (CEST)
-Date: Wed, 14 May 2025 17:57:15 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jeongjun Park <aha310510@gmail.com>
-Cc: tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] jbd2: fix data-race and null-ptr-deref in
- jbd2_journal_dirty_metadata()
-Message-ID: <74flzxcuaj7sozun7bxbaxcv5wn7hnxg6kfmzzveb24ibufv2d@jycpstzyqfa2>
-References: <20250514130855.99010-1-aha310510@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=u/NooQcQQ+DGPZiWjgR8xVQZI9VoKLZBncHGsOkbjC/pBRmAI1PtTdkUE9SgLK/DpZo9IbnjsgC5NdBpWjc7Ob8ooWiIZBMnnUo1D6cSJHyAoKNCTr/w2fieFQ0zrQRfylsHtvufpJ4bZyBU6B0EYuc98K7fcjoKLodrrmJ0Ccw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A1n7T+N0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8025C4CEE3;
+	Wed, 14 May 2025 16:16:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747239363;
+	bh=oqRkXdDYgoE8CplhU1w8F37+ysAKOe5az/ifaAjSHQM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A1n7T+N07AGTPeWpcWOlGos6NrLCN0AC3iqXxCPgqTUwQ2Uz6wKuUh8b9gZG7uUZE
+	 kPMDHFpUUv1A114YWu7bG7E+Bee+sRfaUFSdtNDQ4JphzLrqIcea6rHuaI2/JxEh3Y
+	 6GbmiI3m2qJ5gIyoAKwdWc72vRweZhpjdICp/l0SSAgp7/VCc94wUO6exCJPz5DqzT
+	 +FAf0dmyZlpGZlVlu7OBpTXWpzvUS+rzdgHkfaWLoklXYUc+nLaAX53fOx+BJp+gqx
+	 jdzFb/rZxZoAM9c5rbccX5loNH14YrcUzngWn7v3cLnfP1M16QXPcQEl/alL6WUt5g
+	 ehrJ1oVP0J08A==
+Date: Wed, 14 May 2025 09:16:03 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+	Jan Kara <jack@suse.cz>, John Garry <john.g.garry@oracle.com>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 4/7] ext4: Add support for
+ EXT4_GET_BLOCKS_QUERY_LEAF_BLOCKS
+Message-ID: <20250514161603.GG25655@frogsfrogsfrogs>
+References: <cover.1746734745.git.ritesh.list@gmail.com>
+ <29f33ff8f54526d332c4cc590ac254543587aaa4.1746734745.git.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -104,124 +61,276 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250514130855.99010-1-aha310510@gmail.com>
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: B0AA421243
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_TO(0.00)[gmail.com];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_RCPT(0.00)[de24c3fe3c4091051710];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,appspotmail.com:email,syzkaller.appspot.com:url,suse.com:email,suse.cz:email,suse.cz:dkim]
-X-Spam-Score: -2.51
+In-Reply-To: <29f33ff8f54526d332c4cc590ac254543587aaa4.1746734745.git.ritesh.list@gmail.com>
 
-On Wed 14-05-25 22:08:55, Jeongjun Park wrote:
-> Since handle->h_transaction may be a NULL pointer, so we should change it
-> to call is_handle_aborted(handle) first before dereferencing it.
+On Fri, May 09, 2025 at 02:20:34AM +0530, Ritesh Harjani (IBM) wrote:
+> There can be a case where there are contiguous extents on the adjacent
+> leaf nodes of on-disk extent trees. So when someone tries to write to
+> this contiguous range, ext4_map_blocks() call will split by returning
+> 1 extent at a time if this is not already cached in extent_status tree
+> cache (where if these extents when cached can get merged since they are
+> contiguous).
 > 
-> And the following data-race was reported in my fuzzer:
-> 
-> ==================================================================
-> BUG: KCSAN: data-race in jbd2_journal_dirty_metadata / jbd2_journal_dirty_metadata
-> 
-> write to 0xffff888011024104 of 4 bytes by task 10881 on cpu 1:
->  jbd2_journal_dirty_metadata+0x2a5/0x770 fs/jbd2/transaction.c:1556
->  __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
->  ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
->  ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
->  __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
->  ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
-> ....
-> 
-> read to 0xffff888011024104 of 4 bytes by task 10880 on cpu 0:
->  jbd2_journal_dirty_metadata+0xf2/0x770 fs/jbd2/transaction.c:1512
->  __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
->  ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
->  ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
->  __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
->  ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
-> ....
-> 
-> value changed: 0x00000000 -> 0x00000001
-> ==================================================================
-> 
-> This issue is caused by missing data-race annotation for jh->b_modified.
-> Therefore, the missing annotation needs to be added.
-> 
-> Reported-by: syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=de24c3fe3c4091051710
-> Fixes: 6e06ae88edae ("jbd2: speedup jbd2_journal_dirty_metadata()")
-> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+> This is fine for a normal write however in case of atomic writes, it
+> can't afford to break the write into two. Now this is also something
+> that will only happen in the slow write case where we call
+> ext4_map_blocks() for each of these extents spread across different leaf
+> nodes. However, there is no guarantee that these extent status cache
+> cannot be reclaimed before the last call to ext4_map_blocks() in
+> ext4_map_blocks_atomic_write_slow().
 
-Looks good now! Thanks! Feel free to add:
+Can you have two physically and logically contiguous mappings within a
+single leaf node?  Or is the key idea here that the extent status tree
+will merge adjacent mappings from the same leaf block, just not between
+leaf blocks?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> Hence this patch adds support of EXT4_GET_BLOCKS_QUERY_LEAF_BLOCKS.
+> This flag checks if the requested range can be fully found in extent
+> status cache and return. If not, it looks up in on-disk extent
+> tree via ext4_map_query_blocks(). If the found extent is the last entry
+> in the leaf node, then it goes and queries the next lblk to see if there
+> is an adjacent contiguous extent in the adjacent leaf node of the
+> on-disk extent tree.
+> 
+> Even though there can be a case where there are multiple adjacent extent
+> entries spread across multiple leaf nodes. But we only read an adjacent
+> leaf block i.e. in total of 2 extent entries spread across 2 leaf nodes.
+> The reason for this is that we are mostly only going to support atomic
+> writes with upto 64KB or maybe max upto 1MB of atomic write support.
+> 
+> Co-developed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 > ---
-> v2: Changed to annotate jh->b_modified to avoid performance overhead
-> - Link to v1: https://lore.kernel.org/all/20250513170441.54658-1-aha310510@gmail.com/
-> ---
->  fs/jbd2/transaction.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  fs/ext4/ext4.h    | 18 ++++++++-
+>  fs/ext4/extents.c | 12 ++++++
+>  fs/ext4/inode.c   | 97 +++++++++++++++++++++++++++++++++++++++++------
+>  3 files changed, 115 insertions(+), 12 deletions(-)
 > 
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index cbc4785462f5..c7867139af69 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -1509,7 +1509,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
->  				jh->b_next_transaction == transaction);
->  		spin_unlock(&jh->b_state_lock);
->  	}
-> -	if (jh->b_modified == 1) {
-> +	if (data_race(jh->b_modified == 1)) {
->  		/* If it's in our transaction it must be in BJ_Metadata list. */
->  		if (data_race(jh->b_transaction == transaction &&
->  		    jh->b_jlist != BJ_Metadata)) {
-> @@ -1528,7 +1528,6 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
->  		goto out;
->  	}
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index e2b36a3c1b0f..b4bbe2837423 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -256,9 +256,19 @@ struct ext4_allocation_request {
+>  #define EXT4_MAP_UNWRITTEN	BIT(BH_Unwritten)
+>  #define EXT4_MAP_BOUNDARY	BIT(BH_Boundary)
+>  #define EXT4_MAP_DELAYED	BIT(BH_Delay)
+> +/*
+> + * This is for use in ext4_map_query_blocks() for a special case where we can
+> + * have a physically and logically contiguous blocks explit across two leaf
+
+s/explit/split/ ?
+
+--D
+
+> + * nodes instead of a single extent. This is required in case of atomic writes
+> + * to know whether the returned extent is last in leaf. If yes, then lookup for
+> + * next in leaf block in ext4_map_query_blocks_next_in_leaf().
+> + * - This is never going to be added to any buffer head state.
+> + * - We use the next available bit after BH_BITMAP_UPTODATE.
+> + */
+> +#define EXT4_MAP_QUERY_LAST_IN_LEAF	BIT(BH_BITMAP_UPTODATE + 1)
+>  #define EXT4_MAP_FLAGS		(EXT4_MAP_NEW | EXT4_MAP_MAPPED |\
+>  				 EXT4_MAP_UNWRITTEN | EXT4_MAP_BOUNDARY |\
+> -				 EXT4_MAP_DELAYED)
+> +				 EXT4_MAP_DELAYED | EXT4_MAP_QUERY_LAST_IN_LEAF)
 >  
-> -	journal = transaction->t_journal;
->  	spin_lock(&jh->b_state_lock);
+>  struct ext4_map_blocks {
+>  	ext4_fsblk_t m_pblk;
+> @@ -725,6 +735,12 @@ enum {
+>  #define EXT4_GET_BLOCKS_IO_SUBMIT		0x0400
+>  	/* Caller is in the atomic contex, find extent if it has been cached */
+>  #define EXT4_GET_BLOCKS_CACHED_NOWAIT		0x0800
+> +/*
+> + * Atomic write caller needs this to query in the slow path of mixed mapping
+> + * case, when a contiguous extent can be split across two adjacent leaf nodes.
+> + * Look EXT4_MAP_QUERY_LAST_IN_LEAF.
+> + */
+> +#define EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF	0x1000
 >  
->  	if (is_handle_aborted(handle)) {
-> @@ -1543,6 +1542,8 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
->  		goto out_unlock_bh;
->  	}
->  
-> +	journal = transaction->t_journal;
+>  /*
+>   * The bit position of these flags must not overlap with any of the
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index c616a16a9f36..fa850f188d46 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4433,6 +4433,18 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>  	allocated = map->m_len;
+>  	ext4_ext_show_leaf(inode, path);
+>  out:
+> +	/*
+> +	 * We never use EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF with CREATE flag.
+> +	 * So we know that the depth used here is correct, since there was no
+> +	 * block allocation done if EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF is set.
+> +	 * If tomorrow we start using this QUERY flag with CREATE, then we will
+> +	 * need to re-calculate the depth as it might have changed due to block
+> +	 * allocation.
+> +	 */
+> +	if (flags & EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF)
+> +		if (!err && ex && (ex == EXT_LAST_EXTENT(path[depth].p_hdr)))
+> +			map->m_flags |= EXT4_MAP_QUERY_LAST_IN_LEAF;
 > +
->  	if (jh->b_modified == 0) {
->  		/*
->  		 * This buffer's got modified and becoming part
-> --
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  	ext4_free_ext_path(path);
+>  
+>  	trace_ext4_ext_map_blocks_exit(inode, flags, map,
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 2f99b087a5d8..8b86b1a29bdc 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -459,14 +459,71 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
+>  }
+>  #endif /* ES_AGGRESSIVE_TEST */
+>  
+> +static int ext4_map_query_blocks_next_in_leaf(handle_t *handle,
+> +			struct inode *inode, struct ext4_map_blocks *map,
+> +			unsigned int orig_mlen)
+> +{
+> +	struct ext4_map_blocks map2;
+> +	unsigned int status, status2;
+> +	int retval;
+> +
+> +	status = map->m_flags & EXT4_MAP_UNWRITTEN ?
+> +		EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+> +
+> +	WARN_ON_ONCE(!(map->m_flags & EXT4_MAP_QUERY_LAST_IN_LEAF));
+> +	WARN_ON_ONCE(orig_mlen <= map->m_len);
+> +
+> +	/* Prepare map2 for lookup in next leaf block */
+> +	map2.m_lblk = map->m_lblk + map->m_len;
+> +	map2.m_len = orig_mlen - map->m_len;
+> +	map2.m_flags = 0;
+> +	retval = ext4_ext_map_blocks(handle, inode, &map2, 0);
+> +
+> +	if (retval <= 0) {
+> +		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
+> +				      map->m_pblk, status, false);
+> +		return map->m_len;
+> +	}
+> +
+> +	if (unlikely(retval != map2.m_len)) {
+> +		ext4_warning(inode->i_sb,
+> +			     "ES len assertion failed for inode "
+> +			     "%lu: retval %d != map->m_len %d",
+> +			     inode->i_ino, retval, map2.m_len);
+> +		WARN_ON(1);
+> +	}
+> +
+> +	status2 = map2.m_flags & EXT4_MAP_UNWRITTEN ?
+> +		EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+> +
+> +	/*
+> +	 * If map2 is contiguous with map, then let's insert it as a single
+> +	 * extent in es cache and return the combined length of both the maps.
+> +	 */
+> +	if (map->m_pblk + map->m_len == map2.m_pblk &&
+> +			status == status2) {
+> +		ext4_es_insert_extent(inode, map->m_lblk,
+> +				      map->m_len + map2.m_len, map->m_pblk,
+> +				      status, false);
+> +		map->m_len += map2.m_len;
+> +	} else {
+> +		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
+> +				      map->m_pblk, status, false);
+> +	}
+> +
+> +	return map->m_len;
+> +}
+> +
+>  static int ext4_map_query_blocks(handle_t *handle, struct inode *inode,
+> -				 struct ext4_map_blocks *map)
+> +				 struct ext4_map_blocks *map, int flags)
+>  {
+>  	unsigned int status;
+>  	int retval;
+> +	unsigned int orig_mlen = map->m_len;
+> +	unsigned int query_flags = flags & EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF;
+>  
+>  	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+> -		retval = ext4_ext_map_blocks(handle, inode, map, 0);
+> +		retval = ext4_ext_map_blocks(handle, inode, map, query_flags);
+>  	else
+>  		retval = ext4_ind_map_blocks(handle, inode, map, 0);
+>  
+> @@ -481,11 +538,23 @@ static int ext4_map_query_blocks(handle_t *handle, struct inode *inode,
+>  		WARN_ON(1);
+>  	}
+>  
+> -	status = map->m_flags & EXT4_MAP_UNWRITTEN ?
+> -			EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+> -	ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
+> -			      map->m_pblk, status, false);
+> -	return retval;
+> +	/*
+> +	 * No need to query next in leaf:
+> +	 * - if returned extent is not last in leaf or
+> +	 * - if the last in leaf is the full requested range
+> +	 */
+> +	if (!(map->m_flags & EXT4_MAP_QUERY_LAST_IN_LEAF) ||
+> +			((map->m_flags & EXT4_MAP_QUERY_LAST_IN_LEAF) &&
+> +			 (map->m_len == orig_mlen))) {
+> +		status = map->m_flags & EXT4_MAP_UNWRITTEN ?
+> +				EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+> +		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
+> +				      map->m_pblk, status, false);
+> +		return retval;
+> +	}
+> +
+> +	return ext4_map_query_blocks_next_in_leaf(handle, inode, map,
+> +						  orig_mlen);
+>  }
+>  
+>  static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
+> @@ -599,6 +668,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+>  	struct extent_status es;
+>  	int retval;
+>  	int ret = 0;
+> +	unsigned int orig_mlen = map->m_len;
+>  #ifdef ES_AGGRESSIVE_TEST
+>  	struct ext4_map_blocks orig_map;
+>  
+> @@ -650,7 +720,12 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+>  		ext4_map_blocks_es_recheck(handle, inode, map,
+>  					   &orig_map, flags);
+>  #endif
+> -		goto found;
+> +		if (!(flags & EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF) ||
+> +				orig_mlen == map->m_len)
+> +			goto found;
+> +
+> +		if (flags & EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF)
+> +			map->m_len = orig_mlen;
+>  	}
+>  	/*
+>  	 * In the query cache no-wait mode, nothing we can do more if we
+> @@ -664,7 +739,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+>  	 * file system block.
+>  	 */
+>  	down_read(&EXT4_I(inode)->i_data_sem);
+> -	retval = ext4_map_query_blocks(handle, inode, map);
+> +	retval = ext4_map_query_blocks(handle, inode, map, flags);
+>  	up_read((&EXT4_I(inode)->i_data_sem));
+>  
+>  found:
+> @@ -1802,7 +1877,7 @@ static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map)
+>  	if (ext4_has_inline_data(inode))
+>  		retval = 0;
+>  	else
+> -		retval = ext4_map_query_blocks(NULL, inode, map);
+> +		retval = ext4_map_query_blocks(NULL, inode, map, 0);
+>  	up_read(&EXT4_I(inode)->i_data_sem);
+>  	if (retval)
+>  		return retval < 0 ? retval : 0;
+> @@ -1825,7 +1900,7 @@ static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map)
+>  			goto found;
+>  		}
+>  	} else if (!ext4_has_inline_data(inode)) {
+> -		retval = ext4_map_query_blocks(NULL, inode, map);
+> +		retval = ext4_map_query_blocks(NULL, inode, map, 0);
+>  		if (retval) {
+>  			up_write(&EXT4_I(inode)->i_data_sem);
+>  			return retval < 0 ? retval : 0;
+> -- 
+> 2.49.0
+> 
+> 
 
