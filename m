@@ -1,54 +1,62 @@
-Return-Path: <linux-ext4+bounces-7885-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7886-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2EAEAB6E13
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 16:23:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0C1EAB6EDB
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 17:06:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FE3B1BA10E9
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 14:23:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5D854C5FCC
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 15:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4F7183098;
-	Wed, 14 May 2025 14:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 252EB1C6FF9;
+	Wed, 14 May 2025 15:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QjI/TLk8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F5A136351
-	for <linux-ext4@vger.kernel.org>; Wed, 14 May 2025 14:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05CD19341F;
+	Wed, 14 May 2025 15:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747232614; cv=none; b=a8Zid+K13vI5DKZzM4EMOMjbOZT1loWGEd1aSB9s486ocGt5fvkq11YBPoa0x3T/9z+J5EXFpHbVssL7IuWWC0N71lzl+rbO3YUrWQEzKp5w2VedWtP18DyHzDt2rLwNNlPpRiEaJ6AGF8Xtc2yOaczpb7wMhPyFw9BRPZb7pF4=
+	t=1747235191; cv=none; b=EDHX3a2jEbg0lwghuFPPxnWqR7X4+zvN6kCg/dl4tt4UP7TqBFMDJisBpJszbkuyLcn2aVtXxRTa+kkNT75QewUHIO4aGixgJwLuGY55EOtjUqxkyBnUbSbL6IVM8HSCdtHtsUN3Id96D2FD10+reyeSFDE+pcc9usxTJ+82W8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747232614; c=relaxed/simple;
-	bh=5auqVGAKfTqA/9jQlYowusqm55mq7bSh6BCPZuslLA0=;
+	s=arc-20240116; t=1747235191; c=relaxed/simple;
+	bh=49IPILCDFGJoTtGJw6PabOF4qj/kYnh1Lrc/Fqb5kPg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=svudq8YQJrRVEdksX4BZwUVyvPduJ//+v9+2B+6WcOZl6QKm5s5Vb6yp2meD+8a7iOUW5mllYfI0/8p3yWbM/wqQHbc3UlVIqIwRCtrnftKNgRVIZHSDKcLMtV68WMHgQaVA+tgYDv/kuNWGIs+Oo9dsUPTik81jfc43tiL5w+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-112-151.bstnma.fios.verizon.net [173.48.112.151])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54EENGYW025919
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 May 2025 10:23:17 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 7F1132E00DC; Wed, 14 May 2025 10:23:16 -0400 (EDT)
-Date: Wed, 14 May 2025 10:23:16 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QtfLpkdE5Bz3HQadE4Z8rZjxJ0ACHJ15KWlHsgT/qbMMYVjqaf8SlLqCJPUcHOXYzk4Dbet1Pm7YxoYaovtlKJVeYXX2GE7umbHyNQuPGWPyX6mX8EdnqbxN2qa5pB0wTcxDcR2BNqH5wfEvhfx4pNU9VXFG8AGtDnIMo5KQ230=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QjI/TLk8; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=RKownVnGZe2UL1ciUHyNBkHcN2TX+C13oImW60hfDsM=; b=QjI/TLk8bAz6m0/ahaZbmakyUt
+	x6PoTRckDFJRJ7atnSUukQOhJomjiquCpNi81GTpWflVz30z9/umlbb1jXvT1UdwN7bfgW9LzvCIt
+	oqHEpu5SVX9hIxPF75tqWarkJ46AAWqEBBfUnH8KWO0r2hmZZB+hQRDJqEsK8917vjwN/NPP3ZRkN
+	hoJC24wE8zcuhSBPrVIUFAStqct9Oj77OKULK0+gK/V9daIMsV05BjaelUZeUBbigJaqHduOjbdqz
+	q2Y4kll8asCQZOsNXocWuWvr9SvEDbgThaef+u+LHBdvANyq9ajbdFhfUPQTJixgZJ0kSjLarZoyE
+	mbvvM7lQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uFDgh-0000000FWFN-21pV;
+	Wed, 14 May 2025 15:06:27 +0000
+Date: Wed, 14 May 2025 08:06:27 -0700
+From: Christoph Hellwig <hch@infradead.org>
 To: Matthew Wilcox <willy@infradead.org>
-Cc: =?utf-8?B?6ZmI5rab5rab?= Taotao Chen <chentaotao@didiglobal.com>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	=?utf-8?B?6ZmI5rab5rab?= Taotao Chen <chentaotao@didiglobal.com>,
+	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>
 Subject: Re: [PATCH 1/3] mm/filemap: initialize fsdata with iocb->ki_flags
-Message-ID: <20250514142316.GF9943@mit.edu>
+Message-ID: <aCSxc7TnJzP-n2Lk@infradead.org>
 References: <20250421105026.19577-1-chentaotao@didiglobal.com>
  <20250421105026.19577-2-chentaotao@didiglobal.com>
  <20250514035125.GB178093@mit.edu>
@@ -62,6 +70,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <aCScvepl2qxyU40P@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
 On Wed, May 14, 2025 at 02:38:05PM +0100, Matthew Wilcox wrote:
 > On Tue, May 13, 2025 at 11:51:25PM -0400, Theodore Ts'o wrote:
@@ -73,18 +82,20 @@ On Wed, May 14, 2025 at 02:38:05PM +0100, Matthew Wilcox wrote:
 > Most callers of ->write_begin already pass NULL as the first argument so
 > would not need to change.  i915/gem passes a non-NULL file, but it only
 > operates on shmem and shmem does not use the file argument, so they can
-> pass NULL instead.  fs/buffer.c simply passes through the file passed
+> pass NULL instead.
+
+i915/gem needs to stop using write_begin/end and just do an iter_write.
+Someone who has the hardware and/or CI setup needs to figure out if
+vfs_write and kernel_write is fine, or this is magic enough to skip
+checks and protection and go straight to callig ->iter_write.
+
+> fs/buffer.c simply passes through the file passed
 > to write_begin and can be changed to pass through the iocb passed in.
 > exfat_extend_valid_size() has an iocb in its caller and can pass in the
 > iocb instead.  generic_perform_write() has an iocb.
 
-Mmm, nice!  I agree, that's probably the way to go.
+And we really need to stop theading this through the address_space
+ops because it's not a generic method but a callback for the file
+system..
 
-There might be some callers if write_begin() that might require some
-restructing because they don't have an iocb.  For example,
-shmem_pwrite() in drivers/gpu/i915/gem/i915_gem_shmem.c came up when I
-did a quick grep.
-
-     	      	     	    	     	     - Ted
-					     
 
