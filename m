@@ -1,166 +1,85 @@
-Return-Path: <linux-ext4+bounces-7882-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7883-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BD86AB6C35
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 15:09:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9F63AB6CDD
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 15:38:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45B1B3B85FF
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 13:09:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 013A33A988F
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 May 2025 13:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D9E276038;
-	Wed, 14 May 2025 13:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993E927A459;
+	Wed, 14 May 2025 13:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iwxsP7Jm"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="j+nwTLnG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA8727A455;
-	Wed, 14 May 2025 13:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7886D15AF6;
+	Wed, 14 May 2025 13:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747228168; cv=none; b=Tg9u55F2odFAAsPsAGa6FrdOzIrfOQr63Ad6Z4feg/1Z4DbFly3wUC0GS2Ads5899myHkirUN9gXVYKDzzAZwf7smnTCJyTWLWDa4V1PYleoOR2gVQWH3w3ucmiSV2iuG3fNZxc9uFw6XZcthazA+OijJttfZUZo3fDHe3eo0bM=
+	t=1747229891; cv=none; b=uHusC6Eh3+thwNELmXuWG5D9PMVFYjpbrv5LkDptRoI7oqZnAHaFnvfRyiD0wwpcyR6MUzdWYpBT8zmbEpy54Yd0otrGkCfai8ck7VoAl6V/bIbnjfeI1fmOGvuSgnU9jHCh4uRTcebFjPBs/i7GR6zj4bP9ii76OZvSiZwVX/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747228168; c=relaxed/simple;
-	bh=zeD8unXVnMUvwwF3GajVSv3NzHyHRhKQAwJ7usN+htk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T/asDtqhky3N0FD40Mxb3vjToy6KnK0O6dpEYP2LqA0fCX9gAFgNZabcDX2JydojwJiV8R3EhNpQsToaMlOPdIDuYerXRmR41yQFZaBmHbF1PN3ZgCA+z3RXJ6D9ViLpJGH2IruUm/jyyagRxn//VvebCQf/Yfn+ZDl7o/pFf0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iwxsP7Jm; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-74019695377so5038277b3a.3;
-        Wed, 14 May 2025 06:09:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747228166; x=1747832966; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ny7IJUDWkdRyrhuT9oc4WLLYxl4iVGqYTbLsxT55JRw=;
-        b=iwxsP7Jm6xeen/+vFV3d2iJ1jJ/G08BsXwkfnxCr9GpNBMm1ALQl4EazncWCiT+bZt
-         dh+zlTC/WEkj+mivoidQSke5dOMAXUG7DmMXlgsPsIX9uKOlzfWAluDsUQL/ASzSZJZx
-         Ae6DlgIBYexkqU7bWrdf+d/0AJ+dhfDKJs9B6rgOdWa9K8HwfmiZ6Ra1hi95NoR91sDQ
-         mJeIn/c8rvJ4Trqt962AfrC+bPl1XORaHdJYYJvQK8mhpOEnpOTBUzpfTkGrxWIVftn4
-         OGdTcPOotDvXDwfolPaBi1mgpa6GIz7SCjEh8vs7dGsw56qrifvotoeDImTnHKrABtc3
-         7neQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747228166; x=1747832966;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ny7IJUDWkdRyrhuT9oc4WLLYxl4iVGqYTbLsxT55JRw=;
-        b=odwSOMUijAE7438oXIMU3RE61CvHtwF58syNlz8YU6lmjVKXyufvgsGuLxpnux/NPA
-         lOGyVpzG3LTNajHQvMSE9chc21+uXe6bTCb/2q49EufZPaOBWbui8mH6qowqA7xGMqSr
-         qdba6F6hhO1gmyvRYpSsSJRswCRCozsgWu5e93FbvayedYENglCwA8oRqoRdo3hXSO4s
-         SzdBpzK1l8SnmQyCYHkhycyOEAxZt4Py4bnrcpDixYBNkGkxiloHrljIXfLCvSBjqTQz
-         gsj2xnGv4IDN2dLYmc2t+Fmr3VZbzjsTCqk8cGpBBuh+DnMPltJKzTkmk6j+Zt1xF5TC
-         gbYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUaFHFBiwLrHZOfdiNDqOW1p/fmTc1knqOb5r4s77FQBceBkBPO4WeYGJdPsZHKiq342hIIkHH9PSm2soY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4ZHAhSpm5XMwAMLhYJGNy84rBugv9wPNOfl+bo7mAi3l7Gppz
-	0oFeN3pa0mN9JrrOWeLDeCcTvlQ5vPsHzB8uqgo4QYL4YTvKt+vc
-X-Gm-Gg: ASbGncuu6DvdVt3jfD4GRribVXdg/tv5LdaYr7/bd4ihG4hZqK5jh7eGkNE5Kcw7JDm
-	JqsxMQ708Jx+lX/8JID/FIgWFmF6Gu0zc1iIcRcWL0pgNvx7f1wwQRamZ0vCEZuOXb3h/flLTAM
-	sJ1zfgtQjWuJjTl7O/1kXK4sb3ONwLEVnYzqEVLTJgi/eHWX18PRPlHG7XHNU3IT+P10JcLvftc
-	nmzVDTS9OEI3tRbzk+JlcIdo/lN325O507qVe5tgBTwIs2U6oRwEqCtBLVSs++fz6jVo6qmFPg8
-	LLNXKK+uOCDePzo2BSY69B3Rtxl6xy0BdeeWTCOFiRvkY1/wzbHuJwlX8lUkPrJ4
-X-Google-Smtp-Source: AGHT+IHarGSfq8DTpiGk2i6P06np/kn23owSm18E/NQdeaxxSTuaZVzr+43mg9RGVy/dZcIsmD+ZXQ==
-X-Received: by 2002:a05:6a00:ccc:b0:736:4ebd:e5a with SMTP id d2e1a72fcca58-7428936af7fmr5175222b3a.20.1747228166160;
-        Wed, 14 May 2025 06:09:26 -0700 (PDT)
-Received: from localhost.localdomain ([2001:e60:a413:5fa1:d8a8:267:bf52:3c78])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74283586d57sm2407646b3a.116.2025.05.14.06.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 May 2025 06:09:25 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: tytso@mit.edu,
-	jack@suse.cz
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH v2] jbd2: fix data-race and null-ptr-deref in jbd2_journal_dirty_metadata()
-Date: Wed, 14 May 2025 22:08:55 +0900
-Message-ID: <20250514130855.99010-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1747229891; c=relaxed/simple;
+	bh=5ClBZipevonGNISJ//0KQlN0xd1O5NtCKf+GMqisDl0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=npcfrR+zh+EX6FP4L3Abc1YXCHxt/vDd/zzjncY6yWROZn6ITNc/W+8rVvflUS1TIjx4szMhEHCHRhSMyNHzDrDi7rW5LiQO4Bq/xUZFOd1k7I1rTLLVA6ZXSAb2IiZ3fwkv5LdO+v9X2UhzVauayINjhUBKFGpBkcD38anRNIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=j+nwTLnG; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=TCbxG0sR6k0ek2FO7HVhODHhtN5gSAWTcsnndt8bAnY=; b=j+nwTLnGp++/pDuVRXV/5puhu4
+	kVt4UzOFXLKNMXzkbfTiLtkrR0d25rVC0U0VTpYJfSdtPfJWVBYfodTcI1hnN6xnnTt6RxAYe6evJ
+	zmklAigZcqE/tcQtJmMdp+9yn32HRSoFeocohZPjWmNFyZq24AQ1bHw701u9aPB19Gkg5FCLEYKAF
+	q6GWrWMUAqs4e2cDRduVkTalMj0E4DXS8IpzgTwT4zU87eZ4hjj1gff+qZrCfJCon0nGXEZnQu7ti
+	Ac3rdd0IvOpfKjoMB27XqiZiAsA/778wpMIb0LYXd+UjP1zvUzAsgRmbJfBJo1aVZMi2tKiVoX9NQ
+	lepIj0EA==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uFCJC-0000000CM7W-0D7K;
+	Wed, 14 May 2025 13:38:06 +0000
+Date: Wed, 14 May 2025 14:38:05 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: =?utf-8?B?6ZmI5rab5rab?= Taotao Chen <chentaotao@didiglobal.com>,
+	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/3] mm/filemap: initialize fsdata with iocb->ki_flags
+Message-ID: <aCScvepl2qxyU40P@casper.infradead.org>
+References: <20250421105026.19577-1-chentaotao@didiglobal.com>
+ <20250421105026.19577-2-chentaotao@didiglobal.com>
+ <20250514035125.GB178093@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250514035125.GB178093@mit.edu>
 
-Since handle->h_transaction may be a NULL pointer, so we should change it
-to call is_handle_aborted(handle) first before dereferencing it.
+On Tue, May 13, 2025 at 11:51:25PM -0400, Theodore Ts'o wrote:
+> I understand that it would be a lot more inconvenient change the
+> function signature of write_begin() to pass through iocb->ki_fags via
+> a new parameter.  But I think that probably is the best way to go.
 
-And the following data-race was reported in my fuzzer:
-
-==================================================================
-BUG: KCSAN: data-race in jbd2_journal_dirty_metadata / jbd2_journal_dirty_metadata
-
-write to 0xffff888011024104 of 4 bytes by task 10881 on cpu 1:
- jbd2_journal_dirty_metadata+0x2a5/0x770 fs/jbd2/transaction.c:1556
- __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
- ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
- ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
- __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
- ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
-....
-
-read to 0xffff888011024104 of 4 bytes by task 10880 on cpu 0:
- jbd2_journal_dirty_metadata+0xf2/0x770 fs/jbd2/transaction.c:1512
- __ext4_handle_dirty_metadata+0xe7/0x4b0 fs/ext4/ext4_jbd2.c:358
- ext4_do_update_inode fs/ext4/inode.c:5220 [inline]
- ext4_mark_iloc_dirty+0x32c/0xd50 fs/ext4/inode.c:5869
- __ext4_mark_inode_dirty+0xe1/0x450 fs/ext4/inode.c:6074
- ext4_dirty_inode+0x98/0xc0 fs/ext4/inode.c:6103
-....
-
-value changed: 0x00000000 -> 0x00000001
-==================================================================
-
-This issue is caused by missing data-race annotation for jh->b_modified.
-Therefore, the missing annotation needs to be added.
-
-Reported-by: syzbot+de24c3fe3c4091051710@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=de24c3fe3c4091051710
-Fixes: 6e06ae88edae ("jbd2: speedup jbd2_journal_dirty_metadata()")
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
----
-v2: Changed to annotate jh->b_modified to avoid performance overhead
-- Link to v1: https://lore.kernel.org/all/20250513170441.54658-1-aha310510@gmail.com/
----
- fs/jbd2/transaction.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index cbc4785462f5..c7867139af69 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -1509,7 +1509,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 				jh->b_next_transaction == transaction);
- 		spin_unlock(&jh->b_state_lock);
- 	}
--	if (jh->b_modified == 1) {
-+	if (data_race(jh->b_modified == 1)) {
- 		/* If it's in our transaction it must be in BJ_Metadata list. */
- 		if (data_race(jh->b_transaction == transaction &&
- 		    jh->b_jlist != BJ_Metadata)) {
-@@ -1528,7 +1528,6 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 		goto out;
- 	}
- 
--	journal = transaction->t_journal;
- 	spin_lock(&jh->b_state_lock);
- 
- 	if (is_handle_aborted(handle)) {
-@@ -1543,6 +1542,8 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 		goto out_unlock_bh;
- 	}
- 
-+	journal = transaction->t_journal;
-+
- 	if (jh->b_modified == 0) {
- 		/*
- 		 * This buffer's got modified and becoming part
---
+I'd suggest that passing in iocb rather than file is the way to go.
+Most callers of ->write_begin already pass NULL as the first argument so
+would not need to change.  i915/gem passes a non-NULL file, but it only
+operates on shmem and shmem does not use the file argument, so they can
+pass NULL instead.  fs/buffer.c simply passes through the file passed
+to write_begin and can be changed to pass through the iocb passed in.
+exfat_extend_valid_size() has an iocb in its caller and can pass in the
+iocb instead.  generic_perform_write() has an iocb.
 
