@@ -1,89 +1,158 @@
-Return-Path: <linux-ext4+bounces-7912-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7913-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F706AB8920
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 16:19:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7D28AB89B4
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 16:46:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A0827AB352
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 14:17:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFC50A0165A
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 14:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37251E47AD;
-	Thu, 15 May 2025 14:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0391DFDAB;
+	Thu, 15 May 2025 14:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TNH0ZKSx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F029F153800
-	for <linux-ext4@vger.kernel.org>; Thu, 15 May 2025 14:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8FBA12CD8B;
+	Thu, 15 May 2025 14:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747318621; cv=none; b=h2SSUWB/4SF/K74WlBpBNoPbUl7i+4gnp7xbFb9AHP5PR12TxeTUod7OmkAYQjNLyfuqd81n2+Q5iAgqzIn1AMM4ggN/RvI8bN4MFgQ2IXOVftKvAUiMab4WJWkWSczStuEa1ugEWsSFbFpcR71KEHqDfnjrVSHCnRpwEp2DCh0=
+	t=1747320357; cv=none; b=iRhKYv2xlqUzYfsIWLKNFVsaOYj0HOXo+9Qw8KtiHuvakRUHvjj83MowZimQQ0s83DAWE0lY5GLgcCb+yNriuYrui0YokaotsNTTlq7chZO3MWQ1Ytp5MMa+73eR+a9AYLKxonxpZKYBFmYo4U8mSi99F5ZndRBuSFqwmdpcoOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747318621; c=relaxed/simple;
-	bh=BVd2RztjNgT0w+aQ7oqX9kXk1wjJeyeqN/PC+LJOO4w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uYn7JKQYxZTnjRKSamlVW424z5lUSZB7QKxakCcxkF2Fxbvbne3bc9Uer7IsmKvlXRbs9KbkJCcPqwazpvsfxuk/dVLLEbQZ4OUPf/kl7YAjTRmbqNTq2nBnr3E8AdocoINdSptmuVdx+WqwOuf4a2q4UvQjEdPnC7h8Vg3pbNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-108-26-156-120.bstnma.fios.verizon.net [108.26.156.120])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54FEGhU8009390
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 May 2025 10:16:45 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id C3EF82E00DC; Thu, 15 May 2025 10:16:43 -0400 (EDT)
-Date: Thu, 15 May 2025 10:16:43 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Guoyu Yin <y04609127@gmail.com>
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [BUG] kernel BUG in ext4_mb_release_inode_pa
-Message-ID: <20250515141643.GB325737@mit.edu>
-References: <CAJNGr6t6cpo3zjANpYObZaWOSeGKdGW4B4+k1Bh2ZWQZBbJrBg@mail.gmail.com>
+	s=arc-20240116; t=1747320357; c=relaxed/simple;
+	bh=MicSvrUtFd9+//i8Aaxp3rW0IgcwWjgWkS+/UoefRY4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BPzpPCxc9r4CthqFw4J+9zJcV47UEnCsAE0cbkOENrSEsKxftJLeP5AFbjbl2YXfi0wWuKZsxZX5qzfBUjjXwbH9p2j7Ra8+GLCY/TQ5Z3kcKWM2dhD9I/xrQ+vh1i4kTyOhtO4VfVEdkSYHz1lKD1aJhlzHh62fcX7OiUt4P8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TNH0ZKSx; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-22e7e5bce38so10103855ad.1;
+        Thu, 15 May 2025 07:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747320354; x=1747925154; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+9BgKkX9SLd7ggybw0HQJctOr0oJwAsMfcw1jaoumis=;
+        b=TNH0ZKSxexsguMj9FLtoLNA2yK2aY38fDW1CiOTMqQunFAsSS3FMcNHm3+7uUUqyqu
+         EJtBFxGziK+bwRK5zvEHEeEE/INhDVGp4tfENCPpauP+Jwej6lPy7yECzYAecagF+T/8
+         u8ei/Yu0231VDEqLA0826XUCYOSMfmjcEFdLcNuEq3nLWStCylKoJ38Hg/Hjgh9r+8dI
+         Kba1zIeqC9d+AtiueZT94DqK3HRb6sD3K8g7gYnxiWAMhCYzz+wTUs1AoZarcc+n+GOp
+         gyEa5miV+z4sdGIZhY0KPFZ6yaZvs07+lMz3XSfYRiCgA+tY5u22HVnk/MfXHplMOxD7
+         E8wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747320354; x=1747925154;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+9BgKkX9SLd7ggybw0HQJctOr0oJwAsMfcw1jaoumis=;
+        b=HyhDHUPGXwmiwl79BabIE+msVqJtxMqUC2k4wFU+HZPCDCDV7vAdodq0YHZS/yKL+s
+         JLlMlHLdK1uW5GQTbGTRnbnTJfJD2Vyak+AQXNXsWuXSqjB8X9RUqEYKQ2Q6dGdNCqao
+         0p9V3fsCeKT+XMCPr+5G0kncD+3ardCYjLw61bpK0Ishzb/cmVyXTNtk4R1EHESi42RS
+         9TAfXJJLLK+LnWQNsOtEF/c7coAFzCYMZZpTmkm7Qk1W87/SZHAifdu95YKlxJ0cCerV
+         lAo0bz/jJFTARRDwAtgRMMKLKXX5XkzhgqqvAHekuJ/LgK40PFZpbD+tR6oIXniPb5sm
+         Cm1w==
+X-Forwarded-Encrypted: i=1; AJvYcCVZJGZ4CAMUa0WzFonn6IWDCuCSW0jWPjfeNx0wngedWt1BqDxC9mmlce9yYgT1Omg8ZvGhsoDxlsxAvuju@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5eUaaKVuTBq6wp7ynaP4dVSck6EcbSfC40jeb22Ykxlmt4O3V
+	ba+HjjqdhX7oknTEftGPxFZ0wF1Nd8Vge8vbEq1p72HWjzUoYww/8a1BDA==
+X-Gm-Gg: ASbGncuEGSLE00xPKmgzBPvvYtRp/NNsXoYk1JQNyVjjblqjnrK2yoH0vggl5gBqI6M
+	eQuLeE5FAao8DQPjnIyrj14ThBY6VGy1WaFJOQSpAc1/2w2pur5CDsD6wceu3rUcKddo2WDMVWt
+	k9gJ+Hbs3kaHmEMFSrpgf9mFVj7kKd7nmTk2ZVbqjXtfCHWcM9Hxpemf626PSq6fPAe+jw0Y0XB
+	VLIzNeeBrP85+tj7qYiGjQp3nQ9Ag+ZVepuqJ/tOjVReWFoR6XKiy5mAZWGJplcD+HyYFvsqFzW
+	99vRpZpjljeGTCkepfQpbKr02ppfxizNIBxUojWEipJm8cm9d3f0gxKo
+X-Google-Smtp-Source: AGHT+IEJpDG2r/O6PhthMvwsxQOzViW4RuejJc+gX6DNnIevynZHEcK64G3kGQYE/FAEtC8WHmhC9Q==
+X-Received: by 2002:a17:902:e748:b0:22e:4cae:5958 with SMTP id d9443c01a7336-231980cf978mr80858405ad.18.1747320354089;
+        Thu, 15 May 2025 07:45:54 -0700 (PDT)
+Received: from dw-tp.in.ibm.com ([129.41.58.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b26eaf6e6a5sm3451a12.17.2025.05.15.07.45.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 May 2025 07:45:53 -0700 (PDT)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: linux-ext4@vger.kernel.org
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	Jan Kara <jack@suse.cz>,
+	John Garry <john.g.garry@oracle.com>,
+	djwong@kernel.org,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	linux-fsdevel@vger.kernel.org,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [PATCH v4 0/7] ext4: Add multi-fsblock atomic write support with bigalloc
+Date: Thu, 15 May 2025 20:15:32 +0530
+Message-ID: <cover.1747289779.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJNGr6t6cpo3zjANpYObZaWOSeGKdGW4B4+k1Bh2ZWQZBbJrBg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 15, 2025 at 05:58:40PM +0800, Guoyu Yin wrote:
-> 
-> I discovered a kernel crash described as "kernel BUG in
-> ext4_mb_release_inode_pa." This issue occurs in the EXT4 filesystem's
-> ext4_mb_release_inode_pa function (fs/ext4/mballoc.c:5339), where a
-> BUG() assertion fails due to a mismatch between the calculated free
-> block count free and the expected value pa->pa_free during
-> preallocated block release.
+This adds multi-fsblock atomic write support to ext4 using bigalloc. The major
+chunk of the design changes are kept in Patch-4 & 5 which still needs to be
+reviewed.
 
-I can't reproduce the BUG using qemu,with the kernel config, kernel
-commit, and C reproducer that you have provided.  This is why I
-strongly suggest that if people really feel the need to set up their
-own syzkaller instances, perhaps because they are maing changes to
-syzkaller, that they replicate the full syzkaler setup, including the
-web dashboard and e-mail responder so that people can request that the
-reproducer be run on your setup so we can figure out how easily
-reproducible the report might be, and whether it has been fixed in a
-more recent kernel version, or via a proposed bug fix.
+v3 -> v4:
+=========
+1. Added force txn commit in ext4_iomap_alloc(), in case we ended up allocating
+   and converting unwritten to written conversion during allocation time. This
+   happens when the underlying region has mixed mapping [1].
+2. Addressed review comments from Darrick and Ojaswin.
+3. Ran few data integrity tests on actual nvme device supporting atomic writes.
 
-You are most likely correct that it is caused by a corrupted file
-system, and this is why I strongly recommend that users run fsck -y on
-any file system image of uncertain provenance before trying to mount
-said file system.  In addition, note that if the file system had been
-mounted with errors=remount-ro, the problem wouldn't have resulted in
-a BUG.  For this reason, especially when the C reprducer doesn't
-reproduce the reported issue, this sorts of issues are a very low
-priority to investigate.
+[v2]: https://lore.kernel.org/linux-ext4/cover.1746734745.git.ritesh.list@gmail.com/
+[1]: https://lore.kernel.org/linux-ext4/87msbfyqcm.fsf@gmail.com/T/#m9f6607cc0e65e9fd29e675c5c15b3a03ff02110e
 
-Best regards,
+v2 -> v3:
+=========
+1. Improved error handling at several places.
+2. Further fixed some worst case journal credits estimation.
+3. Added better checks in the slow path allocation loop for atomic writes.
 
-					- Ted
+v3 testing so far:
+===============
+- This has survived "quick" & "auto" group testing with bigalloc on x86 and Power.
+- We have also tested atomic write related tests using fio and some data integrity
+  tests with sudden power off during writes on scsi_debug module.
+  (Will clean up these tests and try to post them out soon!)
+
+Appreciate any review comments / feedback!
+
+v1 -> v2:
+==========
+1. Handled review comments from Ojaswin to optimize the ext4_map_block() calls
+   in ext4_iomap_alloc().
+2. Fixed the journal credits calculation for both:
+	- during block allocation in ext4_iomap_alloc()
+	- during dio completion in ->end_io callback.
+   Earlier we were starting multiple txns in ->end_io callback for unwritten to
+   written conversion. But since in case of atomic writes, we want a single jbd2
+   txn, hence made the necessary changes there.
+[v2]: https://lore.kernel.org/linux-ext4/cover.1745987268.git.ritesh.list@gmail.com/
+
+Ritesh Harjani (IBM) (7):
+  ext4: Document an edge case for overwrites
+  ext4: Check if inode uses extents in ext4_inode_can_atomic_write()
+  ext4: Make ext4_meta_trans_blocks() non-static for later use
+  ext4: Add support for EXT4_GET_BLOCKS_QUERY_LEAF_BLOCKS
+  ext4: Add multi-fsblock atomic write support with bigalloc
+  ext4: Enable support for ext4 multi-fsblock atomic write using bigalloc
+  ext4: Add atomic block write documentation
+
+ .../filesystems/ext4/atomic_writes.rst        | 220 +++++++++++++
+ Documentation/filesystems/ext4/overview.rst   |   1 +
+ fs/ext4/ext4.h                                |  26 +-
+ fs/ext4/extents.c                             |  99 ++++++
+ fs/ext4/file.c                                |   7 +-
+ fs/ext4/inode.c                               | 307 ++++++++++++++++--
+ fs/ext4/super.c                               |   7 +-
+ 7 files changed, 642 insertions(+), 25 deletions(-)
+ create mode 100644 Documentation/filesystems/ext4/atomic_writes.rst
+
+--
+2.49.0
+
 
