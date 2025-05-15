@@ -1,125 +1,136 @@
-Return-Path: <linux-ext4+bounces-7910-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7911-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1DA8AB847B
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 13:02:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D791AB84AC
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 13:22:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D952A1BC0BE2
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 11:02:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 540DB1B634A0
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 11:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DD2297B6E;
-	Thu, 15 May 2025 11:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A05297A57;
+	Thu, 15 May 2025 11:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LcCY+wrr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XBRMje7I"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-yb1-f194.google.com (mail-yb1-f194.google.com [209.85.219.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1603D10E5;
-	Thu, 15 May 2025 11:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6925C2C9;
+	Thu, 15 May 2025 11:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747306913; cv=none; b=PUGsBb0UWhNGImkWU+zvLxaXnA/2jEt79LUk9M8ale7ttiDXMAJo+BvoL2wkFOsm0/Vjq/KqdS2HrPGmY0cHl04i01SAaEhb/o+ilji7vIprCcSDRbY3LqpQ4fkqRx78jd7z8oqrz3c96adHJDALNNarR2XNDCdraUAYJhCS/j8=
+	t=1747308165; cv=none; b=kLmiTBmuO+oP97/zgMj7Rvu2IlrhBMS6lRre4EsMljWrlNJpZ34OSjLoKVnq0a6mpJO0kCg2ERkHMH0XeJgeCyltQaCd5PDtWz0mOGGNvq/bgWcgsogqmqnUKvEFNipPGJ54SJPiGtUXZ6aC7ztjJsgx8YtTMdxTxa8lXHA1UB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747306913; c=relaxed/simple;
-	bh=oF1I/e+0ZW/JAyWLqkT0Ey5HVUISop7fmzQEedssQwI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IdBqBt5MHL3GJCRjpG4X+DIGPmWdvjG8TMXUZGxFYMhWrzTL4YyEPX0mZjUWLrzZRL/BUMdF25q058wi8WDQeVhl+Fp3yrh2/7DGztLd9hj2tMYx/Uy4zl7668QFl1D+VABZGB3vPX7AG5Zb8nRlvD3KpUkWCADrr1QNEatuE/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LcCY+wrr; arc=none smtp.client-ip=209.85.210.169
+	s=arc-20240116; t=1747308165; c=relaxed/simple;
+	bh=aD3ahMdolvWSBfNxRmKfoKUY31bsCsh0KD6krUWX7Ag=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=l8LmJF6841skbBhMDkgWauihtrUNR3Te6tn46/B9dkz7VX+kLb7N2nNXvHPjvVvrM5/6+3BgvCLUX5qzRAyC6PEyBXc9tDVgjvEP07cXO12zDFGn4pJuAUm+7zX0Op26KYJbfHK6obEeBERMGaz0IazReiqnFN/OUneny82Riac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XBRMje7I; arc=none smtp.client-ip=209.85.219.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7399838db7fso767485b3a.0;
-        Thu, 15 May 2025 04:01:51 -0700 (PDT)
+Received: by mail-yb1-f194.google.com with SMTP id 3f1490d57ef6-e7b3410e122so817150276.2;
+        Thu, 15 May 2025 04:22:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747306911; x=1747911711; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UHJtB1q9Untov6MKY8w4xfneHkWOk4rUpt3L0nmtuKw=;
-        b=LcCY+wrrJ6I154SUkavFV9VXtBU1shQ/UheS/aMUpRP94BEz7/cIQNeBG3RuKILHlN
-         WjVY7bZ1L+7igVlMRtiwjhEujJC6FsssoZJC3HfsciChrGAY940yCQl6tREAKR3c/gWb
-         5XTXBxoFUvgTllZKgifVzdyThpHdKxmEG0b0KsZ3mYN31WK53+wLIu4oSNDTc9Wnni7h
-         XchWSCY6lQJxlChqPC848TDrj3OSY1h9dWE00m8qY+1ss+S6g27KUqYNosYiqpGIm3mV
-         7cZZxZWlVIGUsy3JYbBkN75tv6vTFRRNkM/xo26OlZMBLnKRsRttVz8JCFv0FkFGVfwd
-         Dofw==
+        d=gmail.com; s=20230601; t=1747308161; x=1747912961; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=aD3ahMdolvWSBfNxRmKfoKUY31bsCsh0KD6krUWX7Ag=;
+        b=XBRMje7IGmikZ8aXlMrFFmwWMgWl9REBc//YyP+w64LtS/QlJOhmhVNHOVV2QrKfF3
+         nkYvZ6IcYLqGy9zxknISubYEGPnUI0yZMQujNH2peXkRK/7sHAx0W9e5r5sQyw6KtTm0
+         1DgBU/vgni3mHFhNZ21OSnEn64uRfxKK0W3qnhf7c7duAul3sktFwqxqozWH5GwInEu7
+         ywn+ZAJFji+tQ/j064heWtMeGyAFJWFINJXkdupSyYzx57odBYfec/tXz1dEK286MXl0
+         RmXzB/YLtz9hGhWiqe3NaE31DnKs0LfKqkEC2L8v0xHd+2Ohq69LgSX7JcJJOaUDS4sw
+         QYmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747306911; x=1747911711;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UHJtB1q9Untov6MKY8w4xfneHkWOk4rUpt3L0nmtuKw=;
-        b=YpabdcCWeVdpk3ecjdgejEUL+Bl439GDz/9vtHbdH7dcomuieL/zUzrGmJDRfEQGKE
-         SXRfoM1D0U2xWj/mhh4ThInpHkmYo/+Cdp9ngds/2alm3n+JkLCj5mg5p33Hnh3kk08b
-         zkrrToD2X5hmP0A3G9pDlUYPTok1yaMA8mqy6hkL2tuvkcW2lJHLyBWiXgdoxZdRMVt1
-         uR9/nH6sxWdYJqzvNV7+thLjY53hoqz/9ZdpXekzL5EbuIa73zrplAtdRZrfG04K4Oaf
-         AfIJVBuCiIL8/2apOvQY6rSbfQ+SlN6ZyFuqh8TErN/oZ6j5SI1Dj4FWPOwouwZUiZsl
-         SY/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWHwc6fJcJwArdMm5IT7m+q6MEAM+jaZAJ1IQWHWPg7Wt18h1a+FgRjgNCL9j9mWb+Lk45PJf0j6Iw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxB47jMYxx4UDjcylCx7UkF5z7IoJ2THJ15ARHjM9YjgPfLgQnT
-	BDOEl7vygTyG3ToOTwaz0Rmk6TqRaAAospIXZ2Sy0nh7STn8Z8Uot0jE2g==
-X-Gm-Gg: ASbGncs9QW7IyzdA80A5qPJZgHoVYmI81vBMBYtJbQCA25YDVfvrP8QvoXsnB8L15He
-	TxsenaYsIpEMziSNIdsNKirb4NPxzS8GPjslsQdDpMj89lnfwgTIQ8MK21HxoUXu97UvQsN/R0n
-	cXtsdeAPjWhyxXdtoVifCnILXEcuNZ8AMAI5gXmkwvzuufHF5Vjx5t8X4t4QWvuBMIlRD8YZ03r
-	WiVwWXKqk557/5u4yoMkmXcWUebXkDFVhSrfYzwQwuMhy7HJ1Qh2Akx+5yEp7lW76shJgGYw0X1
-	Fd+rVcrpkCrT8HmiRi/HixB24GY7TLYOULihCTz/+lLsAghvU813lrs=
-X-Google-Smtp-Source: AGHT+IH+rzgDbrs0Ry3xGdFeeeapP8e8/+QlX+9iC9TNT5/AvEZESgvnjY+MPAUSCwRyN3uApOVq5w==
-X-Received: by 2002:a05:6a00:4b44:b0:73b:ac3d:9d6b with SMTP id d2e1a72fcca58-742961d4254mr4606678b3a.4.1747306910780;
-        Thu, 15 May 2025 04:01:50 -0700 (PDT)
-Received: from citest-1.. ([49.205.34.162])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7423772752csm10733673b3a.45.2025.05.15.04.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 May 2025 04:01:50 -0700 (PDT)
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-To: fstests@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com,
-	djwong@kernel.org,
-	zlang@kernel.org,
-	david@fromorbit.com,
-	nirjhar.roy.lists@gmail.com
-Subject: [PATCH v2 2/2] new: Replace "status=0; exit 0" with _exit 0
-Date: Thu, 15 May 2025 11:00:17 +0000
-Message-Id: <463f1f99c7b9ced218f62ea9fc048c2e645227c5.1747306604.git.nirjhar.roy.lists@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1747306604.git.nirjhar.roy.lists@gmail.com>
-References: <cover.1747306604.git.nirjhar.roy.lists@gmail.com>
+        d=1e100.net; s=20230601; t=1747308161; x=1747912961;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aD3ahMdolvWSBfNxRmKfoKUY31bsCsh0KD6krUWX7Ag=;
+        b=moEsi4+8qk2GGPxM2U55SdbRM/ucX2dR6/C37tUJLy7e1hpEdnzVkBtGHToArepuED
+         jSVrW4HE8nuE5g9T0g4zyQb1bDTNMtftk7CFO4IzeVv1kdGF8sY+C8MMLfOkmd01nKIe
+         afnLPzMtJcxvODgGTohRo4L0eleJehsepn3OLtGX8N2gzdvrqw2g3BHNpLH1jjxwhlzE
+         ShGvDZIEP83O3vtx8Q0EX0pw1MXPiAQEfwDMIniQqo1wOmUY1V2HfZZWudDG95vsCS8F
+         LKFEJWWxEs4pZLlA4+qwiEMyIqqcSVnEAAAdZQGd/HCKApLq7m6HTzZwGiUrdLyWw1kP
+         B7LQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxciqwLvDSQcpUAB6KCKTNjCTJTVGQ90A+vraThz4gSLQWhXJ4g/KNcs21UGpYFS2WzxeWMwNNYBfR@vger.kernel.org, AJvYcCVMoOwHuuX2DrYjEJev+QuuyKZavoEZvAqtuI9Sg1yW1iWSeD+Lmd4wMi3IuyXsj/W/XkPUPbeuCAnk5zJJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDIwjK+IHH7RbLfLegD24eO89/sFqtAYawLaF31wV3cHepFaeV
+	zNqIhtxe51i+kA7bQGvEho/C/JmHZkfPxmYbjPqeao1jyswFcp1yWE7Ze1bLirUuf2PYUCS+4rN
+	g+eDOO0oqvHOAKKNmmqXW++4UlHU=
+X-Gm-Gg: ASbGnct0H5oDh8l5wZzjvLgCH36Uy1V8utm9GDpVDr09nYVCz44jLrbtD6Rn1i/10qa
+	RaeROSxr5rt2b6xWniMp35aCgjl7My7qNK/wHjkNqhy5Qef09dU5LP26wBWZpbggtAuO4g877g0
+	ZLm8J5WRaruv9BzLGhTASFfcCrbrWHbP9dIqE=
+X-Google-Smtp-Source: AGHT+IGP/+LBlcc23jMwqW/NJ4FYcUvDfJY2pcx8vBqn5G6aFGwZBIfWCXs72GRRPNMS+RTfDkjJLxPVM0I1e4u18G8=
+X-Received: by 2002:a05:6902:2209:b0:e60:7d3b:1e18 with SMTP id
+ 3f1490d57ef6-e7b3d5ea594mr9048063276.40.1747308161553; Thu, 15 May 2025
+ 04:22:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Guoyu Yin <y04609127@gmail.com>
+Date: Thu, 15 May 2025 19:22:31 +0800
+X-Gm-Features: AX0GCFul1A7P1pX1Lgbzfc0_kbfLhE42bIm4x3Nnaj9FBUBaQ0CHRUfbX72ehyw
+Message-ID: <CAJNGr6tvycbeVx+C_ER-BDPsRK3M76B2ufQLDSvC79mUKwMGSA@mail.gmail.com>
+Subject: [BUG] WARNING in gup_vma_lookup
+To: akpm@linux-foundation.org
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 
-We should now start using _exit 0 for every new test
-that we add.
+Hi,
 
-Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-Reviewed-by: Zorro Lang <zlang@redhat.com>
----
- new | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This crash occurs due to a mismatched symlink length validation in
+ext4 when handling corrupted inode data, combined with improper stack
+expansion handling in GUP. The crash can be reproduced through
+syzkaller's filesystem stress tests involving symlink operations and
+direct I/O writes.
 
-diff --git a/new b/new
-index 636648e2..dff69265 100755
---- a/new
-+++ b/new
-@@ -176,8 +176,7 @@ exit
- #echo "If failure, check \$seqres.full (this) and \$seqres.full.ok (reference)"
- 
- # success, all done
--status=0
--exit
-+_exit 0
- End-of-File
- 
- sleep 2		# latency to read messages to this point
--- 
-2.34.1
+The key issues are:
 
+1. In __ext4_iget() at fs/ext4/inode.c:5012:
+
+inode_set_cached_link() triggers a warning when detecting a symlink
+with actual length 39 bytes while expecting 29 bytes. This indicates
+either disk corruption or a kernel bug in symlink length handling. The
+problem likely stems from improper validation of i_extra_isize and
+fast symlink storage in ext4_inode.
+
+2. In gup_vma_lookup() at mm/gup.c:1362:
+
+The warning "GUP no longer grows the stack" appears when handling VMA
+lookups for addresses below the stack region. This occurs during
+direct I/O writes (ext4_dio_write_iter) when pin_user_pages_fast()
+attempts to access user memory near stack boundaries, but the kernel
+refuses to expand the stack automatically.
+
+Suggested fixes:
+
+1. For ext4: Add stronger validation of i_extra_isize and inline data
+size before calling inode_set_cached_link() in __ext4_iget
+
+2. For GUP: Re-examine the stack growth policy when handling direct
+I/O operations near stack boundaries to avoid filesystem corruption
+cascades
+
+This can be reproduced on:
+
+HEAD commit:
+
+38fec10eb60d687e30c8c6b5420d86e8149f7557
+
+report: https://pastebin.com/raw/wDUgDsV0
+
+console output : https://pastebin.com/raw/HndaBU1E
+
+kernel config : https://pastebin.com/raw/u0Efyj5P
+
+C reproducer :
+
+part1: https://pastebin.com/raw/3AA1ZHUd
+
+part2: https://pastebin.com/raw/0LaFkaAd
 
