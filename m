@@ -1,114 +1,116 @@
-Return-Path: <linux-ext4+bounces-7907-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7908-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81B28AB836C
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 11:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F19CAB8477
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 13:01:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C284188EA50
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 09:59:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EB401BA861D
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 May 2025 11:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3CB297A47;
-	Thu, 15 May 2025 09:58:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9953297A45;
+	Thu, 15 May 2025 11:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gFeMu/ef"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VcG0urWq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yb1-f194.google.com (mail-yb1-f194.google.com [209.85.219.194])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D8A1AA795;
-	Thu, 15 May 2025 09:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C07910E5;
+	Thu, 15 May 2025 11:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747303133; cv=none; b=XUR/7v5o4ONKl9zcWAQ1SbHcqYgnXPUABPjpwHcJ7VebbwiAt/bRsR7cPPp/9i66L8EaNQ2QAIcwLX+o+rOMB+sUdOe4xnqZyqMBRmUAYaaRQE1ev3wV8/XK7VBrql3AeTnV82Xcug0jviJYjbXh+2RRORrpd+UA8Zhn78M2nZc=
+	t=1747306873; cv=none; b=dwMtg7et93ZyAfpfJTY2UIz8dbs6k3D2HvX1DJjI3OXMJ7ymcZ4BigNvinftUhA4Di7HUeKQF9stBFZzGoLfQrLcvTE2lB0qLqefN4OlOgTKUxFOXAFnl8qgVtHGR91ugw4ZvVMLJgWWAOWX7nL6jTJw5Y+xGNTi8pDhn4c6NNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747303133; c=relaxed/simple;
-	bh=+kNzFtXmyhwBtRKrJek3nlSxNARyqyuweSImX+0CSHw=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=Z0Conq9jLTVIMR+iH1fDAufLTxUh66bHHgaLzgSvttpAtu+j1FN3hhcapF5MlNPRb2GSRGcTCrVh2HYB/6ID6LPIo5+Gl1DR+FO6W5kl7JKF92xnUSaNa93zi7cZCczBlV39LN/NZ8u+DGmv+9u3dBrdoFLBKS5q3BslCzNg4gE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gFeMu/ef; arc=none smtp.client-ip=209.85.219.194
+	s=arc-20240116; t=1747306873; c=relaxed/simple;
+	bh=4DtxbdHPsRp2yoFWNNjLqWeO8cEgtzLfsnC6zJx88R0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eoXVES1fkZpemVnz85ZbAh3eCCsBRv5YivAzefDnacCjpW0stTE05h8jNpd44dX1XR0hvgkA6qLyEvwYp5lBWrE8485QWH3GXZaE5cOuPZ4EDQsUpd+SeF2pFa5za6AiIpfoz1t89qlrog3UmqIv855snjdZRniGeXOHoswXIPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VcG0urWq; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f194.google.com with SMTP id 3f1490d57ef6-e7b451b708aso565983276.3;
-        Thu, 15 May 2025 02:58:52 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7399838db7fso766949b3a.0;
+        Thu, 15 May 2025 04:01:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747303131; x=1747907931; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+kNzFtXmyhwBtRKrJek3nlSxNARyqyuweSImX+0CSHw=;
-        b=gFeMu/efe0QHm5j4X9lP79Lmywofoe9338ckA4S8N/MArl0Qg9bTVpvw/Ra5Flkkau
-         pUCHbw9v4cjRDaEeRwyPosHEpuVxpu1wFCrFzYZso6VU+Hc8HUE+eZSLylgz+jaLSJMU
-         aOsGTykPVWoz0YsQ3KHRE4TaFZ/VC6FISWAzLaxTHlzH1mNCJwjhVQjXu24EcSpS6QUg
-         UfkYQxsh0CuEN33HKA/PpqFoierD6B5rYGCZPebI5UEWXRtKzxmhvOMHuggWsuJadiuL
-         0mYGDDMnziMTGWIHADA0yq31nXBuO4J7JETJ6m/mYBJoKnj+YpYsPCe+Y6xYzbYYHbbC
-         HGdg==
+        d=gmail.com; s=20230601; t=1747306871; x=1747911671; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n5bk8crn1MS6mjcakRWlTLc0upfKXeQVW/07eSuBmwM=;
+        b=VcG0urWq753z57smN/b+qdPyKTn+rsv/gZKP/jkvbuiQ6QWaiYebM6gSqH6Q/WLg1U
+         HBky9RySXn4eN00CC3jqAlYkzi4SDpMHu7w+EPawUEyM9uhOnByZjWetm5g572W/IF0T
+         YdlPZjf6OvqTBWw9og1gHnGOQeGK8keuDXiSRx0l3wHqMiIgIKNdmRljOp18rWZtFSI1
+         2QwU203Y3yhzZN7wodLJrbj7ICQHjTsMa2NsEGk7OnVh1t2FycHIcQdu4BNnZ6Y+O5Ma
+         F4vcHmsbeqJ+hUQIZNvt/Ch5UJqn7q76KkW75vvuRw6uBq8dhbFwsSZf8C/l5xhP7fca
+         P5oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747303131; x=1747907931;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+kNzFtXmyhwBtRKrJek3nlSxNARyqyuweSImX+0CSHw=;
-        b=etGcWCtebSR37lNPbmtEVir0aoXPDO2yyKIRBnIL9Im5jLYkQboDbjdD9zBXucYkX/
-         Lplqj57/V3hEJ6paJs+yY6QeIi52psDf70dYQe+65wKJXTXT/tazVR5S92jCgjJKoKPS
-         tTPo5yTr0KzNbs7RUHc4a/E3cvA83X6tL2deTJlWkM0YSr/iGKuR7VNFrn6aC6MK7IH9
-         BtxPzSPB7Lk9sGw99NIvrLKmAC+NhJKXNFUHFZqtQYV+nl7hUYG0YcebkJqYs+TjB3nG
-         UC8BNH7xd8ZKQVKwx1caiJaLP/JVUXP++o7YycfL7wXXSxPxKzMikixPQsoDxxspQknX
-         207g==
-X-Forwarded-Encrypted: i=1; AJvYcCU1aZzxRmORDsmuaak+07Ylxk7OQCnjAiyaMxjdm/Wgxw8Ch1M3ePMmRamXagrkSxqGqlrLIHMuGLtA@vger.kernel.org, AJvYcCUjWDufvoOlN9g2BjJ/R9bKXYUqk3uvSCTX0GGUgMMLNx6AIWl4MmHlgNNJKPYe6SVvM0S9aYYFXsq26PL0@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxl+csEQ6HcNTNjh4FSN8VOZdL3iMDEtL9J0EYXqhkCt3cx2Zhd
-	zjYyLu6zxqVgHBQAtpWtzPFvMDYGO8jG9TuTrYh/verzozgmHO2zqPtQQd8PLR2YyK221FzBSgF
-	g3gASU8VDh6XH2/8ikTQu3gFbKm7meSRf2kxL4Q==
-X-Gm-Gg: ASbGncvdZyshsIbIrVWxmVhKug8kGz/mwh8PURcgmqUmbRkAO+4JZx6XhFwx4jGV+L/
-	VgClcBPagi+1RJR/+DZSF30CLXhkvvvSOBtVY7ks15T1T6wHVcQZb2gsV9+DCvPygh/1TzApohO
-	EJ08tBMs64nVeVGNoAqNjeA6hZ4rw1ruckjrc=
-X-Google-Smtp-Source: AGHT+IH9Kbdkxv7aRCrngn5BHmJriIYG/ux74zm2f+ZjXcrFEHBhBmDIwKscLZBDH+0CA++8CLV2C6Zl4PejX+3hEI4=
-X-Received: by 2002:a05:6902:1813:b0:e7b:4b93:84d4 with SMTP id
- 3f1490d57ef6-e7b4b9386d9mr4559069276.0.1747303131371; Thu, 15 May 2025
- 02:58:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1747306871; x=1747911671;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n5bk8crn1MS6mjcakRWlTLc0upfKXeQVW/07eSuBmwM=;
+        b=tafswzCVRVmDb1f6J+nTiVsG5Ee3wcS4TKzLwb45pgj4RLnYxu1Cxc1mFDCVystOxA
+         lyu+ZA7GTDsRvfLHc+VAThdRq3Mh2gpAlv1lV9fpgcvW4rP3/rT8PMtp0/+laQD4nDW+
+         BN3SEb6+UBAeySxiD9HqNDC+S+3ySHjD6p3UO2RKlj37pTbn3lvWyuDhiEVz7LEdPoyq
+         cd2ziU32LgJHnhOG3gbDJ/O0T9Z5zS0bfmkKIhrnKtLlF3uxZAP6AHHPnXIx7JPeYpJF
+         of/7y8vkuALEqoNCn76Vz/q/VnzBaJIXbnQBVkcg22xvI12YA+TC+y3X85yC5Ia29y2h
+         C9hw==
+X-Forwarded-Encrypted: i=1; AJvYcCVvRfg2xXk6y+E5FwwfSkiZ5alj2ybseTk/tlDrZ+/uSYMyzr9ddaN4oqXN+LABrbWH1eNoz4PijZU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHRCjnmCeBW+eTs7dUfKpK6+uASKW89a5ZwYT5ytqkoWzZRMWJ
+	YEY9F2SIhNNRiKSCDKJ7KzoyQ5aE9ndFBHd9mAjjghIcu3nSsKm1+eh/FzkiSw==
+X-Gm-Gg: ASbGncujUI4Zb97TKZK/zDyngY8nVkxbopZy2FU8vsaF4c59Tnax2ol/cwvRTe83QoT
+	yV4Y1UEzxe8gyYmhzhnosdhj+59Uf73kwIiXjaKNlkae2R4PRyYMiI+U3HWGfU56Z2hxLrB7EcF
+	zvizrdc+L03a3wlxsEU9kgQc3Wj7UbVQlDDX2DszGjLnQMDhLwHtzZw1XmQxOtwX2r9CJMavIoB
+	ieC3ECQlHuLY0cFv4kVKaWOYWzl8jBhODYRnOawVEOxMndqx1GtMLsKp5CsPrFEk0n2aqt3Frfl
+	e0eWvMSg0+Wy0zmn9R9PE+izQdii/osSdrXquxy+lIrrsvKWNAcqLt8=
+X-Google-Smtp-Source: AGHT+IG9M5GDFFmf2o524GHS9HoirnkCLqvxy9ol7roMxczIqbVb6JQUVTKPxstvacVUimjoUvs7qA==
+X-Received: by 2002:a05:6a00:6206:b0:732:5875:eb95 with SMTP id d2e1a72fcca58-742961c6c4bmr4358926b3a.4.1747306870659;
+        Thu, 15 May 2025 04:01:10 -0700 (PDT)
+Received: from citest-1.. ([49.205.34.162])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7423772752csm10733673b3a.45.2025.05.15.04.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 May 2025 04:01:10 -0700 (PDT)
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+To: fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com,
+	djwong@kernel.org,
+	zlang@kernel.org,
+	david@fromorbit.com,
+	nirjhar.roy.lists@gmail.com
+Subject: [PATCH v2 0/2] new: Improvements to new script
+Date: Thu, 15 May 2025 11:00:15 +0000
+Message-Id: <cover.1747306604.git.nirjhar.roy.lists@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Guoyu Yin <y04609127@gmail.com>
-Date: Thu, 15 May 2025 17:58:40 +0800
-X-Gm-Features: AX0GCFvgkHunWw2E9wacpa_Iuhq6Dd-MCuH8i7nepAyQnEwlRqtBZgwZMiFyiyg
-Message-ID: <CAJNGr6t6cpo3zjANpYObZaWOSeGKdGW4B4+k1Bh2ZWQZBbJrBg@mail.gmail.com>
-Subject: [BUG] kernel BUG in ext4_mb_release_inode_pa
-To: tytso@mit.edu
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi,
+This series adds a couple of improvements to the "new" script.
+Patch-1/3 - Adds an optional name/email id parameter prompt to the new script while creating
+ a new test file using the "new" file.
+Patch 2/3 - Replace "status=0;exit 0" with _exit 0 in the skeleton file in "new".
 
-I discovered a kernel crash described as "kernel BUG in
-ext4_mb_release_inode_pa." This issue occurs in the EXT4 filesystem's
-ext4_mb_release_inode_pa function (fs/ext4/mballoc.c:5339), where a
-BUG() assertion fails due to a mismatch between the calculated free
-block count free and the expected value pa->pa_free during
-preallocated block release.
+[v1] -> v2
+ - Added RB of Zorro in patch 2 of [v1]
+ - Modified the prompt message for entering the author name (patch 1 of [v1])
 
-The call trace indicates that the crash happens when closing a file
-via the close system call, with ext4_discard_preallocations invoking
-ext4_mb_release_inode_pa. Preliminary analysis suggests this could be
-caused by filesystem metadata corruption or unsynchronized concurrent
-operations. I recommend reviewing the EXT4 preallocated block
-management logic, especially in concurrent scenarios and metadata
-consistency.
+[v1] https://lore.kernel.org/all/cover.1747123422.git.nirjhar.roy.lists@gmail.com/
 
-This can be reproduced on:
+Nirjhar Roy (IBM) (2):
+  new: Add a new parameter (name/emailid) in the "new" script
+  new: Replace "status=0; exit 0" with _exit 0
 
-HEAD commit:
+ new | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-38fec10eb60d687e30c8c6b5420d86e8149f7557
+--
+2.34.1
 
-report: https://pastebin.com/raw/DbusXrC3
-
-console output : https://pastebin.com/raw/rjVjX2cb
-
-kernel config : https://pastebin.com/raw/u0Efyj5P
-
-C reproducer : https://pastebin.com/raw/iKzXm7Ut
 
