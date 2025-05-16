@@ -1,138 +1,171 @@
-Return-Path: <linux-ext4+bounces-7935-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7936-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25063AB95FF
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 08:32:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DC6DAB972C
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 10:07:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B51245025DB
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 06:32:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDD657B1EFB
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 08:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72BD2222D7;
-	Fri, 16 May 2025 06:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ilLN8OAY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB30422C32D;
+	Fri, 16 May 2025 08:07:17 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yb1-f193.google.com (mail-yb1-f193.google.com [209.85.219.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BECD21FF2E;
-	Fri, 16 May 2025 06:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.193
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641B921FF4D;
+	Fri, 16 May 2025 08:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747377136; cv=none; b=kI1zAk9Vxp2rYyNrpR//7YT5VbDaSzG4B3HtewG5Lu0gXfkvVdvsFc3DaF1hDDiCDzoXr6qvMs30KO+bFCCD+9zn7YnTdgfVn5QTo8tjz74NMr7XRzqRO2EQqrEQykwtlRVvhuTmQW/M88j4f1dp25/+61YDIyRLEPRvR2kSMn8=
+	t=1747382837; cv=none; b=ui7apUUAtgYvmDMuxUOtyf5BCBoRXbdfNHyO2qWgp4PEA8cAH8pXMpIpH6x9HjINh/JkKefhwO6uM+iDbhBNl9XGe7DMpYLwSGfKCBEqt2nbr3sYT3Rw8lut1JZh6yhozJf7utX/wBUF7iS9EbI5lR+yBHkdjcHcUiSg/Vxwn4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747377136; c=relaxed/simple;
-	bh=WYB4PC4/QumY6RXKi4PlhSQ9Xaobg1iGGK4yZ9AeIBs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BQ4XlyFueZsn1/F5gPczWFHwe/5rulT8UNkpGSeEjfdLrXJ1dk9d3MF0QOVAwQfS4PDMH9vBtAQtEvaItf16OZ/U6Spui8EqLUTVrFmG2VEM+dS88ep8Xt2/UDEpaw2hjk21mY1H6UQR/mEvbhs1raGKbfYslhczdHy53ztteK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ilLN8OAY; arc=none smtp.client-ip=209.85.219.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f193.google.com with SMTP id 3f1490d57ef6-e7904da218aso1327833276.2;
-        Thu, 15 May 2025 23:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747377134; x=1747981934; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QGXKAGF1/FsCyJWkLL4R/6PrQ05F+0Yz4eEuU1kLWsU=;
-        b=ilLN8OAYf67E72OyApYO9KjHMyGsVuhI7NRnxQfqDqj3zGF7YhwsPiirSXPEvcAxUk
-         HRubqd5flNAsGTbnlGbn++lzNYk+cQ0sFivPp5OGhVSy4wR02fj/jfWqAzcNdykZGYNX
-         t6XAZ/ojpNDutpJMNrPdjW/8JDW2z0bERi28uA68jaI4dc39GYXcCEDFGSv74zVxy4Su
-         1KlgxXu+1NUR1Zy3JxDJQiPO817HRKrE/5ZTRLTdIjX41UqJWSKTbe+rFJhIuC1IdeLx
-         qWmb9+0ijN2a936Vzlta12mMIWu2APBzcuGEeuitZJy+q0ZC+WYpABC4WjSHtS7Mqy4U
-         SrSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747377134; x=1747981934;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QGXKAGF1/FsCyJWkLL4R/6PrQ05F+0Yz4eEuU1kLWsU=;
-        b=pKp5rOHrfyFSoqUe9rxv7TYDiTSE/5iZV/WKPvcwIUmcKyKeoAopJmdrZSJJD/K8aA
-         01e/bKKVyyktkFYAxndRlSrrG3sEnp1EdS3Xchcnu5CLvbSnBMlzFq3TpSOLICPygmwo
-         rvwucyfAcw84BAJmT9wL6q98C4ZFsT+ZWxpGLwesdukg+rj/v6UkW0rRnZ5dyYqShF/D
-         Aa4OVKHeRL/E4iwBt5+UUq3m/enu90nDJW8GnNrtoRfG8hSNkfdDhE4Ihs8B/Dw9aAP9
-         msUreoskgmwmZ8DTo1p9MCSVoNh/coK6PbAcryZ403XW/w5TXsLqhOMATx0qleTbMKGn
-         +DWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWRI+5+U1UEms9g/TxiT1OHmGRzB5BylWj91zJLGaPvcpvb0w5H5FakPxfQi+1D22qE5KTnafI08SkmyV8w@vger.kernel.org, AJvYcCWzfEnAThXR0fFtunb81vSySE+NtDhY/M9YmCL/rccT3kHDtcuLpmjR8g7nhgPstllGihgYW3GcIS7p@vger.kernel.org
-X-Gm-Message-State: AOJu0YyncuLerw6WWCHPZwZxY9Q/vTznXmnqFSRTvzn9t0ms2JAm1Faq
-	e5TxiUdpYaxgm5OdKGflYCSTEZAn84UafmoWHCfprmicl5DLfunAFQLHy8eY3v9E2jWhpLx4/5s
-	4/BqMaxB48pwl2Y3lKo7eft0BgCtTXqRADah+aazL2w==
-X-Gm-Gg: ASbGnctd8iwjnJsWCrZGh6qaymDH0Nfi5U2+yJ27zLQ+qWKPkQwz5f1534Wblagsh03
-	sOy+BOu8r1NgEZ0fUqszpODLUhFDPdHCf7zcTXZMvadV+xTz3iyK8yjn37QIVl2VNFoOgroiGZ1
-	iAdPnjkhhAYL8I7WS0xUyPLOXknzXKKUL2Big=
-X-Google-Smtp-Source: AGHT+IH/IofeAd6vy3/ZeDlDO6zFMGpzZNjxG9N9X1Ud4Y/RDhC/XNh3fz4lMxUc1E0QO+Br5Hebqoh+UwZCRwoxLks=
-X-Received: by 2002:a05:6902:1707:b0:e7b:3cf1:5741 with SMTP id
- 3f1490d57ef6-e7b6a52f211mr3347352276.39.1747377133782; Thu, 15 May 2025
- 23:32:13 -0700 (PDT)
+	s=arc-20240116; t=1747382837; c=relaxed/simple;
+	bh=UBvjaIp8Waej5vlBi/RKzzjiqZNfMRFLiFIwcKpqqNU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a7JgwMdIR+yEMBNOHkpFxbCIt/gY+ezwZClAlyxmXyck7yslqEogueK2q6OXvWBkGAb70vp703ksxqPGxqs/onag0V8kB2g+VtLHVbJQf0pf45JQN2yJElGySG2u/2EwAhHqLFW6SOWISljYhhADZdXDePVigWPdK665MlbgSs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-4c-6826f22eb14b
+Date: Fri, 16 May 2025 17:07:04 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: kernel test robot <lkp@intel.com>
+Cc: linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	oe-kbuild-all@lists.linux.dev, kernel_team@skhynix.com,
+	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+	will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+	joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+	duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+	tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+	amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
+	linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+	minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com
+Subject: Re: [PATCH v15 33/43] dept: assign unique dept_key to each distinct
+ dma fence caller
+Message-ID: <20250516080704.GA56738@system.software.com>
+References: <20250513100730.12664-34-byungchul@sk.com>
+ <202505140631.FOWO8B5L-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJNGr6t6cpo3zjANpYObZaWOSeGKdGW4B4+k1Bh2ZWQZBbJrBg@mail.gmail.com>
- <20250515141643.GB325737@mit.edu>
-In-Reply-To: <20250515141643.GB325737@mit.edu>
-From: Guoyu Yin <y04609127@gmail.com>
-Date: Fri, 16 May 2025 14:32:03 +0800
-X-Gm-Features: AX0GCFuv2R6km5Dmoa9S8zI1wx3oPrIDtvbzPG6i3XXVPiNQMEYLn9l-CnqZ45A
-Message-ID: <CAJNGr6uopyD6dYr2sFT-5k_3=Po-Cc43BKTnwDtaQuk8=Yh+BQ@mail.gmail.com>
-Subject: Re: [BUG] kernel BUG in ext4_mb_release_inode_pa
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202505140631.FOWO8B5L-lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+59zds7ZcnFchv+0DzJTQWqWWb0fIqIL/LELgeAHw2zpqa28
+	1DTLIDJyotPsgqs2rDRpXtPYNDVLbV3tYjdJMbMaWpqZMXJm2m0LqW8/nufhed4PL08r9BI/
+	XpucJuqS1YlKVsbIRrxKFqqcwZpF+s6ZMPY1h4Gi2moWntZUIZh8/ISGknevaai724eg3ZjH
+	wtHSWhaqrBvBkhkEjnIzB+19LyVgOt/Lwt1GBwUvrhWx0Ff9SwIfjzpY6C9sZWHYZaHBMjbK
+	wfO2YgrsFZ0U3DvWRkFLzlsKrNUvWbBZjTR8L7uDwFEwwoE+f4KDPP1pBrJ6l8LktyJ2VQC5
+	9WmUJlm2/eSGq5ghDy5i0mR+zZGslh6O2MpDSen1IYqUOMckxFqZyxKr8xRHDCOdFPnc0cGR
+	+2cnGdJ6rpojgzYT2uwTI1uRICZq00Vd2MptMs2HT830HmvEgeZbmVwmMi4wICmPhQhc017C
+	TPOjvJOcmxkhCOubztBuZoUQ3N094WGfP3rjOwtlQDKeFsYl+MrtVuQ2Zgtx2GS0e0JyAfDo
+	l3HWgHheIWzFA6VRf2Vv3G7q92zRQiju/jlEuSO04I/LfvJuWSqE49LzLzyROUIgbrt6zzOF
+	hUs8bs4voP/eORffLO9mTiDB/F+t+b9a87/aYkRXIoU2OT1JrU2MUGkykrUHVPEpSVb05zks
+	h6a2NCLn0yg7Enik9JKv6grSKCTq9NSMJDvCPK30kXftCtQo5AnqjIOiLiVOty9RTLUjf55R
+	+srDXfsTFMJOdZq4WxT3iLppl+Klfplo17LVwSdE++DzGNeRedmHXQfDnEtic1UDQ8por+XR
+	0oe2GT277z8LOe6IMmgss+qH18yeb75ef3yqZ0ek0Xs7G1C3SY9FU69v0vD7wnR/1VDC2o2X
+	X623wEBcg8s8qH4Tl+s6dWE80jf2xw3iakgJ0m/QZlftlUY2rdv7ML5CIlEyqRr14lBal6r+
+	De+8Zj0YAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Rf0yMcRzH932e557n6bh5OqWvGltHbE2IzGcj4sSz/JhhM2bVjUd3VHSX
+	q5BlFbmUmNKdtHJ250eUq1lEtYu4hKamRkU31g/9sH4cSeEy47/X3u/X+683S0o7KU9WFR0r
+	qKMVkTJaTIm3rEj28xucp1xc37AcRobTKMgrLqKh4c4tBGMvXpFQ2NFGQlltOwJbdjoNycZi
+	Gm5ZNoMpyQfs1w0M2NrfiKDmik0E+vxWGmrL7QQ0Psijob3opwh6ku00fLxYRcNnh4kE08gA
+	A6+rCwiw3mgi4GlGNQGVaR8IsBS9oaHUkk3Cd/MTBPbMPgZSz44ykJ6aQ0FK6zIY+5ZHB3nz
+	Nb0DJJ9SGsc/chRQfN1VzN83tDF8SuVbhi+97ssbH3YTfOHgiIi33DxD85bBCwyv62si+P6X
+	Lxn+We4YxVddKWL4rlI92uq+W7xynxCp0grqRavCxcrO3grysCUgvqImiUlC2Qt0yIXFXACu
+	Tz/POJnifHDq/Uukk2luPm5pGZ1kt995eYeJ0CExS3JfRbjkcRVyFtO5MKzPtk5KEg7wwJev
+	tA6xrJQLxZ+M2//Ertim/0g5meR8cctEN+FUSM4LmydYZ+zCLcHG/MZJxZ2bg6vvPSWykMTw
+	39rw39rwb12AyJvITRWtjVKoIpct1BxUJkSr4hfuPRRlQb/vNyX+OF+Ohhs3WBHHItlUSVCz
+	j1IqUmg1CVFWhFlS5iZpPjBHKZXsUyQcFdSHwtRHIgWNFXmxlMxDErJTCJdyEYpY4aAgHBbU
+	f1uCdfFMQo3flsrvho6vCcZBQ7kex0NOVVtcJ+wvcuseHcmMGdqBDDEnTwR3euy/nKY8FiKv
+	68/VZLjKKzfOtjnM6+J7AuWG8XBtzururtsR057rm+ulgYkzzr2vgEtD78Znrncz+5uzfuac
+	vubATXPX7pni1X/Nb92skl3eN0blm7zLtsXETZdRGqXC35dUaxS/AKmkskj6AgAA
+X-CFilter-Loop: Reflected
 
-Hi,
+On Wed, May 14, 2025 at 06:49:42AM +0800, kernel test robot wrote:
+> Hi Byungchul,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on 82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/llist-move-llist_-head-node-definition-to-types-h/20250513-181346
+> base:   82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3
+> patch link:    https://lore.kernel.org/r/20250513100730.12664-34-byungchul%40sk.com
+> patch subject: [PATCH v15 33/43] dept: assign unique dept_key to each distinct dma fence caller
+> config: arm-randconfig-002-20250514 (https://download.01.org/0day-ci/archive/20250514/202505140631.FOWO8B5L-lkp@intel.com/config)
+> compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project f819f46284f2a79790038e1f6649172789734ae8)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250514/202505140631.FOWO8B5L-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202505140631.FOWO8B5L-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> drivers/dma-buf/dma-fence.c:503: warning: expecting prototype for dma_fence_wait_timeout(). Prototype was for __dma_fence_wait_timeout() instead
+> >> drivers/dma-buf/dma-fence.c:763: warning: expecting prototype for dma_fence_default_wait(). Prototype was for __dma_fence_default_wait() instead
+> >> drivers/dma-buf/dma-fence.c:853: warning: expecting prototype for dma_fence_wait_any_timeout(). Prototype was for __dma_fence_wait_any_timeout() instead
 
-Thank you for your response and suggestions.I have implemented the
-reproduction program based on your suggestions. With these changes, I
-have successfully reproduced the kernel BUG in
-ext4_mb_release_inode_pa, but the crash triggers after 5-8 runs on
-average, please try a few more times.
+I have just fixed it.  Thanks.
 
-The new C reproducer: https://pastebin.com/raw/jWYWQHPP
-
-Best regards,
-Guoyu
-
-Theodore Ts'o <tytso@mit.edu> =E4=BA=8E2025=E5=B9=B45=E6=9C=8815=E6=97=A5=
-=E5=91=A8=E5=9B=9B 22:16=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, May 15, 2025 at 05:58:40PM +0800, Guoyu Yin wrote:
-> >
-> > I discovered a kernel crash described as "kernel BUG in
-> > ext4_mb_release_inode_pa." This issue occurs in the EXT4 filesystem's
-> > ext4_mb_release_inode_pa function (fs/ext4/mballoc.c:5339), where a
-> > BUG() assertion fails due to a mismatch between the calculated free
-> > block count free and the expected value pa->pa_free during
-> > preallocated block release.
->
-> I can't reproduce the BUG using qemu,with the kernel config, kernel
-> commit, and C reproducer that you have provided.  This is why I
-> strongly suggest that if people really feel the need to set up their
-> own syzkaller instances, perhaps because they are maing changes to
-> syzkaller, that they replicate the full syzkaler setup, including the
-> web dashboard and e-mail responder so that people can request that the
-> reproducer be run on your setup so we can figure out how easily
-> reproducible the report might be, and whether it has been fixed in a
-> more recent kernel version, or via a proposed bug fix.
->
-> You are most likely correct that it is caused by a corrupted file
-> system, and this is why I strongly recommend that users run fsck -y on
-> any file system image of uncertain provenance before trying to mount
-> said file system.  In addition, note that if the file system had been
-> mounted with errors=3Dremount-ro, the problem wouldn't have resulted in
-> a BUG.  For this reason, especially when the C reprducer doesn't
-> reproduce the reported issue, this sorts of issues are a very low
-> priority to investigate.
->
-> Best regards,
->
->                                         - Ted
+	Byungchul
+> 
+> vim +503 drivers/dma-buf/dma-fence.c
+> 
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  482  
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  483  /**
+> f54d1867005c33 drivers/dma-buf/dma-fence.c Chris Wilson      2016-10-25  484   * dma_fence_wait_timeout - sleep until the fence gets signaled
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  485   * or until timeout elapses
+> 4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  486   * @fence: the fence to wait on
+> 4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  487   * @intr: if true, do an interruptible wait
+> 4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  488   * @timeout: timeout value in jiffies, or MAX_SCHEDULE_TIMEOUT
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  489   *
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  490   * Returns -ERESTARTSYS if interrupted, 0 if the wait timed out, or the
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  491   * remaining timeout in jiffies on success. Other error values may be
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  492   * returned on custom implementations.
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  493   *
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  494   * Performs a synchronous wait on this fence. It is assumed the caller
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  495   * directly or indirectly (buf-mgr between reservation and committing)
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  496   * holds a reference to the fence, otherwise the fence might be
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  497   * freed before return, resulting in undefined behavior.
+> 4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  498   *
+> 4dd3cdb281f7a3 drivers/dma-buf/dma-fence.c Simona Vetter     2018-07-04  499   * See also dma_fence_wait() and dma_fence_wait_any_timeout().
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  500   */
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  501  signed long
+> 15fe92c1e1cf69 drivers/dma-buf/dma-fence.c Byungchul Park    2025-05-13  502  __dma_fence_wait_timeout(struct dma_fence *fence, bool intr, signed long timeout)
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01 @503  {
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  504  	signed long ret;
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  505  
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  506  	if (WARN_ON(timeout < 0))
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  507  		return -EINVAL;
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  508  
+> ef8255506f6682 drivers/dma-buf/dma-fence.c Simona Vetter     2020-05-19  509  	might_sleep();
+> ef8255506f6682 drivers/dma-buf/dma-fence.c Simona Vetter     2020-05-19  510  
+> 5fbff813a4a328 drivers/dma-buf/dma-fence.c Simona Vetter     2020-07-07  511  	__dma_fence_might_wait();
+> 5fbff813a4a328 drivers/dma-buf/dma-fence.c Simona Vetter     2020-07-07  512  
+> b96fb1e724ae68 drivers/dma-buf/dma-fence.c Arvind Yadav      2022-09-14  513  	dma_fence_enable_sw_signaling(fence);
+> b96fb1e724ae68 drivers/dma-buf/dma-fence.c Arvind Yadav      2022-09-14  514  
+> f54d1867005c33 drivers/dma-buf/dma-fence.c Chris Wilson      2016-10-25  515  	trace_dma_fence_wait_start(fence);
+> 418cc6ca06071e drivers/dma-buf/dma-fence.c Simona Vetter     2018-05-03  516  	if (fence->ops->wait)
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  517  		ret = fence->ops->wait(fence, intr, timeout);
+> 418cc6ca06071e drivers/dma-buf/dma-fence.c Simona Vetter     2018-05-03  518  	else
+> 418cc6ca06071e drivers/dma-buf/dma-fence.c Simona Vetter     2018-05-03  519  		ret = dma_fence_default_wait(fence, intr, timeout);
+> f54d1867005c33 drivers/dma-buf/dma-fence.c Chris Wilson      2016-10-25  520  	trace_dma_fence_wait_end(fence);
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  521  	return ret;
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  522  }
+> 15fe92c1e1cf69 drivers/dma-buf/dma-fence.c Byungchul Park    2025-05-13  523  EXPORT_SYMBOL(__dma_fence_wait_timeout);
+> e941759c74a44d drivers/dma-buf/fence.c     Maarten Lankhorst 2014-07-01  524  
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
