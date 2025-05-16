@@ -1,124 +1,94 @@
-Return-Path: <linux-ext4+bounces-7944-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7945-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F9ECAB9EE4
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 16:48:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE11AAB9EE7
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 16:49:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13A3C1769ED
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 14:48:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D39C73B486C
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 14:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A061A0BE1;
-	Fri, 16 May 2025 14:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HUyFiL4c"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116B2192B84;
+	Fri, 16 May 2025 14:49:03 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40BB17B425;
-	Fri, 16 May 2025 14:48:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629FB190072
+	for <linux-ext4@vger.kernel.org>; Fri, 16 May 2025 14:49:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747406922; cv=none; b=Uy5aA8HJu9BO0H2NIHoT3jp0y6lfgpQqDPIRp00Gv3rkxEHjIpCJy07IWBikZjIhdVm74IAE12phIHO57/2Q5frMXoXuv0ijdXYDBN3/GSYBJXcG6b4wi4F0wiznifQ3joTcmBot1jlEr3YKtiEQd6tWxEXlPjZ/jLDWx1CMFao=
+	t=1747406942; cv=none; b=XWz77u/6qvSPnXt23Ahh8d38kcDu39OcaZjS8RRkU+rTnb7bXC0JHKw5VEJSgiPbX10MUqZA0qnHvZrC2Ors3ijDffDK+LXBMHb8Bb4jkQS4y8HFqHSyzFQhEyd1JTXTXsiLZc+m7qZ1wbDJdA2pNmp12RAdt96k34IH7tL1mVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747406922; c=relaxed/simple;
-	bh=mqs3vH8omkf/lFqlcNBLcijBHI7C4HsS+nSuaL+fiyM=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=DbXDq8fzOqtOEWG0xeVZ7EZTD/6xETr3207jKdGFb3fk3tf74mhkV3vY+VL0OSVqmHjSJAzR0Ds4P/qH+blGyuAMfdZKjDnStwL8T/bP2apNlX1ZnVbVwfHwujinOFw1Jy13ah9MZFDRWlZUCFuRIxqE96o1IR2TR+Bz4WhVQp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HUyFiL4c; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-22e09f57ed4so36312915ad.0;
-        Fri, 16 May 2025 07:48:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747406919; x=1748011719; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=knLSICsJOojzEUrxMy84SDHLckjfFnqIlSz743nGI+A=;
-        b=HUyFiL4cavlkgUr1d5lspQ5rOZlprR3BN7krY9mYUcuKB0VQALlo7ll2+qb2aeGmM0
-         Rr1Jw0jocVItqfhmA6aVfr66EcWSgJtjJDPfGI+Y9uC6TXji7Pd9tApzWURwvEDcUMxY
-         jz6NAC2EXKTurU1P+FHlYWjfVE9vNtz9+b0NZU58J6umXLuB6T23fVZsLERbwDhI1DCf
-         kMWnGvxAZ6wfnfYnIku/DodE/8j0Ii/lxR1QZo2P0oda5EoyIaHPsjWbk1+MxczgqG8L
-         bAIgvj1r4654bdMBhtmEy5zVefiHlCpqBXrUOljH+9Qp/cX+xfwauXI4gWG0Uveq0o6D
-         a4FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747406919; x=1748011719;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=knLSICsJOojzEUrxMy84SDHLckjfFnqIlSz743nGI+A=;
-        b=BUpT01QFdqHciVC7BueCjJOlJ9sh9ip1r+tK8IXDtfigwXNx3CZsrMWwCi5jWvDqAi
-         GYfJ8eGCA/IcprBT8UCM2AUxydLnLFO/2E/y4w21D2fO8K8so35cZIu6pYHlikp+Tp1I
-         Qvs39aJvQZs2s/2hmT/Mo/XqJiOdrAPe2QHteS8zf2uNz2zlb1K8tYLGh1JfeAuwVaYe
-         O7LvZs9foXSOgzvXLWTz9FovfkQm/QNNPyx72SOLFVU8kv5cg3a/79O4KeIjoTeHPM3q
-         v4DlgxOdjvXimBO21hh5o1xY9KbIzqSsF1x9ZKbQyf0KOlVtNCIi2SFGE4gvJCShrw58
-         Zo0g==
-X-Forwarded-Encrypted: i=1; AJvYcCXNt7BGqIQIyvVRF7NDGd/IWI0r2Qq6fCjwj/n8kjIwLegAV/CCR55OnMKYP2YwgdmirlMZOtkEYxvqAPV3@vger.kernel.org
-X-Gm-Message-State: AOJu0YxgR5WpFMlb/5R9N4K1EKrxF4vO0qVnAROQdFWmndJr5+XBsN3M
-	qr1UkzYZSwJVBvN9JCMXG4qqCcHA1h4vQF/ubsUKNaVGA/qy1LC3iDKZEb45Dw==
-X-Gm-Gg: ASbGncv/FehUwRWqaZoU9ZQ0INdh53daFFvqurLryrbztVnGQZJcTnLDrarAt2SUXRx
-	5wZijrjAgZ6LYTUF0fKTMamWTBaefZjNTcjNy93yI6ypozfxs/ArQxOy+Mjr9ixOUCb9Ooya/LS
-	TTY4BpcqD4Ycqq1xoZLV0vTQga2tN4qbjnc9SFzgaO7t1iQ4TAx6rkFDHHI2wS71re9ISdOphA6
-	t5vjwCJLUZEdTjDCUXr+IgAf6UiLLbhpi68G7pbEv2ha4/9Fi1JgrwGEPbfBxQmrnULT5ikBuPs
-	7ExIc2rqntfvd7dbkaKtAWiDsLCsbsrUnqB4/MtWWp9U
-X-Google-Smtp-Source: AGHT+IFxyyEuMbaQRaQPPG4vinthQ8415iSw/lh51IcvJj6esfaaVH7TulzMEAOEdeecAaJsVGwGIg==
-X-Received: by 2002:a17:903:1b48:b0:22e:4b74:5f68 with SMTP id d9443c01a7336-231b39acfbcmr120153455ad.19.1747406919232;
-        Fri, 16 May 2025 07:48:39 -0700 (PDT)
-Received: from dw-tp ([171.76.80.248])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ebaef0sm15203785ad.203.2025.05.16.07.48.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 May 2025 07:48:38 -0700 (PDT)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Theodore Ts'o <tytso@mit.edu>, John Garry <john.g.garry@oracle.com>
-Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>, djwong@kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-fsdevel@vger.kernel.org
+	s=arc-20240116; t=1747406942; c=relaxed/simple;
+	bh=+VH8Gbs2kjNZ9IN29v2lrqtramjIwWZ+QcvvFd3l0N4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JXCXKZ/Lwx9DlCgLtuyCgnpiVDbSwCbDmlPEnI8Y4GnDVh+UptfhuZNGHiyqz/i/WeBgk0uWGjKWXr1HTSaZ5fawseeIfQIZIuCaa4qA0NggAgvzXka9AZKhQzHGgwXbQbPr40jHsP2q2Mkqikb6o+A2lpA8SxT9firdnYe9iPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-112-151.bstnma.fios.verizon.net [173.48.112.151])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54GEmHXU017261
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 May 2025 10:48:17 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 311C92E00DD; Fri, 16 May 2025 10:48:17 -0400 (EDT)
+Date: Fri, 16 May 2025 10:48:17 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Carlos Maiolino <cem@kernel.org>
+Cc: John Garry <john.g.garry@oracle.com>,
+        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>, djwong@kernel.org,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH v5 7/7] ext4: Add atomic block write documentation
-In-Reply-To: <20250516121938.GA7158@mit.edu>
-Date: Fri, 16 May 2025 20:06:43 +0530
-Message-ID: <87ldqwwrk4.fsf@gmail.com>
-References: <cover.1747337952.git.ritesh.list@gmail.com> <d3893b9f5ad70317abae72046e81e4c180af91bf.1747337952.git.ritesh.list@gmail.com> <3b69be2c-51b7-4090-b267-0d213d0cecae@oracle.com> <20250516121938.GA7158@mit.edu>
+Message-ID: <20250516144817.GB21503@mit.edu>
+References: <cover.1747337952.git.ritesh.list@gmail.com>
+ <d3893b9f5ad70317abae72046e81e4c180af91bf.1747337952.git.ritesh.list@gmail.com>
+ <3b69be2c-51b7-4090-b267-0d213d0cecae@oracle.com>
+ <20250516121938.GA7158@mit.edu>
+ <6zGxoHeq5U6Wkycb78Lf1YqD2UZ_6HbHKjIylyTu1s2iRplyxIkQL9FOimJbx_qlfo2fer1wwGQ-5r8i9M91ng==@protonmail.internalid>
+ <920cd126-7cee-4fe5-a4ab-b2c826eb8b8c@oracle.com>
+ <cuyujo64iykwa2axim2jj5fisqnc4xhphasxm5n6nsim5qxvkg@rvtkxg6fj6ni>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cuyujo64iykwa2axim2jj5fisqnc4xhphasxm5n6nsim5qxvkg@rvtkxg6fj6ni>
 
-"Theodore Ts'o" <tytso@mit.edu> writes:
+On Fri, May 16, 2025 at 03:31:17PM +0200, Carlos Maiolino wrote:
+> 
+> This is likely the final state for XFS merge-window and I hope to
+> send it to Linus as soon as the merge window opens.
 
-> On Fri, May 16, 2025 at 09:55:09AM +0100, John Garry wrote:
->> 
->> Or move this file to a common location, and have separate sections for ext4
->> and xfs? This would save having scattered files for instructions.
->
-> What is the current outook for the xfs changes landing in the next
-> merge window?  I haven't been tracking the latest rounds of reviews
-> for the xfs atomic writes patchset.
->
-> If the xfs atomic writes patchset aren't going to land this window,
-> then we can land them as ext4 specific documentation, and when the xfs
-> patches land, we can reorganize the documentation at that point.  Does
-> that make sense?
->
+Very cool!
 
-IMO, the current documentation is primarily intended to capture notes
-from ext4's implementation perspective of single and multi-fsblock
-atomic writes.
+I've taken a quick peek, and it looks like the only XFS-specific
+atomic writes is an XFS mount option.  Am I missing anything?
 
-I guess adding a more general atomic write documentation require a lot
-of other grounds to cover too e.g. 
-- block device driver support (scsi & nvme, dm-... )
-- block layer support (bio split & merge )
-- Filesystem & iomap support (iomap, ext4, xfs)
-- VFS layer support (statx, pwritev2...)
+I want to keep merging the ext4 and xfs atomic write patchsets simple,
+so I'd prefer not to have any git-level dependencies on the branches.
+If we're confident that the xfs changes are going to land at the next
+merge window, given that the ext4 patch set is pretty much ready to
+land in the ext4 tree, how about updating the documentation in a
+follow-up patch.
 
-So, IMO, even with XFS atomic writes patches queued for v6.16, the
-current documentation still stands correct. To cover more ground around
-atomic writes detail, we can think of adding a common documentation
-later which can refer to individual filesystem's documentation file for
-implementation notes.
+I can either append the commit which generalizes the documentation to
+the ext4 tree, or if it turns out that there is a v6 needed of the
+ext4 atomic write patchset, we can fold the documentation update into
+the "ext4: add atomic block write documentation" commit and rename it
+to "Documentation: add atomic write block documentation."
 
-Thoughts?
+Does that seem reasonable?
 
--ritesh
+Cheers,
 
+					- Ted
 
