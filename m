@@ -1,205 +1,124 @@
-Return-Path: <linux-ext4+bounces-7943-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7944-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45228AB9EBC
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 16:36:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F9ECAB9EE4
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 16:48:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08F741BC4359
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 14:36:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13A3C1769ED
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 May 2025 14:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F21719343B;
-	Fri, 16 May 2025 14:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A061A0BE1;
+	Fri, 16 May 2025 14:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hZKQ5bk8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HUyFiL4c"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 791F61922C4;
-	Fri, 16 May 2025 14:36:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40BB17B425;
+	Fri, 16 May 2025 14:48:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747406190; cv=none; b=o3UIwKXnZe2to7ethsNTAkT8rhDfsmW1SX5Eys7HFnkbDaxtcw5siIdHObHjCOiyZyw+TvZSMBw1h5f7DTqh1uTvD4BNFYHfF0weSX32GTF6u3co+W26NRTL4RRq4OpKU+0Rx56JoH9C1xmCp3aYxzrIvMKNh6uIbIBOgsVX2l4=
+	t=1747406922; cv=none; b=Uy5aA8HJu9BO0H2NIHoT3jp0y6lfgpQqDPIRp00Gv3rkxEHjIpCJy07IWBikZjIhdVm74IAE12phIHO57/2Q5frMXoXuv0ijdXYDBN3/GSYBJXcG6b4wi4F0wiznifQ3joTcmBot1jlEr3YKtiEQd6tWxEXlPjZ/jLDWx1CMFao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747406190; c=relaxed/simple;
-	bh=fta6nrMIVM/+cFwELKqOmi5xHWs4Ef+e9jRIu3cPwOA=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=o2UmZPV86dfGoysCmJlJLB9NZuB1s56WQq1/yGx+00OJW9wxqzc+nwIcn74VfjMXQ5Q5bo9FfwRVfmiZwtGEbvznRBv8YUWMenO6/idnCN2LDUiWHJd0sp5R94ZXbbQ+UQCVpCb1Yj72fFVLnzmNu2MAkpOlKH0/uZrg6ymLcLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hZKQ5bk8; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1747406922; c=relaxed/simple;
+	bh=mqs3vH8omkf/lFqlcNBLcijBHI7C4HsS+nSuaL+fiyM=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=DbXDq8fzOqtOEWG0xeVZ7EZTD/6xETr3207jKdGFb3fk3tf74mhkV3vY+VL0OSVqmHjSJAzR0Ds4P/qH+blGyuAMfdZKjDnStwL8T/bP2apNlX1ZnVbVwfHwujinOFw1Jy13ah9MZFDRWlZUCFuRIxqE96o1IR2TR+Bz4WhVQp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HUyFiL4c; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-22fac0694aaso16554605ad.1;
-        Fri, 16 May 2025 07:36:28 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-22e09f57ed4so36312915ad.0;
+        Fri, 16 May 2025 07:48:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747406187; x=1748010987; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747406919; x=1748011719; darn=vger.kernel.org;
         h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=IM+92lUsT2Z/tON4akr6Qdh1u4q79iFCAlooh+mpdNg=;
-        b=hZKQ5bk8ysvPjy3+FG6yAyPw2vevvpK9AjAHD8kUKPptN+vmtDNHQVWWMC+j61KdO0
-         B3D/kzhoxBq3f/y5YUhK1sqlsq2oh8PHv2N9ffOsbkb+ZMhBfPEfS2orlYWw1i8UbU8C
-         Z5VwYD3yD0V8uoH5Id5YnRBtOsatuhuSHJiAavUCoBTW4SL02SX2mfyr0i6NhlHfUdso
-         ijZe4iNzqIWGh6tgmGhM2NX+4GpJpAbVkR61nsB3QFt5UsnohnSTQ9qCS5bnjHAPMWvY
-         yXBD9LxfjhpmxhXxDKvoM1tn/S8cn11JBOZ/cDSDqBOeRRxuvwL8RO8wxQlFCBhWYJ2T
-         8AUg==
+        bh=knLSICsJOojzEUrxMy84SDHLckjfFnqIlSz743nGI+A=;
+        b=HUyFiL4cavlkgUr1d5lspQ5rOZlprR3BN7krY9mYUcuKB0VQALlo7ll2+qb2aeGmM0
+         Rr1Jw0jocVItqfhmA6aVfr66EcWSgJtjJDPfGI+Y9uC6TXji7Pd9tApzWURwvEDcUMxY
+         jz6NAC2EXKTurU1P+FHlYWjfVE9vNtz9+b0NZU58J6umXLuB6T23fVZsLERbwDhI1DCf
+         kMWnGvxAZ6wfnfYnIku/DodE/8j0Ii/lxR1QZo2P0oda5EoyIaHPsjWbk1+MxczgqG8L
+         bAIgvj1r4654bdMBhtmEy5zVefiHlCpqBXrUOljH+9Qp/cX+xfwauXI4gWG0Uveq0o6D
+         a4FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747406187; x=1748010987;
+        d=1e100.net; s=20230601; t=1747406919; x=1748011719;
         h=references:message-id:date:in-reply-to:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IM+92lUsT2Z/tON4akr6Qdh1u4q79iFCAlooh+mpdNg=;
-        b=enriKr7GTP4ilYbzuLpxqtkfboJty9Z4TfBkNf12LglFvGEEraHtqRRNJAvSgjaYB/
-         votI9ROXd0XCy/OOzPpiNFdxDdnzyC1BSC1vYRpBjXdBVznexmqX6NQwsCw4vC0wqIG9
-         AD6ZCJtScvG6s3UZxYX1pf0a3t9RGYpcerwAC3vEzlGjFFCzGiFwqsT3/4uhesMqpLe/
-         HIPWWU4SzDxzU6oAE97WE7JZ2W0I7bbQJQikiDTQ4K5ucZTTrBUG6b0IK+Ku3xLN0C3w
-         N8DI0wcOOZzGx8NlgX5DkU3NURJckEWYhD9IqNiFXw/XrLq2Vwvn0xvTkjFXtpW5PhvK
-         86Dg==
-X-Forwarded-Encrypted: i=1; AJvYcCXGY09nQtiwZvZJzj1iPWLsTTtSb3/YpZVTQN9v50sLEAVVS0enVUkTbwB5Su+7CS5VaDvmTHbZSFHwJJPs0A==@vger.kernel.org, AJvYcCXuKfXS+nfFBno9LH2D+eN0R7fjLIfDpKmQOnmYvyTms1dEqhijBYuHtCSGj5DDsIJNOfd1pbdez0RZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyT4VNQ3Q2iJuCdK9kqllqd7LLW1MdcZlF5k3qedU8cnmTGlaI
-	fMZYmrbFlZ1hiOu5SkS38OD8umqXJlgJ9QYPUYPFEWgz9BTIFpy/Rsli/PbxnA==
-X-Gm-Gg: ASbGnct9GmeSBpQEpXia87ZJ65GLgUtl7NWF5HNMpZQfIMgpWmaImQTx3dsJvIldv3J
-	Ucq4fPVBAYD9JX24qxgJcqeDIWG06UfuJxF7F7N87YIeTZKsoWBEzaDPv/qWwRJl3cW0BZiT3Ej
-	a1CekOzNzI6EesqctE2OkQkgksNVwXL2GUWGdwvTbFuweClnECpBl7KU/VTZGb6hn5aSEAW+ahX
-	WnoRTV7OE79/eiX3FJBuMkrwkclOBni27yceoSE4iYJzqvTJDJ3YrMEd7u3xYFXFOFk4WZIh+LG
-	fafJ/kfIo40iDJGd3MmJM7MY6b+zet09jXHK3JlSmT8S
-X-Google-Smtp-Source: AGHT+IFOOaiVSrby6HvjUISvTCcPeNM21BNo9gYeEFWqji4bptSt9Je4oVIiLQTSP3jiHyNf7KMgWg==
-X-Received: by 2002:a17:903:2301:b0:231:d160:adec with SMTP id d9443c01a7336-231de351d48mr38311325ad.11.1747406186555;
-        Fri, 16 May 2025 07:36:26 -0700 (PDT)
+        bh=knLSICsJOojzEUrxMy84SDHLckjfFnqIlSz743nGI+A=;
+        b=BUpT01QFdqHciVC7BueCjJOlJ9sh9ip1r+tK8IXDtfigwXNx3CZsrMWwCi5jWvDqAi
+         GYfJ8eGCA/IcprBT8UCM2AUxydLnLFO/2E/y4w21D2fO8K8so35cZIu6pYHlikp+Tp1I
+         Qvs39aJvQZs2s/2hmT/Mo/XqJiOdrAPe2QHteS8zf2uNz2zlb1K8tYLGh1JfeAuwVaYe
+         O7LvZs9foXSOgzvXLWTz9FovfkQm/QNNPyx72SOLFVU8kv5cg3a/79O4KeIjoTeHPM3q
+         v4DlgxOdjvXimBO21hh5o1xY9KbIzqSsF1x9ZKbQyf0KOlVtNCIi2SFGE4gvJCShrw58
+         Zo0g==
+X-Forwarded-Encrypted: i=1; AJvYcCXNt7BGqIQIyvVRF7NDGd/IWI0r2Qq6fCjwj/n8kjIwLegAV/CCR55OnMKYP2YwgdmirlMZOtkEYxvqAPV3@vger.kernel.org
+X-Gm-Message-State: AOJu0YxgR5WpFMlb/5R9N4K1EKrxF4vO0qVnAROQdFWmndJr5+XBsN3M
+	qr1UkzYZSwJVBvN9JCMXG4qqCcHA1h4vQF/ubsUKNaVGA/qy1LC3iDKZEb45Dw==
+X-Gm-Gg: ASbGncv/FehUwRWqaZoU9ZQ0INdh53daFFvqurLryrbztVnGQZJcTnLDrarAt2SUXRx
+	5wZijrjAgZ6LYTUF0fKTMamWTBaefZjNTcjNy93yI6ypozfxs/ArQxOy+Mjr9ixOUCb9Ooya/LS
+	TTY4BpcqD4Ycqq1xoZLV0vTQga2tN4qbjnc9SFzgaO7t1iQ4TAx6rkFDHHI2wS71re9ISdOphA6
+	t5vjwCJLUZEdTjDCUXr+IgAf6UiLLbhpi68G7pbEv2ha4/9Fi1JgrwGEPbfBxQmrnULT5ikBuPs
+	7ExIc2rqntfvd7dbkaKtAWiDsLCsbsrUnqB4/MtWWp9U
+X-Google-Smtp-Source: AGHT+IFxyyEuMbaQRaQPPG4vinthQ8415iSw/lh51IcvJj6esfaaVH7TulzMEAOEdeecAaJsVGwGIg==
+X-Received: by 2002:a17:903:1b48:b0:22e:4b74:5f68 with SMTP id d9443c01a7336-231b39acfbcmr120153455ad.19.1747406919232;
+        Fri, 16 May 2025 07:48:39 -0700 (PDT)
 Received: from dw-tp ([171.76.80.248])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ed5b1csm14824845ad.244.2025.05.16.07.36.23
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ebaef0sm15203785ad.203.2025.05.16.07.48.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 May 2025 07:36:25 -0700 (PDT)
+        Fri, 16 May 2025 07:48:38 -0700 (PDT)
 From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, linux-ext4@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>, djwong@kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-fsdevel@vger.kernel.org
+To: Theodore Ts'o <tytso@mit.edu>, John Garry <john.g.garry@oracle.com>
+Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>, djwong@kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH v5 7/7] ext4: Add atomic block write documentation
-In-Reply-To: <3b69be2c-51b7-4090-b267-0d213d0cecae@oracle.com>
-Date: Fri, 16 May 2025 19:45:22 +0530
-Message-ID: <87msbcwsjp.fsf@gmail.com>
-References: <cover.1747337952.git.ritesh.list@gmail.com> <d3893b9f5ad70317abae72046e81e4c180af91bf.1747337952.git.ritesh.list@gmail.com> <3b69be2c-51b7-4090-b267-0d213d0cecae@oracle.com>
+In-Reply-To: <20250516121938.GA7158@mit.edu>
+Date: Fri, 16 May 2025 20:06:43 +0530
+Message-ID: <87ldqwwrk4.fsf@gmail.com>
+References: <cover.1747337952.git.ritesh.list@gmail.com> <d3893b9f5ad70317abae72046e81e4c180af91bf.1747337952.git.ritesh.list@gmail.com> <3b69be2c-51b7-4090-b267-0d213d0cecae@oracle.com> <20250516121938.GA7158@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 
-John Garry <john.g.garry@oracle.com> writes:
+"Theodore Ts'o" <tytso@mit.edu> writes:
 
-> On 15/05/2025 20:50, Ritesh Harjani (IBM) wrote:
+> On Fri, May 16, 2025 at 09:55:09AM +0100, John Garry wrote:
+>> 
+>> Or move this file to a common location, and have separate sections for ext4
+>> and xfs? This would save having scattered files for instructions.
 >
-> thanks for adding this info
+> What is the current outook for the xfs changes landing in the next
+> merge window?  I haven't been tracking the latest rounds of reviews
+> for the xfs atomic writes patchset.
 >
->> Application Interface
->
-> Should we put this into a common file, as it is just not relevant to ext4?
->
-> Or move this file to a common location, and have separate sections for 
-> ext4 and xfs? This would save having scattered files for instructions.
->
-
-The purpose of adding this documentation was mainly to note down some of
-the implementation details around multi-fsblock atomic writes for ext4
-using bigalloc which otherwise are easy to miss. But since there was no
-general documentation available on atomic writes, we added a bit more
-info around it mainly enough to cover ext4.
-
->> +~~~~~~~~~~~~~~~~~~~~~
->> +
->> +Applications can use the ``pwritev2()`` system call with the ``RWF_ATOMIC`` flag
->> +to perform atomic writes:
->> +
->> +.. code-block:: c
->> +
->> +    pwritev2(fd, iov, iovcnt, offset, RWF_ATOMIC);
->> +
->> +The write must be aligned to the filesystem's block size and not exceed the
->> +filesystem's maximum atomic write unit size.
->> +See ``generic_atomic_write_valid()`` for more details.
->> +
->> +``statx()`` system call with ``STATX_WRITE_ATOMIC`` flag can provides following
->> +details:
->> +
->> + * ``stx_atomic_write_unit_min``: Minimum size of an atomic write request.
->> + * ``stx_atomic_write_unit_max``: Maximum size of an atomic write request.
->> + * ``stx_atomic_write_segments_max``: Upper limit for segments. The number of
->> +   separate memory buffers that can be gathered into a write operation
->
-> there will also be stx_atomic_write_unit_max_opt, as queued for 6.16
->
-> For HW-only support, I think that it is ok to just return same as 
-> stx_atomic_write_unit_max when we can atomic write > 1 filesystem block
+> If the xfs atomic writes patchset aren't going to land this window,
+> then we can land them as ext4 specific documentation, and when the xfs
+> patches land, we can reorganize the documentation at that point.  Does
+> that make sense?
 >
 
-Yes, so for HW-only support like ext4 it may not be strictly required.
-To avoid the dependency on XFS patch series, I think it will be better if we add
-those changes after XFS multi-fsblock atomic write has landed :)
+IMO, the current documentation is primarily intended to capture notes
+from ext4's implementation perspective of single and multi-fsblock
+atomic writes.
 
-
->> +   (e.g., the iovcnt parameter for IOV_ITER).
->
->
->> Currently, this is always set to one.
->
-> JFYI, for xfs supporting filesystem-based atomic writes only, i.e. no HW 
-> support, we could set this to a higher value
->
-
-Yes. But again, XFS specific detail, not strictly relevant for EXT4 atomic write documentation.
-
->> +
->> +The STATX_ATTR_WRITE_ATOMIC flag in ``statx->attributes`` is set if atomic
->> +writes are supported.
->> +
->> +.. _atomic_write_bdev_support:
->> +
->> +Hardware Support
->> +----------------
->> +
->> +The underlying storage device must support atomic write operations.
->> +Modern NVMe and SCSI devices often provide this capability.
->> +The Linux kernel exposes this information through sysfs:
->> +
->> +* ``/sys/block/<device>/queue/atomic_write_unit_min`` - Minimum atomic write size
->> +* ``/sys/block/<device>/queue/atomic_write_unit_max`` - Maximum atomic write size
->
-> there is also the max bytes and boundary files. I am not sure if it was 
-> intentional to omit them.
->
-
-The intention of this section was mainly for sysadmin to first check if
-the underlying block device supports atomic writes and what are it's awu
-units to decide an appropriate blocksize and/or clustersize for ext4
-filesystem.
-
-See section "Creating Filesystems with Atomic Write Support"  which
-refers to this section first.
-
->> +
->> +Nonzero values for these attributes indicate that the device supports
->> +atomic writes.
->> +
->> +See Also
->
-> thanks,
-> John
-
-Thanks for the review John. 
-
-I think the current documentation mainly caters to ext4 specific
-implementation notes on single and multi-fsblock atomic writes.
-
-IMO, it is ok for us to keep this Documentation as is for v6.16 and
-let's work on a more general doc which can cover details like:
-- block device driver support (scsi & nvme)
+I guess adding a more general atomic write documentation require a lot
+of other grounds to cover too e.g. 
+- block device driver support (scsi & nvme, dm-... )
 - block layer support (bio split & merge )
 - Filesystem & iomap support (iomap, ext4, xfs)
 - VFS layer support (statx, pwritev2...)
 
-We can add these documentations in their respective subsystem
-directories and add a more common Documentation where VFS details are
-kept, which will refer to these subsystem specific details.
+So, IMO, even with XFS atomic writes patches queued for v6.16, the
+current documentation still stands correct. To cover more ground around
+atomic writes detail, we can think of adding a common documentation
+later which can refer to individual filesystem's documentation file for
+implementation notes.
 
 Thoughts?
 
 -ritesh
+
 
