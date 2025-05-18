@@ -1,99 +1,127 @@
-Return-Path: <linux-ext4+bounces-7953-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7954-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B197FABB072
-	for <lists+linux-ext4@lfdr.de>; Sun, 18 May 2025 16:07:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FF01ABB0F1
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 May 2025 18:49:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 859D71895581
-	for <lists+linux-ext4@lfdr.de>; Sun, 18 May 2025 14:07:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A9973A64FC
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 May 2025 16:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3194A21C9E9;
-	Sun, 18 May 2025 14:07:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E271A21D3C7;
+	Sun, 18 May 2025 16:49:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Tkf+PaOP"
+	dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b="Vk7FKQQQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2194E2CA6;
-	Sun, 18 May 2025 14:07:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A977B21CC55;
+	Sun, 18 May 2025 16:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747577232; cv=none; b=HoBZepH39U6uGxnQsKBfmNLQselw1T9qpSYtT7JDSqoygOieLmhjhwvyWjsfN+pQp+gFTlrXibwETSBWGdCLc+Mj7r3NlqfKd/bpMQ0Tuox/039UrI7ucKnCnVN8HePFhbdOLJPxgE7iTVUOZjl2j774wCN599EmKn79sSAonmc=
+	t=1747586947; cv=none; b=VSlT3Isq/onTBRh7eW3tVoPtHUsSkQnklab59gEp/FMQ1zfYrZYqmX4Ds6irntevkFA/ogh40Hc+q//vH6FzGw+yZvSGVcj98R0qnmvY/XP1qDdXxVv950OHGtfZKpVKHsbe+pKsFjc/oiubN8/kA2gmXTfvmYZvNs3twX3MlZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747577232; c=relaxed/simple;
-	bh=7ZUOy4zfzwtQfFECls1H0K0rWiwTK00K7JoofSWCwAk=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JEsvSEs6qY3FoKyRV1Qi2Aavl/lXDlQNrceFc+YsHoJFD89+xZh88a9i83oCe+sNgIiQLL2ez6xJPkKGKaDH0spZ7c9+JPbZCZxtRScitsdsfo88v/jX93Z5ODrS1ILsHsuk+o/JBJjYHL0pxD0/yMbBFNjTXnPiBTwrpp5H9Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Tkf+PaOP; arc=none smtp.client-ip=162.62.57.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1747576921; bh=ySspec3YNrQpxYsv4pE3dYx/3DWUTev93a0NvHqCYAc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Tkf+PaOP4+TjvyoUmtHWN4GO+oR5cw7jYpGd/9g+y8NWcLiy4o3h2w7+nGA65GoYQ
-	 qVbYuar0HaUtMxQI7PMXkdzwZiH12EXLC8QQARXHCHIWFeUCWKey9lcCTP2yoceREM
-	 cjUNP3sQrYge3JMV8tVk67hQQCWX6kP6py9uRPfM=
-Received: from ctt.. ([219.143.130.140])
-	by newxmesmtplogicsvrszc13-0.qq.com (NewEsmtp) with SMTP
-	id 798228B; Sun, 18 May 2025 22:01:57 +0800
-X-QQ-mid: xmsmtpt1747576917tkneko3hr
-Message-ID: <tencent_7A72A617DCA9854675A3B22B9C0B5F5E4E09@qq.com>
-X-QQ-XMAILINFO: MapnONytPuzijWxJBHCc5PS93VZJwvuokpXoI5q/M+ZsDlZKJp5CVfAhqVZz1b
-	 J4nce0pjPp6rvu1jW9ucyd0Ilc9eHXHfF1X6k8HRQV7PzhaWTnqammcFHeqrUzAyOJh//Ef6HrR3
-	 GeYvjvinwpiiF3aCTUEhnfOgZmO3igKVLIZQuSHLL8+AlJ+yozztRpjG2aAVfHBn0AfNRtGaXoBB
-	 BuAkEP/LMzqSMzWumhq/sOfy25wDzDVHRDqohC+/vBcE6CYwsm/QbPTgs9YBgmk/rvq/ZMEd1Tcp
-	 fxJfHa+gOv6rqX3SNrZ39QPoTRNKkFZNZpMfWKQhxtu498djZJ7pcy/gAv2yBDUC6nAwaoh4a4mg
-	 DZnqtfQYbWFflLFHs6INBVdeV5gwh8P+kQJ6k5YqkjX3BtkrmoCXsjaC7JhPgKeC942IX8u+ScUF
-	 zX88Xkn2m+z0Uxb0/0bijildv3DNbJpBTJvOPd7yWzfwI8KJeCFzRP2eKkrf0/0H3dhuxMbAgm2e
-	 PQS4YB8aL10fUGYRMfJH0GpDb95K19DrN6fjyZ7zbLaEOVpipNMrvBcIHC/WNk67d8ngYmDQjiDb
-	 RUU/Z6vxaZnY5Ye7x0ybbS+jhtf2y8dwZvc86LBPQAMbYkpECcOWaR4a6A3o99PET4CGfJZJASoJ
-	 dkF1sGSp5mP+9Zl3S+ahpoEUzbP7IaAtPTSNEtMfPzNnlQ7E4jUcLhVVJQdU7SVRgtcKgVBGIMTj
-	 llvQ74gB4VtRXDwfJCkhpr+jopP3gsnFi6obNb81/pdRqZ/Xy76qO8Pn07mPvZHWRh1V/S8Shh43
-	 Qjc17FhAt4RabMxkkmTwNhoFkLx9ZiphYu/08NsVducxF4+3iPqeIl/Q5+YxNKW0cOSvtHb1JY8Z
-	 ihcw8+ADlLhUZi23vFSlMsZOXTZi1Gbrud6oCBn7ac6eR8+MHQZ6Oodwwt2/ccbEiuqhsAtCavDY
-	 /QajZEBPWGbWKj7UMGogvJL+EImqr48Jx0A3ZjSPefRFeE1UIt4iij6duxQ7GW4maNWNzH4K3Gti
-	 iowD5bqIqGWCC75+C7S0Fxt+tt5U3xU/NSZuueawLJ6b6j9/xXiVlj79vPCk1ZaFSIzr/voVUuwT
-	 V2lMuN
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From: Taotao Chen <chentao325@qq.com>
-To: hch@infradead.org,
-	tytso@mit.edu,
-	willy@infradead.org
-Cc: adilger.kernel@dilger.ca,
-	akpm@linux-foundation.org,
-	chentaotao@didiglobal.com,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 1/3] mm/filemap: initialize fsdata with iocb->ki_flags
-Date: Sun, 18 May 2025 14:01:57 +0000
-X-OQ-MSGID: <20250518140157.20878-1-chentao325@qq.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <aCSxc7TnJzP-n2Lk@infradead.org>
-References: <aCSxc7TnJzP-n2Lk@infradead.org>
+	s=arc-20240116; t=1747586947; c=relaxed/simple;
+	bh=nURDTX3oA98c5WUnqRp3AZaFPfTyYRIqNcyheLeZwxA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Q/usRjNv47ZxU9ifk/vZcixmnmJeYUh3YprQm37uQ0ECtwlsw8/iNYsVGppwfGhdZv7pAh09hpI8xHNEBXqwbKXpytmQq4tLJk0FHHrNWTRsR9dmNGsuAJ3eBeyZZp/o5OyE9fbTQLHG4gk61UHUjcTeXbIVbvwOj1ydyX6VP60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com; spf=pass smtp.mailfrom=ethancedwards.com; dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b=Vk7FKQQQ; arc=none smtp.client-ip=80.241.56.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ethancedwards.com
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4b0mx30FQmz9sqg;
+	Sun, 18 May 2025 18:48:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ethancedwards.com;
+	s=MBO0001; t=1747586935;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=BxmCFkZ1O7ZrSEj+Oaqix6KX/+I1cvs+0DgBW5fJd/s=;
+	b=Vk7FKQQQUFXwhl984H2BQO7pMrnxjtp4l3luxEV1p4zQArh0CAlXnixe/30rcyRIEfkoUn
+	rmuAmfT7LShJ3v7OgDfHBbL9X8RiCRb/+KSNrNAh5LQN/ekIt3dWp/xdvNQO0FGILHkBY7
+	jHejUTA4bKKbcRtoJBeuOC9QVHEYfJ1o4j5LQwR2JBnqTvMW8Ov6qloGiA9FACsD+sPIyv
+	q3yOS1jp2/gBbgBc1WU9bpahmiYUw11gtyeR2s6r5jWFW6igIHwazuNU8bw2HsBR4Iym7W
+	7lcFrq8CqkhgjgnVYd1rAcSQ+9Tb1XWSOiB5KTkx4+mD+jW8ypo/KHWy6pu/dg==
+From: Ethan Carter Edwards <ethan@ethancedwards.com>
+Date: Sun, 18 May 2025 12:48:50 -0400
+Subject: [PATCH] ext4: replace strcpy() with strscpy() in
+ ext4_init_dot_dotdot()
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250518-ext4-strcpy-v1-1-6c8a82ff078f@ethancedwards.com>
+X-B4-Tracking: v=1; b=H4sIAHEPKmgC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1MDU0ML3dSKEhPd4pKi5IJKXUNTE9NkszRzyyRTQyWgjoKi1LTMCrBp0bG
+ 1tQC9rjcTXQAAAA==
+X-Change-ID: 20250518-ext4-strcpy-1545c6f79b51
+To: Theodore Ts'o <tytso@mit.edu>, 
+ Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-hardening@vger.kernel.org, 
+ Ethan Carter Edwards <ethan@ethancedwards.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1378;
+ i=ethan@ethancedwards.com; h=from:subject:message-id;
+ bh=nURDTX3oA98c5WUnqRp3AZaFPfTyYRIqNcyheLeZwxA=;
+ b=LS0tLS1CRUdJTiBQR1AgTUVTU0FHRS0tLS0tCgpvd0o0bkp2QXk4ekFKWGJEOXFoNThlVGp6e
+ GhQcXlVeFpHanhGd1YvQ04vMWMwWDUwVGplcTZ4Skhvd3NvamZGCnJJNDd2SXJlMWFYVnQwSzRN
+ cnlqbElWQmpJdEJWa3lSNVgrT2N0cER6UmtLTy8rNk5NSE1ZV1VDR2NMQXhTa0EKRTNHTlptUTR
+ 5OVFiZmJwbGNrV3hkT2pMSlAzUVRWZi81TWQ4NlJBMFdkbDFmTEo0d2hzRmh2OStqdXlwNzRXeQ
+ pOOXlhTFRRbk43bHkrYW1HSU9jM0tpLzNpMCtlMUZsMnJwZ2RBS2ZGU1ZnPQo9clN6MAotLS0tL
+ UVORCBQR1AgTUVTU0FHRS0tLS0tCg==
+X-Developer-Key: i=ethan@ethancedwards.com; a=openpgp;
+ fpr=2E51F61839D1FA947A7300C234C04305D581DBFE
+X-Rspamd-Queue-Id: 4b0mx30FQmz9sqg
 
-Hi Christoph, Matthew, Ted
+strcpy() is deprecated; use strscpy() instead.
 
-Thanks for the suggestions.
+No functional changes intended.
 
-Replacing file with iocb in write_begin(), updating call sites,
-and adjusting i915/gem usage makes a lot of sense. I’ll send a
-v2 to reflect this change.
+Link: https://github.com/KSPP/linux/issues/88
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Ethan Carter Edwards <ethan@ethancedwards.com>
+---
+ fs/ext4/namei.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,  
-Taotao
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index e9712e64ec8f04586f5ebcd332431e6af92e4f36..85df7fbf8ebd2c5b2aa3a20813f5f8a1aec7f5b7 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2926,7 +2926,7 @@ struct ext4_dir_entry_2 *ext4_init_dot_dotdot(struct inode *inode,
+ 	de->name_len = 1;
+ 	de->rec_len = ext4_rec_len_to_disk(ext4_dir_rec_len(de->name_len, NULL),
+ 					   blocksize);
+-	strcpy(de->name, ".");
++	strscpy(de->name, ".");
+ 	ext4_set_de_type(inode->i_sb, de, S_IFDIR);
+ 
+ 	de = ext4_next_entry(de, blocksize);
+@@ -2940,7 +2940,7 @@ struct ext4_dir_entry_2 *ext4_init_dot_dotdot(struct inode *inode,
+ 		de->rec_len = ext4_rec_len_to_disk(
+ 					ext4_dir_rec_len(de->name_len, NULL),
+ 					blocksize);
+-	strcpy(de->name, "..");
++	strscpy(de->name, "..");
+ 	ext4_set_de_type(inode->i_sb, de, S_IFDIR);
+ 
+ 	return ext4_next_entry(de, blocksize);
+
+---
+base-commit: 5723cc3450bccf7f98f227b9723b5c9f6b3af1c5
+change-id: 20250518-ext4-strcpy-1545c6f79b51
+
+Best regards,
+-- 
+Ethan Carter Edwards <ethan@ethancedwards.com>
 
 
