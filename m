@@ -1,198 +1,162 @@
-Return-Path: <linux-ext4+bounces-8009-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8012-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A12BABB9A2
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 11:39:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64C53ABBB6E
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 12:48:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B25157AB3AC
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 09:33:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 071F53A7528
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 10:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574A9289376;
-	Mon, 19 May 2025 09:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F6520C038;
+	Mon, 19 May 2025 10:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bnP0n8nI"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617E1283FE2;
-	Mon, 19 May 2025 09:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AAFD3208;
+	Mon, 19 May 2025 10:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747646350; cv=none; b=fAdIGfATeOvniTfOlcnqd45UO25wlXivXoR++aDCdgKyqV8xNc0FnSJVBJTW/eF4nLsqhsxE4jYbnGMCUQtIuodatYZZHg2CqmCqCAYFy1O2f6HP47VhSv02/SpZ8RFGpYqCO7zG2RLxjgPqKCxdQYeuEvgBzsP3fnGDY7NuUoQ=
+	t=1747651724; cv=none; b=sYIfDaxm/0oGMzjtKwfD+Th0L56LpOzzfRttaeKo4QoQlrxOcmjGyKALmvIMfjs2Gfmah6H9cjQ/88xgYy1EBx5Ma+1SvHm4pFnF8/sU20EfUghLYFfksniHQuVQtRel1Ous3+Qv25P8QzWVCNi3t5Gc+un9VqOnAxiITzjW8hE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747646350; c=relaxed/simple;
-	bh=Kn0pCpXycQGzli+Ttb42Y8sONcxizenmqlKSwqT8CyA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=YQVBEYzKp8LqHn0sKp7LWY7gYIFqutW+dsSXhBi3fEjas/6P+rS1C9RAA/t52pfK3d+KeqP7X3NM3aXWTRcAbR/fgVOy0OLs58rVl8rmtGllUo8KBA4YOOiDEyPo7Kp1hS/3097N12wYcEK/NI6LZbEOvO+P1iZhQ4dl95QPJfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-63-682af77127a4
-From: Byungchul Park <byungchul@sk.com>
-To: linux-kernel@vger.kernel.org
-Cc: kernel_team@skhynix.com,
-	torvalds@linux-foundation.org,
-	damien.lemoal@opensource.wdc.com,
-	linux-ide@vger.kernel.org,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	will@kernel.org,
-	tglx@linutronix.de,
-	rostedt@goodmis.org,
-	joel@joelfernandes.org,
-	sashal@kernel.org,
-	daniel.vetter@ffwll.ch,
-	duyuyang@gmail.com,
-	johannes.berg@intel.com,
-	tj@kernel.org,
-	tytso@mit.edu,
-	willy@infradead.org,
-	david@fromorbit.com,
-	amir73il@gmail.com,
-	gregkh@linuxfoundation.org,
-	kernel-team@lge.com,
-	linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	mhocko@kernel.org,
-	minchan@kernel.org,
-	hannes@cmpxchg.org,
-	vdavydov.dev@gmail.com,
-	sj@kernel.org,
-	jglisse@redhat.com,
-	dennis@kernel.org,
-	cl@linux.com,
-	penberg@kernel.org,
-	rientjes@google.com,
-	vbabka@suse.cz,
-	ngupta@vflare.org,
-	linux-block@vger.kernel.org,
-	josef@toxicpanda.com,
-	linux-fsdevel@vger.kernel.org,
-	jack@suse.cz,
-	jlayton@kernel.org,
-	dan.j.williams@intel.com,
-	hch@infradead.org,
-	djwong@kernel.org,
-	dri-devel@lists.freedesktop.org,
-	rodrigosiqueiramelo@gmail.com,
-	melissa.srw@gmail.com,
-	hamohammed.sa@gmail.com,
-	harry.yoo@oracle.com,
-	chris.p.wilson@intel.com,
-	gwan-gyeong.mun@intel.com,
-	max.byungchul.park@gmail.com,
-	boqun.feng@gmail.com,
-	longman@redhat.com,
-	yskelg@gmail.com,
-	yunseong.kim@ericsson.com,
-	yeoreum.yun@arm.com,
-	netdev@vger.kernel.org,
-	matthew.brost@intel.com,
-	her0gyugyu@gmail.com
-Subject: [PATCH v16 42/42] dept: call dept_hardirqs_off() in local_irq_*() regardless of irq state
-Date: Mon, 19 May 2025 18:18:26 +0900
-Message-Id: <20250519091826.19752-43-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20250519091826.19752-1-byungchul@sk.com>
-References: <20250519091826.19752-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSW0wTaRTH/b6Zzkwr1bG67iyQaEqIiiuK0fVEXWNi1HnxkgCJSoLWZbJt
-	BNRWUVZNQJBFsIgYqIBgKVorFMWWB29VFgTFC1ZlEQhWwA3YcGmstNqCu9t6eTn55X/O+Z2X
-	wxCyB6JQRpV6QFCnKpLllISUjIZULdr/MUq5xOdfAZ7xXBLOXzNTYL9ai8DckInB2bIRXnlH
-	EEw8fUaArtiOoKr/NQENrQ4ENtNxCl7+Mw06PC4K2orzKciqvkbB8+FJDL0lRRhqLZvgjXGQ
-	hMeFBgw6JwXluiwcKO8w+Iw1NBgzImHAVEbDZH8MtDk6RWDrWQillb0U3LG1kdB6YwDDy1vn
-	KXCY/xPB49aHJHgLwsB+RiuCujEDBcNeIwFGj4uGF416DK362VCfHRDmfPhXBA+0jRhyLl7H
-	0NF9G8Hd3D4MFnMnBc2eEQxWSzEB/sstCAYKRmk4ccpHQ3lmAYL8EyUkZPcuh4lPgcsV4zGQ
-	eaGehLrPnWjtr7y50oz45hEXwWdbD/F+z98Ub/PqSf6RgeNvlr2m+ey7PTSvtxzkraYovvqO
-	E/NVbo+It9ScpHiLu4jm80Y7MD/W3k5vDd8hWZ0kJKvSBPXiNbskyhKTidyXOf3wk3N+IgON
-	Ts1DYoZjl3E2w1vyO/eNnRYFmWLncV1dPiLIs9i5nFU7GMglDMF2TuVeVXSjPMQwM9nd3MjH
-	kOAMyUZyxWeHcZCl7C9cnc6JvzrncLX1jV884kDek9+Mgixjl3MdtZVk0Mmx1WLu+FD7t4Wf
-	uL9MXWQhkurRlBokU6WmpShUycuilempqsPRv+1NsaDAexmPTSbcQG57bBNiGSQPkdbbFihl
-	IkWaJj2lCXEMIZ8lrbHOV8qkSYr0PwT13p3qg8mCpgmFMaT8R+lS76EkGfu74oCwRxD2Cerv
-	XcyIQzMQCk0wZ5g+RazbEL8ozB1R5vJuW53f122vII64Lzkd85aEDzY44iY8fzpaok9eiU6c
-	ErdfdyVn08Ltimloj2HleP9Qaaxjy9HNjUU+bXjDinjXQ5P+3tz1mzXhC3Z5435IvL9FW5gr
-	fxt7Nt5/b+YbSdbQ+xmrLtE/f4bCCHF7ORMpJzVKRUwUodYo/geZXTjvWgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSe0yTZxSH977flUr1W0f0i8zgmhARohOyuuNlTJMlviPRuEgwMfFS9Iv9
-	YkFplcniBUZ1CMLQpSAorKKplRZlrZtaqSEQwKoTFKyKgEIWlbSURCkO7C6ty/45efL7nTzn
-	n8NTqovMXF7O3SsZcrV6NaugFetWFC/Ke5usW/K07WMITZTQcOayg4WeS3YEjitFGEY71sCj
-	yQCCd793U1Bt7kFwdniQgiudQwg8tu9Z6P1jJvSFxlnwmstYKD53mYX7/jCGgaqTGOzOtfDM
-	+oKGO5UNGKpHWThdXYwj4xWGKWsjB9bCRBix1XIQHk4F75CPgfY6LwOe/hSoqR9gocXjpaHz
-	2giGXvcZFoYc/zBwp/MWDZMV8dBzopyBpmADC/5JKwXW0DgHD1otGDots6HZFLEeffM3A13l
-	rRiOnv8FQ9+TGwhuljzH4HT4WGgPBTC4nGYKpi90IBipGOPgyPEpDk4XVSAoO1JFg2lAA+/+
-	jFyum0iFop+baWj6y4dWpRNHvQOR9sA4RUyub8l06CFLPJMWmtxuEMn12kGOmG72c8Ti3Edc
-	tmRyrmUUk7OvQwxxNh5jifP1SY6UjvVhErx3j1s/b5Ni5Q5JL+dLhk/Ttyl0VTYbvado1v67
-	p6apQjQ2oxTF8KLwmfg8+CMTZVZYID5+PEVFOU6YL7rKX0RyBU8Jvhnio7onqBTx/EdCthh4
-	GxvdoYVE0fyTH0dZKSwVm6pH8X/OBNHe3PreExPJ+8vaUZRVgkbss9fTlUhhQR80ojg5Nz9H
-	K+s1i427dAW58v7F23fnOFHkgawHwyeuoYneNW1I4JE6VtnsWahTMdp8Y0FOGxJ5Sh2nbHQl
-	6VTKHdqC7yTD7q2GfXrJ2IbieVo9R5mxUdqmEnZq90q7JGmPZPi/xXzM3ELkMGd0pSVmvjke
-	JgFfxup4r7nQLidkqot/SNfZ85b7tZVfsocr3N1Z5o5u/EnivJSFL7eslE3fpCjkQ5qu0tjP
-	Sw6Xx141rqvxa1Zl/5ow/Nug3j2z9sHBvGx3zX2rvCAtb8j2dVowM3wg6YvNWV+1XOpyBq3T
-	hxwvD3y4gVnGuNW0UadNTaYMRu2/Yfj0JDwDAAA=
-X-CFilter-Loop: Reflected
+	s=arc-20240116; t=1747651724; c=relaxed/simple;
+	bh=10nLNhZ6GFrdReHtylXJB7WK6jzttMXX1sTFVKmQ9Q8=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=BSDTZqQxdnDOVH7IWLRGyA54CFgQ7Ze/r7FdwEdlMSnwoGd/j0frB0hseVp27oit0JApYjhxxTlNuJuN2cLFiSfMkZZA24WKEOjuUWtdkZ6DGRvXK/GjHkQR2vDbgFQSrW666bLb2URB8fDx8i9PwfPIvNt2mOWgaT/0XVZeRnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bnP0n8nI; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-231c86bffc1so41132805ad.0;
+        Mon, 19 May 2025 03:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747651722; x=1748256522; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=p5QOKNkL19Kp3xC8l9jIeYjLGhIQ9n7VjMtSrEEZQbc=;
+        b=bnP0n8nIc54CZGqVjAt3dhEcKPn+PScscId6+/mvRtV5rFRziKhppD+4eK5TufjTXB
+         dmaLLyFtvfFoe1/JtrT4e++Cbn0XIOBMa1QIqMusCTLfCIIpfrNOOOzrx2bEBJVA5gEo
+         W3Mq+ZXhS1Gj/j5BbIXd5Jt+86cvYv1WRntRLyaQbETgkra+/9HLIMae3cI0fUhXib6U
+         /5WViDj8fW8BsBfYPoJlZgijcSAiO/5FoPt8YLUsKrEvpc6vjHhpV9GPrM+ZS6D0H9XA
+         UJvfpQLeSwqjfQwhC6qKAAFrZn+MW90uF4fMtZDwxe0Q0KfBSVf9qa7V34WOW2qo2tdo
+         zumQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747651722; x=1748256522;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p5QOKNkL19Kp3xC8l9jIeYjLGhIQ9n7VjMtSrEEZQbc=;
+        b=E+CxyIfFUHLevX/2U3fKFHGr0s8FfiaZZRnDPZgbcVDXnBrmXYiiIfR6lFbdw7Xfmy
+         Z4UZGu1Mz/kvHrJd+d4SqE8gnE9QwGFf8wuSyYkQTynp6knDwDU9WVdA1y5LAuJS1g8o
+         zFrUlLuzjeaJHCZZPntgOziRPtNi2ZmJeh/XfzD25t9bsEf8CLMMD9FYadGs9DOtYkXw
+         rhw6NXW1VsM99o4TTGPhbRKJc6UMFoKtf4YgkSEcv7VWp9lDaq8Y04OJpdL/3bD2ntSd
+         K6EA9O2t7MDjQmPtgJtl9LINdYMlWCYkhPGEV9Bh8r/VaGegcPbTHtlRduQQsLHPU1zJ
+         kpqA==
+X-Forwarded-Encrypted: i=1; AJvYcCVThxirUkKc5DEDXbD5o13CqytO0N5clkt8hZsCK+x6VE/835TvzjMwion31Eh8o/dimk0pdQWU3SN9@vger.kernel.org, AJvYcCW4QpkK0BFvqQsB9t4hIAqGx9OZVj2frAGxwgndmPGS2vrVfM7fP42KbEkLESnQBl+dpzSCzfsj/1RnIUA41A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzA3sphacd9LqFLRWik+V1Z/uwBUWfYDy4WuTaSEehpUwifpFkh
+	X3tJzQ8pYohbzdiywsoZXUHuc+N4niuRJy0Hdy3OVP52cgb0EMB7L1CyHnkwTw==
+X-Gm-Gg: ASbGncsFcN7cvv48PkHa06KOSLGc4qwBCmCYZD+AbjrKAYOwnQRUFwBNgzLr9aB+pPK
+	eAyDOe3bjdVKN8PrB25cUjfHtW+eTPEkaCXweCY4oEgLV7eSVhEwP9jjbcwExq+AnoTrm6fhN+I
+	m4sfxr4+slCP1YYjHCLj3U3dmfnDbDWwLZYNuXZ19rpUNAzcl4mBKXCOcwdZVihLla0Emyz/x/o
+	97GaZ30flOOeM1qj872IB8S/Kj36NNREUvCTyxJCtlTATNobT68m6Y8l6/O5XJPYZkCrGmffjpt
+	x/39FC9supsoO3nb1MDDmgAxe34m0WHJlDOf1v6gZME=
+X-Google-Smtp-Source: AGHT+IHw+YJ5sE4VnZc70gzP29WqwWASwuT643VaDkN8HVjtMhhlPCF7dCd7G3WF6/Q6iEOqOze5hA==
+X-Received: by 2002:a17:902:f78c:b0:21f:85ee:f2df with SMTP id d9443c01a7336-231de35f324mr185427885ad.15.1747651721829;
+        Mon, 19 May 2025 03:48:41 -0700 (PDT)
+Received: from dw-tp ([171.76.82.96])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4e97798sm56857705ad.147.2025.05.19.03.48.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 May 2025 03:48:40 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>, John Garry <john.g.garry@oracle.com>, djwong@kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v5 0/7] ext4: Add multi-fsblock atomic write support with bigalloc
+In-Reply-To: <cover.1747337952.git.ritesh.list@gmail.com>
+Date: Mon, 19 May 2025 15:37:52 +0530
+Message-ID: <877c2cx69z.fsf@gmail.com>
+References: <cover.1747337952.git.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 
-For dept to function properly, dept_task()->hardirqs_enabled must be set
-correctly.  If it fails to set this value to false, for example, dept
-may mistakenly think irq is still enabled even when it's not.
+"Ritesh Harjani (IBM)" <ritesh.list@gmail.com> writes:
 
-Do dept_hardirqs_off() regardless of irq state not to miss any
-unexpected cases by any chance e.g. changes of the state by asm code.
+> This adds multi-fsblock atomic write support to ext4 using bigalloc. The major
+> chunk of the design changes are kept in Patch-4 & 5.
+>
+> v4 -> v5:
+> =========
+> 1. Addressed review comments and added Acked-by from Darrick.
+> 2. Changed a minor WARN_ON(1) at one place to WARN_ON_ONCE(1) in patch-5 in
+>    ext4_iomap_begin(). Ideally we may never hit it.
+> 3. Added force commit related info in the Documentation section where
+>    mixed mapping details are mentioned.
+> [v4]: https://lore.kernel.org/linux-ext4/cover.1747289779.git.ritesh.list@gmail.com/
+> <...>
+> Ritesh Harjani (IBM) (7):
+>   ext4: Document an edge case for overwrites
+>   ext4: Check if inode uses extents in ext4_inode_can_atomic_write()
+>   ext4: Make ext4_meta_trans_blocks() non-static for later use
+>   ext4: Add support for EXT4_GET_BLOCKS_QUERY_LEAF_BLOCKS
+>   ext4: Add multi-fsblock atomic write support with bigalloc
+>   ext4: Enable support for ext4 multi-fsblock atomic write using bigalloc
+>   ext4: Add atomic block write documentation
+>
+>  .../filesystems/ext4/atomic_writes.rst        | 225 +++++++++++++
+>  Documentation/filesystems/ext4/overview.rst   |   1 +
+>  fs/ext4/ext4.h                                |  26 +-
+>  fs/ext4/extents.c                             |  99 ++++++
+>  fs/ext4/file.c                                |   7 +-
+>  fs/ext4/inode.c                               | 315 ++++++++++++++++--
+>  fs/ext4/super.c                               |   7 +-
+>  7 files changed, 655 insertions(+), 25 deletions(-)
+>  create mode 100644 Documentation/filesystems/ext4/atomic_writes.rst
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- include/linux/irqflags.h | 14 ++++++++++++++
- kernel/dependency/dept.c |  1 +
- 2 files changed, 15 insertions(+)
+Hi Ted, 
 
-diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
-index d8b9cf093f83..586f5bad4da7 100644
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -214,6 +214,13 @@ extern void warn_bogus_irq_restore(void);
- 		raw_local_irq_disable();		\
- 		if (!was_disabled)			\
- 			trace_hardirqs_off();		\
-+		/*					\
-+		 * Just in case that C code has missed	\
-+		 * trace_hardirqs_off() at the first	\
-+		 * place e.g. disabling irq at asm code.\
-+		 */					\
-+		else					\
-+			dept_hardirqs_off();		\
- 	} while (0)
- 
- #define local_irq_save(flags)				\
-@@ -221,6 +228,13 @@ extern void warn_bogus_irq_restore(void);
- 		raw_local_irq_save(flags);		\
- 		if (!raw_irqs_disabled_flags(flags))	\
- 			trace_hardirqs_off();		\
-+		/*					\
-+		 * Just in case that C code has missed	\
-+		 * trace_hardirqs_off() at the first	\
-+		 * place e.g. disabling irq at asm code.\
-+		 */					\
-+		else					\
-+			dept_hardirqs_off();		\
- 	} while (0)
- 
- #define local_irq_restore(flags)			\
-diff --git a/kernel/dependency/dept.c b/kernel/dependency/dept.c
-index a08d0e16978b..4ca1cc04293c 100644
---- a/kernel/dependency/dept.c
-+++ b/kernel/dependency/dept.c
-@@ -2248,6 +2248,7 @@ void noinstr dept_hardirqs_off(void)
- 	 */
- 	dept_task()->hardirqs_enabled = false;
- }
-+EXPORT_SYMBOL_GPL(dept_hardirqs_off);
- 
- void noinstr dept_update_cxt(void)
- {
--- 
-2.17.1
+I was working on the rebase over the weekend as I figured that there
+will be merge conflicts with Zhang's series. But later I saw that you
+have already rebased [1] and merged atomic write series in dev branch. 
 
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/log/?h=dev
+
+So, thanks for taking care of that. After looking at Zhang's series, I
+figured, we may need EXT4_EX_CACHE flag too in
+ext4_convert_unwritten_extents_atomic() i.e.
+
+	int flags = EXT4_GET_BLOCKS_IO_CONVERT_EXT | EXT4_EX_NOCACHE;
+
+This is since, in ext4_map_blocks(), we have a condition check which can
+emit a WARN_ON like this:
+	/*
+	 * Callers from the context of data submission are the only exceptions
+	 * for regular files that do not hold the i_rwsem or invalidate_lock.
+	 * However, caching unrelated ranges is not permitted.
+	 */
+	if (flags & EXT4_GET_BLOCKS_IO_SUBMIT)
+		WARN_ON_ONCE(!(flags & EXT4_EX_NOCACHE));
+	else
+		ext4_check_map_extents_env(inode);
+
+
+Other than adding the no cache flag, couple of other minor
+simplifications can be done too, I guess for e.g. simplifying the
+query_flags logic in ext4_map_query_blocks() function. 
+
+So I am thinking maybe I will provide the above fix and few other minor
+simplfications which we could do on top of ext4's dev branch (after we
+rebased atomic write changes on top of Zhang's series). Please let me
+know if that is ok?
+
+Or do we want to fix the original atomic write patch and do a force push
+to dev branch again?
+
+Please let me know whichever way works best?
+
+Thanks again!
+-ritesh
 
