@@ -1,148 +1,586 @@
-Return-Path: <linux-ext4+bounces-7966-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7971-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25D49ABB673
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 09:55:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3160ABB8B8
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 11:20:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4126D188C542
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 07:55:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C87547AB239
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 09:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16F0268FFF;
-	Mon, 19 May 2025 07:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lxT0k/dR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3592526FD8F;
+	Mon, 19 May 2025 09:18:51 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE162690FA
-	for <linux-ext4@vger.kernel.org>; Mon, 19 May 2025 07:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50EEE26C39A;
+	Mon, 19 May 2025 09:18:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747641305; cv=none; b=lZuBDJI+Qs2mPwYzjvKBHfti7affmqoCU01XYOOQd1EGV0ULqsgNYeZUo1oqTrXGFSSeCgH2fKLq/s4coVVnQ6320u5l3J4VIrk71DuNwUh9VetPmx7AIDn9wElg4CPkUAbxifOhjoq02bGzFY5F/xaIJGj983cyYWd2OnLhMIk=
+	t=1747646330; cv=none; b=XorA1pkilOorLDE5jU+rKODSYj3XpGDdx9Xs+Lmayykjj1YQ58Dt7VeFCpme+R9Wsz8IZRC6goylCHg9etSb7kaG4lYIADB1LF2/3RXf6slxiPPIarnrLbjt9PFI+z0yk7HMlELnU0P88swN/Dhk14Yypf/FgYZu3+/Z1PGTJuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747641305; c=relaxed/simple;
-	bh=bAeiXyQ4xmGax9eWamxTcSKHYyxrTUjgOR14Hk+vcFs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=fSkhtqpkcUC+RLn+Rx7GFvb4YrZ38F8+wuJoiZHArvNVSpjxt0++k9iJDdlMjJVSnXL5cJOhACZRcBypj/gfHoX3wkPfllQIladKP22T7fdDJRoWVqkQrvDBzArnL43AXTdFPwavBRJw1C4wPR6B4NwLrYZJwAXzn66jlo4jUB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lxT0k/dR; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747641303; x=1779177303;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=bAeiXyQ4xmGax9eWamxTcSKHYyxrTUjgOR14Hk+vcFs=;
-  b=lxT0k/dRA8V0JSEOJggLMu11kofFBtQpMQandP7/JcMCAcdrPrtTqX/s
-   apK+qPk8LkTKUgZYsUe5+n0mdO0qWUhpZ1HvuFB2YHbTnR8oIZlMviIbI
-   2XAn+HFSRgLFyiXuV6O7ddXTAv3s+qn3fydAbEeO0L86ENZ+7ZU+4oe7U
-   HDBD2b23qW+4DvKQLqABsYmZajSUsWbskSu9ag5a34USzopnOasRll35h
-   hK4DFOmhf3wfpM3PK1bBG3pyuVaChp0JWwwZlU9wtAN2meqjMZHmk41RQ
-   ApnDz4PAKycc2i9Fh2MTfoz1eu7QCMjp2v1Naoj9TckoaXOl8WVJeow70
-   w==;
-X-CSE-ConnectionGUID: v7nt6K2jSrm4lO8WJqToag==
-X-CSE-MsgGUID: PiGD7aP8Se6yL3YjgJ4Aog==
-X-IronPort-AV: E=McAfee;i="6700,10204,11437"; a="67085143"
-X-IronPort-AV: E=Sophos;i="6.15,300,1739865600"; 
-   d="scan'208";a="67085143"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2025 00:55:01 -0700
-X-CSE-ConnectionGUID: 9ZfPo66QSuOOrWTYMUmSoA==
-X-CSE-MsgGUID: 0fry8PTfQlu7kCpNADEpoQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,300,1739865600"; 
-   d="scan'208";a="139034883"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by orviesa009.jf.intel.com with ESMTP; 19 May 2025 00:55:00 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uGvKr-000LGW-0O;
-	Mon, 19 May 2025 07:54:57 +0000
-Date: Mon, 19 May 2025 15:54:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Subject: [tytso-ext4:dev 43/47] fs/ext4/inode.c:573:49-51: WARNING !A || A &&
- B is equivalent to !A || B
-Message-ID: <202505191524.auftmOwK-lkp@intel.com>
+	s=arc-20240116; t=1747646330; c=relaxed/simple;
+	bh=F2+laTLY35oiksiLpOr9iux3nq/2r3H/WD2kOmMsKRg=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=iBcU88UINsmnVTSPS4MCzeEgz/a09hOgZ42JANAL2+mL7QWJwGP2sBvM/T114NOqeNy2RJ5qLrcbTul94NfnKW72v8G/TGqz6L5Wl7Zi1SS7dRmbZ7oeyLfObdRIZV4mJT/QIbh6Ik9SKRRJXwZ3h0nze7PuKxab/Sbw8bdRcIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-3d-682af76ccf1d
+From: Byungchul Park <byungchul@sk.com>
+To: linux-kernel@vger.kernel.org
+Cc: kernel_team@skhynix.com,
+	torvalds@linux-foundation.org,
+	damien.lemoal@opensource.wdc.com,
+	linux-ide@vger.kernel.org,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	will@kernel.org,
+	tglx@linutronix.de,
+	rostedt@goodmis.org,
+	joel@joelfernandes.org,
+	sashal@kernel.org,
+	daniel.vetter@ffwll.ch,
+	duyuyang@gmail.com,
+	johannes.berg@intel.com,
+	tj@kernel.org,
+	tytso@mit.edu,
+	willy@infradead.org,
+	david@fromorbit.com,
+	amir73il@gmail.com,
+	gregkh@linuxfoundation.org,
+	kernel-team@lge.com,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	mhocko@kernel.org,
+	minchan@kernel.org,
+	hannes@cmpxchg.org,
+	vdavydov.dev@gmail.com,
+	sj@kernel.org,
+	jglisse@redhat.com,
+	dennis@kernel.org,
+	cl@linux.com,
+	penberg@kernel.org,
+	rientjes@google.com,
+	vbabka@suse.cz,
+	ngupta@vflare.org,
+	linux-block@vger.kernel.org,
+	josef@toxicpanda.com,
+	linux-fsdevel@vger.kernel.org,
+	jack@suse.cz,
+	jlayton@kernel.org,
+	dan.j.williams@intel.com,
+	hch@infradead.org,
+	djwong@kernel.org,
+	dri-devel@lists.freedesktop.org,
+	rodrigosiqueiramelo@gmail.com,
+	melissa.srw@gmail.com,
+	hamohammed.sa@gmail.com,
+	harry.yoo@oracle.com,
+	chris.p.wilson@intel.com,
+	gwan-gyeong.mun@intel.com,
+	max.byungchul.park@gmail.com,
+	boqun.feng@gmail.com,
+	longman@redhat.com,
+	yskelg@gmail.com,
+	yunseong.kim@ericsson.com,
+	yeoreum.yun@arm.com,
+	netdev@vger.kernel.org,
+	matthew.brost@intel.com,
+	her0gyugyu@gmail.com
+Subject: [PATCH v16 00/42] DEPT(DEPendency Tracker)
+Date: Mon, 19 May 2025 18:17:44 +0900
+Message-Id: <20250519091826.19752-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzXSW0xTWRQGYPe57HMoVM9Uo0e8TZrgzGBQ0RrXAxrjg26jRseJL2pGO3K0
+	jQVNURCjsSgSBSlqAigIFjSdphTBFuMFqxW1gkatghUJrUqQSKAgSItgvYCXl5Uv+bP+9bJ4
+	WlHFRvPa5N2SPlmtU2IZIwtElcXpBmM1cztzAIIDRxk4W2XD4LlYgcBWk0FB573l8CLUjeDT
+	oyc0FOZ7EJS98dFQ4/YjcFoOYWhsHwtNwV4MDfk5GA6fr8LwtCtMQWvBKQoq7KvhlbmDgYcn
+	yiko7MRQXHiYGhnvKBgyWzkwG2KgzVLEQfhNPDT4vSw4W2bBmdJWDDecDQy4r7ZR0Hj9LAa/
+	7SsLD931DISMU8BzMpeFyp5yDF0hMw3mYC8Hz1wmCtymiVCdOVKY9eELC/dzXRRkXbhEQdPL
+	WgQ3j76mwG7zYrgT7KbAYc+nYfj/ewjajAEOjhwf4qA4w4gg50gBA5mtC+DTx5HLJQPxkHGu
+	moHKz160ZBGxldoQudPdS5NMRxoZDj7HxBkyMeRBuUiuFfk4knmzhSMm+x7isMSS8zc6KVLW
+	H2SJ3XoME3v/KY5kB5oo0vP4Mbd26gZZQqKk06ZK+jmLt8g0RXnqXYZzaG9LX5gzoHBaNorg
+	RUElFj8NcL/cW/8ejxoLf4jNzUP0qCcIv4uO3A42G8l4WvBGii9KXqLRYLwwXzS6Ln1fZoQY
+	8VBWFztqubBAzPNb6R+lM8SKatdPf+TFt18ifniyeNvSzJxAkSY0xooU2uTUJLVWp5qtSU/W
+	7p29dWeSHY28kflAeONV1O/5pw4JPFJGyaudf2kUrDo1JT2pDok8rZwgtzr+1Cjkier0fZJ+
+	52b9Hp2UUoem8IxyknxeKC1RIWxX75Z2SNIuSf8rpfiIaAP61/jbB16xf5tnWmimC/vzE8bG
+	tX++2BcoXZfo4D3RPm2UDxrlhnGFdw/GrlKtOT295cDgytVxHZxhu2rNWm/ltcj/2L/dl2ds
+	3HZlYUFJad+yWwl55Lh9U23q5eHBZ0uNChmE188ZwGHWl656V9+zqq6mfdnkGL6h1smvWGcJ
+	KZkUjTo+ltanqL8BTJirKUIDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0hTcRyG+//PtdXitKwOdh+EZmVJWb9KIqLoEHT5VBl0GXlqyzllq5VB
+	4dKkLLUEtczL0lgyV+rWB7tMxixrRWZtLZO5UiKyWavpLG1dHNGXlwdeeN4vL0vISqhYVqU5
+	Imo1CrWclpCSrWtyF6u/JyiXFtTNhPDQWRIqGy00dN5qQGC5bcDQ/3ATvB4eQPDz2XMCyks7
+	EVzr7SHgdrsfgb3+NA3u95PAEw7S4Co9T0NuXSMNLwIRDL6yEgwN1i3w1vSBhKcXazGU99Nw
+	tTwXj8VHDCMmMwOmnPnQV1/BQKQ3CVx+LwVtVS4K7N0L4Uq1j4b7dhcJ7S19GNx3K2nwW/5Q
+	8LT9MQnDRTOg81IhBTe/1NIQGDYRYAoHGXjpMGJoN06Dprwxa/7gbwoeFTow5F9vxuB5cw9B
+	69l3GKwWLw1t4QEMNmspAaM3HiLoK/rMwJkLIwxcNRQhOH+mjIQ8XzL8/DG2XDWUBIaaJhJu
+	/vKidWsFS7UFCW0DQULIsx0TRsOvaME+bCSFJ7W8cKeihxHyWrsZwWg9KtjqE4S6+/1YuBYK
+	U4LVfI4WrKESRij47MHCl44OZvus3ZKUNFGt0ovaJWv3S5QVxYqsnBp0vPtbhMlBkWMFaDzL
+	c8v54OOvdJRpLo7v6hohohzDzeVthR+oAiRhCc47gX9d9QZFiyncMr7I0cxEmeTm86fzA1SU
+	pVwyX+w3E/+kc/iGJgdxEbFGNM6MYlQafYZCpU5O1KUrszWq44kHMjOsaOwpppORSy1oyL3J
+	iTgWySdKm+wLlDJKoddlZzgRzxLyGKnZFq+USdMU2SdEbeY+7VG1qHOiGSwpny7dvFPcL+MO
+	KY6I6aKYJWr/t5gdH5uDVn2yVxoPuqfu8m1dvaMXD8Tv3eibFLoRlBkaY0KGklBt2YNIm98W
+	2H5gSKxbM9OzPo4P4I7qxHmjKzpS+tTNMEi0sHsuODeENCu3bZ72rXyvp/nUIq9rdleqwe3I
+	WJ8e59ko6u8tGJf66E7VwsmHiScpvc7WnssV+tLiubl0mpzUKRVJCYRWp/gLeTq8MCUDAAA=
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-head:   e4e129b9e3d37b21d78a5a6617c6987dafa9600d
-commit: 2e7bad830aa9995dbc11577b8ee5090bc06b1b7b [43/47] ext4: Add support for EXT4_GET_BLOCKS_QUERY_LEAF_BLOCKS
-config: alpha-randconfig-r062-20250519 (https://download.01.org/0day-ci/archive/20250519/202505191524.auftmOwK-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 11.5.0
+Found out a recent deadlock issue can be reported by dept.  The issue is:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202505191524.auftmOwK-lkp@intel.com/
+   https://lore.kernel.org/all/20250513093448.592150-1-gavinguo@igalia.com/
 
-cocci warnings: (new ones prefixed by >>)
->> fs/ext4/inode.c:573:49-51: WARNING !A || A && B is equivalent to !A || B
+I'm happy to see that dept reported real problems in practice.  See:
 
-vim +573 fs/ext4/inode.c
+   https://lore.kernel.org/lkml/6383cde5-cf4b-facf-6e07-1378a485657d@I-love.SAKURA.ne.jp/
+   https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-byungchul.park@lge.com/
+   https://lore.kernel.org/all/b6e00e77-4a8c-4e05-ab79-266bf05fcc2d@igalia.com/
 
-   540	
-   541	static int ext4_map_query_blocks(handle_t *handle, struct inode *inode,
-   542					 struct ext4_map_blocks *map, int flags)
-   543	{
-   544		unsigned int status;
-   545		int retval;
-   546		unsigned int orig_mlen = map->m_len;
-   547		unsigned int query_flags = flags & EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF;
-   548	
-   549		flags &= EXT4_EX_FILTER;
-   550		if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
-   551			retval = ext4_ext_map_blocks(handle, inode, map,
-   552						     flags | query_flags);
-   553		else
-   554			retval = ext4_ind_map_blocks(handle, inode, map, flags);
-   555	
-   556		if (retval <= 0)
-   557			return retval;
-   558	
-   559		if (unlikely(retval != map->m_len)) {
-   560			ext4_warning(inode->i_sb,
-   561				     "ES len assertion failed for inode "
-   562				     "%lu: retval %d != map->m_len %d",
-   563				     inode->i_ino, retval, map->m_len);
-   564			WARN_ON(1);
-   565		}
-   566	
-   567		/*
-   568		 * No need to query next in leaf:
-   569		 * - if returned extent is not last in leaf or
-   570		 * - if the last in leaf is the full requested range
-   571		 */
-   572		if (!(map->m_flags & EXT4_MAP_QUERY_LAST_IN_LEAF) ||
- > 573				((map->m_flags & EXT4_MAP_QUERY_LAST_IN_LEAF) &&
-   574				 (map->m_len == orig_mlen))) {
-   575			status = map->m_flags & EXT4_MAP_UNWRITTEN ?
-   576					EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
-   577			ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
-   578					      map->m_pblk, status, false);
-   579			return retval;
-   580		}
-   581	
-   582		return ext4_map_query_blocks_next_in_leaf(handle, inode, map,
-   583							  orig_mlen);
-   584	}
-   585	
+I added documents describing dept, that would help you understand what
+dept is and how dept works.  You can use dept just with CONFIG_DEPT on
+and checking dmesg at runtime.
 
+There are still false positives and some of them are already in progress
+to suppress and the efforts need to be kept for a while as lockdep
+experienced.  Especially, since dept tracks PG_locked but folios have
+never been split in class - which needs help from maybe fs guys tho.. -
+we should put up with the AA report of PG_locked for a while, for
+instance, any nested folio_lock()s will give the dept splat for now :(
+
+It's worth noting that *EXPERIMENTAL* in Kconfig is tagged, which means
+dept is not proper for an automation tool yet.
+
+Thanks for the support and contribution, to:
+
+   Harry Yoo <harry.yoo@oracle.com>
+   Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>
+   Yunseong Kim <yskelg@gmail.com>
+   Yeoreum Yun <yeoreum.yun@arm.com>
+
+---
+
+Hi Linus and folks,
+
+I've been developing a tool for detecting deadlock possibilities by
+tracking wait/event rather than lock acquisition order to try to cover
+all synchonization machanisms.
+
+Benefits:
+
+	0. Works with all lock primitives.
+	1. Works with wait_for_completion()/complete().
+	2. Works with PG_locked.
+	3. Works with swait/wakeup.
+	4. Works with waitqueue.
+	5. Works with wait_bit.
+	6. Multiple reports are allowed.
+	7. Deduplication control on multiple reports.
+	8. Withstand false positives thanks to 7.
+	9. Easy to annotate on waits/events.
+
+Future works:
+
+	0. To make it more stable.
+	1. To separates dept from lockdep.
+	2. To improves performance in terms of time and space.
+	3. To use dept as a dependency engine for lockdep.
+	4. To add missing annotations on waits/events.
+
+How to interpret reports:
+(See the document in this patchset for more detail.)
+
+	[S] the start of the event context
+	[W] the wait disturbing the event from being triggered
+	[E] the event that cannot be reachable
+
+Thanks.
+
+	Byungchul
+
+---
+
+Changes from v15:
+	1. Fix typo and improve comments and commit messages (feedbacked
+	   by ALOK TIWARI, Waiman Long, and kernel test robot).
+	2. Do not stop dept on detection of cicular dependency of
+	   recover event, allowing to keep reporting.
+	3. Add SK hynix to copyright.
+	4. Consider folio_lock() as a potectial wait unconditionally.
+	5. Fix Kconfig dependency bug (feedbacked by kernel test rebot).
+	6. Do not suppress reports that involve classes even that have
+	   already involved in other reports, allowing to keep
+	   reporting.
+
+Changes from v14:
+	1. Rebase on the current latest, v6.15-rc6.
+	2. Refactor dept code.
+	3. With multi event sites for a single wait, even if an event
+	   forms a circular dependency, the event can be recovered by
+	   other event(or wake up) paths.  Even though informing the
+	   circular dependency is worthy but it should be suppressed
+	   once informing it, if it doesn't lead an actual deadlock.  So
+	   introduce APIs to annotate the relationship between event
+	   site and recover site, that are, event_site() and
+	   dept_recover_event().
+	4. wait_for_completion() worked with dept map embedded in struct
+	   completion.  However, it generates a few false positves since
+	   all the waits using the instance of struct completion, share
+	   the map and key.  To avoid the false positves, make it not to
+	   share the map and key but each wait_for_completion() caller
+	   have its own key by default.  Of course, external maps also
+	   can be used if needed.
+	5. Fix a bug about hardirq on/off tracing.
+	6. Implement basic unit test for dept.
+	7. Add more supports for dma fence synchronization.
+	8. Add emergency stop of dept e.g. on panic().
+	9. Fix false positives by mmu_notifier_invalidate_*().
+	10. Fix recursive call bug by DEPT_WARN_*() and DEPT_STOP().
+	11. Fix trivial bugs in DEPT_WARN_*() and DEPT_STOP().
+	12. Fix a bug that a spin lock, dept_pool_spin, is used in
+	    both contexts of irq disabled and enabled without irq
+	    disabled.
+	13. Suppress reports with classes, any of that already have
+	    been reported, even though they have different chains but
+	    being barely meaningful.
+	14. Print stacktrace of the wait that an event is now waking up,
+	    not only stacktrace of the event.
+	15. Make dept aware of lockdep_cmp_fn() that is used to avoid
+	    false positives in lockdep so that dept can also avoid them.
+	16. Do do_event() only if there are no ecxts have been
+	    delimited.
+	17. Fix a bug that was not synchronized for stage_m in struct
+	    dept_task, using a spin lock, dept_task()->stage_lock.
+	18. Fix a bug that dept didn't handle the case that multiple
+	    ttwus for a single waiter can be called at the same time
+	    e.i. a race issue.
+	19. Distinguish each kernel context from others, not only by
+	    system call but also by user oriented fault so that dept can
+	    work with more accuracy information about kernel context.
+	    That helps to avoid a few false positives.
+	20. Limit dept's working to x86_64 and arm64.
+
+Changes from v13:
+
+	1. Rebase on the current latest version, v6.9-rc7.
+	2. Add 'dept' documentation describing dept APIs.
+
+Changes from v12:
+
+	1. Refine the whole document for dept.
+	2. Add 'Interpret dept report' section in the document, using a
+	   deadlock report obtained in practice. Hope this version of
+	   document helps guys understand dept better.
+
+	   https://lore.kernel.org/lkml/6383cde5-cf4b-facf-6e07-1378a485657d@I-love.SAKURA.ne.jp/#t
+	   https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-byungchul.park@lge.com/
+
+Changes from v11:
+
+	1. Add 'dept' documentation describing the concept of dept.
+	2. Rewrite the commit messages of the following commits for
+	   using weaker lockdep annotation, for better description.
+
+	   fs/jbd2: Use a weaker annotation in journal handling
+	   cpu/hotplug: Use a weaker annotation in AP thread
+
+	   (feedbacked by Thomas Gleixner)
+
+Changes from v10:
+
+	1. Fix noinstr warning when building kernel source.
+	2. dept has been reporting some false positives due to the folio
+	   lock's unfairness. Reflect it and make dept work based on
+	   dept annotaions instead of just wait and wake up primitives.
+	3. Remove the support for PG_writeback while working on 2. I
+	   will add the support later if needed.
+	4. dept didn't print stacktrace for [S] if the participant of a
+	   deadlock is not lock mechanism but general wait and event.
+	   However, it made hard to interpret the report in that case.
+	   So add support to print stacktrace of the requestor who asked
+	   the event context to run - usually a waiter of the event does
+	   it just before going to wait state.
+	5. Give up tracking raw_local_irq_{disable,enable}() since it
+	   totally messed up dept's irq tracking. So make it work in the
+	   same way as lockdep does. I will consider it once any false
+	   positives by those are observed again.
+	6. Change the manual rwsem_acquire_read(->j_trans_commit_map)
+	   annotation in fs/jbd2/transaction.c to the try version so
+	   that it works as much as it exactly needs.
+	7. Remove unnecessary 'inline' keyword in dept.c and add
+	   '__maybe_unused' to a needed place.
+
+Changes from v9:
+
+	1. Fix a bug. SDT tracking didn't work well because of my big
+	   mistake that I should've used waiter's map to indentify its
+	   class but it had been working with waker's one. FYI,
+	   PG_locked and PG_writeback weren't affected. They still
+	   worked well. (reported by YoungJun)
+	
+Changes from v8:
+
+	1. Fix build error by adding EXPORT_SYMBOL(PG_locked_map) and
+	   EXPORT_SYMBOL(PG_writeback_map) for kernel module build -
+	   appologize for that. (reported by kernel test robot)
+	2. Fix build error by removing header file's circular dependency
+	   that was caused by "atomic.h", "kernel.h" and "irqflags.h",
+	   which I introduced - appolgize for that. (reported by kernel
+	   test robot)
+
+Changes from v7:
+
+	1. Fix a bug that cannot track rwlock dependency properly,
+	   introduced in v7. (reported by Boqun and lockdep selftest)
+	2. Track wait/event of PG_{locked,writeback} more aggressively
+	   assuming that when a bit of PG_{locked,writeback} is cleared
+	   there might be waits on the bit. (reported by Linus, Hillf
+	   and syzbot)
+	3. Fix and clean bad style code e.i. unnecessarily introduced
+	   a randome pattern and so on. (pointed out by Linux)
+	4. Clean code for applying dept to wait_for_completion().
+
+Changes from v6:
+
+	1. Tie to task scheduler code to track sleep and try_to_wake_up()
+	   assuming sleeps cause waits, try_to_wake_up()s would be the
+	   events that those are waiting for, of course with proper dept
+	   annotations, sdt_might_sleep_weak(), sdt_might_sleep_strong()
+	   and so on. For these cases, class is classified at sleep
+	   entrance rather than the synchronization initialization code.
+	   Which would extremely reduce false alarms.
+	2. Remove the dept associated instance in each page struct for
+	   tracking dependencies by PG_locked and PG_writeback thanks to
+	   the 1. work above.
+	3. Introduce CONFIG_dept_AGGRESIVE_TIMEOUT_WAIT to suppress
+	   reports that waits with timeout set are involved, for those
+	   who don't like verbose reporting.
+	4. Add a mechanism to refill the internal memory pools on
+	   running out so that dept could keep working as long as free
+	   memory is available in the system.
+	5. Re-enable tracking hashed-waitqueue wait. That's going to no
+	   longer generate false positives because class is classified
+	   at sleep entrance rather than the waitqueue initailization.
+	6. Refactor to make it easier to port onto each new version of
+	   the kernel.
+	7. Apply dept to dma fence.
+	8. Do trivial optimizaitions.
+
+Changes from v5:
+
+	1. Use just pr_warn_once() rather than WARN_ONCE() on the lack
+	   of internal resources because WARN_*() printing stacktrace is
+	   too much for informing the lack. (feedback from Ted, Hyeonggon)
+	2. Fix trivial bugs like missing initializing a struct before
+	   using it.
+	3. Assign a different class per task when handling onstack
+	   variables for waitqueue or the like. Which makes dept
+	   distinguish between onstack variables of different tasks so
+	   as to prevent false positives. (reported by Hyeonggon)
+	4. Make dept aware of even raw_local_irq_*() to prevent false
+	   positives. (reported by Hyeonggon)
+	5. Don't consider dependencies between the events that might be
+	   triggered within __schedule() and the waits that requires
+	    __schedule(), real ones. (reported by Hyeonggon)
+	6. Unstage the staged wait that has prepare_to_wait_event()'ed
+	   *and* yet to get to __schedule(), if we encounter __schedule()
+	   in-between for another sleep, which is possible if e.g. a
+	   mutex_lock() exists in 'condition' of ___wait_event().
+	7. Turn on CONFIG_PROVE_LOCKING when CONFIG_DEPT is on, to rely
+	   on the hardirq and softirq entrance tracing to make dept more
+	   portable for now.
+
+Changes from v4:
+
+	1. Fix some bugs that produce false alarms.
+	2. Distinguish each syscall context from another *for arm64*.
+	3. Make it not warn it but just print it in case dept ring
+	   buffer gets exhausted. (feedback from Hyeonggon)
+	4. Explicitely describe "EXPERIMENTAL" and "dept might produce
+	   false positive reports" in Kconfig. (feedback from Ted)
+
+Changes from v3:
+
+	1. dept shouldn't create dependencies between different depths
+	   of a class that were indicated by *_lock_nested(). dept
+	   normally doesn't but it does once another lock class comes
+	   in. So fixed it. (feedback from Hyeonggon)
+	2. dept considered a wait as a real wait once getting to
+	   __schedule() even if it has been set to TASK_RUNNING by wake
+	   up sources in advance. Fixed it so that dept doesn't consider
+	   the case as a real wait. (feedback from Jan Kara)
+	3. Stop tracking dependencies with a map once the event
+	   associated with the map has been handled. dept will start to
+	   work with the map again, on the next sleep.
+
+Changes from v2:
+
+	1. Disable dept on bit_wait_table[] in sched/wait_bit.c
+	   reporting a lot of false positives, which is my fault.
+	   Wait/event for bit_wait_table[] should've been tagged in a
+	   higher layer for better work, which is a future work.
+	   (feedback from Jan Kara)
+	2. Disable dept on crypto_larval's completion to prevent a false
+	   positive.
+
+Changes from v1:
+
+	1. Fix coding style and typo. (feedback from Steven)
+	2. Distinguish each work context from another in workqueue.
+	3. Skip checking lock acquisition with nest_lock, which is about
+	   correct lock usage that should be checked by lockdep.
+
+Changes from RFC(v0):
+
+	1. Prevent adding a wait tag at prepare_to_wait() but __schedule().
+	   (feedback from Linus and Matthew)
+	2. Use try version at lockdep_acquire_cpus_lock() annotation.
+	3. Distinguish each syscall context from another.
+
+Byungchul Park (42):
+  llist: move llist_{head,node} definition to types.h
+  dept: implement DEPT(DEPendency Tracker)
+  dept: add single event dependency tracker APIs
+  dept: add lock dependency tracker APIs
+  dept: tie to lockdep and IRQ tracing
+  dept: add proc knobs to show stats and dependency graph
+  dept: distinguish each kernel context from another
+  x86_64, dept: add support CONFIG_ARCH_HAS_DEPT_SUPPORT to x86_64
+  arm64, dept: add support CONFIG_ARCH_HAS_DEPT_SUPPORT to arm64
+  dept: distinguish each work from another
+  dept: add a mechanism to refill the internal memory pools on running
+    out
+  dept: record the latest one out of consecutive waits of the same class
+  dept: apply sdt_might_sleep_{start,end}() to
+    wait_for_completion()/complete()
+  dept: apply sdt_might_sleep_{start,end}() to swait
+  dept: apply sdt_might_sleep_{start,end}() to waitqueue wait
+  dept: apply sdt_might_sleep_{start,end}() to hashed-waitqueue wait
+  dept: apply sdt_might_sleep_{start,end}() to dma fence
+  dept: track timeout waits separately with a new Kconfig
+  dept: apply timeout consideration to wait_for_completion()/complete()
+  dept: apply timeout consideration to swait
+  dept: apply timeout consideration to waitqueue wait
+  dept: apply timeout consideration to hashed-waitqueue wait
+  dept: apply timeout consideration to dma fence wait
+  dept: make dept able to work with an external wgen
+  dept: track PG_locked with dept
+  dept: print staged wait's stacktrace on report
+  locking/lockdep: prevent various lockdep assertions when
+    lockdep_off()'ed
+  dept: add documentation for dept
+  cpu/hotplug: use a weaker annotation in AP thread
+  fs/jbd2: use a weaker annotation in journal handling
+  dept: assign dept map to mmu notifier invalidation synchronization
+  dept: assign unique dept_key to each distinct dma fence caller
+  dept: make dept aware of lockdep_set_lock_cmp_fn() annotation
+  dept: make dept stop from working on debug_locks_off()
+  i2c: rename wait_for_completion callback to wait_for_completion_cb
+  dept: assign unique dept_key to each distinct wait_for_completion()
+    caller
+  completion, dept: introduce init_completion_dmap() API
+  dept: introduce a new type of dependency tracking between multi event
+    sites
+  dept: add module support for struct dept_event_site and
+    dept_event_site_dep
+  dept: introduce event_site() to disable event tracking if it's
+    recoverable
+  dept: implement a basic unit test for dept
+  dept: call dept_hardirqs_off() in local_irq_*() regardless of irq
+    state
+
+ Documentation/dependency/dept.txt     |  735 ++++++
+ Documentation/dependency/dept_api.txt |  117 +
+ arch/arm64/Kconfig                    |    1 +
+ arch/arm64/kernel/syscall.c           |    7 +
+ arch/arm64/mm/fault.c                 |    7 +
+ arch/x86/Kconfig                      |    1 +
+ arch/x86/entry/syscall_64.c           |    7 +
+ arch/x86/mm/fault.c                   |    7 +
+ drivers/dma-buf/dma-fence.c           |   23 +-
+ drivers/i2c/algos/i2c-algo-pca.c      |    2 +-
+ drivers/i2c/busses/i2c-pca-isa.c      |    2 +-
+ drivers/i2c/busses/i2c-pca-platform.c |    2 +-
+ fs/jbd2/transaction.c                 |    2 +-
+ include/asm-generic/vmlinux.lds.h     |   13 +-
+ include/linux/completion.h            |  124 +-
+ include/linux/dept.h                  |  620 +++++
+ include/linux/dept_ldt.h              |   78 +
+ include/linux/dept_sdt.h              |   68 +
+ include/linux/dept_unit_test.h        |   67 +
+ include/linux/dma-fence.h             |   74 +-
+ include/linux/hardirq.h               |    3 +
+ include/linux/i2c-algo-pca.h          |    2 +-
+ include/linux/irqflags.h              |   21 +-
+ include/linux/llist.h                 |    8 -
+ include/linux/local_lock_internal.h   |    1 +
+ include/linux/lockdep.h               |  105 +-
+ include/linux/lockdep_types.h         |    3 +
+ include/linux/mm_types.h              |    2 +
+ include/linux/mmu_notifier.h          |   26 +
+ include/linux/module.h                |    5 +
+ include/linux/mutex.h                 |    1 +
+ include/linux/page-flags.h            |  125 +-
+ include/linux/pagemap.h               |   16 +-
+ include/linux/percpu-rwsem.h          |    2 +-
+ include/linux/rtmutex.h               |    1 +
+ include/linux/rwlock_types.h          |    1 +
+ include/linux/rwsem.h                 |    1 +
+ include/linux/sched.h                 |  120 +-
+ include/linux/seqlock.h               |    2 +-
+ include/linux/spinlock_types_raw.h    |    3 +
+ include/linux/srcu.h                  |    2 +-
+ include/linux/swait.h                 |    3 +
+ include/linux/types.h                 |    8 +
+ include/linux/wait.h                  |    3 +
+ include/linux/wait_bit.h              |    3 +
+ init/init_task.c                      |    2 +
+ init/main.c                           |    2 +
+ kernel/Makefile                       |    1 +
+ kernel/cpu.c                          |    2 +-
+ kernel/dependency/Makefile            |    5 +
+ kernel/dependency/dept.c              | 3498 +++++++++++++++++++++++++
+ kernel/dependency/dept_hash.h         |   10 +
+ kernel/dependency/dept_internal.h     |   65 +
+ kernel/dependency/dept_object.h       |   13 +
+ kernel/dependency/dept_proc.c         |   94 +
+ kernel/dependency/dept_unit_test.c    |  173 ++
+ kernel/exit.c                         |    1 +
+ kernel/fork.c                         |    2 +
+ kernel/locking/lockdep.c              |   33 +
+ kernel/module/main.c                  |   19 +
+ kernel/sched/completion.c             |   62 +-
+ kernel/sched/core.c                   |    8 +
+ kernel/workqueue.c                    |    3 +
+ lib/Kconfig.debug                     |   51 +
+ lib/debug_locks.c                     |    2 +
+ lib/locking-selftest.c                |    2 +
+ mm/filemap.c                          |   26 +
+ mm/mm_init.c                          |    2 +
+ mm/mmu_notifier.c                     |   31 +-
+ 69 files changed, 6403 insertions(+), 128 deletions(-)
+ create mode 100644 Documentation/dependency/dept.txt
+ create mode 100644 Documentation/dependency/dept_api.txt
+ create mode 100644 include/linux/dept.h
+ create mode 100644 include/linux/dept_ldt.h
+ create mode 100644 include/linux/dept_sdt.h
+ create mode 100644 include/linux/dept_unit_test.h
+ create mode 100644 kernel/dependency/Makefile
+ create mode 100644 kernel/dependency/dept.c
+ create mode 100644 kernel/dependency/dept_hash.h
+ create mode 100644 kernel/dependency/dept_internal.h
+ create mode 100644 kernel/dependency/dept_object.h
+ create mode 100644 kernel/dependency/dept_proc.c
+ create mode 100644 kernel/dependency/dept_unit_test.c
+
+
+base-commit: 82f2b0b97b36ee3fcddf0f0780a9a0825d52fec3
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
+
 
