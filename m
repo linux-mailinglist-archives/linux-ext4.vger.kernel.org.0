@@ -1,228 +1,195 @@
-Return-Path: <linux-ext4+bounces-7956-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7957-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A394ABB2CF
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 03:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98D17ABB371
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 04:48:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71906172800
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 01:22:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FEBB174882
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 02:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF42839F4;
-	Mon, 19 May 2025 01:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M3wnoLqj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAEE91C860C;
+	Mon, 19 May 2025 02:48:39 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D75487BF
-	for <linux-ext4@vger.kernel.org>; Mon, 19 May 2025 01:22:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E6713AA20;
+	Mon, 19 May 2025 02:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747617750; cv=none; b=YpO1FRqr4iTesS7NXhTdZqEHbH6Ug5QXsCCRfwoXOwqfJRSZsW1GdDJ+7UkNn/XFWdVO8kp4ssGODyVRjaatXVCr/w7FP8c+AjQ6o97q0oZ5X80tfCMeQABGvcV30v8611W5Cgp+jjv4tObLPmhoqlnmopo9oL1x3wZyS6qRarY=
+	t=1747622919; cv=none; b=HH/37S21QcY0KjI9ylDI5wj7nic1vyBXh7BrqJbYSduV5uzGHaS8Ax+NCMPSB5OW3zTxZydDHL/ScKuB34D4yCqshSkjigL605XYIq57Uq1jaOXVL/wKSIu67HNQUNR1y4b9qGiNoNS8F1JuYqG9B//BLu8McMfvKsc25vjXmvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747617750; c=relaxed/simple;
-	bh=/SQQgySisQU/utk2o2agcv7AzQAauhPcxqPfTTbWRYs=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=aj21NVkF/h2lyUwurgRHo2BJqpz3S3ScCb5pMVpXnqSngY8pldsk1TvT7VTtUCSZRvvznvQzRN7SePOvpBXsn1AesQeNkbDGMdwCSYKNAaLwO4DSId57E1eO8S/WGH9V0JNPGn0B2Bcuae4hiAUFnZ3dBIVe3IBD4dyTNhyTFgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M3wnoLqj; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747617749; x=1779153749;
-  h=date:from:to:cc:subject:message-id;
-  bh=/SQQgySisQU/utk2o2agcv7AzQAauhPcxqPfTTbWRYs=;
-  b=M3wnoLqj/5B+V+iEWZsXicB9AMjxrGFujBjxBc8VIzHG/CDqli+3Re3d
-   Urp6Jm6olZJLl11j7c1y1LUVgk89XdQwcWCysScKM0ldVIB7ETUPwMKcJ
-   CP7psEvZu1tC/pDTLmr40is3W6vBjnMbeMfGqLJPgjOujh8co56BZ4UX7
-   lCiM4RWOr28NqJOIfhX0XMGWBYDlJP2/7yATq3Ddwgbg14DVZCmtZmh3c
-   Y4s5yZrxuYtVJ9POeEY/c3JaFUk7/GvJ+FxYm6AXEpiaYLbIsYK6/zSET
-   IIgwLwmz+pVoB8BAF9lXv+n+sIoHgkxybmFO+WNRbnMQTSbuBxsZDb61c
-   w==;
-X-CSE-ConnectionGUID: vGWJtWyZTsyp2mCUVlcEYA==
-X-CSE-MsgGUID: D+QjDlCISEKM7r+BE+Jh1g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11437"; a="49643757"
-X-IronPort-AV: E=Sophos;i="6.15,299,1739865600"; 
-   d="scan'208";a="49643757"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2025 18:22:28 -0700
-X-CSE-ConnectionGUID: ip/QmSAeTY2rHssOoP28dg==
-X-CSE-MsgGUID: 3ZUUBytGSRKRNkMh9Cs7Jg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,299,1739865600"; 
-   d="scan'208";a="139128092"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 18 May 2025 18:22:27 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uGpCy-000L4l-2C;
-	Mon, 19 May 2025 01:22:24 +0000
-Date: Mon, 19 May 2025 09:22:01 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- e4e129b9e3d37b21d78a5a6617c6987dafa9600d
-Message-ID: <202505190952.jzBXOONW-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1747622919; c=relaxed/simple;
+	bh=mUL/ZZ3rsvI1Ffg4jQr5dzjyOi46UH6tDEvpyrnBYUA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KK7PYQdvkg2c6jgJPp7ARyDKLlV3kd2RN/usn8D0yCBhAJNK3YFfFz2B6FgB0w60PvlGVV2cgDRe4vcGtgTpNm+EFgVS/qDBscwOLLv8uzwF7np77TyOJmmja1VdMUE4LUIeELaRZ5Ss+caKOzi+KewtGCpQLUuTrn/M9HCvj+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4b12Dw6Dk1zYQtsn;
+	Mon, 19 May 2025 10:48:32 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 183121A1C19;
+	Mon, 19 May 2025 10:48:32 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgBXul78mypoXqlaMw--.27476S3;
+	Mon, 19 May 2025 10:48:30 +0800 (CST)
+Message-ID: <2e127ed8-20a2-4610-8fd8-e2095bde0577@huaweicloud.com>
+Date: Mon, 19 May 2025 10:48:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/8] ext4: correct the journal credits calculations of
+ allocating blocks
+To: tytso@mit.edu, linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ willy@infradead.org, adilger.kernel@dilger.ca, jack@suse.cz,
+ yi.zhang@huawei.com, libaokun1@huawei.com, yukuai3@huawei.com,
+ yangerkun@huawei.com
+References: <20250512063319.3539411-1-yi.zhang@huaweicloud.com>
+ <20250512063319.3539411-6-yi.zhang@huaweicloud.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20250512063319.3539411-6-yi.zhang@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgBXul78mypoXqlaMw--.27476S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFy7GrWkGw1fWw1xuF1Utrb_yoWrXrW5pF
+	nxCF1rKr18Xw1UuFWIga1UZr18Wa1xGa13ur4rJr45XF98XryxKrn5t3WrCFyYqFZ3Aw4j
+	vF4rK347G3W3A37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: e4e129b9e3d37b21d78a5a6617c6987dafa9600d  ext4: only dirty folios when data journaling regular files
+Hi Ted.
 
-elapsed time: 721m
+On 2025/5/12 14:33, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> The journal credits calculation in ext4_ext_index_trans_blocks() is
+> currently inadequate. It only multiplies the depth of the extents tree
+> and doesn't account for the blocks that may be required for adding the
+> leaf extents themselves.
+> 
+> After enabling large folios, we can easily run out of handle credits,
+> triggering a warning in jbd2_journal_dirty_metadata() on filesystems
+> with a 1KB block size. This occurs because we may need more extents when
+> iterating through each large folio in
+> ext4_do_writepages()->mpage_map_and_submit_extent(). Therefore, we
+> should modify ext4_ext_index_trans_blocks() to include a count of the
+> leaf extents in the worst case as well.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  fs/ext4/extents.c |  5 +++--
+>  fs/ext4/inode.c   | 10 ++++------
+>  2 files changed, 7 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index c616a16a9f36..e759941bd262 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -2405,9 +2405,10 @@ int ext4_ext_index_trans_blocks(struct inode *inode, int extents)
+>  	depth = ext_depth(inode);
+>  
+>  	if (extents <= 1)
+> -		index = depth * 2;
+> +		index = depth * 2 + extents;
+>  	else
+> -		index = depth * 3;
+> +		index = depth * 3 +
+> +			DIV_ROUND_UP(extents, ext4_ext_space_block(inode, 0));
+>  
+>  	return index;
+>  }
 
-configs tested: 135
-configs skipped: 2
+This patch conflicts with Jan's patch e18d4f11d240 ("ext4: fix
+calculation of credits for extent tree modification") in
+ext4_ext_index_trans_blocks(), the conflict should be resolved when
+merging this patch. However, I checked the merged commit of this patch
+in your dev branch[1], and the changes in ext4_ext_index_trans_blocks()
+seem to be incorrect, which could result in insufficient credit
+reservations on 1K block size filesystems.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=d80af138eb8873eb13f5fece1adabb3ca4325134
 
-tested configs:
-alpha                             allnoconfig    gcc-14.2.0
-alpha                            allyesconfig    gcc-14.2.0
-alpha                               defconfig    gcc-14.2.0
-arc                              allmodconfig    gcc-14.2.0
-arc                               allnoconfig    gcc-14.2.0
-arc                              allyesconfig    gcc-14.2.0
-arc                                 defconfig    gcc-14.2.0
-arc                   randconfig-001-20250518    gcc-14.2.0
-arc                   randconfig-002-20250518    gcc-11.5.0
-arm                              allmodconfig    gcc-14.2.0
-arm                               allnoconfig    clang-21
-arm                              allyesconfig    gcc-14.2.0
-arm                       aspeed_g5_defconfig    gcc-14.2.0
-arm                        multi_v5_defconfig    gcc-14.2.0
-arm                         nhk8815_defconfig    clang-21
-arm                   randconfig-001-20250518    gcc-10.5.0
-arm                   randconfig-002-20250518    clang-21
-arm                   randconfig-003-20250518    gcc-7.5.0
-arm                   randconfig-004-20250518    clang-16
-arm                        shmobile_defconfig    gcc-14.2.0
-arm                           sunxi_defconfig    gcc-14.2.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-14.2.0
-arm64                 randconfig-001-20250518    gcc-7.5.0
-arm64                 randconfig-002-20250518    clang-21
-arm64                 randconfig-003-20250518    clang-21
-arm64                 randconfig-004-20250518    clang-21
-csky                             alldefconfig    gcc-14.2.0
-csky                              allnoconfig    gcc-14.2.0
-csky                                defconfig    gcc-14.2.0
-csky                  randconfig-001-20250518    gcc-14.2.0
-csky                  randconfig-002-20250518    gcc-9.3.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-21
-hexagon                             defconfig    clang-21
-hexagon               randconfig-001-20250518    clang-21
-hexagon               randconfig-002-20250518    clang-21
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250518    gcc-12
-i386        buildonly-randconfig-002-20250518    clang-20
-i386        buildonly-randconfig-003-20250518    gcc-12
-i386        buildonly-randconfig-004-20250518    gcc-12
-i386        buildonly-randconfig-005-20250518    gcc-12
-i386        buildonly-randconfig-006-20250518    clang-20
-i386                                defconfig    clang-20
-loongarch                        allmodconfig    gcc-14.2.0
-loongarch                         allnoconfig    gcc-14.2.0
-loongarch             randconfig-001-20250518    gcc-13.3.0
-loongarch             randconfig-002-20250518    gcc-14.2.0
-m68k                             allmodconfig    gcc-14.2.0
-m68k                              allnoconfig    gcc-14.2.0
-m68k                             allyesconfig    gcc-14.2.0
-microblaze                       allmodconfig    gcc-14.2.0
-microblaze                        allnoconfig    gcc-14.2.0
-microblaze                       allyesconfig    gcc-14.2.0
-mips                              allnoconfig    gcc-14.2.0
-mips                        omega2p_defconfig    clang-21
-mips                           xway_defconfig    clang-21
-nios2                             allnoconfig    gcc-14.2.0
-nios2                 randconfig-001-20250518    gcc-5.5.0
-nios2                 randconfig-002-20250518    gcc-13.3.0
-openrisc                          allnoconfig    gcc-14.2.0
-openrisc                         allyesconfig    gcc-14.2.0
-openrisc                            defconfig    gcc-14.2.0
-parisc                           allmodconfig    gcc-14.2.0
-parisc                            allnoconfig    gcc-14.2.0
-parisc                           allyesconfig    gcc-14.2.0
-parisc                              defconfig    gcc-14.2.0
-parisc                randconfig-001-20250518    gcc-8.5.0
-parisc                randconfig-002-20250518    gcc-8.5.0
-powerpc                          allmodconfig    gcc-14.2.0
-powerpc                           allnoconfig    gcc-14.2.0
-powerpc                          allyesconfig    clang-21
-powerpc                      bamboo_defconfig    clang-21
-powerpc                  mpc885_ads_defconfig    clang-21
-powerpc                      pmac32_defconfig    clang-21
-powerpc               randconfig-001-20250518    gcc-7.5.0
-powerpc               randconfig-002-20250518    gcc-5.5.0
-powerpc               randconfig-003-20250518    clang-21
-powerpc                    sam440ep_defconfig    gcc-14.2.0
-powerpc64                        alldefconfig    clang-21
-powerpc64             randconfig-001-20250518    gcc-10.5.0
-powerpc64             randconfig-002-20250518    gcc-7.5.0
-powerpc64             randconfig-003-20250518    gcc-7.5.0
-riscv                            allmodconfig    clang-21
-riscv                             allnoconfig    gcc-14.2.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-21
-riscv                 randconfig-001-20250518    clang-21
-riscv                 randconfig-002-20250518    clang-20
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-21
-s390                             allyesconfig    gcc-14.2.0
-s390                                defconfig    clang-21
-s390                  randconfig-001-20250518    gcc-7.5.0
-s390                  randconfig-002-20250518    gcc-7.5.0
-sh                               allmodconfig    gcc-14.2.0
-sh                                allnoconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                                  defconfig    gcc-14.2.0
-sh                         ecovec24_defconfig    gcc-14.2.0
-sh                          lboxre2_defconfig    gcc-14.2.0
-sh                    randconfig-001-20250518    gcc-13.3.0
-sh                    randconfig-002-20250518    gcc-7.5.0
-sparc                            allmodconfig    gcc-14.2.0
-sparc                             allnoconfig    gcc-14.2.0
-sparc                 randconfig-001-20250518    gcc-12.4.0
-sparc                 randconfig-002-20250518    gcc-14.2.0
-sparc64                             defconfig    gcc-14.2.0
-sparc64               randconfig-001-20250518    gcc-6.5.0
-sparc64               randconfig-002-20250518    gcc-6.5.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-21
-um                               allyesconfig    gcc-12
-um                                  defconfig    clang-21
-um                             i386_defconfig    gcc-12
-um                    randconfig-001-20250518    clang-19
-um                    randconfig-002-20250518    clang-21
-um                           x86_64_defconfig    clang-21
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250518    gcc-12
-x86_64      buildonly-randconfig-002-20250518    clang-20
-x86_64      buildonly-randconfig-003-20250518    gcc-12
-x86_64      buildonly-randconfig-004-20250518    gcc-12
-x86_64      buildonly-randconfig-005-20250518    gcc-12
-x86_64      buildonly-randconfig-006-20250518    clang-20
-x86_64                              defconfig    gcc-11
-x86_64                          rhel-9.4-rust    clang-18
-xtensa                            allnoconfig    gcc-14.2.0
-xtensa                randconfig-001-20250518    gcc-12.4.0
-xtensa                randconfig-002-20250518    gcc-12.4.0
+I think the correct conflict resolution in ext4_ext_index_trans_blocks()
+should be:
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 9053fe68ee4c..431d66181721 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -2409,9 +2409,10 @@ int ext4_ext_index_trans_blocks(struct inode *inode, int extents)
+         * the time we actually modify the tree. Assume the worst case.
+         */
+        if (extents <= 1)
+-               index = EXT4_MAX_EXTENT_DEPTH * 2;
++               index = EXT4_MAX_EXTENT_DEPTH * 2 + extents;
+        else
+-               index = EXT4_MAX_EXTENT_DEPTH * 3;
++               index = EXT4_MAX_EXTENT_DEPTH * 3 +
++                       DIV_ROUND_UP(extents, ext4_ext_space_block(inode, 0));
+
+        return index;
+
+Best Regards,
+Yi.
+
+
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index ffbf444b56d4..3e962a760d71 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5792,18 +5792,16 @@ static int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
+>  	int ret;
+>  
+>  	/*
+> -	 * How many index blocks need to touch to map @lblocks logical blocks
+> -	 * to @pextents physical extents?
+> +	 * How many index and lead blocks need to touch to map @lblocks
+> +	 * logical blocks to @pextents physical extents?
+>  	 */
+>  	idxblocks = ext4_index_trans_blocks(inode, lblocks, pextents);
+>  
+> -	ret = idxblocks;
+> -
+>  	/*
+>  	 * Now let's see how many group bitmaps and group descriptors need
+>  	 * to account
+>  	 */
+> -	groups = idxblocks + pextents;
+> +	groups = idxblocks;
+>  	gdpblocks = groups;
+>  	if (groups > ngroups)
+>  		groups = ngroups;
+> @@ -5811,7 +5809,7 @@ static int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
+>  		gdpblocks = EXT4_SB(inode->i_sb)->s_gdb_count;
+>  
+>  	/* bitmaps and block group descriptor blocks */
+> -	ret += groups + gdpblocks;
+> +	ret = idxblocks + groups + gdpblocks;
+>  
+>  	/* Blocks for super block, inode, quota and xattr blocks */
+>  	ret += EXT4_META_TRANS_BLOCKS(inode->i_sb);
+
 
