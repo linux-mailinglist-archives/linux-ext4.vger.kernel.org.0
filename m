@@ -1,129 +1,187 @@
-Return-Path: <linux-ext4+bounces-8026-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8027-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7BC5ABC70E
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 20:20:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A389ABC840
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 22:17:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B61297A1D2F
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 18:20:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59C427A8AA9
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 20:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5FA28934C;
-	Mon, 19 May 2025 18:20:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B52020DD4E;
+	Mon, 19 May 2025 20:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h5e95Wuq"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XqYWIb4z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0eMdyyE1";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XqYWIb4z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0eMdyyE1"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFC11EF0BE;
-	Mon, 19 May 2025 18:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D4A15A848
+	for <linux-ext4@vger.kernel.org>; Mon, 19 May 2025 20:16:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747678822; cv=none; b=SZx2G04Lidi7bZSRUEexe3IIPmP4WiX9kwrDr5MwhKEaNX6vknr8gwd2S4aGOsRUEeX7n9vSgBEds6S7BgEG8a9LsfmYtWVuukXqJ5vhk6acz1LUUMIWwP22ixmvY4rTiNY7bWHugHHbHt3aI6XkyaUowdaUCiPZ0CvcxPEtCHc=
+	t=1747685814; cv=none; b=BKZrDDkh0RppPQuRvT6hh/2adrOnAflxQxIL5f29FSQ06mW/0GwWAS5Vb88PCmcdMweX80kmqgEbeIPEiU/R6W5iyU2SjQ8Un2KT/Q9GjWUBPJFPlgsio91B/6U0+UUJuQU4FJEzOa4NVM/5T7VF+UkKfRc6/xRzWvJGIzIak04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747678822; c=relaxed/simple;
-	bh=b5ji2K6f2Ku/TyTzuIesHXwafT9EHdlC9m2hxzuRLRk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S4VS+Ku5vh7a25KocUlmlEd14r8lRKQz8n6rbXlMNjfhOj+ucpxPiwTDDpiFrciNyqyDNu7W1xc+8GYfMIcbk+KUf+9l2KvbTUNy2UYD8wncN9e54UBA1f6OIPfmpQWeOWa09MeftQP66Zl6hSlaQxUTmli5sEi9yNiC7MkFRe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h5e95Wuq; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-af908bb32fdso3731569a12.1;
-        Mon, 19 May 2025 11:20:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747678819; x=1748283619; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9/KyEuRSPiSuyMw5ngKFNJ+p7EpaLylEIwid+f+mH9k=;
-        b=h5e95WuqqmGX6SyX5jtK3Kff7JVRRMZNFnO41RpsrEX9mCXN6JhA4HucvLYW92Gz9Z
-         lkrKOSU5YXY0Hg2o/T2NuDrzbONW2u7+MxlmrTvP8q3UUQ5vyMTp4sUJkfB7Q8ja2DGH
-         gokWtAUCkrpLE3KRwb/MTTJOxNBuefW1okH3/xfNF0HXttk3LsHtEh6rW9uVUkU0F4Ha
-         q3CkIAufgXoKlnFfPTTTTFBhchtjEv0Futd4tbVc2zJCAEpz8cjKym7wrvjV970jMqij
-         NK68rqyzvggdTFusiFr8gP1yMGMjPSW65KsW1ELv2pym+/lSeTUt5U1+liFrsOpN35gn
-         keBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747678819; x=1748283619;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9/KyEuRSPiSuyMw5ngKFNJ+p7EpaLylEIwid+f+mH9k=;
-        b=w19cSQOXcmv4mAdSy8udQBAOD24Sh0ani8OOktzrxfneBwiNo83pRZBtfpDT2GUpEG
-         Fuu97H8O4RLFaTyQnyRubYLH6w0MeIDiQN1k53rQIdq4rcmno3UlgOwdv0EIBJmpixKD
-         iH3PQJuZtPsmbD/0dMUDBA2E5M4T7U2n13vLOCMIxky7MIwseHLiRxWkD9ET0RGcWInc
-         aSG4NbF/auvIR/Ej9Mb15E7nmq09ia6l/JOW2kWAZmw/B9H43SgQ9CQAPYIvsOj1EpYH
-         IZTJ7E5tnH7Jrdn/9GrAWq8q7bM3ac6Ck1MXr75MKnCaiYMTgTgSg/9pBdy7IZwWFB2N
-         I7cg==
-X-Forwarded-Encrypted: i=1; AJvYcCVnK4dObffvLmh8f+6StGPrOWEa9ypp/VctaCJheU3yLjpR/nRAYDUim0eDY1yS+DyRCzU0ZGvGQxABq6fX@vger.kernel.org
-X-Gm-Message-State: AOJu0YxM+278u3e7xBYnm5X6ALgHNljIgLAAtWyl2dVYhdLOPsDJXa7c
-	xPakzd/tzYYaGu6m9mMZqFdTZ6KJkugu/vUPjsPIBsOUz/MHQ3AGRvLzn8pSpA==
-X-Gm-Gg: ASbGncvWdpGjx1hA1PqWE5VgXVeNxZ5m1eCgOlRNrHpo7tYNayvk0cyojx4n2czX89X
-	wWo0smNhALytu2ZskJO/O9/de0cfEj7MTFckebBwiIhev66bU1CmXLaRqFV89rZJaIMTRbaQ+f6
-	Wxb9nd9qhqR+R3NGLcYKFqxRiyIuW/sQEhL3Pu4LIRGdjn0Amz+i8BFfPg6znqWMU09aB6q4uAP
-	OBx5uSxjnFvJidor+xtsPH/9aW+FDyL0D0FCBW8ARKA274FuZYP6JBQ0KQJ1YorVxxnhQHLs8E4
-	Gh5YqRMwdoSjjuhP+pol06ssAkuyojfwrBarCg7wEwvPFf0AH+rklgM/xrz7QR4Yn8I=
-X-Google-Smtp-Source: AGHT+IEr+FtrGndei4LD0Uxf6Cpb/2rWq1yuzEPTDXMaJ6b6oJO5SfihSPpn8VPR7JxDP4BWiaygNg==
-X-Received: by 2002:a17:902:d48d:b0:232:557c:2501 with SMTP id d9443c01a7336-232557c2657mr47801085ad.10.1747678819050;
-        Mon, 19 May 2025 11:20:19 -0700 (PDT)
-Received: from dw-tp.ibmuc.com ([171.76.82.96])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ed4ec3sm63156245ad.233.2025.05.19.11.20.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 May 2025 11:20:18 -0700 (PDT)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>,
-	Jan Kara <jack@suse.cz>,
-	John Garry <john.g.garry@oracle.com>,
-	djwong@kernel.org,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	linux-fsdevel@vger.kernel.org,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCH v1 5/5] ext4: Add a WARN_ON_ONCE for querying LAST_IN_LEAF instead
-Date: Mon, 19 May 2025 23:49:30 +0530
-Message-ID: <ee6e82a224c50b432df9ce1ce3333c50182d8473.1747677758.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1747677758.git.ritesh.list@gmail.com>
-References: <cover.1747677758.git.ritesh.list@gmail.com>
+	s=arc-20240116; t=1747685814; c=relaxed/simple;
+	bh=ZmMZk2TINwxlV2GwsQa+h6FX3HGztklDF0EzsPIVnts=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o0iPt86adXWpQvgW7+BNKFI8H46Sqpa/jYBvJ6DTOnF2TgyPRz3yOl6ZkgmGYkCtMkuXhzERKvZ2M2UV/04ipu0PyKMbHEap/HmTOC2eNwJrFX9jEHdS0aGLLk3NTOeb6gBOKLAcRWibFKPpjwXAAYK6vLm90s5sRY5v6WZVvWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XqYWIb4z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0eMdyyE1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XqYWIb4z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0eMdyyE1; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 69FC4204CA;
+	Mon, 19 May 2025 20:16:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747685810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m7aYnJRcoWwpfTUaDrWnQNrPa8O1N9QGhPSYb+LgsaY=;
+	b=XqYWIb4zCmfErsfwhc5PZhiPBp6ngFBIR7YZoe1hn6NyzUYvZd2gRnRvZMvbEo7dcczs8u
+	EZ80LkltPTmP+u3bZvcwifYArBu0UTxv6sDZBSV17uzV4Bu/OQTeDpCuzgrPnXtT+bSDY3
+	Iz7WWIqCYUfmEpW9550LBkKZhzRdMEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747685810;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m7aYnJRcoWwpfTUaDrWnQNrPa8O1N9QGhPSYb+LgsaY=;
+	b=0eMdyyE1fECglXh3JP91e6k9KGaExByo77pqSoOIQV0ykDCQ9HtCNh93VJIgcxx2Qd71lv
+	AgJ8ifVI1hssRPDg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747685810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m7aYnJRcoWwpfTUaDrWnQNrPa8O1N9QGhPSYb+LgsaY=;
+	b=XqYWIb4zCmfErsfwhc5PZhiPBp6ngFBIR7YZoe1hn6NyzUYvZd2gRnRvZMvbEo7dcczs8u
+	EZ80LkltPTmP+u3bZvcwifYArBu0UTxv6sDZBSV17uzV4Bu/OQTeDpCuzgrPnXtT+bSDY3
+	Iz7WWIqCYUfmEpW9550LBkKZhzRdMEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747685810;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m7aYnJRcoWwpfTUaDrWnQNrPa8O1N9QGhPSYb+LgsaY=;
+	b=0eMdyyE1fECglXh3JP91e6k9KGaExByo77pqSoOIQV0ykDCQ9HtCNh93VJIgcxx2Qd71lv
+	AgJ8ifVI1hssRPDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 606151372E;
+	Mon, 19 May 2025 20:16:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id SZqFF7KRK2gAFAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 19 May 2025 20:16:50 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2429BA0A31; Mon, 19 May 2025 22:16:50 +0200 (CEST)
+Date: Mon, 19 May 2025 22:16:50 +0200
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, willy@infradead.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	jack@suse.cz, yi.zhang@huawei.com, libaokun1@huawei.com, yukuai3@huawei.com, 
+	yangerkun@huawei.com
+Subject: Re: [PATCH v2 4/8] ext4/jbd2: convert jbd2_journal_blocks_per_page()
+ to support large folio
+Message-ID: <ht54j6bvjmiqt62xmcveqlo7bmrunqs4ji7wikfteftdjijzek@7tz5gpejaoen>
+References: <20250512063319.3539411-1-yi.zhang@huaweicloud.com>
+ <20250512063319.3539411-5-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250512063319.3539411-5-yi.zhang@huaweicloud.com>
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
+X-Spam-Level: 
 
-We added the documentation in ext4_map_blocks() for usage of
-EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF flag. But It's better to add
-a WARN_ON_ONCE in case if anyone tries using this flag with CREATE to
-avoid a random issue later. Since depth can change with CREATE and it
-needs to be re-calculated before using it in there.
+On Mon 12-05-25 14:33:15, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> jbd2_journal_blocks_per_page() returns the number of blocks in a single
+> page. Rename it to jbd2_journal_blocks_per_folio() and make it returns
+> the number of blocks in the largest folio, preparing for the calculation
+> of journal credits blocks when allocating blocks within a large folio in
+> the writeback path.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+...
+> @@ -2657,9 +2657,10 @@ void jbd2_journal_ack_err(journal_t *journal)
+>  	write_unlock(&journal->j_state_lock);
+>  }
+>  
+> -int jbd2_journal_blocks_per_page(struct inode *inode)
+> +int jbd2_journal_blocks_per_folio(struct inode *inode)
+>  {
+> -	return 1 << (PAGE_SHIFT - inode->i_sb->s_blocksize_bits);
+> +	return 1 << (PAGE_SHIFT + mapping_max_folio_order(inode->i_mapping) -
+> +		     inode->i_sb->s_blocksize_bits);
+>  }
 
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- fs/ext4/extents.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+FWIW this will result in us reserving some 10k transaction credits for 1k
+blocksize with maximum 2M folio size. That is going to create serious
+pressure on the journalling machinery. For now I guess we are fine but
+eventually we should rewrite how credits for writing out folio are computed
+to reduce this massive overestimation. It will be a bit tricky but we could
+always reserve credits for one / couple of extents and try to extend the
+transaction if we need more. The tricky part is to do the partial folio
+writeout in case we cannot extend the transaction...
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 7683558381dc..ea5158703d2d 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -4444,9 +4444,11 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 	 * need to re-calculate the depth as it might have changed due to block
- 	 * allocation.
- 	 */
--	if (flags & EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF)
-+	if (flags & EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF) {
-+		WARN_ON_ONCE(flags & EXT4_GET_BLOCKS_CREATE);
- 		if (!err && ex && (ex == EXT_LAST_EXTENT(path[depth].p_hdr)))
- 			map->m_flags |= EXT4_MAP_QUERY_LAST_IN_LEAF;
-+	}
- 
- 	ext4_free_ext_path(path);
- 
+								Honza
+>  /*
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 023e8abdb99a..ebbcdab474d5 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -1723,7 +1723,7 @@ static inline int tid_geq(tid_t x, tid_t y)
+>  	return (difference >= 0);
+>  }
+>  
+> -extern int jbd2_journal_blocks_per_page(struct inode *inode);
+> +extern int jbd2_journal_blocks_per_folio(struct inode *inode);
+>  extern size_t journal_tag_bytes(journal_t *journal);
+>  
+>  static inline int jbd2_journal_has_csum_v2or3(journal_t *journal)
+> -- 
+> 2.46.1
+> 
 -- 
-2.49.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
