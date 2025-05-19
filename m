@@ -1,77 +1,77 @@
-Return-Path: <linux-ext4+bounces-7964-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7965-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF61ABB4F3
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 08:17:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 397A8ABB4FB
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 08:18:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3ECC1729E6
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 06:17:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 928CB1893EE1
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 06:18:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4386A244693;
-	Mon, 19 May 2025 06:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228BA24466B;
+	Mon, 19 May 2025 06:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DfVvA1Ro"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ze/QGsmK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A397243364;
-	Mon, 19 May 2025 06:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E3E224889;
+	Mon, 19 May 2025 06:17:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747635453; cv=none; b=FvV7LZRfG9GBw18jHomVictVc0sMzCr5espPOP2HE90GJn1IamyGmGFJJNeN4VVhYNPld0UNxXca8LFJ7z0Fhh469ebNNXdnMb3lvMdkMcgK+u91qQecK/JvI4mouc4SVmcz0x0MxqLvDnDIc5jW5hfGiof6f8fuu1fH+/n4+6c=
+	t=1747635472; cv=none; b=p/upf0hytY1kvmEymp/It4dWt4uoavp8oeZwASSHfptotyZEOPMbjbS4TbHMVZ4Jt4F+yrbanIMSa7d0/lEwd6RfrisjwtT4Y4EC3OzybVIykL6OMNLh36TDxhn4kCrSPFXs+vtmdX88L4d+kJ3uisGRvys2NxdhMspVrxRcAK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747635453; c=relaxed/simple;
-	bh=5dxxU7c8+r+464RZvzPJQQM825qAm5R4Gr5H0SgZRxw=;
+	s=arc-20240116; t=1747635472; c=relaxed/simple;
+	bh=+8AVc4xBsScUHkSpZGN34MNv4fFhsUznRQJ7OkNQkoQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=V/WvHCqV+Tib697enyY7DHaw1u5UGDZ+58fgiDfcFYE7sVH3xu/NgWIBB1+IJhUmyvAf1hpzhPbKzWphafu87QBtvHthzyiWy7BUVHT1P3lMhCf5RRNpEPIjaD/Op8nxCKNqEk6FeKuMTNsV8eCXM01eefy+dPrUzw3XCNFZz8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DfVvA1Ro; arc=none smtp.client-ip=209.85.215.170
+	 MIME-Version; b=WVaXv373IElMCqGcvF+V73eWBhvJgMeZFJ6AVQ4VrwMBbSv2Pk/v+K+5LxqFI5HDZvfESRXVermvSTd5XdKfbUhcdP9w2iwJyWSXBvjDYyrcqFxO7w2Fht2O1UftkuMapxE60SW6DgmV2V0wQUKPU7zYLdoCLTTS0FW1HitA4ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ze/QGsmK; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b26f01c638fso2401601a12.1;
-        Sun, 18 May 2025 23:17:32 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2322f8afe02so5047475ad.2;
+        Sun, 18 May 2025 23:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747635451; x=1748240251; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747635470; x=1748240270; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=12xeklId4o9lCsEcd8OTP1SwPsiZrTxDOcu/fb34HIs=;
-        b=DfVvA1Ro0lspN4Bw4UUcZY0g7I9cGY49hx2xNguvA/PQWzhe5meA9W75dcWeYfncxs
-         Vmow/xEs/iZWoyGBIu8gxqpZaXIPLXdWpQCuwcXwYE+XGdIK8PBzRermCpnSDX444m6M
-         dihWTRlqlEDc4S2PvDDwQv0gQDK9olvVb1RE3H5nXsUZsprSGwLGZd6EQeiAEVJsNf+8
-         r4CS91WaxoOw9uMUxQ/2mizmUDNXd1OJEWPKlEZtimtvdxN+E4wqj8n3EmmlYmmehCx7
-         8KwPfOmjhPMhRNE7UHQBY/mMsQEYoC1qeiLyZSiBouGJrDsH/0j5mf0BetNbqhrIz3rk
-         LGYA==
+        bh=tdV4gbTUexVZokxTBi5R5goXt94Qpff5aqsyKfGYy0k=;
+        b=Ze/QGsmKMii5xnUycbuds156uM3c78azrk8/i2WmdR9RD4cO+qpfihkVpdTJR8VIsg
+         hyjrNq6w1NvJO2m3XtEJU9qSkJ8roN0jVg6e+s93fjjhBJfocnW9Ura19Kc7yD+e+ipf
+         kKd++r5zUPmfbDrgibLlfHguxKNoR98/cRRmJL7Dv+e6GRsL0M1ItSCNSADJJzM0ceXF
+         7TSNNhNgiYjtJDatmcfOthxVHTHRvMk4VYMcS8yVRDqaUgFwL5Ug4xDG9swaNwJp4SlV
+         zxDbicDiKwds2ULAFLQbLp6NK9nxvEHaChYmn47PS+e1t8YBoBxmfRLdOwoYeEc0Bmw2
+         gsYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747635451; x=1748240251;
+        d=1e100.net; s=20230601; t=1747635470; x=1748240270;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=12xeklId4o9lCsEcd8OTP1SwPsiZrTxDOcu/fb34HIs=;
-        b=NOP9nNf6FsHpn7ShOvcxZJZy4x0fOdljiiddhhLs+R32gHIwBTqNZQ3Ucg3NB59VNk
-         dWSJjivwVDL9svFPLyS2bxiiQjaSus5WbWgV8gf/2Nr/7jnvLg8QfvBRb1hZHi29XUbQ
-         8p3pdHBvbIvrf4pJP808Wa9XoQHKtOmKjZwP6U2nOI5p1iUPpQRYIDdz3SgIHtTB7NiW
-         WVYrC3jgCpQfA++0o4Mw9DxhkZ+1d/fTlFGLoUqIs1+HpRzmoRHz6QRTAaih8eY4HpSu
-         0Qwk6JoD3LGcC8RiicaWf2/BdsYltv/y+TPIKlXn0GMySLixvh0983fPhtWSZSMxgNm3
-         Jj1g==
-X-Forwarded-Encrypted: i=1; AJvYcCWDdRj+3mFxDheo1Br3OLLTJGXnLmGiRGewjbpsXVdrO9xIpa40Ew5XfD6wncWpReA5opWiQaoN0K4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyilfu7eA6mER0/AKZBwk/ttQ5Tc+JNHuUxXa13yPNEMM9etTLo
-	1aQh5sUDuV2s4GZUpq60ys4NUXXevufCu4XZh+noCYNFgDa8axh2en7eualE4Q==
-X-Gm-Gg: ASbGncvsEJ6N2tiq2RDCsYsr9Q7jJH3GEGH6bVALNFFdI7KnuCyw/tMS/LO6gqUpPYD
-	fua4AHVMU0vRMj11rZjDc+nu+HrKlOdN1NAWF8PTgz40i252PmO5NKq1XzJMYcmu3/dkdSozdD6
-	IeKjhoGU6Yk4UBACVdhl+ipSwBwfspwLnEOZTE0fmAmg8lbcsbg8NUhglJ+mN6AziSCHJ8etSzw
-	fiQbenYvqZDVDBbr15/3l85wezqnZhC7gwH8mgeZkfxQ1XCh/Uq+IN0GlSoeiH1oT85e0lOSc5A
-	NuVRk3LlMjKX6Wyn0kxhkZQzJ2ypICjCaJTm5G1P2V7JDWg73FRxqTs=
-X-Google-Smtp-Source: AGHT+IHaTLy4JHIGKbmcZ6w/ADcINRDTteIi6x5poLelCOSAhvqS2ERvlzJ0a6E+IXomG8K4YVhGpw==
-X-Received: by 2002:a17:903:17cb:b0:229:1cef:4c83 with SMTP id d9443c01a7336-231d438b415mr173688515ad.4.1747635451295;
-        Sun, 18 May 2025 23:17:31 -0700 (PDT)
+        bh=tdV4gbTUexVZokxTBi5R5goXt94Qpff5aqsyKfGYy0k=;
+        b=WsgxMqnLjZ+z+JGJXQ1EIwGh16LWxawFyYUab9nmNehpxvorwd1Y5CejI5YPJYQuQX
+         D466wdVxXKkb4+PJFtzkZXxVAPwb7Z3HDw/WyifVa2j9LMYcJRkeTyygvFgcqyKPRfyd
+         3h5piRua2ztxMFi+UzFxWrNw4cDzKQCrqLj5RVOB34BBYpazT5lFkUdeEUV0tcSNf4MY
+         qQ/I0EerOrpfmUeQxF7yM0aeoJf98vNXhulhWZ4Ccc57ds47aq4qPXuMfvks9Kmvt8//
+         3/Ur+JgA/Tkia9w2IL050HM6pnmeaOGNYWCIIrMw2OAupLpDaAkLCpBAdJxoxNFKl04n
+         SRBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV76ArP0O+NhUoU6+CpEb6ztGDtA70ZuWQjEfG3uPqYOHYCwsvIPbpk5+IJZF4E8oQJ/+VShkmRZ7g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXfV20bmtqnzLeMVlZ57M5poHjiYlfSMrc5u3/4zuD6vGTOycL
+	4uUC0J4vDoXA53hLJvZJB2i+dqxIqoCwQQtxZQxsVb2j6UnR1661qpYW8kMdeA==
+X-Gm-Gg: ASbGncuQ332LLg6uK3b+UzvHahrv/3hVPkUHd2m9sjOxKs0dMN3PActxfhMcdxdRW4P
+	NceWqRvVeYtmVjKBwh+4tjSz+AXpp2Ue6Ju1Qg28U/2tVJEjdM6NaPBphTtlvJP3ckgnkpAU4ml
+	TP+OfIW0X7z2TXmo278vUrZAQSkRpWrZTQz6HMdqS6oB3sm2iqe7lFQGP0vR4abgSrT6uOVeoi6
+	FFx03cnV7zW8JAIOLSv9/6sZWPGRtifavP2NHgPg8X+R6iiuoTEUeM8Z06MzML2N6Y3QCPEGg81
+	LWf1ZaUBlI2vwc/TY9ktVn/c+/SeUqpE1GOp8957Q7lRqUgoyOn61j4=
+X-Google-Smtp-Source: AGHT+IFazCX0uazRleXaKjvUHQPuHjW0i0WMUTTfgmCfhF+oosNfGje7o4lsj7TnTEvFDIKHVWWLCQ==
+X-Received: by 2002:a17:902:f790:b0:223:325c:89f6 with SMTP id d9443c01a7336-231d43d9ba7mr212322935ad.10.1747635470173;
+        Sun, 18 May 2025 23:17:50 -0700 (PDT)
 Received: from citest-1.. ([49.205.34.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2325251da10sm6939385ad.42.2025.05.18.23.17.28
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2325251da10sm6939385ad.42.2025.05.18.23.17.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 May 2025 23:17:30 -0700 (PDT)
+        Sun, 18 May 2025 23:17:49 -0700 (PDT)
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
 To: fstests@vger.kernel.org
 Cc: linux-ext4@vger.kernel.org,
@@ -82,9 +82,9 @@ Cc: linux-ext4@vger.kernel.org,
 	zlang@kernel.org,
 	david@fromorbit.com,
 	nirjhar.roy.lists@gmail.com
-Subject: [PATCH v3 1/2] new: Add a new parameter (name) in the "new" script
-Date: Mon, 19 May 2025 06:16:41 +0000
-Message-Id: <2b59f6ae707e45e9d0d5b0fe30d6c44a8cde0fec.1747635261.git.nirjhar.roy.lists@gmail.com>
+Subject: [PATCH v3 2/2] new: Replace "status=0; exit 0" with _exit 0
+Date: Mon, 19 May 2025 06:16:42 +0000
+Message-Id: <921be57a1a6ada795f5df3af042c10904cd4823b.1747635261.git.nirjhar.roy.lists@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1747635261.git.nirjhar.roy.lists@gmail.com>
 References: <cover.1747635261.git.nirjhar.roy.lists@gmail.com>
@@ -96,49 +96,30 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch another optional interactive prompt to enter the
-author name for each new test file that is created using
-the "new" file.
-
-The sample output looks like something like the following:
-
-./new selftest
-Next test id is 007
-Append a name to the ID? Test name will be 007-$name. y,[n]:
-Creating test file '007'
-Add to group(s) [auto] (separate by space, ? for list): selftest quick
-Enter <author_name>: Nirjhar Roy <nirjhar.roy.lists@gmail.com>
-Creating skeletal script for you to edit ...
- done.
+We should now start using _exit 0 for every new test
+that we add.
 
 Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 ---
- new | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ new | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/new b/new
-index 6b50ffed..636648e2 100755
+index 636648e2..dff69265 100755
 --- a/new
 +++ b/new
-@@ -136,6 +136,9 @@ else
- 	check_groups "${new_groups[@]}" || exit 1
- fi
+@@ -176,8 +176,7 @@ exit
+ #echo "If failure, check \$seqres.full (this) and \$seqres.full.ok (reference)"
  
-+read -p "Enter <author_name>: " -r
-+author_name="${REPLY:=YOUR NAME HERE}"
-+
- echo -n "Creating skeletal script for you to edit ..."
+ # success, all done
+-status=0
+-exit
++_exit 0
+ End-of-File
  
- year=`date +%Y`
-@@ -143,7 +146,7 @@ year=`date +%Y`
- cat <<End-of-File >$tdir/$id
- #! /bin/bash
- # SPDX-License-Identifier: GPL-2.0
--# Copyright (c) $year YOUR NAME HERE.  All Rights Reserved.
-+# Copyright (c) $year $author_name.  All Rights Reserved.
- #
- # FS QA Test $id
- #
+ sleep 2		# latency to read messages to this point
 -- 
 2.34.1
 
