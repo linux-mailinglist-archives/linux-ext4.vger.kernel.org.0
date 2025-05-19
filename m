@@ -1,164 +1,176 @@
-Return-Path: <linux-ext4+bounces-8014-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8015-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CDD2ABBD2A
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 14:01:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F076ABBDC6
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 14:30:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00C8E189D42F
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 12:01:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CACB7AC338
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 12:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED45F274FDA;
-	Mon, 19 May 2025 12:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8C02580D5;
+	Mon, 19 May 2025 12:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b="E55L1Do9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CZr7MBTo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB2D2AC17;
-	Mon, 19 May 2025 12:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 558241C5485
+	for <linux-ext4@vger.kernel.org>; Mon, 19 May 2025 12:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747656068; cv=none; b=OJ8/PrZ+dumJxvjq2smsJNL+PPCbwZArdjLo0pW2lpJ/N8vmU7ifMHPw7EKlL3+EEIt+oYVaQ1D1rfzHLmvsMrsp8I6dk2OxxpFCOD6YSCfdRUOkB5UqX4BGa3XYZRFUuPELTgoDiv8HMJt7RBcmMQHa2K0wV9ZziS//4ybWIG0=
+	t=1747657842; cv=none; b=PFvIcEXsZc/BvrAl/iVWd+Xrs0ESGpCIiW3aK9APdElNR7iaDGPUnPXSPT/lp8yXslgynamcl0Ur+4JO47dZftC+xvh+/+i1Cb5RE0YSqi1btjnVvKmfguz2f9ABnocyn5veDcWKQVdATPq8v1xo3p4vu/hpKQILg8TxBgniSvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747656068; c=relaxed/simple;
-	bh=6FQZCmbqhYBvGYMZKrSz23qP8S75tNvXJkLejE2PXIc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Rm8tFD9ehH+TvjaD5MThAlwOEzkSCdOUcpkSBr3210kWcqzfM8tZkY/dFzp7nEC67Sqgh8qsUcK4HlhiIqVpcswC8bVlyTFDwI1CV+7DIFOPV6/8o2jotNfuMIstI9S4aWim2LCTI6y2CWMtkw8i6xZ2dty0w3dP/6vZuU9cDOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com; spf=pass smtp.mailfrom=ethancedwards.com; dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b=E55L1Do9; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ethancedwards.com
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4b1GVP64tMz9tVZ;
-	Mon, 19 May 2025 14:01:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ethancedwards.com;
-	s=MBO0001; t=1747656062;
+	s=arc-20240116; t=1747657842; c=relaxed/simple;
+	bh=uwH35vZskqnFQCg782XfN3Nzayyc+Vps7Iy4QAYu7XQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TPSgwY1brqoD/9x9haU1rq98FHClMfbuniimOYliLeQBpDK/gZdm3uRFcBiz6XLiPknyzeQxoXRC82uPtnuEBu86mIqP3yC/rmWnMe6bT944ia26rE7BdlksMKG3ABa+YIv2CZ7JFLwRLvZ1trHT6ps9JHRVB6FGMzkzYCNvAgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CZr7MBTo; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1747657839;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=OmBSswFk2f6Bhh6ty+jXPF6BtXUnOS/D9iXCBGxUOhk=;
-	b=E55L1Do9xNxNDkE9rcMwOaGdqVZZNEtZTNgXXSBFn9lbYWevmzxHryrE0pxght18pw5QT4
-	/ueZC19Nk0Ktrv+id7H2uFbOjjw9OwkNN/HDhpOm/E05Qqoc8OnkdTr5q3QnizDdm51HCP
-	r3rEQq0PrO4uwzEnCco/GNHR/AkxaveVgszkhT7PGOcmk/Dw+F2gHiRd4TOBhvZYa/rBWA
-	aEyQK8wcaQrfyGC6Dk/2VY3RR6Rngu1ZkaoiCFwm4MU7wuujUE8OhHmXJSM2fpJFeqYC1O
-	9NhCWnVCPhT+TM6/LaP7CqJNrF2J0tu52JuLIzlYPpbSQ3sohY6pE6pqh06xbw==
-From: Ethan Carter Edwards <ethan@ethancedwards.com>
-Date: Mon, 19 May 2025 08:00:57 -0400
-Subject: [PATCH v3] ext4: replace strcpy() with '.' assignment
+	 in-reply-to:in-reply-to:references:references;
+	bh=9WKrghLuANfXdQygrmbp9TAaeInx1YgSzFxjYIUOcyQ=;
+	b=CZr7MBToArOtdfbd7TFFb/Xqs0ovUUvhK7+0OieUQAhhlhreGZrdCVbp9Fdj1duz4JeMnL
+	3mqaEonoHL6SBMhqGuyVahGsfRAvFD355nz5fnn/X/Ps3JnEyZ6evBliQTo2QXH8E0Dvad
+	mMO6IJWOsvDoYNJg33J55rSc0pyKh/U=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-551-4ABGkcQ3OHS2PrRRIrlTHw-1; Mon,
+ 19 May 2025 08:30:35 -0400
+X-MC-Unique: 4ABGkcQ3OHS2PrRRIrlTHw-1
+X-Mimecast-MFC-AGG-ID: 4ABGkcQ3OHS2PrRRIrlTHw_1747657835
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D963C1956096;
+	Mon, 19 May 2025 12:30:34 +0000 (UTC)
+Received: from bfoster (unknown [10.22.64.135])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 241EA195608D;
+	Mon, 19 May 2025 12:30:33 +0000 (UTC)
+Date: Mon, 19 May 2025 08:34:01 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: only dirty folios when data journaling regular
+ files
+Message-ID: <aCslObKt_kwVTn58@bfoster>
+References: <20250516173800.175577-1-bfoster@redhat.com>
+ <l2k5kbcipqjbeyw52cz2vuapgna6upxbm7cwehrnm7rdeshuon@v3yeyhe2xbha>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250519-ext4-strcpy-v3-1-d6518a5f3d47@ethancedwards.com>
-X-B4-Tracking: v=1; b=H4sIAHgdK2gC/33NwQ6DIAyA4VcxnMdCUZDttPdYdnBQJodNA4Rpj
- O++6tns+Lfp14UljAETu1YLi1hCCsOHoj5VzPbd54U8OGomhVRCgeE45YanHO04c1CNstq3l6c
- CRhdjRB+mXbs/qPuQ8hDnHS+wTY+dAhy4tqYz0nvRGn/DTM8tum8XXTrb4c02r8g/hiTDCFeDr
- mnd6CNjXdcf1NGNJfIAAAA=
-X-Change-ID: 20250518-ext4-strcpy-1545c6f79b51
-To: Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: Kees Cook <kees@kernel.org>, 
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, linux-ext4@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
- Ethan Carter Edwards <ethan@ethancedwards.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2922;
- i=ethan@ethancedwards.com; h=from:subject:message-id;
- bh=6FQZCmbqhYBvGYMZKrSz23qP8S75tNvXJkLejE2PXIc=;
- b=LS0tLS1CRUdJTiBQR1AgTUVTU0FHRS0tLS0tCgpvd0o0bkp2QXk4ekFKWGJEOXFoNThlVGp6e
- GhQcXlVeFpHakxWamIxemhXT1lGWmZxdExTc2lqNzhhdkY2VXRxCkVscldXTWszQkhiNFdhOWQ1
- TmxSeXNJZ3hzVWdLNmJJOGo5SE9lMmg1Z3lGblg5ZG1tRG1zREtCREdIZzRoU0EKaVp5NnpNaXd
- hVloxemJJZC96NjlLQW85RWZQa2c1WklsUm1mS05zelo4T1h6anBuOG93bEdmNUs1OHcrTENyTg
- pZUlc3eFR4Z0IwdUNyTXF0YXhXTUU3Y3RQK1hOZThYTi9qOC9BUG56U0E4PQo9QzBxKwotLS0tL
- UVORCBQR1AgTUVTU0FHRS0tLS0tCg==
-X-Developer-Key: i=ethan@ethancedwards.com; a=openpgp;
- fpr=2E51F61839D1FA947A7300C234C04305D581DBFE
-X-Rspamd-Queue-Id: 4b1GVP64tMz9tVZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <l2k5kbcipqjbeyw52cz2vuapgna6upxbm7cwehrnm7rdeshuon@v3yeyhe2xbha>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-strcpy() is deprecated; assignment can be used instead which
-theoretically/potentially increases speed as a function call is removed.
+On Mon, May 19, 2025 at 12:24:32PM +0200, Jan Kara wrote:
+> On Fri 16-05-25 13:38:00, Brian Foster wrote:
+> > fstest generic/388 occasionally reproduces a crash that looks as
+> > follows:
+> > 
+> > BUG: kernel NULL pointer dereference, address: 0000000000000000
+> > ...
+> > Call Trace:
+> >  <TASK>
+> >  ext4_block_zero_page_range+0x30c/0x380 [ext4]
+> >  ext4_truncate+0x436/0x440 [ext4]
+> >  ext4_process_orphan+0x5d/0x110 [ext4]
+> >  ext4_orphan_cleanup+0x124/0x4f0 [ext4]
+> >  ext4_fill_super+0x262d/0x3110 [ext4]
+> >  get_tree_bdev_flags+0x132/0x1d0
+> >  vfs_get_tree+0x26/0xd0
+> >  vfs_cmd_create+0x59/0xe0
+> >  __do_sys_fsconfig+0x4ed/0x6b0
+> >  do_syscall_64+0x82/0x170
+> >  ...
+> > 
+> > This occurs when processing a symlink inode from the orphan list. The
+> > partial block zeroing code in the truncate path calls
+> > ext4_dirty_journalled_data() -> folio_mark_dirty(). The latter calls
+> > mapping->a_ops->dirty_folio(), but symlink inodes are not assigned an
+> > a_ops vector in ext4, hence the crash.
+> > 
+> > To avoid this problem, update the ext4_dirty_journalled_data() helper to
+> > only mark the folio dirty on regular files (for which a_ops is
+> > assigned). This also matches the journaling logic in the ext4_symlink()
+> > creation path, where ext4_handle_dirty_metadata() is called directly.
+> > 
+> > Fixes: d84c9ebdac1e ("ext4: Mark pages with journalled data dirty")
+> > Signed-off-by: Brian Foster <bfoster@redhat.com>
+> 
+> Yeah, I forgot about this subtlety when writing d84c9ebdac1e. Good catch
+> and thanks for fixing this up! The fix looks good. Feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> > ---
+> > 
+> > Hi Jan,
+> > 
+> > I'm not intimately familiar with the jbd machinery here so this may well
+> > be wrong, but it survives my testing so far. I initially hacked this to
+> > mark the buffer dirty instead of the folio, but discovered jbd2 doesn't
+> > seem to like that. I suspect that is because jbd2 wants to dirty/submit
+> > the buffer itself after it's logged..?
+> > 
+> > Anyways, after that, this struck me as most consistent with behavior
+> > prior to d84c9ebdac1e and/or with the creation path, so I'm floating
+> > this as a first pass. Is my understanding of d84c9ebdac1e correct in
+> > that it is mainly an optimization to allow writeback to force the
+> > journaling mechanism vs. otherwise waiting for the other way around
+> > (i.e. a journal commit to mark folios dirty)? Thoughts appreciated..
+> 
+> Well, the motivation for d84c9ebdac1e was not so much an optimization but
+> rather to provide better visibility to the generic code what needs writing
+> out. Otherwise we had to special-case data journalling in a lot of places
+> that tried to do "clean the inode & purge the page cache" because simple
+> filemap_write_and_wait() was not enough to get the dirty pages in the inode
+> to disk.
+> 
 
-Straight assignment works because the strings are not null-terminated
-which means they don't strictly require a str(s)cpy call.
+Ah, I see. Thanks for the insight (and review).
 
-No functional changes intended.
+Brian
 
-Link: https://github.com/KSPP/linux/issues/88
-Suggested-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Ethan Carter Edwards <ethan@ethancedwards.com>
----
-Changes in v3:
-- Fix typo of "." instead of '.'. Sorry!
-- Link to v2: https://lore.kernel.org/r/20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com
-
-Changes in v2:
-- completely remove the call to strcpy and replace it with assignment
-  off of Theo's suggestion. Thanks.
-- Link to v1: https://lore.kernel.org/r/20250518-ext4-strcpy-v1-1-6c8a82ff078f@ethancedwards.com
----
- fs/ext4/inline.c | 4 ++--
- fs/ext4/namei.c  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 2c9b762925c72f2ff5a402b02500370bc1eb0eb1..7ba6220f92ee4e1b817bc9b47ec229050af3dde7 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -1314,7 +1314,7 @@ int ext4_inlinedir_to_tree(struct file *dir_file,
- 		if (pos == 0) {
- 			fake.inode = cpu_to_le32(inode->i_ino);
- 			fake.name_len = 1;
--			strcpy(fake.name, ".");
-+			fake.name[0] = '.';
- 			fake.rec_len = ext4_rec_len_to_disk(
- 					  ext4_dir_rec_len(fake.name_len, NULL),
- 					  inline_size);
-@@ -1324,7 +1324,7 @@ int ext4_inlinedir_to_tree(struct file *dir_file,
- 		} else if (pos == EXT4_INLINE_DOTDOT_OFFSET) {
- 			fake.inode = cpu_to_le32(parent_ino);
- 			fake.name_len = 2;
--			strcpy(fake.name, "..");
-+			fake.name[0] = fake.name[1] = '.';
- 			fake.rec_len = ext4_rec_len_to_disk(
- 					  ext4_dir_rec_len(fake.name_len, NULL),
- 					  inline_size);
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index e9712e64ec8f04586f5ebcd332431e6af92e4f36..c7d7c46a0b18ae109d30358c157812ac2ded200e 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2926,7 +2926,7 @@ struct ext4_dir_entry_2 *ext4_init_dot_dotdot(struct inode *inode,
- 	de->name_len = 1;
- 	de->rec_len = ext4_rec_len_to_disk(ext4_dir_rec_len(de->name_len, NULL),
- 					   blocksize);
--	strcpy(de->name, ".");
-+	de->name[0] = '.';
- 	ext4_set_de_type(inode->i_sb, de, S_IFDIR);
- 
- 	de = ext4_next_entry(de, blocksize);
-@@ -2940,7 +2940,7 @@ struct ext4_dir_entry_2 *ext4_init_dot_dotdot(struct inode *inode,
- 		de->rec_len = ext4_rec_len_to_disk(
- 					ext4_dir_rec_len(de->name_len, NULL),
- 					blocksize);
--	strcpy(de->name, "..");
-+	de->name[0] = de->name[1] = '.';
- 	ext4_set_de_type(inode->i_sb, de, S_IFDIR);
- 
- 	return ext4_next_entry(de, blocksize);
-
----
-base-commit: 5723cc3450bccf7f98f227b9723b5c9f6b3af1c5
-change-id: 20250518-ext4-strcpy-1545c6f79b51
-
-Best regards,
--- 
-Ethan Carter Edwards <ethan@ethancedwards.com>
+> 								Honza
+> 
+> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > index 94c7d2d828a6..d3c138003ad3 100644
+> > --- a/fs/ext4/inode.c
+> > +++ b/fs/ext4/inode.c
+> > @@ -1009,7 +1009,12 @@ int ext4_walk_page_buffers(handle_t *handle, struct inode *inode,
+> >   */
+> >  static int ext4_dirty_journalled_data(handle_t *handle, struct buffer_head *bh)
+> >  {
+> > -	folio_mark_dirty(bh->b_folio);
+> > +	struct folio *folio = bh->b_folio;
+> > +	struct inode *inode = folio->mapping->host;
+> > +
+> > +	/* only regular files have a_ops */
+> > +	if (S_ISREG(inode->i_mode))
+> > +		folio_mark_dirty(folio);
+> >  	return ext4_handle_dirty_metadata(handle, NULL, bh);
+> >  }
+> >  
+> > -- 
+> > 2.49.0
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+> 
 
 
