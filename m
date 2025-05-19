@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-8017-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8018-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35BF2ABC00C
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 15:57:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D5CDABC182
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 17:00:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 525D53AC85C
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 13:56:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14CFC7AC8CA
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 14:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D2127A911;
-	Mon, 19 May 2025 13:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5A428467E;
+	Mon, 19 May 2025 14:59:57 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25BF127FB2E
-	for <linux-ext4@vger.kernel.org>; Mon, 19 May 2025 13:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601261C7005
+	for <linux-ext4@vger.kernel.org>; Mon, 19 May 2025 14:59:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747663014; cv=none; b=l/ruPRmVfKlMX5C+NTssae+QX3mqogn1lcxdjqIcbdWZryx7bS9xfH20VuBGiSshLLquKYzeyvtbhq3evzC4GzmVUvaUwo11K1nDsDcZoe6zYSLT/zaiF+VVfItkt9cku/bQcrXEcT/zNgKDePImvXdUGBdsmxooObuXq4OoM4s=
+	t=1747666797; cv=none; b=qUUbOL3cRElaMMVdk7WuK9G2zs0RLy+y8+E2fIlOLMSNNQjb6K9BEYXoWMSEEMWj+ueV6Kywf3hiiJFSQszpFIHyXT1NfL1fE0lwL3k9ggVNEN89zsinRGaO1NU0ftWMdp3N88J43DnO79A5z+UUgGOkgVIsoAeF5JknFRhWPG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747663014; c=relaxed/simple;
-	bh=3hbqHKmWFsNLHw/fa4d26mjpP3dAYETleGjy1aQoctQ=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TpujYnsAlLVxEcwJf+1P7bZwVgreHa+mZcWaNowtA7vcleUJwSumPcoMPAJQnCQMeB0kObzMJe6wfVtTZjWpy2EiLoTrpxouVwlgE7aXClm0IChVtNhry1Vs/LCv6i6SoOAL9X5C/jPJQI/xlAqqlWiczB1KC6wsuKchEBCoT+I=
+	s=arc-20240116; t=1747666797; c=relaxed/simple;
+	bh=W2vxPFvtMSGFDX01i+sEwTDfFarvJeP/3Ri9KeQvVsg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PpA1PDgMZoeiY9njgRPAQnekoB1/cZYxkAJlyW5gUUwhtLvgb5ejoCG+rCS6zEqE4JeutqggxEuTyNU9wEWrOaFINI8hpqP2MFlsbFjBMMFYK3DApdzzv92l1hwiiyYsRu0xhBhz0EVjF3ZV8lMjISpVsfBFbuxHrBWxnR+iBYw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-111-173.bstnma.fios.verizon.net [173.48.111.173])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54JDuX8K016210
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54JExUl7002060
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 May 2025 09:56:33 -0400
+	Mon, 19 May 2025 10:59:31 -0400
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id D84D52E00DD; Mon, 19 May 2025 09:56:32 -0400 (EDT)
-Date: Mon, 19 May 2025 09:56:32 -0400
+	id 74B8E2E00DD; Mon, 19 May 2025 10:59:30 -0400 (EDT)
+Date: Mon, 19 May 2025 10:59:30 -0400
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Ethan Carter Edwards <ethan@ethancedwards.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
+To: Kees Cook <kees@kernel.org>
+Cc: Ethan Carter Edwards <ethan@ethancedwards.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 Subject: Re: [PATCH v2] ext4: replace strcpy() with '.' assignment
-Message-ID: <20250519135632.GA38098@mit.edu>
+Message-ID: <20250519145930.GB38098@mit.edu>
 References: <20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com>
- <202505191316.JJMnPobO-lkp@intel.com>
+ <202505190651.943F729@keescook>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -55,35 +55,34 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202505191316.JJMnPobO-lkp@intel.com>
+In-Reply-To: <202505190651.943F729@keescook>
 
-On Mon, May 19, 2025 at 01:58:02PM +0800, kernel test robot wrote:
-> Hi Ethan,
+On Mon, May 19, 2025 at 06:52:13AM -0700, Kees Cook wrote:
+> > --- a/fs/ext4/inline.c
+> > +++ b/fs/ext4/inline.c
+> > @@ -1314,7 +1314,7 @@ int ext4_inlinedir_to_tree(struct file *dir_file,
+> >  		if (pos == 0) {
+> >  			fake.inode = cpu_to_le32(inode->i_ino);
+> >  			fake.name_len = 1;
+> > -			strcpy(fake.name, ".");
+> > +			fake.name[0] = ".";
 > 
-> kernel test robot noticed the following build errors:
+> This means the trailing NUL byte isn't being copied any more? That seems
+> like a big change, even if name_len is being used for length tracking.
 
-Hi Ethan,
+Yeah, and so that's something that needs to be tested (and not just
+build tested to catch the obvious FTBFS bug).  However, note how we
+handle normal filenames, as opposed to "." and "..".  From
+ext4_insert_dentry():
 
-I would really appreciate it if you would at least do a build test
-before sending out a patch.  In addition, it would also be helpful if
-you ran a smoke test, using "kvm-xfstests smoke".  The instructions
-for how to use kvm-xfstests can be found here[1], and it was designed
-to be as easy as possible for people who are sending "drive-by
-patches".
+	de->inode = cpu_to_le32(inode->i_ino);
+	ext4_set_de_type(inode->i_sb, de, inode->i_mode);
+	de->name_len = fname_len(fname);
+	memcpy(de->name, fname_name(fname), fname_len(fname));
 
-[1] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+Or were you commenting on the "no functional changes intended" line in
+the commit description?  I agree that this is probably no longer
+accurate.  :-)
 
-Running the smoketest only takes about 20 minutes; although if you
-want to run more sophistcated testing there is also "kvm-xfstests -c
-ext4/4k -g quick", or "kvm-xfstests -c ext4/4k -g auto", or if you
-have a 24 hours to kill, there's always "kvm-xfststs full".  (Although
-these days I generally use gce-xfstests[2] since this can shard the test
-runs across multiple VM's, so it only takes 2.5 hours of wall clock
-time.)
-
-[2] https://thunk.org/gce-xfstests
-
-Cheers,
-
-					- TEd
+					- Ted
 
