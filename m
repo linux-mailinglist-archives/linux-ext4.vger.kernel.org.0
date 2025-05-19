@@ -1,162 +1,219 @@
-Return-Path: <linux-ext4+bounces-8012-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8010-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C53ABBB6E
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 12:48:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0306EABBB06
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 12:24:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 071F53A7528
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 10:48:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D441172A9C
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 10:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F6520C038;
-	Mon, 19 May 2025 10:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618852741BE;
+	Mon, 19 May 2025 10:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bnP0n8nI"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="w4DpuhZS";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vGdz6qAk";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fRel86Rz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BMA6+gTQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AAFD3208;
-	Mon, 19 May 2025 10:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512A91F8EFF
+	for <linux-ext4@vger.kernel.org>; Mon, 19 May 2025 10:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747651724; cv=none; b=sYIfDaxm/0oGMzjtKwfD+Th0L56LpOzzfRttaeKo4QoQlrxOcmjGyKALmvIMfjs2Gfmah6H9cjQ/88xgYy1EBx5Ma+1SvHm4pFnF8/sU20EfUghLYFfksniHQuVQtRel1Ous3+Qv25P8QzWVCNi3t5Gc+un9VqOnAxiITzjW8hE=
+	t=1747650278; cv=none; b=TfY07S1lraqXWvUZ7pHb0evwhD6UTII4SW7IMd4Vi6nKZzrGKSOgBqHPziz0MlOoAM+kIDcUNmPvjlqsZFmiS/3T7rbZ8uD9TI2ukFlkzYeqJn054N0u5THOHUR2xqxS4WF+ycqfG29z3qnERtvTWg6axY6bh0cXUYSQhpkXO+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747651724; c=relaxed/simple;
-	bh=10nLNhZ6GFrdReHtylXJB7WK6jzttMXX1sTFVKmQ9Q8=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=BSDTZqQxdnDOVH7IWLRGyA54CFgQ7Ze/r7FdwEdlMSnwoGd/j0frB0hseVp27oit0JApYjhxxTlNuJuN2cLFiSfMkZZA24WKEOjuUWtdkZ6DGRvXK/GjHkQR2vDbgFQSrW666bLb2URB8fDx8i9PwfPIvNt2mOWgaT/0XVZeRnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bnP0n8nI; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-231c86bffc1so41132805ad.0;
-        Mon, 19 May 2025 03:48:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747651722; x=1748256522; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=p5QOKNkL19Kp3xC8l9jIeYjLGhIQ9n7VjMtSrEEZQbc=;
-        b=bnP0n8nIc54CZGqVjAt3dhEcKPn+PScscId6+/mvRtV5rFRziKhppD+4eK5TufjTXB
-         dmaLLyFtvfFoe1/JtrT4e++Cbn0XIOBMa1QIqMusCTLfCIIpfrNOOOzrx2bEBJVA5gEo
-         W3Mq+ZXhS1Gj/j5BbIXd5Jt+86cvYv1WRntRLyaQbETgkra+/9HLIMae3cI0fUhXib6U
-         /5WViDj8fW8BsBfYPoJlZgijcSAiO/5FoPt8YLUsKrEvpc6vjHhpV9GPrM+ZS6D0H9XA
-         UJvfpQLeSwqjfQwhC6qKAAFrZn+MW90uF4fMtZDwxe0Q0KfBSVf9qa7V34WOW2qo2tdo
-         zumQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747651722; x=1748256522;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p5QOKNkL19Kp3xC8l9jIeYjLGhIQ9n7VjMtSrEEZQbc=;
-        b=E+CxyIfFUHLevX/2U3fKFHGr0s8FfiaZZRnDPZgbcVDXnBrmXYiiIfR6lFbdw7Xfmy
-         Z4UZGu1Mz/kvHrJd+d4SqE8gnE9QwGFf8wuSyYkQTynp6knDwDU9WVdA1y5LAuJS1g8o
-         zFrUlLuzjeaJHCZZPntgOziRPtNi2ZmJeh/XfzD25t9bsEf8CLMMD9FYadGs9DOtYkXw
-         rhw6NXW1VsM99o4TTGPhbRKJc6UMFoKtf4YgkSEcv7VWp9lDaq8Y04OJpdL/3bD2ntSd
-         K6EA9O2t7MDjQmPtgJtl9LINdYMlWCYkhPGEV9Bh8r/VaGegcPbTHtlRduQQsLHPU1zJ
-         kpqA==
-X-Forwarded-Encrypted: i=1; AJvYcCVThxirUkKc5DEDXbD5o13CqytO0N5clkt8hZsCK+x6VE/835TvzjMwion31Eh8o/dimk0pdQWU3SN9@vger.kernel.org, AJvYcCW4QpkK0BFvqQsB9t4hIAqGx9OZVj2frAGxwgndmPGS2vrVfM7fP42KbEkLESnQBl+dpzSCzfsj/1RnIUA41A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzA3sphacd9LqFLRWik+V1Z/uwBUWfYDy4WuTaSEehpUwifpFkh
-	X3tJzQ8pYohbzdiywsoZXUHuc+N4niuRJy0Hdy3OVP52cgb0EMB7L1CyHnkwTw==
-X-Gm-Gg: ASbGncsFcN7cvv48PkHa06KOSLGc4qwBCmCYZD+AbjrKAYOwnQRUFwBNgzLr9aB+pPK
-	eAyDOe3bjdVKN8PrB25cUjfHtW+eTPEkaCXweCY4oEgLV7eSVhEwP9jjbcwExq+AnoTrm6fhN+I
-	m4sfxr4+slCP1YYjHCLj3U3dmfnDbDWwLZYNuXZ19rpUNAzcl4mBKXCOcwdZVihLla0Emyz/x/o
-	97GaZ30flOOeM1qj872IB8S/Kj36NNREUvCTyxJCtlTATNobT68m6Y8l6/O5XJPYZkCrGmffjpt
-	x/39FC9supsoO3nb1MDDmgAxe34m0WHJlDOf1v6gZME=
-X-Google-Smtp-Source: AGHT+IHw+YJ5sE4VnZc70gzP29WqwWASwuT643VaDkN8HVjtMhhlPCF7dCd7G3WF6/Q6iEOqOze5hA==
-X-Received: by 2002:a17:902:f78c:b0:21f:85ee:f2df with SMTP id d9443c01a7336-231de35f324mr185427885ad.15.1747651721829;
-        Mon, 19 May 2025 03:48:41 -0700 (PDT)
-Received: from dw-tp ([171.76.82.96])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4e97798sm56857705ad.147.2025.05.19.03.48.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 May 2025 03:48:40 -0700 (PDT)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Jan Kara <jack@suse.cz>, John Garry <john.g.garry@oracle.com>, djwong@kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v5 0/7] ext4: Add multi-fsblock atomic write support with bigalloc
-In-Reply-To: <cover.1747337952.git.ritesh.list@gmail.com>
-Date: Mon, 19 May 2025 15:37:52 +0530
-Message-ID: <877c2cx69z.fsf@gmail.com>
-References: <cover.1747337952.git.ritesh.list@gmail.com>
+	s=arc-20240116; t=1747650278; c=relaxed/simple;
+	bh=5kGVsJlG6r9uHm5ybJMlVtKYSBUCfPgeLEDwdEsKmKo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KOU8xaJiPrzUtShe5Vh6kwXXSBHaLMrSphPUCv0TQUHxKXNpbhGYDtj19HpQzzxLDbdH+w6fDZ+UB4ACMrND+BdTUt1AqY5Mv+gGqwRP5t+G7H8Rv5rwe/jc0OeqmXN74rLiY+ocYb6C3RsbQglPOCBEGLszemqm8tBCPPsJjvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=w4DpuhZS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vGdz6qAk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fRel86Rz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BMA6+gTQ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 21E75227EF;
+	Mon, 19 May 2025 10:24:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747650274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CgQfNBaoSMyaw7OtF4JJf9jCo6rA+7iKmGLaJFgDFy4=;
+	b=w4DpuhZSUDtQyX0djIQBbrM24bC/MLgfjf9x3X1X3NJygkxhE/7FHgOvFcTzhPhbvdZt9K
+	BePc61Sah9AbmgeLf8uzwZD6748sTUSbNITwFWSev5VnbzYMu77F/cc02Fs6tOlkz3YMmC
+	X5BZjzsOhy30tBLxmViQl47J0tc72gI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747650274;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CgQfNBaoSMyaw7OtF4JJf9jCo6rA+7iKmGLaJFgDFy4=;
+	b=vGdz6qAkwDoIGRu41RvrKQE4BWcbFSFCywLWZ8IQHwvvznbbVsPMU2KMKX+vo+OqlpBxU9
+	9rlsyb4ZT0+AI0Bg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747650273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CgQfNBaoSMyaw7OtF4JJf9jCo6rA+7iKmGLaJFgDFy4=;
+	b=fRel86RzraR0pt36R7uA7TXbw16df3UJSqWdq4WeyRXjwQGsqsuukW4utP7HsIdXJYqM0X
+	DsxzfZeBsbBWI4hEcbPY0NF6aj3lLWSeVyHsuMlP+w8ifnKmB5d3aepSSoAFtadWlNEPDl
+	a++cG0H1X75IOdx/pKJplMVcK9JvtBI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747650273;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CgQfNBaoSMyaw7OtF4JJf9jCo6rA+7iKmGLaJFgDFy4=;
+	b=BMA6+gTQ3337B0rEBbA8Al5AXHBPYJJn6MQPwAlLf5zkv3WNg7ph4ItWaQU4+HEx0wNUXC
+	Dg1S0jyIH0TNnjBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 13EDE13A30;
+	Mon, 19 May 2025 10:24:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hsrYBOEGK2hidwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 19 May 2025 10:24:33 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id A1C13A0A28; Mon, 19 May 2025 12:24:32 +0200 (CEST)
+Date: Mon, 19 May 2025 12:24:32 +0200
+From: Jan Kara <jack@suse.cz>
+To: Brian Foster <bfoster@redhat.com>
+Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] ext4: only dirty folios when data journaling regular
+ files
+Message-ID: <l2k5kbcipqjbeyw52cz2vuapgna6upxbm7cwehrnm7rdeshuon@v3yeyhe2xbha>
+References: <20250516173800.175577-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250516173800.175577-1-bfoster@redhat.com>
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -0.80
+X-Spamd-Result: default: False [-0.80 / 50.00];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email]
 
-"Ritesh Harjani (IBM)" <ritesh.list@gmail.com> writes:
+On Fri 16-05-25 13:38:00, Brian Foster wrote:
+> fstest generic/388 occasionally reproduces a crash that looks as
+> follows:
+> 
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> ...
+> Call Trace:
+>  <TASK>
+>  ext4_block_zero_page_range+0x30c/0x380 [ext4]
+>  ext4_truncate+0x436/0x440 [ext4]
+>  ext4_process_orphan+0x5d/0x110 [ext4]
+>  ext4_orphan_cleanup+0x124/0x4f0 [ext4]
+>  ext4_fill_super+0x262d/0x3110 [ext4]
+>  get_tree_bdev_flags+0x132/0x1d0
+>  vfs_get_tree+0x26/0xd0
+>  vfs_cmd_create+0x59/0xe0
+>  __do_sys_fsconfig+0x4ed/0x6b0
+>  do_syscall_64+0x82/0x170
+>  ...
+> 
+> This occurs when processing a symlink inode from the orphan list. The
+> partial block zeroing code in the truncate path calls
+> ext4_dirty_journalled_data() -> folio_mark_dirty(). The latter calls
+> mapping->a_ops->dirty_folio(), but symlink inodes are not assigned an
+> a_ops vector in ext4, hence the crash.
+> 
+> To avoid this problem, update the ext4_dirty_journalled_data() helper to
+> only mark the folio dirty on regular files (for which a_ops is
+> assigned). This also matches the journaling logic in the ext4_symlink()
+> creation path, where ext4_handle_dirty_metadata() is called directly.
+> 
+> Fixes: d84c9ebdac1e ("ext4: Mark pages with journalled data dirty")
+> Signed-off-by: Brian Foster <bfoster@redhat.com>
 
-> This adds multi-fsblock atomic write support to ext4 using bigalloc. The major
-> chunk of the design changes are kept in Patch-4 & 5.
->
-> v4 -> v5:
-> =========
-> 1. Addressed review comments and added Acked-by from Darrick.
-> 2. Changed a minor WARN_ON(1) at one place to WARN_ON_ONCE(1) in patch-5 in
->    ext4_iomap_begin(). Ideally we may never hit it.
-> 3. Added force commit related info in the Documentation section where
->    mixed mapping details are mentioned.
-> [v4]: https://lore.kernel.org/linux-ext4/cover.1747289779.git.ritesh.list@gmail.com/
-> <...>
-> Ritesh Harjani (IBM) (7):
->   ext4: Document an edge case for overwrites
->   ext4: Check if inode uses extents in ext4_inode_can_atomic_write()
->   ext4: Make ext4_meta_trans_blocks() non-static for later use
->   ext4: Add support for EXT4_GET_BLOCKS_QUERY_LEAF_BLOCKS
->   ext4: Add multi-fsblock atomic write support with bigalloc
->   ext4: Enable support for ext4 multi-fsblock atomic write using bigalloc
->   ext4: Add atomic block write documentation
->
->  .../filesystems/ext4/atomic_writes.rst        | 225 +++++++++++++
->  Documentation/filesystems/ext4/overview.rst   |   1 +
->  fs/ext4/ext4.h                                |  26 +-
->  fs/ext4/extents.c                             |  99 ++++++
->  fs/ext4/file.c                                |   7 +-
->  fs/ext4/inode.c                               | 315 ++++++++++++++++--
->  fs/ext4/super.c                               |   7 +-
->  7 files changed, 655 insertions(+), 25 deletions(-)
->  create mode 100644 Documentation/filesystems/ext4/atomic_writes.rst
+Yeah, I forgot about this subtlety when writing d84c9ebdac1e. Good catch
+and thanks for fixing this up! The fix looks good. Feel free to add:
 
-Hi Ted, 
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-I was working on the rebase over the weekend as I figured that there
-will be merge conflicts with Zhang's series. But later I saw that you
-have already rebased [1] and merged atomic write series in dev branch. 
+> ---
+> 
+> Hi Jan,
+> 
+> I'm not intimately familiar with the jbd machinery here so this may well
+> be wrong, but it survives my testing so far. I initially hacked this to
+> mark the buffer dirty instead of the folio, but discovered jbd2 doesn't
+> seem to like that. I suspect that is because jbd2 wants to dirty/submit
+> the buffer itself after it's logged..?
+> 
+> Anyways, after that, this struck me as most consistent with behavior
+> prior to d84c9ebdac1e and/or with the creation path, so I'm floating
+> this as a first pass. Is my understanding of d84c9ebdac1e correct in
+> that it is mainly an optimization to allow writeback to force the
+> journaling mechanism vs. otherwise waiting for the other way around
+> (i.e. a journal commit to mark folios dirty)? Thoughts appreciated..
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/log/?h=dev
+Well, the motivation for d84c9ebdac1e was not so much an optimization but
+rather to provide better visibility to the generic code what needs writing
+out. Otherwise we had to special-case data journalling in a lot of places
+that tried to do "clean the inode & purge the page cache" because simple
+filemap_write_and_wait() was not enough to get the dirty pages in the inode
+to disk.
 
-So, thanks for taking care of that. After looking at Zhang's series, I
-figured, we may need EXT4_EX_CACHE flag too in
-ext4_convert_unwritten_extents_atomic() i.e.
+								Honza
 
-	int flags = EXT4_GET_BLOCKS_IO_CONVERT_EXT | EXT4_EX_NOCACHE;
-
-This is since, in ext4_map_blocks(), we have a condition check which can
-emit a WARN_ON like this:
-	/*
-	 * Callers from the context of data submission are the only exceptions
-	 * for regular files that do not hold the i_rwsem or invalidate_lock.
-	 * However, caching unrelated ranges is not permitted.
-	 */
-	if (flags & EXT4_GET_BLOCKS_IO_SUBMIT)
-		WARN_ON_ONCE(!(flags & EXT4_EX_NOCACHE));
-	else
-		ext4_check_map_extents_env(inode);
-
-
-Other than adding the no cache flag, couple of other minor
-simplifications can be done too, I guess for e.g. simplifying the
-query_flags logic in ext4_map_query_blocks() function. 
-
-So I am thinking maybe I will provide the above fix and few other minor
-simplfications which we could do on top of ext4's dev branch (after we
-rebased atomic write changes on top of Zhang's series). Please let me
-know if that is ok?
-
-Or do we want to fix the original atomic write patch and do a force push
-to dev branch again?
-
-Please let me know whichever way works best?
-
-Thanks again!
--ritesh
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 94c7d2d828a6..d3c138003ad3 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -1009,7 +1009,12 @@ int ext4_walk_page_buffers(handle_t *handle, struct inode *inode,
+>   */
+>  static int ext4_dirty_journalled_data(handle_t *handle, struct buffer_head *bh)
+>  {
+> -	folio_mark_dirty(bh->b_folio);
+> +	struct folio *folio = bh->b_folio;
+> +	struct inode *inode = folio->mapping->host;
+> +
+> +	/* only regular files have a_ops */
+> +	if (S_ISREG(inode->i_mode))
+> +		folio_mark_dirty(folio);
+>  	return ext4_handle_dirty_metadata(handle, NULL, bh);
+>  }
+>  
+> -- 
+> 2.49.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
