@@ -1,219 +1,196 @@
-Return-Path: <linux-ext4+bounces-8010-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8011-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0306EABBB06
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 12:24:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0086FABBB59
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 12:43:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D441172A9C
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 10:24:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95CBC178583
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 10:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618852741BE;
-	Mon, 19 May 2025 10:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B5D2741DB;
+	Mon, 19 May 2025 10:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="w4DpuhZS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vGdz6qAk";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fRel86Rz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BMA6+gTQ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="dRUm4Eal"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512A91F8EFF
-	for <linux-ext4@vger.kernel.org>; Mon, 19 May 2025 10:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A939B4C92;
+	Mon, 19 May 2025 10:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747650278; cv=none; b=TfY07S1lraqXWvUZ7pHb0evwhD6UTII4SW7IMd4Vi6nKZzrGKSOgBqHPziz0MlOoAM+kIDcUNmPvjlqsZFmiS/3T7rbZ8uD9TI2ukFlkzYeqJn054N0u5THOHUR2xqxS4WF+ycqfG29z3qnERtvTWg6axY6bh0cXUYSQhpkXO+I=
+	t=1747651391; cv=none; b=B9TF0+E1dSw+XTiTfGr/zTufOwKLoaVSLYJTLjngno+HXNGVmg+c91pVUNZYlZHQEHEf9egE+u+JuM6wZTcG2jUq5GEVS/rtcmYI/ZXT5r13VfCOHQtUmFOssv/dqPYgj5MwCfknzoua1cLf2XrBgo+yDdIB4v4viKpXNpQMm5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747650278; c=relaxed/simple;
-	bh=5kGVsJlG6r9uHm5ybJMlVtKYSBUCfPgeLEDwdEsKmKo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KOU8xaJiPrzUtShe5Vh6kwXXSBHaLMrSphPUCv0TQUHxKXNpbhGYDtj19HpQzzxLDbdH+w6fDZ+UB4ACMrND+BdTUt1AqY5Mv+gGqwRP5t+G7H8Rv5rwe/jc0OeqmXN74rLiY+ocYb6C3RsbQglPOCBEGLszemqm8tBCPPsJjvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=w4DpuhZS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vGdz6qAk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fRel86Rz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BMA6+gTQ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 21E75227EF;
-	Mon, 19 May 2025 10:24:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747650274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CgQfNBaoSMyaw7OtF4JJf9jCo6rA+7iKmGLaJFgDFy4=;
-	b=w4DpuhZSUDtQyX0djIQBbrM24bC/MLgfjf9x3X1X3NJygkxhE/7FHgOvFcTzhPhbvdZt9K
-	BePc61Sah9AbmgeLf8uzwZD6748sTUSbNITwFWSev5VnbzYMu77F/cc02Fs6tOlkz3YMmC
-	X5BZjzsOhy30tBLxmViQl47J0tc72gI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747650274;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CgQfNBaoSMyaw7OtF4JJf9jCo6rA+7iKmGLaJFgDFy4=;
-	b=vGdz6qAkwDoIGRu41RvrKQE4BWcbFSFCywLWZ8IQHwvvznbbVsPMU2KMKX+vo+OqlpBxU9
-	9rlsyb4ZT0+AI0Bg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747650273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CgQfNBaoSMyaw7OtF4JJf9jCo6rA+7iKmGLaJFgDFy4=;
-	b=fRel86RzraR0pt36R7uA7TXbw16df3UJSqWdq4WeyRXjwQGsqsuukW4utP7HsIdXJYqM0X
-	DsxzfZeBsbBWI4hEcbPY0NF6aj3lLWSeVyHsuMlP+w8ifnKmB5d3aepSSoAFtadWlNEPDl
-	a++cG0H1X75IOdx/pKJplMVcK9JvtBI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747650273;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CgQfNBaoSMyaw7OtF4JJf9jCo6rA+7iKmGLaJFgDFy4=;
-	b=BMA6+gTQ3337B0rEBbA8Al5AXHBPYJJn6MQPwAlLf5zkv3WNg7ph4ItWaQU4+HEx0wNUXC
-	Dg1S0jyIH0TNnjBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 13EDE13A30;
-	Mon, 19 May 2025 10:24:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id hsrYBOEGK2hidwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 19 May 2025 10:24:33 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A1C13A0A28; Mon, 19 May 2025 12:24:32 +0200 (CEST)
-Date: Mon, 19 May 2025 12:24:32 +0200
-From: Jan Kara <jack@suse.cz>
-To: Brian Foster <bfoster@redhat.com>
-Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] ext4: only dirty folios when data journaling regular
- files
-Message-ID: <l2k5kbcipqjbeyw52cz2vuapgna6upxbm7cwehrnm7rdeshuon@v3yeyhe2xbha>
-References: <20250516173800.175577-1-bfoster@redhat.com>
+	s=arc-20240116; t=1747651391; c=relaxed/simple;
+	bh=S8QUrRNxJY/I87qAbHHhRL5c67O+zlU6bkC4edR4hoc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=JO2nRPbP5fNf3nmmNM5QbyYNbm31dQBytIfcGq8ruwvl3BFf7aCDE2+Xi8cXRQNWi0AbF9VN4j3k4cJ20VQfcx1zvE7zSCuXh1PiORgKjWgIoJucGGsx/qV2YKv6kCIzQ3JsktMwZD/R6/NdIIYrsr71UDiBcnATdDAQsfOxysU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=dRUm4Eal; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Cc:To:Message-Id:Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Subject:Date:From:Sender:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=/wjRdfKuYR+hu2GSwHqSaLOLcZnsXAkfGl3Iw/Uu0yk=; b=dRUm4Ealz8kSO3D5W76W1aftie
+	wb5W/LFwNxCCOVi67XFQRn1fxbdkvMQL9luJ/cx/NtOKKc4Aem/27ZIpNWgmTFS9j+bMBK3pwg6Zv
+	VsYBZpA/HmJp1eqPoKt1U1vi0LgMyzdwwkqH06GDpeJsgO0LFBY0VOlAYxLsSKoPk5JNIzesitcDX
+	KSh5MkheKWb5Wezr1K7U3Vw4GH40pzTTVufFYahWQRQRSMIjoZge3eKypQ6AqB5jxuJNLT9Bs9qW7
+	zS8wVMzf2HpiZTG520xtUgvfoqJajgJ6yt+Em6grAHn/swM+tTmocfQ5vJuH6Jkn+aX6DfjM1YRYM
+	S15cjD5w==;
+Received: from 179-125-70-180-dinamico.pombonet.net.br ([179.125.70.180] helo=[127.0.0.1])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1uGxxP-00ACFf-IE; Mon, 19 May 2025 12:42:55 +0200
+From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+Date: Mon, 19 May 2025 07:42:46 -0300
+Subject: [PATCH] ext4: inline: do not convert when writing to memory map
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250516173800.175577-1-bfoster@redhat.com>
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.80
-X-Spamd-Result: default: False [-0.80 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250519-ext4_inline_page_mkwrite-v1-1-865d9a62b512@igalia.com>
+X-B4-Tracking: v=1; b=H4sIACULK2gC/x3MQQqDMBBG4avIrBtIBrOwVyklhPgnDm1TSUQF8
+ e4Gl9/ivYMqiqDSszuoYJUq/9xgHh2FyecEJWMzsWarrRkU9qV3kr+S4Waf4H6frcgCFXoO3kT
+ NPFhq+VwQZb/Xr/d5XpIKAG9qAAAA
+X-Change-ID: 20250519-ext4_inline_page_mkwrite-c42ca1f02295
+To: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>, 
+ Tao Ma <boyu.mt@taobao.com>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+ Eric Biggers <ebiggers@google.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, kernel-dev@igalia.com, 
+ syzbot+0c89d865531d053abb2d@syzkaller.appspotmail.com, 
+ Thadeu Lima de Souza Cascardo <cascardo@igalia.com>, stable@vger.kernel.org
+X-Mailer: b4 0.14.2
 
-On Fri 16-05-25 13:38:00, Brian Foster wrote:
-> fstest generic/388 occasionally reproduces a crash that looks as
-> follows:
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> ...
-> Call Trace:
->  <TASK>
->  ext4_block_zero_page_range+0x30c/0x380 [ext4]
->  ext4_truncate+0x436/0x440 [ext4]
->  ext4_process_orphan+0x5d/0x110 [ext4]
->  ext4_orphan_cleanup+0x124/0x4f0 [ext4]
->  ext4_fill_super+0x262d/0x3110 [ext4]
->  get_tree_bdev_flags+0x132/0x1d0
->  vfs_get_tree+0x26/0xd0
->  vfs_cmd_create+0x59/0xe0
->  __do_sys_fsconfig+0x4ed/0x6b0
->  do_syscall_64+0x82/0x170
->  ...
-> 
-> This occurs when processing a symlink inode from the orphan list. The
-> partial block zeroing code in the truncate path calls
-> ext4_dirty_journalled_data() -> folio_mark_dirty(). The latter calls
-> mapping->a_ops->dirty_folio(), but symlink inodes are not assigned an
-> a_ops vector in ext4, hence the crash.
-> 
-> To avoid this problem, update the ext4_dirty_journalled_data() helper to
-> only mark the folio dirty on regular files (for which a_ops is
-> assigned). This also matches the journaling logic in the ext4_symlink()
-> creation path, where ext4_handle_dirty_metadata() is called directly.
-> 
-> Fixes: d84c9ebdac1e ("ext4: Mark pages with journalled data dirty")
-> Signed-off-by: Brian Foster <bfoster@redhat.com>
+inline data handling has a race between writing and writing to a memory
+map.
 
-Yeah, I forgot about this subtlety when writing d84c9ebdac1e. Good catch
-and thanks for fixing this up! The fix looks good. Feel free to add:
+When ext4_page_mkwrite is called, it calls ext4_convert_inline_data, which
+destroys the inline data, but if block allocation fails, restores the
+inline data. In that process, we could have:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+CPU1					CPU2
+destroy_inline_data
+					write_begin (does not see inline data)
+restory_inline_data
+					write_end (sees inline data)
 
-> ---
-> 
-> Hi Jan,
-> 
-> I'm not intimately familiar with the jbd machinery here so this may well
-> be wrong, but it survives my testing so far. I initially hacked this to
-> mark the buffer dirty instead of the folio, but discovered jbd2 doesn't
-> seem to like that. I suspect that is because jbd2 wants to dirty/submit
-> the buffer itself after it's logged..?
-> 
-> Anyways, after that, this struck me as most consistent with behavior
-> prior to d84c9ebdac1e and/or with the creation path, so I'm floating
-> this as a first pass. Is my understanding of d84c9ebdac1e correct in
-> that it is mainly an optimization to allow writeback to force the
-> journaling mechanism vs. otherwise waiting for the other way around
-> (i.e. a journal commit to mark folios dirty)? Thoughts appreciated..
+This leads to bugs like the one below, as write_begin did not prepare for
+the case of inline data, which is expected by the write_end side of it.
 
-Well, the motivation for d84c9ebdac1e was not so much an optimization but
-rather to provide better visibility to the generic code what needs writing
-out. Otherwise we had to special-case data journalling in a lot of places
-that tried to do "clean the inode & purge the page cache" because simple
-filemap_write_and_wait() was not enough to get the dirty pages in the inode
-to disk.
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inline.c:235!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 UID: 0 PID: 5838 Comm: syz-executor110 Not tainted 6.13.0-rc3-syzkaller-00209-g499551201b5f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+RIP: 0010:ext4_write_inline_data fs/ext4/inline.c:235 [inline]
+RIP: 0010:ext4_write_inline_data_end+0xdc7/0xdd0 fs/ext4/inline.c:774
+Code: 47 1d 8c e8 4b 3a 91 ff 90 0f 0b e8 63 7a 47 ff 48 8b 7c 24 10 48 c7 c6 e0 47 1d 8c e8 32 3a 91 ff 90 0f 0b e8 4a 7a 47 ff 90 <0f> 0b 0f 1f 80 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc900031c7320 EFLAGS: 00010293
+RAX: ffffffff8257f9a6 RBX: 000000000000005a RCX: ffff888012968000
+RDX: 0000000000000000 RSI: 000000000000005a RDI: 000000000000005b
+RBP: ffffc900031c7448 R08: ffffffff8257ef87 R09: 1ffff11006806070
+R10: dffffc0000000000 R11: ffffed1006806071 R12: 000000000000005a
+R13: dffffc0000000000 R14: ffff888076b65bd8 R15: 000000000000005b
+FS:  00007f5c6bacf6c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000a00 CR3: 0000000073fb6000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ generic_perform_write+0x6f8/0x990 mm/filemap.c:4070
+ ext4_buffered_write_iter+0xc5/0x350 fs/ext4/file.c:299
+ ext4_file_write_iter+0x892/0x1c50
+ iter_file_splice_write+0xbfc/0x1510 fs/splice.c:743
+ do_splice_from fs/splice.c:941 [inline]
+ direct_splice_actor+0x11d/0x220 fs/splice.c:1164
+ splice_direct_to_actor+0x588/0xc80 fs/splice.c:1108
+ do_splice_direct_actor fs/splice.c:1207 [inline]
+ do_splice_direct+0x289/0x3e0 fs/splice.c:1233
+ do_sendfile+0x564/0x8a0 fs/read_write.c:1363
+ __do_sys_sendfile64 fs/read_write.c:1424 [inline]
+ __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1410
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f5c6bb18d09
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f5c6bacf218 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f5c6bba0708 RCX: 00007f5c6bb18d09
+RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000004
+RBP: 00007f5c6bba0700 R08: 0000000000000000 R09: 0000000000000000
+R10: 000080001d00c0d0 R11: 0000000000000246 R12: 00007f5c6bb6d620
+R13: 00007f5c6bb6d0c0 R14: 0031656c69662f2e R15: 8088e3ad122bc192
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
 
-								Honza
+This happens because ext4_page_mkwrite is not protected by the inode_lock.
+The xattr semaphore is not sufficient to protect inline data handling in a
+sane way, so we need to rely on the inode_lock. Adding the inode_lock to
+ext4_page_mkwrite is not an option, otherwise lock-ordering problems with
+mmap_lock may arise.
 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 94c7d2d828a6..d3c138003ad3 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1009,7 +1009,12 @@ int ext4_walk_page_buffers(handle_t *handle, struct inode *inode,
->   */
->  static int ext4_dirty_journalled_data(handle_t *handle, struct buffer_head *bh)
->  {
-> -	folio_mark_dirty(bh->b_folio);
-> +	struct folio *folio = bh->b_folio;
-> +	struct inode *inode = folio->mapping->host;
-> +
-> +	/* only regular files have a_ops */
-> +	if (S_ISREG(inode->i_mode))
-> +		folio_mark_dirty(folio);
->  	return ext4_handle_dirty_metadata(handle, NULL, bh);
->  }
->  
-> -- 
-> 2.49.0
-> 
+The conversion inside ext4_page_mkwrite was introduced at commit
+7b4cc9787fe3 ("ext4: evict inline data when writing to memory map"). This
+fixes a documented bug in the commit message, which suggests some
+alternatives fixes.
+
+The alternative of keeping the data inline is left as an exercise for the
+reader.
+
+Instead, block allocation still happens, just as it does right now. But
+removal of the inline data is only done when pages are written back.
+
+Fixes: 7b4cc9787fe3 ("ext4: evict inline data when writing to memory map")
+Reported-by: syzbot+0c89d865531d053abb2d@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=0c89d865531d053abb2d
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+Cc: stable@vger.kernel.org
+---
+ fs/ext4/inode.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 94c7d2d828a64e42ded09c82497ed7617071aa19..38653d5c8b32ede2b130285ab13ef1e96b1ba783 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2620,8 +2620,7 @@ static int ext4_do_writepages(struct mpage_da_data *mpd)
+ 			ret = PTR_ERR(handle);
+ 			goto out_writepages;
+ 		}
+-		BUG_ON(ext4_test_inode_state(inode,
+-				EXT4_STATE_MAY_INLINE_DATA));
++		ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+ 		ext4_destroy_inline_data(handle, inode);
+ 		ext4_journal_stop(handle);
+ 	}
+@@ -6222,10 +6221,6 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+ 
+ 	filemap_invalidate_lock_shared(mapping);
+ 
+-	err = ext4_convert_inline_data(inode);
+-	if (err)
+-		goto out_ret;
+-
+ 	/*
+ 	 * On data journalling we skip straight to the transaction handle:
+ 	 * there's no delalloc; page truncated will be checked later; the
+
+---
+base-commit: a5806cd506af5a7c19bcd596e4708b5c464bfd21
+change-id: 20250519-ext4_inline_page_mkwrite-c42ca1f02295
+
+Best regards,
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+
 
