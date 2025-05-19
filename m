@@ -1,241 +1,121 @@
-Return-Path: <linux-ext4+bounces-7961-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7963-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8CD1ABB48B
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 07:59:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DD74ABB4F1
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 08:17:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 862F51716E9
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 05:59:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 903CF1893994
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 06:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D311FFC5D;
-	Mon, 19 May 2025 05:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1F6244672;
+	Mon, 19 May 2025 06:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lkaGnUkL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eQKYst6M"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F191F463E;
-	Mon, 19 May 2025 05:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12968243374;
+	Mon, 19 May 2025 06:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747634335; cv=none; b=kQkG5yW5BXpFM3kXDPpksXPxyzxMT+LLpUnW1vmxbd5SCqt1P23k9vBgR+l4wXziUcH7c4mJ0WEya0hmj/uiYsvSfp9/P/x1daoNJHrSojYguE6Mi5uZd09F7xkpEQ5MtzXFzaFEYdffhWV4kWiEP584U9vJNf3ZO/MfWaM+TPQ=
+	t=1747635433; cv=none; b=sLOzyEJ+y7+EiomPdtsd55zqoP5ZOUE1ZdRwhJ9Em+Rlo1mZXDlTOWnUMUHEMfnHDuh/nK2zso3GRhrlsp/eGgASJ0SLKCg2ZJWrl8moRZ2oHVk1hH7aXvXXZ15A1WPiXWPCyyxilBZpWbYST5hP6m78Dm6L1xgPk8YGMwgKxuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747634335; c=relaxed/simple;
-	bh=Jw6mXfv00dMuD2c25uxnyya946iEO7Hvz29jpU+3oL8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Enez7zZUYZMC3AElB2fxrWxNtjpbocBjF6UW3fqevu1UgVzOivZyZLZZoeN6h4eKYxrLBxRZYWPKavD9A2eYhrlTnRpR1dGzgAdKg8xAh71k9rd0ye3DhBRgakqEx7MXNH0DmSdYtpvobtwIGZTXbYcCXYUGSwhkOVFdT3JE0/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lkaGnUkL; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747634333; x=1779170333;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Jw6mXfv00dMuD2c25uxnyya946iEO7Hvz29jpU+3oL8=;
-  b=lkaGnUkL6Q/TdJ4CVTBWBFLE9i3ZcKXqPRtIn3QFU8hFitLWiFiE8Brz
-   U/xn/WM79yaJTwwdHyeLNTMncgnM5+NZZtgZSDQ7D1qtcpBfoa8UD7lT6
-   Ueuq2OM/mYYGFEeDBFEEtaYqSJJgS3n+bKSE49oFbUp/qGMNA9FCfmoEG
-   AoF1mfc0LCzfUOhL5dbpPdf+gFA8bwAGxsK4MYz03xExvq2qbNAp5nqTY
-   6aAQm3/4/7ZhbEqd/qU+MCd4oLMOPFgVEADn7fDQkrZr8No/9coGrk81E
-   Cl+zsq5+S/wUHHy7eFmEdFfjT7S0l5CZj5s6EfjzjfRYapSMYAZGVwXK/
-   w==;
-X-CSE-ConnectionGUID: qpSJtAPyQem1KHIuQhOaAQ==
-X-CSE-MsgGUID: TSMTpPgKQbWX2Ilo42cU9A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11437"; a="53336326"
-X-IronPort-AV: E=Sophos;i="6.15,300,1739865600"; 
-   d="scan'208";a="53336326"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2025 22:58:52 -0700
-X-CSE-ConnectionGUID: An3UK/4URmqvVNZz1hw2Yg==
-X-CSE-MsgGUID: kiA2wLPiT0iC3b1BcrBj7w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,300,1739865600"; 
-   d="scan'208";a="139766798"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 18 May 2025 22:58:49 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uGtWR-000LB5-0G;
-	Mon, 19 May 2025 05:58:47 +0000
-Date: Mon, 19 May 2025 13:58:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ethan Carter Edwards <ethan@ethancedwards.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Ethan Carter Edwards <ethan@ethancedwards.com>
-Subject: Re: [PATCH v2] ext4: replace strcpy() with '.' assignment
-Message-ID: <202505191321.ZwdQZhut-lkp@intel.com>
-References: <20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com>
+	s=arc-20240116; t=1747635433; c=relaxed/simple;
+	bh=d7dO60/1wbgHIvcSIPVvbisu9fIWON9zoH+EUQNB9u0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HZpcumK5u19U41gRKHMKJjQBqDL+MUikarHL3ALzITg14nRLXXCRLP8JUjEzZrNTdGPQ9/gIisBT3NihdRovN+8lrvYRMY3I+BwIyFcrKzA/HBgmuQrUMB23tfVG1H2W9ghoYmIWMxmQCg0nFJCGBtPfqIwea3umdPrmLrB8J0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eQKYst6M; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b200047a6a5so4461435a12.0;
+        Sun, 18 May 2025 23:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747635431; x=1748240231; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xegv/gF/tQ6fF9VYglXwKgNt6/H0qj0lf6CHPVMVv/k=;
+        b=eQKYst6McBtc6boXw1j7HxH7mn6QqYGwBlo82/SgNF/K6nYsFtU3z6JwClAu9ubYn5
+         H4Pc6hFJgVF2F+33xUDywfm4WQZ1wfeBM+vvRGHcKchnHgm6Q8fUizalim3EgUomgPRj
+         LesyJZRSsFj1DsKNAL/CyQ07kpZmooZxVL8vEyxOVBHn3tDAjJaj4W0xzUzCQj7G9I/z
+         qQUS1h6JfUafkvsqAWiQtT6KbrFkgFp7ePBmyuGIuA6mcvHUr+jenYXktNRSTJR6P/j3
+         TcLrE+WtMiY4Dc4HQRdP42khmjeg5++HQPV2Pm54NwZJEFxQ8k5Z2q6wv0P5gpzscZ+Q
+         fK/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747635431; x=1748240231;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xegv/gF/tQ6fF9VYglXwKgNt6/H0qj0lf6CHPVMVv/k=;
+        b=OxoO0cNk++Thkdjbz6Bjuh7goj53AIqQWD9fvGnefw9hWpYWVBBVr7xnSJrI2IQRPc
+         bSvAampPr0e6jZIfXHPW/SY9jrnPmpdZ6jxn12YJt/ISomTHn7GCxMF3CwM91IAi05b1
+         w/444yimMHFJ51MQ4KGaWbeR4e5K6MYKcOwZTc+8GpapdR2IM5wXRIWGDZj2iHpq3NeJ
+         SislJu+w6SfBq8maV5pdLa4ETkQIKDvwpoB+vDCvz9+jryOhJ6339LROGie79hsE2FFE
+         AwzJWpl3OGQd8G5/tBfiyEhettfsKsLo2dcTQqjFsBricJnPuil00i9ffjkdsLjDEm+l
+         t/2g==
+X-Forwarded-Encrypted: i=1; AJvYcCW7LD4Vujw5dz6LpFmo+kap3N9bvrcBG5ilGjKNV+hY8PZX6pZwlZw1SPgKp05DgBaAfTooDKceTvA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqJ4s08kz8p1Fk7Dvtm7F4V7cOCWxo/A7pqMjPkxJ9da6lVgHN
+	8m+1/FfABSLexUfjasWkor78Rq4tcEnHr4bWDRjKtlUQ06JdCnE4RwugN/PWeQ==
+X-Gm-Gg: ASbGncv4MPHib8z8ksS4O9v4dG7PS+5VLFL8rLx1brzxtSBt01kRI4DZvHBeMn8vYdU
+	PTmZSjDPd7nOrho3kq8gZsBHkCEldTlYHMv3GZYZBoxOgaxmCshCJnmullLCENH1bM9BurFLelj
+	zOkbW5QrKSjlWe/jHzqMEopnXMvZ1L6qc6oQ+9wItTzqZ1a7P3EbDO5pPvVbEoqxrtU/AGAxQtg
+	xy/dgEhjjyGF1UuVdTCV/KoEEtkfDjgwFtSvssEY97W6ISqSiaiX/vJoYptd+TSoLCmV2HPPsRx
+	5yp2fLYf82ziWBqzJ8wY6kXOR+mPEnmZWt5HGdH281kovPhxAsbbWg0=
+X-Google-Smtp-Source: AGHT+IEl/K+LaezsJu2M/Nn8u3QAE77OIRh207aXSnzOEm0MMpg2FT/4mb2I10s4LG4mFzyAC5XvUg==
+X-Received: by 2002:a17:902:e5d1:b0:224:7a4:b31 with SMTP id d9443c01a7336-231d4b05b02mr116589025ad.6.1747635430576;
+        Sun, 18 May 2025 23:17:10 -0700 (PDT)
+Received: from citest-1.. ([49.205.34.162])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2325251da10sm6939385ad.42.2025.05.18.23.17.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 May 2025 23:17:10 -0700 (PDT)
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+To: fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com,
+	djwong@kernel.org,
+	zlang@kernel.org,
+	david@fromorbit.com,
+	nirjhar.roy.lists@gmail.com
+Subject: [PATCH v3 0/2] new: Improvements to new script
+Date: Mon, 19 May 2025 06:16:40 +0000
+Message-Id: <cover.1747635261.git.nirjhar.roy.lists@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Ethan,
+This series adds a couple of improvements to the "new" script.
+Patch-1/2 - Adds an optional name/email id parameter prompt to the new script while creating
+ a new test file using the "new" file.
+Patch 2/2 - Replace "status=0;exit 0" with _exit 0 in the skeleton file in "new".
 
-kernel test robot noticed the following build warnings:
+[v2] -> v3
+ - Modified the commit message to remove "email-id" from it (patch 1).
 
-[auto build test WARNING on 5723cc3450bccf7f98f227b9723b5c9f6b3af1c5]
+[v1] -> [v2]
+ - Added RB of Zorro in patch 2 of [v1]
+ - Modified the prompt message for entering the author name (patch 1 of [v1])
+ - Removed patch 3 (Suggested by Zorro) of [v1]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ethan-Carter-Edwards/ext4-replace-strcpy-with-assignment/20250519-115601
-base:   5723cc3450bccf7f98f227b9723b5c9f6b3af1c5
-patch link:    https://lore.kernel.org/r/20250518-ext4-strcpy-v2-1-80d316325046%40ethancedwards.com
-patch subject: [PATCH v2] ext4: replace strcpy() with '.' assignment
-config: csky-randconfig-001-20250519 (https://download.01.org/0day-ci/archive/20250519/202505191321.ZwdQZhut-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 10.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250519/202505191321.ZwdQZhut-lkp@intel.com/reproduce)
+[v1] https://lore.kernel.org/all/cover.1747123422.git.nirjhar.roy.lists@gmail.com/
+[v2] https://lore.kernel.org/all/cover.1747306604.git.nirjhar.roy.lists@gmail.com/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202505191321.ZwdQZhut-lkp@intel.com/
+Nirjhar Roy (IBM) (2):
+  new: Add a new parameter (name) in the "new" script
+  new: Replace "status=0; exit 0" with _exit 0
 
-All warnings (new ones prefixed by >>):
+ new | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-   fs/ext4/inline.c: In function 'ext4_inlinedir_to_tree':
->> fs/ext4/inline.c:1317:17: warning: assignment to 'char' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
-    1317 |    fake.name[0] = ".";
-         |                 ^
-   fs/ext4/inline.c:1327:32: warning: assignment to 'char' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
-    1327 |    fake.name[0] = fake.name[1] = ".";
-         |                                ^
+--
+2.34.1
 
-
-vim +1317 fs/ext4/inline.c
-
-  1259	
-  1260	/*
-  1261	 * This function fills a red-black tree with information from an
-  1262	 * inlined dir.  It returns the number directory entries loaded
-  1263	 * into the tree.  If there is an error it is returned in err.
-  1264	 */
-  1265	int ext4_inlinedir_to_tree(struct file *dir_file,
-  1266				   struct inode *dir, ext4_lblk_t block,
-  1267				   struct dx_hash_info *hinfo,
-  1268				   __u32 start_hash, __u32 start_minor_hash,
-  1269				   int *has_inline_data)
-  1270	{
-  1271		int err = 0, count = 0;
-  1272		unsigned int parent_ino;
-  1273		int pos;
-  1274		struct ext4_dir_entry_2 *de;
-  1275		struct inode *inode = file_inode(dir_file);
-  1276		int ret, inline_size = 0;
-  1277		struct ext4_iloc iloc;
-  1278		void *dir_buf = NULL;
-  1279		struct ext4_dir_entry_2 fake;
-  1280		struct fscrypt_str tmp_str;
-  1281	
-  1282		ret = ext4_get_inode_loc(inode, &iloc);
-  1283		if (ret)
-  1284			return ret;
-  1285	
-  1286		down_read(&EXT4_I(inode)->xattr_sem);
-  1287		if (!ext4_has_inline_data(inode)) {
-  1288			up_read(&EXT4_I(inode)->xattr_sem);
-  1289			*has_inline_data = 0;
-  1290			goto out;
-  1291		}
-  1292	
-  1293		inline_size = ext4_get_inline_size(inode);
-  1294		dir_buf = kmalloc(inline_size, GFP_NOFS);
-  1295		if (!dir_buf) {
-  1296			ret = -ENOMEM;
-  1297			up_read(&EXT4_I(inode)->xattr_sem);
-  1298			goto out;
-  1299		}
-  1300	
-  1301		ret = ext4_read_inline_data(inode, dir_buf, inline_size, &iloc);
-  1302		up_read(&EXT4_I(inode)->xattr_sem);
-  1303		if (ret < 0)
-  1304			goto out;
-  1305	
-  1306		pos = 0;
-  1307		parent_ino = le32_to_cpu(((struct ext4_dir_entry_2 *)dir_buf)->inode);
-  1308		while (pos < inline_size) {
-  1309			/*
-  1310			 * As inlined dir doesn't store any information about '.' and
-  1311			 * only the inode number of '..' is stored, we have to handle
-  1312			 * them differently.
-  1313			 */
-  1314			if (pos == 0) {
-  1315				fake.inode = cpu_to_le32(inode->i_ino);
-  1316				fake.name_len = 1;
-> 1317				fake.name[0] = ".";
-  1318				fake.rec_len = ext4_rec_len_to_disk(
-  1319						  ext4_dir_rec_len(fake.name_len, NULL),
-  1320						  inline_size);
-  1321				ext4_set_de_type(inode->i_sb, &fake, S_IFDIR);
-  1322				de = &fake;
-  1323				pos = EXT4_INLINE_DOTDOT_OFFSET;
-  1324			} else if (pos == EXT4_INLINE_DOTDOT_OFFSET) {
-  1325				fake.inode = cpu_to_le32(parent_ino);
-  1326				fake.name_len = 2;
-  1327				fake.name[0] = fake.name[1] = ".";
-  1328				fake.rec_len = ext4_rec_len_to_disk(
-  1329						  ext4_dir_rec_len(fake.name_len, NULL),
-  1330						  inline_size);
-  1331				ext4_set_de_type(inode->i_sb, &fake, S_IFDIR);
-  1332				de = &fake;
-  1333				pos = EXT4_INLINE_DOTDOT_SIZE;
-  1334			} else {
-  1335				de = (struct ext4_dir_entry_2 *)(dir_buf + pos);
-  1336				pos += ext4_rec_len_from_disk(de->rec_len, inline_size);
-  1337				if (ext4_check_dir_entry(inode, dir_file, de,
-  1338						 iloc.bh, dir_buf,
-  1339						 inline_size, pos)) {
-  1340					ret = count;
-  1341					goto out;
-  1342				}
-  1343			}
-  1344	
-  1345			if (ext4_hash_in_dirent(dir)) {
-  1346				hinfo->hash = EXT4_DIRENT_HASH(de);
-  1347				hinfo->minor_hash = EXT4_DIRENT_MINOR_HASH(de);
-  1348			} else {
-  1349				err = ext4fs_dirhash(dir, de->name, de->name_len, hinfo);
-  1350				if (err) {
-  1351					ret = err;
-  1352					goto out;
-  1353				}
-  1354			}
-  1355			if ((hinfo->hash < start_hash) ||
-  1356			    ((hinfo->hash == start_hash) &&
-  1357			     (hinfo->minor_hash < start_minor_hash)))
-  1358				continue;
-  1359			if (de->inode == 0)
-  1360				continue;
-  1361			tmp_str.name = de->name;
-  1362			tmp_str.len = de->name_len;
-  1363			err = ext4_htree_store_dirent(dir_file, hinfo->hash,
-  1364						      hinfo->minor_hash, de, &tmp_str);
-  1365			if (err) {
-  1366				ret = err;
-  1367				goto out;
-  1368			}
-  1369			count++;
-  1370		}
-  1371		ret = count;
-  1372	out:
-  1373		kfree(dir_buf);
-  1374		brelse(iloc.bh);
-  1375		return ret;
-  1376	}
-  1377	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
