@@ -1,68 +1,68 @@
-Return-Path: <linux-ext4+bounces-7962-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-7961-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F0F3ABB48F
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 07:59:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8CD1ABB48B
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 07:59:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 552E17A569E
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 05:58:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 862F51716E9
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 May 2025 05:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49CF320C030;
-	Mon, 19 May 2025 05:58:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D311FFC5D;
+	Mon, 19 May 2025 05:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mf/ADbis"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lkaGnUkL"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CD12010EE;
-	Mon, 19 May 2025 05:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F191F463E;
+	Mon, 19 May 2025 05:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747634337; cv=none; b=VxPoSknqn8c6Kx4Zfo7AczqZsv/8T1RTklvdpI3Ntl9h2brg10YaJacLbkOnhaXDAg611NFXEcBOQMZeIcyaChpjk9/L1jZdvNs0RMIqo0cu8XfKvAZrqV/sYV1clxU/CztGeYqHcIaK07F8YLLppwaVVoAriEXeTTEKYVgUM+w=
+	t=1747634335; cv=none; b=kQkG5yW5BXpFM3kXDPpksXPxyzxMT+LLpUnW1vmxbd5SCqt1P23k9vBgR+l4wXziUcH7c4mJ0WEya0hmj/uiYsvSfp9/P/x1daoNJHrSojYguE6Mi5uZd09F7xkpEQ5MtzXFzaFEYdffhWV4kWiEP584U9vJNf3ZO/MfWaM+TPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747634337; c=relaxed/simple;
-	bh=3wasfJW/xX5FRh3O7lZ3XUUxGYvh0e3c3h0KW84orOk=;
+	s=arc-20240116; t=1747634335; c=relaxed/simple;
+	bh=Jw6mXfv00dMuD2c25uxnyya946iEO7Hvz29jpU+3oL8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=azZVPTHUHjIkFw4wOEqtyHKat/HEUIA5rhPzI+Nt0tMj1f0ox5xPhsmL2pExRAI3FII67SMEh16pxYBfV+13M3G+RjMd2i1jYm2geBfTGBcM5wWRIYrbZSM7rbqTdqOnwLQfSbqvTRId2xvYWeCwVrfPyZAlzpCAfyWr9oDl02s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mf/ADbis; arc=none smtp.client-ip=198.175.65.14
+	 Content-Type:Content-Disposition:In-Reply-To; b=Enez7zZUYZMC3AElB2fxrWxNtjpbocBjF6UW3fqevu1UgVzOivZyZLZZoeN6h4eKYxrLBxRZYWPKavD9A2eYhrlTnRpR1dGzgAdKg8xAh71k9rd0ye3DhBRgakqEx7MXNH0DmSdYtpvobtwIGZTXbYcCXYUGSwhkOVFdT3JE0/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lkaGnUkL; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747634336; x=1779170336;
+  t=1747634333; x=1779170333;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=3wasfJW/xX5FRh3O7lZ3XUUxGYvh0e3c3h0KW84orOk=;
-  b=mf/ADbisur+or0hhfAl59mPHN+tOIIuMnXLMYrf1vOBpDD9D/G/c/R/E
-   McUYCbySDlHwWU0ZR1AsJGsfvXPFi8+zaeUzIKY4w1ydTkYlKosnzlEJu
-   7H8GmV4qua58ckerB6HqQv4E71CQbumfWc8Cf+6hSHQNA8pBS3lpNX/UO
-   P4ZxNtBPb2J5rO8z8Ixw/oP9aMafsI+XX/Va4WVlAY482pk6sUQyZGl6C
-   qdFwio924rwBTqK96p6C5ckNuGNCWjJxGwDpk9wGW0TS1Gu5IhIu3iGMS
-   DWctMbbwxDk4Us2oy/smRLBAtA+NZbg/DaHLdhOxNdobTN5BG6DA0aIez
-   g==;
-X-CSE-ConnectionGUID: QD+1dBm1RBG3pfaAld0jbA==
-X-CSE-MsgGUID: UR4vXq3SRUmK/Eiw7RWT8Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11437"; a="53336335"
+  bh=Jw6mXfv00dMuD2c25uxnyya946iEO7Hvz29jpU+3oL8=;
+  b=lkaGnUkL6Q/TdJ4CVTBWBFLE9i3ZcKXqPRtIn3QFU8hFitLWiFiE8Brz
+   U/xn/WM79yaJTwwdHyeLNTMncgnM5+NZZtgZSDQ7D1qtcpBfoa8UD7lT6
+   Ueuq2OM/mYYGFEeDBFEEtaYqSJJgS3n+bKSE49oFbUp/qGMNA9FCfmoEG
+   AoF1mfc0LCzfUOhL5dbpPdf+gFA8bwAGxsK4MYz03xExvq2qbNAp5nqTY
+   6aAQm3/4/7ZhbEqd/qU+MCd4oLMOPFgVEADn7fDQkrZr8No/9coGrk81E
+   Cl+zsq5+S/wUHHy7eFmEdFfjT7S0l5CZj5s6EfjzjfRYapSMYAZGVwXK/
+   w==;
+X-CSE-ConnectionGUID: qpSJtAPyQem1KHIuQhOaAQ==
+X-CSE-MsgGUID: TSMTpPgKQbWX2Ilo42cU9A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11437"; a="53336326"
 X-IronPort-AV: E=Sophos;i="6.15,300,1739865600"; 
-   d="scan'208";a="53336335"
+   d="scan'208";a="53336326"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2025 22:58:53 -0700
-X-CSE-ConnectionGUID: +9soHTPkR4iIHLdsbmCuhw==
-X-CSE-MsgGUID: gPgM6GY/QaudTFnlSKFbNg==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2025 22:58:52 -0700
+X-CSE-ConnectionGUID: An3UK/4URmqvVNZz1hw2Yg==
+X-CSE-MsgGUID: kiA2wLPiT0iC3b1BcrBj7w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,300,1739865600"; 
-   d="scan'208";a="139766797"
+   d="scan'208";a="139766798"
 Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
   by fmviesa010.fm.intel.com with ESMTP; 18 May 2025 22:58:49 -0700
 Received: from kbuild by 1992f890471c with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1uGtWR-000LB3-0C;
+	id 1uGtWR-000LB5-0G;
 	Mon, 19 May 2025 05:58:47 +0000
-Date: Mon, 19 May 2025 13:58:02 +0800
+Date: Mon, 19 May 2025 13:58:04 +0800
 From: kernel test robot <lkp@intel.com>
 To: Ethan Carter Edwards <ethan@ethancedwards.com>,
 	Theodore Ts'o <tytso@mit.edu>,
@@ -71,7 +71,7 @@ Cc: oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
 	Ethan Carter Edwards <ethan@ethancedwards.com>
 Subject: Re: [PATCH v2] ext4: replace strcpy() with '.' assignment
-Message-ID: <202505191316.JJMnPobO-lkp@intel.com>
+Message-ID: <202505191321.ZwdQZhut-lkp@intel.com>
 References: <20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -85,32 +85,32 @@ In-Reply-To: <20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com>
 
 Hi Ethan,
 
-kernel test robot noticed the following build errors:
+kernel test robot noticed the following build warnings:
 
-[auto build test ERROR on 5723cc3450bccf7f98f227b9723b5c9f6b3af1c5]
+[auto build test WARNING on 5723cc3450bccf7f98f227b9723b5c9f6b3af1c5]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Ethan-Carter-Edwards/ext4-replace-strcpy-with-assignment/20250519-115601
 base:   5723cc3450bccf7f98f227b9723b5c9f6b3af1c5
 patch link:    https://lore.kernel.org/r/20250518-ext4-strcpy-v2-1-80d316325046%40ethancedwards.com
 patch subject: [PATCH v2] ext4: replace strcpy() with '.' assignment
-config: csky-randconfig-002-20250519 (https://download.01.org/0day-ci/archive/20250519/202505191316.JJMnPobO-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250519/202505191316.JJMnPobO-lkp@intel.com/reproduce)
+config: csky-randconfig-001-20250519 (https://download.01.org/0day-ci/archive/20250519/202505191321.ZwdQZhut-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 10.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250519/202505191321.ZwdQZhut-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202505191316.JJMnPobO-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202505191321.ZwdQZhut-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
    fs/ext4/inline.c: In function 'ext4_inlinedir_to_tree':
->> fs/ext4/inline.c:1317:38: error: assignment to 'char' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
-    1317 |                         fake.name[0] = ".";
-         |                                      ^
-   fs/ext4/inline.c:1327:53: error: assignment to 'char' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
-    1327 |                         fake.name[0] = fake.name[1] = ".";
-         |                                                     ^
+>> fs/ext4/inline.c:1317:17: warning: assignment to 'char' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
+    1317 |    fake.name[0] = ".";
+         |                 ^
+   fs/ext4/inline.c:1327:32: warning: assignment to 'char' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
+    1327 |    fake.name[0] = fake.name[1] = ".";
+         |                                ^
 
 
 vim +1317 fs/ext4/inline.c
