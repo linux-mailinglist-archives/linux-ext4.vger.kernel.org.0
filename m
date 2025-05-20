@@ -1,45 +1,45 @@
-Return-Path: <linux-ext4+bounces-8039-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8040-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08A62ABD88C
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 May 2025 14:53:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 849DEABD8C5
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 May 2025 15:05:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F335F7A57E3
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 May 2025 12:52:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AF13188E356
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 May 2025 13:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F931C8FBA;
-	Tue, 20 May 2025 12:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A294322D4D4;
+	Tue, 20 May 2025 13:05:04 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2267819F135;
-	Tue, 20 May 2025 12:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8335E12F5A5;
+	Tue, 20 May 2025 13:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747745612; cv=none; b=OIcjmBHuIUYTN6gKjFdXE6MDQTH0Lgz9pu8cwI62T1dJ/1PAmKy5ItJnAD+n0RsaJ6j1WWxOFUo86muaRsuWhNCjEZWSl2Iwz3YEIwR+4m8mVqF7BuGBpGARQQGaraZlLwQsKvmqwz9Ub7u6idEny4FU8iFcmxzdPgTKT1f34Q0=
+	t=1747746304; cv=none; b=a+KscoiK2Vaj9bzAks8ZObnYICAejWSegZibTQssG+p2K3IiqbvczSLmiXI1v2VGQVdM6FTmfufLnNrTgTVzw7lNlGFzkOFJKxOMbvOMBn0EIB+fhcxwLVWaYaB9pnsvCbyjJqXCex8eDgbckXORzqHaoML8TeNX3Jwx4IDDlWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747745612; c=relaxed/simple;
-	bh=BSAzjNgFwqBT3dlEfWzgPj4d5DkvOqbJJ/Agsv1uQHM=;
+	s=arc-20240116; t=1747746304; c=relaxed/simple;
+	bh=0muRCv3c3eJ7g6gmyBRD0irSfDgk2oTjiNhBPV+L93Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=utZbM88AObcdv70tFxZSh7sVvWtyZyjz0mOEvr4mnDziWH1sr9l2kMCXQr6cVS+KWVW3Jt4MX5VhbMTkxCd1+2RPA3eJ3Rf4UoGdCFYIzzuVGxaey+YifPXaVqZ7PEMGUoJbagnfWrwHAYs9Ci3g9EvcVecGFP4XDCoNwEk0pgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 In-Reply-To:Content-Type; b=A1yXcsRjtEj7j8q/IWI3gsoMdjIf85pVzB+GXyFiqfNKkA8q/7KzcPR7drSNZtIzUUxVjWBQerMU7PBH6ppSxHfyRsSsRi0mMJ2Iz25qET+j41SXBd4nTwYLUVGf5/sLVpeix8bcDQXS5B5sdBlQhXi48TQXPEGsy3IvMnpdYlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4b1vcT0nC5zKHMfW;
-	Tue, 20 May 2025 20:53:29 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4b1vsC43rdz4f3l26;
+	Tue, 20 May 2025 21:04:31 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 9D75E1A07BB;
-	Tue, 20 May 2025 20:53:27 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 0B61A1A06DC;
+	Tue, 20 May 2025 21:04:58 +0800 (CST)
 Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgBHrGBGeyxorFXpMw--.65335S3;
-	Tue, 20 May 2025 20:53:27 +0800 (CST)
-Message-ID: <25d93183-35ac-4b58-9bd2-2c9179735601@huaweicloud.com>
-Date: Tue, 20 May 2025 20:53:26 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgDXOl_4fSxoiCXqMw--.54580S3;
+	Tue, 20 May 2025 21:04:57 +0800 (CST)
+Message-ID: <a5145aba-1412-488d-9d8d-05a108029327@huaweicloud.com>
+Date: Tue, 20 May 2025 21:04:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -49,128 +49,61 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 5/8] ext4: correct the journal credits calculations of
  allocating blocks
-To: Jan Kara <jack@suse.cz>
+To: Theodore Ts'o <tytso@mit.edu>
 Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, willy@infradead.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, yi.zhang@huawei.com, libaokun1@huawei.com,
- yukuai3@huawei.com, yangerkun@huawei.com
+ linux-kernel@vger.kernel.org, willy@infradead.org, adilger.kernel@dilger.ca,
+ jack@suse.cz, yi.zhang@huawei.com, libaokun1@huawei.com, yukuai3@huawei.com,
+ yangerkun@huawei.com
 References: <20250512063319.3539411-1-yi.zhang@huaweicloud.com>
  <20250512063319.3539411-6-yi.zhang@huaweicloud.com>
- <nhxfuu53wyacsrq7xqgxvgzcggyscu2tbabginahcygvmc45hy@t4fvmyeky33e>
+ <2e127ed8-20a2-4610-8fd8-e2095bde0577@huaweicloud.com>
+ <20250519154800.GD38098@mit.edu>
 Content-Language: en-US
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <nhxfuu53wyacsrq7xqgxvgzcggyscu2tbabginahcygvmc45hy@t4fvmyeky33e>
+In-Reply-To: <20250519154800.GD38098@mit.edu>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBHrGBGeyxorFXpMw--.65335S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFy7Zw13CFy3WF45XFyrZwb_yoW5Zr15pF
-	n7AF4rJF48Xw1UurWIqa1jvr48Wa18GF47uF43Jr45XF98Aa4fGrn0va4rCFy5tr4fAw1q
-	vF4Fk347G3W3JFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUb
-	mii3UUUUU==
+X-CM-TRANSID:gCh0CgDXOl_4fSxoiCXqMw--.54580S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7JryUJrWrurWxZF4rurW8tFb_yoWDtFb_ZF
+	48ArZ2vFyUGF1xGanFkrs7CFs2vayfG345Gry8W34UKw1rAF4kGanYkr9xZrnxGFyrJr98
+	uFn0qr1aq3W2vjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOB
+	MKDUUUU
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2025/5/20 4:24, Jan Kara wrote:
-> On Mon 12-05-25 14:33:16, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
+On 2025/5/19 23:48, Theodore Ts'o wrote:
+> On Mon, May 19, 2025 at 10:48:28AM +0800, Zhang Yi wrote:
 >>
->> The journal credits calculation in ext4_ext_index_trans_blocks() is
->> currently inadequate. It only multiplies the depth of the extents tree
->> and doesn't account for the blocks that may be required for adding the
->> leaf extents themselves.
->>
->> After enabling large folios, we can easily run out of handle credits,
->> triggering a warning in jbd2_journal_dirty_metadata() on filesystems
->> with a 1KB block size. This occurs because we may need more extents when
->> iterating through each large folio in
->> ext4_do_writepages()->mpage_map_and_submit_extent(). Therefore, we
->> should modify ext4_ext_index_trans_blocks() to include a count of the
->> leaf extents in the worst case as well.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> This patch conflicts with Jan's patch e18d4f11d240 ("ext4: fix
+>> calculation of credits for extent tree modification") in
+>> ext4_ext_index_trans_blocks(), the conflict should be resolved when
+>> merging this patch. However, I checked the merged commit of this patch
+>> in your dev branch[1], and the changes in ext4_ext_index_trans_blocks()
+>> seem to be incorrect, which could result in insufficient credit
+>> reservations on 1K block size filesystems.
 > 
-> One comment below
-> 
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index c616a16a9f36..e759941bd262 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -2405,9 +2405,10 @@ int ext4_ext_index_trans_blocks(struct inode *inode, int extents)
->>  	depth = ext_depth(inode);
->>  
->>  	if (extents <= 1)
->> -		index = depth * 2;
->> +		index = depth * 2 + extents;
->>  	else
->> -		index = depth * 3;
->> +		index = depth * 3 +
->> +			DIV_ROUND_UP(extents, ext4_ext_space_block(inode, 0));
->>  
->>  	return index;
->>  }
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index ffbf444b56d4..3e962a760d71 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -5792,18 +5792,16 @@ static int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
->>  	int ret;
->>  
->>  	/*
->> -	 * How many index blocks need to touch to map @lblocks logical blocks
->> -	 * to @pextents physical extents?
->> +	 * How many index and lead blocks need to touch to map @lblocks
->> +	 * logical blocks to @pextents physical extents?
->>  	 */
->>  	idxblocks = ext4_index_trans_blocks(inode, lblocks, pextents);
->>  
->> -	ret = idxblocks;
->> -
->>  	/*
->>  	 * Now let's see how many group bitmaps and group descriptors need
->>  	 * to account
->>  	 */
->> -	groups = idxblocks + pextents;
->> +	groups = idxblocks;
-> 
-> I don't think you can drop 'pextents' from this computation... Yes, you now
-> account possible number of modified extent tree leaf blocks in
-> ext4_index_trans_blocks() but additionally, each extent separately may be
-> allocated from a different group and thus need to update different bitmap
-> and group descriptor block. That is separate from the computation you do in
-> ext4_index_trans_blocks() AFAICT...
+> Thanks so much for noticing the mis-merge!  I've fixed it in my tree,
+> and will be pushing it out shortly.  If you could take a look and make
+> sure that it's correct, that would be great.
 > 
 
-Yes, that's right! Sorry for my mistake. I will fix this.
+The merge in ext4_ext_index_trans_blocks() appears to be correct now.
+However, the issue that Jan pointed out regarding the modification in
+ext4_meta_trans_blocks() is correct, it will also lead to insufficient
+credit reservations on some corner images. I will send out a fix ASAP.
 
-Thanks,
+Best Regards.
 Yi.
-
-> 
->>  	gdpblocks = groups;
->>  	if (groups > ngroups)
->>  		groups = ngroups;
->> @@ -5811,7 +5809,7 @@ static int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
->>  		gdpblocks = EXT4_SB(inode->i_sb)->s_gdb_count;
->>  
->>  	/* bitmaps and block group descriptor blocks */
->> -	ret += groups + gdpblocks;
->> +	ret = idxblocks + groups + gdpblocks;
->>  
->>  	/* Blocks for super block, inode, quota and xattr blocks */
->>  	ret += EXT4_META_TRANS_BLOCKS(inode->i_sb);
->> -- 
->> 2.46.1
->>
 
 
