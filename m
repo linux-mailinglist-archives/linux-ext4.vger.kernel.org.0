@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-8077-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8078-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F196ABFF98
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:35:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B999AABFF99
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:35:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E48853A6BD7
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:34:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B1643A9C0A
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA24A230269;
-	Wed, 21 May 2025 22:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DF64239E9B;
+	Wed, 21 May 2025 22:35:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rntKaX19"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vBwpcRkv"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE83239581
-	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B5423958D
+	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:34:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747866894; cv=none; b=tqkqiaxqpegloyZ5sOAO3+rm8sVQS5bbFw8h/rryWLBT9E5851cZCSot0OEZrjDxGzPUYIXlCX60PLIbqtHdkhSmDI3QbKu/VhrAUtJuEopc7hA73YNY4MquxyUWOuPdkOkNd4P/zJFB/n/FqIpf2CbcR7LtYrRuu1bdl9hg5bg=
+	t=1747866900; cv=none; b=J/FTLWLI30tV8/k2d5JSTXCzoV3zyfLGxY/dpZl5uZRyFV2dE8cSCQLKn5a3txPPfjcraiBWTZC7Qje7YVO1uaz24iFI59ytjkSFWwKLMr1EYTew9vnr3R9Nvvexh0wtbPaxGS99cf478eKj+DTR5mHXMPdKDeaNgBlaSN1FZLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747866894; c=relaxed/simple;
-	bh=8gCLEa5u1uyR1TPZL5Zr3YOiXZzv343U8XFjvPb52hM=;
-	h=Date:Subject:From:To:Cc:Message-ID:MIME-Version:Content-Type; b=HC0BiZC4QxRN2D6si01DOwKu5f/i/WDDefaDUi3arhrVV4Yh6GgDktK5H5VNB39nuYmkqTfl00rHZ4QhZRtju6yODfQRdgMghNwngWXf9LbyaTdTJTM5MggZfkmZPGtcdccEpUU+ZGegbTjKk5H+W5oz5j1k51EXjFFtwWmzsio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rntKaX19; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0655EC4CEE4;
-	Wed, 21 May 2025 22:34:54 +0000 (UTC)
+	s=arc-20240116; t=1747866900; c=relaxed/simple;
+	bh=fUe8zw70F4EXpHMPN+KgQWNCLoAPk3aoL3+NL4awvbs=;
+	h=Date:Subject:From:To:Cc:Message-ID:MIME-Version:Content-Type; b=OyP3nwwlaFTMzi1sx1YhDWIsBbbsBhiBiv3/fVzYjteQ9jYZg18Qj+bPNEKW0ohRLULlG03z4lVd9e0KjjihS+OGzaV8Zprzeuow90jXpyjxVQDyf3H4m1h+DUIKGCE5biXBq1U9FevGT8cHS3zdtK2uPCKcS2fxMQsjfqJcVLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vBwpcRkv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A19ADC4CEE4;
+	Wed, 21 May 2025 22:34:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747866894;
-	bh=8gCLEa5u1uyR1TPZL5Zr3YOiXZzv343U8XFjvPb52hM=;
+	s=k20201202; t=1747866899;
+	bh=fUe8zw70F4EXpHMPN+KgQWNCLoAPk3aoL3+NL4awvbs=;
 	h=Date:Subject:From:To:Cc:From;
-	b=rntKaX19OZqavXb/BSP4oT/ll3qQLIhHvSMOEldMb2v25bqTTv10vbVb3+RU16xd3
-	 n8xDE/oNMi/j/kDhidytAT6P67byD6Yn/omITROWgB4FX5QUoYxm/WHaifZY7zx4va
-	 133JwVy3rgaCwiGw6SBXAyaIAbkaSCxfFKA5VkeB4YU6+AWpAtGSUIBS8ar2JnKq1v
-	 ZFflUScjn0tKbupC1VOCCP6jbTT+lrQpM+J5sSgD2v8OI33gHjMELKBuwkgtUg9Jfi
-	 m8qedBU+HrOQpKDUdJXOcYCNXLpUk8ftOsK+l2sJdd92X7OwbyoJ8pLYMoX93S0aNM
-	 xHhv36dUB294g==
-Date: Wed, 21 May 2025 15:34:53 -0700
-Subject: [PATCHSET 4/6] fuse2fs: use fuseblk mode
+	b=vBwpcRkvC6Xq8vNM9sH/nwvAoPGJ5PdrgspDnhTwVxDzbw3pvaM4u2r+bP89ziRhu
+	 HWAJknFEPR8H36TL2ELJTGY/VyqUTYR0Bm3ES09IW61L69pC1XRfNjYyLMvHx6DI69
+	 Aue9Dr6zsUZCkHoFDdgoWgyh23gUi4J4N4OjhRWH7E3I5D+DObEh+wm4vTQMucokxr
+	 knzC7Qy3gODNWiDQ2o7e7fkg2d6DOTfEmGxDgOXRT9SVKkE7F5Ujn9Txq1TleMzaHG
+	 1KndUivrFlv+eVOk3M1I/9S7bj2dfxzmGD5kRhyIHvJXSJ/Tpvw19LV6miHV4uPsO/
+	 jAsnf9dWphwFw==
+Date: Wed, 21 May 2025 15:34:59 -0700
+Subject: [PATCHSET 5/6] fuse2fs: improve operation tracing
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <174786678650.1385354.14994099236248944550.stgit@frogsfrogsfrogs>
+Message-ID: <174786678990.1385778.5352134289344525189.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,32 +57,11 @@ Content-Transfer-Encoding: 7bit
 
 Hi all,
 
-While I was testing pre-iomap fuse2fs, I noticed a strange behavior of
-fuse2fs.  When the filesystem is unmounted, the VFS mount goes away and
-umount(3) returns before op_destroy is even called in fuse2fs.  As a
-result, a subsequent fstest can try to format/mount the block device
-even though fuse2fs hasn't even finished flushing dirty data to disk
-or closed the block device.
-
-This causes various weird test failures.  More alarmingly, this also
-means that the age old advice that it's safe to yank a USB stick after
-unmount returns is not actually true for fuse2fs.  This can lead to user
-data loss.
-
-There is a solution to this -- fuseblk mode.  In this scheme, fuse2fs
-tells the kernel which block device it wants, the kernel opens the block
-device, and it upcalls FUSE_DESTROY before releasing the block device
-or the in-kernel super_block.  This gives us the desired property that
-when unmount completes, it's safe to remove the device.
-
-Unfortunately, this comes at a price.  Because the kernel insists upon
-opening the fuseblk device in O_EXCL mode, we have to close the
-filesystem before starting up fuse, and reopen it in op_init.  This
-creates a largeish TOCTOU race window and increases mount times.  Worse
-yet, if CONFIG_BLK_DEV_WRITE_MOUNTED=n, then this won't even work.
-
-The last patch also registers fuse2fs as a process involved in memory
-reclamation to prevent memory allocation deadlocks.
+This series improves the ability for developers to trace the activities
+of fuse2fs by adding more debugging printfs and tracing abilities of
+fuse2fs.  It also registers a com_err handler for libext2fs so we can
+capture errors coming out of there, and changes filesystem error
+reporting to tell us the function name instead of just fuse2fs.c.
 
 If you're going to start using this code, I strongly recommend pulling
 from my git trees, which are linked below.
@@ -90,25 +69,18 @@ from my git trees, which are linked below.
 Comments and questions are, as always, welcome.
 
 e2fsprogs git tree:
-https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-use-fuseblk
+https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-tracing
 ---
 Commits in this patchset:
- * fuse2fs: rework FUSE2FS_CHECK_CONTEXT not to rely on global_fs
- * fuse2fs: get rid of the global_fs variable
- * fuse2fs: close filesystem from op_destroy
- * fuse2fs: split filesystem mounting into helper functions
- * fuse2fs: make norecovery behavior consistent with the kernel
- * fuse2fs: check for recorded fs errors before touching things
- * fuse2fs: recheck support after replaying journal
- * fuse2fs: improve error handling behaviors
- * libext2fs: make it possible to extract the fd from an IO manager
- * fuse2fs: use fuseblk mode for mounting filesystems
+ * fuse2fs: register as an IO flusher thread
+ * fuse2fs: hook library error message printing
+ * fuse2fs: log all errors being sent to libfuse
+ * fuse2fs: print the function name in error messages, not the file name
 ---
- lib/ext2fs/ext2_io.h         |    4 
- debian/libext2fs2t64.symbols |    1 
- lib/ext2fs/io_manager.c      |    8 +
- lib/ext2fs/unix_io.c         |   15 +
- misc/fuse2fs.c               |  491 +++++++++++++++++++++++++++++++-----------
- 5 files changed, 387 insertions(+), 132 deletions(-)
+ configure       |   37 +++++++++++++++++++
+ configure.ac    |   19 ++++++++++
+ lib/config.h.in |    3 ++
+ misc/fuse2fs.c  |  109 +++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 4 files changed, 161 insertions(+), 7 deletions(-)
 
 
