@@ -1,52 +1,53 @@
-Return-Path: <linux-ext4+bounces-8131-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8132-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71614AC0007
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:48:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77FFBAC0008
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:48:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B12199E3A52
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:48:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0DBC1BC1B62
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690F82192E3;
-	Wed, 21 May 2025 22:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4522356B4;
+	Wed, 21 May 2025 22:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MJEe9HEo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ujsqQzxp"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A0291EA65
-	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359E31B0F20
+	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747867712; cv=none; b=oBdUbH5ZqdGSq13uKl0TeP9LXJUGYyQdar69P2uFBw696jsDjSWuPoEWGnJh2c2qf67V4be1X/7g2hafB4fVQWxD78oDPGZxyZ3o+hYVEX6br9Wq6MhwiZzAP68oBDsGtOBwqHYFW+apQB11niVHlO62xmKCW2BSoPRGyw5m4LA=
+	t=1747867727; cv=none; b=kSyZ82bQgOCsHq4nRywH48nmilocULMyxXYTqLf5Na4oCfdSK51+zr9KLUsOdt9URgAY4QXn5Sp1X/5H0ji54PnAFGnGru99frhukJQHhGkj/Bu/yxSkGkmbQRXfPmk7c5kd3AWw/85P8CnJ4/YDk2szL4HCZZS5JR47+C8+a5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747867712; c=relaxed/simple;
-	bh=zXEwxfGalJKex3cqNkKEfIKMYsMVnUoJ/rA7PW7A24E=;
+	s=arc-20240116; t=1747867727; c=relaxed/simple;
+	bh=qszYKSY1EamRZD0B+uOyoFVkT0UpGKdbkBQcT63qowk=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XwaZGKrK5b0vmVUn6iyQm9YMSP4TPutNHuLvBAK0vpLfY+bwZbZtvmY4xXyZEX4rKymXdfFJhO+zFQGHguWavg+k/20BFr+wgTEmiHMvTjd0T1ei6q7O7U5DXUuyYxsSiEa1B8SAgntHJ+rNfW8FLYrEb98Kq48yl0WvvkRoNos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MJEe9HEo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 669EBC4CEE4;
-	Wed, 21 May 2025 22:48:31 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jAmXEwI82r6gW31LsHIOIEvK9WSbKIzzXK8BKAQSJX1LtQMODt7bGprOY73DZGI2ROFLRXFbvH2LsqbvLqdFmsLvRpNj6Nirssmjk8mAifpRq7iCi2O/lqVwSDk1/XWQOUWRSVS7EL5Gqk2a+MNGEheMyvA254W1i1phGpQxMho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ujsqQzxp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EB82C4CEE4;
+	Wed, 21 May 2025 22:48:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747867711;
-	bh=zXEwxfGalJKex3cqNkKEfIKMYsMVnUoJ/rA7PW7A24E=;
+	s=k20201202; t=1747867727;
+	bh=qszYKSY1EamRZD0B+uOyoFVkT0UpGKdbkBQcT63qowk=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=MJEe9HEouoC8YLBCDsJMhV/NvNEIKCuHgmn8zNggUFtcmVmZFrEhyToskh82CczW0
-	 pe5VEj+9GGtQ89bHK3B+ff8SDJQr2esD1bAxnI8ijK/LetP0VX6Q3S8kvjGRnz2gcM
-	 6ns0sprQdkECLHa99/ifMv+vOpXHSPPt2aE3XN70gXgBc+rXohBz44eLtD7nT+/MXW
-	 SFZ4rOdXjB1XVvYothBzmeOkqtK2hwnle5HoousIc/3/QRq/kSh4y0Knbasyfj+Y2/
-	 m/PhkZJBVSa9p5HhoaMUoNcL3hjjKncXEPjttIqPSED2Ldt31do/Wx4gIdclHm5TcJ
-	 vXxQi2JbvS0cQ==
-Date: Wed, 21 May 2025 15:48:30 -0700
-Subject: [PATCH 3/4] fuse2fs: log all errors being sent to libfuse
+	b=ujsqQzxpmwV10xOyDTr/hJf7YGabuIPdq7+/73waoJv1F6D72HZQrZ+V2ylFpr+YR
+	 LyOvBLzQ0rDSOxdZhAyFPgH2gQfHiSEfVEuTQ+jZchZQERBgCcfs4UiIJmhOvSJYMf
+	 O7v8mxDSCFwXCAl1C7c1x2y7gG+FieYD0qhuCQ0nd5m2eyBp4gAPp5NrqON5LmkIF1
+	 Pspc6+cEH5rF/fs47AYWJXcE4DxnSKsCsmI7sQL/Z9ZqDlJflwzwIEByVGRlOS4VmP
+	 VcggwMKTm8ifQXIycjSAziqX5vWE5ciZxZkza/aFgYBWUq2Q2ab9CVFDB8J1VHK32q
+	 J5rwNOSTFt5xQ==
+Date: Wed, 21 May 2025 15:48:46 -0700
+Subject: [PATCH 4/4] fuse2fs: print the function name in error messages,
+ not the file name
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <174786679059.1385778.4497680668615630766.stgit@frogsfrogsfrogs>
+Message-ID: <174786679077.1385778.80472067011360869.stgit@frogsfrogsfrogs>
 In-Reply-To: <174786678990.1385778.5352134289344525189.stgit@frogsfrogsfrogs>
 References: <174786678990.1385778.5352134289344525189.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,288 +61,72 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Whenever a filesystem operation is going to return a negative errno to
-libfuse, log the errno if debugging is enabled.
+It would be nice to know which fuse op actually causes failures such as:
+FUSE2FS (sda4): Directory block checksum does not match directory block at ../../misc/fuse2fs.c:819.
+
+The filename is utterly pointless, there's only one for the whole
+daemon.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |   60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+ misc/fuse2fs.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index d78ab5558b6182..fa7618adef48d1 100644
+index fa7618adef48d1..54753c79abeb1d 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -1132,6 +1132,8 @@ static int op_getattr(const char *path, struct stat *statbuf
- 		goto out;
- 	ret = stat_inode(fs, ino, statbuf);
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
+@@ -196,9 +196,9 @@ struct fuse2fs {
+ 	__FUSE2FS_CHECK_CONTEXT((ff), return NULL)
+ 
+ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
+-			     const char *file, int line);
++			     const char *func, int line);
+ #define translate_error(fs, ino, err) __translate_error((fs), (ino), (err), \
+-			__FILE__, __LINE__)
++			__func__, __LINE__)
+ 
+ /* for macosx */
+ #ifndef W_OK
+@@ -5043,7 +5043,7 @@ int main(int argc, char *argv[])
  }
-@@ -1208,6 +1210,8 @@ static int op_readlink(const char *path, char *buf, size_t len)
- 	}
  
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -1448,6 +1452,8 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
- 	if (ret)
- 		goto out2;
- out2:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- out:
- 	free(temp_path);
-@@ -1592,6 +1598,8 @@ static int op_mkdir(const char *path, mode_t mode)
- out3:
- 	ext2fs_free_mem(&block);
- out2:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- out:
- 	free(temp_path);
-@@ -1781,6 +1789,8 @@ static int op_unlink(const char *path)
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	pthread_mutex_lock(&ff->bfl);
- 	ret = __op_unlink(ff, path);
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -1908,6 +1918,8 @@ static int op_rmdir(const char *path)
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	pthread_mutex_lock(&ff->bfl);
- 	ret = __op_rmdir(ff, path);
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -2006,6 +2018,8 @@ static int op_symlink(const char *src, const char *dest)
- 		goto out2;
- 	}
- out2:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- out:
- 	free(temp_path);
-@@ -2278,6 +2292,8 @@ static int op_rename(const char *from, const char *to
- 	free(temp_from);
- 	free(temp_to);
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -2387,6 +2403,8 @@ static int op_link(const char *src, const char *dest)
- 	}
+ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
+-			     const char *file, int line)
++			     const char *func, int line)
+ {
+ 	struct timespec now;
+ 	int ret = err;
+@@ -5158,10 +5158,10 @@ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
  
- out2:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- out:
- 	free(temp_path);
-@@ -2525,6 +2543,8 @@ static int op_chmod(const char *path, mode_t mode
- 	}
- 
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -2598,6 +2618,8 @@ static int op_chown(const char *path, uid_t owner, gid_t group
- 	}
- 
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -2696,6 +2718,8 @@ static int op_truncate(const char *path, off_t len
- 		goto out;
- 
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -2813,6 +2837,8 @@ static int op_open(const char *path, struct fuse_file_info *fp)
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	pthread_mutex_lock(&ff->bfl);
- 	ret = __op_open(ff, path, fp);
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -2870,6 +2896,8 @@ static int op_read(const char *path EXT2FS_ATTR((unused)), char *buf,
- 			goto out;
- 	}
- out:
-+	if (!got && ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return got ? (int) got : ret;
- }
-@@ -2943,6 +2971,8 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
- 		goto out;
- 
- out:
-+	if (!got && ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return got ? (int) got : ret;
- }
-@@ -2973,6 +3003,8 @@ static int op_release(const char *path EXT2FS_ATTR((unused)),
- 	}
- 
- 	fp->fh = 0;
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 
- 	ext2fs_free_mem(&fh);
-@@ -3003,6 +3035,8 @@ static int op_fsync(const char *path EXT2FS_ATTR((unused)),
- 		if (err)
- 			ret = translate_error(fs, fh->ino, err);
- 	}
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 
- 	return ret;
-@@ -3126,6 +3160,8 @@ static int op_getxattr(const char *path, const char *key, char *value,
- 
- 	ext2fs_free_mem(&ptr);
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 
- 	return ret;
-@@ -3224,6 +3260,8 @@ static int op_listxattr(const char *path, char *names, size_t len)
- 	if (err && !ret)
- 		ret = translate_error(fs, ino, err);
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 
- 	return ret;
-@@ -3318,6 +3356,8 @@ static int op_setxattr(const char *path EXT2FS_ATTR((unused)),
- 	if (!ret && err)
- 		ret = translate_error(fs, ino, err);
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 
- 	return ret;
-@@ -3414,6 +3454,8 @@ static int op_removexattr(const char *path, const char *key)
- 	if (err && !ret)
- 		ret = translate_error(fs, ino, err);
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 
- 	return ret;
-@@ -3552,6 +3594,8 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
- 			goto out;
- 	}
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -3580,6 +3624,8 @@ static int op_access(const char *path, int mask)
- 		goto out;
- 
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -3706,6 +3752,8 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
- 	if (ret)
- 		goto out2;
- out2:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- out:
- 	free(temp_path);
-@@ -3761,6 +3809,8 @@ static int op_ftruncate(const char *path EXT2FS_ATTR((unused)),
- 		goto out;
- 
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -3782,6 +3832,8 @@ static int op_fgetattr(const char *path EXT2FS_ATTR((unused)),
- 	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
- 	pthread_mutex_lock(&ff->bfl);
- 	ret = stat_inode(fs, fh->ino, statbuf);
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 
- 	return ret;
-@@ -3856,6 +3908,8 @@ static int op_utimens(const char *path, const struct timespec ctv[2]
- 	}
- 
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -4206,6 +4260,8 @@ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
- 		dbg_printf(ff, "%s: Unknown ioctl %d\n", __func__, cmd);
- 		ret = -ENOTTY;
- 	}
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 
- 	return ret;
-@@ -4239,6 +4295,8 @@ static int op_bmap(const char *path, size_t blocksize EXT2FS_ATTR((unused)),
- 	}
- 
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
- 	return ret;
- }
-@@ -4481,6 +4539,8 @@ static int op_fallocate(const char *path EXT2FS_ATTR((unused)), int mode,
+ 	if (ino)
+ 		err_printf(ff, "%s (inode #%d) at %s:%d.\n",
+-			error_message(err), ino, file, line);
++			error_message(err), ino, func, line);
  	else
- 		ret = fallocate_helper(fp, mode, offset, len);
- out:
-+	if (ret < 0)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", __func__, ret);
- 	pthread_mutex_unlock(&ff->bfl);
+ 		err_printf(ff, "%s at %s:%d.\n",
+-			error_message(err), file, line);
++			error_message(err), func, line);
  
- 	return ret;
+ 	/* Make a note in the error log */
+ 	get_now(&now);
+@@ -5169,14 +5169,14 @@ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
+ 	fs->super->s_last_error_ino = ino;
+ 	fs->super->s_last_error_line = line;
+ 	fs->super->s_last_error_block = err; /* Yeah... */
+-	strncpy((char *)fs->super->s_last_error_func, file,
++	strncpy((char *)fs->super->s_last_error_func, func,
+ 		sizeof(fs->super->s_last_error_func));
+ 	if (ext2fs_get_tstamp(fs->super, s_first_error_time) == 0) {
+ 		ext2fs_set_tstamp(fs->super, s_first_error_time, now.tv_sec);
+ 		fs->super->s_first_error_ino = ino;
+ 		fs->super->s_first_error_line = line;
+ 		fs->super->s_first_error_block = err;
+-		strncpy((char *)fs->super->s_first_error_func, file,
++		strncpy((char *)fs->super->s_first_error_func, func,
+ 			sizeof(fs->super->s_first_error_func));
+ 	}
+ 
 
 
