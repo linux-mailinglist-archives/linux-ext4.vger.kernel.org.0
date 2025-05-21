@@ -1,52 +1,53 @@
-Return-Path: <linux-ext4+bounces-8083-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8084-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFEA6ABFF9E
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:36:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6A43ABFFA1
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:36:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28C551B64B30
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:36:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D3254E363F
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C3A239E62;
-	Wed, 21 May 2025 22:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B20E2239E94;
+	Wed, 21 May 2025 22:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SF5fxwMa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gtIrqP/v"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C6F2B9A9
-	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4317A230269
+	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747866958; cv=none; b=B/V+83T+rUf0emgWw2mqEjyKz+InKGfDxg1qQ3ZfOIXRt4WoqFHRnhRLSvL214Ov4CwU1v0nklc1RlzaD2p9ApiULVKDwuPpkmtwf2OFPHklI9riSDF0UETfdIByLKzKw5QW3mpU72+mVBmk6EKTjJRTeSwpinh2WlWHmFqPeWM=
+	t=1747866974; cv=none; b=KUDU3IXz+msQ6IHLc1k4sBsRq43gnUBD0iq4oC9lar5tSEJRVqynJLSfKQX7Zj6b1iaX9iEKcsUTLsnrqqRDMW9kkEu14tEfLGmq7+AdbJ3l515xMIWxRXg8ECeyKiJYrt+57b0exdNHorNOv0JNIzr9olQ6RxlodBWsz3yXLDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747866958; c=relaxed/simple;
-	bh=HtAAArV+msXlDiXMoRb0PxftoYRHxTySPkUItoj2meE=;
+	s=arc-20240116; t=1747866974; c=relaxed/simple;
+	bh=d14hSDUa0wKXJ/YWNQmPfWCii1oWF3DH03YzNAnJEJw=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eFFzS7x4EKTnd8jhon+JLI+/gKemBThHl0VzYOZ2hMfwnws4Zgvc7jYe46ccMWSIf3xMNnoHqeW0GDufARx2d5v14sMwKvv1RD0cCAUShT8M6uxrgHO7dlab437ahJwzDrXs+nH65tUl83w+GHYIqUziczghslHraz4x/cLox20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SF5fxwMa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00E87C4CEE4;
-	Wed, 21 May 2025 22:35:57 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Nd0SPk7UQ9vSSh5qJbJAPyX3d0/jzqXjDearUaUHcjaew7PnIc6ycKHo1O8PsuUD9z8S8765ngisRFahIqreTWjCJ45/HZkOcQnVX1M/WncqcmuVwnXMiRj0RS0LaZSrLempk53INuCINTvxqlA4m2nRnW2R2nLwdMKM12sRRYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gtIrqP/v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF7D1C4CEEA;
+	Wed, 21 May 2025 22:36:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747866958;
-	bh=HtAAArV+msXlDiXMoRb0PxftoYRHxTySPkUItoj2meE=;
+	s=k20201202; t=1747866973;
+	bh=d14hSDUa0wKXJ/YWNQmPfWCii1oWF3DH03YzNAnJEJw=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=SF5fxwMaa46yfa+p0PQZK82WQRv7tmAGMaQPsMDAY2KUPHzjowzFLsdF1a5sa45PX
-	 VOeZcvZ+R2+C5CJebRN8NKotqvyPvPFxyYFy+2EJoY7ZMI2QTIZ7jxvGuXHXkM+IIm
-	 A6xRdNVhIWTovnoGh7ZpX0AImXK1arDDqgmMEQEhK6IEPXRdbiI4Ik2FSg67Csr3Tl
-	 laErRVIiHxgolssqgO7S5H1t1UW8qdnc476W8j2Jg9e8Dnoj9SgXn0qX+/a3KeWgXm
-	 cHLJkVYSCBFNNU4g11aVOU+cMkNAWnznMCY5yeOjIBg0uKFzU6tNBvNSHoBTUiKbLl
-	 aLrd1BPRpHmfA==
-Date: Wed, 21 May 2025 15:35:57 -0700
-Subject: [PATCH 04/29] fuse2fs: fix cache size parsing
+	b=gtIrqP/vseJq75JC1WTocMJUED9y3IE9EO5Q/H9kd7HyQKKUjjkXzT2C1abx3z9xd
+	 OfhYfKfZGmk4DVLqyJP82JVnuPt/cEjOro2I2bbfRm1DL8XIj3WjFs9SEIes3DnjVJ
+	 l4717c5dEg10v6gkfDEBofMruS7uMdXdYIzngWkCz+NNG6yVcRx004JiJAq4e0ClIN
+	 Kd+mgEJKOgl28MPRTVSKWI33qso0YCBlnVRP9NwytHG3aGu7tDdq1auInJBwFbVizm
+	 kn+U9170De3gXfImR1v1YPG61bU3LrZ5HzrZUqI4vi/GUKHqkdWtA/NC3yxLYktYon
+	 4zTrtVW18iq3w==
+Date: Wed, 21 May 2025 15:36:13 -0700
+Subject: [PATCH 05/29] fuse2fs: compact all the boolean flags in struct
+ fuse2fs
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <174786677621.1383760.4131011398253369305.stgit@frogsfrogsfrogs>
+Message-ID: <174786677639.1383760.16546264802006958473.stgit@frogsfrogsfrogs>
 In-Reply-To: <174786677421.1383760.15289906755026332870.stgit@frogsfrogsfrogs>
 References: <174786677421.1383760.15289906755026332870.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,27 +61,47 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Fix the cache size parsing of "cache_size=%s" -- the "%" is at position
-11, not 12.
+Compact all the booleans into u8 fields.  I'd go further and turn them
+into bitfields but that breaks the fuse argument parsing macros, which
+compute the offset of the structure fields, and gcc won't let us do that
+to bit fields.  Still, 136 -> 112 bytes isn't bad.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ misc/fuse2fs.c |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 8d52e00e3ece48..3e78b6b13fa7bb 100644
+index 3e78b6b13fa7bb..40bb223d50c4fe 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -3809,7 +3809,7 @@ static int fuse2fs_opt_proc(void *data, const char *arg,
- 		}
- 		return 1;
- 	case FUSE2FS_CACHE_SIZE:
--		ff->cache_size = parse_num_blocks2(arg + 12, -1);
-+		ff->cache_size = parse_num_blocks2(arg + 11, -1);
- 		if (ff->cache_size < 1 || ff->cache_size > INT32_MAX) {
- 			fprintf(stderr, "%s: %s\n", arg,
-  _("cache size must be between 1 block and 2GB."));
+@@ -150,16 +150,16 @@ struct fuse2fs {
+ 	pthread_mutex_t bfl;
+ 	char *device;
+ 	char *shortdev;
+-	int ro;
+-	int debug;
+-	int no_default_opts;
+-	int panic_on_error;
+-	int minixdf;
+-	int fakeroot;
+-	int alloc_all_blocks;
+-	int norecovery;
+-	int kernel;
+-	int directio;
++	uint8_t ro;
++	uint8_t debug;
++	uint8_t no_default_opts;
++	uint8_t panic_on_error;
++	uint8_t minixdf;
++	uint8_t fakeroot;
++	uint8_t alloc_all_blocks;
++	uint8_t norecovery;
++	uint8_t kernel;
++	uint8_t directio;
+ 	unsigned long offset;
+ 	unsigned int next_generation;
+ 	unsigned long long cache_size;
 
 
