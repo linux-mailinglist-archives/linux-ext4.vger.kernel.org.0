@@ -1,54 +1,54 @@
-Return-Path: <linux-ext4+bounces-8128-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8129-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A850AC0002
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:47:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2392AC0003
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:48:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AE941BC154B
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:48:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04D223A6DC8
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DB322B8B6;
-	Wed, 21 May 2025 22:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A772192E3;
+	Wed, 21 May 2025 22:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="swVpKmIe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NbDKATUu"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20A61EA65
-	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA021EA65
+	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747867664; cv=none; b=qNFmhw/k7WuBvPxnIUpNNTC9XavgVmXdoJhdUCLeSVmW/fOEc6U5Xi3ODvkc6LDQcr2fSngHspyv5GV8b2hhGNkAJfq1rRrcRNfsDz/gVV4QyCGIe2v4YGLaRco/fooe57zJUXKBOHwpfIqE6EOVljRuGCNNOOL++MZsTTu4TIc=
+	t=1747867680; cv=none; b=X7v2sHkApX6q4HKt+aK+tYiYhzG+7//yNiuoUS676f91O5D51p6NjwXx8jVVWqRA0RMrWZO0ZXqY001dIKj78lChrfgtNcvUQ2zFKIY+JialfIn8gdSvbHlhRsMX6fpjFvHv/H+AczcT/IVX0i3hUjGASBN2ksgrU5vixTyovdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747867664; c=relaxed/simple;
-	bh=A4cZK6Iw9WR3OYTGltfi2J19vQGIsLUyK/I4d/7MEtA=;
+	s=arc-20240116; t=1747867680; c=relaxed/simple;
+	bh=XWtnuTjCaBIPX6cia6zIaCEQ5m4RVHJgJiG4cDVMjbY=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PPfbuuaUbDsWaKh+LktSEcW2Qc6iOb/u6OkwUtWY8vgmICuBq7IOKjC/wGOQh9IOrUpsM0Tkx/hT8XyUPDl8loURnU+wJFIngux7sx5EO0/ZwsNOJweZFGgsGEG94NyoLZptbH5g+tP0lg+ycXJHjCUoiO899si2elfts+VAxuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=swVpKmIe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70394C4CEE4;
-	Wed, 21 May 2025 22:47:44 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WMtRVltVE6ST/0SyFvmauZwhgxKSXbW/ygYl5/5lmB+LeMqLHuVPhmG6AYCW/7xJD7qf55xLbrUVoEXjuVlpAZcHZW0+tctOqIw9q36nndBA4wLezfD36oAwVzg+GP3Vp4SEaLM7dro9SWl7jQfzKurR6hI8TCOGdhIRxewHoA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NbDKATUu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19DAFC4CEE4;
+	Wed, 21 May 2025 22:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747867664;
-	bh=A4cZK6Iw9WR3OYTGltfi2J19vQGIsLUyK/I4d/7MEtA=;
+	s=k20201202; t=1747867680;
+	bh=XWtnuTjCaBIPX6cia6zIaCEQ5m4RVHJgJiG4cDVMjbY=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=swVpKmIex/O3fdS83rkxVu2mfFnLlW3Isav56xz0Kzok7eZBIVGnw7KujK5baXE9F
-	 y6Di2aehnrv2r7sE7Sqp+Ba36LVC+kpmrfwvC+5urxeGTXBxNZGUhM5zAfBHNv5uGF
-	 /UA5nAVUNvLu1mSLH4XSBV6hS8dYZFp/4ezyeS61jDpMDsi247jUv/Rf+fePBeoUA5
-	 Fs8t87/35aiX3wmCSjI5RLI82eI1v62hCPlcHK4irP4ZYFBthFvmoHfvMFUTBb4Dxb
-	 IY3kraxy69Hz8V1gfDXHxwI2L2Bu2AT05CvomwL/EEZIDnyF8tLpp2xy8g3F4TTb/c
-	 6beox5lRfqSxw==
-Date: Wed, 21 May 2025 15:47:43 -0700
-Subject: [PATCH 10/10] fuse2fs: use fuseblk mode for mounting filesystems
+	b=NbDKATUuIGI6JHq11OXTSXOuTVxgANGhFADk4ls2AI8JNxilSY6WdW9O/JfQkI8C7
+	 YFqAM+oykJC/UQ76GHeVqJ5cOX8Yq8x40AFACRrR0J7tV2jaiSdpl+k0HUHCQWQ/Le
+	 vBcvOeQ9j6uAZvIgBzM+pPimrD8Afi8hHy6Kk6Zzua+jM1em2fKPYz09aTrDc8t8Aj
+	 hkWu1bh6hUx+iET244K/f6yAYg8s7u3+yDby72t5gciICZBEp8f3JBKsbQxxLF2vmQ
+	 K8exbvZZ1CRYyjxAPaLXgApd/r7/p2N5baopHOHhIndA6DJUe52C4/MBfxw14V7nSi
+	 o4PVZoXkmsRXw==
+Date: Wed, 21 May 2025 15:47:59 -0700
+Subject: [PATCH 1/4] fuse2fs: register as an IO flusher thread
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <174786678871.1385354.15276136136470748216.stgit@frogsfrogsfrogs>
-In-Reply-To: <174786678650.1385354.14994099236248944550.stgit@frogsfrogsfrogs>
-References: <174786678650.1385354.14994099236248944550.stgit@frogsfrogsfrogs>
+Message-ID: <174786679023.1385778.14264885297965601500.stgit@frogsfrogsfrogs>
+In-Reply-To: <174786678990.1385778.5352134289344525189.stgit@frogsfrogsfrogs>
+References: <174786678990.1385778.5352134289344525189.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,263 +60,145 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-So this is awkward.  Up until now, fuse2fs has opened the block device
-in exclusive mode so that it can do all the superblock feature parsing
-in main() prior to initiating the fuse connection.
-
-However, in running fstests on fuse2fs, I noticed a weird unmount race
-where the umount() syscall can return before the op_destroy function
-gets called by libfuse.  This is problematic because fstests (and
-probably users too) make a lot of assumptions about the block device
-being openable after umount() completes.  The op_destroy function can
-take some time to flush dirty blocks out of its pagecache, call fsync,
-etc.
-
-I poked around the kernel and libfuse and discovered that the kernel
-fuse driver has two modes: anonymous and block device mode.  In block
-device mode the kernel will send a FUSE_DESTROY command to userspace and
-wait for libfuse to call our op_destroy function.  In anonymous mode,
-the kernel closes the fuse device and completes the unmount, which means
-that libfuse calls op_destroy after the unmount has gone away.
-
-This is the root cause of _scratch_cycle_mount sporadically complaining
-about the block device being in use.  The solution is to use block
-device mode, but this means we have to move the libext2fs initialization
-to op_init and we can no longer be the exclusive owner of the block
-device.
+fuse2fs is involved in the filesystem I/O path and can allocate memory
+while processing I/O requests.  Therefore, we need to register that fact
+with the kernel so that memory allocations done by libext2fs don't start
+a round of filesystem memory reclaim, which could cause more writeout to
+get dumped on fuse2fs.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |  131 ++++++++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 118 insertions(+), 13 deletions(-)
+ configure       |   37 +++++++++++++++++++++++++++++++++++++
+ configure.ac    |   19 +++++++++++++++++++
+ lib/config.h.in |    3 +++
+ misc/fuse2fs.c  |   15 +++++++++++++++
+ 4 files changed, 74 insertions(+)
 
 
-diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 7f9f230f37ed2b..51f703267462b4 100644
---- a/misc/fuse2fs.c
-+++ b/misc/fuse2fs.c
-@@ -164,6 +164,7 @@ struct fuse2fs {
+diff --git a/configure b/configure
+index f9a7aa4e2e864c..dfc6bb4a5daa2e 100755
+--- a/configure
++++ b/configure
+@@ -14551,6 +14551,43 @@ then
+ printf "%s\n" "#define FUSE_USE_VERSION $FUSE_USE_VERSION" >>confdefs.h
  
- 	int blocklog;
- 	unsigned int blockmask;
-+	int retcode;
- 	unsigned long offset;
- 	unsigned int next_generation;
- 	unsigned long long cache_size;
-@@ -715,6 +716,31 @@ static errcode_t open_fs(struct fuse2fs *ff, int libext2_flags)
- 	return 0;
- }
- 
-+static errcode_t fs_on_bdev(struct fuse2fs *ff, int *is_bdev)
+ fi
++
++{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for PR_SET_IO_FLUSHER" >&5
++printf %s "checking for PR_SET_IO_FLUSHER... " >&6; }
++cat confdefs.h - <<_ACEOF >conftest.$ac_ext
++/* end confdefs.h.  */
++
++#define _GNU_SOURCE
++#include <sys/prctl.h>
++
++int
++main (void)
 +{
-+	struct stat statbuf;
-+	ext2_filsys fs = ff->fs;
-+	int fd;
-+	errcode_t err;
-+	int ret;
 +
-+	err = io_channel_fd(fs->io, &fd);
-+	if (err) {
-+		err_printf(ff, "%s\n",
-+			   _("Cannot determine if this is a block device.\n"));
-+		return err;
-+	}
++prctl(PR_SET_IO_FLUSHER, 0, 0, 0, 0);
 +
-+	ret = fstat(fd, &statbuf);
-+	if (ret) {
-+		err_printf(ff, "%s\n", strerror(errno));
-+		return ret;
-+	}
-+
-+	*is_bdev = S_ISBLK(statbuf.st_mode);
-+	return 0;
++  ;
++  return 0;
 +}
 +
- static errcode_t config_fs_cache(struct fuse2fs *ff)
- {
- 	char buf[128];
-@@ -854,9 +880,17 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
- 	ext2_filsys fs;
- 	errcode_t err;
- 
-+	/* Can be null if op_init is given an incorrect fuse2fs */
-+	if (!ff)
-+		return;
- 
- 	FUSE2FS_CHECK_CONTEXT_NORET(ff);
++_ACEOF
++if ac_fn_c_try_link "$LINENO"
++then :
++  have_pr_set_io_flusher=yes
++   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
++printf "%s\n" "yes" >&6; }
++else $as_nop
++  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
++printf "%s\n" "no" >&6; }
++fi
++rm -f core conftest.err conftest.$ac_objext conftest.beam \
++    conftest$ac_exeext conftest.$ac_ext
++if test "$have_pr_set_io_flusher" = yes; then
 +
-+	/* Can be null if opening the filesystem failed */
-+	if (!ff->fs)
-+		return;
- 	fs = ff->fs;
++printf "%s\n" "#define HAVE_PR_SET_IO_FLUSHER 1" >>confdefs.h
 +
- 	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
- 	if (fs->flags & EXT2_FLAG_RW) {
- 		fs->super->s_state |= EXT2_VALID_FS;
-@@ -904,12 +938,12 @@ static void *op_init(struct fuse_conn_info *conn
- {
- 	struct fuse_context *ctxt = fuse_get_context();
- 	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
--	ext2_filsys fs;
-+	ext2_filsys fs = ff->fs;
- 	errcode_t err;
-+	int ret;
++fi
++
+ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for optreset" >&5
+ printf %s "checking for optreset... " >&6; }
+ if test ${ac_cv_have_optreset+y}
+diff --git a/configure.ac b/configure.ac
+index 1f67604036b528..7f28701534a905 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1434,6 +1434,25 @@ then
+ 	AC_DEFINE_UNQUOTED(FUSE_USE_VERSION, $FUSE_USE_VERSION,
+ 		[Define to the version of FUSE to use])
+ fi
++
++dnl
++dnl see if PR_SET_IO_FLUSHER exists
++dnl
++AC_MSG_CHECKING(for PR_SET_IO_FLUSHER)
++AC_LINK_IFELSE(
++[	AC_LANG_PROGRAM([[
++#define _GNU_SOURCE
++#include <sys/prctl.h>
++	]], [[
++prctl(PR_SET_IO_FLUSHER, 0, 0, 0, 0);
++	]])
++], have_pr_set_io_flusher=yes
++   AC_MSG_RESULT(yes),
++   AC_MSG_RESULT(no))
++if test "$have_pr_set_io_flusher" = yes; then
++  AC_DEFINE(HAVE_PR_SET_IO_FLUSHER, 1, [Define to 1 if PR_SET_IO_FLUSHER is present])
++fi
++
+ dnl
+ dnl See if optreset exists
+ dnl
+diff --git a/lib/config.h.in b/lib/config.h.in
+index 819c4331379247..6cd9751baab9d1 100644
+--- a/lib/config.h.in
++++ b/lib/config.h.in
+@@ -70,6 +70,9 @@
+ /* Define to 1 if you have the BSD-style 'qsort_r' function. */
+ #undef HAVE_BSD_QSORT_R
  
- 	FUSE2FS_CHECK_CONTEXT_NULL(ff);
--	fs = ff->fs;
--	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
-+	dbg_printf(ff, "%s: dev=%s\n", __func__, ff->device);
- #ifdef FUSE_CAP_IOCTL_DIR
- 	conn->want |= FUSE_CAP_IOCTL_DIR;
++/* Define to 1 if PR_SET_IO_FLUSHER is present */
++#undef HAVE_PR_SET_IO_FLUSHER
++
+ /* Define to 1 if you have the Mac OS X function
+    CFLocaleCopyPreferredLanguages in the CoreFoundation framework. */
+ #undef HAVE_CFLOCALECOPYPREFERREDLANGUAGES
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index 51f703267462b4..cbe9afd4ba1290 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -17,6 +17,7 @@
+ # include <linux/fs.h>
+ # include <linux/falloc.h>
+ # include <linux/xattr.h>
++# include <sys/prctl.h>
  #endif
-@@ -925,6 +959,46 @@ static void *op_init(struct fuse_conn_info *conn
- 	cfg->use_ino = 1;
- 	cfg->nullpath_ok = 1;
- #endif
-+
+ #include <sys/ioctl.h>
+ #include <unistd.h>
+@@ -4792,6 +4793,20 @@ int main(int argc, char *argv[])
+ 		}
+ 	}
+ 
++#ifdef HAVE_PR_SET_IO_FLUSHER
 +	/*
-+	 * If the ext2_filsys object is null, then we are operating in fuseblk
-+	 * mode and must reopen the filesystem.  If any of these steps fail,
-+	 * tough.
++	 * Register as a filesystem I/O server process so that our memory
++	 * allocations don't cause fs reclaim.
 +	 */
-+	if (!fs) {
-+		err = open_fs(ff, 0);
-+		if (err)
-+			goto mount_fail;
-+		fs = ff->fs;
-+
-+		if (ff->cache_size) {
-+			err = config_fs_cache(ff);
-+			if (err)
-+				goto mount_fail;
-+		}
-+
-+		err = check_fs_supported(ff);
-+		if (err)
-+			goto mount_fail;
-+
-+		if (ext2fs_has_feature_shared_blocks(fs->super)) {
-+			log_printf(ff, "%s\n",
-+ _("shared file blocks, mounting filesystem read-only."));
-+			fs->flags &= ~EXT2_FLAG_RW;
-+		}
-+
-+		if (ff->norecovery) {
-+			ret = check_norecovery(ff);
-+			if (ret)
-+				goto mount_fail;
-+		}
-+
-+		err = mount_fs(ff);
-+		if (err)
-+			goto mount_fail;
++	ret = prctl(PR_SET_IO_FLUSHER, 1, 0, 0, 0);
++	if (ret < 0) {
++		err_printf(&fctx, "%s: %s.\n",
++ _("Could not register as IO flusher thread"),
++				strerror(errno));
++		ret = 0;
 +	}
++#endif
 +
-+	/* Clear the valid flag so that an unclean shutdown forces a fsck */
- 	if (fs->flags & EXT2_FLAG_RW) {
- 		fs->super->s_mnt_count++;
- 		ext2fs_set_tstamp(fs->super, s_mtime, time(NULL));
-@@ -943,7 +1017,13 @@ static void *op_init(struct fuse_conn_info *conn
- 		uuid_unparse(fs->super->s_uuid, uuid);
- 		log_printf(ff, "%s %s.\n", _("mounted filesystem"), uuid);
- 	}
-+out:
- 	return ff;
-+mount_fail:
-+	ff->retcode = 32;
-+	/* Tear down the mount immediately. */
-+	fuse_exit(ctxt->fuse);
-+	goto out;
- }
- 
- static int stat_inode(ext2_filsys fs, ext2_ino_t ino, struct stat *statbuf)
-@@ -4663,6 +4743,8 @@ int main(int argc, char *argv[])
- 	FILE *orig_stderr = stderr;
- 	char *logfile;
- 	char extra_args[BUFSIZ];
-+	unsigned int blksize;
-+	int is_bdev;
- 	int ret = 0;
- 
- 	memset(&fctx, 0, sizeof(fctx));
-@@ -4717,6 +4799,10 @@ int main(int argc, char *argv[])
- 		fctx.alloc_all_blocks = 1;
- 	}
- 
-+	/*
-+	 * ext4 can't do COW of shared blocks, so if the feature is enabled,
-+	 * we must force ro mode.
-+	 */
- 	err = open_fs(&fctx, EXT2_FLAG_EXCLUSIVE);
- 	if (err) {
- 		ret = 32;
-@@ -4725,13 +4811,6 @@ int main(int argc, char *argv[])
- 
- 	if (!fctx.cache_size)
- 		fctx.cache_size = default_cache_size();
--	if (fctx.cache_size) {
--		err = config_fs_cache(&fctx);
--		if (err) {
--			ret = 32;
--			goto out;
--		}
--	}
- 
- 	err = check_fs_supported(&fctx);
- 	if (err) {
-@@ -4754,17 +4833,40 @@ int main(int argc, char *argv[])
- 		goto out;
- 	}
- 
-+	err = fs_on_bdev(&fctx, &is_bdev);
-+	if (err) {
-+		ret = 32;
-+		goto out;
-+	}
-+
-+	blksize = fctx.fs->blocksize;
-+
-+	/*
-+	 * If this is a block device, we want to close the fd, open the fuse
-+	 * driver in fuseblk mode (which will reopen the block device) so that
-+	 * unmount will wait until op_destroy completes.  If this is not a
-+	 * block device, we cannot use fuseblk mode and should leave the
-+	 * filesystem open.
-+	 */
-+	if (is_bdev)
-+		close_fs(&fctx);
-+
- 	/* Initialize generation counter */
- 	get_random_bytes(&fctx.next_generation, sizeof(unsigned int));
- 
- 	/* Set up default fuse parameters */
- 	snprintf(extra_args, BUFSIZ, "-okernel_cache,subtype=%s,"
--		 "fsname=%s,attr_timeout=0" FUSE_PLATFORM_OPTS,
--		 get_subtype(argv[0]),
--		 fctx.device);
-+		 "attr_timeout=0" FUSE_PLATFORM_OPTS,
-+		 get_subtype(argv[0]));
- 	if (fctx.no_default_opts == 0)
- 		fuse_opt_add_arg(&args, extra_args);
- 
-+	if (is_bdev) {
-+		snprintf(extra_args, BUFSIZ, "-ofsname=%s,blkdev,blksize=%u",
-+			 fctx.device, blksize);
-+		fuse_opt_add_arg(&args, extra_args);
-+	}
-+
- 	if (fctx.ro)
- 		fuse_opt_add_arg(&args, "-oro");
- 
-@@ -4824,6 +4926,9 @@ int main(int argc, char *argv[])
- 		ret = 0;
- 		break;
- 	}
-+
-+	/* mount might have failed */
-+	ret |= fctx.retcode;
- out:
- 	if (ret & 1) {
- 		fprintf(orig_stderr, "%s\n",
+ 	/* Will we allow users to allocate every last block? */
+ 	if (getenv("FUSE2FS_ALLOC_ALL_BLOCKS")) {
+ 		log_printf(&fctx, "%s\n",
 
 
