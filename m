@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-8064-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8066-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42088ABF858
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 16:55:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45F65ABF873
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 16:57:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4732950182F
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 14:54:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBEF81BC77F9
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 14:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA3722256D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF4E8222574;
 	Wed, 21 May 2025 14:51:27 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C4E1D63DF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CA61EA7E4
 	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 14:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747839087; cv=none; b=r0tmM959OVizqutpaGXqLgpR3yzRlpsXVqv2jEYS3oSq8mhdeRisKBco3qH2GylfbPhnK9UoVIBlKYzCLIpkO6Wl+YjHT1h4nFhhXKaYAnYFDxj+GVu90q1bTgVYqFY3YMF16H6NCrq+8PTB0c8MEcpal0ITCJGd48pxDFRjRl4=
+	t=1747839087; cv=none; b=lA9txAjgBIc81AIeToa7jjKu50lKU6QL+HjKxZOfzUzbX7Or/byI3u6bj2S8jNIJ3qh75BlF2WQPwRtSMGsQ5AIdJDHCAUoAfAxWiXKH+4ABZtqHD9N5uMvxc9D87bAsergXYk/P0sFwgZl3RYRzl8uLXiTN6KldF20b2XatgTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1747839087; c=relaxed/simple;
-	bh=F3pOxOWdkqv1GuiY4E3o0yBfVb9LcHobehbUc8MZ+sI=;
+	bh=blweNaJPAytyiGIRHWYNVeBXzYsOyzq1c7xrjt3LBTI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GUxDLGRM7Wcd/EwKJX4x1CzzKQoLAtvV+Z5HUU25NZf1P+h6brESo+p7fj3A1ooJHX7I1eJFiqua/chJAxnXyq/aGYU1JW4xQBy3MF949ctW9ZXbi3dotkISK+28mg9EhaCPpqInNocHWzy5UQnIHNiLboP7AAUw8THe9wpgnEU=
+	 MIME-Version:Content-Type; b=ETLYoAFUj/Er70K/LMjz78thOYy9ROvdKpxD50Jn2M0ZaCcS4iuKkq66wiFgKpMLBGGv8YgRQCDJoclbcW3gsOTKo50l9uRtpPYCBPeKOjyUcJXSCjcTcB+hY0PZf4UvYFPO+hXEfgpSkBIxVx8xK3iCge5TW0O0lyPXKHkkuTw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-111-173.bstnma.fios.verizon.net [173.48.111.173])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54LEpD2Y001383
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54LEpDE7001380
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 21 May 2025 10:51:14 -0400
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id ACBB02E00E0; Wed, 21 May 2025 10:51:13 -0400 (EDT)
+	id AF1E22E00E1; Wed, 21 May 2025 10:51:13 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
 To: "Darrick J. Wong" <djwong@kernel.org>
 Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCHSET 1/5] fuse2fs: better logging
-Date: Wed, 21 May 2025 10:51:01 -0400
-Message-ID: <174783906008.866336.17894484897217205439.b4-ty@mit.edu>
+Subject: Re: [PATCHSET 2/5] fuse2fs: prepare for kernel driver replacement
+Date: Wed, 21 May 2025 10:51:02 -0400
+Message-ID: <174783906008.866336.11173738902550116677.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.47.2
-In-Reply-To: <174553064436.1160047.577374015997116030.stgit@frogsfrogsfrogs>
-References: <174553064436.1160047.577374015997116030.stgit@frogsfrogsfrogs>
+In-Reply-To: <174553064664.1160289.1903497308767982357.stgit@frogsfrogsfrogs>
+References: <174553064664.1160289.1903497308767982357.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -56,10 +56,12 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 24 Apr 2025 14:38:29 -0700, Darrick J. Wong wrote:
-> This series improves logging in fuse2fs by prefixing all messages with
-> the name of the driver and the device; and ensures that messages are
-> flusehd immediately.
+On Thu, 24 Apr 2025 14:38:35 -0700, Darrick J. Wong wrote:
+> This series creates a new "kernel" mount option that signals to the
+> fuse2fs driver that it's being used as a containerizable replacement
+> for the kernel driver.  This has the effect of delegating quite a
+> lot of decisionmaking to the kernel, and opening access to users
+> other than whoever's running the fuse2fs server.
 > 
 > If you're going to start using this code, I strongly recommend pulling
 > from my git trees, which are linked below.
@@ -68,16 +70,12 @@ On Thu, 24 Apr 2025 14:38:29 -0700, Darrick J. Wong wrote:
 
 Applied, thanks!
 
-[1/5] fuse2fs: enable runtime debugging
-      commit: c4d34d7a4963c60a2e1e7ab276c6439b6f71ca05
-[2/5] fuse2fs: stop aliasing stderr with ff->err_fp
-      commit: 5cdebf3eebc22cb850e7ba0344379a4918ef4a1a
-[3/5] fuse2fs: use error logging macro for mount errors
-      commit: 348d84817d8f37ba61b4c3c6c044ae9d075cbbbf
-[4/5] fuse2fs: make other logging consistent
-      commit: cbbf78113ae1bbddfe5a97d436b7aba70a30b3d4
-[5/5] fuse2fs: redirect all messages when FUSE2FS_LOGFILE is set
-      commit: 7e651c358bfb52c51bf14b6b660b43100214b387
+[1/3] fuse2fs: add dummy acl/user_xattr mount options
+      commit: 5776fc59fb26ecf7a9d4f4ee4cf139ba52bc27a9
+[2/3] fuse2fs: set fuse subtype via argv[0] if possible
+      commit: 13e365bbfdd97cc086ee9e33cb42f514d8a415ac
+[3/3] fuse2fs: make "ro" behavior consistent with the kernel
+      commit: 3875380971d3b63d08fd97c37dd86bf99e898ac8
 
 Best regards,
 -- 
