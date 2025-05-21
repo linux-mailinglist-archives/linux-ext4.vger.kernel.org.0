@@ -1,53 +1,52 @@
-Return-Path: <linux-ext4+bounces-8127-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8128-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D8BFAC0001
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:47:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A850AC0002
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:47:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3D143A6280
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:47:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AE941BC154B
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A3522B8B6;
-	Wed, 21 May 2025 22:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DB322B8B6;
+	Wed, 21 May 2025 22:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P9SkfLXu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="swVpKmIe"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2A41A23AA
-	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20A61EA65
+	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747867649; cv=none; b=R6Z8OLX4p6ts4iCD4fh+ZAy7CHNhIbwABcIMVhN8O+5ECUSNEQI78ic6InB7/aSG0TVsR3SLDeiPPrsNdIEUXcGaCbs8f0lwo0H76xOBsWY4fzyH1vrmJsrNzv6NK5J6M+TnRUsKc77aW3wsP5iYYu4wGGKTl8CglA3KYi7grPE=
+	t=1747867664; cv=none; b=qNFmhw/k7WuBvPxnIUpNNTC9XavgVmXdoJhdUCLeSVmW/fOEc6U5Xi3ODvkc6LDQcr2fSngHspyv5GV8b2hhGNkAJfq1rRrcRNfsDz/gVV4QyCGIe2v4YGLaRco/fooe57zJUXKBOHwpfIqE6EOVljRuGCNNOOL++MZsTTu4TIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747867649; c=relaxed/simple;
-	bh=hF3eqNgajuzNBzCtM5eC8oNzNw9b8pO6jONIS+b7ny0=;
+	s=arc-20240116; t=1747867664; c=relaxed/simple;
+	bh=A4cZK6Iw9WR3OYTGltfi2J19vQGIsLUyK/I4d/7MEtA=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n4yHr0XWHttpU+6wciGWIdNGnh6q6d51defOa1Ky2JmTsj91MarzQpnTnVRNTEtrjReIaSHiPCPML7QOAxUc3Ve3lz+q1HLF1VFJ45UWW29mMqkw1+0zlWO71/Ki5iAmoPXhHJHQXuHRan8aTWfjIaPM0+u8hIL2swlUZDYP4Yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P9SkfLXu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C511DC4CEEA;
-	Wed, 21 May 2025 22:47:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=PPfbuuaUbDsWaKh+LktSEcW2Qc6iOb/u6OkwUtWY8vgmICuBq7IOKjC/wGOQh9IOrUpsM0Tkx/hT8XyUPDl8loURnU+wJFIngux7sx5EO0/ZwsNOJweZFGgsGEG94NyoLZptbH5g+tP0lg+ycXJHjCUoiO899si2elfts+VAxuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=swVpKmIe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70394C4CEE4;
+	Wed, 21 May 2025 22:47:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747867648;
-	bh=hF3eqNgajuzNBzCtM5eC8oNzNw9b8pO6jONIS+b7ny0=;
+	s=k20201202; t=1747867664;
+	bh=A4cZK6Iw9WR3OYTGltfi2J19vQGIsLUyK/I4d/7MEtA=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=P9SkfLXu63GSnDZZOZk9kw8l9xu2VuRNoqFjiyko1iBwVQ2ZPYrQRzpDgE3iBpB/3
-	 OPctrgMkypH4FnZNpddqySLXYPxPDo/1DRGA5TObwX7wBaDz/rXjdPx5FQskIEhlQR
-	 AYNfVp/WGsFFxMRjx3I4pI+2Wx5Liq4JWv3fA/3jW1zMEw0XCBqiuH97an3gLGxVMx
-	 6wYNdZ9JUIwk8FnuI7BwDrYP12rDjAOCZe01327MjmKyM/a4qJ/cl03YZ7vKy7731u
-	 KYEaW5c9/dsAVdx17RVemuYxPnf81knJD0ojIB7F7vQAGgyYbsBWegB56vUdxHSNKG
-	 cuaM7SsbtyyuQ==
-Date: Wed, 21 May 2025 15:47:28 -0700
-Subject: [PATCH 09/10] libext2fs: make it possible to extract the fd from an
- IO manager
+	b=swVpKmIex/O3fdS83rkxVu2mfFnLlW3Isav56xz0Kzok7eZBIVGnw7KujK5baXE9F
+	 y6Di2aehnrv2r7sE7Sqp+Ba36LVC+kpmrfwvC+5urxeGTXBxNZGUhM5zAfBHNv5uGF
+	 /UA5nAVUNvLu1mSLH4XSBV6hS8dYZFp/4ezyeS61jDpMDsi247jUv/Rf+fePBeoUA5
+	 Fs8t87/35aiX3wmCSjI5RLI82eI1v62hCPlcHK4irP4ZYFBthFvmoHfvMFUTBb4Dxb
+	 IY3kraxy69Hz8V1gfDXHxwI2L2Bu2AT05CvomwL/EEZIDnyF8tLpp2xy8g3F4TTb/c
+	 6beox5lRfqSxw==
+Date: Wed, 21 May 2025 15:47:43 -0700
+Subject: [PATCH 10/10] fuse2fs: use fuseblk mode for mounting filesystems
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <174786678853.1385354.14638126520261794242.stgit@frogsfrogsfrogs>
+Message-ID: <174786678871.1385354.15276136136470748216.stgit@frogsfrogsfrogs>
 In-Reply-To: <174786678650.1385354.14994099236248944550.stgit@frogsfrogsfrogs>
 References: <174786678650.1385354.14994099236248944550.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -61,108 +60,263 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Make it so that we can extract the fd from an open IO manager.  This
-will be used in subsequent patches to register the open block device
-with the fuse iomap kernel driver.
+So this is awkward.  Up until now, fuse2fs has opened the block device
+in exclusive mode so that it can do all the superblock feature parsing
+in main() prior to initiating the fuse connection.
+
+However, in running fstests on fuse2fs, I noticed a weird unmount race
+where the umount() syscall can return before the op_destroy function
+gets called by libfuse.  This is problematic because fstests (and
+probably users too) make a lot of assumptions about the block device
+being openable after umount() completes.  The op_destroy function can
+take some time to flush dirty blocks out of its pagecache, call fsync,
+etc.
+
+I poked around the kernel and libfuse and discovered that the kernel
+fuse driver has two modes: anonymous and block device mode.  In block
+device mode the kernel will send a FUSE_DESTROY command to userspace and
+wait for libfuse to call our op_destroy function.  In anonymous mode,
+the kernel closes the fuse device and completes the unmount, which means
+that libfuse calls op_destroy after the unmount has gone away.
+
+This is the root cause of _scratch_cycle_mount sporadically complaining
+about the block device being in use.  The solution is to use block
+device mode, but this means we have to move the libext2fs initialization
+to op_init and we can no longer be the exclusive owner of the block
+device.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- lib/ext2fs/ext2_io.h         |    4 +++-
- debian/libext2fs2t64.symbols |    1 +
- lib/ext2fs/io_manager.c      |    8 ++++++++
- lib/ext2fs/unix_io.c         |   15 +++++++++++++++
- 4 files changed, 27 insertions(+), 1 deletion(-)
+ misc/fuse2fs.c |  131 ++++++++++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 118 insertions(+), 13 deletions(-)
 
 
-diff --git a/lib/ext2fs/ext2_io.h b/lib/ext2fs/ext2_io.h
-index 39a4e8fcf6b515..78c988374c8808 100644
---- a/lib/ext2fs/ext2_io.h
-+++ b/lib/ext2fs/ext2_io.h
-@@ -102,7 +102,8 @@ struct struct_io_manager {
- 				     unsigned long long count);
- 	errcode_t (*zeroout)(io_channel channel, unsigned long long block,
- 			     unsigned long long count);
--	long	reserved[14];
-+	errcode_t (*get_fd)(io_channel channel, int *fd);
-+	long	reserved[13];
- };
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index 7f9f230f37ed2b..51f703267462b4 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -164,6 +164,7 @@ struct fuse2fs {
  
- #define IO_FLAG_RW		0x0001
-@@ -145,6 +146,7 @@ extern errcode_t io_channel_alloc_buf(io_channel channel,
- extern errcode_t io_channel_cache_readahead(io_channel io,
- 					    unsigned long long block,
- 					    unsigned long long count);
-+extern errcode_t io_channel_fd(io_channel io, int *fd);
- 
- #ifdef _WIN32
- /* windows_io.c */
-diff --git a/debian/libext2fs2t64.symbols b/debian/libext2fs2t64.symbols
-index fc1e16ff1e086c..9cf3b33ca15f91 100644
---- a/debian/libext2fs2t64.symbols
-+++ b/debian/libext2fs2t64.symbols
-@@ -688,6 +688,7 @@ libext2fs.so.2 libext2fs2t64 #MINVER#
-  io_channel_alloc_buf@Base 1.42.3
-  io_channel_cache_readahead@Base 1.43
-  io_channel_discard@Base 1.42
-+ io_channel_fd@Base 1.47.3
-  io_channel_read_blk64@Base 1.41.1
-  io_channel_set_options@Base 1.37
-  io_channel_write_blk64@Base 1.41.1
-diff --git a/lib/ext2fs/io_manager.c b/lib/ext2fs/io_manager.c
-index dca6af09996b70..1bab069de63e12 100644
---- a/lib/ext2fs/io_manager.c
-+++ b/lib/ext2fs/io_manager.c
-@@ -150,3 +150,11 @@ errcode_t io_channel_cache_readahead(io_channel io, unsigned long long block,
- 
- 	return io->manager->cache_readahead(io, block, count);
+ 	int blocklog;
+ 	unsigned int blockmask;
++	int retcode;
+ 	unsigned long offset;
+ 	unsigned int next_generation;
+ 	unsigned long long cache_size;
+@@ -715,6 +716,31 @@ static errcode_t open_fs(struct fuse2fs *ff, int libext2_flags)
+ 	return 0;
  }
-+
-+errcode_t io_channel_fd(io_channel io, int *fd)
+ 
++static errcode_t fs_on_bdev(struct fuse2fs *ff, int *is_bdev)
 +{
-+	if (!io->manager->get_fd)
-+		return EXT2_ET_OP_NOT_SUPPORTED;
++	struct stat statbuf;
++	ext2_filsys fs = ff->fs;
++	int fd;
++	errcode_t err;
++	int ret;
 +
-+	return io->manager->get_fd(io, fd);
-+}
-diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
-index be70fee38890c8..ede75cf8ee3681 100644
---- a/lib/ext2fs/unix_io.c
-+++ b/lib/ext2fs/unix_io.c
-@@ -1652,6 +1652,19 @@ static errcode_t unix_zeroout(io_channel channel, unsigned long long block,
- unimplemented:
- 	return EXT2_ET_UNIMPLEMENTED;
- }
++	err = io_channel_fd(fs->io, &fd);
++	if (err) {
++		err_printf(ff, "%s\n",
++			   _("Cannot determine if this is a block device.\n"));
++		return err;
++	}
 +
-+static errcode_t unix_get_fd(io_channel channel, int *fd)
-+{
-+	struct unix_private_data *data;
++	ret = fstat(fd, &statbuf);
++	if (ret) {
++		err_printf(ff, "%s\n", strerror(errno));
++		return ret;
++	}
 +
-+	EXT2_CHECK_MAGIC(channel, EXT2_ET_MAGIC_IO_CHANNEL);
-+	data = (struct unix_private_data *) channel->private_data;
-+	EXT2_CHECK_MAGIC(data, EXT2_ET_MAGIC_UNIX_IO_CHANNEL);
-+
-+	*fd = data->dev;
++	*is_bdev = S_ISBLK(statbuf.st_mode);
 +	return 0;
 +}
 +
- #if __GNUC_PREREQ (4, 6)
- #pragma GCC diagnostic pop
+ static errcode_t config_fs_cache(struct fuse2fs *ff)
+ {
+ 	char buf[128];
+@@ -854,9 +880,17 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
+ 	ext2_filsys fs;
+ 	errcode_t err;
+ 
++	/* Can be null if op_init is given an incorrect fuse2fs */
++	if (!ff)
++		return;
+ 
+ 	FUSE2FS_CHECK_CONTEXT_NORET(ff);
++
++	/* Can be null if opening the filesystem failed */
++	if (!ff->fs)
++		return;
+ 	fs = ff->fs;
++
+ 	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
+ 	if (fs->flags & EXT2_FLAG_RW) {
+ 		fs->super->s_state |= EXT2_VALID_FS;
+@@ -904,12 +938,12 @@ static void *op_init(struct fuse_conn_info *conn
+ {
+ 	struct fuse_context *ctxt = fuse_get_context();
+ 	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+-	ext2_filsys fs;
++	ext2_filsys fs = ff->fs;
+ 	errcode_t err;
++	int ret;
+ 
+ 	FUSE2FS_CHECK_CONTEXT_NULL(ff);
+-	fs = ff->fs;
+-	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
++	dbg_printf(ff, "%s: dev=%s\n", __func__, ff->device);
+ #ifdef FUSE_CAP_IOCTL_DIR
+ 	conn->want |= FUSE_CAP_IOCTL_DIR;
  #endif
-@@ -1673,6 +1686,7 @@ static struct struct_io_manager struct_unix_manager = {
- 	.discard	= unix_discard,
- 	.cache_readahead	= unix_cache_readahead,
- 	.zeroout	= unix_zeroout,
-+	.get_fd		= unix_get_fd,
- };
+@@ -925,6 +959,46 @@ static void *op_init(struct fuse_conn_info *conn
+ 	cfg->use_ino = 1;
+ 	cfg->nullpath_ok = 1;
+ #endif
++
++	/*
++	 * If the ext2_filsys object is null, then we are operating in fuseblk
++	 * mode and must reopen the filesystem.  If any of these steps fail,
++	 * tough.
++	 */
++	if (!fs) {
++		err = open_fs(ff, 0);
++		if (err)
++			goto mount_fail;
++		fs = ff->fs;
++
++		if (ff->cache_size) {
++			err = config_fs_cache(ff);
++			if (err)
++				goto mount_fail;
++		}
++
++		err = check_fs_supported(ff);
++		if (err)
++			goto mount_fail;
++
++		if (ext2fs_has_feature_shared_blocks(fs->super)) {
++			log_printf(ff, "%s\n",
++ _("shared file blocks, mounting filesystem read-only."));
++			fs->flags &= ~EXT2_FLAG_RW;
++		}
++
++		if (ff->norecovery) {
++			ret = check_norecovery(ff);
++			if (ret)
++				goto mount_fail;
++		}
++
++		err = mount_fs(ff);
++		if (err)
++			goto mount_fail;
++	}
++
++	/* Clear the valid flag so that an unclean shutdown forces a fsck */
+ 	if (fs->flags & EXT2_FLAG_RW) {
+ 		fs->super->s_mnt_count++;
+ 		ext2fs_set_tstamp(fs->super, s_mtime, time(NULL));
+@@ -943,7 +1017,13 @@ static void *op_init(struct fuse_conn_info *conn
+ 		uuid_unparse(fs->super->s_uuid, uuid);
+ 		log_printf(ff, "%s %s.\n", _("mounted filesystem"), uuid);
+ 	}
++out:
+ 	return ff;
++mount_fail:
++	ff->retcode = 32;
++	/* Tear down the mount immediately. */
++	fuse_exit(ctxt->fuse);
++	goto out;
+ }
  
- io_manager unix_io_manager = &struct_unix_manager;
-@@ -1694,6 +1708,7 @@ static struct struct_io_manager struct_unixfd_manager = {
- 	.discard	= unix_discard,
- 	.cache_readahead	= unix_cache_readahead,
- 	.zeroout	= unix_zeroout,
-+	.get_fd		= unix_get_fd,
- };
+ static int stat_inode(ext2_filsys fs, ext2_ino_t ino, struct stat *statbuf)
+@@ -4663,6 +4743,8 @@ int main(int argc, char *argv[])
+ 	FILE *orig_stderr = stderr;
+ 	char *logfile;
+ 	char extra_args[BUFSIZ];
++	unsigned int blksize;
++	int is_bdev;
+ 	int ret = 0;
  
- io_manager unixfd_io_manager = &struct_unixfd_manager;
+ 	memset(&fctx, 0, sizeof(fctx));
+@@ -4717,6 +4799,10 @@ int main(int argc, char *argv[])
+ 		fctx.alloc_all_blocks = 1;
+ 	}
+ 
++	/*
++	 * ext4 can't do COW of shared blocks, so if the feature is enabled,
++	 * we must force ro mode.
++	 */
+ 	err = open_fs(&fctx, EXT2_FLAG_EXCLUSIVE);
+ 	if (err) {
+ 		ret = 32;
+@@ -4725,13 +4811,6 @@ int main(int argc, char *argv[])
+ 
+ 	if (!fctx.cache_size)
+ 		fctx.cache_size = default_cache_size();
+-	if (fctx.cache_size) {
+-		err = config_fs_cache(&fctx);
+-		if (err) {
+-			ret = 32;
+-			goto out;
+-		}
+-	}
+ 
+ 	err = check_fs_supported(&fctx);
+ 	if (err) {
+@@ -4754,17 +4833,40 @@ int main(int argc, char *argv[])
+ 		goto out;
+ 	}
+ 
++	err = fs_on_bdev(&fctx, &is_bdev);
++	if (err) {
++		ret = 32;
++		goto out;
++	}
++
++	blksize = fctx.fs->blocksize;
++
++	/*
++	 * If this is a block device, we want to close the fd, open the fuse
++	 * driver in fuseblk mode (which will reopen the block device) so that
++	 * unmount will wait until op_destroy completes.  If this is not a
++	 * block device, we cannot use fuseblk mode and should leave the
++	 * filesystem open.
++	 */
++	if (is_bdev)
++		close_fs(&fctx);
++
+ 	/* Initialize generation counter */
+ 	get_random_bytes(&fctx.next_generation, sizeof(unsigned int));
+ 
+ 	/* Set up default fuse parameters */
+ 	snprintf(extra_args, BUFSIZ, "-okernel_cache,subtype=%s,"
+-		 "fsname=%s,attr_timeout=0" FUSE_PLATFORM_OPTS,
+-		 get_subtype(argv[0]),
+-		 fctx.device);
++		 "attr_timeout=0" FUSE_PLATFORM_OPTS,
++		 get_subtype(argv[0]));
+ 	if (fctx.no_default_opts == 0)
+ 		fuse_opt_add_arg(&args, extra_args);
+ 
++	if (is_bdev) {
++		snprintf(extra_args, BUFSIZ, "-ofsname=%s,blkdev,blksize=%u",
++			 fctx.device, blksize);
++		fuse_opt_add_arg(&args, extra_args);
++	}
++
+ 	if (fctx.ro)
+ 		fuse_opt_add_arg(&args, "-oro");
+ 
+@@ -4824,6 +4926,9 @@ int main(int argc, char *argv[])
+ 		ret = 0;
+ 		break;
+ 	}
++
++	/* mount might have failed */
++	ret |= fctx.retcode;
+ out:
+ 	if (ret & 1) {
+ 		fprintf(orig_stderr, "%s\n",
 
 
