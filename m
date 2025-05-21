@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-8098-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8099-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C67B1ABFFC1
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:40:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 366B9ABFFC8
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:40:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71DB27A3BD1
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:38:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EF764E4DB7
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 22:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2E8239E85;
-	Wed, 21 May 2025 22:39:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB762239E94;
+	Wed, 21 May 2025 22:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jGM9rgGE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DoFmOnQ0"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27481754B
-	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EBBB239E87
+	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 22:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747867193; cv=none; b=DmANpu0lhbwCO3OsVboadAlbl0MAbCpuVJ4shNkTQ84FBA35rSpZeVr3xLYwpw+rNFIkt7+0V8jNItf1sTZ9HT6Ro5Kjfumu3/3v3qep/snpOgv/5UR1XvybQwH0qCCIYosgJMnIGppBb89EWebufuuqtzFMvvTr0PiltPHol54=
+	t=1747867209; cv=none; b=kmpzgmQAM8Jl2Kv76Ma7c/erEUpYYcSfsEF0hjAbQyfH2fMudW9YyAsqi9mkPPCLhn4LaK+6SUW5Txq2rCS/gZR3owXkKQAUVEbNJeA+AQpVfl1/ZA4p7nRzzorH688VwhDBR7PXgdMBA7ikhHd/SUkL4fB4Bbm69yRfUlTgzEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747867193; c=relaxed/simple;
-	bh=7RhiwsSQLQlxgID6tpuUBDSu0ptj7pAUbRDs8tPwD7c=;
+	s=arc-20240116; t=1747867209; c=relaxed/simple;
+	bh=8T0zCvonvtTLhN3jw2P0WAZMx7Z9y4pgpi7cPlLzZDc=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HdqGFKz9cCHvkFK+ISgXJ7Wphlr0l5EFqdkAtv3u+0lXITlq8YeDUk3yobbqcE0Ez5CTZ4hJLfbaOfg8pBqxfSNuynTZoK86Vc0/7UcBbafppvNrDGQ77pYyLFu6OtMOY/EXQl/ZZ4S/K6EzLt4VOGJ5chIhZx+TTFJmLIyIgeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jGM9rgGE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08BD7C4CEF2;
-	Wed, 21 May 2025 22:39:53 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bo8sYUDfDQqhIH3Q46Mq69lZD/3k58sAseEOewmYuBTqu14vV7bINuUFRIlrgxa+oWZKrJDSYa9fC7c1qfI09Y39aX5tjCVNuaGqjjZ5LV4gG4B4zADS+qSUkeP7lIXErQ2+1opZoOxgKBo7LMfUwIk11rlrbez7QgVKyMmAzkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DoFmOnQ0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4E5EC4CEE4;
+	Wed, 21 May 2025 22:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747867193;
-	bh=7RhiwsSQLQlxgID6tpuUBDSu0ptj7pAUbRDs8tPwD7c=;
+	s=k20201202; t=1747867208;
+	bh=8T0zCvonvtTLhN3jw2P0WAZMx7Z9y4pgpi7cPlLzZDc=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=jGM9rgGEayS8K8lQZmDcSir3iWc9g+ewu8zog+rp9jBDByWt5eHYYqVvplrixoXjh
-	 fKMIjp1YWhIypHgW4mmtqiuJLpJ/3oIFweXZaDreyCWlal00Bu6rTYxm4cv+7GJ6ha
-	 o0sUTuPCYjnfPoNRhAwVhoMGxiUrzpHV6Lo4nywNwi2IV1ax4M6a1cARcz6FQbU0gs
-	 1D9/yw7VftJJqjUyGT7lw/NzLaWkwGsgiGw07NpkWBjzxTd8bFYoDxKA2dlxp/n+02
-	 6Lmnds7MCg67ANtJVq1kT217bYqOEVkYKmnUXnele8okC0XwbpdxeoL1Y9PyOvVW0i
-	 WUMYdoyXXisMg==
-Date: Wed, 21 May 2025 15:39:52 -0700
-Subject: [PATCH 19/29] fuse2fs: check the immutable flag in more places
+	b=DoFmOnQ0607tNSR/29RnSl/CjdwvASSSiBBJq8CWKpRiV4A/QKX9QdHfsp+AQawQS
+	 c9czEgVoPMzsC3wSVWON4/64NBv0cnJY7fiSUikDqmTHxfrpIxeYJ9ixj27VdoFm6i
+	 +OOq61Jkd1wYrXLyl2wDv+HTTHhhNp0YUTejUE9s589+C3jcTEKCN6RwyyuP3L/DDX
+	 aZq5oVi72e4F8yzxlNblM7WGt7htoKdFUo8WfjoMrDSajfEi57iS9Ihabj8f9SeBMF
+	 oQ6NcR9DiDwrbH/dsXa278M/Quuh0iZYPK1kLoqOIEp42FWY09ihn/gdj+APfz2eWn
+	 h6TqTXvuuduFA==
+Date: Wed, 21 May 2025 15:40:08 -0700
+Subject: [PATCH 20/29] fuse2fs: implement O_APPEND correctly
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <174786677887.1383760.16795876049190712906.stgit@frogsfrogsfrogs>
+Message-ID: <174786677905.1383760.14021746902005874478.stgit@frogsfrogsfrogs>
 In-Reply-To: <174786677421.1383760.15289906755026332870.stgit@frogsfrogsfrogs>
 References: <174786677421.1383760.15289906755026332870.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,168 +60,173 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-We need to check the immutable flag in a few more places that try to
-modify files.
+Try to implement append-only files correctly.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |   73 ++++++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 68 insertions(+), 5 deletions(-)
+ misc/fuse2fs.c |   50 +++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 39 insertions(+), 11 deletions(-)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 06d59a3e824e09..8567d2a8801bb6 100644
+index 8567d2a8801bb6..52c24715fbc109 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -507,6 +507,30 @@ static inline int want_check_owner(struct fuse2fs *ff,
+@@ -41,6 +41,7 @@
+ #include <inttypes.h>
+ #include "ext2fs/ext2fs.h"
+ #include "ext2fs/ext2_fs.h"
++#include "ext2fs/ext2fsP.h"
+ #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
+ # define FUSE_PLATFORM_OPTS	""
+ #else
+@@ -507,20 +508,26 @@ static inline int want_check_owner(struct fuse2fs *ff,
  	return !is_superuser(ff, ctxt);
  }
  
-+static int check_iflags_access(struct fuse2fs *ff, ext2_ino_t ino,
-+			       const struct ext2_inode *inode, int mask)
-+{
-+	ext2_filsys fs = ff->fs;
++/* Test for append permission */
++#define A_OK	16
 +
-+	/* no writing to read-only or broken fs */
-+	if ((mask & W_OK) && !fs_writeable(fs))
-+		return -EROFS;
+ static int check_iflags_access(struct fuse2fs *ff, ext2_ino_t ino,
+ 			       const struct ext2_inode *inode, int mask)
+ {
+ 	ext2_filsys fs = ff->fs;
+ 
+-	/* no writing to read-only or broken fs */
+-	if ((mask & W_OK) && !fs_writeable(fs))
++	EXT2FS_BUILD_BUG_ON((A_OK & (R_OK | W_OK | X_OK | F_OK)) != 0);
 +
-+	dbg_printf(ff, "access ino=%d mask=e%s%s%s iflags=0x%x\n",
-+		   ino,
-+		   (mask & R_OK ? "r" : ""),
-+		   (mask & W_OK ? "w" : ""),
-+		   (mask & X_OK ? "x" : ""),
-+		   inode->i_flags);
-+
-+	/* is immutable? */
-+	if ((mask & W_OK) &&
-+	    (inode->i_flags & EXT2_IMMUTABLE_FL))
++	/* no writing or metadata changes to read-only or broken fs */
++	if ((mask & (W_OK | A_OK)) && !fs_writeable(fs))
+ 		return -EROFS;
+ 
+-	dbg_printf(ff, "access ino=%d mask=e%s%s%s iflags=0x%x\n",
++	dbg_printf(ff, "access ino=%d mask=e%s%s%s%s iflags=0x%x\n",
+ 		   ino,
+ 		   (mask & R_OK ? "r" : ""),
+ 		   (mask & W_OK ? "w" : ""),
+ 		   (mask & X_OK ? "x" : ""),
++		   (mask & A_OK ? "a" : ""),
+ 		   inode->i_flags);
+ 
+ 	/* is immutable? */
+@@ -528,6 +535,10 @@ static int check_iflags_access(struct fuse2fs *ff, ext2_ino_t ino,
+ 	    (inode->i_flags & EXT2_IMMUTABLE_FL))
+ 		return -EPERM;
+ 
++	/* is append-only? */
++	if ((inode->i_flags & EXT2_APPEND_FL) && (mask & W_OK) && !(mask & A_OK))
 +		return -EPERM;
 +
-+	return 0;
-+}
-+
- static int check_inum_access(struct fuse2fs *ff, ext2_ino_t ino, int mask)
- {
- 	struct fuse_context *ctxt = fuse_get_context();
-@@ -514,6 +538,7 @@ static int check_inum_access(struct fuse2fs *ff, ext2_ino_t ino, int mask)
- 	struct ext2_inode inode;
- 	mode_t perms;
- 	errcode_t err;
-+	int ret;
+ 	return 0;
+ }
+ 
+@@ -541,7 +552,7 @@ static int check_inum_access(struct fuse2fs *ff, ext2_ino_t ino, int mask)
+ 	int ret;
  
  	/* no writing to read-only or broken fs */
- 	if ((mask & W_OK) && !fs_writeable(fs))
-@@ -537,10 +562,9 @@ static int check_inum_access(struct fuse2fs *ff, ext2_ino_t ino, int mask)
- 	if (mask == 0)
- 		return 0;
+-	if ((mask & W_OK) && !fs_writeable(fs))
++	if ((mask & (W_OK | A_OK)) && !fs_writeable(fs))
+ 		return -EROFS;
  
--	/* is immutable? */
--	if ((mask & W_OK) &&
--	    (inode.i_flags & EXT2_IMMUTABLE_FL))
--		return -EPERM;
-+	ret = check_iflags_access(ff, ino, &inode, mask);
-+	if (ret)
-+		return ret;
+ 	err = ext2fs_read_inode(fs, ino, &inode);
+@@ -549,11 +560,12 @@ static int check_inum_access(struct fuse2fs *ff, ext2_ino_t ino, int mask)
+ 		return translate_error(fs, ino, err);
+ 	perms = inode.i_mode & 0777;
  
- 	/* If kernel is responsible for mode and acl checks, we're done. */
- 	if (ff->kernel)
-@@ -1218,6 +1242,10 @@ static int __op_unlink(struct fuse2fs *ff, const char *path)
- 		goto out;
+-	dbg_printf(ff, "access ino=%d mask=e%s%s%s perms=0%o iflags=0x%x "
++	dbg_printf(ff, "access ino=%d mask=e%s%s%s%s perms=0%o iflags=0x%x "
+ 		   "fuid=%d fgid=%d uid=%d gid=%d\n", ino,
+ 		   (mask & R_OK ? "r" : ""),
+ 		   (mask & W_OK ? "w" : ""),
+ 		   (mask & X_OK ? "x" : ""),
++		   (mask & A_OK ? "a" : ""),
+ 		   perms, inode.i_flags,
+ 		   inode_uid(inode), inode_gid(inode),
+ 		   ctxt->uid, ctxt->gid);
+@@ -898,7 +910,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+ 		goto out2;
  	}
  
-+	ret = check_inum_access(ff, ino, W_OK);
-+	if (ret)
-+		goto out;
-+
- 	ret = unlink_file_by_name(ff, path);
+-	ret = check_inum_access(ff, parent, W_OK);
++	ret = check_inum_access(ff, parent, A_OK | W_OK);
  	if (ret)
- 		goto out;
-@@ -1286,6 +1314,10 @@ static int __op_rmdir(struct fuse2fs *ff, const char *path)
- 	}
- 	dbg_printf(ff, "%s: rmdir path=%s ino=%d\n", __func__, path, child);
+ 		goto out2;
  
-+	ret = check_inum_access(ff, child, W_OK);
-+	if (ret)
-+		goto out;
-+
- 	rds.parent = 0;
- 	rds.empty = 1;
- 
-@@ -1295,6 +1327,16 @@ static int __op_rmdir(struct fuse2fs *ff, const char *path)
- 		goto out;
+@@ -1029,7 +1041,7 @@ static int op_mkdir(const char *path, mode_t mode)
+ 		goto out2;
  	}
  
-+	/* the kernel checks parent permissions before emptiness */
-+	if (rds.parent == 0) {
-+		ret = translate_error(fs, child, EXT2_ET_FILESYSTEM_CORRUPTED);
-+		goto out;
-+	}
-+
-+	ret = check_inum_access(ff, rds.parent, W_OK);
-+	if (ret)
-+		goto out;
-+
- 	if (rds.empty == 0) {
- 		ret = -ENOTEMPTY;
- 		goto out;
-@@ -1530,6 +1572,16 @@ static int op_rename(const char *from, const char *to
- 		goto out;
+-	ret = check_inum_access(ff, parent, W_OK);
++	ret = check_inum_access(ff, parent, A_OK | W_OK);
+ 	if (ret)
+ 		goto out2;
+ 
+@@ -1432,7 +1444,7 @@ static int op_symlink(const char *src, const char *dest)
+ 		goto out2;
  	}
  
-+	ret = check_inum_access(ff, from_ino, W_OK);
-+	if (ret)
-+		goto out;
-+
-+	if (to_ino) {
-+		ret = check_inum_access(ff, to_ino, W_OK);
-+		if (ret)
+-	ret = check_inum_access(ff, parent, W_OK);
++	ret = check_inum_access(ff, parent, A_OK | W_OK);
+ 	if (ret)
+ 		goto out2;
+ 
+@@ -1807,7 +1819,7 @@ static int op_link(const char *src, const char *dest)
+ 		goto out2;
+ 	}
+ 
+-	ret = check_inum_access(ff, parent, W_OK);
++	ret = check_inum_access(ff, parent, A_OK | W_OK);
+ 	if (ret)
+ 		goto out2;
+ 
+@@ -2128,6 +2140,15 @@ static int __op_open(struct fuse2fs *ff, const char *path,
+ 		file->open_flags |= EXT2_FILE_WRITE;
+ 		break;
+ 	}
++	if (fp->flags & O_APPEND) {
++		/* the kernel doesn't allow truncation of an append-only file */
++		if (fp->flags & O_TRUNC) {
++			ret = -EPERM;
 +			goto out;
++		}
++
++		check |= A_OK;
 +	}
-+
- 	temp_to = strdup(to);
- 	if (!temp_to) {
- 		ret = -ENOMEM;
-@@ -1759,7 +1811,6 @@ static int op_link(const char *src, const char *dest)
- 	if (ret)
- 		goto out2;
  
--
- 	err = ext2fs_namei(fs, EXT2_ROOT_INO, EXT2_ROOT_INO, src, &ino);
- 	if (err || ino == 0) {
- 		ret = translate_error(fs, 0, err);
-@@ -1774,6 +1825,10 @@ static int op_link(const char *src, const char *dest)
+ 	detect_linux_executable_open(fp->flags, &check, &file->open_flags);
+ 
+@@ -2938,7 +2959,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
  		goto out2;
  	}
  
-+	ret = check_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
-+	if (ret)
-+		goto out2;
-+
- 	inode.i_links_count++;
- 	ret = update_ctime(fs, ino, &inode);
+-	ret = check_inum_access(ff, parent, W_OK);
++	ret = check_inum_access(ff, parent, A_OK | W_OK);
  	if (ret)
-@@ -1848,6 +1903,10 @@ static int op_chmod(const char *path, mode_t mode
- 		goto out;
- 	}
+ 		goto out2;
  
-+	ret = check_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
-+	if (ret)
-+		goto out;
-+
- 	if (want_check_owner(ff, ctxt) && ctxt->uid != inode_uid(inode)) {
- 		ret = -EPERM;
- 		goto out;
-@@ -1912,6 +1971,10 @@ static int op_chown(const char *path, uid_t owner, gid_t group
- 		goto out;
- 	}
+@@ -3110,6 +3131,7 @@ static int op_utimens(const char *path, const struct timespec ctv[2]
+ 	errcode_t err;
+ 	ext2_ino_t ino;
+ 	struct ext2_inode_large inode;
++	int access = W_OK;
+ 	int ret = 0;
  
-+	ret = check_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
-+	if (ret)
-+		goto out;
-+
- 	/* FUSE seems to feed us ~0 to mean "don't change" */
- 	if (owner != (uid_t) ~0) {
- 		/* Only root gets to change UID. */
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+@@ -3125,7 +3147,13 @@ static int op_utimens(const char *path, const struct timespec ctv[2]
+ 			(long long int)ctv[0].tv_sec, ctv[0].tv_nsec,
+ 			(long long int)ctv[1].tv_sec, ctv[1].tv_nsec);
+ 
+-	ret = check_inum_access(ff, ino, W_OK);
++	/*
++	 * ext4 allows timestamp updates of append-only files but only if we're
++	 * setting to current time
++	 */
++	if (ctv[0].tv_nsec == UTIME_NOW && ctv[1].tv_nsec == UTIME_NOW)
++		access |= A_OK;
++	ret = check_inum_access(ff, ino, access);
+ 	if (ret)
+ 		goto out;
+ 
 
 
