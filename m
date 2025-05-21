@@ -1,89 +1,128 @@
-Return-Path: <linux-ext4+bounces-8062-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8063-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83B40ABF43B
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 14:21:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B7DABF6E6
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 16:01:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 452F61654B9
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 12:21:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AD2916DAC3
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 14:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42C3125F7B5;
-	Wed, 21 May 2025 12:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED98A50276;
+	Wed, 21 May 2025 14:01:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a0tLzMuZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B4E255F2C
-	for <linux-ext4@vger.kernel.org>; Wed, 21 May 2025 12:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F1570830;
+	Wed, 21 May 2025 14:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747830086; cv=none; b=eVxCDE6bgOj0PzY3rjDvfKlzRiR4I9D060BLYuvv09Ms6Zzpt2yY9FXZO+ENZ2NCl5bMUTV1PmYnjX1r5iZHlBrWlJIBplPuvDYE3A61TV4WjUx7pctTdiH1Vk/Szw4SHGWOu8C99UxLvvTnf9VB30buCJEu7b43gaUVn4f2OI8=
+	t=1747836069; cv=none; b=MTwYCUkqI6TEWUulNTnHM2Q1QmWUSJV14yafkWLV3yN06JuDM/WSp5VS72enhsOnI1lOs+HGKkJXDyHksoFYh5MmOz90dKEVwDwppGWu2jm3w6aA9qCIDMiN1tA6tLNhKyVu7yULibA53tazoyDeNXGv/NPcnDzU9kRalAU05j4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747830086; c=relaxed/simple;
-	bh=IX1qKeAq25XLpmkzZID0b8HZlu8q8ZSw2B8uUzvwM3E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bN1DNr3oNya9GWy5x+C7vSooqGblbO6iD7rDcCauZWzp0FKBVtrPEVz3cnWKuI6IJR1wDvybKQbZ8iB6pzVPb6IvVvE5BrCWwVtkcAKeClH/i3uUIvJhlSMzUZjZVHz/6k0ONjvuIUZ03ilClWe4vwojnEzd6g7jozftq5RVMcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-111-173.bstnma.fios.verizon.net [173.48.111.173])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54LCL2hC023859
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 May 2025 08:21:02 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 12E0C2E00DD; Wed, 21 May 2025 08:21:02 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        John Garry <john.g.garry@oracle.com>, djwong@kernel.org,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v1 0/5] ext4: Minor fixes and improvements for atomic write series
-Date: Wed, 21 May 2025 08:20:59 -0400
-Message-ID: <174782999401.679857.10177907153334574333.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <cover.1747677758.git.ritesh.list@gmail.com>
-References: <cover.1747677758.git.ritesh.list@gmail.com>
+	s=arc-20240116; t=1747836069; c=relaxed/simple;
+	bh=ONFUsLHSa7vkUiHilg2/DdNQnH53B+UdBapmF3QMSKQ=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=bpXjmGqSiMrbNPo++aRdLEdMdhK5n7MWY8qnbOePElknGJMfAmu1dRbyrHVdS90g6hrlGqbb5cpb91Qv/0tGrB8vGA5YGg4ARheO8hL+zV8bO3AApighg/5orlWnou3/UBzDKYi7Dutka0wTXB9nAO8xDsqDmcY1IGO1Aev+3Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a0tLzMuZ; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-54b166fa41bso10378267e87.0;
+        Wed, 21 May 2025 07:01:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747836066; x=1748440866; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ONFUsLHSa7vkUiHilg2/DdNQnH53B+UdBapmF3QMSKQ=;
+        b=a0tLzMuZsbyE/+k46F8THn/mzR3N+053i8tm/hmRRENvGvDHz/O6jvGRB87eoWKLLs
+         qRf7kkQ35ab6ScZdmUgXIRzirciUYTfPWFaa+aU9C8Gjr6nvoHnWoWnSBNmrNl3yBUNq
+         IqzQAqSPOWHRAsGkfPv6oMKd+a8Yi4Pxlj4oQIe5k1Ce+6QcQf6WJYx3gFQoA17+6zjR
+         hVf7NnmPJPlqmOYOC/Kq0RKscLxyrygIGvcCdPWNw2aebrHnnNvExtol1r+8iOFL3uO/
+         Ju2yQs1Qd2lnbnj//GJYwZ7xU/q+AsoHsY6mqSFKp/3Ps5BdECGf3SW4ANgrJyRzxX/N
+         CvRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747836066; x=1748440866;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ONFUsLHSa7vkUiHilg2/DdNQnH53B+UdBapmF3QMSKQ=;
+        b=hQf2Qjo2V8KIvx7KPUgeSqki/Q41zt2y21lK7bEj1r4o7rX7uJGWcwDrSf/sogXs1G
+         olmhyjOfdb2z34odtKoyF7AmJlyalFnCCSK7AWqe834sYHnnT/2F8tzox0hEFc/bVPD6
+         4sJU6l4qcja5Qq3YG4qGwO1UZkclR+eo+wdBVHTLx4pNoUYzfm6I82Xo/hXb/utqgLoP
+         d/qZmdBgb0jyVbPBLYJl8Zyu2LJ3YoQzcz2oYpb/MwrQ4qEMUzEBMKYPaabxgBwLFrB0
+         d8hr3AsFogsQj8WJbEVqnqpADnsuDhWFb0H4w8d+Pn6+TZ09u8UAoE7xODOOH7Dyk5wc
+         +I3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXVFZFxXHB2HFp2lbSV0VH4UWNoorms3Dw4KLpusWuymUD7XWduNEYbjNvTTVV8GAQpKdEeqp3lwidI/v0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw6Kx7hu7MUpwSDxS4LZW5PZDkKe94pI4kQ3/wBi7xw8cKisEaK
+	GLt3P6ePLApVbo712ryf786lKZTLHVSYctHjUgs7HkHwVzxGnElWcN5PN77nUGl9CyeBKyduplb
+	7S+Z+/SVO6izVIvuF/SOXGHO+9SD8xA==
+X-Gm-Gg: ASbGncsZNGeIg2MQcYpPYEwMVM0Q3t/V3+/Z3etW+fDxFqa2o9Xm/uPMaY/GaBWXq+w
+	ER1Itj+0w16FO5MQzMajXGT8Yk+52KlOOamsnaUo48UAIT/zJJDXbk3R0lL+VN82xC5+MHsxELg
+	/o/vbAPPUzzr8JhnZqpiZRjwJlVKHsPUuNERPVydfXlHaxzyTDg2M+CA==
+X-Google-Smtp-Source: AGHT+IEErQUumcNlrERVRbwPeQbo8ThcwdLSPgoMWXN/7EPZuI0HoopGUnJGS+ztTTTB0ldhhXIhU/86Feukltp2+jI=
+X-Received: by 2002:a2e:be0f:0:b0:329:14df:5c3b with SMTP id
+ 38308e7fff4ca-32914df5d0amr55710461fa.33.1747836065607; Wed, 21 May 2025
+ 07:01:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+From: John <john.cs.hey@gmail.com>
+Date: Wed, 21 May 2025 22:00:51 +0800
+X-Gm-Features: AX0GCFvrUSYfmVFmYHPWPUqbKUBjeps2254KYsjRGu5U2TziEdJnEhvhO2IgNAA
+Message-ID: <CAP=Rh=P0vsd4FVn+FUWpAM6v72CuD8tX27X9zzr6BhkKNDDjLg@mail.gmail.com>
+Subject: [Bug] "kernel BUG in corrupted" in Linux kernel v6.14
+To: Andreas Dilger <adilger.kernel@dilger.ca>, "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Dear Linux Kernel Maintainers,
 
-On Mon, 19 May 2025 23:49:25 +0530, Ritesh Harjani (IBM) wrote:
-> Some minor fixes and improvements on top of ext4's dev branch [1] for atomic
-> write patch series.
-> 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/log/?h=dev
-> 
-> Patch-1: Is the fix needed after rebase on top of extent status cleanup.
-> Patch-2: warning fix for cocci
-> Patch-{3..5}: Minor improvements / simplifications.
-> 
-> [...]
+I hope this message finds you well.
 
-Applied, thanks!
+I am writing to report a potential vulnerability I encountered during
+testing of the Linux Kernel version v6.14.
 
-[1/5] ext4: Unwritten to written conversion requires EXT4_EX_NOCACHE
-      commit: 3be4bb7e71477c0b9708bd6f1975db0ffc72cce4
-[2/5] ext4: Simplify last in leaf check in ext4_map_query_blocks
-      commit: 797ac3ca24ca1af396e84d16c79c523cfefe1737
-[3/5] ext4: Rename and document EXT4_EX_FILTER to EXT4_EX_QUERY_FILTER
-      commit: 9597376bdb6e5830448ba40aacd3ebd705fe35cc
-[4/5] ext4: Simplify flags in ext4_map_query_blocks()
-      commit: 618320daa9673ce2b6adae5ad6fbf16e878ff6c9
-[5/5] ext4: Add a WARN_ON_ONCE for querying LAST_IN_LEAF instead
-      commit: 7acd1b315cdcc03b11a3aa1f9c9c85d99ddb4f0e
+Git Commit: 38fec10eb60d687e30c8c6b5420d86e8149f7557 (tag: v6.14)
+
+Bug Location: 0010:ext4_do_writepages+0x273d/0x32b0 fs/ext4/inode.c:2619
+
+Bug report: https://pastebin.com/WwMypbdm
+
+Complete log:https://pastebin.com/WvhAuSgQ
+
+Entire kernel config: https://pastebin.com/MRWGr3nv
+
+Root Cause Analysis:
+The crash was caused by a fatal metadata inconsistency in an ext4
+filesystem mounted from loop3.
+The function ext4_mb_generate_buddy() detected a mismatch between the
+block bitmap and group descriptor free cluster count (25 vs.
+150994969), which indicates filesystem corruption.
+This led to a forced kernel BUG() in ext4_do_writepages(), which was
+invoked by the background writeback kernel worker.
+The subsequent attempt to exit via do_exit() triggered another warning
+due to an invalid instruction pointer, suggesting that the kernel
+entered a corrupt execution state.
+This bug is indicative of either a malformed or fuzzed ext4 image, or
+a logic flaw in metadata accounting in ext4=E2=80=99s delayed allocation an=
+d
+writeback path.
+
+At present, I have not yet obtained a minimal reproducer for this
+issue. However, I am actively working on reproducing it, and I will
+promptly share any additional findings or a working reproducer as soon
+as it becomes available.
+
+Thank you very much for your time and attention to this matter. I
+truly appreciate the efforts of the Linux kernel community.
 
 Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+John
 
