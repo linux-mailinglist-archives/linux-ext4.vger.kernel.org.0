@@ -1,211 +1,177 @@
-Return-Path: <linux-ext4+bounces-8173-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8174-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6B0FAC0CAD
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 15:25:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55664AC10F2
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 18:25:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D43FB188BC34
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 13:26:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03F2A16C2C9
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 16:25:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8962128BA9A;
-	Thu, 22 May 2025 13:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652AF237717;
+	Thu, 22 May 2025 16:25:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mTYaxTAW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="de+T5F9l"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E36523C384
-	for <linux-ext4@vger.kernel.org>; Thu, 22 May 2025 13:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A269228C9C;
+	Thu, 22 May 2025 16:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747920351; cv=none; b=RhlObY4O3A3Tw2ZxJEI9mR1ZbvqjbUh7hZGlP/paS2lDUZko8aywiqen5ean+CRQr9qRZVxy1ePFC9ilWOOAb+HGL15gN6u60knWT79yV49NR/GXl+ktnRfK9bSU95FYuQkUOXDA1sdsXiUP1ElbZqaXZ1Gy2bAIK8FT6Gqbtk0=
+	t=1747931116; cv=none; b=IVR4hgWRRYxxF69mRGi0nGOZ70kVwjzpOGRwpg0pi+q3hjD+R0qBPL4UzoqS0MBNgn7+SpQOjjosXAbl1/0Ihti3Uq6H64iIB+KknoRTv9hXz8zRjUqu+V7WhjCyAd+ueRehiguLldHN9tlOO6FfyhvHlEOkBaPURgQrOvzFyXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747920351; c=relaxed/simple;
-	bh=93/nAbTCiy7JQjQFtZJWZHbOCN1FZtzNgnN5l8es9z0=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Qh9AeFwOKDpot/0O5VPW4IXiFGh/nOEozHwUOC3JDqckuGutFE+FWOllyZgnGUx6mP/vgPKRyDhA9X2KSahkT8blZZjnd4ye82vwB1EgCUxA7e2XBh2pHV+QluganHlgRFdBRhR3o/h8OoGBO2lK0LJo3qvO4x5xCOi8BZrC/6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mTYaxTAW; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747920349; x=1779456349;
-  h=date:from:to:cc:subject:message-id;
-  bh=93/nAbTCiy7JQjQFtZJWZHbOCN1FZtzNgnN5l8es9z0=;
-  b=mTYaxTAWM9zkVgSouaZqhEvZT2eLMRA65VJOa8EXfC4Ln3Y0/C7sysCa
-   mLyt+IuJ+Izs9ggik7v5IDdIar5s2LJKmv7OwKWGGc5n79wz070q5evPD
-   iNXHmpwHJ6HPuJtn6cSs7FRffUsuTAi390g93AmoXjYrm7xYH1mhxcwQh
-   7nwfrUox4W350hadexSCdFL3el4eDig+50JQQoUAZ/BGi8LCaFSvm8y6q
-   iQPkNkFU6ERZeXkNFrqhmyI8WQNLKsEGlf2E72WndzqXZrZv3memvhazk
-   aI07hXgpG5KKXpHOjuqMtJwMem9iPp61TmB7oE64MgyVKLdeLvXCnrPc9
-   A==;
-X-CSE-ConnectionGUID: N0ab+GvlTWOQ/ISqle9y8A==
-X-CSE-MsgGUID: n0cWuGGBSVCLByeGSoojyQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11441"; a="49064412"
-X-IronPort-AV: E=Sophos;i="6.15,306,1739865600"; 
-   d="scan'208";a="49064412"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2025 06:25:49 -0700
-X-CSE-ConnectionGUID: IH583mXKQ2mY4FvIXnRxaA==
-X-CSE-MsgGUID: UOVVk5BKR6+7GaljQXSNPA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,306,1739865600"; 
-   d="scan'208";a="141105696"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 22 May 2025 06:25:48 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uI5vd-000PNA-2p;
-	Thu, 22 May 2025 13:25:45 +0000
-Date: Thu, 22 May 2025 21:25:44 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 7acd1b315cdcc03b11a3aa1f9c9c85d99ddb4f0e
-Message-ID: <202505222134.CppZLhXV-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1747931116; c=relaxed/simple;
+	bh=MGMaBPwspjdO+Cw7HVJESQj99jweSE+KzXhdvW8OErU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BrWoAZ+Tq/u3iE4/jpJSVqUzo2psoRynH9u3pEl9ynKl13VCGAkaQRRGfAj5SDjhQ8OwIC42MeT3CG8p5cHw3n/YTrQ8Ejbuben1pmwD+eFy922NirCQD/Y+ckopeZwmXira0T4P0FIsZFtLNF4o7jsuvKk5blVcTdRRzFlPbM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=de+T5F9l; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-551efcb745eso6385597e87.2;
+        Thu, 22 May 2025 09:25:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747931112; x=1748535912; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AScnhgmwXeZrgX8byDb4z77AD0ls8o4kE4xkmsd04fc=;
+        b=de+T5F9l9RR0v6pRswEcDQNexoGAb/NvXum3/eEuFlZ4c7Ed69FcSOGvuPI1D7I0oF
+         mhEXDJKqyCoS8VGkBjhcuXvpuPDHgFlJisDFm7WoEm9pgYGiJP0ai9nFuBw+NzwtnpCa
+         iIKr7WZcdb/MrKlVbhCrElp/LAf1SkuRfkhiOunGqCkgUsq/Suty7MksOPR58J9ji1iE
+         GQGBHrYa3UqkJxkVy4LVphVYhXSOTGBlc66ddKPcO66fdmOkbsRVUKUorYP2QE2cAHXA
+         NCrm+PvReir8anRhKINi3Rmjf7obEh7syxDnW3ch1b/8ysRpZAiV0egjsWHNOYEKoppc
+         VHog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747931112; x=1748535912;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AScnhgmwXeZrgX8byDb4z77AD0ls8o4kE4xkmsd04fc=;
+        b=wsPifReVY/2+sXXmdI0OfJZg4M8fuuS5xl03+f993etcJY0bomt3Cba1Dpq43P0khq
+         OMPda38bQusTdyLkgdE59nsEOUWuAxWyIzK1CD0Jmp2n0XnFraO7hwqjxRB1tB1H1w8N
+         xFnD3Ha3Lc04DeCh+4Q2TnV1pJGfiK48llkoJ4bLd3kn1gaFHijjDagtCf0ojQ9vbRDN
+         49Bz9XCnNpqzOeXsmc7rGdoNOs79xNM/lB0LGiemhve2R9xryWBWlVMd+At+EkeBZnzX
+         10+0GQmCNOldR3WKa+P9UEazQuRRH6ha8S4MtXZ+aZ2QNtGOjPmAV4+17HwDq8n3hNoV
+         /ZwA==
+X-Forwarded-Encrypted: i=1; AJvYcCWUFhiAXDoawfP6YwLWSrFXwgfS6g1oXH5ZicIDHRNR3bpGqqXDhMn+sHOTnJIsN+ch/xJR6AgC19W6@vger.kernel.org
+X-Gm-Message-State: AOJu0YwqmC74weQ96ehRgfAd5rdrd93UVjYOa+GGUIQ18B38kls42abG
+	toscsKxBG9vekFu4T5ThbwmQvZfEagzyxVAU4MMKp3s9drk7Yn+52h5/46+pKyF4XYKIbxvYIU2
+	iKT8K0YDNtCWw6f7aAPktXaijsAZZY1eGzt14XGs=
+X-Gm-Gg: ASbGncvm9I4O9AgKCxagZFLyms3S6wNG8kzIZ1beHyKsTy+HcyJB0JNUGaN83vovHny
+	rcE/ACtErfY8fRGxJr6AtKZTgyUnIPVCBFxC968puluw2oo2XPlhWU9hRsCtg6L1i8gcHJffjuS
+	nBgQJuffJi1aXpTwKM+ovcBI/f7Z339eXp
+X-Google-Smtp-Source: AGHT+IHFA3v2ucsMVwhIJwbtjT8bp8pc/0ysED2W0ZNCz6w1/X6DI6K7+XVj8QLkh+U/lJenj9vJ11Z6HbHWpLn3QrU=
+X-Received: by 2002:a17:907:7f8b:b0:ad5:55db:e411 with SMTP id
+ a640c23a62f3a-ad555dbfdefmr2031800866b.27.1747931101539; Thu, 22 May 2025
+ 09:25:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20250521235837.GB9688@frogsfrogsfrogs>
+In-Reply-To: <20250521235837.GB9688@frogsfrogsfrogs>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 22 May 2025 18:24:50 +0200
+X-Gm-Features: AX0GCFtG0ZvPfxpdlc2X67s2FKyAK5ZAjJR94iM36M5BCfha7x5wkalEQmZ_gf0
+Message-ID: <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
+Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
+ containerize ext4
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net, bernd@bsbernd.com, 
+	miklos@szeredi.hu, joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>, 
+	linux-ext4 <linux-ext4@vger.kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 7acd1b315cdcc03b11a3aa1f9c9c85d99ddb4f0e  ext4: Add a WARN_ON_ONCE for querying LAST_IN_LEAF instead
+On Thu, May 22, 2025 at 1:58=E2=80=AFAM Darrick J. Wong <djwong@kernel.org>=
+ wrote:
+>
+> Hi everyone,
+>
+> DO NOT MERGE THIS.
+>
+> This is the very first request for comments of a prototype to connect
+> the Linux fuse driver to fs-iomap for regular file IO operations to and
+> from files whose contents persist to locally attached storage devices.
+>
+> Why would you want to do that?  Most filesystem drivers are seriously
+> vulnerable to metadata parsing attacks, as syzbot has shown repeatedly
+> over almost a decade of its existence.  Faulty code can lead to total
+> kernel compromise, and I think there's a very strong incentive to move
+> all that parsing out to userspace where we can containerize the fuse
+> server process.
+>
+> willy's folios conversion project (and to a certain degree RH's new
+> mount API) have also demonstrated that treewide changes to the core
+> mm/pagecache/fs code are very very difficult to pull off and take years
+> because you have to understand every filesystem's bespoke use of that
+> core code.  Eeeugh.
+>
+> The fuse command plumbing is very simple -- the ->iomap_begin,
+> ->iomap_end, and iomap ioend calls within iomap are turned into upcalls
+> to the fuse server via a trio of new fuse commands.  This is suitable
+> for very simple filesystems that don't do tricky things with mappings
+> (e.g. FAT/HFS) during writeback.  This isn't quite adequate for ext4,
+> but solving that is for the next sprint.
+>
+> With this overly simplistic RFC, I am to show that it's possible to
+> build a fuse server for a real filesystem (ext4) that runs entirely in
+> userspace yet maintains most of its performance.  At this early stage I
+> get about 95% of the kernel ext4 driver's streaming directio performance
+> on streaming IO, and 110% of its streaming buffered IO performance.
+> Random buffered IO suffers a 90% hit on writes due to unwritten extent
+> conversions.  Random direct IO is about 60% as fast as the kernel; see
+> the cover letter for the fuse2fs iomap changes for more details.
+>
 
-elapsed time: 1455m
+Very cool!
 
-configs tested: 118
-configs skipped: 3
+> There are some major warts remaining:
+>
+> 1. The iomap cookie validation is not present, which can lead to subtle
+> races between pagecache zeroing and writeback on filesystems that
+> support unwritten and delalloc mappings.
+>
+> 2. Mappings ought to be cached in the kernel for more speed.
+>
+> 3. iomap doesn't support things like fscrypt or fsverity, and I haven't
+> yet figured out how inline data is supposed to work.
+>
+> 4. I would like to be able to turn on fuse+iomap on a per-inode basis,
+> which currently isn't possible because the kernel fuse driver will iget
+> inodes prior to calling FUSE_GETATTR to discover the properties of the
+> inode it just read.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Can you make the decision about enabling iomap on lookup?
+The plan for passthrough for inode operations was to allow
+setting up passthough config of inode on lookup.
 
-tested configs:
-alpha                             allnoconfig    gcc-14.2.0
-alpha                            allyesconfig    gcc-14.2.0
-arc                              allmodconfig    gcc-14.2.0
-arc                               allnoconfig    gcc-14.2.0
-arc                              allyesconfig    gcc-14.2.0
-arc                   randconfig-001-20250521    gcc-10.5.0
-arc                   randconfig-002-20250521    gcc-12.4.0
-arm                              allmodconfig    gcc-14.2.0
-arm                               allnoconfig    clang-21
-arm                              allyesconfig    gcc-14.2.0
-arm                            dove_defconfig    gcc-14.2.0
-arm                       multi_v4t_defconfig    clang-16
-arm                   randconfig-001-20250521    clang-21
-arm                   randconfig-002-20250521    clang-21
-arm                   randconfig-003-20250521    clang-16
-arm                   randconfig-004-20250521    clang-21
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-14.2.0
-arm64                 randconfig-001-20250521    gcc-6.5.0
-arm64                 randconfig-002-20250521    gcc-6.5.0
-arm64                 randconfig-003-20250521    gcc-8.5.0
-arm64                 randconfig-004-20250521    gcc-8.5.0
-csky                              allnoconfig    gcc-14.2.0
-csky                  randconfig-001-20250522    gcc-15.1.0
-csky                  randconfig-002-20250522    gcc-15.1.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-21
-hexagon               randconfig-001-20250522    clang-17
-hexagon               randconfig-002-20250522    clang-21
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250521    clang-20
-i386        buildonly-randconfig-002-20250521    clang-20
-i386        buildonly-randconfig-003-20250521    gcc-12
-i386        buildonly-randconfig-004-20250521    clang-20
-i386        buildonly-randconfig-005-20250521    gcc-12
-i386        buildonly-randconfig-006-20250521    gcc-12
-i386                                defconfig    clang-20
-loongarch                        allmodconfig    gcc-14.2.0
-loongarch                         allnoconfig    gcc-14.2.0
-loongarch             randconfig-001-20250522    gcc-15.1.0
-loongarch             randconfig-002-20250522    gcc-15.1.0
-m68k                             allmodconfig    gcc-14.2.0
-m68k                              allnoconfig    gcc-14.2.0
-m68k                             allyesconfig    gcc-14.2.0
-m68k                        m5307c3_defconfig    gcc-14.2.0
-microblaze                       allmodconfig    gcc-14.2.0
-microblaze                        allnoconfig    gcc-14.2.0
-microblaze                       allyesconfig    gcc-14.2.0
-mips                              allnoconfig    gcc-14.2.0
-mips                           gcw0_defconfig    clang-21
-nios2                             allnoconfig    gcc-14.2.0
-nios2                 randconfig-001-20250522    gcc-9.3.0
-nios2                 randconfig-002-20250522    gcc-9.3.0
-openrisc                          allnoconfig    gcc-14.2.0
-openrisc                         allyesconfig    gcc-14.2.0
-parisc                           allmodconfig    gcc-14.2.0
-parisc                            allnoconfig    gcc-14.2.0
-parisc                           allyesconfig    gcc-14.2.0
-parisc                randconfig-001-20250522    gcc-6.5.0
-parisc                randconfig-002-20250522    gcc-12.4.0
-parisc64                         alldefconfig    gcc-15.1.0
-powerpc                          allmodconfig    gcc-14.2.0
-powerpc                           allnoconfig    gcc-14.2.0
-powerpc                        cell_defconfig    gcc-14.2.0
-powerpc                       ebony_defconfig    clang-21
-powerpc                          g5_defconfig    gcc-14.2.0
-powerpc                 linkstation_defconfig    clang-20
-powerpc                   motionpro_defconfig    clang-21
-powerpc               randconfig-001-20250522    gcc-9.3.0
-powerpc               randconfig-002-20250522    clang-21
-powerpc               randconfig-003-20250522    gcc-7.5.0
-powerpc                        warp_defconfig    gcc-14.2.0
-powerpc64             randconfig-001-20250522    clang-21
-powerpc64             randconfig-002-20250522    gcc-10.5.0
-powerpc64             randconfig-003-20250522    gcc-7.5.0
-riscv                             allnoconfig    gcc-14.2.0
-riscv                 randconfig-001-20250522    gcc-9.3.0
-riscv                 randconfig-002-20250522    clang-18
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-21
-s390                             allyesconfig    gcc-14.2.0
-s390                  randconfig-001-20250522    clang-19
-s390                  randconfig-002-20250522    clang-18
-sh                               allmodconfig    gcc-14.2.0
-sh                                allnoconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                        edosk7760_defconfig    gcc-14.2.0
-sh                            hp6xx_defconfig    gcc-14.2.0
-sh                    randconfig-001-20250522    gcc-13.3.0
-sh                    randconfig-002-20250522    gcc-13.3.0
-sh                          urquell_defconfig    gcc-14.2.0
-sparc                            allmodconfig    gcc-14.2.0
-sparc                             allnoconfig    gcc-14.2.0
-sparc                 randconfig-001-20250522    gcc-14.2.0
-sparc                 randconfig-002-20250522    gcc-6.5.0
-sparc64               randconfig-001-20250522    gcc-14.2.0
-sparc64               randconfig-002-20250522    gcc-12.4.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-21
-um                               allyesconfig    gcc-12
-um                    randconfig-001-20250522    gcc-12
-um                    randconfig-002-20250522    gcc-12
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250521    clang-20
-x86_64      buildonly-randconfig-002-20250521    clang-20
-x86_64      buildonly-randconfig-003-20250521    gcc-12
-x86_64      buildonly-randconfig-004-20250521    gcc-12
-x86_64      buildonly-randconfig-005-20250521    clang-20
-x86_64      buildonly-randconfig-006-20250521    clang-20
-x86_64                              defconfig    gcc-11
-x86_64                          rhel-9.4-rust    clang-18
-xtensa                            allnoconfig    gcc-14.2.0
-xtensa                randconfig-001-20250522    gcc-14.2.0
-xtensa                randconfig-002-20250522    gcc-10.5.0
+>
+> 5. ext4 doesn't support out of place writes so I don't know if that
+> actually works correctly.
+>
+> 6. iomap is an inode-based service, not a file-based service.  This
+> means that we /must/ push ext2's inode numbers into the kernel via
+> FUSE_GETATTR so that it can report those same numbers back out through
+> the FUSE_IOMAP_* calls.  However, the fuse kernel uses a separate nodeid
+> to index its incore inode, so we have to pass those too so that
+> notifications work properly.
+>
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Again, I might be missing something, but as long as the fuse filesystem
+is exposing a single backing filesystem, it should be possible to make
+sure (via opt-in) that fuse nodeid's are equivalent to the backing fs
+inode number.
+See sketch in this WIP branch:
+https://github.com/amir73il/linux/commit/210f7a29a51b085ead9f555978c85c9a4a=
+503575
+
+Thanks,
+Amir.
 
