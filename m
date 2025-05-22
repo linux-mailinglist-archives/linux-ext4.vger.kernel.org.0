@@ -1,130 +1,85 @@
-Return-Path: <linux-ext4+bounces-8135-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8136-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97845AC00D8
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 01:58:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13A1AAC00DF
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 02:02:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 596154E5E8A
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 May 2025 23:58:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60BBC1BC3521
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ABFA23D2A2;
-	Wed, 21 May 2025 23:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B87383;
+	Thu, 22 May 2025 00:01:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MmRjjF2Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e6pVpZ2M"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1CFDF58;
-	Wed, 21 May 2025 23:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBD6195
+	for <linux-ext4@vger.kernel.org>; Thu, 22 May 2025 00:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747871918; cv=none; b=sZS9noGY5SOqNaT9/bueJK+BdFUk07MiHUJzEmmspySRnImOt9zlT2UVrtzhew2Z5RTldZikJIl3k1js7clBCumSZ1HAPP45Bp4FVALXwFfyQ7dJ0a9JbRo1kE46cGDm+P9y+RbrCwBNfNgH2wr0D91fci8b/I7RI5u596EpRLA=
+	t=1747872114; cv=none; b=WuUlNIi5FE1c+OsfbMGJEwxDsBLsEbqMhOOKj7ldTxZBU11Lm21fpUGGgWxY9eUbOGXyMfIJQC0Oijt5+f6OEbKjKCr7SnnEYDe11VRk0TMakBts4/s+HRXj0GV+3baH5rD2x+ZsHk38EsaD3Ver20F33YqDc5rWz1vVoNm7QYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747871918; c=relaxed/simple;
-	bh=XxnITmLEgTxgxgky1YBwl8m3pp6pz5NHYObmexV15vc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=mpf3ZGYMiNav/ksaKmj5XYEOAsMfQKgNPdN5H2La81cyVfhX6Pl4GILfuhuup/odJpX8cXdxh5YbxUvg2YzUd/yxh0kZmVKs6OwkdJqCTpf87a5zPUulX/lewTJU+qryM8PzC8LfP/OoKldPQRM5AK8kGnfh8nRqV9hG+HqVkBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MmRjjF2Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BFC8C4CEE4;
-	Wed, 21 May 2025 23:58:38 +0000 (UTC)
+	s=arc-20240116; t=1747872114; c=relaxed/simple;
+	bh=dimLlWzefVw+xFC8Y82/Uv/MG5e2Bal08feGmHhcZFI=;
+	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=j585DKJyOa/ZHDbExLbDtAMtDZh6Wiqn4E9gdOjjNsB/1r4fNpEr8N+3ehfh1confAlpLPDvpfvZSPMqBcq/NuPrhKXL1pWE+LUOHsZBLvszuguleAbXjkg0X4TPlBzCFfAM28uHqYBNga/y01LJwIkmAPE1FrXL/N6rlAoSG+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e6pVpZ2M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26ED1C4CEE4;
+	Thu, 22 May 2025 00:01:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747871918;
-	bh=XxnITmLEgTxgxgky1YBwl8m3pp6pz5NHYObmexV15vc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=MmRjjF2Q0TpLehJi00JUQrnClsvlGwi+kwzU5i9q1jCCokPtFSS838j4Ut12vEOqy
-	 vs025p+xy9hbvZCXEns6tSHJ3//QVQRzpocwGiFRLdvUA6+PvYdJTSjkW42oVRasxQ
-	 8Mnrpjc7vdF+2OOQ94WUr+mMQzihXb4DCatmsD7ta0mIM+8Y8H+KdQvOIG4lqs862d
-	 YyZ3yqIQLUwlriy8ijBRixS+hozsxCcYCruX/vw8NqYOg2swcY9vQA981x00wJ5gsh
-	 HxqXf/vGwCSpsMzWqvJpj8gFm0H76+q6sJOOiMF45ysGJnPjerCcEvn4yAyKCmYkS9
-	 EvRiCWZQaQK/Q==
-Date: Wed, 21 May 2025 16:58:37 -0700
+	s=k20201202; t=1747872114;
+	bh=dimLlWzefVw+xFC8Y82/Uv/MG5e2Bal08feGmHhcZFI=;
+	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
+	b=e6pVpZ2MijOMrc4CrL9xu6OY2ifGVm24nY+07sgzyenaiFZF9h5V/sgxVQQD0QsUe
+	 kSDC6JFC7C2UK6oCR0yoLPBoh4WdVQUimMWZ6X4pS44EJJVeQ7d3EB68mP7eE+9hu9
+	 WyuF+0ARMWw7PsPhLXO0kti7e+wjzQByIA9LYd5CUoumTyYKfcESH4OqrCrGdFafAm
+	 EvlSJXL/upsosHcNFgA40DW+S8wxhMr+YZphQhCNVCgFMznXvV274WR8NH8cE9+Dlk
+	 3M+lZW49uRjCT07Zvmr7cXL/bFjdJR7anDABwsH+iZE2JsFl3VOP47eLhOkqhMZ5W1
+	 oMHfioaBbedfA==
+Date: Wed, 21 May 2025 17:01:53 -0700
+Subject: [PATCHSET 1/3] fuse2fs: upgrade to libfuse 3.17
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc: John@groves.net, bernd@bsbernd.com, miklos@szeredi.hu,
-	joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>,
-	linux-ext4 <linux-ext4@vger.kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>
-Subject: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
- containerize ext4
-Message-ID: <20250521235837.GB9688@frogsfrogsfrogs>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org
+Message-ID: <174787197833.1484400.960875804610238864.stgit@frogsfrogsfrogs>
+In-Reply-To: <20250521235837.GB9688@frogsfrogsfrogs>
+References: <20250521235837.GB9688@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hi everyone,
+Hi all,
 
-DO NOT MERGE THIS.
+In preparation to start hacking on fuse2fs and iomap, upgrade fuse2fs
+library support to 3.17, which is the latest upstream release as of this
+writing.
 
-This is the very first request for comments of a prototype to connect
-the Linux fuse driver to fs-iomap for regular file IO operations to and
-from files whose contents persist to locally attached storage devices.
+If you're going to start using this code, I strongly recommend pulling
+from my git trees, which are linked below.
 
-Why would you want to do that?  Most filesystem drivers are seriously
-vulnerable to metadata parsing attacks, as syzbot has shown repeatedly
-over almost a decade of its existence.  Faulty code can lead to total
-kernel compromise, and I think there's a very strong incentive to move
-all that parsing out to userspace where we can containerize the fuse
-server process.
+Comments and questions are, as always, welcome.
 
-willy's folios conversion project (and to a certain degree RH's new
-mount API) have also demonstrated that treewide changes to the core
-mm/pagecache/fs code are very very difficult to pull off and take years
-because you have to understand every filesystem's bespoke use of that
-core code.  Eeeugh.
+e2fsprogs git tree:
+https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-library-upgrade
+---
+Commits in this patchset:
+ * fuse2fs: bump library version
+ * fuse2fs: wrap the fuse_set_feature_flag helper for older libfuse
+ * fuse2fs: disable nfs exports
+---
+ configure      |    4 ++--
+ configure.ac   |    4 ++--
+ misc/fuse2fs.c |   35 ++++++++++++++++++++++++++++++++---
+ 3 files changed, 36 insertions(+), 7 deletions(-)
 
-The fuse command plumbing is very simple -- the ->iomap_begin,
-->iomap_end, and iomap ioend calls within iomap are turned into upcalls
-to the fuse server via a trio of new fuse commands.  This is suitable
-for very simple filesystems that don't do tricky things with mappings
-(e.g. FAT/HFS) during writeback.  This isn't quite adequate for ext4,
-but solving that is for the next sprint.
-
-With this overly simplistic RFC, I am to show that it's possible to
-build a fuse server for a real filesystem (ext4) that runs entirely in
-userspace yet maintains most of its performance.  At this early stage I
-get about 95% of the kernel ext4 driver's streaming directio performance
-on streaming IO, and 110% of its streaming buffered IO performance.
-Random buffered IO suffers a 90% hit on writes due to unwritten extent
-conversions.  Random direct IO is about 60% as fast as the kernel; see
-the cover letter for the fuse2fs iomap changes for more details.
-
-There are some major warts remaining:
-
-1. The iomap cookie validation is not present, which can lead to subtle
-races between pagecache zeroing and writeback on filesystems that
-support unwritten and delalloc mappings.
-
-2. Mappings ought to be cached in the kernel for more speed.
-
-3. iomap doesn't support things like fscrypt or fsverity, and I haven't
-yet figured out how inline data is supposed to work.
-
-4. I would like to be able to turn on fuse+iomap on a per-inode basis,
-which currently isn't possible because the kernel fuse driver will iget
-inodes prior to calling FUSE_GETATTR to discover the properties of the
-inode it just read.
-
-5. ext4 doesn't support out of place writes so I don't know if that
-actually works correctly.
-
-6. iomap is an inode-based service, not a file-based service.  This
-means that we /must/ push ext2's inode numbers into the kernel via
-FUSE_GETATTR so that it can report those same numbers back out through
-the FUSE_IOMAP_* calls.  However, the fuse kernel uses a separate nodeid
-to index its incore inode, so we have to pass those too so that
-notifications work properly.
-
-I'll work on these in June, but for now here's an unmergeable RFC to
-start some discussion.
-
---Darrick
 
