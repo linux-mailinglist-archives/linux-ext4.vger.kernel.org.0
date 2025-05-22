@@ -1,52 +1,54 @@
-Return-Path: <linux-ext4+bounces-8136-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8137-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A1AAC00DF
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 02:02:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E5B4AC00E0
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 02:02:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60BBC1BC3521
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:02:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EA164E5FA7
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 00:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B87383;
-	Thu, 22 May 2025 00:01:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77638A50;
+	Thu, 22 May 2025 00:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e6pVpZ2M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U6gONtfw"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBD6195
-	for <linux-ext4@vger.kernel.org>; Thu, 22 May 2025 00:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1706418D;
+	Thu, 22 May 2025 00:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747872114; cv=none; b=WuUlNIi5FE1c+OsfbMGJEwxDsBLsEbqMhOOKj7ldTxZBU11Lm21fpUGGgWxY9eUbOGXyMfIJQC0Oijt5+f6OEbKjKCr7SnnEYDe11VRk0TMakBts4/s+HRXj0GV+3baH5rD2x+ZsHk38EsaD3Ver20F33YqDc5rWz1vVoNm7QYI=
+	t=1747872130; cv=none; b=c9oDbtE+CBZwyWlLw6t9MkCDbO2XZtnaveO2xUkyOYSfN0CUC6p7Vc9XRyefXOjXZqN//Tmj4y1IqoewwuoSUal5bqlMr3jzh19UXL5NKPx+kWa/+OJ4FpDXE1MsgBP8A5Kf8nqgy6ok7t9BpDAhnMFBTKq1KIwPJcw6rvVWZtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747872114; c=relaxed/simple;
-	bh=dimLlWzefVw+xFC8Y82/Uv/MG5e2Bal08feGmHhcZFI=;
+	s=arc-20240116; t=1747872130; c=relaxed/simple;
+	bh=AP3+DLbOgJ8hRs2usGzYmT5QQY2qEhyjM3m0dVA57u4=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j585DKJyOa/ZHDbExLbDtAMtDZh6Wiqn4E9gdOjjNsB/1r4fNpEr8N+3ehfh1confAlpLPDvpfvZSPMqBcq/NuPrhKXL1pWE+LUOHsZBLvszuguleAbXjkg0X4TPlBzCFfAM28uHqYBNga/y01LJwIkmAPE1FrXL/N6rlAoSG+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e6pVpZ2M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26ED1C4CEE4;
-	Thu, 22 May 2025 00:01:54 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Qk9uw3BnFo2zYWlvpShEOfmQ5IDlwurqOVQc7anY+ut2uO2W9HxXnDFT/YGDrEuG5qos4YyX6WNiX/DrY1FR+SdtPUW15nHZEiIQmphM2E5V6t6/lNwLOCHVZZBI0oi96GQo6TJ2EQxRccvxkp0cyu+xwv6OJHSnVFlOnn1V2sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U6gONtfw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDF8EC4CEE4;
+	Thu, 22 May 2025 00:02:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747872114;
-	bh=dimLlWzefVw+xFC8Y82/Uv/MG5e2Bal08feGmHhcZFI=;
+	s=k20201202; t=1747872129;
+	bh=AP3+DLbOgJ8hRs2usGzYmT5QQY2qEhyjM3m0dVA57u4=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=e6pVpZ2MijOMrc4CrL9xu6OY2ifGVm24nY+07sgzyenaiFZF9h5V/sgxVQQD0QsUe
-	 kSDC6JFC7C2UK6oCR0yoLPBoh4WdVQUimMWZ6X4pS44EJJVeQ7d3EB68mP7eE+9hu9
-	 WyuF+0ARMWw7PsPhLXO0kti7e+wjzQByIA9LYd5CUoumTyYKfcESH4OqrCrGdFafAm
-	 EvlSJXL/upsosHcNFgA40DW+S8wxhMr+YZphQhCNVCgFMznXvV274WR8NH8cE9+Dlk
-	 3M+lZW49uRjCT07Zvmr7cXL/bFjdJR7anDABwsH+iZE2JsFl3VOP47eLhOkqhMZ5W1
-	 oMHfioaBbedfA==
-Date: Wed, 21 May 2025 17:01:53 -0700
-Subject: [PATCHSET 1/3] fuse2fs: upgrade to libfuse 3.17
+	b=U6gONtfwE/iRe9nTWf/jiPWBtlkgzaNff++Vd1YnxUd5IP/fYarcgoMs8HurApjhu
+	 fBNDa1gv4Kms6KbgefgcFA6lvQxG8JejiebONkXPo+LiDBW8rjT/S9B79fK1QCap4E
+	 UJh936KQXTc/FWGeyCts8AS7k5GaumgjNlc5t32nTUCntZcyIeX8/OA/UslNQjjC9G
+	 jiwLEvMv097XGP1dRFqznLrB0cij+d9wVOVSF9RYRN31Z7FGWKvcHWbx4r8o5oynXY
+	 1C2rQJ5roB2v8Z9ny6ELenLnDUysg7nVVXXhnpcYQSuLsjPVuOIJeH2QHfQKKfkABe
+	 6EVPqQQxYVj6w==
+Date: Wed, 21 May 2025 17:02:09 -0700
+Subject: [PATCHSET RFC[RAP] 2/3] libext2fs: refactoring for fuse2fs iomap
+ support
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org
-Message-ID: <174787197833.1484400.960875804610238864.stgit@frogsfrogsfrogs>
+Cc: John@groves.net, linux-ext4@vger.kernel.org, miklos@szeredi.hu,
+ joannelkoong@gmail.com, bernd@bsbernd.com, linux-fsdevel@vger.kernel.org
+Message-ID: <174787198025.1484572.10345977324531146086.stgit@frogsfrogsfrogs>
 In-Reply-To: <20250521235837.GB9688@frogsfrogsfrogs>
 References: <20250521235837.GB9688@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,9 +62,19 @@ Content-Transfer-Encoding: 7bit
 
 Hi all,
 
-In preparation to start hacking on fuse2fs and iomap, upgrade fuse2fs
-library support to 3.17, which is the latest upstream release as of this
-writing.
+In preparation for connecting fuse, iomap, and fuse2fs for a much more
+performant file IO path, make some changes to the Unix IO manager in
+libext2fs so that we can have better IO.  First we start by making
+filesystem flushes a lot more efficient by eliding fsyncs when they're
+not necessary, and allowing library clients to turn off the racy code
+that writes the superblock byte by byte but exposes stale checksums.
+
+XXX: The second part of this series adds IO tagging so that we could tag
+IOs by inode number to distinguish file data blocks in cache from
+everything else.  This is temporary scaffolding whilst we're in the
+middle adding directio and later buffered writes.  Once we can use the
+pagecache for all file IO activity I think we could drop the back half
+of this series.
 
 If you're going to start using this code, I strongly recommend pulling
 from my git trees, which are linked below.
@@ -70,16 +82,28 @@ from my git trees, which are linked below.
 Comments and questions are, as always, welcome.
 
 e2fsprogs git tree:
-https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-library-upgrade
+https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=libext2fs-iomap-prep
 ---
 Commits in this patchset:
- * fuse2fs: bump library version
- * fuse2fs: wrap the fuse_set_feature_flag helper for older libfuse
- * fuse2fs: disable nfs exports
+ * libext2fs: always fsync the device when flushing the cache
+ * libext2fs: always fsync the device when closing the unix IO manager
+ * libext2fs: only fsync the unix fd if we wrote to the device
+ * libext2fs: invalidate cached blocks when freeing them
+ * libext2fs: add tagged block IO for better caching
+ * libext2fs: add tagged block IO caching to the unix IO manager
+ * libext2fs: only flush affected blocks in unix_write_byte
+ * libext2fs: allow unix_write_byte when the write would be aligned
+ * libext2fs: allow clients to ask to write full superblocks
+ * libext2fs: allow callers to disallow I/O to file data blocks
 ---
- configure      |    4 ++--
- configure.ac   |    4 ++--
- misc/fuse2fs.c |   35 ++++++++++++++++++++++++++++++++---
- 3 files changed, 36 insertions(+), 7 deletions(-)
+ lib/ext2fs/ext2_io.h         |   29 ++++
+ lib/ext2fs/ext2fs.h          |    4 +
+ debian/libext2fs2t64.symbols |    5 +
+ lib/ext2fs/alloc_stats.c     |    7 +
+ lib/ext2fs/closefs.c         |    7 +
+ lib/ext2fs/fileio.c          |   26 +++-
+ lib/ext2fs/io_manager.c      |   56 ++++++++
+ lib/ext2fs/unix_io.c         |  281 +++++++++++++++++++++++++++++++++++-------
+ 8 files changed, 362 insertions(+), 53 deletions(-)
 
 
