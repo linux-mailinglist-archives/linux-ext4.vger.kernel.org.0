@@ -1,124 +1,163 @@
-Return-Path: <linux-ext4+bounces-8176-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8177-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF0EEAC1E66
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 10:12:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 925CAAC1F3C
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 11:04:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 284311BA33EB
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 08:12:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598E44E41A9
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 09:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C244728751B;
-	Fri, 23 May 2025 08:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hxxy7rh5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C51A2253B5;
+	Fri, 23 May 2025 09:03:17 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F075420C482;
-	Fri, 23 May 2025 08:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12CE222582;
+	Fri, 23 May 2025 09:03:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747987928; cv=none; b=K9rDeFMoxvLVTXIIivkoLqzLLv53IeiUJf+hBzo4bs+Xrg4kLV13hT8q4x41KeoHBgY+1fRIvLcCRk0DKbMcQk36m8L0mDmOq7SgXZoIEci8YgF8majbcJC/9fGRlvcZ27zS6Xp0C2ekFoCM1QjOaxRL6igo6+KeaFNV41ct4Q4=
+	t=1747990997; cv=none; b=aUgHAmfG5pygdQN2yEuO9/KQJzEDe+KRZtOmN3teqepaeULaUvirImBNLOs1TjsLNfBuWTL+DqsE1gRwWQIPpnJffN9Xl0O0FKviRfy0dRn7gSmv7Oaz85Qsn8ZBvcMt3gdj1vzWPJVmxYPr32gjSEHY92NbvNgVi+vsYpOLdFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747987928; c=relaxed/simple;
-	bh=+TDhoikyMIzmEsOgdHd9FVrqZYGX201X7Z53Q9q6+I0=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=SPFERqH35maa8SPPIRL2E0NQnaYpYnchRqYscMXm2795T1nkszARTk3XHZu2doESnvFUfHUPGgPDLhaxJBozI4apkBagXMu55xN1t4rbwhMRHQOrF+fs83ldmuzr6j4BAvp3IZ3x7KCF8+UaFz6i5UQO24tRF12yr461Ou+sPvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hxxy7rh5; arc=none smtp.client-ip=209.85.221.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-52dc131419cso2047494e0c.2;
-        Fri, 23 May 2025 01:12:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747987925; x=1748592725; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+TDhoikyMIzmEsOgdHd9FVrqZYGX201X7Z53Q9q6+I0=;
-        b=hxxy7rh5fFGYYcjM5veatCSAIgl6Yq0YLc7nOVEHZKjqhZwIJyeAh8H00gP3B/+IIP
-         IWKM6EKxh+vWck3naXE/3vvjbkBdEK2mv9SYjiuwRJkpyevgpVOmeJ9orrXbL7Z31FNA
-         +GlYqwCMC7vyXUSR1jOuGaCUvPESDdKCWgSTZtPguD3selqbKIPJkn3P+Zpzh6Z4YgSf
-         7Vo/C0gLjLHAusDBfvJFpUPGOBqNMKCOKN8Z0KpM1LP7tyAk9n6pyEYwV0cHzZqtMdHL
-         yJ5iw71u0KjVn7GUYCDFKoC9jF+loC9zO1M8ieo6bcpJgsBmhCdvJ+RFdcRQloONigJC
-         RJuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747987925; x=1748592725;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+TDhoikyMIzmEsOgdHd9FVrqZYGX201X7Z53Q9q6+I0=;
-        b=iYW/W6ILAerhF16R9rqtM/q8DeafbHlohXYnP4DmvbcPUC2mQhUbu5w8r5r58GcZ1E
-         JbirghnmXnMIP4Ntu2uvsvHdTFR8C6SCTZPBai7YzCXjcDph6yVV75yVIIJfMd90Ikq+
-         sBB5L+JgtA905wM7azMfN6UabkZ8bUgH9A0Zh+kHqdmtY2TgBeg2ZxAlS06MbC+UEdqi
-         i+/6wWE3z5TV64YyuJ1lav7wj2HnOrJjhWDYFK5JD0PCiQHRTvssyNq2V4tG0Q6VqT/9
-         WoCgzZ9EPB+mVhIk3pyUuVfMsptyUuNKaxLCCycjvOhQMcICPvGqERh93VzPCACjooA7
-         1s8g==
-X-Forwarded-Encrypted: i=1; AJvYcCW0l2jvr7gzD04jvCcrF0l5rvRMFDu51rQv6oKhp+09dM8X2QmC7Pap0ihCG/MrL02G+MAIILhkejamRNoN@vger.kernel.org, AJvYcCW6eLpEmNHc+UkQ9czQ0fgD2eCIa0DZhvMeYi++U9zXUMMLw2b08hH1KP8z8dPXLgVo/OwnBg47npuz@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9Q3KIe8hV5PV/5in2svsLZo0UhHx+YhgmEt/eiw37AvEhaxmb
-	3R5rawOA/cT7mOPSyafCW33XDbFHjjyVDZFYHEbn7EQfV7/FfE15tk+F8n3Woti4NkUUxKbR9c1
-	NMtPWsPcrHcEkS6NShVY9EH3XKUIO4mvj7kdM
-X-Gm-Gg: ASbGncsz6GPxChuNmqHI88D4f1C5wG49wbeUxmjIouDST4GtXmCj4IzmQ0jJ2I36ocC
-	tL48JO0poMlIB0m5MNp+sTLo7iNYqaaExnbi/1pHHzRF2aB2VV8vQS8+wE+hMY4OE/bFmU4AzL+
-	ddEy8/NMCWsdCLwByuJAv9HfWvw/SNyvW5sw==
-X-Google-Smtp-Source: AGHT+IHeC+WH5oaa1bydeoZxnMwXnoppTQct5XbOcd+9ZdMreh4NTLcst9yDwsInfTNHI8dMCKV+xWG4GROCik1hZGs=
-X-Received: by 2002:a05:6122:ec9:b0:52a:c0db:29e3 with SMTP id
- 71dfb90a1353d-52dbce1e5a3mr21773108e0c.10.1747987924729; Fri, 23 May 2025
- 01:12:04 -0700 (PDT)
+	s=arc-20240116; t=1747990997; c=relaxed/simple;
+	bh=0Ei6K/vWbQWuglVPaCmuTBsOppFwqr1RCJb3YqV8Q7s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=uUmBGOSDctThfxxM0mKdOTnX1XvoZC+MRfXCClVRlVMpojoj1t5qHp6tzHNTJDp0cRRlOkmQsQk7yrtLgECAGonduid50a3zuFpV1WscrVVw3aLx1zGkQfSZU36BPXDXnef6MiQOKLMFIoe4ApNW4niRJLcAdDZT0xootfrBp28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4b3fLs5cPwz4f3jdk;
+	Fri, 23 May 2025 17:02:45 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DFB401A07BB;
+	Fri, 23 May 2025 17:03:10 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgCH61_MOTBocBILNQ--.27999S4;
+	Fri, 23 May 2025 17:03:10 +0800 (CST)
+From: libaokun@huaweicloud.com
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	libaokun1@huawei.com,
+	libaokun@huaweicloud.com
+Subject: [PATCH 0/4] ext4: better scalability for ext4 block allocation
+Date: Fri, 23 May 2025 16:58:17 +0800
+Message-Id: <20250523085821.1329392-1-libaokun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Xianying Wang <wangxianying546@gmail.com>
-Date: Fri, 23 May 2025 16:11:53 +0800
-X-Gm-Features: AX0GCFs4P0QyWh7o-IpM0QozTogBYkENxUA3Fz5fk7j9rV2GGl50AAblpywsG-0
-Message-ID: <CAOU40uBdtsGgG9mi1sZvLSa9rdh_SVAeQkv6B5gjMubcmTDgTQ@mail.gmail.com>
-Subject: [BUG] kernel BUG in mb_mark_used
-To: tytso@mit.edu
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCH61_MOTBocBILNQ--.27999S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw4ktr17CFy3WFy8Cw4fAFb_yoW5KF48p3
+	sxtrnxJr1UJr48Xw43tw1UWr1rGw48Gr4UGr12gF18Xr1UAr4UKr40qry0yryUArWxXr15
+	Xw17XryUGr1DCFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lw4CEc2x0rVAKj4xx
+	MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+	67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
+	IFyTuYvjfUO73vUUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAMBWfzh3x0ewABsp
 
-Hi,
+From: Baokun Li <libaokun1@huawei.com>
 
-I discovered a kernel crash described as "kernel BUG in mb_mark_used",
-which is triggered by a BUG_ON() in the ext4 function
-mb_mark_used()(fs/ext4/mballoc.c:2051). The crash occurs when the
-expression start + len > (e4b->bd_sb->s_blocksize << 3) evaluates
-true, indicating that the block range to be marked as used exceeds the
-size of the bitmap. This suggests that an invalid or corrupted block
-extent was passed to the allocator, potentially due to inconsistent
-internal state or a logic flaw in the extent calculation.
+Since servers have more and more CPUs, and we're running more containers
+on them, we've been using will-it-scale to test how well ext4 scales. The
+fallocate2 test (append 8KB to 1MB, truncate to 0, repeat) run concurrently
+on 64 containers revealed significant contention in block allocation/free,
+leading to much lower aggregate fallocate OPS compared to a single
+container (see below).
 
-The call trace shows the crash is triggered via a direct I/O write
-operation (ext4_dio_write_iter), which ultimately invokes
-ext4_mb_new_blocks() and its subroutine mb_mark_used(). The crash is
-reproducible using a crafted workload involving mounting an ext4
-loopback device and issuing writes.
+   1   |    2   |    4   |    8   |   16   |   32   |   64
+-------|--------|--------|--------|--------|--------|-------
+295287 | 70665  | 33865  | 19387  | 10104  |  5588  |  3588
 
-This may indicate a latent inconsistency in ext4's multiblock
-allocation logic (mballoc.c), especially under specific block size or
-extent configurations. Further investigation is recommended in the
-validation of input to mb_mark_used() and in protecting against block
-range overflows.
+The main bottleneck was the ext4_lock_group(), which both block allocation
+and free fought over. While the block group for block free is fixed and
+unoptimizable, the block group for allocation is selectable. Consequently,
+the ext4_try_lock_group() helper function was added to avoid contention on
+busy groups, and you can see more in Patch 1.
 
-This can be reproduced on:
+After we fixed the ext4_lock_group bottleneck, another one showed up:
+s_md_lock. This lock protects different data when allocating and freeing
+blocks. We got rid of the s_md_lock call in block allocation by making
+stream allocation work per inode instead of globally. You can find more
+details in Patch 2.
 
-HEAD commit:
+Patches 3 and 4 are just some minor cleanups.
 
-commit e8f897f4afef0031fe618a8e94127a0934896aba
+Performance test data follows:
 
-report: https://pastebin.com/raw/EHJyW2Ev
+CPU: HUAWEI Kunpeng 920
+Memory: 480GB
+Disk: 480GB SSD SATA 3.2
+Test: Running will-it-scale/fallocate2 on 64 CPU-bound containers.
+Observation: Average fallocate operations per container per second.
 
-console output : https://pastebin.com/raw/vKPznSCn
+|--------|--------|--------|--------|--------|--------|--------|--------|
+|    -   |    1   |    2   |    4   |    8   |   16   |   32   |   64   |
+|--------|--------|--------|--------|--------|--------|--------|--------|
+|  base  | 295287 | 70665  | 33865  | 19387  | 10104  |  5588  |  3588  |
+|--------|--------|--------|--------|--------|--------|--------|--------|
+| linear | 286328 | 123102 | 119542 | 90653  | 60344  | 35302  | 23280  |
+|        | -3.0%  | 74.20% | 252.9% | 367.5% | 497.2% | 531.6% | 548.7% |
+|--------|--------|--------|--------|--------|--------|--------|--------|
+|mb_optim| 292498 | 133305 | 103069 | 61727  | 29702  | 16845  | 10430  |
+|ize_scan| -0.9%  | 88.64% | 204.3% | 218.3% | 193.9% | 201.4% | 190.6% |
+|--------|--------|--------|--------|--------|--------|--------|--------|
 
-kernel config : https://pastebin.com/raw/aJ9rUnhG
+Running "kvm-xfstests -c ext4/all -g auto" showed that 1k/generic/347 often
+fails. The test seems to think that a dm-thin device with a virtual size of
+5000M but a real size of 500M, after being formatted as ext4, would have
+500M free.
 
-C reproducer : https://pastebin.com/raw/rZ5xcbt5
+But it doesn't – we run out of space after making about 430 1M
+files. Since the block size is 1k, making so many files turns on dir_index,
+and dm-thin waits a minute, sees no free space, and then throws IO error.
+This can cause a directory index block to fail to write and abort journal.
 
-Best regards,
+What's worse is that _dmthin_check_fs doesn't replay the journal, so fsck
+finds inconsistencies and the test failed. I think the problem is with the
+test itself, and I'll send a patch to fix it soon.
 
-Xianying
+Comments and questions are, as always, welcome.
+
+Thanks,
+Baokun
+
+
+Baokun Li (4):
+  ext4: add ext4_try_lock_group() to skip busy groups
+  ext4: move mb_last_[group|start] to ext4_inode_info
+  ext4: get rid of some obsolete EXT4_MB_HINT flags
+  ext4: fix typo in CR_GOAL_LEN_SLOW comment
+
+ fs/ext4/ext4.h              | 38 ++++++++++++++++++-------------------
+ fs/ext4/mballoc.c           | 34 +++++++++++++++++++--------------
+ fs/ext4/super.c             |  2 ++
+ include/trace/events/ext4.h |  3 ---
+ 4 files changed, 41 insertions(+), 36 deletions(-)
+
+-- 
+2.46.1
+
 
