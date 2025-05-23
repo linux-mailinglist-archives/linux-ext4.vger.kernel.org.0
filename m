@@ -1,109 +1,147 @@
-Return-Path: <linux-ext4+bounces-8180-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8182-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC441AC1F41
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 11:04:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23D5AAC22A1
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 14:31:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 803AF7BAE37
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 09:02:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEBE116433C
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 12:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B46225A3D;
-	Fri, 23 May 2025 09:03:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185E679DA;
+	Fri, 23 May 2025 12:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hyMnLgRs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A3E224893;
-	Fri, 23 May 2025 09:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18ACD7E9;
+	Fri, 23 May 2025 12:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747990997; cv=none; b=aKqhLpoY0lD9m1VYLVOxw5SA1xZz8ybJhJnw2NNowN5DzsAVQ0Bg8/PzNB/44ixuFU8FcKZ4LahVRfc5eUb0+XrUYXiHQWAmhiTl5G/iTWS+7IJjl6tuQry6DpH1B3jcjhHbmxJ9j7NZNno8nWjf2pJk7a8MBzb9l+Z4HM1uw5A=
+	t=1748003465; cv=none; b=hKchHm631ch+WUL3oXgjQTRZaoipxtM+eeMcSP1tCPDb7Ei9e3xg9dGNQ0NDmVoifcSlytt37d5YyO29alYXPCAZIA1y/iI18jdRbJMkr5jI9YC4kNk9e2I/CjjUP3kOhX6Ypsx9F4LZkA+lH89DIUaoxPR+zBhkWqUKsnK56xI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747990997; c=relaxed/simple;
-	bh=7l5SfPkeJLkABkv2Lg6ATbrd6Cq4z5wQ6b7/+3v9SWQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Wxj3y0UxeFAveV07n5Qlj3soo6SXXjCGwrQ4kQqtOfYubL1ydkRboLgUcicr0rIxp3fTy+7aLyfLFC/okVK5QtNz/eyKugcbAta7jUVrlPXORTduWSExpJSop62jUgjg+aG0Mgdzov1GRiUuOQkgRkXdehR5Y8IQeodeIoO+0Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4b3fMP2ggPzYQv7c;
-	Fri, 23 May 2025 17:03:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 885961A1C4D;
-	Fri, 23 May 2025 17:03:12 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCH61_MOTBocBILNQ--.27999S8;
-	Fri, 23 May 2025 17:03:12 +0800 (CST)
-From: libaokun@huaweicloud.com
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	libaokun1@huawei.com,
-	libaokun@huaweicloud.com
-Subject: [PATCH 4/4] ext4: fix typo in CR_GOAL_LEN_SLOW comment
-Date: Fri, 23 May 2025 16:58:21 +0800
-Message-Id: <20250523085821.1329392-5-libaokun@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20250523085821.1329392-1-libaokun@huaweicloud.com>
-References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
+	s=arc-20240116; t=1748003465; c=relaxed/simple;
+	bh=zYFr+I1bNQIoAAYyuQ0AB1ehPMbnBPch3q9BFHXKHZk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QvvJoiJ6vJvi85+n/wsivC8tAigCtXMxaihILCnegd76hx+Mxu0Mxr7C73e8EcZdatjzx7d60IA53sRT+SXKrtwbQSB4bZgg6JOMbYINW6bPfRXppyhNqS/aap7B2x/nHI0Zn3xjPlNmHE0d+5PswUVXVh2fZflNXletPRYWFrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hyMnLgRs; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-442ed8a275fso114417275e9.2;
+        Fri, 23 May 2025 05:31:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748003462; x=1748608262; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dy8YHa9sBE+qJ+igAsZENydvLd039JNemEnM7InNoVc=;
+        b=hyMnLgRsAWmNj0Xn8FDax038kfzZstDHB5qLJIq4avUFS2OIO7SNS7aX3tBXb0CKLV
+         s8kJeiW6X5DAYAGEyW7wStJHn7XyOd9JFQdlG0HX2AsAblmpOBGUfDFbiSYpXvrWRJy3
+         JpfsVLrNW7WQKQ2jxLHAN4OlOXhsARD0UhVdHEp899gskTHb5Kde8juy76AtOFKxQaA5
+         bsCx1SMCNroS/7s3owXyYdZst5zQwFGoRix0LLz02zWRCA8e1oEn6NIzPyIwhaZk8wP/
+         ZMZ8h4za/NfiyVuPkWZirLJ7Dz6x0wFj7YM4FPRevK2DTt5XPitI2iWUIrnVhoPkiC1/
+         hpOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748003462; x=1748608262;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dy8YHa9sBE+qJ+igAsZENydvLd039JNemEnM7InNoVc=;
+        b=MhriNamNpyVN7YGourrsmhYjxcwMCGORUg7Zs0iigxdOvI0sDT71vE53nA+bK1V/WU
+         U8wDnPZzYS8HoSGVrwKXKtihMjwoveG8TVKZr0BTGN+xcnZsdvo5wu1VphpZfUaQBECr
+         pTsgCH4NY0gXGwelwMydV7wICHDc1tQLaBCZ0uBd2dWf44tkSrCUqsgz0biUhL75CPTd
+         4UZ39KtKz10zblA2Ecr315pL2VL9gymn0/JmopyoUpceA46poMR0EEd/htPZsnOFOadi
+         pYzW1DStH+rJyqzQw4/K/W0PuXVSnsRnuUim/6DNx9mDasoOjhJ4zD/Zt6jRY/uA45QC
+         OMwg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8SXg9AlPcWHP0ydSUsDR1AXskw9I/xZaM9ZKZo5q5X2x5Y3f9iuqwjCKYIBm9vii1T74pqMsR0JPrGJxEKlZ3@vger.kernel.org, AJvYcCVvmmgrEDQd6ISVukZRMZiddN4RX8a/3Ta/B2DUcIt255tvfkz8HfobZthx+/b53r4vOjq+Th4m/QTi@vger.kernel.org, AJvYcCXDB27i6xREiBkvEEflFoG7u6q7cbQlV3u+n7Qj+9c9wMoRyYFqBwKZcHQtVD9k5h7zCggTHWMdGTGMzaxU@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzs+5MKMqDUzuE1c0jJdju61o5qLySSKhuJt57U1rzeZyhq8Vjc
+	F4oqv5stpPk5ilmEUXWG+lAnOq3F9KiQsmMVuO9NqOE/uRkO/1NC4s8ERKI3Sg==
+X-Gm-Gg: ASbGncu/PH6yiABucmQVayW0bGJpWxENDmqSb0l3G6CgtgPWVDlYX3nSfuEdJkcB1l8
+	x9jqkFMjeBz5eShMd7hAB2dIFnUa6b6FLiRZp7C8DODMkOwVWFuEbv3Vu/MRXmrD5Ix0tejPUtC
+	dMuNr2kmHpOunoOVIsvaYzMJGndk3N7oqeg12N6SkDbbo0pkNBQ7Gj7CjARkyevaAWw8m0Oh6sU
+	/lIGFimPPSLmNYvgo46iARddf1gdmsdnNyBxsVjgE0lrjP43U1ShlyYz6NIkAa6UlqR/eyQ0m6e
+	GhHY/8qa9TP2K5WYU2EYeO/quzjuWr0ZdoPBsUA+1IzYYsbUzO3TS1ukB/latUytuCq1QqW8SPw
+	jfmrCyIVDm9rtuQ==
+X-Google-Smtp-Source: AGHT+IGRY+SIJAO8OmgYserPwzfW9oLd1sgZc8DxydvmeRylB5vmFcgb6WgrcelOSrX4QdbKqmgZfA==
+X-Received: by 2002:a05:600c:4fd6:b0:43d:98e7:38dc with SMTP id 5b1f17b1804b1-44b6cc055e8mr21996825e9.5.1748003462110;
+        Fri, 23 May 2025 05:31:02 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f7bae3b9sm136490745e9.33.2025.05.23.05.31.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 May 2025 05:31:01 -0700 (PDT)
+Date: Fri, 23 May 2025 13:31:00 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Kees Cook <kees@kernel.org>, Ethan Carter Edwards
+ <ethan@ethancedwards.com>, Andreas Dilger <adilger.kernel@dilger.ca>,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: replace strcpy() with '.' assignment
+Message-ID: <20250523133100.1b023a6e@pumpkin>
+In-Reply-To: <20250519145930.GB38098@mit.edu>
+References: <20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com>
+	<202505190651.943F729@keescook>
+	<20250519145930.GB38098@mit.edu>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCH61_MOTBocBILNQ--.27999S8
-X-Coremail-Antispam: 1UD129KBjvdXoWruF4DuF1kCFWfur45KF1fXrb_yoWxArX_ta
-	yUZr48Wrnxtrn29a4rur9aqFnFgr48Gr1UuFZ8GrnYqayUX3yfX3Wvyrs8Z3Z8ur4UAFn8
-	ZwsIqF17AF92qjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUby8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
-	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
-	F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
-	1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC0wCY1x
-	0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC2
-	0s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI
-	0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv2
-	0xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2js
-	IE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZF
-	pf9x0JU9Aw3UUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQARBWgwLIEFbAADsK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Baokun Li <libaokun1@huawei.com>
+On Mon, 19 May 2025 10:59:30 -0400
+"Theodore Ts'o" <tytso@mit.edu> wrote:
 
-Remove the superfluous "find_".
+> On Mon, May 19, 2025 at 06:52:13AM -0700, Kees Cook wrote:
+> > > --- a/fs/ext4/inline.c
+> > > +++ b/fs/ext4/inline.c
+> > > @@ -1314,7 +1314,7 @@ int ext4_inlinedir_to_tree(struct file *dir_file,
+> > >  		if (pos == 0) {
+> > >  			fake.inode = cpu_to_le32(inode->i_ino);
+> > >  			fake.name_len = 1;
+> > > -			strcpy(fake.name, ".");
+> > > +			fake.name[0] = ".";  
+> > 
+> > This means the trailing NUL byte isn't being copied any more? That seems
+> > like a big change, even if name_len is being used for length tracking.  
+> 
+> Yeah, and so that's something that needs to be tested (and not just
+> build tested to catch the obvious FTBFS bug).
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- fs/ext4/ext4.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The compiler (or headers files) can also allow strcpy() of constant
+length strings into arrays (known size). Erroring requests that are too long.
+The strcpy() is then converted to a memcpy() which can then be optimised
+into writes of constants.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index f6d01702423d..1182700901cc 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -157,7 +157,7 @@ enum criteria {
- 
- 	/*
- 	 * Reads each block group sequentially, performing disk IO if
--	 * necessary, to find find_suitable block group. Tries to
-+	 * necessary, to find suitable block group. Tries to
- 	 * allocate goal length but might trim the request if nothing
- 	 * is found after enough tries.
- 	 */
--- 
-2.46.1
+So using strcpy() under those conditions 'isn't all bad' and can generate
+better (and less bug prone) code than trying to hand-optimise it.
+
+So even through strcpy() is usually a bad idea, there is not need to
+remove the calls that the compiler can validate as safe.
+
+	David   
+
+> However, note how we
+> handle normal filenames, as opposed to "." and "..".  From
+> ext4_insert_dentry():
+> 
+> 	de->inode = cpu_to_le32(inode->i_ino);
+> 	ext4_set_de_type(inode->i_sb, de, inode->i_mode);
+> 	de->name_len = fname_len(fname);
+> 	memcpy(de->name, fname_name(fname), fname_len(fname));
+> 
+> Or were you commenting on the "no functional changes intended" line in
+> the commit description?  I agree that this is probably no longer
+> accurate.  :-)
+> 
+> 					- Ted
+> 
 
 
