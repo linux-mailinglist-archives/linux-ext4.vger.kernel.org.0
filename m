@@ -1,96 +1,55 @@
-Return-Path: <linux-ext4+bounces-8185-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8186-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B4CAC24C8
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 16:12:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 867EDAC2503
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 16:27:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81BEC1893EF6
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 14:12:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DBE83ADDA4
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 14:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1AF2295511;
-	Fri, 23 May 2025 14:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QsXIMFnj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6EFC297A44;
+	Fri, 23 May 2025 14:25:13 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F92231850
-	for <linux-ext4@vger.kernel.org>; Fri, 23 May 2025 14:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FAA296723
+	for <linux-ext4@vger.kernel.org>; Fri, 23 May 2025 14:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748009553; cv=none; b=pf+cwFmEaEbOA4bDiG3HKlwWh4dLBODV7uFgz7bSB1q+TdNqumx/0yjr9Jv+WJp/SJJrVL/RYC+9Zb61yWwAl3E8cxVSUxG8Oa95uAt79Jt54QFSm3jXvrUsPpN3OjeRk8K35AQ2Ljz1p0EibY8ONJ5xst14G8C7PXwM1dxb1Kc=
+	t=1748010313; cv=none; b=lSy/OykmUoaEKIDszUyimzQHGVpX46tmVkIC7EMS17i2Tl4uLOFW++SDtrzFByDr6riB/1btP2aYe3GMtBrK2pVeZDvMlkgk1HSnV70m+Xh33K9nJKD1WTcvWR+AZ3VSCoxPqJdg00NHPbF3XkZVB4dv8qYkLPZ9Wto8JnWP+8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748009553; c=relaxed/simple;
-	bh=0n59eMFJlkKbjvguOEdIDHYhl/dBZQ1R4YdT1oXHhaU=;
+	s=arc-20240116; t=1748010313; c=relaxed/simple;
+	bh=Jr92kqhLnQvRNC5L+L0W3yvG7mH4cdCdsfVACqlC638=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eZkpczXTsEUlpa6fLNjpJhWtLg98qnAKGJs2y4DXQg/MIlTNvwpIICfRuX/lwEwix3ZjfQheERcxUXkW3sH4tgbXJlgHzqApwFxDhR/5UqJE/4MSY/357QuQOrip9vAQUyIjapKzbPnjyretZjrkK7VMyPKT7aQmrDn0QSHJEDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QsXIMFnj; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1748009550;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H4+7fpqVuqjJM0FQ5QqoSe6SnJqWOfxI5NDtDYNoFiI=;
-	b=QsXIMFnjRCu0qeb2k9dHMOC5LRqzRKDUVmEZar1q3n6TgOZ+n7zC4eUrfbHlDsr0z6v3r0
-	MVbEq+Bvis3fBCerhQtMtPPs/5IXZsocdBz1eoWDJ0Rqg0ywbY+x6U+941Alt1kkwR1/+S
-	HfdDA5mOT96UZV5G/o7ZvWjWUIssvn8=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-146-xBBvQRe5MmGLi0q0SyzhxA-1; Fri, 23 May 2025 10:12:29 -0400
-X-MC-Unique: xBBvQRe5MmGLi0q0SyzhxA-1
-X-Mimecast-MFC-AGG-ID: xBBvQRe5MmGLi0q0SyzhxA_1748009548
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-310c5c2c38cso2178880a91.1
-        for <linux-ext4@vger.kernel.org>; Fri, 23 May 2025 07:12:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748009548; x=1748614348;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H4+7fpqVuqjJM0FQ5QqoSe6SnJqWOfxI5NDtDYNoFiI=;
-        b=YLwbjZT9GdrQPp0YUXq35m/iJYPys4wUYXHxlAaj0U/awP5D+McdGymggwPY1+cPdT
-         bUyRlV5PDaMb2XBmxuMeCvr37tSs9hi/u66pUqr61EpsC/DICdAaVn+jNQBSTre079ZQ
-         AkAy3ZwOjvMF5LQss5SWQXQWCn1Zzr2gIvIyGg6J98bgWirOUqbHH5BaTRee4b9BDxAZ
-         ydNOVwgDDftx+9tlpqoxbD6faL+OsDTl5iKLf02VxJylV8i6m6cbUtf8dX5vWNcrG4/S
-         LU3BSBnFmVarMWSIH+YqgBM1pETJwEQ2bs1quImunItXoFRAb/5ohPAqoulgr+JiuVSR
-         +/8w==
-X-Forwarded-Encrypted: i=1; AJvYcCWbI2GqEth4IC6rOVRwBNy5tIYeCJ2h4xLKltSElVau8WGO5wkJufHZihh4wbVD7WJpMiuo1ri9CuXO@vger.kernel.org
-X-Gm-Message-State: AOJu0YzVreBipkKrifCO/N8K2VA1CDnOl+w0VSuAmdLoDczlkRvGdQVx
-	rzlaJLkHGnEc4b9CdMiEIOTiZWMSHzeKqNWzpCsOx6d5AX8Yenl5Yxd+9nC+Iswse2uwe/6v09z
-	4tsWU9wp0Kgg/t46eU0/epK6Omj5Gm12gIbakzmpzzs+61ojUDVnmXlpxDo7QRuM=
-X-Gm-Gg: ASbGncsdr/GIFWbTTDYjGhsECNLWHhJVrPUkPQmnS+gjoLeGvRt8IDD+C/GBaElh0Q+
-	sB43pUhl+Ss92y5gxDrDJVDKikI98rUd4WAeEn9sKFiW7VKyoYHkXJPe5cMcYCjjsmllGC9c7IY
-	AT7Z5m97QuHM1vygb9AKIrxqsKxohsYPH4yRb+LycLIihS0HwPigvBhZAcpZmR7sUiOoUpz/cgZ
-	IZaZdznfV88yD2MZ+f4OMrpYj9toYq9WQZCbQBoTgYA7Bml9zmQfm5ei1hJh01LWAQ7OLLU7KcQ
-	CHbCQkrDPc6IqU3ATldZSMDF2coa7MeReWP2K01Ym2wogG9KOBEf
-X-Received: by 2002:a17:90b:4a8f:b0:310:8db0:16d3 with SMTP id 98e67ed59e1d1-3108db016d8mr18110852a91.17.1748009548350;
-        Fri, 23 May 2025 07:12:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFFflrRAaK5R8JT5jskEcknD1yOvlcyzxP3TpskbIROOPaj9vMTh/7mi/I9jRDExC1z9ZRp7w==
-X-Received: by 2002:a17:90b:4a8f:b0:310:8db0:16d3 with SMTP id 98e67ed59e1d1-3108db016d8mr18110744a91.17.1748009547376;
-        Fri, 23 May 2025 07:12:27 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30e11e33c2esm12788555a91.1.2025.05.23.07.12.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 May 2025 07:12:27 -0700 (PDT)
-Date: Fri, 23 May 2025 22:12:21 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
-	david@fromorbit.com
-Subject: Re: [PATCH v3 1/2] new: Add a new parameter (name) in the "new"
- script
-Message-ID: <20250523141221.dnndb3b24w27ocmu@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1747635261.git.nirjhar.roy.lists@gmail.com>
- <2b59f6ae707e45e9d0d5b0fe30d6c44a8cde0fec.1747635261.git.nirjhar.roy.lists@gmail.com>
- <20250523140343.nabmzlbss346faue@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qUXBpNzNfXYMTe/Uc1uz1cAT+4g/ZEv3sI+Y38t5GnCe04Eige47m/5unIkprh7MICEs822DmJ7qq+XqugzYgKRvuigX2sL3GkmhRHz2+fIUlF9BMU9cvWfzANfrHBJsObZp6G8ByHrGQlFR0EAHx9pS6Oocz9B3DXhvVoEMPGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-111-173.bstnma.fios.verizon.net [173.48.111.173])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54NEOnpP028475
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 May 2025 10:24:50 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 81E5F2E00DD; Fri, 23 May 2025 10:24:49 -0400 (EDT)
+Date: Fri, 23 May 2025 10:24:49 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: David Laight <david.laight.linux@gmail.com>
+Cc: Kees Cook <kees@kernel.org>,
+        Ethan Carter Edwards <ethan@ethancedwards.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: replace strcpy() with '.' assignment
+Message-ID: <20250523142449.GB1414791@mit.edu>
+References: <20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com>
+ <202505190651.943F729@keescook>
+ <20250519145930.GB38098@mit.edu>
+ <20250523133100.1b023a6e@pumpkin>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -99,70 +58,24 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250523140343.nabmzlbss346faue@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+In-Reply-To: <20250523133100.1b023a6e@pumpkin>
 
-On Fri, May 23, 2025 at 10:03:43PM +0800, Zorro Lang wrote:
-> On Mon, May 19, 2025 at 06:16:41AM +0000, Nirjhar Roy (IBM) wrote:
-> > This patch another optional interactive prompt to enter the
-> > author name for each new test file that is created using
-> > the "new" file.
-> > 
-> > The sample output looks like something like the following:
-> > 
-> > ./new selftest
-> > Next test id is 007
-> > Append a name to the ID? Test name will be 007-$name. y,[n]:
-> > Creating test file '007'
-> > Add to group(s) [auto] (separate by space, ? for list): selftest quick
-> > Enter <author_name>: Nirjhar Roy <nirjhar.roy.lists@gmail.com>
-> > Creating skeletal script for you to edit ...
-> >  done.
-> > 
-> > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> > ---
-> >  new | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/new b/new
-> > index 6b50ffed..636648e2 100755
-> > --- a/new
-> > +++ b/new
-> > @@ -136,6 +136,9 @@ else
-> >  	check_groups "${new_groups[@]}" || exit 1
-> >  fi
-> >  
-> > +read -p "Enter <author_name>: " -r
-> > +author_name="${REPLY:=YOUR NAME HERE}"
-> > +
-> >  echo -n "Creating skeletal script for you to edit ..."
-> >  
-> >  year=`date +%Y`
-> > @@ -143,7 +146,7 @@ year=`date +%Y`
-> >  cat <<End-of-File >$tdir/$id
-> >  #! /bin/bash
-> >  # SPDX-License-Identifier: GPL-2.0
-> > -# Copyright (c) $year YOUR NAME HERE.  All Rights Reserved.
-> > +# Copyright (c) $year $author_name.  All Rights Reserved.
+On Fri, May 23, 2025 at 01:31:00PM +0100, David Laight wrote:
 > 
-> Dave thought we shouldn't use "author_name" at here:
-> https://lore.kernel.org/fstests/aC509xXxgZJKKZVE@dread.disaster.area/
+> The compiler (or headers files) can also allow strcpy() of constant
+> length strings into arrays (known size). Erroring requests that are too long.
+> The strcpy() is then converted to a memcpy() which can then be optimised
+> into writes of constants.
 > 
-> If you don't mind, I'll merge PATCH 2/2 this week. If you still hope to
-> have the 1/2, please consider the review point from Dave.
+> So using strcpy() under those conditions 'isn't all bad' and can generate
+> better (and less bug prone) code than trying to hand-optimise it.
+> 
+> So even through strcpy() is usually a bad idea, there is not need to
+> remove the calls that the compiler can validate as safe.
 
-Oh, sorry, you've sent a V4... Please ignore this one, I'm going to review
-your V4.
+I assume that what the hardening folks want to do is to assert that
+strcpy is always evil(tm) so they can detect potential security bugs
+by doing "git grep strcpy".
 
-> 
-> Thanks,
-> Zorro
-> 
-> >  #
-> >  # FS QA Test $id
-> >  #
-> > -- 
-> > 2.34.1
-> > 
-> > 
-
+						- Ted
 
