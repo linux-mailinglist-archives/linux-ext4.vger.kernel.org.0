@@ -1,147 +1,162 @@
-Return-Path: <linux-ext4+bounces-8182-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8183-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D5AAC22A1
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 14:31:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0277AC249F
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 16:04:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEBE116433C
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 12:31:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 453BC189ED91
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 14:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185E679DA;
-	Fri, 23 May 2025 12:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46E12951AB;
+	Fri, 23 May 2025 14:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hyMnLgRs"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VP+nvUDy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18ACD7E9;
-	Fri, 23 May 2025 12:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF84929345B
+	for <linux-ext4@vger.kernel.org>; Fri, 23 May 2025 14:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748003465; cv=none; b=hKchHm631ch+WUL3oXgjQTRZaoipxtM+eeMcSP1tCPDb7Ei9e3xg9dGNQ0NDmVoifcSlytt37d5YyO29alYXPCAZIA1y/iI18jdRbJMkr5jI9YC4kNk9e2I/CjjUP3kOhX6Ypsx9F4LZkA+lH89DIUaoxPR+zBhkWqUKsnK56xI=
+	t=1748009034; cv=none; b=Pb8GCbDBmXZtOlWlHVjzscJc2gmGRDj2JOm3CfYL5Q6OxA5Voj7fB7tlFTA2SjTuKL21WpawVXKj287olWyUG+jDDkvrJapxpF2AEMPXKhdgLxgrg6alfyAJCCzLILsJFbvSTXiRZsnPm/YBvzNIySwThUzYYd1HpyIb1QRjhPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748003465; c=relaxed/simple;
-	bh=zYFr+I1bNQIoAAYyuQ0AB1ehPMbnBPch3q9BFHXKHZk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QvvJoiJ6vJvi85+n/wsivC8tAigCtXMxaihILCnegd76hx+Mxu0Mxr7C73e8EcZdatjzx7d60IA53sRT+SXKrtwbQSB4bZgg6JOMbYINW6bPfRXppyhNqS/aap7B2x/nHI0Zn3xjPlNmHE0d+5PswUVXVh2fZflNXletPRYWFrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hyMnLgRs; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-442ed8a275fso114417275e9.2;
-        Fri, 23 May 2025 05:31:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748003462; x=1748608262; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dy8YHa9sBE+qJ+igAsZENydvLd039JNemEnM7InNoVc=;
-        b=hyMnLgRsAWmNj0Xn8FDax038kfzZstDHB5qLJIq4avUFS2OIO7SNS7aX3tBXb0CKLV
-         s8kJeiW6X5DAYAGEyW7wStJHn7XyOd9JFQdlG0HX2AsAblmpOBGUfDFbiSYpXvrWRJy3
-         JpfsVLrNW7WQKQ2jxLHAN4OlOXhsARD0UhVdHEp899gskTHb5Kde8juy76AtOFKxQaA5
-         bsCx1SMCNroS/7s3owXyYdZst5zQwFGoRix0LLz02zWRCA8e1oEn6NIzPyIwhaZk8wP/
-         ZMZ8h4za/NfiyVuPkWZirLJ7Dz6x0wFj7YM4FPRevK2DTt5XPitI2iWUIrnVhoPkiC1/
-         hpOw==
+	s=arc-20240116; t=1748009034; c=relaxed/simple;
+	bh=DGkXuHEeaKTLfrGvSNgzGoTOQMi11yZ1xm0b38NCK2c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=darzLPjpPDKS3jNnqwfGF7geWCqhiy0nVZ5D8AoE2UFLQVAOVEpuMOKenUXi8Q8CEV4l4QpV2CrrI1wda08vXSZuVv9JnWiHtJ8kjaDLkYaizSG91Hy6rK6S7QkbyKSx1MsX/JtGnEn3YjstD2P7zL+z38KUSshQ6edk9X0nUbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VP+nvUDy; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1748009032;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4YGRKcfNyyUn6jZ4ThCK6xz4VOL69I1YIik12BFOPpw=;
+	b=VP+nvUDyAgcvwjfq6QnBqnN2teNZMkQg4aysQwmkOL8s5wOQKNvDKfoDL9T5XL9tz7uXGI
+	cx47mq0Jd/C+McqWF/8Hl8jHEnioOoa44rjtLSA1soQAlf3BBS13aIpTMWeUrsCZwmCsjZ
+	KGqCg4LA2vnFVgKdWOxXCE+1XGtxHF4=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-647-gkk77k3fMGqQnXvkgey5Mw-1; Fri, 23 May 2025 10:03:50 -0400
+X-MC-Unique: gkk77k3fMGqQnXvkgey5Mw-1
+X-Mimecast-MFC-AGG-ID: gkk77k3fMGqQnXvkgey5Mw_1748009029
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-73bfc657aefso6915785b3a.1
+        for <linux-ext4@vger.kernel.org>; Fri, 23 May 2025 07:03:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748003462; x=1748608262;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dy8YHa9sBE+qJ+igAsZENydvLd039JNemEnM7InNoVc=;
-        b=MhriNamNpyVN7YGourrsmhYjxcwMCGORUg7Zs0iigxdOvI0sDT71vE53nA+bK1V/WU
-         U8wDnPZzYS8HoSGVrwKXKtihMjwoveG8TVKZr0BTGN+xcnZsdvo5wu1VphpZfUaQBECr
-         pTsgCH4NY0gXGwelwMydV7wICHDc1tQLaBCZ0uBd2dWf44tkSrCUqsgz0biUhL75CPTd
-         4UZ39KtKz10zblA2Ecr315pL2VL9gymn0/JmopyoUpceA46poMR0EEd/htPZsnOFOadi
-         pYzW1DStH+rJyqzQw4/K/W0PuXVSnsRnuUim/6DNx9mDasoOjhJ4zD/Zt6jRY/uA45QC
-         OMwg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8SXg9AlPcWHP0ydSUsDR1AXskw9I/xZaM9ZKZo5q5X2x5Y3f9iuqwjCKYIBm9vii1T74pqMsR0JPrGJxEKlZ3@vger.kernel.org, AJvYcCVvmmgrEDQd6ISVukZRMZiddN4RX8a/3Ta/B2DUcIt255tvfkz8HfobZthx+/b53r4vOjq+Th4m/QTi@vger.kernel.org, AJvYcCXDB27i6xREiBkvEEflFoG7u6q7cbQlV3u+n7Qj+9c9wMoRyYFqBwKZcHQtVD9k5h7zCggTHWMdGTGMzaxU@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzs+5MKMqDUzuE1c0jJdju61o5qLySSKhuJt57U1rzeZyhq8Vjc
-	F4oqv5stpPk5ilmEUXWG+lAnOq3F9KiQsmMVuO9NqOE/uRkO/1NC4s8ERKI3Sg==
-X-Gm-Gg: ASbGncu/PH6yiABucmQVayW0bGJpWxENDmqSb0l3G6CgtgPWVDlYX3nSfuEdJkcB1l8
-	x9jqkFMjeBz5eShMd7hAB2dIFnUa6b6FLiRZp7C8DODMkOwVWFuEbv3Vu/MRXmrD5Ix0tejPUtC
-	dMuNr2kmHpOunoOVIsvaYzMJGndk3N7oqeg12N6SkDbbo0pkNBQ7Gj7CjARkyevaAWw8m0Oh6sU
-	/lIGFimPPSLmNYvgo46iARddf1gdmsdnNyBxsVjgE0lrjP43U1ShlyYz6NIkAa6UlqR/eyQ0m6e
-	GhHY/8qa9TP2K5WYU2EYeO/quzjuWr0ZdoPBsUA+1IzYYsbUzO3TS1ukB/latUytuCq1QqW8SPw
-	jfmrCyIVDm9rtuQ==
-X-Google-Smtp-Source: AGHT+IGRY+SIJAO8OmgYserPwzfW9oLd1sgZc8DxydvmeRylB5vmFcgb6WgrcelOSrX4QdbKqmgZfA==
-X-Received: by 2002:a05:600c:4fd6:b0:43d:98e7:38dc with SMTP id 5b1f17b1804b1-44b6cc055e8mr21996825e9.5.1748003462110;
-        Fri, 23 May 2025 05:31:02 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f7bae3b9sm136490745e9.33.2025.05.23.05.31.01
+        d=1e100.net; s=20230601; t=1748009029; x=1748613829;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4YGRKcfNyyUn6jZ4ThCK6xz4VOL69I1YIik12BFOPpw=;
+        b=EgKPwxhhfsB3uBKTAfWelESpWbr1lMPSXVKTKZz4B+ZuXCW8pVA/xxy/HQRAGeA86k
+         +VreDLwcZqL8nolvEl7nHj/m3NhaGyb3SCg1KNj3w1ikD7uvYYtkLSf1JlHzebKlKjEK
+         79YdVeo5whepELZFVm/YfJGv6aWiUkMJScjde0tiImTL873GM8IPT7hFy0PTycB6NH/G
+         K2oBvAdF5iB8BRJmQbRO4t/ODLxy5o6FcNYm8QUkSo9wXMqW36YVMq84dX1iU97NiXPg
+         drpYdZF72GLpwbXGR8xdQqlAHEDAUobqWQJXiBivpgkw/DETqRApVDSpYPRo8PG5ijum
+         Bg8w==
+X-Forwarded-Encrypted: i=1; AJvYcCW1jnZXwg1klVYzZCC7icmlUrR3VFC+SQa07KZPFP/DO+y7y78wCtqXhJkVysDi96Jy4V+NOzs2mDH8@vger.kernel.org
+X-Gm-Message-State: AOJu0YxpizzsBB7B9fWm98J4Mqgrcv3A+z+ICFw0wHA7pZ13UW1Qt8pt
+	ux0Bqgpkunlwp5P5dW82Bf0jZXgCoOHJUYRD2kaKU0riECqSvNpeI3E2XGWQPAdcqg90Hp9v6kk
+	cPxmp/iInOGEaPrGxo12LGojENxwMCFXfHUu2agZWc6g3YVTxB40tbspu0HFcyo0=
+X-Gm-Gg: ASbGncuoDgZTcoIgiwD3RlBqFu61NYrYtcwljG7EJAuJKunJT8t8/+kCupxRU/mN8Ps
+	PmThJ96+qNRhHVeLGczfO9Wgv9gsUIZkqGe+Pho6wMtT9ycW+HoCTVtEtsvXE9njV/ELoPWZPtg
+	dAU4UsEJovq2GhZLfsGHS+7WaN0gWpJICCKXyxmSFdSRRhSg534Ot2l43vxd8MjVs+Tz3huMURS
+	0nYv2MIlkwwQcyCA/pjI7Lxw213pltb8j5SdX318SMYK5Z8f5mo52pioanLMD7S8QZRGhuzUkIl
+	AQdCCjfY9PRU9QQa+Jj6KByGEd+335/h+jiVBSxyg7Smt/oCymZ6
+X-Received: by 2002:a05:6a00:3cc7:b0:732:2923:b70f with SMTP id d2e1a72fcca58-745ed87c9b5mr4232730b3a.11.1748009029366;
+        Fri, 23 May 2025 07:03:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGj17p1KKn+GDztyBFqeRvJRnpGGbjfNutmIwYVNXD38chctaNMiPd24PVPyBf3pQmeyrOY5g==
+X-Received: by 2002:a05:6a00:3cc7:b0:732:2923:b70f with SMTP id d2e1a72fcca58-745ed87c9b5mr4232686b3a.11.1748009028952;
+        Fri, 23 May 2025 07:03:48 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-742a98a3403sm13273668b3a.177.2025.05.23.07.03.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 May 2025 05:31:01 -0700 (PDT)
-Date: Fri, 23 May 2025 13:31:00 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Kees Cook <kees@kernel.org>, Ethan Carter Edwards
- <ethan@ethancedwards.com>, Andreas Dilger <adilger.kernel@dilger.ca>,
- linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: replace strcpy() with '.' assignment
-Message-ID: <20250523133100.1b023a6e@pumpkin>
-In-Reply-To: <20250519145930.GB38098@mit.edu>
-References: <20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com>
-	<202505190651.943F729@keescook>
-	<20250519145930.GB38098@mit.edu>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        Fri, 23 May 2025 07:03:48 -0700 (PDT)
+Date: Fri, 23 May 2025 22:03:43 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
+	david@fromorbit.com
+Subject: Re: [PATCH v3 1/2] new: Add a new parameter (name) in the "new"
+ script
+Message-ID: <20250523140343.nabmzlbss346faue@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <cover.1747635261.git.nirjhar.roy.lists@gmail.com>
+ <2b59f6ae707e45e9d0d5b0fe30d6c44a8cde0fec.1747635261.git.nirjhar.roy.lists@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b59f6ae707e45e9d0d5b0fe30d6c44a8cde0fec.1747635261.git.nirjhar.roy.lists@gmail.com>
 
-On Mon, 19 May 2025 10:59:30 -0400
-"Theodore Ts'o" <tytso@mit.edu> wrote:
-
-> On Mon, May 19, 2025 at 06:52:13AM -0700, Kees Cook wrote:
-> > > --- a/fs/ext4/inline.c
-> > > +++ b/fs/ext4/inline.c
-> > > @@ -1314,7 +1314,7 @@ int ext4_inlinedir_to_tree(struct file *dir_file,
-> > >  		if (pos == 0) {
-> > >  			fake.inode = cpu_to_le32(inode->i_ino);
-> > >  			fake.name_len = 1;
-> > > -			strcpy(fake.name, ".");
-> > > +			fake.name[0] = ".";  
-> > 
-> > This means the trailing NUL byte isn't being copied any more? That seems
-> > like a big change, even if name_len is being used for length tracking.  
+On Mon, May 19, 2025 at 06:16:41AM +0000, Nirjhar Roy (IBM) wrote:
+> This patch another optional interactive prompt to enter the
+> author name for each new test file that is created using
+> the "new" file.
 > 
-> Yeah, and so that's something that needs to be tested (and not just
-> build tested to catch the obvious FTBFS bug).
-
-The compiler (or headers files) can also allow strcpy() of constant
-length strings into arrays (known size). Erroring requests that are too long.
-The strcpy() is then converted to a memcpy() which can then be optimised
-into writes of constants.
-
-So using strcpy() under those conditions 'isn't all bad' and can generate
-better (and less bug prone) code than trying to hand-optimise it.
-
-So even through strcpy() is usually a bad idea, there is not need to
-remove the calls that the compiler can validate as safe.
-
-	David   
-
-> However, note how we
-> handle normal filenames, as opposed to "." and "..".  From
-> ext4_insert_dentry():
+> The sample output looks like something like the following:
 > 
-> 	de->inode = cpu_to_le32(inode->i_ino);
-> 	ext4_set_de_type(inode->i_sb, de, inode->i_mode);
-> 	de->name_len = fname_len(fname);
-> 	memcpy(de->name, fname_name(fname), fname_len(fname));
+> ./new selftest
+> Next test id is 007
+> Append a name to the ID? Test name will be 007-$name. y,[n]:
+> Creating test file '007'
+> Add to group(s) [auto] (separate by space, ? for list): selftest quick
+> Enter <author_name>: Nirjhar Roy <nirjhar.roy.lists@gmail.com>
+> Creating skeletal script for you to edit ...
+>  done.
 > 
-> Or were you commenting on the "no functional changes intended" line in
-> the commit description?  I agree that this is probably no longer
-> accurate.  :-)
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+> ---
+>  new | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> 					- Ted
+> diff --git a/new b/new
+> index 6b50ffed..636648e2 100755
+> --- a/new
+> +++ b/new
+> @@ -136,6 +136,9 @@ else
+>  	check_groups "${new_groups[@]}" || exit 1
+>  fi
+>  
+> +read -p "Enter <author_name>: " -r
+> +author_name="${REPLY:=YOUR NAME HERE}"
+> +
+>  echo -n "Creating skeletal script for you to edit ..."
+>  
+>  year=`date +%Y`
+> @@ -143,7 +146,7 @@ year=`date +%Y`
+>  cat <<End-of-File >$tdir/$id
+>  #! /bin/bash
+>  # SPDX-License-Identifier: GPL-2.0
+> -# Copyright (c) $year YOUR NAME HERE.  All Rights Reserved.
+> +# Copyright (c) $year $author_name.  All Rights Reserved.
+
+Dave thought we shouldn't use "author_name" at here:
+https://lore.kernel.org/fstests/aC509xXxgZJKKZVE@dread.disaster.area/
+
+If you don't mind, I'll merge PATCH 2/2 this week. If you still hope to
+have the 1/2, please consider the review point from Dave.
+
+Thanks,
+Zorro
+
+>  #
+>  # FS QA Test $id
+>  #
+> -- 
+> 2.34.1
+> 
 > 
 
 
