@@ -1,177 +1,262 @@
-Return-Path: <linux-ext4+bounces-8174-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8175-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55664AC10F2
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 18:25:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96DDFAC1AD0
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 05:51:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03F2A16C2C9
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 May 2025 16:25:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B303A3A4CAD
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 03:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652AF237717;
-	Thu, 22 May 2025 16:25:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="de+T5F9l"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E5322129A;
+	Fri, 23 May 2025 03:51:30 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A269228C9C;
-	Thu, 22 May 2025 16:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0772781749
+	for <linux-ext4@vger.kernel.org>; Fri, 23 May 2025 03:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747931116; cv=none; b=IVR4hgWRRYxxF69mRGi0nGOZ70kVwjzpOGRwpg0pi+q3hjD+R0qBPL4UzoqS0MBNgn7+SpQOjjosXAbl1/0Ihti3Uq6H64iIB+KknoRTv9hXz8zRjUqu+V7WhjCyAd+ueRehiguLldHN9tlOO6FfyhvHlEOkBaPURgQrOvzFyXk=
+	t=1747972289; cv=none; b=WBEgBBDU+cJZuJe5pnjQpCkQDu1v/iMDpGpnDF0zrlJEiCZZI5hXg8mPKdnwMJnKJVk2NDz2HFTlsMW8ps0+0LBASu6zgJJpD2JylyG5l8zyubZBz+dyoe5VO1rDC10WqBQI3jVjZf4/1hKhcmBEKjglyf/qbGZWBuszFw7B0Ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747931116; c=relaxed/simple;
-	bh=MGMaBPwspjdO+Cw7HVJESQj99jweSE+KzXhdvW8OErU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BrWoAZ+Tq/u3iE4/jpJSVqUzo2psoRynH9u3pEl9ynKl13VCGAkaQRRGfAj5SDjhQ8OwIC42MeT3CG8p5cHw3n/YTrQ8Ejbuben1pmwD+eFy922NirCQD/Y+ckopeZwmXira0T4P0FIsZFtLNF4o7jsuvKk5blVcTdRRzFlPbM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=de+T5F9l; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-551efcb745eso6385597e87.2;
-        Thu, 22 May 2025 09:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747931112; x=1748535912; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AScnhgmwXeZrgX8byDb4z77AD0ls8o4kE4xkmsd04fc=;
-        b=de+T5F9l9RR0v6pRswEcDQNexoGAb/NvXum3/eEuFlZ4c7Ed69FcSOGvuPI1D7I0oF
-         mhEXDJKqyCoS8VGkBjhcuXvpuPDHgFlJisDFm7WoEm9pgYGiJP0ai9nFuBw+NzwtnpCa
-         iIKr7WZcdb/MrKlVbhCrElp/LAf1SkuRfkhiOunGqCkgUsq/Suty7MksOPR58J9ji1iE
-         GQGBHrYa3UqkJxkVy4LVphVYhXSOTGBlc66ddKPcO66fdmOkbsRVUKUorYP2QE2cAHXA
-         NCrm+PvReir8anRhKINi3Rmjf7obEh7syxDnW3ch1b/8ysRpZAiV0egjsWHNOYEKoppc
-         VHog==
+	s=arc-20240116; t=1747972289; c=relaxed/simple;
+	bh=5V/v29AfF/oWEweCO4X3mm3g0/wdGwy1d38n6PJCkXQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GYnCYUX49uVQ5XMo66DMF3LjO94wzyMjgPmC7rBIvRBmmZaY8RO7XPJFhaMAhO/49fTwN1BUzpJRQYwJq27TaFqx0oBN3ZbYKC4+G41Md3ihfQgsUmll9JZ67uttxx5NfQYhXtITEuHmUN1JwUH87xF7yklDj2m8YzZMVqt0Z9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-85b3827969dso849276339f.1
+        for <linux-ext4@vger.kernel.org>; Thu, 22 May 2025 20:51:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747931112; x=1748535912;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AScnhgmwXeZrgX8byDb4z77AD0ls8o4kE4xkmsd04fc=;
-        b=wsPifReVY/2+sXXmdI0OfJZg4M8fuuS5xl03+f993etcJY0bomt3Cba1Dpq43P0khq
-         OMPda38bQusTdyLkgdE59nsEOUWuAxWyIzK1CD0Jmp2n0XnFraO7hwqjxRB1tB1H1w8N
-         xFnD3Ha3Lc04DeCh+4Q2TnV1pJGfiK48llkoJ4bLd3kn1gaFHijjDagtCf0ojQ9vbRDN
-         49Bz9XCnNpqzOeXsmc7rGdoNOs79xNM/lB0LGiemhve2R9xryWBWlVMd+At+EkeBZnzX
-         10+0GQmCNOldR3WKa+P9UEazQuRRH6ha8S4MtXZ+aZ2QNtGOjPmAV4+17HwDq8n3hNoV
-         /ZwA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUFhiAXDoawfP6YwLWSrFXwgfS6g1oXH5ZicIDHRNR3bpGqqXDhMn+sHOTnJIsN+ch/xJR6AgC19W6@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqmC74weQ96ehRgfAd5rdrd93UVjYOa+GGUIQ18B38kls42abG
-	toscsKxBG9vekFu4T5ThbwmQvZfEagzyxVAU4MMKp3s9drk7Yn+52h5/46+pKyF4XYKIbxvYIU2
-	iKT8K0YDNtCWw6f7aAPktXaijsAZZY1eGzt14XGs=
-X-Gm-Gg: ASbGncvm9I4O9AgKCxagZFLyms3S6wNG8kzIZ1beHyKsTy+HcyJB0JNUGaN83vovHny
-	rcE/ACtErfY8fRGxJr6AtKZTgyUnIPVCBFxC968puluw2oo2XPlhWU9hRsCtg6L1i8gcHJffjuS
-	nBgQJuffJi1aXpTwKM+ovcBI/f7Z339eXp
-X-Google-Smtp-Source: AGHT+IHFA3v2ucsMVwhIJwbtjT8bp8pc/0ysED2W0ZNCz6w1/X6DI6K7+XVj8QLkh+U/lJenj9vJ11Z6HbHWpLn3QrU=
-X-Received: by 2002:a17:907:7f8b:b0:ad5:55db:e411 with SMTP id
- a640c23a62f3a-ad555dbfdefmr2031800866b.27.1747931101539; Thu, 22 May 2025
- 09:25:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1747972287; x=1748577087;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iqnhaG3SiKjwXI2wuYgoRoxgP4ldO82mcCzA8FggHsM=;
+        b=QPCUILPp2cqmgZWwt53/b06NaJv2n4ijcSR1tChW77vQGT5cxZ6J9AEgYsXO4zxNE5
+         H12NnvF8AU9IXDp6OQW4b4HBAzKnNJEh+WsmZni6MYwq9oYzp6zqkW56mSj3/x1hqLmJ
+         MYlwe3TzTN6yo+1KzqJJnkXn0yiDyXRiSu1ruTk4NQrXrz+DGIEmWuBrbec4oIF4LM22
+         4mTKFdwlvB8d9NcLa/WKXJDzFP0hCCiMbbguVxxdVl/B1RyMSxJ5xRyB5AvZVKqtItSD
+         64DOnEWScLfesyFSmUJFkvtaONhDP+H8ZTOlLts7JRmITVohmopaYkS9uluwObRfCXbx
+         jVlA==
+X-Forwarded-Encrypted: i=1; AJvYcCV2vms6Qc+7cUm6MC8tNZATIXS/DrtpJQDGADcZDG+xQ/BQdf1e4gvF8upAIhAyld751z/JiGn8a64v@vger.kernel.org
+X-Gm-Message-State: AOJu0YwzWXhcV3GCxKMxVSB0zXPUgYR3+fOp5asqmxqckqXgJ2lLIEpk
+	r8uy0hGlqzfFbGLvCpmo2D8yySKo9RxI1cF/qvJBfBvCeGu2ksKfwkc96TeNvEA13NeW+Ttr/vQ
+	QxeGvKSlQlCugLWQ5kaM/tt7/WqJYv60rdGLb1xg3yEkreXeZosbhODRUg0A=
+X-Google-Smtp-Source: AGHT+IGVBDixPBnY4z8Nvzq8uDg7pM3vWgMWs2veQuVDfDjvB9zhVLbqbvRDssvsXJ6q0ojws/w38SvoZYwgWXwW49880a0e4crd
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250521235837.GB9688@frogsfrogsfrogs>
-In-Reply-To: <20250521235837.GB9688@frogsfrogsfrogs>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 22 May 2025 18:24:50 +0200
-X-Gm-Features: AX0GCFtG0ZvPfxpdlc2X67s2FKyAK5ZAjJR94iM36M5BCfha7x5wkalEQmZ_gf0
-Message-ID: <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
-Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
- containerize ext4
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net, bernd@bsbernd.com, 
-	miklos@szeredi.hu, joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>, 
-	linux-ext4 <linux-ext4@vger.kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
+X-Received: by 2002:a05:6602:2988:b0:85d:b054:6eb9 with SMTP id
+ ca18e2360f4ac-86a2324e01amr3835142539f.14.1747972287025; Thu, 22 May 2025
+ 20:51:27 -0700 (PDT)
+Date: Thu, 22 May 2025 20:51:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <682ff0bf.a70a0220.1765ec.0148.GAE@google.com>
+Subject: [syzbot] [ext4?] INFO: task hung in lock_two_directories (4)
+From: syzbot <syzbot+1bfacdf603474cfa86bd@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, bp@alien8.de, casey@schaufler-ca.com, 
+	dave.hansen@linux.intel.com, hpa@zytor.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mingo@redhat.com, roberto.sassu@huawei.com, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tytso@mit.edu, 
+	x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 22, 2025 at 1:58=E2=80=AFAM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> Hi everyone,
->
-> DO NOT MERGE THIS.
->
-> This is the very first request for comments of a prototype to connect
-> the Linux fuse driver to fs-iomap for regular file IO operations to and
-> from files whose contents persist to locally attached storage devices.
->
-> Why would you want to do that?  Most filesystem drivers are seriously
-> vulnerable to metadata parsing attacks, as syzbot has shown repeatedly
-> over almost a decade of its existence.  Faulty code can lead to total
-> kernel compromise, and I think there's a very strong incentive to move
-> all that parsing out to userspace where we can containerize the fuse
-> server process.
->
-> willy's folios conversion project (and to a certain degree RH's new
-> mount API) have also demonstrated that treewide changes to the core
-> mm/pagecache/fs code are very very difficult to pull off and take years
-> because you have to understand every filesystem's bespoke use of that
-> core code.  Eeeugh.
->
-> The fuse command plumbing is very simple -- the ->iomap_begin,
-> ->iomap_end, and iomap ioend calls within iomap are turned into upcalls
-> to the fuse server via a trio of new fuse commands.  This is suitable
-> for very simple filesystems that don't do tricky things with mappings
-> (e.g. FAT/HFS) during writeback.  This isn't quite adequate for ext4,
-> but solving that is for the next sprint.
->
-> With this overly simplistic RFC, I am to show that it's possible to
-> build a fuse server for a real filesystem (ext4) that runs entirely in
-> userspace yet maintains most of its performance.  At this early stage I
-> get about 95% of the kernel ext4 driver's streaming directio performance
-> on streaming IO, and 110% of its streaming buffered IO performance.
-> Random buffered IO suffers a 90% hit on writes due to unwritten extent
-> conversions.  Random direct IO is about 60% as fast as the kernel; see
-> the cover letter for the fuse2fs iomap changes for more details.
->
+Hello,
 
-Very cool!
+syzbot found the following issue on:
 
-> There are some major warts remaining:
->
-> 1. The iomap cookie validation is not present, which can lead to subtle
-> races between pagecache zeroing and writeback on filesystems that
-> support unwritten and delalloc mappings.
->
-> 2. Mappings ought to be cached in the kernel for more speed.
->
-> 3. iomap doesn't support things like fscrypt or fsverity, and I haven't
-> yet figured out how inline data is supposed to work.
->
-> 4. I would like to be able to turn on fuse+iomap on a per-inode basis,
-> which currently isn't possible because the kernel fuse driver will iget
-> inodes prior to calling FUSE_GETATTR to discover the properties of the
-> inode it just read.
+HEAD commit:    a5806cd506af Linux 6.15-rc7
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10defef4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3340af1a8845dd35
+dashboard link: https://syzkaller.appspot.com/bug?extid=1bfacdf603474cfa86bd
+compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14f292d4580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e29e70580000
 
-Can you make the decision about enabling iomap on lookup?
-The plan for passthrough for inode operations was to allow
-setting up passthough config of inode on lookup.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/652000eacd92/disk-a5806cd5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2b445a74e31e/vmlinux-a5806cd5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0a4ef01f165f/bzImage-a5806cd5.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/6f80bf89f51a/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=10f7c1f4580000)
 
->
-> 5. ext4 doesn't support out of place writes so I don't know if that
-> actually works correctly.
->
-> 6. iomap is an inode-based service, not a file-based service.  This
-> means that we /must/ push ext2's inode numbers into the kernel via
-> FUSE_GETATTR so that it can report those same numbers back out through
-> the FUSE_IOMAP_* calls.  However, the fuse kernel uses a separate nodeid
-> to index its incore inode, so we have to pass those too so that
-> notifications work properly.
->
+The issue was bisected to:
 
-Again, I might be missing something, but as long as the fuse filesystem
-is exposing a single backing filesystem, it should be possible to make
-sure (via opt-in) that fuse nodeid's are equivalent to the backing fs
-inode number.
-See sketch in this WIP branch:
-https://github.com/amir73il/linux/commit/210f7a29a51b085ead9f555978c85c9a4a=
-503575
+commit e63d86b8b76437815fc040e8e65da257c28ba922
+Author: Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu Nov 16 09:01:24 2023 +0000
 
-Thanks,
-Amir.
+    smack: Initialize the in-memory inode in smack_inode_init_security()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=148852d4580000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=168852d4580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=128852d4580000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1bfacdf603474cfa86bd@syzkaller.appspotmail.com
+Fixes: e63d86b8b764 ("smack: Initialize the in-memory inode in smack_inode_init_security()")
+
+INFO: task syz-executor125:5853 blocked for more than 143 seconds.
+      Not tainted 6.15.0-rc7-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor125 state:D stack:28616 pid:5853  tgid:5847  ppid:5846   task_flags:0x400040 flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x168f/0x4c70 kernel/sched/core.c:6767
+ __schedule_loop kernel/sched/core.c:6845 [inline]
+ schedule+0x165/0x360 kernel/sched/core.c:6860
+ schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6917
+ rwsem_down_write_slowpath+0xbec/0x1030 kernel/locking/rwsem.c:1176
+ __down_write_common kernel/locking/rwsem.c:1304 [inline]
+ __down_write kernel/locking/rwsem.c:1313 [inline]
+ down_write_nested+0x1b5/0x200 kernel/locking/rwsem.c:1694
+ inode_lock_nested include/linux/fs.h:902 [inline]
+ lock_two_directories+0x16b/0x220 fs/namei.c:3236
+ lock_rename fs/namei.c:3270 [inline]
+ do_renameat2+0x38a/0xc50 fs/namei.c:5216
+ __do_sys_rename fs/namei.c:5317 [inline]
+ __se_sys_rename fs/namei.c:5315 [inline]
+ __x64_sys_rename+0x82/0x90 fs/namei.c:5315
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f58ce457489
+RSP: 002b:00007f58ce3ea168 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
+RAX: ffffffffffffffda RBX: 00007f58ce4de6b8 RCX: 00007f58ce457489
+RDX: 0030656c69662f30 RSI: 00002000000001c0 RDI: 0000200000000000
+RBP: 00007f58ce4de6b0 R08: 00007ffff522f7d7 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f58ce4de6bc
+R13: 000000000000006e R14: 00007ffff522f6f0 R15: 00007ffff522f7d8
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/31:
+ #0: ffffffff8df3dee0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
+ #0: ffffffff8df3dee0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+ #0: ffffffff8df3dee0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x2e/0x180 kernel/locking/lockdep.c:6764
+2 locks held by getty/5581:
+ #0: ffff88814cb7c0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900030062f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x43e/0x1400 drivers/tty/n_tty.c:2222
+3 locks held by syz-executor125/5849:
+4 locks held by syz-executor125/5853:
+ #0: ffff8880353d6420 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:556
+ #1: ffff8880353d6730 (&type->s_vfs_rename_key){+.+.}-{4:4}, at: lock_rename fs/namei.c:3269 [inline]
+ #1: ffff8880353d6730 (&type->s_vfs_rename_key){+.+.}-{4:4}, at: do_renameat2+0x37f/0xc50 fs/namei.c:5216
+ #2: ffff88807b085d60 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:902 [inline]
+ #2: ffff88807b085d60 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: lock_two_directories+0x141/0x220 fs/namei.c:3235
+ #3: ffff88807b329808 (&type->i_mutex_dir_key#3/5){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:902 [inline]
+ #3: ffff88807b329808 (&type->i_mutex_dir_key#3/5){+.+.}-{4:4}, at: lock_two_directories+0x16b/0x220 fs/namei.c:3236
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 31 Comm: khungtaskd Not tainted 6.15.0-rc7-syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ nmi_cpu_backtrace+0x39e/0x3d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x17a/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:158 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:274 [inline]
+ watchdog+0xfee/0x1030 kernel/hung_task.c:437
+ kthread+0x711/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 5849 Comm: syz-executor125 Not tainted 6.15.0-rc7-syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+RIP: 0010:get_current arch/x86/include/asm/current.h:25 [inline]
+RIP: 0010:write_comp_data kernel/kcov.c:245 [inline]
+RIP: 0010:__sanitizer_cov_trace_const_cmp8+0x8/0x90 kernel/kcov.c:321
+Code: 48 89 44 11 20 c3 cc cc cc cc cc 0f 1f 80 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 48 8b 04 24 <65> 48 8b 0c 25 08 a0 72 92 65 8b 15 58 aa b2 10 81 e2 00 01 ff 00
+RSP: 0018:ffffc900044d6ef8 EFLAGS: 00000246
+RAX: ffffffff826f434a RBX: 1ffff9200089adf8 RCX: ffffffff826f431d
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc900044d7090 R08: ffff8880778b39ff R09: 1ffff1100ef1673f
+R10: dffffc0000000000 R11: ffffed100ef16740 R12: 000000000000000e
+R13: 1ffff1100ef1673f R14: 000000000000601b R15: ffff8880778b39f8
+FS:  00007f58ce40b6c0(0000) GS:ffff8881261f6000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055d3b19b24b0 CR3: 0000000034b24000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_buffer_uptodate fs/ext4/ext4.h:3842 [inline]
+ __ext4_get_inode_loc+0x5aa/0x1040 fs/ext4/inode.c:4458
+ ext4_get_inode_loc fs/ext4/inode.c:4583 [inline]
+ ext4_reserve_inode_write+0x191/0x330 fs/ext4/inode.c:5889
+ __ext4_mark_inode_dirty+0x15b/0x700 fs/ext4/inode.c:6066
+ ext4_dirty_inode+0xd0/0x110 fs/ext4/inode.c:6103
+ __mark_inode_dirty+0x2d1/0xdf0 fs/fs-writeback.c:2527
+ mark_inode_dirty include/linux/fs.h:2545 [inline]
+ dquot_alloc_space include/linux/quotaops.h:319 [inline]
+ dquot_alloc_block include/linux/quotaops.h:336 [inline]
+ ext4_xattr_block_set+0x12ca/0x2ac0 fs/ext4/xattr.c:2048
+ ext4_xattr_set_handle+0xdfb/0x1590 fs/ext4/xattr.c:2447
+ ext4_initxattrs+0x9f/0x110 fs/ext4/xattr_security.c:44
+ security_inode_init_security+0x2a0/0x3f0 security/security.c:1852
+ __ext4_new_inode+0x3257/0x3bd0 fs/ext4/ialloc.c:1326
+ ext4_create+0x22d/0x460 fs/ext4/namei.c:2824
+ lookup_open fs/namei.c:3701 [inline]
+ open_last_lookups fs/namei.c:3800 [inline]
+ path_openat+0x14f1/0x3830 fs/namei.c:4036
+ do_filp_open+0x1fa/0x410 fs/namei.c:4066
+ do_sys_openat2+0x121/0x1c0 fs/open.c:1429
+ do_sys_open fs/open.c:1444 [inline]
+ __do_sys_openat fs/open.c:1460 [inline]
+ __se_sys_openat fs/open.c:1455 [inline]
+ __x64_sys_openat+0x138/0x170 fs/open.c:1455
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f58ce457489
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f58ce40b168 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007f58ce4de6a8 RCX: 00007f58ce457489
+RDX: 0000000000101042 RSI: 0000200000000140 RDI: 00000000ffffff9c
+RBP: 00007f58ce4de6a0 R08: 00007f58ce40b6c0 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 00007f58ce4de6ac
+R13: 0000000000000006 R14: 00007ffff522f6f0 R15: 00007ffff522f7d8
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.394 msecs
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
