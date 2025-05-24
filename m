@@ -1,122 +1,129 @@
-Return-Path: <linux-ext4+bounces-8193-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8194-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59803AC2BAE
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 May 2025 00:08:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C3E2AC2D5B
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 May 2025 06:43:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEAD6A44352
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 May 2025 22:07:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 918931C008E9
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 May 2025 04:44:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC3220FABC;
-	Fri, 23 May 2025 22:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1740B1B0439;
+	Sat, 24 May 2025 04:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MBpaq94D"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CA9212FAC
-	for <linux-ext4@vger.kernel.org>; Fri, 23 May 2025 22:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 566DB19ABAC;
+	Sat, 24 May 2025 04:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748038064; cv=none; b=mOh/55lsAUR+rnYMl+qKmWJHx6LjomnfwK5Kx2w1v+6uO+gQhbADrouZF+dr7WjIzqEZMg1bP4EJUQ+SNSN11Wb6VCw89lO4RgJm+mJxFxxoVWYUfJCBeo8QMQBi2DaTcMnovPt5gMDHyAp1sngTitzWffNO8fQaBuHd0nUDABo=
+	t=1748061821; cv=none; b=bLWwPkvxaDBJDMGLIqob7eI1ag6My7xXq5uBnvBuYt2GFm1sWTbrGcK1j/hyVto+wUcAgia5mi/eayewFalny6ccMu3fz9I4p9fue/uEyLBzSqU2b7J9iqvb443bwTNE+mM01P7B2PbT4BP/oI/awUW+fTcSzACsnyeVXoIQ2mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748038064; c=relaxed/simple;
-	bh=/Vv1WmyqouccS68NScFLocNcJemiPcN41TARbtmKYJs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PDsHR+4qb8WYWeMnNB0lTLnXcLwVUPV51wunsAwygVT8qmslLNsG2+u/FvuxxExzFWhWQUP2cNaQOCFeGVCMNa2apsize3YQ3lYeW6iPG+qfhp3Wvznm/jL5vh+NPM/AfkRdiThBjS62VvnOnYdPIsrpG627s7bze9PwFKVrXS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-111-173.bstnma.fios.verizon.net [173.48.111.173])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54NM7JSh006027
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 May 2025 18:07:22 -0400
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 3AFC12E00DD; Fri, 23 May 2025 18:07:19 -0400 (EDT)
-Date: Fri, 23 May 2025 18:07:19 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Kees Cook <kees@kernel.org>
-Cc: David Laight <david.laight.linux@gmail.com>,
-        Ethan Carter Edwards <ethan@ethancedwards.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: replace strcpy() with '.' assignment
-Message-ID: <20250523220719.GC332467@mit.edu>
-References: <20250518-ext4-strcpy-v2-1-80d316325046@ethancedwards.com>
- <202505190651.943F729@keescook>
- <20250519145930.GB38098@mit.edu>
- <20250523133100.1b023a6e@pumpkin>
- <20250523142449.GB1414791@mit.edu>
- <85A9A687-D5E0-4EE4-8FFE-ED70C8CCE863@kernel.org>
+	s=arc-20240116; t=1748061821; c=relaxed/simple;
+	bh=wM12UXAAnAU45ftr2MIfRKHPhf4eIiCkNInZ/ekmLlQ=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
+	 MIME-version:Content-type; b=vA8KrPytb5wqmAdHgUzlLchOdhxrNmIf6xxG30HVQAznZUtPe0Np8WnvFh1o2lt8J9DLLUnyXnOZr2ZxaLyQbZJnBK/Ny2sZ9rFLBJhLWMutJ02nwt6LHukdUn7CZY48+aMBofXedu3u/CaOYy9ZucjyetJjM0H/awP9SqQCZuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MBpaq94D; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-30ec226b7d6so485048a91.2;
+        Fri, 23 May 2025 21:43:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748061819; x=1748666619; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:message-id:date
+         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7Wz5e15DgDNnQg1K4LG2VnU8lmDtJLZduTBJnh+PEZ0=;
+        b=MBpaq94DxyuWalHC9Ut/SLBZAKRmpgHuwiqMtCpwy+hbICmh5QP5aKvG5XTqvfwTIF
+         NACE2cUnFDqbmGoPOmlh2K9v5+3SRU6CYWzCzWgQR9GJKntLyfkFriL3H8zrn3VdrZqT
+         H0sW/Ww3y5uKTPZMgy4kC+FFmPxjUYpmQIj9uSk9Mt/uatT1MlHJgRgREuc6XVf/wleY
+         +QO484/E6V5xtEq1/zAPtVaw3rbp+I0urIJdwgIPJb8swq3RUB2dPtPZBAd5OFdXtUEt
+         Zs+BE8ch9+ViuWqnXkaKZ54OlGMd42m+UccfYEJFsJl6IzZbqP665IXvm4opiJIMzJdV
+         btgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748061819; x=1748666619;
+        h=content-transfer-encoding:mime-version:references:message-id:date
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7Wz5e15DgDNnQg1K4LG2VnU8lmDtJLZduTBJnh+PEZ0=;
+        b=SF/Ixn1Gc+7BIlDHRyHOCiIQYe66heakyQZXfXcNdVQXtzZAle8gVlhIeZJwLOQBHW
+         cmGy2WoDuaw9E2bmR9dVdkrEs9WkJDicjvhblnd9XBQGZJq6Em72PlazgVhrLo3V8g8f
+         ulvHeuJw1C0vylLTQ76HvNwnrCNGv2t9u/+HZfHo88WG2i9a6//uCH8MqdK/oJVhsOzS
+         hwcBJ920tk2GPnB2NCqUJTpNixoSwRhazqWVsGpR5T4meRLveKpLUtOb4He3loC0ehhV
+         Zhul6nebhTQLmYK/ed6WcDR8LgtVqaDBzn9ZlC6oaDj2bkjOhCp3LfxxYtrja2JQAjRQ
+         MqKA==
+X-Forwarded-Encrypted: i=1; AJvYcCVD9L8qZuFyriNZMgod9wynM0/YfRM+LPr5JijffVobZpJQD0FVJ3S4nA7J+qafvlPrO5yq/u55FXaCu5HO2nY=@vger.kernel.org, AJvYcCVVnKktdgT8ZxOEpd9+aZprW+pD3PXomoT+f1nSnj7fRcC8EMgWuKNNAEIGyramsKtXpPqEsgwZJ+TcB3EH@vger.kernel.org, AJvYcCWS2otrM7vsjJlc19S5BbYYhcAphlMANaMJw0XXgTm0vvewk1ckFjdTtXbBh9cYHNHqPv7O6XhzzPqNKA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzocEJBMN8UsKY1wuLI83dKnl2+pptiHaW+bE2tfyq27aF/63LN
+	W0VaYZh8mVQnlIxeVX9UN3ru67XUyznaM86/fWPZWuUw9tiyERK6ERUdzI4wGA==
+X-Gm-Gg: ASbGncu3e0a9DhKTe5RrSWAXvCf3vRlqWIg4CLDgKtyF4jauDHz8d6fkQUk3f5sHWVZ
+	N8iQDmnPGHYVM119qVFFBBL0djDi88/fTWS+XPx+lXiLoDFtiQCnPlD1CL4/+bEDOIs47GTH16b
+	+buvxJzZpk/7fbHtxWtkYgD2T9hPVltFxWwRs5BwsaKLkcDk6rO5c9kre6r2rJo49q/v4GnK6o1
+	E1gnPtWpot3izBO65J0ZlmhaFGsfF7AZD6h1ps5vCxdCu6Ov3k2lytYtLPdws8ELkzN1AfRKB+J
+	vuP+Ra9RlLzvWtQWVa0dQi2bKmwsY+zKyQegK1TBDcxW
+X-Google-Smtp-Source: AGHT+IE3W9sVN9Kj8QzWN+bUqmOvPkuxI3tPM/F+itgLqPoHjPo7vrtoe330BPhnhy/q/oUcvqUWAA==
+X-Received: by 2002:a17:90b:164a:b0:308:6d7a:5d30 with SMTP id 98e67ed59e1d1-3110f31bf8cmr2747449a91.18.1748061818625;
+        Fri, 23 May 2025 21:43:38 -0700 (PDT)
+Received: from dw-tp ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-311082cc986sm762945a91.12.2025.05.23.21.43.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 May 2025 21:43:37 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ext4: remove unnecessary duplicate check in ext4_map_blocks()
+In-Reply-To: <aDCdjUhpzxB64vkD@stanley.mountain>
+Date: Sat, 24 May 2025 10:07:33 +0530
+Message-ID: <87ldqm39pu.fsf@gmail.com>
+References: <aDCdjUhpzxB64vkD@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85A9A687-D5E0-4EE4-8FFE-ED70C8CCE863@kernel.org>
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 23, 2025 at 10:14:04AM -0700, Kees Cook wrote:
-> 
-> 
-> On May 23, 2025 7:24:49 AM PDT, Theodore Ts'o <tytso@mit.edu> wrote:
-> >On Fri, May 23, 2025 at 01:31:00PM +0100, David Laight wrote:
-> >> 
-> >> The compiler (or headers files) can also allow strcpy() of constant
-> >> length strings into arrays (known size). Erroring requests that are too long.
-> >> The strcpy() is then converted to a memcpy() which can then be optimised
-> >> into writes of constants.
-> >> 
-> >> So using strcpy() under those conditions 'isn't all bad' and can generate
-> >> better (and less bug prone) code than trying to hand-optimise it.
-> >> 
-> >> So even through strcpy() is usually a bad idea, there is not need to
-> >> remove the calls that the compiler can validate as safe.
-> >
-> >I assume that what the hardening folks want to do is to assert that
-> >strcpy is always evil(tm) so they can detect potential security bugs
-> >by doing "git grep strcpy".
-> 
-> FWIW, what I'd like is a lack of ambiguity for both humans and
-> compilers. "Get rid of strcpy" is the Big Hammer solution for
-> strcpy. The more precise version is "disallow strcpy of a src or dst
-> where either lack a compile-time buffer size".
+Dan Carpenter <dan.carpenter@linaro.org> writes:
 
-Well, technically speaking struct ext4_dir_entry.name has a fixed
-compile-time buffer size:
+> The previous lines ensure that EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF is
+> set so remove this duplicate check.
+>
 
-struct ext4_dir_entry {
-	__le32	inode;			/* Inode number */
-	__le16	rec_len;		/* Directory entry length */
-	__le16	name_len;		/* Name length */
-	char	name[EXT4_NAME_LEN];	/* File name */
-};
+Earlier, I knew it was a redundant check, but I went ahead with it
+anyway; and later, I might have missed removing it. I agree that we
+don’t really need this extra check.
 
-And what we're copying into name here is also fixed.  It's either "."
-or "..".   As far as optimization is concerned, whether
+So, the patch looks good to me. Thanks for taking care of it!
 
-   de->name[0] = de->name[1] = '.';
+Please feel free to add:
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-could be better optimized by the compiler than:
 
-   strcpy(de->name, "..");
-or
-   memcpy(de->name, "..", 2);
-(which is all that is required)
-
-Meh.  Probably the compiler could optimized it into a 2-byte word
-store, but it's not like mkdir is a hot path.  :-)
-
-It's probably easier to patch the code path and as opposed to having
-the conversation about how "no, really, it's safe, and I can prove
-it."  If this was a performance hot path, I might care more, but it
-isn't, so I don't.
-
-           	   	    	       - Ted
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+>  fs/ext4/inode.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index be9a4cba35fd..014021019b22 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -757,8 +757,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+>  				orig_mlen == map->m_len)
+>  			goto found;
+>  
+> -		if (flags & EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF)
+> -			map->m_len = orig_mlen;
+> +		map->m_len = orig_mlen;
+>  	}
+>  	/*
+>  	 * In the query cache no-wait mode, nothing we can do more if we
+> -- 
+> 2.47.2
 
