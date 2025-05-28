@@ -1,81 +1,82 @@
-Return-Path: <linux-ext4+bounces-8207-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8208-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0710AC6C4F
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 May 2025 16:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E87F9AC6C7B
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 May 2025 17:06:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B35E77A28D4
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 May 2025 14:52:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECE317AE3E0
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 May 2025 15:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DDE28B4FA;
-	Wed, 28 May 2025 14:53:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8937C28B7E0;
+	Wed, 28 May 2025 15:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qadhF+PL"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pf8E2xyy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F9D8288C8C;
-	Wed, 28 May 2025 14:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7602928853F;
+	Wed, 28 May 2025 15:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748444033; cv=none; b=thSZXvUVjvvF++hUugczw6uNxH1vSDRUiwOv7aRZLgnW8WgnxJKaMpmrXhRRlHdJIiqvkT9qQ4dPBQyPxNY/bz6+S8pbjuslavMmpnacWxuqsQUZla8PGz3HJt38/ZwdOYxW9YRt9c3D/ydzE9jz6LtP3BCQygLF25eU3pUxq3k=
+	t=1748444791; cv=none; b=QFp9ZjfD9Sa5Pbz81X6Lb5ckQpvrRxzuCdJlBSQPz9HWamMOGpNMGgcOjyWd/DNmkR6+7J5PvaNRhkTEQpnJDusFVoz/OXSj4wk+EJ8Vke9q/Km+FJwFf3WvCgEUKBhYNUMv6yP4Kbf9wD9905WLRHVrrh1gTqR+H2R6yJNIaVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748444033; c=relaxed/simple;
-	bh=lFDV1HaeUob008ZddkZRHixO8/o/65lcZVfKDJi4TjM=;
+	s=arc-20240116; t=1748444791; c=relaxed/simple;
+	bh=ODpsIO7RVzW6JdyJy6lN6uKemRVcL4gaELLz0FE4nJg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b4+1snETZ7rpLf8WoWwjEs98CjjgWbC1Axsi1t55GPP/zcX92fZfKe2DejxYyQ5b0AZYmAJewUgOqM2sX7Z1ivMzSsSRxz4cm7CrdolqjSAV+eCoC1z4vfcEuxMKb54+MOBeD9A5ASkPZ1IJ152DWg2Ph8XLpWTSGawTskf4xVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qadhF+PL; arc=none smtp.client-ip=148.163.156.1
+	 Content-Type:Content-Disposition:In-Reply-To; b=T2SjzynFi2mw72YRCBdnSyfBF56K2l8b8EYtcR+g/dq8ov7zESaT3ZA5IGqZUltKdoW6DmoLSfWw36O3QDC6y+EyJiLrM53QI2SRln2MEq3A8/1C+2nB225nxZd85LnfT/MATHVaJMqMsiWy9cSb3CUupBgpvP61Z/p7Wvb7lM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pf8E2xyy; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54SE9XOR032017;
-	Wed, 28 May 2025 14:53:29 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54SE9Pwb017540;
+	Wed, 28 May 2025 15:06:03 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=C+Ax56K/8glZJmSH+KSxWGDGC6oik9
-	dHEUVf8/VFNLg=; b=qadhF+PLwysgEZYOoIUKp8ZxmQfyZULiZB8WGRrq18v9a0
-	pzQi8ZD9ORDbTJJRJzoGRUGpSSiUNC9jquapZxvmH8B0rqGX50M1+LqOYaAA+FNU
-	26d6ODgWX55VmQWLFqMOOCc6oPsCHmpnzo1v2XcUPuyqNdgVPkqX2S7BU998yerX
-	M4JJSKDWZPB27WrJzxhiBf1y+GGf2/61jdj2rcP0uGagZ5MDPjr8vW8JuWVaUTIV
-	ImUTootbcsqdfo8IiASP53G/szXa+VmUi7iMCXe/Jp6vJGV9z8EPOGwc1I7+TCmP
-	R4Cjpe9hF4oBHEUatWe/GCV9iMbVjHCM72lplFIw==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46x40jr8k7-1
+	:references:subject:to; s=pp1; bh=TYJDbql5sldxAJx2938C31EJDleJ/2
+	lSl1d6fN/5hkw=; b=pf8E2xyyWPtFBnim+PaCPxlybuAjSL5c1vdZ7FWWw7mLf1
+	7OrVdclUcQtjPSYDrko9vqOE/Qzyk3fuW4IFtqZTaUHepsrI/57k3X/EZPbl/Z2Y
+	H+mcAdPCguWsvxxPuWCLAus4ZbV4f/b6K0ACT9JWBfkRAFDjT3VqitfM7NCoC5vX
+	vo0Up0udYyPI/qGhUEQJVghhx2B+3SsAPwUxWr6B9WkP2YDjP7O6QxKEvPXA4nv8
+	YltWrk4BHMz8X7EsTszsDjkrvxC63C2mqPq5RLA2mJgGg6ouGVcrsFe2atKq5fEI
+	5XN/9APCpuwUqXCzlriuEgph5bxQbmWDbCTWGSGA==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46x40ggbpa-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 May 2025 14:53:29 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54SAecxA021326;
-	Wed, 28 May 2025 14:53:28 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 46utnmqreh-1
+	Wed, 28 May 2025 15:06:03 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54SF2wwd016178;
+	Wed, 28 May 2025 15:06:02 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46uru0r508-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 May 2025 14:53:28 +0000
+	Wed, 28 May 2025 15:06:02 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54SErQfB52232568
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54SF60LX19988938
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 28 May 2025 14:53:26 GMT
+	Wed, 28 May 2025 15:06:00 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8373120040;
-	Wed, 28 May 2025 14:53:26 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 4C2E42004F;
+	Wed, 28 May 2025 15:06:00 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 56D912004B;
-	Wed, 28 May 2025 14:53:22 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 3ACFB20040;
+	Wed, 28 May 2025 15:05:50 +0000 (GMT)
 Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.18.84])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 28 May 2025 14:53:22 +0000 (GMT)
-Date: Wed, 28 May 2025 20:23:15 +0530
+	Wed, 28 May 2025 15:05:47 +0000 (GMT)
+Date: Wed, 28 May 2025 20:35:41 +0530
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: libaokun@huaweicloud.com
 Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
         jack@suse.cz, linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
         yangerkun@huawei.com, libaokun1@huawei.com
-Subject: Re: [PATCH 0/4] ext4: better scalability for ext4 block allocation
-Message-ID: <aDchmYDc_OOAu2yC@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Subject: Re: [PATCH 1/4] ext4: add ext4_try_lock_group() to skip busy groups
+Message-ID: <aDcmRdOrWatcBJWc@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
+ <20250523085821.1329392-2-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -84,51 +85,52 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250523085821.1329392-1-libaokun@huaweicloud.com>
+In-Reply-To: <20250523085821.1329392-2-libaokun@huaweicloud.com>
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=SdL3duRu c=1 sm=1 tr=0 ts=68372369 cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=kj9zAlcOel0A:10 a=dt9VzEwgFbYA:10 a=AiHppB-aAAAA:8 a=i0EeH86SAAAA:8 a=rC1FfmAkVqhJs6Hui7oA:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-GUID: qxy6T5DMMWDnVa8xMLTdHn_p_De3-cJ1
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI4MDEyNyBTYWx0ZWRfX8V4UXs5k8tO6 OtIu1brpWBcDIXyReUW9V8cKeKqERrjcXIOkkNF1tsYryGnynWrNl5S6P4ot7mWJ3rM+SQ92KFK hPPy4Ar9VjfDbHp7GVDd4EuAtEi+GcfDddnT4edOmxAKpGAuI0X5zG4TKK3lOcGv1ORwC9N0zYD
- HDAvLXCMX1W7ZTgjG0sknTk7L1lgRs6IrwL3eWb6/0w8TloXmyhpSDxP++cazECD9W3Eq+nupOq /ebeZc0nYQ13Oi6VWaXyEWNtaWjD+Z+xQwlamQIqNw2zsxiXOvsRioZRHFWIALcvXogwTp47Yey yhvLgLpI6ohxFx/NmmsCDEN2EK+OdTWsNMXphdKwlboqXqY1WjJkC5NOqAJ+iCtSwgEqcOekUdb
- 3YCl1mYhxdl5uX4GPPNy8+aHjTlx6J9XOlMRbmujA9A+BIdT5gi71WmVa8A1umb1V1tRGzvq
-X-Proofpoint-ORIG-GUID: qxy6T5DMMWDnVa8xMLTdHn_p_De3-cJ1
+X-Authority-Analysis: v=2.4 cv=avmyCTZV c=1 sm=1 tr=0 ts=6837265b cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=kj9zAlcOel0A:10 a=dt9VzEwgFbYA:10 a=AiHppB-aAAAA:8 a=i0EeH86SAAAA:8 a=ujIZDTJbDLGYv8oHIywA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI4MDEzMCBTYWx0ZWRfX3cHOzmOZL3Kr t8Jkok2JVH95F2nXHT6azSs/+qIWbgZ6LYzSC1ippmCfSv4XuAhK6Gp4q4evGL5D9arGS+xkD+S fONR7AnNwQ4+AMl+teaKpoY8WrWXr06OTWdS3VGaD3IX03OA+yyCH7Hlk+1kiRZKWIe1iJoSs1K
+ NifSnZ6GvIc7O3ydW2CLRVUCLeC28+n1VU9D5WC5Uyq8rpam/SanzijCkom7JS5cFRhP/5kd2l6 tmoGJbOaKInbPP6QgwQqjaTP/RlAdwegos+a+wcw7mC7ORNDRDsO9Dr2tyfRHh0O6hD2dmwMX53 o3NNBlY2ab9xDvhr+FRy5/fI1wqpQlGyTSZTWh30+lIpcbVdydnIvIndy7xSaG9hKJYzcqiaG7h
+ yuzJBU3+4pmoDHIManzBFfOshoBB9uriO1x/HkGSSxilN29FS+l9or75/Qq+vWcy/SkqIwfx
+X-Proofpoint-GUID: QEXMatXWVlw4NIvsaetoyfMYcivQrApA
+X-Proofpoint-ORIG-GUID: QEXMatXWVlw4NIvsaetoyfMYcivQrApA
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-05-28_07,2025-05-27_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 adultscore=0 priorityscore=1501
- impostorscore=0 malwarescore=0 mlxlogscore=732 suspectscore=0 bulkscore=0
- spamscore=0 clxscore=1011 classifier=spam authscore=0 authtc=n/a authcc=
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 suspectscore=0 spamscore=0 clxscore=1015 impostorscore=0
+ phishscore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 classifier=spam authscore=0 authtc=n/a authcc=
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
- definitions=main-2505280127
+ definitions=main-2505280130
 
-On Fri, May 23, 2025 at 04:58:17PM +0800, libaokun@huaweicloud.com wrote:
+On Fri, May 23, 2025 at 04:58:18PM +0800, libaokun@huaweicloud.com wrote:
 > From: Baokun Li <libaokun1@huawei.com>
 > 
-> Since servers have more and more CPUs, and we're running more containers
-> on them, we've been using will-it-scale to test how well ext4 scales. The
-> fallocate2 test (append 8KB to 1MB, truncate to 0, repeat) run concurrently
-> on 64 containers revealed significant contention in block allocation/free,
-> leading to much lower aggregate fallocate OPS compared to a single
-> container (see below).
+> When ext4 allocates blocks, we used to just go through the block groups
+> one by one to find a good one. But when there are tons of block groups
+> (like hundreds of thousands or even millions) and not many have free space
+> (meaning they're mostly full), it takes a really long time to check them
+> all, and performance gets bad. So, we added the "mb_optimize_scan" mount
+> option (which is on by default now). It keeps track of some group lists,
+> so when we need a free block, we can just grab a likely group from the
+> right list. This saves time and makes block allocation much faster.
 > 
->    1   |    2   |    4   |    8   |   16   |   32   |   64
-> -------|--------|--------|--------|--------|--------|-------
-> 295287 | 70665  | 33865  | 19387  | 10104  |  5588  |  3588
+> But when multiple processes or containers are doing similar things, like
+> constantly allocating 8k blocks, they all try to use the same block group
+> in the same list. Even just two processes doing this can cut the IOPS in
+> half. For example, one container might do 300,000 IOPS, but if you run two
+> at the same time, the total is only 150,000.
 > 
-> The main bottleneck was the ext4_lock_group(), which both block allocation
-> and free fought over. While the block group for block free is fixed and
-> unoptimizable, the block group for allocation is selectable. Consequently,
-> the ext4_try_lock_group() helper function was added to avoid contention on
-> busy groups, and you can see more in Patch 1.
+> Since we can already look at block groups in a non-linear way, the first
+> and last groups in the same list are basically the same for finding a block
+> right now. Therefore, add an ext4_try_lock_group() helper function to skip
+> the current group when it is locked by another process, thereby avoiding
+> contention with other processes. This helps ext4 make better use of having
+> multiple block groups.
 > 
-> After we fixed the ext4_lock_group bottleneck, another one showed up:
-> s_md_lock. This lock protects different data when allocating and freeing
-> blocks. We got rid of the s_md_lock call in block allocation by making
-> stream allocation work per inode instead of globally. You can find more
-> details in Patch 2.
-> 
-> Patches 3 and 4 are just some minor cleanups.
+> Also, to make sure we don't skip all the groups that have free space
+> when allocating blocks, we won't try to skip busy groups anymore when
+> ac_criteria is CR_ANY_FREE.
 > 
 > Performance test data follows:
 > 
@@ -136,54 +138,136 @@ On Fri, May 23, 2025 at 04:58:17PM +0800, libaokun@huaweicloud.com wrote:
 > Memory: 480GB
 > Disk: 480GB SSD SATA 3.2
 > Test: Running will-it-scale/fallocate2 on 64 CPU-bound containers.
->  Observation: Average fallocate operations per container per second.
+> Observation: Average fallocate operations per container per second.
+> 
+>                       base    patched
+> mb_optimize_scan=0    3588    6755 (+88.2%)
+> mb_optimize_scan=1    3588    4302 (+19.8%)
+
+The patch looks mostly good. Same observations about mb_optimize_scan=1
+improving less. We can continue this discussion in my reply to the cover
+letter. That being said, I have some minor suggestions:
 
 > 
-> |--------|--------|--------|--------|--------|--------|--------|--------|
-> |    -   |    1   |    2   |    4   |    8   |   16   |   32   |   64   |
-> |--------|--------|--------|--------|--------|--------|--------|--------|
-> |  base  | 295287 | 70665  | 33865  | 19387  | 10104  |  5588  |  3588  |
-> |--------|--------|--------|--------|--------|--------|--------|--------|
-> | linear | 286328 | 123102 | 119542 | 90653  | 60344  | 35302  | 23280  |
-> |        | -3.0%  | 74.20% | 252.9% | 367.5% | 497.2% | 531.6% | 548.7% |
-> |--------|--------|--------|--------|--------|--------|--------|--------|
-> |mb_optim| 292498 | 133305 | 103069 | 61727  | 29702  | 16845  | 10430  |
-> |ize_scan| -0.9%  | 88.64% | 204.3% | 218.3% | 193.9% | 201.4% | 190.6% |
-> |--------|--------|--------|--------|--------|--------|--------|--------|
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>  fs/ext4/ext4.h    | 23 ++++++++++++++---------
+>  fs/ext4/mballoc.c | 14 +++++++++++---
+>  2 files changed, 25 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 5a20e9cd7184..9c665a620a46 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -3494,23 +3494,28 @@ static inline int ext4_fs_is_busy(struct ext4_sb_info *sbi)
+>  	return (atomic_read(&sbi->s_lock_busy) > EXT4_CONTENTION_THRESHOLD);
+>  }
+>  
+> +static inline bool ext4_try_lock_group(struct super_block *sb, ext4_group_t group)
+> +{
+> +	if (!spin_trylock(ext4_group_lock_ptr(sb, group)))
+> +		return false;
+> +	/*
+> +	 * We're able to grab the lock right away, so drop the lock
+> +	 * contention counter.
+> +	 */
+> +	atomic_add_unless(&EXT4_SB(sb)->s_lock_busy, -1, 0);
+> +	return true;
+> +}
+> +
+>  static inline void ext4_lock_group(struct super_block *sb, ext4_group_t group)
+>  {
+> -	spinlock_t *lock = ext4_group_lock_ptr(sb, group);
+> -	if (spin_trylock(lock))
+> -		/*
+> -		 * We're able to grab the lock right away, so drop the
+> -		 * lock contention counter.
+> -		 */
+> -		atomic_add_unless(&EXT4_SB(sb)->s_lock_busy, -1, 0);
+> -	else {
+> +	if (!ext4_try_lock_group(sb, group)) {
+>  		/*
+>  		 * The lock is busy, so bump the contention counter,
+>  		 * and then wait on the spin lock.
+>  		 */
+>  		atomic_add_unless(&EXT4_SB(sb)->s_lock_busy, 1,
+>  				  EXT4_MAX_CONTENTION);
+> -		spin_lock(lock);
+> +		spin_lock(ext4_group_lock_ptr(sb, group));
+>  	}
+>  }
+>  
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 1e98c5be4e0a..5c13d9f8a1cc 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -896,7 +896,8 @@ static void ext4_mb_choose_next_group_p2_aligned(struct ext4_allocation_context
+>  				    bb_largest_free_order_node) {
+>  			if (sbi->s_mb_stats)
+>  				atomic64_inc(&sbi->s_bal_cX_groups_considered[CR_POWER2_ALIGNED]);
+> -			if (likely(ext4_mb_good_group(ac, iter->bb_group, CR_POWER2_ALIGNED))) {
+> +			if (likely(ext4_mb_good_group(ac, iter->bb_group, CR_POWER2_ALIGNED)) &&
+> +			    !spin_is_locked(ext4_group_lock_ptr(ac->ac_sb, iter->bb_group))) {
 
-Hey Baokun, nice improvements! The proposed changes make sense to me,
-however I suspect the performance improvements may come at a cost of
-slight increase in fragmentation, which might affect rotational disks
-especially. Maybe comparing e2freefrag numbers with and without the
-patches might give a better insight into this.
+Maybe reversing the && order to be (!spin_is_locked() && ext4_mb_good_group()) would be better?
 
-Regardless the performance benefits are significant and I feel it is
-good to have these patches.
+>  				*group = iter->bb_group;
+>  				ac->ac_flags |= EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED;
+>  				read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
+> @@ -932,7 +933,8 @@ ext4_mb_find_good_group_avg_frag_lists(struct ext4_allocation_context *ac, int o
+>  	list_for_each_entry(iter, frag_list, bb_avg_fragment_size_node) {
+>  		if (sbi->s_mb_stats)
+>  			atomic64_inc(&sbi->s_bal_cX_groups_considered[cr]);
+> -		if (likely(ext4_mb_good_group(ac, iter->bb_group, cr))) {
+> +		if (likely(ext4_mb_good_group(ac, iter->bb_group, cr)) &&
+> +		    !spin_is_locked(ext4_group_lock_ptr(ac->ac_sb, iter->bb_group))) {
 
-I'll give my reviews individually as I'm still going through patch 2
-However, I wanted to check on a couple things:
+same as above
+ 
+>  			grp = iter;
+>  			break;
+>  		}
+> @@ -2911,7 +2913,13 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  			if (err)
+>  				goto out;
+>  
+> -			ext4_lock_group(sb, group);
+> +			/* skip busy group */
+> +			if (cr >= CR_ANY_FREE) {
+> +				ext4_lock_group(sb, group);
+> +			} else if (!ext4_try_lock_group(sb, group)) {
+> +				ext4_mb_unload_buddy(&e4b);
+> +				continue;
+> +			}
 
-1. I believe you ran these in docker. Would you have any script etc open
-   sourced that I can use to run some benchmarks on my end (and also
-	 understand your test setup).
+This in itself looks good. I am just thinking that now that we are
+deciding to skip locked groups, in the code above this one, shall we do
+something like:
 
-2. I notice we are getting way less throughput in mb_optimize_scan? I
-   wonder why that is the case. Do you have some data on that? Are your
-   tests starting on an empty FS, maybe in that case linear scan works a 
-   bit better since almost all groups are empty. If so, what are the
-   numbers like when we start with a fragmented FS?
+      
+      if (spin_is_locked(group_lock))
+        continue;
+      
+      err = ext4_mb_load_buddy(sb, group, &e4b);
+      if (err)
+        goto out;
 
-   - Or maybe it is that the lazyinit thread has not yet initialized all
-   the buddies yet which means we have lesser BGs in the freefrag list
-   or the order list used by faster CRs. Hence, if they are locked we
-   are falling more to CR_GOAL_LEN_SLOW. To check if this is the case,
-   one hack is to cat /proc/fs/ext4/<disk>/mb_groups (or something along
-   the lines) before the benchmark, which forces init of all the group
-   buddies thus populating all the lists used by mb_opt_scan. Maybe we
-   can check if this gives better results.
+      /* skip busy group */
+      if (cr >= CR_ANY_FREE) {
+        ext4_lock_group(sb, group);
+      } else if (!ext4_try_lock_group(sb, group)) {
+        ext4_mb_unload_buddy(&e4b);
+        continue;
+      }
 
-3. Also, how much IO are we doing here, are we filling the whole FS?
+With this we can even avoid loading the folio as well.
 
 Regards,
 ojaswin
+>  
+>  			/*
+>  			 * We need to check again after locking the
+> -- 
+> 2.46.1
+> 
 
