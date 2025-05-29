@@ -1,249 +1,168 @@
-Return-Path: <linux-ext4+bounces-8232-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8233-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62F0FAC7FD1
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 16:43:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2180EAC7FF4
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 17:01:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 174C54E6EF6
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 14:43:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1448D189C190
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 15:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60DAA22ACE7;
-	Thu, 29 May 2025 14:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA8E22B8AA;
+	Thu, 29 May 2025 15:01:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="jRaj2QLF"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CW0WPlpJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g28WrHRP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CW0WPlpJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g28WrHRP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9281219E93;
-	Thu, 29 May 2025 14:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D431D6DC5
+	for <linux-ext4@vger.kernel.org>; Thu, 29 May 2025 15:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748529831; cv=none; b=rTkmMxq0Gj6BRGJ7pUzaKXcbfkc5MLZIgzTagWTd8kmGK6WBXx22zJQoisFvtAnTDi5Y/QlTCYlE6iLu+cUlnenWUQkCUYrffUbLCZzyFUeWpkkj27E+s8NllS1YpUTrVPOgiKtxC+om5qqIETjnhq9q/GjURDT495ct9pvTXoY=
+	t=1748530872; cv=none; b=n+ux1o42tLXp5HQqoMIu6xOo0tJ70Wla5zT5ksgKRo321dQdbVxQOq+A3Hf05yzq4RiM2F1SIs84pguiqR4IVuz2Hg2Zr8uaDa9S0wuTcwV/+tjLzya11zvoFApFJV9Uwg8Eejub/ahCd76YCUMe0NU+j7VTIJ5g4Sgtb5km2/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748529831; c=relaxed/simple;
-	bh=XU0oPyxZDzZDKkcXO359f69fX/bnl8KlGOXa8n56B4k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IhVGpbCDS+qj3bIEuliNzn/X6fn+s/G79f0LFnJAU9qVeRjkkwEa5gVgETPkuY+mb1vjqxfMZXWdldQ68YpfQIoBw3cMl//MYHy9a1YS8QLLWvlGr3V5P5nWhxp0/NOHo5cVzQBRfOUNZz8FV1fyd5ZCItPz/DIyCZ6llGePPFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=jRaj2QLF; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=qP
-	ACzQdKmCGnEpy21os+Y6Anwn+AlAe9o0MJqcU0H8E=; b=jRaj2QLFmAKV+U0GUv
-	VUWV5t5XGHDMP3Rg98eFXtpdjKV4wEaOCjSbnOty0BMqZ3haD0Jw/B6FwLlHEIHy
-	TkPBaiGI7eGFheBjaoe5cGxZjOGU4UjnVV/mAy00DCWcz/uIMqJ/PYCurPVGlLWN
-	f8q0kcRUEdhqFlABe8MMw2egM=
-Received: from localhost.localdomain (unknown [])
-	by gzsmtp3 (Coremail) with SMTP id PigvCgDHH6B1cjhoX2CLAQ--.10005S4;
-	Thu, 29 May 2025 22:43:16 +0800 (CST)
-From: David Wang <00107082@163.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	David Wang <00107082@163.com>
-Subject: [RFC] ext4: use kmem_cache for short fname allocation in readdir
-Date: Thu, 29 May 2025 22:42:56 +0800
-Message-Id: <20250529144256.4517-1-00107082@163.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1748530872; c=relaxed/simple;
+	bh=UItVDtl4xUGrFlwPKWmINB5sw+WmsUHfY0KjW2uM0co=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=V5bbIJf4CBLAeS1VIExkgrvAOe2uVPZChso44g2jmnOQmVO1Iq6h7+FEA2PCa/AdvT3HnXNLT8Q42xFq333zmnkH/KtW01JZwYB9YhYJ/66Pey3Ufx2TBmUZgEfNtXvJklqlFvJgGHPOMzB6ITz/PN8kApY+TSD+hq9N/CaxfqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CW0WPlpJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g28WrHRP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CW0WPlpJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g28WrHRP; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DA1F921905;
+	Thu, 29 May 2025 15:01:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748530868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=8+uxCeWg13A7G+Vs4mCKHkxVrl4cZgNPxX62purNS7c=;
+	b=CW0WPlpJkKAcUR/xi/4TsFsB9ptrduPAqgUBP/OVxgDqVN0z4caRYMnanueqsqHgAUQOsp
+	/uMrRxA5enuz8OfI7zY0y/62Gu4v4BK7crwdIkNyPfuTIIS8FxXOMXm/qgx4nQKxWMUJhc
+	f+qLwbR0hZwAjqUj7gyRSQo7oMzPkSk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748530868;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=8+uxCeWg13A7G+Vs4mCKHkxVrl4cZgNPxX62purNS7c=;
+	b=g28WrHRPvPWys2E00NTRemEqiUDmoOPaW9rNb4TOK/qq7d5ugtCdb2XQxoJhH4fPLRa+56
+	bTJnqPwdR6bZGkBg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=CW0WPlpJ;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=g28WrHRP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748530868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=8+uxCeWg13A7G+Vs4mCKHkxVrl4cZgNPxX62purNS7c=;
+	b=CW0WPlpJkKAcUR/xi/4TsFsB9ptrduPAqgUBP/OVxgDqVN0z4caRYMnanueqsqHgAUQOsp
+	/uMrRxA5enuz8OfI7zY0y/62Gu4v4BK7crwdIkNyPfuTIIS8FxXOMXm/qgx4nQKxWMUJhc
+	f+qLwbR0hZwAjqUj7gyRSQo7oMzPkSk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748530868;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=8+uxCeWg13A7G+Vs4mCKHkxVrl4cZgNPxX62purNS7c=;
+	b=g28WrHRPvPWys2E00NTRemEqiUDmoOPaW9rNb4TOK/qq7d5ugtCdb2XQxoJhH4fPLRa+56
+	bTJnqPwdR6bZGkBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C3552136E0;
+	Thu, 29 May 2025 15:01:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wRKtL7R2OGigTgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 29 May 2025 15:01:08 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 6D90DA09B5; Thu, 29 May 2025 17:01:08 +0200 (CEST)
+Date: Thu, 29 May 2025 17:01:08 +0200
+From: Jan Kara <jack@suse.cz>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] ext2 and isofs changes for 6.16-rc1
+Message-ID: <ovi7jizxdqmr35quwevkzwiltahrewq5mrpmhnfe65gllynqod@ji6zewdluxyx>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PigvCgDHH6B1cjhoX2CLAQ--.10005S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKw4fuF1DXr18AF18uF43GFg_yoW7WF1UpF
-	Z3KwnxGw4xXw1DuwsxJr4kZr95Z3W8Ga1UW3s2gw43XrWUZF1kXFnFya4kXa45KrWkX3W3
-	XFW5Kw18ur1kKrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pEb4SnUUUUU=
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/xtbB0glcqmg4a3dDVAABs3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	RCPT_COUNT_THREE(0.00)[3];
+	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: DA1F921905
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -4.01
 
-When searching files, ext4_readdir would kzalloc() a fname
-object for each entry. It would be faster if a dedicated
-kmem_cache is used for fname.
+  Hello Linus,
 
-But fnames are of variable length.
+  could you please pull from
 
-This patch suggests using kmem_cache for fname with short
-length, and resorting to kzalloc when fname needs larger buffer.
-Assuming long file names are not very common.
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fs_for_v6.16-rc1
 
-Profiling when searching files in kernel code base, with following
-command:
-	# perf record -g -e cpu-clock --freq=max bash -c \
-	"for i in {1..100}; do find ./linux -name notfoundatall > /dev/null; done"
-And using sample counts as indicator of performance improvement.
-(The faster, the less samples collected. And the tests are carried out
-when system is under no memory pressure.)
+to get:
+  * isofs fix of handling of particularly formatted Rock Ridge timestamps
+  * Add deprecation notice about support of DAX in ext2 filesystem driver
 
-Before without the change:
-	1232868--ext4_readdir
-		 |
-		 |--839085--ext4_htree_fill_tree
-		 |          |
-		 |           --829223--htree_dirblock_to_tree
-		 |                     |
-		 |                     |--365869--ext4_htree_store_dirent
-		 |                     |          |
-		 |                     |          |--43169--0xffffffffa7f8d094
-		 |                     |          |
-		 |                     |           --21947--0xffffffffa7f8d0f7
-		 |                     |
-		 |                     |--213124--ext4fs_dirhash
-		 |                     |          |
-		 |                     |           --86339--str2hashbuf_signed
-		 |                     |
-		 |                     |--145839--__ext4_read_dirblock
+Top of the tree is d5a2693f93e4. The full shortlog is:
 
-and with the change, ~3% less samples:
-	1202922--ext4_readdir
-		 |
-		 |--805105--ext4_htree_fill_tree
-		 |          |
-		 |           --795055--htree_dirblock_to_tree
-		 |                     |
-		 |                     |--328876--ext4_htree_store_dirent
-		 |                     |          |
-		 |                     |          |--123207--kmem_cache_alloc_noprof
-		 |                     |          |          |
-		 |                     |          |          |--26453--__alloc_tagging_slab_alloc_hook
-		 |                     |          |          |
-		 |                     |          |           --20413--__slab_alloc.isra.0
-		 |                     |          |
-		 |                     |           --31566--rb_insert_color
-		 |                     |
-		 |                     |--212915--ext4fs_dirhash
-		 |                     |          |
-		 |                     |           --86004--str2hashbuf_signed
-		 |                     |
-		 |                     |--149146--__ext4_read_dirblock
+Jan Kara (1):
+      ext2: Deprecate DAX
 
-readdir() would have sigfinicant improvement, but the overall
-improvements for searching files is only ~0.5%, might be more
-sigfinicant if the system is under some memory pressures.
+Jonas 'Sortie' Termansen (1):
+      isofs: fix Y2038 and Y2156 issues in Rock Ridge TF entry
 
-The slab stats after the test:
-ext4_dir_fname      1242   1242    176   23    1 : tunables    0    0    0 : slabdata     54     54      0
+The diffstat is
 
-Signed-off-by: David Wang <00107082@163.com>
----
- fs/ext4/dir.c   | 47 ++++++++++++++++++++++++++++++++++++++++++++---
- fs/ext4/ext4.h  |  4 ++++
- fs/ext4/super.c |  3 +++
- 3 files changed, 51 insertions(+), 3 deletions(-)
+ fs/ext2/super.c  |  3 ++-
+ fs/isofs/inode.c |  7 +++++--
+ fs/isofs/isofs.h |  4 +++-
+ fs/isofs/rock.c  | 40 +++++++++++++++++++++++-----------------
+ fs/isofs/rock.h  |  6 +-----
+ fs/isofs/util.c  | 49 ++++++++++++++++++++++++++++++++-----------------
+ 6 files changed, 66 insertions(+), 43 deletions(-)
 
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index d4164c507a90..3adfa0d038cd 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -424,6 +424,48 @@ struct fname {
- 	char		name[] __counted_by(name_len);
- };
- 
-+#define EXT4_DIR_FNAME_SHORT_LENGTH 127
-+static struct kmem_cache *ext4_dir_fname_cachep;
-+
-+void __init ext4_init_dir(void)
-+{
-+	ext4_dir_fname_cachep = kmem_cache_create_usercopy("ext4_dir_fname",
-+			struct_size_t(struct fname, name,  EXT4_DIR_FNAME_SHORT_LENGTH + 1),
-+			0, SLAB_RECLAIM_ACCOUNT,
-+			offsetof(struct fname, name), EXT4_DIR_FNAME_SHORT_LENGTH + 1,
-+			NULL);
-+}
-+
-+void ext4_exit_dir(void)
-+{
-+	if (ext4_dir_fname_cachep)
-+		kmem_cache_destroy(ext4_dir_fname_cachep);
-+}
-+
-+static struct fname *rb_node_fname_zalloc(__u8 name_len)
-+{
-+	struct fname *p;
-+	if (ext4_dir_fname_cachep && name_len <= EXT4_DIR_FNAME_SHORT_LENGTH)
-+		p = kmem_cache_alloc(ext4_dir_fname_cachep, GFP_KERNEL);
-+	else
-+		p = kmalloc(struct_size(p, name, name_len + 1), GFP_KERNEL);
-+	if (p) {
-+		/* no need to fill name with zeroes*/
-+		memset(p, 0, offsetof(struct fname, name));
-+		p->name[name_len] = 0;
-+	}
-+	return p;
-+}
-+
-+static void rb_node_fname_free(struct fname *p) {
-+	if (!p)
-+		return;
-+	if (ext4_dir_fname_cachep && p->name_len <= EXT4_DIR_FNAME_SHORT_LENGTH)
-+		kmem_cache_free(ext4_dir_fname_cachep, p);
-+	else
-+		kfree(p);
-+}
-+
- /*
-  * This function implements a non-recursive way of freeing all of the
-  * nodes in the red-black tree.
-@@ -436,7 +478,7 @@ static void free_rb_tree_fname(struct rb_root *root)
- 		while (fname) {
- 			struct fname *old = fname;
- 			fname = fname->next;
--			kfree(old);
-+			rb_node_fname_free(old);
- 		}
- 
- 	*root = RB_ROOT;
-@@ -479,8 +521,7 @@ int ext4_htree_store_dirent(struct file *dir_file, __u32 hash,
- 	p = &info->root.rb_node;
- 
- 	/* Create and allocate the fname structure */
--	new_fn = kzalloc(struct_size(new_fn, name, ent_name->len + 1),
--			 GFP_KERNEL);
-+	new_fn = rb_node_fname_zalloc(ent_name->len);
- 	if (!new_fn)
- 		return -ENOMEM;
- 	new_fn->hash = hash;
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 5a20e9cd7184..33ab97143000 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3795,6 +3795,10 @@ extern void ext4_orphan_file_block_trigger(
- 				struct buffer_head *bh,
- 				void *data, size_t size);
- 
-+/* dir.c */
-+extern void __init ext4_init_dir(void);
-+extern void ext4_exit_dir(void);
-+
- /*
-  * Add new method to test whether block and inode bitmaps are properly
-  * initialized. With uninit_bg reading the block from disk is not enough
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 181934499624..21ce3d78912a 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -7457,6 +7457,8 @@ static int __init ext4_init_fs(void)
- 	if (err)
- 		goto out;
- 
-+	ext4_init_dir();
-+
- 	return 0;
- out:
- 	unregister_as_ext2();
-@@ -7497,6 +7499,7 @@ static void __exit ext4_exit_fs(void)
- 	ext4_exit_post_read_processing();
- 	ext4_exit_es();
- 	ext4_exit_pending();
-+	ext4_exit_dir();
- }
- 
- MODULE_AUTHOR("Remy Card, Stephen Tweedie, Andrew Morton, Andreas Dilger, Theodore Ts'o and others");
+							Thanks
+								Honza
+
 -- 
-2.39.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
