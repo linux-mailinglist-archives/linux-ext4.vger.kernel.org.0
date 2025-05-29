@@ -1,168 +1,179 @@
-Return-Path: <linux-ext4+bounces-8233-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8234-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2180EAC7FF4
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 17:01:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADAE4AC8122
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 18:45:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1448D189C190
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 15:01:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA7967AD287
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 16:44:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA8E22B8AA;
-	Thu, 29 May 2025 15:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A8922DA04;
+	Thu, 29 May 2025 16:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CW0WPlpJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g28WrHRP";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CW0WPlpJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g28WrHRP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EeeO2kyE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D431D6DC5
-	for <linux-ext4@vger.kernel.org>; Thu, 29 May 2025 15:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F29422A7EC;
+	Thu, 29 May 2025 16:45:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748530872; cv=none; b=n+ux1o42tLXp5HQqoMIu6xOo0tJ70Wla5zT5ksgKRo321dQdbVxQOq+A3Hf05yzq4RiM2F1SIs84pguiqR4IVuz2Hg2Zr8uaDa9S0wuTcwV/+tjLzya11zvoFApFJV9Uwg8Eejub/ahCd76YCUMe0NU+j7VTIJ5g4Sgtb5km2/o=
+	t=1748537105; cv=none; b=kKokjgNwmdnI+s/kSkibaP6edrfsPP4Ne36162X1dakJHa4HKUQann++TsYa26XMPVpYzWv+bgettjUbT596peqgfPocsYeodKAbDVkg5cnq1AhYTXNgJ8Yi28yhu+qPTDYJbPog6fnY6UkdwwzvTDw+yWkSLurTwwLv0hVtkkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748530872; c=relaxed/simple;
-	bh=UItVDtl4xUGrFlwPKWmINB5sw+WmsUHfY0KjW2uM0co=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=V5bbIJf4CBLAeS1VIExkgrvAOe2uVPZChso44g2jmnOQmVO1Iq6h7+FEA2PCa/AdvT3HnXNLT8Q42xFq333zmnkH/KtW01JZwYB9YhYJ/66Pey3Ufx2TBmUZgEfNtXvJklqlFvJgGHPOMzB6ITz/PN8kApY+TSD+hq9N/CaxfqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CW0WPlpJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g28WrHRP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CW0WPlpJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g28WrHRP; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DA1F921905;
-	Thu, 29 May 2025 15:01:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748530868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=8+uxCeWg13A7G+Vs4mCKHkxVrl4cZgNPxX62purNS7c=;
-	b=CW0WPlpJkKAcUR/xi/4TsFsB9ptrduPAqgUBP/OVxgDqVN0z4caRYMnanueqsqHgAUQOsp
-	/uMrRxA5enuz8OfI7zY0y/62Gu4v4BK7crwdIkNyPfuTIIS8FxXOMXm/qgx4nQKxWMUJhc
-	f+qLwbR0hZwAjqUj7gyRSQo7oMzPkSk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748530868;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=8+uxCeWg13A7G+Vs4mCKHkxVrl4cZgNPxX62purNS7c=;
-	b=g28WrHRPvPWys2E00NTRemEqiUDmoOPaW9rNb4TOK/qq7d5ugtCdb2XQxoJhH4fPLRa+56
-	bTJnqPwdR6bZGkBg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=CW0WPlpJ;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=g28WrHRP
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748530868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=8+uxCeWg13A7G+Vs4mCKHkxVrl4cZgNPxX62purNS7c=;
-	b=CW0WPlpJkKAcUR/xi/4TsFsB9ptrduPAqgUBP/OVxgDqVN0z4caRYMnanueqsqHgAUQOsp
-	/uMrRxA5enuz8OfI7zY0y/62Gu4v4BK7crwdIkNyPfuTIIS8FxXOMXm/qgx4nQKxWMUJhc
-	f+qLwbR0hZwAjqUj7gyRSQo7oMzPkSk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748530868;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=8+uxCeWg13A7G+Vs4mCKHkxVrl4cZgNPxX62purNS7c=;
-	b=g28WrHRPvPWys2E00NTRemEqiUDmoOPaW9rNb4TOK/qq7d5ugtCdb2XQxoJhH4fPLRa+56
-	bTJnqPwdR6bZGkBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C3552136E0;
-	Thu, 29 May 2025 15:01:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wRKtL7R2OGigTgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 29 May 2025 15:01:08 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 6D90DA09B5; Thu, 29 May 2025 17:01:08 +0200 (CEST)
-Date: Thu, 29 May 2025 17:01:08 +0200
-From: Jan Kara <jack@suse.cz>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext2 and isofs changes for 6.16-rc1
-Message-ID: <ovi7jizxdqmr35quwevkzwiltahrewq5mrpmhnfe65gllynqod@ji6zewdluxyx>
+	s=arc-20240116; t=1748537105; c=relaxed/simple;
+	bh=yc6LBxN+Q8vbkSFlcCBoqnAdoFeHw0M/YuyhY3cQPjY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oyWqbIs0nONLf25Gjkt9KHC3pVriXUe2yomzPYX/vAGKY6NOQBPOK0/XKfrp5TXabqCB7A0hJlw31DnwY0kihqu+86pfCmpqDY7K+kI0TFM94VU7h8dHLPjBtW7hEQxPRQgf7b8LMSSbs4B4tq09EGfgJf4WA2LWEBQrlvg1oFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EeeO2kyE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A19EC4CEE7;
+	Thu, 29 May 2025 16:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748537104;
+	bh=yc6LBxN+Q8vbkSFlcCBoqnAdoFeHw0M/YuyhY3cQPjY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EeeO2kyEiQH1hR2Z+kweTObJLZydUchUBc+xi1yHBKegyvW4CRIsGalCETNNy6Oix
+	 Iq6xjHtCE842/LdjxUtDEODh+ULo+KMrVnMvUNrf5dfLziSAW5BuV9SIb8LZEguQFH
+	 xlWVnUfvakegPG+6L/UwZ4wnHL27G6dIwHCqWRxzeRpK5dZTN8xpxQ5vq4rIRHg/6L
+	 hElcavrCMVqONyPvkieQLao36c66kWwLhR61RwGk1IAuQu7ITLKMPlceqOiGhXSAMK
+	 nEiv7a9w8bs/xCdS6DliNL1rG1ThuRFipGgLgbXLKpzp1IUAGuGzSHu4WQ0ombR3ft
+	 eZ3jqlCmTZemw==
+Date: Thu, 29 May 2025 09:45:03 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net,
+	bernd@bsbernd.com, miklos@szeredi.hu, joannelkoong@gmail.com,
+	Josef Bacik <josef@toxicpanda.com>,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
+ containerize ext4
+Message-ID: <20250529164503.GB8282@frogsfrogsfrogs>
+References: <20250521235837.GB9688@frogsfrogsfrogs>
+ <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCPT_COUNT_THREE(0.00)[3];
-	MISSING_XM_UA(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: DA1F921905
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -4.01
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
 
-  Hello Linus,
+On Thu, May 22, 2025 at 06:24:50PM +0200, Amir Goldstein wrote:
+> On Thu, May 22, 2025 at 1:58 AM Darrick J. Wong <djwong@kernel.org> wrote:
+> >
+> > Hi everyone,
+> >
+> > DO NOT MERGE THIS.
+> >
+> > This is the very first request for comments of a prototype to connect
+> > the Linux fuse driver to fs-iomap for regular file IO operations to and
+> > from files whose contents persist to locally attached storage devices.
+> >
+> > Why would you want to do that?  Most filesystem drivers are seriously
+> > vulnerable to metadata parsing attacks, as syzbot has shown repeatedly
+> > over almost a decade of its existence.  Faulty code can lead to total
+> > kernel compromise, and I think there's a very strong incentive to move
+> > all that parsing out to userspace where we can containerize the fuse
+> > server process.
+> >
+> > willy's folios conversion project (and to a certain degree RH's new
+> > mount API) have also demonstrated that treewide changes to the core
+> > mm/pagecache/fs code are very very difficult to pull off and take years
+> > because you have to understand every filesystem's bespoke use of that
+> > core code.  Eeeugh.
+> >
+> > The fuse command plumbing is very simple -- the ->iomap_begin,
+> > ->iomap_end, and iomap ioend calls within iomap are turned into upcalls
+> > to the fuse server via a trio of new fuse commands.  This is suitable
+> > for very simple filesystems that don't do tricky things with mappings
+> > (e.g. FAT/HFS) during writeback.  This isn't quite adequate for ext4,
+> > but solving that is for the next sprint.
+> >
+> > With this overly simplistic RFC, I am to show that it's possible to
+> > build a fuse server for a real filesystem (ext4) that runs entirely in
+> > userspace yet maintains most of its performance.  At this early stage I
+> > get about 95% of the kernel ext4 driver's streaming directio performance
+> > on streaming IO, and 110% of its streaming buffered IO performance.
+> > Random buffered IO suffers a 90% hit on writes due to unwritten extent
+> > conversions.  Random direct IO is about 60% as fast as the kernel; see
+> > the cover letter for the fuse2fs iomap changes for more details.
+> >
+> 
+> Very cool!
+> 
+> > There are some major warts remaining:
+> >
+> > 1. The iomap cookie validation is not present, which can lead to subtle
+> > races between pagecache zeroing and writeback on filesystems that
+> > support unwritten and delalloc mappings.
+> >
+> > 2. Mappings ought to be cached in the kernel for more speed.
+> >
+> > 3. iomap doesn't support things like fscrypt or fsverity, and I haven't
+> > yet figured out how inline data is supposed to work.
+> >
+> > 4. I would like to be able to turn on fuse+iomap on a per-inode basis,
+> > which currently isn't possible because the kernel fuse driver will iget
+> > inodes prior to calling FUSE_GETATTR to discover the properties of the
+> > inode it just read.
+> 
+> Can you make the decision about enabling iomap on lookup?
+> The plan for passthrough for inode operations was to allow
+> setting up passthough config of inode on lookup.
 
-  could you please pull from
+The main requirement (especially for buffered IO) is that we've set the
+address space operations structure either to the regular fuse one or to
+the fuse+iomap ops before clearing INEW because the iomap/buffered-io.c
+code assumes that cannot change on a live inode.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fs_for_v6.16-rc1
+So I /think/ we could ask the fuse server at inode instantiation time
+(which, if I'm reading the code correctly, is when iget5_locked gives
+fuse an INEW inode and calls fuse_init_inode) provided it's ok to upcall
+to userspace at that time.  Alternately I guess we could extend struct
+fuse_attr with another FUSE_ATTR_ flag, I think?
 
-to get:
-  * isofs fix of handling of particularly formatted Rock Ridge timestamps
-  * Add deprecation notice about support of DAX in ext2 filesystem driver
+> > 5. ext4 doesn't support out of place writes so I don't know if that
+> > actually works correctly.
+> >
+> > 6. iomap is an inode-based service, not a file-based service.  This
+> > means that we /must/ push ext2's inode numbers into the kernel via
+> > FUSE_GETATTR so that it can report those same numbers back out through
+> > the FUSE_IOMAP_* calls.  However, the fuse kernel uses a separate nodeid
+> > to index its incore inode, so we have to pass those too so that
+> > notifications work properly.
+> >
+> 
+> Again, I might be missing something, but as long as the fuse filesystem
+> is exposing a single backing filesystem, it should be possible to make
+> sure (via opt-in) that fuse nodeid's are equivalent to the backing fs
+> inode number.
+> See sketch in this WIP branch:
+> https://github.com/amir73il/linux/commit/210f7a29a51b085ead9f555978c85c9a4a503575
 
-Top of the tree is d5a2693f93e4. The full shortlog is:
+I think this would work in many places, except for filesystems with
+64-bit inumbers on 32-bit machines.  That might be a good argument for
+continuing to pass along the nodeid and fuse_inode::orig_ino like it
+does now.  Plus there are some filesystems that synthesize inode numbers
+so tying the two together might not be feasible/desirable anyway.
 
-Jan Kara (1):
-      ext2: Deprecate DAX
+Though one nice feature of letting fuse have its own nodeids might be
+that if the in-memory index switches to a tree structure, then it could
+be more compact if the filesystem's inumbers are fairly sparse like xfs.
+OTOH the current inode hashtable has been around for a very long time so
+that might not be a big concern.  For fuse2fs it doesn't matter since
+ext4 inumbers are u32.
 
-Jonas 'Sortie' Termansen (1):
-      isofs: fix Y2038 and Y2156 issues in Rock Ridge TF entry
+--D
 
-The diffstat is
-
- fs/ext2/super.c  |  3 ++-
- fs/isofs/inode.c |  7 +++++--
- fs/isofs/isofs.h |  4 +++-
- fs/isofs/rock.c  | 40 +++++++++++++++++++++++-----------------
- fs/isofs/rock.h  |  6 +-----
- fs/isofs/util.c  | 49 ++++++++++++++++++++++++++++++++-----------------
- 6 files changed, 66 insertions(+), 43 deletions(-)
-
-							Thanks
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> 
+> Thanks,
+> Amir.
+> 
 
