@@ -1,253 +1,356 @@
-Return-Path: <linux-ext4+bounces-8236-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8237-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D22A1AC82D7
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 21:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4B1CAC83A9
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 23:44:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93421500B9E
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 19:41:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85F484A42FB
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 21:44:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932B523278D;
-	Thu, 29 May 2025 19:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFEA29292E;
+	Thu, 29 May 2025 21:44:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TFL9gRGQ"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="uC3r4OKW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1712110;
-	Thu, 29 May 2025 19:41:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037951D63D8
+	for <linux-ext4@vger.kernel.org>; Thu, 29 May 2025 21:44:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748547699; cv=none; b=jgmm/OFnvAZJVKXSwp0WudgwC6p1Mo2aTpBkIRDv/qNH+AcBXBXODrAQ4tTxpTHGgfml69fDP9bObu/74/5lkTgo5XW3AhN66SVE3HaNW2p4vz3YivNSp8jhKw7P5qB3uYWGrLEvK4qcJvGcrdkHv23LBgVrmpTBFMQS9pEOds0=
+	t=1748555072; cv=none; b=IFj2F3Y8slirX9bxmNulY9ysg/K3AAr79Mqv9CQRLYI2zqfJHmFtoYfneB2xqJtcRA+AdyKWy+x4NSmxn9jrl52dmRwAUmXcG18afNFH8AdmqeUx7FIGYGprzt7A5zYHQqYx/2+E3ia85uPtJ6v1dY6Osp7BnqZwPZG4BGWdqh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748547699; c=relaxed/simple;
-	bh=faB//5zj8LjyOQl2vi3mwWJbWqGE4+2PLln03isVTls=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eWQVAGZGR6DxQeNaqUqeU3csqnn1z8dN6FkDAkSDoimyMfmI5d2rWwWLFCFkwgbxv9OQ6c2PdNQwUFqNu/Ez7KQ0mNCVf1uwxQTEcjzaKIEw00EfFU57NVjTU9/OO68Qnp9Lc6i0wHDUcwvxZn6ymhJerOH937jcPC1LV6uBRVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TFL9gRGQ; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ad69e4f2100so198551766b.2;
-        Thu, 29 May 2025 12:41:37 -0700 (PDT)
+	s=arc-20240116; t=1748555072; c=relaxed/simple;
+	bh=53sFffwn2lLU7v5DP+QQ221kklhDhLpea2BLK+oEyes=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=fZuQhXbAZXVED4Jv+95wGk+VBf/2CjPGl9/Sgzir71KIUFcupeM6s4zAHoQ97WNZ2pLHYGwiEt11D1lmg7IZ7mDkiYl07cpui1dMmTWl+V9OGTHPWk42tsKAwahZW/mSr85wVpgFFtzKmU9ziT5kOFD3+8yqYYaySy+dCnBoS1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=uC3r4OKW; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-742af848148so892787b3a.1
+        for <linux-ext4@vger.kernel.org>; Thu, 29 May 2025 14:44:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748547696; x=1749152496; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gAzLvaxuWrHk/PDo4mDUPGEH9SlvCqy850dkZjMakCE=;
-        b=TFL9gRGQzekIowl04e9lQzdbG4E38sE030hnqjtZRcY/cK6IK5gKqNXgDXJPlUfjRZ
-         qfQ0h3NKyi+Kbhems2F7LXMVHMzJJqgTa9IaDORGaZj7AGOu/Sd8nkI2WXMaDDO4QWXq
-         Pl3nQJjEyqFpp3r+pJy8EX5/9ccq+MkyFaHKq8IJYK4WahCNdJ7V3p3ikl7uPbwKGlKZ
-         iNRshnsgW1JRoeHp6Gu6EoGwXdwI13zfmZECJiBtfX2QAM5VF/+oeNK6qv5b0ilIkg42
-         YFrwNJsAAu0yi1os+2Sx2rW8EuUgNGNi88O9nSM9qBP0pFwoZUeoQ3gTWw9Al3wcxevS
-         YhhA==
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1748555069; x=1749159869; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=84UWnGdEnC7HiveEK2ScM++jsj2dhjCkiP4mv7YXJhg=;
+        b=uC3r4OKWnZjAoy4kID9K4S2nwA52So4EFdBZsc3atkd7r19NpeUTxlESVpxUnKFXS/
+         GzcynXCn9MdafkekNQ2oak55BE17pmUvbtwTFl98TlfUBZ7ImdO7fLDjIxjDrBrLZaIt
+         pRTZsj7HdB8v4q6iUuxmU7TffBAwu5AWADW1mE5V3/phM7q6owWmwe6o8T2CnaqYtE1Y
+         zXjPqJZwM6jHh2QS8bgPPUIX4r4WhnqvBDKG1wl5pL7Ta2A8eGu7ido+jEyzGleBLFqS
+         eOLwF8wgk/aiWsULwwk4gv6Iwic4ch2WdI0rsd1fb/IoMokk9LxCn7m1bX8MrHvWQosr
+         oNiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748547696; x=1749152496;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gAzLvaxuWrHk/PDo4mDUPGEH9SlvCqy850dkZjMakCE=;
-        b=psCErXpLXjI3z75ktSKOo2B0jG3YwZAXgNF9KtaKVMRof53D173HPT9fbH+ow0IUpy
-         LqlOQiky07vGNg0LYBuPxIhcl7friMXgWk59fuvfSRIAzVHMo2oZnr9tfrlwLNB8ebuq
-         1i9QuYHdPUamNxSAOaJWHRHyL97Ze5rieBHni0XWjLJuApTaQZOfarEzwrebpcAUgjmx
-         d2obLPQptCKeUwgPO/U1pzgHepKeC/LI8+8raD2HAXTU6/5xJNfP34/VxHagAJZUFDIo
-         hujAkltMcp0bKk4nP8i4T7JkU47pQQGshhiG0lhMLsZ87GvIKjrCSwVl3ZGzcZaAqLfe
-         fRdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUdJ+ye93r8o6aHqHtce8lHN6Wo1WBwDeqCPpTLLI8oxWZB8dUFGSYtVfXOfSWGGYdR/jHW/sn2kqXM@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUr6Kbka+XSVvsVCn7OJo3iirMC8oNtMdqcy7n3pQrvUnpZz5s
-	ykh3ijbY45K2gpMW+PEUH1uFrg9FFF+m3HURWh/J0Lb3E/hlTJKvdLtm5rxKJeX/a9TpfEfuscy
-	mZAk9aoOhmrE2uX/QXk4VzInY9fVlvCo=
-X-Gm-Gg: ASbGncuXCB/CWgj839MIBWHG+JyRqyBnW9QMQxt7N4fI3pV7I2kVfVqER3yNljIWMhZ
-	7s30fW760AUA9DvKGVaF201qYRiwqrp679P3YH/WUZEVIV8EH2tgQgx1DMZY9UZbSFLeS3y8mZp
-	6eVPQtzgl9EtGo6AW6F6ODZifIDv2BQGiV
-X-Google-Smtp-Source: AGHT+IFWJk5coKplhacZN8PPVX3ku6qQ1gXcQ9LocP/OKLJ6cdH9OZ9eS+kNx6UhcmSXiQoMsQqlpK1ORO54Q3/wpkI=
-X-Received: by 2002:a17:907:72d2:b0:ad8:87a0:62aa with SMTP id
- a640c23a62f3a-adb3225ad42mr72900866b.27.1748547695282; Thu, 29 May 2025
- 12:41:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1748555069; x=1749159869;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=84UWnGdEnC7HiveEK2ScM++jsj2dhjCkiP4mv7YXJhg=;
+        b=upAM/WoIu6ag3AdZd+Pmerom+jtSQsVwguE1idHtLOur9YnKc9LAr0iSpguIlAi9Lh
+         CB8SgxrNRrn+vC+2F9ix35k15U0bI8WXIBqUhTTv/h9WO36txgQYw//8kCX/mUCYGBXX
+         Uh59Rv7hrhkU6Aq5EZv6wzbSHQjV3HasZIXgta2+T4FSSV67XBLCXvwD+2fPO5nXGZik
+         6LiEwPq8ChUXpIbqbNDg+8GVKkV6ihwb13tNa96XeFTsRcJyZlLdar7AcRdLDfDDJ0dy
+         L/OpYxEKFZhhGxkFOA6+J4Ip2f0SwlnAHtyo/p7FPx0NggkU0MrMWVWrrXvPUiELJ3kA
+         69dw==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ/HbBmB4SQleaK7jzebFRf4ukmIBCbEZN27j1/C/t5wR/HRgnWduJpdMFgShKjc9irZSGT/vOgt6B@vger.kernel.org
+X-Gm-Message-State: AOJu0YymWuqJlT37fw/lYxVFLKnmSjttgBbemaCY2Sht/v+DGeknAXJQ
+	8s3okvphPO+tKr+luwy9n2ZfHupmIIOtN2W/V5QmJJdKr+NqhyjfK+Dux2Eica5lEkA=
+X-Gm-Gg: ASbGnctMYFz0vDZeydhq+7LDhrdlW5xRXWBz5ej1dj/qu5QvkLkEQxD90IkdFueRTvE
+	AD9qGh/V9+Imwwr+ktb5a3k0OzvDPVkmppj9eWIn5C1mlRNICI8Z8EJQpSOOiXHmiICFFN3xP4p
+	uiGEeXc3/510O/Q4X+KGkUhajj0gpAbwWftfHFStNTiJfMm09esOOtXWFbsNixZpZ4+ODZYvM/d
+	KjlX5PnqbTbhEetjtuseW41xVDCzu8COWiA28/6kEyjA9Kb1EBPSx4cnniajxlrLbhzOJ5JNIAO
+	ILovEnkDRMf5NvCajk1VhOpxhtS2DqXjhgYq2ZXALq1XuIqICo43asbdNYpTL3oSr9XeR3XGx+o
+	NqpqJGoXTeCwDrPvbQ+hrXMGv
+X-Google-Smtp-Source: AGHT+IER2B/yPYMGNJx2jPbxohMu4IBkKFfwKwf9z0/UFg91mDs7E1AuHZPmG4Pd5vOqUq8avSeCPg==
+X-Received: by 2002:a05:6a00:2d08:b0:742:9fea:a2d1 with SMTP id d2e1a72fcca58-747bda1ad23mr1240074b3a.23.1748555069123;
+        Thu, 29 May 2025 14:44:29 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-747afff7464sm1785758b3a.180.2025.05.29.14.44.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 May 2025 14:44:28 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <9BA9D25F-A282-4998-9B53-03EDCD0D7C25@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_146F10CE-776D-4F3F-81EB-17840FF5CDF3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250521235837.GB9688@frogsfrogsfrogs> <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
- <20250529164503.GB8282@frogsfrogsfrogs>
-In-Reply-To: <20250529164503.GB8282@frogsfrogsfrogs>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 29 May 2025 21:41:23 +0200
-X-Gm-Features: AX0GCFu7pqta6rdvwndbgDtclsxul4PEZgl-Lkv5eXmBpDtb8xV3bN3YZhOkjJc
-Message-ID: <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
-Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
- containerize ext4
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net, bernd@bsbernd.com, 
-	miklos@szeredi.hu, joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>, 
-	linux-ext4 <linux-ext4@vger.kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [RFC] ext4: use kmem_cache for short fname allocation in readdir
+Date: Thu, 29 May 2025 15:44:26 -0600
+In-Reply-To: <20250529144256.4517-1-00107082@163.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+To: David Wang <00107082@163.com>
+References: <20250529144256.4517-1-00107082@163.com>
+X-Mailer: Apple Mail (2.3273)
+
+
+--Apple-Mail=_146F10CE-776D-4F3F-81EB-17840FF5CDF3
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
- or
+On May 29, 2025, at 8:42 AM, David Wang <00107082@163.com> wrote:
+>=20
+> When searching files, ext4_readdir would kzalloc() a fname
+> object for each entry. It would be faster if a dedicated
+> kmem_cache is used for fname.
+>=20
+> But fnames are of variable length.
+>=20
+> This patch suggests using kmem_cache for fname with short
+> length, and resorting to kzalloc when fname needs larger buffer.
+> Assuming long file names are not very common.
 
-On Thu, May 29, 2025 at 6:45=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> On Thu, May 22, 2025 at 06:24:50PM +0200, Amir Goldstein wrote:
-> > On Thu, May 22, 2025 at 1:58=E2=80=AFAM Darrick J. Wong <djwong@kernel.=
-org> wrote:
-> > >
-> > > Hi everyone,
-> > >
-> > > DO NOT MERGE THIS.
-> > >
-> > > This is the very first request for comments of a prototype to connect
-> > > the Linux fuse driver to fs-iomap for regular file IO operations to a=
-nd
-> > > from files whose contents persist to locally attached storage devices=
-.
-> > >
-> > > Why would you want to do that?  Most filesystem drivers are seriously
-> > > vulnerable to metadata parsing attacks, as syzbot has shown repeatedl=
-y
-> > > over almost a decade of its existence.  Faulty code can lead to total
-> > > kernel compromise, and I think there's a very strong incentive to mov=
-e
-> > > all that parsing out to userspace where we can containerize the fuse
-> > > server process.
-> > >
-> > > willy's folios conversion project (and to a certain degree RH's new
-> > > mount API) have also demonstrated that treewide changes to the core
-> > > mm/pagecache/fs code are very very difficult to pull off and take yea=
-rs
-> > > because you have to understand every filesystem's bespoke use of that
-> > > core code.  Eeeugh.
-> > >
-> > > The fuse command plumbing is very simple -- the ->iomap_begin,
-> > > ->iomap_end, and iomap ioend calls within iomap are turned into upcal=
-ls
-> > > to the fuse server via a trio of new fuse commands.  This is suitable
-> > > for very simple filesystems that don't do tricky things with mappings
-> > > (e.g. FAT/HFS) during writeback.  This isn't quite adequate for ext4,
-> > > but solving that is for the next sprint.
-> > >
-> > > With this overly simplistic RFC, I am to show that it's possible to
-> > > build a fuse server for a real filesystem (ext4) that runs entirely i=
-n
-> > > userspace yet maintains most of its performance.  At this early stage=
- I
-> > > get about 95% of the kernel ext4 driver's streaming directio performa=
-nce
-> > > on streaming IO, and 110% of its streaming buffered IO performance.
-> > > Random buffered IO suffers a 90% hit on writes due to unwritten exten=
-t
-> > > conversions.  Random direct IO is about 60% as fast as the kernel; se=
-e
-> > > the cover letter for the fuse2fs iomap changes for more details.
-> > >
-> >
-> > Very cool!
-> >
-> > > There are some major warts remaining:
-> > >
-> > > 1. The iomap cookie validation is not present, which can lead to subt=
-le
-> > > races between pagecache zeroing and writeback on filesystems that
-> > > support unwritten and delalloc mappings.
-> > >
-> > > 2. Mappings ought to be cached in the kernel for more speed.
-> > >
-> > > 3. iomap doesn't support things like fscrypt or fsverity, and I haven=
-'t
-> > > yet figured out how inline data is supposed to work.
-> > >
-> > > 4. I would like to be able to turn on fuse+iomap on a per-inode basis=
-,
-> > > which currently isn't possible because the kernel fuse driver will ig=
-et
-> > > inodes prior to calling FUSE_GETATTR to discover the properties of th=
-e
-> > > inode it just read.
-> >
-> > Can you make the decision about enabling iomap on lookup?
-> > The plan for passthrough for inode operations was to allow
-> > setting up passthough config of inode on lookup.
->
-> The main requirement (especially for buffered IO) is that we've set the
-> address space operations structure either to the regular fuse one or to
-> the fuse+iomap ops before clearing INEW because the iomap/buffered-io.c
-> code assumes that cannot change on a live inode.
->
-> So I /think/ we could ask the fuse server at inode instantiation time
-> (which, if I'm reading the code correctly, is when iget5_locked gives
-> fuse an INEW inode and calls fuse_init_inode) provided it's ok to upcall
-> to userspace at that time.  Alternately I guess we could extend struct
-> fuse_attr with another FUSE_ATTR_ flag, I think?
->
+It may be reasonable to have a cache, but I suspect that 127 bytes
+is too large for most common workloads.  Statistics that I've seen
+show 99-percentile filename length is <=3D 48 bytes on most filesystems,
+so allocating 128 bytes is probably sub-optimal (most is wasted).
 
-The latter. Either extend fuse_attr or struct fuse_entry_out,
-which is in the responses of FUSE_LOOKUP,
-FUSE_READDIRPLUS, FUSE_CREATE, FUSE_TMPFILE.
-which instantiate fuse inodes.
+That said, kmalloc() is mostly a wrapper for the kmalloc-* slabs, so
+creating a 128-byte slab for this doesn't seem super useful?
 
-There is a very hand wavy discussion about this at:
-https://lore.kernel.org/linux-fsdevel/CAOQ4uxi2w+S4yy3yiBvGpJYSqC6GOTAZQzzj=
-ygaH3TjH7Uc4+Q@mail.gmail.com/
+> Profiling when searching files in kernel code base, with following
+> command:
+> 	# perf record -g -e cpu-clock --freq=3Dmax bash -c \
+> 	"for i in {1..100}; do find ./linux -name notfoundatall > =
+/dev/null; done"
+> And using sample counts as indicator of performance improvement.
+> (The faster, the less samples collected. And the tests are carried out
+> when system is under no memory pressure.)
+>=20
+> Before without the change:
+> 	1232868--ext4_readdir
+> 		 |
+> 		 |--839085--ext4_htree_fill_tree
+> 		 |          |
+> 		 |           --829223--htree_dirblock_to_tree
+> 		 |                     |
+> 		 |                     =
+|--365869--ext4_htree_store_dirent
+> 		 |                     |          |
+> 		 |                     |          =
+|--43169--0xffffffffa7f8d094
+> 		 |                     |          |
+> 		 |                     |           =
+--21947--0xffffffffa7f8d0f7
+> 		 |                     |
+> 		 |                     |--213124--ext4fs_dirhash
+> 		 |                     |          |
+> 		 |                     |           =
+--86339--str2hashbuf_signed
+> 		 |                     |
+> 		 |                     |--145839--__ext4_read_dirblock
+>=20
+> and with the change, ~3% less samples:
+> 	1202922--ext4_readdir
 
-In a nutshell, we discussed adding a new FUSE_LOOKUP_HANDLE
-command that uses the variable length file handle instead of nodeid
-as a key for the inode.
+> 		 |
+> 		 |--805105--ext4_htree_fill_tree
+> 		 |          |
+> 		 |           --795055--htree_dirblock_to_tree
+> 		 |                     |
+> 		 |                     =
+|--328876--ext4_htree_store_dirent
+> 		 |                     |          |
+> 		 |                     |          =
+|--123207--kmem_cache_alloc_noprof
+> 		 |                     |          |          |
+> 		 |                     |          |          =
+|--26453--__alloc_tagging_slab_alloc_hook
+> 		 |                     |          |          |
+> 		 |                     |          |           =
+--20413--__slab_alloc.isra.0
+> 		 |                     |          |
+> 		 |                     |           =
+--31566--rb_insert_color
+> 		 |                     |
+> 		 |                     |--212915--ext4fs_dirhash
+> 		 |                     |          |
+> 		 |                     |           =
+--86004--str2hashbuf_signed
+> 		 |                     |
+> 		 |                     |--149146--__ext4_read_dirblock
+>=20
+> readdir() would have sigfinicant improvement, but the overall
+> improvements for searching files is only ~0.5%, might be more
+> sigfinicant if the system is under some memory pressures.
+>=20
+> The slab stats after the test:
+> ext4_dir_fname      1242   1242    176   23    1 : tunables    0    0  =
+  0 : slabdata     54     54      0
+>=20
+> Signed-off-by: David Wang <00107082@163.com>
+> ---
+> fs/ext4/dir.c   | 47 ++++++++++++++++++++++++++++++++++++++++++++---
+> fs/ext4/ext4.h  |  4 ++++
+> fs/ext4/super.c |  3 +++
+> 3 files changed, 51 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> index d4164c507a90..3adfa0d038cd 100644
+> --- a/fs/ext4/dir.c
+> +++ b/fs/ext4/dir.c
+> @@ -424,6 +424,48 @@ struct fname {
+> 	char		name[] __counted_by(name_len);
+> };
+>=20
+> +#define EXT4_DIR_FNAME_SHORT_LENGTH 127
+> +static struct kmem_cache *ext4_dir_fname_cachep;
+> +
+> +void __init ext4_init_dir(void)
+> +{
+> +	ext4_dir_fname_cachep =3D =
+kmem_cache_create_usercopy("ext4_dir_fname",
+> +			struct_size_t(struct fname, name,  =
+EXT4_DIR_FNAME_SHORT_LENGTH + 1),
+> +			0, SLAB_RECLAIM_ACCOUNT,
+> +			offsetof(struct fname, name), =
+EXT4_DIR_FNAME_SHORT_LENGTH + 1,
+> +			NULL);
+> +}
+> +
+> +void ext4_exit_dir(void)
+> +{
+> +	if (ext4_dir_fname_cachep)
+> +		kmem_cache_destroy(ext4_dir_fname_cachep);
+> +}
+> +
+> +static struct fname *rb_node_fname_zalloc(__u8 name_len)
+> +{
+> +	struct fname *p;
+> +	if (ext4_dir_fname_cachep && name_len <=3D =
+EXT4_DIR_FNAME_SHORT_LENGTH)
+> +		p =3D kmem_cache_alloc(ext4_dir_fname_cachep, =
+GFP_KERNEL);
+> +	else
+> +		p =3D kmalloc(struct_size(p, name, name_len + 1), =
+GFP_KERNEL);
+> +	if (p) {
+> +		/* no need to fill name with zeroes*/
+> +		memset(p, 0, offsetof(struct fname, name));
+> +		p->name[name_len] =3D 0;
+> +	}
+> +	return p;
+> +}
+> +
+> +static void rb_node_fname_free(struct fname *p) {
+> +	if (!p)
+> +		return;
+> +	if (ext4_dir_fname_cachep && p->name_len <=3D =
+EXT4_DIR_FNAME_SHORT_LENGTH)
+> +		kmem_cache_free(ext4_dir_fname_cachep, p);
+> +	else
+> +		kfree(p);
+> +}
+> +
+> /*
+>  * This function implements a non-recursive way of freeing all of the
+>  * nodes in the red-black tree.
+> @@ -436,7 +478,7 @@ static void free_rb_tree_fname(struct rb_root =
+*root)
+> 		while (fname) {
+> 			struct fname *old =3D fname;
+> 			fname =3D fname->next;
+> -			kfree(old);
+> +			rb_node_fname_free(old);
+> 		}
+>=20
+> 	*root =3D RB_ROOT;
+> @@ -479,8 +521,7 @@ int ext4_htree_store_dirent(struct file *dir_file, =
+__u32 hash,
+> 	p =3D &info->root.rb_node;
+>=20
+> 	/* Create and allocate the fname structure */
+> -	new_fn =3D kzalloc(struct_size(new_fn, name, ent_name->len + 1),
+> -			 GFP_KERNEL);
+> +	new_fn =3D rb_node_fname_zalloc(ent_name->len);
+> 	if (!new_fn)
+> 		return -ENOMEM;
+> 	new_fn->hash =3D hash;
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 5a20e9cd7184..33ab97143000 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -3795,6 +3795,10 @@ extern void ext4_orphan_file_block_trigger(
+> 				struct buffer_head *bh,
+> 				void *data, size_t size);
+>=20
+> +/* dir.c */
+> +extern void __init ext4_init_dir(void);
+> +extern void ext4_exit_dir(void);
+> +
+> /*
+>  * Add new method to test whether block and inode bitmaps are properly
+>  * initialized. With uninit_bg reading the block from disk is not =
+enough
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 181934499624..21ce3d78912a 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -7457,6 +7457,8 @@ static int __init ext4_init_fs(void)
+> 	if (err)
+> 		goto out;
+>=20
+> +	ext4_init_dir();
+> +
+> 	return 0;
+> out:
+> 	unregister_as_ext2();
+> @@ -7497,6 +7499,7 @@ static void __exit ext4_exit_fs(void)
+> 	ext4_exit_post_read_processing();
+> 	ext4_exit_es();
+> 	ext4_exit_pending();
+> +	ext4_exit_dir();
+> }
+>=20
+> MODULE_AUTHOR("Remy Card, Stephen Tweedie, Andrew Morton, Andreas =
+Dilger, Theodore Ts'o and others");
+> --
+> 2.39.2
+>=20
 
-So we will have to extend fuse_entry_out anyway, but TBH I never got to
-look at the gritty details of how best to extend all the relevant commands,
-so I hope I am not sending you down the wrong path.
+
+Cheers, Andreas
 
 
-> > > 5. ext4 doesn't support out of place writes so I don't know if that
-> > > actually works correctly.
-> > >
-> > > 6. iomap is an inode-based service, not a file-based service.  This
-> > > means that we /must/ push ext2's inode numbers into the kernel via
-> > > FUSE_GETATTR so that it can report those same numbers back out throug=
-h
-> > > the FUSE_IOMAP_* calls.  However, the fuse kernel uses a separate nod=
-eid
-> > > to index its incore inode, so we have to pass those too so that
-> > > notifications work properly.
-> > >
-> >
-> > Again, I might be missing something, but as long as the fuse filesystem
-> > is exposing a single backing filesystem, it should be possible to make
-> > sure (via opt-in) that fuse nodeid's are equivalent to the backing fs
-> > inode number.
-> > See sketch in this WIP branch:
-> > https://github.com/amir73il/linux/commit/210f7a29a51b085ead9f555978c85c=
-9a4a503575
->
-> I think this would work in many places, except for filesystems with
-> 64-bit inumbers on 32-bit machines.  That might be a good argument for
-> continuing to pass along the nodeid and fuse_inode::orig_ino like it
-> does now.  Plus there are some filesystems that synthesize inode numbers
-> so tying the two together might not be feasible/desirable anyway.
->
-> Though one nice feature of letting fuse have its own nodeids might be
-> that if the in-memory index switches to a tree structure, then it could
-> be more compact if the filesystem's inumbers are fairly sparse like xfs.
-> OTOH the current inode hashtable has been around for a very long time so
-> that might not be a big concern.  For fuse2fs it doesn't matter since
-> ext4 inumbers are u32.
->
 
-I wanted to see if declaring one-to-one 64bit ino can simplify things
-for the first version of inode ops passthrough.
-If this is not the case, or if this is too much of a limitation for
-your use case
-then nevermind.
-But if it is a good enough shortcut for the demo and can be extended later,
-then why not.
 
-Thanks,
-Amir.
+
+
+--Apple-Mail=_146F10CE-776D-4F3F-81EB-17840FF5CDF3
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmg41ToACgkQcqXauRfM
+H+ATTBAAhetj5Wxizo3F4M2wY1N0aZqiXk9n/1K6oMSGiIOdM1eOGW8tkeLxMARi
+AqCGlpVQZvEQx5aeeoNDNOO+V+l6xdbaIJ1qx/bEVWNNoN8x0xDOShGrMRYIHf50
+iJaVHXT96ACa+htDy/9I2pnS4t6/K4JExMHPCyYHiUs93ooi/01kyVxmgMKX0uBU
+jPaou+lbTlkE6noIWTYyha/3DLgZ/BnD7/a/XdqUB/PeQMtcvv/qFPYVe9ZcHoll
+PCBFr3uzDxPZeZRURGg3Eqpqs7zdLOH1mTPSpuB1aqeZYm/j9E6pdqPKddkHV1UH
+c3g/VmOSHg1+y2kTGp+qfKXlzp3WnAK329QcA2nJgYeTa/Gws4cVqhR0lu7cu69l
+XRXZe9JxOK5q5quLC+lqTaAQc/fjLKcHunfCliwSSldyV675QSvwFnODgo5dNyhD
+rYgmM1zbbv7Xu+CwL6opr5ac61z26KiHEQ29Kkqfvjq7qTt64Ymwk/XZY7kjk7gw
+BEY4LsHWPHNdpNmnwp5b7cVQ4PxHGu72WFJ0ehcqV6Rn3n+t1n69BT6HuWVx+ej8
+SiY2MX59uogGPyfUSKSrEC7Iv0MupO9vCLmnDEKfKOk1YGudtfJzwamEmp05JXP6
+zBWrRRix+0+22LuBel8LwD7GHcIWYq4P/gWGWhLcnR99G53wgKM=
+=chcN
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_146F10CE-776D-4F3F-81EB-17840FF5CDF3--
 
