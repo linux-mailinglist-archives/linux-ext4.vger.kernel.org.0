@@ -1,442 +1,297 @@
-Return-Path: <linux-ext4+bounces-8228-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8229-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CD15AC7DAD
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 14:25:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C564AC7E32
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 14:57:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAB751BC757B
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 12:25:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0CA54E4AEF
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 12:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC71224AF7;
-	Thu, 29 May 2025 12:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940AB224AEF;
+	Thu, 29 May 2025 12:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sGAVOtQs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sdK3QCQK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sGAVOtQs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sdK3QCQK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C445223DE9;
-	Thu, 29 May 2025 12:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CDA721421E
+	for <linux-ext4@vger.kernel.org>; Thu, 29 May 2025 12:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748521467; cv=none; b=EjGn+s/GT3AkpDU6I+P33k6t1Yl3N5MhxsrHb0OK2wp7TINog/O32EAzpLYL9LVZ38bbjbV3b4nuIMUUUMxXuSSySMSUj7tZOm5iX5hBMbGkvX4QkP0KyX++EJapOSIEJTyfoeAeuTG717rYeLWklXfjabHPGTQPbMfaDbju6Ak=
+	t=1748523420; cv=none; b=oGUW1dKnrlUMYT/1fLcb+/mzAo4FA96oHBoQTEqjJ9K8dGMYNAKifpAKc1NgDSDONay9LXEbiTL/EyQr+6tPj88NfmO4At4kFZTjSpY3c3jWH9DjoaVp6I5vlTfASa9yQPjNWEBG6L58wDiGdc8fVr16RkA/i9D1lQHBEzj82wY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748521467; c=relaxed/simple;
-	bh=HV/NYi6+0fgZ/GhUDaDJrWy55jTF5YKF1SfTHDfhzv4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=V0X6rPfvYwFJLPZJpRrxWjMlcHk1Gfrw7rtT+BAM5AwiIJTYIcd/vQ/JQEW7eDde92aKTYBE8vuQlSQa9iYsq+l/yap5BvdUiRJMWeRMjzOAu4DDjKbnKSOm/Ahta+xbPkBPtEVzhEcZHvnz0bDfC4zpvHRpKuQx8SgsE51arW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4b7QWP01rYz2RVqs;
-	Thu, 29 May 2025 20:23:12 +0800 (CST)
-Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
-	by mail.maildlp.com (Postfix) with ESMTPS id B99BE1401F0;
-	Thu, 29 May 2025 20:24:15 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
- (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 29 May
- 2025 20:24:14 +0800
-Message-ID: <f21507f9-ebc6-43ce-97c4-cd055c53747e@huawei.com>
-Date: Thu, 29 May 2025 20:24:14 +0800
+	s=arc-20240116; t=1748523420; c=relaxed/simple;
+	bh=319J1P+OJhXxIWO+wIzDMbTzEt3aXDCCltCjs0ffe58=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rc8v0iXHApdzOiBKZIvsXCd2WlTgF2Gp1KUPX0j62qXXbG4FHZgX7ywcQGva5Py6dzgehVvXPc7KPq1keCXvW/g3Af7cRxWXy2iXNMoCfK4VsapoKSIINdlbiBWXEeE4UZZywyJZzU1y/D3+kMGe7nBDUn625WoK9MdpxUzbsV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sGAVOtQs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sdK3QCQK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sGAVOtQs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sdK3QCQK; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 865F421EBF;
+	Thu, 29 May 2025 12:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748523416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l5E7n7pfFDehIJQEacIYyiEeuI8RxF7fS+NAow+HFPk=;
+	b=sGAVOtQsc++IHk/zT14hVXQzFNFYVbVQUl/420K7MMcSylRmePV8u1BOD1OxpOTglK+t4j
+	8UfQvPaiyBFrcJ5sUt7DnfisSAWX/N53g05GhMUo5ux5AHSGRr/Vr7f8DAbSV7WPpNJhRP
+	hTIaaWLR3CnXAXaDy3VjbBxCbF+toAo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748523416;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l5E7n7pfFDehIJQEacIYyiEeuI8RxF7fS+NAow+HFPk=;
+	b=sdK3QCQKNIhVNILHHa3mh10zYRRPviYQr/dQ7Q3yjzzJWjPAUSmFJZlVSDbEKnkghHbwDH
+	nTOlaYXRBqsM2fCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748523416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l5E7n7pfFDehIJQEacIYyiEeuI8RxF7fS+NAow+HFPk=;
+	b=sGAVOtQsc++IHk/zT14hVXQzFNFYVbVQUl/420K7MMcSylRmePV8u1BOD1OxpOTglK+t4j
+	8UfQvPaiyBFrcJ5sUt7DnfisSAWX/N53g05GhMUo5ux5AHSGRr/Vr7f8DAbSV7WPpNJhRP
+	hTIaaWLR3CnXAXaDy3VjbBxCbF+toAo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748523416;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l5E7n7pfFDehIJQEacIYyiEeuI8RxF7fS+NAow+HFPk=;
+	b=sdK3QCQKNIhVNILHHa3mh10zYRRPviYQr/dQ7Q3yjzzJWjPAUSmFJZlVSDbEKnkghHbwDH
+	nTOlaYXRBqsM2fCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D3FC136E0;
+	Thu, 29 May 2025 12:56:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id shSPHphZOGitLQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 29 May 2025 12:56:56 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 362CFA09B5; Thu, 29 May 2025 14:56:48 +0200 (CEST)
+Date: Thu, 29 May 2025 14:56:48 +0200
+From: Jan Kara <jack@suse.cz>
+To: libaokun@huaweicloud.com
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	jack@suse.cz, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
+	yangerkun@huawei.com, libaokun1@huawei.com
+Subject: Re: [PATCH 2/4] ext4: move mb_last_[group|start] to ext4_inode_info
+Message-ID: <afjkyrm4y5mp5p72ew3ddqma7v4gkmjqdkcloeaidcj55ruami@zfkn6dzgqfwh>
+References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
+ <20250523085821.1329392-3-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] ext4: better scalability for ext4 block allocation
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<jack@suse.cz>, <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-	<yangerkun@huawei.com>, <libaokun@huaweicloud.com>, Baokun Li
-	<libaokun1@huawei.com>
-References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
- <aDchmYDc_OOAu2yC@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <aDchmYDc_OOAu2yC@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- kwepemg500008.china.huawei.com (7.202.181.45)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250523085821.1329392-3-libaokun@huaweicloud.com>
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Level: 
 
-On 2025/5/28 22:53, Ojaswin Mujoo wrote:
-> On Fri, May 23, 2025 at 04:58:17PM +0800, libaokun@huaweicloud.com wrote:
->> From: Baokun Li <libaokun1@huawei.com>
->>
->> Since servers have more and more CPUs, and we're running more containers
->> on them, we've been using will-it-scale to test how well ext4 scales. The
->> fallocate2 test (append 8KB to 1MB, truncate to 0, repeat) run concurrently
->> on 64 containers revealed significant contention in block allocation/free,
->> leading to much lower aggregate fallocate OPS compared to a single
->> container (see below).
->>
->>     1   |    2   |    4   |    8   |   16   |   32   |   64
->> -------|--------|--------|--------|--------|--------|-------
->> 295287 | 70665  | 33865  | 19387  | 10104  |  5588  |  3588
->>
->> The main bottleneck was the ext4_lock_group(), which both block allocation
->> and free fought over. While the block group for block free is fixed and
->> unoptimizable, the block group for allocation is selectable. Consequently,
->> the ext4_try_lock_group() helper function was added to avoid contention on
->> busy groups, and you can see more in Patch 1.
->>
->> After we fixed the ext4_lock_group bottleneck, another one showed up:
->> s_md_lock. This lock protects different data when allocating and freeing
->> blocks. We got rid of the s_md_lock call in block allocation by making
->> stream allocation work per inode instead of globally. You can find more
->> details in Patch 2.
->>
->> Patches 3 and 4 are just some minor cleanups.
->>
->> Performance test data follows:
->>
->> CPU: HUAWEI Kunpeng 920
->> Memory: 480GB
->> Disk: 480GB SSD SATA 3.2
->> Test: Running will-it-scale/fallocate2 on 64 CPU-bound containers.
->>   Observation: Average fallocate operations per container per second.
->> |--------|--------|--------|--------|--------|--------|--------|--------|
->> |    -   |    1   |    2   |    4   |    8   |   16   |   32   |   64   |
->> |--------|--------|--------|--------|--------|--------|--------|--------|
->> |  base  | 295287 | 70665  | 33865  | 19387  | 10104  |  5588  |  3588  |
->> |--------|--------|--------|--------|--------|--------|--------|--------|
->> | linear | 286328 | 123102 | 119542 | 90653  | 60344  | 35302  | 23280  |
->> |        | -3.0%  | 74.20% | 252.9% | 367.5% | 497.2% | 531.6% | 548.7% |
->> |--------|--------|--------|--------|--------|--------|--------|--------|
->> |mb_optim| 292498 | 133305 | 103069 | 61727  | 29702  | 16845  | 10430  |
->> |ize_scan| -0.9%  | 88.64% | 204.3% | 218.3% | 193.9% | 201.4% | 190.6% |
->> |--------|--------|--------|--------|--------|--------|--------|--------|
-> Hey Baokun, nice improvements! The proposed changes make sense to me,
-> however I suspect the performance improvements may come at a cost of
-> slight increase in fragmentation, which might affect rotational disks
-> especially. Maybe comparing e2freefrag numbers with and without the
-> patches might give a better insight into this.
-While this approach might slightly increase free space fragmentation on
-the disk, it significantly reduces file fragmentation, leading to faster
-read speeds on rotational disks.
+On Fri 23-05-25 16:58:19, libaokun@huaweicloud.com wrote:
+> From: Baokun Li <libaokun1@huawei.com>
+> 
+> After we optimized the block group lock, we found another lock
+> contention issue when running will-it-scale/fallocate2 with multiple
+> processes. The fallocate's block allocation and the truncate's block
+> release were fighting over the s_md_lock. The problem is, this lock
+> protects totally different things in those two processes: the list of
+> freed data blocks (s_freed_data_list) when releasing, and where to start
+> looking for new blocks (mb_last_[group|start]) when allocating.
+> 
+> Moreover, when allocating data blocks, if the first try (goal allocation)
+> fails and stream allocation is on, it tries a global goal starting from
+> the last group we used (s_mb_last_group). This can make things faster by
+> writing blocks close together on the disk. But when many processes are
+> allocating, they all fight over s_md_lock and might even try to use the
+> same group. This makes it harder to merge extents and can make files more
+> fragmented. If different processes allocate chunks of very different sizes,
+> the free space on the disk can also get fragmented. A small allocation
+> might fit in a partially full group, but a big allocation might have
+> skipped it, leading to the small IO ending up in a more empty group.
+> 
+> So, we're changing stream allocation to work per inode. First, it tries
+> the goal, then the last group where that inode successfully allocated a
+> block. This keeps an inode's data closer together. Plus, after moving
+> mb_last_[group|start] to ext4_inode_info, we don't need s_md_lock during
+> block allocation anymore because we already have the write lock on
+> i_data_sem. This gets rid of the contention between allocating and
+> releasing blocks, which gives a huge performance boost to fallocate2.
+> 
+> Performance test data follows:
+> 
+> CPU: HUAWEI Kunpeng 920
+> Memory: 480GB
+> Disk: 480GB SSD SATA 3.2
+> Test: Running will-it-scale/fallocate2 on 64 CPU-bound containers.
+> Observation: Average fallocate operations per container per second.
+> 
+>                       base     patched
+> mb_optimize_scan=0    6755     23280 (+244.6%)
+> mb_optimize_scan=1    4302     10430 (+142.4%)
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-When multiple processes contend for free blocks within the same block
-group, the probability of blocks allocated by the same process being
-merged on consecutive allocations is low. This is because other processes
-may preempt the free blocks immediately following the current process's
-last allocated region.
+Good spotting with the s_md_lock contention here. But your changes don't
+quite make sense to me. The idea of streaming allocation in mballoc is to
+have an area of filesystem for large files to reduce fragmentation.  When
+you switch to per-inode, this effect of packing large files together goes
+away. Futhermore for each inode either all allocations will be very likely
+streaming or not streaming (the logic uses file size) so either your
+per-inode target will be unused or just another constantly used copy of
+goal value.
 
-Normally, we rely on preallocation to avoid files becoming overly
-fragmented (even though preallocation itself can cause fragmentation in
-free disk space). But since fallocate doesn't support preallocation, the
-fragmentation issue is more pronounced. Counterintuitively, skipping busy
-groups actually boosts opportunities for file extent merging, which in turn
-reduces overall file fragmentation.
+So I can see two sensible solutions here:
+a) Drop streaming allocations support altogether.
 
-Referencing will-it-scale/fallocate2, I tested 64 processes each appending
-4KB via fallocate to 64 separate files until they reached 1GB. This test
-specifically examines contention in block allocation, unlike fallocate2,
-it omits the contention between fallocate and truncate. Preliminary results
-are provided below; detailed scripts and full test outcomes are attached in
-the email footer.
+b) Enhance streaming allocation support to avoid contention between
+processes allocating in parallel and freeing. Frankly, there's no strong
+reason why reads & writes of streaming allocation goal need to use a
+spinlock AFAICS. We could just store a physical block number and use
+atomic64 accessors for it? Also having single goal value is just causing
+more contention on group locks for parallel writers that end up using it
+(that's the problem I suspect you were hitting the most). So perhaps we
+can keep multiple streaming goal slots in the superblock (scale the count
+based on CPU count & filesystem group count) and just pick the slot based
+on inode number hash to reduce contention?
 
-----------------------------------------------------------
-                      |       base      |      patched    |
----------------------|--------|--------|--------|--------|
-mb_optimize_scan     | linear |opt_scan| linear |opt_scan|
----------------------|--------|--------|--------|--------|
-bw(MiB/s)            | 217    | 219    | 5685   | 5670   |
-Avg. free extent size| 1943732| 1943728| 1439608| 1368328|
-Avg. extents per file| 261879 | 262039 | 744    | 2084   |
-Avg. size per extent | 4      | 4      | 1408   | 503    |
-Fragmentation score  | 100    | 100    | 2      | 6      |
-----------------------------------------------------------
-> Regardless the performance benefits are significant and I feel it is
-> good to have these patches.
->
-> I'll give my reviews individually as I'm still going through patch 2
-> However, I wanted to check on a couple things:
-Okay, thank you for your feedback.
->
-> 1. I believe you ran these in docker. Would you have any script etc open
->     sourced that I can use to run some benchmarks on my end (and also
-> 	 understand your test setup).
-Yes, these two patches primarily mitigate contention between block
-allocations and between block allocation and release. The testing script
-can be referenced from the fio script mentioned earlier in the email
-footer. You can also add more truncate calls based on it.
-> 2. I notice we are getting way less throughput in mb_optimize_scan? I
->     wonder why that is the case. Do you have some data on that? Are your
->     tests starting on an empty FS, maybe in that case linear scan works a
->     bit better since almost all groups are empty. If so, what are the
->     numbers like when we start with a fragmented FS?
-The throughput of mb_optimize_scan is indeed much lower, and we continue
-to optimize it, as mb_optimize_scan is the default mount option and
-performs better in scenarios with large volume disks and high space usage.
+								Honza
 
-Disk space used is about 7%; mb_optimize_scan should perform better with
-less free space. However, this isn't the critical factor. The poor
-throughput here is due to the following reasons。
-
-One reason is that mb_optimize_scan's list traversal is unordered and
-always selects the first group.
-
-While traversing the list, holding a spin_lock prevents load_buddy, making
-direct use of ext4_lock_group impossible. This can lead to a "bouncing"
-scenario where spin_is_locked(grp_A) succeeds, but ext4_try_lock_group()
-fails, forcing the list traversal to repeatedly restart from grp_A.
-
-In contrast, linear traversal directly uses ext4_try_lock_group(),
-avoiding this bouncing. Therefore, we need a lockless, ordered traversal
-to achieve linear-like efficiency.
-
-Another reason is that opt_scan tends to allocate from groups that have
-just received freed blocks, causing it to constantly "jump around"
-between certain groups.
-
-This leads to intense contention between allocation and release, and even
-between release events. In contrast, linear traversal always moves forward
-without revisiting groups, resulting in less contention between allocation
-and release.
-
-However, because linear involves more groups in allocation, journal
-becomes a bottleneck. If opt_scan first attempts to traverse block groups
-to the right from the target group in all lists, and then from index 0 to
-the left in all lists, competition between block groups would be
-significantly reduced.
-
-To enable ordered traversal, we attempted to convert list_head to an
-ordered xarray. This ordering prevents "bouncing" during retries.
-Additionally, traversing all right-side groups before left-side groups
-significantly reduced contention. Performance improved from 10430 to 17730.
-
-However, xarray traversal introduces overhead; list_head group selection
-was O(1), while xarray becomes O(n log n). This results in a ~10%
-performance drop in single-process scenarios, and I'm not entirely sure if
-this trade-off is worthwhile. 🤔
-
-Additionally, by attempting to merge before inserting in
-ext4_mb_free_metadata(), we can eliminate contention on sbi->s_md_lock
-during merges, resulting in roughly a 5% performance gain.
->
->     - Or maybe it is that the lazyinit thread has not yet initialized all
->     the buddies yet which means we have lesser BGs in the freefrag list
->     or the order list used by faster CRs. Hence, if they are locked we
->     are falling more to CR_GOAL_LEN_SLOW. To check if this is the case,
->     one hack is to cat /proc/fs/ext4/<disk>/mb_groups (or something along
->     the lines) before the benchmark, which forces init of all the group
->     buddies thus populating all the lists used by mb_opt_scan. Maybe we
->     can check if this gives better results.
-All groups are already initialized at the time of testing, and that's not
-where the problem lies.
->
-> 3. Also, how much IO are we doing here, are we filling the whole FS?
->
-In a single container, create a file, then repeatedly append 8KB using
-fallocate until the file reaches 1MB. After that, truncate the file to
-0 and continue appending 8KB with fallocate. The 64 containers will
-occupy a maximum of 64MB of disk space in total, so they won't fill the
-entire file system.
-
-
-Cheers,
-Baokun
-
-
-======================== test script ========================
-
-#!/bin/bash
-
-dir="/tmp/test"
-disk="/dev/sda"
-numjobs=64
-iodepth=128
-
-mkdir -p $dir
-
-for scan in 0 1 ; do
-     mkfs.ext4 -F -E lazy_itable_init=0,lazy_journal_init=0 -O 
-orphan_file $disk
-     mount -o mb_optimize_scan=$scan $disk $dir
-
-     fio -directory=$dir -direct=1 -iodepth ${iodepth} -thread -rw=write 
--ioengine=falloc -bs=4k -fallocate=none \
-         -size=1G -numjobs=${numjobs} -group_reporting -name=job1 
--cpus_allowed_policy=split -file_append=1
-
-     e2freefrag $disk
-     e4defrag -c $dir # ** NOTE ** Without the patch, this could take 
-5-6 hours.
-     filefrag ${dir}/job* | awk '{print $2}' | awk '{sum+=$1} END {print 
-sum/NR}'
-     umount $dir
-done
-
-======================== test results ========================
-
----------------------------------------------------------- ## base
-
-------------------------### linear bw=217MiB/s (228MB/s)
------------- e2freefrag /dev/sda
-Device: /dev/sda
-Blocksize: 4096 bytes
-Total blocks: 52428800
-Free blocks: 34501259 (65.8%)
-
-Min. free extent: 98172 KB
-Max. free extent: 2064256 KB
-Avg. free extent: 1943732 KB
-Num. free extent: 71
-
-HISTOGRAM OF FREE EXTENT SIZES:
-Extent Size Range :  Free extents   Free Blocks  Percent
-    64M...  128M-  :             2         49087    0.14%
-   512M... 1024M-  :             3        646918    1.88%
-     1G...    2G-  :            66      33805254   97.98%
-
------------- e4defrag -c /tmp/test
-e4defrag 1.47.2 (1-Jan-2025)
-<Fragmented files> now/best       size/ext
-1. /tmp/test/job1.4.0                       262035/1 4 KB
-2. /tmp/test/job1.2.0                       262034/1 4 KB
-3. /tmp/test/job1.44.0                      262026/1 4 KB
-4. /tmp/test/job1.15.0                      262025/1 4 KB
-5. /tmp/test/job1.12.0                      262025/1 4 KB
-
-  Total/best extents                             16760234/64
-  Average size per extent                        4 KB
-  Fragmentation score                            100
-  [0-30 no problem: 31-55 a little bit fragmented: 56- needs defrag]
-  This directory (/tmp/test) needs defragmentation.
-  Done.
-
------------- filefrag /tmp/test/job* | awk '{print $2}' | awk '{sum+=$1} 
-END {print sum/NR}'
-261879
-
-------------------------### opt_scan  bw=219MiB/s (230MB/s)
------------- e2freefrag /dev/sda
-Device: /dev/sda
-Blocksize: 4096 bytes
-Total blocks: 52428800
-Free blocks: 34501238 (65.8%)
-
-Min. free extent: 98172 KB
-Max. free extent: 2064256 KB
-Avg. free extent: 1943728 KB
-Num. free extent: 71
-
-HISTOGRAM OF FREE EXTENT SIZES:
-Extent Size Range :  Free extents   Free Blocks  Percent
-    64M...  128M-  :             2         49087    0.14%
-   512M... 1024M-  :             3        646897    1.87%
-     1G...    2G-  :            66      33805254   97.98%
-
------------- e4defrag -c /tmp/test
-e4defrag 1.47.2 (1-Jan-2025)
-<Fragmented files> now/best       size/ext
-1. /tmp/test/job1.57.0                      262084/1 4 KB
-2. /tmp/test/job1.35.0                      262081/1 4 KB
-3. /tmp/test/job1.45.0                      262080/1 4 KB
-4. /tmp/test/job1.25.0                      262078/1 4 KB
-5. /tmp/test/job1.11.0                      262077/1 4 KB
-
-  Total/best extents                             16770469/64
-  Average size per extent                        4 KB
-  Fragmentation score                            100
-  [0-30 no problem: 31-55 a little bit fragmented: 56- needs defrag]
-  This directory (/tmp/test) needs defragmentation.
-  Done.
-
------------- filefrag /tmp/test/job* | awk '{print $2}' | awk '{sum+=$1} 
-END {print sum/NR}'
-262039
-
-==========================================================================================
-
----------------------------------------------------------- ## patched
------------------------- linear bw=5685MiB/s (5962MB/s)
------------- e2freefrag /dev/sda
-Device: /dev/sda
-Blocksize: 4096 bytes
-Total blocks: 52428800
-Free blocks: 34550601 (65.9%)
-
-Min. free extent: 8832 KB
-Max. free extent: 2064256 KB
-Avg. free extent: 1439608 KB
-Num. free extent: 96
-
-HISTOGRAM OF FREE EXTENT SIZES:
-Extent Size Range :  Free extents   Free Blocks  Percent
-     8M...   16M-  :             2          5267    0.02%
-    32M...   64M-  :             9        129695    0.38%
-    64M...  128M-  :            17        409917    1.19%
-   512M... 1024M-  :             3        716532    2.07%
-     1G...    2G-  :            65      33289190   96.35%
-
------------- e4defrag -c /tmp/test
-e4defrag 1.47.2 (1-Jan-2025)
-<Fragmented files> now/best       size/ext
-1. /tmp/test/job1.18.0                         984/1 1065 KB
-2. /tmp/test/job1.37.0                         981/1 1068 KB
-3. /tmp/test/job1.36.0                         980/1 1069 KB
-4. /tmp/test/job1.27.0                         954/1 1099 KB
-5. /tmp/test/job1.30.0                         954/1 1099 KB
-
-  Total/best extents                47629/64
-  Average size per extent            1408 KB
-  Fragmentation score                2
-  [0-30 no problem: 31-55 a little bit fragmented: 56- needs defrag]
-  This directory (/tmp/test) does not need defragmentation.
-  Done.
-
------------- filefrag /tmp/test/job* | awk '{print $2}' | awk '{sum+=$1} 
-END {print sum/NR}'
-744.203
-
------------------------- opt_scan  bw=5670MiB/s (5946MB/s)
------------- e2freefrag /dev/sda
-Device: /dev/sda
-Blocksize: 4096 bytes
-Total blocks: 52428800
-Free blocks: 34550296 (65.9%)
-
-Min. free extent: 5452 KB
-Max. free extent: 2064256 KB
-Avg. free extent: 1368328 KB
-Num. free extent: 101
-
-HISTOGRAM OF FREE EXTENT SIZES:
-Extent Size Range :  Free extents   Free Blocks  Percent
-     4M...    8M-  :             4          5935    0.02%
-     8M...   16M-  :             3          9929    0.03%
-    16M...   32M-  :             4         21775    0.06%
-    32M...   64M-  :            13        164831    0.48%
-    64M...  128M-  :             9        189227    0.55%
-   512M... 1024M-  :             2        457702    1.32%
-     1G...    2G-  :            66      33700897   97.54%
-
------------- e4defrag -c /tmp/test
-e4defrag 1.47.2 (1-Jan-2025)
-<Fragmented files> now/best       size/ext
-1. /tmp/test/job1.43.0                        4539/1 231 KB
-2. /tmp/test/job1.5.0                         4446/1 235 KB
-3. /tmp/test/job1.14.0                        3851/1 272 KB
-4. /tmp/test/job1.3.0                         3682/1 284 KB
-5. /tmp/test/job1.50.0                        3597/1 291 KB
-
-  Total/best extents                133415/64
-  Average size per extent            503 KB
-  Fragmentation score                6
-  [0-30 no problem: 31-55 a little bit fragmented: 56- needs defrag]
-  This directory (/tmp/test) does not need defragmentation.
-  Done.
-
------------- filefrag /tmp/test/job* | awk '{print $2}' | awk '{sum+=$1} 
-END {print sum/NR}'
-2084.61
-
-
-
+> ---
+>  fs/ext4/ext4.h    |  7 ++++---
+>  fs/ext4/mballoc.c | 20 +++++++++-----------
+>  fs/ext4/super.c   |  2 ++
+>  3 files changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 9c665a620a46..16c14dd09df6 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1171,6 +1171,10 @@ struct ext4_inode_info {
+>  	__u32 i_csum_seed;
+>  
+>  	kprojid_t i_projid;
+> +
+> +	/* where last allocation was done - for stream allocation */
+> +	ext4_group_t i_mb_last_group;
+> +	ext4_grpblk_t i_mb_last_start;
+>  };
+>  
+>  /*
+> @@ -1603,9 +1607,6 @@ struct ext4_sb_info {
+>  	unsigned int s_mb_order2_reqs;
+>  	unsigned int s_mb_group_prealloc;
+>  	unsigned int s_max_dir_size_kb;
+> -	/* where last allocation was done - for stream allocation */
+> -	unsigned long s_mb_last_group;
+> -	unsigned long s_mb_last_start;
+>  	unsigned int s_mb_prefetch;
+>  	unsigned int s_mb_prefetch_limit;
+>  	unsigned int s_mb_best_avail_max_trim_order;
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 5c13d9f8a1cc..ee9696f9bac8 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2138,7 +2138,6 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>  static void ext4_mb_use_best_found(struct ext4_allocation_context *ac,
+>  					struct ext4_buddy *e4b)
+>  {
+> -	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+>  	int ret;
+>  
+>  	BUG_ON(ac->ac_b_ex.fe_group != e4b->bd_group);
+> @@ -2169,10 +2168,8 @@ static void ext4_mb_use_best_found(struct ext4_allocation_context *ac,
+>  	folio_get(ac->ac_buddy_folio);
+>  	/* store last allocated for subsequent stream allocation */
+>  	if (ac->ac_flags & EXT4_MB_STREAM_ALLOC) {
+> -		spin_lock(&sbi->s_md_lock);
+> -		sbi->s_mb_last_group = ac->ac_f_ex.fe_group;
+> -		sbi->s_mb_last_start = ac->ac_f_ex.fe_start;
+> -		spin_unlock(&sbi->s_md_lock);
+> +		EXT4_I(ac->ac_inode)->i_mb_last_group = ac->ac_f_ex.fe_group;
+> +		EXT4_I(ac->ac_inode)->i_mb_last_start = ac->ac_f_ex.fe_start;
+>  	}
+>  	/*
+>  	 * As we've just preallocated more space than
+> @@ -2844,13 +2841,14 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  							   MB_NUM_ORDERS(sb));
+>  	}
+>  
+> -	/* if stream allocation is enabled, use global goal */
+> +	/* if stream allocation is enabled, use last goal */
+>  	if (ac->ac_flags & EXT4_MB_STREAM_ALLOC) {
+> -		/* TBD: may be hot point */
+> -		spin_lock(&sbi->s_md_lock);
+> -		ac->ac_g_ex.fe_group = sbi->s_mb_last_group;
+> -		ac->ac_g_ex.fe_start = sbi->s_mb_last_start;
+> -		spin_unlock(&sbi->s_md_lock);
+> +		struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
+> +
+> +		if (ei->i_mb_last_group || ei->i_mb_last_start) {
+> +			ac->ac_g_ex.fe_group = ei->i_mb_last_group;
+> +			ac->ac_g_ex.fe_start = ei->i_mb_last_start;
+> +		}
+>  	}
+>  
+>  	/*
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 181934499624..6c49c43bb2cb 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1416,6 +1416,8 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
+>  	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
+>  	ext4_fc_init_inode(&ei->vfs_inode);
+>  	mutex_init(&ei->i_fc_lock);
+> +	ei->i_mb_last_group = 0;
+> +	ei->i_mb_last_start = 0;
+>  	return &ei->vfs_inode;
+>  }
+>  
+> -- 
+> 2.46.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
