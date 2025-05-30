@@ -1,356 +1,206 @@
-Return-Path: <linux-ext4+bounces-8237-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8238-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B1CAC83A9
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 23:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A38EFAC863D
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 04:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85F484A42FB
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 May 2025 21:44:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57EDA4A34CD
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 02:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFEA29292E;
-	Thu, 29 May 2025 21:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383CB16DEB3;
+	Fri, 30 May 2025 02:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="uC3r4OKW"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="ng049r/D"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037951D63D8
-	for <linux-ext4@vger.kernel.org>; Thu, 29 May 2025 21:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93361D554;
+	Fri, 30 May 2025 02:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748555072; cv=none; b=IFj2F3Y8slirX9bxmNulY9ysg/K3AAr79Mqv9CQRLYI2zqfJHmFtoYfneB2xqJtcRA+AdyKWy+x4NSmxn9jrl52dmRwAUmXcG18afNFH8AdmqeUx7FIGYGprzt7A5zYHQqYx/2+E3ia85uPtJ6v1dY6Osp7BnqZwPZG4BGWdqh8=
+	t=1748572090; cv=none; b=hDjzuvsTb2ohkbUXAonnoO9aJykJsIvzq+q3cCfz+3iclkC3i0ucOBYaZn1lBShX7vZezpifoDACI7/wp4QJOoBT0zmV0TX1ny325l7sFCFV1VzM2YJftQ3w6wsVNIWnGupmJQXJDhD2ukGzvr6qf3cOq90s07kVluCXKAGz0mE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748555072; c=relaxed/simple;
-	bh=53sFffwn2lLU7v5DP+QQ221kklhDhLpea2BLK+oEyes=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=fZuQhXbAZXVED4Jv+95wGk+VBf/2CjPGl9/Sgzir71KIUFcupeM6s4zAHoQ97WNZ2pLHYGwiEt11D1lmg7IZ7mDkiYl07cpui1dMmTWl+V9OGTHPWk42tsKAwahZW/mSr85wVpgFFtzKmU9ziT5kOFD3+8yqYYaySy+dCnBoS1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=uC3r4OKW; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-742af848148so892787b3a.1
-        for <linux-ext4@vger.kernel.org>; Thu, 29 May 2025 14:44:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1748555069; x=1749159869; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=84UWnGdEnC7HiveEK2ScM++jsj2dhjCkiP4mv7YXJhg=;
-        b=uC3r4OKWnZjAoy4kID9K4S2nwA52So4EFdBZsc3atkd7r19NpeUTxlESVpxUnKFXS/
-         GzcynXCn9MdafkekNQ2oak55BE17pmUvbtwTFl98TlfUBZ7ImdO7fLDjIxjDrBrLZaIt
-         pRTZsj7HdB8v4q6iUuxmU7TffBAwu5AWADW1mE5V3/phM7q6owWmwe6o8T2CnaqYtE1Y
-         zXjPqJZwM6jHh2QS8bgPPUIX4r4WhnqvBDKG1wl5pL7Ta2A8eGu7ido+jEyzGleBLFqS
-         eOLwF8wgk/aiWsULwwk4gv6Iwic4ch2WdI0rsd1fb/IoMokk9LxCn7m1bX8MrHvWQosr
-         oNiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748555069; x=1749159869;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=84UWnGdEnC7HiveEK2ScM++jsj2dhjCkiP4mv7YXJhg=;
-        b=upAM/WoIu6ag3AdZd+Pmerom+jtSQsVwguE1idHtLOur9YnKc9LAr0iSpguIlAi9Lh
-         CB8SgxrNRrn+vC+2F9ix35k15U0bI8WXIBqUhTTv/h9WO36txgQYw//8kCX/mUCYGBXX
-         Uh59Rv7hrhkU6Aq5EZv6wzbSHQjV3HasZIXgta2+T4FSSV67XBLCXvwD+2fPO5nXGZik
-         6LiEwPq8ChUXpIbqbNDg+8GVKkV6ihwb13tNa96XeFTsRcJyZlLdar7AcRdLDfDDJ0dy
-         L/OpYxEKFZhhGxkFOA6+J4Ip2f0SwlnAHtyo/p7FPx0NggkU0MrMWVWrrXvPUiELJ3kA
-         69dw==
-X-Forwarded-Encrypted: i=1; AJvYcCWJ/HbBmB4SQleaK7jzebFRf4ukmIBCbEZN27j1/C/t5wR/HRgnWduJpdMFgShKjc9irZSGT/vOgt6B@vger.kernel.org
-X-Gm-Message-State: AOJu0YymWuqJlT37fw/lYxVFLKnmSjttgBbemaCY2Sht/v+DGeknAXJQ
-	8s3okvphPO+tKr+luwy9n2ZfHupmIIOtN2W/V5QmJJdKr+NqhyjfK+Dux2Eica5lEkA=
-X-Gm-Gg: ASbGnctMYFz0vDZeydhq+7LDhrdlW5xRXWBz5ej1dj/qu5QvkLkEQxD90IkdFueRTvE
-	AD9qGh/V9+Imwwr+ktb5a3k0OzvDPVkmppj9eWIn5C1mlRNICI8Z8EJQpSOOiXHmiICFFN3xP4p
-	uiGEeXc3/510O/Q4X+KGkUhajj0gpAbwWftfHFStNTiJfMm09esOOtXWFbsNixZpZ4+ODZYvM/d
-	KjlX5PnqbTbhEetjtuseW41xVDCzu8COWiA28/6kEyjA9Kb1EBPSx4cnniajxlrLbhzOJ5JNIAO
-	ILovEnkDRMf5NvCajk1VhOpxhtS2DqXjhgYq2ZXALq1XuIqICo43asbdNYpTL3oSr9XeR3XGx+o
-	NqpqJGoXTeCwDrPvbQ+hrXMGv
-X-Google-Smtp-Source: AGHT+IER2B/yPYMGNJx2jPbxohMu4IBkKFfwKwf9z0/UFg91mDs7E1AuHZPmG4Pd5vOqUq8avSeCPg==
-X-Received: by 2002:a05:6a00:2d08:b0:742:9fea:a2d1 with SMTP id d2e1a72fcca58-747bda1ad23mr1240074b3a.23.1748555069123;
-        Thu, 29 May 2025 14:44:29 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-747afff7464sm1785758b3a.180.2025.05.29.14.44.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 29 May 2025 14:44:28 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <9BA9D25F-A282-4998-9B53-03EDCD0D7C25@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_146F10CE-776D-4F3F-81EB-17840FF5CDF3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1748572090; c=relaxed/simple;
+	bh=flGUFes5+unQNqiiQA2kP66cj2AnyOmnfJf3BNkV8Qk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=GDth+LZMBi4DiVD5iEpXHciOM59clBcZ+TCbQDxNHG6bOU8yvxysHtclSFUBaMIKZbkNkZHDehoufSgVUbZFc0iHUNxtfQuqJWmOaAS/wc1+BN0IeAsAVxDRagZzO4ll2xVoXIlvXg7+LSMBa/9DpraeUDKR5LgSuaIDIzDzzCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=ng049r/D reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=NLNEe7ffwk32dqaNuZMs0TkDq8vepyjxGwMg76VZ7sY=; b=n
+	g049r/DDP7l2DGWpD5Q+jID93jvoyJg6qBD5kPwFr5HtTFmiDFtKLpRQJ7xP4Yjv
+	M9pXjR535CzqPsb69MytBy2PCYmwxvbV5oJDg3coTbfvKqmzhAH/LvK2lXr+Qa22
+	IgTzoo4Pp42QVU6uhlmNHbvcRtzndqk0uJmOgkH/fI=
+Received: from 00107082$163.com ( [111.35.189.95] ) by
+ ajax-webmail-wmsvr-40-144 (Coremail) ; Fri, 30 May 2025 10:27:52 +0800
+ (CST)
+Date: Fri, 30 May 2025 10:27:52 +0800 (CST)
+From: "David Wang" <00107082@163.com>
+To: "Andreas Dilger" <adilger@dilger.ca>
+Cc: "Theodore Ts'o" <tytso@mit.edu>,
+	"Ext4 Developers List" <linux-ext4@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] ext4: use kmem_cache for short fname allocation in
+ readdir
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
+ Copyright (c) 2002-2025 www.mailtech.cn 163com
+In-Reply-To: <9BA9D25F-A282-4998-9B53-03EDCD0D7C25@dilger.ca>
+References: <20250529144256.4517-1-00107082@163.com>
+ <9BA9D25F-A282-4998-9B53-03EDCD0D7C25@dilger.ca>
+X-NTES-SC: AL_Qu2fCvmcvUgs5COeY+kZnEYQheY4XMKyuPkg1YJXOp80tSbm8RAleXBoE2DfwcOoGR6tvxe3cQdL8e5qV49lerAV5YyAhQviG8gOu84+2PWE
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [RFC] ext4: use kmem_cache for short fname allocation in readdir
-Date: Thu, 29 May 2025 15:44:26 -0600
-In-Reply-To: <20250529144256.4517-1-00107082@163.com>
-Cc: Theodore Ts'o <tytso@mit.edu>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-To: David Wang <00107082@163.com>
-References: <20250529144256.4517-1-00107082@163.com>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Message-ID: <1b87db67.25f8.1971f0469b6.Coremail.00107082@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:kCgvCgDX_xOpFzlodZcQAA--.64642W
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/xtbBkAxdqmg5EpvF3QACsp
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
-
---Apple-Mail=_146F10CE-776D-4F3F-81EB-17840FF5CDF3
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-On May 29, 2025, at 8:42 AM, David Wang <00107082@163.com> wrote:
->=20
-> When searching files, ext4_readdir would kzalloc() a fname
-> object for each entry. It would be faster if a dedicated
-> kmem_cache is used for fname.
->=20
-> But fnames are of variable length.
->=20
-> This patch suggests using kmem_cache for fname with short
-> length, and resorting to kzalloc when fname needs larger buffer.
-> Assuming long file names are not very common.
-
-It may be reasonable to have a cache, but I suspect that 127 bytes
-is too large for most common workloads.  Statistics that I've seen
-show 99-percentile filename length is <=3D 48 bytes on most filesystems,
-so allocating 128 bytes is probably sub-optimal (most is wasted).
-
-That said, kmalloc() is mostly a wrapper for the kmalloc-* slabs, so
-creating a 128-byte slab for this doesn't seem super useful?
-
-> Profiling when searching files in kernel code base, with following
-> command:
-> 	# perf record -g -e cpu-clock --freq=3Dmax bash -c \
-> 	"for i in {1..100}; do find ./linux -name notfoundatall > =
-/dev/null; done"
-> And using sample counts as indicator of performance improvement.
-> (The faster, the less samples collected. And the tests are carried out
-> when system is under no memory pressure.)
->=20
-> Before without the change:
-> 	1232868--ext4_readdir
-> 		 |
-> 		 |--839085--ext4_htree_fill_tree
-> 		 |          |
-> 		 |           --829223--htree_dirblock_to_tree
-> 		 |                     |
-> 		 |                     =
-|--365869--ext4_htree_store_dirent
-> 		 |                     |          |
-> 		 |                     |          =
-|--43169--0xffffffffa7f8d094
-> 		 |                     |          |
-> 		 |                     |           =
---21947--0xffffffffa7f8d0f7
-> 		 |                     |
-> 		 |                     |--213124--ext4fs_dirhash
-> 		 |                     |          |
-> 		 |                     |           =
---86339--str2hashbuf_signed
-> 		 |                     |
-> 		 |                     |--145839--__ext4_read_dirblock
->=20
-> and with the change, ~3% less samples:
-> 	1202922--ext4_readdir
-
-> 		 |
-> 		 |--805105--ext4_htree_fill_tree
-> 		 |          |
-> 		 |           --795055--htree_dirblock_to_tree
-> 		 |                     |
-> 		 |                     =
-|--328876--ext4_htree_store_dirent
-> 		 |                     |          |
-> 		 |                     |          =
-|--123207--kmem_cache_alloc_noprof
-> 		 |                     |          |          |
-> 		 |                     |          |          =
-|--26453--__alloc_tagging_slab_alloc_hook
-> 		 |                     |          |          |
-> 		 |                     |          |           =
---20413--__slab_alloc.isra.0
-> 		 |                     |          |
-> 		 |                     |           =
---31566--rb_insert_color
-> 		 |                     |
-> 		 |                     |--212915--ext4fs_dirhash
-> 		 |                     |          |
-> 		 |                     |           =
---86004--str2hashbuf_signed
-> 		 |                     |
-> 		 |                     |--149146--__ext4_read_dirblock
->=20
-> readdir() would have sigfinicant improvement, but the overall
-> improvements for searching files is only ~0.5%, might be more
-> sigfinicant if the system is under some memory pressures.
->=20
-> The slab stats after the test:
-> ext4_dir_fname      1242   1242    176   23    1 : tunables    0    0  =
-  0 : slabdata     54     54      0
->=20
-> Signed-off-by: David Wang <00107082@163.com>
-> ---
-> fs/ext4/dir.c   | 47 ++++++++++++++++++++++++++++++++++++++++++++---
-> fs/ext4/ext4.h  |  4 ++++
-> fs/ext4/super.c |  3 +++
-> 3 files changed, 51 insertions(+), 3 deletions(-)
->=20
-> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-> index d4164c507a90..3adfa0d038cd 100644
-> --- a/fs/ext4/dir.c
-> +++ b/fs/ext4/dir.c
-> @@ -424,6 +424,48 @@ struct fname {
-> 	char		name[] __counted_by(name_len);
-> };
->=20
-> +#define EXT4_DIR_FNAME_SHORT_LENGTH 127
-> +static struct kmem_cache *ext4_dir_fname_cachep;
-> +
-> +void __init ext4_init_dir(void)
-> +{
-> +	ext4_dir_fname_cachep =3D =
-kmem_cache_create_usercopy("ext4_dir_fname",
-> +			struct_size_t(struct fname, name,  =
-EXT4_DIR_FNAME_SHORT_LENGTH + 1),
-> +			0, SLAB_RECLAIM_ACCOUNT,
-> +			offsetof(struct fname, name), =
-EXT4_DIR_FNAME_SHORT_LENGTH + 1,
-> +			NULL);
-> +}
-> +
-> +void ext4_exit_dir(void)
-> +{
-> +	if (ext4_dir_fname_cachep)
-> +		kmem_cache_destroy(ext4_dir_fname_cachep);
-> +}
-> +
-> +static struct fname *rb_node_fname_zalloc(__u8 name_len)
-> +{
-> +	struct fname *p;
-> +	if (ext4_dir_fname_cachep && name_len <=3D =
-EXT4_DIR_FNAME_SHORT_LENGTH)
-> +		p =3D kmem_cache_alloc(ext4_dir_fname_cachep, =
-GFP_KERNEL);
-> +	else
-> +		p =3D kmalloc(struct_size(p, name, name_len + 1), =
-GFP_KERNEL);
-> +	if (p) {
-> +		/* no need to fill name with zeroes*/
-> +		memset(p, 0, offsetof(struct fname, name));
-> +		p->name[name_len] =3D 0;
-> +	}
-> +	return p;
-> +}
-> +
-> +static void rb_node_fname_free(struct fname *p) {
-> +	if (!p)
-> +		return;
-> +	if (ext4_dir_fname_cachep && p->name_len <=3D =
-EXT4_DIR_FNAME_SHORT_LENGTH)
-> +		kmem_cache_free(ext4_dir_fname_cachep, p);
-> +	else
-> +		kfree(p);
-> +}
-> +
-> /*
->  * This function implements a non-recursive way of freeing all of the
->  * nodes in the red-black tree.
-> @@ -436,7 +478,7 @@ static void free_rb_tree_fname(struct rb_root =
-*root)
-> 		while (fname) {
-> 			struct fname *old =3D fname;
-> 			fname =3D fname->next;
-> -			kfree(old);
-> +			rb_node_fname_free(old);
-> 		}
->=20
-> 	*root =3D RB_ROOT;
-> @@ -479,8 +521,7 @@ int ext4_htree_store_dirent(struct file *dir_file, =
-__u32 hash,
-> 	p =3D &info->root.rb_node;
->=20
-> 	/* Create and allocate the fname structure */
-> -	new_fn =3D kzalloc(struct_size(new_fn, name, ent_name->len + 1),
-> -			 GFP_KERNEL);
-> +	new_fn =3D rb_node_fname_zalloc(ent_name->len);
-> 	if (!new_fn)
-> 		return -ENOMEM;
-> 	new_fn->hash =3D hash;
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 5a20e9cd7184..33ab97143000 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -3795,6 +3795,10 @@ extern void ext4_orphan_file_block_trigger(
-> 				struct buffer_head *bh,
-> 				void *data, size_t size);
->=20
-> +/* dir.c */
-> +extern void __init ext4_init_dir(void);
-> +extern void ext4_exit_dir(void);
-> +
-> /*
->  * Add new method to test whether block and inode bitmaps are properly
->  * initialized. With uninit_bg reading the block from disk is not =
-enough
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 181934499624..21ce3d78912a 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -7457,6 +7457,8 @@ static int __init ext4_init_fs(void)
-> 	if (err)
-> 		goto out;
->=20
-> +	ext4_init_dir();
-> +
-> 	return 0;
-> out:
-> 	unregister_as_ext2();
-> @@ -7497,6 +7499,7 @@ static void __exit ext4_exit_fs(void)
-> 	ext4_exit_post_read_processing();
-> 	ext4_exit_es();
-> 	ext4_exit_pending();
-> +	ext4_exit_dir();
-> }
->=20
-> MODULE_AUTHOR("Remy Card, Stephen Tweedie, Andrew Morton, Andreas =
-Dilger, Theodore Ts'o and others");
-> --
-> 2.39.2
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_146F10CE-776D-4F3F-81EB-17840FF5CDF3
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmg41ToACgkQcqXauRfM
-H+ATTBAAhetj5Wxizo3F4M2wY1N0aZqiXk9n/1K6oMSGiIOdM1eOGW8tkeLxMARi
-AqCGlpVQZvEQx5aeeoNDNOO+V+l6xdbaIJ1qx/bEVWNNoN8x0xDOShGrMRYIHf50
-iJaVHXT96ACa+htDy/9I2pnS4t6/K4JExMHPCyYHiUs93ooi/01kyVxmgMKX0uBU
-jPaou+lbTlkE6noIWTYyha/3DLgZ/BnD7/a/XdqUB/PeQMtcvv/qFPYVe9ZcHoll
-PCBFr3uzDxPZeZRURGg3Eqpqs7zdLOH1mTPSpuB1aqeZYm/j9E6pdqPKddkHV1UH
-c3g/VmOSHg1+y2kTGp+qfKXlzp3WnAK329QcA2nJgYeTa/Gws4cVqhR0lu7cu69l
-XRXZe9JxOK5q5quLC+lqTaAQc/fjLKcHunfCliwSSldyV675QSvwFnODgo5dNyhD
-rYgmM1zbbv7Xu+CwL6opr5ac61z26KiHEQ29Kkqfvjq7qTt64Ymwk/XZY7kjk7gw
-BEY4LsHWPHNdpNmnwp5b7cVQ4PxHGu72WFJ0ehcqV6Rn3n+t1n69BT6HuWVx+ej8
-SiY2MX59uogGPyfUSKSrEC7Iv0MupO9vCLmnDEKfKOk1YGudtfJzwamEmp05JXP6
-zBWrRRix+0+22LuBel8LwD7GHcIWYq4P/gWGWhLcnR99G53wgKM=
-=chcN
------END PGP SIGNATURE-----
-
---Apple-Mail=_146F10CE-776D-4F3F-81EB-17840FF5CDF3--
+CkF0IDIwMjUtMDUtMzAgMDU6NDQ6MjYsICJBbmRyZWFzIERpbGdlciIgPGFkaWxnZXJAZGlsZ2Vy
+LmNhPiB3cm90ZToKPk9uIE1heSAyOSwgMjAyNSwgYXQgODo0MiBBTSwgRGF2aWQgV2FuZyA8MDAx
+MDcwODJAMTYzLmNvbT4gd3JvdGU6Cj4+IAo+PiBXaGVuIHNlYXJjaGluZyBmaWxlcywgZXh0NF9y
+ZWFkZGlyIHdvdWxkIGt6YWxsb2MoKSBhIGZuYW1lCj4+IG9iamVjdCBmb3IgZWFjaCBlbnRyeS4g
+SXQgd291bGQgYmUgZmFzdGVyIGlmIGEgZGVkaWNhdGVkCj4+IGttZW1fY2FjaGUgaXMgdXNlZCBm
+b3IgZm5hbWUuCj4+IAo+PiBCdXQgZm5hbWVzIGFyZSBvZiB2YXJpYWJsZSBsZW5ndGguCj4+IAo+
+PiBUaGlzIHBhdGNoIHN1Z2dlc3RzIHVzaW5nIGttZW1fY2FjaGUgZm9yIGZuYW1lIHdpdGggc2hv
+cnQKPj4gbGVuZ3RoLCBhbmQgcmVzb3J0aW5nIHRvIGt6YWxsb2Mgd2hlbiBmbmFtZSBuZWVkcyBs
+YXJnZXIgYnVmZmVyLgo+PiBBc3N1bWluZyBsb25nIGZpbGUgbmFtZXMgYXJlIG5vdCB2ZXJ5IGNv
+bW1vbi4KPgo+SXQgbWF5IGJlIHJlYXNvbmFibGUgdG8gaGF2ZSBhIGNhY2hlLCBidXQgSSBzdXNw
+ZWN0IHRoYXQgMTI3IGJ5dGVzCj5pcyB0b28gbGFyZ2UgZm9yIG1vc3QgY29tbW9uIHdvcmtsb2Fk
+cy4gIFN0YXRpc3RpY3MgdGhhdCBJJ3ZlIHNlZW4KPnNob3cgOTktcGVyY2VudGlsZSBmaWxlbmFt
+ZSBsZW5ndGggaXMgPD0gNDggYnl0ZXMgb24gbW9zdCBmaWxlc3lzdGVtcywKPnNvIGFsbG9jYXRp
+bmcgMTI4IGJ5dGVzIGlzIHByb2JhYmx5IHN1Yi1vcHRpbWFsIChtb3N0IGlzIHdhc3RlZCkuCj4K
+PlRoYXQgc2FpZCwga21hbGxvYygpIGlzIG1vc3RseSBhIHdyYXBwZXIgZm9yIHRoZSBrbWFsbG9j
+LSogc2xhYnMsIHNvCj5jcmVhdGluZyBhIDEyOC1ieXRlIHNsYWIgZm9yIHRoaXMgZG9lc24ndCBz
+ZWVtIHN1cGVyIHVzZWZ1bD8KClRoYW5rcyBmb3IgdGhlIGZlZWRiYWNrfiEKClllcywgdGhlcmUg
+d291bGQgYmUgbWVtb3J5IHdhc3RlZC4gIEkgY2hvb3NlIDEyNyBpcyBqdXN0IGZvciB0ZXN0aW5n
+IG9uIG15IHN5c3RlbSwgaXQgY2FuIGJlCmFkanVzdGVkIGJhc2VkIG9uIGVtcGlyaWNhbCBkYXRh
+LgoKa21hbGxvYyBpcyBnbG9iYWxseSB1c2VkLCAgd2hpbGUgYSBkZWRpY2F0ZWQvaXNvbGNhdGVk
+IGZuYW1lLXNsYWIgaXMgb25seSBhY2Nlc3NlZCBieQpleHQ0LWRpci4gQWRkaW5nIGEgbmV3IHNs
+YWIgY2FuIGF2b2lkIHRoZSBjb250ZW50aW9uIGJldHdlZW4gZXh0NC1kaXIgYW5kIG90aGVyIHVz
+ZXJzIG9mIAprbWFsbG9jLCBlc3BlY2lhbGx5IHdoZW4gYWxsb2MgZnJlcXVlbmN5IGlzIGhpZ2gu
+IChXaGVuIHNlYXJjaGluZyBpbiBhICJsYXJnZSIgZGlyLCB0aGUKbWVtb3J5IGFsbG9jYXRpb24g
+ZnJlcXVlbmN5IHdvdWxkIGJlIHZlcnkgaGlnaCwgYSBuZXcgc2xhYiBjYW4gcmVkdWNlIHRoZSBp
+bXBhY3Qgb24gb3RoZXIgdXNlcnMKb2Yga21hbGxvYyApCgoKVGhhbmtzCkRhdmlkCgo+Cj4+IFBy
+b2ZpbGluZyB3aGVuIHNlYXJjaGluZyBmaWxlcyBpbiBrZXJuZWwgY29kZSBiYXNlLCB3aXRoIGZv
+bGxvd2luZwo+PiBjb21tYW5kOgo+PiAJIyBwZXJmIHJlY29yZCAtZyAtZSBjcHUtY2xvY2sgLS1m
+cmVxPW1heCBiYXNoIC1jIFwKPj4gCSJmb3IgaSBpbiB7MS4uMTAwfTsgZG8gZmluZCAuL2xpbnV4
+IC1uYW1lIG5vdGZvdW5kYXRhbGwgPiAvZGV2L251bGw7IGRvbmUiCj4+IEFuZCB1c2luZyBzYW1w
+bGUgY291bnRzIGFzIGluZGljYXRvciBvZiBwZXJmb3JtYW5jZSBpbXByb3ZlbWVudC4KPj4gKFRo
+ZSBmYXN0ZXIsIHRoZSBsZXNzIHNhbXBsZXMgY29sbGVjdGVkLiBBbmQgdGhlIHRlc3RzIGFyZSBj
+YXJyaWVkIG91dAo+PiB3aGVuIHN5c3RlbSBpcyB1bmRlciBubyBtZW1vcnkgcHJlc3N1cmUuKQo+
+PiAKPj4gQmVmb3JlIHdpdGhvdXQgdGhlIGNoYW5nZToKPj4gCTEyMzI4NjgtLWV4dDRfcmVhZGRp
+cgo+PiAJCSB8Cj4+IAkJIHwtLTgzOTA4NS0tZXh0NF9odHJlZV9maWxsX3RyZWUKPj4gCQkgfCAg
+ICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgIC0tODI5MjIzLS1odHJlZV9kaXJibG9ja190b190
+cmVlCj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAg
+ICAgICB8LS0zNjU4NjktLWV4dDRfaHRyZWVfc3RvcmVfZGlyZW50Cj4+IAkJIHwgICAgICAgICAg
+ICAgICAgICAgICB8ICAgICAgICAgIHwKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAg
+ICAgICAgfC0tNDMxNjktLTB4ZmZmZmZmZmZhN2Y4ZDA5NAo+PiAJCSB8ICAgICAgICAgICAgICAg
+ICAgICAgfCAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8ICAgICAgICAg
+ICAtLTIxOTQ3LS0weGZmZmZmZmZmYTdmOGQwZjcKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAg
+IHwKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwtLTIxMzEyNC0tZXh0NGZzX2Rpcmhhc2gK
+Pj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgICAgfAo+PiAJCSB8ICAgICAgICAg
+ICAgICAgICAgICAgfCAgICAgICAgICAgLS04NjMzOS0tc3RyMmhhc2hidWZfc2lnbmVkCj4+IAkJ
+IHwgICAgICAgICAgICAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8LS0x
+NDU4MzktLV9fZXh0NF9yZWFkX2RpcmJsb2NrCj4+IAo+PiBhbmQgd2l0aCB0aGUgY2hhbmdlLCB+
+MyUgbGVzcyBzYW1wbGVzOgo+PiAJMTIwMjkyMi0tZXh0NF9yZWFkZGlyCj4KPj4gCQkgfAo+PiAJ
+CSB8LS04MDUxMDUtLWV4dDRfaHRyZWVfZmlsbF90cmVlCj4+IAkJIHwgICAgICAgICAgfAo+PiAJ
+CSB8ICAgICAgICAgICAtLTc5NTA1NS0taHRyZWVfZGlyYmxvY2tfdG9fdHJlZQo+PiAJCSB8ICAg
+ICAgICAgICAgICAgICAgICAgfAo+PiAJCSB8ICAgICAgICAgICAgICAgICAgICAgfC0tMzI4ODc2
+LS1leHQ0X2h0cmVlX3N0b3JlX2RpcmVudAo+PiAJCSB8ICAgICAgICAgICAgICAgICAgICAgfCAg
+ICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8ICAgICAgICAgIHwtLTEyMzIw
+Ny0ta21lbV9jYWNoZV9hbGxvY19ub3Byb2YKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwg
+ICAgICAgICAgfCAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8ICAgICAg
+ICAgIHwgICAgICAgICAgfC0tMjY0NTMtLV9fYWxsb2NfdGFnZ2luZ19zbGFiX2FsbG9jX2hvb2sK
+Pj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgICAgfCAgICAgICAgICB8Cj4+IAkJ
+IHwgICAgICAgICAgICAgICAgICAgICB8ICAgICAgICAgIHwgICAgICAgICAgIC0tMjA0MTMtLV9f
+c2xhYl9hbGxvYy5pc3JhLjAKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgICAg
+fAo+PiAJCSB8ICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgLS0zMTU2Ni0tcmJfaW5z
+ZXJ0X2NvbG9yCj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAg
+ICAgICAgICAgICB8LS0yMTI5MTUtLWV4dDRmc19kaXJoYXNoCj4+IAkJIHwgICAgICAgICAgICAg
+ICAgICAgICB8ICAgICAgICAgIHwKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAgICAg
+ICAgIC0tODYwMDQtLXN0cjJoYXNoYnVmX3NpZ25lZAo+PiAJCSB8ICAgICAgICAgICAgICAgICAg
+ICAgfAo+PiAJCSB8ICAgICAgICAgICAgICAgICAgICAgfC0tMTQ5MTQ2LS1fX2V4dDRfcmVhZF9k
+aXJibG9jawo+PiAKPj4gcmVhZGRpcigpIHdvdWxkIGhhdmUgc2lnZmluaWNhbnQgaW1wcm92ZW1l
+bnQsIGJ1dCB0aGUgb3ZlcmFsbAo+PiBpbXByb3ZlbWVudHMgZm9yIHNlYXJjaGluZyBmaWxlcyBp
+cyBvbmx5IH4wLjUlLCBtaWdodCBiZSBtb3JlCj4+IHNpZ2ZpbmljYW50IGlmIHRoZSBzeXN0ZW0g
+aXMgdW5kZXIgc29tZSBtZW1vcnkgcHJlc3N1cmVzLgo+PiAKPj4gVGhlIHNsYWIgc3RhdHMgYWZ0
+ZXIgdGhlIHRlc3Q6Cj4+IGV4dDRfZGlyX2ZuYW1lICAgICAgMTI0MiAgIDEyNDIgICAgMTc2ICAg
+MjMgICAgMSA6IHR1bmFibGVzICAgIDAgICAgMCAgICAwIDogc2xhYmRhdGEgICAgIDU0ICAgICA1
+NCAgICAgIDAKPj4gCj4+IFNpZ25lZC1vZmYtYnk6IERhdmlkIFdhbmcgPDAwMTA3MDgyQDE2My5j
+b20+Cj4+IC0tLQo+PiBmcy9leHQ0L2Rpci5jICAgfCA0NyArKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKy0tLQo+PiBmcy9leHQ0L2V4dDQuaCAgfCAgNCArKysrCj4+
+IGZzL2V4dDQvc3VwZXIuYyB8ICAzICsrKwo+PiAzIGZpbGVzIGNoYW5nZWQsIDUxIGluc2VydGlv
+bnMoKyksIDMgZGVsZXRpb25zKC0pCj4+IAo+PiBkaWZmIC0tZ2l0IGEvZnMvZXh0NC9kaXIuYyBi
+L2ZzL2V4dDQvZGlyLmMKPj4gaW5kZXggZDQxNjRjNTA3YTkwLi4zYWRmYTBkMDM4Y2QgMTAwNjQ0
+Cj4+IC0tLSBhL2ZzL2V4dDQvZGlyLmMKPj4gKysrIGIvZnMvZXh0NC9kaXIuYwo+PiBAQCAtNDI0
+LDYgKzQyNCw0OCBAQCBzdHJ1Y3QgZm5hbWUgewo+PiAJY2hhcgkJbmFtZVtdIF9fY291bnRlZF9i
+eShuYW1lX2xlbik7Cj4+IH07Cj4+IAo+PiArI2RlZmluZSBFWFQ0X0RJUl9GTkFNRV9TSE9SVF9M
+RU5HVEggMTI3Cj4+ICtzdGF0aWMgc3RydWN0IGttZW1fY2FjaGUgKmV4dDRfZGlyX2ZuYW1lX2Nh
+Y2hlcDsKPj4gKwo+PiArdm9pZCBfX2luaXQgZXh0NF9pbml0X2Rpcih2b2lkKQo+PiArewo+PiAr
+CWV4dDRfZGlyX2ZuYW1lX2NhY2hlcCA9IGttZW1fY2FjaGVfY3JlYXRlX3VzZXJjb3B5KCJleHQ0
+X2Rpcl9mbmFtZSIsCj4+ICsJCQlzdHJ1Y3Rfc2l6ZV90KHN0cnVjdCBmbmFtZSwgbmFtZSwgIEVY
+VDRfRElSX0ZOQU1FX1NIT1JUX0xFTkdUSCArIDEpLAo+PiArCQkJMCwgU0xBQl9SRUNMQUlNX0FD
+Q09VTlQsCj4+ICsJCQlvZmZzZXRvZihzdHJ1Y3QgZm5hbWUsIG5hbWUpLCBFWFQ0X0RJUl9GTkFN
+RV9TSE9SVF9MRU5HVEggKyAxLAo+PiArCQkJTlVMTCk7Cj4+ICt9Cj4+ICsKPj4gK3ZvaWQgZXh0
+NF9leGl0X2Rpcih2b2lkKQo+PiArewo+PiArCWlmIChleHQ0X2Rpcl9mbmFtZV9jYWNoZXApCj4+
+ICsJCWttZW1fY2FjaGVfZGVzdHJveShleHQ0X2Rpcl9mbmFtZV9jYWNoZXApOwo+PiArfQo+PiAr
+Cj4+ICtzdGF0aWMgc3RydWN0IGZuYW1lICpyYl9ub2RlX2ZuYW1lX3phbGxvYyhfX3U4IG5hbWVf
+bGVuKQo+PiArewo+PiArCXN0cnVjdCBmbmFtZSAqcDsKPj4gKwlpZiAoZXh0NF9kaXJfZm5hbWVf
+Y2FjaGVwICYmIG5hbWVfbGVuIDw9IEVYVDRfRElSX0ZOQU1FX1NIT1JUX0xFTkdUSCkKPj4gKwkJ
+cCA9IGttZW1fY2FjaGVfYWxsb2MoZXh0NF9kaXJfZm5hbWVfY2FjaGVwLCBHRlBfS0VSTkVMKTsK
+Pj4gKwllbHNlCj4+ICsJCXAgPSBrbWFsbG9jKHN0cnVjdF9zaXplKHAsIG5hbWUsIG5hbWVfbGVu
+ICsgMSksIEdGUF9LRVJORUwpOwo+PiArCWlmIChwKSB7Cj4+ICsJCS8qIG5vIG5lZWQgdG8gZmls
+bCBuYW1lIHdpdGggemVyb2VzKi8KPj4gKwkJbWVtc2V0KHAsIDAsIG9mZnNldG9mKHN0cnVjdCBm
+bmFtZSwgbmFtZSkpOwo+PiArCQlwLT5uYW1lW25hbWVfbGVuXSA9IDA7Cj4+ICsJfQo+PiArCXJl
+dHVybiBwOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgdm9pZCByYl9ub2RlX2ZuYW1lX2ZyZWUoc3Ry
+dWN0IGZuYW1lICpwKSB7Cj4+ICsJaWYgKCFwKQo+PiArCQlyZXR1cm47Cj4+ICsJaWYgKGV4dDRf
+ZGlyX2ZuYW1lX2NhY2hlcCAmJiBwLT5uYW1lX2xlbiA8PSBFWFQ0X0RJUl9GTkFNRV9TSE9SVF9M
+RU5HVEgpCj4+ICsJCWttZW1fY2FjaGVfZnJlZShleHQ0X2Rpcl9mbmFtZV9jYWNoZXAsIHApOwo+
+PiArCWVsc2UKPj4gKwkJa2ZyZWUocCk7Cj4+ICt9Cj4+ICsKPj4gLyoKPj4gICogVGhpcyBmdW5j
+dGlvbiBpbXBsZW1lbnRzIGEgbm9uLXJlY3Vyc2l2ZSB3YXkgb2YgZnJlZWluZyBhbGwgb2YgdGhl
+Cj4+ICAqIG5vZGVzIGluIHRoZSByZWQtYmxhY2sgdHJlZS4KPj4gQEAgLTQzNiw3ICs0NzgsNyBA
+QCBzdGF0aWMgdm9pZCBmcmVlX3JiX3RyZWVfZm5hbWUoc3RydWN0IHJiX3Jvb3QgKnJvb3QpCj4+
+IAkJd2hpbGUgKGZuYW1lKSB7Cj4+IAkJCXN0cnVjdCBmbmFtZSAqb2xkID0gZm5hbWU7Cj4+IAkJ
+CWZuYW1lID0gZm5hbWUtPm5leHQ7Cj4+IC0JCQlrZnJlZShvbGQpOwo+PiArCQkJcmJfbm9kZV9m
+bmFtZV9mcmVlKG9sZCk7Cj4+IAkJfQo+PiAKPj4gCSpyb290ID0gUkJfUk9PVDsKPj4gQEAgLTQ3
+OSw4ICs1MjEsNyBAQCBpbnQgZXh0NF9odHJlZV9zdG9yZV9kaXJlbnQoc3RydWN0IGZpbGUgKmRp
+cl9maWxlLCBfX3UzMiBoYXNoLAo+PiAJcCA9ICZpbmZvLT5yb290LnJiX25vZGU7Cj4+IAo+PiAJ
+LyogQ3JlYXRlIGFuZCBhbGxvY2F0ZSB0aGUgZm5hbWUgc3RydWN0dXJlICovCj4+IC0JbmV3X2Zu
+ID0ga3phbGxvYyhzdHJ1Y3Rfc2l6ZShuZXdfZm4sIG5hbWUsIGVudF9uYW1lLT5sZW4gKyAxKSwK
+Pj4gLQkJCSBHRlBfS0VSTkVMKTsKPj4gKwluZXdfZm4gPSByYl9ub2RlX2ZuYW1lX3phbGxvYyhl
+bnRfbmFtZS0+bGVuKTsKPj4gCWlmICghbmV3X2ZuKQo+PiAJCXJldHVybiAtRU5PTUVNOwo+PiAJ
+bmV3X2ZuLT5oYXNoID0gaGFzaDsKPj4gZGlmZiAtLWdpdCBhL2ZzL2V4dDQvZXh0NC5oIGIvZnMv
+ZXh0NC9leHQ0LmgKPj4gaW5kZXggNWEyMGU5Y2Q3MTg0Li4zM2FiOTcxNDMwMDAgMTAwNjQ0Cj4+
+IC0tLSBhL2ZzL2V4dDQvZXh0NC5oCj4+ICsrKyBiL2ZzL2V4dDQvZXh0NC5oCj4+IEBAIC0zNzk1
+LDYgKzM3OTUsMTAgQEAgZXh0ZXJuIHZvaWQgZXh0NF9vcnBoYW5fZmlsZV9ibG9ja190cmlnZ2Vy
+KAo+PiAJCQkJc3RydWN0IGJ1ZmZlcl9oZWFkICpiaCwKPj4gCQkJCXZvaWQgKmRhdGEsIHNpemVf
+dCBzaXplKTsKPj4gCj4+ICsvKiBkaXIuYyAqLwo+PiArZXh0ZXJuIHZvaWQgX19pbml0IGV4dDRf
+aW5pdF9kaXIodm9pZCk7Cj4+ICtleHRlcm4gdm9pZCBleHQ0X2V4aXRfZGlyKHZvaWQpOwo+PiAr
+Cj4+IC8qCj4+ICAqIEFkZCBuZXcgbWV0aG9kIHRvIHRlc3Qgd2hldGhlciBibG9jayBhbmQgaW5v
+ZGUgYml0bWFwcyBhcmUgcHJvcGVybHkKPj4gICogaW5pdGlhbGl6ZWQuIFdpdGggdW5pbml0X2Jn
+IHJlYWRpbmcgdGhlIGJsb2NrIGZyb20gZGlzayBpcyBub3QgZW5vdWdoCj4+IGRpZmYgLS1naXQg
+YS9mcy9leHQ0L3N1cGVyLmMgYi9mcy9leHQ0L3N1cGVyLmMKPj4gaW5kZXggMTgxOTM0NDk5NjI0
+Li4yMWNlM2Q3ODkxMmEgMTAwNjQ0Cj4+IC0tLSBhL2ZzL2V4dDQvc3VwZXIuYwo+PiArKysgYi9m
+cy9leHQ0L3N1cGVyLmMKPj4gQEAgLTc0NTcsNiArNzQ1Nyw4IEBAIHN0YXRpYyBpbnQgX19pbml0
+IGV4dDRfaW5pdF9mcyh2b2lkKQo+PiAJaWYgKGVycikKPj4gCQlnb3RvIG91dDsKPj4gCj4+ICsJ
+ZXh0NF9pbml0X2RpcigpOwo+PiArCj4+IAlyZXR1cm4gMDsKPj4gb3V0Ogo+PiAJdW5yZWdpc3Rl
+cl9hc19leHQyKCk7Cj4+IEBAIC03NDk3LDYgKzc0OTksNyBAQCBzdGF0aWMgdm9pZCBfX2V4aXQg
+ZXh0NF9leGl0X2ZzKHZvaWQpCj4+IAlleHQ0X2V4aXRfcG9zdF9yZWFkX3Byb2Nlc3NpbmcoKTsK
+Pj4gCWV4dDRfZXhpdF9lcygpOwo+PiAJZXh0NF9leGl0X3BlbmRpbmcoKTsKPj4gKwlleHQ0X2V4
+aXRfZGlyKCk7Cj4+IH0KPj4gCj4+IE1PRFVMRV9BVVRIT1IoIlJlbXkgQ2FyZCwgU3RlcGhlbiBU
+d2VlZGllLCBBbmRyZXcgTW9ydG9uLCBBbmRyZWFzIERpbGdlciwgVGhlb2RvcmUgVHMnbyBhbmQg
+b3RoZXJzIik7Cj4+IC0tCj4+IDIuMzkuMgo+PiAKPgo+Cj5DaGVlcnMsIEFuZHJlYXMKPgo+Cj4K
+Pgo+Cg==
 
