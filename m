@@ -1,46 +1,88 @@
-Return-Path: <linux-ext4+bounces-8249-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8250-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3BECAC8AF0
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 11:35:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9843AC8B09
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 11:38:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A27DC7AFECF
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 09:33:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7BD8166C99
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 09:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2F022B8AF;
-	Fri, 30 May 2025 09:32:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 473D522FAFD;
+	Fri, 30 May 2025 09:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X25/icrG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D58222578;
-	Fri, 30 May 2025 09:32:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6646222ACFA
+	for <linux-ext4@vger.kernel.org>; Fri, 30 May 2025 09:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748597526; cv=none; b=mZdzxBgGVaguqIEpYZK2GxTx4gAT0pyhWgMxlq/Xs1qcDALiz5QYyxxvr8yLt530o1pvMigaKqoXl60u0lxwMJFOU/Enf01M9pOqEeQpEebqtc9xnyie3oiHD6A5L+Ej/VavcVlYBF3C/l0vboDdiFO5QU5D6yiiS0XfBv3YLMw=
+	t=1748597635; cv=none; b=E7WHtqe21N+XNNBSE9tMKCftJnDSFXS7uia35I/Wqtx9tN5H+MwjiJTn/I+XW/pTWWv7h4vLnYlBw6M4AXBQGu3TPmOSRnEpzcp1qQANmrkNYB/3yCoIkFAqxXtlPsQVmLvxezlEYb6+HTtke/2rEXnEfJPHNNwvTLYo0CDkpnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748597526; c=relaxed/simple;
-	bh=r3EQ7kD0QYtBm/wVC83vp9ptG9VHOOzuguqUtvBO63U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DAaRP8bGhEOJ5m2o9uJgUrGh12GDM1JoNISKwv2K2nxIUV/lF61Z43l1gV/7KT3tPNn0GI++SkDIWoMcT3Ei4XHwpLUpNgD2uZtK+u4MDwRIy+rzZrDUnuhlvBWYjLPQClldvb67byZTKu8J8je/171nYoUy//9VjejOYeistfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4b7yb13zDqz2CfQD;
-	Fri, 30 May 2025 17:28:13 +0800 (CST)
-Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
-	by mail.maildlp.com (Postfix) with ESMTPS id 696321A016C;
-	Fri, 30 May 2025 17:31:59 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
- (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 30 May
- 2025 17:31:58 +0800
-Message-ID: <6200e067-0ad1-4dc4-9694-05ee1e977f4c@huawei.com>
-Date: Fri, 30 May 2025 17:31:48 +0800
+	s=arc-20240116; t=1748597635; c=relaxed/simple;
+	bh=DB+1yl7APIInm8MCrBxZ4Qwh/WXcXEhVDIyFl5OmcI4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=imB19LbvieOi9Xn2kt3FMCak7q1NQR+q25gzakTLU3iEpybuJO6oAK694MMzbafZmgN8a33EsOCS12yLkzuNHP18dwrXIzbQNEdn9ltJhkAVXEwFxiNhtci3ZuRsKETGASOLmOdrCqsu4Uw8kYkFpKAZJ5ojGKv1l2AwoSC1a20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=X25/icrG; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1748597632;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=3HsXX6R0HPP/biqLepMPHpr/VTNhNhquA8c3ePXroJI=;
+	b=X25/icrGF+7ldUIVMRIUKf/TNRguQ3zm3MQmcFGjRcEjI69QEvQYH7KxyP8DuVipXxe0iZ
+	xhm4NnYG4ZHrRvDWX8t5nkTmqMZ7CQDAfqVSsNSODzrwqTvfMQe8hwjdXGsX0C9nzZnsVU
+	Xa0gtRonfgTNdFAiyfE8nQhWncR5K8E=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-390-yZPtMr6cPSKsGhBuYKvEeg-1; Fri, 30 May 2025 05:33:49 -0400
+X-MC-Unique: yZPtMr6cPSKsGhBuYKvEeg-1
+X-Mimecast-MFC-AGG-ID: yZPtMr6cPSKsGhBuYKvEeg_1748597628
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-445135eb689so8956225e9.2
+        for <linux-ext4@vger.kernel.org>; Fri, 30 May 2025 02:33:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748597628; x=1749202428;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3HsXX6R0HPP/biqLepMPHpr/VTNhNhquA8c3ePXroJI=;
+        b=nOrhFd463/8S5e/KFb7Kn9Zy2mXlDFY1qH/NN9XZn1S/4XRxoyZSjR9JCb+RGQrhV6
+         9M7r6vUoW8B3Zl70a7U7ROLGMnrp2TtaAVzb6xROC74kujzaSGrsXdPK4Jgy4TmUyUzl
+         KvKtcUxUVMu3jylA2++8SJobDfP/1d48HN1pp9S7yjL71HdGeh7NTZn+yvYUOE3haKE7
+         F0MTwQgXEUqdHfLiASsX7PxQwOtjBxRnk9LkCkMnurajWfr3lx4cflpg6umPQhtZrIl/
+         JLg64liwFx9YSuuwXPd91wmZKiTup/s/mjfXPO64JjKnlyc8xiwYo4iEmuA2JJ96eHe0
+         Jktw==
+X-Forwarded-Encrypted: i=1; AJvYcCWud7Sw/GUX3wTSLaOTiJ/2fIS/pucPKDZMSUWFJdovq3m2yMAEWWs9J/xCiLNvk7ll1TECy8P2tISl@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywi9/i1IVIVDf9HO6KMY59TYV1SQEZa2yboDJvD3kxeAiyllxkL
+	+pTEgdr92B57r84HGHZbKx4mxnALncoRfD73x8aeWzKmZoqe+s0ZTmYF8IHDlNLk0rPypA86opY
+	hw67enbIpJHNDkx05Hb8nzBRuzo7W6LZV/NxKNHB2RPntJEIfSIVlqgs7X+/eu9Q=
+X-Gm-Gg: ASbGnctOND/2deDMtCN2FbBGcA/w2cRW5Bh52j9EOr1dAIQCIFrmncDveXoOV4x0vjK
+	EFHEbsQtBVcT9GUcy+NTPkiyfX57WY3MqgI52MYlKCAtmFm8fDR+ey/LINpciEsRIqEbhFt1a0i
+	sCqN9sq7Ex111RMOfSvbsD4gerUVEpscdtf5cq5TCQ+Y6TYz56MmRuK0cgC2XUtJwqzK0+IgJe1
+	yr+XvQsUS057hn5GECBpBmfMU9DlCMNrAFCp8SVsdV1Zyi1wg9TPDC8wapG0LXHhSW60AkXT+He
+	M5Co77ubHzVhXR7iDyfM9DWipwB2NC7+oywpwVHKcUQbMjpcXBN9Zg4NZmKbU6XsQTkzOLg5rbZ
+	dsnqh25tYd4gVRHsT5f4riJYsdmD31zTJOvgo9pGfk4Zv5dpukg==
+X-Received: by 2002:a05:6000:188b:b0:3a4:e393:11e2 with SMTP id ffacd0b85a97d-3a4f7a366bbmr2070868f8f.34.1748597628380;
+        Fri, 30 May 2025 02:33:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFPLwoEcfpG65ruS1QubjzGQLrQH9J6REe/EFj1LtU5rHML/KjwauHHFCNN+LVLagp2fysdSQ==
+X-Received: by 2002:a05:6000:188b:b0:3a4:e393:11e2 with SMTP id ffacd0b85a97d-3a4f7a366bbmr2070847f8f.34.1748597627996;
+        Fri, 30 May 2025 02:33:47 -0700 (PDT)
+Received: from ?IPV6:2003:d8:2f03:5b00:f549:a879:b2d3:73ee? (p200300d82f035b00f549a879b2d373ee.dip0.t-ipconnect.de. [2003:d8:2f03:5b00:f549:a879:b2d3:73ee])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4f00972d9sm4415633f8f.64.2025.05.30.02.33.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 May 2025 02:33:47 -0700 (PDT)
+Message-ID: <bbb19f59-54bc-4399-a387-1df9713fc621@redhat.com>
+Date: Fri, 30 May 2025 11:33:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -48,231 +90,86 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] ext4: move mb_last_[group|start] to ext4_inode_info
-To: Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-	<yangerkun@huawei.com>, <libaokun@huaweicloud.com>, Baokun Li
-	<libaokun1@huawei.com>
-References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
- <20250523085821.1329392-3-libaokun@huaweicloud.com>
- <afjkyrm4y5mp5p72ew3ddqma7v4gkmjqdkcloeaidcj55ruami@zfkn6dzgqfwh>
+Subject: Re: [PATCH 01/12] mm: Remove PFN_MAP, PFN_SG_CHAIN and PFN_SG_LAST
+To: Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org
+Cc: gerald.schaefer@linux.ibm.com, dan.j.williams@intel.com, jgg@ziepe.ca,
+ willy@infradead.org, linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
+ zhang.lyra@gmail.com, debug@rivosinc.com, bjorn@kernel.org,
+ balbirs@nvidia.com, lorenzo.stoakes@oracle.com,
+ linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-cxl@vger.kernel.org, dri-devel@lists.freedesktop.org, John@Groves.net
+References: <cover.541c2702181b7461b84f1a6967a3f0e823023fcc.1748500293.git-series.apopple@nvidia.com>
+ <cb45fa705b2eefa1228e262778e784e9b3646827.1748500293.git-series.apopple@nvidia.com>
+From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <afjkyrm4y5mp5p72ew3ddqma7v4gkmjqdkcloeaidcj55ruami@zfkn6dzgqfwh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemg500008.china.huawei.com (7.202.181.45)
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <cb45fa705b2eefa1228e262778e784e9b3646827.1748500293.git-series.apopple@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello Honza,
+On 29.05.25 08:32, Alistair Popple wrote:
+> The PFN_MAP flag is no longer used for anything, so remove it. The
+> PFN_SG_CHAIN and PFN_SG_LAST flags never appear to have been used so
+> also remove them.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> ---
 
-Thank you for you review!
+With SPECIAL mentioned as well
 
-On 2025/5/29 20:56, Jan Kara wrote:
-> On Fri 23-05-25 16:58:19, libaokun@huaweicloud.com wrote:
->> From: Baokun Li <libaokun1@huawei.com>
->>
->> After we optimized the block group lock, we found another lock
->> contention issue when running will-it-scale/fallocate2 with multiple
->> processes. The fallocate's block allocation and the truncate's block
->> release were fighting over the s_md_lock. The problem is, this lock
->> protects totally different things in those two processes: the list of
->> freed data blocks (s_freed_data_list) when releasing, and where to start
->> looking for new blocks (mb_last_[group|start]) when allocating.
->>
->> Moreover, when allocating data blocks, if the first try (goal allocation)
->> fails and stream allocation is on, it tries a global goal starting from
->> the last group we used (s_mb_last_group). This can make things faster by
->> writing blocks close together on the disk. But when many processes are
->> allocating, they all fight over s_md_lock and might even try to use the
->> same group. This makes it harder to merge extents and can make files more
->> fragmented. If different processes allocate chunks of very different sizes,
->> the free space on the disk can also get fragmented. A small allocation
->> might fit in a partially full group, but a big allocation might have
->> skipped it, leading to the small IO ending up in a more empty group.
->>
->> So, we're changing stream allocation to work per inode. First, it tries
->> the goal, then the last group where that inode successfully allocated a
->> block. This keeps an inode's data closer together. Plus, after moving
->> mb_last_[group|start] to ext4_inode_info, we don't need s_md_lock during
->> block allocation anymore because we already have the write lock on
->> i_data_sem. This gets rid of the contention between allocating and
->> releasing blocks, which gives a huge performance boost to fallocate2.
->>
->> Performance test data follows:
->>
->> CPU: HUAWEI Kunpeng 920
->> Memory: 480GB
->> Disk: 480GB SSD SATA 3.2
->> Test: Running will-it-scale/fallocate2 on 64 CPU-bound containers.
->> Observation: Average fallocate operations per container per second.
->>
->>                        base     patched
->> mb_optimize_scan=0    6755     23280 (+244.6%)
->> mb_optimize_scan=1    4302     10430 (+142.4%)
->>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> Good spotting with the s_md_lock contention here. But your changes don't
-> quite make sense to me. The idea of streaming allocation in mballoc is to
-> have an area of filesystem for large files to reduce fragmentation.  When
-> you switch to per-inode, this effect of packing large files together goes
-> away. Futhermore for each inode either all allocations will be very likely
-> streaming or not streaming (the logic uses file size) so either your
-> per-inode target will be unused or just another constantly used copy of
-> goal value.
-Sorry, I didn't intend to  break streaming allocation's semantics.
-A precise definition of streaming allocation is not found in the
-existing code, documentation, or historical records. Consequently,
-my previous understanding of it was somewhat inaccurate.
+Acked-by: David Hildenbrand <david@redhat.com>
 
-I previously thought it was used to optimize the efficiency of linear
-traversal. For instance, if 500 inodes are created in group 0 and each
-file is sequentially filled to 1GB, each file's goal, being empty, would
-be group 1 (the second group in the inode's flex_bg).
+-- 
+Cheers,
 
-Without a global goal and in the absence of non-linear traversal,
-after the first inode is filled, the second inode would need to traverse
-groups 1 through 8 to find its first free block.
-
-This inefficiency escalates, eventually requiring the 500th inode to
-potentially traverse almost 4000 block groups to find its first available
-block.
-
-I initially believed it could be split to the inode level to reduce
-traversal time and file fragmentation. However, as you pointed out,
-its purpose is to cluster large files, not data blocks within a file.
-Given this, splitting it to the inode level no longer makes sense.
-> So I can see two sensible solutions here:
-> a) Drop streaming allocations support altogether.
-As mentioned above, it can also greatly improve the efficiency of linear
-traversal, so we can't simply remove it.
->
-> b) Enhance streaming allocation support to avoid contention between
-> processes allocating in parallel and freeing. Frankly, there's no strong
-> reason why reads & writes of streaming allocation goal need to use a
-> spinlock AFAICS.
-Yes, since it's just a hint, we don't need a lock at all, not even
-fe_start, we just need the last fe_group.
-> We could just store a physical block number and use
-> atomic64 accessors for it? Also having single goal value is just causing
-> more contention on group locks for parallel writers that end up using it
-> (that's the problem I suspect you were hitting the most).
-Spot on! We did try a single, lockless atomic64 variable, and just as
-you pointed out, all processes started traversing from the very same
-group, which just cranked up the contention, dropping OPS to just 6745.
->   So perhaps we
-> can keep multiple streaming goal slots in the superblock (scale the count
-> based on CPU count & filesystem group count) and just pick the slot based
-> on inode number hash to reduce contention?
->
-> 								Honza
-That's a brilliant idea, actually!
-
-Since most containers are CPU-pinned, this would naturally cluster a single
-container's data blocks together. I believe we can also apply this to inode
-allocation, so a container's inodes and data are all in a single region,
-significantly reducing interference between containers.
-
-My gratitude for your valuable suggestion!
-I'm going to try out the CPU bucketing approach.
-
-Regards,
-Baokun
-
-
->> ---
->>   fs/ext4/ext4.h    |  7 ++++---
->>   fs/ext4/mballoc.c | 20 +++++++++-----------
->>   fs/ext4/super.c   |  2 ++
->>   3 files changed, 15 insertions(+), 14 deletions(-)
->>
->> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->> index 9c665a620a46..16c14dd09df6 100644
->> --- a/fs/ext4/ext4.h
->> +++ b/fs/ext4/ext4.h
->> @@ -1171,6 +1171,10 @@ struct ext4_inode_info {
->>   	__u32 i_csum_seed;
->>   
->>   	kprojid_t i_projid;
->> +
->> +	/* where last allocation was done - for stream allocation */
->> +	ext4_group_t i_mb_last_group;
->> +	ext4_grpblk_t i_mb_last_start;
->>   };
->>   
->>   /*
->> @@ -1603,9 +1607,6 @@ struct ext4_sb_info {
->>   	unsigned int s_mb_order2_reqs;
->>   	unsigned int s_mb_group_prealloc;
->>   	unsigned int s_max_dir_size_kb;
->> -	/* where last allocation was done - for stream allocation */
->> -	unsigned long s_mb_last_group;
->> -	unsigned long s_mb_last_start;
->>   	unsigned int s_mb_prefetch;
->>   	unsigned int s_mb_prefetch_limit;
->>   	unsigned int s_mb_best_avail_max_trim_order;
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index 5c13d9f8a1cc..ee9696f9bac8 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -2138,7 +2138,6 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
->>   static void ext4_mb_use_best_found(struct ext4_allocation_context *ac,
->>   					struct ext4_buddy *e4b)
->>   {
->> -	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
->>   	int ret;
->>   
->>   	BUG_ON(ac->ac_b_ex.fe_group != e4b->bd_group);
->> @@ -2169,10 +2168,8 @@ static void ext4_mb_use_best_found(struct ext4_allocation_context *ac,
->>   	folio_get(ac->ac_buddy_folio);
->>   	/* store last allocated for subsequent stream allocation */
->>   	if (ac->ac_flags & EXT4_MB_STREAM_ALLOC) {
->> -		spin_lock(&sbi->s_md_lock);
->> -		sbi->s_mb_last_group = ac->ac_f_ex.fe_group;
->> -		sbi->s_mb_last_start = ac->ac_f_ex.fe_start;
->> -		spin_unlock(&sbi->s_md_lock);
->> +		EXT4_I(ac->ac_inode)->i_mb_last_group = ac->ac_f_ex.fe_group;
->> +		EXT4_I(ac->ac_inode)->i_mb_last_start = ac->ac_f_ex.fe_start;
->>   	}
->>   	/*
->>   	 * As we've just preallocated more space than
->> @@ -2844,13 +2841,14 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->>   							   MB_NUM_ORDERS(sb));
->>   	}
->>   
->> -	/* if stream allocation is enabled, use global goal */
->> +	/* if stream allocation is enabled, use last goal */
->>   	if (ac->ac_flags & EXT4_MB_STREAM_ALLOC) {
->> -		/* TBD: may be hot point */
->> -		spin_lock(&sbi->s_md_lock);
->> -		ac->ac_g_ex.fe_group = sbi->s_mb_last_group;
->> -		ac->ac_g_ex.fe_start = sbi->s_mb_last_start;
->> -		spin_unlock(&sbi->s_md_lock);
->> +		struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
->> +
->> +		if (ei->i_mb_last_group || ei->i_mb_last_start) {
->> +			ac->ac_g_ex.fe_group = ei->i_mb_last_group;
->> +			ac->ac_g_ex.fe_start = ei->i_mb_last_start;
->> +		}
->>   	}
->>   
->>   	/*
->> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> index 181934499624..6c49c43bb2cb 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -1416,6 +1416,8 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
->>   	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
->>   	ext4_fc_init_inode(&ei->vfs_inode);
->>   	mutex_init(&ei->i_fc_lock);
->> +	ei->i_mb_last_group = 0;
->> +	ei->i_mb_last_start = 0;
->>   	return &ei->vfs_inode;
->>   }
->>   
->> -- 
->> 2.46.1
->>
+David / dhildenb
 
 
