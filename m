@@ -1,137 +1,237 @@
-Return-Path: <linux-ext4+bounces-8246-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8247-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E204AC8853
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 08:42:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E6ACAC89DA
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 10:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D7974A687E
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 06:42:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B5171BA4E41
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 08:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95173218EA2;
-	Fri, 30 May 2025 06:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A93CF21516E;
+	Fri, 30 May 2025 08:20:51 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B1C201006;
-	Fri, 30 May 2025 06:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336042116F5;
+	Fri, 30 May 2025 08:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748587296; cv=none; b=orVoUUOfKG/NoJhEvqVpUN4bOVo3hKUvHhY+vocn04VpeeGo4Xmp4BnsGJW8TbctFlAXQOb6gajoWrAYCDmbo6kt2o03CI1LdWEUrkknG8r9Faw4mmr54Huvf1NGYIedE0RY9L6IYX0s70mUswfRTwVaTvDYBtjRmz4UGz89hlU=
+	t=1748593251; cv=none; b=BL4YFlNLjpdz2+c5YDGAv1ciTU4l/5yUJUsU+rt/6JaEQgoh6MjjaOwxVz8nQ2Gqx1U77+FOwqA+AIneGgqOn9AJkOXZ0qhhmskY+9YZ2IHdXgElXxqgUCNsz//6U1jkNmlGJD0Ph61iPWr4VwDgkz2SchLojAR9InWfBmgf0D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748587296; c=relaxed/simple;
-	bh=AHe9ZlzqSs1N0MqxT8r/mBag9PpTGvK3leRA+/aS4ZI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=giP8EeyjYwF8U8IyWYHp9cG+y5Z+aIKWf//4q2zfLTtpDAg5+4tfDUJoXev9NKPs6YEIPV1lXJ/4A7L9YwPrX/P1alqR2GCFFh8CVI9z8AXsnxqM3vIznPjpOw5G2SB6LvNRVRoO6BwrpUR/CUIEjcOlw/Xf3ovZqGOg1oJuTUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4b7tth5wC7zYQv4K;
-	Fri, 30 May 2025 14:41:32 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id E2FCD1A1A1F;
-	Fri, 30 May 2025 14:41:31 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.112.188])
-	by APP4 (Coremail) with SMTP id gCh0CgD3Wl8PUzlo_wXRNw--.6893S9;
-	Fri, 30 May 2025 14:41:31 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ojaswin@linux.ibm.com,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	libaokun1@huawei.com,
-	yukuai3@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH 5/5] ext4: disable large folios if dioread_nolock is not enabled
-Date: Fri, 30 May 2025 14:28:58 +0800
-Message-ID: <20250530062858.458039-6-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20250530062858.458039-1-yi.zhang@huaweicloud.com>
-References: <20250530062858.458039-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1748593251; c=relaxed/simple;
+	bh=Ucz1ygW9HG1Og2peBspr33vdjTpvWXFaRtJTMZFth+M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ROCqcKzM3jRKvLEmBmrDZS+h5g5YFuYsbaqOEkH6LrotzMsCT5d+4KdqxjzRrOlIY3bHCoEuFmM5X0W6hMFoeu3qYIyVmrT1ZqkWiZgP2kzpjV3laimwEKuRcFZ2QodAhMjNFiegVBaOYIlt2CkQ5OkRBlNZmjpy0XB3wCOYDR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4b7x3y0mjpz23jTN;
+	Fri, 30 May 2025 16:19:42 +0800 (CST)
+Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
+	by mail.maildlp.com (Postfix) with ESMTPS id 77A591A016C;
+	Fri, 30 May 2025 16:20:45 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
+ (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 30 May
+ 2025 16:20:44 +0800
+Message-ID: <d5d840c5-d030-48de-84df-3891f498cfc7@huawei.com>
+Date: Fri, 30 May 2025 16:20:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] ext4: add ext4_try_lock_group() to skip busy groups
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<jack@suse.cz>, <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>, <libaokun@huaweicloud.com>, Baokun Li
+	<libaokun1@huawei.com>
+References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
+ <20250523085821.1329392-2-libaokun@huaweicloud.com>
+ <aDcmRdOrWatcBJWc@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <aDcmRdOrWatcBJWc@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3Wl8PUzlo_wXRNw--.6893S9
-X-Coremail-Antispam: 1UD129KBjvJXoWxJryDZr15CFWrKw1DJr1DKFg_yoW8WryDpF
-	9xGFW8Grs8uas7CFWxtr1UXr15tayxGa1UJFWSg3WUWFW7AryfKFsYyF1rC3W7JrWxXw4S
-	qF4UCrWDCw43AFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnI
-	WIevJa73UjIFyTuYvjfUOyIUUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ kwepemg500008.china.huawei.com (7.202.181.45)
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On 2025/5/28 23:05, Ojaswin Mujoo wrote:
+> On Fri, May 23, 2025 at 04:58:18PM +0800, libaokun@huaweicloud.com wrote:
+>> From: Baokun Li <libaokun1@huawei.com>
+>>
+>> When ext4 allocates blocks, we used to just go through the block groups
+>> one by one to find a good one. But when there are tons of block groups
+>> (like hundreds of thousands or even millions) and not many have free space
+>> (meaning they're mostly full), it takes a really long time to check them
+>> all, and performance gets bad. So, we added the "mb_optimize_scan" mount
+>> option (which is on by default now). It keeps track of some group lists,
+>> so when we need a free block, we can just grab a likely group from the
+>> right list. This saves time and makes block allocation much faster.
+>>
+>> But when multiple processes or containers are doing similar things, like
+>> constantly allocating 8k blocks, they all try to use the same block group
+>> in the same list. Even just two processes doing this can cut the IOPS in
+>> half. For example, one container might do 300,000 IOPS, but if you run two
+>> at the same time, the total is only 150,000.
+>>
+>> Since we can already look at block groups in a non-linear way, the first
+>> and last groups in the same list are basically the same for finding a block
+>> right now. Therefore, add an ext4_try_lock_group() helper function to skip
+>> the current group when it is locked by another process, thereby avoiding
+>> contention with other processes. This helps ext4 make better use of having
+>> multiple block groups.
+>>
+>> Also, to make sure we don't skip all the groups that have free space
+>> when allocating blocks, we won't try to skip busy groups anymore when
+>> ac_criteria is CR_ANY_FREE.
+>>
+>> Performance test data follows:
+>>
+>> CPU: HUAWEI Kunpeng 920
+>> Memory: 480GB
+>> Disk: 480GB SSD SATA 3.2
+>> Test: Running will-it-scale/fallocate2 on 64 CPU-bound containers.
+>> Observation: Average fallocate operations per container per second.
+>>
+>>                        base    patched
+>> mb_optimize_scan=0    3588    6755 (+88.2%)
+>> mb_optimize_scan=1    3588    4302 (+19.8%)
+> The patch looks mostly good. Same observations about mb_optimize_scan=1
+> improving less. We can continue this discussion in my reply to the cover
+> letter. That being said, I have some minor suggestions:
+Thanks for the review!
+>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/ext4.h    | 23 ++++++++++++++---------
+>>   fs/ext4/mballoc.c | 14 +++++++++++---
+>>   2 files changed, 25 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>> index 5a20e9cd7184..9c665a620a46 100644
+>> --- a/fs/ext4/ext4.h
+>> +++ b/fs/ext4/ext4.h
+>> @@ -3494,23 +3494,28 @@ static inline int ext4_fs_is_busy(struct ext4_sb_info *sbi)
+>>   	return (atomic_read(&sbi->s_lock_busy) > EXT4_CONTENTION_THRESHOLD);
+>>   }
+>>   
+>> +static inline bool ext4_try_lock_group(struct super_block *sb, ext4_group_t group)
+>> +{
+>> +	if (!spin_trylock(ext4_group_lock_ptr(sb, group)))
+>> +		return false;
+>> +	/*
+>> +	 * We're able to grab the lock right away, so drop the lock
+>> +	 * contention counter.
+>> +	 */
+>> +	atomic_add_unless(&EXT4_SB(sb)->s_lock_busy, -1, 0);
+>> +	return true;
+>> +}
+>> +
+>>   static inline void ext4_lock_group(struct super_block *sb, ext4_group_t group)
+>>   {
+>> -	spinlock_t *lock = ext4_group_lock_ptr(sb, group);
+>> -	if (spin_trylock(lock))
+>> -		/*
+>> -		 * We're able to grab the lock right away, so drop the
+>> -		 * lock contention counter.
+>> -		 */
+>> -		atomic_add_unless(&EXT4_SB(sb)->s_lock_busy, -1, 0);
+>> -	else {
+>> +	if (!ext4_try_lock_group(sb, group)) {
+>>   		/*
+>>   		 * The lock is busy, so bump the contention counter,
+>>   		 * and then wait on the spin lock.
+>>   		 */
+>>   		atomic_add_unless(&EXT4_SB(sb)->s_lock_busy, 1,
+>>   				  EXT4_MAX_CONTENTION);
+>> -		spin_lock(lock);
+>> +		spin_lock(ext4_group_lock_ptr(sb, group));
+>>   	}
+>>   }
+>>   
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 1e98c5be4e0a..5c13d9f8a1cc 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -896,7 +896,8 @@ static void ext4_mb_choose_next_group_p2_aligned(struct ext4_allocation_context
+>>   				    bb_largest_free_order_node) {
+>>   			if (sbi->s_mb_stats)
+>>   				atomic64_inc(&sbi->s_bal_cX_groups_considered[CR_POWER2_ALIGNED]);
+>> -			if (likely(ext4_mb_good_group(ac, iter->bb_group, CR_POWER2_ALIGNED))) {
+>> +			if (likely(ext4_mb_good_group(ac, iter->bb_group, CR_POWER2_ALIGNED)) &&
+>> +			    !spin_is_locked(ext4_group_lock_ptr(ac->ac_sb, iter->bb_group))) {
+> Maybe reversing the && order to be (!spin_is_locked() && ext4_mb_good_group()) would be better?
+Yeah.
+>>   				*group = iter->bb_group;
+>>   				ac->ac_flags |= EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED;
+>>   				read_unlock(&sbi->s_mb_largest_free_orders_locks[i]);
+>> @@ -932,7 +933,8 @@ ext4_mb_find_good_group_avg_frag_lists(struct ext4_allocation_context *ac, int o
+>>   	list_for_each_entry(iter, frag_list, bb_avg_fragment_size_node) {
+>>   		if (sbi->s_mb_stats)
+>>   			atomic64_inc(&sbi->s_bal_cX_groups_considered[cr]);
+>> -		if (likely(ext4_mb_good_group(ac, iter->bb_group, cr))) {
+>> +		if (likely(ext4_mb_good_group(ac, iter->bb_group, cr)) &&
+>> +		    !spin_is_locked(ext4_group_lock_ptr(ac->ac_sb, iter->bb_group))) {
+> same as above
+Okay.
+>   
+>>   			grp = iter;
+>>   			break;
+>>   		}
+>> @@ -2911,7 +2913,13 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>>   			if (err)
+>>   				goto out;
+>>   
+>> -			ext4_lock_group(sb, group);
+>> +			/* skip busy group */
+>> +			if (cr >= CR_ANY_FREE) {
+>> +				ext4_lock_group(sb, group);
+>> +			} else if (!ext4_try_lock_group(sb, group)) {
+>> +				ext4_mb_unload_buddy(&e4b);
+>> +				continue;
+>> +			}
+> This in itself looks good. I am just thinking that now that we are
+> deciding to skip locked groups, in the code above this one, shall we do
+> something like:
+>
+>        
+>        if (spin_is_locked(group_lock))
+>          continue;
+>        
+>        err = ext4_mb_load_buddy(sb, group, &e4b);
+>        if (err)
+>          goto out;
+>
+>        /* skip busy group */
+>        if (cr >= CR_ANY_FREE) {
+>          ext4_lock_group(sb, group);
+>        } else if (!ext4_try_lock_group(sb, group)) {
+>          ext4_mb_unload_buddy(&e4b);
+>          continue;
+>        }
+>
+> With this we can even avoid loading the folio as well.
+I previously assumed that for busy groups, the buddy was already loaded,
+so reloading it would incur minimal overhead. However, I was mistaken.
 
-The write-back process cannot restart a journal transaction when
-submitting a sufficiently large and discontinuous folio if
-dioread_nolock is disabled. To address this, disable large folios when
-building an inode if dioread_nolock is disabled, and also ensure that
-dioread_nolock cannot be disabled on an active inode that has large
-folio enabled.
+After implementing a change, the proportion of time spent in
+ext4_mb_load_buddy() decreased from 3.6% to 1.7%, resulting in
+approximately a 2% performance improvement.
 
-Fixes: 7ac67301e82f ("ext4: enable large folio for regular file")
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/ext4_jbd2.h | 7 +++++++
- fs/ext4/inode.c     | 2 ++
- 2 files changed, 9 insertions(+)
+Thank you for your suggestion！
+I will prevent unnecessary buddy loading in the next version.
 
-diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-index c0ee756cb34c..59292da272ef 100644
---- a/fs/ext4/ext4_jbd2.h
-+++ b/fs/ext4/ext4_jbd2.h
-@@ -422,6 +422,13 @@ static inline int ext4_free_data_revoke_credits(struct inode *inode, int blocks)
-  */
- static inline int ext4_should_dioread_nolock(struct inode *inode)
- {
-+	/*
-+	 * Cannot disable dioread_nolock on an active inode that has
-+	 * large folio enabled.
-+	 */
-+	if (mapping_large_folio_support(inode->i_mapping))
-+		return 1;
-+
- 	if (!test_opt(inode->i_sb, DIOREAD_NOLOCK))
- 		return 0;
- 	if (!S_ISREG(inode->i_mode))
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index e7de2fafc941..421c7bbc3ca9 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5164,6 +5164,8 @@ bool ext4_should_enable_large_folio(struct inode *inode)
- 		return false;
- 	if (ext4_has_feature_encrypt(sb))
- 		return false;
-+	if (!ext4_should_dioread_nolock(inode))
-+		return false;
- 
- 	return true;
- }
--- 
-2.46.1
+Cheers,
+Baokun
 
 
