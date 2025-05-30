@@ -1,206 +1,94 @@
-Return-Path: <linux-ext4+bounces-8238-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8239-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A38EFAC863D
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 04:28:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8131BAC8756
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 06:35:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57EDA4A34CD
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 02:28:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 768087B230C
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 04:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383CB16DEB3;
-	Fri, 30 May 2025 02:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="ng049r/D"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D197D18DB29;
+	Fri, 30 May 2025 04:35:36 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93361D554;
-	Fri, 30 May 2025 02:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17B14685
+	for <linux-ext4@vger.kernel.org>; Fri, 30 May 2025 04:35:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748572090; cv=none; b=hDjzuvsTb2ohkbUXAonnoO9aJykJsIvzq+q3cCfz+3iclkC3i0ucOBYaZn1lBShX7vZezpifoDACI7/wp4QJOoBT0zmV0TX1ny325l7sFCFV1VzM2YJftQ3w6wsVNIWnGupmJQXJDhD2ukGzvr6qf3cOq90s07kVluCXKAGz0mE=
+	t=1748579736; cv=none; b=af3CT6Gyx2HI8gx14NVUA6TagKh9r8bP1uxEPcgdVOW90d+qRlz4t65jnJ9c6ZTAKyhcpJRsX7xGyletV9GosuOvT6xwStQw4M6kyn7DBdY4rRx0e99HTXZ5pwW3efaBqX/cBrWMSxwBLGz0jrGIWC9Fa0yZ7AJxTIR6sQcNkbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748572090; c=relaxed/simple;
-	bh=flGUFes5+unQNqiiQA2kP66cj2AnyOmnfJf3BNkV8Qk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=GDth+LZMBi4DiVD5iEpXHciOM59clBcZ+TCbQDxNHG6bOU8yvxysHtclSFUBaMIKZbkNkZHDehoufSgVUbZFc0iHUNxtfQuqJWmOaAS/wc1+BN0IeAsAVxDRagZzO4ll2xVoXIlvXg7+LSMBa/9DpraeUDKR5LgSuaIDIzDzzCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=ng049r/D reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=NLNEe7ffwk32dqaNuZMs0TkDq8vepyjxGwMg76VZ7sY=; b=n
-	g049r/DDP7l2DGWpD5Q+jID93jvoyJg6qBD5kPwFr5HtTFmiDFtKLpRQJ7xP4Yjv
-	M9pXjR535CzqPsb69MytBy2PCYmwxvbV5oJDg3coTbfvKqmzhAH/LvK2lXr+Qa22
-	IgTzoo4Pp42QVU6uhlmNHbvcRtzndqk0uJmOgkH/fI=
-Received: from 00107082$163.com ( [111.35.189.95] ) by
- ajax-webmail-wmsvr-40-144 (Coremail) ; Fri, 30 May 2025 10:27:52 +0800
- (CST)
-Date: Fri, 30 May 2025 10:27:52 +0800 (CST)
-From: "David Wang" <00107082@163.com>
-To: "Andreas Dilger" <adilger@dilger.ca>
-Cc: "Theodore Ts'o" <tytso@mit.edu>,
-	"Ext4 Developers List" <linux-ext4@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] ext4: use kmem_cache for short fname allocation in
- readdir
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
- Copyright (c) 2002-2025 www.mailtech.cn 163com
-In-Reply-To: <9BA9D25F-A282-4998-9B53-03EDCD0D7C25@dilger.ca>
+	s=arc-20240116; t=1748579736; c=relaxed/simple;
+	bh=gUkxrJALy1SAUy+uYGJNhJ50tKrIGIVCcOAFinEY/Nc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KKb6bb4beKvcCW/hCIfto2MJ0TJCnuI7qSnSiZBPUrPYP+SeWIDq6nzebzNQC2ExLzl9mGWSLiJJ64KqBC663Zpdaus/ksAoOk2vfhA6oYm7gS2ooZtAqP+ZQXGKAbRcfufKEDvDOzAacTTyAm6JEWAKPcFxU+XXit/+n7ANnBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-111-235.bstnma.fios.verizon.net [173.48.111.235])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 54U4ZGWs020446
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 30 May 2025 00:35:17 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 7B8CD2E00DD; Fri, 30 May 2025 00:35:16 -0400 (EDT)
+Date: Fri, 30 May 2025 00:35:16 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: David Wang <00107082@163.com>
+Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC] ext4: use kmem_cache for short fname allocation in readdir
+Message-ID: <20250530043516.GD332467@mit.edu>
 References: <20250529144256.4517-1-00107082@163.com>
- <9BA9D25F-A282-4998-9B53-03EDCD0D7C25@dilger.ca>
-X-NTES-SC: AL_Qu2fCvmcvUgs5COeY+kZnEYQheY4XMKyuPkg1YJXOp80tSbm8RAleXBoE2DfwcOoGR6tvxe3cQdL8e5qV49lerAV5YyAhQviG8gOu84+2PWE
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <1b87db67.25f8.1971f0469b6.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:kCgvCgDX_xOpFzlodZcQAA--.64642W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/xtbBkAxdqmg5EpvF3QACsp
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250529144256.4517-1-00107082@163.com>
 
-CkF0IDIwMjUtMDUtMzAgMDU6NDQ6MjYsICJBbmRyZWFzIERpbGdlciIgPGFkaWxnZXJAZGlsZ2Vy
-LmNhPiB3cm90ZToKPk9uIE1heSAyOSwgMjAyNSwgYXQgODo0MiBBTSwgRGF2aWQgV2FuZyA8MDAx
-MDcwODJAMTYzLmNvbT4gd3JvdGU6Cj4+IAo+PiBXaGVuIHNlYXJjaGluZyBmaWxlcywgZXh0NF9y
-ZWFkZGlyIHdvdWxkIGt6YWxsb2MoKSBhIGZuYW1lCj4+IG9iamVjdCBmb3IgZWFjaCBlbnRyeS4g
-SXQgd291bGQgYmUgZmFzdGVyIGlmIGEgZGVkaWNhdGVkCj4+IGttZW1fY2FjaGUgaXMgdXNlZCBm
-b3IgZm5hbWUuCj4+IAo+PiBCdXQgZm5hbWVzIGFyZSBvZiB2YXJpYWJsZSBsZW5ndGguCj4+IAo+
-PiBUaGlzIHBhdGNoIHN1Z2dlc3RzIHVzaW5nIGttZW1fY2FjaGUgZm9yIGZuYW1lIHdpdGggc2hv
-cnQKPj4gbGVuZ3RoLCBhbmQgcmVzb3J0aW5nIHRvIGt6YWxsb2Mgd2hlbiBmbmFtZSBuZWVkcyBs
-YXJnZXIgYnVmZmVyLgo+PiBBc3N1bWluZyBsb25nIGZpbGUgbmFtZXMgYXJlIG5vdCB2ZXJ5IGNv
-bW1vbi4KPgo+SXQgbWF5IGJlIHJlYXNvbmFibGUgdG8gaGF2ZSBhIGNhY2hlLCBidXQgSSBzdXNw
-ZWN0IHRoYXQgMTI3IGJ5dGVzCj5pcyB0b28gbGFyZ2UgZm9yIG1vc3QgY29tbW9uIHdvcmtsb2Fk
-cy4gIFN0YXRpc3RpY3MgdGhhdCBJJ3ZlIHNlZW4KPnNob3cgOTktcGVyY2VudGlsZSBmaWxlbmFt
-ZSBsZW5ndGggaXMgPD0gNDggYnl0ZXMgb24gbW9zdCBmaWxlc3lzdGVtcywKPnNvIGFsbG9jYXRp
-bmcgMTI4IGJ5dGVzIGlzIHByb2JhYmx5IHN1Yi1vcHRpbWFsIChtb3N0IGlzIHdhc3RlZCkuCj4K
-PlRoYXQgc2FpZCwga21hbGxvYygpIGlzIG1vc3RseSBhIHdyYXBwZXIgZm9yIHRoZSBrbWFsbG9j
-LSogc2xhYnMsIHNvCj5jcmVhdGluZyBhIDEyOC1ieXRlIHNsYWIgZm9yIHRoaXMgZG9lc24ndCBz
-ZWVtIHN1cGVyIHVzZWZ1bD8KClRoYW5rcyBmb3IgdGhlIGZlZWRiYWNrfiEKClllcywgdGhlcmUg
-d291bGQgYmUgbWVtb3J5IHdhc3RlZC4gIEkgY2hvb3NlIDEyNyBpcyBqdXN0IGZvciB0ZXN0aW5n
-IG9uIG15IHN5c3RlbSwgaXQgY2FuIGJlCmFkanVzdGVkIGJhc2VkIG9uIGVtcGlyaWNhbCBkYXRh
-LgoKa21hbGxvYyBpcyBnbG9iYWxseSB1c2VkLCAgd2hpbGUgYSBkZWRpY2F0ZWQvaXNvbGNhdGVk
-IGZuYW1lLXNsYWIgaXMgb25seSBhY2Nlc3NlZCBieQpleHQ0LWRpci4gQWRkaW5nIGEgbmV3IHNs
-YWIgY2FuIGF2b2lkIHRoZSBjb250ZW50aW9uIGJldHdlZW4gZXh0NC1kaXIgYW5kIG90aGVyIHVz
-ZXJzIG9mIAprbWFsbG9jLCBlc3BlY2lhbGx5IHdoZW4gYWxsb2MgZnJlcXVlbmN5IGlzIGhpZ2gu
-IChXaGVuIHNlYXJjaGluZyBpbiBhICJsYXJnZSIgZGlyLCB0aGUKbWVtb3J5IGFsbG9jYXRpb24g
-ZnJlcXVlbmN5IHdvdWxkIGJlIHZlcnkgaGlnaCwgYSBuZXcgc2xhYiBjYW4gcmVkdWNlIHRoZSBp
-bXBhY3Qgb24gb3RoZXIgdXNlcnMKb2Yga21hbGxvYyApCgoKVGhhbmtzCkRhdmlkCgo+Cj4+IFBy
-b2ZpbGluZyB3aGVuIHNlYXJjaGluZyBmaWxlcyBpbiBrZXJuZWwgY29kZSBiYXNlLCB3aXRoIGZv
-bGxvd2luZwo+PiBjb21tYW5kOgo+PiAJIyBwZXJmIHJlY29yZCAtZyAtZSBjcHUtY2xvY2sgLS1m
-cmVxPW1heCBiYXNoIC1jIFwKPj4gCSJmb3IgaSBpbiB7MS4uMTAwfTsgZG8gZmluZCAuL2xpbnV4
-IC1uYW1lIG5vdGZvdW5kYXRhbGwgPiAvZGV2L251bGw7IGRvbmUiCj4+IEFuZCB1c2luZyBzYW1w
-bGUgY291bnRzIGFzIGluZGljYXRvciBvZiBwZXJmb3JtYW5jZSBpbXByb3ZlbWVudC4KPj4gKFRo
-ZSBmYXN0ZXIsIHRoZSBsZXNzIHNhbXBsZXMgY29sbGVjdGVkLiBBbmQgdGhlIHRlc3RzIGFyZSBj
-YXJyaWVkIG91dAo+PiB3aGVuIHN5c3RlbSBpcyB1bmRlciBubyBtZW1vcnkgcHJlc3N1cmUuKQo+
-PiAKPj4gQmVmb3JlIHdpdGhvdXQgdGhlIGNoYW5nZToKPj4gCTEyMzI4NjgtLWV4dDRfcmVhZGRp
-cgo+PiAJCSB8Cj4+IAkJIHwtLTgzOTA4NS0tZXh0NF9odHJlZV9maWxsX3RyZWUKPj4gCQkgfCAg
-ICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgIC0tODI5MjIzLS1odHJlZV9kaXJibG9ja190b190
-cmVlCj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAg
-ICAgICB8LS0zNjU4NjktLWV4dDRfaHRyZWVfc3RvcmVfZGlyZW50Cj4+IAkJIHwgICAgICAgICAg
-ICAgICAgICAgICB8ICAgICAgICAgIHwKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAg
-ICAgICAgfC0tNDMxNjktLTB4ZmZmZmZmZmZhN2Y4ZDA5NAo+PiAJCSB8ICAgICAgICAgICAgICAg
-ICAgICAgfCAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8ICAgICAgICAg
-ICAtLTIxOTQ3LS0weGZmZmZmZmZmYTdmOGQwZjcKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAg
-IHwKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwtLTIxMzEyNC0tZXh0NGZzX2Rpcmhhc2gK
-Pj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgICAgfAo+PiAJCSB8ICAgICAgICAg
-ICAgICAgICAgICAgfCAgICAgICAgICAgLS04NjMzOS0tc3RyMmhhc2hidWZfc2lnbmVkCj4+IAkJ
-IHwgICAgICAgICAgICAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8LS0x
-NDU4MzktLV9fZXh0NF9yZWFkX2RpcmJsb2NrCj4+IAo+PiBhbmQgd2l0aCB0aGUgY2hhbmdlLCB+
-MyUgbGVzcyBzYW1wbGVzOgo+PiAJMTIwMjkyMi0tZXh0NF9yZWFkZGlyCj4KPj4gCQkgfAo+PiAJ
-CSB8LS04MDUxMDUtLWV4dDRfaHRyZWVfZmlsbF90cmVlCj4+IAkJIHwgICAgICAgICAgfAo+PiAJ
-CSB8ICAgICAgICAgICAtLTc5NTA1NS0taHRyZWVfZGlyYmxvY2tfdG9fdHJlZQo+PiAJCSB8ICAg
-ICAgICAgICAgICAgICAgICAgfAo+PiAJCSB8ICAgICAgICAgICAgICAgICAgICAgfC0tMzI4ODc2
-LS1leHQ0X2h0cmVlX3N0b3JlX2RpcmVudAo+PiAJCSB8ICAgICAgICAgICAgICAgICAgICAgfCAg
-ICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8ICAgICAgICAgIHwtLTEyMzIw
-Ny0ta21lbV9jYWNoZV9hbGxvY19ub3Byb2YKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwg
-ICAgICAgICAgfCAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8ICAgICAg
-ICAgIHwgICAgICAgICAgfC0tMjY0NTMtLV9fYWxsb2NfdGFnZ2luZ19zbGFiX2FsbG9jX2hvb2sK
-Pj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgICAgfCAgICAgICAgICB8Cj4+IAkJ
-IHwgICAgICAgICAgICAgICAgICAgICB8ICAgICAgICAgIHwgICAgICAgICAgIC0tMjA0MTMtLV9f
-c2xhYl9hbGxvYy5pc3JhLjAKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgICAg
-fAo+PiAJCSB8ICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgLS0zMTU2Ni0tcmJfaW5z
-ZXJ0X2NvbG9yCj4+IAkJIHwgICAgICAgICAgICAgICAgICAgICB8Cj4+IAkJIHwgICAgICAgICAg
-ICAgICAgICAgICB8LS0yMTI5MTUtLWV4dDRmc19kaXJoYXNoCj4+IAkJIHwgICAgICAgICAgICAg
-ICAgICAgICB8ICAgICAgICAgIHwKPj4gCQkgfCAgICAgICAgICAgICAgICAgICAgIHwgICAgICAg
-ICAgIC0tODYwMDQtLXN0cjJoYXNoYnVmX3NpZ25lZAo+PiAJCSB8ICAgICAgICAgICAgICAgICAg
-ICAgfAo+PiAJCSB8ICAgICAgICAgICAgICAgICAgICAgfC0tMTQ5MTQ2LS1fX2V4dDRfcmVhZF9k
-aXJibG9jawo+PiAKPj4gcmVhZGRpcigpIHdvdWxkIGhhdmUgc2lnZmluaWNhbnQgaW1wcm92ZW1l
-bnQsIGJ1dCB0aGUgb3ZlcmFsbAo+PiBpbXByb3ZlbWVudHMgZm9yIHNlYXJjaGluZyBmaWxlcyBp
-cyBvbmx5IH4wLjUlLCBtaWdodCBiZSBtb3JlCj4+IHNpZ2ZpbmljYW50IGlmIHRoZSBzeXN0ZW0g
-aXMgdW5kZXIgc29tZSBtZW1vcnkgcHJlc3N1cmVzLgo+PiAKPj4gVGhlIHNsYWIgc3RhdHMgYWZ0
-ZXIgdGhlIHRlc3Q6Cj4+IGV4dDRfZGlyX2ZuYW1lICAgICAgMTI0MiAgIDEyNDIgICAgMTc2ICAg
-MjMgICAgMSA6IHR1bmFibGVzICAgIDAgICAgMCAgICAwIDogc2xhYmRhdGEgICAgIDU0ICAgICA1
-NCAgICAgIDAKPj4gCj4+IFNpZ25lZC1vZmYtYnk6IERhdmlkIFdhbmcgPDAwMTA3MDgyQDE2My5j
-b20+Cj4+IC0tLQo+PiBmcy9leHQ0L2Rpci5jICAgfCA0NyArKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKy0tLQo+PiBmcy9leHQ0L2V4dDQuaCAgfCAgNCArKysrCj4+
-IGZzL2V4dDQvc3VwZXIuYyB8ICAzICsrKwo+PiAzIGZpbGVzIGNoYW5nZWQsIDUxIGluc2VydGlv
-bnMoKyksIDMgZGVsZXRpb25zKC0pCj4+IAo+PiBkaWZmIC0tZ2l0IGEvZnMvZXh0NC9kaXIuYyBi
-L2ZzL2V4dDQvZGlyLmMKPj4gaW5kZXggZDQxNjRjNTA3YTkwLi4zYWRmYTBkMDM4Y2QgMTAwNjQ0
-Cj4+IC0tLSBhL2ZzL2V4dDQvZGlyLmMKPj4gKysrIGIvZnMvZXh0NC9kaXIuYwo+PiBAQCAtNDI0
-LDYgKzQyNCw0OCBAQCBzdHJ1Y3QgZm5hbWUgewo+PiAJY2hhcgkJbmFtZVtdIF9fY291bnRlZF9i
-eShuYW1lX2xlbik7Cj4+IH07Cj4+IAo+PiArI2RlZmluZSBFWFQ0X0RJUl9GTkFNRV9TSE9SVF9M
-RU5HVEggMTI3Cj4+ICtzdGF0aWMgc3RydWN0IGttZW1fY2FjaGUgKmV4dDRfZGlyX2ZuYW1lX2Nh
-Y2hlcDsKPj4gKwo+PiArdm9pZCBfX2luaXQgZXh0NF9pbml0X2Rpcih2b2lkKQo+PiArewo+PiAr
-CWV4dDRfZGlyX2ZuYW1lX2NhY2hlcCA9IGttZW1fY2FjaGVfY3JlYXRlX3VzZXJjb3B5KCJleHQ0
-X2Rpcl9mbmFtZSIsCj4+ICsJCQlzdHJ1Y3Rfc2l6ZV90KHN0cnVjdCBmbmFtZSwgbmFtZSwgIEVY
-VDRfRElSX0ZOQU1FX1NIT1JUX0xFTkdUSCArIDEpLAo+PiArCQkJMCwgU0xBQl9SRUNMQUlNX0FD
-Q09VTlQsCj4+ICsJCQlvZmZzZXRvZihzdHJ1Y3QgZm5hbWUsIG5hbWUpLCBFWFQ0X0RJUl9GTkFN
-RV9TSE9SVF9MRU5HVEggKyAxLAo+PiArCQkJTlVMTCk7Cj4+ICt9Cj4+ICsKPj4gK3ZvaWQgZXh0
-NF9leGl0X2Rpcih2b2lkKQo+PiArewo+PiArCWlmIChleHQ0X2Rpcl9mbmFtZV9jYWNoZXApCj4+
-ICsJCWttZW1fY2FjaGVfZGVzdHJveShleHQ0X2Rpcl9mbmFtZV9jYWNoZXApOwo+PiArfQo+PiAr
-Cj4+ICtzdGF0aWMgc3RydWN0IGZuYW1lICpyYl9ub2RlX2ZuYW1lX3phbGxvYyhfX3U4IG5hbWVf
-bGVuKQo+PiArewo+PiArCXN0cnVjdCBmbmFtZSAqcDsKPj4gKwlpZiAoZXh0NF9kaXJfZm5hbWVf
-Y2FjaGVwICYmIG5hbWVfbGVuIDw9IEVYVDRfRElSX0ZOQU1FX1NIT1JUX0xFTkdUSCkKPj4gKwkJ
-cCA9IGttZW1fY2FjaGVfYWxsb2MoZXh0NF9kaXJfZm5hbWVfY2FjaGVwLCBHRlBfS0VSTkVMKTsK
-Pj4gKwllbHNlCj4+ICsJCXAgPSBrbWFsbG9jKHN0cnVjdF9zaXplKHAsIG5hbWUsIG5hbWVfbGVu
-ICsgMSksIEdGUF9LRVJORUwpOwo+PiArCWlmIChwKSB7Cj4+ICsJCS8qIG5vIG5lZWQgdG8gZmls
-bCBuYW1lIHdpdGggemVyb2VzKi8KPj4gKwkJbWVtc2V0KHAsIDAsIG9mZnNldG9mKHN0cnVjdCBm
-bmFtZSwgbmFtZSkpOwo+PiArCQlwLT5uYW1lW25hbWVfbGVuXSA9IDA7Cj4+ICsJfQo+PiArCXJl
-dHVybiBwOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgdm9pZCByYl9ub2RlX2ZuYW1lX2ZyZWUoc3Ry
-dWN0IGZuYW1lICpwKSB7Cj4+ICsJaWYgKCFwKQo+PiArCQlyZXR1cm47Cj4+ICsJaWYgKGV4dDRf
-ZGlyX2ZuYW1lX2NhY2hlcCAmJiBwLT5uYW1lX2xlbiA8PSBFWFQ0X0RJUl9GTkFNRV9TSE9SVF9M
-RU5HVEgpCj4+ICsJCWttZW1fY2FjaGVfZnJlZShleHQ0X2Rpcl9mbmFtZV9jYWNoZXAsIHApOwo+
-PiArCWVsc2UKPj4gKwkJa2ZyZWUocCk7Cj4+ICt9Cj4+ICsKPj4gLyoKPj4gICogVGhpcyBmdW5j
-dGlvbiBpbXBsZW1lbnRzIGEgbm9uLXJlY3Vyc2l2ZSB3YXkgb2YgZnJlZWluZyBhbGwgb2YgdGhl
-Cj4+ICAqIG5vZGVzIGluIHRoZSByZWQtYmxhY2sgdHJlZS4KPj4gQEAgLTQzNiw3ICs0NzgsNyBA
-QCBzdGF0aWMgdm9pZCBmcmVlX3JiX3RyZWVfZm5hbWUoc3RydWN0IHJiX3Jvb3QgKnJvb3QpCj4+
-IAkJd2hpbGUgKGZuYW1lKSB7Cj4+IAkJCXN0cnVjdCBmbmFtZSAqb2xkID0gZm5hbWU7Cj4+IAkJ
-CWZuYW1lID0gZm5hbWUtPm5leHQ7Cj4+IC0JCQlrZnJlZShvbGQpOwo+PiArCQkJcmJfbm9kZV9m
-bmFtZV9mcmVlKG9sZCk7Cj4+IAkJfQo+PiAKPj4gCSpyb290ID0gUkJfUk9PVDsKPj4gQEAgLTQ3
-OSw4ICs1MjEsNyBAQCBpbnQgZXh0NF9odHJlZV9zdG9yZV9kaXJlbnQoc3RydWN0IGZpbGUgKmRp
-cl9maWxlLCBfX3UzMiBoYXNoLAo+PiAJcCA9ICZpbmZvLT5yb290LnJiX25vZGU7Cj4+IAo+PiAJ
-LyogQ3JlYXRlIGFuZCBhbGxvY2F0ZSB0aGUgZm5hbWUgc3RydWN0dXJlICovCj4+IC0JbmV3X2Zu
-ID0ga3phbGxvYyhzdHJ1Y3Rfc2l6ZShuZXdfZm4sIG5hbWUsIGVudF9uYW1lLT5sZW4gKyAxKSwK
-Pj4gLQkJCSBHRlBfS0VSTkVMKTsKPj4gKwluZXdfZm4gPSByYl9ub2RlX2ZuYW1lX3phbGxvYyhl
-bnRfbmFtZS0+bGVuKTsKPj4gCWlmICghbmV3X2ZuKQo+PiAJCXJldHVybiAtRU5PTUVNOwo+PiAJ
-bmV3X2ZuLT5oYXNoID0gaGFzaDsKPj4gZGlmZiAtLWdpdCBhL2ZzL2V4dDQvZXh0NC5oIGIvZnMv
-ZXh0NC9leHQ0LmgKPj4gaW5kZXggNWEyMGU5Y2Q3MTg0Li4zM2FiOTcxNDMwMDAgMTAwNjQ0Cj4+
-IC0tLSBhL2ZzL2V4dDQvZXh0NC5oCj4+ICsrKyBiL2ZzL2V4dDQvZXh0NC5oCj4+IEBAIC0zNzk1
-LDYgKzM3OTUsMTAgQEAgZXh0ZXJuIHZvaWQgZXh0NF9vcnBoYW5fZmlsZV9ibG9ja190cmlnZ2Vy
-KAo+PiAJCQkJc3RydWN0IGJ1ZmZlcl9oZWFkICpiaCwKPj4gCQkJCXZvaWQgKmRhdGEsIHNpemVf
-dCBzaXplKTsKPj4gCj4+ICsvKiBkaXIuYyAqLwo+PiArZXh0ZXJuIHZvaWQgX19pbml0IGV4dDRf
-aW5pdF9kaXIodm9pZCk7Cj4+ICtleHRlcm4gdm9pZCBleHQ0X2V4aXRfZGlyKHZvaWQpOwo+PiAr
-Cj4+IC8qCj4+ICAqIEFkZCBuZXcgbWV0aG9kIHRvIHRlc3Qgd2hldGhlciBibG9jayBhbmQgaW5v
-ZGUgYml0bWFwcyBhcmUgcHJvcGVybHkKPj4gICogaW5pdGlhbGl6ZWQuIFdpdGggdW5pbml0X2Jn
-IHJlYWRpbmcgdGhlIGJsb2NrIGZyb20gZGlzayBpcyBub3QgZW5vdWdoCj4+IGRpZmYgLS1naXQg
-YS9mcy9leHQ0L3N1cGVyLmMgYi9mcy9leHQ0L3N1cGVyLmMKPj4gaW5kZXggMTgxOTM0NDk5NjI0
-Li4yMWNlM2Q3ODkxMmEgMTAwNjQ0Cj4+IC0tLSBhL2ZzL2V4dDQvc3VwZXIuYwo+PiArKysgYi9m
-cy9leHQ0L3N1cGVyLmMKPj4gQEAgLTc0NTcsNiArNzQ1Nyw4IEBAIHN0YXRpYyBpbnQgX19pbml0
-IGV4dDRfaW5pdF9mcyh2b2lkKQo+PiAJaWYgKGVycikKPj4gCQlnb3RvIG91dDsKPj4gCj4+ICsJ
-ZXh0NF9pbml0X2RpcigpOwo+PiArCj4+IAlyZXR1cm4gMDsKPj4gb3V0Ogo+PiAJdW5yZWdpc3Rl
-cl9hc19leHQyKCk7Cj4+IEBAIC03NDk3LDYgKzc0OTksNyBAQCBzdGF0aWMgdm9pZCBfX2V4aXQg
-ZXh0NF9leGl0X2ZzKHZvaWQpCj4+IAlleHQ0X2V4aXRfcG9zdF9yZWFkX3Byb2Nlc3NpbmcoKTsK
-Pj4gCWV4dDRfZXhpdF9lcygpOwo+PiAJZXh0NF9leGl0X3BlbmRpbmcoKTsKPj4gKwlleHQ0X2V4
-aXRfZGlyKCk7Cj4+IH0KPj4gCj4+IE1PRFVMRV9BVVRIT1IoIlJlbXkgQ2FyZCwgU3RlcGhlbiBU
-d2VlZGllLCBBbmRyZXcgTW9ydG9uLCBBbmRyZWFzIERpbGdlciwgVGhlb2RvcmUgVHMnbyBhbmQg
-b3RoZXJzIik7Cj4+IC0tCj4+IDIuMzkuMgo+PiAKPgo+Cj5DaGVlcnMsIEFuZHJlYXMKPgo+Cj4K
-Pgo+Cg==
+On Thu, May 29, 2025 at 10:42:56PM +0800, David Wang wrote:
+> When searching files, ext4_readdir would kzalloc() a fname
+> object for each entry. It would be faster if a dedicated
+> kmem_cache is used for fname.
+> 
+> But fnames are of variable length.
+> 
+> This patch suggests using kmem_cache for fname with short
+> length, and resorting to kzalloc when fname needs larger buffer.
+> Assuming long file names are not very common.
+> 
+> Profiling when searching files in kernel code base, with following
+> command:
+> 	# perf record -g -e cpu-clock --freq=max bash -c \
+> 	"for i in {1..100}; do find ./linux -name notfoundatall > /dev/null; done"
+> And using sample counts as indicator of performance improvement.
+
+I would think a better indicator of performance improvement would be
+to measure the system time when running the find commands.  (i.e.,
+either using getrusange with RUSAGE_CHILDREN or wait3 or wait4).
+
+We're trading off some extra memory usage and code complexity with
+less CPU time because entries in the kmem_cache might be more TLB
+friendly.  But this is only really going to be applicable if the
+directory is large enough such that the cycles spent in readdir is
+significant compared to the rest of the userspace program, *and* you
+are reading the directory multiple times (e.g., calling find on a
+directory hierarchy many, many times) such that the disk blocks are
+cahed and you don't need to read them from the storage device.
+Otherwise the I/O costs will completely dominate and swamp the
+marginal TLB cache savings.
+
+Given that it's really rare for readdir() to be the bottleneck of many
+workloads, the question is, is it worth it?
+
+						- Ted
 
