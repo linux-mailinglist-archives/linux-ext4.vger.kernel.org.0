@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-8264-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8265-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E43CACA5C9
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 02:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2584BACA5D8
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 02:39:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C914E1724AD
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 00:38:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 780F917A755
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 00:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34D130E92F;
-	Sun,  1 Jun 2025 23:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F56298FE4;
+	Sun,  1 Jun 2025 23:39:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ncdExuQc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="joWpTEdO"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF7C30E921;
-	Sun,  1 Jun 2025 23:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B84298FD2;
+	Sun,  1 Jun 2025 23:39:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748821129; cv=none; b=Pt+3KK/LBFxGy0shDCJTrUglRVrWwiOrg4t9bWk0q+ogEw6vJBxkI22qY3i27PDFoCGwI6lK5koT6TN/Meeg1QjEudGk05c4OnP7TqJIpcAUmgovtGoLJwfXj1Y+4lpPm7WKEeeA/o+oiCAQGXpT4hbodhZyOBjBs76AnrxTixQ=
+	t=1748821140; cv=none; b=VwhP7VQX1+ait3xNQ2OaMziZv2Hi9zVpG1ctit3mq2CL4FZGsoX7kxeKN92l54Ot3xbpwR92/p++KHDYvRhwk4xbSybfYobx8x5R9iYgocVJWkRNwkV1XWX6Ep5Z0Ob0F0wcYSQ2YDy8irDKwwxlvL23Wf0as/yO3UDYOo9NPzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748821129; c=relaxed/simple;
-	bh=/7fnd5FeJYSnYjwLNoi1epbW+D3cajrAjB137kc8bME=;
+	s=arc-20240116; t=1748821140; c=relaxed/simple;
+	bh=NS2cB/+wd7U1AKXSPT6AUvGiOi3IncIDUe98c+FATWA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=a8WXJ6N+VANPRdr8DrXPomK6HcUtAhYJ/MDBamTdhqPibAa9hdPvak1fx8khidfKD4DJHkLTMQe6AcZgs0SbIiEJhLHkjcf4CXiCyiMF6fmbmNhUT9FN3af6GfGy9l6IRbx/DP4JxVxM2bowRVkQ8VJn6RxSbPq0pnrrdNwKvA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ncdExuQc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EEBCC4CEF2;
-	Sun,  1 Jun 2025 23:38:48 +0000 (UTC)
+	 MIME-Version; b=pLIombaxFB7dJW6J+SH5IJoYgpqd0C08HzPyqUo/hAOVnouXv08F58I4xL9PpIrZu1yt9bL126WIXdpisgW6F8X5GHYcAA0ps/ry0FnwN0tgGP/1vYAitICUrvOTwoyHmqd1zlE1e3SE8fyR9quD9T+b9viVcDjfxdkO3ky/ZBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=joWpTEdO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC6FDC4CEE7;
+	Sun,  1 Jun 2025 23:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748821129;
-	bh=/7fnd5FeJYSnYjwLNoi1epbW+D3cajrAjB137kc8bME=;
+	s=k20201202; t=1748821140;
+	bh=NS2cB/+wd7U1AKXSPT6AUvGiOi3IncIDUe98c+FATWA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ncdExuQchzjjaRZvWcyJ9AkcAXe6AWW0nOQ1hP7o2PvoXHhBaUemiSeZM1o0rJWuf
-	 vAftUMQR8//Z6nNrJihAoE3xir0c6NxUt6uC8CTqVBhTRNk8qddw97tv48b6eL/LnG
-	 qdwqQJhEpfzR5djmaP/5JDEqy1TXXvbX4psqLqO7mkdGfO0XrWQVosuGGeEGEarpGC
-	 oSyhLWFvmlywjn2krsUsFL6YNJ1UPnxcw05TwDCYWvNKlCkkLJqLHuL5iYNFLt2MZL
-	 TK/bPSBNZceG27nU4/XoIo4JPJz6WjRaju6zJymqgTyLnfPj3y8mKO1TQH1CxRlXEK
-	 X4YiVTqNQQyHA==
+	b=joWpTEdOLGF3BNhpZlHlGMoGFgqfimyMkI4oEGE1VQVE/LiVLaBPbh9cuBS4251C0
+	 8XYZMtKtsIE7rM8kr1w0/81qMRpO5hlPcMejvVvot5fHdpHyjHvq0Qxlrf7eLRXBqL
+	 9Qt0f0sn5lP95sF/NoVp3eWE3Yovnbv0hD3Cq782RvUTYWziokupuxVgCD0S/QwOr1
+	 0uQSQXKHQqvp8rXy/sbnZ9N+o/PJq1LS8mkWowavIkGFaCivp7GOOjSICFGrhiLAw3
+	 3p500zhlaIBD/+E3jtm5o1zqSp3kw4v12MSg54MxVgD3AF8+2Un1vi1D4BOSaAev0M
+	 LpouZX3FgCdpA==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -50,9 +50,9 @@ Cc: Zhang Yi <yi.zhang@huawei.com>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 26/66] ext4: ext4: unify EXT4_EX_NOCACHE|NOFAIL flags in ext4_ext_remove_space()
-Date: Sun,  1 Jun 2025 19:37:03 -0400
-Message-Id: <20250601233744.3514795-26-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 32/66] ext4: prevent stale extent cache entries caused by concurrent get es_cache
+Date: Sun,  1 Jun 2025 19:37:09 -0400
+Message-Id: <20250601233744.3514795-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250601233744.3514795-1-sashal@kernel.org>
 References: <20250601233744.3514795-1-sashal@kernel.org>
@@ -69,153 +69,124 @@ Content-Transfer-Encoding: 8bit
 
 From: Zhang Yi <yi.zhang@huawei.com>
 
-[ Upstream commit 53ce42accd2002cc490fc86000ac532530507a74 ]
+[ Upstream commit f22a0ef2231a7d8374bb021eb86404d0e9de5a02 ]
 
-When removing space, we should use EXT4_EX_NOCACHE because we don't
-need to cache extents, and we should also use EXT4_EX_NOFAIL to prevent
-metadata inconsistencies that may arise from memory allocation failures.
-While ext4_ext_remove_space() already uses these two flags in most
-places, they are missing in ext4_ext_search_right() and
-read_extent_tree_block() calls. Unify the flags to ensure consistent
-behavior throughout the extent removal process.
+The EXT4_IOC_GET_ES_CACHE and EXT4_IOC_PRECACHE_EXTENTS currently
+invokes ext4_ext_precache() to preload the extent cache without holding
+the inode's i_rwsem. This can result in stale extent cache entries when
+competing with operations such as ext4_collapse_range() which calls
+ext4_ext_remove_space() or ext4_ext_shift_extents().
+
+The problem arises when ext4_ext_remove_space() temporarily releases
+i_data_sem due to insufficient journal credits. During this interval, a
+concurrent EXT4_IOC_GET_ES_CACHE or EXT4_IOC_PRECACHE_EXTENTS may cache
+extent entries that are about to be deleted. As a result, these cached
+entries become stale and inconsistent with the actual extents.
+
+Loading the extents cache without holding the inode's i_rwsem or the
+mapping's invalidate_lock is not permitted besides during the writeback.
+Fix this by holding the i_rwsem during EXT4_IOC_GET_ES_CACHE and
+EXT4_IOC_PRECACHE_EXTENTS.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Link: https://patch.msgid.link/20250423085257.122685-2-yi.zhang@huaweicloud.com
+Link: https://patch.msgid.link/20250423085257.122685-6-yi.zhang@huaweicloud.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-Based on my thorough analysis of this commit and the kernel code
-context, here is my assessment: **YES** This commit should be backported
-to stable kernel trees. ## Detailed Analysis: ### **Nature of the Bug
-Fix** This commit addresses an important consistency issue in the ext4
-extent removal process. The problem is that `ext4_ext_remove_space()`
-inconsistently applies critical flags (`EXT4_EX_NOCACHE |
-EXT4_EX_NOFAIL`) across all its `read_extent_tree_block()` calls. ###
-**Technical Impact** 1. **`EXT4_EX_NOCACHE`**: Prevents caching of
-extents during removal operations. Without this flag in
-`ext4_ext_search_right()` calls (lines 1607, 1615), the extent cache
-could become polluted with stale entries during space removal,
-potentially leading to incorrect block mappings. 2.
-**`EXT4_EX_NOFAIL`**: Ensures memory allocation cannot fail during
-critical metadata operations. The absence of this flag in the affected
-calls could cause metadata inconsistencies if memory allocation fails
-during extent tree traversal. ### **Risk Assessment - Low Risk** -
-**Small, contained change**: Only adds consistent flag usage across
-existing function calls - **No algorithmic changes**: The core logic
-remains unchanged - **Well-understood flags**: Both flags are already
-used extensively in the same function ### **Comparison with Historical
-Commits** **Similar to "YES" commits:** - Like commit #1 (ext4 cache
-pollution fix): Addresses extent cache consistency issues - Like commit
-#2 (nofail preallocation): Prevents metadata inconsistencies from
-allocation failures - Small, targeted fix with clear purpose - Addresses
-potential data corruption scenarios **Unlike "NO" commits:** - Not a
-cleanup/refactoring (commits #3, #4, #5 were architectural changes) -
-Not removing functionality or making API changes - Fixes an actual bug
-rather than just code organization ### **Code Evidence** The changes are
-in `/fs/ext4/extents.c:1607, 1615, 2980, 2920, 4299`: 1. **Lines 1607,
-1615**: `ext4_ext_search_right()` now receives and uses flags parameter
-2. **Line 2980**: `read_extent_tree_block()` in the main removal loop
-now uses unified flags 3. **Line 2920**: `ext4_ext_search_right()` call
-now passes flags consistently 4. **Line 4299**: Non-removal path
-correctly passes 0 flags (no change in behavior) ### **Subsystem
-Context** From examining the kernel source: - `EXT4_EX_NOCACHE` prevents
-extent caching when `depth == 0` (line ~460 in extents.c) -
-`EXT4_EX_NOFAIL` adds `__GFP_NOFAIL` to allocation flags (line ~397 in
-extents.c) - The function `ext4_ext_remove_space()` is called during
-truncation and punch hole operations ### **User Impact** This fixes
-potential filesystem corruption during: - File truncation operations -
-Punch hole operations - Any extent removal scenarios The inconsistent
-flag usage could lead to stale extent cache entries and allocation
-failures during critical metadata operations, both of which can cause
-filesystem corruption. ### **Conclusion** This is a clear bug fix that
-prevents potential filesystem corruption with minimal risk of
-regression. It follows the pattern of similar commits that were
-successfully backported and addresses a real consistency issue that
-could affect filesystem reliability.
+Based on my comprehensive analysis of this commit and comparison with
+the historical similar commits, here is my assessment: **YES** This
+commit should be backported to stable kernel trees for the following
+reasons: ## Analysis Summary ### **Type of Bug Fix** This commit
+addresses a **race condition** that can lead to **stale extent cache
+entries** in the ext4 filesystem. The race occurs between: 1.
+`EXT4_IOC_GET_ES_CACHE` and `EXT4_IOC_PRECACHE_EXTENTS` operations 2.
+Concurrent `ext4_collapse_range()` operations that call
+`ext4_ext_remove_space()` or `ext4_ext_shift_extents()` ### **Technical
+Details of the Race** The problem stems from the fact that
+`ext4_ext_remove_space()` temporarily releases `i_data_sem` when journal
+credits are insufficient. During this critical window: - The extent
+precaching operations (`ext4_ext_precache()`) can cache extent entries -
+These cached entries are about to be deleted by the ongoing
+collapse/shift operation - Result: **stale, inconsistent extent cache
+entries** ### **Code Changes Analysis** The fix is **minimal and
+surgical**: **In `fs/ext4/extents.c` (ext4_get_es_cache function):**
+```c if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) { +
+inode_lock_shared(inode); error = ext4_ext_precache(inode); +
+inode_unlock_shared(inode); if (error) return error; ``` **In
+`fs/ext4/ioctl.c` (EXT4_IOC_PRECACHE_EXTENTS case):** ```c case
+EXT4_IOC_PRECACHE_EXTENTS: - return ext4_ext_precache(inode); +{ + int
+ret; + + inode_lock_shared(inode); + ret = ext4_ext_precache(inode); +
+inode_unlock_shared(inode); + return ret; +} ``` ### **Why This
+Qualifies for Backporting** 1. **Important Bug Fix**: Stale extent cache
+entries can lead to filesystem inconsistencies and potential data
+corruption scenarios. 2. **Minimal Risk**: The changes are extremely
+small and contained: - Only adds proper locking around existing
+operations - Uses shared locking (`inode_lock_shared`) which allows
+concurrent readers - No algorithmic changes or new features 3. **Follows
+Established Patterns**: Similar commits in the repository (marked with
+"Backport Status: YES") show this pattern: - Similar commit #2: "ext4:
+fix data races when using cached status extents" - also deals with
+extent cache consistency - Similar commit #3: "ext4: convert to
+exclusive lock while inserting delalloc extents" - addresses similar
+race conditions with proper locking - Similar commit #4: "ext4: do not
+polute the extents cache while shifting extents" - prevents extent cache
+corruption during shift operations 4. **Clear Impact**: The commit
+message explicitly states this prevents "stale extent cache entries"
+which can cause inconsistency with actual extents. 5. **Contained to
+Subsystem**: Changes are limited to ext4 extent management and don't
+affect other kernel subsystems. 6. **Stable Backport Indicators**: - No
+"Cc: stable@" tag is present, but the nature of the fix (race condition
+leading to corruption) makes it a good candidate - The fix follows
+ext4's established locking protocol requirements - Multiple similar
+extent cache race condition fixes have been backported ### **Risk
+Assessment** - **Very Low Regression Risk**: Only adds locking
+protection, doesn't change functional behavior - **Well-understood
+Fix**: The locking pattern matches established ext4 conventions -
+**Limited Scope**: Only affects two specific ioctl code paths This
+commit represents exactly the type of fix that stable trees are meant
+for: a small, safe fix for a real bug that can cause filesystem
+corruption without introducing new functionality or architectural
+changes.
 
- fs/ext4/extents.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ fs/ext4/extents.c | 2 ++
+ fs/ext4/ioctl.c   | 8 +++++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 32218ac7f50fe..b3635254844c8 100644
+index b3635254844c8..39e9250d02c35 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -1536,7 +1536,7 @@ static int ext4_ext_search_left(struct inode *inode,
- static int ext4_ext_search_right(struct inode *inode,
- 				 struct ext4_ext_path *path,
- 				 ext4_lblk_t *logical, ext4_fsblk_t *phys,
--				 struct ext4_extent *ret_ex)
-+				 struct ext4_extent *ret_ex, int flags)
- {
- 	struct buffer_head *bh = NULL;
- 	struct ext4_extent_header *eh;
-@@ -1610,7 +1610,8 @@ static int ext4_ext_search_right(struct inode *inode,
- 	ix++;
- 	while (++depth < path->p_depth) {
- 		/* subtract from p_depth to get proper eh_depth */
--		bh = read_extent_tree_block(inode, ix, path->p_depth - depth, 0);
-+		bh = read_extent_tree_block(inode, ix, path->p_depth - depth,
-+					    flags);
- 		if (IS_ERR(bh))
- 			return PTR_ERR(bh);
- 		eh = ext_block_hdr(bh);
-@@ -1618,7 +1619,7 @@ static int ext4_ext_search_right(struct inode *inode,
- 		put_bh(bh);
+@@ -5047,7 +5047,9 @@ int ext4_get_es_cache(struct inode *inode, struct fiemap_extent_info *fieinfo,
  	}
  
--	bh = read_extent_tree_block(inode, ix, path->p_depth - depth, 0);
-+	bh = read_extent_tree_block(inode, ix, path->p_depth - depth, flags);
- 	if (IS_ERR(bh))
- 		return PTR_ERR(bh);
- 	eh = ext_block_hdr(bh);
-@@ -2799,6 +2800,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 	struct partial_cluster partial;
- 	handle_t *handle;
- 	int i = 0, err = 0;
-+	int flags = EXT4_EX_NOCACHE | EXT4_EX_NOFAIL;
+ 	if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
++		inode_lock_shared(inode);
+ 		error = ext4_ext_precache(inode);
++		inode_unlock_shared(inode);
+ 		if (error)
+ 			return error;
+ 		fieinfo->fi_flags &= ~FIEMAP_FLAG_CACHE;
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 4f931f80cb348..f877ad59c9f63 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -1512,8 +1512,14 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 		return 0;
+ 	}
+ 	case EXT4_IOC_PRECACHE_EXTENTS:
+-		return ext4_ext_precache(inode);
++	{
++		int ret;
  
- 	partial.pclu = 0;
- 	partial.lblk = 0;
-@@ -2829,8 +2831,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 		ext4_fsblk_t pblk;
- 
- 		/* find extent for or closest extent to this block */
--		path = ext4_find_extent(inode, end, NULL,
--					EXT4_EX_NOCACHE | EXT4_EX_NOFAIL);
-+		path = ext4_find_extent(inode, end, NULL, flags);
- 		if (IS_ERR(path)) {
- 			ext4_journal_stop(handle);
- 			return PTR_ERR(path);
-@@ -2895,7 +2896,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 			 */
- 			lblk = ex_end + 1;
- 			err = ext4_ext_search_right(inode, path, &lblk, &pblk,
--						    NULL);
-+						    NULL, flags);
- 			if (err < 0)
- 				goto out;
- 			if (pblk) {
-@@ -2972,8 +2973,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 				  i + 1, ext4_idx_pblock(path[i].p_idx));
- 			memset(path + i + 1, 0, sizeof(*path));
- 			bh = read_extent_tree_block(inode, path[i].p_idx,
--						    depth - i - 1,
--						    EXT4_EX_NOCACHE);
-+						    depth - i - 1, flags);
- 			if (IS_ERR(bh)) {
- 				/* should we reset i_size? */
- 				err = PTR_ERR(bh);
-@@ -4272,7 +4272,8 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 	if (err)
- 		goto out;
- 	ar.lright = map->m_lblk;
--	err = ext4_ext_search_right(inode, path, &ar.lright, &ar.pright, &ex2);
-+	err = ext4_ext_search_right(inode, path, &ar.lright, &ar.pright,
-+				    &ex2, 0);
- 	if (err < 0)
- 		goto out;
- 
++		inode_lock_shared(inode);
++		ret = ext4_ext_precache(inode);
++		inode_unlock_shared(inode);
++		return ret;
++	}
+ 	case FS_IOC_SET_ENCRYPTION_POLICY:
+ 		if (!ext4_has_feature_encrypt(sb))
+ 			return -EOPNOTSUPP;
 -- 
 2.39.5
 
