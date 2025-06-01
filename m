@@ -1,205 +1,342 @@
-Return-Path: <linux-ext4+bounces-8252-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8253-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8047AC8B4F
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 11:44:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D6BDAC9E68
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Jun 2025 13:02:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11C32189B5F4
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 May 2025 09:44:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26EB03AB700
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Jun 2025 11:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5AF4226D1E;
-	Fri, 30 May 2025 09:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1082B1A76AE;
+	Sun,  1 Jun 2025 11:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wk24DIbZ"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="NWh3iSq6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from HK3PR03CU002.outbound.protection.outlook.com (mail-eastasiaazon11021094.outbound.protection.outlook.com [52.101.129.94])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 046A6221732
-	for <linux-ext4@vger.kernel.org>; Fri, 30 May 2025 09:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748598178; cv=none; b=TTFJriptBBvU2IrDUbwVzx/zwTx07m7fWd+nihG2ZeEjoAUkWN4yObjao7ATAmkMPBMJs0VcN1783nJjxcvUHxwbmpvzk9sO7vwSs1BXRmHNXQtH11PP8iKEzGsUwLfT3dsZeIcXi3UBx7XmLnD3vFYKSKpDrArllVfIaT352PE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748598178; c=relaxed/simple;
-	bh=elpyLymxaqb7oa4Th6MKUlLdZPCM+CCtwiijx05Vekk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PvlrdmTRW1nNqXAvD435i84Hh6fZG35i4l5zT0Qd/k6SqGJvSGvbwD1XGkgPC5Mr55Vb/iCu+T85ugnSw5qhIscf4RfmEboiUG5R0IsDMWaXgdzrBqWCKYxanC4vDkssJo9zyoriaxDm1PM1GZJBIKLnUmWb9C013i0gUHbUEfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wk24DIbZ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1748598175;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=zWtS7BX4jv3Md6oma03aZLTPAuckL46QoolFrxWb6FY=;
-	b=Wk24DIbZVlV47aWW2EZJdRerdLBN+qlqN8yElEaCDRRNygo3kRaPYY+sCC17jB2i+v5UAB
-	qycxPNmHtzG2C8U0xVE7NbFFb5VxsWxH67j2hmoSG1XWBtrCcFqNvogkMrpVz2GxMlM/w3
-	wyxjkZRQq7UvCr9TbpjTRUxhGD/2F74=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-53-XbLm7RVKP1KJLwtWNvJVNQ-1; Fri, 30 May 2025 05:42:53 -0400
-X-MC-Unique: XbLm7RVKP1KJLwtWNvJVNQ-1
-X-Mimecast-MFC-AGG-ID: XbLm7RVKP1KJLwtWNvJVNQ_1748598172
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-450d9f96f61so3142555e9.1
-        for <linux-ext4@vger.kernel.org>; Fri, 30 May 2025 02:42:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748598172; x=1749202972;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zWtS7BX4jv3Md6oma03aZLTPAuckL46QoolFrxWb6FY=;
-        b=fCbpVfekktxdjZ/mDHJS4eRmUSZDpepwYcZ8eqNwRVT38tCLMCPzpz7RiKKfOv5Cc1
-         KgoeIVABFS7OIAbwLCYZa8f14IlzkZJ9rRA+oH9uPJU1gqphKWt2KzmCtIbhe6iCVJXu
-         xrINr/cuKR5LusVgLE7sqAu/rXXK/1RO8VQ6W8Ugm+Aexn5cnSiFMkW+rDTFLmv+nXCZ
-         U06aGUAoLKMli6ZfC1XfjuYa2XDO7dOXVNe0CniUfph+tP3Io3l9rGjaT92jKZjb88PP
-         z/qU3ewcn7RlTV/iDIvwaKXINCVq0GvinXjLu7kzWDZEK/ZR3yyZKtNB5XhRIUXqVFCs
-         d5ZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWKIPLsKlvQovr3MGkxSZyYpBjPgX5qliLUGa5/nJwUzVZX72HGHY7HYn9boLRY5sfCMVn69TsuCYvQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpL0ZFdhndkrjfFIQcWmJW6xioo5Bxf7aVVF4b627WfqULmPMN
-	mu46COJ7M8pSPU4j0jhHnapsR32oXSqp0Ghu9+PP1iz6XILWZHPlVKc0s+/nNsAAz5Gv41udAwN
-	T2iho9oyUENS24TzQ/1uVfJ0tYgX/fM9w27dl9QaGVrjTDuYD730aA70lxd3ht2c=
-X-Gm-Gg: ASbGncsQeGBbapBOxp5/MiKWBRsbhOqofuEWa56EJcegaOqfYNEsBWe0z+b2D4ThLhk
-	vLsq6eD26Ld2ANBSI+Us0wzaGySCpsTWtIsV3d34E8Yk0FpZ+3JL5z+rQ1vNOqMsl9EUunxkjE2
-	guy5kAPpF7AmTfQaTT3tnNEIG1St7rLrib7i8MgLWqpUjtCvG+9sydhoyGR6JLGRDTm7jtoGoEp
-	haER6qpb/34nxlXl1SeMXNnvbnBPMHfRsEBFYyjD8J7LbXeMKoO9whPYCA5/JTy450gRiV+gbSk
-	EZ9J1+vRa78XK4MRgFtKjJNpgGcd57XRSVz3qt1+B4MlXmRnM3J/tr0WwY3hYv7I+grA7K18Mcp
-	Jt7H0StnLaBvOOE194GKJFqeUs7Ie0GMFmB/sYQ4=
-X-Received: by 2002:a05:6000:1ac6:b0:39f:175b:a68d with SMTP id ffacd0b85a97d-3a4f7a3e745mr1997137f8f.11.1748598172265;
-        Fri, 30 May 2025 02:42:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEE2cC4rOgIu1Bk0E4HwZEgbfvuVj5Yx/rDkAqlZuc3fKNMuN3WR3Ck+7U4WmY934x7i63eYg==
-X-Received: by 2002:a05:6000:1ac6:b0:39f:175b:a68d with SMTP id ffacd0b85a97d-3a4f7a3e745mr1997108f8f.11.1748598171812;
-        Fri, 30 May 2025 02:42:51 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f03:5b00:f549:a879:b2d3:73ee? (p200300d82f035b00f549a879b2d373ee.dip0.t-ipconnect.de. [2003:d8:2f03:5b00:f549:a879:b2d3:73ee])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-450d7fc24d7sm13138915e9.36.2025.05.30.02.42.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 May 2025 02:42:51 -0700 (PDT)
-Message-ID: <473e974b-39a1-4ee1-b321-58f6a74c0155@redhat.com>
-Date: Fri, 30 May 2025 11:42:49 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F8926AE4
+	for <linux-ext4@vger.kernel.org>; Sun,  1 Jun 2025 11:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.129.94
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748775753; cv=fail; b=agQyHcT/jYF9rnO+LYWncMNbqCpSnFTNLyLIm+SIOpedpxX9vmtJYiibePR3MzFk1LQalxhw80ejK+XBI0r5Unadfj28Skqkul8yVNRFYex0Ufikk7OpiugJuAQ4AOuDlzBXyaCyFlR7wBFKqz4KK53PWvgitZ1tsksbhx68iLU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748775753; c=relaxed/simple;
+	bh=0u3K3zJe/O7QLt1pz9LDUxGqiFoQcGuvERBdmOBCuvw=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=X5s5tdDKwCIjAPnM6HYIwZx9kaDmt/vA7J4ZoA+nj3+2UwLEp+vZjAri6STXQwWrM8cUB8WsX1BxdbCkMO5FRJ0X0YrC6KsX0sjLP9llPtxc3Nn9uS/m/e4bmd1Qmwvwnrxysfda3Nx4LmTmuXqkwMBcMchG7Mg2mwimmAqO45c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=NWh3iSq6; arc=fail smtp.client-ip=52.101.129.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=d++tuDn8/Bq7ktR3BdESHdvYhQK8eVV0hyq9XPpnz6NvWim4HgkGPG8HkOacbbHcD4eAec114TveLmZICiGPqQz6Ehxr6WqchcmYZ982rr931v8ODwi47e25Ogbbx9CxFq9iSim53lOb+IeEsvH/4oRSg5zfPcoufumIo9V9BRz87viyqQ6oS8yPizXMJebO18UJOKjDqSQHw3mAlAfb+gFjhHHm03YjDRSA2RDGK+kL1TvW/4Wa391l0hU+YRyOISyeP/U4ts4SXbhU9ubYPs2U/wGXMaAwkbIDUMnyyWINcyOOpdGBy4Sr5LfhBqG5WLDziyh8V/zEA22Nt6Ni4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kGCAGATCSAIvdyGFq8J6QLyaWgptjBp8rGf5baZDIkI=;
+ b=JCyzGvEiOx9txS7LMNbw9l0Ng4DwTFz5sbr8S5tLfFIFd3AdOOY77nsoi1OQ/iay8RigqBHNEp2L99EwvJwnmFKMyWqLrbcIbNEMgQ5kDPT/Vnzy8GKLqGPCzA4pPhIkQSitOeZrWzxtmjZjTk4hWNaJu+degBn4Gweu0i3cGK3sYcnMje2Dsk7bJxe+lXTX8oA7VTYcGp04ln8M23Bh/+GfmSnZb4MXlLcVmWXrYYl2W2ZiiOMNqFBeTR+QLqkou0aFGytnwg/E0s//t5NDuHBnCggXPXL/7D/N0hUo8dCLp/Pcc0q/FIvoGYvtVnblLMj8N9aPrzBA7o5KFaLaaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kGCAGATCSAIvdyGFq8J6QLyaWgptjBp8rGf5baZDIkI=;
+ b=NWh3iSq636j95l0vODDV1bSEQewOn2sxK1s1hf4E2ABAWRp0GbCGUtVF1kopMlDg4+CfWxMpGE1a8JqbMC7c0mlVzQH1w6+UD8tbLzzCU9kKbc7UOZKJYTYG0MCRzGju265GwRFpntCOTKe4Hkgs0gL8+NVT1Fa3u/fr8XG0GkA=
+Received: from TYZP153MB0627.APCP153.PROD.OUTLOOK.COM (2603:1096:400:25f::12)
+ by SIAP153MB1197.APCP153.PROD.OUTLOOK.COM (2603:1096:4:28c::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8813.7; Sun, 1 Jun 2025 11:02:07 +0000
+Received: from TYZP153MB0627.APCP153.PROD.OUTLOOK.COM
+ ([fe80::1625:a5f8:c796:ee1]) by TYZP153MB0627.APCP153.PROD.OUTLOOK.COM
+ ([fe80::1625:a5f8:c796:ee1%5]) with mapi id 15.20.8813.014; Sun, 1 Jun 2025
+ 11:02:06 +0000
+From: Mitta Sai Chaithanya <mittas@microsoft.com>
+To: "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+CC: Nilesh Awate <Nilesh.Awate@microsoft.com>, Ganesan Kalyanasundaram
+	<ganesanka@microsoft.com>, Pawan Sharma <sharmapawan@microsoft.com>
+Subject: EXT4/JBD2 Not Fully Released device after unmount of NVMe-oF Block
+ Device
+Thread-Topic: EXT4/JBD2 Not Fully Released device after unmount of NVMe-oF
+ Block Device
+Thread-Index: AQHb0VLES057MYZ87kOkGU14tXDGcg==
+Date: Sun, 1 Jun 2025 11:02:05 +0000
+Message-ID:
+ <TYZP153MB06279836B028CF36EB7ED260D761A@TYZP153MB0627.APCP153.PROD.OUTLOOK.COM>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-05-30T14:28:19.712Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+undefined: 2899116
+drawingcanvaselements: []
+composetype: newMail
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZP153MB0627:EE_|SIAP153MB1197:EE_
+x-ms-office365-filtering-correlation-id: b2560f28-4352-4362-bbea-08dda0fbbf18
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|376014|10070799003|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?Windows-1252?Q?lNuLFmsonpAzgxV2/+2GRUzWhYSqE7uXIFjjkoLJeD89vfOBJ3je49HC?=
+ =?Windows-1252?Q?eSgPv3Pq14GpK8eT6UKoUa+RFpz4PAM9LEyLqvHvmx19OLMPQLS2N0oD?=
+ =?Windows-1252?Q?vxRd98hEeG6QDTEKGssRYf+PveXJUwgqQIIBAZsKCyct7iA24hgHRfmL?=
+ =?Windows-1252?Q?tmYJt7kfEZsN4yVEyak40IzEiMHC8CengeZVpSXN6cHNvM3p3b3UPZqw?=
+ =?Windows-1252?Q?zeD6DKbvNK8fj5Vc3Vnm9doDunHa2j9yxaExOLqQ9nC7lu3R6RIFHvcK?=
+ =?Windows-1252?Q?3pIcMTH+oIpSzo3c9Fe4WRmqFbe5MZEXv6vHQHASEACKmV0WDpnFdVi2?=
+ =?Windows-1252?Q?ROjXIB4u5sIaSWFKHx4+cdw5CazBbveWYVwmCjR59a551YwJ4zoiO+g9?=
+ =?Windows-1252?Q?9UYXoYExU5O/vA4usgSqqbTAM6rNmQQAqEoZY+HGQ/nuhkSruq9aLPoO?=
+ =?Windows-1252?Q?UGfeVp60zLrcz3bG71WQXeniDneCYuPZbsQUpOyJoyxE570kD/jOfRM+?=
+ =?Windows-1252?Q?+TPUJnSyxCdHQNdlemDJG1FDRdL3DC0pjv/p29hvmIEGv7cZgAn0cPyM?=
+ =?Windows-1252?Q?l3Ep5e0xDAbAI4jtsfxYPudTYaK2PSb9QdJPu8YJRBOahbF3jdaoabYc?=
+ =?Windows-1252?Q?y9zbFXikQKO3n26nVYCZgUpChSUyAPaE7hxuV0bbU2uW3u9/1/sgb1/C?=
+ =?Windows-1252?Q?GgRAf3cDh/Oqd9HaiBX/7AWrOyWsx52JugAcFUMI873VcBQhmmDSHJEE?=
+ =?Windows-1252?Q?mhleqPZ7ah97qPryb1X9LLx/atZ/kCVbEfv7FzHtHzEZuYVLOjEqjRr6?=
+ =?Windows-1252?Q?ObV7vH1YnSa5ExKLlYIR8Uf1LE9l56Aie2DLXoPj//iPNw7hzuZlDRvM?=
+ =?Windows-1252?Q?A5f5H8k6+dH9tFrmUnlkJQn79KUI5CP7n3iDUZDVB5RUTc33ONEUwlq+?=
+ =?Windows-1252?Q?4reAs5OzT8D+HtNRElUXBTTxjOLlOCVCWOy+ZyiH3U0g5lb98wn0eTRb?=
+ =?Windows-1252?Q?uAndDTUih7UGh8vqbzTj55XjEzc8XeQLoFo+q/vJ3POTxzr6ZeIO+LIc?=
+ =?Windows-1252?Q?NwdIoXGsGIiXhNXPCBEDElVrFI9AaXAmw7xIVRk76eORd+TuC9JNOQW/?=
+ =?Windows-1252?Q?4DpXTdLVNKTXAFbIWOMpQqNIrtrIOPKoU1J7CuuAiWj0W3S3vBvIIltC?=
+ =?Windows-1252?Q?wlrOnZz4YPBbSnJcnWpusTsT9GzY6Lv6AJYhmDL/VucO4CIbvY593Vd3?=
+ =?Windows-1252?Q?c6iTdHAJ5LKZDx8wMjInTLWgV7cgjgawOso3LTi2sKdSMcK4CMWRnYqp?=
+ =?Windows-1252?Q?ao7bedZVaF/cHKEIctrlkSnsZTUvtbYZUczNZ58/DUrcT0QTMMthFaCS?=
+ =?Windows-1252?Q?Gy67lr1Jb+/kvT6+d3J6ybcSvMpZfZ5F3RC9ZWEyKj0s7RYp91pzN68/?=
+ =?Windows-1252?Q?uFiNE1a0/tckzdt0lhUkf2poDATbevsMXyTw4kZ8DSQ/kfWe54nRUxnQ?=
+ =?Windows-1252?Q?rJK91Z1Oio/SHQwrNbxdBEruHQqbl0P24gNcmAhe6v7uiJcOmtlnQArI?=
+ =?Windows-1252?Q?kmvH3/AWLYqjPZd7VRgmvwu90CYOUPk7ViLTTA=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZP153MB0627.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(10070799003)(366016)(38070700018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?Windows-1252?Q?ga8aI9bvkVx/wWiV8G3Qfv6UgHKMYeK5qMmdo2sE05O5V8Ez2dbIyldv?=
+ =?Windows-1252?Q?mnEcTOs4UaPK1ug3VSeoDJptd1wqtSJnbUQaivKL+9zdO0rYJtu+KhOX?=
+ =?Windows-1252?Q?5J8q8KQ3avrj27O4kzx+D6DzOtcqIyevVPRDBT2xaUH0vEuhssha6pED?=
+ =?Windows-1252?Q?IIMbMWynCj7avClnKw7tn4fb+Og1RZl2bwpQxJrpcIkYUCvkeS8dVRNZ?=
+ =?Windows-1252?Q?IbliwVfk6NaE3KNaCy8OUeiS1r//fHmjIvDMvmUAh7WK8/xDWYNyf5Cw?=
+ =?Windows-1252?Q?4m1T6hf8NyVkrJiELbmZ5PwgawpuTA0JcV2wOc0Sfi951eFN+WEhUkhl?=
+ =?Windows-1252?Q?WpxqWmcMQmi3Es/riMhFMkuubFUSMfjUEFcF2nKooGwEOGlzMqUFsCUA?=
+ =?Windows-1252?Q?TqZiVN+E5V1Ph5KPRomBKeh9gz3vMhJzcLZzd6VxA/eXp6j/eUQJpBDf?=
+ =?Windows-1252?Q?m2aDLyZwIzCWtrCyeRdS5CHoRcxW9/Tw4TZtIzKbCTzguWXGyIWiVkg4?=
+ =?Windows-1252?Q?1TT2PFqFAjeqxaJrLt8pQML5AIt6vtBTwcOn3SutLYOT0sOps2OvGIZN?=
+ =?Windows-1252?Q?6ULELRFexm5cZkzLVjCz+IW4I4k3kf1V/z9Ju0Fa7+cyqscWkGR9Q8Nm?=
+ =?Windows-1252?Q?HyG+JwK/JBrwdkvzyqFgjs3Wz7yxWcppegSjCelmcG0pRrW/nY22xkOG?=
+ =?Windows-1252?Q?nVGBqa5qxTFRzspy2DEqbrt4+dMNS7JjBruRbUpL/5d7VgR4shqB3ac4?=
+ =?Windows-1252?Q?6XN5j6r79kaedOWqS/voxJjKWII867OoOdPIkMfWNrqlCUkyi4mIg+OG?=
+ =?Windows-1252?Q?S8CfjnwTdr27S88N7njb5kLNLzF9XYiVGPHTHBgY8BFays/DSbocHv88?=
+ =?Windows-1252?Q?eRWLD8Sk0yU/BcZAMqviFsWEce3vX3ehcmxHaM3aLuul2JWxz4C+ED9x?=
+ =?Windows-1252?Q?MqIRl+H3/zsxPaKg+9U3Yp9eTm5yPgNSH8xPYJViR9mhnrdEKl+Q2GM/?=
+ =?Windows-1252?Q?T4XLXaerj1Y+3bwxK7j3LI8km3t8Aw7lS5UUbGfIxU++eU9425sbG50F?=
+ =?Windows-1252?Q?d9kGuRf2Jjao929Nr3yf3+GVO1XYGJg3NRbOglXeMU630LxUg0A/ciD0?=
+ =?Windows-1252?Q?BHquj6u2ihsKguOS4vR+4io0Spp16FbipUObgAWRhRajkeMUKo3PMvbK?=
+ =?Windows-1252?Q?o2RL6KcFmgh2Y74I2MQrJlSy99Pdn5gT2lZTb7RUUdrBVt4fPxP1ljik?=
+ =?Windows-1252?Q?gdf0rEmguPqrAXVJ6guYaWpxVz3z1ZjiGV4QHlucTAzBQj22T4YTcDZh?=
+ =?Windows-1252?Q?ZCeAUxeOXRxF28fEetR92wbskYN2KOZKvQrKR+fwDCzXQiTYRgMmb0Ek?=
+ =?Windows-1252?Q?psCj7/38HnwM4qBVgar+mmyUTACzsJpSX8MXOb14D/ydL57qiE+J61Cc?=
+ =?Windows-1252?Q?fYY37A44m+4YfVVB4kWtI2zPx7guxhtmS/FMhCZttmUtbTO51j7/Bqn0?=
+ =?Windows-1252?Q?6VfYqwFF20KL3qqFm59kstcVPJHveapSBjUqcUt1pW55jYQx4zjaPNss?=
+ =?Windows-1252?Q?LESWrox8JO3kWrfUtvmnQYrr0YQ5MdRUBI27cdOee7gRgcIZdXWiZcBO?=
+ =?Windows-1252?Q?1fnZQPi53M5I/TFv2InKdpCH?=
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/12] mm/pagewalk: Skip dax pages in pagewalk
-To: Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org
-Cc: gerald.schaefer@linux.ibm.com, dan.j.williams@intel.com, jgg@ziepe.ca,
- willy@infradead.org, linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
- zhang.lyra@gmail.com, debug@rivosinc.com, bjorn@kernel.org,
- balbirs@nvidia.com, lorenzo.stoakes@oracle.com,
- linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-cxl@vger.kernel.org, dri-devel@lists.freedesktop.org, John@Groves.net
-References: <cover.541c2702181b7461b84f1a6967a3f0e823023fcc.1748500293.git-series.apopple@nvidia.com>
- <1799c6772825e1401e7ccad81a10646118201953.1748500293.git-series.apopple@nvidia.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <1799c6772825e1401e7ccad81a10646118201953.1748500293.git-series.apopple@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZP153MB0627.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2560f28-4352-4362-bbea-08dda0fbbf18
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2025 11:02:05.9271
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jEvlrKnmOx7BhPXZWW5garMeZhdVoF3Pz0ftGv9n+4tgHo1F+LAxQa8Gz0kmZxRL+tsLb0E7Xkb+N1ydwdnnfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SIAP153MB1197
 
-On 29.05.25 08:32, Alistair Popple wrote:
-> Previously dax pages were skipped by the pagewalk code as pud_special() or
-> vm_normal_page{_pmd}() would be false for DAX pages. Now that dax pages are
-> refcounted normally that is no longer the case, so add explicit checks to
-> skip them.
-
-Is this really what we want, though? If these are now just "normal" 
-pages, they shall be handled as being normal.
-
-I would assume that we want to check that in the callers instead.
-
-E.g., in get_mergeable_page() we already have a folio_is_zone_device() 
-check.
-
-> 
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> ---
->   include/linux/memremap.h | 11 +++++++++++
->   mm/pagewalk.c            | 12 ++++++++++--
->   2 files changed, 21 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-> index 4aa1519..54e8b57 100644
-> --- a/include/linux/memremap.h
-> +++ b/include/linux/memremap.h
-> @@ -198,6 +198,17 @@ static inline bool folio_is_fsdax(const struct folio *folio)
->   	return is_fsdax_page(&folio->page);
->   }
->   
-> +static inline bool is_devdax_page(const struct page *page)
-> +{
-> +	return is_zone_device_page(page) &&
-> +		page_pgmap(page)->type == MEMORY_DEVICE_GENERIC;
-> +}
-> +
-> +static inline bool folio_is_devdax(const struct folio *folio)
-> +{
-> +	return is_devdax_page(&folio->page);
-> +}
-
-Hm, nobody uses folio_is_devdax() in this patch :)
-
-
--- 
-Cheers,
-
-David / dhildenb
-
+Hi Team,=0A=
+           I'm encountering journal block device (JBD2) errors after unmoun=
+ting a device and have been trying to trace the source of these errors. I'v=
+e observed that these JBD2 errors only occur if the entries under /proc/fs/=
+ext4/<device_name> or /proc/fs/jbd2/<device_name> still exist even after a =
+successful unmount (the unmount command returns success).=0A=
+=0A=
+For context: the block device (/dev/nvme0n1) is connected over NVMe-oF TCP =
+to a remote target. I'm confident that no I/O is stuck on the target side, =
+as there are no related I/O errors or warnings in the kernel logs where the=
+ target is connected.=0A=
+=0A=
+However, the /proc entries mentioned above remain even after a successful u=
+nmount, and this seems to correlate with the journal-related errors.=0A=
+=0A=
+I'd like to understand how to debug this issue further to determine the roo=
+t cause. Specifically, I=92m looking for guidance on what kernel-level refe=
+rences or subsystems might still be holding on to the journal or device str=
+uctures post-unmount, and how to trace or identify them effectively (or) is=
+ this has fixed in latest versions of ext4?=0A=
+=0A=
+Proc entries exist even after unmount:=0A=
+root@aks-nodepool1-44537149-vmss000002 [ / ]# ls /proc/fs/ext4/nvme0n1/=0A=
+es_shrinker_info  fc_info  mb_groups  mb_stats  mb_structs_summary  options=
+=0A=
+root@aks-nodepool1-44537149-vmss000002 [ / ]# ls /proc/fs/jbd2/nvme0n1-8/=
+=0A=
+info=0A=
+=0A=
+=0A=
+Active process associated with unmounted device:=0A=
+root      636845  0.0  0.0      0     0 ?        S    08:43   0:03 [jbd2/nv=
+me0n1-8]=0A=
+root      636987  0.0  0.0      0     0 ?        I<   08:43   0:00 [dio/nvm=
+e0n1]=0A=
+root      699903  0.0  0.0      0     0 ?        I    09:18   0:01 [kworker=
+/u16:1-nvme-wq]=0A=
+root      761100  0.0  0.0      0     0 ?        I<   09:50   0:00 [kworker=
+/1:1H-nvme_tcp_wq]=0A=
+root      763896  0.0  0.0      0     0 ?        I<   09:52   0:00 [kworker=
+/0:0H-nvme_tcp_wq]=0A=
+root      779007  0.0  0.0      0     0 ?        I<   10:01   0:00 [kworker=
+/0:1H-nvme_tcp_wq]=0A=
+=0A=
+=0A=
+Stack trace of process (after unmount):=0A=
+=0A=
+root@aks-nodepool1-44537149-vmss000002 [ / ]# cat /proc/636845/stack=0A=
+[<0>] kjournald2+0x219/0x270=0A=
+[<0>] kthread+0x12a/0x150=0A=
+[<0>] ret_from_fork+0x22/0x30=0A=
+root@aks-nodepool1-44537149-vmss000002 [ / ]# cat /proc/636846/stack=0A=
+[<0>] rescuer_thread+0x2db/0x3b0=0A=
+[<0>] kthread+0x12a/0x150=0A=
+[<0>] ret_from_fork+0x22/0x30=0A=
+=0A=
+=0A=
+ [ / ]# cat /proc/636987/stack=0A=
+[<0>] rescuer_thread+0x2db/0x3b0=0A=
+[<0>] kthread+0x12a/0x150=0A=
+[<0>] ret_from_fork+0x22/0x30=0A=
+=0A=
+ [ / ]# cat /proc/699903/stack=0A=
+[<0>] worker_thread+0xcd/0x3d0=0A=
+[<0>] kthread+0x12a/0x150=0A=
+[<0>] ret_from_fork+0x22/0x30=0A=
+=0A=
+ [ / ]# cat /proc/761100/stack=0A=
+[<0>] worker_thread+0xcd/0x3d0=0A=
+[<0>] kthread+0x12a/0x150=0A=
+[<0>] ret_from_fork+0x22/0x30=0A=
+=0A=
+ [ / ]# cat /proc/763896/stack=0A=
+[<0>] worker_thread+0xcd/0x3d0=0A=
+[<0>] kthread+0x12a/0x150=0A=
+[<0>] ret_from_fork+0x22/0x30=0A=
+=0A=
+[ / ]# cat /proc/779007/stack=0A=
+[<0>] worker_thread+0xcd/0x3d0=0A=
+[<0>] kthread+0x12a/0x150=0A=
+[<0>] ret_from_fork+0x22/0x30=0A=
+=0A=
+=0A=
+Kernel Logs:=0A=
+=0A=
+2025-06-01T10:01:11.568304+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30452.346875] nvme nvme0: Failed reconnect attempt 6=0A=
+2025-06-01T10:01:11.568330+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30452.346881] nvme nvme0: Reconnecting in 10 seconds...=0A=
+2025-06-01T10:01:21.814134+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30462.596133] nvme nvme0: Connect command failed, error wo/DNR bit: 6=0A=
+2025-06-01T10:01:21.814165+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30462.596186] nvme nvme0: failed to connect queue: 0 ret=3D6=0A=
+2025-06-01T10:01:21.814174+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30462.596289] nvme nvme0: Failed reconnect attempt 7=0A=
+2025-06-01T10:01:21.814176+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30462.596292] nvme nvme0: Reconnecting in 10 seconds...=0A=
+2025-06-01T10:01:32.055063+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30472.836929] nvme nvme0: queue_size 128 > ctrl sqsize 64, clamping down=
+=0A=
+2025-06-01T10:01:32.055094+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30472.837002] nvme nvme0: creating 2 I/O queues.=0A=
+2025-06-01T10:01:32.108286+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30472.886546] nvme nvme0: mapped 2/0/0 default/read/poll queues.=0A=
+2025-06-01T10:01:32.108313+00:00 aks-nodepool1-44537149-vmss000002 kernel: =
+[30472.887450] nvme nvme0: Successfully reconnected (8 attempt)=0A=
+=0A=
+High level information of ext4:=0A=
+=0A=
+root@aks-nodepool1-44537149-vmss000002 [ / ]# dumpe2fs /dev/nvme0n1=0A=
+dumpe2fs 1.46.5 (30-Dec-2021)=0A=
+Filesystem volume name:   <none>=0A=
+Last mounted on:          /datadir=0A=
+Filesystem UUID:          1a564b4d-8f34-4f71-8370-802a239e350a=0A=
+Filesystem magic number:  0xEF53=0A=
+Filesystem revision #:    1 (dynamic)=0A=
+Filesystem features:      has_journal ext_attr resize_inode dir_index FEATU=
+RE_C12 filetype needs_recovery extent 64bit flex_bg metadata_csum_seed spar=
+se_super large_file huge_file dir_nlink extra_isize metadata_csum FEATURE_R=
+16=0A=
+Filesystem flags:         signed_directory_hash=0A=
+Default mount options:    user_xattr acl=0A=
+Filesystem state:         clean=0A=
+Errors behavior:          Continue=0A=
+Filesystem OS type:       Linux=0A=
+Inode count:              655360=0A=
+Block count:              2620155=0A=
+Reserved block count:     131007=0A=
+Overhead clusters:        66747=0A=
+Free blocks:              454698=0A=
+Free inodes:              655344=0A=
+First block:              0=0A=
+Block size:               4096=0A=
+Fragment size:            4096=0A=
+Group descriptor size:    64=0A=
+Reserved GDT blocks:      1024=0A=
+Blocks per group:         32768=0A=
+Fragments per group:      32768=0A=
+Inodes per group:         8192=0A=
+Inode blocks per group:   512=0A=
+RAID stripe width:        32=0A=
+Flex block group size:    16=0A=
+Filesystem created:       Sun Jun  1 08:36:28 2025=0A=
+Last mount time:          Sun Jun  1 08:43:57 2025=0A=
+Last write time:          Sun Jun  1 08:43:57 2025=0A=
+Mount count:              4=0A=
+Maximum mount count:      -1=0A=
+Last checked:             Sun Jun  1 08:36:28 2025=0A=
+Check interval:           0 (<none>)=0A=
+Lifetime writes:          576 MB=0A=
+Reserved blocks uid:      0 (user root)=0A=
+Reserved blocks gid:      0 (group root)=0A=
+First inode:              11=0A=
+Inode size:               256=0A=
+Required extra isize:     32=0A=
+Desired extra isize:      32=0A=
+Journal inode:            8=0A=
+Default directory hash:   half_md4=0A=
+Directory Hash Seed:      22fed392-1993-4796-a996-feab145379ba=0A=
+Journal backup:           inode blocks=0A=
+Checksum type:            crc32c=0A=
+Checksum:                 0xea839b0c=0A=
+Checksum seed:            0x8e742ce9=0A=
+Journal features:         journal_64bit journal_checksum_v3=0A=
+Total journal size:       64M=0A=
+Total journal blocks:     16384=0A=
+Max transaction length:   16384=0A=
+Fast commit length:       0=0A=
+Journal sequence:         0x000002a0=0A=
+Journal start:            6816=0A=
+Journal checksum type:    crc32c=0A=
+Journal checksum:         0xa35736ab=0A=
+=0A=
+=0A=
+Thanks & Regards,=0A=
+Sai=
 
