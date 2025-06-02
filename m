@@ -1,88 +1,88 @@
-Return-Path: <linux-ext4+bounces-8274-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8275-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E849CACAB72
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 11:33:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3E13ACAC7B
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 12:32:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1B811656E3
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 09:33:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8FE53AEF29
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 10:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862491C8629;
-	Mon,  2 Jun 2025 09:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CACA1FFC54;
+	Mon,  2 Jun 2025 10:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MXE8Uijp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BIqhjEgc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B661DEFF5
-	for <linux-ext4@vger.kernel.org>; Mon,  2 Jun 2025 09:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAC729D05
+	for <linux-ext4@vger.kernel.org>; Mon,  2 Jun 2025 10:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748856807; cv=none; b=M98IFwDNAyqj5zHJ3Z6oH8LslFQR5VFBDnO1LRyu7seEhov5TKTQt/Nhv0oe1jqr7uIF+OUvK2gx/wb7+yklCm3CoUhbJ3Pbv6dzdZUbVjO5fR5TqE1ukzqPucyv9bD5UKFiRYfaTYp+0SgkgDXaFRBTus0y5cn1IaxpVvVGhkI=
+	t=1748860311; cv=none; b=G6SKDG3jkQYMJF6JBgCBBZcjqM70koU18+Goayj0I6gB3lUmUmRId557liSx6ggPshwWiLa8mU/jAjbQsjC9tm6YrBEYiGsdB0FQ/7L+YW9TvltW83K3E3vNowRXXkvIOwd6dR8+cnQiagAnZ8yo+w9PcBzcsFq//2M3dSdvsds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748856807; c=relaxed/simple;
-	bh=kr8ir0FlQZkNNUQWtY9nCCtXCkYhvIjW8kc5hvNIuKU=;
+	s=arc-20240116; t=1748860311; c=relaxed/simple;
+	bh=ZzssR7Z3WXTPxuV3RaTrvsQITalfSEGHtp9paP/nu3A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MAY+GceEQ3aKCnLvrtQTuNF0++r8x09X61YsXUUOCdG5AI+P4MxmQFg7zu1DiZMcHKFoIPrdhZbdIXYj7hvs3/CmgTiC27RS+bp11icBHDVWxBKfG8z0oFSzl1z/oVOL4587V7/jrGfVoao089kJw7you6XeK2n4pmvqa53aJm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MXE8Uijp; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=jsTjzKhjG6Gqo14GTmpWx9yEv0rSFQwcd2obgLNBYL5+5kiCRNX30sNu5BVbpPYi7U8bbqjfI9c9Ht8oMcd28HfdzNgkYFheChHNKsIAilOS3AojTxCf2/K9sBG0k3mCYJwanhVhZqQClhNUybz+lZ1HbyQB28Apipy+vXrPbxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BIqhjEgc; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1748856800;
+	s=mimecast20190719; t=1748860308;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=AGFrAeg+YrLg6JnrL0SvX9pGyMf+6/YBqcb6y1L9Yas=;
-	b=MXE8UijpriEESdoQETZHAFdo+uPbKOl/FML8xnRPU80qzBZBB/awQxBBTnOBev4kTaDYvZ
-	48i/ZTZrbLtVQoL7vqU7zzzdXKZSRJrKM6F3VkEAz4VVGLbbmBKp0pIBp27j2yPZqIde/N
-	s5wWzWUQfkkGXe7tvp/lCuPAb5GG1WQ=
+	bh=zNGcx2ArrxJr8cIK8d0qYe5Yw20pPHTlFAddIJE8YQE=;
+	b=BIqhjEgcyXhzr5YECzxep8f2NgNI8G81kTty+Kc/cu15MbXjk00H3FdW3F9zjm1Rip1Y1X
+	8teCHTL40WAdivR3ENG4a+fd1i+K4l/15xobcNpWvwx80tpFtbSQfKBiEExT+FxK7SN/8x
+	UzhdAGOzSx+Sa3aISKC+LRJcZSkSGe4=
 Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
  [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-138-eq5U5_GpOvyivSGKijRqMA-1; Mon, 02 Jun 2025 05:33:11 -0400
-X-MC-Unique: eq5U5_GpOvyivSGKijRqMA-1
-X-Mimecast-MFC-AGG-ID: eq5U5_GpOvyivSGKijRqMA_1748856791
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-451d3f03b74so8236415e9.3
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Jun 2025 02:33:11 -0700 (PDT)
+ us-mta-687-Fm1lbVh-MxKdyFn6wSRfww-1; Mon, 02 Jun 2025 06:31:47 -0400
+X-MC-Unique: Fm1lbVh-MxKdyFn6wSRfww-1
+X-Mimecast-MFC-AGG-ID: Fm1lbVh-MxKdyFn6wSRfww_1748860306
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-451d30992bcso11449215e9.2
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Jun 2025 03:31:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748856791; x=1749461591;
+        d=1e100.net; s=20230601; t=1748860306; x=1749465106;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=AGFrAeg+YrLg6JnrL0SvX9pGyMf+6/YBqcb6y1L9Yas=;
-        b=KV5LDX6bnE0cRO6m/QOGc5NnCBD3z7yOM5XoX7qpyYeYBiOG6tW48ywX2IjOAxzM6k
-         AdT8Mj73gZqJHmIRhAloL/YdkCYmPVRecJ7y0QgrKppOlijChZz6hXv5PHeB3UJLID1Z
-         R+V/Zh6PRo8nDAwU7O0UrlITKTDsSjaypb1Wue3WLcpRglNaOYDaGaorLFaKl1bVkR4k
-         bb1LEifz1ogdkoOGkiIJEPaJy1FEZoLOS3c0ivAklhssXlKByJwiQehu+ou20qLwGrkY
-         ZFTd/Rly8BkBULOR1ow0ATYaZEwyTSjmXD1527Uu6zKUpdCkuF9uM3bjIot2js1WZ0ct
-         qCIA==
-X-Forwarded-Encrypted: i=1; AJvYcCUy+/O3L6qeSyiXs0SOUdtWsgo9wTZYoxTTm6sXIv7UbgnifDXwSBYjA432XFmGMVav/2opHNiD1BkA@vger.kernel.org
-X-Gm-Message-State: AOJu0YxHYkbWklqHQBJxebFqxv3m2DEY35ENmxwFd9p4WyeYmLJ4JEeN
-	TgTWo9CYi1Yxx0AchcmgWnQijPPy3nZ08sUFTzrKyU8DsB3sJD/mJ8dfWgLZyB5Jv8jxtsqqxdb
-	K7UDV4Ozv8nXNWQcpU4JgRAj4NAeKmKcqyBnHGDscHZBdk2AMt6ORbYS0ThfQFzQ=
-X-Gm-Gg: ASbGncsilL6mS1lhwTNuzJHMW6PztZ8xl3Lfaw6idhRQEIMXPYR25wf5I2reaL71AhY
-	BFamYg/J1RU0kAmOX/SRYYiMWElmbqbpztvKm8U4KOqV5+tFcGo0vvZ19NvfAlNscCI2t7GkOSJ
-	hwAUu4RH6hKjWCCh2uLFxCEz3FD32K7P27YDQMBltJvZCDYh6PjrLLpZQ95X60ghp6F8a3YBCTU
-	GQcZ0rhhXI9YX5yjChKEvMRcJ33iPJyfSqc5aAtls7OQibiZUAr3NQV/JtDe2lECNfpAXQbxPp6
-	9pKCW4DffWmg2+ZKlb1qBeIA89c7eJZGYl0VxLyhzjbjnDBh+W9i+GTgzFzmLcEZ4GNZ6rdbTUY
-	iGn8p1TbPdvJsyZFY9H5tPVCTnd48qmYP2Uo90pM=
-X-Received: by 2002:a7b:c008:0:b0:451:dee4:cd08 with SMTP id 5b1f17b1804b1-451dee4d1b6mr8272055e9.23.1748856790650;
-        Mon, 02 Jun 2025 02:33:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGkU7ZRpR1NEtSY/JfKM4+YPIoKTdq1NhU5Keu1p6sA2PS3/gG8eXtp9j/HneCiN7kQj1M6xw==
-X-Received: by 2002:a7b:c008:0:b0:451:dee4:cd08 with SMTP id 5b1f17b1804b1-451dee4d1b6mr8271525e9.23.1748856789835;
-        Mon, 02 Jun 2025 02:33:09 -0700 (PDT)
+        bh=zNGcx2ArrxJr8cIK8d0qYe5Yw20pPHTlFAddIJE8YQE=;
+        b=regQ+JBbCOcndRXsfRA/Eums8na3/s3HCa8KtnIHH+rGTvM3j6ZeYSi0WCtmpya6c3
+         ZTlS0PqQnClIOQcXvk+1ZjgBzUNcDH6BGXopYEwff7VwWThruSCH6xmnxf2zpBKfehUU
+         7F8KDIizsDgk8bXY94vWn1PLP5o+nRfBf9Ly9YE7PuHOm5R4LkW2ZBylW4x+Im/LwoFz
+         0/uBnZdcipyB/L6n1rvhNQhwRl45VrLDdoK1GQKJShXvdaknXXmX2ldWsUmfUPSnwqWQ
+         LZIOf9TnoMoPafi8m8Dcgj27gxdoT+/RS61Av9qHISEiKGtCYba8KXXu6mRCAoZLkTeP
+         sODg==
+X-Forwarded-Encrypted: i=1; AJvYcCW2GiP25+GIPsEFDsTXuozUEn4FkpJFGTCQAuztZPX4gbG9ujg2lL4DjItkDOCQo9eEq5Qd3+M36osf@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDRC4CR8pH+KVo3WwZ1WyL9YDGFXIIoC/MMvTBwCHJH5Bvr3Yw
+	gQglYMfCL6KAiR7fNZGWRFvTsKVwaZxFpSGO4opSjrrA51CXV4VekmgAQHbgUDvN5MfXERuW3Pb
+	Vs7DYq2JdmhS1QiyXrDn7Cl0x9BOuMKyviYTJrU8g6JbiQSbuaO/elxCPV3p6Qtk=
+X-Gm-Gg: ASbGncvrY/CdfUFls7huVGVRmb4SGE4YYrsfsQlNvqzDDw+D9kD42wVsYmGklLYorrr
+	xMIWbucePDbFkjzPbWc4Q9Jv5wjXjsyDmMd2hZNzqUy4xmUSqBPIoONYNg2vKrw8cD3JHi/JMG+
+	QpseBlnSyEzrxa4CpPq2ea7PnT3+PuMULg6s2ZEhYwIchOP7vv/z5iYv0q6YjjHa/t7ysFNeR73
+	IrMgEgE2QS6gtjiX4TqcCrcwqOGIVjNiYuUfoFnxOADnEHHOxEf+iLoanChm4Px4H1fv1T7eRI+
+	svN/eMHojs/jbwyY+jdet3DXG/vyEIyaEJxb0ypoa7vVasUSBFAZoxMOIggvvVyUQnx/rrUPYiA
+	8shEe5xQ8FQ72YlaQNORNH5OMZY7RYJlsq4yiSo4=
+X-Received: by 2002:a05:600c:4e48:b0:443:48:66d2 with SMTP id 5b1f17b1804b1-4511ee14c08mr77083175e9.16.1748860305793;
+        Mon, 02 Jun 2025 03:31:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4lrvLwHaEWScY/8IOL/Tuots8CWM7YWfHJfcP7R1yvYuRofYdh+DhIzzTEbvoU5wPzbYr8A==
+X-Received: by 2002:a05:600c:4e48:b0:443:48:66d2 with SMTP id 5b1f17b1804b1-4511ee14c08mr77082755e9.16.1748860305291;
+        Mon, 02 Jun 2025 03:31:45 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f34:a300:1c2c:f35e:e8e5:488e? (p200300d82f34a3001c2cf35ee8e5488e.dip0.t-ipconnect.de. [2003:d8:2f34:a300:1c2c:f35e:e8e5:488e])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-450d7fc1b60sm117663315e9.34.2025.06.02.02.33.08
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-450d7f8f1e7sm118287075e9.1.2025.06.02.03.31.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Jun 2025 02:33:09 -0700 (PDT)
-Message-ID: <9c465b24-8775-4852-9618-0873cbf2aaf7@redhat.com>
-Date: Mon, 2 Jun 2025 11:33:07 +0200
+        Mon, 02 Jun 2025 03:31:44 -0700 (PDT)
+Message-ID: <13ea6653-d33d-4f76-88c8-a17f9989d069@redhat.com>
+Date: Mon, 2 Jun 2025 12:31:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,7 +90,7 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/12] mm: Remove redundant pXd_devmap calls
+Subject: Re: [PATCH 00/12] mm: Remove pXX_devmap page table bit and pfn_t type
 To: Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org
 Cc: gerald.schaefer@linux.ibm.com, dan.j.williams@intel.com, jgg@ziepe.ca,
  willy@infradead.org, linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
@@ -102,7 +102,6 @@ Cc: gerald.schaefer@linux.ibm.com, dan.j.williams@intel.com, jgg@ziepe.ca,
  linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
  linux-cxl@vger.kernel.org, dri-devel@lists.freedesktop.org, John@Groves.net
 References: <cover.541c2702181b7461b84f1a6967a3f0e823023fcc.1748500293.git-series.apopple@nvidia.com>
- <2ee5a64581d2c78445e5c4180d7eceed085825ca.1748500293.git-series.apopple@nvidia.com>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -150,49 +149,76 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <2ee5a64581d2c78445e5c4180d7eceed085825ca.1748500293.git-series.apopple@nvidia.com>
+In-Reply-To: <cover.541c2702181b7461b84f1a6967a3f0e823023fcc.1748500293.git-series.apopple@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1398,10 +1398,7 @@ static int insert_pfn_pmd(struct vm_area_struct *vma, unsigned long addr,
->   	}
->   
->   	entry = pmd_mkhuge(pfn_t_pmd(pfn, prot));
-> -	if (pfn_t_devmap(pfn))
-> -		entry = pmd_mkdevmap(entry);
-> -	else
-> -		entry = pmd_mkspecial(entry);
-> +	entry = pmd_mkspecial(entry);
->   	if (write) {
+On 29.05.25 08:32, Alistair Popple wrote:
+> Changes from v2 of the RFC[1]:
+> 
+>   - My ZONE_DEVICE refcount series has been merged as commit 7851bf649d42 (Patch series
+>     "fs/dax: Fix ZONE_DEVICE page reference counts", v9.) which is included in
+>     v6.15 so have rebased on top of that.
+> 
+>   - No major changes required for the rebase other than fixing up a new user of
+>     the pfn_t type (intel_th).
+> 
+>   - As a reminder the main benefit of this series is it frees up a PTE bit
+>     (pte_devmap).
+> 
+>   - This may be a bit late to consider for inclusion in v6.16 unless it can get
+>     some more reviews before the merge window closes. I don't think missing v6.16
+>     is a huge issue though.
+> 
+>   - This passed xfstests for a XFS filesystem with DAX enabled on my system and
+>     as many of the ndctl tests that pass on my system without it.
+> 
+> Changes for v2:
+> 
+>   - This is an update to my previous RFC[2] removing just pfn_t rebased
+>     on today's mm-unstable which includes my ZONE_DEVICE refcounting
+>     clean-up.
+> 
+>   - The removal of the devmap PTE bit and associated infrastructure was
+>     dropped from that series so I have rolled it into this series.
+> 
+>   - Logically this series makes sense to me, but the dropping of devmap
+>     is wide ranging and touches some areas I'm less familiar with so
+>     would definitely appreciate any review comments there.
+> 
+> [1] - https://lore.kernel.org/linux-mm/cover.95ff0627bc727f2bae44bea4c00ad7a83fbbcfac.1739941374.git-series.apopple@nvidia.com/
+> [2] - https://lore.kernel.org/linux-mm/cover.a7cdeffaaa366a10c65e2e7544285059cc5d55a4.1736299058.git-series.apopple@nvidia.com/
+> 
+> All users of dax now require a ZONE_DEVICE page which is properly
+> refcounted. This means there is no longer any need for the PFN_DEV, PFN_MAP
+> and PFN_SPECIAL flags. Furthermore the PFN_SG_CHAIN and PFN_SG_LAST flags
+> never appear to have been used. It is therefore possible to remove the
+> pfn_t type and replace any usage with raw pfns.
+> 
+> The remaining users of PFN_DEV have simply passed this to
+> vmf_insert_mixed() to create pte_devmap() mappings. It is unclear why this
+> was the case but presumably to ensure vm_normal_page() does not return
+> these pages. These users can be trivially converted to raw pfns and
+> creating a pXX_special() mapping to ensure vm_normal_page() still doesn't
+> return these pages.
+> 
+> Now that there are no users of PFN_DEV we can remove the devmap page table
+> bit and all associated functions and macros, freeing up a software page
+> table bit.
+> 
 
+$ git grep FS_DAX_LIMITED
+fs/Kconfig:     depends on ZONE_DEVICE || FS_DAX_LIMITED
+fs/Kconfig:config FS_DAX_LIMITED
+fs/dax.c:       if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
+fs/dax.c:       if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
+fs/dax.c:       if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
+include/linux/pfn_t.h: * PFN_SPECIAL - for CONFIG_FS_DAX_LIMITED builds 
+to allow XIP, but not
+mm/memremap.c:          if (IS_ENABLED(CONFIG_FS_DAX_LIMITED)) {
 
-I just stumbled over this, and I think there is something off here in 
-the PMD/PUD case.
-
-vmf_insert_folio_pmd() does a folio_get() + folio_add_file_rmap_pmd().
-
-But then, we go ahead and turn this into a special mapping by setting it 
-pmd_mkdevmap()/pmd_mkspecial().
-
-Consequently, vm_normal_page_pmd() would ignore them, not following the 
-rules documented for vm_normal_page() and behaving differently than 
-vmf_insert_page_mkwrite()->insert_page().
-
-
-folio_add_file_rmap_pmd() should never set these things special/devmap 
-in the first place :/
-
-What am I missing?
-
-Note that fs/dax.c calls vmf_insert_folio_pmd() for PMDs and 
-vmf_insert_page_mkwrite() for PTEs.
-
-Consequently, PTEs will never be marked special (corner case, shared 
-zeropage), but PMDs would always.
-
-Hm?
+Can we remove that? Especially the interaction with PFN_SPECIAL looks 
+concerning.
 
 -- 
 Cheers,
