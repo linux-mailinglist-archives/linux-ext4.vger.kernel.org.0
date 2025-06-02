@@ -1,264 +1,402 @@
-Return-Path: <linux-ext4+bounces-8278-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8279-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B95ACB8B7
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 17:45:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71311ACBCB4
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 23:32:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03A5F7A636F
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 15:43:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 326EB17504D
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 21:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D386221F06;
-	Mon,  2 Jun 2025 15:44:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F253C39FF3;
+	Mon,  2 Jun 2025 21:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qCWL+kRA";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WudUNCtB";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qCWL+kRA";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WudUNCtB"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="SEdo25JG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SEYPR02CU001.outbound.protection.outlook.com (mail-koreacentralazon11023087.outbound.protection.outlook.com [40.107.44.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF564221299
-	for <linux-ext4@vger.kernel.org>; Mon,  2 Jun 2025 15:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748879082; cv=none; b=FPoyVq448fm2Clx6kLrvkqpTVN5rY9iXN7V330tiW/gkSN/oqAiH0r08sfXNH79JjTnp+jrttjy+oyByQPByOhgT1MFUwNlqZXxHq724YGyXTaC932TMWe3pqLs8l5MWVFiocwNyYGSS+iEs4ZZ7aVL48JvlKnx8oSLsypCnFwY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748879082; c=relaxed/simple;
-	bh=5BGy1ZFZgVdgU4Ybb7k6V7+DZSi2lSFfGDksG89sg8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RUDXKlriPiRAzpH1YK3L/yFXpMxaRJEVQHfvs5gDZQ+3sW6p5Bs/F0G+CP3owgxxA6Rw6VwN0obxLhtEezPu4t+S/ffYaMmZsHIdsxbfe8YvR+Refhud38/xiurO2CaK18OTrfBOgr5E07bmLN1lQz98bUjvthbgHKAKTA3M4OU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qCWL+kRA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WudUNCtB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qCWL+kRA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WudUNCtB; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C72CD1F790;
-	Mon,  2 Jun 2025 15:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748879078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WGfjyeHEyh7hJgT7OoNiC1/dbvbwsMYqtSmG3KK/uKg=;
-	b=qCWL+kRAlUoVS6m98KucsKQiLqjhxiM1cbeEkAQ5438Nae55BMyDQhuQr9rPgSUIkZoS9V
-	1/qk/Q5FqoC2mDCN4VmHFI83GN/V553dFJ8nPywpYd1hqAeKuvX0WKXYNdw2GRVgABop7F
-	seLo5xGXWwdyZApFn3nc+DjRxG6cGP0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748879078;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WGfjyeHEyh7hJgT7OoNiC1/dbvbwsMYqtSmG3KK/uKg=;
-	b=WudUNCtBM6ZsOE+mX0H4R4Vbv6NXgCz3c6NGEETTm+gBh90jQ6/BjCA+/2O+wh7B8wQpfB
-	/sgjg0csdZ9KrRCw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748879078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WGfjyeHEyh7hJgT7OoNiC1/dbvbwsMYqtSmG3KK/uKg=;
-	b=qCWL+kRAlUoVS6m98KucsKQiLqjhxiM1cbeEkAQ5438Nae55BMyDQhuQr9rPgSUIkZoS9V
-	1/qk/Q5FqoC2mDCN4VmHFI83GN/V553dFJ8nPywpYd1hqAeKuvX0WKXYNdw2GRVgABop7F
-	seLo5xGXWwdyZApFn3nc+DjRxG6cGP0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748879078;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WGfjyeHEyh7hJgT7OoNiC1/dbvbwsMYqtSmG3KK/uKg=;
-	b=WudUNCtBM6ZsOE+mX0H4R4Vbv6NXgCz3c6NGEETTm+gBh90jQ6/BjCA+/2O+wh7B8wQpfB
-	/sgjg0csdZ9KrRCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B2C4E13A63;
-	Mon,  2 Jun 2025 15:44:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iq6eK+bGPWiLAgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 02 Jun 2025 15:44:38 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 67FC4A094C; Mon,  2 Jun 2025 17:44:30 +0200 (CEST)
-Date: Mon, 2 Jun 2025 17:44:30 +0200
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu, 
-	adilger.kernel@dilger.ca, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
-	yangerkun@huawei.com, libaokun@huaweicloud.com
-Subject: Re: [PATCH 2/4] ext4: move mb_last_[group|start] to ext4_inode_info
-Message-ID: <5oqysbekjn7vazkzrh4lgtg25vqqxgrugvld6av7r2nx7dbghr@kk4yidjw735c>
-References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
- <20250523085821.1329392-3-libaokun@huaweicloud.com>
- <afjkyrm4y5mp5p72ew3ddqma7v4gkmjqdkcloeaidcj55ruami@zfkn6dzgqfwh>
- <6200e067-0ad1-4dc4-9694-05ee1e977f4c@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE294400
+	for <linux-ext4@vger.kernel.org>; Mon,  2 Jun 2025 21:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.44.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748899946; cv=fail; b=JdrWAi/2vuko6Bxsq1sdvTkLp+DJeqMANh6EW3PlVhYyNkXNLx/gn2szoFDUu5jhATO5bM2YZ+stCx9JFzVibS6nDue7su1iCkm/QvnCwmyy96BV1EMNqTrT9Hyq3dUIF2BFsMc04c/tpb+fuoKb2NCA/kv7gaKTmoWTWdraDhg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748899946; c=relaxed/simple;
+	bh=JbCzx93vg2Oh/BA3kDJnBciz42BGpPhzqETI6QpZlZA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZzUZGGtUAWkdJMM3c/XWC4Im8khsJCiDcbjWPqqCRYIofUxLsyfmYioC2U6cWU7Rnc3CJF0kuGT5Bp6dJOMlLfC68fuJsCb4oksXxfhEh+9YYuDd/abtY2LO8jnzIz1d1DK3NrOzqh026MqPgWBhHD5B7eZkz61nk9FFnaK/q4w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=SEdo25JG; arc=fail smtp.client-ip=40.107.44.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HNPEOlMBi06CIiLTMA1okOjmHdOH3s30C+D13k9kA8TGp1rAakSuqF3ZkPoI3r4jOkikcaNbn1Ktg+nINWlO9MsRonj1IHon569gIMHNL6nj3tersy0pqEmtHwTtlAzcb5QbdM/9pd7ey2VSmpLV3EUHbm6KE/KXQMs1cjrA/kLJYtr/jjsloUjjAq5B2WbjxpLJLur9NSdqh/LLKG+2+TaW4DxjXIgUGknmOoUuO0ySXt6UV/goQ/W0rGSrMlVu3Z3L7ssZGpwgipv9iK4ewDm8/UQGRsgvOErIVKsYkiEcoU9aiWYgqHWgFJv0U8FIxhZ1IoaSj7Ntw7w64tbESA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7HFCDXh4nKSA/53dvlz4ZEkhiIbJFJHibFcr7NsVaIk=;
+ b=lWudsDTPhGcka+lM0BjuqdwsB4ktTwMT/irux2szUGG7lpdijpx5YAan38bVhybUNv4AK0wAo1JGswQr58Q6GDAF1jDA7FMZQtjGXfKoN68CN/NNGeoeoRDxHiZCjwD+O/56wKgfOp5p4Tm/6BmftZ8vKw8XM6RoPG5Q7sy9+o0Pd7/b2RmagNt4ct+YzemLEVzudwuYwuG9lOpI6cTmAOKmGNFZItS2GYs9fbwj58SFS4ntuRYEHJZpZDwbpKG5FJ9JxMIZTfLUcoucEb95hroVAYVpOfA7ypDpe6Qz2/PcZMfbivvDuucSTWTkNfG9AHxi17QhTJqy9+0g8lJJew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7HFCDXh4nKSA/53dvlz4ZEkhiIbJFJHibFcr7NsVaIk=;
+ b=SEdo25JG3sDPTGcxDywiK4s55Pug1Jj2lLKo2srJg0t78Dfy82iq2UfK6AxFTu1vicrcgOH3REZ4XSc6fbuWGtkrbhL+AdTHwo/8BrIyaE4O5L9NbahETDbGhNzP57NZ6blsPangOTHhkjNfBmpIawIFfH6+M/2kOLxkq1eqh/o=
+Received: from TYZP153MB0627.APCP153.PROD.OUTLOOK.COM (2603:1096:400:25f::12)
+ by OSQP153MB1207.APCP153.PROD.OUTLOOK.COM (2603:1096:604:372::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.7; Mon, 2 Jun
+ 2025 21:32:19 +0000
+Received: from TYZP153MB0627.APCP153.PROD.OUTLOOK.COM
+ ([fe80::1625:a5f8:c796:ee1]) by TYZP153MB0627.APCP153.PROD.OUTLOOK.COM
+ ([fe80::1625:a5f8:c796:ee1%5]) with mapi id 15.20.8813.014; Mon, 2 Jun 2025
+ 21:32:19 +0000
+From: Mitta Sai Chaithanya <mittas@microsoft.com>
+To: Theodore Ts'o <tytso@mit.edu>
+CC: "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>, Nilesh Awate
+	<Nilesh.Awate@microsoft.com>, Ganesan Kalyanasundaram
+	<ganesanka@microsoft.com>, Pawan Sharma <sharmapawan@microsoft.com>
+Subject: Re: [EXTERNAL] Re: EXT4/JBD2 Not Fully Released device after unmount
+ of NVMe-oF Block Device
+Thread-Topic: [EXTERNAL] Re: EXT4/JBD2 Not Fully Released device after unmount
+ of NVMe-oF Block Device
+Thread-Index: AQHb0VLES057MYZ87kOkGU14tXDGcrPu35cAgAF33d8=
+Date: Mon, 2 Jun 2025 21:32:18 +0000
+Message-ID:
+ <TYZP153MB0627DED95B9B9B2E86D66EFED762A@TYZP153MB0627.APCP153.PROD.OUTLOOK.COM>
+References:
+ <TYZP153MB06279836B028CF36EB7ED260D761A@TYZP153MB0627.APCP153.PROD.OUTLOOK.COM>
+ <20250601220418.GC179983@mit.edu>
+In-Reply-To: <20250601220418.GC179983@mit.edu>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-06-02T21:32:17.120Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZP153MB0627:EE_|OSQP153MB1207:EE_
+x-ms-office365-filtering-correlation-id: aca112a0-bc30-44cd-c112-08dda21cf38e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|10070799003|1800799024|376014|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?Windows-1252?Q?XWdVI4WY267sOaUgS5UFCCXc8JyqOTvuhDJZTPKzHceSQ2hWEwzbwAds?=
+ =?Windows-1252?Q?kLETAjsk7GBgovVSEhjHOLJ4lTn7dal9QFulnkDdQNA1pJQ2a7Kftf0b?=
+ =?Windows-1252?Q?PFDY7Z7UGDg/1RaspbZZ2dPO3RuB/n0gmDPkk3peM8krqJr722t5Utbr?=
+ =?Windows-1252?Q?i/7vN5fUQP8mvDwrJ2T6BIeQbisiLbIIZbuVmzuuxAa42j9Bo94qSb5a?=
+ =?Windows-1252?Q?tHXvahOa753cAuUAlncRkqDEHELSnRvs2RVax/xH05ACKVkTl5iiDZcL?=
+ =?Windows-1252?Q?4bo6I4/4lJMzkttdxREm7diRUWDVm+RytWSS4Nb3kw9nv0VRup2+nKsJ?=
+ =?Windows-1252?Q?IwSQWJxKC4KDrdNW7Eec9Mjpj28dN7YiCeC3akAEpwmi/cwip2P7lmeb?=
+ =?Windows-1252?Q?9Mb24OFibH60w5+MNfAbLCijDCcGF6T5EIOozNiCsihsIpawOCHzkWCi?=
+ =?Windows-1252?Q?MZ3zEUMtv0eaStfEQV44MZDwreV/yGYX7O4AFupAyOOfnENsDWo9C7xp?=
+ =?Windows-1252?Q?x1DBhmrj3FX3kBE16b9ae551CpwOea0WBr5pWHE19p6ntw79uNyyZ+yD?=
+ =?Windows-1252?Q?3qbqq1XiO92Itxu9ZotHAm0wPWgZMlhpmAAvDpbNczInmjTSMYpimmey?=
+ =?Windows-1252?Q?a7XFbQzvZBbnR/8Kf6Ep+Kzr0Yz1Vy0pf6a6nSMB1tsNMVaxwfv8GwiO?=
+ =?Windows-1252?Q?d8GF8zH3z72vNUsBO3OOPgT+SPM4TkGGws4AG9LXebASDmVRQ26tarpD?=
+ =?Windows-1252?Q?spu3PfmzmneDVdeTGlh/Y6QManvE1lmLWUdrICfOJZSTaJ1cruBfFUTF?=
+ =?Windows-1252?Q?5H4pOVp7GdT14/Ozqw+Emcf4gWUQTisWlJ4juGGY2r178nDBZVeGggG7?=
+ =?Windows-1252?Q?7d8D7DuL916xh9zaKQcHe7QVv7TIijTqkhSIPXaFGySgYz64GrOva2S0?=
+ =?Windows-1252?Q?eIMCrmnt8x3519mRMB7qzlPMb6LgjTbPuVHWnjNosgfOloYzMBYQOA75?=
+ =?Windows-1252?Q?zbH3HkdPH0aVc9hSsnphWVls34TfOACVfskb6jRyH5hqI7q1rNit43RX?=
+ =?Windows-1252?Q?chuYuwDX8RNOuUygPuEC9x9OWQc7yYuFiyHWl2MEkByKTXszTLSvkPga?=
+ =?Windows-1252?Q?xQq0bNLWG+F9pZyhuXFdX3pzY6bF7rEMXqoou/uPcDXKkZTu6M0Zr6Tq?=
+ =?Windows-1252?Q?OMry52TPTCcR913pnDbI9OH7sbspDObsGjKjO67TQKUqfpHW6LaogOwN?=
+ =?Windows-1252?Q?npeAOyQ3qveIaqeB8KSIa/dfviOStp7np9WOwhnqGE8KrjWCo33oI52o?=
+ =?Windows-1252?Q?6jDjYWyK6KWBAr0Ee0mMQGvdUyhGPqFcMmVS22VZtjPY0XA4kG1UhSIt?=
+ =?Windows-1252?Q?/jsz/XJdMyxdVlzAShdU4nUct+HTtcibvFNZhvbbSA0+0k/AyVAzvCup?=
+ =?Windows-1252?Q?LNklPlTTCjXraNyKEBQCvltE8NVAnhxUKkuzSraYRfiPEyO/8ejd0P2c?=
+ =?Windows-1252?Q?7yoBuh4o++pz1FdrIfDLlFChNeHusFP4qZ4Ows4d0mtOEoEvaYyF+n+v?=
+ =?Windows-1252?Q?cSuyYJBHdT+FjyYipth7RmnKLCC2Mz2j89ydcQ=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZP153MB0627.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(1800799024)(376014)(366016)(38070700018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?Windows-1252?Q?VDlnWL8AyVXq388DOQfU89zm8QSa2e1d6+T7AFQdLsnKezoX2RjRpXxG?=
+ =?Windows-1252?Q?pMeClV23bljJ9JZ3yO0SbGGmp2CFZjsWXDQchB/iEvqCA5b/8h/ucn/w?=
+ =?Windows-1252?Q?B5Fw5D/mDwu3L7rRGY0zpygRAanJBxtoh11Jn9v9Ft2JBdnl9ZlE/SiY?=
+ =?Windows-1252?Q?Pa56zs9wNBDIo5sHmFG4mHIZR+fLJFAPvrGakzYRvhVH3Z7v+j8rnzpl?=
+ =?Windows-1252?Q?XC2bsm3JruUzAgh/6TS/ogXA07jUMeZAKlzqPujSBp5Gb7/0inRaPHMm?=
+ =?Windows-1252?Q?zDrHqaFv8IAvJrZCMzSmmA4BZ2oH3WdK2EVDjKUqYTlodR/IiFAz7TRH?=
+ =?Windows-1252?Q?Ae9BnLPz2r5/XuftygeXw6bYn+Wn77fXvR36VNrpNPPlCPYds2j9Gghb?=
+ =?Windows-1252?Q?3UITrvUp9uhENVhUsnnQB2E82G7bqu4pONevTvLL7n829Wt9d/G504zd?=
+ =?Windows-1252?Q?4iTbQxntFFjlKqoQmyh10KZUioo/aHw1lWsXfzPKwmlyGMfVt9gxw/lP?=
+ =?Windows-1252?Q?Gak5nNEgC3PThkEzZ5jPm0nq/0WIfL8Z+im7LI3pHp8SNmzBOvSj4nhY?=
+ =?Windows-1252?Q?pgudHseq5/0PdXBQz3SQrcKIYtUIt9FEWuGHQCVGtbHaUMCMI5KSdx+m?=
+ =?Windows-1252?Q?ovTLU0lqE+F3aWad2ZEO7cf5TweaveE44Eqck1LU8pTt9yw2giHWH27g?=
+ =?Windows-1252?Q?X9i5cStnckksHaz+IEQ69iNRm9/F0Zmo1N9VNtT5fyva7mQ9/o5to8Vw?=
+ =?Windows-1252?Q?QEitUty/e2NbW8+Kr9lGKxHqb8vb3lgZwnW3jnWxbvlSS/LwFrLAqvqy?=
+ =?Windows-1252?Q?ZOLtioYp4ajDrHHLnuVGzXFcd6W/2xRFfYuDKnsxzgUnONauLfnpiuiI?=
+ =?Windows-1252?Q?polRO+KXWgrovGMt4d6CtwF9HZMzCgSY37o4vWyyYOx8/nDEse9wGS8D?=
+ =?Windows-1252?Q?m/tsvEm2kA1/no2IV4r8yn/v75zDNCc2I/pk1+8h0mTJP7BuaonadAlr?=
+ =?Windows-1252?Q?9EaB+MQNo3hsuUxdH/zDnl8hJWp25JN6JsgN7P4Su3DwClA4SIJPe4bS?=
+ =?Windows-1252?Q?+Pwneh0OmTjbCaaS17JCbCkaznEjCSyP9MNKO6+jm0zAJyFKUvnCI0Mp?=
+ =?Windows-1252?Q?uaosRrnb/DwIRVk4uwgrlaJNiRRDVgstav/loGlom95n8vowSwXr+9ga?=
+ =?Windows-1252?Q?R9FO4KQBdZvPNBxYPZToHmM47ZG5xZoj1pjne8FuJttSyz8aWzBKc6nz?=
+ =?Windows-1252?Q?51yzD47X+Z9VZVtiCOzcTKrGPhgqWU6M8FV7Cp86IHQLSUNBxqSmYYDh?=
+ =?Windows-1252?Q?/0LScHuPQDmQd5jWFmYbELvualDdRZaend1nP/CuHsB8bsKJde61YbvD?=
+ =?Windows-1252?Q?6SnqAX68dFmIPIvbCtQeMzPx2Icv34yIUtX231x2TH13Ir7Ao/XHxpLf?=
+ =?Windows-1252?Q?vO0gc1Mp4WeWoMg8r1MbROJnMdSff9XGqT+DioEZuFzxkrd/2nv6izwj?=
+ =?Windows-1252?Q?Ofsa4uDMp4uvmqefc7Th+LCpZwI5v7dSgc9OzfmwmnCQu6ziVFd/zOyO?=
+ =?Windows-1252?Q?avrcUoIQp4nyhJ3YmJIsI373PSUuvuhiq28VRfPTYE2PtHWvnS6sPXUh?=
+ =?Windows-1252?Q?YGzL/BSJbpgA7qC9X0Elcq4u?=
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6200e067-0ad1-4dc4-9694-05ee1e977f4c@huawei.com>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,huawei.com:email]
-X-Spam-Level: 
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZP153MB0627.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: aca112a0-bc30-44cd-c112-08dda21cf38e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jun 2025 21:32:18.4940
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6oLq8YUGSmzZMMcmeyY4kVCm/apItpIcsOz8r/LKdzlwkHh8g8DHtfTKJZ7iESN+WWDNmNZTFhVV600F+8mTTg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSQP153MB1207
 
-Hello!
-
-On Fri 30-05-25 17:31:48, Baokun Li wrote:
-> On 2025/5/29 20:56, Jan Kara wrote:
-> > On Fri 23-05-25 16:58:19, libaokun@huaweicloud.com wrote:
-> > > From: Baokun Li <libaokun1@huawei.com>
-> > > 
-> > > After we optimized the block group lock, we found another lock
-> > > contention issue when running will-it-scale/fallocate2 with multiple
-> > > processes. The fallocate's block allocation and the truncate's block
-> > > release were fighting over the s_md_lock. The problem is, this lock
-> > > protects totally different things in those two processes: the list of
-> > > freed data blocks (s_freed_data_list) when releasing, and where to start
-> > > looking for new blocks (mb_last_[group|start]) when allocating.
-> > > 
-> > > Moreover, when allocating data blocks, if the first try (goal allocation)
-> > > fails and stream allocation is on, it tries a global goal starting from
-> > > the last group we used (s_mb_last_group). This can make things faster by
-> > > writing blocks close together on the disk. But when many processes are
-> > > allocating, they all fight over s_md_lock and might even try to use the
-> > > same group. This makes it harder to merge extents and can make files more
-> > > fragmented. If different processes allocate chunks of very different sizes,
-> > > the free space on the disk can also get fragmented. A small allocation
-> > > might fit in a partially full group, but a big allocation might have
-> > > skipped it, leading to the small IO ending up in a more empty group.
-> > > 
-> > > So, we're changing stream allocation to work per inode. First, it tries
-> > > the goal, then the last group where that inode successfully allocated a
-> > > block. This keeps an inode's data closer together. Plus, after moving
-> > > mb_last_[group|start] to ext4_inode_info, we don't need s_md_lock during
-> > > block allocation anymore because we already have the write lock on
-> > > i_data_sem. This gets rid of the contention between allocating and
-> > > releasing blocks, which gives a huge performance boost to fallocate2.
-> > > 
-> > > Performance test data follows:
-> > > 
-> > > CPU: HUAWEI Kunpeng 920
-> > > Memory: 480GB
-> > > Disk: 480GB SSD SATA 3.2
-> > > Test: Running will-it-scale/fallocate2 on 64 CPU-bound containers.
-> > > Observation: Average fallocate operations per container per second.
-> > > 
-> > >                        base     patched
-> > > mb_optimize_scan=0    6755     23280 (+244.6%)
-> > > mb_optimize_scan=1    4302     10430 (+142.4%)
-> > > 
-> > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> > Good spotting with the s_md_lock contention here. But your changes don't
-> > quite make sense to me. The idea of streaming allocation in mballoc is to
-> > have an area of filesystem for large files to reduce fragmentation.  When
-> > you switch to per-inode, this effect of packing large files together goes
-> > away. Futhermore for each inode either all allocations will be very likely
-> > streaming or not streaming (the logic uses file size) so either your
-> > per-inode target will be unused or just another constantly used copy of
-> > goal value.
-> Sorry, I didn't intend to  break streaming allocation's semantics.
-> A precise definition of streaming allocation is not found in the
-> existing code, documentation, or historical records. Consequently,
-> my previous understanding of it was somewhat inaccurate.
-> 
-> I previously thought it was used to optimize the efficiency of linear
-> traversal. For instance, if 500 inodes are created in group 0 and each
-> file is sequentially filled to 1GB, each file's goal, being empty, would
-> be group 1 (the second group in the inode's flex_bg).
-> 
-> Without a global goal and in the absence of non-linear traversal,
-> after the first inode is filled, the second inode would need to traverse
-> groups 1 through 8 to find its first free block.
-> 
-> This inefficiency escalates, eventually requiring the 500th inode to
-> potentially traverse almost 4000 block groups to find its first available
-> block.
-
-I see. But doesn't ext4_mb_choose_next_group() usually select group from
-which allocation can succeed instead of linearly scanning through all the
-groups? The linear scan is just a last resort as far as I remember. Anyway
-I'm not 100% sure what was the original motivation for the streaming goal.
-Maybe Andreas would remember since he was involved in the design.  What I
-wrote is mostly derived from the general understanding of mballoc operating
-principles but I could be wrong.
-
-> I initially believed it could be split to the inode level to reduce
-> traversal time and file fragmentation. However, as you pointed out,
-> its purpose is to cluster large files, not data blocks within a file.
-> Given this, splitting it to the inode level no longer makes sense.
-> > So I can see two sensible solutions here:
-> > a) Drop streaming allocations support altogether.
-> As mentioned above, it can also greatly improve the efficiency of linear
-> traversal, so we can't simply remove it.
-> > 
-> > b) Enhance streaming allocation support to avoid contention between
-> > processes allocating in parallel and freeing. Frankly, there's no strong
-> > reason why reads & writes of streaming allocation goal need to use a
-> > spinlock AFAICS.
-> Yes, since it's just a hint, we don't need a lock at all, not even
-> fe_start, we just need the last fe_group.
-> > We could just store a physical block number and use
-> > atomic64 accessors for it? Also having single goal value is just causing
-> > more contention on group locks for parallel writers that end up using it
-> > (that's the problem I suspect you were hitting the most).
-> Spot on! We did try a single, lockless atomic64 variable, and just as
-> you pointed out, all processes started traversing from the very same
-> group, which just cranked up the contention, dropping OPS to just 6745.
-> >   So perhaps we
-> > can keep multiple streaming goal slots in the superblock (scale the count
-> > based on CPU count & filesystem group count) and just pick the slot based
-> > on inode number hash to reduce contention?
-> > 
-> > 								Honza
-> That's a brilliant idea, actually!
-> 
-> Since most containers are CPU-pinned, this would naturally cluster a single
-> container's data blocks together. I believe we can also apply this to inode
-> allocation, so a container's inodes and data are all in a single region,
-> significantly reducing interference between containers.
-> 
-> My gratitude for your valuable suggestion!
-> I'm going to try out the CPU bucketing approach.
-
-Cool, let's see how it works out :).
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Hi Ted,=0A=
+=A0 =A0 =A0 =A0 =A0 =A0Thanks for your quick response. You're right that we=
+ use a bind mount; however,=0A=
+I'm certain that we first unmount the bind mount before unmounting the orig=
+inal mount.=0A=
+I also checked in a different namespace and couldn't find any reference tha=
+t NVMe device being mounted.=0A=
+=0A=
+>  2025-06-01T10:01:11.568304+00:00 aks-nodepool1-44537149-vmss000002 kerne=
+l: [30452.346875] nvme nvme0: Failed reconnect attempt 6=0A=
+>  Rather, that _apparently_ ext4/jbd2 is issuing I/O's after the NVMe-OF c=
+onnection has been torn down.=0A=
+=0A=
+Yes, I am reproducing the issue and expected to see connection outage error=
+s for a few seconds (i.e., within the tolerable time frame).=0A=
+However, after the connection is re-established and the device is unmounted=
+ from all namespaces, I still observe errors from both ext4 and jb2=0A=
+when the device is especially disconnected.=0A=
+=0A=
+=0A=
+>So when you say that /proc/fs/ext4/<device_name> still exists, that is an=
+=0A=
+> indication that "struct super" for that particular ext4 file system is=0A=
+> still alive, and so of course, there can still be ext4 and jbd2 I/O=0A=
+> activity happening.=0A=
+=0A=
+So even when no user-space process is holding the device, and it has been u=
+nmounted from all namespaces, mounts and bind mounts,=0A=
+is there still a possibility of I/O occurring on the device? If so, how lon=
+g does the kernel typically take to flush any remaining I/O operations,=0A=
+whether from ext4 or jb2?=0A=
+=0A=
+Another point I would like to mention, I am observing JBD2 errors especiall=
+y after NVMe-oF device has been disconnected and below are the logs.=0A=
+=0A=
+Logs:=0A=
+=0A=
+[Wed May 14 16:58:50 2025] nvme nvme0: Removing ctrl: NQN "nqn.2019-05.io.o=
+penebs:4cde20d8-ed8f-47ef-90c7-8cf9521a5734"=0A=
+[Wed May 14 16:58:50 2025] Buffer I/O error on dev nvme0n1, logical block 1=
+081344, lost sync page write=0A=
+[Wed May 14 16:58:50 2025] JBD2: Error -5 detected when updating journal su=
+perblock for nvme0n1-8.=0A=
+[Wed May 14 16:58:50 2025] Aborting journal on device nvme0n1-8.=0A=
+[Wed May 14 16:58:50 2025] blk_update_request: recoverable transport error,=
+ dev nvme0n1, sector 8650752 op 0x1:(WRITE) flags 0x20800 phys_seg 1 prio c=
+lass 0=0A=
+[Wed May 14 16:58:50 2025] Buffer I/O error on dev nvme0n1, logical block 1=
+081344, lost sync page write=0A=
+[Wed May 14 16:58:50 2025] JBD2: Error -5 detected when updating journal su=
+perblock for nvme0n1-8.=0A=
+[Wed May 14 16:58:50 2025] EXT4-fs error (device nvme0n1): ext4_put_super:1=
+205: comm ig: Couldn't clean up the journal=0A=
+[Wed May 14 16:58:50 2025] blk_update_request: recoverable transport error,=
+ dev nvme0n1, sector 0 op 0x1:(WRITE) flags 0x23800 phys_seg 1 prio class 0=
+=0A=
+[Wed May 14 16:58:50 2025] Buffer I/O error on dev nvme0n1, logical block 0=
+, lost sync page write=0A=
+[Wed May 14 16:58:50 2025] EXT4-fs (nvme0n1): I/O error while writing super=
+block=0A=
+[Wed May 14 16:58:50 2025] EXT4-fs (nvme0n1): Remounting filesystem read-on=
+ly=0A=
+[Wed May 14 16:58:50 2025] blk_update_request: recoverable transport error,=
+ dev nvme0n1, sector 0 op 0x1:(WRITE) flags 0x23800 phys_seg 1 prio class 0=
+=0A=
+[Wed May 14 16:58:50 2025] Buffer I/O error on dev nvme0n1, logical block 0=
+, lost sync page write=0A=
+[Wed May 14 16:58:50 2025] EXT4-fs (nvme0n1): I/O error while writing super=
+block=0A=
+=0A=
+=0A=
+=0A=
+Thanks & Regards,=0A=
+Sai=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+________________________________________=0A=
+From:=A0Theodore Ts'o <tytso@mit.edu>=0A=
+Sent:=A0Monday, June 02, 2025 03:34=0A=
+To:=A0Mitta Sai Chaithanya <mittas@microsoft.com>=0A=
+Cc:=A0linux-ext4@vger.kernel.org <linux-ext4@vger.kernel.org>; Nilesh Awate=
+ <Nilesh.Awate@microsoft.com>; Ganesan Kalyanasundaram <ganesanka@microsoft=
+.com>; Pawan Sharma <sharmapawan@microsoft.com>=0A=
+Subject:=A0[EXTERNAL] Re: EXT4/JBD2 Not Fully Released device after unmount=
+ of NVMe-oF Block Device=0A=
+=0A=
+=0A=
+[You don't often get email from tytso@mit.edu. Learn why this is important =
+at https://aka.ms/LearnAboutSenderIdentification=A0]=0A=
+=0A=
+=0A=
+=0A=
+On Sun, Jun 01, 2025 at 11:02:05AM +0000, Mitta Sai Chaithanya wrote:=0A=
+=0A=
+> Hi Team,=0A=
+=0A=
+>=0A=
+=0A=
+> I'm encountering journal block device (JBD2) errors after unmounting=0A=
+=0A=
+> a device and have been trying to trace the source of=0A=
+=0A=
+> these errors. I've observed that these JBD2 errors only=0A=
+=0A=
+> occur if the entries under /proc/fs/ext4/<device_name> or=0A=
+=0A=
+> /proc/fs/jbd2/<device_name> still exist even after a=0A=
+=0A=
+> successful unmount (the unmount command returns success).=0A=
+=0A=
+=0A=
+=0A=
+What you are seeing is I/O errors, not jbd2 errors.=A0 i.e.,=0A=
+=0A=
+=0A=
+=0A=
+> 2025-06-01T10:01:11.568304+00:00 aks-nodepool1-44537149-vmss000002 kernel=
+: [30452.346875] nvme nvme0: Failed reconnect attempt 6=0A=
+=0A=
+=0A=
+=0A=
+These errors may have been caused by the jbd2 layer issuing I/O=0A=
+=0A=
+requests, but these are not failures of the jbd2 subsystem. =A0Rather,=0A=
+=0A=
+that _apparently_ ext4/jbd2 is issuing I/O's after the NVMe-OF=0A=
+=0A=
+connection has been torn down.=0A=
+=0A=
+=0A=
+=0A=
+It appears that you are assuming once umount command/system call has=0A=
+=0A=
+successfuly returned, that the kernel file system will be done sending=0A=
+=0A=
+I/O requests to the block device.=A0 This is simply not true.=A0 For=0A=
+=0A=
+example, consider what happens if you do something like:=0A=
+=0A=
+=0A=
+=0A=
+# mount /dev/sda1 /mnt=0A=
+=0A=
+# mount --bind /mnt /mnt2=0A=
+=0A=
+# umount /mnt=0A=
+=0A=
+=0A=
+=0A=
+The umount command will have returned successfully, but the ext4 file=0A=
+=0A=
+system is still mounted, thanks to the bind mount.=A0 And it's not just=0A=
+=0A=
+bind mounts.=A0 If you have one or more processes in a different mount=0A=
+=0A=
+namespace (created using clone(2) with the CLONE_NEWNS flag) so long=0A=
+=0A=
+as those processes are active, the file system will stay active=0A=
+=0A=
+regardless of the file system being unounted in the original mount=0A=
+=0A=
+namespace.=0A=
+=0A=
+=0A=
+=0A=
+Internally inside in the kernel, this is the distinction between the=0A=
+=0A=
+"struct super" object, and the "struct vfsmnt" object.=A0 The umount(2)=0A=
+=0A=
+system call removes the vfsmnt object from a mount namespace object,=0A=
+=0A=
+and decrements the refcount of the vfsmnt object.=0A=
+=0A=
+=0A=
+=0A=
+The "struct super" object can not be deleted so long as there is at=0A=
+=0A=
+least one vfsmnt object pointing at the "struct super" object.=A0 So=0A=
+=0A=
+when you say that /proc/fs/ext4/<device_name> still exists, that is an=0A=
+=0A=
+indication that "struct super" for that particular ext4 file system is=0A=
+=0A=
+still alive, and so of course, there can still be ext4 and jbd2 I/O=0A=
+=0A=
+activity happening.=0A=
+=0A=
+=0A=
+=0A=
+> I'd like to understand how to debug this issue further to determine=0A=
+=0A=
+> the root cause. Specifically, I=92m looking for guidance on what=0A=
+=0A=
+> kernel-level references or subsystems might still be holding on to=0A=
+=0A=
+> the journal or device structures post-unmount, and how to trace or=0A=
+=0A=
+> identify them effectively (or) is this has fixed in latest versions=0A=
+=0A=
+> of ext4?=0A=
+=0A=
+=0A=
+=0A=
+I don't see any evidence of anything "wrong" that requires fixing in=0A=
+=0A=
+the kernel.=A0 It looks something or someone assumed that the file=0A=
+=0A=
+system was deactivated after the umount and then tore down the NVMe-OF=0A=
+=0A=
+TCP connection, even though the file system was still active,=0A=
+=0A=
+resulting in those errors.=0A=
+=0A=
+=0A=
+=0A=
+But that's not a kernel bug; but rather a bug in some human's=0A=
+=0A=
+understanding of how umount works in the context of bind mounts and=0A=
+=0A=
+mount namespaces.=0A=
+=0A=
+=0A=
+=0A=
+Cheers,=0A=
+=0A=
+=0A=
+=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - Ted=0A=
+=0A=
 
