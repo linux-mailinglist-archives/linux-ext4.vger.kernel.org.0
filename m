@@ -1,88 +1,88 @@
-Return-Path: <linux-ext4+bounces-8276-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8277-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B79DAACAD80
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 13:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23543ACADE9
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 14:21:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7218E4003D3
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 11:45:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D7CD3A80EF
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 12:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD0821324E;
-	Mon,  2 Jun 2025 11:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5962C21885A;
+	Mon,  2 Jun 2025 12:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZByUxsDK"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gvG3puDF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 980811A83E8
-	for <linux-ext4@vger.kernel.org>; Mon,  2 Jun 2025 11:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD542116EB
+	for <linux-ext4@vger.kernel.org>; Mon,  2 Jun 2025 12:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748864717; cv=none; b=Ej09+2VVJhRP/JAWJUeU/eL2aft3YEk6mik6ETcj8Qmjs3v6GIWiCdwQhCCif3FSePwdH+233Mc+UfmGMABuZDE4/MIYRBg7fqducaD8Ff0IS6YcYQER02szyHxnoyPAvbDQ/GWubJVNx6Jir8fE7bFff+xoKfTF6mqZ3L9PlT8=
+	t=1748866862; cv=none; b=Bq02Wws67fOw7aXiNmeendTJAEQsO507vXK1DZUe4SykMCYkc4ipCqKG2ABFUL3cNkoX9o99xfGXGq43lBdvsxo3nfxviGbI/M6DxUTWjBBSJJo0Cp1M0/MceJtkOzXV+7P7aqryZ4aj8v6jqYVQDn6BpSiUMKT8gQNyR5P5NP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748864717; c=relaxed/simple;
-	bh=62q+4Y3u3AUMWco0Ri8A9+Iw4BxELPI+v9ZG2/03SOc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=giBhJxVqOulro3AhCiNYrv1Kqnaz1cBg2qhMwe7dzq+l4ndnGBWWh2yUYfBdpGnznr2m4e2ZntdEXhZfjut70u2uMxefcwigA00pBJvS0AzruR039wZMyhWDyiv5+A7e6/NirFNMcy5gMd7F1kX4b9MDrR+dK4e4fqarLF28k30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZByUxsDK; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1748866862; c=relaxed/simple;
+	bh=7VexDBZvf3qNOI+5jXD27gKijSNLI0gBrzQTwaG/cno=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=jyYdf0vl8gI9081x7wmJHOo2iGdO8GhGJU5mdjVmsxRvGQ4a7AUb6F4byDebERQ7ReSuqG3Iilogf00sRIHpv2FaP4JU9BOn7h/uCMJvMnWe45E+r0UpGRpG8HSrSATISlXtHC4XJdcsXx/rZ5vGyrEpLJ+4eHIXc3eQgvueYJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gvG3puDF; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1748864714;
+	s=mimecast20190719; t=1748866859;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=pluW0u/+xJd0eUGvzfkykomG6yjqcYSK31IZ33YVJmI=;
-	b=ZByUxsDKPGTaZk8y2+Kb8NwAh3A/X0ad92kDTHL3s7oa62aj+3PbBYumiAXFx4gdsn3Shr
-	5ftlCSznJBCNlmeLhWZYXTqkH0g7xrqjd3+FX+b6V66ESJv9aj2jCT/MN3K+/QjHQH9gAs
-	rRlfECCwTwghjwoEenSa88OJ8sMt7XQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=fha/wYALl1qC/d0EpO8TYe7+VBeqcFERTe14lUW/UoM=;
+	b=gvG3puDFbo/BHnK29MefFtu1ucdKnyyAQ1X0GU9CPHs0GtrYlaEAgkBS/Xyy9vYMtj3rof
+	z2QcchL7GK/2N40r5vAoxZZvADHbfGNCAv1OM2pgrYAp/QThbEc1xZs8Moumu/jOsUz5He
+	qb3BOxgYEXcTqlbPs3d+TbN0KeheSx8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-63-70ie-4mxNlW3Nti6ZcUSSQ-1; Mon, 02 Jun 2025 07:45:13 -0400
-X-MC-Unique: 70ie-4mxNlW3Nti6ZcUSSQ-1
-X-Mimecast-MFC-AGG-ID: 70ie-4mxNlW3Nti6ZcUSSQ_1748864712
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-450de98b28eso7402515e9.0
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Jun 2025 04:45:13 -0700 (PDT)
+ us-mta-620-ttqNLHiWN6CrUBpPHy5X2w-1; Mon, 02 Jun 2025 08:20:56 -0400
+X-MC-Unique: ttqNLHiWN6CrUBpPHy5X2w-1
+X-Mimecast-MFC-AGG-ID: ttqNLHiWN6CrUBpPHy5X2w_1748866855
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-451e24dfe1dso402665e9.0
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Jun 2025 05:20:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748864712; x=1749469512;
+        d=1e100.net; s=20230601; t=1748866855; x=1749471655;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
+         :content-language:references:cc:to:from:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=pluW0u/+xJd0eUGvzfkykomG6yjqcYSK31IZ33YVJmI=;
-        b=SI//KGPahhcJco0QJrBCCeIQ0bBuxB4+TQJMDDvKGzzbGd/aNIUWzm2/HbxZUdKkv5
-         Yle9U0Tepk/A6CdVwW6n04Ir5g+H8rYjBcZMrfSctRCHZe5JUAj6b9G+wzcG+MlYq0cQ
-         ce8/Li9i1LuLRLWZ364aodA1lnHfpKoCSK0V8WZtKzdxnC7n9PfWBRoTNbFx3X8IJR3A
-         fqN7mpsSKeEYshhPr8zosRGdSbNZVmoCXDQr70y/2mySw+JtwIQvZXc37lH2pi1GCgpP
-         1+IkQOr6MKFmrBrqCIG9FFPI+gQ6rTJdjD6DgwoFjK9ZUKluoJ9DH4sdX108Xp5K1F6F
-         pDGw==
-X-Forwarded-Encrypted: i=1; AJvYcCW73SvtHTKsBpQYj0cmQvOWEhtCiXWl4CcG/ko9LActobohDdtlJSg54Pfoaafk4/egkAJKmF9ldy4q@vger.kernel.org
-X-Gm-Message-State: AOJu0YyD1SdHMcZSogoUI/UNow+SJ1NOhWTEjN2sMGr7jUyizb5lzC7U
-	9pcPpX/8OnQ/WK7v9Uo7IcgH4sLShKMpftIuCMvvToTf8IqHQb1kn5y2/8T60JtPbqLKDbYT/Lz
-	i6RIA/R8HnJVcWV0DIr+NJAngxWzs01aWge/J4hi5SYoRRohBjdNSRe+oO3u62JM=
-X-Gm-Gg: ASbGncufwGSwt0DrFfCyBEL8VFmDwotdSeFSx5OxeJSmdm7d1hAObKKSQKYwQ58YYZz
-	sPLQCnBVmQFu6EBdZ8eXaM9ruwDrDxDrHZz1dz3+Ue1AfMDXuyZy3ooroRgLLRl5icY+iAVNSnG
-	jGKuGJao90p+KxPEYzqJ4KXiSmQ4cGA71s3OoRn65AP8OnF67Mh23mpsM80OWK2RLtPk9xbbbfo
-	jmp1bnp+Dl6p6ZxBr2PVpX/YNkLpJ0PLvt6246AFEz+oIqX0t35OvpvfjLgz5RMkNagOVD47ict
-	GNg0GxzBwiq0C7fc4Mr5ziMvTlYkz9QwfPgxD+uVplZVu0kkrkJ4yRuVLx7X5FF94KkcqmRkAqN
-	+03C4E1fOwYkxWBviPhruxTET3R3I9a3Knh23fGcbaA2DETYa6Q==
-X-Received: by 2002:a05:600c:3555:b0:450:cabc:a6c6 with SMTP id 5b1f17b1804b1-450d6bbb899mr123242585e9.15.1748864712256;
-        Mon, 02 Jun 2025 04:45:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFNiWxj7ru1ZpdEa7TTYC+Mx0/zZsZQT6PVApBO3c8hzuU2D+iOpq+QjyaIBIup3raLJSW1Xg==
-X-Received: by 2002:a05:600c:3555:b0:450:cabc:a6c6 with SMTP id 5b1f17b1804b1-450d6bbb899mr123242185e9.15.1748864711876;
-        Mon, 02 Jun 2025 04:45:11 -0700 (PDT)
+        bh=fha/wYALl1qC/d0EpO8TYe7+VBeqcFERTe14lUW/UoM=;
+        b=oVB+6P+dBk40lmhjoCrd5Lmz0J7U6SofumMEViPhSZdEiwLQZnIcfuuaCFQ0mP2SUy
+         ofyNX2YvC5D9ZOKvkYfqAxWEg1R2NxPs09BV+Iic+nWhqz+6ci4EOZym4gKJT9ZpUO3m
+         xVA9Voob7PygzPZgz6CIg3N+p6m80TfIPMFu0W4Edc2O1ckITFc1srXmWMPeePgLwcP8
+         PHFwynKdw7yPeECuU5isQ927p2mWErSmfXYmNY1U4+FRR63pZqT5J9vdwwOLdfDAUruR
+         3psazEJF2fDNE/RQVJqhK/s0gdFPA3YjfZ6wDbftB7ZUC+1rj7DytcRDn1o0ltXa3stR
+         jigw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXKBND19QjjN0Xgaprb84SbSrL+DLAWABba/aO6eG4HAvQ8UKqsqguyEb82p9U8IbX02b3c3mf4Eww@vger.kernel.org
+X-Gm-Message-State: AOJu0YxI4ju+RhNsxXXzil/qFcLTBoQUxfPLcTcMNrwJqbH3fj0/KFPT
+	WLD7H0Jp5Km8i/kAWaKAVlCCAqXj6Nd8fj/bosWgwwbfF5LTjmAAciDweVVGbKe/4h75RowXIun
+	RtTeH+HmGpTWpOAKekue/3vvO79COFX3xmJmzJQVRQeOxPcXOgqVeNKfQfLIrzNQ=
+X-Gm-Gg: ASbGnctPs/rvpit8U9+H1oOZoc5io6E9tRbPf1fc5PdkUqq1FMmr+mrR6WLL/NQAjs5
+	G+o4Fq9EzfHglZ/B7Ojpyh366OQD8HSGbji9aJw/tEB/QOO9n0POc76lPJtNtESlwJIprKIzRnh
+	jwokldPdi2mfp0pY8RMS+bN5UaLMic6oHRKikI8xf/2Md/ZgsB4joCNVTuUB021W5f86tw8lHfp
+	viJ3MevzZYIuuCf1FIh9z8wRh2sqTuchK8CInMGXyLsubtrQ98aA2NAGyfBIzxk1Sndvq6FiXr9
+	NTu/OV27FmSB1SA3CC0QdzCY5LvYxL14VNCScz6gMpAWOG6+N8M8Aq2cP57D25dVpiPw1naGR6I
+	ExjghQDMpXUCdE8f3Xz8bD3xpbxKLbAuASp2J95s=
+X-Received: by 2002:a05:600c:608a:b0:43d:3df:42d8 with SMTP id 5b1f17b1804b1-450d87fd857mr103237675e9.6.1748866854928;
+        Mon, 02 Jun 2025 05:20:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEIX1lEBcvIjIUWzMHUVHY0RO1zDGA/tS4Yya6bs5LYBrcaJXLO7aiOIgpY/seevYUJEdu6Rg==
+X-Received: by 2002:a05:600c:608a:b0:43d:3df:42d8 with SMTP id 5b1f17b1804b1-450d87fd857mr103237275e9.6.1748866854547;
+        Mon, 02 Jun 2025 05:20:54 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f34:a300:1c2c:f35e:e8e5:488e? (p200300d82f34a3001c2cf35ee8e5488e.dip0.t-ipconnect.de. [2003:d8:2f34:a300:1c2c:f35e:e8e5:488e])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-450d7f92585sm126373555e9.5.2025.06.02.04.45.10
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-450d7f8edf9sm120150665e9.3.2025.06.02.05.20.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Jun 2025 04:45:11 -0700 (PDT)
-Message-ID: <3327f886-e708-4229-a83f-2404f115d44b@redhat.com>
-Date: Mon, 2 Jun 2025 13:45:09 +0200
+        Mon, 02 Jun 2025 05:20:54 -0700 (PDT)
+Message-ID: <799691d6-d9dd-43fd-805e-7dce6efff3e6@redhat.com>
+Date: Mon, 2 Jun 2025 14:20:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,7 +90,8 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/12] mm/khugepaged: Remove redundant pmd_devmap() check
+Subject: Re: [PATCH 07/12] mm: Remove redundant pXd_devmap calls
+From: David Hildenbrand <david@redhat.com>
 To: Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org
 Cc: gerald.schaefer@linux.ibm.com, dan.j.williams@intel.com, jgg@ziepe.ca,
  willy@infradead.org, linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
@@ -102,8 +103,8 @@ Cc: gerald.schaefer@linux.ibm.com, dan.j.williams@intel.com, jgg@ziepe.ca,
  linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
  linux-cxl@vger.kernel.org, dri-devel@lists.freedesktop.org, John@Groves.net
 References: <cover.541c2702181b7461b84f1a6967a3f0e823023fcc.1748500293.git-series.apopple@nvidia.com>
- <2093b864560884a2a525d951a7cc20007da6b9b6.1748500293.git-series.apopple@nvidia.com>
-From: David Hildenbrand <david@redhat.com>
+ <2ee5a64581d2c78445e5c4180d7eceed085825ca.1748500293.git-series.apopple@nvidia.com>
+ <9c465b24-8775-4852-9618-0873cbf2aaf7@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -150,19 +151,59 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <2093b864560884a2a525d951a7cc20007da6b9b6.1748500293.git-series.apopple@nvidia.com>
+In-Reply-To: <9c465b24-8775-4852-9618-0873cbf2aaf7@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 29.05.25 08:32, Alistair Popple wrote:
-> The only users of pmd_devmap were device dax and fs dax. The check for
-> pmd_devmap() in check_pmd_state() is therefore redundant as callers
-> explicitly check for is_zone_device_page(), so this check can be dropped.
+On 02.06.25 11:33, David Hildenbrand wrote:
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -1398,10 +1398,7 @@ static int insert_pfn_pmd(struct vm_area_struct *vma, unsigned long addr,
+>>    	}
+>>    
+>>    	entry = pmd_mkhuge(pfn_t_pmd(pfn, prot));
+>> -	if (pfn_t_devmap(pfn))
+>> -		entry = pmd_mkdevmap(entry);
+>> -	else
+>> -		entry = pmd_mkspecial(entry);
+>> +	entry = pmd_mkspecial(entry);
+>>    	if (write) {
 > 
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> ---
+> 
+> I just stumbled over this, and I think there is something off here in
+> the PMD/PUD case.
+> 
+> vmf_insert_folio_pmd() does a folio_get() + folio_add_file_rmap_pmd().
+> 
+> But then, we go ahead and turn this into a special mapping by setting it
+> pmd_mkdevmap()/pmd_mkspecial().
+> 
+> Consequently, vm_normal_page_pmd() would ignore them, not following the
+> rules documented for vm_normal_page() and behaving differently than
+> vmf_insert_page_mkwrite()->insert_page().
+> 
+> 
+> folio_add_file_rmap_pmd() should never set these things special/devmap
+> in the first place :/
+> 
+> What am I missing?
+> 
+> Note that fs/dax.c calls vmf_insert_folio_pmd() for PMDs and
+> vmf_insert_page_mkwrite() for PTEs.
+> 
+> Consequently, PTEs will never be marked special (corner case, shared
+> zeropage), but PMDs would always.
+> 
+> Hm?
 
-Acked-by: David Hildenbrand <david@redhat.com>
+What an ugly piece of crap this pmd handling code is.
+
+Just noting because I stumbled over that myself:
+
+pmd_mkdevmap() does *not* imply pmd_special().
+
+... in contrast to pte_mkdevmap(), which will imply pte_special().
+
 
 -- 
 Cheers,
