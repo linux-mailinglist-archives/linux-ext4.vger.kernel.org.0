@@ -1,193 +1,284 @@
-Return-Path: <linux-ext4+bounces-8271-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8272-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D5A2ACA77A
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 03:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC1B2ACA895
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 06:44:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D9357A4175
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 01:12:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0055B7AA3BF
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Jun 2025 04:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FF333530E;
-	Sun,  1 Jun 2025 23:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472BB156C63;
+	Mon,  2 Jun 2025 04:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eaPTMTqh"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="W5klesxR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12olkn2100.outbound.protection.outlook.com [40.92.23.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE98A3352FD;
-	Sun,  1 Jun 2025 23:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748821480; cv=none; b=QaHAN//ONT6BLe4IEY5nEA7Ccvl7Ql62nfjMIMiG9l9H6CJro4tap7w6ZpFEuWlPrfyFt63tDqHyfFLOcME57MhfVy9JZABvakP4Cjtnna8nR+Y6cqrpvmlZJA9azoH7RJemZo/eLfrAPttR7S5ZaG+2JgtHdA8g4jlcS3LfZ9s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748821480; c=relaxed/simple;
-	bh=Lrd4w18aQGRnmEoCnX6nYN+B0jzeVk2ueXmwGY6/tjk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=W8UEXqNA+gKiHzJLvwYLnu3uAIRg6IwlSQeZdAgzV/qZ2K/swDQnSntsFvzVYyJ5G5zZBDyR8Lht9tpS3syHMrbFCmNOAJFR/kyCBem0k8NQv2GkCkFQHkAavOAbiJA/OHYGwbyETnW6s2bhI6zvWTFoeYAZ3c2gYWjeA0HOe60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eaPTMTqh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C79C2C4CEE7;
-	Sun,  1 Jun 2025 23:44:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748821480;
-	bh=Lrd4w18aQGRnmEoCnX6nYN+B0jzeVk2ueXmwGY6/tjk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eaPTMTqhNFQTJQL51UUvpT0Dl8jmg+0vGgEh0Pi7hB0d2iDzAIhvRp23VtpI1i1v8
-	 ywqE4273qW+rF+5R9hwGUMzyeGnIp/5022IzK6DswR1efZL62S4cyD936Q+dIIFgdO
-	 YjkuEHPR0Mn4HH6+nN08HPZFTl5NEO/+wrA7UAOd87P5ycfw99AG/6SOKJC8/sdz9d
-	 /hccDlCzBLbQ0Q0QWBeiv5JHRM7vxjwCf19MidSNNQQ3PUzD5qI3HATFIPNDGKdEGQ
-	 vqwO/aglZrPELbM7A5PC9xu5XVuIOJlA2APE+bJm1cWgNw5I8qJNfw1qtENI1x53Tb
-	 uWcciP0m7ZbDQ==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Zhang Yi <yi.zhang@huawei.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 18/34] ext4: prevent stale extent cache entries caused by concurrent get es_cache
-Date: Sun,  1 Jun 2025 19:43:42 -0400
-Message-Id: <20250601234359.3518595-18-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250601234359.3518595-1-sashal@kernel.org>
-References: <20250601234359.3518595-1-sashal@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E4AAD51;
+	Mon,  2 Jun 2025 04:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.23.100
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748839451; cv=fail; b=tRkL2fWohTZ17crbENm99jskPGEpkusZO5MqlmQuogEUrxh3FT7MvwtWYrdxOm/STDsRHZx2JrI9XM3+fXn5+rQbPWdHW/SG/q2ZP02Dkfn5XNJ+MVU6cuODC4p0FuqxliRi4F/R2dTTdFRKjfNRSPHXC6LasXWzmTl1Ije3NAc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748839451; c=relaxed/simple;
+	bh=70njf9Uj/2IGz/AKRN6ixiJCIkgRiDhwQkncF0CGNt4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=RCT0gzf7N/1MyRgy1V5X5D7lP0plxDyfCK7fdHp2UGvkzjjZVt8ucV2PYhl7jj4DbKvYOna5QUppxJi2BMneLc0YVgiFM5cEy9uKjx/nECBMFThuHuYA4vd+xvS6+TiPczjC+FTpF8wulsQ0hwzVKukJXv3Hp/SZisPU8IZMlG8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=W5klesxR; arc=fail smtp.client-ip=40.92.23.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=X/C2Bh/B8KSrN30o2qebscTb8/AeCRd7nE0as+9T1NKBiWHzj+wrKPNt2ELc2ythMA807kaKG7q18eAyjG6O0DIzsPEEk315UwTTmNlb300r+qHck/DnPtgglTwNE+ZkItTAbzeaeGPlMc7inrGWWeJBjX5n20ESAHeg7eGWTPiZLGollBydvFrgDjemGsPR2Ie2Jf4sDw5s9XZVL33VQ6xi5Om+U+ro23HPGCp0KChiKsZtt+x+jeOglgunRFeO5RrQdSvyEf9WKjyKwleSroX+hwBQuTfDTqyXSM+vlBXHHP81ZKR6wm3olz/OLoCrPWIV0UEjW7KekIC52CriOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2RiWgaT1/3iPDhMFBF9I6gIdQAEfK5PtrRIYH0B1qGs=;
+ b=vuNoYeoFIIfT6F1uKrZxHQi/dvw2dXsQcMiYoLt/NOwaqCPf34Y0fjiEaHbJPmRGD69z205M6fpH/JGU/mvvv+9d72LLwF+un47skJxjChbH3Y9EC5/66BrLp7DnUiZCiHkHHv1lMEIsRnfZFBe34Q6F2LmRZVTl0o0Abj46ki+ggO/rCpbEyYAZ4l3lzG8YiAxIhipxCeixxNfWrAYzTAMQGisuc75g07BvUKY5fzhSrHug9EKHB98Y5JPHAzbf9zcD2FHDArOi2L9ovxfz9M5ho2Peb7i7+e1bkxwwGRGZJd4qzNlGDZFixK7NFyMdNciUWGm9hqu1WDyuZUYrdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2RiWgaT1/3iPDhMFBF9I6gIdQAEfK5PtrRIYH0B1qGs=;
+ b=W5klesxR6xhARTrfG8BTLC1BIFPuSwhbgKLBwSyzjfN8Y2PLNcHirDGeDSObsjPh6s7ydU+7LzgWgvD1EPgolYRfgkpayYHi7AoKpKXDpSIl/UDhBzl84s9oI1TVwR8mljri3YG/PJsqsyspWP7XuHkUYgyB49ZwSmbrR6OkTmDgiScARkc93p2mHGKnoAK0qpGjSl/O+t8iioAvU5CmEihi14GMYoP2XFh/oWYBwm7J3IDQgeFi65MHa8YcJTkeHYn8qs2FDKDnn3JGuYOaVlC0uN2pcEsWN8hbsbjHiFHJBWi+jPaNAf/RN/ySxPh/P2gAop6KCJKq3Mst5EcODA==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by SA2PR02MB7787.namprd02.prod.outlook.com (2603:10b6:806:134::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8769.29; Mon, 2 Jun
+ 2025 04:44:07 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::cedd:1e64:8f61:b9df]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::cedd:1e64:8f61:b9df%4]) with mapi id 15.20.8813.016; Mon, 2 Jun 2025
+ 04:44:07 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Alistair Popple <apopple@nvidia.com>, "linux-mm@kvack.org"
+	<linux-mm@kvack.org>
+CC: "gerald.schaefer@linux.ibm.com" <gerald.schaefer@linux.ibm.com>,
+	"dan.j.williams@intel.com" <dan.j.williams@intel.com>, "jgg@ziepe.ca"
+	<jgg@ziepe.ca>, "willy@infradead.org" <willy@infradead.org>,
+	"david@redhat.com" <david@redhat.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "nvdimm@lists.linux.dev"
+	<nvdimm@lists.linux.dev>, "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>, "linux-ext4@vger.kernel.org"
+	<linux-ext4@vger.kernel.org>, "linux-xfs@vger.kernel.org"
+	<linux-xfs@vger.kernel.org>, "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+	"hch@lst.de" <hch@lst.de>, "zhang.lyra@gmail.com" <zhang.lyra@gmail.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>, "bjorn@kernel.org"
+	<bjorn@kernel.org>, "balbirs@nvidia.com" <balbirs@nvidia.com>,
+	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "loongarch@lists.linux.dev"
+	<loongarch@lists.linux.dev>, "linuxppc-dev@lists.ozlabs.org"
+	<linuxppc-dev@lists.ozlabs.org>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>, "linux-cxl@vger.kernel.org"
+	<linux-cxl@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "John@Groves.net" <John@Groves.net>
+Subject: RE: [PATCH 11/12] mm: Remove callers of pfn_t functionality
+Thread-Topic: [PATCH 11/12] mm: Remove callers of pfn_t functionality
+Thread-Index: AQHb0GROaEejup7DJECB0OaLLvji1LPtp3Iw
+Date: Mon, 2 Jun 2025 04:44:06 +0000
+Message-ID:
+ <SN6PR02MB4157F8C860B0164C4115622CD462A@SN6PR02MB4157.namprd02.prod.outlook.com>
+References:
+ <cover.541c2702181b7461b84f1a6967a3f0e823023fcc.1748500293.git-series.apopple@nvidia.com>
+ <4b644a3562d1b4679f5c4a042d8b7d565e24c470.1748500293.git-series.apopple@nvidia.com>
+In-Reply-To:
+ <4b644a3562d1b4679f5c4a042d8b7d565e24c470.1748500293.git-series.apopple@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SA2PR02MB7787:EE_
+x-ms-office365-filtering-correlation-id: fad27895-1d25-4be1-60b0-08dda1901b81
+x-ms-exchange-slblob-mailprops:
+ iS5pQZgsAQAsRVzdZadpos775QbI24X3vbC7sMvidW3c5hjd3nqK/+ifepDrykBRlQB6dKPJzSa++rUVSLiYXbYw9pJRIb9w3iyzRJ9sg3r7oWu21rK2CeOhIV1ABIsh336rISzS9h7hhLp2RpSAPaJ1DTr18i4IFMzK5pSS2ejxB9mgxsdrBeLiz3BTSFjq2/7nC2/D8+ZJ9MQT3SK+knABQYev3hv6MVCofZnIxtVCiFnp1wYMUISXXEJ+HtIwgUUBtbv5ZWPpHuKYB/I0fYgO1UIGhYksjWikc1xyi0G/m1eypclNQQUDXAw3t6BP0RV4ZX7oyChfEFD31F/8rMgnMiZ/jNfXfYHzPlRZCdNJbdjGApgiNeZrDlbcqffpTpMQPXfB/v4lwq2uN6KrRI7R8r6gtjE4BJ8ZV6yNQ7QNluxlcapvygLGAU0BekPTaUaXnGeB53uRzxSvL/dz/06fRIShnIRx3exyoAphR5efVNvbd+qEvecFKbxslytiAncupnYe4k9KVpNp62MLN8amF1tjwv0pMGgLt746JnwLbPuUy+e0pyYhywWkz1hPPg7vc7L4uu3Uc8YuGTQ6wmhkTCQoqhMExAb2UWEkUr1xOrgI/dBCuYF/sgBY5DU9kKZuPQv/q9rkIzUEbJW+amXyCrHZ7ZnNW3EMGenQf3beGt4IT05zZDS7TI06o0tmysuSpd+CqAL/ppauVr0YD5EgKccBJP7eDZuVRGOCtImCDGttZdC3AtR/QovwC9VHT/q/dM5OcovguO2EC9OhLb9scjG2keX1htblJS2r/ZgEtvnInJfGgkUJxw6fLJvY
+x-microsoft-antispam:
+ BCL:0;ARA:14566002|461199028|8060799009|8062599006|15080799009|41001999006|19110799006|102099032|1602099012|10035399007|4302099013|3412199025|440099028;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?vkrn156pVk1hhU/yJmXbf03jUgyaoGp3mo3vd1iKdtjUBEL74ltP2b4sVnOq?=
+ =?us-ascii?Q?p8IPKJkxlm7cHNKiuAEG8KzznoSkEgyGdu8uc2tYIVYvC+jckYcj5fmioFZx?=
+ =?us-ascii?Q?rjppN/TECVfYUwIN/iOzsocef6HcAUbFtTqZH9j7cXbivxBl8I+7LCdDDIMx?=
+ =?us-ascii?Q?AuwrnrN2osXMJ03BaKV0cny8hedb9ysewcPOlgwbVzYsUjKHVZlqw/Ech98D?=
+ =?us-ascii?Q?N4Jf+gtLVa9qyzO5OE2Y2XdYpxzH/oRwVwqZbexTD5RRXErL8ep9I2j0Uidy?=
+ =?us-ascii?Q?klMdhKZKw92tu7QMcOw8wEXcmsJyBQGOjoI07GwSEyvO/4ZjXH87XWGYlPfH?=
+ =?us-ascii?Q?w9hZsNfiZ8nBNjcXqbap7ugc9bWOMGVgyqHAuPKtK9eN6jgxgAy7NnhLHrB2?=
+ =?us-ascii?Q?ABKfoDvmpVroQydgay531WFQkIDQ5Rr4cqrAKwDik9BzcpQBQhWSrWV+ZIA4?=
+ =?us-ascii?Q?d6ow2SXvwxxJ8LZXN88aBZJ4Mq+Qbz+3bHQjhr+QmComnoA6Psz4SWyy7vyd?=
+ =?us-ascii?Q?QP85Wt3pepTpZnU0/itcVnCnV8pWtmBq5bvFKki5M1XFnT2v/17tlgBrjU0s?=
+ =?us-ascii?Q?MpmHdf4H6yWBuPH0ksoS/jpbqKW3wRRneIXTu1HyHwMt6GFyfHdnr7a+qNru?=
+ =?us-ascii?Q?4m/96vKq/YGVgaHD5yiebDRzPBxqtE+bjRkrR9COerV9xh3xSFXfDjakvP2+?=
+ =?us-ascii?Q?xils64nLgFSUCMxcMJoQUmvg7VuVSOF1KuOmckisDECrLVWOMpgXcPDedH2v?=
+ =?us-ascii?Q?0mzbS1/2lTgqujb12xUYMTgJz8P7676tSpkYlxlzO2eP8KWZ0rewf6K8fZFl?=
+ =?us-ascii?Q?a9BROx8yCHhas09CFthVqQxU6l1sHUHJGd5fN6VxixkN6oWyNBhWMC0rKq/i?=
+ =?us-ascii?Q?xHtx0viSJYWGuY9ntULfQGJH3r8rgbjp73T5JhyFfPpoy5PGDNpprDoKvlA5?=
+ =?us-ascii?Q?s2M9MOEYWuQamtCJ9anbIiY1rc67IgNFXtbWmy2EbJr0KKSzF7+jYbrAIf+q?=
+ =?us-ascii?Q?WXYBRlLSLeO5dh/DdD/5oAuLP1norqNKFbihucsqtkLJMYnq44pymDcSWLPB?=
+ =?us-ascii?Q?Y45LeaF3RCp9CFCo1H7jLIApEtYMZjHhfOHjaCBuBZ5ucQ+ogGKMvroBUoLz?=
+ =?us-ascii?Q?G9DtCcraSrSRLC1W9N0vL7mNrnvCT6jWfgG1JmY5/1AiW510EImXsUAGzUFD?=
+ =?us-ascii?Q?PrVq1yieQs6rvHfpL4ViQi3xISrx3BZesAtIj7dWx/uA2Z4j/NgZaHo4qx58?=
+ =?us-ascii?Q?wmorkm5C1559rNm5rU+YEzMz//hW+MfrCj7qcKW/Mg=3D=3D?=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?QKZIUgCAqpnwyOdj39X7o3AcVjNfSSvWLG/BGnxgBbnXSvkdRWXwnFaC4/iH?=
+ =?us-ascii?Q?OuK8bgWcrWOwNsjK0n6h866WuouDq26MuSTNnDfgtQyUtqu9BFm/nRDjcyGe?=
+ =?us-ascii?Q?421FShGm+2sZFPV4ll6uUANKMG0rLhkPkW/hzrXJlwAZDvXsQ+VT/jogmCGi?=
+ =?us-ascii?Q?0smvoNhNcjyGPP1qDXpiuhpww7b18Ak0qp2Z8IcxwEViGuXke9Ai8mD0xair?=
+ =?us-ascii?Q?YOWhDPvjYnl2EqIGhPHmfswkOkqhw9X68Hs8BSX9jZoFhTNJP5UMTtbqOYEU?=
+ =?us-ascii?Q?0YCn2A4HJtkqnmLW5IGW8CGhc8qqu/ty9SeWIihPSsCpRw/OC0Xm7u2bt3Gm?=
+ =?us-ascii?Q?17Gl/nKQJanUrdZg4TPO4O+y35b8RGSIhHR6YHWQBUF9jrSAqrx5qrkC8IVd?=
+ =?us-ascii?Q?f7I5Y2/4pIub9aHzxO7ZZGec3TLnXOgkNNxj4lDohhGUeILwWrkRCyormgTE?=
+ =?us-ascii?Q?QeZzNuIfp5f3QgRkt9f8x99lEFqnGXiyILVUPiFn71IFtfkBQeKoWYYGV0S8?=
+ =?us-ascii?Q?DQN+GvWA+zkwuLdrMQWM4w3qwb7Qem42PkfVMDH40FPqBhUtrKNZW4jcn2bG?=
+ =?us-ascii?Q?vn4aQ+jPLhzJYCfqglH9EpDjzEwBCES0p47aTyizJQtLpJ8Mw4Buz1Q2BVHg?=
+ =?us-ascii?Q?QRv59u5bSZTmhwUBBDol85rQkSSmbmM56A/IXl7vVdMK+PBrLZynJUjSFK8K?=
+ =?us-ascii?Q?Lzh00Xuw1T+CnoPDG5X4Pi26XkAb8d2J/0K5dmiDlMMjxx4DP7rwBhNWY0t3?=
+ =?us-ascii?Q?1Lysh7ma36r3rINEJpwWyM3QW4pDebJ96MUYuXnsxKlM9vF5daTbk9ATVD61?=
+ =?us-ascii?Q?gySHD0lBu6bKxj31dEAoDatJO9+Cfht+9nhrwkGF3Jn+x+Jr3aOStDB4uqBj?=
+ =?us-ascii?Q?Ln+iZoACibKsHDTIET0Iv6J21O4jBGA7j2ZdXTWuf8qktpPHbrCzgSjzerDo?=
+ =?us-ascii?Q?vqOeuinqSOZb2pYt3YCIbVWb50KpKzc+mL1XdKJ8/ez508SMFEuQ8lwjogb5?=
+ =?us-ascii?Q?iR+t4g6Ia8SPXI0ioL7ul6kVx0xk6gwMbLGv6tev9shSksbVfdt7mfpw2PaG?=
+ =?us-ascii?Q?CmvpIts697K8IBVWTuuyVLPngQx641rM4ywB5YpznsGYri/2TkglbaqK6y+E?=
+ =?us-ascii?Q?yVGOduOpbdD7ZJ0IJbaWxq06Qc0gbNPHv8dDnkgVC9zobvKm0mrvwkzduIBi?=
+ =?us-ascii?Q?eHFAeLLrtiQho49ts7UXWGuvD2lQXtghz6BTHJNmU6Nqu/+BQR4SaeABVJw?=
+ =?us-ascii?Q?=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.237
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: fad27895-1d25-4be1-60b0-08dda1901b81
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jun 2025 04:44:06.5107
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR02MB7787
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Alistair Popple <apopple@nvidia.com> Sent: Wednesday, May 28, 2025 11=
+:32 PM
+>=20
+> All PFN_* pfn_t flags have been removed. Therefore there is no longer
+> a need for the pfn_t type and all uses can be replaced with normal
+> pfns.
+>=20
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/x86/mm/pat/memtype.c                |  6 +-
+>  drivers/dax/device.c                     | 23 +++----
+>  drivers/dax/hmem/hmem.c                  |  1 +-
+>  drivers/dax/kmem.c                       |  1 +-
+>  drivers/dax/pmem.c                       |  1 +-
+>  drivers/dax/super.c                      |  3 +-
+>  drivers/gpu/drm/exynos/exynos_drm_gem.c  |  1 +-
+>  drivers/gpu/drm/gma500/fbdev.c           |  3 +-
+>  drivers/gpu/drm/i915/gem/i915_gem_mman.c |  1 +-
+>  drivers/gpu/drm/msm/msm_gem.c            |  1 +-
+>  drivers/gpu/drm/omapdrm/omap_gem.c       |  6 +--
+>  drivers/gpu/drm/v3d/v3d_bo.c             |  1 +-
+>  drivers/hwtracing/intel_th/msu.c         |  3 +-
+>  drivers/md/dm-linear.c                   |  2 +-
+>  drivers/md/dm-log-writes.c               |  2 +-
+>  drivers/md/dm-stripe.c                   |  2 +-
+>  drivers/md/dm-target.c                   |  2 +-
+>  drivers/md/dm-writecache.c               | 11 +--
+>  drivers/md/dm.c                          |  2 +-
+>  drivers/nvdimm/pmem.c                    |  8 +--
+>  drivers/nvdimm/pmem.h                    |  4 +-
+>  drivers/s390/block/dcssblk.c             |  9 +--
+>  drivers/vfio/pci/vfio_pci_core.c         |  5 +-
+>  fs/cramfs/inode.c                        |  5 +-
+>  fs/dax.c                                 | 50 +++++++--------
+>  fs/ext4/file.c                           |  2 +-
+>  fs/fuse/dax.c                            |  3 +-
+>  fs/fuse/virtio_fs.c                      |  5 +-
+>  fs/xfs/xfs_file.c                        |  2 +-
+>  include/linux/dax.h                      |  9 +--
+>  include/linux/device-mapper.h            |  2 +-
+>  include/linux/huge_mm.h                  |  6 +-
+>  include/linux/mm.h                       |  4 +-
+>  include/linux/pfn.h                      |  9 +---
+>  include/linux/pfn_t.h                    | 85 +-------------------------
+>  include/linux/pgtable.h                  |  4 +-
+>  include/trace/events/fs_dax.h            | 12 +---
+>  mm/debug_vm_pgtable.c                    |  1 +-
+>  mm/huge_memory.c                         | 27 +++-----
+>  mm/memory.c                              | 31 ++++-----
+>  mm/memremap.c                            |  1 +-
+>  mm/migrate.c                             |  1 +-
+>  tools/testing/nvdimm/pmem-dax.c          |  6 +-
+>  tools/testing/nvdimm/test/iomap.c        |  7 +--
+>  tools/testing/nvdimm/test/nfit_test.h    |  1 +-
+>  45 files changed, 121 insertions(+), 250 deletions(-)
+>  delete mode 100644 include/linux/pfn_t.h
+>=20
 
-[ Upstream commit f22a0ef2231a7d8374bb021eb86404d0e9de5a02 ]
+[snip]
 
-The EXT4_IOC_GET_ES_CACHE and EXT4_IOC_PRECACHE_EXTENTS currently
-invokes ext4_ext_precache() to preload the extent cache without holding
-the inode's i_rwsem. This can result in stale extent cache entries when
-competing with operations such as ext4_collapse_range() which calls
-ext4_ext_remove_space() or ext4_ext_shift_extents().
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index c5345ee..12d9665 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -3644,9 +3644,9 @@ vm_fault_t vmf_insert_pfn(struct vm_area_struct *vm=
+a, unsigned long addr,
+>  vm_fault_t vmf_insert_pfn_prot(struct vm_area_struct *vma, unsigned long=
+ addr,
+>  			unsigned long pfn, pgprot_t pgprot);
+>  vm_fault_t vmf_insert_mixed(struct vm_area_struct *vma, unsigned long ad=
+dr,
+> -			pfn_t pfn);
+> +			unsigned long pfn);
+>  vm_fault_t vmf_insert_mixed_mkwrite(struct vm_area_struct *vma,
+> -		unsigned long addr, pfn_t pfn);
+> +		unsigned long addr, unsigned long pfn);
+>  int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsig=
+ned long len);
+>=20
+>  static inline vm_fault_t vmf_insert_page(struct vm_area_struct *vma,
 
-The problem arises when ext4_ext_remove_space() temporarily releases
-i_data_sem due to insufficient journal credits. During this interval, a
-concurrent EXT4_IOC_GET_ES_CACHE or EXT4_IOC_PRECACHE_EXTENTS may cache
-extent entries that are about to be deleted. As a result, these cached
-entries become stale and inconsistent with the actual extents.
+[snip]
 
-Loading the extents cache without holding the inode's i_rwsem or the
-mapping's invalidate_lock is not permitted besides during the writeback.
-Fix this by holding the i_rwsem during EXT4_IOC_GET_ES_CACHE and
-EXT4_IOC_PRECACHE_EXTENTS.
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 6b03771..4eaf444 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -2635,7 +2634,7 @@ EXPORT_SYMBOL(vmf_insert_mixed);
+>   *  the same entry was actually inserted.
+>   */
+>  vm_fault_t vmf_insert_mixed_mkwrite(struct vm_area_struct *vma,
+> -		unsigned long addr, pfn_t pfn)
+> +		unsigned long addr, unsigned long pfn)
+>  {
+>  	return __vm_insert_mixed(vma, addr, pfn, true);
+>  }
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Link: https://patch.msgid.link/20250423085257.122685-6-yi.zhang@huaweicloud.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
+vmf_insert_mixed_mkwrite() is not used anywhere in the
+kernel. The commit message for cd1e0dac3a3e suggests it was
+originally used by DAX code, so presumably it could just go away.
 
-Based on my comprehensive analysis of this commit and comparison with
-the historical similar commits, here is my assessment: **YES** This
-commit should be backported to stable kernel trees for the following
-reasons: ## Analysis Summary ### **Type of Bug Fix** This commit
-addresses a **race condition** that can lead to **stale extent cache
-entries** in the ext4 filesystem. The race occurs between: 1.
-`EXT4_IOC_GET_ES_CACHE` and `EXT4_IOC_PRECACHE_EXTENTS` operations 2.
-Concurrent `ext4_collapse_range()` operations that call
-`ext4_ext_remove_space()` or `ext4_ext_shift_extents()` ### **Technical
-Details of the Race** The problem stems from the fact that
-`ext4_ext_remove_space()` temporarily releases `i_data_sem` when journal
-credits are insufficient. During this critical window: - The extent
-precaching operations (`ext4_ext_precache()`) can cache extent entries -
-These cached entries are about to be deleted by the ongoing
-collapse/shift operation - Result: **stale, inconsistent extent cache
-entries** ### **Code Changes Analysis** The fix is **minimal and
-surgical**: **In `fs/ext4/extents.c` (ext4_get_es_cache function):**
-```c if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) { +
-inode_lock_shared(inode); error = ext4_ext_precache(inode); +
-inode_unlock_shared(inode); if (error) return error; ``` **In
-`fs/ext4/ioctl.c` (EXT4_IOC_PRECACHE_EXTENTS case):** ```c case
-EXT4_IOC_PRECACHE_EXTENTS: - return ext4_ext_precache(inode); +{ + int
-ret; + + inode_lock_shared(inode); + ret = ext4_ext_precache(inode); +
-inode_unlock_shared(inode); + return ret; +} ``` ### **Why This
-Qualifies for Backporting** 1. **Important Bug Fix**: Stale extent cache
-entries can lead to filesystem inconsistencies and potential data
-corruption scenarios. 2. **Minimal Risk**: The changes are extremely
-small and contained: - Only adds proper locking around existing
-operations - Uses shared locking (`inode_lock_shared`) which allows
-concurrent readers - No algorithmic changes or new features 3. **Follows
-Established Patterns**: Similar commits in the repository (marked with
-"Backport Status: YES") show this pattern: - Similar commit #2: "ext4:
-fix data races when using cached status extents" - also deals with
-extent cache consistency - Similar commit #3: "ext4: convert to
-exclusive lock while inserting delalloc extents" - addresses similar
-race conditions with proper locking - Similar commit #4: "ext4: do not
-polute the extents cache while shifting extents" - prevents extent cache
-corruption during shift operations 4. **Clear Impact**: The commit
-message explicitly states this prevents "stale extent cache entries"
-which can cause inconsistency with actual extents. 5. **Contained to
-Subsystem**: Changes are limited to ext4 extent management and don't
-affect other kernel subsystems. 6. **Stable Backport Indicators**: - No
-"Cc: stable@" tag is present, but the nature of the fix (race condition
-leading to corruption) makes it a good candidate - The fix follows
-ext4's established locking protocol requirements - Multiple similar
-extent cache race condition fixes have been backported ### **Risk
-Assessment** - **Very Low Regression Risk**: Only adds locking
-protection, doesn't change functional behavior - **Well-understood
-Fix**: The locking pattern matches established ext4 conventions -
-**Limited Scope**: Only affects two specific ioctl code paths This
-commit represents exactly the type of fix that stable trees are meant
-for: a small, safe fix for a real bug that can cause filesystem
-corruption without introducing new functionality or architectural
-changes.
+On the flip side, I have a patch set in flight (see Patch 3 of [1])
+that uses it to do mkwrite on a special PTE, and my usage
+requires passing PFN_SPECIAL in order to pass the tests in
+vm_mixed_ok(). But this may be dubious usage, and should not
+be a blocker to your elimination of pfn_t. I'll either add
+vmf_insert_special_mkwrite() or figure out an equivalent. Anyone
+with suggestions in that direction would be appreciated as I'm
+not an mm expert.
 
- fs/ext4/extents.c | 2 ++
- fs/ext4/ioctl.c   | 8 +++++++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+Michael
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 196134d48e00d..436b844d7d225 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -5038,7 +5038,9 @@ int ext4_get_es_cache(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 	}
- 
- 	if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
-+		inode_lock_shared(inode);
- 		error = ext4_ext_precache(inode);
-+		inode_unlock_shared(inode);
- 		if (error)
- 			return error;
- 		fieinfo->fi_flags &= ~FIEMAP_FLAG_CACHE;
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 56829507e68c8..b6da12b4c8a82 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1139,8 +1139,14 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		return 0;
- 	}
- 	case EXT4_IOC_PRECACHE_EXTENTS:
--		return ext4_ext_precache(inode);
-+	{
-+		int ret;
- 
-+		inode_lock_shared(inode);
-+		ret = ext4_ext_precache(inode);
-+		inode_unlock_shared(inode);
-+		return ret;
-+	}
- 	case FS_IOC_SET_ENCRYPTION_POLICY:
- 		if (!ext4_has_feature_encrypt(sb))
- 			return -EOPNOTSUPP;
--- 
-2.39.5
-
+[1] https://lore.kernel.org/linux-hyperv/20250523161522.409504-1-mhklinux@o=
+utlook.com/
 
