@@ -1,82 +1,82 @@
-Return-Path: <linux-ext4+bounces-8281-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8282-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C83EACC7E7
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jun 2025 15:34:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3E73ACC7EE
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jun 2025 15:35:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80DE8188D09D
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jun 2025 13:34:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 022C7188C9C7
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jun 2025 13:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41D7231C9F;
-	Tue,  3 Jun 2025 13:34:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5324231826;
+	Tue,  3 Jun 2025 13:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="lrAku4ce"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="L9faMCZo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1536230981
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Jun 2025 13:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EE0230981
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Jun 2025 13:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748957675; cv=none; b=Q0jm/EM8+hnDsqs/oIrdvKSXGOeM3NzBgC0RMuqKHyK3JU9JUmtLsN5ymbr6tfC48VbZBGW6m9f8/5u/NbHx6/Vya/CAJ2dC6hhRSrPjwJ7dOGMneJqP/3Urse9dnPBSPG0KoTI2HajmJHS+xIb32sqODiVu75Znro/VeZEGnAA=
+	t=1748957713; cv=none; b=kfj70hbrTFzVMfyy0tSrgwayS5cngB9uM2OPl4FZv7yI9ASJkWjY/QF4VfHHUftT1aWcTF/um7hfXcnW0GYvae4dVr14RXG8c7si/FPzEC0RwpNqSo33GfueF38h3iM7Y4WBLAumXRdk5HYy9ATs0FLdfUZSyMEB2y3RDnxxTpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748957675; c=relaxed/simple;
-	bh=Lw5cSrf9yXELvBT6bTYGu3OBlBOa4jK7fmgeC+bgcao=;
+	s=arc-20240116; t=1748957713; c=relaxed/simple;
+	bh=6aXyILyNFzvdfLvnjhe+7eEg65vKZaS3Xgt9s4P7IoA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IUaCmlpP5Cu0iiIZVXOLDhx0SFT0dkrhP/JEFtMFzC8su37UXfMKdIv4IGatm3KK+Ee3W9QvrvitExgIgg1iiJbVYiEC0jcYL3Kie/svS8emjy0FT7UndYwOqroAr8LHCvwelqF+NWtusDR17mAij5IyjBLwbhE0bX442B8HiGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=lrAku4ce; arc=none smtp.client-ip=209.85.219.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=tVPSzxg/90x/ktirQ2yBZXiYUnZxxOcCDWh487NDkfuvWMLS7DdY0yBtROgNlYZwyqWIFbv4rl6iOUv+1l5ldKpIzMCjaIznTINf8RvXZWpW0Vpkr9CuY1UfpQsr1h1WA6Xnw8hQD+/hxggZb0K/sKbvpUY31VgjHLS24n6yq2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=L9faMCZo; arc=none smtp.client-ip=209.85.219.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6fac7b6fd32so29243876d6.3
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Jun 2025 06:34:32 -0700 (PDT)
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6f0ad744811so41013456d6.1
+        for <linux-ext4@vger.kernel.org>; Tue, 03 Jun 2025 06:35:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1748957672; x=1749562472; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1748957710; x=1749562510; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o9eD6fBv50JvJ7Gx4KUjwD3EkSFG+lO7duRzw9dtFZs=;
-        b=lrAku4ceWFfd92z3vNIRNznkctKgFgmmyMQzW81z4NHUxFQj/l3xSfa7PCLr00O6ew
-         UM6mT2kD6Ct/OECKUDQZG53FXfqFij9nZhl/zpvcIBTGZn0q3FfWJ3rmLOcj/MsP7Gsy
-         SVIVWQB/Z0dVQA9/oora/QY9tOLyr7TtDGd6V19zHnLrc/gLS2DpuqdvOgmR3z0NjizF
-         6j42V4uqsJf+D3RxJVZDuduTu2Id0UiwGsV0mqt2UAsFiOvCgjL9MRxPLV8RIvcsMdYA
-         frhFnACPi8wIvshwXOGxlFJ9wjx1nmtTgJh0ufocXr2a1Sf83OiQD3w05nQQJ5mc9Zww
-         TEHg==
+        bh=csMjX6EgdDvsoUroDDkC2t6M2H8xOJU7irccfVA/OHY=;
+        b=L9faMCZoU5k/eDkzQK021wVY5FNVNBtn7krLf6IoxlHpm1QF2vWzXGv0u7r8BdGjAm
+         1ZfBSaDxx3E9EAaIl/9pE9ng1Ii3grLFqUSNGGaK/HmxD9aPIBsW35Zgihs/nAsL0Pj0
+         DB8vqs9CFLwCTqERpAvT061kIhjcj3MYkTlunlPQb+nFkd+h4UHb1+UK5G6X5N4nFEQQ
+         sJPnqYrKWS9tONkmVjTCC/GacIFCzFqn+4L4+rl4h+tk40iZk7kbUbSsFPC4JZsFF0YK
+         YM+kJYa126BBD/AZ0Vw6T1+y8HPQFkyAjcpfoGYjT4hjB5l0PB43dSKVcIDuV8xRE9Cb
+         gDPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748957672; x=1749562472;
+        d=1e100.net; s=20230601; t=1748957710; x=1749562510;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o9eD6fBv50JvJ7Gx4KUjwD3EkSFG+lO7duRzw9dtFZs=;
-        b=fpyheYu9MQgOEeykT4/LH4hY2v2RZjfGC0MebSNCkvWMy7SFp20fdY+TQL3taAxL30
-         pfqUDq9huFeJLkogfWYi2Ugaw8T9/X0PWgesGRG/u0fdMOBHTzpqvf0GtE2Y5NxdbVVq
-         BW+I3jmNGsPl+6z+9jj1YxhHX0YTn2v/hfZPSKfrYYy2StKlc+5bu4RtTcJ+0NEuBNgy
-         uxIr4TSobBvk2sX8hW3O3B8xVSFNc4vzALv14uWEVgFp7VpUBfKHqhBCvBvIDDmQYbwz
-         4k4mPO/5ZlhWceAmBGgOBEROwh5YCPugvsRMEAIppZ94BZY3kaAGn9Tyc/a2JQfVhFMp
-         SAYA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxK6ekv1YCIKGpbmxtch170HahpK1qoMqNmmfXbQevWZwpMWVUFiqul0Qwd3MsdbC/fld94udpY6gl@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmK4uUfuH7jc0MePKKzwqUGmvBHrS2MASD6iYclbroy6R7MYsA
-	+4p0zKQ1NKxXZfuFzrH857Oa6D1kHpKC1CBecNZu8vuMAdIJq9nSbiziHTLF/VrQOEg=
-X-Gm-Gg: ASbGncud5B/jJcwTOcHyCLzZzaM75PaCWSSbVpnhN+auF+QTVeoJUqcEWYYbEMpV0Qu
-	pxzIRNuCG5SCbD0qNKQw6hsNQnU8IEfXmkIBK/v6kobzeI3GOr/IJS3k7CFDUyztKOkBq+P3tNe
-	jqtsQa80bdoY/l3ROJp2kbTGh5y/IygJJrsOSZ+Bm7pqyJ8Y5BQzibiJgY3oJtceEzeYXCj0wNt
-	TAUAqKzUKWjcxBukxWDSpg7cP1czEe+FzZWBDg0HE/VNwLfKSJYDxis9hkbjdr1MGxYwHKiRmfe
-	OoYx20hvdBZ4o1lRjekTwCfEV0XW0dXACLkZyVKg1/RVCrtsoHm9eTFY2YCYuluKr5KlQxtCwk6
-	PgOlV6JpK+OXTaTPEjmq3Eb2tyYA=
-X-Google-Smtp-Source: AGHT+IH3/hKllTZ0eEK/dcuWTgO5QsHZ5LZ3JNRLIXTEioRhdRSPfL4GWfnU3eDieGqXq6aFnuzp+A==
-X-Received: by 2002:a05:6214:5096:b0:6ed:1651:e8c1 with SMTP id 6a1803df08f44-6fad90aa622mr189063246d6.13.1748957671754;
-        Tue, 03 Jun 2025 06:34:31 -0700 (PDT)
+        bh=csMjX6EgdDvsoUroDDkC2t6M2H8xOJU7irccfVA/OHY=;
+        b=bEL/qSKlDeC+G7Yd9Ro1nkAIdN9JiB2aaeQiUEPKD04JzbKq+YitTEdFDtTLYtzHiY
+         orMJI7H2mSqOuyEkv+f0w6/BRXzsE5YIst71Z7K+/nx056P5phMcTfximjC1JcNAmS7c
+         ku7qsn7sFZqYApkKYAsnXilJJdIeyGdqr9ADy0KO+x3R5UQ1y7lhk49yl794kts1v+Mz
+         wa047IstdhzSnS1LDbDUQEHgbmYn4YQINLDVSc+47oFIye2wpU+QSrIvPXWispho9Pk6
+         4LJYmY5FTZJOiEjgrQva7MWg97wewi67yCx2A7pQ/6R0qb+RtcdhLaKtHe2aOl/U50e9
+         rLEw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/GwakcYGI33Jl6X5yofJOlHu67gNOk5j3/BansYbBAZ4peH8OBfNkMt2T2KHK1pNL2iVsiUaQidy9@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywx9jP5k/QzqCfgQCOSulUbM36H7Fh2hfnPUepi56DWRESQyLYo
+	acO1y5egVqugXBnADLAnCZszSIDVhb1//qkmnZK4bPn81iCtDMLk0fS/QPu1cQIIgho=
+X-Gm-Gg: ASbGncsGdT2F/uhkE3oHb0OZR2K5pSosxFtg98YOPiBpTOaiUaOPrHHbl2gvoPnqU02
+	Ouqtl3Ziw/zM6Ofh5tFgcremkOIQCRj2FGPNOZYKnUNOXNSeVgNXODQV3mACuB0h5hxA2pQ7/uT
+	ZSrdFrDwu3U5j3lkBw68FcZjMk75exM6w/UPuSQuE/jesC7HyuwfJ1TTM0ElBL49WSLWMIX6R5w
+	H6vlrj0zVPbXfOoBit6najT324NW5SlieSA/gJnfatAxXodXsYWBtzHMc1OIp94RuDfdAbY+JwB
+	9ueBDdWxkvwTF3A60pdhUoY6BZaF0xApgd329JkDvjmrBXYwScqDr4vy4FEvlsmUVlueEc0xdTt
+	It9+vGyzm1vCZs77pQhvd9NfTsbZOzjF740GaUg==
+X-Google-Smtp-Source: AGHT+IGTO1Uq6qWKkHjHjzXPtbeutCQLStskBTpgABiXf8IiWIF7+BRGzTPM/WsKdaJBbv1DscVTNw==
+X-Received: by 2002:a05:6214:d87:b0:6eb:1e80:19fa with SMTP id 6a1803df08f44-6fad9090760mr153489766d6.1.1748957710547;
+        Tue, 03 Jun 2025 06:35:10 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-167-56-70.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.56.70])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6fac6e00b78sm80064216d6.75.2025.06.03.06.34.31
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6fac6e2fc45sm80639296d6.122.2025.06.03.06.35.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Jun 2025 06:34:31 -0700 (PDT)
+        Tue, 03 Jun 2025 06:35:10 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1uMRmg-00000001h3q-2scY;
-	Tue, 03 Jun 2025 10:34:30 -0300
-Date: Tue, 3 Jun 2025 10:34:30 -0300
+	id 1uMRnJ-00000001h4R-2OPU;
+	Tue, 03 Jun 2025 10:35:09 -0300
+Date: Tue, 3 Jun 2025 10:35:09 -0300
 From: Jason Gunthorpe <jgg@ziepe.ca>
 To: Alistair Popple <apopple@nvidia.com>
 Cc: linux-mm@kvack.org, gerald.schaefer@linux.ibm.com,
@@ -90,10 +90,10 @@ Cc: linux-mm@kvack.org, gerald.schaefer@linux.ibm.com,
 	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
 	linux-cxl@vger.kernel.org, dri-devel@lists.freedesktop.org,
 	John@groves.net
-Subject: Re: [PATCH 01/12] mm: Remove PFN_MAP, PFN_SG_CHAIN and PFN_SG_LAST
-Message-ID: <20250603133430.GB386142@ziepe.ca>
+Subject: Re: [PATCH 02/12] mm: Convert pXd_devmap checks to vma_is_dax
+Message-ID: <20250603133509.GC386142@ziepe.ca>
 References: <cover.541c2702181b7461b84f1a6967a3f0e823023fcc.1748500293.git-series.apopple@nvidia.com>
- <cb45fa705b2eefa1228e262778e784e9b3646827.1748500293.git-series.apopple@nvidia.com>
+ <224f0265027a9578534586fa1f6ed80270aa24d5.1748500293.git-series.apopple@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -102,20 +102,23 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cb45fa705b2eefa1228e262778e784e9b3646827.1748500293.git-series.apopple@nvidia.com>
+In-Reply-To: <224f0265027a9578534586fa1f6ed80270aa24d5.1748500293.git-series.apopple@nvidia.com>
 
-On Thu, May 29, 2025 at 04:32:02PM +1000, Alistair Popple wrote:
-> The PFN_MAP flag is no longer used for anything, so remove it. The
-> PFN_SG_CHAIN and PFN_SG_LAST flags never appear to have been used so
-> also remove them.
+On Thu, May 29, 2025 at 04:32:03PM +1000, Alistair Popple wrote:
+> Currently dax is the only user of pmd and pud mapped ZONE_DEVICE
+> pages. Therefore page walkers that want to exclude DAX pages can check
+> pmd_devmap or pud_devmap. However soon dax will no longer set PFN_DEV,
+> meaning dax pages are mapped as normal pages.
+> 
+> Ensure page walkers that currently use pXd_devmap to skip DAX pages
+> continue to do so by adding explicit checks of the VMA instead.
 > 
 > Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
 > ---
->  include/linux/pfn_t.h             | 31 +++----------------------------
->  mm/memory.c                       |  2 --
->  tools/testing/nvdimm/test/iomap.c |  4 ----
->  3 files changed, 3 insertions(+), 34 deletions(-)
+>  fs/userfaultfd.c | 2 +-
+>  mm/hmm.c         | 2 +-
+>  mm/userfaultfd.c | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 
 Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
