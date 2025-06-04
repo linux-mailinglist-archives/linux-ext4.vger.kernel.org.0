@@ -1,217 +1,208 @@
-Return-Path: <linux-ext4+bounces-8308-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8309-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1C52ACD968
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jun 2025 10:14:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DF35ACE5FB
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jun 2025 23:05:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C75EC188622B
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jun 2025 08:14:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D790178D6D
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jun 2025 21:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A8B24EF76;
-	Wed,  4 Jun 2025 08:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0F3211A11;
+	Wed,  4 Jun 2025 21:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZfoxQQJm"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D3826FA50;
-	Wed,  4 Jun 2025 08:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749024840; cv=none; b=e5ImA12FTN6zQmsOTm8/RdDPoZE2NPviuFCN0epqaA1SRA6MqivPCEX+bVmkbyKsUhHQQdySth2YeeqDcpSQNC3UtgPo3wlGmlMKNljGHn6Ge5SH5C4qnGUGi/kSP7MTHpwWd5k6qKVRud3crYo7dXEf3/ZH5YLvDYctpx0gKoM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749024840; c=relaxed/simple;
-	bh=sx7dt9fASGXFnof0E6le4fHW/32v2bXW+fx07LKwKcc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=PgAxdnnaFdVKMS3eUDMolwSr6CWEjClYem8eHu9SJ2xVLHlQYht3HMYIiFWVdA/8u+ufFFaFBh1k8chmt3NbTCUCgSot4Pxb4JDbm/Sv21ce8ULP5CFpsuuMjVBkK/0wIGa94ZmdZzNjKVM7xXax3/8WhkT0q6itOIG2XZaslfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4bC0cT6nfyz2Cddv;
-	Wed,  4 Jun 2025 16:10:01 +0800 (CST)
-Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
-	by mail.maildlp.com (Postfix) with ESMTPS id 09155180042;
-	Wed,  4 Jun 2025 16:13:50 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
- (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 4 Jun
- 2025 16:13:49 +0800
-Message-ID: <ffb669b5-dc98-4264-a92d-5ad1baa4e06e@huawei.com>
-Date: Wed, 4 Jun 2025 16:13:48 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2550B1DE4FC;
+	Wed,  4 Jun 2025 21:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1749071128; cv=fail; b=qIH2g6Go0Gz/guB65ULltuKPMhxK51FzEcrWxjm5o1RSBzt965RLI7rEeTgBXrImIcw0N+R/yXrpWe8QCEuHSTVSwb/IBj+40Ksba/rUUIMkBhr9V605Z4SVvyU9ODhDa+oiGuyaniWvuv4Ha453xq+oayyR8Inf7oNdpNKXTS4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1749071128; c=relaxed/simple;
+	bh=PsgiqNh8JeJPrfLZl6LDq+LRAoqBx7MvuVKnoWRppgs=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Zy79S0sxuGfNy2CGZCTbAbqelPANBNnUz5DGlmRmVX1m+QQhjN2xVDsCCfiSC1A2XLPwVtLrZLR8sKc4gvWSjV3BhrPTkST/2cOJOsnhP6V3KcMJjXDPYwqXKKuSauvFu3HK+Lj/xBFFQR3Tdut+jDiWOhArn31wiBloTuMBKec=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZfoxQQJm; arc=fail smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1749071127; x=1780607127;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=PsgiqNh8JeJPrfLZl6LDq+LRAoqBx7MvuVKnoWRppgs=;
+  b=ZfoxQQJmuoamss1JcdK9V7v6bdePOWKMVpd7p808WUKE/9DLIqtanp+o
+   +u6Ft72jBAfkUXvpneybncaYKDVN6JVyuJj02bbYSqa2JxF3t/Pn+DwyS
+   kx/YI9wghAwqzw+pNbdofa+d03GZR9JNTVNC7pqJlTnfJGglf9Lc2qpwq
+   YI+K/ZBiZCVthD0YzXQZkrmAhPA5000HgxEJTqVF23mLWfDCXOj8Lt31X
+   4oov2w9PIAJjSZOQmv0juZ6Tgy44UAyCdNsigipTMY2ZNA48wFuDxCNGL
+   q7AIjHbk0T/TXURUzL8wcupFmmls2gmkDSTsle0vorvNOdsrPV9v39m2x
+   w==;
+X-CSE-ConnectionGUID: HmCaLor1QlegpQupo+VESw==
+X-CSE-MsgGUID: f+qrsDchRISaPgQWfYh9cg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11454"; a="51035089"
+X-IronPort-AV: E=Sophos;i="6.16,210,1744095600"; 
+   d="scan'208";a="51035089"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2025 14:05:26 -0700
+X-CSE-ConnectionGUID: 1w0A7deQR0yNY5bmC+u9xg==
+X-CSE-MsgGUID: SRc88llqSTy27ZOxdHK9eg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,210,1744095600"; 
+   d="scan'208";a="150323967"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2025 14:05:25 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Wed, 4 Jun 2025 14:05:25 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25 via Frontend Transport; Wed, 4 Jun 2025 14:05:25 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (40.107.96.56) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.55; Wed, 4 Jun 2025 14:05:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=VLrAoe8ovOfaGZPyhJSP9rH4posbBsh3ayyZwvqKXbSfrUWX/lqm2ZEZdDN6E6fhDRYqiPSGT+VA3tNurUq/oPCInT7wXtQBYxq7z56DephZA2mIxjRSXlsUIfcwFRf8y6qWsSUcDkh0Ojrqm7AAL95Tl4Jl3UwVHe6BIkl8p8OAFnUytCECJxvnz6mGJyA0ztJqVPZ/CvYApm1J4YDfZvSfu+NsjGap4h/lEjgUp6kHon/YBK5dHWPUrQUp2558MVceyKMY8d1JIZhwbUhU+FAksFwX0lg8yc1VgBEX3MoyC3swJoXLa9s52tWCFS9apJ6Kyv5j80M0d0hdMfxneQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tffwslYcS9wYv6xv8s7cL/iVvooTi77TcpMyFouePAw=;
+ b=mLw8gKLMtl9GVIlJUK1UrfrP+8tGHNAOkZKFkTGjUclj8eSogx546ckBSLPjNm51syDR3EbBs+7JNrelW5hQDJNavu4/Ya/53xYL8C05X9ENrdl2dLIX5PC03ygLGJvE+5ElS5QyXXb+aTwhBnCSfi3rIZR9wt8SqTBwfheShZdQUpVfsSiiUwF7tHlMH44NfDGi1hVAa9JxeNEJI+mpyyW/k/aYGOKFMQIR9RgNFjik2JjMye/+FBqH62tG0iL3HeQTkemoi3Vu7KLtNCQ5+uBusgJvs8ZaWGcEEOVYiAjCvcnLfBl/T0LJZgNf/GDDqlPK6PYFDXCykqXigC8nYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by PH7PR11MB8035.namprd11.prod.outlook.com (2603:10b6:510:245::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8769.32; Wed, 4 Jun
+ 2025 21:05:22 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8%5]) with mapi id 15.20.8769.031; Wed, 4 Jun 2025
+ 21:05:21 +0000
+Date: Wed, 4 Jun 2025 14:05:16 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Alistair Popple <apopple@nvidia.com>, <linux-mm@kvack.org>
+CC: Alistair Popple <apopple@nvidia.com>, <gerald.schaefer@linux.ibm.com>,
+	<dan.j.williams@intel.com>, <jgg@ziepe.ca>, <willy@infradead.org>,
+	<david@redhat.com>, <linux-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+	<linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+	<linux-xfs@vger.kernel.org>, <jhubbard@nvidia.com>, <hch@lst.de>,
+	<zhang.lyra@gmail.com>, <debug@rivosinc.com>, <bjorn@kernel.org>,
+	<balbirs@nvidia.com>, <lorenzo.stoakes@oracle.com>,
+	<linux-arm-kernel@lists.infradead.org>, <loongarch@lists.linux.dev>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+	<linux-cxl@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<John@groves.net>
+Subject: Re: [PATCH 01/12] mm: Remove PFN_MAP, PFN_SG_CHAIN and PFN_SG_LAST
+Message-ID: <6840b50cb29bd_24911007e@dwillia2-xfh.jf.intel.com.notmuch>
+References: <cover.541c2702181b7461b84f1a6967a3f0e823023fcc.1748500293.git-series.apopple@nvidia.com>
+ <cb45fa705b2eefa1228e262778e784e9b3646827.1748500293.git-series.apopple@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <cb45fa705b2eefa1228e262778e784e9b3646827.1748500293.git-series.apopple@nvidia.com>
+X-ClientProxiedBy: BYAPR21CA0007.namprd21.prod.outlook.com
+ (2603:10b6:a03:114::17) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] ext4: move mb_last_[group|start] to ext4_inode_info
-To: Jan Kara <jack@suse.cz>, <adilger.kernel@dilger.ca>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-	<yangerkun@huawei.com>, <libaokun@huaweicloud.com>, Baokun Li
-	<libaokun1@huawei.com>
-References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
- <20250523085821.1329392-3-libaokun@huaweicloud.com>
- <afjkyrm4y5mp5p72ew3ddqma7v4gkmjqdkcloeaidcj55ruami@zfkn6dzgqfwh>
- <6200e067-0ad1-4dc4-9694-05ee1e977f4c@huawei.com>
- <5oqysbekjn7vazkzrh4lgtg25vqqxgrugvld6av7r2nx7dbghr@kk4yidjw735c>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <5oqysbekjn7vazkzrh4lgtg25vqqxgrugvld6av7r2nx7dbghr@kk4yidjw735c>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemg500008.china.huawei.com (7.202.181.45)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|PH7PR11MB8035:EE_
+X-MS-Office365-Filtering-Correlation-Id: 095eb32d-4fa5-4d45-cad7-08dda3ab849a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014|7053199007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?sSNBqkzwqkChNTGv9qy0YPLO82lgj5OtTE682ySCKw4hI5XStu3glHDRYYPU?=
+ =?us-ascii?Q?FUw6jD1qt423LMTI0NMliZfglUmY++fZTnYO67zx5zFrjLOGZkzj+DCx9f68?=
+ =?us-ascii?Q?967e/5p8dwqKuRza1RiPcsrX5tbrzLqQkGPKDYLjlLG/F06jYeUR36FMw4F1?=
+ =?us-ascii?Q?DL/CpgS8bCVjNv5L9INj+mUT7FdCyJKA+FSeboh8kXRy6JZEIwyhUMP5JedE?=
+ =?us-ascii?Q?yr7NKJJ/OGC2/tiCQJdOiPCeGcjoHE/wWAXJp+T2il7euFKz6ItRqhldGTax?=
+ =?us-ascii?Q?nuRjevJ8L0vokrFDU9n+lQL6GkS/SKc+zK4z3iUCRhJf0y4pLJtDkPvghnMo?=
+ =?us-ascii?Q?8B9oUcEzz+ohs0NsEmw4gS+XJcT8MCFlWzanltOoki28M8PTTX4rVWizvE+M?=
+ =?us-ascii?Q?Ezza01LVYFhtXTVxXbwZKOhu1OEaZAL1eXP8AOn0TGhStrcALDv+zzD1SWce?=
+ =?us-ascii?Q?91x9Sjf65+4lkyXVDr7LhjPgFC9jLPHZ4OyrXd2H2ERHKN3ZD37bbiXBfSEY?=
+ =?us-ascii?Q?LFScZaW7U3W865Kda4BKrVWl2b5HX/e7A/99G8jLL/Bpps2tvJ7R6gJaWwTq?=
+ =?us-ascii?Q?owyPquvbrfNBOr0DOg6ydVZ7xVRxLNoM7jEUXiqZc5hhTYjsUrCx6yY9gs+G?=
+ =?us-ascii?Q?SMvoQwCQgdj9pD8RUeeDCIYiAGw2CHeFIUHql6sMndikMc1hC8b0vJXybRIG?=
+ =?us-ascii?Q?9GHBlX6+Aq31XQNcWlz0P5a+ABrw/1Sj5f/4i69mRQFiWFSLbmhK377Bzrgv?=
+ =?us-ascii?Q?/tSo627HmuazwFrbayp9AqLNZvGLdqvRVtLxfhWh16u1h2hJAHKwSZfQW2BH?=
+ =?us-ascii?Q?oS6kEqZp2IL8m56VUZoT9VCiEQ1NPe8CoVpefWgz/eaRHbgioa+szGclU58i?=
+ =?us-ascii?Q?J/9+yHP3ghc1jdPvK0zzC3X0UsaeyrvKEELFUnS9PLMOlcus58zCpicwh2FY?=
+ =?us-ascii?Q?2e+3TzmP8/lqEQ7nLq4ov/NF0zWuotjue9KqZVptNKbv4Hp5vKtOq2Ocu9Ai?=
+ =?us-ascii?Q?UfmVVgdaCJxajpG/z58U1IWU/tnTcUV59SlQoX9YKlLB2ijvJWE7Zzhl+3L1?=
+ =?us-ascii?Q?vgsgy4I6UkTbpfdrmcsnjQxQnDD9+t2YpjokYo13VPdILkWBGkeIQVRyxSJo?=
+ =?us-ascii?Q?cueq1Rl4fN7wolDXqowJKxLz7P9pbEFxRcEdkV1VcFJyX/44vXFWyNPwZnnY?=
+ =?us-ascii?Q?8gV0IqnQzqK8R/nLbOXx03UxNIAoYdke7C8hS58o7YkjKSJWFCQmwaXl7jXM?=
+ =?us-ascii?Q?nFDw0s8QIoBfk8aAAaJb4gtnLx/EzeTDdXKOls3BMzfsZFnhdNj6CvWJUgrU?=
+ =?us-ascii?Q?fYxn2xAu8iIRGoIcqfp8Ja68rJHvzFbB0uR5K9PuT5PnKaLKxefKJkFyUYB0?=
+ =?us-ascii?Q?neR960PnjY5rCJGuCqoO/V+3rx3aL4FgQcd3ZO38S1VqSmMAKavWXmLrqP3U?=
+ =?us-ascii?Q?JevMYfWN0cw=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7sal2s5eXmzc1aLMbzjU/PxAdvY0rT5/lEeUyOldsB/Y2Q+4t+8yc4KxBws2?=
+ =?us-ascii?Q?A0XQOmF4s5YN6l+0rLTw2oKAG3Vjkp7rndsLMKCIZcCcVs+P53EcPEQv9hMi?=
+ =?us-ascii?Q?GP+w7bIs+zsebKKPD05TKgbakBRTgDaU0ASpj+74umZaTUb+LP4Kjx89QRZU?=
+ =?us-ascii?Q?Rl4dldVBLzT92wvRQt2QjG251MOE5T3cBGvNfvSxZ0YvhdSluUatLr56eR1w?=
+ =?us-ascii?Q?XdjUUSSuq4EUh6hzK/n5mXWRqgbDkGgWXOpVqnmrjIDTrHxnv9gU7FGpfiNS?=
+ =?us-ascii?Q?/9xu8NlDV99A0wmhDzXiGHBiHfMFNfvbUZy31ZPfkrkrYJSwj+FWeTAkkH2u?=
+ =?us-ascii?Q?zcmljcSlaE/bbL3zm3F5dvWnJFmz8bPOlyFZznSGsHcRHODnaX+wjtZjqO1y?=
+ =?us-ascii?Q?Itpg89Gf7VAMmsIFRVOcZ2S9owa7Y/X76Rv/YAw1imJruK6GJmVePonr4PPH?=
+ =?us-ascii?Q?EcAteINsb+3DTgZNWd1DCt8yfwBeQ+kZhjugp4J5pzxPsYj5p2x5U8w80lxR?=
+ =?us-ascii?Q?9mUq26obfAJ49wh2S44jnbYRCSjFpcnFJXZc3AWdWrbix2GYJXdnWRSYPsiz?=
+ =?us-ascii?Q?DhDdWUk+D0HMJvTMmMYNmTQ+STXS8Q9QWjxaIMBXGgzznfutAeBLbVUm6AmW?=
+ =?us-ascii?Q?dhXJGXWnaj5A/nmsVkm0HtAqTihoGBNMDXWA7hP7KKWfekKEiHQyjgnjd2cE?=
+ =?us-ascii?Q?9Hx/Qy5bvSJK6mJPUJGlHd8ztI0hSETj7XiFgbsgA0qvKhhSgk5lS/4OWpXo?=
+ =?us-ascii?Q?CurjBHSA7lttyNW7+/sIbLeVuDGwrWh6Hm14paNB9AICIbdQdQQrIWwr2eOD?=
+ =?us-ascii?Q?j/Z4blVWjtWapVgRiJn1Jq1vH8xUrqOFyO/80jt6qJaoBEzM5t4PXwO0Uo7D?=
+ =?us-ascii?Q?cBc+ScNfVWPR2B4VaewhKOdgWTjKyGkFcH8biZQyo8Hj64Y5iv6jN+dUfjOM?=
+ =?us-ascii?Q?jHFrDGkEiEGweP9/cqRsWc+K/7Ez3ZTzH90rqcd8VstqcBGz0Mpx/hkU5fqj?=
+ =?us-ascii?Q?uOB67m8mWo49oai7jzVYfjG+AdSwvV+aqauWgyhFUPciJzT+RI7IWv+SOgsP?=
+ =?us-ascii?Q?F5LklrVnBZs18rELXPqNnKhRAsah1tsLCFa90ofgY60JMG1f8rjQBuW57GIv?=
+ =?us-ascii?Q?MLTnqTUnc3eBdnxN3/n4uZz0Etq17ErZewACw5XflzZdoqZihz3/2uya8csy?=
+ =?us-ascii?Q?1qw51c3O4i3ngvajqlWy+gPpv4J7wq2R2Z7PGUvNwdWQxzsM8BVRsalHI8wp?=
+ =?us-ascii?Q?xSobHJXTDlhZmkXF+l6XsZqQDRkzc5rcrP+mEIjwZWxrl0ezpKywp+cNEAn1?=
+ =?us-ascii?Q?lCyOAlSUH8xxzjbwqgDFLr0w+8z0hNxNO9AGkZSB9q0plulgX2IY0YEGMmCn?=
+ =?us-ascii?Q?0VQnftGKVYXMsD41sVAw7k+HfFqooRfdyXLw+Xh/cPt4Ia+LWHguOd4YNHxa?=
+ =?us-ascii?Q?l6ntELzhuvXZgIzIzfpJ7XgDA+vTw/hskQz3OWMpuWRQq0zb+o7Zo7PFUb9A?=
+ =?us-ascii?Q?WA7Ed8f6t7obD9NxpVKp2PUT6l3o8KU9DLFEXNYD3X2SG6zy03wo/EtNNtd/?=
+ =?us-ascii?Q?dBh7JwmN1QE7Fbcqlcqe21XarZx2Sino4r/caP06cB5YrCrchAe0K3tvlvFO?=
+ =?us-ascii?Q?LA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 095eb32d-4fa5-4d45-cad7-08dda3ab849a
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2025 21:05:21.8670
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6VWyVI509N+OmqwyuzReqQTRU6of21tMOMVbjQ/MlOJn5z8MzD71tBSnPKsNJAxKiBtPkrOMSX8xpFFwcZUe1qS+4q3glYipfMJ3/MtnkcY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8035
+X-OriginatorOrg: intel.com
 
-On 2025/6/2 23:44, Jan Kara wrote:
-> Hello!
->
-> On Fri 30-05-25 17:31:48, Baokun Li wrote:
->> On 2025/5/29 20:56, Jan Kara wrote:
->>> On Fri 23-05-25 16:58:19, libaokun@huaweicloud.com wrote:
->>>> From: Baokun Li <libaokun1@huawei.com>
->>>>
->>>> After we optimized the block group lock, we found another lock
->>>> contention issue when running will-it-scale/fallocate2 with multiple
->>>> processes. The fallocate's block allocation and the truncate's block
->>>> release were fighting over the s_md_lock. The problem is, this lock
->>>> protects totally different things in those two processes: the list of
->>>> freed data blocks (s_freed_data_list) when releasing, and where to start
->>>> looking for new blocks (mb_last_[group|start]) when allocating.
->>>>
->>>> Moreover, when allocating data blocks, if the first try (goal allocation)
->>>> fails and stream allocation is on, it tries a global goal starting from
->>>> the last group we used (s_mb_last_group). This can make things faster by
->>>> writing blocks close together on the disk. But when many processes are
->>>> allocating, they all fight over s_md_lock and might even try to use the
->>>> same group. This makes it harder to merge extents and can make files more
->>>> fragmented. If different processes allocate chunks of very different sizes,
->>>> the free space on the disk can also get fragmented. A small allocation
->>>> might fit in a partially full group, but a big allocation might have
->>>> skipped it, leading to the small IO ending up in a more empty group.
->>>>
->>>> So, we're changing stream allocation to work per inode. First, it tries
->>>> the goal, then the last group where that inode successfully allocated a
->>>> block. This keeps an inode's data closer together. Plus, after moving
->>>> mb_last_[group|start] to ext4_inode_info, we don't need s_md_lock during
->>>> block allocation anymore because we already have the write lock on
->>>> i_data_sem. This gets rid of the contention between allocating and
->>>> releasing blocks, which gives a huge performance boost to fallocate2.
->>>>
->>>> Performance test data follows:
->>>>
->>>> CPU: HUAWEI Kunpeng 920
->>>> Memory: 480GB
->>>> Disk: 480GB SSD SATA 3.2
->>>> Test: Running will-it-scale/fallocate2 on 64 CPU-bound containers.
->>>> Observation: Average fallocate operations per container per second.
->>>>
->>>>                         base     patched
->>>> mb_optimize_scan=0    6755     23280 (+244.6%)
->>>> mb_optimize_scan=1    4302     10430 (+142.4%)
->>>>
->>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->>> Good spotting with the s_md_lock contention here. But your changes don't
->>> quite make sense to me. The idea of streaming allocation in mballoc is to
->>> have an area of filesystem for large files to reduce fragmentation.  When
->>> you switch to per-inode, this effect of packing large files together goes
->>> away. Futhermore for each inode either all allocations will be very likely
->>> streaming or not streaming (the logic uses file size) so either your
->>> per-inode target will be unused or just another constantly used copy of
->>> goal value.
->> Sorry, I didn't intend to  break streaming allocation's semantics.
->> A precise definition of streaming allocation is not found in the
->> existing code, documentation, or historical records. Consequently,
->> my previous understanding of it was somewhat inaccurate.
->>
->> I previously thought it was used to optimize the efficiency of linear
->> traversal. For instance, if 500 inodes are created in group 0 and each
->> file is sequentially filled to 1GB, each file's goal, being empty, would
->> be group 1 (the second group in the inode's flex_bg).
->>
->> Without a global goal and in the absence of non-linear traversal,
->> after the first inode is filled, the second inode would need to traverse
->> groups 1 through 8 to find its first free block.
->>
->> This inefficiency escalates, eventually requiring the 500th inode to
->> potentially traverse almost 4000 block groups to find its first available
->> block.
-> I see. But doesn't ext4_mb_choose_next_group() usually select group from
-> which allocation can succeed instead of linearly scanning through all the
-> groups? The linear scan is just a last resort as far as I remember.
-Yes, that's right. I was referring to how streaming allocation worked
-before mb_optimize_scan was introduced, when we only had linear traversal.
+Alistair Popple wrote:
+> The PFN_MAP flag is no longer used for anything, so remove it. The
+> PFN_SG_CHAIN and PFN_SG_LAST flags never appear to have been used so
+> also remove them.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Because mb_optimize_scan's traversal is unordered, it doesn't encounter
-this problem. But linear traversal is still needed when criteria are
-CR_GOAL_LEN_SLOW or CR_ANY_FREE, or when s_mb_max_linear_groups is
-specified.
-> Anyway
-> I'm not 100% sure what was the original motivation for the streaming goal.
-> Maybe Andreas would remember since he was involved in the design.  What I
-> wrote is mostly derived from the general understanding of mballoc operating
-> principles but I could be wrong.
-Hey Andreas, do you happen to remember what the initial thinking was
-behind bringing in the streaming goal (EXT4_MB_STREAM_ALLOC)?
->> I initially believed it could be split to the inode level to reduce
->> traversal time and file fragmentation. However, as you pointed out,
->> its purpose is to cluster large files, not data blocks within a file.
->> Given this, splitting it to the inode level no longer makes sense.
->>> So I can see two sensible solutions here:
->>> a) Drop streaming allocations support altogether.
->> As mentioned above, it can also greatly improve the efficiency of linear
->> traversal, so we can't simply remove it.
->>> b) Enhance streaming allocation support to avoid contention between
->>> processes allocating in parallel and freeing. Frankly, there's no strong
->>> reason why reads & writes of streaming allocation goal need to use a
->>> spinlock AFAICS.
->> Yes, since it's just a hint, we don't need a lock at all, not even
->> fe_start, we just need the last fe_group.
->>> We could just store a physical block number and use
->>> atomic64 accessors for it? Also having single goal value is just causing
->>> more contention on group locks for parallel writers that end up using it
->>> (that's the problem I suspect you were hitting the most).
->> Spot on! We did try a single, lockless atomic64 variable, and just as
->> you pointed out, all processes started traversing from the very same
->> group, which just cranked up the contention, dropping OPS to just 6745.
->>>    So perhaps we
->>> can keep multiple streaming goal slots in the superblock (scale the count
->>> based on CPU count & filesystem group count) and just pick the slot based
->>> on inode number hash to reduce contention?
->>>
->>> 								Honza
->> That's a brilliant idea, actually!
->>
->> Since most containers are CPU-pinned, this would naturally cluster a single
->> container's data blocks together. I believe we can also apply this to inode
->> allocation, so a container's inodes and data are all in a single region,
->> significantly reducing interference between containers.
->>
->> My gratitude for your valuable suggestion!
->> I'm going to try out the CPU bucketing approach.
-> Cool, let's see how it works out :).
+Looks good and I see PFN_DEV goes later in the series:
 
-Initially, I tried defining a per-CPU variable where each process would
-use the goal corresponding to its current CPU. In CPU-pinned scenarios,
-this resulted in almost no interference between CPUs. However, when
-writing to the same file sequentially in a non-CPU-pinned environment,
-the data blocks could become highly fragmented.
-
-Therefore, I switched to defining a regular array whose length is the
-number of CPUs rounded up to the nearest power of 2. By taking the inode
-number modulo the array length, we can get the corresponding goal. This
-guarantees that the same file consistently uses the same goal. Its
-performance is largely similar to inode i_mb_last_group, but it's more
-memory-efficient. I'll be switching to this method in the next version.
-
-Thanks again for your suggestion!
-
-
-Cheers,
-Baokun
-
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 
