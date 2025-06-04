@@ -1,189 +1,320 @@
-Return-Path: <linux-ext4+bounces-8294-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8296-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F3BDACCE3B
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jun 2025 22:33:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AD6BACD554
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jun 2025 04:22:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC4161633AA
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Jun 2025 20:33:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E0353A373A
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jun 2025 02:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5740617C224;
-	Tue,  3 Jun 2025 20:33:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="IGg7lfh+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C115B18DB24;
+	Wed,  4 Jun 2025 02:21:48 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEABA15E5C2
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Jun 2025 20:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634C63594F;
+	Wed,  4 Jun 2025 02:21:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748982780; cv=none; b=OfocOpdZEXy5Zi4oiaTLXDLu9ivt/k7oryIo/nCQmyZ1qpFkcHfEedELUvu4+mCIeT3VxEmyVUboB8Ol0rPPM7gKPtBAqmWngb9vRYeWwj2T4RcXsi+trdd6u1N+cywf3Put37j34nmYITZrXsu5QqwMyqFZkdZGiAOofjTArbo=
+	t=1749003708; cv=none; b=bgXPQWNwlx/9900vEUcKEDcRZ6+LENSAnMgKW/cah8gSvh2C4sOBnLVYETaHnc/xWvaA5ra8NT1n5Bp0n6UYWLtwo86xjQ7Eb5nTJxPl16zO62SCwbaqbWS18PdxsvH94VCmmhdu124X1AANf/FokD1IkRj09Yd5p4yGxC7Qedc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748982780; c=relaxed/simple;
-	bh=gRaERZQkhocULXlCG/X/h/R5XG8eUA2IwhcjqXRw0NQ=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=XZVgFElTtTors15l2+SbXxz40CXUr74YR9zicfUmLR0tqpI8C2T2FP5GG3uf7D6gwRntDHDUNWOK8YFMw02GqAGfYBljZCC9edl0+AOCwIXI3l7kcS844zDlPR3ZblhXJupDVOTwmX4TqztdVJUG3yNW6RfMCMAFoKYJ3pA0c0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=IGg7lfh+; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-234d2d914bcso43028515ad.0
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Jun 2025 13:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1748982777; x=1749587577; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HVDNpuIj2vvb/nVmbPh2SBcTSRC1OTz+L9z52PGm4D0=;
-        b=IGg7lfh+CC061184+JO2CdyXEnHiKXnWceKsULyGB60zgxJYPRBnT02k2ez3T8eFKA
-         1yXYu45n4lTjCwkyl+4rwPdRaEzspv7xhaYArBNBGTRy0Pjbm7kCOQ+p/N95uKEOJncq
-         Ppz3SrQJ+hzx3bF0DYOqsWHuLQkAlnhD5Yf0+nvlfYLpCzdP+LY2Ucooae/aPSZm4vfj
-         jXXdTDihpIbOy6xCUWWZ0LLQTVXjZ+UnVvpJ+RX2T+D+maWGFnb6UNK5c6+wAnt4Hw8+
-         e24zzgUQxITuwRd3hPF7Mey7xiGrOINXgSPVlWuHnatXyyUSqTiz4yRVl3joB6s9dPVH
-         jYUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748982777; x=1749587577;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HVDNpuIj2vvb/nVmbPh2SBcTSRC1OTz+L9z52PGm4D0=;
-        b=WyFNIm2NAwvg2jDCLmzAhxNiPAFhdE2DNCdLYRvsgv2whZGIrDNCZ80fHFRpng5/4c
-         q5bK9+e4Bcg1hAnRn9EZZ5Efd3xA8zvDzwpLMPbYmlm5t6w3dxc1rfTW8ivThVk+2T5P
-         S4YraA7s3VqVugGgi45sRmy3LURzmHchX0eNiFykeNHmOaZWz3f55B9zs/L7T89k/60Q
-         BJG/6qW3bNuZ2MOSfz/RbWfqbM3/MLLSW8e2ty+ydAFzwLfz8AETI1KVp2Tliumqwypo
-         jzVwMNXkClCX/5G1Ocy1G3ieSCDG8m7CyASXmFsaL3boPSZYTschCG+IBDpXtR88h3Ii
-         bRjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUHwPETkomZkYvr6KfwKJKk5rEklX9F7lljgekgl41KT7i+aW94kn6lK3okf/0c060V1lSXw3an91ha@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFN530X8zkMB2UkluCol4IwiJl7GxRb5V6cACpDd9L6BYXzOFh
-	LyT/t4weSdZrqU0hgzK5cHTymWC0pglXZ/S1TVyCBdK7m61i4axoozC3O0S1CuH7kHY=
-X-Gm-Gg: ASbGncuvgRs8gIcLNK9Htt24cBbuUyGCLeItD5J8f+OLZ96MimqJ1KiEwqOBJcj2Vhl
-	VMkAbLDv1DF3TfnDhsoZ9t3nieENh/o3zKQrHtzJueCHY7dnJvA17XPEzFewBOOmMABBmNK07fp
-	7A/EoPXn+lG2WbSvC96PkCxnDdCm2GYDLrMRn9Y5t7bBSDKXdUMWQMrSe4uEFJMVcV14P0nOTNq
-	AYfawVXda05d/PmKf9QI+QeMFGtdwNgPsopOddXccQDdKB9izLPFXUvWfRnuwz5z02kS0n0VwR6
-	JnKY0WxAOeB4cfO8Y8xomRQTmeEid1EAGcjSFEY8wKI7ZaSCefjxRzSU2zI4sP6cfD7Qg04+fyI
-	rLBUe7+Hg5/5Xn2SaER9BhRSH
-X-Google-Smtp-Source: AGHT+IG+W4jIWFbfDvGkXqXleFhLy0qpdSfVmTtf97WBfpXxjF0Yuqi9x3tpb4b06hWPaaVAPd8W+w==
-X-Received: by 2002:a17:902:d4cb:b0:234:88f5:c0cf with SMTP id d9443c01a7336-235e1485aa2mr1043115ad.3.1748982776945;
-        Tue, 03 Jun 2025 13:32:56 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3124e3d7a17sm7614153a91.47.2025.06.03.13.32.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Jun 2025 13:32:56 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <369896EC-04BB-41D3-8A08-5A37E16F0984@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_76007CD5-E6CD-423E-9336-CF6372B91462";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1749003708; c=relaxed/simple;
+	bh=xhZvMESc55g+qRWJ4xx7cgzusA78J8NvqvJvA/N9ZVA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z929S5qBs8EjuVYtupPe2Xhbn4PgG2DsUTYwYCGpu9YZIvTZ70Qc56hkKGnfzOgJ6AuzLUHd0EU7R3Tidp7NJLn9mTbs9wJoD58Sc4vdJqRImfpSbTDG9WMyRjtjzeylznPp7gfIuTMVBPjtGcsNgb7EtVgVkvPSVBB6DV4nDKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bBrtc2hzRzKHN3y;
+	Wed,  4 Jun 2025 10:21:44 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id B8D641A0A0D;
+	Wed,  4 Jun 2025 10:21:42 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.112.188])
+	by APP4 (Coremail) with SMTP id gCh0CgCnCl+nrT9oedfBOQ--.14997S4;
+	Wed, 04 Jun 2025 10:21:40 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	linux-scsi@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	hch@lst.de,
+	tytso@mit.edu,
+	djwong@kernel.org,
+	john.g.garry@oracle.com,
+	bmarzins@redhat.com,
+	chaitanyak@nvidia.com,
+	shinichiro.kawasaki@wdc.com,
+	brauner@kernel.org,
+	martin.petersen@oracle.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH 00/10] fallocate: introduce FALLOC_FL_WRITE_ZEROES flag
+Date: Wed,  4 Jun 2025 10:08:40 +0800
+Message-ID: <20250604020850.1304633-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [EXTERNAL] Re: EXT4/JBD2 Not Fully Released device after unmount
- of NVMe-oF Block Device
-Date: Tue, 3 Jun 2025 14:32:52 -0600
-In-Reply-To: <20250603002904.GE179983@mit.edu>
-Cc: Mitta Sai Chaithanya <mittas@microsoft.com>,
- "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
- Nilesh Awate <Nilesh.Awate@microsoft.com>,
- Ganesan Kalyanasundaram <ganesanka@microsoft.com>,
- Pawan Sharma <sharmapawan@microsoft.com>
-To: Theodore Ts'o <tytso@mit.edu>
-References: <TYZP153MB06279836B028CF36EB7ED260D761A@TYZP153MB0627.APCP153.PROD.OUTLOOK.COM>
- <20250601220418.GC179983@mit.edu>
- <TYZP153MB0627DED95B9B9B2E86D66EFED762A@TYZP153MB0627.APCP153.PROD.OUTLOOK.COM>
- <20250603002904.GE179983@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCnCl+nrT9oedfBOQ--.14997S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3ZFWxXw17Cr45Ww1rCw1xXwb_yoWDWrW8pa
+	yUXF4Ykr1DKryxC3s3ua1I9ryrZws5AFW3Gw4Ik34UZFZ8XF1xKFs2ga4Yva9rJFyxW3WD
+	XFsrKr9rua47A3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjTRRBT5DUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
+From: Zhang Yi <yi.zhang@huawei.com>
 
---Apple-Mail=_76007CD5-E6CD-423E-9336-CF6372B91462
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Changes since RFC v4:
+ - Rebase codes on 6.16-rc1.
+ - Add a new queue_limit flag, and change the write_zeroes_unmap sysfs
+   interface to RW mode. User can disable the unmap write zeroes
+   operation by writing '0' to it when the operation is slow.
+ - Modify the documentation of write_zeroes_unmap sysfs interface as
+   Martin suggested.
+ - Remove the statx interface.
+ - Make the bdev and ext4 don't allow to submit FALLOC_FL_WRITE_ZEROES
+   if the block device does not enable the unmap write zeroes operation,
+   it should return -EOPNOTSUPP.
+Changes sicne RFC v3:
+ - Rebase codes on 6.15-rc2.
+ - Add a note in patch 1 to indicate that the unmap write zeros command
+   is not always guaranteed as Christoph suggested.
+ - Rename bdev_unmap_write_zeroes() helper and move it to patch 1 as
+   Christoph suggested.
+ - Introduce a new statx attribute flag STATX_ATTR_WRITE_ZEROES_UNMAP as
+   Christoph and Christian suggested.
+ - Exchange the order of the two patches that modified
+   blkdev_fallocate() as Christoph suggested.
+Changes since RFC v2:
+ - Rebase codes on next-20250314.
+ - Add support for nvme multipath.
+ - Add support for NVMeT with block device backing.
+ - Clear FALLOC_FL_WRITE_ZEROES if dm clear
+   limits->max_write_zeroes_sectors.
+ - Complement the counterpart userspace tools(util-linux and xfs_io)
+   and tests(blktests and xfstests), please see below for details.
+Changes since RFC v1:
+ - Switch to add a new write zeroes operation, FALLOC_FL_WRITE_ZEROES,
+   in fallocate, instead of just adding a supported flag to
+   FALLOC_FL_ZERO_RANGE.
+ - Introduce a new flag BLK_FEAT_WRITE_ZEROES_UNMAP to the block
+   device's queue limit features, and implement it on SCSI sd driver,
+   NVMe SSD driver and dm driver.
+ - Implement FALLOC_FL_WRITE_ZEROES on both the ext4 filesystem and
+   block device (bdev).
 
+RFC v4: https://lore.kernel.org/linux-fsdevel/20250421021509.2366003-1-yi.zhang@huaweicloud.com/
+RFC v3: https://lore.kernel.org/linux-fsdevel/20250318073545.3518707-1-yi.zhang@huaweicloud.com/
+RFC v2: https://lore.kernel.org/linux-fsdevel/20250115114637.2705887-1-yi.zhang@huaweicloud.com/
+RFC v1: https://lore.kernel.org/linux-fsdevel/20241228014522.2395187-1-yi.zhang@huaweicloud.com/
 
-> On Jun 2, 2025, at 6:29 PM, Theodore Ts'o <tytso@mit.edu> wrote:
->=20
-> On Mon, Jun 02, 2025 at 09:32:18PM +0000, Mitta Sai Chaithanya wrote:
->=20
->> However, after the connection is re-established and the device is
->> unmounted from all namespaces, I still observe errors from both ext4
->> and jb2 when the device is especially disconnected.
->=20
-> How do you *know* that you've unmounted the device in all namespaces.
-> I seem to recall that some process (I think one of the systemd
-> daemons, but I could be wrong) was creating a namespace that users
-> were not expecting, resulting in the device staying mounted when the
-> users were not so expecting it.
->=20
-> The fact that /proc/fs/ext4/<device_name> still exists means that the
-> kernel (specifically, the VFS layer) doesn't think that the file
-> system can be shut down.  As a result, the VFS layer has not called
-> ext4's put_super() and kill_sb() methods.  And so yes, I/O activity
-> can still happen, because the file system has not been shutdown.
->=20
-> If you still see /proc/fs/ext4/<device_name>, my suggestion would be
-> grep /proc/*/mounts looking to see which processes has a namespace
-> which still has the device mounted.  I suspect that you will see that
-> there is some namespace that you weren't aware of that is keeping the
-> ext4 struct super object pinned and alive.
->=20
->> Another point I would like to mention, I am observing JBD2 errors =
-especially after NVMe-oF device has been disconnected and below are the =
-logs.
->=20
-> Sure, but that's the effect, not the cause, of the NVME-of device
-> getting ripped down while the file system is still active.  Which I am
-> 99.997% sure is because it is still mounted in some namespace.  The
-> other 0.003% chance is that there is some refcount problem in the VFS
-> subsytem, and I would suggest that you ask Microsoft's VFS experts,
-> (such as Christain Brauner, who is one of the VFS maintainers) to take
-> a look.  I very much doubt it is a kernel bug, though.
+The counterpart userspace tools changes and tests are here:
+ - util-linux: https://lore.kernel.org/linux-fsdevel/20250318073218.3513262-1-yi.zhang@huaweicloud.com/ 
+ - xfsprogs: https://lore.kernel.org/linux-fsdevel/20250318072318.3502037-1-yi.zhang@huaweicloud.com/
+ - xfstests: https://lore.kernel.org/linux-fsdevel/20250318072615.3505873-1-yi.zhang@huaweicloud.com/
+ - blktests: https://lore.kernel.org/linux-fsdevel/20250318072835.3508696-1-yi.zhang@huaweicloud.com/
 
-We've definitely seen similar situations with filesystem mounts inside
-of a namespace keeping the mountpoint busy.
+Original Description:
 
-Adding debugging in ext4_put_super() if current->comm !=3D "umount" to =
-print
-the process name showed monitoring tools running in the container that
-held open references on the mountpoint until they exited and closed =
-files.
+Currently, we can use the fallocate command to quickly create a
+pre-allocated file. However, on most filesystems, such as ext4 and XFS,
+fallocate create pre-allocation blocks in an unwritten state, and the
+FALLOC_FL_ZERO_RANGE flag also behaves similarly. The extent state must
+be converted to a written state when the user writes data into this
+range later, which can trigger numerous metadata changes and consequent
+journal I/O. This may leads to significant write amplification and
+performance degradation in synchronous write mode. Therefore, we need a
+method to create a pre-allocated file with written extents that can be
+used for pure overwriting. At the monent, the only method available is
+to create an empty file and write zero data into it (for example, using
+'dd' with a large block size). However, this method is slow and consumes
+a considerable amount of disk bandwidth, we must pre-allocate files in
+advance but cannot add pre-allocated files while user business services
+are running.
 
-Cheers, Andreas
+Fortunately, with the development and more and more widely used of
+flash-based storage devices, we can efficiently write zeros to SSDs
+using the unmap write zeroes command if the devices do not write
+physical zeroes to the media. For example, if SCSI SSDs support the
+UMMAP bit or NVMe SSDs support the DEAC bit[1], the write zeroes command
+does not write actual data to the device, instead, NVMe converts the
+zeroed range to a deallocated state, which works fast and consumes
+almost no disk write bandwidth. Consequently, this feature can provide
+us with a faster method for creating pre-allocated files with written
+extents and zeroed data. However, please note that this may be a
+best-effort optimization rather than a mandatory requirement, some
+devices may partially fall back to writing physical zeroes due to
+factors such as receiving unaligned commands. 
 
+This series aims to implement this by:
+1. Introduce a new feature BLK_FEAT_WRITE_ZEROES_UNMAP to the block
+   device queue limit features, which indicates whether the storage is
+   device explicitly supports the unmapped write zeroes command. This
+   flag should be set to 1 by the driver if the attached disk supports
+   this command.
 
+2. Introduce a queue limit flag, BLK_FLAG_WRITE_ZEROES_UNMAP_DISABLED,
+   along with a corresponding sysfs entry. Users can query the support
+   status of the unmap write zeroes operation and disable this operation
+   if the write zeroes operation is very slow.
 
+       /sys/block/<disk>/queue/write_zeroes_unmap
 
+3. Introduce a new flag, FALLOC_FL_WRITE_ZEROES, into the fallocate.
+   Filesystems that support this operation should allocate written
+   extents and issue zeroes to the specified range of the device. For
+   local block device filesystems, this operation should depend on the
+   write_zeroes_unmap operaion of the underlying block device. It should
+   return -EOPNOTSUPP if the device doesn't enable unmap write zeroes
+   operaion.
 
+This series implements the BLK_FEAT_WRITE_ZEROES_UNMAP feature and
+BLK_FLAG_WRITE_ZEROES_UNMAP_DISABLED flag for SCSI, NVMe and
+device-mapper drivers, and add the FALLOC_FL_WRITE_ZEROES and
+STATX_ATTR_WRITE_ZEROES_UNMAP support for ext4 and raw bdev devices.
+Any comments are welcome.
 
---Apple-Mail=_76007CD5-E6CD-423E-9336-CF6372B91462
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+I've tested performance with this series on ext4 filesystem on my
+machine with an Intel Xeon Gold 6248R CPU, a 7TB KCD61LUL7T68 NVMe SSD
+which supports unmap write zeroes command with the Deallocated state
+and the DEAC bit. Feel free to give it a try.
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
+0. Ensure the NVMe device supports WRITE_ZERO command.
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmg/W/QACgkQcqXauRfM
-H+Drvw//QRJe/6jmjTiLACgdPKFx//dPxcnYS83bqCcwvAwi/K7egFjdsGkkPFuf
-S1oRVgwjyaQOtKqU/ebs+F3I31pYKVItOrBB+IBJVrhLB3clNCEg5QlrFEdah90p
-t2NEZpOzJJcrJZI1GsPbd150j4pZ2VYbio4qY49/E8zSPU54VK7XPl37odYXot6y
-QeRBhPztuzPTMGYjyMvDoyn7lheHgb+8wsOt2bIEINRRqXksgVEDnru98HmZFxKd
-G/8c+iOyQIualx6lXFl8zDpkKi2rGNcXGvyGZ2BtKlTTbPXxJjbAbVNxZ5II+ZDm
-j1YmKF5L1+xI7WPl7uN/40eTSr2H1Yq1HCvOwHdTSCPFMIWHJzCliaOLOlsWM7OB
-A381qDfNHi7QRrcCiYjiVTKNLuwei5Yxd0tkA8+0ypRXTxTvUUpBe+Zj6iOifsSv
-cnhDGlLsX4i2zimtT+6XBnWagxxI/jY9d9Oxd2s/3vSXXTETfSqqZLS+vD4jlDV6
-m0bN6/dv8XNwejmOSYQ5+iQ9eHFw0x6Ece5huLYdwsGhlGbgGHl6BsO98hewmj+R
-Wi8u4lB1PSbaLbUcXeAEb/cdpoeHlEz9XzisWwXAIGMWfCgdqaGHH6JjZf4zuqPv
-zKghJk29IRB4MZY7+V1yi+WMIZNVyMSywbDLRm/DqGJWH4rQuqI=
-=ery9
------END PGP SIGNATURE-----
+ $ cat /sys/block/nvme5n1/queue/write_zeroes_max_bytes
+   8388608
+ $ nvme id-ns -H /dev/nvme5n1 | grep -i -A 3 "dlfeat"
+   dlfeat  : 25
+   [4:4] : 0x1   Guard Field of Deallocated Logical Blocks is set to CRC
+                 of The Value Read
+   [3:3] : 0x1   Deallocate Bit in the Write Zeroes Command is Supported
+   [2:0] : 0x1   Bytes Read From a Deallocated Logical Block and its
+                 Metadata are 0x00
 
---Apple-Mail=_76007CD5-E6CD-423E-9336-CF6372B91462--
+1. Compare 'dd' and fallocate with unmap write zeroes, the later one is
+   significantly faster than 'dd'.
+
+   Create a 1GB and 10GB zeroed file.
+    $dd if=/dev/zero of=foo bs=2M count=$count oflag=direct
+    $time fallocate -w -l $size bar
+
+    #1G
+    dd:                     0.5s
+    FALLOC_FL_WRITE_ZEROES: 0.17s
+
+    #10G
+    dd:                     5.0s
+    FALLOC_FL_WRITE_ZEROES: 1.7s
+
+2. Run fio overwrite and fallocate with unmap write zeroes
+   simultaneously, fallocate has little impact on write bandwidth and
+   only slightly affects write latency.
+
+ a) Test bandwidth costs.
+  $ fio -directory=/test -direct=1 -iodepth=10 -fsync=0 -rw=write \
+        -numjobs=10 -bs=2M -ioengine=libaio -size=20G -runtime=20 \
+        -fallocate=none -overwrite=1 -group_reportin -name=bw_test
+
+   Without background zero range:
+    bw (MiB/s): min= 2068, max= 2280, per=100.00%, avg=2186.40
+
+   With background zero range:
+    bw (MiB/s): min= 2056, max= 2308, per=100.00%, avg=2186.20
+
+ b) Test write latency costs.
+  $ fio -filename=/test/foo -direct=1 -iodepth=1 -fsync=0 -rw=write \
+        -numjobs=1 -bs=4k -ioengine=psync -size=5G -runtime=20 \
+        -fallocate=none -overwrite=1 -group_reportin -name=lat_test
+
+   Without background zero range:
+   lat (nsec): min=9269, max=71635, avg=9840.65
+
+   With a background zero range:
+   lat (usec): min=9, max=982, avg=11.03
+
+3. Compare overwriting in a pre-allocated unwritten file and a written
+   file in O_DSYNC mode. Write to a file with written extents is much
+   faster.
+
+  # First mkfs and create a test file according to below three cases,
+  # and then run fio.
+
+  $ fio -filename=/test/foo -direct=1 -iodepth=1 -fdatasync=1 \
+        -rw=write -numjobs=1 -bs=4k -ioengine=psync -size=5G \
+        -runtime=20 -fallocate=none -group_reportin -name=test
+
+   unwritten file:                 IOPS=20.1k, BW=78.7MiB/s
+   unwritten file + fast_commit:   IOPS=42.9k, BW=167MiB/s
+   written file:                   IOPS=98.8k, BW=386MiB/s
+
+Thanks,
+Yi.
+
+---
+
+[1] https://nvmexpress.org/specifications/
+    NVM Command Set Specification, Figure 82 and Figure 114.
+
+Zhang Yi (10):
+  block: introduce BLK_FEAT_WRITE_ZEROES_UNMAP to queue limits features
+  nvme: set BLK_FEAT_WRITE_ZEROES_UNMAP if device supports DEAC bit
+  nvme-multipath: add BLK_FEAT_WRITE_ZEROES_UNMAP support
+  nvmet: set WZDS and DRB if device supports BLK_FEAT_WRITE_ZEROES_UNMAP
+  scsi: sd: set BLK_FEAT_WRITE_ZEROES_UNMAP if device supports unmap
+    zeroing mode
+  dm: add BLK_FEAT_WRITE_ZEROES_UNMAP support
+  fs: introduce FALLOC_FL_WRITE_ZEROES to fallocate
+  block: factor out common part in blkdev_fallocate()
+  block: add FALLOC_FL_WRITE_ZEROES support
+  ext4: add FALLOC_FL_WRITE_ZEROES support
+
+ Documentation/ABI/stable/sysfs-block | 20 +++++++++
+ block/blk-settings.c                 |  6 +++
+ block/blk-sysfs.c                    | 25 +++++++++++
+ block/fops.c                         | 44 +++++++++++--------
+ drivers/md/dm-table.c                |  7 ++-
+ drivers/md/dm.c                      |  1 +
+ drivers/nvme/host/core.c             | 21 +++++----
+ drivers/nvme/host/multipath.c        |  3 +-
+ drivers/nvme/target/io-cmd-bdev.c    |  4 ++
+ drivers/scsi/sd.c                    |  5 +++
+ fs/ext4/extents.c                    | 66 +++++++++++++++++++++++-----
+ fs/open.c                            |  1 +
+ include/linux/blkdev.h               | 18 ++++++++
+ include/linux/falloc.h               |  3 +-
+ include/trace/events/ext4.h          |  3 +-
+ include/uapi/linux/falloc.h          | 18 ++++++++
+ 16 files changed, 201 insertions(+), 44 deletions(-)
+
+-- 
+2.46.1
+
 
