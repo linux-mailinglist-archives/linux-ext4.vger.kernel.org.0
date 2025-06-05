@@ -1,320 +1,226 @@
-Return-Path: <linux-ext4+bounces-8310-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8311-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 325B8ACE6BD
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Jun 2025 00:40:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 509B5ACE7CD
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Jun 2025 03:38:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F82718874FD
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Jun 2025 22:40:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C268174CC1
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Jun 2025 01:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C30225A34;
-	Wed,  4 Jun 2025 22:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4518680034;
+	Thu,  5 Jun 2025 01:38:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SFzhT8Ed"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D3A179A3
-	for <linux-ext4@vger.kernel.org>; Wed,  4 Jun 2025 22:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749076825; cv=none; b=QROF2UMeHoeMyDXjnTQ0XHCJduFKShr7u0cgAxbtIJWXkO1L3gdBpsMWeK6QItA63L6PNuJnyDJijaU7jwa9y5Z/Onkq0cQbVqDo/A0d74SamOXSY+2cKr5LjCWyRvuEEDAg5BaJ+Zegk50mLLa93PWK+uWuWQR8M74eh5r5WJU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749076825; c=relaxed/simple;
-	bh=yJKEo6PKKsFEaoY+Wb+NuTVHnNoK8lm+1WZEK3Oda0s=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uXUgUcoCavyC5oD7sj7ejLNEkuJo2aDel3a0S1DXgXGJ42p7eUBH6GSXRb+4tfPI4odG2S5/Z5u4U/8dpppPwIf66lY0OfTXblW/MKFcxBTW6GcAFsM2UjLjC7yFxFffjavtGFK4Fe7Fd7RR6D0v73GnGP8h8feaGfjRwyvSirM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ddc1f84ab5so7766275ab.0
-        for <linux-ext4@vger.kernel.org>; Wed, 04 Jun 2025 15:40:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749076822; x=1749681622;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U3CVkFYSih42dMa4crK8+2r1dGR38THO+9uTUAByLCA=;
-        b=YG/H29JeUcOCd7Mwch4OBJOurw5XFTLStdnKYagAZ0Xvq4GbE6pHwEK70ytCca7Fq7
-         mNEBl65u3X4qzxKuuTs23zrmPwu61owwwTSDsSS3owXt8gBkMwphJQNyMDR2XwugYJ9W
-         0/cbvSaJbIopf7IxB8Zg5URgl0AjFN1B3yXSocE6uNcVDb6ueIcW/ncobQYyfdeyQ6cC
-         E0I3LkCIONo6eQCP/2laaeEXG+BoKU2vRV6ZHxQv2wSJjr3qbwRrXetApMbEUQ879Niw
-         DQ+6KRCj09+IR5qaFfcaws0uJC/EZMVKKUdJ1sOzEqth8blYVxN+sa0z42hUFWCK5UjS
-         5bdw==
-X-Forwarded-Encrypted: i=1; AJvYcCXX9sqhlP9nYV1NNZ0NiFUE7/AJlnxseh8/FXWjdE8pW9F4uOyq5bFUr08eCrgcNHGvoXHB2T58qNHY@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLNXO+WN0RVQ7blT+BVXCiD3RaZsrlSWHgsePEw2gcTXRZB2TB
-	Q+47nkAaKwKTfsqbz5jxAq2V/bVbgBO2mIZ/YJNQlxoQXU2mmd2LAchOLsXRXRLp15wuVWpiRs8
-	lfusQbAkrxcqL3UoAtARkqlwTlfg9Qy8bG1KKV/pPyC1Z9qRvPpAlVrUyLOI=
-X-Google-Smtp-Source: AGHT+IFKEm94hei2X92UPF3Njhb1nrH8QDmc/JVW364mYXZ44FCQBlnszvgmqeD1KinChAldYeR4HW+NW5Cz2fvi7aow2w4Axee9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087FA3209;
+	Thu,  5 Jun 2025 01:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1749087493; cv=fail; b=JDDmBLLo93NrU3I4zsuEB5aMbVawkRMs2oy+YtFdAXmJL9iGmn6vnoTRI8hkmMSPNLxadjdAdOhhGfk2NFoxTddf/1P3LPp20EyocS2Y8rrLtNUan5TDweTxQULcJam313AqVVYDjHYk7uokvHdbboJooUC6fm46TGgXCYNlC+s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1749087493; c=relaxed/simple;
+	bh=AGj+aeqjKVAFivXiyiJYEs/2sAuUGl4LmvFhsC/o6pI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=oy+SvUIyvZVlZvfc5ZMS8b0UKPyNz0XeiXTCrRJstrc2vg4K84FzzSsZWaeQaIXR3W3rF0XulcVS2XUCRmMCADPFaifnaMxjK+yQ5BnymggX/UpX/FLu7Zf6Krps3xlv9GRIIK+Y3+6Fraffi1NRbsXmPTo+TQ2znrXXRAkhGvo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SFzhT8Ed; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1749087492; x=1780623492;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=AGj+aeqjKVAFivXiyiJYEs/2sAuUGl4LmvFhsC/o6pI=;
+  b=SFzhT8EdjfCigy+7dO7i4SUsfFTbccZy6+C4oylNHplf53BYIp2L6u2d
+   b1+1BTJVedN+PnjgkbdDykuKRmL8nELKmTB7RLC1Hpqs1Iw81W3yeUYx8
+   DivHImz4JjvqC3ARwW8hBgDvBfNewgo2JyVJfj4KDZ8JO31OVhdsMCeJ4
+   UOeSeupeJR2lW3mwTD1Z+oj3r3jyPNAOBNfoYplW2nUdIUXuCHqmclRoP
+   qihd+a3FpeqfV0VgptwIIQo9BkP5W+REiLSEQxjgVisq2lKMBX91hN03i
+   VrfcRrl+mR7OwgmcqilFNHFQA5lCY+dEbIS2d/gEkblhLctetulfeTHLG
+   Q==;
+X-CSE-ConnectionGUID: gEG7NesJRwevB27yEsWv3A==
+X-CSE-MsgGUID: N73Z52BxRlmyTIm6YMI8Aw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11454"; a="68627987"
+X-IronPort-AV: E=Sophos;i="6.16,210,1744095600"; 
+   d="scan'208";a="68627987"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2025 18:38:11 -0700
+X-CSE-ConnectionGUID: zHqGCrLLSpOpI3zP4vasbQ==
+X-CSE-MsgGUID: NMQpJrGcRFab3SXC49wmUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,210,1744095600"; 
+   d="scan'208";a="182562649"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2025 18:38:11 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Wed, 4 Jun 2025 18:38:10 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25 via Frontend Transport; Wed, 4 Jun 2025 18:38:10 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (40.107.102.73)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.55; Wed, 4 Jun 2025 18:38:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=BUJGQW2UqBEkQ5bcdWjL1KmtnqE3ObJGXoGbf+HQlzBtapW4Rnc5J3HFx+oYMZj/2knfMYKG6DFUGQ/hnq6/y9hbB4oTA/3WJVVNnJWXlT4cgGOFjotodFyMzFa3F+r71OSkeCwN5yV6HY/WicrPVLsdyQELkGT5qRMHD8US9lEL4My8MQMKZKWkS0qTaOLgGiLEkNyK78GKGta7eWBPh51kQ+NxATwuPDa2AfVwb0R6OloqyrIUCNheDcCXZWzaLrRa3vzGB6REXOIv988gj7C6OfigIZqcoUdq2JOdM73Is4ri0eOevMC19e//968MxJ1X/DVE6QMGLGt09yd6tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TgpsqDkxcn8QeUWsScfwyCPAeddsdW8Kb6y9zFKne6s=;
+ b=VRVmybhx3ZvsAz+ZmFjOFlUH3nprakKSHjpeFPoJw4Flms5JSJ14Z+n7tbWs39ENfQcpbT0rVQ13EPKgP483C9q8sfmXV+iIwMr7q6etVq10CIzfVfVviroYoW9b+1DtaSRhu9guzXmeFYsDFPf1YD8IPzxiOII4Rum4xmnPh+/uX8YbJzKAwOnnVWzJgzUMFgqvP8kbX2NxwDPDOj9Wrfcp8DSCzv510wHKpHOZcL/wi1sxMmbuc4rf3AHiyrz5x48Q0W5jt6JGyPgwD4Y/39B95M0KMYoRiJn77LTfBSRzR3joPdsP3qmadKFv92S8Ucwi59P7K0lIZLSyd6x7fA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by IA1PR11MB6242.namprd11.prod.outlook.com (2603:10b6:208:3e8::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8813.20; Thu, 5 Jun
+ 2025 01:38:03 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8%5]) with mapi id 15.20.8769.031; Thu, 5 Jun 2025
+ 01:38:03 +0000
+Date: Wed, 4 Jun 2025 18:37:58 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Alistair Popple <apopple@nvidia.com>, <linux-mm@kvack.org>
+CC: Alistair Popple <apopple@nvidia.com>, <gerald.schaefer@linux.ibm.com>,
+	<dan.j.williams@intel.com>, <jgg@ziepe.ca>, <willy@infradead.org>,
+	<david@redhat.com>, <linux-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+	<linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+	<linux-xfs@vger.kernel.org>, <jhubbard@nvidia.com>, <hch@lst.de>,
+	<zhang.lyra@gmail.com>, <debug@rivosinc.com>, <bjorn@kernel.org>,
+	<balbirs@nvidia.com>, <lorenzo.stoakes@oracle.com>,
+	<linux-arm-kernel@lists.infradead.org>, <loongarch@lists.linux.dev>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+	<linux-cxl@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<John@groves.net>
+Subject: Re: [PATCH 02/12] mm: Convert pXd_devmap checks to vma_is_dax
+Message-ID: <6840f4f65a981_2491100b3@dwillia2-xfh.jf.intel.com.notmuch>
+References: <cover.541c2702181b7461b84f1a6967a3f0e823023fcc.1748500293.git-series.apopple@nvidia.com>
+ <224f0265027a9578534586fa1f6ed80270aa24d5.1748500293.git-series.apopple@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <224f0265027a9578534586fa1f6ed80270aa24d5.1748500293.git-series.apopple@nvidia.com>
+X-ClientProxiedBy: BYAPR01CA0025.prod.exchangelabs.com (2603:10b6:a02:80::38)
+ To PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:398d:b0:3db:877a:dff4 with SMTP id
- e9e14a558f8ab-3ddbed62af1mr53474965ab.14.1749076822447; Wed, 04 Jun 2025
- 15:40:22 -0700 (PDT)
-Date: Wed, 04 Jun 2025 15:40:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6840cb56.a00a0220.d4325.000f.GAE@google.com>
-Subject: [syzbot] [v9fs?] [ext4?] INFO: task hung in __iterate_supers
-From: syzbot <syzbot+b10aefdd9ef275e9368d@syzkaller.appspotmail.com>
-To: asmadeus@codewreck.org, ericvh@kernel.org, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux_oss@crudebyte.com, lucho@ionkov.net, 
-	syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|IA1PR11MB6242:EE_
+X-MS-Office365-Filtering-Correlation-Id: b6e15110-6b18-4268-f4d8-08dda3d19c98
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|7416014|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?lW5bg1r/mhCCdlV69bKn9AXX7xxpnAYFzeJLow9o1rRGqgXSNyWSB8VClRWx?=
+ =?us-ascii?Q?UpvjaL7oGaIY321vsxUrZiDIyE6/69myVAhFGryd4lwGsHWNusm9vF7xXE9F?=
+ =?us-ascii?Q?LS4kyIylkaUj7eeo8ApsRzofO75PXFj5BtXXiUMlqQFL6iJb2LR8JxyZdn9P?=
+ =?us-ascii?Q?cJWuBMT7SJxCMKujt0dWdOJ+G0JmSfbQCfOHNqY9tHwfN9/4lfIA6HqwEiG5?=
+ =?us-ascii?Q?M5DzqHlSp+XUBOIGVOS2dlNteBeRxjPQLp2u8inbRrHbKBLHcbPpiWqfA9sQ?=
+ =?us-ascii?Q?3eXIsNKPS3OE7Z3AjkSVLuIoquxsDi0aYNyuF7MMkr2MCEvKOsORxWUGTdyu?=
+ =?us-ascii?Q?9aWh92MGcQKUxuzrzKY79IfDaTHMlNdbZuOxlt4n9dMdy/eEJNbI/Yi7E7sI?=
+ =?us-ascii?Q?3hWX1c68Rg6ogXe3qN1+pH/tiPBSrrPg0LNypLVp0910eWrNxjT8X4uadLzX?=
+ =?us-ascii?Q?iDg/Lp5fb6h8BvEPff4SSoQbGxeImoa30QihVmXYnuB94exnPjp0vgrJ6oIB?=
+ =?us-ascii?Q?zPXE5dY9dqcBU6fVIZozlIh88fS5eLq3j1Q0aA2znOgGGZLENjAGdC8MdUEQ?=
+ =?us-ascii?Q?HJu/iedy4w7LvvPfN7KYu0JyQTl5AL8dxD1bbqc1AqzDJfwi8wE983amfQXC?=
+ =?us-ascii?Q?Kq6Hv8AjAC+7FGcKL5OMT/MIObAqr70UxiOBOPIKtcG/ZMXf4grU+6u7XOTk?=
+ =?us-ascii?Q?TQEQVQenEUtaOrjchfYMGChPMWmE80Wodk02EfRJ4I49aBTqMts82Btn0Iw0?=
+ =?us-ascii?Q?whCR/+QnhCH7xAb2V5DH6YL/aEYPGlIig0OTf3DInomjcTuHx4Duu3mmwRzA?=
+ =?us-ascii?Q?JBluN2RjgK3Ih5gZvNboCd/iUmHVLnPM0DwFkz9l1EhNlDKUBzjR7+uvtK4v?=
+ =?us-ascii?Q?YT1pJ6ppSqNrYB3ntO7bw91pWViqq8OfE7QW6LF3AWAV0BxhLl9+rl182rYA?=
+ =?us-ascii?Q?0bnSNyE4FiMq2hdc9pQL/3Sa9eWyT/LsCTqd66TbD70eOEH0fn3y7tjEVJqJ?=
+ =?us-ascii?Q?nEDAw93Xo89lcE/Mnynez27KDzW5BBs7N4V9+/ulrkOKOmxj/+SI+wt/tA7G?=
+ =?us-ascii?Q?ukXM96XujmBzXVu3LWq8SmwX9WahNM/s059QZ/I/HudhtxN6ki06RJKOKbQn?=
+ =?us-ascii?Q?6vAAfaBL5aM6J4rhAM4gbkE4cH4P7IrqxQb81BeIOgN/dSWrl8G+I9T6NwN8?=
+ =?us-ascii?Q?9Ke+bTeFU2apSBxqn9DmKtN0tXEEWYHXbXHp5Ypogwa0OHELNs0PrIgt9Elo?=
+ =?us-ascii?Q?zvMduw2rvzExYnzu6Y3PouytOtd5GWvh7mJUkmld3kvKlEZlr9mX7Po/cSzZ?=
+ =?us-ascii?Q?+iWc2Jxq/oLDo05CptSiieOGdwROG6FzllXE/qDQYajNgJZ679aDJjVskK8L?=
+ =?us-ascii?Q?/UmvASaHnVODUHSv/H9Eb3r+mUBATfxAbLhXb+7NMlI2FJWzQ3G/5f4fZOLU?=
+ =?us-ascii?Q?ChrH0LMTJH0=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vRSxZ10/swKa4CHSWm2C7YUtBe7g7XKEGAKjq3F3iJXRG77QAiI1kVNury2b?=
+ =?us-ascii?Q?J5cfaKTMekxqtN9NfyLAk3j3G1DmXylcSR4AB2G7c3ArlVWSVf6zyEL9QWzD?=
+ =?us-ascii?Q?giQAUgPhZqsYF0+wRMc6C8N4KtSS8Nru9bh/SjZUNEv8MM/fGm8LjKAxtM+Q?=
+ =?us-ascii?Q?oFGPJ3+DA/80W3JpTZDMEF6rvBqaFPCsgDhUHylNBRtqUSfCEEpl8GmaWIVX?=
+ =?us-ascii?Q?IWlO0J3mQ8sLSg/Yolodwy7Bzj+BVd01cgQJinQxVHxPWR/OErT5m+Ck1Fjb?=
+ =?us-ascii?Q?Mt2BWcTez7N1LvwasrFnOD78F0Ar2zW3Gd8eZUHwENu8Op8b07MTDQoiGi7s?=
+ =?us-ascii?Q?qQWEeUNovUSOUtSep5Q+6qrt86Ug6KQeKNSW5K9XojShUdWLWBf5ILbRp8Ys?=
+ =?us-ascii?Q?hr543k5r6aCadn6FbcquxeZYaboDOSHlBw0cb+mauuC0BPYFGd0o6HKy5kwh?=
+ =?us-ascii?Q?wBpZ9GO0s/QFaPAAl1RxHfaczFzUeJYVyO4mwCkz5qv/9PXQNSgeqgZOf52W?=
+ =?us-ascii?Q?etK2NnKUVDythOdbMlQeZq1i8ZSoK+Mj9RaqEh0vpha1xRI1nKanUSSe03wR?=
+ =?us-ascii?Q?we4+k+jUm25szkirV9zGEIl+YZ2AgOENn/83o/vsaFm1piLHJ2aKrAYMIFNc?=
+ =?us-ascii?Q?BiwmVxPLE6uX/8rAKzcbGNeclUBRoRNABcsUefybf38bkMF8N0t2sWclqlQt?=
+ =?us-ascii?Q?8wOAOCtoPfLkxcgShMwc2Im1uBG9/b9Uynmm3Tgc4wIy33eXiGQ2SwJGwj03?=
+ =?us-ascii?Q?eBCsyUJJc7EeHy+gO4ky2BS2OrdOyqRrNHFQLMW86LQSnlHr2onTgr2AJvTS?=
+ =?us-ascii?Q?ZwjGTbwMNTeatAho2zkiGm8YCLVfCFouS7ZP6jezPYFXPYKxOmu8TOGyHUuc?=
+ =?us-ascii?Q?WDBugLUx6MVtGN/13EggV6gtVgRs/BBQ6N7YkUuaS0IB5zbOHX1GDzbX7y9D?=
+ =?us-ascii?Q?fFhc1GX+ppC+ts65r4SOfpr7Vn8HBvj5rhFz5CHXwq3ZA78vqjMOC+AwI5tM?=
+ =?us-ascii?Q?FLiFCJ94zmxcMLQMfq4te93ljLYW+zPdD3RiNtTjVNePSpGdDpxczQ7ORM1m?=
+ =?us-ascii?Q?/RgMPwhqkd6DZ1+tQY37N2hTT3wQT3v2o48AontVU5dFTtVfFEpvsA22PCZQ?=
+ =?us-ascii?Q?XGujzbDRlGOmXnIaTJxjjVev61z3uHUJyYPXH8gM0Fp89olRyCGpUiOZxhtP?=
+ =?us-ascii?Q?UXHadCr2El4vIdy6a5kr0zyeYJHD+wIKoORjzaXlKSylSB3X/bbNlHYPz4Il?=
+ =?us-ascii?Q?zqxKMvcSLsm53ZcZgCmMfHNogGIEmx/XEHYYryeya4ugPxPwGYUGk6l/1fCh?=
+ =?us-ascii?Q?GITDoK/8d42I8u9R/m/xty+idXaNkptY/BwUmZxYQdWK2RS1vjRFsCxRvFF/?=
+ =?us-ascii?Q?xATNBOHz43Mzg0RrTJb6bGx4pj1n6OLbOAVLf6dWAoAVFYHf2Um8Xj3PT8gC?=
+ =?us-ascii?Q?M4MPUku541WyU3+OlgHDoY8pwvzpo1dx07hziCGYT+SElxqJjPa/JadNsdc0?=
+ =?us-ascii?Q?kThpYiUZkbwknWW3MkE5E8kwY3RLxd+tlVkepvLD+RUoJq7g63TJVt5Cmz4m?=
+ =?us-ascii?Q?jTW+92MQdCILVBSaBNbdy/q+KLD+GeSfgp7dOKLyCPOoWRKRXwe9eq4D7ckc?=
+ =?us-ascii?Q?Sg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6e15110-6b18-4268-f4d8-08dda3d19c98
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2025 01:38:03.0983
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VkeZN2X/UyCsf+Np3b+qWHCmILQEglBeCvzFdCC7hRBCI5NcnIZadQmyuNX4GBO8hA/cx1100G6EDJtk1RAtp5vgfOddQO+JdVqd590VbDs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6242
+X-OriginatorOrg: intel.com
 
-Hello,
+Alistair Popple wrote:
+> Currently dax is the only user of pmd and pud mapped ZONE_DEVICE
+> pages. Therefore page walkers that want to exclude DAX pages can check
+> pmd_devmap or pud_devmap. However soon dax will no longer set PFN_DEV,
+> meaning dax pages are mapped as normal pages.
+> 
+> Ensure page walkers that currently use pXd_devmap to skip DAX pages
+> continue to do so by adding explicit checks of the VMA instead.
 
-syzbot found the following issue on:
+tl;dr:
 
-HEAD commit:    3a83b350b5be Add linux-next specific files for 20250530
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=127da00c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=28859360c84ac63d
-dashboard link: https://syzkaller.appspot.com/bug?extid=b10aefdd9ef275e9368d
-compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13765970580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f4b00c580000
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e18e458d13c9/disk-3a83b350.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a1c40854811c/vmlinux-3a83b350.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/571f670b130a/bzImage-3a83b350.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/f51e108aa24a/mount_0.gz
-  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=15765970580000)
+So I went through all the p[mu]d_devmap() checks and indeed this is the
+set I also come up with that are implicitly checking for "dax" instead
+of checking for "is this a larger than base pte size mapping".
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b10aefdd9ef275e9368d@syzkaller.appspotmail.com
+While I am a little uncomfortable with the generality of calling the
+policy "dax" in these locations I think it is ok for now. I.e. the
+fundamental detail in these paths is "huge pte, but not typical
+page-allocator THP page"
 
-INFO: task syz-executor419:5916 blocked for more than 143 seconds.
-      Not tainted 6.15.0-next-20250530-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor419 state:D stack:29576 pid:5916  tgid:5890  ppid:5883   task_flags:0x400040 flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5396 [inline]
- __schedule+0x16f5/0x4d00 kernel/sched/core.c:6785
- __schedule_loop kernel/sched/core.c:6863 [inline]
- schedule+0x165/0x360 kernel/sched/core.c:6878
- super_lock+0x1c8/0x3b0 fs/super.c:115
- __iterate_supers+0x126/0x250 fs/super.c:923
- ksys_sync+0x94/0x150 fs/sync.c:102
- __ia32_sys_sync+0xe/0x20 fs/sync.c:113
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f90546eea09
-RSP: 002b:00007f9054678218 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
-RAX: ffffffffffffffda RBX: 00007f90547706f8 RCX: 00007f90546eea09
-RDX: 00007f90546c5526 RSI: 0000000000000000 RDI: 00007f9054678fb0
-RBP: 00007f90547706f0 R08: 00007ffc16b879e7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f905473ca1c
-R13: 000000000000006e R14: 0000200000000040 R15: 00007ffc16b879e8
- </TASK>
-INFO: task syz-executor419:5913 blocked for more than 144 seconds.
-      Not tainted 6.15.0-next-20250530-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor419 state:D stack:28584 pid:5913  tgid:5891  ppid:5881   task_flags:0x400040 flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5396 [inline]
- __schedule+0x16f5/0x4d00 kernel/sched/core.c:6785
- __schedule_loop kernel/sched/core.c:6863 [inline]
- schedule+0x165/0x360 kernel/sched/core.c:6878
- super_lock+0x1c8/0x3b0 fs/super.c:115
- __iterate_supers+0x126/0x250 fs/super.c:923
- ksys_sync+0x94/0x150 fs/sync.c:102
- __ia32_sys_sync+0xe/0x20 fs/sync.c:113
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f90546eea09
-RSP: 002b:00007f9054678218 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
-RAX: ffffffffffffffda RBX: 00007f90547706f8 RCX: 00007f90546eea09
-RDX: 00007f90546c5526 RSI: 0000000000000000 RDI: 00007f9054678fb0
-RBP: 00007f90547706f0 R08: 00007ffc16b879e7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f905473ca1c
-R13: 000000000000006e R14: 0000200000000040 R15: 00007ffc16b879e8
- </TASK>
-INFO: task syz-executor419:5914 blocked for more than 144 seconds.
-      Not tainted 6.15.0-next-20250530-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor419 state:D stack:29544 pid:5914  tgid:5892  ppid:5882   task_flags:0x400040 flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5396 [inline]
- __schedule+0x16f5/0x4d00 kernel/sched/core.c:6785
- __schedule_loop kernel/sched/core.c:6863 [inline]
- schedule+0x165/0x360 kernel/sched/core.c:6878
- super_lock+0x1c8/0x3b0 fs/super.c:115
- __iterate_supers+0x126/0x250 fs/super.c:923
- ksys_sync+0x94/0x150 fs/sync.c:102
- __ia32_sys_sync+0xe/0x20 fs/sync.c:113
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f90546eea09
-RSP: 002b:00007f9054678218 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
-RAX: ffffffffffffffda RBX: 00007f90547706f8 RCX: 00007f90546eea09
-RDX: 00007f90546c5526 RSI: 0000000000000000 RDI: 00007f9054678fb0
-RBP: 00007f90547706f0 R08: 00007ffc16b879e7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f905473ca1c
-R13: 000000000000006e R14: 0000200000000040 R15: 00007ffc16b879e8
- </TASK>
-INFO: task syz-executor419:5915 blocked for more than 145 seconds.
-      Not tainted 6.15.0-next-20250530-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor419 state:D stack:29576 pid:5915  tgid:5893  ppid:5880   task_flags:0x400040 flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5396 [inline]
- __schedule+0x16f5/0x4d00 kernel/sched/core.c:6785
- __schedule_loop kernel/sched/core.c:6863 [inline]
- schedule+0x165/0x360 kernel/sched/core.c:6878
- super_lock+0x1c8/0x3b0 fs/super.c:115
- __iterate_supers+0x126/0x250 fs/super.c:923
- ksys_sync+0x94/0x150 fs/sync.c:102
- __ia32_sys_sync+0xe/0x20 fs/sync.c:113
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f90546eea09
-RSP: 002b:00007f9054678218 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
-RAX: ffffffffffffffda RBX: 00007f90547706f8 RCX: 00007f90546eea09
-RDX: 00007f90546c5526 RSI: 0000000000000000 RDI: 00007f9054678fb0
-RBP: 00007f90547706f0 R08: 00007ffc16b879e7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f905473ca1c
-R13: 000000000000006e R14: 0000200000000040 R15: 00007ffc16b879e8
- </TASK>
-INFO: task syz-executor419:5917 blocked for more than 145 seconds.
-      Not tainted 6.15.0-next-20250530-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor419 state:D stack:29576 pid:5917  tgid:5895  ppid:5879   task_flags:0x400040 flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5396 [inline]
- __schedule+0x16f5/0x4d00 kernel/sched/core.c:6785
- __schedule_loop kernel/sched/core.c:6863 [inline]
- schedule+0x165/0x360 kernel/sched/core.c:6878
- super_lock+0x1c8/0x3b0 fs/super.c:115
- __iterate_supers+0x126/0x250 fs/super.c:923
- ksys_sync+0x94/0x150 fs/sync.c:102
- __ia32_sys_sync+0xe/0x20 fs/sync.c:113
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f90546eea09
-RSP: 002b:00007f9054678218 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
-RAX: ffffffffffffffda RBX: 00007f90547706f8 RCX: 00007f90546eea09
-RDX: 00007f90546eea09 RSI: 0000000000000000 RDI: 0000000000000080
-RBP: 00007f90547706f0 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffc16b879e7 R11: 0000000000000246 R12: 00007f905473ca1c
-R13: 000000000000006e R14: 0000200000000040 R15: 00007ffc16b879e8
- </TASK>
+Also I would have felt better if some of the leftover places that are
+doing "dax" checks but not updated were noted in the changelog just for
+review purposes. Like:
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/31:
- #0: ffffffff8e13f140 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
- #0: ffffffff8e13f140 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
- #0: ffffffff8e13f140 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x2e/0x180 kernel/locking/lockdep.c:6770
-2 locks held by getty/5595:
- #0: ffff888034dd90a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc9000332b2f0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x43e/0x1400 drivers/tty/n_tty.c:2222
-1 lock held by syz-executor419/5894:
-1 lock held by syz-executor419/5897:
-1 lock held by syz-executor419/5896:
-1 lock held by syz-executor419/5898:
-1 lock held by syz-executor419/5900:
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 31 Comm: khungtaskd Not tainted 6.15.0-next-20250530-syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-Call Trace:
- <TASK>
- dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x39e/0x3d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x17a/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:158 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:307 [inline]
- watchdog+0xfee/0x1030 kernel/hung_task.c:470
- kthread+0x70e/0x8a0 kernel/kthread.c:464
- ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 5900 Comm: syz-executor419 Not tainted 6.15.0-next-20250530-syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-RIP: 0010:its_return_thunk+0x0/0x10 arch/x86/lib/retpoline.S:412
-Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc <c3> cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 e9 8b 84 ca f5 cc
-RSP: 0018:ffffc9000469fa38 EFLAGS: 00000293
-RAX: ffffffff81ad3201 RBX: ffffc9000469fb20 RCX: ffff88807fc99e00
-RDX: 0000000000000000 RSI: 746e756f6d65723d RDI: 000000003b9ac9ff
-RBP: ffffc9000469faf0 R08: ffffffff8fa127f7 R09: 1ffffffff1f424fe
-R10: dffffc0000000000 R11: fffffbfff1f424ff R12: ffffc9000469fa80
-R13: ffffffffc4653600 R14: 195d9dfa908f7e3d R15: 73726f73f98510d7
-FS:  00007f90546996c0(0000) GS:ffff888125d53000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005606f52b3168 CR3: 0000000077c1a000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- set_normalized_timespec64+0xc1/0x1a0 kernel/time/time.c:497
- inode_set_ctime_to_ts+0x126/0x2f0 fs/inode.c:2666
- inode_set_ctime include/linux/fs.h:1773 [inline]
- v9fs_stat2inode_dotl+0x4f6/0xad0 fs/9p/vfs_inode_dotl.c:656
- v9fs_qid_iget_dotl fs/9p/vfs_inode_dotl.c:128 [inline]
- v9fs_inode_from_fid_dotl+0x206/0x2b0 fs/9p/vfs_inode_dotl.c:154
- v9fs_get_new_inode_from_fid fs/9p/v9fs.h:251 [inline]
- v9fs_mount+0x6cb/0xa10 fs/9p/vfs_super.c:142
- legacy_get_tree+0xfa/0x1a0 fs/fs_context.c:666
- vfs_get_tree+0x8f/0x2b0 fs/super.c:1802
- do_new_mount+0x24a/0xa40 fs/namespace.c:3856
- do_mount fs/namespace.c:4193 [inline]
- __do_sys_mount fs/namespace.c:4404 [inline]
- __se_sys_mount+0x317/0x410 fs/namespace.c:4381
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f90546eea09
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 1f 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9054699218 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f90547706e8 RCX: 00007f90546eea09
-RDX: 0000200000000b80 RSI: 0000200000000040 RDI: 0000000000000000
-RBP: 00007f90547706e0 R08: 0000200000000580 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f905473ca1c
-R13: 0000200000000580 R14: 0000200000000040 R15: 00007f905473c04d
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+"Note paths like follow_huge_pud and follow_pmd_mask also have 'dax'
+checks, but those paths are for maintaining dev_pagemap refcounts which
+no longer (since v6.15) need to be managed for dax pages. A later patch
+cleans those up."
 
