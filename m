@@ -1,349 +1,327 @@
-Return-Path: <linux-ext4+bounces-8343-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8344-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AE09AD3439
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jun 2025 13:00:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9511AD3591
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jun 2025 14:07:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BE483B0E56
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jun 2025 10:59:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73721176078
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Jun 2025 12:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA1728CF4D;
-	Tue, 10 Jun 2025 10:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D38A28CF7F;
+	Tue, 10 Jun 2025 12:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dpFNwbbi"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ri8iSlR6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C16A286D58;
-	Tue, 10 Jun 2025 10:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADAC728C2C8;
+	Tue, 10 Jun 2025 12:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749553195; cv=none; b=JsriJXVJWRu87opcn3Wke4Ve8TZo6TZWZ4s/tsxytUs0deBURySTM7InQtkfvals57X7S5VYtkQCwaBDF+wcKANc8Y3NlUv0vRgAq05E17OuIpZua86JuXYoXJ6aLarJQ7UcoRkEqxNRzBr5GorLwNdLc9Rbm0wJW9nqlrgUiEs=
+	t=1749557220; cv=none; b=N0i7Hpqqc7jloSuUbDHIfDNJd7xuiFMI9cP0ILxUKuQCioGZ5Vm9s506ZH0DRn2Smoz2WTCWbQLnwyHEbhs53+KD3CPK1pQEwn/LbZdSrg/+mZd3NMBNqyJXkQibwupeDKNlGrg4KJqrM0SM9GTtfnhC7OO0B5EbAvQD7qla8g4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749553195; c=relaxed/simple;
-	bh=ivV4+afIMd3Xs6QrgS35Yg9Hsfo1ljdX0+KQj3LvrYw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vCCpRwwlrj7r0Icb4jkNyCUuCFmIa+HyW42a2X+oe4ZYoz4fAGM8CqpKI8egHj5GWzHmmSOFo9YfdmvoM2efEaJpEzahfXTkyZVTXQcklb1I0FL57YEViP2mhcHUNq6rVkEBaLhIoDxZbEwz8KdmnlDYXBWFa6t/9EohuoYXRUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dpFNwbbi; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-ade58f04fb2so282297366b.0;
-        Tue, 10 Jun 2025 03:59:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749553188; x=1750157988; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RBMHbmy12t6g1RNYj0kWM1uARKBAVpLlDGvuC02v+Fk=;
-        b=dpFNwbbioiKcO8IRRX8qoEP8Ewmp/iFtV65SAL8sd8u7NHTXfRsnu0wOgEIP8t9DbL
-         jxS1S16NhZN6h8Tw8wn0Wap1vAY5BrfFgsSQ+h2y7XedkzeTvFbb253HBPgkZiM8Oyg8
-         2PrE6AcVothaLSvbo4FiZN4hLM5CT+BhUXD4FgcykjvTI5x+qAwG74QRg0oOyrVO6Fiw
-         QgXwl3NvejISS1t5x6jdGwpvFHeWLIwfHXp3azxnnJs5Hf04J7hbcuCk1An+FHoh6/Vt
-         SnW5X5IIdh5WmqTQwF0cvMVuc7vnmHvfyPFchMEshY2Xd0t1ZEtSWJtSrXdrGAZ11d4f
-         pyxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749553188; x=1750157988;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RBMHbmy12t6g1RNYj0kWM1uARKBAVpLlDGvuC02v+Fk=;
-        b=gZ8pTQFF3ZWpUdU1RY76qju6n+cQ0we5itstBrl4A5NLWd5jwcD3wGzVxt7NV+Xwah
-         kZYxQLdckBYMkcPX+EE4hY1OkKW4nNUojrHxKOsNB/+GRDxwgrswBSYr10HgQfj7jeAh
-         hSrCoWW9xT/h+DBRnnC6BJxFXGxuDeVEZ7QCM6ie82aBiX8iJSUhuTojodwzI+ISR/5D
-         i/5/xL1RE1d1qbn772MjYtN8LAdaQDm9SYQ/wMHXYtEGLsBHwXWcMMFNxCdGn9Kkbn14
-         IyXAmFNWwCyZzhg1BDtBpLK7MQD6HUHkGvt49+nnsIQGKvHDgY/8R9WdJx27gaC/tfUe
-         S53Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXPVvYC8Q9o3sXikNbtSgMNwKOKeAmZ47WoSaVd3Wfb1PkaaARNjynmNaDew62rZ9uQByk2DCFxX0Qo@vger.kernel.org
-X-Gm-Message-State: AOJu0YyhAeecrX/6X3puUZpAYYVbSSKrmlQia5ukXOqLJ6AsdJ5g8Gn2
-	JUwNnG8a6JeTcx//yTXDYWUek78zJQEkLBdWvMRC4aN4lH4t9ps/9wI98K+pAbrUo3yCwPpvcse
-	icwjGjA8JtFK12REQC5EAgCR1SeLEmgGzP3+nYmw=
-X-Gm-Gg: ASbGncsncE2VS8iijGIlIQEU01CzbW6XrsJ6WTVKOfnSoBf4Dy9cRRaits/BZ4suJAG
-	s/d+aNiGmLk4UHO7BHYCwzwcB2J3tC2nY0Lx4h9VgAl/14uQsPMcwfAIejxgBcuYCyg4hKDlr6o
-	sV6bo0ixBVSxwCxhU6PocUHeKunVHJpK/kX2eHc42hVU8=
-X-Google-Smtp-Source: AGHT+IFUVRPFVelAXvbArPfuFc3vpl2WJ1fKE4ALNclgY2756HO/qRZj4nzsYB8f3ghKHX0HROkwrEhuISwoppX1KDA=
-X-Received: by 2002:a17:907:1c8e:b0:ad8:a41a:3cd2 with SMTP id
- a640c23a62f3a-ade1a9058e7mr1633477066b.16.1749553187888; Tue, 10 Jun 2025
- 03:59:47 -0700 (PDT)
+	s=arc-20240116; t=1749557220; c=relaxed/simple;
+	bh=EkMB7KUTjkwge8j0gz9girM5cdLzB5ROPSWijkurCcI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SEnoYu9dPgbRc8/p5br4uQETfWKR5CHWyZWnIEjcyOSkcnFcqsVuuKUOdlIS6TSE21x4X3W5HwZCx8oI7HWMbWZfl6EVMhxdFVfE/SMxHIOfWj0ajmjCKP1NlcZ7DoAWee3cRtBc1sJ8OvoHl/vvxoKqmLm0u/aX8/YsKm0sFas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ri8iSlR6; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55A8t32c015822;
+	Tue, 10 Jun 2025 12:06:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=TfQeFs
+	n5OX8Ds6lrkjF8mkNC2ESgwitOsvbH/o3G5ps=; b=ri8iSlR6d8y4F/Zdk7JaeV
+	XyyajxIhlzv5SheCSUb2ysTKgnTCKReK6hk+jtrLOdw4Xx//EtQLdgqfP3Zbcs3z
+	2ocDCUsp65GP4+xww0uS/BUXFte9VSSn+Km5w3GpRE8DaAlAliwxNx2ZJ4Q/cIzZ
+	DQjri92xnbq/zfR/j4lMc3BIHVDvPsJPTmhhOkj5ySzV4F1szNHLka8q4YFYIoXq
+	zE4zmBi9NZDXhQylYALL8yXXvk8EDq50HzqKSoTOKV+m98OLvnvxmMH6XpQj7jq1
+	xzFivSYJUU/tu3uNrE/PtW+i1IpFxLhntCLXsTM2yN3PGme8rLbrVffpPTU44X9Q
+	==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 474x4m3748-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 10 Jun 2025 12:06:30 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 55AA25W8003405;
+	Tue, 10 Jun 2025 12:06:30 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4751ykj202-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 10 Jun 2025 12:06:30 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 55AC6SNp32375500
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 10 Jun 2025 12:06:28 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 701272004B;
+	Tue, 10 Jun 2025 12:06:28 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7275520040;
+	Tue, 10 Jun 2025 12:06:26 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.109.219.249])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 10 Jun 2025 12:06:26 +0000 (GMT)
+Date: Tue, 10 Jun 2025 17:36:24 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jack@suse.cz, linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, libaokun@huaweicloud.com
+Subject: Re: [PATCH 0/4] ext4: better scalability for ext4 block allocation
+Message-ID: <aEgfwKvcJzt9gkGq@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
+ <aDchmYDc_OOAu2yC@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <f21507f9-ebc6-43ce-97c4-cd055c53747e@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250521235837.GB9688@frogsfrogsfrogs> <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
- <20250529164503.GB8282@frogsfrogsfrogs> <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
- <20250609223159.GB6138@frogsfrogsfrogs>
-In-Reply-To: <20250609223159.GB6138@frogsfrogsfrogs>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 10 Jun 2025 12:59:36 +0200
-X-Gm-Features: AX0GCFupdvfZ2fk0jvsPzxZ2w4xAakEGAIcPKTZRhKPOL9Z7Ti0WGY8Du9qPZVs
-Message-ID: <CAOQ4uxgUVOLs070MyBpfodt12E0zjUn_SvyaCSJcm_M3SW36Ug@mail.gmail.com>
-Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
- containerize ext4
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net, bernd@bsbernd.com, 
-	miklos@szeredi.hu, joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>, 
-	linux-ext4 <linux-ext4@vger.kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f21507f9-ebc6-43ce-97c4-cd055c53747e@huawei.com>
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=Y4X4sgeN c=1 sm=1 tr=0 ts=68481fc7 cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=AiHppB-aAAAA:8 a=i0EeH86SAAAA:8 a=UN8tCtabBRPHEa8_l9kA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10 a=pguttIyuptPycXpC454v:22
+X-Proofpoint-GUID: -pgdU0MtfYHDtLkLOu8MGqff_Pppmb9N
+X-Proofpoint-ORIG-GUID: -pgdU0MtfYHDtLkLOu8MGqff_Pppmb9N
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjEwMDA5MiBTYWx0ZWRfXyoA4phmBDrun IFs5HTJCRfejvzZ0+Pi9bOLfZlHgV+39QPUXMuvM762oNCaJDEKYTfJuT8HWzYG8vuxhqBdWq+0 PnJ0YVZvddpcAJhAQ1I9ulKFna1Mk3KNJF/7Q/9YOTE9ah2imKiJWdMWis5DshzFcUDveeU/bu8
+ sLkZ7/GADNivUsqJlVWZOV77fALUxpdDgjS0ORzQ3vUhGKvK2M1jCS3zEj8gmYAks86vmfBfaf1 afxKCUEYCsxzMnaytkrvbVZDGzOI92LHqktw7G/1jDT6vXndG3PrPJfftYIakeccOfXOyeFhFjK efnCJDp0wH8rbrOKjgZAWY/YCheVdQoyNIqV4+MK2H5IO52EsMBke5TcZg5x3Rp47XvUWGZgPQq
+ mAxwvRdfCQ+UU/2GdRolPCnxVMYSeU9R/ab+zdqTyCRreZAmggG9mUd8IliJmxrBVWpN7LuH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-10_04,2025-06-10_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ clxscore=1015 lowpriorityscore=0 malwarescore=0 bulkscore=0 adultscore=0
+ impostorscore=0 suspectscore=0 phishscore=0 mlxscore=0 priorityscore=1501
+ classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2506100092
 
-On Tue, Jun 10, 2025 at 12:32=E2=80=AFAM Darrick J. Wong <djwong@kernel.org=
-> wrote:
->
-> On Thu, May 29, 2025 at 09:41:23PM +0200, Amir Goldstein wrote:
-> >  or
-> >
-> > On Thu, May 29, 2025 at 6:45=E2=80=AFPM Darrick J. Wong <djwong@kernel.=
-org> wrote:
-> > >
-> > > On Thu, May 22, 2025 at 06:24:50PM +0200, Amir Goldstein wrote:
-> > > > On Thu, May 22, 2025 at 1:58=E2=80=AFAM Darrick J. Wong <djwong@ker=
-nel.org> wrote:
-> > > > >
-> > > > > Hi everyone,
-> > > > >
-> > > > > DO NOT MERGE THIS.
-> > > > >
-> > > > > This is the very first request for comments of a prototype to con=
-nect
-> > > > > the Linux fuse driver to fs-iomap for regular file IO operations =
-to and
-> > > > > from files whose contents persist to locally attached storage dev=
-ices.
-> > > > >
-> > > > > Why would you want to do that?  Most filesystem drivers are serio=
-usly
-> > > > > vulnerable to metadata parsing attacks, as syzbot has shown repea=
-tedly
-> > > > > over almost a decade of its existence.  Faulty code can lead to t=
-otal
-> > > > > kernel compromise, and I think there's a very strong incentive to=
- move
-> > > > > all that parsing out to userspace where we can containerize the f=
-use
-> > > > > server process.
-> > > > >
-> > > > > willy's folios conversion project (and to a certain degree RH's n=
-ew
-> > > > > mount API) have also demonstrated that treewide changes to the co=
-re
-> > > > > mm/pagecache/fs code are very very difficult to pull off and take=
- years
-> > > > > because you have to understand every filesystem's bespoke use of =
-that
-> > > > > core code.  Eeeugh.
-> > > > >
-> > > > > The fuse command plumbing is very simple -- the ->iomap_begin,
-> > > > > ->iomap_end, and iomap ioend calls within iomap are turned into u=
-pcalls
-> > > > > to the fuse server via a trio of new fuse commands.  This is suit=
-able
-> > > > > for very simple filesystems that don't do tricky things with mapp=
-ings
-> > > > > (e.g. FAT/HFS) during writeback.  This isn't quite adequate for e=
-xt4,
-> > > > > but solving that is for the next sprint.
-> > > > >
-> > > > > With this overly simplistic RFC, I am to show that it's possible =
-to
-> > > > > build a fuse server for a real filesystem (ext4) that runs entire=
-ly in
-> > > > > userspace yet maintains most of its performance.  At this early s=
-tage I
-> > > > > get about 95% of the kernel ext4 driver's streaming directio perf=
-ormance
-> > > > > on streaming IO, and 110% of its streaming buffered IO performanc=
-e.
-> > > > > Random buffered IO suffers a 90% hit on writes due to unwritten e=
-xtent
-> > > > > conversions.  Random direct IO is about 60% as fast as the kernel=
-; see
-> > > > > the cover letter for the fuse2fs iomap changes for more details.
-> > > > >
-> > > >
-> > > > Very cool!
-> > > >
-> > > > > There are some major warts remaining:
-> > > > >
-> > > > > 1. The iomap cookie validation is not present, which can lead to =
-subtle
-> > > > > races between pagecache zeroing and writeback on filesystems that
-> > > > > support unwritten and delalloc mappings.
-> > > > >
-> > > > > 2. Mappings ought to be cached in the kernel for more speed.
-> > > > >
-> > > > > 3. iomap doesn't support things like fscrypt or fsverity, and I h=
-aven't
-> > > > > yet figured out how inline data is supposed to work.
-> > > > >
-> > > > > 4. I would like to be able to turn on fuse+iomap on a per-inode b=
-asis,
-> > > > > which currently isn't possible because the kernel fuse driver wil=
-l iget
-> > > > > inodes prior to calling FUSE_GETATTR to discover the properties o=
-f the
-> > > > > inode it just read.
-> > > >
-> > > > Can you make the decision about enabling iomap on lookup?
-> > > > The plan for passthrough for inode operations was to allow
-> > > > setting up passthough config of inode on lookup.
-> > >
-> > > The main requirement (especially for buffered IO) is that we've set t=
-he
-> > > address space operations structure either to the regular fuse one or =
-to
-> > > the fuse+iomap ops before clearing INEW because the iomap/buffered-io=
-.c
-> > > code assumes that cannot change on a live inode.
-> > >
-> > > So I /think/ we could ask the fuse server at inode instantiation time
-> > > (which, if I'm reading the code correctly, is when iget5_locked gives
-> > > fuse an INEW inode and calls fuse_init_inode) provided it's ok to upc=
-all
-> > > to userspace at that time.  Alternately I guess we could extend struc=
-t
-> > > fuse_attr with another FUSE_ATTR_ flag, I think?
-> > >
-> >
-> > The latter. Either extend fuse_attr or struct fuse_entry_out,
-> > which is in the responses of FUSE_LOOKUP,
-> > FUSE_READDIRPLUS, FUSE_CREATE, FUSE_TMPFILE.
-> > which instantiate fuse inodes.
-> >
-> > There is a very hand wavy discussion about this at:
-> > https://lore.kernel.org/linux-fsdevel/CAOQ4uxi2w+S4yy3yiBvGpJYSqC6GOTAZ=
-QzzjygaH3TjH7Uc4+Q@mail.gmail.com/
-> >
-> > In a nutshell, we discussed adding a new FUSE_LOOKUP_HANDLE
-> > command that uses the variable length file handle instead of nodeid
-> > as a key for the inode.
-> >
-> > So we will have to extend fuse_entry_out anyway, but TBH I never got to
-> > look at the gritty details of how best to extend all the relevant comma=
-nds,
-> > so I hope I am not sending you down the wrong path.
->
-> I found another twist to this story: the upper level libfuse3 library
-> assigns distinct nodeids for each directory entry.  These nodeids are
-> passed into the kernel and appear to the basis for an iget5_locked call.
-> IOWs, each nodeid causes a struct fuse_inode to be created in the
-> kernel.
->
-> For a single-linked file this is no big deal, but for a hardlink this
-> makes iomap a mess because this means that in fuse2fs, an ext2 inode can
-> map to multiple kernel fuse_inode objects.  This /really/ breaks the
-> locking model of iomap, which assumes that there's one in-kernel inode
-> and that it can use i_rwsem to synchronize updates.
->
-> So I'm going to have to find a way to deal with this.  I tried trivially
-> messing with libfuse nodeid assigment but that blew some assertion.
-> Maybe your LOOKUP_HANDLE thing would work.
->
+On Thu, May 29, 2025 at 08:24:14PM +0800, Baokun Li wrote:
+> On 2025/5/28 22:53, Ojaswin Mujoo wrote:
+> > On Fri, May 23, 2025 at 04:58:17PM +0800, libaokun@huaweicloud.com wrote:
+> > > From: Baokun Li <libaokun1@huawei.com>
 
-Pull the emergency break!
+<...>
 
-In an amature move, I did not look at fuse2fs.c before commenting on your
-work.
+> > > |--------|--------|--------|--------|--------|--------|--------|--------|
+> > > |    -   |    1   |    2   |    4   |    8   |   16   |   32   |   64   |
+> > > |--------|--------|--------|--------|--------|--------|--------|--------|
+> > > |  base  | 295287 | 70665  | 33865  | 19387  | 10104  |  5588  |  3588  |
+> > > |--------|--------|--------|--------|--------|--------|--------|--------|
+> > > | linear | 286328 | 123102 | 119542 | 90653  | 60344  | 35302  | 23280  |
+> > > |        | -3.0%  | 74.20% | 252.9% | 367.5% | 497.2% | 531.6% | 548.7% |
+> > > |--------|--------|--------|--------|--------|--------|--------|--------|
+> > > |mb_optim| 292498 | 133305 | 103069 | 61727  | 29702  | 16845  | 10430  |
+> > > |ize_scan| -0.9%  | 88.64% | 204.3% | 218.3% | 193.9% | 201.4% | 190.6% |
+> > > |--------|--------|--------|--------|--------|--------|--------|--------|
+> > Hey Baokun, nice improvements! The proposed changes make sense to me,
+> > however I suspect the performance improvements may come at a cost of
+> > slight increase in fragmentation, which might affect rotational disks
+> > especially. Maybe comparing e2freefrag numbers with and without the
+> > patches might give a better insight into this.
+> While this approach might slightly increase free space fragmentation on
+> the disk, it significantly reduces file fragmentation, leading to faster
+> read speeds on rotational disks.
+> 
+> When multiple processes contend for free blocks within the same block
+> group, the probability of blocks allocated by the same process being
+> merged on consecutive allocations is low. This is because other processes
+> may preempt the free blocks immediately following the current process's
+> last allocated region.
+> 
+> Normally, we rely on preallocation to avoid files becoming overly
+> fragmented (even though preallocation itself can cause fragmentation in
+> free disk space). But since fallocate doesn't support preallocation, the
+> fragmentation issue is more pronounced. Counterintuitively, skipping busy
+> groups actually boosts opportunities for file extent merging, which in turn
+> reduces overall file fragmentation.
+> 
+> Referencing will-it-scale/fallocate2, I tested 64 processes each appending
+> 4KB via fallocate to 64 separate files until they reached 1GB. This test
+> specifically examines contention in block allocation, unlike fallocate2,
+> it omits the contention between fallocate and truncate. Preliminary results
+> are provided below; detailed scripts and full test outcomes are attached in
+> the email footer.
+> 
+> ----------------------------------------------------------
+>                      |       base      |      patched    |
+> ---------------------|--------|--------|--------|--------|
+> mb_optimize_scan     | linear |opt_scan| linear |opt_scan|
+> ---------------------|--------|--------|--------|--------|
+> bw(MiB/s)            | 217    | 219    | 5685   | 5670   |
+> Avg. free extent size| 1943732| 1943728| 1439608| 1368328|
+> Avg. extents per file| 261879 | 262039 | 744    | 2084   |
+> Avg. size per extent | 4      | 4      | 1408   | 503    |
+> Fragmentation score  | 100    | 100    | 2      | 6      |
+> ----------------------------------------------------------
 
-High level fuse interface is not the right tool for the job.
-It's not even the easiest way to have written fuse2fs in the first place.
+Hi Baokun,
 
-High-level fuse API addresses file system objects with full paths.
-This is good for writing simple virtual filesystems, but it is not the
-correct nor is the easiest choice to write a userspace driver for ext4.
+Thanks for the info and data and apologies for being late, I caught a
+viral last week :/ 
 
-Low-level fuse interface addresses filesystem objects by nodeid
-and requires the server to implement lookup(parent_nodeid, name)
-where the server gets to choose the nodeid (not libfuse).
+These numbers look pretty interesting and your explanation of why the
+fragmentation is better makes sense. It is definitely a win-win then for 
+performance and fragmentation!
 
-current fuse2fs code needs to go to an effort to convert from full path
-to inode + name using ext2fs_namei().
+> > Regardless the performance benefits are significant and I feel it is
+> > good to have these patches.
+> > 
+> > I'll give my reviews individually as I'm still going through patch 2
+> > However, I wanted to check on a couple things:
+> Okay, thank you for your feedback.
+> > 
+> > 1. I believe you ran these in docker. Would you have any script etc open
+> >     sourced that I can use to run some benchmarks on my end (and also
+> > 	 understand your test setup).
+> Yes, these two patches primarily mitigate contention between block
+> allocations and between block allocation and release. The testing script
+> can be referenced from the fio script mentioned earlier in the email
+> footer. You can also add more truncate calls based on it.
 
-With the low-level fuse op_lookup() might have used the native ext2_lookup(=
-)
-which would have been much more natural.
+Thanks for the scripts.
 
-You can find the most featureful low-level fuse example at:
-https://github.com/libfuse/libfuse/blob/master/example/passthrough_hp.cc
+> > 2. I notice we are getting way less throughput in mb_optimize_scan? I
+> >     wonder why that is the case. Do you have some data on that? Are your
+> >     tests starting on an empty FS, maybe in that case linear scan works a
+> >     bit better since almost all groups are empty. If so, what are the
+> >     numbers like when we start with a fragmented FS?
+> The throughput of mb_optimize_scan is indeed much lower, and we continue
+> to optimize it, as mb_optimize_scan is the default mount option and
+> performs better in scenarios with large volume disks and high space usage.
+> 
+> Disk space used is about 7%; mb_optimize_scan should perform better with
+> less free space. However, this isn't the critical factor. The poor
+> throughput here is due to the following reasons。
+> 
+> One reason is that mb_optimize_scan's list traversal is unordered and
+> always selects the first group.
+> 
+> While traversing the list, holding a spin_lock prevents load_buddy, making
+> direct use of ext4_lock_group impossible. This can lead to a "bouncing"
+> scenario where spin_is_locked(grp_A) succeeds, but ext4_try_lock_group()
+> fails, forcing the list traversal to repeatedly restart from grp_A.
+> 
+> In contrast, linear traversal directly uses ext4_try_lock_group(),
+> avoiding this bouncing. Therefore, we need a lockless, ordered traversal
+> to achieve linear-like efficiency.
 
-Among other things, the server has an inode cache, where an inode
-has in its state 'nopen' (was this inode opened for io) and 'backing_id'
-(was this inode mapped for kernel passthrough).
+Hmm, right the non ordered traversal has led to other issues as well in
+the past.
 
-Currently this backing_id mapping is only made on first open of inode,
-but the plan is to do that also at lookup time, for example, if the
-iomap mode for the inode can be determined at lookup time.
+> 
+> Another reason is that opt_scan tends to allocate from groups that have
+> just received freed blocks, causing it to constantly "jump around"
+> between certain groups.
+> 
+> This leads to intense contention between allocation and release, and even
+> between release events. In contrast, linear traversal always moves forward
+> without revisiting groups, resulting in less contention between allocation
+> and release.
 
+By just received free blocks, you mean the blocks got freed in the group
+right? I was under the impression that when we free blocks and the group's
+largest order/ avg fragment changes, the group is added to the end of
+the free fragment list/order list so it should be the last to be picked.
+Is that not the case?
 
-> > > > > 5. ext4 doesn't support out of place writes so I don't know if th=
-at
-> > > > > actually works correctly.
-> > > > >
-> > > > > 6. iomap is an inode-based service, not a file-based service.  Th=
-is
-> > > > > means that we /must/ push ext2's inode numbers into the kernel vi=
-a
-> > > > > FUSE_GETATTR so that it can report those same numbers back out th=
-rough
-> > > > > the FUSE_IOMAP_* calls.  However, the fuse kernel uses a separate=
- nodeid
-> > > > > to index its incore inode, so we have to pass those too so that
-> > > > > notifications work properly.
-> > > > >
-> > > >
-> > > > Again, I might be missing something, but as long as the fuse filesy=
-stem
-> > > > is exposing a single backing filesystem, it should be possible to m=
-ake
-> > > > sure (via opt-in) that fuse nodeid's are equivalent to the backing =
-fs
-> > > > inode number.
-> > > > See sketch in this WIP branch:
-> > > > https://github.com/amir73il/linux/commit/210f7a29a51b085ead9f555978=
-c85c9a4a503575
-> > >
-> > > I think this would work in many places, except for filesystems with
-> > > 64-bit inumbers on 32-bit machines.  That might be a good argument fo=
-r
-> > > continuing to pass along the nodeid and fuse_inode::orig_ino like it
-> > > does now.  Plus there are some filesystems that synthesize inode numb=
-ers
-> > > so tying the two together might not be feasible/desirable anyway.
-> > >
-> > > Though one nice feature of letting fuse have its own nodeids might be
-> > > that if the in-memory index switches to a tree structure, then it cou=
-ld
-> > > be more compact if the filesystem's inumbers are fairly sparse like x=
-fs.
-> > > OTOH the current inode hashtable has been around for a very long time=
- so
-> > > that might not be a big concern.  For fuse2fs it doesn't matter since
-> > > ext4 inumbers are u32.
-> > >
-> >
-> > I wanted to see if declaring one-to-one 64bit ino can simplify things
-> > for the first version of inode ops passthrough.
-> > If this is not the case, or if this is too much of a limitation for
-> > your use case
-> > then nevermind.
-> > But if it is a good enough shortcut for the demo and can be extended la=
-ter,
-> > then why not.
->
-> It's very tempting, because it's very confusing to have nodeids and
-> stat st_ino not be the same thing.
->
+> 
+> However, because linear involves more groups in allocation, journal
+> becomes a bottleneck. If opt_scan first attempts to traverse block groups
+> to the right from the target group in all lists, and then from index 0 to
+> the left in all lists, competition between block groups would be
+> significantly reduced.
+> 
+> To enable ordered traversal, we attempted to convert list_head to an
+> ordered xarray. This ordering prevents "bouncing" during retries.
+> Additionally, traversing all right-side groups before left-side groups
+> significantly reduced contention. Performance improved from 10430 to 17730.
 
-Now that I have explained that fuse2fs should be low-level, it should be
-trivial to claim that it should have no problem to declare via
-FUSE_PASSTHROUGH_INO flag to the kernel that nodeid =3D=3D st_ino,
-because I see no reason to implement fuse2fs with non one-to-one
-mapping of ino <=3D=3D> nodeid.
+Do you maybe have some code you can share of this? 
 
-Thanks,
-Amir.
+> 
+> However, xarray traversal introduces overhead; list_head group selection
+> was O(1), while xarray becomes O(n log n). This results in a ~10%
+> performance drop in single-process scenarios, and I'm not entirely sure if
+> this trade-off is worthwhile. 🤔
+> 
+> Additionally, by attempting to merge before inserting in
+> ext4_mb_free_metadata(), we can eliminate contention on sbi->s_md_lock
+> during merges, resulting in roughly a 5% performance gain.
+> > 
+> >     - Or maybe it is that the lazyinit thread has not yet initialized all
+> >     the buddies yet which means we have lesser BGs in the freefrag list
+> >     or the order list used by faster CRs. Hence, if they are locked we
+> >     are falling more to CR_GOAL_LEN_SLOW. To check if this is the case,
+> >     one hack is to cat /proc/fs/ext4/<disk>/mb_groups (or something along
+> >     the lines) before the benchmark, which forces init of all the group
+> >     buddies thus populating all the lists used by mb_opt_scan. Maybe we
+> >     can check if this gives better results.
+> All groups are already initialized at the time of testing, and that's not
+> where the problem lies.
+> > 
+> > 3. Also, how much IO are we doing here, are we filling the whole FS?
+> > 
+> In a single container, create a file, then repeatedly append 8KB using
+> fallocate until the file reaches 1MB. After that, truncate the file to
+> 0 and continue appending 8KB with fallocate. The 64 containers will
+> occupy a maximum of 64MB of disk space in total, so they won't fill the
+> entire file system.
+
+Also, as per your theory, if we do similar experiments in a fragmented
+FS we should see opt_scan perform better right? I'd like to test this as
+well. I'll try to play with the scripts you have shared.
+
+Thanks again for the detailed response and scripts!
+
+Regards,
+ojaswin
+
+> 
+> Cheers,
+> Baokun
+> 
+> 
+> ======================== test script ========================
+> 
+> #!/bin/bash
+> 
+> dir="/tmp/test"
+> disk="/dev/sda"
+> numjobs=64
+> iodepth=128
+> 
+> mkdir -p $dir
+> 
+> for scan in 0 1 ; do
+>     mkfs.ext4 -F -E lazy_itable_init=0,lazy_journal_init=0 -O orphan_file
+> $disk
+>     mount -o mb_optimize_scan=$scan $disk $dir
+> 
+>     fio -directory=$dir -direct=1 -iodepth ${iodepth} -thread -rw=write
+> -ioengine=falloc -bs=4k -fallocate=none \
+>         -size=1G -numjobs=${numjobs} -group_reporting -name=job1
+> -cpus_allowed_policy=split -file_append=1
+> 
+>     e2freefrag $disk
+>     e4defrag -c $dir # ** NOTE ** Without the patch, this could take 5-6
+> hours.
+>     filefrag ${dir}/job* | awk '{print $2}' | awk '{sum+=$1} END {print
+> sum/NR}'
+>     umount $dir
+> done
+> 
+
+<snip>
 
