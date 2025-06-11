@@ -1,147 +1,333 @@
-Return-Path: <linux-ext4+bounces-8369-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8370-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFA0EAD5EF5
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 21:23:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF9D6AD6080
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 23:00:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3894D176D62
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 19:23:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 749E51BC1FF3
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 21:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8881028B41A;
-	Wed, 11 Jun 2025 19:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594162594BD;
+	Wed, 11 Jun 2025 21:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RvTiMFEp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842712253E0
-	for <linux-ext4@vger.kernel.org>; Wed, 11 Jun 2025 19:23:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDC419A;
+	Wed, 11 Jun 2025 21:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749669800; cv=none; b=qxQibsRknQQZPZrumcIxYOcHvuZSbrUoIavJAHYdztXCOwp1o/J8KP7osfDNxgcGmKMZP+sSCpiXBLib4MgFfZtJfW2qNet/eQ7GZMIsgskp6C+ARJuumZD4WAnfT0rJOSibx+YWF524r0MfEVT1nxm3eieq/OsS0OmhqWS9OCk=
+	t=1749675631; cv=none; b=Cmj9XGU1chUBo3Gg9W6lA8TJj1T1WvBZNn/zTHzpI7bwpxclUDjQ/8gmmh0DXlR060SoWEk1DHtmcd+WenTxgIqt3u4mG8VESvqHvJeJsv+WpIOfH82ZTB0naTXQvWg7CpHfn6/eh4MqT2jdT9GRC/WvRvG+a7fpvnMwpxMDTGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749669800; c=relaxed/simple;
-	bh=wdAUIfA6Vz+0pVx2FNnom2a0zaaWLcLTW0x1GvWk3Bk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rp9TeCy2xYXc5ZuDL8nYzcHgzkIxLMyiC2TvINPrgOyQD4CSs2rd1lwAtXhLoP0PtJXQj6vR99QCkFTOq3MGMKMcs3bQXxIQJ57wmghfSTGBGBGZeHglbdoUTNhA5LcHZtv8g+UAcCNzWruRKTWgqqcwwxaAdazj+br/I9kMNbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org ([154.16.192.62])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 55BJMp6G027563
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 11 Jun 2025 15:22:53 -0400
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id E6850346B78; Wed, 11 Jun 2025 07:56:29 -0400 (EDT)
-Date: Wed, 11 Jun 2025 10:56:29 -0100
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net,
-        bernd@bsbernd.com, miklos@szeredi.hu, joannelkoong@gmail.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Allison Karlitskaya <lis@redhat.com>
-Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
- containerize ext4
-Message-ID: <20250611115629.GL784455@mit.edu>
-References: <20250521235837.GB9688@frogsfrogsfrogs>
- <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
- <20250529164503.GB8282@frogsfrogsfrogs>
- <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
- <20250609223159.GB6138@frogsfrogsfrogs>
- <CAOQ4uxgUVOLs070MyBpfodt12E0zjUn_SvyaCSJcm_M3SW36Ug@mail.gmail.com>
- <20250610190026.GA6134@frogsfrogsfrogs>
+	s=arc-20240116; t=1749675631; c=relaxed/simple;
+	bh=ufdekVOYWt8m3xq4jkK/O28QDQm1sAnVWeCFEjZjOhw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S9h8v9+IGdEc0Ruf7tW+tlutYjji2X61Xyy/jHOdoK7xvWi1tFp9s2Af+2poL2dFb6qzML2UU4bNV2bRiU7xOMSiHZg4wiAw26XvTLQuZIADx8XApvvmC7h5cGUBKS1xv5LBGS824ZhGc3iu76Mk69nl+WxbC22ftGt8DkUp1cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RvTiMFEp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C44C4CEE3;
+	Wed, 11 Jun 2025 21:00:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749675630;
+	bh=ufdekVOYWt8m3xq4jkK/O28QDQm1sAnVWeCFEjZjOhw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=RvTiMFEpxUD4MzFZRsyUdiXQH0upKQl4nEyPUOFBiaCI7vET0SorY8i8il3dXTZMS
+	 edik1QH0PF4rSwwha/q0PR7wYYxOagItYezlwJgpK2qU3A44yrdFiIKbRDLx33D57E
+	 GO2Gg1p8X4GPddbngPnV/fuclAPMmULwzEV/3wrgXFmDr9vaR4DIPiYQcdPn87+/XJ
+	 agWoe8yQStLctGQfdX3PTZAqQ/R/mC6GsqUBQQt1jAl/qFIVvNX1PgLTGjjO7hORJi
+	 Z1JnvyWIf2cmCGyowvkW8AwGDJ0tTuplmjW3s/i67PvKd1LfzTh5puWEIvdV3H5GQM
+	 E2hR+5dqNIs8g==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	ceph-devel@vger.kernel.org
+Subject: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
+Date: Wed, 11 Jun 2025 13:58:59 -0700
+Message-ID: <20250611205859.80819-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250610190026.GA6134@frogsfrogsfrogs>
+Content-Transfer-Encoding: 8bit
 
-+Allison Karlitskaya
+From: Eric Biggers <ebiggers@google.com>
 
-On Tue, Jun 10, 2025 at 12:00:26PM -0700, Darrick J. Wong wrote:
-> > High level fuse interface is not the right tool for the job.
-> > It's not even the easiest way to have written fuse2fs in the first place.
-> 
-> At the time I thought it would minimize friction across multiple
-> operating systems' fuse implementations.
-> 
-> > High-level fuse API addresses file system objects with full paths.
-> > This is good for writing simple virtual filesystems, but it is not the
-> > correct nor is the easiest choice to write a userspace driver for ext4.
-> 
-> Agreed, it's a *terrible* way to implement ext4.
-> 
-> I think, however, that Ted would like to maintain compatibility with
-> macfuse and freebsd(?) so he's been resistant to rewriting the entire
-> program to work with the lowlevel library.
+fscrypt has never properly supported the old-school Crypto API hardware
+offload drivers, as it processes each request synchronously.  There was
+one report of someone successfully using such a driver 8 years ago.  But
+otherwise this style of hardware offload is basically obsolete and has
+been superseded by hardware-accelerated crypto instructions directly on
+the CPU as well as inline storage encryption (UFS/eMMC).  Since then,
+all I've gotten are issue reports where someone accidentally used a
+buggy offload driver and it caused a problem for them, for example:
 
-My priority is to make sure that we have compatibility with other OS's
-(in particular MacOS, FreeBSD, if possible Windows, although that's
-not something that I develop against or have test vehicles to
-validate).  However, from what I can tell, they all support Fuse3 at
-this point --- MacFuse, FreeBSD, and WinFSP all have Fuse3 support as
-of today.
+- https://lore.kernel.org/r/PH0PR02MB731916ECDB6C613665863B6CFFAA2@PH0PR02MB7319.namprd02.prod.outlook.com
+- https://github.com/google/fscryptctl/issues/32
 
-The only complaint that I've had about breaking support using Fuse2
-was from Allison (Cc'ed), who was involved with another Github
-project, whose Github Actions break because they were using a very old
-version of Ubuntu LTS 20.04), which only had support for libfuse2.  I
-am going to assume that this is probably only because they hadn't
-bothered to update their .github/workflows/ci.yaml file, and not
-because there was any inherit requirement that we support ancient
-versions of Linux distributions.  (When I was at IBM, I remember
-having to support customers who used RHEL4, and even in one extreme
-case, RHEL3 because there were a customer paying $$$$$ that refused to
-update; but that was well over a decade ago, and at this point, I'm
-finding it a lot harder to care about that.  :-)
+To protect users from these buggy and seemingly unhelpful drivers that I
+have no way of testing, let's make fscrypt not use them.  Unfortunately
+there is no direct support for doing so in the Crypto API, but we can
+achieve something very close to it by disallowing algorithms that have
+ASYNC, ALLOCATES_MEMORY, or KERN_DRIVER_ONLY set.
 
-My plan is that after I release 1.47.2 (which will have some
-interesting data corruption bugfixes thanks to Darrick and other users
-using fuse2fs in deadly earnest, as opposed to as a lightweight way to
-copy files in and out of an file system image), I plan to transition
-the master and next branches for the future 1.48 release, and the
-maint branch will have bug fixes for 1.47.N releases.
+Disallowing ASYNC has the bonus that the code that waits for
+asynchronous requests to complete is no longer necessary.
 
-At that point, unless I hear some very strong arguments against, for
-1.48, my current thinking is that we will drop support for Fuse2.  I
-will still care about making sure that fuse2fs will build and work
-well enough that casual file copies work on MacOS and FreeBSD, and
-I'll accept patches that make fuse2fs work with WinFSP.  In practice,
-this means that Linux-specific things like Verity support will need to
-be #ifdef'ed so that they will build against MacFUSE, and I assume the
-same will be true for fuseblk mode and iomap mode(?).
+Note that for years dm-crypt has already had most of these drivers
+disabled, as it disallows algorithms with ALLOCATES_MEMORY.
 
-This may break the github actions for composefs-rs[1], but I'm going
-to assume that they can figure out a way to transition to Fuse3
-(hopefully by just using a newer version of Ubuntu, but I suppose it's
-possible that Rust bindings only exist for Fuse2, and not Fuse3).  But
-in any case, I don't think it makes sense to hold back fuse2fs
-development just for the sake of Ubuntu Focal (LTS 20.04).  And if
-necessary, composefs-rs can just stay back on e2fsprogs 1.47.N until
-they can get off of Fuse2 and/or Ubuntu 20.04.  Allison, does that
-sound fair to you?
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/crypto.c          |  7 +++----
+ fs/crypto/fname.c           | 18 ++++++++----------
+ fs/crypto/fscrypt_private.h | 14 ++++++++++++++
+ fs/crypto/hkdf.c            |  2 +-
+ fs/crypto/keysetup.c        |  3 ++-
+ fs/crypto/keysetup_v1.c     | 12 ++++++------
+ 6 files changed, 34 insertions(+), 22 deletions(-)
 
-[1] https://github.com/containers/composefs-rs
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index b74b5937e695c..0acb440ae9723 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -111,11 +111,10 @@ int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
+ 			    unsigned int len, unsigned int offs,
+ 			    gfp_t gfp_flags)
+ {
+ 	union fscrypt_iv iv;
+ 	struct skcipher_request *req = NULL;
+-	DECLARE_CRYPTO_WAIT(wait);
+ 	struct scatterlist dst, src;
+ 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
+ 	int res = 0;
+ 
+ 	if (WARN_ON_ONCE(len <= 0))
+@@ -129,21 +128,21 @@ int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
+ 	if (!req)
+ 		return -ENOMEM;
+ 
+ 	skcipher_request_set_callback(
+ 		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+-		crypto_req_done, &wait);
++		NULL, NULL);
+ 
+ 	sg_init_table(&dst, 1);
+ 	sg_set_page(&dst, dest_page, len, offs);
+ 	sg_init_table(&src, 1);
+ 	sg_set_page(&src, src_page, len, offs);
+ 	skcipher_request_set_crypt(req, &src, &dst, len, &iv);
+ 	if (rw == FS_DECRYPT)
+-		res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
++		res = crypto_skcipher_decrypt(req);
+ 	else
+-		res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
++		res = crypto_skcipher_encrypt(req);
+ 	skcipher_request_free(req);
+ 	if (res) {
+ 		fscrypt_err(ci->ci_inode,
+ 			    "%scryption failed for data unit %llu: %d",
+ 			    (rw == FS_DECRYPT ? "De" : "En"), index, res);
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 010f9c0a4c2f1..6365070211c02 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -91,11 +91,10 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
+  */
+ int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
+ 			  u8 *out, unsigned int olen)
+ {
+ 	struct skcipher_request *req = NULL;
+-	DECLARE_CRYPTO_WAIT(wait);
+ 	const struct fscrypt_inode_info *ci = inode->i_crypt_info;
+ 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
+ 	union fscrypt_iv iv;
+ 	struct scatterlist sg;
+ 	int res;
+@@ -114,18 +113,18 @@ int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
+ 
+ 	/* Set up the encryption request */
+ 	req = skcipher_request_alloc(tfm, GFP_NOFS);
+ 	if (!req)
+ 		return -ENOMEM;
+-	skcipher_request_set_callback(req,
+-			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+-			crypto_req_done, &wait);
++	skcipher_request_set_callback(
++		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
++		NULL, NULL);
+ 	sg_init_one(&sg, out, olen);
+ 	skcipher_request_set_crypt(req, &sg, &sg, olen, &iv);
+ 
+ 	/* Do the encryption */
+-	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
++	res = crypto_skcipher_encrypt(req);
+ 	skcipher_request_free(req);
+ 	if (res < 0) {
+ 		fscrypt_err(inode, "Filename encryption failed: %d", res);
+ 		return res;
+ 	}
+@@ -147,33 +146,32 @@ EXPORT_SYMBOL_GPL(fscrypt_fname_encrypt);
+ static int fname_decrypt(const struct inode *inode,
+ 			 const struct fscrypt_str *iname,
+ 			 struct fscrypt_str *oname)
+ {
+ 	struct skcipher_request *req = NULL;
+-	DECLARE_CRYPTO_WAIT(wait);
+ 	struct scatterlist src_sg, dst_sg;
+ 	const struct fscrypt_inode_info *ci = inode->i_crypt_info;
+ 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
+ 	union fscrypt_iv iv;
+ 	int res;
+ 
+ 	/* Allocate request */
+ 	req = skcipher_request_alloc(tfm, GFP_NOFS);
+ 	if (!req)
+ 		return -ENOMEM;
+-	skcipher_request_set_callback(req,
+-		CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+-		crypto_req_done, &wait);
++	skcipher_request_set_callback(
++		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
++		NULL, NULL);
+ 
+ 	/* Initialize IV */
+ 	fscrypt_generate_iv(&iv, 0, ci);
+ 
+ 	/* Create decryption request */
+ 	sg_init_one(&src_sg, iname->name, iname->len);
+ 	sg_init_one(&dst_sg, oname->name, oname->len);
+ 	skcipher_request_set_crypt(req, &src_sg, &dst_sg, iname->len, &iv);
+-	res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
++	res = crypto_skcipher_decrypt(req);
+ 	skcipher_request_free(req);
+ 	if (res < 0) {
+ 		fscrypt_err(inode, "Filename decryption failed: %d", res);
+ 		return res;
+ 	}
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index c1d92074b65c5..e9acf96f76739 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -43,10 +43,24 @@
+  * hardware-wrapped keys has made it misleading as it's only for raw keys.
+  * Don't use it in kernel code; use one of the above constants instead.
+  */
+ #undef FSCRYPT_MAX_KEY_SIZE
+ 
++/*
++ * This mask is passed as the third argument to crypto_alloc_*() functions to
++ * disallow CryptoAPI algorithm implementations that have any of these flags
++ * set.  This ensures that fscrypt uses only either well-tested "software"
++ * crypto (which these days is usually hardware-accelerated by specialized CPU
++ * instructions) or an inline encryption engine, not obsolete dedicated crypto
++ * accelerators.  Dedicated crypto accelerators often have buggy drivers and/or
++ * are slower than the "software" crypto, and fscrypt has never really been able
++ * to properly take advantage of them, as it en/decrypts data synchronously.
++ */
++#define FSCRYPT_CRYPTOAPI_MASK                            \
++	(CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY | \
++	 CRYPTO_ALG_KERN_DRIVER_ONLY)
++
+ #define FSCRYPT_CONTEXT_V1	1
+ #define FSCRYPT_CONTEXT_V2	2
+ 
+ /* Keep this in sync with include/uapi/linux/fscrypt.h */
+ #define FSCRYPT_MODE_MAX	FSCRYPT_MODE_AES_256_HCTR2
+diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
+index 0f3028adc9c72..5b9c21cfe2b45 100644
+--- a/fs/crypto/hkdf.c
++++ b/fs/crypto/hkdf.c
+@@ -56,11 +56,11 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+ 	struct crypto_shash *hmac_tfm;
+ 	static const u8 default_salt[HKDF_HASHLEN];
+ 	u8 prk[HKDF_HASHLEN];
+ 	int err;
+ 
+-	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, 0);
++	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, FSCRYPT_CRYPTOAPI_MASK);
+ 	if (IS_ERR(hmac_tfm)) {
+ 		fscrypt_err(NULL, "Error allocating " HKDF_HMAC_ALG ": %ld",
+ 			    PTR_ERR(hmac_tfm));
+ 		return PTR_ERR(hmac_tfm);
+ 	}
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index 0d71843af9469..d8113a7196979 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -101,11 +101,12 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
+ 			  const struct inode *inode)
+ {
+ 	struct crypto_skcipher *tfm;
+ 	int err;
+ 
+-	tfm = crypto_alloc_skcipher(mode->cipher_str, 0, 0);
++	tfm = crypto_alloc_skcipher(mode->cipher_str, 0,
++				    FSCRYPT_CRYPTOAPI_MASK);
+ 	if (IS_ERR(tfm)) {
+ 		if (PTR_ERR(tfm) == -ENOENT) {
+ 			fscrypt_warn(inode,
+ 				     "Missing crypto API support for %s (API name: \"%s\")",
+ 				     mode->friendly_name, mode->cipher_str);
+diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
+index b70521c55132b..3fdf174384f3d 100644
+--- a/fs/crypto/keysetup_v1.c
++++ b/fs/crypto/keysetup_v1.c
+@@ -48,13 +48,13 @@ static int derive_key_aes(const u8 *master_key,
+ 			  const u8 nonce[FSCRYPT_FILE_NONCE_SIZE],
+ 			  u8 *derived_key, unsigned int derived_keysize)
+ {
+ 	int res = 0;
+ 	struct skcipher_request *req = NULL;
+-	DECLARE_CRYPTO_WAIT(wait);
+ 	struct scatterlist src_sg, dst_sg;
+-	struct crypto_skcipher *tfm = crypto_alloc_skcipher("ecb(aes)", 0, 0);
++	struct crypto_skcipher *tfm =
++		crypto_alloc_skcipher("ecb(aes)", 0, FSCRYPT_CRYPTOAPI_MASK);
+ 
+ 	if (IS_ERR(tfm)) {
+ 		res = PTR_ERR(tfm);
+ 		tfm = NULL;
+ 		goto out;
+@@ -63,22 +63,22 @@ static int derive_key_aes(const u8 *master_key,
+ 	req = skcipher_request_alloc(tfm, GFP_KERNEL);
+ 	if (!req) {
+ 		res = -ENOMEM;
+ 		goto out;
+ 	}
+-	skcipher_request_set_callback(req,
+-			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+-			crypto_req_done, &wait);
++	skcipher_request_set_callback(
++		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
++		NULL, NULL);
+ 	res = crypto_skcipher_setkey(tfm, nonce, FSCRYPT_FILE_NONCE_SIZE);
+ 	if (res < 0)
+ 		goto out;
+ 
+ 	sg_init_one(&src_sg, master_key, derived_keysize);
+ 	sg_init_one(&dst_sg, derived_key, derived_keysize);
+ 	skcipher_request_set_crypt(req, &src_sg, &dst_sg, derived_keysize,
+ 				   NULL);
+-	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
++	res = crypto_skcipher_encrypt(req);
+ out:
+ 	skcipher_request_free(req);
+ 	crypto_free_skcipher(tfm);
+ 	return res;
+ }
 
-Does anyone else have any objections to dropping Fuse2 support?  And
-is that sufficient for folks to more easily support iomap mode in
-fuse2fs?
+base-commit: 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
+-- 
+2.49.0
 
-Cheers,
-
-							- Ted
-
-P.S.  Greetings from Greenland.  :-)  (We're currently in the middle of
-a cruise that started in Iceland, and will be ending in New York City
-next week.)
 
