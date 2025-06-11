@@ -1,52 +1,53 @@
-Return-Path: <linux-ext4+bounces-8364-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8365-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B164CAD5C87
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 18:44:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BA96AD5C88
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 18:44:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7AA73A2CCF
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 16:43:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DA99172D58
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 16:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271CA2139B6;
-	Wed, 11 Jun 2025 16:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5642036EC;
+	Wed, 11 Jun 2025 16:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="je3GpWA1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eVfYtqie"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C101F202C5A
-	for <linux-ext4@vger.kernel.org>; Wed, 11 Jun 2025 16:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA831FDE02
+	for <linux-ext4@vger.kernel.org>; Wed, 11 Jun 2025 16:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749660227; cv=none; b=HV+iBshxbNJfP7tS/x5+02XDkGI2PP4K24h/csLUkUokg7zqxwh2EAbdpDifGl53WwT2awwMMGJVurFTLpoA8i+pBO+j4IZuV4Hl8F01Ji8bGns7sq+kMYPwYMmY/OjhPMYkrsspdG0FY4exz+5HezFUpfSA5vAM+pcNXzrHv9s=
+	t=1749660242; cv=none; b=o5UZiWP6UvB4zz5OPphrXzV+4ULPOTuzUiVpY02Qge5ILlTbs+ZqZPmQZ62SJfmAi80Q5gTjHJlQm2B/GUdo1yUeBKDD/EeAyiWZX7GJ93MCxaA6bMaREm5/Qir8RkmW/+9TGMAAQHdGuVrarDkOz+Sj7cswzfHV98BI/F+Oo2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749660227; c=relaxed/simple;
-	bh=rXzGlDsTr8SM4ootJzMbmqN8NxVeG2Yn99gO44SFhKY=;
+	s=arc-20240116; t=1749660242; c=relaxed/simple;
+	bh=gyqwf5+MHj6CEwRkppp0MaUfWMge+T9U8UFWccuOfQU=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pr3Uof4uC+lFJaIzV8Cg29MUWtKIRwYDrX0RaoTg083OEEcQjr4SxsRrJw9Qd81vQ2WO6hh7/rZRDudHtqX7kE83Tw/qEnFplJH5kmTfaWujPYADVw+7UgetHC945fGkYzaQZAuZTBVrnp7I3pGJo+MzhUiRTcF1mxgZFk86kBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=je3GpWA1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33038C4CEE3;
-	Wed, 11 Jun 2025 16:43:46 +0000 (UTC)
+	 MIME-Version:Content-Type; b=qZs5ZtJ44OTQebP1/Mk8yPA4Pn3c8QNywWcb1SP0TrFuI6OhKEIxTpAKbbdOMZ+qAzw0uPl5+92qpHkGVk/ovop1u4dedWokHfY7tIY62/6fPnDm0CX+Lcw+bZF7VH3cdw4FPIoko/7TXg475MBb1WHBloI5e13VXR/i7GFE3YQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eVfYtqie; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6162C4CEE3;
+	Wed, 11 Jun 2025 16:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749660226;
-	bh=rXzGlDsTr8SM4ootJzMbmqN8NxVeG2Yn99gO44SFhKY=;
+	s=k20201202; t=1749660241;
+	bh=gyqwf5+MHj6CEwRkppp0MaUfWMge+T9U8UFWccuOfQU=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=je3GpWA1qG1h5fIZItchiJDRGIHNlej1O9zZ4upSHOkDkVqZ3yt2/o4dGovEpds5O
-	 5bA/C2RqRJq//vmb0L/R6dcu78k66XcXSQrWg768eJlqKOZeqtqR3WJ9MaR9Ndi1Ns
-	 DgdfRsAd571OL63/LCQb6Y97tdLVoQwrS9gU1wfrtTl6UAB/7/FC938k8REUWx+r2X
-	 gZi9JbslyTZRF4E0LjjwZKyOQNdeJ/PdtKFyt2YHacSvYVX5ine+m1livuw8moLIId
-	 qkdg6hlY/e36qSl9XQvcNHsop0qyzl5i9D5v4SMn+UFlsZ+JjO3bA28T0HECeEcoWp
-	 3k1oG33m0ojDg==
-Date: Wed, 11 Jun 2025 09:43:45 -0700
-Subject: [PATCH 1/3] libext2fs: fix spurious warnings from fallocate
+	b=eVfYtqieNnwWHUAVfZVnqFAzajYhCCC0QcgTmm3oU2QYxR46iVOSgfjwAEQZe7kVb
+	 7g7n6ikuNXga3lfk4NVgYknim6z24/NvF1rE46caXDX5yZlqOSQJbv1+urWvF5jsue
+	 IS+Eq+VNr9Aqsd4Y6II17iH1/ai2Y3h8idXZ6tCEf/FBLgW4VdSko4YAV7xaoSsW/n
+	 SYThUVb1lBhQzlqVJkjV6vYKMrEF+GC6gGMkVUuN7VZEfgfKcAm3hbMm42f/BFPVui
+	 IUyxghGReZBP+HCTNcNpFLvXveSXgIE2ATnJPNplfDCgPYjA7FD/2iTkhHtX+CF4RP
+	 I3/8anVMEFzBQ==
+Date: Wed, 11 Jun 2025 09:44:01 -0700
+Subject: [PATCH 2/3] fuse2fs: fix error bailout in op_create
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org, linux-ext4@vger.kernel.org
-Message-ID: <174966018070.3972888.9575426474425493201.stgit@frogsfrogsfrogs>
+Cc: debianbugs@woodall.me.uk, linux-ext4@vger.kernel.org,
+ linux-ext4@vger.kernel.org
+Message-ID: <174966018088.3972888.266269916293367037.stgit@frogsfrogsfrogs>
 In-Reply-To: <174966018041.3972888.391896904012834159.stgit@frogsfrogsfrogs>
 References: <174966018041.3972888.391896904012834159.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,59 +61,36 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-generic/522 routinely produces error messages from fuse2fs like this:
-
-FUSE2FS (sde): Illegal block number passed to ext2fs_test_block_bitmap #9321 for block bitmap for /dev/sde
-
-Curiously, these don't actually result in errors being thrown up to the
-kernel.  Digging into the program (which was more difficult than it
-needed to be because of the weird bitmap base + errcode weirdness)
-produced a left record:
-
-e_lblk = 16
-e_pblk = 9293
-e_len = 6
-e_flags = 0
-
-and a right record:
-
-e_lblk = 45
-e_pblk = 9321
-e_len = 6
-e_flags = 0
-
-Thus we end up in the "Merge both extents together, perhaps?" section of
-ext_falloc_helper.  Unfortunately, the merge selection code isn't smart
-enough to notice that the two mappings aren't actually physically
-contiguous, so it scans the bitmap with a negative length, which is why
-the assertion trips.
-
-The simple fix here is not to try to merge the adjacent extents if
-they're not actually physically contiguous.
+Tim Woodall pointed out that op_create returns garbage error codes if
+the ext2fs_extent_open2 in op_create fails.  Worse than that, it also
+neglects to drop the bfl and leaks temp_path.  Let's fix all that.
 
 Cc: <linux-ext4@vger.kernel.org> # v1.43
-Fixes: 5aad5b8e0e3cfa ("libext2fs: implement fallocate")
+Fixes: 81cbf1ef4f5dab ("misc: add fuse2fs, a FUSE server for e2fsprogs")
+Reported-by: Tim Woodall <debianbugs@woodall.me.uk>
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- lib/ext2fs/fallocate.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ misc/fuse2fs.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 
-diff --git a/lib/ext2fs/fallocate.c b/lib/ext2fs/fallocate.c
-index 5cde7d5c2dc28b..063242c5fa4e6b 100644
---- a/lib/ext2fs/fallocate.c
-+++ b/lib/ext2fs/fallocate.c
-@@ -276,6 +276,11 @@ static errcode_t ext_falloc_helper(ext2_filsys fs,
- 				max_uninit_len : max_init_len))
- 			goto try_left;
- 
-+		/* Would they even be physically contiguous if merged? */
-+		if (left_ext->e_pblk + left_ext->e_len + range_len !=
-+				right_ext->e_pblk)
-+			goto try_left;
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index ad4795ae4ed907..cc023065727fd5 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -3306,8 +3306,11 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
+ 		inode.i_flags &= ~EXT4_EXTENTS_FL;
+ 		ret = ext2fs_extent_open2(fs, child,
+ 					  EXT2_INODE(&inode), &handle);
+-		if (ret)
+-			return ret;
++		if (ret) {
++			ret = translate_error(fs, child, err);
++			goto out2;
++		}
 +
- 		err = ext2fs_extent_goto(handle, left_ext->e_lblk);
- 		if (err)
- 			goto try_left;
+ 		ext2fs_extent_free(handle);
+ 	}
+ 
 
 
