@@ -1,121 +1,132 @@
-Return-Path: <linux-ext4+bounces-8354-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8357-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08B4EAD4EE6
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 10:54:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F51CAD53F2
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 13:30:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5AC07A7653
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 08:53:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69F8B17B3E6
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 11:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E7E2417F9;
-	Wed, 11 Jun 2025 08:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="exOvvAE8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83282273D7D;
+	Wed, 11 Jun 2025 11:29:44 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D99E2BD11;
-	Wed, 11 Jun 2025 08:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3320F25BF06;
+	Wed, 11 Jun 2025 11:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749632071; cv=none; b=AZ49OkXCKU8vzmoabxhlI0Fu/3VePa7+qtedqxtzRoAG/fw9oeDIs7Yv7RQ42wej2In0Yjwj75cW2qS7ERJvNR195WmArlvRYHmo+VbXcw7ETeNEdm4gNbJaJSKR4tHsKeLozjoedwBLhrrUKWMQT15Nmdrt3dS6qjcjvQkxv14=
+	t=1749641384; cv=none; b=lu2rLkJVNZCVelZWrme5bYvNs6ZyxKR/h/GxK0NSFLuInp5pGNntltnvoOpBoUT6GTFFAWUBAlPijoZhM0KJR93OOfCYO1fGjvrHjIbBJtt/47u4QjqZkQNThfJOIF8oN1KQSXTNM8p2ZzU4eeMB2KOsNVuQ+lYGzNe+9IRxdt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749632071; c=relaxed/simple;
-	bh=1bV93nrz7FxAl5rV5+OlXjudwdNNoz/1PB+o6GG4rQs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u67UZRGOd5bbb8EZ9J4FzYK+jZ9y1wPbtWyFxLeSRZDMEcf/UgevWZAUISfEsw3CyxaX3yJZky9ghvwY27BW1zsHtqKSy8BHNeT2xjKoHg3kGSVAmpn2nZ5RtzfOE2X5oKZbwEt8kItayH/X5Mw0LEV/ZPLwXZJWp6mO/xiVBu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=exOvvAE8; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-adb5cb6d8f1so1031610366b.3;
-        Wed, 11 Jun 2025 01:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749632068; x=1750236868; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1bV93nrz7FxAl5rV5+OlXjudwdNNoz/1PB+o6GG4rQs=;
-        b=exOvvAE83hwxD0VpFqJQBzgS5XJYzip+yadF6E2vx+PCRJljqv3Sr80LlN03PTP9Oi
-         Zeci2m8ktdOU+c7VB960xGV/XSmJ/GWGFHUI9b7DnZ+T9qmAXJ+Sg8mDLRDl79PfWo2K
-         OgQKQC/5mjNt20jRelfF5iOPEurEMcx0Xc77iDl/yA7BYielpHnnoQepLjmvMtXm+4ho
-         4tExbs4/phYb0A1x6P6KMpWz0Cw7KTE3LMec/6W6TUc1/2X9SHqk+4WCmaoQI+/AQ7AH
-         RGpnivXvEHEfbVTXxnUKXywliboZp4/S5+ZlLSzeSUpK0YCgWX0EObhVQVLJQgC3jdaF
-         U7hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749632068; x=1750236868;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1bV93nrz7FxAl5rV5+OlXjudwdNNoz/1PB+o6GG4rQs=;
-        b=T3pfy02zwZDFFeX+BGU9dM4K2fkIAUZeNuIuQoU97hBGZ7NfiP3ClLV//JVcuJFqxm
-         8gGR8dDD0GsjappiGVKtRhmtSoiA0HOmMsX+uM/PJzWPoBA/cAE9lcHiY+ntW7aRawxN
-         KObqXbrm2kXbgwnI299vvCBDYn7NNDyZqldw7/fnpla0l8vIGQhIALCI4Uopl1hywIGX
-         kdDnAs1/Luvf9Ry7LFweMvHVtGD4eIdXHK+U3V4vQC9EyVzL0FGZJkSXx4AP1jnC9gOe
-         BpfGvek9k8cGMvAZOp8bHGI6r9BFri72H57gYLCrAPi1PqVdKqWy6BeuMvjJfAgllW6K
-         r2Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCUIldYbU7egjcCs4tTrxsBdmXDN5H7C/zP9pcug8ur+5MbaDmU3aPA8QngH+xE4Uc+D1g5cYxcHsLpv@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz74AcKLSTn7fjwkkS3UNlP5bt/7SgOZX3uVotJqgXr2VAD4dSP
-	OhOLLaWI9rAV5h9TWJMfmo5DcX5kVmYCFYzy9pqj/W1MfsxopbI+9/mJ280tKqRj+TwSIqnYoQX
-	Vj2k9LQS1gxNKkRpmLpRg0rkVDNjWXkUd7S5uPzM=
-X-Gm-Gg: ASbGnctAI1OWp6gmfzJ5aNphGZ6QBkfIn4qZm6y2WERbqtmQc0xWFDj5e/pbLgBwigw
-	sWo/k5jNOLyVY6p9irP3VpOVEP3cZRrcwWktXcw2gmRsQQNgpMjwuSrM0OLjg/6+ZFijnnIzDsM
-	P/HtzNUMlC7mXKqCq9qR5IZNPCVmttDy53yUsffuR30zNyg1klHrByeg==
-X-Google-Smtp-Source: AGHT+IElTGYJ6SSWqMhVOosDTZSvZHz4crYNyGRIynttvzk3iJlIjWEZXTqsMSJtJdZjcYi5zGSLBGMqJIAbjHquIUk=
-X-Received: by 2002:a17:907:c0f:b0:ac6:fc40:c996 with SMTP id
- a640c23a62f3a-ade8c7a787cmr185456866b.23.1749632067832; Wed, 11 Jun 2025
- 01:54:27 -0700 (PDT)
+	s=arc-20240116; t=1749641384; c=relaxed/simple;
+	bh=LwJzZfwCzwooaWWIheJ4nFIMPjioADEPy417rmh7ndQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f4+EuJlNavvRoF81RNxcXuBzHOs1SWOKZ597HUDmaq5POFzKi0TV35IvGSQoCnM3ofxpuCyJc0wYdRfaMUNYpeCYNAmgi1P9IYFkojY6gVblVXkcUiTK/+CxFs2YZhvOpGHFhaGua2HSjAwtz9xBKYjuOlErsq/Wx6xDVk2Vrdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bHNjc29MfzKHNHl;
+	Wed, 11 Jun 2025 19:29:40 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id A432C1A13F3;
+	Wed, 11 Jun 2025 19:29:38 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.112.188])
+	by APP3 (Coremail) with SMTP id _Ch0CgAXacOXaElofvDPOw--.32023S4;
+	Wed, 11 Jun 2025 19:29:36 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ojaswin@linux.ibm.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	libaokun1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v2 0/6] ext4: fix insufficient credits when writing back large folios
+Date: Wed, 11 Jun 2025 19:16:19 +0800
+Message-ID: <20250611111625.1668035-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250521235837.GB9688@frogsfrogsfrogs> <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
- <20250529164503.GB8282@frogsfrogsfrogs> <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
- <20250609223159.GB6138@frogsfrogsfrogs> <CAOQ4uxgUVOLs070MyBpfodt12E0zjUn_SvyaCSJcm_M3SW36Ug@mail.gmail.com>
- <20250610190026.GA6134@frogsfrogsfrogs> <CAOQ4uxj4G_7E-Yba0hP2kpdeX17Fma0H-dB6Z8=BkbOWsF9NUg@mail.gmail.com>
- <20250611060040.GC6138@frogsfrogsfrogs>
-In-Reply-To: <20250611060040.GC6138@frogsfrogsfrogs>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 11 Jun 2025 10:54:16 +0200
-X-Gm-Features: AX0GCFuIV6RQ_ldojmYC_yaiOTPMv5df8q-ONaLTXses9_KOg9dpHcK0zyaSAjs
-Message-ID: <CAOQ4uxg-HT9ZA4UdQsD40z4THp9wBJw=MPHBSnWUCbOA+Mc0hA@mail.gmail.com>
-Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
- containerize ext4
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net, bernd@bsbernd.com, 
-	miklos@szeredi.hu, joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>, 
-	linux-ext4 <linux-ext4@vger.kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgAXacOXaElofvDPOw--.32023S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyfJF48JF43Zr45KFyDKFg_yoW8uryxpa
+	93G3WrG3yrZa47ZFZ3Xa1xGF1rGaykCr1UXr47tw1Dua9xuryxKFsFgF45KFyjyrZ3JFWj
+	qr1jyryDCFZ0y3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoWlkDUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-> > > Does the nodeid for the root directory have to be FUSE_ROOT_ID?
-> >
-> > Yeh, I think that's the case, otherwise FUSE_INIT would need to
-> > tell the kernel the root nodeid, because there is no lookup to
-> > return the root nodeid.
-> >
-> > > I guess
-> > > for ext4 that's not a big deal since ext2 inode #1 is the badblocks file
-> > > which cannot be accessed from userspace anyway.
-> > >
-> >
-> > As long as inode #1 is reserved it should be fine.
-> > just need to refine the rules of the one-to-one mapping with
-> > this exception.
->
-> Or just make it so that passthrough_ino filesystems can specify the
-> rootdir inumber?
->
+From: Zhang Yi <yi.zhang@huawei.com>
 
-There is already a mount option 'rootmode' for st_mode of root inode
-so I suppose we could add the rootino mount option.
+Changes since v1:
+ - Make the write-back process supports writing a partial folio if it
+   exits the mapping loop prematurely due to insufficient sapce or
+   journal credits, it also fix the potential stale data and
+   inconsistency issues.
+ - Fix the same issue regarding the allocation of blocks in
+   ext4_write_begin() and ext4_page_mkwrite() when delalloc is not
+   enabled.
 
-Note that currently fuse_fill_super_common() instantiates the root inode
-before negotiating FUSE_INIT with the server.
+This series addresses the issue that Jan pointed out regarding large
+folios support for ext4[1]. The problem is that the credits calculation
+may insufficient in ext4_meta_trans_blocks() when allocating blocks
+during write back a sufficiently large and discontinuous folio, it
+doesn't involve the credits for updating bitmap and group descriptor
+block. However, if we fix this issue, it may lead to significant
+overestimation on the some filesystems with a lot of block groups.
+
+The solution involves first ensure that the current journal transaction
+has enough credits when we mapping an extent during allocating blocks.
+Then if the credits reach the upper limit, exit the current mapping
+loop, submit the partial folio and restart a new transaction. Finally,
+fix the wrong credits calculation in ext4_meta_trans_blocks(). Please
+see the following patches for details.
+
+[1] https://lore.kernel.org/linux-ext4/ht54j6bvjmiqt62xmcveqlo7bmrunqs4ji7wikfteftdjijzek@7tz5gpejaoen/
 
 Thanks,
-Amir.
+Yi.
+
+Zhang Yi (6):
+  ext4: move the calculation of wbc->nr_to_write to mpage_folio_done()
+  ext4: fix stale data if it bail out of the extents mapping loop
+  ext4: restart handle if credits are insufficient during allocating
+    blocks
+  ext4: correct the reserved credits for extent conversion
+  ext4/jbd2: reintroduce jbd2_journal_blocks_per_page()
+  ext4: fix insufficient credits calculation in ext4_meta_trans_blocks()
+
+ fs/ext4/ext4_jbd2.h  |   7 +++
+ fs/ext4/inode.c      | 118 ++++++++++++++++++++++++++++++++++++-------
+ fs/jbd2/journal.c    |   6 +++
+ include/linux/jbd2.h |   1 +
+ 4 files changed, 113 insertions(+), 19 deletions(-)
+
+-- 
+2.46.1
+
 
