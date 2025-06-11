@@ -1,128 +1,198 @@
-Return-Path: <linux-ext4+bounces-8361-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8362-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D60FAD5400
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 13:31:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C1BAD59A2
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 17:07:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7958E178B5E
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 11:31:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E17711E0A2D
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 15:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F7E27CCEA;
-	Wed, 11 Jun 2025 11:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB091DB375;
+	Wed, 11 Jun 2025 15:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q09gTN7J"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C5325D8F5;
-	Wed, 11 Jun 2025 11:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4259418BC2F;
+	Wed, 11 Jun 2025 15:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749641386; cv=none; b=rXvo60JG27lzH3DxWAvIo0OYvALpG3mozuIc8/hFXilFPVHWevSEqy446IGo98hJ1zjj5mW7OTEeBrABJx9en33Wpnihhny6m/WC+3vrM3GH2foktu6rAPGJIz15wJR9F77ayD5UREFWacOMlpRkVmTkZtdxccE1J3CxnVPXC7o=
+	t=1749654356; cv=none; b=gs2p97F8xakutiMBlAhVpbhOEq0ICMVZ4Xd9sDMtS01a2sWk/COeeYYx4rqiFik8WB3FVb/zvDgqgvFtEx1s/ZGU9CyW32NLSPipu/rdOcCmYJ5qhodTZXJ8AFqhmwbz02QXQ8KWTmJmglmwdBBKE8Lr1SlUfmaCUas/9cTQHNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749641386; c=relaxed/simple;
-	bh=PjZbjonEikl0ssZOOSWJaqyCJF5bAU8HJZK179JXyJg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D/vvBgQlHz7y5lblLXN2dIEoylMkRW+k3gSyTdE4CQhJ20835Id2Wz05HQIBON8T3Blgtykd9AKQKJiTPhQjyCvtueJKnOCYce/TcZMx8gZqL66FCPKSs7PLd8dmUYj9hHdJVUp13c3bongqg0yThlcg1CUkX2RdkyTSKgOV+FE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bHNjg2KxmzKHNRX;
-	Wed, 11 Jun 2025 19:29:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id A7A241A0E76;
-	Wed, 11 Jun 2025 19:29:41 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.112.188])
-	by APP3 (Coremail) with SMTP id _Ch0CgAXacOXaElofvDPOw--.32023S10;
-	Wed, 11 Jun 2025 19:29:41 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ojaswin@linux.ibm.com,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	libaokun1@huawei.com,
-	yukuai3@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH v2 6/6] ext4: fix insufficient credits calculation in ext4_meta_trans_blocks()
-Date: Wed, 11 Jun 2025 19:16:25 +0800
-Message-ID: <20250611111625.1668035-7-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20250611111625.1668035-1-yi.zhang@huaweicloud.com>
-References: <20250611111625.1668035-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1749654356; c=relaxed/simple;
+	bh=nXn//9wEDz612qpwUp8e5GEyUKA50kkwM4h/bE6ZsuQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=su5z1yS8jd8azCp46KNpSr3hGUrUxHodUkSa+nWZc3tLl4dQVwIHtbkS0idMXbDby+r8eqovkXu0UhwBY3u26oWorq0EgJWCy2yxS/3YLRcycAhBIkhbUozQjxDFHetKSj8wLxN6+SmApe8OT+k09HiqetS+eJ9HtWj2LJ6Pxn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q09gTN7J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF97EC4CEE3;
+	Wed, 11 Jun 2025 15:05:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749654355;
+	bh=nXn//9wEDz612qpwUp8e5GEyUKA50kkwM4h/bE6ZsuQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Q09gTN7JEA9p4RLFDHZ4C0xd3qOt0xR+cuu6CEvOs3oeO1rgndK/SFluuYHxpBwiL
+	 pcrJUktzodkyPGdCmioD3Pn+DGNwZw7t8x7x2D0qcxhP98WSlrEXXDrl7ncRliIhTv
+	 i4B1LttaTfBZZFx7yGC/ufWAgQofppsA7SN8MiAQIPngifAuoyFFbczwovXdJeehdI
+	 4OJt2ThjrKPM/ptQuox2H9n/ZSCCZ39v0wavG5UYR+eo8fL5G9z0B1cJtSFNF0XXL9
+	 lNIgvxMVexROrysgq8wf/C4BYLcPSK2fCrvofoN4KX+z/6+s8eFIPH4pHF4mqI6jr0
+	 gYUgZDM+G7c/Q==
+Date: Wed, 11 Jun 2025 08:05:55 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de,
+	tytso@mit.edu, john.g.garry@oracle.com, bmarzins@redhat.com,
+	chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com,
+	brauner@kernel.org, martin.petersen@oracle.com, yi.zhang@huawei.com,
+	chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com,
+	linux-api@vger.kernel.org
+Subject: Re: [PATCH 07/10] fs: introduce FALLOC_FL_WRITE_ZEROES to fallocate
+Message-ID: <20250611150555.GB6134@frogsfrogsfrogs>
+References: <20250604020850.1304633-1-yi.zhang@huaweicloud.com>
+ <20250604020850.1304633-8-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgAXacOXaElofvDPOw--.32023S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFy7Zw48KrW5GFWrCF1fCrg_yoW8XF4xp3
-	Z3CF1rJ34rWw4v9a18Ww42qr48Ka1kGa17uFWfAw15JFZxZr92krnFq34rAa45tFWfKw1q
-	qF4Yyry3Gw1UArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUma14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsG
-	vfC2KfnxnUUI43ZEXa7VUbAnY7UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250604020850.1304633-8-yi.zhang@huaweicloud.com>
 
-From: Zhang Yi <yi.zhang@huawei.com>
+[cc linux-api about a fallocate uapi change]
 
-The calculation of journal credits in ext4_meta_trans_blocks() should
-include pextents, as each extent separately may be allocated from a
-different group and thus need to update different bitmap and group
-descriptor block.
+On Wed, Jun 04, 2025 at 10:08:47AM +0800, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> With the development of flash-based storage devices, we can quickly
+> write zeros to SSDs using the WRITE_ZERO command if the devices do not
+> actually write physical zeroes to the media. Therefore, we can use this
+> command to quickly preallocate a real all-zero file with written
+> extents. This approach should be beneficial for subsequent pure
+> overwriting within this file, as it can save on block allocation and,
+> consequently, significant metadata changes, which should greatly improve
+> overwrite performance on certain filesystems.
+> 
+> Therefore, introduce a new operation FALLOC_FL_WRITE_ZEROES to
+> fallocate. This flag is used to convert a specified range of a file to
+> zeros by issuing a zeroing operation. Blocks should be allocated for the
+> regions that span holes in the file, and the entire range is converted
+> to written extents. If the underlying device supports the actual offload
+> write zeroes command, the process of zeroing out operation can be
+> accelerated. If it does not, we currently don't prevent the file system
+> from writing actual zeros to the device. This provides users with a new
+> method to quickly generate a zeroed file, users no longer need to write
+> zero data to create a file with written extents.
+> 
+> Users can determine whether a disk supports the unmap write zeroes
+> operation through querying this sysfs interface:
+> 
+>     /sys/block/<disk>/queue/write_zeroes_unmap
+> 
+> Finally, this flag cannot be specified in conjunction with the
+> FALLOC_FL_KEEP_SIZE since allocating written extents beyond file EOF is
+> not permitted. In addition, filesystems that always require out-of-place
+> writes should not support this flag since they still need to allocated
+> new blocks during subsequent overwrites.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/open.c                   |  1 +
+>  include/linux/falloc.h      |  3 ++-
+>  include/uapi/linux/falloc.h | 18 ++++++++++++++++++
+>  3 files changed, 21 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/open.c b/fs/open.c
+> index 7828234a7caa..b777e11e5522 100644
+> --- a/fs/open.c
+> +++ b/fs/open.c
+> @@ -281,6 +281,7 @@ int vfs_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+>  		break;
+>  	case FALLOC_FL_COLLAPSE_RANGE:
+>  	case FALLOC_FL_INSERT_RANGE:
+> +	case FALLOC_FL_WRITE_ZEROES:
+>  		if (mode & FALLOC_FL_KEEP_SIZE)
+>  			return -EOPNOTSUPP;
+>  		break;
+> diff --git a/include/linux/falloc.h b/include/linux/falloc.h
+> index 3f49f3df6af5..7c38c6b76b60 100644
+> --- a/include/linux/falloc.h
+> +++ b/include/linux/falloc.h
+> @@ -36,7 +36,8 @@ struct space_resv {
+>  				 FALLOC_FL_COLLAPSE_RANGE |	\
+>  				 FALLOC_FL_ZERO_RANGE |		\
+>  				 FALLOC_FL_INSERT_RANGE |	\
+> -				 FALLOC_FL_UNSHARE_RANGE)
+> +				 FALLOC_FL_UNSHARE_RANGE |	\
+> +				 FALLOC_FL_WRITE_ZEROES)
+>  
+>  /* on ia32 l_start is on a 32-bit boundary */
+>  #if defined(CONFIG_X86_64)
+> diff --git a/include/uapi/linux/falloc.h b/include/uapi/linux/falloc.h
+> index 5810371ed72b..265aae7ff8c1 100644
+> --- a/include/uapi/linux/falloc.h
+> +++ b/include/uapi/linux/falloc.h
+> @@ -78,4 +78,22 @@
+>   */
+>  #define FALLOC_FL_UNSHARE_RANGE		0x40
+>  
+> +/*
+> + * FALLOC_FL_WRITE_ZEROES is used to convert a specified range of a file to
+> + * zeros by issuing a zeroing operation. Blocks should be allocated for the
+> + * regions that span holes in the file, and the entire range is converted to
+> + * written extents.
 
-Fixes: 0e32d8617012 ("ext4: correct the journal credits calculations of allocating blocks")
-Reported-by: Jan Kara <jack@suse.cz>
-Closes: https://lore.kernel.org/linux-ext4/nhxfuu53wyacsrq7xqgxvgzcggyscu2tbabginahcygvmc45hy@t4fvmyeky33e/
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I think you could simplify this a bit by talking only about the end
+state after a successful call:
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 9835145b1b27..9b6ebf823740 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -6218,7 +6218,7 @@ int ext4_meta_trans_blocks(struct inode *inode, int lblocks, int pextents)
- 	int ret;
- 
- 	/*
--	 * How many index and lead blocks need to touch to map @lblocks
-+	 * How many index and leaf blocks need to touch to map @lblocks
- 	 * logical blocks to @pextents physical extents?
- 	 */
- 	idxblocks = ext4_index_trans_blocks(inode, lblocks, pextents);
-@@ -6227,7 +6227,7 @@ int ext4_meta_trans_blocks(struct inode *inode, int lblocks, int pextents)
- 	 * Now let's see how many group bitmaps and group descriptors need
- 	 * to account
- 	 */
--	groups = idxblocks;
-+	groups = idxblocks + pextents;
- 	gdpblocks = groups;
- 	if (groups > ngroups)
- 		groups = ngroups;
--- 
-2.46.1
+"FALLOC_FL_WRITE_ZEROES zeroes a specified file range in such a way that
+subsequent writes to that range do not require further changes to file
+mapping metadata."
 
+Note that we don't say how the filesystem gets to this goal.  Presumably
+the first implementations will send a zeroing operation to the block
+device during allocation and the fs will create written mappings, but
+there are other ways to get there -- a filesystem could maintain a pool
+of pre-zeroed space and hand those out; or it could zero space on
+freeing and mounting such that all new mappings can be created as
+written even without the block device zeroing operation.
+
+Or you could be running on some carefully engineered system where you
+know the storage will always be zeroed at allocation time due to some
+other aspect of the system design, e.g. a single-use throwaway cloud vm
+where you allocate to the end of the disk and reboot the node.
+
+> + *                  This flag is beneficial for subsequent pure overwriting
+> + * within this range, as it can save on block allocation and, consequently,
+> + * significant metadata changes. Therefore, filesystems that always require
+> + * out-of-place writes should not support this flag.
+> + *
+> + * Different filesystems may implement different limitations on the
+> + * granularity of the zeroing operation. Most will preferably be accelerated
+> + * by submitting write zeroes command if the backing storage supports, which
+> + * may not physically write zeros to the media.
+> + *
+> + * This flag cannot be specified in conjunction with the FALLOC_FL_KEEP_SIZE.
+> + */
+> +#define FALLOC_FL_WRITE_ZEROES		0x80
+
+The rest of the writeup seems fine to me.
+
+--D
+
+> +
+>  #endif /* _UAPI_FALLOC_H_ */
+> -- 
+> 2.46.1
+> 
+> 
 
