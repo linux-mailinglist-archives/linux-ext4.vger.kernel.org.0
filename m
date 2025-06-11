@@ -1,100 +1,147 @@
-Return-Path: <linux-ext4+bounces-8368-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8369-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5054EAD5CD3
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 19:05:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFA0EAD5EF5
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 21:23:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE09C3A70DA
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 17:05:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3894D176D62
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 19:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2531920C463;
-	Wed, 11 Jun 2025 17:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="mbDVAX+V"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8881028B41A;
+	Wed, 11 Jun 2025 19:23:20 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060E81A317A;
-	Wed, 11 Jun 2025 17:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842712253E0
+	for <linux-ext4@vger.kernel.org>; Wed, 11 Jun 2025 19:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749661520; cv=none; b=iJ2sKwKzCPK3zVI+uv+MX5XIvuujGbHf4FwxMnkS65P8fXnbVuGrFzGGySgtW9wZHIXJrLgyzJjSV+fKfBwbOqPvtjWkXXLGFfsCL+AmE6XzPZyo2ybEQFTZPTCS9K0MnI7rmrsem7YKZf3nApZPuOmH7yuKyQ8Ex0PJqcNCz2E=
+	t=1749669800; cv=none; b=qxQibsRknQQZPZrumcIxYOcHvuZSbrUoIavJAHYdztXCOwp1o/J8KP7osfDNxgcGmKMZP+sSCpiXBLib4MgFfZtJfW2qNet/eQ7GZMIsgskp6C+ARJuumZD4WAnfT0rJOSibx+YWF524r0MfEVT1nxm3eieq/OsS0OmhqWS9OCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749661520; c=relaxed/simple;
-	bh=wE17FUWoXTtsVVyfUweavOVY7qJotag8pGhX4VoqGAc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=A3YgMz3AXRNikL0LEmCGXSc86ty1wMLkoZw1uhoo06KAK5gBezmwlvRrvuL+7YPaypHb4qs4Ge5SHQ3bIF5nXaCK2+ujjyBuZUclLC1nAcKcpnSulZ6I6N46/UDElEn/9y8r8Qi7S2WcH7dFg7GKYy6/j4wYl8kFepgR8r2+a/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=mbDVAX+V; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 026F941ECE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1749661518; bh=+VWSQ4ODTAC6Kk4O/+fTY+FOsVbZtqm+QbfgKKPfzmk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=mbDVAX+V3HgxcvBRNIwMTEiudyZD2XhYKkRzl4Zb0feO5gDYLrwd4nbmifxH2Cxyx
-	 OASYX578aLc6TRsEQHci8ctwHo1ErIrloLBzzTbE30uVtcoPrFaTsovFs+RFvMUpGA
-	 zcrhDkA589fuXR55SGMC62Fb9huohqfhmc8NLhu2Ctol6+wJ8wCec3kNBzicRjWa5S
-	 lKOdW4lzQTzf5YfjV7MmUgII/5RbSiWeY13kA2fryrdyIc7wp3GigEOCsNujhYa9J6
-	 qcPdQuq4sl6Wah0/qi1LdJc+H3mPMSmwTBlOkN3iC3a6mJsp4bCno1Eox9vyGl17/Q
-	 Smc9Pl+MBn6Fw==
-Received: from localhost (unknown [IPv6:2601:280:4600:2da9::1fe])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 026F941ECE;
-	Wed, 11 Jun 2025 17:05:17 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: "Darrick J. Wong" <djwong@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux
- Documentation <linux-doc@vger.kernel.org>, Linux ext4
- <linux-ext4@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas
- Dilger <adilger.kernel@dilger.ca>, "Ritesh Harjani (IBM)"
- <ritesh.list@gmail.com>
-Subject: Re: [PATCH] Documentation: ext4: atomic_writes: Remove
- cross-reference labels
-In-Reply-To: <20250611164800.GC6134@frogsfrogsfrogs>
-References: <20250610091200.54075-2-bagasdotme@gmail.com>
- <20250611164800.GC6134@frogsfrogsfrogs>
-Date: Wed, 11 Jun 2025 11:05:17 -0600
-Message-ID: <87ikl21a5u.fsf@trenco.lwn.net>
+	s=arc-20240116; t=1749669800; c=relaxed/simple;
+	bh=wdAUIfA6Vz+0pVx2FNnom2a0zaaWLcLTW0x1GvWk3Bk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rp9TeCy2xYXc5ZuDL8nYzcHgzkIxLMyiC2TvINPrgOyQD4CSs2rd1lwAtXhLoP0PtJXQj6vR99QCkFTOq3MGMKMcs3bQXxIQJ57wmghfSTGBGBGZeHglbdoUTNhA5LcHZtv8g+UAcCNzWruRKTWgqqcwwxaAdazj+br/I9kMNbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org ([154.16.192.62])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 55BJMp6G027563
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 11 Jun 2025 15:22:53 -0400
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id E6850346B78; Wed, 11 Jun 2025 07:56:29 -0400 (EDT)
+Date: Wed, 11 Jun 2025 10:56:29 -0100
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net,
+        bernd@bsbernd.com, miklos@szeredi.hu, joannelkoong@gmail.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Allison Karlitskaya <lis@redhat.com>
+Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
+ containerize ext4
+Message-ID: <20250611115629.GL784455@mit.edu>
+References: <20250521235837.GB9688@frogsfrogsfrogs>
+ <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
+ <20250529164503.GB8282@frogsfrogsfrogs>
+ <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
+ <20250609223159.GB6138@frogsfrogsfrogs>
+ <CAOQ4uxgUVOLs070MyBpfodt12E0zjUn_SvyaCSJcm_M3SW36Ug@mail.gmail.com>
+ <20250610190026.GA6134@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250610190026.GA6134@frogsfrogsfrogs>
 
-"Darrick J. Wong" <djwong@kernel.org> writes:
++Allison Karlitskaya
 
-> On Tue, Jun 10, 2025 at 04:11:59PM +0700, Bagas Sanjaya wrote:
->> Sphinx reports htmldocs warnings on ext4 atomic block writes docs:
->> 
->> Documentation/filesystems/ext4/atomic_writes.rst:5: WARNING: duplicate label atomic_writes, other instance in Documentation/filesystems/ext4/atomic_writes.rst
->> Documentation/filesystems/ext4/atomic_writes.rst:207: WARNING: duplicate label atomic_write_bdev_support, other instance in Documentation/filesystems/ext4/atomic_writes.rst
->> 
->> These warnings reference duplicated cross-reference labels to themselves in
->> the same doc, which are because atomic_writes.rst is transcluded in
->> overview.rst via include:: directive, thus the culprit docs get processed
->> twice.
->
-> <confused> How is that possible?  atomic_writes.rst is only "include::"d
-> once in overview.rst.  Is the file implicitly included through some
-> other means?
+On Tue, Jun 10, 2025 at 12:00:26PM -0700, Darrick J. Wong wrote:
+> > High level fuse interface is not the right tool for the job.
+> > It's not even the easiest way to have written fuse2fs in the first place.
+> 
+> At the time I thought it would minimize friction across multiple
+> operating systems' fuse implementations.
+> 
+> > High-level fuse API addresses file system objects with full paths.
+> > This is good for writing simple virtual filesystems, but it is not the
+> > correct nor is the easiest choice to write a userspace driver for ext4.
+> 
+> Agreed, it's a *terrible* way to implement ext4.
+> 
+> I think, however, that Ted would like to maintain compatibility with
+> macfuse and freebsd(?) so he's been resistant to rewriting the entire
+> program to work with the lowlevel library.
 
-Sphinx wants to snarf up every .rst file it sees, regardless of whether
-it is explicitly made part of the document tree.  So it will pick up
-atomic_writes.rst separately from the include.
+My priority is to make sure that we have compatibility with other OS's
+(in particular MacOS, FreeBSD, if possible Windows, although that's
+not something that I develop against or have test vehicles to
+validate).  However, from what I can tell, they all support Fuse3 at
+this point --- MacFuse, FreeBSD, and WinFSP all have Fuse3 support as
+of today.
 
-This could be "fixed" by removing the .rst extension from the included
-file.  But, since there is no use of the atomic_writes label to begin
-with, it's better to just take it out.  The other fix, removing a cross
-reference, is not entirely ideal, but there is little text between the
-label and the reference.
+The only complaint that I've had about breaking support using Fuse2
+was from Allison (Cc'ed), who was involved with another Github
+project, whose Github Actions break because they were using a very old
+version of Ubuntu LTS 20.04), which only had support for libfuse2.  I
+am going to assume that this is probably only because they hadn't
+bothered to update their .github/workflows/ci.yaml file, and not
+because there was any inherit requirement that we support ancient
+versions of Linux distributions.  (When I was at IBM, I remember
+having to support customers who used RHEL4, and even in one extreme
+case, RHEL3 because there were a customer paying $$$$$ that refused to
+update; but that was well over a decade ago, and at this point, I'm
+finding it a lot harder to care about that.  :-)
 
-jon
+My plan is that after I release 1.47.2 (which will have some
+interesting data corruption bugfixes thanks to Darrick and other users
+using fuse2fs in deadly earnest, as opposed to as a lightweight way to
+copy files in and out of an file system image), I plan to transition
+the master and next branches for the future 1.48 release, and the
+maint branch will have bug fixes for 1.47.N releases.
+
+At that point, unless I hear some very strong arguments against, for
+1.48, my current thinking is that we will drop support for Fuse2.  I
+will still care about making sure that fuse2fs will build and work
+well enough that casual file copies work on MacOS and FreeBSD, and
+I'll accept patches that make fuse2fs work with WinFSP.  In practice,
+this means that Linux-specific things like Verity support will need to
+be #ifdef'ed so that they will build against MacFUSE, and I assume the
+same will be true for fuseblk mode and iomap mode(?).
+
+This may break the github actions for composefs-rs[1], but I'm going
+to assume that they can figure out a way to transition to Fuse3
+(hopefully by just using a newer version of Ubuntu, but I suppose it's
+possible that Rust bindings only exist for Fuse2, and not Fuse3).  But
+in any case, I don't think it makes sense to hold back fuse2fs
+development just for the sake of Ubuntu Focal (LTS 20.04).  And if
+necessary, composefs-rs can just stay back on e2fsprogs 1.47.N until
+they can get off of Fuse2 and/or Ubuntu 20.04.  Allison, does that
+sound fair to you?
+
+[1] https://github.com/containers/composefs-rs
+
+Does anyone else have any objections to dropping Fuse2 support?  And
+is that sufficient for folks to more easily support iomap mode in
+fuse2fs?
+
+Cheers,
+
+							- Ted
+
+P.S.  Greetings from Greenland.  :-)  (We're currently in the middle of
+a cruise that started in Iceland, and will be ending in New York City
+next week.)
 
