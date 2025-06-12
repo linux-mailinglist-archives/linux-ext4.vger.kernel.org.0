@@ -1,73 +1,114 @@
-Return-Path: <linux-ext4+bounces-8379-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8380-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3270AD66E9
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 06:48:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E390FAD6786
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 07:54:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 510CB3AD479
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 04:47:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AE6917D7BA
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 05:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F971EA91;
-	Thu, 12 Jun 2025 04:47:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73921DF75A;
+	Thu, 12 Jun 2025 05:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="ENkWACqB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6027FD;
-	Thu, 12 Jun 2025 04:47:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF9D2AE6D
+	for <linux-ext4@vger.kernel.org>; Thu, 12 Jun 2025 05:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749703672; cv=none; b=uk5mF5hmMglefp61kYSX8uvBn9ZV2eC0kOHcx3xNCHyKPX/e+cRU5wRa7pKg21zTgbZ33/G6BUYElUoQc14FYQSAv/B6CZsMjdw3PVUD1S0rSxkqTWinNV4DJreg78LX8sccXPQTOcMGRC9TIs7UzCX9xbQHA1iNmHG9yeuv6dI=
+	t=1749707666; cv=none; b=ml6Y47oBrDdMSr2FIjk6daflNYmevWJOis8Yf2NpRdV4LoqqJMW57nibdEKUV+Du3wsIlo2QCqDOoQpXJaYnNUJGoGEoOSqyEix2Ay4eNnd5SNQqGT6pe6l4pPj+LQ4bX4EsuYsEdJFyZs4FXMeR4xgKdP0fmpksf2Db7Z4kO1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749703672; c=relaxed/simple;
-	bh=eYItOdFLi7G0YIaWAGU9SVXHNxF9FM0zycgn2Pn9pKE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UcoMGTBdvWpK8pAbu0jWo/EAzdT7zseGvt1Q8SLTDTipcI53cFvW8lvlWw+AUvMSuE3tCsqMx6lKlvoJlKIGxmxsdn4K8+VBGV5W3UTzN6qGz3feaVgh2KaR/DPqTSnLNa4mjWV5tr/qNesnWZ1jzRjXQo4AtDmlJJrr9rNmcIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 7C82B68D09; Thu, 12 Jun 2025 06:47:44 +0200 (CEST)
-Date: Thu, 12 Jun 2025 06:47:44 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-block@vger.kernel.org,
-	dm-devel@lists.linux.dev, linux-nvme@lists.infradead.org,
-	linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tytso@mit.edu, djwong@kernel.org,
-	john.g.garry@oracle.com, bmarzins@redhat.com, chaitanyak@nvidia.com,
-	shinichiro.kawasaki@wdc.com, brauner@kernel.org,
-	martin.petersen@oracle.com, yi.zhang@huawei.com,
-	chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH 01/10] block: introduce BLK_FEAT_WRITE_ZEROES_UNMAP to
- queue limits features
-Message-ID: <20250612044744.GA12828@lst.de>
-References: <20250604020850.1304633-1-yi.zhang@huaweicloud.com> <20250604020850.1304633-2-yi.zhang@huaweicloud.com> <20250611060900.GA4613@lst.de> <343f7f06-9bf6-442f-8e77-0a774203ec3f@huaweicloud.com>
+	s=arc-20240116; t=1749707666; c=relaxed/simple;
+	bh=rCqJBITI17wUEy8pxvAWbyIY2HOccVtAGy9V9bSN/sk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mHyOGNs/4VwCTVJAp4+3Dvi5s6HPTM2xImndQl9OHyvHepACWmreAXHJIcGS/gnEdJF3zMSvIndImUVx9MmanvDSs3wPOHek1fkS2gREyT34O9vBA7kgjtZ2FY9akgEkG3HTh10im/8c1WjzFiITtcgwxUl+gO9LUhSQ6JwpSTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=ENkWACqB; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4a58ba6c945so11495621cf.2
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Jun 2025 22:54:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1749707663; x=1750312463; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=L3kezLdvyOflb1iXxwzQLR/J1sisi4H2qKqn/TJwD2Y=;
+        b=ENkWACqBLRuM1EfA4LygxI44RoWYlyyK14kZF6lrWluG4rsb4T8UZ0jAYwBWmLnd6y
+         DLxWI0GsAgTnU5GBYUptg46vbtOwtDNKyjQv9JQhoJbwihLpEcn4xwbPUk7C9JUKNBJq
+         wjHu5JwsaKyF0CCBEiqrGFLoze93DJi3qubeY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749707663; x=1750312463;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L3kezLdvyOflb1iXxwzQLR/J1sisi4H2qKqn/TJwD2Y=;
+        b=I4zFJuLFrx5rqxTJVoeX/igT/+eL3nODwjP4mEAdf5FXYzLp+H8gOQK860QCjINhBU
+         3gEsUDXP56u8zgCDRMFnjouCk3R953LbckdZFooc2Kw7nSf75yYVMck+r/fvWk2X5cY2
+         FLMjfS3qqWcP1Oj27wEB32LQzx4ceSQKwsqZSSiqxdQiCn7K7Yv/qivyqhoJssEFDRHC
+         Bgkm14gFXmDg/4DdyMRL3l908G8kRwOOI0UJfizqESwfkVVA34ekyPboMwrhfd5L2Rfw
+         1bIauQd8nWdna2FMcSEgmfiouA2f5h9RodYeKqGHFxwQk+Bm8ngD9TziWy8sFZyTb4Rn
+         +53w==
+X-Forwarded-Encrypted: i=1; AJvYcCVeoQ3+WZe4ZFjUxb0NpIYItDkzVaJXqiplm0zag//whZK9jltv0pPq41YVOXn+J78SF9hw3CJi+FeA@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWNY2raJGudVx/vqSq3qZTT5u0IiwH+/+MNgvxOpxCOuFfinXi
+	bzWZ9UNAx3CUVj9g2wQxmeJI5Aw+DQfUhCOLv+J/etpUbe9EIJOY2FFmgofkDkMrIQOqVOmROkV
+	etPYMKS9H7EEL0HMf6By2NAjJIwytEpQp4iy5Nq9PZw==
+X-Gm-Gg: ASbGncuPyyKWP3xkrYpT8gRfHiJPdXekNhdYafp/cKepmofM2QTZq5By0QJalA7A6s+
+	L069+OQDxvpXNrTRIZjApQpMxiLBtitshmiyqPgOiUXICBzAtZDZ11VqNjMvOClkFtQhThxZ/Ib
+	uX++Q6v2+WZfG56s1DjBkXvsY2RC/oooSfZYjPvIJ9++nlQ7JhbJpZtRk=
+X-Google-Smtp-Source: AGHT+IGuCZBZeDcZUWDRQPVv74TNbhbiDXKa0VPONpmsuiq38OVOt1vmKqAgiGlD0aS+y6wrRfuqxM2a2ZAip/BRkCE=
+X-Received: by 2002:a05:622a:1e10:b0:494:5805:c2b9 with SMTP id
+ d75a77b69052e-4a72298b30fmr45465221cf.31.1749707662898; Wed, 11 Jun 2025
+ 22:54:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <343f7f06-9bf6-442f-8e77-0a774203ec3f@huaweicloud.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20250521235837.GB9688@frogsfrogsfrogs> <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
+ <20250529164503.GB8282@frogsfrogsfrogs> <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
+ <20250609223159.GB6138@frogsfrogsfrogs> <CAOQ4uxgUVOLs070MyBpfodt12E0zjUn_SvyaCSJcm_M3SW36Ug@mail.gmail.com>
+ <20250610190026.GA6134@frogsfrogsfrogs> <CAOQ4uxj4G_7E-Yba0hP2kpdeX17Fma0H-dB6Z8=BkbOWsF9NUg@mail.gmail.com>
+ <20250611060040.GC6138@frogsfrogsfrogs> <CAOQ4uxg-HT9ZA4UdQsD40z4THp9wBJw=MPHBSnWUCbOA+Mc0hA@mail.gmail.com>
+In-Reply-To: <CAOQ4uxg-HT9ZA4UdQsD40z4THp9wBJw=MPHBSnWUCbOA+Mc0hA@mail.gmail.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Thu, 12 Jun 2025 07:54:12 +0200
+X-Gm-Features: AX0GCFsw2KR9hAx3DAJbh7kMqAeaJeXoEwObZo7EXusxHxaagbFzTyYqtlm2UXM
+Message-ID: <CAJfpegs_An=3Ghgz5fyo=A_e--gbG5sS1-cDoOJwhfWBx0DBLg@mail.gmail.com>
+Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
+ containerize ext4
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net, 
+	bernd@bsbernd.com, joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>, 
+	linux-ext4 <linux-ext4@vger.kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jun 11, 2025 at 03:31:21PM +0800, Zhang Yi wrote:
-> >> +/* supports unmap write zeroes command */
-> >> +#define BLK_FEAT_WRITE_ZEROES_UNMAP	((__force blk_features_t)(1u << 17))
-> > 
-> > 
-> > Should this be exposed through sysfs as a read-only value?
-> 
-> Uh, are you suggesting adding another sysfs interface to expose
-> this feature?
+On Wed, 11 Jun 2025 at 10:54, Amir Goldstein <amir73il@gmail.com> wrote:
 
-That was the idea.  Or do we have another way to report this capability?
+> There is already a mount option 'rootmode' for st_mode of root inode
+> so I suppose we could add the rootino mount option.
+>
+> Note that currently fuse_fill_super_common() instantiates the root inode
+> before negotiating FUSE_INIT with the server.
 
+I'd prefer not to add more mount options like this.
+
+It would be nice to move away from async FUSE_INIT.  It's one of those
+things I wish I'd done differently.
+
+Unfortunately I don't think adding FUSE_INIT_SYNC would be sufficient,
+as servers might expect the first request to be always FUSE_INIT and
+break if it isn't.   Libfuse seems to be okay, but...
+
+One idea is to add an ioctl that the server would call before
+mounting, that explicitly allows FUSE_INIT_SYNC.  It's somewhat ugly,
+but I can't think of a better solution.
+
+Thanks,
+Miklos
 
