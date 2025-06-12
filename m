@@ -1,333 +1,161 @@
-Return-Path: <linux-ext4+bounces-8370-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8371-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF9D6AD6080
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 23:00:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D62AD6455
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 02:07:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 749E51BC1FF3
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Jun 2025 21:00:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A13189E4BC
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 00:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594162594BD;
-	Wed, 11 Jun 2025 21:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54A32905;
+	Thu, 12 Jun 2025 00:07:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RvTiMFEp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fp3WfuMd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDC419A;
-	Wed, 11 Jun 2025 21:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BB6182;
+	Thu, 12 Jun 2025 00:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749675631; cv=none; b=Cmj9XGU1chUBo3Gg9W6lA8TJj1T1WvBZNn/zTHzpI7bwpxclUDjQ/8gmmh0DXlR060SoWEk1DHtmcd+WenTxgIqt3u4mG8VESvqHvJeJsv+WpIOfH82ZTB0naTXQvWg7CpHfn6/eh4MqT2jdT9GRC/WvRvG+a7fpvnMwpxMDTGA=
+	t=1749686827; cv=none; b=Unxkn29gpKuRlMndIaatfFbOYnA0aukWPxgQvsokLIM7FMTz3cv+Vq933iS5AlhisUPHzLgu4nkw7QSVJZ+yEIrmuPD+IKBElGPWQMSklMkNIDE3dso9cyRQMiLa1IOGBsGWV+BKjLcXZIx+mjFTmi/LMcZn3B4lXIqM7xRjIWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749675631; c=relaxed/simple;
-	bh=ufdekVOYWt8m3xq4jkK/O28QDQm1sAnVWeCFEjZjOhw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S9h8v9+IGdEc0Ruf7tW+tlutYjji2X61Xyy/jHOdoK7xvWi1tFp9s2Af+2poL2dFb6qzML2UU4bNV2bRiU7xOMSiHZg4wiAw26XvTLQuZIADx8XApvvmC7h5cGUBKS1xv5LBGS824ZhGc3iu76Mk69nl+WxbC22ftGt8DkUp1cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RvTiMFEp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C44C4CEE3;
-	Wed, 11 Jun 2025 21:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749675630;
-	bh=ufdekVOYWt8m3xq4jkK/O28QDQm1sAnVWeCFEjZjOhw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RvTiMFEpxUD4MzFZRsyUdiXQH0upKQl4nEyPUOFBiaCI7vET0SorY8i8il3dXTZMS
-	 edik1QH0PF4rSwwha/q0PR7wYYxOagItYezlwJgpK2qU3A44yrdFiIKbRDLx33D57E
-	 GO2Gg1p8X4GPddbngPnV/fuclAPMmULwzEV/3wrgXFmDr9vaR4DIPiYQcdPn87+/XJ
-	 agWoe8yQStLctGQfdX3PTZAqQ/R/mC6GsqUBQQt1jAl/qFIVvNX1PgLTGjjO7hORJi
-	 Z1JnvyWIf2cmCGyowvkW8AwGDJ0tTuplmjW3s/i67PvKd1LfzTh5puWEIvdV3H5GQM
-	 E2hR+5dqNIs8g==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	ceph-devel@vger.kernel.org
-Subject: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
-Date: Wed, 11 Jun 2025 13:58:59 -0700
-Message-ID: <20250611205859.80819-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1749686827; c=relaxed/simple;
+	bh=kM4wkz/dwxa0xW4cXGWEbX2WdUscnexwQFhQh8Zq1Gk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P7Eqtp/iucAQLefSF/tvK9rbChyqvACntgh8s0+oJPmJpLi935+9biqstb+Ft3EXqEJckfwn1YH8beB9QHkU34xywqBIOuv7BdC7EcxBqxFRz6PFfF0SRMmRl6mdMZsbkNDGIvFaQtYkLkPhr06ClKVcg3v7MM3aic68ouvQeKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fp3WfuMd; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2350b1b9129so2992225ad.0;
+        Wed, 11 Jun 2025 17:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749686825; x=1750291625; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lQdNWisb6TalRPXEapWg0OiOyvj6XGGrfSAO9j4MbfQ=;
+        b=Fp3WfuMdOfit25omUexpMieIQqEcLCdPUXldh8lrb2/5Ypjon/Coz48jSiBclh6MSh
+         MgKdsonWW2q3lQER+P7B0QpfB1dpoLvh9zAcW810tKXItQDu5n2TvYO+WHLQ+Mpu2YQ7
+         0WyT0nTl/MaeycPkeuMP13ds4eJhYyx0tx6AzlM7QJ7KTGpGj5+2AhTFgy8IqmrZWaSO
+         UKm5mnst8lPTxWpc2T9gKRrD3o0BQKQC/H7YDgKriS7QmRDgJ+yhzocag6OoH3Zkl7h8
+         XG6iK8/J6Bldo/F/oZRjWWptVrxflNI9aYeV8jZi4L8QHUZo0ulhFEOcDnFvQZX+lHD8
+         H8Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749686825; x=1750291625;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lQdNWisb6TalRPXEapWg0OiOyvj6XGGrfSAO9j4MbfQ=;
+        b=N6Nq4aYbNooQadUv3ixRHxMtI7oeKT/d+aAIHewWoYbkCvyQYCPhsPiYsXlM61Pydz
+         6NT6pkFx7Xc6wzQ4RGHQeWB7UJXNeU52G3YG6EDohIF8OyHVEfHIn839gDkgGcgqB/At
+         dJPc1JBZOLuQpESkmlD/0w/BVE0mSrIYL+wfSQUCdJt2Du5EEQlxIO1+ntWqAj4l1uL6
+         h8Wwh7RhU2z8KwEVor/GLcOn2Zm62MRTFZyfSBiHE1pIWKwtTnMvK99213HfcD+XPnAo
+         4+sAYOX3kOUS6JsA/TQbkkh179QbqqOKo7ESLrOhJfyh3y3Ot/eVlfhk4ejhgHsHY/wK
+         wLOA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8SRP4rapSwwI7j9stgT3WUEp2VVj3UbADed699bpPodz5jqCAzh82JoALr8uovhL+ZE0uoVrfHn/sUQ==@vger.kernel.org, AJvYcCXO8mS2yhbgcflzCU8BO1ObNrhPCNkLjUPZlDEA6//4nsURqXd9junmYhmu29aJRqVib+BYVD1/WMc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy037T2kTeIST5CCxwUmlrWMQXQD5RenLhi4dy6mPr8d6/oMSKm
+	FznlntUezlVhS5Q/0vuNpdnwYue8n0aKazy0NMFRYY3zobq+XRQ1BcFS
+X-Gm-Gg: ASbGncst5t86nhF0oGG38o7RDE89hsYFKpdXlQwiEmTQ4QwdZqWoK32oHylqtcqxwND
+	Cex6SGLAmRgwIgagEUESdDtlCb+AWZ0j84CKkJTs+ly0op5kbCS5Jp8hbcI6UwUGNooFG2fEvls
+	qjB8dXQGiqGfWqXMp+6GxeSFacenNc6Z490plf1Ia2qVbPJHudsZHfJtCe7UQKi6MDz6xMkT8eI
+	xEWbiDOemyyCyjJjaDzkn+RsEhtStvJOCpfrI8gNlYp8KSdhmT66l76xVN/exef+WLL+bfqoPaA
+	p03PIjYCKEBJx9fXZuvXmuj7vng0IcpUR3zOeA4vUdQpNUpq5Xpw6ke7FsTdwg==
+X-Google-Smtp-Source: AGHT+IEsN7Bu671DA14zZxy9bgMmEbIOhi5XXbISeqwcmmbAcTTvu3o69KPy92HniR4rrPpub1UMIg==
+X-Received: by 2002:a17:903:32ca:b0:234:c2e7:a0e4 with SMTP id d9443c01a7336-2364c8b81ccmr18935955ad.3.1749686825121;
+        Wed, 11 Jun 2025 17:07:05 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2364e6d9bb8sm1582135ad.113.2025.06.11.17.07.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Jun 2025 17:07:04 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id A96B1424180B; Thu, 12 Jun 2025 07:07:00 +0700 (WIB)
+Date: Thu, 12 Jun 2025 07:07:00 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Jonathan Corbet <corbet@lwn.net>, "Darrick J. Wong" <djwong@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux ext4 <linux-ext4@vger.kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: Re: [PATCH] Documentation: ext4: atomic_writes: Remove
+ cross-reference labels
+Message-ID: <aEoaJEhw5qHkd2_w@archie.me>
+References: <20250610091200.54075-2-bagasdotme@gmail.com>
+ <20250611164800.GC6134@frogsfrogsfrogs>
+ <87ikl21a5u.fsf@trenco.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ZHoNJR7Yp/fs3t3e"
+Content-Disposition: inline
+In-Reply-To: <87ikl21a5u.fsf@trenco.lwn.net>
 
-From: Eric Biggers <ebiggers@google.com>
 
-fscrypt has never properly supported the old-school Crypto API hardware
-offload drivers, as it processes each request synchronously.  There was
-one report of someone successfully using such a driver 8 years ago.  But
-otherwise this style of hardware offload is basically obsolete and has
-been superseded by hardware-accelerated crypto instructions directly on
-the CPU as well as inline storage encryption (UFS/eMMC).  Since then,
-all I've gotten are issue reports where someone accidentally used a
-buggy offload driver and it caused a problem for them, for example:
+--ZHoNJR7Yp/fs3t3e
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- https://lore.kernel.org/r/PH0PR02MB731916ECDB6C613665863B6CFFAA2@PH0PR02MB7319.namprd02.prod.outlook.com
-- https://github.com/google/fscryptctl/issues/32
+On Wed, Jun 11, 2025 at 11:05:17AM -0600, Jonathan Corbet wrote:
+> "Darrick J. Wong" <djwong@kernel.org> writes:
+>=20
+> > On Tue, Jun 10, 2025 at 04:11:59PM +0700, Bagas Sanjaya wrote:
+> >> Sphinx reports htmldocs warnings on ext4 atomic block writes docs:
+> >>=20
+> >> Documentation/filesystems/ext4/atomic_writes.rst:5: WARNING: duplicate=
+ label atomic_writes, other instance in Documentation/filesystems/ext4/atom=
+ic_writes.rst
+> >> Documentation/filesystems/ext4/atomic_writes.rst:207: WARNING: duplica=
+te label atomic_write_bdev_support, other instance in Documentation/filesys=
+tems/ext4/atomic_writes.rst
+> >>=20
+> >> These warnings reference duplicated cross-reference labels to themselv=
+es in
+> >> the same doc, which are because atomic_writes.rst is transcluded in
+> >> overview.rst via include:: directive, thus the culprit docs get proces=
+sed
+> >> twice.
+> >
+> > <confused> How is that possible?  atomic_writes.rst is only "include::"d
+> > once in overview.rst.  Is the file implicitly included through some
+> > other means?
+>=20
+> Sphinx wants to snarf up every .rst file it sees, regardless of whether
+> it is explicitly made part of the document tree.  So it will pick up
+> atomic_writes.rst separately from the include.
+>=20
+> This could be "fixed" by removing the .rst extension from the included
+> file.  But, since there is no use of the atomic_writes label to begin
+> with, it's better to just take it out.  The other fix, removing a cross
+> reference, is not entirely ideal, but there is little text between the
+> label and the reference.
 
-To protect users from these buggy and seemingly unhelpful drivers that I
-have no way of testing, let's make fscrypt not use them.  Unfortunately
-there is no direct support for doing so in the Crypto API, but we can
-achieve something very close to it by disallowing algorithms that have
-ASYNC, ALLOCATES_MEMORY, or KERN_DRIVER_ONLY set.
+So removing the labels looks good to you, right?
 
-Disallowing ASYNC has the bonus that the code that waits for
-asynchronous requests to complete is no longer necessary.
+Confused...
 
-Note that for years dm-crypt has already had most of these drivers
-disabled, as it disallows algorithms with ALLOCATES_MEMORY.
+--=20
+An old man doll... just what I always wanted! - Clara
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/crypto.c          |  7 +++----
- fs/crypto/fname.c           | 18 ++++++++----------
- fs/crypto/fscrypt_private.h | 14 ++++++++++++++
- fs/crypto/hkdf.c            |  2 +-
- fs/crypto/keysetup.c        |  3 ++-
- fs/crypto/keysetup_v1.c     | 12 ++++++------
- 6 files changed, 34 insertions(+), 22 deletions(-)
+--ZHoNJR7Yp/fs3t3e
+Content-Type: application/pgp-signature; name=signature.asc
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index b74b5937e695c..0acb440ae9723 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -111,11 +111,10 @@ int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
- 			    unsigned int len, unsigned int offs,
- 			    gfp_t gfp_flags)
- {
- 	union fscrypt_iv iv;
- 	struct skcipher_request *req = NULL;
--	DECLARE_CRYPTO_WAIT(wait);
- 	struct scatterlist dst, src;
- 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
- 	int res = 0;
- 
- 	if (WARN_ON_ONCE(len <= 0))
-@@ -129,21 +128,21 @@ int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
- 	if (!req)
- 		return -ENOMEM;
- 
- 	skcipher_request_set_callback(
- 		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
--		crypto_req_done, &wait);
-+		NULL, NULL);
- 
- 	sg_init_table(&dst, 1);
- 	sg_set_page(&dst, dest_page, len, offs);
- 	sg_init_table(&src, 1);
- 	sg_set_page(&src, src_page, len, offs);
- 	skcipher_request_set_crypt(req, &src, &dst, len, &iv);
- 	if (rw == FS_DECRYPT)
--		res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
-+		res = crypto_skcipher_decrypt(req);
- 	else
--		res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
-+		res = crypto_skcipher_encrypt(req);
- 	skcipher_request_free(req);
- 	if (res) {
- 		fscrypt_err(ci->ci_inode,
- 			    "%scryption failed for data unit %llu: %d",
- 			    (rw == FS_DECRYPT ? "De" : "En"), index, res);
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 010f9c0a4c2f1..6365070211c02 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -91,11 +91,10 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
-  */
- int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
- 			  u8 *out, unsigned int olen)
- {
- 	struct skcipher_request *req = NULL;
--	DECLARE_CRYPTO_WAIT(wait);
- 	const struct fscrypt_inode_info *ci = inode->i_crypt_info;
- 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
- 	union fscrypt_iv iv;
- 	struct scatterlist sg;
- 	int res;
-@@ -114,18 +113,18 @@ int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
- 
- 	/* Set up the encryption request */
- 	req = skcipher_request_alloc(tfm, GFP_NOFS);
- 	if (!req)
- 		return -ENOMEM;
--	skcipher_request_set_callback(req,
--			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
--			crypto_req_done, &wait);
-+	skcipher_request_set_callback(
-+		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
-+		NULL, NULL);
- 	sg_init_one(&sg, out, olen);
- 	skcipher_request_set_crypt(req, &sg, &sg, olen, &iv);
- 
- 	/* Do the encryption */
--	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
-+	res = crypto_skcipher_encrypt(req);
- 	skcipher_request_free(req);
- 	if (res < 0) {
- 		fscrypt_err(inode, "Filename encryption failed: %d", res);
- 		return res;
- 	}
-@@ -147,33 +146,32 @@ EXPORT_SYMBOL_GPL(fscrypt_fname_encrypt);
- static int fname_decrypt(const struct inode *inode,
- 			 const struct fscrypt_str *iname,
- 			 struct fscrypt_str *oname)
- {
- 	struct skcipher_request *req = NULL;
--	DECLARE_CRYPTO_WAIT(wait);
- 	struct scatterlist src_sg, dst_sg;
- 	const struct fscrypt_inode_info *ci = inode->i_crypt_info;
- 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
- 	union fscrypt_iv iv;
- 	int res;
- 
- 	/* Allocate request */
- 	req = skcipher_request_alloc(tfm, GFP_NOFS);
- 	if (!req)
- 		return -ENOMEM;
--	skcipher_request_set_callback(req,
--		CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
--		crypto_req_done, &wait);
-+	skcipher_request_set_callback(
-+		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
-+		NULL, NULL);
- 
- 	/* Initialize IV */
- 	fscrypt_generate_iv(&iv, 0, ci);
- 
- 	/* Create decryption request */
- 	sg_init_one(&src_sg, iname->name, iname->len);
- 	sg_init_one(&dst_sg, oname->name, oname->len);
- 	skcipher_request_set_crypt(req, &src_sg, &dst_sg, iname->len, &iv);
--	res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
-+	res = crypto_skcipher_decrypt(req);
- 	skcipher_request_free(req);
- 	if (res < 0) {
- 		fscrypt_err(inode, "Filename decryption failed: %d", res);
- 		return res;
- 	}
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index c1d92074b65c5..e9acf96f76739 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -43,10 +43,24 @@
-  * hardware-wrapped keys has made it misleading as it's only for raw keys.
-  * Don't use it in kernel code; use one of the above constants instead.
-  */
- #undef FSCRYPT_MAX_KEY_SIZE
- 
-+/*
-+ * This mask is passed as the third argument to crypto_alloc_*() functions to
-+ * disallow CryptoAPI algorithm implementations that have any of these flags
-+ * set.  This ensures that fscrypt uses only either well-tested "software"
-+ * crypto (which these days is usually hardware-accelerated by specialized CPU
-+ * instructions) or an inline encryption engine, not obsolete dedicated crypto
-+ * accelerators.  Dedicated crypto accelerators often have buggy drivers and/or
-+ * are slower than the "software" crypto, and fscrypt has never really been able
-+ * to properly take advantage of them, as it en/decrypts data synchronously.
-+ */
-+#define FSCRYPT_CRYPTOAPI_MASK                            \
-+	(CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY | \
-+	 CRYPTO_ALG_KERN_DRIVER_ONLY)
-+
- #define FSCRYPT_CONTEXT_V1	1
- #define FSCRYPT_CONTEXT_V2	2
- 
- /* Keep this in sync with include/uapi/linux/fscrypt.h */
- #define FSCRYPT_MODE_MAX	FSCRYPT_MODE_AES_256_HCTR2
-diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
-index 0f3028adc9c72..5b9c21cfe2b45 100644
---- a/fs/crypto/hkdf.c
-+++ b/fs/crypto/hkdf.c
-@@ -56,11 +56,11 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
- 	struct crypto_shash *hmac_tfm;
- 	static const u8 default_salt[HKDF_HASHLEN];
- 	u8 prk[HKDF_HASHLEN];
- 	int err;
- 
--	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, 0);
-+	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, FSCRYPT_CRYPTOAPI_MASK);
- 	if (IS_ERR(hmac_tfm)) {
- 		fscrypt_err(NULL, "Error allocating " HKDF_HMAC_ALG ": %ld",
- 			    PTR_ERR(hmac_tfm));
- 		return PTR_ERR(hmac_tfm);
- 	}
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 0d71843af9469..d8113a7196979 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -101,11 +101,12 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
- 			  const struct inode *inode)
- {
- 	struct crypto_skcipher *tfm;
- 	int err;
- 
--	tfm = crypto_alloc_skcipher(mode->cipher_str, 0, 0);
-+	tfm = crypto_alloc_skcipher(mode->cipher_str, 0,
-+				    FSCRYPT_CRYPTOAPI_MASK);
- 	if (IS_ERR(tfm)) {
- 		if (PTR_ERR(tfm) == -ENOENT) {
- 			fscrypt_warn(inode,
- 				     "Missing crypto API support for %s (API name: \"%s\")",
- 				     mode->friendly_name, mode->cipher_str);
-diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
-index b70521c55132b..3fdf174384f3d 100644
---- a/fs/crypto/keysetup_v1.c
-+++ b/fs/crypto/keysetup_v1.c
-@@ -48,13 +48,13 @@ static int derive_key_aes(const u8 *master_key,
- 			  const u8 nonce[FSCRYPT_FILE_NONCE_SIZE],
- 			  u8 *derived_key, unsigned int derived_keysize)
- {
- 	int res = 0;
- 	struct skcipher_request *req = NULL;
--	DECLARE_CRYPTO_WAIT(wait);
- 	struct scatterlist src_sg, dst_sg;
--	struct crypto_skcipher *tfm = crypto_alloc_skcipher("ecb(aes)", 0, 0);
-+	struct crypto_skcipher *tfm =
-+		crypto_alloc_skcipher("ecb(aes)", 0, FSCRYPT_CRYPTOAPI_MASK);
- 
- 	if (IS_ERR(tfm)) {
- 		res = PTR_ERR(tfm);
- 		tfm = NULL;
- 		goto out;
-@@ -63,22 +63,22 @@ static int derive_key_aes(const u8 *master_key,
- 	req = skcipher_request_alloc(tfm, GFP_KERNEL);
- 	if (!req) {
- 		res = -ENOMEM;
- 		goto out;
- 	}
--	skcipher_request_set_callback(req,
--			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
--			crypto_req_done, &wait);
-+	skcipher_request_set_callback(
-+		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
-+		NULL, NULL);
- 	res = crypto_skcipher_setkey(tfm, nonce, FSCRYPT_FILE_NONCE_SIZE);
- 	if (res < 0)
- 		goto out;
- 
- 	sg_init_one(&src_sg, master_key, derived_keysize);
- 	sg_init_one(&dst_sg, derived_key, derived_keysize);
- 	skcipher_request_set_crypt(req, &src_sg, &dst_sg, derived_keysize,
- 				   NULL);
--	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
-+	res = crypto_skcipher_encrypt(req);
- out:
- 	skcipher_request_free(req);
- 	crypto_free_skcipher(tfm);
- 	return res;
- }
+-----BEGIN PGP SIGNATURE-----
 
-base-commit: 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
--- 
-2.49.0
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaEoaHwAKCRD2uYlJVVFO
+ozRNAP4rqmYsSw/PYLeoGBzEqB5LnXGG8bFlzEhWr2Xjst8QGgD+IDODlnZyKYVW
+nWWTqzLnYN2LmlAyRXI2BiDN7EYWUQ0=
+=wyqL
+-----END PGP SIGNATURE-----
 
+--ZHoNJR7Yp/fs3t3e--
 
