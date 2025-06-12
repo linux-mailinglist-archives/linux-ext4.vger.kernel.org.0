@@ -1,125 +1,187 @@
-Return-Path: <linux-ext4+bounces-8377-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8378-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8394CAD6612
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 05:15:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FA88AD661A
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 05:20:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4E907ADAB9
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 03:13:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 273DC3AC44B
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 03:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679A11DE4EC;
-	Thu, 12 Jun 2025 03:14:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE7FE1C8631;
+	Thu, 12 Jun 2025 03:20:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OwNMvS60"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZO8jzZG6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD88B18D;
-	Thu, 12 Jun 2025 03:14:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498DABE5E;
+	Thu, 12 Jun 2025 03:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749698097; cv=none; b=HArm7wU5vXK3soFN046Qi8f56+Qi/i5+k9v1bDVCvuCAa4y7sfrUHmstsbASnb8eOyFZ+jxVLYMpc7UzS8YSdF5onEyKpVG+mayFaN2OZXi2nwLnkt8KeO6szy5nHP+nDFcVil2f4CDqjIdg1Qzflrlr/UHXCpWjKD6klkw4+0s=
+	t=1749698408; cv=none; b=GeJKc2BV0nwn0E2iTovR32xbzJevEx1xsTv3QpeIe/jpdNG9EfwgO+RHJDncra/H1wgZ+WzjvsQeshObcD0DLbndelnXUt6GputwEjZIboKnF/158i2vRQcb51nxCqyA0D1cp2S9unRLWP3kQf3HjrBR1zvTKVfUeoJYvFO7eyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749698097; c=relaxed/simple;
-	bh=7jJhAfebdEIfSg5lLa5dJj+zy2cgJc0CzRnWHGsNRdM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=G5tfBYC0ViWgtRQrDP3hFpMSkgW6HYBG+HeoU7mxr06x0uo+a6hS/LslkbPDlXrfarwgBB6XXBLkRLjx0yh4GmisPc7hx46LbtHe0tmTWro8MEbH42z3ScN+xu2f1KdniN5tJgPiXECjVeg4trSJflWMQKBHapWeTkKKVYeRi4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OwNMvS60; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-74849e33349so517115b3a.3;
-        Wed, 11 Jun 2025 20:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749698095; x=1750302895; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VcfvNlt00FTPnlyELPoRt9S7HG9qLcQIDOCI0yY1ETI=;
-        b=OwNMvS60un+NWkXu5j2HkJ6ABmuIIw1Acl/+0aeA0+EWNym2UFGB/x3ZVrKyNgRtb9
-         iCOl2mgI+hp7TYg/HRL0pGLwt1dWBaYFvI/RPlhUDOWmGe1QtU6O3adrSbHJACnvqvRq
-         tiatJxItlogBWgNe9l3gibQfuoWcDVFUnXjn9mm3RHLxtQdbOIM1n7TbZ1fgoD5RFQ5o
-         U8FosN7KF4iKXPm2vMCGF9obbpNhmjb4LQV9i3LwmX1Naj1IKqK9rnoG9v6hIrBPAwhz
-         V8ge0JXkWNCnyCyC/TvTuBrlhY/eJ5zs1fixmJV6RJBya7D3MtETkOi56XoLkwc5uwdU
-         rI9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749698095; x=1750302895;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VcfvNlt00FTPnlyELPoRt9S7HG9qLcQIDOCI0yY1ETI=;
-        b=ipelcwcd2V+cND88JUho3+8Anb+wGCacDEyVm+M62hHaxZZ/NSYUbA4VoE4N3aTT8R
-         b6UmKh4rA7GkmSYPbTBQO4cGeX93rqEDX9P7Ie2dwfZ2QaU5NkbBXlp1/E94VZ8i+dAY
-         9CNcNP6p/LCzQ+n6QbNNR49cUzQIZ5PtvlXDPAyhF6Bg7E/vu0BE8zIDagiBKEE7gedN
-         ny0B1fGNuMNQW5hhj3od2N9cEEeJ2FVDADzWFb1d7qFxeZU8kcWzFatc8m8JK0ehFwjb
-         3I3UB8su5zynP35K3OCfOEF5KBZk8+Kl3Qo5oXXHdSpo4nNwKIm6BN73+HxDjOmSVbzU
-         bFSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV7oyuNvBgYvIww89MPb9plEkkixcpT7OTdmJicZm5DaoP4BG5Wpmm0TXa0aKqCb4PnwtqI8yfb+s5H5+g6@vger.kernel.org, AJvYcCVu8j8pynmgTE3HspVJQWZMiKYlF5M4Zd3DvrMaWS4ihZmZleHxDMRYxt7k6SDHTIBP6bd8T8RkZ9x7ag==@vger.kernel.org, AJvYcCXA2NreDOnGtF0KVeL5G5NaKE36cdb302b5P3rC6/z3209yVPG5CGWMLdQm+wKc58ytoHqQ1uPFEos=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNPz8fRpanE85KTD5Fo12VarxMbCoScu3osZ/vsXy2b/FYVfWR
-	ytHYclWRcZ70zBGw7/8cTiP1d91d4w0SjkagnXNgAmAhP6Vo5OenQORH
-X-Gm-Gg: ASbGncvhKKxJFXQVGcjKfdp7dDLgilvCXUYHUcraEeoCJPcJKtpxXdsxI5am5Ap2m7X
-	uqEJc6O2Wswglt587ikoAqqdYLi2T0TOXbVYV2FS7ORTLVtLz0FoT3QgdaxargSoui29cw5YKOT
-	2HQZl60+g28CXZSfbcAHLq+TO6MHN5Rj7gq/ULZQGX2g9dkJwBR+w2qdFgpI4Rrn6J1R79v5tVW
-	sroQERmAbSOsJBMGVm2eLE6DJZXgC2zJdg2eYrJ9lInc7hYDsyrHcnL+nbSAUBw7Hsdf1tgSabD
-	B8wLG+7rPvbiLNGHahyZG4xjcouE4sYQ8Sl1cfQGJ3zi8zCg0+qKBgK81U/PEUUNZB0VQ3wT9xZ
-	QaCv/
-X-Google-Smtp-Source: AGHT+IE89JQcQCFvk3h02GmjoF0xUyL9MLke8YxZb75TKbqJ9AyQHn/6KwKLAgtRBahWWUJo0vLigw==
-X-Received: by 2002:a05:6a20:12c6:b0:1f5:889c:3cbd with SMTP id adf61e73a8af0-21f867441e9mr9009270637.35.1749698094760;
-        Wed, 11 Jun 2025 20:14:54 -0700 (PDT)
-Received: from [192.168.0.150] ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74880896268sm350183b3a.44.2025.06.11.20.14.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Jun 2025 20:14:54 -0700 (PDT)
-Message-ID: <8b354dec-021b-4083-a59d-d77b48e3e616@gmail.com>
-Date: Thu, 12 Jun 2025 10:14:50 +0700
+	s=arc-20240116; t=1749698408; c=relaxed/simple;
+	bh=JKrGxfJ9bY1VdlddKbZBYtnIpnFbzfj0wQ2bxGETc00=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PT5ZHlcwCO1pCrquh+ky7M12KbDnQXRRbRrqADWTtU79W9gR97fG1Do8frQ2iKPbYyOOTyjdxcKS2h932c9pZgUYM7veuoRfxvbxyH2QT+9QMZhpUXP9wMKD9UI9f8bwDCvOfjz1Gre6bkNQVdeKuFmmXr5qOxed6IBs+HgWH7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZO8jzZG6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE41CC4CEEB;
+	Thu, 12 Jun 2025 03:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749698407;
+	bh=JKrGxfJ9bY1VdlddKbZBYtnIpnFbzfj0wQ2bxGETc00=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZO8jzZG6flEz1SlEaeLqAhfI48cg+Uq9RT214hBXxLaVla0kh6yZbqDfd/5j9AIcy
+	 hg7FRB34On826XdWb/njONmiWCIuYU/AURBB5w7dy+Y14OTQAF40sRpkqMs2jp8YtT
+	 oB8XxVJoOQJW2bxCGMBlUTVY2VlYboLfvfLB3zV61kdoTp9JXq1ptOoC+AhuWAgdTL
+	 9KV/4vKzn76SkaGv8myx9Puu0MBmiJqryXzBp5TEFe4tAgw87v5Im/p8VkvFe3bsqe
+	 gpztu9Iof9weAwIfiQTLtbgqkmLoq277bbqUiPNuX5RjxiLfj07a9c/VTWYEob9vij
+	 8yQp77MlyII8w==
+Date: Wed, 11 Jun 2025 20:20:07 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Amir Goldstein <amir73il@gmail.com>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net,
+	bernd@bsbernd.com, miklos@szeredi.hu, joannelkoong@gmail.com,
+	Josef Bacik <josef@toxicpanda.com>,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	Allison Karlitskaya <lis@redhat.com>
+Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
+ containerize ext4
+Message-ID: <20250612032007.GD6134@frogsfrogsfrogs>
+References: <20250521235837.GB9688@frogsfrogsfrogs>
+ <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
+ <20250529164503.GB8282@frogsfrogsfrogs>
+ <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
+ <20250609223159.GB6138@frogsfrogsfrogs>
+ <CAOQ4uxgUVOLs070MyBpfodt12E0zjUn_SvyaCSJcm_M3SW36Ug@mail.gmail.com>
+ <20250610190026.GA6134@frogsfrogsfrogs>
+ <20250611115629.GL784455@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Documentation: ext4: atomic_writes: Remove
- cross-reference labels
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Documentation <linux-doc@vger.kernel.org>,
- Linux ext4 <linux-ext4@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>,
- Andreas Dilger <adilger.kernel@dilger.ca>,
- "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-References: <20250610091200.54075-2-bagasdotme@gmail.com>
- <20250611164800.GC6134@frogsfrogsfrogs> <87ikl21a5u.fsf@trenco.lwn.net>
- <aEoaJEhw5qHkd2_w@archie.me> <20250612010942.GJ6179@frogsfrogsfrogs>
- <aEpAD2jcemzvoJlQ@archie.me>
-Content-Language: en-US
-In-Reply-To: <aEpAD2jcemzvoJlQ@archie.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250611115629.GL784455@mit.edu>
 
-On 6/12/25 09:48, Bagas Sanjaya wrote:
-> On Wed, Jun 11, 2025 at 06:09:42PM -0700, Darrick J. Wong wrote:
->> On Thu, Jun 12, 2025 at 07:07:00AM +0700, Bagas Sanjaya wrote:
->>> On Wed, Jun 11, 2025 at 11:05:17AM -0600, Jonathan Corbet wrote:
->>>> Sphinx wants to snarf up every .rst file it sees, regardless of whether
->>>> it is explicitly made part of the document tree.  So it will pick up
->>>> atomic_writes.rst separately from the include.
->>
->> Does that mean that overview.rst doesn't need to include the other files
->> at all?
+On Wed, Jun 11, 2025 at 10:56:29AM -0100, Theodore Ts'o wrote:
+> +Allison Karlitskaya
 > 
-> I think overview.rst can be turned into toctree index.
+> On Tue, Jun 10, 2025 at 12:00:26PM -0700, Darrick J. Wong wrote:
+> > > High level fuse interface is not the right tool for the job.
+> > > It's not even the easiest way to have written fuse2fs in the first place.
+> > 
+> > At the time I thought it would minimize friction across multiple
+> > operating systems' fuse implementations.
+> > 
+> > > High-level fuse API addresses file system objects with full paths.
+> > > This is good for writing simple virtual filesystems, but it is not the
+> > > correct nor is the easiest choice to write a userspace driver for ext4.
+> > 
+> > Agreed, it's a *terrible* way to implement ext4.
+> > 
+> > I think, however, that Ted would like to maintain compatibility with
+> > macfuse and freebsd(?) so he's been resistant to rewriting the entire
+> > program to work with the lowlevel library.
 > 
+> My priority is to make sure that we have compatibility with other OS's
+> (in particular MacOS, FreeBSD, if possible Windows, although that's
+> not something that I develop against or have test vehicles to
+> validate).  However, from what I can tell, they all support Fuse3 at
+> this point --- MacFuse, FreeBSD, and WinFSP all have Fuse3 support as
+> of today.
+> 
+> The only complaint that I've had about breaking support using Fuse2
+> was from Allison (Cc'ed), who was involved with another Github
+> project, whose Github Actions break because they were using a very old
+> version of Ubuntu LTS 20.04), which only had support for libfuse2.  I
+> am going to assume that this is probably only because they hadn't
+> bothered to update their .github/workflows/ci.yaml file, and not
+> because there was any inherit requirement that we support ancient
+> versions of Linux distributions.  (When I was at IBM, I remember
+> having to support customers who used RHEL4, and even in one extreme
+> case, RHEL3 because there were a customer paying $$$$$ that refused to
+> update; but that was well over a decade ago, and at this point, I'm
+> finding it a lot harder to care about that.  :-)
+> 
+> My plan is that after I release 1.47.2 (which will have some
+> interesting data corruption bugfixes thanks to Darrick and other users
+> using fuse2fs in deadly earnest, as opposed to as a lightweight way to
+> copy files in and out of an file system image), I plan to transition
+> the master and next branches for the future 1.48 release, and the
+> maint branch will have bug fixes for 1.47.N releases.
+> 
+> At that point, unless I hear some very strong arguments against, for
+> 1.48, my current thinking is that we will drop support for Fuse2.  I
+> will still care about making sure that fuse2fs will build and work
+> well enough that casual file copies work on MacOS and FreeBSD, and
+> I'll accept patches that make fuse2fs work with WinFSP.  In practice,
+> this means that Linux-specific things like Verity support will need to
+> be #ifdef'ed so that they will build against MacFUSE, and I assume the
+> same will be true for fuseblk mode and iomap mode(?).
 
-Or maybe slurp all included .rst's.
+<nod> I might just drop fuseblk mode since it's unusable for
+unprivileged userspace and regular files; and is a real pain even for
+"I'm pretending to be the kernel" mode.
 
-Thanks.
+> This may break the github actions for composefs-rs[1], but I'm going
+> to assume that they can figure out a way to transition to Fuse3
+> (hopefully by just using a newer version of Ubuntu, but I suppose it's
+> possible that Rust bindings only exist for Fuse2, and not Fuse3).  But
+> in any case, I don't think it makes sense to hold back fuse2fs
+> development just for the sake of Ubuntu Focal (LTS 20.04).  And if
+> necessary, composefs-rs can just stay back on e2fsprogs 1.47.N until
+> they can get off of Fuse2 and/or Ubuntu 20.04.  Allison, does that
+> sound fair to you?
+> 
+> [1] https://github.com/containers/composefs-rs
+> 
+> Does anyone else have any objections to dropping Fuse2 support?  And
+> is that sufficient for folks to more easily support iomap mode in
+> fuse2fs?
 
+I don't have any objections to cleaning the fuse2 crud out of fuse2fs.
 
--- 
-An old man doll... just what I always wanted! - Clara
+I /do/ worry that rewriting fuse2fs to target the lowlevel fuse3 library
+instead of the highlevel one is going to break the !linux platforms.
+Although I *think* macfuse and freebsd fuse actually support the
+lowlevel library will be ok, I do worry that we might lose windows
+support.  I can't tell if winfsp or dokan are what you're supposed to
+use there, but afaict neither of them support the lowlevel interface.
+
+That said, I could just fork fuse2fs and make the fork ("fuse4fs") talk
+to the lowlevel library, and we can see what happens when/if people try
+to build it on those platforms.
+
+(Though again I have zero capacity to build macos or windows programs...)
+
+TBH it might be a huge relief to just start with a new fuse4fs codebase
+where I can focus on making iomap the single IO path that works really
+well, rather than try to support the existing one.  There's a lot of IO
+manager changes in the fuse2fs+iomap prototype that I think just go away
+if you don't need to support doing the file IO yourself.
+
+Any code that's shareable between fuse[24]fs should of course get split
+out, which should ease the maintenance burden of having two fuse
+servers.  Most of fuse2fs' "smarts" are just calling libext2fs anyway.
+Maybe someday we can pull an egcs. :P
+
+> Cheers,
+> 
+> 							- Ted
+> 
+> P.S.  Greetings from Greenland.  :-)  (We're currently in the middle of
+> a cruise that started in Iceland, and will be ending in New York City
+> next week.)
+
+Heh, enjoy your cruise!!
+
+--D
 
