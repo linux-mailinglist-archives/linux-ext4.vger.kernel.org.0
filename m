@@ -1,46 +1,45 @@
-Return-Path: <linux-ext4+bounces-8390-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8391-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0201AD6F0F
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 13:31:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9360AAD6F2F
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 13:38:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6188B7A9A2D
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 11:29:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6485A1898E3E
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 11:38:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463212F430D;
-	Thu, 12 Jun 2025 11:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4553D22F76C;
+	Thu, 12 Jun 2025 11:37:48 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4909AEC2;
-	Thu, 12 Jun 2025 11:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C0B32F4333;
+	Thu, 12 Jun 2025 11:37:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749727862; cv=none; b=FkHaEnvnJnk9c61S6BipXncaH5aVPw0hTmq0LGpKkKEtvxOh43f7/U4tKVWaQGwyVt6BnIhvb4Wsn5ajWuETUT7zs15n23cafKjTNwqO/j3lws5QH6M10m+3oWehYRZ26GPzfW5bn1R04Mi6gzxxcglGiWnbx+OzqnLpF8q4QEA=
+	t=1749728268; cv=none; b=hSOPXz5xcMHpNfbiAjyc7+Vn1XBdowCH7ua2uQxaozNkhGH+sjdAaF8UjMO7MPeoLdN4V9pXmJDjYD6WSCQapfhPiPdc2Uo19Mz+Iw91LDgTQ30ILvQwqrOH3foIW2hCzOXlu/1mOCSAofDOk6kj+pMPjeoWKBBBLC+dmuTBcmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749727862; c=relaxed/simple;
-	bh=t34Qsq3FLgijejopvQb4g/9oC3yiNefOtHAPCHcuUWw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=SCWTXNBBkFr9CPi7qPzuRucw1i4xHa9RFTQuonhjZW5+m8ww+EFbHFeTiF9SVVkST3Z6fD/dvYdyt/pHvE40kgh57CFiJfA7M7f6rFJPKuAPzmaearqIJ+USYkvC7kSdsbK2XFsFYTCssNAJ5RmV331mnTPNAah8w15sB/1y0ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4bJ0jS2tnqz2QTyj;
-	Thu, 12 Jun 2025 19:31:40 +0800 (CST)
-Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9A1DA1A0188;
-	Thu, 12 Jun 2025 19:30:47 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
- (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 12 Jun
- 2025 19:30:46 +0800
-Message-ID: <4fd0b1b9-6054-42ea-9cb3-250910f644c7@huawei.com>
-Date: Thu, 12 Jun 2025 19:30:45 +0800
+	s=arc-20240116; t=1749728268; c=relaxed/simple;
+	bh=1hME+q7q5I+jjLm/t72QKjRqfoHtJN7hkve8S00L+WE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iW4W95KG9jb9KG8+tASQF0M91Z9u0VrjAaAr/YvGnA/tVpdNTsObEouIkzhMPwgRSQx1RziF1GKWg1ZlA3Kt3W+9aXxbd2+3t4qi+x3NK4RQBO+RKnRH5QYrwhKpw54ojqd+wOi2cnESBGbw4pVSXVTGztvlWxPm21imrK3fhZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bJ0rR4SwYzKHN95;
+	Thu, 12 Jun 2025 19:37:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id ECED01A01A4;
+	Thu, 12 Jun 2025 19:37:41 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgAXe18DvEpoJoUoPQ--.21926S3;
+	Thu, 12 Jun 2025 19:37:41 +0800 (CST)
+Message-ID: <b14aaa15-9d41-45cf-9bd8-fe92d256070d@huaweicloud.com>
+Date: Thu, 12 Jun 2025 19:37:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -48,126 +47,128 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] ext4: better scalability for ext4 block allocation
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<jack@suse.cz>, <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-	<yangerkun@huawei.com>, Baokun Li <libaokun@huaweicloud.com>
-References: <20250523085821.1329392-1-libaokun@huaweicloud.com>
- <aDchmYDc_OOAu2yC@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <f21507f9-ebc6-43ce-97c4-cd055c53747e@huawei.com>
- <aEgfwKvcJzt9gkGq@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <bff134da-e056-4eaf-b5ac-cace99208e40@huawei.com>
- <aEk8xcy9Zykrx3m3@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Subject: Re: [PATCH 07/10] fs: introduce FALLOC_FL_WRITE_ZEROES to fallocate
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+ linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de,
+ tytso@mit.edu, john.g.garry@oracle.com, bmarzins@redhat.com,
+ chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com, brauner@kernel.org,
+ martin.petersen@oracle.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+ yukuai3@huawei.com, yangerkun@huawei.com, linux-api@vger.kernel.org
+References: <20250604020850.1304633-1-yi.zhang@huaweicloud.com>
+ <20250604020850.1304633-8-yi.zhang@huaweicloud.com>
+ <20250611150555.GB6134@frogsfrogsfrogs>
 Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <aEk8xcy9Zykrx3m3@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemg500008.china.huawei.com (7.202.181.45)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20250611150555.GB6134@frogsfrogsfrogs>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgAXe18DvEpoJoUoPQ--.21926S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGrykKF4xGr1UuryUJryUAwb_yoWrWF45pF
+	W3Ca4UKr4kGFyfC3s3Z3Z7Cry5Zws3Kr43ZrW2gr1jvr15Wr1fKFsFgryYva4xJrs7Aa1Y
+	qr40vFy3ua4DZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
+	0PDUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2025/6/11 16:22, Ojaswin Mujoo wrote:
-> On Tue, Jun 10, 2025 at 09:48:30PM +0800, Baokun Li wrote:
->> On 2025/6/10 20:06, Ojaswin Mujoo wrote:
->>> On Thu, May 29, 2025 at 08:24:14PM +0800, Baokun Li wrote:
->>>> On 2025/5/28 22:53, Ojaswin Mujoo wrote:
->>>>> On Fri, May 23, 2025 at 04:58:17PM +0800, libaokun@huaweicloud.com wrote:
->>>> ----------------------------------------------------------
->>>>                        |       base      |      patched    |
->>>> ---------------------|--------|--------|--------|--------|
->>>> mb_optimize_scan     | linear |opt_scan| linear |opt_scan|
->>>> ---------------------|--------|--------|--------|--------|
->>>> bw(MiB/s)            | 217    | 219    | 5685   | 5670   |
->>>> Avg. free extent size| 1943732| 1943728| 1439608| 1368328|
->>>> Avg. extents per file| 261879 | 262039 | 744    | 2084   |
->>>> Avg. size per extent | 4      | 4      | 1408   | 503    |
->>>> Fragmentation score  | 100    | 100    | 2      | 6      |
->>>> ----------------------------------------------------------
->>> Hi Baokun,
->>>
->>> Thanks for the info and data and apologies for being late, I caught a
->>> viral last week :/
->> Hi Ojaswin,
+On 2025/6/11 23:05, Darrick J. Wong wrote:
+> [cc linux-api about a fallocate uapi change]
+> 
+> On Wed, Jun 04, 2025 at 10:08:47AM +0800, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
 >>
->> Being sick really takes a toll.
->> Please get some good rest and take care of yourself.
-> Thanks Baokun!
->
-> <snip>
->
->>>> Another reason is that opt_scan tends to allocate from groups that have
->>>> just received freed blocks, causing it to constantly "jump around"
->>>> between certain groups.
->>>>
->>>> This leads to intense contention between allocation and release, and even
->>>> between release events. In contrast, linear traversal always moves forward
->>>> without revisiting groups, resulting in less contention between allocation
->>>> and release.
->>> By just received free blocks, you mean the blocks got freed in the group
->>> right?
->> Yes.
->>> I was under the impression that when we free blocks and the group's
->>> largest order/ avg fragment changes, the group is added to the end of
->>> the free fragment list/order list so it should be the last to be picked.
->>> Is that not the case?
->> Yes, we are indeed adding the group to the list tail. However, because
->> we traverse all ordered lists from low to high, a group might end up
->> "bouncing" repeatedly between order_0 and order_1 here.
+>> With the development of flash-based storage devices, we can quickly
+>> write zeros to SSDs using the WRITE_ZERO command if the devices do not
+>> actually write physical zeroes to the media. Therefore, we can use this
+>> command to quickly preallocate a real all-zero file with written
+>> extents. This approach should be beneficial for subsequent pure
+>> overwriting within this file, as it can save on block allocation and,
+>> consequently, significant metadata changes, which should greatly improve
+>> overwrite performance on certain filesystems.
 >>
->> For instance, if order_1 only contains group 1, linear traversal would
->> rarely revisit it after the initial pass. However, after a non-linear
->> allocation, this group is moved from the order_1 list to the order_0 list.
->> When blocks are freed, it's moved back to the order_1 list, and then
->> non-linear traversal prioritizes allocation in this same group again...
-> Right, I get what you mean now. Thanks.
->
->>>> However, because linear involves more groups in allocation, journal
->>>> becomes a bottleneck. If opt_scan first attempts to traverse block groups
->>>> to the right from the target group in all lists, and then from index 0 to
->>>> the left in all lists, competition between block groups would be
->>>> significantly reduced.
->>>>
->>>> To enable ordered traversal, we attempted to convert list_head to an
->>>> ordered xarray. This ordering prevents "bouncing" during retries.
->>>> Additionally, traversing all right-side groups before left-side groups
->>>> significantly reduced contention. Performance improved from 10430 to 17730.
->>> Do you maybe have some code you can share of this?
->> Yes, V2 will include those changes.
-> Okay sure
->
-> <snip
->
->>>> In a single container, create a file, then repeatedly append 8KB using
->>>> fallocate until the file reaches 1MB. After that, truncate the file to
->>>> 0 and continue appending 8KB with fallocate. The 64 containers will
->>>> occupy a maximum of 64MB of disk space in total, so they won't fill the
->>>> entire file system.
->>> Also, as per your theory, if we do similar experiments in a fragmented
->>> FS we should see opt_scan perform better right? I'd like to test this as
->>> well. I'll try to play with the scripts you have shared.
->>>
->> Yes, mb_optimize_scan performs well when free space fragmentation is
->> severe. We have a 600TB disk array where the write bandwidth is
->> approximately 5 GB/s when empty. When space utilization reaches 95%,
->> linear traversal drops bandwidth to 1 GB/s, whereas enabling
->> mb_optimize_scan restores it to 4.2 GB/s.
-> Got it, thanks for confirming. Seems like in mostly empty FS linear
-> traversal seems to do better. Makes me wonder if we should use some
-> heurestic to switch between linear and opt_scan based allocation, for
-> example opt_scan can be used if FS is 60% full or has a fragmentation
-> score of X. (or something like that..)
-Yes, it would be nice if we could switch at the right point in time so we
-could have the best of both allocations. But we need some data to support
-us in choosing the right strategy, but that can come later.
-> But Im also curious about your improved optimize scan implementation
-> with ordered traversal, so lets see how that goes first.
->
-The v2 version of the patch is currently being tested and if it goes
-well, it could be sent out next week.
+>> Therefore, introduce a new operation FALLOC_FL_WRITE_ZEROES to
+>> fallocate. This flag is used to convert a specified range of a file to
+>> zeros by issuing a zeroing operation. Blocks should be allocated for the
+>> regions that span holes in the file, and the entire range is converted
+>> to written extents. If the underlying device supports the actual offload
+>> write zeroes command, the process of zeroing out operation can be
+>> accelerated. If it does not, we currently don't prevent the file system
+>> from writing actual zeros to the device. This provides users with a new
+>> method to quickly generate a zeroed file, users no longer need to write
+>> zero data to create a file with written extents.
+>>
+>> Users can determine whether a disk supports the unmap write zeroes
+>> operation through querying this sysfs interface:
+>>
+>>     /sys/block/<disk>/queue/write_zeroes_unmap
+>>
+>> Finally, this flag cannot be specified in conjunction with the
+>> FALLOC_FL_KEEP_SIZE since allocating written extents beyond file EOF is
+>> not permitted. In addition, filesystems that always require out-of-place
+>> writes should not support this flag since they still need to allocated
+>> new blocks during subsequent overwrites.
+>>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>> ---
+>>  fs/open.c                   |  1 +
+>>  include/linux/falloc.h      |  3 ++-
+>>  include/uapi/linux/falloc.h | 18 ++++++++++++++++++
+>>  3 files changed, 21 insertions(+), 1 deletion(-)
+>>
+[...]
+>> diff --git a/include/uapi/linux/falloc.h b/include/uapi/linux/falloc.h
+>> index 5810371ed72b..265aae7ff8c1 100644
+>> --- a/include/uapi/linux/falloc.h
+>> +++ b/include/uapi/linux/falloc.h
+>> @@ -78,4 +78,22 @@
+>>   */
+>>  #define FALLOC_FL_UNSHARE_RANGE		0x40
+>>  
+>> +/*
+>> + * FALLOC_FL_WRITE_ZEROES is used to convert a specified range of a file to
+>> + * zeros by issuing a zeroing operation. Blocks should be allocated for the
+>> + * regions that span holes in the file, and the entire range is converted to
+>> + * written extents.
+> 
+> I think you could simplify this a bit by talking only about the end
+> state after a successful call:
+> 
+> "FALLOC_FL_WRITE_ZEROES zeroes a specified file range in such a way that
+> subsequent writes to that range do not require further changes to file
+> mapping metadata."
+> 
+> Note that we don't say how the filesystem gets to this goal.  Presumably
+> the first implementations will send a zeroing operation to the block
+> device during allocation and the fs will create written mappings, but
+> there are other ways to get there -- a filesystem could maintain a pool
+> of pre-zeroed space and hand those out; or it could zero space on
+> freeing and mounting such that all new mappings can be created as
+> written even without the block device zeroing operation.
+> 
+> Or you could be running on some carefully engineered system where you
+> know the storage will always be zeroed at allocation time due to some
+> other aspect of the system design, e.g. a single-use throwaway cloud vm
+> where you allocate to the end of the disk and reboot the node.
 
+Indeed, it makes sense to me. It appears to be more generic and obscures
+the methods by which different file systems may achieve this goal. Thank
+you for the suggestion.
 
-Cheers,
-Baokun
+Best regards,
+Yi.
 
 
