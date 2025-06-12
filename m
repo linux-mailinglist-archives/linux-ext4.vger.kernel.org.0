@@ -1,163 +1,121 @@
-Return-Path: <linux-ext4+bounces-8396-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8397-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796F8AD7498
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 16:51:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F303AD753C
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 17:07:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C7623B3D59
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 14:50:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A79B3B7053
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Jun 2025 15:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3328A1A3160;
-	Thu, 12 Jun 2025 14:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE95D27A914;
+	Thu, 12 Jun 2025 15:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dupond.be header.i=@dupond.be header.b="ET0HjE8w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m74s/H9b"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from apollo.dupie.be (apollo.dupie.be [51.159.20.238])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 229711C7015
-	for <linux-ext4@vger.kernel.org>; Thu, 12 Jun 2025 14:50:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.159.20.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662F0279795;
+	Thu, 12 Jun 2025 15:03:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749739854; cv=none; b=otRhujk7lrKRcX3/1qqNDgAmJ/A5661X4NYh0uZtyWiwbir3ZBvgqvLgGIqVLGruPWmvYVPvk2MghfYbuKUMPJ7vCOzml7dbTf8Y/LFDtTh+vKzpjBJ9h8G63njYsLqHWjTBrTWLnoVJaT+3sfqceb7H7pZlVB5u/vuiDoFSQSw=
+	t=1749740628; cv=none; b=WzfBwLkBLUuOb5Vzqax3mCt1WPq+AHFtgQ5jAPtGv+/DbBveZXLvoarIOr5IghKmsUU4VxEtzdD8/kUeVokcX6IDnaqnQaG3mH39Jk81WmiLc3cI4F97Goe1QshcNJRKg6Ku1ghl185An1MbBBEta9/kSbM6F2hsRLZ3rD92NIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749739854; c=relaxed/simple;
-	bh=eadKk0mDVOEU6QzXDQpg30pPt7Wrg16aVbD9/y0CatM=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=RXR8TpVqSzNP5f7z9fEKqSRxX/012LFawLXHqdq6HG4awrzkRlGAywb/S9MGLYUEJy1ZaU5WQQPeBkCTfdbikH9njA/Om5i1ksPJ0KBlVqQ4mr+5F+Tqkgi0hBji7+942/eMRokwiv52IpvR687k+rikgoHq95w7q8kC82ndbis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dupond.be; spf=pass smtp.mailfrom=dupond.be; dkim=pass (2048-bit key) header.d=dupond.be header.i=@dupond.be header.b=ET0HjE8w; arc=none smtp.client-ip=51.159.20.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dupond.be
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dupond.be
-Received: from [IPV6:2a02:a03f:fafa:dc01:d858:164:afdb:5295] (unknown [IPv6:2a02:a03f:fafa:dc01:d858:164:afdb:5295])
-	by apollo.dupie.be (Postfix) with ESMTPSA id 3B9561520F57
-	for <linux-ext4@vger.kernel.org>; Thu, 12 Jun 2025 16:43:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dupond.be; s=dkim;
-	t=1749739398;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=IKnrvGOmGJh2sEXYzsi0ev1ZDtvFQJoybGRjwSFx4cE=;
-	b=ET0HjE8wJlafVQBaPMcVxGJAcYqVw7nakPEb/wvG5ESDTKXAJky1+QgfQXd/TX3mQLLRWx
-	AfIg4+FIJFDihZrPf3+sVLlIjdthu7zpA7ATlL7ivvMXHJZkR1HJFW+yy3kjQkyuYJaLwO
-	C4kHuJLfXwZnTIy0b0qq9lE0TIbNOwjmtzbx1BwlqR5zLFvHAZMD88mhaBXVC9f0i05cXo
-	7BGpAiMe9ngLn8KsUUXbLGKmXqWP/r4ZjU5NjlJ0u0DpcDb78aRyxwgJ8cqSxqGude/b5d
-	2P8iTgupV9575EoJDQ7TH2N5lOw3OYZcYpNK3+AEHRInoB/JNSXiA91O0L9gxQ==
-Message-ID: <e90d9c7f-adf8-453d-a3c2-f1d28ee9d9b3@dupond.be>
-Date: Thu, 12 Jun 2025 16:43:17 +0200
+	s=arc-20240116; t=1749740628; c=relaxed/simple;
+	bh=ONyFbl7eR0QXU3CRaThaUkea18g1Bd2HJqzSu8H2F5E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nVwdg6vIKF1xXsMiRSIRaSzB79GN8FbI2279dR5cLXr4bZVv0UIU/i789xnTwkcMjU6ud8IPiiocrIjnabH8BvyyuiQf5hjjvmx+ygS6MpJYiWjKjyvJ5fBBg7+m5lQglVPKeM+ZPG43Lsnk4v8F6rpnFGFU46wxjIHEWRM3IUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m74s/H9b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C65BDC4CEEB;
+	Thu, 12 Jun 2025 15:03:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749740627;
+	bh=ONyFbl7eR0QXU3CRaThaUkea18g1Bd2HJqzSu8H2F5E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=m74s/H9bViol79YmIelbep7cXyzEw47hdktzg1MN6vCsg0S24VQ/KqSDwpigubKeE
+	 i41PpwJYbao8dKkGyE2Qqe80rDBt1KLstr08lFXyM7NrBpY5+1GLMitIsyHPH9pCI1
+	 RYqA94+q4srgJ820hmzPT2j5D4utw51hYyphDzfmQ9/qugstzZiKxhOn3D8GrAvQ8j
+	 X4Jo/C2BGR8LyZw47KY7cK2I3lFCTccQP4dr8up2k8RWnzpbNifNYM9Yn3+F7UHZR0
+	 qapgcqmD42kiSJv9F9eFn76HvvhT8koJ4G37SFjrSwz0usnG0i9ighP1aKYvjTYnul
+	 8U9pYzGL/Kbhg==
+Date: Thu, 12 Jun 2025 08:03:47 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-block@vger.kernel.org,
+	dm-devel@lists.linux.dev, linux-nvme@lists.infradead.org,
+	linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tytso@mit.edu,
+	john.g.garry@oracle.com, bmarzins@redhat.com, chaitanyak@nvidia.com,
+	shinichiro.kawasaki@wdc.com, brauner@kernel.org,
+	martin.petersen@oracle.com, yi.zhang@huawei.com,
+	chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH 01/10] block: introduce BLK_FEAT_WRITE_ZEROES_UNMAP to
+ queue limits features
+Message-ID: <20250612150347.GK6138@frogsfrogsfrogs>
+References: <20250604020850.1304633-1-yi.zhang@huaweicloud.com>
+ <20250604020850.1304633-2-yi.zhang@huaweicloud.com>
+ <20250611060900.GA4613@lst.de>
+ <343f7f06-9bf6-442f-8e77-0a774203ec3f@huaweicloud.com>
+ <20250612044744.GA12828@lst.de>
+ <41c21e20-5439-4157-ad73-6f133df42d28@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-ext4@vger.kernel.org
-Content-Language: en-US, en-GB, nl-BE
-From: Jean-Louis Dupond <jean-louis@dupond.be>
-Subject: ext4 metadata corruption - snapshot related?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41c21e20-5439-4157-ad73-6f133df42d28@huaweicloud.com>
 
-Hi,
+On Thu, Jun 12, 2025 at 07:20:45PM +0800, Zhang Yi wrote:
+> On 2025/6/12 12:47, Christoph Hellwig wrote:
+> > On Wed, Jun 11, 2025 at 03:31:21PM +0800, Zhang Yi wrote:
+> >>>> +/* supports unmap write zeroes command */
+> >>>> +#define BLK_FEAT_WRITE_ZEROES_UNMAP	((__force blk_features_t)(1u << 17))
+> >>>
+> >>>
+> >>> Should this be exposed through sysfs as a read-only value?
+> >>
+> >> Uh, are you suggesting adding another sysfs interface to expose
+> >> this feature?
+> > 
+> > That was the idea.  Or do we have another way to report this capability?
+> > 
+> 
+> Exposing this feature looks useful, but I think adding a new interface
+> might be somewhat redundant, and it's also difficult to name the new
+> interface. What about extend this interface to include 3 types? When
+> read, it exposes the following:
+> 
+>  - none     : the device doesn't support BLK_FEAT_WRITE_ZEROES_UNMAP.
+>  - enabled  : the device supports BLK_FEAT_WRITE_ZEROES_UNMAP, but the
+>               BLK_FLAG_WRITE_ZEROES_UNMAP_DISABLED is not set.
+>  - disabled : the device supports BLK_FEAT_WRITE_ZEROES_UNMAP, and the
+>               BLK_FLAG_WRITE_ZEROES_UNMAP_DISABLED is set.
+> 
+> Users can write '0' and '1' to disable and enable this operation if it
+> is not 'none', thoughts?
 
-We have around 200 VM's running on qemu (on a AlmaLinux 9 based hypervisor).
-All those VM's are migrated from physical machines recently.
+Perhaps it should reuse the enumeration pattern elsewhere in sysfs?
+For example,
 
-But when we enable backups on those VM's (which triggers snapshots), we 
-notice some weird/random ext4 corruption within the VM itself.
-The VM itself runs CloudLinux 8 (4.18.0-553.40.1.lve.el8.x86_64 kernel).
+# cat /sys/block/sda/queue/scheduler
+none [mq-deadline]
+# echo none > /sys/block/sda/queue/scheduler
+# cat /sys/block/sda/queue/scheduler
+[none] mq-deadline
 
-This are some examples of corruption we see:
-1)
-kernel: EXT4-fs error (device sdc1): htree_dirblock_to_tree:1036: inode 
-#19280823: comm lsphp: Directory block failed checksum
-kernel: EXT4-fs error (device sdc1): ext4_empty_dir:2801: inode 
-#19280823: comm lsphp: Directory block failed checksum
-kernel: EXT4-fs error (device sdc1): htree_dirblock_to_tree:1036: inode 
-#19280820: comm lsphp: Directory block failed checksum
-kernel: EXT4-fs error (device sdc1): ext4_empty_dir:2801: inode 
-#19280820: comm lsphp: Directory block failed checksum
+(Annoying that this seems to be opencoded wherever it appears...)
 
-2)
-kernel: EXT4-fs error (device sdc1): ext4_lookup:1645: inode #49419787: 
-comm lsphp: deleted inode referenced: 49422454
-kernel: EXT4-fs error (device sdc1): ext4_lookup:1645: inode #49419787: 
-comm lsphp: deleted inode referenced: 49422454
-kernel: EXT4-fs error (device sdc1): ext4_lookup:1645: inode #49419787: 
-comm lsphp: deleted inode referenced: 49422454
+--D
 
-3)
-kernel: EXT4-fs error (device sdb1): ext4_validate_block_bitmap:384: 
-comm kworker/u240:3: bg 308: bad block bitmap checksum
-kernel: EXT4-fs (sdb1): Delayed block allocation failed for inode 
-2513946 at logical offset 2 with max blocks 1 with error 74
-kernel: EXT4-fs (sdb1): This should not happen!! Data will be lost
-kernel: EXT4-fs (sdb1): Inode 2513946 (00000000265d63ca): 
-i_reserved_data_blocks (1) not cleared!
-kernel: EXT4-fs (sdb1): error count since last fsck: 1
-kernel: EXT4-fs (sdb1): initial error at time 1747923211: 
-ext4_validate_block_bitmap:384
-kernel: EXT4-fs (sdb1): last error at time 1747923211: 
-ext4_validate_block_bitmap:384
-kernel: EXT4-fs (sdb1): error count since last fsck: 1
-kernel: EXT4-fs (sdb1): initial error at time 1747923211: 
-ext4_validate_block_bitmap:384
-kernel: EXT4-fs (sdb1): last error at time 1747923211: 
-ext4_validate_block_bitmap:384
-
-4)
-kernel: EXT4-fs (sdc1): error count since last fsck: 4
-kernel: EXT4-fs (sdc1): initial error at time 1746616017: 
-ext4_validate_block_bitmap:384
-kernel: EXT4-fs (sdc1): last error at time 1746621676: 
-ext4_mb_generate_buddy:808
-
-
-Now as a test we upgraded to some newer (backported) kernel, more 
-specificly: 5.14.0-284.1101
-And after doing some backups again, we had another error:
-
-kernel: EXT4-fs error (device sdc1): htree_dirblock_to_tree:1073: inode 
-#34752060: comm tar: Directory block failed checksum
-kernel: EXT4-fs warning (device sdc1): ext4_dirblock_csum_verify:405: 
-inode #34752232: comm tar: No space for directory leaf checksum. Please 
-run e2fsck -D.
-kernel: EXT4-fs error (device sdc1): htree_dirblock_to_tree:1073: inode 
-#34752232: comm tar: Directory block failed checksum
-kernel: EXT4-fs warning (device sdc1): ext4_dirblock_csum_verify:405: 
-inode #34752064: comm tar: No space for directory leaf checksum. Please 
-run e2fsck -D.
-kernel: EXT4-fs error (device sdc1): htree_dirblock_to_tree:1073: inode 
-#34752064: comm tar: Directory block failed checksum
-kernel: EXT4-fs warning (device sdc1): ext4_dirblock_csum_verify:405: 
-inode #34752167: comm tar: No space for directory leaf checksum. Please 
-run e2fsck -D.
-kernel: EXT4-fs error (device sdc1): htree_dirblock_to_tree:1073: inode 
-#34752167: comm tar: Directory block failed checksum
-
-
-So now we are wondering what could cause this corruption here.
-- We have more VM's on the same kind of setup, without seeing any 
-corruption. The only difference there is that the VM's are running 
-Debian, have smaller disks and not doing quota.
-- If we disable backups/snapshots, no corruption is observed
-- Even if we disable the qemu-guest-agent (so no fsfreeze is executed), 
-the corruption still occurs
-
-We (for now at least) only see the corruption on filesystems where quota 
-is enabled (both usrjquota and usrquota).
-The filesystems are between 600GB and 2TB.
-And today I noticed (as the filesystems are resized during setup), the 
-journal size is only 64M (could this potentially be an issue?).
-
-The big question in the whole story here is, could it be an in-guest 
-(ext4?) bug/issue? Or do we really need to look into the layer below 
-(aka qemu/hypervisor).
-Or if somebody has other idea's, feel free to share! Also additional 
-things that could help to troubleshoot the issue.
-
-Thanks
-Jean-Louis
+> Best regards,
+> Yi.
+> 
+> 
 
