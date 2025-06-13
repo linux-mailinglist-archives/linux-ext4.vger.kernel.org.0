@@ -1,158 +1,129 @@
-Return-Path: <linux-ext4+bounces-8408-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8409-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08AC4AD8187
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 05:16:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 991A7AD819A
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 05:25:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 635883B74BC
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 03:15:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 497A1189A183
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 03:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFE01D5173;
-	Fri, 13 Jun 2025 03:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249C023A563;
+	Fri, 13 Jun 2025 03:25:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ggFghHLV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59E2320E70C;
-	Fri, 13 Jun 2025 03:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495A215278E
+	for <linux-ext4@vger.kernel.org>; Fri, 13 Jun 2025 03:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749784549; cv=none; b=lF9Wakv2w/ThDufJYWIBmX3L7MycqUa0NRVtAVF8Pf7lyzIIMoDsbHtyL4wkSmXBigmyvzBl4vspWe+hELrCGOY03waEYioGA8Qhx076oQleHi1uEa/sEmm1drHASIacIG9pcaibaEs4tvaDpgunb/0s/MZxPkJc0TDm02olxYU=
+	t=1749785110; cv=none; b=Un3PaQB8hDoHlu7nUfmfaNOZ2cSwv3lLE7Sdl4lKwaN72T33Jakb/Dh57nVdMeUJIonmXuBvc32xBHO/DbE8aMxzQxUh3NkKXa+ErboS+a5wvzlsncmfutiEZy0Mf1cJ03NlXxTFp1DQFTIgKwxzVMaqqJURQAEH02XVWLxaaJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749784549; c=relaxed/simple;
-	bh=wiWZ2dzLQqc4OfpRI+E8bl3uA461tgzyLh2UFnwyaAI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GheMIyNuTe+cAnMFkBm/O47OAIxvKfRWncwOzF6hwSI7tiy528Hdan2dCK+AwJfUBmVwOAn8btlWXz1FwT+wfkJZVEq+4UCnBXfH6oioGpS/xxO1j1HgeDIYHr8XMtckqCoonEY1/B+XSyLku3GhYBkpZ2U51RJ5oSIPViuuN+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bJPfn3RlhzKHN5T;
-	Fri, 13 Jun 2025 11:15:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id CBD201A1911;
-	Fri, 13 Jun 2025 11:15:43 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgD3W2Ddl0to15NsPQ--.28263S3;
-	Fri, 13 Jun 2025 11:15:43 +0800 (CST)
-Message-ID: <3569a77f-1f38-4764-b1e3-d0075775c7bb@huaweicloud.com>
-Date: Fri, 13 Jun 2025 11:15:41 +0800
+	s=arc-20240116; t=1749785110; c=relaxed/simple;
+	bh=FaPZa9IHzNOvH4bmqcBMC83mjoJKfAKPO/ztTFspTOA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=FmGIcKI0UgW52x390DpIk2Xa9DK69/SKSrz105ZzLHkJgo6vouunD7e8lMC785HD1T6gUZjoB+IBRVWmzR8DD6yDR+PrikEw7bE8aU2UUCnRersFi7yV8EGbNuhBuF/sN85FI/OELf1GDsU0mrh/f9uiuWxS1VidY+aww0yD1Fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ggFghHLV; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4508287895dso17543605e9.1
+        for <linux-ext4@vger.kernel.org>; Thu, 12 Jun 2025 20:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1749785105; x=1750389905; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u2fREc+AJyXByCSx89CWeAOJxNBy6PYYGd7sGZkmHQ8=;
+        b=ggFghHLVmYvut5sipTcSHSzxvHvG4bijx5r40UQBnAuZqCb9Ohw7LSb9ihp16dPIyY
+         gJ7JIQzcD0XjaBHVeuaw8eQRgT+/OIf1XcSbK7qrVLb+w+87zaxehk4tffBJnZ2Kh4CV
+         dW7OgDu76gD11go2GAcUw+uiQ0ZyndBv4c54ESJx/Ep/678uMljetJH8mPxAmhz32jP5
+         bHAeTJX53HAwi51kULW1NxuhdrHOwxN2FDhdt6LBoQKG41BNi7ea6Gu2IByeN1kc1QiQ
+         ikDvkUpD6ZKZE9QUm39VJ6AFlM5qYOtlHTlEv8TrgHQJ9JNr5AwdkvgDG4a5lY7HiDZG
+         0PUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749785105; x=1750389905;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u2fREc+AJyXByCSx89CWeAOJxNBy6PYYGd7sGZkmHQ8=;
+        b=tXQ6E1NqO4eHxfg9BPHdIsnByLSsreNHxmG8LZxM3puULEa3ifHa7KjHPh++ymzvjU
+         Xiq4h2buWe7s5OY1Ymu0hiDXGPwxoPiDcrrpBIVdOd+caZgnSme7vTkeVM2lkDDohGpj
+         AGGJk9ZutvGa+QMPDBs8TWM95nGlCBJLc1lfnEHFgQnj3/swkRFOrvWxhJdzoyOAZ09K
+         H7oEF6S8Uo3/9g9nVjbKjS7seG+5fWOcKcBo8tBbcYjuvWh2xpiegugjEr9bPw2vnTeV
+         NiPT1zm1pCUK4VcASEpPOMMY4rTL2ucBYXapBoyG8oQQwb9v9J8A6PsB2BaFGA5/n2EG
+         +0pQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWX9N++CePZjTRkHDac90D+BjNftwIqkmLpiKA/Z+oL2Mbo/cUOcY2EygpOUeM5stuPBonKzrD4qIiB@vger.kernel.org
+X-Gm-Message-State: AOJu0YydO3EsQpRB7jYSPA34KpF5zcEMrh1UomG+HEnYuhdOQ+Py68kd
+	F6hqb0n/lybuge90b9cQ8xx1iE5BIhlpVF9EdfmjkcVKeXIkp7CveJWbl4l0S9OeJQ==
+X-Gm-Gg: ASbGnctlV2MsW3WeLZw04zCRI0Yqf2kkyOG9BPUlvTb/rdynUMl5w+q0JDaK4WKlowx
+	G3nhT4KIjjsBaHz+kmwKNvVrtLUr+zzzz626rcldgl/7eW6xOzLuRlCjLDJWXhjghqiQ0dTberx
+	AuotXNa8O+8TTWxnpI9xQlaUQSZoOA//UpZXkUL2/lFR+ozYuwzv+rqSa8vxBkCzpOxwnxwXJDa
+	FakU6u3USz6kVqS+HG3x9NE3lBoT7vbFH93+sFtL8ADXaSwuqrHk0jDX8RVjtIIVE0JryS7JDx2
+	wLensh/m3WeLR7PpN9bSZMbpLu2Js+ra2BaCHdOEDc9hsdv0VXs=
+X-Google-Smtp-Source: AGHT+IFF2MYUpmBOV7t6AV7qpogCCm7ZuPkeNrX1RdBwqDvurBf2ligtHScARmXgbcqtMwhmDQWkCQ==
+X-Received: by 2002:a5d:5f88:0:b0:3a4:d685:3de7 with SMTP id ffacd0b85a97d-3a56a2c323dmr583210f8f.8.1749785105644;
+        Thu, 12 Jun 2025 20:25:05 -0700 (PDT)
+Received: from localhost ([202.127.77.110])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-748900d0d90sm525256b3a.155.2025.06.12.20.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Jun 2025 20:25:05 -0700 (PDT)
+From: Wei Gao <wegao@suse.com>
+To: Jan Kara <jack@suse.cz>
+Cc: Wei Gao <wegao@suse.com>,
+	linux-kernel@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH v2] ext2: Handle fiemap on empty files to prevent EINVAL
+Date: Fri, 13 Jun 2025 11:18:38 -0400
+Message-ID: <20250613152402.3432135-1-wegao@suse.com>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250612142855.2678267-1-wegao@suse.com>
+References: <20250612142855.2678267-1-wegao@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/10] block: introduce BLK_FEAT_WRITE_ZEROES_UNMAP to
- queue limits features
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-block@vger.kernel.org,
- dm-devel@lists.linux.dev, linux-nvme@lists.infradead.org,
- linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, john.g.garry@oracle.com,
- bmarzins@redhat.com, chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com,
- brauner@kernel.org, martin.petersen@oracle.com, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
-References: <20250604020850.1304633-1-yi.zhang@huaweicloud.com>
- <20250604020850.1304633-2-yi.zhang@huaweicloud.com>
- <20250611060900.GA4613@lst.de>
- <343f7f06-9bf6-442f-8e77-0a774203ec3f@huaweicloud.com>
- <20250612044744.GA12828@lst.de>
- <41c21e20-5439-4157-ad73-6f133df42d28@huaweicloud.com>
- <20250612150347.GK6138@frogsfrogsfrogs>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20250612150347.GK6138@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgD3W2Ddl0to15NsPQ--.28263S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww45Gr4fJw4UWr13Zw4DXFb_yoW5Jr43pF
-	W8GF1vyFWDKF15Gw1q93W0qr1Fvrs2ywsxXws5CrWUAwn0qr17WF1kKFWjkF97Z3Wxu3y5
-	Xa15G343ua15C3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
-	0PDUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Transfer-Encoding: 8bit
 
-On 2025/6/12 23:03, Darrick J. Wong wrote:
-> On Thu, Jun 12, 2025 at 07:20:45PM +0800, Zhang Yi wrote:
->> On 2025/6/12 12:47, Christoph Hellwig wrote:
->>> On Wed, Jun 11, 2025 at 03:31:21PM +0800, Zhang Yi wrote:
->>>>>> +/* supports unmap write zeroes command */
->>>>>> +#define BLK_FEAT_WRITE_ZEROES_UNMAP	((__force blk_features_t)(1u << 17))
->>>>>
->>>>>
->>>>> Should this be exposed through sysfs as a read-only value?
->>>>
->>>> Uh, are you suggesting adding another sysfs interface to expose
->>>> this feature?
->>>
->>> That was the idea.  Or do we have another way to report this capability?
->>>
->>
->> Exposing this feature looks useful, but I think adding a new interface
->> might be somewhat redundant, and it's also difficult to name the new
->> interface. What about extend this interface to include 3 types? When
->> read, it exposes the following:
->>
->>  - none     : the device doesn't support BLK_FEAT_WRITE_ZEROES_UNMAP.
->>  - enabled  : the device supports BLK_FEAT_WRITE_ZEROES_UNMAP, but the
->>               BLK_FLAG_WRITE_ZEROES_UNMAP_DISABLED is not set.
->>  - disabled : the device supports BLK_FEAT_WRITE_ZEROES_UNMAP, and the
->>               BLK_FLAG_WRITE_ZEROES_UNMAP_DISABLED is set.
->>
->> Users can write '0' and '1' to disable and enable this operation if it
->> is not 'none', thoughts?
-> 
-> Perhaps it should reuse the enumeration pattern elsewhere in sysfs?
-> For example,
-> 
-> # cat /sys/block/sda/queue/scheduler
-> none [mq-deadline]
-> # echo none > /sys/block/sda/queue/scheduler
-> # cat /sys/block/sda/queue/scheduler
-> [none] mq-deadline
-> 
-> (Annoying that this seems to be opencoded wherever it appears...)
-> 
+Previously, ext2_fiemap would unconditionally apply "len = min_t(u64, len,
+i_size_read(inode));", When inode->i_size was 0 (for an empty file), this
+would reduce the requested len to 0. Passing len = 0 to iomap_fiemap could
+then result in an -EINVAL error, even for valid queries on empty files.
 
-Yeah, this solution looks good to me. However, we currently have only
-two selections (none and unmap). What if we keep it as is and simply
-hide this interface if BLK_FEAT_WRITE_ZEROES_UNMAP is not set, making
-it visible only when the device supports this feature? Something like
-below:
+Link: https://github.com/linux-test-project/ltp/issues/1246
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ fs/ext2/inode.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index e918b2c93aed..204ee4d5f63f 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -747,6 +747,9 @@ static umode_t queue_attr_visible(struct kobject *kobj, struct attribute *attr,
-             attr == &queue_max_active_zones_entry.attr) &&
-            !blk_queue_is_zoned(q))
-                return 0;
-+       if (attr == &queue_write_zeroes_unmap_entry.attr &&
-+           !(q->limits.features & BLK_FEAT_WRITE_ZEROES_UNMAP))
-+               return 0;
-
-        return attr->mode;
- }
-
-Thanks,
-Yi.
+diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+index 30f8201c155f..591db2b4390a 100644
+--- a/fs/ext2/inode.c
++++ b/fs/ext2/inode.c
+@@ -895,9 +895,15 @@ int ext2_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 		u64 start, u64 len)
+ {
+ 	int ret;
++	u64 i_size;
+ 
+ 	inode_lock(inode);
+-	len = min_t(u64, len, i_size_read(inode));
++
++	i_size = i_size_read(inode);
++
++	if (i_size > 0)
++		len = min_t(u64, len, i_size_read(inode));
++
+ 	ret = iomap_fiemap(inode, fieinfo, start, len, &ext2_iomap_ops);
+ 	inode_unlock(inode);
+ 
+-- 
+2.49.0
 
 
