@@ -1,131 +1,174 @@
-Return-Path: <linux-ext4+bounces-8406-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8407-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7DD4AD80C5
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 04:04:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B26A4AD8102
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 04:31:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7BD11E1D12
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 02:04:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D2F17A364E
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 02:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31EF81DF742;
-	Fri, 13 Jun 2025 02:04:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C2C22F770;
+	Fri, 13 Jun 2025 02:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PNGlIXkJ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3622E2F4317
-	for <linux-ext4@vger.kernel.org>; Fri, 13 Jun 2025 02:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10512EAE5
+	for <linux-ext4@vger.kernel.org>; Fri, 13 Jun 2025 02:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749780263; cv=none; b=COdb4D30WUD/5ItQpvmMlb75NMx8cS408RF84LGF2/V+p2S3StXFJuToWxQf+E3UUgRHqF8DdDsmqC/Gpu2CbBdvI7UFJz7d/8ikmPCCTNpRJx/FLf7geZGqcbinOc5rF6vDIj5a6PhVLAeU08IOlWlBGJsBS7eSS8SW34Aqk58=
+	t=1749781898; cv=none; b=Yj8AIeXBEikNRhIoSV8WFQopbBqnn7KfMnMgc5+W/n4SOiMim5NcWbNQUp2osRBuwLwDV4P81LaHQZeWRZCdvao4ClC6ZaEK5ZKRb5SjGCZXqZcnJStmSHzSETqrStZoAfUh9YHQD0fRJnWZ0AmYgXL3hIq0FAUj4OXyM1wfXzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749780263; c=relaxed/simple;
-	bh=B0yJphM+E4U/1RSlojz8rIvAgF3yzuMeApHZwxrV5+I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qd08BYY76+seRZmMrqQPvAwOIVY+55bCsEfV6MXIc6vxEMwBH54oslmC0yITvjqAN8DKcpbU/WtWusRu7P41aJMbXJKViYVGpKb8iHfZUXJDegQCjapj+m5qWfYwUdShUVJ0fc+a1X+WcQlNGP2E/dFZME5ojqbiXiaFtreduOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org ([191.96.150.107])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 55D24DfP009420
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Jun 2025 22:04:15 -0400
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id 8C85D34107C; Thu, 12 Jun 2025 22:04:12 -0400 (EDT)
-Date: Thu, 12 Jun 2025 23:34:12 -0230
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/3] fuse2fs: catch positive errnos coming from libext2fs
-Message-ID: <20250613020412.GA5819@mit.edu>
-References: <174966018041.3972888.391896904012834159.stgit@frogsfrogsfrogs>
- <174966018106.3972888.12154557537002504919.stgit@frogsfrogsfrogs>
- <20250612164304.GQ784455@mit.edu>
- <20250612221552.GO6179@frogsfrogsfrogs>
+	s=arc-20240116; t=1749781898; c=relaxed/simple;
+	bh=L3wD9sTjjdKg+ZhQeerd0GOe7e4k3/cfuUIH3z873d8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tgK182UFJiKBWwWxYdp0mIWR+/oUo+PTiTy51uW1Hps/tu3fEyZjloRQBKq+P95GcsFV2zkPwzqPygwxhI3sruxXSML78fneuDOBhjVaVgrOBwWlAdDFoPaNV3l3mdmBfWbslZdVlHtr6++g5TutBUar+FawvxcHARq/Rs1QC7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PNGlIXkJ; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-553644b8f56so1628987e87.1
+        for <linux-ext4@vger.kernel.org>; Thu, 12 Jun 2025 19:31:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749781895; x=1750386695; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n1s6XbPJSX+YCoKOPLgfOXLdhaBWp+NzFys3E04ARtU=;
+        b=PNGlIXkJJTsIvQGTPkfySrZxKGDCnl2FQgmauhqmJUEIqK616cx1VgibxC609D4PAd
+         BnfbOYoRpviKpxgFlQIpEVr9q7TVVzSQ6fX6XyvmGNPf+lCMuYJKLsYnFkpYlrl0PBH7
+         0+COZR1JUKYI+ErgGzRHRVYcWMOmxKB8k+glcuIkMSsYHVNxYbH7av8ZPCmV4c1VCZXG
+         fH1/HLLG5ByIapSHB7Ya0a+FFnKODB9Zaenu2ZQbQS9SqKrXK87nm243tmiVQA5kT7bu
+         bl8N+RVxprtehyICv5U2Udu2ZUlMTjXcV+MtGAotubBK/etHQ74Oh/u1dnzmDarF/iGQ
+         D7Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749781895; x=1750386695;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n1s6XbPJSX+YCoKOPLgfOXLdhaBWp+NzFys3E04ARtU=;
+        b=YNP7wxbvmnC9U1H/V6f7GcB3e486UeuJ7IQAAV0D2YvyRJ1tyfeIeR36fMNkG4Lvoz
+         GkOdMEeaP6uauom6TOtfg+mXp8y3zbwLPrv1Saf0nMnjbnp2zGwW2mG0/EySjhzrs40Y
+         aRXrKUjfNgTUkKcnH1XARXEgmsBMIfZu2ega/XvhxI2PFz5LfoBM3muftSGLDStOiCPM
+         HmQEeiHPkRr9h/9x9d76DXuYdVwVBAueJLzfJ6UrlpQiJLKIcZFj4xFGdDfdJlFdlghA
+         iktvDG8d8G0+xum4NUnd3kAS0G3rAf5LDNiM8EeaJkFvU7i/TBNL0Qy8nPb8tVb5Yo3n
+         7ISw==
+X-Gm-Message-State: AOJu0Yxdvv85msCr0YKhQHz7b4MN3Oowk5XbMcqCMZ5IssS/MdOp3lEY
+	thXpw6kevhJa5fWGlK6nk9lRxIroJL3EglqdXfCSnRteaG37DulXjlV37oN+9tXlRF/P3Jrv1MD
+	39YoFV23dkIgfJJb3leo8rNjb1R3TVv7urCPJ91Ks7w==
+X-Gm-Gg: ASbGncuZLUIfpVmmPkRXX9W9GiUVNNmL3As2DJHLpKmiAnL6Mvds69nci9k+eeIs8F4
+	uCVjvNbQkVgwqoU/F1T89JdtDSSbuZdnfbt7lsEhb9wi/lh0ntaHFEVL60KMWvzii8ZQi6Iemv5
+	iMI2D7UK9fds3vwO0EXBtTrcSttgB9PB/+AeXjxadtl9mXRxFa8EFQtIp3
+X-Google-Smtp-Source: AGHT+IFtuUdbYUuhRUf83nY2Zv7f6NjkbcSJ40Hs+kOw+r78XuMs2v4r78FG4a/sZIsELG8t201H0dpaBkdXjt84+Fw=
+X-Received: by 2002:a05:6512:3ba8:b0:553:515a:5ebd with SMTP id
+ 2adb3069b0e04-553af9044a1mr363952e87.8.1749781894436; Thu, 12 Jun 2025
+ 19:31:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250612221552.GO6179@frogsfrogsfrogs>
+References: <CAHB1NahGodp3=NovantwmhM2=faVWuuusfRPUiUZaXZt58K7Qg@mail.gmail.com>
+ <20250612215003.GR784455@mit.edu>
+In-Reply-To: <20250612215003.GR784455@mit.edu>
+From: Julian Sun <sunjunchao2870@gmail.com>
+Date: Fri, 13 Jun 2025 10:31:22 +0800
+X-Gm-Features: AX0GCFuKd-QfA5YwQ2GH9pwVCfoFZDK_EwOjeKq6jUVygXbOwYHL__yfXR5u5Ew
+Message-ID: <CAHB1NagzeV+RdndRWU5eXY-NdBuG+mhOccke-fQ0FkVJmQkhFA@mail.gmail.com>
+Subject: Re: Discrepancy between mkfs.ext4 man page and code on
+ lazy_journal_init default
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 12, 2025 at 03:15:52PM -0700, Darrick J. Wong wrote:
-> 
-> I.... had no idea that errcode_t's were actually segmented numbers.  Is
-> there a way to figure out the subsystem from one of them?
+On Fri, Jun 13, 2025 at 5:50=E2=80=AFAM Theodore Ts'o <tytso@mit.edu> wrote=
+:
+>
+> On Thu, Jun 12, 2025 at 08:54:59PM +0800, Julian Sun wrote:
+> > Hi,
+> >
+> > Recently, I observed a significant difference in the number of
+> > blk_mq_get_tag() calls when executing mkfs.ext4 -F -q /dev/$nvme
+> > versus mkfs.ext4 -F -q -E lazy_itable_init=3D1,lazy_journal_init=3D1
+> > /dev/$nvme. The former has over 2,000 more calls than the latter,
+> > which is confusing because the mkfs.ext4 man page states both features
+> > should be enabled by default. This implies the commands should be
+> > equivalent, with no I/O difference.
+> >
+> >        lazy_journal_init[=3D <0 to disable, 1 to enable>]
+> >              If  enabled, the journal inode will not be
+> > fully zeroed out by mke2fs.  This speeds up file system initialization
+> > noticeably, but carries some small risk if the system crashes before
+> > the journal has been overwritten entirely one time.  If the option
+> > value is omitted, it defaults to 1 to enable lazy journal inode
+> >                               ^^^^^^^^^^^
+> > zeroing.
+>
+> I agree that this might be a bit misleading, but what was meant was
+> that:
+>
+>         mke2fs -E lazy_journal_init
+>
+> and
+>
+>         mke2fs -E lazy_journal_init=3D1
+>
+> are identical.  The key words here is "If the option value is
+> omitted".
+>
 
-Sure, you can take the high 24-bits, and group them into 4 chunks of
-6-bit numbers, and then apply the lookup table found in
-lib/et/et_c.awk:
+That's a bit surprising... Because for readers searching for the
+default value in the man page, they actually want to know the value
+when the configuration is completely unspecified, including in
+/etc/mke2fs.conf and when not specified via mke2fs -E. It feels like
+the current man page description avoids the majority of scenarios and
+only describes a rare case.
 
-## "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
-c2n["A"]=1
-c2n["B"]=2
-c2n["C"]=3
- ...
-c2n["7"]=60
-c2n["8"]=61
-c2n["9"]=62
-c2n["_"]=63
+What do you think about changing the man page description to: "If the
+value is not specified in /etc/mke2fs.conf or via mke2fs, it defaults
+to disabled."?
+This also implicitly conveys that the default value can be overridden
+by configurations in /etc/mke2fs.conf or via the mkfs.ext4 -E option.
+>
+> Note that there is a distinct difference between the extended option
+> using -E command-line option and specifying the default in
+> mke2fs.conf.  That is documented in the mke2fs.conf(5) man page.
+>
+> So the bottom line is that it is possible to change the default of
+> lazy_journal_init (and lazy_itable_init, etc.) in /etc/mke2fs.conf.
+> So specifying exactly what the default should be is tricky, because
+> the system administrator could have changed what is in
+> /etc/mke2fs.conf.
+>
+> So there is the default if there is no mention of the option in
+> /etc/mke2fs.conf; the default that is used if the extended option -E
+> lazy_itable_init=3DN is not specified (which is the value in
+> /etc/mke2fs.conf, or the default if it is not mentioned in
+> /etc/mke2fs.conf); and then there is the default value if "=3DN" is not
+> specified.
+>
+> 'm not sure what's the best way of making this more explicit, short
+> of doubling or tripling the paragraphs in man pages for mke2fs(8) and
+> mke2fs.conf(5).  Which would not be ideal....  I'm happy to receive
+> any suggestions for how to make things a bit more clear but hopefully
+> in a succint way.
+>
+> Fortunately, it's super rare that users would ever need to change the
+> default, and most of the time, it's best not to mess with these knobs
+> at all....
+>
+> Cheers,
+>
+>                                                 - Ted
 
-> Or will fuse2fs just have to "know" that !(errcode & 0xFFFFFF00)
-> means "errno"?
 
-How error codes get translated into strings is implemented by
-lib/et/error_message.c.  If the high 24-bits are zero, then
-error_message.c will call strerror(code), because it's assumed that
-it's an errno.
-
-Fuse2fs's __translate_error() function is also trying to interpret
-error codes, and normally, most code paths just either (a) call
-error_message(code) or (b) compare the code for equality against a
-specific code point.  But __translate_error() needs to know the
-internal underlying structure of the error code so it can do its own
-translation, so it has to peer behimd the abstraction barrier
-implemented by the com_err library.
-
-I'll note that this scheme is a little fragile, because POSIX does not
-guarantee that errno's have to be small integers that fit in the low 8
-bits of an integer.  In practice this is true, but there is nothing
-stopping a confirming POSIX implementation of some OS to use, say, to
-have errnos between 0 and 1024.  Or perhaps some OS might try to
-implement their own segmented error code space for errno's.  But in
-practice, this has worked out for all the various subsystems that use
-the com_err infrastructure, and like libext2fs, the krb5 library has
-been ported to zillions of environments.
-
-> Hrm -- if MMP fails, that implies that we might not be the owner of
-> this filesystem, right?  Doesn't that means we should be careful about
-> not scribbling on the superblock?
-
-Well, the only time we check against MMP is when the file system is
-opened.  That's because e2fsprogs doesn't implemented the full MMP
-protocol as is found in the kernel.  In order to do that, we'd have to
-spawn a separate thread which is periodically checking the superblock
-to make sure no other node on the shared block file system has tried
-to modify the file system out from under us.
-
-Since historically e2fsprogs is single-threaded, what we do instead is
-we write a magic value into the MMP sequence number,
-EXT4_MMP_SEQ_FSCK, and if you are unfortunate enough to crash while
-fsck.ext4 (or fuse2fs or other e2fsprogs program) is operating on a
-file system, then a system adminsitrator would have to recover the
-system manually using debugfs -c ("catastrophic recovery" mode) and
-its set_super_value command to manually clear the MMP fields.
-
-If we really care about trying to use fuse2fs in a primary/secondary
-failover setup using a shared block device, we probably should put a
-first class MMP implementation into libext2fs if threading is enabled.
-However, the use of MMP is rare enough that it's probably not a high
-priority to implement, at least not immediately.
-
-					- Ted
+Thanks,
+--=20
+Julian Sun <sunjunchao2870@gmail.com>
 
