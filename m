@@ -1,61 +1,52 @@
-Return-Path: <linux-ext4+bounces-8405-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8406-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58DD9AD8041
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 03:24:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7DD4AD80C5
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 04:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B2C51892928
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 01:24:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7BD11E1D12
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Jun 2025 02:04:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2356E1D63E8;
-	Fri, 13 Jun 2025 01:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sopL9OVG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31EF81DF742;
+	Fri, 13 Jun 2025 02:04:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9A572636;
-	Fri, 13 Jun 2025 01:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3622E2F4317
+	for <linux-ext4@vger.kernel.org>; Fri, 13 Jun 2025 02:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749777841; cv=none; b=U1Runc3y8i8mp62AZIMIjfJYAE16vImdaPFawYPMOeQ+rqrIlv+WVYYTvW7F9KL6JI+6TcyLE3WAHYO+/paExGgfgA/EQGGOP3ETAAMQZDnxe+HEQMDdV8+BOmqahhwjCi59UafrBQ7oi+I/SS37xu8mgBKHaI4Dm1bRTPqlOqs=
+	t=1749780263; cv=none; b=COdb4D30WUD/5ItQpvmMlb75NMx8cS408RF84LGF2/V+p2S3StXFJuToWxQf+E3UUgRHqF8DdDsmqC/Gpu2CbBdvI7UFJz7d/8ikmPCCTNpRJx/FLf7geZGqcbinOc5rF6vDIj5a6PhVLAeU08IOlWlBGJsBS7eSS8SW34Aqk58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749777841; c=relaxed/simple;
-	bh=d5rHizoOE6yeSiQobFd52hpxfVk2+AkiKtye4xkZZNQ=;
+	s=arc-20240116; t=1749780263; c=relaxed/simple;
+	bh=B0yJphM+E4U/1RSlojz8rIvAgF3yzuMeApHZwxrV5+I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mpwcVB8zufKDpRNDoDXfUC6y6crnuQHpNOjxTu2YXtwGE90mX924g12vEPr+KtvUWUOQay0yBU7caYQNu5A7JxW1OUhFO9Y5GTDlymZRJwF9mlD8Mhy70hRpv5rxOvFTncZ7lWq5yWFu1BmMesjpMhgDivgeF+55+yMElTCRcoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sopL9OVG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB4CEC4CEEA;
-	Fri, 13 Jun 2025 01:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749777840;
-	bh=d5rHizoOE6yeSiQobFd52hpxfVk2+AkiKtye4xkZZNQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sopL9OVGaKkYBLoQ9K0Gx3mNqKCtmF6HeqAxRPeMFvJLOQNPGNCCbdfRxS2LlfLqu
-	 C3Drs4Qu4cFQG2+79qNVN/2U+Mp5r2Ku8fHrvgJywco1pbYG6PtA3ImiR1O4x08klz
-	 xDAF1Jfb3fKbHGBJ+46TYP3cVpNrl19/EEmKclh0GQCX86o255XF08PT4Rd7b6JjMQ
-	 0pZk7pLaqF1Q6YqyMWUL0yY5F1li1Q6ACzRmSrSgpQrt8hIvANSSWWinXiguz6euWJ
-	 eocxM+zUeCV/S4k5Ycq56kPx+45/tXS3yhtnvX35hipDpMVHslTEwlPdsTCo0NKkoz
-	 V/KcVAfBqnyXg==
-Date: Fri, 13 Jun 2025 01:23:57 +0000
-From: Eric Biggers <ebiggers@kernel.org>
-To: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc: Simon Richter <Simon.Richter@hogyros.de>, linux-fscrypt@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
-Message-ID: <20250613012357.GA3603104@google.com>
-References: <20250611205859.80819-1-ebiggers@kernel.org>
- <7f63be76-289b-4a99-b802-afd72e0512b8@hogyros.de>
- <20250612005914.GA546455@google.com>
- <20250612062521.GA1838@sol>
- <aEqU0iU1tBrLEYUq@gcabiddu-mobl.ger.corp.intel.com>
- <20250612155743.GA3529549@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qd08BYY76+seRZmMrqQPvAwOIVY+55bCsEfV6MXIc6vxEMwBH54oslmC0yITvjqAN8DKcpbU/WtWusRu7P41aJMbXJKViYVGpKb8iHfZUXJDegQCjapj+m5qWfYwUdShUVJ0fc+a1X+WcQlNGP2E/dFZME5ojqbiXiaFtreduOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org ([191.96.150.107])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 55D24DfP009420
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 12 Jun 2025 22:04:15 -0400
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 8C85D34107C; Thu, 12 Jun 2025 22:04:12 -0400 (EDT)
+Date: Thu, 12 Jun 2025 23:34:12 -0230
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 3/3] fuse2fs: catch positive errnos coming from libext2fs
+Message-ID: <20250613020412.GA5819@mit.edu>
+References: <174966018041.3972888.391896904012834159.stgit@frogsfrogsfrogs>
+ <174966018106.3972888.12154557537002504919.stgit@frogsfrogsfrogs>
+ <20250612164304.GQ784455@mit.edu>
+ <20250612221552.GO6179@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,93 +55,77 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250612155743.GA3529549@google.com>
+In-Reply-To: <20250612221552.GO6179@frogsfrogsfrogs>
 
-On Thu, Jun 12, 2025 at 03:57:43PM +0000, Eric Biggers wrote:
-> On Thu, Jun 12, 2025 at 09:50:26AM +0100, Giovanni Cabiddu wrote:
-> > On Wed, Jun 11, 2025 at 11:25:21PM -0700, Eric Biggers wrote:
-> > 
-> > ...
-> > 
-> > > FWIW, here's what happens if you try to use the Intel QAT driver with dm-crypt:
-> > > https://lore.kernel.org/r/CACsaVZ+mt3CfdXV0_yJh7d50tRcGcRZ12j3n6-hoX2cz3+njsg@mail.gmail.com/
-> > 
-> > /s/happens/happened/
-> > 
-> > ... and it got fixed
-> > https://lore.kernel.org/all/20220506082327.21605-1-giovanni.cabiddu@intel.com/
+On Thu, Jun 12, 2025 at 03:15:52PM -0700, Darrick J. Wong wrote:
 > 
-> But it reached users in the first place, including stable kernels.  And
-> apparently the issues were going on for years and were known to the authors of
-> the driver
-> (https://lore.kernel.org/linux-crypto/91fe9f87-54d7-4140-4d1a-eac8e2081a7c@gmail.com/).
-> 
-> We simply don't have issues like this with the AES-NI or VAES XTS code.
-> 
-> And separately, QAT was reported to be much slower than AES-NI for synchronous use
-> (https://lore.kernel.org/linux-crypto/0171515-7267-624-5a22-238af829698f@redhat.com/)
-> 
-> Later, I added VAES accelerated AES-XTS code which is over twice as fast as
-> AES-NI on the latest Intel CPUs, so that likely widened the gap even more.
-> 
-> Yet, the QAT driver registers its "xts(aes)" implementation with priority 4001,
-> compared to priority 800 for the VAES accelerated one.  So the QAT one is the
-> one that will be used by fscrypt!
-> 
-> That seems like a major issue even just from a performance perspective.
-> 
-> I expect this patch will significantly improve fscrypt performance on Intel
-> servers that have QAT.
+> I.... had no idea that errcode_t's were actually segmented numbers.  Is
+> there a way to figure out the subsystem from one of them?
 
-I was curious, so I actually ran a benchmark on an Intel Emerald Rapids server.
-Specifically, I used a kernel module that repeatedly en/decrypted 4096-byte
-messages with AES-XTS using crypto_skcipher_en/decrypt().  That's basically what
-fscrypt's file contents encryption does, but here I just measured the raw crypto
-performance.  I tested both xts-aes-vaes-avx512 and qat_aes_xts.  For both, the
-difference between encryption and decryption was within the margin of error, so
-I'll give just one number for each.
+Sure, you can take the high 24-bits, and group them into 4 chunks of
+6-bit numbers, and then apply the lookup table found in
+lib/et/et_c.awk:
 
-Results:
+## "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+c2n["A"]=1
+c2n["B"]=2
+c2n["C"]=3
+ ...
+c2n["7"]=60
+c2n["8"]=61
+c2n["9"]=62
+c2n["_"]=63
 
-    xts-aes-vaes-avx512: 16171 MB/s
-    qat_aes_xts: 289 MB/s
+> Or will fuse2fs just have to "know" that !(errcode & 0xFFFFFF00)
+> means "errno"?
 
-So, QAT is 55 times slower than the VAES-optimized software code!
+How error codes get translated into strings is implemented by
+lib/et/error_message.c.  If the high 24-bits are zero, then
+error_message.c will call strerror(code), because it's assumed that
+it's an errno.
 
-It's even slower than the generic C code:
-     
-    xts(ecb(aes-generic)): 305 MB/s
+Fuse2fs's __translate_error() function is also trying to interpret
+error codes, and normally, most code paths just either (a) call
+error_message(code) or (b) compare the code for equality against a
+specific code point.  But __translate_error() needs to know the
+internal underlying structure of the error code so it can do its own
+translation, so it has to peer behimd the abstraction barrier
+implemented by the com_err library.
 
-Now, it could be argued that this is user error -- I "should" have created lots
-of asynchronous crypto requests for 4K blocks, submitted them all at once, and
-waited for them to complete.  Thus allowing parallel processing by QAT.
+I'll note that this scheme is a little fragile, because POSIX does not
+guarantee that errno's have to be small integers that fit in the low 8
+bits of an integer.  In practice this is true, but there is nothing
+stopping a confirming POSIX implementation of some OS to use, say, to
+have errnos between 0 and 1024.  Or perhaps some OS might try to
+implement their own segmented error code space for errno's.  But in
+practice, this has worked out for all the various subsystems that use
+the com_err infrastructure, and like libext2fs, the krb5 library has
+been ported to zillions of environments.
 
-But, that's simply not what fscrypt does.  And even if it did, it could only
-plausibly help for large bios.  Short bios, for which latency is really
-important, would continue to be massively regressed by using QAT for them.
+> Hrm -- if MMP fails, that implies that we might not be the owner of
+> this filesystem, right?  Doesn't that means we should be careful about
+> not scribbling on the superblock?
 
-Even for large bios, it would have to get over 55 times faster to be worth it,
-which seems (very?) tenuous.
+Well, the only time we check against MMP is when the file system is
+opened.  That's because e2fsprogs doesn't implemented the full MMP
+protocol as is found in the kernel.  In order to do that, we'd have to
+spawn a separate thread which is periodically checking the superblock
+to make sure no other node on the shared block file system has tried
+to modify the file system out from under us.
 
-Also, as is known from dm-crypt which does do async processing, the code that's
-needed to do it is quite complex and error-prone.
+Since historically e2fsprogs is single-threaded, what we do instead is
+we write a magic value into the MMP sequence number,
+EXT4_MMP_SEQ_FSCK, and if you are unfortunate enough to crash while
+fsck.ext4 (or fuse2fs or other e2fsprogs program) is operating on a
+file system, then a system adminsitrator would have to recover the
+system manually using debugfs -c ("catastrophic recovery" mode) and
+its set_super_value command to manually clear the MMP fields.
 
-In any case, async processing would be a theoretical future improvement.  It's
-simply not what fscrypt does today, or has ever done.
+If we really care about trying to use fuse2fs in a primary/secondary
+failover setup using a shared block device, we probably should put a
+first class MMP implementation into libext2fs if threading is enabled.
+However, the use of MMP is rare enough that it's probably not a high
+priority to implement, at least not immediately.
 
-I also found that, even though I built the QAT driver as a loadable module, it
-was loaded automatically on the system and prioritized itself over the VAES-
-accelerated AES-XTS.  Thus, it would be what fscrypt uses on Intel servers where
-the QAT driver is enabled in kconfig, even just as 'm'.
-
-Even disregarding the historical data corruption issues with QAT, I think this
-makes it *very* clear that the QAT driver is harmful to fscrypt users.
-
-And I've seen similar results with the Qualcomm crypto engine
-(https://lore.kernel.org/r/20241203180553.16893-1-ebiggers@kernel.org/).
-So this isn't even unique to this particular accelerator either.
-
-This has gone on for long enough.
-
-- Eric
+					- Ted
 
