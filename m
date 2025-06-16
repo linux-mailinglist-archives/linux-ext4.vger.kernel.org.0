@@ -1,88 +1,142 @@
-Return-Path: <linux-ext4+bounces-8439-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8440-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF6B2ADB3D7
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jun 2025 16:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C9FD8ADB4E8
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jun 2025 17:08:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F1B518910CE
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jun 2025 14:27:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63AEF188B53A
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jun 2025 15:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE811F0E25;
-	Mon, 16 Jun 2025 14:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BBF20F087;
+	Mon, 16 Jun 2025 15:06:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NTVakR5S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EFIDiYoq"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E2B2BF017;
-	Mon, 16 Jun 2025 14:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0947D2BEFF9
+	for <linux-ext4@vger.kernel.org>; Mon, 16 Jun 2025 15:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750084034; cv=none; b=QlTEYjWFshZrhgyt721Elx/2ph+WlmteXr4KNEZcFRrnJxxOojV0FfLoh1nyoFg7j/v4pDSwq5Ixsmxu1kylM9MCdShD+I0Ndw/SWy/30Q3YqU4jo3D+mqdvNA5oRazeLl/amei47LAlQBtg73NnaLAQTlirZF9LpAsr/iSuqk4=
+	t=1750086376; cv=none; b=hngGnGltbvWNO1SDJQEfKeDwjRgdZU+EpQrnZtixy6CSh0AEWGqRv91gtifT6BxvNXcD9Lxbr3JpkJ3IxHIZ719ltwJgUnNlMEtAwuM2uYL9MF/WcDseHtJoQp2ShPttqZdCMYKw5vSZaTtMFxvv3I4nxwvYJ5T5eibEK22/sNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750084034; c=relaxed/simple;
-	bh=27LBzjkFKC0MWbPlUQj6Tt4KZ0Jk3l3sGSDRRlvA7Qg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rhqpd05+UhJQEADLxrAhSAapzJgcZXVebK45QjJlK94hmpzaxc/fRZnN1M+UsdySERbhtToGCRSGHuq2yXg8dOWjHKsYdGubF7GDLKyqY2pQM1jqKSFKYHebLQBfn+XXsfp8Lu8fSZCWo8O6STI+N98YHF3lZQKLUc8b5uMMA4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NTVakR5S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F3D8C4CEEA;
-	Mon, 16 Jun 2025 14:27:09 +0000 (UTC)
+	s=arc-20240116; t=1750086376; c=relaxed/simple;
+	bh=sbtVcvtxysmRyzj/aMqegOWtp2HYVhtGH+0s8ynEfkY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Q6D9CE9TBrOpDeQXi2qIlbTAnJ56Gor94baFpVBozzvwSkqcDMq4LaUjDaTg4GFRbMkkLYLlezwpKDOKuhYQ186M1emI9NLlfThy8xGljn7r0nMtTPAIkFo1jlBS+NoEYjHigZO27V4mkXQayM7i3vDnR9UfP9JaU1iejEvLud8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EFIDiYoq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EDCEC4CEEA;
+	Mon, 16 Jun 2025 15:06:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750084034;
-	bh=27LBzjkFKC0MWbPlUQj6Tt4KZ0Jk3l3sGSDRRlvA7Qg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NTVakR5SXYu6c0BR4in/xtNji5OdDLRcOb+1S6kRPnlTkxHPWFuXHEYB2XKVOnV5V
-	 XKW8fuD7PUAxa0hc9pOLobc3bi0uPxw+HNln+mqm/IAkPNktMrm+/b1hQwe4msPHOt
-	 /RBrG+An7Q7/xCH/oFBha8sLE7asffKwinvo7s0gsMMJkwqWOFFVu1jWoUz0qVEXqh
-	 8nYbEvxVezT7bLn6rjAKCURMMss27siUxZLadBGHlsr1LHHNUVo8hPE4huYEBXn5E5
-	 fAacJRg0Mlzep6Qt2V5d4o+LEnwopKyEIQ5mGnZXFdLg6Twux+PSTbq1SyQ5q+r4bW
-	 c85QZmNSdOsqg==
-Date: Mon, 16 Jun 2025 16:27:07 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-fsdevel@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-block@vger.kernel.org, dm-devel@lists.linux.dev, 
-	linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, hch@lst.de, tytso@mit.edu, djwong@kernel.org, 
-	john.g.garry@oracle.com, bmarzins@redhat.com, chaitanyak@nvidia.com, 
-	shinichiro.kawasaki@wdc.com, yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com, 
-	yangerkun@huawei.com
-Subject: Re: [PATCH 00/10] fallocate: introduce FALLOC_FL_WRITE_ZEROES flag
-Message-ID: <20250616-wasser-replizieren-c47bcfaa418a@brauner>
-References: <20250604020850.1304633-1-yi.zhang@huaweicloud.com>
- <yq17c1k74jd.fsf@ca-mkp.ca.oracle.com>
+	s=k20201202; t=1750086375;
+	bh=sbtVcvtxysmRyzj/aMqegOWtp2HYVhtGH+0s8ynEfkY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=EFIDiYoqvNgUfkhxYFGC6mo4pgrYwTFgMhn3N649Dm2jgAe0uc01rHiTkav3djL0C
+	 crPb4BYxxASmyCMRVS3A3frznuaaJj4I5gZbi+EsTjI5AQhCZ0+CPjFeBG3LiSCh3M
+	 s1xQHgzpZ3pK0lxwrv/oGHUMdRTkwVvrAmnsS/vl7dzDubR8IZtGXfNNEStXQGi5hb
+	 eL5sTH5OZiSq02vE9o+Kdd/0VUQRbiF9BCKgzwSbB+DLGaz5+KTISeveuOBV8XePiH
+	 IuaJerh087Ru3ANO1Ce4HjCk5cKgfeS969ABZNUO2engEf5NNSw2qbTADZt1XPMJCB
+	 +oZWE9hqt/3CA==
+Date: Mon, 16 Jun 2025 08:06:14 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Tim Woodall <debianbugs@woodall.me.uk>,
+	linux-ext4 <linux-ext4@vger.kernel.org>
+Subject: [PATCH] fuse2fs: clean up the lockfile handling
+Message-ID: <20250616150614.GG6134@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <yq17c1k74jd.fsf@ca-mkp.ca.oracle.com>
 
-On Mon, Jun 09, 2025 at 09:47:13PM -0400, Martin K. Petersen wrote:
-> 
-> Zhang,
-> 
-> > Changes since RFC v4:
-> >  - Rebase codes on 6.16-rc1.
-> >  - Add a new queue_limit flag, and change the write_zeroes_unmap sysfs
-> >    interface to RW mode. User can disable the unmap write zeroes
-> >    operation by writing '0' to it when the operation is slow.
-> >  - Modify the documentation of write_zeroes_unmap sysfs interface as
-> >    Martin suggested.
-> >  - Remove the statx interface.
-> >  - Make the bdev and ext4 don't allow to submit FALLOC_FL_WRITE_ZEROES
-> >    if the block device does not enable the unmap write zeroes operation,
-> >    it should return -EOPNOTSUPP.
-> 
-> This looks OK to me as long as the fs folks agree on the fallocate()
-> semantics.
+From: Darrick J. Wong <djwong@kernel.org>
 
-That looks overall fine. Should I queue this up in the vfs tree?
+Fix various problems with the new lockfile code in fuse2fs: the printfs
+should use the actual logging function err_printf, the messages should
+be looked up in gettext, we should actually exit main properly on
+error instead of calling exit(), and the error message printing for the
+final lockfile unlink is broken.
+
+Fixes: e83c0df0135f98 ("fuse2fs: rename the inusefile option to lockfile")
+Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+---
+ misc/fuse2fs.c |   45 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 29 insertions(+), 16 deletions(-)
+
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index 0f9cb6849aa7ad..bb75d9421283ed 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -4417,19 +4417,31 @@ int main(int argc, char *argv[])
+ 		fctx.alloc_all_blocks = 1;
+ 	}
+ 
+-	if(fctx.lockfile) {
+-		FILE* lockfile=fopen(fctx.lockfile, "w");
+-		if(!lockfile) {
+-			fprintf(stderr, "Requested lockfile=%s but couldn't open the file for writing\n", fctx.lockfile);
+-			exit(1);
++	if (fctx.lockfile) {
++		FILE *lockfile = fopen(fctx.lockfile, "w");
++		char *resolved;
++
++		if (!lockfile) {
++			err = errno;
++			err_printf(&fctx, "%s: %s: %s\n", fctx.lockfile,
++				   _("opening lockfile failed"),
++				   strerror(err));
++			fctx.lockfile = NULL;
++			ret |= 32;
++			goto out;
+ 		}
+ 		fclose(lockfile);
+-		char* resolved = realpath(fctx.lockfile, NULL);
++
++		resolved = realpath(fctx.lockfile, NULL);
+ 		if (!resolved) {
+-			perror("realpath");
+-			fprintf(stderr, "Could not resolve realpath for lockfile=%s\n", fctx.lockfile);
++			err = errno;
++			err_printf(&fctx, "%s: %s: %s\n", fctx.lockfile,
++				   _("resolving lockfile failed"),
++				   strerror(err));
+ 			unlink(fctx.lockfile);
+-			exit(1);
++			fctx.lockfile = NULL;
++			ret |= 32;
++			goto out;
+ 		}
+ 		free(fctx.lockfile);
+ 		fctx.lockfile = resolved;
+@@ -4639,14 +4651,15 @@ int main(int argc, char *argv[])
+ 			com_err(argv[0], err, "while closing fs");
+ 		global_fs = NULL;
+ 	}
+-	if(fctx.lockfile) {
+-		err = unlink(fctx.lockfile);
+-		if (err)
+-			com_err(argv[0], errno, "while unlinking '%s'",
+-				fctx.lockfile);
+-	}
+-	if (fctx.lockfile)
++	if (fctx.lockfile) {
++		if (unlink(fctx.lockfile)) {
++			err = errno;
++			err_printf(&fctx, "%s: %s: %s\n", fctx.lockfile,
++				   _("removing lockfile failed"),
++				   strerror(err));
++		}
+ 		free(fctx.lockfile);
++	}
+ 	if (fctx.device)
+ 		free(fctx.device);
+ 	fuse_opt_free_args(&args);
 
