@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-8455-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8456-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 557C0ADBB28
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jun 2025 22:28:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73C13ADBB62
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jun 2025 22:43:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D688C3B061B
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jun 2025 20:27:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6564C3A6AD0
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Jun 2025 20:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F07128A1D3;
-	Mon, 16 Jun 2025 20:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B35C1213E7B;
+	Mon, 16 Jun 2025 20:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XSnCmY0M"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="A7p+Acvn"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01753188734;
-	Mon, 16 Jun 2025 20:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF4C1C860C;
+	Mon, 16 Jun 2025 20:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750105686; cv=none; b=bR6TZd1PqGdIHQII0iFySlpa8+ulmnI4PBsGqOaoOOjEVQTcDzeEIPQA66c11di+oN3HDd3YlBQNM2moojkV+V8/QmtsffD+hZDY+Kdvi3C7TcKjftI8PJvL5rcGS1k/Akt9V8tOexf2Be1c/kxvXun7gjbcHwR0xt8MV9A1d2U=
+	t=1750106569; cv=none; b=oXYCFDnsVDmWDczeiy4m67QmrsvpmG5BCxwLOdm9MJCr1ogfs97Z7WfQEQUmUOGk68OX78pnOTPu5NgP9Q08FjeCXRoyU32x3AZ2mBMSPkQUF10rIO40OQDTynqhae0F6x7CHTaTykYzwv31r5KTy8phzgxGeGfkY4nhHaHPyrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750105686; c=relaxed/simple;
-	bh=R3wRxKwlAAHBbCsEPOWuhFiFhnm04q3MM+rzfa29QTA=;
+	s=arc-20240116; t=1750106569; c=relaxed/simple;
+	bh=RZvhT3osRsrhjeNVgiL0tfWaqyG2kuFrsDfJx3KFgYI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=egq0YhU3aMjVAB010tmsIxNChCPSzEmsPyJt1s2/PdWj30gdgMcba9n1g/t8HQWjUt0xe6oJov4YsaFiQX62jAPf5+ugzQmvdgQ/6WgwpXCAtn0cfCfjnKXbOITnEsuhvhVay0n1H7RnV8wxMTZcCaaYVCu8UiWvoaL8qliXrjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XSnCmY0M; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=F2dKNgU2xTaaB67AMBR0YnUTUStR6OA7vE4dh8DFej4WawhzqwW+w1/RPooGjrN81fZ2aRCnhEFFPMLWD1J55mlwf7asXnhDC7E5h8Q3kp9kBtalzWbBVFWjXKgdFlIqFusT+Jxntd52wbVL+bbFdaOJLRrvKUP1lXatzJY+KrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=A7p+Acvn; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=rMTsK0YsjlB18wsT75a6evHrM3XMSVJTrFI3gzXouMw=; b=XSnCmY0Ml7NLCrMRP4OfNwKCxm
-	t3knyrRU4umUwqGsAQ78VDJwhklMHyppjzgkgSiDjEr1eDLbkdmMI1Ud09tK10NOTGSkVr9OAVdA5
-	yeDW00x8GaS/9hTn/5iTIiI7ZEmOX2IYVaYsUKHT/a7Sh9XTAvxkYrLcfI6adjZOgVZ/EQ8izXpRS
-	N7CyfmoYNKAXSZWjXkcw7dH2WIhiyXqdB2rcIWxw4KPMz9e5BecjG1NA5nrYsPuYwy5tj/ShXnUjZ
-	Hx7i1JazW+vFcm5JpzfYFwz2+TREcWXzGJRoblKfrG12x8d/ZXuZZBMy93UQ4ahuLIE/06ESgJ7x2
-	dKaQyh9w==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRGPu-0000000GKxl-3X50;
-	Mon, 16 Jun 2025 20:26:54 +0000
-Date: Mon, 16 Jun 2025 21:26:54 +0100
-From: Matthew Wilcox <willy@infradead.org>
+	bh=alq/Pjol9hRHmsoK4W/c2CtmXHL3bnmjTRKmw+CMrtk=; b=A7p+Acvn5uycXyz3kLo38iW9Ad
+	D+bYigpKSwXx9Qqj1iM2cauc4vJVM5S4cn4cbXzLSyPr5aCY6CT2OVFHXSo8Ysd1LMe4PIHVof75s
+	4ixGU0gXpw9fxNXo/FZ31klq9ihs5qru2SnNaJuY3SsfiDVgdbRXOX9BVI2VDLVAd+vUo1oJFU8Te
+	frcwrPbBPewoCrxwD5QpKNqhm3CGjwSVicr7Dykb5NZb2DUD7NyCDlrCYxIHPR3p2qtE9G2el/ykq
+	A/AlxzwslpPcDC/i4wy3o5P2e7I9G86mm6pGM50kd8VFzxMarLvEuy3Rg4LaGo1AqBnz7BuHEsWZB
+	PDLsSc+w==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uRGeL-00000002Qr4-0IjJ;
+	Mon, 16 Jun 2025 20:41:49 +0000
+Date: Mon, 16 Jun 2025 21:41:49 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
 To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
@@ -62,7 +62,6 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	David Sterba <dsterba@suse.com>,
 	David Howells <dhowells@redhat.com>,
 	Marc Dionne <marc.dionne@auristor.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
 	Benjamin LaHaise <bcrl@kvack.org>,
 	Miklos Szeredi <miklos@szeredi.hu>,
@@ -112,6 +111,7 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Naohiro Aota <naohiro.aota@wdc.com>,
 	Johannes Thumshirn <jth@kernel.org>,
 	Dan Williams <dan.j.williams@intel.com>,
+	Matthew Wilcox <willy@infradead.org>,
 	Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>,
 	Pedro Falcato <pfalcato@suse.de>, linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
@@ -130,11 +130,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
 	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
 	linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 04/10] fs/dax: make it possible to check dev dax support
- without a VMA
-Message-ID: <aFB-Do9FE6H9SsGY@casper.infradead.org>
+Subject: Re: [PATCH 00/10] convert the majority of file systems to
+ mmap_prepare
+Message-ID: <20250616204149.GK1880847@ZenIV>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <b09de1e8544384074165d92d048e80058d971286.1750099179.git.lorenzo.stoakes@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -143,27 +142,24 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b09de1e8544384074165d92d048e80058d971286.1750099179.git.lorenzo.stoakes@oracle.com>
+In-Reply-To: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Mon, Jun 16, 2025 at 08:33:23PM +0100, Lorenzo Stoakes wrote:
->  fs/ext4/file.c      |  2 +-
->  fs/xfs/xfs_file.c   |  3 ++-
+On Mon, Jun 16, 2025 at 08:33:19PM +0100, Lorenzo Stoakes wrote:
+> REVIEWER'S NOTES
+> ================
+> 
+> I am basing this on the mm-new branch in Andrew's tree, so let me know if I
+> should rebase anything here. Given the mm bits touched I did think perhaps
+> we should take it through the mm tree, however it may be more sensible to
+> take it through an fs tree - let me know!
+> 
+> Apologies for the noise/churn, but there are some prerequisite steps here
+> that inform an ordering - "fs: consistently use file_has_valid_mmap_hooks()
+> helper" being especially critical, and so I put the bulk of the work in the
+> same series.
+> 
+> Let me know if there's anything I can do to make life easier here.
 
-Both of these already have the inode from the file ...
-
-> +static inline bool daxdev_mapping_supported(vm_flags_t vm_flags,
-> +					    struct file *file,
-> +					    struct dax_device *dax_dev)
->  {
-> -	if (!(vma->vm_flags & VM_SYNC))
-> +	if (!(vm_flags & VM_SYNC))
->  		return true;
-> -	if (!IS_DAX(file_inode(vma->vm_file)))
-> +	if (!IS_DAX(file_inode(file)))
->  		return false;
->  	return dax_synchronous(dax_dev);
-
-... and the only thing this function uses from the file is the inode.
-So maybe pass in the inode rather than the file?
-
+Documentation/filesystems/porting.rst?
 
