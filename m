@@ -1,50 +1,50 @@
-Return-Path: <linux-ext4+bounces-8462-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8463-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28C17ADC14C
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 07:10:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C030CADC158
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 07:11:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D37E41893C16
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 05:10:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F204175920
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 05:11:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAA225178F;
-	Tue, 17 Jun 2025 05:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFBF23C4FF;
+	Tue, 17 Jun 2025 05:11:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QNDoywVG"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JLzFVcD4"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BD723B635;
-	Tue, 17 Jun 2025 05:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F401E501C;
+	Tue, 17 Jun 2025 05:11:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750136947; cv=none; b=TYUgL7rThnKmg+NK4J1vCXt3HJVykdoebWpiUpF1bSSNWbHhvItYL/qRDKOrkSDOd+/5hrzXL2x7CveGQba5fHIvLODBTblPVgciPZTAgLA6HTWi8II/+MsAsj0RSWMT7i2VJFp1rUcCTPsb2po7+tStOwSIFszmJA2cuzGbV0w=
+	t=1750137063; cv=none; b=J5vVFBA1ox/VEL5i9WCZZZev4bZJo0rkD/bYJqdKgrf4/qevggRGB8tVBaR4J62XIoatKAYBz3Gbn9HByEaCZyu3c7gXL6nX/9uAtSyt7J4t8socHXuHF1ouDNzkkAZ1lQnUDtsAjWdCP9pVw9vr2TdvIFRVTlH4THDdB2PwP1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750136947; c=relaxed/simple;
-	bh=PhPQQLZ5N9oyTqOW+Q9Ax4Uij5LekGBciexu/J54MQg=;
+	s=arc-20240116; t=1750137063; c=relaxed/simple;
+	bh=RUskd9sL1nqRCJsGuo6CIgEFJx4MwAfkQY3PQOBYaZ8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fnvTOj+BOmsj4w5p2MOW0Amw9TMygv8BUfEp9PeHvInRr02hTiuKFzqNdrPxJoc7DWvC87byVzeslofEx0R4WVhGnGUKZ8bd9aKFgJWcgfRCF7Kj1PI4Zj/NvRvDhT/TVPPFuFldUkhZbtSrgqBOd0nCD8P9w3MCkUh+qDgCKSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QNDoywVG; arc=none smtp.client-ip=198.137.202.133
+	 Content-Type:Content-Disposition:In-Reply-To; b=kf/TXJq/164tTn4Bb+HHPTj1hfOnNnR8Q0VoJnMnwRSIubPJ4sKvgCqLeJLyZ+4ocqNvkPhVUwhQmVf0pN589cvG0RZbXP1OePCjKQMIs1XTW4++1oKQLwYFJbDokInNUAMU7hAHnhoHvvsJeyEOGG2KVWUdQxm89ijgsnH16ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JLzFVcD4; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
 	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=MnSFdd8xjqrBRMNrjDtPx5JnmQica7Kdjxsp8Q9K/Q4=; b=QNDoywVGRFryPFg2RDAGbDqnER
-	kMwwVaNvmdaPWaUdYiw4uVs1cwpES6Y1BZK6zmz6epnmQf/31dqrJ33hky4AO7LYDYrEmHWzT5Bgg
-	VyfgKX5JeKt2VwytR3aURQTHJg+QRiPTD7MQPSSkuL5gSVT+THSOdd4vmpMu97aV9REIFv8EPvGoL
-	F3fP2a1meh2mhDu+1cb3aNJjUMgJcQcJkdsXsvzXczzr8NFZjGt/s0pWBSaW/4wNY4j8IybNcONJm
-	YgcOcrsyjgwc13MQm/OFO8/8KkG1q6x4Z+oB+mDwuoX4JPhpMCDIGJM1OzS7S4z578+cbogTh+9t6
-	xs0eBXpg==;
+	bh=7hewv5VaHf/nCFVYzE18Jb3sDfwjWx9bJqENJtpan9o=; b=JLzFVcD4P4hX82nyMOI+BRPTFS
+	9m9nUf8QSnN3KcOf1hfPPNg8SY5CD8KGmTwZG9p42mwem0h3+g+jr8vmH1IdJ03DA5flPOfwfb8Kb
+	2p/Z3NPif2HWA7V7Zh1b/Hzs0cuKS7D2jEWqmC6rRRVe5v+D58zBUGfE4pJ1gAH0HUd1EKkuocvQE
+	/AS7xYTlLDrNF7H7t6M6DnRrb6AncDawE5sQF8d0UGBLNipdl/wWjLzy7Aye1Ze+VzA+g0jzxlIg8
+	VUglo0acb2sgxrdZjdYWcBo4907Ol02gnYVbwtHB4bd+XE+ZjOsUlox9yo8MazTrsTyF2g2LImZhO
+	mwKximfw==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uROYF-00000006DYq-2nid;
-	Tue, 17 Jun 2025 05:08:03 +0000
-Date: Mon, 16 Jun 2025 22:08:03 -0700
+	id 1uROac-00000006E8g-3Ody;
+	Tue, 17 Jun 2025 05:10:30 +0000
+Date: Mon, 16 Jun 2025 22:10:30 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -131,11 +131,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
 	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
 	linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 06/10] fs/xfs: transition from deprecated .mmap hook to
- .mmap_prepare
-Message-ID: <aFD4M48RMZB0Hj-f@infradead.org>
+Subject: Re: [PATCH 01/10] mm: rename call_mmap/mmap_prepare to
+ vfs_mmap/mmap_prepare
+Message-ID: <aFD4xtpot22xvTEq@infradead.org>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <cba8b29ba5f225df8f63f50182d5f6e0fcf94456.1750099179.git.lorenzo.stoakes@oracle.com>
+ <8d389f4994fa736aa8f9172bef8533c10a9e9011.1750099179.git.lorenzo.stoakes@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -144,18 +144,23 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cba8b29ba5f225df8f63f50182d5f6e0fcf94456.1750099179.git.lorenzo.stoakes@oracle.com>
+In-Reply-To: <8d389f4994fa736aa8f9172bef8533c10a9e9011.1750099179.git.lorenzo.stoakes@oracle.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Jun 16, 2025 at 08:33:25PM +0100, Lorenzo Stoakes wrote:
->  STATIC int
-> -xfs_file_mmap(
-> -	struct file		*file,
-> -	struct vm_area_struct	*vma)
-> +xfs_file_mmap_prepare(
-> +	struct vm_area_desc *desc)
+On Mon, Jun 16, 2025 at 08:33:20PM +0100, Lorenzo Stoakes wrote:
+> The call_mmap() function violates the existing convention in
+> include/linux/fs.h whereby invocations of virtual file system hooks is
+> performed by functions prefixed with vfs_xxx().
+> 
+> Correct this by renaming call_mmap() to vfs_mmap(). This also avoids
+> confusion as to the fact that f_op->mmap_prepare may be invoked here.
+> 
+> Also rename __call_mmap_prepare() function to vfs_mmap_prepare() and adjust
+> to accept a file parameter, this is useful later for nested file systems.
+> 
+> Finally, fix up the VMA userland tests and ensure the mmap_prepare -> mmap
+> shim is implemented there.
 
-Please stick to the existing alignment for the declarations.
+Can we please just kill these silly call_* helpers instead?
 
-Otherwise this looks good.
 
