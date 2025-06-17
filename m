@@ -1,74 +1,76 @@
-Return-Path: <linux-ext4+bounces-8503-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8504-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930F1ADDDA1
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 23:10:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D75F2ADDDA3
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 23:10:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 572687AC1CB
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 21:08:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70A527AC2CB
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 21:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8047F2F002F;
-	Tue, 17 Jun 2025 21:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393372F0037;
+	Tue, 17 Jun 2025 21:10:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W8MXDIVq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AyZp49jK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775CB1F1315;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD5D2E719C;
 	Tue, 17 Jun 2025 21:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750194604; cv=none; b=ko75NGuAiLRUAT9cBMF6gmiVe5lZfJVI1UofocL2enzfuNOIrpWVACG8jiXETt4jqBtH2AHuVHudxijefDZ8JGfcdgUee6Gk1Qx4Ab9KQJwqv9Dlz0HPReG8PpRoW1nzPhs3vN4B9kGaT4ZuqDv/sgIZQ3I1dhubDzWQ16cSQe0=
+	t=1750194604; cv=none; b=ICCmxsLz4MtvonRTW8yWRwYtqDMGYwoaJ1qxmPM8Q2vNoK7WESr9j8pi70VY+dCTjqx8ORWTDlczQXiMIK+aevEGFHhXlUvCs6aTdAP+aPneYWK8iOfFp97ci2SfeKAorHBYXsobYoDFD1FLtaJkxXrQBYZuKzz8M6tpcsaJN7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1750194604; c=relaxed/simple;
-	bh=6h5HyU+7sEYivNzJgYWmYbcAldtr3uB9+w5FyIuWTyw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q8MLJLoDkpIroJDb8P0NqOIVnHkBeFIS6w6Igm+pFoPbyk4+1UpEltrvNO22eRo4Wh3OZRY0ZI1R//c4VBRZo9jJvbI/qH9Rmj/ekJkLdEjEZrdCizU2f6/k3igPl/2ZC0RdgS9wlJacKtsVYBel3rtZrFme1SAFB/M2V4/IUKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W8MXDIVq; arc=none smtp.client-ip=209.85.208.45
+	bh=3pROmvqeZxrojUVtYMiw8Ry8cQoSm1tYkA+iOZpxGb8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=NHeQ0GuBWKB9cfkv5tuDijz6i+vGGTPxHJIfDcljGgM21SItGVmtCOtfB6BZTr8fQ9Sakw84x80gSnz0LFzYrXX2tlXf85jJE2KUnD1KhD8vnmyRKkTDq8zKwrGlnCE5MbZBvCLm4nFCz+/84BXj8rc1jfVg1ls0uaz88MY9pnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AyZp49jK; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-60702d77c60so13071871a12.3;
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-6088d856c6eso10967406a12.0;
         Tue, 17 Jun 2025 14:10:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1750194601; x=1750799401; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s1er4d9l8Ij5+uO2QQyMYaV46wq4H9DE4zUkepQurz0=;
-        b=W8MXDIVqZpAlJKocKuWDNhM+4MaNd90KGZUqkbfXairGqZplT6RN1kGrSRVngEMf+8
-         ZVAvgWDMW3qjNHGSt86kTcj49XOgMdqMILpNsGZBqwD6HqvAuEZAxF688cMfE+5EK6n6
-         8rA6p/oFTATldf09+ISFFz3MQUKrB5AN7XI0AOSimA8Dzb4rr0YQdUyXfHs7Ac6uuERr
-         MG/lMdBA+i5XHobQLzOz7ZpMyxf4mO1qNURgfOsb+/3euctAueK2JIs61ookZl6cpGJa
-         JmsexXqF5ke/KW2l7GzWx+qy85qzs2yVws8aWW8REvcltfzsziVjU5G4QZNTCQ+5vBio
-         P9xQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/mUZ5Uu+ZqGu4Fg5dzwdy5KHEGUFhLXXBrcjghCCS0o=;
+        b=AyZp49jKxEf7MlLCTbHuKsdhe/EGwa2nFk2PmRHGOmQsfOzmBj7QBe4mTzoTpU1HYF
+         yBzdTDrdELKP9Um5b6ec7VPqb2b9pw9m4nLvSjEEgI0dp6oPp32O2sJWT+CV8HqJVjn+
+         SgZ5iR5w7Dn48W73NvHEsOI2NMf1UhMjg1YNq/tLEK9iffLy6QuO5Prh2pyMYBOjOSn8
+         OnjTSFHRs/04mOEG8uqMxZiCITGDOjLS0gWgCCnN0SxDkZIvBhCAx65UVcwTj22hxVSN
+         B019XhTUlVWxt4qYPEn+rt3cmU2ZpTWgSOaKzbYZ6EN6azXcmJzoCq3bz/L0BaNv2Og8
+         5Xkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1750194601; x=1750799401;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s1er4d9l8Ij5+uO2QQyMYaV46wq4H9DE4zUkepQurz0=;
-        b=HcKEQQDynZfMgslBzPUo1w3VpV5vhAxM3fP8rlQtJROqjKgoo0RD7cC+9hnPuf203B
-         US638IdQKhrJA2VJSH++KmRhJUWHUZ0ypmg3mD78eeog//4qMPQZAYotWQlasSEsCLyI
-         kwPWZhK/t6HKAqyN/RMDmXbvIaVUpR9vEHBTDgx6UEHxOsaT1ANilc2DdCKgVyOXvj1d
-         a1qd1ZdqryoiQWSHAOzXQ89l3PX7sYq2yz+ctbmKNvG7aGyhMeTpRIs7zSKDKdTQzJor
-         XqEsXAKfrTH0m5slFobAMqVu6Qiy1EDjAoeRnRpLsr1RDRhzymNwFqFm9MA4grfBLGwC
-         Bjpg==
-X-Forwarded-Encrypted: i=1; AJvYcCV4gF+zU7JTaYpsONnGW3Coo15UvM0VUKrc5ql7n8su7QC5tzQtwpU7ipWYWSwE5HLpL32HHQUv@vger.kernel.org, AJvYcCVr50jO/xMBbcdw2t3Xzj00Raufq74bIbRo+a0z2pA2mIXAEabzPmnOK4mEbOpmTQ12vOh3@vger.kernel.org, AJvYcCVyI6Cb54kZi3cPVzLIDoJZToiiwb9LS2VudDIK9ZVBrL/y/s+hnNMfrxvVoGxTbAmFl/iR9MFYNp6L@vger.kernel.org
-X-Gm-Message-State: AOJu0YzihaRn++s3NwzmRiUZHxQgqR2YTGagH+aggrMAqTIXEM75j7Sd
-	oEykiwWc4V4EEp1JpIkdzHSu9Ud4DlaF/ajHtV3694eG7dv/miM8FPx/
-X-Gm-Gg: ASbGncuI1jT6H0Fnaw9aj82GnEHGeE7fMm6xr9Ahg8GVbb+iVXRAhrDZvV8AFLbITrb
-	wSzxGd5ozOHkxC/3/PxYj10jMobxaD3traS0h2FS3jp6SaBX+1Ei5MNtUwEHjJtOX4VQrRKvjQe
-	BqQKjlGSftqc4YDVYRUHUXfYtd6in1mPPkhtO8EqtSVrdQNo1G41/83mVUEmgZg8biKz64Atonb
-	OS0y3OmiopmRAwF512IDKZ3mmt2Ew4Mgt2cxLP3oMv6D8dKm7TkqNTtCuI2E2/Gm1FSKIUIZWom
-	mKCzYd+xv5x4VKe1lFchA5RkU4iM2IaPe6uC1xY41VNTAV7QdJaRqKV8hAxzY8Nk5LIBQNDfExT
-	p32p7e9AUysrd8bS8l3ssSzLzG2OfkaSs41uxp/cKI+0hdNwamqIrNSe7V8c=
-X-Google-Smtp-Source: AGHT+IFsWPPEISUc3/DTIP+5sI5p90uo4Vsio8TOeyupzElOw9Aue1Rl0aYQ+PigCqmbCYFzSpPhBw==
-X-Received: by 2002:aa7:c90b:0:b0:609:7ed1:c792 with SMTP id 4fb4d7f45d1cf-6097ed1d0e8mr4209218a12.29.1750194600546;
-        Tue, 17 Jun 2025 14:10:00 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/mUZ5Uu+ZqGu4Fg5dzwdy5KHEGUFhLXXBrcjghCCS0o=;
+        b=Vam6MC+3M52VexmUzMkUGojZ5XWaTUrNQCZSP+q/Fx8VUL+ZBZgiH/jV8Gq+aAzrcP
+         T0GKSn5T2ThIbi6JPcSGkHfCEJpVibfY3sDA8QbYFvlH1VkoKRLDefBUJ1xOYBwJ+Tqg
+         f7Jmg7aV7oGCjBaBCQUrxVtqofPi+5ICZMKa5y5RrI3RzBiLgyzaHDUa3DgYfUA8YZh1
+         JP9xac76YYQtBwxCGe21g8vkEFvDjPqEb1VI5x/Zzjmaj7CNeOntlz9ECg3YizjCMX2t
+         U7LaaKFBp/efL3Bh5/YDaAVSJHT44nXff98F8by1h2PK+p/6O9Ibd6U0BsMIBSt9l5Ty
+         5qjg==
+X-Forwarded-Encrypted: i=1; AJvYcCUiJb04Kikm/mI9aZetkCZxzl+kaEHFImhhIJRCR4GzsVDNUA1xyNhqw35C1goTL8B/i9Rg@vger.kernel.org, AJvYcCXr+kqvxBVd0r2+Ko4Uh7DJ5/Pt/4LfPRZDGvI/Dnef8iTL0tsJQY7s08XF3CVrVqXgJDpYFf9R@vger.kernel.org, AJvYcCXyKu0W8BBV4PWAyiW0XczzWxziIhXN/usO8+z07dzVzo93etpwenrUr+OvrfcAVTrt/yykm2c35jCJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWn6H1JOo57K3Ms5KS8cZGeldvcEhCYZoxnHqmx2QVz8dvObWN
+	RsHAQ1o8Z4aJ2PBPmfVk24wUxgTN81oeQqogzRo0R0guxHLe64SsZ7YP
+X-Gm-Gg: ASbGncvhg99qDCpmQ9FwhD9sNanBVnthgSvQuJkIFoiJ0knXLiPUINOu+AbBoaOUu6G
+	dH2sD1YRJVlT6WH41kkxOTZJOUvlHMTbm5odm3xTEyBgPv5URDbCDcrGjW/50jvIgQwMqB9p7K1
+	td8oaeg9gDMQqjCzoiLy8HivUyBBDdru3LZNDetFQD4jjenXbdzNXdzhnX5M2sKHRablBtTyH+o
+	pN8pVdrYsCwXkSS/hNakoCgImue629vx4BKohXt2CJUd2pbG9hfaCKDrCVPFQg+mLvBJgWPc4ad
+	u8HJlvHMvzmDmn28Je1sO37RWUjQ/2ZZmUyGglbNnGQJ+4PaMNx3yWRYnUWvgUkDN06LUGrUm52
+	pxe4PAxZ0flJyTywgLLwwScmDOkAlXOaIB+ke18tZA10Fsfs5qIMof42pebE=
+X-Google-Smtp-Source: AGHT+IHcHBYqSnvSfF9j/XWUSX83W19K7+LrVLAVucW0fSP/ziXW65yxwpxKzbvGlnAKiLTwFy8LLA==
+X-Received: by 2002:a05:6402:d0b:b0:608:a7a0:48 with SMTP id 4fb4d7f45d1cf-608d097b3d4mr14428889a12.28.1750194601134;
+        Tue, 17 Jun 2025 14:10:01 -0700 (PDT)
 Received: from amir-ThinkPad-T480.arnhem.chello.nl (92-109-99-123.cable.dynamic.v4.ziggo.nl. [92.109.99.123])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-608b4a93a01sm8506711a12.65.2025.06.17.14.09.59
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-608b4a93a01sm8506711a12.65.2025.06.17.14.10.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 17 Jun 2025 14:10:00 -0700 (PDT)
 From: Amir Goldstein <amir73il@gmail.com>
@@ -79,10 +81,12 @@ Cc: Theodore Ts'o <tytso@mit.edu>,
 	linux-ext4@vger.kernel.org,
 	ltp@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH 5.15 0/2] fix LTP regression in fanotify22
-Date: Tue, 17 Jun 2025 23:09:54 +0200
-Message-ID: <20250617210956.146158-1-amir73il@gmail.com>
+Subject: [PATCH 5.15 1/2] ext4: make 'abort' mount option handling standard
+Date: Tue, 17 Jun 2025 23:09:55 +0200
+Message-ID: <20250617210956.146158-2-amir73il@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250617210956.146158-1-amir73il@gmail.com>
+References: <20250617210956.146158-1-amir73il@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -91,33 +95,70 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Jan,
+[ Upstream commit 22b8d707b07e6e06f50fe1d9ca8756e1f894eb0d ]
 
-I noticed that fanotify22, the FAN_FS_ERROR test has regressed in the
-5.15.y stable tree.
+[amir: partial backport to 5.15.y without removing s_mount_flags]
 
-This is because commit d3476f3dad4a ("ext4: don't set SB_RDONLY after
-filesystem errors") was backported to 5.15.y and the later Fixes
-commit could not be cleanly applied to 5.15.y over the new mount api
-re-factoring.
+'abort' mount option is the only mount option that has special handling
+and sets a bit in sbi->s_mount_flags. There is not strong reason for
+that so just simplify the code and make 'abort' set a bit in
+sbi->s_mount_opt2 as any other mount option. This simplifies the code
+and will allow us to drop EXT4_MF_FS_ABORTED completely in the following
+patch.
 
-I am not sure it is critical to fix this regression, because it is
-mostly a regression in a test feature, but I think the backport is
-pretty simple, although I could be missing something.
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20230616165109.21695-4-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Stable-dep-of: 76486b104168 ("ext4: avoid remount errors with 'abort' mount option")
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+---
+ fs/ext4/ext4.h  | 1 +
+ fs/ext4/super.c | 6 ++----
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-Please ACK if you agree that this backport should be applied to 5.15.y.
-
-Thanks,
-Amir.
-
-Amir Goldstein (2):
-  ext4: make 'abort' mount option handling standard
-  ext4: avoid remount errors with 'abort' mount option
-
- fs/ext4/ext4.h  |  1 +
- fs/ext4/super.c | 15 +++++++++------
- 2 files changed, 10 insertions(+), 6 deletions(-)
-
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index e1a5ec7362ad..2ee8c3dc25f5 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1255,6 +1255,7 @@ struct ext4_inode_info {
+ #define EXT4_MOUNT2_MB_OPTIMIZE_SCAN	0x00000080 /* Optimize group
+ 						    * scanning in mballoc
+ 						    */
++#define EXT4_MOUNT2_ABORT		0x00000100 /* Abort filesystem */
+ 
+ #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
+ 						~EXT4_MOUNT_##opt
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 01fad4554255..7ce25cdf9334 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2023,6 +2023,7 @@ static const struct mount_opts {
+ 	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
+ 	{Opt_fc_debug_max_replay, 0, MOPT_GTE0},
+ #endif
++	{Opt_abort, EXT4_MOUNT2_ABORT, MOPT_SET | MOPT_2},
+ 	{Opt_err, 0, 0}
+ };
+ 
+@@ -2143,9 +2144,6 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
+ 	case Opt_removed:
+ 		ext4_msg(sb, KERN_WARNING, "Ignoring removed %s option", opt);
+ 		return 1;
+-	case Opt_abort:
+-		ext4_set_mount_flag(sb, EXT4_MF_FS_ABORTED);
+-		return 1;
+ 	case Opt_i_version:
+ 		sb->s_flags |= SB_I_VERSION;
+ 		return 1;
+@@ -5851,7 +5849,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 		goto restore_opts;
+ 	}
+ 
+-	if (ext4_test_mount_flag(sb, EXT4_MF_FS_ABORTED))
++	if (test_opt2(sb, ABORT))
+ 		ext4_abort(sb, ESHUTDOWN, "Abort forced by user");
+ 
+ 	sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
 -- 
 2.47.1
 
