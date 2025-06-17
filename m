@@ -1,88 +1,88 @@
-Return-Path: <linux-ext4+bounces-8470-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8471-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA02BADC670
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 11:31:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D29E4ADC697
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 11:34:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C9D61886936
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 09:31:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 827367A123C
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 09:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D5E2957AC;
-	Tue, 17 Jun 2025 09:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29ED921348;
+	Tue, 17 Jun 2025 09:34:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V5GvZj85"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H17Ga4VT"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1802957A9
-	for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 09:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA3829346F
+	for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 09:34:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750152629; cv=none; b=q0xCLNjCqLdfTZ4nnJKNnJhW/lrj8UtF3ddb8Sz9eH8M0+5scF7/GRH1kpcOW9JbwILuI5gdp453Xlfkb//9hWxhAdbkyjcEJhFJmGdBnYkB0QKO2Yvq9igiYS006ZAUBgFGVn/MZL2gwyBcLrPhPHkq569FLHA2k4csOEExHhI=
+	t=1750152874; cv=none; b=tSue85l01Dmz2JpwwNN5g9i3bbJMw/uSp8CNv8VlKjg7CqXbl6FGfntdmARJdsmIuAWKoo9yUB3YBdDAZ2hQQnkppZP+hYE7iD+qAD0fiMDpmQs5jKPLIfrETZYOIR5kO+rjOdioSse0odR0R8zxXu/Q5Fgv/IW8Q8Dpg/STEZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750152629; c=relaxed/simple;
-	bh=VsGFuJ30l6CqVRP3jywVJWX2fWTvbWCR93BCpuZBv6I=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=KOcyzoSayyxd2gQKgt8IQXGvu4meMm/5RbYcFEbVoi6nJ+q1vxgPZ02ayZI4n1y8J5F7b7iPWj9FA1hazK3gjNpK5pLJ7GV3FJI4M2XVDZcbKB85mo1/545VD3+d8ILxinzTLmkuf/IQlQJ6sINhwEZSK7M38XOxnkBmmBzGlYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V5GvZj85; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1750152874; c=relaxed/simple;
+	bh=/l+blL0P/WvKFXEmP8UAB8+2DcgBYjMRCa/JF+NxGbg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qOwXuAjykiCr3vZo+6aXEQFj8ErnFMiKvYEDsiVpZZ3Y3OAknYX3B3T4s3ppOHGUEvU9sYlW4BESek6GqRUFOedf19vTbSerKlLR3j/M+ISXodRUgFCRtTWansXF3KijVYCbaVSDeoSm0m+O+VbK0FLFmLzd01QSSpRghKgUWU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H17Ga4VT; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750152626;
+	s=mimecast20190719; t=1750152872;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=AycC/SqlmFtbCkiK+UJFsVg8F5mY3OZuVJE4LIVGke0=;
-	b=V5GvZj85cMVYyTXDJ7amQOXGXFjlyN8mAUKTBMuuuQEI3RPN9p2IvKq6dYgC5Fa9XepOOj
-	HD8aDGmNAn3oXuemf3pdbsjZBELecH/anmpPZ80kNnxlggFgE//AiyZIG/vWi/VZG6QeZD
-	9p5rR1QOR7ma/eWWb+xhCDWQ5tQ75FI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=UoO6Im3sdMj9qrKiZw97K0g1BjWI//UD+48kISxcxhU=;
+	b=H17Ga4VTXpLcJQtVGtOXTLTdsFRxwKIZHlHmDp2f3q4yHxHlYVq0ynSoYBY/wGSjSEXrdP
+	g/u+MBzDyHyrpTb8c4q4v4wOZCmmwb9NRwni4iJ4qkwmUjmxgg/DTemp6jmXWVHFthclTk
+	fu1Xru0KpxBxLCTSONuPH5GsGdosqhI=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-452-LmIVdIMTNVu2fYziSQ-hUA-1; Tue, 17 Jun 2025 05:30:24 -0400
-X-MC-Unique: LmIVdIMTNVu2fYziSQ-hUA-1
-X-Mimecast-MFC-AGG-ID: LmIVdIMTNVu2fYziSQ-hUA_1750152624
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3a4f55ea44dso2269487f8f.1
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 02:30:24 -0700 (PDT)
+ us-mta-258-jkZ_vo0TOd-4mKWelUVNiQ-1; Tue, 17 Jun 2025 05:34:29 -0400
+X-MC-Unique: jkZ_vo0TOd-4mKWelUVNiQ-1
+X-Mimecast-MFC-AGG-ID: jkZ_vo0TOd-4mKWelUVNiQ_1750152868
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3a3696a0d3aso2057712f8f.2
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 02:34:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750152623; x=1750757423;
+        d=1e100.net; s=20230601; t=1750152868; x=1750757668;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:from:subject:user-agent
+         :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=AycC/SqlmFtbCkiK+UJFsVg8F5mY3OZuVJE4LIVGke0=;
-        b=B6KaWtj+xuhcCfLqYfBQ85q7qyb5yr//gnyy8GXh7k7edGaX48JJf5fuPg21RrQdsU
-         WH0aq9sdUn0aTFt7Jfc6w/KDj6mVap/wYs2/+gVv7v5g26t4gP50BMwKwCLHm/uK2UY2
-         /AY0WZlsL1ksIOC23GlNwUKJxKiK9ayEmuQ9MmTSk3/l53Ztx3ymx5IPuvmmkQ9SvCW3
-         AegGEv+lVB+RQ+PO9xGJTSScuEoTkUaEL3sD23Ww0lo9isSJ+3Wa3asyj4bUbaqskyGd
-         Mjf1j/6SzuNZO4X6MxzdoF5IhVJLWylOz7+ip1GTDLa9EKY/uiQ7LcIPgh5ipl8YL7b2
-         4nJw==
-X-Forwarded-Encrypted: i=1; AJvYcCWYSuP34Ce8QZo6JlTJBAiz055VXCAa/xAoDKVozaBe98xzqGdERMQeKVZmW96eO6H1C7iAvibEy89J@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywh2R9LQ+tTd9O8avWt6iOx7KvivcPiejwvTghHoShuISgWzp2L
-	T48bUWTVZftb/u1aSUzM3O5jUP7fEPJvZ7AjacQE3n3pqrk3rQJSm4bga4ukZmkqzjqjCf7k+5+
-	bZ19oOgUKSfnmOUwWZAT9J5eDjN4iezxLnbSPCyHcd3KOva0VMjIQxWaOXnc7Zlw=
-X-Gm-Gg: ASbGncu0yA0izGgpNTZDh68ORzyUwzDnF/3jTFpJD3wDjaWD9f8eahRDF8zGefApEwa
-	f00JCd1bFwmP/w3PDfwLzwxUjm3pf6y47/0YXM2sUpoHRRnJsJMVUnAMwlHP09gHm0ehdpGCEv/
-	vTzksNJJIrUcNprWsgXMvE+9uMSBPvXPMg9sWkavE9OSUSunW45ZmN0RISl1cGi6fVw+wI1E91/
-	CvcQbFRMo84kS0QuxL6MgUp8adIaJG+ych7I55d2dRdZd994BK8pef1cKiGF85svFFYmx5lgtPH
-	Jigb1e5GQgAuzO8uX8GSsHtBZ+tT+P530jL/Z9Bz18d+AbHPf6DI9QgbLUvZVDeaoIDf710LEzb
-	bMoPTBr6VeMketTB3hkl1D0NwEtzhkVeaDz1Uo4vF570jPT8=
-X-Received: by 2002:a05:6000:3109:b0:3a3:7387:3078 with SMTP id ffacd0b85a97d-3a572367b6bmr10595427f8f.4.1750152623490;
-        Tue, 17 Jun 2025 02:30:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHzIdOD1Y0VrtNcMDMGER4ExUmFNXEczyRtVtoCy/fV6z201YqQ8+qNgA+yjmzITUoW9nwVOw==
-X-Received: by 2002:a05:6000:3109:b0:3a3:7387:3078 with SMTP id ffacd0b85a97d-3a572367b6bmr10595381f8f.4.1750152622944;
-        Tue, 17 Jun 2025 02:30:22 -0700 (PDT)
+        bh=UoO6Im3sdMj9qrKiZw97K0g1BjWI//UD+48kISxcxhU=;
+        b=emA+9isjw/S6d6X82E8diKWa2jlUt5+BzOq4x1PAlFmeeqZWbbQCbnt0Azj8J5+ej4
+         +di3MEGAvYVMATc/vIQLZE13AnztuJcgbZ/9eL+UKa4HIx9JC6RN/aEG19Wz0NEL6pnL
+         1dH282bsJUGWXaNzg4RvIJG0jItaxpjIFKn5GSey86AwXMnenrfZPhLzUQUMs5naYWL1
+         qg9pdUcMnjOVlskzfeR+DpvaUHY7ZPQ55EFkTY6lqJeThBCOBmhyrH+cl4zyIKFnNkxr
+         PAXaROb+3ip99hBrZxeuME/x7aM+409VrGOg5F8tYP65Uab+dIG5VCzSLPXJga8NmWgf
+         HVPw==
+X-Forwarded-Encrypted: i=1; AJvYcCW5HtFi1q+dCVBQlg9LcWSHpYm8z4nfFMRYz1PvD6pOt9i0M1aFofr35OmdPfE5NSuCmceq3zLILHfR@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDOLclmn+y9e3m2Rz3YD0GGJgjZhemOZu2GhDI1XClIdGlfi7/
+	U0YKNWirjbryQBYgtwPy5NXTy8DMpVaV141B53F6+3YPiPTCDkcDjREadmyeh2b16qQ6i9HcQKA
+	ACizyrOAp8gYi4RuQY69aLKuOlbh9Njdgsfkqnexgy2b4WWgaNQShLz5N6iQkyAk=
+X-Gm-Gg: ASbGncu/ViW+csQRyVJ0+XQpH/5hOrmVGsU93yg/ZMs5mAeBQVWQznxDp/YQFbLBkWJ
+	xmnq5u0zn/tAbiqk5jhY4MYABArb7bt+tgXH4f9K0Y6S9Z0RM6XwW6mx/oiNC3KsTWj9t7Eu/Qy
+	WpNALwPvMpaD8RHXpqGiu9y419DMg69reEA5pAL7iasMZ8oc+FefubcWyrL7LiqvcKKNMlvib+T
+	zw2u2qGbIuCCqJXlJ4zrHz2eZNURtWY3j0t3qKX4KXbroK2w65/0Efkl8vR4C4VUQBJZJwXlA+6
+	2mGpV0N8hSW9J2f6iWgyoOUSHbg2wNDRjYZXm/dutrBvj65x2MdH7eK15x8qKj3/xJ9UGEiyu4B
+	bI3dVOjGR9z1QiijKY+rRNbEldR/aBT4+4CBt7QlTPvf99+8=
+X-Received: by 2002:a05:6000:480d:b0:3a4:ed2f:e82d with SMTP id ffacd0b85a97d-3a5723a49e0mr9462610f8f.22.1750152867953;
+        Tue, 17 Jun 2025 02:34:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGAmkCmIe8r1op6vQb6TFjyJmDKs7yVrH6V8NRIzvLkSM/8ZQuEH09JTbMfp0YgKwsQ3nxlSg==
+X-Received: by 2002:a05:6000:480d:b0:3a4:ed2f:e82d with SMTP id ffacd0b85a97d-3a5723a49e0mr9462594f8f.22.1750152867607;
+        Tue, 17 Jun 2025 02:34:27 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f31:700:3851:c66a:b6b9:3490? (p200300d82f3107003851c66ab6b93490.dip0.t-ipconnect.de. [2003:d8:2f31:700:3851:c66a:b6b9:3490])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568b79f45sm13384674f8f.101.2025.06.17.02.30.21
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568a7f8f9sm13367621f8f.42.2025.06.17.02.34.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Jun 2025 02:30:22 -0700 (PDT)
-Message-ID: <b67f8dea-dc22-4c83-a71f-f5a2ecc8a8d7@redhat.com>
-Date: Tue, 17 Jun 2025 11:30:20 +0200
+        Tue, 17 Jun 2025 02:34:27 -0700 (PDT)
+Message-ID: <b2640810-d528-4a3f-b69a-87847943dc2b@redhat.com>
+Date: Tue, 17 Jun 2025 11:34:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,9 +90,7 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/14] mm: Filter zone device pages returned from
- folio_walk_start()
-From: David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2 14/14] mm/memremap: Remove unused devmap_managed_key
 To: Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org
 Cc: linux-mm@kvack.org, gerald.schaefer@linux.ibm.com,
  dan.j.williams@intel.com, jgg@ziepe.ca, willy@infradead.org,
@@ -104,10 +102,10 @@ Cc: linux-mm@kvack.org, gerald.schaefer@linux.ibm.com,
  linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
  linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
  linux-cxl@vger.kernel.org, dri-devel@lists.freedesktop.org, John@Groves.net,
- m.szyprowski@samsung.com
+ m.szyprowski@samsung.com, Jason Gunthorpe <jgg@nvidia.com>
 References: <cover.8d04615eb17b9e46fc0ae7402ca54b69e04b1043.1750075065.git-series.apopple@nvidia.com>
- <11dd5b70546ec67593a4bf79f087b113f15d6bb1.1750075065.git-series.apopple@nvidia.com>
- <6afc2e67-3ecb-41a5-9c8f-00ecd64f035a@redhat.com>
+ <51ccdbbc3d7b76a7f6e2aefb543eba52d653a230.1750075065.git-series.apopple@nvidia.com>
+From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -154,111 +152,18 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <6afc2e67-3ecb-41a5-9c8f-00ecd64f035a@redhat.com>
+In-Reply-To: <51ccdbbc3d7b76a7f6e2aefb543eba52d653a230.1750075065.git-series.apopple@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 17.06.25 11:25, David Hildenbrand wrote:
-> On 16.06.25 13:58, Alistair Popple wrote:
->> Previously dax pages were skipped by the pagewalk code as pud_special() or
->> vm_normal_page{_pmd}() would be false for DAX pages. Now that dax pages are
->> refcounted normally that is no longer the case, so the pagewalk code will
->> start returning them.
->>
->> Most callers already explicitly filter for DAX or zone device pages so
->> don't need updating. However some don't, so add checks to those callers.
->>
->> Signed-off-by: Alistair Popple <apopple@nvidia.com>
->>
->> ---
->>
->> Changes since v1:
->>
->>    - Dropped "mm/pagewalk: Skip dax pages in pagewalk" and replaced it
->>      with this new patch for v2
->>
->>    - As suggested by David and Jason we can filter the folios in the
->>      callers instead of doing it in folio_start_walk(). Most callers
->>      already do this (see below).
->>
->> I audited all callers of folio_walk_start() and found the following:
->>
->> mm/ksm.c:
->>
->> break_ksm() - doesn't need to filter zone_device pages because the can
->> never be KSM pages.
->>
->> get_mergeable_page() - already filters out zone_device pages.
->> scan_get_next_rmap_iterm() - already filters out zone_device_pages.
->>
->> mm/huge_memory.c:
->>
->> split_huge_pages_pid() - already checks for DAX with
->> vma_not_suitable_for_thp_split()
->>
->> mm/rmap.c:
->>
->> make_device_exclusive() - only works on anonymous pages, although
->> there'd be no issue with finding a DAX page even if support was extended
->> to file-backed pages.
->>
->> mm/migrate.c:
->>
->> add_folio_for_migration() - already checks the vma with vma_migratable()
->> do_pages_stat_array() - explicitly checks for zone_device folios
->>
->> kernel/event/uprobes.c:
->>
->> uprobe_write_opcode() - only works on anonymous pages, not sure if
->> zone_device could ever work so add an explicit check
->>
->> arch/s390/mm/fault.c:
->>
->> do_secure_storage_access() - not sure so be conservative and add a check
->>
->> arch/s390/kernel/uv.c:
->>
->> make_hva_secure() - not sure so be conservative and add a check
->> ---
->>    arch/s390/kernel/uv.c   | 2 +-
->>    arch/s390/mm/fault.c    | 2 +-
->>    kernel/events/uprobes.c | 2 +-
->>    3 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
->> index b99478e..55aa280 100644
->> --- a/arch/s390/kernel/uv.c
->> +++ b/arch/s390/kernel/uv.c
->> @@ -424,7 +424,7 @@ int make_hva_secure(struct mm_struct *mm, unsigned long hva, struct uv_cb_header
->>    		return -EFAULT;
->>    	}
->>    	folio = folio_walk_start(&fw, vma, hva, 0);
->> -	if (!folio) {
->> +	if (!folio || folio_is_zone_device(folio)) {
->>    		mmap_read_unlock(mm);
->>    		return -ENXIO;
->>    	}
->> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
->> index e1ad05b..df1a067 100644
->> --- a/arch/s390/mm/fault.c
->> +++ b/arch/s390/mm/fault.c
->> @@ -449,7 +449,7 @@ void do_secure_storage_access(struct pt_regs *regs)
->>    		if (!vma)
->>    			return handle_fault_error(regs, SEGV_MAPERR);
->>    		folio = folio_walk_start(&fw, vma, addr, 0);
->> -		if (!folio) {
->> +		if (!folio || folio_is_zone_device(folio)) {
->>    			mmap_read_unlock(mm);
->>    			return;
->>    		}
+On 16.06.25 13:58, Alistair Popple wrote:
+> It's no longer used so remove it.
 > 
-> Curious, does s390 even support ZONE_DEVICE and could trigger this?
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
 
-Ah, I see you raised this above. Even if it could be triggered (which I 
-don't think), I wonder if there would actually be a problem with 
-zone_device folios in here?
-
-I think these two can be dropped for now
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Cheers,
