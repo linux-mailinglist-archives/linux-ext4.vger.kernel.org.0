@@ -1,88 +1,88 @@
-Return-Path: <linux-ext4+bounces-8472-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8473-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3856ADC6A5
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 11:36:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65555ADC6B3
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 11:37:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79377188FA16
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 09:35:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 376B3188BBAF
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 09:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C532951A0;
-	Tue, 17 Jun 2025 09:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E85F2949F3;
+	Tue, 17 Jun 2025 09:36:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D/zDTGDP"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZVyyB7X+"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2293A229B28
-	for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 09:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8131A293468
+	for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 09:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750152923; cv=none; b=Rz/2OqIrxFhAzk7HSLtYUO4oZRIQ84SjMHPFiq3dMIY+nQfJJ9s+JIY63u+M80DvjAwyuvvaWkgE5BrpGj6TdE7s0aqRQbtmMrmWysxv+BLxRBpi4OmQP3ZX6LydbS/gWe6iSuJZrCUHdf0PyORvIVBBQFzpzvCx67mqRslj1hA=
+	t=1750153014; cv=none; b=EpsCjNzbncfY0UbRnVsmPpnlmmXkJ0jfIdAklKVHacmeCphd4sfrDeV1LviQlWm/G6t0YtiwVQJvKODwaqtwUzq84vOeUL9HdnaxPi+YPguex8E0TxixmD2UPAbr1FOf9CQb5yKRUfOrD0n0QQtH2hBtRiNjLvDpQw67NEl4/I0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750152923; c=relaxed/simple;
-	bh=orOmsWmK7arl5guU70AdaHCHCOleWhKkPZuEjky9V7Y=;
+	s=arc-20240116; t=1750153014; c=relaxed/simple;
+	bh=HH6V1fnf+nZI2Ty8BdLKCLuFpYcl0XP6dXI6GJxS+MI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SYN/oDszctSRJGic457hZX0OpEdKacPLQL1AHKtzYs5juwNFJP+esUKra2+bxS7JcjMx3IytUI71XhXR5HwtZ2dMcG2bg+SBFuoY8nYUQwod2XOLgjwe1pGN8vqq0ClyrGqd/xHeRHYj7/UDhB4Q6lV6JBMWlbiJqY7Yikg05sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D/zDTGDP; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=ju6IR16JEBx3fm6c3quBQ3PIh8dZgOwJnfnwWtM2PsP+Dq2O267vp1Gcv4CRr+oVm8oFaa5I3GNs3QxBodLU9PTjazx6AupDfNqmBLVXlHn8BNjCZOdcBRc1NBxXfla7TcN/FnB6IctDYN3Or/5j21UwBgD4UoIRb55rDF7xaW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZVyyB7X+; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750152921;
+	s=mimecast20190719; t=1750153011;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=sxNGLVvBoDB549OTJwTVX80yqxzNkqnyUmP8nOzpMNA=;
-	b=D/zDTGDPSFDLYnYiB6MjqVuiov28xW39P/Grr03Hhy952o9XfQibTfCKCzfv0TcmLN/ZDi
-	Ghuq7B8hsmNVn7DQhTddtnUbHpuKYuqnvlzhWTowKZiGa+mcXntjwYCaA90C4ON9n6dWoP
-	ka/nBn1neCXgllSsmANXOEubMGpqazQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=QeaQyg08N2bK9CSAL6amctKGL4o8t+/yBMjOyZjIdjM=;
+	b=ZVyyB7X+jts3HvfhVYUcuDfffIBQzps7eagy/s0Whi2aKX9fYTYb2bAAngj72Hlp7Xj1dW
+	E0od7g6xKFrC07YohibICkHczlLkjfxRg5wLLcplrKyiyDrmqeGxOqOn+MazLRkVLYjDzS
+	p3c/3Je5c4hfY3bdvp+7QBSuI+ldXC4=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-C48sSrAgPTSDU8uFNRC5Og-1; Tue, 17 Jun 2025 05:35:18 -0400
-X-MC-Unique: C48sSrAgPTSDU8uFNRC5Og-1
-X-Mimecast-MFC-AGG-ID: C48sSrAgPTSDU8uFNRC5Og_1750152917
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-450de98b28eso32699785e9.0
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 02:35:18 -0700 (PDT)
+ us-mta-278-F7tUKa8uMh2CE-wF9yOMrg-1; Tue, 17 Jun 2025 05:36:50 -0400
+X-MC-Unique: F7tUKa8uMh2CE-wF9yOMrg-1
+X-Mimecast-MFC-AGG-ID: F7tUKa8uMh2CE-wF9yOMrg_1750153009
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-451d5600a54so45021085e9.2
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 02:36:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750152917; x=1750757717;
+        d=1e100.net; s=20230601; t=1750153009; x=1750757809;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=sxNGLVvBoDB549OTJwTVX80yqxzNkqnyUmP8nOzpMNA=;
-        b=cXB1cWgYvrPyuoqq6dotZTzidh4lV2lX7llydZzLpJjGoVU1dNM2i3btMkLJq/C+2q
-         W3M47VvDhOgWGinILiIhCNC2Yz+qYN6+XlH9H6PlE0j9q4O1GdeP375iYR+/M2KjZTIT
-         o+pfaNVQtI8gWJTXmAYVqhmYuejXeGIQ2Wdf2Cm1FOY55jm85pacmw7IT1w4167ZJfFX
-         5OX3siectvTis0oH77384bc6zYrgIgrB92/hZ6mBBRNtCF2Axky6xR9ZbQxXzu0q1CMh
-         ZTedendUX/sMv+MqpTl8n1Ol7VkmLV6L2VA7j84ZeXPO24roHGlJVsvjLgiCI6C/8bAm
-         DP5A==
-X-Forwarded-Encrypted: i=1; AJvYcCVTrPp1BvMAMAVjxfE/JqjpJgrwK32i5/dxhtOijVYjAHKiqtvmvIInD+bjgMIOtqVszadXWZ+MU1VC@vger.kernel.org
-X-Gm-Message-State: AOJu0YzYUPalrCi9J+nNEWyO6Aq1bWBWGSuzRbrqcH1JkPhpV7tQzCYQ
-	fX10NWtoUZeSuRZQBGVG1NgcTiZGJvBW0Nxf/p7YE1AU2VSP2F0tiJ4uFKPHVAq0R0hzqbF426r
-	lu+76l4rPrLSChqdX2m6NKJ2cn42LRX3DMygQ6Hqe4sklkbXAFoqFBtjM6n4pWFw=
-X-Gm-Gg: ASbGncuWq/0U/mi2LMqStKOxVyPY00YDi7jXGaNxyqJ0GtzJzGnIIz6itvCzCtZpIg7
-	uf7a/lIjzuoInpmxAHSdndKcdwCtfzcJGJC3XtYA3GhyiSVGKq+CTZKzMSuEKaWjElXDQVNoabN
-	oxXkzuk8goGlEi1x6GAtQu3H+KPc0o/XFG/1WJonpq6Z/qUxBvZFCwWwgpanlRvNVXsXREj9mV6
-	Y7eKp5wbe2eCpgPAK+Nq69L1jFtAh2jmBDTM1PKwfKrj0JcgNpLyMc5UdaeVdiDI+8AQs+NJAMk
-	e5cZalsGgOLudGnzoCX9LyETQoExiw2hnCN9VaaDS4HUA9qeQ7GXcQfvXHlMBYkRyzLqPc6kiD6
-	MT7Ssj70nF4wchvPlis/WRU8WexovEQfNhVReknwyJ9209ck=
-X-Received: by 2002:a05:600c:64c8:b0:442:d9fb:d9a5 with SMTP id 5b1f17b1804b1-4533c92e02dmr116196965e9.9.1750152917439;
-        Tue, 17 Jun 2025 02:35:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEit+yPVLJbHP2/NKoMhgu9bHwQKBDL8e7RYDOzVbEtAUjPvQmNHH9hZ4psmoetdsF5NGVCyg==
-X-Received: by 2002:a05:600c:64c8:b0:442:d9fb:d9a5 with SMTP id 5b1f17b1804b1-4533c92e02dmr116195515e9.9.1750152915523;
-        Tue, 17 Jun 2025 02:35:15 -0700 (PDT)
+        bh=QeaQyg08N2bK9CSAL6amctKGL4o8t+/yBMjOyZjIdjM=;
+        b=civiRxnIpZt1vA11UlpVQa74UTCYpTMUL6lIC6n6wJuhMh95CXlbPxYD3ifHXtxL8M
+         Q8HzXPtheiy497XW99cZjzXkk1KWyQNgUjmxAFxAAIioAiO7wuVEFcWPB/MdrWAr8EJT
+         sMrsdo5d0bRb3nAAzoALPcU+58Fl6WzFQa670J6kUeJIV1Ibhz4xawOQHGBX8mr4f3x2
+         4o1+dnMUYplCeFIKw+6UZmttOf1lpZrJPdxVaXzfsFLPkNihY1Pn7va6H0FxBS+bjEeN
+         iLbBk8K1dmx33SzdQOtoaTvoarX1a4/pvbqFr+j2t+d+hdjVyH9ARKVERcOubthUohz4
+         ixRw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOgfbr4PrK8XcQPhUPqKI0TapOuziOFcDuQnHROtZg1QH2bj94nZ+K16YZOGhUhzGBzRa7Z8/v3QGu@vger.kernel.org
+X-Gm-Message-State: AOJu0YwU/1tLmq26pxQ8Whah82PQpY7qHMGGx6rJF5RseJOPhsQFifU+
+	WZW++ru/u8yzLVJu/nO3UwM7CK6J1E94MyrLBTx3LrSzyWlktfb0EBEZm1R28nbpXbXCn5Ah/tG
+	g5kNXZZI9TELyBWjngzDOykXjXGkwuExONf12bI5vHMjcf+qj5j+GnzL8EjE4QtM=
+X-Gm-Gg: ASbGncu7ROlwf1t5U/us4//D2dyucUOMCRWPTunoo/sUyxmIm8PtwkHNM3bFRWE/4bb
+	cbkyd8I9Ejjatt5DN+3LdIO9fQ5sseT3KhJnzq1mZw0P8MasrZfgEnGGX5+TfBwV5ChLIwY2Ago
+	3L6QyMBBb1R9gn/QrYK3Qh4atrdBUjepPuojJu6bdv4+Wgx7y4Au9GK6z9dx7J3JQyNkE3zfjee
+	Mlfnd1qf1f+yKZCu3BRlWpNo16G4rapBqaGycoWtafr1meG32kvCVvW6n2VF0PO3BnZpspMWQZk
+	VJiH/GVheWLLunkDUUOuVVnewY9U+UzjFufPJerpEaLsAbL13/jTGHClFKUFV5fdTvJ6JMRKuPJ
+	PFWR7MJd1xdHN87pY1a/Y4RRnV008HxvvW2BExyx3xhvjEGM=
+X-Received: by 2002:a05:600c:6205:b0:441:a715:664a with SMTP id 5b1f17b1804b1-4533caa628fmr107487115e9.20.1750153008749;
+        Tue, 17 Jun 2025 02:36:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHiGU6rdJOxze5zntN178WfWP080iOaFrEHA392zHARPkcDs+AZMCwZ9uBzuwzj+r+ddywNSA==
+X-Received: by 2002:a05:600c:6205:b0:441:a715:664a with SMTP id 5b1f17b1804b1-4533caa628fmr107486885e9.20.1750153008407;
+        Tue, 17 Jun 2025 02:36:48 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f31:700:3851:c66a:b6b9:3490? (p200300d82f3107003851c66ab6b93490.dip0.t-ipconnect.de. [2003:d8:2f31:700:3851:c66a:b6b9:3490])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a57b15015fsm7801901f8f.95.2025.06.17.02.35.14
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568a54a36sm13644198f8f.15.2025.06.17.02.36.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Jun 2025 02:35:15 -0700 (PDT)
-Message-ID: <69bea6b9-e9e7-4d17-843c-001029d4f2c2@redhat.com>
-Date: Tue, 17 Jun 2025 11:35:13 +0200
+        Tue, 17 Jun 2025 02:36:47 -0700 (PDT)
+Message-ID: <911e7b40-e30e-477f-a4e5-df34df1d0e14@redhat.com>
+Date: Tue, 17 Jun 2025 11:36:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,7 +90,8 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/14] mm: Remove callers of pfn_t functionality
+Subject: Re: [PATCH v2 11/14] mm: Remove devmap related functions and page
+ table bits
 To: Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org
 Cc: linux-mm@kvack.org, gerald.schaefer@linux.ibm.com,
  dan.j.williams@intel.com, jgg@ziepe.ca, willy@infradead.org,
@@ -102,9 +103,11 @@ Cc: linux-mm@kvack.org, gerald.schaefer@linux.ibm.com,
  linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
  linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
  linux-cxl@vger.kernel.org, dri-devel@lists.freedesktop.org, John@Groves.net,
- m.szyprowski@samsung.com, Jason Gunthorpe <jgg@nvidia.com>
+ m.szyprowski@samsung.com, Will Deacon <will@kernel.org>,
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+ Jason Gunthorpe <jgg@nvidia.com>
 References: <cover.8d04615eb17b9e46fc0ae7402ca54b69e04b1043.1750075065.git-series.apopple@nvidia.com>
- <657be8fef1f0d15c377ad3c420d77ca4db918013.1750075065.git-series.apopple@nvidia.com>
+ <bf6221bf1e3a290845417a60c27cf301203fd99c.1750075065.git-series.apopple@nvidia.com>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -152,75 +155,22 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <657be8fef1f0d15c377ad3c420d77ca4db918013.1750075065.git-series.apopple@nvidia.com>
+In-Reply-To: <bf6221bf1e3a290845417a60c27cf301203fd99c.1750075065.git-series.apopple@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 On 16.06.25 13:58, Alistair Popple wrote:
-> All PFN_* pfn_t flags have been removed. Therefore there is no longer
-> a need for the pfn_t type and all uses can be replaced with normal
-> pfns.
+> Now that DAX and all other reference counts to ZONE_DEVICE pages are
+> managed normally there is no need for the special devmap PTE/PMD/PUD
+> page table bits. So drop all references to these, freeing up a
+> software defined page table bit on architectures supporting it.
 > 
 > Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Will Deacon <will@kernel.org> # arm64
+> Suggested-by: Chunyan Zhang <zhang.lyra@gmail.com>
+> Reviewed-by: Björn Töpel <bjorn@rivosinc.com>
 > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> 
 > ---
-> 
-> Changes since v1:
-> 
->   - Rebased on David's cleanup[1]
-> 
-> [1] https://lore.kernel.org/linux-mm/20250611120654.545963-1-david@redhat.com/
-> ---
->   arch/x86/mm/pat/memtype.c                |  1 +-
->   drivers/dax/device.c                     | 23 +++----
->   drivers/dax/hmem/hmem.c                  |  1 +-
->   drivers/dax/kmem.c                       |  1 +-
->   drivers/dax/pmem.c                       |  1 +-
->   drivers/dax/super.c                      |  3 +-
->   drivers/gpu/drm/exynos/exynos_drm_gem.c  |  1 +-
->   drivers/gpu/drm/gma500/fbdev.c           |  3 +-
->   drivers/gpu/drm/i915/gem/i915_gem_mman.c |  1 +-
->   drivers/gpu/drm/msm/msm_gem.c            |  1 +-
->   drivers/gpu/drm/omapdrm/omap_gem.c       |  6 +--
->   drivers/gpu/drm/v3d/v3d_bo.c             |  1 +-
->   drivers/hwtracing/intel_th/msu.c         |  3 +-
->   drivers/md/dm-linear.c                   |  2 +-
->   drivers/md/dm-log-writes.c               |  2 +-
->   drivers/md/dm-stripe.c                   |  2 +-
->   drivers/md/dm-target.c                   |  2 +-
->   drivers/md/dm-writecache.c               | 11 +--
->   drivers/md/dm.c                          |  2 +-
->   drivers/nvdimm/pmem.c                    |  8 +--
->   drivers/nvdimm/pmem.h                    |  4 +-
->   drivers/s390/block/dcssblk.c             |  9 +--
->   drivers/vfio/pci/vfio_pci_core.c         |  5 +-
->   fs/cramfs/inode.c                        |  5 +-
->   fs/dax.c                                 | 50 +++++++--------
->   fs/ext4/file.c                           |  2 +-
->   fs/fuse/dax.c                            |  3 +-
->   fs/fuse/virtio_fs.c                      |  5 +-
->   fs/xfs/xfs_file.c                        |  2 +-
->   include/linux/dax.h                      |  9 +--
->   include/linux/device-mapper.h            |  2 +-
->   include/linux/huge_mm.h                  |  6 +-
->   include/linux/mm.h                       |  4 +-
->   include/linux/pfn.h                      |  9 +---
->   include/linux/pfn_t.h                    | 85 +-------------------------
->   mm/debug_vm_pgtable.c                    |  1 +-
->   mm/huge_memory.c                         | 21 +++---
->   mm/memory.c                              | 31 ++++-----
->   mm/memremap.c                            |  1 +-
->   mm/migrate.c                             |  1 +-
->   tools/testing/nvdimm/pmem-dax.c          |  6 +-
->   tools/testing/nvdimm/test/iomap.c        |  7 +--
->   tools/testing/nvdimm/test/nfit_test.h    |  1 +-
->   43 files changed, 109 insertions(+), 235 deletions(-)
->   delete mode 100644 include/linux/pfn_t.h
-> 
-
-Lovely
 
 Acked-by: David Hildenbrand <david@redhat.com>
 
