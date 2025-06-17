@@ -1,88 +1,88 @@
-Return-Path: <linux-ext4+bounces-8468-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8469-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB48ADC609
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 11:20:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4E5FADC636
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 11:25:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D652189935A
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 09:20:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D4883A9C98
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Jun 2025 09:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA209293B53;
-	Tue, 17 Jun 2025 09:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D591C7017;
+	Tue, 17 Jun 2025 09:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J24VFdGI"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KRf+QljU"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B939292B4F
-	for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 09:19:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEE828C2C7
+	for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 09:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750151984; cv=none; b=ENf7vTDE/wIIcdciZQroEeR+XHLfS+mXd6eaJVNCVnjaAvciQ+V4ybVL4UwysEMs9vNPYLKlTIZzz1gz+2FonxzRYM5dtmkXQXHlDG8M1782uSRn+e46JkIbpbyQFlPZ7NpMrVLD8cr101+6CPX7uu4hMxHf5yHIwEey9rYSm1g=
+	t=1750152322; cv=none; b=uROMDkAcmyndABg98x4iHxgxZ+fyeDIIHff0nN17k8yc9rEYL1IDWtVsqsv3ys8rwFcQJ/0MDU9jdkpjtJbbjE/YMh+ykd+0069euM540bS43AqvxnCEHLQSml/bm9GxyA45TcKhE+/aqFCq1JXvhP7VXVpAMGykHllnmF5YqDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750151984; c=relaxed/simple;
-	bh=+5SWU1o8juSDYZoOuyQJC1B+OKlGQ52mSspkNeSUazk=;
+	s=arc-20240116; t=1750152322; c=relaxed/simple;
+	bh=wWhnXAyX2CPjsnfMuHGcrmqHfLEOeRFBGDWPGeExTLI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m337ilCLrSIujvg948SByyz0gwBIucLtro4+Dxovgdr3sXTKPBklfKqiswyw6L/IiGnvJHAE1JjXphQMdffC8OMhJxWZCHesnzzdmZY2Yt63WGa1bBPYV5t0oRwV8o4j2u//yDQVioN1jWVohM5CTr1IMoHzK6epDOKuj3e/q2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J24VFdGI; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=Ppy/Xlwdx66zqGLx44CLpVRwvfjKa574W2qBbMHEjk68NmhiFdsuYVSjUup9RfICnI3uOjbvTZgySm8EjtCxV7LuZ0fqFV2fQSoideU8BSn8CYiuaE1qBMTRjnGn+a9BbZkmXJ96wgn0kdl0KPoJjXXCZuZaEQk2YzJMidPpbG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KRf+QljU; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750151980;
+	s=mimecast20190719; t=1750152319;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Pl6PxwbpUS7ADU1xqvtXXrf/iKUynSR5SAu+83BnGX4=;
-	b=J24VFdGI1Z2zNW5lowKImzrZa41MUw9N78xUxZth2XJjoSJShAPhIYTr2htFpfa59Cjdzw
-	XTUEUhkjhRqhQHbdlfuaXujIDXeP1HJQ3+X962gL36RkT2O/PpVH0L02K91PV/XOVVu71Z
-	UnuyuFkDzG9kNouA7GqVHe3zSyVWzwg=
+	bh=6zkQFw/Ch3T6ugLEDBuaz32yOTGmLuefrLkmwqJMJuQ=;
+	b=KRf+QljUah1CBJD8g+uNYmULynoqSJDJ2Uf0pQ9vL/X7C50AuqizO3q3LZpLzU6ForEZG4
+	tbQZOIaEMQMfc5v93LAcp2CX0yjvqb0/SH8Q1jI1f+nSIJ/0mUMaufjOqYqVmRGAtmCs7t
+	oa8JOUK3Ps6qBtNg7/omFJfdL4TxMTs=
 Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
  [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-94-25rGqI0ZN8-EqGn8ArOtIg-1; Tue, 17 Jun 2025 05:19:38 -0400
-X-MC-Unique: 25rGqI0ZN8-EqGn8ArOtIg-1
-X-Mimecast-MFC-AGG-ID: 25rGqI0ZN8-EqGn8ArOtIg_1750151977
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-45311704d22so35978275e9.2
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 02:19:38 -0700 (PDT)
+ us-mta-376-iHrNlo-EO8GVW-eClzwGDg-1; Tue, 17 Jun 2025 05:25:18 -0400
+X-MC-Unique: iHrNlo-EO8GVW-eClzwGDg-1
+X-Mimecast-MFC-AGG-ID: iHrNlo-EO8GVW-eClzwGDg_1750152317
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-451dda846a0so42412835e9.2
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Jun 2025 02:25:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750151977; x=1750756777;
+        d=1e100.net; s=20230601; t=1750152317; x=1750757117;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Pl6PxwbpUS7ADU1xqvtXXrf/iKUynSR5SAu+83BnGX4=;
-        b=tWXVKg8UhOg1d1hszPiuCHuGrjlEJaKOAcGcf97jnxK+oU2DeOLj/tEzB8ye9xLBMh
-         W4MqUjkxpak0WAZUkX2hJT9ovtJLuQW4isP6MUgNYHjw0OOES/NGd3kaZ8XEzHu8SzUe
-         1x8vZsqq44CDvZMeeCMztsYZLYcH0/XxRi2ygU6zFKAhKxQS/zLClBMvC7DMiURMsQzq
-         qh006PGaMJ9Elc+PjssKGQszr384diZ3zZQ1FnrOQDwDDYrcAuAFVTTdnpnOzM1eEhBA
-         i3rAfpDaVOV+OscgsPJzYt0LNC+BxHj6XO+LPl2nNG8+BHSWw4gF6mhS1Z+HRvuznDaE
-         ZL6A==
-X-Forwarded-Encrypted: i=1; AJvYcCWsTvku1UYTzY/J4fpZdrckzSHFuWoD95a6gPoP3wPQYiTC4lsEIJU9Ao97K1E13mLCQbv6ndspfzrD@vger.kernel.org
-X-Gm-Message-State: AOJu0YzjMlkxEYpSzasB055VNCHOmYp+9aTb144vzCglqiZ37qdZCB82
-	0Xd74FuStmH6R5d61lnqHoMo7p60WCDZmHgnho7JwVz8IjeFzigvgYAwVLcFjOfPiAkMGul/XGj
-	MgeNlXgIFJz2wuoHpJWdR3aUPiwityRpeAqKh62LYICqe8DgSyF/w8XAzsYx68HA=
-X-Gm-Gg: ASbGncstptNjD7o2N7CqJEKUpA1uFQ2/6ggkjauSrV5VFr2fIoJLiceThGTTS/W2Elx
-	S5LEXlVweiikm0lqWZidNFgfL98p6edTTTzpfRs6NQyi6AZs2Jkf0JWd1V1TefAeUufz9VQWsxd
-	7pw4dpqbjhT7Z4CY44GWbGQXAma3eSSDC2Fl3PbE3DkcSCupwFdaM3w7eZBplWMzMT/0bJ4y3Cz
-	iNM6NpwMEJaPbq1PFCJUn3HT4D0XvggLpNejrjZU/bMaXzi40oR6R2m7kP+LucnCXK01e+F7pmr
-	H6vPyiAJ7x/5nXxu0nRmTsf70wf3ZOy5XX3axuqJqHtyevygWsEa/lMz2vSHeEQRVdUqkwBTV7e
-	U0SREGyuRfbOdJrFcKDRk5+Sxfalxvoy8b1LiH06JzgH1KnQ=
-X-Received: by 2002:a05:6000:4202:b0:3a4:dfaa:df8d with SMTP id ffacd0b85a97d-3a572367c45mr11265693f8f.9.1750151977251;
-        Tue, 17 Jun 2025 02:19:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHt8iXJvJT0W2e4sI8GT6VcpVG8jxrePAU09oM8r6xnq4XSbjmN3FC6k4gXR+D2djVSpIQQtw==
-X-Received: by 2002:a05:6000:4202:b0:3a4:dfaa:df8d with SMTP id ffacd0b85a97d-3a572367c45mr11265656f8f.9.1750151976687;
-        Tue, 17 Jun 2025 02:19:36 -0700 (PDT)
+        bh=6zkQFw/Ch3T6ugLEDBuaz32yOTGmLuefrLkmwqJMJuQ=;
+        b=BUP4gVWtUsBzoRXoNusm8HptWPMe+IPJS8SZpSjWm6+caczhFZrNgVfqC8NdqlwTgE
+         g7XE33hZ713aY+t0BpLqSKRDMy4iFfOz3myzdmH7WLK9aO0OkLR+xUmBRnGrBUClubbg
+         cOr4fgY5Ob90MBEb5DImrifocFIMSYAtAtP6HAuV+sDVnTMcDjVz3RnlXD687B9BT6X4
+         R5pW/HfXQGkbpCycAWsEhloFF4vHtYBJ1AoccpfiOO2qoF2TjZzMfcTRG+QsW6lbfxz4
+         l7pZwnAV8bI8oroAO+w+k52b29TUhvpR2uCvv2WuBFcGHpjVvLoFubb7+4ec9vYi01WW
+         oIAg==
+X-Forwarded-Encrypted: i=1; AJvYcCVbUE9QiFPIOSBeruq8fjagKl98UyPJ+TjR4Zi+9+5O/XfVlQgOlK/tcS0iaRXkstYMqaDlpvJTJ7pi@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyt5HZxn9Jz/e625eX6g/qomdmPsTBIdfrrvgZ5u/+OZ4G9BTYr
+	kpiiZY49urmXYLe1B9DXTyEioWB1HKbfiTXgko2PVVbZ/KH7i7oK7qhRl6qIYNoO4XLqdQ677Aa
+	r27qymKfsGFgC9IF32gUUPtQ8h4+cKuD4MHsHvg0vy1pjvPIiBSNwdVMoAAPDnQY=
+X-Gm-Gg: ASbGnctKF4fVo1Ha0x9VaXkwe/BySZizM5wx786ezP6fWWMd7AL/gpQT+z2Zz/PSTnb
+	pQzF9cnlL6lWyDQbHsacf2PILxx4J6rPwamGBoJjEe3GJqQCFsPhnMQEco7TyLv3LGhmurPoFU6
+	5IvVk6jQ6v/ViwMNwR0xY1NoBdJ8WYZlt2Y6pVyS0ejZu70T6Hju0io4awkBCOCo/EMxLqakqn6
+	PDCrubxjSuL0CKKMjM0vpLnM63PsBcnZnFDmkCyoS76tO5kk7lRWGqSXHato4djFcMO3oS4nLoO
+	grhS8RKERJSRf88AuTlwHL62EEYnp1hSVzsm46tHRAWQSecIkW/yVtJQG1CYVYlpnSIuW2Ud5dr
+	Coa8MSBNQxnbKYV4aRk8ObGt9Vql2JEJeTuK5LegEfSSXAyE=
+X-Received: by 2002:a05:6000:1447:b0:3a5:2fad:17af with SMTP id ffacd0b85a97d-3a572e58cbemr8127105f8f.57.1750152316871;
+        Tue, 17 Jun 2025 02:25:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNVa+RJrykc/8Xieu2BbPmReEGJ3iCm4JfplZNxZv4/8Vep/Wlu6kppgIaFWfNuw/GXp3OKw==
+X-Received: by 2002:a05:6000:1447:b0:3a5:2fad:17af with SMTP id ffacd0b85a97d-3a572e58cbemr8127063f8f.57.1750152316374;
+        Tue, 17 Jun 2025 02:25:16 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f31:700:3851:c66a:b6b9:3490? (p200300d82f3107003851c66ab6b93490.dip0.t-ipconnect.de. [2003:d8:2f31:700:3851:c66a:b6b9:3490])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568b08e21sm13528866f8f.52.2025.06.17.02.19.34
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568b087f8sm13629833f8f.53.2025.06.17.02.25.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Jun 2025 02:19:36 -0700 (PDT)
-Message-ID: <bf855ce0-d0ba-4bd6-bfc1-8be2fdbdfe70@redhat.com>
-Date: Tue, 17 Jun 2025 11:19:34 +0200
+        Tue, 17 Jun 2025 02:25:15 -0700 (PDT)
+Message-ID: <6afc2e67-3ecb-41a5-9c8f-00ecd64f035a@redhat.com>
+Date: Tue, 17 Jun 2025 11:25:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,7 +90,8 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/14] mm: Convert pXd_devmap checks to vma_is_dax
+Subject: Re: [PATCH v2 02/14] mm: Filter zone device pages returned from
+ folio_walk_start()
 To: Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org
 Cc: linux-mm@kvack.org, gerald.schaefer@linux.ibm.com,
  dan.j.williams@intel.com, jgg@ziepe.ca, willy@infradead.org,
@@ -102,9 +103,9 @@ Cc: linux-mm@kvack.org, gerald.schaefer@linux.ibm.com,
  linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
  linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
  linux-cxl@vger.kernel.org, dri-devel@lists.freedesktop.org, John@Groves.net,
- m.szyprowski@samsung.com, Jason Gunthorpe <jgg@nvidia.com>
+ m.szyprowski@samsung.com
 References: <cover.8d04615eb17b9e46fc0ae7402ca54b69e04b1043.1750075065.git-series.apopple@nvidia.com>
- <361009510f346090fad328c53ec228d99bb955ee.1750075065.git-series.apopple@nvidia.com>
+ <11dd5b70546ec67593a4bf79f087b113f15d6bb1.1750075065.git-series.apopple@nvidia.com>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -152,88 +153,123 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <361009510f346090fad328c53ec228d99bb955ee.1750075065.git-series.apopple@nvidia.com>
+In-Reply-To: <11dd5b70546ec67593a4bf79f087b113f15d6bb1.1750075065.git-series.apopple@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 16.06.25 13:58, Alistair Popple wrote:
-> Currently dax is the only user of pmd and pud mapped ZONE_DEVICE
-> pages. Therefore page walkers that want to exclude DAX pages can check
-> pmd_devmap or pud_devmap. However soon dax will no longer set PFN_DEV,
-> meaning dax pages are mapped as normal pages.
+> Previously dax pages were skipped by the pagewalk code as pud_special() or
+> vm_normal_page{_pmd}() would be false for DAX pages. Now that dax pages are
+> refcounted normally that is no longer the case, so the pagewalk code will
+> start returning them.
 > 
-> Ensure page walkers that currently use pXd_devmap to skip DAX pages
-> continue to do so by adding explicit checks of the VMA instead.
- > > Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Most callers already explicitly filter for DAX or zone device pages so
+> don't need updating. However some don't, so add checks to those callers.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
 > 
 > ---
 > 
-> Changes from v1:
+> Changes since v1:
 > 
->   - Remove vma_is_dax() check from mm/userfaultfd.c as
->     validate_move_areas() will already skip DAX VMA's on account of them
->     not being anonymous.
-
-This should be documented in the patch description above.
-
+>   - Dropped "mm/pagewalk: Skip dax pages in pagewalk" and replaced it
+>     with this new patch for v2
+> 
+>   - As suggested by David and Jason we can filter the folios in the
+>     callers instead of doing it in folio_start_walk(). Most callers
+>     already do this (see below).
+> 
+> I audited all callers of folio_walk_start() and found the following:
+> 
+> mm/ksm.c:
+> 
+> break_ksm() - doesn't need to filter zone_device pages because the can
+> never be KSM pages.
+> 
+> get_mergeable_page() - already filters out zone_device pages.
+> scan_get_next_rmap_iterm() - already filters out zone_device_pages.
+> 
+> mm/huge_memory.c:
+> 
+> split_huge_pages_pid() - already checks for DAX with
+> vma_not_suitable_for_thp_split()
+> 
+> mm/rmap.c:
+> 
+> make_device_exclusive() - only works on anonymous pages, although
+> there'd be no issue with finding a DAX page even if support was extended
+> to file-backed pages.
+> 
+> mm/migrate.c:
+> 
+> add_folio_for_migration() - already checks the vma with vma_migratable()
+> do_pages_stat_array() - explicitly checks for zone_device folios
+> 
+> kernel/event/uprobes.c:
+> 
+> uprobe_write_opcode() - only works on anonymous pages, not sure if
+> zone_device could ever work so add an explicit check
+> 
+> arch/s390/mm/fault.c:
+> 
+> do_secure_storage_access() - not sure so be conservative and add a check
+> 
+> arch/s390/kernel/uv.c:
+> 
+> make_hva_secure() - not sure so be conservative and add a check
 > ---
->   fs/userfaultfd.c | 2 +-
->   mm/hmm.c         | 2 +-
->   mm/userfaultfd.c | 6 ------
->   3 files changed, 2 insertions(+), 8 deletions(-)
+>   arch/s390/kernel/uv.c   | 2 +-
+>   arch/s390/mm/fault.c    | 2 +-
+>   kernel/events/uprobes.c | 2 +-
+>   3 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> index ef054b3..a886750 100644
-> --- a/fs/userfaultfd.c
-> +++ b/fs/userfaultfd.c
-> @@ -304,7 +304,7 @@ static inline bool userfaultfd_must_wait(struct userfaultfd_ctx *ctx,
->   		goto out;
->   
->   	ret = false;
-> -	if (!pmd_present(_pmd) || pmd_devmap(_pmd))
-> +	if (!pmd_present(_pmd) || vma_is_dax(vmf->vma))
->   		goto out;
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index b99478e..55aa280 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -424,7 +424,7 @@ int make_hva_secure(struct mm_struct *mm, unsigned long hva, struct uv_cb_header
+>   		return -EFAULT;
+>   	}
+>   	folio = folio_walk_start(&fw, vma, hva, 0);
+> -	if (!folio) {
+> +	if (!folio || folio_is_zone_device(folio)) {
+>   		mmap_read_unlock(mm);
+>   		return -ENXIO;
+>   	}
+> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> index e1ad05b..df1a067 100644
+> --- a/arch/s390/mm/fault.c
+> +++ b/arch/s390/mm/fault.c
+> @@ -449,7 +449,7 @@ void do_secure_storage_access(struct pt_regs *regs)
+>   		if (!vma)
+>   			return handle_fault_error(regs, SEGV_MAPERR);
+>   		folio = folio_walk_start(&fw, vma, addr, 0);
+> -		if (!folio) {
+> +		if (!folio || folio_is_zone_device(folio)) {
+>   			mmap_read_unlock(mm);
+>   			return;
+>   		}
 
-VMA checks should be done before doing any page table walk.
+Curious, does s390 even support ZONE_DEVICE and could trigger this?
 
->   
->   	if (pmd_trans_huge(_pmd)) {
-> diff --git a/mm/hmm.c b/mm/hmm.c
-> index feac861..5311753 100644
-> --- a/mm/hmm.c
-> +++ b/mm/hmm.c
-> @@ -441,7 +441,7 @@ static int hmm_vma_walk_pud(pud_t *pudp, unsigned long start, unsigned long end,
->   		return hmm_vma_walk_hole(start, end, -1, walk);
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 8a601df..f774367 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -539,7 +539,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
 >   	}
 >   
-> -	if (pud_leaf(pud) && pud_devmap(pud)) {
-> +	if (pud_leaf(pud) && vma_is_dax(walk->vma)) {
->   		unsigned long i, npages, pfn;
->   		unsigned int required_fault;
->   		unsigned long *hmm_pfns;
+>   	ret = 0;
+> -	if (unlikely(!folio_test_anon(folio))) {
+> +	if (unlikely(!folio_test_anon(folio) || folio_is_zone_device(folio))) {
+>   		VM_WARN_ON_ONCE(is_register);
+>   		folio_put(folio);
+>   		goto out;
 
-Dito.
+I wonder if __uprobe_write_opcode() would just work with anon device folios?
 
-> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> index 58b3ad6..8395db2 100644
-> --- a/mm/userfaultfd.c
-> +++ b/mm/userfaultfd.c
-> @@ -1818,12 +1818,6 @@ ssize_t move_pages(struct userfaultfd_ctx *ctx, unsigned long dst_start,
->   
->   		ptl = pmd_trans_huge_lock(src_pmd, src_vma);
->   		if (ptl) {
-> -			if (pmd_devmap(*src_pmd)) {
-> -				spin_unlock(ptl);
-> -				err = -ENOENT;
-> -				break;
-> -			}
-> -
->   			/* Check if we can move the pmd without splitting it. */
->   			if (move_splits_huge_pmd(dst_addr, src_addr, src_start + len) ||
->   			    !pmd_none(dst_pmdval)) {
-
+We only modify page content, and conditionally zap the page. Would there 
+be a problem with anon device folios?
 
 -- 
 Cheers,
