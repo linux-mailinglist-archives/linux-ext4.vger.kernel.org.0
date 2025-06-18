@@ -1,79 +1,79 @@
-Return-Path: <linux-ext4+bounces-8510-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8512-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2593ADE9B8
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jun 2025 13:16:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED11ADE9C4
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jun 2025 13:17:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 808DD1897F96
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jun 2025 11:16:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CD893A2FD5
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Jun 2025 11:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B422BE7BE;
-	Wed, 18 Jun 2025 11:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC412C030D;
+	Wed, 18 Jun 2025 11:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d5daYMbw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EvcOdtdB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996C8295531;
-	Wed, 18 Jun 2025 11:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F312980D0;
+	Wed, 18 Jun 2025 11:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750245371; cv=none; b=kmT7f7pY3frjxnLaukN3wY/tTWCLH8grRIwyIh1vDysKyyjqIxUzI6Syu9r5NkPzZoEnGQEMBulZ9QQYLfSf+rbJpIqkiYXWxJqw4nO81YstF2QM0iqsSpb3KjDeRpVCynwSIhuBYZhjd8lw9DsAFXoFKOWzM4PGJGY68TZiIyI=
+	t=1750245376; cv=none; b=XzbRir0AVRIVrtBsBGAr+UCt7kq3VIEEJnr6SeIBivp8IfwzSEk7CA6/c9w0wQVRJS0zL7qVm6tVOW/1myPg3ipvhhJMdDOU9+9RM9iIzcwS+WCvTwnfSIidQTBY1rGyRjTiYN27jFkAR6ZqX3w6A8qp4yYLsAuW2QLbEjaPmpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750245371; c=relaxed/simple;
-	bh=K5pTB5IITvkRTBBRO+8HubCgsx539iFFT7LH9lgg4Sk=;
+	s=arc-20240116; t=1750245376; c=relaxed/simple;
+	bh=BdBzNwLlLqgS46DkMif1dJEUTlsNP0+gDTFFuVm91u8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mRRzZwr5FlRVP9lN84ufFSQ2mkcYdY/GUnC0KGuW4tsL51sZsEABw4cVjrda25aDCfsgPP5vzV+9MFPO8zpEEs2x+/4w2ndQldM+fgbn9lss5l3Cla7/Cob8XikQj/BLexwO3ECcRKnNo4R55t+eXDl1V7z6kHALzS7cpIndSkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d5daYMbw; arc=none smtp.client-ip=209.85.210.176
+	 MIME-Version:Content-Type; b=QPNrzjL8pER5gASwjgojTIJdIz/yI807XamJKEFRBwBkDt/D/Eozy+/1oB8KyYZbh2nONRjPqDlanApuWC9cxDBu/LPCA2Kwhi/8VMwgrPPkbmWri3hzWR+GcNbdiidHBjN2heK3u3WBfEc8TGEkzVu6L6mh0xKJu6orvjFYwIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EvcOdtdB; arc=none smtp.client-ip=209.85.215.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-748ece799bdso249167b3a.1;
-        Wed, 18 Jun 2025 04:16:07 -0700 (PDT)
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-af6a315b491so6169599a12.1;
+        Wed, 18 Jun 2025 04:16:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750245367; x=1750850167; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750245370; x=1750850170; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lxxGu10V6DoBlyRrA1QrIkw1CSrpJwPgwTi1jCn3eGY=;
-        b=d5daYMbwmmevg5a2ArbI3qncNnLCro0QgVy6W6R4Hob3k3dL2m1+IFPa98qFPqwKYa
-         zTn9+zSBy05oLYgkCgSQvoLQRTdCcAI2MdO5ExXB0vffnYMn4OwLw9aAF4a+7qFfbBv0
-         hEXH3POBaeKsT9zAWA16Sl5zZ9i4sICPIWyuZcjZcR7xn/pYJs5Jskn8sheGDZXsM6HP
-         JsKF8IKTOujIt///mswuEwQwhakelvIe3MHnUPeKTzzUr8SIXZeQfyj/gPgYUBBs0wA0
-         YbDUjRTGbHBmWifsehbUs0bcvk8yrHaKt9YrmuWQXx+Yylnj9GS22neydHmGW8uEmbh/
-         UJvg==
+        bh=0ZwIOGYwnzwPKQYsQKPCZlGW8kcO4DPGovRI54lK8PA=;
+        b=EvcOdtdBmbA66QjlyPDsF2sNxzlM55cSK83AI9m+13jePzKWlzwo6pcZ6G0ylkIFYl
+         2ykv6AItwUwanPhw168CU4QLES0AhXKwlkg6tWhYVbq+ycH/P8cXPklloFNKxfXBWUpS
+         ZZJFfAbEafHB/iZiQzhId8UUpy8eahOX+jVXJw1Pa+VLQY0fbOwGryg0eEKmm/fKH1FT
+         9hN0P2lVMXGZZLhd+WsHVoG+p2IxT/w8PXhyFNXjvPWXhtvXPXP09JsV6rlzR8cox1eO
+         YR7pqiC7dRGfD/wthtC0+tOQNQnBnR6jh059wTRrK5lGDpfhhhgr97YBf/MzRBRhID+Z
+         69zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750245367; x=1750850167;
+        d=1e100.net; s=20230601; t=1750245370; x=1750850170;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lxxGu10V6DoBlyRrA1QrIkw1CSrpJwPgwTi1jCn3eGY=;
-        b=mSYQpKaHbEEJSAcVuE5XG6Mnf8f0uBinWuHbGv0cvE0t4K9TWibO7I8/UHpMRZ1tZD
-         0Js3531sCuQvzxsbtfwlGZU2K3pJDb9OLZqou5ChohlcnetstUpKUlwnVu+JrDEu5xxm
-         ZwjosX6sAYI3NuPX047Vvi8lbusu3O/v5PyI6YYwqgvt9KA+OupAiF3Hro3lLBJmItQk
-         jySzfw5aOd/S5XgKpUX7CYXUQ0G0j7laFfKhsID8xhdV5z66XkUq71aVfasOTKDSJQHn
-         3z3lEZaFqgd4EBY2XVabzPA+4MhFvGhsUQxmjVLxjDI0fJMg/E8gOaff5+rwD5rfZwpD
-         vl/A==
-X-Forwarded-Encrypted: i=1; AJvYcCWCXYSZ1T5W+urM2nB18fPxoac0QBqISgpzxya4raQqjS4JcbrcXQyWXyIJhtIbQzQJACaXCQ41VjVa8Q==@vger.kernel.org, AJvYcCWy5IJexUe89rSQRLEYHDKlWrqJADc2fdPv0hiG2dSgXQvd5DwdNHIVBOkPpNyOD1envLYZu5hZeMo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy38CDH6+p1994C4ff7q1SwU++tf7K5x+o27xDFsXhK+Esro0mv
-	UucXPQNXEqVXpIL69QlGWe6NOq/Do4L6S1r4v+jLLZp75aFgGRppO7lCuAWoPw==
-X-Gm-Gg: ASbGncuw6dMUoTbRH/xW4ESMr7K44lqUIYigXF87nMgmJ721Fb0+F3yVNZSsQt+m1An
-	xwUH1OX9kd9yQGvjhdcrJYXMk9nVJAaqk28Gx6TZaML+qcXXQhXW1v+KkFwdwdG6aEJHUvTuh3s
-	WLn/oGaKLyKUj8owwBHP5b5PrVkwiULEM3BHblCjhD1H3gs26q8y40eCoRpl3lESjhl+dp3AjOX
-	bKKh6QeGG7v4DpQ/Ws8GKH8tXZ56aeSiJ7tYUVFo0pvPR/roUQ/WC2jV703DuAMsbIwqJ5TBx9s
-	5K2UyXufdSVoVlu8vjJi3gfmRZmYP4rTsYz5I2aS0HZirXzCd6zOudaC6txJag==
-X-Google-Smtp-Source: AGHT+IErWc/EF4yO/GsSLGH4UN19fjyyFu2ijPAcsjK58jl9mdviWlSB1G7dPKqPCIqxc7UnWhR0rw==
-X-Received: by 2002:a05:6a00:4b4a:b0:736:54c9:df2c with SMTP id d2e1a72fcca58-7489cfbb3b3mr20955146b3a.15.1750245365958;
-        Wed, 18 Jun 2025 04:16:05 -0700 (PDT)
+        bh=0ZwIOGYwnzwPKQYsQKPCZlGW8kcO4DPGovRI54lK8PA=;
+        b=J2DyWw/TfAgKwu485TYeOfEpYIgszWmu12REJXxSe4PxyKwQG65CM/92j8TEXrOc45
+         okUmi9yaqc7yMHUyVuUZQRLv2M4FnBsp6vtdeIpl6WlzYagZTGZamIP7Sbx/7r6HJuMU
+         l00uHwrcdcZnntsJWZV8twH/mJnPf1EdSANTcVuBDRki9JO2gCf0SF39KHjn2AJAVCwI
+         4mkvp4VY4+kr8MHWXw/rtL/UnwtS2qOZrEA/o7ZifqSxtZEKp8TN6maFPgcRQF1QqNL6
+         Guwp+QwMfvVZF/0muNiZh5W9HlAHgILTRvPl1ndCuH3+4msnjOPzGgoj4IERuZa3lPed
+         cxzw==
+X-Forwarded-Encrypted: i=1; AJvYcCVefY8f5JmsyLttm07/+QBGjx70vN4CYwbcTU6t+6v15Gxxa/hMTMdVIMfKgH8QJfZZpBdkox6WzO4=@vger.kernel.org, AJvYcCW7GbGJSyKDAC/2Ra5xeWm/bA1KYlAiQwai2OQrjA2zG0NPnaphtNLWbqf1jUJDK1o7LCY/k8Zp3P1foQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzifhKkjfoZXQ5DRWukGWy9D/5Vw5t3PTxt8uVO4QXxStGbTPfP
+	zMZA4qRXHamoKZ2SflMEta7Go6yv8tJUBVGEOSBsry1MEM4J5LbWRdiM
+X-Gm-Gg: ASbGncsavMiV0+kCMGXjEFzwF30AUT9ClVcOPUbcr5XzhUrvlMHbuJOvlzNXX9baa/8
+	X8uJ4LTWZN5/LDQbLrZCSWXMW4S+88gafM6HFb9W6kQaJiIUqu/LLa4Gwdpu7H7k70A4Pas/nxe
+	naXG7Bn/4dPlTBr7KpI/Z8wDjIRP743Ayoo3Y4SUovnu/KG860syr4Q0Ib+IZxspUb1cHZzafYB
+	9gylghYg51Q6A+5ngxHW1HHH3hJrkqq6OzahlE1WBZ+8ohQN3U9tp0hCztWYTLaTQ1jFvYyT+Wc
+	6QnNW1TJ1EffvievN1+E3ti7S+RenP4pAVWmZpRMYfR4ATt3ZpeKOALBgAa41g==
+X-Google-Smtp-Source: AGHT+IEnchaz71dOfNUo0g/iWkZWfS/8pyfxDmVKuQuCVGBkGejHz5lhCZQSSucSgNmEntcyPeEGyw==
+X-Received: by 2002:a17:90b:1d81:b0:312:e279:9ccf with SMTP id 98e67ed59e1d1-313f1be89b1mr22226239a91.5.1750245366578;
+        Wed, 18 Jun 2025 04:16:06 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-748efa19750sm717606b3a.58.2025.06.18.04.16.02
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-313c1bdb39bsm12374543a91.20.2025.06.18.04.16.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 18 Jun 2025 04:16:02 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id AEAED4596078; Wed, 18 Jun 2025 18:15:59 +0700 (WIB)
+	id C228D45965DE; Wed, 18 Jun 2025 18:15:59 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -84,9 +84,9 @@ Cc: "Theodore Ts'o" <tytso@mit.edu>,
 	"Darrick J. Wong" <djwong@kernel.org>,
 	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
 	Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH 1/4] Documentation: ext4: Slurp included subdocs in high-level overview docs
-Date: Wed, 18 Jun 2025 18:15:34 +0700
-Message-ID: <20250618111544.22602-2-bagasdotme@gmail.com>
+Subject: [PATCH 2/4] Documentation: ext4: Slurp included subdocs in global structures docs
+Date: Wed, 18 Jun 2025 18:15:35 +0700
+Message-ID: <20250618111544.22602-3-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250618111544.22602-1-bagasdotme@gmail.com>
 References: <20250618111544.22602-1-bagasdotme@gmail.com>
@@ -96,1748 +96,3918 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=73921; i=bagasdotme@gmail.com; h=from:subject; bh=K5pTB5IITvkRTBBRO+8HubCgsx539iFFT7LH9lgg4Sk=; b=kA0DAAoW9rmJSVVRTqMByyZiAGhSnyaiLz1+AdYQ8EGiVSZwm2SifBdiJkX9xEdlpFS26POZI Yh1BAAWCgAdFiEEkmEOgsu6MhTQh61B9rmJSVVRTqMFAmhSnyYACgkQ9rmJSVVRTqNedgEAu1Zb UA4cyRS/CYcz3zAq1YlfdYvzQl4+wQdNad4FCZwBAPdvueHdaOZWoNAZutB2jAH1uKZGs4xq7h/ fyXHxwKEA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=129089; i=bagasdotme@gmail.com; h=from:subject; bh=BdBzNwLlLqgS46DkMif1dJEUTlsNP0+gDTFFuVm91u8=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBlB89XmJlr5pSy+/WTlskVPJqo2rbZZfNbhYIj9sYX1B Trc372VO0pZGMS4GGTFFFkmJfI1nd5lJHKhfa0jzBxWJpAhDFycAjCRpo0Mf7h38D970CZ47miv auUc9oAD866csA0q4VMr229wxOM3szMjQ29hVX6+wiO3b3HL3com/ku6PcEre/2ESc/E+5SYcq0 N+AE=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Slurp subdocumentations for high-level ext4 design overview
-(overview.rst) by replacing reST include:: directive with their
-respective contents.
+Slurp subdocumentations for global structures (globals.rst) by replacing
+reST include:: directive with their respective contents.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/filesystems/ext4/allocators.rst |  56 --
- .../filesystems/ext4/atomic_writes.rst        | 225 -----
- Documentation/filesystems/ext4/bigalloc.rst   |  34 -
- Documentation/filesystems/ext4/blockgroup.rst | 135 ---
- Documentation/filesystems/ext4/blocks.rst     | 144 ---
- Documentation/filesystems/ext4/checksums.rst  |  73 --
- Documentation/filesystems/ext4/eainode.rst    |  18 -
- Documentation/filesystems/ext4/inlinedata.rst |  37 -
- Documentation/filesystems/ext4/overview.rst   | 819 +++++++++++++++++-
- .../filesystems/ext4/special_inodes.rst       |  55 --
- Documentation/filesystems/ext4/verity.rst     |  44 -
- 11 files changed, 809 insertions(+), 831 deletions(-)
- delete mode 100644 Documentation/filesystems/ext4/allocators.rst
- delete mode 100644 Documentation/filesystems/ext4/atomic_writes.rst
- delete mode 100644 Documentation/filesystems/ext4/bigalloc.rst
- delete mode 100644 Documentation/filesystems/ext4/blockgroup.rst
- delete mode 100644 Documentation/filesystems/ext4/blocks.rst
- delete mode 100644 Documentation/filesystems/ext4/checksums.rst
- delete mode 100644 Documentation/filesystems/ext4/eainode.rst
- delete mode 100644 Documentation/filesystems/ext4/inlinedata.rst
- delete mode 100644 Documentation/filesystems/ext4/special_inodes.rst
- delete mode 100644 Documentation/filesystems/ext4/verity.rst
+ Documentation/filesystems/ext4/bitmaps.rst    |   28 -
+ Documentation/filesystems/ext4/globals.rst    | 1923 ++++++++++++++++-
+ .../filesystems/ext4/group_descr.rst          |  173 --
+ Documentation/filesystems/ext4/journal.rst    |  761 -------
+ Documentation/filesystems/ext4/mmp.rst        |   77 -
+ Documentation/filesystems/ext4/orphan.rst     |   42 -
+ Documentation/filesystems/ext4/super.rst      |  839 -------
+ 7 files changed, 1917 insertions(+), 1926 deletions(-)
+ delete mode 100644 Documentation/filesystems/ext4/bitmaps.rst
+ delete mode 100644 Documentation/filesystems/ext4/group_descr.rst
+ delete mode 100644 Documentation/filesystems/ext4/journal.rst
+ delete mode 100644 Documentation/filesystems/ext4/mmp.rst
+ delete mode 100644 Documentation/filesystems/ext4/orphan.rst
+ delete mode 100644 Documentation/filesystems/ext4/super.rst
 
-diff --git a/Documentation/filesystems/ext4/allocators.rst b/Documentation/filesystems/ext4/allocators.rst
+diff --git a/Documentation/filesystems/ext4/bitmaps.rst b/Documentation/filesystems/ext4/bitmaps.rst
 deleted file mode 100644
-index 7aa85152ace3d0..00000000000000
---- a/Documentation/filesystems/ext4/allocators.rst
+index 91c45d86e9bb56..00000000000000
+--- a/Documentation/filesystems/ext4/bitmaps.rst
 +++ /dev/null
-@@ -1,56 +0,0 @@
+@@ -1,28 +0,0 @@
 -.. SPDX-License-Identifier: GPL-2.0
 -
--Block and Inode Allocation Policy
-----------------------------------
--
--ext4 recognizes (better than ext3, anyway) that data locality is
--generally a desirably quality of a filesystem. On a spinning disk,
--keeping related blocks near each other reduces the amount of movement
--that the head actuator and disk must perform to access a data block,
--thus speeding up disk IO. On an SSD there of course are no moving parts,
--but locality can increase the size of each transfer request while
--reducing the total number of requests. This locality may also have the
--effect of concentrating writes on a single erase block, which can speed
--up file rewrites significantly. Therefore, it is useful to reduce
--fragmentation whenever possible.
--
--The first tool that ext4 uses to combat fragmentation is the multi-block
--allocator. When a file is first created, the block allocator
--speculatively allocates 8KiB of disk space to the file on the assumption
--that the space will get written soon. When the file is closed, the
--unused speculative allocations are of course freed, but if the
--speculation is correct (typically the case for full writes of small
--files) then the file data gets written out in a single multi-block
--extent. A second related trick that ext4 uses is delayed allocation.
--Under this scheme, when a file needs more blocks to absorb file writes,
--the filesystem defers deciding the exact placement on the disk until all
--the dirty buffers are being written out to disk. By not committing to a
--particular placement until it's absolutely necessary (the commit timeout
--is hit, or sync() is called, or the kernel runs out of memory), the hope
--is that the filesystem can make better location decisions.
--
--The third trick that ext4 (and ext3) uses is that it tries to keep a
--file's data blocks in the same block group as its inode. This cuts down
--on the seek penalty when the filesystem first has to read a file's inode
--to learn where the file's data blocks live and then seek over to the
--file's data blocks to begin I/O operations.
--
--The fourth trick is that all the inodes in a directory are placed in the
--same block group as the directory, when feasible. The working assumption
--here is that all the files in a directory might be related, therefore it
--is useful to try to keep them all together.
--
--The fifth trick is that the disk volume is cut up into 128MB block
--groups; these mini-containers are used as outlined above to try to
--maintain data locality. However, there is a deliberate quirk -- when a
--directory is created in the root directory, the inode allocator scans
--the block groups and puts that directory into the least heavily loaded
--block group that it can find. This encourages directories to spread out
--over a disk; as the top-level directory/file blobs fill up one block
--group, the allocators simply move on to the next block group. Allegedly
--this scheme evens out the loading on the block groups, though the author
--suspects that the directories which are so unlucky as to land towards
--the end of a spinning drive get a raw deal performance-wise.
--
--Of course if all of these mechanisms fail, one can always use e4defrag
--to defragment files.
-diff --git a/Documentation/filesystems/ext4/atomic_writes.rst b/Documentation/filesystems/ext4/atomic_writes.rst
-deleted file mode 100644
-index f65767df3620d5..00000000000000
---- a/Documentation/filesystems/ext4/atomic_writes.rst
-+++ /dev/null
-@@ -1,225 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--.. _atomic_writes:
--
--Atomic Block Writes
---------------------------
--
--Introduction
--~~~~~~~~~~~~
--
--Atomic (untorn) block writes ensure that either the entire write is committed
--to disk or none of it is. This prevents "torn writes" during power loss or
--system crashes. The ext4 filesystem supports atomic writes (only with Direct
--I/O) on regular files with extents, provided the underlying storage device
--supports hardware atomic writes. This is supported in the following two ways:
--
--1. **Single-fsblock Atomic Writes**:
--   EXT4's supports atomic write operations with a single filesystem block since
--   v6.13. In this the atomic write unit minimum and maximum sizes are both set
--   to filesystem blocksize.
--   e.g. doing atomic write of 16KB with 16KB filesystem blocksize on 64KB
--   pagesize system is possible.
--
--2. **Multi-fsblock Atomic Writes with Bigalloc**:
--   EXT4 now also supports atomic writes spanning multiple filesystem blocks
--   using a feature known as bigalloc. The atomic write unit's minimum and
--   maximum sizes are determined by the filesystem block size and cluster size,
--   based on the underlying device’s supported atomic write unit limits.
--
--Requirements
--~~~~~~~~~~~~
--
--Basic requirements for atomic writes in ext4:
--
-- 1. The extents feature must be enabled (default for ext4)
-- 2. The underlying block device must support atomic writes
-- 3. For single-fsblock atomic writes:
--
--    1. A filesystem with appropriate block size (up to the page size)
-- 4. For multi-fsblock atomic writes:
--
--    1. The bigalloc feature must be enabled
--    2. The cluster size must be appropriately configured
--
--NOTE: EXT4 does not support software or COW based atomic write, which means
--atomic writes on ext4 are only supported if underlying storage device supports
--it.
--
--Multi-fsblock Implementation Details
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--
--The bigalloc feature changes ext4 to allocate in units of multiple filesystem
--blocks, also known as clusters. With bigalloc each bit within block bitmap
--represents cluster (power of 2 number of blocks) rather than individual
--filesystem blocks.
--EXT4 supports multi-fsblock atomic writes with bigalloc, subject to the
--following constraints. The minimum atomic write size is the larger of the fs
--block size and the minimum hardware atomic write unit; and the maximum atomic
--write size is smaller of the bigalloc cluster size and the maximum hardware
--atomic write unit.  Bigalloc ensures that all allocations are aligned to the
--cluster size, which satisfies the LBA alignment requirements of the hardware
--device if the start of the partition/logical volume is itself aligned correctly.
--
--Here is the block allocation strategy in bigalloc for atomic writes:
--
-- * For regions with fully mapped extents, no additional work is needed
-- * For append writes, a new mapped extent is allocated
-- * For regions that are entirely holes, unwritten extent is created
-- * For large unwritten extents, the extent gets split into two unwritten
--   extents of appropriate requested size
-- * For mixed mapping regions (combinations of holes, unwritten extents, or
--   mapped extents), ext4_map_blocks() is called in a loop with
--   EXT4_GET_BLOCKS_ZERO flag to convert the region into a single contiguous
--   mapped extent by writing zeroes to it and converting any unwritten extents to
--   written, if found within the range.
--
--Note: Writing on a single contiguous underlying extent, whether mapped or
--unwritten, is not inherently problematic. However, writing to a mixed mapping
--region (i.e. one containing a combination of mapped and unwritten extents)
--must be avoided when performing atomic writes.
--
--The reason is that, atomic writes when issued via pwritev2() with the RWF_ATOMIC
--flag, requires that either all data is written or none at all. In the event of
--a system crash or unexpected power loss during the write operation, the affected
--region (when later read) must reflect either the complete old data or the
--complete new data, but never a mix of both.
--
--To enforce this guarantee, we ensure that the write target is backed by
--a single, contiguous extent before any data is written. This is critical because
--ext4 defers the conversion of unwritten extents to written extents until the I/O
--completion path (typically in ->end_io()). If a write is allowed to proceed over
--a mixed mapping region (with mapped and unwritten extents) and a failure occurs
--mid-write, the system could observe partially updated regions after reboot, i.e.
--new data over mapped areas, and stale (old) data over unwritten extents that
--were never marked written. This violates the atomicity and/or torn write
--prevention guarantee.
--
--To prevent such torn writes, ext4 proactively allocates a single contiguous
--extent for the entire requested region in ``ext4_iomap_alloc`` via
--``ext4_map_blocks_atomic()``. EXT4 also force commits the current journalling
--transaction in case if allocation is done over mixed mapping. This ensures any
--pending metadata updates (like unwritten to written extents conversion) in this
--range are in consistent state with the file data blocks, before performing the
--actual write I/O. If the commit fails, the whole I/O must be aborted to prevent
--from any possible torn writes.
--Only after this step, the actual data write operation is performed by the iomap.
--
--Handling Split Extents Across Leaf Blocks
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--
--There can be a special edge case where we have logically and physically
--contiguous extents stored in separate leaf nodes of the on-disk extent tree.
--This occurs because on-disk extent tree merges only happens within the leaf
--blocks except for a case where we have 2-level tree which can get merged and
--collapsed entirely into the inode.
--If such a layout exists and, in the worst case, the extent status cache entries
--are reclaimed due to memory pressure, ``ext4_map_blocks()`` may never return
--a single contiguous extent for these split leaf extents.
--
--To address this edge case, a new get block flag
--``EXT4_GET_BLOCKS_QUERY_LEAF_BLOCKS flag`` is added to enhance the
--``ext4_map_query_blocks()`` lookup behavior.
--
--This new get block flag allows ``ext4_map_blocks()`` to first check if there is
--an entry in the extent status cache for the full range.
--If not present, it consults the on-disk extent tree using
--``ext4_map_query_blocks()``.
--If the located extent is at the end of a leaf node, it probes the next logical
--block (lblk) to detect a contiguous extent in the adjacent leaf.
--
--For now only one additional leaf block is queried to maintain efficiency, as
--atomic writes are typically constrained to small sizes
--(e.g. [blocksize, clustersize]).
--
--
--Handling Journal transactions
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--
--To support multi-fsblock atomic writes, we ensure enough journal credits are
--reserved during:
--
-- 1. Block allocation time in ``ext4_iomap_alloc()``. We first query if there
--    could be a mixed mapping for the underlying requested range. If yes, then we
--    reserve credits of up to ``m_len``, assuming every alternate block can be
--    an unwritten extent followed by a hole.
--
-- 2. During ``->end_io()`` call, we make sure a single transaction is started for
--    doing unwritten-to-written conversion. The loop for conversion is mainly
--    only required to handle a split extent across leaf blocks.
--
--How to
--------
--
--Creating Filesystems with Atomic Write Support
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--
--First check the atomic write units supported by block device.
--See :ref:`atomic_write_bdev_support` for more details.
--
--For single-fsblock atomic writes with a larger block size
--(on systems with block size < page size):
--
--.. code-block:: bash
--
--    # Create an ext4 filesystem with a 16KB block size
--    # (requires page size >= 16KB)
--    mkfs.ext4 -b 16384 /dev/device
--
--For multi-fsblock atomic writes with bigalloc:
--
--.. code-block:: bash
--
--    # Create an ext4 filesystem with bigalloc and 64KB cluster size
--    mkfs.ext4 -F -O bigalloc -b 4096 -C 65536 /dev/device
--
--Where ``-b`` specifies the block size, ``-C`` specifies the cluster size in bytes,
--and ``-O bigalloc`` enables the bigalloc feature.
--
--Application Interface
--~~~~~~~~~~~~~~~~~~~~~
--
--Applications can use the ``pwritev2()`` system call with the ``RWF_ATOMIC`` flag
--to perform atomic writes:
--
--.. code-block:: c
--
--    pwritev2(fd, iov, iovcnt, offset, RWF_ATOMIC);
--
--The write must be aligned to the filesystem's block size and not exceed the
--filesystem's maximum atomic write unit size.
--See ``generic_atomic_write_valid()`` for more details.
--
--``statx()`` system call with ``STATX_WRITE_ATOMIC`` flag can provides following
--details:
--
-- * ``stx_atomic_write_unit_min``: Minimum size of an atomic write request.
-- * ``stx_atomic_write_unit_max``: Maximum size of an atomic write request.
-- * ``stx_atomic_write_segments_max``: Upper limit for segments. The number of
--   separate memory buffers that can be gathered into a write operation
--   (e.g., the iovcnt parameter for IOV_ITER). Currently, this is always set to one.
--
--The STATX_ATTR_WRITE_ATOMIC flag in ``statx->attributes`` is set if atomic
--writes are supported.
--
--.. _atomic_write_bdev_support:
--
--Hardware Support
------------------
--
--The underlying storage device must support atomic write operations.
--Modern NVMe and SCSI devices often provide this capability.
--The Linux kernel exposes this information through sysfs:
--
--* ``/sys/block/<device>/queue/atomic_write_unit_min`` - Minimum atomic write size
--* ``/sys/block/<device>/queue/atomic_write_unit_max`` - Maximum atomic write size
--
--Nonzero values for these attributes indicate that the device supports
--atomic writes.
--
--See Also
----------
--
--* :doc:`bigalloc` - Documentation on the bigalloc feature
--* :doc:`allocators` - Documentation on block allocation in ext4
--* Support for atomic block writes in 6.13:
--  https://lwn.net/Articles/1009298/
-diff --git a/Documentation/filesystems/ext4/bigalloc.rst b/Documentation/filesystems/ext4/bigalloc.rst
-deleted file mode 100644
-index 976a180b209c2a..00000000000000
---- a/Documentation/filesystems/ext4/bigalloc.rst
-+++ /dev/null
-@@ -1,34 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--Bigalloc
----------
--
--At the moment, the default size of a block is 4KiB, which is a commonly
--supported page size on most MMU-capable hardware. This is fortunate, as
--ext4 code is not prepared to handle the case where the block size
--exceeds the page size. However, for a filesystem of mostly huge files,
--it is desirable to be able to allocate disk blocks in units of multiple
--blocks to reduce both fragmentation and metadata overhead. The
--bigalloc feature provides exactly this ability.
--
--The bigalloc feature (EXT4_FEATURE_RO_COMPAT_BIGALLOC) changes ext4 to
--use clustered allocation, so that each bit in the ext4 block allocation
--bitmap addresses a power of two number of blocks. For example, if the
--file system is mainly going to be storing large files in the 4-32
--megabyte range, it might make sense to set a cluster size of 1 megabyte.
--This means that each bit in the block allocation bitmap now addresses
--256 4k blocks. This shrinks the total size of the block allocation
--bitmaps for a 2T file system from 64 megabytes to 256 kilobytes. It also
--means that a block group addresses 32 gigabytes instead of 128 megabytes,
--also shrinking the amount of file system overhead for metadata.
--
--The administrator can set a block cluster size at mkfs time (which is
--stored in the s_log_cluster_size field in the superblock); from then
--on, the block bitmaps track clusters, not individual blocks. This means
--that block groups can be several gigabytes in size (instead of just
--128MiB); however, the minimum allocation unit becomes a cluster, not a
--block, even for directories. TaoBao had a patchset to extend the “use
--units of clusters instead of blocks” to the extent tree, though it is
--not clear where those patches went-- they eventually morphed into
--“extent tree v2” but that code has not landed as of May 2015.
--
-diff --git a/Documentation/filesystems/ext4/blockgroup.rst b/Documentation/filesystems/ext4/blockgroup.rst
-deleted file mode 100644
-index ed5a5cac6d40e1..00000000000000
---- a/Documentation/filesystems/ext4/blockgroup.rst
-+++ /dev/null
-@@ -1,135 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--Layout
--------
--
--The layout of a standard block group is approximately as follows (each
--of these fields is discussed in a separate section below):
--
--.. list-table::
--   :widths: 1 1 1 1 1 1 1 1
--   :header-rows: 1
--
--   * - Group 0 Padding
--     - ext4 Super Block
--     - Group Descriptors
--     - Reserved GDT Blocks
--     - Data Block Bitmap
--     - inode Bitmap
--     - inode Table
--     - Data Blocks
--   * - 1024 bytes
--     - 1 block
--     - many blocks
--     - many blocks
--     - 1 block
--     - 1 block
--     - many blocks
--     - many more blocks
--
--For the special case of block group 0, the first 1024 bytes are unused,
--to allow for the installation of x86 boot sectors and other oddities.
--The superblock will start at offset 1024 bytes, whichever block that
--happens to be (usually 0). However, if for some reason the block size =
--1024, then block 0 is marked in use and the superblock goes in block 1.
--For all other block groups, there is no padding.
--
--The ext4 driver primarily works with the superblock and the group
--descriptors that are found in block group 0. Redundant copies of the
--superblock and group descriptors are written to some of the block groups
--across the disk in case the beginning of the disk gets trashed, though
--not all block groups necessarily host a redundant copy (see following
--paragraph for more details). If the group does not have a redundant
--copy, the block group begins with the data block bitmap. Note also that
--when the filesystem is freshly formatted, mkfs will allocate “reserve
--GDT block” space after the block group descriptors and before the start
--of the block bitmaps to allow for future expansion of the filesystem. By
--default, a filesystem is allowed to increase in size by a factor of
--1024x over the original filesystem size.
--
--The location of the inode table is given by ``grp.bg_inode_table_*``. It
--is continuous range of blocks large enough to contain
--``sb.s_inodes_per_group * sb.s_inode_size`` bytes.
--
--As for the ordering of items in a block group, it is generally
--established that the super block and the group descriptor table, if
--present, will be at the beginning of the block group. The bitmaps and
--the inode table can be anywhere, and it is quite possible for the
--bitmaps to come after the inode table, or for both to be in different
--groups (flex_bg). Leftover space is used for file data blocks, indirect
--block maps, extent tree blocks, and extended attributes.
--
--Flexible Block Groups
-----------------------
--
--Starting in ext4, there is a new feature called flexible block groups
--(flex_bg). In a flex_bg, several block groups are tied together as one
--logical block group; the bitmap spaces and the inode table space in the
--first block group of the flex_bg are expanded to include the bitmaps
--and inode tables of all other block groups in the flex_bg. For example,
--if the flex_bg size is 4, then group 0 will contain (in order) the
--superblock, group descriptors, data block bitmaps for groups 0-3, inode
--bitmaps for groups 0-3, inode tables for groups 0-3, and the remaining
--space in group 0 is for file data. The effect of this is to group the
--block group metadata close together for faster loading, and to enable
--large files to be continuous on disk. Backup copies of the superblock
--and group descriptors are always at the beginning of block groups, even
--if flex_bg is enabled. The number of block groups that make up a
--flex_bg is given by 2 ^ ``sb.s_log_groups_per_flex``.
--
--Meta Block Groups
-------------------
--
--Without the option META_BG, for safety concerns, all block group
--descriptors copies are kept in the first block group. Given the default
--128MiB(2^27 bytes) block group size and 64-byte group descriptors, ext4
--can have at most 2^27/64 = 2^21 block groups. This limits the entire
--filesystem size to 2^21 * 2^27 = 2^48bytes or 256TiB.
--
--The solution to this problem is to use the metablock group feature
--(META_BG), which is already in ext3 for all 2.6 releases. With the
--META_BG feature, ext4 filesystems are partitioned into many metablock
--groups. Each metablock group is a cluster of block groups whose group
--descriptor structures can be stored in a single disk block. For ext4
--filesystems with 4 KB block size, a single metablock group partition
--includes 64 block groups, or 8 GiB of disk space. The metablock group
--feature moves the location of the group descriptors from the congested
--first block group of the whole filesystem into the first group of each
--metablock group itself. The backups are in the second and last group of
--each metablock group. This increases the 2^21 maximum block groups limit
--to the hard limit 2^32, allowing support for a 512PiB filesystem.
--
--The change in the filesystem format replaces the current scheme where
--the superblock is followed by a variable-length set of block group
--descriptors. Instead, the superblock and a single block group descriptor
--block is placed at the beginning of the first, second, and last block
--groups in a meta-block group. A meta-block group is a collection of
--block groups which can be described by a single block group descriptor
--block. Since the size of the block group descriptor structure is 64
--bytes, a meta-block group contains 16 block groups for filesystems with
--a 1KB block size, and 64 block groups for filesystems with a 4KB
--blocksize. Filesystems can either be created using this new block group
--descriptor layout, or existing filesystems can be resized on-line, and
--the field s_first_meta_bg in the superblock will indicate the first
--block group using this new layout.
--
--Please see an important note about ``BLOCK_UNINIT`` in the section about
--block and inode bitmaps.
--
--Lazy Block Group Initialization
---------------------------------
--
--A new feature for ext4 are three block group descriptor flags that
--enable mkfs to skip initializing other parts of the block group
--metadata. Specifically, the INODE_UNINIT and BLOCK_UNINIT flags mean
--that the inode and block bitmaps for that group can be calculated and
--therefore the on-disk bitmap blocks are not initialized. This is
--generally the case for an empty block group or a block group containing
--only fixed-location block group metadata. The INODE_ZEROED flag means
--that the inode table has been initialized; mkfs will unset this flag and
--rely on the kernel to initialize the inode tables in the background.
--
--By not writing zeroes to the bitmaps and inode table, mkfs time is
--reduced considerably. Note the feature flag is RO_COMPAT_GDT_CSUM,
--but the dumpe2fs output prints this as “uninit_bg”. They are the same
--thing.
-diff --git a/Documentation/filesystems/ext4/blocks.rst b/Documentation/filesystems/ext4/blocks.rst
-deleted file mode 100644
-index b0f80ea87c90e1..00000000000000
---- a/Documentation/filesystems/ext4/blocks.rst
-+++ /dev/null
-@@ -1,144 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--Blocks
--------
--
--ext4 allocates storage space in units of “blocks”. A block is a group of
--sectors between 1KiB and 64KiB, and the number of sectors must be an
--integral power of 2. Blocks are in turn grouped into larger units called
--block groups. Block size is specified at mkfs time and typically is
--4KiB. You may experience mounting problems if block size is greater than
--page size (i.e. 64KiB blocks on a i386 which only has 4KiB memory
--pages). By default a filesystem can contain 2^32 blocks; if the '64bit'
--feature is enabled, then a filesystem can have 2^64 blocks. The location
--of structures is stored in terms of the block number the structure lives
--in and not the absolute offset on disk.
--
--For 32-bit filesystems, limits are as follows:
--
--.. list-table::
--   :widths: 1 1 1 1 1
--   :header-rows: 1
--
--   * - Item
--     - 1KiB
--     - 2KiB
--     - 4KiB
--     - 64KiB
--   * - Blocks
--     - 2^32
--     - 2^32
--     - 2^32
--     - 2^32
--   * - Inodes
--     - 2^32
--     - 2^32
--     - 2^32
--     - 2^32
--   * - File System Size
--     - 4TiB
--     - 8TiB
--     - 16TiB
--     - 256TiB
--   * - Blocks Per Block Group
--     - 8,192
--     - 16,384
--     - 32,768
--     - 524,288
--   * - Inodes Per Block Group
--     - 8,192
--     - 16,384
--     - 32,768
--     - 524,288
--   * - Block Group Size
--     - 8MiB
--     - 32MiB
--     - 128MiB
--     - 32GiB
--   * - Blocks Per File, Extents
--     - 2^32
--     - 2^32
--     - 2^32
--     - 2^32
--   * - Blocks Per File, Block Maps
--     - 16,843,020
--     - 134,480,396
--     - 1,074,791,436
--     - 4,398,314,962,956 (really 2^32 due to field size limitations)
--   * - File Size, Extents
--     - 4TiB
--     - 8TiB
--     - 16TiB
--     - 256TiB
--   * - File Size, Block Maps
--     - 16GiB
--     - 256GiB
--     - 4TiB
--     - 256TiB
--
--For 64-bit filesystems, limits are as follows:
--
--.. list-table::
--   :widths: 1 1 1 1 1
--   :header-rows: 1
--
--   * - Item
--     - 1KiB
--     - 2KiB
--     - 4KiB
--     - 64KiB
--   * - Blocks
--     - 2^64
--     - 2^64
--     - 2^64
--     - 2^64
--   * - Inodes
--     - 2^32
--     - 2^32
--     - 2^32
--     - 2^32
--   * - File System Size
--     - 16ZiB
--     - 32ZiB
--     - 64ZiB
--     - 1YiB
--   * - Blocks Per Block Group
--     - 8,192
--     - 16,384
--     - 32,768
--     - 524,288
--   * - Inodes Per Block Group
--     - 8,192
--     - 16,384
--     - 32,768
--     - 524,288
--   * - Block Group Size
--     - 8MiB
--     - 32MiB
--     - 128MiB
--     - 32GiB
--   * - Blocks Per File, Extents
--     - 2^32
--     - 2^32
--     - 2^32
--     - 2^32
--   * - Blocks Per File, Block Maps
--     - 16,843,020
--     - 134,480,396
--     - 1,074,791,436
--     - 4,398,314,962,956 (really 2^32 due to field size limitations)
--   * - File Size, Extents
--     - 4TiB
--     - 8TiB
--     - 16TiB
--     - 256TiB
--   * - File Size, Block Maps
--     - 16GiB
--     - 256GiB
--     - 4TiB
--     - 256TiB
--
--Note: Files not using extents (i.e. files using block maps) must be
--placed within the first 2^32 blocks of a filesystem. Files with extents
--must be placed within the first 2^48 blocks of a filesystem. It's not
--clear what happens with larger filesystems.
-diff --git a/Documentation/filesystems/ext4/checksums.rst b/Documentation/filesystems/ext4/checksums.rst
-deleted file mode 100644
-index e232749daf5f30..00000000000000
---- a/Documentation/filesystems/ext4/checksums.rst
-+++ /dev/null
-@@ -1,73 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--Checksums
-----------
--
--Starting in early 2012, metadata checksums were added to all major ext4
--and jbd2 data structures. The associated feature flag is metadata_csum.
--The desired checksum algorithm is indicated in the superblock, though as
--of October 2012 the only supported algorithm is crc32c. Some data
--structures did not have space to fit a full 32-bit checksum, so only the
--lower 16 bits are stored. Enabling the 64bit feature increases the data
--structure size so that full 32-bit checksums can be stored for many data
--structures. However, existing 32-bit filesystems cannot be extended to
--enable 64bit mode, at least not without the experimental resize2fs
--patches to do so.
--
--Existing filesystems can have checksumming added by running
--``tune2fs -O metadata_csum`` against the underlying device. If tune2fs
--encounters directory blocks that lack sufficient empty space to add a
--checksum, it will request that you run ``e2fsck -D`` to have the
--directories rebuilt with checksums. This has the added benefit of
--removing slack space from the directory files and rebalancing the htree
--indexes. If you _ignore_ this step, your directories will not be
--protected by a checksum!
--
--The following table describes the data elements that go into each type
--of checksum. The checksum function is whatever the superblock describes
--(crc32c as of October 2013) unless noted otherwise.
--
--.. list-table::
--   :widths: 20 8 50
--   :header-rows: 1
--
--   * - Metadata
--     - Length
--     - Ingredients
--   * - Superblock
--     - __le32
--     - The entire superblock up to the checksum field. The UUID lives inside
--       the superblock.
--   * - MMP
--     - __le32
--     - UUID + the entire MMP block up to the checksum field.
--   * - Extended Attributes
--     - __le32
--     - UUID + the entire extended attribute block. The checksum field is set to
--       zero.
--   * - Directory Entries
--     - __le32
--     - UUID + inode number + inode generation + the directory block up to the
--       fake entry enclosing the checksum field.
--   * - HTREE Nodes
--     - __le32
--     - UUID + inode number + inode generation + all valid extents + HTREE tail.
--       The checksum field is set to zero.
--   * - Extents
--     - __le32
--     - UUID + inode number + inode generation + the entire extent block up to
--       the checksum field.
--   * - Bitmaps
--     - __le32 or __le16
--     - UUID + the entire bitmap. Checksums are stored in the group descriptor,
--       and truncated if the group descriptor size is 32 bytes (i.e. ^64bit)
--   * - Inodes
--     - __le32
--     - UUID + inode number + inode generation + the entire inode. The checksum
--       field is set to zero. Each inode has its own checksum.
--   * - Group Descriptors
--     - __le16
--     - If metadata_csum, then UUID + group number + the entire descriptor;
--       else if gdt_csum, then crc16(UUID + group number + the entire
--       descriptor). In all cases, only the lower 16 bits are stored.
--
-diff --git a/Documentation/filesystems/ext4/eainode.rst b/Documentation/filesystems/ext4/eainode.rst
-deleted file mode 100644
-index 7a2ef26b064ac0..00000000000000
---- a/Documentation/filesystems/ext4/eainode.rst
-+++ /dev/null
-@@ -1,18 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--Large Extended Attribute Values
---------------------------------
--
--To enable ext4 to store extended attribute values that do not fit in the
--inode or in the single extended attribute block attached to an inode,
--the EA_INODE feature allows us to store the value in the data blocks of
--a regular file inode. This “EA inode” is linked only from the extended
--attribute name index and must not appear in a directory entry. The
--inode's i_atime field is used to store a checksum of the xattr value;
--and i_ctime/i_version store a 64-bit reference count, which enables
--sharing of large xattr values between multiple owning inodes. For
--backward compatibility with older versions of this feature, the
--i_mtime/i_generation *may* store a back-reference to the inode number
--and i_generation of the **one** owning inode (in cases where the EA
--inode is not referenced by multiple inodes) to verify that the EA inode
--is the correct one being accessed.
-diff --git a/Documentation/filesystems/ext4/inlinedata.rst b/Documentation/filesystems/ext4/inlinedata.rst
-deleted file mode 100644
-index a728af0d2fd0c5..00000000000000
---- a/Documentation/filesystems/ext4/inlinedata.rst
-+++ /dev/null
-@@ -1,37 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--Inline Data
+-Block and inode Bitmaps
+------------------------
+-
+-The data block bitmap tracks the usage of data blocks within the block
+-group.
+-
+-The inode bitmap records which entries in the inode table are in use.
+-
+-As with most bitmaps, one bit represents the usage status of one data
+-block or inode table entry. This implies a block group size of 8 *
+-number_of_bytes_in_a_logical_block.
+-
+-NOTE: If ``BLOCK_UNINIT`` is set for a given block group, various parts
+-of the kernel and e2fsprogs code pretends that the block bitmap contains
+-zeros (i.e. all blocks in the group are free). However, it is not
+-necessarily the case that no blocks are in use -- if ``meta_bg`` is set,
+-the bitmaps and group descriptor live inside the group. Unfortunately,
+-ext2fs_test_block_bitmap2() will return '0' for those locations,
+-which produces confusing debugfs output.
+-
+-Inode Table
 ------------
--
--The inline data feature was designed to handle the case that a file's
--data is so tiny that it readily fits inside the inode, which
--(theoretically) reduces disk block consumption and reduces seeks. If the
--file is smaller than 60 bytes, then the data are stored inline in
--``inode.i_block``. If the rest of the file would fit inside the extended
--attribute space, then it might be found as an extended attribute
--“system.data” within the inode body (“ibody EA”). This of course
--constrains the amount of extended attributes one can attach to an inode.
--If the data size increases beyond i_block + ibody EA, a regular block
--is allocated and the contents moved to that block.
--
--Pending a change to compact the extended attribute key used to store
--inline data, one ought to be able to store 160 bytes of data in a
--256-byte inode (as of June 2015, when i_extra_isize is 28). Prior to
--that, the limit was 156 bytes due to inefficient use of inode space.
--
--The inline data feature requires the presence of an extended attribute
--for “system.data”, even if the attribute value is zero length.
--
--Inline Directories
--~~~~~~~~~~~~~~~~~~
--
--The first four bytes of i_block are the inode number of the parent
--directory. Following that is a 56-byte space for an array of directory
--entries; see ``struct ext4_dir_entry``. If there is a “system.data”
--attribute in the inode body, the EA value is an array of
--``struct ext4_dir_entry`` as well. Note that for inline directories, the
--i_block and EA space are treated as separate dirent blocks; directory
--entries cannot span the two.
--
--Inline directory entries are not checksummed, as the inode checksum
--should protect all inline data contents.
-diff --git a/Documentation/filesystems/ext4/overview.rst b/Documentation/filesystems/ext4/overview.rst
-index 9d4054c17ecb7b..f402ba37179f02 100644
---- a/Documentation/filesystems/ext4/overview.rst
-+++ b/Documentation/filesystems/ext4/overview.rst
-@@ -16,13 +16,812 @@ All fields in ext4 are written to disk in little-endian order. HOWEVER,
- all fields in jbd2 (the journal) are written to disk in big-endian
- order.
+-Inode tables are statically allocated at mkfs time.  Each block group
+-descriptor points to the start of the table, and the superblock records
+-the number of inodes per group.  See the section on inodes for more
+-information.
+diff --git a/Documentation/filesystems/ext4/globals.rst b/Documentation/filesystems/ext4/globals.rst
+index b17418974fd35e..46eabf88267f80 100644
+--- a/Documentation/filesystems/ext4/globals.rst
++++ b/Documentation/filesystems/ext4/globals.rst
+@@ -6,9 +6,1920 @@ Global Structures
+ The filesystem is sharded into a number of block groups, each of which
+ have static metadata at fixed locations.
  
--.. include:: blocks.rst
--.. include:: blockgroup.rst
--.. include:: special_inodes.rst
--.. include:: allocators.rst
--.. include:: checksums.rst
--.. include:: bigalloc.rst
--.. include:: inlinedata.rst
--.. include:: eainode.rst
--.. include:: verity.rst
--.. include:: atomic_writes.rst
-+Blocks
-+------
-+
-+ext4 allocates storage space in units of “blocks”. A block is a group of
-+sectors between 1KiB and 64KiB, and the number of sectors must be an
-+integral power of 2. Blocks are in turn grouped into larger units called
-+block groups. Block size is specified at mkfs time and typically is
-+4KiB. You may experience mounting problems if block size is greater than
-+page size (i.e. 64KiB blocks on a i386 which only has 4KiB memory
-+pages). By default a filesystem can contain 2^32 blocks; if the '64bit'
-+feature is enabled, then a filesystem can have 2^64 blocks. The location
-+of structures is stored in terms of the block number the structure lives
-+in and not the absolute offset on disk.
-+
-+For 32-bit filesystems, limits are as follows:
-+
-+.. list-table::
-+   :widths: 1 1 1 1 1
-+   :header-rows: 1
-+
-+   * - Item
-+     - 1KiB
-+     - 2KiB
-+     - 4KiB
-+     - 64KiB
-+   * - Blocks
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+   * - Inodes
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+   * - File System Size
-+     - 4TiB
-+     - 8TiB
-+     - 16TiB
-+     - 256TiB
-+   * - Blocks Per Block Group
-+     - 8,192
-+     - 16,384
-+     - 32,768
-+     - 524,288
-+   * - Inodes Per Block Group
-+     - 8,192
-+     - 16,384
-+     - 32,768
-+     - 524,288
-+   * - Block Group Size
-+     - 8MiB
-+     - 32MiB
-+     - 128MiB
-+     - 32GiB
-+   * - Blocks Per File, Extents
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+   * - Blocks Per File, Block Maps
-+     - 16,843,020
-+     - 134,480,396
-+     - 1,074,791,436
-+     - 4,398,314,962,956 (really 2^32 due to field size limitations)
-+   * - File Size, Extents
-+     - 4TiB
-+     - 8TiB
-+     - 16TiB
-+     - 256TiB
-+   * - File Size, Block Maps
-+     - 16GiB
-+     - 256GiB
-+     - 4TiB
-+     - 256TiB
-+
-+For 64-bit filesystems, limits are as follows:
-+
-+.. list-table::
-+   :widths: 1 1 1 1 1
-+   :header-rows: 1
-+
-+   * - Item
-+     - 1KiB
-+     - 2KiB
-+     - 4KiB
-+     - 64KiB
-+   * - Blocks
-+     - 2^64
-+     - 2^64
-+     - 2^64
-+     - 2^64
-+   * - Inodes
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+   * - File System Size
-+     - 16ZiB
-+     - 32ZiB
-+     - 64ZiB
-+     - 1YiB
-+   * - Blocks Per Block Group
-+     - 8,192
-+     - 16,384
-+     - 32,768
-+     - 524,288
-+   * - Inodes Per Block Group
-+     - 8,192
-+     - 16,384
-+     - 32,768
-+     - 524,288
-+   * - Block Group Size
-+     - 8MiB
-+     - 32MiB
-+     - 128MiB
-+     - 32GiB
-+   * - Blocks Per File, Extents
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+     - 2^32
-+   * - Blocks Per File, Block Maps
-+     - 16,843,020
-+     - 134,480,396
-+     - 1,074,791,436
-+     - 4,398,314,962,956 (really 2^32 due to field size limitations)
-+   * - File Size, Extents
-+     - 4TiB
-+     - 8TiB
-+     - 16TiB
-+     - 256TiB
-+   * - File Size, Block Maps
-+     - 16GiB
-+     - 256GiB
-+     - 4TiB
-+     - 256TiB
-+
-+.. note::
-+   Files not using extents (i.e. files using block maps) must be
-+   placed within the first 2^32 blocks of a filesystem. Files with extents
-+   must be placed within the first 2^48 blocks of a filesystem. It's not
-+   clear what happens with larger filesystems.
-+
-+Layout
-+------
-+
-+The layout of a standard block group is approximately as follows (each
-+of these fields is discussed in a separate section below):
-+
-+.. list-table::
-+   :widths: 1 1 1 1 1 1 1 1
-+   :header-rows: 1
-+
-+   * - Group 0 Padding
-+     - ext4 Super Block
-+     - Group Descriptors
-+     - Reserved GDT Blocks
-+     - Data Block Bitmap
-+     - inode Bitmap
-+     - inode Table
-+     - Data Blocks
-+   * - 1024 bytes
-+     - 1 block
-+     - many blocks
-+     - many blocks
-+     - 1 block
-+     - 1 block
-+     - many blocks
-+     - many more blocks
-+
-+For the special case of block group 0, the first 1024 bytes are unused,
-+to allow for the installation of x86 boot sectors and other oddities.
-+The superblock will start at offset 1024 bytes, whichever block that
-+happens to be (usually 0). However, if for some reason the block size =
-+1024, then block 0 is marked in use and the superblock goes in block 1.
-+For all other block groups, there is no padding.
-+
-+The ext4 driver primarily works with the superblock and the group
-+descriptors that are found in block group 0. Redundant copies of the
-+superblock and group descriptors are written to some of the block groups
-+across the disk in case the beginning of the disk gets trashed, though
-+not all block groups necessarily host a redundant copy (see following
-+paragraph for more details). If the group does not have a redundant
-+copy, the block group begins with the data block bitmap. Note also that
-+when the filesystem is freshly formatted, mkfs will allocate “reserve
-+GDT block” space after the block group descriptors and before the start
-+of the block bitmaps to allow for future expansion of the filesystem. By
-+default, a filesystem is allowed to increase in size by a factor of
-+1024x over the original filesystem size.
-+
-+The location of the inode table is given by ``grp.bg_inode_table_*``. It
-+is continuous range of blocks large enough to contain
-+``sb.s_inodes_per_group * sb.s_inode_size`` bytes.
-+
-+As for the ordering of items in a block group, it is generally
-+established that the super block and the group descriptor table, if
-+present, will be at the beginning of the block group. The bitmaps and
-+the inode table can be anywhere, and it is quite possible for the
-+bitmaps to come after the inode table, or for both to be in different
-+groups (flex_bg). Leftover space is used for file data blocks, indirect
-+block maps, extent tree blocks, and extended attributes.
-+
-+Flexible Block Groups
-+---------------------
-+
-+Starting in ext4, there is a new feature called flexible block groups
-+(flex_bg). In a flex_bg, several block groups are tied together as one
-+logical block group; the bitmap spaces and the inode table space in the
-+first block group of the flex_bg are expanded to include the bitmaps
-+and inode tables of all other block groups in the flex_bg. For example,
-+if the flex_bg size is 4, then group 0 will contain (in order) the
-+superblock, group descriptors, data block bitmaps for groups 0-3, inode
-+bitmaps for groups 0-3, inode tables for groups 0-3, and the remaining
-+space in group 0 is for file data. The effect of this is to group the
-+block group metadata close together for faster loading, and to enable
-+large files to be continuous on disk. Backup copies of the superblock
-+and group descriptors are always at the beginning of block groups, even
-+if flex_bg is enabled. The number of block groups that make up a
-+flex_bg is given by 2 ^ ``sb.s_log_groups_per_flex``.
-+
-+Meta Block Groups
-+-----------------
-+
-+Without the option META_BG, for safety concerns, all block group
-+descriptors copies are kept in the first block group. Given the default
-+128MiB(2^27 bytes) block group size and 64-byte group descriptors, ext4
-+can have at most 2^27/64 = 2^21 block groups. This limits the entire
-+filesystem size to 2^21 * 2^27 = 2^48bytes or 256TiB.
-+
-+The solution to this problem is to use the metablock group feature
-+(META_BG), which is already in ext3 for all 2.6 releases. With the
-+META_BG feature, ext4 filesystems are partitioned into many metablock
-+groups. Each metablock group is a cluster of block groups whose group
-+descriptor structures can be stored in a single disk block. For ext4
-+filesystems with 4 KB block size, a single metablock group partition
-+includes 64 block groups, or 8 GiB of disk space. The metablock group
-+feature moves the location of the group descriptors from the congested
-+first block group of the whole filesystem into the first group of each
-+metablock group itself. The backups are in the second and last group of
-+each metablock group. This increases the 2^21 maximum block groups limit
-+to the hard limit 2^32, allowing support for a 512PiB filesystem.
-+
-+The change in the filesystem format replaces the current scheme where
-+the superblock is followed by a variable-length set of block group
-+descriptors. Instead, the superblock and a single block group descriptor
-+block is placed at the beginning of the first, second, and last block
-+groups in a meta-block group. A meta-block group is a collection of
-+block groups which can be described by a single block group descriptor
-+block. Since the size of the block group descriptor structure is 64
-+bytes, a meta-block group contains 16 block groups for filesystems with
-+a 1KB block size, and 64 block groups for filesystems with a 4KB
-+blocksize. Filesystems can either be created using this new block group
-+descriptor layout, or existing filesystems can be resized on-line, and
-+the field s_first_meta_bg in the superblock will indicate the first
-+block group using this new layout.
-+
-+Please see an important note about ``BLOCK_UNINIT`` in the section about
-+block and inode bitmaps.
-+
-+Lazy Block Group Initialization
-+-------------------------------
-+
-+A new feature for ext4 are three block group descriptor flags that
-+enable mkfs to skip initializing other parts of the block group
-+metadata. Specifically, the INODE_UNINIT and BLOCK_UNINIT flags mean
-+that the inode and block bitmaps for that group can be calculated and
-+therefore the on-disk bitmap blocks are not initialized. This is
-+generally the case for an empty block group or a block group containing
-+only fixed-location block group metadata. The INODE_ZEROED flag means
-+that the inode table has been initialized; mkfs will unset this flag and
-+rely on the kernel to initialize the inode tables in the background.
-+
-+By not writing zeroes to the bitmaps and inode table, mkfs time is
-+reduced considerably. Note the feature flag is RO_COMPAT_GDT_CSUM,
-+but the dumpe2fs output prints this as “uninit_bg”. They are the same
-+thing.
-+
-+Special inodes
-+--------------
-+
-+ext4 reserves some inode for special features, as follows:
-+
-+.. list-table::
-+   :widths: 6 70
-+   :header-rows: 1
-+
-+   * - inode Number
-+     - Purpose
-+   * - 0
-+     - Doesn't exist; there is no inode 0.
-+   * - 1
-+     - List of defective blocks.
-+   * - 2
-+     - Root directory.
-+   * - 3
-+     - User quota.
-+   * - 4
-+     - Group quota.
-+   * - 5
-+     - Boot loader.
-+   * - 6
-+     - Undelete directory.
-+   * - 7
-+     - Reserved group descriptors inode. (“resize inode”)
-+   * - 8
-+     - Journal inode.
-+   * - 9
-+     - The “exclude” inode, for snapshots(?)
-+   * - 10
-+     - Replica inode, used for some non-upstream feature?
-+   * - 11
-+     - Traditional first non-reserved inode. Usually this is the lost+found directory. See s_first_ino in the superblock.
-+
-+Note that there are also some inodes allocated from non-reserved inode numbers
-+for other filesystem features which are not referenced from standard directory
-+hierarchy. These are generally reference from the superblock. They are:
-+
-+.. list-table::
-+   :widths: 20 50
-+   :header-rows: 1
-+
-+   * - Superblock field
-+     - Description
-+
-+   * - s_lpf_ino
-+     - Inode number of lost+found directory.
-+   * - s_prj_quota_inum
-+     - Inode number of quota file tracking project quotas
-+   * - s_orphan_file_inum
-+     - Inode number of file tracking orphan inodes.
-+
-+Block and Inode Allocation Policy
-+---------------------------------
-+
-+ext4 recognizes (better than ext3, anyway) that data locality is
-+generally a desirably quality of a filesystem. On a spinning disk,
-+keeping related blocks near each other reduces the amount of movement
-+that the head actuator and disk must perform to access a data block,
-+thus speeding up disk IO. On an SSD there of course are no moving parts,
-+but locality can increase the size of each transfer request while
-+reducing the total number of requests. This locality may also have the
-+effect of concentrating writes on a single erase block, which can speed
-+up file rewrites significantly. Therefore, it is useful to reduce
-+fragmentation whenever possible.
-+
-+The first tool that ext4 uses to combat fragmentation is the multi-block
-+allocator. When a file is first created, the block allocator
-+speculatively allocates 8KiB of disk space to the file on the assumption
-+that the space will get written soon. When the file is closed, the
-+unused speculative allocations are of course freed, but if the
-+speculation is correct (typically the case for full writes of small
-+files) then the file data gets written out in a single multi-block
-+extent. A second related trick that ext4 uses is delayed allocation.
-+Under this scheme, when a file needs more blocks to absorb file writes,
-+the filesystem defers deciding the exact placement on the disk until all
-+the dirty buffers are being written out to disk. By not committing to a
-+particular placement until it's absolutely necessary (the commit timeout
-+is hit, or sync() is called, or the kernel runs out of memory), the hope
-+is that the filesystem can make better location decisions.
-+
-+The third trick that ext4 (and ext3) uses is that it tries to keep a
-+file's data blocks in the same block group as its inode. This cuts down
-+on the seek penalty when the filesystem first has to read a file's inode
-+to learn where the file's data blocks live and then seek over to the
-+file's data blocks to begin I/O operations.
-+
-+The fourth trick is that all the inodes in a directory are placed in the
-+same block group as the directory, when feasible. The working assumption
-+here is that all the files in a directory might be related, therefore it
-+is useful to try to keep them all together.
-+
-+The fifth trick is that the disk volume is cut up into 128MB block
-+groups; these mini-containers are used as outlined above to try to
-+maintain data locality. However, there is a deliberate quirk -- when a
-+directory is created in the root directory, the inode allocator scans
-+the block groups and puts that directory into the least heavily loaded
-+block group that it can find. This encourages directories to spread out
-+over a disk; as the top-level directory/file blobs fill up one block
-+group, the allocators simply move on to the next block group. Allegedly
-+this scheme evens out the loading on the block groups, though the author
-+suspects that the directories which are so unlucky as to land towards
-+the end of a spinning drive get a raw deal performance-wise.
-+
-+Of course if all of these mechanisms fail, one can always use e4defrag
-+to defragment files.
-+
-+Checksums
-+---------
-+
-+Starting in early 2012, metadata checksums were added to all major ext4
-+and jbd2 data structures. The associated feature flag is metadata_csum.
-+The desired checksum algorithm is indicated in the superblock, though as
-+of October 2012 the only supported algorithm is crc32c. Some data
-+structures did not have space to fit a full 32-bit checksum, so only the
-+lower 16 bits are stored. Enabling the 64bit feature increases the data
-+structure size so that full 32-bit checksums can be stored for many data
-+structures. However, existing 32-bit filesystems cannot be extended to
-+enable 64bit mode, at least not without the experimental resize2fs
-+patches to do so.
-+
-+Existing filesystems can have checksumming added by running
-+``tune2fs -O metadata_csum`` against the underlying device. If tune2fs
-+encounters directory blocks that lack sufficient empty space to add a
-+checksum, it will request that you run ``e2fsck -D`` to have the
-+directories rebuilt with checksums. This has the added benefit of
-+removing slack space from the directory files and rebalancing the htree
-+indexes. If you _ignore_ this step, your directories will not be
-+protected by a checksum!
-+
-+The following table describes the data elements that go into each type
-+of checksum. The checksum function is whatever the superblock describes
-+(crc32c as of October 2013) unless noted otherwise.
-+
-+.. list-table::
-+   :widths: 20 8 50
-+   :header-rows: 1
-+
-+   * - Metadata
-+     - Length
-+     - Ingredients
-+   * - Superblock
-+     - __le32
-+     - The entire superblock up to the checksum field. The UUID lives inside
-+       the superblock.
-+   * - MMP
-+     - __le32
-+     - UUID + the entire MMP block up to the checksum field.
-+   * - Extended Attributes
-+     - __le32
-+     - UUID + the entire extended attribute block. The checksum field is set to
-+       zero.
-+   * - Directory Entries
-+     - __le32
-+     - UUID + inode number + inode generation + the directory block up to the
-+       fake entry enclosing the checksum field.
-+   * - HTREE Nodes
-+     - __le32
-+     - UUID + inode number + inode generation + all valid extents + HTREE tail.
-+       The checksum field is set to zero.
-+   * - Extents
-+     - __le32
-+     - UUID + inode number + inode generation + the entire extent block up to
-+       the checksum field.
-+   * - Bitmaps
-+     - __le32 or __le16
-+     - UUID + the entire bitmap. Checksums are stored in the group descriptor,
-+       and truncated if the group descriptor size is 32 bytes (i.e. ^64bit)
-+   * - Inodes
-+     - __le32
-+     - UUID + inode number + inode generation + the entire inode. The checksum
-+       field is set to zero. Each inode has its own checksum.
-+   * - Group Descriptors
-+     - __le16
-+     - If metadata_csum, then UUID + group number + the entire descriptor;
-+       else if gdt_csum, then crc16(UUID + group number + the entire
-+       descriptor). In all cases, only the lower 16 bits are stored.
-+
-+Bigalloc
-+--------
-+
-+At the moment, the default size of a block is 4KiB, which is a commonly
-+supported page size on most MMU-capable hardware. This is fortunate, as
-+ext4 code is not prepared to handle the case where the block size
-+exceeds the page size. However, for a filesystem of mostly huge files,
-+it is desirable to be able to allocate disk blocks in units of multiple
-+blocks to reduce both fragmentation and metadata overhead. The
-+bigalloc feature provides exactly this ability.
-+
-+The bigalloc feature (EXT4_FEATURE_RO_COMPAT_BIGALLOC) changes ext4 to
-+use clustered allocation, so that each bit in the ext4 block allocation
-+bitmap addresses a power of two number of blocks. For example, if the
-+file system is mainly going to be storing large files in the 4-32
-+megabyte range, it might make sense to set a cluster size of 1 megabyte.
-+This means that each bit in the block allocation bitmap now addresses
-+256 4k blocks. This shrinks the total size of the block allocation
-+bitmaps for a 2T file system from 64 megabytes to 256 kilobytes. It also
-+means that a block group addresses 32 gigabytes instead of 128 megabytes,
-+also shrinking the amount of file system overhead for metadata.
-+
-+The administrator can set a block cluster size at mkfs time (which is
-+stored in the s_log_cluster_size field in the superblock); from then
-+on, the block bitmaps track clusters, not individual blocks. This means
-+that block groups can be several gigabytes in size (instead of just
-+128MiB); however, the minimum allocation unit becomes a cluster, not a
-+block, even for directories. TaoBao had a patchset to extend the “use
-+units of clusters instead of blocks” to the extent tree, though it is
-+not clear where those patches went-- they eventually morphed into
-+“extent tree v2” but that code has not landed as of May 2015.
-+
-+Inline Data
+-.. include:: super.rst
+-.. include:: group_descr.rst
+-.. include:: bitmaps.rst
+-.. include:: mmp.rst
+-.. include:: journal.rst
+-.. include:: orphan.rst
++Super Block
 +-----------
 +
-+The inline data feature was designed to handle the case that a file's
-+data is so tiny that it readily fits inside the inode, which
-+(theoretically) reduces disk block consumption and reduces seeks. If the
-+file is smaller than 60 bytes, then the data are stored inline in
-+``inode.i_block``. If the rest of the file would fit inside the extended
-+attribute space, then it might be found as an extended attribute
-+“system.data” within the inode body (“ibody EA”). This of course
-+constrains the amount of extended attributes one can attach to an inode.
-+If the data size increases beyond i_block + ibody EA, a regular block
-+is allocated and the contents moved to that block.
++The superblock records various information about the enclosing
++filesystem, such as block counts, inode counts, supported features,
++maintenance information, and more.
 +
-+Pending a change to compact the extended attribute key used to store
-+inline data, one ought to be able to store 160 bytes of data in a
-+256-byte inode (as of June 2015, when i_extra_isize is 28). Prior to
-+that, the limit was 156 bytes due to inefficient use of inode space.
++If the sparse_super feature flag is set, redundant copies of the
++superblock and group descriptors are kept only in the groups whose group
++number is either 0 or a power of 3, 5, or 7. If the flag is not set,
++redundant copies are kept in all groups.
 +
-+The inline data feature requires the presence of an extended attribute
-+for “system.data”, even if the attribute value is zero length.
++The superblock checksum is calculated against the superblock structure,
++which includes the FS UUID.
 +
-+Inline Directories
-+~~~~~~~~~~~~~~~~~~
++The ext4 superblock is laid out as follows in
++``struct ext4_super_block``:
 +
-+The first four bytes of i_block are the inode number of the parent
-+directory. Following that is a 56-byte space for an array of directory
-+entries; see ``struct ext4_dir_entry``. If there is a “system.data”
-+attribute in the inode body, the EA value is an array of
-+``struct ext4_dir_entry`` as well. Note that for inline directories, the
-+i_block and EA space are treated as separate dirent blocks; directory
-+entries cannot span the two.
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
 +
-+Inline directory entries are not checksummed, as the inode checksum
-+should protect all inline data contents.
++   * - Offset
++     - Size
++     - Name
++     - Description
++   * - 0x0
++     - __le32
++     - s_inodes_count
++     - Total inode count.
++   * - 0x4
++     - __le32
++     - s_blocks_count_lo
++     - Total block count.
++   * - 0x8
++     - __le32
++     - s_r_blocks_count_lo
++     - This number of blocks can only be allocated by the super-user.
++   * - 0xC
++     - __le32
++     - s_free_blocks_count_lo
++     - Free block count.
++   * - 0x10
++     - __le32
++     - s_free_inodes_count
++     - Free inode count.
++   * - 0x14
++     - __le32
++     - s_first_data_block
++     - First data block. This must be at least 1 for 1k-block filesystems and
++       is typically 0 for all other block sizes.
++   * - 0x18
++     - __le32
++     - s_log_block_size
++     - Block size is 2 ^ (10 + s_log_block_size).
++   * - 0x1C
++     - __le32
++     - s_log_cluster_size
++     - Cluster size is 2 ^ (10 + s_log_cluster_size) blocks if bigalloc is
++       enabled. Otherwise s_log_cluster_size must equal s_log_block_size.
++   * - 0x20
++     - __le32
++     - s_blocks_per_group
++     - Blocks per group.
++   * - 0x24
++     - __le32
++     - s_clusters_per_group
++     - Clusters per group, if bigalloc is enabled. Otherwise
++       s_clusters_per_group must equal s_blocks_per_group.
++   * - 0x28
++     - __le32
++     - s_inodes_per_group
++     - Inodes per group.
++   * - 0x2C
++     - __le32
++     - s_mtime
++     - Mount time, in seconds since the epoch.
++   * - 0x30
++     - __le32
++     - s_wtime
++     - Write time, in seconds since the epoch.
++   * - 0x34
++     - __le16
++     - s_mnt_count
++     - Number of mounts since the last fsck.
++   * - 0x36
++     - __le16
++     - s_max_mnt_count
++     - Number of mounts beyond which a fsck is needed.
++   * - 0x38
++     - __le16
++     - s_magic
++     - Magic signature, 0xEF53
++   * - 0x3A
++     - __le16
++     - s_state
++     - File system state. See super_state_ for more info.
++   * - 0x3C
++     - __le16
++     - s_errors
++     - Behaviour when detecting errors. See super_errors_ for more info.
++   * - 0x3E
++     - __le16
++     - s_minor_rev_level
++     - Minor revision level.
++   * - 0x40
++     - __le32
++     - s_lastcheck
++     - Time of last check, in seconds since the epoch.
++   * - 0x44
++     - __le32
++     - s_checkinterval
++     - Maximum time between checks, in seconds.
++   * - 0x48
++     - __le32
++     - s_creator_os
++     - Creator OS. See the table super_creator_ for more info.
++   * - 0x4C
++     - __le32
++     - s_rev_level
++     - Revision level. See the table super_revision_ for more info.
++   * - 0x50
++     - __le16
++     - s_def_resuid
++     - Default uid for reserved blocks.
++   * - 0x52
++     - __le16
++     - s_def_resgid
++     - Default gid for reserved blocks.
++   * -
++     -
++     -
++     - These fields are for EXT4_DYNAMIC_REV superblocks only.
++       
++       .. note::
++          the difference between the compatible feature set and the
++          incompatible feature set is that if there is a bit set in the
++          incompatible feature set that the kernel doesn't know about, it
++          should refuse to mount the filesystem.
++       
++          e2fsck's requirements are more strict; if it doesn't know
++          about a feature in either the compatible or incompatible feature set,
++          it must abort and not try to meddle with things it doesn't
++          understand...
++   * - 0x54
++     - __le32
++     - s_first_ino
++     - First non-reserved inode.
++   * - 0x58
++     - __le16
++     - s_inode_size
++     - Size of inode structure, in bytes.
++   * - 0x5A
++     - __le16
++     - s_block_group_nr
++     - Block group # of this superblock.
++   * - 0x5C
++     - __le32
++     - s_feature_compat
++     - Compatible feature set flags. Kernel can still read/write this fs even
++       if it doesn't understand a flag; fsck should not do that. See the
++       super_compat_ table for more info.
++   * - 0x60
++     - __le32
++     - s_feature_incompat
++     - Incompatible feature set. If the kernel or fsck doesn't understand one
++       of these bits, it should stop. See the super_incompat_ table for more
++       info.
++   * - 0x64
++     - __le32
++     - s_feature_ro_compat
++     - Readonly-compatible feature set. If the kernel doesn't understand one of
++       these bits, it can still mount read-only. See the super_rocompat_ table
++       for more info.
++   * - 0x68
++     - __u8
++     - s_uuid[16]
++     - 128-bit UUID for volume.
++   * - 0x78
++     - char
++     - s_volume_name[16]
++     - Volume label.
++   * - 0x88
++     - char
++     - s_last_mounted[64]
++     - Directory where filesystem was last mounted.
++   * - 0xC8
++     - __le32
++     - s_algorithm_usage_bitmap
++     - For compression (Not used in e2fsprogs/Linux)
++   * -
++     -
++     -
++     - Performance hints.  Directory preallocation should only happen if the
++       EXT4_FEATURE_COMPAT_DIR_PREALLOC flag is on.
++   * - 0xCC
++     - __u8
++     - s_prealloc_blocks
++     - #. of blocks to try to preallocate for ... files? (Not used in
++       e2fsprogs/Linux)
++   * - 0xCD
++     - __u8
++     - s_prealloc_dir_blocks
++     - #. of blocks to preallocate for directories. (Not used in
++       e2fsprogs/Linux)
++   * - 0xCE
++     - __le16
++     - s_reserved_gdt_blocks
++     - Number of reserved GDT entries for future filesystem expansion.
++   * -
++     -
++     -
++     - Journalling support is valid only if EXT4_FEATURE_COMPAT_HAS_JOURNAL is
++       set.
++   * - 0xD0
++     - __u8
++     - s_journal_uuid[16]
++     - UUID of journal superblock
++   * - 0xE0
++     - __le32
++     - s_journal_inum
++     - inode number of journal file.
++   * - 0xE4
++     - __le32
++     - s_journal_dev
++     - Device number of journal file, if the external journal feature flag is
++       set.
++   * - 0xE8
++     - __le32
++     - s_last_orphan
++     - Start of list of orphaned inodes to delete.
++   * - 0xEC
++     - __le32
++     - s_hash_seed[4]
++     - HTREE hash seed.
++   * - 0xFC
++     - __u8
++     - s_def_hash_version
++     - Default hash algorithm to use for directory hashes. See super_def_hash_
++       for more info.
++   * - 0xFD
++     - __u8
++     - s_jnl_backup_type
++     - If this value is 0 or EXT3_JNL_BACKUP_BLOCKS (1), then the
++       ``s_jnl_blocks`` field contains a duplicate copy of the inode's
++       ``i_block[]`` array and ``i_size``.
++   * - 0xFE
++     - __le16
++     - s_desc_size
++     - Size of group descriptors, in bytes, if the 64bit incompat feature flag
++       is set.
++   * - 0x100
++     - __le32
++     - s_default_mount_opts
++     - Default mount options. See the super_mountopts_ table for more info.
++   * - 0x104
++     - __le32
++     - s_first_meta_bg
++     - First metablock block group, if the meta_bg feature is enabled.
++   * - 0x108
++     - __le32
++     - s_mkfs_time
++     - When the filesystem was created, in seconds since the epoch.
++   * - 0x10C
++     - __le32
++     - s_jnl_blocks[17]
++     - Backup copy of the journal inode's ``i_block[]`` array in the first 15
++       elements and i_size_high and i_size in the 16th and 17th elements,
++       respectively.
++   * -
++     -
++     -
++     - 64bit support is valid only if EXT4_FEATURE_COMPAT_64BIT is set.
++   * - 0x150
++     - __le32
++     - s_blocks_count_hi
++     - High 32-bits of the block count.
++   * - 0x154
++     - __le32
++     - s_r_blocks_count_hi
++     - High 32-bits of the reserved block count.
++   * - 0x158
++     - __le32
++     - s_free_blocks_count_hi
++     - High 32-bits of the free block count.
++   * - 0x15C
++     - __le16
++     - s_min_extra_isize
++     - All inodes have at least # bytes.
++   * - 0x15E
++     - __le16
++     - s_want_extra_isize
++     - New inodes should reserve # bytes.
++   * - 0x160
++     - __le32
++     - s_flags
++     - Miscellaneous flags. See the super_flags_ table for more info.
++   * - 0x164
++     - __le16
++     - s_raid_stride
++     - RAID stride. This is the number of logical blocks read from or written
++       to the disk before moving to the next disk. This affects the placement
++       of filesystem metadata, which will hopefully make RAID storage faster.
++   * - 0x166
++     - __le16
++     - s_mmp_interval
++     - #. seconds to wait in multi-mount prevention (MMP) checking. In theory,
++       MMP is a mechanism to record in the superblock which host and device
++       have mounted the filesystem, in order to prevent multiple mounts. This
++       feature does not seem to be implemented...
++   * - 0x168
++     - __le64
++     - s_mmp_block
++     - Block # for multi-mount protection data.
++   * - 0x170
++     - __le32
++     - s_raid_stripe_width
++     - RAID stripe width. This is the number of logical blocks read from or
++       written to the disk before coming back to the current disk. This is used
++       by the block allocator to try to reduce the number of read-modify-write
++       operations in a RAID5/6.
++   * - 0x174
++     - __u8
++     - s_log_groups_per_flex
++     - Size of a flexible block group is 2 ^ ``s_log_groups_per_flex``.
++   * - 0x175
++     - __u8
++     - s_checksum_type
++     - Metadata checksum algorithm type. The only valid value is 1 (crc32c).
++   * - 0x176
++     - \_\_u8
++     - s\_encryption\_level
++     - Versioning level for encryption.
++   * - 0x177
++     - \_\_u8
++     - s\_reserved\_pad
++     - Padding to next 32bits.
++   * - 0x178
++     - __le64
++     - s_kbytes_written
++     - Number of KiB written to this filesystem over its lifetime.
++   * - 0x180
++     - __le32
++     - s_snapshot_inum
++     - inode number of active snapshot. (Not used in e2fsprogs/Linux.)
++   * - 0x184
++     - __le32
++     - s_snapshot_id
++     - Sequential ID of active snapshot. (Not used in e2fsprogs/Linux.)
++   * - 0x188
++     - __le64
++     - s_snapshot_r_blocks_count
++     - Number of blocks reserved for active snapshot's future use. (Not used in
++       e2fsprogs/Linux.)
++   * - 0x190
++     - __le32
++     - s_snapshot_list
++     - inode number of the head of the on-disk snapshot list. (Not used in
++       e2fsprogs/Linux.)
++   * - 0x194
++     - __le32
++     - s_error_count
++     - Number of errors seen.
++   * - 0x198
++     - __le32
++     - s_first_error_time
++     - First time an error happened, in seconds since the epoch.
++   * - 0x19C
++     - __le32
++     - s_first_error_ino
++     - inode involved in first error.
++   * - 0x1A0
++     - __le64
++     - s_first_error_block
++     - Number of block involved of first error.
++   * - 0x1A8
++     - __u8
++     - s_first_error_func[32]
++     - Name of function where the error happened.
++   * - 0x1C8
++     - __le32
++     - s_first_error_line
++     - Line number where error happened.
++   * - 0x1CC
++     - __le32
++     - s_last_error_time
++     - Time of most recent error, in seconds since the epoch.
++   * - 0x1D0
++     - __le32
++     - s_last_error_ino
++     - inode involved in most recent error.
++   * - 0x1D4
++     - __le32
++     - s_last_error_line
++     - Line number where most recent error happened.
++   * - 0x1D8
++     - __le64
++     - s_last_error_block
++     - Number of block involved in most recent error.
++   * - 0x1E0
++     - __u8
++     - s_last_error_func[32]
++     - Name of function where the most recent error happened.
++   * - 0x200
++     - __u8
++     - s_mount_opts[64]
++     - ASCIIZ string of mount options.
++   * - 0x240
++     - __le32
++     - s_usr_quota_inum
++     - Inode number of user `quota <quota>`__ file.
++   * - 0x244
++     - __le32
++     - s_grp_quota_inum
++     - Inode number of group `quota <quota>`__ file.
++   * - 0x248
++     - __le32
++     - s_overhead_blocks
++     - Overhead blocks/clusters in fs. (Huh? This field is always zero, which
++       means that the kernel calculates it dynamically.)
++   * - 0x24C
++     - __le32
++     - s_backup_bgs[2]
++     - Block groups containing superblock backups (if sparse_super2)
++   * - 0x254
++     - __u8
++     - s_encrypt_algos[4]
++     - Encryption algorithms in use. There can be up to four algorithms in use
++       at any time; valid algorithm codes are given in the super_encrypt_ table
++       below.
++   * - 0x258
++     - __u8
++     - s_encrypt_pw_salt[16]
++     - Salt for the string2key algorithm for encryption.
++   * - 0x268
++     - __le32
++     - s_lpf_ino
++     - Inode number of lost+found
++   * - 0x26C
++     - __le32
++     - s_prj_quota_inum
++     - Inode that tracks project quotas.
++   * - 0x270
++     - __le32
++     - s_checksum_seed
++     - Checksum seed used for metadata_csum calculations. This value is
++       crc32c(~0, $orig_fs_uuid).
++   * - 0x274
++     - __u8
++     - s_wtime_hi
++     - Upper 8 bits of the s_wtime field.
++   * - 0x275
++     - __u8
++     - s_mtime_hi
++     - Upper 8 bits of the s_mtime field.
++   * - 0x276
++     - __u8
++     - s_mkfs_time_hi
++     - Upper 8 bits of the s_mkfs_time field.
++   * - 0x277
++     - __u8
++     - s_lastcheck_hi
++     - Upper 8 bits of the s_lastcheck field.
++   * - 0x278
++     - __u8
++     - s_first_error_time_hi
++     - Upper 8 bits of the s_first_error_time field.
++   * - 0x279
++     - __u8
++     - s_last_error_time_hi
++     - Upper 8 bits of the s_last_error_time field.
++   * - 0x27A
++     - \_\_u8
++     - s\_first\_error\_errcode
++     -
++   * - 0x27B
++     - \_\_u8
++     - s\_last\_error\_errcode
++     -
++   * - 0x27C
++     - __le16
++     - s_encoding
++     - Filename charset encoding.
++   * - 0x27E
++     - __le16
++     - s_encoding_flags
++     - Filename charset encoding flags.
++   * - 0x280
++     - __le32
++     - s_orphan_file_inum
++     - Orphan file inode number.
++   * - 0x284
++     - __le32
++     - s_reserved[94]
++     - Padding to the end of the block.
++   * - 0x3FC
++     - __le32
++     - s_checksum
++     - Superblock checksum.
 +
-+Large Extended Attribute Values
-+-------------------------------
++.. _super_state:
 +
-+To enable ext4 to store extended attribute values that do not fit in the
-+inode or in the single extended attribute block attached to an inode,
-+the EA_INODE feature allows us to store the value in the data blocks of
-+a regular file inode. This “EA inode” is linked only from the extended
-+attribute name index and must not appear in a directory entry. The
-+inode's i_atime field is used to store a checksum of the xattr value;
-+and i_ctime/i_version store a 64-bit reference count, which enables
-+sharing of large xattr values between multiple owning inodes. For
-+backward compatibility with older versions of this feature, the
-+i_mtime/i_generation *may* store a back-reference to the inode number
-+and i_generation of the **one** owning inode (in cases where the EA
-+inode is not referenced by multiple inodes) to verify that the EA inode
-+is the correct one being accessed.
++The superblock state is some combination of the following:
 +
-+Verity files
-+------------
++.. list-table::
++   :widths: 8 72
++   :header-rows: 1
 +
-+ext4 supports fs-verity, which is a filesystem feature that provides
-+Merkle tree based hashing for individual readonly files.  Most of
-+fs-verity is common to all filesystems that support it; see
-+:ref:`Documentation/filesystems/fsverity.rst <fsverity>` for the
-+fs-verity documentation.  However, the on-disk layout of the verity
-+metadata is filesystem-specific.  On ext4, the verity metadata is
-+stored after the end of the file data itself, in the following format:
++   * - Value
++     - Description
++   * - 0x0001
++     - Cleanly umounted
++   * - 0x0002
++     - Errors detected
++   * - 0x0004
++     - Orphans being recovered
 +
-+- Zero-padding to the next 65536-byte boundary.  This padding need not
-+  actually be allocated on-disk, i.e. it may be a hole.
++.. _super_errors:
 +
-+- The Merkle tree, as documented in
-+  :ref:`Documentation/filesystems/fsverity.rst
-+  <fsverity_merkle_tree>`, with the tree levels stored in order from
-+  root to leaf, and the tree blocks within each level stored in their
-+  natural order.
++The superblock error policy is one of the following:
 +
-+- Zero-padding to the next filesystem block boundary.
++.. list-table::
++   :widths: 8 72
++   :header-rows: 1
 +
-+- The verity descriptor, as documented in
-+  :ref:`Documentation/filesystems/fsverity.rst <fsverity_descriptor>`,
-+  with optionally appended signature blob.
++   * - Value
++     - Description
++   * - 1
++     - Continue
++   * - 2
++     - Remount read-only
++   * - 3
++     - Panic
 +
-+- Zero-padding to the next offset that is 4 bytes before a filesystem
-+  block boundary.
++.. _super_creator:
 +
-+- The size of the verity descriptor in bytes, as a 4-byte little
-+  endian integer.
++The filesystem creator is one of the following:
 +
-+Verity inodes have EXT4_VERITY_FL set, and they must use extents, i.e.
-+EXT4_EXTENTS_FL must be set and EXT4_INLINE_DATA_FL must be clear.
-+They can have EXT4_ENCRYPT_FL set, in which case the verity metadata
-+is encrypted as well as the data itself.
++.. list-table::
++   :widths: 8 72
++   :header-rows: 1
 +
-+Verity files cannot have blocks allocated past the end of the verity
-+metadata.
++   * - Value
++     - Description
++   * - 0
++     - Linux
++   * - 1
++     - Hurd
++   * - 2
++     - Masix
++   * - 3
++     - FreeBSD
++   * - 4
++     - Lites
 +
-+Verity and DAX are not compatible and attempts to set both of these flags
-+on a file will fail.
++.. _super_revision:
 +
-+Atomic Block Writes
-+-------------------
++The superblock revision is one of the following:
 +
-+Introduction
-+~~~~~~~~~~~~
++.. list-table::
++   :widths: 8 72
++   :header-rows: 1
 +
-+Atomic (untorn) block writes ensure that either the entire write is committed
-+to disk or none of it is. This prevents "torn writes" during power loss or
-+system crashes. The ext4 filesystem supports atomic writes (only with Direct
-+I/O) on regular files with extents, provided the underlying storage device
-+supports hardware atomic writes. This is supported in the following two ways:
++   * - Value
++     - Description
++   * - 0
++     - Original format
++   * - 1
++     - v2 format w/ dynamic inode sizes
 +
-+1. **Single-fsblock Atomic Writes**:
-+   ext4 supports atomic write operations with a single filesystem block since
-+   v6.13. In this the atomic write unit minimum and maximum sizes are both set
-+   to filesystem blocksize.
-+   e.g. doing atomic write of 16KB with 16KB filesystem blocksize on 64KB
-+   pagesize system is possible.
++Note that ``EXT4_DYNAMIC_REV`` refers to a revision 1 or newer filesystem.
 +
-+2. **Multi-fsblock Atomic Writes with Bigalloc**:
-+   ext4 now also supports atomic writes spanning multiple filesystem blocks
-+   using a feature known as bigalloc. The atomic write unit's minimum and
-+   maximum sizes are determined by the filesystem block size and cluster size,
-+   based on the underlying device’s supported atomic write unit limits.
++.. _super_compat:
 +
-+Requirements
-+~~~~~~~~~~~~
++The superblock compatible features field is a combination of any of the
++following:
 +
-+Basic requirements for atomic writes in ext4:
++.. list-table::
++   :widths: 16 64
++   :header-rows: 1
 +
-+ 1. The extents feature must be enabled (default for ext4)
-+ 2. The underlying block device must support atomic writes
-+ 3. For single-fsblock atomic writes:
++   * - Value
++     - Description
++   * - 0x1
++     - Directory preallocation (COMPAT_DIR_PREALLOC).
++   * - 0x2
++     - “imagic inodes”. Not clear from the code what this does
++       (COMPAT_IMAGIC_INODES).
++   * - 0x4
++     - Has a journal (COMPAT_HAS_JOURNAL).
++   * - 0x8
++     - Supports extended attributes (COMPAT_EXT_ATTR).
++   * - 0x10
++     - Has reserved GDT blocks for filesystem expansion
++       (COMPAT_RESIZE_INODE). Requires RO_COMPAT_SPARSE_SUPER.
++   * - 0x20
++     - Has directory indices (COMPAT_DIR_INDEX).
++   * - 0x40
++     - “Lazy BG”. Not in Linux kernel, seems to have been for uninitialized
++       block groups? (COMPAT_LAZY_BG)
++   * - 0x80
++     - “Exclude inode”. Not used. (COMPAT_EXCLUDE_INODE).
++   * - 0x100
++     - “Exclude bitmap”. Seems to be used to indicate the presence of
++       snapshot-related exclude bitmaps? Not defined in kernel or used in
++       e2fsprogs (COMPAT_EXCLUDE_BITMAP).
++   * - 0x200
++     - Sparse Super Block, v2. If this flag is set, the SB field s_backup_bgs
++       points to the two block groups that contain backup superblocks
++       (COMPAT_SPARSE_SUPER2).
++   * - 0x400
++     - Fast commits supported. Although fast commits blocks are
++       backward incompatible, fast commit blocks are not always
++       present in the journal. If fast commit blocks are present in
++       the journal, JBD2 incompat feature
++       (JBD2_FEATURE_INCOMPAT_FAST_COMMIT) gets
++       set (COMPAT_FAST_COMMIT).
++   * - 0x1000
++     - Orphan file allocated. This is the special file for more efficient
++       tracking of unlinked but still open inodes. When there may be any
++       entries in the file, we additionally set proper rocompat feature
++       (RO_COMPAT_ORPHAN_PRESENT).
 +
-+    1. A filesystem with appropriate block size (up to the page size)
-+ 4. For multi-fsblock atomic writes:
++.. _super_incompat:
 +
-+    1. The bigalloc feature must be enabled
-+    2. The cluster size must be appropriately configured
++The superblock incompatible features field is a combination of any of the
++following:
++
++.. list-table::
++   :widths: 16 64
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0x1
++     - Compression (INCOMPAT_COMPRESSION).
++   * - 0x2
++     - Directory entries record the file type. See ext4_dir_entry_2 below
++       (INCOMPAT_FILETYPE).
++   * - 0x4
++     - Filesystem needs recovery (INCOMPAT_RECOVER).
++   * - 0x8
++     - Filesystem has a separate journal device (INCOMPAT_JOURNAL_DEV).
++   * - 0x10
++     - Meta block groups. See the earlier discussion of this feature
++       (INCOMPAT_META_BG).
++   * - 0x40
++     - Files in this filesystem use extents (INCOMPAT_EXTENTS).
++   * - 0x80
++     - Enable a filesystem size of 2^64 blocks (INCOMPAT_64BIT).
++   * - 0x100
++     - Multiple mount protection (INCOMPAT_MMP).
++   * - 0x200
++     - Flexible block groups. See the earlier discussion of this feature
++       (INCOMPAT_FLEX_BG).
++   * - 0x400
++     - Inodes can be used to store large extended attribute values
++       (INCOMPAT_EA_INODE).
++   * - 0x1000
++     - Data in directory entry (INCOMPAT_DIRDATA). (Not implemented?)
++   * - 0x2000
++     - Metadata checksum seed is stored in the superblock. This feature enables
++       the administrator to change the UUID of a metadata_csum filesystem
++       while the filesystem is mounted; without it, the checksum definition
++       requires all metadata blocks to be rewritten (INCOMPAT_CSUM_SEED).
++   * - 0x4000
++     - Large directory >2GB or 3-level htree (INCOMPAT_LARGEDIR). Prior to
++       this feature, directories could not be larger than 4GiB and could not
++       have an htree more than 2 levels deep. If this feature is enabled,
++       directories can be larger than 4GiB and have a maximum htree depth of 3.
++   * - 0x8000
++     - Data in inode (INCOMPAT_INLINE_DATA).
++   * - 0x10000
++     - Encrypted inodes are present on the filesystem. (INCOMPAT_ENCRYPT).
++
++.. _super_rocompat:
++
++The superblock read-only compatible features field is a combination of any of
++the following:
++
++.. list-table::
++   :widths: 16 64
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0x1
++     - Sparse superblocks. See the earlier discussion of this feature
++       (RO_COMPAT_SPARSE_SUPER).
++   * - 0x2
++     - This filesystem has been used to store a file greater than 2GiB
++       (RO_COMPAT_LARGE_FILE).
++   * - 0x4
++     - Not used in kernel or e2fsprogs (RO_COMPAT_BTREE_DIR).
++   * - 0x8
++     - This filesystem has files whose sizes are represented in units of
++       logical blocks, not 512-byte sectors. This implies a very large file
++       indeed! (RO_COMPAT_HUGE_FILE)
++   * - 0x10
++     - Group descriptors have checksums. In addition to detecting corruption,
++       this is useful for lazy formatting with uninitialized groups
++       (RO_COMPAT_GDT_CSUM).
++   * - 0x20
++     - Indicates that the old ext3 32,000 subdirectory limit no longer applies
++       (RO_COMPAT_DIR_NLINK). A directory's i_links_count will be set to 1
++       if it is incremented past 64,999.
++   * - 0x40
++     - Indicates that large inodes exist on this filesystem
++       (RO_COMPAT_EXTRA_ISIZE).
++   * - 0x80
++     - This filesystem has a snapshot (RO_COMPAT_HAS_SNAPSHOT).
++   * - 0x100
++     - `Quota <Quota>`__ (RO_COMPAT_QUOTA).
++   * - 0x200
++     - This filesystem supports “bigalloc”, which means that file extents are
++       tracked in units of clusters (of blocks) instead of blocks
++       (RO_COMPAT_BIGALLOC).
++   * - 0x400
++     - This filesystem supports metadata checksumming.
++       (RO_COMPAT_METADATA_CSUM; implies RO_COMPAT_GDT_CSUM, though
++       GDT_CSUM must not be set)
++   * - 0x800
++     - Filesystem supports replicas. This feature is neither in the kernel nor
++       e2fsprogs. (RO_COMPAT_REPLICA)
++   * - 0x1000
++     - Read-only filesystem image; the kernel will not mount this image
++       read-write and most tools will refuse to write to the image.
++       (RO_COMPAT_READONLY)
++   * - 0x2000
++     - Filesystem tracks project quotas. (RO_COMPAT_PROJECT)
++   * - 0x8000
++     - Verity inodes may be present on the filesystem. (RO_COMPAT_VERITY)
++   * - 0x10000
++     - Indicates orphan file may have valid orphan entries and thus we need
++       to clean them up when mounting the filesystem
++       (RO_COMPAT_ORPHAN_PRESENT).
++
++.. _super_def_hash:
++
++The ``s_def_hash_version`` field is one of the following:
++
++.. list-table::
++   :widths: 8 72
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0x0
++     - Legacy.
++   * - 0x1
++     - Half MD4.
++   * - 0x2
++     - Tea.
++   * - 0x3
++     - Legacy, unsigned.
++   * - 0x4
++     - Half MD4, unsigned.
++   * - 0x5
++     - Tea, unsigned.
++
++.. _super_mountopts:
++
++The ``s_default_mount_opts`` field is any combination of the following:
++
++.. list-table::
++   :widths: 8 72
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0x0001
++     - Print debugging info upon (re)mount. (EXT4_DEFM_DEBUG)
++   * - 0x0002
++     - New files take the gid of the containing directory (instead of the fsgid
++       of the current process). (EXT4_DEFM_BSDGROUPS)
++   * - 0x0004
++     - Support userspace-provided extended attributes. (EXT4_DEFM_XATTR_USER)
++   * - 0x0008
++     - Support POSIX access control lists (ACLs). (EXT4_DEFM_ACL)
++   * - 0x0010
++     - Do not support 32-bit UIDs. (EXT4_DEFM_UID16)
++   * - 0x0020
++     - All data and metadata are committed to the journal.
++       (EXT4_DEFM_JMODE_DATA)
++   * - 0x0040
++     - All data are flushed to the disk before metadata are committed to the
++       journal. (EXT4_DEFM_JMODE_ORDERED)
++   * - 0x0060
++     - Data ordering is not preserved; data may be written after the metadata
++       has been written. (EXT4_DEFM_JMODE_WBACK)
++   * - 0x0100
++     - Disable write flushes. (EXT4_DEFM_NOBARRIER)
++   * - 0x0200
++     - Track which blocks in a filesystem are metadata and therefore should not
++       be used as data blocks. This option will be enabled by default on 3.18,
++       hopefully. (EXT4_DEFM_BLOCK_VALIDITY)
++   * - 0x0400
++     - Enable DISCARD support, where the storage device is told about blocks
++       becoming unused. (EXT4_DEFM_DISCARD)
++   * - 0x0800
++     - Disable delayed allocation. (EXT4_DEFM_NODELALLOC)
++
++.. _super_flags:
++
++The ``s_flags`` field is any combination of the following:
++
++.. list-table::
++   :widths: 8 72
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0x0001
++     - Signed directory hash in use.
++   * - 0x0002
++     - Unsigned directory hash in use.
++   * - 0x0004
++     - To test development code.
++
++.. _super_encrypt:
++
++The ``s_encrypt_algos`` list can contain any of the following:
++
++.. list-table::
++   :widths: 8 72
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0
++     - Invalid algorithm (ENCRYPTION_MODE_INVALID).
++   * - 1
++     - 256-bit AES in XTS mode (ENCRYPTION_MODE_AES_256_XTS).
++   * - 2
++     - 256-bit AES in GCM mode (ENCRYPTION_MODE_AES_256_GCM).
++   * - 3
++     - 256-bit AES in CBC mode (ENCRYPTION_MODE_AES_256_CBC).
++
++Total size of the superblock is 1024 bytes.
++
++Block Group Descriptors
++-----------------------
++
++Each block group on the filesystem has one of these descriptors
++associated with it. As noted in the Layout section above, the group
++descriptors (if present) are the second item in the block group. The
++standard configuration is for each block group to contain a full copy of
++the block group descriptor table unless the sparse_super feature flag
++is set.
++
++Notice how the group descriptor records the location of both bitmaps and
++the inode table (i.e. they can float). This means that within a block
++group, the only data structures with fixed locations are the superblock
++and the group descriptor table. The flex_bg mechanism uses this
++property to group several block groups into a flex group and lay out all
++of the groups' bitmaps and inode tables into one long run in the first
++group of the flex group.
++
++If the meta_bg feature flag is set, then several block groups are
++grouped together into a meta group. Note that in the meta_bg case,
++however, the first and last two block groups within the larger meta
++group contain only group descriptors for the groups inside the meta
++group.
++
++flex_bg and meta_bg do not appear to be mutually exclusive features.
++
++In ext2, ext3, and ext4 (when the 64bit feature is not enabled), the
++block group descriptor was only 32 bytes long and therefore ends at
++bg_checksum. On an ext4 filesystem with the 64bit feature enabled, the
++block group descriptor expands to at least the 64 bytes described below;
++the size is stored in the superblock.
++
++If gdt_csum is set and metadata_csum is not set, the block group
++checksum is the crc16 of the FS UUID, the group number, and the group
++descriptor structure. If metadata_csum is set, then the block group
++checksum is the lower 16 bits of the checksum of the FS UUID, the group
++number, and the group descriptor structure. Both block and inode bitmap
++checksums are calculated against the FS UUID, the group number, and the
++entire bitmap.
++
++The block group descriptor is laid out in ``struct ext4_group_desc``.
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Size
++     - Name
++     - Description
++   * - 0x0
++     - __le32
++     - bg_block_bitmap_lo
++     - Lower 32-bits of location of block bitmap.
++   * - 0x4
++     - __le32
++     - bg_inode_bitmap_lo
++     - Lower 32-bits of location of inode bitmap.
++   * - 0x8
++     - __le32
++     - bg_inode_table_lo
++     - Lower 32-bits of location of inode table.
++   * - 0xC
++     - __le16
++     - bg_free_blocks_count_lo
++     - Lower 16-bits of free block count.
++   * - 0xE
++     - __le16
++     - bg_free_inodes_count_lo
++     - Lower 16-bits of free inode count.
++   * - 0x10
++     - __le16
++     - bg_used_dirs_count_lo
++     - Lower 16-bits of directory count.
++   * - 0x12
++     - __le16
++     - bg_flags
++     - Block group flags. See the bgflags_ table below.
++   * - 0x14
++     - __le32
++     - bg_exclude_bitmap_lo
++     - Lower 32-bits of location of snapshot exclusion bitmap.
++   * - 0x18
++     - __le16
++     - bg_block_bitmap_csum_lo
++     - Lower 16-bits of the block bitmap checksum.
++   * - 0x1A
++     - __le16
++     - bg_inode_bitmap_csum_lo
++     - Lower 16-bits of the inode bitmap checksum.
++   * - 0x1C
++     - __le16
++     - bg_itable_unused_lo
++     - Lower 16-bits of unused inode count. If set, we needn't scan past the
++       ``(sb.s_inodes_per_group - gdt.bg_itable_unused)`` th entry in the
++       inode table for this group.
++   * - 0x1E
++     - __le16
++     - bg_checksum
++     - Group descriptor checksum; crc16(sb_uuid+group_num+bg_desc) if the
++       RO_COMPAT_GDT_CSUM feature is set, or
++       crc32c(sb_uuid+group_num+bg_desc) & 0xFFFF if the
++       RO_COMPAT_METADATA_CSUM feature is set.  The bg_checksum
++       field in bg_desc is skipped when calculating crc16 checksum,
++       and set to zero if crc32c checksum is used.
++   * -
++     -
++     -
++     - These fields only exist if the 64bit feature is enabled and s_desc_size
++       > 32.
++   * - 0x20
++     - __le32
++     - bg_block_bitmap_hi
++     - Upper 32-bits of location of block bitmap.
++   * - 0x24
++     - __le32
++     - bg_inode_bitmap_hi
++     - Upper 32-bits of location of inodes bitmap.
++   * - 0x28
++     - __le32
++     - bg_inode_table_hi
++     - Upper 32-bits of location of inodes table.
++   * - 0x2C
++     - __le16
++     - bg_free_blocks_count_hi
++     - Upper 16-bits of free block count.
++   * - 0x2E
++     - __le16
++     - bg_free_inodes_count_hi
++     - Upper 16-bits of free inode count.
++   * - 0x30
++     - __le16
++     - bg_used_dirs_count_hi
++     - Upper 16-bits of directory count.
++   * - 0x32
++     - __le16
++     - bg_itable_unused_hi
++     - Upper 16-bits of unused inode count.
++   * - 0x34
++     - __le32
++     - bg_exclude_bitmap_hi
++     - Upper 32-bits of location of snapshot exclusion bitmap.
++   * - 0x38
++     - __le16
++     - bg_block_bitmap_csum_hi
++     - Upper 16-bits of the block bitmap checksum.
++   * - 0x3A
++     - __le16
++     - bg_inode_bitmap_csum_hi
++     - Upper 16-bits of the inode bitmap checksum.
++   * - 0x3C
++     - __u32
++     - bg_reserved
++     - Padding to 64 bytes.
++
++.. _bgflags:
++
++Block group flags can be any combination of the following:
++
++.. list-table::
++   :widths: 16 64
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0x1
++     - inode table and bitmap are not initialized (EXT4_BG_INODE_UNINIT).
++   * - 0x2
++     - block bitmap is not initialized (EXT4_BG_BLOCK_UNINIT).
++   * - 0x4
++     - inode table is zeroed (EXT4_BG_INODE_ZEROED).
++
++Block and inode Bitmaps
++-----------------------
++
++The data block bitmap tracks the usage of data blocks within the block
++group.
++
++The inode bitmap records which entries in the inode table are in use.
++
++As with most bitmaps, one bit represents the usage status of one data
++block or inode table entry. This implies a block group size of 8 *
++number_of_bytes_in_a_logical_block.
 +
 +.. note::
-+   ext4 does not support software or COW based atomic write, which means
-+   atomic writes on ext4 are only supported if underlying storage device
-+   supports it.
++   If ``BLOCK_UNINIT`` is set for a given block group, various parts
++   of the kernel and e2fsprogs code pretends that the block bitmap contains
++   zeros (i.e. all blocks in the group are free). However, it is not
++   necessarily the case that no blocks are in use -- if ``meta_bg`` is set,
++   the bitmaps and group descriptor live inside the group. Unfortunately,
++   ext2fs_test_block_bitmap2() will return '0' for those locations,
++   which produces confusing debugfs output.
 +
-+Multi-fsblock Implementation Details
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++Inode Table
++-----------
++Inode tables are statically allocated at mkfs time.  Each block group
++descriptor points to the start of the table, and the superblock records
++the number of inodes per group.  See the section on inodes for more
++information.
 +
-+The bigalloc feature changes ext4 to allocate in units of multiple filesystem
-+blocks, also known as clusters. With bigalloc each bit within block bitmap
-+represents cluster (power of 2 number of blocks) rather than individual
-+filesystem blocks.
++Multiple Mount Protection
++-------------------------
 +
-+ext4 supports multi-fsblock atomic writes with bigalloc, subject to the
-+following constraints. The minimum atomic write size is the larger of the fs
-+block size and the minimum hardware atomic write unit; and the maximum atomic
-+write size is smaller of the bigalloc cluster size and the maximum hardware
-+atomic write unit.  Bigalloc ensures that all allocations are aligned to the
-+cluster size, which satisfies the LBA alignment requirements of the hardware
-+device if the start of the partition/logical volume is itself aligned correctly.
++Multiple mount protection (MMP) is a feature that protects the
++filesystem against multiple hosts trying to use the filesystem
++simultaneously. When a filesystem is opened (for mounting, or fsck,
++etc.), the MMP code running on the node (call it node A) checks a
++sequence number. If the sequence number is EXT4_MMP_SEQ_CLEAN, the
++open continues. If the sequence number is EXT4_MMP_SEQ_FSCK, then
++fsck is (hopefully) running, and open fails immediately. Otherwise, the
++open code will wait for twice the specified MMP check interval and check
++the sequence number again. If the sequence number has changed, then the
++filesystem is active on another machine and the open fails. If the MMP
++code passes all of those checks, a new MMP sequence number is generated
++and written to the MMP block, and the mount proceeds.
 +
-+Here is the block allocation strategy in bigalloc for atomic writes:
++While the filesystem is live, the kernel sets up a timer to re-check the
++MMP block at the specified MMP check interval. To perform the re-check,
++the MMP sequence number is re-read; if it does not match the in-memory
++MMP sequence number, then another node (node B) has mounted the
++filesystem, and node A remounts the filesystem read-only. If the
++sequence numbers match, the sequence number is incremented both in
++memory and on disk, and the re-check is complete.
 +
-+ * For regions with fully mapped extents, no additional work is needed
-+ * For append writes, a new mapped extent is allocated
-+ * For regions that are entirely holes, unwritten extent is created
-+ * For large unwritten extents, the extent gets split into two unwritten
-+   extents of appropriate requested size
-+ * For mixed mapping regions (combinations of holes, unwritten extents, or
-+   mapped extents), ext4_map_blocks() is called in a loop with
-+   EXT4_GET_BLOCKS_ZERO flag to convert the region into a single contiguous
-+   mapped extent by writing zeroes to it and converting any unwritten extents to
-+   written, if found within the range.
++The hostname and device filename are written into the MMP block whenever
++an open operation succeeds. The MMP code does not use these values; they
++are provided purely for informational purposes.
 +
-+.. note::
-+   Writing on a single contiguous underlying extent, whether mapped or
-+   unwritten, is not inherently problematic. However, writing to a mixed mapping
-+   region (i.e. one containing a combination of mapped and unwritten extents)
-+   must be avoided when performing atomic writes.
++The checksum is calculated against the FS UUID and the MMP structure.
++The MMP structure (``struct mmp_struct``) is as follows:
 +
-+The reason is that, atomic writes when issued via pwritev2() with the RWF_ATOMIC
-+flag, requires that either all data is written or none at all. In the event of
-+a system crash or unexpected power loss during the write operation, the affected
-+region (when later read) must reflect either the complete old data or the
-+complete new data, but never a mix of both.
++.. list-table::
++   :widths: 8 12 20 40
++   :header-rows: 1
 +
-+To enforce this guarantee, we ensure that the write target is backed by
-+a single, contiguous extent before any data is written. This is critical because
-+ext4 defers the conversion of unwritten extents to written extents until the I/O
-+completion path (typically in ->end_io()). If a write is allowed to proceed over
-+a mixed mapping region (with mapped and unwritten extents) and a failure occurs
-+mid-write, the system could observe partially updated regions after reboot, i.e.
-+new data over mapped areas, and stale (old) data over unwritten extents that
-+were never marked written. This violates the atomicity and/or torn write
-+prevention guarantee.
++   * - Offset
++     - Type
++     - Name
++     - Description
++   * - 0x0
++     - __le32
++     - mmp_magic
++     - Magic number for MMP, 0x004D4D50 (“MMP”).
++   * - 0x4
++     - __le32
++     - mmp_seq
++     - Sequence number, updated periodically.
++   * - 0x8
++     - __le64
++     - mmp_time
++     - Time that the MMP block was last updated.
++   * - 0x10
++     - char[64]
++     - mmp_nodename
++     - Hostname of the node that opened the filesystem.
++   * - 0x50
++     - char[32]
++     - mmp_bdevname
++     - Block device name of the filesystem.
++   * - 0x70
++     - __le16
++     - mmp_check_interval
++     - The MMP re-check interval, in seconds.
++   * - 0x72
++     - __le16
++     - mmp_pad1
++     - Zero.
++   * - 0x74
++     - __le32[226]
++     - mmp_pad2
++     - Zero.
++   * - 0x3FC
++     - __le32
++     - mmp_checksum
++     - Checksum of the MMP block.
 +
-+To prevent such torn writes, ext4 proactively allocates a single contiguous
-+extent for the entire requested region in ``ext4_iomap_alloc`` via
-+``ext4_map_blocks_atomic()``. ext4 also force commits the current journalling
-+transaction in case if allocation is done over mixed mapping. This ensures any
-+pending metadata updates (like unwritten to written extents conversion) in this
-+range are in consistent state with the file data blocks, before performing the
-+actual write I/O. If the commit fails, the whole I/O must be aborted to prevent
-+from any possible torn writes.
-+Only after this step, the actual data write operation is performed by the iomap.
++Journal (jbd2)
++--------------
 +
-+Handling Split Extents Across Leaf Blocks
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++Introduced in ext3, the ext4 filesystem employs a journal to protect the
++filesystem against metadata inconsistencies in the case of a system crash. Up
++to 10,240,000 file system blocks (see man mke2fs(8) for more details on journal
++size limits) can be reserved inside the filesystem as a place to land
++“important” data writes on-disk as quickly as possible. Once the important
++data transaction is fully written to the disk and flushed from the disk write
++cache, a record of the data being committed is also written to the journal. At
++some later point in time, the journal code writes the transactions to their
++final locations on disk (this could involve a lot of seeking or a lot of small
++read-write-erases) before erasing the commit record. Should the system
++crash during the second slow write, the journal can be replayed all the
++way to the latest commit record, guaranteeing the atomicity of whatever
++gets written through the journal to the disk. The effect of this is to
++guarantee that the filesystem does not become stuck midway through a
++metadata update.
 +
-+There can be a special edge case where we have logically and physically
-+contiguous extents stored in separate leaf nodes of the on-disk extent tree.
-+This occurs because on-disk extent tree merges only happens within the leaf
-+blocks except for a case where we have 2-level tree which can get merged and
-+collapsed entirely into the inode.
-+If such a layout exists and, in the worst case, the extent status cache entries
-+are reclaimed due to memory pressure, ``ext4_map_blocks()`` may never return
-+a single contiguous extent for these split leaf extents.
++For performance reasons, ext4 by default only writes filesystem metadata
++through the journal. This means that file data blocks are /not/
++guaranteed to be in any consistent state after a crash. If this default
++guarantee level (``data=ordered``) is not satisfactory, there is a mount
++option to control journal behavior. If ``data=journal``, all data and
++metadata are written to disk through the journal. This is slower but
++safest. If ``data=writeback``, dirty data blocks are not flushed to the
++disk before the metadata are written to disk through the journal.
 +
-+To address this edge case, a new get block flag
-+``EXT4_GET_BLOCKS_QUERY_LEAF_BLOCKS flag`` is added to enhance the
-+``ext4_map_query_blocks()`` lookup behavior.
++In case of ``data=ordered`` mode, Ext4 also supports fast commits which
++help reduce commit latency significantly. The default ``data=ordered``
++mode works by logging metadata blocks to the journal. In fast commit
++mode, Ext4 only stores the minimal delta needed to recreate the
++affected metadata in fast commit space that is shared with JBD2.
++Once the fast commit area fills in or if fast commit is not possible
++or if JBD2 commit timer goes off, Ext4 performs a traditional full commit.
++A full commit invalidates all the fast commits that happened before
++it and thus it makes the fast commit area empty for further fast
++commits. This feature needs to be enabled at mkfs time.
 +
-+This new get block flag allows ``ext4_map_blocks()`` to first check if there is
-+an entry in the extent status cache for the full range.
-+If not present, it consults the on-disk extent tree using
-+``ext4_map_query_blocks()``.
-+If the located extent is at the end of a leaf node, it probes the next logical
-+block (lblk) to detect a contiguous extent in the adjacent leaf.
++The journal inode is typically inode 8. The first 68 bytes of the
++journal inode are replicated in the ext4 superblock. The journal itself
++is normal (but hidden) file within the filesystem. The file usually
++consumes an entire block group, though mke2fs tries to put it in the
++middle of the disk.
 +
-+For now only one additional leaf block is queried to maintain efficiency, as
-+atomic writes are typically constrained to small sizes
-+(e.g. [blocksize, clustersize]).
++All fields in jbd2 are written to disk in big-endian order. This is the
++opposite of ext4.
 +
++.. note:: Both ext4 and ocfs2 use jbd2.
 +
-+Handling Journal transactions
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++The maximum size of a journal embedded in an ext4 filesystem is 2^32
++blocks. jbd2 itself does not seem to care.
 +
-+To support multi-fsblock atomic writes, we ensure enough journal credits are
-+reserved during:
-+
-+ 1. Block allocation time in ``ext4_iomap_alloc()``. We first query if there
-+    could be a mixed mapping for the underlying requested range. If yes, then we
-+    reserve credits of up to ``m_len``, assuming every alternate block can be
-+    an unwritten extent followed by a hole.
-+
-+ 2. During ``->end_io()`` call, we make sure a single transaction is started for
-+    doing unwritten-to-written conversion. The loop for conversion is mainly
-+    only required to handle a split extent across leaf blocks.
-+
-+How to
++Layout
 +~~~~~~
 +
-+Creating Filesystems with Atomic Write Support
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++Generally speaking, the journal has this format:
 +
-+First check the atomic write units supported by block device.
-+See :ref:`atomic_write_bdev_support` for more details.
++.. list-table::
++   :widths: 16 48 16
++   :header-rows: 1
 +
-+For single-fsblock atomic writes with a larger block size
-+(on systems with block size < page size):
++   * - Superblock
++     - descriptor_block (data_blocks or revocation_block) [more data or
++       revocations] commmit_block
++     - [more transactions...]
++   * - 
++     - One transaction
++     -
 +
-+.. code-block:: bash
++Notice that a transaction begins with either a descriptor and some data,
++or a block revocation list. A finished transaction always ends with a
++commit. If there is no commit record (or the checksums don't match), the
++transaction will be discarded during replay.
 +
-+    # Create an ext4 filesystem with a 16KB block size
-+    # (requires page size >= 16KB)
-+    mkfs.ext4 -b 16384 /dev/device
-+
-+For multi-fsblock atomic writes with bigalloc:
-+
-+.. code-block:: bash
-+
-+    # Create an ext4 filesystem with bigalloc and 64KB cluster size
-+    mkfs.ext4 -F -O bigalloc -b 4096 -C 65536 /dev/device
-+
-+Where ``-b`` specifies the block size, ``-C`` specifies the cluster size in bytes,
-+and ``-O bigalloc`` enables the bigalloc feature.
-+
-+Application Interface
-+^^^^^^^^^^^^^^^^^^^^^
-+
-+Applications can use the ``pwritev2()`` system call with the ``RWF_ATOMIC`` flag
-+to perform atomic writes:
-+
-+.. code-block:: c
-+
-+    pwritev2(fd, iov, iovcnt, offset, RWF_ATOMIC);
-+
-+The write must be aligned to the filesystem's block size and not exceed the
-+filesystem's maximum atomic write unit size.
-+See ``generic_atomic_write_valid()`` for more details.
-+
-+``statx()`` system call with ``STATX_WRITE_ATOMIC`` flag can provides following
-+details:
-+
-+ * ``stx_atomic_write_unit_min``: Minimum size of an atomic write request.
-+ * ``stx_atomic_write_unit_max``: Maximum size of an atomic write request.
-+ * ``stx_atomic_write_segments_max``: Upper limit for segments. The number of
-+   separate memory buffers that can be gathered into a write operation
-+   (e.g., the iovcnt parameter for IOV_ITER). Currently, this is always set to one.
-+
-+The STATX_ATTR_WRITE_ATOMIC flag in ``statx->attributes`` is set if atomic
-+writes are supported.
-+
-+.. _atomic_write_bdev_support:
-+
-+Hardware Support
++External Journal
 +~~~~~~~~~~~~~~~~
 +
-+The underlying storage device must support atomic write operations.
-+Modern NVMe and SCSI devices often provide this capability.
-+The Linux kernel exposes this information through sysfs:
++Optionally, an ext4 filesystem can be created with an external journal
++device (as opposed to an internal journal, which uses a reserved inode).
++In this case, on the filesystem device, ``s_journal_inum`` should be
++zero and ``s_journal_uuid`` should be set. On the journal device there
++will be an ext4 super block in the usual place, with a matching UUID.
++The journal superblock will be in the next full block after the
++superblock.
 +
-+* ``/sys/block/<device>/queue/atomic_write_unit_min`` - Minimum atomic write size
-+* ``/sys/block/<device>/queue/atomic_write_unit_max`` - Maximum atomic write size
++.. list-table::
++   :widths: 12 12 12 32 12
++   :header-rows: 1
 +
-+Nonzero values for these attributes indicate that the device supports
-+atomic writes.
++   * - 1024 bytes of padding
++     - ext4 Superblock
++     - Journal Superblock
++     - descriptor_block (data_blocks or revocation_block) [more data or
++       revocations] commmit_block
++     - [more transactions...]
++   * - 
++     -
++     -
++     - One transaction
++     -
 +
-+See Also
-+~~~~~~~~
++Block Header
++~~~~~~~~~~~~
 +
-+* Support for atomic block writes in 6.13:
-+  https://lwn.net/Articles/1009298/
-diff --git a/Documentation/filesystems/ext4/special_inodes.rst b/Documentation/filesystems/ext4/special_inodes.rst
++Every block in the journal starts with a common 12-byte header
++``struct journal_header_s``:
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Description
++   * - 0x0
++     - __be32
++     - h_magic
++     - jbd2 magic number, 0xC03B3998.
++   * - 0x4
++     - __be32
++     - h_blocktype
++     - Description of what this block contains. See the jbd2_blocktype_ table
++       below.
++   * - 0x8
++     - __be32
++     - h_sequence
++     - The transaction ID that goes with this block.
++
++.. _jbd2_blocktype:
++
++The journal block type can be any one of:
++
++.. list-table::
++   :widths: 16 64
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 1
++     - Descriptor. This block precedes a series of data blocks that were
++       written through the journal during a transaction.
++   * - 2
++     - Block commit record. This block signifies the completion of a
++       transaction.
++   * - 3
++     - Journal superblock, v1.
++   * - 4
++     - Journal superblock, v2.
++   * - 5
++     - Block revocation records. This speeds up recovery by enabling the
++       journal to skip writing blocks that were subsequently rewritten.
++
++Super Block
++~~~~~~~~~~~
++
++The super block for the journal is much simpler as compared to ext4's.
++The key data kept within are size of the journal, and where to find the
++start of the log of transactions.
++
++The journal superblock is recorded as ``struct journal_superblock_s``,
++which is 1024 bytes long:
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Description
++   * -
++     -
++     -
++     - Static information describing the journal.
++   * - 0x0
++     - journal_header_t (12 bytes)
++     - s_header
++     - Common header identifying this as a superblock.
++   * - 0xC
++     - __be32
++     - s_blocksize
++     - Journal device block size.
++   * - 0x10
++     - __be32
++     - s_maxlen
++     - Total number of blocks in this journal.
++   * - 0x14
++     - __be32
++     - s_first
++     - First block of log information.
++   * -
++     -
++     -
++     - Dynamic information describing the current state of the log.
++   * - 0x18
++     - __be32
++     - s_sequence
++     - First commit ID expected in log.
++   * - 0x1C
++     - __be32
++     - s_start
++     - Block number of the start of log. Contrary to the comments, this field
++       being zero does not imply that the journal is clean!
++   * - 0x20
++     - __be32
++     - s_errno
++     - Error value, as set by jbd2_journal_abort().
++   * -
++     -
++     -
++     - The remaining fields are only valid in a v2 superblock.
++   * - 0x24
++     - __be32
++     - s_feature_compat;
++     - Compatible feature set. See the table jbd2_compat_ below.
++   * - 0x28
++     - __be32
++     - s_feature_incompat
++     - Incompatible feature set. See the table jbd2_incompat_ below.
++   * - 0x2C
++     - __be32
++     - s_feature_ro_compat
++     - Read-only compatible feature set. There aren't any of these currently.
++   * - 0x30
++     - __u8
++     - s_uuid[16]
++     - 128-bit uuid for journal. This is compared against the copy in the ext4
++       super block at mount time.
++   * - 0x40
++     - __be32
++     - s_nr_users
++     - Number of file systems sharing this journal.
++   * - 0x44
++     - __be32
++     - s_dynsuper
++     - Location of dynamic super block copy. (Not used?)
++   * - 0x48
++     - __be32
++     - s_max_transaction
++     - Limit of journal blocks per transaction. (Not used?)
++   * - 0x4C
++     - __be32
++     - s_max_trans_data
++     - Limit of data blocks per transaction. (Not used?)
++   * - 0x50
++     - __u8
++     - s_checksum_type
++     - Checksum algorithm used for the journal.  See jbd2_checksum_type_ for
++       more info.
++   * - 0x51
++     - __u8[3]
++     - s_padding2
++     -
++   * - 0x54
++     - __be32
++     - s_num_fc_blocks
++     - Number of fast commit blocks in the journal.
++   * - 0x58
++     - __be32
++     - s_head
++     - Block number of the head (first unused block) of the journal, only
++       up-to-date when the journal is empty.
++   * - 0x5C
++     - __u32
++     - s_padding[40]
++     -
++   * - 0xFC
++     - __be32
++     - s_checksum
++     - Checksum of the entire superblock, with this field set to zero.
++   * - 0x100
++     - __u8
++     - s_users[16*48]
++     - ids of all file systems sharing the log. e2fsprogs/Linux don't allow
++       shared external journals, but I imagine Lustre (or ocfs2?), which use
++       the jbd2 code, might.
++
++.. _jbd2_compat:
++
++The journal compat features are any combination of the following:
++
++.. list-table::
++   :widths: 16 64
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0x1
++     - Journal maintains checksums on the data blocks.
++       (JBD2_FEATURE_COMPAT_CHECKSUM)
++
++.. _jbd2_incompat:
++
++The journal incompat features are any combination of the following:
++
++.. list-table::
++   :widths: 16 64
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0x1
++     - Journal has block revocation records. (JBD2_FEATURE_INCOMPAT_REVOKE)
++   * - 0x2
++     - Journal can deal with 64-bit block numbers.
++       (JBD2_FEATURE_INCOMPAT_64BIT)
++   * - 0x4
++     - Journal commits asynchronously. (JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT)
++   * - 0x8
++     - This journal uses v2 of the checksum on-disk format. Each journal
++       metadata block gets its own checksum, and the block tags in the
++       descriptor table contain checksums for each of the data blocks in the
++       journal. (JBD2_FEATURE_INCOMPAT_CSUM_V2)
++   * - 0x10
++     - This journal uses v3 of the checksum on-disk format. This is the same as
++       v2, but the journal block tag size is fixed regardless of the size of
++       block numbers. (JBD2_FEATURE_INCOMPAT_CSUM_V3)
++   * - 0x20
++     - Journal has fast commit blocks. (JBD2_FEATURE_INCOMPAT_FAST_COMMIT)
++
++.. _jbd2_checksum_type:
++
++Journal checksum type codes are one of the following.  crc32 or crc32c are the
++most likely choices.
++
++.. list-table::
++   :widths: 16 64
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 1
++     - CRC32
++   * - 2
++     - MD5
++   * - 3
++     - SHA1
++   * - 4
++     - CRC32C
++
++Descriptor Block
++~~~~~~~~~~~~~~~~
++
++The descriptor block contains an array of journal block tags that
++describe the final locations of the data blocks that follow in the
++journal. Descriptor blocks are open-coded instead of being completely
++described by a data structure, but here is the block structure anyway.
++Descriptor blocks consume at least 36 bytes, but use a full block:
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Descriptor
++   * - 0x0
++     - journal_header_t
++     - (open coded)
++     - Common block header.
++   * - 0xC
++     - struct journal_block_tag_s
++     - open coded array[]
++     - Enough tags either to fill up the block or to describe all the data
++       blocks that follow this descriptor block.
++
++Journal block tags have any of the following formats, depending on which
++journal feature and block tag flags are set.
++
++If JBD2_FEATURE_INCOMPAT_CSUM_V3 is set, the journal block tag is
++defined as ``struct journal_block_tag3_s``, which looks like the
++following. The size is 16 or 32 bytes.
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Descriptor
++   * - 0x0
++     - __be32
++     - t_blocknr
++     - Lower 32-bits of the location of where the corresponding data block
++       should end up on disk.
++   * - 0x4
++     - __be32
++     - t_flags
++     - Flags that go with the descriptor. See the table jbd2_tag_flags_ for
++       more info.
++   * - 0x8
++     - __be32
++     - t_blocknr_high
++     - Upper 32-bits of the location of where the corresponding data block
++       should end up on disk. This is zero if JBD2_FEATURE_INCOMPAT_64BIT is
++       not enabled.
++   * - 0xC
++     - __be32
++     - t_checksum
++     - Checksum of the journal UUID, the sequence number, and the data block.
++   * -
++     -
++     -
++     - This field appears to be open coded. It always comes at the end of the
++       tag, after t_checksum. This field is not present if the "same UUID" flag
++       is set.
++   * - 0x8 or 0xC
++     - char
++     - uuid[16]
++     - A UUID to go with this tag. This field appears to be copied from the
++       ``j_uuid`` field in ``struct journal_s``, but only tune2fs touches that
++       field.
++
++.. _jbd2_tag_flags:
++
++The journal tag flags are any combination of the following:
++
++.. list-table::
++   :widths: 16 64
++   :header-rows: 1
++
++   * - Value
++     - Description
++   * - 0x1
++     - On-disk block is escaped. The first four bytes of the data block just
++       happened to match the jbd2 magic number.
++   * - 0x2
++     - This block has the same UUID as previous, therefore the UUID field is
++       omitted.
++   * - 0x4
++     - The data block was deleted by the transaction. (Not used?)
++   * - 0x8
++     - This is the last tag in this descriptor block.
++
++If JBD2_FEATURE_INCOMPAT_CSUM_V3 is NOT set, the journal block tag
++is defined as ``struct journal_block_tag_s``, which looks like the
++following. The size is 8, 12, 24, or 28 bytes:
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Descriptor
++   * - 0x0
++     - __be32
++     - t_blocknr
++     - Lower 32-bits of the location of where the corresponding data block
++       should end up on disk.
++   * - 0x4
++     - __be16
++     - t_checksum
++     - Checksum of the journal UUID, the sequence number, and the data block.
++       Note that only the lower 16 bits are stored.
++   * - 0x6
++     - __be16
++     - t_flags
++     - Flags that go with the descriptor. See the table jbd2_tag_flags_ for
++       more info.
++   * -
++     -
++     -
++     - This next field is only present if the super block indicates support for
++       64-bit block numbers.
++   * - 0x8
++     - __be32
++     - t_blocknr_high
++     - Upper 32-bits of the location of where the corresponding data block
++       should end up on disk.
++   * -
++     -
++     -
++     - This field appears to be open coded. It always comes at the end of the
++       tag, after t_flags or t_blocknr_high. This field is not present if the
++       "same UUID" flag is set.
++   * - 0x8 or 0xC
++     - char
++     - uuid[16]
++     - A UUID to go with this tag. This field appears to be copied from the
++       ``j_uuid`` field in ``struct journal_s``, but only tune2fs touches that
++       field.
++
++If JBD2_FEATURE_INCOMPAT_CSUM_V2 or
++JBD2_FEATURE_INCOMPAT_CSUM_V3 are set, the end of the block is a
++``struct jbd2_journal_block_tail``, which looks like this:
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Descriptor
++   * - 0x0
++     - __be32
++     - t_checksum
++     - Checksum of the journal UUID + the descriptor block, with this field set
++       to zero.
++
++Data Block
++~~~~~~~~~~
++
++In general, the data blocks being written to disk through the journal
++are written verbatim into the journal file after the descriptor block.
++However, if the first four bytes of the block match the jbd2 magic
++number then those four bytes are replaced with zeroes and the “escaped”
++flag is set in the descriptor block tag.
++
++Revocation Block
++~~~~~~~~~~~~~~~~
++
++A revocation block is used to prevent replay of a block in an earlier
++transaction. This is used to mark blocks that were journalled at one
++time but are no longer journalled. Typically this happens if a metadata
++block is freed and re-allocated as a file data block; in this case, a
++journal replay after the file block was written to disk will cause
++corruption.
++
++.. note::
++   This mechanism is NOT used to express “this journal block is
++   superseded by this other journal block”, as the author (djwong)
++   mistakenly thought. Any block being added to a transaction will cause
++   the removal of all existing revocation records for that block.
++
++Revocation blocks are described in
++``struct jbd2_journal_revoke_header_s``, are at least 16 bytes in
++length, but use a full block:
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Description
++   * - 0x0
++     - journal_header_t
++     - r_header
++     - Common block header.
++   * - 0xC
++     - __be32
++     - r_count
++     - Number of bytes used in this block.
++   * - 0x10
++     - __be32 or __be64
++     - blocks[0]
++     - Blocks to revoke.
++
++After r_count is a linear array of block numbers that are effectively
++revoked by this transaction. The size of each block number is 8 bytes if
++the superblock advertises 64-bit block number support, or 4 bytes
++otherwise.
++
++If JBD2_FEATURE_INCOMPAT_CSUM_V2 or
++JBD2_FEATURE_INCOMPAT_CSUM_V3 are set, the end of the revocation
++block is a ``struct jbd2_journal_revoke_tail``, which has this format:
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Description
++   * - 0x0
++     - __be32
++     - r_checksum
++     - Checksum of the journal UUID + revocation block
++
++Commit Block
++~~~~~~~~~~~~
++
++The commit block is a sentry that indicates that a transaction has been
++completely written to the journal. Once this commit block reaches the
++journal, the data stored with this transaction can be written to their
++final locations on disk.
++
++The commit block is described by ``struct commit_header``, which is 32
++bytes long (but uses a full block):
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Descriptor
++   * - 0x0
++     - journal_header_s
++     - (open coded)
++     - Common block header.
++   * - 0xC
++     - unsigned char
++     - h_chksum_type
++     - The type of checksum to use to verify the integrity of the data blocks
++       in the transaction. See jbd2_checksum_type_ for more info.
++   * - 0xD
++     - unsigned char
++     - h_chksum_size
++     - The number of bytes used by the checksum. Most likely 4.
++   * - 0xE
++     - unsigned char
++     - h_padding[2]
++     -
++   * - 0x10
++     - __be32
++     - h_chksum[JBD2_CHECKSUM_BYTES]
++     - 32 bytes of space to store checksums. If
++       JBD2_FEATURE_INCOMPAT_CSUM_V2 or JBD2_FEATURE_INCOMPAT_CSUM_V3
++       are set, the first ``__be32`` is the checksum of the journal UUID and
++       the entire commit block, with this field zeroed. If
++       JBD2_FEATURE_COMPAT_CHECKSUM is set, the first ``__be32`` is the
++       crc32 of all the blocks already written to the transaction.
++   * - 0x30
++     - __be64
++     - h_commit_sec
++     - The time that the transaction was committed, in seconds since the epoch.
++   * - 0x38
++     - __be32
++     - h_commit_nsec
++     - Nanoseconds component of the above timestamp.
++
++Fast commits
++~~~~~~~~~~~~
++
++Fast commit area is organized as a log of tag length values. Each TLV has
++a ``struct ext4_fc_tl`` in the beginning which stores the tag and the length
++of the entire field. It is followed by variable length tag specific value.
++Here is the list of supported tags and their meanings:
++
++.. list-table::
++   :widths: 8 20 20 32
++   :header-rows: 1
++
++   * - Tag
++     - Meaning
++     - Value struct
++     - Description
++   * - EXT4_FC_TAG_HEAD
++     - Fast commit area header
++     - ``struct ext4_fc_head``
++     - Stores the TID of the transaction after which these fast commits should
++       be applied.
++   * - EXT4_FC_TAG_ADD_RANGE
++     - Add extent to inode
++     - ``struct ext4_fc_add_range``
++     - Stores the inode number and extent to be added in this inode
++   * - EXT4_FC_TAG_DEL_RANGE
++     - Remove logical offsets to inode
++     - ``struct ext4_fc_del_range``
++     - Stores the inode number and the logical offset range that needs to be
++       removed
++   * - EXT4_FC_TAG_CREAT
++     - Create directory entry for a newly created file
++     - ``struct ext4_fc_dentry_info``
++     - Stores the parent inode number, inode number and directory entry of the
++       newly created file
++   * - EXT4_FC_TAG_LINK
++     - Link a directory entry to an inode
++     - ``struct ext4_fc_dentry_info``
++     - Stores the parent inode number, inode number and directory entry
++   * - EXT4_FC_TAG_UNLINK
++     - Unlink a directory entry of an inode
++     - ``struct ext4_fc_dentry_info``
++     - Stores the parent inode number, inode number and directory entry
++
++   * - EXT4_FC_TAG_PAD
++     - Padding (unused area)
++     - None
++     - Unused bytes in the fast commit area.
++
++   * - EXT4_FC_TAG_TAIL
++     - Mark the end of a fast commit
++     - ``struct ext4_fc_tail``
++     - Stores the TID of the commit, CRC of the fast commit of which this tag
++       represents the end of
++
++Fast Commit Replay Idempotence
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Fast commits tags are idempotent in nature provided the recovery code follows
++certain rules. The guiding principle that the commit path follows while
++committing is that it stores the result of a particular operation instead of
++storing the procedure.
++
++Let's consider this rename operation: 'mv /a /b'. Let's assume dirent '/a'
++was associated with inode 10. During fast commit, instead of storing this
++operation as a procedure "rename a to b", we store the resulting file system
++state as a "series" of outcomes:
++
++- Link dirent b to inode 10
++- Unlink dirent a
++- Inode 10 with valid refcount
++
++Now when recovery code runs, it needs "enforce" this state on the file
++system. This is what guarantees idempotence of fast commit replay.
++
++Let's take an example of a procedure that is not idempotent and see how fast
++commits make it idempotent. Consider following sequence of operations:
++
++1) rm A
++2) mv B A
++3) read A
++
++If we store this sequence of operations as is then the replay is not idempotent.
++Let's say while in replay, we crash after (2). During the second replay,
++file A (which was actually created as a result of "mv B A" operation) would get
++deleted. Thus, file named A would be absent when we try to read A. So, this
++sequence of operations is not idempotent. However, as mentioned above, instead
++of storing the procedure fast commits store the outcome of each procedure. Thus
++the fast commit log for above procedure would be as follows:
++
++(Let's assume dirent A was linked to inode 10 and dirent B was linked to
++inode 11 before the replay)
++
++1) Unlink A
++2) Link A to inode 11
++3) Unlink B
++4) Inode 11
++
++If we crash after (3) we will have file A linked to inode 11. During the second
++replay, we will remove file A (inode 11). But we will create it back and make
++it point to inode 11. We won't find B, so we'll just skip that step. At this
++point, the refcount for inode 11 is not reliable, but that gets fixed by the
++replay of last inode 11 tag. Thus, by converting a non-idempotent procedure
++into a series of idempotent outcomes, fast commits ensured idempotence during
++the replay.
++
++Journal Checkpoint
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Checkpointing the journal ensures all transactions and their associated buffers
++are submitted to the disk. In-progress transactions are waited upon and included
++in the checkpoint. Checkpointing is used internally during critical updates to
++the filesystem including journal recovery, filesystem resizing, and freeing of
++the journal_t structure.
++
++A journal checkpoint can be triggered from userspace via the ioctl
++EXT4_IOC_CHECKPOINT. This ioctl takes a single, u64 argument for flags.
++Currently, three flags are supported. First, EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN
++can be used to verify input to the ioctl. It returns error if there is any
++invalid input, otherwise it returns success without performing
++any checkpointing. This can be used to check whether the ioctl exists on a
++system and to verify there are no issues with arguments or flags. The
++other two flags are EXT4_IOC_CHECKPOINT_FLAG_DISCARD and
++EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT. These flags cause the journal blocks to be
++discarded or zero-filled, respectively, after the journal checkpoint is
++complete. EXT4_IOC_CHECKPOINT_FLAG_DISCARD and EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT
++cannot both be set. The ioctl may be useful when snapshotting a system or for
++complying with content deletion SLOs.
++
++Orphan file
++-----------
++
++In unix there can inodes that are unlinked from directory hierarchy but that
++are still alive because they are open. In case of crash the filesystem has to
++clean up these inodes as otherwise they (and the blocks referenced from them)
++would leak. Similarly if we truncate or extend the file, we need not be able
++to perform the operation in a single journalling transaction. In such case we
++track the inode as orphan so that in case of crash extra blocks allocated to
++the file get truncated.
++
++Traditionally ext4 tracks orphan inodes in a form of single linked list where
++superblock contains the inode number of the last orphan inode (s_last_orphan
++field) and then each inode contains inode number of the previously orphaned
++inode (we overload i_dtime inode field for this). However this filesystem
++global single linked list is a scalability bottleneck for workloads that result
++in heavy creation of orphan inodes. When orphan file feature
++(COMPAT_ORPHAN_FILE) is enabled, the filesystem has a special inode
++(referenced from the superblock through s_orphan_file_inum) with several
++blocks. Each of these blocks has a structure:
++
++============= ================ =============== ===============================
++Offset        Type             Name            Description
++============= ================ =============== ===============================
++0x0           Array of         Orphan inode    Each __le32 entry is either
++              __le32 entries   entries         empty (0) or it contains
++	                                       inode number of an orphan
++					       inode.
++blocksize-8   __le32           ob_magic        Magic value stored in orphan
++                                               block tail (0x0b10ca04)
++blocksize-4   __le32           ob_checksum     Checksum of the orphan block.
++============= ================ =============== ===============================
++
++When a filesystem with orphan file feature is writeably mounted, we set
++RO_COMPAT_ORPHAN_PRESENT feature in the superblock to indicate there may
++be valid orphan entries. In case we see this feature when mounting the
++filesystem, we read the whole orphan file and process all orphan inodes found
++there as usual. When cleanly unmounting the filesystem we remove the
++RO_COMPAT_ORPHAN_PRESENT feature to avoid unnecessary scanning of the orphan
++file and also make the filesystem fully compatible with older kernels.
+diff --git a/Documentation/filesystems/ext4/group_descr.rst b/Documentation/filesystems/ext4/group_descr.rst
 deleted file mode 100644
-index fc0636901fa0e1..00000000000000
---- a/Documentation/filesystems/ext4/special_inodes.rst
+index 392ec44f8fb00d..00000000000000
+--- a/Documentation/filesystems/ext4/group_descr.rst
 +++ /dev/null
-@@ -1,55 +0,0 @@
+@@ -1,173 +0,0 @@
 -.. SPDX-License-Identifier: GPL-2.0
 -
--Special inodes
+-Block Group Descriptors
+------------------------
+-
+-Each block group on the filesystem has one of these descriptors
+-associated with it. As noted in the Layout section above, the group
+-descriptors (if present) are the second item in the block group. The
+-standard configuration is for each block group to contain a full copy of
+-the block group descriptor table unless the sparse_super feature flag
+-is set.
+-
+-Notice how the group descriptor records the location of both bitmaps and
+-the inode table (i.e. they can float). This means that within a block
+-group, the only data structures with fixed locations are the superblock
+-and the group descriptor table. The flex_bg mechanism uses this
+-property to group several block groups into a flex group and lay out all
+-of the groups' bitmaps and inode tables into one long run in the first
+-group of the flex group.
+-
+-If the meta_bg feature flag is set, then several block groups are
+-grouped together into a meta group. Note that in the meta_bg case,
+-however, the first and last two block groups within the larger meta
+-group contain only group descriptors for the groups inside the meta
+-group.
+-
+-flex_bg and meta_bg do not appear to be mutually exclusive features.
+-
+-In ext2, ext3, and ext4 (when the 64bit feature is not enabled), the
+-block group descriptor was only 32 bytes long and therefore ends at
+-bg_checksum. On an ext4 filesystem with the 64bit feature enabled, the
+-block group descriptor expands to at least the 64 bytes described below;
+-the size is stored in the superblock.
+-
+-If gdt_csum is set and metadata_csum is not set, the block group
+-checksum is the crc16 of the FS UUID, the group number, and the group
+-descriptor structure. If metadata_csum is set, then the block group
+-checksum is the lower 16 bits of the checksum of the FS UUID, the group
+-number, and the group descriptor structure. Both block and inode bitmap
+-checksums are calculated against the FS UUID, the group number, and the
+-entire bitmap.
+-
+-The block group descriptor is laid out in ``struct ext4_group_desc``.
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Size
+-     - Name
+-     - Description
+-   * - 0x0
+-     - __le32
+-     - bg_block_bitmap_lo
+-     - Lower 32-bits of location of block bitmap.
+-   * - 0x4
+-     - __le32
+-     - bg_inode_bitmap_lo
+-     - Lower 32-bits of location of inode bitmap.
+-   * - 0x8
+-     - __le32
+-     - bg_inode_table_lo
+-     - Lower 32-bits of location of inode table.
+-   * - 0xC
+-     - __le16
+-     - bg_free_blocks_count_lo
+-     - Lower 16-bits of free block count.
+-   * - 0xE
+-     - __le16
+-     - bg_free_inodes_count_lo
+-     - Lower 16-bits of free inode count.
+-   * - 0x10
+-     - __le16
+-     - bg_used_dirs_count_lo
+-     - Lower 16-bits of directory count.
+-   * - 0x12
+-     - __le16
+-     - bg_flags
+-     - Block group flags. See the bgflags_ table below.
+-   * - 0x14
+-     - __le32
+-     - bg_exclude_bitmap_lo
+-     - Lower 32-bits of location of snapshot exclusion bitmap.
+-   * - 0x18
+-     - __le16
+-     - bg_block_bitmap_csum_lo
+-     - Lower 16-bits of the block bitmap checksum.
+-   * - 0x1A
+-     - __le16
+-     - bg_inode_bitmap_csum_lo
+-     - Lower 16-bits of the inode bitmap checksum.
+-   * - 0x1C
+-     - __le16
+-     - bg_itable_unused_lo
+-     - Lower 16-bits of unused inode count. If set, we needn't scan past the
+-       ``(sb.s_inodes_per_group - gdt.bg_itable_unused)`` th entry in the
+-       inode table for this group.
+-   * - 0x1E
+-     - __le16
+-     - bg_checksum
+-     - Group descriptor checksum; crc16(sb_uuid+group_num+bg_desc) if the
+-       RO_COMPAT_GDT_CSUM feature is set, or
+-       crc32c(sb_uuid+group_num+bg_desc) & 0xFFFF if the
+-       RO_COMPAT_METADATA_CSUM feature is set.  The bg_checksum
+-       field in bg_desc is skipped when calculating crc16 checksum,
+-       and set to zero if crc32c checksum is used.
+-   * -
+-     -
+-     -
+-     - These fields only exist if the 64bit feature is enabled and s_desc_size
+-       > 32.
+-   * - 0x20
+-     - __le32
+-     - bg_block_bitmap_hi
+-     - Upper 32-bits of location of block bitmap.
+-   * - 0x24
+-     - __le32
+-     - bg_inode_bitmap_hi
+-     - Upper 32-bits of location of inodes bitmap.
+-   * - 0x28
+-     - __le32
+-     - bg_inode_table_hi
+-     - Upper 32-bits of location of inodes table.
+-   * - 0x2C
+-     - __le16
+-     - bg_free_blocks_count_hi
+-     - Upper 16-bits of free block count.
+-   * - 0x2E
+-     - __le16
+-     - bg_free_inodes_count_hi
+-     - Upper 16-bits of free inode count.
+-   * - 0x30
+-     - __le16
+-     - bg_used_dirs_count_hi
+-     - Upper 16-bits of directory count.
+-   * - 0x32
+-     - __le16
+-     - bg_itable_unused_hi
+-     - Upper 16-bits of unused inode count.
+-   * - 0x34
+-     - __le32
+-     - bg_exclude_bitmap_hi
+-     - Upper 32-bits of location of snapshot exclusion bitmap.
+-   * - 0x38
+-     - __le16
+-     - bg_block_bitmap_csum_hi
+-     - Upper 16-bits of the block bitmap checksum.
+-   * - 0x3A
+-     - __le16
+-     - bg_inode_bitmap_csum_hi
+-     - Upper 16-bits of the inode bitmap checksum.
+-   * - 0x3C
+-     - __u32
+-     - bg_reserved
+-     - Padding to 64 bytes.
+-
+-.. _bgflags:
+-
+-Block group flags can be any combination of the following:
+-
+-.. list-table::
+-   :widths: 16 64
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x1
+-     - inode table and bitmap are not initialized (EXT4_BG_INODE_UNINIT).
+-   * - 0x2
+-     - block bitmap is not initialized (EXT4_BG_BLOCK_UNINIT).
+-   * - 0x4
+-     - inode table is zeroed (EXT4_BG_INODE_ZEROED).
+diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
+deleted file mode 100644
+index 6e8fb2d4b46fed..00000000000000
+--- a/Documentation/filesystems/ext4/journal.rst
++++ /dev/null
+@@ -1,761 +0,0 @@
+-.. SPDX-License-Identifier: GPL-2.0
+-
+-Journal (jbd2)
 ---------------
 -
--ext4 reserves some inode for special features, as follows:
+-Introduced in ext3, the ext4 filesystem employs a journal to protect the
+-filesystem against metadata inconsistencies in the case of a system crash. Up
+-to 10,240,000 file system blocks (see man mke2fs(8) for more details on journal
+-size limits) can be reserved inside the filesystem as a place to land
+-“important” data writes on-disk as quickly as possible. Once the important
+-data transaction is fully written to the disk and flushed from the disk write
+-cache, a record of the data being committed is also written to the journal. At
+-some later point in time, the journal code writes the transactions to their
+-final locations on disk (this could involve a lot of seeking or a lot of small
+-read-write-erases) before erasing the commit record. Should the system
+-crash during the second slow write, the journal can be replayed all the
+-way to the latest commit record, guaranteeing the atomicity of whatever
+-gets written through the journal to the disk. The effect of this is to
+-guarantee that the filesystem does not become stuck midway through a
+-metadata update.
+-
+-For performance reasons, ext4 by default only writes filesystem metadata
+-through the journal. This means that file data blocks are /not/
+-guaranteed to be in any consistent state after a crash. If this default
+-guarantee level (``data=ordered``) is not satisfactory, there is a mount
+-option to control journal behavior. If ``data=journal``, all data and
+-metadata are written to disk through the journal. This is slower but
+-safest. If ``data=writeback``, dirty data blocks are not flushed to the
+-disk before the metadata are written to disk through the journal.
+-
+-In case of ``data=ordered`` mode, Ext4 also supports fast commits which
+-help reduce commit latency significantly. The default ``data=ordered``
+-mode works by logging metadata blocks to the journal. In fast commit
+-mode, Ext4 only stores the minimal delta needed to recreate the
+-affected metadata in fast commit space that is shared with JBD2.
+-Once the fast commit area fills in or if fast commit is not possible
+-or if JBD2 commit timer goes off, Ext4 performs a traditional full commit.
+-A full commit invalidates all the fast commits that happened before
+-it and thus it makes the fast commit area empty for further fast
+-commits. This feature needs to be enabled at mkfs time.
+-
+-The journal inode is typically inode 8. The first 68 bytes of the
+-journal inode are replicated in the ext4 superblock. The journal itself
+-is normal (but hidden) file within the filesystem. The file usually
+-consumes an entire block group, though mke2fs tries to put it in the
+-middle of the disk.
+-
+-All fields in jbd2 are written to disk in big-endian order. This is the
+-opposite of ext4.
+-
+-NOTE: Both ext4 and ocfs2 use jbd2.
+-
+-The maximum size of a journal embedded in an ext4 filesystem is 2^32
+-blocks. jbd2 itself does not seem to care.
+-
+-Layout
+-~~~~~~
+-
+-Generally speaking, the journal has this format:
 -
 -.. list-table::
--   :widths: 6 70
+-   :widths: 16 48 16
 -   :header-rows: 1
 -
--   * - inode Number
--     - Purpose
--   * - 0
--     - Doesn't exist; there is no inode 0.
--   * - 1
--     - List of defective blocks.
--   * - 2
--     - Root directory.
--   * - 3
--     - User quota.
--   * - 4
--     - Group quota.
--   * - 5
--     - Boot loader.
--   * - 6
--     - Undelete directory.
--   * - 7
--     - Reserved group descriptors inode. (“resize inode”)
--   * - 8
--     - Journal inode.
--   * - 9
--     - The “exclude” inode, for snapshots(?)
--   * - 10
--     - Replica inode, used for some non-upstream feature?
--   * - 11
--     - Traditional first non-reserved inode. Usually this is the lost+found directory. See s_first_ino in the superblock.
+-   * - Superblock
+-     - descriptor_block (data_blocks or revocation_block) [more data or
+-       revocations] commmit_block
+-     - [more transactions...]
+-   * - 
+-     - One transaction
+-     -
 -
--Note that there are also some inodes allocated from non-reserved inode numbers
--for other filesystem features which are not referenced from standard directory
--hierarchy. These are generally reference from the superblock. They are:
+-Notice that a transaction begins with either a descriptor and some data,
+-or a block revocation list. A finished transaction always ends with a
+-commit. If there is no commit record (or the checksums don't match), the
+-transaction will be discarded during replay.
+-
+-External Journal
+-~~~~~~~~~~~~~~~~
+-
+-Optionally, an ext4 filesystem can be created with an external journal
+-device (as opposed to an internal journal, which uses a reserved inode).
+-In this case, on the filesystem device, ``s_journal_inum`` should be
+-zero and ``s_journal_uuid`` should be set. On the journal device there
+-will be an ext4 super block in the usual place, with a matching UUID.
+-The journal superblock will be in the next full block after the
+-superblock.
 -
 -.. list-table::
--   :widths: 20 50
+-   :widths: 12 12 12 32 12
 -   :header-rows: 1
 -
--   * - Superblock field
+-   * - 1024 bytes of padding
+-     - ext4 Superblock
+-     - Journal Superblock
+-     - descriptor_block (data_blocks or revocation_block) [more data or
+-       revocations] commmit_block
+-     - [more transactions...]
+-   * - 
+-     -
+-     -
+-     - One transaction
+-     -
+-
+-Block Header
+-~~~~~~~~~~~~
+-
+-Every block in the journal starts with a common 12-byte header
+-``struct journal_header_s``:
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Type
+-     - Name
 -     - Description
+-   * - 0x0
+-     - __be32
+-     - h_magic
+-     - jbd2 magic number, 0xC03B3998.
+-   * - 0x4
+-     - __be32
+-     - h_blocktype
+-     - Description of what this block contains. See the jbd2_blocktype_ table
+-       below.
+-   * - 0x8
+-     - __be32
+-     - h_sequence
+-     - The transaction ID that goes with this block.
 -
--   * - s_lpf_ino
--     - Inode number of lost+found directory.
--   * - s_prj_quota_inum
--     - Inode number of quota file tracking project quotas
--   * - s_orphan_file_inum
--     - Inode number of file tracking orphan inodes.
-diff --git a/Documentation/filesystems/ext4/verity.rst b/Documentation/filesystems/ext4/verity.rst
+-.. _jbd2_blocktype:
+-
+-The journal block type can be any one of:
+-
+-.. list-table::
+-   :widths: 16 64
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 1
+-     - Descriptor. This block precedes a series of data blocks that were
+-       written through the journal during a transaction.
+-   * - 2
+-     - Block commit record. This block signifies the completion of a
+-       transaction.
+-   * - 3
+-     - Journal superblock, v1.
+-   * - 4
+-     - Journal superblock, v2.
+-   * - 5
+-     - Block revocation records. This speeds up recovery by enabling the
+-       journal to skip writing blocks that were subsequently rewritten.
+-
+-Super Block
+-~~~~~~~~~~~
+-
+-The super block for the journal is much simpler as compared to ext4's.
+-The key data kept within are size of the journal, and where to find the
+-start of the log of transactions.
+-
+-The journal superblock is recorded as ``struct journal_superblock_s``,
+-which is 1024 bytes long:
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Type
+-     - Name
+-     - Description
+-   * -
+-     -
+-     -
+-     - Static information describing the journal.
+-   * - 0x0
+-     - journal_header_t (12 bytes)
+-     - s_header
+-     - Common header identifying this as a superblock.
+-   * - 0xC
+-     - __be32
+-     - s_blocksize
+-     - Journal device block size.
+-   * - 0x10
+-     - __be32
+-     - s_maxlen
+-     - Total number of blocks in this journal.
+-   * - 0x14
+-     - __be32
+-     - s_first
+-     - First block of log information.
+-   * -
+-     -
+-     -
+-     - Dynamic information describing the current state of the log.
+-   * - 0x18
+-     - __be32
+-     - s_sequence
+-     - First commit ID expected in log.
+-   * - 0x1C
+-     - __be32
+-     - s_start
+-     - Block number of the start of log. Contrary to the comments, this field
+-       being zero does not imply that the journal is clean!
+-   * - 0x20
+-     - __be32
+-     - s_errno
+-     - Error value, as set by jbd2_journal_abort().
+-   * -
+-     -
+-     -
+-     - The remaining fields are only valid in a v2 superblock.
+-   * - 0x24
+-     - __be32
+-     - s_feature_compat;
+-     - Compatible feature set. See the table jbd2_compat_ below.
+-   * - 0x28
+-     - __be32
+-     - s_feature_incompat
+-     - Incompatible feature set. See the table jbd2_incompat_ below.
+-   * - 0x2C
+-     - __be32
+-     - s_feature_ro_compat
+-     - Read-only compatible feature set. There aren't any of these currently.
+-   * - 0x30
+-     - __u8
+-     - s_uuid[16]
+-     - 128-bit uuid for journal. This is compared against the copy in the ext4
+-       super block at mount time.
+-   * - 0x40
+-     - __be32
+-     - s_nr_users
+-     - Number of file systems sharing this journal.
+-   * - 0x44
+-     - __be32
+-     - s_dynsuper
+-     - Location of dynamic super block copy. (Not used?)
+-   * - 0x48
+-     - __be32
+-     - s_max_transaction
+-     - Limit of journal blocks per transaction. (Not used?)
+-   * - 0x4C
+-     - __be32
+-     - s_max_trans_data
+-     - Limit of data blocks per transaction. (Not used?)
+-   * - 0x50
+-     - __u8
+-     - s_checksum_type
+-     - Checksum algorithm used for the journal.  See jbd2_checksum_type_ for
+-       more info.
+-   * - 0x51
+-     - __u8[3]
+-     - s_padding2
+-     -
+-   * - 0x54
+-     - __be32
+-     - s_num_fc_blocks
+-     - Number of fast commit blocks in the journal.
+-   * - 0x58
+-     - __be32
+-     - s_head
+-     - Block number of the head (first unused block) of the journal, only
+-       up-to-date when the journal is empty.
+-   * - 0x5C
+-     - __u32
+-     - s_padding[40]
+-     -
+-   * - 0xFC
+-     - __be32
+-     - s_checksum
+-     - Checksum of the entire superblock, with this field set to zero.
+-   * - 0x100
+-     - __u8
+-     - s_users[16*48]
+-     - ids of all file systems sharing the log. e2fsprogs/Linux don't allow
+-       shared external journals, but I imagine Lustre (or ocfs2?), which use
+-       the jbd2 code, might.
+-
+-.. _jbd2_compat:
+-
+-The journal compat features are any combination of the following:
+-
+-.. list-table::
+-   :widths: 16 64
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x1
+-     - Journal maintains checksums on the data blocks.
+-       (JBD2_FEATURE_COMPAT_CHECKSUM)
+-
+-.. _jbd2_incompat:
+-
+-The journal incompat features are any combination of the following:
+-
+-.. list-table::
+-   :widths: 16 64
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x1
+-     - Journal has block revocation records. (JBD2_FEATURE_INCOMPAT_REVOKE)
+-   * - 0x2
+-     - Journal can deal with 64-bit block numbers.
+-       (JBD2_FEATURE_INCOMPAT_64BIT)
+-   * - 0x4
+-     - Journal commits asynchronously. (JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT)
+-   * - 0x8
+-     - This journal uses v2 of the checksum on-disk format. Each journal
+-       metadata block gets its own checksum, and the block tags in the
+-       descriptor table contain checksums for each of the data blocks in the
+-       journal. (JBD2_FEATURE_INCOMPAT_CSUM_V2)
+-   * - 0x10
+-     - This journal uses v3 of the checksum on-disk format. This is the same as
+-       v2, but the journal block tag size is fixed regardless of the size of
+-       block numbers. (JBD2_FEATURE_INCOMPAT_CSUM_V3)
+-   * - 0x20
+-     - Journal has fast commit blocks. (JBD2_FEATURE_INCOMPAT_FAST_COMMIT)
+-
+-.. _jbd2_checksum_type:
+-
+-Journal checksum type codes are one of the following.  crc32 or crc32c are the
+-most likely choices.
+-
+-.. list-table::
+-   :widths: 16 64
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 1
+-     - CRC32
+-   * - 2
+-     - MD5
+-   * - 3
+-     - SHA1
+-   * - 4
+-     - CRC32C
+-
+-Descriptor Block
+-~~~~~~~~~~~~~~~~
+-
+-The descriptor block contains an array of journal block tags that
+-describe the final locations of the data blocks that follow in the
+-journal. Descriptor blocks are open-coded instead of being completely
+-described by a data structure, but here is the block structure anyway.
+-Descriptor blocks consume at least 36 bytes, but use a full block:
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Type
+-     - Name
+-     - Descriptor
+-   * - 0x0
+-     - journal_header_t
+-     - (open coded)
+-     - Common block header.
+-   * - 0xC
+-     - struct journal_block_tag_s
+-     - open coded array[]
+-     - Enough tags either to fill up the block or to describe all the data
+-       blocks that follow this descriptor block.
+-
+-Journal block tags have any of the following formats, depending on which
+-journal feature and block tag flags are set.
+-
+-If JBD2_FEATURE_INCOMPAT_CSUM_V3 is set, the journal block tag is
+-defined as ``struct journal_block_tag3_s``, which looks like the
+-following. The size is 16 or 32 bytes.
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Type
+-     - Name
+-     - Descriptor
+-   * - 0x0
+-     - __be32
+-     - t_blocknr
+-     - Lower 32-bits of the location of where the corresponding data block
+-       should end up on disk.
+-   * - 0x4
+-     - __be32
+-     - t_flags
+-     - Flags that go with the descriptor. See the table jbd2_tag_flags_ for
+-       more info.
+-   * - 0x8
+-     - __be32
+-     - t_blocknr_high
+-     - Upper 32-bits of the location of where the corresponding data block
+-       should end up on disk. This is zero if JBD2_FEATURE_INCOMPAT_64BIT is
+-       not enabled.
+-   * - 0xC
+-     - __be32
+-     - t_checksum
+-     - Checksum of the journal UUID, the sequence number, and the data block.
+-   * -
+-     -
+-     -
+-     - This field appears to be open coded. It always comes at the end of the
+-       tag, after t_checksum. This field is not present if the "same UUID" flag
+-       is set.
+-   * - 0x8 or 0xC
+-     - char
+-     - uuid[16]
+-     - A UUID to go with this tag. This field appears to be copied from the
+-       ``j_uuid`` field in ``struct journal_s``, but only tune2fs touches that
+-       field.
+-
+-.. _jbd2_tag_flags:
+-
+-The journal tag flags are any combination of the following:
+-
+-.. list-table::
+-   :widths: 16 64
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x1
+-     - On-disk block is escaped. The first four bytes of the data block just
+-       happened to match the jbd2 magic number.
+-   * - 0x2
+-     - This block has the same UUID as previous, therefore the UUID field is
+-       omitted.
+-   * - 0x4
+-     - The data block was deleted by the transaction. (Not used?)
+-   * - 0x8
+-     - This is the last tag in this descriptor block.
+-
+-If JBD2_FEATURE_INCOMPAT_CSUM_V3 is NOT set, the journal block tag
+-is defined as ``struct journal_block_tag_s``, which looks like the
+-following. The size is 8, 12, 24, or 28 bytes:
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Type
+-     - Name
+-     - Descriptor
+-   * - 0x0
+-     - __be32
+-     - t_blocknr
+-     - Lower 32-bits of the location of where the corresponding data block
+-       should end up on disk.
+-   * - 0x4
+-     - __be16
+-     - t_checksum
+-     - Checksum of the journal UUID, the sequence number, and the data block.
+-       Note that only the lower 16 bits are stored.
+-   * - 0x6
+-     - __be16
+-     - t_flags
+-     - Flags that go with the descriptor. See the table jbd2_tag_flags_ for
+-       more info.
+-   * -
+-     -
+-     -
+-     - This next field is only present if the super block indicates support for
+-       64-bit block numbers.
+-   * - 0x8
+-     - __be32
+-     - t_blocknr_high
+-     - Upper 32-bits of the location of where the corresponding data block
+-       should end up on disk.
+-   * -
+-     -
+-     -
+-     - This field appears to be open coded. It always comes at the end of the
+-       tag, after t_flags or t_blocknr_high. This field is not present if the
+-       "same UUID" flag is set.
+-   * - 0x8 or 0xC
+-     - char
+-     - uuid[16]
+-     - A UUID to go with this tag. This field appears to be copied from the
+-       ``j_uuid`` field in ``struct journal_s``, but only tune2fs touches that
+-       field.
+-
+-If JBD2_FEATURE_INCOMPAT_CSUM_V2 or
+-JBD2_FEATURE_INCOMPAT_CSUM_V3 are set, the end of the block is a
+-``struct jbd2_journal_block_tail``, which looks like this:
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Type
+-     - Name
+-     - Descriptor
+-   * - 0x0
+-     - __be32
+-     - t_checksum
+-     - Checksum of the journal UUID + the descriptor block, with this field set
+-       to zero.
+-
+-Data Block
+-~~~~~~~~~~
+-
+-In general, the data blocks being written to disk through the journal
+-are written verbatim into the journal file after the descriptor block.
+-However, if the first four bytes of the block match the jbd2 magic
+-number then those four bytes are replaced with zeroes and the “escaped”
+-flag is set in the descriptor block tag.
+-
+-Revocation Block
+-~~~~~~~~~~~~~~~~
+-
+-A revocation block is used to prevent replay of a block in an earlier
+-transaction. This is used to mark blocks that were journalled at one
+-time but are no longer journalled. Typically this happens if a metadata
+-block is freed and re-allocated as a file data block; in this case, a
+-journal replay after the file block was written to disk will cause
+-corruption.
+-
+-**NOTE**: This mechanism is NOT used to express “this journal block is
+-superseded by this other journal block”, as the author (djwong)
+-mistakenly thought. Any block being added to a transaction will cause
+-the removal of all existing revocation records for that block.
+-
+-Revocation blocks are described in
+-``struct jbd2_journal_revoke_header_s``, are at least 16 bytes in
+-length, but use a full block:
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Type
+-     - Name
+-     - Description
+-   * - 0x0
+-     - journal_header_t
+-     - r_header
+-     - Common block header.
+-   * - 0xC
+-     - __be32
+-     - r_count
+-     - Number of bytes used in this block.
+-   * - 0x10
+-     - __be32 or __be64
+-     - blocks[0]
+-     - Blocks to revoke.
+-
+-After r_count is a linear array of block numbers that are effectively
+-revoked by this transaction. The size of each block number is 8 bytes if
+-the superblock advertises 64-bit block number support, or 4 bytes
+-otherwise.
+-
+-If JBD2_FEATURE_INCOMPAT_CSUM_V2 or
+-JBD2_FEATURE_INCOMPAT_CSUM_V3 are set, the end of the revocation
+-block is a ``struct jbd2_journal_revoke_tail``, which has this format:
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Type
+-     - Name
+-     - Description
+-   * - 0x0
+-     - __be32
+-     - r_checksum
+-     - Checksum of the journal UUID + revocation block
+-
+-Commit Block
+-~~~~~~~~~~~~
+-
+-The commit block is a sentry that indicates that a transaction has been
+-completely written to the journal. Once this commit block reaches the
+-journal, the data stored with this transaction can be written to their
+-final locations on disk.
+-
+-The commit block is described by ``struct commit_header``, which is 32
+-bytes long (but uses a full block):
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Type
+-     - Name
+-     - Descriptor
+-   * - 0x0
+-     - journal_header_s
+-     - (open coded)
+-     - Common block header.
+-   * - 0xC
+-     - unsigned char
+-     - h_chksum_type
+-     - The type of checksum to use to verify the integrity of the data blocks
+-       in the transaction. See jbd2_checksum_type_ for more info.
+-   * - 0xD
+-     - unsigned char
+-     - h_chksum_size
+-     - The number of bytes used by the checksum. Most likely 4.
+-   * - 0xE
+-     - unsigned char
+-     - h_padding[2]
+-     -
+-   * - 0x10
+-     - __be32
+-     - h_chksum[JBD2_CHECKSUM_BYTES]
+-     - 32 bytes of space to store checksums. If
+-       JBD2_FEATURE_INCOMPAT_CSUM_V2 or JBD2_FEATURE_INCOMPAT_CSUM_V3
+-       are set, the first ``__be32`` is the checksum of the journal UUID and
+-       the entire commit block, with this field zeroed. If
+-       JBD2_FEATURE_COMPAT_CHECKSUM is set, the first ``__be32`` is the
+-       crc32 of all the blocks already written to the transaction.
+-   * - 0x30
+-     - __be64
+-     - h_commit_sec
+-     - The time that the transaction was committed, in seconds since the epoch.
+-   * - 0x38
+-     - __be32
+-     - h_commit_nsec
+-     - Nanoseconds component of the above timestamp.
+-
+-Fast commits
+-~~~~~~~~~~~~
+-
+-Fast commit area is organized as a log of tag length values. Each TLV has
+-a ``struct ext4_fc_tl`` in the beginning which stores the tag and the length
+-of the entire field. It is followed by variable length tag specific value.
+-Here is the list of supported tags and their meanings:
+-
+-.. list-table::
+-   :widths: 8 20 20 32
+-   :header-rows: 1
+-
+-   * - Tag
+-     - Meaning
+-     - Value struct
+-     - Description
+-   * - EXT4_FC_TAG_HEAD
+-     - Fast commit area header
+-     - ``struct ext4_fc_head``
+-     - Stores the TID of the transaction after which these fast commits should
+-       be applied.
+-   * - EXT4_FC_TAG_ADD_RANGE
+-     - Add extent to inode
+-     - ``struct ext4_fc_add_range``
+-     - Stores the inode number and extent to be added in this inode
+-   * - EXT4_FC_TAG_DEL_RANGE
+-     - Remove logical offsets to inode
+-     - ``struct ext4_fc_del_range``
+-     - Stores the inode number and the logical offset range that needs to be
+-       removed
+-   * - EXT4_FC_TAG_CREAT
+-     - Create directory entry for a newly created file
+-     - ``struct ext4_fc_dentry_info``
+-     - Stores the parent inode number, inode number and directory entry of the
+-       newly created file
+-   * - EXT4_FC_TAG_LINK
+-     - Link a directory entry to an inode
+-     - ``struct ext4_fc_dentry_info``
+-     - Stores the parent inode number, inode number and directory entry
+-   * - EXT4_FC_TAG_UNLINK
+-     - Unlink a directory entry of an inode
+-     - ``struct ext4_fc_dentry_info``
+-     - Stores the parent inode number, inode number and directory entry
+-
+-   * - EXT4_FC_TAG_PAD
+-     - Padding (unused area)
+-     - None
+-     - Unused bytes in the fast commit area.
+-
+-   * - EXT4_FC_TAG_TAIL
+-     - Mark the end of a fast commit
+-     - ``struct ext4_fc_tail``
+-     - Stores the TID of the commit, CRC of the fast commit of which this tag
+-       represents the end of
+-
+-Fast Commit Replay Idempotence
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-
+-Fast commits tags are idempotent in nature provided the recovery code follows
+-certain rules. The guiding principle that the commit path follows while
+-committing is that it stores the result of a particular operation instead of
+-storing the procedure.
+-
+-Let's consider this rename operation: 'mv /a /b'. Let's assume dirent '/a'
+-was associated with inode 10. During fast commit, instead of storing this
+-operation as a procedure "rename a to b", we store the resulting file system
+-state as a "series" of outcomes:
+-
+-- Link dirent b to inode 10
+-- Unlink dirent a
+-- Inode 10 with valid refcount
+-
+-Now when recovery code runs, it needs "enforce" this state on the file
+-system. This is what guarantees idempotence of fast commit replay.
+-
+-Let's take an example of a procedure that is not idempotent and see how fast
+-commits make it idempotent. Consider following sequence of operations:
+-
+-1) rm A
+-2) mv B A
+-3) read A
+-
+-If we store this sequence of operations as is then the replay is not idempotent.
+-Let's say while in replay, we crash after (2). During the second replay,
+-file A (which was actually created as a result of "mv B A" operation) would get
+-deleted. Thus, file named A would be absent when we try to read A. So, this
+-sequence of operations is not idempotent. However, as mentioned above, instead
+-of storing the procedure fast commits store the outcome of each procedure. Thus
+-the fast commit log for above procedure would be as follows:
+-
+-(Let's assume dirent A was linked to inode 10 and dirent B was linked to
+-inode 11 before the replay)
+-
+-1) Unlink A
+-2) Link A to inode 11
+-3) Unlink B
+-4) Inode 11
+-
+-If we crash after (3) we will have file A linked to inode 11. During the second
+-replay, we will remove file A (inode 11). But we will create it back and make
+-it point to inode 11. We won't find B, so we'll just skip that step. At this
+-point, the refcount for inode 11 is not reliable, but that gets fixed by the
+-replay of last inode 11 tag. Thus, by converting a non-idempotent procedure
+-into a series of idempotent outcomes, fast commits ensured idempotence during
+-the replay.
+-
+-Journal Checkpoint
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-
+-Checkpointing the journal ensures all transactions and their associated buffers
+-are submitted to the disk. In-progress transactions are waited upon and included
+-in the checkpoint. Checkpointing is used internally during critical updates to
+-the filesystem including journal recovery, filesystem resizing, and freeing of
+-the journal_t structure.
+-
+-A journal checkpoint can be triggered from userspace via the ioctl
+-EXT4_IOC_CHECKPOINT. This ioctl takes a single, u64 argument for flags.
+-Currently, three flags are supported. First, EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN
+-can be used to verify input to the ioctl. It returns error if there is any
+-invalid input, otherwise it returns success without performing
+-any checkpointing. This can be used to check whether the ioctl exists on a
+-system and to verify there are no issues with arguments or flags. The
+-other two flags are EXT4_IOC_CHECKPOINT_FLAG_DISCARD and
+-EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT. These flags cause the journal blocks to be
+-discarded or zero-filled, respectively, after the journal checkpoint is
+-complete. EXT4_IOC_CHECKPOINT_FLAG_DISCARD and EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT
+-cannot both be set. The ioctl may be useful when snapshotting a system or for
+-complying with content deletion SLOs.
+diff --git a/Documentation/filesystems/ext4/mmp.rst b/Documentation/filesystems/ext4/mmp.rst
 deleted file mode 100644
-index e99ff3fd09f7e7..00000000000000
---- a/Documentation/filesystems/ext4/verity.rst
+index 174dd6538737d8..00000000000000
+--- a/Documentation/filesystems/ext4/mmp.rst
 +++ /dev/null
-@@ -1,44 +0,0 @@
+@@ -1,77 +0,0 @@
 -.. SPDX-License-Identifier: GPL-2.0
 -
--Verity files
--------------
+-Multiple Mount Protection
+--------------------------
 -
--ext4 supports fs-verity, which is a filesystem feature that provides
--Merkle tree based hashing for individual readonly files.  Most of
--fs-verity is common to all filesystems that support it; see
--:ref:`Documentation/filesystems/fsverity.rst <fsverity>` for the
--fs-verity documentation.  However, the on-disk layout of the verity
--metadata is filesystem-specific.  On ext4, the verity metadata is
--stored after the end of the file data itself, in the following format:
+-Multiple mount protection (MMP) is a feature that protects the
+-filesystem against multiple hosts trying to use the filesystem
+-simultaneously. When a filesystem is opened (for mounting, or fsck,
+-etc.), the MMP code running on the node (call it node A) checks a
+-sequence number. If the sequence number is EXT4_MMP_SEQ_CLEAN, the
+-open continues. If the sequence number is EXT4_MMP_SEQ_FSCK, then
+-fsck is (hopefully) running, and open fails immediately. Otherwise, the
+-open code will wait for twice the specified MMP check interval and check
+-the sequence number again. If the sequence number has changed, then the
+-filesystem is active on another machine and the open fails. If the MMP
+-code passes all of those checks, a new MMP sequence number is generated
+-and written to the MMP block, and the mount proceeds.
 -
--- Zero-padding to the next 65536-byte boundary.  This padding need not
--  actually be allocated on-disk, i.e. it may be a hole.
+-While the filesystem is live, the kernel sets up a timer to re-check the
+-MMP block at the specified MMP check interval. To perform the re-check,
+-the MMP sequence number is re-read; if it does not match the in-memory
+-MMP sequence number, then another node (node B) has mounted the
+-filesystem, and node A remounts the filesystem read-only. If the
+-sequence numbers match, the sequence number is incremented both in
+-memory and on disk, and the re-check is complete.
 -
--- The Merkle tree, as documented in
--  :ref:`Documentation/filesystems/fsverity.rst
--  <fsverity_merkle_tree>`, with the tree levels stored in order from
--  root to leaf, and the tree blocks within each level stored in their
--  natural order.
+-The hostname and device filename are written into the MMP block whenever
+-an open operation succeeds. The MMP code does not use these values; they
+-are provided purely for informational purposes.
 -
--- Zero-padding to the next filesystem block boundary.
+-The checksum is calculated against the FS UUID and the MMP structure.
+-The MMP structure (``struct mmp_struct``) is as follows:
 -
--- The verity descriptor, as documented in
--  :ref:`Documentation/filesystems/fsverity.rst <fsverity_descriptor>`,
--  with optionally appended signature blob.
+-.. list-table::
+-   :widths: 8 12 20 40
+-   :header-rows: 1
 -
--- Zero-padding to the next offset that is 4 bytes before a filesystem
--  block boundary.
+-   * - Offset
+-     - Type
+-     - Name
+-     - Description
+-   * - 0x0
+-     - __le32
+-     - mmp_magic
+-     - Magic number for MMP, 0x004D4D50 (“MMP”).
+-   * - 0x4
+-     - __le32
+-     - mmp_seq
+-     - Sequence number, updated periodically.
+-   * - 0x8
+-     - __le64
+-     - mmp_time
+-     - Time that the MMP block was last updated.
+-   * - 0x10
+-     - char[64]
+-     - mmp_nodename
+-     - Hostname of the node that opened the filesystem.
+-   * - 0x50
+-     - char[32]
+-     - mmp_bdevname
+-     - Block device name of the filesystem.
+-   * - 0x70
+-     - __le16
+-     - mmp_check_interval
+-     - The MMP re-check interval, in seconds.
+-   * - 0x72
+-     - __le16
+-     - mmp_pad1
+-     - Zero.
+-   * - 0x74
+-     - __le32[226]
+-     - mmp_pad2
+-     - Zero.
+-   * - 0x3FC
+-     - __le32
+-     - mmp_checksum
+-     - Checksum of the MMP block.
+diff --git a/Documentation/filesystems/ext4/orphan.rst b/Documentation/filesystems/ext4/orphan.rst
+deleted file mode 100644
+index 03cca178864bb0..00000000000000
+--- a/Documentation/filesystems/ext4/orphan.rst
++++ /dev/null
+@@ -1,42 +0,0 @@
+-.. SPDX-License-Identifier: GPL-2.0
 -
--- The size of the verity descriptor in bytes, as a 4-byte little
--  endian integer.
+-Orphan file
+------------
 -
--Verity inodes have EXT4_VERITY_FL set, and they must use extents, i.e.
--EXT4_EXTENTS_FL must be set and EXT4_INLINE_DATA_FL must be clear.
--They can have EXT4_ENCRYPT_FL set, in which case the verity metadata
--is encrypted as well as the data itself.
+-In unix there can inodes that are unlinked from directory hierarchy but that
+-are still alive because they are open. In case of crash the filesystem has to
+-clean up these inodes as otherwise they (and the blocks referenced from them)
+-would leak. Similarly if we truncate or extend the file, we need not be able
+-to perform the operation in a single journalling transaction. In such case we
+-track the inode as orphan so that in case of crash extra blocks allocated to
+-the file get truncated.
 -
--Verity files cannot have blocks allocated past the end of the verity
--metadata.
+-Traditionally ext4 tracks orphan inodes in a form of single linked list where
+-superblock contains the inode number of the last orphan inode (s_last_orphan
+-field) and then each inode contains inode number of the previously orphaned
+-inode (we overload i_dtime inode field for this). However this filesystem
+-global single linked list is a scalability bottleneck for workloads that result
+-in heavy creation of orphan inodes. When orphan file feature
+-(COMPAT_ORPHAN_FILE) is enabled, the filesystem has a special inode
+-(referenced from the superblock through s_orphan_file_inum) with several
+-blocks. Each of these blocks has a structure:
 -
--Verity and DAX are not compatible and attempts to set both of these flags
--on a file will fail.
+-============= ================ =============== ===============================
+-Offset        Type             Name            Description
+-============= ================ =============== ===============================
+-0x0           Array of         Orphan inode    Each __le32 entry is either
+-              __le32 entries   entries         empty (0) or it contains
+-	                                       inode number of an orphan
+-					       inode.
+-blocksize-8   __le32           ob_magic        Magic value stored in orphan
+-                                               block tail (0x0b10ca04)
+-blocksize-4   __le32           ob_checksum     Checksum of the orphan block.
+-============= ================ =============== ===============================
+-
+-When a filesystem with orphan file feature is writeably mounted, we set
+-RO_COMPAT_ORPHAN_PRESENT feature in the superblock to indicate there may
+-be valid orphan entries. In case we see this feature when mounting the
+-filesystem, we read the whole orphan file and process all orphan inodes found
+-there as usual. When cleanly unmounting the filesystem we remove the
+-RO_COMPAT_ORPHAN_PRESENT feature to avoid unnecessary scanning of the orphan
+-file and also make the filesystem fully compatible with older kernels.
+diff --git a/Documentation/filesystems/ext4/super.rst b/Documentation/filesystems/ext4/super.rst
+deleted file mode 100644
+index 1b240661bfa306..00000000000000
+--- a/Documentation/filesystems/ext4/super.rst
++++ /dev/null
+@@ -1,839 +0,0 @@
+-.. SPDX-License-Identifier: GPL-2.0
+-
+-Super Block
+------------
+-
+-The superblock records various information about the enclosing
+-filesystem, such as block counts, inode counts, supported features,
+-maintenance information, and more.
+-
+-If the sparse_super feature flag is set, redundant copies of the
+-superblock and group descriptors are kept only in the groups whose group
+-number is either 0 or a power of 3, 5, or 7. If the flag is not set,
+-redundant copies are kept in all groups.
+-
+-The superblock checksum is calculated against the superblock structure,
+-which includes the FS UUID.
+-
+-The ext4 superblock is laid out as follows in
+-``struct ext4_super_block``:
+-
+-.. list-table::
+-   :widths: 8 8 24 40
+-   :header-rows: 1
+-
+-   * - Offset
+-     - Size
+-     - Name
+-     - Description
+-   * - 0x0
+-     - __le32
+-     - s_inodes_count
+-     - Total inode count.
+-   * - 0x4
+-     - __le32
+-     - s_blocks_count_lo
+-     - Total block count.
+-   * - 0x8
+-     - __le32
+-     - s_r_blocks_count_lo
+-     - This number of blocks can only be allocated by the super-user.
+-   * - 0xC
+-     - __le32
+-     - s_free_blocks_count_lo
+-     - Free block count.
+-   * - 0x10
+-     - __le32
+-     - s_free_inodes_count
+-     - Free inode count.
+-   * - 0x14
+-     - __le32
+-     - s_first_data_block
+-     - First data block. This must be at least 1 for 1k-block filesystems and
+-       is typically 0 for all other block sizes.
+-   * - 0x18
+-     - __le32
+-     - s_log_block_size
+-     - Block size is 2 ^ (10 + s_log_block_size).
+-   * - 0x1C
+-     - __le32
+-     - s_log_cluster_size
+-     - Cluster size is 2 ^ (10 + s_log_cluster_size) blocks if bigalloc is
+-       enabled. Otherwise s_log_cluster_size must equal s_log_block_size.
+-   * - 0x20
+-     - __le32
+-     - s_blocks_per_group
+-     - Blocks per group.
+-   * - 0x24
+-     - __le32
+-     - s_clusters_per_group
+-     - Clusters per group, if bigalloc is enabled. Otherwise
+-       s_clusters_per_group must equal s_blocks_per_group.
+-   * - 0x28
+-     - __le32
+-     - s_inodes_per_group
+-     - Inodes per group.
+-   * - 0x2C
+-     - __le32
+-     - s_mtime
+-     - Mount time, in seconds since the epoch.
+-   * - 0x30
+-     - __le32
+-     - s_wtime
+-     - Write time, in seconds since the epoch.
+-   * - 0x34
+-     - __le16
+-     - s_mnt_count
+-     - Number of mounts since the last fsck.
+-   * - 0x36
+-     - __le16
+-     - s_max_mnt_count
+-     - Number of mounts beyond which a fsck is needed.
+-   * - 0x38
+-     - __le16
+-     - s_magic
+-     - Magic signature, 0xEF53
+-   * - 0x3A
+-     - __le16
+-     - s_state
+-     - File system state. See super_state_ for more info.
+-   * - 0x3C
+-     - __le16
+-     - s_errors
+-     - Behaviour when detecting errors. See super_errors_ for more info.
+-   * - 0x3E
+-     - __le16
+-     - s_minor_rev_level
+-     - Minor revision level.
+-   * - 0x40
+-     - __le32
+-     - s_lastcheck
+-     - Time of last check, in seconds since the epoch.
+-   * - 0x44
+-     - __le32
+-     - s_checkinterval
+-     - Maximum time between checks, in seconds.
+-   * - 0x48
+-     - __le32
+-     - s_creator_os
+-     - Creator OS. See the table super_creator_ for more info.
+-   * - 0x4C
+-     - __le32
+-     - s_rev_level
+-     - Revision level. See the table super_revision_ for more info.
+-   * - 0x50
+-     - __le16
+-     - s_def_resuid
+-     - Default uid for reserved blocks.
+-   * - 0x52
+-     - __le16
+-     - s_def_resgid
+-     - Default gid for reserved blocks.
+-   * -
+-     -
+-     -
+-     - These fields are for EXT4_DYNAMIC_REV superblocks only.
+-       
+-       Note: the difference between the compatible feature set and the
+-       incompatible feature set is that if there is a bit set in the
+-       incompatible feature set that the kernel doesn't know about, it should
+-       refuse to mount the filesystem.
+-       
+-       e2fsck's requirements are more strict; if it doesn't know
+-       about a feature in either the compatible or incompatible feature set, it
+-       must abort and not try to meddle with things it doesn't understand...
+-   * - 0x54
+-     - __le32
+-     - s_first_ino
+-     - First non-reserved inode.
+-   * - 0x58
+-     - __le16
+-     - s_inode_size
+-     - Size of inode structure, in bytes.
+-   * - 0x5A
+-     - __le16
+-     - s_block_group_nr
+-     - Block group # of this superblock.
+-   * - 0x5C
+-     - __le32
+-     - s_feature_compat
+-     - Compatible feature set flags. Kernel can still read/write this fs even
+-       if it doesn't understand a flag; fsck should not do that. See the
+-       super_compat_ table for more info.
+-   * - 0x60
+-     - __le32
+-     - s_feature_incompat
+-     - Incompatible feature set. If the kernel or fsck doesn't understand one
+-       of these bits, it should stop. See the super_incompat_ table for more
+-       info.
+-   * - 0x64
+-     - __le32
+-     - s_feature_ro_compat
+-     - Readonly-compatible feature set. If the kernel doesn't understand one of
+-       these bits, it can still mount read-only. See the super_rocompat_ table
+-       for more info.
+-   * - 0x68
+-     - __u8
+-     - s_uuid[16]
+-     - 128-bit UUID for volume.
+-   * - 0x78
+-     - char
+-     - s_volume_name[16]
+-     - Volume label.
+-   * - 0x88
+-     - char
+-     - s_last_mounted[64]
+-     - Directory where filesystem was last mounted.
+-   * - 0xC8
+-     - __le32
+-     - s_algorithm_usage_bitmap
+-     - For compression (Not used in e2fsprogs/Linux)
+-   * -
+-     -
+-     -
+-     - Performance hints.  Directory preallocation should only happen if the
+-       EXT4_FEATURE_COMPAT_DIR_PREALLOC flag is on.
+-   * - 0xCC
+-     - __u8
+-     - s_prealloc_blocks
+-     - #. of blocks to try to preallocate for ... files? (Not used in
+-       e2fsprogs/Linux)
+-   * - 0xCD
+-     - __u8
+-     - s_prealloc_dir_blocks
+-     - #. of blocks to preallocate for directories. (Not used in
+-       e2fsprogs/Linux)
+-   * - 0xCE
+-     - __le16
+-     - s_reserved_gdt_blocks
+-     - Number of reserved GDT entries for future filesystem expansion.
+-   * -
+-     -
+-     -
+-     - Journalling support is valid only if EXT4_FEATURE_COMPAT_HAS_JOURNAL is
+-       set.
+-   * - 0xD0
+-     - __u8
+-     - s_journal_uuid[16]
+-     - UUID of journal superblock
+-   * - 0xE0
+-     - __le32
+-     - s_journal_inum
+-     - inode number of journal file.
+-   * - 0xE4
+-     - __le32
+-     - s_journal_dev
+-     - Device number of journal file, if the external journal feature flag is
+-       set.
+-   * - 0xE8
+-     - __le32
+-     - s_last_orphan
+-     - Start of list of orphaned inodes to delete.
+-   * - 0xEC
+-     - __le32
+-     - s_hash_seed[4]
+-     - HTREE hash seed.
+-   * - 0xFC
+-     - __u8
+-     - s_def_hash_version
+-     - Default hash algorithm to use for directory hashes. See super_def_hash_
+-       for more info.
+-   * - 0xFD
+-     - __u8
+-     - s_jnl_backup_type
+-     - If this value is 0 or EXT3_JNL_BACKUP_BLOCKS (1), then the
+-       ``s_jnl_blocks`` field contains a duplicate copy of the inode's
+-       ``i_block[]`` array and ``i_size``.
+-   * - 0xFE
+-     - __le16
+-     - s_desc_size
+-     - Size of group descriptors, in bytes, if the 64bit incompat feature flag
+-       is set.
+-   * - 0x100
+-     - __le32
+-     - s_default_mount_opts
+-     - Default mount options. See the super_mountopts_ table for more info.
+-   * - 0x104
+-     - __le32
+-     - s_first_meta_bg
+-     - First metablock block group, if the meta_bg feature is enabled.
+-   * - 0x108
+-     - __le32
+-     - s_mkfs_time
+-     - When the filesystem was created, in seconds since the epoch.
+-   * - 0x10C
+-     - __le32
+-     - s_jnl_blocks[17]
+-     - Backup copy of the journal inode's ``i_block[]`` array in the first 15
+-       elements and i_size_high and i_size in the 16th and 17th elements,
+-       respectively.
+-   * -
+-     -
+-     -
+-     - 64bit support is valid only if EXT4_FEATURE_COMPAT_64BIT is set.
+-   * - 0x150
+-     - __le32
+-     - s_blocks_count_hi
+-     - High 32-bits of the block count.
+-   * - 0x154
+-     - __le32
+-     - s_r_blocks_count_hi
+-     - High 32-bits of the reserved block count.
+-   * - 0x158
+-     - __le32
+-     - s_free_blocks_count_hi
+-     - High 32-bits of the free block count.
+-   * - 0x15C
+-     - __le16
+-     - s_min_extra_isize
+-     - All inodes have at least # bytes.
+-   * - 0x15E
+-     - __le16
+-     - s_want_extra_isize
+-     - New inodes should reserve # bytes.
+-   * - 0x160
+-     - __le32
+-     - s_flags
+-     - Miscellaneous flags. See the super_flags_ table for more info.
+-   * - 0x164
+-     - __le16
+-     - s_raid_stride
+-     - RAID stride. This is the number of logical blocks read from or written
+-       to the disk before moving to the next disk. This affects the placement
+-       of filesystem metadata, which will hopefully make RAID storage faster.
+-   * - 0x166
+-     - __le16
+-     - s_mmp_interval
+-     - #. seconds to wait in multi-mount prevention (MMP) checking. In theory,
+-       MMP is a mechanism to record in the superblock which host and device
+-       have mounted the filesystem, in order to prevent multiple mounts. This
+-       feature does not seem to be implemented...
+-   * - 0x168
+-     - __le64
+-     - s_mmp_block
+-     - Block # for multi-mount protection data.
+-   * - 0x170
+-     - __le32
+-     - s_raid_stripe_width
+-     - RAID stripe width. This is the number of logical blocks read from or
+-       written to the disk before coming back to the current disk. This is used
+-       by the block allocator to try to reduce the number of read-modify-write
+-       operations in a RAID5/6.
+-   * - 0x174
+-     - __u8
+-     - s_log_groups_per_flex
+-     - Size of a flexible block group is 2 ^ ``s_log_groups_per_flex``.
+-   * - 0x175
+-     - __u8
+-     - s_checksum_type
+-     - Metadata checksum algorithm type. The only valid value is 1 (crc32c).
+-   * - 0x176
+-     - \_\_u8
+-     - s\_encryption\_level
+-     - Versioning level for encryption.
+-   * - 0x177
+-     - \_\_u8
+-     - s\_reserved\_pad
+-     - Padding to next 32bits.
+-   * - 0x178
+-     - __le64
+-     - s_kbytes_written
+-     - Number of KiB written to this filesystem over its lifetime.
+-   * - 0x180
+-     - __le32
+-     - s_snapshot_inum
+-     - inode number of active snapshot. (Not used in e2fsprogs/Linux.)
+-   * - 0x184
+-     - __le32
+-     - s_snapshot_id
+-     - Sequential ID of active snapshot. (Not used in e2fsprogs/Linux.)
+-   * - 0x188
+-     - __le64
+-     - s_snapshot_r_blocks_count
+-     - Number of blocks reserved for active snapshot's future use. (Not used in
+-       e2fsprogs/Linux.)
+-   * - 0x190
+-     - __le32
+-     - s_snapshot_list
+-     - inode number of the head of the on-disk snapshot list. (Not used in
+-       e2fsprogs/Linux.)
+-   * - 0x194
+-     - __le32
+-     - s_error_count
+-     - Number of errors seen.
+-   * - 0x198
+-     - __le32
+-     - s_first_error_time
+-     - First time an error happened, in seconds since the epoch.
+-   * - 0x19C
+-     - __le32
+-     - s_first_error_ino
+-     - inode involved in first error.
+-   * - 0x1A0
+-     - __le64
+-     - s_first_error_block
+-     - Number of block involved of first error.
+-   * - 0x1A8
+-     - __u8
+-     - s_first_error_func[32]
+-     - Name of function where the error happened.
+-   * - 0x1C8
+-     - __le32
+-     - s_first_error_line
+-     - Line number where error happened.
+-   * - 0x1CC
+-     - __le32
+-     - s_last_error_time
+-     - Time of most recent error, in seconds since the epoch.
+-   * - 0x1D0
+-     - __le32
+-     - s_last_error_ino
+-     - inode involved in most recent error.
+-   * - 0x1D4
+-     - __le32
+-     - s_last_error_line
+-     - Line number where most recent error happened.
+-   * - 0x1D8
+-     - __le64
+-     - s_last_error_block
+-     - Number of block involved in most recent error.
+-   * - 0x1E0
+-     - __u8
+-     - s_last_error_func[32]
+-     - Name of function where the most recent error happened.
+-   * - 0x200
+-     - __u8
+-     - s_mount_opts[64]
+-     - ASCIIZ string of mount options.
+-   * - 0x240
+-     - __le32
+-     - s_usr_quota_inum
+-     - Inode number of user `quota <quota>`__ file.
+-   * - 0x244
+-     - __le32
+-     - s_grp_quota_inum
+-     - Inode number of group `quota <quota>`__ file.
+-   * - 0x248
+-     - __le32
+-     - s_overhead_blocks
+-     - Overhead blocks/clusters in fs. (Huh? This field is always zero, which
+-       means that the kernel calculates it dynamically.)
+-   * - 0x24C
+-     - __le32
+-     - s_backup_bgs[2]
+-     - Block groups containing superblock backups (if sparse_super2)
+-   * - 0x254
+-     - __u8
+-     - s_encrypt_algos[4]
+-     - Encryption algorithms in use. There can be up to four algorithms in use
+-       at any time; valid algorithm codes are given in the super_encrypt_ table
+-       below.
+-   * - 0x258
+-     - __u8
+-     - s_encrypt_pw_salt[16]
+-     - Salt for the string2key algorithm for encryption.
+-   * - 0x268
+-     - __le32
+-     - s_lpf_ino
+-     - Inode number of lost+found
+-   * - 0x26C
+-     - __le32
+-     - s_prj_quota_inum
+-     - Inode that tracks project quotas.
+-   * - 0x270
+-     - __le32
+-     - s_checksum_seed
+-     - Checksum seed used for metadata_csum calculations. This value is
+-       crc32c(~0, $orig_fs_uuid).
+-   * - 0x274
+-     - __u8
+-     - s_wtime_hi
+-     - Upper 8 bits of the s_wtime field.
+-   * - 0x275
+-     - __u8
+-     - s_mtime_hi
+-     - Upper 8 bits of the s_mtime field.
+-   * - 0x276
+-     - __u8
+-     - s_mkfs_time_hi
+-     - Upper 8 bits of the s_mkfs_time field.
+-   * - 0x277
+-     - __u8
+-     - s_lastcheck_hi
+-     - Upper 8 bits of the s_lastcheck field.
+-   * - 0x278
+-     - __u8
+-     - s_first_error_time_hi
+-     - Upper 8 bits of the s_first_error_time field.
+-   * - 0x279
+-     - __u8
+-     - s_last_error_time_hi
+-     - Upper 8 bits of the s_last_error_time field.
+-   * - 0x27A
+-     - \_\_u8
+-     - s\_first\_error\_errcode
+-     -
+-   * - 0x27B
+-     - \_\_u8
+-     - s\_last\_error\_errcode
+-     -
+-   * - 0x27C
+-     - __le16
+-     - s_encoding
+-     - Filename charset encoding.
+-   * - 0x27E
+-     - __le16
+-     - s_encoding_flags
+-     - Filename charset encoding flags.
+-   * - 0x280
+-     - __le32
+-     - s_orphan_file_inum
+-     - Orphan file inode number.
+-   * - 0x284
+-     - __le32
+-     - s_reserved[94]
+-     - Padding to the end of the block.
+-   * - 0x3FC
+-     - __le32
+-     - s_checksum
+-     - Superblock checksum.
+-
+-.. _super_state:
+-
+-The superblock state is some combination of the following:
+-
+-.. list-table::
+-   :widths: 8 72
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x0001
+-     - Cleanly umounted
+-   * - 0x0002
+-     - Errors detected
+-   * - 0x0004
+-     - Orphans being recovered
+-
+-.. _super_errors:
+-
+-The superblock error policy is one of the following:
+-
+-.. list-table::
+-   :widths: 8 72
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 1
+-     - Continue
+-   * - 2
+-     - Remount read-only
+-   * - 3
+-     - Panic
+-
+-.. _super_creator:
+-
+-The filesystem creator is one of the following:
+-
+-.. list-table::
+-   :widths: 8 72
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0
+-     - Linux
+-   * - 1
+-     - Hurd
+-   * - 2
+-     - Masix
+-   * - 3
+-     - FreeBSD
+-   * - 4
+-     - Lites
+-
+-.. _super_revision:
+-
+-The superblock revision is one of the following:
+-
+-.. list-table::
+-   :widths: 8 72
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0
+-     - Original format
+-   * - 1
+-     - v2 format w/ dynamic inode sizes
+-
+-Note that ``EXT4_DYNAMIC_REV`` refers to a revision 1 or newer filesystem.
+-
+-.. _super_compat:
+-
+-The superblock compatible features field is a combination of any of the
+-following:
+-
+-.. list-table::
+-   :widths: 16 64
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x1
+-     - Directory preallocation (COMPAT_DIR_PREALLOC).
+-   * - 0x2
+-     - “imagic inodes”. Not clear from the code what this does
+-       (COMPAT_IMAGIC_INODES).
+-   * - 0x4
+-     - Has a journal (COMPAT_HAS_JOURNAL).
+-   * - 0x8
+-     - Supports extended attributes (COMPAT_EXT_ATTR).
+-   * - 0x10
+-     - Has reserved GDT blocks for filesystem expansion
+-       (COMPAT_RESIZE_INODE). Requires RO_COMPAT_SPARSE_SUPER.
+-   * - 0x20
+-     - Has directory indices (COMPAT_DIR_INDEX).
+-   * - 0x40
+-     - “Lazy BG”. Not in Linux kernel, seems to have been for uninitialized
+-       block groups? (COMPAT_LAZY_BG)
+-   * - 0x80
+-     - “Exclude inode”. Not used. (COMPAT_EXCLUDE_INODE).
+-   * - 0x100
+-     - “Exclude bitmap”. Seems to be used to indicate the presence of
+-       snapshot-related exclude bitmaps? Not defined in kernel or used in
+-       e2fsprogs (COMPAT_EXCLUDE_BITMAP).
+-   * - 0x200
+-     - Sparse Super Block, v2. If this flag is set, the SB field s_backup_bgs
+-       points to the two block groups that contain backup superblocks
+-       (COMPAT_SPARSE_SUPER2).
+-   * - 0x400
+-     - Fast commits supported. Although fast commits blocks are
+-       backward incompatible, fast commit blocks are not always
+-       present in the journal. If fast commit blocks are present in
+-       the journal, JBD2 incompat feature
+-       (JBD2_FEATURE_INCOMPAT_FAST_COMMIT) gets
+-       set (COMPAT_FAST_COMMIT).
+-   * - 0x1000
+-     - Orphan file allocated. This is the special file for more efficient
+-       tracking of unlinked but still open inodes. When there may be any
+-       entries in the file, we additionally set proper rocompat feature
+-       (RO_COMPAT_ORPHAN_PRESENT).
+-
+-.. _super_incompat:
+-
+-The superblock incompatible features field is a combination of any of the
+-following:
+-
+-.. list-table::
+-   :widths: 16 64
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x1
+-     - Compression (INCOMPAT_COMPRESSION).
+-   * - 0x2
+-     - Directory entries record the file type. See ext4_dir_entry_2 below
+-       (INCOMPAT_FILETYPE).
+-   * - 0x4
+-     - Filesystem needs recovery (INCOMPAT_RECOVER).
+-   * - 0x8
+-     - Filesystem has a separate journal device (INCOMPAT_JOURNAL_DEV).
+-   * - 0x10
+-     - Meta block groups. See the earlier discussion of this feature
+-       (INCOMPAT_META_BG).
+-   * - 0x40
+-     - Files in this filesystem use extents (INCOMPAT_EXTENTS).
+-   * - 0x80
+-     - Enable a filesystem size of 2^64 blocks (INCOMPAT_64BIT).
+-   * - 0x100
+-     - Multiple mount protection (INCOMPAT_MMP).
+-   * - 0x200
+-     - Flexible block groups. See the earlier discussion of this feature
+-       (INCOMPAT_FLEX_BG).
+-   * - 0x400
+-     - Inodes can be used to store large extended attribute values
+-       (INCOMPAT_EA_INODE).
+-   * - 0x1000
+-     - Data in directory entry (INCOMPAT_DIRDATA). (Not implemented?)
+-   * - 0x2000
+-     - Metadata checksum seed is stored in the superblock. This feature enables
+-       the administrator to change the UUID of a metadata_csum filesystem
+-       while the filesystem is mounted; without it, the checksum definition
+-       requires all metadata blocks to be rewritten (INCOMPAT_CSUM_SEED).
+-   * - 0x4000
+-     - Large directory >2GB or 3-level htree (INCOMPAT_LARGEDIR). Prior to
+-       this feature, directories could not be larger than 4GiB and could not
+-       have an htree more than 2 levels deep. If this feature is enabled,
+-       directories can be larger than 4GiB and have a maximum htree depth of 3.
+-   * - 0x8000
+-     - Data in inode (INCOMPAT_INLINE_DATA).
+-   * - 0x10000
+-     - Encrypted inodes are present on the filesystem. (INCOMPAT_ENCRYPT).
+-
+-.. _super_rocompat:
+-
+-The superblock read-only compatible features field is a combination of any of
+-the following:
+-
+-.. list-table::
+-   :widths: 16 64
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x1
+-     - Sparse superblocks. See the earlier discussion of this feature
+-       (RO_COMPAT_SPARSE_SUPER).
+-   * - 0x2
+-     - This filesystem has been used to store a file greater than 2GiB
+-       (RO_COMPAT_LARGE_FILE).
+-   * - 0x4
+-     - Not used in kernel or e2fsprogs (RO_COMPAT_BTREE_DIR).
+-   * - 0x8
+-     - This filesystem has files whose sizes are represented in units of
+-       logical blocks, not 512-byte sectors. This implies a very large file
+-       indeed! (RO_COMPAT_HUGE_FILE)
+-   * - 0x10
+-     - Group descriptors have checksums. In addition to detecting corruption,
+-       this is useful for lazy formatting with uninitialized groups
+-       (RO_COMPAT_GDT_CSUM).
+-   * - 0x20
+-     - Indicates that the old ext3 32,000 subdirectory limit no longer applies
+-       (RO_COMPAT_DIR_NLINK). A directory's i_links_count will be set to 1
+-       if it is incremented past 64,999.
+-   * - 0x40
+-     - Indicates that large inodes exist on this filesystem
+-       (RO_COMPAT_EXTRA_ISIZE).
+-   * - 0x80
+-     - This filesystem has a snapshot (RO_COMPAT_HAS_SNAPSHOT).
+-   * - 0x100
+-     - `Quota <Quota>`__ (RO_COMPAT_QUOTA).
+-   * - 0x200
+-     - This filesystem supports “bigalloc”, which means that file extents are
+-       tracked in units of clusters (of blocks) instead of blocks
+-       (RO_COMPAT_BIGALLOC).
+-   * - 0x400
+-     - This filesystem supports metadata checksumming.
+-       (RO_COMPAT_METADATA_CSUM; implies RO_COMPAT_GDT_CSUM, though
+-       GDT_CSUM must not be set)
+-   * - 0x800
+-     - Filesystem supports replicas. This feature is neither in the kernel nor
+-       e2fsprogs. (RO_COMPAT_REPLICA)
+-   * - 0x1000
+-     - Read-only filesystem image; the kernel will not mount this image
+-       read-write and most tools will refuse to write to the image.
+-       (RO_COMPAT_READONLY)
+-   * - 0x2000
+-     - Filesystem tracks project quotas. (RO_COMPAT_PROJECT)
+-   * - 0x8000
+-     - Verity inodes may be present on the filesystem. (RO_COMPAT_VERITY)
+-   * - 0x10000
+-     - Indicates orphan file may have valid orphan entries and thus we need
+-       to clean them up when mounting the filesystem
+-       (RO_COMPAT_ORPHAN_PRESENT).
+-
+-.. _super_def_hash:
+-
+-The ``s_def_hash_version`` field is one of the following:
+-
+-.. list-table::
+-   :widths: 8 72
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x0
+-     - Legacy.
+-   * - 0x1
+-     - Half MD4.
+-   * - 0x2
+-     - Tea.
+-   * - 0x3
+-     - Legacy, unsigned.
+-   * - 0x4
+-     - Half MD4, unsigned.
+-   * - 0x5
+-     - Tea, unsigned.
+-
+-.. _super_mountopts:
+-
+-The ``s_default_mount_opts`` field is any combination of the following:
+-
+-.. list-table::
+-   :widths: 8 72
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x0001
+-     - Print debugging info upon (re)mount. (EXT4_DEFM_DEBUG)
+-   * - 0x0002
+-     - New files take the gid of the containing directory (instead of the fsgid
+-       of the current process). (EXT4_DEFM_BSDGROUPS)
+-   * - 0x0004
+-     - Support userspace-provided extended attributes. (EXT4_DEFM_XATTR_USER)
+-   * - 0x0008
+-     - Support POSIX access control lists (ACLs). (EXT4_DEFM_ACL)
+-   * - 0x0010
+-     - Do not support 32-bit UIDs. (EXT4_DEFM_UID16)
+-   * - 0x0020
+-     - All data and metadata are committed to the journal.
+-       (EXT4_DEFM_JMODE_DATA)
+-   * - 0x0040
+-     - All data are flushed to the disk before metadata are committed to the
+-       journal. (EXT4_DEFM_JMODE_ORDERED)
+-   * - 0x0060
+-     - Data ordering is not preserved; data may be written after the metadata
+-       has been written. (EXT4_DEFM_JMODE_WBACK)
+-   * - 0x0100
+-     - Disable write flushes. (EXT4_DEFM_NOBARRIER)
+-   * - 0x0200
+-     - Track which blocks in a filesystem are metadata and therefore should not
+-       be used as data blocks. This option will be enabled by default on 3.18,
+-       hopefully. (EXT4_DEFM_BLOCK_VALIDITY)
+-   * - 0x0400
+-     - Enable DISCARD support, where the storage device is told about blocks
+-       becoming unused. (EXT4_DEFM_DISCARD)
+-   * - 0x0800
+-     - Disable delayed allocation. (EXT4_DEFM_NODELALLOC)
+-
+-.. _super_flags:
+-
+-The ``s_flags`` field is any combination of the following:
+-
+-.. list-table::
+-   :widths: 8 72
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0x0001
+-     - Signed directory hash in use.
+-   * - 0x0002
+-     - Unsigned directory hash in use.
+-   * - 0x0004
+-     - To test development code.
+-
+-.. _super_encrypt:
+-
+-The ``s_encrypt_algos`` list can contain any of the following:
+-
+-.. list-table::
+-   :widths: 8 72
+-   :header-rows: 1
+-
+-   * - Value
+-     - Description
+-   * - 0
+-     - Invalid algorithm (ENCRYPTION_MODE_INVALID).
+-   * - 1
+-     - 256-bit AES in XTS mode (ENCRYPTION_MODE_AES_256_XTS).
+-   * - 2
+-     - 256-bit AES in GCM mode (ENCRYPTION_MODE_AES_256_GCM).
+-   * - 3
+-     - 256-bit AES in CBC mode (ENCRYPTION_MODE_AES_256_CBC).
+-
+-Total size of the superblock is 1024 bytes.
 -- 
 An old man doll... just what I always wanted! - Clara
 
