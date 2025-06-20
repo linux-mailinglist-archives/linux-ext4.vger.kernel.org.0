@@ -1,160 +1,249 @@
-Return-Path: <linux-ext4+bounces-8569-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8570-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5DA4AE1A3A
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 13:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59CB6AE1D2E
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 16:18:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C25C1BC1F06
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 11:50:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB9F61BC53A5
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 14:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4B428A730;
-	Fri, 20 Jun 2025 11:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E19C292910;
+	Fri, 20 Jun 2025 14:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bsbernd.com header.i=@bsbernd.com header.b="npkPStXW";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nifjXByx"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cYx1ayUs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hZ3CMdyG";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cYx1ayUs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hZ3CMdyG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB18730E841;
-	Fri, 20 Jun 2025 11:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE7B28FFE7
+	for <linux-ext4@vger.kernel.org>; Fri, 20 Jun 2025 14:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750420227; cv=none; b=NbomvbK1gv8h9OBsB1xMUb89vxeVf/XQjZSLP2rro1W9LoEWPWh+MJdJ6yLz0TLFZ35N8H4ZyO4Ms6+kGxPsriK72D9V0KjvVIIa6M4+rM64WyoD3LbkbH36pIPQpy6Q+r3p1cDqgIAqek+nLaNnkEE7FyPkcEDqZbVDYi8SHyM=
+	t=1750429112; cv=none; b=ur/4Mtr1gBtGpJ7ait60DYdu7fLeJgvsNGr0rJJMGY5kaFAJU2MOq9Oi7xZtsS5Knd3EXEDQxOZO+IbjK5fcB3Se4h0BAxLOBl6a5Iz+EfFRmBa2r+5MwXjQlD7QJu+RMYOjLev47iJug+H3QG+Y6oCVOXuR8CtxKml3sOqFkeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750420227; c=relaxed/simple;
-	bh=XQP+okgwnUJzIyjCbH/bSoqgpvri7GVwz1su2JFjrl8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tE2xewMK1HasxnDPA3029II5S6SgiekpMwF5PrgCIiriara92wfQxm6m+Xk7M11MzvKZm9+GVztdZaYOHj+QAZXRR3NSdoHPW7AMQVbIren++lT4Y/nOJEuoVIIaE0XX9aL19y2oMI2CMdRgIyufEkRhfmlT/GHen/x5mg+uRVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bsbernd.com; spf=pass smtp.mailfrom=bsbernd.com; dkim=pass (2048-bit key) header.d=bsbernd.com header.i=@bsbernd.com header.b=npkPStXW; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=nifjXByx; arc=none smtp.client-ip=202.12.124.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bsbernd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bsbernd.com
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfout.stl.internal (Postfix) with ESMTP id 82591114022E;
-	Fri, 20 Jun 2025 07:50:23 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-11.internal (MEProxy); Fri, 20 Jun 2025 07:50:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bsbernd.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1750420223;
-	 x=1750506623; bh=l2hII4cp1PyuBUVylpSn0Ellq5/eSFVIntLZcwtH1hI=; b=
-	npkPStXWRyCVryYxdY6IQIeviIXh+2n6rWViPZzUqh3iKMz1i10zmSsiEUd+pQJz
-	Fb0mfWiQ+gREkaF27Ke5uUelXBVoYvl6hQXa5src0MEuQS2kfeRvrQ2fN4PYqn4x
-	vG1oEBofJsiHI57HdtNVwpUbgBVrawFWGEAunbsoNdU2CYRzOMQSsfqRw+Bzh5ym
-	62LGJpzEEdvRv4TEOhSrb9ySoEdBaoLqLupVqBhTGdyOJ8Z0JRXAV2tpr67PN/N/
-	fw9s79YKr9rTT8ywGwQTRK2jR72Xj4xKWCEvS1XZONoCTDIUT+kISZVyM6mxLUkB
-	i1tnyNNjtMsZyNiZ6dmrNA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1750420223; x=
-	1750506623; bh=l2hII4cp1PyuBUVylpSn0Ellq5/eSFVIntLZcwtH1hI=; b=n
-	ifjXByxaNRRLakj6lL2xdIIaetTwnvH805LM7CD4adrNFy94YnTao2IgfAx5vkYy
-	NTLGgFdivOUSJOxyarSG3s5Yz7zp9gce8YRXRysN6/CNeggZzceJLrElDmHHtXE6
-	LgpOCk+OJZWwaSbaB++54u9ta0CqamZKB+8aPd5QFP4U4BG10s58rYhG7s5SKZmA
-	Fro62KBvsRUfv2TCqm+hGCLPjW6olucr6SC6LZMlEwH3r014CmRITU7MhpqgkCop
-	eXdHefyblyadVyvBO6jcoWXsFqyCvBCHZb/c+1m01twZUBu3J2QYngUc+fPGrelb
-	TPhU36bmUQ8/mb1jEuhMg==
-X-ME-Sender: <xms:_kpVaNDFBXzNsKJDv88JH3iaARE_DiQYyagf-am3xLWXrZBrM954zQ>
-    <xme:_kpVaLg15AFCv4uk5N2ctJvgbTjy6CQ4YCRrvJNfKGJqXJutu2bSUe3cJuzuzuVjR
-    0ZT4te9V7C8k-Yd>
-X-ME-Received: <xmr:_kpVaImHbuNoGhKVDMUAk-gQ1CkJ6HWc0QBU_72JLPe8icmOHYGR3kGwuiK_JpZ1MA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgdekfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
-    epkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeeuvghrnhguucfu
-    tghhuhgsvghrthcuoegsvghrnhgusegsshgsvghrnhgurdgtohhmqeenucggtffrrghtth
-    gvrhhnpeehhfejueejleehtdehteefvdfgtdelffeuudejhfehgedufedvhfehueevudeu
-    geenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsvg
-    hrnhgusegsshgsvghrnhgurdgtohhmpdhnsggprhgtphhtthhopedutddpmhhouggvpehs
-    mhhtphhouhhtpdhrtghpthhtoheplhhishesrhgvughhrghtrdgtohhmpdhrtghpthhtoh
-    epthihthhsohesmhhithdrvgguuhdprhgtphhtthhopegujhifohhngheskhgvrhhnvghl
-    rdhorhhgpdhrtghpthhtoheprghmihhrjeefihhlsehgmhgrihhlrdgtohhmpdhrtghpth
-    htoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
-    phhtthhopehjohhhnhesghhrohhvvghsrdhnvghtpdhrtghpthhtohepmhhikhhlohhsse
-    hsiigvrhgvughirdhhuhdprhgtphhtthhopehjohgrnhhnvghlkhhoohhnghesghhmrghi
-    lhdrtghomhdprhgtphhtthhopehjohhsvghfsehtohigihgtphgrnhgurgdrtghomh
-X-ME-Proxy: <xmx:_kpVaHw3BCmLCcPEt5esB2526zpYbljLvrjsNswI2t0rge-F4T3xCg>
-    <xmx:_kpVaCTMOCtKUrWyj65sSLtI5QUyASoAH0BT9BajAbjfqfcfD3Se_w>
-    <xmx:_kpVaKbfrVh5JDCyor75MsA7-nnLBugEpYG-jun4XSBaOkjhyB-OXA>
-    <xmx:_kpVaDTvnIzMl9qcrEoLjXfmlQaDKdOPDH6eTR8wFasTUGwKLqoDFw>
-    <xmx:_0pVaLiov9a9lbVj0ffG6DBDk3wC6JyK9pEU8jKDsj_1RB4Xzo3qcPlH>
-Feedback-ID: i5c2e48a5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 20 Jun 2025 07:50:21 -0400 (EDT)
-Message-ID: <1ac7d8ff-a212-4db8-8d01-e06be712c4ed@bsbernd.com>
-Date: Fri, 20 Jun 2025 13:50:20 +0200
+	s=arc-20240116; t=1750429112; c=relaxed/simple;
+	bh=GmEF7XtFRaAMmD60L3O3wivlsw6IEUOJIQM94TBoGzU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SkKQ/6bfkaEjlPWc2ky05rmRi/M+d9FuKISf00I77/QVkbyeYVC38Zje5fO8u8TB99JEjdWhCvDgOWbpSIz0QZnnOPFobMiRuzcaLrcPXquTFXy5Uodq0K4y83eacMWwGWmOSztvCOoxAT18vZr7gjUBVZ6D/IEmyMur+iWrymY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cYx1ayUs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hZ3CMdyG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cYx1ayUs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hZ3CMdyG; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4B7612122E;
+	Fri, 20 Jun 2025 14:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750429108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xrIaBkWkQCmvjsPNtiSTszsjd+CXnshpFyRej0yL6DU=;
+	b=cYx1ayUsFCdNhSPC9sTk7egjzcWy083PokC0jwQpyoVlBL+x2rSRByjvbIDtUABkFa68ku
+	gogF/zbXyr7Hki1pGfSX5ErKQIhN/fRZqUc/HoyryaeaNXNxG+ExSrywyYU5QcWFxXemYd
+	bgfhkAkKBK64C+AV2K99Up2chm2xyb4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750429108;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xrIaBkWkQCmvjsPNtiSTszsjd+CXnshpFyRej0yL6DU=;
+	b=hZ3CMdyGaBJGAuowpRgIrvvRtyZ62RKvzjP2V+a6+iwPhj5EAPycQseieFUCt2ePELWjLj
+	78JH2+7kt6bw4/DQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750429108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xrIaBkWkQCmvjsPNtiSTszsjd+CXnshpFyRej0yL6DU=;
+	b=cYx1ayUsFCdNhSPC9sTk7egjzcWy083PokC0jwQpyoVlBL+x2rSRByjvbIDtUABkFa68ku
+	gogF/zbXyr7Hki1pGfSX5ErKQIhN/fRZqUc/HoyryaeaNXNxG+ExSrywyYU5QcWFxXemYd
+	bgfhkAkKBK64C+AV2K99Up2chm2xyb4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750429108;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xrIaBkWkQCmvjsPNtiSTszsjd+CXnshpFyRej0yL6DU=;
+	b=hZ3CMdyGaBJGAuowpRgIrvvRtyZ62RKvzjP2V+a6+iwPhj5EAPycQseieFUCt2ePELWjLj
+	78JH2+7kt6bw4/DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 38563136BA;
+	Fri, 20 Jun 2025 14:18:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Alx7DbRtVWgmSgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 20 Jun 2025 14:18:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CC62FA08D2; Fri, 20 Jun 2025 16:18:27 +0200 (CEST)
+Date: Fri, 20 Jun 2025 16:18:27 +0200
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu, 
+	adilger.kernel@dilger.ca, ojaswin@linux.ibm.com, yi.zhang@huawei.com, libaokun1@huawei.com, 
+	yukuai3@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v2 3/6] ext4: restart handle if credits are insufficient
+ during allocating blocks
+Message-ID: <hdwxc2rv6vwcqpc33prhhlx4eor47xuuft5utvioxiwtrcsz36@n56ap5fi7uku>
+References: <20250611111625.1668035-1-yi.zhang@huaweicloud.com>
+ <20250611111625.1668035-4-yi.zhang@huaweicloud.com>
+ <7nw5sxwibqmp6zuuanb6eklkxnm5n536fpgzqus6pxts37q2ix@vlpsd2muuj6w>
+ <00d60446-f380-4480-b643-2b63669ebccc@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
- containerize ext4
-To: Allison Karlitskaya <lis@redhat.com>, Theodore Ts'o <tytso@mit.edu>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, Amir Goldstein
- <amir73il@gmail.com>, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- John@groves.net, miklos@szeredi.hu, joannelkoong@gmail.com,
- Josef Bacik <josef@toxicpanda.com>, linux-ext4 <linux-ext4@vger.kernel.org>
-References: <20250521235837.GB9688@frogsfrogsfrogs>
- <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
- <20250529164503.GB8282@frogsfrogsfrogs>
- <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
- <20250609223159.GB6138@frogsfrogsfrogs>
- <CAOQ4uxgUVOLs070MyBpfodt12E0zjUn_SvyaCSJcm_M3SW36Ug@mail.gmail.com>
- <20250610190026.GA6134@frogsfrogsfrogs> <20250611115629.GL784455@mit.edu>
- <CAOYeF9W8OpAjSS9r_MO5set0ZoUCAnTmG2iB7NXvOiewtnrqLg@mail.gmail.com>
-From: Bernd Schubert <bernd@bsbernd.com>
-Content-Language: en-US
-In-Reply-To: <CAOYeF9W8OpAjSS9r_MO5set0ZoUCAnTmG2iB7NXvOiewtnrqLg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00d60446-f380-4480-b643-2b63669ebccc@huaweicloud.com>
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-
-
-On 6/20/25 10:58, Allison Karlitskaya wrote:
-> hi Ted,
+On Fri 20-06-25 13:00:32, Zhang Yi wrote:
+> On 2025/6/20 0:33, Jan Kara wrote:
+> > On Wed 11-06-25 19:16:22, Zhang Yi wrote:
+> >> From: Zhang Yi <yi.zhang@huawei.com>
+> >>
+> >> After large folios are supported on ext4, writing back a sufficiently
+> >> large and discontinuous folio may consume a significant number of
+> >> journal credits, placing considerable strain on the journal. For
+> >> example, in a 20GB filesystem with 1K block size and 1MB journal size,
+> >> writing back a 2MB folio could require thousands of credits in the
+> >> worst-case scenario (when each block is discontinuous and distributed
+> >> across different block groups), potentially exceeding the journal size.
+> >> This issue can also occur in ext4_write_begin() and ext4_page_mkwrite()
+> >> when delalloc is not enabled.
+> >>
+> >> Fix this by ensuring that there are sufficient journal credits before
+> >> allocating an extent in mpage_map_one_extent() and _ext4_get_block(). If
+> >> there are not enough credits, return -EAGAIN, exit the current mapping
+> >> loop, restart a new handle and a new transaction, and allocating blocks
+> >> on this folio again in the next iteration.
+> >>
+> >> Suggested-by: Jan Kara <jack@suse.cz>
+> >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> > 
+> > ...
+> > 
+> >>  static int _ext4_get_block(struct inode *inode, sector_t iblock,
+> >>  			   struct buffer_head *bh, int flags)
+> >>  {
+> >>  	struct ext4_map_blocks map;
+> >> +	handle_t *handle = ext4_journal_current_handle();
+> >>  	int ret = 0;
+> >>  
+> >>  	if (ext4_has_inline_data(inode))
+> >>  		return -ERANGE;
+> >>  
+> >> +	/* Make sure transaction has enough credits for this extent */
+> >> +	if (flags & EXT4_GET_BLOCKS_CREATE) {
+> >> +		ret = ext4_journal_ensure_extent_credits(handle, inode);
+> >> +		if (ret)
+> >> +			return ret;
+> >> +	}
+> >> +
+> >>  	map.m_lblk = iblock;
+> >>  	map.m_len = bh->b_size >> inode->i_blkbits;
+> >>  
+> >> -	ret = ext4_map_blocks(ext4_journal_current_handle(), inode, &map,
+> >> -			      flags);
+> >> +	ret = ext4_map_blocks(handle, inode, &map, flags);
+> > 
+> > Good spotting with ext4_page_mkwrite() and ext4_write_begin() also needing
+> > this treatment! But rather then hiding the transaction extension in
+> > _ext4_get_block() I'd do this in ext4_block_write_begin() where it is much
+> > more obvious (and also it is much more obvious who needs to be prepared for
+> > handling EAGAIN error). Otherwise the patch looks good!
+> > 
 > 
-> Sorry I didn't see this earlier.  I've been travelling.
+> Yes, I completely agree with you. However, unfortunately, do this in
+> ext4_block_write_begin() only works for ext4_write_begin().
+> ext4_page_mkwrite() does not call ext4_block_write_begin() to allocate
+> blocks, it call the vfs helper __block_write_begin_int() instead.
 > 
-> On Wed, 11 Jun 2025 at 21:25, Theodore Ts'o <tytso@mit.edu> wrote:
->> This may break the github actions for composefs-rs[1], but I'm going
->> to assume that they can figure out a way to transition to Fuse3
->> (hopefully by just using a newer version of Ubuntu, but I suppose it's
->> possible that Rust bindings only exist for Fuse2, and not Fuse3).  But
->> in any case, I don't think it makes sense to hold back fuse2fs
->> development just for the sake of Ubuntu Focal (LTS 20.04).  And if
->> necessary, composefs-rs can just stay back on e2fsprogs 1.47.N until
->> they can get off of Fuse2 and/or Ubuntu 20.04.  Allison, does that
->> sound fair to you?
+> vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+> {
+> 	...
+> 	if (!ext4_should_journal_data(inode)) {
+> 		err = block_page_mkwrite(vma, vmf, get_block);
+> 	...
+> }
 > 
-> To be honest, with a composefs-rs hat on, I don't care at all about
-> fuse support for ext2/3/4 (although I think it's cool that it exists).
-> We also use fuse in composefs-rs for unrelated reasons, but even there
-> we use the fuser rust crate which has a "pure rust" direct syscall
-> layer that no longer depends on libfuse.  Our use of e2fsprogs is
-> strictly related to building testing images in CI, and for that we
-> only use mkfs.ext4.  There's also no specific reason that we're using
-> old Ubuntu.  I probably just copy-pasted it from another project
-> without paying too much attention.
+> 
+> So...
 
+Right, I forgot about the nodelalloc case. But since we do most of things
+by hand for data=journal mode, perhaps we could lift some code from
+data=journal mode and reuse it for nodelalloc as well like:
 
- From libfuse point of view I'm too happy about that split into different
-libraries. Libfuse already right now misses several features because
-they were added to virtiofs, but not to libfuse. I need to find the time
-for it, but I guess it makes sense to add rust support to libfuse (and
-some parts can be entirely rewritten into rust).
+        folio_lock(folio);
+        size = i_size_read(inode);
+        /* Page got truncated from under us? */
+        if (folio->mapping != mapping || folio_pos(folio) > size) {
+                ret = VM_FAULT_NOPAGE;
+                goto out_error;
+        }
 
+        len = folio_size(folio);
+        if (folio_pos(folio) + len > size)
+                len = size - folio_pos(folio);
+                
+        err = ext4_block_write_begin(handle, folio, 0, len,
+                                     get_block);
+	if (err)
+		goto out_error;
+	if (!ext4_should_journal_data(inode))
+		block_commit_write(folio, 0, len);
+		folio_mark_dirty(folio);
+	} else {
+	        if (ext4_journal_folio_buffers(handle, folio, len)) {
+	        	ret = VM_FAULT_SIGBUS;
+		        goto out_error;
+		}
+	}
+	ext4_journal_stop(handle);
+	folio_wait_stable(folio);
 
+We get an additional bonus for not waiting for page writeback with
+transaction handle held (which is a potential deadlock vector). What do you
+think?
 
-Thanks,
-Bernd
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
