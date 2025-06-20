@@ -1,100 +1,90 @@
-Return-Path: <linux-ext4+bounces-8573-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8574-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEF3EAE1F96
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 17:57:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFEAFAE219B
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 19:53:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D754B3BC7E8
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 15:55:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AA4B4C1507
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 17:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42BF32D3A7A;
-	Fri, 20 Jun 2025 15:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64ED72E610E;
+	Fri, 20 Jun 2025 17:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wvc2nOpN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1X8PA2Vj";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wvc2nOpN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1X8PA2Vj"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TUykt67A"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1A72D4B42
-	for <linux-ext4@vger.kernel.org>; Fri, 20 Jun 2025 15:56:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0BF2E6128
+	for <linux-ext4@vger.kernel.org>; Fri, 20 Jun 2025 17:53:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750434961; cv=none; b=KdzP9V0x24f47Vdh2/agt7tSUAjg4DsypDNNmO+sduXnhnKMDZgKlHYHFboxQB7AODn3Z2rnZIjOwhY/+ts/K0yB+aSAGrqw1zap4eZD1sHP7FueNIEcGteqMxCqk74nXAEyjFf0y5RceDjUbF4SqRckef3jH9YShAOfGBonLPo=
+	t=1750442015; cv=none; b=ox3kmpcojp43BdfDxslpwVAGIku56YXmYtdlktPaCyMbaXH3dBRXG+ELqupYrzLIcoMBmNmBO8TJgokQXbYyOp2Bc6DdmazjNPweUjR/CR9aoBu1UM0wf80Mna0BxVVA3Q1D3visHpyBvDkKvZB8gDd06ZvA/q4Nenu592AuAEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750434961; c=relaxed/simple;
-	bh=p7Nb0khwUEHR5yfrT3OfmE2VkDA7t7oJqSg5spcJcIU=;
+	s=arc-20240116; t=1750442015; c=relaxed/simple;
+	bh=P4GssuY/lJRwBeU/r8xgj2f0Jz2JM6g82ZiHyvgA6mI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j365v4JVxde9LCO08wCnr0Gf5cWeEr+vHiXX9orpOO2TciLpPUH6n+p3nxb3S5K6eAe4NwoVuVHQJ5XPZV2ytD1UmWPCdygdxRp3n7C+x12+e7uQIY1GG7KyBszbq0pU+9lTf5r/4CPElOKPaazpPG3i6XXUw4DZ551ANhWXDKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wvc2nOpN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1X8PA2Vj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wvc2nOpN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1X8PA2Vj; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B1D7821216;
-	Fri, 20 Jun 2025 15:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750434958; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QOXgmJ+XobrGUgEMq7o0V1SmE85xCTbPXfAzBUKvQ8zSZbjpXv6mMXrcn2Moag7f5o1XgCp/jtFnbhYErdF6VlzcIPkzrhhi2FnkUsnl1l1KbhYC2dTCv/wUuSel6zvOGjvHlECksyWJXfn8vn9QCf3lZridq1pRy5/QDMryEFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TUykt67A; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1750442011;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Q74bddg/Lybxm3bPnUkwZDUfV+Qbp/SK7AIO2GcrpD8=;
-	b=wvc2nOpNUWLDHTCZA7mJH0d5qm4AgAIFufDZ/CjDMI2dros2kjjDyF7Er8HjtYRAsAVxci
-	JA3akLAS4ONiOdXekbiul/kXh8hBGuGPYKuushPG2XAwOGTvQHItYP1m6ylTLs3vMbMEc2
-	2pxRv1OPE3dtMllNLfF3jtl3sKeqOXw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750434958;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q74bddg/Lybxm3bPnUkwZDUfV+Qbp/SK7AIO2GcrpD8=;
-	b=1X8PA2VjM9UJZYM14ZOuh6lSi8Xt06w5XFXrpgCq7ixX3C91roz6Fk0ECqCWh2OlnzCs6X
-	dbpx2rQs+u9L6aDQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750434958; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q74bddg/Lybxm3bPnUkwZDUfV+Qbp/SK7AIO2GcrpD8=;
-	b=wvc2nOpNUWLDHTCZA7mJH0d5qm4AgAIFufDZ/CjDMI2dros2kjjDyF7Er8HjtYRAsAVxci
-	JA3akLAS4ONiOdXekbiul/kXh8hBGuGPYKuushPG2XAwOGTvQHItYP1m6ylTLs3vMbMEc2
-	2pxRv1OPE3dtMllNLfF3jtl3sKeqOXw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750434958;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q74bddg/Lybxm3bPnUkwZDUfV+Qbp/SK7AIO2GcrpD8=;
-	b=1X8PA2VjM9UJZYM14ZOuh6lSi8Xt06w5XFXrpgCq7ixX3C91roz6Fk0ECqCWh2OlnzCs6X
-	dbpx2rQs+u9L6aDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 95A8213736;
-	Fri, 20 Jun 2025 15:55:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id u5CBJI6EVWiSZwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 20 Jun 2025 15:55:58 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0CF70A08DD; Fri, 20 Jun 2025 17:55:58 +0200 (CEST)
-Date: Fri, 20 Jun 2025 17:55:58 +0200
-From: Jan Kara <jack@suse.cz>
-To: Pankaj Raghav <kernel@pankajraghav.com>
-Cc: Jan Kara <jack@suse.cz>, tytso@mit.edu, 
-	Luis Chamberlain <mcgrof@kernel.org>, Pankaj Raghav <p.raghav@samsung.com>, linux-ext4@vger.kernel.org, 
-	Zhang Yi <yi.zhang@huaweicloud.com>
-Subject: Re: LBS support for EXT4
-Message-ID: <jcgnjl6txstun2hcimtz2zdayz7kxw4em6orafu5mfmcl2j5ik@ootfvveenf7j>
-References: <6ac7ce67-b54b-437e-9409-7da9402c9de1@pankajraghav.com>
+	bh=MmVr62zHeiFyZ5PIOfEG/VEY8NtaiLO4PmPOTd/TeYQ=;
+	b=TUykt67AnT/LrGoq9L5w0fFbpwveYJiRjDJ43JCCxvsHfuQoeVoz18kbfK00KJVWmOCXMX
+	fwfUPeyaIVgHjwAo7utacHePLXJzgiLhNUPfgK5RmbZmKseRb6wGH+Y9DF23f2ZGBzVn+l
+	aHejxWHG6wVvSBXG1rl2HzoBFj8oDRo=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-371-i2ndxX2NMZmBx1fuN1CLTg-1; Fri, 20 Jun 2025 13:53:30 -0400
+X-MC-Unique: i2ndxX2NMZmBx1fuN1CLTg-1
+X-Mimecast-MFC-AGG-ID: i2ndxX2NMZmBx1fuN1CLTg_1750442009
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-b31814efd1cso1361471a12.3
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Jun 2025 10:53:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750442009; x=1751046809;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MmVr62zHeiFyZ5PIOfEG/VEY8NtaiLO4PmPOTd/TeYQ=;
+        b=OER+b7XfTxw7xcTwAsZpG6W41LgnW/2/kCyOS+9kudK8LvIqkByGmGk4qkWrLFZm/p
+         UiQZiTE77jLqSs62ybnQp/aEp01S+ZCGjGGMFj+8ebrsI27EfLMT2vmx4IxQsEvhG7lG
+         hKiiJkcilOBJQrGQv1/EpR0vritEWc8qcllDg4SLU9eSR8/3RObEfP2GeA50KWbC/U8u
+         Gl0H8w1UPtNGOT9td+QsW+3ouGgCXVntkON/zuEBPtQhoy2zQk2iKK23sLcSUW3IvIWi
+         L1h8HL5UHq7YvcyPXM4WhJAoa52k2Ja527D3fUiJXx6LnQZArz9SLzZSlP50jK8u4Wgb
+         SLSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEPrdlgPLcd+bsVENC3vGtbLTxJKBhKsJsnV7wYL1hbXWW+a9p6Sg/Lb0E5EpJDOjWwOt0mxp3L3ak@vger.kernel.org
+X-Gm-Message-State: AOJu0Yys8dLCHdWpPk6TinrIBv7HaPKfJ4CMLnYaVAGo0pvw9FjKk3W2
+	Jy6GebBD9U+azvH606YPmRMiVn6bSdGUpV1WhCnYWZ8qlAHPx7Ph2Ue4I1eUnzRTBUK+Fw8kLZ6
+	qgxO4fZS7bet1JEzi2qJwOZ/p5Wr9yLLKga14ZlFEcyJa76U/VWogESqLbgw8VY46QlZ6I6Q=
+X-Gm-Gg: ASbGncviGnBCm61+N+Kuw3ZaE5i8q3oaohRFHY0m9Nm7IWOlemOe7wYqRbBV4pE9yo4
+	6lL59dJlYPJIp3KoEzS0pQQqLndgdDze6cI5CD0UZuq/X/f/sOdDx0aC9jNhiVdbukn6e99L3QJ
+	C2lxPO0/FKqLODSnmDLUVvE86YalhEL0Bvy8HKQ+jy8wH1OMPF8C0YyzBd10B0u5bto1SiM6pDv
+	ywzFVjUtdL6YZxbgvA+6urYiixMrHBhX1sRepWkfbeHXc7YPB37isu/OorP728oe9oKsiI2sMzO
+	oBsvIk0Rs3fknYTU6ZXJFV/ZdLAhDPWZCfUbQ/0Vwk+Z+U8gRDQ2aHIFnASPrQ4=
+X-Received: by 2002:a05:6a21:6d98:b0:216:5fa9:55ad with SMTP id adf61e73a8af0-22026e9d0f1mr5517345637.39.1750442008680;
+        Fri, 20 Jun 2025 10:53:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEStXPkBhSplwryrT8owmYybNJQqkhlLLia/kHBX2zM7mompliT7DCOU8lHLZHnqtfAevqMsw==
+X-Received: by 2002:a05:6a21:6d98:b0:216:5fa9:55ad with SMTP id adf61e73a8af0-22026e9d0f1mr5517328637.39.1750442008367;
+        Fri, 20 Jun 2025 10:53:28 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7490a621cafsm2600290b3a.101.2025.06.20.10.53.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Jun 2025 10:53:27 -0700 (PDT)
+Date: Sat, 21 Jun 2025 01:53:24 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Leah Rumancik <leah.rumancik@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] common/rc: add repair fsck flag -f for ext4
+Message-ID: <20250620175324.tyx4s4dxdslv7hqx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20250530192712.2643365-1-leah.rumancik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -103,74 +93,80 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6ac7ce67-b54b-437e-9409-7da9402c9de1@pankajraghav.com>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Level: 
+In-Reply-To: <20250530192712.2643365-1-leah.rumancik@gmail.com>
 
-[added ext4 list and Zhang to CC]
-
-Hi,
-
-On Thu 19-06-25 15:05:14, Pankaj Raghav wrote:
-> Hello Jan and Ted,
+On Fri, May 30, 2025 at 12:27:11PM -0700, Leah Rumancik wrote:
+> There is a descrepancy between the fsck flags for ext4 during
+> filesystem repair and filesystem checking which causes occasional test
+> failures. In particular, _check_generic_filesystems uses -f for force
+> checking, but _repair_scratch_fs does not. In some tests, such as
+> generic/441, we sometimes exit fsck repair early with the filesystem
+> being deemed "clean" but then _check_generic_filesystems finds issues
+> during the forced full check. Bringing these flags in sync fixes the
+> flakes.
 > 
-> As you might know, I added LBS support to XFS sometime back. And after
-> that Luis added LBS support to block devices/buffer head path.
-> 
-> And now that EXT4 supports large folios, it should be possible to add LBS
-> support to EXT4.
-> 
-> I started digging in to the code, and it looks like it might require some
-> rework throughout EXT4 and lot of testing.
-> 
-> My question is:
-> 
-> I have seen patches from Zhang Yi to add iomap buffered IO support to EXT4.
-> If that happens, then adding LBS support should become trivial.
-> 
-> Do you think it might happen soon or it is going to take more time?
-> Seeing the patches it is hard for me to say what the status is as the
-> last patches posted for them was last year.
+> Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
+> ---
 
-Well, time is always relative so it's difficult to tell what do you mean by
-"soon" :). We are definitely interested in converting ext4 to iomap.
-Currently we are fixing up some remaining issues caused by conversion to
-support large order folios but after that iomap conversion would be a next
-logical step. Zhang Yi had patches for that, I'm not sure how much from
-them is left to apply after the large order folios have landed.
+CC ext4 list to get more review points.
 
-> The reason I am asking is, should I take up the challenge to add LBS
-> support with buffer heads in EXT4, or should I wait until iomap patches
-> are merged.
+>  common/rc | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/common/rc b/common/rc
+> index daf62c92..042f6c36 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -1496,19 +1496,24 @@ _repair_scratch_fs()
+>  	_check_scratch_fs
+>  	;;
+>      *)
+>  	local dev=$SCRATCH_DEV
+>  	local fstyp=$FSTYP
+> +	local fsopts=
+>  	if [ $FSTYP = "overlay" -a -n "$OVL_BASE_SCRATCH_DEV" ]; then
+>  		_repair_overlay_scratch_fs
+>  		# Fall through to repair base fs
+>  		dev=$OVL_BASE_SCRATCH_DEV
+>  		fstyp=$OVL_BASE_FSTYP
+>  		_unmount $OVL_BASE_SCRATCH_MNT
+>  	fi
+> +	if [ $FSTYP = "ext4" ]; then
 
-I think better spent time would be to help with the iomap conversion. I
-don't think there will be that much coding left (perhaps some more exotic
-features need attention) but there's definitely testing needed and review
-is always welcome and most needed...
+What if ext2 and ext3?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> +		fsopts="-f"
+> +	fi
+> +
+>  	# Let's hope fsck -y suffices...
+> -	fsck -t $fstyp -y $dev 2>&1
+> +	fsck -t $fstyp -y ${fsopts} $dev 2>&1
+>  	local res=$?
+>  	case $res in
+>  	$FSCK_OK|$FSCK_NONDESTRUCT|$FSCK_REBOOT)
+>  		res=0
+>  		;;
+> @@ -1548,12 +1553,16 @@ _repair_test_fs()
+>  	yes | $BTRFS_UTIL_PROG check --repair --force "$TEST_DEV" >> \
+>  								$tmp.repair 2>&1
+>  		res=$?
+>  		;;
+>  	*)
+> +		local fsopts=
+> +		if [ $FSTYP = "ext4" ]; then
+> +			fsopts="-f"
+> +		fi
+>  		# Let's hope fsck -y suffices...
+> -		fsck -t $FSTYP -y $TEST_DEV >$tmp.repair 2>&1
+> +		fsck -t $FSTYP -y ${fsopts} $TEST_DEV >$tmp.repair 2>&1
+>  		res=$?
+>  		if test "$res" -lt 4 ; then
+>  			res=0
+>  		fi
+>  		;;
+> -- 
+> 2.49.0.1204.g71687c7c1d-goog
+> 
+> 
+
 
