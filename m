@@ -1,163 +1,160 @@
-Return-Path: <linux-ext4+bounces-8568-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8569-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D99DAE195D
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 12:58:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5DA4AE1A3A
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 13:50:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E5987A27B9
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 10:57:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C25C1BC1F06
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Jun 2025 11:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6934228B4EB;
-	Fri, 20 Jun 2025 10:57:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4B428A730;
+	Fri, 20 Jun 2025 11:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PsXgRs8O"
+	dkim=pass (2048-bit key) header.d=bsbernd.com header.i=@bsbernd.com header.b="npkPStXW";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nifjXByx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBFE28A726;
-	Fri, 20 Jun 2025 10:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB18730E841;
+	Fri, 20 Jun 2025 11:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750417050; cv=none; b=OJd5Zsi2qUEeCD7N+R4nU0sYRMkge2yYdNDNXaAG5UAqL8DNXhlmhvjz43cyhL6Q/F5bAtjJvHch0Hdjjn3AT7/0KpFgRqLa/HmMfLvSkL0bDfN3f7AGpDUhdKYPXPe1yQd1FVppopBHQbiaugrAIfjzsNMqJraP55gROvG75+Q=
+	t=1750420227; cv=none; b=NbomvbK1gv8h9OBsB1xMUb89vxeVf/XQjZSLP2rro1W9LoEWPWh+MJdJ6yLz0TLFZ35N8H4ZyO4Ms6+kGxPsriK72D9V0KjvVIIa6M4+rM64WyoD3LbkbH36pIPQpy6Q+r3p1cDqgIAqek+nLaNnkEE7FyPkcEDqZbVDYi8SHyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750417050; c=relaxed/simple;
-	bh=+T4MKSWdsIjPwq7v/X3d5MxVaQFBiaCAUlHggc0nYyU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WLKt4f41xt8cygKh2sKLnayxZtuZLwJGFWXQu+8tD0DSQPSk+E0B4Nm1EBFaQm/QVjbOp1PsW/ERvwMPgVSxhrZHOoZHBNMGwRYTiPzNIK2SQG3g4kbebPElh7KDt83Zshzapg2f546MCnFKiOe8RfYLg5eE+egDSTCi75hUI0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PsXgRs8O; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2352400344aso16750975ad.2;
-        Fri, 20 Jun 2025 03:57:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750417048; x=1751021848; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E/SSTeD5INnDMSlbYCrgdkKOcD8aKffVGoAdYJgE0hM=;
-        b=PsXgRs8OH/nWnrhGuEnhkEyh1t7XOTmKsaxrJuomSXjE93MqWBzYhsNAOxLtI2SYvF
-         0eGxMJ8nFkhKYpJKFX5Q4ug78fvGeQ4Vg4kejz77RFN7ybUxeTpeEQ9ejHR0b2QyOH4c
-         4YycDGuSLWNdOa/f6uDOL9r6y73VnEL/l1eCrPkSOjgnrUtS7AzwfIpUAKvJjeUcKPu4
-         V6iEORF/SykiZU1mZFT4uE0ovz3AB/IzvZTglvBtU5Y+mC6xhCBXdFCVnh7yRzbo1nNc
-         93y42snCr21KbvxLD3sG9or8IfRwOM9hupzxRvsBcs+6db6G6CgFAblb9J1j7Ax2C776
-         x4aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750417048; x=1751021848;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E/SSTeD5INnDMSlbYCrgdkKOcD8aKffVGoAdYJgE0hM=;
-        b=MMvwkt1CmCnIHq2iOBQGZwD9r7xcI70vmjeBuitDvCbSD1VEA9MGlHGfmOS9sZQ8+s
-         jzrOkr3qqAzxIVJgOL6n9rW2ypUR1wGVzxbctX/a+LuvU0F2vDFPGeProJJDp0sHS06M
-         biAyNqDyKukQH80vHpVdHZM4etlS8aYkOhYvVLc7AX8th0NTjS9xzwfnSf30C50rNdQ3
-         SoJDZrMja/u+cnQFKWsf9tMJJcjzDRI2WXlfDFTq3h76QcItCdOCe09GaLeLTu1e5s2f
-         p+evkYTIco8iveggjKFOl+grhJw6tAoQ5Z2DNWdrVFc5PvWgdIyMgh6gg8Ce/A9OKq4D
-         xVSw==
-X-Forwarded-Encrypted: i=1; AJvYcCURY3HCkUULL8Va4NXQtFVg3LmaFtA11D8UugJBfyooEELtlb/Gf1EtCTqYIc5f6uyVOOm84TV/hBo=@vger.kernel.org, AJvYcCX51H62zuitKwZF54jVoTfS6+1XRMvtID8VzOTqZZv2rq166FlvzarqFB2nfVYAy04gAwCy2BeqcNorlg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2VQcdGI172W1siN6NjM9ip6xlTiepJyf3LTWZ88rUdDKIg1if
-	80rYaESp2qC78dJYfJI38hP2q7NXwlpnIus0eVLklHSBCSxVg6lGln63
-X-Gm-Gg: ASbGncvuxV8tX+wlZ+JaSZUyeIrd1gTetU/nOYPPiWTlskTVXKiwfxaJS5WlPJ0ntpZ
-	/BpSdy0N43WHFVYbP+OPNy4IP3oLnM8oaz6qs3GttWXInhH2ND/bkT1qdVpPUpu10Nm0C40Mtxd
-	bVN259wNfWJsACV+NOVyjVIOZwhLa/wUgDWR7BmG6j+hUIixCJmPS0FPawlNRaKcaWSt98wh+BA
-	6zr/Ih+mISLNpLfD2CIw/Yng4JhCT0HszcnRMyFdkGE1PqZsj2vD17RzRrBJGZzwKqjfxHTfxp/
-	aHne/JshC6e03vxw6U3zbq2/oB8B5xZjLqP0DAUS+F12pv4M1D0xtCkSazAjVg==
-X-Google-Smtp-Source: AGHT+IFjIS/UxczrAh5+l+DmG908FynEuQ5swZHGAIC6iYmHhIM2uJPssMw5jdXnzg1z8IgfH34JZA==
-X-Received: by 2002:a17:903:196b:b0:234:1163:ff99 with SMTP id d9443c01a7336-237d9af3066mr36120745ad.43.1750417047818;
-        Fri, 20 Jun 2025 03:57:27 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-237d86f8261sm15269165ad.221.2025.06.20.03.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Jun 2025 03:57:27 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id B9BDE40AD72B; Fri, 20 Jun 2025 17:57:16 +0700 (WIB)
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux ext4 <linux-ext4@vger.kernel.org>
-Cc: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH 5/5] Documentation: ext4: Move inode table short docs into its own file
-Date: Fri, 20 Jun 2025 17:56:44 +0700
-Message-ID: <20250620105643.25141-7-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250620105643.25141-2-bagasdotme@gmail.com>
-References: <20250620105643.25141-2-bagasdotme@gmail.com>
+	s=arc-20240116; t=1750420227; c=relaxed/simple;
+	bh=XQP+okgwnUJzIyjCbH/bSoqgpvri7GVwz1su2JFjrl8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tE2xewMK1HasxnDPA3029II5S6SgiekpMwF5PrgCIiriara92wfQxm6m+Xk7M11MzvKZm9+GVztdZaYOHj+QAZXRR3NSdoHPW7AMQVbIren++lT4Y/nOJEuoVIIaE0XX9aL19y2oMI2CMdRgIyufEkRhfmlT/GHen/x5mg+uRVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bsbernd.com; spf=pass smtp.mailfrom=bsbernd.com; dkim=pass (2048-bit key) header.d=bsbernd.com header.i=@bsbernd.com header.b=npkPStXW; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=nifjXByx; arc=none smtp.client-ip=202.12.124.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bsbernd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bsbernd.com
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfout.stl.internal (Postfix) with ESMTP id 82591114022E;
+	Fri, 20 Jun 2025 07:50:23 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Fri, 20 Jun 2025 07:50:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bsbernd.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1750420223;
+	 x=1750506623; bh=l2hII4cp1PyuBUVylpSn0Ellq5/eSFVIntLZcwtH1hI=; b=
+	npkPStXWRyCVryYxdY6IQIeviIXh+2n6rWViPZzUqh3iKMz1i10zmSsiEUd+pQJz
+	Fb0mfWiQ+gREkaF27Ke5uUelXBVoYvl6hQXa5src0MEuQS2kfeRvrQ2fN4PYqn4x
+	vG1oEBofJsiHI57HdtNVwpUbgBVrawFWGEAunbsoNdU2CYRzOMQSsfqRw+Bzh5ym
+	62LGJpzEEdvRv4TEOhSrb9ySoEdBaoLqLupVqBhTGdyOJ8Z0JRXAV2tpr67PN/N/
+	fw9s79YKr9rTT8ywGwQTRK2jR72Xj4xKWCEvS1XZONoCTDIUT+kISZVyM6mxLUkB
+	i1tnyNNjtMsZyNiZ6dmrNA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1750420223; x=
+	1750506623; bh=l2hII4cp1PyuBUVylpSn0Ellq5/eSFVIntLZcwtH1hI=; b=n
+	ifjXByxaNRRLakj6lL2xdIIaetTwnvH805LM7CD4adrNFy94YnTao2IgfAx5vkYy
+	NTLGgFdivOUSJOxyarSG3s5Yz7zp9gce8YRXRysN6/CNeggZzceJLrElDmHHtXE6
+	LgpOCk+OJZWwaSbaB++54u9ta0CqamZKB+8aPd5QFP4U4BG10s58rYhG7s5SKZmA
+	Fro62KBvsRUfv2TCqm+hGCLPjW6olucr6SC6LZMlEwH3r014CmRITU7MhpqgkCop
+	eXdHefyblyadVyvBO6jcoWXsFqyCvBCHZb/c+1m01twZUBu3J2QYngUc+fPGrelb
+	TPhU36bmUQ8/mb1jEuhMg==
+X-ME-Sender: <xms:_kpVaNDFBXzNsKJDv88JH3iaARE_DiQYyagf-am3xLWXrZBrM954zQ>
+    <xme:_kpVaLg15AFCv4uk5N2ctJvgbTjy6CQ4YCRrvJNfKGJqXJutu2bSUe3cJuzuzuVjR
+    0ZT4te9V7C8k-Yd>
+X-ME-Received: <xmr:_kpVaImHbuNoGhKVDMUAk-gQ1CkJ6HWc0QBU_72JLPe8icmOHYGR3kGwuiK_JpZ1MA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgdekfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+    epkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeeuvghrnhguucfu
+    tghhuhgsvghrthcuoegsvghrnhgusegsshgsvghrnhgurdgtohhmqeenucggtffrrghtth
+    gvrhhnpeehhfejueejleehtdehteefvdfgtdelffeuudejhfehgedufedvhfehueevudeu
+    geenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsvg
+    hrnhgusegsshgsvghrnhgurdgtohhmpdhnsggprhgtphhtthhopedutddpmhhouggvpehs
+    mhhtphhouhhtpdhrtghpthhtoheplhhishesrhgvughhrghtrdgtohhmpdhrtghpthhtoh
+    epthihthhsohesmhhithdrvgguuhdprhgtphhtthhopegujhifohhngheskhgvrhhnvghl
+    rdhorhhgpdhrtghpthhtoheprghmihhrjeefihhlsehgmhgrihhlrdgtohhmpdhrtghpth
+    htoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
+    phhtthhopehjohhhnhesghhrohhvvghsrdhnvghtpdhrtghpthhtohepmhhikhhlohhsse
+    hsiigvrhgvughirdhhuhdprhgtphhtthhopehjohgrnhhnvghlkhhoohhnghesghhmrghi
+    lhdrtghomhdprhgtphhtthhopehjohhsvghfsehtohigihgtphgrnhgurgdrtghomh
+X-ME-Proxy: <xmx:_kpVaHw3BCmLCcPEt5esB2526zpYbljLvrjsNswI2t0rge-F4T3xCg>
+    <xmx:_kpVaCTMOCtKUrWyj65sSLtI5QUyASoAH0BT9BajAbjfqfcfD3Se_w>
+    <xmx:_kpVaKbfrVh5JDCyor75MsA7-nnLBugEpYG-jun4XSBaOkjhyB-OXA>
+    <xmx:_kpVaDTvnIzMl9qcrEoLjXfmlQaDKdOPDH6eTR8wFasTUGwKLqoDFw>
+    <xmx:_0pVaLiov9a9lbVj0ffG6DBDk3wC6JyK9pEU8jKDsj_1RB4Xzo3qcPlH>
+Feedback-ID: i5c2e48a5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 20 Jun 2025 07:50:21 -0400 (EDT)
+Message-ID: <1ac7d8ff-a212-4db8-8d01-e06be712c4ed@bsbernd.com>
+Date: Fri, 20 Jun 2025 13:50:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2511; i=bagasdotme@gmail.com; h=from:subject; bh=+T4MKSWdsIjPwq7v/X3d5MxVaQFBiaCAUlHggc0nYyU=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBmhtvc282jEmvgXfItR2COryLd4bvPahwEFeze9/bl+k TrDLbXQjlIWBjEuBlkxRZZJiXxNp3cZiVxoX+sIM4eVCWQIAxenAEwk3Y6RYffye48u3f4vv/tu wDSNWYs2l8nUud0MOShyzyPYyuHY/j+MDFMVf3Kl8FQFiv6beOXxc2NxP5bA17MmR2ZkZT6+Fxk YxgIA
-X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
+ containerize ext4
+To: Allison Karlitskaya <lis@redhat.com>, Theodore Ts'o <tytso@mit.edu>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, Amir Goldstein
+ <amir73il@gmail.com>, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ John@groves.net, miklos@szeredi.hu, joannelkoong@gmail.com,
+ Josef Bacik <josef@toxicpanda.com>, linux-ext4 <linux-ext4@vger.kernel.org>
+References: <20250521235837.GB9688@frogsfrogsfrogs>
+ <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
+ <20250529164503.GB8282@frogsfrogsfrogs>
+ <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
+ <20250609223159.GB6138@frogsfrogsfrogs>
+ <CAOQ4uxgUVOLs070MyBpfodt12E0zjUn_SvyaCSJcm_M3SW36Ug@mail.gmail.com>
+ <20250610190026.GA6134@frogsfrogsfrogs> <20250611115629.GL784455@mit.edu>
+ <CAOYeF9W8OpAjSS9r_MO5set0ZoUCAnTmG2iB7NXvOiewtnrqLg@mail.gmail.com>
+From: Bernd Schubert <bernd@bsbernd.com>
+Content-Language: en-US
+In-Reply-To: <CAOYeF9W8OpAjSS9r_MO5set0ZoUCAnTmG2iB7NXvOiewtnrqLg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The short description of inode table is in bitmaps.rst alongside the
-proper bitmpas documentation. The docs file is short enough that it fits
-whole browser screen on desktop, which implies that when readers click
-"Inode Table", they will essentially see bitmaps docs.
 
-Move inode table short description.
 
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- Documentation/filesystems/ext4/bitmaps.rst     | 7 -------
- Documentation/filesystems/ext4/globals.rst     | 1 +
- Documentation/filesystems/ext4/inode_table.rst | 9 +++++++++
- 3 files changed, 10 insertions(+), 7 deletions(-)
- create mode 100644 Documentation/filesystems/ext4/inode_table.rst
+On 6/20/25 10:58, Allison Karlitskaya wrote:
+> hi Ted,
+> 
+> Sorry I didn't see this earlier.  I've been travelling.
+> 
+> On Wed, 11 Jun 2025 at 21:25, Theodore Ts'o <tytso@mit.edu> wrote:
+>> This may break the github actions for composefs-rs[1], but I'm going
+>> to assume that they can figure out a way to transition to Fuse3
+>> (hopefully by just using a newer version of Ubuntu, but I suppose it's
+>> possible that Rust bindings only exist for Fuse2, and not Fuse3).  But
+>> in any case, I don't think it makes sense to hold back fuse2fs
+>> development just for the sake of Ubuntu Focal (LTS 20.04).  And if
+>> necessary, composefs-rs can just stay back on e2fsprogs 1.47.N until
+>> they can get off of Fuse2 and/or Ubuntu 20.04.  Allison, does that
+>> sound fair to you?
+> 
+> To be honest, with a composefs-rs hat on, I don't care at all about
+> fuse support for ext2/3/4 (although I think it's cool that it exists).
+> We also use fuse in composefs-rs for unrelated reasons, but even there
+> we use the fuser rust crate which has a "pure rust" direct syscall
+> layer that no longer depends on libfuse.  Our use of e2fsprogs is
+> strictly related to building testing images in CI, and for that we
+> only use mkfs.ext4.  There's also no specific reason that we're using
+> old Ubuntu.  I probably just copy-pasted it from another project
+> without paying too much attention.
 
-diff --git a/Documentation/filesystems/ext4/bitmaps.rst b/Documentation/filesystems/ext4/bitmaps.rst
-index 91c45d86e9bb56..9d7d7b083a258c 100644
---- a/Documentation/filesystems/ext4/bitmaps.rst
-+++ b/Documentation/filesystems/ext4/bitmaps.rst
-@@ -19,10 +19,3 @@ necessarily the case that no blocks are in use -- if ``meta_bg`` is set,
- the bitmaps and group descriptor live inside the group. Unfortunately,
- ext2fs_test_block_bitmap2() will return '0' for those locations,
- which produces confusing debugfs output.
--
--Inode Table
-------------
--Inode tables are statically allocated at mkfs time.  Each block group
--descriptor points to the start of the table, and the superblock records
--the number of inodes per group.  See the section on inodes for more
--information.
-diff --git a/Documentation/filesystems/ext4/globals.rst b/Documentation/filesystems/ext4/globals.rst
-index 2264b76e873cc9..c6a6abce818a17 100644
---- a/Documentation/filesystems/ext4/globals.rst
-+++ b/Documentation/filesystems/ext4/globals.rst
-@@ -11,6 +11,7 @@ have static metadata at fixed locations.
-    super
-    group_descr
-    bitmaps
-+   inode_table
-    mmp
-    journal
-    orphan
-diff --git a/Documentation/filesystems/ext4/inode_table.rst b/Documentation/filesystems/ext4/inode_table.rst
-new file mode 100644
-index 00000000000000..f7900a52c0d5da
---- /dev/null
-+++ b/Documentation/filesystems/ext4/inode_table.rst
-@@ -0,0 +1,9 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Inode Table
-+-----------
-+
-+Inode tables are statically allocated at mkfs time.  Each block group
-+descriptor points to the start of the table, and the superblock records
-+the number of inodes per group.  See :doc:`inode documentation <inodes>`
-+for more information on inode table layout.
--- 
-An old man doll... just what I always wanted! - Clara
 
+ From libfuse point of view I'm too happy about that split into different
+libraries. Libfuse already right now misses several features because
+they were added to virtiofs, but not to libfuse. I need to find the time
+for it, but I guess it makes sense to add rust support to libfuse (and
+some parts can be entirely rewritten into rust).
+
+
+
+Thanks,
+Bernd
 
