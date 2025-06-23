@@ -1,192 +1,177 @@
-Return-Path: <linux-ext4+bounces-8606-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8604-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0121AAE3E69
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Jun 2025 13:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCA54AE3D43
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Jun 2025 12:51:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85BFB1747D0
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Jun 2025 11:47:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1040164C4F
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Jun 2025 10:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69FEC248895;
-	Mon, 23 Jun 2025 11:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F74C23A566;
+	Mon, 23 Jun 2025 10:47:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RGCfOQeJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YaW3yg9M";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RGCfOQeJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YaW3yg9M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b7lCO+rk"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85AF3248869
-	for <linux-ext4@vger.kernel.org>; Mon, 23 Jun 2025 11:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2FF0136988;
+	Mon, 23 Jun 2025 10:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750679179; cv=none; b=n20w2+DpuFepwbuvKUpAEKTf2MfMWFurgwZRdKiiPTGzqT9Eshh4COEofD3tdX/Sz/C3+WxmS7+iX/g9Fp7d2iGN7Ck9+Uv38z62tXwu4lGo7yBLrAMyzsA5d1egOqIRc/GOVNVkWrdbnIM+0DmK4JH37YlrOzF5+HlOuFH4P/o=
+	t=1750675676; cv=none; b=BhS8BEIO5QjEuBOpUlnJsal8F99bZeDOEsyAQj1gwfK/Vh6bjzwsyWAeIh1xcTKZTNltj9ZA9+Bc9f+fFYeupEGrs35YWF6skuoGLyWtGwtXG4ziPPN4/yRP8f5NHSRNHsUbzoSQpGAB0JJMq9c92VOczlijRXgytU8V9BdxvuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750679179; c=relaxed/simple;
-	bh=KVCn3pmMJ5yCE9/Zk+aqhDjnGhs1KKfsE2Frela8LbQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z0dj9jFqXZedxR5TC5KgM6FemCYuolEEuNpAMwnmqjX0foZx1am2hJEzAZS7BF/RnOA93dF2RUwFoMqoaN9PmgSx9AjAxUqjb5ImkkprRkXkIWrwxW5YpGBlqJE7J3b8ycZR6bxNqKdxZkXfrdEEqBQi7d4lpYZjMun4+j4oYcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RGCfOQeJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YaW3yg9M; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RGCfOQeJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YaW3yg9M; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9A4D91F457;
-	Mon, 23 Jun 2025 11:46:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750679169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=85n04soQnTCspGUaqCxhy29BgIf3j4nlIk46T5YAzUY=;
-	b=RGCfOQeJLcVCKlFWzY+AutjvAGUSCzMHSsj2mDWzbWFGuAQUK8Z9lqIDNxllMbX2iwMXmO
-	r0miBWkH81zwzfSaJv03zEz8MWROtaYAmZeZl19ya6bM1oWPqIf5QSzG6Ov0t5uht/5mxU
-	Mrs7X8TYW0qK9U2RWJueh4e57l0FRCk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750679169;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=85n04soQnTCspGUaqCxhy29BgIf3j4nlIk46T5YAzUY=;
-	b=YaW3yg9MuMH/odDJ2AOLcTGXzwtGwQ9tacQ/LyfLJ1OVSHcwQhg2BfFD+YDaR1EHtmgfdF
-	O4y47yPQWsoxh0Cg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750679169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=85n04soQnTCspGUaqCxhy29BgIf3j4nlIk46T5YAzUY=;
-	b=RGCfOQeJLcVCKlFWzY+AutjvAGUSCzMHSsj2mDWzbWFGuAQUK8Z9lqIDNxllMbX2iwMXmO
-	r0miBWkH81zwzfSaJv03zEz8MWROtaYAmZeZl19ya6bM1oWPqIf5QSzG6Ov0t5uht/5mxU
-	Mrs7X8TYW0qK9U2RWJueh4e57l0FRCk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750679169;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=85n04soQnTCspGUaqCxhy29BgIf3j4nlIk46T5YAzUY=;
-	b=YaW3yg9MuMH/odDJ2AOLcTGXzwtGwQ9tacQ/LyfLJ1OVSHcwQhg2BfFD+YDaR1EHtmgfdF
-	O4y47yPQWsoxh0Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 62D3813A27;
-	Mon, 23 Jun 2025 11:46:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id O55gFoE+WWgRNQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 23 Jun 2025 11:46:09 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0D650A29FA; Mon, 23 Jun 2025 09:38:53 +0200 (CEST)
-Date: Mon, 23 Jun 2025 09:38:53 +0200
-From: Jan Kara <jack@suse.cz>
+	s=arc-20240116; t=1750675676; c=relaxed/simple;
+	bh=vaI9JbaFKhhNbfL3EiT6CpfhfHc/XVt+vnuH5ChGQ2o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=g1GywFLVOx9r3kaySZWBhhv8QTTfwgSvKuTRBynfqZKl38AG0Mrdtois8Jg3SuedZjPwrgGJ759inLgGvJJl0WKaFH52O45aQjMTOH+k6sYdvpsN6SBZWwTtiVp342wNE7qydsuWSfsXGibepQLEKo9+GP4mb+bcZYnGzgWqT78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b7lCO+rk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA2F7C4CEF1;
+	Mon, 23 Jun 2025 10:47:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750675675;
+	bh=vaI9JbaFKhhNbfL3EiT6CpfhfHc/XVt+vnuH5ChGQ2o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=b7lCO+rkZfha5OkwQI2AxXKyczCj80cT2NHRXpoSBK/KFuE980LACZ966Ktf6Frhb
+	 D6JFf5l3uNV8TKf1Lso9HNIMgZYBTJy0VmCqIo5YzPD0T4E5RzsEraPeo1TERBOiBe
+	 uTcVgBIvskm1u0sYg/4+VX4rrzPYKzSRXO7u4sDOl73xVsFORCeTXWIjRa9NZtBON6
+	 CzWMgaj53gWBJddS72rFl/tzbBqMWTppxR7smR+HB+TjXjR7CgNZFdKUxw5C/CpMeO
+	 wKiwRU22qiMQK8S/pnZp/IuiwheMKF18FwVsFxs7jiYypTApeeVXa4pJCtBC5aKeL+
+	 UCx+ilau5wxnA==
+From: Christian Brauner <brauner@kernel.org>
 To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu, 
-	adilger.kernel@dilger.ca, ojaswin@linux.ibm.com, yi.zhang@huawei.com, libaokun1@huawei.com, 
-	yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v2 2/6] ext4: fix stale data if it bail out of the
- extents mapping loop
-Message-ID: <cqhltjvxmmbv4fafoc6gb4lisd63osqw44njmxjvmpgqzkqn3g@ncworvfx7iys>
-References: <20250611111625.1668035-1-yi.zhang@huaweicloud.com>
- <20250611111625.1668035-3-yi.zhang@huaweicloud.com>
- <m5drn6xauyaksmui7b3vpua24ttgmjnwsi3sgavpelxlcwivsw@6bpmobqvpw7f>
- <14966764-5bbc-48a9-9d56-841255cfe3c6@huaweicloud.com>
- <ygdwliycwt52ngkl2o4lia3hzyug3zzvc2hdacbdi3lvbzne7l@l7ub66fvqym6>
- <49596299-8cd5-4b43-ba32-cf2b404236a7@huaweicloud.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	hch@lst.de,
+	tytso@mit.edu,
+	djwong@kernel.org,
+	john.g.garry@oracle.com,
+	bmarzins@redhat.com,
+	chaitanyak@nvidia.com,
+	shinichiro.kawasaki@wdc.com,
+	martin.petersen@oracle.com,
+	yi.zhang@huawei.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com,
+	linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] fallocate: introduce FALLOC_FL_WRITE_ZEROES flag
+Date: Mon, 23 Jun 2025 12:46:54 +0200
+Message-ID: <20250623-woanders-allabendlich-f87ae2d9c704@brauner>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250619111806.3546162-1-yi.zhang@huaweicloud.com>
+References: <20250619111806.3546162-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <49596299-8cd5-4b43-ba32-cf2b404236a7@huaweicloud.com>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4373; i=brauner@kernel.org; h=from:subject:message-id; bh=OinsHwHlIaW6oGbcffOJfdJKYbQ2uEC1ci1r6m7GeH0=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWREGix/nvp5ld7fB65PPklO87v6O/f5D4/KcwUn71wJ5 7Vb5xff01HKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRD18YGR4VrfgeVsV69OJK J4uDihukLdR8nao/PFXYPlvhrhG3bQojw4QTkzVm7196Yef0s6x+i0yz3+/Xk/fbUVW0+pff25N fPDgB
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Sat 21-06-25 12:42:11, Zhang Yi wrote:
-> On 2025/6/20 23:21, Jan Kara wrote:
-> > I suspect you thought that the failure to extend transaction in the middle
-> > of order 0 folio should not happen because you reserve credits for full
-> > page worth of writeback? But those credits could be exhaused by the time we
-> > get to mapping third folio because mpage_map_one_extent() only ensures
-> > there are credits for mapping one extent.
+On Thu, 19 Jun 2025 19:17:57 +0800, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
 > 
-> Ooops, you are right. Sorry, it was my mistake.
+> Changes since v1:
+>  - Rebase codes on 6.16-rc2.
+>  - Use max_{hw|user}_wzeroes_unmap_sectors queue limits instead of
+>    BLK_FEAT_WRITE_ZEROES_UNMAP feature to represent the status of the
+>    unmap write zeroes operation as Christoph and Darrick suggested. This
+>    redoes the first 5 patches, so remove all the reviewed-by tags,
+>    please review them again.
+>  - Simplify the description of FALLOC_FL_WRITE_ZEROES in patch 06 as
+>    Darrick suggested.
+>  - Revise the check order of FALLOC_FL_WRITE_ZEROES in patch 08 as
+>    Christoph suggested.
+> Changes since RFC v4:
+>  - Rebase codes on 6.16-rc1.
+>  - Add a new queue_limit flag, and change the write_zeroes_unmap sysfs
+>    interface to RW mode. User can disable the unmap write zeroes
+>    operation by writing '0' to it when the operation is slow.
+>  - Modify the documentation of write_zeroes_unmap sysfs interface as
+>    Martin suggested.
+>  - Remove the statx interface.
+>  - Make the bdev and ext4 don't allow to submit FALLOC_FL_WRITE_ZEROES
+>    if the block device does not enable the unmap write zeroes operation,
+>    it should return -EOPNOTSUPP.
+> Changes sicne RFC v3:
+>  - Rebase codes on 6.15-rc2.
+>  - Add a note in patch 1 to indicate that the unmap write zeros command
+>    is not always guaranteed as Christoph suggested.
+>  - Rename bdev_unmap_write_zeroes() helper and move it to patch 1 as
+>    Christoph suggested.
+>  - Introduce a new statx attribute flag STATX_ATTR_WRITE_ZEROES_UNMAP as
+>    Christoph and Christian suggested.
+>  - Exchange the order of the two patches that modified
+>    blkdev_fallocate() as Christoph suggested.
+> Changes since RFC v2:
+>  - Rebase codes on next-20250314.
+>  - Add support for nvme multipath.
+>  - Add support for NVMeT with block device backing.
+>  - Clear FALLOC_FL_WRITE_ZEROES if dm clear
+>    limits->max_write_zeroes_sectors.
+>  - Complement the counterpart userspace tools(util-linux and xfs_io)
+>    and tests(blktests and xfstests), please see below for details.
+> Changes since RFC v1:
+>  - Switch to add a new write zeroes operation, FALLOC_FL_WRITE_ZEROES,
+>    in fallocate, instead of just adding a supported flag to
+>    FALLOC_FL_ZERO_RANGE.
+>  - Introduce a new flag BLK_FEAT_WRITE_ZEROES_UNMAP to the block
+>    device's queue limit features, and implement it on SCSI sd driver,
+>    NVMe SSD driver and dm driver.
+>  - Implement FALLOC_FL_WRITE_ZEROES on both the ext4 filesystem and
+>    block device (bdev).
 > 
-> > 
-> > And I think reserving credits for just one extent is fine even from the
-> > beginning (as I wrote in my comment to patch 4). We just need to handle
-> > this partial case 
-> 
-> Yeah.
-> 
-> > which should be possible by just leaving
-> > mpd->first_page untouched and leave unlocking to
-> > mpage_release_unused_pages(). 
-> 
-> I was going to use this solution, but it breaks the semantics of the
-> mpage_release_unused_pages() and trigger BUG_ON(folio_test_writeback(folio))
-> in this function. I don't want to drop this BUG_ON since I think it's
-> somewhat useful.
+> [...]
 
-Oh, right. Well, we could modify the BUG_ON to:
+If needed, the branch can be declared stable and thus be used as base
+for other work.
 
-	/*
-	 * first_page folio can be under writeback if we need to restart
-         * transaction to map more
-	 */
-	BUG_ON((invalidate || folio->inode > mpd->first_page) && folio_test_writeback(folio));
+---
 
-> > But I can be missing some effects, the writeback code is really complex...
-> 
-> Indeed, I was confused by this code for a long time. Thank you a lot for
-> patiently correcting my mistakes in my patch.
+Applied to the vfs-6.17.fallocate branch of the vfs/vfs.git tree.
+Patches in the vfs-6.17.fallocate branch should appear in linux-next soon.
 
-Thank you for taking time to properly fix these issues :)
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-> > BTW long-term the code may be easier to follow if we replace
-> > mpd->first_page and mpd->next_page with logical block based or byte based
-> > indexing. Now when we have large order folios, page is not that important
-> > concept for writeback anymore.
-> 
-> I suppose we should do this conversion now.
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-Yes or this... I guess it would be more obvious what's going on this way.
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-6.17.fallocate
+
+[1/9] block: introduce max_{hw|user}_wzeroes_unmap_sectors to queue limits
+      https://git.kernel.org/vfs/vfs/c/2695a9b086fd
+[2/9] nvme: set max_hw_wzeroes_unmap_sectors if device supports DEAC bit
+      https://git.kernel.org/vfs/vfs/c/bf07c1180194
+[3/9] nvmet: set WZDS and DRB if device enables unmap write zeroes operation
+      https://git.kernel.org/vfs/vfs/c/a6c7ab5adcba
+[4/9] scsi: sd: set max_hw_wzeroes_unmap_sectors if device supports SD_ZERO_*_UNMAP
+      https://git.kernel.org/vfs/vfs/c/92372ed1cc88
+[5/9] dm: clear unmap write zeroes limits when disabling write zeroes
+      https://git.kernel.org/vfs/vfs/c/e383d550e716
+[6/9] fs: introduce FALLOC_FL_WRITE_ZEROES to fallocate
+      https://git.kernel.org/vfs/vfs/c/1ed1b5df86ec
+[7/9] block: factor out common part in blkdev_fallocate()
+      https://git.kernel.org/vfs/vfs/c/96433508c8c0
+[8/9] block: add FALLOC_FL_WRITE_ZEROES support
+      https://git.kernel.org/vfs/vfs/c/2b4e5f9b3eb9
+[9/9] ext4: add FALLOC_FL_WRITE_ZEROES support
+      https://git.kernel.org/vfs/vfs/c/51954e469396
 
