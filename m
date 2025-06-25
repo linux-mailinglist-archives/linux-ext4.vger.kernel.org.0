@@ -1,89 +1,111 @@
-Return-Path: <linux-ext4+bounces-8626-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8627-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D7D7AE7798
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 08:56:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3256AAE796D
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 10:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D5857AED63
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 06:55:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC04E7A8D82
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 08:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 570091F4CAF;
-	Wed, 25 Jun 2025 06:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C35020C476;
+	Wed, 25 Jun 2025 08:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CgIypNKh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iH1n489F"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CD01DE4D2;
-	Wed, 25 Jun 2025 06:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CF917A2F8;
+	Wed, 25 Jun 2025 08:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750834592; cv=none; b=qxdf7AW3Yy9CSMOpS5bkx179P3MGbkbWnNaF67mMDFPWYnBwnyPiLQmLk2J1X/v4qb5U7xFeYnSKOHu9mQ7qGM/feRPvT85Nj2eDEsOVVJxbC1bIiYL47p9/lsOj4GLaDL33k4c944CpwNQwHeyPrbcToDyfnqmpykD7wgb4hAs=
+	t=1750838669; cv=none; b=Rj0+ia9byQxn2z5D8H3PbMEpueiECNGUrtFklZeksxGTEdW0GZkJeiGpWr+RxZ30sjMp6HPvM0lyh4IVybmbk8p4M5Agmo5bHvtChN2TA++j3uA0RnVTCvOv5FXJ9dLIC0Qw4sbZtOw7PKlE3TjGAOW/wXBaJPZvp03403ZAUWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750834592; c=relaxed/simple;
-	bh=Uh1WwnNvimTsWyoQ0hTnqc/W/jE8I7xFNWmTFet+yG8=;
+	s=arc-20240116; t=1750838669; c=relaxed/simple;
+	bh=33Db58Zgs1Us82FoEGQ+AOZm9l1WltZ90kNW2vjvy6c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qz6lH2Mz0JT88inTB/aLTH33Y0bjN3D3ZdsMcrjvZplbDxecshBQx5QewMyUUvoW+rCK7s740W0R0PZK4KoGXJWzyKJ3MyvHK5Y9/mAmSa0eEKQK/qLgbLuxaM+kc0Ga5LgI06o2chs6AxYODBhBI9UKm9oc7zFbvg6UH9senwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=CgIypNKh; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Uh1WwnNvimTsWyoQ0hTnqc/W/jE8I7xFNWmTFet+yG8=; b=CgIypNKhmQ3029o1RKULsD2Xwj
-	vR4Dylx++/bDN9hEqSwPvw/3ZAfijYzkWi80sgOWXNcBE7uDwW/nADhc3mj691cB+/aauczS0ueB1
-	W1+4ny5XmQr4weZuy0cERCCzvlxXH7Ezo683DTg3ESOh87r42tGjM354mfQfI5d41GxF4fgoRQ4Pm
-	LyUNeB4Hq7HT2iCqF9DYpXYKF2aS9MwtV0XMecqbBn51oEpybU8HvkCxJ+dp4WtUnA8iYlsJySN+Q
-	YaRTV1EMoqBPLzBiT044IAGB6t7McuLAwZUq0PHXYqREJiEZmCJoBFR4uydwPbtL5TsQvkp98FRm9
-	Jjlg8naA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUK3X-00000007k2q-0N1j;
-	Wed, 25 Jun 2025 06:56:27 +0000
-Date: Tue, 24 Jun 2025 23:56:27 -0700
-From: "hch@infradead.org" <hch@infradead.org>
-To: =?utf-8?B?6ZmI5rab5rab?= Taotao Chen <chentaotao@didiglobal.com>
-Cc: "tytso@mit.edu" <tytso@mit.edu>,
-	"hch@infradead.org" <hch@infradead.org>,
-	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-	"willy@infradead.org" <willy@infradead.org>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-	"rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
-	"tursulin@ursulin.net" <tursulin@ursulin.net>,
-	"airlied@gmail.com" <airlied@gmail.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=jS5WfnInt9dke/uC59OgncX13QYCuAVzQ2qrLyS9c6mgrwxQ6mNZmkW9dbox6UtaJZjGObSL5lNcwYaIQn5cQAycRPsZB4gZWOo1+CWF7KQaXqc9q4trWPdOZJIFvzRtwgKx/gKlLVqkq/Bzv8dsKomT73Q6I68fSHucxFCK1j0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iH1n489F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24A09C4CEEA;
+	Wed, 25 Jun 2025 08:04:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750838669;
+	bh=33Db58Zgs1Us82FoEGQ+AOZm9l1WltZ90kNW2vjvy6c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iH1n489FRT/VUDCzbZstkBsRFo5c8F/QxvDELXrmnB0il6WHte0vIcyu5rPE+DJtw
+	 Cxj+2D7s/QNd1hV2OSvnvUCYXs9f+HD2SqK0g+PiI1SvSgeqDm9nok2idfvm+VXf06
+	 4OdwhvFB5kpZfqgJ+GdVYC2Ml0cj3Q56rUKQw4+RYwzv1PVFnVnNCqPmZRn6zEJ4My
+	 P7N7u+Xh82fg35P2Nz7WEIWKCtFSLfnHs513dkhYS7po6+vuc+GxIDdMOYuSQg1QQL
+	 OCxmz9soe8yvYONFgmprZloT7OqCjIdaLjJriPpYTxtdDX02YuE5PBV9CLKzDU5KrF
+	 x8SDdin5EAkhg==
+Date: Wed, 25 Jun 2025 10:04:22 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: =?utf-8?B?6ZmI5rab5rab?= Taotao Chen <chentaotao@didiglobal.com>, 
+	"tytso@mit.edu" <tytso@mit.edu>, "hch@infradead.org" <hch@infradead.org>, 
+	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>, "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>, 
+	"rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>, "tursulin@ursulin.net" <tursulin@ursulin.net>, 
+	"airlied@gmail.com" <airlied@gmail.com>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>, "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, 
+	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, 
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
 	"chentao325@qq.com" <chentao325@qq.com>
-Subject: Re: [PATCH v2 0/5] fs: refactor write_begin/write_end and add ext4
- IOCB_DONTCACHE support
-Message-ID: <aFudm1ndfN-kTSOx@infradead.org>
+Subject: Re: [PATCH v2 3/5] fs: change write_begin/write_end interface to
+ take struct kiocb *
+Message-ID: <20250625-erstklassig-stilvoll-273282f0dd1b@brauner>
 References: <20250624121149.2927-1-chentaotao@didiglobal.com>
+ <20250624121149.2927-4-chentaotao@didiglobal.com>
+ <aFqfZ9hiiW4qnYtO@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250624121149.2927-1-chentaotao@didiglobal.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aFqfZ9hiiW4qnYtO@casper.infradead.org>
 
-Thanks, I really like the i915 work to stop the shmem abuse.
+On Tue, Jun 24, 2025 at 01:51:51PM +0100, Matthew Wilcox wrote:
+> On Tue, Jun 24, 2025 at 12:12:08PM +0000, 陈涛涛 Taotao Chen wrote:
+> > -static int blkdev_write_end(struct file *file, struct address_space *mapping,
+> > +static int blkdev_write_end(struct kiocb *iocb, struct address_space *mapping,
+> >  		loff_t pos, unsigned len, unsigned copied, struct folio *folio,
+> >  		void *fsdata)
+> >  {
+> >  	int ret;
+> > -	ret = block_write_end(file, mapping, pos, len, copied, folio, fsdata);
+> > +	ret = block_write_end(iocb->ki_filp, mapping, pos, len, copied, folio, fsdata);
+> 
+> ... huh.  I thought block_write_end() had to have the same prototype as
+> ->write_end because it was used by some filesystems as the ->write_end.
+> I see that's not true (any more?).  Maybe I was confused with
+> generic_write_end().  Anyway, block_write_end() doesn't use it's file
+> argument, and never will, so we can just remove it.
+> 
+> > +++ b/include/linux/fs.h
+> > @@ -446,10 +446,10 @@ struct address_space_operations {
+> >  
+> >  	void (*readahead)(struct readahead_control *);
+> >  
+> > -	int (*write_begin)(struct file *, struct address_space *mapping,
+> > +	int (*write_begin)(struct kiocb *, struct address_space *mapping,
+> >  				loff_t pos, unsigned len,
+> >  				struct folio **foliop, void **fsdata);
+> > -	int (*write_end)(struct file *, struct address_space *mapping,
+> > +	int (*write_end)(struct kiocb *, struct address_space *mapping,
+> >  				loff_t pos, unsigned len, unsigned copied,
+> >  				struct folio *folio, void *fsdata);
+> 
+> Should we make this a 'const struct kiocb *'?  I don't see a need for
+> filesystems to be allowed to modify the kiocb in future, but perhaps
+> other people have different opinions.
 
-I still hate it that we just change the write_begin/end ops while still
-in the address_space ops vs passing explicit callbacks, because that
-means we'll some other version of that abuse back sooner or later :(
-
+Given I picked up Willy's change I'll wait for a resubmit of this series
+on top of vfs-6.17.misc unless I hear otherwise?
 
