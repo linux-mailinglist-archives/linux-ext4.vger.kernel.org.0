@@ -1,59 +1,74 @@
-Return-Path: <linux-ext4+bounces-8625-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8626-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79584AE7730
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 08:35:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D7D7AE7798
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 08:56:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05C8A5A6C56
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 06:34:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D5857AED63
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 06:55:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07DFE1F09A1;
-	Wed, 25 Jun 2025 06:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 570091F4CAF;
+	Wed, 25 Jun 2025 06:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bgakoUfA"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CgIypNKh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839C718A6C4;
-	Wed, 25 Jun 2025 06:33:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CD01DE4D2;
+	Wed, 25 Jun 2025 06:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750833207; cv=none; b=q0Mtvqg49RjpPKy1CdxWbcdX9NfASH7u8UH4hkzttNpRqH1NpytXWJ37LyN9BePeb2N+XJ2Kgwq28Fc1plGTKaZfLLkt9RTNDJElQq0q8GaUDO6XKA3jrYgakE/lSMV8kXAN8JKiVTUQl1u+fkK4Fmue0p51KQQaK/ihAEpRz9w=
+	t=1750834592; cv=none; b=qxdf7AW3Yy9CSMOpS5bkx179P3MGbkbWnNaF67mMDFPWYnBwnyPiLQmLk2J1X/v4qb5U7xFeYnSKOHu9mQ7qGM/feRPvT85Nj2eDEsOVVJxbC1bIiYL47p9/lsOj4GLaDL33k4c944CpwNQwHeyPrbcToDyfnqmpykD7wgb4hAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750833207; c=relaxed/simple;
-	bh=KvBZdCVe3bjcds3toNzSaotNrJRp/h1SfSaoHVQtlow=;
+	s=arc-20240116; t=1750834592; c=relaxed/simple;
+	bh=Uh1WwnNvimTsWyoQ0hTnqc/W/jE8I7xFNWmTFet+yG8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TrXVgB4LgvkYBGSgSYUjJp/+4VJK5bEka0fU3lDXN8fMWcLIyhiN45JWFTwI+Is1TCVmXmcg/DwaokWmNkiRaQ8mCAylvk3vKgxgzyjdzKisS0se4DCq9U2ujylgThLVk7jA+G6iVvkswxPYKgA4TnLC2I4e2Wq3vnP3BZWv/7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bgakoUfA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7B4DC4CEEA;
-	Wed, 25 Jun 2025 06:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750833207;
-	bh=KvBZdCVe3bjcds3toNzSaotNrJRp/h1SfSaoHVQtlow=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bgakoUfAtI3aZ6TL8fY22KKltCf5IxNhnzJ2oiyuuI/GEIHZVXnwJ10tWdkSvPitL
-	 /7bgjo9d0xQe1/8gpM9TBWDxFi/Ea0rEL81mSYagOjUKrHIXs7lqZdbBqzmHFzyv8u
-	 ZWO+dWfZgHmJ/TMTmP0277ODQYtrlhMqpajvswJ8zCCo09C9Bj7uSHR7SGVz+9SwGl
-	 KSwIFk6u+iudkaHqeTJb2dbajWY0742z1b6HWGCzoj5/myPz3cCTRLT7guhEKxa1Ue
-	 qWBczEoXOLdeLmUv9Qp8JOrF2q6gevGPPGRKDXQ/LfFR2ZmiDmtFXt9weQocqTrCp1
-	 Hz6xQ9sygvLRQ==
-Date: Tue, 24 Jun 2025 23:32:52 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Simon Richter <Simon.Richter@hogyros.de>
-Cc: linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	ceph-devel@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
-Message-ID: <20250625063252.GD8962@sol>
-References: <20250611205859.80819-1-ebiggers@kernel.org>
- <7f63be76-289b-4a99-b802-afd72e0512b8@hogyros.de>
- <20250612005914.GA546455@google.com>
- <20250612062521.GA1838@sol>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qz6lH2Mz0JT88inTB/aLTH33Y0bjN3D3ZdsMcrjvZplbDxecshBQx5QewMyUUvoW+rCK7s740W0R0PZK4KoGXJWzyKJ3MyvHK5Y9/mAmSa0eEKQK/qLgbLuxaM+kc0Ga5LgI06o2chs6AxYODBhBI9UKm9oc7zFbvg6UH9senwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=CgIypNKh; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Uh1WwnNvimTsWyoQ0hTnqc/W/jE8I7xFNWmTFet+yG8=; b=CgIypNKhmQ3029o1RKULsD2Xwj
+	vR4Dylx++/bDN9hEqSwPvw/3ZAfijYzkWi80sgOWXNcBE7uDwW/nADhc3mj691cB+/aauczS0ueB1
+	W1+4ny5XmQr4weZuy0cERCCzvlxXH7Ezo683DTg3ESOh87r42tGjM354mfQfI5d41GxF4fgoRQ4Pm
+	LyUNeB4Hq7HT2iCqF9DYpXYKF2aS9MwtV0XMecqbBn51oEpybU8HvkCxJ+dp4WtUnA8iYlsJySN+Q
+	YaRTV1EMoqBPLzBiT044IAGB6t7McuLAwZUq0PHXYqREJiEZmCJoBFR4uydwPbtL5TsQvkp98FRm9
+	Jjlg8naA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uUK3X-00000007k2q-0N1j;
+	Wed, 25 Jun 2025 06:56:27 +0000
+Date: Tue, 24 Jun 2025 23:56:27 -0700
+From: "hch@infradead.org" <hch@infradead.org>
+To: =?utf-8?B?6ZmI5rab5rab?= Taotao Chen <chentaotao@didiglobal.com>
+Cc: "tytso@mit.edu" <tytso@mit.edu>,
+	"hch@infradead.org" <hch@infradead.org>,
+	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+	"willy@infradead.org" <willy@infradead.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+	"rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
+	"tursulin@ursulin.net" <tursulin@ursulin.net>,
+	"airlied@gmail.com" <airlied@gmail.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"chentao325@qq.com" <chentao325@qq.com>
+Subject: Re: [PATCH v2 0/5] fs: refactor write_begin/write_end and add ext4
+ IOCB_DONTCACHE support
+Message-ID: <aFudm1ndfN-kTSOx@infradead.org>
+References: <20250624121149.2927-1-chentaotao@didiglobal.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -62,70 +77,13 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250612062521.GA1838@sol>
+In-Reply-To: <20250624121149.2927-1-chentaotao@didiglobal.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Wed, Jun 11, 2025 at 11:25:21PM -0700, Eric Biggers wrote:
-> On Thu, Jun 12, 2025 at 12:59:14AM +0000, Eric Biggers wrote:
-> > On Thu, Jun 12, 2025 at 09:21:26AM +0900, Simon Richter wrote:
-> > > Hi,
-> > > 
-> > > On 6/12/25 05:58, Eric Biggers wrote:
-> > > 
-> > > > But
-> > > > otherwise this style of hardware offload is basically obsolete and has
-> > > > been superseded by hardware-accelerated crypto instructions directly on
-> > > > the CPU as well as inline storage encryption (UFS/eMMC).
-> > > 
-> > > For desktop, yes, but embedded still has quite a few of these, for example
-> > > the STM32 crypto offload engine
-> 
-> By the way, I noticed you specifically mentioned STM32.  I'm not sure if you
-> looked at the links I had in my commit message, but one of them
-> (https://github.com/google/fscryptctl/issues/32) was actually for the STM32
-> driver being broken and returning the wrong results, which broke filename
-> encryption.  The user fixed the issue by disabling the STM32 driver, and they
-> seemed okay with that.
-> 
-> That doesn't sound like something useful, IMO.  It sounds more like something
-> actively harmful to users.
-> 
-> Here's another one I forgot to mention:
-> https://github.com/google/fscryptctl/issues/9
-> 
-> I get blamed for these issues, because it's fscrypt that breaks.
+Thanks, I really like the i915 work to stop the shmem abuse.
 
-Since two people were pushing the STM32 crypto engine in this thread:
+I still hate it that we just change the write_begin/end ops while still
+in the address_space ops vs passing explicit callbacks, because that
+means we'll some other version of that abuse back sooner or later :(
 
-I measured decryption throughput on 4 KiB messages on an STM32MP157F-DK2.  This
-is an embedded evaluation board that includes an STM32 crypto engine and has an
-800 MHz Cortex-A7 processor.  Cortex-A7 doesn't have AES instructions:
-
-    AES-128-CBC-ESSIV:
-        essiv(stm32-cbc-aes,sha256-arm):
-            3.1 MB/s
-        essiv(cbc-aes-neonbs,sha256-arm): 
-            15.5 MB/s
-
-    AES-256-XTS:
-        xts(stm32-ecb-aes):
-            3.1 MB/s
-        xts-aes-neonbs:
-            11.0 MB/s
-            
-    Adiantum:
-        adiantum(xchacha12-arm,aes-arm,nhpoly1305-neon):
-            53.1 MB/s
-
-That was the synchronous throughput.  However, submitting multiple requests
-asynchronously (which again, fscrypt doesn't actually do) barely helps.
-Apparently the STM32 crypto engine has only one hardware queue.
-
-I already strongly suspected that these non-inline crypto engines aren't worth
-using.  But I didn't realize they are quite this bad.  Even with AES on a
-Cortex-A7 CPU that lacks AES instructions, the CPU is much faster!
-
-But of course Adiantum is even faster, as it was specifically designed for CPUs
-that don't have AES instructions.
-
-- Eric
 
