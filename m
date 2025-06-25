@@ -1,56 +1,55 @@
-Return-Path: <linux-ext4+bounces-8635-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8636-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35259AE8301
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 14:45:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 972A2AE8435
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 15:19:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3013C173199
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 12:45:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E74FE5A657E
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Jun 2025 13:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CED25FA2D;
-	Wed, 25 Jun 2025 12:45:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE31261573;
+	Wed, 25 Jun 2025 13:16:42 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FEEB2609E1
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Jun 2025 12:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB6425B697
+	for <linux-ext4@vger.kernel.org>; Wed, 25 Jun 2025 13:16:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750855512; cv=none; b=OdC7+a07L0qfyMToEQhZz0izKoK4BJq/Alr06bogtONvd4LuIbOkXTtQT1o++Tgdm/y2PQrFPRbcO69BoPkWS6xNGhIBSyZIjSx/GnbopNCPbrIYj4+YyXTvapV03N7d2e6+rEucgCTT/oRrqL/gpw2EL42JdWg6KMhplEXq/1I=
+	t=1750857402; cv=none; b=Fdi6D95lnQOuW5PDzrpU4VhSpT/IUTCs5C8zPntsKNLPiYPjaviVPlvo1cREQG8yzX/5LDqkx6WybxAqweejxRezcIKdsCw0r8cKu8DzI0CpNrdReFV/1u2GTOAD4GUY2a6gsosAh+SzZazqo5DWXSMtrW0GCLCg2JMOeCDmiuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750855512; c=relaxed/simple;
-	bh=U6MI2PdJBFWRH5pUrWIaLIFI8PrLyw/SMKOxte+tblQ=;
+	s=arc-20240116; t=1750857402; c=relaxed/simple;
+	bh=4CpkSQhruvCRcQ20qi8I7WhktLgeu8TyxZ6Xjev41mw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U1cggoPNKcWKys/jO71K4gL3i5ti0NvXpoXGer6zYuoNmj11lx0a1o5VUqCsVeiII6LapooFHjwmZeXQ5Vx41yyWPcdcbXOjSVkZDGONiTgr5TNrc+m/QKoXqKr551CcHTJVE2CyDEPVPAwO65gNFibXlzMygJlheNaLd3GAajI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=MwnF0+d4/wpGIlo4ceewGKbUY/p0yTTsM9EJ3Mc6Yia8Upv7xESNqDCze2lf+rmXg0sIWcxXYAMouNE0QhWjeqpKFgvaDCPIUwWi4JfUulYXIuSIdNvz7qp60fQzsalYvxrJOuubRJI8D3QQgF+sWA9/IsxGIyg8ki2dY6lVCxk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-82-219.bstnma.fios.verizon.net [173.48.82.219])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 55PCijuO005260
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 55PDFkYM012486
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 25 Jun 2025 08:44:46 -0400
+	Wed, 25 Jun 2025 09:15:46 -0400
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 067412E00D5; Wed, 25 Jun 2025 08:44:45 -0400 (EDT)
-Date: Wed, 25 Jun 2025 08:44:45 -0400
+	id DC9672E00D5; Wed, 25 Jun 2025 09:15:45 -0400 (EDT)
+Date: Wed, 25 Jun 2025 09:15:45 -0400
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Simon Richter <Simon.Richter@hogyros.de>, linux-fscrypt@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
-Message-ID: <20250625124445.GC28249@mit.edu>
-References: <20250611205859.80819-1-ebiggers@kernel.org>
- <7f63be76-289b-4a99-b802-afd72e0512b8@hogyros.de>
- <20250612005914.GA546455@google.com>
- <20250612062521.GA1838@sol>
- <20250625063252.GD8962@sol>
+To: "Lai, Yi" <yi1.lai@linux.intel.com>
+Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        willy@infradead.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, libaokun1@huawei.com, yukuai3@huawei.com,
+        yangerkun@huawei.com, yi1.lai@intel.com
+Subject: Re: [PATCH v2 8/8] ext4: enable large folio for regular file
+Message-ID: <20250625131545.GD28249@mit.edu>
+References: <20250512063319.3539411-1-yi.zhang@huaweicloud.com>
+ <20250512063319.3539411-9-yi.zhang@huaweicloud.com>
+ <aFuv+bNk4LyqaSNU@ly-workstation>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,28 +58,27 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250625063252.GD8962@sol>
+In-Reply-To: <aFuv+bNk4LyqaSNU@ly-workstation>
 
-On Tue, Jun 24, 2025 at 11:32:52PM -0700, Eric Biggers wrote:
-> 
-> That was the synchronous throughput.  However, submitting multiple requests
-> asynchronously (which again, fscrypt doesn't actually do) barely helps.
-> Apparently the STM32 crypto engine has only one hardware queue.
-> 
-> I already strongly suspected that these non-inline crypto engines
-> aren't worth using.  But I didn't realize they are quite this bad.
-> Even with AES on a Cortex-A7 CPU that lacks AES instructions, the
-> CPU is much faster!
+It looks like this failure requires using madvise() with MADV_HWPOISON
+(which requires root) and MADV_PAGEOUT, and the stack trace is in deep
+in the an mm codepath:
 
-I wonder if the primary design goal of the STM32 crypto engine is that
-it might reduce power consumption --- after all, one of the primary
-benchmarketing metrics that vendors care about is "hours of You Tube
-watch time" --- and decryptoing a video stream doesn't require high
-performance.
+   madvise_cold_or_pageout_pte_range+0x1cac/0x2800
+      reclaim_pages+0x393/0x560
+         reclaim_folio_list+0xe2/0x4c0
+            shrink_folio_list+0x44f/0x3d90
+                unmap_poisoned_folio+0x130/0x500
+                    try_to_unmap+0x12f/0x140
+                       rmap_walk+0x16b/0x1f0
+		       ...
 
-Given that the typical benchmarketing number which handset vendors
-tend to care about is SQLite transactions per second, maybe they
-wouldn't be all that eager to use the crypto engine.  :-)
+The bisected commit is the one which enables using large folios, so
+while it's possible that this due to ext4 doing something not quite
+right when using large folios, it's also posible that this might be a
+bug in the folio/mm code paths.
 
-    	     	      	      	     	      - Ted
+Does this reproduce on other file systems, such as XFS?
+
+     	  	       	     	  	   	- Ted
 
