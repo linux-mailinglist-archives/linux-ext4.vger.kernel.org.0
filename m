@@ -1,50 +1,50 @@
-Return-Path: <linux-ext4+bounces-8675-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8676-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB418AEBC88
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 17:54:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6955FAEBE0E
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 19:03:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CC0E3B15D3
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 15:53:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDB2A178641
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 17:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 515FF2EA480;
-	Fri, 27 Jun 2025 15:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130742EA757;
+	Fri, 27 Jun 2025 17:03:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Z0ceVbAZ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lLKFhWE7"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8427623B61F;
-	Fri, 27 Jun 2025 15:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7292EA162;
+	Fri, 27 Jun 2025 17:03:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751039546; cv=none; b=folD3kd1+eNGMSsZz+jhDRf+p5V8Xv73tNONYwk5+u5Bc5amWrdtimE1+hls0ImydF9BZYxAKzChjVCVJN/XO1IRNANNuSDj149LW6FfHQBBZqA0w/nvyB2okjBFCC6dHIVO3ONfmHnpqbkSwLReWOhx3sdISwVUExu9CGrKxVs=
+	t=1751043801; cv=none; b=NeqikWzcwaAqID9vqqUSCMRl7hPYdJID+S+8F+fTJHY5/vXJ/AxdxBMhle2uMcTtWIUbNNIxnlKTUVEpeP3rQwSmPsIbg+tDp6UjIq+LRCZYQem1wzZOac9IKSBretYgLdt97LvVAgcgyi/9YQefIrCTqxTFVrokp2ixzVSkHJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751039546; c=relaxed/simple;
-	bh=d40eK7td5Xa1FR52S3Q2YnEJMCDbNmnB5/xe1+8KVxw=;
+	s=arc-20240116; t=1751043801; c=relaxed/simple;
+	bh=6iU4sKtqulwtJbHdtTjfBW2WtHCU3a8mQLkMyO716dQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W/dCTWmNR0A1z+ekx7OLIwpGWjlE4mAzVryI7xqXNKN5jmElNUnJM8VOBoh0F21KmtW1c0azrAUw5WEyHYxwZKgzr8BKcYnm6e9HmC2WA/Nigiil3VwL/+FnpeXJfpKRCLhq6KOPosrraEoMkSKxyepdIVUuwDUqZypU7obqtKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Z0ceVbAZ; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=uAj1DxKr/1aSg59b6nOevskiOwY1cu23NU98E51YUyvIaKZgR619ChKkPRPzefBUi/4rNWo05ZhUO9kuvJDPwiB7QDxFXMsStTBCjl6giP/E4Bui+Cw3GdHXXmTbQQfeA1rLFFMHi6cQaym583rk7tF1DO8VrKSbZlG8Ldg/Gxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=lLKFhWE7; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=Z+c/vMVBxvVliRM5Ba7u5qi1BNZCmTnatXuCT2DSf3s=; b=Z0ceVbAZOy3oDx3Jzp0zWCkcEC
-	5+/Ux5Woml8GdpSfkIhVTxnoD/1Ma1995s/H+9SLhMV2WFdH9AnA9VE6AMi5lmgAUc/GeLJBH8dv8
-	E+M91T3jrx+/xDUjfEcpMkKP2yciCidFInvaEizsorLfYjYs4vSQqrO5c8ROi7216sQU8i31mcYAN
-	tujVt5eFpXiIQNYSJqIuB4VKAotXXyXWuUkTHDWgreQsgQoRPqOcBBnTBM8tXQMMJZ9gn6FY62Phu
-	Xf2fu73K0hPBw9c5br2aSuebLqlrVwLN+UclnVhjVRg3/Iu1SkfzhW56ODmF5CZeO5B9qaQwK9fRF
-	+21HmNKA==;
+	bh=BX8yP699mQd1hqQWYrl2/cTWYSKTaQhOnRx2XR4O0nI=; b=lLKFhWE7lu96o6X4WT3tH4Sf1O
+	oFn+aopDUWdGLcdZZzN4QfYf4S6XDwKRYHArQn5ap3m58Et87mT4Ayt6ydcfEgKSJk9PEFzYHQGW/
+	JMPMcvwErhnhXiakaH6uPHmYcq+T3F3YwECBJHYqoUiNPo9ymCBd1Ib/d9+WGAmCO0GI/fl3FtOmv
+	+toLcyd8ZL6SW5pWju0H9RRNwMPb2ngciRiSRQuHslvf32Vy10QFJC1mkVGwPE+K86H2nT+LgoeKL
+	1nQzjkHMiGrUvnzfn32qPmJoVD+pIIBdxrgVJB1unlnK8fQDHJ9XR/SU0LsqA909wugZbwr1k3AbM
+	5BCG5tNw==;
 Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uVBN9-0000000EQf9-17Tf;
-	Fri, 27 Jun 2025 15:52:15 +0000
-Date: Fri, 27 Jun 2025 16:52:15 +0100
+	id 1uVCTl-0000000EZN4-26cY;
+	Fri, 27 Jun 2025 17:03:09 +0000
+Date: Fri, 27 Jun 2025 18:03:09 +0100
 From: Matthew Wilcox <willy@infradead.org>
 To: =?utf-8?B?6ZmI5rab5rab?= Taotao Chen <chentaotao@didiglobal.com>
 Cc: "tytso@mit.edu" <tytso@mit.edu>,
@@ -65,11 +65,10 @@ Cc: "tytso@mit.edu" <tytso@mit.edu>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	"chentao325@qq.com" <chentao325@qq.com>,
 	"frank.li@vivo.com" <frank.li@vivo.com>
-Subject: Re: [PATCH v3 3/4] fs: change write_begin/write_end interface to
- take struct kiocb *
-Message-ID: <aF6-L5Eu7XieS8aM@casper.infradead.org>
+Subject: Re: [PATCH v3 4/4] ext4: support uncached buffered I/O
+Message-ID: <aF7OzbVwXqbJaLQA@casper.infradead.org>
 References: <20250627110257.1870826-1-chentaotao@didiglobal.com>
- <20250627110257.1870826-4-chentaotao@didiglobal.com>
+ <20250627110257.1870826-5-chentaotao@didiglobal.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -79,25 +78,38 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250627110257.1870826-4-chentaotao@didiglobal.com>
+In-Reply-To: <20250627110257.1870826-5-chentaotao@didiglobal.com>
 
-On Fri, Jun 27, 2025 at 11:03:11AM +0000, 陈涛涛 Taotao Chen wrote:
-> @@ -1399,13 +1400,10 @@ static int write_end_fn(handle_t *handle, struct inode *inode,
->  }
+On Fri, Jun 27, 2025 at 11:03:13AM +0000, 陈涛涛 Taotao Chen wrote:
+> +++ b/fs/ext4/inode.c
+> @@ -1270,6 +1270,9 @@ static int ext4_write_begin(const struct kiocb *iocb,
+>  	if (unlikely(ret))
+>  		return ret;
 >  
->  /*
-> - * We need to pick up the new inode size which generic_commit_write gave us
-> - * `file' can be NULL - eg, when called from page_symlink().
-> - *
+> +	if (iocb->ki_flags & IOCB_DONTCACHE)
+> +		fgp |= FGP_DONTCACHE;
 
-Why delete this?  It seems still true to me, other than s/file/iocb/
+I think this needs to be:
 
->   * ext4 never places buffers on inode->i_mapping->i_private_list.  metadata
->   * buffers are managed internally.
->   */
-> -static int ext4_write_end(struct file *file,
-> +static int ext4_write_end(const struct kiocb *iocb,
->  			  struct address_space *mapping,
->  			  loff_t pos, unsigned len, unsigned copied,
->  			  struct folio *folio, void *fsdata)
+	if (iocb && iocb->ki_flags & IOCB_DONTCACHE)
+
+because it's legit to call write_begin with a NULL argument.  The
+'file' was always an optional argument, and we should preserve that
+optionality with this transformation.
+
+I wonder if it's worth abstracting some of this boilerplate.  Something
+like:
+
+struct folio *write_begin_get_folio(iocb, mapping, index, len)
+{
+	fgf_t fgflags = FGP_WRITEBEGIN;
+
+	if (iocb && iocb->ki_flags & IOCB_DONTCACHE)
+		fgflags |= FGP_DONTCACHE;
+	fgflags |= fgf_set_order(len);
+
+	return __filemap_get_folio(mapping, index, fgflags,
+			mapping_gfp_mask(mapping));
+}
+
 
