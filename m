@@ -1,112 +1,163 @@
-Return-Path: <linux-ext4+bounces-8668-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8669-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39AECAEADBB
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 06:11:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D611AEB5BB
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 13:04:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2DE4A70A4
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 04:11:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CC134A3643
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 11:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB04C1BE871;
-	Fri, 27 Jun 2025 04:11:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E626D2BE7D0;
+	Fri, 27 Jun 2025 11:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=didiglobal.com header.i=@didiglobal.com header.b="KApNmOW0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845962BAF9
-	for <linux-ext4@vger.kernel.org>; Fri, 27 Jun 2025 04:11:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+Received: from mx10.didiglobal.com (mx10.didiglobal.com [111.202.70.125])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id B1C922980B4;
+	Fri, 27 Jun 2025 11:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.202.70.125
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750997487; cv=none; b=GGGdu1TZDIgiMUJIXGhivawc/6YasLYAtBpLGwii9xhPLC/83PmoiX5PuGwchj9PalcN/4VaotCa3cF18CxSoEGGdMnTY1Z+Yn5ziD+TcCM0B2v/h88RutWVWRLHli0W7CdoedUNUF7tY9KdwDz0G7u5RxYzF+DE9qg6c4R5RuE=
+	t=1751022214; cv=none; b=PkcBiXR8QjMgt/ROrZoVBS9g8FD1eYiCz4sZaMspNgUsUpcGFXNzNVILJ9kIwUW8ipCR6PwqWpdwghUMi4uE9KLAidQzJOKQOSKBYb1DCio7Jtfbivo3oe4ich0fM2bBpF4WwMz7d2YrfvBTrjsq4pvYHOBC/PoEqf5lsSwEAv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750997487; c=relaxed/simple;
-	bh=jaTYgmABf21nztGuEiu3NFE3x3QtaZ7dg4SgRRZ5Ows=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CZb9pOZABc9Fb0Fk9yZEEJ3LgNJom86G+ws/J+qJf6Eu8Rx/VsEQEJgmoeBXonsjlh7hCNWB85HaMe5BAiJNNa3seyjmc8bI+gN/wFQp4L6Jc0PYjKCF5Qnz+T5KM/QxqwyBduQKodWj2i9xTX5xd3/9L+pAnfpGA1b8Jo+Oj8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4bT27S57phzCsMt;
-	Fri, 27 Jun 2025 12:07:00 +0800 (CST)
-Received: from kwepemp200004.china.huawei.com (unknown [7.202.195.99])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0600B140159;
-	Fri, 27 Jun 2025 12:11:21 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by kwepemp200004.china.huawei.com
- (7.202.195.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 27 Jun
- 2025 12:11:20 +0800
-From: zhangjian <zhangjian496@huawei.com>
-To: <tytso@mit.edu>
-CC: <linux-ext4@vger.kernel.org>
-Subject: [PATCH] debugfs: fix printing for sequence in descriptor/revoke block
-Date: Sat, 28 Jun 2025 05:24:51 +0800
-Message-ID: <20250627212451.3600741-1-zhangjian496@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	s=arc-20240116; t=1751022214; c=relaxed/simple;
+	bh=3eEkTzd48aJijwJie0PYgb5WApqXlFvlW7CzY8x/BWg=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=oxH7WIPPKQ9Td15bOiV+bfspxRmFpM47eVvbj3m+3oXjfj4WyLhYFu/pltqoxSjDhT3NmG2p2zLtGKPhQJFgkzzriJkyj9vC5O3ggbFAiq/3n6s6XY9hihessMM/2gr0dC8SNTv2QoR5UfgOGkG+Fga5Ie0XnG9hbDI1i6YZX6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com; spf=pass smtp.mailfrom=didiglobal.com; dkim=pass (1024-bit key) header.d=didiglobal.com header.i=@didiglobal.com header.b=KApNmOW0; arc=none smtp.client-ip=111.202.70.125
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=didiglobal.com
+Received: from mail.didiglobal.com (unknown [10.79.71.38])
+	by mx10.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id C7EB5180FFD583;
+	Fri, 27 Jun 2025 19:02:17 +0800 (CST)
+Received: from BJ01-ACTMBX-09.didichuxing.com (10.79.64.19) by
+ BJ03-ACTMBX-02.didichuxing.com (10.79.71.38) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.10; Fri, 27 Jun 2025 19:03:00 +0800
+Received: from BJ03-ACTMBX-07.didichuxing.com (10.79.71.34) by
+ BJ01-ACTMBX-09.didichuxing.com (10.79.64.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.10; Fri, 27 Jun 2025 19:02:59 +0800
+Received: from BJ03-ACTMBX-07.didichuxing.com ([fe80::2e1a:dd47:6d25:287e]) by
+ BJ03-ACTMBX-07.didichuxing.com ([fe80::2e1a:dd47:6d25:287e%7]) with mapi id
+ 15.02.1748.010; Fri, 27 Jun 2025 19:02:59 +0800
+X-MD-Sfrom: chentaotao@didiglobal.com
+X-MD-SrcIP: 10.79.71.38
+From: =?gb2312?B?s8LMzszOIFRhb3RhbyBDaGVu?= <chentaotao@didiglobal.com>
+To: "tytso@mit.edu" <tytso@mit.edu>, "hch@infradead.org" <hch@infradead.org>,
+	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>, "willy@infradead.org"
+	<willy@infradead.org>, "brauner@kernel.org" <brauner@kernel.org>,
+	"jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+	"rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>, "tursulin@ursulin.net"
+	<tursulin@ursulin.net>, "airlied@gmail.com" <airlied@gmail.com>
+CC: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "chentao325@qq.com" <chentao325@qq.com>,
+	"frank.li@vivo.com" <frank.li@vivo.com>,
+	=?gb2312?B?s8LMzszOIFRhb3RhbyBDaGVu?= <chentaotao@didiglobal.com>
+Subject: [PATCH v3 0/4] fs: refactor write_begin/write_end and add ext4
+ IOCB_DONTCACHE support
+Thread-Topic: [PATCH v3 0/4] fs: refactor write_begin/write_end and add ext4
+ IOCB_DONTCACHE support
+Thread-Index: AQHb51MLW2LGYmXE/k20eq/l5Jv3Yw==
+Date: Fri, 27 Jun 2025 11:02:59 +0000
+Message-ID: <20250627110257.1870826-1-chentaotao@didiglobal.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
- kwepemp200004.china.huawei.com (7.202.195.99)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=didiglobal.com;
+	s=2025; t=1751022159;
+	bh=3eEkTzd48aJijwJie0PYgb5WApqXlFvlW7CzY8x/BWg=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type;
+	b=KApNmOW02CTDBt28PJqDWHYfl7sdBXb/8lUclD2mNMCrpsIKV4nLmUO35t6pdRNpr
+	 fHTI/liJvGeoRIHIWhVG48ygm49UNeXjpF4/KLb8hkowd6dGVcIWOIDxcsU0dg3fYw
+	 F+JorA/cq5QG40DYy9NfKAWXD/O5aZUoe6XuWCyY=
 
-When cursor cross the last journal block and will dump old journal blocks
-sequence number will be lower than transaction number. Sequence number
-should be read from descriptor block rather than accelerating transaction.
-
-For example:
-A snippet from "logdump -aO"
-===============================================================
-Found expected sequence 6, type 1 (descriptor block) at block 13
-Dumping descriptor block, sequence 13, at block 13:
-  FS block 276 logged at journal block 14 (flags 0x0)
-  FS block 2 logged at journal block 15 (flags 0x2)
-  FS block 295 logged at journal block 16 (flags 0x2)
-  FS block 292 logged at journal block 17 (flags 0x2)
-  FS block 7972 logged at journal block 18 (flags 0x2)
-  FS block 1 logged at journal block 19 (flags 0x2)
-  FS block 263 logged at journal block 20 (flags 0xa)
-Found sequence 6 (not 13) at block 21: end of journal.
-===============================================================
-
-sequence number should be 6 from header->h_sequence, rather than 13 from
-transaction accelerating from jsb->s_sequence
-
-Signed-off-by: zhangjian <zhangjian496@huawei.com>
-Signed-off-by: zhanchengbin <zhanchengbin1@h-partners.com>
----
- debugfs/logdump.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/debugfs/logdump.c b/debugfs/logdump.c
-index 324ed425..56f36291 100644
---- a/debugfs/logdump.c
-+++ b/debugfs/logdump.c
-@@ -532,7 +532,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
- 		case JBD2_DESCRIPTOR_BLOCK:
- 			dump_descriptor_block(out_file, source, buf, jsb,
- 					      &blocknr, blocksize, maxlen,
--					      transaction);
-+					      sequence);
- 			continue;
- 
- 		case JBD2_COMMIT_BLOCK:
-@@ -545,7 +545,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
- 		case JBD2_REVOKE_BLOCK:
- 			dump_revoke_block(out_file, buf, jsb,
- 					  blocknr, blocksize,
--					  transaction);
-+					  seqeunce);
- 			blocknr++;
- 			WRAP(jsb, blocknr, maxlen);
- 			continue;
--- 
-2.33.0
-
+RnJvbTogVGFvdGFvIENoZW4gPGNoZW50YW90YW9AZGlkaWdsb2JhbC5jb20+DQoNClRoaXMgcGF0
+Y2ggc2VyaWVzIHJlZmFjdG9ycyB0aGUgYWRkcmVzc19zcGFjZV9vcGVyYXRpb25zIHdyaXRlX2Jl
+Z2luKCkNCmFuZCB3cml0ZV9lbmQoKSBjYWxsYmFja3MgdG8gdGFrZSBjb25zdCBzdHJ1Y3Qga2lv
+Y2IgKiBhcyB0aGVpciBmaXJzdA0KYXJndW1lbnQsIGFsbG93aW5nIElPQ0IgZmxhZ3Mgc3VjaCBh
+cyBJT0NCX0RPTlRDQUNIRSB0byBwcm9wYWdhdGUgdG8gdGhlDQpmaWxlc3lzdGVtJ3MgYnVmZmVy
+ZWQgSS9PIHBhdGguDQoNCkV4dDQgaXMgdXBkYXRlZCB0byBpbXBsZW1lbnQgaGFuZGxpbmcgb2Yg
+dGhlIElPQ0JfRE9OVENBQ0hFIGZsYWcgYW5kDQphZHZlcnRpc2VzIHN1cHBvcnQgdmlhIHRoZSBG
+T1BfRE9OVENBQ0hFIGZpbGUgb3BlcmF0aW9uIGZsYWcuDQoNCkFkZGl0aW9uYWxseSwgdGhlIGk5
+MTUgZHJpdmVyJ3Mgc2htZW0gd3JpdGUgcGF0aHMgYXJlIHVwZGF0ZWQgdG8gYnlwYXNzDQp0aGUg
+bGVnYWN5IHdyaXRlX2JlZ2luL3dyaXRlX2VuZCBpbnRlcmZhY2UgaW4gZmF2b3Igb2YgZGlyZWN0
+bHkNCmNhbGxpbmcgd3JpdGVfaXRlcigpIHdpdGggYSBjb25zdHJ1Y3RlZCBzeW5jaHJvbm91cyBr
+aW9jYi4gQW5vdGhlciBpOTE1DQpjaGFuZ2UgcmVwbGFjZXMgYSBtYW51YWwgd3JpdGUgbG9vcCB3
+aXRoIGtlcm5lbF93cml0ZSgpIGR1cmluZyBHRU0gc2htZW0NCm9iamVjdCBjcmVhdGlvbi4NCg0K
+VGVzdGVkIHdpdGggZXh0NCBhbmQgaTkxNSBHRU0gd29ya2xvYWRzLg0KDQpUaGlzIHBhdGNoIHNl
+cmllcyBpcyBiYXNlZCBvbiB0aGUgdmZzLTYuMTcubWlzYyBicmFuY2guDQoNCkNoYW5nZXMgc2lu
+Y2UgdjI6DQotIENoYW5nZWQgYWxsIHdyaXRlX2JlZ2luL3dyaXRlX2VuZCBmdW5jdGlvbiBzaWdu
+YXR1cmVzIHRvIHRha2UNCiAgY29uc3Qgc3RydWN0IGtpb2NiICogaW5zdGVhZCBvZiBzdHJ1Y3Qg
+a2lvY2IgKi4NCi0gTWVyZ2VkIHRoZSB0d28gZXh0NCBwYXRjaGVzIGludG8gb25lIGZvciBjbGFy
+aXR5Lg0KLSBVcGRhdGVkIHJldHVybiB0eXBlIGZyb20gaW50IHRvIHNzaXplX3QgZm9yIGtlcm5l
+bF93cml0ZS4NCi0gTWlub3IgZm9ybWF0dGluZyBhbmQgY29tbWVudCBpbXByb3ZlbWVudHMuDQoN
+Cg0KVGhhbmtzIHRvIE1hdHRoZXcgV2lsY294IGZvciBlYXJseSBmZWVkYmFjaywgYW5kIHRvIGFs
+bCByZXZpZXdlcnMgZm9yDQpkZXRhaWxlZCBjb21tZW50cy4NCg0KVGFvdGFvIENoZW4gKDQpOg0K
+ICBkcm0vaTkxNTogVXNlIGtlcm5lbF93cml0ZSgpIGluIHNobWVtIG9iamVjdCBjcmVhdGUNCiAg
+ZHJtL2k5MTU6IFJlZmFjdG9yIHNobWVtX3B3cml0ZSgpIHRvIHVzZSBraW9jYiBhbmQgd3JpdGVf
+aXRlcg0KICBmczogY2hhbmdlIHdyaXRlX2JlZ2luL3dyaXRlX2VuZCBpbnRlcmZhY2UgdG8gdGFr
+ZSBzdHJ1Y3Qga2lvY2IgKg0KICBleHQ0OiBzdXBwb3J0IHVuY2FjaGVkIGJ1ZmZlcmVkIEkvTw0K
+DQogRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9sb2NraW5nLnJzdCAgICAgfCAgIDQgKy0NCiBE
+b2N1bWVudGF0aW9uL2ZpbGVzeXN0ZW1zL3Zmcy5yc3QgICAgICAgICB8ICAgNiArLQ0KIGJsb2Nr
+L2ZvcHMuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEzICsrLQ0KIGRyaXZlcnMv
+Z3B1L2RybS9pOTE1L2dlbS9pOTE1X2dlbV9zaG1lbS5jIHwgMTE0ICsrKysrKy0tLS0tLS0tLS0t
+LS0tLS0NCiBmcy9hZGZzL2lub2RlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgOSAr
+LQ0KIGZzL2FmZnMvZmlsZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDI2ICsrLS0t
+DQogZnMvYmNhY2hlZnMvZnMtaW8tYnVmZmVyZWQuYyAgICAgICAgICAgICAgfCAgIDQgKy0NCiBm
+cy9iY2FjaGVmcy9mcy1pby1idWZmZXJlZC5oICAgICAgICAgICAgICB8ICAgNCArLQ0KIGZzL2Jm
+cy9maWxlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA3ICstDQogZnMvYnVmZmVy
+LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMjYgKystLS0NCiBmcy9jZXBoL2Fk
+ZHIuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxMCArLQ0KIGZzL2VjcnlwdGZzL21t
+YXAuYyAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEwICstDQogZnMvZXhmYXQvZmlsZS5jICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTUgKystDQogZnMvZXhmYXQvaW5vZGUuYyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgMTYgKy0tDQogZnMvZXh0Mi9pbm9kZS5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgMTEgKystDQogZnMvZXh0NC9maWxlLmMgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgfCAgIDMgKy0NCiBmcy9leHQ0L2lub2RlLmMgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB8ICAyNSArKystLQ0KIGZzL2YyZnMvZGF0YS5jICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHwgICA4ICstDQogZnMvZmF0L2lub2RlLmMgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgMTggKystLQ0KIGZzL2Z1c2UvZmlsZS5jICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgIDE0ICsrLQ0KIGZzL2hmcy9oZnNfZnMuaCAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICAyICstDQogZnMvaGZzL2lub2RlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+IDQgKy0NCiBmcy9oZnNwbHVzL2hmc3BsdXNfZnMuaCAgICAgICAgICAgICAgICAgICB8ICAgNiAr
+LQ0KIGZzL2hmc3BsdXMvaW5vZGUuYyAgICAgICAgICAgICAgICAgICAgICAgIHwgICA4ICstDQog
+ZnMvaG9zdGZzL2hvc3Rmc19rZXJuLmMgICAgICAgICAgICAgICAgICAgfCAgIDggKy0NCiBmcy9o
+cGZzL2ZpbGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxOCArKy0tDQogZnMvaHVn
+ZXRsYmZzL2lub2RlLmMgICAgICAgICAgICAgICAgICAgICAgfCAgIDkgKy0NCiBmcy9qZmZzMi9m
+aWxlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyOCArKystLS0NCiBmcy9qZnMvaW5v
+ZGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxNiArLS0NCiBmcy9saWJmcy5jICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxMSArKy0NCiBmcy9taW5peC9pbm9kZS5j
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNyArLQ0KIGZzL25mcy9maWxlLmMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgICA4ICstDQogZnMvbmlsZnMyL2lub2RlLmMgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgIDggKy0NCiBmcy9udGZzMy9maWxlLmMgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgNyArLQ0KIGZzL250ZnMzL2lub2RlLmMgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHwgICA3ICstDQogZnMvbnRmczMvbnRmc19mcy5oICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgMTAgKy0NCiBmcy9vY2ZzMi9hb3BzLmMgICAgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAgNiArLQ0KIGZzL29tZnMvZmlsZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICA3ICstDQogZnMvb3JhbmdlZnMvaW5vZGUuYyAgICAgICAgICAgICAgICAgICAgICAgfCAgMTYg
+Ky0tDQogZnMvdWJpZnMvZmlsZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDUgKy0N
+CiBmcy91ZGYvaW5vZGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxMSArKy0NCiBm
+cy91ZnMvaW5vZGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxNiArLS0NCiBmcy92
+Ym94c2YvZmlsZS5jICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNSArLQ0KIGluY2x1ZGUv
+bGludXgvYnVmZmVyX2hlYWQuaCAgICAgICAgICAgICAgIHwgICA0ICstDQogaW5jbHVkZS9saW51
+eC9mcy5oICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTEgKystDQogbW0vZmlsZW1hcC5jICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDQgKy0NCiBtbS9zaG1lbS5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAxMiArLS0NCiA0NyBmaWxlcyBjaGFuZ2VkLCAzMTAg
+aW5zZXJ0aW9ucygrKSwgMjg3IGRlbGV0aW9ucygtKQ0KDQotLSANCjIuMzQuMQ0K
 
