@@ -1,49 +1,49 @@
-Return-Path: <linux-ext4+bounces-8667-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8668-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763FEAEADBA
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 06:10:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39AECAEADBB
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 06:11:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60C921BC832B
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 04:10:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2DE4A70A4
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Jun 2025 04:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0ABE1BE871;
-	Fri, 27 Jun 2025 04:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB04C1BE871;
+	Fri, 27 Jun 2025 04:11:27 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0502BAF9
-	for <linux-ext4@vger.kernel.org>; Fri, 27 Jun 2025 04:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845962BAF9
+	for <linux-ext4@vger.kernel.org>; Fri, 27 Jun 2025 04:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750997419; cv=none; b=EXg34UzkZEH9AQZtD+WDuJLd0H+DnwctWOJ2OzSYSzwyN4ylN24ZpcD45RWT+Ubiv8qQP7UlH5MQDCxkBEetLCJw231STvWf6wO2ZsTjTQbRecok6NQzvjTGDme4m1Mq3COzCUPfqja+q76EkM4ddLewxACtbG/HedQNAP+cb9M=
+	t=1750997487; cv=none; b=GGGdu1TZDIgiMUJIXGhivawc/6YasLYAtBpLGwii9xhPLC/83PmoiX5PuGwchj9PalcN/4VaotCa3cF18CxSoEGGdMnTY1Z+Yn5ziD+TcCM0B2v/h88RutWVWRLHli0W7CdoedUNUF7tY9KdwDz0G7u5RxYzF+DE9qg6c4R5RuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750997419; c=relaxed/simple;
-	bh=bDbxwGdd737sUs891Scm+zHCS9tpiC8epSG9wrIidas=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XK1L2ZCuY37mgzqr8Mmi7Y7lLGyCpspulDDpfANHeYw8ltDTdrI5eAqzMo5mDaQNu3RIuoFC0V+3BxDAIx/JeEFldkkybFeSZ5epCTzC4ZZ7v/LRluUKFPr+WIAGcwRiinYQP/jGMtC6wyC9riPlodhqR5yQQJdmU3DT1JyVyes=
+	s=arc-20240116; t=1750997487; c=relaxed/simple;
+	bh=jaTYgmABf21nztGuEiu3NFE3x3QtaZ7dg4SgRRZ5Ows=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CZb9pOZABc9Fb0Fk9yZEEJ3LgNJom86G+ws/J+qJf6Eu8Rx/VsEQEJgmoeBXonsjlh7hCNWB85HaMe5BAiJNNa3seyjmc8bI+gN/wFQp4L6Jc0PYjKCF5Qnz+T5KM/QxqwyBduQKodWj2i9xTX5xd3/9L+pAnfpGA1b8Jo+Oj8c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4bT29s02jhzqVRS;
-	Fri, 27 Jun 2025 12:09:05 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4bT27S57phzCsMt;
+	Fri, 27 Jun 2025 12:07:00 +0800 (CST)
 Received: from kwepemp200004.china.huawei.com (unknown [7.202.195.99])
-	by mail.maildlp.com (Postfix) with ESMTPS id BD9291400D4;
-	Fri, 27 Jun 2025 12:10:13 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 0600B140159;
+	Fri, 27 Jun 2025 12:11:21 +0800 (CST)
 Received: from huawei.com (10.175.124.27) by kwepemp200004.china.huawei.com
  (7.202.195.99) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 27 Jun
- 2025 12:10:13 +0800
+ 2025 12:11:20 +0800
 From: zhangjian <zhangjian496@huawei.com>
 To: <tytso@mit.edu>
 CC: <linux-ext4@vger.kernel.org>
 Subject: [PATCH] debugfs: fix printing for sequence in descriptor/revoke block
-Date: Sat, 28 Jun 2025 05:23:44 +0800
-Message-ID: <20250627212344.3590204-1-zhangjian496@huawei.com>
+Date: Sat, 28 Jun 2025 05:24:51 +0800
+Message-ID: <20250627212451.3600741-1-zhangjian496@huawei.com>
 X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -79,6 +79,7 @@ sequence number should be 6 from header->h_sequence, rather than 13 from
 transaction accelerating from jsb->s_sequence
 
 Signed-off-by: zhangjian <zhangjian496@huawei.com>
+Signed-off-by: zhanchengbin <zhanchengbin1@h-partners.com>
 ---
  debugfs/logdump.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
