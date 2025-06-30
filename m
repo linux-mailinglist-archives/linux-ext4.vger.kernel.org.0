@@ -1,276 +1,175 @@
-Return-Path: <linux-ext4+bounces-8720-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8721-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C11F2AEE5C6
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 19:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64070AEE607
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 19:41:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 197D418973EA
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 17:29:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F6BE1899DEB
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 17:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2BD2E1C54;
-	Mon, 30 Jun 2025 17:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D537A2C031B;
+	Mon, 30 Jun 2025 17:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DR19nqDT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iM0UBs/8";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c0rr6qM2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1mQo3tjy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD55228DEE5
-	for <linux-ext4@vger.kernel.org>; Mon, 30 Jun 2025 17:28:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD5529009A
+	for <linux-ext4@vger.kernel.org>; Mon, 30 Jun 2025 17:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751304519; cv=none; b=gl7gTY4ksMhTNqoiUJR16M/YL4fYLfgRGVGpjoaVidT3Z9WaHUbwG3gFGAJNpS8TUnxeD5Abt1sCbGQMRbEfcmb+9Jdb5xu3v3JM3pN+dM9CnKUff+KuqkaGxuYBtW0KnOHmIZrOSvF7whmjZrau4Q0IcLCBwPc/VDh7T+pLd0k=
+	t=1751305306; cv=none; b=APkPxlBOcTGUMe5d4BVzqBFcNpeA5zuEgpTAGeWwwkDmKhFirhjjxoYvvg1IY5Z3j6iYWS5X3uFZ+z6QvVLjSj/s0bP6oynuyL8mtgfq7UbK2FYRXtG8xoe8671pbSXgTXJTDKArl7aLNLLiIps3GiFPsQux7B7FX8klky8Q+7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751304519; c=relaxed/simple;
-	bh=DvEt/ME2bVvlYYwFj2goBLZH0mw+U7nOOeWKccUHuXM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=No65NPgn4PCeOhaXSEftWJpVQmW5IWHFHy/FsiZpnGd/LrDtqa+8Oaw4Tb3sH5o6zG8c6Hftv7+blnjf4hqHvS187HijwmXq7zyptZxhqhzyoS1PilV4aw3K7WwzoAa2WkeX8RHvxZDYVLI3C5WfWnf7+8rakNRMiUkLNOXmeNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ddd5311fd3so22064945ab.3
-        for <linux-ext4@vger.kernel.org>; Mon, 30 Jun 2025 10:28:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751304515; x=1751909315;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aqqXdLIuiWEuc9N8wVH05YmN19CxMNf+yhLVdonB7/4=;
-        b=bvQ3oKvTsx+JVuFeuKK6tfcNIGbAhKMxlpAEnWyOvGh6/gHphPysGzIlfTZtsMv5/3
-         WFnw2x77tq93xHXWfkoniTrWaOkfnHq6uI0bsjEi7RV4s5V3JfSr8UYfjUg267ADQEeE
-         rM7C46Uw9kxmt4wC4xpvhSTJUEOorC6pNkgCKu18jSEd64wGCxT4wJPh8Skf+S6HcNQI
-         EMHDcL3kZ9Ex0TaVV6XWBgkTrrogc9BsusCUKwRcG6Ipww8+Jn6EUTe+xEZC+rEqIWRn
-         FG1e717YubRGq9V+9MwJTgVpm8AJIltqj+xQhzCFBcNFLvpGnU0MsEr6RYqpQuNDHOwA
-         Nlkg==
-X-Forwarded-Encrypted: i=1; AJvYcCWPRmatIdxCLMKqDylbJxTxPz9Z1gnVmfPAozhg2iJauqGlkvE2cZwvE4dMm2ZYjk6ZDBLGtx4uMNUR@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw0iR6QU7FaL2RnoA818h9vSbQHQa/7HMpIXoGF3e6iUwC+zdEP
-	N5sykDiCecgA/R6G7q+w22S1xrWTi+fPXIWeLHYtBLLnz8eO+j15VB+YJ1ETVaiF6yrLz8h19gL
-	9tyA+eO3j0smqi2oA/5ugguvIc0Fj+ttQ0nR++D/tU1kS3Y4EBCA5ydjoApc=
-X-Google-Smtp-Source: AGHT+IHEV4mwSFr4PsYOQjv4WFkE4agsYeeL7gfhiYNxhOaMur41YcDDozbQ19opL8QdfX5XKahIH1Ds2nxLvd0sZmckn0cWLfe1
+	s=arc-20240116; t=1751305306; c=relaxed/simple;
+	bh=MKC6WgTK53IkV2utREflpT+8t0y2MRP28JRtYbd3T/g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VaZl7vyv7F4Vt68aHxFtBaeN5kSv+5lJi1Ao7dArAQ4a6AUAsui+gWHZTWNHxoe2rip7AOCK6dE5XWaYJSeJQ8+SEkBNStHlSeN7gug/PUpbqP/Yw1m1Pou7t23tkM1i4q+Jal4wazegLQU88NzoWoMcQ7yKb8eeQrHosr0uBvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DR19nqDT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iM0UBs/8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c0rr6qM2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1mQo3tjy; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DE31921163;
+	Mon, 30 Jun 2025 17:41:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751305303; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DduZmfIRYnUE6a825bqzfBebQAdLHgav/Uc/BQtMODE=;
+	b=DR19nqDTijWhJeX4xPeGV44KlrwL2eGV6JR5Xv1gRw6g64pUYQ88MTsQssHsw3ds92fMjN
+	HTajtB/wfOil/3H/qrr2MaQbEPkN3TRYY2RFkNAWLUc8TRn6Xc8IlP8WayaOFq91A5jJON
+	ajIQ6HUk9NYqD8/ZpPtrarvOpEsle9s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751305303;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DduZmfIRYnUE6a825bqzfBebQAdLHgav/Uc/BQtMODE=;
+	b=iM0UBs/8C6I1QPNWt5sK+4iEh9VLDUo13U7Df2t4PfWMkXkEbX2zKLq85Yu3BFLdyELVR1
+	U+6wwkdlfgqrDDAA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=c0rr6qM2;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1mQo3tjy
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751305301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DduZmfIRYnUE6a825bqzfBebQAdLHgav/Uc/BQtMODE=;
+	b=c0rr6qM2HRK65PiynbHtAo6ET06R3c3PUeMVRoKKM+xOaAYeelQI81pa1P2z5MfarwdzAo
+	DBYeApdotaBzNiv0x6D4Qzq84mDZs+O21TdfMKgVb2lI8cLIGdQ3vLFR0DBENLWcOWx93n
+	CxOnBuOExLm0F6iM8CTEb+ZwWQd0Ttk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751305301;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DduZmfIRYnUE6a825bqzfBebQAdLHgav/Uc/BQtMODE=;
+	b=1mQo3tjyazJuJNrxsY21lFDbDUXLKrZktDHDzok+lHiIrfzFuyJzuoCkpk1307tfmpD2ib
+	qpfreVDyO6b3KSAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C833C1399F;
+	Mon, 30 Jun 2025 17:41:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id YeeSMFXMYmhPLQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 30 Jun 2025 17:41:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 592DEA0A31; Mon, 30 Jun 2025 19:41:41 +0200 (CEST)
+Date: Mon, 30 Jun 2025 19:41:41 +0200
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu, 
+	adilger.kernel@dilger.ca, ojaswin@linux.ibm.com, linux-kernel@vger.kernel.org, 
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v2 04/16] ext4: utilize multiple global goals to reduce
+ contention
+Message-ID: <trjf7lqckchx6bc3p4lwh5yy3bqczo6yvdll7ujguhvvezwtja@cpfhj6ai7gzp>
+References: <20250623073304.3275702-1-libaokun1@huawei.com>
+ <20250623073304.3275702-5-libaokun1@huawei.com>
+ <xmhuzjcgujdvmgmnc3mfd45txehmq73fiyg32vr6h7ldznctlq@rosxe25scojb>
+ <77077598-45d6-43dd-90a0-f3668a27ca15@huawei.com>
+ <qtdxe2rmnvrxdjmp26ro4l5erwq5lrbvmvysxfgqddadnpr7x4@xrkrdjkgsh67>
+ <4f15d0aa-39e0-42ef-a9ca-ddbb3ff36060@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca48:0:b0:3df:306f:3b25 with SMTP id
- e9e14a558f8ab-3df4abac665mr128663025ab.16.1751304514903; Mon, 30 Jun 2025
- 10:28:34 -0700 (PDT)
-Date: Mon, 30 Jun 2025 10:28:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6862c942.a70a0220.2f4de1.002c.GAE@google.com>
-Subject: [syzbot] [ext4?] KASAN: slab-use-after-free Read in __ext4_check_dir_entry
-From: syzbot <syzbot+5322c5c260eb44d209ed@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f15d0aa-39e0-42ef-a9ca-ddbb3ff36060@huawei.com>
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: DE31921163
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -4.01
 
-Hello,
+On Mon 30-06-25 18:02:49, Baokun Li wrote:
+> On 2025/6/30 16:38, Jan Kara wrote:
+> > We could make streaming goal to be ext4_fsblk_t so that also offset of the
+> > last big allocation in the group is recorded as I wrote above. That would
+> > tend to pack big allocations in each group together which is benefitial to
+> > combat fragmentation even with higher proportion of groups that are streaming
+> > goals (and likely becomes more important as the blocksize and thus group
+> > size grow). We can discuss proper number of slots for streaming allocation
+> > (I'm not hung up on it being quarter of the group count) but I'm convinced
+> > sb->s_groups_count is too much :)
+> > 
+> > 								Honza
+> 
+> I think sbi->s_groups_count / 4 is indeed acceptable. However, I don't
+> believe recording offsets is necessary. As groups become larger,
+> contention for groups will intensify, and adding offsets would only
+> make this contention worse.
 
-syzbot found the following issue on:
+I agree the contention for groups will increase when the group count goes
+down. I just thought offsets may help to find free space faster in large
+groups (and thus reduce contention) and also reduce free space
+fragmentation within a group (by having higher chances of placing large
+allocations close together within a group) but maybe that's not the case.
+Offsets are definitely not requirement at this point.
 
-HEAD commit:    afa9a6f4f574 Merge tag 'staging-6.16-rc4' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1220a770580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=28cc6f051378bb16
-dashboard link: https://syzkaller.appspot.com/bug?extid=5322c5c260eb44d209ed
-compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=134c188c580000
+								Honza
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/234fe6db1565/disk-afa9a6f4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/49ab9f2eb5dc/vmlinux-afa9a6f4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8e64db09b112/bzImage-afa9a6f4.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/7bfd5fd5e1c5/mount_0.gz
-  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=12c36982580000)
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5322c5c260eb44d209ed@syzkaller.appspotmail.com
-
-EXT4-fs warning (device loop1): dx_probe:801: inode #2: comm syz.1.21: Unrecognised inode hash code 4
-EXT4-fs warning (device loop1): dx_probe:934: inode #2: comm syz.1.21: Corrupt directory, running e2fsck is recommended
-==================================================================
-BUG: KASAN: slab-use-after-free in __ext4_check_dir_entry+0x708/0x8a0 fs/ext4/dir.c:85
-Read of size 2 at addr ffff8880601f4003 by task syz.1.21/6095
-
-CPU: 0 UID: 0 PID: 6095 Comm: syz.1.21 Not tainted 6.16.0-rc3-syzkaller-00346-gafa9a6f4f574 #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-Call Trace:
- <TASK>
- dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:408 [inline]
- print_report+0xd2/0x2b0 mm/kasan/report.c:521
- kasan_report+0x118/0x150 mm/kasan/report.c:634
- __ext4_check_dir_entry+0x708/0x8a0 fs/ext4/dir.c:85
- ext4_readdir+0x1299/0x3b60 fs/ext4/dir.c:262
- iterate_dir+0x5af/0x770 fs/readdir.c:108
- __do_sys_getdents64 fs/readdir.c:410 [inline]
- __se_sys_getdents64+0xe4/0x260 fs/readdir.c:396
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f2ff398e929
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f2ff48d9038 EFLAGS: 00000246 ORIG_RAX: 00000000000000d9
-RAX: ffffffffffffffda RBX: 00007f2ff3bb5fa0 RCX: 00007f2ff398e929
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000006
-RBP: 00007f2ff3a10b39 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f2ff3bb5fa0 R15: 00007ffd14fba298
- </TASK>
-
-Allocated by task 6097:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
- __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:394
- kasan_kmalloc include/linux/kasan.h:260 [inline]
- __do_kmalloc_node mm/slub.c:4328 [inline]
- __kmalloc_noprof+0x27a/0x4f0 mm/slub.c:4340
- kmalloc_noprof include/linux/slab.h:909 [inline]
- kzalloc_noprof include/linux/slab.h:1039 [inline]
- tomoyo_encode2 security/tomoyo/realpath.c:45 [inline]
- tomoyo_encode+0x28b/0x550 security/tomoyo/realpath.c:80
- tomoyo_realpath_from_path+0x58d/0x5d0 security/tomoyo/realpath.c:283
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x1c1/0x3b0 security/tomoyo/file.c:771
- security_file_open+0xb1/0x270 security/security.c:3114
- do_dentry_open+0x35e/0x1970 fs/open.c:941
- vfs_open+0x3b/0x340 fs/open.c:1094
- do_open fs/namei.c:3896 [inline]
- path_openat+0x2ee5/0x3830 fs/namei.c:4055
- do_filp_open+0x1fa/0x410 fs/namei.c:4082
- do_sys_openat2+0x121/0x1c0 fs/open.c:1437
- do_sys_open fs/open.c:1452 [inline]
- __do_sys_openat fs/open.c:1468 [inline]
- __se_sys_openat fs/open.c:1463 [inline]
- __x64_sys_openat+0x138/0x170 fs/open.c:1463
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Freed by task 6097:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
- kasan_save_free_info+0x46/0x50 mm/kasan/generic.c:576
- poison_slab_object mm/kasan/common.c:247 [inline]
- __kasan_slab_free+0x62/0x70 mm/kasan/common.c:264
- kasan_slab_free include/linux/kasan.h:233 [inline]
- slab_free_hook mm/slub.c:2381 [inline]
- slab_free mm/slub.c:4643 [inline]
- kfree+0x18e/0x440 mm/slub.c:4842
- tomoyo_check_open_permission+0x2c2/0x3b0 security/tomoyo/file.c:786
- security_file_open+0xb1/0x270 security/security.c:3114
- do_dentry_open+0x35e/0x1970 fs/open.c:941
- vfs_open+0x3b/0x340 fs/open.c:1094
- do_open fs/namei.c:3896 [inline]
- path_openat+0x2ee5/0x3830 fs/namei.c:4055
- do_filp_open+0x1fa/0x410 fs/namei.c:4082
- do_sys_openat2+0x121/0x1c0 fs/open.c:1437
- do_sys_open fs/open.c:1452 [inline]
- __do_sys_openat fs/open.c:1468 [inline]
- __se_sys_openat fs/open.c:1463 [inline]
- __x64_sys_openat+0x138/0x170 fs/open.c:1463
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-The buggy address belongs to the object at ffff8880601f4000
- which belongs to the cache kmalloc-32 of size 32
-The buggy address is located 3 bytes inside of
- freed 32-byte region [ffff8880601f4000, ffff8880601f4020)
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x601f4
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 00fff00000000000 ffff88801a441780 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000400040 00000000f5000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x52c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP), pid 6097, tgid 6097 (modprobe), ts 96501120570, free_ts 85677675649
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1704
- prep_new_page mm/page_alloc.c:1712 [inline]
- get_page_from_freelist+0x21d5/0x22b0 mm/page_alloc.c:3669
- __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:4959
- alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2419
- alloc_slab_page mm/slub.c:2451 [inline]
- allocate_slab+0x8a/0x3b0 mm/slub.c:2619
- new_slab mm/slub.c:2673 [inline]
- ___slab_alloc+0xbfc/0x1480 mm/slub.c:3859
- __slab_alloc mm/slub.c:3949 [inline]
- __slab_alloc_node mm/slub.c:4024 [inline]
- slab_alloc_node mm/slub.c:4185 [inline]
- __do_kmalloc_node mm/slub.c:4327 [inline]
- __kmalloc_noprof+0x305/0x4f0 mm/slub.c:4340
- kmalloc_noprof include/linux/slab.h:909 [inline]
- kzalloc_noprof include/linux/slab.h:1039 [inline]
- tomoyo_encode2 security/tomoyo/realpath.c:45 [inline]
- tomoyo_encode+0x28b/0x550 security/tomoyo/realpath.c:80
- tomoyo_realpath_from_path+0x58d/0x5d0 security/tomoyo/realpath.c:283
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x1c1/0x3b0 security/tomoyo/file.c:771
- security_file_open+0xb1/0x270 security/security.c:3114
- do_dentry_open+0x35e/0x1970 fs/open.c:941
- vfs_open+0x3b/0x340 fs/open.c:1094
- do_open fs/namei.c:3896 [inline]
- path_openat+0x2ee5/0x3830 fs/namei.c:4055
- do_filp_open+0x1fa/0x410 fs/namei.c:4082
- do_sys_openat2+0x121/0x1c0 fs/open.c:1437
-page last free pid 5877 tgid 5877 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1248 [inline]
- __free_frozen_pages+0xc65/0xe60 mm/page_alloc.c:2706
- vfree+0x25a/0x400 mm/vmalloc.c:3426
- kcov_put kernel/kcov.c:439 [inline]
- kcov_close+0x28/0x50 kernel/kcov.c:535
- __fput+0x44c/0xa70 fs/file_table.c:465
- task_work_run+0x1d4/0x260 kernel/task_work.c:227
- exit_task_work include/linux/task_work.h:40 [inline]
- do_exit+0x6b5/0x22e0 kernel/exit.c:964
- do_group_exit+0x21c/0x2d0 kernel/exit.c:1105
- get_signal+0x125e/0x1310 kernel/signal.c:3034
- arch_do_signal_or_restart+0x9a/0x750 arch/x86/kernel/signal.c:337
- exit_to_user_mode_loop+0x75/0x110 kernel/entry/common.c:111
- exit_to_user_mode_prepare include/linux/entry-common.h:330 [inline]
- syscall_exit_to_user_mode_work include/linux/entry-common.h:414 [inline]
- syscall_exit_to_user_mode include/linux/entry-common.h:449 [inline]
- do_syscall_64+0x2bd/0x3b0 arch/x86/entry/syscall_64.c:100
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Memory state around the buggy address:
- ffff8880601f3f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff8880601f3f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff8880601f4000: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
-                   ^
- ffff8880601f4080: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
- ffff8880601f4100: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
