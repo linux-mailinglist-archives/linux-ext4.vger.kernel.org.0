@@ -1,125 +1,154 @@
-Return-Path: <linux-ext4+bounces-8698-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8699-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E89CAED4C8
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 08:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76BD0AED4EA
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 08:50:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1950518961F7
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 06:41:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A86318967E1
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 06:51:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51791FE45D;
-	Mon, 30 Jun 2025 06:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZejtL3sm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47AB91FBE83;
+	Mon, 30 Jun 2025 06:50:38 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F55C1D79A5;
-	Mon, 30 Jun 2025 06:41:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F46D20322;
+	Mon, 30 Jun 2025 06:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751265678; cv=none; b=dWP4UlfIrkP1IOBdTHtJApq2Vr3JmF+1dLDPy248+F5uyqmaYE57ZdnMSO51BXsVbM7+h9xzrUQHotzD83UqpXr4pnlXV/6SXx8wN9hDkYUu5gSSB+ABTmKycAsIGfbpZ/1wlfHupXI57M25N4co5diuqMNJgAXWeWUAkg8tJvY=
+	t=1751266238; cv=none; b=AN4V0vDbaWivPRV4qeBGRpSg0u85zclg0AvZwZjqB8KPO2kFZe17mhJ38urQRnZFBCOpDzSEKqWparJIKxe/fqTqHs+CDCEVQgiaDzpnQUV2Y0jPABstLqciTZMg+Q7akRWuxsdRz5ZrjJDOKMHcW63eX6+x8n0Gj8V5FWueMx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751265678; c=relaxed/simple;
-	bh=/p835mRdk+vulunfvCv3tNpVgYqkgcusJR9pB6KII+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BKnFyK6qqg+MsrOimbIgcWGhx/DS1dlUEseUZeh8GcZxfSaPbJjpGT+j+bZfMTbi+pOJ7ypTBp9Pf+4N6kfM4v9ITTns6DKN2HwUqBcu5NkcaWUMB+3M8gv0z0KMtmQdwwRkBiJ6ZpAV+FcivXF7eJ+kRxGWRtEzuu0lo/LYV/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ZejtL3sm; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=EGTTLrFnUeqEt2LkPOIc08Ji7tLkFOls0h+QkE/PVjc=; b=ZejtL3sm8QRhn8xcCFFNMRUL5+
-	0p7qJLSYpjYurp0fqdmTke9LZp+wa5u/DPr2M2a4rWyOnqixEjMud8JtVP9k/ud3+EzI567qwEmKl
-	2mNIqLQPd4psFOKCKguyQ/Em0h9PQKYZNBoWsnq7ml1C9HrGmd8yap79ONNpYS5/CxtR90oliYys5
-	S0NpLfICJfIyRoYslKnSAh47MCq1iELTLHWXmbbfwyfLY/UyKQiB2AReAz55sg3bfb0JTKFF7mU6Y
-	LhVeWFX7hDzkKSoHGg2nslJ9BLS5KGSoJWZdNRQka+3RT+Y//LfBZlQzUxjZ1EDkVNgRUv4GWaBPM
-	bptOJZKg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uW8CX-00000001MDX-03Ey;
-	Mon, 30 Jun 2025 06:41:13 +0000
-Date: Sun, 29 Jun 2025 23:41:12 -0700
-From: "hch@infradead.org" <hch@infradead.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: =?utf-8?B?6ZmI5rab5rab?= Taotao Chen <chentaotao@didiglobal.com>,
-	"tytso@mit.edu" <tytso@mit.edu>,
-	"hch@infradead.org" <hch@infradead.org>,
-	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-	"rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
-	"tursulin@ursulin.net" <tursulin@ursulin.net>,
-	"airlied@gmail.com" <airlied@gmail.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"chentao325@qq.com" <chentao325@qq.com>,
-	"frank.li@vivo.com" <frank.li@vivo.com>
-Subject: Re: [PATCH v3 4/4] ext4: support uncached buffered I/O
-Message-ID: <aGIxiOeJ_-lmRmiT@infradead.org>
-References: <20250627110257.1870826-1-chentaotao@didiglobal.com>
- <20250627110257.1870826-5-chentaotao@didiglobal.com>
- <aF7OzbVwXqbJaLQA@casper.infradead.org>
+	s=arc-20240116; t=1751266238; c=relaxed/simple;
+	bh=Iivev3SIZqW0SaRJo9EnFrOxkXH0TOMUQKHax2I4Cd4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=AMx91kyjc64gFhOamkIuYnMniAITD0OdLxvKKrxJM+9V1pHGxpI74vNnWpYPxFmaDD9ds7F1D79/U3gdSR43IUBJzRWDHGFQAgNkvAHzUgeaB3755P/MBrMOJgpwL4HbKFSqACioiZgV3B/lawWnJ4wtOIc+nhmlxhbQj/WSYgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4bVxYx1rKgz13MJf;
+	Mon, 30 Jun 2025 14:48:05 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 42594140257;
+	Mon, 30 Jun 2025 14:50:32 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.71) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 30 Jun
+ 2025 14:50:31 +0800
+Message-ID: <77077598-45d6-43dd-90a0-f3668a27ca15@huawei.com>
+Date: Mon, 30 Jun 2025 14:50:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 04/16] ext4: utilize multiple global goals to reduce
+ contention
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ojaswin@linux.ibm.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, Baokun Li
+	<libaokun1@huawei.com>
+References: <20250623073304.3275702-1-libaokun1@huawei.com>
+ <20250623073304.3275702-5-libaokun1@huawei.com>
+ <xmhuzjcgujdvmgmnc3mfd45txehmq73fiyg32vr6h7ldznctlq@rosxe25scojb>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <xmhuzjcgujdvmgmnc3mfd45txehmq73fiyg32vr6h7ldznctlq@rosxe25scojb>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <aF7OzbVwXqbJaLQA@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-On Fri, Jun 27, 2025 at 06:03:09PM +0100, Matthew Wilcox wrote:
-> On Fri, Jun 27, 2025 at 11:03:13AM +0000, 陈涛涛 Taotao Chen wrote:
-> > +++ b/fs/ext4/inode.c
-> > @@ -1270,6 +1270,9 @@ static int ext4_write_begin(const struct kiocb *iocb,
-> >  	if (unlikely(ret))
-> >  		return ret;
-> >  
-> > +	if (iocb->ki_flags & IOCB_DONTCACHE)
-> > +		fgp |= FGP_DONTCACHE;
-> 
-> I think this needs to be:
-> 
-> 	if (iocb && iocb->ki_flags & IOCB_DONTCACHE)
-> 
-> because it's legit to call write_begin with a NULL argument.  The
-> 'file' was always an optional argument, and we should preserve that
-> optionality with this transformation.
+On 2025/6/28 2:31, Jan Kara wrote:
+> On Mon 23-06-25 15:32:52, Baokun Li wrote:
+>> When allocating data blocks, if the first try (goal allocation) fails and
+>> stream allocation is on, it tries a global goal starting from the last
+>> group we used (s_mb_last_group). This helps cluster large files together
+>> to reduce free space fragmentation, and the data block contiguity also
+>> accelerates write-back to disk.
+>>
+>> However, when multiple processes allocate blocks, having just one global
+>> goal means they all fight over the same group. This drastically lowers
+>> the chances of extents merging and leads to much worse file fragmentation.
+>>
+>> To mitigate this multi-process contention, we now employ multiple global
+>> goals, with the number of goals being the CPU count rounded up to the
+>> nearest power of 2. To ensure a consistent goal for each inode, we select
+>> the corresponding goal by taking the inode number modulo the total number
+>> of goals.
+>>
+>> Performance test data follows:
+>>
+>> Test: Running will-it-scale/fallocate2 on CPU-bound containers.
+>> Observation: Average fallocate operations per container per second.
+>>
+>>                     | Kunpeng 920 / 512GB -P80|  AMD 9654 / 1536GB -P96 |
+>>   Disk: 960GB SSD   |-------------------------|-------------------------|
+>>                     | base  |    patched      | base  |    patched      |
+>> -------------------|-------|-----------------|-------|-----------------|
+>> mb_optimize_scan=0 | 7612  | 19699 (+158%)   | 21647 | 53093 (+145%)   |
+>> mb_optimize_scan=1 | 7568  | 9862  (+30.3%)  | 9117  | 14401 (+57.9%)  |
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ...
+>
+>> +/*
+>> + * Number of mb last groups
+>> + */
+>> +#ifdef CONFIG_SMP
+>> +#define MB_LAST_GROUPS roundup_pow_of_two(nr_cpu_ids)
+>> +#else
+>> +#define MB_LAST_GROUPS 1
+>> +#endif
+>> +
+> I think this is too aggressive. nr_cpu_ids is easily 4096 or similar for
+> distribution kernels (it is just a theoretical maximum for the number of
+> CPUs the kernel can support)
 
-write_begin and write_end are only callbacks through helpers called
-by the file system.  So if the file system never passes a NULL
-file/kiocb it doesn't need to check for it.
+nr_cpu_ids is generally equal to num_possible_cpus(). Only when
+CONFIG_FORCE_NR_CPUS is enabled will nr_cpu_ids be set to NR_CPUS,
+which represents the maximum number of supported CPUs.
 
-> I wonder if it's worth abstracting some of this boilerplate.  Something
-> like:
-> 
-> struct folio *write_begin_get_folio(iocb, mapping, index, len)
-> {
-> 	fgf_t fgflags = FGP_WRITEBEGIN;
-> 
-> 	if (iocb && iocb->ki_flags & IOCB_DONTCACHE)
-> 		fgflags |= FGP_DONTCACHE;
-> 	fgflags |= fgf_set_order(len);
-> 
-> 	return __filemap_get_folio(mapping, index, fgflags,
-> 			mapping_gfp_mask(mapping));
-> }
+> which seems like far too much for small
+> filesystems with say 100 block groups.
 
-But this helper still seems useful.
+It does make sense.
+
+> I'd rather pick the array size like:
+>
+> min(num_possible_cpus(), sbi->s_groups_count/4)
+>
+> to
+>
+> a) don't have too many slots so we still concentrate big allocations in
+> somewhat limited area of the filesystem (a quarter of block groups here).
+>
+> b) have at most one slot per CPU the machine hardware can in principle
+> support.
+>
+> 								Honza
+
+You're right, we should consider the number of block groups when setting
+the number of global goals.
+
+However, a server's rootfs can often be quite small, perhaps only tens of
+GBs, while having many CPUs. In such cases, sbi->s_groups_count / 4 might
+still limit the filesystem's scalability. Furthermore, after supporting
+LBS, the number of block groups will sharply decrease.
+
+How about we directly use sbi->s_groups_count (which would effectively be
+min(num_possible_cpus(), sbi->s_groups_count)) instead? This would also
+avoid zero values.
+
+
+Cheers,
+Baokun
 
 
