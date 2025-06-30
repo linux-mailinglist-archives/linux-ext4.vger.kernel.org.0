@@ -1,135 +1,113 @@
-Return-Path: <linux-ext4+bounces-8695-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8696-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3DC9AED207
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 02:53:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66DFFAED2EF
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 05:32:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D7DF1892F9A
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 00:54:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA0BF1707E9
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 03:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C368642A80;
-	Mon, 30 Jun 2025 00:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X/CPutkz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265D31A2381;
+	Mon, 30 Jun 2025 03:32:30 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292C82F3E;
-	Mon, 30 Jun 2025 00:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11D312CDAE;
+	Mon, 30 Jun 2025 03:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751244831; cv=none; b=ZkQCUuseiR/184RGsshTJc8QZqncsE0oy08HhsyCjav5Kiayg2makvOvYBQJzIEYDAVU9q8wVzWqXlriaC4vD7AufFL/UXcF3J68fKjxsjb5nFUtsG2OhwVHSgVDdDv9TprSmhAzDckbYBlravNq43LHEY0ku3g/rOIFLRW2qTA=
+	t=1751254349; cv=none; b=GsHeafdBU5AAjizeNEh9BltLRtd3++sjpLVJD19yeAnCpQLnj/6pT+X5Md85UIl0MgT985D6fj0fhYO+hoTwJ15E5VbV9CqJYaIR1xgSMMhPtgMvUuZiVdHAQH53hfjrj7mt9tVVLxnHSiazs8VbtN/voI1bQI2swjKHZVsg3P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751244831; c=relaxed/simple;
-	bh=FKthKZ5AGBI1LPO2Rof+WridS24SjCZIkPO3nQZVzBE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KrUACadZEvMwBIyJJnWPaxS9MmUFOoms1f3cAxktXF5GmtAKN+7VKVk9heqDNpg4wYsYmozpvAeryuG6iWazg1GVln6FulM62dPzF9rvZExAMwGhjByDG8S0tl5O4SUkUux7riz8Ea9F0H+rygm6Ecu1OMclxf+FhX7Bs8ZnyrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X/CPutkz; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2363e973db1so36721155ad.0;
-        Sun, 29 Jun 2025 17:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751244829; x=1751849629; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FKthKZ5AGBI1LPO2Rof+WridS24SjCZIkPO3nQZVzBE=;
-        b=X/CPutkzZO+3DYbnD0re3eWQ7KFEww1oThoIUJbyN3StUvbvl44cN+dUJzDiROom6x
-         dibYdqIMlwU49oCx3IZnqVUKs7dTMuhJ5yFko6U41gnI2u0tHkCJM4l7wTpN9EZrZpk6
-         jq2HqmZt1ObhTkyR1/NwnFSXRKBEVLQkGGQ0a4H8xPbrbpiO2BZc9MRRFbk64nAEgt9x
-         Y+4xLImDTSHNER/3vzEiWBjeJ9S7KWgGuCcKtEpRFDkqd5fwQkwkWhGhN2ei8yE3majI
-         pyxqjFqBB94cu/pI/YVZj/s6Y6sldYFzqjwcK+FFHQBr1zKo2g5+9NM0LYTeZBrNAywB
-         ji2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751244829; x=1751849629;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FKthKZ5AGBI1LPO2Rof+WridS24SjCZIkPO3nQZVzBE=;
-        b=qT9B8xpS2oB63ZGhgHhJGKb21MYIzEbAu3vtbyuj2o6tXP9HFGChglPKYmxYWwjpbx
-         QPTGIsWNlQl667Y1YcPFA8qo1KTilJgZgWSbTce/0f+esco4/+moyRt5nztfA89g89zi
-         hp0UnO6EOjO/LIu0gteJZw/aIk+J78VniTvQJHWwjsc/gUiVHFG8t71CbulmHBmuw8EI
-         IS6CuVkuTMvtbC01iT99GdvKyQNLbCCTUGVP2IZsWRwLS7Pks/LlIH62aiT7HgLLQeLh
-         b0o7bJB+WDSqhivjrVk9Hy9V+gFZdbQSR85q6143neFiTn7EC85LdKUfkrtxmzkYw3mt
-         +tKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV4HMmmjRy0SopXP4hFtHlfnzoSIutVBznRbwrf2iIIMBMSWTb9g136wzibI87pNiomk3DGe5f54hMEMw==@vger.kernel.org, AJvYcCX02GU7goo3iTXGePAzegJrxYnBkNKrBw/XKNTGeEButpG/farcwqQeYTUSkLeeo/+oLUmfNr7GZaY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfId+hfws0zuHK6u8UX3wNzioHSSvUiPrNlviAkmXWEMt6+vqR
-	I6Ja8x43yJiV2BGH+rDgTeWhfBjX3Lc5hnQsAREYEcPZh05TB/MUqgOA
-X-Gm-Gg: ASbGncsg4lL+W3T+xjkzg41vBXHC0ukrN8s5+GlgauSMrV5JNn7N4grU2zu4qJAuF/S
-	XlNmyckUU8L8q4tZps2SZfQhg0bRmbYXQjVdS1iMPaVNfvF8mtjWbG4xdnKH9FDiStsSWLyx5Iu
-	0/TOXpuUrGgHWCYSR1FN0/Mf7LzIbp/x3got6cH4EKyQPDCuT4+QFqHcDQDGpg36EwedDZ1UaSf
-	zN+h1kigONyDaSeRdn5nCWIEdNqx0vHnd3R2zDPWXSgNNowByoo3PtdfW4JbKaOzUsrYWVDOAei
-	ygv6RFb1K9LSPAPZyrblOUF2Kf7V3Oif4ylp2Nz4tTJQmWjKvZltIzWHLH/OCQ==
-X-Google-Smtp-Source: AGHT+IEQbWodGX0rf2OvvWXvNIJP82dLnAuWdeDKxG9HiLhYS/lYFZEU21+vks6d+QYinYUbznlLGg==
-X-Received: by 2002:a17:903:f8d:b0:221:1497:7b08 with SMTP id d9443c01a7336-2390a54c778mr261738635ad.23.1751244829186;
-        Sun, 29 Jun 2025 17:53:49 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23acb2e1a8asm69663575ad.47.2025.06.29.17.53.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Jun 2025 17:53:47 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id E4817420A813; Mon, 30 Jun 2025 07:53:43 +0700 (WIB)
-Date: Mon, 30 Jun 2025 07:53:43 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux ext4 <linux-ext4@vger.kernel.org>
-Cc: Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	"Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH 0/5] ext4 docs toctree reorganization
-Message-ID: <aGHgF0Aa8NlTw6Eh@archie.me>
-References: <20250620105643.25141-2-bagasdotme@gmail.com>
+	s=arc-20240116; t=1751254349; c=relaxed/simple;
+	bh=iqndf9zm7GIRyLdCT5XBDzJBmVTL0GUfiigxCwjbVEw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=hzGKbKmQrDrztclGh5K4a0ozYRNyehkw3j2hp7K15gtyuWTnjeXW5L+6sQLFgHvNI8Ztc/eDscumNmBuRKaXFezOBHb/0jq9LwEjSn7HKstL4cOC1CCLJuQ3+rtWz3iZSmWpOdYuyVUy/X3zC8sIpxsEMBJnvH9jxvisY6ySr1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4bVs7Q31zyz2Cfcw;
+	Mon, 30 Jun 2025 11:28:18 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1DD4E1A016C;
+	Mon, 30 Jun 2025 11:32:18 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.71) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 30 Jun
+ 2025 11:32:17 +0800
+Message-ID: <0bcfc7c6-003f-4b4d-ac65-e01308a74f3b@huawei.com>
+Date: Mon, 30 Jun 2025 11:32:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="c9RWCR0bh8lBIBaX"
-Content-Disposition: inline
-In-Reply-To: <20250620105643.25141-2-bagasdotme@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/16] ext4: remove unnecessary s_mb_last_start
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ojaswin@linux.ibm.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, Baokun Li
+	<libaokun1@huawei.com>
+References: <20250623073304.3275702-1-libaokun1@huawei.com>
+ <20250623073304.3275702-3-libaokun1@huawei.com>
+ <3p5udvc7fgd73kruz563pi4dmc6vjxvszmnegyym2xhuuauw5j@sjudcmk7idht>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <3p5udvc7fgd73kruz563pi4dmc6vjxvszmnegyym2xhuuauw5j@sjudcmk7idht>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
+
+On 2025/6/28 2:15, Jan Kara wrote:
+> On Mon 23-06-25 15:32:50, Baokun Li wrote:
+>> ac->ac_g_ex.fe_start is only used in ext4_mb_find_by_goal(), but STREAM
+>> ALLOC is activated after ext4_mb_find_by_goal() fails, so there's no need
+>> to update ac->ac_g_ex.fe_start, remove the unnecessary s_mb_last_start.
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> I'd just note that ac->ac_g_ex.fe_start is also used in
+> ext4_mb_collect_stats() so this change may impact the statistics gathered
+> there. OTOH it is questionable whether we even want to account streaming
+> allocation as a goal hit... Anyway, I'm fine with this, I'd just mention it
+> in the changelog.
+Yes, I missed ext4_mb_collect_stats(). However, instead of explaining
+it in the changelog, I think it would be better to move the current
+s_bal_goals update to inside or after ext4_mb_find_by_goal().
+
+Then, we could add another variable, such as s_bal_stream_goals, to
+represent the hit count for global goals. This kind of statistic would
+help us fine-tune the logic for optimizing inode goals and global goals.
+
+What are your thoughts on this?
+> Also one nit below but feel free to add:
+>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+Thanks for your review!
+>
+>> @@ -2849,7 +2848,6 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>>   		/* TBD: may be hot point */
+>>   		spin_lock(&sbi->s_md_lock);
+>>   		ac->ac_g_ex.fe_group = sbi->s_mb_last_group;
+>> -		ac->ac_g_ex.fe_start = sbi->s_mb_last_start;
+> Maybe reset ac->ac_g_ex.fe_start to 0 instead of leaving it at some random
+> value? Just for the sake of defensive programming...
+>
+> 								Honza
+
+ac->ac_g_ex.fe_start holds the inode goal's start position, not a random
+value. It's unused after ext4_mb_find_by_goal() (if s_bal_stream_goals is
+added). Thus, I see no need for further modification. We can always re-add
+it if future requirements change.
 
 
---c9RWCR0bh8lBIBaX
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks,
+Baokun
 
-On Fri, Jun 20, 2025 at 05:56:39PM +0700, Bagas Sanjaya wrote:
-> Hi Jon, hi Ted,
->=20
-> While discussing on my previous ext4 docs reorganization attempt
-> by merging contents [1], Jon suggested that considering current docs
-> file structure, a proper toctree would be ideal [2]. So, here's
-> the patchset that does exactly that.
->=20
-> Actual conversion to toctree structure is in [1/5], while the rest
-> is cleanups to make the resulting toctree nicer.
->=20
-
-review ping
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---c9RWCR0bh8lBIBaX
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaGHgEwAKCRD2uYlJVVFO
-o+u2AQD1g2L9ChBvGW4LNkYeldjFp7I7eZw2ZLpoGkN24tpp8wD+P3409BFqlD9K
-fWnBHJJv/Du+6seEQQhFtqrf+auW4Q8=
-=KWON
------END PGP SIGNATURE-----
-
---c9RWCR0bh8lBIBaX--
 
