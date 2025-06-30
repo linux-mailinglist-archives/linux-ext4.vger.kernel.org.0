@@ -1,646 +1,276 @@
-Return-Path: <linux-ext4+bounces-8719-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8720-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1644DAEE5B8
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 19:25:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C11F2AEE5C6
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 19:28:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9081A189E7CE
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 17:24:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 197D418973EA
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 17:29:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53AFD2E5428;
-	Mon, 30 Jun 2025 17:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IhiAAvZ8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2BD2E1C54;
+	Mon, 30 Jun 2025 17:28:39 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF30B2E4258;
-	Mon, 30 Jun 2025 17:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD55228DEE5
+	for <linux-ext4@vger.kernel.org>; Mon, 30 Jun 2025 17:28:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751304250; cv=none; b=ch5e+8o3PDIwnrUS3IMtksN+zmQqRFOEFvV9KLUKAkYKUEBY8/3E+/dsre/YLgnQ4pAnqTPtng5/Y8agQnp2D8f6qXubQg1Uun6FmLN8qV1R96Le+f0vDjXfQq8fbvVD108oyyNeVAphFcnOcI6vEG6REAt7R0BGmb1zfu+ZiaU=
+	t=1751304519; cv=none; b=gl7gTY4ksMhTNqoiUJR16M/YL4fYLfgRGVGpjoaVidT3Z9WaHUbwG3gFGAJNpS8TUnxeD5Abt1sCbGQMRbEfcmb+9Jdb5xu3v3JM3pN+dM9CnKUff+KuqkaGxuYBtW0KnOHmIZrOSvF7whmjZrau4Q0IcLCBwPc/VDh7T+pLd0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751304250; c=relaxed/simple;
-	bh=yp3Er/6VfXzjS/b8G0ZBuHpoMbKRiCHKh33gb8emuDs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NgcimUPJEvZywWQY6IOqKELaJaDPy5IgUTKd9Ni+0UdIB1/0yQ5/fvIv8rb1/2lfBIDJfdUrQJl+ncNnsQd/FbLVyu0Ae9KJ1+EMdMtOMAfFu4b1W9wGUuNC7BwXWA30O6eEyLg69vpRxiYg8EF1pyIa+QkCHnHHr2WmULooh24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IhiAAvZ8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 364FFC4CEF2;
-	Mon, 30 Jun 2025 17:24:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751304249;
-	bh=yp3Er/6VfXzjS/b8G0ZBuHpoMbKRiCHKh33gb8emuDs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IhiAAvZ8/KjMWPMOUgBqbAkqUwqCG6gWYYrdIFia4Va2L7C1B4aTrhrk4LbGz3AzN
-	 id7AydefDEUbdOqs1TkYNEsmfk1gnuUD0uSH/Y0gnQqVXyPQqkdkm8etmjhfxfcW1Y
-	 dGiu9w0Neg1ng/oxnLx8zhwiFmGpibWvlCXYPmMFl6SS7sjnjlKNgcECzkKSdZBESf
-	 RuLUSao3FRztHFngSHv3OaLWkKsQksRHThPLVUtyXCXAFDmhCgtkKu88fEwgVhpAE0
-	 wfwWi4t5MSQwTTuB7YZ+CdGIPnwERs84swWC1E5OV2T47PBXOdF2KWxV0AADqE1Nly
-	 Fld/vgL76xxLQ==
-From: Eric Biggers <ebiggers@kernel.org>
-To: fsverity@lists.linux.dev
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-btrfs@vger.kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 2/2] fsverity: Switch from crypto_shash to SHA-2 library
-Date: Mon, 30 Jun 2025 10:22:24 -0700
-Message-ID: <20250630172224.46909-3-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.50.0
-In-Reply-To: <20250630172224.46909-1-ebiggers@kernel.org>
-References: <20250630172224.46909-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1751304519; c=relaxed/simple;
+	bh=DvEt/ME2bVvlYYwFj2goBLZH0mw+U7nOOeWKccUHuXM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=No65NPgn4PCeOhaXSEftWJpVQmW5IWHFHy/FsiZpnGd/LrDtqa+8Oaw4Tb3sH5o6zG8c6Hftv7+blnjf4hqHvS187HijwmXq7zyptZxhqhzyoS1PilV4aw3K7WwzoAa2WkeX8RHvxZDYVLI3C5WfWnf7+8rakNRMiUkLNOXmeNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ddd5311fd3so22064945ab.3
+        for <linux-ext4@vger.kernel.org>; Mon, 30 Jun 2025 10:28:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751304515; x=1751909315;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aqqXdLIuiWEuc9N8wVH05YmN19CxMNf+yhLVdonB7/4=;
+        b=bvQ3oKvTsx+JVuFeuKK6tfcNIGbAhKMxlpAEnWyOvGh6/gHphPysGzIlfTZtsMv5/3
+         WFnw2x77tq93xHXWfkoniTrWaOkfnHq6uI0bsjEi7RV4s5V3JfSr8UYfjUg267ADQEeE
+         rM7C46Uw9kxmt4wC4xpvhSTJUEOorC6pNkgCKu18jSEd64wGCxT4wJPh8Skf+S6HcNQI
+         EMHDcL3kZ9Ex0TaVV6XWBgkTrrogc9BsusCUKwRcG6Ipww8+Jn6EUTe+xEZC+rEqIWRn
+         FG1e717YubRGq9V+9MwJTgVpm8AJIltqj+xQhzCFBcNFLvpGnU0MsEr6RYqpQuNDHOwA
+         Nlkg==
+X-Forwarded-Encrypted: i=1; AJvYcCWPRmatIdxCLMKqDylbJxTxPz9Z1gnVmfPAozhg2iJauqGlkvE2cZwvE4dMm2ZYjk6ZDBLGtx4uMNUR@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0iR6QU7FaL2RnoA818h9vSbQHQa/7HMpIXoGF3e6iUwC+zdEP
+	N5sykDiCecgA/R6G7q+w22S1xrWTi+fPXIWeLHYtBLLnz8eO+j15VB+YJ1ETVaiF6yrLz8h19gL
+	9tyA+eO3j0smqi2oA/5ugguvIc0Fj+ttQ0nR++D/tU1kS3Y4EBCA5ydjoApc=
+X-Google-Smtp-Source: AGHT+IHEV4mwSFr4PsYOQjv4WFkE4agsYeeL7gfhiYNxhOaMur41YcDDozbQ19opL8QdfX5XKahIH1Ds2nxLvd0sZmckn0cWLfe1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:ca48:0:b0:3df:306f:3b25 with SMTP id
+ e9e14a558f8ab-3df4abac665mr128663025ab.16.1751304514903; Mon, 30 Jun 2025
+ 10:28:34 -0700 (PDT)
+Date: Mon, 30 Jun 2025 10:28:34 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6862c942.a70a0220.2f4de1.002c.GAE@google.com>
+Subject: [syzbot] [ext4?] KASAN: slab-use-after-free Read in __ext4_check_dir_entry
+From: syzbot <syzbot+5322c5c260eb44d209ed@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-fsverity supports two hash algorithms: SHA-256 and SHA-512.  Since both
-of these have a library API now, just use the library API instead of
-crypto_shash.  Even with multiple algorithms, the library-based code
-still ends up being quite a bit simpler, due to how clumsy the
-old-school crypto API is.  The library-based code is also more
-efficient, since it avoids overheads such as indirect calls.
+Hello,
 
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+syzbot found the following issue on:
+
+HEAD commit:    afa9a6f4f574 Merge tag 'staging-6.16-rc4' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1220a770580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=28cc6f051378bb16
+dashboard link: https://syzkaller.appspot.com/bug?extid=5322c5c260eb44d209ed
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=134c188c580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/234fe6db1565/disk-afa9a6f4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/49ab9f2eb5dc/vmlinux-afa9a6f4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8e64db09b112/bzImage-afa9a6f4.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/7bfd5fd5e1c5/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=12c36982580000)
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5322c5c260eb44d209ed@syzkaller.appspotmail.com
+
+EXT4-fs warning (device loop1): dx_probe:801: inode #2: comm syz.1.21: Unrecognised inode hash code 4
+EXT4-fs warning (device loop1): dx_probe:934: inode #2: comm syz.1.21: Corrupt directory, running e2fsck is recommended
+==================================================================
+BUG: KASAN: slab-use-after-free in __ext4_check_dir_entry+0x708/0x8a0 fs/ext4/dir.c:85
+Read of size 2 at addr ffff8880601f4003 by task syz.1.21/6095
+
+CPU: 0 UID: 0 PID: 6095 Comm: syz.1.21 Not tainted 6.16.0-rc3-syzkaller-00346-gafa9a6f4f574 #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:408 [inline]
+ print_report+0xd2/0x2b0 mm/kasan/report.c:521
+ kasan_report+0x118/0x150 mm/kasan/report.c:634
+ __ext4_check_dir_entry+0x708/0x8a0 fs/ext4/dir.c:85
+ ext4_readdir+0x1299/0x3b60 fs/ext4/dir.c:262
+ iterate_dir+0x5af/0x770 fs/readdir.c:108
+ __do_sys_getdents64 fs/readdir.c:410 [inline]
+ __se_sys_getdents64+0xe4/0x260 fs/readdir.c:396
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f2ff398e929
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f2ff48d9038 EFLAGS: 00000246 ORIG_RAX: 00000000000000d9
+RAX: ffffffffffffffda RBX: 00007f2ff3bb5fa0 RCX: 00007f2ff398e929
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000006
+RBP: 00007f2ff3a10b39 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f2ff3bb5fa0 R15: 00007ffd14fba298
+ </TASK>
+
+Allocated by task 6097:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
+ __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:394
+ kasan_kmalloc include/linux/kasan.h:260 [inline]
+ __do_kmalloc_node mm/slub.c:4328 [inline]
+ __kmalloc_noprof+0x27a/0x4f0 mm/slub.c:4340
+ kmalloc_noprof include/linux/slab.h:909 [inline]
+ kzalloc_noprof include/linux/slab.h:1039 [inline]
+ tomoyo_encode2 security/tomoyo/realpath.c:45 [inline]
+ tomoyo_encode+0x28b/0x550 security/tomoyo/realpath.c:80
+ tomoyo_realpath_from_path+0x58d/0x5d0 security/tomoyo/realpath.c:283
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x1c1/0x3b0 security/tomoyo/file.c:771
+ security_file_open+0xb1/0x270 security/security.c:3114
+ do_dentry_open+0x35e/0x1970 fs/open.c:941
+ vfs_open+0x3b/0x340 fs/open.c:1094
+ do_open fs/namei.c:3896 [inline]
+ path_openat+0x2ee5/0x3830 fs/namei.c:4055
+ do_filp_open+0x1fa/0x410 fs/namei.c:4082
+ do_sys_openat2+0x121/0x1c0 fs/open.c:1437
+ do_sys_open fs/open.c:1452 [inline]
+ __do_sys_openat fs/open.c:1468 [inline]
+ __se_sys_openat fs/open.c:1463 [inline]
+ __x64_sys_openat+0x138/0x170 fs/open.c:1463
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Freed by task 6097:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+ kasan_save_free_info+0x46/0x50 mm/kasan/generic.c:576
+ poison_slab_object mm/kasan/common.c:247 [inline]
+ __kasan_slab_free+0x62/0x70 mm/kasan/common.c:264
+ kasan_slab_free include/linux/kasan.h:233 [inline]
+ slab_free_hook mm/slub.c:2381 [inline]
+ slab_free mm/slub.c:4643 [inline]
+ kfree+0x18e/0x440 mm/slub.c:4842
+ tomoyo_check_open_permission+0x2c2/0x3b0 security/tomoyo/file.c:786
+ security_file_open+0xb1/0x270 security/security.c:3114
+ do_dentry_open+0x35e/0x1970 fs/open.c:941
+ vfs_open+0x3b/0x340 fs/open.c:1094
+ do_open fs/namei.c:3896 [inline]
+ path_openat+0x2ee5/0x3830 fs/namei.c:4055
+ do_filp_open+0x1fa/0x410 fs/namei.c:4082
+ do_sys_openat2+0x121/0x1c0 fs/open.c:1437
+ do_sys_open fs/open.c:1452 [inline]
+ __do_sys_openat fs/open.c:1468 [inline]
+ __se_sys_openat fs/open.c:1463 [inline]
+ __x64_sys_openat+0x138/0x170 fs/open.c:1463
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff8880601f4000
+ which belongs to the cache kmalloc-32 of size 32
+The buggy address is located 3 bytes inside of
+ freed 32-byte region [ffff8880601f4000, ffff8880601f4020)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x601f4
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 00fff00000000000 ffff88801a441780 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000400040 00000000f5000000 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x52c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP), pid 6097, tgid 6097 (modprobe), ts 96501120570, free_ts 85677675649
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1704
+ prep_new_page mm/page_alloc.c:1712 [inline]
+ get_page_from_freelist+0x21d5/0x22b0 mm/page_alloc.c:3669
+ __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:4959
+ alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2419
+ alloc_slab_page mm/slub.c:2451 [inline]
+ allocate_slab+0x8a/0x3b0 mm/slub.c:2619
+ new_slab mm/slub.c:2673 [inline]
+ ___slab_alloc+0xbfc/0x1480 mm/slub.c:3859
+ __slab_alloc mm/slub.c:3949 [inline]
+ __slab_alloc_node mm/slub.c:4024 [inline]
+ slab_alloc_node mm/slub.c:4185 [inline]
+ __do_kmalloc_node mm/slub.c:4327 [inline]
+ __kmalloc_noprof+0x305/0x4f0 mm/slub.c:4340
+ kmalloc_noprof include/linux/slab.h:909 [inline]
+ kzalloc_noprof include/linux/slab.h:1039 [inline]
+ tomoyo_encode2 security/tomoyo/realpath.c:45 [inline]
+ tomoyo_encode+0x28b/0x550 security/tomoyo/realpath.c:80
+ tomoyo_realpath_from_path+0x58d/0x5d0 security/tomoyo/realpath.c:283
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x1c1/0x3b0 security/tomoyo/file.c:771
+ security_file_open+0xb1/0x270 security/security.c:3114
+ do_dentry_open+0x35e/0x1970 fs/open.c:941
+ vfs_open+0x3b/0x340 fs/open.c:1094
+ do_open fs/namei.c:3896 [inline]
+ path_openat+0x2ee5/0x3830 fs/namei.c:4055
+ do_filp_open+0x1fa/0x410 fs/namei.c:4082
+ do_sys_openat2+0x121/0x1c0 fs/open.c:1437
+page last free pid 5877 tgid 5877 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1248 [inline]
+ __free_frozen_pages+0xc65/0xe60 mm/page_alloc.c:2706
+ vfree+0x25a/0x400 mm/vmalloc.c:3426
+ kcov_put kernel/kcov.c:439 [inline]
+ kcov_close+0x28/0x50 kernel/kcov.c:535
+ __fput+0x44c/0xa70 fs/file_table.c:465
+ task_work_run+0x1d4/0x260 kernel/task_work.c:227
+ exit_task_work include/linux/task_work.h:40 [inline]
+ do_exit+0x6b5/0x22e0 kernel/exit.c:964
+ do_group_exit+0x21c/0x2d0 kernel/exit.c:1105
+ get_signal+0x125e/0x1310 kernel/signal.c:3034
+ arch_do_signal_or_restart+0x9a/0x750 arch/x86/kernel/signal.c:337
+ exit_to_user_mode_loop+0x75/0x110 kernel/entry/common.c:111
+ exit_to_user_mode_prepare include/linux/entry-common.h:330 [inline]
+ syscall_exit_to_user_mode_work include/linux/entry-common.h:414 [inline]
+ syscall_exit_to_user_mode include/linux/entry-common.h:449 [inline]
+ do_syscall_64+0x2bd/0x3b0 arch/x86/entry/syscall_64.c:100
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Memory state around the buggy address:
+ ffff8880601f3f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff8880601f3f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff8880601f4000: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+                   ^
+ ffff8880601f4080: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+ ffff8880601f4100: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+==================================================================
+
+
 ---
- Documentation/filesystems/fsverity.rst |   3 +-
- fs/verity/Kconfig                      |   6 +-
- fs/verity/enable.c                     |   8 +-
- fs/verity/fsverity_private.h           |  24 +--
- fs/verity/hash_algs.c                  | 194 +++++++++----------------
- fs/verity/open.c                       |  36 ++---
- fs/verity/verify.c                     |   7 +-
- 7 files changed, 102 insertions(+), 176 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
-index dacdbc1149e67..412cf11e32985 100644
---- a/Documentation/filesystems/fsverity.rst
-+++ b/Documentation/filesystems/fsverity.rst
-@@ -183,12 +183,11 @@ FS_IOC_ENABLE_VERITY can fail with the following errors:
- - ``EKEYREJECTED``: the builtin signature doesn't match the file
- - ``EMSGSIZE``: the salt or builtin signature is too long
- - ``ENOKEY``: the ".fs-verity" keyring doesn't contain the certificate
-   needed to verify the builtin signature
- - ``ENOPKG``: fs-verity recognizes the hash algorithm, but it's not
--  available in the kernel's crypto API as currently configured (e.g.
--  for SHA-512, missing CONFIG_CRYPTO_SHA512).
-+  available in the kernel as currently configured
- - ``ENOTTY``: this type of filesystem does not implement fs-verity
- - ``EOPNOTSUPP``: the kernel was not configured with fs-verity
-   support; or the filesystem superblock has not had the 'verity'
-   feature enabled on it; or the filesystem does not support fs-verity
-   on this file.  (See `Filesystem support`_.)
-diff --git a/fs/verity/Kconfig b/fs/verity/Kconfig
-index 40569d3527a71..76d1c5971b826 100644
---- a/fs/verity/Kconfig
-+++ b/fs/verity/Kconfig
-@@ -1,14 +1,12 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- config FS_VERITY
- 	bool "FS Verity (read-only file-based authenticity protection)"
--	select CRYPTO
- 	select CRYPTO_HASH_INFO
--	# SHA-256 is selected as it's intended to be the default hash algorithm.
--	# To avoid bloat, other wanted algorithms must be selected explicitly.
--	select CRYPTO_SHA256
-+	select CRYPTO_LIB_SHA256
-+	select CRYPTO_LIB_SHA512
- 	help
- 	  This option enables fs-verity.  fs-verity is the dm-verity
- 	  mechanism implemented at the file level.  On supported
- 	  filesystems (currently ext4, f2fs, and btrfs), userspace can
- 	  use an ioctl to enable verity for a file, which causes the
-diff --git a/fs/verity/enable.c b/fs/verity/enable.c
-index c284f46d1b535..0816ec295c380 100644
---- a/fs/verity/enable.c
-+++ b/fs/verity/enable.c
-@@ -5,11 +5,10 @@
-  * Copyright 2019 Google LLC
-  */
- 
- #include "fsverity_private.h"
- 
--#include <crypto/hash.h>
- #include <linux/mount.h>
- #include <linux/sched/signal.h>
- #include <linux/uaccess.h>
- 
- struct block_buffer {
-@@ -22,11 +21,10 @@ struct block_buffer {
- static int hash_one_block(struct inode *inode,
- 			  const struct merkle_tree_params *params,
- 			  struct block_buffer *cur)
- {
- 	struct block_buffer *next = cur + 1;
--	int err;
- 
- 	/*
- 	 * Safety check to prevent a buffer overflow in case of a filesystem bug
- 	 * that allows the file size to change despite deny_write_access(), or a
- 	 * bug in the Merkle tree logic itself
-@@ -35,14 +33,12 @@ static int hash_one_block(struct inode *inode,
- 		return -EINVAL;
- 
- 	/* Zero-pad the block if it's shorter than the block size. */
- 	memset(&cur->data[cur->filled], 0, params->block_size - cur->filled);
- 
--	err = fsverity_hash_block(params, inode, cur->data,
--				  &next->data[next->filled]);
--	if (err)
--		return err;
-+	fsverity_hash_block(params, inode, cur->data,
-+			    &next->data[next->filled]);
- 	next->filled += params->digest_size;
- 	cur->filled = 0;
- 	return 0;
- }
- 
-diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-index b3506f56e180b..5fe854a5b9ad3 100644
---- a/fs/verity/fsverity_private.h
-+++ b/fs/verity/fsverity_private.h
-@@ -18,25 +18,30 @@
-  */
- #define FS_VERITY_MAX_LEVELS		8
- 
- /* A hash algorithm supported by fs-verity */
- struct fsverity_hash_alg {
--	struct crypto_shash *tfm; /* hash tfm, allocated on demand */
- 	const char *name;	  /* crypto API name, e.g. sha256 */
- 	unsigned int digest_size; /* digest size in bytes, e.g. 32 for SHA-256 */
- 	unsigned int block_size;  /* block size in bytes, e.g. 64 for SHA-256 */
- 	/*
- 	 * The HASH_ALGO_* constant for this algorithm.  This is different from
- 	 * FS_VERITY_HASH_ALG_*, which uses a different numbering scheme.
- 	 */
- 	enum hash_algo algo_id;
- };
- 
-+union fsverity_hash_ctx {
-+	struct sha256_ctx sha256;
-+	struct sha512_ctx sha512;
-+};
-+
- /* Merkle tree parameters: hash algorithm, initial hash state, and topology */
- struct merkle_tree_params {
- 	const struct fsverity_hash_alg *hash_alg; /* the hash algorithm */
--	const u8 *hashstate;		/* initial hash state or NULL */
-+	/* initial hash state if salted, NULL if unsalted */
-+	const union fsverity_hash_ctx *hashstate;
- 	unsigned int digest_size;	/* same as hash_alg->digest_size */
- 	unsigned int block_size;	/* size of data and tree blocks */
- 	unsigned int hashes_per_block;	/* number of hashes per tree block */
- 	unsigned int blocks_per_page;	/* PAGE_SIZE / block_size */
- 	u8 log_digestsize;		/* log2(digest_size) */
-@@ -74,20 +79,21 @@ struct fsverity_info {
- #define FS_VERITY_MAX_SIGNATURE_SIZE	(FS_VERITY_MAX_DESCRIPTOR_SIZE - \
- 					 sizeof(struct fsverity_descriptor))
- 
- /* hash_algs.c */
- 
--extern struct fsverity_hash_alg fsverity_hash_algs[];
-+extern const struct fsverity_hash_alg fsverity_hash_algs[];
- 
- const struct fsverity_hash_alg *fsverity_get_hash_alg(const struct inode *inode,
- 						      unsigned int num);
--const u8 *fsverity_prepare_hash_state(const struct fsverity_hash_alg *alg,
--				      const u8 *salt, size_t salt_size);
--int fsverity_hash_block(const struct merkle_tree_params *params,
--			const struct inode *inode, const void *data, u8 *out);
--int fsverity_hash_buffer(const struct fsverity_hash_alg *alg,
--			 const void *data, size_t size, u8 *out);
-+union fsverity_hash_ctx *
-+fsverity_prepare_hash_state(const struct fsverity_hash_alg *alg,
-+			    const u8 *salt, size_t salt_size);
-+void fsverity_hash_block(const struct merkle_tree_params *params,
-+			 const struct inode *inode, const void *data, u8 *out);
-+void fsverity_hash_buffer(const struct fsverity_hash_alg *alg,
-+			  const void *data, size_t size, u8 *out);
- void __init fsverity_check_hash_algs(void);
- 
- /* init.c */
- 
- void __printf(3, 4) __cold
-diff --git a/fs/verity/hash_algs.c b/fs/verity/hash_algs.c
-index 6b08b1d9a7d7c..9bb3c6344907e 100644
---- a/fs/verity/hash_algs.c
-+++ b/fs/verity/hash_algs.c
-@@ -5,14 +5,12 @@
-  * Copyright 2019 Google LLC
-  */
- 
- #include "fsverity_private.h"
- 
--#include <crypto/hash.h>
--
- /* The hash algorithms supported by fs-verity */
--struct fsverity_hash_alg fsverity_hash_algs[] = {
-+const struct fsverity_hash_alg fsverity_hash_algs[] = {
- 	[FS_VERITY_HASH_ALG_SHA256] = {
- 		.name = "sha256",
- 		.digest_size = SHA256_DIGEST_SIZE,
- 		.block_size = SHA256_BLOCK_SIZE,
- 		.algo_id = HASH_ALGO_SHA256,
-@@ -23,144 +21,76 @@ struct fsverity_hash_alg fsverity_hash_algs[] = {
- 		.block_size = SHA512_BLOCK_SIZE,
- 		.algo_id = HASH_ALGO_SHA512,
- 	},
- };
- 
--static DEFINE_MUTEX(fsverity_hash_alg_init_mutex);
--
- /**
-- * fsverity_get_hash_alg() - validate and prepare a hash algorithm
-+ * fsverity_get_hash_alg() - get a hash algorithm by number
-  * @inode: optional inode for logging purposes
-  * @num: the hash algorithm number
-  *
-- * Get the struct fsverity_hash_alg for the given hash algorithm number, and
-- * ensure it has a hash transform ready to go.  The hash transforms are
-- * allocated on-demand so that we don't waste resources unnecessarily, and
-- * because the crypto modules may be initialized later than fs/verity/.
-+ * Get the struct fsverity_hash_alg for the given hash algorithm number.
-  *
-- * Return: pointer to the hash alg on success, else an ERR_PTR()
-+ * Return: pointer to the hash alg if it's known, otherwise NULL.
-  */
- const struct fsverity_hash_alg *fsverity_get_hash_alg(const struct inode *inode,
- 						      unsigned int num)
- {
--	struct fsverity_hash_alg *alg;
--	struct crypto_shash *tfm;
--	int err;
--
- 	if (num >= ARRAY_SIZE(fsverity_hash_algs) ||
- 	    !fsverity_hash_algs[num].name) {
- 		fsverity_warn(inode, "Unknown hash algorithm number: %u", num);
--		return ERR_PTR(-EINVAL);
--	}
--	alg = &fsverity_hash_algs[num];
--
--	/* pairs with smp_store_release() below */
--	if (likely(smp_load_acquire(&alg->tfm) != NULL))
--		return alg;
--
--	mutex_lock(&fsverity_hash_alg_init_mutex);
--
--	if (alg->tfm != NULL)
--		goto out_unlock;
--
--	tfm = crypto_alloc_shash(alg->name, 0, 0);
--	if (IS_ERR(tfm)) {
--		if (PTR_ERR(tfm) == -ENOENT) {
--			fsverity_warn(inode,
--				      "Missing crypto API support for hash algorithm \"%s\"",
--				      alg->name);
--			alg = ERR_PTR(-ENOPKG);
--			goto out_unlock;
--		}
--		fsverity_err(inode,
--			     "Error allocating hash algorithm \"%s\": %ld",
--			     alg->name, PTR_ERR(tfm));
--		alg = ERR_CAST(tfm);
--		goto out_unlock;
-+		return NULL;
- 	}
--
--	err = -EINVAL;
--	if (WARN_ON_ONCE(alg->digest_size != crypto_shash_digestsize(tfm)))
--		goto err_free_tfm;
--	if (WARN_ON_ONCE(alg->block_size != crypto_shash_blocksize(tfm)))
--		goto err_free_tfm;
--
--	pr_info("%s using implementation \"%s\"\n",
--		alg->name, crypto_shash_driver_name(tfm));
--
--	/* pairs with smp_load_acquire() above */
--	smp_store_release(&alg->tfm, tfm);
--	goto out_unlock;
--
--err_free_tfm:
--	crypto_free_shash(tfm);
--	alg = ERR_PTR(err);
--out_unlock:
--	mutex_unlock(&fsverity_hash_alg_init_mutex);
--	return alg;
-+	return &fsverity_hash_algs[num];
- }
- 
- /**
-  * fsverity_prepare_hash_state() - precompute the initial hash state
-  * @alg: hash algorithm
-  * @salt: a salt which is to be prepended to all data to be hashed
-- * @salt_size: salt size in bytes, possibly 0
-+ * @salt_size: salt size in bytes
-  *
-- * Return: NULL if the salt is empty, otherwise the kmalloc()'ed precomputed
-- *	   initial hash state on success or an ERR_PTR() on failure.
-+ * Return: the kmalloc()'ed initial hash state, or NULL if out of memory.
-  */
--const u8 *fsverity_prepare_hash_state(const struct fsverity_hash_alg *alg,
--				      const u8 *salt, size_t salt_size)
-+union fsverity_hash_ctx *
-+fsverity_prepare_hash_state(const struct fsverity_hash_alg *alg,
-+			    const u8 *salt, size_t salt_size)
- {
--	u8 *hashstate = NULL;
--	SHASH_DESC_ON_STACK(desc, alg->tfm);
- 	u8 *padded_salt = NULL;
- 	size_t padded_salt_size;
--	int err;
--
--	desc->tfm = alg->tfm;
--
--	if (salt_size == 0)
--		return NULL;
--
--	hashstate = kmalloc(crypto_shash_statesize(alg->tfm), GFP_KERNEL);
--	if (!hashstate)
--		return ERR_PTR(-ENOMEM);
-+	union fsverity_hash_ctx ctx;
-+	void *res = NULL;
- 
- 	/*
- 	 * Zero-pad the salt to the next multiple of the input size of the hash
- 	 * algorithm's compression function, e.g. 64 bytes for SHA-256 or 128
- 	 * bytes for SHA-512.  This ensures that the hash algorithm won't have
- 	 * any bytes buffered internally after processing the salt, thus making
- 	 * salted hashing just as fast as unsalted hashing.
- 	 */
- 	padded_salt_size = round_up(salt_size, alg->block_size);
- 	padded_salt = kzalloc(padded_salt_size, GFP_KERNEL);
--	if (!padded_salt) {
--		err = -ENOMEM;
--		goto err_free;
--	}
-+	if (!padded_salt)
-+		return NULL;
- 	memcpy(padded_salt, salt, salt_size);
--	err = crypto_shash_init(desc);
--	if (err)
--		goto err_free;
--
--	err = crypto_shash_update(desc, padded_salt, padded_salt_size);
--	if (err)
--		goto err_free;
--
--	err = crypto_shash_export(desc, hashstate);
--	if (err)
--		goto err_free;
--out:
--	kfree(padded_salt);
--	return hashstate;
- 
--err_free:
--	kfree(hashstate);
--	hashstate = ERR_PTR(err);
--	goto out;
-+	switch (alg->algo_id) {
-+	case HASH_ALGO_SHA256:
-+		sha256_init(&ctx.sha256);
-+		sha256_update(&ctx.sha256, padded_salt, padded_salt_size);
-+		res = kmemdup(&ctx.sha256, sizeof(ctx.sha256), GFP_KERNEL);
-+		break;
-+	case HASH_ALGO_SHA512:
-+		sha512_init(&ctx.sha512);
-+		sha512_update(&ctx.sha512, padded_salt, padded_salt_size);
-+		res = kmemdup(&ctx.sha512, sizeof(ctx.sha512), GFP_KERNEL);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+	}
-+	kfree(padded_salt);
-+	return res;
- }
- 
- /**
-  * fsverity_hash_block() - hash a single data or hash block
-  * @params: the Merkle tree's parameters
-@@ -168,50 +98,58 @@ const u8 *fsverity_prepare_hash_state(const struct fsverity_hash_alg *alg,
-  * @data: virtual address of a buffer containing the block to hash
-  * @out: output digest, size 'params->digest_size' bytes
-  *
-  * Hash a single data or hash block.  The hash is salted if a salt is specified
-  * in the Merkle tree parameters.
-- *
-- * Return: 0 on success, -errno on failure
-  */
--int fsverity_hash_block(const struct merkle_tree_params *params,
--			const struct inode *inode, const void *data, u8 *out)
-+void fsverity_hash_block(const struct merkle_tree_params *params,
-+			 const struct inode *inode, const void *data, u8 *out)
- {
--	SHASH_DESC_ON_STACK(desc, params->hash_alg->tfm);
--	int err;
--
--	desc->tfm = params->hash_alg->tfm;
--
--	if (params->hashstate) {
--		err = crypto_shash_import(desc, params->hashstate);
--		if (err) {
--			fsverity_err(inode,
--				     "Error %d importing hash state", err);
--			return err;
--		}
--		err = crypto_shash_finup(desc, data, params->block_size, out);
--	} else {
--		err = crypto_shash_digest(desc, data, params->block_size, out);
-+	union fsverity_hash_ctx ctx;
-+
-+	if (!params->hashstate) {
-+		fsverity_hash_buffer(params->hash_alg, data, params->block_size,
-+				     out);
-+		return;
-+	}
-+
-+	switch (params->hash_alg->algo_id) {
-+	case HASH_ALGO_SHA256:
-+		ctx.sha256 = params->hashstate->sha256;
-+		sha256_update(&ctx.sha256, data, params->block_size);
-+		sha256_final(&ctx.sha256, out);
-+		return;
-+	case HASH_ALGO_SHA512:
-+		ctx.sha512 = params->hashstate->sha512;
-+		sha512_update(&ctx.sha512, data, params->block_size);
-+		sha512_final(&ctx.sha512, out);
-+		return;
-+	default:
-+		BUG();
- 	}
--	if (err)
--		fsverity_err(inode, "Error %d computing block hash", err);
--	return err;
- }
- 
- /**
-  * fsverity_hash_buffer() - hash some data
-  * @alg: the hash algorithm to use
-  * @data: the data to hash
-  * @size: size of data to hash, in bytes
-  * @out: output digest, size 'alg->digest_size' bytes
-- *
-- * Return: 0 on success, -errno on failure
-  */
--int fsverity_hash_buffer(const struct fsverity_hash_alg *alg,
--			 const void *data, size_t size, u8 *out)
-+void fsverity_hash_buffer(const struct fsverity_hash_alg *alg,
-+			  const void *data, size_t size, u8 *out)
- {
--	return crypto_shash_tfm_digest(alg->tfm, data, size, out);
-+	switch (alg->algo_id) {
-+	case HASH_ALGO_SHA256:
-+		sha256(data, size, out);
-+		return;
-+	case HASH_ALGO_SHA512:
-+		sha512(data, size, out);
-+		return;
-+	default:
-+		BUG();
-+	}
- }
- 
- void __init fsverity_check_hash_algs(void)
- {
- 	size_t i;
-diff --git a/fs/verity/open.c b/fs/verity/open.c
-index fdeb95eca3af3..0604cebe194cd 100644
---- a/fs/verity/open.c
-+++ b/fs/verity/open.c
-@@ -40,22 +40,22 @@ int fsverity_init_merkle_tree_params(struct merkle_tree_params *params,
- 	int level;
- 
- 	memset(params, 0, sizeof(*params));
- 
- 	hash_alg = fsverity_get_hash_alg(inode, hash_algorithm);
--	if (IS_ERR(hash_alg))
--		return PTR_ERR(hash_alg);
-+	if (!hash_alg)
-+		return -EINVAL;
- 	params->hash_alg = hash_alg;
- 	params->digest_size = hash_alg->digest_size;
- 
--	params->hashstate = fsverity_prepare_hash_state(hash_alg, salt,
--							salt_size);
--	if (IS_ERR(params->hashstate)) {
--		err = PTR_ERR(params->hashstate);
--		params->hashstate = NULL;
--		fsverity_err(inode, "Error %d preparing hash state", err);
--		goto out_err;
-+	if (salt_size) {
-+		params->hashstate =
-+			fsverity_prepare_hash_state(hash_alg, salt, salt_size);
-+		if (!params->hashstate) {
-+			err = -ENOMEM;
-+			goto out_err;
-+		}
- 	}
- 
- 	/*
- 	 * fs/verity/ directly assumes that the Merkle tree block size is a
- 	 * power of 2 less than or equal to PAGE_SIZE.  Another restriction
-@@ -156,22 +156,19 @@ int fsverity_init_merkle_tree_params(struct merkle_tree_params *params,
- 
- /*
-  * Compute the file digest by hashing the fsverity_descriptor excluding the
-  * builtin signature and with the sig_size field set to 0.
-  */
--static int compute_file_digest(const struct fsverity_hash_alg *hash_alg,
--			       struct fsverity_descriptor *desc,
--			       u8 *file_digest)
-+static void compute_file_digest(const struct fsverity_hash_alg *hash_alg,
-+				struct fsverity_descriptor *desc,
-+				u8 *file_digest)
- {
- 	__le32 sig_size = desc->sig_size;
--	int err;
- 
- 	desc->sig_size = 0;
--	err = fsverity_hash_buffer(hash_alg, desc, sizeof(*desc), file_digest);
-+	fsverity_hash_buffer(hash_alg, desc, sizeof(*desc), file_digest);
- 	desc->sig_size = sig_size;
--
--	return err;
- }
- 
- /*
-  * Create a new fsverity_info from the given fsverity_descriptor (with optional
-  * appended builtin signature), and check the signature if present.  The
-@@ -199,16 +196,11 @@ struct fsverity_info *fsverity_create_info(const struct inode *inode,
- 		goto fail;
- 	}
- 
- 	memcpy(vi->root_hash, desc->root_hash, vi->tree_params.digest_size);
- 
--	err = compute_file_digest(vi->tree_params.hash_alg, desc,
--				  vi->file_digest);
--	if (err) {
--		fsverity_err(inode, "Error %d computing file digest", err);
--		goto fail;
--	}
-+	compute_file_digest(vi->tree_params.hash_alg, desc, vi->file_digest);
- 
- 	err = fsverity_verify_signature(vi, desc->signature,
- 					le32_to_cpu(desc->sig_size));
- 	if (err)
- 		goto fail;
-diff --git a/fs/verity/verify.c b/fs/verity/verify.c
-index 4fcad0825a120..481a381128cb9 100644
---- a/fs/verity/verify.c
-+++ b/fs/verity/verify.c
-@@ -5,11 +5,10 @@
-  * Copyright 2019 Google LLC
-  */
- 
- #include "fsverity_private.h"
- 
--#include <crypto/hash.h>
- #include <linux/bio.h>
- 
- static struct workqueue_struct *fsverity_read_workqueue;
- 
- /*
-@@ -200,12 +199,11 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
- 		struct page *hpage = hblocks[level - 1].page;
- 		const void *haddr = hblocks[level - 1].addr;
- 		unsigned long hblock_idx = hblocks[level - 1].index;
- 		unsigned int hoffset = hblocks[level - 1].hoffset;
- 
--		if (fsverity_hash_block(params, inode, haddr, real_hash) != 0)
--			goto error;
-+		fsverity_hash_block(params, inode, haddr, real_hash);
- 		if (memcmp(want_hash, real_hash, hsize) != 0)
- 			goto corrupted;
- 		/*
- 		 * Mark the hash block as verified.  This must be atomic and
- 		 * idempotent, as the same hash block might be verified by
-@@ -220,12 +218,11 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
- 		kunmap_local(haddr);
- 		put_page(hpage);
- 	}
- 
- 	/* Finally, verify the data block. */
--	if (fsverity_hash_block(params, inode, data, real_hash) != 0)
--		goto error;
-+	fsverity_hash_block(params, inode, data, real_hash);
- 	if (memcmp(want_hash, real_hash, hsize) != 0)
- 		goto corrupted;
- 	return true;
- 
- corrupted:
--- 
-2.50.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
