@@ -1,94 +1,135 @@
-Return-Path: <linux-ext4+bounces-8694-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8695-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF059AECB5D
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Jun 2025 07:10:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3DC9AED207
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 02:53:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 309ED3B7C64
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Jun 2025 05:09:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D7DF1892F9A
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Jun 2025 00:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5D21D7995;
-	Sun, 29 Jun 2025 05:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C368642A80;
+	Mon, 30 Jun 2025 00:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X/CPutkz"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D902319ABD1
-	for <linux-ext4@vger.kernel.org>; Sun, 29 Jun 2025 05:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292C82F3E;
+	Mon, 30 Jun 2025 00:53:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751173804; cv=none; b=R9qpbJmvpYsBrmnoWZdqHmwDlLirXf8G9VFxrqwujcbjUC0N5p29Oe41AvMj7fhns3S5h8ikMy2ZUXpCOf2PgKHSFu8c2XWyxgde6uMCilCPSOeYDwd+jXLQ2kW/Fd4U358UJ+V93ve6xxiHL7bEiudKPoSQgxx6M/1EQOCPpE4=
+	t=1751244831; cv=none; b=ZkQCUuseiR/184RGsshTJc8QZqncsE0oy08HhsyCjav5Kiayg2makvOvYBQJzIEYDAVU9q8wVzWqXlriaC4vD7AufFL/UXcF3J68fKjxsjb5nFUtsG2OhwVHSgVDdDv9TprSmhAzDckbYBlravNq43LHEY0ku3g/rOIFLRW2qTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751173804; c=relaxed/simple;
-	bh=aNiR3Lw9MNDSlRocyMPoiz+Do8n0Kkd/i/v0ChqN9+Y=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=YRukpj9Mjl8xufJljALtwdkljvRWXzbCldRNM693yCmdxY8y93fyMLswcfAdjqhAPfy+VIttiUudZiFp92oBKIJCM8ffRK1iGBxkXZCYqPJ4eca4afWMQ6Jx1DWDVKesxPx8q5iSeNcMSMIUpWDHdgOVvKcTfMFQrRXFUtChD3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3ddc5137992so13115595ab.2
-        for <linux-ext4@vger.kernel.org>; Sat, 28 Jun 2025 22:10:02 -0700 (PDT)
+	s=arc-20240116; t=1751244831; c=relaxed/simple;
+	bh=FKthKZ5AGBI1LPO2Rof+WridS24SjCZIkPO3nQZVzBE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KrUACadZEvMwBIyJJnWPaxS9MmUFOoms1f3cAxktXF5GmtAKN+7VKVk9heqDNpg4wYsYmozpvAeryuG6iWazg1GVln6FulM62dPzF9rvZExAMwGhjByDG8S0tl5O4SUkUux7riz8Ea9F0H+rygm6Ecu1OMclxf+FhX7Bs8ZnyrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X/CPutkz; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2363e973db1so36721155ad.0;
+        Sun, 29 Jun 2025 17:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751244829; x=1751849629; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FKthKZ5AGBI1LPO2Rof+WridS24SjCZIkPO3nQZVzBE=;
+        b=X/CPutkzZO+3DYbnD0re3eWQ7KFEww1oThoIUJbyN3StUvbvl44cN+dUJzDiROom6x
+         dibYdqIMlwU49oCx3IZnqVUKs7dTMuhJ5yFko6U41gnI2u0tHkCJM4l7wTpN9EZrZpk6
+         jq2HqmZt1ObhTkyR1/NwnFSXRKBEVLQkGGQ0a4H8xPbrbpiO2BZc9MRRFbk64nAEgt9x
+         Y+4xLImDTSHNER/3vzEiWBjeJ9S7KWgGuCcKtEpRFDkqd5fwQkwkWhGhN2ei8yE3majI
+         pyxqjFqBB94cu/pI/YVZj/s6Y6sldYFzqjwcK+FFHQBr1zKo2g5+9NM0LYTeZBrNAywB
+         ji2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751173802; x=1751778602;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xfAPSBFodS1baEzZSVSrOtDU6GtBDxIYvoZte8GGu3Q=;
-        b=NNu951EU47wtTlbSvE+NheWrWxCN5A/ZE3xeSZ6g/j/UTCkNAvRe9nL56VBobdjRRj
-         r/e/FpxRyS+K9yUueJvH2eWtwxixuHK0grA7BcQxhvtqtXMGXpy8Eyf5C9ZnC1mBLjBJ
-         EBioeAt79B+utFx7HhrCay32ZffFn45KEOIy4d5U9QtGtX/JL5RieXWWmy+Sn1hgiSbN
-         wZhO0L8YfdS8Sj/eJwm2rPPf0P/vRuX2MtTJ+3KtvHF7l3tcQEUywa3EAx+3RMamoSiw
-         6jVUlKomSyQYs/S0e6Ue4AnBRc5hxVbE5Ardp2XRVMmxxSNV8lnP90omwK61NvXk4E+N
-         JSzw==
-X-Forwarded-Encrypted: i=1; AJvYcCUuZgoHJiIfsqHKmFuYZeX/0L19rUOphlY6c7+lsdxGxtgmM3VORZBDcOWBtqTw9jfV3jPJnDy0DBfe@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJZRgVZ5cd1tr7CFJrWOBUEBmbN5ZEd+opuHsrV19TgAyz1l7r
-	DB6dysBRhm5xhxC1bCuTpIVmrJEYDEHqZ6UrbMZqEzBnLQROPGp6/Dl8oEWUzE1egTX7LZIRc2F
-	Pm/9yfhDcKNzt69i6bEx9MxNliEVJivzK3n9ltaiXTprS3dwGkREiAT+iS48=
-X-Google-Smtp-Source: AGHT+IF3m9bBlVsKZz0AGHRHyIYQ9S4LRZ3vx30SyuVPQlv33/rFHSqNg/KF/RT1LyGjClooUbalVUkAYG+XvFvDhpNolEOHgkDw
+        d=1e100.net; s=20230601; t=1751244829; x=1751849629;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FKthKZ5AGBI1LPO2Rof+WridS24SjCZIkPO3nQZVzBE=;
+        b=qT9B8xpS2oB63ZGhgHhJGKb21MYIzEbAu3vtbyuj2o6tXP9HFGChglPKYmxYWwjpbx
+         QPTGIsWNlQl667Y1YcPFA8qo1KTilJgZgWSbTce/0f+esco4/+moyRt5nztfA89g89zi
+         hp0UnO6EOjO/LIu0gteJZw/aIk+J78VniTvQJHWwjsc/gUiVHFG8t71CbulmHBmuw8EI
+         IS6CuVkuTMvtbC01iT99GdvKyQNLbCCTUGVP2IZsWRwLS7Pks/LlIH62aiT7HgLLQeLh
+         b0o7bJB+WDSqhivjrVk9Hy9V+gFZdbQSR85q6143neFiTn7EC85LdKUfkrtxmzkYw3mt
+         +tKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV4HMmmjRy0SopXP4hFtHlfnzoSIutVBznRbwrf2iIIMBMSWTb9g136wzibI87pNiomk3DGe5f54hMEMw==@vger.kernel.org, AJvYcCX02GU7goo3iTXGePAzegJrxYnBkNKrBw/XKNTGeEButpG/farcwqQeYTUSkLeeo/+oLUmfNr7GZaY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxfId+hfws0zuHK6u8UX3wNzioHSSvUiPrNlviAkmXWEMt6+vqR
+	I6Ja8x43yJiV2BGH+rDgTeWhfBjX3Lc5hnQsAREYEcPZh05TB/MUqgOA
+X-Gm-Gg: ASbGncsg4lL+W3T+xjkzg41vBXHC0ukrN8s5+GlgauSMrV5JNn7N4grU2zu4qJAuF/S
+	XlNmyckUU8L8q4tZps2SZfQhg0bRmbYXQjVdS1iMPaVNfvF8mtjWbG4xdnKH9FDiStsSWLyx5Iu
+	0/TOXpuUrGgHWCYSR1FN0/Mf7LzIbp/x3got6cH4EKyQPDCuT4+QFqHcDQDGpg36EwedDZ1UaSf
+	zN+h1kigONyDaSeRdn5nCWIEdNqx0vHnd3R2zDPWXSgNNowByoo3PtdfW4JbKaOzUsrYWVDOAei
+	ygv6RFb1K9LSPAPZyrblOUF2Kf7V3Oif4ylp2Nz4tTJQmWjKvZltIzWHLH/OCQ==
+X-Google-Smtp-Source: AGHT+IEQbWodGX0rf2OvvWXvNIJP82dLnAuWdeDKxG9HiLhYS/lYFZEU21+vks6d+QYinYUbznlLGg==
+X-Received: by 2002:a17:903:f8d:b0:221:1497:7b08 with SMTP id d9443c01a7336-2390a54c778mr261738635ad.23.1751244829186;
+        Sun, 29 Jun 2025 17:53:49 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23acb2e1a8asm69663575ad.47.2025.06.29.17.53.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Jun 2025 17:53:47 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id E4817420A813; Mon, 30 Jun 2025 07:53:43 +0700 (WIB)
+Date: Mon, 30 Jun 2025 07:53:43 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux ext4 <linux-ext4@vger.kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	"Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH 0/5] ext4 docs toctree reorganization
+Message-ID: <aGHgF0Aa8NlTw6Eh@archie.me>
+References: <20250620105643.25141-2-bagasdotme@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3d85:b0:3df:2a58:381a with SMTP id
- e9e14a558f8ab-3df4ab2c75dmr115400835ab.3.1751173802056; Sat, 28 Jun 2025
- 22:10:02 -0700 (PDT)
-Date: Sat, 28 Jun 2025 22:10:02 -0700
-In-Reply-To: <67f94057.050a0220.2c5fcf.0001.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6860caaa.a00a0220.274b5f.000d.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_ext_insert_extent (2)
-From: syzbot <syzbot+ad86dcdffd6785f56e03@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, akpm@linux-foundation.org, 
-	dave.hansen@linux.intel.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu, 
-	willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="c9RWCR0bh8lBIBaX"
+Content-Disposition: inline
+In-Reply-To: <20250620105643.25141-2-bagasdotme@gmail.com>
 
-syzbot has bisected this issue to:
 
-commit 665575cff098b696995ddaddf4646a4099941f5e
-Author: Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Fri Feb 28 20:37:22 2025 +0000
+--c9RWCR0bh8lBIBaX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    filemap: move prefaulting out of hot write path
+On Fri, Jun 20, 2025 at 05:56:39PM +0700, Bagas Sanjaya wrote:
+> Hi Jon, hi Ted,
+>=20
+> While discussing on my previous ext4 docs reorganization attempt
+> by merging contents [1], Jon suggested that considering current docs
+> file structure, a proper toctree would be ideal [2]. So, here's
+> the patchset that does exactly that.
+>=20
+> Actual conversion to toctree structure is in [1/5], while the rest
+> is cleanups to make the resulting toctree nicer.
+>=20
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1434a3d4580000
-start commit:   739a6c93cc75 Merge tag 'nfsd-6.16-1' of git://git.kernel.o..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1634a3d4580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1234a3d4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d11f52d3049c3790
-dashboard link: https://syzkaller.appspot.com/bug?extid=ad86dcdffd6785f56e03
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14fb2b0c580000
+review ping
 
-Reported-by: syzbot+ad86dcdffd6785f56e03@syzkaller.appspotmail.com
-Fixes: 665575cff098 ("filemap: move prefaulting out of hot write path")
+--=20
+An old man doll... just what I always wanted! - Clara
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+--c9RWCR0bh8lBIBaX
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaGHgEwAKCRD2uYlJVVFO
+o+u2AQD1g2L9ChBvGW4LNkYeldjFp7I7eZw2ZLpoGkN24tpp8wD+P3409BFqlD9K
+fWnBHJJv/Du+6seEQQhFtqrf+auW4Q8=
+=KWON
+-----END PGP SIGNATURE-----
+
+--c9RWCR0bh8lBIBaX--
 
