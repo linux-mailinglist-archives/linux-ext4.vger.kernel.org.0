@@ -1,98 +1,91 @@
-Return-Path: <linux-ext4+bounces-8756-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8757-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04405AEFBBA
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Jul 2025 16:12:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4984EAF036D
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Jul 2025 21:11:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFBAB1623B0
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Jul 2025 14:12:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 343593B6B27
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Jul 2025 19:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B076F2749C9;
-	Tue,  1 Jul 2025 14:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CF2280A47;
+	Tue,  1 Jul 2025 19:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="dlq4IhSk"
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="jTir4Ovy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from forward101a.mail.yandex.net (forward101a.mail.yandex.net [178.154.239.84])
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB46226B755
-	for <linux-ext4@vger.kernel.org>; Tue,  1 Jul 2025 14:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BDA26A0E0;
+	Tue,  1 Jul 2025 19:11:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751379130; cv=none; b=Rc1ndoqabsT5sTTzX3pDt1mGm5x0yCzz24/ZvipJropUdPE8vjx9Kc6UPzzTcPlUgN5M9u2eyKxClHxffLMlyJtW0KUfZjX2K+nzH5rEA6nNkGTS+qKRvs/4KfTdE1sWG4Sbu672DEi5Rl8bdCwT2fCrM/UmyosCdCm/pwoK9OU=
+	t=1751397088; cv=none; b=oyFcnSgB7WV+AR5ipZkQi1WDWO33EsqXAeDnYm0TgteP25BxStmzs6MCLnO4j3SPaKlBrdUKiVWe9tcJOAvtnQn4u4VX4lgSJ8Zxd8Qf0n7BDnhAT9Vw2TNUjsLW+mEB9PFimSUri5J4CVYKBXthDixqwXEnlKng8nHfYuTfqrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751379130; c=relaxed/simple;
-	bh=R875AKwCEXUj1/YADOtdtYJyIMfMyzxGZ03L9Kjo9zs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K0CgngXVdjks4NxQDSpkzTPIOXcOh1WG9WavnWdxkftOpLr1Y3hZM07t7rUWSR0DBqUAa2DQwnf8yt1tfAL1BZLOFQ1GbGW7o/+70gtMv6nBt4aWkG+OHpC2oVXd0Px60P2NadKfu8mNbKyKI8QR0UWUO9oxTuKnNABGtccFd+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=dlq4IhSk; arc=none smtp.client-ip=178.154.239.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-95.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-95.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1d:5915:0:640:b034:0])
-	by forward101a.mail.yandex.net (Yandex) with ESMTPS id 37FE960E8C;
-	Tue,  1 Jul 2025 17:11:58 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-95.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id uBbmqxCLrKo0-E6oTYCWS;
-	Tue, 01 Jul 2025 17:11:57 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1751379117; bh=r7Q1Sa9+IWzR6aoJTjOOzAKaXXilRJbvrTxm69a0mpg=;
-	h=Message-ID:Date:Cc:Subject:To:From;
-	b=dlq4IhSkNjZXuZ80Dj9KwjELYXbInDgLkFdF4tUfFep7MZOs10m/+ky/kgRioVJ4o
-	 TfiCLIZXU2kvYuGNUVdBAJ+6jdzuTY29uzp7ICtEqPkpcK6NEk1AvEeMbMSvWu1c10
-	 JqoPf9O2HkD6kNOGUJLTxmY5Ody9dDbIwEy6Y5E8=
-Authentication-Results: mail-nwsmtp-smtp-production-main-95.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Dmitry Antipov <dmantipov@yandex.ru>
-To: Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: linux-ext4@vger.kernel.org,
-	Dmitry Antipov <dmantipov@yandex.ru>,
-	syzbot+5322c5c260eb44d209ed@syzkaller.appspotmail.com
-Subject: [PATCH] ext4: verify dirent offset in ext4_readdir()
-Date: Tue,  1 Jul 2025 17:11:41 +0300
-Message-ID: <20250701141141.55938-1-dmantipov@yandex.ru>
-X-Mailer: git-send-email 2.50.0
+	s=arc-20240116; t=1751397088; c=relaxed/simple;
+	bh=z4f+eQJG65IF7q83wr7qPgXhTWfnXVrZOVU35IJNU9s=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Q9FTDsgmXCEmdfr1Kk6HEh1EQD4XPaVABvHI83P++7HqcWswtKXOHEk9MV3uZD6Gyi3Zm2dZ4Xn7d0ZmV9YrVCV7D8VDLYitHjB0WXHrYvOzzwXuBpS/omB/zb22agTSjvayoMQfdevSUyLvIReRsMeC2Bw3q2eycoOp4KdGIEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=jTir4Ovy; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 04AFF406FC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1751397086; bh=2BeC9ePAMZTy0IbNm56dxbKdnRGE6FcrpsbWIQptkVE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=jTir4OvyjsfDadhSD6P98fYu6lq7wOw56wodpA0Zjv1GwAFMmh1hPAOeRNCW6JbfI
+	 UPgzwMJ6uNRWYFy1KxImyw/Xz4S28LH6cB7YRY+YkAvX/bZ62BoseuEeqOdE0zBogg
+	 9UnZEnuro/h4/qe5eDM9N9hcRdoiUrE5rC1eyx7TFCdlela6bWWJ+N+TzqJFkImuxc
+	 E2+sYXlhsnGZinv3xaiE7diwDuWJ7TAwf/hmAkOqHEcz5IIZV0oO0uy3Mb3bkMGLgq
+	 6wmkqKASqKUBFc2NNHW1wu+DoiBTf5rI/yPDuE5EJnRVxtdaOVL2CmpUYWkM0we5kL
+	 gbQNgV8BdjjLw==
+Received: from localhost (unknown [IPv6:2601:280:4600:2da9::1fe])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 04AFF406FC;
+	Tue,  1 Jul 2025 19:11:25 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Bagas Sanjaya <bagasdotme@gmail.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Documentation
+ <linux-doc@vger.kernel.org>, Linux ext4 <linux-ext4@vger.kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, "Ritesh Harjani (IBM)"
+ <ritesh.list@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>, Bagas
+ Sanjaya <bagasdotme@gmail.com>
+Subject: Re: [PATCH 0/5] ext4 docs toctree reorganization
+In-Reply-To: <20250620105643.25141-2-bagasdotme@gmail.com>
+References: <20250620105643.25141-2-bagasdotme@gmail.com>
+Date: Tue, 01 Jul 2025 13:11:25 -0600
+Message-ID: <87y0t7rajm.fsf@trenco.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On a corrupted filesystem, an unexpectedly large invalid value
-returned by 'ext4_rec_len_from_disk()' may cause 'ext4_readdir()'
-to read the next dirent from an area beyond the corresponding
-buffer head's data. At this point, an exact length of the dirent
-is not known yet but it's possible to check whether the shortest
-possible dirent will be read from within the bh's data at least.
+Bagas Sanjaya <bagasdotme@gmail.com> writes:
 
-Reported-by: syzbot+5322c5c260eb44d209ed@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=5322c5c260eb44d209ed
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
----
- fs/ext4/dir.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> Hi Jon, hi Ted,
+>
+> While discussing on my previous ext4 docs reorganization attempt
+> by merging contents [1], Jon suggested that considering current docs
+> file structure, a proper toctree would be ideal [2]. So, here's
+> the patchset that does exactly that.
+>
+> Actual conversion to toctree structure is in [1/5], while the rest
+> is cleanups to make the resulting toctree nicer.
+>
+> This patchset is based on docs-next tree.
 
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index d4164c507a90..8097016f69aa 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -258,6 +258,12 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 
- 		while (ctx->pos < inode->i_size
- 		       && offset < sb->s_blocksize) {
-+			/* Ensure that at least the shortest possible
-+			 * dirent will be read from within the bh's data.
-+			 */
-+			if (offset + offsetof(struct ext4_dir_entry_2, name)
-+			    > bh->b_size)
-+				break;
- 			de = (struct ext4_dir_entry_2 *) (bh->b_data + offset);
- 			if (ext4_check_dir_entry(inode, file, de, bh,
- 						 bh->b_data, bh->b_size,
--- 
-2.50.0
+So to me this seems like an improvement.  I'm happy to take it, though
+would prefer an ack from ext4land if possible.
 
+Thanks,
+
+jon
 
