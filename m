@@ -1,104 +1,104 @@
-Return-Path: <linux-ext4+bounces-8770-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8771-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDD43AF5AF2
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 16:18:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85BFCAF5AFA
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 16:20:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01C697A52EA
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 14:17:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E20FB7A3B3D
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 14:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79D0B2F5306;
-	Wed,  2 Jul 2025 14:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0302F530F;
+	Wed,  2 Jul 2025 14:20:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zlc+Vcn+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JaXX/d4A";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zlc+Vcn+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JaXX/d4A"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wLSloOXy";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Tw93rIRJ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vI0EpeuB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YnR8PVsU"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872C02F5310
-	for <linux-ext4@vger.kernel.org>; Wed,  2 Jul 2025 14:18:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08D022F74E
+	for <linux-ext4@vger.kernel.org>; Wed,  2 Jul 2025 14:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751465915; cv=none; b=DsF06d+rbi4dgmSbAZkViicDTwy4GEN08zU6JeBRn1lbNLmhejW/iD0cd9DqMKX8FrGUroQww//fi/bRrpxwaaB4t0Wa9Q9RqaQfdXU2h/UnPtS8I7QAwVPqAJD5M1Q7wcKqNp45idQvbJzrfbvEFdDUZpkQ4933x5sFBnvXpgo=
+	t=1751466033; cv=none; b=LxrjlnzT5i4Ef9UhdiS3r2mGMIA9qNedCnTgXekSfYgLAT4L/N9fYirehf8MsWGYn3Zw7JJKou710onnGzFdoVdJ5uW/IBHm3KRr1KfRPpGHwD0VsEovUo1e9Ec3Nds8eEsZJMx7zYOj0llekWxRkHCOWpi4RIf+LQMRqdOiUY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751465915; c=relaxed/simple;
-	bh=U90ze6YGaRKTN4akGjcsk4ddEqacBFwSE3cpSjF7fA0=;
+	s=arc-20240116; t=1751466033; c=relaxed/simple;
+	bh=avnRLKakTmibTGU63hfRD4q6SIXreBXAHQdAGo9SCpY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t8lUuhOTDaKuXQLk7LaqCCdVLff1BETEZDyd/DfeTLFbOkk7SH0ptVFsj2X5ylyHzJa0xqn0xxemZwcNGploZ5ApseE9+bdrmvk1ZbuIx+9h2k2TBmOR97FW8DsL3pEagkIvkOBuhSjuQ9LSbyBF7TFNdxHjW9CEf8OMuGG9zxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zlc+Vcn+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JaXX/d4A; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zlc+Vcn+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JaXX/d4A; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=j+VdlTtTbMH26GlqK7qUHmKdy6VFAM8aMpP+BGcdqX+UhnYpLU4jRzQT7k0Vd7dh2qjWhgfZ64NLpSh5hxPeW2ai0nn9t0IaoGCoCAkmHecEx2QaAS40wiQf39Fq4tiqQNR//QwTqr3Px/ePJoH3ooWQWlMt8+EYSdjnPBYzcms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wLSloOXy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Tw93rIRJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vI0EpeuB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YnR8PVsU; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BCAAF1F45F;
-	Wed,  2 Jul 2025 14:18:31 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EAD721F38D;
+	Wed,  2 Jul 2025 14:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751465911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1751466029; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pgoFF8DUukUkYq9J7iecIj+75rXFjaQrqgbtYXVONDo=;
-	b=zlc+Vcn+tkOze8qW30S9ajdbtJ59gSGR068egcz9alKiDxE4HukUPpmU4xGqTM1mfN/Igt
-	pLyH+cgyRxFYPe3e073x3mKtRVItqHPWKtARMsBZH976sMPNz4AyR7yPT0KIBowwvd+OfU
-	TvFlOiMVEoOUnmlUE0N/iyfb6Yqpn9M=
+	bh=+2NSSFfIrDFk0JWc9gz8bcD7t0dPLi/sMrLX5yogfHw=;
+	b=wLSloOXyK5rfDlzwMUnHDy/nICkLlE+sNp6LuKYuEmRT1Y3JKtHB1jEhwDfzCWyZUlzjOk
+	WK4ObxmghWXCxYk+J+tl7xhIulA8LHJ4nFuJgkN0DZUEcxAGHYlxVPS3oUA0GctkxG5aRp
+	e6+kpb7yxO3ZyXbQmbFlKcDnRA5GRHU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751465911;
+	s=susede2_ed25519; t=1751466029;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pgoFF8DUukUkYq9J7iecIj+75rXFjaQrqgbtYXVONDo=;
-	b=JaXX/d4AnSQI2rg3YqrdEUOJ5YguJd7MQ/Fq5RjH3ghYa09SfyISXk+d3F8Pg3lBOi7crc
-	oBEFFi+Rbxzv7OBw==
+	bh=+2NSSFfIrDFk0JWc9gz8bcD7t0dPLi/sMrLX5yogfHw=;
+	b=Tw93rIRJneVvpujkvzWy1bcXU7dl+YhAc14tZ1IR1ZWp+dBBJDGYQQrSpBbe6GJgaCvzL/
+	MwAk8vy/y1CLc3AA==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zlc+Vcn+;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="JaXX/d4A"
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vI0EpeuB;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=YnR8PVsU
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751465911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1751466027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pgoFF8DUukUkYq9J7iecIj+75rXFjaQrqgbtYXVONDo=;
-	b=zlc+Vcn+tkOze8qW30S9ajdbtJ59gSGR068egcz9alKiDxE4HukUPpmU4xGqTM1mfN/Igt
-	pLyH+cgyRxFYPe3e073x3mKtRVItqHPWKtARMsBZH976sMPNz4AyR7yPT0KIBowwvd+OfU
-	TvFlOiMVEoOUnmlUE0N/iyfb6Yqpn9M=
+	bh=+2NSSFfIrDFk0JWc9gz8bcD7t0dPLi/sMrLX5yogfHw=;
+	b=vI0EpeuBcQEzl7eL6fjQU8Ok+3MOJseFuW4FJ/CgCYKzs1vty/BsxUWiwaOxfgoMlCC2+5
+	gb66kdmS0bTlJEJYhmI1z4egJ0RjXO+N5ePb6WKDjHQFtyBEHJ7G4rF9A2ILaqMVNTfyrL
+	g803HoHgXcJDyuIoMMd1Ecz3mwdB3BU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751465911;
+	s=susede2_ed25519; t=1751466027;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pgoFF8DUukUkYq9J7iecIj+75rXFjaQrqgbtYXVONDo=;
-	b=JaXX/d4AnSQI2rg3YqrdEUOJ5YguJd7MQ/Fq5RjH3ghYa09SfyISXk+d3F8Pg3lBOi7crc
-	oBEFFi+Rbxzv7OBw==
+	bh=+2NSSFfIrDFk0JWc9gz8bcD7t0dPLi/sMrLX5yogfHw=;
+	b=YnR8PVsUB256hPoh5fBSysAMk23XVFzbIyzycClk4go0voyQuJy80PZlu8F8nJ4+lJxWf3
+	cWoZ5mu1mTxRxpDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7AFAA13A24;
-	Wed,  2 Jul 2025 14:18:30 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC8DA13A24;
+	Wed,  2 Jul 2025 14:20:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WZEBHrY/ZWiCQgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 02 Jul 2025 14:18:30 +0000
+	id 4gcfKitAZWgkQwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 02 Jul 2025 14:20:27 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 83B07A0A55; Wed,  2 Jul 2025 16:18:21 +0200 (CEST)
-Date: Wed, 2 Jul 2025 16:18:21 +0200
+	id 8481BA0A55; Wed,  2 Jul 2025 16:20:21 +0200 (CEST)
+Date: Wed, 2 Jul 2025 16:20:21 +0200
 From: Jan Kara <jack@suse.cz>
 To: Zhang Yi <yi.zhang@huaweicloud.com>
 Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, 
 	ojaswin@linux.ibm.com, sashal@kernel.org, yi.zhang@huawei.com, libaokun1@huawei.com, 
 	yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v3 05/10] ext4: restart handle if credits are
- insufficient during allocating blocks
-Message-ID: <i7lzmvk5prgnw2zri46adshfjhfq63r7le5w5sv67wmkiimbhc@a24oub5o6xtg>
+Subject: Re: [PATCH v3 06/10] ext4: enhance tracepoints during the folios
+ writeback
+Message-ID: <jxtj25ptoel2l3723i26lxstemmvieejnql4iypinrejm5lvx5@72key7fyl3qi>
 References: <20250701130635.4079595-1-yi.zhang@huaweicloud.com>
- <20250701130635.4079595-6-yi.zhang@huaweicloud.com>
+ <20250701130635.4079595-7-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -107,11 +107,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250701130635.4079595-6-yi.zhang@huaweicloud.com>
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: BCAAF1F45F
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
+In-Reply-To: <20250701130635.4079595-7-yi.zhang@huaweicloud.com>
 X-Spamd-Result: default: False [-4.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -120,18 +116,17 @@ X-Spamd-Result: default: False [-4.01 / 50.00];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
 	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
 	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	ARC_NA(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[13];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
 	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
 	FROM_EQ_ENVFROM(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -139,54 +134,30 @@ X-Spamd-Result: default: False [-4.01 / 50.00];
 	MISSING_XM_UA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email]
-X-Spam-Score: -4.01
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,huawei.com:email,suse.com:email]
 X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: EAD721F38D
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -4.01
 
-On Tue 01-07-25 21:06:30, Zhang Yi wrote:
+On Tue 01-07-25 21:06:31, Zhang Yi wrote:
 > From: Zhang Yi <yi.zhang@huawei.com>
 > 
-> After large folios are supported on ext4, writing back a sufficiently
-> large and discontinuous folio may consume a significant number of
-> journal credits, placing considerable strain on the journal. For
-> example, in a 20GB filesystem with 1K block size and 1MB journal size,
-> writing back a 2MB folio could require thousands of credits in the
-> worst-case scenario (when each block is discontinuous and distributed
-> across different block groups), potentially exceeding the journal size.
-> This issue can also occur in ext4_write_begin() and ext4_page_mkwrite()
-> when delalloc is not enabled.
+> After mpage_map_and_submit_extent() supports restarting handle if
+> credits are insufficient during allocating blocks, it is more likely to
+> exit the current mapping iteration and continue to process the current
+> processing partially mapped folio again. The existing tracepoints are
+> not sufficient to track this situation, so enhance the tracepoints to
+> track the writeback position and the return value before and after
+> submitting the folios.
 > 
-> Fix this by ensuring that there are sufficient journal credits before
-> allocating an extent in mpage_map_one_extent() and
-> ext4_block_write_begin(). If there are not enough credits, return
-> -EAGAIN, exit the current mapping loop, restart a new handle and a new
-> transaction, and allocating blocks on this folio again in the next
-> iteration.
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
 > Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-Very nice. Feel free to add:
+Looks good. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
-
-One small comment below:
-
-> +/*
-> + * Make sure that the current journal transaction has enough credits to map
-> + * one extent. Return -EAGAIN if it cannot extend the current running
-> + * transaction.
-> + */
-> +static inline int ext4_journal_ensure_extent_credits(handle_t *handle,
-> +						     struct inode *inode)
-> +{
-> +	int credits;
-> +	int ret;
-> +
-> +	if (!handle)
-
-Shouldn't this rather be ext4_handle_valid(handle) to catch nojournal mode
-properly?
 
 								Honza
 -- 
