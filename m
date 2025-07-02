@@ -1,215 +1,195 @@
-Return-Path: <linux-ext4+bounces-8769-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8770-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F1FEAF5AB3
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 16:12:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDD43AF5AF2
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 16:18:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD57D443947
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 14:12:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01C697A52EA
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 14:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03BC92BDC2B;
-	Wed,  2 Jul 2025 14:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79D0B2F5306;
+	Wed,  2 Jul 2025 14:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UHgxogd/"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zlc+Vcn+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JaXX/d4A";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zlc+Vcn+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JaXX/d4A"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BBF2BD59E;
-	Wed,  2 Jul 2025 14:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872C02F5310
+	for <linux-ext4@vger.kernel.org>; Wed,  2 Jul 2025 14:18:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751465560; cv=none; b=KQDlzjtPvFMdIItTxaiG3XDJNv6mNa2wLumQGeO8j1Ul2mkY4E0OgoFtytL5OA9xUKBQvTN0d0ZfHmcnQ70WZt2GSYtxtzFLa67I3k+P8LA56hp2DtHj9LZ9aGfkH3bpJKr/miKC2z386Pc3/q4CsKgZFsXdW7QMFFAYfD9glUA=
+	t=1751465915; cv=none; b=DsF06d+rbi4dgmSbAZkViicDTwy4GEN08zU6JeBRn1lbNLmhejW/iD0cd9DqMKX8FrGUroQww//fi/bRrpxwaaB4t0Wa9Q9RqaQfdXU2h/UnPtS8I7QAwVPqAJD5M1Q7wcKqNp45idQvbJzrfbvEFdDUZpkQ4933x5sFBnvXpgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751465560; c=relaxed/simple;
-	bh=Dm6xqHk0RBgx7vLihZyB1iyak1emMrW4rq8J0I4i8o4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZlyUfpzqTPhTiqo7K6c9SfXm/lgyt9Y/yFlueWAWByBfz0DmN36TQ5hT/tjjRGp2/FmWLBmeSsjb09icPDAdTlIULPo0SYb0+YAuYIudcxQonlLp9c3dGTTqbg+ubXULL2tZnZn/FaizrffZ2wHEJHOeGMF7O2NONjeRGZb73dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UHgxogd/; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b321bd36a41so3965924a12.2;
-        Wed, 02 Jul 2025 07:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751465555; x=1752070355; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3hi0b4Q2TMU9s9ow4O1FxnYpGW2LdSH037wzbnfcLAI=;
-        b=UHgxogd/e2vGa8mbXR0Ryy0YrcG83M1VqWf+KuzZqVLCBaobO/1gDIRxF6h5ZHpclf
-         1hDAxIbT26J+e46c0hYZ1WLHcUp/WBp8K6fsU0pHP7/ZGQQA/mzWkNJS15SwT5q3GmJp
-         35zIbo38vxOluo0YLt864gYpQh0HCNUH2LKz9nBJJ2PC4wR4n3ex1Sq8m6Dn7k5HOo7p
-         F5tprdjz9MtM1bEj/uRufs7poW/H7h7l6t2FKOtInqNNLpD4JmGFvFn/9RQCRpxbUd+o
-         jXdhODCa8KjT81recq+ixZiAGMunRlmTbUQzNBufWFAvHw2uj7f856KaDXg2BkuG0/Hc
-         OmSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751465555; x=1752070355;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3hi0b4Q2TMU9s9ow4O1FxnYpGW2LdSH037wzbnfcLAI=;
-        b=Tax2hcW/14/rshrtzjm3E1q7/B/C0qMrTRMcuFpMO3vS76Uxe+GTU+ibTokwlcWvsc
-         SSritfsSmGL46i0k9gT0tmzeDOglUayZ2nCw8oOquulUi2ity5oH+pA5z4Ff7QWFggfo
-         LDYctO6ZWEy2CBwei61OFp2yJz2Xs4X8US2g3YwJ/wAkc6FdOmckDOc69XkfIpiQozI4
-         6DjmtS+vi6uWeh9TLbHfhYER5G4WzdnbBcw4/YMZ4PILNyWe891YiQSaEC7i3tzxm819
-         CtXRkUhpp04irKIvTY3aYrivsxZvMEc404ox9ZRZXCTrKNtsZSmHf19cm6VcKRQ4Upca
-         NKXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUOniCKDhgDCCVgUIEBZ0HW0kGhLKtRRoQ1s/cVn8ALYiX2f1U2t0TXGOP1/KyXgt+xzd1Jnaa1hKWE8yuNsQ==@vger.kernel.org, AJvYcCV8MMG+VWc1+LRY/8Nd3GawytSrzz1zUk6T+t7d78haBJLdlt3OuIoYKXI2BZXGY2Yaovt9g3QkUh5iqQ==@vger.kernel.org, AJvYcCVeX1sopL+Q0IW/sBsrJJ8vBA7KmMrqqAf9QZIVpQPycWH+QILO2jiefx40cP31FWBBT3lSCvRMSVbzK76J@vger.kernel.org, AJvYcCWoivTaPMihWtJnHa4F7FsegHAuvTtW39Uz6Q48cjVYpWfB0ivgvoz317ydDPG3B/VlqNKS+JERfRtjsw==@vger.kernel.org, AJvYcCXSlbXAUHmBnv0jqw4JBGILStDgs+jG7qdsGbwN69Zh2/6rw3A9uw/jDiIj9DmEzDLMy36BQAmzyeFr@vger.kernel.org
-X-Gm-Message-State: AOJu0YzpFaBB3/GB06zPjVGqI3a8E9KuaIzxmA+q1WNauyUt0sXG0689
-	i11Bb6/tgv7KCm8O6UqvpU96kuucTPWDgimJv82OQhCZIbJ06coPtd25
-X-Gm-Gg: ASbGncse17autRLbKo7wvsMqi7sv4xUAFj4TV3w5OSPayzbUFHp03nwqsFY938bQPx2
-	3GzF/8zGTGrjW+18JhBfRLb1/+ndY2EFuFp7sxJoMH8ttJ041wITc9gH8bxpEK4NBZq7lw3o+FF
-	JKF7dFLcSR3LItJy9qtqwtjv7IWzeStXbeIScNdJxzMdbmMRyuMxHuP1LwyOMGJxsqfmMYk0T+b
-	wNxSAfMjGoUSpbe/ljnqd8t213EYXMo+sE1cNo6y+HPK2SJL7+jEpSIHRDVCNBB5SrFXA4NVTQS
-	mC3d982wBqRnByvOb159jFtBt7P1ASks7pmBe+gE+omGFGOtjwzXsDtNBzXe32UxXBFRmKIgzN5
-	THjntgwD4/1F7YcSsDY1oW014ct5/iIwtqZteqVI=
-X-Google-Smtp-Source: AGHT+IFKRDLioih13g48ycaXA5K8ysUyKk1vSQvjV96+wwiKTloc/oO2WVx/lFSAoNhOajXgeeSAFQ==
-X-Received: by 2002:a05:6a20:a126:b0:21d:fd1:9be with SMTP id adf61e73a8af0-222d7de1c90mr4563817637.12.1751465555071;
-        Wed, 02 Jul 2025 07:12:35 -0700 (PDT)
-Received: from ?IPV6:240e:305:798e:6800:ad23:906d:e07c:8a1e? ([240e:305:798e:6800:ad23:906d:e07c:8a1e])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af56ce9f3sm14100034b3a.122.2025.07.02.07.12.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jul 2025 07:12:34 -0700 (PDT)
-Message-ID: <54a85ec6-992d-4685-9031-114ba634e0a3@gmail.com>
-Date: Wed, 2 Jul 2025 22:12:20 +0800
+	s=arc-20240116; t=1751465915; c=relaxed/simple;
+	bh=U90ze6YGaRKTN4akGjcsk4ddEqacBFwSE3cpSjF7fA0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t8lUuhOTDaKuXQLk7LaqCCdVLff1BETEZDyd/DfeTLFbOkk7SH0ptVFsj2X5ylyHzJa0xqn0xxemZwcNGploZ5ApseE9+bdrmvk1ZbuIx+9h2k2TBmOR97FW8DsL3pEagkIvkOBuhSjuQ9LSbyBF7TFNdxHjW9CEf8OMuGG9zxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zlc+Vcn+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JaXX/d4A; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zlc+Vcn+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JaXX/d4A; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BCAAF1F45F;
+	Wed,  2 Jul 2025 14:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751465911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pgoFF8DUukUkYq9J7iecIj+75rXFjaQrqgbtYXVONDo=;
+	b=zlc+Vcn+tkOze8qW30S9ajdbtJ59gSGR068egcz9alKiDxE4HukUPpmU4xGqTM1mfN/Igt
+	pLyH+cgyRxFYPe3e073x3mKtRVItqHPWKtARMsBZH976sMPNz4AyR7yPT0KIBowwvd+OfU
+	TvFlOiMVEoOUnmlUE0N/iyfb6Yqpn9M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751465911;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pgoFF8DUukUkYq9J7iecIj+75rXFjaQrqgbtYXVONDo=;
+	b=JaXX/d4AnSQI2rg3YqrdEUOJ5YguJd7MQ/Fq5RjH3ghYa09SfyISXk+d3F8Pg3lBOi7crc
+	oBEFFi+Rbxzv7OBw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zlc+Vcn+;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="JaXX/d4A"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751465911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pgoFF8DUukUkYq9J7iecIj+75rXFjaQrqgbtYXVONDo=;
+	b=zlc+Vcn+tkOze8qW30S9ajdbtJ59gSGR068egcz9alKiDxE4HukUPpmU4xGqTM1mfN/Igt
+	pLyH+cgyRxFYPe3e073x3mKtRVItqHPWKtARMsBZH976sMPNz4AyR7yPT0KIBowwvd+OfU
+	TvFlOiMVEoOUnmlUE0N/iyfb6Yqpn9M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751465911;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pgoFF8DUukUkYq9J7iecIj+75rXFjaQrqgbtYXVONDo=;
+	b=JaXX/d4AnSQI2rg3YqrdEUOJ5YguJd7MQ/Fq5RjH3ghYa09SfyISXk+d3F8Pg3lBOi7crc
+	oBEFFi+Rbxzv7OBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7AFAA13A24;
+	Wed,  2 Jul 2025 14:18:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id WZEBHrY/ZWiCQgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 02 Jul 2025 14:18:30 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 83B07A0A55; Wed,  2 Jul 2025 16:18:21 +0200 (CEST)
+Date: Wed, 2 Jul 2025 16:18:21 +0200
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, 
+	ojaswin@linux.ibm.com, sashal@kernel.org, yi.zhang@huawei.com, libaokun1@huawei.com, 
+	yukuai3@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v3 05/10] ext4: restart handle if credits are
+ insufficient during allocating blocks
+Message-ID: <i7lzmvk5prgnw2zri46adshfjhfq63r7le5w5sv67wmkiimbhc@a24oub5o6xtg>
+References: <20250701130635.4079595-1-yi.zhang@huaweicloud.com>
+ <20250701130635.4079595-6-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/4] fs: change write_begin/write_end interface to take
- struct kiocb *
-To: Matthew Wilcox <willy@infradead.org>
-Cc: "tytso@mit.edu" <tytso@mit.edu>, "hch@infradead.org" <hch@infradead.org>,
- "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
- "brauner@kernel.org" <brauner@kernel.org>,
- "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
- "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
- "tursulin@ursulin.net" <tursulin@ursulin.net>,
- "airlied@gmail.com" <airlied@gmail.com>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "chentao325@qq.com" <chentao325@qq.com>,
- "frank.li@vivo.com" <frank.li@vivo.com>
-References: <20250627110257.1870826-1-chentaotao@didiglobal.com>
- <20250627110257.1870826-4-chentaotao@didiglobal.com>
- <aF68sKzx24P1q54h@casper.infradead.org>
-From: Taotao Chen <chentt325@gmail.com>
-In-Reply-To: <aF68sKzx24P1q54h@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250701130635.4079595-6-yi.zhang@huaweicloud.com>
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: BCAAF1F45F
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email]
+X-Spam-Score: -4.01
+X-Spam-Level: 
 
+On Tue 01-07-25 21:06:30, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> After large folios are supported on ext4, writing back a sufficiently
+> large and discontinuous folio may consume a significant number of
+> journal credits, placing considerable strain on the journal. For
+> example, in a 20GB filesystem with 1K block size and 1MB journal size,
+> writing back a 2MB folio could require thousands of credits in the
+> worst-case scenario (when each block is discontinuous and distributed
+> across different block groups), potentially exceeding the journal size.
+> This issue can also occur in ext4_write_begin() and ext4_page_mkwrite()
+> when delalloc is not enabled.
+> 
+> Fix this by ensuring that there are sufficient journal credits before
+> allocating an extent in mpage_map_one_extent() and
+> ext4_block_write_begin(). If there are not enough credits, return
+> -EAGAIN, exit the current mapping loop, restart a new handle and a new
+> transaction, and allocating blocks on this folio again in the next
+> iteration.
+> 
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-在 2025/6/27 23:45, Matthew Wilcox 写道:
-> On Fri, Jun 27, 2025 at 11:03:11AM +0000, 陈涛涛 Taotao Chen wrote:
->> diff --git a/fs/exfat/file.c b/fs/exfat/file.c
->> index 841a5b18e3df..fdc2fa1e5c41 100644
->> --- a/fs/exfat/file.c
->> +++ b/fs/exfat/file.c
->> @@ -532,10 +532,12 @@ int exfat_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
->>   	return blkdev_issue_flush(inode->i_sb->s_bdev);
->>   }
->>   
->> -static int exfat_extend_valid_size(struct file *file, loff_t new_valid_size)
->> +static int exfat_extend_valid_size(const struct kiocb *iocb,
->> +				   loff_t new_valid_size)
->>   {
->>   	int err;
->>   	loff_t pos;
->> +	struct file *file = iocb->ki_filp;
->>   	struct inode *inode = file_inode(file);
->>   	struct exfat_inode_info *ei = EXFAT_I(inode);
->>   	struct address_space *mapping = inode->i_mapping;
->> @@ -551,14 +553,14 @@ static int exfat_extend_valid_size(struct file *file, loff_t new_valid_size)
->>   		if (pos + len > new_valid_size)
->>   			len = new_valid_size - pos;
->>   
->> -		err = ops->write_begin(file, mapping, pos, len, &folio, NULL);
->> +		err = ops->write_begin(iocb, mapping, pos, len, &folio, NULL);
->>   		if (err)
->>   			goto out;
->>   
->>   		off = offset_in_folio(folio, pos);
->>   		folio_zero_new_buffers(folio, off, off + len);
->>   
->> -		err = ops->write_end(file, mapping, pos, len, len, folio, NULL);
->> +		err = ops->write_end(iocb, mapping, pos, len, len, folio, NULL);
->>   		if (err < 0)
->>   			goto out;
->>   		pos += len;
->> @@ -604,7 +606,7 @@ static ssize_t exfat_file_write_iter(struct kiocb *iocb, struct iov_iter *iter)
->>   	}
->>   
->>   	if (pos > valid_size) {
->> -		ret = exfat_extend_valid_size(file, pos);
->> +		ret = exfat_extend_valid_size(iocb, pos);
->>   		if (ret < 0 && ret != -ENOSPC) {
->>   			exfat_err(inode->i_sb,
->>   				"write: fail to zero from %llu to %llu(%zd)",
->> @@ -655,8 +657,11 @@ static vm_fault_t exfat_page_mkwrite(struct vm_fault *vmf)
->>   	struct file *file = vma->vm_file;
->>   	struct inode *inode = file_inode(file);
->>   	struct exfat_inode_info *ei = EXFAT_I(inode);
->> +	struct kiocb iocb;
->>   	loff_t start, end;
->>   
->> +	init_sync_kiocb(&iocb, file);
->> +
->>   	if (!inode_trylock(inode))
->>   		return VM_FAULT_RETRY;
->>   
->> @@ -665,7 +670,7 @@ static vm_fault_t exfat_page_mkwrite(struct vm_fault *vmf)
->>   			start + vma->vm_end - vma->vm_start);
->>   
->>   	if (ei->valid_size < end) {
->> -		err = exfat_extend_valid_size(file, end);
->> +		err = exfat_extend_valid_size(&iocb, end);
->>   		if (err < 0) {
->>   			inode_unlock(inode);
->>   			return vmf_fs_error(err);
-> This is unnecessary work.  The only ->write_begin/write_end that we'll
-> see here is exfat_write_begin() / exfat_write_end() which don't actually
-> need iocb (or file).  Traditionally we pass NULL in these situations,
-> but the exfat people probably weren't aware of this convention.
->
-> exfat_extend_valid_size() only uses the file it's passed to get the
-> inode, and both callers already have the inode.  So I'd change
-> exfat_extend_valid_size() to take an inode instead of a file as its
-> first argument, then you can skip the creation of an iocb in
-> exfat_page_mkwrite().
+Very nice. Feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-My initial goal was to maintain consistency with the updated ->write_begin/
+One small comment below:
 
-->write_end interfaces. That meant passing the iocb to avoid special cases
+> +/*
+> + * Make sure that the current journal transaction has enough credits to map
+> + * one extent. Return -EAGAIN if it cannot extend the current running
+> + * transaction.
+> + */
+> +static inline int ext4_journal_ensure_extent_credits(handle_t *handle,
+> +						     struct inode *inode)
+> +{
+> +	int credits;
+> +	int ret;
+> +
+> +	if (!handle)
 
-and keep the changes minimal and safe.
+Shouldn't this rather be ext4_handle_valid(handle) to catch nojournal mode
+properly?
 
-But you're right, since exfat_write_begin() and exfat_write_end() don't 
-use the
-
-iocb or file pointer, passing NULL is fine, and having 
-exfat_extend_valid_size()
-
-directly take an inode makes the code simpler and clearer.
-
-
-In addition, inside the ntfs_extend_initialized_size() function, I also 
-set the iocb
-
-parameter to NULL when calling ntfs_write_begin() and ntfs_write_end().
-
-
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
