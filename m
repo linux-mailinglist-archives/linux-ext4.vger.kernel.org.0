@@ -1,213 +1,85 @@
-Return-Path: <linux-ext4+bounces-8762-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8763-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5103AF095D
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 05:46:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25BEBAF096C
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 05:51:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 776617A65E2
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 03:45:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87EE91C2066B
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Jul 2025 03:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC2111C6B4;
-	Wed,  2 Jul 2025 03:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8441DF97F;
+	Wed,  2 Jul 2025 03:51:04 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08774211C
-	for <linux-ext4@vger.kernel.org>; Wed,  2 Jul 2025 03:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E591A4F0A
+	for <linux-ext4@vger.kernel.org>; Wed,  2 Jul 2025 03:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751427983; cv=none; b=IuDZs6PNlru3n7VvpENjHUULAtlc255690P99nOY4YSRuFe6lodl9040bufYCSvOkwL/bEVQ+IcgLXIAEuqEPE00/1s0ZqTHh+7Iy4Ertx682780P9nGiBEuO1nZGIkgREG1UAfA2bOn7p1RIJg6Jj/DqpL0Drle1txZ9iKVSIY=
+	t=1751428263; cv=none; b=pCYG+aKE4bcgx78x0LIpVCLfxJ7mTE9+6I+fGNcmstbRMYk1ejpbDPvckOUhZKH8ZPeHaMz2T0rUmNGBvzSPX4CwLgGGIzMmqwk6woL9oA/hq7X5s/ercO1ZbiYU5o4sjmpUtUB0tTsJCQtBsShc1tLU4vLwP9ZdLtqZOtb4UAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751427983; c=relaxed/simple;
-	bh=ISZMubAdFQYA3cuqvzlgCjklnOjCyIKhS2wwzvg2BdI=;
-	h=Message-ID:Date:MIME-Version:To:CC:From:Subject:Content-Type; b=kpNrBrE/pYpDOxAL/nZZpMlP8CeqsA5ePxr4h+0SMsKvxSDSSCyV8dC4ygB002yQoPYrxrY4xd05UMLakDhvwTU2VRUqv73Up+R4lw7w2mwsQJo29Yd+drhMxcgNNY9bJtDH8T8gW6ZwUEyP8xrNFHOtVe2nVV7nWlL1vPef/SE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=h-partners.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h-partners.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4bX5Lc2T63z2Cfbt;
-	Wed,  2 Jul 2025 11:42:16 +0800 (CST)
-Received: from kwepemo100017.china.huawei.com (unknown [7.202.195.215])
-	by mail.maildlp.com (Postfix) with ESMTPS id E21E61A016C;
-	Wed,  2 Jul 2025 11:46:16 +0800 (CST)
-Received: from [10.174.187.231] (10.174.187.231) by
- kwepemo100017.china.huawei.com (7.202.195.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 2 Jul 2025 11:46:16 +0800
-Message-ID: <32252e29-aba9-df6f-3b97-d3774df375ad@huawei.com>
-Date: Wed, 2 Jul 2025 11:46:15 +0800
+	s=arc-20240116; t=1751428263; c=relaxed/simple;
+	bh=XW/LGxXKcwsfIV9H6okqsLgM4kmzK8nr+I8oG+pXG74=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TgzIvUqos3/h1OoV+XEaNT27SfUze/GLJdRwv3wepRhGhm/vWzE8alqjs/Zp4bWptE++nopuMIRJ3C1WWukQ/YSg5legl7M58D38tDA53+AKRUaoYPuZyWJMFFhuaM5SiSeB58/zH4k2NjYe+kbhwjX5PASUDx4N0G4lW4mkKiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-108-26-156-121.bstnma.fios.verizon.net [108.26.156.121])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5623ooM9025204
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 1 Jul 2025 23:50:51 -0400
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id E11852E00D5; Tue, 01 Jul 2025 23:50:49 -0400 (EDT)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH 1/2] fuse2fs: fix normal (non-kernel) permissions checking
+Date: Tue,  1 Jul 2025 23:50:43 -0400
+Message-ID: <20250702035044.47373-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-To: Theodore Ts'o <tytso@mit.edu>
-CC: "Darrick J. Wong" <djwong@kernel.org>, <linux-ext4@vger.kernel.org>,
-	<qiangxiaojun@huawei.com>, <hejie3@huawei.com>
-From: zhanchengbin <zhanchengbin1@huawei.com>
-Subject: [PATCH v3] debugfs/logdump.c: Add parameter t to dump sequence commit
- timestamps
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemo100017.china.huawei.com (7.202.195.215)
+Content-Transfer-Encoding: 8bit
 
-When filesystem errors occur, inspect journal sequences with parameter t to
-dump commit timestamps.
+Commit 9f69dfc4e275 ("fuse2fs: implement O_APPEND correctly") defined
+a new flag, A_OK, to add support for testing whether the file is valid
+for append operations.  This is relevant for the check_iflags_access()
+function, but when are later testing operations mask against the inode
+permissions, this new flag gets in the way and causes non-root users
+attempting to create new inodes in a directory to fail.  Fix this by
+masking off A_OK before doing these tests.
 
-Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Fixes: 9f69dfc4e275 ("fuse2fs: implement O_APPEND correctly")
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
-v3: Change from displaying UTC time to local time.
-- Link to v2:
-https://patchwork.ozlabs.org/project/linux-ext4/patch/5a4b703c-6940-d9da-5686-337e3220d3a4@huawei.com/
-v2: Correct abnormal formats in the patch.
-- Link to v1:
-https://patchwork.ozlabs.org/project/linux-ext4/patch/50aeb0c1-9f14-ed04-c3b7-7a50f61c3341@huawei.com/
----
-  debugfs/logdump.c | 61 ++++++++++++++++++++++++++++++++++++++++-------
-  1 file changed, 52 insertions(+), 9 deletions(-)
+ misc/fuse2fs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/debugfs/logdump.c b/debugfs/logdump.c
-index 324ed42..ce87419 100644
---- a/debugfs/logdump.c
-+++ b/debugfs/logdump.c
-@@ -47,7 +47,7 @@ enum journal_location {JOURNAL_IS_INTERNAL, 
-JOURNAL_IS_EXTERNAL};
-
-  #define ANY_BLOCK ((blk64_t) -1)
-
--static int		dump_all, dump_super, dump_old, dump_contents, 
-dump_descriptors;
-+static int		dump_all, dump_super, dump_old, dump_contents, 
-dump_descriptors, dump_time;
-  static int64_t		dump_counts;
-  static blk64_t		block_to_dump, bitmap_to_dump, inode_block_to_dump;
-  static unsigned int	group_to_dump, inode_offset_to_dump;
-@@ -67,6 +67,8 @@ static void dump_descriptor_block(FILE *, struct 
-journal_source *,
-  				  char *, journal_superblock_t *,
-  				  unsigned int *, unsigned int, __u32, tid_t);
-
-+static void dump_commit_time(FILE *out_file, char *buf);
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index bb75d9421..d209bc790 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -687,6 +687,9 @@ static int check_inum_access(struct fuse2fs *ff, ext2_ino_t ino, int mask)
+ 		return -EACCES;
+ 	}
+ 
++	/* Remove the O_APPEND flag before testing permissions */
++	mask &= ~A_OK;
 +
-  static void dump_revoke_block(FILE *, char *, journal_superblock_t *,
-  				  unsigned int, unsigned int, tid_t);
-
-@@ -118,10 +120,11 @@ void do_logdump(int argc, ss_argv_t argv, int 
-sci_idx EXT2FS_ATTR((unused)),
-  	inode_block_to_dump = ANY_BLOCK;
-  	inode_to_dump = -1;
-  	dump_counts = -1;
-+	dump_time = 0;
-  	wrapped_flag = false;
-
-  	reset_getopt();
--	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
-+	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:t")) != EOF) {
-  		switch (c) {
-  		case 'a':
-  			dump_all++;
-@@ -162,6 +165,9 @@ void do_logdump(int argc, ss_argv_t argv, int 
-sci_idx EXT2FS_ATTR((unused)),
-  				return;
-  			}
-  			break;
-+		case 't':
-+			dump_time++;
-+			break;
-  		default:
-  			goto print_usage;
-  		}
-@@ -521,21 +527,33 @@ static void dump_journal(char *cmdname, FILE 
-*out_file,
-  				break;
-  		}
-
--		if (dump_descriptors) {
--			fprintf (out_file, "Found expected sequence %u, "
--				 "type %u (%s) at block %u\n",
--				 sequence, blocktype,
--				 type_to_name(blocktype), blocknr);
--		}
--
-  		switch (blocktype) {
-  		case JBD2_DESCRIPTOR_BLOCK:
-+			if (dump_descriptors) {
-+				fprintf (out_file, "Found expected sequence %u, "
-+					 "type %u (%s) at block %u\n",
-+					 sequence, blocktype,
-+					 type_to_name(blocktype), blocknr);
-+			}
-+
-  			dump_descriptor_block(out_file, source, buf, jsb,
-  					      &blocknr, blocksize, maxlen,
-  					      transaction);
-  			continue;
-
-  		case JBD2_COMMIT_BLOCK:
-+			if (dump_descriptors) {
-+				fprintf (out_file, "Found expected sequence %u, "
-+					 "type %u (%s) at block %u",
-+					 sequence, blocktype,
-+					 type_to_name(blocktype), blocknr);
-+			}
-+
-+			if (dump_time)
-+				dump_commit_time(out_file, buf);
-+			else
-+				fprintf(out_file, "\n");
-+
-  			cur_counts++;
-  			transaction++;
-  			blocknr++;
-@@ -543,6 +561,13 @@ static void dump_journal(char *cmdname, FILE *out_file,
-  			continue;
-
-  		case JBD2_REVOKE_BLOCK:
-+			if (dump_descriptors) {
-+				fprintf (out_file, "Found expected sequence %u, "
-+					 "type %u (%s) at block %u\n",
-+					 sequence, blocktype,
-+					 type_to_name(blocktype), blocknr);
-+			}
-+
-  			dump_revoke_block(out_file, buf, jsb,
-  					  blocknr, blocksize,
-  					  transaction);
-@@ -742,6 +767,24 @@ static void dump_descriptor_block(FILE *out_file,
-  	*blockp = blocknr;
-  }
-
-+static void dump_commit_time(FILE *out_file, char *buf)
-+{
-+	struct commit_header	*header;
-+	__be64		commit_sec;
-+	time_t		timestamp;
-+	char		time_buffer[26];
-+	char		*result;
-+
-+	header = (struct commit_header *)buf;
-+	commit_sec = be64_to_cpu(header->h_commit_sec);
-+
-+	timestamp = commit_sec;
-+	result = ctime_r(&timestamp, time_buffer);
-+	if (result == NULL) {
-+		exit (1);
-+	}
-+	fprintf(out_file, ", commit at: %s", time_buffer);
-+}
-
-  static void dump_revoke_block(FILE *out_file, char *buf,
-  			      journal_superblock_t *jsb EXT2FS_ATTR((unused)),
+ 	/* allow owner, if perms match */
+ 	if (inode_uid(inode) == ctxt->uid) {
+ 		if ((mask & (perms >> 6)) == mask)
 -- 
-2.33.0
-
+2.47.2
 
 
