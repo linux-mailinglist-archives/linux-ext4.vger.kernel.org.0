@@ -1,100 +1,101 @@
-Return-Path: <linux-ext4+bounces-8802-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8803-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45605AF7E01
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 18:36:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2002AF7E13
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 18:42:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7A04482E3F
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 16:36:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E7571889776
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 16:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ABFF258CF4;
-	Thu,  3 Jul 2025 16:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F1E2580DD;
+	Thu,  3 Jul 2025 16:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uoNcvSGR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/gcLuIxC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uoNcvSGR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/gcLuIxC"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i2pt2sJQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rlb/8en7";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i2pt2sJQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rlb/8en7"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EBD722CBF1
-	for <linux-ext4@vger.kernel.org>; Thu,  3 Jul 2025 16:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90148158535
+	for <linux-ext4@vger.kernel.org>; Thu,  3 Jul 2025 16:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751560599; cv=none; b=c0XDqkZciOT3Ey8Epn7C5qyicBdyW+8b+e/bIDkjU1VRYTPCSI/ojHPHa4CIkLfkggDBEx2U3g/0JfzYWICEOVTDSDMkY89UXvSnc885kQxwWTq6ygLHO4tQoOUUpXOrNxj+sJ78NCfg0WJptgGpqNNca+YoWJ/Tiwamc8Ropco=
+	t=1751560916; cv=none; b=NgtdmQ1FYToLg9mjoW6RDfw+RmuWNWm44jBPvBFSVcEvJW1dlaArWanYATjCYj2MXX/HbuELpjpoUOt6kmSciH+/hzGaCR3CCZRBzodF3zxDdNHR5X3bGn3lke4pNMVMGaZFTtiDI714/DB3Rf8u52GAAv5BQ8wqz5if6Id7enY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751560599; c=relaxed/simple;
-	bh=zpkHQu5pf9tXYgwlRfC5iwGBkfyQpnz+ReA1cH5U0tc=;
+	s=arc-20240116; t=1751560916; c=relaxed/simple;
+	bh=eALA3TRhYTgHttXWZ8fc2vctoM6c+mBtTseDBawNElo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pevUQ8f30tl9pKGCw0yHVavTLy5VQsyZxBiJJbcDb4f658eAeA7HA8qm+6Klt2LChowms+MQ+4uhWQLUbG2Mm3q6mz4VAu8X9Aq53Ma2fGrrRB8QYJXsd4kDYgru8bHhnog/wuoSJC5PT2Pe5RXGxs1mn9iovIjim13OAw2PRqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uoNcvSGR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/gcLuIxC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uoNcvSGR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/gcLuIxC; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=SqpSbDq8olLJbju/dQShqBgD0ZwZUWn59bVYIs8IXYBc0NafItRBH33TIns0NvfPnlQk6Ml8ji88Rt0I8j7IJWa3U9xYw/2ptPXco+rW8pLCnvbu/fwvHAg/yb5Lvkv5v7IqW9hCLAn/I1kaaLhGqSsJ36vAlg35k26F4aSjCWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i2pt2sJQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rlb/8en7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i2pt2sJQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rlb/8en7; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 48ADF1F387;
-	Thu,  3 Jul 2025 16:36:34 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BEE5E210F3;
+	Thu,  3 Jul 2025 16:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751560594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1751560912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gha886q83QNHHfaeqtJBn/R0Pt8WcTJFp/jUF+wQ530=;
-	b=uoNcvSGRrNEuA+HbaXTFNY8uHSq66BtY/FcmEC9q4UD8ljF2ax3L779f+roLqY+iBOcn8O
-	vIJygXnPGV8yGGa4ant1JSfvHe6Ecdw5ClSbJ9jz7EOzdP+g7H3O42/kaOCcTfklf2WN2z
-	kkUXbqnOhYbzRQGioLpekzZgK/AhzcM=
+	bh=mL125oyuZxBODWkamkQ92+oqml0BgJm5qTBT4RYwE4Y=;
+	b=i2pt2sJQwwmABuBKvGWQWILt8mnTXRKnS2GPUZvTWpvvZ9aJBWERgmGO90jXL/rJBKAozW
+	OG91ItkgSuTdR2c2LBdbi2BaQxHnjGwRqvy0sXE2B6hH2CyPipcJLhg6nfdOvYz65E9JMk
+	UFa5Fe/ujvAaFxo3cmUl3f+ww/7ZnDU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751560594;
+	s=susede2_ed25519; t=1751560912;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gha886q83QNHHfaeqtJBn/R0Pt8WcTJFp/jUF+wQ530=;
-	b=/gcLuIxCFdWe/+zBPApp0vU4KaCeAZy1Lyp0/iIUfI7T+tG2/ItIIAEhcz1VWMc31ad/Wn
-	ecfIFxyxmKnRX1DA==
-Authentication-Results: smtp-out2.suse.de;
+	bh=mL125oyuZxBODWkamkQ92+oqml0BgJm5qTBT4RYwE4Y=;
+	b=rlb/8en7amV9YFOyiv3IGCZXuvOWY2128/AKYY5SXzOVxwKlwj7+H0321phnss6iO72lRl
+	UBRs4RevXDQnePBA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751560594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1751560912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gha886q83QNHHfaeqtJBn/R0Pt8WcTJFp/jUF+wQ530=;
-	b=uoNcvSGRrNEuA+HbaXTFNY8uHSq66BtY/FcmEC9q4UD8ljF2ax3L779f+roLqY+iBOcn8O
-	vIJygXnPGV8yGGa4ant1JSfvHe6Ecdw5ClSbJ9jz7EOzdP+g7H3O42/kaOCcTfklf2WN2z
-	kkUXbqnOhYbzRQGioLpekzZgK/AhzcM=
+	bh=mL125oyuZxBODWkamkQ92+oqml0BgJm5qTBT4RYwE4Y=;
+	b=i2pt2sJQwwmABuBKvGWQWILt8mnTXRKnS2GPUZvTWpvvZ9aJBWERgmGO90jXL/rJBKAozW
+	OG91ItkgSuTdR2c2LBdbi2BaQxHnjGwRqvy0sXE2B6hH2CyPipcJLhg6nfdOvYz65E9JMk
+	UFa5Fe/ujvAaFxo3cmUl3f+ww/7ZnDU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751560594;
+	s=susede2_ed25519; t=1751560912;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gha886q83QNHHfaeqtJBn/R0Pt8WcTJFp/jUF+wQ530=;
-	b=/gcLuIxCFdWe/+zBPApp0vU4KaCeAZy1Lyp0/iIUfI7T+tG2/ItIIAEhcz1VWMc31ad/Wn
-	ecfIFxyxmKnRX1DA==
+	bh=mL125oyuZxBODWkamkQ92+oqml0BgJm5qTBT4RYwE4Y=;
+	b=rlb/8en7amV9YFOyiv3IGCZXuvOWY2128/AKYY5SXzOVxwKlwj7+H0321phnss6iO72lRl
+	UBRs4RevXDQnePBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 375EF1368E;
-	Thu,  3 Jul 2025 16:36:34 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B259E13721;
+	Thu,  3 Jul 2025 16:41:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 30t7DZKxZmg/DgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 03 Jul 2025 16:36:34 +0000
+	id PgqJK9CyZmjGDwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 03 Jul 2025 16:41:52 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CC9D4A0A48; Thu,  3 Jul 2025 18:36:29 +0200 (CEST)
-Date: Thu, 3 Jul 2025 18:36:29 +0200
+	id 364BDA0A48; Thu,  3 Jul 2025 18:41:48 +0200 (CEST)
+Date: Thu, 3 Jul 2025 18:41:48 +0200
 From: Jan Kara <jack@suse.cz>
 To: libaokun@huaweicloud.com
 Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
 	jack@suse.cz, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
 	yangerkun@huawei.com, libaokun1@huawei.com
-Subject: Re: [PATCH 1/2] ext4: show the default enabled i_version option
-Message-ID: <l7xuy7lslsyvig3ji2yktrxpml67nhcawnq5yxccek4kdrp4a2@ntpla25pphqb>
+Subject: Re: [PATCH 2/2] ext4: preserve SB_I_VERSION on remount
+Message-ID: <6zslpjdu6urzex23d45n47myfzqmksphjz4bin6tpsxi7wqey2@nbmumzwl7255>
 References: <20250703073903.6952-1-libaokun@huaweicloud.com>
+ <20250703073903.6952-2-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -103,9 +104,9 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250703073903.6952-1-libaokun@huaweicloud.com>
+In-Reply-To: <20250703073903.6952-2-libaokun@huaweicloud.com>
 X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-0.998];
@@ -128,39 +129,59 @@ X-Spam-Flag: NO
 X-Spam-Level: 
 X-Spam-Score: -3.80
 
-On Thu 03-07-25 15:39:02, libaokun@huaweicloud.com wrote:
+On Thu 03-07-25 15:39:03, libaokun@huaweicloud.com wrote:
 > From: Baokun Li <libaokun1@huawei.com>
 > 
-> Display `i_version` in `/proc/fs/ext4/sdx/options`, even though it's
-> default enabled. This aids users managing multi-version scenarios and
-> simplifies debugging.
+> IMA testing revealed that after an ext4 remount, file accesses triggered
+> full measurements even without modifications, instead of skipping as
+> expected when i_version is unchanged.
 > 
+> Debugging showed `SB_I_VERSION` was cleared in reconfigure_super() during
+> remount due to commit 1ff20307393e ("ext4: unconditionally enable the
+> i_version counter") removing the fix from commit 960e0ab63b2e ("ext4: fix
+> i_version handling on remount").
+> 
+> To rectify this, `SB_I_VERSION` is always set for `fc->sb_flags` in
+> ext4_init_fs_context(), instead of `sb->s_flags` in __ext4_fill_super(),
+> ensuring it persists across all mounts.
+> 
+> Fixes: 1ff20307393e ("ext4: unconditionally enable the i_version counter")
 > Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-OK, I guess it makes sense as a backward compatibility glue. Feel free to
-add:
+Looks good. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  fs/ext4/super.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  fs/ext4/super.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
 > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index c7d39da7e733..9203518786e4 100644
+> index 9203518786e4..ed1b36bd51c8 100644
 > --- a/fs/ext4/super.c
 > +++ b/fs/ext4/super.c
-> @@ -2975,6 +2975,8 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
->  		SEQ_OPTS_PRINT("min_batch_time=%u", sbi->s_min_batch_time);
->  	if (nodefs || sbi->s_max_batch_time != EXT4_DEF_MAX_BATCH_TIME)
->  		SEQ_OPTS_PRINT("max_batch_time=%u", sbi->s_max_batch_time);
-> +	if (nodefs && sb->s_flags & SB_I_VERSION)
-> +		SEQ_OPTS_PUTS("i_version");
->  	if (nodefs || sbi->s_stripe)
->  		SEQ_OPTS_PRINT("stripe=%lu", sbi->s_stripe);
->  	if (nodefs || EXT4_MOUNT_DATA_FLAGS &
+> @@ -1998,6 +1998,9 @@ int ext4_init_fs_context(struct fs_context *fc)
+>  	fc->fs_private = ctx;
+>  	fc->ops = &ext4_context_ops;
+>  
+> +	/* i_version is always enabled now */
+> +	fc->sb_flags |= SB_I_VERSION;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -5316,9 +5319,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  	sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
+>  		(test_opt(sb, POSIX_ACL) ? SB_POSIXACL : 0);
+>  
+> -	/* i_version is always enabled now */
+> -	sb->s_flags |= SB_I_VERSION;
+> -
+>  	/* HSM events are allowed by default. */
+>  	sb->s_iflags |= SB_I_ALLOW_HSM;
+>  
 > -- 
 > 2.46.1
 > 
