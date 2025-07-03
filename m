@@ -1,215 +1,155 @@
-Return-Path: <linux-ext4+bounces-8798-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8799-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6EE1AF7344
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 14:08:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65DBCAF76F1
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 16:15:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED9953BB9F2
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 12:07:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3161580BE5
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 14:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F9772E5400;
-	Thu,  3 Jul 2025 12:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E8B2E7F28;
+	Thu,  3 Jul 2025 14:14:00 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269F52E4983
-	for <linux-ext4@vger.kernel.org>; Thu,  3 Jul 2025 12:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A082D5418;
+	Thu,  3 Jul 2025 14:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751544481; cv=none; b=Go51+C+8J4rlCqimd9YAEKLYUnkyU6vRhSVfg5WnocvRewnkjDutc4eJtOptRYpBPszqehzB8II85D1m+ARETxGUdBeIT+JILhMkk8tbWIQ26PoBxnJUoBZngH5OW+Ko22ANntVsae4e84u6oL41ojv5YYmWb4BZqpc939p5X4k=
+	t=1751552040; cv=none; b=Y6nlH8J/OBkXzshUYWBf34iX2m734KEJ5pgAARtT3z7dWTnTy8cYVbyXDH6X5dZCV4ueZux66SEM1PZiNWQXkUSa73PJHXO9hhbERzDbBhBWLqVyGxv8PI4wAlqCNFdbIGNMXhN2QL6G67Z+/05se8rUHf0V3/UO1JoLRJeVMng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751544481; c=relaxed/simple;
-	bh=jreUI5ENE4FP6OiVZQGo0yWaWoUVeoajHwdCFVLqK78=;
-	h=Message-ID:Date:MIME-Version:To:CC:From:Subject:Content-Type; b=kFhEVpaQ2C4AXyW3+0vnHnH5RKOJfkkNdtk3uP05Xuy4fDBXJiUXY8gYbqm+dINWw6g2BBIT7CwwZtPze7J59tzWDSl1VJ5VGZpVHq3+IklIKJgDJHmyf6br6+Tm0BpJBaZRxq3rbbWzzKWgY7rZrOiMB0HAhRirfGxa+EBiUOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=h-partners.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h-partners.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4bXwQx1tDkz1GCFv;
-	Thu,  3 Jul 2025 20:03:53 +0800 (CST)
-Received: from kwepemo100017.china.huawei.com (unknown [7.202.195.215])
-	by mail.maildlp.com (Postfix) with ESMTPS id A9B43180B3F;
-	Thu,  3 Jul 2025 20:07:54 +0800 (CST)
-Received: from [10.174.187.231] (10.174.187.231) by
- kwepemo100017.china.huawei.com (7.202.195.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 3 Jul 2025 20:07:54 +0800
-Message-ID: <f5445a3b-f278-6440-91f3-08e5ca5b93cf@huawei.com>
-Date: Thu, 3 Jul 2025 20:07:53 +0800
+	s=arc-20240116; t=1751552040; c=relaxed/simple;
+	bh=jYa0ElrOwg3E30m7l7Nw6tKSbtT2mPC05vfYnMLOo4s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dyVqQV4td19MX6b3V4SclwLedlszhobjetCacf3in47A7NfXYVrOK4g9YFAtE1jW1M3nhHwzxqIIeBhecWAPqKIZcVNCsjrXdPoSXmV3TIH32+Eg6EHKDOt/JWxte8n57jD+DPIEtdQDwzKMH/LY3BGwMvW8wIA3s9ufcdm/qLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bXzJz0DsgzYQtrH;
+	Thu,  3 Jul 2025 22:13:55 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id D8C491A108E;
+	Thu,  3 Jul 2025 22:13:53 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP3 (Coremail) with SMTP id _Ch0CgAHaCUfkGZoidghAg--.13097S3;
+	Thu, 03 Jul 2025 22:13:53 +0800 (CST)
+Message-ID: <a6225180-9983-4a0a-8898-435b014b8ebe@huaweicloud.com>
+Date: Thu, 3 Jul 2025 22:13:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-To: Theodore Ts'o <tytso@mit.edu>
-CC: "Darrick J. Wong" <djwong@kernel.org>, <linux-ext4@vger.kernel.org>,
-	<qiangxiaojun@huawei.com>, <hejie3@huawei.com>
-From: zhanchengbin <zhanchengbin1@huawei.com>
-Subject: [PATCH v4] debugfs/logdump.c: Add parameter t to dump sequence commit
- timestamps
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 8/8] ext4: enable large folio for regular file
+To: Theodore Ts'o <tytso@mit.edu>, "D, Suneeth" <Suneeth.D@amd.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, willy@infradead.org, adilger.kernel@dilger.ca,
+ jack@suse.cz, yi.zhang@huawei.com, libaokun1@huawei.com, yukuai3@huawei.com,
+ yangerkun@huawei.com
+References: <20250512063319.3539411-1-yi.zhang@huaweicloud.com>
+ <20250512063319.3539411-9-yi.zhang@huaweicloud.com>
+ <f59ef632-0d11-4ae7-bdad-d552fe1f1d78@amd.com>
+ <94de227e-23c1-4089-b99c-e8fc0beae5da@huaweicloud.com>
+ <20250626145647.GA217371@mit.edu>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20250626145647.GA217371@mit.edu>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemo100017.china.huawei.com (7.202.195.215)
+X-CM-TRANSID:_Ch0CgAHaCUfkGZoidghAg--.13097S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr17uFWkWFyDGr4rJw4DXFb_yoW5XFyxpF
+	WakFn7AFnxXw4xAwn7Gw1kZr9Iy3s5XFW3G3Z5GryjvwnxGF4S9FW0qas5uFW7GrWUX3WI
+	qw4jv343Z3W5XFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-When filesystem errors occur, inspect journal sequences with parameter t to
-dump commit timestamps.
+On 2025/6/26 22:56, Theodore Ts'o wrote:
+> On Thu, Jun 26, 2025 at 09:26:41PM +0800, Zhang Yi wrote:
+>>
+>> Thanks for the report, I will try to reproduce this performance regression on
+>> my machine and find out what caused this regression.
+> 
+> I took a quick look at this, and I *think* it's because lmbench is
+> measuring the latency of mmap read's --- I'm going to guess 4k random
+> page faults, but I'm not sure.  If that's the case, this may just be a
+> natural result of using large folios, and the tradeoff of optimizing
+> for large reads versus small page faults.
+> 
+> But if you could take a closer look, that would be great, thanks!
+> 
 
-Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
----
-v4: (1) Fix incorrect variable type; (2) Add logging for error branches.
-- Link to v3:
-https://patchwork.ozlabs.org/project/linux-ext4/patch/32252e29-aba9-df6f-3b97-d3774df375ad@huawei.com/
-v3: Change from displaying UTC time to local time.
-- Link to v2:
-https://patchwork.ozlabs.org/project/linux-ext4/patch/5a4b703c-6940-d9da-5686-337e3220d3a4@huawei.com/
-v2: Correct abnormal formats in the patch.
-- Link to v1:
-https://patchwork.ozlabs.org/project/linux-ext4/patch/50aeb0c1-9f14-ed04-c3b7-7a50f61c3341@huawei.com/
----
-  debugfs/logdump.c | 61 ++++++++++++++++++++++++++++++++++++++++-------
-  1 file changed, 52 insertions(+), 9 deletions(-)
+After analyzing what the lmbench mmap test actually does, I found that
+the regression is related to the mmap writes, not mmap reads. In other
+words, the latency increases in ext4_page_mkwrite() after we enable
+large folios.
 
-diff --git a/debugfs/logdump.c b/debugfs/logdump.c
-index 324ed42..a1256c4 100644
---- a/debugfs/logdump.c
-+++ b/debugfs/logdump.c
-@@ -47,7 +47,7 @@ enum journal_location {JOURNAL_IS_INTERNAL, 
-JOURNAL_IS_EXTERNAL};
+The lmbench mmap test performed the following two tests:
+1. mmap a range with PROT_READ|PROT_WRITE and MAP_SHARED, and then
+   write one byte every 16KB sequentially.
+2. mmap a range with PROT_READ and MAP_SHARED, and then read byte
+   one by one sequentially.
 
-  #define ANY_BLOCK ((blk64_t) -1)
+For the mmap read test, the average page fault latency on my machine
+can be improved from 3,634 ns to 2,005 ns. This improvement is due to
+the ability to save the folio readahead loop in page_cache_async_ra()
+and the set PTE loop in filemap_map_pages() after implementing support
+for large folios.
 
--static int		dump_all, dump_super, dump_old, dump_contents, 
-dump_descriptors;
-+static int		dump_all, dump_super, dump_old, dump_contents, 
-dump_descriptors, dump_time;
-  static int64_t		dump_counts;
-  static blk64_t		block_to_dump, bitmap_to_dump, inode_block_to_dump;
-  static unsigned int	group_to_dump, inode_offset_to_dump;
-@@ -67,6 +67,8 @@ static void dump_descriptor_block(FILE *, struct 
-journal_source *,
-  				  char *, journal_superblock_t *,
-  				  unsigned int *, unsigned int, __u32, tid_t);
+For the mmap write test, the number of page faults does not decrease
+due to the large folio (the maximum order is 5), each page still
+incurs one page fault. However, the ext4_page_mkwrite() does multiple
+iterations through buffer_head in the folio, so the time consumption
+will increase. The latency of ext4_page_mkwrite() can be increased
+from 958ns to 1596ns.
 
-+static void dump_commit_time(FILE *out_file, char *buf);
-+
-  static void dump_revoke_block(FILE *, char *, journal_superblock_t *,
-  				  unsigned int, unsigned int, tid_t);
+After looking at the comments in finish_fault() and 43e027e414232
+("mm: memory: extend finish_fault() to support large folio").
 
-@@ -118,10 +120,11 @@ void do_logdump(int argc, ss_argv_t argv, int 
-sci_idx EXT2FS_ATTR((unused)),
-  	inode_block_to_dump = ANY_BLOCK;
-  	inode_to_dump = -1;
-  	dump_counts = -1;
-+	dump_time = 0;
-  	wrapped_flag = false;
+vm_fault_t finish_fault(struct vm_fault *vmf)
+{
+	...
+	nr_pages = folio_nr_pages(folio);
 
-  	reset_getopt();
--	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
-+	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:t")) != EOF) {
-  		switch (c) {
-  		case 'a':
-  			dump_all++;
-@@ -162,6 +165,9 @@ void do_logdump(int argc, ss_argv_t argv, int 
-sci_idx EXT2FS_ATTR((unused)),
-  				return;
-  			}
-  			break;
-+		case 't':
-+			dump_time++;
-+			break;
-  		default:
-  			goto print_usage;
-  		}
-@@ -521,21 +527,33 @@ static void dump_journal(char *cmdname, FILE 
-*out_file,
-  				break;
-  		}
+	/*
+	 * Using per-page fault to maintain the uffd semantics, and same
+	 * approach also applies to non-anonymous-shmem faults to avoid
+	 * inflating the RSS of the process.
+	 */
+	if (!vma_is_anon_shmem(vma) || unlikely(userfaultfd_armed(vma)) ||
+	    unlikely(needs_fallback)) {
+		nr_pages = 1;
+	...
+	set_pte_range(vmf, folio, page, nr_pages, addr);
+}
 
--		if (dump_descriptors) {
--			fprintf (out_file, "Found expected sequence %u, "
--				 "type %u (%s) at block %u\n",
--				 sequence, blocktype,
--				 type_to_name(blocktype), blocknr);
--		}
--
-  		switch (blocktype) {
-  		case JBD2_DESCRIPTOR_BLOCK:
-+			if (dump_descriptors) {
-+				fprintf (out_file, "Found expected sequence %u, "
-+					 "type %u (%s) at block %u\n",
-+					 sequence, blocktype,
-+					 type_to_name(blocktype), blocknr);
-+			}
-+
-  			dump_descriptor_block(out_file, source, buf, jsb,
-  					      &blocknr, blocksize, maxlen,
-  					      transaction);
-  			continue;
+I believe this regression can be resolved if the finish_fault()
+supports file-based large folios, but I'm not sure if we are planning
+to implement this.
 
-  		case JBD2_COMMIT_BLOCK:
-+			if (dump_descriptors) {
-+				fprintf (out_file, "Found expected sequence %u, "
-+					 "type %u (%s) at block %u",
-+					 sequence, blocktype,
-+					 type_to_name(blocktype), blocknr);
-+			}
-+
-+			if (dump_time)
-+				dump_commit_time(out_file, buf);
-+			else
-+				fprintf(out_file, "\n");
-+
-  			cur_counts++;
-  			transaction++;
-  			blocknr++;
-@@ -543,6 +561,13 @@ static void dump_journal(char *cmdname, FILE *out_file,
-  			continue;
+As for ext4_page_mkwrite(), I think it can also be optimized by reducing
+the number of the folio iterations, but this would make it impossible to
+use existing generic helpers and could make the code very messy.
 
-  		case JBD2_REVOKE_BLOCK:
-+			if (dump_descriptors) {
-+				fprintf (out_file, "Found expected sequence %u, "
-+					 "type %u (%s) at block %u\n",
-+					 sequence, blocktype,
-+					 type_to_name(blocktype), blocknr);
-+			}
-+
-  			dump_revoke_block(out_file, buf, jsb,
-  					  blocknr, blocksize,
-  					  transaction);
-@@ -742,6 +767,24 @@ static void dump_descriptor_block(FILE *out_file,
-  	*blockp = blocknr;
-  }
-
-+static void dump_commit_time(FILE *out_file, char *buf)
-+{
-+	struct commit_header	*header;
-+	uint64_t	commit_sec;
-+	time_t		timestamp;
-+	char		time_buffer[26];
-+	char		*result;
-+
-+	header = (struct commit_header *)buf;
-+	commit_sec = be64_to_cpu(header->h_commit_sec);
-+
-+	timestamp = commit_sec;
-+	result = ctime_r(&timestamp, time_buffer);
-+	if (result)
-+		fprintf(out_file, ", commit at: %s", time_buffer);
-+	else
-+		fprintf(out_file, ", commit_sec is %llu\n", commit_sec);
-+}
-
-  static void dump_revoke_block(FILE *out_file, char *buf,
-  			      journal_superblock_t *jsb EXT2FS_ATTR((unused)),
--- 
-2.33.0
+Best regards,
+Yi.
 
 
