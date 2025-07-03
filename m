@@ -1,239 +1,107 @@
-Return-Path: <linux-ext4+bounces-8787-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8788-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC35CAF6B82
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 09:26:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AFAFAF6BE2
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 09:46:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3AE83A1767
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 07:26:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF3517ADAA7
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Jul 2025 07:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B16529993E;
-	Thu,  3 Jul 2025 07:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="loK8ogUX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C43298259;
+	Thu,  3 Jul 2025 07:46:23 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E01D298CCF
-	for <linux-ext4@vger.kernel.org>; Thu,  3 Jul 2025 07:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86FAC1FFC46;
+	Thu,  3 Jul 2025 07:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751527581; cv=none; b=el+u6MO1ls8+/bTHtKHa7dMazMut4ibh9Eu0aQPOz6rEm0Co3AK/5Lsdt9F/yUDe+TcaAX7RMelMP9rVGXnlirT05mJoQHKR4KIcNatfZCn8l9dqFZlS2g0AgmlChXBOSvSn8+MzNbRBf/7cuc6I5wdvBS8GXf3eVUmGC1EfXno=
+	t=1751528783; cv=none; b=WmXKcGYeSHNNiVZ7h2lEG0JkcWG/f50bQzhOOMg6h1decmX+2LOIABBNGwYe/ExHNGvueWWPhm+2ducO9a7CgBRGewOonuB6uYNARrWURlPiimkVS8/1lN5hvOktYGuULTSm7vRuMs3UrxM2W8/JRsA2eGsomdPykfkkD/1a1BY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751527581; c=relaxed/simple;
-	bh=eXG7L6apoeVaPxa6zg1mVdlH+teKsLNGl93S/Tr0PoI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=js47uhg8rDiZ6+41755jnm5IUgNXh/75k13ihtEauva0umSkk19x+f7iG+y32igR70matnHGSwNYfAMGKRgNT/PMxBByKuq/Xicx8cSEi7wrdshofFW4k5z/lYSupMjJGvtW1X0k0AMffnoquOpwI2QOcjQ5JmSdw2Bb+F9OB1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=loK8ogUX; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-b3182c6d03bso8817790a12.0
-        for <linux-ext4@vger.kernel.org>; Thu, 03 Jul 2025 00:26:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1751527578; x=1752132378; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GAMKSN1cf/DpMVRo6gFlykOi6cd+hJQyMWIE0kM7p2Y=;
-        b=loK8ogUXGIhVB3sCRdTnY+ZaQcbBbNZ8gwXBetgvlP2tHI/us/8hlTnH/9052phb26
-         WmCZZJn0yQ0J7tm9S+2yEFnwXPI6npur7zgiK4xs78t8NE6iHf3OeZq82lyPse60dxZy
-         lSM4oqTQxoBJQnCkO3WYRV5p7m45KNfyO0RrsALiGOTRGSeXrTP3PzuceVG/AwXvxNcT
-         RnhC4RtL9G6m7Fhg5x0D1z5NEC7eEoTfKX9N2ceYuQC4CtMLv5WPZxDhrCNPz/RZDfI6
-         dWrRKw/Buh/5uBCTkhLDh2p1dFgNCFkfqs3hFx5CtyFrHRAUAWfv9oitckfv+uTKbuLN
-         7mmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751527579; x=1752132379;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GAMKSN1cf/DpMVRo6gFlykOi6cd+hJQyMWIE0kM7p2Y=;
-        b=WPpdGFPAJDsrz6/BVKR6PelOfkkmLoDjNpOZkZ65GqA6znY/4fU04UK45wzZJgc3Em
-         hA/brPIbt5sne9QzdBKzOoS0AAr8jOH1P8wL4l+MbjqLFZ2ZM/5Ki+OMEK2LsBJSFnV9
-         SNd/jyERwAbfy3f1G3zhtDcqJ/FYojbT8vu77KxTxd3WDvJIJuT1G/uuJQxEUWWvTuCE
-         KvvhrwP2G7auc+UKNjutogfADTiH7toH74SpMrNxL8TyjPh9zvth38IiqFxEFPEEk2Z8
-         5nvRVDVg/e2Yr6WpqpdgTmzuVTVxhDE5Zp3bR+eu1UoEHvhJeTQ4qhv5HWkG/EDDh2vA
-         YzTA==
-X-Gm-Message-State: AOJu0YwtcWTimmeKK7EUpvNTawc1tIEKdCTdKSTXhasOSzW886lYE38L
-	AxaiBb2sjLoq20ZUQwz/1GAWRUo21Bv9NV4/ixmuJmksr+pEFxdxb9rg3bbF74Sg99x7Pif2vjG
-	SS+8aenOUisP3w7cGzopwmUvyZ/QG5KApeGlPK57IrQ==
-X-Gm-Gg: ASbGncs+f2/4n1ahitXVUqJ48pr2qBLoH3/JVLxgbCju5ZLfBmSC86SiNWkM7X/LcFt
-	qnQjdGN2eFSuh98Vb/8VMM281Cgpm+rNrcqJH7kb5IH5n9IWmLVVQJmsFxuDMAkWYdS1m/q2VTm
-	mGlPbH6ylPfhQFMU/h2qEKs2zRAF+WsESmV01+A3vdoMIYNbkOsDri2sGpyzYwrtGGIU2kJN7CR
-	gLj3ITJAn+hBQ==
-X-Google-Smtp-Source: AGHT+IFBtroNhRgT2smI4MTW+nF7Q1k9nWSGPUagsoi7hbtQlf2pdM4tjmPERmB0KQXgaKAhNH2kWUgg6ohVrZtxleU=
-X-Received: by 2002:a17:90a:d60c:b0:313:1a8c:c2c6 with SMTP id
- 98e67ed59e1d1-31a90bc9850mr9100678a91.16.1751527578511; Thu, 03 Jul 2025
- 00:26:18 -0700 (PDT)
+	s=arc-20240116; t=1751528783; c=relaxed/simple;
+	bh=n781EbzYKIh3Mtb0Fcy3qgjejSfBkd/4v6yk4slrCB4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oCmsg5oOipVxvtUwArzAabysEc8rf7dvnB5WnX96sgsfp4kSGRfh4tbgLtA23VRtseNBzNRwywgMPIruoZyqzjUOQckX4ld85A4xykh2VKASKU2rtjj1iJqprQZ15QGkW1tsuf6b5QUSgjYjQM2JJvTqjWtK3A3tSQTTyuC/sgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bXpjm0nq5zYQv7C;
+	Thu,  3 Jul 2025 15:46:20 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id EE40A1A0842;
+	Thu,  3 Jul 2025 15:46:18 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP3 (Coremail) with SMTP id _Ch0CgAXeCVINWZohPkEAg--.7195S4;
+	Thu, 03 Jul 2025 15:46:18 +0800 (CST)
+From: libaokun@huaweicloud.com
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	libaokun1@huawei.com,
+	libaokun@huaweicloud.com
+Subject: [PATCH 1/2] ext4: show the default enabled i_version option
+Date: Thu,  3 Jul 2025 15:39:02 +0800
+Message-Id: <20250703073903.6952-1-libaokun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com>
- <2dbc199b-ef22-4c22-9dbd-5e5876e9f9b4@huaweicloud.com>
-In-Reply-To: <2dbc199b-ef22-4c22-9dbd-5e5876e9f9b4@huaweicloud.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 3 Jul 2025 12:56:06 +0530
-X-Gm-Features: Ac12FXzBgwMwFGfOkzvJ_EzX-plndvQT1fRe69w5kV27SFg1-zbk8bDaXp-Lnc4
-Message-ID: <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
-Subject: Re: next-20250626: WARNING fs jbd2 transaction.c start_this_handle
- with ARM64_64K_PAGES
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-ext4 <linux-ext4@vger.kernel.org>, linux-fsdevel@vger.kernel.org, 
-	open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, 
-	Linux Regressions <regressions@lists.linux.dev>, LTP List <ltp@lists.linux.it>, 
-	"Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>, Anders Roxell <anders.roxell@linaro.org>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgAXeCVINWZohPkEAg--.7195S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFy5Aw4UGF15Gw4UtFyxKrg_yoWDXFc_X3
+	y8JF4UJr1fKrsayF4UCw4YyF9Y9ana9F1UWrZagFy5XFn093yjgFsrtrWkJa15uFWrXFWf
+	u39rtF4rXr1jgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbsxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0F24l
+	c7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+	14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
+	ZFpf9x0JUmjgxUUUUU=
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAKBWhaXIpLhAABsn
 
-On Thu, 26 Jun 2025 at 19:23, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
->
-> Hi, Naresh!
->
-> On 2025/6/26 20:31, Naresh Kamboju wrote:
-> > Regressions noticed on arm64 devices while running LTP syscalls mmap16
-> > test case on the Linux next-20250616..next-20250626 with the extra build
-> > config fragment CONFIG_ARM64_64K_PAGES=y the kernel warning noticed.
-> >
-> > Not reproducible with 4K page size.
-> >
-> > Test environments:
-> > - Dragonboard-410c
-> > - Juno-r2
-> > - rk3399-rock-pi-4b
-> > - qemu-arm64
-> >
-> > Regression Analysis:
-> > - New regression? Yes
-> > - Reproducibility? Yes
-> >
-> > Test regression: next-20250626 LTP mmap16 WARNING fs jbd2
-> > transaction.c start_this_handle
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> Thank you for the report. The block size for this test is 1 KB, so I
-> suspect this is the issue with insufficient journal credits that we
-> are going to resolve.
+From: Baokun Li <libaokun1@huawei.com>
 
-I have applied your patch set [1] and tested and the reported
-regressions did not fix.
-Am I missing anything ?
+Display `i_version` in `/proc/fs/ext4/sdx/options`, even though it's
+default enabled. This aids users managing multi-version scenarios and
+simplifies debugging.
 
-[1] https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ fs/ext4/super.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
->
-> Thanks,
-> Yi.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c7d39da7e733..9203518786e4 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2975,6 +2975,8 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
+ 		SEQ_OPTS_PRINT("min_batch_time=%u", sbi->s_min_batch_time);
+ 	if (nodefs || sbi->s_max_batch_time != EXT4_DEF_MAX_BATCH_TIME)
+ 		SEQ_OPTS_PRINT("max_batch_time=%u", sbi->s_max_batch_time);
++	if (nodefs && sb->s_flags & SB_I_VERSION)
++		SEQ_OPTS_PUTS("i_version");
+ 	if (nodefs || sbi->s_stripe)
+ 		SEQ_OPTS_PRINT("stripe=%lu", sbi->s_stripe);
+ 	if (nodefs || EXT4_MOUNT_DATA_FLAGS &
+-- 
+2.46.1
 
-- Naresh
-
-> >
-> > ## Test log
-> > <6>[   89.498969] loop0: detected capacity change from 0 to 614400
-> > <3>[   89.609561] operation not supported error, dev loop0, sector
-> > 20352 op 0x9:(WRITE_ZEROES) flags 0x20000800 phys_seg 0 prio class 0
-> > <6>[   89.707795] EXT4-fs (loop0): mounted filesystem
-> > 6786a191-5e0d-472b-8bce-4714e1a4fb44 r/w with ordered data mode. Quota
-> > mode: none.
-> > <3>[   90.023985] JBD2: kworker/u8:2 wants too many credits
-> > credits:416 rsv_credits:21 max:334
-> > <4>[   90.024973] ------------[ cut here ]------------
-> > <4>[ 90.025062] WARNING: fs/jbd2/transaction.c:334 at
-> > start_this_handle+0x4c0/0x4e0, CPU#0: 2/42
-> > <4>[   90.026661] Modules linked in: btrfs blake2b_generic xor
-> > xor_neon raid6_pq zstd_compress sm3_ce sha3_ce fuse drm backlight
-> > ip_tables x_tables
-> > <4>[   90.027952] CPU: 0 UID: 0 PID: 42 Comm: kworker/u8:2 Not tainted
-> > 6.16.0-rc3-next-20250626 #1 PREEMPT
-> > <4>[   90.029043] Hardware name: linux,dummy-virt (DT)
-> > <4>[   90.029524] Workqueue: writeback wb_workfn (flush-7:0)
-> > <4>[   90.030050] pstate: 63402009 (nZCv daif +PAN -UAO +TCO +DIT
-> > -SSBS BTYPE=--)
-> > <4>[ 90.030311] pc : start_this_handle (fs/jbd2/transaction.c:334
-> > (discriminator 1))
-> > <4>[ 90.030481] lr : start_this_handle (fs/jbd2/transaction.c:334
-> > (discriminator 1))
-> > <4>[   90.030656] sp : ffffc000805cb650
-> > <4>[   90.030785] x29: ffffc000805cb690 x28: fff00000dd1f5000 x27:
-> > ffffde2ec0272000
-> > <4>[   90.031097] x26: 00000000000001a0 x25: 0000000000000015 x24:
-> > 0000000000000002
-> > <4>[   90.031360] x23: 0000000000000015 x22: 0000000000000c40 x21:
-> > 0000000000000008
-> > <4>[   90.031618] x20: fff00000c231da78 x19: fff00000c231da78 x18:
-> > 0000000000000000
-> > <4>[   90.031875] x17: 0000000000000000 x16: 0000000000000000 x15:
-> > 0000000000000000
-> > <4>[   90.032859] x14: 0000000000000000 x13: 00000000ffffffff x12:
-> > 0000000000000000
-> > <4>[   90.033225] x11: 0000000000000000 x10: ffffde2ebfba8bd0 x9 :
-> > ffffde2ebd34e944
-> > <4>[   90.033607] x8 : ffffc000805cb278 x7 : 0000000000000000 x6 :
-> > 0000000000000001
-> > <4>[   90.033971] x5 : ffffde2ebfb29000 x4 : ffffde2ebfb293d0 x3 :
-> > 0000000000000000
-> > <4>[   90.034294] x2 : 0000000000000000 x1 : fff00000c04dc080 x0 :
-> > 000000000000004c
-> > <4>[   90.034772] Call trace:
-> > <4>[ 90.035068] start_this_handle (fs/jbd2/transaction.c:334
-> > (discriminator 1)) (P)
-> > <4>[ 90.035366] jbd2__journal_start (fs/jbd2/transaction.c:501)
-> > <4>[ 90.035586] __ext4_journal_start_sb (fs/ext4/ext4_jbd2.c:117)
-> > <4>[ 90.035807] ext4_do_writepages (fs/ext4/ext4_jbd2.h:242
-> > fs/ext4/inode.c:2846)
-> > <4>[ 90.036004] ext4_writepages (fs/ext4/inode.c:2953)
-> > <4>[ 90.036233] do_writepages (mm/page-writeback.c:2636)
-> > <4>[ 90.036406] __writeback_single_inode (fs/fs-writeback.c:1680)
-> > <4>[ 90.036616] writeback_sb_inodes (fs/fs-writeback.c:1978)
-> > <4>[ 90.036891] wb_writeback (fs/fs-writeback.c:2156)
-> > <4>[ 90.037122] wb_workfn (fs/fs-writeback.c:2303 (discriminator 1)
-> > fs/fs-writeback.c:2343 (discriminator 1))
-> > <4>[ 90.037318] process_one_work (kernel/workqueue.c:3244)
-> > <4>[ 90.037517] worker_thread (kernel/workqueue.c:3316 (discriminator
-> > 2) kernel/workqueue.c:3403 (discriminator 2))
-> > <4>[ 90.037752] kthread (kernel/kthread.c:463)
-> > <4>[ 90.037903] ret_from_fork (arch/arm64/kernel/entry.S:863)
-> > <4>[   90.038217] ---[ end trace 0000000000000000 ]---
-> > <2>[   90.039950] EXT4-fs (loop0): ext4_do_writepages: jbd2_start:
-> > 9223372036854775807 pages, ino 14; err -28
-> > <3>[   90.040291] JBD2: kworker/u8:2 wants too many credits
-> > credits:416 rsv_credits:21 max:334
-> > <4>[   90.040374] ------------[ cut here ]------------
-> > <4>[ 90.040386] WARNING: fs/jbd2/transaction.c:334 at
-> > start_this_handle+0x4c0/0x4e0, CPU#1: 2/42
-> >
-> >
-> > ## Source
-> > * Kernel version: 6.16.0-rc3-next-20250626
-> > * Git tree: https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git
-> > * Git sha: ecb259c4f70dd5c83907809f45bf4dc6869961d7
-> > * Git describe: 6.16.0-rc3-next-20250626
-> > * Project details:
-> > https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250626/
-> > * Architectures: arm64
-> > * Toolchains: gcc-13
-> > * Kconfigs: gcc-13-lkftconfig-64k_page_size
-> >
-> > ## Build arm64
-> > * Test log: https://qa-reports.linaro.org/api/testruns/28894530/log_file/
-> > * Test LAVA log 1:
-> > https://lkft.validation.linaro.org/scheduler/job/8331353#L6841
-> > * Test LAVA log 2:
-> > https://lkft.validation.linaro.org/scheduler/job/8331352#L8854
-> > * Test details:
-> > https://regressions.linaro.org/lkft/linux-next-master/next-20250626/log-parser-test/exception-warning-fsjbd2transaction-at-start_this_handle/
-> > * Build link: https://storage.tuxsuite.com/public/linaro/lkft/builds/2z2V7LhiJecGzINkU7ObVQTwoR1/
-> > * Kernel config:
-> > https://storage.tuxsuite.com/public/linaro/lkft/builds/2z2V7LhiJecGzINkU7ObVQTwoR1/config
-> >
-> > --
-> > Linaro LKFT
-> > https://lkft.linaro.org
-> >
->
 
