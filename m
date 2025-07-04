@@ -1,80 +1,80 @@
-Return-Path: <linux-ext4+bounces-8822-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8823-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE027AF99E2
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 19:39:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3A78AF9A09
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 19:46:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 554FE54409E
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 17:39:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 033425A7A49
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 17:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718102D542E;
-	Fri,  4 Jul 2025 17:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28111F8BCB;
+	Fri,  4 Jul 2025 17:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b="IEoZN18k"
+	dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b="kVHFVuE8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F23B32D8361
-	for <linux-ext4@vger.kernel.org>; Fri,  4 Jul 2025 17:37:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A3B1EBFFF
+	for <linux-ext4@vger.kernel.org>; Fri,  4 Jul 2025 17:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751650679; cv=none; b=N80owVlpgRM9EiFk22LQBOwI06QC4XKmnGwPhaE8GwOq/8b8xomMLXHJe2VcetN3SHG0qrUb0xvzJK28lo/WWwDo9ukH975Iec+QGRsFunFZWTQUeH9ufS4LTDxtgfgDoVZuCC3QQkpujmMZYP9eNzQDpIPTpeNw/UGqMTnMIJk=
+	t=1751651134; cv=none; b=oI7zgi5AfIU4WRzMmEDPMP7oN8QwEp3tr6wYrETaKX74avMLSK9gVmdHkMoVu3LiNF6Da8vCyy0gIXXPEnW2/dbw+UX10v7EMBYkJQx24htaStM8OoQxHrG0axUGI3LhcEZEqaffBH4XlqxJHVBs+eTHCixyiahniXDQbaJaE8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751650679; c=relaxed/simple;
-	bh=9EALfSFFBRNxRqRk7VUICyoOrPWaEk2Bqic5Nq+c1QU=;
+	s=arc-20240116; t=1751651134; c=relaxed/simple;
+	bh=Nqm9M4UJIqwudHAuGH7UYCWuSwRLdeHqz5vOhTfsqY0=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Z29L7htXc4J8SlFJjK2p8fTc1KC7NIu627gROzNpyxwKcQMEjG11x8PSsP6HLNjLpkBdBThO3gAN3OYEprNjZJ7uI761xlF+s+uBVVGw5y+CWX5+EOdbi8J2aPlAUn4lWPx9UfxDWSeJ2xnZj/P2PN7IOWwblaDva6NzD50jvhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com; spf=pass smtp.mailfrom=dubeyko.com; dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b=IEoZN18k; arc=none smtp.client-ip=209.85.128.172
+	 Content-Type:MIME-Version; b=bYmi4Pll6Zj3Pt654t6emueBhI18tJtN97gKgaViw+D/u7bcnIXnFJdB/9fgfSG/TE8TqOZAhNxDFMMp6HX5u3GepooT1D1DUoe771P8kZ7bc0KKCC/23PkZal+e5Vhue2g+wDKCProro2qU0ygukW03FGLORjztwsr1mWWLs74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com; spf=pass smtp.mailfrom=dubeyko.com; dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b=kVHFVuE8; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubeyko.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-70f862dbeaeso10755817b3.1
-        for <linux-ext4@vger.kernel.org>; Fri, 04 Jul 2025 10:37:56 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e81a7d90835so951521276.1
+        for <linux-ext4@vger.kernel.org>; Fri, 04 Jul 2025 10:45:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20230601.gappssmtp.com; s=20230601; t=1751650676; x=1752255476; darn=vger.kernel.org;
+        d=dubeyko-com.20230601.gappssmtp.com; s=20230601; t=1751651131; x=1752255931; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:autocrypt
          :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=lLUj9yr52QgRuAClbNBOdP/RkbfnWsisubBXRJYh1fQ=;
-        b=IEoZN18kzQIDka8i89xchVuT9VJi5TSDgmA7iajf9iCpKJMdLU/FME99+PaRpUf1/4
-         qc7CsT4GxkO/hGTtDdUPGGNKS4qpG2egKULafSUTVvPUcgooIJHIGchgA20rgyFEvLkW
-         LMohtkvYAdOPNTRoUyxYxOQf/AXi633E4PfqiCHDa2rmOVZvim3U7Z6S2TVRp+WaynWO
-         +/xsSdARGxzVyti2okmY0NBhy1z4jas5mxFbIBrw1kl5sCVK0TltKHA8KmltkZtac+zh
-         VSnXvkt8hdoxeuv/ug7FSpRQL8lyVWNlLnZdqe/4E1DVTG2/EDfWYogE4aytjx/yt7mY
-         fwjg==
+        bh=sRRTUBR1HhzbPWZOo6ysCxsvxUXtkw1uTBwQrVosYbE=;
+        b=kVHFVuE8jGnyzQdWYrL9udFsL0iMBPRmEyadwhxcLNrX6PDfKdNPNT9naBKapb8K8g
+         GUylmwYGn6ekk2Mb9/UzFsxXqF8gl/w3kkI/IlNCUlOED4nwDtUvjPGlXg18kcg0h/4C
+         ZYrM2SYfJ0u9Oq0Wus3FzUo4WOtaRZoGotJTF6dN5fqhilicNygIRAGZjQHnE0BnS/ZR
+         4ELs8MJ868dMBRyOcWpdM0AL4/+DQsH2sP5Y/uhhSRi8IiYb4xj7eZJcLGGzHEgpvs6b
+         yc6OpyJmc9XBeu6ayBjQc7rKgG5LAq1PVpOw0iM4MMDb2UMJbmApocNSIOk53fF5qSW+
+         0erg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751650676; x=1752255476;
+        d=1e100.net; s=20230601; t=1751651131; x=1752255931;
         h=mime-version:user-agent:content-transfer-encoding:autocrypt
          :references:in-reply-to:date:cc:to:from:subject:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lLUj9yr52QgRuAClbNBOdP/RkbfnWsisubBXRJYh1fQ=;
-        b=QfgoX0NTw1Me9LxloopJsOtSQe60dRZONr32paVDWIjQTl+5EEN76tDr1Lmq6pzJNn
-         z26AmPWWQSWyK2rJVXbnQsmRvbseXugQubLsaqvYzZNHO6DBsjbGh8xA0tgMneEk0AY2
-         aMRy+XTPF4NPvy8C1KT5ndssyyTD0DJ/aOmgaG9qb1HeRR4mWF8eunzATbsyo0qeixDz
-         yyysJ9Kf0sEa5SOQVZzy+CW9xxhHAtvjz6gIKtWyEP8oksaiLMjx5beWm6fWkrjZef40
-         rGCnsQ43U6bROsdeWVhDhjU3DYOdeEVcoHmhBie62HeJKu0nqEqteGH9BbPGHqExRMT2
-         tzgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUM07ryiH7xvKiNJmLMzB0zaxZEBuHjnE/8pUNfWKyUV966uwCMFN9UFap8VmtQWllzb4+oDNQqgQbN@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAirQOItQQ+JI0Mcsz5Fv97F1z29W30DarjQWI4+uJ0LhrkS8f
-	jewhhoiSFDbOQg/9Gu8dfzNgN9GocIH1CI84cyD9snvZJpH5SXNcXRV0B7sQDS+1r7U=
-X-Gm-Gg: ASbGncts5OULeKKIrsNzsL8idAWxB9neiP6Ve+s50K49EuhEvqdp0VyzZMQSbF8jsdY
-	JDkQVLy5pAUPePzOm/7Kb5gTFC0f+dXie+Ft+68flv+MSL3lelZf96yla3oQRzRd9flJyCnTIDa
-	tlYcoTDL5MWUGnuLVMUO7Zy89gLJzxvpWr7Dn8jtqrxuG5z7QXOeUwJoXChCFuchzOtQ0I3YS+a
-	rzXz56mb+MzDgBRa57tT984bj0iT73H6cptqwcYH1o0oDH6GaU1qqfHN08aEvpWNpYBh9Gwh7M0
-	bzHxFJr0b4kxqhWRn5zVaYSSTE/e3LQE8OFjpU8pndmpwGoJL4KiYby8Rqg3Ggbi1eVlZ2QdL15
-	Lv/vYZUV2+ZP9aaiAd8yHNIlkdIZ8aek=
-X-Google-Smtp-Source: AGHT+IG/aHreLeb27PwZvmI50YVh3KULg7kve7WZz2i4AoC208Quitrbot6B7W1w0/7tBwFUvl1n9g==
-X-Received: by 2002:a05:690c:b84:b0:70f:84c8:3105 with SMTP id 00721157ae682-71668d73139mr47948477b3.37.1751650675940;
-        Fri, 04 Jul 2025 10:37:55 -0700 (PDT)
+        bh=sRRTUBR1HhzbPWZOo6ysCxsvxUXtkw1uTBwQrVosYbE=;
+        b=MxBdT6aLyfjNmWx4ReCEPpG0Lx5V42ZxW72XPtMeOWxJgUka86YxZQELaOjjpqrBgg
+         XF2V5Uakq9twGRserNOCcZPzIOv25ges6vBtA1PvYfBn2x94crxZC+yG7PjUFHvFwnCm
+         j1oIXQW8uBJvf7I6EktbMAJlJl3lzcYlr5KjgMnLDYLGWXTXXi5tg2f8uOdZi1EXUXXV
+         ZOTFH978O/rInQG0NibL6TL7dsp9JyLlJypgayEMYcjPamjGNKdpV5i0atCcebZ8Ftey
+         dW+z7UgMTkB9QqEFBArZc0AY1mPIBBMkVtZ+6TOAAD6kzbD+duHNPY+QNR0iJHIUWJwl
+         iN8g==
+X-Forwarded-Encrypted: i=1; AJvYcCX7JBEvbWhaQaik15YtU9urZpbcVLCwOv4/iMZEhtBfDXSl4/ilzPynGgbn0u6Z2fKu/Gozc80Xz2Ca@vger.kernel.org
+X-Gm-Message-State: AOJu0Yws1qKgoK4VB9Pd8RjQqOWoH2xoxkPUr/le4X8+ucwhWquUGYMa
+	HmqEpnXWOPsPsygpfXbcqZeo4oVbpp1CMD5fLptTfj9uZ9Cqcfszkfgs+ONKEYj558Q=
+X-Gm-Gg: ASbGncuVuCUa+O5pK4n4wwgY0czHylp4erzJR62q1TDLQp0GgKUBr3dRp1EcjTslzFd
+	RCoo22uHRu4STPphbnMA3agQRxKHmG67V94kGj7uQWSd8yU2U54qH1LNRlVnroAhFWYK/I/+6Vc
+	+d9IN7g4vXwHGSVr96CtHu2MjWnIK75Dx/fB39HEVMGrEKzzdIkr7bhsyZRz+tLyu3fxc8yuXQc
+	XfhLIjoKSwc0X6TZ3azX6c2o6M0HCry9ULWq0qbSMzVqkFehjCakeNeD0eS4wF68Wp+XajjNRMG
+	lNGPVAuv5dDce2CjpBOx/Suo4TiPoWeTai4mjbEL8ISMSNmy8i/OzSKbNvKKkm2fVMERFDoKctU
+	eXaDY2RTab/U9ze0gMQS10+onYJ903KU=
+X-Google-Smtp-Source: AGHT+IHavxdRXfQcFPtCri7JPle6nXppaWnSECfYS7k4+PrbVcT/6JmmoNF/J8UBNVnhAzeOW0UVtw==
+X-Received: by 2002:a05:690c:3709:b0:70e:29d2:fba1 with SMTP id 00721157ae682-7166b66f4d6mr36192927b3.23.1751651131297;
+        Fri, 04 Jul 2025 10:45:31 -0700 (PDT)
 Received: from ?IPv6:2600:1700:6476:1430:f030:281a:9e2c:722? ([2600:1700:6476:1430:f030:281a:9e2c:722])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-7166599fc22sm4941937b3.28.2025.07.04.10.37.53
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e899c48ba54sm754640276.43.2025.07.04.10.45.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jul 2025 10:37:55 -0700 (PDT)
-Message-ID: <9d9d7bbab5443bd1c3dfd7d81d9bc91debecf4ef.camel@dubeyko.com>
-Subject: Re: [PATCH 4/4] hfs: enable uncached buffer io support
+        Fri, 04 Jul 2025 10:45:30 -0700 (PDT)
+Message-ID: <3c4ac1ab5f7afbbd745f88c595ee1465fc2e9ac6.camel@dubeyko.com>
+Subject: Re: [PATCH 3/4] hfsplus: enable uncached buffer io support
 From: Viacheslav Dubeyko <slava@dubeyko.com>
 To: Yangtao Li <frank.li@vivo.com>, axboe@kernel.dk,
  aivazian.tigran@gmail.com, 	viro@zeniv.linux.org.uk, brauner@kernel.org,
@@ -89,10 +89,10 @@ Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
 	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
 	ntfs3@lists.linux.dev, linux-karma-devel@lists.sourceforge.net, 
 	bpf@vger.kernel.org
-Date: Fri, 04 Jul 2025 10:37:52 -0700
-In-Reply-To: <20250626173023.2702554-5-frank.li@vivo.com>
+Date: Fri, 04 Jul 2025 10:45:27 -0700
+In-Reply-To: <20250626173023.2702554-4-frank.li@vivo.com>
 References: <20250626173023.2702554-1-frank.li@vivo.com>
-	 <20250626173023.2702554-5-frank.li@vivo.com>
+	 <20250626173023.2702554-4-frank.li@vivo.com>
 Autocrypt: addr=slava@dubeyko.com; prefer-encrypt=mutual;
  keydata=mQINBGgaTLYBEADaJc/WqWTeunGetXyyGJ5Za7b23M/ozuDCWCp+yWUa2GqQKH40dxRIR
  zshgOmAue7t9RQJU9lxZ4ZHWbi1Hzz85+0omefEdAKFmxTO6+CYV0g/sapU0wPJws3sC2Pbda9/eJ
@@ -139,46 +139,40 @@ MIME-Version: 1.0
 On Thu, 2025-06-26 at 11:30 -0600, Yangtao Li wrote:
 > Now cont_write_begin() support DONTCACHE mode, let's set
 > FOP_DONTCACHE
-> flag to enable uncached buffer io support for hfs.
+> flag to enable uncached buffer io support for hfsplus.
 >=20
 > Signed-off-by: Yangtao Li <frank.li@vivo.com>
 > ---
-> =C2=A0fs/hfs/inode.c | 1 +
+> =C2=A0fs/hfsplus/inode.c | 1 +
 > =C2=A01 file changed, 1 insertion(+)
 >=20
-> diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
-> index 8409e4412366..a62f45e9745d 100644
-> --- a/fs/hfs/inode.c
-> +++ b/fs/hfs/inode.c
-> @@ -695,6 +695,7 @@ static const struct file_operations
-> hfs_file_operations =3D {
-> =C2=A0	.fsync		=3D hfs_file_fsync,
-> =C2=A0	.open		=3D hfs_file_open,
-> =C2=A0	.release	=3D hfs_file_release,
+> diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
+> index 26cc150856b9..b790ffe92019 100644
+> --- a/fs/hfsplus/inode.c
+> +++ b/fs/hfsplus/inode.c
+> @@ -372,6 +372,7 @@ static const struct file_operations
+> hfsplus_file_operations =3D {
+> =C2=A0	.open		=3D hfsplus_file_open,
+> =C2=A0	.release	=3D hfsplus_file_release,
+> =C2=A0	.unlocked_ioctl =3D hfsplus_ioctl,
 > +	.fop_flags	=3D FOP_DONTCACHE,
 > =C2=A0};
 > =C2=A0
-> =C2=A0static const struct inode_operations hfs_file_inode_operations =3D =
-{
+> =C2=A0struct inode *hfsplus_new_inode(struct super_block *sb, struct inod=
+e
+> *dir,
 
-Frankly speaking, I am not convinced that HFS really need to support
-this feature. It is old and pretty obsolete file system. The main use-
-case is simply support the capability to mount HFS volume is created
-under Mac OS X, for example, and to access the data there. Of course,
-we can support this feature, but what is the point of this?
-
-As far as I can see, the goal of RWF_DONTCACHE feature is:
-
-"Common for both reads and writes with RWF_DONTCACHE is that they use
-the page cache for IO. Reads work just like a normal buffered read
-would, with the only exception being that the touched ranges will get
-pruned after data has been copied. For writes, the ranges will get
-writeback kicked off before the syscall returns, and then writeback
-completion will prune the range."
-
-So, who would like to see such efficiency in HFS? Do we really need to
-support it in HFS? I think that it is not.
+The same question for HFS+. Because, it is again old and pretty
+obsolete file system. :) The main use-case is simply support the
+capability to mount HFS+ volume is created under Mac OS X, for example,
+and to access the data there. What is the point to support this feature
+in HFS+? Currently, around 200 xfstests fails in HFS/HFS+. We even
+cannot test any new functionality properly. And guys reports bugs in
+existing functionality. We need to be focused on this right now. Sorry,
+HFS/HFS+ is not so good ground for implementing new features. :)
+We really need to stabilize the existing functionality right now. And
+we have a lot of work yet. :)=20
 
 Thanks,
-Slava. =20
+Slava.=20
 
