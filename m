@@ -1,57 +1,59 @@
-Return-Path: <linux-ext4+bounces-8810-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8811-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0FC6AF860C
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 05:34:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18260AF878A
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 08:03:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA8FC1881B01
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 03:34:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A03281C400BD
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 06:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A1D35942;
-	Fri,  4 Jul 2025 03:33:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C59218827;
+	Fri,  4 Jul 2025 06:03:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ut2qIcXi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l/nBVVGI"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A906733E1
-	for <linux-ext4@vger.kernel.org>; Fri,  4 Jul 2025 03:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909C9143C69;
+	Fri,  4 Jul 2025 06:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751600036; cv=none; b=RqLPMUxEOc2XZA1v0FX8qKaV4+tDgHCQAzRY2zVAjNiz50z92Edyz32xLIRemH5HRuanKMVJIqHSU4UwiIzCT9muvSXagd4ITPBNoJrOVcEEdoFNdI4D3GbhVUSNuu/TxEmUks5i221pgaJSlO1DxtqFmM26I1mRcDP7nndUeBk=
+	t=1751609023; cv=none; b=B927geu8X64r1lZsej8MmcVGCPlTW8txlf3qrBN9ih4tWaG6EmF2bG6yTLQLaDdxKLmMSr1rZRebF1TKSCS1B/bXjWqUjakWAuFai9FD/W4zuz4Ha9yAGx/+gXUaAx/H1ypDjzpvJUEO7BzxKKQAsRCxQAyf5FaHgHR/2wEWVdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751600036; c=relaxed/simple;
-	bh=PovOhAki9/8FtTYb/L6mOtv7q295+My55XvuW+SvZm4=;
+	s=arc-20240116; t=1751609023; c=relaxed/simple;
+	bh=TOAqevWd5ctBWJ93LJwpcNQVBzN27/vAb8SLM1CQQF4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eUcVGwAySerJnIRhasPOjhfkHVNENXxV0H6DzgMwdw0t5JT5YazDV6UirW5q82huZk1BSAzyqBeCgH9+IOYf80rXS9+jOf0u2EneVhQPFCeAorDHJv/GLK5ceBnGTqIYzZmIN3ABf4r2F4RF5Y8zIJC6+zvUwufw1drImnyRtv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ut2qIcXi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36AE6C4CEE3;
-	Fri,  4 Jul 2025 03:33:55 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=CpRSCfHcTypl8UmqZ67Lo0eQSd330ovuQNdtqkDOrt2SBkW6Uyv15JR78CNx/SV3s1SMQxrP8EJbmNR6/S/3bJT9wvubEQKTXcSzFOICgHEJHYyFiHm/kwFKIQZEmJJF8UrgVPZrMq2hYhp8PSRibH8xGbWYyuIC/ZvWJc+9Jzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l/nBVVGI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC1EEC4CEE3;
+	Fri,  4 Jul 2025 06:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751600036;
-	bh=PovOhAki9/8FtTYb/L6mOtv7q295+My55XvuW+SvZm4=;
+	s=k20201202; t=1751609023;
+	bh=TOAqevWd5ctBWJ93LJwpcNQVBzN27/vAb8SLM1CQQF4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ut2qIcXiRYY7lFNaVHxKlHfEjhu+CE2FbpXyWZe11hOT68OIvEnC9cdF8h2qzsbhw
-	 7Om2LILRQ+JV5sf6HXgX97wePvFSL26mw/Jvi7i5P1Zr/tY16NROUkT7ptM3zqmzci
-	 ynRlQhGw39yLNX1PlibMvmMxcp3mdFkCgQrrlbYRA3tndBCEE3tgXOiTCJzPNqFZXz
-	 h6NRcTQNzuKb8MEE4SFeI/gq8pQfr/AGKBzUAuSBGWl+B48zaFn/AnUxQv1LFujZeV
-	 PcPdA8rm3aNym6UPW/U8j8cW6/mayE+5FZUhYZ3ndZc2UcpdC97MnUYkkhyIYvA7r+
-	 X5fU1K2zUOgyQ==
-Date: Thu, 3 Jul 2025 20:33:54 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: zhanchengbin <zhanchengbin1@huawei.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-	qiangxiaojun@huawei.com, hejie3@huawei.com
-Subject: Re: [PATCH v4] debugfs/logdump.c: Add parameter t to dump sequence
- commit timestamps
-Message-ID: <20250704033354.GA2672070@frogsfrogsfrogs>
-References: <f5445a3b-f278-6440-91f3-08e5ca5b93cf@huawei.com>
- <20250703153907.GA2672022@frogsfrogsfrogs>
- <55e2c4b2-5ceb-7aa9-772b-a2dc1f2fdbaf@huawei.com>
+	b=l/nBVVGIZV6R2rKe/b6EN6IwJcS5QZtZii8YIAru6zwzSiCc5t34PTnJ43d1gfTg5
+	 YMriRqpfzpYsgKj6fhb7GFDQx7Kmy2y3zHaF3EYHiyRsZDdEJTuwwiWbI4z4/LThG1
+	 STJ1IccRKGfpVCIOpRZziDMEBhogSYHzjjLkbUiajktff+Lq08EheL9jk+2lecELO5
+	 iTH4BWawxZjzZjU1QeBz3OqKjeEkTEY08NhKyDFaqwDE2qt7HnI57TLK7p+kx8qI9R
+	 S76OZLOK4S48W4dg3QHYpHp8h54m1Jb3kCaUy+5TUKQC6vTd62OrWLZsNjRRVA8uK7
+	 FGKwJ8KU6wG2w==
+Date: Thu, 3 Jul 2025 23:02:59 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Yuwen Chen <ywen.chen@foxmail.com>
+Cc: hch@infradead.org, brauner@kernel.org, tytso@mit.edu,
+	linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, adilger.kernel@dilger.ca,
+	viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+	jaegeuk@kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] libfs: reduce the number of memory allocations in
+ generic_ci_match
+Message-ID: <20250704060259.GB4199@sol>
+References: <aGZFtmIxHDLKL6mc@infradead.org>
+ <tencent_82716EB4F15F579C738C3CC3AFE62E822207@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,221 +62,60 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <55e2c4b2-5ceb-7aa9-772b-a2dc1f2fdbaf@huawei.com>
+In-Reply-To: <tencent_82716EB4F15F579C738C3CC3AFE62E822207@qq.com>
 
-On Fri, Jul 04, 2025 at 10:11:09AM +0800, zhanchengbin wrote:
-> On 2025/7/3 23:39, Darrick J. Wong wrote:
-> > On Thu, Jul 03, 2025 at 08:07:53PM +0800, zhanchengbin wrote:
-> > > When filesystem errors occur, inspect journal sequences with parameter t to
-> > > dump commit timestamps.
-> > > 
-> > > Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-> > > ---
-> > > v4: (1) Fix incorrect variable type; (2) Add logging for error branches.
-> > > - Link to v3:
-> > > https://patchwork.ozlabs.org/project/linux-ext4/patch/32252e29-aba9-df6f-3b97-d3774df375ad@huawei.com/
-> > > v3: Change from displaying UTC time to local time.
-> > > - Link to v2:
-> > > https://patchwork.ozlabs.org/project/linux-ext4/patch/5a4b703c-6940-d9da-5686-337e3220d3a4@huawei.com/
-> > > v2: Correct abnormal formats in the patch.
-> > > - Link to v1:
-> > > https://patchwork.ozlabs.org/project/linux-ext4/patch/50aeb0c1-9f14-ed04-c3b7-7a50f61c3341@huawei.com/
-> > > ---
-> > >   debugfs/logdump.c | 61 ++++++++++++++++++++++++++++++++++++++++-------
-> > >   1 file changed, 52 insertions(+), 9 deletions(-)
-> > > 
-> > > diff --git a/debugfs/logdump.c b/debugfs/logdump.c
-> > > index 324ed42..a1256c4 100644
-> > > --- a/debugfs/logdump.c
-> > > +++ b/debugfs/logdump.c
-> > > @@ -47,7 +47,7 @@ enum journal_location {JOURNAL_IS_INTERNAL,
-> > > JOURNAL_IS_EXTERNAL};
-> > > 
-> > >   #define ANY_BLOCK ((blk64_t) -1)
-> > > 
-> > > -static int		dump_all, dump_super, dump_old, dump_contents,
-> > > dump_descriptors;
-> > > +static int		dump_all, dump_super, dump_old, dump_contents,
-> > > dump_descriptors, dump_time;
-> > >   static int64_t		dump_counts;
-> > >   static blk64_t		block_to_dump, bitmap_to_dump, inode_block_to_dump;
-> > >   static unsigned int	group_to_dump, inode_offset_to_dump;
-> > > @@ -67,6 +67,8 @@ static void dump_descriptor_block(FILE *, struct
-> > > journal_source *,
-> > >   				  char *, journal_superblock_t *,
-> > >   				  unsigned int *, unsigned int, __u32, tid_t);
-> > > 
-> > > +static void dump_commit_time(FILE *out_file, char *buf);
-> > > +
-> > >   static void dump_revoke_block(FILE *, char *, journal_superblock_t *,
-> > >   				  unsigned int, unsigned int, tid_t);
-> > > 
-> > > @@ -118,10 +120,11 @@ void do_logdump(int argc, ss_argv_t argv, int sci_idx
-> > > EXT2FS_ATTR((unused)),
-> > >   	inode_block_to_dump = ANY_BLOCK;
-> > >   	inode_to_dump = -1;
-> > >   	dump_counts = -1;
-> > > +	dump_time = 0;
-> > >   	wrapped_flag = false;
-> > > 
-> > >   	reset_getopt();
-> > > -	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
-> > > +	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:t")) != EOF) {
-> > >   		switch (c) {
-> > >   		case 'a':
-> > >   			dump_all++;
-> > > @@ -162,6 +165,9 @@ void do_logdump(int argc, ss_argv_t argv, int sci_idx
-> > > EXT2FS_ATTR((unused)),
-> > >   				return;
-> > >   			}
-> > >   			break;
-> > > +		case 't':
-> > > +			dump_time++;
-> > > +			break;
-> > >   		default:
-> > >   			goto print_usage;
-> > >   		}
-> > > @@ -521,21 +527,33 @@ static void dump_journal(char *cmdname, FILE
-> > > *out_file,
-> > >   				break;
-> > >   		}
-> > > 
-> > > -		if (dump_descriptors) {
-> > > -			fprintf (out_file, "Found expected sequence %u, "
-> > > -				 "type %u (%s) at block %u\n",
-> > > -				 sequence, blocktype,
-> > > -				 type_to_name(blocktype), blocknr);
-> > > -		}
-> > > -
-> > >   		switch (blocktype) {
-> > >   		case JBD2_DESCRIPTOR_BLOCK:
-> > > +			if (dump_descriptors) {
-> > > +				fprintf (out_file, "Found expected sequence %u, "
-> > > +					 "type %u (%s) at block %u\n",
-> > > +					 sequence, blocktype,
-> > > +					 type_to_name(blocktype), blocknr);
-> > > +			}
-> > > +
-> > >   			dump_descriptor_block(out_file, source, buf, jsb,
-> > >   					      &blocknr, blocksize, maxlen,
-> > >   					      transaction);
-> > >   			continue;
-> > > 
-> > >   		case JBD2_COMMIT_BLOCK:
-> > > +			if (dump_descriptors) {
-> > > +				fprintf (out_file, "Found expected sequence %u, "
-> > > +					 "type %u (%s) at block %u",
-> > > +					 sequence, blocktype,
-> > > +					 type_to_name(blocktype), blocknr);
-> > > +			}
-> > > +
-> > > +			if (dump_time)
-> > > +				dump_commit_time(out_file, buf);
-> > > +			else
-> > > +				fprintf(out_file, "\n");
-> > > +
-> > >   			cur_counts++;
-> > >   			transaction++;
-> > >   			blocknr++;
-> > > @@ -543,6 +561,13 @@ static void dump_journal(char *cmdname, FILE *out_file,
-> > >   			continue;
-> > > 
-> > >   		case JBD2_REVOKE_BLOCK:
-> > > +			if (dump_descriptors) {
-> > > +				fprintf (out_file, "Found expected sequence %u, "
-> > > +					 "type %u (%s) at block %u\n",
-> > > +					 sequence, blocktype,
-> > > +					 type_to_name(blocktype), blocknr);
-> > > +			}
-> > > +
-> > >   			dump_revoke_block(out_file, buf, jsb,
-> > >   					  blocknr, blocksize,
-> > >   					  transaction);
-> > > @@ -742,6 +767,24 @@ static void dump_descriptor_block(FILE *out_file,
-> > >   	*blockp = blocknr;
-> > >   }
-> > > 
-> > > +static void dump_commit_time(FILE *out_file, char *buf)
-> > > +{
-> > > +	struct commit_header	*header;
-> > > +	uint64_t	commit_sec;
-> > > +	time_t		timestamp;
-> > > +	char		time_buffer[26];
-> > > +	char		*result;
-> > > +
-> > > +	header = (struct commit_header *)buf;
-> > > +	commit_sec = be64_to_cpu(header->h_commit_sec);
-> > > +
-> > > +	timestamp = commit_sec;
-> > > +	result = ctime_r(&timestamp, time_buffer);
-> > > +	if (result)
-> > > +		fprintf(out_file, ", commit at: %s", time_buffer);
-> > 
-> > Nit: missing newline in this fprintf... or you could delete the newline
-> > below and change the callsite to:
-> > 
-> > 	if (dump_time)
-> > 		dump_commit_time(out_file, buf);
-> > 	fprintf(out_file, "\n");
-> > 
+On Fri, Jul 04, 2025 at 10:43:57AM +0800, Yuwen Chen wrote:
+> During path traversal, the generic_ci_match function may be called
+> multiple times. The number of memory allocations and releases
+> in it accounts for a relatively high proportion in the flamegraph.
+> This patch significantly reduces the number of memory allocations
+> in generic_ci_match through pre - allocation.
 > 
-> In my test environment, the string generated by ctime_r comes with a
-> newline character at the end.
-
-Oh, I guess that /is/ in the manpage:
-
-	Broken-down time is stored in the structure tm, described in
-	tm(3type).
-
-	The call ctime(t) is equivalent to asctime(localtime(t)).  It
-	converts the calendar time t into a null-terminated string of
-	the form
-
-           "Wed Jun 30 21:49:08 1993\n"
-
-and then POSIX has this to say about asctime():
-
-	The asctime() function shall convert the broken-down time in the
-	structure pointed to by timeptr into a string in the form:
-
-	Sun Sep 16 01:03:52 1973\n\0
-
-which is also in ISO C23:
-
-	The asctime function converts the broken-down time in the
-	structure pointed to by timeptr into a string in the form:
-
-	Sun Sep 16 01:03:52 1973\n\0
-
-	using the equivalent of the following algorithm.
-
-Sigh.
-
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-
---D
-
-> Thanks,
->  - bin.
+> Signed-off-by: Yuwen Chen <ywen.chen@foxmail.com>
+> ---
+>  fs/ext4/namei.c    |  2 +-
+>  fs/f2fs/dir.c      |  2 +-
+>  fs/libfs.c         | 33 ++++++++++++++++++++++++++++++---
+>  include/linux/fs.h |  8 +++++++-
+>  4 files changed, 39 insertions(+), 6 deletions(-)
 > 
-> > > +	else
-> > > +		fprintf(out_file, ", commit_sec is %llu\n", commit_sec);
-> > 
-> > Hm?
-> > 
-> > (Everything else in the patch looks ok to me)
-> > 
-> > --D
-> > 
-> > > +}
-> > > 
-> > >   static void dump_revoke_block(FILE *out_file, char *buf,
-> > >   			      journal_superblock_t *jsb EXT2FS_ATTR((unused)),
-> > > -- 
-> > > 2.33.0
-> > > 
-> > > 
-> > 
-> > .
-> > 
+
+The reason the allocation is needed at all is because generic_ci_match() has to
+decrypt the encrypted on-disk filename from the dentry that it's matching
+against.  It can't decrypt in-place, since the source buffer is in the pagecache
+which must not be modified.  Hence, a separate destination buffer is needed.
+
+Filenames have a maximum length of NAME_MAX, i.e. 255, bytes.
+
+It would be *much* simpler to just allocate that on the stack.
+
+And we almost can.  255 bytes is on the high end of what can be acceptable to
+allocate on the stack in the kernel.  However, here it would give a lot of
+benefit and would always occur close to the leaves in the call graph.  So the
+size is not a barrier here, IMO.
+
+The real problem is, once again, the legacy crypto_skcipher API, which requires
+that the source/destination buffers be provided as scatterlists.  In Linux, the
+kernel stack can be in the vmalloc area.  Thus, the buffers passed to
+crypto_skcipher cannot be stack buffers unless the caller actually is aware of
+how to turn a vmalloc'ed buffer into a scatterlist, which is hard to do.  (See
+verity_ahash_update() in drivers/md/dm-verity-target.c for an example.)
+
+Fortunately, I'm currently in the process of introducing library APIs that will
+supersede these legacy crypto APIs.  They'll be simpler and faster and won't
+have these silly limitations like not working on virtual addresses...  I plan to
+make fscrypt use the library APIs instead of the legacy crypto API.
+
+It will take some time to land everything, though.  We can consider this
+patchset as a workaround in the mean time.  But it's sad to see the legacy
+crypto API continue to cause problems and more time be wasted on these problems.
+
+I do wonder if the "turn a vmalloc'ed buffer into a scatterlist" trick that some
+code in the kernel uses is something that would be worth adopting for now in
+fname_decrypt().  As I mentioned above, it's hard to do (you have to go page by
+page), but it's possible.  That would allow immediately moving
+generic_ci_match() to use a stack allocation, which would avoid adding all the
+complexity of the preallocation that you have in this patchset.
+
+- Eric
 
