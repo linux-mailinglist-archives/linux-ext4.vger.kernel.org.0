@@ -1,305 +1,280 @@
-Return-Path: <linux-ext4+bounces-8808-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8810-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65FC6AF85BD
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 04:49:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0FC6AF860C
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 05:34:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98EE04E319E
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 02:49:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA8FC1881B01
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 03:34:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4041018DB1A;
-	Fri,  4 Jul 2025 02:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A1D35942;
+	Fri,  4 Jul 2025 03:33:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="IfZK1LaQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ut2qIcXi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF98C1FC3;
-	Fri,  4 Jul 2025 02:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A906733E1
+	for <linux-ext4@vger.kernel.org>; Fri,  4 Jul 2025 03:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751597371; cv=none; b=OMmu99LBbRhRj8sV9SIkyl2lCI71RGqvDi56gU+Dpcv7WciibgXiNUo82O3R89hDZusgp7o6wqbeEn/RJbspzk898jap9NwJwkBO5zU6ZK3YzvTLJOQSIYpUH9FIeKNumjC3dsYJTiY30s+I6Q4q5q//gCFv/YB8q8fBUdxWlIE=
+	t=1751600036; cv=none; b=RqLPMUxEOc2XZA1v0FX8qKaV4+tDgHCQAzRY2zVAjNiz50z92Edyz32xLIRemH5HRuanKMVJIqHSU4UwiIzCT9muvSXagd4ITPBNoJrOVcEEdoFNdI4D3GbhVUSNuu/TxEmUks5i221pgaJSlO1DxtqFmM26I1mRcDP7nndUeBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751597371; c=relaxed/simple;
-	bh=ze2gvCo92srJ1IEYqrI1nT6REGo4gSNbnkVjXHndL3k=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=CuFF5udCjlR7AZXDtNHoaR0SnOJm6FdJv8XlNiY8mMAALNlDKA6JzPF89kPfpCfAOSM0RfAsj7JkhDXrrhdSgB4Zjv1742h5nL6/yctrSkkMNyAe7Ri+d55iERUJvEuqZIl9pORgOSnbOT5IRVjbrtrWoYY6ETX6V4v/3O4drVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=IfZK1LaQ; arc=none smtp.client-ip=162.62.58.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1751597061;
-	bh=x++/DrPNd44ZCLrC0h0UmG5N3pBOIkWVrED+TUpDaQM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=IfZK1LaQ8LrAMVHiKpRLFWl+ULSLM/Cyrs8Z1eOIO1hQOn4NNqNfTXyxUUHe+gD9O
-	 Gv7mWLimuYFqFaAd4xxiN3+khO46my/BJyGtWvwxWXkOxLvvXnBkLBnrdp2yGbozd5
-	 b9tHCh1JPOMYRMvIDp3Q5iQHSXlWTxnRT6MEIX+s=
-Received: from meizu-Precision-3660.meizu.com ([14.21.33.153])
-	by newxmesmtplogicsvrszb20-0.qq.com (NewEsmtp) with SMTP
-	id B1284873; Fri, 04 Jul 2025 10:44:18 +0800
-X-QQ-mid: xmsmtpt1751597058t0px2c030
-Message-ID: <tencent_AF5D3E4566DC2FE381AE03E77779AA5F1F08@qq.com>
-X-QQ-XMAILINFO: Od+6/RRPbeDtRA0hh4DoK7vwOScIr3LPQOoTh0ezLc86jVUia1ShtBvSk+5yPW
-	 QEN149HyuUAaLcy1GGLVLK8Ul+kh7bf/C7E8l2t70SPqNZ7+ttR2pAo2cJAoWuMMiwYjdys5zPLX
-	 2oWDQK1ipH+IW8X8aACvfCAZ5HpbOsAPxIrWWzh1lJFScjOYARClcl9hokgrROHoXmoj4s/sSPAO
-	 EbjkitYz3CVgEYHju4FJng6FxzEFNGHQu+PGdKJo/10pviLH6qfCJoUKu91JWgQhwhbdyPlMB1Px
-	 iLyzbhzPX9MHv1avwL+LGiRY/V59IH5chul1DNWezYi8jD3Ixsg8iXRPbgc9d3AuV/53c+tES5Ei
-	 /WB6TdPXiT/RdFd3ZbeKY/WmWOK6bBpsyS0JXjW5tIhiHvh4CKL9CWQot8F33QiFM/0LuvKPetka
-	 6fF6tNxomqAxCFWrcOFZd0bx1qGEZMgieTOpubXIJ1d3ygjNb/WClb1pMoeCq8RP81arPpi9AiE0
-	 A2byanW0ZvYR98fZXS13uK8NE4luunXfKv856B1kT5xqjYzMFS608NsYWuww1Nn0wZyVwYaZA0TZ
-	 30fwrDy7mQrHBpkFC+Uo0r5iKk2jL7neUiV6Pd7nms70rmx0y6DxJQSm9sVTo2tOFZRwUaEUG6x6
-	 59TtxRoaoh7b5IQq9Kb66cQd96UVvm+uXG8bww6a/HtbMVAND0YVCoKmqwWFnsr/OKjRMy5nNAn3
-	 hxOcKoVd0rXfTDUIGnvQB6yG2ZtVwm45cs7PhE88iiOgTDDRjZrWId+NSSn+pn7O/jFKHy+wf2WS
-	 gZRoqaAr68fxwveMhUcu+pJ+fyck2711HQ3esoiwF45ZswgVFMXJrC8yZ5HS2S362e8/0PDOEuKm
-	 jNULnlejOarUf4mptR5AVJxnS3mZB0AMvQBIOPX8p3s4ZnPoQ7b0s5Pj/CuOqR7rgtkasQDfzBR9
-	 Ss57LmnVgm0xIsww0+1tlVpdv1efbxHf0+NhfbH6gWLzEZ6iktfdMaPkjRNKecE+QkC45cXpSZgH
-	 dSfZcduyz1vMFFq0YSoGeRlMgCntMLiMUB51x2TkS16Ain49wGF22B4SLnX/g=
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From: Yuwen Chen <ywen.chen@foxmail.com>
-To: hch@infradead.org
-Cc: adilger.kernel@dilger.ca,
-	brauner@kernel.org,
-	chao@kernel.org,
-	jaegeuk@kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	viro@zeniv.linux.org.uk,
-	ywen.chen@foxmail.com
-Subject: [PATCH v3 2/2] f2fs: improve the performance of f2fs_lookup
-Date: Fri,  4 Jul 2025 10:44:16 +0800
-X-OQ-MSGID: <20250704024416.4078789-1-ywen.chen@foxmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <aGZFtmIxHDLKL6mc@infradead.org>
-References: <aGZFtmIxHDLKL6mc@infradead.org>
+	s=arc-20240116; t=1751600036; c=relaxed/simple;
+	bh=PovOhAki9/8FtTYb/L6mOtv7q295+My55XvuW+SvZm4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eUcVGwAySerJnIRhasPOjhfkHVNENXxV0H6DzgMwdw0t5JT5YazDV6UirW5q82huZk1BSAzyqBeCgH9+IOYf80rXS9+jOf0u2EneVhQPFCeAorDHJv/GLK5ceBnGTqIYzZmIN3ABf4r2F4RF5Y8zIJC6+zvUwufw1drImnyRtv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ut2qIcXi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36AE6C4CEE3;
+	Fri,  4 Jul 2025 03:33:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751600036;
+	bh=PovOhAki9/8FtTYb/L6mOtv7q295+My55XvuW+SvZm4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ut2qIcXiRYY7lFNaVHxKlHfEjhu+CE2FbpXyWZe11hOT68OIvEnC9cdF8h2qzsbhw
+	 7Om2LILRQ+JV5sf6HXgX97wePvFSL26mw/Jvi7i5P1Zr/tY16NROUkT7ptM3zqmzci
+	 ynRlQhGw39yLNX1PlibMvmMxcp3mdFkCgQrrlbYRA3tndBCEE3tgXOiTCJzPNqFZXz
+	 h6NRcTQNzuKb8MEE4SFeI/gq8pQfr/AGKBzUAuSBGWl+B48zaFn/AnUxQv1LFujZeV
+	 PcPdA8rm3aNym6UPW/U8j8cW6/mayE+5FZUhYZ3ndZc2UcpdC97MnUYkkhyIYvA7r+
+	 X5fU1K2zUOgyQ==
+Date: Thu, 3 Jul 2025 20:33:54 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: zhanchengbin <zhanchengbin1@huawei.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+	qiangxiaojun@huawei.com, hejie3@huawei.com
+Subject: Re: [PATCH v4] debugfs/logdump.c: Add parameter t to dump sequence
+ commit timestamps
+Message-ID: <20250704033354.GA2672070@frogsfrogsfrogs>
+References: <f5445a3b-f278-6440-91f3-08e5ca5b93cf@huawei.com>
+ <20250703153907.GA2672022@frogsfrogsfrogs>
+ <55e2c4b2-5ceb-7aa9-772b-a2dc1f2fdbaf@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55e2c4b2-5ceb-7aa9-772b-a2dc1f2fdbaf@huawei.com>
 
-On the Android system, the file creation operation will call
-the f2fs_lookup function. When there are too many files in a
-directory, the generic_ci_match operation will be called
-repeatedly in large quantities. In extreme cases, the file
-creation speed will drop to three times per second.
+On Fri, Jul 04, 2025 at 10:11:09AM +0800, zhanchengbin wrote:
+> On 2025/7/3 23:39, Darrick J. Wong wrote:
+> > On Thu, Jul 03, 2025 at 08:07:53PM +0800, zhanchengbin wrote:
+> > > When filesystem errors occur, inspect journal sequences with parameter t to
+> > > dump commit timestamps.
+> > > 
+> > > Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+> > > ---
+> > > v4: (1) Fix incorrect variable type; (2) Add logging for error branches.
+> > > - Link to v3:
+> > > https://patchwork.ozlabs.org/project/linux-ext4/patch/32252e29-aba9-df6f-3b97-d3774df375ad@huawei.com/
+> > > v3: Change from displaying UTC time to local time.
+> > > - Link to v2:
+> > > https://patchwork.ozlabs.org/project/linux-ext4/patch/5a4b703c-6940-d9da-5686-337e3220d3a4@huawei.com/
+> > > v2: Correct abnormal formats in the patch.
+> > > - Link to v1:
+> > > https://patchwork.ozlabs.org/project/linux-ext4/patch/50aeb0c1-9f14-ed04-c3b7-7a50f61c3341@huawei.com/
+> > > ---
+> > >   debugfs/logdump.c | 61 ++++++++++++++++++++++++++++++++++++++++-------
+> > >   1 file changed, 52 insertions(+), 9 deletions(-)
+> > > 
+> > > diff --git a/debugfs/logdump.c b/debugfs/logdump.c
+> > > index 324ed42..a1256c4 100644
+> > > --- a/debugfs/logdump.c
+> > > +++ b/debugfs/logdump.c
+> > > @@ -47,7 +47,7 @@ enum journal_location {JOURNAL_IS_INTERNAL,
+> > > JOURNAL_IS_EXTERNAL};
+> > > 
+> > >   #define ANY_BLOCK ((blk64_t) -1)
+> > > 
+> > > -static int		dump_all, dump_super, dump_old, dump_contents,
+> > > dump_descriptors;
+> > > +static int		dump_all, dump_super, dump_old, dump_contents,
+> > > dump_descriptors, dump_time;
+> > >   static int64_t		dump_counts;
+> > >   static blk64_t		block_to_dump, bitmap_to_dump, inode_block_to_dump;
+> > >   static unsigned int	group_to_dump, inode_offset_to_dump;
+> > > @@ -67,6 +67,8 @@ static void dump_descriptor_block(FILE *, struct
+> > > journal_source *,
+> > >   				  char *, journal_superblock_t *,
+> > >   				  unsigned int *, unsigned int, __u32, tid_t);
+> > > 
+> > > +static void dump_commit_time(FILE *out_file, char *buf);
+> > > +
+> > >   static void dump_revoke_block(FILE *, char *, journal_superblock_t *,
+> > >   				  unsigned int, unsigned int, tid_t);
+> > > 
+> > > @@ -118,10 +120,11 @@ void do_logdump(int argc, ss_argv_t argv, int sci_idx
+> > > EXT2FS_ATTR((unused)),
+> > >   	inode_block_to_dump = ANY_BLOCK;
+> > >   	inode_to_dump = -1;
+> > >   	dump_counts = -1;
+> > > +	dump_time = 0;
+> > >   	wrapped_flag = false;
+> > > 
+> > >   	reset_getopt();
+> > > -	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
+> > > +	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:t")) != EOF) {
+> > >   		switch (c) {
+> > >   		case 'a':
+> > >   			dump_all++;
+> > > @@ -162,6 +165,9 @@ void do_logdump(int argc, ss_argv_t argv, int sci_idx
+> > > EXT2FS_ATTR((unused)),
+> > >   				return;
+> > >   			}
+> > >   			break;
+> > > +		case 't':
+> > > +			dump_time++;
+> > > +			break;
+> > >   		default:
+> > >   			goto print_usage;
+> > >   		}
+> > > @@ -521,21 +527,33 @@ static void dump_journal(char *cmdname, FILE
+> > > *out_file,
+> > >   				break;
+> > >   		}
+> > > 
+> > > -		if (dump_descriptors) {
+> > > -			fprintf (out_file, "Found expected sequence %u, "
+> > > -				 "type %u (%s) at block %u\n",
+> > > -				 sequence, blocktype,
+> > > -				 type_to_name(blocktype), blocknr);
+> > > -		}
+> > > -
+> > >   		switch (blocktype) {
+> > >   		case JBD2_DESCRIPTOR_BLOCK:
+> > > +			if (dump_descriptors) {
+> > > +				fprintf (out_file, "Found expected sequence %u, "
+> > > +					 "type %u (%s) at block %u\n",
+> > > +					 sequence, blocktype,
+> > > +					 type_to_name(blocktype), blocknr);
+> > > +			}
+> > > +
+> > >   			dump_descriptor_block(out_file, source, buf, jsb,
+> > >   					      &blocknr, blocksize, maxlen,
+> > >   					      transaction);
+> > >   			continue;
+> > > 
+> > >   		case JBD2_COMMIT_BLOCK:
+> > > +			if (dump_descriptors) {
+> > > +				fprintf (out_file, "Found expected sequence %u, "
+> > > +					 "type %u (%s) at block %u",
+> > > +					 sequence, blocktype,
+> > > +					 type_to_name(blocktype), blocknr);
+> > > +			}
+> > > +
+> > > +			if (dump_time)
+> > > +				dump_commit_time(out_file, buf);
+> > > +			else
+> > > +				fprintf(out_file, "\n");
+> > > +
+> > >   			cur_counts++;
+> > >   			transaction++;
+> > >   			blocknr++;
+> > > @@ -543,6 +561,13 @@ static void dump_journal(char *cmdname, FILE *out_file,
+> > >   			continue;
+> > > 
+> > >   		case JBD2_REVOKE_BLOCK:
+> > > +			if (dump_descriptors) {
+> > > +				fprintf (out_file, "Found expected sequence %u, "
+> > > +					 "type %u (%s) at block %u\n",
+> > > +					 sequence, blocktype,
+> > > +					 type_to_name(blocktype), blocknr);
+> > > +			}
+> > > +
+> > >   			dump_revoke_block(out_file, buf, jsb,
+> > >   					  blocknr, blocksize,
+> > >   					  transaction);
+> > > @@ -742,6 +767,24 @@ static void dump_descriptor_block(FILE *out_file,
+> > >   	*blockp = blocknr;
+> > >   }
+> > > 
+> > > +static void dump_commit_time(FILE *out_file, char *buf)
+> > > +{
+> > > +	struct commit_header	*header;
+> > > +	uint64_t	commit_sec;
+> > > +	time_t		timestamp;
+> > > +	char		time_buffer[26];
+> > > +	char		*result;
+> > > +
+> > > +	header = (struct commit_header *)buf;
+> > > +	commit_sec = be64_to_cpu(header->h_commit_sec);
+> > > +
+> > > +	timestamp = commit_sec;
+> > > +	result = ctime_r(&timestamp, time_buffer);
+> > > +	if (result)
+> > > +		fprintf(out_file, ", commit at: %s", time_buffer);
+> > 
+> > Nit: missing newline in this fprintf... or you could delete the newline
+> > below and change the callsite to:
+> > 
+> > 	if (dump_time)
+> > 		dump_commit_time(out_file, buf);
+> > 	fprintf(out_file, "\n");
+> > 
+> 
+> In my test environment, the string generated by ctime_r comes with a
+> newline character at the end.
 
-Use the following program to conduct a file-creation test in
-the private program directory(/data/media/0/Android/data/*)
-of Android.
+Oh, I guess that /is/ in the manpage:
 
-int main(int argc, char **argv)
-{
-    size_t fcnt = 0;
-    char path[PATH_MAX];
-    char buf[4096] = {0};
-    int i, fd;
+	Broken-down time is stored in the structure tm, described in
+	tm(3type).
 
-    if (argc < 2)
-        return - EINVAL;
+	The call ctime(t) is equivalent to asctime(localtime(t)).  It
+	converts the calendar time t into a null-terminated string of
+	the form
 
-    fcnt = atoi(argv[1]);
-    for (i = 0; i < fcnt; i++)
-    {
-        snprintf(path, sizeof(path), "./%d", i);
-        fd = open(path, O_RDWR | O_CREAT, 0600);
-        if (fd < 0)
-            return - 1;
-        write(fd, buf, sizeof(buf));
-        close(fd);
-    }
-    return 0;
-}
+           "Wed Jun 30 21:49:08 1993\n"
 
-The test platform is Snapdragon 8s Gen4, with a kernel version
-of v6.6 and a userdebug version.
+and then POSIX has this to say about asctime():
 
-Before this submission was merged, when creating 2000 files,
-the performance test results are as follows:
-$ time /data/file_creater 2000
-0m14.83s real     0m00.00s user     0m14.30s system
-0m15.61s real     0m00.00s user     0m15.04s system
-0m14.72s real     0m00.01s user     0m14.18s system
+	The asctime() function shall convert the broken-down time in the
+	structure pointed to by timeptr into a string in the form:
 
-After this submission was merged, the performance is as follows:
-$ time /data/file_creater 2000
-0m08.17s real     0m00.00s user     0m07.86s system
-0m08.16s real     0m00.01s user     0m07.86s system
-0m08.15s real     0m00.00s user     0m07.86s system
+	Sun Sep 16 01:03:52 1973\n\0
 
-It was observed through perf that the generic_ci_match function
-was called a large number of times, which led to most of the
-time being spent on memory allocation and release. Due to a
-flush_dcache operation in the implementation of cts_cbc_decrypt,
-this memory cannot be allocated on the stack.
+which is also in ISO C23:
 
-Signed-off-by: Yuwen Chen <ywen.chen@foxmail.com>
----
- fs/f2fs/dir.c    | 24 +++++++++++++++++-------
- fs/f2fs/f2fs.h   |  3 ++-
- fs/f2fs/inline.c |  3 ++-
- 3 files changed, 21 insertions(+), 9 deletions(-)
+	The asctime function converts the broken-down time in the
+	structure pointed to by timeptr into a string in the form:
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 4c6611fbd9574..ee0cbeb80debd 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -176,6 +176,7 @@ static struct f2fs_dir_entry *find_in_block(struct inode *dir,
- 				struct folio *dentry_folio,
- 				const struct f2fs_filename *fname,
- 				int *max_slots,
-+				struct decrypted_name_prealloc *prealloc,
- 				bool use_hash)
- {
- 	struct f2fs_dentry_block *dentry_blk;
-@@ -184,12 +185,13 @@ static struct f2fs_dir_entry *find_in_block(struct inode *dir,
- 	dentry_blk = folio_address(dentry_folio);
- 
- 	make_dentry_ptr_block(dir, &d, dentry_blk);
--	return f2fs_find_target_dentry(&d, fname, max_slots, use_hash);
-+	return f2fs_find_target_dentry(&d, fname, max_slots, prealloc, use_hash);
- }
- 
- static inline int f2fs_match_name(const struct inode *dir,
- 				   const struct f2fs_filename *fname,
--				   const u8 *de_name, u32 de_name_len)
-+				   const u8 *de_name, u32 de_name_len,
-+				   struct decrypted_name_prealloc *prealloc)
- {
- 	struct fscrypt_name f;
- 
-@@ -197,7 +199,7 @@ static inline int f2fs_match_name(const struct inode *dir,
- 	if (fname->cf_name.name)
- 		return generic_ci_match(dir, fname->usr_fname,
- 					&fname->cf_name,
--					de_name, de_name_len, NULL);
-+					de_name, de_name_len, prealloc);
- 
- #endif
- 	f.usr_fname = fname->usr_fname;
-@@ -210,6 +212,7 @@ static inline int f2fs_match_name(const struct inode *dir,
- 
- struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
- 			const struct f2fs_filename *fname, int *max_slots,
-+			struct decrypted_name_prealloc *prealloc,
- 			bool use_hash)
- {
- 	struct f2fs_dir_entry *de;
-@@ -236,7 +239,8 @@ struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
- 		if (!use_hash || de->hash_code == fname->hash) {
- 			res = f2fs_match_name(d->inode, fname,
- 					      d->filename[bit_pos],
--					      le16_to_cpu(de->name_len));
-+					      le16_to_cpu(de->name_len),
-+					      prealloc);
- 			if (res < 0)
- 				return ERR_PTR(res);
- 			if (res)
-@@ -261,6 +265,7 @@ static struct f2fs_dir_entry *find_in_level(struct inode *dir,
- 					unsigned int level,
- 					const struct f2fs_filename *fname,
- 					struct folio **res_folio,
-+					struct decrypted_name_prealloc *prealloc,
- 					bool use_hash)
- {
- 	int s = GET_DENTRY_SLOTS(fname->disk_name.len);
-@@ -296,7 +301,8 @@ static struct f2fs_dir_entry *find_in_level(struct inode *dir,
- 			}
- 		}
- 
--		de = find_in_block(dir, dentry_folio, fname, &max_slots, use_hash);
-+		de = find_in_block(dir, dentry_folio, fname, &max_slots, prealloc,
-+				   use_hash);
- 		if (IS_ERR(de)) {
- 			*res_folio = ERR_CAST(de);
- 			de = NULL;
-@@ -336,6 +342,7 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
- 	unsigned int max_depth;
- 	unsigned int level;
- 	bool use_hash = true;
-+	struct decrypted_name_prealloc prealloc = {0};
- 
- 	*res_folio = NULL;
- 
-@@ -343,7 +350,8 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
- start_find_entry:
- #endif
- 	if (f2fs_has_inline_dentry(dir)) {
--		de = f2fs_find_in_inline_dir(dir, fname, res_folio, use_hash);
-+		de = f2fs_find_in_inline_dir(dir, fname, res_folio, &prealloc,
-+					     use_hash);
- 		goto out;
- 	}
- 
-@@ -359,7 +367,8 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
- 	}
- 
- 	for (level = 0; level < max_depth; level++) {
--		de = find_in_level(dir, level, fname, res_folio, use_hash);
-+		de = find_in_level(dir, level, fname, res_folio, &prealloc,
-+				   use_hash);
- 		if (de || IS_ERR(*res_folio))
- 			break;
- 	}
-@@ -372,6 +381,7 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
- 		goto start_find_entry;
- 	}
- #endif
-+	kfree(prealloc.name);
- 	/* This is to increase the speed of f2fs_create */
- 	if (!de)
- 		F2FS_I(dir)->task = current;
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 9333a22b9a01e..dfbd2215310fb 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3673,6 +3673,7 @@ int f2fs_prepare_lookup(struct inode *dir, struct dentry *dentry,
- void f2fs_free_filename(struct f2fs_filename *fname);
- struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
- 			const struct f2fs_filename *fname, int *max_slots,
-+			struct decrypted_name_prealloc *prealloc,
- 			bool use_hash);
- int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
- 			unsigned int start_pos, struct fscrypt_str *fstr);
-@@ -4316,7 +4317,7 @@ int f2fs_write_inline_data(struct inode *inode, struct folio *folio);
- int f2fs_recover_inline_data(struct inode *inode, struct folio *nfolio);
- struct f2fs_dir_entry *f2fs_find_in_inline_dir(struct inode *dir,
- 		const struct f2fs_filename *fname, struct folio **res_folio,
--		bool use_hash);
-+		struct decrypted_name_prealloc *prealloc, bool use_hash);
- int f2fs_make_empty_inline_dir(struct inode *inode, struct inode *parent,
- 			struct folio *ifolio);
- int f2fs_add_inline_entry(struct inode *dir, const struct f2fs_filename *fname,
-diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
-index 901c630685ced..d02ff6c26d70a 100644
---- a/fs/f2fs/inline.c
-+++ b/fs/f2fs/inline.c
-@@ -353,6 +353,7 @@ int f2fs_recover_inline_data(struct inode *inode, struct folio *nfolio)
- struct f2fs_dir_entry *f2fs_find_in_inline_dir(struct inode *dir,
- 					const struct f2fs_filename *fname,
- 					struct folio **res_folio,
-+					struct decrypted_name_prealloc *prealloc,
- 					bool use_hash)
- {
- 	struct f2fs_sb_info *sbi = F2FS_SB(dir->i_sb);
-@@ -370,7 +371,7 @@ struct f2fs_dir_entry *f2fs_find_in_inline_dir(struct inode *dir,
- 	inline_dentry = inline_data_addr(dir, ifolio);
- 
- 	make_dentry_ptr_inline(dir, &d, inline_dentry);
--	de = f2fs_find_target_dentry(&d, fname, NULL, use_hash);
-+	de = f2fs_find_target_dentry(&d, fname, NULL, prealloc, use_hash);
- 	folio_unlock(ifolio);
- 	if (IS_ERR(de)) {
- 		*res_folio = ERR_CAST(de);
--- 
-2.34.1
+	Sun Sep 16 01:03:52 1973\n\0
 
+	using the equivalent of the following algorithm.
+
+Sigh.
+
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+
+--D
+
+> Thanks,
+>  - bin.
+> 
+> > > +	else
+> > > +		fprintf(out_file, ", commit_sec is %llu\n", commit_sec);
+> > 
+> > Hm?
+> > 
+> > (Everything else in the patch looks ok to me)
+> > 
+> > --D
+> > 
+> > > +}
+> > > 
+> > >   static void dump_revoke_block(FILE *out_file, char *buf,
+> > >   			      journal_superblock_t *jsb EXT2FS_ATTR((unused)),
+> > > -- 
+> > > 2.33.0
+> > > 
+> > > 
+> > 
+> > .
+> > 
 
