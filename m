@@ -1,149 +1,247 @@
-Return-Path: <linux-ext4+bounces-8806-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8807-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4791AF8540
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 03:40:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40597AF8576
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 04:11:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BD334882DC
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 01:40:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C34CD3A35A5
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 02:11:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39AD819F48D;
-	Fri,  4 Jul 2025 01:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4251A4E9E;
+	Fri,  4 Jul 2025 02:11:22 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1D9018DF80;
-	Fri,  4 Jul 2025 01:40:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AA802869E
+	for <linux-ext4@vger.kernel.org>; Fri,  4 Jul 2025 02:11:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751593231; cv=none; b=TwNkGFnnMNo5Cwiv9hi0nWmv/73Q9CNOZ3ih+KLHow5b4RBnuoO2rAhkuE6JUfCe125nTe50tBoCVGKGc8lkPfbMdApXIvwYmdWDKQvJTtJnSDnHOGfSdwkvWHAKUcaHqntmh2LP+cqZFDTeOojXUuvooMDmsgzSZ+sbMn1ZEdg=
+	t=1751595082; cv=none; b=KayVnphE92N21H8Opc5aEvPFsVoZeV55DyCCNXQdlizBhT/lXMcuJvgOw1dcim1gYP+mRXqEPmFfKNjM2zIBz+vJs18RAM5PmWzsABJMeNIkLgocsntFfbYmCu9rCx8cT0Qfwu3vMcjq6CEcdu+a6tylrxuDH/ApZzPuh9YH4EY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751593231; c=relaxed/simple;
-	bh=WONhXjTimx6DN03HG/RMmbijk/yprIyCTUxCwykAM54=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jRv+9zvrbRHbI9GBtmYDyoA+du5qPb3QHvTyAmCoFQh7MyJkglDILplVXElUX5Jywymi03lALLQA3Tq/QqRdz8Ywf5TD01j5HV+EvIfSt+BpNIg/8yuWzO8N3RAKiYh6SioPHOeKoN4hUUGd2CZHtji6SvR7DvhM5vYevAj7Op8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bYGY65T9RzYQv77;
-	Fri,  4 Jul 2025 09:40:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 992591A0847;
-	Fri,  4 Jul 2025 09:40:25 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP3 (Coremail) with SMTP id _Ch0CgBnxyQHMWdo_wdUAg--.20169S3;
-	Fri, 04 Jul 2025 09:40:25 +0800 (CST)
-Message-ID: <f73b6973-3f7c-4e0e-9908-3a3f151715b5@huaweicloud.com>
-Date: Fri, 4 Jul 2025 09:40:23 +0800
+	s=arc-20240116; t=1751595082; c=relaxed/simple;
+	bh=3S8FYUV3voEL7ghpJLo31F2KYee74iKTOMLqkHEsbfk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ALV/zqbtUB7FvMu1n0Hxzpc4G+0ieQx4nmJbaU774LBMry8aAgMZH3IpeIGgIkPuXE/9GdPwtNppX48FX2eaGpC36nSMi77r6JSRVEwmpQJEy5otb+dsnOVu0abvOz/9+L32gY9pQSuqvKg3TCccQfggSAAlB2Y/822xzjqiURg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=h-partners.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h-partners.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4bYH7w5STTz1GCGZ;
+	Fri,  4 Jul 2025 10:07:08 +0800 (CST)
+Received: from kwepemo100017.china.huawei.com (unknown [7.202.195.215])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6FC0C140132;
+	Fri,  4 Jul 2025 10:11:10 +0800 (CST)
+Received: from [10.174.187.231] (10.174.187.231) by
+ kwepemo100017.china.huawei.com (7.202.195.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 4 Jul 2025 10:11:09 +0800
+Message-ID: <55e2c4b2-5ceb-7aa9-772b-a2dc1f2fdbaf@huawei.com>
+Date: Fri, 4 Jul 2025 10:11:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 05/10] ext4: restart handle if credits are insufficient
- during allocating blocks
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- ojaswin@linux.ibm.com, sashal@kernel.org, yi.zhang@huawei.com,
- libaokun1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
-References: <20250701130635.4079595-1-yi.zhang@huaweicloud.com>
- <20250701130635.4079595-6-yi.zhang@huaweicloud.com>
- <i7lzmvk5prgnw2zri46adshfjhfq63r7le5w5sv67wmkiimbhc@a24oub5o6xtg>
- <ceb8c9c1-f426-4cd0-b7d8-841190631a90@huaweicloud.com>
- <zqrcmug26tnhhjombztjjqwcorbnk4elqg2dqayhtfo2gkx3e3@wvzykthigny6>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <zqrcmug26tnhhjombztjjqwcorbnk4elqg2dqayhtfo2gkx3e3@wvzykthigny6>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v4] debugfs/logdump.c: Add parameter t to dump sequence
+ commit timestamps
+To: "Darrick J. Wong" <djwong@kernel.org>
+CC: Theodore Ts'o <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
+	<qiangxiaojun@huawei.com>, <hejie3@huawei.com>
+References: <f5445a3b-f278-6440-91f3-08e5ca5b93cf@huawei.com>
+ <20250703153907.GA2672022@frogsfrogsfrogs>
+From: zhanchengbin <zhanchengbin1@huawei.com>
+In-Reply-To: <20250703153907.GA2672022@frogsfrogsfrogs>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgBnxyQHMWdo_wdUAg--.20169S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar1DtF1kAF4UWw1rXFW5KFg_yoW5JFy8pF
-	WfCF1jkr4UWa47ZF4Iqw4kXFW3t3ykCrW7XrZ8W3sFq3Z09r1SkF4xJa4jkF9YyrWxWa1U
-	Zr4Ut343W3W5ArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
+ kwepemo100017.china.huawei.com (7.202.195.215)
 
-On 2025/7/4 0:27, Jan Kara wrote:
-> On Thu 03-07-25 10:13:07, Zhang Yi wrote:
->> On 2025/7/2 22:18, Jan Kara wrote:
->>> On Tue 01-07-25 21:06:30, Zhang Yi wrote:
->>>> From: Zhang Yi <yi.zhang@huawei.com>
->>>>
->>>> After large folios are supported on ext4, writing back a sufficiently
->>>> large and discontinuous folio may consume a significant number of
->>>> journal credits, placing considerable strain on the journal. For
->>>> example, in a 20GB filesystem with 1K block size and 1MB journal size,
->>>> writing back a 2MB folio could require thousands of credits in the
->>>> worst-case scenario (when each block is discontinuous and distributed
->>>> across different block groups), potentially exceeding the journal size.
->>>> This issue can also occur in ext4_write_begin() and ext4_page_mkwrite()
->>>> when delalloc is not enabled.
->>>>
->>>> Fix this by ensuring that there are sufficient journal credits before
->>>> allocating an extent in mpage_map_one_extent() and
->>>> ext4_block_write_begin(). If there are not enough credits, return
->>>> -EAGAIN, exit the current mapping loop, restart a new handle and a new
->>>> transaction, and allocating blocks on this folio again in the next
->>>> iteration.
->>>>
->>>> Suggested-by: Jan Kara <jack@suse.cz>
->>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->>>
->>> Very nice. Feel free to add:
->>>
->>> Reviewed-by: Jan Kara <jack@suse.cz>
->>>
->>> One small comment below:
->>>
->>>> +/*
->>>> + * Make sure that the current journal transaction has enough credits to map
->>>> + * one extent. Return -EAGAIN if it cannot extend the current running
->>>> + * transaction.
->>>> + */
->>>> +static inline int ext4_journal_ensure_extent_credits(handle_t *handle,
->>>> +						     struct inode *inode)
->>>> +{
->>>> +	int credits;
->>>> +	int ret;
->>>> +
->>>> +	if (!handle)
->>>
->>> Shouldn't this rather be ext4_handle_valid(handle) to catch nojournal mode
->>> properly?
->>>
->> __ext4_journal_ensure_credits() already calls ext4_handle_valid() to handle
->> nojournal mode, and the '!handle' check here is to handle the case where
->> ext4_block_write_begin() passes in a NULL 'handle'.
+On 2025/7/3 23:39, Darrick J. Wong wrote:
+> On Thu, Jul 03, 2025 at 08:07:53PM +0800, zhanchengbin wrote:
+>> When filesystem errors occur, inspect journal sequences with parameter t to
+>> dump commit timestamps.
+>>
+>> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+>> ---
+>> v4: (1) Fix incorrect variable type; (2) Add logging for error branches.
+>> - Link to v3:
+>> https://patchwork.ozlabs.org/project/linux-ext4/patch/32252e29-aba9-df6f-3b97-d3774df375ad@huawei.com/
+>> v3: Change from displaying UTC time to local time.
+>> - Link to v2:
+>> https://patchwork.ozlabs.org/project/linux-ext4/patch/5a4b703c-6940-d9da-5686-337e3220d3a4@huawei.com/
+>> v2: Correct abnormal formats in the patch.
+>> - Link to v1:
+>> https://patchwork.ozlabs.org/project/linux-ext4/patch/50aeb0c1-9f14-ed04-c3b7-7a50f61c3341@huawei.com/
+>> ---
+>>   debugfs/logdump.c | 61 ++++++++++++++++++++++++++++++++++++++++-------
+>>   1 file changed, 52 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/debugfs/logdump.c b/debugfs/logdump.c
+>> index 324ed42..a1256c4 100644
+>> --- a/debugfs/logdump.c
+>> +++ b/debugfs/logdump.c
+>> @@ -47,7 +47,7 @@ enum journal_location {JOURNAL_IS_INTERNAL,
+>> JOURNAL_IS_EXTERNAL};
+>>
+>>   #define ANY_BLOCK ((blk64_t) -1)
+>>
+>> -static int		dump_all, dump_super, dump_old, dump_contents,
+>> dump_descriptors;
+>> +static int		dump_all, dump_super, dump_old, dump_contents,
+>> dump_descriptors, dump_time;
+>>   static int64_t		dump_counts;
+>>   static blk64_t		block_to_dump, bitmap_to_dump, inode_block_to_dump;
+>>   static unsigned int	group_to_dump, inode_offset_to_dump;
+>> @@ -67,6 +67,8 @@ static void dump_descriptor_block(FILE *, struct
+>> journal_source *,
+>>   				  char *, journal_superblock_t *,
+>>   				  unsigned int *, unsigned int, __u32, tid_t);
+>>
+>> +static void dump_commit_time(FILE *out_file, char *buf);
+>> +
+>>   static void dump_revoke_block(FILE *, char *, journal_superblock_t *,
+>>   				  unsigned int, unsigned int, tid_t);
+>>
+>> @@ -118,10 +120,11 @@ void do_logdump(int argc, ss_argv_t argv, int sci_idx
+>> EXT2FS_ATTR((unused)),
+>>   	inode_block_to_dump = ANY_BLOCK;
+>>   	inode_to_dump = -1;
+>>   	dump_counts = -1;
+>> +	dump_time = 0;
+>>   	wrapped_flag = false;
+>>
+>>   	reset_getopt();
+>> -	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
+>> +	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:t")) != EOF) {
+>>   		switch (c) {
+>>   		case 'a':
+>>   			dump_all++;
+>> @@ -162,6 +165,9 @@ void do_logdump(int argc, ss_argv_t argv, int sci_idx
+>> EXT2FS_ATTR((unused)),
+>>   				return;
+>>   			}
+>>   			break;
+>> +		case 't':
+>> +			dump_time++;
+>> +			break;
+>>   		default:
+>>   			goto print_usage;
+>>   		}
+>> @@ -521,21 +527,33 @@ static void dump_journal(char *cmdname, FILE
+>> *out_file,
+>>   				break;
+>>   		}
+>>
+>> -		if (dump_descriptors) {
+>> -			fprintf (out_file, "Found expected sequence %u, "
+>> -				 "type %u (%s) at block %u\n",
+>> -				 sequence, blocktype,
+>> -				 type_to_name(blocktype), blocknr);
+>> -		}
+>> -
+>>   		switch (blocktype) {
+>>   		case JBD2_DESCRIPTOR_BLOCK:
+>> +			if (dump_descriptors) {
+>> +				fprintf (out_file, "Found expected sequence %u, "
+>> +					 "type %u (%s) at block %u\n",
+>> +					 sequence, blocktype,
+>> +					 type_to_name(blocktype), blocknr);
+>> +			}
+>> +
+>>   			dump_descriptor_block(out_file, source, buf, jsb,
+>>   					      &blocknr, blocksize, maxlen,
+>>   					      transaction);
+>>   			continue;
+>>
+>>   		case JBD2_COMMIT_BLOCK:
+>> +			if (dump_descriptors) {
+>> +				fprintf (out_file, "Found expected sequence %u, "
+>> +					 "type %u (%s) at block %u",
+>> +					 sequence, blocktype,
+>> +					 type_to_name(blocktype), blocknr);
+>> +			}
+>> +
+>> +			if (dump_time)
+>> +				dump_commit_time(out_file, buf);
+>> +			else
+>> +				fprintf(out_file, "\n");
+>> +
+>>   			cur_counts++;
+>>   			transaction++;
+>>   			blocknr++;
+>> @@ -543,6 +561,13 @@ static void dump_journal(char *cmdname, FILE *out_file,
+>>   			continue;
+>>
+>>   		case JBD2_REVOKE_BLOCK:
+>> +			if (dump_descriptors) {
+>> +				fprintf (out_file, "Found expected sequence %u, "
+>> +					 "type %u (%s) at block %u\n",
+>> +					 sequence, blocktype,
+>> +					 type_to_name(blocktype), blocknr);
+>> +			}
+>> +
+>>   			dump_revoke_block(out_file, buf, jsb,
+>>   					  blocknr, blocksize,
+>>   					  transaction);
+>> @@ -742,6 +767,24 @@ static void dump_descriptor_block(FILE *out_file,
+>>   	*blockp = blocknr;
+>>   }
+>>
+>> +static void dump_commit_time(FILE *out_file, char *buf)
+>> +{
+>> +	struct commit_header	*header;
+>> +	uint64_t	commit_sec;
+>> +	time_t		timestamp;
+>> +	char		time_buffer[26];
+>> +	char		*result;
+>> +
+>> +	header = (struct commit_header *)buf;
+>> +	commit_sec = be64_to_cpu(header->h_commit_sec);
+>> +
+>> +	timestamp = commit_sec;
+>> +	result = ctime_r(&timestamp, time_buffer);
+>> +	if (result)
+>> +		fprintf(out_file, ", commit at: %s", time_buffer);
 > 
-> Ah, right. But then you don't need the test at all, do you? Anyway,
-> whatever you decide to do with this (or nothing) is fine by me.
+> Nit: missing newline in this fprintf... or you could delete the newline
+> below and change the callsite to:
+> 
+> 	if (dump_time)
+> 		dump_commit_time(out_file, buf);
+> 	fprintf(out_file, "\n");
 > 
 
-Yeah, remove this test is fine with me. I added this one is because the
-comments in ext4_handle_valid() said "Do not use this for NULL handles."
-I think it is best to follow this rule. :)
+In my test environment, the string generated by ctime_r comes with a
+newline character at the end.
 
-Best regards,
-Yi.
+Thanks,
+  - bin.
 
+>> +	else
+>> +		fprintf(out_file, ", commit_sec is %llu\n", commit_sec);
+> 
+> Hm?
+> 
+> (Everything else in the patch looks ok to me)
+> 
+> --D
+> 
+>> +}
+>>
+>>   static void dump_revoke_block(FILE *out_file, char *buf,
+>>   			      journal_superblock_t *jsb EXT2FS_ATTR((unused)),
+>> -- 
+>> 2.33.0
+>>
+>>
+> 
+> .
+> 
 
