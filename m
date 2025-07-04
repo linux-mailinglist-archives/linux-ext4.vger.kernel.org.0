@@ -1,153 +1,167 @@
-Return-Path: <linux-ext4+bounces-8814-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8815-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25F83AF8C53
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 10:44:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C510CAF8CC3
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 10:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87434588048
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 08:44:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A8CB484FDE
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 08:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4124F262FDB;
-	Fri,  4 Jul 2025 08:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VLpy79R3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C712A2DAFB7;
+	Fri,  4 Jul 2025 08:47:16 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4E1328AE4;
-	Fri,  4 Jul 2025 08:40:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA64E2DAFAE;
+	Fri,  4 Jul 2025 08:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751618400; cv=none; b=DO+4XH/igW6zNQMj0MVkKegBUBQ5eHX2kwSpIIBpWYNCR67Na0tpeQqzLdMOyHyp2/Cr3r6v7DDQ+HotVFFZE3hpUxgCrku98eRVEvUZK+O28N7aIXDISxzOUUmPW177vHnnVrY0+lL5+Vwf01+U0pLv9VsHbtzdttH9xpMVTFE=
+	t=1751618836; cv=none; b=iJhqJXNZfbvXH3pf4sgT60tSosHANbjfaEBjgrIBXY0d+oDKi6Vbjy8WE+yy3aqmd13nnwQJPYH4HW86ljshEEILnuPyizjYYlaQVINzJAw6paMRfV/ZP7S5mCRHbuMkUpS9Uqls2PrAAxB7IasnOvP9RaC5VBKIvrd3wCRlcDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751618400; c=relaxed/simple;
-	bh=FHas3OLzhcWmJla/w9SVAWfRsC/N5brO1Le2ihalCNg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TN2UI3xyCfwRG2Zl3GjjqEP0gUD97Lrde26YuFL2ocVGOzIcKvc4MrsbLy7pOFTOE+SYnfxnbQwcJ/byijjLYkVgyMtM4bvdb/ZaPjiHX6cF53fbz1/XHoGaNUhohKRw6JpXr+sywUrNN/+CZ2gCEdKBEZBuydk+4csAmU3hG+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VLpy79R3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11EA7C4CEF0;
-	Fri,  4 Jul 2025 08:39:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751618400;
-	bh=FHas3OLzhcWmJla/w9SVAWfRsC/N5brO1Le2ihalCNg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VLpy79R3WoowQ0dde0FpFT1YyHsXsurqva+SkoBcww5fjPVnQMcwqe87L2wtjyLYi
-	 kRKqWJIQ81p4a1f0xNgpRmdmn+OPlPkQk/4+3lz4NrJRi0wbmnDt4pjvgXFACOvZxO
-	 qU9E5LKN5/hna1bw+wpVR2YB99mwlJCTB2beguJ1mHivp02SKA4At/U4wBW5k3iT/Q
-	 u3HMCjJxxvd2r71zcnuKhwU/Z06IvtD7wFREJ9CXS/1miJCbu6oYZeK5DrvOvTrTgE
-	 IHzvXhhXfrV+PFyTdnHzAjREeo0FCEO0Q5nKDCaILrTwFadudwtNVY/apMjWmKyCd5
-	 QDeadiD91wJeA==
-Date: Fri, 4 Jul 2025 10:39:53 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de, 
-	tytso@mit.edu, djwong@kernel.org, john.g.garry@oracle.com, bmarzins@redhat.com, 
-	chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com, martin.petersen@oracle.com, 
-	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com, 
-	yangerkun@huawei.com, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-block@vger.kernel.org, dm-devel@lists.linux.dev, linux-nvme@lists.infradead.org, 
-	linux-scsi@vger.kernel.org
-Subject: Re: [PATCH v2 0/9] fallocate: introduce FALLOC_FL_WRITE_ZEROES flag
-Message-ID: <20250704-gemein-addieren-62ad4d210c70@brauner>
-References: <20250619111806.3546162-1-yi.zhang@huaweicloud.com>
- <20250623-woanders-allabendlich-f87ae2d9c704@brauner>
- <99010bfd-c968-49c7-b62b-c72b38722c1b@huaweicloud.com>
+	s=arc-20240116; t=1751618836; c=relaxed/simple;
+	bh=TWmJdeIYeEuBJcd9NqV2O8kqXLjlEAjWmbj91C+OgL4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=udNd4EOufPCYQiE7crXgRXmgl5FeK/fRsVZhSena5gMjwxYHefuvL5ImX8LRksfqMv34z3SECKzuG72XP7y+tgcML7s9UbZS4DwORtsi0zerXq8ass4lI3G+ZUwB4qvkIdtGRdzR6S/OO1zK0aG4O80fWBVmNWk7YAf6Rf51KmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bYS1Y0LSQzKHMkC;
+	Fri,  4 Jul 2025 16:47:13 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 72C061A06E6;
+	Fri,  4 Jul 2025 16:47:11 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP3 (Coremail) with SMTP id _Ch0CgBXuSYNlWdoU6BzAg--.32297S3;
+	Fri, 04 Jul 2025 16:47:11 +0800 (CST)
+Message-ID: <6a47b6f2-08d5-49ae-aee5-9068a421de05@huaweicloud.com>
+Date: Fri, 4 Jul 2025 16:47:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <99010bfd-c968-49c7-b62b-c72b38722c1b@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 05/10] ext4: restart handle if credits are insufficient
+ during allocating blocks
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ ojaswin@linux.ibm.com, sashal@kernel.org, yi.zhang@huawei.com,
+ libaokun1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
+References: <20250701130635.4079595-1-yi.zhang@huaweicloud.com>
+ <20250701130635.4079595-6-yi.zhang@huaweicloud.com>
+ <i7lzmvk5prgnw2zri46adshfjhfq63r7le5w5sv67wmkiimbhc@a24oub5o6xtg>
+ <ceb8c9c1-f426-4cd0-b7d8-841190631a90@huaweicloud.com>
+ <zqrcmug26tnhhjombztjjqwcorbnk4elqg2dqayhtfo2gkx3e3@wvzykthigny6>
+ <f73b6973-3f7c-4e0e-9908-3a3f151715b5@huaweicloud.com>
+ <mk5f4g4rwp37ob6qmd7asocumeepjcnufqzjvazr3yukbyzq3y@6gp6x6zvxf7r>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <mk5f4g4rwp37ob6qmd7asocumeepjcnufqzjvazr3yukbyzq3y@6gp6x6zvxf7r>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgBXuSYNlWdoU6BzAg--.32297S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFyDZw47Kw4fAFW3WF17Wrg_yoW5ArWDpr
+	WfCF1jyr47GFyUAF40vw18XF13t348CrWUXrZ8Wryqq3Z09r1fKF18Ja4jkFyjyrW8WF4U
+	Zr4Ut343WF15ArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Thu, Jul 03, 2025 at 11:35:41AM +0800, Zhang Yi wrote:
-> On 2025/6/23 18:46, Christian Brauner wrote:
-> > On Thu, 19 Jun 2025 19:17:57 +0800, Zhang Yi wrote:
-> >> From: Zhang Yi <yi.zhang@huawei.com>
-> >>
-> >> Changes since v1:
-> >>  - Rebase codes on 6.16-rc2.
-> >>  - Use max_{hw|user}_wzeroes_unmap_sectors queue limits instead of
-> >>    BLK_FEAT_WRITE_ZEROES_UNMAP feature to represent the status of the
-> >>    unmap write zeroes operation as Christoph and Darrick suggested. This
-> >>    redoes the first 5 patches, so remove all the reviewed-by tags,
-> >>    please review them again.
-> >>  - Simplify the description of FALLOC_FL_WRITE_ZEROES in patch 06 as
-> >>    Darrick suggested.
-> >>  - Revise the check order of FALLOC_FL_WRITE_ZEROES in patch 08 as
-> >>    Christoph suggested.
-> >> Changes since RFC v4:
-> >>  - Rebase codes on 6.16-rc1.
-> >>  - Add a new queue_limit flag, and change the write_zeroes_unmap sysfs
-> >>    interface to RW mode. User can disable the unmap write zeroes
-> >>    operation by writing '0' to it when the operation is slow.
-> >>  - Modify the documentation of write_zeroes_unmap sysfs interface as
-> >>    Martin suggested.
-> >>  - Remove the statx interface.
-> >>  - Make the bdev and ext4 don't allow to submit FALLOC_FL_WRITE_ZEROES
-> >>    if the block device does not enable the unmap write zeroes operation,
-> >>    it should return -EOPNOTSUPP.
-> >> Changes sicne RFC v3:
-> >>  - Rebase codes on 6.15-rc2.
-> >>  - Add a note in patch 1 to indicate that the unmap write zeros command
-> >>    is not always guaranteed as Christoph suggested.
-> >>  - Rename bdev_unmap_write_zeroes() helper and move it to patch 1 as
-> >>    Christoph suggested.
-> >>  - Introduce a new statx attribute flag STATX_ATTR_WRITE_ZEROES_UNMAP as
-> >>    Christoph and Christian suggested.
-> >>  - Exchange the order of the two patches that modified
-> >>    blkdev_fallocate() as Christoph suggested.
-> >> Changes since RFC v2:
-> >>  - Rebase codes on next-20250314.
-> >>  - Add support for nvme multipath.
-> >>  - Add support for NVMeT with block device backing.
-> >>  - Clear FALLOC_FL_WRITE_ZEROES if dm clear
-> >>    limits->max_write_zeroes_sectors.
-> >>  - Complement the counterpart userspace tools(util-linux and xfs_io)
-> >>    and tests(blktests and xfstests), please see below for details.
-> >> Changes since RFC v1:
-> >>  - Switch to add a new write zeroes operation, FALLOC_FL_WRITE_ZEROES,
-> >>    in fallocate, instead of just adding a supported flag to
-> >>    FALLOC_FL_ZERO_RANGE.
-> >>  - Introduce a new flag BLK_FEAT_WRITE_ZEROES_UNMAP to the block
-> >>    device's queue limit features, and implement it on SCSI sd driver,
-> >>    NVMe SSD driver and dm driver.
-> >>  - Implement FALLOC_FL_WRITE_ZEROES on both the ext4 filesystem and
-> >>    block device (bdev).
-> >>
-> >> [...]
-> > 
-> > If needed, the branch can be declared stable and thus be used as base
-> > for other work.
-> > 
-> > ---
-> > 
-> > Applied to the vfs-6.17.fallocate branch of the vfs/vfs.git tree.
-> > Patches in the vfs-6.17.fallocate branch should appear in linux-next soon.
-> > 
-> > Please report any outstanding bugs that were missed during review in a
-> > new review to the original patch series allowing us to drop it.
-> > 
-> > It's encouraged to provide Acked-bys and Reviewed-bys even though the
-> > patch has now been applied. If possible patch trailers will be updated.
-> > 
-> > Note that commit hashes shown below are subject to change due to rebase,
-> > trailer updates or similar. If in doubt, please check the listed branch.
-> > 
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-> > branch: vfs-6.17.fallocate
+On 2025/7/4 16:18, Jan Kara wrote:
+> On Fri 04-07-25 09:40:23, Zhang Yi wrote:
+>> On 2025/7/4 0:27, Jan Kara wrote:
+>>> On Thu 03-07-25 10:13:07, Zhang Yi wrote:
+>>>> On 2025/7/2 22:18, Jan Kara wrote:
+>>>>> On Tue 01-07-25 21:06:30, Zhang Yi wrote:
+>>>>>> From: Zhang Yi <yi.zhang@huawei.com>
+>>>>>>
+>>>>>> After large folios are supported on ext4, writing back a sufficiently
+>>>>>> large and discontinuous folio may consume a significant number of
+>>>>>> journal credits, placing considerable strain on the journal. For
+>>>>>> example, in a 20GB filesystem with 1K block size and 1MB journal size,
+>>>>>> writing back a 2MB folio could require thousands of credits in the
+>>>>>> worst-case scenario (when each block is discontinuous and distributed
+>>>>>> across different block groups), potentially exceeding the journal size.
+>>>>>> This issue can also occur in ext4_write_begin() and ext4_page_mkwrite()
+>>>>>> when delalloc is not enabled.
+>>>>>>
+>>>>>> Fix this by ensuring that there are sufficient journal credits before
+>>>>>> allocating an extent in mpage_map_one_extent() and
+>>>>>> ext4_block_write_begin(). If there are not enough credits, return
+>>>>>> -EAGAIN, exit the current mapping loop, restart a new handle and a new
+>>>>>> transaction, and allocating blocks on this folio again in the next
+>>>>>> iteration.
+>>>>>>
+>>>>>> Suggested-by: Jan Kara <jack@suse.cz>
+>>>>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>>>>>
+>>>>> Very nice. Feel free to add:
+>>>>>
+>>>>> Reviewed-by: Jan Kara <jack@suse.cz>
+>>>>>
+>>>>> One small comment below:
+>>>>>
+>>>>>> +/*
+>>>>>> + * Make sure that the current journal transaction has enough credits to map
+>>>>>> + * one extent. Return -EAGAIN if it cannot extend the current running
+>>>>>> + * transaction.
+>>>>>> + */
+>>>>>> +static inline int ext4_journal_ensure_extent_credits(handle_t *handle,
+>>>>>> +						     struct inode *inode)
+>>>>>> +{
+>>>>>> +	int credits;
+>>>>>> +	int ret;
+>>>>>> +
+>>>>>> +	if (!handle)
+>>>>>
+>>>>> Shouldn't this rather be ext4_handle_valid(handle) to catch nojournal mode
+>>>>> properly?
+>>>>>
+>>>> __ext4_journal_ensure_credits() already calls ext4_handle_valid() to handle
+>>>> nojournal mode, and the '!handle' check here is to handle the case where
+>>>> ext4_block_write_begin() passes in a NULL 'handle'.
+>>>
+>>> Ah, right. But then you don't need the test at all, do you? Anyway,
+>>> whatever you decide to do with this (or nothing) is fine by me.
+>>>
+>>
+>> Yeah, remove this test is fine with me. I added this one is because the
+>> comments in ext4_handle_valid() said "Do not use this for NULL handles."
+>> I think it is best to follow this rule. :)
 > 
-> Hi Christian,
+> Right, I didn't read that comment :) So maybe the best fix will be just
+> adding a comment before the test like:
 > 
-> I noticed that this patch series doesn't appear to be merged into this
-> branch. Just wondering if it might have been missed?
+> 	/* Called from ext4_da_write_begin() which has no handle started? */
+> 	if (!handle)
+> 		return 0;
+> 
 
-Dammit, my script missed to push the branch. Fixed now. Thanks for
-checking!
+Sure, it looks good, will do.
+
+Thanks,
+Yi.
+
+
+
+
+
 
