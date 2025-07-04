@@ -1,102 +1,108 @@
-Return-Path: <linux-ext4+bounces-8818-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8828-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DAD0AF8ED3
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 11:38:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70A9BAFA1A7
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Jul 2025 22:01:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63C5E7BEE40
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Jul 2025 09:11:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C46CA4A3C39
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Jul 2025 20:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E5A2F5C31;
-	Fri,  4 Jul 2025 09:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99023238C1E;
+	Sat,  5 Jul 2025 20:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qfBb4+sH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NM9DKMq5";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vDHsu56a";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jEFmAHHO"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TYF/Ne+g";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="J3G1lxAG";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mMrF3HJZ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nyW5d7U2"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CAAB2BEFE1
-	for <linux-ext4@vger.kernel.org>; Fri,  4 Jul 2025 09:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AF431E9B3D
+	for <linux-ext4@vger.kernel.org>; Sat,  5 Jul 2025 20:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751619934; cv=none; b=YgrC6OK6GwHV7W1Do+9JAY+6OmbVt/5FiEMsi03WJiy/yWGpUjfksHKmGyjBKbfmMpkcN4iS/2HR96WKO+Q6g9kjl8kucjd4Lk31eV164MLFpli7n9kpHqifxYh3wS7p/hF1ABCIiq2YaHTMvD8uO1JOQF4v9ghoVuCuavWmWH8=
+	t=1751745664; cv=none; b=GAE6tBYk0r2paowvlv6UnYyYn4Fh58614PjCRH2E5/jDHBd2zJjwX8+pTRg+OOt6dZDnjxTH1AceWT1XjvCZB8nb6aq98/soqMAK0UQFpRyMHS0nH8O7TESoR8PiQP13i9Ud5qHFywK+LqGFyfOrtEP3oVkON0X+L1//tUX4Jgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751619934; c=relaxed/simple;
-	bh=hpzUYbJAq1TnWqpU6r5JKq7hljtPojJXaRtJWDUtTFI=;
+	s=arc-20240116; t=1751745664; c=relaxed/simple;
+	bh=KQVDv7vaSa56RILpk9GXU4EE/SRZNSQ/rx09IYPXoVI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l3cU/wXTPyUIuySpklFAhwUUE6okNsEPviybymJ4rr/Kpic5crduw811zUU9yQQULpqi9slRvY0dNm9Ryc+WBbU4mx3HgNKRAV3lDLa+HrDMAZqXxYIar8SPHd/I8frxYVD/APHxQc+NNDyjrVMmnsrXUGcrrV9+AsBLKeyRzzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qfBb4+sH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NM9DKMq5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vDHsu56a; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jEFmAHHO; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=rKKg+hHWxpAMzTHAszaGBKk6BXIZ/F8C0H6Pkm/XmmrajzBhOMfhgLFy85K+K+DB7I8lPp332XnAMBUaYJiovB0EiTtZ9RK+6lMjJoAiEO2PJvNEQ8ziDU/ehdO5545KdlBKl/aOPbjcpqEd5zXLmcaMMGPuKYBzjemoc3ccDHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TYF/Ne+g; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=J3G1lxAG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mMrF3HJZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nyW5d7U2; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C048D21185;
-	Fri,  4 Jul 2025 09:05:29 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E901D21162;
+	Sat,  5 Jul 2025 20:00:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751619931; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1751745653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Om6I5tFyyfcVPangDfbiEU+nIPjPaTL8L4plfMPqXn8=;
-	b=qfBb4+sHK9BfeeWcUjfD5mRPSdttXFRP64KYHtqu+d0Q472yOpgmCOkOrfJ1UgFQBGZHV5
-	OYusvWl+4kvunMmtGzU8NBtDoWEMYAFHmJdnazWbJ0FcpYGBiV30EznAdAyKxRyElrfMjD
-	1Zqhd4b3zVLE67rnzr8Gue23N6nz4IM=
+	bh=6Ej3hCCfrQWrt1GFOzYcVms9XxZbLYdzP8GSAojwfQs=;
+	b=TYF/Ne+gm84Jjzu+l1y7Ng3WdT1Zbg2a/G2+meZE/naYB6PpZTtP1lTX7VcI4+YBOSetSg
+	hSbijUk41V5baToNXQUshPu0ii4yHrxxW8Orm4ZqzbRF673AkyVUhgJPFqik2l9EiM0M2c
+	dYOuyw0GudKqq/w87vQg8JelcKV8JDc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751619931;
+	s=susede2_ed25519; t=1751745653;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Om6I5tFyyfcVPangDfbiEU+nIPjPaTL8L4plfMPqXn8=;
-	b=NM9DKMq5jHqAwl6hKHyll9FNBaFPMblKpdnWRn3dxhn/RQqvOGBnR42lfm3ngX91BzRweD
-	THSzZ6RUelehQfAQ==
+	bh=6Ej3hCCfrQWrt1GFOzYcVms9XxZbLYdzP8GSAojwfQs=;
+	b=J3G1lxAGXomf/SBDfTgumU9R0JnWekvLClbpJ5Ggu/aWU9UFKT6P+0TEuWvOSjS8YVaADg
+	/X+dv0uaU+v7dLCw==
 Authentication-Results: smtp-out1.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mMrF3HJZ;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nyW5d7U2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751619929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1751745651; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Om6I5tFyyfcVPangDfbiEU+nIPjPaTL8L4plfMPqXn8=;
-	b=vDHsu56aBWMos2GEDefWTDa1hJ4vdTD/vFFqfy0jbznRGu6ZxhpsLzK6J9A2RnlUC8+oci
-	+lFT4zi7SnLsFdVEHt6jVYYq5rD1F7/PyAn3Y8b66ojk14Ijjv8SAjSNwcAXi3D5hisHhH
-	hqj5gayWwu/9zGgCFuj6ATx8JXyrFC8=
+	bh=6Ej3hCCfrQWrt1GFOzYcVms9XxZbLYdzP8GSAojwfQs=;
+	b=mMrF3HJZ2uVVpv/4ZDdDcLlzTEKfvndTgpnQTk0mjxoshaKYrj1I7dfCGp7Fd5rlKycztA
+	BpOlwo8U8PO8TOG/r2Ns/KJV4vR3hjLj2gjo24X9K85BuwibfRuMVZMzyhiswwGbBSAIXU
+	HoMlNozXcH3C93LEyoLl4EhVZ7MdL10=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751619929;
+	s=susede2_ed25519; t=1751745651;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Om6I5tFyyfcVPangDfbiEU+nIPjPaTL8L4plfMPqXn8=;
-	b=jEFmAHHOjAnGAPIJL648yH8UYVIw7cG7M41c2+nXbcEkuLgbd3nrWV4Bcgq3KltDpPS/Vl
-	7pA57YOx0PTfq5Bg==
+	bh=6Ej3hCCfrQWrt1GFOzYcVms9XxZbLYdzP8GSAojwfQs=;
+	b=nyW5d7U2IaF6rMG78ShWPMAsBIDGGXHKQ+wPcwKkhyqCNZXPb2wQx1ZpzaQRTu20lIZY69
+	6qnlGcO9gjW4IuBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9CCFB13757;
-	Fri,  4 Jul 2025 09:05:29 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D7A7213757;
+	Sat,  5 Jul 2025 20:00:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id axZDJlmZZ2gGHwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 04 Jul 2025 09:05:29 +0000
+	id 0hikNHOEaWiaMgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Sat, 05 Jul 2025 20:00:51 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 4770BA0A31; Fri,  4 Jul 2025 11:05:25 +0200 (CEST)
-Date: Fri, 4 Jul 2025 11:05:25 +0200
+	id AD57CA0A31; Fri,  4 Jul 2025 13:17:02 +0200 (CEST)
+Date: Fri, 4 Jul 2025 13:17:02 +0200
 From: Jan Kara <jack@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
- remove_bdev()
-Message-ID: <3koe4okqyngnl3djuj46xz5jk2hbwnsukmwn4wwpgf3nebn3uh@uxaot4z2wdgc>
-References: <cover.1751589725.git.wqu@suse.com>
- <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, 
+	Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>, linux-ext4 <linux-ext4@vger.kernel.org>, 
+	linux-fsdevel@vger.kernel.org, open list <linux-kernel@vger.kernel.org>, 
+	lkft-triage@lists.linaro.org, Linux Regressions <regressions@lists.linux.dev>, 
+	LTP List <ltp@lists.linux.it>, Anders Roxell <anders.roxell@linaro.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: next-20250626: WARNING fs jbd2 transaction.c start_this_handle
+ with ARM64_64K_PAGES
+Message-ID: <c2dvcablaximwjnwg67spegwkntxjgezu6prvyyto4vjnx6rvh@w3xgx4jjq4bb>
+References: <CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com>
+ <2dbc199b-ef22-4c22-9dbd-5e5876e9f9b4@huaweicloud.com>
+ <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
+ <1c7ae5cb-61ad-404c-950a-ba1b5895e6c3@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -105,241 +111,108 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
-X-Spamd-Result: default: False [-3.80 / 50.00];
+In-Reply-To: <1c7ae5cb-61ad-404c-950a-ba1b5895e6c3@huaweicloud.com>
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
+	DATE_IN_PAST(1.00)[32];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MX_GOOD(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email]
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,huaweicloud.com:email,linaro.org:email]
 X-Spam-Flag: NO
 X-Spam-Level: 
-X-Spam-Score: -3.80
+X-Rspamd-Queue-Id: E901D21162
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
-OK, now that you've made me read the changelog :) :
+On Thu 03-07-25 19:33:32, Zhang Yi wrote:
+> On 2025/7/3 15:26, Naresh Kamboju wrote:
+> > On Thu, 26 Jun 2025 at 19:23, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
+> >> On 2025/6/26 20:31, Naresh Kamboju wrote:
+> >>> Regressions noticed on arm64 devices while running LTP syscalls mmap16
+> >>> test case on the Linux next-20250616..next-20250626 with the extra build
+> >>> config fragment CONFIG_ARM64_64K_PAGES=y the kernel warning noticed.
+> >>>
+> >>> Not reproducible with 4K page size.
+> >>>
+> >>> Test environments:
+> >>> - Dragonboard-410c
+> >>> - Juno-r2
+> >>> - rk3399-rock-pi-4b
+> >>> - qemu-arm64
+> >>>
+> >>> Regression Analysis:
+> >>> - New regression? Yes
+> >>> - Reproducibility? Yes
+> >>>
+> >>> Test regression: next-20250626 LTP mmap16 WARNING fs jbd2
+> >>> transaction.c start_this_handle
+> >>>
+> >>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >>
+> >> Thank you for the report. The block size for this test is 1 KB, so I
+> >> suspect this is the issue with insufficient journal credits that we
+> >> are going to resolve.
+> > 
+> > I have applied your patch set [1] and tested and the reported
+> > regressions did not fix.
+> > Am I missing anything ?
+> > 
+> > [1] https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
+> > 
+> 
+> Hmm. It seems that my fix for the insufficient journal credit series
+> cannot handle cases with a page size of 64k. The problem is the folio
+> size can up to 128M, and the 'rsv_blocks' in ext4_do_writepages() can
+> up to 1577 on 1K block size filesystems, this is too large.
 
-On Fri 04-07-25 10:12:29, Qu Wenruo wrote:
-> Currently all the filesystems implementing the
-> super_opearations::shutdown() callback can not afford losing a device.
-        ^^^ operations
+Firstly, I think that 128M folios are too big for our current approaches
+(in ext4 at least) to sensibly work. Maybe we could limit max folio order
+in ext4 mappings to max 1024 blocks per folio or something like that? For
+realistic setups with 4k blocksize this means 4M folios which is not really
+limiting for x86. Arm64 or ppc64 could do bigger but the gain for even
+larger folios is diminishingly small anyway.
 
-> Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
-> involved filesystem.
-> 
-> But it will no longer be the case, with multi-device filesystems like
-> btrfs and bcachefs the filesystem can handle certain device loss without
-> shutting down the whole filesystem.
-> 
-> To allow those multi-device filesystems to be integrated to use
-> fs_holder_ops:
-> 
-> - Replace super_opearation::shutdown() with
->   super_opearations::remove_bdev()
-    ^^ again typos in work "operations"
+Secondly, I'm wondering that even with 1577 reserved blocks we shouldn't
+really overflow the journal unless you make it really small. But maybe
+that's what the test does...
 
->   To better describe when the callback is called.
+> Therefore, at this time, I think we should disable the large folio
+> support for 64K page size. Then, we may need to reserve rsv_blocks
+> for one extent and implement the same journal extension logic for
+> reserved credits.
 > 
-> - Add a new @bdev parameter to remove_bdev() callback
->   To allow the fs to determine which device is missing, and do the
->   proper handling when needed.
-> 
-> For the existing shutdown callback users, the change is minimal.
-> They only need to follow the rename and the new parameter list.
-> The new @bdev parameter can be ignored if the filesystem can not afford
-> losing any device, and continue using the old shutdown behavior.
-> 
-> Btrfs is going to implement the callback soon, which will either
-> shutdown the fs or continue read-write operations.
-> 
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-ext4@vger.kernel.org
-> Cc: linux-f2fs-devel@lists.sourceforge.net
-> Cc: ntfs3@lists.linux.dev
-> Cc: linux-xfs@vger.kernel.org
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Ted and Jan, what do you think?
 
-Still feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
+I wouldn't really disable it for 64K page size. I'd rather limit max folio
+order to 1024 blocks. That actually makes sense as a general limitation of
+our current implementation (linked lists of bhs in each folio don't really
+scale). We can use mapping_set_folio_order_range() for that instead of
+mapping_set_large_folios().
 
 								Honza
-
-> ---
->  fs/exfat/super.c   | 4 ++--
->  fs/ext4/super.c    | 4 ++--
->  fs/f2fs/super.c    | 4 ++--
->  fs/ntfs3/super.c   | 6 +++---
->  fs/super.c         | 4 ++--
->  fs/xfs/xfs_super.c | 7 ++++---
->  include/linux/fs.h | 7 ++++++-
->  7 files changed, 21 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/exfat/super.c b/fs/exfat/super.c
-> index 7ed858937d45..a0e11166b194 100644
-> --- a/fs/exfat/super.c
-> +++ b/fs/exfat/super.c
-> @@ -172,7 +172,7 @@ int exfat_force_shutdown(struct super_block *sb, u32 flags)
->  	return 0;
->  }
->  
-> -static void exfat_shutdown(struct super_block *sb)
-> +static void exfat_remove_bdev(struct super_block *sb, struct block_device *bdev)
->  {
->  	exfat_force_shutdown(sb, EXFAT_GOING_DOWN_NOSYNC);
->  }
-> @@ -202,7 +202,7 @@ static const struct super_operations exfat_sops = {
->  	.put_super	= exfat_put_super,
->  	.statfs		= exfat_statfs,
->  	.show_options	= exfat_show_options,
-> -	.shutdown	= exfat_shutdown,
-> +	.remove_bdev	= exfat_remove_bdev,
->  };
->  
->  enum {
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index c7d39da7e733..d75b416401ae 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1456,7 +1456,7 @@ static void ext4_destroy_inode(struct inode *inode)
->  			 EXT4_I(inode)->i_reserved_data_blocks);
->  }
->  
-> -static void ext4_shutdown(struct super_block *sb)
-> +static void ext4_remove_bdev(struct super_block *sb, struct block_device *bdev)
->  {
->         ext4_force_shutdown(sb, EXT4_GOING_FLAGS_NOLOGFLUSH);
->  }
-> @@ -1620,7 +1620,7 @@ static const struct super_operations ext4_sops = {
->  	.unfreeze_fs	= ext4_unfreeze,
->  	.statfs		= ext4_statfs,
->  	.show_options	= ext4_show_options,
-> -	.shutdown	= ext4_shutdown,
-> +	.remove_bdev	= ext4_remove_bdev,
->  #ifdef CONFIG_QUOTA
->  	.quota_read	= ext4_quota_read,
->  	.quota_write	= ext4_quota_write,
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index bbf1dad6843f..8667af9f76e4 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -2640,7 +2640,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->  	return err;
->  }
->  
-> -static void f2fs_shutdown(struct super_block *sb)
-> +static void f2fs_remove_bdev(struct super_block *sb, struct block_device *bdev)
->  {
->  	f2fs_do_shutdown(F2FS_SB(sb), F2FS_GOING_DOWN_NOSYNC, false, false);
->  }
-> @@ -3264,7 +3264,7 @@ static const struct super_operations f2fs_sops = {
->  	.unfreeze_fs	= f2fs_unfreeze,
->  	.statfs		= f2fs_statfs,
->  	.remount_fs	= f2fs_remount,
-> -	.shutdown	= f2fs_shutdown,
-> +	.remove_bdev	= f2fs_remove_bdev,
->  };
->  
->  #ifdef CONFIG_FS_ENCRYPTION
-> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> index 920a1ab47b63..3e69dc805e3a 100644
-> --- a/fs/ntfs3/super.c
-> +++ b/fs/ntfs3/super.c
-> @@ -762,9 +762,9 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
->  }
->  
->  /*
-> - * ntfs_shutdown - super_operations::shutdown
-> + * ntfs_remove_bdev - super_operations::remove_bdev
->   */
-> -static void ntfs_shutdown(struct super_block *sb)
-> +static void ntfs_remove_bdev(struct super_block *sb, struct block_device *bdev)
->  {
->  	set_bit(NTFS_FLAGS_SHUTDOWN_BIT, &ntfs_sb(sb)->flags);
->  }
-> @@ -821,7 +821,7 @@ static const struct super_operations ntfs_sops = {
->  	.put_super = ntfs_put_super,
->  	.statfs = ntfs_statfs,
->  	.show_options = ntfs_show_options,
-> -	.shutdown = ntfs_shutdown,
-> +	.remove_bdev = ntfs_remove_bdev,
->  	.sync_fs = ntfs_sync_fs,
->  	.write_inode = ntfs3_write_inode,
->  };
-> diff --git a/fs/super.c b/fs/super.c
-> index 80418ca8e215..c972efb38f6a 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -1463,8 +1463,8 @@ static void fs_bdev_mark_dead(struct block_device *bdev, bool surprise)
->  		sync_filesystem(sb);
->  	shrink_dcache_sb(sb);
->  	evict_inodes(sb);
-> -	if (sb->s_op->shutdown)
-> -		sb->s_op->shutdown(sb);
-> +	if (sb->s_op->remove_bdev)
-> +		sb->s_op->remove_bdev(sb, bdev);
->  
->  	super_unlock_shared(sb);
->  }
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index 0bc4b5489078..8e307b036133 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -1276,8 +1276,9 @@ xfs_fs_free_cached_objects(
->  }
->  
->  static void
-> -xfs_fs_shutdown(
-> -	struct super_block	*sb)
-> +xfs_fs_remove_bdev(
-> +	struct super_block	*sb,
-> +	struct block_device	*bdev)
->  {
->  	xfs_force_shutdown(XFS_M(sb), SHUTDOWN_DEVICE_REMOVED);
->  }
-> @@ -1308,7 +1309,7 @@ static const struct super_operations xfs_super_operations = {
->  	.show_options		= xfs_fs_show_options,
->  	.nr_cached_objects	= xfs_fs_nr_cached_objects,
->  	.free_cached_objects	= xfs_fs_free_cached_objects,
-> -	.shutdown		= xfs_fs_shutdown,
-> +	.remove_bdev		= xfs_fs_remove_bdev,
->  	.show_stats		= xfs_fs_show_stats,
->  };
->  
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index b085f161ed22..b08af63d2d4f 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2367,7 +2367,12 @@ struct super_operations {
->  				  struct shrink_control *);
->  	long (*free_cached_objects)(struct super_block *,
->  				    struct shrink_control *);
-> -	void (*shutdown)(struct super_block *sb);
-> +	/*
-> +	 * Called when block device @bdev belonging to @sb is removed.
-> +	 *
-> +	 * If the fs can't afford the device loss, it should be shutdown.
-> +	 */
-> +	void (*remove_bdev)(struct super_block *sb, struct block_device *bdev);
->  };
->  
->  /*
-> -- 
-> 2.50.0
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
