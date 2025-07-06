@@ -1,53 +1,52 @@
-Return-Path: <linux-ext4+bounces-8832-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8833-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06A24AFA72E
-	for <lists+linux-ext4@lfdr.de>; Sun,  6 Jul 2025 20:31:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F325AFA72F
+	for <lists+linux-ext4@lfdr.de>; Sun,  6 Jul 2025 20:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FAD617617E
-	for <lists+linux-ext4@lfdr.de>; Sun,  6 Jul 2025 18:31:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C21E3A865B
+	for <lists+linux-ext4@lfdr.de>; Sun,  6 Jul 2025 18:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956F712C544;
-	Sun,  6 Jul 2025 18:31:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A3313D503;
+	Sun,  6 Jul 2025 18:31:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N0rslNid"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UXd8/oJ5"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B88249F9
-	for <linux-ext4@vger.kernel.org>; Sun,  6 Jul 2025 18:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBC1846F
+	for <linux-ext4@vger.kernel.org>; Sun,  6 Jul 2025 18:31:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751826678; cv=none; b=NznqLOct2Ur8L9MqltQ2EF7DgwXb5dnoCYJlWXo7uDeR4OOfMhaknG5t3nPhnmdjmzvEQ3aQz19zy8ie2pIh/WINOx1zpG/gOxvwx+pDpiRQx+aaoSvi4R2xYKSTCUHHuNzFg3Dhh5rftXYDYZGoDryo/0NGgrSQrWS68L1yf5A=
+	t=1751826692; cv=none; b=M9OVtKD5bYwkYAFC8tYqhH7Vir8vZgyo4gvLt6zdSQ4sq2e0EM5hTnCv64DFmp1jS7YSExl0G3CYaw478KPsf9bkNlAVsJzXsPtxj6NJKeAMX+WcbTYQNkWw8QrBscsbDjnkEHGqGw5woK6bsVDMOyr16OUahgPD0BrAy+GiYvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751826678; c=relaxed/simple;
-	bh=CcY4muxyvWXuMKsAdjiegM/L5iqTlKwCpBulTZZodZs=;
+	s=arc-20240116; t=1751826692; c=relaxed/simple;
+	bh=Kwnx58q251cyabG0S8SkDeaDtjZ8GmcH9EHSHQxXat0=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rlm7eu5hvebD5Cgf69xa4O53VLRKssLA9YRn3fv6OtDOItXo4S52zNeNWT5OncilborT6t0ebM6UoiN4YPCZH073WS2Fol1wqXin/DCoXqUm4ZxXMLyRm7XGX0c5ThmUvx4F7yZ3dcU41FKF48n93NVF7K0Yw5C9tpvmkc0qg8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N0rslNid; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7F5AC4CEED;
-	Sun,  6 Jul 2025 18:31:16 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Flqd7VsRxJR/tFG+jg0wHzmXiefzvNaSG4iVlbVfDtXqzsbxAp9oMvnlwPrLa4VuBUf9JbB2YbxEBINV20mY3jCv3Tt75nEU+JKKtdGu/s+Y+mtLb3hOAKSR4xTqvc7NoqTkIxcQHXgqKeCQHM1iXXPI80DOsdSSBU42WQej+AM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UXd8/oJ5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6370CC4CEED;
+	Sun,  6 Jul 2025 18:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751826676;
-	bh=CcY4muxyvWXuMKsAdjiegM/L5iqTlKwCpBulTZZodZs=;
+	s=k20201202; t=1751826692;
+	bh=Kwnx58q251cyabG0S8SkDeaDtjZ8GmcH9EHSHQxXat0=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=N0rslNid8JzYZm43sCPhH+gc3JG1zvjunAZJKrMtX6VGZFMS2yQAiH7qEfZhgdn/D
-	 wMVI9+yOUoCnCVmEn4dmfQYH/USDc8/cMqnqhRe2EWGeJH0uqeInUobbEfJ591BxXn
-	 +uNTbDIUD8CpU3jLWEnjYAYARqzmKpf/eldKohX0Q8/vzV96sDkwJIoAxZzzLAg2pA
-	 cG0naOjHm5Sv0rRUd1LZfoichxniXh9T1jnJxWzaFaMDQ6QAGKh6CNjAEvNtuVPTam
-	 ApxZg6IghHchna8AqSVH6sAjYXiSQrm8C+57UPrgvqclkcUhZ2MfU/aDlVbIJn3lKF
-	 Ob/NK/woJzxIw==
-Date: Sun, 06 Jul 2025 11:31:16 -0700
-Subject: [PATCH 2/8] libext2fs: fix arguments passed to
- ->block_alloc_stats_range
+	b=UXd8/oJ5abE3r43R7vuABpGCMA3LDItWSr8c6H/zN2WKy+VLvlDWn17V+Lh7a+49M
+	 mjxrOIx202OPOlegxncLiNecmMC65Hcbt+bk5T0NjVNdbfBerXX2H7YPoTDcQbuDUV
+	 bN5DUStyewpNJ5wf2yAeg4VJ66nb/fdXlKdUURhWU3WDcEC+sub4NO7X8efPxIZX6r
+	 Icyak+xtQSoKNwzCkFto5sI+gsfqSkrDktrTKl6Vslb6owBfKT0k5+jxgXz+jFGeVY
+	 Zzi4iQqUnx+lW8BLp62R+++mjfVcZ8oo+l1a9ZblpRmjioauPmU76LxPBQwVrrMrxI
+	 51Io+YgYn7GqA==
+Date: Sun, 06 Jul 2025 11:31:31 -0700
+Subject: [PATCH 3/8] fuse2fs: refactor uid/gid setting
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org, linux-ext4@vger.kernel.org
-Message-ID: <175182663005.1984706.2711154041137486922.stgit@frogsfrogsfrogs>
+Cc: linux-ext4@vger.kernel.org
+Message-ID: <175182663023.1984706.1635443008190304976.stgit@frogsfrogsfrogs>
 In-Reply-To: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 References: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -61,44 +60,108 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-In ext2fs_block_alloc_stats_range, we use @num as the loop counter but
-then pass it to the callback and @blk as the loop cursor.  This means
-that the range passed to e2fsck_block_alloc_stats_range starts beyond
-the range that was actually freed and has a length of zero, which is not
-at all correct.
+Don't open-code the uid and gid update logic.
 
-Fix this by saving the original values and passing those instead.
-
-Cc: <linux-ext4@vger.kernel.org> # v1.43
-Fixes: 647e8786156061 ("libext2fs: add new hooks to support large allocations")
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- lib/ext2fs/alloc_stats.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ misc/fuse2fs.c |   42 ++++++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
 
 
-diff --git a/lib/ext2fs/alloc_stats.c b/lib/ext2fs/alloc_stats.c
-index 6f98bcc7cbd5f3..95a6438f252e0f 100644
---- a/lib/ext2fs/alloc_stats.c
-+++ b/lib/ext2fs/alloc_stats.c
-@@ -110,6 +110,9 @@ void ext2fs_set_block_alloc_stats_callback(ext2_filsys fs,
- void ext2fs_block_alloc_stats_range(ext2_filsys fs, blk64_t blk,
- 				    blk_t num, int inuse)
- {
-+	const blk64_t orig_blk = blk;
-+	const blk_t orig_num = num;
-+
- #ifndef OMIT_COM_ERR
- 	if (blk + num > ext2fs_blocks_count(fs->super)) {
- 		com_err("ext2fs_block_alloc_stats_range", 0,
-@@ -147,7 +150,7 @@ void ext2fs_block_alloc_stats_range(ext2_filsys fs, blk64_t blk,
- 	ext2fs_mark_super_dirty(fs);
- 	ext2fs_mark_bb_dirty(fs);
- 	if (fs->block_alloc_stats_range)
--		(fs->block_alloc_stats_range)(fs, blk, num, inuse);
-+		(fs->block_alloc_stats_range)(fs, orig_blk, orig_num, inuse);
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index d209bc790fbd36..86fef7765e5e46 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -1053,6 +1053,18 @@ static int propagate_default_acls(struct fuse2fs *ff, ext2_ino_t parent,
+ 	return ret;
  }
  
- void ext2fs_set_block_alloc_stats_range_callback(ext2_filsys fs,
++static inline void fuse2fs_set_uid(struct ext2_inode_large *inode, uid_t uid)
++{
++	inode->i_uid = uid;
++	ext2fs_set_i_uid_high(*inode, uid >> 16);
++}
++
++static inline void fuse2fs_set_gid(struct ext2_inode_large *inode, gid_t gid)
++{
++	inode->i_gid = gid;
++	ext2fs_set_i_gid_high(*inode, gid >> 16);
++}
++
+ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+ {
+ 	struct fuse_context *ctxt = fuse_get_context();
+@@ -1145,10 +1157,8 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+ 	inode.i_links_count = 1;
+ 	inode.i_extra_isize = sizeof(struct ext2_inode_large) -
+ 		EXT2_GOOD_OLD_INODE_SIZE;
+-	inode.i_uid = ctxt->uid;
+-	ext2fs_set_i_uid_high(inode, ctxt->uid >> 16);
+-	inode.i_gid = ctxt->gid;
+-	ext2fs_set_i_gid_high(inode, ctxt->gid >> 16);
++	fuse2fs_set_uid(&inode, ctxt->uid);
++	fuse2fs_set_gid(&inode, ctxt->gid);
+ 
+ 	err = ext2fs_write_new_inode(fs, child, EXT2_INODE(&inode));
+ 	if (err) {
+@@ -1262,10 +1272,8 @@ static int op_mkdir(const char *path, mode_t mode)
+ 		goto out2;
+ 	}
+ 
+-	inode.i_uid = ctxt->uid;
+-	ext2fs_set_i_uid_high(inode, ctxt->uid >> 16);
+-	inode.i_gid = ctxt->gid;
+-	ext2fs_set_i_gid_high(inode, ctxt->gid >> 16);
++	fuse2fs_set_uid(&inode, ctxt->uid);
++	fuse2fs_set_gid(&inode, ctxt->gid);
+ 	inode.i_mode = LINUX_S_IFDIR | (mode & ~S_ISUID) |
+ 		       parent_sgid;
+ 	inode.i_generation = ff->next_generation++;
+@@ -1691,10 +1699,8 @@ static int op_symlink(const char *src, const char *dest)
+ 		goto out2;
+ 	}
+ 
+-	inode.i_uid = ctxt->uid;
+-	ext2fs_set_i_uid_high(inode, ctxt->uid >> 16);
+-	inode.i_gid = ctxt->gid;
+-	ext2fs_set_i_gid_high(inode, ctxt->gid >> 16);
++	fuse2fs_set_uid(&inode, ctxt->uid);
++	fuse2fs_set_gid(&inode, ctxt->gid);
+ 	inode.i_generation = ff->next_generation++;
+ 	init_times(&inode);
+ 
+@@ -2243,8 +2249,7 @@ static int op_chown(const char *path, uid_t owner, gid_t group
+ 			ret = -EPERM;
+ 			goto out;
+ 		}
+-		inode.i_uid = owner;
+-		ext2fs_set_i_uid_high(inode, owner >> 16);
++		fuse2fs_set_uid(&inode, owner);
+ 	}
+ 
+ 	if (group != (gid_t) ~0) {
+@@ -2256,8 +2261,7 @@ static int op_chown(const char *path, uid_t owner, gid_t group
+ 		}
+ 
+ 		/* XXX: We /should/ check group membership but FUSE */
+-		inode.i_gid = group;
+-		ext2fs_set_i_gid_high(inode, group >> 16);
++		fuse2fs_set_gid(&inode, group);
+ 	}
+ 
+ 	ret = update_ctime(fs, ino, &inode);
+@@ -3300,10 +3304,8 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
+ 	inode.i_links_count = 1;
+ 	inode.i_extra_isize = sizeof(struct ext2_inode_large) -
+ 		EXT2_GOOD_OLD_INODE_SIZE;
+-	inode.i_uid = ctxt->uid;
+-	ext2fs_set_i_uid_high(inode, ctxt->uid >> 16);
+-	inode.i_gid = ctxt->gid;
+-	ext2fs_set_i_gid_high(inode, ctxt->gid >> 16);
++	fuse2fs_set_uid(&inode, ctxt->uid);
++	fuse2fs_set_gid(&inode, ctxt->gid);
+ 	if (ext2fs_has_feature_extents(fs->super)) {
+ 		ext2_extent_handle_t handle;
+ 
 
 
