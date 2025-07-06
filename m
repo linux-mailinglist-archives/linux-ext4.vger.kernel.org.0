@@ -1,144 +1,102 @@
-Return-Path: <linux-ext4+bounces-8827-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8829-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7875DAF9E9B
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Jul 2025 09:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E3AAFA725
+	for <lists+linux-ext4@lfdr.de>; Sun,  6 Jul 2025 20:28:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBDDD566F29
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Jul 2025 07:10:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8A3616CCA7
+	for <lists+linux-ext4@lfdr.de>; Sun,  6 Jul 2025 18:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031E7271477;
-	Sat,  5 Jul 2025 07:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BC72BDC06;
+	Sun,  6 Jul 2025 18:28:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TBdti2Ik"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690DD1DD0D4;
-	Sat,  5 Jul 2025 07:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC4222BD585
+	for <linux-ext4@vger.kernel.org>; Sun,  6 Jul 2025 18:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751699414; cv=none; b=gBO/SiqAEvz6d3/+XOtxqOCpByCYeKvw/vuK7ERUZeOf9jETPvTvAylIkmaNgEuAW0ahdVkM7ztLPoN7R614COUkPh2+/M2Iob+g6jwm2IJ/7GfQIqg4714LvI8hLyXeCHLkRI3Ed5YHEn5rIyNx0IYtLy2gQsl7ohz912XUiic=
+	t=1751826493; cv=none; b=YYYzUYRuKhgkIIYBP9RNlPQ4ZEBmTwd4iI7jbfGLSVm0r6ecJ40S1wDWo5jdsb7BfZaToLJNDt5+0KR98FatRdzyhE8HfYFwhh8+ELUOHlb9RqQ5ehTkyJTUPe5FjOziM7mJyvOCHmznkOsWLd2wUA8Em9VY4DS2mw6AG+niHPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751699414; c=relaxed/simple;
-	bh=D7TQOOjltjXwEI9gZjZ2pDomlcz9NTXBEIbpgbwlSLQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lREKmYpkqq88J2zU9hpiDo9Y4D2P788Ljqkx2ZTI3D50D3fVPNl1ts9cEJ+Jk795RGntlYxuBubHMBxeG798o70yJn4D4t7OCUCPKeJ/TsTq5EyenKmxjMWBAe9bVmR5MzjlYbmRtVZMMdORVwyUH20l8w0K7huTgnueQMtJTYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bZ1q55Hn2zYQtLs;
-	Sat,  5 Jul 2025 15:10:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 8EA471A0847;
-	Sat,  5 Jul 2025 15:10:08 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP3 (Coremail) with SMTP id _Ch0CgBnxyTKz2hoUJLWAg--.53385S3;
-	Sat, 05 Jul 2025 15:10:04 +0800 (CST)
-Message-ID: <094a1420-9060-4dcf-9398-8873193f5f7b@huaweicloud.com>
-Date: Sat, 5 Jul 2025 15:10:02 +0800
+	s=arc-20240116; t=1751826493; c=relaxed/simple;
+	bh=yVb/f6SuUbXNknax9NowL1oGcJiaTT7iGYkt9OzEaP8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HcISxUe8dnN5r0eKjfaRszamgApZjVfZmN7QwILTUUm8WyaVXWERW1RZes0f6XoT+HE7gIF87B6xQ3u5faXcoaM0gxym/916S9uhtKA2ZWGaxeq1oy3GY0CEwTRncnm2zbpVtQ+tqfqJ2L9wcW4QUHXNPu4JV0lo6NHpI1mUWIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TBdti2Ik; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72B2AC4CEF2;
+	Sun,  6 Jul 2025 18:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751826493;
+	bh=yVb/f6SuUbXNknax9NowL1oGcJiaTT7iGYkt9OzEaP8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TBdti2IkzcLnoXva99l43I2lm52ID8ue0g8n/hGB1GuyaWd7agNlm7TQZHdNG6JmM
+	 nxZ7PIqJ2qoGUn1lnrc8Kb0ZT0LcMRJmQQBzTj4Kfx25JZe6rscu2Q91hzHy4LWBAV
+	 eziDOkxbXLinp19LknIRVx1AQ5Lla2a2edbaD8Xc/deTuhuEVlmd9AVgsrAKgLGKwA
+	 Ug59aA1/VDytadPbrYGt8rUKIrVmL97VnUAIHs17tVrVDXE0uxTKh85PJeZX6dwPAE
+	 9EwYV++dHCz97/7/6VLjwmWcYmPyIx9afh/vy9Tclo0OMXN6q1qZiYI39zmRgmRWtg
+	 JIbavyDIFfOWw==
+Date: Sun, 6 Jul 2025 11:28:12 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Samuel Smith <satlug@net153.net>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [PATCH] e2scrub: reorder exit status check after calling lvremove
+Message-ID: <20250706182812.GB2672022@frogsfrogsfrogs>
+References: <20250705033821.3695205-1-satlug@net153.net>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: next-20250626: WARNING fs jbd2 transaction.c start_this_handle
- with ARM64_64K_PAGES
-To: Joseph Qi <jiangqi903@gmail.com>
-Cc: linux-ext4 <linux-ext4@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- Linux Regressions <regressions@lists.linux.dev>,
- LTP List <ltp@lists.linux.it>, Theodore Ts'o <tytso@mit.edu>,
- Jan Kara <jack@suse.cz>, Anders Roxell <anders.roxell@linaro.org>,
- Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
- Naresh Kamboju <naresh.kamboju@linaro.org>
-References: <CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com>
- <2dbc199b-ef22-4c22-9dbd-5e5876e9f9b4@huaweicloud.com>
- <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
- <2ee5547a-fa11-49fb-98b7-898d20457d7e@gmail.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <2ee5547a-fa11-49fb-98b7-898d20457d7e@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgBnxyTKz2hoUJLWAg--.53385S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJry3Gr1kKrW8KF1rCryrtFb_yoW8AF4rpa
-	y3Ja4DCF4UGr18JrWIqF1vqw17ta18tr48Xr9xGry5C3Z0yF1xur4SgF1j9F90vr1xuwnY
-	qr4q9a4I9ayjyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250705033821.3695205-1-satlug@net153.net>
 
-On 2025/7/3 18:47, Joseph Qi wrote:
+On Fri, Jul 04, 2025 at 10:38:21PM -0500, Samuel Smith wrote:
+> Checking for snapshot device existence resets the status code in $?.
+> Reording the conditions will allow the retry loop to work properly.
+> 
+> Signed-off-by: Samuel Smith <satlug@net153.net>
+
+Yep, that was a mistake.  Sorry about that. :(
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+
+--D
+
+> ---
+>  scrub/e2scrub.in | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/scrub/e2scrub.in b/scrub/e2scrub.in
+> index 043bc12b..6f9b5ce2 100644
+> --- a/scrub/e2scrub.in
+> +++ b/scrub/e2scrub.in
+> @@ -182,7 +182,7 @@ snap_dev="/dev/${LVM2_VG_NAME}/${snap}"
+>  teardown() {
+>  	# Remove and wait for removal to succeed.
+>  	${DBG} lvremove -f "${LVM2_VG_NAME}/${snap}"
+> -	while [ -e "${snap_dev}" ] && [ "$?" -eq "5" ]; do
+> +	while [ "$?" -eq "5" ] && [ -e "${snap_dev}" ]; do
+>  		sleep 0.5
+>  		${DBG} lvremove -f "${LVM2_VG_NAME}/${snap}"
+>  	done
+> @@ -210,7 +210,7 @@ setup() {
+>  	# Try to remove snapshot for 30s, bail out if we can't remove it.
+>  	lvremove_deadline="$(( $(date "+%s") + 30))"
+>  	${DBG} lvremove -f "${LVM2_VG_NAME}/${snap}" 2>/dev/null
+> -	while [ -e "${snap_dev}" ] && [ "$?" -eq "5" ] &&
+> +	while [ "$?" -eq "5" ] && [ -e "${snap_dev}" ] &&
+>  	      [ "$(date "+%s")" -lt "${lvremove_deadline}" ]; do
+>  		sleep 0.5
+>  		${DBG} lvremove -f "${LVM2_VG_NAME}/${snap}"
+> -- 
+> 2.39.5
 > 
 > 
-> On 2025/7/3 15:26, Naresh Kamboju wrote:
->> On Thu, 26 Jun 2025 at 19:23, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
->>>
->>> Hi, Naresh!
->>>
->>> On 2025/6/26 20:31, Naresh Kamboju wrote:
->>>> Regressions noticed on arm64 devices while running LTP syscalls mmap16
->>>> test case on the Linux next-20250616..next-20250626 with the extra build
->>>> config fragment CONFIG_ARM64_64K_PAGES=y the kernel warning noticed.
->>>>
->>>> Not reproducible with 4K page size.
->>>>
->>>> Test environments:
->>>> - Dragonboard-410c
->>>> - Juno-r2
->>>> - rk3399-rock-pi-4b
->>>> - qemu-arm64
->>>>
->>>> Regression Analysis:
->>>> - New regression? Yes
->>>> - Reproducibility? Yes
->>>>
->>>> Test regression: next-20250626 LTP mmap16 WARNING fs jbd2
->>>> transaction.c start_this_handle
->>>>
->>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>>
->>> Thank you for the report. The block size for this test is 1 KB, so I
->>> suspect this is the issue with insufficient journal credits that we
->>> are going to resolve.
->>
->> I have applied your patch set [1] and tested and the reported
->> regressions did not fix.
->> Am I missing anything ?
->>
->> [1] https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
->>
-> 
-> I can also reproduce the similar warning with xfstests generic/730 under
-> 64k page size + 4k block size.
-> 
-
-Hi, Joseph!
-
-I cannot reproduce this issue on my machine. Theoretically, the 'rsv_credits'
-should be 113 under 64k page size + 4k block size, I don't think it would
-exceed the max user trans buffers. Could you please give more details?
-What is the configuration of your xfstests? and what does the specific error
-log look like?
-
-Thanks,
-Yi.
-
 
