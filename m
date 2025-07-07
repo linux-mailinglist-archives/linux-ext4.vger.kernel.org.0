@@ -1,186 +1,111 @@
-Return-Path: <linux-ext4+bounces-8842-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8843-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E364AFAAAE
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 07:03:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C639AFAADE
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 07:27:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2593316E741
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 05:03:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53E2B3B6BD9
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 05:27:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DAD022655B;
-	Mon,  7 Jul 2025 05:03:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B0E262FF9;
+	Mon,  7 Jul 2025 05:27:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mJbJX81L"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735A63594C;
-	Mon,  7 Jul 2025 05:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67ECE25525F;
+	Mon,  7 Jul 2025 05:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751864589; cv=none; b=FS5yaYEJ5gjtznz6jTN1iiOvY0ScJcJuwOefCATIxHK5kXxt+iJHYzA6KylMzXOtS6cFJm9d1SKbQsvNtDnhj6y+fG2vrQwELWbqZHKUdasEyKKp55WNAbFW7KrcGXNDwY5GZTZjEQcuDUnFgfcDrLD1zmIvaUPHp7ndqXlmCVA=
+	t=1751866041; cv=none; b=sP6A6rTWu+68VI2KwBPp4UxP6hV9bPLUSSr18K6eVUJ2UGyAwTrK5KK37nsewWFh7lzo1zhXkCK46UofDmBPY+m3smblT4wP6bbqMQgs/vsxnYN0bqWG9alR9J4M8xL94WyXF8EQjfxOt4HxbeDjGr28VEkVkyLgiN2i1X9qWvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751864589; c=relaxed/simple;
-	bh=qau8kLo7RA0oR8tZ7uNWb49Vo54Zep7OP61bVD0/SQU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u6niKnSf0mQzoM0VmHw1C6A7xaVLIwklD7B0bM3Mnim62xXMIOh0/Rp0H+oS2cLAozvZMKuJEBarn1hsoVorD/UuXEivuCh9J+eVXr1QnTrDakcXl5aX6y2cC/i8e2iJrkLHlSUy2m1KTBEcKMQvcl789Jwc8RrRJuF6fIg09vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bbBvY2DRszYQvKW;
-	Mon,  7 Jul 2025 13:03:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 242A11A019B;
-	Mon,  7 Jul 2025 13:03:04 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP3 (Coremail) with SMTP id _Ch0CgB3JSMHVWto_lGhAw--.4001S3;
-	Mon, 07 Jul 2025 13:03:03 +0800 (CST)
-Message-ID: <a5726ab3-99ed-430a-a883-d04e972b6e76@huaweicloud.com>
-Date: Mon, 7 Jul 2025 13:03:02 +0800
+	s=arc-20240116; t=1751866041; c=relaxed/simple;
+	bh=LWXSP11U4v7LhS9NiD0RGxeMQ2ejJp1tXMOxu9EiViU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JdRN+VsLseQMAgZgFEnyd4uR/2wDqhMIZMVdYihqwrgym8+oH0aoNXmuTFCYUmQhtamuHbwRatRP6Ll7lj1G9dqoI7slNPHdloa2yMdi03Nd2eZPr5yz2JBV5hIk9bBXKy1S5K1R8Etu7qZnipysJ+/Otx0as5Ef3CqJrNevp2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=mJbJX81L; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=yjYpPsb1PlpJ4trdF82+OwKClS+X6SpzN0bYgE8MEi8=; b=mJbJX81LkHLWenjyVpDOEV6th/
+	0RXfvxzyDfXyzQ8ca97WJZaSBp6QXvcMxkje3u9wyL519KCvFaNGie7tG+MMdv61u5rMtVk1g7RUT
+	qKmGSYAluEIaCApNI/pUdpBZdoFPjeSZXpwM/jxfVf+4CeDVBpisv1p8VuSvgZjod0WrWry/D/pms
+	fCfCIuOW7tLKdVEAjnWyab0OruZA5cEBzvlWm0FEZI29mwl/7jtKshwJHzIIbTP4kNScBGkwDtoiZ
+	4J9eGct4fcMVrsYgIJ6MDtv1Lh9lvLtlGP0fjin0VJSvDTsILqnkesaH05sCeEPxpU+VIACEY/Cem
+	iHAZuwLg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uYeNp-00000001QwP-15D7;
+	Mon, 07 Jul 2025 05:27:17 +0000
+Date: Sun, 6 Jul 2025 22:27:17 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Yuwen Chen <ywen.chen@foxmail.com>, hch@infradead.org,
+	brauner@kernel.org, tytso@mit.edu, linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, adilger.kernel@dilger.ca,
+	viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+	jaegeuk@kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] libfs: reduce the number of memory allocations in
+ generic_ci_match
+Message-ID: <aGtatW8g2fV6bFkm@infradead.org>
+References: <aGZFtmIxHDLKL6mc@infradead.org>
+ <tencent_82716EB4F15F579C738C3CC3AFE62E822207@qq.com>
+ <20250704060259.GB4199@sol>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: next-20250626: WARNING fs jbd2 transaction.c start_this_handle
- with ARM64_64K_PAGES
-To: Joseph Qi <jiangqi903@gmail.com>
-Cc: linux-ext4 <linux-ext4@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- Linux Regressions <regressions@lists.linux.dev>,
- LTP List <ltp@lists.linux.it>, Theodore Ts'o <tytso@mit.edu>,
- Jan Kara <jack@suse.cz>, Anders Roxell <anders.roxell@linaro.org>,
- Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
- Naresh Kamboju <naresh.kamboju@linaro.org>
-References: <CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com>
- <2dbc199b-ef22-4c22-9dbd-5e5876e9f9b4@huaweicloud.com>
- <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
- <2ee5547a-fa11-49fb-98b7-898d20457d7e@gmail.com>
- <094a1420-9060-4dcf-9398-8873193f5f7b@huaweicloud.com>
- <5db1e0c2-a192-4883-9535-dd269efdff74@gmail.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <5db1e0c2-a192-4883-9535-dd269efdff74@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgB3JSMHVWto_lGhAw--.4001S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrW5CFWxuF1kKw4UXr4rGrg_yoW5tFy3pF
-	y5JF1UAF47K348XF4Iqr40gw1UtanFqrWUWr98Gr1UCF4qyr18CF4SgF1UuFZ8K3yxZryD
-	X3ykua4Iqr1Ut3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUb
-	mii3UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250704060259.GB4199@sol>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 2025/7/7 9:43, Joseph Qi wrote:
-> 
-> 
-> On 2025/7/5 15:10, Zhang Yi wrote:
->> On 2025/7/3 18:47, Joseph Qi wrote:
->>>
->>>
->>> On 2025/7/3 15:26, Naresh Kamboju wrote:
->>>> On Thu, 26 Jun 2025 at 19:23, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
->>>>>
->>>>> Hi, Naresh!
->>>>>
->>>>> On 2025/6/26 20:31, Naresh Kamboju wrote:
->>>>>> Regressions noticed on arm64 devices while running LTP syscalls mmap16
->>>>>> test case on the Linux next-20250616..next-20250626 with the extra build
->>>>>> config fragment CONFIG_ARM64_64K_PAGES=y the kernel warning noticed.
->>>>>>
->>>>>> Not reproducible with 4K page size.
->>>>>>
->>>>>> Test environments:
->>>>>> - Dragonboard-410c
->>>>>> - Juno-r2
->>>>>> - rk3399-rock-pi-4b
->>>>>> - qemu-arm64
->>>>>>
->>>>>> Regression Analysis:
->>>>>> - New regression? Yes
->>>>>> - Reproducibility? Yes
->>>>>>
->>>>>> Test regression: next-20250626 LTP mmap16 WARNING fs jbd2
->>>>>> transaction.c start_this_handle
->>>>>>
->>>>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>>>>
->>>>> Thank you for the report. The block size for this test is 1 KB, so I
->>>>> suspect this is the issue with insufficient journal credits that we
->>>>> are going to resolve.
->>>>
->>>> I have applied your patch set [1] and tested and the reported
->>>> regressions did not fix.
->>>> Am I missing anything ?
->>>>
->>>> [1] https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
->>>>
->>>
->>> I can also reproduce the similar warning with xfstests generic/730 under
->>> 64k page size + 4k block size.
->>>
->>
->> Hi, Joseph!
->>
->> I cannot reproduce this issue on my machine. Theoretically, the 'rsv_credits'
->> should be 113 under 64k page size + 4k block size, I don't think it would
->> exceed the max user trans buffers. Could you please give more details?
->> What is the configuration of your xfstests? and what does the specific error
->> log look like?
->>
-> I'm testing on arm 64K ECS with xfstests local.config as follows:
-> 
-> export TEST_DEV=/dev/nvme1n1p1
-> export TEST_DIR=/mnt/test
-> export SCRATCH_DEV=/dev/nvme1n1p2
-> export SCRATCH_MNT=/mnt/scratch
-> > Each disk part is 250G and formated with 4k block size.
-> 
-> The dmesg shows the following warning:
-> 
-> [  137.174661] JBD2: kworker/u32:0 wants too many credits credits:32 rsv_credits:1577 max:2695
-> ...
-> [  137.175544] Call trace:
-> [  137.175545]  start_this_handle+0x3bc/0x3d8 (P)
-> [  137.175548]  jbd2__journal_start+0x10c/0x248
-> [  137.175550]  __ext4_journal_start_sb+0xe4/0x1b0
-> [  137.175553]  ext4_do_writepages+0x430/0x768
-> [  137.175556]  ext4_writepages+0x8c/0x118
-> [  137.175558]  do_writepages+0xac/0x180
-> [  137.175561]  __writeback_single_inode+0x48/0x328
-> [  137.175563]  writeback_sb_inodes+0x244/0x4a0
-> [  137.175564]  wb_writeback+0xec/0x3a0
-> [  137.175566]  wb_do_writeback+0xc0/0x250
-> [  137.175568]  wb_workfn+0x70/0x1b0
-> [  137.175570]  process_one_work+0x180/0x400
-> [  137.175573]  worker_thread+0x254/0x2c8
-> [  137.175575]  kthread+0x124/0x130
-> [  137.175577]  ret_from_fork+0x10/0x20
-> ...
+On Thu, Jul 03, 2025 at 11:02:59PM -0700, Eric Biggers wrote:
 
-OK, well. Since you did not specifically set MKFS_OPTIONS="-b 4096, the
-generic/730 will use scsi_debug to create a file system image with a size of
-256MB, a block size of 1KB, and a log size of 8MB. Consequently, the issue
-did not actually occur in a 4KB block size environment, so the root cause
-is the same as Naresh's report.
+[Can you trim your replies to the usual 73 characters?  The long lines
+make them quite hard to read without first reflowing them]
 
-Thanks,
-Yi.
+> The real problem is, once again, the legacy crypto_skcipher API, which requires
+> that the source/destination buffers be provided as scatterlists.  In Linux, the
+> kernel stack can be in the vmalloc area.  Thus, the buffers passed to
+> crypto_skcipher cannot be stack buffers unless the caller actually is aware of
+> how to turn a vmalloc'ed buffer into a scatterlist, which is hard to do.  (See
+> verity_ahash_update() in drivers/md/dm-verity-target.c for an example.)
 
+I don't think setting up a scatterlist for vmalloc data is hard.  But it is
+extra boilerplate code that is rather annoying and adds overhead.
+
+> code in the kernel uses is something that would be worth adopting for
+> now in fname_decrypt().  As I mentioned above, it's hard to do (you
+> have to go page by page), but it's possible.  That would allow
+> immediately moving generic_ci_match() to use a stack allocation, which
+> would avoid adding all the complexity of the preallocation that you
+> have in this patchset.
+
+I suspect that all the overhead required for that get close to that of a
+memory allocation.
+
+But I wonder why generic_ci_match is even called that often.  Both ext4
+and f2fs support hashed lookups, so you should usually only see it called
+for the main match, plus the occasional hash false positive, which should
+be rate if the hash works.
+
+Yuwen, are you using f2fs in the mode where it does a linear scan on a
+hash lookup miss?  That was added as a workaround for the utf8 code point
+changes, but is a completely broken idea the defeats hashed lookups and
+IIRC only was default for a very short time.
+
+Note that even with this fixed, using an on-stack allocation would be
+nice eventually when moving the crypto library API, as it would still
+avoid the allocation entirely.  But caching shouldn't be worth it if the
+number of generic_ci_match per lookup is just slightly above 1.
 
