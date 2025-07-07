@@ -1,124 +1,173 @@
-Return-Path: <linux-ext4+bounces-8868-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8869-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3876AFB84E
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 18:06:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBEC0AFB8AC
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 18:32:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 402CB188A2BB
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 16:06:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0931F4A2B7F
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 16:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF883227EA7;
-	Mon,  7 Jul 2025 16:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HXNOjbv1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899C6224220;
+	Mon,  7 Jul 2025 16:32:35 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696152264AB
-	for <linux-ext4@vger.kernel.org>; Mon,  7 Jul 2025 16:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E88155A25
+	for <linux-ext4@vger.kernel.org>; Mon,  7 Jul 2025 16:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751904326; cv=none; b=n6s5aAHC6TX/y9cBrsOo4WePk3p38k4iTnKUa8Lvl4JnIvi4UWZxkWlYV1jh651iyuM0sdYQPI7nBDlBdOpjHHZ5l4iI+Obn79k2VKmUT4oOz21doHQJEfnTZnNdAgi1VhxY//ptECBqNw1qPPAOLwXI8LvTCuQLS8JMeoK+lL8=
+	t=1751905955; cv=none; b=ApyNC52WGGzDkmuG4fBs8OBBLQA7XrPpeNQfaIufiiJTI3KmA24EESEseHRPH4RuYqV6jLHVclb2TI2Dbzho7rYykkWCiHED6B7vawEw4v56EPPooNt9DSzzSE/+YWUyzCaqZLOGK3hLzEriWhwEUo5fWjv4nzrUIoKKFJZ2D24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751904326; c=relaxed/simple;
-	bh=HV2X2ECneCbvCGMDMePgQ2C0augHCPhGlZSBd6UdJqk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uaXFw9s4mpPjGElp7U5MZoVkVVYtJn8s16yqtHEQTaVkbhib6sXG+b10sXegECbp8b89BstpYwA3a32lpNTecGFDDtibrkHRyyhBRVatpaXueQT8Jk1YflKxIoeUd0KDoK2uyR9Rf6weSxN5acTpgRkHjtiWgypXgibaws34Tto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HXNOjbv1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA2D0C4CEF4;
-	Mon,  7 Jul 2025 16:05:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751904326;
-	bh=HV2X2ECneCbvCGMDMePgQ2C0augHCPhGlZSBd6UdJqk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HXNOjbv1e56DnwCfm7b9Z40H6O5g4HO5e6IRefbRYy1WLWD33o2Hy6oFmaNC0KXj2
-	 87SnlmqLzur/Sf+OMHybxuKsFZ89hWPeLgvvjdvt3CvU12uRD4/qZQ6Fq938gdCrBB
-	 Pu4GgolBilAD7vgFq9MbtlBd6TnhmMLsukgp3wpFh2jb6X+5HetULYidaYvortcL/7
-	 lZTUssz/ToavancI1JgskFBD4SVz0dfHEWrpr6SoccdtJQNAkmidgh4iIQ3NmIXbBs
-	 WVmXLx4J7OqUpMZm5WOzKVeR8VPJuJo0X4btbeUqA8EFi+Hl5INiIt64OTBhWXr3XI
-	 2MfHsnZlwbj6g==
-Date: Mon, 7 Jul 2025 09:05:25 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org
-Subject: [PATCH 9/8] fuse2fs: fix relatime comparisons
-Message-ID: <20250707160525.GC2672022@frogsfrogsfrogs>
-References: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
+	s=arc-20240116; t=1751905955; c=relaxed/simple;
+	bh=y+i+Ranqf6OG1iQXgmpthwSHPW70a1cBAzZ/739T2pA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pUzIjkC/FJTujwm9Sm67JQfIr39Iu58v/rDPFminYVqH5Q/W4sW21IJw+FsU3CSBqq4QKW4VI7WQeEjJG3y8A/Oh2RuvgyK2ogd+keYa24EqWnppuiNaWwLD+S+/LNfUkWEF46bw7g8Wfut8dESpiSlAXesEl1kCYwQ8BRh02sU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3ddc0a6d4bdso33454565ab.0
+        for <linux-ext4@vger.kernel.org>; Mon, 07 Jul 2025 09:32:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751905953; x=1752510753;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YFBDqnvaNNRhui7ANIEe6AwQqm/bPubwvFwSS3+qT8k=;
+        b=s8frSuFmsRSeyK9T9ZP7C8XD1xpgHHiIRxQ5PLcFpdt7HOFcCUSBqwSje5x3TdoO7C
+         6SOVI+tXnS/QZIthY6ioc3zKLkKgJG9iJ+34AQOKs4q7NHLe/o4h0gstqNMMTezlgSJU
+         NiK/CPtGmv256kyjheMxTh4mP5lS5HkbTpkyN+XA+jxrgTZE9QlUqCmNl05hH67Fx6UZ
+         QOBobEGIwM5203XwwUDoInOrOxtzC69qJa/iqP7bh51XHJoG8CGmIjaHigCfH3ps6DVZ
+         KKHKGAPWMW9r5ooXOQAD66NKbCK2SZIlNlUV2QGNnS2eOQGnZ7Ais1fR+t9JP+bWdsDM
+         /Gtg==
+X-Forwarded-Encrypted: i=1; AJvYcCV66AdjLvDGfwQjWXwwaLmE3yZxAncJJG7srh0NdRpkr8Nb4OYQIUvrB7MqiPm4h+/CldUOIQZIDRRr@vger.kernel.org
+X-Gm-Message-State: AOJu0YySITgCUdFeW1fyugZGssdEoE7nqkFH2Q46XKK/x5Xx/+dBRunj
+	0rCNYkE7U8iMbxRlm51BRPAcI0EnW7FB2LyABfFgMUggkJQ7GeZBi2jvXY0FMo7WOV2VIu/6R20
+	greW+F8KL7In/TZJbfSA4dmuewUTvIVhutnoGPxIDKm5iWOZF6LldKlqR+Fw=
+X-Google-Smtp-Source: AGHT+IGKKsGEorLguEvKJx8RLXhH0LAEyEsvpUhmXgRf1jTaNqXkp9P1y4+TX7th9jroDsBE2i3BVsHy+LCQJHp2Xxs41r3kdd2N
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
+X-Received: by 2002:a05:6e02:1d86:b0:3df:2d65:c27a with SMTP id
+ e9e14a558f8ab-3e13545d5f6mr125096315ab.1.1751905952625; Mon, 07 Jul 2025
+ 09:32:32 -0700 (PDT)
+Date: Mon, 07 Jul 2025 09:32:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <686bf6a0.a00a0220.b087d.01f3.GAE@google.com>
+Subject: [syzbot] [ext4?] kernel BUG in ext4_update_inline_data
+From: syzbot <syzbot+544248a761451c0df72f@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-From: Darrick J. Wong <djwong@kernel.org>
+Hello,
 
-generic/192 fails like this even before we start adding iomap code:
+syzbot found the following issue on:
 
-    --- tests/generic/192.out   2025-04-30 16:20:44.512675591 -0700
-    +++ tests/generic/192.out.bad    2025-07-06 22:26:11.666015735 -0700
-    @@ -1,5 +1,6 @@
-     QA output created by 192
-     sleep for 5 seconds
-     test
-    -delta1 is in range
-    +delta1 has value of 0
-    +delta1 is NOT in range 5 .. 7
-     delta2 is in range
+HEAD commit:    772b78c2abd8 Merge tag 'sched_urgent_for_v6.16_rc5' of git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1747ef70580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=930b74448cb4593a
+dashboard link: https://syzkaller.appspot.com/bug?extid=544248a761451c0df72f
+compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120e828c580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160e828c580000
 
-The cause of this regression is that the timestamp comparisons account
-only for seconds, not nanoseconds.  If a write came in 100ms after the
-last read but still in the same second, then we fail to update atime on
-a subsequent read.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-772b78c2.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8a1257ea2c00/vmlinux-772b78c2.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ff01d2c78ebd/bzImage-772b78c2.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/f97118969515/mount_0.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=1581628c580000)
 
-Fix this by converting the timespecs to doubles so that we can include
-the nanoseconds component, and then perform the comparison in floating
-point mode.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+544248a761451c0df72f@syzkaller.appspotmail.com
 
-Cc: <linux-ext4@vger.kernel.org> # v1.43
-Fixes: 81cbf1ef4f5dab ("misc: add fuse2fs, a FUSE server for e2fsprogs")
-Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: writeback.
+fscrypt: AES-256-XTS using implementation "xts-aes-aesni-avx"
+loop0: detected capacity change from 512 to 64
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inline.c:357!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5499 Comm: syz.0.16 Not tainted 6.16.0-rc4-syzkaller-00348-g772b78c2abd8 #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:ext4_update_inline_data+0x4e8/0x4f0 fs/ext4/inline.c:357
+Code: ff ff ff 48 8b 4c 24 18 80 e1 07 fe c1 38 c1 0f 8c 32 ff ff ff 48 8b 7c 24 18 e8 33 59 b1 ff e9 23 ff ff ff e8 e9 d5 4d ff 90 <0f> 0b 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc90002abf4a0 EFLAGS: 00010293
+RAX: ffffffff82725017 RBX: ffff8880123cf558 RCX: ffff88800020c880
+RDX: 0000000000000000 RSI: 00000000ffffffc3 RDI: 0000000000000000
+RBP: ffffc90002abf5f0 R08: ffff88800020c880 R09: 0000000000000002
+R10: 00000000ffffffc3 R11: 0000000000000000 R12: 00000000ffffffc3
+R13: 000000000000004a R14: ffffc90002abf500 R15: ffffc90002abf528
+FS:  0000555558bce500(0000) GS:ffff88808d21d000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055795b748950 CR3: 000000003f98a000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ ext4_prepare_inline_data+0x141/0x1d0 fs/ext4/inline.c:415
+ ext4_generic_write_inline_data+0x207/0xc90 fs/ext4/inline.c:692
+ ext4_try_to_write_inline_data+0x80/0xa0 fs/ext4/inline.c:763
+ ext4_write_begin+0x2d8/0x1680 fs/ext4/inode.c:1281
+ generic_perform_write+0x2c7/0x910 mm/filemap.c:4112
+ ext4_buffered_write_iter+0xce/0x3a0 fs/ext4/file.c:299
+ ext4_file_write_iter+0x298/0x1bc0 fs/ext4/file.c:-1
+ new_sync_write fs/read_write.c:593 [inline]
+ vfs_write+0x548/0xa90 fs/read_write.c:686
+ ksys_write+0x145/0x250 fs/read_write.c:738
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f32a778e929
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffd1fdeb38 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f32a79b5fa0 RCX: 00007f32a778e929
+RDX: 000000000000004a RSI: 0000000000000000 RDI: 0000000000000007
+RBP: 00007f32a7810b39 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f32a79b5fa0 R14: 00007f32a79b5fa0 R15: 0000000000000003
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_update_inline_data+0x4e8/0x4f0 fs/ext4/inline.c:357
+Code: ff ff ff 48 8b 4c 24 18 80 e1 07 fe c1 38 c1 0f 8c 32 ff ff ff 48 8b 7c 24 18 e8 33 59 b1 ff e9 23 ff ff ff e8 e9 d5 4d ff 90 <0f> 0b 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc90002abf4a0 EFLAGS: 00010293
+RAX: ffffffff82725017 RBX: ffff8880123cf558 RCX: ffff88800020c880
+RDX: 0000000000000000 RSI: 00000000ffffffc3 RDI: 0000000000000000
+RBP: ffffc90002abf5f0 R08: ffff88800020c880 R09: 0000000000000002
+R10: 00000000ffffffc3 R11: 0000000000000000 R12: 00000000ffffffc3
+R13: 000000000000004a R14: ffffc90002abf500 R15: ffffc90002abf528
+FS:  0000555558bce500(0000) GS:ffff88808d21d000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563842271138 CR3: 000000003f98a000 CR4: 0000000000352ef0
+
+
 ---
- misc/fuse2fs.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index ab3efea66d3def..b7201f7c8ed185 100644
---- a/misc/fuse2fs.c
-+++ b/misc/fuse2fs.c
-@@ -461,6 +461,7 @@ static int update_atime(ext2_filsys fs, ext2_ino_t ino)
- 	errcode_t err;
- 	struct ext2_inode_large inode, *pinode;
- 	struct timespec atime, mtime, now;
-+	double datime, dmtime, dnow;
- 
- 	if (!(fs->flags & EXT2_FLAG_RW))
- 		return 0;
-@@ -472,11 +473,17 @@ static int update_atime(ext2_filsys fs, ext2_ino_t ino)
- 	EXT4_INODE_GET_XTIME(i_atime, &atime, pinode);
- 	EXT4_INODE_GET_XTIME(i_mtime, &mtime, pinode);
- 	get_now(&now);
-+
-+	datime = atime.tv_sec + ((double)atime.tv_nsec / 1000000000);
-+	dmtime = mtime.tv_sec + ((double)mtime.tv_nsec / 1000000000);
-+	dnow = now.tv_sec + ((double)now.tv_nsec / 1000000000);
-+
- 	/*
- 	 * If atime is newer than mtime and atime hasn't been updated in thirty
--	 * seconds, skip the atime update.  Same idea as Linux "relatime".
-+	 * seconds, skip the atime update.  Same idea as Linux "relatime".  Use
-+	 * doubles to account for nanosecond resolution.
- 	 */
--	if (atime.tv_sec >= mtime.tv_sec && atime.tv_sec >= now.tv_sec - 30)
-+	if (datime >= dmtime && datime >= dnow - 30)
- 		return 0;
- 	EXT4_INODE_SET_XTIME(i_atime, &now, &inode);
- 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
