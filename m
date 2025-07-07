@@ -1,96 +1,168 @@
-Return-Path: <linux-ext4+bounces-8854-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8855-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84792AFB33C
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 14:27:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AF8FAFB5CA
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 16:23:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 547B41AA1E6F
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 12:27:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187C518826B5
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Jul 2025 14:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2D129B228;
-	Mon,  7 Jul 2025 12:27:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LShA2euv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6DDD2D8DD6;
+	Mon,  7 Jul 2025 14:23:00 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C207029AB1D;
-	Mon,  7 Jul 2025 12:27:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306C82D8375;
+	Mon,  7 Jul 2025 14:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751891229; cv=none; b=VkO4WPTkKXKz7j96+5YV6OiPMHZCqq6DeMBZTQLzXHc78ptLjwuzarwt2nW5brFEusaIBs9Z100qtJodyPnIXvNPSP9X9j8KofImPZP2KvAgyME5CnrhSIKLzDOFjbdj/yqNdAUsfXvBGoRpImos3tsUkdMgBda5Ok7m7r3i0OA=
+	t=1751898180; cv=none; b=CIJnPZBhcpTvMjB+uwcOr+vlgZNY+vKT+gvjKsjHL3o+ZyaZBFgfE8s2+kRTdlXVYXiUCpf5V5rTU6l4FDJA5zdnd1SbSvZW8blEJvjerYjSWD9S93vY75KaKJ2JX4FAcNgFdNPkWAEczFqL25q4hV7Nvz/We9bmIrG3xr+4MYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751891229; c=relaxed/simple;
-	bh=SGG3D9WopLeBB75uKMFhOYBdJ0qpwAJZgrfSTmqdzM4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZH1KgDvf57XXpyPHvyH/M9wGQzlwZ/0UjzQOj03XOFLjvH0ItCEUm3mK10q5d3xlFU4cvXP3OUQQbW1sqvcJSsm6dFw3las4Yc+U9V+PJfCIvCconboCkzrJUU1tyfHHc49KUDS4OCGyJv0TdG2mQ+5xwXIzO226DnIboCb5+cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LShA2euv; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=vdT3AgUINABtwE8EihkZZFkgFWExnIToCc9PtsmmP28=; b=LShA2euvaWLp3TUtJvlXH4Hwc3
-	ki8zSGrrYpbbC33U7vTxcSB2v4aYx9fsLxdfv0hO1B/XtIeVg/vZEKImqbzEgMt8xEpVIYBNxRJch
-	JcPrfBezDUk+O3KyHrljn3gnhWcsZyP7o2vOY2+gzdmVd64pIIaGYt9cCBeE0o9Vr9yylRt4UdzkS
-	7e54tjm/iMe2THJjQbAQWGnkaO2H+fTFod3+fh0cLaTV6A5NyQFJncPgujvjc3rN9/Q7g49jjNjSM
-	1PnZ8enN3cylXat4ZIEkue08LwLKX4Y0udQqwhETMjTHK5aPm0sPrQxpQw31X9ZP/V5oUovGjOway
-	6Bd4M5Fw==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uYkvv-0000000CzOX-09LD;
-	Mon, 07 Jul 2025 12:26:55 +0000
-Date: Mon, 7 Jul 2025 13:26:54 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: hanqi <hanqi@vivo.com>
-Cc: =?utf-8?B?6ZmI5rab5rab?= Taotao Chen <chentaotao@didiglobal.com>,
-	"tytso@mit.edu" <tytso@mit.edu>,
-	"hch@infradead.org" <hch@infradead.org>,
-	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-	"rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
-	"tursulin@ursulin.net" <tursulin@ursulin.net>,
-	"airlied@gmail.com" <airlied@gmail.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"chentao325@qq.com" <chentao325@qq.com>,
-	"frank.li@vivo.com" <frank.li@vivo.com>
-Subject: Re: [PATCH v4 4/5] mm/filemap: add write_begin_get_folio() helper
- function
-Message-ID: <aGu9DiKbxpkq2xlx@casper.infradead.org>
-References: <20250707070023.206725-5-chentaotao@didiglobal.com>
- <a4cc7c59-2dfd-497e-9f20-b12ea86a1baa@vivo.com>
+	s=arc-20240116; t=1751898180; c=relaxed/simple;
+	bh=mwRNkUG9Ads6twT1NddkxxWfD8nyJM5H91oOZh3c1t4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nnULpuRBOTpjmldiXHrQ3Eta4+IrLlBUwzv+iDAp3Fl05ORZCszhi+fe4vGY0VsG5TBhWlfJ5NO2vn1V64ylAloxKiInorQCsAtBxpZgvhJAaeDfYPQgQekRC48L9hBXpHfvAVJwB9yxNlChgKHW4XjGL4M6zoI0af2M9hpHZFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bbRKX4lN0zYQtvZ;
+	Mon,  7 Jul 2025 22:22:56 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 780E91A0E25;
+	Mon,  7 Jul 2025 22:22:55 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.112.188])
+	by APP3 (Coremail) with SMTP id _Ch0CgBnxyQ22GtoNazLAw--.46745S4;
+	Mon, 07 Jul 2025 22:22:53 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ojaswin@linux.ibm.com,
+	sashal@kernel.org,
+	naresh.kamboju@linaro.org,
+	jiangqi903@gmail.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	libaokun1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v4 00/11] ext4: fix insufficient credits when writing back large folios
+Date: Mon,  7 Jul 2025 22:08:03 +0800
+Message-ID: <20250707140814.542883-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a4cc7c59-2dfd-497e-9f20-b12ea86a1baa@vivo.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgBnxyQ22GtoNazLAw--.46745S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFy5tF4kWry5tr1DKFyUJrb_yoWrJF4UpF
+	W3CF15Gr1rZw17Za9rXa18CF1rGan5Cr47Xry3K3s8uayDuFyIkFZaga1Y9FyUArZ3GFy0
+	qr4jyryDCFy5A3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUFjjgDUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Mon, Jul 07, 2025 at 07:48:34PM +0800, hanqi wrote:
-> I think it might be worth considering adding an fgf_t parameter to the
-> write_begin_get_folio() helper, since in some filesystems the fgp_flags
-> passed to __filemap_get_folio() in write_begin are not limited to just
-> FGP_WRITEBEGIN. Something like:
-> struct folio *write_begin_get_folio(const struct kiocb *iocb,
-> 				    struct address_space *mapping,
-> 				    pgoff_t index, size_t len,
->                                     fgf_t fgp_flags)
+From: Zhang Yi <yi.zhang@huawei.com>
 
-The point is to make the simple cases simple.  Filesystems which need
-something more complicated can do it all themselves.  NAK your idea.
+Changes since v3:
+ - Fix the end_pos assignment in patch 01.
+ - Rename mpage_submit_buffers() to mpage_submit_partial_folio(), and
+   fix a left shift out-of-bounds problem in patch 03.
+ - Fix the spelling errors in patch 04.
+ - Add a comment for NULL 'handle' test in
+   ext4_journal_ensure_extent_credits().
+ - Add patch 11 to limit the maximum order of the folio to 2048 fs
+   blocks, prevent the overestimation of reserve journal credits during
+   folios write-back.
+Changes since v2:
+ - Convert the processing of folios writeback in bytes instead of pages.
+ - Refactor ext4_page_mkwrite() and ensure journal credits in
+   ext4_block_write_begin() instead of in _ext4_get_block().
+ - Enhance tracepoints in ext4_do_writepages().
+ - Replace the outdated ext4_da_writepages_trans_blocks() and
+   ext4_writepage_trans_blocks() with the new helper used to reserve
+   credits for a single extent.
+Changes since v1:
+ - Make the write-back process supports writing a partial folio if it
+   exits the mapping loop prematurely due to insufficient sapce or
+   journal credits, it also fix the potential stale data and
+   inconsistency issues.
+ - Fix the same issue regarding the allocation of blocks in
+   ext4_write_begin() and ext4_page_mkwrite() when delalloc is not
+   enabled.
+
+v3: https://lore.kernel.org/linux-ext4/20250701130635.4079595-1-yi.zhang@huaweicloud.com/
+v2: https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
+v1: https://lore.kernel.org/linux-ext4/20250530062858.458039-1-yi.zhang@huaweicloud.com/
+
+Original Description
+
+This series addresses the issue that Jan pointed out regarding large
+folios support for ext4[1]. The problem is that the credits calculation
+may insufficient in ext4_meta_trans_blocks() when allocating blocks
+during write back a sufficiently large and discontinuous folio, it
+doesn't involve the credits for updating bitmap and group descriptor
+block. However, if we fix this issue, it may lead to significant
+overestimation on the some filesystems with a lot of block groups.
+
+The solution involves first ensure that the current journal transaction
+has enough credits when we mapping an extent during allocating blocks.
+Then if the credits reach the upper limit, exit the current mapping
+loop, submit the partial folio and restart a new transaction. Finally,
+fix the wrong credits calculation in ext4_meta_trans_blocks(). Please
+see the following patches for details.
+
+[1] https://lore.kernel.org/linux-ext4/ht54j6bvjmiqt62xmcveqlo7bmrunqs4ji7wikfteftdjijzek@7tz5gpejaoen/
+
+Thanks,
+Yi.
+
+Zhang Yi (11):
+  ext4: process folios writeback in bytes
+  ext4: move the calculation of wbc->nr_to_write to mpage_folio_done()
+  ext4: fix stale data if it bail out of the extents mapping loop
+  ext4: refactor the block allocation process of ext4_page_mkwrite()
+  ext4: restart handle if credits are insufficient during allocating
+    blocks
+  ext4: enhance tracepoints during the folios writeback
+  ext4: correct the reserved credits for extent conversion
+  ext4: reserved credits for one extent during the folio writeback
+  ext4: replace ext4_writepage_trans_blocks()
+  ext4: fix insufficient credits calculation in ext4_meta_trans_blocks()
+  ext4: limit the maximum folio order
+
+ fs/ext4/ext4.h              |   4 +-
+ fs/ext4/extents.c           |   6 +-
+ fs/ext4/ialloc.c            |   3 +-
+ fs/ext4/inline.c            |   6 +-
+ fs/ext4/inode.c             | 349 +++++++++++++++++++++++-------------
+ fs/ext4/move_extent.c       |   3 +-
+ fs/ext4/xattr.c             |   2 +-
+ include/trace/events/ext4.h |  47 ++++-
+ 8 files changed, 272 insertions(+), 148 deletions(-)
+
+-- 
+2.46.1
+
 
