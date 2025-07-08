@@ -1,224 +1,225 @@
-Return-Path: <linux-ext4+bounces-8883-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8884-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94454AFC233
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 07:42:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7265AAFC2FE
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 08:43:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19B941AA6149
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 05:42:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6C874A51E1
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 06:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87BBD2192F9;
-	Tue,  8 Jul 2025 05:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715992253EE;
+	Tue,  8 Jul 2025 06:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="aYqrLG2c"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="mI7aBuKv"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3808918024;
-	Tue,  8 Jul 2025 05:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2224B221579;
+	Tue,  8 Jul 2025 06:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751953326; cv=none; b=iFwM184sIi8HnVA5LEhJ1BaDTJCyxA7xYAGXoja9JEn7snLjs9oMNx/jxwwkJGD9i4LD73dQf//CKmIBMZ2iQExIPTToUfFabng9azssvgrZAHrCplEFZ/5o1fDB4gMuXzY6O0H/fN/DDpZ4dkiTFSCmpUKriajnJoFf22BnsRI=
+	t=1751956933; cv=none; b=BftD4WROdcqsdMUE3voI7fWOmJuETq3QjhDTA3rdypsgUmsACLCMrgShtlgJ6RR9lhra39xpSc5eEh/Et1gSkohyTm1aNeNEWrGypr7WSTojZZ5ymbyNhF/kIHKksO4zOEDWA2CJez/m1KuGRgtSb2WaHcnvqO5xeSk4qbWTVl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751953326; c=relaxed/simple;
-	bh=EAlbBeWoK3RNJAtErDy9F+fUUi9HiiRCm9ZFeu3xqpg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WgQOuWuYe6oxjZvxnrrm+iyCwJ/eX8Ep7vai0xV/KDIceTeFTDYiSub+MoM/jpuJ7xmRr6r7V2FP14R/wYpHU8Z7wxIeqFN/4KjammVGspF4T8HK9m0URNTMM2ZKmXB/anTTqVP8DLEzNqwbsbiA17n7awrT+FSkc4HYydBonfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=aYqrLG2c; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1751953309; x=1752558109; i=quwenruo.btrfs@gmx.com;
-	bh=riyCXE5gKKYIpfq8XUSBh84iFbyW0X9hUsfvBULvywI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=aYqrLG2cm0iEAMBeW3jd4w7SLBsfxqTjxpzZhNantYHyNixKtfaLP3btMd+WtZ23
-	 rngCGErOAj0uzoPtUTYhF6KsgDuBjjq7uMt8ePyibFlyRHLXavD9SfDc24cRG7hvA
-	 sD8ezeWXQ/MW1kPkXknvAihs4/ZTKj9rOviIsdCPKRzP+lC968Fz2hJNW9mxwhQTI
-	 hwSaq/65jSdKq7Vbu8OW51IXPMAQRi6PwDMR2mTsESUzrbXnW+LREJwX1AZEfU/1r
-	 SET1/kN1P5Dy+S95j2UM90PriXebf4tBorRVNaRcKNSl08wihNvKTmPkt0xQFEYgv
-	 pjaAfmPna3xNNQh+FA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAwXh-1uOFSH401B-000v94; Tue, 08
- Jul 2025 07:41:49 +0200
-Message-ID: <31d4c67f-160b-456d-a47b-869ddc5be6d0@gmx.com>
-Date: Tue, 8 Jul 2025 15:11:43 +0930
+	s=arc-20240116; t=1751956933; c=relaxed/simple;
+	bh=e9lWMzUorQ1Xy+szibNpC6r2jnMweK5HHXxTyIE1Y78=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=gvQF+dNsaJ1fQwdvASnLI8RFqCHgXdcQ/KRmhAtVifbwajqH+HgxKNH07aL8RHr4xD/cCtWPS8Gg1opRPibMp+U+cdjBhyik/M50F6rH2OqswoQlJuuRnP2K0EQ0NYC7eM3SkvWjq2DDo2BJS6+IJtlVZEO+yuTs1VWaJA4CQTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=mI7aBuKv; arc=none smtp.client-ip=203.205.221.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1751956923;
+	bh=vdIyDvJNm1JguBw4F+puzOvkcznPiEpm8HbrDr1/ue4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=mI7aBuKvGvOXvPD2OOqVTOXl5AWl74Tc0Bmd3BPeWlRKGzA/xUp14R2qzUYcdhPXy
+	 nvrWdikVU51As5z9kUFxwG99Y8PZ/NzXabUkLVLb4jYLvCypvODNnJyitg8rSeYcbd
+	 SdQevvBDUd3KC5Lp6xNZyt38YyVfvnaRTfbTh0H4=
+Received: from meizu-Precision-3660.meizu.com ([112.91.84.73])
+	by newxmesmtplogicsvrszc16-0.qq.com (NewEsmtp) with SMTP
+	id A6890ACF; Tue, 08 Jul 2025 14:41:40 +0800
+X-QQ-mid: xmsmtpt1751956900tianq68yj
+Message-ID: <tencent_5A2FE78BA54BA148917B62FCC4B5E4FC2505@qq.com>
+X-QQ-XMAILINFO: Mm/8i8/T4yne9o+Gb8aezNKf5Psbb6m1VxRKSa2JVhARcEcyjV0y21AATnjgl7
+	 oizaZTfuyqmRXnTMmfneAkENDMc6Vu1RT/u8y9XIcloKbgBjkaXNPNPyOdWZTtKQRknWjxdHD2AW
+	 Sxgq2JvE7RtnIPYwfGSnNyH1mB1OwRZuGMtOQLvCqC8xovQ9tTe4k6GZOTarq55quNN9JBvAwcx7
+	 qOOrO8zFVVOtW8ByOD/9YbFHisQllOFlMfxdZfKTHY7kfUA5b3iNz7IH5iekXOfv05fNAUos0KO4
+	 hG4bRM9n5Y1MMg+BCnvNLaLAEfpZFdbe7LtFQ6PMmt8I+JlYm8wWKKmc44W15m8vwTX6/ajAxNoK
+	 pJ7x01omadan2ex1F6frWPgiNrQ0jtrISb2TecrhIYkIPne4VzgpS984JHYZ+BqkiEEXOM2wRVNW
+	 TziMC+RzIXO92IOj7DDAb2t23XrnZQVN4GfRybb168MKM9QMZprVF+2aDDn0qtZBsUkFz7qqOrZK
+	 Jhz0cP1tY3My2A+Vt4BFYCD6IeAeZamAMf/mngWvv6j3Ea7tT/d77Uam4W7nlPnDjTaj262LmeLx
+	 zSs8fWTrGFAPEabL7LEOgyla55q6+dUSE8/GRAwF7fbyTTxEn6YNA0q7FeJocUjtIvy3l+b33H3R
+	 +OZAyL3Zj1qn3xR9aOw8E7SNXqT8rnbqkvjY79yCyW0w/rNQNHRmiWXVWV9V/0u4JgtLWhnIjRhL
+	 AeVKW7P90HPwCCAzsjEISF5L1Voz8SYgIiX/vRxbnGNZzkiKMpdsjHavXPxgIav54NVD4WcDWAgu
+	 VlSobte6LbHPRN4QJEYUJOZKvlfPrOl8Xc2S9yoXvnv4omGu/+E2Vo/86vTKrUmh3aA83Fzhc0Gt
+	 JBDpm2iPOgnR2TB9x+3rTsAune/cMl1qz/rA1Oriqev5G5LbttRZCHsz0Kyas4SqSpRrkH2Exqap
+	 CGb4v1Y7Zz4kAt1OMWipz5zkHocBmrKjEOAIYte+QXcFDqtKzaerx4H+9mQ+iR7A5wMR8cIuW+i0
+	 u5Z93q4jO5MGvWsSKKw5qxS3dDfwHRVht2RKF/Dw==
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: Yuwen Chen <ywen.chen@foxmail.com>
+To: ywen.chen@foxmail.com
+Cc: adilger.kernel@dilger.ca,
+	brauner@kernel.org,
+	chao@kernel.org,
+	jaegeuk@kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	viro@zeniv.linux.org.uk
+Subject: [PATCH v4 1/2] libfs: reduce the number of memory allocations in generic_ci_match
+Date: Tue,  8 Jul 2025 14:41:35 +0800
+X-OQ-MSGID: <20250708064135.844552-1-ywen.chen@foxmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <tencent_0D8BB6ABAB0880DB7BFCCE35EDBC3DCFF505@qq.com>
+References: <tencent_0D8BB6ABAB0880DB7BFCCE35EDBC3DCFF505@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
- remove_bdev()
-To: Dave Chinner <david@fromorbit.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
-References: <cover.1751589725.git.wqu@suse.com>
- <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
- <aGxSHKeyldrR1Q0T@dread.disaster.area>
- <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
- <20250708004532.GA2672018@frogsfrogsfrogs>
- <02584a40-a2c0-4565-ab46-50c1a4100b21@gmx.com>
- <bdce1e62-c6dd-4f40-b207-cfaf4c5e25e4@gmx.com>
- <aGynIewLL-05fuoJ@dread.disaster.area>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <aGynIewLL-05fuoJ@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DZshX1x/Z8YAMhLnJ2+UeFiwTjMPrwyrZ85RITtwjEDU/AurW5K
- +SJ2veNL9n+tpNoL2eb53lzkrhbexEmLh0BbM4wCDbF4GWdweUxd132TGn0w87/x1fnkJPo
- ZAkV1lR+zGtIh2Fy0g+dRWJiGdAjtu6aSWAS0Vt1NAl9PEJI/FJ+4oQFh0H1GZA36FTo9+n
- Cq4/YglOlX5B3fEx2wl7A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:2TVEOnqouYY=;TnGclIOpdVuPZRjCsvWX+V4Y8+6
- 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
+Content-Transfer-Encoding: 8bit
 
+During path traversal, the generic_ci_match function may be called
+multiple times. The number of memory allocations and releases
+in it accounts for a relatively high proportion in the flamegraph.
+This patch significantly reduces the number of memory allocations
+in generic_ci_match through pre - allocation.
 
+Signed-off-by: Yuwen Chen <ywen.chen@foxmail.com>
+---
+ fs/ext4/namei.c    |  2 +-
+ fs/f2fs/dir.c      |  2 +-
+ fs/libfs.c         | 33 ++++++++++++++++++++++++++++++---
+ include/linux/fs.h |  8 +++++++-
+ 4 files changed, 39 insertions(+), 6 deletions(-)
 
-=E5=9C=A8 2025/7/8 14:35, Dave Chinner =E5=86=99=E9=81=93:
-[...]
->>> Not really worthy if we only want a single different behavior.
->=20
-> This is the *3rd* different behaviour for ->mark_dead. We
-> have the generic behaviour, the bcachefs behaviour, and now the
-> btrfs behaviour (whatever that may be).
-
-Then why not merging the btrfs/bcachefs callback into one generic=20
-callback? Other than introducing 3 different bdev_holder_ops?
-
-This looks exactly the opposite what VFS is trying to do.
-
-Thanks,
-Qu
-
->=20
->>> Thus I strongly prefer to do with the existing fs_holder_ops, no matte=
-r
->>> if it's using/renaming the shutdown() callback, or a new callback.
->>
->> Previously Christoph is against a new ->remove_bdev() callback, as it i=
-s
->> conflicting with the existing ->shutdown().
->>
->> So what about a new ->handle_bdev_remove() callback, that we do somethi=
-ng
->> like this inside fs_bdev_mark_dead():
->>
->> {
->> 	bdev_super_lock();
->> 	if (!surprise)
->> 		sync_filesystem();
->>
->> 	if (s_op->handle_bdev_remove) {
->> 		ret =3D s_op->handle_bdev_remove();
->> 		if (!ret) {
->> 			super_unlock_shared();
->> 			return;
->> 		}
->> 	}
->> 	shrink_dcache_sb();
->> 	evict_inodes();
->> 	if (s_op->shutdown)
->> 		s_op->shutdown();
->> }
->>
->> So that the new ->handle_bdev_remove() is not conflicting with
->> ->shutdown() but an optional one.
->>
->> And if the fs can not handle the removal, just let
->> ->handle_bdev_remove() return an error so that we fallback to the exist=
-ing
->> shutdown routine.
->>
->> Would this be more acceptable?
->=20
-> No.
->=20
-> -Dave.
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index a178ac2294895..f235693bd71aa 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1443,7 +1443,7 @@ static bool ext4_match(struct inode *parent,
+ 
+ 		return generic_ci_match(parent, fname->usr_fname,
+ 					&fname->cf_name, de->name,
+-					de->name_len) > 0;
++					de->name_len, NULL) > 0;
+ 	}
+ #endif
+ 
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index c36b3b22bfffd..4c6611fbd9574 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -197,7 +197,7 @@ static inline int f2fs_match_name(const struct inode *dir,
+ 	if (fname->cf_name.name)
+ 		return generic_ci_match(dir, fname->usr_fname,
+ 					&fname->cf_name,
+-					de_name, de_name_len);
++					de_name, de_name_len, NULL);
+ 
+ #endif
+ 	f.usr_fname = fname->usr_fname;
+diff --git a/fs/libfs.c b/fs/libfs.c
+index 9ea0ecc325a81..293b605971bbf 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -1863,6 +1863,26 @@ static const struct dentry_operations generic_ci_dentry_ops = {
+ #endif
+ };
+ 
++#define DECRYPTED_NAME_PREALLOC_MIN_LEN 64
++static inline char *decrypted_name_prealloc_resize(
++		struct decrypted_name_prealloc *prealloc,
++		size_t wantlen)
++{
++	char *retbuf = NULL;
++
++	if (prealloc->name && wantlen <= prealloc->namelen)
++		return prealloc->name;
++
++	retbuf = kmalloc(wantlen + DECRYPTED_NAME_PREALLOC_MIN_LEN, GFP_KERNEL);
++	if (!retbuf)
++		return NULL;
++
++	kfree(prealloc->name);
++	prealloc->name = retbuf;
++	prealloc->namelen = wantlen + DECRYPTED_NAME_PREALLOC_MIN_LEN;
++	return retbuf;
++}
++
+ /**
+  * generic_ci_match() - Match a name (case-insensitively) with a dirent.
+  * This is a filesystem helper for comparison with directory entries.
+@@ -1873,6 +1893,7 @@ static const struct dentry_operations generic_ci_dentry_ops = {
+  * @folded_name: Optional pre-folded name under lookup
+  * @de_name: Dirent name.
+  * @de_name_len: dirent name length.
++ * @prealloc: decrypted name memory buffer
+  *
+  * Test whether a case-insensitive directory entry matches the filename
+  * being searched.  If @folded_name is provided, it is used instead of
+@@ -1884,7 +1905,8 @@ static const struct dentry_operations generic_ci_dentry_ops = {
+ int generic_ci_match(const struct inode *parent,
+ 		     const struct qstr *name,
+ 		     const struct qstr *folded_name,
+-		     const u8 *de_name, u32 de_name_len)
++		     const u8 *de_name, u32 de_name_len,
++		     struct decrypted_name_prealloc *prealloc)
+ {
+ 	const struct super_block *sb = parent->i_sb;
+ 	const struct unicode_map *um = sb->s_encoding;
+@@ -1899,7 +1921,11 @@ int generic_ci_match(const struct inode *parent,
+ 		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
+ 			return -EINVAL;
+ 
+-		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
++		if (!prealloc)
++			decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
++		else
++			decrypted_name.name = decrypted_name_prealloc_resize(
++					prealloc, de_name_len);
+ 		if (!decrypted_name.name)
+ 			return -ENOMEM;
+ 		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
+@@ -1928,7 +1954,8 @@ int generic_ci_match(const struct inode *parent,
+ 		res = utf8_strncasecmp(um, name, &dirent);
+ 
+ out:
+-	kfree(decrypted_name.name);
++	if (!prealloc)
++		kfree(decrypted_name.name);
+ 	if (res < 0 && sb_has_strict_encoding(sb)) {
+ 		pr_err_ratelimited("Directory contains filename that is invalid UTF-8");
+ 		return 0;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 4ec77da65f144..65307c8c11485 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3651,10 +3651,16 @@ extern int generic_file_fsync(struct file *, loff_t, loff_t, int);
+ extern int generic_check_addressable(unsigned, u64);
+ 
+ extern void generic_set_sb_d_ops(struct super_block *sb);
++
++struct decrypted_name_prealloc {
++	char *name;
++	size_t namelen;
++};
+ extern int generic_ci_match(const struct inode *parent,
+ 			    const struct qstr *name,
+ 			    const struct qstr *folded_name,
+-			    const u8 *de_name, u32 de_name_len);
++			    const u8 *de_name, u32 de_name_len,
++			    struct decrypted_name_prealloc *prealloc);
+ 
+ #if IS_ENABLED(CONFIG_UNICODE)
+ int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str);
+-- 
+2.34.1
 
 
