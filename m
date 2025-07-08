@@ -1,118 +1,201 @@
-Return-Path: <linux-ext4+bounces-8892-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8893-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2275AAFD55F
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 19:33:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97008AFD839
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 22:21:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7715D17C3B3
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 17:33:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D7F0541001
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 20:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2FBD2C15A6;
-	Tue,  8 Jul 2025 17:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB2423D2B0;
+	Tue,  8 Jul 2025 20:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MkuEuEf2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPMEhSkU"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687DA2E36FE
-	for <linux-ext4@vger.kernel.org>; Tue,  8 Jul 2025 17:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAC11D54E2;
+	Tue,  8 Jul 2025 20:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751996014; cv=none; b=A8+n0nEwxUNi5PeJRdbVkIRgtWXudBN8TvtDEEtj30mKjKWEDZ+ZwB85+2eBtIuk27euAh+9sXyy4bC2fio+flliKWBkhPCSRcR0+CFk+RpLxAzKu6d8dKi7bCxKcqTRCyiHPabrCwJTO9BlUsFcBSlngfiaPAN/uNDJD+XolG4=
+	t=1752006052; cv=none; b=dEPLau6gg5JBwuabax/pHvDyJMiiWCsRdkAkFnYeGj4h+V7MKGVtrUtFfyKJ0E/0kgcOCJdvDCHNblJnOnGgk+9ruZguYG/TVN0bScVecxJZooQPdIWV+jqJF9XJmUuN3WjnRb1FHGn4sjSd25edXqxM/e+6cV+wxmos4yynScU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751996014; c=relaxed/simple;
-	bh=nm8QqQDgJltRF76FyT8WTMHLZw2lyNt1AepY3EgdA+A=;
+	s=arc-20240116; t=1752006052; c=relaxed/simple;
+	bh=+yxZ08dKrAbdFZ6sAL+9jMwOYAMn3pq6/TMoNHiAVqM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b1/JW8zxI5RVpSGMYYmCX3AmGnjZFUB+IBpDamLqsXPby1fPUOMi9HYNc1qIY7giDMOFEK9gljQlkLRAjfd7xFkiXnTcmikAIDUhAXdmLOF5qd9lxyIhCQ73FD7NghQHI04WR5uDPDuYpeCYDY6CjfXbelcaHTOwwx2wRniPmYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MkuEuEf2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0FF2C4CEED;
-	Tue,  8 Jul 2025 17:33:33 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=POqngLEtnY7UOEA1+VhFCNGe5YPKhl9DFMSdzSwhChJOxQopnmP7kwSOjfvFZHJ35dn/m7YMKRBX4K3+S5PZayMHntqKPQ7Dqxf/gmhWoLhnBUp3EMwOcl3iXvrC7zUZ0mtFvXwAYTI/PZpFsvHdIsVJQcfNkCwOuugM3Gc3oX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hPMEhSkU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58E7EC4CEED;
+	Tue,  8 Jul 2025 20:20:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751996013;
-	bh=nm8QqQDgJltRF76FyT8WTMHLZw2lyNt1AepY3EgdA+A=;
+	s=k20201202; t=1752006051;
+	bh=+yxZ08dKrAbdFZ6sAL+9jMwOYAMn3pq6/TMoNHiAVqM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MkuEuEf25jvlP333M3IHPevSIwnYz9tPASV6w8micVvXMXaHQ/j384pl3oSIwFRm2
-	 8L9FUaDd9u2pZ+MpWcggTmxxcIBFZPSMHx8UDkSBOI68xR4ajq1AyOZIyf28jT0a6Z
-	 6v+z06uPYI3eEwAy6cWNVkD35U62aYgBgJ4XhwWb9aGaYPyX0I9++L1GQFudjjWbut
-	 rzDT0XJR309yZFbL8y0GXZBbCtKnlt8lsaLDHo0E4txaVOoxXSel3ZgX+x3G4NnNs+
-	 sGDt2nonBDF3uOrIqnPumb5HYsD8CxC+Z2so3DSkT3aknWfiATCGYZ6Rtto3HzZLZE
-	 oKu2jV8TPT7hQ==
-Date: Tue, 8 Jul 2025 10:33:33 -0700
+	b=hPMEhSkUX/LsvtZLeds9iEsFR445eshxWZXvoRnSLujgLEPzAcfHTEY1hKzvOZwLi
+	 CO6xBgdyPLvwJKOyvRvQbfayjvwz//qmWRwCqXX9eJfnurVWX9yJjB+FGnGJqw9Bdo
+	 YvTa4ZUzOiq4x/0+MnhVWgvty8CXom2KMAk1lU1DdgCV3QPlLlzl63cgXPodHeUmuR
+	 c/DyafLAONZHqILRSCVnIMh6DkLySD8sZvd+yvzKsb2YGHyNZ8+dzvy79GVsPU2CIa
+	 QSxZLDXRKYoNFJq9mC7u92Mfs4HyGdJgpKNx3bbNB6DnNtxSNNOGKynr+rejYv2LwT
+	 nVQjowPhBvE+A==
+Date: Tue, 8 Jul 2025 13:20:50 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org
-Subject: [PATCH 10/8] fuse2fs: fix lockfile creation, again
-Message-ID: <20250708173333.GD2672022@frogsfrogsfrogs>
-References: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
+To: Jan Kara <jack@suse.cz>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Dave Chinner <david@fromorbit.com>,
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev,
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <20250708202050.GG2672049@frogsfrogsfrogs>
+References: <cover.1751589725.git.wqu@suse.com>
+ <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
+ <aGxSHKeyldrR1Q0T@dread.disaster.area>
+ <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
+ <20250708004532.GA2672018@frogsfrogsfrogs>
+ <2dm6bsup7vxwl4vwmllkvt5erncirr272bov4ehd5gix7n2vnw@bkagb26tjtj5>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2dm6bsup7vxwl4vwmllkvt5erncirr272bov4ehd5gix7n2vnw@bkagb26tjtj5>
 
-From: Darrick J. Wong <djwong@kernel.org>
+On Tue, Jul 08, 2025 at 12:20:00PM +0200, Jan Kara wrote:
+> On Mon 07-07-25 17:45:32, Darrick J. Wong wrote:
+> > On Tue, Jul 08, 2025 at 08:52:47AM +0930, Qu Wenruo wrote:
+> > > 在 2025/7/8 08:32, Dave Chinner 写道:
+> > > > On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
+> > > > > Currently all the filesystems implementing the
+> > > > > super_opearations::shutdown() callback can not afford losing a device.
+> > > > > 
+> > > > > Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
+> > > > > involved filesystem.
+> > > > > 
+> > > > > But it will no longer be the case, with multi-device filesystems like
+> > > > > btrfs and bcachefs the filesystem can handle certain device loss without
+> > > > > shutting down the whole filesystem.
+> > > > > 
+> > > > > To allow those multi-device filesystems to be integrated to use
+> > > > > fs_holder_ops:
+> > > > > 
+> > > > > - Replace super_opearation::shutdown() with
+> > > > >    super_opearations::remove_bdev()
+> > > > >    To better describe when the callback is called.
+> > > > 
+> > > > This conflates cause with action.
+> > > > 
+> > > > The shutdown callout is an action that the filesystem must execute,
+> > > > whilst "remove bdev" is a cause notification that might require an
+> > > > action to be take.
+> > > > 
+> > > > Yes, the cause could be someone doing hot-unplug of the block
+> > > > device, but it could also be something going wrong in software
+> > > > layers below the filesystem. e.g. dm-thinp having an unrecoverable
+> > > > corruption or ENOSPC errors.
+> > > > 
+> > > > We already have a "cause" notification: blk_holder_ops->mark_dead().
+> > > > 
+> > > > The generic fs action that is taken by this notification is
+> > > > fs_bdev_mark_dead().  That action is to invalidate caches and shut
+> > > > down the filesystem.
+> > > > 
+> > > > btrfs needs to do something different to a blk_holder_ops->mark_dead
+> > > > notification. i.e. it needs an action that is different to
+> > > > fs_bdev_mark_dead().
+> > > > 
+> > > > Indeed, this is how bcachefs already handles "single device
+> > > > died" events for multi-device filesystems - see
+> > > > bch2_fs_bdev_mark_dead().
+> > > 
+> > > I do not think it's the correct way to go, especially when there is already
+> > > fs_holder_ops.
+> > > 
+> > > We're always going towards a more generic solution, other than letting the
+> > > individual fs to do the same thing slightly differently.
+> > 
+> > On second thought -- it's weird that you'd flush the filesystem and
+> > shrink the inode/dentry caches in a "your device went away" handler.
+> > Fancy filesystems like bcachefs and btrfs would likely just shift IO to
+> > a different bdev, right?  And there's no good reason to run shrinkers on
+> > either of those fses, right?
+> 
+> I agree it is awkward and bcachefs avoids these in case of removal it can
+> handle gracefully AFAICS.
+> 
+> > > Yes, the naming is not perfect and mixing cause and action, but the end
+> > > result is still a more generic and less duplicated code base.
+> > 
+> > I think dchinner makes a good point that if your filesystem can do
+> > something clever on device removal, it should provide its own block
+> > device holder ops instead of using fs_holder_ops.  I don't understand
+> > why you need a "generic" solution for btrfs when it's not going to do
+> > what the others do anyway.
+> 
+> Well, I'd also say just go for own fs_holder_ops if it was not for the
+> awkward "get super from bdev" step. As Christian wrote we've encapsulated
+> that in fs/super.c and bdev_super_lock() in particular but the calling
+> conventions for the fs_holder_ops are not very nice (holding
+> bdev_holder_lock, need to release it before grabbing practically anything
+> else) so I'd have much greater peace of mind if this didn't spread too
+> much. Once you call bdev_super_lock() and hold on to sb with s_umount held,
+> things are much more conventional for the fs land so I'd like if this
+> step happened before any fs hook got called. So I prefer something like
+> Qu's proposal of separate sb op for device removal over exporting
+> bdev_super_lock(). Like:
+> 
+> static void fs_bdev_mark_dead(struct block_device *bdev, bool surprise)
+> {
+>         struct super_block *sb;
+> 
+>         sb = bdev_super_lock(bdev, false);
+>         if (!sb)
+>                 return;
+> 
+> 	if (sb->s_op->remove_bdev) {
+> 		sb->s_op->remove_bdev(sb, bdev, surprise);
+> 		return;
+> 	}
 
-On closer examination of the lockfile code, there is still a fatal flaw
-in the locking logic.  This is born out by the fact that you can run:
+It feels odd but I could live with this, particularly since that's the
+direction that brauner is laying down. :)
 
-# truncate -s 300m /tmp/a
-# mkfs.ext2 /tmp/a
-# fuse2fs -o kernel /tmp/a /mnt -o lockfile=/tmp/fuselock
-# fuse2fs -o kernel /tmp/a /mnt -o lockfile=/tmp/fuselock
+Do we still need to super_unlock_shared here?
 
-and the second mount attempt succeeds where it really shouldn't.  This
-is due to the use of fopen(..., "w"), because "w" means "truncate or
-create".  It does /not/ imply O_CREAT | O_EXCL, which fails if the file
-already exists.  Theoretically that could have been done with mode
-string "wx", but that's a glibc extension.
+--D
 
-Fix this by calling open() directly with the O_ modes that we want.
-
-Cc: <linux-ext4@vger.kernel.org> # v1.47.3-rc3
-Fixes: e50fbaa4d156a6 ("fuse2fs: clean up the lockfile handling")
-Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
----
- misc/fuse2fs.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index b7201f7c8ed185..ff8d4668cee217 100644
---- a/misc/fuse2fs.c
-+++ b/misc/fuse2fs.c
-@@ -4473,11 +4473,15 @@ int main(int argc, char *argv[])
- 	}
- 
- 	if (fctx.lockfile) {
--		FILE *lockfile = fopen(fctx.lockfile, "w");
- 		char *resolved;
-+		int lockfd;
- 
--		if (!lockfile) {
--			err = errno;
-+		lockfd = open(fctx.lockfile, O_RDWR | O_CREAT | O_EXCL, 0400);
-+		if (lockfd < 0) {
-+			if (errno == EEXIST)
-+				err = EWOULDBLOCK;
-+			else
-+				err = errno;
- 			err_printf(&fctx, "%s: %s: %s\n", fctx.lockfile,
- 				   _("opening lockfile failed"),
- 				   strerror(err));
-@@ -4485,7 +4489,7 @@ int main(int argc, char *argv[])
- 			ret |= 32;
- 			goto out;
- 		}
--		fclose(lockfile);
-+		close(lockfd);
- 
- 		resolved = realpath(fctx.lockfile, NULL);
- 		if (!resolved) {
+> 
+> 	if (!surprise)
+> 		sync_filesystem(sb);
+> 	shrink_dcache_sb(sb);
+> 	evict_inodes(sb);
+> 	if (sb->s_op->shutdown)
+> 		sb->s_op->shutdown(sb);
+> 
+> 	super_unlock_shared(sb);
+> }
+> 
+> > As an aside:
+> > 'twould be nice if we could lift the *FS_IOC_SHUTDOWN dispatch out of
+> > everyone's ioctl functions into the VFS, and then move the "I am dead"
+> > state into super_block so that you could actually shut down any
+> > filesystem, not just the seven that currently implement it.
+> 
+> Yes, I should find time to revive that patch series... It was not *that*
+> hard to do.
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+> 
 
