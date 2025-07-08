@@ -1,120 +1,169 @@
-Return-Path: <linux-ext4+bounces-8886-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8887-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 761C8AFC3F2
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 09:25:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED255AFC4C3
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 09:55:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CD971AA0FFB
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 07:26:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC28A4221C9
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 07:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD62298983;
-	Tue,  8 Jul 2025 07:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E5729C340;
+	Tue,  8 Jul 2025 07:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="pDaru0nC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgxuPBfh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.44])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8053B188006;
-	Tue,  8 Jul 2025 07:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D4B221282;
+	Tue,  8 Jul 2025 07:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751959539; cv=none; b=PlbmWwpsibhzKrWhgYhuaATkGLCwoT59CN2TbWHDe1elxI5B2V4HviGzds5fC6VX2DVNlqQL7DxcV+1CjRyKmLkxtbNp+Qt3ld5b9SIeqjjIybR2xJO6huk6v6qo1fzBcPLiPSt3GQ18bZqqzByB8a6bdopJaEIHsuQHuf375XU=
+	t=1751961320; cv=none; b=UiZVNYDfkhpVvfDohNtu2JY/IpU106/bx2uiqCe5oTNx1YDWCtpFxZ3X7cnDFBpkS337bwIKjTh2NLqQKCZCAewTfRwGx1DxLXAjZQHJQa9eQn4FE+fFRuYqQcgfcaMdQtsRwRmgvzdwCkTDTav1M7Z+ykfvps8jZnbxcIr5dys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751959539; c=relaxed/simple;
-	bh=hTsxhYYXUNl6kQHXHKWGlxUMQwI6ZkobTMVeUv0I7ts=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=A0IYEFUet+2SmoDYncQKInVIhHtLUMBa2hrDLaI9MsTqkbW8beyn3wysPw9JRI6ShWgZMrKCipw3M27zVO9lbeOOygXSte9BXtPsqM7Hgxd5OfwyWJRqqQoEMYuEfUMkFfzVRKsD7p/7Hp8EqurLiE7MEKjuy6b0djYQG0Qi3JE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=pDaru0nC; arc=none smtp.client-ip=43.163.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1751959525;
-	bh=rgW1EbDqX+O9wPlMcm457ujwjBjyq0KCUjbW0ywG0Dg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=pDaru0nC1KxIf9pkQH+aM7Vs806suMvDW37K8eJfLGZM0AQuEhqmjw8pUGYI8c23i
-	 kD90a8o/QWIApQHp6lcwRjVqHSCyHUXMoVg8ntc2DvHIZm5GTqrsMTRHfvVtdkZrcF
-	 +2ByYUcLJbEgVxqWqOG0Qf0uxTXXBtU3DdKpFdnk=
-Received: from meizu-Precision-3660.meizu.com ([112.91.84.73])
-	by newxmesmtplogicsvrsza36-0.qq.com (NewEsmtp) with SMTP
-	id 2E92B483; Tue, 08 Jul 2025 15:11:41 +0800
-X-QQ-mid: xmsmtpt1751958701tlp273eg5
-Message-ID: <tencent_19ABF292BF48BBA08B98B8C3C7BD5D19CE09@qq.com>
-X-QQ-XMAILINFO: NDgMZBR9sMmawRpms6Ue/39BQQ1SRHowQpkx27lg4qRnEyrDKufpEe6JoiwE0s
-	 X4bUjYFCuqPdCbfYYIFhf9vrdN+PzxNOI/ByibxMc60LKkq1AUMsXP/6AcJrxdtQqAq5Q0a0IJkx
-	 NaTDDt2HEJ8CiHe9EOdkaQg5CO1oeqX3d919iGGttuQi7kXVNaq9YNMNQ8QXTsnTq7WOsCx3sF/Y
-	 2iqJm8SS8Hw7wbvdprC6vq2zA/oLeCyS0WpPYfjqEHYSRnrARSXp4ou+eQ+RdvvXG7BuYMHpA/d/
-	 vOYjXICj+D7IVgOL2xnAhpj4gc+zyJPFU8DK7Y4ULYekU378T+x9eye4cRdZrdZ8R86F4PC0Yxf0
-	 GUHK845Y8M/BURpKI/ERfIIxgcHgmceJwZSGud2LahiyT+1kKHg4Lixl0QTrxsZYYssTUi+1olqt
-	 TFm1jgsn0Kq+08J3hM1y2wIYvC0KGnmxG+fbtZ8bbmKCNATl4haAHgSQO8gpVNZnyBCe18tCQqW4
-	 AQf1teH5Q+FQ5osKuP4hCzjXCFSXNcnv+VUcQMZMwryTkz9N7dq3vb4cguh3Kf8L0WVzuuay3BTL
-	 5M/oIIOhYTSwSg2nOISpNaW04R+vvzqb+Ht59wY01WZdkI4uOjdLYcTc61uNs5j+gvURqYiwdFpU
-	 /gip+yblaxFsKwc1I6S9xMpA9YDONR0wB9yAFCFSh1IjwqRALZHRgp/67oasvkvNY8PzV6ilcdwO
-	 idNafDhJ2l94tg95QKmw0SSpxxWfeAZmXyEbhepumU3g6W+POnW59tFGNo2fkyMHwWaA9PVedHsq
-	 ZDO3wxqRQA+Mfb29a3P8Qjx35mO1lMoXbvFcBrTblRVvDdWgKxRL36jD+zJFx4jmD0PP9+hJvspG
-	 U+0K2myUpjwLv6S8iJrwTgWC2l+sW6WIhM4U5ihg4jY4U6VfB9UAURSuVgZxOXgSZ0VZYncVzH8b
-	 wcAj7s5h0lyB4CG3vj/gVRCxQHgaDqtXJYBN9aF1cN0+6fngS+YeK9VhrVR//z5HlizyVog2WO80
-	 fJOz+hfQ==
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: Yuwen Chen <ywen.chen@foxmail.com>
-To: hch@infradead.org
-Cc: adilger.kernel@dilger.ca,
-	brauner@kernel.org,
-	ebiggers@kernel.org,
-	jaegeuk@kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	viro@zeniv.linux.org.uk,
-	ywen.chen@foxmail.com
-Subject: Re: [PATCH v3 1/2] libfs: reduce the number of memory allocations in generic_ci_match
-Date: Tue,  8 Jul 2025 15:11:41 +0800
-X-OQ-MSGID: <20250708071141.847557-1-ywen.chen@foxmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <aGtatW8g2fV6bFkm@infradead.org>
-References: <aGtatW8g2fV6bFkm@infradead.org>
+	s=arc-20240116; t=1751961320; c=relaxed/simple;
+	bh=qsPSN2BpCezUCvdd+RaM6scGQ8lIU5NoJZv7E/OP/1I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MY2gHv0KybElIM+eF7K+SrSE74pcjdUOT6OCdWyniDDI5nEPUTxfRI6LcS2+JaKpq2B3iuGfFU4PkKSP4za2il6giWfDYtUlU7dA9BiVOl37QQhjcKg1aglhBMrYeEOym/T5IFBReM9ai+ZM1jHumYzPexLNERPGkvCxRMKH12Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgxuPBfh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59B88C4CEED;
+	Tue,  8 Jul 2025 07:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751961320;
+	bh=qsPSN2BpCezUCvdd+RaM6scGQ8lIU5NoJZv7E/OP/1I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sgxuPBfh3cZ0dSDKch6I5Rqryw9OXZSRJcFlBBbK2wZk7UGITXp4prgxpzNUQi6VS
+	 +nmmibndMCtDY0Li8hfg7Jw/0gZudYRJblZ6FolRAubFzcLMuAsK7XEoKiSDxIgIW1
+	 9qRXNQoc/ihFCGt2UwXeahyM5dgBpX/hh1PBhZEkRleJQEzgoAcBwUYxCiRTCaUC1o
+	 XPGqDJKxSp5j5XzA1ld1uWapoMzVkWw9oV5u9f/lfYdSi0W1PygUXlIMOWdhVsP0C/
+	 ABdtdShHTLFroT13TzZA/Ayi8o093gg45lzstPUfEDRdSAW6wkVshNvzkuIsltRaXJ
+	 tIjDK/9jXsNog==
+Date: Tue, 8 Jul 2025 09:55:14 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Dave Chinner <david@fromorbit.com>, 
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	viro@zeniv.linux.org.uk, jack@suse.cz, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <20250708-geahndet-rohmaterial-0419fd6a76b3@brauner>
+References: <cover.1751589725.git.wqu@suse.com>
+ <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
+ <aGxSHKeyldrR1Q0T@dread.disaster.area>
+ <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
+ <20250708004532.GA2672018@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250708004532.GA2672018@frogsfrogsfrogs>
 
-On Sun, 6 Jul 2025 22:27:17 -0700 Christoph Hellwig wrote:
-> But I wonder why generic_ci_match is even called that often.  Both ext4
-> and f2fs support hashed lookups, so you should usually only see it called
-> for the main match, plus the occasional hash false positive, which should
-> be rate if the hash works.
+On Mon, Jul 07, 2025 at 05:45:32PM -0700, Darrick J. Wong wrote:
+> On Tue, Jul 08, 2025 at 08:52:47AM +0930, Qu Wenruo wrote:
+> > 
+> > 
+> > 在 2025/7/8 08:32, Dave Chinner 写道:
+> > > On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
+> > > > Currently all the filesystems implementing the
+> > > > super_opearations::shutdown() callback can not afford losing a device.
+> > > > 
+> > > > Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
+> > > > involved filesystem.
+> > > > 
+> > > > But it will no longer be the case, with multi-device filesystems like
+> > > > btrfs and bcachefs the filesystem can handle certain device loss without
+> > > > shutting down the whole filesystem.
+> > > > 
+> > > > To allow those multi-device filesystems to be integrated to use
+> > > > fs_holder_ops:
+> > > > 
+> > > > - Replace super_opearation::shutdown() with
+> > > >    super_opearations::remove_bdev()
+> > > >    To better describe when the callback is called.
+> > > 
+> > > This conflates cause with action.
+> > > 
+> > > The shutdown callout is an action that the filesystem must execute,
+> > > whilst "remove bdev" is a cause notification that might require an
+> > > action to be take.
+> > > 
+> > > Yes, the cause could be someone doing hot-unplug of the block
+> > > device, but it could also be something going wrong in software
+> > > layers below the filesystem. e.g. dm-thinp having an unrecoverable
+> > > corruption or ENOSPC errors.
+> > > 
+> > > We already have a "cause" notification: blk_holder_ops->mark_dead().
+> > > 
+> > > The generic fs action that is taken by this notification is
+> > > fs_bdev_mark_dead().  That action is to invalidate caches and shut
+> > > down the filesystem.
+> > > 
+> > > btrfs needs to do something different to a blk_holder_ops->mark_dead
+> > > notification. i.e. it needs an action that is different to
+> > > fs_bdev_mark_dead().
+> > > 
+> > > Indeed, this is how bcachefs already handles "single device
+> > > died" events for multi-device filesystems - see
+> > > bch2_fs_bdev_mark_dead().
+> > 
+> > I do not think it's the correct way to go, especially when there is already
+> > fs_holder_ops.
+> > 
+> > We're always going towards a more generic solution, other than letting the
+> > individual fs to do the same thing slightly differently.
+> 
+> On second thought -- it's weird that you'd flush the filesystem and
+> shrink the inode/dentry caches in a "your device went away" handler.
+> Fancy filesystems like bcachefs and btrfs would likely just shift IO to
+> a different bdev, right?  And there's no good reason to run shrinkers on
+> either of those fses, right?
+> 
+> > Yes, the naming is not perfect and mixing cause and action, but the end
+> > result is still a more generic and less duplicated code base.
+> 
+> I think dchinner makes a good point that if your filesystem can do
+> something clever on device removal, it should provide its own block
+> device holder ops instead of using fs_holder_ops.  I don't understand
+> why you need a "generic" solution for btrfs when it's not going to do
+> what the others do anyway.
 
-At present, in the latest version of Linux, in some scenarios,
-f2fs still uses linear search.
+I think letting filesystems implement their own holder ops should be
+avoided if we can. Christoph may chime in here. I have no appettite for
+exporting stuff like get_bdev_super() unless absolutely necessary. We
+tried to move all that handling into the VFS to eliminate a slew of
+deadlocks we detected and fixed. I have no appetite to repeat that
+cycle.
 
-The logic of linear search was introduced by Commit 91b587ba79e1
-(f2fs: Introduce linear search for dentries). Commit 91b587ba79e1
-was designed to solve the problem of inconsistent hashes before
-and after the rollback of Commit 5c26d2f1d3f5
-("unicode: Don't special case ignorable code points"),
-which led to files being inaccessible.
+The shutdown method is implemented only by block-based filesystems and
+arguably shutdown was always a misnomer because it assumed that the
+filesystem needs to actually shut down when it is called. IOW, we made
+it so that it is a call to action but that doesn't have to be the case.
+Calling it ->remove_bdev() is imo the correct thing because it gives
+block based filesystem the ability to handle device events how they see
+fit.
 
-In order to reduce the impact of linear search, in relatively new
-versions, the logic of turning off linear search has also been
-introduced. However, the triggering conditions for this
-turn - off logic on f2fs are rather strict:
+Once we will have non-block based filesystems that need a method to
+always shut down the filesystem itself we might have to revisit this
+design anyway but no one had that use-case yet.
 
-1. Use the latest version of the fsck.f2fs tool to correct
-the file system.
-2. Use a relatively new version of the kernel. (For example,
-linear search cannot be turned off in v6.6)
+> 
+> Awkward naming is often a sign that further thought (or at least
+> separation of code) is needed.
+> 
+> As an aside:
+> 'twould be nice if we could lift the *FS_IOC_SHUTDOWN dispatch out of
+> everyone's ioctl functions into the VFS, and then move the "I am dead"
+> state into super_block so that you could actually shut down any
+> filesystem, not just the seven that currently implement it.
 
-The performance gain of this commit is very obvious in scenarios
-where linear search is not turned off. In scenarios where linear
-search is turned off, no performance problems will be introduced
-either.
-
+That goes back to my earlier point. Fwiw, I think that's valuable work.
 
