@@ -1,249 +1,259 @@
-Return-Path: <linux-ext4+bounces-8894-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8895-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 348DFAFDABB
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 00:12:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D72B0AFDB77
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 00:59:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B0F03BEE96
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 22:12:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7632D7A997B
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Jul 2025 22:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0281525394B;
-	Tue,  8 Jul 2025 22:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C2D222A4DA;
+	Tue,  8 Jul 2025 22:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lc/jmtzs"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="eKQVDhYv"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A789AAD21;
-	Tue,  8 Jul 2025 22:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16123227B95
+	for <linux-ext4@vger.kernel.org>; Tue,  8 Jul 2025 22:59:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752012762; cv=none; b=YZqTrtidqyHbtA4/HF7MLJvkd0mmHhXZXkoENig9nWSWD9tXgciv7OtA4VruXQR4EnEJepgi181SljT7R5Nq6d4CvuG8CBqFTvuLqAUnAF5oPhR7Mxqq6KajLNDfb70RleqgCE+c2/+fOA0I51Ui2BSnqtsv/WPsJD7r7l46ODY=
+	t=1752015587; cv=none; b=tHjv/4dlI6bD+5O+MCFUIYkmZDF92HpYYv52C1PZKDK2EP+imKvE3TbDjQ6wQ4RTYdX9NDarWesZ6jr/g8ZNP/f08hV67O3zrQIE0+Yuj+jjAaHdnmyO3F7kotkb83ZsilPq9do4zyNEXKVHwDa6bbPF31K+tKsTW5HBWshZ8/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752012762; c=relaxed/simple;
-	bh=qz7OfKvy9UkusQ0pIiJ8C7Vv6iWfvqCTDZ2EafqNzfA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dxUEV5Mt+E3kLkAucX/hHOapDj8iLOv8rXw4DwGX95QkcUwWG/muQIzxFujodqzyUXBPY28DuOFaBlBUpXW+gRkSiUfqmSCePFDWCvY/loYqZ+SwAcO6IvEnutuUX4yleVuHOuHcf4KyWHAP/AdHX53mtZh61gUSjgqjEviS8hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lc/jmtzs; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1752012737; x=1752617537; i=quwenruo.btrfs@gmx.com;
-	bh=tKiXQzcJnHUoFYy1SQwgQQJ2Y4OJhs4iWApYS2UOz0w=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=lc/jmtzsvIfILu3IOxjndYwN0WxXgGlEKxLrIeJ57F4ESKQP52XCEvwyg5mIPZuQ
-	 iCOEG9eFjdarPpeMtymVoon7hSNEIDqnDINnwezhhFkQq7JZuhq0cE1H9a9Kujh41
-	 3DwNiLTITql/IjHRkIt6zLMtzTy8rMHYE4KCucWvHgbHNYJ7h9UwTvXJYn7aDQtDI
-	 uSEnn07wvm6qV0MPw8G9kQOxybqtZEtQa7k4/3d6lj+4nXTOvxzHWZQW75jmeDM2F
-	 qn8IuFTdNTWfsBA1kDVyWGQso+6yGydsTZlsmRuNanWGKfV00ZHYRLEoejKSPUa8B
-	 WJG9TFWhhJLjr4MKeA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mirng-1vBbVc3I9s-00qUDJ; Wed, 09
- Jul 2025 00:12:17 +0200
-Message-ID: <debab09d-5eb8-4742-96f4-b2c39233f9b7@gmx.com>
-Date: Wed, 9 Jul 2025 07:42:11 +0930
+	s=arc-20240116; t=1752015587; c=relaxed/simple;
+	bh=M3mbuCdHP5nRK/r1JDT5y/NZEwpCM+rOZ/k+iVnc3Xk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TAbJSellJuIe7nZq3dIQI/wIUQvjeQHSbHucLUX0FQyAEW2abbkIa8goOOsZE83GDkdXGMLCulD+7tehpR5lLT+g+s8+WHB4iBoUvCXZArm71WZQH8FlO1maXEZyQZZLw7mZd8sz07mzQWZ5sT+awY+betJ3a4jAR0AW0krbbTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=eKQVDhYv; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2352400344aso50470075ad.2
+        for <linux-ext4@vger.kernel.org>; Tue, 08 Jul 2025 15:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1752015585; x=1752620385; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=s3l35aQqAnevtjyZ/VyVsw6OhRX5o5OHMyl6xIvwp38=;
+        b=eKQVDhYv8LiyC3jnf97jJV+MCpCDdKLYjMCKYT/G+AufJrdbxHtRtUyi+h8gJiCucb
+         HFChlxOXpK3jTnXjwi1Tt+EdTgcEBbliTIIcJMcrcNcZX1ZyJ/owzAwkWja1hDUPIi+Y
+         FIeyyrTP1Th89WluUkqtdh6oPxJezFDGK4YG8NOaTH/cnJ8dQ3Ch68PHdVSbVvjndUu9
+         N2WYcZAi5ObhNh8JfUULFpqux138ZohIXe2lmswRq96jQVBT8KUJv1CUb6HJJdCNYcps
+         A0HxH1Byuk9pC6kRqjWSsBWSPTWMy6AtUOdr9NRml5aFUJqmHLLKTyiIpwGwDzNiOPcp
+         Wh8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752015585; x=1752620385;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3l35aQqAnevtjyZ/VyVsw6OhRX5o5OHMyl6xIvwp38=;
+        b=gx6oFalrrEF9tkfqlpKf0K7BwcGGLen3gMNFe3u7dz3kDszpydrMBnGUQPnEG3A8GA
+         fAVSWgu0w5UutGG3Qz7k/Bv+0WrIx8k/eJBS1XmVi9xuqKFQe4usrRUdmmf+pihjcNSq
+         djw4PvNdjF7+jwwXEWuqgIwgF1ReiJmoD1tRsNqDGSGTEL+kpoiyVMThgjf+esTctsVX
+         d7JIkocC8MnSZpxX3uETrdDW5yS7z8cjgf88V8kmYYkZSRf0wxZJuY/0AdMHuhdD6Yf7
+         X3eQ1CyD86hw0dLMnaidlX+td4aIM/MkFTP8ehWYacX6J6M6qCvcgtCRT2x+z0+dDsLS
+         uM1A==
+X-Forwarded-Encrypted: i=1; AJvYcCVSbVSfzVxNblQVixcOPe28xvoFAUK7U3TH2/P7Uu/8BX7MhCzvD8CK5W1827bxtUYT85bivk1wUtZv@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/3JbZmHMPDwy0n2arhMv9r39NlnznNNrUZ7wQiq9NvKtz4Z0X
+	kSsNfBJHyYfsL935KSw5uGITw3qn3hoLjSQhS2GL13thk40VPdDH8exS9pcfD+T98sdxlUdetzC
+	iUhSt
+X-Gm-Gg: ASbGncvgkvXlxDltde3odSHAvpSZKqNRoPxt+3LvNj3y9v6KQbKWHKTllVcEa9w2wY6
+	WSpr8KxKvgjnbgkoTsIsGhfxR+KbLB7QlCoLeQSVPXcEMXLPSxZb61dnFP2gRhADOZwMeSb1RHs
+	5rZj81wXpiMJcm1UEdRkPlFRflIOBQfNgTiVw+3PFoOcc1UQ1CRTvnZ5KExsXla8RJk+LrvYJqV
+	zXQVn4urdP7nSmRorfLnXuy3kjDANxhEuAHNDfC90g/2C59H4vj+NZdN8BIHtruWPgs/8mYy1vW
+	S1/SF/NI8XIJzMK2Jx6ewz20kLDHyQEhfSaiKitzuCxpyD+wPXX1I8+qrZY8RDusPSrhv/pWzu0
+	rworfluwOMCmw27cGWnVbHK99abg/AES6lDCEfw==
+X-Google-Smtp-Source: AGHT+IHgAio6dtY7YujZnCX74Dqj6rWXG+QIi1+TToEKN6tFwVYNcRTRFvNMZWDi8G3LmTON1cFJ/Q==
+X-Received: by 2002:a17:903:2411:b0:223:7006:4db2 with SMTP id d9443c01a7336-23ddb2e62cfmr4398715ad.31.1752015585353;
+        Tue, 08 Jul 2025 15:59:45 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-184-88.pa.nsw.optusnet.com.au. [49.180.184.88])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c8455eea0sm121499985ad.137.2025.07.08.15.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jul 2025 15:59:44 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.98.2)
+	(envelope-from <david@fromorbit.com>)
+	id 1uZHHq-00000008cJE-0C8v;
+	Wed, 09 Jul 2025 08:59:42 +1000
+Date: Wed, 9 Jul 2025 08:59:42 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: "Darrick J. Wong" <djwong@kernel.org>,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	viro@zeniv.linux.org.uk, jack@suse.cz, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev,
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <aG2i3qP01m-vmFVE@dread.disaster.area>
+References: <cover.1751589725.git.wqu@suse.com>
+ <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
+ <aGxSHKeyldrR1Q0T@dread.disaster.area>
+ <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
+ <20250708004532.GA2672018@frogsfrogsfrogs>
+ <20250708-geahndet-rohmaterial-0419fd6a76b3@brauner>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
- remove_bdev()
-To: "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>
-Cc: Dave Chinner <david@fromorbit.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- viro@zeniv.linux.org.uk, brauner@kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev,
- linux-xfs@vger.kernel.org
-References: <cover.1751589725.git.wqu@suse.com>
- <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
- <aGxSHKeyldrR1Q0T@dread.disaster.area>
- <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
- <20250708004532.GA2672018@frogsfrogsfrogs>
- <2dm6bsup7vxwl4vwmllkvt5erncirr272bov4ehd5gix7n2vnw@bkagb26tjtj5>
- <20250708202050.GG2672049@frogsfrogsfrogs>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250708202050.GG2672049@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1aTVJTVlu9i6lCW/LoieK4tzGVQNDEqTWrn2So/d5vdAo2no05b
- w7fxbRr0HI5ATdhhPmCGZPEkmqpkJ06eckuxn3KXOoJZ+jtOdc/VWu6gU9kUhR9FT/CvMDx
- Mam0v4a14/lWOLR0IfklHjEv5QOt8D4pJlHHww46UvqoSrf7Uw9cSa79lxxIVDyy3wOoYWk
- lEu2TtQLbqiPLWPbm4oQw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:geYc7ZXsxis=;bu5kTzrVCY6/wrS/1m+bAkP1XZE
- 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
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250708-geahndet-rohmaterial-0419fd6a76b3@brauner>
 
+On Tue, Jul 08, 2025 at 09:55:14AM +0200, Christian Brauner wrote:
+> On Mon, Jul 07, 2025 at 05:45:32PM -0700, Darrick J. Wong wrote:
+> > On Tue, Jul 08, 2025 at 08:52:47AM +0930, Qu Wenruo wrote:
+> > > 
+> > > 
+> > > 在 2025/7/8 08:32, Dave Chinner 写道:
+> > > > On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
+> > > > > Currently all the filesystems implementing the
+> > > > > super_opearations::shutdown() callback can not afford losing a device.
+> > > > > 
+> > > > > Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
+> > > > > involved filesystem.
+> > > > > 
+> > > > > But it will no longer be the case, with multi-device filesystems like
+> > > > > btrfs and bcachefs the filesystem can handle certain device loss without
+> > > > > shutting down the whole filesystem.
+> > > > > 
+> > > > > To allow those multi-device filesystems to be integrated to use
+> > > > > fs_holder_ops:
+> > > > > 
+> > > > > - Replace super_opearation::shutdown() with
+> > > > >    super_opearations::remove_bdev()
+> > > > >    To better describe when the callback is called.
+> > > > 
+> > > > This conflates cause with action.
+> > > > 
+> > > > The shutdown callout is an action that the filesystem must execute,
+> > > > whilst "remove bdev" is a cause notification that might require an
+> > > > action to be take.
+> > > > 
+> > > > Yes, the cause could be someone doing hot-unplug of the block
+> > > > device, but it could also be something going wrong in software
+> > > > layers below the filesystem. e.g. dm-thinp having an unrecoverable
+> > > > corruption or ENOSPC errors.
+> > > > 
+> > > > We already have a "cause" notification: blk_holder_ops->mark_dead().
+> > > > 
+> > > > The generic fs action that is taken by this notification is
+> > > > fs_bdev_mark_dead().  That action is to invalidate caches and shut
+> > > > down the filesystem.
+> > > > 
+> > > > btrfs needs to do something different to a blk_holder_ops->mark_dead
+> > > > notification. i.e. it needs an action that is different to
+> > > > fs_bdev_mark_dead().
+> > > > 
+> > > > Indeed, this is how bcachefs already handles "single device
+> > > > died" events for multi-device filesystems - see
+> > > > bch2_fs_bdev_mark_dead().
+> > > 
+> > > I do not think it's the correct way to go, especially when there is already
+> > > fs_holder_ops.
+> > > 
+> > > We're always going towards a more generic solution, other than letting the
+> > > individual fs to do the same thing slightly differently.
+> > 
+> > On second thought -- it's weird that you'd flush the filesystem and
+> > shrink the inode/dentry caches in a "your device went away" handler.
+> > Fancy filesystems like bcachefs and btrfs would likely just shift IO to
+> > a different bdev, right?  And there's no good reason to run shrinkers on
+> > either of those fses, right?
+> > 
+> > > Yes, the naming is not perfect and mixing cause and action, but the end
+> > > result is still a more generic and less duplicated code base.
+> > 
+> > I think dchinner makes a good point that if your filesystem can do
+> > something clever on device removal, it should provide its own block
+> > device holder ops instead of using fs_holder_ops.  I don't understand
+> > why you need a "generic" solution for btrfs when it's not going to do
+> > what the others do anyway.
+> 
+> I think letting filesystems implement their own holder ops should be
+> avoided if we can. Christoph may chime in here. I have no appettite for
+> exporting stuff like get_bdev_super() unless absolutely necessary. We
+> tried to move all that handling into the VFS to eliminate a slew of
+> deadlocks we detected and fixed. I have no appetite to repeat that
+> cycle.
 
+Except it isn't actually necessary.
 
-=E5=9C=A8 2025/7/9 05:50, Darrick J. Wong =E5=86=99=E9=81=93:
-[...]
->> Well, I'd also say just go for own fs_holder_ops if it was not for the
->> awkward "get super from bdev" step. As Christian wrote we've encapsulat=
-ed
->> that in fs/super.c and bdev_super_lock() in particular but the calling
->> conventions for the fs_holder_ops are not very nice (holding
->> bdev_holder_lock, need to release it before grabbing practically anythi=
-ng
->> else) so I'd have much greater peace of mind if this didn't spread too
->> much. Once you call bdev_super_lock() and hold on to sb with s_umount h=
-eld,
->> things are much more conventional for the fs land so I'd like if this
->> step happened before any fs hook got called. So I prefer something like
->> Qu's proposal of separate sb op for device removal over exporting
->> bdev_super_lock(). Like:
->>
->> static void fs_bdev_mark_dead(struct block_device *bdev, bool surprise)
->> {
->>          struct super_block *sb;
->>
->>          sb =3D bdev_super_lock(bdev, false);
->>          if (!sb)
->>                  return;
->>
->> 	if (sb->s_op->remove_bdev) {
->> 		sb->s_op->remove_bdev(sb, bdev, surprise);
+Everyone here seems to be assuming that the filesystem *must* take
+an active superblock reference to process a device removal event,
+and that is *simply not true*.
 
-The only concern here is, remove_bdev() will handle two different things:
+bcachefs does not use get_bdev_super() or an active superblock
+reference to process ->mark_dead events.
 
-- Mark the target devices as missing and continue working
-   Of course that's when the fs can handle it.
+It has it's own internal reference counting on the struct bch_fs
+attached to the bdev that ensures the filesystem structures can't go
+away whilst ->mark_dead is being processed.  i.e. bcachefs is only
+dependent on the bdev->bd_holder_lock() being held when
+->mark_dead() is called and does not rely on the VFS for anything.
 
-- Shutdown
-   If the fs can not handle it.
+This means that device removal processing can be performed
+without global filesystem/VFS locks needing to be held. Hence issues
+like re-entrancy deadlocks when there are concurrent/cascading
+device failures (e.g. a HBA dies, taking out multiple devices
+simultaneously) are completely avoided...
 
-And if the fs has to shutdown, we're missing all the shrinks in the=20
-shutdown path.
+It also avoids the problem of ->mark_dead events being generated
+from a context that holds filesystem/vfs locks and then deadlocking
+waiting for those locks to be released.
 
-Thus I'd prefer the remove_bdev() to have a return value, so that we can=
-=20
-fallback to shutdown path if the remove_bdev() failed.
+IOWs, a multi-device filesystem should really be implementing
+->mark_dead itself, and should not be depending on being able to
+lock the superblock to take an active reference to it.
 
-This also aligns more towards Brauner's idea that we may want to expose=20
-if the fs can handle the removal.
+It should be pretty clear that these are not issues that the generic
+filesystem ->mark_dead implementation should be trying to
+handle.....
 
-Thanks,
-Qu
+> The shutdown method is implemented only by block-based filesystems and
+> arguably shutdown was always a misnomer because it assumed that the
+> filesystem needs to actually shut down when it is called.
 
->> 		return;
->> 	}
->=20
-> It feels odd but I could live with this, particularly since that's the
-> direction that brauner is laying down. :)
->=20
-> Do we still need to super_unlock_shared here?
->=20
-> --D
->=20
->>
->> 	if (!surprise)
->> 		sync_filesystem(sb);
->> 	shrink_dcache_sb(sb);
->> 	evict_inodes(sb);
->> 	if (sb->s_op->shutdown)
->> 		sb->s_op->shutdown(sb);
->>
->> 	super_unlock_shared(sb);
->> }
->>
->>> As an aside:
->>> 'twould be nice if we could lift the *FS_IOC_SHUTDOWN dispatch out of
->>> everyone's ioctl functions into the VFS, and then move the "I am dead"
->>> state into super_block so that you could actually shut down any
->>> filesystem, not just the seven that currently implement it.
->>
->> Yes, I should find time to revive that patch series... It was not *that=
-*
->> hard to do.
->>
->> 								Honza
->> --=20
->> Jan Kara <jack@suse.com>
->> SUSE Labs, CR
->>
+Shutdown was not -assumed- as the operation that needed to be
+performed. That was the feature that was *required* to fix
+filesystem level problems that occur when the device underneath it
+disappears.
 
+->mark_dead() is the abstract filesystem notification from the block
+device, fs_bdfev_mark_dead() is the -generic implementation- of the
+functionality required by single block device filesystems. Part of
+that functionality is shutting down the filesystem because it can
+*no longer function without a backing device*.
+
+multi-block device filesystems require compeltely different
+implementations, and we already have one that -does not use active
+superblock references-. IOWs, even if we add ->remove_bdev(sb)
+callout, bcachefs will continue to use ->mark_dead() because low
+level filesystem device management isn't (and shouldn't be!)
+dependent on high level VFS structure reference counting....
+
+> IOW, we made
+> it so that it is a call to action but that doesn't have to be the case.
+> Calling it ->remove_bdev() is imo the correct thing because it gives
+> block based filesystem the ability to handle device events how they see
+> fit.
+
+And that's exactly what ->mark_dead already provides. 
+
+And, as I've pointed out above, multi-device filesystems don't
+actually need actively referenced superblocks to process device
+removal notifications. Hence ->mark_dead is the correct interface
+for them to use.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
