@@ -1,84 +1,112 @@
-Return-Path: <linux-ext4+bounces-8904-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8905-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C89CAFEF2B
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 18:51:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9FBAFEF3A
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 18:54:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E64917C209
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 16:51:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0610D189EEF6
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 16:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CCF1221286;
-	Wed,  9 Jul 2025 16:49:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EB1221FC0;
+	Wed,  9 Jul 2025 16:51:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="jOVm9/b8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ErIX8iPf"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF6F2236EB
-	for <linux-ext4@vger.kernel.org>; Wed,  9 Jul 2025 16:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092E022126A
+	for <linux-ext4@vger.kernel.org>; Wed,  9 Jul 2025 16:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752079761; cv=none; b=R+0lkg0RyNibo/xi6nkbOn/7J03ZewZD+bQWWHg3OFCQgQiXco3aU2qVv8j7W3OFOCN0MioHjLjzxY6n/FXplllP0ap9S0V9ozKUtFfyLATF42WPngrNu1f66qyqBI4c0vjU7i0fEUuTH+zJpLHZjId1WlR7QiTAUZP7kD6MO+c=
+	t=1752079914; cv=none; b=QhUMaim2hhZEB5qiRYQYDFP/J++/kYx9CjnadNw9myZYs4V9xNY/54p3tCi5Bch60FYVoBW4TekQXo4iU/fMxLSfGgZkMgigbm9GRrinmesZyPOUcs4tj0fiMOh+Em4XxzCoejpTS4WI6b7G2hpoiQY4HaodeLHEYzRtJAE0WO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752079761; c=relaxed/simple;
-	bh=neSm+DA9Rm3hRLGNHaOZJCT/GifDO6n3DNx7t808w6Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LWykz6Y9pLVWJXfJLS7zIVspBixwBA8wycMr/tjzhCscF+hB69SLeXyf85tcyjOt6EH1foTzkaDT/PKwEV9Yd7gTgWtar3yOQkvFpppFyvN9WfgXKo792cE0nrE3z/39v1VK8Eb08wOyHSubKDFz/jcAKadEeEvtzzjgGzDl99s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=jOVm9/b8; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-108-49-45-64.bstnma.fios.verizon.net [108.49.45.64])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 569Gn1bw016489
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 9 Jul 2025 12:49:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1752079743; bh=u3WxDOUMKnT55e7i3pnhI69PAg3R31+4a1AwDVnXRDA=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=jOVm9/b8VJ08biSybgjFEWx6pa+6XjYIjFi4ecVLdRQgpm/BubyswjWVM07Kz6aba
-	 MyH/voSJ36AsDWzz6+k5civxOZGjUB+a2U8lCtbQ5KNpKZp/ytVDNcmT94sMw71h8Y
-	 jlDUzwCNuwQHWtnJfKVshqqdqN+wP05Dyk7BQb6iEbhpKJVXY7Famx7mozyfIUIOR1
-	 fjXvZEzjjc+u9JEwl+pewlpDCxmeuPaqkJgEhXRher1dskiSHu8d/JOnZvCWP0/eQF
-	 pqMqjSqNhBAr7FSbO482MEu7EXJ4W5HC0n8EjPq/bC77DvOLx1WQUlRqQ0mSOsnerA
-	 UdWeVhd05XglQ==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 50FD12E00D5; Wed, 09 Jul 2025 12:49:01 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, Samuel Smith <satlug@net153.net>
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH] e2scrub: reorder exit status check after calling lvremove
-Date: Wed,  9 Jul 2025 12:48:55 -0400
-Message-ID: <175207972881.202310.6505227584562745829.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250705033821.3695205-1-satlug@net153.net>
-References: <20250705033821.3695205-1-satlug@net153.net>
+	s=arc-20240116; t=1752079914; c=relaxed/simple;
+	bh=e7l99A14nbjyz9j5qEDX3CAkhXKclAN64tWMh80wG8w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rak+u7v3glUXIAwF8SDuiQTMmHwcTxV4TtesVdatDxeJwyH9i9Jsm4v38zxLmV8GEdPGuzZvOdZIR7R+BK7MF9BfIk6PucdqCo6zDsm+WB5dpfvxZcmZbQpFTmW9H1EGSkZbKI1Jj6myZe3hFKxWjvJ+1bZB8PSnjWfkfuGWb3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ErIX8iPf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77796C4CEEF;
+	Wed,  9 Jul 2025 16:51:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752079913;
+	bh=e7l99A14nbjyz9j5qEDX3CAkhXKclAN64tWMh80wG8w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ErIX8iPf5J2TM5eoI2dKpby9lZiRcyjsDwbh8SgB6iW/Rw6hfgY3sX/HnATA0Sc92
+	 FaMXEXxPlZpH0gDdndRflaDNkxWqWzgQM0tUDd5rvhmBlsFcLDOl1Ws1WWFkGQ5oNC
+	 zFqAjEg00k0z/+0jdWPDnOvM86/uJT6aWgJ7GmeXPMwgoT+H/f+5SsSqtuwem9Sjim
+	 1BuS802nkt9kL8e+/Dw90i5BccVmdUfZfi6vmPVmoUph+4gcCkcAchp6kAT32eneSk
+	 9CbFYcVowhqm/mIHqSfVjeZytq+EtIaKp5PxBDNzL5cC3IteRtg7iUZu3UjdseV3p3
+	 BAIOh65tuCEUQ==
+Date: Wed, 9 Jul 2025 09:51:52 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org
+Subject: [PATCH 11/8] fuse2fs: fix race condition in op_destroy
+Message-ID: <20250709165152.GE2672022@frogsfrogsfrogs>
+References: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 
+From: Darrick J. Wong <djwong@kernel.org>
 
-On Fri, 04 Jul 2025 22:38:21 -0500, Samuel Smith wrote:
-> Checking for snapshot device existence resets the status code in $?.
-> Reording the conditions will allow the retry loop to work properly.
-> 
-> 
+On a regular fuse server (i.e. one not running in fuseblk mode), libfuse
+synthesizes and dispatches a FUSE_DESTROY command as soon as the event
+dispatch loop terminates after the kernel disconnects /dev/fuse.
+Unfortunately, this is done without coordinating with any other threads
+that may have already received a real FUSE command from the kernel.
 
-Applied, thanks!
+In other words, FUSE_DESTROY can run in parallel with other
+fuse_operations.  Therefore, we must guard the body of this function
+with the BKL just like any other fuse operation or risk races within
+libext2fs.  If we're lucky, we trash the ext2_filsys state and
+generic/488 will crash.
 
-[1/1] e2scrub: reorder exit status check after calling lvremove
-      commit: fb9b2e7c9cf90e2c4eabcf1cffbde443e8eeb360
+[23512.452451] [U] fuse: reading device: Software caused connection abort
+[23512.453886] [U] fuse: reading device: Software caused connection abort
 
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+If we're not lucky, it corrupts the ondisk filesystem resulting in a
+e2fsck complaining as well.
+
+Cc: <linux-ext4@vger.kernel.org> # v1.43
+Fixes: 81cbf1ef4f5dab ("misc: add fuse2fs, a FUSE server for e2fsprogs")
+Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+---
+ misc/fuse2fs.c |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index ff8d4668cee217..f0250bd1cec2ec 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -728,7 +728,10 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
+ 		translate_error(global_fs, 0, EXT2_ET_BAD_MAGIC);
+ 		return;
+ 	}
++
++	pthread_mutex_lock(&ff->bfl);
+ 	fs = ff->fs;
++
+ 	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
+ 	if (fs->flags & EXT2_FLAG_RW) {
+ 		fs->super->s_state |= EXT2_VALID_FS;
+@@ -763,6 +766,8 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
+ 		uuid_unparse(fs->super->s_uuid, uuid);
+ 		log_printf(ff, "%s %s.\n", _("unmounting filesystem"), uuid);
+ 	}
++
++	pthread_mutex_unlock(&ff->bfl);
+ }
+ 
+ static void *op_init(struct fuse_conn_info *conn
 
