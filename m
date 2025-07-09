@@ -1,134 +1,118 @@
-Return-Path: <linux-ext4+bounces-8899-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8900-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7A32AFDCCB
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 03:13:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D70AAFDD96
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 04:42:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD20E1BC806B
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 01:14:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 760B13BDBFE
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 02:42:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9571514E4;
-	Wed,  9 Jul 2025 01:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3946C1D54F7;
+	Wed,  9 Jul 2025 02:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UhSl7kPe"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XiaZ0XsF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02EC26290;
-	Wed,  9 Jul 2025 01:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1251C32FF;
+	Wed,  9 Jul 2025 02:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752023625; cv=none; b=mey4HguE3sUvXTQKg/L7M4UVWJFNJjQXqilRhpDXBm4YD/MIfRcWmqViQn/rmlR2qD4bq+LPFrQ93S2KjwkKc5NqU1ElXIHMhAHKeZSN+gV7kFA6NhKdHAecYsxZ0h4/Lt+Ib/5eyLsuIYwNKyS/r3G4BBzyhnFFDTjLexSKZpI=
+	t=1752028952; cv=none; b=Vep14L8kszlLu+mhxCY9eEPAytP0sGEF5QkCLmoREdViu990W2Ctu/QMKqCgsFoRERFRvd/Ir2/ra3fS8j/ZoA+LWKvQ2/NiQwwPGzuBqAAa8QtIzXc57E0dDgqUe02JwEVHnPjJIbTkIFIkUsljyi+wZnvahWDArTzjUiR7Ja0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752023625; c=relaxed/simple;
-	bh=rLljmfQ+Dh78X1UmJ3f7KKQyZnFs632DgJ+Uzdz30cI=;
+	s=arc-20240116; t=1752028952; c=relaxed/simple;
+	bh=xglNHnUKEdCNHWEZUbyP1kgYRLDTNgnIgCGRAbmV9TY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GUuixtfPoGh2dHR4cV9PFPvJqih4pZcIzUpgmzTxPrrPZmqKKVXgJsVg1vbmDtLVTIZnr7q53e+36RtVSe9YDhnDR65RNeP9zG1DRm9CabPk7IbuZ9gGmx2HdtgNkzO3G8SI/VAmQJgo2GZfenhuIDfyoUi1gkFZrPIGZpN1F3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UhSl7kPe; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 8 Jul 2025 21:13:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752023610;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Cy2fv3s6ERO5d4cU+IzLOG038BuHbFit+Fwtwintg6A=;
-	b=UhSl7kPeAE9NdrlN6dm0fuhSYJ+U/aw9XBq4CN7FGW9Phojz8I1CGRLbLw8wleVPz5RQHI
-	5HbOIc7YTA8sPAuR3KhNCRrnFyl/8xtzRiOj7LAuxJ4uH51PZVZdOGEAm0yLDs3pWF5hsV
-	wcT3hxFix0OyWJnAqgDKJsCyzR7eNb8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Dave Chinner <david@fromorbit.com>, 
-	Christian Brauner <brauner@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, Qu Wenruo <wqu@suse.com>, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, 
-	jack@suse.cz, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
- remove_bdev()
-Message-ID: <c6zp6k7ozn7idiyt4shxhwwe2hoprkgdzq66eau5w4jlgbuwta@od2atq4kexoj>
-References: <cover.1751589725.git.wqu@suse.com>
- <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
- <aGxSHKeyldrR1Q0T@dread.disaster.area>
- <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
- <20250708004532.GA2672018@frogsfrogsfrogs>
- <20250708-geahndet-rohmaterial-0419fd6a76b3@brauner>
- <aG2i3qP01m-vmFVE@dread.disaster.area>
- <00f5c2a2-4216-4eeb-b555-ef49f8cfd447@gmx.com>
- <lcbj2r4etktljckyv3q4mgryvwqsbl7pwe6sqdtyfwgmunhkov@4oinzvvnt44s>
- <eb7c3b1c-b5c0-4078-9a88-327f1220cae8@gmx.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FVX8+WMklpTv+UGAWdz0hEA5qTnOhTrgDKXl3rgxTQ9qYctCnG3WLa6jD57QKvd5qLx1qyhmGQfJngYNq5V/wJkGrIHHGRJUg733mbyppElJomVhoPSR7KtV14jva2kPhr3kZKsXOGm2UUfB+PHJPsN31hk0aRpmwv47cgJGDsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XiaZ0XsF; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1752028951; x=1783564951;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xglNHnUKEdCNHWEZUbyP1kgYRLDTNgnIgCGRAbmV9TY=;
+  b=XiaZ0XsFlZdrVXZKf6axemcA1BeWynOkjxaDjNcXA26aqWZBeaS5rqsh
+   5hvY3VCx2Agsj+rlvGSDDaxFcuv5TuN7R51mvp/ZAUQ5wwgsG478Z4nfn
+   1FR48p+t+DlbUJjBMJlx92MFJzO6XWIA9I+rMTtoorxZF6sdn25Xmrdcx
+   SjW1Z0MrZza2ok7hYfZFQ5Koip6n5VaiSVa8GcFDKQ86cHJwuGFp+F/AZ
+   wOcQ5wBUK0oQzmC7hphMdKY+09myTPpM9n/kXjdROOmaIFFVAxf27TQTt
+   aNEMxxXBM1c59i/4XgOFCEob+TcmmkwDuUgrKNAUUqJkooJhQPHjyJ1fv
+   Q==;
+X-CSE-ConnectionGUID: DXkI2VHrTAqqoZ8WFmJprQ==
+X-CSE-MsgGUID: nQ/0cMemRyG3SLd9qhqrNQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11487"; a="71861557"
+X-IronPort-AV: E=Sophos;i="6.16,298,1744095600"; 
+   d="scan'208";a="71861557"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2025 19:42:30 -0700
+X-CSE-ConnectionGUID: tytLHidlQRG86rBxSg+7Kw==
+X-CSE-MsgGUID: TUVthDdhTX+U4YWnIEJPfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,298,1744095600"; 
+   d="scan'208";a="161204389"
+Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 08 Jul 2025 19:42:27 -0700
+Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uZKlN-0002zX-0w;
+	Wed, 09 Jul 2025 02:42:25 +0000
+Date: Wed, 9 Jul 2025 10:42:13 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yuwen Chen <ywen.chen@foxmail.com>, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org, Yuwen Chen <ywen.chen@foxmail.com>
+Subject: Re: [PATCH] f2fs: improve the performance of f2fs_lookup
+Message-ID: <202507091026.yb48YXt5-lkp@intel.com>
+References: <tencent_0D8BB6ABAB0880DB7BFCCE35EDBC3DCFF505@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eb7c3b1c-b5c0-4078-9a88-327f1220cae8@gmx.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <tencent_0D8BB6ABAB0880DB7BFCCE35EDBC3DCFF505@qq.com>
 
-On Wed, Jul 09, 2025 at 10:25:08AM +0930, Qu Wenruo wrote:
-> 在 2025/7/9 10:05, Kent Overstreet 写道:
-> > Consider that the thing that has a block device open might not even be a
-> > filesystem, or at least a VFS filesystem.
-> > 
-> > It could be a stacking block device driver - md or md - and those
-> > absolutely should be implementing .mark_dead() (likely passing it
-> > through on up the stack), or something else entirely.
-> > 
-> > In bcachefs's case, we might not even have created the VFS super_block
-> > yet: we don't do that until after recovery finishes, and indeed we can't
-> > because creating a super_block and leaving it in !SB_BORN will cause
-> > such fun as sync calls to hang for the entire system...
-> > 
-> 
-> Not related to the series, but IIRC if s_flags doesn't have SB_ACTIVE set,
-> things like bdev_super_lock() won't choose that superblock, thus won't call
-> ->sync() callback through the bdev callbacks.
-> 
-> And btrfs also follows the same scheme, only setting SB_ACTIVE after
-> everything is done (including replaying the log etc), and so far we haven't
-> yet hit such sync during mount.
+Hi Yuwen,
 
-Well, how long can that take? Have a look at iterate_supers(), it's
-something to be wary of.
+kernel test robot noticed the following build warnings:
 
-Fixing the fs/super.c locking is something I was looking at, it's doable
-but it'd be a giant hassle - for bcachefs it wasn't worth it, bcachefs
-has preexisting reasons for wanting to avoid the vfs superblock
-dependency.
+[auto build test WARNING on jaegeuk-f2fs/dev-test]
+[also build test WARNING on jaegeuk-f2fs/dev brauner-vfs/vfs.all linus/master v6.16-rc5 next-20250708]
+[cannot apply to tytso-ext4/dev]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Anyways - the VFS trying to own .mark_dead() is a layering violation.
+url:    https://github.com/intel-lab-lkp/linux/commits/Yuwen-Chen/f2fs-improve-the-performance-of-f2fs_lookup/20250708-184528
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git dev-test
+patch link:    https://lore.kernel.org/r/tencent_0D8BB6ABAB0880DB7BFCCE35EDBC3DCFF505%40qq.com
+patch subject: [PATCH] f2fs: improve the performance of f2fs_lookup
+config: arc-randconfig-001-20250709 (https://download.01.org/0day-ci/archive/20250709/202507091026.yb48YXt5-lkp@intel.com/config)
+compiler: arc-linux-gcc (GCC) 8.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250709/202507091026.yb48YXt5-lkp@intel.com/reproduce)
 
-        VFS
-------------------
-        FS
-------------------
-        BLOCK
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202507091026.yb48YXt5-lkp@intel.com/
 
-By default, the "FS" layer should be considered a black box by both the
-block layer and VFS; reaching across that and assuming filesystem
-behavior is a good way to paint yourself into a corner.
+All warnings (new ones prefixed by >>):
 
-It's seductive because most filesystems are single device filesystems,
-and for that case it makes total sense to provide helpers for
-convenience, given that there's not much room for behaviour to deviate
-in the single device case.
+>> Warning: fs/libfs.c:1908 function parameter 'prealloc' not described in 'generic_ci_match'
 
-But in the multi device case: the behaviour is completely up to the
-filesystem - in general we don't shut down the entire filesystem if a
-single block device goes dead, if we're redundant we can just drop that
-device and continue.
-
-And if you're thinking you want to make use of locking provided by the
-VFS - I would warn away from that line of thinking too, mixing up
-locking from different layers creates all sorts of fun...
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
