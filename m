@@ -1,189 +1,201 @@
-Return-Path: <linux-ext4+bounces-8901-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8902-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3089BAFE1A4
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 09:53:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D129CAFE321
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 10:49:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F0864E779E
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 07:53:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE44A3A5F72
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 08:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14985271446;
-	Wed,  9 Jul 2025 07:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CAA2280308;
+	Wed,  9 Jul 2025 08:49:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Hs39won/"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PP3waaJf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nmRra7xs";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PP3waaJf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nmRra7xs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0EB1E0E0B
-	for <linux-ext4@vger.kernel.org>; Wed,  9 Jul 2025 07:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C24027EC7C
+	for <linux-ext4@vger.kernel.org>; Wed,  9 Jul 2025 08:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752047618; cv=none; b=q/G1BDZrEsrucYF7/5zzeD+lBUUhnNXFojPSpEuVmxVITfITLsHykp2XjVq8hKK9O8uBogvyN/8NJ7PSanLcPeEs6tRpNnQB0ReAVqccXbCq8giS+b7m3c9Cm3gUJ87Z54j2oXtJtogqi4VTfOv9ML8LDQJxoCxi0wNgNlveS78=
+	t=1752050945; cv=none; b=KkCXZ2WH1FcLkYoX3haRK7ACJjeI2S0jlMUuZxRpnHyha9VD+73v1q14y2bUv60aT2XC2KzDyt1kJ2C3UqKOy1qCTpIRnO4HFk97/P79JuNexplZ3i1dmWa2QlDWTUUUIpCRC4QbhY9eBvE38+h79npUSHsLvBgjTTLDEuoiCUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752047618; c=relaxed/simple;
-	bh=YiRTViN6sFugfcWHy68JCjyr4GwLcTomgBIK3NlTZ5g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tq1YMDH/TaX3HoIO9+zd59pRuTSQ2JrXETUdBZBxXWyKnY0rBMJLspQv7T/K/xirl96QhCfeKF0PFdj7BlN/fljjmHGXSE7q15jCiKDKaGsxo9LZfg78+pkeqjL+VkqW8zuseOxlgtJD+aJhaIuKOTYk6uCgYQ23LXO8pC0o3uQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Hs39won/; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2353a2bc210so51301125ad.2
-        for <linux-ext4@vger.kernel.org>; Wed, 09 Jul 2025 00:53:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1752047616; x=1752652416; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZSRb/f3D+1mlx48D0CzDoRw0M54T1sMdT08EpdKIp/M=;
-        b=Hs39won/zvmbzw7jPrJ/Ko+gAug58ewzgcc0XKbhSxmHW9jY9cd3uFIG/8I3bIxf+5
-         3IAx76Y9QtLDuxp1ARX62YqK34JYaWH38QSz366OuPnTqLBR+284IARV3z+3WZIT1TW7
-         iVZeIXavhpuM9XfKyp7jInwXRkPhhF8NoyXFRazp+45JOlQTkUioNK2Udv0ooUvviyZO
-         Hx5Pj+dhRQ32JtK2zBk8oeRwH1T+tNcjt5jgtDlQygIU6NXzHEOpIh2PcbUNMQneo3Ms
-         7pYsTppgfVScqikkmBw4+mm6/C59P6lWnt+njrobEaSUpwjKmuk5amLpTy63rLoC0kw+
-         /JWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752047616; x=1752652416;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZSRb/f3D+1mlx48D0CzDoRw0M54T1sMdT08EpdKIp/M=;
-        b=o89jW6AdWwrKxVznu/DDtObzL2a+O7dwwhT2U3BN2g0wOsrd1+8M46vFk6VCvc6FNK
-         e5z74F+GZYuqstvege2DLRGVl8dHZyd/wuyHGVcURPUPchKQPPcRFu2T+KRj2/oYVPZV
-         +mp+9uQQta6X57ggmV00MBKFZ41ZJXt+G7ASAK6bTMOAaGP0/rLtxdzOgWieVXHgCo7f
-         ASoY8QPgAxkdP8ONuRNRy7k4BPsBQx3hn67sRRKQfQFlYWhhScxMFO9jsNk7vB+7FjOp
-         buoI340ObWN5kYu8M5rpP8e65/BDF0do4JHulWdsc3i+V6UL7yfT79+4rMo9MWz0km2s
-         zsFg==
-X-Gm-Message-State: AOJu0Yzih/1X8c/1ZHIJj6s3DbpU05IAPliwz1Z3fnKQYcNwYpwFLrM1
-	2xtdaHzCA8CqTjrvSA49bJ13D0nC0Dpi4Uxb6sI0pddALlSdgpMMHU+j6r6cB33RyJSAYJQrEd1
-	Unl73amQfiWtH4zoVEg53se7AYiJcaV5cDe0tffeM1w==
-X-Gm-Gg: ASbGncucr7VWvfnqgrkf66ni1I0Th0MXYOGsad0vjjraYwj0dQ5UnvgtKKX2/jkIjw+
-	2R5EI0FOB1RkoYws5s8evWGZXCHJ4WvotJDPeZb0patPFpIUDTKBNxBEYTu1iYKtcz/GVgIFVYu
-	VFBU8yNVCTprOdaalF6Okh1YKdu+68sAwKv33Mv7atVPq695bovF4LeNCEiLb9lpyaG2ogTYpYo
-	qcWCVxg2Nohjr8=
-X-Google-Smtp-Source: AGHT+IFTpw9IyFVln9jcj7sOWtr3g6epVrGGfan92wq+FaJIONZdCE8t1/jqdXFlbGoqLQcJM938+Gi2RQnDj4EcuQQ=
-X-Received: by 2002:a17:902:f205:b0:23d:ddf0:c908 with SMTP id
- d9443c01a7336-23dddf0ca78mr6375655ad.6.1752047616451; Wed, 09 Jul 2025
- 00:53:36 -0700 (PDT)
+	s=arc-20240116; t=1752050945; c=relaxed/simple;
+	bh=4ODZanswgrYQG5OA9IzTa9E2LQFRsS+RoJ+X0cbEXL0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q9Xz+oCtDWsz6Uc9xBsc6u5iWE4meA1NmKaIfx2+No43k9edHKgY5gqv9LYMflIm3hSTbvLntvGXxtFbAUGdEhfXjwo5ZEPdi2a3L9NCE6VkIH7NK3tbEbzmjmRSrefP/SUXwSEgTc8RbzN8se/J1nRjS8UWMJDaDUk+KXYMB8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PP3waaJf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nmRra7xs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PP3waaJf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nmRra7xs; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 596EE1F455;
+	Wed,  9 Jul 2025 08:49:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752050940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MRKJ1ixeOLyaSLzVhMbH2GLj8DfHL3951lwOdPjryXk=;
+	b=PP3waaJfajSO1SmeUGpWD7ATOct9loIXgBHNo60Svow71x0S7gVCrf51u0zVDHgbNpqGht
+	hWmNX/ChzhoulDXqPYqyMYE7fZHQplvwaZlYgEY7D9OZ5lxflNyQeA9+ADUVnBCwrTZqPO
+	scaeJq32wkMnGC+nqRZuw5qSSBZfqAI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752050940;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MRKJ1ixeOLyaSLzVhMbH2GLj8DfHL3951lwOdPjryXk=;
+	b=nmRra7xs1GchQ2OWkojrleEtr4cHkjmxAY0QlAYmQW84jJvSq0O0IxtKQWKJvAVi3aKd8Y
+	D6V2namf/QneiQCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752050940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MRKJ1ixeOLyaSLzVhMbH2GLj8DfHL3951lwOdPjryXk=;
+	b=PP3waaJfajSO1SmeUGpWD7ATOct9loIXgBHNo60Svow71x0S7gVCrf51u0zVDHgbNpqGht
+	hWmNX/ChzhoulDXqPYqyMYE7fZHQplvwaZlYgEY7D9OZ5lxflNyQeA9+ADUVnBCwrTZqPO
+	scaeJq32wkMnGC+nqRZuw5qSSBZfqAI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752050940;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MRKJ1ixeOLyaSLzVhMbH2GLj8DfHL3951lwOdPjryXk=;
+	b=nmRra7xs1GchQ2OWkojrleEtr4cHkjmxAY0QlAYmQW84jJvSq0O0IxtKQWKJvAVi3aKd8Y
+	D6V2namf/QneiQCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 40DDD13757;
+	Wed,  9 Jul 2025 08:49:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zULRD/wsbmhSfwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 09 Jul 2025 08:49:00 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id DEE6BA09D7; Wed,  9 Jul 2025 10:48:59 +0200 (CEST)
+From: Jan Kara <jack@suse.cz>
+To: Ted Tso <tytso@mit.edu>
+Cc: <linux-ext4@vger.kernel.org>,
+	Baolin Liu <liubaolin12138@163.com>,
+	Zhi Long <longzhi@sangfor.com.cn>,
+	Jan Kara <jack@suse.cz>
+Subject: [PATCH v4 RESEND] ext4: Make sure BH_New bit is cleared in ->write_end handler
+Date: Wed,  9 Jul 2025 10:48:32 +0200
+Message-ID: <20250709084831.23876-2-jack@suse.cz>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250707140814.542883-1-yi.zhang@huaweicloud.com>
-In-Reply-To: <20250707140814.542883-1-yi.zhang@huaweicloud.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 9 Jul 2025 13:23:25 +0530
-X-Gm-Features: Ac12FXxDkre9nFgz-yfBFb9RvXNEyb5lmt12udtMlCfaF0Z0wAperRuxm5yhZlY
-Message-ID: <CA+G9fYvXTCK5PHSazWkE6yww1QJA=wwb+1xV0udMSXgc63P_6A@mail.gmail.com>
-Subject: Re: [PATCH v4 00/11] ext4: fix insufficient credits when writing back
- large folios
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	jack@suse.cz, ojaswin@linux.ibm.com, sashal@kernel.org, jiangqi903@gmail.com, 
-	yi.zhang@huawei.com, libaokun1@huawei.com, yukuai3@huawei.com, 
-	yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2773; i=jack@suse.cz; h=from:subject; bh=4ODZanswgrYQG5OA9IzTa9E2LQFRsS+RoJ+X0cbEXL0=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBobizfAeh0C9lgkyny+JJs7UdNlOoS41aHsIREAAEU /IZTChWJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCaG4s3wAKCRCcnaoHP2RA2adtB/ wMrIUj2i4pLCq500sxoFMHjrVth0EFvZIK48A/nrGu6DDIDoD40Y++fgoeibnNO8fOrpWNAfuoOxOx EowST4UkVyHEWRSUYRyAyYA0i34xgASnGS9xeztk2vp0NPrrjGudEF7a3Tl6J8RTZcXRSszlzZKr8n +dElYtvcgrwWbxBEWDYBPc2fwLHr9Lwbtr59ApRUzTmmZndF77eUq8VDPV+d4Ji7Bgsq2bTF0oL7/q 2ROnqYMFuTw8RgRu3nSPQGHconr8H/De8MVLvr4L/lsWwV0v1A2gUjUjxMOVfxMO+c3LN+v3KmNTzS 0bqOilbUtKsJ2Y+pnbsGZm5ZlHn+E5
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,163.com,sangfor.com.cn,suse.cz];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_ENVRCPT(0.00)[163.com]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-On Mon, 7 Jul 2025 at 19:53, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
->
-> From: Zhang Yi <yi.zhang@huawei.com>
->
-> Changes since v3:
->  - Fix the end_pos assignment in patch 01.
->  - Rename mpage_submit_buffers() to mpage_submit_partial_folio(), and
->    fix a left shift out-of-bounds problem in patch 03.
->  - Fix the spelling errors in patch 04.
->  - Add a comment for NULL 'handle' test in
->    ext4_journal_ensure_extent_credits().
->  - Add patch 11 to limit the maximum order of the folio to 2048 fs
->    blocks, prevent the overestimation of reserve journal credits during
->    folios write-back.
-> Changes since v2:
->  - Convert the processing of folios writeback in bytes instead of pages.
->  - Refactor ext4_page_mkwrite() and ensure journal credits in
->    ext4_block_write_begin() instead of in _ext4_get_block().
->  - Enhance tracepoints in ext4_do_writepages().
->  - Replace the outdated ext4_da_writepages_trans_blocks() and
->    ext4_writepage_trans_blocks() with the new helper used to reserve
->    credits for a single extent.
-> Changes since v1:
->  - Make the write-back process supports writing a partial folio if it
->    exits the mapping loop prematurely due to insufficient sapce or
->    journal credits, it also fix the potential stale data and
->    inconsistency issues.
->  - Fix the same issue regarding the allocation of blocks in
->    ext4_write_begin() and ext4_page_mkwrite() when delalloc is not
->    enabled.
->
-> v3: https://lore.kernel.org/linux-ext4/20250701130635.4079595-1-yi.zhang@huaweicloud.com/
-> v2: https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
-> v1: https://lore.kernel.org/linux-ext4/20250530062858.458039-1-yi.zhang@huaweicloud.com/
->
-> Original Description
->
-> This series addresses the issue that Jan pointed out regarding large
-> folios support for ext4[1]. The problem is that the credits calculation
-> may insufficient in ext4_meta_trans_blocks() when allocating blocks
-> during write back a sufficiently large and discontinuous folio, it
-> doesn't involve the credits for updating bitmap and group descriptor
-> block. However, if we fix this issue, it may lead to significant
-> overestimation on the some filesystems with a lot of block groups.
->
-> The solution involves first ensure that the current journal transaction
-> has enough credits when we mapping an extent during allocating blocks.
-> Then if the credits reach the upper limit, exit the current mapping
-> loop, submit the partial folio and restart a new transaction. Finally,
-> fix the wrong credits calculation in ext4_meta_trans_blocks(). Please
-> see the following patches for details.
+Currently we clear BH_New bit in case of error and also in the standard
+ext4_write_end() handler (in block_commit_write()). However
+ext4_journalled_write_end() misses this clearing and thus we are leaving
+stale BH_New bits behind. Generally ext4_block_write_begin() clears
+these bits before any harm can be done but in case blocksize < pagesize
+and we hit some error when processing a page with these stale bits,
+we'll try to zero buffers with these stale BH_New bits and jbd2 will
+complain (as buffers were not prepared for writing in this transaction).
+Fix the problem by clearing BH_New bits in ext4_journalled_write_end()
+and WARN if ext4_block_write_begin() sees stale BH_New bits.
 
-I have applied this patch set on top of the Linux next tree and performed
-testing. The previously reported regressions [a] are no longer observed.
-Thank you for providing the fix.
+Reported-by: Baolin Liu <liubaolin12138@163.com>
+Reported-by: Zhi Long <longzhi@sangfor.com.cn>
+Fixes: 3910b513fcdf ("ext4: persist the new uptodate buffers in ext4_journalled_zero_new_buffers")
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/inline.c | 2 ++
+ fs/ext4/inode.c  | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Hello Ted,
 
-Reference link:
-[a] https://lore.kernel.org/all/CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com/
+when clearing branches in my devel tree I've found this fix which I think
+has fallen through the cracks so I'm resending it.
 
->
-> [1] https://lore.kernel.org/linux-ext4/ht54j6bvjmiqt62xmcveqlo7bmrunqs4ji7wikfteftdjijzek@7tz5gpejaoen/
->
-> Thanks,
-> Yi.
->
-> Zhang Yi (11):
->   ext4: process folios writeback in bytes
->   ext4: move the calculation of wbc->nr_to_write to mpage_folio_done()
->   ext4: fix stale data if it bail out of the extents mapping loop
->   ext4: refactor the block allocation process of ext4_page_mkwrite()
->   ext4: restart handle if credits are insufficient during allocating
->     blocks
->   ext4: enhance tracepoints during the folios writeback
->   ext4: correct the reserved credits for extent conversion
->   ext4: reserved credits for one extent during the folio writeback
->   ext4: replace ext4_writepage_trans_blocks()
->   ext4: fix insufficient credits calculation in ext4_meta_trans_blocks()
->   ext4: limit the maximum folio order
->
->  fs/ext4/ext4.h              |   4 +-
->  fs/ext4/extents.c           |   6 +-
->  fs/ext4/ialloc.c            |   3 +-
->  fs/ext4/inline.c            |   6 +-
->  fs/ext4/inode.c             | 349 +++++++++++++++++++++++-------------
->  fs/ext4/move_extent.c       |   3 +-
->  fs/ext4/xattr.c             |   2 +-
->  include/trace/events/ext4.h |  47 ++++-
->  8 files changed, 272 insertions(+), 148 deletions(-)
->
-> --
-> 2.46.1
+Changes since v3 (https://lore.kernel.org/all/20241113175550.GA462442@mit.edu):
+  * Clear stale BH_New flags resulting from inline->extent data conversion
 
---
-Linaro LKFT
-https://lkft.linaro.org
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 3536ca7e4fcc..0d3cf0ca5c2a 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -606,6 +606,7 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
+ 	} else
+ 		ret = ext4_block_write_begin(handle, folio, from, to,
+ 					     ext4_get_block);
++	clear_buffer_new(folio_buffers(folio));
+ 
+ 	if (!ret && ext4_should_journal_data(inode)) {
+ 		ret = ext4_walk_page_buffers(handle, inode,
+@@ -867,6 +868,7 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
+ 		return ret;
+ 	}
+ 
++	clear_buffer_new(folio_buffers(folio));
+ 	folio_mark_dirty(folio);
+ 	folio_mark_uptodate(folio);
+ 	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 54bdd4884fe6..aa56af4a92ad 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1049,7 +1049,7 @@ int ext4_block_write_begin(handle_t *handle, struct folio *folio,
+ 			}
+ 			continue;
+ 		}
+-		if (buffer_new(bh))
++		if (WARN_ON_ONCE(buffer_new(bh)))
+ 			clear_buffer_new(bh);
+ 		if (!buffer_mapped(bh)) {
+ 			WARN_ON(bh->b_size != blocksize);
+@@ -1265,6 +1265,7 @@ static int write_end_fn(handle_t *handle, struct inode *inode,
+ 	ret = ext4_dirty_journalled_data(handle, bh);
+ 	clear_buffer_meta(bh);
+ 	clear_buffer_prio(bh);
++	clear_buffer_new(bh);
+ 	return ret;
+ }
+ 
+-- 
+2.35.3
+
 
