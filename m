@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-8905-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8906-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9FBAFEF3A
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 18:54:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0B8BAFEF38
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 18:53:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0610D189EEF6
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 16:52:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C37CA3A9A98
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 16:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EB1221FC0;
-	Wed,  9 Jul 2025 16:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE15221FAE;
+	Wed,  9 Jul 2025 16:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ErIX8iPf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H0MWE4uH"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092E022126A
-	for <linux-ext4@vger.kernel.org>; Wed,  9 Jul 2025 16:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024332206B1
+	for <linux-ext4@vger.kernel.org>; Wed,  9 Jul 2025 16:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752079914; cv=none; b=QhUMaim2hhZEB5qiRYQYDFP/J++/kYx9CjnadNw9myZYs4V9xNY/54p3tCi5Bch60FYVoBW4TekQXo4iU/fMxLSfGgZkMgigbm9GRrinmesZyPOUcs4tj0fiMOh+Em4XxzCoejpTS4WI6b7G2hpoiQY4HaodeLHEYzRtJAE0WO0=
+	t=1752079961; cv=none; b=hDpKn3loA5/RsCrNIl/e7Bztp4KFZuZP4VlMhRNm1dEN0EI0nyVqycodbFkoQbhakrEONdTeXV0OxWNnPG3nhVRweNsMxYiov122oIYV12W2ojeDb6+kBjo1hRfOU+ABJnfET9D/3iux2phci+5574iLJsxHEb+a4KDxSAuevbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752079914; c=relaxed/simple;
-	bh=e7l99A14nbjyz9j5qEDX3CAkhXKclAN64tWMh80wG8w=;
+	s=arc-20240116; t=1752079961; c=relaxed/simple;
+	bh=uhhp3u1zgjKArW9Cv5gpb4Vczs7GU8TaBbynePpdUWU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rak+u7v3glUXIAwF8SDuiQTMmHwcTxV4TtesVdatDxeJwyH9i9Jsm4v38zxLmV8GEdPGuzZvOdZIR7R+BK7MF9BfIk6PucdqCo6zDsm+WB5dpfvxZcmZbQpFTmW9H1EGSkZbKI1Jj6myZe3hFKxWjvJ+1bZB8PSnjWfkfuGWb3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ErIX8iPf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77796C4CEEF;
-	Wed,  9 Jul 2025 16:51:53 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=IrT/G1easiIox+uBHmVtZPDkGYRuUYm5rf8drJQDuBsUloc2zthNIXmjt4KcBArs0NKqoIuGBSdwThIElyzD4MxhAua1AvP/JGGIOEWvBoIc7gfYJN5j0JRmPNp9vAbl2mVHIn6Ne3xieODLQKPFGvgFQBLemFuGW/3DyLW9OMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H0MWE4uH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3DC3C4CEEF;
+	Wed,  9 Jul 2025 16:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752079913;
-	bh=e7l99A14nbjyz9j5qEDX3CAkhXKclAN64tWMh80wG8w=;
+	s=k20201202; t=1752079960;
+	bh=uhhp3u1zgjKArW9Cv5gpb4Vczs7GU8TaBbynePpdUWU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ErIX8iPf5J2TM5eoI2dKpby9lZiRcyjsDwbh8SgB6iW/Rw6hfgY3sX/HnATA0Sc92
-	 FaMXEXxPlZpH0gDdndRflaDNkxWqWzgQM0tUDd5rvhmBlsFcLDOl1Ws1WWFkGQ5oNC
-	 zFqAjEg00k0z/+0jdWPDnOvM86/uJT6aWgJ7GmeXPMwgoT+H/f+5SsSqtuwem9Sjim
-	 1BuS802nkt9kL8e+/Dw90i5BccVmdUfZfi6vmPVmoUph+4gcCkcAchp6kAT32eneSk
-	 9CbFYcVowhqm/mIHqSfVjeZytq+EtIaKp5PxBDNzL5cC3IteRtg7iUZu3UjdseV3p3
-	 BAIOh65tuCEUQ==
-Date: Wed, 9 Jul 2025 09:51:52 -0700
+	b=H0MWE4uHAP7QTn9iX0or79fF34UQjacH51Zxmcy8WjZ9yqoZu0QXQqZaRE8aXKNnr
+	 lyIZBVsevP5XfC9km+uzBFmSzh1v0I00g9lRxD2jJaWgy2xzVVNvmmSCcZLPLjyfEq
+	 UmpZ525VF5AS7l5Iw7gt9LB6AsfBRqk7XglEf7xao+JNHcvseYN3YodPOoyFfyUtLu
+	 ldYBj4vtKHQ4SxJ7s+iK2RXssZiaxHzE+6wYOIJQ9pDfSe9DGRMkopBiwvQtMAyRA2
+	 iLYusBH/ujPnJ+4v37a1SILnqXP8kNEPcOQmo5mpjCRF/g255jliemgIbIcyh0Yrfr
+	 rz0eSy7R+6eYQ==
+Date: Wed, 9 Jul 2025 09:52:40 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Subject: [PATCH 11/8] fuse2fs: fix race condition in op_destroy
-Message-ID: <20250709165152.GE2672022@frogsfrogsfrogs>
+Subject: [PATCH 12/8] fuse2fs: fix races in statfs
+Message-ID: <20250709165240.GF2672022@frogsfrogsfrogs>
 References: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -60,53 +60,35 @@ In-Reply-To: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-On a regular fuse server (i.e. one not running in fuseblk mode), libfuse
-synthesizes and dispatches a FUSE_DESTROY command as soon as the event
-dispatch loop terminates after the kernel disconnects /dev/fuse.
-Unfortunately, this is done without coordinating with any other threads
-that may have already received a real FUSE command from the kernel.
+Take the BFL in statfs so that we don't expose a torn access to
+userspace.  Found via code inspection.
 
-In other words, FUSE_DESTROY can run in parallel with other
-fuse_operations.  Therefore, we must guard the body of this function
-with the BKL just like any other fuse operation or risk races within
-libext2fs.  If we're lucky, we trash the ext2_filsys state and
-generic/488 will crash.
-
-[23512.452451] [U] fuse: reading device: Software caused connection abort
-[23512.453886] [U] fuse: reading device: Software caused connection abort
-
-If we're not lucky, it corrupts the ondisk filesystem resulting in a
-e2fsck complaining as well.
-
-Cc: <linux-ext4@vger.kernel.org> # v1.43
-Fixes: 81cbf1ef4f5dab ("misc: add fuse2fs, a FUSE server for e2fsprogs")
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ misc/fuse2fs.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index ff8d4668cee217..f0250bd1cec2ec 100644
+index f0250bd1cec2ec..bc9fed6f4a8525 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -728,7 +728,10 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
- 		translate_error(global_fs, 0, EXT2_ET_BAD_MAGIC);
- 		return;
- 	}
-+
-+	pthread_mutex_lock(&ff->bfl);
- 	fs = ff->fs;
-+
- 	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
- 	if (fs->flags & EXT2_FLAG_RW) {
- 		fs->super->s_state |= EXT2_VALID_FS;
-@@ -763,6 +766,8 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
- 		uuid_unparse(fs->super->s_uuid, uuid);
- 		log_printf(ff, "%s %s.\n", _("unmounting filesystem"), uuid);
- 	}
-+
-+	pthread_mutex_unlock(&ff->bfl);
- }
+@@ -2743,8 +2743,9 @@ static int op_statfs(const char *path EXT2FS_ATTR((unused)),
+ 	blk64_t overhead, reserved, free;
  
- static void *op_init(struct fuse_conn_info *conn
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+-	fs = ff->fs;
+ 	dbg_printf(ff, "%s: path=%s\n", __func__, path);
++	fs = ff->fs;
++	pthread_mutex_lock(&ff->bfl);
+ 	buf->f_bsize = fs->blocksize;
+ 	buf->f_frsize = 0;
+ 
+@@ -2777,6 +2778,7 @@ static int op_statfs(const char *path EXT2FS_ATTR((unused)),
+ 	if (fs->flags & EXT2_FLAG_RW)
+ 		buf->f_flag |= ST_RDONLY;
+ 	buf->f_namemax = EXT2_NAME_LEN;
++	pthread_mutex_unlock(&ff->bfl);
+ 
+ 	return 0;
+ }
 
