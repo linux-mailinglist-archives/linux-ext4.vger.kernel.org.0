@@ -1,118 +1,189 @@
-Return-Path: <linux-ext4+bounces-8900-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8901-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D70AAFDD96
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 04:42:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3089BAFE1A4
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 09:53:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 760B13BDBFE
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 02:42:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F0864E779E
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Jul 2025 07:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3946C1D54F7;
-	Wed,  9 Jul 2025 02:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14985271446;
+	Wed,  9 Jul 2025 07:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XiaZ0XsF"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Hs39won/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1251C32FF;
-	Wed,  9 Jul 2025 02:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0EB1E0E0B
+	for <linux-ext4@vger.kernel.org>; Wed,  9 Jul 2025 07:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752028952; cv=none; b=Vep14L8kszlLu+mhxCY9eEPAytP0sGEF5QkCLmoREdViu990W2Ctu/QMKqCgsFoRERFRvd/Ir2/ra3fS8j/ZoA+LWKvQ2/NiQwwPGzuBqAAa8QtIzXc57E0dDgqUe02JwEVHnPjJIbTkIFIkUsljyi+wZnvahWDArTzjUiR7Ja0=
+	t=1752047618; cv=none; b=q/G1BDZrEsrucYF7/5zzeD+lBUUhnNXFojPSpEuVmxVITfITLsHykp2XjVq8hKK9O8uBogvyN/8NJ7PSanLcPeEs6tRpNnQB0ReAVqccXbCq8giS+b7m3c9Cm3gUJ87Z54j2oXtJtogqi4VTfOv9ML8LDQJxoCxi0wNgNlveS78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752028952; c=relaxed/simple;
-	bh=xglNHnUKEdCNHWEZUbyP1kgYRLDTNgnIgCGRAbmV9TY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FVX8+WMklpTv+UGAWdz0hEA5qTnOhTrgDKXl3rgxTQ9qYctCnG3WLa6jD57QKvd5qLx1qyhmGQfJngYNq5V/wJkGrIHHGRJUg733mbyppElJomVhoPSR7KtV14jva2kPhr3kZKsXOGm2UUfB+PHJPsN31hk0aRpmwv47cgJGDsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XiaZ0XsF; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752028951; x=1783564951;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xglNHnUKEdCNHWEZUbyP1kgYRLDTNgnIgCGRAbmV9TY=;
-  b=XiaZ0XsFlZdrVXZKf6axemcA1BeWynOkjxaDjNcXA26aqWZBeaS5rqsh
-   5hvY3VCx2Agsj+rlvGSDDaxFcuv5TuN7R51mvp/ZAUQ5wwgsG478Z4nfn
-   1FR48p+t+DlbUJjBMJlx92MFJzO6XWIA9I+rMTtoorxZF6sdn25Xmrdcx
-   SjW1Z0MrZza2ok7hYfZFQ5Koip6n5VaiSVa8GcFDKQ86cHJwuGFp+F/AZ
-   wOcQ5wBUK0oQzmC7hphMdKY+09myTPpM9n/kXjdROOmaIFFVAxf27TQTt
-   aNEMxxXBM1c59i/4XgOFCEob+TcmmkwDuUgrKNAUUqJkooJhQPHjyJ1fv
-   Q==;
-X-CSE-ConnectionGUID: DXkI2VHrTAqqoZ8WFmJprQ==
-X-CSE-MsgGUID: nQ/0cMemRyG3SLd9qhqrNQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11487"; a="71861557"
-X-IronPort-AV: E=Sophos;i="6.16,298,1744095600"; 
-   d="scan'208";a="71861557"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2025 19:42:30 -0700
-X-CSE-ConnectionGUID: tytLHidlQRG86rBxSg+7Kw==
-X-CSE-MsgGUID: TUVthDdhTX+U4YWnIEJPfw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,298,1744095600"; 
-   d="scan'208";a="161204389"
-Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 08 Jul 2025 19:42:27 -0700
-Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uZKlN-0002zX-0w;
-	Wed, 09 Jul 2025 02:42:25 +0000
-Date: Wed, 9 Jul 2025 10:42:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yuwen Chen <ywen.chen@foxmail.com>, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org, Yuwen Chen <ywen.chen@foxmail.com>
-Subject: Re: [PATCH] f2fs: improve the performance of f2fs_lookup
-Message-ID: <202507091026.yb48YXt5-lkp@intel.com>
-References: <tencent_0D8BB6ABAB0880DB7BFCCE35EDBC3DCFF505@qq.com>
+	s=arc-20240116; t=1752047618; c=relaxed/simple;
+	bh=YiRTViN6sFugfcWHy68JCjyr4GwLcTomgBIK3NlTZ5g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tq1YMDH/TaX3HoIO9+zd59pRuTSQ2JrXETUdBZBxXWyKnY0rBMJLspQv7T/K/xirl96QhCfeKF0PFdj7BlN/fljjmHGXSE7q15jCiKDKaGsxo9LZfg78+pkeqjL+VkqW8zuseOxlgtJD+aJhaIuKOTYk6uCgYQ23LXO8pC0o3uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Hs39won/; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2353a2bc210so51301125ad.2
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Jul 2025 00:53:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1752047616; x=1752652416; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZSRb/f3D+1mlx48D0CzDoRw0M54T1sMdT08EpdKIp/M=;
+        b=Hs39won/zvmbzw7jPrJ/Ko+gAug58ewzgcc0XKbhSxmHW9jY9cd3uFIG/8I3bIxf+5
+         3IAx76Y9QtLDuxp1ARX62YqK34JYaWH38QSz366OuPnTqLBR+284IARV3z+3WZIT1TW7
+         iVZeIXavhpuM9XfKyp7jInwXRkPhhF8NoyXFRazp+45JOlQTkUioNK2Udv0ooUvviyZO
+         Hx5Pj+dhRQ32JtK2zBk8oeRwH1T+tNcjt5jgtDlQygIU6NXzHEOpIh2PcbUNMQneo3Ms
+         7pYsTppgfVScqikkmBw4+mm6/C59P6lWnt+njrobEaSUpwjKmuk5amLpTy63rLoC0kw+
+         /JWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752047616; x=1752652416;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZSRb/f3D+1mlx48D0CzDoRw0M54T1sMdT08EpdKIp/M=;
+        b=o89jW6AdWwrKxVznu/DDtObzL2a+O7dwwhT2U3BN2g0wOsrd1+8M46vFk6VCvc6FNK
+         e5z74F+GZYuqstvege2DLRGVl8dHZyd/wuyHGVcURPUPchKQPPcRFu2T+KRj2/oYVPZV
+         +mp+9uQQta6X57ggmV00MBKFZ41ZJXt+G7ASAK6bTMOAaGP0/rLtxdzOgWieVXHgCo7f
+         ASoY8QPgAxkdP8ONuRNRy7k4BPsBQx3hn67sRRKQfQFlYWhhScxMFO9jsNk7vB+7FjOp
+         buoI340ObWN5kYu8M5rpP8e65/BDF0do4JHulWdsc3i+V6UL7yfT79+4rMo9MWz0km2s
+         zsFg==
+X-Gm-Message-State: AOJu0Yzih/1X8c/1ZHIJj6s3DbpU05IAPliwz1Z3fnKQYcNwYpwFLrM1
+	2xtdaHzCA8CqTjrvSA49bJ13D0nC0Dpi4Uxb6sI0pddALlSdgpMMHU+j6r6cB33RyJSAYJQrEd1
+	Unl73amQfiWtH4zoVEg53se7AYiJcaV5cDe0tffeM1w==
+X-Gm-Gg: ASbGncucr7VWvfnqgrkf66ni1I0Th0MXYOGsad0vjjraYwj0dQ5UnvgtKKX2/jkIjw+
+	2R5EI0FOB1RkoYws5s8evWGZXCHJ4WvotJDPeZb0patPFpIUDTKBNxBEYTu1iYKtcz/GVgIFVYu
+	VFBU8yNVCTprOdaalF6Okh1YKdu+68sAwKv33Mv7atVPq695bovF4LeNCEiLb9lpyaG2ogTYpYo
+	qcWCVxg2Nohjr8=
+X-Google-Smtp-Source: AGHT+IFTpw9IyFVln9jcj7sOWtr3g6epVrGGfan92wq+FaJIONZdCE8t1/jqdXFlbGoqLQcJM938+Gi2RQnDj4EcuQQ=
+X-Received: by 2002:a17:902:f205:b0:23d:ddf0:c908 with SMTP id
+ d9443c01a7336-23dddf0ca78mr6375655ad.6.1752047616451; Wed, 09 Jul 2025
+ 00:53:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_0D8BB6ABAB0880DB7BFCCE35EDBC3DCFF505@qq.com>
+References: <20250707140814.542883-1-yi.zhang@huaweicloud.com>
+In-Reply-To: <20250707140814.542883-1-yi.zhang@huaweicloud.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 9 Jul 2025 13:23:25 +0530
+X-Gm-Features: Ac12FXxDkre9nFgz-yfBFb9RvXNEyb5lmt12udtMlCfaF0Z0wAperRuxm5yhZlY
+Message-ID: <CA+G9fYvXTCK5PHSazWkE6yww1QJA=wwb+1xV0udMSXgc63P_6A@mail.gmail.com>
+Subject: Re: [PATCH v4 00/11] ext4: fix insufficient credits when writing back
+ large folios
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	jack@suse.cz, ojaswin@linux.ibm.com, sashal@kernel.org, jiangqi903@gmail.com, 
+	yi.zhang@huawei.com, libaokun1@huawei.com, yukuai3@huawei.com, 
+	yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Yuwen,
+On Mon, 7 Jul 2025 at 19:53, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
+>
+> From: Zhang Yi <yi.zhang@huawei.com>
+>
+> Changes since v3:
+>  - Fix the end_pos assignment in patch 01.
+>  - Rename mpage_submit_buffers() to mpage_submit_partial_folio(), and
+>    fix a left shift out-of-bounds problem in patch 03.
+>  - Fix the spelling errors in patch 04.
+>  - Add a comment for NULL 'handle' test in
+>    ext4_journal_ensure_extent_credits().
+>  - Add patch 11 to limit the maximum order of the folio to 2048 fs
+>    blocks, prevent the overestimation of reserve journal credits during
+>    folios write-back.
+> Changes since v2:
+>  - Convert the processing of folios writeback in bytes instead of pages.
+>  - Refactor ext4_page_mkwrite() and ensure journal credits in
+>    ext4_block_write_begin() instead of in _ext4_get_block().
+>  - Enhance tracepoints in ext4_do_writepages().
+>  - Replace the outdated ext4_da_writepages_trans_blocks() and
+>    ext4_writepage_trans_blocks() with the new helper used to reserve
+>    credits for a single extent.
+> Changes since v1:
+>  - Make the write-back process supports writing a partial folio if it
+>    exits the mapping loop prematurely due to insufficient sapce or
+>    journal credits, it also fix the potential stale data and
+>    inconsistency issues.
+>  - Fix the same issue regarding the allocation of blocks in
+>    ext4_write_begin() and ext4_page_mkwrite() when delalloc is not
+>    enabled.
+>
+> v3: https://lore.kernel.org/linux-ext4/20250701130635.4079595-1-yi.zhang@huaweicloud.com/
+> v2: https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
+> v1: https://lore.kernel.org/linux-ext4/20250530062858.458039-1-yi.zhang@huaweicloud.com/
+>
+> Original Description
+>
+> This series addresses the issue that Jan pointed out regarding large
+> folios support for ext4[1]. The problem is that the credits calculation
+> may insufficient in ext4_meta_trans_blocks() when allocating blocks
+> during write back a sufficiently large and discontinuous folio, it
+> doesn't involve the credits for updating bitmap and group descriptor
+> block. However, if we fix this issue, it may lead to significant
+> overestimation on the some filesystems with a lot of block groups.
+>
+> The solution involves first ensure that the current journal transaction
+> has enough credits when we mapping an extent during allocating blocks.
+> Then if the credits reach the upper limit, exit the current mapping
+> loop, submit the partial folio and restart a new transaction. Finally,
+> fix the wrong credits calculation in ext4_meta_trans_blocks(). Please
+> see the following patches for details.
 
-kernel test robot noticed the following build warnings:
+I have applied this patch set on top of the Linux next tree and performed
+testing. The previously reported regressions [a] are no longer observed.
+Thank you for providing the fix.
 
-[auto build test WARNING on jaegeuk-f2fs/dev-test]
-[also build test WARNING on jaegeuk-f2fs/dev brauner-vfs/vfs.all linus/master v6.16-rc5 next-20250708]
-[cannot apply to tytso-ext4/dev]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yuwen-Chen/f2fs-improve-the-performance-of-f2fs_lookup/20250708-184528
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git dev-test
-patch link:    https://lore.kernel.org/r/tencent_0D8BB6ABAB0880DB7BFCCE35EDBC3DCFF505%40qq.com
-patch subject: [PATCH] f2fs: improve the performance of f2fs_lookup
-config: arc-randconfig-001-20250709 (https://download.01.org/0day-ci/archive/20250709/202507091026.yb48YXt5-lkp@intel.com/config)
-compiler: arc-linux-gcc (GCC) 8.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250709/202507091026.yb48YXt5-lkp@intel.com/reproduce)
+Reference link:
+[a] https://lore.kernel.org/all/CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202507091026.yb48YXt5-lkp@intel.com/
+>
+> [1] https://lore.kernel.org/linux-ext4/ht54j6bvjmiqt62xmcveqlo7bmrunqs4ji7wikfteftdjijzek@7tz5gpejaoen/
+>
+> Thanks,
+> Yi.
+>
+> Zhang Yi (11):
+>   ext4: process folios writeback in bytes
+>   ext4: move the calculation of wbc->nr_to_write to mpage_folio_done()
+>   ext4: fix stale data if it bail out of the extents mapping loop
+>   ext4: refactor the block allocation process of ext4_page_mkwrite()
+>   ext4: restart handle if credits are insufficient during allocating
+>     blocks
+>   ext4: enhance tracepoints during the folios writeback
+>   ext4: correct the reserved credits for extent conversion
+>   ext4: reserved credits for one extent during the folio writeback
+>   ext4: replace ext4_writepage_trans_blocks()
+>   ext4: fix insufficient credits calculation in ext4_meta_trans_blocks()
+>   ext4: limit the maximum folio order
+>
+>  fs/ext4/ext4.h              |   4 +-
+>  fs/ext4/extents.c           |   6 +-
+>  fs/ext4/ialloc.c            |   3 +-
+>  fs/ext4/inline.c            |   6 +-
+>  fs/ext4/inode.c             | 349 +++++++++++++++++++++++-------------
+>  fs/ext4/move_extent.c       |   3 +-
+>  fs/ext4/xattr.c             |   2 +-
+>  include/trace/events/ext4.h |  47 ++++-
+>  8 files changed, 272 insertions(+), 148 deletions(-)
+>
+> --
+> 2.46.1
 
-All warnings (new ones prefixed by >>):
-
->> Warning: fs/libfs.c:1908 function parameter 'prealloc' not described in 'generic_ci_match'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--
+Linaro LKFT
+https://lkft.linaro.org
 
