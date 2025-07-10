@@ -1,242 +1,144 @@
-Return-Path: <linux-ext4+bounces-8916-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8917-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01F72AFFD81
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 11:06:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11042AFFE6E
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 11:49:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98BA7481217
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 09:04:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 940FB643E50
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 09:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E54442C;
-	Thu, 10 Jul 2025 09:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C65C2D59EF;
+	Thu, 10 Jul 2025 09:48:30 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail.189.cn (189sx01-ptr.21cn.com [125.88.204.37])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CBA285050;
-	Thu, 10 Jul 2025 09:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=125.88.204.37
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C8D2D3EFC
+	for <linux-ext4@vger.kernel.org>; Thu, 10 Jul 2025 09:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752138252; cv=none; b=GkLbcFsC8P8yIzic7xgQ+rGdzQTyuSFo6WryYTAtzoF1c7g/8EVSeYYcdfxGHaz9o44qeQAKK776LQLP9Nh7Gk9mMZnYlY649MJsro84k7ahYi8mIYCG9mD6dI4VTsPdSioKRnZVmZqTd/ivcajRl1/v9WxoqgIx1/WjnfOH3/w=
+	t=1752140910; cv=none; b=dcIL2chxBQRltuhPcVK+UGKo+oQk2jCEgLsXioXCITSvWZL4TyDpvG+oRyxaWYFSZI8cKHXYU3972CzmdyrcLG7+U/1NRJYtq1mgFaVE4iFvvig/Um10f4tfW2BkpNDH5rZbWU4SFL5K6G/mfOpqh2PhSG/nxKzQv4lSPPpaYhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752138252; c=relaxed/simple;
-	bh=r22/WRVHPAfiyhwvVqnqplhAC1IL96v+HDVyPThKqh4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MgM9SVfH7gwB4ooraJ5BlaN24v9fqXmMxntIew3wQfzEeKiQT9s6T7676Se+ISfKw+/UXMXZPRRBwtg7Y2CqzAoZuM6sIrkxy9sZHYLAtYEG/W0KELwjZ67kwumEbn/8w37X94OuKLkLoFH+B5Tg25ZPsgGWl54kI6Gpg1Wzk7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=189.cn; spf=pass smtp.mailfrom=189.cn; arc=none smtp.client-ip=125.88.204.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=189.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=189.cn
-HMM_SOURCE_IP:10.158.242.145:0.645490632
-HMM_ATTACHE_NUM:0000
-HMM_SOURCE_TYPE:SMTP
-Received: from clientip-221.238.56.49 (unknown [10.158.242.145])
-	by mail.189.cn (HERMES) with SMTP id DA5C140029B;
-	Thu, 10 Jul 2025 16:59:12 +0800 (CST)
-Received: from  ([221.238.56.49])
-	by gateway-153622-dep-67b7b5d8b-hc52f with ESMTP id 8fdc9f5561464c378926d8d3ce4d65a8 for tytso@mit.edu;
-	Thu, 10 Jul 2025 16:59:12 CST
-X-Transaction-ID: 8fdc9f5561464c378926d8d3ce4d65a8
-X-Real-From: chensong_2000@189.cn
-X-Receive-IP: 221.238.56.49
-X-MEDUSA-Status: 0
-Sender: chensong_2000@189.cn
-From: chensong_2000@189.cn
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Song Chen <chensong_2000@189.cn>
-Subject: [PATCH RFC] ext4: fallback unaligned part of dio to buffered IO
-Date: Thu, 10 Jul 2025 16:59:10 +0800
-Message-Id: <20250710085910.123168-1-chensong_2000@189.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1752140910; c=relaxed/simple;
+	bh=wua15EXatrBk9R6iK5XMpx7VDAhdWc7lVkWDizjVrSM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=T83gMW0Dh0EK9vs8aZL210anwx2UkQFaxkFsG4gd8xpkZPMfZP2aSgCr2eC2M00iqbmS9gtRYv39TLp7+VdNyVYOcRY0/jSNX4DWMWNBJXnzCRSVFjYeAvnEwZ2JVfvYKt+845aWbSEBnJtsE5s81bduZ1lZLLwxoOMT2253ook=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-87595d00ca0so86158239f.2
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Jul 2025 02:48:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752140908; x=1752745708;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Th7Zhin8QPUH3N06DLsdoISRDrdM3Ozfgu5cmTbMOjo=;
+        b=lUbWk3qUgSw94ulC8x/m9DvSX7qPe/uasH7YsEDL0MfFDZHyFK6zFFwkOhcoW1ra3Q
+         DAs9SBfiY7ovxRS/gOlhrquDLB4kaovL3dp77HGE8sJ6I0nSsr/Q5E/w4qxkxhvFABM2
+         /IAEVGb2PksxWYkmXKJU81Exr0lp5zADdzssR6tX3rZrznLgIhJAlNzyheA1z/+Fvvqo
+         j5zlh6e9NYluIHeO1xGFuAAShstY+lotOkbS1cfJ+voykf+8cDcGLIsG41uleaStS0E9
+         FH3kbR4sm+7jtWQwbJbGJb+HwijfdiDjcdI6JzNQrgLK4QR/8jOAfOCh5EB/geqcaTe7
+         OcXg==
+X-Forwarded-Encrypted: i=1; AJvYcCWLO4XZvBTuuoZCLUUVtiHnJYemaD3qASAWLVWZwTvNHA/oNkyqJI/E/X8NbaIo00joosgYwu3CYeXQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YwnvoTZvpujQ7hd7LbOyFPSrJTYYmd3JdkP1b9FcNdKoKrtmNw3
+	D4my+ljfQtWTc/0M3BEfSa7Mj3JcBvYRDd3tzt6KaWpoVgTNAOnnZ43beRlVG+o2HOhTisoQ8y3
+	zl60OYstOjwWomxKuztAmVvDUB2Wb/8lGB82UTwqJFo1NjtmEcDdSxqhtUM4=
+X-Google-Smtp-Source: AGHT+IHIwms0CBlclfEP762gb3HSmOTXv+nfCV7EKukKEdvS5ODM4IecXCP+5KGxqYRP+I3iJhND3FNZ2XHx/rEJ0dfHFloWlJQL
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:3192:b0:3dd:d1bc:f08c with SMTP id
+ e9e14a558f8ab-3e1670fe7f6mr68367135ab.20.1752140907815; Thu, 10 Jul 2025
+ 02:48:27 -0700 (PDT)
+Date: Thu, 10 Jul 2025 02:48:27 -0700
+In-Reply-To: <686a8143.a00a0220.c7b3.005b.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <686f8c6b.a00a0220.26a83e.000e.GAE@google.com>
+Subject: Re: [syzbot] [ext4?] WARNING in bdev_getblk
+From: syzbot <syzbot+01ef7a8da81a975e1ccd@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, jfs-discussion@lists.sourceforge.net, 
+	linkinjeon@kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	shaggy@kernel.org, sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com, 
+	tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-From: Song Chen <chensong_2000@189.cn>
+syzbot has found a reproducer for the following issue on:
 
-When I was trying to read a big file in direct IO mode, if the
-file was not page aligned, ext4 rejected the request in
-iomap_dio_bio_iter which checks alignments of pos, addr and length
-before submitting bio.
+HEAD commit:    835244aba90d Add linux-next specific files for 20250709
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10535a8c580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8396fd456733c122
+dashboard link: https://syzkaller.appspot.com/bug?extid=01ef7a8da81a975e1ccd
+compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=115c40f0580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11856a8c580000
 
-As my understanding, pos and addr must be block size aligned, but length
-doesn't have to be. Instead of rejecting entire request which is so
-frastrating to upper layer, this patch splits length into aligned part
-and unaligned part. For the aligned part, still uses direct IO with
-no problem, for the rest unaligned part, falls back to buffered IO.
-This way looks more friendly to apps.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e5c5711c47f9/disk-835244ab.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/dd2453f9f672/vmlinux-835244ab.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a81cc03651e7/bzImage-835244ab.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/e3888e058fbc/mount_0.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=12856a8c580000)
 
-Please have a look at the patch in [1], it has to reopen the file
-to read the unaligned part in upper layer, which doen't look
-gracefully.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+01ef7a8da81a975e1ccd@syzkaller.appspotmail.com
 
-I guess I'm not the first one who brings it up, there must be a reason
-to stop this porblem being addressed. unaligned write seems to be
-addressed in [2] and [3]. Side effects or complexity, I would like to know.
+------------[ cut here ]------------
+WARNING: fs/buffer.c:1125 at __getblk_slow fs/buffer.c:1125 [inline], CPU#0: syz-executor261/5880
+WARNING: fs/buffer.c:1125 at bdev_getblk+0x580/0x660 fs/buffer.c:1461, CPU#0: syz-executor261/5880
+Modules linked in:
+CPU: 0 UID: 0 PID: 5880 Comm: syz-executor261 Not tainted 6.16.0-rc5-next-20250709-syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+RIP: 0010:__getblk_slow fs/buffer.c:1125 [inline]
+RIP: 0010:bdev_getblk+0x580/0x660 fs/buffer.c:1461
+Code: 26 fb ff ff e8 81 ee 78 ff 48 c7 c7 20 08 9a 8b 48 c7 c6 02 1b a0 8d 4c 89 fa 4c 89 e9 e8 38 d7 e0 fe eb bd e8 61 ee 78 ff 90 <0f> 0b 90 48 b8 00 00 00 00 00 fc ff df 41 80 3c 07 00 74 08 48 89
+RSP: 0018:ffffc9000403f620 EFLAGS: 00010293
+RAX: ffffffff8246c6ff RBX: ffff888022d0b998 RCX: ffff888078b31e00
+RDX: 0000000000000000 RSI: 0000000000000400 RDI: 0000000000000000
+RBP: 0000000000000400 R08: ffff888078b31e00 R09: 0000000000000003
+R10: 0000000000000406 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff888022d0b980 R14: 0000000000000400 R15: 1ffff110045a1733
+FS:  000055558d712380(0000) GS:ffff888125bd4000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5b0e5d6000 CR3: 00000000227ea000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ ext4_sb_breadahead_unmovable+0x6f/0xf0 fs/ext4/super.c:270
+ __ext4_get_inode_loc+0xcc9/0x1040 fs/ext4/inode.c:4879
+ __ext4_get_inode_loc_noinmem fs/ext4/inode.c:4909 [inline]
+ __ext4_iget+0x450/0x4260 fs/ext4/inode.c:5168
+ __ext4_fill_super fs/ext4/super.c:5500 [inline]
+ ext4_fill_super+0x4592/0x6080 fs/ext4/super.c:5724
+ get_tree_bdev_flags+0x40e/0x4d0 fs/super.c:1681
+ vfs_get_tree+0x8f/0x2b0 fs/super.c:1804
+ do_new_mount+0x2a2/0x9e0 fs/namespace.c:3805
+ do_mount fs/namespace.c:4133 [inline]
+ __do_sys_mount fs/namespace.c:4344 [inline]
+ __se_sys_mount+0x317/0x410 fs/namespace.c:4321
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f457044b7da
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd924f6f58 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffd924f6f70 RCX: 00007f457044b7da
+RDX: 0000200000000040 RSI: 0000200000000000 RDI: 00007ffd924f6f70
+RBP: 0000200000000000 R08: 00007ffd924f6fb0 R09: 00007ffd924f6fb0
+R10: 000000000000088e R11: 0000000000000246 R12: 0000200000000040
+R13: 00007ffd924f6fb0 R14: 0000000000000003 R15: 000000000000088e
+ </TASK>
 
-This is just a draft of RFC, I haven't taken care of ubuf properly yet,
-please let me know if you like this idea or not, then I can drop it or
-go further, like introduce helpers to split iov_iter in lib/iov_iters.c
 
-[1]:https://lore.kernel.org/all/20240730075755.10941-4-link@vivo.com/
-[2]:https://lore.kernel.org/linux-ext4/20230314130759.642710-1-bfoster
-@redhat.com/
-[3]:https://lore.kernel.org/linux-ext4/20230810165559.946222-1-bfoster
-@redhat.com/
-
-Signed-off-by: Song Chen <chensong_2000@189.cn>
 ---
- fs/ext4/file.c | 90 ++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 83 insertions(+), 7 deletions(-)
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 21df81347147..a059985d0b16 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -36,6 +36,12 @@
- #include "acl.h"
- #include "truncate.h"
- 
-+enum {
-+	SHOULD_NOT_DIO,
-+	SHOULD_DIO,
-+	SHOULD_PARTIAL_DIO,
-+};
-+
- /*
-  * Returns %true if the given DIO request should be attempted with DIO, or
-  * %false if it should fall back to buffered I/O.
-@@ -52,23 +58,89 @@
-  *
-  * This function implements the traditional ext4 behavior in all these cases.
-  */
--static bool ext4_should_use_dio(struct kiocb *iocb, struct iov_iter *iter)
-+static int ext4_should_use_dio(struct kiocb *iocb, struct iov_iter *iter)
- {
- 	struct inode *inode = file_inode(iocb->ki_filp);
-+	unsigned int len_mask = i_blocksize(inode) - 1;
-+	unsigned int addr_mask = bdev_dma_alignment(inode->i_sb->s_bdev);
- 	u32 dio_align = ext4_dio_alignment(inode);
- 
-+	/* inode doesn't support dio, fall back to buffered IO*/
- 	if (dio_align == 0)
--		return false;
-+		return SHOULD_NOT_DIO;
-+
-+	/* addr is misaligned, fall back to buffered IO*/
-+	if (!iov_iter_is_aligned(iter, addr_mask, 0))
-+		return SHOULD_NOT_DIO;
-+
-+	/* pos is misaligned, fall back to buffered IO*/
-+	if (!IS_ALIGNED(iocb->ki_pos, len_mask))
-+		return SHOULD_NOT_DIO;
-+
-+	/* length is misaligned*/
-+	if (!iov_iter_is_aligned(iter, 0, len_mask)) {
-+		/* if length is less than a block, fall back to buffered IO*/
-+		if (iov_iter_count(iter) < i_blocksize(inode))
-+			return SHOULD_NOT_DIO;
-+		/*direct IO for aligned part, buffered IO for misaligned part*/
-+		return SHOULD_PARTIAL_DIO;
-+	}
- 
--	if (dio_align == 1)
--		return true;
-+	return SHOULD_DIO;
-+}
- 
--	return IS_ALIGNED(iocb->ki_pos | iov_iter_alignment(iter), dio_align);
-+/*
-+ * First of all, truncate the length to block size aligned and start
-+ * a direct IO. If it goes well in iomap_dio_rw, fall back the rest
-+ * unaligned part to buffered IO.
-+ *
-+ * At the end, return the sum bytes of direct IO and buffered IO.
-+ */
-+static ssize_t ext4_mixed_read_iter(struct kiocb *iocb, struct iov_iter *to)
-+{
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+	struct iov_iter to_misaligned = *to;
-+	struct iovec iov;
-+	ssize_t ret, ret_dio, ret_generic;
-+
-+	/* truncate iter->count to blocksize aligned and start direct IO */
-+	iov_iter_truncate(to, ALIGN_DOWN(to->count, i_blocksize(inode)));
-+	ret_dio = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL, 0, NULL, 0);
-+
-+	if (ret_dio <= 0) {
-+		ret = ret_dio;
-+		goto out;
-+	}
-+
-+	/* set up iter to misaligned part and start buffered IO*/
-+	iov.iov_base = to->__iov->iov_base +  ret_dio;
-+	iov.iov_len	 = to->__iov->iov_len -  ret_dio;
-+
-+	to_misaligned.__iov = &iov;
-+	iov_iter_truncate(&to_misaligned, iov.iov_len);
-+
-+	iocb->ki_flags &= ~IOCB_DIRECT;
-+	ret_generic = generic_file_read_iter(iocb, &to_misaligned);
-+
-+	if (ret_generic <= 0) {
-+		ret  = ret_generic;
-+		goto out;
-+	}
-+
-+	ret = ret_dio + ret_generic;
-+
-+out:
-+	iocb->ki_flags |= IOCB_DIRECT;
-+	inode_unlock_shared(inode);
-+	file_accessed(iocb->ki_filp);
-+
-+	return ret;
- }
- 
- static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
- 	ssize_t ret;
-+	int dio_supported;
- 	struct inode *inode = file_inode(iocb->ki_filp);
- 
- 	if (iocb->ki_flags & IOCB_NOWAIT) {
-@@ -78,7 +150,8 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 		inode_lock_shared(inode);
- 	}
- 
--	if (!ext4_should_use_dio(iocb, to)) {
-+	dio_supported = ext4_should_use_dio(iocb, to);
-+	if (dio_supported == SHOULD_NOT_DIO) {
- 		inode_unlock_shared(inode);
- 		/*
- 		 * Fallback to buffered I/O if the operation being performed on
-@@ -91,6 +164,9 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 		return generic_file_read_iter(iocb, to);
- 	}
- 
-+	if (dio_supported == SHOULD_PARTIAL_DIO)
-+		return ext4_mixed_read_iter(iocb, to);
-+
- 	ret = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL, 0, NULL, 0);
- 	inode_unlock_shared(inode);
- 
-@@ -537,7 +613,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	}
- 
- 	/* Fallback to buffered I/O if the inode does not support direct I/O. */
--	if (!ext4_should_use_dio(iocb, from)) {
-+	if (ext4_should_use_dio(iocb, from) != SHOULD_DIO) {
- 		if (ilock_shared)
- 			inode_unlock_shared(inode);
- 		else
--- 
-2.25.1
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
