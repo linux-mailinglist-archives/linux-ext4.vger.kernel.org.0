@@ -1,64 +1,63 @@
-Return-Path: <linux-ext4+bounces-8914-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8915-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9148FAFFC70
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 10:34:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C968AFFC88
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 10:40:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0F0A1C813DF
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 08:34:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38AC85418BD
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 08:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4995728D8FF;
-	Thu, 10 Jul 2025 08:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8864628C840;
+	Thu, 10 Jul 2025 08:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s4wYb/wJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qFfss6a6"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B547328C2B8;
-	Thu, 10 Jul 2025 08:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D8B221F13;
+	Thu, 10 Jul 2025 08:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752136414; cv=none; b=WeotfSEyvek3zyW1mXBHha6Ilog8F0tdAunxMp2lQmFGio7gTtWG3Q6zWEsohROrOl067KL4s3NHjHNMZRYtt2zCOojo+jgIWC7HUqrGr/7JA9ZAsT6Y6NPnNunwEGcpjOtz6jOiDLrzPOJlen6WhRc/wsJcRSPCNJR0VzoI7CY=
+	t=1752136825; cv=none; b=n5lX9B8d2YCxUZfe9NLQjx0wk6uBLgC6ewqbCIume7evywwnvZadqD5OzuhtSYvtmj4B1WmHWLJGlOShvjXpATnAtGvkR8InsMpNTA2pSKvgiioh37iUNCGLwzuWnK0R44U1+RRUg5+whK21OCnHMwAXcLkMsvKuhZ+rLUkTELU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752136414; c=relaxed/simple;
-	bh=R9b7+hWyJ6gpe2+oeqJYo/68ZSLNbj8perkTo8oGBwY=;
+	s=arc-20240116; t=1752136825; c=relaxed/simple;
+	bh=9PLxogK3nJE98NYsYw4ic0UVw1bmrgsymXuv+M30YcA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uxjF2ceA10kBpBOD/EnLkT2AsD14QwYlgmQsglbImzgomeZkHE03dsOI282fs71doAdFx92xPt7LjMWEUCzpYv9707iN0RsmueppJfXjF6cCb45K0xRdDJb5MWfJlrKt61YttgqdpsZv2eeG2BGwXUfrwCkofqvX6xXIn/cQtyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s4wYb/wJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77394C4CEE3;
-	Thu, 10 Jul 2025 08:33:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=aAMtO5Oyg7nQbACCvKzVlAVFdLEsQyOx5wK+80hxsRINTTHyYcvcudk/8YlTo4Ki2WJpTD1M0PcyThGlnb2me6tSGUOGW3Ur5WSJYGt2vOTVZUCE6xcntstMIpGRo8tkUE0NklRC6i0TCJK5MWe/doZSjiQ8QYqkFfdFikEk78w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qFfss6a6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C612CC4CEE3;
+	Thu, 10 Jul 2025 08:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752136414;
-	bh=R9b7+hWyJ6gpe2+oeqJYo/68ZSLNbj8perkTo8oGBwY=;
+	s=k20201202; t=1752136824;
+	bh=9PLxogK3nJE98NYsYw4ic0UVw1bmrgsymXuv+M30YcA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s4wYb/wJqU7WvJJS+HWpf+MLbR4QdL3k6V9v1TTBW0gSIbyziqUP77aR5nlTEsLj6
-	 ql7ifdWjFUYsBjZnUVXuVU1DlrR++M7jlytzAZHlLuGAEFjGCGnevtsRmBnKta2E0d
-	 IV4NUe1U5YRS7bFHuNAkYLG1WusQB1wHNIVm2tIed7LZSEpj7mPoCLVkfRo0opGOX4
-	 qw+Nvfp+eSBpOHuEhpPuzsuEhRtuI29DOn/H5yY5UDm5GMsxT8Y3DUrYAVnrOTzy2j
-	 F0bO9JcYT1vjE/JPysLLt+3cYSQwUnctap/qv9Ob1QpRo4MbnrV9f+Fkmzu3E1Hyqf
-	 i6YqXhl34iobw==
-Date: Thu, 10 Jul 2025 10:33:28 +0200
+	b=qFfss6a6kaDr4H6voAveuCONryrANTdjYoagQas0dkX3aEb6gXvqCFcEuBMH+gqnV
+	 gtlEjVA2c5XYLEuswbn+kaVvfSHZSmSSczlZOcu8/cbhGVVq5JJCLilSEGPQNStH86
+	 oeLE7XlFXLWgb5gg6Pkt/WON3j1nIVRaYyuNiCXSqUcJqXdEv9AQmOSLeICba9p6nR
+	 /RnPb04ir1PJSWKC1IiAO8p8YKRykF8pXNdbBogCfmc3s7wZV0na0H9zZsNzV1JTlX
+	 E+lB1K5gFQNR/isOq3ZqEJF4CVvymIfNA9KkXRLX4GMg/vAlt29nbVQvv48/MauA+8
+	 sv4UXr1v3dckA==
+Date: Thu, 10 Jul 2025 10:40:19 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, 
-	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz, 
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, 
-	linux-xfs@vger.kernel.org
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Qu Wenruo <quwenruo.btrfs@gmx.com>, 
+	Dave Chinner <david@fromorbit.com>, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
 Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
  remove_bdev()
-Message-ID: <20250710-laufkundschaft-watscheln-2b1ea9ee4519@brauner>
+Message-ID: <20250710-sitzung-gelaufen-4ee804949772@brauner>
 References: <cover.1751589725.git.wqu@suse.com>
  <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
  <aGxSHKeyldrR1Q0T@dread.disaster.area>
  <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
  <20250708004532.GA2672018@frogsfrogsfrogs>
- <20250708-geahndet-rohmaterial-0419fd6a76b3@brauner>
- <aG2i3qP01m-vmFVE@dread.disaster.area>
+ <2dm6bsup7vxwl4vwmllkvt5erncirr272bov4ehd5gix7n2vnw@bkagb26tjtj5>
+ <20250708202050.GG2672049@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,14 +67,12 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <aG2i3qP01m-vmFVE@dread.disaster.area>
+In-Reply-To: <20250708202050.GG2672049@frogsfrogsfrogs>
 
-On Wed, Jul 09, 2025 at 08:59:42AM +1000, Dave Chinner wrote:
-> On Tue, Jul 08, 2025 at 09:55:14AM +0200, Christian Brauner wrote:
-> > On Mon, Jul 07, 2025 at 05:45:32PM -0700, Darrick J. Wong wrote:
+On Tue, Jul 08, 2025 at 01:20:50PM -0700, Darrick J. Wong wrote:
+> On Tue, Jul 08, 2025 at 12:20:00PM +0200, Jan Kara wrote:
+> > On Mon 07-07-25 17:45:32, Darrick J. Wong wrote:
 > > > On Tue, Jul 08, 2025 at 08:52:47AM +0930, Qu Wenruo wrote:
-> > > > 
-> > > > 
 > > > > 在 2025/7/8 08:32, Dave Chinner 写道:
 > > > > > On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
 > > > > > > Currently all the filesystems implementing the
@@ -131,7 +128,10 @@ On Wed, Jul 09, 2025 at 08:59:42AM +1000, Dave Chinner wrote:
 > > > Fancy filesystems like bcachefs and btrfs would likely just shift IO to
 > > > a different bdev, right?  And there's no good reason to run shrinkers on
 > > > either of those fses, right?
-> > > 
+> > 
+> > I agree it is awkward and bcachefs avoids these in case of removal it can
+> > handle gracefully AFAICS.
+> > 
 > > > > Yes, the naming is not perfect and mixing cause and action, but the end
 > > > > result is still a more generic and less duplicated code base.
 > > > 
@@ -141,93 +141,48 @@ On Wed, Jul 09, 2025 at 08:59:42AM +1000, Dave Chinner wrote:
 > > > why you need a "generic" solution for btrfs when it's not going to do
 > > > what the others do anyway.
 > > 
-> > I think letting filesystems implement their own holder ops should be
-> > avoided if we can. Christoph may chime in here. I have no appettite for
-> > exporting stuff like get_bdev_super() unless absolutely necessary. We
-> > tried to move all that handling into the VFS to eliminate a slew of
-> > deadlocks we detected and fixed. I have no appetite to repeat that
-> > cycle.
+> > Well, I'd also say just go for own fs_holder_ops if it was not for the
+> > awkward "get super from bdev" step. As Christian wrote we've encapsulated
+> > that in fs/super.c and bdev_super_lock() in particular but the calling
+> > conventions for the fs_holder_ops are not very nice (holding
+> > bdev_holder_lock, need to release it before grabbing practically anything
+> > else) so I'd have much greater peace of mind if this didn't spread too
+> > much. Once you call bdev_super_lock() and hold on to sb with s_umount held,
+> > things are much more conventional for the fs land so I'd like if this
+> > step happened before any fs hook got called. So I prefer something like
+> > Qu's proposal of separate sb op for device removal over exporting
+> > bdev_super_lock(). Like:
+> > 
+> > static void fs_bdev_mark_dead(struct block_device *bdev, bool surprise)
+> > {
+> >         struct super_block *sb;
+> > 
+> >         sb = bdev_super_lock(bdev, false);
+> >         if (!sb)
+> >                 return;
+> > 
+> > 	if (sb->s_op->remove_bdev) {
+> > 		sb->s_op->remove_bdev(sb, bdev, surprise);
+> > 		return;
+> > 	}
 > 
-> Except it isn't actually necessary.
-> 
-> Everyone here seems to be assuming that the filesystem *must* take
-> an active superblock reference to process a device removal event,
-> and that is *simply not true*.
-> 
-> bcachefs does not use get_bdev_super() or an active superblock
-> reference to process ->mark_dead events.
-> 
-> It has it's own internal reference counting on the struct bch_fs
-> attached to the bdev that ensures the filesystem structures can't go
-> away whilst ->mark_dead is being processed.  i.e. bcachefs is only
-> dependent on the bdev->bd_holder_lock() being held when
-> ->mark_dead() is called and does not rely on the VFS for anything.
-> 
-> This means that device removal processing can be performed
-> without global filesystem/VFS locks needing to be held. Hence issues
-> like re-entrancy deadlocks when there are concurrent/cascading
-> device failures (e.g. a HBA dies, taking out multiple devices
-> simultaneously) are completely avoided...
-> 
-> It also avoids the problem of ->mark_dead events being generated
-> from a context that holds filesystem/vfs locks and then deadlocking
-> waiting for those locks to be released.
-> 
-> IOWs, a multi-device filesystem should really be implementing
-> ->mark_dead itself, and should not be depending on being able to
-> lock the superblock to take an active reference to it.
-> 
-> It should be pretty clear that these are not issues that the generic
-> filesystem ->mark_dead implementation should be trying to
-> handle.....
-> 
-> > The shutdown method is implemented only by block-based filesystems and
-> > arguably shutdown was always a misnomer because it assumed that the
-> > filesystem needs to actually shut down when it is called.
-> 
-> Shutdown was not -assumed- as the operation that needed to be
-> performed. That was the feature that was *required* to fix
-> filesystem level problems that occur when the device underneath it
-> disappears.
-> 
-> ->mark_dead() is the abstract filesystem notification from the block
-> device, fs_bdfev_mark_dead() is the -generic implementation- of the
-> functionality required by single block device filesystems. Part of
-> that functionality is shutting down the filesystem because it can
-> *no longer function without a backing device*.
-> 
-> multi-block device filesystems require compeltely different
-> implementations, and we already have one that -does not use active
-> superblock references-. IOWs, even if we add ->remove_bdev(sb)
-> callout, bcachefs will continue to use ->mark_dead() because low
-> level filesystem device management isn't (and shouldn't be!)
-> dependent on high level VFS structure reference counting....
-> 
-> > IOW, we made
-> > it so that it is a call to action but that doesn't have to be the case.
-> > Calling it ->remove_bdev() is imo the correct thing because it gives
-> > block based filesystem the ability to handle device events how they see
-> > fit.
-> 
-> And that's exactly what ->mark_dead already provides. 
-> 
-> And, as I've pointed out above, multi-device filesystems don't
-> actually need actively referenced superblocks to process device
-> removal notifications. Hence ->mark_dead is the correct interface
-> for them to use.
+> It feels odd but I could live with this, particularly since that's the
+> direction that brauner is laying down. :)
 
-I'm not sure what this is trying to argue about as we agree.
+I want to reiterate that no one is saying "under no circumstances
+implement your own holder ops". But if you rely on the VFS locking then
+you better not spill it's guts into your filesystem and make us export
+this bloody locking that half the world had implemented wrong in their
+drivers in the first places spewing endless syzbot deadlocks reports
+that we had to track down and fix. That will not happen again similar
+way we don't bleed all the nastiness of other locking paths.
 
-All current filesystems that use the fs_holder_ops require an active
-superblock reference. If they want to rewrite themselves to not need an
-active superblock reference and switch to custom holder ops then the VFS
-doesn't care.
+Please all stop long philosophical treatises about things no on has ever
+argued. btrfs wants to rely on the VFS infra. That is fine and well. We
+will support and enable this.
 
-This is about what is currently the case. Everyone is aware that a
-filesystem can do this differently.
+I think the two method idea is fine given that they now are clearly
+delineated.
 
-If btrfs wants to rely on the VFS infrastructure then we will enable it
-and we will help them move along and the only requirement is that we
-don't have to bleed the VFS locking requirements into the specific
-filesystem unnecessarily. That's all this is.
+Thanks for providing some clarity here, Darrick and Qu.
 
