@@ -1,153 +1,233 @@
-Return-Path: <linux-ext4+bounces-8913-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8914-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A6AFAFFC69
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 10:33:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9148FAFFC70
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 10:34:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83AD17A6D70
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 08:31:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0F0A1C813DF
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Jul 2025 08:34:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A0028DF27;
-	Thu, 10 Jul 2025 08:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4995728D8FF;
+	Thu, 10 Jul 2025 08:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s4wYb/wJ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB708224B14;
-	Thu, 10 Jul 2025 08:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B547328C2B8;
+	Thu, 10 Jul 2025 08:33:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752136234; cv=none; b=oYTwtz1MN8bhYQc7bNTgpzl6K166FQehx3KeE+C2p5Mqzcv3jzLm5ioc+BTd8saGkPv0EMa3lz5JfCSVGyUR21r1Ts/X4ANJKPhTkGwvq/SP/r68AYBtzotXyia80mVFXRmKj1UvgfkhhZ7ejJf/H/q9Oy5klvl18qoS486IYnQ=
+	t=1752136414; cv=none; b=WeotfSEyvek3zyW1mXBHha6Ilog8F0tdAunxMp2lQmFGio7gTtWG3Q6zWEsohROrOl067KL4s3NHjHNMZRYtt2zCOojo+jgIWC7HUqrGr/7JA9ZAsT6Y6NPnNunwEGcpjOtz6jOiDLrzPOJlen6WhRc/wsJcRSPCNJR0VzoI7CY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752136234; c=relaxed/simple;
-	bh=2vt98ZOkX2ZCprct/CZ38okaD2P1Rf8hMKqEpfH+MBQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dxmttxHJX5bULUOb+Au7quwwZ2r2kQkhkiIP5Z1Uk2N44VsKJkD6SlcTIEuQgJnoUmFnE/mkFA232MOdb/zLFOYVNvaMorr+2clwLjHKYX819MPNUlb+R2zesCw4i6BooZZiV+NFKP/AG7lNQv1TK6vf5wWFiwPmQoxmXPBY1fE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bd7MP3r7rzYQvM8;
-	Thu, 10 Jul 2025 16:30:25 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 577E91A1C0C;
-	Thu, 10 Jul 2025 16:30:24 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP3 (Coremail) with SMTP id _Ch0CgCHNSMeem9oVU39BA--.55493S3;
-	Thu, 10 Jul 2025 16:30:24 +0800 (CST)
-Message-ID: <6c2445e9-5105-495f-a64a-3d6b1fb81a5f@huaweicloud.com>
-Date: Thu, 10 Jul 2025 16:30:22 +0800
+	s=arc-20240116; t=1752136414; c=relaxed/simple;
+	bh=R9b7+hWyJ6gpe2+oeqJYo/68ZSLNbj8perkTo8oGBwY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uxjF2ceA10kBpBOD/EnLkT2AsD14QwYlgmQsglbImzgomeZkHE03dsOI282fs71doAdFx92xPt7LjMWEUCzpYv9707iN0RsmueppJfXjF6cCb45K0xRdDJb5MWfJlrKt61YttgqdpsZv2eeG2BGwXUfrwCkofqvX6xXIn/cQtyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s4wYb/wJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77394C4CEE3;
+	Thu, 10 Jul 2025 08:33:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752136414;
+	bh=R9b7+hWyJ6gpe2+oeqJYo/68ZSLNbj8perkTo8oGBwY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s4wYb/wJqU7WvJJS+HWpf+MLbR4QdL3k6V9v1TTBW0gSIbyziqUP77aR5nlTEsLj6
+	 ql7ifdWjFUYsBjZnUVXuVU1DlrR++M7jlytzAZHlLuGAEFjGCGnevtsRmBnKta2E0d
+	 IV4NUe1U5YRS7bFHuNAkYLG1WusQB1wHNIVm2tIed7LZSEpj7mPoCLVkfRo0opGOX4
+	 qw+Nvfp+eSBpOHuEhpPuzsuEhRtuI29DOn/H5yY5UDm5GMsxT8Y3DUrYAVnrOTzy2j
+	 F0bO9JcYT1vjE/JPysLLt+3cYSQwUnctap/qv9Ob1QpRo4MbnrV9f+Fkmzu3E1Hyqf
+	 i6YqXhl34iobw==
+Date: Thu, 10 Jul 2025 10:33:28 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Dave Chinner <david@fromorbit.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, 
+	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz, 
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, 
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <20250710-laufkundschaft-watscheln-2b1ea9ee4519@brauner>
+References: <cover.1751589725.git.wqu@suse.com>
+ <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
+ <aGxSHKeyldrR1Q0T@dread.disaster.area>
+ <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
+ <20250708004532.GA2672018@frogsfrogsfrogs>
+ <20250708-geahndet-rohmaterial-0419fd6a76b3@brauner>
+ <aG2i3qP01m-vmFVE@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: fix inode use after free in ext4_end_io_rsv_work()
-To: libaokun@huaweicloud.com, linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
- linux-kernel@vger.kernel.org, yangerkun@huawei.com, libaokun1@huawei.com
-References: <20250708111504.3208660-1-libaokun@huaweicloud.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20250708111504.3208660-1-libaokun@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgCHNSMeem9oVU39BA--.55493S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw48Wry7CryxtFyUWr1Utrb_yoW5AFW7pF
-	yY9FyUKF47Zwn2grs3JF1DXr4vqayxtF4UW34xWFy2yFZ3JFn8t3WIq3W5JF18CrWfua17
-	ZF4rKrnxWa15trDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aG2i3qP01m-vmFVE@dread.disaster.area>
 
-On 2025/7/8 19:15, libaokun@huaweicloud.com wrote:
-> From: Baokun Li <libaokun1@huawei.com>
+On Wed, Jul 09, 2025 at 08:59:42AM +1000, Dave Chinner wrote:
+> On Tue, Jul 08, 2025 at 09:55:14AM +0200, Christian Brauner wrote:
+> > On Mon, Jul 07, 2025 at 05:45:32PM -0700, Darrick J. Wong wrote:
+> > > On Tue, Jul 08, 2025 at 08:52:47AM +0930, Qu Wenruo wrote:
+> > > > 
+> > > > 
+> > > > 在 2025/7/8 08:32, Dave Chinner 写道:
+> > > > > On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
+> > > > > > Currently all the filesystems implementing the
+> > > > > > super_opearations::shutdown() callback can not afford losing a device.
+> > > > > > 
+> > > > > > Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
+> > > > > > involved filesystem.
+> > > > > > 
+> > > > > > But it will no longer be the case, with multi-device filesystems like
+> > > > > > btrfs and bcachefs the filesystem can handle certain device loss without
+> > > > > > shutting down the whole filesystem.
+> > > > > > 
+> > > > > > To allow those multi-device filesystems to be integrated to use
+> > > > > > fs_holder_ops:
+> > > > > > 
+> > > > > > - Replace super_opearation::shutdown() with
+> > > > > >    super_opearations::remove_bdev()
+> > > > > >    To better describe when the callback is called.
+> > > > > 
+> > > > > This conflates cause with action.
+> > > > > 
+> > > > > The shutdown callout is an action that the filesystem must execute,
+> > > > > whilst "remove bdev" is a cause notification that might require an
+> > > > > action to be take.
+> > > > > 
+> > > > > Yes, the cause could be someone doing hot-unplug of the block
+> > > > > device, but it could also be something going wrong in software
+> > > > > layers below the filesystem. e.g. dm-thinp having an unrecoverable
+> > > > > corruption or ENOSPC errors.
+> > > > > 
+> > > > > We already have a "cause" notification: blk_holder_ops->mark_dead().
+> > > > > 
+> > > > > The generic fs action that is taken by this notification is
+> > > > > fs_bdev_mark_dead().  That action is to invalidate caches and shut
+> > > > > down the filesystem.
+> > > > > 
+> > > > > btrfs needs to do something different to a blk_holder_ops->mark_dead
+> > > > > notification. i.e. it needs an action that is different to
+> > > > > fs_bdev_mark_dead().
+> > > > > 
+> > > > > Indeed, this is how bcachefs already handles "single device
+> > > > > died" events for multi-device filesystems - see
+> > > > > bch2_fs_bdev_mark_dead().
+> > > > 
+> > > > I do not think it's the correct way to go, especially when there is already
+> > > > fs_holder_ops.
+> > > > 
+> > > > We're always going towards a more generic solution, other than letting the
+> > > > individual fs to do the same thing slightly differently.
+> > > 
+> > > On second thought -- it's weird that you'd flush the filesystem and
+> > > shrink the inode/dentry caches in a "your device went away" handler.
+> > > Fancy filesystems like bcachefs and btrfs would likely just shift IO to
+> > > a different bdev, right?  And there's no good reason to run shrinkers on
+> > > either of those fses, right?
+> > > 
+> > > > Yes, the naming is not perfect and mixing cause and action, but the end
+> > > > result is still a more generic and less duplicated code base.
+> > > 
+> > > I think dchinner makes a good point that if your filesystem can do
+> > > something clever on device removal, it should provide its own block
+> > > device holder ops instead of using fs_holder_ops.  I don't understand
+> > > why you need a "generic" solution for btrfs when it's not going to do
+> > > what the others do anyway.
+> > 
+> > I think letting filesystems implement their own holder ops should be
+> > avoided if we can. Christoph may chime in here. I have no appettite for
+> > exporting stuff like get_bdev_super() unless absolutely necessary. We
+> > tried to move all that handling into the VFS to eliminate a slew of
+> > deadlocks we detected and fixed. I have no appetite to repeat that
+> > cycle.
 > 
-> In ext4_io_end_defer_completion(), check if io_end->list_vec is empty to
-> avoid adding an io_end that requires no conversion to the
-> i_rsv_conversion_list, which in turn prevents starting an unnecessary
-> worker. An ext4_emergency_state() check is also added to avoid attempting
-> to abort the journal in an emergency state.
+> Except it isn't actually necessary.
 > 
-> Additionally, ext4_put_io_end_defer() is refactored to call
-> ext4_io_end_defer_completion() directly instead of being open-coded.
-> This also prevents starting an unnecessary worker when EXT4_IO_END_FAILED
-> is set but data_err=abort is not enabled.
+> Everyone here seems to be assuming that the filesystem *must* take
+> an active superblock reference to process a device removal event,
+> and that is *simply not true*.
 > 
-> This ensures that the check in ext4_put_io_end_defer() is consistent with
-> the check in ext4_end_bio(). Otherwise, we might add an io_end to the
-> i_rsv_conversion_list and then call ext4_finish_bio(), after which the
-> inode could be freed before ext4_end_io_rsv_work() is called, triggering
-> a use-after-free issue.
+> bcachefs does not use get_bdev_super() or an active superblock
+> reference to process ->mark_dead events.
 > 
-> Fixes: ce51afb8cc5e ("ext4: abort journal on data writeback failure if in data_err=abort mode")
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> It has it's own internal reference counting on the struct bch_fs
+> attached to the bdev that ensures the filesystem structures can't go
+> away whilst ->mark_dead is being processed.  i.e. bcachefs is only
+> dependent on the bdev->bd_holder_lock() being held when
+> ->mark_dead() is called and does not rely on the VFS for anything.
+> 
+> This means that device removal processing can be performed
+> without global filesystem/VFS locks needing to be held. Hence issues
+> like re-entrancy deadlocks when there are concurrent/cascading
+> device failures (e.g. a HBA dies, taking out multiple devices
+> simultaneously) are completely avoided...
+> 
+> It also avoids the problem of ->mark_dead events being generated
+> from a context that holds filesystem/vfs locks and then deadlocking
+> waiting for those locks to be released.
+> 
+> IOWs, a multi-device filesystem should really be implementing
+> ->mark_dead itself, and should not be depending on being able to
+> lock the superblock to take an active reference to it.
+> 
+> It should be pretty clear that these are not issues that the generic
+> filesystem ->mark_dead implementation should be trying to
+> handle.....
+> 
+> > The shutdown method is implemented only by block-based filesystems and
+> > arguably shutdown was always a misnomer because it assumed that the
+> > filesystem needs to actually shut down when it is called.
+> 
+> Shutdown was not -assumed- as the operation that needed to be
+> performed. That was the feature that was *required* to fix
+> filesystem level problems that occur when the device underneath it
+> disappears.
+> 
+> ->mark_dead() is the abstract filesystem notification from the block
+> device, fs_bdfev_mark_dead() is the -generic implementation- of the
+> functionality required by single block device filesystems. Part of
+> that functionality is shutting down the filesystem because it can
+> *no longer function without a backing device*.
+> 
+> multi-block device filesystems require compeltely different
+> implementations, and we already have one that -does not use active
+> superblock references-. IOWs, even if we add ->remove_bdev(sb)
+> callout, bcachefs will continue to use ->mark_dead() because low
+> level filesystem device management isn't (and shouldn't be!)
+> dependent on high level VFS structure reference counting....
+> 
+> > IOW, we made
+> > it so that it is a call to action but that doesn't have to be the case.
+> > Calling it ->remove_bdev() is imo the correct thing because it gives
+> > block based filesystem the ability to handle device events how they see
+> > fit.
+> 
+> And that's exactly what ->mark_dead already provides. 
+> 
+> And, as I've pointed out above, multi-device filesystems don't
+> actually need actively referenced superblocks to process device
+> removal notifications. Hence ->mark_dead is the correct interface
+> for them to use.
 
-Looks good to me.
+I'm not sure what this is trying to argue about as we agree.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+All current filesystems that use the fs_holder_ops require an active
+superblock reference. If they want to rewrite themselves to not need an
+active superblock reference and switch to custom holder ops then the VFS
+doesn't care.
 
-> ---
->  fs/ext4/page-io.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-> index 179e54f3a3b6..3d8b0f6d2dea 100644
-> --- a/fs/ext4/page-io.c
-> +++ b/fs/ext4/page-io.c
-> @@ -236,10 +236,12 @@ static void dump_completed_IO(struct inode *inode, struct list_head *head)
->  
->  static bool ext4_io_end_defer_completion(ext4_io_end_t *io_end)
->  {
-> -	if (io_end->flag & EXT4_IO_END_UNWRITTEN)
-> +	if (io_end->flag & EXT4_IO_END_UNWRITTEN &&
-> +	    !list_empty(&io_end->list_vec))
->  		return true;
->  	if (test_opt(io_end->inode->i_sb, DATA_ERR_ABORT) &&
-> -	    io_end->flag & EXT4_IO_END_FAILED)
-> +	    io_end->flag & EXT4_IO_END_FAILED &&
-> +	    !ext4_emergency_state(io_end->inode->i_sb))
->  		return true;
->  	return false;
->  }
-> @@ -256,6 +258,7 @@ static void ext4_add_complete_io(ext4_io_end_t *io_end)
->  	WARN_ON(!(io_end->flag & EXT4_IO_END_DEFER_COMPLETION));
->  	WARN_ON(io_end->flag & EXT4_IO_END_UNWRITTEN &&
->  		!io_end->handle && sbi->s_journal);
-> +	WARN_ON(!io_end->bio);
->  
->  	spin_lock_irqsave(&ei->i_completed_io_lock, flags);
->  	wq = sbi->rsv_conversion_wq;
-> @@ -318,12 +321,9 @@ ext4_io_end_t *ext4_init_io_end(struct inode *inode, gfp_t flags)
->  void ext4_put_io_end_defer(ext4_io_end_t *io_end)
->  {
->  	if (refcount_dec_and_test(&io_end->count)) {
-> -		if (io_end->flag & EXT4_IO_END_FAILED ||
-> -		    (io_end->flag & EXT4_IO_END_UNWRITTEN &&
-> -		     !list_empty(&io_end->list_vec))) {
-> -			ext4_add_complete_io(io_end);
-> -			return;
-> -		}
-> +		if (ext4_io_end_defer_completion(io_end))
-> +			return ext4_add_complete_io(io_end);
-> +
->  		ext4_release_io_end(io_end);
->  	}
->  }
+This is about what is currently the case. Everyone is aware that a
+filesystem can do this differently.
 
+If btrfs wants to rely on the VFS infrastructure then we will enable it
+and we will help them move along and the only requirement is that we
+don't have to bleed the VFS locking requirements into the specific
+filesystem unnecessarily. That's all this is.
 
