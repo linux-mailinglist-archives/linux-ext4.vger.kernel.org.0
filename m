@@ -1,87 +1,87 @@
-Return-Path: <linux-ext4+bounces-8958-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8959-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6674CB02B57
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 16:16:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02992B02B5D
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 16:18:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C0471AA2364
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 14:16:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CD7216CC61
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 14:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3A927FB2A;
-	Sat, 12 Jul 2025 14:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09CC281368;
+	Sat, 12 Jul 2025 14:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BfjF9u7W"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Xk+aqn6E"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F81827E047;
-	Sat, 12 Jul 2025 14:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA1D317A2EC;
+	Sat, 12 Jul 2025 14:14:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752329647; cv=none; b=sL0okDnQpb4K/cIa2ku0nbE5+jfO/KNBPFGBUSspwQcuKXw3CnKzjy/1aZzbq45J51cNndt3Y4fmMJmSKBoQlPbGDMbkL+Al1MKvWP8hYUAtVuxubq34Zo1gP8+v5LsnUZQ+BnNTyaPm8YOMrFYAwLaNG3qRpkpUHcrmZedCmg8=
+	t=1752329661; cv=none; b=SssqUTmGkYAN3MrkYeYQF4PaAwE67dYqV5l19CVaMUetIn1xInu02kp/3Yur+HqQHd1uHEVoT7JQCAkYSeL9efsxeNKjSXh2AOFTjZZ6lgwJwBbr6Zsi/8gk2rAjWLRA3ZV4ZjcVr0W2oHdAWTihgWqmxcBclWuoLz8ZbKQKxQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752329647; c=relaxed/simple;
-	bh=KNrAQHgMsXhyOwPfV9u/T0Jg4bGopTaJ35cfz1MUYuc=;
+	s=arc-20240116; t=1752329661; c=relaxed/simple;
+	bh=WqXXipFPQ1tVUxnA3odb4wEvTzAaPB/Apy2RQvWokIY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SYd/SdhIMWSG8jE5iOyshW1crI/4xH5cDtnE4+ajRFF/I3hi2UxNL0K8E/zbgvnDCfViGu7NJG5XA7juoB/QPx6X6lVTL0Ar1GMK7xwYwrgj8Z/nlN86IOMOP7EXWbt14BdJ/HzE8xhgz/n2RImmfnzhDXhFnHLnXMSzTTRVJuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=BfjF9u7W; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=c9DUZ3q6v4D+49tfVVH335LmBCydmL34MXtQpHD9dpaDYaSv3/B1S8SCcJ4Ky54fOsztINBHsQqeL3+B6M34U1RrGTIUwTl4WcCJxwYCzR3BcLiSsT9COGD5Jbv95iZV4tsisrmfkewObrqljRkEbqcYn+bo2XkJG5ON0pEOEaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Xk+aqn6E; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56CCwcta031931;
-	Sat, 12 Jul 2025 14:13:31 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56CBkc90018194;
+	Sat, 12 Jul 2025 14:13:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=/HrkyBHl/xr+a469M
-	1SoZyj2BKanRPoZvRyiqaCwunU=; b=BfjF9u7WsH8OV+iqk8CBJmh/qICPDneKF
-	HQMk9Vm1LGvYCrc3gfBM9XP1sFdEqe6IS/Z8N3zgzYC5j8QQYE5KIPuorQE0w9lo
-	JU5drRolIs0fTldDDWnczweuR1ut+JopmfxUjo2N6HQ5/j13sOqWt5q2/k2EG9bt
-	4pqBHOpx88qWM19o2UdZsNiRWUVwT+cYkMb2fGtcqmwMSQtNmM746xo54LR/tX6p
-	EUKmv4XrEeoTSgjPxJjoemBTagrBniLZ0DpBiqQrBtK/kyyYJCf1EfhLj8NKLHeV
-	d6t+C+mrg8QChHF1QL75/1j6p2ReXiTDj0JYxbYyL9Uq6wtM76xiA==
+	:mime-version:references:subject:to; s=pp1; bh=ZRdoJ9TTuDQV9ijiB
+	aHQiZbirmNkt1nR1KInfMDU9Ag=; b=Xk+aqn6El/7nP14bdhWjx0SFONupIwsTH
+	kFZLfIs7ruzL3GWn6SEN6Cnrb1esduHvQGrYyyz4Mce/Ci1JWHxZktc7B9XSEoK4
+	x/sgvjhfrc20/t7/EQe65ALZz/tDtcEohpAruFA1SmXipDjOamynYbXivgdKGBgj
+	hR2/p/pmvYx32G+J9/P/MOdra8HvCmkvO5k8ly3bezNWld3K8omz3YbodfSbLBrP
+	kx2UA+GwM6TAN1ir++7EvayR+/Lilr9tyH+n+EJUsjEqdFbHC/pmhT6drlJ1etlE
+	XXpi1JqTTy80s+ylw5rLvDs84NOgX1R4LS3FRRlvZcMFpJjYFOvxg==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ufeehqvb-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ue4thv6s-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 12 Jul 2025 14:13:31 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 56CEDUuM031405;
-	Sat, 12 Jul 2025 14:13:31 GMT
+	Sat, 12 Jul 2025 14:13:34 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 56CEDKUU008828;
+	Sat, 12 Jul 2025 14:13:33 GMT
 Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ufeehqv2-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ue4thv6m-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 12 Jul 2025 14:13:30 +0000 (GMT)
+	Sat, 12 Jul 2025 14:13:33 +0000 (GMT)
 Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56CBdNON013616;
-	Sat, 12 Jul 2025 14:13:30 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qgkmf65d-1
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56CB3wU9013577;
+	Sat, 12 Jul 2025 14:13:32 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qgkmf667-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 12 Jul 2025 14:13:29 +0000
+	Sat, 12 Jul 2025 14:13:32 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56CEDS2n18481612
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56CEDVDK30409160
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 12 Jul 2025 14:13:28 GMT
+	Sat, 12 Jul 2025 14:13:31 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5838020043;
+	by IMSVA (Postfix) with ESMTP id 06C4920043;
+	Sat, 12 Jul 2025 14:13:31 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BB2AB20040;
 	Sat, 12 Jul 2025 14:13:28 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 19CEA20040;
-	Sat, 12 Jul 2025 14:13:26 +0000 (GMT)
 Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.215.252])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Sat, 12 Jul 2025 14:13:25 +0000 (GMT)
+	Sat, 12 Jul 2025 14:13:28 +0000 (GMT)
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org
 Cc: Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
         john.g.garry@oracle.com, tytso@mit.edu, linux-xfs@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [PATCH v3 11/13] ext4/062: Atomic writes test for bigalloc using fio crc verifier on multiple files
-Date: Sat, 12 Jul 2025 19:42:53 +0530
-Message-ID: <0116498a542ba9ea9026b2b61ad747eca31f931d.1752329098.git.ojaswin@linux.ibm.com>
+Subject: [PATCH v3 12/13] ext4/063: Atomic write test for extent split across leaf nodes
+Date: Sat, 12 Jul 2025 19:42:54 +0530
+Message-ID: <b6f7b73de6bb6ebfc78e533f89f0899d884e5490.1752329098.git.ojaswin@linux.ibm.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1752329098.git.ojaswin@linux.ibm.com>
 References: <cover.1752329098.git.ojaswin@linux.ibm.com>
@@ -93,228 +93,176 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEyMDEwNyBTYWx0ZWRfX3VBEYmIfO40y 4J8D/pu03m/sfmH209oeigTuMnbNP3TnXAGND+LG9lXxC1i6nuf3gyLWRFVJ7TyZds1Xlcb0rwP LmKgx/JXJHkKblGMPquNOJqDLVimlBKkSL/QUadmtSz/NXQ+2cs0ld7Bhp82yis2Tm/RIsDJJLA
- DZ+SDtEGTnFAVlHB0EJe/iZ2pwnmHQulPzbbdDLgzYUqA1kN0aa1nMVyHK/mdLrq3anFwc3c4Zp fbXt7oTyiTj5BmK2NKJgHKO61NYGmt6xv9pgMWvxe1l3lEydzp7YvlYoyT6GlEcn9hEP27iq1MH qDD4CybmVxy5mHGG8FhjT1JnPNzjpQr01fbW+6SUL4RCMop3B6oQhxj9mwVqL++nacgCOkBsOBa
- doqhoug5KrssOuLol5NJ4phoQWUMmOHM9+VW9OSTuixzCsg92N87MljQAriqsmvi3jc5FIw0
-X-Proofpoint-ORIG-GUID: Bn_q3_yU56Y9fED776peuyFyy11fk7qw
-X-Authority-Analysis: v=2.4 cv=C9/pyRP+ c=1 sm=1 tr=0 ts=68726d8b cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=Wb1JkmetP80A:10 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8 a=yVCtIWGlblad6CDWSz4A:9
-X-Proofpoint-GUID: qKwxC4nF61vVidSZYV87Wfu-Xi13qJl2
+X-Authority-Analysis: v=2.4 cv=baBrUPPB c=1 sm=1 tr=0 ts=68726d8e cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=BtNrGSYHu5IGmLxdGZgA:9
+X-Proofpoint-GUID: x5iyryN_uXFvgrbwGwYH5FGrdNTMxDoZ
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEyMDEwNyBTYWx0ZWRfX4jcauGXp+Juh dxhMZER8JAm8uzzPyO5QBtJb9bYsSXrrQLfV192tvvwz05Re5A9LtUAC55FSsUyv8aFcXSfNHB5 pb1uNHP3qD60BU/sMkoyNX+wiO6VO7jhSVVilcoU3STVhCxDL9vGCnvSfGmi5S8wmSRrqkgcNq+
+ kom7SM+/0DIEAfJK4grJNu3hEVHLJH8m1ywReseNGX92NCwtKhMhUSzIDwyz1XOE+vV6nGQmeSk lt4FsovYNzTI7g4k6RW01ujDHzJjS/ALsIduHKg3Cg4LCLBI5wVO7C/5eOWeq6pKw+c/5g6vNOp Hr0vkh3q3ggYBJWTQaXLNLnCvDr+JtV5TcPX4eEgq+QpUixYrbdC5ziEqqlWmQYj9hbRoh1zwFe
+ J8iNBqKAg/qjfPeDkfJIzCBL8eya61zH7DTic2vo9o765HPftVvWPJXDWLUL8kZ3RlKGzIon
+X-Proofpoint-ORIG-GUID: q3o_HD03o1lzVRCUAtH9nIuWh66upTFR
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
  definitions=2025-07-12_02,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- impostorscore=0 spamscore=0 suspectscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=991 bulkscore=0 adultscore=0 clxscore=1015
- mlxscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
+ malwarescore=0 spamscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
  definitions=main-2507120107
 
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+In ext4, even if an allocated range is physically and logically
+contiguous, it can still be split into 2 extents. This is because ext4
+does not merge extents across leaf nodes. This is an issue for atomic
+writes since even for a continuous extent the map block could (in rare
+cases) return a shorter map, hence tearning the write. This test creates
+such a file and ensures that the atomic write handles this case
+correctly
 
-Brute force all possible blocksize clustersize combination on a bigalloc
-filesystem for stressing atomic write using fio data crc verifier. We run
-multiple threads in parallel with each job writing to its own file. The
-parallel jobs running on a constrained filesystem size ensure that we stress
-the ext4 allocator to allocate contiguous extents.
-
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- tests/ext4/062     | 176 +++++++++++++++++++++++++++++++++++++++++++++
- tests/ext4/062.out |   2 +
- 2 files changed, 178 insertions(+)
- create mode 100755 tests/ext4/062
- create mode 100644 tests/ext4/062.out
+ tests/ext4/063     | 125 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/ext4/063.out |   2 +
+ 2 files changed, 127 insertions(+)
+ create mode 100755 tests/ext4/063
+ create mode 100644 tests/ext4/063.out
 
-diff --git a/tests/ext4/062 b/tests/ext4/062
+diff --git a/tests/ext4/063 b/tests/ext4/063
 new file mode 100755
-index 00000000..85b82f97
+index 00000000..25b5693d
 --- /dev/null
-+++ b/tests/ext4/062
-@@ -0,0 +1,176 @@
++++ b/tests/ext4/063
+@@ -0,0 +1,125 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
 +#
-+# FS QA Test 061
++# In ext4, even if an allocated range is physically and logically contiguous,
++# it can still be split into 2 extents. This is because ext4 does not merge
++# extents across leaf nodes. This is an issue for atomic writes since even for
++# a continuous extent the map block could (in rare cases) return a shorter map,
++# hence tearning the write. This test creates such a file and ensures that the
++# atomic write handles this case correctly
 +#
-+# Brute force all possible blocksize clustersize combination on a bigalloc
-+# filesystem for stressing atomic write using fio data crc verifier. We run
-+# nproc * $LOAD_FACTOR threads in parallel writing to a single
-+# $SCRATCH_MNT/test-file. We also create 8 such parallel jobs to run on
-+# a constrained filesystem size to stress the ext4 allocator to allocate
-+# contiguous extents.
-+#
-+
 +. ./common/preamble
 +. ./common/atomicwrites
++_begin_fstest auto atomicwrites
 +
-+_begin_fstest auto rw stress atomicwrites
++_require_scratch_write_atomic_multi_fsblock
++_require_atomic_write_test_commands
++_require_command "$DEBUGFS_PROG" debugfs
 +
-+_require_scratch_write_atomic
-+_require_aiodio
++prep() {
++	local bs=`_get_block_size $SCRATCH_MNT`
++	local ex_hdr_bytes=12
++	local ex_entry_bytes=12
++	local entries_per_blk=$(( (bs - ex_hdr_bytes) / ex_entry_bytes ))
 +
-+FSSIZE=$((360*1024*1024))
-+FIO_LOAD=$(($(nproc) * LOAD_FACTOR))
-+fiobsize=4096
-+
-+# Calculate fsblocksize as per bdev atomic write units.
-+bdev_awu_min=$(_get_atomic_write_unit_min $SCRATCH_DEV)
-+bdev_awu_max=$(_get_atomic_write_unit_max $SCRATCH_DEV)
-+fsblocksize=$(_max 4096 "$bdev_awu_min")
-+
-+function create_fio_configs()
-+{
-+	create_fio_aw_config
-+	create_fio_verify_config
-+}
-+
-+function create_fio_verify_config()
-+{
-+cat >$fio_verify_config <<EOF
-+	[global]
-+	direct=1
-+	ioengine=libaio
-+	rw=randwrite
-+	bs=$fiobsize
-+	fallocate=truncate
-+	size=$((FSSIZE / 12))
-+	iodepth=$FIO_LOAD
-+	numjobs=$FIO_LOAD
-+	group_reporting=1
-+	atomic=1
-+
-+	verify_only=1
-+	verify_state_save=0
-+	verify=crc32c
-+	verify_fatal=1
-+	verify_write_sequence=0
-+
-+	[verify-job1]
-+	filename=$SCRATCH_MNT/testfile-job1
-+
-+	[verify-job2]
-+	filename=$SCRATCH_MNT/testfile-job2
-+
-+	[verify-job3]
-+	filename=$SCRATCH_MNT/testfile-job3
-+
-+	[verify-job4]
-+	filename=$SCRATCH_MNT/testfile-job4
-+
-+	[verify-job5]
-+	filename=$SCRATCH_MNT/testfile-job5
-+
-+	[verify-job6]
-+	filename=$SCRATCH_MNT/testfile-job6
-+
-+	[verify-job7]
-+	filename=$SCRATCH_MNT/testfile-job7
-+
-+	[verify-job8]
-+	filename=$SCRATCH_MNT/testfile-job8
-+
-+EOF
-+}
-+
-+function create_fio_aw_config()
-+{
-+cat >$fio_aw_config <<EOF
-+	[global]
-+	direct=1
-+	ioengine=libaio
-+	rw=randwrite
-+	bs=$fiobsize
-+	fallocate=truncate
-+	size=$((FSSIZE / 12))
-+	iodepth=$FIO_LOAD
-+	numjobs=$FIO_LOAD
-+	group_reporting=1
-+	atomic=1
-+
-+	verify_state_save=0
-+	verify=crc32c
-+	do_verify=0
-+
-+	[write-job1]
-+	filename=$SCRATCH_MNT/testfile-job1
-+
-+	[write-job2]
-+	filename=$SCRATCH_MNT/testfile-job2
-+
-+	[write-job3]
-+	filename=$SCRATCH_MNT/testfile-job3
-+
-+	[write-job4]
-+	filename=$SCRATCH_MNT/testfile-job4
-+
-+	[write-job5]
-+	filename=$SCRATCH_MNT/testfile-job5
-+
-+	[write-job6]
-+	filename=$SCRATCH_MNT/testfile-job6
-+
-+	[write-job7]
-+	filename=$SCRATCH_MNT/testfile-job7
-+
-+	[write-job8]
-+	filename=$SCRATCH_MNT/testfile-job8
-+
-+EOF
-+}
-+
-+# Let's create a sample fio config to check whether fio supports all options.
-+fio_aw_config=$tmp.aw.fio
-+fio_verify_config=$tmp.verify.fio
-+fio_out=$tmp.fio.out
-+
-+create_fio_configs
-+_require_fio $fio_aw_config
-+
-+for ((fsblocksize=$fsblocksize; fsblocksize <= $(_get_page_size); fsblocksize = $fsblocksize << 1)); do
-+	# cluster sizes above 16 x blocksize are experimental so avoid them
-+	# Also, cap cluster size at 128kb to keep it reasonable for large
-+	# blocks size cases.
-+	fs_max_clustersize=$(_min $((16 * fsblocksize)) "$bdev_awu_max" $((128 * 1024)))
-+
-+	for ((fsclustersize=$fsblocksize; fsclustersize <= $fs_max_clustersize; fsclustersize = $fsclustersize << 1)); do
-+		for ((fiobsize = $fsblocksize; fiobsize <= $fsclustersize; fiobsize = $fiobsize << 1)); do
-+			MKFS_OPTIONS="-O bigalloc -b $fsblocksize -C $fsclustersize"
-+			_scratch_mkfs_sized "$FSSIZE" >> $seqres.full 2>&1 || continue
-+			if _try_scratch_mount >> $seqres.full 2>&1; then
-+				echo "== FIO test for fsblocksize=$fsblocksize fsclustersize=$fsclustersize fiobsize=$fiobsize ==" >> $seqres.full
-+
-+				touch $SCRATCH_MNT/f1
-+				create_fio_configs
-+
-+				cat $fio_aw_config >> $seqres.full
-+				cat $fio_verify_config >> $seqres.full
-+
-+				$FIO_PROG $fio_aw_config >> $seqres.full
-+				ret1=$?
-+
-+				$FIO_PROG $fio_verify_config  >> $seqres.full
-+				ret2=$?
-+
-+				_scratch_unmount
-+
-+				[[ $ret1 -eq 0 && $ret2 -eq 0 ]] || _fail "fio with atomic write failed"
-+			fi
-+		done
++	# fill the extent tree leaf which bs len extents at alternate offsets. For example,
++	# for 4k bs the tree should look as follows
++	#
++	#                  +---------+---------+
++	#                  | index 1 | index 2 |
++	#                  +-----+---+-----+---+
++	#               +--------+         +-------+
++	#               |                          |
++	#    +----------+--------------+     +-----+-----+
++	#    | ex 1 | ex 2 |... | ex n |     |  ex n + 1 |
++	#    +-------------------------+     +-----------+
++	#    0      2            680          682
++	for i in $(seq 0 $entries_per_blk)
++	do
++		$XFS_IO_PROG -fc "pwrite -b $bs $((i * 2 * bs)) $bs" $testfile > /dev/null
 +	done
-+done
++	sync $testfile
 +
-+# success, all done
-+echo Silence is golden
++	echo >> $seqres.full
++	echo "Create file with extents spanning 2 leaves. Extents:">> $seqres.full
++	echo "...">> $seqres.full
++	$DEBUGFS_PROG -R "ex `basename $testfile`" $SCRATCH_DEV |& tail >> $seqres.full
++
++	# Now try to insert a new extent ex(new) between ex(n) and ex(n+1). Since
++	# this is a new FS the allocator would find continuous blocks such that
++	# ex(n) ex(new) ex(n+1) are physically(and logically) contiguous. However,
++	# since we dont merge extents across leaf we will end up with a tree as:
++	#
++	#                  +---------+---------+
++	#                  | index 1 | index 2 |
++	#                  +-----+---+-----+---+
++	#               +--------+         +-------+
++	#               |                          |
++	#    +----------+--------------+     +-----+-----+
++	#    | ex 1 | ex 2 |... | ex n |     | ex merged |
++	#    +-------------------------+     +-----------+
++	#    0      2            680          681  682  684
++	#
++	echo >> $seqres.full
++	torn_ex_offset=$((((entries_per_blk * 2) - 1) * bs))
++	$XFS_IO_PROG -c "pwrite $torn_ex_offset $bs" $testfile >> /dev/null
++	sync $testfile
++
++	echo >> $seqres.full
++	echo "Perform 1 block write at $torn_ex_offset to create torn extent. Extents:">> $seqres.full
++	echo "...">> $seqres.full
++	$DEBUGFS_PROG -R "ex `basename $testfile`" $SCRATCH_DEV |& tail >> $seqres.full
++
++	_scratch_cycle_mount
++}
++
++_scratch_mkfs >> $seqres.full
++_scratch_mount >> $seqres.full
++
++testfile=$SCRATCH_MNT/testfile
++touch $testfile
++awu_max=$(_get_atomic_write_unit_max $testfile)
++
++echo >> $seqres.full
++echo "# Prepping the file" >> $seqres.full
++prep
++
++torn_aw_offset=$((torn_ex_offset - (torn_ex_offset % awu_max)))
++
++echo >> $seqres.full
++echo "# Performing atomic IO on the torn extent range. Command: " >> $seqres.full
++echo $XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $awu_max $torn_aw_offset $awu_max" >> $seqres.full
++$XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $awu_max $torn_aw_offset $awu_max" >> $seqres.full
++
++echo >> $seqres.full
++echo "Extent state after atomic write:">> $seqres.full
++echo "...">> $seqres.full
++$DEBUGFS_PROG -R "ex `basename $testfile`" $SCRATCH_DEV |& tail >> $seqres.full
++
++echo >> $seqres.full
++echo "# Checking data integrity" >> $seqres.full
++
++# create a dummy file with expected data
++$XFS_IO_PROG -fc "pwrite -S 0x61 -b $awu_max 0 $awu_max" $testfile.exp >> /dev/null
++expected_data=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp)
++
++# We ensure that the data after atomic writes should match the expected data
++actual_data=$(od -An -t x1 -j $torn_aw_offset -N $awu_max $testfile)
++if [[ "$actual_data" != "$expected_data" ]]
++then
++	echo "Checksum match failed at off: $torn_aw_offset size: $awu_max"
++	echo
++	echo "Expected: "
++	echo "$expected_data"
++	echo
++	echo "Actual contents: "
++	echo "$actual_data"
++
++	_fail
++fi
++
++echo -n "Data verification at offset $torn_aw_offset suceeded!" >> $seqres.full
++echo "Silence is golden"
 +status=0
 +exit
-diff --git a/tests/ext4/062.out b/tests/ext4/062.out
+diff --git a/tests/ext4/063.out b/tests/ext4/063.out
 new file mode 100644
-index 00000000..a1578f48
+index 00000000..de35fc52
 --- /dev/null
-+++ b/tests/ext4/062.out
++++ b/tests/ext4/063.out
 @@ -0,0 +1,2 @@
-+QA output created by 062
++QA output created by 063
 +Silence is golden
 -- 
 2.49.0
