@@ -1,87 +1,87 @@
-Return-Path: <linux-ext4+bounces-8952-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8953-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B1A1B02B45
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 16:15:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6188CB02B4C
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 16:15:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C350B188B7BD
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 14:15:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A29B176564
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 14:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58EB0287278;
-	Sat, 12 Jul 2025 14:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8836288CB4;
+	Sat, 12 Jul 2025 14:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WLTSc3pa"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="U5L4cUF2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1F2284B56;
-	Sat, 12 Jul 2025 14:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B1A27F19B;
+	Sat, 12 Jul 2025 14:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752329607; cv=none; b=nqhLJ6uEg+YofNGp0NuGuBcch7xQ/w4/ccOZ5ud6svuNHXBgT8Zh+9ypiolgTFgn5/GIQO9oPMFovYcBfmCO9qL/rvXOXWlBK5UmMUPdrY7NQtYLHxcx6wieXzOnl08NSVG5K3VpCNWOdD940o6q4aHXa/OArXcKbX8hqrhxiYM=
+	t=1752329609; cv=none; b=Il5+LU1seoqX9GzvgK1l8suMPiqkZtxrHMufbC12jDrJsQSJLEqlP53wKLCW8N++hqJSVNy0GjKBYD5zmgbi+rrEElPeLRw5m2BXSFQaFVDqK/xFl+DZX7QcQhW0MJtWZLtWjGQVxVSG6eQEnWflNiBnFgBP2EqRCTC7B6pB+9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752329607; c=relaxed/simple;
-	bh=NbKJl4MIkBjbKokRgks+75U1IqsVpspVnPb0d087uRU=;
+	s=arc-20240116; t=1752329609; c=relaxed/simple;
+	bh=qfTNrVszUJrJ9X5OWWdIiNeQVrPCrDeBfKMcJnCHPrI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IsG2WJhxc0nl6JX6Ko3cPOi9mdN4QKy6tT1a4NIFnUEmhh5hkRCc+wkqsawHlCJZC+lCCAijU56ViVW5pC6aINLxa9xkdEgdZ3qp/Wh1b0DCA8Em8C6gCSwbVCseu8TikCj5uQxZ97uQiczG9mIzs7DTVmn5aGM/McsMlNyaidY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WLTSc3pa; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=FiBA8jl7JMFx8jTODohN8OrBZ7XUBvCKIONv4L8Kjhj2md/lZKWH/hUarPIaRu4BSrUkTy6rOLxY8d6NlROExgNWKePTn6K3ch0VdoGTTudXabihjRWTFgcxtG65gX2uf24csmMXFSRvlEgzoqsTiVajXermLPurlw7hPkzYbv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=U5L4cUF2; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56C2wLYO005951;
-	Sat, 12 Jul 2025 14:13:19 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56C8i00h028787;
+	Sat, 12 Jul 2025 14:13:21 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=rT9EgbiIW9JY2UPbN
-	E2nI/jlnTr+TgFGnm5C5P1lbkk=; b=WLTSc3papKwPjvsBOdYjGSNc7LJpOe4UR
-	fBNl/9xNY5Glf1XsK7q1oO5cnBVKJeJlp1ocTx66C88Is3t3FDkGdiG4PzJHU6AO
-	UvHa/ZK/TCr2ToNTeTQHFr4FWdNbmhpICXLwIjQhJBNtrkh4lGJT/3jeFV59O3/u
-	aYaZGUBJbp3HexECWAHRBkpsgh0jVFSTC9ezrYe1pwEjfbVXNqsUiYEuh+mJwBl7
-	cfA7PeLkwLER/IH7tc223omSM11h3wirQ4k0tR8p6Ee9+bSjHwkeIuo8/E/T+1IC
-	RSaOWEyHiYrEBe1l/qXEWUBuOfv8J5voyqDwC4pIMCxKkXJ3EE0Lg==
+	:mime-version:references:subject:to; s=pp1; bh=jnPUZ5Gvv3upS+qTq
+	KyPnVTG8IdhzTg0fV6sfLAbL/4=; b=U5L4cUF2H0ffhGibTyfbiluxMXmRBNKr2
+	cmUgqxZxyZQMbMLE0LBwVi6C7Xi4e9JtHnjADi2O2NSyJjeQs72AsRM1Y3vQprvV
+	qlKeUVf/VHEuFaxHrWYZzZARh6xj6RvtvhW7Kip7mbDKI63uZuQHXQ3E5UWRVrGy
+	GfTpiWNctBKgltlItiAQkfbnIDaHM1xkUCyRiJXWcz7vWewcnLqKbiQJwM7i5aqm
+	164Nzd2jyWAAmvOQbhBR0JaxBBim4/UrHpMUBRPmaajAKQS3AxqMj279VAOICbIT
+	iWoCABjp4oFg/e7+kp/H1xvMeNFemuZhp28EZ4KNYhID+d75a1XjQ==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ufcysr7d-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ue4thv4b-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 12 Jul 2025 14:13:18 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 56CEDIb4008429;
-	Sat, 12 Jul 2025 14:13:18 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ufcysr7b-1
+	Sat, 12 Jul 2025 14:13:20 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 56CEDKUS008828;
+	Sat, 12 Jul 2025 14:13:20 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ue4thv49-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 12 Jul 2025 14:13:18 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56C91GFZ010841;
-	Sat, 12 Jul 2025 14:13:16 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47qes0qk6u-1
+	Sat, 12 Jul 2025 14:13:20 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56CB0DgD002888;
+	Sat, 12 Jul 2025 14:13:19 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47qfvmy96h-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 12 Jul 2025 14:13:16 +0000
+	Sat, 12 Jul 2025 14:13:19 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56CEDErO35521154
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56CEDHfP50594128
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 12 Jul 2025 14:13:15 GMT
+	Sat, 12 Jul 2025 14:13:17 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D289520043;
-	Sat, 12 Jul 2025 14:13:14 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 953DA20043;
+	Sat, 12 Jul 2025 14:13:17 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BEA9020040;
-	Sat, 12 Jul 2025 14:13:12 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 4685320040;
+	Sat, 12 Jul 2025 14:13:15 +0000 (GMT)
 Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.215.252])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Sat, 12 Jul 2025 14:13:12 +0000 (GMT)
+	Sat, 12 Jul 2025 14:13:15 +0000 (GMT)
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org
 Cc: Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
         john.g.garry@oracle.com, tytso@mit.edu, linux-xfs@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [PATCH v3 06/13] generic/1227: Add atomic write test using fio verify on file mixed mappings
-Date: Sat, 12 Jul 2025 19:42:48 +0530
-Message-ID: <f2d4a366f32ca56e1d47897dc5cf6cc8d85328b4.1752329098.git.ojaswin@linux.ibm.com>
+Subject: [PATCH v3 07/13] generic/1228: Add atomic write multi-fsblock O_[D]SYNC tests
+Date: Sat, 12 Jul 2025 19:42:49 +0530
+Message-ID: <ae247b8d0a9b1309a2e4887f8dd30c1d6e479848.1752329098.git.ojaswin@linux.ibm.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1752329098.git.ojaswin@linux.ibm.com>
 References: <cover.1752329098.git.ojaswin@linux.ibm.com>
@@ -93,175 +93,187 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=J6iq7BnS c=1 sm=1 tr=0 ts=68726d7e cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=Wb1JkmetP80A:10 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8 a=ZzjZKRc1KEgCYT2eLxwA:9
-X-Proofpoint-GUID: vQXvLn4qNjY_a4grMjnswC7N7woNlctU
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEyMDEwNyBTYWx0ZWRfX5zNynLNRfb34 dnNuOLGOJmdvoEof9O0hyHsnDYOkQ6JE8SWLiAV0RpWG6OeQCzJURXqE/PF7O9/1aLJbXbqvERC ouKgbbL+/9kp/TORFdO11YNPKnHdwbhlKX/S/D/2KdJ0u81ov5ghHn4mCZkAmjzD+gTCYgvXdPI
- DlNsyxvTmP1O+/bP6RV19/XpYzgQcnpbWoTzeJG/coMSV3XR0pLBSKexP8SEq+5h16kTOOMsQwz Hkp02rxowNS9cyiJZ8NMzwxXTwWjeqdRspOwu4pseWOV0kDyeibqVLCTAulYMx4fusI351m0UmT aNK/fJHkirn9+kWZw7p2PYp6YE9Dn4eu0uP9VM0J0S5NKUq0PkP39/m0B7UFEVZYfQuskWNwgEv
- 7MkdzpIRLTiTJ6KTp+BgPk7jW0BskI00a4KWqQ2ffa/QK3gor5XCgNDWRGGqI94luLguhLmH
-X-Proofpoint-ORIG-GUID: amrTx6z_leAjrOAm5_agPxdX2t6vVbfu
+X-Authority-Analysis: v=2.4 cv=baBrUPPB c=1 sm=1 tr=0 ts=68726d81 cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=Wb1JkmetP80A:10 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8 a=gLbHiHCgn5DP7liA1jIA:9
+X-Proofpoint-GUID: F6qj_X1kYoVpbdHmmJO4E2QYVEfRETtR
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEyMDEwNyBTYWx0ZWRfX7zPPLAUMXZc6 oSHwu1lad0XqCRZQKY1xJRJTPFN+pkHjW5eCXDEJ9cgY4SrzSoxbld7hflVX28VdEQHyXjfmy5+ q9PFGIEvXwdyj589A7OyqYng8xbLL2vroBZTBolv0h+eZ9xNs2h50OiOxQRfHM2G7sXZtyyKZfx
+ kZeGUF423+k2mzXLRydJp06rHWRko4ki7379NzF1YUATDooZ2ml0EeRLxt5y9RkBzUlJ/67adCX Fq7Ur4Baeb3bmc8fQC0sh3jb1tQA+t8+JlAeHndRewMmlsYodFXPD124qaglqmahAz2t1e13wfj h9IrW5v4qZauAYTdJdz9bN/5epbT4TWBwvMj21D8QlbHxvWXhmP0ut4A6AQ8Ofn+TIVJ8n4mwq7
+ p9RInQ/M2MVeOwuBme7afqBOGqe1GH5zF2LQfIy+FsgsPAIoRLTCi/Et10bcxeCNvIq2VwHT
+X-Proofpoint-ORIG-GUID: 9f9BEVOGHkrhG0L7XQpWn_B8L0EQ-6aL
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
  definitions=2025-07-12_02,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- malwarescore=0 priorityscore=1501 adultscore=0 mlxscore=0 suspectscore=0
- bulkscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0 phishscore=0
- classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2505280000
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
+ malwarescore=0 spamscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
  definitions=main-2507120107
 
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+This adds various atomic write multi-fsblock stresst tests
+with mixed mappings and O_SYNC, to ensure the data and metadata
+is atomically persisted even if there is a shutdown.
 
-This tests uses fio to first create a file with mixed mappings. Then it
-does atomic writes using aio dio with parallel jobs to the same file
-with mixed mappings. This forces the filesystem allocator to allocate
-extents over mixed mapping regions to stress FS block allocators.
-
-Co-developed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- tests/generic/1227     | 123 +++++++++++++++++++++++++++++++++++++++++
- tests/generic/1227.out |   2 +
- 2 files changed, 125 insertions(+)
- create mode 100755 tests/generic/1227
- create mode 100644 tests/generic/1227.out
+ tests/generic/1228     | 139 +++++++++++++++++++++++++++++++++++++++++
+ tests/generic/1228.out |   2 +
+ 2 files changed, 141 insertions(+)
+ create mode 100755 tests/generic/1228
+ create mode 100644 tests/generic/1228.out
 
-diff --git a/tests/generic/1227 b/tests/generic/1227
+diff --git a/tests/generic/1228 b/tests/generic/1228
 new file mode 100755
-index 00000000..cfdc54ec
+index 00000000..3f9a6af1
 --- /dev/null
-+++ b/tests/generic/1227
-@@ -0,0 +1,123 @@
++++ b/tests/generic/1228
+@@ -0,0 +1,139 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
 +#
-+# FS QA Test 1227
++# FS QA Test 1228
 +#
-+# Validate FS atomic write using fio crc check verifier on mixed mappings
-+# of a file.
++# Atomic write multi-fsblock data integrity tests with mixed mappings
++# and O_SYNC
 +#
 +. ./common/preamble
 +. ./common/atomicwrites
-+
-+_begin_fstest auto aio rw atomicwrites
++_begin_fstest auto quick rw atomicwrites
 +
 +_require_scratch_write_atomic_multi_fsblock
-+_require_odirect
-+_require_aio
++_require_atomic_write_test_commands
++_require_scratch_shutdown
++_require_xfs_io_command "truncate"
 +
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount
++_scratch_mkfs >> $seqres.full
++_scratch_mount >> $seqres.full
 +
-+touch "$SCRATCH_MNT/f1"
-+awu_min_write=$(_get_atomic_write_unit_min "$SCRATCH_MNT/f1")
-+awu_max_write=$(_get_atomic_write_unit_max "$SCRATCH_MNT/f1")
-+aw_bsize=$(_max "$awu_min_write" "$((awu_max_write/4))")
++check_data_integrity() {
++	actual=$(_hexdump $testfile)
++	if [[ "$expected" != "$actual" ]]
++	then
++		echo "Integrity check failed"
++		echo "Integrity check failed" >> $seqres.full
++		echo "# Expected file contents:" >> $seqres.full
++		echo "$expected" >> $seqres.full
++		echo "# Actual file contents:" >> $seqres.full
++		echo "$actual" >> $seqres.full
 +
-+fsbsize=$(_get_block_size $SCRATCH_MNT)
++		_fail "Data integrity check failed. The atomic write was torn."
++	fi
++}
 +
-+fio_prep_config=$tmp.prep.fio
-+fio_aw_config=$tmp.aw.fio
-+fio_verify_config=$tmp.verify.fio
-+fio_out=$tmp.fio.out
++prep_mixed_mapping() {
++	$XFS_IO_PROG -c "truncate 0" $testfile >> $seqres.full
++	local off=0
++	local mapping=""
 +
-+FIO_LOAD=$(($(nproc) * 2 * LOAD_FACTOR))
-+SIZE=$((128 * 1024 * 1024))
++	local operations=("W" "H" "U")
++	local num_blocks=$((awu_max / blksz))
++	for ((i=0; i<num_blocks; i++)); do
++		local index=$((RANDOM % ${#operations[@]}))
++		local map="${operations[$index]}"
++		local mapping="${mapping}${map}"
 +
-+cat >$fio_prep_config <<EOF
-+# prep file to have mixed mappings
-+[global]
-+ioengine=libaio
-+fallocate=none
-+filename=$SCRATCH_MNT/test-file
-+filesize=$SIZE
-+bs=$fsbsize
-+direct=1
-+group_reporting=1
++		case "$map" in
++			"W")
++				$XFS_IO_PROG -dc "pwrite -S 0x61 -b $blksz $off $blksz" $testfile > /dev/null
++				;;
++			"H")
++				# No operation needed for hole
++				;;
++			"U")
++				$XFS_IO_PROG -c "falloc $off $blksz" $testfile >> /dev/null
++				;;
++		esac
++		off=$((off + blksz))
++	done
 +
-+# Create written extents
-+[prep_written_blocks]
-+ioengine=libaio
-+rw=randwrite
-+io_size=$((SIZE/3))
-+random_generator=lfsr
++	echo "+ + Mixed mapping prep done. Full mapping pattern: $mapping" >> $seqres.full
 +
-+# Create unwritten extents
-+[prep_unwritten_blocks]
-+ioengine=falloc
-+rw=randwrite
-+io_size=$((SIZE/3))
-+random_generator=lfsr
-+EOF
++	sync $testfile
++}
 +
-+cat >$fio_aw_config <<EOF
-+# atomic write to mixed mappings of written/unwritten/holes
-+[atomic_write_job]
-+ioengine=libaio
-+rw=randwrite
-+direct=1
-+atomic=1
-+random_generator=lfsr
-+group_reporting=1
++verify_atomic_write() {
++	if [[ "$1" == "shutdown" ]]
++	then
++		local do_shutdown=1
++	fi
 +
-+filename=$SCRATCH_MNT/test-file
-+size=$SIZE
-+bs=$aw_bsize
-+iodepth=$FIO_LOAD
-+numjobs=$FIO_LOAD
++	test $bytes_written -eq $awu_max || _fail "atomic write len=$awu_max assertion failed"
 +
-+verify_state_save=0
-+verify=crc32c
-+do_verify=0
-+EOF
++	if [[ $do_shutdown -eq "1" ]]
++	then
++		echo "Shutting down filesystem" >> $seqres.full
++		_scratch_shutdown >> $seqres.full
++		_scratch_cycle_mount >>$seqres.full 2>&1 || _fail "remount failed for Test-3"
++	fi
 +
-+cat >$fio_verify_config <<EOF
-+# verify atomic writes done by previous job
-+[verify_job]
-+ioengine=libaio
-+rw=randwrite
-+random_generator=lfsr
-+group_reporting=1
++	check_data_integrity
++}
 +
-+filename=$SCRATCH_MNT/test-file
-+size=$SIZE
-+bs=$aw_bsize
-+iodepth=$FIO_LOAD
++mixed_mapping_test() {
++	prep_mixed_mapping
 +
-+verify_state_save=0
-+verify_only=1
-+verify=crc32c
-+verify_fatal=1
-+verify_write_sequence=0
-+EOF
++	echo "+ + Performing O_DSYNC atomic write from 0 to $awu_max" >> $seqres.full
++	bytes_written=$($XFS_IO_PROG -dc "pwrite -DA -V1 -b $awu_max 0 $awu_max" $testfile | \
++		        grep wrote | awk -F'[/ ]' '{print $2}')
 +
-+_require_fio $fio_aw_config
-+_require_fio $fio_verify_config
++	verify_atomic_write $1
++}
 +
-+cat $fio_prep_config >> $seqres.full
-+cat $fio_aw_config >> $seqres.full
-+cat $fio_verify_config >> $seqres.full
++testfile=$SCRATCH_MNT/testfile
++touch $testfile
 +
-+#prepare file with mixed mappings
-+$FIO_PROG $fio_prep_config >> $seqres.full
++awu_max=$(_get_atomic_write_unit_max $testfile)
++blksz=$(_get_block_size $SCRATCH_MNT)
 +
-+# do atomic writes without verifying
-+$FIO_PROG $fio_aw_config >> $seqres.full
++# Create an expected pattern to compare with
++$XFS_IO_PROG -tc "pwrite -b $awu_max 0 $awu_max" $testfile >> $seqres.full
++expected=$(_hexdump $testfile)
++echo "# Expected file contents:" >> $seqres.full
++echo "$expected" >> $seqres.full
++echo >> $seqres.full
 +
-+# verify data is not torn
-+$FIO_PROG $fio_verify_config >> $seqres.full
++echo "# Test 1: Do O_DSYNC atomic write on random mixed mapping:" >> $seqres.full
++echo >> $seqres.full
++for ((iteration=1; iteration<=10; iteration++)); do
++	echo "=== Mixed Mapping Test Iteration $iteration ===" >> $seqres.full
++
++	echo "+ Testing without shutdown..." >> $seqres.full
++	mixed_mapping_test
++	echo "Passed!" >> $seqres.full
++
++	echo "+ Testing with sudden shutdown..." >> $seqres.full
++	mixed_mapping_test "shutdown"
++	echo "Passed!" >> $seqres.full
++
++	echo "Iteration $iteration completed: OK" >> $seqres.full
++	echo >> $seqres.full
++done
++echo "# Test 1: Do O_SYNC atomic write on random mixed mapping (10 iterations): OK" >> $seqres.full
++
++
++echo >> $seqres.full
++echo "# Test 2: Do extending O_SYNC atomic writes: " >> $seqres.full
++bytes_written=$($XFS_IO_PROG -dstc "pwrite -A -V1 -b $awu_max 0 $awu_max" $testfile | \
++                grep wrote | awk -F'[/ ]' '{print $2}')
++verify_atomic_write "shutdown"
++echo "# Test 2: Do extending O_SYNC atomic writes: OK" >> $seqres.full
 +
 +# success, all done
-+echo Silence is golden
++echo "Silence is golden"
 +status=0
 +exit
-diff --git a/tests/generic/1227.out b/tests/generic/1227.out
++
+diff --git a/tests/generic/1228.out b/tests/generic/1228.out
 new file mode 100644
-index 00000000..2605d062
+index 00000000..1baffa91
 --- /dev/null
-+++ b/tests/generic/1227.out
++++ b/tests/generic/1228.out
 @@ -0,0 +1,2 @@
-+QA output created by 1227
++QA output created by 1228
 +Silence is golden
 -- 
 2.49.0
