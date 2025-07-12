@@ -1,174 +1,229 @@
-Return-Path: <linux-ext4+bounces-8943-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8944-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 328C1B02675
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Jul 2025 23:38:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1B3EB0295E
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 06:27:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EEBB563EBD
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Jul 2025 21:38:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D401D4A8407
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 04:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578DE1FECB4;
-	Fri, 11 Jul 2025 21:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57A071F2B88;
+	Sat, 12 Jul 2025 04:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="shUTryzB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638A31D432D
-	for <linux-ext4@vger.kernel.org>; Fri, 11 Jul 2025 21:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2702C9D
+	for <linux-ext4@vger.kernel.org>; Sat, 12 Jul 2025 04:27:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752269920; cv=none; b=EVEavGSzv3jXeWnPMpCICLUrvf82SbzBbvol+yg3LRSXbDgFoU7BrLcmx9uGWmKdjgGsQiU+S1YALMqu2Z5zZyN5lPbzg8QA4wKB+yRmRCvsB83BSj7uvcZ0/XsN1/h8FEsTmExd5moj4tmfEva5K2NoTpWiQWqrVaF9HpkVX/w=
+	t=1752294439; cv=none; b=cte10JGj2EKpLh8W1mLRDEqDurvLvHyU5LLa7bNs7SkSAGjGucfKQtba5qNV3vNCB1Pa4AHv4824SKINvaJoHkX2XT17QpxzAulzk2jR+NXNSoNyhLEJ6TMllLRM2RBcJunSy/aWZHq5faKvER/6Iatx//adEDMSTzPUVmuPGXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752269920; c=relaxed/simple;
-	bh=NKHKmJP3s1jx/5M71PIclKsgQ6m9AUV+tU9vuUvaTQ0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=PPAoCm8HoNhIKLaJEqU6J8fWxSyeH6RVH1bO6o6mI6xNnTZdgjrEYpbEgTSECEVicQXr7np5Qbrvx/S4uexev5Q7oOjE4Mg7an7f5rTZ1xSmfwpHg8nk6WwQCCCLL96C0oHtlZ/y1MBjJADCi+PBKP5gOe2xXkRx15oItemfVhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3ddbfe1fc8fso49649545ab.2
-        for <linux-ext4@vger.kernel.org>; Fri, 11 Jul 2025 14:38:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752269917; x=1752874717;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cxDs5k3H68METE6KnOVQNHlW/uRvpg1HNaCIpjh2v68=;
-        b=kA+0gCRT2LDnTOxk8Y0wpl7odx/CNReMFfFtrCpeEu4fEHg5mU561hIYE8V/nRedub
-         R/n+ncl3YeyhU6xM1yQe+Tce4ScroFMBJJYOqG3czjCUMQwvG6E/mnsIDvUAjyZQIV6J
-         BmAydg66TwP9vjCex1/xPV88ZDsaxEBDrEJERxKxUiC1ts6G30XT++yuv7AhpwbFRIYr
-         Qm9jC0XZPuoEgNvdd7VNRWDCWi5TcxgP30ndfUZeeBNxf0EjbOBy+AZtMVkxXHYqdAMZ
-         q0UJDKqBpxbH5tpc+M9srODBuDpnh92P5HkEYlt3frXsRCKy8Q7YiyjR5qUEI7p4shtp
-         78mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVRcAVOJluZdrpxbnp74OgCymjODbdJL0sQQSRq00rBNKgbZWgmbk2JxBDA8iacvV6Eewr8AZhLfjOV@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywb/zSuSh6GeB8EAXL4qllQiRkpzwwTrZqZ+UMlvFRRpZU5Ca/2
-	sfGWPVG9dYLkzt5RD2vwZ6yS95QpDG9Oaapy9/NSKGMOVq665FhsENxV66gpYOujFmxKfpYZ7Jf
-	tkzI2mPY2ccNqrhjMBiAH8DWkOvm0QNWqxyPH4KFT05BxURL3++HkPE+bCQg=
-X-Google-Smtp-Source: AGHT+IFmNTOONepWpBl1umrwIDY0tjemvcJh/DcJknpI5vKQVVLsUvQXxgGbeuEfiGN5hvmRy/6gAT0kDfBUo92B4X4XYM6J+C5R
+	s=arc-20240116; t=1752294439; c=relaxed/simple;
+	bh=inn7fyxpO7Md0SIm7c6ektwOBL9mYCa6AAuG97SIU9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AYxacxnvAQ1shqDifBQlN8Y4KXVB9kJlGP9M4Rf34Qx6eqWsM5vHDADgACVLqkvn8QGU3r/nxw6Met6OojaSNXscUi7bmOPdftoMdn/v+JLVELPOTFaJF4JuVUe4Q3ShVyTphIv/nC8nZdf7Otbcg6cJzYGp0Gg6C1dHnq5DemQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=shUTryzB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F39FC4CEEF;
+	Sat, 12 Jul 2025 04:27:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752294435;
+	bh=inn7fyxpO7Md0SIm7c6ektwOBL9mYCa6AAuG97SIU9c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=shUTryzB0SOErHnbSo41pdyJHyjP9tnkUARbFkd8IDWFKQP8n6cYslnuEwYGzMEJj
+	 W7pSXPSPsqL6cRF8CEHAqBmKG0ipMYT4yr8oaFy8dZdahNBocXtgxdAx1QLJKwjGqD
+	 IZ3N5ArTAw6dJNcjzl1/HxN4uRjGDMBOrSdoNKWfktO58NlycVJNi+C5RiTvd8AasD
+	 JZQBqgyiWauuODfePNAxRUDtOxA17JiFyLaBFZA+bfSIUDQ8VOOCxAHuwWVTC08vGs
+	 VJPhKnzxwAI+QmrdOmbE3LhNWFq7IKIrKJuRaT+CZZVH8gGzEJ6flAkav48brAWGUB
+	 hvKPENttZx6/Q==
+Date: Fri, 11 Jul 2025 21:27:14 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Jiany Wu <wujianyue000@gmail.com>, yi.zhang@huawei.com, jack@suse.cz,
+	linux-ext4@vger.kernel.org
+Subject: Re: Issue with ext4 filesystem corruption when writing to a file
+ after disk exhaustion
+Message-ID: <20250712042714.GG2672022@frogsfrogsfrogs>
+References: <CAJxJ_jhEbHJiP-OzSpp2xqai-n=t2CGKXqkmvqf7T3i37Eki0A@mail.gmail.com>
+ <20250711052905.GC2026761@mit.edu>
+ <CAJxJ_jhYUqYhNcsLnjPv+2-n83G77zeQ1jppC6YGfo6bHv+vaA@mail.gmail.com>
+ <20250711154012.GB4040@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:240c:b0:3df:3bdc:2e49 with SMTP id
- e9e14a558f8ab-3e253325542mr77423655ab.12.1752269917509; Fri, 11 Jul 2025
- 14:38:37 -0700 (PDT)
-Date: Fri, 11 Jul 2025 14:38:37 -0700
-In-Reply-To: <67f94057.050a0220.2c5fcf.0001.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6871845d.a00a0220.26a83e.005f.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_ext_insert_extent (2)
-From: syzbot <syzbot+ad86dcdffd6785f56e03@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, akpm@linux-foundation.org, 
-	dave.hansen@linux.intel.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu, 
-	willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250711154012.GB4040@mit.edu>
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Jul 11, 2025 at 11:40:12AM -0400, Theodore Ts'o wrote:
+> On Fri, Jul 11, 2025 at 05:56:18PM +0800, Jiany Wu wrote:
+> > Hello, Ted,
+> > 
+> > Thanks indeed for the help, really appreciated!
+> > BTW, is it proper to fallocate whole disk space to exhaust disk?
+> 
+> I'm not sure what do you mean by "proper".  It depends on what you are
+> trying to do, I suppose.
+> 
+> The other thing here is I think you are seriously confusing yourself
+> (and others) by using a loopback file image which si mounted.  That's
+> because now you need worry about failures at two levels; at the level
+> of the storage device containing the image (e.g., /tmp for the image
+> /tmp/mydisk) and the loopback file system (e.g., /mnt/tmp when
+> /tmp/mydisk is mounted on top of /mnt/tmp).  You could potentially
+> have ENOSPC errors at either level.
 
-HEAD commit:    40f92e79b0aa Merge tag 'block-6.16-20250710' of git://git...
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14314d82580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bd2783a0a99d4ed0
-dashboard link: https://syzkaller.appspot.com/bug?extid=ad86dcdffd6785f56e03
-compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ce7a8c580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=152fc68c580000
+Honestly it's really too bad that there's no way for an fs to ask the
+block device how much space it thinks is available, and then teach its
+own statfs method to return min(fs space available, bdev space
+availble).
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f33b9048bb66/disk-40f92e79.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1194a16e19e9/vmlinux-40f92e79.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bd82e554bd44/bzImage-40f92e79.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/ead6dd3b0e30/mount_0.gz
-  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=17a760f0580000)
+Then at least df could report that your 500T ramdisk filesystem on a 4G
+/tmp really only has 4G of space available.
 
-The issue was bisected to:
+> > I see even fallocate full disk size, seems file size equal to avail
+> > size still can be allocated.
+> > i.e. When /tmp availability space is 26G, but fallocate requests 32G
+> > (total disk space), we see it finally allocated a 26G file, but exit
+> > code is 1.
+> 
+> You're being ambiguous here.  When you say "full disk sice", which
+> level are you talking about?  /tmp or /mnt/test?  And when you
+> fallocate, which are you fallocating.
+> 
+> What I would recommend is to fallocate *first* at the /mnt/mydisk
+> level.  So do this:
+> 
+> # fallocate -l 32G /tmp/mydisk
+> # mkfs.ext4 /tmp/mydisk
+> 
+> If /tmp only has 26GB of free space, then the fallocate will fail ---
+> but that's fine.  That tells you that you don't have enough free space
+> to fully allocate the file system image.  So *stop*, and do this
+> somewhere you have enough free space:
+> 
+> # fallocate -l 32G /mnt/huge-10TB-disk-with-lots-of-free-space/mydisk
+> # mkfs.ext4 /mnt/huge-10TB-disk-with-lots-of-free-space/mydisk
+> 
+> Now you know that no matter what, when you mount mydisk, you don't
+> need to worry about I/O errors when writing to mydisk.  And you can
+> proceed with your experimentation.
+> 
+> 
+> Now, what if you don't have that huge 10TB disk.  Can you use
+> /tmp/mydisk to create a 32TB file system even though /tmp only has
+> 26GB of free space.  You *can*. but you need to be careful, because
+> eventually when you start writing to the mounted file system, you will
+> eventually run out of space in /tmp.
+> 
+> For example:
+> 
+> % cp /dev/null /tmp/test.img
+> % ls -lsh /tmp/test.img
+> 0 -rw-r--r-- 1 tytso tytso 0 Jul 11 11:19 /tmp/test.img
+> % mkfs.ext4 -q /tmp/test.img 32G
+> % ls -lsh /tmp/test.img
+> 6.4M -rw-r--r-- 1 tytso tytso 32G Jul 11 11:19 /tmp/test.img
+> 
+> So you can see here that we have created a test file system which is
+> 32 GiB in size, but so far, the actual amount of *space* consumed in
+> /tmp is 6.4 MiB.  The i_size of the file is 32 GiB, but it is a sparse
+> file, which means not all of the blocks between logical offset 0 and
+> 32 GiB have been allocated.
+> 
+> Now, if we mount the file system, as we start writing into the file,
+> we will allocate space in /tmp.  Now, the way fallocate works in the
+> mounted file system is that it guarantees space in the file system,
+> but it won't write the data blocks, so space confusmed in /tmp by
+> /tmp/mydisk will grow only by the space needed when we updated the
+> metadata blocks in the file system contained in /tmp/mydisk.
+> 
+> % sudo mount /tmp/test.img /mnt/test
+> % df -h /mnt/test
+> Filesystem      Size  Used Avail Use% Mounted on
+> /dev/loop1       32G  2.1M   30G   1% /mnt/test
+> % sudo fallocate -l 16G /mnt/test/testfile
+> 1093% df -h /mnt/test
+> Filesystem      Size  Used Avail Use% Mounted on
+> /dev/loop1       32G   17G   14G  55% /mnt/test
+> % ls -lsh /mnt/test/testfile
+> 17G -rw-r--r-- 1 root root 16G Jul 11 11:25 /mnt/test/testfile
+> % ls -lsh /tmp/test.img
+> 7.5M -rw-r--r-- 1 tytso tytso 32G Jul 11 11:25 /tmp/test.img
+> 
+> So here, we fallocated 16GB in the file system in /tmp/test.img.  You
+> can see that it created a file which is 16GB in size, but which is a
+> bit more than 16GB once you include the metadata blocks for
+> /tmp/test/testfile.  That's why the space used is 17GB (the ls program
+> rounded up) but the i_size is 16GB.
+> 
+> *But* the space consumed by the file /tmp/test.img only went up from
+> 6.4 MiB to 7.5 MiB.  That's because although we reserved space in the
+> file system /tmp/test.img, we didn't reserve any space in /tmp.
+> 
+> This is working as intended; and if what you are doing is "thin
+> provisioning", this is a feature, but a bug.
+> 
+> But what it means is that if /tmp only has 26GB of space, eventually
+> if you keep writing to /tmp/test.img, there will be block level errors
+> in the loop device when /tmp runs out of space.  That was what you saw
+> in your original example:
+> 
+> Jul 08 05:43:07 testbed kernel: loop: Write error at byte offset 274432, length 1024.
+> 
+> As soon as there are block I/O errors in the underlying file system,
+> all bets are off.  There could be data loss (if you had been writing
+> to a data block when /tmp ran out of space) or file system corruption
+> (if the kernel had been trying to write a metadata block when /tmp ran
+> out of space), or possibly both.  So as soon as you see block I/O
+> errors, don't assume that file system is unscathed, because you
+> probably *will* have lost data or have a corrupted file sytem.
+> 
+> > Is it legal usage or will it trigger some unknown issue? I'm a newbie
+> > on fallocate:)
+> 
+> So it's *legal* to do thin provisioning; if you are trying to test a
+> very large file system, and you don't have enough space, then you
+> might not have a choice.  Or if you are trying to be more efficient,
+> it mgiht allow you to allow users to *think* they have more space than
+> you actually have purchased, since very often, users don't artually
+> use; they just want to feel good that they have the space.
+> 
+> And if you have a large number of users, thin provisioning might make
+> sense because it saves money.  But it's much like a bank which has
+> lent out money that depositors have on deposit, relying on the fact
+> that it is very rare that all of the depositors will suddenly show up
+> and withdraw all of their money all at the same time.  If that
+> happens, then you have a run on the bank, and there could be civil
+> unrest, and things get ugly.  Which is why after bank runs, government
+> regulartors will demand that banks keep more money on reserve, which
+> lowers their profits and makes the bank's shareholders sad --- but
+> better that than angry bank customers.  :-)
 
-commit 665575cff098b696995ddaddf4646a4099941f5e
-Author: Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Fri Feb 28 20:37:22 2025 +0000
+LOL SVB :(
 
-    filemap: move prefaulting out of hot write path
+--D
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1434a3d4580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1634a3d4580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1234a3d4580000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ad86dcdffd6785f56e03@syzkaller.appspotmail.com
-Fixes: 665575cff098 ("filemap: move prefaulting out of hot write path")
-
-------------[ cut here ]------------
-kernel BUG at fs/ext4/extents.c:2153!
-Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
-CPU: 1 UID: 0 PID: 5856 Comm: syz-executor355 Not tainted 6.16.0-rc5-syzkaller-00193-g40f92e79b0aa #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-RIP: 0010:ext4_ext_insert_extent+0x4ab7/0x4af0 fs/ext4/extents.c:2153
-Code: 89 d9 80 e1 07 fe c1 38 c1 0f 8c a6 e7 ff ff 48 89 df e8 3c 95 b6 ff e9 99 e7 ff ff e8 a2 3d 55 ff 90 0f 0b e8 9a 3d 55 ff 90 <0f> 0b e8 92 3d 55 ff 90 0f 0b 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c
-RSP: 0018:ffffc9000437ec60 EFLAGS: 00010293
-RAX: ffffffff826af7b6 RBX: 000000000000001d RCX: ffff88802dd18000
-RDX: 0000000000000000 RSI: 000000000000001d RDI: 000000000000001d
-RBP: ffffc9000437ee10 R08: ffff8880738b3ae7 R09: 1ffff1100e71675c
-R10: dffffc0000000000 R11: ffffed100e71675d R12: 000000000000001d
-R13: dffffc0000000000 R14: ffff8880721f643c R15: ffff888027204700
-FS:  00007fa4a23966c0(0000) GS:ffff888125d4f000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f42dc5c1000 CR3: 000000003299c000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- ext4_ext_map_blocks+0x1792/0x6ac0 fs/ext4/extents.c:4404
- ext4_map_create_blocks fs/ext4/inode.c:609 [inline]
- ext4_map_blocks+0x931/0x18d0 fs/ext4/inode.c:813
- _ext4_get_block+0x200/0x4c0 fs/ext4/inode.c:892
- ext4_get_block_unwritten+0x2e/0x100 fs/ext4/inode.c:925
- ext4_block_write_begin+0x6f8/0x14b0 fs/ext4/inode.c:1178
- ext4_write_begin+0xa4f/0x1680 fs/ext4/ext4_jbd2.h:-1
- ext4_da_write_begin+0x449/0xd20 fs/ext4/inode.c:3057
- generic_perform_write+0x2c4/0x910 mm/filemap.c:4112
- ext4_buffered_write_iter+0xce/0x3a0 fs/ext4/file.c:299
- ext4_dio_write_iter fs/ext4/file.c:613 [inline]
- ext4_file_write_iter+0x182a/0x1bc0 fs/ext4/file.c:721
- do_iter_readv_writev+0x56b/0x7f0 fs/read_write.c:-1
- vfs_writev+0x31a/0x960 fs/read_write.c:1057
- do_pwritev fs/read_write.c:1153 [inline]
- __do_sys_pwritev2 fs/read_write.c:1211 [inline]
- __se_sys_pwritev2+0x179/0x290 fs/read_write.c:1202
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fa4a23e16f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fa4a2396208 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
-RAX: ffffffffffffffda RBX: 00007fa4a2468648 RCX: 00007fa4a23e16f9
-RDX: 0000000000000001 RSI: 00002000000001c0 RDI: 0000000000000007
-RBP: 00007fa4a2468640 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000e7b R11: 0000000000000246 R12: 00007fa4a2435620
-R13: 0000200000000140 R14: 00002000000001c0 R15: 0000200000000080
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_ext_insert_extent+0x4ab7/0x4af0 fs/ext4/extents.c:2153
-Code: 89 d9 80 e1 07 fe c1 38 c1 0f 8c a6 e7 ff ff 48 89 df e8 3c 95 b6 ff e9 99 e7 ff ff e8 a2 3d 55 ff 90 0f 0b e8 9a 3d 55 ff 90 <0f> 0b e8 92 3d 55 ff 90 0f 0b 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c
-RSP: 0018:ffffc9000437ec60 EFLAGS: 00010293
-
-RAX: ffffffff826af7b6 RBX: 000000000000001d RCX: ffff88802dd18000
-RDX: 0000000000000000 RSI: 000000000000001d RDI: 000000000000001d
-RBP: ffffc9000437ee10 R08: ffff8880738b3ae7 R09: 1ffff1100e71675c
-R10: dffffc0000000000 R11: ffffed100e71675d R12: 000000000000001d
-R13: dffffc0000000000 R14: ffff8880721f643c R15: ffff888027204700
-FS:  00007fa4a23966c0(0000) GS:ffff888125d4f000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff12275000 CR3: 000000003299c000 CR4: 00000000003526f0
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+> So if you know what you are doing, it *can* work.  But it might
+> trigger an issue which is unknown/unexpected for you, even though for
+> soemone who understands how things work it makes perfect sense and is
+> the system working as designed.
+> 
+> If you have lots of disk space, then just use fallocate to allocate
+> space for /tmp/mydisk, and then you can use fallocate to allocate
+> space for the file system contained in /tmp/mydisk.  And it will all
+> work, but it will require more disk space to be available in /tmp.
+> 
+> Cheers,
+> 
+> 						- Ted
+> 
 
