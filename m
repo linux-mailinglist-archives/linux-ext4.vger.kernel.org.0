@@ -1,229 +1,145 @@
-Return-Path: <linux-ext4+bounces-8944-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8945-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B3EB0295E
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 06:27:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E6D7B02A84
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 12:58:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D401D4A8407
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 04:27:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A63016753E
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Jul 2025 10:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57A071F2B88;
-	Sat, 12 Jul 2025 04:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE19275105;
+	Sat, 12 Jul 2025 10:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="shUTryzB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ccAoL6d3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2702C9D
-	for <linux-ext4@vger.kernel.org>; Sat, 12 Jul 2025 04:27:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC494A59;
+	Sat, 12 Jul 2025 10:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752294439; cv=none; b=cte10JGj2EKpLh8W1mLRDEqDurvLvHyU5LLa7bNs7SkSAGjGucfKQtba5qNV3vNCB1Pa4AHv4824SKINvaJoHkX2XT17QpxzAulzk2jR+NXNSoNyhLEJ6TMllLRM2RBcJunSy/aWZHq5faKvER/6Iatx//adEDMSTzPUVmuPGXM=
+	t=1752317889; cv=none; b=kNDm4wzQ2Oqzn49rrmIu/kBqa8bzEQTzDyFxaE7PZzLInsM4fbZulXT+BJMkUP89BRO1rpIA0cOg/QY5Aqi+oOYAB+DrdkI1eh0+0bFCZs+m9ZW3kvLvhwAMcwt+TuQojyeFR/J68kN4oGjjLl29704aCxuxns2xVqWNSPele5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752294439; c=relaxed/simple;
-	bh=inn7fyxpO7Md0SIm7c6ektwOBL9mYCa6AAuG97SIU9c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AYxacxnvAQ1shqDifBQlN8Y4KXVB9kJlGP9M4Rf34Qx6eqWsM5vHDADgACVLqkvn8QGU3r/nxw6Met6OojaSNXscUi7bmOPdftoMdn/v+JLVELPOTFaJF4JuVUe4Q3ShVyTphIv/nC8nZdf7Otbcg6cJzYGp0Gg6C1dHnq5DemQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=shUTryzB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F39FC4CEEF;
-	Sat, 12 Jul 2025 04:27:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752294435;
-	bh=inn7fyxpO7Md0SIm7c6ektwOBL9mYCa6AAuG97SIU9c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=shUTryzB0SOErHnbSo41pdyJHyjP9tnkUARbFkd8IDWFKQP8n6cYslnuEwYGzMEJj
-	 W7pSXPSPsqL6cRF8CEHAqBmKG0ipMYT4yr8oaFy8dZdahNBocXtgxdAx1QLJKwjGqD
-	 IZ3N5ArTAw6dJNcjzl1/HxN4uRjGDMBOrSdoNKWfktO58NlycVJNi+C5RiTvd8AasD
-	 JZQBqgyiWauuODfePNAxRUDtOxA17JiFyLaBFZA+bfSIUDQ8VOOCxAHuwWVTC08vGs
-	 VJPhKnzxwAI+QmrdOmbE3LhNWFq7IKIrKJuRaT+CZZVH8gGzEJ6flAkav48brAWGUB
-	 hvKPENttZx6/Q==
-Date: Fri, 11 Jul 2025 21:27:14 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Jiany Wu <wujianyue000@gmail.com>, yi.zhang@huawei.com, jack@suse.cz,
-	linux-ext4@vger.kernel.org
-Subject: Re: Issue with ext4 filesystem corruption when writing to a file
- after disk exhaustion
-Message-ID: <20250712042714.GG2672022@frogsfrogsfrogs>
-References: <CAJxJ_jhEbHJiP-OzSpp2xqai-n=t2CGKXqkmvqf7T3i37Eki0A@mail.gmail.com>
- <20250711052905.GC2026761@mit.edu>
- <CAJxJ_jhYUqYhNcsLnjPv+2-n83G77zeQ1jppC6YGfo6bHv+vaA@mail.gmail.com>
- <20250711154012.GB4040@mit.edu>
+	s=arc-20240116; t=1752317889; c=relaxed/simple;
+	bh=fcie66mWvwOJ6YpAcZs+i1R6TJHgjxefFvTTseHjrac=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l3L5WrDNf0vdopgTlZD3U2u2QTq7VGeYTFftvHlttkUtLPTB7bHB/sRGnMMzjH7dZP1LB2f2j5fdGVegA8LDLgd4JT+rfBCxoc2jigi7RRpWV6bg4Z/J80vt0ueVugUsFQ1kNLYXz/EWJaUj7Xk+RdSqjwoa0HY8lHCrYo3jWLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ccAoL6d3; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3a4fd1ba177so1897001f8f.0;
+        Sat, 12 Jul 2025 03:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752317886; x=1752922686; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kq31oy/tF7ji6FEBX3VPLuFkrFDumCL1oq4Tw5MVgnI=;
+        b=ccAoL6d32CJV/7MOQinY+wX7DkzDCHdsuJVUBTLYotmnHtpxshE/0Tq2Ft9OFt6zru
+         M9bTtkxj9MCWpboaJRe7LKccxUai+ClKSskf3KnqkL0Bl/XjM6nYM9CCXd9nPkAKvxe5
+         UVYQXroU5XX6g9t9wjTKt/E53/DGy6u9lMuDKSIzYsYjrE3MWr+t47mJfujVBseetoRU
+         Zw8064wb2NVq29KSPCMqHOMIdiSFdr2UuCNQLwQVo8vjsfiEQSccOyHlRDbBtXOBgOEX
+         vUDuopQnEFhRGrstdhyifeD6XeZpdzJxaBaq2o2FvGfHSJkavDbt4JLdMDlUSuBmgjVQ
+         hcaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752317886; x=1752922686;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kq31oy/tF7ji6FEBX3VPLuFkrFDumCL1oq4Tw5MVgnI=;
+        b=Az/fTUxd+bCNYbBMQppwrUj4Wu+TN9xOZu5lNivkM+Cw84+UKQheI351SBAetliyW+
+         UInjUce+2S/lkr0p+vOKdQWYMhTWiLTwtt9QMMvvZm5VljhwZRtUYCLkVN2aX9GcaNNl
+         mv9XmU2BnRXE5QKIdkc2fbLUVy/aUjH0LonD3V67bOHhna/NnBgrljapClsCWQMSW3z+
+         1fy3F0VTJlnzWHpof+d0Fnt6DlP4XBEHGyAuFz5nvUxu+bIPtgTimKHdHOySAvnDW0e6
+         j7/XttldE2KNi6maDap7qmnrtnfDGW3U5doEF47aXVNuuxqZgB7G8Yv9my6G/FoWwA/v
+         T2zQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWWe8fC5cGZiNPA+eL9J6Oog6sf+TJrAMZG3TXpa3dlVMU5sf6TL8UqxomwKFNmL8pnFvPLc8jnrYOK@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzf7HNeWmlmMXqsgSVBp1Kj12lz9YxxOCpRqX+MquPMCAdCdjeX
+	OpVHS4p/tYQFVnzf+nxw3ITuHYyN8GtDrTddmwAqzYxrZUpSrPHvYWa8hMoYTwlWbSF6lkDSXlT
+	WMfCDz+DnPNVvuRPAEfIT+qtm8bN6eco=
+X-Gm-Gg: ASbGnct76sTMKYejRB4Pm61THNZc20Z89Pe8CtU7Kqvw87zkOFzT6fll8OUvbYPs3K4
+	ucg2PSke9v5l1D5MapZJrH9lDnxrb/mWGTkxO1bQ8/jr3F5qTjeV4ditNORhycvLDyaEgNGout+
+	2HNrtR0o9DYPquTUgo3bjp7JRsMT54Cw8wTjTTswsVniuvUl0WyGBcPcg7ANrKHiFia3MqnawO1
+	KM9p+U=
+X-Google-Smtp-Source: AGHT+IEH8XVA4Dbd1XVWRumbmfyNno76vxcb3Jvk4QDfFtuh3jCMqVQvGbZu+bvosgMEZGxLi/KdgxM3VlelbHQbn1o=
+X-Received: by 2002:a5d:6f1d:0:b0:3a3:64b9:773 with SMTP id
+ ffacd0b85a97d-3b5f1c726admr5744274f8f.10.1752317885736; Sat, 12 Jul 2025
+ 03:58:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250711154012.GB4040@mit.edu>
+References: <20250521235837.GB9688@frogsfrogsfrogs> <CAOQ4uxh3vW5z_Q35DtDhhTWqWtrkpFzK7QUsw3MGLPY4hqUxLw@mail.gmail.com>
+ <20250529164503.GB8282@frogsfrogsfrogs> <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxgqKO+8LNTve_KgKnAu3vxX1q-4NaotZqeLi6QaNMHQiQ@mail.gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Sat, 12 Jul 2025 12:57:53 +0200
+X-Gm-Features: Ac12FXy4aqVq-PS4EwmQxehOdSXtpELetqRZGIC420RrnVT6jgdkfCA_90IVY4c
+Message-ID: <CAOQ4uxhp3Zs-J92jcXPAD=VjY=t0s0=kf2bOMo50E-Lk6tWJgA@mail.gmail.com>
+Subject: Re: [RFC[RAP]] fuse: use fs-iomap for better performance so we can
+ containerize ext4
+To: "Darrick J. Wong" <djwong@kernel.org>, Bernd Schubert <bernd.schubert@fastmail.fm>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net, bernd@bsbernd.com, 
+	miklos@szeredi.hu, joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>, 
+	linux-ext4 <linux-ext4@vger.kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 11, 2025 at 11:40:12AM -0400, Theodore Ts'o wrote:
-> On Fri, Jul 11, 2025 at 05:56:18PM +0800, Jiany Wu wrote:
-> > Hello, Ted,
-> > 
-> > Thanks indeed for the help, really appreciated!
-> > BTW, is it proper to fallocate whole disk space to exhaust disk?
-> 
-> I'm not sure what do you mean by "proper".  It depends on what you are
-> trying to do, I suppose.
-> 
-> The other thing here is I think you are seriously confusing yourself
-> (and others) by using a loopback file image which si mounted.  That's
-> because now you need worry about failures at two levels; at the level
-> of the storage device containing the image (e.g., /tmp for the image
-> /tmp/mydisk) and the loopback file system (e.g., /mnt/tmp when
-> /tmp/mydisk is mounted on top of /mnt/tmp).  You could potentially
-> have ENOSPC errors at either level.
+> On Thu, May 29, 2025 at 6:45=E2=80=AFPM Darrick J. Wong <djwong@kernel.or=
+g> wrote:
+...
+> > So I /think/ we could ask the fuse server at inode instantiation time
+> > (which, if I'm reading the code correctly, is when iget5_locked gives
+> > fuse an INEW inode and calls fuse_init_inode) provided it's ok to upcal=
+l
+> > to userspace at that time.  Alternately I guess we could extend struct
+> > fuse_attr with another FUSE_ATTR_ flag, I think?
+> >
+>
+> The latter. Either extend fuse_attr or struct fuse_entry_out,
+> which is in the responses of FUSE_LOOKUP,
+> FUSE_READDIRPLUS, FUSE_CREATE, FUSE_TMPFILE.
+> which instantiate fuse inodes.
+>
 
-Honestly it's really too bad that there's no way for an fs to ask the
-block device how much space it thinks is available, and then teach its
-own statfs method to return min(fs space available, bdev space
-availble).
+Update:
+I went to look at this extension for my inode ops passthrough patches.
 
-Then at least df could report that your 500T ramdisk filesystem on a 4G
-/tmp really only has 4G of space available.
+What I saw is that while struct fuse_attr and struct fuse_entry_out
+are designed to be extended and have been extended in the past:
+ * 7.9:
+ *  - add blksize field to fuse_attr
 
-> > I see even fallocate full disk size, seems file size equal to avail
-> > size still can be allocated.
-> > i.e. When /tmp availability space is 26G, but fallocate requests 32G
-> > (total disk space), we see it finally allocated a 26G file, but exit
-> > code is 1.
-> 
-> You're being ambiguous here.  When you say "full disk sice", which
-> level are you talking about?  /tmp or /mnt/test?  And when you
-> fallocate, which are you fallocating.
-> 
-> What I would recommend is to fallocate *first* at the /mnt/mydisk
-> level.  So do this:
-> 
-> # fallocate -l 32G /tmp/mydisk
-> # mkfs.ext4 /tmp/mydisk
-> 
-> If /tmp only has 26GB of free space, then the fallocate will fail ---
-> but that's fine.  That tells you that you don't have enough free space
-> to fully allocate the file system image.  So *stop*, and do this
-> somewhere you have enough free space:
-> 
-> # fallocate -l 32G /mnt/huge-10TB-disk-with-lots-of-free-space/mydisk
-> # mkfs.ext4 /mnt/huge-10TB-disk-with-lots-of-free-space/mydisk
-> 
-> Now you know that no matter what, when you mount mydisk, you don't
-> need to worry about I/O errors when writing to mydisk.  And you can
-> proceed with your experimentation.
-> 
-> 
-> Now, what if you don't have that huge 10TB disk.  Can you use
-> /tmp/mydisk to create a 32TB file system even though /tmp only has
-> 26GB of free space.  You *can*. but you need to be careful, because
-> eventually when you start writing to the mounted file system, you will
-> eventually run out of space in /tmp.
-> 
-> For example:
-> 
-> % cp /dev/null /tmp/test.img
-> % ls -lsh /tmp/test.img
-> 0 -rw-r--r-- 1 tytso tytso 0 Jul 11 11:19 /tmp/test.img
-> % mkfs.ext4 -q /tmp/test.img 32G
-> % ls -lsh /tmp/test.img
-> 6.4M -rw-r--r-- 1 tytso tytso 32G Jul 11 11:19 /tmp/test.img
-> 
-> So you can see here that we have created a test file system which is
-> 32 GiB in size, but so far, the actual amount of *space* consumed in
-> /tmp is 6.4 MiB.  The i_size of the file is 32 GiB, but it is a sparse
-> file, which means not all of the blocks between logical offset 0 and
-> 32 GiB have been allocated.
-> 
-> Now, if we mount the file system, as we start writing into the file,
-> we will allocate space in /tmp.  Now, the way fallocate works in the
-> mounted file system is that it guarantees space in the file system,
-> but it won't write the data blocks, so space confusmed in /tmp by
-> /tmp/mydisk will grow only by the space needed when we updated the
-> metadata blocks in the file system contained in /tmp/mydisk.
-> 
-> % sudo mount /tmp/test.img /mnt/test
-> % df -h /mnt/test
-> Filesystem      Size  Used Avail Use% Mounted on
-> /dev/loop1       32G  2.1M   30G   1% /mnt/test
-> % sudo fallocate -l 16G /mnt/test/testfile
-> 1093% df -h /mnt/test
-> Filesystem      Size  Used Avail Use% Mounted on
-> /dev/loop1       32G   17G   14G  55% /mnt/test
-> % ls -lsh /mnt/test/testfile
-> 17G -rw-r--r-- 1 root root 16G Jul 11 11:25 /mnt/test/testfile
-> % ls -lsh /tmp/test.img
-> 7.5M -rw-r--r-- 1 tytso tytso 32G Jul 11 11:25 /tmp/test.img
-> 
-> So here, we fallocated 16GB in the file system in /tmp/test.img.  You
-> can see that it created a file which is 16GB in size, but which is a
-> bit more than 16GB once you include the metadata blocks for
-> /tmp/test/testfile.  That's why the space used is 17GB (the ls program
-> rounded up) but the i_size is 16GB.
-> 
-> *But* the space consumed by the file /tmp/test.img only went up from
-> 6.4 MiB to 7.5 MiB.  That's because although we reserved space in the
-> file system /tmp/test.img, we didn't reserve any space in /tmp.
-> 
-> This is working as intended; and if what you are doing is "thin
-> provisioning", this is a feature, but a bug.
-> 
-> But what it means is that if /tmp only has 26GB of space, eventually
-> if you keep writing to /tmp/test.img, there will be block level errors
-> in the loop device when /tmp runs out of space.  That was what you saw
-> in your original example:
-> 
-> Jul 08 05:43:07 testbed kernel: loop: Write error at byte offset 274432, length 1024.
-> 
-> As soon as there are block I/O errors in the underlying file system,
-> all bets are off.  There could be data loss (if you had been writing
-> to a data block when /tmp ran out of space) or file system corruption
-> (if the kernel had been trying to write a metadata block when /tmp ran
-> out of space), or possibly both.  So as soon as you see block I/O
-> errors, don't assume that file system is unscathed, because you
-> probably *will* have lost data or have a corrupted file sytem.
-> 
-> > Is it legal usage or will it trigger some unknown issue? I'm a newbie
-> > on fallocate:)
-> 
-> So it's *legal* to do thin provisioning; if you are trying to test a
-> very large file system, and you don't have enough space, then you
-> might not have a choice.  Or if you are trying to be more efficient,
-> it mgiht allow you to allow users to *think* they have more space than
-> you actually have purchased, since very often, users don't artually
-> use; they just want to feel good that they have the space.
-> 
-> And if you have a large number of users, thin provisioning might make
-> sense because it saves money.  But it's much like a bank which has
-> lent out money that depositors have on deposit, relying on the fact
-> that it is very rare that all of the depositors will suddenly show up
-> and withdraw all of their money all at the same time.  If that
-> happens, then you have a run on the bank, and there could be civil
-> unrest, and things get ugly.  Which is why after bank runs, government
-> regulartors will demand that banks keep more money on reserve, which
-> lowers their profits and makes the bank's shareholders sad --- but
-> better that than angry bank customers.  :-)
+Later on, struct fuse_direntplus was introduced
+ * 7.21
+ *  - add FUSE_READDIRPLUS
 
-LOL SVB :(
+With struct struct fuse_entry_out/fuse_attr embedded in the middle
+and I don't see any code in the kernel/lib that is prepared to handle
+a change in the FUSE_NAME_OFFSET_DIRENTPLUS constant
+(maybe it's there and I am missing it)
 
---D
+So for my own use, which only requires passing a single int backing_id
+I was tempted to try and overload attr_valid{,_nsec} which are
+not relevant for passthrough getattr case,
+something like {attr_valid =3D backing_id, attr_valid_nsec =3D UTIME_OMIT}.
 
-> So if you know what you are doing, it *can* work.  But it might
-> trigger an issue which is unknown/unexpected for you, even though for
-> soemone who understands how things work it makes perfect sense and is
-> the system working as designed.
-> 
-> If you have lots of disk space, then just use fallocate to allocate
-> space for /tmp/mydisk, and then you can use fallocate to allocate
-> space for the file system contained in /tmp/mydisk.  And it will all
-> work, but it will require more disk space to be available in /tmp.
-> 
-> Cheers,
-> 
-> 						- Ted
-> 
+In the meanwhile, as an example I used a hole in struct fuse_attr_out
+to implement backing file setup in reply to GETATTR in the wip branch [1].
+
+Bernd,
+
+I wonder if I am missing something w.r.t the intended extensibility of
+struct fuse_entry_out/fuse_attr and current readdirplus code?
+
+Thanks,
+Amir.
+
+[1] https://github.com/amir73il/linux/commits/fuse-backing-inode-wip/
 
