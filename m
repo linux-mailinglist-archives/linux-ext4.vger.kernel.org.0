@@ -1,132 +1,251 @@
-Return-Path: <linux-ext4+bounces-8997-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8998-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E53E6B046DA
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Jul 2025 19:47:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ECABB04D3A
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 03:12:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37D08189A314
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Jul 2025 17:48:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BFC4164996
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 01:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BD625F797;
-	Mon, 14 Jul 2025 17:47:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="omceRwRM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5909F1ACEDA;
+	Tue, 15 Jul 2025 01:12:08 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D46B79FE
-	for <linux-ext4@vger.kernel.org>; Mon, 14 Jul 2025 17:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501FB1A83ED;
+	Tue, 15 Jul 2025 01:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752515267; cv=none; b=cBCRUwD2dp2PtB4q5oLzNqtT/WMuAnvuKyAQ4MBKVuHtJ6DiLN+9AWsDR/lubNXIDu+yni0AT2fYmmV4pRogNML2is33Iva6jsgZSsmhqdzwWlSCAv+LBskqGXCBnShtBmMpfzqhs3gEUGQUJ/05kW7c9XOFlUnY0TNH+vx1xho=
+	t=1752541928; cv=none; b=j1Xw84FG6tILTUotd2OU2t5vCfWacHKJW1aLcMOBvLbrqlTC1YmdQ2rUPLpoDp9ThuU6Ozl70/39TvwGbrWQE1+Ef6gQzy6DAmV2esO6qiU0Ra+aQ1SFfeCMkHh6C9yNT3uVy+LuhFcv/CelduvG0cTJN8twsPihonfjUzgQHvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752515267; c=relaxed/simple;
-	bh=pRLmzq/67ThMDCRf1SUK8lPAAbVBbB4Cg1lY5AXK69k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KWrwNnkegJtxjBh9uuxRmxdYtoCFFJdcxjnqczEpc70qpG0TlOwdBPVeQ57u0TDhMW42AdmBGPohnk+hpioGnRLJfRIDzxlUtZ/7OK7wJxH+jxhFbF272U7VgmB3R23lWk4DgoUU2QMJ/IW0NGHIqsGmjyEz6qvTSeyU5Qyf8yU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=omceRwRM; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-108-26-156-88.bstnma.fios.verizon.net [108.26.156.88])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 56EHl26W021854
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 14 Jul 2025 13:47:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1752515226; bh=WVeVS8ghlhSXlPKutqTq4jxAQQ7jm0W3yKizKXZBUhw=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=omceRwRMuKbPrvU+8hmTSJ3MQme/7Pa9K7hCwaGuDcvpvEsbn4EaLDmT8CUaGYxKb
-	 MYHuv2g/nLa9oG1NKvNP9I0UKm+8cqQlrRfdc2grmhlZ3jLBo1eWB42mnCzEhyxfnk
-	 j+2AuKlurwEt5RKf6gZaWFoFpONy+7rIEzwEHyWuXd1O9RyTmr5i26bcy67ZUWL2cl
-	 +pQzscr52NSfyuojywzCEsh2WrnuYW5DoUT3OWEeTNcEzuY8CICGvr6C7M4XXEIBW0
-	 dUKcpXrlbc21fe0xMKcWZfDF1E368XCGtxBuyFiYwEO9S4HfWlRdoti1GLBKOqi7Vj
-	 zqPx9sZ8s9IQQ==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id D00342E00D5; Mon, 14 Jul 2025 13:47:02 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        ojaswin@linux.ibm.com, sashal@kernel.org, naresh.kamboju@linaro.org,
-        jiangqi903@gmail.com, yi.zhang@huawei.com, libaokun1@huawei.com,
-        yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v4 00/11] ext4: fix insufficient credits when writing back large folios
-Date: Mon, 14 Jul 2025 13:46:41 -0400
-Message-ID: <175251519237.80092.16212793631969121417.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250707140814.542883-1-yi.zhang@huaweicloud.com>
-References: <20250707140814.542883-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1752541928; c=relaxed/simple;
+	bh=Yezu9BqmWiIJ5dC2G9z4hnVe9zQIi4zcKg/Eu58ieCY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=WXa9Vc9FHb3TzWI7FuqJnWAGjWEhkg3t2hWj7OF3qppFAziXuopFIgrah6dfG2aOiTPjfcZWIc3TsekSfZvX02qjJiPcjR8msLEsofTAh6U1/0B6cs5pWk+ZBsP8LxXtpKKzazf+XM3bTEszhf7jkv5f5A23ybcPv7ypWdAdnMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4bh1JV33Lpz2Cfqk;
+	Tue, 15 Jul 2025 09:07:54 +0800 (CST)
+Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
+	by mail.maildlp.com (Postfix) with ESMTPS id C7D5F14011F;
+	Tue, 15 Jul 2025 09:12:00 +0800 (CST)
+Received: from [10.174.179.80] (10.174.179.80) by
+ kwepemf100017.china.huawei.com (7.202.181.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 15 Jul 2025 09:11:59 +0800
+Message-ID: <277b45e3-173d-4cf4-b044-7c25cd42e41b@huawei.com>
+Date: Tue, 15 Jul 2025 09:11:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/17] ext4: better scalability for ext4 block
+ allocation
+To: Baokun Li <libaokun1@huawei.com>, <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<linux-kernel@vger.kernel.org>, <ojaswin@linux.ibm.com>,
+	<julia.lawall@inria.fr>, <yangerkun@huawei.com>, <libaokun@huaweicloud.com>
+References: <20250714130327.1830534-1-libaokun1@huawei.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huawei.com>
+In-Reply-To: <20250714130327.1830534-1-libaokun1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ kwepemf100017.china.huawei.com (7.202.181.16)
 
-
-On Mon, 07 Jul 2025 22:08:03 +0800, Zhang Yi wrote:
-> Changes since v3:
->  - Fix the end_pos assignment in patch 01.
->  - Rename mpage_submit_buffers() to mpage_submit_partial_folio(), and
->    fix a left shift out-of-bounds problem in patch 03.
->  - Fix the spelling errors in patch 04.
->  - Add a comment for NULL 'handle' test in
->    ext4_journal_ensure_extent_credits().
->  - Add patch 11 to limit the maximum order of the folio to 2048 fs
->    blocks, prevent the overestimation of reserve journal credits during
->    folios write-back.
+On 2025/7/14 21:03, Baokun Li wrote:
 > Changes since v2:
->  - Convert the processing of folios writeback in bytes instead of pages.
->  - Refactor ext4_page_mkwrite() and ensure journal credits in
->    ext4_block_write_begin() instead of in _ext4_get_block().
->  - Enhance tracepoints in ext4_do_writepages().
->  - Replace the outdated ext4_da_writepages_trans_blocks() and
->    ext4_writepage_trans_blocks() with the new helper used to reserve
->    credits for a single extent.
-> Changes since v1:
->  - Make the write-back process supports writing a partial folio if it
->    exits the mapping loop prematurely due to insufficient sapce or
->    journal credits, it also fix the potential stale data and
->    inconsistency issues.
->  - Fix the same issue regarding the allocation of blocks in
->    ext4_write_begin() and ext4_page_mkwrite() when delalloc is not
->    enabled.
+>  * Collect RVB from Jan Kara. (Thanks for your review!)
+>  * Add patch 2.
+>  * Patch 4: Switching to READ_ONCE/WRITE_ONCE (great for single-process)
+>         over smp_load_acquire/smp_store_release (only slight multi-process
+>         gain). (Suggested by Jan Kara)
+>  * Patch 5: The number of global goals is now set to the lesser of the CPU
+>         count or one-fourth of the group count. This prevents setting too
+>         many goals for small filesystems, which lead to file dispersion.
+>         (Suggested by Jan Kara)
+>  * Patch 5: Directly use kfree() to release s_mb_last_groups instead of
+>         kvfree(). (Suggested by Julia Lawall)
+>  * Patch 11: Even without mb_optimize_scan enabled, we now always attempt
+>         to remove the group from the old order list.(Suggested by Jan Kara)
+>  * Patch 14-16: Added comments for clarity, refined logic, and removed
+>         obsolete variables.
+>  * Update performance test results and indicate raw disk write bandwidth. 
 > 
-> [...]
+> Thanks to Honza for your suggestions!
 
-Applied, thanks!
+This is a nice improvement! Overall, the series looks good to me!
 
-[01/11] ext4: process folios writeback in bytes
-        commit: 1bfe6354e0975fe89c3d25e81b6546d205556a4b
-[02/11] ext4: move the calculation of wbc->nr_to_write to mpage_folio_done()
-        commit: f922c8c2461b022a2efd9914484901fb358a5b2a
-[03/11] ext4: fix stale data if it bail out of the extents mapping loop
-        commit: ded2d726a3041fce8afd88005cbfe15cd4737702
-[04/11] ext4: refactor the block allocation process of ext4_page_mkwrite()
-        commit: 2bddafea3d0d85ee9ac3cf5ba9a4b2f2d2f50257
-[05/11] ext4: restart handle if credits are insufficient during allocating blocks
-        commit: e2c4c49dee64ca2f42ad2958cbe1805de96b6732
-[06/11] ext4: enhance tracepoints during the folios writeback
-        commit: 6b132759b0fe78e518abafb62190c294100db6d6
-[07/11] ext4: correct the reserved credits for extent conversion
-        commit: 95ad8ee45cdbc321c135a2db895d48b374ef0f87
-[08/11] ext4: reserved credits for one extent during the folio writeback
-        commit: bbbf150f3f85619569ac19dc6458cca7c492e715
-[09/11] ext4: replace ext4_writepage_trans_blocks()
-        commit: 57661f28756c59510e31543520b5b8f5e591f384
-[10/11] ext4: fix insufficient credits calculation in ext4_meta_trans_blocks()
-        commit: 5137d6c8906b55b3c7b5d1aa5a549753ec8520f5
-[11/11] ext4: limit the maximum folio order
-        commit: e14bef2a00b5e9b9a100210ec0676aac384904be
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+> 
+> v2: https://lore.kernel.org/r/20250623073304.3275702-1-libaokun1@huawei.com
+> 
+> Changes since v1:
+>  * Patch 1: Prioritize checking if a group is busy to avoid unnecessary
+>        checks and buddy loading. (Thanks to Ojaswin for the suggestion!)
+>  * Patch 4: Using multiple global goals instead of moving the goal to the
+>        inode level. (Thanks to Honza for the suggestion!)
+>  * Collect RVB from Jan Kara and Ojaswin Mujoo.(Thanks for your review!)
+>  * Add patch 2,3,7-16.
+>  * Due to the change of test server, the relevant test data was refreshed.
+> 
+> v1: https://lore.kernel.org/r/20250523085821.1329392-1-libaokun@huaweicloud.com
+> 
+> Since servers have more and more CPUs, and we're running more containers
+> on them, we've been using will-it-scale to test how well ext4 scales. The
+> fallocate2 test (append 8KB to 1MB, truncate to 0, repeat) run concurrently
+> on 64 containers revealed significant contention in block allocation/free,
+> leading to much lower average fallocate OPS compared to a single
+> container (see below).
+> 
+>    1   |    2   |    4   |    8   |   16   |   32   |   64
+> -------|--------|--------|--------|--------|--------|-------
+> 295287 | 70665  | 33865  | 19387  | 10104  |  5588  |  3588
+> 
+> Under this test scenario, the primary operations are block allocation
+> (fallocate) and block deallocation (truncate). The main bottlenecks for
+> these operations are the group lock and s_md_lock. Therefore, this patch
+> series primarily focuses on optimizing the code related to these two locks.
+> 
+> The following is a brief overview of the patches, see the patches for
+> more details.
+> 
+> Patch 1: Add ext4_try_lock_group() to skip busy groups to take advantage
+> of the large number of ext4 groups.
+> 
+> Patch 2: Separates stream goal hits from s_bal_goals in preparation for
+> cleanup of s_mb_last_start.
+> 
+> Patches 3-5: Split stream allocation's global goal into multiple goals and
+> remove the unnecessary and expensive s_md_lock.
+> 
+> Patches 6-7: minor cleanups
+> 
+> Patches 8: Converted s_mb_free_pending to atomic_t and used memory barriers
+> for consistency, instead of relying on the expensive s_md_lock.
+> 
+> Patches 9: When inserting free extents, we now attempt to merge them with
+> already inserted extents first, to reduce s_md_lock contention.
+> 
+> Patches 10: Updates bb_avg_fragment_size_order to -1 when a group is out of
+> free blocks, eliminating efficiency-impacting "zombie groups."
+> 
+> Patches 11: Fix potential largest free orders lists corruption when the
+> mb_optimize_scan mount option is switched on or off.
+> 
+> Patches 12-17: Convert mb_optimize_scan's existing unordered list traversal
+> to ordered xarrays, thereby reducing contention between block allocation
+> and freeing, similar to linear traversal.
+> 
+> "kvm-xfstests -c ext4/all -g auto" has been executed with no new failures.
+> 
+> Here are some performance test data for your reference:
+> 
+> Test: Running will-it-scale/fallocate2 on CPU-bound containers.
+> Observation: Average fallocate operations per container per second.
+> 
+> |CPU: Kunpeng 920   |          P80           |            P1           |
+> |Memory: 512GB      |------------------------|-------------------------|
+> |960GB SSD (0.5GB/s)| base  |    patched     | base   |    patched     |
+> |-------------------|-------|----------------|--------|----------------|
+> |mb_optimize_scan=0 | 2667  | 20049 (+651%)  | 314065 | 316724 (+0.8%) |
+> |mb_optimize_scan=1 | 2643  | 19342 (+631%)  | 316344 | 328324 (+3.7%) |
+> 
+> |CPU: AMD 9654 * 2  |          P96           |             P1          |
+> |Memory: 1536GB     |------------------------|-------------------------|
+> |960GB SSD (1GB/s)  | base  |    patched     | base   |    patched     |
+> |-------------------|-------|----------------|--------|----------------|
+> |mb_optimize_scan=0 | 3450  | 52125 (+1410%) | 205851 | 215136 (+4.5%) |
+> |mb_optimize_scan=1 | 3209  | 50331 (+1468%) | 207373 | 209431 (+0.9%) |
+> 
+> Tests also evaluated this patch set's impact on fragmentation: a minor
+> increase in free space fragmentation for multi-process workloads, but a
+> significant decrease in file fragmentation:
+> 
+> Test Script：
+> ```shell
+> #!/bin/bash
+> 
+> dir="/tmp/test"
+> disk="/dev/sda"
+> 
+> mkdir -p $dir
+> 
+> for scan in 0 1 ; do
+>     mkfs.ext4 -F -E lazy_itable_init=0,lazy_journal_init=0 \
+>               -O orphan_file $disk 200G
+>     mount -o mb_optimize_scan=$scan $disk $dir
+> 
+>     fio -directory=$dir -direct=1 -iodepth 128 -thread -ioengine=falloc \
+>         -rw=write -bs=4k -fallocate=none -numjobs=64 -file_append=1 \
+>         -size=1G -group_reporting -name=job1 -cpus_allowed_policy=split
+> 
+>     e2freefrag $disk
+>     e4defrag -c $dir # Without the patch, this could take 5-6 hours.
+>     filefrag ${dir}/job* | awk '{print $2}' | \
+>                            awk '{sum+=$1} END {print sum/NR}'
+>     umount $dir
+> done
+> ```
+> 
+> Test results:
+> -------------------------------------------------------------|
+>                          |       base      |      patched    |
+> -------------------------|--------|--------|--------|--------|
+> mb_optimize_scan         | linear |opt_scan| linear |opt_scan|
+> -------------------------|--------|--------|--------|--------|
+> bw(MiB/s)                | 217    | 217    | 5718   | 5626   |
+> -------------------------|-----------------------------------|
+> Avg. free extent size(KB)| 1943732| 1943732| 1316212| 1171208|
+> Num. free extent         | 71     | 71     | 105    | 118    |
+> -------------------------------------------------------------|
+> Avg. extents per file    | 261967 | 261973 | 588    | 570    |
+> Avg. size per extent(KB) | 4      | 4      | 1780   | 1837   |
+> Fragmentation score      | 100    | 100    | 2      | 2      |
+> -------------------------------------------------------------|
+> 
+> Comments and questions are, as always, welcome.
+> 
+> Thanks,
+> Baokun
+> 
+> Baokun Li (17):
+>   ext4: add ext4_try_lock_group() to skip busy groups
+>   ext4: separate stream goal hits from s_bal_goals for better tracking
+>   ext4: remove unnecessary s_mb_last_start
+>   ext4: remove unnecessary s_md_lock on update s_mb_last_group
+>   ext4: utilize multiple global goals to reduce contention
+>   ext4: get rid of some obsolete EXT4_MB_HINT flags
+>   ext4: fix typo in CR_GOAL_LEN_SLOW comment
+>   ext4: convert sbi->s_mb_free_pending to atomic_t
+>   ext4: merge freed extent with existing extents before insertion
+>   ext4: fix zombie groups in average fragment size lists
+>   ext4: fix largest free orders lists corruption on mb_optimize_scan
+>     switch
+>   ext4: factor out __ext4_mb_scan_group()
+>   ext4: factor out ext4_mb_might_prefetch()
+>   ext4: factor out ext4_mb_scan_group()
+>   ext4: convert free groups order lists to xarrays
+>   ext4: refactor choose group to scan group
+>   ext4: implement linear-like traversal across order xarrays
+> 
+>  fs/ext4/balloc.c            |   2 +-
+>  fs/ext4/ext4.h              |  61 +--
+>  fs/ext4/mballoc.c           | 895 ++++++++++++++++++++----------------
+>  fs/ext4/mballoc.h           |   9 +-
+>  include/trace/events/ext4.h |   3 -
+>  5 files changed, 534 insertions(+), 436 deletions(-)
+> 
+
 
