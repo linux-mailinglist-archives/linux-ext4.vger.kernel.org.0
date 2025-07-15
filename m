@@ -1,70 +1,63 @@
-Return-Path: <linux-ext4+bounces-9009-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9010-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 118E7B057F9
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 12:37:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6284EB05A56
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 14:35:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 735331C2166A
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 10:37:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87DD63AD61E
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 12:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E622D837E;
-	Tue, 15 Jul 2025 10:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B84C2E03F6;
+	Tue, 15 Jul 2025 12:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="fMP/2/5a"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="JIovepZd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E5A2D6406;
-	Tue, 15 Jul 2025 10:37:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1392E03E4
+	for <linux-ext4@vger.kernel.org>; Tue, 15 Jul 2025 12:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752575839; cv=none; b=d6Ch5xdzIZsdS9qioSJcnDUm88DvEE2wW96Sgh59XgozHjHOvAJsIsxkZDNwLvjuSoO1s5Gl7ileBERwrOc4ImxqIRk0DyZC+l9J2cM7D8hgRwt5tJy2dN9TalVsGFeY0nLoQogcGPK5VaoF+fAJEZ1JgbJucSlcaeYWIbbaKdk=
+	t=1752582920; cv=none; b=TBPz2gjmU5WCeCSkCUJ1OPiJRdaSK8t8y5oL2vIt+aMzPbZVHLjXfYPQiB6opor4bwRjfwV3nn6oYqoLJG4jUhMaeuhvCz4Onfj8ex7kx2dSrzg+K490ryEzsItWMIubClDRwrBIs8pSj2Sm47rFVjjREljUnmVVZdCchAUFSO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752575839; c=relaxed/simple;
-	bh=bRWQnGaBFkqATicoOZBNn07+yA+dB5OA8yMdsKFlD70=;
+	s=arc-20240116; t=1752582920; c=relaxed/simple;
+	bh=QLo89csj3kq3EH40mhgTDCdEVSZgVt+rpcBpJXUGG/A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J6/wLOPxBzKQrMt5PY1T+36JV7oXS7UWRPbTkONzJC67zGAtksRiL6e/jYV/xtsrRtNFcjrDk7SslI7yY93+JJU8lgTpUE0iCq+n0wAmyBZC9vxROWeg8J9bsejQDZHIiyJAod+vwVxBZkvzB/p6/UrGhmysBme53oDIMITqmno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=fMP/2/5a; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4bhFxK0fpGz9tfC;
-	Tue, 15 Jul 2025 12:37:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1752575829;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xkTXIjd3OsRf0eTlKAZhhSr2I1Js8WnKPTLus2lYh/0=;
-	b=fMP/2/5aRy89wVDDtWPiLpWM6+NT4rbhDFrN85k+PQgKFGsy4ZXffGVAec+4b5FgwGyCwM
-	oD46fz3Q2+c4FsgaI8YglSL/grUQh+xJkgXj15S22kPzJzDcb7BG93/TyRdSw5hzORxjXq
-	wgR65uD+K5QrgY35TxnvacbTa7rsWjKxQZM12m23t4J6iXFr6K6ZvnRoHV8uREBohXqHKX
-	Z3WCtVRBTkZx1ECuRCWFcrKAZeJJz+6uW6dyxXf+q9d0vTG85UxqyZhzp168fnVXkraT9o
-	Pownt3fQ8fLxYQAob3n4GAVHSVWmg07H4xsJ1mNlB7NW6tqxEbRJQukaMYqRpQ==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=pass (outgoing_mbo_mout: domain of kernel@pankajraghav.com designates 2001:67c:2050:b231:465::2 as permitted sender) smtp.mailfrom=kernel@pankajraghav.com
-Date: Tue, 15 Jul 2025 12:36:59 +0200
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Jan Kara <jack@suse.cz>
-Cc: syzbot <syzbot+01ef7a8da81a975e1ccd@syzkaller.appspotmail.com>, 
-	adilger.kernel@dilger.ca, anna.luese@v-bien.de, brauner@kernel.org, 
-	jfs-discussion@lists.sourceforge.net, libaokun1@huawei.com, linkinjeon@kernel.org, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	p.raghav@samsung.com, shaggy@kernel.org, sj1557.seo@samsung.com, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] WARNING in bdev_getblk
-Message-ID: <f634msrtbc75cspm3pysavmxc5gfzlut56bee7qtc72ypmd4ap@p7tmmjisdc72>
-References: <686a8143.a00a0220.c7b3.005b.GAE@google.com>
- <68710315.a00a0220.26a83e.004a.GAE@google.com>
- <gbzywhurs75yyg2uckcbi7qp7g4cx6tybridb4spts43jxj6gw@66ab5zymisgc>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iFvxY38R4z2hB1SQCSspOeBSJ3czbaW/+Z9oiMYbRTKvDhYa2lw2fs/P2Q58f3l5yrKfMvjYfaaZrC+p4tRAUeM4KAgBY4ir+4Sw6gJVwzhKXV1Qat88qWawonEl2aLYiJrhkOtjWigHbumrRQtrwfIpa8XWibOKRIgx0+BUhrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=JIovepZd; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-108-26-156-131.bstnma.fios.verizon.net [108.26.156.131])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 56FCYsKf005184
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 15 Jul 2025 08:34:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1752582898; bh=JEmCrzAwkf+pL0BE8Ts9Gq27U59HE+yr1Fpegkv0wnE=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=JIovepZdZp+sq9wxOa24YaAKQWfwpYH1SYaeUwfRXHpK8nJQkO+8vCn3RYRiEtTH3
+	 81C2l7YkvrB2um8E9Ww1eKXO09w9gg2VjLHpt7VOP/tf3Fnyo7y8wakIpKjiXoqmE3
+	 ny4+aiCsgMFiPiAnlQ7HD+BttBiuKBFqUv6ImjvFWlOFEIAVXu43o6Uyg+98AxaAWB
+	 IwSyazeqUSQA7u9akobfmwYqAD4I6hFXQiju5tH2AXKgGYMBBckwqIFtkdo1YmhaS7
+	 cpwMV5SoyXWzxLnyFnBQe+ELxfkaK7HRwGiaSAQeHTArXiox4HFBTccDNCrWOzIIpY
+	 ate9EOnTdKBzQ==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 98FA12E00D5; Tue, 15 Jul 2025 08:34:54 -0400 (EDT)
+Date: Tue, 15 Jul 2025 08:34:54 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: chuguangqing <chuguangqing@inspur.com>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] ext4: add FALLOC_FL_ALLOCATE_RANGE to supported
+ flags mask
+Message-ID: <20250715123454.GD74698@mit.edu>
+References: <20250715043808.5808-2-chuguangqing@inspur.com>
+ <20250715064536.12053-1-chuguangqing@inspur.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -73,43 +66,17 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <gbzywhurs75yyg2uckcbi7qp7g4cx6tybridb4spts43jxj6gw@66ab5zymisgc>
-X-Rspamd-Queue-Id: 4bhFxK0fpGz9tfC
+In-Reply-To: <20250715064536.12053-1-chuguangqing@inspur.com>
 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127d8d82580000
-> > start commit:   835244aba90d Add linux-next specific files for 20250709
-> > git tree:       linux-next
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=117d8d82580000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=167d8d82580000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=8396fd456733c122
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=01ef7a8da81a975e1ccd
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=115c40f0580000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11856a8c580000
-> > 
-> > Reported-by: syzbot+01ef7a8da81a975e1ccd@syzkaller.appspotmail.com
-> > Fixes: 77eb64439ad5 ("fs/buffer: remove the min and max limit checks in __getblk_slow()")
-> > 
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On Tue, Jul 15, 2025 at 02:45:18PM +0800, chuguangqing wrote:
+> Note that since FALLOC_FL_ALLOCATE_RANGE is defined as 0x00, this addition
+> has no functional modifications.
 > 
-> Ah, I see what's going on here. The reproducer mounts ext4 filesystem and
-> sets block size on loop0 loop device to 32k using LOOP_SET_BLOCK_SIZE. Now
-> because there are multiple reproducer running using various loop devices it
-> can happen that we're setting blocksize during mount which obviously
-> confuses the filesystem (and makes sb mismatch the bdev block size). It is
-> really not a good idea to allow setting block size (or capacity for that
-> matter) underneath an exclusive opener. The ioctl should have required
-> exclusive open from the start but now it's too late to change that so we
-> need to perform a similar dance with bd_prepare_to_claim() as in
-> loop_configure() to grab temporary exclusive access... Sigh.
-> 
-> Anyway, the commit 77eb64439ad5 is just a victim that switched KERN_ERR
-> messages in the log to WARN_ON so syzbot started to notice this breakage.
+> Signed-off-by: chuguangqing <chuguangqing@inspur.com>
 
-I was also thinking the change we did from KERN_ERR to WARN_ON was catching
-a different bug.
+I'll note that this isn't something which any of the other file
+systems (btrfs, xfs, etc.) is doing.
 
-Thanks for taking a look and fixing the issue Jan.
-
--- 
-Pankaj Raghav
+				- Ted
+				
 
