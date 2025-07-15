@@ -1,251 +1,142 @@
-Return-Path: <linux-ext4+bounces-8998-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-8999-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ECABB04D3A
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 03:12:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3821EB04D68
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 03:27:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BFC4164996
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 01:12:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F4983B832F
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 01:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5909F1ACEDA;
-	Tue, 15 Jul 2025 01:12:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCE01B0F23;
+	Tue, 15 Jul 2025 01:27:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HYnKfYtG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501FB1A83ED;
-	Tue, 15 Jul 2025 01:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A752CCC5
+	for <linux-ext4@vger.kernel.org>; Tue, 15 Jul 2025 01:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752541928; cv=none; b=j1Xw84FG6tILTUotd2OU2t5vCfWacHKJW1aLcMOBvLbrqlTC1YmdQ2rUPLpoDp9ThuU6Ozl70/39TvwGbrWQE1+Ef6gQzy6DAmV2esO6qiU0Ra+aQ1SFfeCMkHh6C9yNT3uVy+LuhFcv/CelduvG0cTJN8twsPihonfjUzgQHvQ=
+	t=1752542836; cv=none; b=hB8TIzLHTraBGlpK7P0GzGu5LR6qC1LnuoBqGNXUU8u/M93SXcYH9gQ2dK15tULaey4S4ykvMThQd3TBZeZz4R+ElYRjrOqFV3/1R8xVxMlx+8D8mJ3tBh/shnC7J+uYJBLLCz5wBXc3a8J3mJY7ilUwtqhJe0V0ulIp+5awbxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752541928; c=relaxed/simple;
-	bh=Yezu9BqmWiIJ5dC2G9z4hnVe9zQIi4zcKg/Eu58ieCY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=WXa9Vc9FHb3TzWI7FuqJnWAGjWEhkg3t2hWj7OF3qppFAziXuopFIgrah6dfG2aOiTPjfcZWIc3TsekSfZvX02qjJiPcjR8msLEsofTAh6U1/0B6cs5pWk+ZBsP8LxXtpKKzazf+XM3bTEszhf7jkv5f5A23ybcPv7ypWdAdnMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4bh1JV33Lpz2Cfqk;
-	Tue, 15 Jul 2025 09:07:54 +0800 (CST)
-Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
-	by mail.maildlp.com (Postfix) with ESMTPS id C7D5F14011F;
-	Tue, 15 Jul 2025 09:12:00 +0800 (CST)
-Received: from [10.174.179.80] (10.174.179.80) by
- kwepemf100017.china.huawei.com (7.202.181.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 15 Jul 2025 09:11:59 +0800
-Message-ID: <277b45e3-173d-4cf4-b044-7c25cd42e41b@huawei.com>
-Date: Tue, 15 Jul 2025 09:11:59 +0800
+	s=arc-20240116; t=1752542836; c=relaxed/simple;
+	bh=j/4sJZcbHC32K0ee+0YzpRwAqKArUBiWFvrwb4dVve4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QNAUYmi3uGl9Svn6O8ywCw5sIHr0ZAKRtoLWRtA02SB+53N/ssqVghR1F96ekw+x91RFrL0W5YDsJXfQo7lxz6lmzRs/aJb8Iwstg7Eo7Eh80HvC1Dmi2pRxgYK7T7nmDkNHldDuFfLSI6/gkgtjQ9eZfVtOvVbicsfZWemQbug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HYnKfYtG; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-32e14ce168eso44390891fa.1
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Jul 2025 18:27:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752542833; x=1753147633; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+lsB6I1d+zFCdyvil2uVYlX1q0vZUlgB88Dtk7XEVS4=;
+        b=HYnKfYtGDt9ePRjPwRegH4WB7os9F6znpI91Fj2w9t8Z2fW+nQDh1W0K54Z8cXFxtX
+         tZ9g2DCPEike6WuQw2BtXLLtteXmVcuYYiW+HOktlcROVL/udzptwF6Y6s207BAih3i5
+         UMAMKLoiUEU3G/amJggo7mgNCxs2URTHNt95eAA2g3I4kgsZe+igihEU5nh7fHHrcvIn
+         9bZfc51AQCNiVREd9qR8+OcJSTmgpIQ9UM+3ZOmPEmLn5BaAI0LhuxyYV1uB45YxdV3g
+         wklN0L3/ggs/q5fAn+vNUanlzz8aUccN5BS87K0R6SDLoUjLvwCdqtPaqt19OEXM+czI
+         uMBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752542833; x=1753147633;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+lsB6I1d+zFCdyvil2uVYlX1q0vZUlgB88Dtk7XEVS4=;
+        b=A5aiAMQ5ddrWFVMwtHG3vjCD3IJPIBNJ7Pa0DsLNyDnGlS1+xHyXYgfjLZ+tr3kPNP
+         rIt1gEOGMMtCoN9zFy8FmowE0fTvXNecottwc6Vjr6M7Scd5aS9CcWAQCbfDfA0DOsJN
+         vISXCdLWDZ1hdG1C+9qYr/mfLYWK5nQIQ4B7HWOOu4X693f8eH87zz3aTbtpfXiZOhQ9
+         nUO2QerNRndLSZOMrEojNRfZE7NnZgYGGH3m76Glb6F+LtkAIGpyWwzGtIoAoKBWJxUx
+         kxbS04rmNxlkDo36KIbvm1nuDlY7Du9gECbj+Iw1BMMwaBOQxNdrMi4TxX2J+LIz1hNf
+         fvhA==
+X-Forwarded-Encrypted: i=1; AJvYcCWyifZBuqR2mwchKSixgoBIVFCbPw1mkhe7g7gPdNXsfX/3cU6MP+jbsVr0xDmN19yvszrxXGDToZfg@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUgDyH/JkKi1jhYiRhb0hEf5wZI6/bCOZ7+08581NyzTbk5Mgt
+	JI1MEi6/xGCSY87P5WCdxQ1A+3x0XFLn8nvIhUmjMhsO89fw4XU+EUPu3qZnaNUQzWK87LwBdo+
+	NhQ1i5BrTbxwWBspCjjegMtqgB6qYpxk=
+X-Gm-Gg: ASbGncsaT1T0Obrozo8qeGdtbJlr+z9lZHZSi8yQ4Rrd+xjhLwI//ZOv6XP6APi8Clg
+	9EEelj2YekoJ8/xLRXVdLif76KpvnxBJ3UBxGSPpWEyThKls6VjCN2ViW9DjHMwFc7F6pvAdwBg
+	50/lhoIvntV3FBLdFPoG8Ec54qJiHyDJkg00k/xcWxZNEYQnwlnDZblyW70yrKT3VZVGU8gYzTw
+	1P+
+X-Google-Smtp-Source: AGHT+IG1mKsW0dIYEECbqgDfZa9CYtAyMZHjPk8Ws032PjUuaGVaDXgbb9MERd49B8PO5J6C7VF6kZy07eo1besHfJs=
+X-Received: by 2002:a05:651c:154a:b0:32a:7270:5c29 with SMTP id
+ 38308e7fff4ca-33053292f80mr41641361fa.2.1752542832370; Mon, 14 Jul 2025
+ 18:27:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/17] ext4: better scalability for ext4 block
- allocation
-To: Baokun Li <libaokun1@huawei.com>, <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<linux-kernel@vger.kernel.org>, <ojaswin@linux.ibm.com>,
-	<julia.lawall@inria.fr>, <yangerkun@huawei.com>, <libaokun@huaweicloud.com>
-References: <20250714130327.1830534-1-libaokun1@huawei.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huawei.com>
-In-Reply-To: <20250714130327.1830534-1-libaokun1@huawei.com>
+References: <CAJxJ_jhEbHJiP-OzSpp2xqai-n=t2CGKXqkmvqf7T3i37Eki0A@mail.gmail.com>
+ <20250711052905.GC2026761@mit.edu> <CAJxJ_jhYUqYhNcsLnjPv+2-n83G77zeQ1jppC6YGfo6bHv+vaA@mail.gmail.com>
+ <20250711154012.GB4040@mit.edu> <20250712042714.GG2672022@frogsfrogsfrogs>
+ <20250712143432.GE4040@mit.edu> <CAJxJ_jh=4q81OnSXk=yAU3u_7CCHZLGhb31eALF0cSyNv34E1g@mail.gmail.com>
+ <20250714130951.GB41071@mit.edu>
+In-Reply-To: <20250714130951.GB41071@mit.edu>
+From: Jiany Wu <wujianyue000@gmail.com>
+Date: Tue, 15 Jul 2025 09:27:01 +0800
+X-Gm-Features: Ac12FXz27Ijgp8l77hlNPvem5zeYWGdsxPQsOmKqdCRulBSMxAuPYoFEk2J7f84
+Message-ID: <CAJxJ_jgg0H=+JLSjc6SNwa5tiDhWjTunNPE2V1SP-v9_O8oCqw@mail.gmail.com>
+Subject: Re: Issue with ext4 filesystem corruption when writing to a file
+ after disk exhaustion
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, yi.zhang@huawei.com, jack@suse.cz, 
+	linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemf100017.china.huawei.com (7.202.181.16)
+Content-Transfer-Encoding: quoted-printable
 
-On 2025/7/14 21:03, Baokun Li wrote:
-> Changes since v2:
->  * Collect RVB from Jan Kara. (Thanks for your review!)
->  * Add patch 2.
->  * Patch 4: Switching to READ_ONCE/WRITE_ONCE (great for single-process)
->         over smp_load_acquire/smp_store_release (only slight multi-process
->         gain). (Suggested by Jan Kara)
->  * Patch 5: The number of global goals is now set to the lesser of the CPU
->         count or one-fourth of the group count. This prevents setting too
->         many goals for small filesystems, which lead to file dispersion.
->         (Suggested by Jan Kara)
->  * Patch 5: Directly use kfree() to release s_mb_last_groups instead of
->         kvfree(). (Suggested by Julia Lawall)
->  * Patch 11: Even without mb_optimize_scan enabled, we now always attempt
->         to remove the group from the old order list.(Suggested by Jan Kara)
->  * Patch 14-16: Added comments for clarity, refined logic, and removed
->         obsolete variables.
->  * Update performance test results and indicate raw disk write bandwidth. 
-> 
-> Thanks to Honza for your suggestions!
+Hello, Ted,
 
-This is a nice improvement! Overall, the series looks good to me!
+Thanks indeed for the clarification, it is clear now.
+OK, if using a loopback mounted image on a disk, underlying file
+system full then the block device will have I/O error.
+This loopback mount belongs to a third party common config. I'll
+fallocate lower disk space to not exhaust disk as a work around
+firstly.
+Thanks again for the help:)
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Best regards,
+Jianyue Wu
 
-> 
-> v2: https://lore.kernel.org/r/20250623073304.3275702-1-libaokun1@huawei.com
-> 
-> Changes since v1:
->  * Patch 1: Prioritize checking if a group is busy to avoid unnecessary
->        checks and buddy loading. (Thanks to Ojaswin for the suggestion!)
->  * Patch 4: Using multiple global goals instead of moving the goal to the
->        inode level. (Thanks to Honza for the suggestion!)
->  * Collect RVB from Jan Kara and Ojaswin Mujoo.(Thanks for your review!)
->  * Add patch 2,3,7-16.
->  * Due to the change of test server, the relevant test data was refreshed.
-> 
-> v1: https://lore.kernel.org/r/20250523085821.1329392-1-libaokun@huaweicloud.com
-> 
-> Since servers have more and more CPUs, and we're running more containers
-> on them, we've been using will-it-scale to test how well ext4 scales. The
-> fallocate2 test (append 8KB to 1MB, truncate to 0, repeat) run concurrently
-> on 64 containers revealed significant contention in block allocation/free,
-> leading to much lower average fallocate OPS compared to a single
-> container (see below).
-> 
->    1   |    2   |    4   |    8   |   16   |   32   |   64
-> -------|--------|--------|--------|--------|--------|-------
-> 295287 | 70665  | 33865  | 19387  | 10104  |  5588  |  3588
-> 
-> Under this test scenario, the primary operations are block allocation
-> (fallocate) and block deallocation (truncate). The main bottlenecks for
-> these operations are the group lock and s_md_lock. Therefore, this patch
-> series primarily focuses on optimizing the code related to these two locks.
-> 
-> The following is a brief overview of the patches, see the patches for
-> more details.
-> 
-> Patch 1: Add ext4_try_lock_group() to skip busy groups to take advantage
-> of the large number of ext4 groups.
-> 
-> Patch 2: Separates stream goal hits from s_bal_goals in preparation for
-> cleanup of s_mb_last_start.
-> 
-> Patches 3-5: Split stream allocation's global goal into multiple goals and
-> remove the unnecessary and expensive s_md_lock.
-> 
-> Patches 6-7: minor cleanups
-> 
-> Patches 8: Converted s_mb_free_pending to atomic_t and used memory barriers
-> for consistency, instead of relying on the expensive s_md_lock.
-> 
-> Patches 9: When inserting free extents, we now attempt to merge them with
-> already inserted extents first, to reduce s_md_lock contention.
-> 
-> Patches 10: Updates bb_avg_fragment_size_order to -1 when a group is out of
-> free blocks, eliminating efficiency-impacting "zombie groups."
-> 
-> Patches 11: Fix potential largest free orders lists corruption when the
-> mb_optimize_scan mount option is switched on or off.
-> 
-> Patches 12-17: Convert mb_optimize_scan's existing unordered list traversal
-> to ordered xarrays, thereby reducing contention between block allocation
-> and freeing, similar to linear traversal.
-> 
-> "kvm-xfstests -c ext4/all -g auto" has been executed with no new failures.
-> 
-> Here are some performance test data for your reference:
-> 
-> Test: Running will-it-scale/fallocate2 on CPU-bound containers.
-> Observation: Average fallocate operations per container per second.
-> 
-> |CPU: Kunpeng 920   |          P80           |            P1           |
-> |Memory: 512GB      |------------------------|-------------------------|
-> |960GB SSD (0.5GB/s)| base  |    patched     | base   |    patched     |
-> |-------------------|-------|----------------|--------|----------------|
-> |mb_optimize_scan=0 | 2667  | 20049 (+651%)  | 314065 | 316724 (+0.8%) |
-> |mb_optimize_scan=1 | 2643  | 19342 (+631%)  | 316344 | 328324 (+3.7%) |
-> 
-> |CPU: AMD 9654 * 2  |          P96           |             P1          |
-> |Memory: 1536GB     |------------------------|-------------------------|
-> |960GB SSD (1GB/s)  | base  |    patched     | base   |    patched     |
-> |-------------------|-------|----------------|--------|----------------|
-> |mb_optimize_scan=0 | 3450  | 52125 (+1410%) | 205851 | 215136 (+4.5%) |
-> |mb_optimize_scan=1 | 3209  | 50331 (+1468%) | 207373 | 209431 (+0.9%) |
-> 
-> Tests also evaluated this patch set's impact on fragmentation: a minor
-> increase in free space fragmentation for multi-process workloads, but a
-> significant decrease in file fragmentation:
-> 
-> Test Script：
-> ```shell
-> #!/bin/bash
-> 
-> dir="/tmp/test"
-> disk="/dev/sda"
-> 
-> mkdir -p $dir
-> 
-> for scan in 0 1 ; do
->     mkfs.ext4 -F -E lazy_itable_init=0,lazy_journal_init=0 \
->               -O orphan_file $disk 200G
->     mount -o mb_optimize_scan=$scan $disk $dir
-> 
->     fio -directory=$dir -direct=1 -iodepth 128 -thread -ioengine=falloc \
->         -rw=write -bs=4k -fallocate=none -numjobs=64 -file_append=1 \
->         -size=1G -group_reporting -name=job1 -cpus_allowed_policy=split
-> 
->     e2freefrag $disk
->     e4defrag -c $dir # Without the patch, this could take 5-6 hours.
->     filefrag ${dir}/job* | awk '{print $2}' | \
->                            awk '{sum+=$1} END {print sum/NR}'
->     umount $dir
-> done
-> ```
-> 
-> Test results:
-> -------------------------------------------------------------|
->                          |       base      |      patched    |
-> -------------------------|--------|--------|--------|--------|
-> mb_optimize_scan         | linear |opt_scan| linear |opt_scan|
-> -------------------------|--------|--------|--------|--------|
-> bw(MiB/s)                | 217    | 217    | 5718   | 5626   |
-> -------------------------|-----------------------------------|
-> Avg. free extent size(KB)| 1943732| 1943732| 1316212| 1171208|
-> Num. free extent         | 71     | 71     | 105    | 118    |
-> -------------------------------------------------------------|
-> Avg. extents per file    | 261967 | 261973 | 588    | 570    |
-> Avg. size per extent(KB) | 4      | 4      | 1780   | 1837   |
-> Fragmentation score      | 100    | 100    | 2      | 2      |
-> -------------------------------------------------------------|
-> 
-> Comments and questions are, as always, welcome.
-> 
-> Thanks,
-> Baokun
-> 
-> Baokun Li (17):
->   ext4: add ext4_try_lock_group() to skip busy groups
->   ext4: separate stream goal hits from s_bal_goals for better tracking
->   ext4: remove unnecessary s_mb_last_start
->   ext4: remove unnecessary s_md_lock on update s_mb_last_group
->   ext4: utilize multiple global goals to reduce contention
->   ext4: get rid of some obsolete EXT4_MB_HINT flags
->   ext4: fix typo in CR_GOAL_LEN_SLOW comment
->   ext4: convert sbi->s_mb_free_pending to atomic_t
->   ext4: merge freed extent with existing extents before insertion
->   ext4: fix zombie groups in average fragment size lists
->   ext4: fix largest free orders lists corruption on mb_optimize_scan
->     switch
->   ext4: factor out __ext4_mb_scan_group()
->   ext4: factor out ext4_mb_might_prefetch()
->   ext4: factor out ext4_mb_scan_group()
->   ext4: convert free groups order lists to xarrays
->   ext4: refactor choose group to scan group
->   ext4: implement linear-like traversal across order xarrays
-> 
->  fs/ext4/balloc.c            |   2 +-
->  fs/ext4/ext4.h              |  61 +--
->  fs/ext4/mballoc.c           | 895 ++++++++++++++++++++----------------
->  fs/ext4/mballoc.h           |   9 +-
->  include/trace/events/ext4.h |   3 -
->  5 files changed, 534 insertions(+), 436 deletions(-)
-> 
 
+On Mon, Jul 14, 2025 at 9:09=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote=
+:
+>
+> On Mon, Jul 14, 2025 at 12:37:21PM +0800, Jiany Wu wrote:
+> > Hello, Ted,
+> >
+> > Good day, thanks indeed for the clarification~
+> > Yes, previously tried to mount a specific ext4 disk-img to /var/log,
+> > with /dev/loop1 device, and rsyslogd will write to /var/log/syslog.
+> > When /tmp directory exhaust manually via fallocate, / dir will be also
+> > occupied as 100%, and rsyslog write errors in /dev/loop1 happen, later
+> > mount as read-only. Different from the early scenario, but this
+> > scenario is not easy to reproduce.
+> > Tried updating the test case, not fallocate all spaces in disk, now
+> > alloc 95%, everything is normal now, no related error prints anymore.
+> > It is confirmed errors are caused by disk exhaust.
+> > I think the main hesitation part is whether fallocate is allowed to
+> > use the whole disk space.
+>
+> The fallocate system call is allowed to use the whole space on the
+> *file system*.  But it doesn't know about how much free space a
+> thin-provisioned device's underlying storage is available.  If you are
+> using a loopback mounted image on a disk, if the underlying file
+> system on the disk fills up then the block device will have I/O errors
+> --- and then the file system on the loop device will run into
+> problems, either data loss or metadata corruption.
+>
+> So this is working as intended.  If you don't want this, either don't
+> use a loopback mount with a sparse file; either use fallocate when
+> creating the image file, or don't use a loopback mount.
+>
+>                                 - Ted
 
