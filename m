@@ -1,142 +1,114 @@
-Return-Path: <linux-ext4+bounces-8999-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9002-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3821EB04D68
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 03:27:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE18CB04EB6
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 05:27:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F4983B832F
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 01:26:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 150344A4D6B
+	for <lists+linux-ext4@lfdr.de>; Tue, 15 Jul 2025 03:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCE01B0F23;
-	Tue, 15 Jul 2025 01:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HYnKfYtG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4E02D0C92;
+	Tue, 15 Jul 2025 03:27:15 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A752CCC5
-	for <linux-ext4@vger.kernel.org>; Tue, 15 Jul 2025 01:27:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA4A6FBF;
+	Tue, 15 Jul 2025 03:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752542836; cv=none; b=hB8TIzLHTraBGlpK7P0GzGu5LR6qC1LnuoBqGNXUU8u/M93SXcYH9gQ2dK15tULaey4S4ykvMThQd3TBZeZz4R+ElYRjrOqFV3/1R8xVxMlx+8D8mJ3tBh/shnC7J+uYJBLLCz5wBXc3a8J3mJY7ilUwtqhJe0V0ulIp+5awbxc=
+	t=1752550035; cv=none; b=XTtC827gxid35cE4ReN54YC3MA3iWowSLfPmwWMz+CYKmqLtG8SgzI8vxHgC1J02n/hBV5VU+q3ME3daP0BC6Ws+p4NPkvqCXnlle+ln6Fz1UPJvUencn+olGRG/PPK7xH+Cf1yZowGgIRblO2M6mAvQW6KsDbsS2yFv4YM+xpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752542836; c=relaxed/simple;
-	bh=j/4sJZcbHC32K0ee+0YzpRwAqKArUBiWFvrwb4dVve4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QNAUYmi3uGl9Svn6O8ywCw5sIHr0ZAKRtoLWRtA02SB+53N/ssqVghR1F96ekw+x91RFrL0W5YDsJXfQo7lxz6lmzRs/aJb8Iwstg7Eo7Eh80HvC1Dmi2pRxgYK7T7nmDkNHldDuFfLSI6/gkgtjQ9eZfVtOvVbicsfZWemQbug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HYnKfYtG; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-32e14ce168eso44390891fa.1
-        for <linux-ext4@vger.kernel.org>; Mon, 14 Jul 2025 18:27:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752542833; x=1753147633; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+lsB6I1d+zFCdyvil2uVYlX1q0vZUlgB88Dtk7XEVS4=;
-        b=HYnKfYtGDt9ePRjPwRegH4WB7os9F6znpI91Fj2w9t8Z2fW+nQDh1W0K54Z8cXFxtX
-         tZ9g2DCPEike6WuQw2BtXLLtteXmVcuYYiW+HOktlcROVL/udzptwF6Y6s207BAih3i5
-         UMAMKLoiUEU3G/amJggo7mgNCxs2URTHNt95eAA2g3I4kgsZe+igihEU5nh7fHHrcvIn
-         9bZfc51AQCNiVREd9qR8+OcJSTmgpIQ9UM+3ZOmPEmLn5BaAI0LhuxyYV1uB45YxdV3g
-         wklN0L3/ggs/q5fAn+vNUanlzz8aUccN5BS87K0R6SDLoUjLvwCdqtPaqt19OEXM+czI
-         uMBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752542833; x=1753147633;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+lsB6I1d+zFCdyvil2uVYlX1q0vZUlgB88Dtk7XEVS4=;
-        b=A5aiAMQ5ddrWFVMwtHG3vjCD3IJPIBNJ7Pa0DsLNyDnGlS1+xHyXYgfjLZ+tr3kPNP
-         rIt1gEOGMMtCoN9zFy8FmowE0fTvXNecottwc6Vjr6M7Scd5aS9CcWAQCbfDfA0DOsJN
-         vISXCdLWDZ1hdG1C+9qYr/mfLYWK5nQIQ4B7HWOOu4X693f8eH87zz3aTbtpfXiZOhQ9
-         nUO2QerNRndLSZOMrEojNRfZE7NnZgYGGH3m76Glb6F+LtkAIGpyWwzGtIoAoKBWJxUx
-         kxbS04rmNxlkDo36KIbvm1nuDlY7Du9gECbj+Iw1BMMwaBOQxNdrMi4TxX2J+LIz1hNf
-         fvhA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyifZBuqR2mwchKSixgoBIVFCbPw1mkhe7g7gPdNXsfX/3cU6MP+jbsVr0xDmN19yvszrxXGDToZfg@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUgDyH/JkKi1jhYiRhb0hEf5wZI6/bCOZ7+08581NyzTbk5Mgt
-	JI1MEi6/xGCSY87P5WCdxQ1A+3x0XFLn8nvIhUmjMhsO89fw4XU+EUPu3qZnaNUQzWK87LwBdo+
-	NhQ1i5BrTbxwWBspCjjegMtqgB6qYpxk=
-X-Gm-Gg: ASbGncsaT1T0Obrozo8qeGdtbJlr+z9lZHZSi8yQ4Rrd+xjhLwI//ZOv6XP6APi8Clg
-	9EEelj2YekoJ8/xLRXVdLif76KpvnxBJ3UBxGSPpWEyThKls6VjCN2ViW9DjHMwFc7F6pvAdwBg
-	50/lhoIvntV3FBLdFPoG8Ec54qJiHyDJkg00k/xcWxZNEYQnwlnDZblyW70yrKT3VZVGU8gYzTw
-	1P+
-X-Google-Smtp-Source: AGHT+IG1mKsW0dIYEECbqgDfZa9CYtAyMZHjPk8Ws032PjUuaGVaDXgbb9MERd49B8PO5J6C7VF6kZy07eo1besHfJs=
-X-Received: by 2002:a05:651c:154a:b0:32a:7270:5c29 with SMTP id
- 38308e7fff4ca-33053292f80mr41641361fa.2.1752542832370; Mon, 14 Jul 2025
- 18:27:12 -0700 (PDT)
+	s=arc-20240116; t=1752550035; c=relaxed/simple;
+	bh=atfrjIauy1ItkJU6XhIyOdBfAhDGceSKKQb+tx5X7OU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BeF07ZVcHBhOvL+dY1IVKUNY8eKZQLeQjAeF1VIEJVLxEaceCxpvZBiYNpEE8N7FhntXK2R9KIiBlI5rwk+xnr6J2BS9j0/d325b98QSWRli02hheBwH29VzDXIpQ3yFEtT8CszvvTFFuu9ptepJ2DS0w3n0C2CbSm1HaEiHGRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bh4P95nYdzYQtyd;
+	Tue, 15 Jul 2025 11:27:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 8D56D1A0FB3;
+	Tue, 15 Jul 2025 11:27:08 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.112.188])
+	by APP4 (Coremail) with SMTP id gCh0CgDnYhOFynVor4g7AQ--.28397S4;
+	Tue, 15 Jul 2025 11:27:07 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ojaswin@linux.ibm.com,
+	sfr@canb.auug.org.au,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	libaokun1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH -next] ext4: fix the compile error of EXT4_MAX_PAGECACHE_ORDER macro
+Date: Tue, 15 Jul 2025 11:12:03 +0800
+Message-ID: <20250715031203.2966086-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJxJ_jhEbHJiP-OzSpp2xqai-n=t2CGKXqkmvqf7T3i37Eki0A@mail.gmail.com>
- <20250711052905.GC2026761@mit.edu> <CAJxJ_jhYUqYhNcsLnjPv+2-n83G77zeQ1jppC6YGfo6bHv+vaA@mail.gmail.com>
- <20250711154012.GB4040@mit.edu> <20250712042714.GG2672022@frogsfrogsfrogs>
- <20250712143432.GE4040@mit.edu> <CAJxJ_jh=4q81OnSXk=yAU3u_7CCHZLGhb31eALF0cSyNv34E1g@mail.gmail.com>
- <20250714130951.GB41071@mit.edu>
-In-Reply-To: <20250714130951.GB41071@mit.edu>
-From: Jiany Wu <wujianyue000@gmail.com>
-Date: Tue, 15 Jul 2025 09:27:01 +0800
-X-Gm-Features: Ac12FXz27Ijgp8l77hlNPvem5zeYWGdsxPQsOmKqdCRulBSMxAuPYoFEk2J7f84
-Message-ID: <CAJxJ_jgg0H=+JLSjc6SNwa5tiDhWjTunNPE2V1SP-v9_O8oCqw@mail.gmail.com>
-Subject: Re: Issue with ext4 filesystem corruption when writing to a file
- after disk exhaustion
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, yi.zhang@huawei.com, jack@suse.cz, 
-	linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDnYhOFynVor4g7AQ--.28397S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jr4xXryxuFWrtw4UGF4UArb_yoWkWrX_Z3
+	WxZr48Ww15Xw4vkrsYyF9Iqrn29a4Fkr1Y9FW7tF93WF1UXrZ8Can3Ga4xAF45WrWUXrZx
+	ZFykJFykKF1IqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb3kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUZYFZUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Hello, Ted,
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Thanks indeed for the clarification, it is clear now.
-OK, if using a loopback mounted image on a disk, underlying file
-system full then the block device will have I/O error.
-This loopback mount belongs to a third party common config. I'll
-fallocate lower disk space to not exhaust disk as a work around
-firstly.
-Thanks again for the help:)
+Since both the input and output parameters of the
+EXT4_MAX_PAGECACHE_ORDER should be unsigned int type, switch to using
+umin() instead of min(). This will silence the compile error reported by
+_compiletime_assert() on powerpc.
 
-Best regards,
-Jianyue Wu
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Closes: https://lore.kernel.org/all/20250715082230.7f5bcb1e@canb.auug.org.au/
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+---
+ fs/ext4/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 1bce9ebaedb7..6fd3692c4faf 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5204,7 +5204,7 @@ static bool ext4_should_enable_large_folio(struct inode *inode)
+  * where the PAGE_SIZE exceeds 4KB.
+  */
+ #define EXT4_MAX_PAGECACHE_ORDER(i)		\
+-		min(MAX_PAGECACHE_ORDER, (11 + (i)->i_blkbits - PAGE_SHIFT))
++		umin(MAX_PAGECACHE_ORDER, (11 + (i)->i_blkbits - PAGE_SHIFT))
+ void ext4_set_inode_mapping_order(struct inode *inode)
+ {
+ 	if (!ext4_should_enable_large_folio(inode))
+-- 
+2.46.1
 
-On Mon, Jul 14, 2025 at 9:09=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote=
-:
->
-> On Mon, Jul 14, 2025 at 12:37:21PM +0800, Jiany Wu wrote:
-> > Hello, Ted,
-> >
-> > Good day, thanks indeed for the clarification~
-> > Yes, previously tried to mount a specific ext4 disk-img to /var/log,
-> > with /dev/loop1 device, and rsyslogd will write to /var/log/syslog.
-> > When /tmp directory exhaust manually via fallocate, / dir will be also
-> > occupied as 100%, and rsyslog write errors in /dev/loop1 happen, later
-> > mount as read-only. Different from the early scenario, but this
-> > scenario is not easy to reproduce.
-> > Tried updating the test case, not fallocate all spaces in disk, now
-> > alloc 95%, everything is normal now, no related error prints anymore.
-> > It is confirmed errors are caused by disk exhaust.
-> > I think the main hesitation part is whether fallocate is allowed to
-> > use the whole disk space.
->
-> The fallocate system call is allowed to use the whole space on the
-> *file system*.  But it doesn't know about how much free space a
-> thin-provisioned device's underlying storage is available.  If you are
-> using a loopback mounted image on a disk, if the underlying file
-> system on the disk fills up then the block device will have I/O errors
-> --- and then the file system on the loop device will run into
-> problems, either data loss or metadata corruption.
->
-> So this is working as intended.  If you don't want this, either don't
-> use a loopback mount with a sparse file; either use fallocate when
-> creating the image file, or don't use a loopback mount.
->
->                                 - Ted
 
