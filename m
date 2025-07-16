@@ -1,118 +1,171 @@
-Return-Path: <linux-ext4+bounces-9025-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9028-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9239AB06E7C
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jul 2025 09:05:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9348CB071E0
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jul 2025 11:36:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 028601A62390
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jul 2025 07:06:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBFEB1C229C0
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Jul 2025 09:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B15D289E15;
-	Wed, 16 Jul 2025 07:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2312F237C;
+	Wed, 16 Jul 2025 09:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=didiglobal.com header.i=@didiglobal.com header.b="IxqNLlHM"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF03289E04;
-	Wed, 16 Jul 2025 07:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Received: from mx9.didiglobal.com (mx9.didiglobal.com [111.202.70.124])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id BB194253356;
+	Wed, 16 Jul 2025 09:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.202.70.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752649544; cv=none; b=tCymTCjkUDRzUQDzBWjh16f88fttJaAJjxihdpLZDqtl5RnNUKCVOwKQWWGECbRiOcJZFUNMX0wHcAHCI1wFw7lKIsDc2Bj3ipC59fe6DYNFPXjzbiUBB+0D6ghglbXzdYlOngbkB+nY65KfdGykdQJxdlI6KkUSOop8Txkc4vI=
+	t=1752658584; cv=none; b=OlcwnKmTr03wjs7bcYo7R7KpfPcr4olPpWSgw7D+8ZJBbRX1crWAv63KG8Ox1llhMQotqO49X6CYnDSx/FkLtCcvN02Tju7VoeQ+IbsF6xB/+l21xzY8wgIL4mJwxllBukXbw78OEz37bH8k1nue/ME6qF/jUqwdTFquFSnCpI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752649544; c=relaxed/simple;
-	bh=Yvf13pjIC0oaLeeAMDo6xAXVpC5ZAgzfWmrSA0+wzLM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m1jz/CxDiCJs4CzzhqzxMu8M7qnAh0A3tDfR096JBYzS6baEp9Kge6ERcdyyESxpZ66gJWiK3p/dlQFiTmNqxxRgasYoi3oeFiKWck0V2SSB1fvLVGjCwovknA0Rf7f4N44R4HVT5WFswLKj60zUyemwtdJnc0tXguyBalnmjKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bhnBs102XzYQtFs;
-	Wed, 16 Jul 2025 15:05:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id DCE811A084D;
-	Wed, 16 Jul 2025 15:05:39 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgAHgxNCT3do4069AQ--.2681S3;
-	Wed, 16 Jul 2025 15:05:39 +0800 (CST)
-Message-ID: <0e32bf57-6658-45c8-9b97-cbf1c958220c@huaweicloud.com>
-Date: Wed, 16 Jul 2025 15:05:38 +0800
+	s=arc-20240116; t=1752658584; c=relaxed/simple;
+	bh=0zYXam5C0/pCSJyKQVX8Pe/qKDvmGXv1zAAjMTAOJ+E=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=EQN9cQCKQdNSBR3eKMt5Rn1ve9WlPolN7YxcskBgaXBUVsuquJoKE2shEgpy+ngXmv7kS0kVaocWsjJvz6cX3/4+X83tkPbNsdU5Yo58jz1CWjKBA6GyhmECsbjTlkci1Lv/+8lvKwRCzMPJ9Ep+dPqyTryBPyzcr+lh0BW4BQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com; spf=pass smtp.mailfrom=didiglobal.com; dkim=pass (1024-bit key) header.d=didiglobal.com header.i=@didiglobal.com header.b=IxqNLlHM; arc=none smtp.client-ip=111.202.70.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=didiglobal.com
+Received: from mail.didiglobal.com (unknown [10.79.65.20])
+	by mx9.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id 9D55C18121AED5;
+	Wed, 16 Jul 2025 17:35:51 +0800 (CST)
+Received: from BJ02-ACTMBX-08.didichuxing.com (10.79.65.15) by
+ BJ02-ACTMBX-02.didichuxing.com (10.79.65.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.10; Wed, 16 Jul 2025 17:36:02 +0800
+Received: from BJ03-ACTMBX-07.didichuxing.com (10.79.71.34) by
+ BJ02-ACTMBX-08.didichuxing.com (10.79.65.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.10; Wed, 16 Jul 2025 17:36:01 +0800
+Received: from BJ03-ACTMBX-07.didichuxing.com ([fe80::2e1a:dd47:6d25:287e]) by
+ BJ03-ACTMBX-07.didichuxing.com ([fe80::2e1a:dd47:6d25:287e%7]) with mapi id
+ 15.02.1748.010; Wed, 16 Jul 2025 17:36:01 +0800
+X-MD-Sfrom: chentaotao@didiglobal.com
+X-MD-SrcIP: 10.79.65.20
+From: =?gb2312?B?s8LMzszOIFRhb3RhbyBDaGVu?= <chentaotao@didiglobal.com>
+To: "tytso@mit.edu" <tytso@mit.edu>, "hch@infradead.org" <hch@infradead.org>,
+	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>, "willy@infradead.org"
+	<willy@infradead.org>, "brauner@kernel.org" <brauner@kernel.org>,
+	"jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+	"rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>, "tursulin@ursulin.net"
+	<tursulin@ursulin.net>, "airlied@gmail.com" <airlied@gmail.com>
+CC: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "chentao325@qq.com" <chentao325@qq.com>,
+	"frank.li@vivo.com" <frank.li@vivo.com>,
+	=?gb2312?B?s8LMzszOIFRhb3RhbyBDaGVu?= <chentaotao@didiglobal.com>, "kernel
+ test robot" <lkp@intel.com>
+Subject: [PATCH v6 0/5] fs: refactor write_begin/write_end and add ext4
+ IOCB_DONTCACHE support
+Thread-Topic: [PATCH v6 0/5] fs: refactor write_begin/write_end and add ext4
+ IOCB_DONTCACHE support
+Thread-Index: AQHb9jULofTXnprVQECcaSYOVFKHUA==
+Date: Wed, 16 Jul 2025 09:36:01 +0000
+Message-ID: <20250716093559.217344-1-chentaotao@didiglobal.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] ext4: add FALLOC_FL_ALLOCATE_RANGE to supported flags
- mask
-To: chuguangqing <chuguangqing@inspur.com>
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
-References: <f42f9a79-75cf-491e-bf46-5ea036cf6656@huawei.com>
- <20250716030420.4528-1-chuguangqing@inspur.com>
- <20250716030420.4528-2-chuguangqing@inspur.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20250716030420.4528-2-chuguangqing@inspur.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAHgxNCT3do4069AQ--.2681S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww18ZF17XryxGry8ZF1rCrg_yoW8GrWxpF
-	4rWF18Wa48X34Ykas5Cw4v9rs8Xa1DGry5Wr4Syry8urW7Jrn7Kr4rK3Z5J3Z5WFW8Ar4U
-	tF1ag3ZrXF43A37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU7IJmUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=didiglobal.com;
+	s=2025; t=1752658558;
+	bh=0zYXam5C0/pCSJyKQVX8Pe/qKDvmGXv1zAAjMTAOJ+E=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type;
+	b=IxqNLlHMxAhih2297gc/ze4zQGN4mc8iK+HX2I1vym2+kC0B2Grp1VqfVg7Zshwiz
+	 4nF7W+BtiLXBjsoZQygUoIyDDNg4zO7cJQi9+dmvr87YFrOPS9zWMIcUsesXCZ5I9u
+	 Qqpf4GLCPzAKiIAktT0/gbVgDlpCXZ1GWWGLYqmc=
 
-On 2025/7/16 11:04, chuguangqing wrote:
-> Add FALLOC_FL_ALLOCATE_RANGE to the set of supported fallocate mode flags.
-> This change improves code clarity and maintains by explicitly showing
-> this flag in the supported flags mask.
-> 
-> Note that since FALLOC_FL_ALLOCATE_RANGE is defined as 0x00, this addition
-> has no functional modifications.
-> 
-> Signed-off-by: chuguangqing <chuguangqing@inspur.com>
-
-OK, now it looks good to me. Feel free to add:
-
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-
-> ---
->  fs/ext4/extents.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index b43aa82c1b39..46cbb8697252 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -4784,9 +4784,10 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  		return -EOPNOTSUPP;
->  
->  	/* Return error if mode is not supported */
-> -	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
-> -		     FALLOC_FL_ZERO_RANGE | FALLOC_FL_COLLAPSE_RANGE |
-> -		     FALLOC_FL_INSERT_RANGE | FALLOC_FL_WRITE_ZEROES))
-> +	if (mode & ~(FALLOC_FL_ALLOCATE_RANGE | FALLOC_FL_KEEP_SIZE |
-> +		     FALLOC_FL_PUNCH_HOLE | FALLOC_FL_COLLAPSE_RANGE |
-> +		     FALLOC_FL_ZERO_RANGE | FALLOC_FL_INSERT_RANGE |
-> +		     FALLOC_FL_WRITE_ZEROES))
->  		return -EOPNOTSUPP;
->  
->  	inode_lock(inode);
-
+RnJvbTogVGFvdGFvIENoZW4gPGNoZW50YW90YW9AZGlkaWdsb2JhbC5jb20+DQoNClRoaXMgcGF0
+Y2ggc2VyaWVzIHJlZmFjdG9ycyB0aGUgYWRkcmVzc19zcGFjZV9vcGVyYXRpb25zIHdyaXRlX2Jl
+Z2luKCkNCmFuZCB3cml0ZV9lbmQoKSBjYWxsYmFja3MgdG8gdGFrZSBjb25zdCBzdHJ1Y3Qga2lv
+Y2IgKiBhcyB0aGVpciBmaXJzdA0KYXJndW1lbnQsIGFsbG93aW5nIElPQ0IgZmxhZ3Mgc3VjaCBh
+cyBJT0NCX0RPTlRDQUNIRSB0byBwcm9wYWdhdGUgdG8gdGhlDQpmaWxlc3lzdGVtJ3MgYnVmZmVy
+ZWQgSS9PIHBhdGguDQoNCkV4dDQgaXMgdXBkYXRlZCB0byBpbXBsZW1lbnQgaGFuZGxpbmcgb2Yg
+dGhlIElPQ0JfRE9OVENBQ0hFIGZsYWcgYW5kDQphZHZlcnRpc2VzIHN1cHBvcnQgdmlhIHRoZSBG
+T1BfRE9OVENBQ0hFIGZpbGUgb3BlcmF0aW9uIGZsYWcuDQoNCkFkZGl0aW9uYWxseSwgdGhlIGk5
+MTUgZHJpdmVyJ3Mgc2htZW0gd3JpdGUgcGF0aHMgYXJlIHVwZGF0ZWQgdG8gYnlwYXNzDQp0aGUg
+bGVnYWN5IHdyaXRlX2JlZ2luL3dyaXRlX2VuZCBpbnRlcmZhY2UgaW4gZmF2b3Igb2YgZGlyZWN0
+bHkNCmNhbGxpbmcgd3JpdGVfaXRlcigpIHdpdGggYSBjb25zdHJ1Y3RlZCBzeW5jaHJvbm91cyBr
+aW9jYi4gQW5vdGhlciBpOTE1DQpjaGFuZ2UgcmVwbGFjZXMgYSBtYW51YWwgd3JpdGUgbG9vcCB3
+aXRoIGtlcm5lbF93cml0ZSgpIGR1cmluZyBHRU0gc2htZW0NCm9iamVjdCBjcmVhdGlvbi4NCg0K
+VGVzdGVkIHdpdGggZXh0NCBhbmQgaTkxNSBHRU0gd29ya2xvYWRzLg0KDQpUaGlzIHBhdGNoIHNl
+cmllcyBpcyBiYXNlZCBvbiB0aGUgdmZzLTYuMTcubWlzYyBicmFuY2guDQoNClRoZSBrZXJuZWwg
+dGVzdCByb2JvdCByZXBvcnRlZCBpc3N1ZXMgaW4gcHJldmlvdXMgdmVyc2lvbnMsIHdoaWNoIGFy
+ZSBmaXhlZA0KaW4gdGhpcyB1cGRhdGVkIHBhdGNoc2V0Lg0KDQpSZXBvcnRlZC1ieToga2VybmVs
+IHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQpDbG9zZXM6IGh0dHBzOi8vbG9yZS5rZXJuZWwu
+b3JnL29lLWtidWlsZC1hbGwvMjAyNTA3MTQyMTI4LlpyNVN0blloLWxrcEBpbnRlbC5jb20vDQoN
+ClJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4NCkNsb3Nlczog
+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvb2Uta2J1aWxkLWFsbC8yMDI1MDcxNDIwNDAud3BweW9Y
+MXMtbGtwQGludGVsLmNvbS8NCg0KQ2hhbmdlcyBzaW5jZSB2NToNCi0gUGF0Y2ggMi81OiBGaXgg
+YnVpbGQgZXJyb3JzIGluIGk5MTVfZ2VtX3NobWVtLmMgYnkgYWRkaW5nDQogICNpbmNsdWRlIDxs
+aW51eC91aW8uaD4gdG8gZGVmaW5lIGlvdl9pdGVyIGFuZCByZWxhdGVkIHN5bWJvbHMuDQotIFBh
+dGNoIDMvNTogRml4IHViaWZzX3dyaXRlX2VuZCgpIGJ5IGFkZGluZyBjb25zdCB0byB0aGUgYXJn
+dW1lbnQNCiAgdG8gbWF0Y2ggdGhlIHVwZGF0ZWQgd3JpdGVfZW5kKCkgaW50ZXJmYWNlLg0KDQpU
+YW90YW8gQ2hlbiAoNSk6DQogIGRybS9pOTE1OiBVc2Uga2VybmVsX3dyaXRlKCkgaW4gc2htZW0g
+b2JqZWN0IGNyZWF0ZQ0KICBkcm0vaTkxNTogUmVmYWN0b3Igc2htZW1fcHdyaXRlKCkgdG8gdXNl
+IGtpb2NiIGFuZCB3cml0ZV9pdGVyDQogIGZzOiBjaGFuZ2Ugd3JpdGVfYmVnaW4vd3JpdGVfZW5k
+IGludGVyZmFjZSB0byB0YWtlIHN0cnVjdCBraW9jYiAqDQogIG1tL3BhZ2VtYXA6IGFkZCB3cml0
+ZV9iZWdpbl9nZXRfZm9saW8oKSBoZWxwZXIgZnVuY3Rpb24NCiAgZXh0NDogc3VwcG9ydCB1bmNh
+Y2hlZCBidWZmZXJlZCBJL08NCg0KIERvY3VtZW50YXRpb24vZmlsZXN5c3RlbXMvbG9ja2luZy5y
+c3QgICAgIHwgICA0ICstDQogRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy92ZnMucnN0ICAgICAg
+ICAgfCAgIDYgKy0NCiBibG9jay9mb3BzLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAxMyArKy0NCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9nZW0vaTkxNV9nZW1fc2htZW0uYyB8IDEx
+NSArKysrKystLS0tLS0tLS0tLS0tLS0tDQogZnMvYWRmcy9pbm9kZS5jICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgIDkgKy0NCiBmcy9hZmZzL2ZpbGUuYyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAyNiArKy0tLQ0KIGZzL2JjYWNoZWZzL2ZzLWlvLWJ1ZmZlcmVkLmMgICAgICAg
+ICAgICAgIHwgICA0ICstDQogZnMvYmNhY2hlZnMvZnMtaW8tYnVmZmVyZWQuaCAgICAgICAgICAg
+ICAgfCAgIDQgKy0NCiBmcy9iZnMvZmlsZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgNyArLQ0KIGZzL2J1ZmZlci5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDI2
+ICsrLS0tDQogZnMvY2VwaC9hZGRyLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTAg
+Ky0NCiBmcy9lY3J5cHRmcy9tbWFwLmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAxMCArLQ0K
+IGZzL2V4ZmF0L2ZpbGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDExICstLQ0KIGZz
+L2V4ZmF0L2lub2RlLmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDE2ICstLQ0KIGZzL2V4
+dDIvaW5vZGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDExICsrLQ0KIGZzL2V4dDQv
+ZmlsZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAzICstDQogZnMvZXh0NC9pbm9k
+ZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMzAgKysrLS0tDQogZnMvZjJmcy9kYXRh
+LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDggKy0NCiBmcy9mYXQvaW5vZGUuYyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxOCArKy0tDQogZnMvZnVzZS9maWxlLmMgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTQgKystDQogZnMvaGZzL2hmc19mcy5oICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0NCiBmcy9oZnMvaW5vZGUuYyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgNCArLQ0KIGZzL2hmc3BsdXMvaGZzcGx1c19mcy5oICAgICAg
+ICAgICAgICAgICAgIHwgICA2ICstDQogZnMvaGZzcGx1cy9pbm9kZS5jICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgIDggKy0NCiBmcy9ob3N0ZnMvaG9zdGZzX2tlcm4uYyAgICAgICAgICAgICAg
+ICAgICB8ICAgOCArLQ0KIGZzL2hwZnMvZmlsZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgIDE4ICsrLS0NCiBmcy9odWdldGxiZnMvaW5vZGUuYyAgICAgICAgICAgICAgICAgICAgICB8
+ICAgOSArLQ0KIGZzL2pmZnMyL2ZpbGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDI4
+ICsrKy0tLQ0KIGZzL2pmcy9pbm9kZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDE2
+ICstLQ0KIGZzL2xpYmZzLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDExICsr
+LQ0KIGZzL21pbml4L2lub2RlLmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA3ICstDQog
+ZnMvbmZzL2ZpbGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDggKy0NCiBmcy9u
+aWxmczIvaW5vZGUuYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgOCArLQ0KIGZzL250ZnMz
+L2ZpbGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA0ICstDQogZnMvbnRmczMvaW5v
+ZGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDcgKy0NCiBmcy9udGZzMy9udGZzX2Zz
+LmggICAgICAgICAgICAgICAgICAgICAgICB8ICAxMCArLQ0KIGZzL29jZnMyL2FvcHMuYyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgICA2ICstDQogZnMvb21mcy9maWxlLmMgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgIDcgKy0NCiBmcy9vcmFuZ2Vmcy9pbm9kZS5jICAgICAgICAg
+ICAgICAgICAgICAgICB8ICAxNiArLS0NCiBmcy91Ymlmcy9maWxlLmMgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB8ICAgOCArLQ0KIGZzL3VkZi9pbm9kZS5jICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDExICsrLQ0KIGZzL3Vmcy9pbm9kZS5jICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgIDE2ICstLQ0KIGZzL3Zib3hzZi9maWxlLmMgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICA1ICstDQogaW5jbHVkZS9saW51eC9idWZmZXJfaGVhZC5oICAgICAgICAgICAgICAgfCAg
+IDQgKy0NCiBpbmNsdWRlL2xpbnV4L2ZzLmggICAgICAgICAgICAgICAgICAgICAgICB8ICAxMSAr
+Ky0NCiBpbmNsdWRlL2xpbnV4L3BhZ2VtYXAuaCAgICAgICAgICAgICAgICAgICB8ICAyNyArKysr
+Kw0KIG1tL2ZpbGVtYXAuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA0ICstDQog
+bW0vc2htZW0uYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTIgKy0tDQogNDgg
+ZmlsZXMgY2hhbmdlZCwgMzMwIGluc2VydGlvbnMoKyksIDI5NiBkZWxldGlvbnMoLSkNCg0KLS0g
+DQoyLjM0LjENCg==
 
