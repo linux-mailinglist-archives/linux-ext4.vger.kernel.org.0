@@ -1,83 +1,82 @@
-Return-Path: <linux-ext4+bounces-9036-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9037-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2892EB08A8A
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 12:30:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 709DCB08A93
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 12:32:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58CB64A1B68
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 10:30:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E04673B84EB
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 10:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66CF5299957;
-	Thu, 17 Jul 2025 10:30:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5640928B417;
+	Thu, 17 Jul 2025 10:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="igu40ym/"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ri4R45Px"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0DD299A8E;
-	Thu, 17 Jul 2025 10:30:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B43D1F5413;
+	Thu, 17 Jul 2025 10:31:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752748214; cv=none; b=CsYPDLM0l52jcG1d7FLpPpsPRDTiCGXlTPROPGRtJRVOmf5febm1rHpDuQTb1T568/8EtpJ3Ou8R84A9hCfyYdY3SN5n4g5LGlEBPU57APDmgfDVPEqhcKByCh5zEUz1Vn7CBZ7iHofEvxGqWllQQz0/EzJP84s2VtsX8tzXC1M=
+	t=1752748318; cv=none; b=pQPEvseMkACzROU/CLhuoNH7yZfEXjZFZVOnB3f7swImVvlbyEDeJTQSFT7chSJUV4tC+m/tXfLHzF2Jhd5BO+k2iat0A7B5+5gRya/qaR+5JEhWwjw4omZbUHAEYMd8aV/rHVN0Z6vVYaDM3rtTDEOGcRo1l45fSbpBEui4E7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752748214; c=relaxed/simple;
-	bh=PF8hynOMolcglnafslbmqSGN5JRS9OFzi3kNiS4aNdg=;
+	s=arc-20240116; t=1752748318; c=relaxed/simple;
+	bh=gW+x7Dae052GnKsSfXRjfCO7WlWB2qcidHvBMxFpWvo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mI9samLgqTSUCqmDHeBIRgh32Sk/im/pGgSTPD8w/V/EYdw0qhLbMC3VaZL8oVTUvDSsDVjdnKPut2PaS/tC5/Q4R38BnQOiEEF+ttQIy4oVwW0FKSj8nf98lMqWmdeiUpw5mm7B2y5f1ubL6e48YqD8PS5rveNbf5aiNdipsjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=igu40ym/; arc=none smtp.client-ip=148.163.156.1
+	 Content-Type:Content-Disposition:In-Reply-To; b=pH/0fpSZ25GP2Ovr9ONJrS4BW369+JcxnVrtt8BPbEwWucm4FCstDvwpD/4sxK/eCVSk6y0bUJpuxE1rJ2F2jPmk6q8khq6ZoB2ST5RckHtUAuhBdZ+ejIp0VYJLGFWPfBVMJB9JUGMN6E3Fe3Yfud4WBEnvQdT100qQE45YePE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ri4R45Px; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56H26K2I031328;
-	Thu, 17 Jul 2025 10:29:52 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56HASl5r010944;
+	Thu, 17 Jul 2025 10:31:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=xuCiFHTfULOxLAhaq2IdmuafyFyXtP
-	zi/TpTO2v1iBo=; b=igu40ym/2BCsW5Z1VOD778cW7QF6RkKasaH06a1ZkNRNAw
-	jPWpgUIYqm3SaSZk2iTAhBLSQ24kpleCmOMayeMgmACwilRkTDwmgTQN6yWYr6Z2
-	t57WgGFqnE1jiXeIJMUVVG72+Phn2Z64hjQQj/PfSKGQe36ZzpazvN0Dzy9I9uNB
-	CylJsudc9IjhmzotUH2ydvZsI5fwQUmZQq0thlcBOje9UouoCkrJRynpGKti9TFT
-	9o52ZECrBcxMPsHJdWM/+IfKl6nKBTI8o6pIuH+BKcB0hLuTE9eDzVcT0nSbmHFg
-	M+XlwtEhQak3TipiowXrOXKiMfso0x9tS5q84w1w==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47uf7dadhh-1
+	:references:subject:to; s=pp1; bh=sEGkm5sYvIQR0NJ+SdTDjKzKLds0oZ
+	aTZXPyV+Vo/Wc=; b=ri4R45Px0j4cv4xHPsKMYo34EjCvHDwkhwoldOwyFQZcHN
+	605PzvrCxnHYvqjbIkFY8vsPRJOF/H63miW3x2aBrCuoBNCPQ3WEgEoQjQIsVo8f
+	5A3N7xKx4klUvfunmcAFg6ht6zlhH/mDVYLdVWr48n1BllHiCtpFFDvnACF3Y8+y
+	iryLw6azTJJaM39L0yifs7T5mA8tERVqD90s/XXPGTHaA9vmbBDevixP+Ce47+Xw
+	QLe7meKRg+thMYmHrWccAeDSntltAfkeEq66ky27w4tz8Xk64h7+KfkmmdAHiOx9
+	qOl1+l/YSwUGaOy+T8kGyM2jnFOMvdjTbVDppyoA==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ue4ua67n-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 17 Jul 2025 10:29:52 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56HA1J3S000722;
-	Thu, 17 Jul 2025 10:29:51 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 47v48mbg14-1
+	Thu, 17 Jul 2025 10:31:24 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56H7J7Ap008150;
+	Thu, 17 Jul 2025 10:31:23 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47v2e0uwm1-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 17 Jul 2025 10:29:50 +0000
+	Thu, 17 Jul 2025 10:31:23 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56HATnEZ53019048
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56HAVLSm60031236
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 17 Jul 2025 10:29:49 GMT
+	Thu, 17 Jul 2025 10:31:21 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3CDFC2004E;
-	Thu, 17 Jul 2025 10:29:49 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id B05F220040;
+	Thu, 17 Jul 2025 10:31:21 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id F2F152004B;
-	Thu, 17 Jul 2025 10:29:46 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 57D4A2004B;
+	Thu, 17 Jul 2025 10:31:19 +0000 (GMT)
 Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.17.40])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 17 Jul 2025 10:29:46 +0000 (GMT)
-Date: Thu, 17 Jul 2025 15:59:44 +0530
+	Thu, 17 Jul 2025 10:31:19 +0000 (GMT)
+Date: Thu, 17 Jul 2025 16:01:16 +0530
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: Baokun Li <libaokun1@huawei.com>
 Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
         jack@suse.cz, linux-kernel@vger.kernel.org, julia.lawall@inria.fr,
         yi.zhang@huawei.com, yangerkun@huawei.com, libaokun@huaweicloud.com
-Subject: Re: [PATCH v3 02/17] ext4: separate stream goal hits from
- s_bal_goals for better tracking
-Message-ID: <aHjQmHgSYmjwI6g8@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Subject: Re: [PATCH v3 03/17] ext4: remove unnecessary s_mb_last_start
+Message-ID: <aHjQ9BwMcHQL-2A4@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 References: <20250714130327.1830534-1-libaokun1@huawei.com>
- <20250714130327.1830534-3-libaokun1@huawei.com>
+ <20250714130327.1830534-4-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -86,153 +85,69 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250714130327.1830534-3-libaokun1@huawei.com>
+In-Reply-To: <20250714130327.1830534-4-libaokun1@huawei.com>
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: mmxE7gUjD-dt3QDqSV-AJ4iu_gS0kIoK
-X-Authority-Analysis: v=2.4 cv=LoGSymdc c=1 sm=1 tr=0 ts=6878d0a0 cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=kj9zAlcOel0A:10 a=Wb1JkmetP80A:10 a=i0EeH86SAAAA:8 a=zWkni7x_GnGFfIkcl88A:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-GUID: mmxE7gUjD-dt3QDqSV-AJ4iu_gS0kIoK
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzE3MDA5MCBTYWx0ZWRfX270mT3gPKqzF 2Orjb4kkjDkMscnkcWrj8s0ozExjp7d521u94cQgosNsSMe2mf6EzXSUOIy0BlP92US4pTRIpPa cao9sfa6EhqFZaeGIcjF/VhtZiaQiHqbknRwZ1Rsq5HBBDXtpFLuABXjOY0rHscSRC80a7X5Xpa
- +1m3J+z93o6ZMrPyM+mJKw9j1C5Sn9y3gLwDj2PQZjoRqiPhiRVSL8nYZ+ggOEIzGBM7Ayrr106 H/nnH2/LHgLP+7f5xUe2povv+FWu6dEi6m25o/gSNA2GBXrJa52+uipxHYlRhBRcaOsTp86d40c 6ziUf7jJnSY30sYYENkj7cSqpsbJltgJmvu1a4Err8PkgJy8lDPc6jkTNBATWJW8PMDMp1D/YVj
- l2J93IrhFcU4EbbPAT65bU7I5zV4qsC1RZB31z4zzYNhlskZKDbTqsSdh5TACxDTpQZJktBX
+X-Authority-Analysis: v=2.4 cv=baBrUPPB c=1 sm=1 tr=0 ts=6878d0fc cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=kj9zAlcOel0A:10 a=Wb1JkmetP80A:10 a=i0EeH86SAAAA:8 a=VnNF1IyMAAAA:8 a=maETWrEbk6pMdrDMjMoA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-GUID: aaZ26G40lOOUUm6bD5pATYZE2Gfca1pK
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzE3MDA5MCBTYWx0ZWRfXxhN1ZPdlb1uq 84oQrsJwhMHGklGy5B8KnFrZ/SalE79+HGi4uSAnzYQQlwk/B6tHSmR06c3oObrmZUX+TcZ+UJW wyULQRLeNWmDHa7xQ8PRECy4kkPPOvY43MkoL/7ukcEtkPfoIy32GqM6vCRsGbio6OaFfe7tLEZ
+ nN9I7Awx2jkfRIz1OupSHZ5Q3ITi1U0KpRso0U9R2GEe0tk9AexBeG985RV7/xO3m7T/+ZvQkSV KO/bjwisRRCJ0sJuzv7EpyGd4DfvE/xnts5MEgIxrDpBaoik5xhd8rKvA8X4PKazUFANzCl7KHv e4QKWItmZjs/cRBOrHW9+qFRVCkxRsU626Ss9mvF9nmDwHk1OkVLsLgtYcGeAGt2XV6X/jxObva
+ ROwOxktciEli0S2PDQSZlrwcQ1BrQa85a1U1rDK/xZV5nT2U2b7C/m84YFTZBhwYzFzpMWMi
+X-Proofpoint-ORIG-GUID: aaZ26G40lOOUUm6bD5pATYZE2Gfca1pK
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-07-17_01,2025-07-16_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 spamscore=0 malwarescore=0 impostorscore=0
- clxscore=1015 phishscore=0 mlxlogscore=999 priorityscore=1501
- suspectscore=0 mlxscore=0 adultscore=0 classifier=spam authscore=0
- authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2505280000 definitions=main-2507170090
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=788
+ suspectscore=0 adultscore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
+ malwarescore=0 spamscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2507170090
 
-On Mon, Jul 14, 2025 at 09:03:12PM +0800, Baokun Li wrote:
-> In ext4_mb_regular_allocator(), after the call to ext4_mb_find_by_goal()
-> fails to achieve the inode goal, allocation continues with the stream
-> allocation global goal. Currently, hits for both are combined in
-> sbi->s_bal_goals, hindering accurate optimization.
-> 
-> This commit separates global goal hits into sbi->s_bal_stream_goals. Since
-> stream allocation doesn't use ac->ac_g_ex.fe_start, set fe_start to -1.
-> This prevents stream allocations from being counted in s_bal_goals. Also
-> clear EXT4_MB_HINT_TRY_GOAL to avoid calling ext4_mb_find_by_goal again.
-> 
-> After adding `stream_goal_hits`, `/proc/fs/ext4/sdx/mb_stats` will show:
-> 
-> mballoc:
-> 	reqs: 840347
-> 	success: 750992
-> 	groups_scanned: 1230506
-> 	cr_p2_aligned_stats:
-> 		hits: 21531
-> 		groups_considered: 411664
-> 		extents_scanned: 21531
-> 		useless_loops: 0
-> 		bad_suggestions: 6
-> 	cr_goal_fast_stats:
-> 		hits: 111222
-> 		groups_considered: 1806728
-> 		extents_scanned: 467908
-> 		useless_loops: 0
-> 		bad_suggestions: 13
-> 	cr_best_avail_stats:
-> 		hits: 36267
-> 		groups_considered: 1817631
-> 		extents_scanned: 156143
-> 		useless_loops: 0
-> 		bad_suggestions: 204
-> 	cr_goal_slow_stats:
-> 		hits: 106396
-> 		groups_considered: 5671710
-> 		extents_scanned: 22540056
-> 		useless_loops: 123747
-> 	cr_any_free_stats:
-> 		hits: 138071
-> 		groups_considered: 724692
-> 		extents_scanned: 23615593
-> 		useless_loops: 585
-> 	extents_scanned: 46804261
-> 		goal_hits: 1307
-> 		stream_goal_hits: 236317
-> 		len_goal_hits: 155549
-> 		2^n_hits: 21531
-> 		breaks: 225096
-> 		lost: 35062
-> 	buddies_generated: 40/40
-> 	buddies_time_used: 48004
-> 	preallocated: 5962467
-> 	discarded: 4847560
+On Mon, Jul 14, 2025 at 09:03:13PM +0800, Baokun Li wrote:
+> Since stream allocation does not use ac->ac_f_ex.fe_start, it is set to -1
+> by default, so the no longer needed sbi->s_mb_last_start is removed.
 > 
 > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 > ---
->  fs/ext4/ext4.h    |  1 +
->  fs/ext4/mballoc.c | 11 +++++++++--
->  2 files changed, 10 insertions(+), 2 deletions(-)
+>  fs/ext4/ext4.h    | 1 -
+>  fs/ext4/mballoc.c | 1 -
+>  2 files changed, 2 deletions(-)
 > 
 > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 9df74123e7e6..8750ace12935 100644
+> index 8750ace12935..b83095541c98 100644
 > --- a/fs/ext4/ext4.h
 > +++ b/fs/ext4/ext4.h
-> @@ -1646,6 +1646,7 @@ struct ext4_sb_info {
->  	atomic_t s_bal_cX_ex_scanned[EXT4_MB_NUM_CRS];	/* total extents scanned */
->  	atomic_t s_bal_groups_scanned;	/* number of groups scanned */
->  	atomic_t s_bal_goals;	/* goal hits */
-> +	atomic_t s_bal_stream_goals;	/* stream allocation global goal hits */
->  	atomic_t s_bal_len_goals;	/* len goal hits */
->  	atomic_t s_bal_breaks;	/* too long searches */
->  	atomic_t s_bal_2orders;	/* 2^order hits */
+> @@ -1631,7 +1631,6 @@ struct ext4_sb_info {
+>  	unsigned int s_max_dir_size_kb;
+>  	/* where last allocation was done - for stream allocation */
+>  	unsigned long s_mb_last_group;
+> -	unsigned long s_mb_last_start;
+>  	unsigned int s_mb_prefetch;
+>  	unsigned int s_mb_prefetch_limit;
+>  	unsigned int s_mb_best_avail_max_trim_order;
 > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 336d65c4f6a2..f56ac477c464 100644
+> index f56ac477c464..e3a5103e1620 100644
 > --- a/fs/ext4/mballoc.c
 > +++ b/fs/ext4/mballoc.c
-> @@ -2849,8 +2849,9 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  		/* TBD: may be hot point */
+> @@ -2171,7 +2171,6 @@ static void ext4_mb_use_best_found(struct ext4_allocation_context *ac,
+>  	if (ac->ac_flags & EXT4_MB_STREAM_ALLOC) {
 >  		spin_lock(&sbi->s_md_lock);
->  		ac->ac_g_ex.fe_group = sbi->s_mb_last_group;
-> -		ac->ac_g_ex.fe_start = sbi->s_mb_last_start;
->  		spin_unlock(&sbi->s_md_lock);
-> +		ac->ac_g_ex.fe_start = -1;
-> +		ac->ac_flags &= ~EXT4_MB_HINT_TRY_GOAL;
+>  		sbi->s_mb_last_group = ac->ac_f_ex.fe_group;
+> -		sbi->s_mb_last_start = ac->ac_f_ex.fe_start;
 
-Hey Baokun, I was a bit late to review this in v2 so I'll add the
-comment here:
+Looks good,
 
-So this is mostly to account for retires right? Maybe rather than
-disabling goal allocation a better way to do this is resetting the
-original goal group and goal start in the retry logic of
-ext4_mb_new_blocks()? Since we drop preallocations before retrying, this
-way we might actually find our goal during the retry. Its a slim chance
-though but still feels like the right way to do it.
+Feel free to add:
 
-Thoughts?
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
 Regards,
 ojaswin
 
+>  		spin_unlock(&sbi->s_md_lock);
 >  	}
->  
 >  	/*
-> @@ -3000,8 +3001,12 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  		}
->  	}
->  
-> -	if (sbi->s_mb_stats && ac->ac_status == AC_STATUS_FOUND)
-> +	if (sbi->s_mb_stats && ac->ac_status == AC_STATUS_FOUND) {
->  		atomic64_inc(&sbi->s_bal_cX_hits[ac->ac_criteria]);
-> +		if (ac->ac_flags & EXT4_MB_STREAM_ALLOC &&
-> +		    ac->ac_b_ex.fe_group == ac->ac_g_ex.fe_group)
-> +			atomic_inc(&sbi->s_bal_stream_goals);
-> +	}
->  out:
->  	if (!err && ac->ac_status != AC_STATUS_FOUND && first_err)
->  		err = first_err;
-> @@ -3194,6 +3199,8 @@ int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset)
->  	seq_printf(seq, "\textents_scanned: %u\n",
->  		   atomic_read(&sbi->s_bal_ex_scanned));
->  	seq_printf(seq, "\t\tgoal_hits: %u\n", atomic_read(&sbi->s_bal_goals));
-> +	seq_printf(seq, "\t\tstream_goal_hits: %u\n",
-> +		   atomic_read(&sbi->s_bal_stream_goals));
->  	seq_printf(seq, "\t\tlen_goal_hits: %u\n",
->  		   atomic_read(&sbi->s_bal_len_goals));
->  	seq_printf(seq, "\t\t2^n_hits: %u\n", atomic_read(&sbi->s_bal_2orders));
 > -- 
 > 2.46.1
 > 
