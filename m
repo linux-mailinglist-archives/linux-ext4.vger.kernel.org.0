@@ -1,115 +1,195 @@
-Return-Path: <linux-ext4+bounces-9057-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9058-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FC87B096E8
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 00:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E180FB09715
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 01:10:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75193A40991
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 22:28:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE4263A86A8
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 23:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4D523D282;
-	Thu, 17 Jul 2025 22:28:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5018E23ABAD;
+	Thu, 17 Jul 2025 23:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jOPAXHma"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UaccgL1r"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0083023C50C;
-	Thu, 17 Jul 2025 22:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02951C6FFD;
+	Thu, 17 Jul 2025 23:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752791311; cv=none; b=lihLBwy4yYjo+RnBZYkNqIcTIN6YOPJy67TnTQg66eGgSOFuVJ+h3kvUMy5FCPAQCmSCJMKoEzX33AoEvOO9epwlmNAcf+w+3HKe88yR2jWqxvxETIjr/dpXHdp/+epBcMFFjCVzf9Ck32W8T7i4JHUgLKXaKQNQd9ud25b/GEs=
+	t=1752793840; cv=none; b=q9c2y7hEWQn5sDzmkwCFVsaPjSaKCqqw8U2QgPwQiLaJeAXUWOaFj7q10R04Q8wluvLDJIHim1yNduTAfwupAoa+D0zSUxZjO8KOsbOKZG+iTUjQs+K5sjdcUOwOC25MX+piScZKxMUuIUGsLwuBeo8lp0SScyH2L08re7CqzWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752791311; c=relaxed/simple;
-	bh=p0vDHWck1FU222M+GzNOyMhrIFdZ1185CKWEBiG97pw=;
-	h=From:To:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=NhxuR+I0OEIIKeksbFNxlSd0jrqQRKZNDgtNHFv7cef+3hCDAwIWnY8zLCP0/zQNdmwdB4JUO1PUqLPffsC8ctu6WKjIbfVJxYe5MdGdspqt1OdA4kLgi+jRB2ntZnjA9f/np4oNArwiIV+hplwEvqx+AiQldDD6rtnyfbayy0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jOPAXHma; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752791309; x=1784327309;
-  h=from:to:subject:references:date:in-reply-to:message-id:
-   mime-version;
-  bh=p0vDHWck1FU222M+GzNOyMhrIFdZ1185CKWEBiG97pw=;
-  b=jOPAXHmak536Ws+HNXrpOIBMpiTkCY+NtLEa/WGiBZVKXa3LP6b+U5KD
-   ofMBGz+vHrUG1z0QunH9a3LWNJkQTsMYowNSW7Yh9TYnB92yEeuqwdiae
-   xrFF2RaCBsdeaiBdMEtb2AUPisQhdp6C+46HhH+sDs2J0VRu/YJIWiQFF
-   aS0IK3t33KlQq4Pkgo8wC+etyWrbJ5OazgUKycDJIAitWoSBR8J/4WtsI
-   6dSvZ6TfHeCNJi5bt8CFyHCiSZe1c9Gtg5LQLOfSXqEr/bBFrB8FbqPsD
-   0fhp+WuxvTYSzle7C/b1V5UBx1ttdkKySGgjZKEeRbj+0H8dB5a57CucN
-   w==;
-X-CSE-ConnectionGUID: yBU33cxgTkCAHi90kuxKKg==
-X-CSE-MsgGUID: jMNWDdGmQbOWns5TpNQMFA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11495"; a="80528871"
-X-IronPort-AV: E=Sophos;i="6.16,320,1744095600"; 
-   d="scan'208";a="80528871"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2025 15:28:28 -0700
-X-CSE-ConnectionGUID: dnwYRp6eS9y9rqDEVZGlrw==
-X-CSE-MsgGUID: QcKNG3EqTmGXv5bavCi+QA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,320,1744095600"; 
-   d="scan'208";a="157586665"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.38.190])
-  by fmviesa007.fm.intel.com with ESMTP; 17 Jul 2025 15:28:28 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-	id EE97A3011B8; Thu, 17 Jul 2025 15:28:27 -0700 (PDT)
-From: Andi Kleen <ak@linux.intel.com>
-To: libaokun1@huawei.com, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 01/17] ext4: add ext4_try_lock_group() to skip busy
- groups
-References: <20250714130327.1830534-1-libaokun1@huawei.com>
-	<20250714130327.1830534-2-libaokun1@huawei.com>
-Date: Thu, 17 Jul 2025 15:28:27 -0700
-In-Reply-To: <20250714130327.1830534-2-libaokun1@huawei.com> (Baokun Li's
-	message of "Mon, 14 Jul 2025 21:03:11 +0800")
-Message-ID: <87pldy78qc.fsf@linux.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1752793840; c=relaxed/simple;
+	bh=G1Xp1dKPUfJzybBu+Y+YBQjiqjDgnvclFXhL071t/dU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=qlzIZa1edyMY6zcQboKrC3Jz1rtK87iDYM2cv4AOEKA10cPAlGShTd/lkkkBD2xC/E9EshyTjFiKSgXv2yKBtJdRg9Aio2s/4S3n1AypMppgu7mN42UOfr6B15Fv+ubbcLVMT/dIVgs96QFbqlbiS0CJ9/FQISSoamHaL+vh4VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UaccgL1r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 653DCC4CEE3;
+	Thu, 17 Jul 2025 23:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752793839;
+	bh=G1Xp1dKPUfJzybBu+Y+YBQjiqjDgnvclFXhL071t/dU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=UaccgL1rJ1AvmqzPUkVT53ng2onXHj+M+f3mAkOQzzZ7TROmbS16VoCeeniiz3Tvh
+	 bjEIrBrZy3n9vrSWJBDv39rFPqHhQQg4T92rexQ9zZxJnKuzpwJGjoGHULIKkv7DrS
+	 rhNfjnY8piCPmFwRHwwiuPBYX2YfbGDSozX1D3xzCw30j1YxjTOerPHKMjzdAUF74b
+	 Uc9g2/JcGga9tQTi0allEL1l6mzKqz7/CiHW97u2U+pdi16hNClJPUFhq3W6XZhdHL
+	 4e2ptFCYSBQl92sOP/cI/M3xUVZR6EWwObortVsD9UH9r/kBNREdyWLYBtQz+dNaVK
+	 GSlhTwhsEEaTQ==
+Date: Thu, 17 Jul 2025 16:10:38 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc: John@groves.net, bernd@bsbernd.com, miklos@szeredi.hu,
+	joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>, Neal Gompa <neal@gompa.dev>
+Subject: [RFC v3] fuse: use fs-iomap for better performance so we can
+ containerize ext4
+Message-ID: <20250717231038.GQ2672029@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Baokun Li <libaokun1@huawei.com> writes:
+Hi everyone,
 
-> When ext4 allocates blocks, we used to just go through the block groups
-> one by one to find a good one. But when there are tons of block groups
-> (like hundreds of thousands or even millions) and not many have free space
-> (meaning they're mostly full), it takes a really long time to check them
-> all, and performance gets bad. So, we added the "mb_optimize_scan" mount
-> option (which is on by default now). It keeps track of some group lists,
-> so when we need a free block, we can just grab a likely group from the
-> right list. This saves time and makes block allocation much faster.
->
-> But when multiple processes or containers are doing similar things, like
-> constantly allocating 8k blocks, they all try to use the same block group
-> in the same list. Even just two processes doing this can cut the IOPS in
-> half. For example, one container might do 300,000 IOPS, but if you run two
-> at the same time, the total is only 150,000.
->
-> Since we can already look at block groups in a non-linear way, the first
-> and last groups in the same list are basically the same for finding a block
-> right now. Therefore, add an ext4_try_lock_group() helper function to skip
-> the current group when it is locked by another process, thereby avoiding
-> contention with other processes. This helps ext4 make better use of having
-> multiple block groups.
+DO NOT MERGE THIS, STILL!
 
-It seems this makes block allocation non deterministic, but depend on
-the system load. I can see where this could cause problems when
-reproducing bugs at least, but perhaps also in other cases.
+This is the third request for comments of a prototype to connect the
+Linux fuse driver to fs-iomap for regular file IO operations to and from
+files whose contents persist to locally attached storage devices.
 
-Better perhaps just round robin the groups?
-Or at least add a way to turn it off.
+Why would you want to do that?  Most filesystem drivers are seriously
+vulnerable to metadata parsing attacks, as syzbot has shown repeatedly
+over almost a decade of its existence.  Faulty code can lead to total
+kernel compromise, and I think there's a very strong incentive to move
+all that parsing out to userspace where we can containerize the fuse
+server process.
 
--Andi
+willy's folios conversion project (and to a certain degree RH's new
+mount API) have also demonstrated that treewide changes to the core
+mm/pagecache/fs code are very very difficult to pull off and take years
+because you have to understand every filesystem's bespoke use of that
+core code.  Eeeugh.
+
+The fuse command plumbing is very simple -- the ->iomap_begin,
+->iomap_end, and iomap ->ioend calls within iomap are turned into
+upcalls to the fuse server via a trio of new fuse commands.  Pagecache
+writeback is now a directio write.  The fuse server is now able to
+upsert mappings into the kernel for cached access (== zero upcalls for
+rereads and pure overwrites!) and the iomap cache revalidation code
+works.
+
+With this RFC, I am able to show that it's possible to build a fuse
+server for a real filesystem (ext4) that runs entirely in userspace yet
+maintains most of its performance.  At this stage I still get about 95%
+of the kernel ext4 driver's streaming directio performance on streaming
+IO, and 110% of its streaming buffered IO performance.  Random buffered
+IO is about 85% as fast as the kernel.  Random direct IO is about 80% as
+fast as the kernel; see the cover letter for the fuse2fs iomap changes
+for more details.  Unwritten extent conversions on random direct writes
+are especially painful for fuse+iomap (~90% more overhead) due to upcall
+overhead.  And that's with debugging turned on!
+
+These items have been addressed since the first RFC:
+
+1. The iomap cookie validation is now present, which avoids subtle races
+between pagecache zeroing and writeback on filesystems that support
+unwritten and delalloc mappings.
+
+2. Mappings can be cached in the kernel for more speed.
+
+3. iomap supports inline data.
+
+4. I can now turn on fuse+iomap on a per-inode basis, which turned out
+to be as easy as creating a new ->getattr_iflags callback so that the
+fuse server can set fuse_attr::flags.
+
+5. statx and syncfs work on iomap filesystems.
+
+6. Timestamps and ACLs work the same way they do in ext4/xfs when iomap
+is enabled.
+
+7. The ext4 shutdown ioctl is now supported.
+
+There are some major warts remaining:
+
+a. ext4 doesn't support out of place writes so I don't know if that
+actually works correctly.
+
+b. iomap is an inode-based service, not a file-based service.  This
+means that we /must/ push ext2's inode numbers into the kernel via
+FUSE_GETATTR so that it can report those same numbers back out through
+the FUSE_IOMAP_* calls.  However, the fuse kernel uses a separate nodeid
+to index its incore inode, so we have to pass those too so that
+notifications work properly.  This is related to #3 below:
+
+c. Hardlinks and iomap are not possible for upper-level libfuse clients
+because the upper level libfuse likes to abstract kernel nodeids with
+its own homebrew dirent/inode cache, which doesn't understand hardlinks.
+As a result, a hardlinked file results in two distinct struct inodes in
+the kernel, which completely breaks iomap's locking model.  I will have
+to rewrite fuse2fs for the lowlevel libfuse library to make this work,
+but on the plus side there will be far less path lookup overhead.
+
+d. There are too many changes to the IO manager in libext2fs because I
+built things needed to stage the direct/buffered IO paths separately.
+These are now unnecessary but I haven't pulled them out yet because
+they're sort of useful to verify that iomap file IO never goes through
+libext2fs except for inline data.
+
+e. If we're going to use fuse servers as "safe" replacements for kernel
+filesystem drivers, we need to be able to set PF_MEMALLOC_NOFS so that
+fuse2fs memory allocations (in the kernel) don't push pagecache reclaim.
+We also need to disable the OOM killer(s) for fuse servers because you
+don't want filesystems to unmount abruptly.
+
+f. How do we maximally contain the fuse server to have safe filesystem
+mounts?  It's very convenient to use systemd services to configure
+isolation declaratively, but fuse2fs still needs to be able to open
+/dev/fuse, the ext4 block device, and call mount() in the shared
+namespace.  This prevents us from using most of the stronger systemd
+protections because they tend to run in a private mount namespace with
+various parts of the filesystem either hidden or readonly.
+
+In theory one could design a socket protocol to pass mount options,
+block device paths, fds, and responsibility for the mount() call between
+a mount helper and a service:
+
+e2fsprogs would define as a systemd socket service for fuse2fs that sets
+up a dynamic unprivileged user, no network access, and no access to the
+host's filesystem aside from readonly access to the root filesystem.
+
+The mount helper (e.g. mount.safe) would then connect to the magic
+socket and pass the CLI arguments to the fuse2fs service.  The service
+would parse the arguments, find the block device paths, and feed them
+back through the socket to mount.safe.  mount.safe would open them and
+pass fds back to the fuse2fs service.  The service would then open the
+devices, parse the superblock, and if everything was ok, request a mount
+through the socket.  The mount helper would then open /dev/fuse and
+mount the filesystem, and if successful, pass the /dev/fuse fd through
+the socket to the fuse2fs server.  At that point the fuse2fs server
+would attach to the /dev/fuse device and handle the usual events.
+
+Finally we'd have to train people/daemons to run "mount -t safe.ext4
+/dev/sda1 /mnt" to get the contained version of ext4.
+
+(Yeah, #f is all Neal. ;))
+
+g. fuse2fs doesn't support the ext4 journal.  Urk.
+
+I'll work on these in July/August, but for now here's an unmergeable RFC
+to start some discussion.
+
+--Darrick
+
 
