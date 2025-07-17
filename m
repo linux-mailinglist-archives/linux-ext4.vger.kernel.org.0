@@ -1,118 +1,112 @@
-Return-Path: <linux-ext4+bounces-9054-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9055-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 277D6B0953B
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 21:54:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CB48B096BB
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 00:01:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BA854A3765
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 19:54:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C340916E6C3
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 22:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060F521C179;
-	Thu, 17 Jul 2025 19:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778CD221FA4;
+	Thu, 17 Jul 2025 22:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EIEutlp7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LeqZFXTx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C391799F;
-	Thu, 17 Jul 2025 19:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188873597E
+	for <linux-ext4@vger.kernel.org>; Thu, 17 Jul 2025 22:01:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752782043; cv=none; b=WK38rEuzb1JwpWdxpSjs8bDTn6ZvSOP72T32jhD3NeOwM2800pfbTCyRQrlx+dUxd39jrdZYAaL7UEtAvA7LBJS7HaUQQHddVRP9+6xIp/OlRaqnoTIIWhyNmLezShGAFtXkuqzYOoHHx6BVYXXttqYGFdHe7VzQm9Z9HD3m+1A=
+	t=1752789678; cv=none; b=uoI4Rh09SkJoQJlvJpt/AMAwwa/7hMvz/wcxtZ+Ed8eITqeeDCbtbqaYx/bSAli6XkbbpGlGT/V4gtPfQN0QnHsijHFCUHwyEJIYyj+FrXNcTQA3HjDYoP7G62SV2gA9XDjALOBCF5+ItTVilE9P6wryhf9KxfeQSe42M4pALbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752782043; c=relaxed/simple;
-	bh=eLhEjhdcSa4FuviVC2h+NoqxxGi3U1iHTnj9BL2JeZk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qsnbJ+GQ/cDfylzmJScGXLUoDNz0ZwZC3CcrDJ3DMobxbn/6N+PwVHCX0ZCGOJ+vAa6QkjrJjmWJdd4fJgH/ntIVnnvvo8o4LaSBWlWyV+njUBLvEWNNbZSRGdwF6aGwgvd5j12rfGmR9JaWZK9Lr5wxsP4SGT1OttE00cqFKvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EIEutlp7; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-e8d713e64c5so925573276.0;
-        Thu, 17 Jul 2025 12:54:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752782041; x=1753386841; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eLhEjhdcSa4FuviVC2h+NoqxxGi3U1iHTnj9BL2JeZk=;
-        b=EIEutlp7MKD822fpMLQuWemcW50BwvBPEct46773ZVuX4PB+gEsPuBqlf5JwXMxcH8
-         HtWjra14CDQOzIjIdjIUPEA5Ovzofifg7or2WZPvrGaHGbYx6BfAuex0lkbQ/feoaKDV
-         sHC19NmckjX9woFAPzixOBBOvnsZBexUlgsmONaQjOzlUjuw0mIyBfG1qTehPJ7QlrQi
-         zMrd+l73GZ62GcbT7ed61WZ6MbyI5dt+Qit7XF0Xtql9xuUiodqTjW6Ab9kAZPWFriV/
-         nIc56+4eZJ0pfE8DTyYmZgO8ueIYDi990Vl77Rl9ZXSRHL4DnfBJzlMh1LOiopnqrYMg
-         yERw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752782041; x=1753386841;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eLhEjhdcSa4FuviVC2h+NoqxxGi3U1iHTnj9BL2JeZk=;
-        b=LHyDxhJlBYN91ZzCl4iVDwogkdab9fOS3Icll1jo53yixXtcE0eYEBTFWrFT5SWfbn
-         q54C7U/M9ZxyNueTBp/vwcoRBvNg0Xe6pukmGTcf4oHDU+AuFJRvIkPdFDLxbkVkccEj
-         nIysMaTFjYGiiwFkOl7rhEgoFYA760v7qm9kXssd+r9xMeaNnFdpkd1UE0o6XMZGZrDW
-         XvSgo8BsNX0OtXs5ffdDo3QTXDtknD76uRWRx9CpBIuxgBXqWZlOPxYEGR4tzVS5DsCI
-         qpWTVzOcNMLkg4HMISdkrulc4E0xy6HaudBtr/zADbgOGMI2glsVdmLJF8ns6EMegKQr
-         zVhg==
-X-Forwarded-Encrypted: i=1; AJvYcCUrJBELqy0PWKAqGL/XFSD1D5VbY89iGqck9u/fpvxSXUjuU9j3s47a6KbIsfgmSmJBNcR+JfqixIhi@vger.kernel.org, AJvYcCUuwDOU5vyuHqZXjFSA853qZ4+OCxKCq7DSN3re7BoDyHY/eZ57tib+EtCI3Kg4B0aVc7HI6VsXp+QuQa0o@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywcl3fedsTLyp/VkApa9ZTDfFT/ZzCRLw7sObVAwGe9rTrc70RT
-	cuYESZj69iyl8B1A1cJOJS5L7C9RLpB+t+gilaBbOH3OuFqaO/v6grmR0zloYy1zXqb7O8Rm1ld
-	IJSnou+Ea6OqHA65Jj6LqkLTwEEKfl5Y=
-X-Gm-Gg: ASbGncvDnNObhHrDscZnV4N4EiLoY6poIs1Q/MaoBEWvioMl3mKg77V53MGwJu0KO43
-	jxrGlGL1gf6xvoC29zKD1EKCVwOBGBKCwwiSf+gDtIlWPBytOiSNT1l1U6UBZFUeHqslE4MF4bw
-	lT8eYmf9wJ+S3pJQ6LeISbfQQUP21RcfHmJPCA/UTqeozW2Y5JI/jkmqZP9EqWH0rcJ1ZxkRHCt
-	gnNPaILiMkMjayWbIBLdMwaXDLUcPdN5cE79/2ms2ApfTXv4gE=
-X-Google-Smtp-Source: AGHT+IEMptaiU9saHMli+tWmWTvzkXlcE9XiJNrtQ2eFdgPK8YWZPvkdjCTfnG161XyIkWmHqCDjyy+2BgHa6UJVCo8=
-X-Received: by 2002:a05:6902:2843:b0:e8b:76d8:6fd6 with SMTP id
- 3f1490d57ef6-e8d7a58d22bmr252202276.34.1752782040543; Thu, 17 Jul 2025
- 12:54:00 -0700 (PDT)
+	s=arc-20240116; t=1752789678; c=relaxed/simple;
+	bh=CZoAU1G6zyrGaMij6mSwXVihPyU2F6QaxpEZEkfgTBA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JdjKe4mAVnIxfE8AjYa3egu40FmKdl2/DeV+NtKv8rCOh2/pru51EDJod5i7ASZte4h+4t/NKnFaBAEYj0ESBWCY7GCtiQ+InNDQrzF0muIx1f/jLxi99lPSj+bk06PFzJE43QQQUqY4Y9j8X73qOKi5WiJ1YBfGzLWuiNMBZSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LeqZFXTx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B63C4CEF0;
+	Thu, 17 Jul 2025 22:01:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752789675;
+	bh=CZoAU1G6zyrGaMij6mSwXVihPyU2F6QaxpEZEkfgTBA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LeqZFXTxiSaqVWniiU3AYhfDdnl6AHUrFF0PD+UdHNUKuNpjw8iT1Q7sxHadM7RvH
+	 9sRDyqEl9Fuo0+yPLn3fWCSOmXvhpHSrRcRuNIdGQ3qXWY75sd+FCXG2yFrGHvL0Z7
+	 uYNko5O5S/NItJ40ryKct1tYHfxBUjIyABimoFVk95bqpWTBB/s09mfzqqU0WgNmfS
+	 NrIqbda4tAzF2O+OBpMtAvrqwjVk5+afAHfO8YYu0N6xH4+7UeWyqovyclG9ET6H2z
+	 P8UMM9MIKFh30wgumI0CZU5Q/DqlbQ33Z6AD4LO5EAKVgD4OZF+9jyfc2Z8RwRQMVc
+	 lBgex2D81YPKA==
+Date: Thu, 17 Jul 2025 15:01:14 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org
+Subject: [PATCH 16/8] fuse2fs: fix clean_block_middle when punching byte 0 of
+ a block
+Message-ID: <20250717220114.GL2672022@frogsfrogsfrogs>
+References: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAF3JpA7a0ExYEJ8_c7v7evKsV83s+_p7qUoH9uiYZLPxT_Md6g@mail.gmail.com>
- <20250717145911.GB112967@mit.edu> <CAF3JpA6RwyzQMdG4y3P_8jkaS8qUFPerE5MJ8Xecs+VkbPEmpg@mail.gmail.com>
-In-Reply-To: <CAF3JpA6RwyzQMdG4y3P_8jkaS8qUFPerE5MJ8Xecs+VkbPEmpg@mail.gmail.com>
-From: Moon Hee Lee <moonhee.lee.ca@gmail.com>
-Date: Thu, 17 Jul 2025 12:53:49 -0700
-X-Gm-Features: Ac12FXxeXecFpphJU2I1tr9wMiUpO3PxFBJMA_oJH7oytKiF9y0XFH0qv8sqA68
-Message-ID: <CAF3JpA5wakELyyOZVYC2MmAoQa9P_nj3AqesZ-PAHN31Omp8Rw@mail.gmail.com>
-Subject: Re: [PATCH] ext4: do not BUG when INLINE_DATA_FL lacks system.data xattr
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: syzbot+544248a761451c0df72f@syzkaller.appspotmail.com, 
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 
-On Thu, Jul 17, 2025 at 9:59=E2=80=AFAM Moon Hee Lee <moonhee.lee.ca@gmail.=
-com> wrote:
+From: Darrick J. Wong <djwong@kernel.org>
 
-Just a quick follow-up to close the loop:
+In non-iomap mode, generic/008 tries to fzero the first byte of a block
+and fails:
 
->
-> The current patch addresses ext4_update_inline_data() directly, but the
-> same condition also leads to a BUG_ON in ext4_create_inline_data() [2],
-> which the earlier approach intended to prevent as well.
+--- a/tests/generic/008.out      2025-07-15 14:45:14.937058680 -0700
++++ b/tests/generic/008.out.bad        2025-07-16 11:43:42.427989360 -0700
+@@ -4,8 +4,7 @@
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+ wrote 1024/1024 bytes at offset 1024
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-00000000:  00 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41  .AAAAAAAAAAAAAAA
+-00000010:  41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41  AAAAAAAAAAAAAAAA
++00000000:  41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41  AAAAAAAAAAAAAAAA
+ *
+ 00000400:  42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42  BBBBBBBBBBBBBBBB
+ *
 
-I missed that ext4_create_inline_data expects the xattr to be absent at
-that point, since it's about to create it. The BUG_ON(!is.s.not_found)
-enforces that expectation.
+Here we can clearly see that the first byte of the block has not been
+zeroed, even though that's what the caller wanted us to do.  This is due
+to an incorrect check of the residue variable that was most likely copy
+pasted from clean_block_edge years ago.
 
-The patch I sent earlier didn=E2=80=99t account for this correctly. Returni=
-ng an
-error when the xattr was not found would have broken valid behavior in
-the create path.
+Cc: <linux-ext4@vger.kernel.org> # v1.43
+Fixes: 81cbf1ef4f5dab ("misc: add fuse2fs, a FUSE server for e2fsprogs")
+Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+---
+ misc/fuse2fs.c |    6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-Thanks again for resolving this with a simple and correct fix. Per-site
-handling makes sense here, as each path has different expectations about
-the xattr state.
-
-Best regards,
-Moonhee
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index bff303a10e7186..6155dff6645ff6 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -4007,14 +4007,10 @@ static errcode_t clean_block_middle(struct fuse2fs *ff, ext2_ino_t ino,
+ {
+ 	ext2_filsys fs = ff->fs;
+ 	blk64_t blk;
+-	off_t residue;
++	off_t residue = FUSE2FS_OFF_IN_FSB(ff, offset);
+ 	int retflags;
+ 	errcode_t err;
+ 
+-	residue = FUSE2FS_OFF_IN_FSB(ff, offset);
+-	if (residue == 0)
+-		return 0;
+-
+ 	if (!*buf) {
+ 		err = ext2fs_get_mem(fs->blocksize, buf);
+ 		if (err)
 
