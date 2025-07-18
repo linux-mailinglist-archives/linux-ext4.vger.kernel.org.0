@@ -1,206 +1,150 @@
-Return-Path: <linux-ext4+bounces-9094-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9095-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63898B0989D
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 01:48:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09B91B09906
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 03:05:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1BC61AA1329
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Jul 2025 23:48:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A51E4A782D
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 01:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4D2259CBE;
-	Thu, 17 Jul 2025 23:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09AB42058;
+	Fri, 18 Jul 2025 01:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dZSSSPF5"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="G3RCeyHQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C672255F53;
-	Thu, 17 Jul 2025 23:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE71D2A1CF
+	for <linux-ext4@vger.kernel.org>; Fri, 18 Jul 2025 01:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752796080; cv=none; b=OhwOewTAXy4VdplndxGRTQ5rU+Ds9//ZTnG8WipiOjK6HnpoCF8ifhsro1kNxqQsLFsrrN4AEhATwZNLH8GngYasFVOTmVWHRT9A0cdQ+gDLy+Y/PuCyoqh/tQnApwGWWV7sWXcTBUf3pGhF1J0o6YgU2ArCYs1XrbDSOjuyB/M=
+	t=1752800738; cv=none; b=JIhRTP4vXOTDTNSopeO1IsdNopDmGY5R8D6HJU3mO/gXwumK6LEnbAmXoAyrWasPkFnsQd9waYVlk+lYK/C4XDPJojgScMtjlVYearsQuulCkChigvDxPr4mFGqZiPOphvzNk12S5UpSAExSsWdO+DFq/Zf9dJ5kn/ECiaFsV9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752796080; c=relaxed/simple;
-	bh=JeYv39w2MTaAnEH6C45hdB/CpeLfsS8BX0mRO6+/G1I=;
-	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fDfvT9fa2nH5okqUIqDgxL/OmGCWwvFOG0mIsRJN8qyXb6XKmrdNC0thbvKjNUUjhrxdSNwTFRPlK/UipRkJH1rPyFEvtO5MMmNSFohack3Nz65hZY9JsQfVy8H0zvgUP5QKm/5MTaCAR4/TQ5rjP8bYRgSZOfgNp0GyOIXGsYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dZSSSPF5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9957C4CEE3;
-	Thu, 17 Jul 2025 23:47:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752796080;
-	bh=JeYv39w2MTaAnEH6C45hdB/CpeLfsS8BX0mRO6+/G1I=;
-	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=dZSSSPF5mUZUsiAJzoA94Dkba3fXzGcCODQh7JMtbnId0VLDAnhfhx8z00QNCvtMJ
-	 mw3fNagS7dttyS4NLJ8a8tkZXnRNv4C2Jt/7gQqqSusfSGD9hztLIOBFnoCO4O+MXV
-	 OX4vyk+7/HlaKRwfzRWkcGVRObmDCDHTcJ7d32ZtGBZzqoKb6BvjZVo4PTzRriDMeo
-	 1EHlBjA4Roasuzv/md4RjNbbcsJBlvvb/OQuhBz1s5plvvZJmL07lgAFaSVNcQk/Gu
-	 68EXNVc+2BsqrtmEGlR4GbT1lWkqkDscK8Ex/EyKvYgeVF0twjd9Dzj7MS6wYe3s9m
-	 Qyvt8TU+5LO6A==
-Date: Thu, 17 Jul 2025 16:47:59 -0700
-Subject: [PATCH 10/10] fuse2fs: implement statx
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: tytso@mit.edu
-Cc: joannelkoong@gmail.com, miklos@szeredi.hu, John@groves.net,
- linux-fsdevel@vger.kernel.org, bernd@bsbernd.com, linux-ext4@vger.kernel.org,
- neal@gompa.dev
-Message-ID: <175279461900.716436.1047020432825856932.stgit@frogsfrogsfrogs>
-In-Reply-To: <175279461680.716436.11923939115339176158.stgit@frogsfrogsfrogs>
-References: <175279461680.716436.11923939115339176158.stgit@frogsfrogsfrogs>
+	s=arc-20240116; t=1752800738; c=relaxed/simple;
+	bh=XOrlqtqrDX/2HGjlVR4wdMWUi738RFOWWukkfL1LH3s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZG1TzeAF2QFgbLxSqtBbkCLt/sMn/HlF4uhS+BChg8RrjU6m2ERMWVv62pOxbq2+Eda2tF2iMoAMrpiZ0T5vcm5LFKWA+RdyQpJY2io8DVxec8a7UDZLpGff/3caXNxn3mHCPw7rcaryu//LEM8gODq18Anql7TTHeFyEqGRYk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=G3RCeyHQ; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-108-26-156-131.bstnma.fios.verizon.net [108.26.156.131])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 56I15LnL015966
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 17 Jul 2025 21:05:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1752800724; bh=47MrvFVIL5gfquO0TuUwWAIK+sNLLvE+ehK38vF6nHU=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=G3RCeyHQjLKBOadQ9r+lAWFneQuzh9IPGwMcsmVilGMsRgDAQbeV1IaM0EDVCXTwQ
+	 f4qGjUQ/WUGQEsZyNZbWUnCuXxyab8IBnxtW9/MpDiYoXXeyihB0bnfEGpjEJJiTUo
+	 HzY2pX/sQqYwUS3o6bm5AXGq8/w5Xn7mdAAdEcKv0PSmioxM6dA+ib6XJEaofJmYHe
+	 CRh1QhyIFgXNsZxw88zeHXuEOc53EWfvh86Kh4GRrKP8Oe/dIf6rLFqCo03uuDUi4R
+	 5BMLUGZYy0Uu1zxd0P1aUiK5tmvxEC6+bU3aYD+mrsMR2sp6Byd6c+cWn1ajVOjsKP
+	 FTebFHj+ortxw==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 176282E00D5; Thu, 17 Jul 2025 21:05:21 -0400 (EDT)
+Date: Thu, 17 Jul 2025 21:05:21 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Moon Hee Lee <moonhee.lee.ca@gmail.com>
+Cc: syzbot+544248a761451c0df72f@syzkaller.appspotmail.com,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH] ext4: do not BUG when INLINE_DATA_FL lacks system.data
+ xattr
+Message-ID: <20250718010521.GC112967@mit.edu>
+References: <CAF3JpA7a0ExYEJ8_c7v7evKsV83s+_p7qUoH9uiYZLPxT_Md6g@mail.gmail.com>
+ <20250717145911.GB112967@mit.edu>
+ <CAF3JpA6RwyzQMdG4y3P_8jkaS8qUFPerE5MJ8Xecs+VkbPEmpg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF3JpA6RwyzQMdG4y3P_8jkaS8qUFPerE5MJ8Xecs+VkbPEmpg@mail.gmail.com>
 
-From: Darrick J. Wong <djwong@kernel.org>
+On Thu, Jul 17, 2025 at 09:59:13AM -0700, Moon Hee Lee wrote:
+> The current patch addresses ext4_update_inline_data() directly, but the
+> same condition also leads to a BUG_ON in ext4_create_inline_data() [2],
+> which the earlier approach intended to prevent as well.
 
-Implement statx.
+Actually, the two conditions are opposite to each other.  The one in
+ext4_update_inline_data() was:
 
-Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
----
- misc/fuse2fs.c |  107 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
+         BUG_ON(is.s.not_found);
+
+while te one in ext4_create_inline_data() was:
+
+	BUG_ON(!is.s.not_found);
+
+So your patch would not only cause an extra xattr lookup in
+ext4_prepare_inline_data(), but it would actually cause problems by
+causing spurious failures when first writing to an inline data file.
+(Which makes me suspect that you hadn't run other test on your patich
+other than just vaidating that the syzkaller reproduce was no longer
+reproducing.)   
+
+Also, having taking a closer look at te code paths, I became
+suspicious that there is something about the syzkaller reproducer is
+doing which might be a bit sus.  That's because whether we call
+ext4_update_inline_data() or ext4_create_inline_data() is based on
+whether i_inline off is set or not:
+
+	if (ei->i_inline_off)
+		ret = ext4_update_inline_data(handle, inode, len);
+	else
+		ret = ext4_create_inline_data(handle, inode, len);
 
 
-diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 3bded0fdd21e2a..6d2ed7da9cc09e 100644
---- a/misc/fuse2fs.c
-+++ b/misc/fuse2fs.c
-@@ -23,6 +23,7 @@
- #include <sys/xattr.h>
- #endif
- #include <sys/ioctl.h>
-+#include <sys/sysmacros.h>
- #include <unistd.h>
- #include <ctype.h>
- #define FUSE_DARWIN_ENABLE_EXTENSIONS 0
-@@ -1646,6 +1647,111 @@ static int op_getattr_iflags(const char *path, struct stat *statbuf,
- }
- #endif
- 
-+#if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 18) && defined(STATX_BASIC_STATS)
-+static inline void fuse2fs_set_statx_attr(struct statx *stx,
-+					  uint64_t statx_flag, int set)
-+{
-+	if (set)
-+		stx->stx_attributes |= statx_flag;
-+	stx->stx_attributes_mask |= statx_flag;
-+}
-+
-+static int fuse2fs_statx(struct fuse2fs *ff, ext2_ino_t ino,
-+			 uint32_t statx_mask, struct statx *stx, size_t size)
-+{
-+	struct ext2_inode_large inode;
-+	ext2_filsys fs = ff->fs;;
-+	dev_t fakedev = 0;
-+	errcode_t err;
-+	struct timespec tv;
-+
-+	if (size < sizeof(struct statx))
-+		return translate_error(fs, ino, EOPNOTSUPP);
-+
-+	err = fuse2fs_read_inode(fs, ino, &inode);
-+	if (err)
-+		return translate_error(fs, ino, err);
-+
-+	memcpy(&fakedev, fs->super->s_uuid, sizeof(fakedev));
-+	stx->stx_mask = STATX_BASIC_STATS | STATX_BTIME;
-+	stx->stx_dev_major = major(fakedev);
-+	stx->stx_dev_minor = minor(fakedev);
-+	stx->stx_ino = ino;
-+	stx->stx_mode = inode.i_mode;
-+	stx->stx_nlink = inode.i_links_count;
-+	stx->stx_uid = inode_uid(inode);
-+	stx->stx_gid = inode_gid(inode);
-+	stx->stx_size = EXT2_I_SIZE(&inode);
-+	stx->stx_blksize = fs->blocksize;
-+	stx->stx_blocks = ext2fs_get_stat_i_blocks(fs,
-+						EXT2_INODE(&inode));
-+	EXT4_INODE_GET_XTIME(i_atime, &tv, &inode);
-+	stx->stx_atime.tv_sec = tv.tv_sec;
-+	stx->stx_atime.tv_nsec = tv.tv_nsec;
-+
-+	EXT4_INODE_GET_XTIME(i_mtime, &tv, &inode);
-+	stx->stx_mtime.tv_sec = tv.tv_sec;
-+	stx->stx_mtime.tv_nsec = tv.tv_nsec;
-+
-+	EXT4_INODE_GET_XTIME(i_ctime, &tv, &inode);
-+	stx->stx_ctime.tv_sec = tv.tv_sec;
-+	stx->stx_ctime.tv_nsec = tv.tv_nsec;
-+
-+	EXT4_INODE_GET_XTIME(i_crtime, &tv, &inode);
-+	stx->stx_btime.tv_sec = tv.tv_sec;
-+	stx->stx_btime.tv_nsec = tv.tv_nsec;
-+
-+	dbg_printf(ff, "%s: ino=%d atime=%lld.%d mtime=%lld.%d ctime=%lld.%d btime=%lld.%d\n",
-+		   __func__, ino,
-+		   (long long int)stx->stx_atime.tv_sec, stx->stx_atime.tv_nsec,
-+		   (long long int)stx->stx_mtime.tv_sec, stx->stx_mtime.tv_nsec,
-+		   (long long int)stx->stx_ctime.tv_sec, stx->stx_ctime.tv_nsec,
-+		   (long long int)stx->stx_btime.tv_sec, stx->stx_btime.tv_nsec);
-+
-+	if (LINUX_S_ISCHR(inode.i_mode) ||
-+	    LINUX_S_ISBLK(inode.i_mode)) {
-+		if (inode.i_block[0]) {
-+			stx->stx_rdev_major = major(inode.i_block[0]);
-+			stx->stx_rdev_minor = minor(inode.i_block[0]);
-+		} else {
-+			stx->stx_rdev_major = major(inode.i_block[1]);
-+			stx->stx_rdev_minor = minor(inode.i_block[1]);
-+		}
-+	}
-+
-+	fuse2fs_set_statx_attr(stx, STATX_ATTR_COMPRESSED,
-+			       inode.i_flags & EXT2_COMPR_FL);
-+	fuse2fs_set_statx_attr(stx, STATX_ATTR_IMMUTABLE,
-+			       inode.i_flags & EXT2_IMMUTABLE_FL);
-+	fuse2fs_set_statx_attr(stx, STATX_ATTR_APPEND,
-+			       inode.i_flags & EXT2_APPEND_FL);
-+	fuse2fs_set_statx_attr(stx, STATX_ATTR_NODUMP,
-+			       inode.i_flags & EXT2_NODUMP_FL);
-+
-+	return 0;
-+}
-+
-+static int op_statx(const char *path, uint32_t statx_flags, uint32_t statx_mask,
-+		    struct statx *stx, size_t size, struct fuse_file_info *fi)
-+{
-+	struct fuse_context *ctxt = fuse_get_context();
-+	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
-+	ext2_ino_t ino;
-+	int ret = 0;
-+
-+	FUSE2FS_CHECK_CONTEXT(ff);
-+	fuse2fs_start(ff);
-+	ret = fuse2fs_file_ino(ff, path, fi, &ino);
-+	if (ret)
-+		goto out;
-+	ret = fuse2fs_statx(ff, ino, statx_mask, stx, size);
-+out:
-+	fuse2fs_finish(ff, ret);
-+	return ret;
-+}
-+#else
-+# define op_statx		NULL
-+#endif
- 
- static int op_readlink(const char *path, char *buf, size_t len)
- {
-@@ -6351,6 +6457,7 @@ static struct fuse_operations fs_ops = {
- #endif
- #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 18)
- 	.syncfs = op_syncfs,
-+	.statx = op_statx,
- #endif
- #ifdef HAVE_FUSE_IOMAP
- 	.iomap_begin = op_iomap_begin,
+But how is ei->i_inline_off set?  It's set from a former call to
+ext4_xattr_ibody_find():
 
+	error = ext4_xattr_ibody_find(inode, &i, &is);
+	if (error)
+		goto out;
+
+	if (!is.s.not_found) {
+		if (is.s.here->e_value_inum) {
+			EXT4_ERROR_INODE(inode, "inline data xattr refers "
+					 "to an external xattr inode");
+			error = -EFSCORRUPTED;
+			goto out;
+		}
+		EXT4_I(inode)->i_inline_off = (u16)((void *)is.s.here -
+					(void *)ext4_raw_inode(&is.iloc));
+		EXT4_I(inode)->i_inline_size = EXT4_MIN_INLINE_DATA_SIZE +
+				le32_to_cpu(is.s.here->e_value_size);
+	}
+
+So the whole *reason* why i_inline_off exists is because we're caching
+the result of calling ext4_xattr_ibody_find().  So if i_inline_off is
+non-zero, and then when we call ext4_ibody_find() later on, and we
+find that xattr has suddenly disappeared, there is something weird
+going on.   That's why the BUG_ON was added orginally.
+
+When I took a look at the reproduer, I found that indeed, it is
+calling LOOP_CLR_FD and LOOP_SET_STATUS64 to reconfigure the loop
+device out from under the mounted file system.  This is smashing the
+file system, and is therefore corrupting the block device.  As it
+turns out, Jan Kara recently sent out a patch, and it has been
+accepted in the block tree, to prevent a similar Syzkaller issue using
+LOOP_SET_BLOCK_SIZE[1].
+
+[1] https://lore.kernel.org/r/20250711163202.19623-2-jack@suse.cz
+
+We need to do something similar for LOOP_CLR_FD, LOOP_SET_STATUS,
+LOOP_SET_STATUS64, LOOP_CHANGE_FD, and LOOP_SET_CAPACITY ioctls.
+
+Cheers,
+
+						- Ted
 
