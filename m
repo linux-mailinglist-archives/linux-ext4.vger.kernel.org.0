@@ -1,99 +1,211 @@
-Return-Path: <linux-ext4+bounces-9103-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9104-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F701B0A43F
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 14:30:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFB02B0A57B
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 15:45:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 068EC1C25D19
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 12:31:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 935B71884BEF
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Jul 2025 13:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679BC2BE7D5;
-	Fri, 18 Jul 2025 12:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC29E2DAFDD;
+	Fri, 18 Jul 2025 13:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AAzB4sDO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KoqrsqjP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BD523A563
-	for <linux-ext4@vger.kernel.org>; Fri, 18 Jul 2025 12:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4260246761
+	for <linux-ext4@vger.kernel.org>; Fri, 18 Jul 2025 13:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752841854; cv=none; b=D3cffkvYl7+3iHv6v1jufeg74QVfU8L0DBOtKrUlkLrpTIE6P9AEjyZVxuSwtiRw6pLkQINh6HuQ9LrXpZOSX3Me6vWgPUmfhmx1e5UWJDPQ7F0roFnPe0QHPxZIz7Nxl+4sOjkufJ6vWEq9on/7hCNJ5ahXK8E7ah01sTnmbBA=
+	t=1752846325; cv=none; b=mVY0lpM6VP2+5j/PHxxr0Z4GT/xQ7MB+jBb9mab5qmstA92VTf5L+/8UZ5d2jQ8evcFEJKqbFuti2Y/D8/Yuhf60kXmIUbX1ESofQvznCPZncz7tHlccfhXXe1ErxTM08oA4bsH4XCEpdmmvcR2OFR9K+pWZMh5GFM/51OG9cSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752841854; c=relaxed/simple;
-	bh=48DUHdS8LMtMVor34JU+zgMzqioFskD89uzc1eU/CMU=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ua1hoaorLccBuX1+bY423Y7afFpfgIqGeSIKrSw9olkkHFeJqVlU3BvMrPmnyasDh2iNjAIZ8YnCpukjJb8Pcl9CYlcahNfcqdUcWz+3kfbdg2h1DU2izQjxjlBzjq9xiawQ6mY2lJhDQXK6wCUYr+j8l7HJPCHVUzsadV0HYT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AAzB4sDO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D87BC4CEF4
-	for <linux-ext4@vger.kernel.org>; Fri, 18 Jul 2025 12:30:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752841853;
-	bh=48DUHdS8LMtMVor34JU+zgMzqioFskD89uzc1eU/CMU=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=AAzB4sDO9165HY6j7hykDZOIpYNwNNvc33UrwJSB64+nYviY/EPNkuk1zmICDBId5
-	 sHhS64L2F5nCL6BGVnCp9hUZgFUk1CGu3T1S37vGUO/z1UJu60Pg5lKLZ40ydRdYmn
-	 t7O8uz8aNyYdGgUciogQqWD6LsCxRBoa4HFkFpm5gax1lWv/KlNOYeJgtvBMFgqlAK
-	 QGkOdQtxGBO2qqF/7I2KR1cVgspjfGrui34vxPZXm5s6vqR9Ftnc1l8MQJJZQqRyl7
-	 5bw7ryVLHpntYKw1hKIr1EeMSyJb7kqIdn2NmKnxsxfLa4e1TEqKxEaxbHYliYRGIO
-	 g5tgwP6SPWGFw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 5E2F6C433E1; Fri, 18 Jul 2025 12:30:53 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 220342] After file delete, extent index structure remains
- unchanged
-Date: Fri, 18 Jul 2025 12:30:53 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: bretznic@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: attachments.isobsolete attachments.created
-Message-ID: <bug-220342-13602-t8zud6oBF1@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-220342-13602@https.bugzilla.kernel.org/>
-References: <bug-220342-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1752846325; c=relaxed/simple;
+	bh=WipuT1sG80Kqgs4Rio5XVDokJa/1ePvEc66uO9IabRM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q5skGXyXnJzW73dv8vDRrr4Q/03+LpsdFjcPnRq9BJFu2k5c8PWeckHvFegCkWOJqaYUNu06OD/gn/LFFU0Age5YVHNlfSZVWO2DMMIDrZ7YUBwtXAKyfe9JNyK422jwi4Jz4qQZHYJzAvyN1jyHG+ZhVRPEv5AyCCCtq4r4ius=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KoqrsqjP; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1752846322;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3GvvYIuajsxp+kxv/56jCZLacsNZ7W7YUzRAr6tPZH4=;
+	b=KoqrsqjPwFTMJ6nf6qDol8UsDmI8juMuwH0Kyc9cuSZUzkTAPcGqtAnUKpvJQM0xxW440+
+	GAg42qWJ+VbYtvCM9+z/54t67N7oBC2O8vb3SiPcr6XtXtiCbhHOxR2Qs9UD7VZ7DLOZRU
+	xfgtocX5VTwz8SmUwrmgiVBbtfIGDlg=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-614-_cRK0FLWNfu5qDrnabbNTg-1; Fri,
+ 18 Jul 2025 09:45:17 -0400
+X-MC-Unique: _cRK0FLWNfu5qDrnabbNTg-1
+X-Mimecast-MFC-AGG-ID: _cRK0FLWNfu5qDrnabbNTg_1752846316
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DE4081956048;
+	Fri, 18 Jul 2025 13:45:15 +0000 (UTC)
+Received: from bfoster (unknown [10.22.88.128])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 985E3196664F;
+	Fri, 18 Jul 2025 13:45:13 +0000 (UTC)
+Date: Fri, 18 Jul 2025 09:48:54 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-mm@kvack.org, hch@infradead.org, willy@infradead.org,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH v3 3/7] iomap: optional zero range dirty folio processing
+Message-ID: <aHpQxq6mDyLL1Nfj@bfoster>
+References: <20250714204122.349582-1-bfoster@redhat.com>
+ <20250714204122.349582-4-bfoster@redhat.com>
+ <20250715052259.GO2672049@frogsfrogsfrogs>
+ <e6333d2d-cc30-44d3-8f23-6a6c5ea0134d@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e6333d2d-cc30-44d3-8f23-6a6c5ea0134d@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D220342
+On Fri, Jul 18, 2025 at 07:30:10PM +0800, Zhang Yi wrote:
+> On 2025/7/15 13:22, Darrick J. Wong wrote:
+> > On Mon, Jul 14, 2025 at 04:41:18PM -0400, Brian Foster wrote:
+> >> The only way zero range can currently process unwritten mappings
+> >> with dirty pagecache is to check whether the range is dirty before
+> >> mapping lookup and then flush when at least one underlying mapping
+> >> is unwritten. This ordering is required to prevent iomap lookup from
+> >> racing with folio writeback and reclaim.
+> >>
+> >> Since zero range can skip ranges of unwritten mappings that are
+> >> clean in cache, this operation can be improved by allowing the
+> >> filesystem to provide a set of dirty folios that require zeroing. In
+> >> turn, rather than flush or iterate file offsets, zero range can
+> >> iterate on folios in the batch and advance over clean or uncached
+> >> ranges in between.
+> >>
+> >> Add a folio_batch in struct iomap and provide a helper for fs' to
+> > 
+> > /me confused by the single quote; is this supposed to read:
+> > 
+> > "...for the fs to populate..."?
+> > 
+> > Either way the code changes look like a reasonable thing to do for the
+> > pagecache (try to grab a bunch of dirty folios while XFS holds the
+> > mapping lock) so
+> > 
+> > Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+> > 
+> > --D
+> > 
+> > 
+> >> populate the batch at lookup time. Update the folio lookup path to
+> >> return the next folio in the batch, if provided, and advance the
+> >> iter if the folio starts beyond the current offset.
+> >>
+> >> Signed-off-by: Brian Foster <bfoster@redhat.com>
+> >> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> >> ---
+> >>  fs/iomap/buffered-io.c | 89 +++++++++++++++++++++++++++++++++++++++---
+> >>  fs/iomap/iter.c        |  6 +++
+> >>  include/linux/iomap.h  |  4 ++
+> >>  3 files changed, 94 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> >> index 38da2fa6e6b0..194e3cc0857f 100644
+> >> --- a/fs/iomap/buffered-io.c
+> >> +++ b/fs/iomap/buffered-io.c
+> [...]
+> >> @@ -1398,6 +1452,26 @@ static int iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+> >>  	return status;
+> >>  }
+> >>  
+> >> +loff_t
+> >> +iomap_fill_dirty_folios(
+> >> +	struct iomap_iter	*iter,
+> >> +	loff_t			offset,
+> >> +	loff_t			length)
+> >> +{
+> >> +	struct address_space	*mapping = iter->inode->i_mapping;
+> >> +	pgoff_t			start = offset >> PAGE_SHIFT;
+> >> +	pgoff_t			end = (offset + length - 1) >> PAGE_SHIFT;
+> >> +
+> >> +	iter->fbatch = kmalloc(sizeof(struct folio_batch), GFP_KERNEL);
+> >> +	if (!iter->fbatch)
+> 
+> Hi, Brian!
+> 
+> I think ext4 needs to be aware of this failure after it converts to use
+> iomap infrastructure. It is because if we fail to add dirty folios to the
+> fbatch, iomap_zero_range() will flush those unwritten and dirty range.
+> This could potentially lead to a deadlock, as most calls to
+> ext4_block_zero_page_range() occur under an active journal handle.
+> Writeback operations under an active journal handle may result in circular
+> waiting within journal transactions. So please return this error code, and
+> then ext4 can interrupt zero operations to prevent deadlock.
+> 
 
-Nicolas Bretz (bretznic@gmail.com) changed:
+Hi Yi,
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
- Attachment #308381|0                           |1
-        is obsolete|                            |
+Thanks for looking at this.
 
---- Comment #3 from Nicolas Bretz (bretznic@gmail.com) ---
-Created attachment 308387
-  --> https://bugzilla.kernel.org/attachment.cgi?id=3D308387&action=3Dedit
-correction
+Huh.. so the reason for falling back like this here is just that this
+was considered an optional optimization, with the flush in
+iomap_zero_range() being default fallback behavior. IIUC, what you're
+saying means that the current zero range behavior without this series is
+problematic for ext4-on-iomap..? If so, have you observed issues you can
+share details about?
 
---=20
-You may reply to this email to add a comment.
+FWIW, I think your suggestion is reasonable, but I'm also curious what
+the error handling would look like in ext4. Do you expect to the fail
+the higher level operation, for example? Cycle locks and retry, etc.?
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+The reason I ask is because the folio_batch handling has come up through
+discussions on this series. My position so far has been to keep it as a
+separate allocation and to keep things simple since it is currently
+isolated to zero range, but that may change if the usage spills over to
+other operations (which seems expected at this point). I suspect that if
+a filesystem actually depends on this for correct behavior, that is
+another data point worth considering on that topic.
+
+So that has me wondering if it would be better/easier here to perhaps
+embed the batch in iomap_iter, or maybe as an incremental step put it on
+the stack in iomap_zero_range() and initialize the iomap_iter pointer
+there instead of doing the dynamic allocation (then the fill helper
+would set a flag to indicate the fs did pagecache lookup). Thoughts on
+something like that?
+
+Also IIUC ext4-on-iomap is still a WIP and review on this series seems
+to have mostly wound down. Any objection if the fix for that comes along
+as a followup patch rather than a rework of this series?
+
+Brian
+
+P.S., I'm heading on vacation so it will likely be a week or two before
+I follow up from here, JFYI.
+
+> Thanks,
+> Yi.
+> 
+> >> +		return offset + length;
+> >> +	folio_batch_init(iter->fbatch);
+> >> +
+> >> +	filemap_get_folios_dirty(mapping, &start, end, iter->fbatch);
+> >> +	return (start << PAGE_SHIFT);
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(iomap_fill_dirty_folios);
+> 
+
 
