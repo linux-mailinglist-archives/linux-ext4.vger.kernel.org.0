@@ -1,64 +1,65 @@
-Return-Path: <linux-ext4+bounces-9117-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9115-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2477B0B1FD
-	for <lists+linux-ext4@lfdr.de>; Sat, 19 Jul 2025 23:46:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E75E3B0B1F9
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Jul 2025 23:46:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE8CD3A2DE2
-	for <lists+linux-ext4@lfdr.de>; Sat, 19 Jul 2025 21:46:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 774E5189D44D
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Jul 2025 21:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0EA193079;
-	Sat, 19 Jul 2025 21:46:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2568E1C84A8;
+	Sat, 19 Jul 2025 21:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="LcuCEes6"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="eQBdRZBC"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A756B8BF8
-	for <linux-ext4@vger.kernel.org>; Sat, 19 Jul 2025 21:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5EA3208
+	for <linux-ext4@vger.kernel.org>; Sat, 19 Jul 2025 21:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752961594; cv=none; b=bes+ijqyaIfpnrxblyUu9WOSR/dR9Ihn18mfSCR1uxQZZVhgxbkcCzjX31dDcbr6Qb//ca3T7n7oZ4k71eSjjGRyoAiUVTUlJrRttOtkzn6XlimGAMwPDmriQlHxSFADeme+bqdr6OJCynA/xkZRkSvZ4bT9mN4wagM5mA0Cwrs=
+	t=1752961579; cv=none; b=FVMe6OSEIncBzHuigSi6bcMRks7rG9qu4V7E5K3y6boJHg+hKNvdgEGMc3pRgcKA0jpVY8jGx5IM89nRizL68zIzweSa38pn6PFOvFJWk+Uu7R1B+W+k8HYk6978ECCTI8cFBHXER8phYNS5FgZUvTbCgmGHhAhHxGi6DKwBck0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752961594; c=relaxed/simple;
-	bh=MHiCBSNW2MSFaHp6WYlTcmRAzoi6mLH81cnRX91BgmE=;
+	s=arc-20240116; t=1752961579; c=relaxed/simple;
+	bh=K7fmwbzAGB5SviPmGFl+B09mUOuJ9NRY2Punbj4PEfA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UxH7nEUEEVBLMW7tU0++hJyAv7tt088q/wOd7ces3HdcRhBIcbNQoglGEUQFmQNgc7pjhbH/69e850bpuPNogGDy4fqcklHgxr6YoiWLT/Ig28YLw1L3xdR0e5scqZLGRLKdbLbK+14uepdg9MrsiHbC1EgqiG0VCuCvoWDJRvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=LcuCEes6; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=MpzxdEceGds2TaSs5lqKF19BlOVUklt3HnWtKUD5hraxcPgFY6yExCUrMSG0NA2srpE00X59v/JBjLDvhbQ17YIAWQLaGYO7qbzsirYa7jJv1xp8qhg0JojfTMBY6UmN4jPn7X+9uBCCBE8XJ5Ub6VDUYmXKsMfXNIQtSvdyGSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=eQBdRZBC; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-117-186.bstnma.fios.verizon.net [173.48.117.186])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 56JLk1TI009671
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 56JLk1af009673
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Sat, 19 Jul 2025 17:46:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1752961565; bh=oDA/2owfp3b6eC4ZauUySYEg3jK5MAbzenIvtYlz4FY=;
+	t=1752961564; bh=exflGeeC4CnyyIBrcYnERcNj2c+ONgP0MDuvyGETvs8=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=LcuCEes6Uyfj+vMutj4fho0k8zWkR9G9Cbq6XwIE8D7Cz3wgnt7FVb+BYipmHZl0a
-	 rxW2XLTQjjUWzWbS/ZTYkYSTeeDqCfqQyZPP0KUYVkQDPKGWFpy/AtRaGtOpLnkKXq
-	 R3NbpFxLSBjzj9c8m1e/1GNY83XrvnbYoSuuinDeAIdYhek5vL5K33FTgaSiOJMpxb
-	 iSjkB8GPk6Sv56ktHd4fWj2aYO+oghsnkmJSjEyPu6Vq372yiLfLg67/kc10hKq+7j
-	 hu9A8VPKsr79uKHCHRdS0k1i+3fs68Ynd3pGTObvDJuDmRxea/W6CLbArnDd4mqZlf
-	 v8CO5ZsGOvg1w==
+	b=eQBdRZBCWYDQ6fdES3LPsxSp2HFiYmX15OSSgZ+SEzIZd8O01X2YnK74p7tOrB/Tk
+	 SUJoH11MN/ldLAmq4f0AFpqLkxSzobcQ6JBuDZPSSlxaguZ/aiGp08dtOEFtVnjHPX
+	 U9mh+qKUnOK01wiQlZ32Octf89IXktoNmFr3A+vsVYI5s5F0GwB9buDFI6m7qeBdjG
+	 4bj78mndaWXKk04oj0Jce1j6nOwXifD39VfsB1Ys3aX2b9hkiC4fKSYHI0WVdJgu4b
+	 adUakxEN4nJgX/pY2johgCftVaR4B8Pch8nulOijyzQ6G/xviigjxASegIU2ut6W0b
+	 GwizKCrXTXjMg==
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 22B022E00D7; Sat, 19 Jul 2025 17:46:01 -0400 (EDT)
+	id 250E22E00D9; Sat, 19 Jul 2025 17:46:01 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, libaokun@huaweicloud.com
-Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca, jack@suse.cz,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, libaokun1@huawei.com
-Subject: Re: [PATCH] ext4: fix inode use after free in ext4_end_io_rsv_work()
-Date: Sat, 19 Jul 2025 17:45:54 -0400
-Message-ID: <175296153001.397842.8711554475973554905.b4-ty@mit.edu>
+To: I Hsin Cheng <richard120310@gmail.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] ext4: Refactor breaking condition for xattr_find_entry()
+Date: Sat, 19 Jul 2025 17:45:55 -0400
+Message-ID: <175296153001.397842.9125557926811806145.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250708111504.3208660-1-libaokun@huaweicloud.com>
-References: <20250708111504.3208660-1-libaokun@huaweicloud.com>
+In-Reply-To: <20250708020013.175728-1-richard120310@gmail.com>
+References: <20250708020013.175728-1-richard120310@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -69,24 +70,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 08 Jul 2025 19:15:04 +0800, libaokun@huaweicloud.com wrote:
-> In ext4_io_end_defer_completion(), check if io_end->list_vec is empty to
-> avoid adding an io_end that requires no conversion to the
-> i_rsv_conversion_list, which in turn prevents starting an unnecessary
-> worker. An ext4_emergency_state() check is also added to avoid attempting
-> to abort the journal in an emergency state.
+On Tue, 08 Jul 2025 10:00:13 +0800, I Hsin Cheng wrote:
+> Refactor the condition for breaking the loop within xattr_find_entry().
+> Elimate the usage of "<=" and take condition shortcut when "!cmp" is
+> true.
 > 
-> Additionally, ext4_put_io_end_defer() is refactored to call
-> ext4_io_end_defer_completion() directly instead of being open-coded.
-> This also prevents starting an unnecessary worker when EXT4_IO_END_FAILED
-> is set but data_err=abort is not enabled.
+> Originally, the condition was "(cmp <= 0 && (sorted || cmp == 0))", which
+> means after it knows "cmp <= 0" is true, it has to check the value of
+> "sorted" and "cmp". The checking of "cmp" here would be redundant since
+> it has already checked it.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: fix inode use after free in ext4_end_io_rsv_work()
-      commit: c678bdc998754589cea2e6afab9401d7d8312ac4
+[1/1] ext4: Refactor breaking condition for xattr_find_entry()
+      commit: 9d9076238fe9fe45257f298bf51b35aa796cf0f1
 
 Best regards,
 -- 
