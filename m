@@ -1,196 +1,114 @@
-Return-Path: <linux-ext4+bounces-9138-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9139-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE0E3B0C574
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Jul 2025 15:45:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15502B0C58C
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Jul 2025 15:52:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D096A3A4C4C
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Jul 2025 13:45:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26E421AA390F
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Jul 2025 13:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81EF32D9797;
-	Mon, 21 Jul 2025 13:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D322D978C;
+	Mon, 21 Jul 2025 13:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="HB3uhHUS"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876B52D97BD;
-	Mon, 21 Jul 2025 13:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26195339A1
+	for <linux-ext4@vger.kernel.org>; Mon, 21 Jul 2025 13:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753105540; cv=none; b=Wjz5S3bbCySD/LovDexULQc48FD8N16VWb8eVCAzMgavAevzZ7ciNKa9Nf4C50CjO092+H27zJqW2e+OBat3w77yvfNpD+DSwYLG1sV5C5lbF1nbKqUmZy+AJKPEkEUzQmjTDBzfKCvLKXfSVWlrboxNyzJ2KanaHa6gUy/nQQM=
+	t=1753105918; cv=none; b=QltQPpYfeP+FM8PNwmZHyQonfKJJlsDj+a7RS8S7wd4hF43WMelugT2S/WOLyWKohC62UPeImAYRFzaH6Dr9ZKzTwUymV5qQLH2TkqnYXInySSyvpdiKWM5or8ncf84Qi/FZja5zZhLx65IZiHYchrfGXaYrTe0xt6YTBNd55C0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753105540; c=relaxed/simple;
-	bh=1A9N82rpMrM4KRVgIj6NghfrE40sK6A4fFITF7n6YuY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jo1YAIq9+QL5Y/G471yfacm6Sz990R0g2f2U4jjKlMnQBDGqxXv3Seev9SfhUiA5KGBLQSlnnS2dAbVsB/etey1nBZXMsXpO2aY88ynaI4gg3t2DTduTVOjQ54/mudP+ms+5RJ/nqV61RP0jEkp+ztnoC8DDBTCqfnmRVu0e/PE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4bm1kj19PMzSjfK;
-	Mon, 21 Jul 2025 21:41:01 +0800 (CST)
-Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6D92F1800B1;
-	Mon, 21 Jul 2025 21:45:32 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by dggpemf500013.china.huawei.com
- (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 21 Jul
- 2025 21:45:31 +0800
-Message-ID: <4b5a7a7a-a4db-4d4d-8931-c57ffd231006@huawei.com>
-Date: Mon, 21 Jul 2025 21:45:30 +0800
+	s=arc-20240116; t=1753105918; c=relaxed/simple;
+	bh=/+3b8bgh1vPULVzDfotk0Tuh85QMpR17zv57e9lavHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=onwykZGSyUleh7ee5VgdgWcgLbPELkxjGXrd5JIzrmXN71o7WO6xR5A5YO9Y8MGiuRtYf3IdEdYqCmNXRSFzVRF0yq2JNqQDH7TnUOv60mP3rqfFnRnrwLTcuv8ac6LnsBalQQsLjjW2SVu3VhFQogvoJAynnKF1pD4dzWCwxto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=HB3uhHUS; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-122-135.bstnma.fios.verizon.net [173.48.122.135])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 56LDphi7017498
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 21 Jul 2025 09:51:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1753105905; bh=eS3N/MSmfHPbMFf2Twvw9BHa3nbuJfzcSdiNYA0uTPw=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=HB3uhHUS7cxnPKQYqoi2e1awOK1zpZgNN38eW4gY1WpKdyZJUd0XgZ1cJO2UNt989
+	 3FuhywpqwUr/rjL7Dc2zCdm7KDvcat0Nwrji+nEpptMqB9pLOdr+uxa+Z15KgzFCp2
+	 q9Cz09RVX3CAPO+EFLwumakT3KJBG3+2P6CLxAa4oFB91BJhn3AxO8zJcxKUW8QqAv
+	 sEB89Dm7Luh3Rb487XCTl13FFT5x7h9pYeTvel9y9QiGae0T8MAYcqN+E50yO7BczD
+	 RP2XB5jCFqkjmjwnskv2aoeZi14j/1iq8nPg7p9GsPmbvsDuFMVspqvcLuqazEM1zt
+	 QYBpgZZ44jWuA==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id DAE332E00D5; Mon, 21 Jul 2025 09:51:42 -0400 (EDT)
+Date: Mon, 21 Jul 2025 09:51:42 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Jan Kara <jack@suse.cz>
+Cc: Moon Hee Lee <moonhee.lee.ca@gmail.com>,
+        syzbot+544248a761451c0df72f@syzkaller.appspotmail.com,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Subject: Re: [PATCH] ext4: do not BUG when INLINE_DATA_FL lacks system.data
+ xattr
+Message-ID: <20250721135142.GA1415603@mit.edu>
+References: <CAF3JpA7a0ExYEJ8_c7v7evKsV83s+_p7qUoH9uiYZLPxT_Md6g@mail.gmail.com>
+ <20250717145911.GB112967@mit.edu>
+ <CAF3JpA6RwyzQMdG4y3P_8jkaS8qUFPerE5MJ8Xecs+VkbPEmpg@mail.gmail.com>
+ <20250718010521.GC112967@mit.edu>
+ <t6yl3jtspvfby4c6nlqbwjucfkx2evpuebaqvwolgjzcdst3sx@y4yuq7xegul6>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 15/17] ext4: convert free groups order lists to xarrays
-To: <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-	<linux-kernel@vger.kernel.org>, <ojaswin@linux.ibm.com>,
-	<julia.lawall@inria.fr>, <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-	<libaokun@huaweicloud.com>
-References: <20250714130327.1830534-1-libaokun1@huawei.com>
- <20250714130327.1830534-16-libaokun1@huawei.com>
- <iulwol5ygqv7fry543vuoawhn7fjzlz7hmai5stjxqkkvvz6pc@wukeepjempwn>
- <47e62021-fd2c-44ba-be34-e12b2a486efb@huawei.com>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <47e62021-fd2c-44ba-be34-e12b2a486efb@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- dggpemf500013.china.huawei.com (7.185.36.188)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <t6yl3jtspvfby4c6nlqbwjucfkx2evpuebaqvwolgjzcdst3sx@y4yuq7xegul6>
 
-在 2025/7/21 20:33, Baokun Li 写道:
-> On 2025/7/21 19:07, Jan Kara wrote:
->> On Mon 14-07-25 21:03:25, Baokun Li wrote:
->>> |CPU: Kunpeng 920   |          P80           |            P1           |
->>> |Memory: 512GB      |------------------------|-------------------------|
->>> |960GB SSD (0.5GB/s)| base  |    patched     | base   |    patched     |
->>> |-------------------|-------|----------------|--------|----------------|
->>> |mb_optimize_scan=0 | 20097 | 19555 (-2.6%)  | 316141 | 315636 (-0.2%) |
->>> |mb_optimize_scan=1 | 13318 | 15496 (+16.3%) | 325273 | 323569 (-0.5%) |
->>>
->>> |CPU: AMD 9654 * 2  |          P96           |             P1          |
->>> |Memory: 1536GB     |------------------------|-------------------------|
->>> |960GB SSD (1GB/s)  | base  |    patched     | base   |    patched     |
->>> |-------------------|-------|----------------|--------|----------------|
->>> |mb_optimize_scan=0 | 53603 | 53192 (-0.7%)  | 214243 | 212678 (-0.7%) |
->>> |mb_optimize_scan=1 | 20887 | 37636 (+80.1%) | 213632 | 214189 (+0.2%) |
->>>
->>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> The patch looks good and the results are nice. I've just noticed two 
->> typos:
->>
->>> +static inline void ext4_mb_avg_fragment_size_destory(struct 
->>> ext4_sb_info *sbi)
->>                         ^^^ destroy
->>
->>
->>> +static inline void ext4_mb_largest_free_orders_destory(struct 
->>> ext4_sb_info *sbi)
->>                           ^^^ destroy
+On Mon, Jul 21, 2025 at 02:49:57PM +0200, Jan Kara wrote:
+> > We need to do something similar for LOOP_CLR_FD, LOOP_SET_STATUS,
+> > LOOP_SET_STATUS64, LOOP_CHANGE_FD, and LOOP_SET_CAPACITY ioctls.
 > 
-> Hi Jan, thanks for the review! While examining this patch, I also
-> identified a comment formatting error that I regret overlooking previously.
-> My apologies for this oversight.
-> 
-> Hey Ted, could you please help apply the following diff to correct the
-> spelling errors and comment formatting issues? Or would you prefer I send
-> out a new patch series or a separate cleanup patch?
-> 
-> 
-Sorry, thunderbird is automatically converting tabs to spaces in the
-code, try the diff below.
+> Well, careful here. Changing loop device underneath mounted filesystem is a
+> valid usecase in active use (similarly as changing DM device underneath a
+> filesystem). So don't think we can play similar tricks as with
+> LOOP_SET_BLOCK_SIZE where changing block device block size just doesn't
+> make sense while the device is in use. Similarly LOOP_CLR_FD is an
+> equivalent of device going away. LOOP_CHANGE_FD is a legacy of the past but
+> it was *designed* to be used to swap backing file under a life filesystem
+> (old days of Wild West :)) during boot. We may get away with dropping that
+> these days but so far I'm not convinced it's worth the risk. So in this case
+> I don't see anything here that couldn't happen with say DM device and thus
+> I wouldn't really restrict the loop device functionality...
 
+Sure, and LOOP_SET_CAPACITY might be used to grow a file system image
+which the file system could then grow into.  Fair.
 
-Thanks,
-Baokun
+This is related to BLK_DEV_WRITE_MOUNTED=n which the syzkaller folks
+have agreed to use to prevent noisy syzkaller reports.  We're seeing a
+bunch of syzkaller reports now that syzkaller has been taught how to
+use these loop ioctls and so we're seeing loop device hijinks.  Which
+is fine; I can just start filtering any syzkaller report that uses
+loop device ioctls as false positive noise and call it a day.
+Unfortunately, that won't help deal with researchers that are taking
+the syzkaller code and then sending reports without any dashboards or
+reproducers.  :-(
 
+However, I do think that if the file system has advertised that they
+don't support random underlying block device hijinks, such as XFS for
+example, we should honor this and disallow those "wild west" loop
+device operations.  And perhaps we should similarly disallow them if
+BLK_DEV_WRITE_MOUNTED=n.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a9eb997b8c9b..c61955cba370 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -863,10 +863,10 @@ mb_update_avg_fragment_size(struct super_block 
-*sb, struct ext4_group_info *grp)
-  	grp->bb_avg_fragment_size_order = new;
-  	if (new >= 0) {
-  		/*
--		* Cannot use __GFP_NOFAIL because we hold the group lock.
--		* Although allocation for insertion may fails, it's not fatal
--		* as we have linear traversal to fall back on.
--		*/
-+		 * Cannot use __GFP_NOFAIL because we hold the group lock.
-+		 * Although allocation for insertion may fails, it's not fatal
-+		 * as we have linear traversal to fall back on.
-+		 */
-  		int err = xa_insert(&sbi->s_mb_avg_fragment_size[new],
-  				    grp->bb_group, grp, GFP_ATOMIC);
-  		if (err)
-@@ -1201,10 +1201,10 @@ mb_set_largest_free_order(struct super_block 
-*sb, struct ext4_group_info *grp)
-  	grp->bb_largest_free_order = new;
-  	if (test_opt2(sb, MB_OPTIMIZE_SCAN) && new >= 0 && grp->bb_free) {
-  		/*
--		* Cannot use __GFP_NOFAIL because we hold the group lock.
--		* Although allocation for insertion may fails, it's not fatal
--		* as we have linear traversal to fall back on.
--		*/
-+		 * Cannot use __GFP_NOFAIL because we hold the group lock.
-+		 * Although allocation for insertion may fails, it's not fatal
-+		 * as we have linear traversal to fall back on.
-+		 */
-  		int err = xa_insert(&sbi->s_mb_largest_free_orders[new],
-  				    grp->bb_group, grp, GFP_ATOMIC);
-  		if (err)
-@@ -3657,14 +3657,14 @@ static void ext4_discard_work(struct work_struct 
-*work)
-  		ext4_mb_unload_buddy(&e4b);
-  }
-
--static inline void ext4_mb_avg_fragment_size_destory(struct 
-ext4_sb_info *sbi)
-+static inline void ext4_mb_avg_fragment_size_destroy(struct 
-ext4_sb_info *sbi)
-  {
-  	for (int i = 0; i < MB_NUM_ORDERS(sbi->s_sb); i++)
-  		xa_destroy(&sbi->s_mb_avg_fragment_size[i]);
-  	kfree(sbi->s_mb_avg_fragment_size);
-  }
-
--static inline void ext4_mb_largest_free_orders_destory(struct 
-ext4_sb_info *sbi)
-+static inline void ext4_mb_largest_free_orders_destroy(struct 
-ext4_sb_info *sbi)
-  {
-  	for (int i = 0; i < MB_NUM_ORDERS(sbi->s_sb); i++)
-  		xa_destroy(&sbi->s_mb_largest_free_orders[i]);
-@@ -3818,8 +3818,8 @@ int ext4_mb_init(struct super_block *sb)
-  	kfree(sbi->s_mb_last_groups);
-  	sbi->s_mb_last_groups = NULL;
-  out:
--	ext4_mb_avg_fragment_size_destory(sbi);
--	ext4_mb_largest_free_orders_destory(sbi);
-+	ext4_mb_avg_fragment_size_destroy(sbi);
-+	ext4_mb_largest_free_orders_destroy(sbi);
-  	kfree(sbi->s_mb_offsets);
-  	sbi->s_mb_offsets = NULL;
-  	kfree(sbi->s_mb_maxs);
-@@ -3886,8 +3886,8 @@ void ext4_mb_release(struct super_block *sb)
-  		kvfree(group_info);
-  		rcu_read_unlock();
-  	}
--	ext4_mb_avg_fragment_size_destory(sbi);
--	ext4_mb_largest_free_orders_destory(sbi);
-+	ext4_mb_avg_fragment_size_destroy(sbi);
-+	ext4_mb_largest_free_orders_destroy(sbi);
-  	kfree(sbi->s_mb_offsets);
-  	kfree(sbi->s_mb_maxs);
-  	iput(sbi->s_buddy_cache);
+						- Ted
 
 
