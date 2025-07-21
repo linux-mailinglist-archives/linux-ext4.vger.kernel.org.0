@@ -1,222 +1,117 @@
-Return-Path: <linux-ext4+bounces-9131-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9132-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2718DB0BB39
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Jul 2025 05:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A475CB0BC10
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Jul 2025 07:42:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B40E3B53EC
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Jul 2025 03:07:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BFF83B9073
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Jul 2025 05:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A279A185E7F;
-	Mon, 21 Jul 2025 03:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0804E1F03C5;
+	Mon, 21 Jul 2025 05:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O7zG80XN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A6B8BEE
-	for <linux-ext4@vger.kernel.org>; Mon, 21 Jul 2025 03:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D54E1DFDE
+	for <linux-ext4@vger.kernel.org>; Mon, 21 Jul 2025 05:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753067298; cv=none; b=tVmirLOBDSWNnoE0yuYlDMdmBfDFwL01ndtcRn8kB9CocfaXRJqsHfohu55O6kGWEBlMGox7/ZtgQsfrlWhG/prUjOFX8ySqseBWXzRqxOABkqH903a3wJ5DvnRXwR8mbXJqtf+umbiW5RGZcWQqj2/ImLA8ZfcSzdLy7iYshPY=
+	t=1753076557; cv=none; b=K3PCdUHSb7sTXTMcIzrAvHJY8OOIL7enzprkLgndMiul6+hKSSryReVR8mc+VpEmailxiESgRBKZz85M9KT7TNU6U1z55qgVfgid/mSaNo/+iIw39pH7G3tVX/qJ84QqH5i5GTQ3GGmIetgGxIhQXpuy0QU4SzPXJlTpOVcBi/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753067298; c=relaxed/simple;
-	bh=7kjh95nBJiPLAQsE/kUaEUe3O6FLXdQGqny1//I2HF8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=c7I5baAULA7xf9ZF5MVjCzB6Poxilen6gnhKNV6iNPazGP51zsfmfzwFFRj+9OZr3S2X2hI9krkuKVuxLcNCj3uugRptjPM/YHjE2ol9Wqz0A5pZ6Ek/c10zJXp3YkAwlGswHiJNu7aNFZIzIlAPmij3mmthp9pNAhebNFMundc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=h-partners.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h-partners.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4bllbC3bNCzSjbM;
-	Mon, 21 Jul 2025 11:03:35 +0800 (CST)
-Received: from kwepemo100017.china.huawei.com (unknown [7.202.195.215])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8C2FE180B57;
-	Mon, 21 Jul 2025 11:08:06 +0800 (CST)
-Received: from [10.174.187.231] (10.174.187.231) by
- kwepemo100017.china.huawei.com (7.202.195.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 21 Jul 2025 11:08:05 +0800
-Message-ID: <441c158e-8de3-e0f1-60f2-fa10b7bdfffe@huawei.com>
-Date: Mon, 21 Jul 2025 11:08:05 +0800
+	s=arc-20240116; t=1753076557; c=relaxed/simple;
+	bh=LD4HIMCs28PTj999wJuBYiUHK56B42tSOK0t8SOpXOs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IhGMQp+gmEJYh/zU5ZNEo+K6Ujpxr47Qz6/aeiye8ZN/HfGddH9BqhrYZFXsHJnmccWrf2/l+jB9dZpNhupoouDZoCu18vaYR8yW218W21M+qBg345mJj3DltRKTbIxz/eOOtlLE/l4zlH5IxYIxLsAwOSwgIYu22mpktayx9Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O7zG80XN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0435DC4CEF1;
+	Mon, 21 Jul 2025 05:42:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753076555;
+	bh=LD4HIMCs28PTj999wJuBYiUHK56B42tSOK0t8SOpXOs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O7zG80XNTKPn6i7KpSP5+1d5/1PUOy/X4wK0G/D2eC21a5TrH6LbLz5zIpalVz7ZR
+	 /G0cTTUlrhXm8zXudfk6LtU2RParbKNkZDra/sVgDGQB/3NEBRkRHoL+qVvygLbouk
+	 wpjrSFMTJJT0rHGAIQp1l0dtKNbXwh7L4pPNHJ+kY33bBKSPMdgh0ihY+MGGWOp/aD
+	 gzjoAPsxgcnEVq7cx4VUKthNv+UlqMxcg3LplF+fNDQW4Y/NhmfKXV62FRwiaD0Ptd
+	 2hswLRU9HTvDPB4FNKYAGq4Zrb4YPUtdpXJhyYC+WCXvIQRyMJmvGpgJqSwScFVoTG
+	 DtMDpDQeIa14g==
+Date: Sun, 20 Jul 2025 22:42:34 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Sam James <sam@gentoo.org>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [PATCH 2/5] fuse2fs: stop aliasing stderr with ff->err_fp
+Message-ID: <20250721054234.GN2672022@frogsfrogsfrogs>
+References: <174553064491.1160047.2269966041756188067.stgit@frogsfrogsfrogs>
+ <87seirz2pu.fsf@gentoo.org>
+ <20250720185135.GS2672070@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v4] debugfs/logdump.c: Add parameter t to dump sequence
- commit timestamps
-From: zhanchengbin <zhanchengbin1@huawei.com>
-To: Theodore Ts'o <tytso@mit.edu>
-CC: "Darrick J. Wong" <djwong@kernel.org>, <linux-ext4@vger.kernel.org>,
-	<qiangxiaojun@huawei.com>, <hejie3@huawei.com>
-References: <f5445a3b-f278-6440-91f3-08e5ca5b93cf@huawei.com>
-In-Reply-To: <f5445a3b-f278-6440-91f3-08e5ca5b93cf@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- kwepemo100017.china.huawei.com (7.202.195.215)
+In-Reply-To: <20250720185135.GS2672070@frogsfrogsfrogs>
 
-Friendly ping, thanks.
+On Sun, Jul 20, 2025 at 11:51:35AM -0700, Darrick J. Wong wrote:
+> On Sun, Jul 20, 2025 at 09:27:41AM +0100, Sam James wrote:
+> > This seems to have introduced https://github.com/tytso/e2fsprogs/issues/235.
+> 
+> Heh, section 7.23.1 paragraph 4 of the latest C2y draft says that
+> stdin/stdout/stderr “are expressions of type "pointer to FILE" that
+> point to the FILE objects associated, respectively, with the standard
+> error, input, and output streams.”
+> 
+> The use of "expression" should have been the warning sign that a symbol
+> that can be mostly used as a pointer is not simply a pointer.
+> 
+> Later in footnote 318, they say [stdin/stdout/stderr] “need not be
+> modifiable lvalues to which the value returned by the fopen function
+> could be assigned.”
+> 
+> "need not be" is the magic phrasing that means musl and glibc are both
+> following the spec.  IOWs, every C programmer should reduce the amount
+> of brainpower they spend on their program's core algorithm so that they
+> can all be really smart about this quirk.
+> 
+> So yeah, you're right.
+> 
+> But we could also do:
+> 
+> 	fd = open(logfile, O_WRONLY | O_CREAT | O_APPEND, 0666);
+> 	dup2(fd, STDOUT_FILENO);
+> 	dup2(fd, STDERR_FILENO);
+> 
+> and skip all this standards-worrying.  I would have just done that, but
+> for fear that somewhere there might be a library that actually *does* do
+> freopen and this trick won't work.
+> 
+> Yaaay, it's 2025 and we all still suuuuuuuck.
 
-On 2025/7/3 20:07, zhanchengbin wrote:
-> When filesystem errors occur, inspect journal sequences with parameter t to
-> dump commit timestamps.
-> 
-> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
-> ---
-> v4: (1) Fix incorrect variable type; (2) Add logging for error branches.
-> - Link to v3:
-> https://patchwork.ozlabs.org/project/linux-ext4/patch/32252e29-aba9-df6f-3b97-d3774df375ad@huawei.com/ 
-> 
-> v3: Change from displaying UTC time to local time.
-> - Link to v2:
-> https://patchwork.ozlabs.org/project/linux-ext4/patch/5a4b703c-6940-d9da-5686-337e3220d3a4@huawei.com/ 
-> 
-> v2: Correct abnormal formats in the patch.
-> - Link to v1:
-> https://patchwork.ozlabs.org/project/linux-ext4/patch/50aeb0c1-9f14-ed04-c3b7-7a50f61c3341@huawei.com/ 
-> 
-> ---
->   debugfs/logdump.c | 61 ++++++++++++++++++++++++++++++++++++++++-------
->   1 file changed, 52 insertions(+), 9 deletions(-)
-> 
-> diff --git a/debugfs/logdump.c b/debugfs/logdump.c
-> index 324ed42..a1256c4 100644
-> --- a/debugfs/logdump.c
-> +++ b/debugfs/logdump.c
-> @@ -47,7 +47,7 @@ enum journal_location {JOURNAL_IS_INTERNAL, 
-> JOURNAL_IS_EXTERNAL};
-> 
->   #define ANY_BLOCK ((blk64_t) -1)
-> 
-> -static int        dump_all, dump_super, dump_old, dump_contents, 
-> dump_descriptors;
-> +static int        dump_all, dump_super, dump_old, dump_contents, 
-> dump_descriptors, dump_time;
->   static int64_t        dump_counts;
->   static blk64_t        block_to_dump, bitmap_to_dump, inode_block_to_dump;
->   static unsigned int    group_to_dump, inode_offset_to_dump;
-> @@ -67,6 +67,8 @@ static void dump_descriptor_block(FILE *, struct 
-> journal_source *,
->                     char *, journal_superblock_t *,
->                     unsigned int *, unsigned int, __u32, tid_t);
-> 
-> +static void dump_commit_time(FILE *out_file, char *buf);
-> +
->   static void dump_revoke_block(FILE *, char *, journal_superblock_t *,
->                     unsigned int, unsigned int, tid_t);
-> 
-> @@ -118,10 +120,11 @@ void do_logdump(int argc, ss_argv_t argv, int 
-> sci_idx EXT2FS_ATTR((unused)),
->       inode_block_to_dump = ANY_BLOCK;
->       inode_to_dump = -1;
->       dump_counts = -1;
-> +    dump_time = 0;
->       wrapped_flag = false;
-> 
->       reset_getopt();
-> -    while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
-> +    while ((c = getopt (argc, argv, "ab:ci:f:OsSn:t")) != EOF) {
->           switch (c) {
->           case 'a':
->               dump_all++;
-> @@ -162,6 +165,9 @@ void do_logdump(int argc, ss_argv_t argv, int 
-> sci_idx EXT2FS_ATTR((unused)),
->                   return;
->               }
->               break;
-> +        case 't':
-> +            dump_time++;
-> +            break;
->           default:
->               goto print_usage;
->           }
-> @@ -521,21 +527,33 @@ static void dump_journal(char *cmdname, FILE 
-> *out_file,
->                   break;
->           }
-> 
-> -        if (dump_descriptors) {
-> -            fprintf (out_file, "Found expected sequence %u, "
-> -                 "type %u (%s) at block %u\n",
-> -                 sequence, blocktype,
-> -                 type_to_name(blocktype), blocknr);
-> -        }
-> -
->           switch (blocktype) {
->           case JBD2_DESCRIPTOR_BLOCK:
-> +            if (dump_descriptors) {
-> +                fprintf (out_file, "Found expected sequence %u, "
-> +                     "type %u (%s) at block %u\n",
-> +                     sequence, blocktype,
-> +                     type_to_name(blocktype), blocknr);
-> +            }
-> +
->               dump_descriptor_block(out_file, source, buf, jsb,
->                             &blocknr, blocksize, maxlen,
->                             transaction);
->               continue;
-> 
->           case JBD2_COMMIT_BLOCK:
-> +            if (dump_descriptors) {
-> +                fprintf (out_file, "Found expected sequence %u, "
-> +                     "type %u (%s) at block %u",
-> +                     sequence, blocktype,
-> +                     type_to_name(blocktype), blocknr);
-> +            }
-> +
-> +            if (dump_time)
-> +                dump_commit_time(out_file, buf);
-> +            else
-> +                fprintf(out_file, "\n");
-> +
->               cur_counts++;
->               transaction++;
->               blocknr++;
-> @@ -543,6 +561,13 @@ static void dump_journal(char *cmdname, FILE 
-> *out_file,
->               continue;
-> 
->           case JBD2_REVOKE_BLOCK:
-> +            if (dump_descriptors) {
-> +                fprintf (out_file, "Found expected sequence %u, "
-> +                     "type %u (%s) at block %u\n",
-> +                     sequence, blocktype,
-> +                     type_to_name(blocktype), blocknr);
-> +            }
-> +
->               dump_revoke_block(out_file, buf, jsb,
->                         blocknr, blocksize,
->                         transaction);
-> @@ -742,6 +767,24 @@ static void dump_descriptor_block(FILE *out_file,
->       *blockp = blocknr;
->   }
-> 
-> +static void dump_commit_time(FILE *out_file, char *buf)
-> +{
-> +    struct commit_header    *header;
-> +    uint64_t    commit_sec;
-> +    time_t        timestamp;
-> +    char        time_buffer[26];
-> +    char        *result;
-> +
-> +    header = (struct commit_header *)buf;
-> +    commit_sec = be64_to_cpu(header->h_commit_sec);
-> +
-> +    timestamp = commit_sec;
-> +    result = ctime_r(&timestamp, time_buffer);
-> +    if (result)
-> +        fprintf(out_file, ", commit at: %s", time_buffer);
-> +    else
-> +        fprintf(out_file, ", commit_sec is %llu\n", commit_sec);
-> +}
-> 
->   static void dump_revoke_block(FILE *out_file, char *buf,
->                     journal_superblock_t *jsb EXT2FS_ATTR((unused)),
+Oh wait no it turns out that libfuse obliterates std{in,out,err} in
+fuse_daemonize() by opening /dev/null and using that exact trick.  So
+the only reason why I was ever getting any FUSE2FS debug output
+throughout *any* of the fuse+iomap development sprints was that glibc
+lets you assign stdout/stderr directly.
+
+freopen also won't work (at least on glibc) because its freopen
+implementation uses the dup2 trick which will be undone by libfuse.
+
+GREAT!  I only got to debug my program because OF A WEIRD GLIBC QUIRK!!
+
+So the only way to actually fix this is to open whatever logging file we
+want to use, and explicitly pass that around to every function that
+wants to log a message or an error, because the libraries can't be
+trusted not to fsck it all up.  libext2fs has a callback for any errors
+that it wants to print, and that will have to do.
+
+--D
 
