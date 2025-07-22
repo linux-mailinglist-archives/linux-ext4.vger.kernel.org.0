@@ -1,91 +1,91 @@
-Return-Path: <linux-ext4+bounces-9147-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9148-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FCDBB0D65B
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Jul 2025 11:54:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B7FDB0D682
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Jul 2025 12:00:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E246AA02E3
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Jul 2025 09:53:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0D991AA695F
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Jul 2025 10:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8990C2E03FB;
-	Tue, 22 Jul 2025 09:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812712E11C0;
+	Tue, 22 Jul 2025 09:59:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fXbAGeUy"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="m/O49DTU"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 499642DEA6A;
-	Tue, 22 Jul 2025 09:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE012E03E0;
+	Tue, 22 Jul 2025 09:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753178004; cv=none; b=W+vZ+NMlEvyDWMLIfpBJt5HL3ggWJOCCgRvAOjLlWSvIMBtf5L9f6otppTD0nmJG+WGUmToxnLO6JtMb5zLRdi5AJ1iRHBplE0OjltEWDI9jAqo5yiK4rQeussa7m+kiv0QPAYTG4sWfkwq7WJza9haJLuRkAM0Z0uh/Qxn7LxM=
+	t=1753178381; cv=none; b=VpERZmFdDGD8Nkgt4npf4dHrDN0olwyTcNv89Znnw8YGllTK+To2i54QMykYIC5FQ6i3KvyY5+vswzVBL5JPIKY+NsqYfCana8BF+51DvGA3e316n8oFso12Ul7MfzyGK4qEDmPSWp69hIjIwdp6MYE/I8mGu2MjAe4RZqBO6Ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753178004; c=relaxed/simple;
-	bh=0ahjYebJTcBwY5yNy4z0UV0/9vcA93nCL1qO41tahCg=;
+	s=arc-20240116; t=1753178381; c=relaxed/simple;
+	bh=9lAHiBwoo8jGTNinYh/ijsaneKOOiolgCjybVc2fj1U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mXD8mMH50cUKaYqaOYsdeQCpdTcc3gK1YGY38oX1X9x8iixru5UBGjo5QpceX2RXMmOyw3Kk/GQWV6veHjOEpOVaKoS/BiWBbOYHldDtDkH9I45bRHR6hYaNxLY/nxUqjg2VgQj9wpp5Ibo0VUj+9tCcKEClZC95TdBFEf+kXPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fXbAGeUy; arc=none smtp.client-ip=148.163.158.5
+	 Content-Type:Content-Disposition:In-Reply-To; b=UO8k3Vl5n44oWn/pCI832ulSxn1OQoL7WXaI2+XM4xkbamEhZev8vRLm0mevlCQ8frBeRnNON9l2mqo//yvjfWzLGTuXa0CRGggrCXmB9YXYJ73qANosZEyf7gpS5yvxcRdJlr6Utv9n+jhWD0qWMjrgPssr/ZiUqqPH3dcETQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=m/O49DTU; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56M0oVZJ032317;
-	Tue, 22 Jul 2025 09:53:13 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56M8xTd5009164;
+	Tue, 22 Jul 2025 09:59:11 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=iXPjagKe1OfX88cYSdt0ScY3MiGeMz
-	nFbHV/ry44zF8=; b=fXbAGeUyES5WdcPTM3njnI/JE+Y8U8Hxh3Eep8PZlwHGZ9
-	D2vOi0ZaimIx+kRvFt7x/Lo2KalvjFnIaYVZc/bDWi+jVi4teA9fqub5pNzR+Lzt
-	SlzVhBptbPXimx4/P/AnVEd/qMJaHOI4bi13+3c8gY8cCT+yiDlr2D4wJtdQ7I8u
-	9hDTCOMJ+vUfYJSnHfvq2vyrP+X1TRRw0fwRqXWb7T/zofueKJlEzwTISYiRJEpQ
-	QKlQbhDGV5tyuwfOn44pCAk6G8n8V/uZDlIF8+XseHmAiv8NQLaW90Y7Ix3qcEUn
-	qMLCzt29HKCEU7KB5yIIPz0QmD1XbWwZqW6ArIBA==
+	:references:subject:to; s=pp1; bh=QNi9XzvfVxCwjgas+8tBNVhNwsc6Wl
+	y29wriyx3/p7g=; b=m/O49DTUDdwY7AISTXrwrRvug3FDe4RCwEjkgJMjIK5f8k
+	gTPyiraUNoWEe8n6MOFReNFfHX/GjX1upniWgyTpj5NPKFFqKhmXIk3U417BqDI2
+	7AYPlDiJ78cvytPbXcfbJXKTMUgIzWsLc9l9pbQc7N3kpaTyOwuHiBEbj5e+ynbZ
+	+so/XPY+QDg2H1ZiSbHAC+tnKDTqlvGWrocHSNkFvC0oALERZRjocTGXGiulzjmC
+	Vj+42bzcmVWJL5mOr/um2ifK9WD/nkE5Rxk8W+TJCmQEwj8cMM82wlgngCuMdy2f
+	CxFOWpPDFf0U+68u/BVrQbAWmzUbFl9u7GRwM90Q==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4805hfwk52-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4805ut5grt-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 22 Jul 2025 09:53:13 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 56M9cwWW011936;
-	Tue, 22 Jul 2025 09:53:13 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4805hfwk50-1
+	Tue, 22 Jul 2025 09:59:11 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 56M9vwHl015887;
+	Tue, 22 Jul 2025 09:59:10 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4805ut5grn-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 22 Jul 2025 09:53:13 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56M5tSTu024964;
-	Tue, 22 Jul 2025 09:53:12 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 480nptjf7m-1
+	Tue, 22 Jul 2025 09:59:10 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56M6AHHd005470;
+	Tue, 22 Jul 2025 09:59:09 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 480tvqsfua-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 22 Jul 2025 09:53:12 +0000
+	Tue, 22 Jul 2025 09:59:09 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56M9r7ih51773934
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56M9x7gN52822374
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 22 Jul 2025 09:53:07 GMT
+	Tue, 22 Jul 2025 09:59:07 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A088720043;
-	Tue, 22 Jul 2025 09:53:07 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id C56B520043;
+	Tue, 22 Jul 2025 09:59:07 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 494F420040;
-	Tue, 22 Jul 2025 09:53:05 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 8760020040;
+	Tue, 22 Jul 2025 09:59:05 +0000 (GMT)
 Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.18.185])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 22 Jul 2025 09:53:05 +0000 (GMT)
-Date: Tue, 22 Jul 2025 15:23:02 +0530
+	Tue, 22 Jul 2025 09:59:05 +0000 (GMT)
+Date: Tue, 22 Jul 2025 15:29:02 +0530
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: "Darrick J. Wong" <djwong@kernel.org>
 Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
         Ritesh Harjani <ritesh.list@gmail.com>, john.g.garry@oracle.com,
         tytso@mit.edu, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 02/13] common/rc: Fix fsx for ext4 with bigalloc
-Message-ID: <aH9ffl7-2ri2Exgv@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Subject: Re: [PATCH v3 04/13] ltp/fsx.c: Add atomic writes support to fsx
+Message-ID: <aH9g5jkwnXAkQUJl@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 References: <cover.1752329098.git.ojaswin@linux.ibm.com>
- <84a1820482419a1f1fb599bc35c2b7dcc1abbcb9.1752329098.git.ojaswin@linux.ibm.com>
- <20250717161154.GF2672039@frogsfrogsfrogs>
+ <5bbd19e1615ca2a485b3b430c92f0260ee576f5e.1752329098.git.ojaswin@linux.ibm.com>
+ <20250717161747.GG2672039@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -94,127 +94,127 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250717161154.GF2672039@frogsfrogsfrogs>
+In-Reply-To: <20250717161747.GG2672039@frogsfrogsfrogs>
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzIyMDA3OSBTYWx0ZWRfX7lUwW1+Q5zWa
- wuiWsDx8+a4mjfw8gOtpvTo7qAO1Zqml6+9DARLyt9nIVz/oY938OX7KvXkeTUQuR/J0kcov4J6
- CZ2IDHDhSa6JWPpc0jjwL6lbp60HaVqnftbourjIPdW1No0CxWUd/qqvB7ELUTPO0c8idtnurEB
- vjEbDUXeretDzGAwJRuiRNi0/tebnLK8VfADZmwP1KCaS/TGk8IV0Uue8KT0jB3nXMs6lrk4noZ
- jTN1JwYypR4kRtioTk3SrWhUSUlvQL4W0wN953U3bfQyPx3BZHXkc69Zj8y8WhO8xmHF6xBdMmg
- 8u7ZbYtxWUOl1hYf6i4wmOGWFiFbIz4r776HM8jk8m948FfhDI8VSNCRa1BTErhOhzxSmuxTsNS
- w9KG3Dx6Jye2Q3okqTj1O97DUZ+eMgsLAGnglyPWZ5QdbFtgyOPYQWoGwm/dpcL28AX6yAZs
-X-Proofpoint-GUID: uVC4Ndc0eYIstplw9f8qLXS3t_zWHjGM
-X-Proofpoint-ORIG-GUID: 1-5EotLC-Bt5v-VEBZmlBtzd989lpf7d
-X-Authority-Analysis: v=2.4 cv=X9RSKHTe c=1 sm=1 tr=0 ts=687f5f89 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=kj9zAlcOel0A:10 a=Wb1JkmetP80A:10 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8
- a=WmCSGEEz2f1fRig7hz0A:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzIyMDA3OSBTYWx0ZWRfX1d0DcaK6nuRc
+ Ykn4QE+rWz1xLNyk01nNXPFVshatEvYaqlOcrLWJGMLyRu1RUIH/8Gu09U1vTZpVggolp4Ou29q
+ Zslfq1aTj8mJqCILMhvecMIZUcF3aNsH4pKz3W+zZTViYEM93jLgGFjUPSYKs1muVRTDXho61pd
+ 9hCg0niKlOeCzNXKgV1wVt8i1x4/fIqhe/AnJWUK6UiknngXwMseG+h8B1Eglxn+7eC0aXzVzeV
+ SvAqVnH7znABNEW5aemXvsAe28E+QfVrfJau33rAqZ2POOGQUuqAqhcKJw+OBYDfEcL1S3m7Ty4
+ CgEDHFuPmZRvcDUn46/67MhnaRweUfkGHBkwSm6aHQhnvtfqSRdaoU4wTk7Bz1cAiopHfUuT4fA
+ CFYeu8V3M66kbub9Ck1FRWJ2xLu1+NfN0tJLaugSFDFI7Ie2rmwvI+ku7jZkwmSUfcyJZ6RO
+X-Proofpoint-ORIG-GUID: xmIFSctcK-dyd90AKesi5vAaqMFHatIm
+X-Authority-Analysis: v=2.4 cv=cIDgskeN c=1 sm=1 tr=0 ts=687f60ef cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=kj9zAlcOel0A:10 a=Wb1JkmetP80A:10 a=IipzgdfrNufsr-TDSacA:9
+ a=CjuIK1q_8ugA:10
+X-Proofpoint-GUID: pLWncaHFwhK7sN5QcqX_s5BCD-TJg0qo
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-07-22_01,2025-07-21_02,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
- phishscore=0 malwarescore=0 clxscore=1015 mlxscore=0 spamscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 classifier=spam authscore=0
- authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
+ malwarescore=0 mlxlogscore=999 mlxscore=0 spamscore=0 suspectscore=0
+ adultscore=0 phishscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ priorityscore=1501 clxscore=1015 classifier=spam authscore=0 authtc=n/a
+ authcc= route=outbound adjust=0 reason=mlx scancount=1
  engine=8.19.0-2505280000 definitions=main-2507220079
 
-On Thu, Jul 17, 2025 at 09:11:54AM -0700, Darrick J. Wong wrote:
-> On Sat, Jul 12, 2025 at 07:42:44PM +0530, Ojaswin Mujoo wrote:
-> > Insert range and collapse range only works with bigalloc in case
-> > the range is cluster size aligned, which fsx doesnt take care. To
-> > work past this, disable insert range and collapse range on ext4, if
-> > bigalloc is enabled.
-> > 
-> > This is achieved by defining a new function _set_default_fsx_avoid
-> > called via run_fsx helper. This can be used to selectively disable
-> > fsx options based on the configuration.
-> > 
-> > Co-developed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > ---
-> >  common/rc | 27 +++++++++++++++++++++++++++
-> >  1 file changed, 27 insertions(+)
-> > 
-> > diff --git a/common/rc b/common/rc
-> > index 9a9d3cc8..218cf253 100644
-> > --- a/common/rc
-> > +++ b/common/rc
-> > @@ -5113,10 +5113,37 @@ _require_hugepage_fsx()
-> >  		_notrun "fsx binary does not support MADV_COLLAPSE"
-> >  }
-> >  
-> > +_set_default_fsx_avoid() {
-> > +	local file=$1
+On Thu, Jul 17, 2025 at 09:17:47AM -0700, Darrick J. Wong wrote:
+
+<snip>
+
 > > +
-> > +	case "$FSTYP" in
-> > +	"ext4")
-> > +		local dev=$(findmnt -n -o SOURCE --target $file)
+> > +/*
+> > + * Round down n to nearest power of 2.
+> > + * If n is already a power of 2, return n;
+> > + */
+> > +static int rounddown_pow_of_2(int n) {
+> > +	int i = 0;
 > > +
-> > +		# open code instead of _require_dumpe2fs cause we don't
-> > +		# want to _notrun if dumpe2fs is not available
-> > +		if [ -z "$DUMPE2FS_PROG" ]; then
-> > +			echo "_set_default_fsx_avoid: dumpe2fs not found, skipping bigalloc check." >> $seqres.full
-> > +			return
-> > +		fi
-> 
-> I hate to be the guy who says one thing and then another, but ...
-> 
-> If we extended _get_file_block_size to report the ext4 bigalloc cluster
-> size, would that be sufficient to keep testing collapse/insert range?
-> 
-> I guess the tricky part here is that bigalloc allows sub-cluster
-> mappings and we might not want to do all file IO testing in such big
-> units.
-
-Hmm, so maybe a better way is to just add a parameter like alloc_unit in
-fsx where we can pass the cluster_size to which INSERT/COLLAPSE range be
-aligned to. For now we can pass it explicitly in the tests if needed.
-
-I do plan on working on your suggestion of exposing alloc unit via
-statx(). Once we have that in the kernel, fsx can use that as well.
-
-If this approach sounds okay I can try to maybe send the whole "fixing
-of insert/collpase range in fsx" as a patchset separate from atomic
-writes.
-
-
-> 
+> > +	if (is_power_of_2(n))
+> > +		return n;
 > > +
-> > +		$DUMPE2FS_PROG -h $dev 2>&1 | grep -q bigalloc && {
-> > +			export FSX_AVOID+=" -I -C"
+> > +	for (; (1 << i) < n; i++);
+> > +
+> > +	return 1 << (i - 1);
+> > +}
+> > +
+> >  void
+> >  dowrite(unsigned offset, unsigned size, int flags)
+> >  {
+> > @@ -1081,6 +1113,27 @@ dowrite(unsigned offset, unsigned size, int flags)
+> >  	offset -= offset % writebdy;
+> >  	if (o_direct)
+> >  		size -= size % writebdy;
+> > +	if (flags & RWF_ATOMIC) {
+> > +		/* atomic write len must be inbetween awu_min and awu_max */
+> > +		if (size < awu_min)
+> > +			size = awu_min;
+> > +		if (size > awu_max)
+> > +			size = awu_max;
+> > +
+> > +		/* atomic writes need power-of-2 sizes */
+> > +		size = rounddown_pow_of_2(size);
+> > +
+> > +		/* atomic writes need naturally aligned offsets */
+> > +		offset -= offset % size;
 > 
-> No need to export FSX_AVOID to subprocesses.
+> I don't think you should be modifying offset/size here.  Normally for
+> fsx we do all the rounding of the file range in the switch statement
+> after the "calculate appropriate op to run" comment statement.
 > 
 > --D
 
-Got it, will fix. Thanks for review!
+Yes, I noticed that but then I saw we make size/offset adjustments in
+do write for writebdy and I wanted atomic writes adjustments to be done
+after that.
 
-
-Regards,
+Regads,
 ojaswin
+
 > 
+> > +
+> > +		/* Skip the write if we are crossing max filesize */
+> > +		if ((offset + size) > maxfilelen) {
+> > +			if (!quiet && testcalls > simulatedopcount)
+> > +				prt("skipping atomic write past maxfilelen\n");
+> > +			log4(OP_WRITE_ATOMIC, offset, size, FL_SKIPPED);
+> > +			return;
 > > +		}
-> > +		;;
-> > +	# Add other filesystem types here as needed
-> > +	*)
-> > +		;;
-> > +	esac
-> > +}
+> > +	}
+> >  	if (size == 0) {
+> >  		if (!quiet && testcalls > simulatedopcount && !o_direct)
+> >  			prt("skipping zero size write\n");
+> > @@ -1088,7 +1141,10 @@ dowrite(unsigned offset, unsigned size, int flags)
+> >  		return;
+> >  	}
+> >  
+> > -	log4(OP_WRITE, offset, size, FL_NONE);
+> > +	if (flags & RWF_ATOMIC)
+> > +		log4(OP_WRITE_ATOMIC, offset, size, FL_NONE);
+> > +	else
+> > +		log4(OP_WRITE, offset, size, FL_NONE);
+> >  
+> >  	gendata(original_buf, good_buf, offset, size);
+> >  	if (offset + size > file_size) {
+> > @@ -1108,8 +1164,9 @@ dowrite(unsigned offset, unsigned size, int flags)
+> >  		       (monitorstart == -1 ||
+> >  			(offset + size > monitorstart &&
+> >  			(monitorend == -1 || offset <= monitorend))))))
+> > -		prt("%lld write\t0x%x thru\t0x%x\t(0x%x bytes)\tdontcache=%d\n", testcalls,
+> > -		    offset, offset + size - 1, size, (flags & RWF_DONTCACHE) != 0);
+> > +		prt("%lld write\t0x%x thru\t0x%x\t(0x%x bytes)\tdontcache=%d atomic_wr=%d\n", testcalls,
+> > +		    offset, offset + size - 1, size, (flags & RWF_DONTCACHE) != 0,
+> > +		    (flags & RWF_ATOMIC) != 0);
+> >  	iret = fsxwrite(fd, good_buf + offset, size, offset, flags);
+> >  	if (iret != size) {
+> >  		if (iret == -1)
+> > @@ -1785,6 +1842,30 @@ do_dedupe_range(unsigned offset, unsigned length, unsigned dest)
+> >  }
+> >  #endif
+> >  
+> > +int test_atomic_writes(void) {
+> > +	int ret;
+> > +	struct statx stx;
 > > +
-> >  _run_fsx()
-> >  {
-> >  	echo "fsx $*"
-> >  	local args=`echo $@ | sed -e "s/ BSIZE / $bsize /g" -e "s/ PSIZE / $psize /g"`
-> > +
-> > +	_set_default_fsx_avoid $testfile
-> > +
-> >  	set -- $FSX_PROG $args $FSX_AVOID $TEST_DIR/junk
-> >  	echo "$@" >>$seqres.full
-> >  	rm -f $TEST_DIR/junk
-> > -- 
-> > 2.49.0
-> > 
-> > 
 
