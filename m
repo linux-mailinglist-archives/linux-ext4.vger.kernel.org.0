@@ -1,253 +1,146 @@
-Return-Path: <linux-ext4+bounces-9159-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9160-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A214B0EA28
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jul 2025 07:48:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2593B0EAA9
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jul 2025 08:31:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB25E1AA335D
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jul 2025 05:48:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E58593B1B5C
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jul 2025 06:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D3692472AB;
-	Wed, 23 Jul 2025 05:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A4226C3B7;
+	Wed, 23 Jul 2025 06:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="a9Od9cWb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail.189.cn (189sx01-ptr.21cn.com [14.18.100.240])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD398182D3;
-	Wed, 23 Jul 2025 05:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.18.100.240
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCEE248873;
+	Wed, 23 Jul 2025 06:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753249691; cv=none; b=XTTszHw/7ym7187SduWcQGssmOWmUKuJic5BoS6F1JZx0U8Qs2iSSFSI1rpj/wlYv8SnwwxAa5b1E53bRf+Sn2/MHnh7E4361lWgU5NtjDodxNaQ9DAYpz7XPg33od8Ir7TJMK08k9pMqm9OPGB0oKZNlvhRwrGvDrSdrDYj67U=
+	t=1753252266; cv=none; b=F6EekzSUyoyS55MwCsV7U9F9kgQiTEvMzHV8bTdnJuIfuY+ZW+ys6CdQRTWMVVKAYsioTu4/ySQ1do2fl+8GSkSX+hPSOVX7/AfrjGzC1AnZqkHCv8DRn9AL8q+gFv7BfSNrkffaYlyVZu7RlGxyFJQgthKyxA0hzhB4iTpwLLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753249691; c=relaxed/simple;
-	bh=gkIUfd/D/ipbRme1xVbi3313xf1eZlBNCbFdGG+F/XE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CuvzUOeMy6hAN2iWQ/j/vZ12RUhX9C4aRjMA3rs1bnYRLEglSJb6mAtP2w94zl1XSO46GtJNDV9JdDWHeJwstpLd1NHrIDRLnzaJyeXPMY6l9+4jeAkVfmwa5TzdwNhBXKolDoFZwHswsdYq4ASM/RjXvYRfrNALl9tT61c2IwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=189.cn; spf=pass smtp.mailfrom=189.cn; arc=none smtp.client-ip=14.18.100.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=189.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=189.cn
-HMM_SOURCE_IP:10.158.242.145:0.2069462472
-HMM_ATTACHE_NUM:0000
-HMM_SOURCE_TYPE:SMTP
-Received: from clientip-221.238.56.48 (unknown [10.158.242.145])
-	by mail.189.cn (HERMES) with SMTP id 1ACC940008A;
-	Wed, 23 Jul 2025 13:44:20 +0800 (CST)
-Received: from  ([221.238.56.48])
-	by gateway-153622-dep-67b7b5d8b-hc52f with ESMTP id d5fbf68be4ee4d06b323a9dc52f42bb8 for tytso@mit.edu;
-	Wed, 23 Jul 2025 13:44:21 CST
-X-Transaction-ID: d5fbf68be4ee4d06b323a9dc52f42bb8
-X-Real-From: chensong_2000@189.cn
-X-Receive-IP: 221.238.56.48
-X-MEDUSA-Status: 0
-Sender: chensong_2000@189.cn
-Message-ID: <2d9fc63c-091d-4224-b5dd-968bceed72ee@189.cn>
-Date: Wed, 23 Jul 2025 13:44:19 +0800
+	s=arc-20240116; t=1753252266; c=relaxed/simple;
+	bh=9nvMvBGs6JMLEfhugYRVg7nfMGizUadRYQsyGSOwFbc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TGWqq3lKUSSIuEVWOckUgg4Tsm9JNtTrbGT62/obOTJn0MNtnNxxWoW/7M9W3rlIBNma4RuPNw+eaO7o95g01xO7PCTZ/t1Qmx9qfZWgLoSaMb1N/BIVOorQ9RtHvTbrfc0BR8vewwQO8MeermPyU4KvP088ehdtJ5Hg1hOVBUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=a9Od9cWb; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56N66vgV027701;
+	Wed, 23 Jul 2025 06:30:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=UUEGT/sUYkFf4gih7YaF2crredDSL9
+	YO30q2Z/pvqo8=; b=a9Od9cWbrb2SLn/u9nQtVJTN9qT3S70fCBMtqpvIheoacn
+	9F1AEPHSTxJt0k4/zNDB6Ll9GwBwq/jsWY4q5HafywAmgdFYxbehKpd4a9oyiq4o
+	xXu08uxkliLZyljzSoE18S7ByC1A6kVZQvvqEm7JKN1AY0migz83xZp60VTSFj0N
+	cNX7Cl8Ku8MKfu7HuM3Vh02h0sXiZh77P6SFbCHkiX0g1VJ8JcYW7dKCiZPIBMQK
+	LysLz8mDSS2JwucueNswqOZCEyBn5QKI2M/nvFjTMiybjcZLqmAr991I/USW5l/h
+	ATjTV8pJO/+inOWNMfAC3y5dgaLexYe0LVGLddcg==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 482ff5k08r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 23 Jul 2025 06:30:56 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 56N6N8ht018047;
+	Wed, 23 Jul 2025 06:30:56 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 482ff5k08m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 23 Jul 2025 06:30:56 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56N3M58L012823;
+	Wed, 23 Jul 2025 06:30:55 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 480p306rbq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 23 Jul 2025 06:30:55 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56N6UrSi57213290
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 23 Jul 2025 06:30:53 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4037220040;
+	Wed, 23 Jul 2025 06:30:53 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C486620043;
+	Wed, 23 Jul 2025 06:30:50 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.209.114])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 23 Jul 2025 06:30:50 +0000 (GMT)
+Date: Wed, 23 Jul 2025 12:00:48 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>, john.g.garry@oracle.com,
+        tytso@mit.edu, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v3 08/13] generic/1229: Stress fsx with atomic writes
+ enabled
+Message-ID: <aICBYrgdwZUcm2C7@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <cover.1752329098.git.ojaswin@linux.ibm.com>
+ <1e1e7d552e91fab58037b7b35ffbf8b2e7070be5.1752329098.git.ojaswin@linux.ibm.com>
+ <20250717162230.GH2672039@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC] ext4: fallback unaligned part of dio to buffered IO
-To: tytso@mit.edu, adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250710085910.123168-1-chensong_2000@189.cn>
-Content-Language: en-US
-From: Song Chen <chensong_2000@189.cn>
-In-Reply-To: <20250710085910.123168-1-chensong_2000@189.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250717162230.GH2672039@frogsfrogsfrogs>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzIzMDA1MCBTYWx0ZWRfXzRIi3k0Ck60u
+ ROtC2tLWO4rDlDCbiJn1+oySVcRKYekYdhRU+49UKPUxFZuAEjv+8DwhqyzJT4j5sxn+7nBE99J
+ A2Drrnd6c1qL525qTQvea2dmB5ciNu2Q6yGNV1icG5aW6DgrmflQzNXkkQKpBQtnjRWzTTCF3qm
+ NDG4AKEXr1F4zoG0t01HBF1zGCeq36uNE6W7LQngiSJe5soJaBEr9E45mI15MxJ1OR5YfZn/7s0
+ PX/xWZdag8AfNiCC3RRViJ+OUtrShYpgiAqheYcPeVQExLttBM9DDsKmFkvtHsv7Z8bgTVVe1EY
+ MdOvbwOov2PZB6S0MRh+ofKcQwPrZVdfLoGAT9Ym2rkxGgQ6hfAoGNnUSXK4NrKH/aD8YZ7rUnh
+ O6vQf4Y6jxAktUry1gBpJURcjWlr+mQumyDvQpTceOPsXWK3wQC/9YJGjjMtm+4ZFhmR+TAB
+X-Authority-Analysis: v=2.4 cv=evLfzppX c=1 sm=1 tr=0 ts=688081a0 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=kj9zAlcOel0A:10 a=Wb1JkmetP80A:10 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8
+ a=2tcgm7eZke0umGGLaFsA:9 a=CjuIK1q_8ugA:10 a=U1FKsahkfWQA:10
+X-Proofpoint-GUID: ll9oNXlQFTwHByoXRp7lyJgKlcguFbKj
+X-Proofpoint-ORIG-GUID: jqjavEVRMWN2MgiUEZvGwLUG6tXpxoqK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-07-23_01,2025-07-22_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 impostorscore=0 malwarescore=0 spamscore=0 adultscore=0
+ lowpriorityscore=0 bulkscore=0 mlxscore=0 suspectscore=0 phishscore=0
+ priorityscore=1501 mlxlogscore=542 classifier=spam authscore=0 authtc=n/a
+ authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2505280000 definitions=main-2507230050
 
-Dear maintainers,
+On Thu, Jul 17, 2025 at 09:22:30AM -0700, Darrick J. Wong wrote:
+> On Sat, Jul 12, 2025 at 07:42:50PM +0530, Ojaswin Mujoo wrote:
+> > Stress file with atomic writes to ensure we excercise codepaths
+> > where we are mixing different FS operations with atomic writes
+> > 
+> > Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> 
+> Hrm, doesn't generic/521 test this already if the fs happens to support
+> atomic writes?
+> 
+> --D
 
-This is kindly ping, i would appreciate it if you could have a look and 
-give me your feedback.
+Hi Darrick,
 
-many thanks.
+Yes but I wanted one with _require_scratch_write_atomic and writes going
+to SCRATCH fs to explicitly test atomic writes as that can get missed in
+g/521. 
 
-BR
+Would you instead prefer to have those changes in g/521?
 
-Song
-
-在 2025/7/10 16:59, chensong_2000@189.cn 写道:
-> From: Song Chen <chensong_2000@189.cn>
-> 
-> When I was trying to read a big file in direct IO mode, if the
-> file was not page aligned, ext4 rejected the request in
-> iomap_dio_bio_iter which checks alignments of pos, addr and length
-> before submitting bio.
-> 
-> As my understanding, pos and addr must be block size aligned, but length
-> doesn't have to be. Instead of rejecting entire request which is so
-> frastrating to upper layer, this patch splits length into aligned part
-> and unaligned part. For the aligned part, still uses direct IO with
-> no problem, for the rest unaligned part, falls back to buffered IO.
-> This way looks more friendly to apps.
-> 
-> Please have a look at the patch in [1], it has to reopen the file
-> to read the unaligned part in upper layer, which doen't look
-> gracefully.
-> 
-> I guess I'm not the first one who brings it up, there must be a reason
-> to stop this porblem being addressed. unaligned write seems to be
-> addressed in [2] and [3]. Side effects or complexity, I would like to know.
-> 
-> This is just a draft of RFC, I haven't taken care of ubuf properly yet,
-> please let me know if you like this idea or not, then I can drop it or
-> go further, like introduce helpers to split iov_iter in lib/iov_iters.c
-> 
-> [1]:https://lore.kernel.org/all/20240730075755.10941-4-link@vivo.com/
-> [2]:https://lore.kernel.org/linux-ext4/20230314130759.642710-1-bfoster
-> @redhat.com/
-> [3]:https://lore.kernel.org/linux-ext4/20230810165559.946222-1-bfoster
-> @redhat.com/
-> 
-> Signed-off-by: Song Chen <chensong_2000@189.cn>
-> ---
->   fs/ext4/file.c | 90 ++++++++++++++++++++++++++++++++++++++++++++++----
->   1 file changed, 83 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 21df81347147..a059985d0b16 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -36,6 +36,12 @@
->   #include "acl.h"
->   #include "truncate.h"
->   
-> +enum {
-> +	SHOULD_NOT_DIO,
-> +	SHOULD_DIO,
-> +	SHOULD_PARTIAL_DIO,
-> +};
-> +
->   /*
->    * Returns %true if the given DIO request should be attempted with DIO, or
->    * %false if it should fall back to buffered I/O.
-> @@ -52,23 +58,89 @@
->    *
->    * This function implements the traditional ext4 behavior in all these cases.
->    */
-> -static bool ext4_should_use_dio(struct kiocb *iocb, struct iov_iter *iter)
-> +static int ext4_should_use_dio(struct kiocb *iocb, struct iov_iter *iter)
->   {
->   	struct inode *inode = file_inode(iocb->ki_filp);
-> +	unsigned int len_mask = i_blocksize(inode) - 1;
-> +	unsigned int addr_mask = bdev_dma_alignment(inode->i_sb->s_bdev);
->   	u32 dio_align = ext4_dio_alignment(inode);
->   
-> +	/* inode doesn't support dio, fall back to buffered IO*/
->   	if (dio_align == 0)
-> -		return false;
-> +		return SHOULD_NOT_DIO;
-> +
-> +	/* addr is misaligned, fall back to buffered IO*/
-> +	if (!iov_iter_is_aligned(iter, addr_mask, 0))
-> +		return SHOULD_NOT_DIO;
-> +
-> +	/* pos is misaligned, fall back to buffered IO*/
-> +	if (!IS_ALIGNED(iocb->ki_pos, len_mask))
-> +		return SHOULD_NOT_DIO;
-> +
-> +	/* length is misaligned*/
-> +	if (!iov_iter_is_aligned(iter, 0, len_mask)) {
-> +		/* if length is less than a block, fall back to buffered IO*/
-> +		if (iov_iter_count(iter) < i_blocksize(inode))
-> +			return SHOULD_NOT_DIO;
-> +		/*direct IO for aligned part, buffered IO for misaligned part*/
-> +		return SHOULD_PARTIAL_DIO;
-> +	}
->   
-> -	if (dio_align == 1)
-> -		return true;
-> +	return SHOULD_DIO;
-> +}
->   
-> -	return IS_ALIGNED(iocb->ki_pos | iov_iter_alignment(iter), dio_align);
-> +/*
-> + * First of all, truncate the length to block size aligned and start
-> + * a direct IO. If it goes well in iomap_dio_rw, fall back the rest
-> + * unaligned part to buffered IO.
-> + *
-> + * At the end, return the sum bytes of direct IO and buffered IO.
-> + */
-> +static ssize_t ext4_mixed_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> +{
-> +	struct inode *inode = file_inode(iocb->ki_filp);
-> +	struct iov_iter to_misaligned = *to;
-> +	struct iovec iov;
-> +	ssize_t ret, ret_dio, ret_generic;
-> +
-> +	/* truncate iter->count to blocksize aligned and start direct IO */
-> +	iov_iter_truncate(to, ALIGN_DOWN(to->count, i_blocksize(inode)));
-> +	ret_dio = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL, 0, NULL, 0);
-> +
-> +	if (ret_dio <= 0) {
-> +		ret = ret_dio;
-> +		goto out;
-> +	}
-> +
-> +	/* set up iter to misaligned part and start buffered IO*/
-> +	iov.iov_base = to->__iov->iov_base +  ret_dio;
-> +	iov.iov_len	 = to->__iov->iov_len -  ret_dio;
-> +
-> +	to_misaligned.__iov = &iov;
-> +	iov_iter_truncate(&to_misaligned, iov.iov_len);
-> +
-> +	iocb->ki_flags &= ~IOCB_DIRECT;
-> +	ret_generic = generic_file_read_iter(iocb, &to_misaligned);
-> +
-> +	if (ret_generic <= 0) {
-> +		ret  = ret_generic;
-> +		goto out;
-> +	}
-> +
-> +	ret = ret_dio + ret_generic;
-> +
-> +out:
-> +	iocb->ki_flags |= IOCB_DIRECT;
-> +	inode_unlock_shared(inode);
-> +	file_accessed(iocb->ki_filp);
-> +
-> +	return ret;
->   }
->   
->   static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
->   {
->   	ssize_t ret;
-> +	int dio_supported;
->   	struct inode *inode = file_inode(iocb->ki_filp);
->   
->   	if (iocb->ki_flags & IOCB_NOWAIT) {
-> @@ -78,7 +150,8 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
->   		inode_lock_shared(inode);
->   	}
->   
-> -	if (!ext4_should_use_dio(iocb, to)) {
-> +	dio_supported = ext4_should_use_dio(iocb, to);
-> +	if (dio_supported == SHOULD_NOT_DIO) {
->   		inode_unlock_shared(inode);
->   		/*
->   		 * Fallback to buffered I/O if the operation being performed on
-> @@ -91,6 +164,9 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
->   		return generic_file_read_iter(iocb, to);
->   	}
->   
-> +	if (dio_supported == SHOULD_PARTIAL_DIO)
-> +		return ext4_mixed_read_iter(iocb, to);
-> +
->   	ret = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL, 0, NULL, 0);
->   	inode_unlock_shared(inode);
->   
-> @@ -537,7 +613,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->   	}
->   
->   	/* Fallback to buffered I/O if the inode does not support direct I/O. */
-> -	if (!ext4_should_use_dio(iocb, from)) {
-> +	if (ext4_should_use_dio(iocb, from) != SHOULD_DIO) {
->   		if (ilock_shared)
->   			inode_unlock_shared(inode);
->   		else
+Regards,
+Ojaswin
 
