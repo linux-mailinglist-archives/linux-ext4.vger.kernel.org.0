@@ -1,59 +1,60 @@
-Return-Path: <linux-ext4+bounces-9166-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9167-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A36BB0F660
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jul 2025 17:02:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A871B0F664
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jul 2025 17:03:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22AB27BAE81
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jul 2025 14:58:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D3B6AC393F
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Jul 2025 15:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8CC22FA652;
-	Wed, 23 Jul 2025 14:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874472F7D02;
+	Wed, 23 Jul 2025 14:54:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ajICN4Ku"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u2Cf8VKp"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D26F2FC3AE;
-	Wed, 23 Jul 2025 14:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64AE8301148;
+	Wed, 23 Jul 2025 14:54:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753282223; cv=none; b=u4kJay8qooVrDggfxeYOJkb13NlDjDjEYL39HF9tBGVlM8c9Y8rvalX7bfm7yvCWO8hKji+aSYd+EGPAhXHvvgx5h2Yjh9Ix7EAB/tGFOn3R7ufT+e9tA0EL0rR7n+w5bF04Aj7nmgZeE9v7QJ5NDNfBulQAeJ+ih5SxBGjOnqI=
+	t=1753282467; cv=none; b=fGzN23keyPSvjHrT+M8QLybiQ0Lmk+8CEhk0ZAfsNbAtsBxvaXeAXTcPs65I4Ssr3M63rQtnE9+oSbxND/Jormb3eMnOp6y7tikPS/WSzNh/wyWlLlPuqRhrgkMt212DgSqTu3aLViOoRyvEWhHkJ89cJB7SuP7S+fs3D0fB9HY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753282223; c=relaxed/simple;
-	bh=aZqQBj3Q0MLO38xOs+l/KAa78pTbHFsmu7NSuwSazTA=;
+	s=arc-20240116; t=1753282467; c=relaxed/simple;
+	bh=y+g/uzpxGoEeQev5j+AyDMsNyEL4KeDVSDo9psgVMLE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rJJSuHTkZYWBrLWdLod2HTBwsca+gfYdOeEZF5nTP3dsYdSrDzCm4P16K86l4jhNX9XGhrL+o4OSUDcmIb3xOkwaTNXGvigs93R0F3iwE4PzDNEj7YLuvVnIFge2CuYTI0BCXitm7YbCxMC3JdIk07IlrRDtBY7pbtwkG3Gw71w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ajICN4Ku; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA051C4CEF8;
-	Wed, 23 Jul 2025 14:50:21 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=HpYmb3uGl4WGvBirtLf5FbTQ6iasdW4EFAW+7Rvs/iHgnnAR0EaXYuGo/Fcxt51J/M+OVfkJFQBTVUEdNZYjWpnWT9bJsSx2MiwsnKJoi/pzDwu1KflvIxtq+lWjBdhmmgGx6/A8adwRY3Xifmwy9oMEG7mDGgstXLLmPuMRuhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u2Cf8VKp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB512C4CEFC;
+	Wed, 23 Jul 2025 14:54:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753282221;
-	bh=aZqQBj3Q0MLO38xOs+l/KAa78pTbHFsmu7NSuwSazTA=;
+	s=k20201202; t=1753282463;
+	bh=y+g/uzpxGoEeQev5j+AyDMsNyEL4KeDVSDo9psgVMLE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ajICN4KuGGGlV0yyQlHAdIDFz8bj43GXCAH4ORyaBqwi6xArAHsIiJ/uP4vZcLTWY
-	 eKKMBCIbM6URY8c1VsiZpUfbnt8SHn/EkX+mJQ0NEEptOnHPOycaM6l5Nsw38w9748
-	 LHmZk5PZfoKKV7AZA6QLYKp6w/L8a/DFxmeJOaMFEQDoHKPLTTD6yjzMqWMJSDD5Vz
-	 GdnIQ0yCpTVS6CguD86wWbYUafG+38CZM0WWl/+/A0sMrbXE6EhZ10VAp8sQ2aqi7a
-	 SoCZtPkgAjw+KYRh1j0WJbois5N0yIKHDAFyZp8yQuszOv5Zvf6bxvB/Cs5VASLeoJ
-	 pJcuzt8141LSg==
-Date: Wed, 23 Jul 2025 07:50:21 -0700
+	b=u2Cf8VKpyjqQEsL1GL9nabTeJnsWtYkmeIQfMMvVw8dhEpQX40cJ34YtfOhRr+j4P
+	 d9eekkecg546N1fJS2JQ2hL459GSHae8kwIWugR80LGoDQqZOaDqk/gu/mYGgpDxSN
+	 vQTSVGmFUPl842Xud3QTXqaWvIA/zcsb28kCItbQADq3W9cUhYL3gGktSZTHftPnFm
+	 RgW2Op0tNNloSe/4wH4HAbVFmi2C1zIpgEnfxWp1lI0646YBBrKZya4K/fRqonlBfH
+	 1ov3172yW5mhZkSPbv1fjccBUmomK9HtQGSdxVqONl19P5niyQLUgiCOtNYoGbDLnZ
+	 Ze8X+CIn88SAA==
+Date: Wed, 23 Jul 2025 07:54:23 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
 	Ritesh Harjani <ritesh.list@gmail.com>, john.g.garry@oracle.com,
 	tytso@mit.edu, linux-xfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 02/13] common/rc: Fix fsx for ext4 with bigalloc
-Message-ID: <20250723145021.GM2672039@frogsfrogsfrogs>
+Subject: Re: [PATCH v3 07/13] generic/1228: Add atomic write multi-fsblock
+ O_[D]SYNC tests
+Message-ID: <20250723145423.GN2672039@frogsfrogsfrogs>
 References: <cover.1752329098.git.ojaswin@linux.ibm.com>
- <84a1820482419a1f1fb599bc35c2b7dcc1abbcb9.1752329098.git.ojaswin@linux.ibm.com>
- <20250717161154.GF2672039@frogsfrogsfrogs>
- <aH9ffl7-2ri2Exgv@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <ae247b8d0a9b1309a2e4887f8dd30c1d6e479848.1752329098.git.ojaswin@linux.ibm.com>
+ <20250717163510.GJ2672039@frogsfrogsfrogs>
+ <aIDpdg_SibBYFAPy@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -62,109 +63,63 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aH9ffl7-2ri2Exgv@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+In-Reply-To: <aIDpdg_SibBYFAPy@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 
-On Tue, Jul 22, 2025 at 03:23:02PM +0530, Ojaswin Mujoo wrote:
-> On Thu, Jul 17, 2025 at 09:11:54AM -0700, Darrick J. Wong wrote:
-> > On Sat, Jul 12, 2025 at 07:42:44PM +0530, Ojaswin Mujoo wrote:
-> > > Insert range and collapse range only works with bigalloc in case
-> > > the range is cluster size aligned, which fsx doesnt take care. To
-> > > work past this, disable insert range and collapse range on ext4, if
-> > > bigalloc is enabled.
-> > > 
-> > > This is achieved by defining a new function _set_default_fsx_avoid
-> > > called via run_fsx helper. This can be used to selectively disable
-> > > fsx options based on the configuration.
-> > > 
-> > > Co-developed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> > > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> > > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > > ---
-> > >  common/rc | 27 +++++++++++++++++++++++++++
-> > >  1 file changed, 27 insertions(+)
-> > > 
-> > > diff --git a/common/rc b/common/rc
-> > > index 9a9d3cc8..218cf253 100644
-> > > --- a/common/rc
-> > > +++ b/common/rc
-> > > @@ -5113,10 +5113,37 @@ _require_hugepage_fsx()
-> > >  		_notrun "fsx binary does not support MADV_COLLAPSE"
-> > >  }
-> > >  
-> > > +_set_default_fsx_avoid() {
-> > > +	local file=$1
-> > > +
-> > > +	case "$FSTYP" in
-> > > +	"ext4")
-> > > +		local dev=$(findmnt -n -o SOURCE --target $file)
-> > > +
-> > > +		# open code instead of _require_dumpe2fs cause we don't
-> > > +		# want to _notrun if dumpe2fs is not available
-> > > +		if [ -z "$DUMPE2FS_PROG" ]; then
-> > > +			echo "_set_default_fsx_avoid: dumpe2fs not found, skipping bigalloc check." >> $seqres.full
-> > > +			return
-> > > +		fi
-> > 
-> > I hate to be the guy who says one thing and then another, but ...
-> > 
-> > If we extended _get_file_block_size to report the ext4 bigalloc cluster
-> > size, would that be sufficient to keep testing collapse/insert range?
-> > 
-> > I guess the tricky part here is that bigalloc allows sub-cluster
-> > mappings and we might not want to do all file IO testing in such big
-> > units.
+On Wed, Jul 23, 2025 at 07:23:58PM +0530, Ojaswin Mujoo wrote:
+> On Thu, Jul 17, 2025 at 09:35:10AM -0700, Darrick J. Wong wrote:
 > 
-> Hmm, so maybe a better way is to just add a parameter like alloc_unit in
-> fsx where we can pass the cluster_size to which INSERT/COLLAPSE range be
-> aligned to. For now we can pass it explicitly in the tests if needed.
+> <snip>
 > 
-> I do plan on working on your suggestion of exposing alloc unit via
-> statx(). Once we have that in the kernel, fsx can use that as well.
-> 
-> If this approach sounds okay I can try to maybe send the whole "fixing
-> of insert/collpase range in fsx" as a patchset separate from atomic
-> writes.
-
-Yeah, that sounds like a good longer-term solution to me. :)
-
---D
-
-> > 
+> > > +verify_atomic_write() {
+> > > +	if [[ "$1" == "shutdown" ]]
+> > > +	then
+> > > +		local do_shutdown=1
+> > > +	fi
 > > > +
-> > > +		$DUMPE2FS_PROG -h $dev 2>&1 | grep -q bigalloc && {
-> > > +			export FSX_AVOID+=" -I -C"
+> > > +	test $bytes_written -eq $awu_max || _fail "atomic write len=$awu_max assertion failed"
+> > > +
+> > > +	if [[ $do_shutdown -eq "1" ]]
+> > > +	then
+> > > +		echo "Shutting down filesystem" >> $seqres.full
+> > > +		_scratch_shutdown >> $seqres.full
+> > > +		_scratch_cycle_mount >>$seqres.full 2>&1 || _fail "remount failed for Test-3"
+> > > +	fi
+> > > +
+> > > +	check_data_integrity
+> > > +}
+> > > +
+> > > +mixed_mapping_test() {
+> > > +	prep_mixed_mapping
+> > > +
+> > > +	echo "+ + Performing O_DSYNC atomic write from 0 to $awu_max" >> $seqres.full
+> > > +	bytes_written=$($XFS_IO_PROG -dc "pwrite -DA -V1 -b $awu_max 0 $awu_max" $testfile | \
+> > > +		        grep wrote | awk -F'[/ ]' '{print $2}')
+> > > +
+> > > +	verify_atomic_write $1
 > > 
-> > No need to export FSX_AVOID to subprocesses.
+> > The shutdown happens after the synchronous write completes?  If so, then
+> > what part of recovery is this testing?
 > > 
 > > --D
 > 
-> Got it, will fix. Thanks for review!
+> Right, it is mostly inspired by [1] where sometimes isize update could
+> be lost after dio completion. Although this might not exactly be
+> affected by atomic writes, we added it here out of caution.
 > 
-> 
-> Regards,
-> ojaswin
-> > 
-> > > +		}
-> > > +		;;
-> > > +	# Add other filesystem types here as needed
-> > > +	*)
-> > > +		;;
-> > > +	esac
+> [1] https://lore.kernel.org/fstests/434beffaf18d39f898518ea9eb1cea4548e77c3a.1695383715.git.ritesh.list@gmail.com/
+
+Ah, so we're racing with background log flush then.  Would it improve
+the potential failure detection rate to call shutdown right after the
+pwrite, e.g.
+
+$XFS_IO_PROG -dxc "pwrite -DA..." -c 'shutdown' $testfile
+
+It can take a few milliseconds to walk down the bash functions and
+fork/exec another child process.
+
+--D
+
 > > > +}
 > > > +
-> > >  _run_fsx()
-> > >  {
-> > >  	echo "fsx $*"
-> > >  	local args=`echo $@ | sed -e "s/ BSIZE / $bsize /g" -e "s/ PSIZE / $psize /g"`
-> > > +
-> > > +	_set_default_fsx_avoid $testfile
-> > > +
-> > >  	set -- $FSX_PROG $args $FSX_AVOID $TEST_DIR/junk
-> > >  	echo "$@" >>$seqres.full
-> > >  	rm -f $TEST_DIR/junk
-> > > -- 
-> > > 2.49.0
-> > > 
-> > > 
 > 
 
