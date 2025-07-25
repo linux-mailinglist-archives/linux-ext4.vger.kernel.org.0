@@ -1,65 +1,54 @@
-Return-Path: <linux-ext4+bounces-9190-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9191-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8A23B120BC
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Jul 2025 17:22:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6403B1215A
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Jul 2025 17:56:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 627AA3B3F62
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Jul 2025 15:21:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC133AC0EC4
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Jul 2025 15:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62EB11AC43A;
-	Fri, 25 Jul 2025 15:22:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D032EE968;
+	Fri, 25 Jul 2025 15:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="dJxjij5H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L1Xp/ycP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4CC77111
-	for <linux-ext4@vger.kernel.org>; Fri, 25 Jul 2025 15:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA5724677E
+	for <linux-ext4@vger.kernel.org>; Fri, 25 Jul 2025 15:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753456924; cv=none; b=cp3GIdMo7Pram2je4vGqRyBCMg6h0jCLCdg/mHMwJYK8siUKXwXbt+XN/D8AFmxi532SwcqtuxUlh5hDizEJB8PXybnTheG9xJxYqobi7SZXb4leVNwgs3aIubgvp0eMyIkqxKgwLuHPvDNSugsYJ+2r9JmcsY5fNqVQ80dg+pw=
+	t=1753458971; cv=none; b=afoDRrba06PIC+Q8Qbbd5sYtATefOLU4dZu7En/IYFIMFxrkJqAmkzxV45cZcq6UaQ0y/ltWpyAY0J3Qnt96LkIdg/gytO7BfRV+Y6OK7OQiWsRSgqFyUDe2WnYzZFKJoQBuSIKh2DwiNuCEssmcyjvdfYNDn/0rcRFRyT6VMzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753456924; c=relaxed/simple;
-	bh=w6cqLDPAuWWOf3XDsgnT9TheMq0d2PeDxG8bPLIPHH8=;
+	s=arc-20240116; t=1753458971; c=relaxed/simple;
+	bh=x0XHSmeayeoxzsjEur9qWdQXXL5JmdvVLGCROiTezQ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ecnRChFv/tOQr925N6Y/jL4wS2FnC4dQ/BgoRkm/Wa6A2eVN2AOb+HnyymN7ODZoXF05BIY+qS3FMiLQQNrVVT11YRu3w12iKXHlHESUUWr0jnDvpCSd7UAjq4O9IEH4j7xF+bHRb3YSOu4fBAB8nWdSIszZkRu/V9khYQHmea8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=dJxjij5H; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-116-187.bstnma.fios.verizon.net [173.48.116.187])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 56PFJ19S022191
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 25 Jul 2025 11:19:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1753456745; bh=wBKmwQYCteJSPB4Hw5iOzmxaBx11IomAX7t4BBIedJc=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=dJxjij5H3IZka8UrAhUdDHbTwYomsTNgMcfiGCaxIgsBWkgzaRf+1/kNCJAepJ7Yq
-	 6W3VbkuAxbG5rY4xeDIvuM6HzdnOGNKb25Hq03osoQY5qfoiOg64BHyD5SVqegA4ut
-	 S95N6Ozx9j8vphBGJmTYZUenYAT2qeVHWW3sgPQC7rrMm5ASWmtHWiZQ3uImpry4cz
-	 1ivX7EVEUWh67Q+HXy2Jp5nrFw3hyZRJ/QeplXswFodxXoMpPwsx0mZrOZOKFuGACQ
-	 zmMLq9Obit2reyRC8ZVCuP9zV4hU06DF8R5y6Z93VFbbkZls+JS6SDKAIjUlM0GQt9
-	 WOwfi87BfJqpA==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 774922E00D6; Fri, 25 Jul 2025 09:15:41 -0400 (EDT)
-Date: Fri, 25 Jul 2025 09:15:41 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Jan Kara <jack@suse.cz>
-Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com, linux@roeck-us.net,
-        yi.zhang@huawei.com, libaokun1@huawei.com, yukuai3@huawei.com,
-        yangerkun@huawei.com
-Subject: Re: [PATCH] ext4: fix crash on test_mb_mark_used kunit tests
-Message-ID: <20250725131541.GA184259@mit.edu>
-References: <20250725021654.3188798-1-yi.zhang@huaweicloud.com>
- <av5necgeitkiormvqsh75kvgq3arjwxxqxpqievulgz2rvi3dg@75hdi2ubarmr>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tYpOCVotDHjV5x0hs5PhS9rdjpFBZjohO6hHgNTiYkjnhh22pfkLlPgywxvVBPzVEjUk1zeyBa+0Nsk+Ci8h4lOZiYL1kD5ZGhP+Q/rZFXjn9XyuSy0RBzx+E8ESzg+uw3HNSrRQNryA9d8pkKHjoaNOF2zLf1rzkiTaJWVwF9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L1Xp/ycP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78E1EC4CEE7;
+	Fri, 25 Jul 2025 15:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753458970;
+	bh=x0XHSmeayeoxzsjEur9qWdQXXL5JmdvVLGCROiTezQ0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L1Xp/ycParvwzmCH2BUw6UuOIK3nkxfelPgPvttKdyUlu5vrdvqXGArsKEvd4EABp
+	 Bg5wJOYFkt2IXEglWL0wr02w2F20n6r6QKDwqPgbNXB03J8nnMFuvuXCvBEBQmof6h
+	 AveH4LXGWU00gVHLM9V2rYx5x63Sl029fgVXcEDeIirAV1D8SD/fZC+m/elQpuwP7T
+	 cgdXgOa/+GLrmdwc1zZ5o+etoHIjzLjYilffuZOMk1B4pcP4SelZ+4BRUo7n+eyfA+
+	 4q10AZZJDrqEvU4jVJNXAMdnU+NXBFGo3eFpoX6RlV0KEJyL1jMflMkxFxOcZXscPW
+	 Fhz3gT2wNXtHg==
+Date: Fri, 25 Jul 2025 08:56:10 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org
+Subject: [PATCH 19/8] fuse2fs: don't record every errno in the superblock as
+ an fs failure
+Message-ID: <20250725155610.GP2672022@frogsfrogsfrogs>
+References: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,63 +57,63 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <av5necgeitkiormvqsh75kvgq3arjwxxqxpqievulgz2rvi3dg@75hdi2ubarmr>
+In-Reply-To: <175182662934.1984706.3737778061161342509.stgit@frogsfrogsfrogs>
 
-On Fri, Jul 25, 2025 at 01:06:18PM +0200, Jan Kara wrote:
-> > This patch applies to the kernel that has only merged bbe11dd13a3f
-> > ("ext4: fix largest free orders lists corruption on mb_optimize_scan
-> > switch"), but not merged 458bfb991155 ("ext4: convert free groups order
-> > lists to xarrays").
-> 
-> Hum, I think it would be best to just squash this into bbe11dd13a3f and
-> then just rebase & squash the other unittest fixup to the final commit when
-> we have to rebase anyway. Because otherwise backports to stable kernel will
-> quickly become rather messy.
+From: Darrick J. Wong <djwong@kernel.org>
 
-What I ended up doing was to add a squashed combination of these two
-commits and dropped it in before the block allocation scalabiltity
-with the following commit description:
+fstests just blew up because somewhere in the fuse iomap code we
+returned an ESTALE, which was then passed to translate_error.  That
+function decided it was a Serious Error and wrote it to the superblock,
+so every subsequent mount attempt failed.
 
-    ext4: initialize superblock fields in the kballoc-test.c kunit tests
-    
-    Various changes in the "ext4: better scalability for ext4 block
-    allocation" patch series have resulted in kunit test failures, most
-    notably in the test_new_blocks_simple and the test_mb_mark_used tests.
-    The root cause of these failures is that various in-memory ext4 data
-    structures were not getting initialized, and while previous versions
-    of the functions exercised by the unit tests didn't use these
-    structure members, this was arguably a test bug.
-    
-    Since one of the patches in the block allocation scalability patches
-    is a fix which is has a cc:stable tag, this commit also has a
-    cc:stable tag.
-    
-    CC: stable@vger.kernel.org
-    Link: https://lore.kernel.org/r/20250714130327.1830534-1-libaokun1@huawei.com
-    Link: https://patch.msgid.link/20250725021550.3177573-1-yi.zhang@huaweicloud.com
-    Link: https://patch.msgid.link/20250725021654.3188798-1-yi.zhang@huaweicloud.com
-    Reported-by: Guenter Roeck <linux@roeck-us.net>
-    Closes: https://lore.kernel.org/linux-ext4/b0635ad0-7ebf-4152-a69b-58e7e87d5085@roeck-us.net/
-    Tested-by: Guenter Roeck <linux@roeck-us.net>
-    Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+I should go figure out why the iomap cache upsert operation returned
+ESTALE, but that's not a sign that the *ondisk* filesystem is corrupt.
+Prior to commit 71f046a788adba we wouldn't have written that to the
+superblock either.
 
-Then in the commit "ext4: convert free groups order lists to xarrays"
-which removed list_head, I modified it to remove the linked list
-initialization from mballoc-test.c, since that's the commit which
-removed those structures.
+Fix this by isolating the handful of errno that usually mean corruption
+problems in filesystems and writing those to the superblock; the other
+errno are merely operational errors that can be passed back to the
+kernel and up to userspace.
 
-In the future, we should try to make sure that when we modify data
-structures to add or remove struct elements, that we also make sure
-that kunit test should also be updated.  To that end, I've updated the
-kbuild script[1] in xfstests-bld repo so that "kbuild --test" will run
-the Kunit tests.  Hopefully reducing the friction for running tests
-will encourage more kunit tests to be created and so they will kept
-under regular maintenance.
+I'm not sure why e2fsck doesn't flag when s_error_count > 0.  That might
+be an error on its own.
 
-[1] https://github.com/tytso/xfstests-bld/blob/master/kernel-build/kbuild
+Cc: <linux-ext4@vger.kernel.org> # v1.47.3
+Fixes: 71f046a788adba ("fuse2fs: correctly handle system errno values in __translate_error()")
+Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+---
+ misc/fuse2fs.c |   18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-Cheers,
-
-					- Ted
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index 242bbfd221eb3a..18d8f426a5eb43 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -4969,9 +4969,23 @@ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
+ 		is_err = 1;
+ 		ret = -EUCLEAN;
+ 		break;
+-	default:
++	case EIO:
++#ifdef EILSEQ
++	case EILSEQ:
++#endif
++	case EUCLEAN:
++		/* these errnos usually denote corruption or persistence fail */
+ 		is_err = 1;
+-		ret = (err < 256) ? -err : -EIO;
++		ret = -err;
++		break;
++	default:
++		if (err < 256) {
++			/* other errno are usually operational errors */
++			ret = -err;
++		} else {
++			is_err = 1;
++			ret = -EIO;
++		}
+ 		break;
+ 	}
+ 
 
