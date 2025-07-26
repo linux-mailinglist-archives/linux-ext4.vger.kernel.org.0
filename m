@@ -1,46 +1,45 @@
-Return-Path: <linux-ext4+bounces-9192-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9193-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9856B12842
-	for <lists+linux-ext4@lfdr.de>; Sat, 26 Jul 2025 02:50:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 201A1B1287B
+	for <lists+linux-ext4@lfdr.de>; Sat, 26 Jul 2025 03:42:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CDF91C26DAC
-	for <lists+linux-ext4@lfdr.de>; Sat, 26 Jul 2025 00:50:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38D181CC58D3
+	for <lists+linux-ext4@lfdr.de>; Sat, 26 Jul 2025 01:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93357288DB;
-	Sat, 26 Jul 2025 00:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F84C1C7009;
+	Sat, 26 Jul 2025 01:42:48 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32662CA5A;
-	Sat, 26 Jul 2025 00:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E36D381BA;
+	Sat, 26 Jul 2025 01:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753491024; cv=none; b=e5+IhLHuUxmYIIRDpnvJi42bEsOxrqvrggybx35IzcmUh+TP/irOSv/CaDB0b5SSQujpvU4Y5F5bZZF6JtMa7UvBaHW4yUUfe6DkCZ7Pxyd518mNAEyJoA5XqNOH8RtXHK5OhQQK5yVrHvZK9CEDf1nxrME69ule4CPMCC1H20Y=
+	t=1753494168; cv=none; b=lEfrnGX6ev6a2AFQ0OncOiTZSEJx+S5X5SixRciISR8X95ISAx+ogVVrrkdGbEybB5Cv0EbiIe+6frC++DQALQtI7a56nnzOOI4EHVRkirS8F4eoetTg8E6Bj+pfO8b2sfpT4EXAexE1EwAtfu94tFiUmQEOKQ3pdwSNcszr3oA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753491024; c=relaxed/simple;
-	bh=/3c2aKYG7udY7zbDAsNEvbHD1nJ+QqSgSs3hTuZRXbY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=YTdZNsPyUXqhwmqDqd0bnbBKtTdAWBHu9T7DyCkXaWCt2eI1W4lZvMjyyGMnWXqK3CGXvj0pe0/tFiX1IsWyUWlH+MtWfgoIl6O4dXk8hBO0HzeiMn20+dQL0aiX4Wo2PqJKswdwZhJnnulzLray33Vo6Q3RbJWlMBlfwnIP8ik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4bpmJ855GTzGpwD;
-	Sat, 26 Jul 2025 08:46:00 +0800 (CST)
-Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4D000180468;
-	Sat, 26 Jul 2025 08:50:12 +0800 (CST)
-Received: from [10.174.177.71] (10.174.177.71) by
- dggpemf500013.china.huawei.com (7.185.36.188) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 26 Jul 2025 08:50:11 +0800
-Message-ID: <2d59bf3d-212c-418f-97ac-2157ab1c2628@huawei.com>
-Date: Sat, 26 Jul 2025 08:50:10 +0800
+	s=arc-20240116; t=1753494168; c=relaxed/simple;
+	bh=ABFfoAOBAwyUcqf0zDKRUV3PwNapelhvIFjQcwXU3nU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YRBUGTs0g8iYNKPJJl1Gs/JH5ih2jtqA2dhPx6yqnx4Tfusw9csSmZSJMtfCfcGHzx2F3jBYFOaoEDp/pepOdfVWhJybsPy7Hfg6I7Y64PgBw3MymGj1Z1m/bmmp1GK7OCyI6f3FB5HPKTe9PL+BQZbjmUNcZcZq9laylITfo+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bpnYb4H5szKHMZv;
+	Sat, 26 Jul 2025 09:42:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 5FA491A06D7;
+	Sat, 26 Jul 2025 09:42:42 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgAXkxONMoRoIEsFBg--.41753S3;
+	Sat, 26 Jul 2025 09:42:39 +0800 (CST)
+Message-ID: <2f53f9a8-380a-4fe4-8407-03d5b4e78140@huaweicloud.com>
+Date: Sat, 26 Jul 2025 09:42:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -48,112 +47,111 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 15/17] ext4: convert free groups order lists to xarrays
-Content-Language: en-GB
-To: Zhang Yi <yi.zhang@huaweicloud.com>, Theodore Ts'o <tytso@mit.edu>
-CC: Guenter Roeck <linux@roeck-us.net>, <linux-ext4@vger.kernel.org>,
-	<adilger.kernel@dilger.ca>, <jack@suse.cz>, <linux-kernel@vger.kernel.org>,
-	<ojaswin@linux.ibm.com>, <julia.lawall@inria.fr>, <yangerkun@huawei.com>,
-	<libaokun@huaweicloud.com>
-References: <20250714130327.1830534-1-libaokun1@huawei.com>
- <20250714130327.1830534-16-libaokun1@huawei.com>
- <b0635ad0-7ebf-4152-a69b-58e7e87d5085@roeck-us.net>
- <20250724045456.GA80823@mit.edu>
- <ef789a81-f326-4af6-8e9b-a13b5b20412b@huawei.com>
- <20250724145437.GD80823@mit.edu>
- <4b8b6482-f2f5-4fa5-949a-6d999c335319@huaweicloud.com>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <4b8b6482-f2f5-4fa5-949a-6d999c335319@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH] ext4: fix crash on test_mb_mark_used kunit tests
+To: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca,
+ ojaswin@linux.ibm.com, linux@roeck-us.net, yi.zhang@huawei.com,
+ libaokun1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
+References: <20250725021654.3188798-1-yi.zhang@huaweicloud.com>
+ <av5necgeitkiormvqsh75kvgq3arjwxxqxpqievulgz2rvi3dg@75hdi2ubarmr>
+ <20250725131541.GA184259@mit.edu>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20250725131541.GA184259@mit.edu>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- dggpemf500013.china.huawei.com (7.185.36.188)
+X-CM-TRANSID:gCh0CgAXkxONMoRoIEsFBg--.41753S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw1xAr15KrWDKrW5KF4Durg_yoW5tFW3pa
+	y7W3WYkFWkKF4xuaykuw48uFyaya95Ar1UCr9xW34UA3yvgry0gF1Sya1YvFn0grZYgF1j
+	vF42yrWrG3WDAa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 7/25/2025 10:28 AM, Zhang Yi wrote:
-> On 2025/7/24 22:54, Theodore Ts'o wrote:
->> On Thu, Jul 24, 2025 at 07:14:58PM +0800, Zhang Yi wrote:
->>> I'm sorry for this regression, we didn't run these tests.
->> No worries, I didn't run them either.
+On 2025/7/25 21:15, Theodore Ts'o wrote:
+> On Fri, Jul 25, 2025 at 01:06:18PM +0200, Jan Kara wrote:
+>>> This patch applies to the kernel that has only merged bbe11dd13a3f
+>>> ("ext4: fix largest free orders lists corruption on mb_optimize_scan
+>>> switch"), but not merged 458bfb991155 ("ext4: convert free groups order
+>>> lists to xarrays").
 >>
->>> Could you please try the following diff? I have tested it on my
->>> machine, and the issue does not recur. If every thing looks fine, I
->>> will send out the official patch.
->> This patch fixes the test bug which was causing the failure of
->> test_new_blocks_simple.
->>
-> The official patch to fix test_new_blocks_simple for the next
-> branch:
->
-> https://lore.kernel.org/linux-ext4/20250725021550.3177573-1-yi.zhang@huaweicloud.com/
->
->> However, there is still test failure of test_mb_mark_used in the patch
->> series starting with bbe11dd13a3f ("ext4: fix largest free orders
->> lists corruption on mb_optimize_scan switch").  The test failure is
->> fixed by 458bfb991155 ("ext4: convert free groups order lists to
->> xarrays").  The reason why this is especialy problematic is that
->> commit which introduced the problem is marked as "cc: stable", which
->> means it will get back ported to LTS kernels, thus introducing a
->> potential bug.
->>
-> Indeed!
->
->> One of the advantages of unit tests is that they are light weight
->> enough that it is tractable to run them against every commit in the
->> patch series.  So we should strive to add more unit tests, since it
->> makes easier to detect regressions.
->>
->> Anyway, here's the stack trace staring with "ext4: fix largest free
->> orders lists corruption on mb_optimize_scan switch".  Could you
->> investigate this failure?  Many thanks!!
->>
-> Sure! I've sent out the fix that applies to the kernel that has only
-> merged bbe11dd13a3f ("ext4: fix largest free orders lists corruption
-> on mb_optimize_scan switch"), but not merged 458bfb991155 ("ext4:
-> convert free groups order lists to xarrays"). Please give it a try.
->
-> https://lore.kernel.org/linux-ext4/20250725021654.3188798-1-yi.zhang@huaweicloud.com/
->
-Sorry for the late reply, I haven't had time to look into this this week.
-I really appreciate Yi for taking the time to help address these issues.
-I'm also very sorry for introducing a regression in the ext4 kunit tests.
+>> Hum, I think it would be best to just squash this into bbe11dd13a3f and
+>> then just rebase & squash the other unittest fixup to the final commit when
+>> we have to rebase anyway. Because otherwise backports to stable kernel will
+>> quickly become rather messy.
+> 
+> What I ended up doing was to add a squashed combination of these two
+> commits and dropped it in before the block allocation scalabiltity
+> with the following commit description:
+> 
+>     ext4: initialize superblock fields in the kballoc-test.c kunit tests
+>     
+>     Various changes in the "ext4: better scalability for ext4 block
+>     allocation" patch series have resulted in kunit test failures, most
+>     notably in the test_new_blocks_simple and the test_mb_mark_used tests.
+>     The root cause of these failures is that various in-memory ext4 data
+>     structures were not getting initialized, and while previous versions
+>     of the functions exercised by the unit tests didn't use these
+>     structure members, this was arguably a test bug.
+>     
+>     Since one of the patches in the block allocation scalability patches
+>     is a fix which is has a cc:stable tag, this commit also has a
+>     cc:stable tag.
+>     
+>     CC: stable@vger.kernel.org
+>     Link: https://lore.kernel.org/r/20250714130327.1830534-1-libaokun1@huawei.com
+>     Link: https://patch.msgid.link/20250725021550.3177573-1-yi.zhang@huaweicloud.com
+>     Link: https://patch.msgid.link/20250725021654.3188798-1-yi.zhang@huaweicloud.com
+>     Reported-by: Guenter Roeck <linux@roeck-us.net>
+>     Closes: https://lore.kernel.org/linux-ext4/b0635ad0-7ebf-4152-a69b-58e7e87d5085@roeck-us.net/
+>     Tested-by: Guenter Roeck <linux@roeck-us.net>
+>     Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> 
+> Then in the commit "ext4: convert free groups order lists to xarrays"
+> which removed list_head, I modified it to remove the linked list
+> initialization from mballoc-test.c, since that's the commit which
+> removed those structures.
+> 
 
+Thank you for revising this series. This way, it will be less likely
+to miss this fix when merging into the LTS branch.
 
-Thanks,
-Baokun
+> In the future, we should try to make sure that when we modify data
+> structures to add or remove struct elements, that we also make sure
+> that kunit test should also be updated.
 
->
->> [09:35:46] ==================== test_mb_mark_used  ====================
->> [09:35:46] [ERROR] Test: test_mb_mark_used: missing subtest result line!
->> [09:35:46]
->> [09:35:46] Pid: 35, comm: kunit_try_catch Tainted: G        W        N  6.16.0-rc4-00031-gbbe11dd13a3f-dirty
->> [09:35:46] RIP: 0033:mb_set_largest_free_order+0x5c/0xc0
->> [09:35:46] RSP: 00000000a0883d98  EFLAGS: 00010206
->> [09:35:46] RAX: 0000000060aeaa28 RBX: 0000000060a2d400 RCX: 0000000000000008
->> [09:35:46] RDX: 0000000060aea9c0 RSI: 0000000000000000 RDI: 0000000060864000
->> [09:35:46] RBP: 0000000060aea9c0 R08: 0000000000000000 R09: 0000000060a2d400
->> [09:35:46] R10: 0000000000000400 R11: 0000000060a9cc00 R12: 0000000000000006
->> [09:35:46] R13: 0000000000000400 R14: 0000000000000305 R15: 0000000000000000
->> [09:35:46] Kernel panic - not syncing: Segfault with no mm
->> [09:35:46] CPU: 0 UID: 0 PID: 35 Comm: kunit_try_catch Tainted: G        W        N  6.16.0-rc4-00031-gbbe11dd13a3f-dirty #36 NONE
->> [09:35:46] Tainted: [W]=WARN, [N]=TEST
->> [09:35:46] Stack:
->> [09:35:46]  60210c60 00000200 60a9e400 00000400
->> [09:35:46]  40060300280 60864000 60a9cc00 60a2d400
->> [09:35:46]  00000400 60aea9c0 60a9cc00 60aea9c0
->> [09:35:46] Call Trace:
->> [09:35:46]  [<60210c60>] ? ext4_mb_generate_buddy+0x1f0/0x230
->> [09:35:46]  [<60215c3b>] ? test_mb_mark_used+0x28b/0x4e0
->> [09:35:46]  [<601df5bc>] ? ext4_get_group_desc+0xbc/0x150
->> [09:35:46]  [<600bf1c0>] ? ktime_get_ts64+0x0/0x190
->> [09:35:46]  [<60086370>] ? to_kthread+0x0/0x40
->> [09:35:46]  [<602b559b>] ? kunit_try_run_case+0x7b/0x100
->> [09:35:46]  [<60086370>] ? to_kthread+0x0/0x40
->> [09:35:46]  [<602b7850>] ? kunit_generic_run_threadfn_adapter+0x0/0x30
->> [09:35:46]  [<602b7862>] ? kunit_generic_run_threadfn_adapter+0x12/0x30
->> [09:35:46]  [<60086a51>] ? kthread+0xf1/0x250
->> [09:35:46]  [<6004a541>] ? new_thread_handler+0x41/0x60
->> [09:35:46] [ERROR] Test: test_mb_mark_used: 0 tests run!
->> [09:35:46] ============= [NO TESTS RUN] test_mb_mark_used =============
->>
+Yes, currently in the Kunit tests, the initialization and maintenance
+of data structures are too fragmented and fragile, making it easy to
+overlook during modifications. In the future, I think we should provide
+some general interfaces to handle the initialization and
+deinitialization of those data structures.
+
+> To that end, I've updated the
+> kbuild script[1] in xfstests-bld repo so that "kbuild --test" will run
+> the Kunit tests.  Hopefully reducing the friction for running tests
+> will encourage more kunit tests to be created and so they will kept
+> under regular maintenance.
+> 
+> [1] https://github.com/tytso/xfstests-bld/blob/master/kernel-build/kbuild
+> 
+
+That would be great! Then we won't miss Kunit tests again, and it
+will also make those tests more useful. :-)
+
+Best Regards,
+Yi.
 
 
