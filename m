@@ -1,58 +1,58 @@
-Return-Path: <linux-ext4+bounces-9221-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9222-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90673B153DE
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 21:47:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2150B153E4
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 21:49:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DBA318953B4
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 19:47:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 144803B15E3
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 19:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CD923F42A;
-	Tue, 29 Jul 2025 19:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C715124676D;
+	Tue, 29 Jul 2025 19:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cMNtaczP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vOzlHsKG"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 678084501A;
-	Tue, 29 Jul 2025 19:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD9323184F;
+	Tue, 29 Jul 2025 19:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753818429; cv=none; b=OT4yZQGjfUdPZEpKQUbotDjVBAYZIq6FSsATR1aDnsA64xnD2MZZsViqK0MXS5shfEUjhb+dvwOUsI9bp1i33stqsetxzBBzQm0fHRptvo8NLOIqEgB9IRD5zMQ5YidHequiVXPVzqXLpIqCJ6hQoRmVw6iV636O8hrFuoMg8Eo=
+	t=1753818564; cv=none; b=tmedVAm+pDEO4oXWOM+sjuCBXqLBL3b2e0sY/lhD5nJF/tliLoVN8FYg7tGa/HRxMS2FZiTJeDSB8tF2hy6/Miq4hxR2cn9F2pQ4ojKB7yPb4d1x2QNQ9uRw1fmcpezgiRZ7JhkIfbAMt091cm065Qf1esCWvjO6ufHyPctfBHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753818429; c=relaxed/simple;
-	bh=7g+vHY2HvBya9KJddCkKHnXJQbLMcLxb6XOLx4HCaFo=;
+	s=arc-20240116; t=1753818564; c=relaxed/simple;
+	bh=cFk4vFIsASUg+tOLvZKl6Km/LTyb5ZNVyfjNHmpGF9k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=szrD3NUv9xqaVkyrKKBfqTgctVGwyWTDo77QFbwZhsWMn0fuoRi5W78/Fjq2q5bz+y40Yl3UMoMyXOaUkp7OjUe3qZoOSkiNQf1RVfr95gKfuouv82hI3WfAYC7eUVoB/Obc/YbW2o+Z98nfXuTG8ow3YF16JTY/56/Xbln7UeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cMNtaczP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CB1AC4CEF6;
-	Tue, 29 Jul 2025 19:47:09 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=oZxQRIuirSPu8WGWo2GOWyTXrBM1H3pfQaEQnWqQd4aXDcnptzPqh2KA2AQpfB8RWvRpyCjvm2cKuyy+2hK+JGt8hG/nq/DvuKx+9gB221/EA3PUueMJBp/c+gX2meVKTZQzoB+kVSUyyF+GBv5H9ZoiAmiqIrvBzgJoxujtXjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vOzlHsKG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE4ABC4CEEF;
+	Tue, 29 Jul 2025 19:49:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753818429;
-	bh=7g+vHY2HvBya9KJddCkKHnXJQbLMcLxb6XOLx4HCaFo=;
+	s=k20201202; t=1753818564;
+	bh=cFk4vFIsASUg+tOLvZKl6Km/LTyb5ZNVyfjNHmpGF9k=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cMNtaczPIT6PYSBtvnrXHAjxBMHndrLNjIr3T6dmx+dbDbVJ1O/c/2PyyOg1PsDNG
-	 3xNsuX2SfdO3tSupMXYpMWU8VPQjS4jRWUhU76CxsAqX8wJ4m1QSfFbyLYvlkBKxBU
-	 KDhWA7iD2oNIYhii7I/mnJg70F8I6GmjBGh4Sp9fSs7KlYgGFi61vmfTIE4Xv57g/Q
-	 TFvL2OqEPFxNsVCM7bZreyE9JpjRfA8vo/W7xRxUyTYkS6Hkyd+nS9ubQYHpTgqUnp
-	 5Jv3dH4ur5VjzYHEVxNhn+fuwnA+tA1kHtQZMKtwuivRGKFDv0B2bIXe0ZA/l542rn
-	 OA0oc85mh9GPQ==
-Date: Tue, 29 Jul 2025 12:47:08 -0700
+	b=vOzlHsKGJGBL77oZbcfHIgL9H4CbdTWGAke8jHXfl7/nsS/6iJcxouTQungV60PUi
+	 SUI6q2c6JTARlaQq6kZDdwoVujLmPkzbiSYJZxA0P7oMXpc2L9LU4KpszhMrjka0oF
+	 bltJ/RjDXAu9L0zWovRUVzYVFI5INjrBNCtOe+4PYp8iEblu2EdBeH1dj9wderM0wj
+	 kn4piSBZhbBjDu+sT/tBJKh9rXFSRZyVE4kryHiM2vFwWKdXOA4jxBwNrgBirzx+K2
+	 wOutTnWZ4H8Dkt4bWgdKgwml0qFet942y2J5YfOAbJM1U8aJXIb+0dXERu+8sz88Vy
+	 OkLvy9rwtTdpg==
+Date: Tue, 29 Jul 2025 12:49:23 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
 	Ritesh Harjani <ritesh.list@gmail.com>, john.g.garry@oracle.com,
 	tytso@mit.edu, linux-xfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 10/13] ext4/061: Atomic writes stress test for
- bigalloc using fio crc verifier
-Message-ID: <20250729194708.GV2672039@frogsfrogsfrogs>
+Subject: Re: [PATCH v3 09/13] generic/1230: Add sudden shutdown tests for
+ multi block atomic writes
+Message-ID: <20250729194923.GW2672039@frogsfrogsfrogs>
 References: <cover.1752329098.git.ojaswin@linux.ibm.com>
- <9b59eb50b171dece1a15bc7c1b6cadff438586d6.1752329098.git.ojaswin@linux.ibm.com>
+ <4965ba3e281a81558f1fe06fe1c478d29adca1e5.1752329098.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,178 +61,448 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9b59eb50b171dece1a15bc7c1b6cadff438586d6.1752329098.git.ojaswin@linux.ibm.com>
+In-Reply-To: <4965ba3e281a81558f1fe06fe1c478d29adca1e5.1752329098.git.ojaswin@linux.ibm.com>
 
-On Sat, Jul 12, 2025 at 07:42:52PM +0530, Ojaswin Mujoo wrote:
-> From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+On Sat, Jul 12, 2025 at 07:42:51PM +0530, Ojaswin Mujoo wrote:
+> This test is intended to ensure that multi blocks atomic writes
+> maintain atomic guarantees across sudden FS shutdowns.
 > 
-> We brute force all possible blocksize & clustersize combinations on
-> a bigalloc filesystem for stressing atomic write using fio data crc
-> verifier. We run nproc * $LOAD_FACTOR threads in parallel writing to
-> a single $SCRATCH_MNT/test-file. With atomic writes this test ensures
-> that we never see the mix of data contents from different threads on
-> a given bsrange.
+> The way we work is that we lay out a file with random mix of written,
+> unwritten and hole extents. Then we start performing atomic writes
+> sequentially on the file while we parallely shutdown the FS. Then we
+> note the last offset where the atomic write happened just before shut
+> down and then make sure blocks around it either have completely old
+> data or completely new data, ie the write was not torn during shutdown.
+> 
+> We repeat the same with completely written, completely unwritten and completely
+> empty file to ensure these cases are not torn either.  Finally, we have a
+> similar test for append atomic writes
+> 
+> Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-Err, how does this differ from the next patch?  It looks like this one
-creates one IO thread, whereas the next one creates 8?  If so, what does
-this test add over ext4/062?
-
-(and now that I look at it, ext4/062 says "FS QA Test 061"...)
+Looks fine to me,
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
 --D
 
-> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 > ---
->  tests/ext4/061     | 130 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/ext4/061.out |   2 +
->  2 files changed, 132 insertions(+)
->  create mode 100755 tests/ext4/061
->  create mode 100644 tests/ext4/061.out
+>  tests/generic/1230     | 397 +++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/1230.out |   2 +
+>  2 files changed, 399 insertions(+)
+>  create mode 100755 tests/generic/1230
+>  create mode 100644 tests/generic/1230.out
 > 
-> diff --git a/tests/ext4/061 b/tests/ext4/061
+> diff --git a/tests/generic/1230 b/tests/generic/1230
 > new file mode 100755
-> index 00000000..a0e49249
+> index 00000000..cff5adc0
 > --- /dev/null
-> +++ b/tests/ext4/061
-> @@ -0,0 +1,130 @@
+> +++ b/tests/generic/1230
+> @@ -0,0 +1,397 @@
 > +#! /bin/bash
 > +# SPDX-License-Identifier: GPL-2.0
 > +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
 > +#
-> +# FS QA Test 061
+> +# FS QA Test No. 1230
 > +#
-> +# Brute force all possible blocksize clustersize combination on a bigalloc
-> +# filesystem for stressing atomic write using fio data crc verifier. We run
-> +# nproc * 2 * $LOAD_FACTOR threads in parallel writing to a single
-> +# $SCRATCH_MNT/test-file. With fio aio-dio atomic write this test ensures that
-> +# we should never see the mix of data contents from different threads for any
-> +# given fio blocksize.
-> +#
-> +
+> +# Test multi block atomic writes with sudden FS shutdowns to ensure
+> +# the FS is not tearing the write operation
 > +. ./common/preamble
 > +. ./common/atomicwrites
+> +_begin_fstest auto atomicwrites
 > +
-> +_begin_fstest auto rw stress atomicwrites
+> +_require_scratch_write_atomic_multi_fsblock
+> +_require_atomic_write_test_commands
+> +_require_scratch_shutdown
+> +_require_xfs_io_command "truncate"
 > +
-> +_require_scratch_write_atomic
-> +_require_aiodio
+> +_scratch_mkfs >> $seqres.full 2>&1
+> +_scratch_mount >> $seqres.full
 > +
-> +FIO_LOAD=$(($(nproc) * 2 * LOAD_FACTOR))
-> +SIZE=$((100*1024*1024))
-> +fiobsize=4096
+> +testfile=$SCRATCH_MNT/testfile
+> +touch $testfile
 > +
-> +# Calculate fsblocksize as per bdev atomic write units.
-> +bdev_awu_min=$(_get_atomic_write_unit_min $SCRATCH_DEV)
-> +bdev_awu_max=$(_get_atomic_write_unit_max $SCRATCH_DEV)
-> +fsblocksize=$(_max 4096 "$bdev_awu_min")
+> +awu_max=$(_get_atomic_write_unit_max $testfile)
+> +blksz=$(_get_block_size $SCRATCH_MNT)
+> +echo "Awu max: $awu_max" >> $seqres.full
 > +
-> +function create_fio_configs()
-> +{
-> +	create_fio_aw_config
-> +	create_fio_verify_config
+> +num_blocks=$((awu_max / blksz))
+> +# keep initial value high for dry run. This will be
+> +# tweaked in dry_run() based on device write speed.
+> +filesize=$(( 10 * 1024 * 1024 * 1024 ))
+> +
+> +_cleanup() {
+> +	[ -n "$awloop_pid" ] && kill $awloop_pid &> /dev/null
+> +	wait
 > +}
 > +
-> +function create_fio_verify_config()
-> +{
-> +cat >$fio_verify_config <<EOF
-> +	[aio-dio-aw-verify]
-> +	direct=1
-> +	ioengine=libaio
-> +	rw=randwrite
-> +	bs=$fiobsize
-> +	fallocate=native
-> +	filename=$SCRATCH_MNT/test-file
-> +	size=$SIZE
-> +	iodepth=$FIO_LOAD
-> +	numjobs=$FIO_LOAD
-> +	atomic=1
-> +	group_reporting=1
-> +
-> +	verify_only=1
-> +	verify_state_save=0
-> +	verify=crc32c
-> +	verify_fatal=1
-> +	verify_write_sequence=0
-> +EOF
-> +}
-> +
-> +function create_fio_aw_config()
-> +{
-> +cat >$fio_aw_config <<EOF
-> +	[aio-dio-aw]
-> +	direct=1
-> +	ioengine=libaio
-> +	rw=randwrite
-> +	bs=$fiobsize
-> +	fallocate=native
-> +	filename=$SCRATCH_MNT/test-file
-> +	size=$SIZE
-> +	iodepth=$FIO_LOAD
-> +	numjobs=$FIO_LOAD
-> +	group_reporting=1
-> +	atomic=1
-> +
-> +	verify_state_save=0
-> +	verify=crc32c
-> +	do_verify=0
-> +
-> +EOF
-> +}
-> +
-> +# Let's create a sample fio config to check whether fio supports all options.
-> +fio_aw_config=$tmp.aw.fio
-> +fio_verify_config=$tmp.verify.fio
-> +fio_out=$tmp.fio.out
-> +
-> +create_fio_configs
-> +_require_fio $fio_aw_config
-> +
-> +for ((fsblocksize=$fsblocksize; fsblocksize <= $(_get_page_size); fsblocksize = $fsblocksize << 1)); do
-> +	# cluster sizes above 16 x blocksize are experimental so avoid them
-> +	# Also, cap cluster size at 128kb to keep it reasonable for large
-> +	# blocks size
-> +	fs_max_clustersize=$(_min $((16 * fsblocksize)) "$bdev_awu_max" $((128 * 1024)))
-> +
-> +	for ((fsclustersize=$fsblocksize; fsclustersize <= $fs_max_clustersize; fsclustersize = $fsclustersize << 1)); do
-> +		for ((fiobsize = $fsblocksize; fiobsize <= $fsclustersize; fiobsize = $fiobsize << 1)); do
-> +			MKFS_OPTIONS="-O bigalloc -b $fsblocksize -C $fsclustersize"
-> +			_scratch_mkfs_ext4  >> $seqres.full 2>&1 || continue
-> +			if _try_scratch_mount >> $seqres.full 2>&1; then
-> +				echo "== FIO test for fsblocksize=$fsblocksize fsclustersize=$fsclustersize fiobsize=$fiobsize ==" >> $seqres.full
-> +
-> +				touch $SCRATCH_MNT/f1
-> +				create_fio_configs
-> +
-> +				cat $fio_aw_config >> $seqres.full
-> +				echo >> $seqres.full
-> +				cat $fio_verify_config >> $seqres.full
-> +
-> +				$FIO_PROG $fio_aw_config >> $seqres.full
-> +				ret1=$?
-> +
-> +				$FIO_PROG $fio_verify_config >> $seqres.full
-> +				ret2=$?
-> +
-> +				_scratch_unmount
-> +
-> +				[[ $ret1 -eq 0 && $ret2 -eq 0 ]] || _fail "fio with atomic write failed"
-> +			fi
-> +		done
+> +atomic_write_loop() {
+> +	local off=0
+> +	local size=$awu_max
+> +	for ((i=0; i<$((filesize / $size )); i++)); do
+> +		# Due to sudden shutdown this can produce errors so just
+> +		# redirect them to seqres.full
+> +		$XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $size $off $size" >> /dev/null 2>>$seqres.full
+> +		echo "Written to offset: $off" >> $tmp.aw
+> +		off=$((off + $size))
 > +	done
+> +}
+> +
+> +# This test has the following flow:
+> +# 1. Start doing sequential atomic writes in bg, upto $filesize
+> +# 2. Sleep for 0.2s and shutdown the FS
+> +# 3. kill the atomic write process
+> +# 4. verify the writes were not torn
+> +#
+> +# We ideally want the shutdown to happen while an atomic write is ongoing
+> +# but this gets tricky since faster devices can actually finish the whole
+> +# atomic write loop before sleep 0.2s completes, resulting in the shutdown
+> +# happening after the write loop which is not what we want. A simple solution
+> +# to this is to increase $filesize so step 1 takes long enough but a big
+> +# $filesize leads to create_mixed_mappings() taking very long, which is not
+> +# ideal.
+> +#
+> +# Hence, use the dry_run function to figure out the rough device speed and set
+> +# $filesize accordingly.
+> +dry_run() {
+> +	echo >> $seqres.full
+> +	echo "# Estimating ideal filesize..." >> $seqres.full
+> +	atomic_write_loop &
+> +	awloop_pid=$!
+> +
+> +	local i=0
+> +	# Wait for atleast first write to be recorded or 10s
+> +	while [ ! -f "$tmp.aw" -a $i -le 50 ]; do i=$((i + 1)); sleep 0.2; done
+> +
+> +	if [[ $i -gt 50 ]]
+> +	then
+> +		_fail "atomic write process took too long to start"
+> +	fi
+> +
+> +	echo >> $seqres.full
+> +	echo "# Shutting down filesystem while write is running" >> $seqres.full
+> +	_scratch_shutdown
+> +
+> +	kill $awloop_pid 2>/dev/null  # the process might have finished already
+> +	wait $awloop_pid
+> +	unset $awloop_pid
+> +
+> +	bytes_written=$(tail -n 1 $tmp.aw | cut -d" " -f4)
+> +	echo "# Bytes written in 0.2s: $bytes_written" >> $seqres.full
+> +
+> +	filesize=$((bytes_written * 3))
+> +	echo "# Setting \$filesize=$filesize" >> $seqres.full
+> +
+> +	rm $tmp.aw
+> +	sleep 0.5
+> +
+> +	_scratch_cycle_mount
+> +
+> +}
+> +
+> +create_mixed_mappings() {
+> +	local file=$1
+> +	local size_bytes=$2
+> +
+> +	echo "# Filling file $file with alternate mappings till size $size_bytes" >> $seqres.full
+> +	#Fill the file with alternate written and unwritten blocks
+> +	local off=0
+> +	local operations=("W" "U")
+> +
+> +	for ((i=0; i<$((size_bytes / blksz )); i++)); do
+> +		index=$(($i % ${#operations[@]}))
+> +		map="${operations[$index]}"
+> +
+> +		case "$map" in
+> +		    "W")
+> +			$XFS_IO_PROG -fc "pwrite -b $blksz $off $blksz" $file  >> /dev/null
+> +			;;
+> +		    "U")
+> +			$XFS_IO_PROG -fc "falloc $off $blksz" $file >> /dev/null
+> +			;;
+> +		esac
+> +		off=$((off + blksz))
+> +	done
+> +
+> +	sync $file
+> +}
+> +
+> +populate_expected_data() {
+> +	# create a dummy file with expected old data for different cases
+> +	create_mixed_mappings $testfile.exp_old_mixed $awu_max
+> +	expected_data_old_mixed=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp_old_mixed)
+> +
+> +	$XFS_IO_PROG -fc "falloc 0 $awu_max" $testfile.exp_old_zeroes >> $seqres.full
+> +	expected_data_old_zeroes=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp_old_zeroes)
+> +
+> +	$XFS_IO_PROG -fc "pwrite -b $awu_max 0 $awu_max" $testfile.exp_old_mapped >> $seqres.full
+> +	expected_data_old_mapped=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp_old_mapped)
+> +
+> +	# create a dummy file with expected new data
+> +	$XFS_IO_PROG -fc "pwrite -S 0x61 -b $awu_max 0 $awu_max" $testfile.exp_new >> $seqres.full
+> +	expected_data_new=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp_new)
+> +}
+> +
+> +verify_data_blocks() {
+> +	local verify_start=$1
+> +	local verify_end=$2
+> +	local expected_data_old="$3"
+> +	local expected_data_new="$4"
+> +
+> +	echo >> $seqres.full
+> +	echo "# Checking data integrity from $verify_start to $verify_end" >> $seqres.full
+> +
+> +	# After an atomic write, for every chunk we ensure that the underlying
+> +	# data is either the old data or new data as writes shouldn't get torn.
+> +	local off=$verify_start
+> +	while [[ "$off" -lt "$verify_end" ]]
+> +	do
+> +		#actual_data=$(xxd -s $off -l $awu_max -p $testfile)
+> +		actual_data=$(od -An -t x1 -j $off -N $awu_max $testfile)
+> +		if [[ "$actual_data" != "$expected_data_new" ]] && [[ "$actual_data" != "$expected_data_old" ]]
+> +		then
+> +			echo "Checksum match failed at off: $off size: $awu_max"
+> +			echo "Expected contents: (Either of the 2 below):"
+> +			echo
+> +			echo "Expected old: "
+> +			echo "$expected_data_old"
+> +			echo
+> +			echo "Expected new: "
+> +			echo "$expected_data_new"
+> +			echo
+> +			echo "Actual contents: "
+> +			echo "$actual_data"
+> +
+> +			_fail
+> +		fi
+> +		echo -n "Check at offset $off suceeded! " >> $seqres.full
+> +		if [[ "$actual_data" == "$expected_data_new" ]]
+> +		then
+> +			echo "matched new" >> $seqres.full
+> +		elif [[ "$actual_data" == "$expected_data_old" ]]
+> +		then
+> +			echo "matched old" >> $seqres.full
+> +		fi
+> +		off=$(( off + awu_max ))
+> +	done
+> +}
+> +
+> +# test data integrity for file by shutting down in between atomic writes
+> +test_data_integrity() {
+> +	echo >> $seqres.full
+> +	echo "# Writing atomically to file in background" >> $seqres.full
+> +	atomic_write_loop &
+> +	awloop_pid=$!
+> +
+> +	local i=0
+> +	# Wait for atleast first write to be recorded or 10s
+> +	while [ ! -f "$tmp.aw" -a $i -le 50 ]; do i=$((i + 1)); sleep 0.2; done
+> +
+> +	if [[ $i -gt 50 ]]
+> +	then
+> +		_fail "atomic write process took too long to start"
+> +	fi
+> +
+> +	echo >> $seqres.full
+> +	echo "# Shutting down filesystem while write is running" >> $seqres.full
+> +	_scratch_shutdown
+> +
+> +	kill $awloop_pid 2>/dev/null  # the process might have finished already
+> +	wait $awloop_pid
+> +	unset $awloop_pid
+> +
+> +	last_offset=$(tail -n 1 $tmp.aw | cut -d" " -f4)
+> +	if [[ -z $last_offset ]]
+> +	then
+> +		last_offset=0
+> +	fi
+> +
+> +	echo >> $seqres.full
+> +	echo "# Last offset of atomic write: $last_offset" >> $seqres.full
+> +
+> +	rm $tmp.aw
+> +	sleep 0.5
+> +
+> +	_scratch_cycle_mount
+> +
+> +	# we want to verify all blocks around which the shutdown happended
+> +	verify_start=$(( last_offset - (awu_max * 5)))
+> +	if [[ $verify_start < 0 ]]
+> +	then
+> +		verify_start=0
+> +	fi
+> +
+> +	verify_end=$(( last_offset + (awu_max * 5)))
+> +	if [[ "$verify_end" -gt "$filesize" ]]
+> +	then
+> +		verify_end=$filesize
+> +	fi
+> +}
+> +
+> +# test data integrity for file wiht written and unwritten mappings
+> +test_data_integrity_mixed() {
+> +	$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
+> +
+> +	echo >> $seqres.full
+> +	echo "# Creating testfile with mixed mappings" >> $seqres.full
+> +	create_mixed_mappings $testfile $filesize
+> +
+> +	test_data_integrity
+> +
+> +	verify_data_blocks $verify_start $verify_end "$expected_data_old_mixed" "$expected_data_new"
+> +}
+> +
+> +# test data integrity for file with completely written mappings
+> +test_data_integrity_writ() {
+> +	$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
+> +
+> +	echo >> $seqres.full
+> +	echo "# Creating testfile with fully written mapping" >> $seqres.full
+> +	$XFS_IO_PROG -c "pwrite -b $filesize 0 $filesize" $testfile >> $seqres.full
+> +	sync $testfile
+> +
+> +	test_data_integrity
+> +
+> +	verify_data_blocks $verify_start $verify_end "$expected_data_old_mapped" "$expected_data_new"
+> +}
+> +
+> +# test data integrity for file with completely unwritten mappings
+> +test_data_integrity_unwrit() {
+> +	$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
+> +
+> +	echo >> $seqres.full
+> +	echo "# Creating testfile with fully unwritten mappings" >> $seqres.full
+> +	$XFS_IO_PROG -c "falloc 0 $filesize" $testfile >> $seqres.full
+> +	sync $testfile
+> +
+> +	test_data_integrity
+> +
+> +	verify_data_blocks $verify_start $verify_end "$expected_data_old_zeroes" "$expected_data_new"
+> +}
+> +
+> +# test data integrity for file with no mappings
+> +test_data_integrity_hole() {
+> +	$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
+> +
+> +	echo >> $seqres.full
+> +	echo "# Creating testfile with no mappings" >> $seqres.full
+> +	$XFS_IO_PROG -c "truncate $filesize" $testfile >> $seqres.full
+> +	sync $testfile
+> +
+> +	test_data_integrity
+> +
+> +	verify_data_blocks $verify_start $verify_end "$expected_data_old_zeroes" "$expected_data_new"
+> +}
+> +
+> +test_filesize_integrity() {
+> +	$XFS_IO_PROG -c "truncate 0" $testfile >> $seqres.full
+> +
+> +	echo >> $seqres.full
+> +	echo "# Performing extending atomic writes over file in background" >> $seqres.full
+> +	atomic_write_loop &
+> +	awloop_pid=$!
+> +
+> +	local i=0
+> +	# Wait for atleast first write to be recorded or 10s
+> +	while [ ! -f "$tmp.aw" -a $i -le 50 ]; do i=$((i + 1)); sleep 0.2; done
+> +
+> +	if [[ $i -gt 50 ]]
+> +	then
+> +		_fail "atomic write process took too long to start"
+> +	fi
+> +
+> +	echo >> $seqres.full
+> +	echo "# Shutting down filesystem while write is running" >> $seqres.full
+> +	_scratch_shutdown
+> +
+> +	kill $awloop_pid 2>/dev/null  # the process might have finished already
+> +	wait $awloop_pid
+> +	unset $awloop_pid
+> +
+> +	local last_offset=$(tail -n 1 $tmp.aw | cut -d" " -f4)
+> +	if [[ -z $last_offset ]]
+> +	then
+> +		last_offset=0
+> +	fi
+> +
+> +	echo >> $seqres.full
+> +	echo "# Last offset of atomic write: $last_offset" >> $seqres.full
+> +	rm $tmp.aw
+> +	sleep 0.5
+> +
+> +	_scratch_cycle_mount
+> +	local filesize=$(_get_filesize $testfile)
+> +	echo >> $seqres.full
+> +	echo "# Filesize after shutdown: $filesize" >> $seqres.full
+> +
+> +	# To confirm that the write went atomically, we check:
+> +	# 1. The last block should be a multiple of awu_max
+> +	# 2. The last block should be the completely new data
+> +
+> +	if (( $filesize % $awu_max ))
+> +	then
+> +		echo "Filesize after shutdown ($filesize) not a multiple of atomic write unit ($awu_max)"
+> +	fi
+> +
+> +	verify_start=$(( filesize - (awu_max * 5)))
+> +	if [[ $verify_start < 0 ]]
+> +	then
+> +		verify_start=0
+> +	fi
+> +
+> +	local verify_end=$filesize
+> +
+> +	# Here the blocks should always match new data hence, for simplicity of
+> +	# code, just corrupt the $expected_data_old buffer so it never matches
+> +	local expected_data_old="POISON"
+> +	verify_data_blocks $verify_start $verify_end "$expected_data_old" "$expected_data_new"
+> +}
+> +
+> +$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
+> +
+> +dry_run
+> +
+> +echo >> $seqres.full
+> +echo "# Populating expected data buffers" >> $seqres.full
+> +populate_expected_data
+> +
+> +# Loop 20 times to shake out any races due to shutdown
+> +for ((iter=0; iter<20; iter++))
+> +do
+> +	echo >> $seqres.full
+> +	echo "------ Iteration $iter ------" >> $seqres.full
+> +
+> +	echo >> $seqres.full
+> +	echo "# Starting data integrity test for atomic writes over mixed mapping" >> $seqres.full
+> +	test_data_integrity_mixed
+> +
+> +	echo >> $seqres.full
+> +	echo "# Starting data integrity test for atomic writes over fully written mapping" >> $seqres.full
+> +	test_data_integrity_writ
+> +
+> +	echo >> $seqres.full
+> +	echo "# Starting data integrity test for atomic writes over fully unwritten mapping" >> $seqres.full
+> +	test_data_integrity_unwrit
+> +
+> +	echo >> $seqres.full
+> +	echo "# Starting data integrity test for atomic writes over holes" >> $seqres.full
+> +	test_data_integrity_hole
+> +
+> +	echo >> $seqres.full
+> +	echo "# Starting filesize integrity test for atomic writes" >> $seqres.full
+> +	test_filesize_integrity
 > +done
 > +
-> +# success, all done
-> +echo Silence is golden
+> +echo "Silence is golden"
 > +status=0
 > +exit
-> diff --git a/tests/ext4/061.out b/tests/ext4/061.out
+> diff --git a/tests/generic/1230.out b/tests/generic/1230.out
 > new file mode 100644
-> index 00000000..273be9e0
+> index 00000000..d01f54ea
 > --- /dev/null
-> +++ b/tests/ext4/061.out
+> +++ b/tests/generic/1230.out
 > @@ -0,0 +1,2 @@
-> +QA output created by 061
+> +QA output created by 1230
 > +Silence is golden
 > -- 
 > 2.49.0
