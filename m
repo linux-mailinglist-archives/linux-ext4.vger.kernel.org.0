@@ -1,66 +1,58 @@
-Return-Path: <linux-ext4+bounces-9217-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9218-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AE5BB14F7C
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 16:45:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA17EB15382
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 21:37:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44EDF4E455B
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 14:45:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A50AC7B0BD4
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 19:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83B81E633C;
-	Tue, 29 Jul 2025 14:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88E90242927;
+	Tue, 29 Jul 2025 19:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uwk+hC9D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fUJsvXRH"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78FE91E492;
-	Tue, 29 Jul 2025 14:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1593EF507;
+	Tue, 29 Jul 2025 19:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753800327; cv=none; b=IW2O1wbFxrbZZcOCKfF6DMYcsysESh5jDMyH59TzrKFiVGS+JoyVoJmn+BQfwmD7vCXvpPwrYEhbGOu2ETubdq/iRnWtMJIbV6jjln001QWfs2dlL13q9FtkJM4cLffdxV1Q8nsNQ7RzBA1AkZYNHecLgXWJC7FAKwDlB3OwYgc=
+	t=1753817813; cv=none; b=X8VaSHrqU6YDEASxajm25iYlnxjKfg7q4PO9V7JZTO0PJpdx+sANlOyGCH6vfB3ZIrWomPsRKbwLHUIiPFzmtEWQqZPisMujbwQEVpQA4JRBiq9WqpKK1bbTswNVgfFddoyBCkELs2qIjm32SQF+9EmZtGltSu5vRa2qOZJ2t8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753800327; c=relaxed/simple;
-	bh=F/Bh+Ko7ppvbg/wnZKDwtyoTD+8mKkxRf3M7eQV81Rc=;
+	s=arc-20240116; t=1753817813; c=relaxed/simple;
+	bh=roOFkqTFzp4zTjiVcl31QDnEMxJzSfs1CfVy7zIV4Cg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aQSGH4AyDtqHklkl0tGiPe8BorZLbQBQHa1hXdGNKECaezXc34huLYOpbhtsLHQQqLCtv/s9rVmpo+NlcpkvFyp8Zm+rW0Up5pMboMIaVemGKfpNaYHJTcjfqoYklNzdsG07NNo4jpV6HCBrNKHQoy5Sfz40WjGld4AVYzgrgek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uwk+hC9D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0354FC4CEF4;
-	Tue, 29 Jul 2025 14:45:26 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=sn+B4YoQVcjLv3rRl/Yr3HGGpK5aaYv6ybVSCXtBlriyL39oPk269lCVeDbNokMB5qKwgT775BicC3I6Z4f70Oq5vpg9CX5P4lhjhRUjjvDgHzh+GdacBoGfe9ZdaU1uw47sv8LBwFOz856/b2zcfwzDO3tNm3GP0KcpdfKXJYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fUJsvXRH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F034C4CEEF;
+	Tue, 29 Jul 2025 19:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753800327;
-	bh=F/Bh+Ko7ppvbg/wnZKDwtyoTD+8mKkxRf3M7eQV81Rc=;
+	s=k20201202; t=1753817812;
+	bh=roOFkqTFzp4zTjiVcl31QDnEMxJzSfs1CfVy7zIV4Cg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uwk+hC9DrAJEjata9Hgdy5oewaZG9KXV8YmIkeUonkXlDl9Mo/ZaRNNAAFHmLlXIm
-	 KLHSpkAK72Q0nnZKayxuc8nOidM4LctrisYowwCVXZ0GcqvgP6CwEc2BrW49MlMhII
-	 QffzsvQNO4ow09OKUf8X1rnNUinMUPXjz63ccvCaoZRxTXxjy2neZm4rMNokYZhfSW
-	 2bPa/99E7L7WnnOlI1tOfD+ALfreLAq4WKutVmwVgktgg7u+4/vPIHsWJL/PYiNt9i
-	 c0OmBB5PYJXqf/iRUoposDzCl13gxxlfMU5R744HRzpyscXfbxBADBajxAfGIKc1j3
-	 NtG88owBSUi/A==
-Date: Tue, 29 Jul 2025 07:45:26 -0700
+	b=fUJsvXRH4YcSxYcTWBV9YbGPiYZPlhblP5hKP62hSog2kJBI++PN9T2FtZ3Vj4J2X
+	 iCN2Y97Vxe2E6/BzBcI0IEzqtnlMlNGrCku3m6/tC6FB12kgXG9N+ErrLxQdik1kQO
+	 wHZYk3YAe/bfAB5EvwXlhs3v7YZHASr+2ueat9T3uyZ91os8ib6ZtLV6fMsDqH9+1r
+	 qzNSax/gDGzhOZww9OkdV2Cs8b3WHgoJqGePvkwOWDx2xBGOTJ+SmrqRxDevWrXDMC
+	 2KvUTJcWEly0rCM0Oqlopglw0D2As6DB1O6pG2xZi7HIdXiKv2XjqaDQsmsbXqcoDn
+	 OVJ57NNoc9AUw==
+Date: Tue, 29 Jul 2025 12:36:51 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: John Garry <john.g.garry@oracle.com>, Zorro Lang <zlang@redhat.com>,
-	fstests@vger.kernel.org, Ritesh Harjani <ritesh.list@gmail.com>,
+Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
+	Ritesh Harjani <ritesh.list@gmail.com>, john.g.garry@oracle.com,
 	tytso@mit.edu, linux-xfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 05/13] generic/1226: Add atomic write test using fio
- crc check verifier
-Message-ID: <20250729144526.GB2672049@frogsfrogsfrogs>
-References: <7fc0f04e-dcec-47a4-b522-eb5a8b90637c@oracle.com>
- <aIDozETJ8aLparYV@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <9b9ed959-bda5-4a92-90c7-a621ffe58240@oracle.com>
- <aIMjrunlU04jI2lF@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <0af205d9-6093-4931-abe9-f236acae8d44@oracle.com>
- <aIccCgrCuQ4Wf1OH@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <2ae4bb04-fbf7-4a53-b498-ea6361cdab3e@oracle.com>
- <aId8oZGXSg5DW48X@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <3a4854ac-75ad-4783-acbd-048fe7c7fdb0@oracle.com>
- <aIhmG-l4nWOAzz2I@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Subject: Re: [PATCH v3 13/13] ext4/064: Add atomic write tests for journal
+ credit calculation
+Message-ID: <20250729193651.GS2672039@frogsfrogsfrogs>
+References: <cover.1752329098.git.ojaswin@linux.ibm.com>
+ <77fb2f74dfce591aed65364984803904da9c1408.1752329098.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -69,59 +61,127 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aIhmG-l4nWOAzz2I@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+In-Reply-To: <77fb2f74dfce591aed65364984803904da9c1408.1752329098.git.ojaswin@linux.ibm.com>
 
-On Tue, Jul 29, 2025 at 11:41:39AM +0530, Ojaswin Mujoo wrote:
-> On Mon, Jul 28, 2025 at 03:00:40PM +0100, John Garry wrote:
-> > On 28/07/2025 14:35, Ojaswin Mujoo wrote:
-> > > > We guarantee that the write is committed all-or-nothing, but do rely on
-> > > > userspace not issuing racing atomic writes or racing regular writes.
-> > > > 
-> > > > I can easily change this, as I mentioned, but I am not convinced that it is
-> > > > a must.
-> > > Purely from a design point of view, I feel we are breaking atomicity and
-> > > hence we should serialize or just stop userspace from doing this (which
-> > > is a bit extreme).
-> > 
-> > If you check the man page description of RWF_ATOMIC, it does not mention
-> > serialization. The user should conclude that usual direct IO rules apply,
-> > i.e. userspace is responsible for serializing.
+On Sat, Jul 12, 2025 at 07:42:55PM +0530, Ojaswin Mujoo wrote:
+> Test atomic writes with journal credit calculation. We take 2 cases
+> here:
 > 
-> My mental model of serialization in context of atomic writes is that if
-> user does 64k atomic write A followed by a parallel overlapping 64kb
-> atomic write B then the user might see complete A or complete B (we
-> don't guarantee) but not a mix of A and B.
+> 1. Atomic writes on single mapping causing tree to collapse into
+>    the inode
+> 2. Atomic writes on mixed mapping causing tree to collapse into the
+>    inode
+> 
+> This test is inspired by ext4/034.
+> 
+> Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> ---
+>  tests/ext4/064     | 75 ++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/ext4/064.out |  2 ++
+>  2 files changed, 77 insertions(+)
+>  create mode 100755 tests/ext4/064
+>  create mode 100644 tests/ext4/064.out
+> 
+> diff --git a/tests/ext4/064 b/tests/ext4/064
+> new file mode 100755
+> index 00000000..ec31f983
+> --- /dev/null
+> +++ b/tests/ext4/064
+> @@ -0,0 +1,75 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
+> +#
+> +# FS QA Test 034
+> +#
+> +# Test proper credit reservation is done when performing
+> +# tree collapse during an aotmic write based allocation
+> +#
+> +. ./common/preamble
+> +. ./common/atomicwrites
+> +_begin_fstest auto quick quota fiemap prealloc atomicwrites
+> +
+> +# Import common functions.
+> +
+> +
+> +# Modify as appropriate.
+> +_exclude_fs ext2
+> +_exclude_fs ext3
+> +_require_xfs_io_command "falloc"
+> +_require_xfs_io_command "fiemap"
+> +_require_xfs_io_command "syncfs"
+> +_require_scratch_write_atomic_multi_fsblock
+> +_require_atomic_write_test_commands
 
-Heh, here comes that feature naming confusing again.  This is my
-definition:
+_require_metadata_journaling $SCRATCH_DEV ?
 
-RWF_ATOMIC means the system won't introduce new tearing when persisting
-file writes.  The application is allowed to introduce tearing by writing
-to overlapping ranges at the same time.  The system does not isolate
-overlapping reads from writes.
+> +
+> +echo "----- Testing with atomic write on non-mixed mapping -----" >> $seqres.full
+> +
+> +echo "Format and mount" >> $seqres.full
+> +_scratch_mkfs  > $seqres.full 2>&1
+> +_scratch_mount > $seqres.full 2>&1
+> +
+> +echo "Create the original file" >> $seqres.full
+> +touch $SCRATCH_MNT/foobar >> $seqres.full
+> +
+> +echo "Create 2 level extent tree (btree) for foobar with a unwritten extent" >> $seqres.full
+> +$XFS_IO_PROG -f -c "pwrite 0 4k" -c "falloc 4k 4k" -c "pwrite 8k 4k" \
+> +	     -c "pwrite 20k 4k"  -c "pwrite 28k 4k" -c "pwrite 36k 4k" \
+> +	     -c "fsync" $SCRATCH_MNT/foobar >> $seqres.full
+
+What happens if the block size isn't 4k?
 
 --D
 
-> > 
-> > > 
-> > > I know userspace should ideally not do overwriting atomic writes but if
-> > > it is something we are allowing (which we do) then it is
-> > > kernel's responsibility to ensure atomicity. Sure we can penalize them
-> > > by serializing the writes but not by tearing it.
-> > > 
-> > > With that reasoning, I don't think the test should accomodate for this
-> > > particular scenario.
-> > 
-> > I can send a patch to the community for xfs (to provide serialization), like
-> > I showed earlier, to get opinion.
+> +
+> +$XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/foobar >> $seqres.full
+> +
+> +echo "Convert unwritten extent to written and collapse extent tree to inode" >> $seqres.full
+> +$XFS_IO_PROG -dc "pwrite -A -V1 4k 4k" $SCRATCH_MNT/foobar >> $seqres.full
+> +
+> +echo "Create a new file and do fsync to force a jbd2 commit" >> $seqres.full
+> +$XFS_IO_PROG -f -c "pwrite 0 4k" -c "fsync" $SCRATCH_MNT/dummy >> $seqres.full
+> +
+> +echo "sync $SCRATCH_MNT to writeback" >> $seqres.full
+> +$XFS_IO_PROG -c "syncfs" $SCRATCH_MNT >> $seqres.full
+> +
+> +echo "----- Testing with atomi write on mixed mapping -----" >> $seqres.full
+> +
+> +echo "Create the original file" >> $seqres.full
+> +touch $SCRATCH_MNT/foobar2 >> $seqres.full
+> +
+> +echo "Create 2 level extent tree (btree) for foobar2 with a unwritten extent" >> $seqres.full
+> +$XFS_IO_PROG -f -c "pwrite 0 4k" -c "falloc 4k 4k" -c "pwrite 8k 4k" \
+> +	     -c "pwrite 20k 4k"  -c "pwrite 28k 4k" -c "pwrite 36k 4k" \
+> +	     -c "fsync" $SCRATCH_MNT/foobar2 >> $seqres.full
+> +
+> +$XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/foobar2 >> $seqres.full
+> +
+> +echo "Convert unwritten extent to written and collapse extent tree to inode" >> $seqres.full
+> +$XFS_IO_PROG -dc "pwrite -A -V1 0k 12k" $SCRATCH_MNT/foobar2 >> $seqres.full
+> +
+> +echo "Create a new file and do fsync to force a jbd2 commit" >> $seqres.full
+> +$XFS_IO_PROG -f -c "pwrite 0 4k" -c "fsync" $SCRATCH_MNT/dummy2 >> $seqres.full
+> +
+> +echo "sync $SCRATCH_MNT to writeback" >> $seqres.full
+> +$XFS_IO_PROG -c "syncfs" $SCRATCH_MNT >> $seqres.full
+> +
+> +# success, all done
+> +echo "Silence is golden"
+> +status=0
+> +exit
+> diff --git a/tests/ext4/064.out b/tests/ext4/064.out
+> new file mode 100644
+> index 00000000..d9076546
+> --- /dev/null
+> +++ b/tests/ext4/064.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 064
+> +Silence is golden
+> -- 
+> 2.49.0
 > 
-> Thanks, that would be great.
-> 
-> Regards,
-> John
-> > 
-> > Thanks,
-> > John
-> > 
 > 
 
