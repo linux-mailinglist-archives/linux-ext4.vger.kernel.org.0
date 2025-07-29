@@ -1,129 +1,112 @@
-Return-Path: <linux-ext4+bounces-9210-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9211-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AB06B1457B
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 02:57:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 660C1B14586
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 03:04:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9EE63A7593
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 00:56:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B19553BC456
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Jul 2025 01:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B22186E40;
-	Tue, 29 Jul 2025 00:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FD518DF89;
+	Tue, 29 Jul 2025 01:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cKBWBRJM"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NS3UWwS3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BCF42AE90;
-	Tue, 29 Jul 2025 00:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F3E26AC3;
+	Tue, 29 Jul 2025 01:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753750611; cv=none; b=MklpNtGLjbocbXrouLzkLHLSk23YOCZPidMNIpJz456GcYagiq+/WziGkQ1z1aKzMk7NLrIj4am+WGe0rzMyvUOqy8JzDmOQzkQ2EV1TYz6jVC1m409MOPUQk0/zYYg/MAXpb4xtPtQ9F4lA5+6/7cZ1kpjx38tvVY++z/NIzKU=
+	t=1753751041; cv=none; b=ERfxZL8/58YPx/pD4J9tu8Ssi427mbob6N7bzVZn/SD0jZiU7rmhgi6K6U8HUj7FWopy38RVBZLOCVws/ez8jvR2drQW5PMB9hZmKKk/N6ztTTEYPUV1sRjdzkUSi+mDz/Ia3ovKADAhPpgDFq+G/NCF85McMQ+RFCTArXYA/BY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753750611; c=relaxed/simple;
-	bh=ZRj0BA6FAuWiJdzSHX7Yi5bfqEmLROewvDuAP1PQ8QI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pjtIYfQgjxCXG78zgg3HQIZvmIukcZ8+Q+pJNBSYjd+TBcoTK0czn8EqJAT4k0CXtZzNUdD22g3FaDv7UUr48Wuct66GWqD0gUM1/Rc5S9GDNav2iIypEhkQCCg9gYh6qasv6RLZWadgsb30QXwxohxBNOKaFjJXRCB6fVHND10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cKBWBRJM; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2402774851fso17723005ad.1;
-        Mon, 28 Jul 2025 17:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753750609; x=1754355409; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=84J/uTIpBTek7M7s8ekKOao4paiVT7+Ml3Zn33DutDY=;
-        b=cKBWBRJMrZwTGH24ClOeDUPsZvOKt9ArYLrDxjTjUTJsepykgGscN+3GlAzozCdZPN
-         D+TPqNTZaoRk6ep4yoQvjMx6tu3wSz+uBhlppnFQvl8btVB4nDG1q0lQR50JXYA4wAl9
-         6fU/MK+4Rdu80/Gq7hlpAYtr0Ri83J67Zguur5Wp5cz3UGiLyohbJOlpnTOCpeeCng0N
-         e97aNLj1NtkU0mkMB3vwhrsCTpRppwL5mNO1trS/8tKDnB9NG2EAoaACyq/v2IW8U5L5
-         E09EXl+amJ+kLcH5eThidf/MKYy+9F3/vZJBxoTIOHhD8YuX8/ErDxiJquR9ph5LZ8+D
-         PH+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753750609; x=1754355409;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=84J/uTIpBTek7M7s8ekKOao4paiVT7+Ml3Zn33DutDY=;
-        b=LzTgRm85R7+3fcgtFGe8nEVRMg8qo1sMOJhLswjSvsgdz77ldUWFJI/Z2+mspYaPtG
-         2j555EJD8J0BdeB89Mf3HPnpj7QLHxDxpJwtBvlOwaiEsvjShzzvg34e4lDQL5ExAXy/
-         NLajVYPPLjn1WoFLkUDzvGcbqmFgwNT/HMf166FYW8WZRwGh+r0um/Gf9roNcn/tmxia
-         BguYjT4KBafYMjGnSkTexTyDu9NSy+dmhQM0YSJ6kYWu1ZHQWcoFIDW2ceqEVO1DCoYJ
-         7UW8v7+aC27usODo/wnu4aJONlrvBw+kV2S52XSEUog/f4ogDkkYBmVMP/zZwk8In+7x
-         rQdA==
-X-Forwarded-Encrypted: i=1; AJvYcCUi4dDvV/XaOP+pjtljnbtxTPOQtXODBvVNl1jXsvY+LE+mMzuCJw2K9KE2fn4aTlH3uQ/Qx3YUPUEUKx2K@vger.kernel.org, AJvYcCV0QGMCafBKO2jxyh+6lXLe1kgJhqMf1YgbpjkwF34pvgJPhEC0hiXdA+pOGtN75vIA2d7pgmmw4JM=@vger.kernel.org, AJvYcCXBaG/uiRpQDQaYuzyqzmkujfvnltWdb7WoLdD6fO5lGPrm7+Rnt4A6own7oLpeau1KIHkT6JuMs/UjNA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzutWcwFl39BtsJkvozFa/LVbdn0V3jB2Rvuwekl6mfes0yfcRW
-	SH0fizTWhL9Qt7LPoTfG3JiZrkWiXwOE5VkmC9PLJsno3MnU+QZ+hrs2
-X-Gm-Gg: ASbGncsBTyWvLWUgSF6bezrrUdCWdhpCgkrYfmGp3b/POFNboDDTANRG/ZkWpZu9UwW
-	e1ebTdISPh2VIPXT8LHSCDzbMLdHbzdyjj+CH1L9T2a3PNkuvmBd/7Ce1r4hagNqe5hW9Ynad+J
-	CGMoNBR8f51VHnAF3ZT4E2AUSvC84AhxUnMuffHQsTXyp4venGjGtW2dWAmq3Tksp+OvYcnqg0N
-	jtMIVPLE0MNmVtxSwUZrPLaLgNkMX4vE8o0Q0BXoBQVx1/wOsDrwITxGaFgNHLpi8Tqfh8W0XKs
-	mMnjSWE88V4cwQhUkMeUWBWdf+AntzOABSCoxkGrSY2d/FWWKxQz4izmBTnkaeTxNGKL7lVDDsW
-	JcGc+/1U0AtoWWVFbZv40nhfFcPPNgSqcJHM=
-X-Google-Smtp-Source: AGHT+IGJKFEVQoBw3Z8VAFR7xi9JSagw5fpw/hROPG/o9WSAO/0cKgapmoBHsdkdUpwtRR23/6iUow==
-X-Received: by 2002:a17:903:1111:b0:234:d7b2:2ac3 with SMTP id d9443c01a7336-23fb3029b76mr171942425ad.20.1753750609133;
-        Mon, 28 Jul 2025 17:56:49 -0700 (PDT)
-Received: from alkaleus ([168.0.235.14])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23ff1dbec8esm48310715ad.194.2025.07.28.17.56.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jul 2025 17:56:48 -0700 (PDT)
-From: Andre Luiz da Nobrega <andreluizrodriguescastro@gmail.com>
-To: tytso@mit.edu
-Cc: adilger.kernel@dilger.ca,
-	corbet@lwn.net,
-	linux-ext4@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: ext4: fix duplicate Sphinx labels in atomic_writes.rst
-Date: Mon, 28 Jul 2025 21:56:28 -0300
-Message-ID: <20250729005628.68795-1-andreluizrodriguescastro@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1753751041; c=relaxed/simple;
+	bh=xvL5Snk9AkC2TzpByv0i3/kjTLO4XcHtgHVQhzVmSfo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qHLvJAXJ3Fop6YQ4zz9n6ywqtmKyU+v4010pqiSFu9rd8QpwUqK2m4GdviIfZ2CMEQQuAWd2wEC9PVUESe5fNnphyQ56xBmsAPhpYG7RIlDJFzCyv8Rf7Kj5fnIczCcnLYsw3jpo2dcaAtFYoYEggiYJV05qCpyd0g9XFkYyH6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NS3UWwS3; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=45IU08JIJqJgViVt6DYreAvaMpc8wW/LjPAgfw8p8cw=; b=NS3UWwS3L1wkNp4hrrqpO0/pX8
+	6DcSm7CVRywsT8mNyns+lY4OvTqH2j8OBlUaSaNBco5Q4i2QYbVbBF920B8WQBcThhVuxCZ2fpvHe
+	eNN7uHxNOfBxXetPdVAQNyh/vmFiFwZGYleoIMmlWm7XFgaTyGjRhh4TFjY7/xndySdk2pI+AR781
+	8Sg0jh6ibvOqzIR2vAN1bzX/ssEJK8rsCYSGm+spaOsfvMmFakVdyG8WZmTx6E4m2+ZVP2nmuDmPi
+	/r2cICOCSDUkzcZywNGw/zQFei9QsyiWyzBnCrtKq23AOYLhU3IJYWhXULWk7tCKUkmE7Vgvu+HhJ
+	J7kmm3Qg==;
+Received: from [50.53.25.54] (helo=[192.168.254.17])
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ugYl5-0000000Ffs2-1IUK;
+	Tue, 29 Jul 2025 01:03:59 +0000
+Message-ID: <0b5d7ca5-cc85-4f6b-b417-0d237d9d45a4@infradead.org>
+Date: Mon, 28 Jul 2025 18:03:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs: ext4: fix duplicate Sphinx labels in
+ atomic_writes.rst
+To: Andre Luiz da Nobrega <andreluizrodriguescastro@gmail.com>, tytso@mit.edu
+Cc: adilger.kernel@dilger.ca, corbet@lwn.net, linux-ext4@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250729005628.68795-1-andreluizrodriguescastro@gmail.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20250729005628.68795-1-andreluizrodriguescastro@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Fixes Sphinx warnings about duplicate reference labels in
-Documentation/filesystems/ext4/atomic_writes.rst.
+Hi,
 
-Specifically, the label '.. _atomic_write_bdev_support:' was renamed to
-'.. _atomic_write_bdev_support_section:' to ensure label uniqueness
-within the document.
+It seems that the patch and the $Subject do not agree.
 
-Signed-off-by: Andre Luiz da Nobrega <andreluizrodriguescastro@gmail.com>
----
- Documentation/arch/powerpc/index.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/arch/powerpc/index.rst b/Documentation/arch/powerpc/index.rst
-index 0560cbae5fa1..ce39b54b5a7d 100644
---- a/Documentation/arch/powerpc/index.rst
-+++ b/Documentation/arch/powerpc/index.rst
-@@ -6,7 +6,7 @@ powerpc
- 
- .. toctree::
-     :maxdepth: 1
--
-+    
-     associativity
-     booting
-     bootwrapper
-@@ -20,6 +20,7 @@ powerpc
-     elfnote
-     firmware-assisted-dump
-     hvcs
-+    htm 
-     imc
-     isa-versions
-     kaslr-booke32
+On 7/28/25 5:56 PM, Andre Luiz da Nobrega wrote:
+> Fixes Sphinx warnings about duplicate reference labels in
+> Documentation/filesystems/ext4/atomic_writes.rst.
+> 
+> Specifically, the label '.. _atomic_write_bdev_support:' was renamed to
+> '.. _atomic_write_bdev_support_section:' to ensure label uniqueness
+> within the document.
+> 
+> Signed-off-by: Andre Luiz da Nobrega <andreluizrodriguescastro@gmail.com>
+> ---
+>  Documentation/arch/powerpc/index.rst | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/arch/powerpc/index.rst b/Documentation/arch/powerpc/index.rst
+> index 0560cbae5fa1..ce39b54b5a7d 100644
+> --- a/Documentation/arch/powerpc/index.rst
+> +++ b/Documentation/arch/powerpc/index.rst
+> @@ -6,7 +6,7 @@ powerpc
+>  
+>  .. toctree::
+>      :maxdepth: 1
+> -
+> +    
+>      associativity
+>      booting
+>      bootwrapper
+> @@ -20,6 +20,7 @@ powerpc
+>      elfnote
+>      firmware-assisted-dump
+>      hvcs
+> +    htm 
+>      imc
+>      isa-versions
+>      kaslr-booke32
+
 -- 
-2.50.1
+~Randy
 
 
