@@ -1,99 +1,103 @@
-Return-Path: <linux-ext4+bounces-9232-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9233-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C86BB15DA9
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jul 2025 11:57:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01A49B15E7F
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jul 2025 12:52:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECDF24E59C4
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jul 2025 09:55:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 510237A3C23
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Jul 2025 10:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56340291880;
-	Wed, 30 Jul 2025 09:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52272279DD3;
+	Wed, 30 Jul 2025 10:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fNd9zYpP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yO+QUXvs";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fNd9zYpP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yO+QUXvs"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xMzmwMLc";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4nq/T99R";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PAlx+ANF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9gSKyhV+"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A7C230981
-	for <linux-ext4@vger.kernel.org>; Wed, 30 Jul 2025 09:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 731B51990B7
+	for <linux-ext4@vger.kernel.org>; Wed, 30 Jul 2025 10:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753869350; cv=none; b=RNlsRESU5at4NW2pgfCzfmNkmKIIY2QpC6ml+oOA3wquE+ejp1Yriaz39VIoNsh5assbesuaQNYfCQ9+1a80fzlDFpWonUqHO+4mS6o3dA24BXs96eeKafW42tkVziRFBL4A7k4rlOHyGEx2zTyf/C/Spdo7RnsWu7jt3WUgCyo=
+	t=1753872761; cv=none; b=kvlq4zdVhhcMy4ZJggTFo9wrNOf+kK6TFrfsni97is4zr60u3nsa4iGiydvnePNHzDE5R7gT9Wjj7wjbCxIsR98JVnLutqaAI+y6XAVIHC//yqQgrUo/cD9UwiTfZSOlsNm0Ed0sJPh7beeJU33VaazZ/PD+blvxnqFLDFqKK30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753869350; c=relaxed/simple;
-	bh=XTXxciGEVeAh7uLF/y5qLSEgG0iN/zk4R/cgpxYEcYI=;
+	s=arc-20240116; t=1753872761; c=relaxed/simple;
+	bh=eFoOrlxqYnMnNvJOYUbqwIYNCizkzCg+QhTxHNXLwB4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tU5CWCZhKdeKNoIhfRc5F6M8bsLYmxZjvLsVuJsGTa/8E0tCLoWYW1epQDuwlCfkOO1mx0QcjdlsTSUKg7qvWIf10hg98ikNJZqMb34XhyR8L0GMNlQ8FZvQPqFLn9VL6srHVfsVlzrJlaj1pvJc2aWUuR2rOjlfW/KuqTxltdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fNd9zYpP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yO+QUXvs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fNd9zYpP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yO+QUXvs; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=XV6kdOByVGriAWdVnnjINyfOnqjkjAa0joyA6JXfLHH4ni93yl/nBB0ERbx88ynA7D9WaTdhCcTOvRCCEgZ3DokW0DlXvaKAmccLL4hUJEC6FTT+JwJtSKab80QsS7Gm4ziHG2NBQrtroO/7JtyEfy9DhDQI3HmVRnpYdGVmymI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xMzmwMLc; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4nq/T99R; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PAlx+ANF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9gSKyhV+; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 852C01F8D5;
-	Wed, 30 Jul 2025 09:55:46 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 581851F385;
+	Wed, 30 Jul 2025 10:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753869346; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1753872756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+4PFGiNz7H3oAIKcLDB2QM4lgpaFjNjpSnfL7WIyvjI=;
-	b=fNd9zYpPgfxEr2mtcchdYo6zL2AtvALdC5j+ascWH2H2XkbG3jljJa+T7H2AR7dlSc1lLU
-	KVeJEXea9/vM9uvm+gCYmLF5EDNWE4SW18v+46Yv8R37MpJ5pn/ePp/PTCqQ7wkQzRZauk
-	JxgOACUkatF4Lfeoaa7gyqGN4eoU7kU=
+	bh=wc301orRKr1+S2MHSitGz+H4D8xT/O9/Fr5lKe+1fVg=;
+	b=xMzmwMLcoKXPtfbgpkf/K4eCDc1YzDSooDORkXwYVttd1tQt1qAdx8t1GdLObf70YfM7Br
+	YWZFePc+V7ey4D1hietpdYYzGd4BYJxuEZH4RLZ9eru36KFRfFD3JfVnviPWl7jw2da/Lo
+	fxPLJpYwNG3+lP6TAvmzy1zyTkMSIsI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753869346;
+	s=susede2_ed25519; t=1753872756;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+4PFGiNz7H3oAIKcLDB2QM4lgpaFjNjpSnfL7WIyvjI=;
-	b=yO+QUXvsecudDLqM0r91DzRbJSVQqlCqR4K2LFaQbqgGoX5JpgO4t9g9xemvUg413HNNag
-	fT3pK5OIFamILzCA==
+	bh=wc301orRKr1+S2MHSitGz+H4D8xT/O9/Fr5lKe+1fVg=;
+	b=4nq/T99RBoCZ+02roVmFzZCPWVxe66TDZYDrJ4OKQhrwM7ij6GbQiYaJPCfTDyR+2XT3G1
+	8E+W0ux6jBj6wkAQ==
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PAlx+ANF;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9gSKyhV+
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753869346; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1753872755; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+4PFGiNz7H3oAIKcLDB2QM4lgpaFjNjpSnfL7WIyvjI=;
-	b=fNd9zYpPgfxEr2mtcchdYo6zL2AtvALdC5j+ascWH2H2XkbG3jljJa+T7H2AR7dlSc1lLU
-	KVeJEXea9/vM9uvm+gCYmLF5EDNWE4SW18v+46Yv8R37MpJ5pn/ePp/PTCqQ7wkQzRZauk
-	JxgOACUkatF4Lfeoaa7gyqGN4eoU7kU=
+	bh=wc301orRKr1+S2MHSitGz+H4D8xT/O9/Fr5lKe+1fVg=;
+	b=PAlx+ANFBpMSKJrPGTgslQJH3xcRppVjCCaYMA+IH1ciL/r1UMCHG3wIlZcOTUwuQp0zhW
+	OoHrqHUuCJqKiRfR0iW5WjB76TYmKZkt4xEud326H8ldftr99AQfVhvBQTQey8AcOi6cD7
+	frLA+06OY1zHcFIsWqkrAmj5mOPga7c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753869346;
+	s=susede2_ed25519; t=1753872755;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+4PFGiNz7H3oAIKcLDB2QM4lgpaFjNjpSnfL7WIyvjI=;
-	b=yO+QUXvsecudDLqM0r91DzRbJSVQqlCqR4K2LFaQbqgGoX5JpgO4t9g9xemvUg413HNNag
-	fT3pK5OIFamILzCA==
+	bh=wc301orRKr1+S2MHSitGz+H4D8xT/O9/Fr5lKe+1fVg=;
+	b=9gSKyhV+RZlq3YDoYw0z24hRmKfSoN7LV2uWy+HwGQi9gzacSgCEH0He3/Pi29GkUPAmGs
+	x2wmKA9lWlqxzjAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 75E5C13942;
-	Wed, 30 Jul 2025 09:55:46 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 484CA1388B;
+	Wed, 30 Jul 2025 10:52:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BI0zHCLsiWi0cgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 30 Jul 2025 09:55:46 +0000
+	id 8KenEXP5iWicBgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 30 Jul 2025 10:52:35 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id F0BE3A09FB; Wed, 30 Jul 2025 11:55:41 +0200 (CEST)
-Date: Wed, 30 Jul 2025 11:55:41 +0200
+	id F35BDA094F; Wed, 30 Jul 2025 12:52:30 +0200 (CEST)
+Date: Wed, 30 Jul 2025 12:52:30 +0200
 From: Jan Kara <jack@suse.cz>
-To: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: prevent module unload while filesystem is in use
-Message-ID: <g6cbleoltydfxhdcuttckw7ntiqvwilqnbxegvec7eqtnqauje@e3h36x2lsj45>
-References: <20250724153044.149890-1-kevinpaul468@gmail.com>
+To: Dai Junbing <daijunbing@vivo.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH v1 5/5] jbd2: Add TASK_FREEZABLE to kjournald2 thread
+Message-ID: <uj22sykbnhfsbk7abj3rdul46uko5vvhq425kdbtkzsw5l5kqa@ixs245eozsfe>
+References: <20250730014708.1516-1-daijunbing@vivo.com>
+ <20250730014708.1516-6-daijunbing@vivo.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -102,111 +106,119 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250724153044.149890-1-kevinpaul468@gmail.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
+In-Reply-To: <20250730014708.1516-6-daijunbing@vivo.com>
+X-Spamd-Result: default: False [-4.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_EQ_ENVFROM(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.cz:+]
 X-Spam-Flag: NO
-X-Spam-Score: -3.80
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 581851F385
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
 
-On Thu 24-07-25 21:00:44, Kevin Paul Reddy Janagari wrote:
-> preventing attempt to unload the ext4 module while the fs is still actively
-> mounted by adding a check before exit
+On Wed 30-07-25 09:47:06, Dai Junbing wrote:
+> Set the TASK_FREEZABLE flag when the kjournald2 kernel thread sleeps
+> during journal commit operations. This prevents premature wakeups
+> during system suspend/resume cycles, avoiding unnecessary CPU wakeups
+> and power consumption.
 > 
-> The crash occurs because ext4_inode_cache still contain objects
-> in use when kmem_cache_destroy is called
+> in this case, the original code:
 > 
-> This is a log of the bug produced by crepro given by a local syzkaller
+> 	prepare_to_wait(&journal->j_wait_commit, &wait,
+>                	 TASK_INTERRUPTIBLE);
+> 	if (journal->j_commit_sequence != journal->j_commit_request)
+>         	should_sleep = 0;
 > 
-> [  301.647795] BUG ext4_inode_cache (Tainted: G  R                ): Objects remaining on __kmem_cache_shutdown()
-> [  301.652120] -----------------------------------------------------------
-> [  301.652120] 
-> [  301.653366] Object 0xffff88800ec88008 @offset=8
-> [  301.653877] Allocated in ext4_alloc_inode+0x27/0x1a0 [ext4] age=46055 cpu=0 pid=616
-> [  301.655766]  ext4_alloc_inode+0x27/0x1a0 [ext4]
-> [  301.657063]  alloc_inode+0x2b/0x120
-> [  301.657570]  iget_locked+0x1ae/0x3e0
-> [  301.658137]  __ext4_iget+0x243/0x1af0 [ext4]
-> [  301.659197]  ext4_lookup+0x1b5/0x3e0 [ext4]
-> [  301.660784]  __lookup_slow+0xd1/0x1f0
-> [  301.661575]  walk_component+0x1a7/0x250
-> [  301.662411]  path_lookupat+0x9a/0x2f0
-> [  301.663179]  filename_lookup+0x14e/0x2e0
-> [  301.663947]  vfs_statx+0xb9/0x240
-> [  301.664622]  __do_sys_newstat+0x62/0xd0
-> [  301.665376]  do_syscall_64+0x80/0x2c0
-> [  301.666091]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 	transaction = journal->j_running_transaction;
+> 	if (transaction && time_after_eq(jiffies, transaction->t_expires))
+>         	should_sleep = 0;
+> 	......
+> 	......
+> 	if (should_sleep) {
+>         	write_unlock(&journal->j_state_lock);
+>         	schedule();
+>         	write_lock(&journal->j_state_lock);
+> 	}
 > 
-> Was not able to reproduce on my host system
-> Tested in a Qemu instance
+> is functionally equivalent to the more concise:
 > 
-> Signed-off-by: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
+> 	write_unlock(&journal->j_state_lock);
+> 	wait_event_freezable_exclusive(&journal->j_wait_commit,
+>         	journal->j_commit_sequence == journal->j_commit_request ||
+>         	(journal->j_running_transaction &&
+>          	time_after_eq(jiffies, transaction->t_expires)) ||
+>         	(journal->j_flags & JBD2_UNMOUNT));
+> 	write_lock(&journal->j_state_lock);
 
-This is definitely wrong. VFS calls get_filesystem() (to acquire module
-refcount) when mounting the filesystem (in sget_fc() or sget() depending on
-whether the filesystem has been converted to the new mount API or not).
-This prevents module removal so there must have been something else that
-broke this protection mechanism in the syzbot reproducer you have and we
-need to figure out what *that* was.
+This would be actually wrong because you cannot safely do some of the
+dereferences without holding j_state_lock. Luckily you didn't modify the
+existing code in the patch, just the changelog is bogus so please fix it.
+
+> Signed-off-by: Dai Junbing <daijunbing@vivo.com>
+> ---
+>  fs/jbd2/journal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index d480b94117cd..9a1def9f730b 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -222,7 +222,7 @@ static int kjournald2(void *arg)
+>  		DEFINE_WAIT(wait);
+>  
+>  		prepare_to_wait(&journal->j_wait_commit, &wait,
+> -				TASK_INTERRUPTIBLE);
+> +				TASK_INTERRUPTIBLE | TASK_FREEZABLE);
+
+So this looks fine but I have one question. There's code like:
+
+        if (freezing(current)) {
+                /*
+                 * The simpler the better. Flushing journal isn't a
+                 * good idea, because that depends on threads that may
+                 * be already stopped.
+                 */
+                jbd2_debug(1, "Now suspending kjournald2\n");
+                write_unlock(&journal->j_state_lock);
+                try_to_freeze();
+                write_lock(&journal->j_state_lock);
+
+a few lines above. Is it still needed after your change? I guess that
+probably yes (e.g. when the freeze attempt happens while kjournald still
+performs some work then the later schedule in TASK_FREEZABLE state doesn't
+necessarily freeze the kthread). But getting a confirmation would be nice.
 
 								Honza
 
-> ---
->  fs/ext4/super.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index c7d39da7e733..c6c77369a252 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -7480,8 +7480,24 @@ static int __init ext4_init_fs(void)
->  	return err;
->  }
->  
-> +static void ext4_busy_check(struct super_block *sb, void *data)
-> +{
-> +	int *is_busy = data;
-> +	*is_busy = 1;
-> +}
-> +
->  static void __exit ext4_exit_fs(void)
->  {
-> +
-> +	int is_busy = 0;
-> +
-> +	iterate_supers_type(&ext4_fs_type, ext4_busy_check, &is_busy);
-> +
-> +	if (is_busy) {
-> +		pr_warn("ext4: Cannot unload module, filesystem is still in use.\n");
-> +		return;
-> +	}
-> +
->  	ext4_destroy_lazyinit_thread();
->  	unregister_as_ext2();
->  	unregister_as_ext3();
+>  		transaction = journal->j_running_transaction;
+>  		if (transaction == NULL ||
+>  		    time_before(jiffies, transaction->t_expires)) {
 > -- 
-> 2.39.5
-> 
+> 2.25.1
 > 
 -- 
 Jan Kara <jack@suse.com>
