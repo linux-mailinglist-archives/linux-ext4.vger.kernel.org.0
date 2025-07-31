@@ -1,334 +1,145 @@
-Return-Path: <linux-ext4+bounces-9245-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9246-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033CFB16F3C
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Jul 2025 12:13:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E0CB172EA
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Jul 2025 16:12:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E90296241EF
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Jul 2025 10:12:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73C84563A7A
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Jul 2025 14:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F0229DB61;
-	Thu, 31 Jul 2025 10:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vM5Q7YV3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7BB2D1F64;
+	Thu, 31 Jul 2025 14:12:43 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706B02A8C1;
-	Thu, 31 Jul 2025 10:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72AC2C1594;
+	Thu, 31 Jul 2025 14:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753956787; cv=none; b=SR89yly8SjhgK8T41VTuasEHWeQnaxueUBYG+bEu3Gpgcv8k2oMqwSuaamKeK4kNC1zQiiLLPoUlUNik78cFwgU2mxAVupn893Gx5Y3vafEZWktBFakPDmSOfP5BtRlBOw/i5xFTyqCW0Rd+I9SHv4QhdgnZIqtUyIudZAdwaWE=
+	t=1753971163; cv=none; b=slMblf5O+brCdDretXkugfyiYsc59jnb3Mei8+Fo1NJ7tN74ihOhJD5rq0J/xyrRiI9qbkYPKNYDuzegmofCzWpK4NpsAPnQS4UyuCcPAz2ewpHQz70WXH2nspdXZD5sxQfTm1Jzp3rflfQzk1I9XiMDuxjI4F4pwOJszKakbHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753956787; c=relaxed/simple;
-	bh=Lac3NEKmMQg2ts4espDwdxxOLpJ72VxwLUcqYIEBbXE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QjfivpfczcOpyMbrxX+nTfVVaXl2Rauex1CP/Xsl+PaGEnniL+K3kwR01KrpKKDtoSs93CfmNGdSaoAJCMQAqiiKtB62MgkuJfNbUC5jI9gcqrtQGzbZEk4iCCigBd4Qmwn0edQbv9tT+lDZKE5v1ikRp6lRxY6JR64pp9zlDfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vM5Q7YV3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A2CCC4CEEF;
-	Thu, 31 Jul 2025 10:13:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753956787;
-	bh=Lac3NEKmMQg2ts4espDwdxxOLpJ72VxwLUcqYIEBbXE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vM5Q7YV3JO5FBOOLmPQ5j8545S+aU/ukazDsdBaK6+L7BVUleqBdDUJ8Pd7Cos3D/
-	 ueKItoNOTefe47H3nwjvhaCDv5ifO4FIaap3+4S27PDyeMKCvHNKf5mGOgHt3XWgpY
-	 ErKRA7WRNwC+IqWR63sfMHEJQ2WjQs/Dm9+u/ahmmkGSxeY9Kbw08c5doVbQmkIk4F
-	 PRbUdoFWZKCE/ru/5oQFM95GLvYa73eoDXws9oMByECZ00ygcJEtQMf0Gr8VLKIAcG
-	 UCIJjRkI5cSvyUvB3BoizIxUqJl1ZyohQJSv4TypcybDFKAc+Co75Fm31JAnw/vThY
-	 VCnabdajEiGHg==
-Date: Thu, 31 Jul 2025 12:13:01 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Amir Goldstein <amir73il@gmail.com>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>, John@groves.net, bernd@bsbernd.com, miklos@szeredi.hu, 
-	joannelkoong@gmail.com, Josef Bacik <josef@toxicpanda.com>, 
-	linux-ext4 <linux-ext4@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>, Neal Gompa <neal@gompa.dev>
-Subject: Re: [RFC v3] fuse: use fs-iomap for better performance so we can
- containerize ext4
-Message-ID: <20250731-mitverantwortlich-geothermie-085916922040@brauner>
-References: <20250717231038.GQ2672029@frogsfrogsfrogs>
- <20250718-flitzen-imker-4874d797877e@brauner>
- <CAOQ4uxgV_nJZBh4BNE+LEjCsMToHv7vSj8Ci4yJqtR-vrxb=yA@mail.gmail.com>
- <20250718193116.GC2672029@frogsfrogsfrogs>
- <20250723-situiert-lenkrad-c17d23a177bd@brauner>
- <20250723180443.GK2672029@frogsfrogsfrogs>
+	s=arc-20240116; t=1753971163; c=relaxed/simple;
+	bh=N+mvX9ou1vvZCytYXuof8XXOllsC5htU6j309tbQTAg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Q2+m1pvopF0BMsqdcQ9Ek3VXgB/W1nl0G3Vdcfm9UwLwNHkMdq5fEFhEsJuBbxQ/Bs2jKTl0RfryQqGLpzq4BsojYu7V7Xzf0jLdBJdfdPDvgYLxx8D5ZoayCoCEiUFiBZuXBgNPHb3iwdf7pKIcy05o+8xMWTB6Y4d97BmrZgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bt9yP1JgszKHMZm;
+	Thu, 31 Jul 2025 22:12:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 1B21F1A058E;
+	Thu, 31 Jul 2025 22:12:28 +0800 (CST)
+Received: from huawei.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgD3chPFeYtowwJwCA--.44078S4;
+	Thu, 31 Jul 2025 22:12:28 +0800 (CST)
+From: sunyongjian@huaweicloud.com
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	yangerkun@huawei.com,
+	yi.zhang@huawei.com,
+	libaokun1@huawei.com,
+	chengzhihao1@huawei.com,
+	sunyongjian1@huawei.com
+Subject: [PATCH -next] ext4: add an update to i_disksize in ext4_block_page_mkwrite
+Date: Thu, 31 Jul 2025 22:05:28 +0800
+Message-Id: <20250731140528.1554917-1-sunyongjian@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250723180443.GK2672029@frogsfrogsfrogs>
+X-CM-TRANSID:gCh0CgD3chPFeYtowwJwCA--.44078S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFykCFWkKr17WF43Wr4Durg_yoW8Kw1Up3
+	yYkFyvgr1vg3s5uws7XF1UXFyjkayrKr4xJFy7Gr42vFy5uw1IgF18t3sxWa4UtrWfJFWq
+	qFWFqrWDWay8u3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkmb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lw4CEc2x0rVAKj4xxMxkF7I0En4kS14v26r12
+	6r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
+	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+	IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwSdgDUUUU
+X-CM-SenderInfo: 5vxq505qjmxt3q6k3tpzhluzxrxghudrp/
 
-On Wed, Jul 23, 2025 at 11:04:43AM -0700, Darrick J. Wong wrote:
-> On Wed, Jul 23, 2025 at 03:05:12PM +0200, Christian Brauner wrote:
-> > On Fri, Jul 18, 2025 at 12:31:16PM -0700, Darrick J. Wong wrote:
-> > > On Fri, Jul 18, 2025 at 01:55:48PM +0200, Amir Goldstein wrote:
-> > > > On Fri, Jul 18, 2025 at 10:54 AM Christian Brauner <brauner@kernel.org> wrote:
-> > > > >
-> > > > > On Thu, Jul 17, 2025 at 04:10:38PM -0700, Darrick J. Wong wrote:
-> > > > > > Hi everyone,
-> > > > > >
-> > > > > > DO NOT MERGE THIS, STILL!
-> > > > > >
-> > > > > > This is the third request for comments of a prototype to connect the
-> > > > > > Linux fuse driver to fs-iomap for regular file IO operations to and from
-> > > > > > files whose contents persist to locally attached storage devices.
-> > > > > >
-> > > > > > Why would you want to do that?  Most filesystem drivers are seriously
-> > > > > > vulnerable to metadata parsing attacks, as syzbot has shown repeatedly
-> > > > > > over almost a decade of its existence.  Faulty code can lead to total
-> > > > > > kernel compromise, and I think there's a very strong incentive to move
-> > > > > > all that parsing out to userspace where we can containerize the fuse
-> > > > > > server process.
-> > > > > >
-> > > > > > willy's folios conversion project (and to a certain degree RH's new
-> > > > > > mount API) have also demonstrated that treewide changes to the core
-> > > > > > mm/pagecache/fs code are very very difficult to pull off and take years
-> > > > > > because you have to understand every filesystem's bespoke use of that
-> > > > > > core code.  Eeeugh.
-> > > > > >
-> > > > > > The fuse command plumbing is very simple -- the ->iomap_begin,
-> > > > > > ->iomap_end, and iomap ->ioend calls within iomap are turned into
-> > > > > > upcalls to the fuse server via a trio of new fuse commands.  Pagecache
-> > > > > > writeback is now a directio write.  The fuse server is now able to
-> > > > > > upsert mappings into the kernel for cached access (== zero upcalls for
-> > > > > > rereads and pure overwrites!) and the iomap cache revalidation code
-> > > > > > works.
-> > > > > >
-> > > > > > With this RFC, I am able to show that it's possible to build a fuse
-> > > > > > server for a real filesystem (ext4) that runs entirely in userspace yet
-> > > > > > maintains most of its performance.  At this stage I still get about 95%
-> > > > > > of the kernel ext4 driver's streaming directio performance on streaming
-> > > > > > IO, and 110% of its streaming buffered IO performance.  Random buffered
-> > > > > > IO is about 85% as fast as the kernel.  Random direct IO is about 80% as
-> > > > > > fast as the kernel; see the cover letter for the fuse2fs iomap changes
-> > > > > > for more details.  Unwritten extent conversions on random direct writes
-> > > > > > are especially painful for fuse+iomap (~90% more overhead) due to upcall
-> > > > > > overhead.  And that's with debugging turned on!
-> > > > > >
-> > > > > > These items have been addressed since the first RFC:
-> > > > > >
-> > > > > > 1. The iomap cookie validation is now present, which avoids subtle races
-> > > > > > between pagecache zeroing and writeback on filesystems that support
-> > > > > > unwritten and delalloc mappings.
-> > > > > >
-> > > > > > 2. Mappings can be cached in the kernel for more speed.
-> > > > > >
-> > > > > > 3. iomap supports inline data.
-> > > > > >
-> > > > > > 4. I can now turn on fuse+iomap on a per-inode basis, which turned out
-> > > > > > to be as easy as creating a new ->getattr_iflags callback so that the
-> > > > > > fuse server can set fuse_attr::flags.
-> > > > > >
-> > > > > > 5. statx and syncfs work on iomap filesystems.
-> > > > > >
-> > > > > > 6. Timestamps and ACLs work the same way they do in ext4/xfs when iomap
-> > > > > > is enabled.
-> > > > > >
-> > > > > > 7. The ext4 shutdown ioctl is now supported.
-> > > > > >
-> > > > > > There are some major warts remaining:
-> > > > > >
-> > > > > > a. ext4 doesn't support out of place writes so I don't know if that
-> > > > > > actually works correctly.
-> > > > > >
-> > > > > > b. iomap is an inode-based service, not a file-based service.  This
-> > > > > > means that we /must/ push ext2's inode numbers into the kernel via
-> > > > > > FUSE_GETATTR so that it can report those same numbers back out through
-> > > > > > the FUSE_IOMAP_* calls.  However, the fuse kernel uses a separate nodeid
-> > > > > > to index its incore inode, so we have to pass those too so that
-> > > > > > notifications work properly.  This is related to #3 below:
-> > > > > >
-> > > > > > c. Hardlinks and iomap are not possible for upper-level libfuse clients
-> > > > > > because the upper level libfuse likes to abstract kernel nodeids with
-> > > > > > its own homebrew dirent/inode cache, which doesn't understand hardlinks.
-> > > > > > As a result, a hardlinked file results in two distinct struct inodes in
-> > > > > > the kernel, which completely breaks iomap's locking model.  I will have
-> > > > > > to rewrite fuse2fs for the lowlevel libfuse library to make this work,
-> > > > > > but on the plus side there will be far less path lookup overhead.
-> > > > > >
-> > > > > > d. There are too many changes to the IO manager in libext2fs because I
-> > > > > > built things needed to stage the direct/buffered IO paths separately.
-> > > > > > These are now unnecessary but I haven't pulled them out yet because
-> > > > > > they're sort of useful to verify that iomap file IO never goes through
-> > > > > > libext2fs except for inline data.
-> > > > > >
-> > > > > > e. If we're going to use fuse servers as "safe" replacements for kernel
-> > > > > > filesystem drivers, we need to be able to set PF_MEMALLOC_NOFS so that
-> > > > > > fuse2fs memory allocations (in the kernel) don't push pagecache reclaim.
-> > > > > > We also need to disable the OOM killer(s) for fuse servers because you
-> > > > > > don't want filesystems to unmount abruptly.
-> > > > > >
-> > > > > > f. How do we maximally contain the fuse server to have safe filesystem
-> > > > > > mounts?  It's very convenient to use systemd services to configure
-> > > > > > isolation declaratively, but fuse2fs still needs to be able to open
-> > > > > > /dev/fuse, the ext4 block device, and call mount() in the shared
-> > > > > > namespace.  This prevents us from using most of the stronger systemd
-> > > > >
-> > > > > I'm happy to help you here.
-> > > > >
-> > > > > First, I think using a character device for namespaced drivers is always
-> > > > > a mistake. FUSE predates all that ofc. They're incredibly terrible for
-> > > > > delegation because of devtmpfs not being namespaced as well as devices
-> > > > > in general. And having device nodes on anything other than tmpfs is just
-> > > > > wrong (TM).
-> > > > >
-> > > > > In systemd I ultimately want a bpf LSM program that prevents the
-> > > > > creation of device nodes outside of tmpfs. They don't belong on
-> > > > > persistent storage imho. But anyway, that's besides the point.
-> > > > >
-> > > > > Opening the block device should be done by systemd-mountfsd but I think
-> > > > > /dev/fuse should really be openable by the service itself.
-> > > 
-> > > /me slaps his head and remembers that fsopen/fsconfig/fsmount exist.
-> > > Can you pass an fsopen fd to an unprivileged process and have that
-> > > second process call fsmount?
-> > 
-> > Yes, but remember that at some point you must call
-> > fsconfig(FSCONFIG_CMD_CREATE) to create the superblock. On block based
-> > fses that requires CAP_SYS_ADMIN so that has to be done by the
-> > privielged process. All the rest can be done by the unprivileged process
-> > though. That's exactly how bpf tokens work.
-> 
-> Hrm.  Assuming the fsopen mount sequence is still:
-> 
-> 	sfd = fsopen("ext4", FSOPEN_CLOEXEC);
-> 	fsconfig(sfd, FSCONFIG_SET_FLAG, "ro", NULL, 0);
-> 	...
-> 	fsconfig(sfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0);
-> 	mfd = fsmount(sfd, FSMOUNT_CLOEXEC, MS_RELATIME);
-> 	move_mount(mfd, "", sfd, AT_FDCWD, "/mnt", MOVE_MOUNT_F_EMPTY_PATH);
-> 
-> Then I guess whoever calls fsconfig(FSCONFIG_CMD_CREATE) needs
-> CAP_SYS_ADMIN; and they have to be running in the desired fs namespace
-> for move_mount() to have the intended effect.
+From: Yongjian Sun <sunyongjian1@huawei.com>
 
-Yes-ish.
+After running a stress test combined with fault injection,
+we performed fsck -a followed by fsck -fn on the filesystem
+image. During the second pass, fsck -fn reported:
 
-At fsopen() time the user namespace of the caller is recorded in
-fs_context->user_ns. If the filesystems is mountable inside of a user
-namespace then fs_context->user_ns will be used to perform the
-CAP_SYS_ADMIN check.
+Inode 131512, end of extent exceeds allowed value
+	(logical block 405, physical block 1180540, len 2)
 
-For filesystems that aren't mountable inside of user namespaces (ext4,
-xfs, ...) the fs_context->user_ns is ignored in mount_capable() and
-global CAP_SYS_ADMIN is required. sget_fc() and friends flat out refuse
-to mount a filesystem with a non-initial userns if it's not marked as
-mountable. That used to be possible but it's an invitation for extremely
-subtle bugs and you gain control over the superblock itself.
+This inode was not in the orphan list. Analysis revealed the
+following call chain that leads to the inconsistency:
 
-TL;DR the user namespace the superblock belongs to is usually determined
-at fsopen() time.
+                             ext4_da_write_end()
+                              //does not update i_disksize
+                             ext4_punch_hole()
+                              //truncate folio, keep size
+ext4_page_mkwrite()
+ ext4_block_page_mkwrite()
+  ext4_block_write_begin()
+    ext4_get_block()
+     //insert written extent without update i_disksize
+journal commit
+echo 1 > /sys/block/xxx/device/delete
 
-> 
-> Can two processes share the same fsopen fd?  If so then systemd-mountfsd
+da-write path updates i_size but does not update i_disksize. Then
+ext4_punch_hole truncates the da-folio yet still leaves i_disksize
+unchanged. Then ext4_page_mkwrite sees ext4_nonda_switch return 1
+and takes the nodioread_nolock path, the folio about to be written
+has just been punched out, and it’s offset sits beyond the current
+i_disksize. This may result in a written extent being inserted, but
+again does not update i_disksize. If the journal gets committed and
+then the block device is yanked, we might run into this.
 
-Yes, they can share and it's synchronized.
+To fix this, we now check in ext4_block_page_mkwrite whether
+i_disksize needs to be updated to cover the newly allocated blocks.
 
-> could pass the fsopen fd to the fuse server (whilst retaining its own
-> copy).  The fuse server could do its own mount option parsing, call
+Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
+---
+ fs/ext4/inode.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Yes, systemd-mountfsd already does passing like that.
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index ed54c4d0f2f9..050270b265ae 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -6666,8 +6666,18 @@ static int ext4_block_page_mkwrite(struct inode *inode, struct folio *folio,
+ 		goto out_error;
+ 
+ 	if (!ext4_should_journal_data(inode)) {
++		loff_t disksize = folio_pos(folio) + len;
+ 		block_commit_write(folio, 0, len);
+ 		folio_mark_dirty(folio);
++		if (disksize > READ_ONCE(EXT4_I(inode)->i_disksize)) {
++			down_write(&EXT4_I(inode)->i_data_sem);
++			if (disksize > EXT4_I(inode)->i_disksize)
++				EXT4_I(inode)->i_disksize = disksize;
++			up_write(&EXT4_I(inode)->i_data_sem);
++			ret = ext4_mark_inode_dirty(handle, inode);
++			if (ret)
++				goto out_error;
++		}
+ 	} else {
+ 		ret = ext4_journal_folio_buffers(handle, folio, len);
+ 		if (ret)
+-- 
+2.39.2
 
-> FSCONFIG_SET_* on the fd, and then signal back to systemd-mountfsd to do
-> the create/fsmount/move_mount part.
-
-Yes.
-
-> 
-> The systemd-mountfsd would have to be running in desired fs namespace
-> and with sufficient privileges to open block devices, but I'm guessing
-> that's already a requirement?
-
-Yes, systemd-mountfsd is a system level service running in the initial
-set of namespaces and interacting with systemd-nsresourced (namespace
-related stuff). It can obviously also create helper to setns() into
-various namespaces if required. 
-
-> 
-> > > If so, then it would be more convenient if mount.safe/systemd-mountfsd
-> > > could pass open fds for /dev/fuse fsopen then the fuse server wouldn't
-
-Yes, I would think so.
-
-> > 
-> > Yes, that would work.
-> 
-> Oh goody :)
-> 
-> > > need any special /dev access at all.  I think then the fuse server's
-> > > service could have:
-> > > 
-> > > DynamicUser=true
-> > > ProtectSystem=true
-> > > ProtectHome=true
-> > > PrivateTmp=true
-> > > PrivateDevices=true
-> > > DevicePolicy=strict
-> > > 
-> > > (I think most of those are redundant with DynamicUser=true but a lot of
-> > > my systemd-fu is paged out ATM.)
-> > > 
-> > > My goal here is extreme containment -- the code doing the fs metadata
-> > > parsing has no privileges, no write access except to the fds it was
-> > > given, no network access, and no ability to read anything outside the
-> > > root filesystem.  Then I can get back to writing buffer
-> > > overflows^W^Whigh quality filesystem code in peace.
-> > 
-> > Yeah, sounds about right.
-> > 
-> > > 
-> > > > > So we can try and allowlist /dev/fuse in vfs_mknod() similar to
-> > > > > whiteouts. That means you can do mknod() in the container to create
-> > > > > /dev/fuse (Personally, I would even restrict this to tmpfs right off the
-> > > > > bat so that containers can only do this on their private tmpfs mount at
-> > > > > /dev.)
-> > > > >
-> > > > > The downside of this would be to give unprivileged containers access to
-> > > > > FUSE by default. I don't think that's a problem per se but it is a uapi
-> > > > > change.
-> > > 
-> > > Yeah, that is a new risk.  It's still better than metadata parsing
-> > > within the kernel address space ... though who knows how thoroughly fuse
-> > > has been fuzzed by syzbot :P
-> > > 
-> > > > > Let me think a bit about alternatives. I have one crazy idea but I'm not
-> > > > > sure enough about it to spill it.
-> > > 
-> > > Please do share, #f is my crazy unbaked idea. :)
-> > > 
-> > > > I don't think there is a hard requirement for the fuse fd to be opened from
-> > > > a device driver.
-> > > > With fuse io_uring communication, the open fd doesn't even need to do io.
-> > > > 
-> > > > > > protections because they tend to run in a private mount namespace with
-> > > > > > various parts of the filesystem either hidden or readonly.
-> > > > > >
-> > > > > > In theory one could design a socket protocol to pass mount options,
-> > > > > > block device paths, fds, and responsibility for the mount() call between
-> > > > > > a mount helper and a service:
-> > > > >
-> > > > > This isn't a problem really. This should just be an extension to
-> > > > > systemd-mountfsd.
-> > > 
-> > > I suppose mount.safe could very well call systemd-mount to go do all the
-> > > systemd-related service setup, and that would take care of udisks as
-> > > well.
-> > 
-> > The ultimate goal is to teach mount(8)/libmount to use that daemon when
-> > it's available. Because that would just make unprivileged mounting work
-> > without userspace noticing anything.
-> 
-> That sounds really neat. :)
-> 
-> --D
 
