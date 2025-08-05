@@ -1,61 +1,57 @@
-Return-Path: <linux-ext4+bounces-9269-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9270-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4065CB1B43F
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Aug 2025 15:11:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7492DB1B471
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Aug 2025 15:13:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5D5F18A42BC
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Aug 2025 13:12:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CC5D1701DC
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Aug 2025 13:13:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84187276059;
-	Tue,  5 Aug 2025 13:10:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 188F72749E5;
+	Tue,  5 Aug 2025 13:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p0zgwUWF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D+SHiPw1"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E74B2749F8;
-	Tue,  5 Aug 2025 13:10:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9819278768;
+	Tue,  5 Aug 2025 13:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754399438; cv=none; b=DwwYPlCdSWDLtWOZSXd+Av/TyX8G7EzCzYqUHN5zkrMTotOYZhNVd6wi0owPF4vEn76WkFoVo86Uum9uU+hWRf3j1AbVLxoKVHAsklxU7uBmQ2MTdaD4DItJXKL9cVUYrnlWD/Z1Uuh/WwP1KFmZ04xFe+OGYgMRPPCEkQIYdIU=
+	t=1754399482; cv=none; b=fcQbkaU/jdDBqAEAk7gc1aHugzp/uv3K6J5FIy70NEoSNxZfu3/8GiHvFwZRanoY7JeML21s7g0AMMagfjQrZFcKJWeDm0RwbDPrnqkViMzF/HE/4FD41mjo36c4Kl4I+JKD2AzjdQH59Ou+ZY82aOM/XBQulE+CHE5G1gfAFaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754399438; c=relaxed/simple;
-	bh=Wpa1Pd2sU1RyHS8bDSx//SJZnplORfSm5q5SQzW4zZ8=;
+	s=arc-20240116; t=1754399482; c=relaxed/simple;
+	bh=2XphjJhZ3No9vA3wznCk3klDKiFZpEzPjrTATkENw8M=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YsoEzWXS3M7s1qCLiwTu/8mrQwrnIvUf/H1TQwaNLyr0GAgcEyWPxNmel2FFETETGhHrXQwqhGzbSqfcJSHH2mIuPaI8SzRCslwc0BoCNZyMnNjCBjsDhPsgLueIieO+u3B/05kpSdyF+OixaiWo0wj1OBvLGFU+fQHtiehQSrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p0zgwUWF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBF9FC4CEF0;
-	Tue,  5 Aug 2025 13:10:34 +0000 (UTC)
+	 MIME-Version; b=hKYSwZiVPtPZHhsTaAJANoEcipDNhsKNQPLypmltEl3bNIz+7VNxA4NdhNiOvtB2+ydGWJoXac8lofvkzfpdoyYCKgkSxaTurRjmlfoRaCVMgJ7Rc3KrzUqyQ2KwQ/8qiuulnjBH0DrCr/grN+sRg+0UyAtENjXKhrQzeLQtRus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D+SHiPw1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E50EC4CEF9;
+	Tue,  5 Aug 2025 13:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754399436;
-	bh=Wpa1Pd2sU1RyHS8bDSx//SJZnplORfSm5q5SQzW4zZ8=;
+	s=k20201202; t=1754399482;
+	bh=2XphjJhZ3No9vA3wznCk3klDKiFZpEzPjrTATkENw8M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=p0zgwUWFKdw/S0dbQHUnTLum31JbfRbSlOyUnnRs9EFjJrjN7TUHMi2y99lE3HH4R
-	 mOaGGTaoAQ3IDxL6Q9pG0cRQrfyIAD8R0STNcladtowbVQV0tgiDJDCKmT7AFlVnSM
-	 2hoUALR+WIYPdAr0OBMHmAEQjNLvfFVUukc3XsTpoCgD1OqlBTEDp5Ubb2qjvWGRaB
-	 5ZQp8Uu4ps2IxT/mS/ZBIFQTKuaF7z/W3s1EyvAvEh2CBRKbge5npfELF+pAh3p2yu
-	 S82erzS71ZCTr3N/JqYnHBdJaSvkwUxDvz2/Ep01I5RAUHIpisVnmJTOyXMcMCHlUk
-	 EX/qV2X5uVGUg==
+	b=D+SHiPw1jWUEe00EHnORyXP2TEPeZAiJ18bjW55NsPLFuAeYb+CB8q20cAD8Qa/nL
+	 klAOfCsc37ct07Zl1hP7VyR3gBq8huo9cY94kKOxpHUYKhLhXNiPR8SFPFHHqJ6GJB
+	 bHYWJH6KQwFEJ4or10CgGbUx2u2ZyAvP3Y5cxIBpPBFCTsthOEXgK+nuJ+DB+5NXFe
+	 gLtQTP/a1Gt19vAc14TF/7w03/Of2MVV+wxlhVIFjocpRvlX6pok+qbZYEK+2IIP+f
+	 lbc/48Ca7Zr9VYk4zRSQFREQdBS9wslPzl2m1ErtWrgIRnGoZmaMCi9tuKiGJl/oVZ
+	 FOiIShC2qLgyA==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Zhang Yi <yi.zhang@huawei.com>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Joseph Qi <jiangqi903@gmail.com>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	syzbot+544248a761451c0df72f@syzkaller.appspotmail.com,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.16] ext4: limit the maximum folio order
-Date: Tue,  5 Aug 2025 09:08:57 -0400
-Message-Id: <20250805130945.471732-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.16-5.4] ext4: do not BUG when INLINE_DATA_FL lacks system.data xattr
+Date: Tue,  5 Aug 2025 09:09:19 -0400
+Message-Id: <20250805130945.471732-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250805130945.471732-1-sashal@kernel.org>
 References: <20250805130945.471732-1-sashal@kernel.org>
@@ -70,26 +66,21 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.16
 Content-Transfer-Encoding: 8bit
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Theodore Ts'o <tytso@mit.edu>
 
-[ Upstream commit b12f423d598fd874df9ecfb2436789d582fda8e6 ]
+[ Upstream commit 099b847ccc6c1ad2f805d13cfbcc83f5b6d4bc42 ]
 
-In environments with a page size of 64KB, the maximum size of a folio
-can reach up to 128MB. Consequently, during the write-back of folios,
-the 'rsv_blocks' will be overestimated to 1,577, which can make
-pressure on the journal space where the journal is small. This can
-easily exceed the limit of a single transaction. Besides, an excessively
-large folio is meaningless and will instead increase the overhead of
-traversing the bhs within the folio. Therefore, limit the maximum order
-of a folio to 2048 filesystem blocks.
+A syzbot fuzzed image triggered a BUG_ON in ext4_update_inline_data()
+when an inode had the INLINE_DATA_FL flag set but was missing the
+system.data extended attribute.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reported-by: Joseph Qi <jiangqi903@gmail.com>
-Closes: https://lore.kernel.org/linux-ext4/CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com/
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Tested-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://patch.msgid.link/20250707140814.542883-12-yi.zhang@huaweicloud.com
+Since this can happen due to a maiciouly fuzzed file system, we
+shouldn't BUG, but rather, report it as a corrupted file system.
+
+Add similar replacements of BUG_ON with EXT4_ERROR_INODE() ii
+ext4_create_inline_data() and ext4_inline_data_truncate().
+
+Reported-by: syzbot+544248a761451c0df72f@syzkaller.appspotmail.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -101,142 +92,104 @@ LLM Generated explanations, may be completely bogus:
 This commit should be backported to stable kernel trees for the
 following reasons:
 
-## Bug Fix Nature
-The commit fixes a critical issue where ext4 could exhaust journal space
-on systems with 64KB page sizes. The commit message explicitly states:
-"Consequently, during the write-back of folios, the 'rsv_blocks' will be
-overestimated to 1,577, which can make pressure on the journal space
-where the journal is small. This can easily exceed the limit of a single
-transaction."
+## Critical Bug Fix
+1. **Fixes kernel BUG_ON crashes**: The commit replaces three BUG_ON()
+   calls with proper error handling using EXT4_ERROR_INODE() and
+   returning -EFSCORRUPTED. This prevents kernel panics when
+   encountering corrupted filesystem metadata.
 
-## Real-World Impact
-1. **Reported by multiple users**: The commit includes two Reported-by
-   tags and a Closes link to a bug report, indicating this is affecting
-   real users in production environments
-2. **Specific environment failure**: The issue manifests on systems with
-   64KB page sizes (common on ARM64 systems), where large folios can
-   reach 128MB, causing journal transaction limits to be exceeded
+2. **Security/Stability improvement**: The issue was found by syzbot
+   fuzzing, indicating it can be triggered by maliciously crafted
+   filesystems. Converting BUG_ON to error handling prevents denial-of-
+   service attacks where a corrupted filesystem image could crash the
+   entire system.
 
-## Minimal and Safe Fix
-The fix is clean and contained:
-1. **Limited scope**: Changes only affect folio order calculation for
-   ext4 filesystems
-2. **Conservative approach**: Limits maximum folio order to 2048
-   filesystem blocks using the formula `(11 + (i)->i_blkbits -
-   PAGE_SHIFT)`
-3. **Function refactoring**: Converts `ext4_should_enable_large_folio()`
-   from public to static and introduces `ext4_set_inode_mapping_order()`
-   as a wrapper, maintaining clean interfaces
+## Meets Stable Criteria
+1. **Small and contained fix**: The changes are minimal - only replacing
+   BUG_ON statements with proper error checks in three locations within
+   fs/ext4/inline.c:
+   - Line 306 in ext4_create_inline_data()
+   - Line 357 in ext4_update_inline_data()
+   - Line 1871 in ext4_inline_data_truncate()
+
+2. **Clear bug fix without new features**: This is purely a bug fix that
+   handles filesystem corruption gracefully instead of crashing. No new
+   functionality is added.
+
+3. **Low regression risk**: The change follows established patterns in
+   ext4 - the file already uses EXT4_ERROR_INODE() and -EFSCORRUPTED in
+   similar situations (line 168-170). The error handling is consistent
+   with how ext4 handles corruption elsewhere in the codebase.
+
+4. **Important for users**: Any user mounting potentially corrupted ext4
+   filesystems (from damaged media, malicious sources, or fuzzing) could
+   encounter these BUG_ONs. Converting them to proper error handling
+   significantly improves system stability.
 
 ## Code Analysis
-The changes show:
-- Introduction of `EXT4_MAX_PAGECACHE_ORDER()` macro that caps folio
-  size
-- New function `ext4_set_inode_mapping_order()` using
-  `mapping_set_folio_order_range()` instead of the previous
-  `mapping_set_large_folios()`
-- Updates to both inode allocation (fs/ext4/ialloc.c) and inode
-  retrieval (fs/ext4/inode.c) paths
+The patch correctly:
+- Replaces `BUG_ON(!is.s.not_found)` with a check that reports
+  corruption and returns -EFSCORRUPTED when the xattr should be absent
+  but is found
+- Replaces `BUG_ON(is.s.not_found)` with a check that reports corruption
+  when the xattr should exist but is missing
+- Uses the same error reporting pattern (EXT4_ERROR_INODE) that ext4
+  uses throughout for filesystem corruption cases
+- Properly propagates the error up the call chain via the existing error
+  handling paths
 
-## Stability Considerations
-1. **No new features**: This is purely a bug fix that prevents journal
-   exhaustion
-2. **Backward compatible**: The change doesn't break existing
-   functionality
-3. **Tested**: Has "Tested-by" tag from Joseph Qi
-4. **Reviewed**: Has "Reviewed-by" tag from Jan Kara (experienced
-   filesystem maintainer)
+This is a textbook example of a stable-worthy fix: it addresses a real
+crash issue found by fuzzing, uses minimal changes, follows existing
+code patterns, and significantly improves system reliability when
+dealing with corrupted filesystems.
 
-## Timeline Context
-The large folio support was recently enabled in ext4 (commit
-7ac67301e82f from May 2025), and this fix addresses a
-regression/oversight in that implementation for systems with large page
-sizes. This makes it critical to backport alongside or shortly after the
-large folio enablement if that feature is backported.
+ fs/ext4/inline.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-The fix prevents potential filesystem hangs or write failures on
-affected systems, making it an important stability fix for stable
-kernels.
-
- fs/ext4/ext4.h   |  2 +-
- fs/ext4/ialloc.c |  3 +--
- fs/ext4/inode.c  | 22 +++++++++++++++++++---
- 3 files changed, 21 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 18373de980f2..fe3366e98493 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3020,7 +3020,7 @@ int ext4_walk_page_buffers(handle_t *handle,
- 				     struct buffer_head *bh));
- int do_journal_get_write_access(handle_t *handle, struct inode *inode,
- 				struct buffer_head *bh);
--bool ext4_should_enable_large_folio(struct inode *inode);
-+void ext4_set_inode_mapping_order(struct inode *inode);
- #define FALL_BACK_TO_NONDELALLOC 1
- #define CONVERT_INLINE_DATA	 2
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index a1bbcdf40824..fa6668126fd7 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -303,7 +303,11 @@ static int ext4_create_inline_data(handle_t *handle,
+ 	if (error)
+ 		goto out;
  
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 79aa3df8d019..df4051613b29 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -1335,8 +1335,7 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 		}
- 	}
+-	BUG_ON(!is.s.not_found);
++	if (!is.s.not_found) {
++		EXT4_ERROR_INODE(inode, "unexpected inline data xattr");
++		error = -EFSCORRUPTED;
++		goto out;
++	}
  
--	if (ext4_should_enable_large_folio(inode))
--		mapping_set_large_folios(inode->i_mapping);
-+	ext4_set_inode_mapping_order(inode);
+ 	error = ext4_xattr_ibody_set(handle, inode, &i, &is);
+ 	if (error) {
+@@ -354,7 +358,11 @@ static int ext4_update_inline_data(handle_t *handle, struct inode *inode,
+ 	if (error)
+ 		goto out;
  
- 	ext4_update_inode_fsync_trans(handle, inode, 1);
+-	BUG_ON(is.s.not_found);
++	if (is.s.not_found) {
++		EXT4_ERROR_INODE(inode, "missing inline data xattr");
++		error = -EFSCORRUPTED;
++		goto out;
++	}
  
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index be9a4cba35fd..4f4fa62a3bff 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5106,7 +5106,7 @@ static int check_igot_inode(struct inode *inode, ext4_iget_flags flags,
- 	return -EFSCORRUPTED;
- }
+ 	len -= EXT4_MIN_INLINE_DATA_SIZE;
+ 	value = kzalloc(len, GFP_NOFS);
+@@ -1903,7 +1911,12 @@ int ext4_inline_data_truncate(struct inode *inode, int *has_inline)
+ 			if ((err = ext4_xattr_ibody_find(inode, &i, &is)) != 0)
+ 				goto out_error;
  
--bool ext4_should_enable_large_folio(struct inode *inode)
-+static bool ext4_should_enable_large_folio(struct inode *inode)
- {
- 	struct super_block *sb = inode->i_sb;
+-			BUG_ON(is.s.not_found);
++			if (is.s.not_found) {
++				EXT4_ERROR_INODE(inode,
++						 "missing inline data xattr");
++				err = -EFSCORRUPTED;
++				goto out_error;
++			}
  
-@@ -5123,6 +5123,22 @@ bool ext4_should_enable_large_folio(struct inode *inode)
- 	return true;
- }
- 
-+/*
-+ * Limit the maximum folio order to 2048 blocks to prevent overestimation
-+ * of reserve handle credits during the folio writeback in environments
-+ * where the PAGE_SIZE exceeds 4KB.
-+ */
-+#define EXT4_MAX_PAGECACHE_ORDER(i)		\
-+		umin(MAX_PAGECACHE_ORDER, (11 + (i)->i_blkbits - PAGE_SHIFT))
-+void ext4_set_inode_mapping_order(struct inode *inode)
-+{
-+	if (!ext4_should_enable_large_folio(inode))
-+		return;
-+
-+	mapping_set_folio_order_range(inode->i_mapping, 0,
-+				      EXT4_MAX_PAGECACHE_ORDER(inode));
-+}
-+
- struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 			  ext4_iget_flags flags, const char *function,
- 			  unsigned int line)
-@@ -5440,8 +5456,8 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 		ret = -EFSCORRUPTED;
- 		goto bad_inode;
- 	}
--	if (ext4_should_enable_large_folio(inode))
--		mapping_set_large_folios(inode->i_mapping);
-+
-+	ext4_set_inode_mapping_order(inode);
- 
- 	ret = check_igot_inode(inode, flags, function, line);
- 	/*
+ 			value_len = le32_to_cpu(is.s.here->e_value_size);
+ 			value = kmalloc(value_len, GFP_NOFS);
 -- 
 2.39.5
 
