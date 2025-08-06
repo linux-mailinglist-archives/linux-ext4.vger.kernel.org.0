@@ -1,80 +1,62 @@
-Return-Path: <linux-ext4+bounces-9274-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9275-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6188EB1C6BA
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Aug 2025 15:21:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D09B1C7DA
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Aug 2025 16:47:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A25318C19F1
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Aug 2025 13:22:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5687F3A8177
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Aug 2025 14:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C468928A707;
-	Wed,  6 Aug 2025 13:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B41192B96;
+	Wed,  6 Aug 2025 14:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aGQWIm24"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="CDLnWMjo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D46F2218ACA
-	for <linux-ext4@vger.kernel.org>; Wed,  6 Aug 2025 13:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6AC15B135
+	for <linux-ext4@vger.kernel.org>; Wed,  6 Aug 2025 14:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754486500; cv=none; b=cW4l3NJy6iL1r7lm4NUyXiikSd+omDNx5Ai0BaAPA845Q4umRLBaexYMUjrQRuqulrnBBv2wwSCZJ/kARgJDas91yCdqllVTgZz0Qj3B056mQty+9vELDSSrjEPDGcCg9EQydqg6Bqjw4F+2Dneo8ousRttYycsv6Rl4zjLo2N0=
+	t=1754491625; cv=none; b=tQBTuxULxMLjIZsVQLm2bS8hXN3TxARlx4ULqMSlvDYbCny2CX5qYMa/cWyAQi7S6gubExYMfe/ux0IXSMi8JRzeikiGE37iJjuM2CHwImmkIny/uSAx1w6c+FDBgxHpSIAeAju20351WcG0BC/G9V79gdmxiH8NsgRGraoAEeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754486500; c=relaxed/simple;
-	bh=Lypq3Kn7SKd7OqzV2ehEb/f8RDBVPYb8ewwwy5cS63E=;
+	s=arc-20240116; t=1754491625; c=relaxed/simple;
+	bh=tk7QFLlbCCpvpyvzqueXNItxkyAFxMmXrih0EUxfmek=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gU0ayU1yJvaVco8evWJ7dxLO65H5iokcHORUHHTU5hqizo5TfG0fnBlMVLz34ZoTykqTgLja4QPUQgd0+d361GFLkKdn9pqmmQL6kRLH3RrfHWG1UzPMgQrk9GU6CgXQKxDwaW7h2O7M0bWCq9V5nFOhkMW0M/yU1BXOyRLqRm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aGQWIm24; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754486496;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aV9DQaZgr+rw7JwHz711MWsokjO9iIPYD1xaKGBVOvs=;
-	b=aGQWIm24t7a3YTdvv14coS4gaIWdTEYbFd7udbHTPca7WPJopZhdYkkzpOz+2onvpD2cuc
-	NRNoyPPZ26Hy70lDw8HNAPYTaxhvdaFz2eg42uH3L45Ax2iXEe7oRkKuEYemkV75Dbk9Hr
-	VrHaBVfvHSui/YTrR9ajk3/bkfhEH+M=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-13-7HshZox7PWiF07NX9g3-qw-1; Wed,
- 06 Aug 2025 09:21:33 -0400
-X-MC-Unique: 7HshZox7PWiF07NX9g3-qw-1
-X-Mimecast-MFC-AGG-ID: 7HshZox7PWiF07NX9g3-qw_1754486491
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 614A019560B0;
-	Wed,  6 Aug 2025 13:21:30 +0000 (UTC)
-Received: from bfoster (unknown [10.22.88.68])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2FCA2195608F;
-	Wed,  6 Aug 2025 13:21:28 +0000 (UTC)
-Date: Wed, 6 Aug 2025 09:25:22 -0400
-From: Brian Foster <bfoster@redhat.com>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-mm@kvack.org, hch@infradead.org, willy@infradead.org,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v3 3/7] iomap: optional zero range dirty folio processing
-Message-ID: <aJNXwvp87THRLtpf@bfoster>
-References: <20250714204122.349582-1-bfoster@redhat.com>
- <20250714204122.349582-4-bfoster@redhat.com>
- <20250715052259.GO2672049@frogsfrogsfrogs>
- <e6333d2d-cc30-44d3-8f23-6a6c5ea0134d@huaweicloud.com>
- <aHpQxq6mDyLL1Nfj@bfoster>
- <09b7c1cf-7bfa-4798-b9de-f49620046664@huaweicloud.com>
- <aIobh49Bb0Vqz10I@bfoster>
- <c12ae271-63ba-4028-8da1-131d95727764@huaweicloud.com>
- <aJICOpY5FU1vHZvm@bfoster>
- <9c09377d-5a88-4935-9d28-5683a8263de5@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VDNebtsT6k7bkO/6qlRYts5ElqGD0SAuDlLo4OlZOEwjZr/D9/kKkI5reOSiaUoyOdDDXPV2cjEoLjUc67A1+DrrwInRbalJMcXsZHcgnslZwJSAXxh9mrqDiYBvlB7Bn9dr3Ltoks0eKyZcwB+iapMAfAR0K7WoTYDdqHtrcP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=CDLnWMjo; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-102-183.bstnma.fios.verizon.net [173.48.102.183])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 576EkovI012595
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 6 Aug 2025 10:46:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1754491613; bh=2PgKc0s9udb6ac5tu3jB6ZKq8EjCsICaE/1T42AF0xA=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=CDLnWMjoCrRsM+YEy/l9TRoor0OC+bnsmkdxb+oozujDq84HdTrXmR+3xG/2V19Ot
+	 tPoTSFhOF34oTn0x8C/81WHTJl09BL2zBuhhzzBXPGeqVXOBqZafQo5BIQ18sIuRmh
+	 ndagDCv+hXZ+lG0GGWcS0xig9H+POfiS47on2hK0/eLOeonokT7Dn68wLrXvdCl4tz
+	 ZnurL4djIgE6CtDmAJvBW/+jPJA0cokh5BLDFxS+v87lzxj0dcNBOkmezuOBtANCGJ
+	 AqMjzUcKD2IDJ4BY0k5lzzZGkP7Dm09WcU7rjOJ6/Ax9wnRm2OfPwNbBlp/ljCHTz/
+	 oxjQHm+BHwuWA==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 9FCFA2E00D6; Wed, 06 Aug 2025 10:46:50 -0400 (EDT)
+Date: Wed, 6 Aug 2025 10:46:50 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Mingyu He <mingyu.he@shopee.com>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [BUG] ext4: mballoctor issue observed in fs/ext4/mballoc.c
+ ext4_mb_regular_allocator on kernel 6.6
+Message-ID: <20250806144650.GA778805@mit.edu>
+References: <CAAoBcuSk9j3kTAuH5uktd_FV8wryzFegZpFg_v3o94mbYPoA=A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -83,455 +65,102 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9c09377d-5a88-4935-9d28-5683a8263de5@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+In-Reply-To: <CAAoBcuSk9j3kTAuH5uktd_FV8wryzFegZpFg_v3o94mbYPoA=A@mail.gmail.com>
 
-On Wed, Aug 06, 2025 at 11:10:30AM +0800, Zhang Yi wrote:
-> On 2025/8/5 21:08, Brian Foster wrote:
-> > On Sat, Aug 02, 2025 at 03:19:54PM +0800, Zhang Yi wrote:
-> >> On 2025/7/30 21:17, Brian Foster wrote:
-> >>> On Sat, Jul 19, 2025 at 07:07:43PM +0800, Zhang Yi wrote:
-> >>>> On 2025/7/18 21:48, Brian Foster wrote:
-> >>>>> On Fri, Jul 18, 2025 at 07:30:10PM +0800, Zhang Yi wrote:
-> >>>>>> On 2025/7/15 13:22, Darrick J. Wong wrote:
-> >>>>>>> On Mon, Jul 14, 2025 at 04:41:18PM -0400, Brian Foster wrote:
-> >>>>>>>> The only way zero range can currently process unwritten mappings
-> >>>>>>>> with dirty pagecache is to check whether the range is dirty before
-> >>>>>>>> mapping lookup and then flush when at least one underlying mapping
-> >>>>>>>> is unwritten. This ordering is required to prevent iomap lookup from
-> >>>>>>>> racing with folio writeback and reclaim.
-> >>>>>>>>
-> >>>>>>>> Since zero range can skip ranges of unwritten mappings that are
-> >>>>>>>> clean in cache, this operation can be improved by allowing the
-> >>>>>>>> filesystem to provide a set of dirty folios that require zeroing. In
-> >>>>>>>> turn, rather than flush or iterate file offsets, zero range can
-> >>>>>>>> iterate on folios in the batch and advance over clean or uncached
-> >>>>>>>> ranges in between.
-> >>>>>>>>
-> >>>>>>>> Add a folio_batch in struct iomap and provide a helper for fs' to
-> >>>>>>>
-> >>>>>>> /me confused by the single quote; is this supposed to read:
-> >>>>>>>
-> >>>>>>> "...for the fs to populate..."?
-> >>>>>>>
-> >>>>>>> Either way the code changes look like a reasonable thing to do for the
-> >>>>>>> pagecache (try to grab a bunch of dirty folios while XFS holds the
-> >>>>>>> mapping lock) so
-> >>>>>>>
-> >>>>>>> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-> >>>>>>>
-> >>>>>>> --D
-> >>>>>>>
-> >>>>>>>
-> >>>>>>>> populate the batch at lookup time. Update the folio lookup path to
-> >>>>>>>> return the next folio in the batch, if provided, and advance the
-> >>>>>>>> iter if the folio starts beyond the current offset.
-> >>>>>>>>
-> >>>>>>>> Signed-off-by: Brian Foster <bfoster@redhat.com>
-> >>>>>>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> >>>>>>>> ---
-> >>>>>>>>  fs/iomap/buffered-io.c | 89 +++++++++++++++++++++++++++++++++++++++---
-> >>>>>>>>  fs/iomap/iter.c        |  6 +++
-> >>>>>>>>  include/linux/iomap.h  |  4 ++
-> >>>>>>>>  3 files changed, 94 insertions(+), 5 deletions(-)
-> >>>>>>>>
-> >>>>>>>> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> >>>>>>>> index 38da2fa6e6b0..194e3cc0857f 100644
-> >>>>>>>> --- a/fs/iomap/buffered-io.c
-> >>>>>>>> +++ b/fs/iomap/buffered-io.c
-> >>>>>> [...]
-> >>>>>>>> @@ -1398,6 +1452,26 @@ static int iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
-> >>>>>>>>  	return status;
-> >>>>>>>>  }
-> >>>>>>>>  
-> >>>>>>>> +loff_t
-> >>>>>>>> +iomap_fill_dirty_folios(
-> >>>>>>>> +	struct iomap_iter	*iter,
-> >>>>>>>> +	loff_t			offset,
-> >>>>>>>> +	loff_t			length)
-> >>>>>>>> +{
-> >>>>>>>> +	struct address_space	*mapping = iter->inode->i_mapping;
-> >>>>>>>> +	pgoff_t			start = offset >> PAGE_SHIFT;
-> >>>>>>>> +	pgoff_t			end = (offset + length - 1) >> PAGE_SHIFT;
-> >>>>>>>> +
-> >>>>>>>> +	iter->fbatch = kmalloc(sizeof(struct folio_batch), GFP_KERNEL);
-> >>>>>>>> +	if (!iter->fbatch)
-> >>>>>>
-> >>>>>> Hi, Brian!
-> >>>>>>
-> >>>>>> I think ext4 needs to be aware of this failure after it converts to use
-> >>>>>> iomap infrastructure. It is because if we fail to add dirty folios to the
-> >>>>>> fbatch, iomap_zero_range() will flush those unwritten and dirty range.
-> >>>>>> This could potentially lead to a deadlock, as most calls to
-> >>>>>> ext4_block_zero_page_range() occur under an active journal handle.
-> >>>>>> Writeback operations under an active journal handle may result in circular
-> >>>>>> waiting within journal transactions. So please return this error code, and
-> >>>>>> then ext4 can interrupt zero operations to prevent deadlock.
-> >>>>>>
-> >>>>>
-> >>>>> Hi Yi,
-> >>>>>
-> >>>>> Thanks for looking at this.
-> >>>>>
-> >>>>> Huh.. so the reason for falling back like this here is just that this
-> >>>>> was considered an optional optimization, with the flush in
-> >>>>> iomap_zero_range() being default fallback behavior. IIUC, what you're
-> >>>>> saying means that the current zero range behavior without this series is
-> >>>>> problematic for ext4-on-iomap..? 
-> >>>>
-> >>>> Yes.
-> >>>>
-> >>>>> If so, have you observed issues you can share details about?
-> >>>>
-> >>>> Sure.
-> >>>>
-> >>>> Before delving into the specific details of this issue, I would like
-> >>>> to provide some background information on the rule that ext4 cannot
-> >>>> wait for writeback in an active journal handle. If you are aware of
-> >>>> this background, please skip this paragraph. During ext4 writing back
-> >>>> the page cache, it may start a new journal handle to allocate blocks,
-> >>>> update the disksize, and convert unwritten extents after the I/O is
-> >>>> completed. When starting this new journal handle, if the current
-> >>>> running journal transaction is in the process of being submitted or
-> >>>> if the journal space is insufficient, it must wait for the ongoing
-> >>>> transaction to be completed, but the prerequisite for this is that all
-> >>>> currently running handles must be terminated. However, if we flush the
-> >>>> page cache under an active journal handle, we cannot stop it, which
-> >>>> may lead to a deadlock.
-> >>>>
-> >>>
-> >>> Ok, makes sense.
-> >>>
-> >>>> Now, the issue I have observed occurs when I attempt to use
-> >>>> iomap_zero_range() within ext4_block_zero_page_range(). My current
-> >>>> implementation are below(based on the latest fs-next).
-> >>>>
-> >>>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> >>>> index 28547663e4fd..1a21667f3f7c 100644
-> >>>> --- a/fs/ext4/inode.c
-> >>>> +++ b/fs/ext4/inode.c
-> >>>> @@ -4147,6 +4147,53 @@ static int ext4_iomap_buffered_da_write_end(struct inode *inode, loff_t offset,
-> >>>>  	return 0;
-> >>>>  }
-> >>>>
-> >>>> +static int ext4_iomap_buffered_zero_begin(struct inode *inode, loff_t offset,
-> >>>> +			loff_t length, unsigned int flags, struct iomap *iomap,
-> >>>> +			struct iomap *srcmap)
-> >>>> +{
-> >>>> +	struct iomap_iter *iter = container_of(iomap, struct iomap_iter, iomap);
-> >>>> +	struct ext4_map_blocks map;
-> >>>> +	u8 blkbits = inode->i_blkbits;
-> >>>> +	int ret;
-> >>>> +
-> >>>> +	ret = ext4_emergency_state(inode->i_sb);
-> >>>> +	if (unlikely(ret))
-> >>>> +		return ret;
-> >>>> +
-> >>>> +	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
-> >>>> +		return -EINVAL;
-> >>>> +
-> >>>> +	/* Calculate the first and last logical blocks respectively. */
-> >>>> +	map.m_lblk = offset >> blkbits;
-> >>>> +	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
-> >>>> +			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
-> >>>> +
-> >>>> +	ret = ext4_map_blocks(NULL, inode, &map, 0);
-> >>>> +	if (ret < 0)
-> >>>> +		return ret;
-> >>>> +
-> >>>> +	/*
-> >>>> +	 * Look up dirty folios for unwritten mappings within EOF. Providing
-> >>>> +	 * this bypasses the flush iomap uses to trigger extent conversion
-> >>>> +	 * when unwritten mappings have dirty pagecache in need of zeroing.
-> >>>> +	 */
-> >>>> +	if ((map.m_flags & EXT4_MAP_UNWRITTEN) &&
-> >>>> +	    map.m_lblk < EXT4_B_TO_LBLK(inode, i_size_read(inode))) {
-> >>>> +		loff_t end;
-> >>>> +
-> >>>> +		end = iomap_fill_dirty_folios(iter, map.m_lblk << blkbits,
-> >>>> +					      map.m_len << blkbits);
-> >>>> +		if ((end >> blkbits) < map.m_lblk + map.m_len)
-> >>>> +			map.m_len = (end >> blkbits) - map.m_lblk;
-> >>>> +	}
-> >>>> +
-> >>>> +	ext4_set_iomap(inode, iomap, &map, offset, length, flags);
-> >>>> +	return 0;
-> >>>> +}
-> >>>> +
-> >>>> +const struct iomap_ops ext4_iomap_buffered_zero_ops = {
-> >>>> +	.iomap_begin = ext4_iomap_buffered_zero_begin,
-> >>>> +};
-> >>>>
-> >>>>  const struct iomap_ops ext4_iomap_buffered_write_ops = {
-> >>>>  	.iomap_begin = ext4_iomap_buffered_write_begin,
-> >>>> @@ -4611,6 +4658,17 @@ static int __ext4_block_zero_page_range(handle_t *handle,
-> >>>>  	return err;
-> >>>>  }
-> >>>>
-> >>>> +static inline int ext4_iomap_zero_range(struct inode *inode, loff_t from,
-> >>>> +					loff_t length)
-> >>>> +{
-> >>>> +	WARN_ON_ONCE(!inode_is_locked(inode) &&
-> >>>> +		     !rwsem_is_locked(&inode->i_mapping->invalidate_lock));
-> >>>> +
-> >>>> +	return iomap_zero_range(inode, from, length, NULL,
-> >>>> +				&ext4_iomap_buffered_zero_ops,
-> >>>> +				&ext4_iomap_write_ops, NULL);
-> >>>> +}
-> >>>> +
-> >>>>  /*
-> >>>>   * ext4_block_zero_page_range() zeros out a mapping of length 'length'
-> >>>>   * starting from file offset 'from'.  The range to be zero'd must
-> >>>> @@ -4636,6 +4694,8 @@ static int ext4_block_zero_page_range(handle_t *handle,
-> >>>>  	if (IS_DAX(inode)) {
-> >>>>  		return dax_zero_range(inode, from, length, NULL,
-> >>>>  				      &ext4_iomap_ops);
-> >>>> +	} else if (ext4_test_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP)) {
-> >>>> +		return ext4_iomap_zero_range(inode, from, length);
-> >>>>  	}
-> >>>>  	return __ext4_block_zero_page_range(handle, mapping, from, length);
-> >>>>  }
-> >>>>
-> >>>> The problem is most calls to ext4_block_zero_page_range() occur under
-> >>>> an active journal handle, so I can reproduce the deadlock issue easily
-> >>>> without this series.
-> >>>>
-> >>>>>
-> >>>>> FWIW, I think your suggestion is reasonable, but I'm also curious what
-> >>>>> the error handling would look like in ext4. Do you expect to the fail
-> >>>>> the higher level operation, for example? Cycle locks and retry, etc.?
-> >>>>
-> >>>> Originally, I wanted ext4_block_zero_page_range() to return a failure
-> >>>> to the higher level operation. However, unfortunately, after my testing
-> >>>> today, I discovered that even though we implement this, this series still
-> >>>> cannot resolve the issue. The corner case is:
-> >>>>
-> >>>> Assume we have a dirty folio covers both hole and unwritten mappings.
-> >>>>
-> >>>>    |- dirty folio  -|
-> >>>>    [hhhhhhhhuuuuuuuu]                h:hole, u:unwrtten
-> >>>>
-> >>>> If we punch the range of the hole, ext4_punch_hole()->
-> >>>> ext4_zero_partial_blocks() will zero out the first half of the dirty folio.
-> >>>> Then, ext4_iomap_buffered_zero_begin() will skip adding this dirty folio
-> >>>> since the target range is a hole. Finally, iomap_zero_range() will still
-> >>>> flush this whole folio and lead to deadlock during writeback the latter
-> >>>> half of the folio.
-> >>>>
-> >>>
-> >>> Hmm.. Ok. So it seems there are at least a couple ways around this
-> >>> particular quirk. I suspect one is that you could just call the fill
-> >>> helper in the hole case as well, but that's kind of a hack and not
-> >>> really intended use.
-> >>>
-> >>> The other way goes back to the fact that the flush for the hole case was
-> >>> kind of a corner case hack in the first place. The original comment for
-> >>> that seems to have been dropped, but see commit 7d9b474ee4cc ("iomap:
-> >>> make zero range flush conditional on unwritten mappings") for reference
-> >>> to the original intent.
-> >>>
-> >>> I'd have to go back and investigate if something regresses with that
-> >>> taken out, but my recollection is that was something that needed proper
-> >>> fixing eventually anyways. I'm particularly wondering if that is no
-> >>> longer an issue now that pagecache_isize_extended() handles the post-eof
-> >>> zeroing (the caveat being we might just need to call it in some
-> >>> additional size extension cases besides just setattr/truncate).
-> >>
-> >> Yeah, I agree with you. I suppose the post-EOF partial folio zeroing in
-> >> pagecache_isize_extended() should work.
-> >>
-> > 
-> > Ok..
-> > 
-> >>>
-> >>>>>
-> >>>>> The reason I ask is because the folio_batch handling has come up through
-> >>>>> discussions on this series. My position so far has been to keep it as a
-> >>>>> separate allocation and to keep things simple since it is currently
-> >>>>> isolated to zero range, but that may change if the usage spills over to
-> >>>>> other operations (which seems expected at this point). I suspect that if
-> >>>>> a filesystem actually depends on this for correct behavior, that is
-> >>>>> another data point worth considering on that topic.
-> >>>>>
-> >>>>> So that has me wondering if it would be better/easier here to perhaps
-> >>>>> embed the batch in iomap_iter, or maybe as an incremental step put it on
-> >>>>> the stack in iomap_zero_range() and initialize the iomap_iter pointer
-> >>>>> there instead of doing the dynamic allocation (then the fill helper
-> >>>>> would set a flag to indicate the fs did pagecache lookup). Thoughts on
-> >>>>> something like that?
-> >>>>>
-> >>>>> Also IIUC ext4-on-iomap is still a WIP and review on this series seems
-> >>>>> to have mostly wound down. Any objection if the fix for that comes along
-> >>>>> as a followup patch rather than a rework of this series?
-> >>>>
-> >>>> It seems that we don't need to modify this series, we need to consider
-> >>>> other solutions to resolve this deadlock issue.
-> >>>>
-> >>>> In my v1 ext4-on-iomap series [1], I resolved this issue by moving all
-> >>>> instances of ext4_block_zero_page_range() out of the running journal
-> >>>> handle(please see patch 19-21). But I don't think this is a good solution
-> >>>> since it's complex and fragile. Besides, after commit c7fc0366c6562
-> >>>> ("ext4: partial zero eof block on unaligned inode size extension"), you
-> >>>> added more invocations of ext4_zero_partial_blocks(), and the situation
-> >>>> has become more complicated (Althrough I think the calls in the three
-> >>>> write_end callbacks can be removed).
-> >>>>
-> >>>> Besides, IIUC, it seems that ext4 doesn't need to flush dirty folios
-> >>>> over unwritten mappings before zeroing partial blocks. This is because
-> >>>> ext4 always zeroes the in-memory page cache before zeroing(e.g, in
-> >>>> ext4_setattr() and ext4_punch_hole()), it means if the target range is
-> >>>> still dirty and unwritten when calling ext4_block_zero_page_range(), it
-> >>>> must has already been zeroed. Was I missing something? Therefore, I was
-> >>>> wondering if there are any ways to prevent flushing in
-> >>>> iomap_zero_range()? Any ideas?
-> >>>
-> >>> It's certainly possible that the quirk fixed by the flush the hole case
-> >>> was never a problem on ext4, if that's what you mean. Most of the
-> >>> testing for this was on XFS since ext4 hadn't used iomap for buffered
-> >>> writes.
-> >>>
-> >>> At the end of the day, the batch mechanism is intended to facilitate
-> >>> avoiding the flush entirely. I'm still paging things back in here.. but
-> >>> if we had two smallish changes to this code path to 1. eliminate the
-> >>> dynamic folio_batch allocation and 2. drop the flush on hole mapping
-> >>> case, would that address the issues with iomap zero range for ext4?
-> >>>
-> >>
-> >> Thank you for looking at this!
-> >>
-> >> I made a simple modification to the iomap_zero_range() function based
-> >> on the second solution you mentioned, then tested it using kvm-xfstests
-> >> these days. This solution works fine on ext4 and I don't find any other
-> >> risks by now. (Since my testing environment has sufficient memory, I
-> >> have not yet handled the case of memory allocation failure).
-> >>
-> > 
-> > Great, thanks for evaluating that. I've been playing around with the
-> > exact same change the past few days. As it turns out, this still breaks
-> > something with XFS. I've narrowed it down to an interaction between a
-> > large eof folio that fails to split on truncate due to being dirty, COW
-> > prealloc and insert range racing with writeback in such a way that this
-> > results in a mapped post-eof block on the file. Technically that isn't
-> > the end of the world so long as it is zeroed, but a subsequent zero
-> > range can warn if the folio is reclaimed and we now end up with a new
-> > one that starts beyond EOF, because those folios don't write back.
-> > 
-> > I have a mix of hacks that seems to address the generic/363 failure, but
-> > it still needs further testing and analysis to unwind my mess of various
-> > experiments and whatnot. ;P
+On Wed, Aug 06, 2025 at 04:26:49PM +0800, Mingyu He wrote:
+> Hi EXT4 maintainers,
 > 
-> OK, thanks for debugging and analyzing this.
-> 
-> > 
-> >> --- a/fs/iomap/buffered-io.c
-> >> +++ b/fs/iomap/buffered-io.c
-> >> @@ -1520,7 +1520,7 @@ iomap_zero_range(struct inode *inode, loff_t pos, loff_t len, bool *did_zero,
-> >> 		     srcmap->type == IOMAP_UNWRITTEN)) {
-> >> 			s64 status;
-> >>
-> >> -			if (range_dirty) {
-> >> +			if (range_dirty && srcmap->type == IOMAP_UNWRITTEN) {
-> >> 				range_dirty = false;
-> >> 				status = iomap_zero_iter_flush_and_stale(&iter);
-> >> 			} else {
-> >>
-> >> Another thing I want to mention (although there are no real issues at
-> >> the moment, I still want to mention it) is that there appears to be
-> >> no consistency guarantee between the lookup of the mapping and the
-> >> follo_batch. For example, assume we have a file which contains two
-> >> dirty folio and two unwritten extents, one folio corresponds to one
-> >> extent. We zero out these two folios.
-> >>
-> >>     | dirty folio 1  || dirty folio 2   |
-> >>     [uuuuuuuuuuuuuuuu][uuuuuuuuuuuuuuuuu]
-> >>
-> >> In the first call to ->iomap_begin(), we get the unwritten extent 1.
-> >> At the same time, another thread writes back folio 1 and clears this
-> >> folio, so this folio will not be added to the follo_batch. Then
-> >> iomap_zero_range() will still flush those two folios. When flushing
-> >> the second folio, there is still a risk of deadlock due to changes in
-> >> metadata.
-> >>
-> > 
-> > Hmm.. not sure I follow the example. The folio batch should include the
-> > folio in any case other than where it can look up, lock it and confirm
-> > it is clean. If the folio is clean and thus not included, the iomap
-> > logic should still see the empty folio batch and skip over the mapping
-> > if unwritten. (I want to replace this with a flag to address your memory
-> > allocation concern, but that is orthogonal to this logic.)
-> > 
-> > Of course this should happen under appropriate fs locks such that iomap
-> > either sees the folio in dirty/writeback state where the mapping is
-> > unwritten, or if the folio has been cleaned, the mapping is reported as
-> > written.
-> > 
-> > If I'm still missing something with your example above, can you
-> > elaborate a bit further? Thanks.
-> > 
-> 
-> Sorry for not make things clear. The race condition is the following,
-> 
-> zero range                            sync_file_range
-> iomap_zero_range() //folio 1+2
->  range_dirty = filemap_range_needs_writeback()
->  //range_dirty is set to 'ture'
->  iomap_iter()
->    ext4_iomap_buffer_zero_begin()
->      ext4_map_blocks()
->      //get unwritten extent 1
->                                       sync_file_range() //folio 1
->                                         iomap_writepages()
->                                         ...
->                                         iomap_finish_ioend()
->                                           folio_end_writeback()
->                                           //clear folio 1, and
->                                           //extent 1 becomes written
->      iomap_fill_dirty_folios()
->      //do not add folio 1 to batch
+> I would like to report a potential bug related to the ext4 allocator
+> implementation, specifically in the file `fs/ext4/mballoc.c`.
 
-I think the issue here is that this needs serialization between the
-lookups and extent conversion. I.e., XFS handles this by doing the folio
-lookup under the same locks used for looking up the extent. So in this
-scenario, that ensures that the only way we don't add the folio to the
-batch is if the mapping has already been converted by writeback
-completion..
+Yeah, this is a known issue with ext4's RAID support.  The problem is
+that we're trying too hard to try to find a precise RAID stripe
+alignment.  There are a couple of things that could be done to solve
+the issue, but none of them are easy.
 
->   iomap_zero_iter_flush_and_stale()
->   //!fbatch && IOMAP_UNWRITTEN && range_dirty
->   //flush folio 1+2, folio 2 is still dirty, then deadlock
-> 
+* Cache the number of stripe aligned regions in a particular block
+  group, so we can skip the block groups where searching is for a
+  stripe alignment is hopeless.  This will reduce the CPU time spent
+  searching all of the block groups for each alignment, but on a
+  freshly mounted disk, initial allocations will still be slow since
+  we would need to read the block allocation bitmaps into memory and
+  then process them.  We would also need to keep the cache of the
+  number of stripe aligned regions to a minimum.
 
-I also think the failure characteristic here is different. In this case
-you'd see an empty fbatch because at least on the lookup side the
-mapping is presumed to be unwritten. So that means we still wouldn't
-flush, but the zeroing would probably race with writeback such that it
-skips zeroing the blocks when it shouldn't.
+* Have a hard limit on the amount of time (either wall clock time or
+  CPU time) spent searching for stripe aligned bitmaps.  If none are
+  available, bail out early.
 
-> Besides, if the range of folio 1 is initially clean and unwritten
-> (folio 2 is still dirty), the flush can also be triggered without the
-> concurrent sync_file_range.
-> 
-> The problem is that we initially checked `range_dirty` only once, and
-> if was done for the entire zero range, instead of checking it each
-> iteration, and there is no fs lock can prevent a concurrent write-back.
-> Perhaps we need to check 'dirty_range' for each iteration?
-> 
+* Use a more efficient in-memory data structure for storing the free
+  block information.  Today, we use a buddy bitmap, which is great if
+  we are doing power of two allocations (which for non-RAID file
+  systems, we try to do whenever possible, up to trying to allocate
+  more space than what was asked for in case the user tries to append
+  to the file later).  If the RAID stripe size is power-of-two
+  aligned, the buddy bitmap would be fine, but very often, that isn't
+  the case.  This still requires initially reading the block bitmap
+  into memory in order to convert to that more efficient in-memory
+  data structure, but it is simpler than...
 
-I don't think this needs to prevent writeback, but is there not any
-locking to protect extent lookups vs. extent conversion (via writeback)?
+* Use a more efficient on-disk data structure, such as a b-tree.  This
+  requires an on-disk format change, which means we would need to
+  update e2fsprogs, and we would have to worry about backwards
+  compatibility in case the file system needs to be mounted on an
+  older kernel.
 
-FWIW, I think it's a little hard to reason about some of these
-interactions because of the pending tweaks that aren't implemented yet.
-What I'd like to do is get another version of this posted (mostly as
-is), hopefully get it landed into -next or whatever, then get another
-series going with this handful of tweaks we're discussing to prepare for
-ext4 on iomap. From there we can work out any remaining details on
-things that might need to change on either side. Sound Ok?
+If someone is interested in working on these options (which I view as
+a new feature, not as a bug fix), please contact me and I'm happy to
+discuss further.
 
-Brian
+Alternatively, a workaround is to simply disable the RAID stripe
+information in the superblock.  You can do this via "tune2fs -E
+stripe_width 0 /dev/sdXX".  For a file system which is fragmented such
+that finding stripe aligned free space is hopeless, this isn't going
+to hurt, and it will definitely help.  In the most recent version of
+e2fsprogs, this is now the default in mke2fs for non-rotational (e.g.,
+thin provisioned, or flash based) storage devices:
 
-> Regards,
-> Yi.
-> 
+commit b61f182b2de1ea75cff935037883ba1a8c7db623
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Sun May 4 14:07:14 2025 -0400
 
+    mke2fs: don't set the raid stripe for non-rotational devices by default
+    
+    The ext4 block allocator is not at all efficient when it is asked to
+    enforce RAID alignment.  It is especially bad for flash-based devices,
+    or when the file system is highly fragmented.  For non-rotational
+    devices, it's fine to set the stride parameter (which controls
+    spreading the allocation bitmaps across the RAID component devices,
+    which always makessense); but for the stripe parameter (which asks the
+    ext4 block alocator to try _very_ hard to find RAID stripe aligned
+    devices) it's probably not a good idea.
+    
+    Add new mke2fs.conf parameters with the defaults:
+    
+    [defaults]
+       set_raid_stride = always
+       set_raid_stripe = disk
+    
+    Even for RAID arrays based on HDD's, we can still have problems for
+    highly fragmented file systems.  This will need to solved in the
+    kernel, probably by having some kind of wall clock or CPU time
+    limitation for each block allocation or adding some kind of
+    optimization which is faster than using our current buddy bitmap
+    implementation, especially if the stripe size is not multiple of a
+    power of two.  But for SSD's, it's much less likely to make sense even
+    if we have an optimized block allocator, because if you've paid $$$
+    for a flash-based RAID array, the cost/benefit tradeoffs of doing less
+    optimized stripe RMW cycles versus the block allocator time and CPU
+    overhead is harder to justify without a lot of optimization effort.
+    
+    If and when we can improve the ext4 kernel implementation (and it gets
+    rolled out to users using LTS kernels), we can change the defaults.
+    And of course, system administrators can always change
+    /etc/mke2fs.conf settings.
+    
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+
+Cheers,
+
+						- Ted
 
