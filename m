@@ -1,107 +1,182 @@
-Return-Path: <linux-ext4+bounces-9278-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9279-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12EAB1DB93
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Aug 2025 18:25:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD52AB1DDB7
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Aug 2025 21:57:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E20B7E03F0
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Aug 2025 16:24:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88F7C3AB9B2
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Aug 2025 19:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A701A0BFD;
-	Thu,  7 Aug 2025 16:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 582CD22DFA4;
+	Thu,  7 Aug 2025 19:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="j2OXaEVr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NyIUtxP8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE6C26FA4E
-	for <linux-ext4@vger.kernel.org>; Thu,  7 Aug 2025 16:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9FFA223705;
+	Thu,  7 Aug 2025 19:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754583895; cv=none; b=pfFfuKZP3CCfGZXt4gaRnvHVNqAWy3fciC/EQ+CoCN/ZbC+orY/SJGXMlgWs9v30k0ESf/p7subTWejcEEEzR3mL+CKlsKpbKbRHVu1dExajPa4E1Q3WcWSXIa+lLrCjlXBtnYjD0fa0JITDsmgNUw3ZD5uub4Y4MF7ATw8FQvA=
+	t=1754596622; cv=none; b=TqPZJ0w9r/CPQtIbbl+tjpH4GjOKFCdYXUPcdd/FBMyMOmYAgqfHV/la8E6GlAPgZTmWpkrmJbVMaHyQ4vddxmeNOw9CXTHpPqkUXLXTuC5poqVCyPj+gFCX5CAQD0fMt5WKnG7Q/mm5nHarm+GIbc86jIQxga3mHWYKyzbsBQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754583895; c=relaxed/simple;
-	bh=e8UA82WWbvs95x7GEu0Qs+WzQPVdOwUM2dOWu71eJi8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VTfVhWDkQ9smzZObXE8xgU8cD7lxuYiLhMHCxPe82MRQrfh6GSH/MP7Z9fHVEVsBLrAkeGXZ3C3BIeoCpYoKoSU2R/o/3Frd68p8TRgVUtldo5dhssA+976lUSswRNbThXN57B8zG0/KqXP2KLX/6++hCkwXyp6S1xTT3R3AMDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=j2OXaEVr; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-147.bstnma.fios.verizon.net [173.48.82.147])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 577GMUpJ029077
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 7 Aug 2025 12:22:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1754583752; bh=aQv5OK9d3Sw0ikDpxCLt3KXG1Y9/Rmfc7AB3nXBBEoQ=;
-	h=From:Subject:Date:Message-ID:MIME-Version;
-	b=j2OXaEVrv0Vnm87PrzSJZE6nASde/K60wL/+0MYM03qwFKRiwU3nzIjv+fRWnmvdE
-	 OU0uv2YkP2XEkQPH1Llbi+2FubVLPrlOnFsFPEDqpf1NU6WbDalUBA+dwilCi+RRke
-	 cI3O7O8+84kc/2Lt/y3TbCnYjdG+zkloC9b/earikXWckqmxvPrFFnSWBC4nthtd1b
-	 CL5Q0MmvK7/DgFn/YxM7pyB1xbnH+RwF8Cbw2y4nj9feEKnyzYEcJffBTZvBlOyGeq
-	 z4xtPVB6vSHHZS6i0b4FHHhfz3VnTHU5LFgmjo70F4PVcg8iifSNK3ziV6m0fVukG6
-	 i32XSRuctXj9Q==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 4F05F2E00D6; Thu, 07 Aug 2025 12:22:30 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, stable@vger.kernel.org
-Subject: [PATCH] ext4: don't try to clear the orphan_present feature block device is r/o
-Date: Thu,  7 Aug 2025 12:22:20 -0400
-Message-ID: <20250807162220.882655-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1754596622; c=relaxed/simple;
+	bh=nDMGNwMtc0VDvGNgvp1lhcxe2RK30/Cr/bqKvCLRm4Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oa4vu7Ug7eE809lijottV3SacTsPgkQR6s+PcDTxpDzu8lPtuzcAP7OSmpHDIJ7N1+65ZGXqKgE2jC/axFZ5oWPLZ8USrzhwGzTkVDfKt3T1yQKcxg0YnuncpC05UBLQtegiiHZEzMUQhRBOPRTmTb6jphwO3gq1R69Tv6KqXSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NyIUtxP8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57827C4CEEB;
+	Thu,  7 Aug 2025 19:57:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754596621;
+	bh=nDMGNwMtc0VDvGNgvp1lhcxe2RK30/Cr/bqKvCLRm4Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NyIUtxP8PF4fKg+4Apcqo/Yi27bIkP6caR+mUukIKY0/MxtNOh/N5K6MX45YVsGqI
+	 U3zgqIq5FrXhBq2HsGd1XkDY6a8bNSCSTpbiNHkgQ0twdqWb/PUpaw0JLJjUiUM4zm
+	 aPNSkI1/pndVkiOq3IKOuT7ynLiNAB1jgJrpIWXMv13Y0Jo5JhC6gKp4xEH+a2gQh+
+	 GtF6E2I92pin3tRO+bImY+Rim9m+Ba8B+V70FUGk65kSHawmpOzy9DoWInjVMYucsa
+	 B/rq+ECAGqhQfWXp2x3mXT6grN9sUpa2U43CR/qZUm2EOSDMsYIKOgnnuX7CiouGMY
+	 bS3CGWCDZ6AEQ==
+Date: Thu, 7 Aug 2025 12:57:00 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+	Ritesh Harjani <ritesh.list@gmail.com>,
+	Zhang Yi <yi.zhang@huawei.com>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, Disha Goel <disgoel@linux.ibm.com>
+Subject: Re: [PATCH 1/2] ext4: Fix fsmap end of range reporting with bigalloc
+Message-ID: <20250807195700.GS2672022@frogsfrogsfrogs>
+References: <e7472c8535c9c5ec10f425f495366864ea12c9da.1754377641.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e7472c8535c9c5ec10f425f495366864ea12c9da.1754377641.git.ojaswin@linux.ibm.com>
 
-When the file system is frozen in preparation for taking an LVM
-snapshot, the journal is checkpointed and if the orphan_file feature
-is enabled, and the orphan file is empty, we clear the orphan_present
-feature flag.  But if there are pending inodes that need to be removed
-the orphan_present feature flag can't be cleared.
+On Tue, Aug 05, 2025 at 02:00:30PM +0530, Ojaswin Mujoo wrote:
+> With bigalloc enabled, the logic to report last extent has a bug since
+> we try to use cluster units instead of block units. This can cause an issue
+> where extra incorrect entries might be returned back to the user. This was
+> flagged by generic/365 with 64k bs and -O bigalloc.
+> 
+> ** Details of issue **
+> 
+> The issue was noticed on 5G 64k blocksize FS with -O bigalloc which has
+> only 1 bg.
+> 
+> $ xfs_io -c "fsmap -d" /mnt/scratch
+> 
+>   0: 253:48 [0..127]: static fs metadata 128   /* sb */
+>   1: 253:48 [128..255]: special 102:1 128   /* gdt */
+>   3: 253:48 [256..383]: special 102:3 128   /* block bitmap */
+>   4: 253:48 [384..2303]: unknown 1920       /* flex bg empty space */
+>   5: 253:48 [2304..2431]: special 102:4 128   /* inode bitmap */
+>   6: 253:48 [2432..4351]: unknown 1920      /* flex bg empty space */
+>   7: 253:48 [4352..6911]: inodes 2560
+>   8: 253:48 [6912..538623]: unknown 531712
+>   9: 253:48 [538624..10485759]: free space 9947136
+> 
+> The issue can be seen with:
+> 
+> $ xfs_io -c "fsmap -d 0 3" /mnt/scratch
+> 
+>   0: 253:48 [0..127]: static fs metadata 128
+>   1: 253:48 [384..2047]: unknown 1664
+> 
+> Only the first entry was expected to be returned but we get 2. This is
+> because:
+> 
+> ext4_getfsmap_datadev()
+>   first_cluster, last_cluster = 0
+>   ...
+>   info->gfi_last = true;
+>   ext4_getfsmap_datadev_helper(sb, end_ag, last_cluster + 1, 0, info);
+>     fsb = C2B(1) = 16
+>     fslen = 0
+>     ...
+>     /* Merge in any relevant extents from the meta_list */
+>     list_for_each_entry_safe(p, tmp, &info->gfi_meta_list, fmr_list) {
+>       ...
+>       // since fsb = 16, considers all metadata which starts before 16 blockno
+>       iter 1: error = ext4_getfsmap_helper(sb, info, p);  // p = sb (0,1), nop
+>         info->gfi_next_fsblk = 1
+>       iter 2: error = ext4_getfsmap_helper(sb, info, p);  // p = gdt (1,2), nop
+>         info->gfi_next_fsblk = 2
+>       iter 3: error = ext4_getfsmap_helper(sb, info, p);  // p = blk bitmap (2,3), nop
+>         info->gfi_next_fsblk = 3
+>       iter 4: error = ext4_getfsmap_helper(sb, info, p);  // p = ino bitmap (18,19)
+>         if (rec_blk > info->gfi_next_fsblk) { // (18 > 3)
+>           // emits an extra entry ** BUG **
+>         }
+>     }
+> 
+> Fix this by directly calling ext4_getfsmap_datadev() with a dummy record
+> that has fmr_physical set to (end_fsb + 1) instead of last_cluster + 1. By
+> using the block instead of cluster we get the correct behavior.
+> 
+> Replacing ext4_getfsmap_datadev_helper() with ext4_getfsmap_helper() is
+> okay since the gfi_lastfree and metadata checks in
+> ext4_getfsmap_datadev_helper() are anyways redundant when we only want to
+> emit the last allocated block of the range, as we have already taken care
+> of emitting metadata and any last free blocks.
+> 
+> Reported-by: Disha Goel <disgoel@linux.ibm.com>
+> Fixes: 4a622e4d477b ("ext4: fix FS_IOC_GETFSMAP handling")
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-The problem comes if the block device is read-only.  In that case, we
-can't process the orphan inode list, so it is skipped in
-ext4_orphan_cleanup().  But then in ext4_mark_recovery_complete(),
-this results in the ext4 error "Orphan file not empty on read-only fs"
-firing and the file system mount is aborted.
+Looks fine to me
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
-Fix this by clearing the needs_recovery flag in the block device is
-read-only.  We do this after the call to ext4_load_and_init-journal()
-since there are some error checks need to be done in case the journal
-needs to be replayed and the block device is read-only, or if the
-block device containing the externa journal is read-only, etc.
+--D
 
-Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1108271
-Cc: stable@vger.kernel.org
-Fixes: 02f310fcf47f ("ext4: Speedup ext4 orphan inode handling")
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/super.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c7d39da7e733..52a5f2b391fb 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5414,6 +5414,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 		err = ext4_load_and_init_journal(sb, es, ctx);
- 		if (err)
- 			goto failed_mount3a;
-+		if (bdev_read_only(sb->s_bdev))
-+		    needs_recovery = 0;
- 	} else if (test_opt(sb, NOLOAD) && !sb_rdonly(sb) &&
- 		   ext4_has_feature_journal_needs_recovery(sb)) {
- 		ext4_msg(sb, KERN_ERR, "required journal recovery "
--- 
-2.47.2
-
+> ---
+>  fs/ext4/fsmap.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
+> index 383c6edea6dd..9d63c39f6077 100644
+> --- a/fs/ext4/fsmap.c
+> +++ b/fs/ext4/fsmap.c
+> @@ -526,6 +526,7 @@ static int ext4_getfsmap_datadev(struct super_block *sb,
+>  	ext4_group_t end_ag;
+>  	ext4_grpblk_t first_cluster;
+>  	ext4_grpblk_t last_cluster;
+> +	struct ext4_fsmap irec;
+>  	int error = 0;
+>  
+>  	bofs = le32_to_cpu(sbi->s_es->s_first_data_block);
+> @@ -609,10 +610,18 @@ static int ext4_getfsmap_datadev(struct super_block *sb,
+>  			goto err;
+>  	}
+>  
+> -	/* Report any gaps at the end of the bg */
+> +	/*
+> +	 * The dummy record below will cause ext4_getfsmap_helper() to report
+> +	 * any allocated blocks at the end of the range.
+> +	 */
+> +	irec.fmr_device = 0;
+> +	irec.fmr_physical = end_fsb + 1;
+> +	irec.fmr_length = 0;
+> +	irec.fmr_owner = EXT4_FMR_OWN_FREE;
+> +	irec.fmr_flags = 0;
+> +
+>  	info->gfi_last = true;
+> -	error = ext4_getfsmap_datadev_helper(sb, end_ag, last_cluster + 1,
+> -					     0, info);
+> +	error = ext4_getfsmap_helper(sb, info, &irec);
+>  	if (error)
+>  		goto err;
+>  
+> -- 
+> 2.49.0
+> 
+> 
 
