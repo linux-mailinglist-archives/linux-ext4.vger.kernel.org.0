@@ -1,302 +1,247 @@
-Return-Path: <linux-ext4+bounces-9283-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9284-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE7BB1E3E0
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Aug 2025 09:52:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BA14B1E410
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Aug 2025 10:06:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019BB1899351
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Aug 2025 07:53:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92B2F3AB897
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Aug 2025 08:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5E122FF39;
-	Fri,  8 Aug 2025 07:52:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="DXOma/yn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3877324A05B;
+	Fri,  8 Aug 2025 08:06:46 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from omta003.cacentral1.a.cloudfilter.net (omta001.cacentral1.a.cloudfilter.net [3.97.99.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA58B23B615;
-	Fri,  8 Aug 2025 07:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA0C84AEE2
+	for <linux-ext4@vger.kernel.org>; Fri,  8 Aug 2025 08:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.97.99.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754639563; cv=none; b=H4HbZpYmBDNoB30YW2NYJmOesl+8kXlZ0k44z8bqTJ+CfzD4aCzN9qr5dL/NAMdC8KolxkvAWFMoIDx9fhK8S1ED6qIZYwCX3FsJSKRli73PadTm32NPon9o08zLmXX0E4prE8z6HDJLWwTdF/ob+/iPYJ/m+nSlxp/86jukfBE=
+	t=1754640406; cv=none; b=Mc04AgTsKBeqUVV14o5i3VwHSG2+m4IIdq+XtOXw4fjjstA5pg88JpP9cO9QdfXDLLDJOoT2A54P7Ble50rgWqFt6k10EpLxrmKwMSIme50Lw1wQrNf+Nl5iYoNmG2ag9DwaF6midRnPE5Dls/t3AABg+XfqObS3tUo/TAgbiDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754639563; c=relaxed/simple;
-	bh=Uv7uGrVKUrQl082IaPTDRUowNnVBhilnVBIK2Oe2KPI=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=TlGz/Ns7f8fWrkowpmjMQ4baUjcCXYfnc7f0oF2u4Yw+fsP8hZoTEo1fl7kPL7GDiYnNCnRaVHfdHS2FSLDxJWgUXBOvFEpzChWgMzNNk9EmBrBw3rgNhEH791tWmxahcO0n1Ua7Ics8o8jQJJL8VY+JsHBCz7X9s3al4rcY/gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=DXOma/yn; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1754639555; x=1755244355; i=quwenruo.btrfs@gmx.com;
-	bh=1zUvgIQCuWZ2zoJ6wePNNerNLqhd+V4gd1tlx0MJLHs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
-	 Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=DXOma/ynv68JX3TFxzRLkjTkuQ7A5kszRNXYqzYExDQs3EjKWb4ItipwekFNQImE
-	 p2dZbrNEF8hKy4Q3VPxQ/jgIFU4ejeLSLg7ZTSBbngJ9+kd9xeQFyWJHHIUM+jhVh
-	 Bs7S4o++OOksGzBlRWh6MqEXeVxwZogX2IyumUIwnhb5/wTuuDjDlBjx8qGn5GnOa
-	 rWdRapEdlfY90O6Zd2uhET5f9+fMagefQDVQVbt59UiG5lGV89WWIS0zN79syNvex
-	 R+A0Ot1havtwVGlF4TuslmS4f86qgFbdadbJ9BRMH92FqFhUcLTpw7IytzMHi2Edd
-	 CG1zhHEFehahP2J/wQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWzjt-1v8Fsw14cz-00OCCa; Fri, 08
- Aug 2025 09:52:35 +0200
-Message-ID: <9b650a52-9672-4604-a765-bb6be55d1e4a@gmx.com>
-Date: Fri, 8 Aug 2025 17:22:32 +0930
+	s=arc-20240116; t=1754640406; c=relaxed/simple;
+	bh=DCms4VkDzKFNblfh2PhJ+rY4JHIzCbwh8pKfrtIr12k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wkb1xfKg1mu70uY+PD8PhGhlZmbx7bdWJA1EI4NqDy3CiAYXK6CqGXGB1VpkbPU/j+hGeiLzH1+fXL+WY9dliRGgigKLHo78MB8aFt2dVr38o1Ab8Bc0x3NSFH7wqN2GgcrNzadEctPqnOP49GwEXDUuHLdCXBB0fgyQI80cPsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; arc=none smtp.client-ip=3.97.99.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: from shw-obgw-4001a.ext.cloudfilter.net ([10.228.9.142])
+	by cmsmtp with ESMTPS
+	id kAy7uYMa59JM2kI66udL9S; Fri, 08 Aug 2025 08:05:06 +0000
+Received: from cabot.adilger.int ([70.77.200.158])
+	by cmsmtp with ESMTP
+	id kI65uvtluWX70kI65uMYcc; Fri, 08 Aug 2025 08:05:06 +0000
+X-Authority-Analysis: v=2.4 cv=d71WygjE c=1 sm=1 tr=0 ts=6895afb2
+ a=0Thh8+fbYSyN3T2vM72L7A==:117 a=0Thh8+fbYSyN3T2vM72L7A==:17 a=ySfo2T4IAAAA:8
+ a=lB0dNpNiAAAA:8 a=1rRP3Pm-Zha4dS9LYPEA:9 a=ZUkhVnNHqyo2at-WnAgH:22
+ a=c-ZiYqmG3AbHTdtsH08C:22
+From: Andreas Dilger <adilger@dilger.ca>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org,
+	Andreas Dilger <adilger@dilger.ca>,
+	Andreas Dilger <adilger@whamcloud.com>,
+	Li Dongyang <dongyangli@ddn.com>
+Subject: [PATCHv2] ext2fs: fix fast symlink blocks check
+Date: Fri,  8 Aug 2025 02:04:27 -0600
+Message-ID: <20250808080505.1307694-1-adilger@dilger.ca>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-ext4 <linux-ext4@vger.kernel.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Ext4 iomap warning during btrfs/136 (yes, it's from btrfs test cases)
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jSHIu+pQ44a4AiY029gy9dlPAu+eMrc3PHttTPahTv0jwECeWmB
- sQANA2ZVyM+BgAK/WMP26Wky2V1rNy0zfMid6T5P+nMXopodYmIDGwNH6l5VZ0pmDtyEnRF
- B+WtLMKqXsAKhKvW4d1VGKvRsi6mHMZIaX1UK4U0ALdBBIwPYkEPCRKs/PIqS81KFWJmjlx
- 72GHhbo3mx0BlRg0CCbUA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:M2/HDnLW6mM=;hQj879ff0BsF87s4EkVLTSqL66D
- 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
- ohM+l0+36Ug==
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfP0amQsfON78heTq6LJO7JXHz+FVoUI16PQsT7YY+9c7wPihYJ2kZkHzjcihyk/dLciN1nJhnDc5KHolHVrEErRT4WtVrYq3rpkDtcvWtpjNUZWtqfG2
+ 2W60HOxIoZM7wjcYJTlHGsytUskkTt9ui8VH0B9CLtyc2oJGLrNQXGe2B3c4ITJW4umv5lZh38y4lZj2gNa+Lxl5uJhE6YaGmJXei9vpJHUPBG5qGoboU5mw
+ jtPEoMQBE1IrtBh7Bald5jmuCnvO1z5XKTvK8qH3XL3HsPomcTKDyH4zSC2axH8EVvP8g2cC0nI/fxngdQ0jdA==
 
-Hi,
+Use ext4_inode_is_fast_symlink() in ext2fs_inode_has_valid_blocks2()
+instead of depending exclusively on i_blocks == 0 to determine
+if an inode is a fast symlink. Otherwise, if a fast symlink has a
+large external xattr inode that increases i_blocks, it will be
+incorrectly reported as having invalid blocks.
 
-[BACKGROUND]
-Recently I'm testing btrfs with 16KiB block size.
+Change-Id: Ibde2348da39401601abedd603bd7e4ef97091abe
+Fixes: 0684a4f33 ("Overhaul extended attribute handling")
+Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+Reviewed-by: Li Dongyang <dongyangli@ddn.com>
+Reviewed-on: https://review.whamcloud.com/59871
+Lustre-bug-id: https://jira.whamcloud.com/browse/LU-19121
+---
+v1->v2: added f_ea_inode_fast_symlink test case
 
-Currently btrfs is artificially limiting subpage block size to 4K.
-But there is a simple patch to change it to support all block sizes <=3D=
-=20
-page size in my branch:
+ lib/ext2fs/valid_blk.c                 |   1 +
+ tests/f_ea_inode_fast_symlink/expect.1 |   7 +++++++
+ tests/f_ea_inode_fast_symlink/expect.2 |   7 +++++++
+ tests/f_ea_inode_fast_symlink/image.gz | Bin 0 -> 13789 bytes
+ tests/f_ea_inode_fast_symlink/name     |   1 +
+ 5 files changed, 16 insertions(+)
+ create mode 100644 tests/f_ea_inode_fast_symlink/expect.1
+ create mode 100644 tests/f_ea_inode_fast_symlink/expect.2
+ create mode 100644 tests/f_ea_inode_fast_symlink/image.gz
+ create mode 100644 tests/f_ea_inode_fast_symlink/name
 
-https://github.com/adam900710/linux/tree/larger_bs_support
+diff --git a/lib/ext2fs/valid_blk.c b/lib/ext2fs/valid_blk.c
+index db5d90ae4..332e9c66a 100644
+--- a/lib/ext2fs/valid_blk.c
++++ b/lib/ext2fs/valid_blk.c
+@@ -43,6 +43,7 @@ int ext2fs_inode_has_valid_blocks2(ext2_filsys fs, struct ext2_inode *inode)
+ 			/* With no EA block, we can rely on i_blocks */
+ 			if (inode->i_blocks == 0)
+ 				return 0;
++			return !ext2fs_is_fast_symlink(inode);
+ 		} else {
+ 			/* With an EA block, life gets more tricky */
+ 			if (inode->i_size >= EXT2_N_BLOCKS*4)
+diff --git a/tests/f_ea_inode_fast_symlink/expect.1 b/tests/f_ea_inode_fast_symlink/expect.1
+new file mode 100644
+index 000000000..b88456d00
+--- /dev/null
++++ b/tests/f_ea_inode_fast_symlink/expect.1
+@@ -0,0 +1,7 @@
++Pass 1: Checking inodes, blocks, and sizes
++Pass 2: Checking directory structure
++Pass 3: Checking directory connectivity
++Pass 4: Checking reference counts
++Pass 5: Checking group summary information
++test_filesys: 14/256 files (0.0% non-contiguous), 1147/8192 blocks
++Exit status is 0
+diff --git a/tests/f_ea_inode_fast_symlink/expect.2 b/tests/f_ea_inode_fast_symlink/expect.2
+new file mode 100644
+index 000000000..b88456d00
+--- /dev/null
++++ b/tests/f_ea_inode_fast_symlink/expect.2
+@@ -0,0 +1,7 @@
++Pass 1: Checking inodes, blocks, and sizes
++Pass 2: Checking directory structure
++Pass 3: Checking directory connectivity
++Pass 4: Checking reference counts
++Pass 5: Checking group summary information
++test_filesys: 14/256 files (0.0% non-contiguous), 1147/8192 blocks
++Exit status is 0
+diff --git a/tests/f_ea_inode_fast_symlink/image.gz b/tests/f_ea_inode_fast_symlink/image.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..f3872b3721fa8484e05cc3281d0bc745113fa775
+GIT binary patch
+literal 13789
+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
 
-[IOMAP WARNING]
-And I'm running into a very weird kernel warning at btrfs/136, with 16K=20
-block size and 64K page size.
+literal 0
+HcmV?d00001
 
-The problem is, the problem happens with ext3 (using ext4 modeule) with=20
-16K block size, and no btrfs is involved yet.
+diff --git a/tests/f_ea_inode_fast_symlink/name b/tests/f_ea_inode_fast_symlink/name
+new file mode 100644
+index 000000000..9eebeded8
+--- /dev/null
++++ b/tests/f_ea_inode_fast_symlink/name
+@@ -0,0 +1 @@
++fast symlink with ea_inode
+-- 
+2.43.5
 
-The test case btrfs/136 create an ext3 fs first, using the same block=20
-size of the btrfs on TEST_DEV (so it's 16K).
-Then populate the fs.
-
-The hang happens at the ext3 populating part, with the following kernel=20
-warning:
-
-[  989.664270] run fstests btrfs/136 at 2025-08-08 16:57:37
-[  990.551395] EXT4-fs (dm-3): mounting ext3 file system using the ext4=20
-subsystem
-[  990.554980] EXT4-fs (dm-3): mounted filesystem=20
-d90f4325-e6a6-4787-9da8-150ece277a94 r/w with ordered data mode. Quota=20
-mode: none.
-[  990.581540] ------------[ cut here ]------------
-[  990.581551] WARNING: CPU: 3 PID: 434101 at fs/iomap/iter.c:34=20
-iomap_iter_done+0x148/0x190
-[  990.583497] Modules linked in: dm_flakey nls_ascii nls_cp437 vfat fat=
-=20
-btrfs polyval_ce ghash_ce rtc_efi processor xor xor_neon raid6_pq=20
-zstd_compress fuse loop nfnetlink qemu_fw_cfg ext4 crc16 mbcache jbd2=20
-dm_mod xhci_pci xhci_hcd virtio_net virtio_scsi net_failover failover=20
-virtio_console virtio_balloon virtio_blk virtio_mmio
-[  990.587247] CPU: 3 UID: 0 PID: 434101 Comm: fsstress Not tainted=20
-6.16.0-rc7-custom+ #128 PREEMPT(voluntary)
-[  990.588525] Hardware name: QEMU KVM Virtual Machine, BIOS unknown=20
-2/2/2022
-[  990.589414] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS=20
-BTYPE=3D--)
-[  990.590314] pc : iomap_iter_done+0x148/0x190
-[  990.590874] lr : iomap_iter+0x174/0x230
-[  990.591370] sp : ffff8000880af740
-[  990.591800] x29: ffff8000880af740 x28: ffff0000db8e6840 x27:=20
-0000000000000000
-[  990.592716] x26: 0000000000000000 x25: ffff8000880af830 x24:=20
-0000004000000000
-[  990.593631] x23: 0000000000000002 x22: 000001bfdbfa8000 x21:=20
-ffffa6a41c002e48
-[  990.594549] x20: 0000000000000001 x19: ffff8000880af808 x18:=20
-0000000000000000
-[  990.595464] x17: 0000000000000000 x16: ffffa6a495ee6cd0 x15:=20
-0000000000000000
-[  990.596379] x14: 00000000000003d4 x13: 00000000fa83b2da x12:=20
-0000b236fc95f18c
-[  990.597295] x11: ffffa6a4978b9c08 x10: 0000000000001da0 x9 :=20
-ffffa6a41c1a2a44
-[  990.598210] x8 : ffff8000880af5c8 x7 : 0000000001000000 x6 :=20
-0000000000000000
-[  990.599125] x5 : 0000000000000004 x4 : 000001bfdbfa8000 x3 :=20
-0000000000000000
-[  990.600040] x2 : 0000000000000000 x1 : 0000004004030000 x0 :=20
-0000000000000000
-[  990.600955] Call trace:
-[  990.601273]  iomap_iter_done+0x148/0x190 (P)
-[  990.601829]  iomap_iter+0x174/0x230
-[  990.602280]  iomap_fiemap+0x154/0x1d8
-[  990.602751]  ext4_fiemap+0x110/0x140 [ext4]
-[  990.603350]  do_vfs_ioctl+0x4b8/0xbc0
-[  990.603831]  __arm64_sys_ioctl+0x8c/0x120
-[  990.604346]  invoke_syscall+0x6c/0x100
-[  990.604836]  el0_svc_common.constprop.0+0x48/0xf0
-[  990.605444]  do_el0_svc+0x24/0x38
-[  990.605875]  el0_svc+0x38/0x120
-[  990.606283]  el0t_64_sync_handler+0x10c/0x138
-[  990.606846]  el0t_64_sync+0x198/0x1a0
-[  990.607319] ---[ end trace 0000000000000000 ]---
-[  990.608042] ------------[ cut here ]------------
-[  990.608047] WARNING: CPU: 3 PID: 434101 at fs/iomap/iter.c:35=20
-iomap_iter_done+0x164/0x190
-[  990.610842] Modules linked in: dm_flakey nls_ascii nls_cp437 vfat fat=
-=20
-btrfs polyval_ce ghash_ce rtc_efi processor xor xor_neon raid6_pq=20
-zstd_compress fuse loop nfnetlink qemu_fw_cfg ext4 crc16 mbcache jbd2=20
-dm_mod xhci_pci xhci_hcd virtio_net virtio_scsi net_failover failover=20
-virtio_console virtio_balloon virtio_blk virtio_mmio
-[  990.619189] CPU: 3 UID: 0 PID: 434101 Comm: fsstress Tainted: G=20
-  W           6.16.0-rc7-custom+ #128 PREEMPT(voluntary)
-[  990.620876] Tainted: [W]=3DWARN
-[  990.621458] Hardware name: QEMU KVM Virtual Machine, BIOS unknown=20
-2/2/2022
-[  990.622507] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS=20
-BTYPE=3D--)
-[  990.623911] pc : iomap_iter_done+0x164/0x190
-[  990.624936] lr : iomap_iter+0x174/0x230
-[  990.626747] sp : ffff8000880af740
-[  990.627404] x29: ffff8000880af740 x28: ffff0000db8e6840 x27:=20
-0000000000000000
-[  990.628947] x26: 0000000000000000 x25: ffff8000880af830 x24:=20
-0000004000000000
-[  990.631024] x23: 0000000000000002 x22: 000001bfdbfa8000 x21:=20
-ffffa6a41c002e48
-[  990.632278] x20: 0000000000000001 x19: ffff8000880af808 x18:=20
-0000000000000000
-[  990.634189] x17: 0000000000000000 x16: ffffa6a495ee6cd0 x15:=20
-0000000000000000
-[  990.635608] x14: 00000000000003d4 x13: 00000000fa83b2da x12:=20
-0000b236fc95f18c
-[  990.637854] x11: ffffa6a4978b9c08 x10: 0000000000001da0 x9 :=20
-ffffa6a41c1a2a44
-[  990.639181] x8 : ffff8000880af5c8 x7 : 0000000001000000 x6 :=20
-0000000000000000
-[  990.642370] x5 : 0000000000000004 x4 : 000001bfdbfa8000 x3 :=20
-0000000000000000
-[  990.644505] x2 : 0000004004030000 x1 : 0000004004030000 x0 :=20
-0000004004030000
-[  990.645493] Call trace:
-[  990.645841]  iomap_iter_done+0x164/0x190 (P)
-[  990.646377]  iomap_iter+0x174/0x230
-[  990.647550]  iomap_fiemap+0x154/0x1d8
-[  990.648052]  ext4_fiemap+0x110/0x140 [ext4]
-[  990.649061]  do_vfs_ioctl+0x4b8/0xbc0
-[  990.649704]  __arm64_sys_ioctl+0x8c/0x120
-[  990.652141]  invoke_syscall+0x6c/0x100
-[  990.653001]  el0_svc_common.constprop.0+0x48/0xf0
-[  990.653909]  do_el0_svc+0x24/0x38
-[  990.654332]  el0_svc+0x38/0x120
-[  990.654736]  el0t_64_sync_handler+0x10c/0x138
-[  990.655295]  el0t_64_sync+0x198/0x1a0
-[  990.655761] ---[ end trace 0000000000000000 ]---
-
-Considering it's not yet btrfs, and the call trace is from iomap, I=20
-guess there is something wrong with ext4's ext3 support?
-
-The involved ext4 kernel configs are the following:
-
-# CONFIG_EXT2_FS is not set
-# CONFIG_EXT3_FS is not set
-CONFIG_EXT4_FS=3Dm
-CONFIG_EXT4_USE_FOR_EXT2=3Dy
-CONFIG_EXT4_FS_POSIX_ACL=3Dy
-CONFIG_EXT4_FS_SECURITY=3Dy
-# CONFIG_EXT4_DEBUG is not set
-CONFIG_JBD2=3Dm
-# CONFIG_JBD2_DEBUG is not set
-
-Thanks,
-Qu
 
