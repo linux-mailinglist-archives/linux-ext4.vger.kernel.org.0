@@ -1,87 +1,87 @@
-Return-Path: <linux-ext4+bounces-9316-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9317-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6298EB1FA3D
-	for <lists+linux-ext4@lfdr.de>; Sun, 10 Aug 2025 15:44:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79E4DB1FA43
+	for <lists+linux-ext4@lfdr.de>; Sun, 10 Aug 2025 15:45:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D3E57A7CB1
-	for <lists+linux-ext4@lfdr.de>; Sun, 10 Aug 2025 13:42:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50461189BC8C
+	for <lists+linux-ext4@lfdr.de>; Sun, 10 Aug 2025 13:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ECB2276022;
-	Sun, 10 Aug 2025 13:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF95327701E;
+	Sun, 10 Aug 2025 13:42:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="F/fwmhpW"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="R4InZBwS"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AF6275B08;
-	Sun, 10 Aug 2025 13:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A2D261593;
+	Sun, 10 Aug 2025 13:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754833360; cv=none; b=PZ1Ml8WD+bHh7cwNuFR8n5nJGetMU7MfCzi3Xd262eRBLjJrPOg64cwuAJ6CQ54z085k7QIK6HAhOuF79tLBNP/aWkYk28faC5g8iwI5128YctSACF2OwoYGZZiJvk7Vx0k9uWAcnwxjsFYBjcNYAVF3uI3WrkcYvYkAvNziido=
+	t=1754833361; cv=none; b=ZhPrgSEtUCee5glqjHUg6GJfW61wgLvFAW/ZHVXt2EEhjfhdE2C8NODJelxsxrGs+CBA+Y5MRMkl7nIOee4WSrJeoE6714xPs1Z5Ittk3wACxAUCNc3RSi90zLE6kTvaLm7kFRIGwe3Ys1TJomml3fQMCzzeyrNPwrCEUeMlAhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754833360; c=relaxed/simple;
-	bh=5Whlb3M258/hYH1QZfI08fWCJYDAzM4q+pN3fIkE6zg=;
+	s=arc-20240116; t=1754833361; c=relaxed/simple;
+	bh=wspgVSwP2KtmDPNbaP/ai2qU3wRo/iq0pVkkQNIPIXw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZVC3rcG4mZbLY2CiE9WmGaMBsSCwm2Z9NmrGW2kqvCB29OmGnhOdqyI9Wlovw+soxHaJ/TIZ/t2ou3tqPkArB2i5dJgZSW1u4DsQVjC8gOAA/OwEcWn6xEZMAxtuE6Au2Kz7Kx4pCEjfKeDv3cmuiLCjVAlak9HqBvVCF7VnJRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=F/fwmhpW; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=I+NiO0sG9BVSGR/qaKXuFhwvjJAAsXWQmhfFH9RFQ0caPxq+mCc/ovbGhASVlnlZas48G8wJOZdHM2pPrADhcpW+0tXNNe4YVyl+aAqpICD6SFYQb7I86v7qhRgMlrwoiuDAEKsyaH8A7a9qn597c5aondRp2KcEqzVHe9REfUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=R4InZBwS; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57ABmBYR002295;
-	Sun, 10 Aug 2025 13:42:30 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57ABFHYh020424;
+	Sun, 10 Aug 2025 13:42:33 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=K/X0pllH+N+VUDutZ
-	XHOgTw9gsmcrn73ZXWsZBojlR0=; b=F/fwmhpWdkoFjw6EH5roCDNrcj0HZr8m4
-	FkdziKAjIlz18NeSs7L+rlXSfQwiGtbRsVlm0r8hDi881l3IpurKJNRleCB+TBlm
-	htrlyR1B6SZTogu9w/8njIbiemjD2uhU+X4a2m6gM1vd3Sl6L4zQnn8aKKXWrVhB
-	auMla/Yn1kSzvmhnlhqqWXXSTnUyMthdqkRkPj//fgrLBPaUc50+dDwnrHUr7nes
-	75RRNDSZQcdg3cWyp+zeCNQoXSOHeITZupuezzrykNSNkfkzdyfV6H746DGL54Wn
-	26elLZCbjvNjQAF62K+vEK6OOVNqATC4M5GVgkOn325jB7o80C01A==
+	:mime-version:references:subject:to; s=pp1; bh=7cAcpyoz5b2WrvbMZ
+	5AZRhmyr9/OG0bYIbpRqA/h1BE=; b=R4InZBwSHc5aFHNaD4VtyABGVkDaVqRfw
+	GJ8LnLy4hHwTWpxUBF4zjnHyDf/uvB5Vh00g+xcih2B6vHP724LuRPX6TuDMRGCM
+	5PI/c/mhgvY25Py4wFBaqt+igf+x8b/Qi8x+NFiY1mB0GesPcESTahYVyOjRG0WG
+	41StrH9AzxSfkLzY53Z4bE7iGYjrUvwdgUwAJKDn9Xbg72Pzi0F/pAEGTincCJx6
+	GUBdx6Let6ITr+vhhnVfvkpXphVhCeZrmkQenR1x7+FQCzy8SIb4D2pLIAjt7d1G
+	eJxk34CnYk30TGr5uFgCg9KoqZjymctgDqgoJOisgDzRYlUilcJVg==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48durtwjb8-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dvrnnc4e-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 10 Aug 2025 13:42:30 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57ADemqb003312;
-	Sun, 10 Aug 2025 13:42:29 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48durtwjb5-1
+	Sun, 10 Aug 2025 13:42:32 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57ADgWID027642;
+	Sun, 10 Aug 2025 13:42:32 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dvrnnc4c-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 10 Aug 2025 13:42:29 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57A8ZwlT025654;
-	Sun, 10 Aug 2025 13:42:28 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 48ejvm1rpj-1
+	Sun, 10 Aug 2025 13:42:32 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57A96Uqf017600;
+	Sun, 10 Aug 2025 13:42:31 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 48ekc39nf6-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 10 Aug 2025 13:42:28 +0000
+	Sun, 10 Aug 2025 13:42:31 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57ADgRBj15860120
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57ADgTSo14680514
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 10 Aug 2025 13:42:27 GMT
+	Sun, 10 Aug 2025 13:42:29 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 263D520043;
+	by IMSVA (Postfix) with ESMTP id AF3AC2004B;
+	Sun, 10 Aug 2025 13:42:29 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 70CE620040;
 	Sun, 10 Aug 2025 13:42:27 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DCAA820040;
-	Sun, 10 Aug 2025 13:42:24 +0000 (GMT)
 Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.216.43])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Sun, 10 Aug 2025 13:42:24 +0000 (GMT)
+	Sun, 10 Aug 2025 13:42:27 +0000 (GMT)
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org
 Cc: Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
         john.g.garry@oracle.com, tytso@mit.edu, linux-xfs@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [PATCH v4 08/11] generic: Add sudden shutdown tests for multi block atomic writes
-Date: Sun, 10 Aug 2025 19:11:59 +0530
-Message-ID: <36f8204dfa6880956dd94a52e9d89b4f1dfeba53.1754833177.git.ojaswin@linux.ibm.com>
+Subject: [PATCH v4 09/11] ext4: Atomic writes stress test for bigalloc using fio crc verifier
+Date: Sun, 10 Aug 2025 19:12:00 +0530
+Message-ID: <210979d189d43165fa792101cf2f4eb8ef02bc98.1754833177.git.ojaswin@linux.ibm.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1754833177.git.ojaswin@linux.ibm.com>
 References: <cover.1754833177.git.ojaswin@linux.ibm.com>
@@ -93,463 +93,193 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9HcCdvpu4xlMdj4iiJ-HPeVM4v5heHRA
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODEwMDA5NyBTYWx0ZWRfX8Lg4GGo6M0Kp
- +BAOgRPWQXe86PyttdWzV5osqtcqOLjc6brsnvPRwMbM+5eT4CuW0oxaWqL0dwSZPuEQ39Qi2KO
- akXpzi6qjIMejgKYKAXDXNkbkb7RJnlT2KFntIPioZwtfQnyq/Qdde5oTaFAnLWtEwm69u4XBow
- m1wNT26gtB8EXmSORGP/zBV6se7OuerjMmxk2RupkHTWd7LoYQ1/Ozh1vbyi4j4uPm3CBN5eUq+
- g/R3OfJ3PRFSfvXO7b9p7ef4ckEO9+dR2QKtcPayykZPm+Zopl4BMS5JzLPBOyZmqC1d5cQ0pC4
- EIyHJEDfeT5eFaxWsM8j27g7UnLV2NWCKUbXJtcFBErYuYLylZeKQvjqFll0ZUQXa5Eiq8+H/s8
- atgoigwxSanKu+C/R4EmiJpPoJVFrylCrwLRLYOxgl56fqoOYq3x9+Dq1vyl++J5NgEppuua
-X-Authority-Analysis: v=2.4 cv=QtNe3Uyd c=1 sm=1 tr=0 ts=6898a1c6 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=2OwXVqhp2XgA:10 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=jzLDx6uKbS-OZFe_CzQA:9
-X-Proofpoint-ORIG-GUID: Ku93tApph_-hkBr3u6rjQoMhbkxPjknr
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODEwMDA5NyBTYWx0ZWRfX/e8XY7776UxW
+ qd+khSW+FvzCiGaJ95VJObbbYiQJpaHrXdOw5W1a7mDHquC1pHEqHNEQOPYrf0bjgfYt6LGuxsN
+ RYWgaE6z8DCDvT0KM9jZUG3cqi3d1FjmlbirIzWDFYNur952gVDocUEOdovfNCx3xroT9TrBMoi
+ aUeoqC207eIdqwS/ltkJQZfUKifFNxfDIt5tz1v5mHLWnf2XKw9g8I6NL1M7SIxYSI5cjy5HCXE
+ ISeBZeJyiEqoNHQXb9XOGLHtvDoLU42glj0xmgIrKLw0NdrYC01vs/rF4jcu1SL4N3IcHaC4Dwu
+ x33iCrs4y06EyBdHoQG3XM5dexyCBE5u39uHlxgQVaRm7r87pQk6c2ta6CYpN8QDuNVC6ClDcHO
+ Z7wi5QulFz/ekoD+Yju+KErH+RbJycIwudvXldJu77yV+aqTHCMDHNNywrL1OUtqjm6F6RBm
+X-Authority-Analysis: v=2.4 cv=GrpC+l1C c=1 sm=1 tr=0 ts=6898a1c8 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=2OwXVqhp2XgA:10 a=pGLkceISAAAA:8 a=VnNF1IyMAAAA:8 a=jHICElQ_nnKT0EPUS5YA:9
+X-Proofpoint-GUID: Dxu8SrsZfkogDVdt7_UvziYjm6EiDJO1
+X-Proofpoint-ORIG-GUID: ih8___XlxYzVK6FGa04wgtgjhQH5NT-S
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-08-10_04,2025-08-06_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
- mlxlogscore=999 impostorscore=0 suspectscore=0 bulkscore=0 mlxscore=0
- phishscore=0 malwarescore=0 spamscore=0 classifier=spam authscore=0
- authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
+ impostorscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=922
+ malwarescore=0 clxscore=1015 adultscore=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 classifier=spam authscore=0 authtc=n/a
+ authcc= route=outbound adjust=0 reason=mlx scancount=1
  engine=8.19.0-2507300000 definitions=main-2508100097
 
-This test is intended to ensure that multi blocks atomic writes
-maintain atomic guarantees across sudden FS shutdowns.
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 
-The way we work is that we lay out a file with random mix of written,
-unwritten and hole extents. Then we start performing atomic writes
-sequentially on the file while we parallely shutdown the FS. Then we
-note the last offset where the atomic write happened just before shut
-down and then make sure blocks around it either have completely old
-data or completely new data, ie the write was not torn during shutdown.
+We brute force all possible blocksize & clustersize combinations on
+a bigalloc filesystem for stressing atomic write using fio data crc
+verifier. We run nproc * $LOAD_FACTOR threads in parallel writing to
+a single $SCRATCH_MNT/test-file. With atomic writes this test ensures
+that we never see the mix of data contents from different threads on
+a given bsrange.
 
-We repeat the same with completely written, completely unwritten and completely
-empty file to ensure these cases are not torn either.  Finally, we have a
-similar test for append atomic writes
+This test might do overlapping atomic writes but that should be okay
+since overlapping parallel hardware atomic writes don't cause tearing as
+long as io size is the same for all writes.
 
-Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- tests/generic/1230     | 397 +++++++++++++++++++++++++++++++++++++++++
- tests/generic/1230.out |   2 +
- 2 files changed, 399 insertions(+)
- create mode 100755 tests/generic/1230
- create mode 100644 tests/generic/1230.out
+ tests/ext4/061     | 130 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/ext4/061.out |   2 +
+ 2 files changed, 132 insertions(+)
+ create mode 100755 tests/ext4/061
+ create mode 100644 tests/ext4/061.out
 
-diff --git a/tests/generic/1230 b/tests/generic/1230
+diff --git a/tests/ext4/061 b/tests/ext4/061
 new file mode 100755
-index 00000000..cff5adc0
+index 00000000..a0e49249
 --- /dev/null
-+++ b/tests/generic/1230
-@@ -0,0 +1,397 @@
++++ b/tests/ext4/061
+@@ -0,0 +1,130 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
 +#
-+# FS QA Test No. 1230
++# FS QA Test 061
 +#
-+# Test multi block atomic writes with sudden FS shutdowns to ensure
-+# the FS is not tearing the write operation
++# Brute force all possible blocksize clustersize combination on a bigalloc
++# filesystem for stressing atomic write using fio data crc verifier. We run
++# nproc * 2 * $LOAD_FACTOR threads in parallel writing to a single
++# $SCRATCH_MNT/test-file. With fio aio-dio atomic write this test ensures that
++# we should never see the mix of data contents from different threads for any
++# given fio blocksize.
++#
++
 +. ./common/preamble
 +. ./common/atomicwrites
-+_begin_fstest auto atomicwrites
 +
-+_require_scratch_write_atomic_multi_fsblock
-+_require_atomic_write_test_commands
-+_require_scratch_shutdown
-+_require_xfs_io_command "truncate"
++_begin_fstest auto rw stress atomicwrites
 +
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount >> $seqres.full
++_require_scratch_write_atomic
++_require_aiodio
 +
-+testfile=$SCRATCH_MNT/testfile
-+touch $testfile
++FIO_LOAD=$(($(nproc) * 2 * LOAD_FACTOR))
++SIZE=$((100*1024*1024))
++fiobsize=4096
 +
-+awu_max=$(_get_atomic_write_unit_max $testfile)
-+blksz=$(_get_block_size $SCRATCH_MNT)
-+echo "Awu max: $awu_max" >> $seqres.full
++# Calculate fsblocksize as per bdev atomic write units.
++bdev_awu_min=$(_get_atomic_write_unit_min $SCRATCH_DEV)
++bdev_awu_max=$(_get_atomic_write_unit_max $SCRATCH_DEV)
++fsblocksize=$(_max 4096 "$bdev_awu_min")
 +
-+num_blocks=$((awu_max / blksz))
-+# keep initial value high for dry run. This will be
-+# tweaked in dry_run() based on device write speed.
-+filesize=$(( 10 * 1024 * 1024 * 1024 ))
-+
-+_cleanup() {
-+	[ -n "$awloop_pid" ] && kill $awloop_pid &> /dev/null
-+	wait
++function create_fio_configs()
++{
++	create_fio_aw_config
++	create_fio_verify_config
 +}
 +
-+atomic_write_loop() {
-+	local off=0
-+	local size=$awu_max
-+	for ((i=0; i<$((filesize / $size )); i++)); do
-+		# Due to sudden shutdown this can produce errors so just
-+		# redirect them to seqres.full
-+		$XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $size $off $size" >> /dev/null 2>>$seqres.full
-+		echo "Written to offset: $off" >> $tmp.aw
-+		off=$((off + $size))
++function create_fio_verify_config()
++{
++cat >$fio_verify_config <<EOF
++	[aio-dio-aw-verify]
++	direct=1
++	ioengine=libaio
++	rw=randwrite
++	bs=$fiobsize
++	fallocate=native
++	filename=$SCRATCH_MNT/test-file
++	size=$SIZE
++	iodepth=$FIO_LOAD
++	numjobs=$FIO_LOAD
++	atomic=1
++	group_reporting=1
++
++	verify_only=1
++	verify_state_save=0
++	verify=crc32c
++	verify_fatal=1
++	verify_write_sequence=0
++EOF
++}
++
++function create_fio_aw_config()
++{
++cat >$fio_aw_config <<EOF
++	[aio-dio-aw]
++	direct=1
++	ioengine=libaio
++	rw=randwrite
++	bs=$fiobsize
++	fallocate=native
++	filename=$SCRATCH_MNT/test-file
++	size=$SIZE
++	iodepth=$FIO_LOAD
++	numjobs=$FIO_LOAD
++	group_reporting=1
++	atomic=1
++
++	verify_state_save=0
++	verify=crc32c
++	do_verify=0
++
++EOF
++}
++
++# Let's create a sample fio config to check whether fio supports all options.
++fio_aw_config=$tmp.aw.fio
++fio_verify_config=$tmp.verify.fio
++fio_out=$tmp.fio.out
++
++create_fio_configs
++_require_fio $fio_aw_config
++
++for ((fsblocksize=$fsblocksize; fsblocksize <= $(_get_page_size); fsblocksize = $fsblocksize << 1)); do
++	# cluster sizes above 16 x blocksize are experimental so avoid them
++	# Also, cap cluster size at 128kb to keep it reasonable for large
++	# blocks size
++	fs_max_clustersize=$(_min $((16 * fsblocksize)) "$bdev_awu_max" $((128 * 1024)))
++
++	for ((fsclustersize=$fsblocksize; fsclustersize <= $fs_max_clustersize; fsclustersize = $fsclustersize << 1)); do
++		for ((fiobsize = $fsblocksize; fiobsize <= $fsclustersize; fiobsize = $fiobsize << 1)); do
++			MKFS_OPTIONS="-O bigalloc -b $fsblocksize -C $fsclustersize"
++			_scratch_mkfs_ext4  >> $seqres.full 2>&1 || continue
++			if _try_scratch_mount >> $seqres.full 2>&1; then
++				echo "== FIO test for fsblocksize=$fsblocksize fsclustersize=$fsclustersize fiobsize=$fiobsize ==" >> $seqres.full
++
++				touch $SCRATCH_MNT/f1
++				create_fio_configs
++
++				cat $fio_aw_config >> $seqres.full
++				echo >> $seqres.full
++				cat $fio_verify_config >> $seqres.full
++
++				$FIO_PROG $fio_aw_config >> $seqres.full
++				ret1=$?
++
++				$FIO_PROG $fio_verify_config >> $seqres.full
++				ret2=$?
++
++				_scratch_unmount
++
++				[[ $ret1 -eq 0 && $ret2 -eq 0 ]] || _fail "fio with atomic write failed"
++			fi
++		done
 +	done
-+}
-+
-+# This test has the following flow:
-+# 1. Start doing sequential atomic writes in bg, upto $filesize
-+# 2. Sleep for 0.2s and shutdown the FS
-+# 3. kill the atomic write process
-+# 4. verify the writes were not torn
-+#
-+# We ideally want the shutdown to happen while an atomic write is ongoing
-+# but this gets tricky since faster devices can actually finish the whole
-+# atomic write loop before sleep 0.2s completes, resulting in the shutdown
-+# happening after the write loop which is not what we want. A simple solution
-+# to this is to increase $filesize so step 1 takes long enough but a big
-+# $filesize leads to create_mixed_mappings() taking very long, which is not
-+# ideal.
-+#
-+# Hence, use the dry_run function to figure out the rough device speed and set
-+# $filesize accordingly.
-+dry_run() {
-+	echo >> $seqres.full
-+	echo "# Estimating ideal filesize..." >> $seqres.full
-+	atomic_write_loop &
-+	awloop_pid=$!
-+
-+	local i=0
-+	# Wait for atleast first write to be recorded or 10s
-+	while [ ! -f "$tmp.aw" -a $i -le 50 ]; do i=$((i + 1)); sleep 0.2; done
-+
-+	if [[ $i -gt 50 ]]
-+	then
-+		_fail "atomic write process took too long to start"
-+	fi
-+
-+	echo >> $seqres.full
-+	echo "# Shutting down filesystem while write is running" >> $seqres.full
-+	_scratch_shutdown
-+
-+	kill $awloop_pid 2>/dev/null  # the process might have finished already
-+	wait $awloop_pid
-+	unset $awloop_pid
-+
-+	bytes_written=$(tail -n 1 $tmp.aw | cut -d" " -f4)
-+	echo "# Bytes written in 0.2s: $bytes_written" >> $seqres.full
-+
-+	filesize=$((bytes_written * 3))
-+	echo "# Setting \$filesize=$filesize" >> $seqres.full
-+
-+	rm $tmp.aw
-+	sleep 0.5
-+
-+	_scratch_cycle_mount
-+
-+}
-+
-+create_mixed_mappings() {
-+	local file=$1
-+	local size_bytes=$2
-+
-+	echo "# Filling file $file with alternate mappings till size $size_bytes" >> $seqres.full
-+	#Fill the file with alternate written and unwritten blocks
-+	local off=0
-+	local operations=("W" "U")
-+
-+	for ((i=0; i<$((size_bytes / blksz )); i++)); do
-+		index=$(($i % ${#operations[@]}))
-+		map="${operations[$index]}"
-+
-+		case "$map" in
-+		    "W")
-+			$XFS_IO_PROG -fc "pwrite -b $blksz $off $blksz" $file  >> /dev/null
-+			;;
-+		    "U")
-+			$XFS_IO_PROG -fc "falloc $off $blksz" $file >> /dev/null
-+			;;
-+		esac
-+		off=$((off + blksz))
-+	done
-+
-+	sync $file
-+}
-+
-+populate_expected_data() {
-+	# create a dummy file with expected old data for different cases
-+	create_mixed_mappings $testfile.exp_old_mixed $awu_max
-+	expected_data_old_mixed=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp_old_mixed)
-+
-+	$XFS_IO_PROG -fc "falloc 0 $awu_max" $testfile.exp_old_zeroes >> $seqres.full
-+	expected_data_old_zeroes=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp_old_zeroes)
-+
-+	$XFS_IO_PROG -fc "pwrite -b $awu_max 0 $awu_max" $testfile.exp_old_mapped >> $seqres.full
-+	expected_data_old_mapped=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp_old_mapped)
-+
-+	# create a dummy file with expected new data
-+	$XFS_IO_PROG -fc "pwrite -S 0x61 -b $awu_max 0 $awu_max" $testfile.exp_new >> $seqres.full
-+	expected_data_new=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp_new)
-+}
-+
-+verify_data_blocks() {
-+	local verify_start=$1
-+	local verify_end=$2
-+	local expected_data_old="$3"
-+	local expected_data_new="$4"
-+
-+	echo >> $seqres.full
-+	echo "# Checking data integrity from $verify_start to $verify_end" >> $seqres.full
-+
-+	# After an atomic write, for every chunk we ensure that the underlying
-+	# data is either the old data or new data as writes shouldn't get torn.
-+	local off=$verify_start
-+	while [[ "$off" -lt "$verify_end" ]]
-+	do
-+		#actual_data=$(xxd -s $off -l $awu_max -p $testfile)
-+		actual_data=$(od -An -t x1 -j $off -N $awu_max $testfile)
-+		if [[ "$actual_data" != "$expected_data_new" ]] && [[ "$actual_data" != "$expected_data_old" ]]
-+		then
-+			echo "Checksum match failed at off: $off size: $awu_max"
-+			echo "Expected contents: (Either of the 2 below):"
-+			echo
-+			echo "Expected old: "
-+			echo "$expected_data_old"
-+			echo
-+			echo "Expected new: "
-+			echo "$expected_data_new"
-+			echo
-+			echo "Actual contents: "
-+			echo "$actual_data"
-+
-+			_fail
-+		fi
-+		echo -n "Check at offset $off suceeded! " >> $seqres.full
-+		if [[ "$actual_data" == "$expected_data_new" ]]
-+		then
-+			echo "matched new" >> $seqres.full
-+		elif [[ "$actual_data" == "$expected_data_old" ]]
-+		then
-+			echo "matched old" >> $seqres.full
-+		fi
-+		off=$(( off + awu_max ))
-+	done
-+}
-+
-+# test data integrity for file by shutting down in between atomic writes
-+test_data_integrity() {
-+	echo >> $seqres.full
-+	echo "# Writing atomically to file in background" >> $seqres.full
-+	atomic_write_loop &
-+	awloop_pid=$!
-+
-+	local i=0
-+	# Wait for atleast first write to be recorded or 10s
-+	while [ ! -f "$tmp.aw" -a $i -le 50 ]; do i=$((i + 1)); sleep 0.2; done
-+
-+	if [[ $i -gt 50 ]]
-+	then
-+		_fail "atomic write process took too long to start"
-+	fi
-+
-+	echo >> $seqres.full
-+	echo "# Shutting down filesystem while write is running" >> $seqres.full
-+	_scratch_shutdown
-+
-+	kill $awloop_pid 2>/dev/null  # the process might have finished already
-+	wait $awloop_pid
-+	unset $awloop_pid
-+
-+	last_offset=$(tail -n 1 $tmp.aw | cut -d" " -f4)
-+	if [[ -z $last_offset ]]
-+	then
-+		last_offset=0
-+	fi
-+
-+	echo >> $seqres.full
-+	echo "# Last offset of atomic write: $last_offset" >> $seqres.full
-+
-+	rm $tmp.aw
-+	sleep 0.5
-+
-+	_scratch_cycle_mount
-+
-+	# we want to verify all blocks around which the shutdown happended
-+	verify_start=$(( last_offset - (awu_max * 5)))
-+	if [[ $verify_start < 0 ]]
-+	then
-+		verify_start=0
-+	fi
-+
-+	verify_end=$(( last_offset + (awu_max * 5)))
-+	if [[ "$verify_end" -gt "$filesize" ]]
-+	then
-+		verify_end=$filesize
-+	fi
-+}
-+
-+# test data integrity for file wiht written and unwritten mappings
-+test_data_integrity_mixed() {
-+	$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
-+
-+	echo >> $seqres.full
-+	echo "# Creating testfile with mixed mappings" >> $seqres.full
-+	create_mixed_mappings $testfile $filesize
-+
-+	test_data_integrity
-+
-+	verify_data_blocks $verify_start $verify_end "$expected_data_old_mixed" "$expected_data_new"
-+}
-+
-+# test data integrity for file with completely written mappings
-+test_data_integrity_writ() {
-+	$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
-+
-+	echo >> $seqres.full
-+	echo "# Creating testfile with fully written mapping" >> $seqres.full
-+	$XFS_IO_PROG -c "pwrite -b $filesize 0 $filesize" $testfile >> $seqres.full
-+	sync $testfile
-+
-+	test_data_integrity
-+
-+	verify_data_blocks $verify_start $verify_end "$expected_data_old_mapped" "$expected_data_new"
-+}
-+
-+# test data integrity for file with completely unwritten mappings
-+test_data_integrity_unwrit() {
-+	$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
-+
-+	echo >> $seqres.full
-+	echo "# Creating testfile with fully unwritten mappings" >> $seqres.full
-+	$XFS_IO_PROG -c "falloc 0 $filesize" $testfile >> $seqres.full
-+	sync $testfile
-+
-+	test_data_integrity
-+
-+	verify_data_blocks $verify_start $verify_end "$expected_data_old_zeroes" "$expected_data_new"
-+}
-+
-+# test data integrity for file with no mappings
-+test_data_integrity_hole() {
-+	$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
-+
-+	echo >> $seqres.full
-+	echo "# Creating testfile with no mappings" >> $seqres.full
-+	$XFS_IO_PROG -c "truncate $filesize" $testfile >> $seqres.full
-+	sync $testfile
-+
-+	test_data_integrity
-+
-+	verify_data_blocks $verify_start $verify_end "$expected_data_old_zeroes" "$expected_data_new"
-+}
-+
-+test_filesize_integrity() {
-+	$XFS_IO_PROG -c "truncate 0" $testfile >> $seqres.full
-+
-+	echo >> $seqres.full
-+	echo "# Performing extending atomic writes over file in background" >> $seqres.full
-+	atomic_write_loop &
-+	awloop_pid=$!
-+
-+	local i=0
-+	# Wait for atleast first write to be recorded or 10s
-+	while [ ! -f "$tmp.aw" -a $i -le 50 ]; do i=$((i + 1)); sleep 0.2; done
-+
-+	if [[ $i -gt 50 ]]
-+	then
-+		_fail "atomic write process took too long to start"
-+	fi
-+
-+	echo >> $seqres.full
-+	echo "# Shutting down filesystem while write is running" >> $seqres.full
-+	_scratch_shutdown
-+
-+	kill $awloop_pid 2>/dev/null  # the process might have finished already
-+	wait $awloop_pid
-+	unset $awloop_pid
-+
-+	local last_offset=$(tail -n 1 $tmp.aw | cut -d" " -f4)
-+	if [[ -z $last_offset ]]
-+	then
-+		last_offset=0
-+	fi
-+
-+	echo >> $seqres.full
-+	echo "# Last offset of atomic write: $last_offset" >> $seqres.full
-+	rm $tmp.aw
-+	sleep 0.5
-+
-+	_scratch_cycle_mount
-+	local filesize=$(_get_filesize $testfile)
-+	echo >> $seqres.full
-+	echo "# Filesize after shutdown: $filesize" >> $seqres.full
-+
-+	# To confirm that the write went atomically, we check:
-+	# 1. The last block should be a multiple of awu_max
-+	# 2. The last block should be the completely new data
-+
-+	if (( $filesize % $awu_max ))
-+	then
-+		echo "Filesize after shutdown ($filesize) not a multiple of atomic write unit ($awu_max)"
-+	fi
-+
-+	verify_start=$(( filesize - (awu_max * 5)))
-+	if [[ $verify_start < 0 ]]
-+	then
-+		verify_start=0
-+	fi
-+
-+	local verify_end=$filesize
-+
-+	# Here the blocks should always match new data hence, for simplicity of
-+	# code, just corrupt the $expected_data_old buffer so it never matches
-+	local expected_data_old="POISON"
-+	verify_data_blocks $verify_start $verify_end "$expected_data_old" "$expected_data_new"
-+}
-+
-+$XFS_IO_PROG -fc "truncate 0" $testfile >> $seqres.full
-+
-+dry_run
-+
-+echo >> $seqres.full
-+echo "# Populating expected data buffers" >> $seqres.full
-+populate_expected_data
-+
-+# Loop 20 times to shake out any races due to shutdown
-+for ((iter=0; iter<20; iter++))
-+do
-+	echo >> $seqres.full
-+	echo "------ Iteration $iter ------" >> $seqres.full
-+
-+	echo >> $seqres.full
-+	echo "# Starting data integrity test for atomic writes over mixed mapping" >> $seqres.full
-+	test_data_integrity_mixed
-+
-+	echo >> $seqres.full
-+	echo "# Starting data integrity test for atomic writes over fully written mapping" >> $seqres.full
-+	test_data_integrity_writ
-+
-+	echo >> $seqres.full
-+	echo "# Starting data integrity test for atomic writes over fully unwritten mapping" >> $seqres.full
-+	test_data_integrity_unwrit
-+
-+	echo >> $seqres.full
-+	echo "# Starting data integrity test for atomic writes over holes" >> $seqres.full
-+	test_data_integrity_hole
-+
-+	echo >> $seqres.full
-+	echo "# Starting filesize integrity test for atomic writes" >> $seqres.full
-+	test_filesize_integrity
 +done
 +
-+echo "Silence is golden"
++# success, all done
++echo Silence is golden
 +status=0
 +exit
-diff --git a/tests/generic/1230.out b/tests/generic/1230.out
+diff --git a/tests/ext4/061.out b/tests/ext4/061.out
 new file mode 100644
-index 00000000..d01f54ea
+index 00000000..273be9e0
 --- /dev/null
-+++ b/tests/generic/1230.out
++++ b/tests/ext4/061.out
 @@ -0,0 +1,2 @@
-+QA output created by 1230
++QA output created by 061
 +Silence is golden
 -- 
 2.49.0
