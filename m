@@ -1,241 +1,186 @@
-Return-Path: <linux-ext4+bounces-9331-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9332-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58C21B2106E
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 17:57:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B183AB2111A
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 18:10:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35CF418A1E3D
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 15:51:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23212162BCD
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 16:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 865D52E5B0C;
-	Mon, 11 Aug 2025 15:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507B92EBBB9;
+	Mon, 11 Aug 2025 15:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u+ee6uzy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WrGck7Fm"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA642E0934;
-	Mon, 11 Aug 2025 15:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB02E2E2679;
+	Mon, 11 Aug 2025 15:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754926172; cv=none; b=g+PcOgopCm9b+4F5igGn5PQPGTPWDNQaA61lJ31ur98uPKR44lp3nb186ZT1vrx1Xo3GzOXJ5v6oKe2X8JtrjUQqMZnK+UnuxsHK/qPEDy8vi6WMz6IBItx53bCmuj+Mqlrx6j+Wa7iyUvxYzTKDP2sUcoE8u/+hDXK3yX3q0X8=
+	t=1754927377; cv=none; b=cTzShH5tNb+SJ3/JIac9f45M6WQtxUUpMZKbNGGsL3rMEssiOc733gripkspi8NLg0+DLKknscUPz25jO9+mh5CZ504UGmlLYs6zjQED794/un9IAJkgbE2KF5XfP+yfqH7i2HJx9ll4ONi6zJs42WDg9SGv7ozrl4BuxAlmSFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754926172; c=relaxed/simple;
-	bh=DaoO0tOAvuz+IieVCs2Sd8Rvss6i/VyAINsBzWtgG08=;
+	s=arc-20240116; t=1754927377; c=relaxed/simple;
+	bh=RopHifErAZ/r1bKrzCXHi+tqR8Gd+ZBCOXa63JC3HIU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HlILmarBmBsTBNBYYX7j7wgzEBI4AJqmWLgBVmc80j1gfJzRPMyaJ9O+VvAZ9W3cRmqWCGHYswlpyGxAGk5tKaPjEFVgFWbiOFCbHrclpk3ptpyrcvrMU2M9CAqj1616AR1C0OfnhwhVGeu6BvjblDo18EOYXcowxJ13G8+gYI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u+ee6uzy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7EACC4CEED;
-	Mon, 11 Aug 2025 15:29:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=duTirGKDQyiGBycyeKkvAiDA+PxmGT2Wcz7Ut5cbO5BRV7AqwSjREhyDzi8h2Th/WNpWnMRTGAWRmROQxHlknjGYXwC7WeG+eCtKFriId2xu/fYYq55rycfWt433MTjdjvFQLaEstZCwKXLvCGb00RSNcMBxMyTf3vLZHxVrRZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WrGck7Fm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A2FBC4CEED;
+	Mon, 11 Aug 2025 15:49:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754926171;
-	bh=DaoO0tOAvuz+IieVCs2Sd8Rvss6i/VyAINsBzWtgG08=;
+	s=k20201202; t=1754927376;
+	bh=RopHifErAZ/r1bKrzCXHi+tqR8Gd+ZBCOXa63JC3HIU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u+ee6uzyVyBXe3OGMvR73lm8imKsfB3QLa0r3oVyr53nuV+UFgcuDRoNpMLAtIkzL
-	 N7q6xmJHs8ImeY0PuX7INuJEplIyHdIw1HmslRd/HZ0MyBK7MGeVguerKl1pwLBbA9
-	 owVy9BHNa1REfFNrO4G9zCCugNr1wUudSll+G4GKKhpIkhw7U1fTYb0xiYIaXImJj3
-	 O5pkkD8CxthBIjekBuqxrUGHi/cGYOnDW8XOvTYg8zZBaP2f5sm7VbAhIqCo9b1FyJ
-	 novVXUKROcJZvIIraAhV3Vwn0fDT2ALJ8QyINnWNVBr4IXlhac305eHEg9Vga5GOWB
-	 +sUIr5juO4jSg==
-Date: Mon, 11 Aug 2025 08:29:31 -0700
+	b=WrGck7Fmn0StA1HSyOixhZNPLPo5/WRadk5mDshttUOMgrSNgupbE96hta5DvBVj3
+	 apSkCJOnMOECU6/IGLbkJHX2t7Vvbotqor63J18pfGnwia/s6dXE1SreowaY24sO0q
+	 wQv5qfqtKahV6w8xGiUAV8eURWno82WnSMRDKSAs2RJK/g/q3HIL3VWC2cB98VCGKW
+	 QesWjW+OnVmrp9KDJ2yFVTxfMfuKyTpp+WLHGuakLcpptXpnmJAWXndwyWnOnsF3q+
+	 s8DO7xeTCoaEjnNgQlSddM+52tNVwSnC4BsO8Rmzgvi74GrybIFHuhPemLca0du7Mp
+	 yO0DvfspCWAEQ==
+Date: Mon, 11 Aug 2025 08:49:35 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
-	Ritesh Harjani <ritesh.list@gmail.com>, john.g.garry@oracle.com,
-	tytso@mit.edu, linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v4 06/11] generic: Add atomic write multi-fsblock
- O_[D]SYNC tests
-Message-ID: <20250811152931.GI7965@frogsfrogsfrogs>
-References: <cover.1754833177.git.ojaswin@linux.ibm.com>
- <af97ff125953e4e29abc42d1726c632398652d67.1754833177.git.ojaswin@linux.ibm.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Zhang Yi <yi.zhang@huaweicloud.com>, Qu Wenruo <wqu@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	linux-btrfs <linux-btrfs@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: Ext4 iomap warning during btrfs/136 (yes, it's from btrfs test
+ cases)
+Message-ID: <20250811154935.GD7942@frogsfrogsfrogs>
+References: <9b650a52-9672-4604-a765-bb6be55d1e4a@gmx.com>
+ <4ef2476f-50c3-424d-927d-100e305e1f8e@gmx.com>
+ <20250808121659.GC778805@mit.edu>
+ <035ad34e-fb1e-414f-8d3c-839188cfa387@suse.com>
+ <c2a00db8-ed34-49bb-8c01-572381451af3@huaweicloud.com>
+ <15a4c437-d276-4503-9e30-4d48f5b7a4ff@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <af97ff125953e4e29abc42d1726c632398652d67.1754833177.git.ojaswin@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <15a4c437-d276-4503-9e30-4d48f5b7a4ff@gmx.com>
 
-On Sun, Aug 10, 2025 at 07:11:57PM +0530, Ojaswin Mujoo wrote:
-> This adds various atomic write multi-fsblock stresst tests
-> with mixed mappings and O_SYNC, to ensure the data and metadata
-> is atomically persisted even if there is a shutdown.
+On Sun, Aug 10, 2025 at 07:36:48AM +0930, Qu Wenruo wrote:
 > 
-> Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> 
+> 在 2025/8/9 18:39, Zhang Yi 写道:
+> > On 2025/8/9 6:11, Qu Wenruo wrote:
+> > > 在 2025/8/8 21:46, Theodore Ts'o 写道:
+> > > > On Fri, Aug 08, 2025 at 06:20:56PM +0930, Qu Wenruo wrote:
+> > > > > 
+> > > > > 在 2025/8/8 17:22, Qu Wenruo 写道:
+> > > > > > Hi,
+> > > > > > 
+> > > > > > [BACKGROUND]
+> > > > > > Recently I'm testing btrfs with 16KiB block size.
+> > > > > > 
+> > > > > > Currently btrfs is artificially limiting subpage block size to 4K.
+> > > > > > But there is a simple patch to change it to support all block sizes <=
+> > > > > > page size in my branch:
+> > > > > > 
+> > > > > > https://github.com/adam900710/linux/tree/larger_bs_support
+> > > > > > 
+> > > > > > [IOMAP WARNING]
+> > > > > > And I'm running into a very weird kernel warning at btrfs/136, with 16K
+> > > > > > block size and 64K page size.
+> > > > > > 
+> > > > > > The problem is, the problem happens with ext3 (using ext4 modeule) with
+> > > > > > 16K block size, and no btrfs is involved yet.
+> > > > 
+> > > > 
+> > > > Thanks for the bug report!  This looks like it's an issue with using
+> > > > indirect block-mapped file with a 16k block size.  I tried your
+> > > > reproducer using a 1k block size on an x86_64 system, which is how I
+> > > > test problem caused by the block size < page size.  It didn't
+> > > > reproduce there, so it looks like it really needs a 16k block size.
+> > > > 
+> > > > Can you say something about what system were you running your testing
+> > > > on --- was it an arm64 system, or a powerpc 64 system (the two most
+> > > > common systems with page size > 4k)?  (I assume you're not trying to
+> > > > do this on an Itanic.  :-)   And was the page size 16k or 64k?
+> > > 
+> > > The architecture is aarch64, the host board is Rock5B (cheap and fast enough), the test machine is a VM on that board, with ovmf as the UEFI firmware.
+> > > 
+> > > The kernel is configured to use 64K page size, the *ext3* system is using 16K block size.
+> > > 
+> > > Currently I tried the following combination with 64K page size and ext3, the result looks like the following
+> > > 
+> > > - 2K block size
+> > > - 4K block size
+> > >    All fine
+> > > 
+> > > - 8K block size
+> > > - 16K block size
+> > >    All the same kernel warning and never ending fsstress
+> > > 
+> > > - 32K block size
+> > > - 64K block size
+> > >    All fine
+> > > 
+> > > I am surprised as you that, not all subpage block size are having problems, just 2 of the less common combinations failed.
+> > > 
+> > > And the most common ones (4K, page size) are all fine.
+> > > 
+> > > Finally, if using ext4 not ext3, all combinations above are fine again.
+> > > 
+> > > So I ran out of ideas why only 2 block sizes fail here...
+> > > 
+> > 
+> > This issue is caused by an overflow in the calculation of the hole's
+> > length on the forth-level depth for non-extent inodes. For a file system
+> > with a 4KB block size, the calculation will not overflow. For a 64KB
+> > block size, the queried position will not reach the fourth level, so this
+> > issue only occur on the filesystem with a 8KB and 16KB block size.
+> > 
+> > Hi, Wenruo, could you try the following fix?
+> > 
+> > diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+> > index 7de327fa7b1c..d45124318200 100644
+> > --- a/fs/ext4/indirect.c
+> > +++ b/fs/ext4/indirect.c
+> > @@ -539,7 +539,7 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
+> >   	int indirect_blks;
+> >   	int blocks_to_boundary = 0;
+> >   	int depth;
+> > -	int count = 0;
+> > +	u64 count = 0;
+> >   	ext4_fsblk_t first_block = 0;
+> > 
+> >   	trace_ext4_ind_map_blocks_enter(inode, map->m_lblk, map->m_len, flags);
+> > @@ -588,7 +588,7 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
+> >   		count++;
+> >   		/* Fill in size of a hole we found */
+> >   		map->m_pblk = 0;
+> > -		map->m_len = min_t(unsigned int, map->m_len, count);
+> > +		map->m_len = umin(map->m_len, count);
+> >   		goto cleanup;
+> >   	}
+> 
+> It indeed solves the problem.
+> 
+> Tested-by: Qu Wenruo <wqu@suse.com>
 
-Looks fine to me now.
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+Can we get the relevant chunks of this test turned into a tests/ext4/
+fstest so that the ext4 developers have a regression test that doesn't
+require setting up btrfs, please?
 
 --D
 
-> ---
->  tests/generic/1228     | 137 +++++++++++++++++++++++++++++++++++++++++
->  tests/generic/1228.out |   2 +
->  2 files changed, 139 insertions(+)
->  create mode 100755 tests/generic/1228
->  create mode 100644 tests/generic/1228.out
+> Thanks,
+> Qu
 > 
-> diff --git a/tests/generic/1228 b/tests/generic/1228
-> new file mode 100755
-> index 00000000..888599ce
-> --- /dev/null
-> +++ b/tests/generic/1228
-> @@ -0,0 +1,137 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
-> +#
-> +# FS QA Test 1228
-> +#
-> +# Atomic write multi-fsblock data integrity tests with mixed mappings
-> +# and O_SYNC
-> +#
-> +. ./common/preamble
-> +. ./common/atomicwrites
-> +_begin_fstest auto quick rw atomicwrites
-> +
-> +_require_scratch_write_atomic_multi_fsblock
-> +_require_atomic_write_test_commands
-> +_require_scratch_shutdown
-> +_require_xfs_io_command "truncate"
-> +
-> +_scratch_mkfs >> $seqres.full
-> +_scratch_mount >> $seqres.full
-> +
-> +check_data_integrity() {
-> +	actual=$(_hexdump $testfile)
-> +	if [[ "$expected" != "$actual" ]]
-> +	then
-> +		echo "Integrity check failed"
-> +		echo "Integrity check failed" >> $seqres.full
-> +		echo "# Expected file contents:" >> $seqres.full
-> +		echo "$expected" >> $seqres.full
-> +		echo "# Actual file contents:" >> $seqres.full
-> +		echo "$actual" >> $seqres.full
-> +
-> +		_fail "Data integrity check failed. The atomic write was torn."
-> +	fi
-> +}
-> +
-> +prep_mixed_mapping() {
-> +	$XFS_IO_PROG -c "truncate 0" $testfile >> $seqres.full
-> +	local off=0
-> +	local mapping=""
-> +
-> +	local operations=("W" "H" "U")
-> +	local num_blocks=$((awu_max / blksz))
-> +	for ((i=0; i<num_blocks; i++)); do
-> +		local index=$((RANDOM % ${#operations[@]}))
-> +		local map="${operations[$index]}"
-> +		local mapping="${mapping}${map}"
-> +
-> +		case "$map" in
-> +			"W")
-> +				$XFS_IO_PROG -dc "pwrite -S 0x61 -b $blksz $off $blksz" $testfile > /dev/null
-> +				;;
-> +			"H")
-> +				# No operation needed for hole
-> +				;;
-> +			"U")
-> +				$XFS_IO_PROG -c "falloc $off $blksz" $testfile >> /dev/null
-> +				;;
-> +		esac
-> +		off=$((off + blksz))
-> +	done
-> +
-> +	echo "+ + Mixed mapping prep done. Full mapping pattern: $mapping" >> $seqres.full
-> +
-> +	sync $testfile
-> +}
-> +
-> +verify_atomic_write() {
-> +	test $bytes_written -eq $awu_max || _fail "atomic write len=$awu_max assertion failed"
-> +	check_data_integrity
-> +}
-> +
-> +mixed_mapping_test() {
-> +	prep_mixed_mapping
-> +
-> +	echo -"+ + Performing O_DSYNC atomic write from 0 to $awu_max" >> $seqres.full
-> +	if [[ "$1" == "shutdown" ]]
-> +	then
-> +		bytes_written=$($XFS_IO_PROG -x -dc \
-> +				"pwrite -DA -V1 -b $awu_max 0 $awu_max" \
-> +				-c "shutdown" $testfile | grep wrote | \
-> +				awk -F'[/ ]' '{print $2}')
-> +		_scratch_cycle_mount >>$seqres.full 2>&1 || _fail "remount failed"
-> +	else
-> +		bytes_written=$($XFS_IO_PROG -dc \
-> +				"pwrite -DA -V1 -b $awu_max 0 $awu_max" $testfile | \
-> +				grep wrote | awk -F'[/ ]' '{print $2}')
-> +	fi
-> +
-> +	verify_atomic_write
-> +}
-> +
-> +testfile=$SCRATCH_MNT/testfile
-> +touch $testfile
-> +
-> +awu_max=$(_get_atomic_write_unit_max $testfile)
-> +blksz=$(_get_block_size $SCRATCH_MNT)
-> +
-> +# Create an expected pattern to compare with
-> +$XFS_IO_PROG -tc "pwrite -b $awu_max 0 $awu_max" $testfile >> $seqres.full
-> +expected=$(_hexdump $testfile)
-> +echo "# Expected file contents:" >> $seqres.full
-> +echo "$expected" >> $seqres.full
-> +echo >> $seqres.full
-> +
-> +echo "# Test 1: Do O_DSYNC atomic write on random mixed mapping:" >> $seqres.full
-> +echo >> $seqres.full
-> +for ((iteration=1; iteration<=10; iteration++)); do
-> +	echo "=== Mixed Mapping Test Iteration $iteration ===" >> $seqres.full
-> +
-> +	echo "+ Testing without shutdown..." >> $seqres.full
-> +	mixed_mapping_test
-> +	echo "Passed!" >> $seqres.full
-> +
-> +	echo "+ Testing with sudden shutdown..." >> $seqres.full
-> +	mixed_mapping_test "shutdown"
-> +	echo "Passed!" >> $seqres.full
-> +
-> +	echo "Iteration $iteration completed: OK" >> $seqres.full
-> +	echo >> $seqres.full
-> +done
-> +echo "# Test 1: Do O_SYNC atomic write on random mixed mapping (10 iterations): OK" >> $seqres.full
-> +
-> +
-> +echo >> $seqres.full
-> +echo "# Test 2: Do extending O_SYNC atomic writes: " >> $seqres.full
-> +bytes_written=$($XFS_IO_PROG -x -dstc "pwrite -A -V1 -b $awu_max 0 $awu_max" \
-> +		-c "shutdown" $testfile | grep wrote | awk -F'[/ ]' '{print $2}')
-> +_scratch_cycle_mount >>$seqres.full 2>&1 || _fail "remount failed"
-> +verify_atomic_write
-> +echo "# Test 2: Do extending O_SYNC atomic writes: OK" >> $seqres.full
-> +
-> +# success, all done
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> +
-> diff --git a/tests/generic/1228.out b/tests/generic/1228.out
-> new file mode 100644
-> index 00000000..1baffa91
-> --- /dev/null
-> +++ b/tests/generic/1228.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 1228
-> +Silence is golden
-> -- 
-> 2.49.0
+> > Thanks,
+> > Yi.
+> > 
 > 
 > 
 
