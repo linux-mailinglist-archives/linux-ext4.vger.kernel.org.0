@@ -1,54 +1,54 @@
-Return-Path: <linux-ext4+bounces-9324-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9325-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0FD2B20732
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 13:15:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DA19B20729
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 13:15:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B576E4267CE
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 11:15:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84C472A3061
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 11:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4C72C033C;
-	Mon, 11 Aug 2025 11:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65AD52C1580;
+	Mon, 11 Aug 2025 11:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="CjQtsYYR"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="gcppwGYu"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F402475CB
-	for <linux-ext4@vger.kernel.org>; Mon, 11 Aug 2025 11:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0002BEC5F
+	for <linux-ext4@vger.kernel.org>; Mon, 11 Aug 2025 11:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754910865; cv=none; b=FqYumG01R0+i3AQa6S1W1TBWwIF1Zi5Twu0TT7Ldvc8fwHJ741BL0Iz3z45QF9M8Cu9M+rwyGMsB1xaa5eAGu/PypC9pqiw44TTlH7L9VObjEoD8xqeVYqXJFU1tQE9T44Erxu5MOdhUwv3Y3Y6+kKJy8tNGUnwfKM8O4EJl8RE=
+	t=1754910867; cv=none; b=Y+9CSJfVDY1/T02y/4JFWvXFY81/BqSszsu3Kocl+FD1FVQqP9iZG/zFP579GW96zSPUjb2EoX9r2XEIEpBGLcHp7imZO6njGyIUXh1ug2ljoytoJ6/dk/w9YexB2qKMKoj1d8fvLWuqUqIk2kgEy4Y0R2Amwsm0KpdoHcCqCtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754910865; c=relaxed/simple;
-	bh=KAs5jOZENA+23HRC30nHOmdO4LP+gU6V2ANPivN/B7Q=;
+	s=arc-20240116; t=1754910867; c=relaxed/simple;
+	bh=otpdYSy1ilfGEXWcocGLxg4mSn5osOgKnmShKt0EkyU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LVfEmneIn/9ZzE3MPhpsiOtTStkj41qUtcZnarHqYbDGDluGwQ9G9PgxYHUGBVXNY0UEO/4MLQO7VA8lSbCce3AQvzBWwVuOTdX/xxdjMPoyPPlqC22aYA81QQnX66ephXcUJKEBoHhHfC88IgsWjy2azfn2wT+9JYbqCPEXnGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=CjQtsYYR; arc=none smtp.client-ip=18.9.28.11
+	 Content-Type:Content-Disposition:In-Reply-To; b=M+l6W1uslSD1OTlIL6ocmyq3D9pH5wtHAVCviLxZtRXvtZsqqb6EZTyg4NJp4UbmsJIca8OrifHes1lounsYIAzAaoZ0yb/nWd5Zbdg5Cb/QWWCX07ymvPoiRRAzmguhy+A0bT2FSY/+M4kDrVGMREeNjdYEU0qvs4ZveN1K0HM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=gcppwGYu; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-111-121.bstnma.fios.verizon.net [173.48.111.121])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 57BBDaM5029819
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 57BBDu6B029953
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Aug 2025 07:13:37 -0400
+	Mon, 11 Aug 2025 07:13:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1754910820; bh=yHFvHo6R+wyvHhllEY32hSJMp83zXaOzd29KX8MLnHU=;
+	t=1754910838; bh=eCERekx2qJbgICEDcQPb6BFVY0/fxG8tnJnx/oSJL5Y=;
 	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=CjQtsYYRB4hjhMsFcG4MM7KsFeE/ne0VzdfIAZXYral+rbBfboazdcrCorY8copyA
-	 /9lJZwoxtASPD5sZV/SlFnG6XNbOiqjpEOjxnUW4WC9tSdT+NEKtkNGueJ88vuAblh
-	 I4eTexci9aW1BAwDNmf+Bq+UIQ/aP1lNsAJjqA8yMgP8eB0ohGD81Flq1zMxVV+jzo
-	 I0ZJ7vxAzqqNcJHLA6hm8X0UNbnhbZf0TsJCflzsu260J6EIuQJfOxbCCno0TBO9aE
-	 7uKTEs5qw7kfPPGMDMZp+/zOHXpj9Budfyg1vGCowkZgTDvwzSZcjPq6YgIr3c+YRm
-	 FJplTrp1n8j2A==
+	b=gcppwGYuGui0YtwkeJc3OxTfMVHnLyj8Jh2ayVIvazlrORmfq8SYE2nQXClK46QIJ
+	 ZC4MvRWdgnmb+9xymUny2kGzBvOpXv44DovveuB6LHwx2tDKwSM+qvnWX1L+1WZtGM
+	 sHlkIBeFhaDnjkHqLKKEDm/cDTdrkPzXs+RbdbiXLTxcYkeqjx7BzzVWFMXxGhyhw4
+	 D63qXjT2VoccbtPx3dD4W0KJhjvZMLjyy/WZsSax9xtdH2TU8IEqZaf1pUFsRChFPS
+	 YaRJ6ZTPNZbn2JHO8qqNSq+z14T0v/9iIeuCk4jZZHW+d2bD47RhcYK55V1j+21s+y
+	 OrgeOillPmPnw==
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 525CB2E00D6; Mon, 11 Aug 2025 07:13:36 -0400 (EDT)
-Date: Mon, 11 Aug 2025 07:13:36 -0400
+	id 63E212E00D6; Mon, 11 Aug 2025 07:13:56 -0400 (EDT)
+Date: Mon, 11 Aug 2025 07:13:56 -0400
 From: "Theodore Ts'o" <tytso@mit.edu>
 To: Eric Biggers <ebiggers@kernel.org>
 Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev,
@@ -56,11 +56,11 @@ Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev,
         linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
         linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
         Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v5 03/13] ext4: move crypt info pointer to fs-specific
+Subject: Re: [PATCH v5 09/13] ext4: move verity info pointer to fs-specific
  part of inode
-Message-ID: <20250811111336.GB984814@mit.edu>
+Message-ID: <20250811111356.GC984814@mit.edu>
 References: <20250810075706.172910-1-ebiggers@kernel.org>
- <20250810075706.172910-4-ebiggers@kernel.org>
+ <20250810075706.172910-10-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -69,20 +69,20 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250810075706.172910-4-ebiggers@kernel.org>
+In-Reply-To: <20250810075706.172910-10-ebiggers@kernel.org>
 
-On Sun, Aug 10, 2025 at 12:56:56AM -0700, Eric Biggers wrote:
-> Move the fscrypt_inode_info pointer into the filesystem-specific part of
-> the inode by adding the field ext4_inode_info::i_crypt_info and
-> configuring fscrypt_operations::inode_info_offs accordingly.
+On Sun, Aug 10, 2025 at 12:57:02AM -0700, Eric Biggers wrote:
+> Move the fsverity_info pointer into the filesystem-specific part of the
+> inode by adding the field ext4_inode_info::i_verity_info and configuring
+> fsverity_operations::inode_info_offs accordingly.
 > 
 > This is a prerequisite for a later commit that removes
-> inode::i_crypt_info, saving memory and improving cache efficiency with
-> filesystems that don't support fscrypt.
+> inode::i_verity_info, saving memory and improving cache efficiency on
+> filesystems that don't support fsverity.
 > 
 > Co-developed-by: Christian Brauner <brauner@kernel.org>
 > Signed-off-by: Christian Brauner <brauner@kernel.org>
 > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
