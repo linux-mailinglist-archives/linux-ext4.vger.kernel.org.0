@@ -1,186 +1,152 @@
-Return-Path: <linux-ext4+bounces-9332-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9333-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B183AB2111A
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 18:10:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEB81B21279
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 18:46:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23212162BCD
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 16:03:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB19C500430
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Aug 2025 16:40:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507B92EBBB9;
-	Mon, 11 Aug 2025 15:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C61629BDAC;
+	Mon, 11 Aug 2025 16:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WrGck7Fm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pGsk5/BB"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB02E2E2679;
-	Mon, 11 Aug 2025 15:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F289296BB4;
+	Mon, 11 Aug 2025 16:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754927377; cv=none; b=cTzShH5tNb+SJ3/JIac9f45M6WQtxUUpMZKbNGGsL3rMEssiOc733gripkspi8NLg0+DLKknscUPz25jO9+mh5CZ504UGmlLYs6zjQED794/un9IAJkgbE2KF5XfP+yfqH7i2HJx9ll4ONi6zJs42WDg9SGv7ozrl4BuxAlmSFo=
+	t=1754930409; cv=none; b=SPYoowoZjHkKsJCRY0ZE/Sf5d0iiYG/PVDYWSzMcgrREbAws1vyoBEiaGbtUyGmqq3A3VlMiFgfV/cZlyj6av3VfvsCpAajIwbxkko5vJXFSla45W1YDag6x5PFmoZ6LAUGGJBuJLvh7m728G1xiX0ASE2F8wWlp1qEY7ZP5HME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754927377; c=relaxed/simple;
-	bh=RopHifErAZ/r1bKrzCXHi+tqR8Gd+ZBCOXa63JC3HIU=;
+	s=arc-20240116; t=1754930409; c=relaxed/simple;
+	bh=yfY9fEwE5prSXu7c0Ar8fQ1UlOn+Yver65cw9lpRakc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=duTirGKDQyiGBycyeKkvAiDA+PxmGT2Wcz7Ut5cbO5BRV7AqwSjREhyDzi8h2Th/WNpWnMRTGAWRmROQxHlknjGYXwC7WeG+eCtKFriId2xu/fYYq55rycfWt433MTjdjvFQLaEstZCwKXLvCGb00RSNcMBxMyTf3vLZHxVrRZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WrGck7Fm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A2FBC4CEED;
-	Mon, 11 Aug 2025 15:49:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=AAi5LpIgcDokwTnT3cSrmNkltlflOYVOYzd0G4GLBfjxIpn6gH+UDo6EyCshwo94qp5lyx7DIB+kNwNpmdimfRD/iSwHt+uobPX40cDcC9m2LPSBnI7xzz5o0o9XVWHuOD39PPJaLup90nm9lMlVOGrZ1zkaL99xKEj72dEhRus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pGsk5/BB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B361C4CEED;
+	Mon, 11 Aug 2025 16:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754927376;
-	bh=RopHifErAZ/r1bKrzCXHi+tqR8Gd+ZBCOXa63JC3HIU=;
+	s=k20201202; t=1754930409;
+	bh=yfY9fEwE5prSXu7c0Ar8fQ1UlOn+Yver65cw9lpRakc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WrGck7Fmn0StA1HSyOixhZNPLPo5/WRadk5mDshttUOMgrSNgupbE96hta5DvBVj3
-	 apSkCJOnMOECU6/IGLbkJHX2t7Vvbotqor63J18pfGnwia/s6dXE1SreowaY24sO0q
-	 wQv5qfqtKahV6w8xGiUAV8eURWno82WnSMRDKSAs2RJK/g/q3HIL3VWC2cB98VCGKW
-	 QesWjW+OnVmrp9KDJ2yFVTxfMfuKyTpp+WLHGuakLcpptXpnmJAWXndwyWnOnsF3q+
-	 s8DO7xeTCoaEjnNgQlSddM+52tNVwSnC4BsO8Rmzgvi74GrybIFHuhPemLca0du7Mp
-	 yO0DvfspCWAEQ==
-Date: Mon, 11 Aug 2025 08:49:35 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Zhang Yi <yi.zhang@huaweicloud.com>, Qu Wenruo <wqu@suse.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	linux-ext4 <linux-ext4@vger.kernel.org>,
-	linux-btrfs <linux-btrfs@vger.kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: Ext4 iomap warning during btrfs/136 (yes, it's from btrfs test
- cases)
-Message-ID: <20250811154935.GD7942@frogsfrogsfrogs>
-References: <9b650a52-9672-4604-a765-bb6be55d1e4a@gmx.com>
- <4ef2476f-50c3-424d-927d-100e305e1f8e@gmx.com>
- <20250808121659.GC778805@mit.edu>
- <035ad34e-fb1e-414f-8d3c-839188cfa387@suse.com>
- <c2a00db8-ed34-49bb-8c01-572381451af3@huaweicloud.com>
- <15a4c437-d276-4503-9e30-4d48f5b7a4ff@gmx.com>
+	b=pGsk5/BBpOcOyGSEi4YMVtKP9l1LnkIw0E8k1OWWmvEzjR8tWPYLRCdVWgDivYzB0
+	 QBjs/iXUHLQNSFF4scAcafi5A8kFz1Z8tWfjAEZfNb9NTb5L3WGctIErpbHiBvkSjS
+	 jAGC82roagiAIKtNyS3bUDO/rDabILKuUtEMC3vtmh4MpO1+42hJvpurkyNYZzA8f6
+	 uJ8+z6YbJb9LNnmANY2gQPZvA+X+dfQdOzHLdtSWb7wVG3CjCC6waAV6DvQSRz5Mm4
+	 JlzXaWwIgprKlf+tsPTkwngce/DAsh+8U1uF1N3mPSSegfPMWUPEc15lr9rK5LUNSN
+	 vJdnzKs0VS1gA==
+Date: Mon, 11 Aug 2025 09:39:07 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org
+Subject: Re: [PATCH v5 00/13] Move fscrypt and fsverity info out of struct
+ inode
+Message-ID: <20250811163907.GA1268@sol>
+References: <20250810075706.172910-1-ebiggers@kernel.org>
+ <20250810-tortur-gerammt-8d9ffd00da19@brauner>
+ <20250810090302.GA1274@sol>
+ <20250811-distribuieren-nilpferd-bef047fa7992@brauner>
+ <20250811-unbedacht-vollmond-1a805b76212b@brauner>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <15a4c437-d276-4503-9e30-4d48f5b7a4ff@gmx.com>
+In-Reply-To: <20250811-unbedacht-vollmond-1a805b76212b@brauner>
 
-On Sun, Aug 10, 2025 at 07:36:48AM +0930, Qu Wenruo wrote:
-> 
-> 
-> 在 2025/8/9 18:39, Zhang Yi 写道:
-> > On 2025/8/9 6:11, Qu Wenruo wrote:
-> > > 在 2025/8/8 21:46, Theodore Ts'o 写道:
-> > > > On Fri, Aug 08, 2025 at 06:20:56PM +0930, Qu Wenruo wrote:
+On Mon, Aug 11, 2025 at 03:34:35PM +0200, Christian Brauner wrote:
+> On Mon, Aug 11, 2025 at 03:17:01PM +0200, Christian Brauner wrote:
+> > On Sun, Aug 10, 2025 at 02:03:02AM -0700, Eric Biggers wrote:
+> > > On Sun, Aug 10, 2025 at 10:47:32AM +0200, Christian Brauner wrote:
+> > > > On Sun, Aug 10, 2025 at 12:56:53AM -0700, Eric Biggers wrote:
+> > > > > This is a cleaned-up implementation of moving the i_crypt_info and
+> > > > > i_verity_info pointers out of 'struct inode' and into the fs-specific
+> > > > > part of the inode, as proposed previously by Christian at
+> > > > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
 > > > > > 
-> > > > > 在 2025/8/8 17:22, Qu Wenruo 写道:
-> > > > > > Hi,
-> > > > > > 
-> > > > > > [BACKGROUND]
-> > > > > > Recently I'm testing btrfs with 16KiB block size.
-> > > > > > 
-> > > > > > Currently btrfs is artificially limiting subpage block size to 4K.
-> > > > > > But there is a simple patch to change it to support all block sizes <=
-> > > > > > page size in my branch:
-> > > > > > 
-> > > > > > https://github.com/adam900710/linux/tree/larger_bs_support
-> > > > > > 
-> > > > > > [IOMAP WARNING]
-> > > > > > And I'm running into a very weird kernel warning at btrfs/136, with 16K
-> > > > > > block size and 64K page size.
-> > > > > > 
-> > > > > > The problem is, the problem happens with ext3 (using ext4 modeule) with
-> > > > > > 16K block size, and no btrfs is involved yet.
+> > > > > The high-level concept is still the same: fs/crypto/ and fs/verity/
+> > > > > locate the pointer by adding an offset to the address of struct inode.
+> > > > > The offset is retrieved from fscrypt_operations or fsverity_operations.
+> > > > > 
+> > > > > I've cleaned up a lot of the details, including:
+> > > > > - Grouped changes into patches differently
+> > > > > - Rewrote commit messages and comments to be clearer
+> > > > > - Adjusted code formatting to be consistent with existing code
+> > > > > - Removed unneeded #ifdefs
+> > > > > - Improved choice and location of VFS_WARN_ON_ONCE() statements
+> > > > > - Added missing kerneldoc for ubifs_inode::i_crypt_info
+> > > > > - Moved field initialization to init_once functions when they exist
+> > > > > - Improved ceph offset calculation and removed unneeded static_asserts
+> > > > > - fsverity_get_info() now checks IS_VERITY() instead of v_ops
+> > > > > - fscrypt_put_encryption_info() no longer checks IS_ENCRYPTED(), since I
+> > > > >   no longer think it's actually correct there.
+> > > > > - verity_data_blocks() now keeps doing a raw dereference
+> > > > > - Dropped fscrypt_set_inode_info() 
+> > > > > - Renamed some functions
+> > > > > - Do offset calculation using int, so we don't rely on unsigned overflow
+> > > > > - And more.
+> > > > > 
+> > > > > For v4 and earlier, see
+> > > > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
+> > > > > 
+> > > > > I'd like to take this series through the fscrypt tree for 6.18.
+> > > > > (fsverity normally has a separate tree, but by choosing just one tree
+> > > > > for this, we'll avoid conflicts in some places.)
 > > > > 
-> > > > 
-> > > > Thanks for the bug report!  This looks like it's an issue with using
-> > > > indirect block-mapped file with a 16k block size.  I tried your
-> > > > reproducer using a 1k block size on an x86_64 system, which is how I
-> > > > test problem caused by the block size < page size.  It didn't
-> > > > reproduce there, so it looks like it really needs a 16k block size.
-> > > > 
-> > > > Can you say something about what system were you running your testing
-> > > > on --- was it an arm64 system, or a powerpc 64 system (the two most
-> > > > common systems with page size > 4k)?  (I assume you're not trying to
-> > > > do this on an Itanic.  :-)   And was the page size 16k or 64k?
+> > > > Woh woh. First, I had a cleaned up version ready for v6.18 so if you
+> > > > plan on taking over someone's series and resend then maybe ask the
+> > > > author first whether that's ok or not. I haven't seen you do that. You
+> > > > just caused duplicated work for no reason.
 > > > 
-> > > The architecture is aarch64, the host board is Rock5B (cheap and fast enough), the test machine is a VM on that board, with ovmf as the UEFI firmware.
-> > > 
-> > > The kernel is configured to use 64K page size, the *ext3* system is using 16K block size.
-> > > 
-> > > Currently I tried the following combination with 64K page size and ext3, the result looks like the following
-> > > 
-> > > - 2K block size
-> > > - 4K block size
-> > >    All fine
-> > > 
-> > > - 8K block size
-> > > - 16K block size
-> > >    All the same kernel warning and never ending fsstress
-> > > 
-> > > - 32K block size
-> > > - 64K block size
-> > >    All fine
-> > > 
-> > > I am surprised as you that, not all subpage block size are having problems, just 2 of the less common combinations failed.
-> > > 
-> > > And the most common ones (4K, page size) are all fine.
-> > > 
-> > > Finally, if using ext4 not ext3, all combinations above are fine again.
-> > > 
-> > > So I ran out of ideas why only 2 block sizes fail here...
-> > > 
+> > > Ah, sorry about that.  When I started looking at it again yesterday
+> > > there turned out to be way too many cleanups and fixes I wanted to make
+> > > (beyond the comments I gave earlier), and I hadn't seen activity from
+> > > you on it in a while.  So I figured it would be easier to just send a
+> > > series myself.  But I should have asked you first, sorry.
 > > 
-> > This issue is caused by an overflow in the calculation of the hole's
-> > length on the forth-level depth for non-extent inodes. For a file system
-> > with a 4KB block size, the calculation will not overflow. For a 64KB
-> > block size, the queried position will not reach the fourth level, so this
-> > issue only occur on the filesystem with a 8KB and 16KB block size.
-> > 
-> > Hi, Wenruo, could you try the following fix?
-> > 
-> > diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-> > index 7de327fa7b1c..d45124318200 100644
-> > --- a/fs/ext4/indirect.c
-> > +++ b/fs/ext4/indirect.c
-> > @@ -539,7 +539,7 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
-> >   	int indirect_blks;
-> >   	int blocks_to_boundary = 0;
-> >   	int depth;
-> > -	int count = 0;
-> > +	u64 count = 0;
-> >   	ext4_fsblk_t first_block = 0;
-> > 
-> >   	trace_ext4_ind_map_blocks_enter(inode, map->m_lblk, map->m_len, flags);
-> > @@ -588,7 +588,7 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
-> >   		count++;
-> >   		/* Fill in size of a hole we found */
-> >   		map->m_pblk = 0;
-> > -		map->m_len = min_t(unsigned int, map->m_len, count);
-> > +		map->m_len = umin(map->m_len, count);
-> >   		goto cleanup;
-> >   	}
+> > So I started working on this pretty much right away. And I had planned
+> > on sending it out rather soon but then thought to better wait for -rc1
+> > to be released because I saw you had a bunch of crypto changes in for
+> > -rc1 that would've caused merge conflicts. It's no big deal overall but
+> > I just don't like that I wasted massaging all that stuff. So next time a
+> > heads-up would be nice. Thank you!
 > 
-> It indeed solves the problem.
+> I just pulled the series and now I see that you also changed the
+> authorship of every single patch in the series from me to you and put my
+> Co-developed-by in there.
 > 
-> Tested-by: Qu Wenruo <wqu@suse.com>
+> I mean I acknowledge that there's changes between the branches and
+> there's some function renaming but it's not to the point where
+> authorship should be changed. And if you think that's necessary than it
+> would be something you would want to talk to me about first.
+> 
+> I don't care about the stats but it was always hugely frustrating to me
+> when I started kernel development when senior kernel developers waltzed
+> in and thought they'd just take things over so I try very hard to not do
+> that unless this is agreed upon first.
 
-Can we get the relevant chunks of this test turned into a tests/ext4/
-fstest so that the ext4 developers have a regression test that doesn't
-require setting up btrfs, please?
+If you want to keep the authorship that's fine with me.  Make sure
+you've checked the diff: the diff between v4 and v5 is larger than the
+diff between the base and either version.  And as I mentioned, I rewrote
+the commit messages and divided some of the changes into commits
+differently as well.  If the situation was flipped, I wouldn't want to
+be kept as the author.  But I realize there are different opinions about
+this sort of thing, and I'm totally fine with whatever you prefer.
 
---D
+Thanks,
 
-> Thanks,
-> Qu
-> 
-> > Thanks,
-> > Yi.
-> > 
-> 
-> 
+- Eric
 
