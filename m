@@ -1,117 +1,219 @@
-Return-Path: <linux-ext4+bounces-9340-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9341-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C8BCB22E59
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 18:56:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8426AB22EC9
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 19:16:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BA9B3A6A77
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 16:54:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2654F163B72
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 17:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3868E2FA0F8;
-	Tue, 12 Aug 2025 16:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6450B2FD1C7;
+	Tue, 12 Aug 2025 17:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KMBnaTl7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I3UKfnuU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB03280018;
-	Tue, 12 Aug 2025 16:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDEC91A9FA8;
+	Tue, 12 Aug 2025 17:16:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755017652; cv=none; b=GXMVsiLtfdC6d+xyd3C2aWiqqaBNBzFCFY3RLJcEuY2Dfa/uy1JrWq7uhB7g4Hb+SJfeIkkmoV4VA3b9OVNQpdQx3J86Dnkwa5/4SolRxVzbcDb4n1A79aESLnQ0eXGbfZvaUTOf7NGDRVIk+ef3ZalD/7ZBu87/lHKa6yJ2qDM=
+	t=1755018980; cv=none; b=JZinmcKJUKzoxyv2uGKWQhgul58RiFjL3+0I7f5bk8BFrX8AdzggP+OCMBJLqRqOdY4IXbEb8XEC3wdz4D0HwO0hnICA5jWNiPIOkxbmjZHhomPjGw1JdrdN1RPf7O/5UWXT/tLFzDabGeBRF2BheAtWqbCAHywvJeUgxbUhnNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755017652; c=relaxed/simple;
-	bh=FMnY8Q5KvNSrxp5A0evPe/gyrxbVf6qxqvIJnxtc2Sg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pJvxQkCffhxxJzwoWY1KVl9mZyhD8Wmp6g4SUmTMRHhlkdsZwp+lMH0eusARpaFk0ozuJeWEypvvrl5JlTKXvhZyPHfM11ED6IGPQUN1T2oU9U7uwO6bMlOZpqiKONNTNuho57xxU78GB/DLCX49mD/PEAH5uZwMpLyfeX838sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KMBnaTl7; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-7430835eae1so40530a34.1;
-        Tue, 12 Aug 2025 09:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755017650; x=1755622450; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=axc3NlzEWDOXd+gEuNTDLEsYjSZ8XkkLcsbwtnhrv6k=;
-        b=KMBnaTl7BzPDeHwZiIJnYijLAX7HgGg1IivZ6gu86eOC1Noq8wZxcuDkbiadjIXqUB
-         gNsU8jWUDf6LkvKOJgoLXPhV5KZGEicrCuZoZ8RBW/8gN8Wpti+tmO1ORt7kBOh6QT96
-         kwNM12m00FxDXLTy4r0aVAIlDss5PspjANjSG279s+qJCp8NR2RYHHVMqesg2ie4X8d9
-         ob37zFGYS/b3awVBzbmJELZqp4pQyPrrc89GLYAEVSP3x9/9O5nce1GaduwByJ7cMVGS
-         VbI8/Qn8ADpvdFPJyHjf+1Z/o2OgKiSSiJyu7eFQtUSrLmOTBxJizGjSGenWNpGcleCd
-         8hZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755017650; x=1755622450;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=axc3NlzEWDOXd+gEuNTDLEsYjSZ8XkkLcsbwtnhrv6k=;
-        b=wST+QSt7YayBAM2KbE/UWNBjblp+pmzyEMAj8CQhiG3+EGPUUEzINIYZvUhwBgBcCw
-         UOTjICMPqr1e0D1jXpCnRCGRyPDEEwOCeKKJmqVdh6PjiQZabNifbm4ZvQ07ur7jD/qE
-         CXvtPMstgIJ+ylHuorfvsvlDoSrrDAxzJMYwzxxlVZQW4Dck16ooyFAqMbyDZpg2kwm+
-         3M9RtzoYXuMIYcPMFSPwhQde8oLWNAXrWim7AmPhABKIvdvQ491geJ1oLpVvMVuB9Dfa
-         0imAHq3z3Qc+b2ERtngnvra84/LeLdYN+ERdIrYbi5RA2cggrwOvO+h4vl7DzRihMthD
-         ydJA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQP4gO1KEMhgNAlupK3+HbOUMCgQtIgxN1mor8pNv1WX3Tfx9/LtCZLL7ww+68JvV8yRrJTy/L6CgMIiom@vger.kernel.org, AJvYcCVMQvhNhdM/4jBtdi3Ev7gkP027SB8Pae6IutlEZuyf8+1hyHD7baosLbu3QaqbWE10SZGSXAjNDOit@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8k9vXneQvLXFSnUq9bv67Vh1w8zSXqeppwynKVFM+vOJAOxzP
-	F3bKrylqI/bLhy5rc95f6yieMUnGfD8z1xD08t7vgTG07qqJjrNtgmTrtFzAbLC0tm8=
-X-Gm-Gg: ASbGnctdiCLlzTD+Z6yVNCGvRIklNHc0LB08jyOuoXWRLH+7x+rrOL4i0vz6uWI4Fv9
-	MZ9tVLqQitbMmPBpu7LIbzjbyo9qhh4MM4OYU2+TPBf6Te0KzND3Go8poSSnWMN4Gbn7wrwaerR
-	Gq2KtAWP3x8Ah2vEcnK0UZC+kMkLHqp38jnVK32/irRkoKkucD7UKeQyEtzJzKs32by7u/31FH9
-	+WcZAwhIitjdrrj26DggOyXe7DKhyKFVjYLzdVrZNcsU9JDTUiEtyDePKLTYYJTL+tG7zZupvaM
-	X/xuN+6z90ls/juxZbCqANuVrlhqwgwrCAZgVCf2MikGfG7m8Jm9o8TZnak0JRESq9G0eLmyfsa
-	TO4HLQQe6nHoIDKMOgjCRPRGy
-X-Google-Smtp-Source: AGHT+IGqIkf2DXnXvaT7WN6+oWH9g364u3Q796J4JQ4J5bg8nShXhozWUpVTuQp+yHgae7i76C6gaA==
-X-Received: by 2002:a05:6830:90e:b0:73e:9fea:f2a5 with SMTP id 46e09a7af769-7437498681emr198546a34.4.1755017650501;
-        Tue, 12 Aug 2025 09:54:10 -0700 (PDT)
-Received: from s-machine2.. ([2806:2f0:5501:d07c:56f9:3b9d:73c4:bab2])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7436f96e0eesm318507a34.33.2025.08.12.09.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Aug 2025 09:54:10 -0700 (PDT)
-From: Sergio Perez Gonzalez <sperezglz@gmail.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: Sergio Perez Gonzalez <sperezglz@gmail.com>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: remove branch to identical code ext4_init_new_dir()
-Date: Tue, 12 Aug 2025 10:53:28 -0600
-Message-ID: <20250812165331.8449-1-sperezglz@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1755018980; c=relaxed/simple;
+	bh=1mDeEuCRCUoO/MKB/AEbGFw8HAfQXdnAVzoiB5lEbQo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EPPzjOwUZqgLdOUs7amVZNGMkqIn4jG7D2QWAT4JaWwra9hGl08GIJLNcW5/DBYZGRKzIiDjXRlSJMPOsS8Z9TafK4HBiiU5kRvMOgBhs72fmQCTo/w7/JurpiB1yBwbqAfALbKO4fPBvtpcpa3TgMcsYUrVJyjslffbS6GUHcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I3UKfnuU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68DE1C4CEF0;
+	Tue, 12 Aug 2025 17:16:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755018978;
+	bh=1mDeEuCRCUoO/MKB/AEbGFw8HAfQXdnAVzoiB5lEbQo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=I3UKfnuUWiZiif3PdKTjdz7rEtzwKYBC0qKF3F/Eveu6xzhc7ynsKY+sM45TCfcJC
+	 d4qrbCSvC7iv0nJ8Je+lw07HoJK1Pnsqbvabe35NOSL7WcQIFIqG0zoRRTYHQYs2ez
+	 XcRmZMHhALRYClJHC2+X6MufIj0t6gLhgHjWCItv+1ELSCRwv6f3h7/HuRqK7sNga3
+	 9rj95bPMY8GvpGaYk1kEi/k7HIhG5I+NdpjUnD+W78doxJmJXz40HPKoGXPl3jeetX
+	 RH1+b1KG2xAdIJKcMkVGvdX/6dcBOm0ip9WCP/k9y8b9xjCwvuKvQ4aCioE4mh/O/i
+	 CPBgtMDUs6MFA==
+Date: Tue, 12 Aug 2025 10:16:17 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
+	Ritesh Harjani <ritesh.list@gmail.com>, john.g.garry@oracle.com,
+	tytso@mit.edu, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v4 04/11] generic: Add atomic write test using fio crc
+ check verifier
+Message-ID: <20250812171617.GA7938@frogsfrogsfrogs>
+References: <cover.1754833177.git.ojaswin@linux.ibm.com>
+ <783e950d8b5ad80672a359a19ede4faeb64e3dd7.1754833177.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <783e950d8b5ad80672a359a19ede4faeb64e3dd7.1754833177.git.ojaswin@linux.ibm.com>
 
-It seems unnecessary to use a branch, in the event of
-error, to the same target label that would execute on
-success.
+On Sun, Aug 10, 2025 at 07:11:55PM +0530, Ojaswin Mujoo wrote:
+> This adds atomic write test using fio based on it's crc check verifier.
+> fio adds a crc for each data block. If the underlying device supports
+> atomic write then it is guaranteed that we will never have a mix data from
+> two threads writing on the same physical block.
+> 
+> Avoid doing overlapping parallel atomic writes because it might give
+> unexpected results. Use offset_increment=, size= fio options to achieve
+> this behavior.
+> 
+> Co-developed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-Signed-off-by: Sergio Perez Gonzalez <sperezglz@gmail.com>
----
- fs/ext4/namei.c | 2 --
- 1 file changed, 2 deletions(-)
+John had the most opinions about the last iteration of this test, but it
+looks reasonable enough to me...
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index d83f91b62317..01f379f5fd04 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2984,8 +2984,6 @@ int ext4_init_new_dir(handle_t *handle, struct inode *dir,
- 		return PTR_ERR(dir_block);
- 	de = (struct ext4_dir_entry_2 *)dir_block->b_data;
- 	err = ext4_init_dirblock(handle, inode, dir_block, dir->i_ino, NULL, 0);
--	if (err)
--		goto out;
- out:
- 	brelse(dir_block);
- 	return err;
--- 
-2.43.0
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
+--D
+
+> ---
+>  tests/generic/1226     | 107 +++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/1226.out |   2 +
+>  2 files changed, 109 insertions(+)
+>  create mode 100755 tests/generic/1226
+>  create mode 100644 tests/generic/1226.out
+> 
+> diff --git a/tests/generic/1226 b/tests/generic/1226
+> new file mode 100755
+> index 00000000..efc360e1
+> --- /dev/null
+> +++ b/tests/generic/1226
+> @@ -0,0 +1,107 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
+> +#
+> +# FS QA Test 1226
+> +#
+> +# Validate FS atomic write using fio crc check verifier.
+> +#
+> +. ./common/preamble
+> +. ./common/atomicwrites
+> +
+> +_begin_fstest auto aio rw atomicwrites
+> +
+> +_require_scratch_write_atomic
+> +_require_odirect
+> +_require_aio
+> +
+> +_scratch_mkfs >> $seqres.full 2>&1
+> +_scratch_mount
+> +_require_xfs_io_command "falloc"
+> +
+> +touch "$SCRATCH_MNT/f1"
+> +awu_min_write=$(_get_atomic_write_unit_min "$SCRATCH_MNT/f1")
+> +awu_max_write=$(_get_atomic_write_unit_max "$SCRATCH_MNT/f1")
+> +
+> +blocksize=$(_max "$awu_min_write" "$((awu_max_write/2))")
+> +threads=$(_min "$(($(nproc) * 2 * LOAD_FACTOR))" "100")
+> +filesize=$((blocksize * threads * 100))
+> +depth=$threads
+> +io_size=$((filesize / threads))
+> +io_inc=$io_size
+> +testfile=$SCRATCH_MNT/test-file
+> +
+> +fio_config=$tmp.fio
+> +fio_out=$tmp.fio.out
+> +
+> +fio_aw_config=$tmp.aw.fio
+> +fio_verify_config=$tmp.verify.fio
+> +
+> +function create_fio_configs()
+> +{
+> +	create_fio_aw_config
+> +	create_fio_verify_config
+> +}
+> +
+> +function create_fio_verify_config()
+> +{
+> +cat >$fio_verify_config <<EOF
+> +	[verify-job]
+> +	direct=1
+> +	ioengine=libaio
+> +	rw=read
+> +	bs=$blocksize
+> +	filename=$testfile
+> +	size=$filesize
+> +	iodepth=$depth
+> +	group_reporting=1
+> +
+> +	verify_only=1
+> +	verify=crc32c
+> +	verify_fatal=1
+> +	verify_state_save=0
+> +	verify_write_sequence=0
+> +EOF
+> +}
+> +
+> +function create_fio_aw_config()
+> +{
+> +cat >$fio_aw_config <<EOF
+> +	[atomicwrite-job]
+> +	direct=1
+> +	ioengine=libaio
+> +	rw=randwrite
+> +	bs=$blocksize
+> +	filename=$testfile
+> +	size=$io_inc
+> +	offset_increment=$io_inc
+> +	iodepth=$depth
+> +	numjobs=$threads
+> +	group_reporting=1
+> +	atomic=1
+> +
+> +	verify_state_save=0
+> +	verify=crc32c
+> +	do_verify=0
+> +EOF
+> +}
+> +
+> +create_fio_configs
+> +_require_fio $fio_aw_config
+> +
+> +cat $fio_aw_config >> $seqres.full
+> +cat $fio_verify_config >> $seqres.full
+> +
+> +$XFS_IO_PROG -fc "falloc 0 $filesize" $testfile >> $seqres.full
+> +
+> +$FIO_PROG $fio_aw_config >> $seqres.full
+> +ret1=$?
+> +$FIO_PROG $fio_verify_config >> $seqres.full
+> +ret2=$?
+> +
+> +[[ $ret1 -eq 0 && $ret2 -eq 0 ]] || _fail "fio with atomic write failed"
+> +
+> +# success, all done
+> +echo Silence is golden
+> +status=0
+> +exit
+> diff --git a/tests/generic/1226.out b/tests/generic/1226.out
+> new file mode 100644
+> index 00000000..6dce0ea5
+> --- /dev/null
+> +++ b/tests/generic/1226.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 1226
+> +Silence is golden
+> -- 
+> 2.49.0
+> 
+> 
 
