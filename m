@@ -1,58 +1,57 @@
-Return-Path: <linux-ext4+bounces-9342-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9343-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A13EBB22ED3
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 19:17:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93298B22EDB
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 19:19:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49E9D56036E
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 17:17:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA21B189F140
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 17:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 938E42FD1C7;
-	Tue, 12 Aug 2025 17:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AFB42FD1CE;
+	Tue, 12 Aug 2025 17:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NFSSNAbv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gnUeVR3d"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9A0305E31;
-	Tue, 12 Aug 2025 17:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E682E8895;
+	Tue, 12 Aug 2025 17:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755019016; cv=none; b=RJUtXw3NwcmluDtNZ9qc2UMJjb2sfoIUCYkTM8iKMEx33V7XH0Nmrh0VqE2aEpNfukKkojmaBaoJQ4Bd44qks+mO2IaC34t3064LMJoNqzzTRB8zKUFCVfK56e/wCfACEi4h8hbtW2ntCeM4VncYrErcFKGMdLhXhcColMTL/WI=
+	t=1755019137; cv=none; b=M9vyIZnb1+FCF3vdr592vkdw9ibv+WvU0MmFQU3f80WWHbfGzymxL9oarP90AX2KqCVKeg7I/HPQOLfHn6WTS7nsI+5dfrxDa+ztcw5l9FLfwPpWRQhgDRXY1RD7OMqtsscCzyPyt8PYOaLVA31aTmKFxl7eU3IJqtKCg/ZASdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755019016; c=relaxed/simple;
-	bh=634pBqw0mHuPhjmf+NA8hzzSYWmkdmu/kMfY+dOF4GM=;
+	s=arc-20240116; t=1755019137; c=relaxed/simple;
+	bh=Yb0koM1v5zVJkGPV0tK0r+Qe/NOn1YeQ9N+JMgvWYkU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U5ZLA3ha42Eucn2k+TUJplMNdNn9vl3BQQkMt6vo+3EVMDV9XKddq/1tXXtoR2bVWG5kryhoa3OBXYqlZSku0gnIKzzeJqnS+L0BpFxIdlah3NqGxSbx+ATOVgkrHP53zFIxwADmNb0wSrUBJ5r63dcim+o5Rqwf5osLyaCK0zU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NFSSNAbv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A03EBC4CEF0;
-	Tue, 12 Aug 2025 17:16:55 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=CixyJ8U3fwqNTGQFmxYA0gt5try7q3TkSoYz6+KL9kMLVxHD3u0JN1hxfxw6cpULmnpBKeiFoFt7Tt/WM/7Td39zbIIDozUkRz8abQ1XRWnupTN+8tqvjWIIsUgiaF7FTSJfMnz3JqhiFyNkuPf6UINvxJjWQU5OTlGSgR425vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gnUeVR3d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F01C4CEF0;
+	Tue, 12 Aug 2025 17:18:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755019015;
-	bh=634pBqw0mHuPhjmf+NA8hzzSYWmkdmu/kMfY+dOF4GM=;
+	s=k20201202; t=1755019135;
+	bh=Yb0koM1v5zVJkGPV0tK0r+Qe/NOn1YeQ9N+JMgvWYkU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NFSSNAbvArjtwnnogPcGQr3210SIqurRZBEhsiZKQWPj5Q5kAvyifV1dT7ACyVY2I
-	 VB9jpux2qRX93rpvGFyU5iDWj3uTJZIMnBgXRbDkTNLXT5HBpZieAkkLyxosupCA0i
-	 8l3G3l9lWb4DVtjOTLNlsl05gI0z+EC215tZY9EbKUFy1wQulBX8MoQsgFdjfAEfO+
-	 SEf9POHA831lI5Q2vGQdaOTgpNdugRLJEJF/QB/mlmh7n0OwiAxvuDPyfibdO37/S/
-	 W9mbF839LJCp7kG7qhk2OZ3cy2WB72oJ6R3N7uJpKzse1I2WEEO3WTmT84333MFEwX
-	 +UgPQHvRbtf2w==
-Date: Tue, 12 Aug 2025 10:16:55 -0700
+	b=gnUeVR3dirkaxTzmweSmNCG3p9m0Wmr1ZqbPvU57sHJ4tWtvLf/N4XBC6vX8Ch51n
+	 eJvGUcf4edJUUPWbXya33K0l7eyTqT8Lh5xDIIOjM/55K2bhCtv39qCp1+o7IiP4W+
+	 Q1JKo2QAB07KIIlBRAdGrwNLytMA79TadwWI2hvXuA3MkwNL+Og93JauQbAdjqUOsN
+	 5J2wlJuv1RUbLcCorAOfrVgZkFubhhBDxsql8ebuw6CVBoccNKZLbRKuwUlEWWlSTM
+	 teS6nS/TwnP95jMR9Wh0o84gJvyg4frC4QHuKBSwzql6NDOr87pGzLyDKdmGThxc0Q
+	 JyYop4QrsrFFw==
+Date: Tue, 12 Aug 2025 10:18:55 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
 	Ritesh Harjani <ritesh.list@gmail.com>, john.g.garry@oracle.com,
 	tytso@mit.edu, linux-xfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v4 05/11] generic: Add atomic write test using fio verify
- on file mixed mappings
-Message-ID: <20250812171655.GB7938@frogsfrogsfrogs>
+Subject: Re: [PATCH v4 07/11] generic: Stress fsx with atomic writes enabled
+Message-ID: <20250812171855.GC7938@frogsfrogsfrogs>
 References: <cover.1754833177.git.ojaswin@linux.ibm.com>
- <508d55ad8e3b8efde87ffbe3354e9e1d9ee8c908.1754833177.git.ojaswin@linux.ibm.com>
+ <50487b2e8a510598a93888c2674df7357d371da8.1754833177.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,178 +60,108 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <508d55ad8e3b8efde87ffbe3354e9e1d9ee8c908.1754833177.git.ojaswin@linux.ibm.com>
+In-Reply-To: <50487b2e8a510598a93888c2674df7357d371da8.1754833177.git.ojaswin@linux.ibm.com>
 
-On Sun, Aug 10, 2025 at 07:11:56PM +0530, Ojaswin Mujoo wrote:
-> This tests uses fio to first create a file with mixed mappings. Then it
-> does atomic writes using aio dio with parallel jobs to the same file with
-> mixed mappings. This forces the filesystem allocator to allocate extents
-> over mixed mapping regions to stress FS block allocators.
+On Sun, Aug 10, 2025 at 07:11:58PM +0530, Ojaswin Mujoo wrote:
+> Stress file with atomic writes to ensure we excercise codepaths
+> where we are mixing different FS operations with atomic writes
 > 
-> Avoid doing overlapping parallel atomic writes because it might give
-> unexpected results. Use offset_increment=, size= fio options to achieve
-> this behavior.
-> 
-> Co-developed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-Looks ok still...
+Didn't I already tag this
 Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
 --D
 
 > ---
->  tests/generic/1227     | 131 +++++++++++++++++++++++++++++++++++++++++
->  tests/generic/1227.out |   2 +
->  2 files changed, 133 insertions(+)
->  create mode 100755 tests/generic/1227
->  create mode 100644 tests/generic/1227.out
+>  tests/generic/1229     | 68 ++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/1229.out |  2 ++
+>  2 files changed, 70 insertions(+)
+>  create mode 100755 tests/generic/1229
+>  create mode 100644 tests/generic/1229.out
 > 
-> diff --git a/tests/generic/1227 b/tests/generic/1227
+> diff --git a/tests/generic/1229 b/tests/generic/1229
 > new file mode 100755
-> index 00000000..7423e67c
+> index 00000000..7fa57105
 > --- /dev/null
-> +++ b/tests/generic/1227
-> @@ -0,0 +1,131 @@
+> +++ b/tests/generic/1229
+> @@ -0,0 +1,68 @@
 > +#! /bin/bash
 > +# SPDX-License-Identifier: GPL-2.0
 > +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
 > +#
-> +# FS QA Test 1227
+> +# FS QA Test 1229
 > +#
-> +# Validate FS atomic write using fio crc check verifier on mixed mappings
-> +# of a file.
+> +# fuzz fsx with atomic writes
 > +#
 > +. ./common/preamble
 > +. ./common/atomicwrites
+> +_begin_fstest rw auto quick atomicwrites
 > +
-> +_begin_fstest auto aio rw atomicwrites
-> +
-> +_require_scratch_write_atomic_multi_fsblock
 > +_require_odirect
-> +_require_aio
-> +_require_xfs_io_command "truncate"
+> +_require_scratch_write_atomic
 > +
 > +_scratch_mkfs >> $seqres.full 2>&1
-> +_scratch_mount
+> +_scratch_mount  >> $seqres.full 2>&1
 > +
-> +touch "$SCRATCH_MNT/f1"
-> +awu_min_write=$(_get_atomic_write_unit_min "$SCRATCH_MNT/f1")
-> +awu_max_write=$(_get_atomic_write_unit_max "$SCRATCH_MNT/f1")
+> +testfile=$SCRATCH_MNT/testfile
+> +touch $testfile
 > +
-> +aw_bsize=$(_max "$awu_min_write" "$((awu_max_write/4))")
-> +fsbsize=$(_get_block_size $SCRATCH_MNT)
+> +awu_max=$(_get_atomic_write_unit_max $testfile)
+> +blksz=$(_get_block_size $SCRATCH_MNT)
+> +bsize=`$here/src/min_dio_alignment $SCRATCH_MNT $SCRATCH_DEV`
 > +
-> +threads=$(_min "$(($(nproc) * 2 * LOAD_FACTOR))" "100")
-> +filesize=$((aw_bsize * threads * 100))
-> +depth=$threads
-> +aw_io_size=$((filesize / threads))
-> +aw_io_inc=$aw_io_size
-> +testfile=$SCRATCH_MNT/test-file
+> +set_fsx_avoid() {
+> +	local file=$1
 > +
-> +fio_prep_config=$tmp.prep.fio
-> +fio_aw_config=$tmp.aw.fio
-> +fio_verify_config=$tmp.verify.fio
-> +fio_out=$tmp.fio.out
+> +	case "$FSTYP" in
+> +	"ext4")
+> +		local dev=$(findmnt -n -o SOURCE --target $testfile)
 > +
-> +cat >$fio_prep_config <<EOF
-> +# prep file to have mixed mappings
-> +[global]
-> +ioengine=libaio
-> +filename=$testfile
-> +size=$filesize
-> +bs=$fsbsize
-> +direct=1
-> +iodepth=$depth
-> +group_reporting=1
+> +		# fsx insert/collpase range support for ext4+bigalloc is
+> +		# currently broken, so disable it. Also disable incase we can't
+> +		# detect bigalloc to be on safer side.
+> +		if [ -z "$DUMPE2FS_PROG" ]; then
+> +			echo "dumpe2fs not found, disabling insert/collapse range" >> $seqres.full
+> +			FSX_AVOID+=" -I -C"
+> +			return
+> +		fi
 > +
-> +# Create written extents
-> +[prep_written_blocks]
-> +ioengine=libaio
-> +rw=randwrite
-> +io_size=$((filesize/3))
-> +random_generator=lfsr
+> +		$DUMPE2FS_PROG -h $dev 2>&1 | grep -q bigalloc && {
+> +			echo "fsx insert/collapse range not supported with bigalloc. Disabling.." >> $seqres.full
+> +			FSX_AVOID+=" -I -C"
+> +		}
+> +		;;
+> +	*)
+> +		;;
+> +	esac
+> +}
 > +
-> +# Create unwritten extents
-> +[prep_unwritten_blocks]
-> +ioengine=falloc
-> +rw=randwrite
-> +io_size=$((filesize/3))
-> +random_generator=lfsr
-> +EOF
+> +# fsx usage:
+> +#
+> +# -N numops: total # operations to do
+> +# -l flen: the upper bound on file size
+> +# -o oplen: the upper bound on operation size (64k default)
+> +# -Z: O_DIRECT ()
 > +
-> +cat >$fio_aw_config <<EOF
-> +# atomic write to mixed mappings of written/unwritten/holes
-> +[atomic_write_job]
-> +ioengine=libaio
-> +rw=randwrite
-> +direct=1
-> +atomic=1
-> +random_generator=lfsr
-> +group_reporting=1
+> +set_fsx_avoid
+> +_run_fsx_on_file $testfile -N 10000 -o $awu_max -A -l 500000 -r $bsize -w $bsize -Z $FSX_AVOID  >> $seqres.full
+> +if [[ "$?" != "0" ]]
+> +then
+> +	_fail "fsx returned error: $?"
+> +fi
 > +
-> +filename=$testfile
-> +bs=$aw_bsize
-> +size=$aw_io_size
-> +offset_increment=$aw_io_inc
-> +iodepth=$depth
-> +numjobs=$threads
-> +
-> +verify_state_save=0
-> +verify=crc32c
-> +do_verify=0
-> +EOF
-> +
-> +cat >$fio_verify_config <<EOF
-> +# verify atomic writes done by previous job
-> +[verify_job]
-> +ioengine=libaio
-> +rw=read
-> +random_generator=lfsr
-> +group_reporting=1
-> +
-> +filename=$testfile
-> +size=$filesize
-> +bs=$aw_bsize
-> +iodepth=$depth
-> +
-> +verify_state_save=0
-> +verify_only=1
-> +verify=crc32c
-> +verify_fatal=1
-> +verify_write_sequence=0
-> +EOF
-> +
-> +_require_fio $fio_aw_config
-> +_require_fio $fio_verify_config
-> +
-> +cat $fio_prep_config >> $seqres.full
-> +cat $fio_aw_config >> $seqres.full
-> +cat $fio_verify_config >> $seqres.full
-> +
-> +$XFS_IO_PROG -fc "truncate $filesize" $testfile >> $seqres.full
-> +
-> +#prepare file with mixed mappings
-> +$FIO_PROG $fio_prep_config >> $seqres.full
-> +
-> +# do atomic writes without verifying
-> +$FIO_PROG $fio_aw_config >> $seqres.full
-> +
-> +# verify data is not torn
-> +$FIO_PROG $fio_verify_config >> $seqres.full
-> +
-> +# success, all done
-> +echo Silence is golden
+> +echo "Silence is golden"
 > +status=0
 > +exit
-> diff --git a/tests/generic/1227.out b/tests/generic/1227.out
+> diff --git a/tests/generic/1229.out b/tests/generic/1229.out
 > new file mode 100644
-> index 00000000..2605d062
+> index 00000000..737d61c6
 > --- /dev/null
-> +++ b/tests/generic/1227.out
+> +++ b/tests/generic/1229.out
 > @@ -0,0 +1,2 @@
-> +QA output created by 1227
+> +QA output created by 1229
 > +Silence is golden
 > -- 
 > 2.49.0
