@@ -1,217 +1,117 @@
-Return-Path: <linux-ext4+bounces-9339-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9340-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F837B22E1B
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 18:48:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C8BCB22E59
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 18:56:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A89E7A5293
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 16:46:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BA9B3A6A77
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Aug 2025 16:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F882FA0F0;
-	Tue, 12 Aug 2025 16:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3868E2FA0F8;
+	Tue, 12 Aug 2025 16:54:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cdPFVQ4V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KMBnaTl7"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BA01F4CA0;
-	Tue, 12 Aug 2025 16:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB03280018;
+	Tue, 12 Aug 2025 16:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755017287; cv=none; b=uTqkINgSyCimtS1BL5Urk7OmTEeWH+QFsMTizcyAuIhatl2bxvjBeVZYgii7enU9tQkoJSwzc8Kbnoz01WICutDpPImPK34XehVhpnzLe3WlfT3okQsY6IS3Pdg7spVhopfxUyAUeyfDiwDOQYMlSQ8Klk8mxgYwbTvoj9pSeyA=
+	t=1755017652; cv=none; b=GXMVsiLtfdC6d+xyd3C2aWiqqaBNBzFCFY3RLJcEuY2Dfa/uy1JrWq7uhB7g4Hb+SJfeIkkmoV4VA3b9OVNQpdQx3J86Dnkwa5/4SolRxVzbcDb4n1A79aESLnQ0eXGbfZvaUTOf7NGDRVIk+ef3ZalD/7ZBu87/lHKa6yJ2qDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755017287; c=relaxed/simple;
-	bh=TyxIRLTl9NXVeVcD8UsZ5wlMsNk5vzwRoGhXxXi1k8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kw9ZMPl8/FzFPrA2UtB95PUhpLiMBFKCmc+AB2zfx24Y5eyNeNOT27QqZ0f7C7a66jY0lYCgEUrmHRLtqp6YeMwTKIhBAnY84gUXYV6xVZNDpMRas9D0Ynl3w+Wn8HP56rbHO67qAQJRWG2RoI02g22wBcInZqTkGTXXSlblI74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cdPFVQ4V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7408AC4CEF0;
-	Tue, 12 Aug 2025 16:48:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755017286;
-	bh=TyxIRLTl9NXVeVcD8UsZ5wlMsNk5vzwRoGhXxXi1k8k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cdPFVQ4VF5/IPTEMsMSORpVJmORvFRtRNo7KaE76rjlqlVZQADF89BLaWdbubfedU
-	 fy96WdYdnkepCImVEnGfPBKIBgl1xiRARu6i1kamVb6dhK+THzDhAvhkAeu53rImkT
-	 d0s5IXvrPQWktZ/3+7bYvZW0fqwBrlyvDn7cC4UsTziQOucpPxPJEJRgTSe5pFwBfQ
-	 Rb6ClY79oKSx7fCb7T/GRa7ZQBgkfjKnrpaKvgK48BGt2vnWcS+agb4t08zqxXaB8y
-	 mt2zZFET4wQcCJzBcJZQtJaz3WXq3zlfGEgtV+9qj73uLLu/qdyQLs6sY2QXKzVTTD
-	 wgnf/8d43lJRQ==
-Date: Tue, 12 Aug 2025 09:48:05 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Zhang Yi <yi.zhang@huaweicloud.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	linux-ext4 <linux-ext4@vger.kernel.org>,
-	linux-btrfs <linux-btrfs@vger.kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: Ext4 iomap warning during btrfs/136 (yes, it's from btrfs test
- cases)
-Message-ID: <20250812164805.GH7942@frogsfrogsfrogs>
-References: <9b650a52-9672-4604-a765-bb6be55d1e4a@gmx.com>
- <4ef2476f-50c3-424d-927d-100e305e1f8e@gmx.com>
- <20250808121659.GC778805@mit.edu>
- <035ad34e-fb1e-414f-8d3c-839188cfa387@suse.com>
- <c2a00db8-ed34-49bb-8c01-572381451af3@huaweicloud.com>
- <15a4c437-d276-4503-9e30-4d48f5b7a4ff@gmx.com>
- <20250811154935.GD7942@frogsfrogsfrogs>
- <869c9ca6-2799-4ae0-8490-f383d7e0564b@suse.com>
+	s=arc-20240116; t=1755017652; c=relaxed/simple;
+	bh=FMnY8Q5KvNSrxp5A0evPe/gyrxbVf6qxqvIJnxtc2Sg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pJvxQkCffhxxJzwoWY1KVl9mZyhD8Wmp6g4SUmTMRHhlkdsZwp+lMH0eusARpaFk0ozuJeWEypvvrl5JlTKXvhZyPHfM11ED6IGPQUN1T2oU9U7uwO6bMlOZpqiKONNTNuho57xxU78GB/DLCX49mD/PEAH5uZwMpLyfeX838sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KMBnaTl7; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-7430835eae1so40530a34.1;
+        Tue, 12 Aug 2025 09:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755017650; x=1755622450; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=axc3NlzEWDOXd+gEuNTDLEsYjSZ8XkkLcsbwtnhrv6k=;
+        b=KMBnaTl7BzPDeHwZiIJnYijLAX7HgGg1IivZ6gu86eOC1Noq8wZxcuDkbiadjIXqUB
+         gNsU8jWUDf6LkvKOJgoLXPhV5KZGEicrCuZoZ8RBW/8gN8Wpti+tmO1ORt7kBOh6QT96
+         kwNM12m00FxDXLTy4r0aVAIlDss5PspjANjSG279s+qJCp8NR2RYHHVMqesg2ie4X8d9
+         ob37zFGYS/b3awVBzbmJELZqp4pQyPrrc89GLYAEVSP3x9/9O5nce1GaduwByJ7cMVGS
+         VbI8/Qn8ADpvdFPJyHjf+1Z/o2OgKiSSiJyu7eFQtUSrLmOTBxJizGjSGenWNpGcleCd
+         8hZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755017650; x=1755622450;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=axc3NlzEWDOXd+gEuNTDLEsYjSZ8XkkLcsbwtnhrv6k=;
+        b=wST+QSt7YayBAM2KbE/UWNBjblp+pmzyEMAj8CQhiG3+EGPUUEzINIYZvUhwBgBcCw
+         UOTjICMPqr1e0D1jXpCnRCGRyPDEEwOCeKKJmqVdh6PjiQZabNifbm4ZvQ07ur7jD/qE
+         CXvtPMstgIJ+ylHuorfvsvlDoSrrDAxzJMYwzxxlVZQW4Dck16ooyFAqMbyDZpg2kwm+
+         3M9RtzoYXuMIYcPMFSPwhQde8oLWNAXrWim7AmPhABKIvdvQ491geJ1oLpVvMVuB9Dfa
+         0imAHq3z3Qc+b2ERtngnvra84/LeLdYN+ERdIrYbi5RA2cggrwOvO+h4vl7DzRihMthD
+         ydJA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQP4gO1KEMhgNAlupK3+HbOUMCgQtIgxN1mor8pNv1WX3Tfx9/LtCZLL7ww+68JvV8yRrJTy/L6CgMIiom@vger.kernel.org, AJvYcCVMQvhNhdM/4jBtdi3Ev7gkP027SB8Pae6IutlEZuyf8+1hyHD7baosLbu3QaqbWE10SZGSXAjNDOit@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8k9vXneQvLXFSnUq9bv67Vh1w8zSXqeppwynKVFM+vOJAOxzP
+	F3bKrylqI/bLhy5rc95f6yieMUnGfD8z1xD08t7vgTG07qqJjrNtgmTrtFzAbLC0tm8=
+X-Gm-Gg: ASbGnctdiCLlzTD+Z6yVNCGvRIklNHc0LB08jyOuoXWRLH+7x+rrOL4i0vz6uWI4Fv9
+	MZ9tVLqQitbMmPBpu7LIbzjbyo9qhh4MM4OYU2+TPBf6Te0KzND3Go8poSSnWMN4Gbn7wrwaerR
+	Gq2KtAWP3x8Ah2vEcnK0UZC+kMkLHqp38jnVK32/irRkoKkucD7UKeQyEtzJzKs32by7u/31FH9
+	+WcZAwhIitjdrrj26DggOyXe7DKhyKFVjYLzdVrZNcsU9JDTUiEtyDePKLTYYJTL+tG7zZupvaM
+	X/xuN+6z90ls/juxZbCqANuVrlhqwgwrCAZgVCf2MikGfG7m8Jm9o8TZnak0JRESq9G0eLmyfsa
+	TO4HLQQe6nHoIDKMOgjCRPRGy
+X-Google-Smtp-Source: AGHT+IGqIkf2DXnXvaT7WN6+oWH9g364u3Q796J4JQ4J5bg8nShXhozWUpVTuQp+yHgae7i76C6gaA==
+X-Received: by 2002:a05:6830:90e:b0:73e:9fea:f2a5 with SMTP id 46e09a7af769-7437498681emr198546a34.4.1755017650501;
+        Tue, 12 Aug 2025 09:54:10 -0700 (PDT)
+Received: from s-machine2.. ([2806:2f0:5501:d07c:56f9:3b9d:73c4:bab2])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7436f96e0eesm318507a34.33.2025.08.12.09.54.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Aug 2025 09:54:10 -0700 (PDT)
+From: Sergio Perez Gonzalez <sperezglz@gmail.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: Sergio Perez Gonzalez <sperezglz@gmail.com>,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ext4: remove branch to identical code ext4_init_new_dir()
+Date: Tue, 12 Aug 2025 10:53:28 -0600
+Message-ID: <20250812165331.8449-1-sperezglz@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <869c9ca6-2799-4ae0-8490-f383d7e0564b@suse.com>
 
-On Tue, Aug 12, 2025 at 07:44:09AM +0930, Qu Wenruo wrote:
-> 
-> 
-> 在 2025/8/12 01:19, Darrick J. Wong 写道:
-> > On Sun, Aug 10, 2025 at 07:36:48AM +0930, Qu Wenruo wrote:
-> > > 
-> > > 
-> > > 在 2025/8/9 18:39, Zhang Yi 写道:
-> > > > On 2025/8/9 6:11, Qu Wenruo wrote:
-> > > > > 在 2025/8/8 21:46, Theodore Ts'o 写道:
-> > > > > > On Fri, Aug 08, 2025 at 06:20:56PM +0930, Qu Wenruo wrote:
-> > > > > > > 
-> > > > > > > 在 2025/8/8 17:22, Qu Wenruo 写道:
-> > > > > > > > Hi,
-> > > > > > > > 
-> > > > > > > > [BACKGROUND]
-> > > > > > > > Recently I'm testing btrfs with 16KiB block size.
-> > > > > > > > 
-> > > > > > > > Currently btrfs is artificially limiting subpage block size to 4K.
-> > > > > > > > But there is a simple patch to change it to support all block sizes <=
-> > > > > > > > page size in my branch:
-> > > > > > > > 
-> > > > > > > > https://github.com/adam900710/linux/tree/larger_bs_support
-> > > > > > > > 
-> > > > > > > > [IOMAP WARNING]
-> > > > > > > > And I'm running into a very weird kernel warning at btrfs/136, with 16K
-> > > > > > > > block size and 64K page size.
-> > > > > > > > 
-> > > > > > > > The problem is, the problem happens with ext3 (using ext4 modeule) with
-> > > > > > > > 16K block size, and no btrfs is involved yet.
-> > > > > > 
-> > > > > > 
-> > > > > > Thanks for the bug report!  This looks like it's an issue with using
-> > > > > > indirect block-mapped file with a 16k block size.  I tried your
-> > > > > > reproducer using a 1k block size on an x86_64 system, which is how I
-> > > > > > test problem caused by the block size < page size.  It didn't
-> > > > > > reproduce there, so it looks like it really needs a 16k block size.
-> > > > > > 
-> > > > > > Can you say something about what system were you running your testing
-> > > > > > on --- was it an arm64 system, or a powerpc 64 system (the two most
-> > > > > > common systems with page size > 4k)?  (I assume you're not trying to
-> > > > > > do this on an Itanic.  :-)   And was the page size 16k or 64k?
-> > > > > 
-> > > > > The architecture is aarch64, the host board is Rock5B (cheap and fast enough), the test machine is a VM on that board, with ovmf as the UEFI firmware.
-> > > > > 
-> > > > > The kernel is configured to use 64K page size, the *ext3* system is using 16K block size.
-> > > > > 
-> > > > > Currently I tried the following combination with 64K page size and ext3, the result looks like the following
-> > > > > 
-> > > > > - 2K block size
-> > > > > - 4K block size
-> > > > >     All fine
-> > > > > 
-> > > > > - 8K block size
-> > > > > - 16K block size
-> > > > >     All the same kernel warning and never ending fsstress
-> > > > > 
-> > > > > - 32K block size
-> > > > > - 64K block size
-> > > > >     All fine
-> > > > > 
-> > > > > I am surprised as you that, not all subpage block size are having problems, just 2 of the less common combinations failed.
-> > > > > 
-> > > > > And the most common ones (4K, page size) are all fine.
-> > > > > 
-> > > > > Finally, if using ext4 not ext3, all combinations above are fine again.
-> > > > > 
-> > > > > So I ran out of ideas why only 2 block sizes fail here...
-> > > > > 
-> > > > 
-> > > > This issue is caused by an overflow in the calculation of the hole's
-> > > > length on the forth-level depth for non-extent inodes. For a file system
-> > > > with a 4KB block size, the calculation will not overflow. For a 64KB
-> > > > block size, the queried position will not reach the fourth level, so this
-> > > > issue only occur on the filesystem with a 8KB and 16KB block size.
-> > > > 
-> > > > Hi, Wenruo, could you try the following fix?
-> > > > 
-> > > > diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-> > > > index 7de327fa7b1c..d45124318200 100644
-> > > > --- a/fs/ext4/indirect.c
-> > > > +++ b/fs/ext4/indirect.c
-> > > > @@ -539,7 +539,7 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
-> > > >    	int indirect_blks;
-> > > >    	int blocks_to_boundary = 0;
-> > > >    	int depth;
-> > > > -	int count = 0;
-> > > > +	u64 count = 0;
-> > > >    	ext4_fsblk_t first_block = 0;
-> > > > 
-> > > >    	trace_ext4_ind_map_blocks_enter(inode, map->m_lblk, map->m_len, flags);
-> > > > @@ -588,7 +588,7 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
-> > > >    		count++;
-> > > >    		/* Fill in size of a hole we found */
-> > > >    		map->m_pblk = 0;
-> > > > -		map->m_len = min_t(unsigned int, map->m_len, count);
-> > > > +		map->m_len = umin(map->m_len, count);
-> > > >    		goto cleanup;
-> > > >    	}
-> > > 
-> > > It indeed solves the problem.
-> > > 
-> > > Tested-by: Qu Wenruo <wqu@suse.com>
-> > 
-> > Can we get the relevant chunks of this test turned into a tests/ext4/
-> > fstest so that the ext4 developers have a regression test that doesn't
-> > require setting up btrfs, please?
-> 
-> Sure, although I can send out a ext4 specific test case for it, I'm
-> definitely not the best one to explain why the problem happens.
-> 
-> Thus I believe Zhang Yi would be the best one to send the test case.
-> 
-> 
-> 
-> Another thing is, any ext3 run with 16K block size (that's if the system
-> supports it) should trigger it with the existing test cases.
-> 
-> The biggest challenge is to get a system supporting 16k bs (aka page size >=
-> 16K), so it has a high chance that for most people the new test case will
-> mostly be NOTRUN.
+It seems unnecessary to use a branch, in the event of
+error, to the same target label that would execute on
+success.
 
-I'm curious to try out fuse2fs against whatever test gets written, since
-it supports large fsblock sizes.
+Signed-off-by: Sergio Perez Gonzalez <sperezglz@gmail.com>
+---
+ fs/ext4/namei.c | 2 --
+ 1 file changed, 2 deletions(-)
 
---D
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index d83f91b62317..01f379f5fd04 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2984,8 +2984,6 @@ int ext4_init_new_dir(handle_t *handle, struct inode *dir,
+ 		return PTR_ERR(dir_block);
+ 	de = (struct ext4_dir_entry_2 *)dir_block->b_data;
+ 	err = ext4_init_dirblock(handle, inode, dir_block, dir->i_ino, NULL, 0);
+-	if (err)
+-		goto out;
+ out:
+ 	brelse(dir_block);
+ 	return err;
+-- 
+2.43.0
 
-> Thanks,
-> Qu
-> 
-> > 
-> > --D
-> > 
-> > > Thanks,
-> > > Qu
-> > > 
-> > > > Thanks,
-> > > > Yi.
-> > > > 
-> > > 
-> > > 
-> 
-> 
 
