@@ -1,123 +1,155 @@
-Return-Path: <linux-ext4+bounces-9374-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9377-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72545B26A2A
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Aug 2025 16:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88DEEB26B1A
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Aug 2025 17:35:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 434565E7E55
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Aug 2025 14:50:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27C6D564CCD
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Aug 2025 15:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D097C21771A;
-	Thu, 14 Aug 2025 14:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BE422422B;
+	Thu, 14 Aug 2025 15:30:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="WRL+0zRS"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="jTOR52cE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5229212D83
-	for <linux-ext4@vger.kernel.org>; Thu, 14 Aug 2025 14:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34A321B9D6;
+	Thu, 14 Aug 2025 15:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755182971; cv=none; b=DhBIUncgD11HdKWsthXWatSpAHiFkE+asL67+e/wx4skVF9UkWzfryh74TBIR5K+tovqAwUzuD3za5n5WOLuzLaaNsHQn4tsz6mrDfzoVqVcSQYQuqP3wQ9fpRjdU46bCUeOVFBo+7zKMOwKZmn5MML8Xg/04jXaV1wr6orcmSs=
+	t=1755185450; cv=none; b=PhpxBbjIVakEsl81t/Pj6FJr7g4QZBrlfRMizaLeJOXEQnNQ0nguYXUJWEkur83fzvwbDpyHnM+grtG+tWAgpsmM3cVwwxTBP4G94fRbE/AKH11b0nEJ3tKIyU2u60XX7vrvo0I0DFMPbwT5A2WlCYaX7bXhHfc1RIVfCFZ2avc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755182971; c=relaxed/simple;
-	bh=e1V9BgrfW6RyU0+oK0JnO7jkbtdIVoNNVz8oXqpBAdE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ld6kVeWwxWqDuInWMtvdJCkOFUZCK2APhvmMN1zSu20q2E/saEZMCtCV+7awCpZGFlhg6YVpP6eUZApQyPzc7MsfdXGXx7B05qNY4d0SxEgAp4Gg9l8P260ZFQuVswvrXTwj1zb1sf3RhA/pG4bVjViHhmBBqkQNZkwch/6Bq68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=WRL+0zRS; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-113-254.bstnma.fios.verizon.net [173.48.113.254])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 57EEmpgp028603
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Aug 2025 10:48:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1755182934; bh=igsjnNeFFRYJYvTLHCKqhYGxPF7o0ec5Al7arDZAOiQ=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=WRL+0zRSnGh7rzPG49rekKflytLOe7O/nRLB+ahY04kDR1cPUhMGJtJfzuJ2OUHR6
-	 vzHk0S+Ye39QZVncBwMRTw3PsDLu6elSdY9ifa9mmghK934oZLgZKF8JtjvIrCqaQB
-	 dkM4+zD3xZhj6clOF0ZoEtj4TAx3/QN0gdgPB1UMobcXYCK1qf4EIIpuQekRU/wxcR
-	 bjnid33V/G3iWmr7c4l0IkSXa4uZ4OSdGuzSibVteFwmVuUWYh7jpi+CD8lIgZsA4H
-	 6tcVZQZhEEJ6WfKJDGFx6WPP8QScA9cBnwO4jysQB2uCxU8kKcwnhhkScXfaht82iT
-	 v/Axcl4kOTM4g==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id DA9DD2E00E0; Thu, 14 Aug 2025 10:48:48 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        ojaswin@linux.ibm.com, yi.zhang@huawei.com, libaokun1@huawei.com,
-        yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH] ext4: fix hole length calculation overflow in non-extent inodes
-Date: Thu, 14 Aug 2025 10:48:47 -0400
-Message-ID: <175518289076.1126827.12676708912922845605.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250811064532.1788289-1-yi.zhang@huaweicloud.com>
-References: <20250811064532.1788289-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1755185450; c=relaxed/simple;
+	bh=cvTYcOO2SFOCDjwerP1KEOTUieXi4c8bDV0Z2qhr2s4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LCNVFuF9QEbSi1LuTJ12N7FashyRRv7NMAZgqIijJATbUTtgVnwfpXju9RKroLX001/15shT4g1HFz1/vXrqXzq4OxjXts6Br2ozB5rzgdxUgPK8Ux3GZob1A+lGtTub49ZYzQSY0rv2qBnV5OAWeOs5WBN1lbqPMp6MMNjQVVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=jTOR52cE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51789C4CEED;
+	Thu, 14 Aug 2025 15:30:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1755185450;
+	bh=cvTYcOO2SFOCDjwerP1KEOTUieXi4c8bDV0Z2qhr2s4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jTOR52cELhkyDE+NrphwZYdLWf4cfJAMhSsdNkjjGXFVbnh3vqBpW91wVEGUkEYtJ
+	 JRwUwCFEaf4x+OyYrdf0R9Ua1H5/GNFbwLX4h6vwnDEiIka6iFvJzrjB6meClf4B8X
+	 WkXh/Yp7lXXwYtX1kgmHJ7Jz6UEKqS9UWLtHT8Mc=
+Date: Thu, 14 Aug 2025 17:30:46 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, stable@vger.kernel.org,
+	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	hargar@microsoft.com, broonie@kernel.org, achill@achill.org,
+	qemu-devel@nongnu.org,
+	Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Ben Copeland <benjamin.copeland@linaro.org>,
+	LTP List <ltp@lists.linux.it>, chrubis <chrubis@suse.cz>,
+	Petr Vorel <pvorel@suse.cz>, Ian Rogers <irogers@google.com>,
+	linux-perf-users@vger.kernel.org, Joseph Qi <jiangqi903@gmail.com>,
+	Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	Zhang Yi <yi.zhang@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
+	Baokun Li <libaokun1@huawei.com>
+Subject: Re: [PATCH 6.16 000/627] 6.16.1-rc1 review
+Message-ID: <2025081436-upchuck-shush-adba@gregkh>
+References: <20250812173419.303046420@linuxfoundation.org>
+ <CA+G9fYtBnCSa2zkaCn-oZKYz8jz5FZj0HS7DjSfMeamq3AXqNg@mail.gmail.com>
+ <2025081300-frown-sketch-f5bd@gregkh>
+ <CA+G9fYuEb7Y__CVHxZ8VkWGqfA4imWzXsBhPdn05GhOandg0Yw@mail.gmail.com>
+ <2025081311-purifier-reviver-aeb2@gregkh>
+ <42aace87-1b89-4b17-96f1-3efbabc4acf3@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42aace87-1b89-4b17-96f1-3efbabc4acf3@huaweicloud.com>
 
-
-On Mon, 11 Aug 2025 14:45:32 +0800, Zhang Yi wrote:
-> In a filesystem with a block size larger than 4KB, the hole length
-> calculation for a non-extent inode in ext4_ind_map_blocks() can easily
-> exceed INT_MAX. Then it could return a zero length hole and trigger the
-> following waring and infinite in the iomap infrastructure.
+On Thu, Aug 14, 2025 at 09:27:49AM +0800, Zhang Yi wrote:
+> On 2025/8/13 22:53, Greg Kroah-Hartman wrote:
+> > On Wed, Aug 13, 2025 at 08:01:51PM +0530, Naresh Kamboju wrote:
+> >> Hi Greg,
+> >>
+> >>>> 2)
+> >>>>
+> >>>> The following list of LTP syscalls failure noticed on qemu-arm64 with
+> >>>> stable-rc 6.16.1-rc1 with CONFIG_ARM64_64K_PAGES=y build configuration.
+> >>>>
+> >>>> Most failures report ENOSPC (28) or mkswap errors, which may be related
+> >>>> to disk space handling in the 64K page configuration on qemu-arm64.
+> >>>>
+> >>>> The issue is reproducible on multiple runs.
+> >>>>
+> >>>> * qemu-arm64, ltp-syscalls - 64K page size test failures list,
+> >>>>
+> >>>>   - fallocate04
+> >>>>   - fallocate05
+> >>>>   - fdatasync03
+> >>>>   - fsync01
+> >>>>   - fsync04
+> >>>>   - ioctl_fiemap01
+> >>>>   - swapoff01
+> >>>>   - swapoff02
+> >>>>   - swapon01
+> >>>>   - swapon02
+> >>>>   - swapon03
+> >>>>   - sync01
+> >>>>   - sync_file_range02
+> >>>>   - syncfs01
+> >>>>
+> >>>> Reproducibility:
+> >>>>  - 64K config above listed test fails
+> >>>>  - 4K config above listed test pass.
+> >>>>
+> >>>> Regression Analysis:
+> >>>> - New regression? yes
+> >>>
+> >>> Regression from 6.16?  Or just from 6.15.y?
+> >>
+> >> Based on available data, the issue is not present in v6.16 or v6.15.
+> >>
+> >> Anders, bisected this regression and found,
+> >>
+> >>   ext4: correct the reserved credits for extent conversion
+> >>     [ Upstream commit 95ad8ee45cdbc321c135a2db895d48b374ef0f87 ]
+> >>
+> >> Report lore link,
+> >>
+> >> https://lore.kernel.org/stable/CA+G9fYtBnCSa2zkaCn-oZKYz8jz5FZj0HS7DjSfMeamq3AXqNg@mail.gmail.com/
+> > 
+> > Great, and that's also affecting 6.17-rc1 so we are "bug compatible"?
+> > :)
+> > 
 > 
->   ------------[ cut here ]------------
->   WARNING: CPU: 3 PID: 434101 at fs/iomap/iter.c:34 iomap_iter_done+0x148/0x190
->   CPU: 3 UID: 0 PID: 434101 Comm: fsstress Not tainted 6.16.0-rc7+ #128 PREEMPT(voluntary)
->   Hardware name: QEMU KVM Virtual Machine, BIOS unknown 2/2/2022
->   pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->   pc : iomap_iter_done+0x148/0x190
->   lr : iomap_iter+0x174/0x230
->   sp : ffff8000880af740
->   x29: ffff8000880af740 x28: ffff0000db8e6840 x27: 0000000000000000
->   x26: 0000000000000000 x25: ffff8000880af830 x24: 0000004000000000
->   x23: 0000000000000002 x22: 000001bfdbfa8000 x21: ffffa6a41c002e48
->   x20: 0000000000000001 x19: ffff8000880af808 x18: 0000000000000000
->   x17: 0000000000000000 x16: ffffa6a495ee6cd0 x15: 0000000000000000
->   x14: 00000000000003d4 x13: 00000000fa83b2da x12: 0000b236fc95f18c
->   x11: ffffa6a4978b9c08 x10: 0000000000001da0 x9 : ffffa6a41c1a2a44
->   x8 : ffff8000880af5c8 x7 : 0000000001000000 x6 : 0000000000000000
->   x5 : 0000000000000004 x4 : 000001bfdbfa8000 x3 : 0000000000000000
->   x2 : 0000000000000000 x1 : 0000004004030000 x0 : 0000000000000000
->   Call trace:
->    iomap_iter_done+0x148/0x190 (P)
->    iomap_iter+0x174/0x230
->    iomap_fiemap+0x154/0x1d8
->    ext4_fiemap+0x110/0x140 [ext4]
->    do_vfs_ioctl+0x4b8/0xbc0
->    __arm64_sys_ioctl+0x8c/0x120
->    invoke_syscall+0x6c/0x100
->    el0_svc_common.constprop.0+0x48/0xf0
->    do_el0_svc+0x24/0x38
->    el0_svc+0x38/0x120
->    el0t_64_sync_handler+0x10c/0x138
->    el0t_64_sync+0x198/0x1a0
->   ---[ end trace 0000000000000000 ]---
+> Hi,
 > 
-> [...]
+> This issue has already fixed in 6.17-rc1 through this series:
+> 
+> https://lore.kernel.org/linux-ext4/20250707140814.542883-1-yi.zhang@huaweicloud.com/
+> 
+> 
+> To fix this issue in 6.16, it's necessary to backport the whole series
+> instead of just pick 5137d6c8906b ("ext4: fix insufficient credits
+> calculation in ext4_meta_trans_blocks()") and 95ad8ee45cdb {"ext4: correct
+> the reserved credits for extent conversion").  Otherwise, this will make
+> the problem more likely to occur.
 
-Applied, thanks!
+Thanks, I'll just postpone this one for now.
 
-[1/1] ext4: fix hole length calculation overflow in non-extent inodes
-      commit: 02c7f7219ac0e2277b3379a3a0e9841ef464b6d4
-
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+greg k-h
 
