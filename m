@@ -1,127 +1,171 @@
-Return-Path: <linux-ext4+bounces-9366-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9367-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41D4BB252FB
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Aug 2025 20:25:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2B1FB2590C
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Aug 2025 03:30:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E115A7CDA
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Aug 2025 18:25:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1AF29A342B
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Aug 2025 01:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F000B2E5B3B;
-	Wed, 13 Aug 2025 18:24:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mHurdd43"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6768619CCEC;
+	Thu, 14 Aug 2025 01:27:58 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616C02D7381;
-	Wed, 13 Aug 2025 18:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB19189F3F;
+	Thu, 14 Aug 2025 01:27:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755109494; cv=none; b=U2sc25AyXYp2cdvjm3DP1vb5HC8qLirILS/B1fIl723tnb5b5lQmWCNIKSdnSYyt9WFpT8sxnC2idr1UCs+vsvGzcC6AfZX+NjnsTzkB7lbYKrdOuxbWw/z1mUWfpec2L5H2poGbHAo8KYO1PTZGm/RJpFfeame62D+oJvIjA9c=
+	t=1755134878; cv=none; b=RbX7uUmbs1q804UJ+wZ/2ytNttUOddW7mFRDNM8iqh4sHYq3I2l2u4FPT3Kc4KX4J0LFiqyyDMKkWB/YuS6Ljby/b18Y249fNWx5Bll3c9ipSmLDPhSDKEAE8zQK1jczuhL0yHOtuuC0HMAVJkd25GYCQoWDuVFHAD8lGBLs5ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755109494; c=relaxed/simple;
-	bh=rMZI/++Sl83oEviYROVHczJ3NA9sNaqcT1YdK0dP1Q0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bBrMvDmdIrucwHdwIZTglojEZm+QxaycWgGQbnl+qrtb1/IwhRmTeAahlC/tWmnKWD/udgjOBKtx2p3uXhmLTVFF6bXYPzQ2BKZAe83vbkgcYzLGZVxxxa6FAjMe8TrqYeNFHmsx0M4vwVNxjS9ql0CbMzmmiWciFEf41Bmjxz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mHurdd43; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-76e2ea94c7dso244328b3a.2;
-        Wed, 13 Aug 2025 11:24:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755109493; x=1755714293; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lf4c4+X3SHCf0c7CaWo3n9zdv/g/JaUx8MF3KOPrPUg=;
-        b=mHurdd43f+Zo0ijFe8LwYpm1oGVMdzbrPuchfk64Bj8b04ZzkWe7rd1GhgbyrwxgeZ
-         3a3x69dhkJEY5NcqHjo13u+J2zCNnTTud37GkqWsSMFUH0uer1/s1XTUZEVC14pzs9ed
-         ydrpeby0EYDPdttcvuWAIOsajh2AbZv614rCSuzmgXqttKkFwfIS1vd6clyjKw3LxGOU
-         GajgqE6YSMAw3GPiSMQu5uAGugDEKJXOxQ2gmBsCnz6kGAgYkRV6r31Yt63XiKnTwcys
-         5ZYY7EZ51au2To74+DVrqnC/bAAglAOynLZOI2LqbmGNSzVI58aZH14PqZ86a1cj10Ny
-         G4Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755109493; x=1755714293;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lf4c4+X3SHCf0c7CaWo3n9zdv/g/JaUx8MF3KOPrPUg=;
-        b=RGUPirsGSZy/J94c1ucbWn4aLkomoMkyDAbC49Qz3i0EAQR1hroSKjJm+gsBuj54CX
-         faOD1pOs4lIWjhPWPNP1088pRhS4ooslusErYzwnCaOYtswxOqqhOpVkIJkUGllE/3f7
-         C+SqgIct0PThbUDupgyPGcTrpEOrscl9PsZhTBohLwwpIYq/MehXwxKM1HRHsGoRadx9
-         NTrT4JfzPALRrIK2hGbNbi0zFdluS9I4z9qTTLKBf4s/Q/1WE69JCMAsJ8potLXfxt0c
-         XiCmvnM7BbGyf0zMBMh0ttmnX0TvMXBuEO46I7jUNvSzFBPZbIhvJ99kDRh0LaeX8TEy
-         7M0w==
-X-Forwarded-Encrypted: i=1; AJvYcCWIjoOcdSZxwg1qI7QYntXwqtxuwW/wLFobzsJ+lP4v20vX/EnYN/A52lspXiOJiy1iEUzgJ7JOkYpD@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxbt/tfJC4Jqlk7dXD1OUAjAKekZhNICeHUFYCswgXKpLeNHKLF
-	W44kEpF1w7NbnHSKZqqJuPhDJJ8ZqAyzAd/3ryaP/pPFL5RmnPKW0OYi
-X-Gm-Gg: ASbGncvKKvScuhTwAmhkn+75nk4s0zl3erQCD7bNFz4+eWAVVlynag/HPFIu76TQty6
-	/KKe+mPJbCjzE7d/+oibHSaH/0mrnPUyHdYJl2oTOgfybMru+jwsaVF8AQckwzIzaHtqL75ml9C
-	QMRUj1gCJz4fQJ5QrWpTQYz6QLLoeV4Bs87OFf+I8XMg2CGCaTdXwkMWfAXwG34wI+Su+VasSw5
-	SFo5SkCgK1bLtuWz9tU2sQVUkMSrwcihlncRiEVDn7IwuzezfHyp5sHZlyDJQftglkiXngmRRcL
-	jzeatNQzATO7Z/dFS7iJSlWovI17u2im/MoyUeZypjxtgxIny8Xx90G9nLVG834QnWcanJUBZi6
-	KsZomaMBBJ/dZlS8XbACq+gk4eB+czIQ4LRuB1+zP
-X-Google-Smtp-Source: AGHT+IGFPWxg01RMwiGU0dEwChvK6RJmUSmpiGeA5HRM48y193iq5Ghvtn2vXWFMsWE1r5tKYUst2Q==
-X-Received: by 2002:a05:6a20:3ca2:b0:240:11b3:bef3 with SMTP id adf61e73a8af0-240a8b50ffbmr7204349637.38.1755109492421;
-        Wed, 13 Aug 2025 11:24:52 -0700 (PDT)
-Received: from archlinux ([205.254.163.26])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4263836324sm20670472a12.10.2025.08.13.11.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Aug 2025 11:24:52 -0700 (PDT)
-From: Suchit Karunakaran <suchitkarunakaran@gmail.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-kernel-mentees@lists.linux.dev,
-	skhan@linuxfoundation.org,
-	Suchit Karunakaran <suchitkarunakaran@gmail.com>
-Subject: [PATCH RESEND] fs/ext4: remove unused variable 'de' in ext4_init_new_dir()
-Date: Wed, 13 Aug 2025 23:54:40 +0530
-Message-ID: <20250813182440.17581-1-suchitkarunakaran@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1755134878; c=relaxed/simple;
+	bh=HYvlknKOx1rKjvQkyNkvqhaEdoRV/o3tuBi9L0Uo+rg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pWlRcGlWOKUMSZpr2OlkiaN/SozXDS5YGW7NCY7hiekzWfl8MY8jgXbtEIU0CJb3IoZhFdp3X5iXYDIn/Db8oRS1SnvcyE3sUQbF4TJKpIgfEk5cgwxUOyuSpw7jgzNS7sTH/iA4BU5aSahfD0OGUcJXuO05GSXr9OjiNw/IAUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c2SKl5B90zYQv10;
+	Thu, 14 Aug 2025 09:27:55 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 5084F1A12D9;
+	Thu, 14 Aug 2025 09:27:54 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgAHgxOVO51oPzBtDg--.8664S3;
+	Thu, 14 Aug 2025 09:27:52 +0800 (CST)
+Message-ID: <42aace87-1b89-4b17-96f1-3efbabc4acf3@huaweicloud.com>
+Date: Thu, 14 Aug 2025 09:27:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.16 000/627] 6.16.1-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+ linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+ akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+ patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+ jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+ srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+ hargar@microsoft.com, broonie@kernel.org, achill@achill.org,
+ qemu-devel@nongnu.org, =?UTF-8?Q?Alex_Benn=C3=A9e?=
+ <alex.bennee@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ Anders Roxell <anders.roxell@linaro.org>,
+ Ben Copeland <benjamin.copeland@linaro.org>, LTP List <ltp@lists.linux.it>,
+ chrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>,
+ Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org,
+ Joseph Qi <jiangqi903@gmail.com>, Jan Kara <jack@suse.cz>,
+ linux-fsdevel@vger.kernel.org, linux-ext4 <linux-ext4@vger.kernel.org>,
+ Zhang Yi <yi.zhang@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
+ Baokun Li <libaokun1@huawei.com>
+References: <20250812173419.303046420@linuxfoundation.org>
+ <CA+G9fYtBnCSa2zkaCn-oZKYz8jz5FZj0HS7DjSfMeamq3AXqNg@mail.gmail.com>
+ <2025081300-frown-sketch-f5bd@gregkh>
+ <CA+G9fYuEb7Y__CVHxZ8VkWGqfA4imWzXsBhPdn05GhOandg0Yw@mail.gmail.com>
+ <2025081311-purifier-reviver-aeb2@gregkh>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <2025081311-purifier-reviver-aeb2@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgAHgxOVO51oPzBtDg--.8664S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF1fAFW7tF4UtrWrWr1DGFg_yoW8Zw4xpF
+	WrCF98tr45X345ArsFvw4IgFyUtrZ8Krn5Wr1rtw17C39IkryDZF4SgF1Y9F97Jr4DCFyr
+	ZrsFv3sIyryDAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
+	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+	j6a0PUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-The variable 'de' was declared but never used in the ext4_init_new_dir()
-function, causing a compiler warning:
-variable 'de' set but not used [-Werror=unused-but-set-variable]
-Remove the unused declaration to clean up the code and fix the warning.
+On 2025/8/13 22:53, Greg Kroah-Hartman wrote:
+> On Wed, Aug 13, 2025 at 08:01:51PM +0530, Naresh Kamboju wrote:
+>> Hi Greg,
+>>
+>>>> 2)
+>>>>
+>>>> The following list of LTP syscalls failure noticed on qemu-arm64 with
+>>>> stable-rc 6.16.1-rc1 with CONFIG_ARM64_64K_PAGES=y build configuration.
+>>>>
+>>>> Most failures report ENOSPC (28) or mkswap errors, which may be related
+>>>> to disk space handling in the 64K page configuration on qemu-arm64.
+>>>>
+>>>> The issue is reproducible on multiple runs.
+>>>>
+>>>> * qemu-arm64, ltp-syscalls - 64K page size test failures list,
+>>>>
+>>>>   - fallocate04
+>>>>   - fallocate05
+>>>>   - fdatasync03
+>>>>   - fsync01
+>>>>   - fsync04
+>>>>   - ioctl_fiemap01
+>>>>   - swapoff01
+>>>>   - swapoff02
+>>>>   - swapon01
+>>>>   - swapon02
+>>>>   - swapon03
+>>>>   - sync01
+>>>>   - sync_file_range02
+>>>>   - syncfs01
+>>>>
+>>>> Reproducibility:
+>>>>  - 64K config above listed test fails
+>>>>  - 4K config above listed test pass.
+>>>>
+>>>> Regression Analysis:
+>>>> - New regression? yes
+>>>
+>>> Regression from 6.16?  Or just from 6.15.y?
+>>
+>> Based on available data, the issue is not present in v6.16 or v6.15.
+>>
+>> Anders, bisected this regression and found,
+>>
+>>   ext4: correct the reserved credits for extent conversion
+>>     [ Upstream commit 95ad8ee45cdbc321c135a2db895d48b374ef0f87 ]
+>>
+>> Report lore link,
+>>
+>> https://lore.kernel.org/stable/CA+G9fYtBnCSa2zkaCn-oZKYz8jz5FZj0HS7DjSfMeamq3AXqNg@mail.gmail.com/
+> 
+> Great, and that's also affecting 6.17-rc1 so we are "bug compatible"?
+> :)
+> 
 
-Signed-off-by: Suchit Karunakaran <suchitkarunakaran@gmail.com>
----
- fs/ext4/namei.c | 2 --
- 1 file changed, 2 deletions(-)
+Hi,
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index d83f91b62317..bb2370829928 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2965,7 +2965,6 @@ int ext4_init_new_dir(handle_t *handle, struct inode *dir,
- 			     struct inode *inode)
- {
- 	struct buffer_head *dir_block = NULL;
--	struct ext4_dir_entry_2 *de;
- 	ext4_lblk_t block = 0;
- 	int err;
- 
-@@ -2982,7 +2981,6 @@ int ext4_init_new_dir(handle_t *handle, struct inode *dir,
- 	dir_block = ext4_append(handle, inode, &block);
- 	if (IS_ERR(dir_block))
- 		return PTR_ERR(dir_block);
--	de = (struct ext4_dir_entry_2 *)dir_block->b_data;
- 	err = ext4_init_dirblock(handle, inode, dir_block, dir->i_ino, NULL, 0);
- 	if (err)
- 		goto out;
--- 
-2.50.1
+This issue has already fixed in 6.17-rc1 through this series:
+
+https://lore.kernel.org/linux-ext4/20250707140814.542883-1-yi.zhang@huaweicloud.com/
+
+
+To fix this issue in 6.16, it's necessary to backport the whole series
+instead of just pick 5137d6c8906b ("ext4: fix insufficient credits
+calculation in ext4_meta_trans_blocks()") and 95ad8ee45cdb {"ext4: correct
+the reserved credits for extent conversion").  Otherwise, this will make
+the problem more likely to occur.
+
+Thanks,
+Yi.
 
 
