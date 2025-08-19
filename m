@@ -1,118 +1,196 @@
-Return-Path: <linux-ext4+bounces-9396-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9397-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8EB1B2CA6A
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Aug 2025 19:21:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08656B2CE43
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Aug 2025 22:48:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BAB104E2E8A
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Aug 2025 17:21:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 653665A1717
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Aug 2025 20:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 857353002DB;
-	Tue, 19 Aug 2025 17:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495C8343216;
+	Tue, 19 Aug 2025 20:48:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sflB6Bub"
+	dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b="Y7CvcekA"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF7852FF673;
-	Tue, 19 Aug 2025 17:21:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E0E3431F8;
+	Tue, 19 Aug 2025 20:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755624106; cv=none; b=X0lNsvOLa4fqQAAounssL5YCyKrq2aEGsoxELqAwoco2V/VpzhQ0vtqWXkR9HeSXMBA4X2orWu1L5JDVY4maOYq2q6cEKoI1167fYJenVpvDezS64GCXnrBW6fA48zVZu3GwLq04r46AsNQAFzN85rPj1iSTV1pbS4QGgVPw0EM=
+	t=1755636495; cv=none; b=ndmBljaIZz0oPvHomTUPo+fs1YlqE2wb6NW+sVyU4vulk+CzNyW609RxZ0euBxMt7IRXzVAgmWVqUwgc4jJ12wvo96lPK0OZfeGpVVRyJsWkK7DJw2iJHN6BB2rD2xXjDU8olXZmlGcs7IzYEwkNfZFrNg5HEWLebeT/42p1gv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755624106; c=relaxed/simple;
-	bh=SDWSd9eDIVaOgvKOAno67JrZJi9jJ5T+MPV9EI76C2w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bVfl1i5XO17Jiph/HDvUA3ddpYLYaQ5rpk0D9cCfvNL8oEuWKjO2pB5LG23O/hpoRumIIYajFfTfy6akNYxDPJ74B01E503hQasropjyJqPnoC8OOfPGqKFaNzoJ4Lyi7XW+UjIL57Oh5uPRnaEojmqlEEQAEE9CWkKz5UsvhF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sflB6Bub; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=lgCY7eZ6MuSdBzowaVX9lsgvvatMY7ZW2gqbJ3qeJk8=; b=sflB6BubXc0WPqipoahes9+PDs
-	HlZsvbvGnqVsMDR+diQOEZfV103qynUzZ8dmIymyfsbfPXI1ZzaNOHhl66hLfF4bgWzZXLSjhO2QH
-	7YipIRtIKnlxsNXSCe/+3bYkkeLncnhQDboABQoCLvYum1SfGorN4abXB4qR0GFhqPAwRGvhhQ3al
-	g8kAgyw5lLC7IdTglsjW4ohLd18CEPDG9J/ifDRR+Bt2J+uF7D//MaiFT0ZGmL6q/xOpX3722ayI1
-	bsYCe6KZ+R0O26EMoPZ7yLDhlgPG9fFmAyukD6KRnnT8R62izEzHGBjGsRuhjrfN2z6w2ZokgOQYN
-	f52Pbe0Q==;
-Received: from [50.53.25.54] (helo=[192.168.254.17])
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uoQ1o-0000000B5jT-0ESe;
-	Tue, 19 Aug 2025 17:21:44 +0000
-Message-ID: <3fb70bd5-76a6-4099-90d4-2cbee7f47475@infradead.org>
-Date: Tue, 19 Aug 2025 10:21:43 -0700
+	s=arc-20240116; t=1755636495; c=relaxed/simple;
+	bh=XsXedyb+e0/0ymR+mDGL9+ZLIljFU7NhmtueqTDLaVY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=V6Kw34Q4XPnvyc/zIcAUVJwpg87ISRUOzmMmK2IAJTSaL6QUolVOxLboRcutIIwZD2KSdVxeiH/aA+oy8Cy6eJxDeO0gv87p8Or0qbr0leuTVpjixAycqJXLeaQFEDFs9EcOE7RF6Dc2jB9k9MWevVMwbUnihXf58TT6S0dIxB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu; spf=pass smtp.mailfrom=heusel.eu; dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b=Y7CvcekA; arc=none smtp.client-ip=212.227.126.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=heusel.eu;
+	s=s1-ionos; t=1755636453; x=1756241253; i=christian@heusel.eu;
+	bh=/Wr44AgFXoaYBlyvs6YRu/M5zut+USayl6NmpH4xK7s=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:
+	 MIME-Version:Content-Type:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=Y7CvcekAlH5n0MGNJzDNuRXUOyA8sH9R5b3L41u4WHsof8MONhvdzk/Z3Rwudrni
+	 dNMeLUXF4GRlg6buJz2IxmXB7K0FgbDMN7vqyPbHt22I8sfbAQ8cHjTfc88IjblzX
+	 +E7BeG9WtDBoXIPpsHK6S2Jv12RWem4Qij+jMJww5FAr8fNwJ1nRxrZkYfH94/BST
+	 76tEsMyazfuVBOOlKnDtUoj+fhzpGkymJITxGGtWn0FimekoqX06HzZnurFfpUsU2
+	 OXi8bFfABhbP3BDCvTbyL8asV/X3eR2NfRwHz5BNTMJciVOgIvngX95S+ZD/fcQQt
+	 Fk5xYLNm7X/cYJ/XTw==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost ([89.244.90.62]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N3sZs-1uNpZN0wCG-01245y; Tue, 19 Aug 2025 22:47:33 +0200
+Date: Tue, 19 Aug 2025 22:47:30 +0200
+From: Christian Heusel <christian@heusel.eu>
+To: Zhang Yi <yi.zhang@huawei.com>, Sasha Levin <sashal@kernel.org>, 
+	Theodore Ts'o <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	regressions@lists.linux.dev, stable@vger.kernel.org, heftig@archlinux.org, 
+	Luca Boccassi <bluca@debian.org>
+Subject: [REGRESSION][STABLE] ext4: too many credits wanted / file system
+ issue in v6.16.1
+Message-ID: <3d7f77d2-b1f8-4d49-b36a-927a943efc2f@heusel.eu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] docs: fix spelling and grammar in atomic_writes
-To: Mallikarjun Thammanavar <mallikarjunst09@gmail.com>, tytso@mit.edu
-Cc: adilger.kernel@dilger.ca, corbet@lwn.net, linux-ext4@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250819124604.8995-1-mallikarjunst09@gmail.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20250819124604.8995-1-mallikarjunst09@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5ggdsov66otjwqq3"
+Content-Disposition: inline
+X-Provags-ID: V03:K1:Uw7gUbrUQjWaal6EjkNl1HPn2esgkeMvDfBkwkrNWrTt++PozPA
+ KTW10OrXJs63BG43uVaEHcrqAVlJAHBWRVWfR4e9H22mh8WebiPwiCrl9z+YKzGu1HkDIEm
+ /Yk4kWUSQslC9S+W2Thczjlmsw4X5zHHLw0Wds9SyEgT/2vTqLdc53lzl7q5yXfp+zwXluH
+ ++SDeIJ/3Ce0aOe8GI7yw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:MmtXFU/+tGk=;AsxyEngQwZZlXbykvWvvvlF8luH
+ +fQBPSedR+pvNm/6e2CuFWjhG8qbjQDkFAk5HJVrD/14+lT6oXtlfmjGOKACzwCjSOjvuE4g3
+ Woc7HzKG1AvgmuGbpacv+ESeArmdI7zgxpU0cUH/meB9geepWm7wzhKgmFsN1HOogDl/0mXAi
+ Ho7WIAMyMF5rrNkasziXsZrbrXnXzqPxUqet1BNFWm8x6lETfN9L9HHw5NrKVcFTEiwbOtztK
+ t/QMYJWqvicCAmiGWXPHTbXpz4g9OXz5EJthyyMRMPE2TO9gY7MO7kcNIa5Qc7rEa3jaQ3HBp
+ z4/ZyCRTCpzvbM1aZgTDOqvy0xG9d94kIC4679ulzVQVdI5NN7MwQpkB9E1hNxrLMqVRUr5dP
+ iuPvzA2jCEtaMnT6fu59o87wgSyIOLpr02V3MoYdgo8Uut64sMmyv6BtcB+N1t0TPTwRM0KUJ
+ xj9tkY5SvhRcxKNF0v7yj+rrkR2mDxrVLZcNE2qAPpwsGX6WEgPT8bcJ+V/ZRvyvFZPYrgl/f
+ bLfeP55Rnfe0fq7aDI+Dhi31xBGJ5riQ+HR4zCNDWtzbbDmMnmB5lLR9ymOqYTKp/HqYIwwKV
+ OX8IOqcrSPXErcSkwkgH+taIVdUX7MX1D9OI9oe2TDH6jYlOx9q5PF7mIH/k/AERNpLjXxnaA
+ nx9gUs/E7miu8/D3Gd2gfxJnZg/734T65qgqGNeLnhQC0m4RR0Uo1Dt7DYOPy+jCI424dfgr/
+ +TswUMOUziAhP/mK6OtBTriQ8krzjMAuSC4rSDEiEXFqlkjJNzd6GWYDIwuib4iuz4OscNQTr
+ eHsbWBvBhaikb21+eEcy77qvyuN5Ey8Vy1pbIsh2iwAkNJ3xAn6qif3anYTcNWS8R2lnxK5o3
+ Jt2YnvdGn5qtFGLQjJZHlSYyyk4eSGuIUsnWVeuQma8O1oYOnWdhIPg9wso6yeFZZVYDpka8w
+ fXQEb0x3rMnvlT1kKlXs4gsxfJjJFqr/cfEANKoItoRfuJQVv7/7/Y81jDdLL3Z5kYAPf6I0D
+ M1HCDilr4roeXiVnP8YgPhVH1KUayPPfClLVg5/LCdqYXi9g7rgIRM5ijmt+RspGvJ+0NyX1r
+ z94mHNYi06NggNzaTh+/gcPEW0RvigdVM6jAALswrsD8OfsV3VpvB02j8k5+J3+1/NEOO3QX4
+ QLlWTfALZ7YFNVrfXQXeqWjUIXGsdPLG2WH3Q/BJ72ouWJEpoUptB7eMHxM9ZRIQplVCwMeS3
+ HLQaKlavJ1c5TDL+aEwo/6tnC/+nz8Yp5128n3B2Rhc7zfHN4VubpjQ0xzCuXyM3/TuZL7Hws
+ l8T/GQY8L7FkOJHgXxQsimmZvb2uZUwGLNHA2aZhc1PK0lARkfuxCHq9j++2kCZ2I6DBBQwu+
+ IuRMUjG57ZupBoYSa6FddLEvclmeWwvVDqtIGf/JQ7crrB2FMSwomcnmFnuWh5cdF9xQpWEHL
+ ZY9V2VNiAqqIlZMXajZmCE0N2QXeWEy1XGDsfaTpCibFRTvQyMXJ+KOHmfonupm0uKxltsydr
+ PhhAzUxCXVoTaobW38yZc7QXiWgFYpEZUQBr2w9bmESOIoXNyUui2ge1UhsUhM3hT/idSF159
+ 6RhjofjATyDtxK2bHk3f8hWBq43q4Xh1n+ur0Noq6/P2z9zwaXMDawO4vWDmVzzsK7SUHyjwO
+ ktvC+dmFeOaVehcMbAJzXr
 
 
+--5ggdsov66otjwqq3
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: [REGRESSION][STABLE] ext4: too many credits wanted / file system
+ issue in v6.16.1
+MIME-Version: 1.0
 
-On 8/19/25 5:46 AM, Mallikarjun Thammanavar wrote:
-> Fix minor spelling and grammatical issues in the ext4 atomic_writes
-> documentation.
-> 
-> Signed-off-by: Mallikarjun Thammanavar <mallikarjunst09@gmail.com>
+Hello everyone,
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+the systemd CI has [recently noticed][0] an issue within the ext4 file
+system after the Arch Linux kernel was upgraded to 6.16.1. The issue is
+exclusive to the stable tree and does not occur on 6.16 and not on
+6.17-rc2. I have also tested 6.16.2-rc1 and it still contains the bug.
 
-Thanks.
+I was able to bisect the issue between 6.16 and 6.16.1 to the following
+commit:
 
-> ---
->  Documentation/filesystems/ext4/atomic_writes.rst | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/ext4/atomic_writes.rst b/Documentation/filesystems/ext4/atomic_writes.rst
-> index f65767df3620..b614b5ffe76b 100644
-> --- a/Documentation/filesystems/ext4/atomic_writes.rst
-> +++ b/Documentation/filesystems/ext4/atomic_writes.rst
-> @@ -14,7 +14,7 @@ I/O) on regular files with extents, provided the underlying storage device
->  supports hardware atomic writes. This is supported in the following two ways:
->  
->  1. **Single-fsblock Atomic Writes**:
-> -   EXT4's supports atomic write operations with a single filesystem block since
-> +   EXT4 supports atomic write operations with a single filesystem block since
->     v6.13. In this the atomic write unit minimum and maximum sizes are both set
->     to filesystem blocksize.
->     e.g. doing atomic write of 16KB with 16KB filesystem blocksize on 64KB
-> @@ -50,7 +50,7 @@ Multi-fsblock Implementation Details
->  
->  The bigalloc feature changes ext4 to allocate in units of multiple filesystem
->  blocks, also known as clusters. With bigalloc each bit within block bitmap
-> -represents cluster (power of 2 number of blocks) rather than individual
-> +represents a cluster (power of 2 number of blocks) rather than individual
->  filesystem blocks.
->  EXT4 supports multi-fsblock atomic writes with bigalloc, subject to the
->  following constraints. The minimum atomic write size is the larger of the fs
-> @@ -189,7 +189,7 @@ The write must be aligned to the filesystem's block size and not exceed the
->  filesystem's maximum atomic write unit size.
->  See ``generic_atomic_write_valid()`` for more details.
->  
-> -``statx()`` system call with ``STATX_WRITE_ATOMIC`` flag can provides following
-> +``statx()`` system call with ``STATX_WRITE_ATOMIC`` flag can provide following
->  details:
->  
->   * ``stx_atomic_write_unit_min``: Minimum size of an atomic write request.
+    b9c561f3f29c2 ("ext4: fix insufficient credits calculation in ext4_meta_trans_blocks()")
 
--- 
-~Randy
+The issue can be reproduced by running the tests from
+[TEST-58-REPART.sh][1] by running the [systemd integration tests][2].
+But if there are any suggestions I can also test myself as the initial
+setup for the integration tests is a bit involved.
+
+It is not yet clear to me whether this has real-world impact besides the
+test, but the systemd devs said that it's not a particularily demanding
+workflow, so I guess it is expected to work and could cause issues on
+other systems too.
+
+Also does anybody have an idea which backport could be missing?
+
+Cheers,
+Chris
+
+[0]: https://github.com/systemd/systemd/actions/runs/17053272497/job/48345703316#step:14:233
+[1]: https://github.com/systemd/systemd/blob/main/test/units/TEST-58-REPART.sh
+[2]: https://github.com/systemd/systemd/blob/main/test/integration-tests/README.md
+
+---
+
+#regzbot introduced: b9c561f3f29c2
+#regzbot title: [STABLE] ext4: too many credits wanted / file system issue in v6.16.1
+#regzbot link: https://github.com/systemd/systemd/actions/runs/17053272497/job/48345703316#step:14:233
+
+---
+
+git bisect start
+# status: waiting for both good and bad commits
+# good: [038d61fd642278bab63ee8ef722c50d10ab01e8f] Linux 6.16
+git bisect good 038d61fd642278bab63ee8ef722c50d10ab01e8f
+# status: waiting for bad commit, 1 good commit known
+# bad: [3e0969c9a8c57ff3c6139c084673ebedfc1cf14f] Linux 6.16.1
+git bisect bad 3e0969c9a8c57ff3c6139c084673ebedfc1cf14f
+# good: [288f1562e3f6af6d9b461eba49e75c84afa1b92c] media: v4l2-ctrls: Fix H264 SEPARATE_COLOUR_PLANE check
+git bisect good 288f1562e3f6af6d9b461eba49e75c84afa1b92c
+# bad: [f427460a1586c2e0865f9326b71ed6e5a0f404f2] f2fs: turn off one_time when forcibly set to foreground GC
+git bisect bad f427460a1586c2e0865f9326b71ed6e5a0f404f2
+# bad: [5f57327f41a5bbb85ea382bc389126dd7b8f2d7b] scsi: elx: efct: Fix dma_unmap_sg() nents value
+git bisect bad 5f57327f41a5bbb85ea382bc389126dd7b8f2d7b
+# good: [9143c604415328d5dcd4d37b8adab8417afcdd21] leds: pca955x: Avoid potential overflow when filling default_label (take 2)
+git bisect good 9143c604415328d5dcd4d37b8adab8417afcdd21
+# good: [9c4f20b7ac700e4b4377f85e36165a4f6ca85995] RDMA/hns: Fix accessing uninitialized resources
+git bisect good 9c4f20b7ac700e4b4377f85e36165a4f6ca85995
+# good: [0b21d1962bec2e660c22c4c4231430f97163dcf8] perf tests bp_account: Fix leaked file descriptor
+git bisect good 0b21d1962bec2e660c22c4c4231430f97163dcf8
+# good: [3dbe96d5481acd40d6090f174d2be8433d88716d] clk: thead: th1520-ap: Correctly refer the parent of osc_12m
+git bisect good 3dbe96d5481acd40d6090f174d2be8433d88716d
+# bad: [c6714f30ef88096a8da9fcafb6034dc4e9aa467d] clk: sunxi-ng: v3s: Fix de clock definition
+git bisect bad c6714f30ef88096a8da9fcafb6034dc4e9aa467d
+# bad: [b9c561f3f29c2d6e1c1d3ffc202910bef250b7d8] ext4: fix insufficient credits calculation in ext4_meta_trans_blocks()
+git bisect bad b9c561f3f29c2d6e1c1d3ffc202910bef250b7d8
+# first bad commit: [b9c561f3f29c2d6e1c1d3ffc202910bef250b7d8] ext4: fix insufficient credits calculation in ext4_meta_trans_blocks()
+
+--5ggdsov66otjwqq3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEb3ea3iR6a4oPcswTwEfU8yi1JYUFAmik4uIACgkQwEfU8yi1
+JYXsfw/+LeRYCYO/JU/3jmVbTwwTFJPSblF7NedBQTMkouUQcQqjYIZPUHw4Y9co
+dI94iPBhTd4zoWKTXQU40GkeV5wHrNO+PJSUFTTLXhjtFdPDosX9CLVSYNOAf4Hg
+/bI9hqjOtzSXyHme+sa4hczPuqWBgK8FNtpHp41f3epeCftWE5EV9Hfa4Gu8gD8+
+6pgewpn04k1FnOW+27eH+wDmclGiGLohY1qk6lI0ljTntshRpk8T2vGbCxv6KWLc
+M4qDlQ3k6KJgifGFiOjNaOScxhmlE0f2zUxQB6jDlbR1uiO1baThuxs2FHtAQOZL
+ANg6H5IgJRkiOk4rAE7N5AA3oMi7EMkMh3zo8a5E08x8adZFM5S7jPttSAnyqib2
+M4voJh6yDMj4fNSyNQkwtmDg9RkQeBY4bXN9eYpHK3fTuS8D7CfRegDPrGxCI3Jf
+WQKGWyUipo+IYG9nmei9jsGqIg7lh2qzsH9jPuip+PeOVIrdjzvHbgUvOZKWbUuL
+h1Sj4R+4H9PkUdv8/TEUMEeriew+MtfPb0Bd4PIT8RAMo42tjsBBGj0lUMzfw3bp
+6uCfjOVo/IsCvdk0msdxzpOYbUTHk4VZRWOhU9fpcW03PINaRNGBzt9d/WDSssab
+PvImIYOOQoJJFjSI+Jw8vVxK3d9TnZRW6r496U7UK64dNr0fG3k=
+=2G9b
+-----END PGP SIGNATURE-----
+
+--5ggdsov66otjwqq3--
 
