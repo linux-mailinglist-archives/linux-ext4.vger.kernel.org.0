@@ -1,75 +1,81 @@
-Return-Path: <linux-ext4+bounces-9395-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9396-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56DA0B2C77E
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Aug 2025 16:51:15 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8EB1B2CA6A
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Aug 2025 19:21:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95054170CB3
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Aug 2025 14:49:04 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BAB104E2E8A
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Aug 2025 17:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501F827B328;
-	Tue, 19 Aug 2025 14:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 857353002DB;
+	Tue, 19 Aug 2025 17:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k04Ck/8Q"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sflB6Bub"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE3920299E;
-	Tue, 19 Aug 2025 14:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF7852FF673;
+	Tue, 19 Aug 2025 17:21:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755614938; cv=none; b=jStFfSGd0YDbx1TAUn3nV/nqFFTJ3PnFx6XmQHBEOg35Op9161iHE+TLt8ope/PYxtbcGKWDzuC7axpAPbf2/LKLN/6jMhLbstddanVya9fp4kR1hijPT0mg1LjKYp3pjHpEs5bD7sha1l4uMYUT0jE66HLNb/ern226O0gBDuA=
+	t=1755624106; cv=none; b=X0lNsvOLa4fqQAAounssL5YCyKrq2aEGsoxELqAwoco2V/VpzhQ0vtqWXkR9HeSXMBA4X2orWu1L5JDVY4maOYq2q6cEKoI1167fYJenVpvDezS64GCXnrBW6fA48zVZu3GwLq04r46AsNQAFzN85rPj1iSTV1pbS4QGgVPw0EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755614938; c=relaxed/simple;
-	bh=H58fj0I4jkJlHc1hDy1CZKSXx0spVc4T64PEGNgAkqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gF/CIKSpHXHERlU8RZ/kw9YMwmN8MAi6gVP3PcG9rqb/SK2L3W6a8HyYJfqCz+/o92wQd11RO9HvcMTJznilie6AIi5vl52ZTUHXT70/tCj2AWub4DslWPmB/uEIq8UHu4TxNBluBCYYjS3XmlD6h8U3YEfbslGc1mKxc+jIvO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k04Ck/8Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62EE3C4CEF1;
-	Tue, 19 Aug 2025 14:48:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755614937;
-	bh=H58fj0I4jkJlHc1hDy1CZKSXx0spVc4T64PEGNgAkqw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k04Ck/8QpSDp835pbZNEz5/PhrvQO6Z8lowWexOiAGI72Zz5hNn3aijoLlAeHu8Yh
-	 yJdJovRzSs6s+Gu0UGO4+B9klCeBj87fHXtydqC9bfszENJmaig5zBvLjVGZWh6D1V
-	 2zeX0FF7Gwik5AUw1gbQ2FT63tFTuP71M0pOnfjQGwrUnMKrzejqzgE+2/LnstPTqw
-	 HDXOHmFObMFr4r01Rt0J/gSMeKI6H/07sVoCaIJC78ko9cI9d3SqlWIwt6aXJcmBVo
-	 enllQ1zwxGnqyxhYGWj8OYPkqkpgGGO8J2dLuJV7VxtELjuJjHprzYbECQm6eANHbU
-	 0MrT5/glfylDw==
-Date: Tue, 19 Aug 2025 07:48:56 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Mallikarjun Thammanavar <mallikarjunst09@gmail.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, corbet@lwn.net,
-	linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: fix spelling and grammar in atomic_writes
-Message-ID: <20250819144856.GI7938@frogsfrogsfrogs>
-References: <20250819124604.8995-1-mallikarjunst09@gmail.com>
+	s=arc-20240116; t=1755624106; c=relaxed/simple;
+	bh=SDWSd9eDIVaOgvKOAno67JrZJi9jJ5T+MPV9EI76C2w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bVfl1i5XO17Jiph/HDvUA3ddpYLYaQ5rpk0D9cCfvNL8oEuWKjO2pB5LG23O/hpoRumIIYajFfTfy6akNYxDPJ74B01E503hQasropjyJqPnoC8OOfPGqKFaNzoJ4Lyi7XW+UjIL57Oh5uPRnaEojmqlEEQAEE9CWkKz5UsvhF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sflB6Bub; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=lgCY7eZ6MuSdBzowaVX9lsgvvatMY7ZW2gqbJ3qeJk8=; b=sflB6BubXc0WPqipoahes9+PDs
+	HlZsvbvGnqVsMDR+diQOEZfV103qynUzZ8dmIymyfsbfPXI1ZzaNOHhl66hLfF4bgWzZXLSjhO2QH
+	7YipIRtIKnlxsNXSCe/+3bYkkeLncnhQDboABQoCLvYum1SfGorN4abXB4qR0GFhqPAwRGvhhQ3al
+	g8kAgyw5lLC7IdTglsjW4ohLd18CEPDG9J/ifDRR+Bt2J+uF7D//MaiFT0ZGmL6q/xOpX3722ayI1
+	bsYCe6KZ+R0O26EMoPZ7yLDhlgPG9fFmAyukD6KRnnT8R62izEzHGBjGsRuhjrfN2z6w2ZokgOQYN
+	f52Pbe0Q==;
+Received: from [50.53.25.54] (helo=[192.168.254.17])
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uoQ1o-0000000B5jT-0ESe;
+	Tue, 19 Aug 2025 17:21:44 +0000
+Message-ID: <3fb70bd5-76a6-4099-90d4-2cbee7f47475@infradead.org>
+Date: Tue, 19 Aug 2025 10:21:43 -0700
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs: fix spelling and grammar in atomic_writes
+To: Mallikarjun Thammanavar <mallikarjunst09@gmail.com>, tytso@mit.edu
+Cc: adilger.kernel@dilger.ca, corbet@lwn.net, linux-ext4@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250819124604.8995-1-mallikarjunst09@gmail.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
 In-Reply-To: <20250819124604.8995-1-mallikarjunst09@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Aug 19, 2025 at 12:46:04PM +0000, Mallikarjun Thammanavar wrote:
+
+
+On 8/19/25 5:46 AM, Mallikarjun Thammanavar wrote:
 > Fix minor spelling and grammatical issues in the ext4 atomic_writes
 > documentation.
 > 
 > Signed-off-by: Mallikarjun Thammanavar <mallikarjunst09@gmail.com>
 
-Much improved, thanks!
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
---D
+Thanks.
 
 > ---
 >  Documentation/filesystems/ext4/atomic_writes.rst | 6 +++---
@@ -106,8 +112,7 @@ Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 >  details:
 >  
 >   * ``stx_atomic_write_unit_min``: Minimum size of an atomic write request.
-> -- 
-> 2.43.0
-> 
-> 
+
+-- 
+~Randy
 
