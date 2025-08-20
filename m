@@ -1,53 +1,52 @@
-Return-Path: <linux-ext4+bounces-9410-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9411-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C225B2E8F1
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 01:43:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 498CFB2E8FB
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 01:44:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 130625E64A0
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Aug 2025 23:43:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B14B67BA3D7
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Aug 2025 23:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7FA2E0B48;
-	Wed, 20 Aug 2025 23:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C502E228A;
+	Wed, 20 Aug 2025 23:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BabWfOfB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VI6FHpG3"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700052DCF56
-	for <linux-ext4@vger.kernel.org>; Wed, 20 Aug 2025 23:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA532765E3
+	for <linux-ext4@vger.kernel.org>; Wed, 20 Aug 2025 23:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755733378; cv=none; b=mIyFLzMm05qOR+7A26X+EthNP8EadPEtBvrVKgOxwRetHd0I00OGCOjOZtEmfaUiJTBi7lp7eePZ2c8Q1BJASn7Sj1yjtEn4gTOUIy0d4FEI6oYsQlRZSvHi+MdlYmiKr6qQ7AnSaVx8iNYGpIBLWZjo0XSIl8UXdU2+TVjwJPU=
+	t=1755733394; cv=none; b=R96K8fZyJxokxhVX1x3M5cb39N+Zv4O+cU4XTZeBs61858ZH6o7DKhi+PhjXkOoHdSXdKlsW/lgnRKBtFMTnXUBOUBqcS3q2S9S3ndKRczTelR8q7V2c4c0Zwke43vq2YrA+Er3JPI1Y1skMLpoqbxUKR21ztbFqV9fjuIAjyuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755733378; c=relaxed/simple;
-	bh=mOcCmuPoKCHlnFRy0MDE0myNvBqn35HqHSaFJFTNf5M=;
+	s=arc-20240116; t=1755733394; c=relaxed/simple;
+	bh=5hBrVWl5ogYfSkonnLyIg/ks2iHiSi1WvRI4RpDNb2E=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nTETyVMYSsGsSoqhk5sMdz4QBx66LH0dG4d7BHd+yQ/2rKHe60SOrWcQB0XBnn7LXBNaXeC/WrxxrDZEGFwm6Y5lkjwj4lviYsaldJ6wdIIJ8JaWGG/OSOsdNPtEEeHULzIMadSBXhGNkYeEpTnugL1dAjVP7wlfrf7MeZw6fWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BabWfOfB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 040A8C4CEE7;
-	Wed, 20 Aug 2025 23:42:57 +0000 (UTC)
+	 MIME-Version:Content-Type; b=L+uSXNaYRuK2u8EuQ1UrOrbtMVgfow2JrEKW27uMjNpNw6gxYcPaZRjQxAzR+h+7482/HFuUZLbZ1TyIwIiYITs/UkoBAsgsLqNDH698xwN5lkViMrIohJpwPdan0agrsuCt+Nc332ySQx9WZzXJOMeJ0OYnvGJUYtWvoxrPXHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VI6FHpG3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 977A6C4CEE7;
+	Wed, 20 Aug 2025 23:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755733378;
-	bh=mOcCmuPoKCHlnFRy0MDE0myNvBqn35HqHSaFJFTNf5M=;
+	s=k20201202; t=1755733393;
+	bh=5hBrVWl5ogYfSkonnLyIg/ks2iHiSi1WvRI4RpDNb2E=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=BabWfOfBinoxNQgbarK7PhLp2Vd4ALhXNBH9+O3nIj3eycYNJLYOFCCNeEo57ZtJx
-	 +7WO5ELrnfHLeAjlNd55g9FI9PR3AqMm0/oKi+aF306Y/xJ1jCzpLYnvVla8y+UKjb
-	 hLAOM1Ff5yEan0zc6oNu90itp1eoIvmQuWWfKmmiuU7pnVM3ASCB8AQmcZfm0tiu5k
-	 IDKLicrg1FpS+zNsKYP69toC/N9bBrMEhmHigAaF8+7UvKZSc/6vkMrSTsoB6+92zM
-	 5cWeKwFxCLYMXaZ/aP866ru9BVffSvMy/BxiBpDDFFKWqukAvVZ3nc+sPHMac5UmwP
-	 j3GztEH8QlndQ==
-Date: Wed, 20 Aug 2025 16:42:57 -0700
-Subject: [PATCH 08/12] fuse2fs: interpret error codes in remove_ea_inodes
- correctly
+	b=VI6FHpG3MNI4MQdABq/5ReONqXuIdHhC53FjmQkhZ0Nc1UCU+vmtIosIg41PLuXTP
+	 u+niEuAOFQwkb0+BEzH22klzj/QbEfLpXZshRhQDdTuZFRTxiXh2lijnEC1Jrj7cmC
+	 etmTTv8eYHMe46EisiVmUmzJartvRs7tAW4rdhByAvdC4SlS9/oSwLV1RdBm4uL+TP
+	 OUAGaQIAwiQQn3qtu3almzVO7qUKKcFxPfK7DIX3f/F8ZbA4vbTfiwqVU9xONR/XGY
+	 QVdBHg+juOw4EAXO0Ki1bUj+dTYYgWx69XHf9VB4Mdh0VudoqEcbr9DAUP+Dymz3tL
+	 fpDf5pIjRRYnQ==
+Date: Wed, 20 Aug 2025 16:43:13 -0700
+Subject: [PATCH 09/12] fuse2fs: don't write inode when inactivation fails
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org, linux-ext4@vger.kernel.org
-Message-ID: <175573318746.4130038.9263918181319561586.stgit@frogsfrogsfrogs>
+Message-ID: <175573318765.4130038.17584770605415835679.stgit@frogsfrogsfrogs>
 In-Reply-To: <175573318553.4130038.2069350865263085609.stgit@frogsfrogsfrogs>
 References: <175573318553.4130038.2069350865263085609.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -61,89 +60,88 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-remove_ea_inodes should translate libext2fs error codes into errnos so
-that fs developers can trace exactly where a failure occurred.  Also
-don't squash EA inode removal errors.
+remove_inode has this weird behavior where it writes the inode to disk
+even if the attempts to inactivate it (remove xattrs, truncate data)
+fail.  Worse yet, it doesn't even return the original error code, so it
+masks failures.  Fix this too.
 
-Cc: <linux-ext4@vger.kernel.org> # v1.47.3
-Fixes: 3045aed621117f ("fuse2fs: fix removing ea inodes when freeing a file")
+Cc: <linux-ext4@vger.kernel.org> # v1.43
+Fixes: 81cbf1ef4f5dab ("misc: add fuse2fs, a FUSE server for e2fsprogs")
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |   29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
+ misc/fuse2fs.c |   29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 415f174875922f..a7f7e7f1595344 100644
+index a7f7e7f1595344..2648b55893d5e7 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -1524,12 +1524,13 @@ static int unlink_file_by_name(struct fuse2fs *ff, const char *path)
- 	return update_mtime(fs, dir, NULL);
- }
+@@ -1577,10 +1577,9 @@ static int remove_inode(struct fuse2fs *ff, ext2_ino_t ino)
+ 	int ret = 0;
  
--static errcode_t remove_ea_inodes(struct fuse2fs *ff, ext2_ino_t ino,
--				  struct ext2_inode_large *inode)
-+static int remove_ea_inodes(struct fuse2fs *ff, ext2_ino_t ino,
-+			    struct ext2_inode_large *inode)
- {
- 	ext2_filsys fs = ff->fs;
- 	struct ext2_xattr_handle *h;
- 	errcode_t err;
-+	int ret = 0;
- 
- 	/*
- 	 * The xattr handle maintains its own private copy of the inode, so
-@@ -1537,25 +1538,35 @@ static errcode_t remove_ea_inodes(struct fuse2fs *ff, ext2_ino_t ino,
- 	 */
- 	err = fuse2fs_write_inode(fs, ino, inode);
- 	if (err)
--		return err;
+ 	err = fuse2fs_read_inode(fs, ino, &inode);
+-	if (err) {
+-		ret = translate_error(fs, ino, err);
+-		goto out;
+-	}
++	if (err)
 +		return translate_error(fs, ino, err);
++
+ 	dbg_printf(ff, "%s: put ino=%d links=%d\n", __func__, ino,
+ 		   inode.i_links_count);
  
- 	err = ext2fs_xattrs_open(fs, ino, &h);
- 	if (err)
--		return err;
-+		return translate_error(fs, ino, err);
+@@ -1597,7 +1596,7 @@ static int remove_inode(struct fuse2fs *ff, ext2_ino_t ino)
  
- 	err = ext2fs_xattrs_read(h);
--	if (err)
-+	if (err) {
-+		ret = translate_error(fs, ino, err);
- 		goto out_close;
-+	}
- 
- 	err = ext2fs_xattr_remove_all(h);
--	if (err)
-+	if (err) {
-+		ret = translate_error(fs, ino, err);
- 		goto out_close;
-+	}
- 
- out_close:
- 	ext2fs_xattrs_close(&h);
-+	if (ret)
+ 	ret = update_ctime(fs, ino, &inode);
+ 	if (ret)
+-		goto out;
 +		return ret;
  
- 	/* Now read the inode back in. */
--	return fuse2fs_read_inode(fs, ino, inode);
-+	err = fuse2fs_read_inode(fs, ino, inode);
+ 	if (inode.i_links_count)
+ 		goto write_out;
+@@ -1605,21 +1604,19 @@ static int remove_inode(struct fuse2fs *ff, ext2_ino_t ino)
+ 	if (ext2fs_has_feature_ea_inode(fs->super)) {
+ 		ret = remove_ea_inodes(ff, ino, &inode);
+ 		if (ret)
+-			goto write_out;
++			return ret;
+ 	}
+ 
+ 	/* Nobody holds this file; free its blocks! */
+ 	err = ext2fs_free_ext_attr(fs, ino, &inode);
+ 	if (err)
+-		goto write_out;
++		return translate_error(fs, ino, err);
+ 
+ 	if (ext2fs_inode_has_valid_blocks2(fs, EXT2_INODE(&inode))) {
+ 		err = ext2fs_punch(fs, ino, EXT2_INODE(&inode), NULL,
+ 				   0, ~0ULL);
+-		if (err) {
+-			ret = translate_error(fs, ino, err);
+-			goto write_out;
+-		}
++		if (err)
++			return translate_error(fs, ino, err);
+ 	}
+ 
+ 	ext2fs_inode_alloc_stats2(fs, ino, -1,
+@@ -1627,12 +1624,10 @@ static int remove_inode(struct fuse2fs *ff, ext2_ino_t ino)
+ 
+ write_out:
+ 	err = fuse2fs_write_inode(fs, ino, &inode);
+-	if (err) {
+-		ret = translate_error(fs, ino, err);
+-		goto out;
+-	}
+-out:
+-	return ret;
 +	if (err)
 +		return translate_error(fs, ino, err);
 +
 +	return 0;
  }
  
- static int remove_inode(struct fuse2fs *ff, ext2_ino_t ino)
-@@ -1592,8 +1603,8 @@ static int remove_inode(struct fuse2fs *ff, ext2_ino_t ino)
- 		goto write_out;
- 
- 	if (ext2fs_has_feature_ea_inode(fs->super)) {
--		err = remove_ea_inodes(ff, ino, &inode);
--		if (err)
-+		ret = remove_ea_inodes(ff, ino, &inode);
-+		if (ret)
- 			goto write_out;
- 	}
- 
+ static int __op_unlink(struct fuse2fs *ff, const char *path)
 
 
