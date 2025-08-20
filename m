@@ -1,86 +1,86 @@
-Return-Path: <linux-ext4+bounces-9400-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9401-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BBD8B2DCFE
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Aug 2025 14:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADA58B2DF81
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Aug 2025 16:37:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C758D189AF82
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Aug 2025 12:45:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C01A11885297
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Aug 2025 14:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FFCF308F05;
-	Wed, 20 Aug 2025 12:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2636435334E;
+	Wed, 20 Aug 2025 14:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OE5BZSAX"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p4Cjct5L"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5082E11B6
-	for <linux-ext4@vger.kernel.org>; Wed, 20 Aug 2025 12:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A216272E6E
+	for <linux-ext4@vger.kernel.org>; Wed, 20 Aug 2025 14:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755693933; cv=none; b=OnVwY385a0nGk8PLdTAMFWPJUZNmMNGdyMTpV9yK17w3L6w3bPpTm08GJ3wOdtcrwr+V5tWenwoenPZu4aL76A6OsKMMa05betRqJKsDZUw2SPUFuhkahUaNUNqrB+gSxIkebnWfDEoCAIwqw9bQK/KRadS+qY/cKRK3mkOd01M=
+	t=1755700575; cv=none; b=MB2/D9E5a5BF7Jtf7FV/FORC7/XDiIiej6L6jkCV1iLTiVtzSERNzdOU6mSEMlCmLfxFyw7iLLTO/GizXTLRgO4JpHR3qYJbQ92Nhbdimm96leVLT2+KFnEqVxvbkb6UN1iy4U02yh8BCKHYx2Zzps3Lsosd+Qgiod5qT0PQMRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755693933; c=relaxed/simple;
-	bh=XGZNUyGClMBZ53/9M+WiiYZ3hnA8W8MXcf7Y6tflI0U=;
+	s=arc-20240116; t=1755700575; c=relaxed/simple;
+	bh=4hBT+buiES17wXgKl6UMMYEyTZ1Pb3414IbE2VoRNAs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PKqd13naRB/BQDz7xmA4Na4FFq4vG5aT8+Uz3ZPa87HGuQoANtS/hcBrMW+Oy7T9uxH4ML6HjU4wsyM/vZttu2BRLlKVJE4QRN/cNq6xCKksz8yu7Ds6HvEVVCIQXeFPzE2LuxU7MNg9YLXBmCGlZLjPmLi2APawHkLbktsmfD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OE5BZSAX; arc=none smtp.client-ip=209.85.215.178
+	 To:Cc:Content-Type; b=E07/m2N1+N2FImxyHHyJ/gu+B42uRCLkbUcZICMOo4b8ggB69stTSXPVLwJYnSBj2/jUUMK7+Td5wHtcyGhp7cOs5D8DpksoomIvmYX9LbVR0CxIFIOnR9D+Q0oq6JdKEqouEPKGcPPPf40JQzIJ7jAuRxvZRRcbKZf5Cy6AcdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=p4Cjct5L; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b4743621044so2119333a12.0
-        for <linux-ext4@vger.kernel.org>; Wed, 20 Aug 2025 05:45:32 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-32326e8005bso6598634a91.3
+        for <linux-ext4@vger.kernel.org>; Wed, 20 Aug 2025 07:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1755693931; x=1756298731; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1755700573; x=1756305373; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+gRhe9SO61ZZX3zSeOGc3YYqkcNZ6w6+wJsLaFnopq8=;
-        b=OE5BZSAX++GGBYdUglCKCN9aiZTz/BOimihiEiz6UqZxqXIpP3P0iPTNXkcCGPtecN
-         fD0YnTMq1IfRCNY1koLNdTmOR9rOVispxsotIX5llgnihL+yG4fRu5Z4uA9fp2LROz/J
-         zODym8rqWAY0HvWueQlfDSYqlGrJSa1N51GHwF1k9GK+4vE6ZSzpmIBLqr6PQWkrSC/J
-         DMuSOD8xhMcOQVnOIDsTmhjID7h4OURd9erX+S50qxJiy9oWjXFIJ49U9rroOoanQKoy
-         iCc2B2uaouXBcceMkWIaZd4q+kOzwwNU200drxKaXONhd2YgaUbW8pzA1NLdqwBdCK9t
-         3TWA==
+        bh=PbJBv/3H5428xs4cdRW4AQdn6v112iL6mkHWnmkXwqE=;
+        b=p4Cjct5LhB4EUlPnUfP8b3AkQuBnjPt+kueRO4zAd0gPuVH8DVQ1UsKTMjstqAH/Bs
+         jpYFde9ogpjlIuSsm51B/6eWVW03CylSZFtY5Jei8qVBwtFqS7Txigc2CcbWwhCksZT5
+         nxlS/NOWYvudZYj2eJrghI2fMODCd4bVmfQxQ6apOH7QRtmFdA7AZkT5tpOyIZQC+eCp
+         UgRj2OACeuZcbhBCD057ETTIJfFgoT1PJ//khN2flKO8Dhiud6349cK3JCHoeVl6pvaQ
+         PbZhyVoUIbF1pLwk6kvsvHURylSX5oNork6YnIM3nJulEqfsidUP9Dp0ZE2HfXwtsujY
+         zQPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755693931; x=1756298731;
+        d=1e100.net; s=20230601; t=1755700573; x=1756305373;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+gRhe9SO61ZZX3zSeOGc3YYqkcNZ6w6+wJsLaFnopq8=;
-        b=cmzWdjQ9tfxe1icYqICwIA2fDydOqfTeZC04lo6pyiuL1Co2bQK0DRh9h32e0MDdVj
-         FykMvYfvC/L9vr4C64NCynOeTzNNTY5p1sbzzg5EnOvkW4SYhnIa3xAC04F5BjPXSfZn
-         j+WGo1oICkEniSpZxxynPUhYdap28v7NRAJUYIt0Nm2m7Q1DMAunb8a4quSBN+02Mw+S
-         7ALL4X8M/KDc9Lexg9UJl8Kq9pwHMMpRBiEaSr2+08zcSa8Mi1Xc2/29xbzF2WND0KXA
-         CMD/XicvuDdg/PPBLr+MWOrIHhcZhE6MMamwCk/uwt2n0vxZJKdagKzNfbkJ54T6iQXb
-         apTw==
-X-Forwarded-Encrypted: i=1; AJvYcCVAtsggrI0rlUkip56nSK47P8luRJZxloUjpwT1a118t0wMNETnwoF8PIKZKsuR8Y6o3/3nZVqCWXE5@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqCVRj4K9Pa1L5FcWoLX5MtRQHK5fbrXLRXPRwprwf731LcVOD
-	EMtPy2oTPmHD3+ni8en2UQVuKwuNg2K0w9L6eWyickzduHi/hjaMg8b0LJh2tzBcH/Jfub+6/GR
-	AJoChjQ3JamakpinKrbfH0II9nmhhrST0P4PKk80nNw==
-X-Gm-Gg: ASbGncvQd3LeKubb6RiYltVtIiTklGqZ9Rtbj14l3x509QJbqyXz4o+KD7dDPBMzhd1
-	ruICsEqcksns/reXACYJLCc0Z9dTPWWdZVzo8ZmU9cmPOEhrl+AUjWDlzyi2Zdc3XmurWYEN3Vd
-	g7c13EtycMBNSnZuBLRMf6ZNffT3eg0iTl23ZiwdJ07P41mokzQMuGEwn37NElKor1s7K5BffA1
-	YjVY+C3pu0T6o96nDcZ5wsjJZIG1aD0NPbTXipdX3hel0poAc0=
-X-Google-Smtp-Source: AGHT+IEo6AZMHBNfNm+wGuts2E1fjpomh+rCZIxZABpTnRUGW4TVydP8e55fzi6K1vdQKBnAE9C73PQOIe+rJ5ddIZo=
-X-Received: by 2002:a17:902:ebd1:b0:234:9375:e07c with SMTP id
- d9443c01a7336-245ef2716c0mr38415775ad.46.1755693931471; Wed, 20 Aug 2025
- 05:45:31 -0700 (PDT)
+        bh=PbJBv/3H5428xs4cdRW4AQdn6v112iL6mkHWnmkXwqE=;
+        b=OVsPnk1Fo/+mpBJ+zu+Oq/647IcYo9EbWsccnNEBcQJgi0LjOK2l7ZQ3qKWGXimZzl
+         lRAla79h+a/IhD6phgJTWAO0pnT9wRa79ojHyguRXtKGW6Tv67fbaIJ105yHFPcxoaON
+         d6+w3kbcWNlgSFKJHxkqI0PvgM3Xs6v2jXmEG56xmuofhXaW9hFsugvSZ8/2hKPAShVE
+         OnI+ib8wVnt5yP0X8P91EtGbY+2YKqCNWyD9mpayf4IICDuEoM31OWyukqrF8t1ZcLsi
+         b1//n4zXFnWluPOkKEcVm7lLiO3mgQsuU5mdEoB0umXfR/KXDEpkAcgFJYgOpIqvXPZ5
+         MZRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUbX5cCDR6xYX0CTp6dNoOBgcTKUq/Ls0O0YalJ+cFP0U+39HSizp8TBLchrVnrUksO24eUVfkdvfSp@vger.kernel.org
+X-Gm-Message-State: AOJu0YyiclJdRuV0yO6ek3T2FPEd2ockOhx8HLwfbQ5vAmONASbcOwfE
+	LcZrb4maYxGwT+U0ZcBEVzeH/jXkSJGzHtT9l2cgnCoSfDW/njxLVdWIU9JFvDv4DR0SppsxG/r
+	d8kCRIW73/jKQedKqdZe3NhMuzqDX+lAV1TJnoUJJfg==
+X-Gm-Gg: ASbGncvf6VTIS2SDuP3VcaQ2+FzI/yGFnmE6xAHjQvkUR3ASVLywaCehmddaZ+mSBmK
+	q9yM451L+E4Weaeh3eXeB7NbGQIAWydmYq1Y9/nRC5OhjBQVKii+SyFrjTIurIZ4T04qj73MhBw
+	wKSvljkGhg2INXeJjJFD0gi+hm21sMcqJlOfwel6Fh7YtBAuuJsQaPn7hPvbhv+y//lwXt9ymVF
+	jQFwntdZHhJKdpSEPZmOuQzPsiY3P6PvG7Ubh4=
+X-Google-Smtp-Source: AGHT+IEdMY4xh4BhwPScUhIgPWf9ZcAB/0weEpDIJ55eNjWwG2Sd0rlo1FnkJtUF8wfhxGfuA4mblTlPnIw0NgaRkjk=
+X-Received: by 2002:a17:90a:ec88:b0:31a:9004:899d with SMTP id
+ 98e67ed59e1d1-324e143e583mr4420576a91.18.1755700573433; Wed, 20 Aug 2025
+ 07:36:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250819122820.553053307@linuxfoundation.org>
-In-Reply-To: <20250819122820.553053307@linuxfoundation.org>
+References: <20250819122844.483737955@linuxfoundation.org>
+In-Reply-To: <20250819122844.483737955@linuxfoundation.org>
 From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 20 Aug 2025 18:15:19 +0530
-X-Gm-Features: Ac12FXzNj44omXAfHJgi9bZ51uoRtB8H1kwROfJrlwowrwNPU6U7fIeg-6nxe0Q
-Message-ID: <CA+G9fYuQ_eHhoWsVdQpbmOSS-e_5BQzpar8Sjvtps41fUbknzA@mail.gmail.com>
-Subject: Re: [PATCH 6.12 000/438] 6.12.43-rc2 review
+Date: Wed, 20 Aug 2025 20:06:01 +0530
+X-Gm-Features: Ac12FXyUQdvOPLI9LVSLZtfZIlbJBJH9mNkCOuEMZ2eMxjtxG5PAQO0-gm_8dGI
+Message-ID: <CA+G9fYsjac=SLhzVCZqVHnHGADv1KmTAnTdfcrnhnhcLuko+SQ@mail.gmail.com>
+Subject: Re: [PATCH 6.16 000/564] 6.16.2-rc2 review
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
 	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
@@ -88,168 +88,86 @@ Cc: stable@vger.kernel.org, patches@lists.linux.dev,
 	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
 	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
 	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, hargar@microsoft.com, 
-	broonie@kernel.org, achill@achill.org, LTP List <ltp@lists.linux.it>, 
-	Jan Kara <jack@suse.cz>, linux-ext4 <linux-ext4@vger.kernel.org>, Jann Horn <jannh@google.com>, 
-	Jan Stancek <jstancek@redhat.com>, linux-fsdevel@vger.kernel.org, 
-	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Anders Roxell <anders.roxell@linaro.org>, Ben Copeland <benjamin.copeland@linaro.org>
+	broonie@kernel.org, achill@achill.org, Zhang Yi <yi.zhang@huaweicloud.com>, 
+	linux-ext4 <linux-ext4@vger.kernel.org>, linux-fsdevel@vger.kernel.org, 
+	Joseph Qi <jiangqi903@gmail.com>, Jan Kara <jack@suse.cz>, "Theodore Ts'o" <tytso@mit.edu>, 
+	Anders Roxell <anders.roxell@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Ben Copeland <benjamin.copeland@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 19 Aug 2025 at 18:01, Greg Kroah-Hartman
+On Tue, 19 Aug 2025 at 18:02, Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
-> This is the start of the stable review cycle for the 6.12.43 release.
-> There are 438 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.16.2 release.
+> There are 564 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
-> Responses should be made by Thu, 21 Aug 2025 12:27:16 +0000.
+> Responses should be made by Thu, 21 Aug 2025 12:27:23 +0000.
 > Anything received after that time might be too late.
 >
 > The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.12.43-rc2.gz
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.16.2-rc2.gz
 > or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.12.y
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.16.y
 > and the diffstat can be found below.
 >
 > thanks,
 >
 > greg k-h
 
-As we discussed from the last time LTP syscalls epoll_ctl04 is a known issue
-on the Linus master and Linux next.
+As I have reported last week on 6.16.1-rc1 as regression is
+still noticed on 6.16.2-rc2.
 
-* ltp-syscalls
-  - epoll_ctl04
+WARNING: CPU: 0 PID: 7012 at fs/jbd2/transaction.c:334 start_this_handle
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Full test log:
+------------[ cut here ]------------
+[  153.965287] WARNING: CPU: 0 PID: 7012 at fs/jbd2/transaction.c:334
+start_this_handle+0x4df/0x500
+[  153.966304] Modules linked in: tun fuse
+[  153.967547] CPU: 0 UID: 0 PID: 7012 Comm: quotacheck Not tainted
+6.16.2-rc2 #1 PREEMPT(voluntary)
+[  153.968294] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  153.969408] RIP: 0010:start_this_handle+0x4df/0x500
+[  153.970243] Code: e9 5b fc ff ff 90 0f 0b 8b 4d a4 65 48 8b 05 a0
+27 17 02 48 c7 c7 70 f2 87 ac 8b 55 a0 48 8d b0 c0 07 00 00 e8 a2 09
+c7 ff 90 <0f> 0b 90 41 b8 e4 ff ff ff e9 a7 fc ff ff e8 0e c9 e2 00 0f
+1f 00
+[  153.971734] RSP: 0018:ffffabfb0112bb60 EFLAGS: 00010246
+[  153.972336] RAX: 0000000000000049 RBX: ffff93cf8706a800 RCX: 0000000000000000
+[  153.973157] RDX: 0000000000000000 RSI: ffffffffaae64a70 RDI: ffffffffaae64a70
+[  153.973347] RBP: ffffabfb0112bbd0 R08: 00000000ffffdfff R09: ffffffffacc7c880
+[  153.973513] R10: 0000000000000003 R11: ffffffffacc7c880 R12: ffff93cf8706a800
+[  153.974263] R13: ffff93cf8044f6c8 R14: 0000000000000000 R15: 0000000000000002
+[  153.975058] FS:  00007f245e2d5780(0000) GS:ffff93d04e8ae000(0000)
+knlGS:0000000000000000
+[  153.975933] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  153.976641] CR2: 00007ff069065690 CR3: 0000000106a0a000 CR4: 00000000000006f0
+[  153.977841] Call Trace:
+[  153.978279]  <TASK>
+[  153.978748]  ? kmem_cache_alloc_noprof+0x119/0x3d0
+[  153.979180]  ? __folio_batch_add_and_move+0xb5/0x100
+[  153.979691]  jbd2__journal_start+0xfd/0x1f0
+[  153.980154]  __ext4_journal_start_sb+0x10d/0x1a0
+[  153.980642]  ext4_write_begin+0x17e/0x510
+[  153.981132]  generic_perform_write+0x95/0x290
+[  153.981569]  ext4_buffered_write_iter+0x6d/0x120
+[  153.982014]  ext4_file_write_iter+0xab/0x820
+[  153.982315]  ? selinux_file_permission+0x12d/0x1a0
+[  153.982754]  ? trace_preempt_on+0x1e/0x70
+[  153.983393]  vfs_write+0x2a8/0x4b0
+[  153.983886]  ksys_write+0x7b/0xf0
+[  153.984248]  __x64_sys_write+0x1d/0x30
+[  153.984510]  x64_sys_call+0x2ab/0x20c0
+[  153.985107]  do_syscall_64+0xb2/0x2b0
+[  153.985513]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-1)
-The bisection results pointing to
 
-First bad commit,
-eventpoll: Fix semi-unbounded recursion
-commit f2e467a48287c868818085aa35389a224d226732 upstream.
-
-2)
-A patch has been proposed to update the LTP test case to align with
-recent changes in the Linux kernel code.
-
-[LTP] [PATCH] syscalls/epoll_ctl04: add ELOOP to expected errnos
-- https://lore.kernel.org/ltp/39ee7abdee12e22074b40d46775d69d37725b932.1754386027.git.jstancek@redhat.com/
-- https://regressions.linaro.org/lkft/linux-stable-rc-linux-6.12.y/v6.12.41-808-ge80021fb2304/ltp-syscalls/epoll_ctl04/
-
-## Build
-* kernel: 6.12.43-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-* git commit: e80021fb2304b3e1f96e7b9a132e69d2c1d022f1
-* git describe: v6.12.41-808-ge80021fb2304
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.12.y/build/v6.12.41-808-ge80021fb2304
-
-## Test Regressions (compared to v6.12.41-370-g3566c7a6291d)
-* ltp-syscalls
-  - epoll_ctl04
-
-## Metric Regressions (compared to v6.12.41-370-g3566c7a6291d)
-
-## Test Fixes (compared to v6.12.41-370-g3566c7a6291d)
-
-## Metric Fixes (compared to v6.12.41-370-g3566c7a6291d)
-
-## Test result summary
-total: 284700, pass: 268768, fail: 4803, skip: 10936, xfail: 193
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 139 total, 137 passed, 2 failed
-* arm64: 57 total, 56 passed, 1 failed
-* i386: 18 total, 18 passed, 0 failed
-* mips: 34 total, 33 passed, 1 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 40 total, 40 passed, 0 failed
-* riscv: 25 total, 22 passed, 3 failed
-* s390: 22 total, 21 passed, 1 failed
-* sh: 5 total, 5 passed, 0 failed
-* sparc: 4 total, 3 passed, 1 failed
-* x86_64: 49 total, 48 passed, 1 failed
-
-## Test suites summary
-* boot
-* commands
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-fpu
-* kselftest-futex
-* kselftest-intel_pstate
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-mptcp
-* kselftest-openat2
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-x86
-* kunit
-* kvm-unit-tests
-* lava
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-build-clang
-* log-parser-build-gcc
-* log-parser-test
-* ltp-capability
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* modules
-* perf
-* rcutorture
-* rt-tests-cyclicdeadline
-* rt-tests-pi-stress
-* rt-tests-pmqtest
-* rt-tests-rt-migrate-test
-* rt-tests-signaltest
+Lore link:
+- https://lore.kernel.org/all/CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com/
+- https://regressions.linaro.org/lkft/linux-stable-rc-linux-6.16.y/v6.16-1186-gb81166f7d590/log-parser-test/exception-warning-cpu-pid-at-fsjbd2transaction-start_this_handle/
 
 --
 Linaro LKFT
