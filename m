@@ -1,181 +1,243 @@
-Return-Path: <linux-ext4+bounces-9500-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9501-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BF97B2FC0E
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 16:14:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78F1EB30624
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 22:43:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98EFA6804D4
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 14:08:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7219A1D21E56
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 20:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85F523D7ED;
-	Thu, 21 Aug 2025 14:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F3B350D5E;
+	Thu, 21 Aug 2025 20:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="XyllwlvQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC90320298C
-	for <linux-ext4@vger.kernel.org>; Thu, 21 Aug 2025 14:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C0C27FB2D
+	for <linux-ext4@vger.kernel.org>; Thu, 21 Aug 2025 20:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755785315; cv=none; b=pLS62waG38Ob/0EgNx6RRisEvBBWFXLa3gAgruBkn6zKawv631RAqRlB28JX+uaXVq104FlvYZ3uGLKBeFx49nCREWkLC7LMrfNfPuD/Rx7Lht3v0eYJDlMzhRE8GaY6hicU+vkTcpbNRCbCF2ezYkSLlhpEqGWedI8ga4qBQWw=
+	t=1755807620; cv=none; b=nxHNezuIGZPORNS/TbSS6pIUaMe5+y2GViw1aOJ7Z+n7Bq3av3Cdj3u1si4v4Cl5WF1Fb6O0vFqNOqtrsqxeM0cSlM4obK+zRln/PskYn9c73QwCOih2I4s5fnb6L9HpES/gbMMXE+m0I7vRQwo/dUBpc6qXNbzIxQHpfWXmVCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755785315; c=relaxed/simple;
-	bh=znPykkbROliSjpvxuccxv6Ye409UsS8f7zOe/B+5JBQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=dBPD+JED1cSTLQUO/mieDtmx8uMHneNrbxt8NwkFLAgp8t3ZvQ/C/ZAV0fDcvsW5dgOFhYLk/uL5cvSfgreOOeoLKs0N/zNw8PglY4H3fmhBhnN8ZETnO9IXb1f/aH7mxgsl6wbMFEb+zyVxHm0cedMWGOdDJ+MRjVnIQW2Qn70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3e580be9806so10163765ab.1
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Aug 2025 07:08:33 -0700 (PDT)
+	s=arc-20240116; t=1755807620; c=relaxed/simple;
+	bh=/BdIefG1/27tHJXIb/J7ReJQO+Wd/JMyOnilC6r+beI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Vk30CIqTsFbUvmucYaL+l+zf9m8iZzZtv6BOz8ZyVlrYoBM/AT/Jhidov/xl17sRWh71cxWBEpLAfqb1KyLCe1Bk91ZlCEeRGSNu3R7zfn2UxGet+sSw+c7WCy8jVQPNd2rS8I1ORaVPV4ykAdJ2Hc5dCP+ojDG8Hw5ZtZi6evU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=XyllwlvQ; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-e931cddb0e2so1153541276.3
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Aug 2025 13:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1755807616; x=1756412416; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0SeVezRefrCpYYDCsSNYu7Co/BY5e8f2aGHEoMEe3eM=;
+        b=XyllwlvQ6uPHQhwkWYYO4WrSXeL/jZZnBWsH/2D1yH8tDDkJoQex0WhEQR9mgQLLhg
+         DcRl552u4lNDETTeGR3M8NTaIEYhJV/Y0ZwdvurtkcgN7duySD9L7Q2PJA/sLUTiD3XV
+         rYsgQ4UZwg5SEbUhmqp/31V+777HAZCTJ05784bOFwxXSKIOb41ZBv791p/g/+H7/5Hp
+         mmlIDj0eTCJsPUiMJ89/EsfmY7ugTN27YEY3jXaWx/z0Oc9P3NSLY7aJiUISUbNtAbr0
+         kxjSixxzC6aCi85Oz9kykFujNIwCjHFoo00yRE2My4Lmo36SoZD/ptrZFozUrzGOCIlU
+         66rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755785313; x=1756390113;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w/enU3klx7bfkpNDi5dMuC8pF4in7LDDV9JxB6hf48k=;
-        b=I1GkpOx5NbwryiejkmjdcbKSwaROZXOK8neT7IdBAuk7/u+Iy6RicLEpgW3oM/FZ+2
-         AiDPpg43kAixJ8sHsfU/wcsE0DLIgL3jolIoXek1WBHLOxMiV1/06ucz+RRanXrcfP2Y
-         EAZ9L3L0lsbjJgmUfm3a8YJJy3qFFLFl3K0gkOHZNbNg7tjpMhcWHPGd+N0x3dcpJ7qm
-         +NYFveRsb6aHnfHqdLJ3YabNZKhtiomVA4M48LJuZbhy1INqGE/Mjq77n4KID56b8d8s
-         2SS2uqpyHacsfEghpV8qZ05nOYj15OahwA9Yu9QLBDJHTwO8c3OZru6H9RJcAJ8BB1hQ
-         kAMw==
-X-Forwarded-Encrypted: i=1; AJvYcCXiR/a3QJ8pe2nKzWdDx+PcyLOFY/rrJg0HxOrN6EwTgiXBTfBWWPJbQF0FL4eoG3QJ54cxyFgRTFNk@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRNZliUyJdFU+Vy06N/9pRKHxaULUFyn2NEZNU5UNLzyNOpFm/
-	lCEnhVPgas1BqExSXzrsdIW+zWWwN57KoqFrdwbpjQx2N7liyj3EIS6Ax/E78XIsNUgVem7laN8
-	Vg8N5LI1Xg5G88XrpMCa9+OLTNiwyBvCZVkGZ/JidOJ67z5daEjxfZQW1kdM=
-X-Google-Smtp-Source: AGHT+IFxlZweowjB6dvQbH/PChzOLYG9iOSjfbeXU6zgQTKb9IwQSUWLKbNDNnQXv6sY2dPdDJrPl/H3ZUDDbUxILYOJ9slBOF2D
+        d=1e100.net; s=20230601; t=1755807616; x=1756412416;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0SeVezRefrCpYYDCsSNYu7Co/BY5e8f2aGHEoMEe3eM=;
+        b=SENi20MP2Ce3krSnvFy7xZsN2WlRLePQWoxFC+OFJAWUAxA6jqRTXweBrejledbahT
+         MELLLHE9qZCRhIPaNbH7DyjpfY9GxZV8H1675vTC9RjavErOMDMY2eotPxIwSx/ckuIY
+         Rwd5/F9jCiPP+b88JPB3HIolOZtfCV3ME429VBstIAkbBl3KUSUkzvBioQmd9F2ZJps+
+         6K2CrZ16+yFzbKAhyPXq+Sp2Y5u86UfByDsrUpEwwkGMbPGuRuZqg4B2+MyJX7Af7XHg
+         Gzu7nG26ShRQlgo0Y80qOe1vKe/PPaRqDGA1eA6t02bgP+Yb9MgHf4+iyjpwS9A4RRcj
+         0CTg==
+X-Forwarded-Encrypted: i=1; AJvYcCWLX31bKDYnskm577LAyEhQtwvcHFm9kWsEVa0yJ6jf2BO42AGJkFfCr9VBcCust/RCDS0FCFGsddNR@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWJUnUvWAj9hkGZyOdAcX5V2j8RuK0M55hy1VV/vhmmZYltZNf
+	oK58SSw7he3JSvrJ0CuDhUWKO+pj/MrimJPQWsMmk7Ijwhh65bFYvdP6TMGyE9SkjvE=
+X-Gm-Gg: ASbGncvFjecNj+fxMa1L60R/CVJvcFC3/PHJhfD2tTS9e9/R78tGi6VlKvhoLtOUen4
+	Xme3eelo9sCvbQYFNDxeIHkEGmQ7lSgAAJj3blGnbwYOWoNeSDpl23Thy23gFSyiWrbJxpsg682
+	tBjANxiy+MtXJI2i/+mAAZeyeO7Fa3sklPf3Lfto2EBcWhYjE2IHdR9eFxsj9N8xb4n29J6mhoa
+	4YVBo6kKHSStuHxQBKWUTbEsfZ0Tu5JieQawnmkq2hAl5HvNN8vhMnIeT+LJa4zXRt+aFNxZD1q
+	WZQ3sQJt/SO+HR3mk9Upo6tk87r2A0R3YitdGt3Nb3DZkbpXpszvYKJMicCqBbsF+oh8uMWjZ5z
+	+scPFxEQe7c/c5CUHL/kuYYpz4Mz1cZCJ6xjh3/FOs1ALlU2EFqeVsM2VAsg=
+X-Google-Smtp-Source: AGHT+IE6Qk/uCJGKI3wxomxr6wsEq4XUy1mGV5MwcGWRTIhxV9r/kfkTBxnBTTgL2CLxX+LStcCrXA==
+X-Received: by 2002:a05:6902:600c:b0:e90:39b7:6085 with SMTP id 3f1490d57ef6-e951c3200fdmr856373276.17.1755807615867;
+        Thu, 21 Aug 2025 13:20:15 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e94f1ddbbbfsm2363100276.12.2025.08.21.13.20.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Aug 2025 13:20:15 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com,
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	brauner@kernel.org,
+	viro@ZenIV.linux.org.uk
+Subject: [PATCH 00/50] fs: rework inode reference counting
+Date: Thu, 21 Aug 2025 16:18:11 -0400
+Message-ID: <cover.1755806649.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2703:b0:3e8:ec53:1e7a with SMTP id
- e9e14a558f8ab-3e8ec533da4mr5274285ab.15.1755785312942; Thu, 21 Aug 2025
- 07:08:32 -0700 (PDT)
-Date: Thu, 21 Aug 2025 07:08:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68a72860.050a0220.3d78fd.002a.GAE@google.com>
-Subject: [syzbot] [exfat?] [ext4?] WARNING in __rt_mutex_slowlock_locked
-From: syzbot <syzbot+a725ab460fc1def9896f@syzkaller.appspotmail.com>
-To: bigeasy@linutronix.de, brauner@kernel.org, jack@suse.cz, 
-	linkinjeon@kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, 
-	viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
 Hello,
 
-syzbot found the following issue on:
+This series is the first part of a larger body of work geared towards solving a
+variety of scalability issues in the VFS.
 
-HEAD commit:    41cd3fd15263 Merge tag 'pci-v6.17-fixes-2' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11ef37a2580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e1e1566c7726877e
-dashboard link: https://syzkaller.appspot.com/bug?extid=a725ab460fc1def9896f
-compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a857a2580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c916f0580000
+We have historically had a variety of foot-guns related to inode freeing.  We
+have I_WILL_FREE and I_FREEING flags that indicated when the inode was in the
+different stages of being reclaimed.  This lead to confusion, and bugs in cases
+where one was checked but the other wasn't.  Additionally, it's frankly
+confusing to have both of these flags and to deal with them in practice.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bc397a2f4204/disk-41cd3fd1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5291086f4669/vmlinux-41cd3fd1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1099e6ad84b5/bzImage-41cd3fd1.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/c1980868ad6b/mount_0.gz
-  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=10e28fa2580000)
+However, this exists because we have an odd behavior with inodes, we allow them
+to have a 0 reference count and still be usable. This again is a pretty unfun
+footgun, because generally speaking we want reference counts to be meaningful.
 
-The issue was bisected to:
+The problem with the way we reference inodes is the final iput(). The majority
+of file systems do their final truncate of a unlinked inode in their
+->evict_inode() callback, which happens when the inode is actually being
+evicted. This can be a long process for large inodes, and thus isn't safe to
+happen in a variety of contexts. Btrfs, for example, has an entire delayed iput
+infrastructure to make sure that we do not do the final iput() in a dangerous
+context. We cannot expand the use of this reference count to all the places the
+inode is used, because there are cases where we would need to iput() in an IRQ
+context  (end folio writeback) or other unsafe context, which is not allowed.
 
-commit d2d6422f8bd17c6bb205133e290625a564194496
-Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Fri Sep 6 10:59:04 2024 +0000
+To that end, resolve this by introducing a new i_obj_count reference count. This
+will be used to control when we can actually free the inode. We then can use
+this reference count in all the places where we may reference the inode. This
+removes another huge footgun, having ways to access the inode itself without
+having an actual reference to it. The writeback code is one of the main places
+where we see this. Inodes end up on all sorts of lists here without a proper
+reference count. This allows us to protect the inode from being freed by giving
+this an other code mechanisms to protect their access to the inode.
 
-    x86: Allow to enable PREEMPT_RT.
+With this we can separate the concept of the inode being usable, and the inode
+being freed.  The next part of the patch series is to stop allowing for inodes
+to have an i_count of 0 and still be viable.  This comes with some warts. The
+biggest wart is now if we choose to cache inodes in the LRU list we have to
+remove the inode from the LRU list if we access it once it's on the LRU list.
+This will result in more contention on the lru list lock, but in practice we
+rarely have inodes that do not have a dentry, and if we do that inode is not
+long for this world.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16cf8fa2580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15cf8fa2580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11cf8fa2580000
+With not allowing inodes to hit a refcount of 0, we can take advantage of that
+common pattern of using refcount_inc_not_zero() in all of the lockless places
+where we do inode lookup in cache.  From there we can change all the users who
+check I_WILL_FREE or I_FREEING to simply check the i_count. If it is 0 then they
+aren't allowed to do their work, othrwise they can proceed as normal.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a725ab460fc1def9896f@syzkaller.appspotmail.com
-Fixes: d2d6422f8bd1 ("x86: Allow to enable PREEMPT_RT.")
+With all of that in place we can finally remove these two flags.
 
-exFAT-fs (loop0): Medium has reported failures. Some data may be lost.
-exFAT-fs (loop0): failed to load upcase table (idx : 0x00010000, chksum : 0xe5674ec2, utbl_chksum : 0xe619d30d)
-------------[ cut here ]------------
-rtmutex deadlock detected
-WARNING: CPU: 0 PID: 6000 at kernel/locking/rtmutex.c:1674 rt_mutex_handle_deadlock kernel/locking/rtmutex.c:1674 [inline]
-WARNING: CPU: 0 PID: 6000 at kernel/locking/rtmutex.c:1674 __rt_mutex_slowlock kernel/locking/rtmutex.c:1734 [inline]
-WARNING: CPU: 0 PID: 6000 at kernel/locking/rtmutex.c:1674 __rt_mutex_slowlock_locked+0xed2/0x25e0 kernel/locking/rtmutex.c:1760
-Modules linked in:
-CPU: 0 UID: 0 PID: 6000 Comm: syz.0.17 Tainted: G        W           syzkaller #0 PREEMPT_{RT,(full)} 
-Tainted: [W]=WARN
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
-RIP: 0010:rt_mutex_handle_deadlock kernel/locking/rtmutex.c:1674 [inline]
-RIP: 0010:__rt_mutex_slowlock kernel/locking/rtmutex.c:1734 [inline]
-RIP: 0010:__rt_mutex_slowlock_locked+0xed2/0x25e0 kernel/locking/rtmutex.c:1760
-Code: 7c 24 20 dd 4c 8b b4 24 98 00 00 00 0f 85 fd 0a 00 00 48 8b 7c 24 10 e8 2c ee 5d 09 90 48 c7 c7 00 ed 0a 8b e8 df 89 e7 ff 90 <0f> 0b 90 90 48 8b 9c 24 80 00 00 00 43 80 3c 3e 00 74 08 4c 89 e7
-RSP: 0018:ffffc900048df840 EFLAGS: 00010246
-RAX: e12880a9366a4400 RBX: ffff8880324663e0 RCX: ffff888032465940
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc900048dfa30 R08: 0000000000000000 R09: 0000000000000000
-R10: dffffc0000000000 R11: ffffed1017104863 R12: ffff888032467060
-R13: ffff888032465958 R14: 1ffff1100648ce0c R15: dffffc0000000000
-FS:  0000555557981500(0000) GS:ffff8881268c5000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 0000000035be0000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- rt_mutex_slowlock+0xb5/0x160 kernel/locking/rtmutex.c:1800
- __rt_mutex_lock kernel/locking/rtmutex.c:1815 [inline]
- rwbase_write_lock+0x14f/0x750 kernel/locking/rwbase_rt.c:244
- inode_lock_nested include/linux/fs.h:914 [inline]
- vfs_rename+0x68f/0xf00 fs/namei.c:5092
- do_renameat2+0x6ce/0xa80 fs/namei.c:5278
- __do_sys_renameat2 fs/namei.c:5312 [inline]
- __se_sys_renameat2 fs/namei.c:5309 [inline]
- __x64_sys_renameat2+0xce/0xe0 fs/namei.c:5309
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fc9cdd7ebe9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe70cc6ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000013c
-RAX: ffffffffffffffda RBX: 00007fc9cdfa5fa0 RCX: 00007fc9cdd7ebe9
-RDX: 0000000000000004 RSI: 00002000000001c0 RDI: 0000000000000004
-RBP: 00007fc9cde01e19 R08: 0000000000000004 R09: 0000000000000000
-R10: 0000200000000140 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fc9cdfa5fa0 R14: 00007fc9cdfa5fa0 R15: 0000000000000005
- </TASK>
+This is a large series, but it is mostly mechanical. I've kept the patches very
+small, to make it easy to review and logic about each change. I have run this
+through fstests for btrfs and ext4, xfs is currently going. I wanted to get this
+out for review to make sure this big design changes are reasonable to everybody.
 
+The series is based on vfs/vfs.all branch, which is based on 6.9-rc1. Thanks,
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Josef
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Josef Bacik (50):
+  fs: add an i_obj_count refcount to the inode
+  fs: make the i_state flags an enum
+  fs: hold an i_obj_count reference in wait_sb_inodes
+  fs: hold an i_obj_count reference for the i_wb_list
+  fs: hold an i_obj_count reference for the i_io_list
+  fs: hold an i_obj_count reference in writeback_sb_inodes
+  fs: hold an i_obj_count reference while on the hashtable
+  fs: hold an i_obj_count reference while on the LRU list
+  fs: hold an i_obj_count reference while on the sb inode list
+  fs: stop accessing ->i_count directly in f2fs and gfs2
+  fs: hold an i_obj_count when we have an i_count reference
+  fs: rework iput logic
+  fs: add an I_LRU flag to the inode
+  fs: maintain a list of pinned inodes
+  fs: delete the inode from the LRU list on lookup
+  fs: change evict_inodes to use iput instead of evict directly
+  fs: hold a full ref while the inode is on a LRU
+  fs: disallow 0 reference count inodes
+  fs: make evict_inodes add to the dispose list under the i_lock
+  fs: convert i_count to refcount_t
+  fs: use refcount_inc_not_zero in igrab
+  fs: use inode_tryget in find_inode*
+  fs: update find_inode_*rcu to check the i_count count
+  fs: use igrab in insert_inode_locked
+  fs: remove I_WILL_FREE|I_FREEING check from __inode_add_lru
+  fs: remove I_WILL_FREE|I_FREEING check in inode_pin_lru_isolating
+  fs: use inode_tryget in evict_inodes
+  fs: change evict_dentries_for_decrypted_inodes to use refcount
+  block: use igrab in sync_bdevs
+  bcachefs: use the refcount instead of I_WILL_FREE|I_FREEING
+  btrfs: don't check I_WILL_FREE|I_FREEING
+  fs: use igrab in drop_pagecache_sb
+  fs: stop checking I_FREEING in d_find_alias_rcu
+  ext4: stop checking I_WILL_FREE|IFREEING in ext4_check_map_extents_env
+  fs: remove I_WILL_FREE|I_FREEING from fs-writeback.c
+  gfs2: remove I_WILL_FREE|I_FREEING usage
+  fs: remove I_WILL_FREE|I_FREEING check from dquot.c
+  notify: remove I_WILL_FREE|I_FREEING checks in fsnotify_unmount_inodes
+  xfs: remove I_FREEING check
+  landlock: remove I_FREEING|I_WILL_FREE check
+  fs: change inode_is_dirtytime_only to use refcount
+  btrfs: remove references to I_FREEING
+  ext4: remove reference to I_FREEING in inode.c
+  ext4: remove reference to I_FREEING in orphan.c
+  pnfs: use i_count refcount to determine if the inode is going away
+  fs: remove some spurious I_FREEING references in inode.c
+  xfs: remove reference to I_FREEING|I_WILL_FREE
+  ocfs2: do not set I_WILL_FREE
+  fs: remove I_FREEING|I_WILL_FREE
+  fs: add documentation explaining the reference count rules for inodes
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+ Documentation/filesystems/vfs.rst        |  23 ++
+ arch/powerpc/platforms/cell/spufs/file.c |   2 +-
+ block/bdev.c                             |   8 +-
+ fs/bcachefs/fs.c                         |   3 +-
+ fs/btrfs/inode.c                         |  11 +-
+ fs/ceph/mds_client.c                     |   2 +-
+ fs/crypto/keyring.c                      |   7 +-
+ fs/dcache.c                              |   4 +-
+ fs/drop_caches.c                         |  11 +-
+ fs/ext4/ialloc.c                         |   4 +-
+ fs/ext4/inode.c                          |   8 +-
+ fs/ext4/orphan.c                         |   6 +-
+ fs/f2fs/super.c                          |   4 +-
+ fs/fs-writeback.c                        | 105 +++++--
+ fs/gfs2/ops_fstype.c                     |  17 +-
+ fs/hpfs/inode.c                          |   2 +-
+ fs/inode.c                               | 371 ++++++++++++++++-------
+ fs/internal.h                            |   1 +
+ fs/nfs/inode.c                           |   4 +-
+ fs/nfs/pnfs.c                            |   2 +-
+ fs/notify/fsnotify.c                     |  26 +-
+ fs/ocfs2/inode.c                         |   4 -
+ fs/quota/dquot.c                         |   6 +-
+ fs/super.c                               |   3 +
+ fs/ubifs/super.c                         |   2 +-
+ fs/xfs/scrub/common.c                    |   3 +-
+ fs/xfs/xfs_bmap_util.c                   |   2 +-
+ fs/xfs/xfs_inode.c                       |   2 +-
+ fs/xfs/xfs_trace.h                       |   2 +-
+ include/linux/fs.h                       | 284 ++++++++++-------
+ include/trace/events/filelock.h          |   2 +-
+ include/trace/events/writeback.h         |   6 +-
+ security/landlock/fs.c                   |  22 +-
+ 33 files changed, 607 insertions(+), 352 deletions(-)
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+-- 
+2.49.0
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
