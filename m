@@ -1,154 +1,181 @@
-Return-Path: <linux-ext4+bounces-9499-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9500-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 718DFB2FB5B
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 15:55:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BF97B2FC0E
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 16:14:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F607622EC8
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 13:50:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98EFA6804D4
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 14:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A376B2EC554;
-	Thu, 21 Aug 2025 13:47:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85F523D7ED;
+	Thu, 21 Aug 2025 14:08:35 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B452EC546;
-	Thu, 21 Aug 2025 13:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC90320298C
+	for <linux-ext4@vger.kernel.org>; Thu, 21 Aug 2025 14:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755784040; cv=none; b=pDL4nGhjUB4AiFGm0TF529ct4H3PFoMAQCG4lu10yPZLQtBZgr7fHRK9KU0CvEvEkAk+3iytOsY3TzqNQoo6aVbeDS5huPUfRv44H63K8EMezgfhDkyay55hihl7QVc79nvBjvN/QqB56ob8PP7BoMc2UGAMJ5lAqmBFKmCAWnc=
+	t=1755785315; cv=none; b=pLS62waG38Ob/0EgNx6RRisEvBBWFXLa3gAgruBkn6zKawv631RAqRlB28JX+uaXVq104FlvYZ3uGLKBeFx49nCREWkLC7LMrfNfPuD/Rx7Lht3v0eYJDlMzhRE8GaY6hicU+vkTcpbNRCbCF2ezYkSLlhpEqGWedI8ga4qBQWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755784040; c=relaxed/simple;
-	bh=3ZVNvqFDjJxm5ZzDqKpS6MfeIKDwhSVa/QX5wPdQnss=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nuHFI+jqUXtNtn4eF83NVIPz4J+XtH/PD1HVolu/tbaaGbZmI5xmjH/3aT2YVgV/XNdEyCLJNcCQauHtIdKEeVIJO8q9mvFna+Ce5VDzh8rOAIJ2xM986K/M8Q+9Wj+9oFC+etfYXqP3NUQrlzNpWP2UNB5Ot7Su5g122uB2SqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c74PZ4R0mzKHMVZ;
-	Thu, 21 Aug 2025 21:47:14 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 1DE0A1A1D5D;
-	Thu, 21 Aug 2025 21:47:14 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgDXUxRgI6doV1LFEQ--.11929S4;
-	Thu, 21 Aug 2025 21:47:13 +0800 (CST)
-From: libaokun@huaweicloud.com
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	libaokun1@huawei.com,
-	libaokun@huaweicloud.com
-Subject: [PATCH] ext4: add ext4_sb_bread_nofail() helper function for ext4_free_branches()
-Date: Thu, 21 Aug 2025 21:38:57 +0800
-Message-Id: <20250821133857.80542-1-libaokun@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1755785315; c=relaxed/simple;
+	bh=znPykkbROliSjpvxuccxv6Ye409UsS8f7zOe/B+5JBQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=dBPD+JED1cSTLQUO/mieDtmx8uMHneNrbxt8NwkFLAgp8t3ZvQ/C/ZAV0fDcvsW5dgOFhYLk/uL5cvSfgreOOeoLKs0N/zNw8PglY4H3fmhBhnN8ZETnO9IXb1f/aH7mxgsl6wbMFEb+zyVxHm0cedMWGOdDJ+MRjVnIQW2Qn70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3e580be9806so10163765ab.1
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Aug 2025 07:08:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755785313; x=1756390113;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w/enU3klx7bfkpNDi5dMuC8pF4in7LDDV9JxB6hf48k=;
+        b=I1GkpOx5NbwryiejkmjdcbKSwaROZXOK8neT7IdBAuk7/u+Iy6RicLEpgW3oM/FZ+2
+         AiDPpg43kAixJ8sHsfU/wcsE0DLIgL3jolIoXek1WBHLOxMiV1/06ucz+RRanXrcfP2Y
+         EAZ9L3L0lsbjJgmUfm3a8YJJy3qFFLFl3K0gkOHZNbNg7tjpMhcWHPGd+N0x3dcpJ7qm
+         +NYFveRsb6aHnfHqdLJ3YabNZKhtiomVA4M48LJuZbhy1INqGE/Mjq77n4KID56b8d8s
+         2SS2uqpyHacsfEghpV8qZ05nOYj15OahwA9Yu9QLBDJHTwO8c3OZru6H9RJcAJ8BB1hQ
+         kAMw==
+X-Forwarded-Encrypted: i=1; AJvYcCXiR/a3QJ8pe2nKzWdDx+PcyLOFY/rrJg0HxOrN6EwTgiXBTfBWWPJbQF0FL4eoG3QJ54cxyFgRTFNk@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRNZliUyJdFU+Vy06N/9pRKHxaULUFyn2NEZNU5UNLzyNOpFm/
+	lCEnhVPgas1BqExSXzrsdIW+zWWwN57KoqFrdwbpjQx2N7liyj3EIS6Ax/E78XIsNUgVem7laN8
+	Vg8N5LI1Xg5G88XrpMCa9+OLTNiwyBvCZVkGZ/JidOJ67z5daEjxfZQW1kdM=
+X-Google-Smtp-Source: AGHT+IFxlZweowjB6dvQbH/PChzOLYG9iOSjfbeXU6zgQTKb9IwQSUWLKbNDNnQXv6sY2dPdDJrPl/H3ZUDDbUxILYOJ9slBOF2D
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDXUxRgI6doV1LFEQ--.11929S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFyDZw1ftF43Zr15JFyUtrb_yoW5Ww4fpw
-	n8CFyxCrWj93Wq9anxKa13tw1fAw4IkF1DGa4I9398XrW5X3savFyUtF15KFyjvFW3Xrsx
-	XF1jk34fAr1fCFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0F24l
-	c7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-	14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
-	ZFpf9x0JUmjgxUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAFBWikJ3MK3AACsN
+X-Received: by 2002:a05:6e02:2703:b0:3e8:ec53:1e7a with SMTP id
+ e9e14a558f8ab-3e8ec533da4mr5274285ab.15.1755785312942; Thu, 21 Aug 2025
+ 07:08:32 -0700 (PDT)
+Date: Thu, 21 Aug 2025 07:08:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68a72860.050a0220.3d78fd.002a.GAE@google.com>
+Subject: [syzbot] [exfat?] [ext4?] WARNING in __rt_mutex_slowlock_locked
+From: syzbot <syzbot+a725ab460fc1def9896f@syzkaller.appspotmail.com>
+To: bigeasy@linutronix.de, brauner@kernel.org, jack@suse.cz, 
+	linkinjeon@kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, 
+	viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 
-From: Baokun Li <libaokun1@huawei.com>
+Hello,
 
-The implicit __GFP_NOFAIL flag in ext4_sb_bread() was removed in commit
-8a83ac54940d ("ext4: call bdev_getblk() from sb_getblk_gfp()"), meaning
-the function can now fail under memory pressure.
+syzbot found the following issue on:
 
-Most callers of ext4_sb_bread() propagate the error to userspace and do not
-remount the filesystem read-only. However, ext4_free_branches() handles
-ext4_sb_bread() failure by remounting the filesystem read-only.
+HEAD commit:    41cd3fd15263 Merge tag 'pci-v6.17-fixes-2' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11ef37a2580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e1e1566c7726877e
+dashboard link: https://syzkaller.appspot.com/bug?extid=a725ab460fc1def9896f
+compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a857a2580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c916f0580000
 
-This implies that an ext3 filesystem (mounted via the ext4 driver) could be
-forcibly remounted read-only due to a transient page allocation failure,
-which is unacceptable.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bc397a2f4204/disk-41cd3fd1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5291086f4669/vmlinux-41cd3fd1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1099e6ad84b5/bzImage-41cd3fd1.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/c1980868ad6b/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=10e28fa2580000)
 
-To mitigate this, introduce a new helper function, ext4_sb_bread_nofail(),
-which explicitly uses __GFP_NOFAIL, and use it in ext4_free_branches().
+The issue was bisected to:
 
-Fixes: 8a83ac54940d ("ext4: call bdev_getblk() from sb_getblk_gfp()")
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+commit d2d6422f8bd17c6bb205133e290625a564194496
+Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Fri Sep 6 10:59:04 2024 +0000
+
+    x86: Allow to enable PREEMPT_RT.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16cf8fa2580000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15cf8fa2580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11cf8fa2580000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a725ab460fc1def9896f@syzkaller.appspotmail.com
+Fixes: d2d6422f8bd1 ("x86: Allow to enable PREEMPT_RT.")
+
+exFAT-fs (loop0): Medium has reported failures. Some data may be lost.
+exFAT-fs (loop0): failed to load upcase table (idx : 0x00010000, chksum : 0xe5674ec2, utbl_chksum : 0xe619d30d)
+------------[ cut here ]------------
+rtmutex deadlock detected
+WARNING: CPU: 0 PID: 6000 at kernel/locking/rtmutex.c:1674 rt_mutex_handle_deadlock kernel/locking/rtmutex.c:1674 [inline]
+WARNING: CPU: 0 PID: 6000 at kernel/locking/rtmutex.c:1674 __rt_mutex_slowlock kernel/locking/rtmutex.c:1734 [inline]
+WARNING: CPU: 0 PID: 6000 at kernel/locking/rtmutex.c:1674 __rt_mutex_slowlock_locked+0xed2/0x25e0 kernel/locking/rtmutex.c:1760
+Modules linked in:
+CPU: 0 UID: 0 PID: 6000 Comm: syz.0.17 Tainted: G        W           syzkaller #0 PREEMPT_{RT,(full)} 
+Tainted: [W]=WARN
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
+RIP: 0010:rt_mutex_handle_deadlock kernel/locking/rtmutex.c:1674 [inline]
+RIP: 0010:__rt_mutex_slowlock kernel/locking/rtmutex.c:1734 [inline]
+RIP: 0010:__rt_mutex_slowlock_locked+0xed2/0x25e0 kernel/locking/rtmutex.c:1760
+Code: 7c 24 20 dd 4c 8b b4 24 98 00 00 00 0f 85 fd 0a 00 00 48 8b 7c 24 10 e8 2c ee 5d 09 90 48 c7 c7 00 ed 0a 8b e8 df 89 e7 ff 90 <0f> 0b 90 90 48 8b 9c 24 80 00 00 00 43 80 3c 3e 00 74 08 4c 89 e7
+RSP: 0018:ffffc900048df840 EFLAGS: 00010246
+RAX: e12880a9366a4400 RBX: ffff8880324663e0 RCX: ffff888032465940
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc900048dfa30 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: ffffed1017104863 R12: ffff888032467060
+R13: ffff888032465958 R14: 1ffff1100648ce0c R15: dffffc0000000000
+FS:  0000555557981500(0000) GS:ffff8881268c5000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000035be0000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ rt_mutex_slowlock+0xb5/0x160 kernel/locking/rtmutex.c:1800
+ __rt_mutex_lock kernel/locking/rtmutex.c:1815 [inline]
+ rwbase_write_lock+0x14f/0x750 kernel/locking/rwbase_rt.c:244
+ inode_lock_nested include/linux/fs.h:914 [inline]
+ vfs_rename+0x68f/0xf00 fs/namei.c:5092
+ do_renameat2+0x6ce/0xa80 fs/namei.c:5278
+ __do_sys_renameat2 fs/namei.c:5312 [inline]
+ __se_sys_renameat2 fs/namei.c:5309 [inline]
+ __x64_sys_renameat2+0xce/0xe0 fs/namei.c:5309
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fc9cdd7ebe9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe70cc6ad8 EFLAGS: 00000246 ORIG_RAX: 000000000000013c
+RAX: ffffffffffffffda RBX: 00007fc9cdfa5fa0 RCX: 00007fc9cdd7ebe9
+RDX: 0000000000000004 RSI: 00002000000001c0 RDI: 0000000000000004
+RBP: 00007fc9cde01e19 R08: 0000000000000004 R09: 0000000000000000
+R10: 0000200000000140 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fc9cdfa5fa0 R14: 00007fc9cdfa5fa0 R15: 0000000000000005
+ </TASK>
+
+
 ---
- fs/ext4/ext4.h     | 2 ++
- fs/ext4/indirect.c | 2 +-
- fs/ext4/super.c    | 9 +++++++++
- 3 files changed, 12 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 106484739932..32315e51639e 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3134,6 +3134,8 @@ extern struct buffer_head *ext4_sb_bread(struct super_block *sb,
- 					 sector_t block, blk_opf_t op_flags);
- extern struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
- 						   sector_t block);
-+extern struct buffer_head *ext4_sb_bread_nofail(struct super_block *sb,
-+						sector_t block);
- extern void ext4_read_bh_nowait(struct buffer_head *bh, blk_opf_t op_flags,
- 				bh_end_io_t *end_io, bool simu_fail);
- extern int ext4_read_bh(struct buffer_head *bh, blk_opf_t op_flags,
-diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
-index 7de327fa7b1c..39350a18e919 100644
---- a/fs/ext4/indirect.c
-+++ b/fs/ext4/indirect.c
-@@ -1025,7 +1025,7 @@ static void ext4_free_branches(handle_t *handle, struct inode *inode,
- 			}
- 
- 			/* Go read the buffer for the next level down */
--			bh = ext4_sb_bread(inode->i_sb, nr, 0);
-+			bh = ext4_sb_bread_nofail(inode->i_sb, nr);
- 
- 			/*
- 			 * A read failure? Report error and clear slot
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c7d39da7e733..a0e2b396aa76 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -265,6 +265,15 @@ struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
- 	return __ext4_sb_bread_gfp(sb, block, 0, gfp);
- }
- 
-+struct buffer_head *ext4_sb_bread_nofail(struct super_block *sb,
-+					 sector_t block)
-+{
-+	gfp_t gfp = mapping_gfp_constraint(sb->s_bdev->bd_mapping,
-+			~__GFP_FS) | __GFP_MOVABLE | __GFP_NOFAIL;
-+
-+	return __ext4_sb_bread_gfp(sb, block, 0, gfp);
-+}
-+
- void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block)
- {
- 	struct buffer_head *bh = bdev_getblk(sb->s_bdev, block,
--- 
-2.39.2
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
