@@ -1,509 +1,263 @@
-Return-Path: <linux-ext4+bounces-9486-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9487-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0A28B2EAA4
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 03:25:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B36CB2F24D
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 10:36:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4AF31C84B56
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 01:25:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81E5960684F
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Aug 2025 08:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1CE217736;
-	Thu, 21 Aug 2025 01:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0D92C21E6;
+	Thu, 21 Aug 2025 08:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W8F0M3C0"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mhaR019h"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E9E20B81B;
-	Thu, 21 Aug 2025 01:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74E99286426;
+	Thu, 21 Aug 2025 08:25:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755739490; cv=none; b=cKCHT/Hnh13w7PTbSHDEZx+TaN1vvocFaALZl5aKUS6qAcDfs23RUYJQsXvYDjwPH9rvN2ZQ7eucOyp5l1EU/XG9o65IjPcCMBpBQcU1vEy2uq2laFmd3S9EopFIlNRRqdCC/89bVwECOQCNTw1otJZBKe5jCSUkoyvO3Xb5L+U=
+	t=1755764752; cv=none; b=tHvA525Oz70Pp9W8HPwysIbrowue2KQq1VbwxIcvRPwKq7puoqgP+se1dpaUFSVceG6oHRjkGy1chaVv+wmVTlxcqbii1tQVqQ0akODeyi1op8GpCNI0OLWxrkkI/qnHTuN31rX82fkYFHU9OY8Qdh6C1sXBNhng/Mb2AGA5DNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755739490; c=relaxed/simple;
-	bh=jqlZCWBArW/UPtaoCxgm8FgSWlef84QzZ8iZHk551W4=;
-	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pOFiLXmChUKzYRiCLzb8HLLOrk4OXUpp1a1YUSR8VSmC/MqPsPWOQlTjKkzto2vQsyhjk3VYxNtXKFZsj9IMlp9VxUUmo6nqVDe2Fyy5GWDZEH/amL/zyNY5j6Omr6OP7XyZrQ3TbRaSnJMIBfYCwTkrFm6NW8zX8ARLg+MtT0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W8F0M3C0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54D37C4CEEB;
-	Thu, 21 Aug 2025 01:24:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755739490;
-	bh=jqlZCWBArW/UPtaoCxgm8FgSWlef84QzZ8iZHk551W4=;
-	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=W8F0M3C0RqMmGqtQSgcLlethQ/Qtjo1A2n4i0XXo8TmMj7qTQ+9E/R6HmWkUvjNR9
-	 ZXaEMSymBlDakwhpN5Tn5PYFZmAlE16A9+U0LLMz1iJzK01tulFM8tsM9OcN/IH315
-	 7siHN8IHyEWwKpmg7YlKLFh11pLS9kFxbOpSUlCLJYUB/TAWwOcgEXneDnjdwu5fXQ
-	 MsMx0yf7lquT1Bw2WhM8XxoTXGAK3/r/Au0uIL1LnDQmdDpZwKvUeibGYp1tUFroNw
-	 Qh38jCnRa1YiXH1m6mvDD3z7kM0F5vJY/wnewXhm+0TE5WcdbEHjX7mV9SM8z9P5z0
-	 zsSOkIoh/r8DQ==
-Date: Wed, 20 Aug 2025 18:24:49 -0700
-Subject: [PATCH 6/6] libext2fs: improve caching for inodes
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: tytso@mit.edu
-Cc: John@groves.net, bernd@bsbernd.com, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, miklos@szeredi.hu, joannelkoong@gmail.com,
- neal@gompa.dev
-Message-ID: <175573714794.23206.8706515270632067316.stgit@frogsfrogsfrogs>
-In-Reply-To: <175573714661.23206.877359205706511372.stgit@frogsfrogsfrogs>
-References: <175573714661.23206.877359205706511372.stgit@frogsfrogsfrogs>
+	s=arc-20240116; t=1755764752; c=relaxed/simple;
+	bh=YH8f9LuYue17HimZLwRrZ2dKi4buVG2w+XdqQClGQTM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oz6fikEac03T/rYf/Zj2mcB+iQnCwRyS5YI7a3mnbkHRLyT7buUSM5ZEeQYJEY7SYIRZdTTxcIpNhyDB+PBKAdA17OamdE58Rnaq0IOk6NOCreqcqVMs5WVA+yQTK1zsEWzxPk6YVelkhBqe8eYTNE4oTq7IJgtVmb8my/zVpf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mhaR019h; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57KKqpu9011904;
+	Thu, 21 Aug 2025 08:25:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=2H/MrotFsMZx/RFMlPb99IUFWAskJX
+	X6bnnRaUEyK0Y=; b=mhaR019hNgG444l/N1WAzPdx8i/UdM/RiFZ5lTPBO5VeHn
+	QKOnmnGq53JGIVv/awqpwNLz2VGGRl+0IIYDORFIdfcOpi+CIJ2VIIwyirt49k4Y
+	ytYkMNwjNGqh8YbwDo5oIqZgJAKvCR5PpDLMbhYgmh4NubtAprvXVnypjQHFMzxI
+	8zxPw0oKyxg/3dHbFw7WuJkIMaDAIC8wnSpn9Ll98rsmGzNnBek2jhrGd3u1iHAu
+	UxgRnSdokYHDXUk43ZlxsLlxzzWiXsKbzrjnXrLMmOolWS3cYf2qwW868QW6JdcT
+	Xtt5QnHqVqluOj0m1SY+2PsnT3sDDoHAGTrwVB/g==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48n38vfjru-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Aug 2025 08:25:35 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57L8PYdx005612;
+	Thu, 21 Aug 2025 08:25:34 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48n38vfjrs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Aug 2025 08:25:34 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57L6m8lP027145;
+	Thu, 21 Aug 2025 08:25:33 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 48my4w7ds6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Aug 2025 08:25:33 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57L8PVDK51642802
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 21 Aug 2025 08:25:31 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4B0E12004B;
+	Thu, 21 Aug 2025 08:25:31 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1ADDC20040;
+	Thu, 21 Aug 2025 08:25:29 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.109.219.158])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 21 Aug 2025 08:25:28 +0000 (GMT)
+Date: Thu, 21 Aug 2025 13:55:29 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
+        tytso@mit.edu, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v4 11/11] ext4: Atomic write test for extent split across
+ leaf nodes
+Message-ID: <aKbX-dBzSC1pmPuh@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <cover.1754833177.git.ojaswin@linux.ibm.com>
+ <2c241ea2ede39914d29aa59cd06acfc951aed160.1754833177.git.ojaswin@linux.ibm.com>
+ <0eb2703b-a862-4a40-b271-6b8bb27b4ad4@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0eb2703b-a862-4a40-b271-6b8bb27b4ad4@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wx2NctUtzfC2yHY7-KjOM1LWGayoQw7J
+X-Authority-Analysis: v=2.4 cv=IrhHsL/g c=1 sm=1 tr=0 ts=68a6d7ff cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=kj9zAlcOel0A:10 a=2OwXVqhp2XgA:10 a=VnNF1IyMAAAA:8 a=GWIc7fT3pVVaNgT2m1IA:9
+ a=CjuIK1q_8ugA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODE5MDIyMiBTYWx0ZWRfX663KAyLHuNC3
+ AAIR5yR03i4dSzBzKXNy5rzLYF3XJ7OLEzHeoU5pulcVzfSawXJdjxdYgQAlYS57RFruBD+xV+g
+ m+t/8YbAm+FESeQ0cdLTcJkhxQRx7HfY22ygMZoIFabyk2cFA1tslbqyQNyxGH8h17383zm839v
+ voKDRpWKnwkpNBTh5NP3ukty/mg49R5NB8L8iCBsbjAL83fcxNW9kTizgT4MHiemNg/jj5Wn6Nz
+ 82QoOPeSuNwN8/265PyY+6Y3RSwP12zUo+9rBBGF31SQBGBTwVXSyP81CLEqEFo4MdVbBysUVui
+ TkV3ifhJv9DsUAW3iKn0t9vq1lrA0q9++ekw3r5//lSXFP3tU7y4XKMjGQS/t75i2eNVE7QL9aH
+ NK9ot6H83BwWYyzoOoygihoq58JZpg==
+X-Proofpoint-ORIG-GUID: nfPn7lHfX-UZtQMoOIlWYEXF4EazgGlC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-21_01,2025-08-20_03,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 malwarescore=0 bulkscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 impostorscore=0 adultscore=0 priorityscore=1501
+ clxscore=1015 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2508110000
+ definitions=main-2508190222
 
-From: Darrick J. Wong <djwong@kernel.org>
+On Wed, Aug 13, 2025 at 02:54:04PM +0100, John Garry wrote:
+> On 10/08/2025 14:42, Ojaswin Mujoo wrote:
+> > In ext4, even if an allocated range is physically and logically
+> > contiguous, it can still be split into 2 extents. This is because ext4
+> > does not merge extents across leaf nodes. This is an issue for atomic
+> > writes since even for a continuous extent the map block could (in rare
+> > cases) return a shorter map, hence tearning the write. This test creates
+> > such a file and ensures that the atomic write handles this case
+> > correctly
+> > 
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > ---
+> >   tests/ext4/063     | 129 +++++++++++++++++++++++++++++++++++++++++++++
+> >   tests/ext4/063.out |   2 +
+> >   2 files changed, 131 insertions(+)
+> >   create mode 100755 tests/ext4/063
+> >   create mode 100644 tests/ext4/063.out
+> > 
+> > diff --git a/tests/ext4/063 b/tests/ext4/063
+> > new file mode 100755
+> > index 00000000..40867acb
+> > --- /dev/null
+> > +++ b/tests/ext4/063
+> > @@ -0,0 +1,129 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
+> > +#
+> > +# In ext4, even if an allocated range is physically and logically contiguous,
+> > +# it can still be split into 2 extents.
+> 
+> Nit: I assume that you mean "2 or more extents"
+> 
+> > +# This is because ext4 does not merge
+> > +# extents across leaf nodes. This is an issue for atomic writes since even for
+> > +# a continuous extent the map block could (in rare cases) return a shorter map,
+> > +# hence tearning the write. This test creates such a file and ensures that the
+> 
+> tearing
+> 
+> > +# atomic write handles this case correctly
+> > +#
+> > +. ./common/preamble
+> > +. ./common/atomicwrites
+> > +_begin_fstest auto atomicwrites
+> > +
+> > +_require_scratch_write_atomic_multi_fsblock
+> > +_require_atomic_write_test_commands
+> > +_require_command "$DEBUGFS_PROG" debugfs
+> > +
+> > +prep() {
+> > +	local bs=`_get_block_size $SCRATCH_MNT`
+> > +	local ex_hdr_bytes=12
+> > +	local ex_entry_bytes=12
+> > +	local entries_per_blk=$(( (bs - ex_hdr_bytes) / ex_entry_bytes ))
+> > +
+> > +	# fill the extent tree leaf with bs len extents at alternate offsets.
+> > +	# The tree should look as follows
+> > +	#
+> > +	#                    +---------+---------+
+> > +	#                    | index 1 | index 2 |
+> > +	#                    +-----+---+-----+---+
+> > +	#                   +------+         +-----------+
+> > +	#                   |                            |
+> > +	#      +-------+-------+---+---------+     +-----+----+
+> > +	#      | ex 1  | ex 2  |   |  ex n   |     |  ex n+1  |
+> > +	#      | off:0 | off:2 |...| off:678 |     |  off:680 |
+> > +	#      | len:1 | len:1 |   |  len:1  |     |   len:1  |
+> > +	#      +-------+-------+---+---------+     +----------+
+> > +	#
+> > +	for i in $(seq 0 $entries_per_blk)
+> > +	do
+> > +		$XFS_IO_PROG -fc "pwrite -b $bs $((i * 2 * bs)) $bs" $testfile > /dev/null
+> > +	done
+> > +	sync $testfile
+> > +
+> > +	echo >> $seqres.full
+> > +	echo "Create file with extents spanning 2 leaves. Extents:">> $seqres.full
+> > +	echo "...">> $seqres.full
+> > +	$DEBUGFS_PROG -R "ex `basename $testfile`" $SCRATCH_DEV |& tail >> $seqres.full
+> > +
+> > +	# Now try to insert a new extent ex(new) between ex(n) and ex(n+1).
+> > +	# Since this is a new FS the allocator would find continuous blocks
+> > +	# such that ex(n) ex(new) ex(n+1) are physically(and logically)
+> > +	# contiguous. However, since we dont merge extents across leaf we will
+> 
+> don't
+> 
+> > +	# end up with a tree as:
+> > +	#
+> > +	#                    +---------+---------+
+> > +	#                    | index 1 | index 2 |
+> > +	#                    +-----+---+-----+---+
+> > +	#                   +------+         +------------+
+> > +	#                   |                             |
+> > +	#      +-------+-------+---+---------+     +------+-----------+
+> > +	#      | ex 1  | ex 2  |   |  ex n   |     |  ex n+1 (merged) |
+> > +	#      | off:0 | off:2 |...| off:678 |     |      off:679     |
+> > +	#      | len:1 | len:1 |   |  len:1  |     |      len:2       |
+> > +	#      +-------+-------+---+---------+     +------------------+
+> > +	#
+> > +	echo >> $seqres.full
+> > +	torn_ex_offset=$((((entries_per_blk * 2) - 1) * bs))
+> > +	$XFS_IO_PROG -c "pwrite $torn_ex_offset $bs" $testfile >> /dev/null
+> > +	sync $testfile
+> > +
+> > +	echo >> $seqres.full
+> > +	echo "Perform 1 block write at $torn_ex_offset to create torn extent. Extents:">> $seqres.full
+> > +	echo "...">> $seqres.full
+> > +	$DEBUGFS_PROG -R "ex `basename $testfile`" $SCRATCH_DEV |& tail >> $seqres.full
+> > +
+> > +	_scratch_cycle_mount
+> > +}
+> > +
+> 
+> Out of curiosity, for such a file with split extents, what would filefrag
+> output look like? An example would be nice.
 
-Use our new cache code to improve the ondisk inode cache inside
-libext2fs.  Oops, list.h duplication, and libext2fs needs to link
-against libsupport now.
+Hey John thanks for the review. Sorry for the late reply i had a mini
+vacation followed by lei suddenly not pulling emails :/
 
-Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
----
- lib/ext2fs/ext2fsP.h    |   13 ++-
- debugfs/Makefile.in     |    4 -
- e2fsck/Makefile.in      |    4 -
- lib/ext2fs/Makefile.in  |    4 +
- lib/ext2fs/inode.c      |  215 +++++++++++++++++++++++++++++++++++++----------
- resize/Makefile.in      |    4 -
- tests/progs/Makefile.in |    4 -
- 7 files changed, 187 insertions(+), 61 deletions(-)
+Anyways, yes I've added the $DEBUGFS command so we can observe the
+extent structure, but the filefrag would look something like this (last
+few extents):
 
+ ...
+ 337:      674..     674:      10130..     10130:      1:
+ 338:      676..     676:      10132..     10132:      1:
+ 339:      678..     678:      10134..     10134:      1:
+ 340:      679..     680:      10135..     10136:      2:             last,eof
 
-diff --git a/lib/ext2fs/ext2fsP.h b/lib/ext2fs/ext2fsP.h
-index 428081c9e2ff38..8490dd5139d543 100644
---- a/lib/ext2fs/ext2fsP.h
-+++ b/lib/ext2fs/ext2fsP.h
-@@ -82,21 +82,26 @@ struct dir_context {
- 	errcode_t	errcode;
- };
- 
-+#include "support/list.h"
-+#include "support/cache.h"
-+
- /*
-  * Inode cache structure
-  */
- struct ext2_inode_cache {
- 	void *				buffer;
- 	blk64_t				buffer_blk;
--	int				cache_last;
--	unsigned int			cache_size;
- 	int				refcount;
--	struct ext2_inode_cache_ent	*cache;
-+	struct cache			cache;
- };
- 
- struct ext2_inode_cache_ent {
-+	struct cache_node	node;
- 	ext2_ino_t		ino;
--	struct ext2_inode	*inode;
-+	uint8_t			access;
-+
-+	/* bytes representing a host-endian ext2_inode_large object */
-+	char			raw[];
- };
- 
- /*
-diff --git a/debugfs/Makefile.in b/debugfs/Makefile.in
-index 700ae87418c268..8dfd802692b839 100644
---- a/debugfs/Makefile.in
-+++ b/debugfs/Makefile.in
-@@ -38,9 +38,9 @@ SRCS= debug_cmds.c $(srcdir)/debugfs.c $(srcdir)/util.c $(srcdir)/ls.c \
- 	$(srcdir)/../e2fsck/recovery.c $(srcdir)/do_journal.c \
- 	$(srcdir)/do_orphan.c
- 
--LIBS= $(LIBSUPPORT) $(LIBEXT2FS) $(LIBE2P) $(LIBSS) $(LIBCOM_ERR) $(LIBBLKID) \
-+LIBS= $(LIBEXT2FS) $(LIBSUPPORT) $(LIBE2P) $(LIBSS) $(LIBCOM_ERR) $(LIBBLKID) \
- 	$(LIBUUID) $(LIBMAGIC) $(SYSLIBS) $(LIBARCHIVE)
--DEPLIBS= $(DEPLIBSUPPORT) $(LIBEXT2FS) $(LIBE2P) $(DEPLIBSS) $(DEPLIBCOM_ERR) \
-+DEPLIBS= $(LIBEXT2FS) $(DEPLIBSUPPORT) $(LIBE2P) $(DEPLIBSS) $(DEPLIBCOM_ERR) \
- 	$(DEPLIBBLKID) $(DEPLIBUUID)
- 
- STATIC_LIBS= $(STATIC_LIBSUPPORT) $(STATIC_LIBEXT2FS) $(STATIC_LIBSS) \
-diff --git a/e2fsck/Makefile.in b/e2fsck/Makefile.in
-index 52fad9cbfd2b23..61451f2d9e3276 100644
---- a/e2fsck/Makefile.in
-+++ b/e2fsck/Makefile.in
-@@ -16,9 +16,9 @@ PROGS=		e2fsck
- MANPAGES=	e2fsck.8
- FMANPAGES=	e2fsck.conf.5
- 
--LIBS= $(LIBSUPPORT) $(LIBEXT2FS) $(LIBCOM_ERR) $(LIBBLKID) $(LIBUUID) \
-+LIBS= $(LIBEXT2FS) $(LIBSUPPORT) $(LIBCOM_ERR) $(LIBBLKID) $(LIBUUID) \
- 	$(LIBINTL) $(LIBE2P) $(LIBMAGIC) $(SYSLIBS)
--DEPLIBS= $(DEPLIBSUPPORT) $(LIBEXT2FS) $(DEPLIBCOM_ERR) $(DEPLIBBLKID) \
-+DEPLIBS= $(LIBEXT2FS) $(DEPLIBSUPPORT) $(DEPLIBCOM_ERR) $(DEPLIBBLKID) \
- 	 $(DEPLIBUUID) $(DEPLIBE2P)
- 
- STATIC_LIBS= $(STATIC_LIBSUPPORT) $(STATIC_LIBEXT2FS) $(STATIC_LIBCOM_ERR) \
-diff --git a/lib/ext2fs/Makefile.in b/lib/ext2fs/Makefile.in
-index 1d0991defff804..89254ded7c0723 100644
---- a/lib/ext2fs/Makefile.in
-+++ b/lib/ext2fs/Makefile.in
-@@ -976,7 +976,9 @@ inode.o: $(srcdir)/inode.c $(top_builddir)/lib/config.h \
-  $(srcdir)/ext2fs.h $(srcdir)/ext2_fs.h $(srcdir)/ext3_extents.h \
-  $(top_srcdir)/lib/et/com_err.h $(srcdir)/ext2_io.h \
-  $(top_builddir)/lib/ext2fs/ext2_err.h $(srcdir)/ext2_ext_attr.h \
-- $(srcdir)/hashmap.h $(srcdir)/bitops.h $(srcdir)/e2image.h
-+ $(srcdir)/hashmap.h $(srcdir)/bitops.h $(srcdir)/e2image.h \
-+ $(srcdir)/../support/cache.h $(srcdir)/../support/list.h \
-+ $(srcdir)/../support/xbitops.h 
- inode_io.o: $(srcdir)/inode_io.c $(top_builddir)/lib/config.h \
-  $(top_builddir)/lib/dirpaths.h $(srcdir)/ext2_fs.h \
-  $(top_builddir)/lib/ext2fs/ext2_types.h $(srcdir)/ext2fs.h \
-diff --git a/lib/ext2fs/inode.c b/lib/ext2fs/inode.c
-index c9389a2324be07..8ca82af1ab35d3 100644
---- a/lib/ext2fs/inode.c
-+++ b/lib/ext2fs/inode.c
-@@ -59,18 +59,145 @@ struct ext2_struct_inode_scan {
- 	int			reserved[6];
- };
- 
-+struct ext2_inode_cache_key {
-+	ext2_filsys		fs;
-+	ext2_ino_t		ino;
-+};
-+
-+#define ICKEY(key)	((struct ext2_inode_cache_key *)(key))
-+#define ICNODE(node)	(container_of((node), struct ext2_inode_cache_ent, node))
-+
-+static unsigned int
-+ext2_inode_cache_hash(cache_key_t key, unsigned int hashsize,
-+		      unsigned int hashshift)
-+{
-+	uint64_t	hashval = ICKEY(key)->ino;
-+	uint64_t	tmp;
-+
-+	tmp = hashval ^ (GOLDEN_RATIO_PRIME + hashval) / CACHE_LINE_SIZE;
-+	tmp = tmp ^ ((tmp ^ GOLDEN_RATIO_PRIME) >> hashshift);
-+	return tmp % hashsize;
-+}
-+
-+static int ext2_inode_cache_compare(struct cache_node *node, cache_key_t key)
-+{
-+	struct ext2_inode_cache_ent *ent = ICNODE(node);
-+	struct ext2_inode_cache_key *ikey = ICKEY(key);
-+
-+	if (ent->ino == ikey->ino)
-+		return CACHE_HIT;
-+
-+	return CACHE_MISS;
-+}
-+
-+static struct cache_node *ext2_inode_cache_alloc(struct cache *c,
-+						 cache_key_t key)
-+{
-+	struct ext2_inode_cache_key *ikey = ICKEY(key);
-+	struct ext2_inode_cache_ent *ent;
-+
-+	ent = calloc(1, sizeof(struct ext2_inode_cache_ent) +
-+			EXT2_INODE_SIZE(ikey->fs->super));
-+	if (!ent)
-+		return NULL;
-+
-+	ent->ino = ikey->ino;
-+	return &ent->node;
-+}
-+
-+static bool ext2_inode_cache_flush(struct cache *c, struct cache_node *node)
-+{
-+	/* can always drop inode cache */
-+	return 0;
-+}
-+
-+static void ext2_inode_cache_relse(struct cache *c, struct cache_node *node)
-+{
-+	struct ext2_inode_cache_ent *ent = ICNODE(node);
-+
-+	free(ent);
-+}
-+
-+static unsigned int ext2_inode_cache_bulkrelse(struct cache *cache,
-+					       struct list_head *list)
-+{
-+	struct cache_node *cn, *n;
-+	int count = 0;
-+
-+	if (list_empty(list))
-+		return 0;
-+
-+	list_for_each_entry_safe(cn, n, list, cn_mru) {
-+		ext2_inode_cache_relse(cache, cn);
-+		count++;
-+	}
-+
-+	return count;
-+}
-+
-+static const struct cache_operations ext2_inode_cache_ops = {
-+	.hash		= ext2_inode_cache_hash,
-+	.alloc		= ext2_inode_cache_alloc,
-+	.flush		= ext2_inode_cache_flush,
-+	.relse		= ext2_inode_cache_relse,
-+	.compare	= ext2_inode_cache_compare,
-+	.bulkrelse	= ext2_inode_cache_bulkrelse,
-+	.resize		= cache_gradual_resize,
-+};
-+
-+static errcode_t ext2_inode_cache_iget(ext2_filsys fs, ext2_ino_t ino,
-+				       unsigned int getflags,
-+				       struct ext2_inode_cache_ent **entp)
-+{
-+	struct ext2_inode_cache_key ikey = {
-+		.fs = fs,
-+		.ino = ino,
-+	};
-+	struct cache_node *node = NULL;
-+
-+	cache_node_get(&fs->icache->cache, &ikey, getflags, &node);
-+	if (!node)
-+		return ENOMEM;
-+
-+	*entp = ICNODE(node);
-+	return 0;
-+}
-+
-+static void ext2_inode_cache_iput(ext2_filsys fs,
-+				  struct ext2_inode_cache_ent *ent)
-+{
-+	cache_node_put(&fs->icache->cache, &ent->node);
-+}
-+
-+static int ext2_inode_cache_ipurge(ext2_filsys fs, ext2_ino_t ino,
-+				   struct ext2_inode_cache_ent *ent)
-+{
-+	struct ext2_inode_cache_key ikey = {
-+		.fs = fs,
-+		.ino = ino,
-+	};
-+
-+	return cache_node_purge(&fs->icache->cache, &ikey, &ent->node);
-+}
-+
-+static void ext2_inode_cache_ibump(ext2_filsys fs,
-+				   struct ext2_inode_cache_ent *ent)
-+{
-+	if (++ent->access > 50) {
-+		cache_node_bump_priority(&fs->icache->cache, &ent->node);
-+		ent->access = 0;
-+	}
-+}
-+
- /*
-  * This routine flushes the icache, if it exists.
-  */
- errcode_t ext2fs_flush_icache(ext2_filsys fs)
- {
--	unsigned	i;
--
- 	if (!fs->icache)
- 		return 0;
- 
--	for (i=0; i < fs->icache->cache_size; i++)
--		fs->icache->cache[i].ino = 0;
-+	cache_purge(&fs->icache->cache);
- 
- 	fs->icache->buffer_blk = 0;
- 	return 0;
-@@ -81,23 +208,20 @@ errcode_t ext2fs_flush_icache(ext2_filsys fs)
-  */
- void ext2fs_free_inode_cache(struct ext2_inode_cache *icache)
- {
--	unsigned i;
--
- 	if (--icache->refcount)
- 		return;
- 	if (icache->buffer)
- 		ext2fs_free_mem(&icache->buffer);
--	for (i = 0; i < icache->cache_size; i++)
--		ext2fs_free_mem(&icache->cache[i].inode);
--	if (icache->cache)
--		ext2fs_free_mem(&icache->cache);
-+	if (cache_initialized(&icache->cache)) {
-+		cache_purge(&icache->cache);
-+		cache_destroy(&icache->cache);
-+	}
- 	icache->buffer_blk = 0;
- 	ext2fs_free_mem(&icache);
- }
- 
- errcode_t ext2fs_create_inode_cache(ext2_filsys fs, unsigned int cache_size)
- {
--	unsigned	i;
- 	errcode_t	retval;
- 
- 	if (fs->icache)
-@@ -112,22 +236,12 @@ errcode_t ext2fs_create_inode_cache(ext2_filsys fs, unsigned int cache_size)
- 		goto errout;
- 
- 	fs->icache->buffer_blk = 0;
--	fs->icache->cache_last = -1;
--	fs->icache->cache_size = cache_size;
- 	fs->icache->refcount = 1;
--	retval = ext2fs_get_array(fs->icache->cache_size,
--				  sizeof(struct ext2_inode_cache_ent),
--				  &fs->icache->cache);
-+	retval = cache_init(0, cache_size, &ext2_inode_cache_ops,
-+			    &fs->icache->cache);
- 	if (retval)
- 		goto errout;
- 
--	for (i = 0; i < fs->icache->cache_size; i++) {
--		retval = ext2fs_get_mem(EXT2_INODE_SIZE(fs->super),
--					&fs->icache->cache[i].inode);
--		if (retval)
--			goto errout;
--	}
--
- 	ext2fs_flush_icache(fs);
- 	return 0;
- errout:
-@@ -762,12 +876,12 @@ errcode_t ext2fs_read_inode2(ext2_filsys fs, ext2_ino_t ino,
- 	unsigned long 	block, offset;
- 	char 		*ptr;
- 	errcode_t	retval;
--	unsigned	i;
- 	int		clen, inodes_per_block;
- 	io_channel	io;
- 	int		length = EXT2_INODE_SIZE(fs->super);
- 	struct ext2_inode_large	*iptr;
--	int		cache_slot, fail_csum;
-+	struct ext2_inode_cache_ent *ent = NULL;
-+	int		fail_csum;
- 
- 	EXT2_CHECK_MAGIC(fs, EXT2_ET_MAGIC_EXT2FS_FILSYS);
- 
-@@ -794,12 +908,12 @@ errcode_t ext2fs_read_inode2(ext2_filsys fs, ext2_ino_t ino,
- 			return retval;
- 	}
- 	/* Check to see if it's in the inode cache */
--	for (i = 0; i < fs->icache->cache_size; i++) {
--		if (fs->icache->cache[i].ino == ino) {
--			memcpy(inode, fs->icache->cache[i].inode,
--			       (bufsize > length) ? length : bufsize);
--			return 0;
--		}
-+	ext2_inode_cache_iget(fs, ino, CACHE_GET_INCORE, &ent);
-+	if (ent) {
-+		memcpy(inode, ent->raw, (bufsize > length) ? length : bufsize);
-+		ext2_inode_cache_ibump(fs, ent);
-+		ext2_inode_cache_iput(fs, ent);
-+		return 0;
- 	}
- 	if (fs->flags & EXT2_FLAG_IMAGE_FILE) {
- 		inodes_per_block = fs->blocksize / EXT2_INODE_SIZE(fs->super);
-@@ -827,8 +941,10 @@ errcode_t ext2fs_read_inode2(ext2_filsys fs, ext2_ino_t ino,
- 	}
- 	offset &= (EXT2_BLOCK_SIZE(fs->super) - 1);
- 
--	cache_slot = (fs->icache->cache_last + 1) % fs->icache->cache_size;
--	iptr = (struct ext2_inode_large *)fs->icache->cache[cache_slot].inode;
-+	retval = ext2_inode_cache_iget(fs, ino, 0, &ent);
-+	if (retval)
-+		return retval;
-+	iptr = (struct ext2_inode_large *)ent->raw;
- 
- 	ptr = (char *) iptr;
- 	while (length) {
-@@ -863,13 +979,15 @@ errcode_t ext2fs_read_inode2(ext2_filsys fs, ext2_ino_t ino,
- 			       0, length);
- #endif
- 
--	/* Update the inode cache bookkeeping */
--	if (!fail_csum) {
--		fs->icache->cache_last = cache_slot;
--		fs->icache->cache[cache_slot].ino = ino;
--	}
- 	memcpy(inode, iptr, (bufsize > length) ? length : bufsize);
- 
-+	/* Update the inode cache bookkeeping */
-+	if (!fail_csum)
-+		ext2_inode_cache_ibump(fs, ent);
-+	ext2_inode_cache_iput(fs, ent);
-+	if (fail_csum)
-+		ext2_inode_cache_ipurge(fs, ino, ent);
-+
- 	if (!(fs->flags & EXT2_FLAG_IGNORE_CSUM_ERRORS) &&
- 	    !(flags & READ_INODE_NOCSUM) && fail_csum)
- 		return EXT2_ET_INODE_CSUM_INVALID;
-@@ -899,8 +1017,8 @@ errcode_t ext2fs_write_inode2(ext2_filsys fs, ext2_ino_t ino,
- 	unsigned long block, offset;
- 	errcode_t retval = 0;
- 	struct ext2_inode_large *w_inode;
-+	struct ext2_inode_cache_ent *ent;
- 	char *ptr;
--	unsigned i;
- 	int clen;
- 	int length = EXT2_INODE_SIZE(fs->super);
- 
-@@ -933,19 +1051,20 @@ errcode_t ext2fs_write_inode2(ext2_filsys fs, ext2_ino_t ino,
- 	}
- 
- 	/* Check to see if the inode cache needs to be updated */
--	if (fs->icache) {
--		for (i=0; i < fs->icache->cache_size; i++) {
--			if (fs->icache->cache[i].ino == ino) {
--				memcpy(fs->icache->cache[i].inode, inode,
--				       (bufsize > length) ? length : bufsize);
--				break;
--			}
--		}
--	} else {
-+	if (!fs->icache) {
- 		retval = ext2fs_create_inode_cache(fs, 4);
- 		if (retval)
- 			goto errout;
- 	}
-+
-+	retval = ext2_inode_cache_iget(fs, ino, 0, &ent);
-+	if (retval)
-+		goto errout;
-+
-+	memcpy(ent->raw, inode, (bufsize > length) ? length : bufsize);
-+	ext2_inode_cache_ibump(fs, ent);
-+	ext2_inode_cache_iput(fs, ent);
-+
- 	memcpy(w_inode, inode, (bufsize > length) ? length : bufsize);
- 
- 	if (!(fs->flags & EXT2_FLAG_RW)) {
-diff --git a/resize/Makefile.in b/resize/Makefile.in
-index 27f721305e052e..d03d3bfc309968 100644
---- a/resize/Makefile.in
-+++ b/resize/Makefile.in
-@@ -28,8 +28,8 @@ SRCS= $(srcdir)/extent.c \
- 	$(srcdir)/resource_track.c \
- 	$(srcdir)/sim_progress.c
- 
--LIBS= $(LIBE2P) $(LIBEXT2FS) $(LIBCOM_ERR) $(LIBINTL) $(SYSLIBS)
--DEPLIBS= $(LIBE2P) $(LIBEXT2FS) $(DEPLIBCOM_ERR)
-+LIBS= $(LIBE2P) $(LIBEXT2FS) $(LIBSUPPORT) $(LIBCOM_ERR) $(LIBINTL) $(SYSLIBS)
-+DEPLIBS= $(LIBE2P) $(LIBEXT2FS) $(DEPLIBSUPPORT) $(DEPLIBCOM_ERR)
- 
- STATIC_LIBS= $(STATIC_LIBE2P) $(STATIC_LIBEXT2FS) $(STATIC_LIBCOM_ERR) \
- 	$(LIBINTL) $(SYSLIBS)
-diff --git a/tests/progs/Makefile.in b/tests/progs/Makefile.in
-index 1a8e9299a1c1ca..64069a52c57cd3 100644
---- a/tests/progs/Makefile.in
-+++ b/tests/progs/Makefile.in
-@@ -23,8 +23,8 @@ TEST_ICOUNT_OBJS=	test_icount.o test_icount_cmds.o
- SRCS=	$(srcdir)/test_icount.c \
- 	$(srcdir)/test_rel.c
- 
--LIBS= $(LIBEXT2FS) $(LIBSS) $(LIBCOM_ERR) $(SYSLIBS)
--DEPLIBS= $(LIBEXT2FS) $(DEPLIBSS) $(DEPLIBCOM_ERR)
-+LIBS= $(LIBEXT2FS) $(LIBSUPPORT) $(LIBSS) $(LIBCOM_ERR) $(SYSLIBS)
-+DEPLIBS= $(LIBEXT2FS) $(DEPLIBSUPPORT) $(DEPLIBSS) $(DEPLIBCOM_ERR)
- 
- .c.o:
- 	$(E) "	CC $<"
+Notice that the last 2 extents are logically and physically continuous
+but not merged.
 
+Reards,
+ojaswin
+
+> 
+> Thanks,
+> John
 
