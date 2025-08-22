@@ -1,88 +1,75 @@
-Return-Path: <linux-ext4+bounces-9580-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9582-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B022B319D6
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Aug 2025 15:40:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71BB4B31AAA
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Aug 2025 16:05:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51780AE3EB2
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Aug 2025 13:34:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78F17AE699D
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Aug 2025 14:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4410E302CBB;
-	Fri, 22 Aug 2025 13:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B804309DAF;
+	Fri, 22 Aug 2025 13:57:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="m4AyDOqZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UWqk4RJe"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D533302CAD
-	for <linux-ext4@vger.kernel.org>; Fri, 22 Aug 2025 13:31:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E46F3074BE;
+	Fri, 22 Aug 2025 13:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755869515; cv=none; b=lRm3W3Hacrlu4yQIuN2p86ZnquXCSEFbAitePGdratmgCxwL5n8pEJEwfszZapABmRbV+FdKoVDpWGkMLGK6yiV66DuF5j1yvyDBREZqDII0trPYO8z529ObysQG7c3GmY9Usdljxhjm6KoBsFMGroXEDzyFaui1O155xbVehCo=
+	t=1755871062; cv=none; b=ZpJ7odk9odCnT/wmEVEuE8Leq1dxb+nUbEguoF9dIvg/azyTJVfpzL9iuu0Vurv1WlGgQod4HrqvcBisi09a/xiGAHyqYn0GbwTQDp4MjZg8zpiKvRO2hk9AC0qbKnatde41pjedrTwt3UfLNzDvnX8ucCOOGiqfZJgpVIsXt3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755869515; c=relaxed/simple;
-	bh=doC7mMX6Qib2P8llXBZPDzV0rg9Aoj4aCzPhSQRvmpA=;
+	s=arc-20240116; t=1755871062; c=relaxed/simple;
+	bh=4Ym9yF5fTrA4dks5oCV9NLu3Hj2LMaWfEQG4rZ8T+N0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h+MaZf6mUZbayg7hTr4OE9vGg5WNcM7GnzIiSpQeK1rcJDRAyeyHiR88RJpPr/cJzh19s2W8tY0BEyt53rx+bONqMM82XXChhzD1kRj8z1tlp8w/DtHCzyPGGB1E+j4dEu5EdqV8StMIVQCxz/rRMjGpt3oY5ZKKzGZ+Or5BPqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=m4AyDOqZ; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e95230750ceso518435276.0
-        for <linux-ext4@vger.kernel.org>; Fri, 22 Aug 2025 06:31:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1755869513; x=1756474313; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1UHIuV1R9kJlTum1IUZl89jWukXHK0SZ9mLRMY0AeM=;
-        b=m4AyDOqZd3/SMkwmzBLgWZHnUR01cCkYdjU/LiqdqJR4S5LGsIkq7eywmJJflfiwlx
-         yRWdYqAKk0Hlh+StZYzw9dTI9TfIcoAyRKRw9nWgANVHQLOrJHkx7vdjhR1JxizyebuB
-         1ZZIn64ahupkbBnekETkD5yAhhc3wNJbs0fEJvtUVSPAsR4l4Wj/VrYyZAFPP+1Qz0fE
-         +irUu1OVMdPT9bRftBnjpEMnmoX0gtm2g4SOBo3bxoSeyVpH85onwoJDYxXTHcP6T64l
-         MByAySXjN4jFB8uO/432cpVLOT/YJtjoD9l+5NRs33uro/DYU27hP2rmt4yGBnW8aerb
-         Krzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755869513; x=1756474313;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O1UHIuV1R9kJlTum1IUZl89jWukXHK0SZ9mLRMY0AeM=;
-        b=gEcH2dpEAda9iGbt+rmdUmXCeGQY7LwUHGpgVv0PI16A+LNFPP7HZ/CPDc+J2+6ygQ
-         h3wtxbTJ5LdPVTpqfaChjw7sLEb8gLvPBP0f+Y36CP4jZinIDflzFui4Ndg6CmYyaZeO
-         7klVks1RdVFxL+Iw/tkFj4Dfp9yy3HHKHERv36FgFbIXI3H3jhEZgK2wT0J8vqB/sZ6h
-         7P/qSgGLGNilW2zdC83Yje1W7DlQT2hRCyTxzPivr5TyNslXMIfcRDGu0FwqRCF/0xhh
-         FZAjiKKyeEvCaUUviikExlKv/xCf3OYZ6XPgO7uXHauPdj8nKiu0DhshhYdA7wu56x9d
-         hU6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUhSYxyfrJdyHPPfoITdWagQgUIxAACtQISjfklRRKZNttyk02YZXrO9fqXkuYpOx5J+Xu7bT+q9fnj@vger.kernel.org
-X-Gm-Message-State: AOJu0Yya1Pw24saq/jHik5JXS/G5vCR3xj0SFEcEdSvJU3C5m7j2A3Xu
-	bHB+YeUSZn06UTghV1OWFsH/aDPsQ5lAap+Ro4/K7lMDOXLxurrl0dmdB8IZXhtIWGQ=
-X-Gm-Gg: ASbGncuHvCEw8ZBzE2Ik7tZpObzdSH6Yv2AMyD9eoXQ+OO6EdDPOfroET5aZbdHVrTh
-	nKxXzs8hIqrvguvN0v5rYdcPFjC4MMNGqY0jiYHGr5UaS6K3AmDarFi9pbGztErYZam860yjjf8
-	z55WUVmg8g9E8M19QaZTFA6xCl9ZdtSRYcS0HkmYeOiCPR8CfAopGX61UAmGnU0V7IlBtFttDLS
-	Rt0Syaq/9oSll2rmao10TK1T60dxsrCuJOrwrKi4IOqPXVANEEkJhQFjDTZRrTifMKOxdjJ1sS8
-	M08q0ZWdu3FzIxtIB5bqsjhFsK+u6gcqiLL7jUMounR5BLu97uG1JUBcdjcxNoEWb2JbsXeKKxn
-	xJ7AiW7ce1ju1iliQqUufeRfV5CIB05qxjc9+JePZqdHmcGSjicc+log2T2w=
-X-Google-Smtp-Source: AGHT+IHOMcdXFoBNlqJp1nvuHeuGm4jjp9gkJ74n4aiOq3a9UsdZVSTvCfFQFaKC6IhpCYd+XHR/sQ==
-X-Received: by 2002:a05:6902:2412:b0:e94:e1e6:d1d with SMTP id 3f1490d57ef6-e951d11229fmr2850101276.25.1755869512847;
-        Fri, 22 Aug 2025 06:31:52 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e94f805c56fsm2505171276.3.2025.08.22.06.31.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Aug 2025 06:31:52 -0700 (PDT)
-Date: Fri, 22 Aug 2025 09:31:51 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 02/50] fs: make the i_state flags an enum
-Message-ID: <20250822133151.GB927384@perftesting>
-References: <cover.1755806649.git.josef@toxicpanda.com>
- <02211105388c53dc68b7f4332f9b5649d5b66b71.1755806649.git.josef@toxicpanda.com>
- <20250822-orcas-bemannten-728c9946b160@brauner>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QRchxLfXh4MyXu0DT9Eu/xn32GunoXN0hrnqwv1kSQYoQtG3Lufx+lP+QdTfRmasiA0B0fLB9Ne62dRlYYVTMEYCtJNLUSGU8FgUyYspopnQDv7K0pt/cmBhKeHl0Oxrk88n6klmc7T2bFWvNCzme+KBo2XEC482uy5bPTBvaNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UWqk4RJe; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1755871060; x=1787407060;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4Ym9yF5fTrA4dks5oCV9NLu3Hj2LMaWfEQG4rZ8T+N0=;
+  b=UWqk4RJerQyjG4/QSLpROsDfOtokjZySE+74aMAsxG96f4lUiW+BIBOC
+   xf51aOIMIBiOK98Dez0Zs0yFDsQJ/fc3OqYGEZlnCWyIcj96wSWxRT2CU
+   Z85jGdYBX0JJvdovrtikIh4aGZXtt+X7YE0srdvCWG7kPiOcQFx3aAMRr
+   gIdYqFmff0gHzwaxupt87sfvSAxech8OSMHYIZLgsA8dJqFjU6cuJwSuk
+   8OQuMc01UauQUq0WrFUz9QKD4bNxltmmvSTAEmMQK70uBNROFrVTnhD4j
+   y+AWSWUD73Vb/REYisyvBUd9zuqbNp5guhBvD0faYQFtdiYu5WH0H0GOd
+   w==;
+X-CSE-ConnectionGUID: U0g1/v51QWqY6lQkmnrlmg==
+X-CSE-MsgGUID: ILTcE0iHTPmzl69IQksCpg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11529"; a="61821050"
+X-IronPort-AV: E=Sophos;i="6.17,309,1747724400"; 
+   d="scan'208";a="61821050"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2025 06:57:36 -0700
+X-CSE-ConnectionGUID: TtaRggd4R2KFb29mZ5ryGQ==
+X-CSE-MsgGUID: x3SYgpxDRKm+Ctkwy9TM9g==
+X-ExtLoop1: 1
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by fmviesa003.fm.intel.com with ESMTP; 22 Aug 2025 06:57:33 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1upSGf-000LMx-1C;
+	Fri, 22 Aug 2025 13:57:24 +0000
+Date: Fri, 22 Aug 2025 21:56:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+	brauner@kernel.org, viro@zeniv.linux.org.uk
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 20/50] fs: convert i_count to refcount_t
+Message-ID: <202508222128.KZDs9G7n-lkp@intel.com>
+References: <6a12e35a078d765b50bc7ced7030d6cd98065528.1755806649.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -91,190 +78,193 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250822-orcas-bemannten-728c9946b160@brauner>
+In-Reply-To: <6a12e35a078d765b50bc7ced7030d6cd98065528.1755806649.git.josef@toxicpanda.com>
 
-On Fri, Aug 22, 2025 at 01:08:07PM +0200, Christian Brauner wrote:
-> On Thu, Aug 21, 2025 at 04:18:13PM -0400, Josef Bacik wrote:
-> > Adjusting i_state flags always means updating the values manually. Bring
-> > these forward into the 2020's and make a nice clean macro for defining
-> > the i_state values as an enum, providing __ variants for the cases where
-> > we need the bit position instead of the actual value, and leaving the
-> > actual NAME as the 1U << bit value.
-> > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >  include/linux/fs.h | 234 +++++++++++++++++++++++----------------------
-> >  1 file changed, 122 insertions(+), 112 deletions(-)
-> > 
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index 9a1ce67eed33..e741dc453c2c 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -665,6 +665,127 @@ is_uncached_acl(struct posix_acl *acl)
-> >  #define IOP_MGTIME	0x0020
-> >  #define IOP_CACHED_LINK	0x0040
-> >  
-> > +/*
-> > + * Inode state bits.  Protected by inode->i_lock
-> > + *
-> > + * Four bits determine the dirty state of the inode: I_DIRTY_SYNC,
-> > + * I_DIRTY_DATASYNC, I_DIRTY_PAGES, and I_DIRTY_TIME.
-> > + *
-> > + * Four bits define the lifetime of an inode.  Initially, inodes are I_NEW,
-> > + * until that flag is cleared.  I_WILL_FREE, I_FREEING and I_CLEAR are set at
-> > + * various stages of removing an inode.
-> > + *
-> > + * Two bits are used for locking and completion notification, I_NEW and I_SYNC.
-> > + *
-> > + * I_DIRTY_SYNC		Inode is dirty, but doesn't have to be written on
-> > + *			fdatasync() (unless I_DIRTY_DATASYNC is also set).
-> > + *			Timestamp updates are the usual cause.
-> > + * I_DIRTY_DATASYNC	Data-related inode changes pending.  We keep track of
-> > + *			these changes separately from I_DIRTY_SYNC so that we
-> > + *			don't have to write inode on fdatasync() when only
-> > + *			e.g. the timestamps have changed.
-> > + * I_DIRTY_PAGES	Inode has dirty pages.  Inode itself may be clean.
-> > + * I_DIRTY_TIME		The inode itself has dirty timestamps, and the
-> > + *			lazytime mount option is enabled.  We keep track of this
-> > + *			separately from I_DIRTY_SYNC in order to implement
-> > + *			lazytime.  This gets cleared if I_DIRTY_INODE
-> > + *			(I_DIRTY_SYNC and/or I_DIRTY_DATASYNC) gets set. But
-> > + *			I_DIRTY_TIME can still be set if I_DIRTY_SYNC is already
-> > + *			in place because writeback might already be in progress
-> > + *			and we don't want to lose the time update
-> > + * I_NEW		Serves as both a mutex and completion notification.
-> > + *			New inodes set I_NEW.  If two processes both create
-> > + *			the same inode, one of them will release its inode and
-> > + *			wait for I_NEW to be released before returning.
-> > + *			Inodes in I_WILL_FREE, I_FREEING or I_CLEAR state can
-> > + *			also cause waiting on I_NEW, without I_NEW actually
-> > + *			being set.  find_inode() uses this to prevent returning
-> > + *			nearly-dead inodes.
-> > + * I_WILL_FREE		Must be set when calling write_inode_now() if i_count
-> > + *			is zero.  I_FREEING must be set when I_WILL_FREE is
-> > + *			cleared.
-> > + * I_FREEING		Set when inode is about to be freed but still has dirty
-> > + *			pages or buffers attached or the inode itself is still
-> > + *			dirty.
-> > + * I_CLEAR		Added by clear_inode().  In this state the inode is
-> > + *			clean and can be destroyed.  Inode keeps I_FREEING.
-> > + *
-> > + *			Inodes that are I_WILL_FREE, I_FREEING or I_CLEAR are
-> > + *			prohibited for many purposes.  iget() must wait for
-> > + *			the inode to be completely released, then create it
-> > + *			anew.  Other functions will just ignore such inodes,
-> > + *			if appropriate.  I_NEW is used for waiting.
-> > + *
-> > + * I_SYNC		Writeback of inode is running. The bit is set during
-> > + *			data writeback, and cleared with a wakeup on the bit
-> > + *			address once it is done. The bit is also used to pin
-> > + *			the inode in memory for flusher thread.
-> > + *
-> > + * I_REFERENCED		Marks the inode as recently references on the LRU list.
-> > + *
-> > + * I_WB_SWITCH		Cgroup bdi_writeback switching in progress.  Used to
-> > + *			synchronize competing switching instances and to tell
-> > + *			wb stat updates to grab the i_pages lock.  See
-> > + *			inode_switch_wbs_work_fn() for details.
-> > + *
-> > + * I_OVL_INUSE		Used by overlayfs to get exclusive ownership on upper
-> > + *			and work dirs among overlayfs mounts.
-> > + *
-> > + * I_CREATING		New object's inode in the middle of setting up.
-> > + *
-> > + * I_DONTCACHE		Evict inode as soon as it is not used anymore.
-> > + *
-> > + * I_SYNC_QUEUED	Inode is queued in b_io or b_more_io writeback lists.
-> > + *			Used to detect that mark_inode_dirty() should not move
-> > + *			inode between dirty lists.
-> > + *
-> > + * I_PINNING_FSCACHE_WB	Inode is pinning an fscache object for writeback.
-> > + *
-> > + * I_LRU_ISOLATING	Inode is pinned being isolated from LRU without holding
-> > + *			i_count.
-> > + *
-> > + * Q: What is the difference between I_WILL_FREE and I_FREEING?
-> > + *
-> > + * __I_{SYNC,NEW,LRU_ISOLATING} are used to derive unique addresses to wait
-> > + * upon. There's one free address left.
-> > + */
-> > +
-> > +/*
-> > + * As simple macro to define the inode state bits, __NAME will be the bit value
-> > + * (0, 1, 2, ...), and NAME will be the bit mask (1U << __NAME). The __NAME_SEQ
-> > + * is used to reset the sequence number so the next name gets the next bit value
-> > + * in the sequence.
-> > + */
-> > +#define INODE_BIT(name)			\
-> > +	__ ## name,			\
-> > +	name = (1U << __ ## name),	\
-> > +	__ ## name ## _SEQ = __ ## name
-> 
-> I'm not sure if this is the future we want :D
-> I think it's harder to parse than what we have now.
-> 
-> > +
-> > +enum inode_state_bits {
-> > +	INODE_BIT(I_NEW),
-> > +	INODE_BIT(I_SYNC),
-> > +	INODE_BIT(I_LRU_ISOLATING),
-> > +	INODE_BIT(I_DIRTY_SYNC),
-> > +	INODE_BIT(I_DIRTY_DATASYNC),
-> > +	INODE_BIT(I_DIRTY_PAGES),
-> > +	INODE_BIT(I_WILL_FREE),
-> > +	INODE_BIT(I_FREEING),
-> > +	INODE_BIT(I_CLEAR),
-> > +	INODE_BIT(I_REFERENCED),
-> > +	INODE_BIT(I_LINKABLE),
-> > +	INODE_BIT(I_DIRTY_TIME),
-> > +	INODE_BIT(I_WB_SWITCH),
-> > +	INODE_BIT(I_OVL_INUSE),
-> > +	INODE_BIT(I_CREATING),
-> > +	INODE_BIT(I_DONTCACHE),
-> > +	INODE_BIT(I_SYNC_QUEUED),
-> > +	INODE_BIT(I_PINNING_NETFS_WB),
-> > +};
-> 
-> Good idea but I really dislike this macro indirection.
-> Can't we just do the really boring?
-> 
-> enum inode_state_bits {
-> 	__I_BIT_NEW		= 0U
-> 	__I_BIT_SYNC		= 1U
-> 	__I_BIT_LRU_ISOLATING	= 2U
-> }
-> 
-> enum inode_state_flags_t {
-> 	I_NEW			= (1U << __I_BIT_NEW)
-> 	I_SYNC			= (1U << __I_BIT_SYNC)
-> 	I_LRU_ISOLATING		= (1U << __I_BIT_LRU_ISOLATING)
-> 	I_DIRTY_SYNC		= (1U << 3)
-> 	I_DIRTY_DATASYNC	= (1U << 4)
-> 	I_DIRTY_PAGES		= (1U << 5)
-> 	I_WILL_FREE		= (1U << 6)
-> 	I_FREEING		= (1U << 7)
-> 	I_CLEAR			= (1U << 8)
-> 	I_REFERENCED		= (1U << 9)
-> 	I_LINKABLE		= (1U << 10)
-> 	I_DIRTY_TIME		= (1U << 11)
-> 	I_WB_SWITCH		= (1U << 12)
-> 	I_OVL_INUSE		= (1U << 13)
-> 	I_CREATING		= (1U << 14)
-> 	I_DONTCACHE		= (1U << 15)
-> 	I_SYNC_QUEUED		= (1U << 16)
-> 	I_PINNING_NETFS_WB	= (1U << 17)
-> };
-> 
-> Note that inode_state_wait_address() and that only works on four bits so
-> we can't really use higher bits anyway without switching back to a
-> scheme where we have to use unsigned long and waste for bytes for
-> nothing on 64 bit.
-> 
-> With that out of the way,
-> 
-> Reviewed-by: Christian Brauner <brauner@kernel.org>
+Hi Josef,
 
-Yup totally, I'll fix this and add your RB. Thanks!
+kernel test robot noticed the following build errors:
 
-Josef
+[auto build test ERROR on brauner-vfs/vfs.all]
+[also build test ERROR on kdave/for-next trace/for-next xfs-linux/for-next linus/master v6.17-rc2 next-20250822]
+[cannot apply to tytso-ext4/dev]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Josef-Bacik/fs-add-an-i_obj_count-refcount-to-the-inode/20250822-045428
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.all
+patch link:    https://lore.kernel.org/r/6a12e35a078d765b50bc7ced7030d6cd98065528.1755806649.git.josef%40toxicpanda.com
+patch subject: [PATCH 20/50] fs: convert i_count to refcount_t
+config: x86_64-randconfig-003-20250822 (https://download.01.org/0day-ci/archive/20250822/202508222128.KZDs9G7n-lkp@intel.com/config)
+compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250822/202508222128.KZDs9G7n-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508222128.KZDs9G7n-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
+    2782 |                  full_path, inode, inode->i_count.counter,
+         |                                    ~~~~~~~~~~~~~~ ^
+   fs/smb/client/cifs_debug.h:77:36: note: expanded from macro 'cifs_dbg'
+      77 |                 cifs_dbg_func(once, type, fmt, ##__VA_ARGS__);          \
+         |                                                  ^~~~~~~~~~~
+   fs/smb/client/cifs_debug.h:66:23: note: expanded from macro 'cifs_dbg_func'
+      66 |                                       __FILE__, ##__VA_ARGS__);         \
+         |                                                   ^~~~~~~~~~~
+   include/linux/printk.h:693:38: note: expanded from macro 'pr_debug_once'
+     693 |         no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+         |                                             ^~~~~~~~~~~
+   include/linux/printk.h:135:18: note: expanded from macro 'no_printk'
+     135 |                 _printk(fmt, ##__VA_ARGS__);            \
+         |                                ^~~~~~~~~~~
+>> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
+    2782 |                  full_path, inode, inode->i_count.counter,
+         |                                    ~~~~~~~~~~~~~~ ^
+   fs/smb/client/cifs_debug.h:77:36: note: expanded from macro 'cifs_dbg'
+      77 |                 cifs_dbg_func(once, type, fmt, ##__VA_ARGS__);          \
+         |                                                  ^~~~~~~~~~~
+   fs/smb/client/cifs_debug.h:68:38: note: expanded from macro 'cifs_dbg_func'
+      68 |                 pr_err_ ## ratefunc("VFS: " fmt, ##__VA_ARGS__);        \
+         |                                                    ^~~~~~~~~~~
+   include/linux/printk.h:670:38: note: expanded from macro 'pr_err_once'
+     670 |         printk_once(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+         |                                             ^~~~~~~~~~~
+   note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+   include/linux/once_lite.h:31:9: note: expanded from macro 'DO_ONCE_LITE_IF'
+      31 |                         func(__VA_ARGS__);                              \
+         |                              ^~~~~~~~~~~
+   include/linux/printk.h:514:60: note: expanded from macro 'printk'
+     514 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
+         |                                                            ^~~~~~~~~~~
+   include/linux/printk.h:486:19: note: expanded from macro 'printk_index_wrap'
+     486 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                                 ^~~~~~~~~~~
+>> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
+    2782 |                  full_path, inode, inode->i_count.counter,
+         |                                    ~~~~~~~~~~~~~~ ^
+   fs/smb/client/cifs_debug.h:77:36: note: expanded from macro 'cifs_dbg'
+      77 |                 cifs_dbg_func(once, type, fmt, ##__VA_ARGS__);          \
+         |                                                  ^~~~~~~~~~~
+   fs/smb/client/cifs_debug.h:70:32: note: expanded from macro 'cifs_dbg_func'
+      70 |                 pr_debug_ ## ratefunc(fmt, ##__VA_ARGS__);              \
+         |                                              ^~~~~~~~~~~
+   include/linux/printk.h:693:38: note: expanded from macro 'pr_debug_once'
+     693 |         no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+         |                                             ^~~~~~~~~~~
+   include/linux/printk.h:135:18: note: expanded from macro 'no_printk'
+     135 |                 _printk(fmt, ##__VA_ARGS__);            \
+         |                                ^~~~~~~~~~~
+>> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
+    2782 |                  full_path, inode, inode->i_count.counter,
+         |                                    ~~~~~~~~~~~~~~ ^
+   fs/smb/client/cifs_debug.h:79:43: note: expanded from macro 'cifs_dbg'
+      79 |                 cifs_dbg_func(ratelimited, type, fmt, ##__VA_ARGS__);   \
+         |                                                         ^~~~~~~~~~~
+   fs/smb/client/cifs_debug.h:66:23: note: expanded from macro 'cifs_dbg_func'
+      66 |                                       __FILE__, ##__VA_ARGS__);         \
+         |                                                   ^~~~~~~~~~~
+   include/linux/printk.h:758:38: note: expanded from macro 'pr_debug_ratelimited'
+     758 |         no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+         |                                             ^~~~~~~~~~~
+   include/linux/printk.h:135:18: note: expanded from macro 'no_printk'
+     135 |                 _printk(fmt, ##__VA_ARGS__);            \
+         |                                ^~~~~~~~~~~
+>> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
+    2782 |                  full_path, inode, inode->i_count.counter,
+         |                                    ~~~~~~~~~~~~~~ ^
+   fs/smb/client/cifs_debug.h:79:43: note: expanded from macro 'cifs_dbg'
+      79 |                 cifs_dbg_func(ratelimited, type, fmt, ##__VA_ARGS__);   \
+         |                                                         ^~~~~~~~~~~
+   fs/smb/client/cifs_debug.h:68:38: note: expanded from macro 'cifs_dbg_func'
+      68 |                 pr_err_ ## ratefunc("VFS: " fmt, ##__VA_ARGS__);        \
+         |                                                    ^~~~~~~~~~~
+   include/linux/printk.h:722:45: note: expanded from macro 'pr_err_ratelimited'
+     722 |         printk_ratelimited(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+         |                                                    ^~~~~~~~~~~
+   include/linux/printk.h:708:17: note: expanded from macro 'printk_ratelimited'
+     708 |                 printk(fmt, ##__VA_ARGS__);                             \
+         |                               ^~~~~~~~~~~
+   include/linux/printk.h:514:60: note: expanded from macro 'printk'
+     514 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
+         |                                                            ^~~~~~~~~~~
+   include/linux/printk.h:486:19: note: expanded from macro 'printk_index_wrap'
+     486 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                                 ^~~~~~~~~~~
+>> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
+    2782 |                  full_path, inode, inode->i_count.counter,
+         |                                    ~~~~~~~~~~~~~~ ^
+   fs/smb/client/cifs_debug.h:79:43: note: expanded from macro 'cifs_dbg'
+      79 |                 cifs_dbg_func(ratelimited, type, fmt, ##__VA_ARGS__);   \
+         |                                                         ^~~~~~~~~~~
+   fs/smb/client/cifs_debug.h:70:32: note: expanded from macro 'cifs_dbg_func'
+      70 |                 pr_debug_ ## ratefunc(fmt, ##__VA_ARGS__);              \
+         |                                              ^~~~~~~~~~~
+   include/linux/printk.h:758:38: note: expanded from macro 'pr_debug_ratelimited'
+     758 |         no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+         |                                             ^~~~~~~~~~~
+   include/linux/printk.h:135:18: note: expanded from macro 'no_printk'
+     135 |                 _printk(fmt, ##__VA_ARGS__);            \
+         |                                ^~~~~~~~~~~
+   6 errors generated.
+
+
+vim +2782 fs/smb/client/inode.c
+
+abab095d1fd259 fs/cifs/inode.c       Jeff Layton     2010-02-12  2755  
+6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2756  int cifs_revalidate_dentry_attr(struct dentry *dentry)
+df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2757  {
+6d5786a34d98bf fs/cifs/inode.c       Pavel Shilovsky 2012-06-20  2758  	unsigned int xid;
+df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2759  	int rc = 0;
+2b0143b5c986be fs/cifs/inode.c       David Howells   2015-03-17  2760  	struct inode *inode = d_inode(dentry);
+df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2761  	struct super_block *sb = dentry->d_sb;
+f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2762  	const char *full_path;
+f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2763  	void *page;
+fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2764  	int count = 0;
+df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2765  
+df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2766  	if (inode == NULL)
+df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2767  		return -ENOENT;
+^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2768  
+ed8561fa1d12b4 fs/cifs/inode.c       Ronnie Sahlberg 2021-03-09  2769  	if (!cifs_dentry_needs_reval(dentry))
+6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2770  		return rc;
+6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2771  
+6d5786a34d98bf fs/cifs/inode.c       Pavel Shilovsky 2012-06-20  2772  	xid = get_xid();
+^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2773  
+f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2774  	page = alloc_dentry_path();
+f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2775  	full_path = build_path_from_dentry(dentry, page);
+f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2776  	if (IS_ERR(full_path)) {
+f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2777  		rc = PTR_ERR(full_path);
+6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2778  		goto out;
+^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2779  	}
+^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2780  
+f96637be081141 fs/cifs/inode.c       Joe Perches     2013-05-04  2781  	cifs_dbg(FYI, "Update attributes: %s inode 0x%p count %d dentry: 0x%p d_time %ld jiffies %ld\n",
+f96637be081141 fs/cifs/inode.c       Joe Perches     2013-05-04 @2782  		 full_path, inode, inode->i_count.counter,
+a00be0e31f8df4 fs/cifs/inode.c       Miklos Szeredi  2016-09-16  2783  		 dentry, cifs_get_time(dentry), jiffies);
+^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2784  
+fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2785  again:
+102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2786  	if (cifs_sb_master_tcon(CIFS_SB(sb))->posix_extensions) {
+102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2787  		rc = smb311_posix_get_inode_info(&inode, full_path,
+102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2788  						 NULL, sb, xid);
+102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2789  	} else if (cifs_sb_master_tcon(CIFS_SB(sb))->unix_ext) {
+df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2790  		rc = cifs_get_inode_info_unix(&inode, full_path, sb, xid);
+102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2791  	} else {
+df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2792  		rc = cifs_get_inode_info(&inode, full_path, NULL, sb,
+df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2793  					 xid, NULL);
+102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2794  	}
+fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2795  	if (rc == -EAGAIN && count++ < 10)
+fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2796  		goto again;
+6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2797  out:
+f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2798  	free_dentry_path(page);
+6d5786a34d98bf fs/cifs/inode.c       Pavel Shilovsky 2012-06-20  2799  	free_xid(xid);
+fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2800  
+^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2801  	return rc;
+^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2802  }
+^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2803  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
