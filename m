@@ -1,115 +1,97 @@
-Return-Path: <linux-ext4+bounces-9574-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9575-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2386BB317BD
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Aug 2025 14:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC5E7B3180B
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Aug 2025 14:39:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4302917A74F
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Aug 2025 12:21:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E71F9601D6C
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Aug 2025 12:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133052FC007;
-	Fri, 22 Aug 2025 12:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C5D32FB997;
+	Fri, 22 Aug 2025 12:39:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nlit8ZfF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RHPyZ14/"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C30F14A4DB;
-	Fri, 22 Aug 2025 12:21:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 089EB271443;
+	Fri, 22 Aug 2025 12:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755865263; cv=none; b=JaEgwo8cjHmV/iv8lv5T4Fw7shXpZhfJlWmHAeZhYB6APOuK3WXZRw5Ru15CNO3dxrb4FjEvdO3mOfh341/VOIW4A6RmhUIsCTeQhDhkQ65R0u1f6F+8EPuERuhX8fRFMEQi5Dwsi+ujjpLCLEgQq4Jt0qsbS4OLS0QWxmDCFoA=
+	t=1755866369; cv=none; b=IGqWGdiy/SeGoF8nj1Lx/Gr4ZLHVpw9nCjCW8DEIdLSE8G3VB3q9DWFa2sSCRuIYJmjwjC5bONGZUM2IzCBfgHFj7Uc7Bj3M/Swqx2BCs3orjTfm7Grc35jSWNErLE6Jf0q2hdXA8jziSUW9DRqeRoBfsqLyKAff6USbtWYQ15o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755865263; c=relaxed/simple;
-	bh=Wvb9FGXp+svTFsvVbtKnyZ+CHAIJCOpOAE+YtdsGVMw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ryu/tIib0E6K8ir2/owQ8fq6YFVVcVjHK1sdTf3kfaR0bV9vIvISvW9PznBPBvL0pA7heOS9SzJeIteIU/xqz4mK6jn/N0Wl4TdNYUdzqrCdohGRbFPXCxCX1Qk41Z/P6MyhOjaiScePqYQysmNi7UKwSdfYcMNrIgBF2MJpDCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nlit8ZfF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70E79C4CEED;
-	Fri, 22 Aug 2025 12:21:01 +0000 (UTC)
+	s=arc-20240116; t=1755866369; c=relaxed/simple;
+	bh=/Njx2dKk/x0Bia9w57MBf+NAh2t8oZ/tfmxV2nmmPsk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sej6HX71a56Y2DTHVrfzF3/0iXUF34iQgIlyOttWOLEhdEKiQkm8CxxO9V+G2mywcmbVxvLeBAL1Q9qjUgf7Df0HnCnI7TsDGoWu5RkqcuT3q7/qQqCLWNGXTenPYU3RWyjvEmn4dRrIPwJaZszPeUD7G3RYl+C6XWYLwQWgf40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RHPyZ14/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BBD2C4CEED;
+	Fri, 22 Aug 2025 12:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755865263;
-	bh=Wvb9FGXp+svTFsvVbtKnyZ+CHAIJCOpOAE+YtdsGVMw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nlit8ZfFhU4UrHoHAnONXjZbqlmFT8jA4Lntnb/myBfRWuuupoaZt1Nt0L9JLTJwd
-	 vFZQ6JqcuG17gPNX23pbjgp+mkw2Ba0C4nkduBd4Efg+xy+YvAVxVIMCjQSDWKfshe
-	 IFx+d3jwAD0uV34rlymQ7nmQ/eIA3Gn+FRCqKsVqHUkf2+B4HJ74WdjymWdsONvpob
-	 P7zKyWUMN88Gi/J/jdIKg6RwBDyDo+Dx85k8B0BSAtkoP3VTK6UG/jiP6/pF+duI2+
-	 L+Tt3RiJT8w7fPMzgwWPhD4xO8WeYuQ3xnzVu3YlnX1N5TXrodfIgwRXw2CMCdgM8f
-	 u1RPPWTVbB2vg==
-Date: Fri, 22 Aug 2025 14:20:58 +0200
+	s=k20201202; t=1755866368;
+	bh=/Njx2dKk/x0Bia9w57MBf+NAh2t8oZ/tfmxV2nmmPsk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=RHPyZ14/mYOIxYRjgFsWWN1VjlE5GZ3L18a9Gz5QTrU7WFrzouwKxWxICcO7yV0ZE
+	 +wu2q4K45HR31VYAt3wZeWqaayvRGpR3vIlxEbTzp0aRySEx93fxc96gchdUuk4XaH
+	 DBZk4IX5qUjqee7ffUEPmYv9t9zKoVs8VvX824KoavmyBhzRVTVgdUDf1t3dXPi9Sl
+	 9ggCeXj6N8IywTR5MyR+eh5nb8334O1T9dlD4w9WhlNF7mAUncWe7aguxJowSQgPBK
+	 /O/GxyqPfQxF6hP3x5LTkMYYWG460AY5bW9PMcsMUR64wLG9Lf4tFpPOw0MS7lO+vO
+	 B88g+kGECUMNg==
 From: Christian Brauner <brauner@kernel.org>
 To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 06/50] fs: hold an i_obj_count reference in
- writeback_sb_inodes
-Message-ID: <20250822-umarmen-mehltau-515d545eadd0@brauner>
-References: <cover.1755806649.git.josef@toxicpanda.com>
- <1a7d1025914b6840e9cc3f6e10c6e69af95452f5.1755806649.git.josef@toxicpanda.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com,
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	viro@ZenIV.linux.org.uk
+Subject: Re: (subset) [PATCH 10/50] fs: stop accessing ->i_count directly in f2fs and gfs2
+Date: Fri, 22 Aug 2025 14:38:56 +0200
+Message-ID: <20250822-herdplatte-fotomodell-8b323246552e@brauner>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <b8e6eb8a3e690ce082828d3580415bf70dfa93aa.1755806649.git.josef@toxicpanda.com>
+References: <b8e6eb8a3e690ce082828d3580415bf70dfa93aa.1755806649.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1a7d1025914b6840e9cc3f6e10c6e69af95452f5.1755806649.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=985; i=brauner@kernel.org; h=from:subject:message-id; bh=/Njx2dKk/x0Bia9w57MBf+NAh2t8oZ/tfmxV2nmmPsk=; b=kA0DAAoWkcYbwGV43KIByyZiAGioZPqhAHO5rjUmOvZjutYrMq8SDVrCRLqSgH58/v8POYeBx Yh1BAAWCgAdFiEEQIc0Vx6nDHizMmkokcYbwGV43KIFAmioZPoACgkQkcYbwGV43KKtogD7B+Kw pOiih3Mh0kqt9h7Xhx1Bpyxd3e8pJe4GvX5Y0v4BAImNQgSp9e8pFC/+5tZY8uJlNFBjNln9Kse Sp5NG2uQJ
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Thu, Aug 21, 2025 at 04:18:17PM -0400, Josef Bacik wrote:
-> We drop the wb list_lock while writing back inodes, and we could
-> manipulate the i_io_list while this is happening and drop our reference
-> for the inode. Protect this by holding the i_obj_count reference during
-> the writeback.
+On Thu, 21 Aug 2025 16:18:21 -0400, Josef Bacik wrote:
+> Instead of accessing ->i_count directly in these file systems, use the
+> appropriate __iget and iput helpers.
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/fs-writeback.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 24fccb299de4..2b0d26a58a5a 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -1977,6 +1977,7 @@ static long writeback_sb_inodes(struct super_block *sb,
->  			trace_writeback_sb_inodes_requeue(inode);
->  			continue;
->  		}
-> +		iobj_get(inode);
->  		spin_unlock(&wb->list_lock);
->  
->  		/*
-> @@ -1987,6 +1988,7 @@ static long writeback_sb_inodes(struct super_block *sb,
->  		if (inode->i_state & I_SYNC) {
->  			/* Wait for I_SYNC. This function drops i_lock... */
->  			inode_sleep_on_writeback(inode);
-> +			iobj_put(inode);
->  			/* Inode may be gone, start again */
->  			spin_lock(&wb->list_lock);
->  			continue;
-> @@ -2035,10 +2037,9 @@ static long writeback_sb_inodes(struct super_block *sb,
->  		inode_sync_complete(inode);
->  		spin_unlock(&inode->i_lock);
->  
-> -		if (unlikely(tmp_wb != wb)) {
-> -			spin_unlock(&tmp_wb->list_lock);
-> -			spin_lock(&wb->list_lock);
-> -		}
-> +		spin_unlock(&tmp_wb->list_lock);
-> +		iobj_put(inode);
-> +		spin_lock(&wb->list_lock);
+>
 
-So if tmp_wb == wb then you unlock and immediately relock dropping the
-reference in between and if tmp_wb != wb then you unlock tmp_wb and the
-context implies that @wb became unlocked and can be relocked again.
-Seems sane, thanks. More contention on @wb->list_lock. I have no
-intuition how bad that is and I know you mentioned it in your cover
-letter. If it matters then I suspect the reference count would matter as
-well. But let's not worry about it yet.
+I'll take that as a fix.
+
+---
+
+Applied to the vfs.fixes branch of the vfs/vfs.git tree.
+Patches in the vfs.fixes branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.fixes
+
+[10/50] fs: stop accessing ->i_count directly in f2fs and gfs2
+        https://git.kernel.org/vfs/vfs/c/2c2be4cb82c2
 
