@@ -1,163 +1,134 @@
-Return-Path: <linux-ext4+bounces-9589-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9590-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8444B32615
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Aug 2025 02:59:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B1A5B326D9
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Aug 2025 06:37:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAA3BAA6C63
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Aug 2025 00:59:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F103A1C883B1
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Aug 2025 04:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C873A14E2F2;
-	Sat, 23 Aug 2025 00:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M7X41HBl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B1C21CA10;
+	Sat, 23 Aug 2025 04:37:26 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AC117BA9;
-	Sat, 23 Aug 2025 00:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783822566;
+	Sat, 23 Aug 2025 04:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755910779; cv=none; b=ONLpxCIhXKvt++myZnRYzboqMTuesS3qC+SPENoHmGFsI0ShcPPCeGTcxwCc/w6kOmBaEfJdEdVyoLahdz1nylGgfx0ySUmVnlvZr+VvIE0FrbSzQT65tLhLjB4wgI7v1gTcxe0TyLpMTzjYqwT8EinvMYwfCrHW4wIoM+m7OG0=
+	t=1755923846; cv=none; b=TAM3XiEHu9mQmC8wVB7tbQqQq0+gvrJjRkztv7ZEDJgkAIlskP/aOqNVRyOfw3YFCn9XV87FJSYR+JWP1ddVaFDvIv/aZ9viqS1CXG93tKMRKUC9P843v4XfX2RoPUFxRpvV6g1GaIg2A3K8lthKCKoBIT+f7gG2Xb3lh/KMJps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755910779; c=relaxed/simple;
-	bh=WhTHIrtJD6ig/V+Dqcu/MqbMu9QFWWCzIgEU0MSON8E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M8jZ89mSPZWoR8xFauiylgn2kG20Tlhs9iGxqUdHnSQVJRCvfddLK5/uJ1f9747dFPBMfpQfWF3AYadj3J1G6oFdIFX63asXt4MlUrC4QZEiOEp+NO6pY3mytDy4ttsgl/2+s8xF9g/MiIGMg6cUYc6vhuCbGm47aI29uJUGsiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M7X41HBl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5A2BC116D0;
-	Sat, 23 Aug 2025 00:59:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755910776;
-	bh=WhTHIrtJD6ig/V+Dqcu/MqbMu9QFWWCzIgEU0MSON8E=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=M7X41HBl3WWgt2eB1JELXgRefF24A9Ktl80i9LgP5kQvnG4QDRMBSnOYMoFrHHx6x
-	 cGoEmfybD/kGnNVUjg+nTNzDm5bTx33JgEyj8i2G6yD0vWuz2X1qJf1k6W1RI3G0Sb
-	 AtVobHclKMvQCziJswIhJ1DepqY/5K2vDbgUxIr/PWtxa6+uMaS1QtDopN+628UaK2
-	 dvZlCa0fWp+oDw7jSzxmFR2mXjFxkOerSdJlspXkxr3nb+/8o5xQTuAT7mEI7HH30J
-	 8lMmR+hpXYbdIUQjNv6VKt1pA3V2by/no3xyFT88i3TAzQMPhjzii/5xfNNzfTq4iU
-	 QO38QjwTLOpDQ==
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-61c20e28380so1976034a12.1;
-        Fri, 22 Aug 2025 17:59:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVaBBmFK+eRnrCUyAinFV8l5Jm2YuDOF3V5U1BbLZpY/w5e4msRI585lxfjMfcIEnKhNgAV3N8AGgbuablUGQ==@vger.kernel.org, AJvYcCWGsqcZ4mWi5GlMMeLmRJYzs9SIW+F+NvWpaPu8PaE/5WyOcpPPc9ZuLtL5RxInt3ZmWB06j1b38avbfUDv@vger.kernel.org, AJvYcCWHYFH+9j5jmnnd0CxI7jm6dgbek+wE9eKFNDv85b7f62+Xee6gSqIorLkjo/bJEkBbYFg4lKZTPcpJ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8mQ0NKO8ArfUQRz0X/zIhBVSm6qLjF4l9xUZBQ0SGWmV8nz7G
-	6xm4Jpk3ZCkVRaciZ2+wk2s9rz/W9n/o/pX5BQgqKn0WcZib0rMHcc498HoG7kVupVgAjlDi3/l
-	QPr3cRhDBaYuQUHzaAUbQwxwF0NkEnII=
-X-Google-Smtp-Source: AGHT+IETvS6EmVb9SsRL07lUStumjMiBXv7KMAz+tuWOOiILZMbQNkwScTlhem+G+PSHOQg5igqosUJ6tMJmB2j6478=
-X-Received: by 2002:a05:6402:52c8:b0:618:20c1:7e43 with SMTP id
- 4fb4d7f45d1cf-61c1b70aba6mr3954060a12.29.1755910775362; Fri, 22 Aug 2025
- 17:59:35 -0700 (PDT)
+	s=arc-20240116; t=1755923846; c=relaxed/simple;
+	bh=jOsk/0E2M1AqmaAoj/SNM6dDuTwerjrCn1XIBMFUI0c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dQ3BT225vnekFI4KeePC8WledVmOiomTusLGqSZER/jr5FWJwiN9bTW/WfQW1EGsi7cADNE7GbfooYBQCVJ2ygvN5Q6U/He/LuwK7iZt2MdqQ4S1R4hMQy6PlhQZwz/2qigRGz31DcwnhFYPbaeg832U4N+FeCYaW/TMM59hAcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c84691PCYzYQvXl;
+	Sat, 23 Aug 2025 12:37:21 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id AF3481A06DD;
+	Sat, 23 Aug 2025 12:37:19 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgBHERJ9Ralopph+Eg--.26768S3;
+	Sat, 23 Aug 2025 12:37:19 +0800 (CST)
+Message-ID: <bf778cf7-6ae5-4f57-a40c-fbae5cbe00a7@huaweicloud.com>
+Date: Sat, 23 Aug 2025 12:37:17 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <68a72860.050a0220.3d78fd.002a.GAE@google.com> <20250822162041.gXcLgwIW@linutronix.de>
-In-Reply-To: <20250822162041.gXcLgwIW@linutronix.de>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Sat, 23 Aug 2025 09:59:22 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd_koTJzp4hJhojnB9d_=Pgu6jaATySZ61zN4s=vZqe_FA@mail.gmail.com>
-X-Gm-Features: Ac12FXx4RqArqi2TOPLn9BW2NusyL7iulzKG_VxY2KxsJFxOsowT10annWLE4cY
-Message-ID: <CAKYAXd_koTJzp4hJhojnB9d_=Pgu6jaATySZ61zN4s=vZqe_FA@mail.gmail.com>
-Subject: Re: [syzbot] [exfat?] [ext4?] WARNING in __rt_mutex_slowlock_locked
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: syzbot <syzbot+a725ab460fc1def9896f@syzkaller.appspotmail.com>, 
-	brauner@kernel.org, jack@suse.cz, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, 
-	viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/9] block: introduce
+ max_{hw|user}_wzeroes_unmap_sectors to queue limits
+To: John Garry <john.g.garry@oracle.com>, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-block@vger.kernel.org,
+ dm-devel@lists.linux.dev, linux-nvme@lists.infradead.org,
+ linux-scsi@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de,
+ tytso@mit.edu, djwong@kernel.org, bmarzins@redhat.com,
+ chaitanyak@nvidia.com, shinichiro.kawasaki@wdc.com, brauner@kernel.org,
+ martin.petersen@oracle.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+ yukuai3@huawei.com, yangerkun@huawei.com
+References: <20250619111806.3546162-1-yi.zhang@huaweicloud.com>
+ <20250619111806.3546162-2-yi.zhang@huaweicloud.com>
+ <803a2183-a0bb-4b7a-92f1-afc5097630d2@oracle.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <803a2183-a0bb-4b7a-92f1-afc5097630d2@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBHERJ9Ralopph+Eg--.26768S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF1Utr4furyDGrW7CryxAFb_yoW8Zw4xpF
+	y8uryIq34rJFs29w4Utw1UuFyFy3yru345Gr9rJ3Z3A3ykCrnIgF45u3ZFgFW7XrWrGw18
+	t3WYyFZxZr4UZ37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Sat, Aug 23, 2025 at 1:20=E2=80=AFAM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2025-08-21 07:08:32 [-0700], syzbot wrote:
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Da725ab460fc1d=
-ef9896f
-> =E2=80=A6
-> > The issue was bisected to:
-> >
-> > commit d2d6422f8bd17c6bb205133e290625a564194496
-> > Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Date:   Fri Sep 6 10:59:04 2024 +0000
-> >
-> >     x86: Allow to enable PREEMPT_RT.
-> >
-> =E2=80=A6
-> > exFAT-fs (loop0): Medium has reported failures. Some data may be lost.
-> > exFAT-fs (loop0): failed to load upcase table (idx : 0x00010000, chksum=
- : 0xe5674ec2, utbl_chksum : 0xe619d30d)
-> > ------------[ cut here ]------------
-> > rtmutex deadlock detected
-> > WARNING: CPU: 0 PID: 6000 at kernel/locking/rtmutex.c:1674 rt_mutex_han=
-dle_deadlock kernel/locking/rtmutex.c:1674 [inline]
-> > WARNING: CPU: 0 PID: 6000 at kernel/locking/rtmutex.c:1674 __rt_mutex_s=
-lowlock kernel/locking/rtmutex.c:1734 [inline]
-> > WARNING: CPU: 0 PID: 6000 at kernel/locking/rtmutex.c:1674 __rt_mutex_s=
-lowlock_locked+0xed2/0x25e0 kernel/locking/rtmutex.c:1760
->
-> RT detected a deadlock and complained. The same testcase on !RT results
-> in:
->
-> | [   15.363878] loop0: detected capacity change from 0 to 256
-> | [   15.367981] exFAT-fs (loop0): Volume was not properly unmounted. Som=
-e data may be corrupt. Please run fsck.
-> | [   15.373808] exFAT-fs (loop0): Medium has reported failures. Some dat=
-a may be lost.
-> | [   15.380396] exFAT-fs (loop0): failed to load upcase table (idx : 0x0=
-0010000, chksum : 0xe5674ec2, utbl_chksum : 0xe619d30d)
-> | [   62.668182] INFO: task exfat-repro:2155 blocked for more than 30 sec=
-onds.
-> | [   62.669405]       Not tainted 6.17.0-rc2+ #10
-> | [   62.670181] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disab=
-les this message.
-> | [   62.671612] task:exfat-repro     state:D stack:0     pid:2155  tgid:=
-2155  ppid:1      task_flags:0x400140 flags:0x00004006
-> | [   62.673557] Call Trace:
-> | [   62.674008]  <TASK>
-> | [   62.674400]  __schedule+0x4ef/0xbb0
-> | [   62.675069]  schedule+0x22/0xd0
-> | [   62.675656]  schedule_preempt_disabled+0x10/0x20
-> | [   62.676495]  rwsem_down_write_slowpath+0x1e2/0x6c0
-> | [   62.679028]  down_write+0x66/0x70
-> | [   62.679645]  vfs_rename+0x5c6/0xc30
-> | [   62.681734]  do_renameat2+0x3c4/0x570
-> | [   62.682395]  __x64_sys_renameat2+0x7b/0xc0
-> | [   62.683187]  do_syscall_64+0x7f/0x290
-> | [   62.695576]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
->
-> After ctrl+c that testcase terminates but one thread remains in D state.
-> This is from
-> |         lock_new_subdir =3D new_dir !=3D old_dir || !(flags & RENAME_EX=
-CHANGE);
-> |         if (is_dir) {
-> |                 if (lock_old_subdir)
-> |                         inode_lock_nested(source, I_MUTEX_CHILD);
->                           ^^^
-> | 5 locks held by exfat-repro/2156:
-> |  #0: ffff888113b69400 (sb_writers#11){.+.+}-{0:0}, at: do_renameat2+0x1=
-c8/0x580
-> |  #1: ffff888113b69710 (&type->s_vfs_rename_key){+.+.}-{4:4}, at: do_ren=
-ameat2+0x24d/0x580
-> |  #2: ffff88810fb79b88 (&sb->s_type->i_mutex_key#16/1){+.+.}-{4:4}, at: =
-lock_two_directories+0x6c/0x110
-> |  #3: ffff88810fb7a1c0 (&sb->s_type->i_mutex_key#17/5){+.+.}-{4:4}, at: =
-lock_two_directories+0x82/0x110
-> |  #4: ffffffff82f618a0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_l=
-ocks+0x3d/0x184
->
-> #2 and #3 are from the "(r =3D=3D p1)" case. The lock it appears to acqui=
-re
-> is #2.
-> Could an exfat take a look, please?
-I will take a look.
-Thanks!
->
-> Sebastian
+On 8/21/2025 8:55 PM, John Garry wrote:
+> On 19/06/2025 12:17, Zhang Yi wrote:
+>>   }
+>> @@ -333,6 +335,12 @@ int blk_validate_limits(struct queue_limits *lim)
+>>       if (!lim->max_segments)
+>>           lim->max_segments = BLK_MAX_SEGMENTS;
+>>   +    if (lim->max_hw_wzeroes_unmap_sectors &&
+>> +        lim->max_hw_wzeroes_unmap_sectors != lim->max_write_zeroes_sectors)
+>> +        return -EINVAL;
+> 
+> JFYI, I noticed that I am failing this check in raid0_set_limits() -> queue_limits_set() -> queue_limits_commit_update() -> blk_validate_limits() for v6.17-rc2
+> 
+> The raid0 array consists of NVMe partitions. Here lim->max_hw_wzeroes_unmap_sectors = 4096 and lim->max_write_zeroes_sectors = 0 values for the failure, above.
+> 
+> john@raspberrypi:~ $ cat /sys/block/nvme0n1/queue/write_zeroes_max_bytes
+> 2097152
+> john@raspberrypi:~ $ cat /sys/block/nvme0n1/queue/write_zeroes_unmap_max_bytes
+> 2097152
+> john@raspberrypi:~ $ cat
+> /sys/block/nvme0n1/queue/write_zeroes_unmap_max_hw_bytes
+> 2097152
+> john@raspberrypi:~ $
+> 
+> 
+
+Thank you for checking on this!
+
+The problem is that raid0_set_limits() only sets max_write_zeroes_sectors
+without synchronously setting max_hw_wzeroes_unmap_sectors. It appears
+that all stacked drivers that call blk_set_stacking_limits() to
+initialize stacked limits but independently adjust
+max_write_zeroes_sectors are problematic, including all md drivers and
+drbd. These drivers need to update max_hw_wzeroes_unmap_sectors as well, I
+will send out a fix soon.
+
+Thanks,
+Yi.
+
+> 
+>> +    lim->max_wzeroes_unmap_sectors = min(lim->max_hw_wzeroes_unmap_sectors,
+>> +            lim->max_user_wzeroes_unmap_sectors);
+>> +
+>>       lim->max_discard_sectors =
+>>           min(lim->max_hw_discard_sectors, lim->max_user_discard_sectors);
+>>   @@ -418,10 +426,11 @@ int blk_set_default_limits(struct queue_limits *lim)
+
 
