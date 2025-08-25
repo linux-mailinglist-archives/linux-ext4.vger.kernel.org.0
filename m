@@ -1,57 +1,56 @@
-Return-Path: <linux-ext4+bounces-9601-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9602-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B68AB33CE8
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 12:40:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB8AB33D46
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 12:54:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F379D2006BD
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 10:40:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D9DD188881D
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 10:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5067F2D7381;
-	Mon, 25 Aug 2025 10:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581A22E0B59;
+	Mon, 25 Aug 2025 10:54:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P6bTBvGx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qLPCByag"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D496E29AAF3;
-	Mon, 25 Aug 2025 10:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73792DCF7B;
+	Mon, 25 Aug 2025 10:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756118443; cv=none; b=tSMLQUlAGmbLeix7o3em7hHRhN42qd1HmCN0Y+fTV3vP3vxIMjRJGzlxSIDSNXtQUxvX871dOZCcH4RfEhZOU70eluBu9e7XPENSpVUEV5cgjzepRJc8QO5rs39YnEwi7QWZi1p75Pd59cqT0gfmJZpjgpbb5OHFhBuBz0/Fb1Y=
+	t=1756119246; cv=none; b=oSotMamGEYnYKPTBImAA2MB5PiccV6LHbWJxG+f+bXAM3X6r58zza7ZygeLEg1w4SKGfkZtvTNuDXi6AOaeO7bxmMv7dVqeDGbJmaSFMtQHm7d+lwQdJgijydoKZTVGgu8eMNBzc70wBMidiwGlgkjBXusSlVkUK8RdzJ5rTVEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756118443; c=relaxed/simple;
-	bh=jD8unm5fFokP8vboFdQvT37W8Gl10f+xmS3ubNRFNcQ=;
+	s=arc-20240116; t=1756119246; c=relaxed/simple;
+	bh=E+ab+mxNsPLyo6AQ1XDslsP4TqTnE3JrBDz+dRI3TaY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qDVgEhsI+QDuRF6IccDvnR+F2x9NhmN73vWSELo+KSrz+DjsSl0LRtovzaBVjqeIpWU5gWrP7CUpCM9z9j5mtXPlTbCgqP2Cru8I2mwCXD47ifonmeLtWTpiTPVMfC8SAO4PHDRXgVGwF+435sVHrkk+X8GQrxJwyieqyITxFko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P6bTBvGx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF8BCC4CEED;
-	Mon, 25 Aug 2025 10:40:40 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ACOocAscD3AXlldOtiezk7MWRaB9jFR4AqGY8HM5P7UMiCmR3FtuV9hl8ffGDloocefehbBRuUfN3DZRuH6Tue+4L14AEEBACYi5B3hZGBTkibeGcSuyjlwZYow+fEwDuJ1ALcfmKTwIKNhd9tk9XS+1ki7hJaLJUTqVroYiDlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qLPCByag; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2E67C4CEED;
+	Mon, 25 Aug 2025 10:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756118442;
-	bh=jD8unm5fFokP8vboFdQvT37W8Gl10f+xmS3ubNRFNcQ=;
+	s=k20201202; t=1756119245;
+	bh=E+ab+mxNsPLyo6AQ1XDslsP4TqTnE3JrBDz+dRI3TaY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P6bTBvGx0abIEUekQ6EITDjfQaHcwIBqw7u2oDl7tnhdbHPjFoJe7KVXjh7OYAh8C
-	 gOnFmMaVgYxVUn6warb9iV4Giv2isXmTtLCGC1HKk2awn7zrnOvGgq30qSZPqe+9fJ
-	 zmdMXuosbw2UdcQfhh8tZ23x44rFFda3BO+T8rZJup9xw1ad8JWwojxtep39C0uA/n
-	 IiWAWQaGV/BdSGbHzRZi74N4t4SA+I942Trvsjmo2zKrhMczsWqndPjWdpxmgOA+8o
-	 1ha7QY9A6Ot3L44qXqXMH/EvZ77nfZibjPfFs2CsirZ0WJgW/XnVnJnhobOI6uqN6d
-	 gMnmymif4vvHg==
-Date: Mon, 25 Aug 2025 12:40:38 +0200
+	b=qLPCByagYYv3+BJkzsOrCb6SAfvEpPFklG+DbVX1ObfkxUDy53uLo3N5YAuB5hgT0
+	 xFcbClWlzvOTU38U3T4HOaiojgGmt74+2P+cKDoc6CFEuc7/WKO26ggYl/c4y8kVQg
+	 erTytcUO7RPc7/MkcJHjXRKxhfmFDiel9VNysk7Ev0DQcE8fyGWwXt/YehoCyt3gLg
+	 2fhq5alPQlvYLZN0VZCDRhoMAdT7cODiKnsxMaQo1U6dQ6kWOO5LoZUexYy6FoJ85y
+	 H/RRFD+phQhrXJuHAgOuLdW4qsbxVpn822JmA71SnIojZJ0zxbu5/4T2cXlsv8G3i0
+	 awQMPN+DZDgfA==
+Date: Mon, 25 Aug 2025 12:54:01 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
 	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
 	viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 17/50] fs: hold a full ref while the inode is on a LRU
-Message-ID: <20250825-bekommen-nashorn-9971054b7d45@brauner>
+Subject: Re: [PATCH 18/50] fs: disallow 0 reference count inodes
+Message-ID: <20250825-person-knapp-e802daccfe5b@brauner>
 References: <cover.1755806649.git.josef@toxicpanda.com>
- <113ec167162bbaccc02fa3c3bf1a2c7d3e5a3e82.1755806649.git.josef@toxicpanda.com>
- <20250825-affekt-ruckartig-e7da04294931@brauner>
+ <6f4fb1baddecbdab4231c6094bbb05a98bbb7365.1755806649.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,319 +59,152 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250825-affekt-ruckartig-e7da04294931@brauner>
+In-Reply-To: <6f4fb1baddecbdab4231c6094bbb05a98bbb7365.1755806649.git.josef@toxicpanda.com>
 
-On Mon, Aug 25, 2025 at 11:20:07AM +0200, Christian Brauner wrote:
-> On Thu, Aug 21, 2025 at 04:18:28PM -0400, Josef Bacik wrote:
-> > We want to eliminate 0 refcount inodes that can be used. To that end,
-> > make the LRU's hold a full reference on the inode while it is on an LRU
-> > list. From there we can change the eviction code to always just iput the
-> > inode, and the LRU operations will just add or drop a full reference
-> > where appropriate.
-> > 
-> > We also now must take into account unlink, and drop our LRU reference
-> > when we go to an nlink of 0.  We will also avoid adding inodes with a
-> > nlink of 0 as they can be reclaimed immediately.
-> > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >  fs/inode.c | 105 +++++++++++++++++++++++++++++------------------------
-> >  1 file changed, 57 insertions(+), 48 deletions(-)
-> > 
-> > diff --git a/fs/inode.c b/fs/inode.c
-> > index 80ad327746a7..de0ec791f9a3 100644
-> > --- a/fs/inode.c
-> > +++ b/fs/inode.c
-> > @@ -434,8 +434,18 @@ void drop_nlink(struct inode *inode)
-> >  {
-> >  	WARN_ON(inode->i_nlink == 0);
-> >  	inode->__i_nlink--;
-> > -	if (!inode->i_nlink)
-> > +	if (!inode->i_nlink) {
-> > +		/*
-> > +		 * LRU's hold a full ref on the inode, but if we've unlinked it
-> > +		 * then we want the inode to be freed when the last user goes,
-> > +		 * so delete the inode from the LRU list.
-> > +		 */
-> > +		spin_lock(&inode->i_lock);
-> > +		inode_lru_list_del(inode);
-> > +		spin_unlock(&inode->i_lock);
-> > +
-> >  		atomic_long_inc(&inode->i_sb->s_remove_count);
-> > +	}
+On Thu, Aug 21, 2025 at 04:18:29PM -0400, Josef Bacik wrote:
+> Now that we take a full reference for inodes on the LRU, move the logic
+> to add the inode to the LRU to before we drop our last reference. This
+> allows us to ensure that if the inode has a reference count it can be
+> used, and we no longer hold onto inodes that have a 0 reference count.
 > 
-> As written this doesn't work because you can have callers that have
-> already acquired inode->i_lock(). For example, afs:
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/inode.c | 53 +++++++++++++++++++++++++++++++++--------------------
+>  1 file changed, 33 insertions(+), 20 deletions(-)
 > 
->         new_inode = d_inode(new_dentry);
->         if (new_inode) {
->                 spin_lock(&new_inode->i_lock);
->                 if (S_ISDIR(new_inode->i_mode))
->                         clear_nlink(new_inode);
->                 else if (new_inode->i_nlink > 0)
->                         drop_nlink(new_inode);
->                 spin_unlock(&new_inode->i_lock);
->         }
+> diff --git a/fs/inode.c b/fs/inode.c
+> index de0ec791f9a3..b4145ddbaf8e 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -614,7 +614,7 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
+>  
+>  	if (inode->i_state & (I_FREEING | I_WILL_FREE))
+>  		return;
+> -	if (atomic_read(&inode->i_count))
+> +	if (atomic_read(&inode->i_count) != 1)
+>  		return;
+>  	if (inode->__i_nlink == 0)
+>  		return;
+> @@ -1966,28 +1966,11 @@ EXPORT_SYMBOL(generic_delete_inode);
+>   * in cache if fs is alive, sync and evict if fs is
+>   * shutting down.
+>   */
+> -static void iput_final(struct inode *inode, bool skip_lru)
+> +static void iput_final(struct inode *inode, bool drop)
+>  {
+> -	struct super_block *sb = inode->i_sb;
+> -	const struct super_operations *op = inode->i_sb->s_op;
+>  	unsigned long state;
+> -	int drop;
+>  
+>  	WARN_ON(inode->i_state & I_NEW);
+> -
+> -	if (op->drop_inode)
+> -		drop = op->drop_inode(inode);
+> -	else
+> -		drop = generic_drop_inode(inode);
+> -
+> -	if (!drop && !skip_lru &&
+> -	    !(inode->i_state & I_DONTCACHE) &&
+> -	    (sb->s_flags & SB_ACTIVE)) {
+> -		__inode_add_lru(inode, true);
+> -		spin_unlock(&inode->i_lock);
+> -		return;
+> -	}
+> -
+>  	WARN_ON(!list_empty(&inode->i_lru));
+>  
+>  	state = inode->i_state;
+> @@ -2009,8 +1992,29 @@ static void iput_final(struct inode *inode, bool skip_lru)
+>  	evict(inode);
+>  }
+>  
+> +static bool maybe_add_lru(struct inode *inode, bool skip_lru)
+> +{
+> +	const struct super_operations *op = inode->i_sb->s_op;
+> +	struct super_block *sb = inode->i_sb;
+> +	bool drop = false;
+> +
+> +	if (op->drop_inode)
+> +		drop = op->drop_inode(inode);
+> +	else
+> +		drop = generic_drop_inode(inode);
+> +
+> +	if (!drop && !skip_lru &&
+> +	    !(inode->i_state & I_DONTCACHE) &&
+> +	    (sb->s_flags & SB_ACTIVE))
+> +		__inode_add_lru(inode, true);
+> +
+> +	return drop;
+> +}
 
-I think it should be possible to do LRU list deletion locklessly so you
-don't need to hold i_lock. The plain lru lists can already be walked
-locklessly and removal is also possible without locks.
+Can we rewrite this as:
 
-So we only seem to take i_lock because of i_state. If we can get rid of
-a bunch i_lock grabs for the sake of i_state by just using atomic bit
-operations on i_state I'm willing to sacrifice my hard-won 32bits and
-make i_state an unsigned long again...
+static bool maybe_add_lru(struct inode *inode, bool skip_lru)
+{
+	const struct super_operations *op = inode->i_sb->s_op;
+	const struct super_block *sb = inode->i_sb;
+	bool drop = false;
 
-If I'm right then this would allow us to make lru list removal lockless
-and then you can avoid this problem here in clear_nlink()/drop_nlink().
+	if (op->drop_inode)
+		drop = op->drop_inode(inode);
+	else
+		drop = generic_drop_inode(inode);
 
-Let me know if that's not working or you have other ideas.
+	if (drop)
+		return drop;
 
+	if (skip_lru)
+		return drop;
+
+	if (inode->i_state & I_DONTCACHE)
+		return drop;
+
+	if (!(sb->s_flags & SB_ACTIVE))
+		return drop;
+
+	__inode_add_lru(inode, true);
+	return drop;
+}
+
+so it's a lot easier to follow. I really dislike munging conditions
+together with a bunch of ands and negations mixed in.
+
+And btw for both I_DONTCACHE and !SB_ACTIVE it seems that returning
+anything other than false from op->drop_inode() would be a bug probably
+a technicality but I find it pretty odd.
+
+Maybe we add a VFS_WARN_ON_ONCE() at least in your local testing to see
+whether you see anything that ever hits this case.
+
+> +
+>  static void __iput(struct inode *inode, bool skip_lru)
+>  {
+> +	bool drop;
+> +
+>  	if (!inode)
+>  		return;
+>  	BUG_ON(inode->i_state & I_CLEAR);
+> @@ -2026,8 +2030,17 @@ static void __iput(struct inode *inode, bool skip_lru)
+>  	}
+>  
+>  	spin_lock(&inode->i_lock);
+> +
+> +	/*
+> +	 * If we want to keep the inode around on an LRU we will grab a ref to
+> +	 * the inode when we add it to the LRU list, so we can safely drop the
+> +	 * callers reference after this. If we didn't add the inode to the LRU
+> +	 * then the refcount will still be 1 and we can do the final iput.
+> +	 */
+> +	drop = maybe_add_lru(inode, skip_lru);
+> +
+>  	if (atomic_dec_and_test(&inode->i_count))
+> -		iput_final(inode, skip_lru);
+> +		iput_final(inode, drop);
+>  	else
+>  		spin_unlock(&inode->i_lock);
+>  
+> -- 
+> 2.49.0
 > 
-> >  }
-> >  EXPORT_SYMBOL(drop_nlink);
-> >  
-> > @@ -451,6 +461,12 @@ void clear_nlink(struct inode *inode)
-> >  {
-> >  	if (inode->i_nlink) {
-> >  		inode->__i_nlink = 0;
-> > +
-> > +		/* See comment in drop_nlink(). */
-> > +		spin_lock(&inode->i_lock);
-> > +		inode_lru_list_del(inode);
-> > +		spin_unlock(&inode->i_lock);
-> > +
-> >  		atomic_long_inc(&inode->i_sb->s_remove_count);
-> >  	}
-> >  }
-> > @@ -555,6 +571,8 @@ static void inode_add_cached_lru(struct inode *inode)
-> >  
-> >  	if (inode->i_state & I_CACHED_LRU)
-> >  		return;
-> > +	if (inode->__i_nlink == 0)
-> > +		return;
-> >  	if (!list_empty(&inode->i_lru))
-> >  		return;
-> >  
-> > @@ -562,7 +580,7 @@ static void inode_add_cached_lru(struct inode *inode)
-> >  	spin_lock(&inode->i_sb->s_cached_inodes_lock);
-> >  	list_add(&inode->i_lru, &inode->i_sb->s_cached_inodes);
-> >  	spin_unlock(&inode->i_sb->s_cached_inodes_lock);
-> > -	iobj_get(inode);
-> > +	__iget(inode);
-> >  }
-> >  
-> >  static bool __inode_del_cached_lru(struct inode *inode)
-> > @@ -582,7 +600,7 @@ static bool __inode_del_cached_lru(struct inode *inode)
-> >  static bool inode_del_cached_lru(struct inode *inode)
-> >  {
-> >  	if (__inode_del_cached_lru(inode)) {
-> > -		iobj_put(inode);
-> > +		iput(inode);
-> >  		return true;
-> >  	}
-> >  	return false;
-> > @@ -598,6 +616,8 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
-> >  		return;
-> >  	if (atomic_read(&inode->i_count))
-> >  		return;
-> > +	if (inode->__i_nlink == 0)
-> > +		return;
-> >  	if (!(inode->i_sb->s_flags & SB_ACTIVE))
-> >  		return;
-> >  	if (inode_needs_cached(inode)) {
-> > @@ -609,7 +629,7 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
-> >  	if (list_lru_add_obj(&inode->i_sb->s_inode_lru, &inode->i_lru)) {
-> >  		inode->i_state |= I_LRU;
-> >  		if (need_ref)
-> > -			iobj_get(inode);
-> > +			__iget(inode);
-> >  		this_cpu_inc(nr_unused);
-> >  	} else if (rotate) {
-> >  		inode->i_state |= I_REFERENCED;
-> > @@ -655,7 +675,7 @@ void inode_lru_list_del(struct inode *inode)
-> >  
-> >  	if (list_lru_del_obj(&inode->i_sb->s_inode_lru, &inode->i_lru)) {
-> >  		inode->i_state &= ~I_LRU;
-> > -		iobj_put(inode);
-> > +		iput(inode);
-> >  		this_cpu_dec(nr_unused);
-> >  	}
-> >  }
-> > @@ -926,6 +946,7 @@ static void evict(struct inode *inode)
-> >  	BUG_ON(inode->i_state != (I_FREEING | I_CLEAR));
-> >  }
-> >  
-> > +static void iput_evict(struct inode *inode);
-> >  /*
-> >   * dispose_list - dispose of the contents of a local list
-> >   * @head: the head of the list to free
-> > @@ -933,20 +954,14 @@ static void evict(struct inode *inode)
-> >   * Dispose-list gets a local list with local inodes in it, so it doesn't
-> >   * need to worry about list corruption and SMP locks.
-> >   */
-> > -static void dispose_list(struct list_head *head, bool for_lru)
-> > +static void dispose_list(struct list_head *head)
-> >  {
-> >  	while (!list_empty(head)) {
-> >  		struct inode *inode;
-> >  
-> >  		inode = list_first_entry(head, struct inode, i_lru);
-> >  		list_del_init(&inode->i_lru);
-> > -
-> > -		if (for_lru) {
-> > -			evict(inode);
-> > -			iobj_put(inode);
-> > -		} else {
-> > -			iput(inode);
-> > -		}
-> > +		iput_evict(inode);
-> >  		cond_resched();
-> >  	}
-> >  }
-> > @@ -987,13 +1002,13 @@ void evict_inodes(struct super_block *sb)
-> >  		if (need_resched()) {
-> >  			spin_unlock(&sb->s_inode_list_lock);
-> >  			cond_resched();
-> > -			dispose_list(&dispose, false);
-> > +			dispose_list(&dispose);
-> >  			goto again;
-> >  		}
-> >  	}
-> >  	spin_unlock(&sb->s_inode_list_lock);
-> >  
-> > -	dispose_list(&dispose, false);
-> > +	dispose_list(&dispose);
-> >  }
-> >  EXPORT_SYMBOL_GPL(evict_inodes);
-> >  
-> > @@ -1031,22 +1046,7 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
-> >  	if (inode_needs_cached(inode)) {
-> >  		list_lru_isolate(lru, &inode->i_lru);
-> >  		inode_add_cached_lru(inode);
-> > -		iobj_put(inode);
-> > -		spin_unlock(&inode->i_lock);
-> > -		this_cpu_dec(nr_unused);
-> > -		return LRU_REMOVED;
-> > -	}
-> > -
-> > -	/*
-> > -	 * Inodes can get referenced, redirtied, or repopulated while
-> > -	 * they're already on the LRU, and this can make them
-> > -	 * unreclaimable for a while. Remove them lazily here; iput,
-> > -	 * sync, or the last page cache deletion will requeue them.
-> > -	 */
-> > -	if (atomic_read(&inode->i_count) ||
-> > -	    (inode->i_state & ~I_REFERENCED)) {
-> > -		list_lru_isolate(lru, &inode->i_lru);
-> > -		inode->i_state &= ~I_LRU;
-> > +		iput(inode);
-> >  		spin_unlock(&inode->i_lock);
-> >  		this_cpu_dec(nr_unused);
-> >  		return LRU_REMOVED;
-> > @@ -1082,7 +1082,6 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
-> >  	}
-> >  
-> >  	WARN_ON(inode->i_state & I_NEW);
-> > -	inode->i_state |= I_FREEING;
-> >  	inode->i_state &= ~I_LRU;
-> >  	list_lru_isolate_move(lru, &inode->i_lru, freeable);
-> >  	spin_unlock(&inode->i_lock);
-> > @@ -1104,7 +1103,7 @@ long prune_icache_sb(struct super_block *sb, struct shrink_control *sc)
-> >  
-> >  	freed = list_lru_shrink_walk(&sb->s_inode_lru, sc,
-> >  				     inode_lru_isolate, &freeable);
-> > -	dispose_list(&freeable, true);
-> > +	dispose_list(&freeable);
-> >  	return freed;
-> >  }
-> >  
-> > @@ -1967,7 +1966,7 @@ EXPORT_SYMBOL(generic_delete_inode);
-> >   * in cache if fs is alive, sync and evict if fs is
-> >   * shutting down.
-> >   */
-> > -static void iput_final(struct inode *inode)
-> > +static void iput_final(struct inode *inode, bool skip_lru)
-> >  {
-> >  	struct super_block *sb = inode->i_sb;
-> >  	const struct super_operations *op = inode->i_sb->s_op;
-> > @@ -1981,7 +1980,7 @@ static void iput_final(struct inode *inode)
-> >  	else
-> >  		drop = generic_drop_inode(inode);
-> >  
-> > -	if (!drop &&
-> > +	if (!drop && !skip_lru &&
-> >  	    !(inode->i_state & I_DONTCACHE) &&
-> >  	    (sb->s_flags & SB_ACTIVE)) {
-> >  		__inode_add_lru(inode, true);
-> > @@ -1989,6 +1988,8 @@ static void iput_final(struct inode *inode)
-> >  		return;
-> >  	}
-> >  
-> > +	WARN_ON(!list_empty(&inode->i_lru));
-> > +
-> >  	state = inode->i_state;
-> >  	if (!drop) {
-> >  		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
-> > @@ -2003,23 +2004,12 @@ static void iput_final(struct inode *inode)
-> >  	}
-> >  
-> >  	WRITE_ONCE(inode->i_state, state | I_FREEING);
-> > -	if (!list_empty(&inode->i_lru))
-> > -		inode_lru_list_del(inode);
-> >  	spin_unlock(&inode->i_lock);
-> >  
-> >  	evict(inode);
-> >  }
-> >  
-> > -/**
-> > - *	iput	- put an inode
-> > - *	@inode: inode to put
-> > - *
-> > - *	Puts an inode, dropping its usage count. If the inode use count hits
-> > - *	zero, the inode is then freed and may also be destroyed.
-> > - *
-> > - *	Consequently, iput() can sleep.
-> > - */
-> > -void iput(struct inode *inode)
-> > +static void __iput(struct inode *inode, bool skip_lru)
-> >  {
-> >  	if (!inode)
-> >  		return;
-> > @@ -2037,12 +2027,31 @@ void iput(struct inode *inode)
-> >  
-> >  	spin_lock(&inode->i_lock);
-> >  	if (atomic_dec_and_test(&inode->i_count))
-> > -		iput_final(inode);
-> > +		iput_final(inode, skip_lru);
-> >  	else
-> >  		spin_unlock(&inode->i_lock);
-> >  
-> >  	iobj_put(inode);
-> >  }
-> > +
-> > +static void iput_evict(struct inode *inode)
-> > +{
-> > +	__iput(inode, true);
-> > +}
-> > +
-> > +/**
-> > + *	iput	- put an inode
-> > + *	@inode: inode to put
-> > + *
-> > + *	Puts an inode, dropping its usage count. If the inode use count hits
-> > + *	zero, the inode is then freed and may also be destroyed.
-> > + *
-> > + *	Consequently, iput() can sleep.
-> > + */
-> > +void iput(struct inode *inode)
-> > +{
-> > +	__iput(inode, false);
-> > +}
-> >  EXPORT_SYMBOL(iput);
-> >  
-> >  /**
-> > -- 
-> > 2.49.0
-> > 
 
