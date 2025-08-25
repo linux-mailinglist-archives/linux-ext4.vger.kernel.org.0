@@ -1,89 +1,89 @@
-Return-Path: <linux-ext4+bounces-9619-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9620-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BEF4B34ADA
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 21:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 05249B34AF5
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 21:35:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFB435E3DF6
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 19:26:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E2DB3B6D2A
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 19:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB87D28313F;
-	Mon, 25 Aug 2025 19:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27601284B25;
+	Mon, 25 Aug 2025 19:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="gifK/GuQ"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="ouM+Sjx8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCEF519D8BC
-	for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 19:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1169627AC3E
+	for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 19:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756149975; cv=none; b=lrzxDtmXDPgNOuXJDHI+POyVusDBZ0X054OPHUrE+ty4+bhXUVORKkbVmjTOv+ChPCYxZQetUqBw03dzXXBcjZoQr5odOKAhEAA830qAT/33cBpIgSCzr1gf+MTemkVCGJQqr0pkU5bMsPSeAL+RxdJxUPZClOovMnwA/E6LQDo=
+	t=1756150507; cv=none; b=cr0aHI6w7h61QiPz4vj6TGuIk2pJpKigJF5DIOyKD17VaGyPC7iq5sbxkoDixp9OWp9X0JjmVlrNs2fQ3MeQ1aADaMfF+s11qn5ysYFlc+9Q94lNHro5KkoAVrSugQdYzMFeP/9fo+zw34nlb6KVwW7TSRYg0MdS7bxZfZd9eR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756149975; c=relaxed/simple;
-	bh=OVo/nnDHoAM+dyoQZoqa2tMCaLxG9KPpqdz7u06+QkI=;
+	s=arc-20240116; t=1756150507; c=relaxed/simple;
+	bh=oezHH2OV9IQAQTvmhi0PGkJGTakD8P6Kca8eDrWjLaw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IZWpBdpbS1sIq47U1AeQtbC5wA5uFx3RBqTJQn5VlVo28cHYEMPdDcmwS1hzO1UWZZotlNMAPuIQSoAmLoEsy++OTeZHw2idEOIbU+3kmBNnRVMH20swUL8m8evBbhZPWL2ijBninDat2DwpwBAZwcRqfVdN4Dx/nb5kw/Ealek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=gifK/GuQ; arc=none smtp.client-ip=209.85.219.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=L+O6OLqPy9rOUYfbRp+s2pF+8bG4HFxlDie9PHnMJtNXD6Lnp8aRTI5710NCfqK+EOanL1dTT1i2wKoBeVdP+nFl2gc9CWjDIE/hSWebzrijxOvE04HdtAIJdnAYsJhTd6QBu3Xskjv7m7I9vX982DFAm6ROIDh3gTcSE1HgF3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=ouM+Sjx8; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-e931c71a1baso6938622276.0
-        for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 12:26:13 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e9526271af9so2440430276.3
+        for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 12:35:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756149973; x=1756754773; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756150505; x=1756755305; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mp7hrAC+z9ITkZMGbXSePlctrkwigE1uRQddy7FPWjw=;
-        b=gifK/GuQq9K4U4Oe8HSxzb1UVEs7xOFF9LajWJLKNk6i8UnYSHAC4oVSHbclZQH2oR
-         8Uis8HWxt3BZihbqMX6lvEh3OdyD1AXGVtj9aJ+nY0EuOucJ85zNGOek4Zrev1kf0jSr
-         EigyG7m0CKuiaLswo0rW5ybSxIA0HyHdRob6iBdkNHEXVwvJCy6jHSW54MWXu23E/UNF
-         mVKpSgnT7IiW2T6ibj/uCtWCCJPi4pNdIt/zLidST0x9cuToz6/JVmZvCp/6ifHUmfiv
-         l7QEJm8P4vy8XM1T1D9dcE2KbWYj45SAkVJU1PpWMlQ0sijVxQkJQfCu1aRQQrNievNy
-         Pk2Q==
+        bh=wYuLPKGcVdOQFox0yjz3XsNMcHe6CSns2VOTsCthOLA=;
+        b=ouM+Sjx8atQGgmj2FimpaoUdomTlALAZka266IV6mj3TaqOcCow8jyOp+dcRRd4EkT
+         RgAgZI0lX0wXbstYYt29tyJNeT3KJaAj+s1wMbw3TJvqzkGjX7/qE4lcyB+IdGmziZPa
+         whjKTplbsKkCXGNIbX/NyvMOHso406xqfdf45lEz2IPyhKPnKN5klGtJQ7k31aRheFdO
+         zuNh/df6hj2eqgNQh5y4pJssR7fo/vQn6Iu5ncKRTOsMs2ILDkjh4dYWsiAMJPENB8ev
+         jHfwv9mOXuGHxscgSLSQaMVgmd9pJ65ls3EMqElVwoqUPIitBryejqcna3FuQrC2DVID
+         pb8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756149973; x=1756754773;
+        d=1e100.net; s=20230601; t=1756150505; x=1756755305;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mp7hrAC+z9ITkZMGbXSePlctrkwigE1uRQddy7FPWjw=;
-        b=WMPi1lMtTSMqXipWGBwjximdkrUQfpmv2ro655jmpM9ei2RPP554C0VvG4VfsfC+3Q
-         kQsKMFjumnxfCcdHRCv5OrRqekRUf6YiQBwLXVl3VpVQODiceUszrL2S/x4ozqBeWyhZ
-         ErJwjGBU6W0EIpLuP6kLbiwZ/MdRkDEB7k/I+RjDOTNMI5kB6FhBEsIPcNOsG9SN6Gyj
-         ubsBth6+eFDzmfE+TEd2dQDCQ8+wUW23FFR/BgHNhhus1QCBVhN8c6qqgGmLSfLYMdIT
-         r86SFJV92w2z0yxc637f02TJROr6gyqVbmi0+rwHMtAD/GWnVfkZS1UGjbMnYIGLPj6Z
-         Nnrg==
-X-Forwarded-Encrypted: i=1; AJvYcCUgWuUkHeDM6aOBTmLW5/zRNV0pz+d07o1AlEjbTREt+T+9FdVwFFc/9LUJLnELSVZjb8lAYZVKx0Nm@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEcOO/fnvdOFVxuEPlZluOiq87Uafwi8CTgRrB301iH6e9U/Vr
-	le4zOvtxjdGTQI3ebmp0WtiZFCNJ4/GfsqQ6cqnBR/PkZaTXglruU5iEIZgdRjmNtuc=
-X-Gm-Gg: ASbGncsiU3Bxrtb+o1vE7Z05Vy/0xmjxORIJ4ZaZjXRsYriMlDHsP7lQx4Usc8rPfSW
-	KOuOncX+zPokA2UaMwHdC7SnXriMObAxE960x6mPD8B+FUCCOGMv7p7+INWrAhxi8rVcr00wdUt
-	Mz6Zqf9wXAlKGPnWW8SV27s8r2770B8o6bPwCcKDcQjeVNWMERROiw9i5X3oYWQpoWsdiMnBUaQ
-	wK3tSvKriXD+u3ZMi7lv3jAsrokMv99lG23CUruQ1C70zPmUHku2E2P95yjsw2I8zpHba+1p5SQ
-	d3fj1QTzueT5dqgCM8vatMIGD2+K03VIMnTKdBaF/s6lkERdYPK4b6hpCMvQfP4AsAmGY3O0xPb
-	6SZfo3ZSdres+eGCyMdYL6ZG1mXiqBmOKwswKM8dNB+Akr+epGzL/f7AkA+FLghYjp+7abUZexZ
-	KA4eqy
-X-Google-Smtp-Source: AGHT+IHEx37a3oXB5tv663eJfw1dYbVgBWHF+M2D92Pt6vUhFsXxqSKLHwZGoJ033niO4gVVY5tSNg==
-X-Received: by 2002:a05:690c:6102:b0:71f:f866:bba4 with SMTP id 00721157ae682-71ff866f374mr97051877b3.17.1756149972656;
-        Mon, 25 Aug 2025 12:26:12 -0700 (PDT)
+        bh=wYuLPKGcVdOQFox0yjz3XsNMcHe6CSns2VOTsCthOLA=;
+        b=qBYJaHz9olQZ9OpcVquhv2kprZMOuFUPc5q2JdrbI5/C2urCjVsPkgUhLPIFclUDAr
+         MTORvujSX6auRMmpOR0cfYAhYxKW4tUv8WWf+kfCGaIjBmLIenVMLvHsNwFD70eMWv5G
+         U+8+51aTqW7JGKZGnGzMS0ZpV75+tAGeZUwrHmmdV7Fa77ec+7dqq37x7XW2sFPQl85t
+         TfHDmqgVqON1t9F741Ft4WAp9UZilIU5pt7hEN7/6EKzDeJ9J14rSJirADHHhhjjaViP
+         ScI/yVWX0LxrQLCVqMGFkKbANZ/9PJLcP1PYh0VSjlProkx21u6KFC3P6RhT5HFTi7+W
+         Z06w==
+X-Forwarded-Encrypted: i=1; AJvYcCVnZYkTQyxKDrPrgoVpDIMYtc4DwVfWcOuNB+SZYoNUayJTUyYzSGtsYG6CsOTOzh5bA9xvEj3Me08y@vger.kernel.org
+X-Gm-Message-State: AOJu0YzdVixU32fhQXFMb8dMP68Ujpz21sdB+aYAGbRWe4+hMu6s2YIS
+	jhg7EovNo2g2OA0HQaqR6rR040OaVTOwAshUfwz9x+h4yLlPj5ty+aSsEfTNNpxcIZI=
+X-Gm-Gg: ASbGncsnqwEqolKVsvvErs+XeGnVkjxp9BsaEqxw3kg1x+NRqF24aPHHZQAVhmAmsP3
+	BbwUkkh9s4lgxpR5Lvozfm13G0l5921sNl+QB+QTp9811tW9wWNvhq5/AAGhBq1M1WKa8xLIqbu
+	ENbjF37/qjDZuXkvlwRcvMXlQ/QKDuQckXfATh9S5g2N5kxxkNPO/YJDU6yv3Sjws5vfUIYwpyD
+	mvjctbeqOy5GiovwgTgDshsOkcEBJjAjVjb6bpNQkt4kQvH9XG0z6yafL57+qIzYaWWHfPmE+NN
+	v6+ertCvxMi9UcSSHnNWrkWGkLVvA7tEObqy6+WTAFUiDe1JXgsy80yighFNt8eJ2hEaji9GzVW
+	QAFFmpbkZM4fbIiDRE0Mc0pGhcavEBCawCC3T+OGwPqJwMf5oaPGI4Cc/L2E=
+X-Google-Smtp-Source: AGHT+IG2LKen8WXlKCVG4rUuv5H4Bl3N4h2X8DwUeXxNFNEgbfsUd99hFbjqhhw3cYiYoTH7LHEqTg==
+X-Received: by 2002:a05:690c:6c83:b0:71f:9a36:d339 with SMTP id 00721157ae682-71fdc40fcebmr122974027b3.43.1756150504855;
+        Mon, 25 Aug 2025 12:35:04 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff18b3794sm19329237b3.63.2025.08.25.12.26.11
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff18b3794sm19383027b3.63.2025.08.25.12.35.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 12:26:11 -0700 (PDT)
-Date: Mon, 25 Aug 2025 15:26:10 -0400
+        Mon, 25 Aug 2025 12:35:03 -0700 (PDT)
+Date: Mon, 25 Aug 2025 15:35:02 -0400
 From: Josef Bacik <josef@toxicpanda.com>
 To: Christian Brauner <brauner@kernel.org>
 Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com, linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 18/50] fs: disallow 0 reference count inodes
-Message-ID: <20250825192610.GA1310133@perftesting>
+Subject: Re: [PATCH 16/50] fs: change evict_inodes to use iput instead of
+ evict directly
+Message-ID: <20250825193502.GB1310133@perftesting>
 References: <cover.1755806649.git.josef@toxicpanda.com>
- <6f4fb1baddecbdab4231c6094bbb05a98bbb7365.1755806649.git.josef@toxicpanda.com>
- <20250825-person-knapp-e802daccfe5b@brauner>
+ <1198cd4cd35c5875fbf95dc3dca68650bb176bb1.1755806649.git.josef@toxicpanda.com>
+ <20250825-entbinden-kehle-2e1f8b67b190@brauner>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -92,125 +92,137 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250825-person-knapp-e802daccfe5b@brauner>
+In-Reply-To: <20250825-entbinden-kehle-2e1f8b67b190@brauner>
 
-On Mon, Aug 25, 2025 at 12:54:01PM +0200, Christian Brauner wrote:
-> On Thu, Aug 21, 2025 at 04:18:29PM -0400, Josef Bacik wrote:
-> > Now that we take a full reference for inodes on the LRU, move the logic
-> > to add the inode to the LRU to before we drop our last reference. This
-> > allows us to ensure that if the inode has a reference count it can be
-> > used, and we no longer hold onto inodes that have a 0 reference count.
+On Mon, Aug 25, 2025 at 11:07:55AM +0200, Christian Brauner wrote:
+> On Thu, Aug 21, 2025 at 04:18:27PM -0400, Josef Bacik wrote:
+> > At evict_inodes() time, we no longer have SB_ACTIVE set, so we can
+> > easily go through the normal iput path to clear any inodes. Update
+> 
+> I'm a bit lost why SB_ACTIVE is used here as a justification to call
+> iput(). I think it's because iput_final() would somehow add it back to
+> the LRU if SB_ACTIVE was still set and the filesystem somehow would
+> indicate it wouldn't want to drop the inode.
+> 
+> I'm confused where that would even happen. IOW, which filesystem would
+> indicate "don't drop the inode" even though it's about to vanish. But
+> anyway, that's probably not important because...
+> 
+> > dispose_list() to check how we need to free the inode, and then grab a
+> > full reference to the inode while we're looping through the remaining
+> > inodes, and simply iput them at the end.
+> > 
+> > Since we're just calling iput we don't really care about the i_count on
+> > the inode at the current time.  Remove the i_count checks and just call
+> > iput on every inode we find.
 > > 
 > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > > ---
-> >  fs/inode.c | 53 +++++++++++++++++++++++++++++++++--------------------
-> >  1 file changed, 33 insertions(+), 20 deletions(-)
+> >  fs/inode.c | 26 +++++++++++---------------
+> >  1 file changed, 11 insertions(+), 15 deletions(-)
 > > 
 > > diff --git a/fs/inode.c b/fs/inode.c
-> > index de0ec791f9a3..b4145ddbaf8e 100644
+> > index 72981b890ec6..80ad327746a7 100644
 > > --- a/fs/inode.c
 > > +++ b/fs/inode.c
-> > @@ -614,7 +614,7 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
-> >  
-> >  	if (inode->i_state & (I_FREEING | I_WILL_FREE))
-> >  		return;
-> > -	if (atomic_read(&inode->i_count))
-> > +	if (atomic_read(&inode->i_count) != 1)
-> >  		return;
-> >  	if (inode->__i_nlink == 0)
-> >  		return;
-> > @@ -1966,28 +1966,11 @@ EXPORT_SYMBOL(generic_delete_inode);
-> >   * in cache if fs is alive, sync and evict if fs is
-> >   * shutting down.
+> > @@ -933,7 +933,7 @@ static void evict(struct inode *inode)
+> >   * Dispose-list gets a local list with local inodes in it, so it doesn't
+> >   * need to worry about list corruption and SMP locks.
 > >   */
-> > -static void iput_final(struct inode *inode, bool skip_lru)
-> > +static void iput_final(struct inode *inode, bool drop)
+> > -static void dispose_list(struct list_head *head)
+> > +static void dispose_list(struct list_head *head, bool for_lru)
 > >  {
-> > -	struct super_block *sb = inode->i_sb;
-> > -	const struct super_operations *op = inode->i_sb->s_op;
-> >  	unsigned long state;
-> > -	int drop;
+> >  	while (!list_empty(head)) {
+> >  		struct inode *inode;
+> > @@ -941,8 +941,12 @@ static void dispose_list(struct list_head *head)
+> >  		inode = list_first_entry(head, struct inode, i_lru);
+> >  		list_del_init(&inode->i_lru);
 > >  
-> >  	WARN_ON(inode->i_state & I_NEW);
-> > -
-> > -	if (op->drop_inode)
-> > -		drop = op->drop_inode(inode);
-> > -	else
-> > -		drop = generic_drop_inode(inode);
-> > -
-> > -	if (!drop && !skip_lru &&
-> > -	    !(inode->i_state & I_DONTCACHE) &&
-> > -	    (sb->s_flags & SB_ACTIVE)) {
-> > -		__inode_add_lru(inode, true);
-> > -		spin_unlock(&inode->i_lock);
-> > -		return;
-> > -	}
-> > -
-> >  	WARN_ON(!list_empty(&inode->i_lru));
-> >  
-> >  	state = inode->i_state;
-> > @@ -2009,8 +1992,29 @@ static void iput_final(struct inode *inode, bool skip_lru)
-> >  	evict(inode);
-> >  }
-> >  
-> > +static bool maybe_add_lru(struct inode *inode, bool skip_lru)
-> > +{
-> > +	const struct super_operations *op = inode->i_sb->s_op;
-> > +	struct super_block *sb = inode->i_sb;
-> > +	bool drop = false;
-> > +
-> > +	if (op->drop_inode)
-> > +		drop = op->drop_inode(inode);
-> > +	else
-> > +		drop = generic_drop_inode(inode);
-> > +
-> > +	if (!drop && !skip_lru &&
-> > +	    !(inode->i_state & I_DONTCACHE) &&
-> > +	    (sb->s_flags & SB_ACTIVE))
-> > +		__inode_add_lru(inode, true);
-> > +
-> > +	return drop;
-> > +}
+> > -		evict(inode);
+> > -		iobj_put(inode);
+> > +		if (for_lru) {
+> > +			evict(inode);
+> > +			iobj_put(inode);
+> > +		} else {
+> > +			iput(inode);
+> > +		}
 > 
-> Can we rewrite this as:
+> ... Afaict, if we end up in dispose_list() we came from one of two
+> locations:
 > 
-> static bool maybe_add_lru(struct inode *inode, bool skip_lru)
-> {
-> 	const struct super_operations *op = inode->i_sb->s_op;
-> 	const struct super_block *sb = inode->i_sb;
-> 	bool drop = false;
+> (1) prune_icache_sb()
+>     In which case inode_lru_isolate() will have only returned inodes
+>     that prior to your changes would have inode->i_count zero.
 > 
-> 	if (op->drop_inode)
-> 		drop = op->drop_inode(inode);
-> 	else
-> 		drop = generic_drop_inode(inode);
+> (2) evict_inodes()
+>     Similar story, this only hits inodes with inode->i_count zero.
 > 
-> 	if (drop)
-> 		return drop;
+> With your change you're adding an increment from zero for (2) via
+> __iget() so that you always end up with a full refcount, and that is
+> backing your changes to dispose_list() later.
 > 
-> 	if (skip_lru)
-> 		return drop;
-> 
-> 	if (inode->i_state & I_DONTCACHE)
-> 		return drop;
-> 
-> 	if (!(sb->s_flags & SB_ACTIVE))
-> 		return drop;
-> 
-> 	__inode_add_lru(inode, true);
-> 	return drop;
-> }
-> 
-> so it's a lot easier to follow. I really dislike munging conditions
-> together with a bunch of ands and negations mixed in.
-> 
-> And btw for both I_DONTCACHE and !SB_ACTIVE it seems that returning
-> anything other than false from op->drop_inode() would be a bug probably
-> a technicality but I find it pretty odd.
+> I don't see the same done for (1) though and so your later call to
+> iput() drops the reference below zero? It's accidently benign because
+> iiuc atomic_dec_and_test() will simply tell you that reference count
+> didn't go to zero and so iput() will back off. But still this should be
+> fixed if I'm right.
 
-Not necsessarily, maybe we had some delayed iput (*cough* btrfs *cough*) that
-didn't run until umount time and now we have true coming from ->drop_inode()
-with SB_ACTIVE turned off.  That would be completely valid.  Thanks,
+Because (1) at this point doesn't have a full reference, it only has an
+i_obj_count reference. The next patch converts this, and removes this bit. I did
+it this way to clearly mark the change in behavior.
+
+prune_icache_sb() will call dispose_list(&list, true), which will do the
+evict(inode) and iobj_put(inode). This is correct because the inodes on the list
+from prune_icache_sb() will have an i_count == and have I_WILL_FREE set, so it
+will never have it's i_count increased to 1.
+
+The change here is to change evict_inodes() to simply call iput(), as it calls
+dispose_list(&list, false). We will increase the i_count to 1 from zero via
+__iget(), which at this point in the series is completely correct behavior. Then
+we will call iput() which will drop the i_count back to zero, and then call
+iput_final, and since SB_ACTIVE is not set, it will call evict(inode) and clean
+everything up properly.
+
+> 
+> The conversion to iput() is introducing a lot of subtlety in the middle
+> of the series. If I'm right then the iput() is a always a nop because in
+> all cases it was an increment from zero. But it isn't really a nop
+> because we still do stuff like call ->drop_inode() again. Maybe it's
+> fine because no filesystem would have issues with this but I wouldn't
+> count on it and also it feels rather unclean to do it this way.
+
+So I'm definitely introducing another call to ->drop_inode() here, but
+->drop_inode() has always been a "do we want to keep this inode on the LRU"
+call, calling it again doesn't really change anything.
+
+That being said it is a subtle functional change. I put it here specifically
+because it is a functional change. If it bites us in the ass in some unforseen
+way we'll be able to bisect it down to here and then we can all laugh at Josef
+because he missed something.
+
+> 
+> So, under the assumption, that after the increment from zero you did, we
+> really only have a blatant zombie inode on our hands and we only need to
+> get rid of the i_count we took make that explicit and do:
+> 
+> 	if (for_lru) {
+> 		evict(inode);
+> 		iobj_put(inode);
+> 	} else {
+> 		/* This inode was always incremented from zero.
+> 		 * Get rid of that reference without doing anything else.
+> 		 */
+> 		WARN_ON_ONCE(!atomic_dec_and_test(&inode->i_count));
+> 	}
+
+We still need the evict() to actually free the inode.  We're just getting there
+via iput_final() now instead of directly calling evict().
+
+> 
+> Btw, for the iobj_put() above, I assume that we're not guaranteed that
+> i_obj_count == 1?
+
+Right, it's purely dropping the LRU list i_obj_count reference.  Thanks,
 
 Josef
 
