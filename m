@@ -1,202 +1,160 @@
-Return-Path: <linux-ext4+bounces-9598-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9599-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CA38B339EA
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 10:51:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30700B33A26
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 11:08:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA844189EC5F
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 08:52:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0A23177C05
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 09:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E042BDC25;
-	Mon, 25 Aug 2025 08:51:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 154282C08DA;
+	Mon, 25 Aug 2025 09:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="taO2W+7j"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BCC729E112
-	for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 08:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE0B2C08C5;
+	Mon, 25 Aug 2025 09:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756111892; cv=none; b=DowZlb4+MX0JnF5V5LfJnSHfVe01hIXeE/3YinS5mV9ivee0MHIiceChVID3yYUMJ4PlqVnp356+b7pL4Z9D6kyGxfhSzhfZsf/bLHQ6kygRWCcqCVX5+RxvCqwab0/2SeLsVDOJ1uoc3kZJ5P9EZs9gJwEf09T3dxYjgOuNmUQ=
+	t=1756112881; cv=none; b=aQ/y/yqJXzNHvHYbxcKbo6v/S0Z4OpP2TitYGrzmnUAlpJMBpSagxEKn8EsCDvo95H6bmaOp0iQG8i0Bb8FbXf3pPiG7JF4shSXYsPCLlf6w2JlN/1d2fHDJ4079gkwdbEFp5Ioje+GWHH4snhdb2F9BrqySNzCvsgv+SntAKkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756111892; c=relaxed/simple;
-	bh=737pHUcbqavM/NYe5LkFjkuENOe+KqG8l78fhwWiOtM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=FDnLRItRN42Y7whEHP4jsPl3n7rxgDGhlhCZ+yiXY/KVPlRwI74ynat3fF4C5UHIYcHOhIXgEmquCO9kxWizULnBKaNaQP9FMM97iBhjUzjWpGPUqZNDkczhQd/JxUYNLFHAQHNf728t9TCeXGRUS53mMaPoWitrNZpxF9LB+rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-88432e1ea71so1108655239f.2
-        for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 01:51:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756111890; x=1756716690;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SUGiyLybXFIGgebnjZWx+A6DBkt0GAu5fA8F5iMbSEA=;
-        b=IF2+/ZAvBAGCpDV7kCO8ET1/SHMboAh53zzY5cN4DWNkfu8ALHf5QeRg83i9bPlhwl
-         dYQ2FXDOsmIuT4EInuBjlhYueF09M0+3hCnMRtR80AvPvZ0Rp4dvwMFnf+wBONYM05+y
-         M9/xNsHJHFdCy488eSqubKlQ/vKXHll1XbRCRlblV6Nl0qgVWO7a95IMZA4LJnFXj5jk
-         Nv+pLcOg5z1YgJWtpvxhM79dkIyOXHsFplrUlTS6Y2uDnNTpYvmuR6Pv60cuElBV9G2i
-         SxthqdAD3cGYBYaUmdaGeQ+pP+Jm9xMlqaL8FQUJFH9lCd62qIOc9D0LpaQtbVSFHEIQ
-         RNhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFkWcGSr/YJlMl/A+++jxJ36sdny1HbH+jcw7HqE9TU64NTpCoLq0gqVnH1oP9eLH6I5brdmIjgLw7@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLEzB9UhgcoMjcTrDpNoWiUo8p4GBaBHm3giiMJUEUhevHKJT4
-	/Z76mGYN1ogOpZCCy9MouKgsK1VllZdNMm4ZJt5/BCi645xYCnbZc3bnnqQ5+Eam+cusLjjGiOy
-	dFY0XYKjo8KVxt/iACDIpc2xa7aNW1xhU80t02fsTib/ICD0XHT99rI1RdB0=
-X-Google-Smtp-Source: AGHT+IFKBOmBvl27xsblvM7OKwhWGLo3t756oC5s3Kddkq7C9ib3+yMi8JmeP0QUxMSmTN55NitQFPxafz/4JgmkCJ0jKI2v6ZcI
+	s=arc-20240116; t=1756112881; c=relaxed/simple;
+	bh=WcGIexejQro4dJup18GJZHF4Y5xxKShoUkhmSJJdXKA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MFk4u9BideIMrWjR58uVm+YGXQZ4OgCnCXCEyxRI3AKft66tojhEDWj611KdItGLqxp3kEWKvOjictqDijE0V4hZZSS9dv0shU5obx5LNjTx4mnTNodRopjvx0HA7J44R6Uss+uqJQ+Si2XUvJ3msMPalj0CC7PfHKd8Kw3Ai8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=taO2W+7j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49F02C4CEED;
+	Mon, 25 Aug 2025 09:07:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756112881;
+	bh=WcGIexejQro4dJup18GJZHF4Y5xxKShoUkhmSJJdXKA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=taO2W+7jJohKF1oHfrS8W24AZXDZtFunSZkAUlqBPxAi5IuIxthDreYTMCML96ryV
+	 JpYQz0KT5GXAoFRaiFNTI1n4GApimZ85BVrQMpga+/84hjT5LkXCsrzlI1zOEzYpMK
+	 HtgOQNiEVwsiFNemunQwpFnkw5txFOVeRUE2P5vd5WKO0Irv9CpYFWglknEw33F9m+
+	 M3rtnPC0ANjrY1CaFcxzSSAjPEyHrvzWFU6z3PJ53fpW5tXeO1Y/Fg5U4utLs/uCHu
+	 K4fQWOCR+ulXSRW4oV2FaWmKyiYtG1vva859dQt6ydFPePttrImp7IGVFfmlV15tiw
+	 xdV2EO05Rk7eA==
+Date: Mon, 25 Aug 2025 11:07:55 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 16/50] fs: change evict_inodes to use iput instead of
+ evict directly
+Message-ID: <20250825-entbinden-kehle-2e1f8b67b190@brauner>
+References: <cover.1755806649.git.josef@toxicpanda.com>
+ <1198cd4cd35c5875fbf95dc3dca68650bb176bb1.1755806649.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1985:b0:3e5:4bc5:539a with SMTP id
- e9e14a558f8ab-3e921c50621mr179288905ab.19.1756111890383; Mon, 25 Aug 2025
- 01:51:30 -0700 (PDT)
-Date: Mon, 25 Aug 2025 01:51:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68ac2412.050a0220.37038e.0089.GAE@google.com>
-Subject: [syzbot] [ext4?] possible deadlock in ext4_truncate (2)
-From: syzbot <syzbot+c5c9c223a721d7353490@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1198cd4cd35c5875fbf95dc3dca68650bb176bb1.1755806649.git.josef@toxicpanda.com>
 
-Hello,
+On Thu, Aug 21, 2025 at 04:18:27PM -0400, Josef Bacik wrote:
+> At evict_inodes() time, we no longer have SB_ACTIVE set, so we can
+> easily go through the normal iput path to clear any inodes. Update
 
-syzbot found the following issue on:
+I'm a bit lost why SB_ACTIVE is used here as a justification to call
+iput(). I think it's because iput_final() would somehow add it back to
+the LRU if SB_ACTIVE was still set and the filesystem somehow would
+indicate it wouldn't want to drop the inode.
 
-HEAD commit:    8d245acc1e88 Merge tag 'char-misc-6.17-rc3' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1654ac42580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=da02162f945f3311
-dashboard link: https://syzkaller.appspot.com/bug?extid=c5c9c223a721d7353490
-compiler:       gcc (Debian 12.2.0-14+deb12u1) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d1cef0580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f4e7bc580000
+I'm confused where that would even happen. IOW, which filesystem would
+indicate "don't drop the inode" even though it's about to vanish. But
+anyway, that's probably not important because...
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cea3b9f96317/disk-8d245acc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/edb55fcbe832/vmlinux-8d245acc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/db6f85cd97c7/bzImage-8d245acc.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/d39971563b22/mount_0.gz
-  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=125fc862580000)
+> dispose_list() to check how we need to free the inode, and then grab a
+> full reference to the inode while we're looping through the remaining
+> inodes, and simply iput them at the end.
+> 
+> Since we're just calling iput we don't really care about the i_count on
+> the inode at the current time.  Remove the i_count checks and just call
+> iput on every inode we find.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/inode.c | 26 +++++++++++---------------
+>  1 file changed, 11 insertions(+), 15 deletions(-)
+> 
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 72981b890ec6..80ad327746a7 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -933,7 +933,7 @@ static void evict(struct inode *inode)
+>   * Dispose-list gets a local list with local inodes in it, so it doesn't
+>   * need to worry about list corruption and SMP locks.
+>   */
+> -static void dispose_list(struct list_head *head)
+> +static void dispose_list(struct list_head *head, bool for_lru)
+>  {
+>  	while (!list_empty(head)) {
+>  		struct inode *inode;
+> @@ -941,8 +941,12 @@ static void dispose_list(struct list_head *head)
+>  		inode = list_first_entry(head, struct inode, i_lru);
+>  		list_del_init(&inode->i_lru);
+>  
+> -		evict(inode);
+> -		iobj_put(inode);
+> +		if (for_lru) {
+> +			evict(inode);
+> +			iobj_put(inode);
+> +		} else {
+> +			iput(inode);
+> +		}
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c5c9c223a721d7353490@syzkaller.appspotmail.com
+... Afaict, if we end up in dispose_list() we came from one of two
+locations:
 
-loop5: detected capacity change from 0 to 1024
-EXT4-fs: Ignoring removed nobh option
-============================================
-WARNING: possible recursive locking detected
-syzkaller #0 Not tainted
---------------------------------------------
-syz.5.286/7060 is trying to acquire lock:
-ffff888056de1590 (&ei->i_data_sem/3){++++}-{4:4}, at: ext4_truncate+0xddd/0x1210 fs/ext4/inode.c:4639
+(1) prune_icache_sb()
+    In which case inode_lru_isolate() will have only returned inodes
+    that prior to your changes would have inode->i_count zero.
 
-but task is already holding lock:
-ffff888056de1f20 (&ei->i_data_sem/3){++++}-{4:4}, at: ext4_truncate+0xddd/0x1210 fs/ext4/inode.c:4639
+(2) evict_inodes()
+    Similar story, this only hits inodes with inode->i_count zero.
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+With your change you're adding an increment from zero for (2) via
+__iget() so that you always end up with a full refcount, and that is
+backing your changes to dispose_list() later.
 
-       CPU0
-       ----
-  lock(&ei->i_data_sem/3);
-  lock(&ei->i_data_sem/3);
+I don't see the same done for (1) though and so your later call to
+iput() drops the reference below zero? It's accidently benign because
+iiuc atomic_dec_and_test() will simply tell you that reference count
+didn't go to zero and so iput() will back off. But still this should be
+fixed if I'm right.
 
- *** DEADLOCK ***
+The conversion to iput() is introducing a lot of subtlety in the middle
+of the series. If I'm right then the iput() is a always a nop because in
+all cases it was an increment from zero. But it isn't really a nop
+because we still do stuff like call ->drop_inode() again. Maybe it's
+fine because no filesystem would have issues with this but I wouldn't
+count on it and also it feels rather unclean to do it this way.
 
- May be due to missing lock nesting notation
+So, under the assumption, that after the increment from zero you did, we
+really only have a blatant zombie inode on our hands and we only need to
+get rid of the i_count we took make that explicit and do:
 
-5 locks held by syz.5.286/7060:
- #0: ffff888022bfe428 (sb_writers#4){.+.+}-{0:0}, at: vfs_truncate+0x336/0x6e0 fs/open.c:96
- #1: ffff888056de2090 (&sb->s_type->i_mutex_key#9){++++}-{4:4}, at: inode_lock_killable include/linux/fs.h:874 [inline]
- #1: ffff888056de2090 (&sb->s_type->i_mutex_key#9){++++}-{4:4}, at: do_truncate+0x146/0x230 fs/open.c:63
- #2: ffff888056de2230 (mapping.invalidate_lock#2){++++}-{4:4}, at: filemap_invalidate_lock include/linux/fs.h:924 [inline]
- #2: ffff888056de2230 (mapping.invalidate_lock#2){++++}-{4:4}, at: ext4_setattr+0xe11/0x2ae0 fs/ext4/inode.c:5954
- #3: ffff888056de1f20 (&ei->i_data_sem/3){++++}-{4:4}, at: ext4_truncate+0xddd/0x1210 fs/ext4/inode.c:4639
- #4: ffff888056de1d78 (&ei->xattr_sem){++++}-{4:4}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:164 [inline]
- #4: ffff888056de1d78 (&ei->xattr_sem){++++}-{4:4}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:6425 [inline]
- #4: ffff888056de1d78 (&ei->xattr_sem){++++}-{4:4}, at: __ext4_mark_inode_dirty+0x4ba/0x870 fs/ext4/inode.c:6506
+	if (for_lru) {
+		evict(inode);
+		iobj_put(inode);
+	} else {
+		/* This inode was always incremented from zero.
+		 * Get rid of that reference without doing anything else.
+		 */
+		WARN_ON_ONCE(!atomic_dec_and_test(&inode->i_count));
+	}
 
-stack backtrace:
-CPU: 1 UID: 0 PID: 7060 Comm: syz.5.286 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
- print_deadlock_bug+0x1e9/0x240 kernel/locking/lockdep.c:3041
- check_deadlock kernel/locking/lockdep.c:3093 [inline]
- validate_chain kernel/locking/lockdep.c:3895 [inline]
- __lock_acquire+0x1133/0x1ce0 kernel/locking/lockdep.c:5237
- lock_acquire kernel/locking/lockdep.c:5868 [inline]
- lock_acquire+0x179/0x350 kernel/locking/lockdep.c:5825
- down_write+0x92/0x200 kernel/locking/rwsem.c:1590
- ext4_truncate+0xddd/0x1210 fs/ext4/inode.c:4639
- ext4_evict_inode+0x7a8/0x18e0 fs/ext4/inode.c:261
- evict+0x3e6/0x920 fs/inode.c:810
- iput_final fs/inode.c:1897 [inline]
- iput fs/inode.c:1923 [inline]
- iput+0x521/0x880 fs/inode.c:1909
- ext4_xattr_set_entry+0x73c/0x1f00 fs/ext4/xattr.c:1839
- ext4_xattr_ibody_set+0x3d6/0x5d0 fs/ext4/xattr.c:2263
- ext4_xattr_move_to_block fs/ext4/xattr.c:2666 [inline]
- ext4_xattr_make_inode_space fs/ext4/xattr.c:2734 [inline]
- ext4_expand_extra_isize_ea+0x1487/0x1ab0 fs/ext4/xattr.c:2822
- __ext4_expand_extra_isize+0x346/0x480 fs/ext4/inode.c:6385
- ext4_try_to_expand_extra_isize fs/ext4/inode.c:6428 [inline]
- __ext4_mark_inode_dirty+0x544/0x870 fs/ext4/inode.c:6506
- ext4_ext_truncate+0xa3/0x300 fs/ext4/extents.c:4475
- ext4_truncate+0xe3b/0x1210 fs/ext4/inode.c:4643
- ext4_setattr+0x19f3/0x2ae0 fs/ext4/inode.c:6044
- notify_change+0x6a9/0x1230 fs/attr.c:552
- do_truncate+0x1d7/0x230 fs/open.c:68
- vfs_truncate+0x5d6/0x6e0 fs/open.c:118
- do_sys_truncate fs/open.c:141 [inline]
- __do_sys_truncate fs/open.c:153 [inline]
- __se_sys_truncate fs/open.c:151 [inline]
- __x64_sys_truncate+0x172/0x1e0 fs/open.c:151
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xcd/0x4c0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f63ad98ebe9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f63ae7fc038 EFLAGS: 00000246 ORIG_RAX: 000000000000004c
-RAX: ffffffffffffffda RBX: 00007f63adbb5fa0 RCX: 00007f63ad98ebe9
-RDX: 0000000000000000 RSI: 000000000000041a RDI: 00002000000000c0
-RBP: 00007f63ada11e19 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f63adbb6038 R14: 00007f63adbb5fa0 R15: 00007fff7f328758
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Btw, for the iobj_put() above, I assume that we're not guaranteed that
+i_obj_count == 1?
 
