@@ -1,56 +1,57 @@
-Return-Path: <linux-ext4+bounces-9609-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9610-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33D29B33E71
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 13:53:35 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 446BBB33E7F
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 13:56:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 204D41A828A9
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 11:53:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 153EC4E3210
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 11:56:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99432E3705;
-	Mon, 25 Aug 2025 11:53:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD7C32E1F04;
+	Mon, 25 Aug 2025 11:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i7lTvDmv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CPkoEoxv"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548922D23B5;
-	Mon, 25 Aug 2025 11:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400CF38D;
+	Mon, 25 Aug 2025 11:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756122808; cv=none; b=C6lTbCEjR3/qUG2BeR7IJ05QIJw99zY/+xo4lMvQjSCd1STeowjPGvd2VngIGor1j8GMQMcXxNOQKrZJdPnNFWpeprGtY6g72e63F9TwtCBwNbNpPDjGsf0V/dyh6dV6uQTenY6egxVTbe/I4ElkZThTlaMR1S+DPjVf1wLbAUM=
+	t=1756122971; cv=none; b=ZwgmIwLU4fHuSpmfAQ9kGCgoySurTUY2lQ1IfCUDsJoU81coPCt3odiCxxo2zL0uvT9wjkssobfsJ1Nt56eC5Onn5Vy6AhNKKcR6aSWrSSKT7Cb8E+o1w3pqYJJPJdc3hD5XcPj7oKXmaQXz/7//JomMjaFCiAxAZgHPdTdXuao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756122808; c=relaxed/simple;
-	bh=0hhkEvAKCKYwPCsyx9LPA3uyUWRLJOb4k+WN+qfOLKY=;
+	s=arc-20240116; t=1756122971; c=relaxed/simple;
+	bh=MDSWgn6WKv+gJIuM/KMh250oQpC7dHfexKwoxreXAtc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iaB8N+bCMk9yFJfI5AvzXicI7UivhyK2Lk060mVCJSE/tvIfRXtmXa14n6h/lLy1QH0UAH5sYNEskMlXGDJqO5OJFrR6rHbAKrdVhQ4LNqI0ufJdwNNp0A+FyVoItg0EBa9C+c42F//YhutSaqnMV1xp9iTmEX7b8GdoeIoCNE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i7lTvDmv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1600C4CEED;
-	Mon, 25 Aug 2025 11:53:25 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=kbFoxBXxK4STmFlVQ1hfE8xdSyq4hkgCX5OWeEllQYjThmY+BCvKcQx3uhh1EebT9voHAtwcFv7BCIlNKBaj5jJyWdZEghqwwM+1idBVr5CLWJVEStre9RxYF04ccb8gB/lPgV5CipUvNsrS/msfbOhbkRLKu/ddmyhxa/28rag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CPkoEoxv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26FF5C4CEED;
+	Mon, 25 Aug 2025 11:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756122807;
-	bh=0hhkEvAKCKYwPCsyx9LPA3uyUWRLJOb4k+WN+qfOLKY=;
+	s=k20201202; t=1756122970;
+	bh=MDSWgn6WKv+gJIuM/KMh250oQpC7dHfexKwoxreXAtc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=i7lTvDmvkLY5qx5OKllmYcuRYoUQayp0NeBdl1wnI3F21YYVJsxgN/UCAr2kEReYd
-	 LsyovDDS0WTfZPFQj1gnvR+Sa3x3+qni3tS6Ot8zhy7hvVr5a8y/EcnXimaXSO5MsN
-	 Rw9IDwMbLsGQLkd42O8utqwH2R4hBtcfY+Bnmk3MY6p0jLsaPSbv/02HRwRunARdqw
-	 sf9XLBcA62qVs2asfUhGkSmTsLo6EfuQO7O2aq5QI2Vj7OWVeyoRPzJhuXv+4G5rDc
-	 tyHxrlP96q2op4V2fYTNSZxt/FxQ+cvxPnJknzTzAbFy/12YyEkVNtqN6BsHUFhN3M
-	 e+eChJI+zzPcA==
-Date: Mon, 25 Aug 2025 13:53:23 +0200
+	b=CPkoEoxvHfgM+V7S4D/WFHpuNZ0OztvUfx+8JrDAC6WCCyKOGfofT392bUTFo+d0L
+	 jUByDTZKk77wKlMuRUbbnMUhzDELt76eEAGciBD9sdxdT4RpifTPanfxRY2Mp29O+7
+	 c6dCbh1KXx8QNOici8N5M6SEhafagC+bQJqvDaxEen/vU+1omdfRx6ryn/+Hlxfnly
+	 H4+YagonfpyWr0RcyGTP5/8S+fGG7AIemHsqHbL8Ef7+Gn7pbp1fUjCEXpBgX6Cw47
+	 p5TO56K1k/U/Ubwe24Vg8UeHicfrpmmPYjZZ0hTzCqK6HnzyWfo57OQo0v8jOhFil4
+	 5yltmj8H7f2/A==
+Date: Mon, 25 Aug 2025 13:56:06 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
 	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
 	viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 49/50] fs: remove I_FREEING|I_WILL_FREE
-Message-ID: <20250825-zellteilung-investieren-90b030b10963@brauner>
+Subject: Re: [PATCH 50/50] fs: add documentation explaining the reference
+ count rules for inodes
+Message-ID: <20250825-evakuieren-ansetzen-105f384692dc@brauner>
 References: <cover.1755806649.git.josef@toxicpanda.com>
- <986e757c6b725231500556c68967588b23081e79.1755806649.git.josef@toxicpanda.com>
+ <e0bdfc839c71c8e7264e570125cc4573d9613df4.1755806649.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,145 +60,53 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <986e757c6b725231500556c68967588b23081e79.1755806649.git.josef@toxicpanda.com>
+In-Reply-To: <e0bdfc839c71c8e7264e570125cc4573d9613df4.1755806649.git.josef@toxicpanda.com>
 
-On Thu, Aug 21, 2025 at 04:19:00PM -0400, Josef Bacik wrote:
-> Now that we're using the i_count reference count as the ultimate arbiter
-> of whether or not an inode is life we can remove the I_FREEING and
-> I_WILL_FREE flags.
+On Thu, Aug 21, 2025 at 04:19:01PM -0400, Josef Bacik wrote:
+> Now that we've made these changes to the inode, document the reference
+> count rules in the vfs documentation.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
-
-Very nice.
-
->  fs/inode.c                       |  8 ++------
->  include/linux/fs.h               | 32 +++++++++++---------------------
->  include/trace/events/writeback.h |  2 --
->  3 files changed, 13 insertions(+), 29 deletions(-)
+>  Documentation/filesystems/vfs.rst | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
 > 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index f715504778d2..1bb528405b3d 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -878,7 +878,7 @@ void clear_inode(struct inode *inode)
->  	BUG_ON(inode->i_state & I_CLEAR);
->  	BUG_ON(!list_empty(&inode->i_wb_list));
->  	/* don't need i_lock here, no concurrent mods to i_state */
-> -	inode->i_state = I_FREEING | I_CLEAR;
-> +	inode->i_state = I_CLEAR;
->  }
->  EXPORT_SYMBOL(clear_inode);
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index 229eb90c96f2..5bfe7863a5de 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -457,6 +457,29 @@ The Inode Object
 >  
-> @@ -942,7 +942,7 @@ static void evict(struct inode *inode)
->  	 * This also means we don't need any fences for the call below.
->  	 */
->  	inode_wake_up_bit(inode, __I_NEW);
-> -	BUG_ON(inode->i_state != (I_FREEING | I_CLEAR));
-> +	BUG_ON(inode->i_state != I_CLEAR);
->  }
+>  An inode object represents an object within the filesystem.
 >  
->  static void iput_evict(struct inode *inode);
-> @@ -1975,7 +1975,6 @@ static void iput_final(struct inode *inode, bool drop)
->  
->  	state = inode->i_state;
->  	if (!drop) {
-> -		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
->  		spin_unlock(&inode->i_lock);
->  
->  		write_inode_now(inode, 1);
-> @@ -1983,10 +1982,7 @@ static void iput_final(struct inode *inode, bool drop)
->  		spin_lock(&inode->i_lock);
->  		state = inode->i_state;
->  		WARN_ON(state & I_NEW);
-> -		state &= ~I_WILL_FREE;
->  	}
-> -
-> -	WRITE_ONCE(inode->i_state, state | I_FREEING);
->  	spin_unlock(&inode->i_lock);
->  
->  	evict(inode);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 9d9acbea6433..0599faef0d6a 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -672,8 +672,8 @@ is_uncached_acl(struct posix_acl *acl)
->   * I_DIRTY_DATASYNC, I_DIRTY_PAGES, and I_DIRTY_TIME.
->   *
->   * Four bits define the lifetime of an inode.  Initially, inodes are I_NEW,
-> - * until that flag is cleared.  I_WILL_FREE, I_FREEING and I_CLEAR are set at
-> - * various stages of removing an inode.
-> + * until that flag is cleared.  I_CLEAR is set when the inode is clean and ready
-> + * to be freed.
->   *
->   * Two bits are used for locking and completion notification, I_NEW and I_SYNC.
->   *
-> @@ -697,24 +697,18 @@ is_uncached_acl(struct posix_acl *acl)
->   *			New inodes set I_NEW.  If two processes both create
->   *			the same inode, one of them will release its inode and
->   *			wait for I_NEW to be released before returning.
-> - *			Inodes in I_WILL_FREE, I_FREEING or I_CLEAR state can
-> - *			also cause waiting on I_NEW, without I_NEW actually
-> - *			being set.  find_inode() uses this to prevent returning
-> + *			Inodes with an i_count == 0 or I_CLEAR state can also
-> + *			cause waiting on I_NEW, without I_NEW actually being
-> + *			set.  find_inode() uses this to prevent returning
->   *			nearly-dead inodes.
-> - * I_WILL_FREE		Must be set when calling write_inode_now() if i_count
-> - *			is zero.  I_FREEING must be set when I_WILL_FREE is
-> - *			cleared.
-> - * I_FREEING		Set when inode is about to be freed but still has dirty
-> - *			pages or buffers attached or the inode itself is still
-> - *			dirty.
->   * I_CLEAR		Added by clear_inode().  In this state the inode is
-> - *			clean and can be destroyed.  Inode keeps I_FREEING.
-> + *			clean and can be destroyed.
->   *
-> - *			Inodes that are I_WILL_FREE, I_FREEING or I_CLEAR are
-> - *			prohibited for many purposes.  iget() must wait for
-> - *			the inode to be completely released, then create it
-> - *			anew.  Other functions will just ignore such inodes,
-> - *			if appropriate.  I_NEW is used for waiting.
-> + *			Inodes that have i_count == 0 or I_CLEAR are prohibited
-> + *			for many purposes.  iget() must wait for the inode to be
-> + *			completely released, then create it anew.  Other
-> + *			functions will just ignore such inodes, if appropriate.
-> + *			I_NEW is used for waiting.
->   *
->   * I_SYNC		Writeback of inode is running. The bit is set during
->   *			data writeback, and cleared with a wakeup on the bit
-> @@ -752,8 +746,6 @@ is_uncached_acl(struct posix_acl *acl)
->   * I_CACHED_LRU		Inode is cached because it is dirty or isn't shrinkable,
->   *			and thus is on the s_cached_inode_lru list.
->   *
-> - * Q: What is the difference between I_WILL_FREE and I_FREEING?
-> - *
->   * __I_{SYNC,NEW,LRU_ISOLATING} are used to derive unique addresses to wait
->   * upon. There's one free address left.
->   */
-> @@ -776,8 +768,6 @@ enum inode_state_bits {
->  	INODE_BIT(I_DIRTY_SYNC),
->  	INODE_BIT(I_DIRTY_DATASYNC),
->  	INODE_BIT(I_DIRTY_PAGES),
-> -	INODE_BIT(I_WILL_FREE),
-> -	INODE_BIT(I_FREEING),
->  	INODE_BIT(I_CLEAR),
->  	INODE_BIT(I_REFERENCED),
->  	INODE_BIT(I_LINKABLE),
-> diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
-> index 6949329c744a..58ee61f3d91d 100644
-> --- a/include/trace/events/writeback.h
-> +++ b/include/trace/events/writeback.h
-> @@ -15,8 +15,6 @@
->  		{I_DIRTY_DATASYNC,	"I_DIRTY_DATASYNC"},	\
->  		{I_DIRTY_PAGES,		"I_DIRTY_PAGES"},	\
->  		{I_NEW,			"I_NEW"},		\
-> -		{I_WILL_FREE,		"I_WILL_FREE"},		\
-> -		{I_FREEING,		"I_FREEING"},		\
->  		{I_CLEAR,		"I_CLEAR"},		\
->  		{I_SYNC,		"I_SYNC"},		\
->  		{I_DIRTY_TIME,		"I_DIRTY_TIME"},	\
-> -- 
-> 2.49.0
-> 
+> +Reference counting rules
+> +------------------------
+> +
+> +The inode is reference counted in two distinct ways, an i_obj_count refcount and
+> +an i_count refcount. These control two different lifetimes of the inode. The
+> +i_obj_count is the simplest, think of it as a reference count on the object
+> +itself. When the i_obj_count reaches zero, the inode is freed.  Inode freeing
+> +happens in the RCU context, so the inode is not freed immediately, but rather
+> +after a grace period.
+> +
+> +The i_count reference is the indicator that the inode is "alive". That is to
+> +say, it is available for use by all the ways that a user can access the inode.
+> +Once this count reaches zero, we begin the process of evicting the inode. This
+> +is where the final truncate of an unlinked inode will normally occur.  Once
+> +i_count has reached 0, only the final iput() is allowed to do things like
+> +writeback, truncate, etc. All users that want to do these style of operation
+> +must use igrab() or, in very rare and specific circumstances, use
+> +inode_tryget().
+> +
+> +Every access to an inode must include one of these two references. Generally
+> +i_obj_count is reserved for internal VFS references, the s_inode_list for
+> +example. All file systems should use igrab()/lookup() to get a live reference on
+> +the inode, with very few exceptions.
+
+It would be awesome if you could document in more detail how LRU
+handling and reference counts works.
+
+I_FREEING | I_WILL_FREE was tightly interconnected with LRU handling and
+it was frankly a mess to understand so having the new stuff clearly
+documented would help us all a lot. Thanks!
 
