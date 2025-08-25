@@ -1,95 +1,88 @@
-Return-Path: <linux-ext4+bounces-9617-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9618-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D57C8B346C2
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 18:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E22D5B34A45
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 20:23:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 016E47A7420
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 16:06:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7733F7B18D2
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Aug 2025 18:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC78A35965;
-	Mon, 25 Aug 2025 16:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6042730E85F;
+	Mon, 25 Aug 2025 18:22:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eyQHW3Vo"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="KB94o+7K"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C5A299924
-	for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 16:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0B7130DEC9
+	for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 18:22:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756138094; cv=none; b=FxvCSRxf1qAnysz/gheZ/veCoMSgk0Fm4gA0ZENPon9teVomLpu0A5bvK8i0bnLSAHL2VFJRXjFs9Gd+ZbSy5vlA+96JZQ5q0XdG2eCpefZaZbTuInF9fI7OsWkyrVCpICBMXSX6dy04yj/otBfbJLNEVu70pB/vqaXxB4G9idI=
+	t=1756146169; cv=none; b=HyM1xBOmfgit/BMQ6erxee/bY1JS7xrAtvTxVRIpskWXTVmarikm3dHhHpLcOUZgiIwNKZ1SY92st3i4bEzS5tpMhcOl8iNArcVTh/Lz1l5ev9ZRTBrRarQ5oaisRuq4SpP62Hevcn7eRYS/qPqrf32rF0ESr64oV8cpShLiiL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756138094; c=relaxed/simple;
-	bh=lx8unmZZotH1lOPOwGBWaz+oEXYueOAZnio+N2QuHm4=;
+	s=arc-20240116; t=1756146169; c=relaxed/simple;
+	bh=FS4D6RzJNe0/1vJ29vQERztz4mfXg+H3Its9k7rkj3M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TRAGxZwHAwQmpqVo1gYsMflUhZvqe5PzZ6p8dVzmTbO/cVpGNh/URsOMuZRITB9Zsj/6BnoloaOTPhT3zseDZ9to/hriiAk/5UmthYzVfdohVMeHBWZ8gxnkjfZxeBtTMbWS3Vz2yUDkTkHKMoCSkmiDic995jD0HUOY6UlVu0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eyQHW3Vo; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756138091;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S26mrjD5N2pdJld3xZ+GOHAoTX+ohujbOU33KruSQAI=;
-	b=eyQHW3VoHf1AJQQExlIgxT57KKaXdK6U3CenPzCM9ToEvhdp8vmZE3zjdwTvsRzCfz2Vvp
-	ANkNblAvZ9JZ4ZqAs8iWEQkXHBhLnXuG6jZk9mzrp0FP75hV2xeEHswp9k5ByRH9BcnIBZ
-	nAIH4txp98tUlhzlqRnu6p08g9/2cgg=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-284-0z8CRFVQPE2zDHvU5ARJ7w-1; Mon, 25 Aug 2025 12:08:08 -0400
-X-MC-Unique: 0z8CRFVQPE2zDHvU5ARJ7w-1
-X-Mimecast-MFC-AGG-ID: 0z8CRFVQPE2zDHvU5ARJ7w_1756138088
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-b47253319b8so3444722a12.3
-        for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 09:08:08 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZV7/8KVKV0S0hlbY/ekLaiUMNmwdR0voHRhlkvFs4VZ3h5CwV0E0brWUul/HjOTDUHOQFc8Pm/VA6A8K5cNYbuCUee2i+Kyi4d9wgY0KRn5yaVgTDxS3Hjm4NULwnGIDebyP6f/mExyEcSw26G5w7kBDXr97fHRkUOpHNJTLh6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=KB94o+7K; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-71d605a70bdso32205877b3.3
+        for <linux-ext4@vger.kernel.org>; Mon, 25 Aug 2025 11:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756146166; x=1756750966; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UbBH3BstU0W0il045l8W91T5IUJiQUm4fEy5zUE09Y0=;
+        b=KB94o+7KKpbkv4W85iNWsTnXZBq+eoTrAAd03r/GUpW0lH55v9fQW2T3HaZluuTaYZ
+         h45N4FqF4TYQN5Q/HLtSM8dO+TstZ6NdWaKaU90mJwugXK8ZxKdvG86fsNCjzBDsAlQ2
+         Kp4xoYG5oFHQCXQjHHMCj9tmfCHIfevuMQoDGvgiNIYVyLtCEjmDIHt1Gattwl/VS0YJ
+         mgYJNL3WGQVMzurI1zMNisAuH3FIJJznJlnlq4jtZ0l0S9IfMHxqa7LQca1LLIqmjy9u
+         ubjxkmbYK0K3ZTrCMnWehcA0E+FyrZAFeCBOk/xQmtTPY+HiIr/UlDLHhs5kq/czoB9G
+         DgzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756138087; x=1756742887;
+        d=1e100.net; s=20230601; t=1756146166; x=1756750966;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S26mrjD5N2pdJld3xZ+GOHAoTX+ohujbOU33KruSQAI=;
-        b=GSr5vKiD+IZxfok8n1xGE7gN4q+QPW8i0OLZ/+okq6IOqhCl1aEqMxHfJH9M3Gf9jk
-         iJ+folAY8zkSu0sEUTyC1KfXvytYyGqbZm4p+SiEOA5uKGACXbYqNVk8Qg185PoZKFUe
-         keWWqxoUDIeiNVski8N4kJR3bR6wLkLCyZeZts5LMpAoRKvQF7D9zr0X5gumgJPy2d/i
-         MliW37ghcgxdnQB2d6Nw7C8Ha6DGRfRiSpiRXDzEqbfHBeID08Oa7vdqJw11lRYQSjNs
-         oBsUBxAoZoTX3D6xg4DGvb+DKzhUCrP6uc2dr0HThjpYz7286HAm+/u8C6dZ0Ai5Uvqj
-         ENiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVna1aVsHuKaDk5QZXdsq7BHtbFlJuZ4hOFGFtRs6cETlThfuQlvX8zbgHS0VJK3GSR+Wjgpnn2gSMy@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1QzIRn2oRKyJPa9wATUqGypnNApJOGqoWrESJsRP+XbtUxBQi
-	Yi+yeIrmSmJzXXCSe4YjHX1cazS8LnDZZYszgrdyrGO6mJgD6LJ/qUUHZQuO2qlEn/vrrmt8Lf4
-	kkX27pYX+JU2Huzxh2VBnW6v9QkALF3LBGq66VY7pjyN3sy8D+kwij65wKFK9dXMlFPmRLac=
-X-Gm-Gg: ASbGnctXHGMfvvNM1rYxmGGtAvrkwwCsVQ8S6XchhznEETYXcsnrG7WPu06pT8E8eYj
-	ZKwFlddmv4DEoWccvv3zHNT+u+HXpOXna5a9BMd5Ujpot23yDmLpVyrcWIlrwIi79r8EY14iERZ
-	nzRvmw1z3Dj3iC2Rt6ukC7vA5owlVAbQLLE3CfG7q+xRk5H+qWmSMgxkgk9gd2Ek88xLcvRVWyB
-	1UXBAIrEeprwwt3HfriwUUKv0msyo260qR+A9wOBhSc7WjeKQkWGxTVNbZesbZbDJD7P7+5BcLF
-	Awp3uexV0EMSqm6ABw/NU1hARVZoEoZ5lntxpLBnzbSs/Ck82pztzvSIYcCOfWD81lgBAzHaFvM
-	deDrd
-X-Received: by 2002:a05:6a20:7fa7:b0:220:631c:e090 with SMTP id adf61e73a8af0-24340884ecfmr17792513637.0.1756138087393;
-        Mon, 25 Aug 2025 09:08:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFuGQjcHakFAYSJasLNIwmwH5AbB+ig9C8K1dte2zhi+ECS9Vuy2ZlNckCYG18AokysGYZ0Zw==
-X-Received: by 2002:a05:6a20:7fa7:b0:220:631c:e090 with SMTP id adf61e73a8af0-24340884ecfmr17792475637.0.1756138086873;
-        Mon, 25 Aug 2025 09:08:06 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b49cbb7c09fsm6956388a12.26.2025.08.25.09.08.03
+        bh=UbBH3BstU0W0il045l8W91T5IUJiQUm4fEy5zUE09Y0=;
+        b=VEVPNcEV9jjgZ5bRkZtTLSHtj3muzaNSD1ctEJS9wAKWe44Wcn6hRjG4QYj4sn60Jm
+         TPaEvcVlf29/oSnEkIfM4Km5oYsUJvme8onEPy+A4S4eKRrgL3QG2uEcAcoiHhHaBYpg
+         +Rw3A784MSIGjbl9t5kbYr6kyrT0KeUWLdXufxuqbJ9tzirX7Tnby9oBwV2bEapqOERT
+         p1r2sCIsd8EpJnru4d7BhcRloPp8YYbom5yE6bH+EVoGj3IFv2bK0TC9GQofwUosphKK
+         ofWD2hQLax/8Kvjuxh6V8BF2peY9GwthYoaebY5Bi1dU+Ccq5MOlEwfqRgyazMjj6Cz2
+         j6bg==
+X-Forwarded-Encrypted: i=1; AJvYcCWV3fcL9XwlKDUkdsvnoWoPcvn0IcipVtpbTyqPpvkRX3tYp95yAE6soQGpFddBQ1vSMEJ4Se8dz8H5@vger.kernel.org
+X-Gm-Message-State: AOJu0YwrJ8k7S7WZei09pq/0/QkxVtt5E586FcQB/yfnoQBJarYxP4UG
+	smHKy3U8EXVd1/orF29HvFNz/4tBm+6pQsqzCOmeJ8qqGqR41hEWJ9PoiNDdpIlHeCA=
+X-Gm-Gg: ASbGnctB3BJfLswp/MAZJftbojUF8Se4UWE3ueYQ4nI0SM7PTXiDLv8dIcwnlyoOera
+	nONoeAayO1CEoeOzkvpEmhwUtOVMjyjhZ8yrW0RE6ioQUq9BxUX7tW/sT+PiTRD/piTMe38FkCc
+	M67ZxKt903Nb8weJq6ZX8HgPq7cnsl8sl/iuUSfcO8YUSQ9nCUbP219Rxn6hv2TsRw293935+kk
+	cKSuDtekdFvRXT6M4ZBJ2Zo4ktabGbvVNZ716lYjMMZeP8fWQwQhgEVx3u4gsslbRw+iH7V8cpZ
+	e6OGdxEEif8bVXY0MONRrtTmWAejIRbGmRWkTC1R4kPA/qrnJ8BCTpY6jvhaj4JLajN8/FR3pxS
+	WmKcexZuqheSTG2sSaarcazlsknGhYg70SckeJDI2nfXWQYXY6f9yVhUdKu2nJgedTpQVjw==
+X-Google-Smtp-Source: AGHT+IERtHisFfW+VyMjl1dMZngork77s7Qk0/q0F0qZcCiOk6L/mrYgqmr7IGpI0tYf+zVYRA2mng==
+X-Received: by 2002:a05:690c:9a82:b0:71f:c5f0:3368 with SMTP id 00721157ae682-71fdc2abbcdmr141089057b3.9.1756146165612;
+        Mon, 25 Aug 2025 11:22:45 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff18840f8sm19178147b3.47.2025.08.25.11.22.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 09:08:06 -0700 (PDT)
-Date: Tue, 26 Aug 2025 00:08:01 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: fstests@vger.kernel.org, Ritesh Harjani <ritesh.list@gmail.com>,
-	djwong@kernel.org, john.g.garry@oracle.com, tytso@mit.edu,
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v5 02/12] common/rc: Add _require_fio_version helper
-Message-ID: <20250825160801.ffktqauw2o6l5ql3@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1755849134.git.ojaswin@linux.ibm.com>
- <955d47b2534d9236adbd2bbd13598bbd1da8fc04.1755849134.git.ojaswin@linux.ibm.com>
+        Mon, 25 Aug 2025 11:22:44 -0700 (PDT)
+Date: Mon, 25 Aug 2025 14:22:43 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 27/50] fs: use inode_tryget in evict_inodes
+Message-ID: <20250825182243.GA1123234@perftesting>
+References: <cover.1755806649.git.josef@toxicpanda.com>
+ <7564463eb7f0cb60a84b99f732118774d2ddacaa.1755806649.git.josef@toxicpanda.com>
+ <20250825-jungautor-aprikosen-9e6622636614@brauner>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -98,80 +91,63 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <955d47b2534d9236adbd2bbd13598bbd1da8fc04.1755849134.git.ojaswin@linux.ibm.com>
+In-Reply-To: <20250825-jungautor-aprikosen-9e6622636614@brauner>
 
-On Fri, Aug 22, 2025 at 01:32:01PM +0530, Ojaswin Mujoo wrote:
-> The main motivation of adding this function on top of _require_fio is
-> that there has been a case in fio where atomic= option was added but
-> later it was changed to noop since kernel didn't yet have support for
-> atomic writes. It was then again utilized to do atomic writes in a later
-> version, once kernel got the support. Due to this there is a point in
-> fio where _require_fio w/ atomic=1 will succeed even though it would
-> not be doing atomic writes.
+On Mon, Aug 25, 2025 at 01:43:57PM +0200, Christian Brauner wrote:
+> On Thu, Aug 21, 2025 at 04:18:38PM -0400, Josef Bacik wrote:
+> > Instead of checking I_WILL_FREE|I_FREEING we can simply use
+> > inode_tryget() to determine if we have a live inode that can be evicted.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >  fs/inode.c | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/inode.c b/fs/inode.c
+> > index a14b3a54c4b5..4e1eeb0c3889 100644
+> > --- a/fs/inode.c
+> > +++ b/fs/inode.c
+> > @@ -983,12 +983,16 @@ void evict_inodes(struct super_block *sb)
+> >  	spin_lock(&sb->s_inode_list_lock);
+> >  	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+> >  		spin_lock(&inode->i_lock);
+> > -		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
+> > +		if (inode->i_state & I_NEW) {
+> > +			spin_unlock(&inode->i_lock);
+> > +			continue;
+> > +		}
+> > +
+> > +		if (!inode_tryget(inode)) {
 > 
-> Hence, add an explicit helper to ensure tests to require specific
-> versions of fio to work past such issues.
-
-Actually I'm wondering if fstests really needs to care about this. This's
-just a temporary issue of fio, not kernel or any fs usespace program. Do
-we need to add a seperated helper only for a temporary fio issue? If fio
-doesn't break fstests running, let it run. Just the testers install proper
-fio (maybe latest) they need. What do you and others think?
-
-Thanks,
-Zorro
-
+> So it reads like if we fail to take a reference count on @inode then
+> someone else is already evicting it. I get that.
 > 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
->  common/rc | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
+> But what's confusing to me is that the __iget() call you're removing
+> was an increment from zero earlier in your series because evict_inodes()
+> was only callable on inodes that had a zero i_count.
 > 
-> diff --git a/common/rc b/common/rc
-> index 35a1c835..f45b9a38 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -5997,6 +5997,38 @@ _max() {
->  	echo $ret
->  }
->  
-> +# Check the required fio version. Examples:
-> +#   _require_fio_version 3.38 (matches 3.38 only)
-> +#   _require_fio_version 3.38+ (matches 3.38 and above)
-> +#   _require_fio_version 3.38- (matches 3.38 and below)
-> +_require_fio_version() {
-> +	local req_ver="$1"
-> +	local fio_ver
-> +
-> +	_require_fio
-> +	_require_math
-> +
-> +	fio_ver=$(fio -v | cut -d"-" -f2)
-> +
-> +	case "$req_ver" in
-> +	*+)
-> +		req_ver=${req_ver%+}
-> +		test $(_math "$fio_ver >= $req_ver") -eq 1 || \
-> +			_notrun "need fio >= $req_ver (found $fio_ver)"
-> +		;;
-> +	*-)
-> +		req_ver=${req_ver%-}
-> +		test $(_math "$fio_ver <= $req_ver") -eq 1 || \
-> +			_notrun "need fio <= $req_ver (found $fio_ver)"
-> +		;;
-> +	*)
-> +		req_ver=${req_ver%-}
-> +		test $(_math "$fio_ver == $req_ver") -eq 1 || \
-> +			_notrun "need fio = $req_ver (found $fio_ver)"
-> +		;;
-> +	esac
-> +}
-> +
->  ################################################################################
->  # make sure this script returns success
->  /bin/true
-> -- 
-> 2.49.0
+> Oh, ok, I forgot, you mandate that for an inode to be on an LRU they
+> must now hold an i_count reference not just an i_obj_count reference.
 > 
+> So in the prior scheme i_count was zero and wouldn't go back up from
+> zero. In your scheme is i_count guaranteed to be one and after you've
+> grabbed another reference and it's gone up to 2 is that the max it can
+> reach or is it possible that i_count can be grabbed by others somehow?
 
+It can be grabbed by others now.
+
+The idea here is that we're drastically simplifying the logic. We no longer care
+to only operate on inodes that are truly dead. If we can grab a reference to the
+inode then it is live by some other means (LRU, someone holding a file open,
+etc). We remove it from the LRU and then we drop our reference. At this point
+becasue S_ACTIVE is not set we know that we won't be adding inodes to the LRU
+anymore, and this should free the inode.
+
+However if there's some bug in the filesystem or elsewhere and we have an
+elevated refcount then we could still leak the inode. But we just don't care
+about that here. Before we wouldn't even bother to touch the inode, now we
+uncondtionally process all the inodes, and if there's still inodes left then
+there's a bug.  Thanks,
+
+Josef
 
