@@ -1,78 +1,78 @@
-Return-Path: <linux-ext4+bounces-9632-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9633-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30B20B36E1B
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Aug 2025 17:42:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92147B36E19
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Aug 2025 17:42:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 101EE36482F
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Aug 2025 15:42:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 334C11BA8818
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Aug 2025 15:42:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A82350825;
-	Tue, 26 Aug 2025 15:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC6C3568E6;
+	Tue, 26 Aug 2025 15:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="xGobScvO"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Qx7xDk2Z"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5D6D34F499
-	for <linux-ext4@vger.kernel.org>; Tue, 26 Aug 2025 15:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F0234DCE8
+	for <linux-ext4@vger.kernel.org>; Tue, 26 Aug 2025 15:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756222861; cv=none; b=V3JlF+ZxHcSDHfsc5zVd1x51/i/aebUjMhNLN5/Cw6X5FmqsrPzOAr3VtRF3JA+LTZ5VBUCXsA9UwqIZwwY7lxqjhYVNQ/pRVWs3FB4+Ld90cbUQdFTJ9Kz4raQqRLwGBK04zj6OWDD/sXm4vbgE8t8DfOuQtvDReBCYSoHoe1g=
+	t=1756222862; cv=none; b=aMMw6R//R5MXJ7bnxhVV/7550DDQ5bZu3dFZy8IYRso4zGj6Ke/3KQ1QRap/VRr3dFpQCrykU7N9Z49KjNqM6wbkijwlVfJzzVoc5etQaQxvEtKXMIlcIuURuULtJ0BAsuLT5PrQkEqfn97FGGKfoLTxSWTf3NV5aAgbgtZSWhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756222861; c=relaxed/simple;
-	bh=LR7CWXTHq8PxRLgtCmpwYh94UJBJq3AtMLa8nfpVhLw=;
+	s=arc-20240116; t=1756222862; c=relaxed/simple;
+	bh=vb3lgatLL22BxERk9/b+lCqLtXz3W8a2P/7Gr1XM4H4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DX1Slg7g+ZvsFnYJruhsUTw314GbeYoQ4W2F5Bppy6Px2rS+Gq4mLMaMbrz4vLlNkR0e8qDdOZg9Fi0Mfj4TKg4aDdfa8IRPcLdBsCBtlT7/iOZPphjRe2x5q8jKsA/PzcwDIPeDh54KLmGPx4Vb0Cc8x8TTsZZ5t9v4IsP0GJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=xGobScvO; arc=none smtp.client-ip=209.85.128.173
+	 MIME-Version; b=YRTy+GH4dJ5jW7wTplVJ+4MoI64hDJtvuT43Ua6MKKUykeS9zmXL+Ot7W3jXSzbSvfoOn7d1tknaTSgMypM+XzF3xzYFwVEB0UW1RrC1sa0eqe1Hszpkkab7VnmRZTlNQZi2w7rbfi666lHbllIEA7yIS8g4HjjaQoX/V3Q/jAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Qx7xDk2Z; arc=none smtp.client-ip=209.85.128.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-71d60110772so49939447b3.0
-        for <linux-ext4@vger.kernel.org>; Tue, 26 Aug 2025 08:40:59 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-71d603acc23so45327347b3.1
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Aug 2025 08:41:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756222859; x=1756827659; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756222860; x=1756827660; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/a4qa/ANgmJB/A00Ci0w/v1yDlD4/6YZQSFqLG2Lykw=;
-        b=xGobScvOKjFNjNtKVJ0YWqAXe7M8eSOgx724pEAloiCi1mWxhUIIOC3Bl5UaHcG8Hs
-         o5BghR8D7F0/QjZGTPfylyv5nNhYVtglMrwbgdW5fRWq78SLj4kiUc8Dyvu6K/9busW7
-         3EuWM3z4+Kyqpao0qjGV69K1GI6tTVR9lXxo7ozCJPICP88baqyw+oN5uSvyD5vRQ82U
-         orTQsqnS03EwprlaGHU0TDwqIKGCZ7FluJdpfk+jjsWNKArT9YtpOyv9R+DmoVGfRdKa
-         nD0J9Ej5bEp9bnI+kS1RW8OD756lKLyh133p948mm3NZjFo0t/xTm8T9bM+Iq8VbOqnA
-         7IWw==
+        bh=TgvK09Ne5Aq6jRiEthgDjLIcJNkO/NakbksX6k8jf14=;
+        b=Qx7xDk2ZZPH1b2wholEdBMKOO4Ugu9Bjzye6rSVT7PbRbJhUDERheM1oMAZR0k/jb/
+         5/Ibffdz2WOiGrC1l3dKTc90rfmIvV16iXNw4tariDYGqhLaFGiq1ncqlrMYhPstSKMn
+         8uHzstew7KMfdNxZUpzdGP/NKJ/b632/2eOdAN+cjiZIEkIDzorxXRMpjkz3wAAbkxFk
+         v7Enw8MxdFr3Z6m/qKrTGIJ0yacWeiLBz6n3rchwtE3PiPZDqsW8msDwatxNMAEBNcsF
+         G7MJv/v29W1PMa6Y3gg0MSmN1x3vnPgKWv0KUs/LE0rrjU9/jkwmxvkBiAWEE32429m4
+         FtQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756222859; x=1756827659;
+        d=1e100.net; s=20230601; t=1756222860; x=1756827660;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/a4qa/ANgmJB/A00Ci0w/v1yDlD4/6YZQSFqLG2Lykw=;
-        b=qjuy/lj2oNg+MV7ygNVbn8QebFcBQm/58a7Eob8OLxY7pEMSCjuHmxfktmamdRiCrV
-         rG3hwbmN1EF+Q/WpVPFizTK9d3ZDScoaG0XA3wYbwfSQiPYfMgXbPtY504Y+rpRZYgUi
-         uNL/6TCfEx8Dqp/plN//DYHdonAkfJ+xJf5xnFmYbv9XCr/cTjkax3fpNvhdtD+D9TTv
-         lmL6+hWOFvzZGCutpZBGC7vA62TVJwvBZMSSvbUZcwZwveJkEklDeSuL2fHc7T7OC1eE
-         4wc9ABCorf668xdZ/fsJ9vVstGQur2BQ4HMGfaZc3fwNhhlza7TctdBL2kNcpPksuHCP
-         nQ/g==
-X-Forwarded-Encrypted: i=1; AJvYcCWqumUSbQmQa+oky8FcWmp1NcHItHdtyRyeKEGrzlE02gIeB2wYhZvdKR4/A6u+mqswum2mukVSUjUN@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGbUIdrovFc6nX22VWx6CzUNYQXAebumUcIvo1znILdwvkyQ9I
-	4p8gPA0AEM2Gs8HAJ/IGdmNaaBA+0u/NTtn6UQWyEiFHrgK/mS+ru7xzY+0MX8hyS7M=
-X-Gm-Gg: ASbGncu/ZXpr/AsF34y57xPyJEKub/APmf8yPJddmxiwp+li8i7hY2CzAnBf4ULP23t
-	ySAmIkRXdyeDJgA9AeT+If7BdDISEwKPwgLcOy5TAyPWf9g5UjhtGXu0eZWitZ1unNX27jVhV7l
-	NpebuxKKudjtqDWVPwyZrwDbzZQBtSrrSibdYn7hJoCDaHM3io03VI4ahRFiQWbpVHFJfJCUDv/
-	6kN96m1PAJ6K3D1/00PKcpV6DxVccPEQg4+2ebC9QRYKcNHfvB53xkZu8hsH+N4NlShv6lDFiq8
-	t6dj1LwpTt5WagEaCff+79pHEoJlUi5IWKy/Iv94UUArNHwzDAUyX1CSadLhoC71C0BfbxCjNwx
-	Nw6fPMjiYhJ3unXQyBQLCG/jQVJAvEIU0EgAcurocsvFwkhjQvi6cPk092nm9RdUe+RI0jA==
-X-Google-Smtp-Source: AGHT+IEFN3CKkE+Hnj7Gi8IBgNUKfldwmoPTHprUzkt1izn6bJ+Tpqgf5eBYIsK3AJ5tcpghHEF8Yg==
-X-Received: by 2002:a05:690c:8691:20b0:71f:f195:808d with SMTP id 00721157ae682-71ff19587d2mr100321947b3.5.1756222858629;
-        Tue, 26 Aug 2025 08:40:58 -0700 (PDT)
+        bh=TgvK09Ne5Aq6jRiEthgDjLIcJNkO/NakbksX6k8jf14=;
+        b=p3k3BoFvVpidak5HgInm1iUFwVBUkuKccNFh9JhJ7FyIqjxsOftKJc73oKSwBTrHus
+         RT1Z/FGiJSBRF+s6LIS5ovrDvNSacVY2+ySHvgRcpz8bmdshS9cnkiXl+oDq0EZDVtoi
+         QTLLpOItxvVryCITRH2x6RmCnrRHD8+0fVfP0d35BoIJLfHx2Qc3oky6kOxmAh1Fsqyp
+         rdw1qZBKQrqwdyC5E8194E9QhHo+NF/4pipPQcIM93TySFC6bKCqWaed6n452XQw11AZ
+         FlrmWPRmv9Lt+QDE2vtih7hEKw0pSU0DMAQueKrL17qeMk2e++zEsvpjDK+NGOWz3ICq
+         t6rA==
+X-Forwarded-Encrypted: i=1; AJvYcCVXD5crrMPavMAT1RWKEx1lSZL7xSKdp5sIl5UYuC6gWE7Cessg/WNU+0J6MYo3kWhm1jTobSm8JC/k@vger.kernel.org
+X-Gm-Message-State: AOJu0YyTtKGbjHMFl+HfX2eNLD4ButspBTJp3gnYOxzdiDWH9vIjD2Ka
+	V0llVt2DQws/KP2lF/n9f3OcxBzoW8OkQkmBL2aFyzDVm4t93e0radmlj5ZNoq8hwUg=
+X-Gm-Gg: ASbGncuZtNuJEkH4QjHMNThoRFWj5U8PyBSRvuahvippoOycrGTWD+z7B1KTUkGnpPa
+	11y0csNc5PPcLecgf4Z3ymSy4FBmtf7MkuJbcQexKuVjxBZ8fIhxNXe71C01L5ZL61QqKxbxg8s
+	9xVuoowxoBtgJpVs9wWDaFl7JYOD/CIgvH5TX1VE2DV2pyhZxPlv/fkdVnxHPpT12gSmcWkwSDC
+	ypGSulOuCyY/M1bYmSUMc6eUgkUgQ0frVo1Fx2AGvnG/9lChZy9wXn+jHCc5b6xnTnE9ogtH3EW
+	scvRLGHVF0R+frSy+yntp0qsig1jlSTZWmRlOu2prl0ZRIjSJsUfoEqHpuiBjsgi8n8B9aQyesI
+	dIC6LD/mgiYr0mc+jmOAbGBxsdTRSzXJOU+xORkcZQk4uopH3+eMPnBJ6Utk=
+X-Google-Smtp-Source: AGHT+IFHc0cd1vBL1NZ56pvHPXho4UE/Yj/BshipiSC1BWzt1LmJ0zTyz+AzopKHLGkL4tZhqzzqxw==
+X-Received: by 2002:a05:690c:6108:b0:720:2af3:fad6 with SMTP id 00721157ae682-7202af3fbebmr100372157b3.17.1756222860145;
+        Tue, 26 Aug 2025 08:41:00 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff18b1b7dsm24961717b3.62.2025.08.26.08.40.57
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff17339fdsm25180647b3.21.2025.08.26.08.40.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 08:40:57 -0700 (PDT)
+        Tue, 26 Aug 2025 08:40:59 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
@@ -82,9 +82,9 @@ To: linux-fsdevel@vger.kernel.org,
 	brauner@kernel.org,
 	viro@ZenIV.linux.org.uk,
 	amir73il@gmail.com
-Subject: [PATCH v2 07/54] fs: hold an i_obj_count reference for the i_io_list
-Date: Tue, 26 Aug 2025 11:39:07 -0400
-Message-ID: <e9c6b9533098baca9f7967bcb15de23e12b84134.1756222465.git.josef@toxicpanda.com>
+Subject: [PATCH v2 08/54] fs: hold an i_obj_count reference in writeback_sb_inodes
+Date: Tue, 26 Aug 2025 11:39:08 -0400
+Message-ID: <1e555c73564393129833d550965e3175c142bb84.1756222465.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1756222464.git.josef@toxicpanda.com>
 References: <cover.1756222464.git.josef@toxicpanda.com>
@@ -96,101 +96,50 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While the inode is attached to a list with its i_io_list member we need
-to hold a reference on the object.
-
-The put is under the i_lock in some cases which could potentially be
-unsafe. It isn't currently because we're holding the i_obj_count
-throughout the entire lifetime of the inode, so it won't be the last
-currently. Subsequent patches will make sure we're holding an
-i_obj_count reference while we're manipulating this list to ensure this
-continues to be safe.
+We drop the wb list_lock while writing back inodes, and we could
+manipulate the i_io_list while this is happening and drop our reference
+for the inode. Protect this by holding the i_obj_count reference during
+the writeback.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/fs-writeback.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ fs/fs-writeback.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index cb5e22169808..cf7fab59e4d5 100644
+index cf7fab59e4d5..773b276328ec 100644
 --- a/fs/fs-writeback.c
 +++ b/fs/fs-writeback.c
-@@ -72,6 +72,14 @@ static inline struct inode *wb_inode(struct list_head *head)
- 	return list_entry(head, struct inode, i_io_list);
- }
- 
-+static inline void inode_delete_from_io_list(struct inode *inode)
-+{
-+	if (!list_empty(&inode->i_io_list)) {
-+		list_del_init(&inode->i_io_list);
-+		iobj_put(inode);
-+	}
-+}
-+
- /*
-  * Include the creation of the trace points after defining the
-  * wb_writeback_work structure and inline functions so that the definition
-@@ -123,6 +131,8 @@ static bool inode_io_list_move_locked(struct inode *inode,
- 	assert_spin_locked(&inode->i_lock);
- 	WARN_ON_ONCE(inode->i_state & I_FREEING);
- 
-+	if (list_empty(&inode->i_io_list))
+@@ -1977,6 +1977,7 @@ static long writeback_sb_inodes(struct super_block *sb,
+ 			trace_writeback_sb_inodes_requeue(inode);
+ 			continue;
+ 		}
 +		iobj_get(inode);
- 	list_move(&inode->i_io_list, head);
+ 		spin_unlock(&wb->list_lock);
  
- 	/* dirty_time doesn't count as dirty_io until expiration */
-@@ -310,7 +320,7 @@ static void inode_cgwb_move_to_attached(struct inode *inode,
- 	if (wb != &wb->bdi->wb)
- 		list_move(&inode->i_io_list, &wb->b_attached);
- 	else
--		list_del_init(&inode->i_io_list);
-+		inode_delete_from_io_list(inode);
- 	wb_io_lists_depopulated(wb);
- }
+ 		/*
+@@ -1987,6 +1988,7 @@ static long writeback_sb_inodes(struct super_block *sb,
+ 		if (inode->i_state & I_SYNC) {
+ 			/* Wait for I_SYNC. This function drops i_lock... */
+ 			inode_sleep_on_writeback(inode);
++			iobj_put(inode);
+ 			/* Inode may be gone, start again */
+ 			spin_lock(&wb->list_lock);
+ 			continue;
+@@ -2035,10 +2037,9 @@ static long writeback_sb_inodes(struct super_block *sb,
+ 		inode_sync_complete(inode);
+ 		spin_unlock(&inode->i_lock);
  
-@@ -1200,7 +1210,7 @@ static void inode_cgwb_move_to_attached(struct inode *inode,
- 	WARN_ON_ONCE(inode->i_state & I_FREEING);
- 
- 	inode->i_state &= ~I_SYNC_QUEUED;
--	list_del_init(&inode->i_io_list);
-+	inode_delete_from_io_list(inode);
- 	wb_io_lists_depopulated(wb);
- }
- 
-@@ -1308,16 +1318,23 @@ void wb_start_background_writeback(struct bdi_writeback *wb)
- void inode_io_list_del(struct inode *inode)
- {
- 	struct bdi_writeback *wb;
-+	bool drop = false;
- 
- 	wb = inode_to_wb_and_lock_list(inode);
- 	spin_lock(&inode->i_lock);
- 
- 	inode->i_state &= ~I_SYNC_QUEUED;
--	list_del_init(&inode->i_io_list);
-+	if (!list_empty(&inode->i_io_list)) {
-+		drop = true;
-+		list_del_init(&inode->i_io_list);
-+	}
- 	wb_io_lists_depopulated(wb);
- 
- 	spin_unlock(&inode->i_lock);
- 	spin_unlock(&wb->list_lock);
-+
-+	if (drop)
+-		if (unlikely(tmp_wb != wb)) {
+-			spin_unlock(&tmp_wb->list_lock);
+-			spin_lock(&wb->list_lock);
+-		}
++		spin_unlock(&tmp_wb->list_lock);
 +		iobj_put(inode);
- }
- EXPORT_SYMBOL(inode_io_list_del);
++		spin_lock(&wb->list_lock);
  
-@@ -1389,7 +1406,7 @@ static void redirty_tail_locked(struct inode *inode, struct bdi_writeback *wb)
- 	 * trigger assertions in inode_io_list_move_locked().
- 	 */
- 	if (inode->i_state & I_FREEING) {
--		list_del_init(&inode->i_io_list);
-+		inode_delete_from_io_list(inode);
- 		wb_io_lists_depopulated(wb);
- 		return;
- 	}
+ 		/*
+ 		 * bail out to wb_writeback() often enough to check
 -- 
 2.49.0
 
