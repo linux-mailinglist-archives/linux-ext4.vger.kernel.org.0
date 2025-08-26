@@ -1,127 +1,151 @@
-Return-Path: <linux-ext4+bounces-9680-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9681-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2C01B3742B
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Aug 2025 23:01:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49232B374C0
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 00:06:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D04BB7B6798
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Aug 2025 20:59:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 366EF1BA36AC
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Aug 2025 22:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CCE1DA21;
-	Tue, 26 Aug 2025 21:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3576528D829;
+	Tue, 26 Aug 2025 22:06:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P3tzFwcY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="baBlc2bH"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223D31EB36
-	for <linux-ext4@vger.kernel.org>; Tue, 26 Aug 2025 21:01:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28E9823817F;
+	Tue, 26 Aug 2025 22:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756242081; cv=none; b=oX82627+1n1AK7B1o992jADnolvfgDdJwgbpsfwM5JRUgFBJXhsV+mRLuSbUBnqXXGJJY7r/e+uBsYjI+Bhvfq7+YzU0CeQUXgN+EGVn0qChxy1fN8dNx0MmDLsO2F6OdcE3+a6BLe/x1+W/vonMQPggSiRZGiaoz59FQQZ6PFE=
+	t=1756245984; cv=none; b=UGOZKcRVOtPpm2fyM3OppYxvn4rNgeExVi90/smMpifhxj9WJwX2ieAgnMFRw91inhAhkv7uwTzWMob8dKrniNh8GpV+KV/Y2Rwdhnuv/i1GRvdxim3SCrkShZUa/5TSNh87Syu1L/NK+cZIatZ6tMXI3Q9dIHz/SJZBwezxO0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756242081; c=relaxed/simple;
-	bh=dhiR3F0uVrGWHP1Fwn1w/DheX4EPkQPVad8O7D7YYWM=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=fCwq3gsQvejgObHSX6jeAKYqtBJXprhKDsI4KyKVADmeMf/wkfs12swWv1+HpSU0/mO+x6+diYvhN5Qjdksh6RdPzzItu68aNJ7zZGYty4K7ZYWqA4eX1ASu8z9D+pmdddjFtEduVNiUPVshnS9Mqapnf+iwDuayvvtATAPfBLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P3tzFwcY; arc=none smtp.client-ip=209.85.210.181
+	s=arc-20240116; t=1756245984; c=relaxed/simple;
+	bh=vDJBzU4m3Hm39oLtWDLszwqWtakfsHY8YYCWLG4yfMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BXyI9r8hnfSrRyfYeTiLiVs64T8ZdsfQi/kxAGcSqcVx07aio5p19ULNtlFohy0AFtX5zlqfP8+/VlIttGSJtiAV2tylLO+88XxS/y+BYoYrknHymzMY50U3L40RIkuQ6FIq6iqblF/lgyfSBWXYebUYB+cXbVEheEWLiaUrPek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=baBlc2bH; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7704f3c46ceso2723484b3a.2
-        for <linux-ext4@vger.kernel.org>; Tue, 26 Aug 2025 14:01:17 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45b4d892175so31046165e9.2;
+        Tue, 26 Aug 2025 15:06:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756242077; x=1756846877; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nPGNWM9HJUFsW5VzLZNJ1ojndCf3jyx5scZwtHG2tY0=;
-        b=P3tzFwcYXHaqeOxztxFIrX1xKFEbTiTvCekFz3LQmU7e7ktMdev6TCmAxXxFQvL1jk
-         VR/ycZ7Tc+64RlP8GsAzOYHQC9M7adib06gCNkubWMfmW63sn3QN6z0AGMaD9p0btLqf
-         /3BjXPxIK6ngfOg4RkO0zdOEyZkqQ6rojkpODVIpiKyNWi7wNXKc+EeYV5Mz3FSb6AcA
-         nvpD5SRCyMREP0kBNgm6TmAEH1RCLbeZjUqlYqQUIVk6k1IWYetFXNHFRVFiTrCD7N/a
-         PJC51BBanhS5QNGdD55VQrvaW6JlaqJpCz6W5csY8xE1nCY6a24/3SpiFfDbLoX1zKz4
-         yH3g==
+        d=gmail.com; s=20230601; t=1756245981; x=1756850781; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M6vC6Fn5eeYPqcr3v1ybJoz5+MyT3oZfJ4fM8WDUIJk=;
+        b=baBlc2bHE3gIt00TBhDyQbd85fpeqvEAo/xVto4BFRummJ2EDeHCb4LpIJ5k+tWask
+         AFsUGncS510UoPEbiNiaXp4S8dVkE8+AEtGQet4IdcppYFdBtSKljQuQtkHGvMfrAoCb
+         +Id8FJZp38sDOOGtcXC3BJlKdVNA2D7e63sdq8jE0/7/rb3tgo6YcRk85bRAWJpEDUPS
+         H6n6dyHrtDK5azzSbxZZv6XPkcdIDOvcDPv160D9iniUo7Bj2Sd7vw98Kfm0jWqNRWYU
+         UyXj0O4kT3Nc+x9FJgh3B0cmSkoNuXvOM/Rlc38ewoSlrFj2pGnRKvFG2LSeoBUKCVKM
+         QvmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756242077; x=1756846877;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nPGNWM9HJUFsW5VzLZNJ1ojndCf3jyx5scZwtHG2tY0=;
-        b=Sba2UATyxkAQvuDRzC6kH7Qk51mo2VMbNOPht8ToVcxIlrySzkSKgmI1TXqOBQRRv9
-         ItkkVvaStaLlHAc1YhHSDDFD6WgUmbCoPJ66PpMf8cyKUU3R1q7S8YX6NB93cwb1RXpt
-         uAHb1jMfxq/1hgDGdI8U0WJlQmen/bUgG9emc/AuBlsBapEOahZMYB9/dJxrcsbU/2vt
-         7A/5p4yOy42QI2EK8GH+LNw6Xl4Fs5oHREh4eRVEYNQITXwbWXwm+IzJ/W81SBV3FrXz
-         7HxLaEyl2RT91rT1UKrk8rhOHKBQqdLA9IOBAYh7wRRCcJbQSxf2+MHjuE1MC24nZ7bM
-         ce2w==
-X-Forwarded-Encrypted: i=1; AJvYcCXeclxEdgYAGRSwjz2g5bnupDXyzlFUPv0O8I1WTcGJn5l/hODYYIpIjSBAXNbQfCdNEJloqQS/kABx@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWfm2FP8I0Sn0fBzlAdJ6tSUwVWPmtJ7x+SNHmrksdMn3TY46j
-	17erONpbtu35EercIrktp6c575gVWrzHsGJj4J1puQ81tcWwB5A6IF9WZKhzeA==
-X-Gm-Gg: ASbGncuW6aqxza8HtcPWdi3ADFguKE+MYzA8AbcPJMdms0E6mai3LnO81xpYgNkl+Q6
-	FMtrA0JRUaoIhqQoPUdQru87TmrY/Yd7YQvKJGHkt/C7zUDJd4y3h1NR1bjuQj/SxCWsHtrgfin
-	5cB+iOI+r2N58RB2ng7bMJjjKmafC8Fro3upjVFWvgg/caOvz6oJs2hPXzjzgYnUGRQIjTX5BVD
-	0xEl/cKzABG0pJQ/tJAUpHtnxUIoBZnlxlQFAOp2XzsB/vcYyhOsArITae3aP5xrfdU25tpJjPN
-	QhZW9sMsnc65Sj7IIRcEjJq8PhQgknJ0qP9pJgqQockzoS99OOvvqE0JFqTxbsoCG7oSybW+pEb
-	0LMRlY2MOG6pZqQdyPfe7Viy7
-X-Google-Smtp-Source: AGHT+IEpgh+wF2Tb03+QBt0YYSf9MEkZJQjl4CmOVvc8fVZlnk+MpGxRQ724/3TeY866cu93WqBeLw==
-X-Received: by 2002:a05:6a20:2446:b0:240:66:bfbf with SMTP id adf61e73a8af0-24340d2c0aemr23122143637.32.1756242077104;
-        Tue, 26 Aug 2025 14:01:17 -0700 (PDT)
-Received: from dw-tp ([171.76.82.15])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-771fa791e6bsm2626462b3a.60.2025.08.26.14.01.14
+        d=1e100.net; s=20230601; t=1756245981; x=1756850781;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M6vC6Fn5eeYPqcr3v1ybJoz5+MyT3oZfJ4fM8WDUIJk=;
+        b=Yu4o8gPhJ1pIiR+J369Nfrx1QrmS2ffk47ENMr07mk/nL4tTETxM6OmArQfTcvOSJr
+         7D+EsQa6RC5K9W4wTzL6BtHncqjnAkuEdgr+dFz8BbW4opaTYfwByk3DZWqXaFH3/8eZ
+         PexyWm/NC7su7KrEx+wE1CVNW9VPXE9wfedhcGM85AWWPZL0twczg1JuMmqZ0UtHdkKq
+         vi7nJYPkHp2tVGzFvSPegAg7pgXwyq5jBWBuS1nQvr536FAXARcPvWWha55ZlZTuiaj9
+         ajQRa3SmxWsuAUFbC+7yiAX/03+mDFg+wfM1MGsuWEMtAMA3wnMWO/VsgOeMjtz4NmYR
+         S9uA==
+X-Forwarded-Encrypted: i=1; AJvYcCUet0xmFquRnYYaUagBuOlhytcfRu20MbzZJmN6cbB+wyrlTJSk8q9enmf6a3KEmdbNaJF7mbAFl+rB@vger.kernel.org, AJvYcCWggjDScQPdSjz0eLVx1kesRLWk1DaSer4H4c3Ec2I4bs30FS48+ES1VVDWRLbSSjPgqG923ZolWyvMMQ==@vger.kernel.org, AJvYcCXnWyZI60TNmQ5JWS261knwpiQfMrhMPqbkBKFjUqQcKmSdB9uO2fMusqsLSeOrcJNstsg8pYLhCDQ+Tw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUdbdEeYrxdHLwGsR7i5yaZxkCAlko6N2Dvn8Wg7TKv7VsLZlF
+	no55aOv21tYQ7RHBld0ycINhS583e2OF8j1nxclQ7UfiXE+x1rSEXDnK
+X-Gm-Gg: ASbGncu+CKwnUGcDKhZ9ze60y2S+3Uurid/pyKGjBc06U+ujzMXz01d/K3340E9YzSp
+	5vscsWguB62yn5Bh/bMxoeOsxdQ0z8l/adwHYT64GHefmCtDLNn5mxmMBt9guYkRyjW5FzkIIR3
+	NpBTJE9VKjq/oomVPSbzdOmlBJr223s94kP/Y/Iiwwm24iWjd2tIMem7rH+Eeysuw2pn73gIfh4
+	dFpn5+EaXNKdPQ8LZBsmTe3J+z84DBQeVqExXRbCOAsX/u5a3KvwVWCgeMmAnXbO+/q6iXFeT0m
+	lUAm5WXuPJ8b9GAoR9KGGoEoBL/g7lFRzYoKfwhShbFwXV5QIgctzuDAZv8M0IAz135XVbSjQYx
+	4rrYk/KfCQSoqdpxcT/xeOyIZ7yv/mWGUThmbMUOSuzQWAg==
+X-Google-Smtp-Source: AGHT+IE71Hq9WAIJBAYy95k7pKZG8QwPjDe/BOhy/0ZPk0haCOJOVXxgmdQ4MQNoHE1C7IILw4kgWA==
+X-Received: by 2002:a05:600c:1d25:b0:45b:6f48:9deb with SMTP id 5b1f17b1804b1-45b6f489ee1mr1492315e9.28.1756245981114;
+        Tue, 26 Aug 2025 15:06:21 -0700 (PDT)
+Received: from f (cst-prg-2-200.cust.vodafone.cz. [46.135.2.200])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c70f237fefsm17956621f8f.30.2025.08.26.15.06.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 14:01:16 -0700 (PDT)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Julian Sun <sunjunchao@bytedance.com>, linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu, jack@suse.com, yi.zhang@huawei.com
-Subject: Re: [PATCH] jbd2: Increase IO priority of checkpoint.
-In-Reply-To: <20250825125339.1368799-1-sunjunchao@bytedance.com>
-Date: Wed, 27 Aug 2025 02:25:15 +0530
-Message-ID: <877byprefg.fsf@gmail.com>
-References: <20250825125339.1368799-1-sunjunchao@bytedance.com>
+        Tue, 26 Aug 2025 15:06:20 -0700 (PDT)
+Date: Wed, 27 Aug 2025 00:06:12 +0200
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	brauner@kernel.org, viro@zeniv.linux.org.uk, amir73il@gmail.com
+Subject: Re: [PATCH v2 43/54] fs: change inode_is_dirtytime_only to use
+ refcount
+Message-ID: <3aoxujvj27dpehe2xjswtf73wqffahusomomjqaqcmhufz2pzp@kndlcuu7anam>
+References: <cover.1756222464.git.josef@toxicpanda.com>
+ <caa80372b21562257d938b200bb720dcb53336cd.1756222465.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <caa80372b21562257d938b200bb720dcb53336cd.1756222465.git.josef@toxicpanda.com>
 
-Julian Sun <sunjunchao@bytedance.com> writes:
-
-> In commit 6a3afb6ac6df ("jbd2: increase the journal IO's priority"),
-> the priority of IOs initiated by jbd2 has been raised, exempting them
-> from WBT throttling.
-> Checkpoint is also a crucial operation of jbd2. While no serious issues
-> have been observed so far, it should still be reasonable to exempt
-> checkpoint from WBT throttling.
->
-
-Interesting.. I was wondering whether we were able to observe any
-throttling for jbd2 log writes or for jbd2 checkpoint?
-Maybe It would have been nice, if we had some kind of data for this. 
-
-BTW - does it make sense for fastcommit path too maybe for non-tail
-fc write requests? I think it uses ext4_fc_submit_bh(). 
-
--ritesh
-
-
-> Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+On Tue, Aug 26, 2025 at 11:39:43AM -0400, Josef Bacik wrote:
+> We don't need the I_WILL_FREE|I_FREEING check, we can use the refcount
+> to see if the inode is valid.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/jbd2/checkpoint.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-> index 38861ca04899..2d0719bf6d87 100644
-> --- a/fs/jbd2/checkpoint.c
-> +++ b/fs/jbd2/checkpoint.c
-> @@ -131,7 +131,7 @@ __flush_batch(journal_t *journal, int *batch_count)
+>  include/linux/fs.h | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index b13d057ad0d7..531a6d0afa75 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2628,6 +2628,11 @@ static inline void mark_inode_dirty_sync(struct inode *inode)
+>  	__mark_inode_dirty(inode, I_DIRTY_SYNC);
+>  }
 >  
->  	blk_start_plug(&plug);
->  	for (i = 0; i < *batch_count; i++)
-> -		write_dirty_buffer(journal->j_chkpt_bhs[i], REQ_SYNC);
-> +		write_dirty_buffer(journal->j_chkpt_bhs[i], JBD2_JOURNAL_REQ_FLAGS);
->  	blk_finish_plug(&plug);
+> +static inline int icount_read(const struct inode *inode)
+> +{
+> +	return refcount_read(&inode->i_count);
+> +}
+> +
+>  /*
+>   * Returns true if the given inode itself only has dirty timestamps (its pages
+>   * may still be dirty) and isn't currently being allocated or freed.
+> @@ -2639,8 +2644,8 @@ static inline void mark_inode_dirty_sync(struct inode *inode)
+>   */
+>  static inline bool inode_is_dirtytime_only(struct inode *inode)
+>  {
+> -	return (inode->i_state & (I_DIRTY_TIME | I_NEW |
+> -				  I_FREEING | I_WILL_FREE)) == I_DIRTY_TIME;
+> +	return (inode->i_state & (I_DIRTY_TIME | I_NEW)) == I_DIRTY_TIME &&
+> +	       icount_read(inode);
+>  }
 >  
->  	for (i = 0; i < *batch_count; i++) {
+>  extern void inc_nlink(struct inode *inode);
+> @@ -3432,11 +3437,6 @@ static inline void __iget(struct inode *inode)
+>  	refcount_inc(&inode->i_count);
+>  }
+>  
+> -static inline int icount_read(const struct inode *inode)
+> -{
+> -	return refcount_read(&inode->i_count);
+> -}
+> -
+>  extern void iget_failed(struct inode *);
+>  extern void clear_inode(struct inode *);
+>  extern void __destroy_inode(struct inode *);
 > -- 
-> 2.20.1
+> 2.49.0
+> 
+
+nit: I would change the diff introducing icount_read() to already place
+it in the right spot. As is this is going to mess with blame for no good
+reason.
 
