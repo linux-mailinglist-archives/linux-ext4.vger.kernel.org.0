@@ -1,128 +1,169 @@
-Return-Path: <linux-ext4+bounces-9693-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9694-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4FD3B38221
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 14:18:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A343B38268
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 14:33:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21011980FAD
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 12:18:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9BFD189FD26
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 12:33:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09DFA303CB6;
-	Wed, 27 Aug 2025 12:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEDB33148DC;
+	Wed, 27 Aug 2025 12:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Ljb5XLeN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GyMR+Nqy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1618F302CB5
-	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 12:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DEF628135B;
+	Wed, 27 Aug 2025 12:32:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756297101; cv=none; b=bLkTvFzd279MMUncljzaSZgDZcWosKwdx5F6OLe8dwyHGmBBKkk28uTyMo/+Y+8zHwJzo0BGc64UibTG6niXHYC1b4HENuBjkrmsmLILf030Jdefg3jDDZ461rFOODisrRfJFliCySrOf339AS4nKcdmylQ17MUtrg6qv4AFGeM=
+	t=1756297974; cv=none; b=gFNfFuMrmQyHhW4rrb1blMSXbR+wRsj5d46ysdVp8jynRLElznlAgzwa7l4X8K+Hwl8KUmMJywMG8kfVt061KhJyZgxY2tc98IcQSUELIG7OzHL8XNuzNulOtaCSZYjMjlF/0Go12Hagjw1qFPl2cR+Wgg+vVbTsAjeGqf014QU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756297101; c=relaxed/simple;
-	bh=QAEXeYp4ZwNEF11A+LDId32CXx6FbODT+0plZ7vPAnU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UgvemuTM2TV8VYFrfMiBlRXKY7ONj4kRxKi8GUGch6T0JsplTXRJcZD56N94iE8riJdDKeEygtn67qDbd0tXPXsUF3/tJbp4xZXIeL/y90/U/90OTJDA/c/oyPtHSMncJOHPd4Ofq3uLR2y7fjwT93h8PnNeBiIgj7ZYpPkPEi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Ljb5XLeN; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2460757107bso62299895ad.2
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 05:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1756297096; x=1756901896; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lk37+tVypbmq7tD8itHdvPagwtmzPZc7iO9u/V3pJxI=;
-        b=Ljb5XLeNtQyofaBPGFjwIH5L5cLNKFDx/J8BG3Uv/rIh6rwmqw+kSrPv5Im0mTDc9O
-         YmzpBFAsfdPUIEWoKKknAfcKRW0YXJSUIRz/KS6hhx0Hyg560LVGdBX3v0bsoEsi1Wm7
-         8H4kJuB391qN/ePCJuCKNz9981GCfE6tZ2UV0rUQHJwAfcnqmEc33+QOj11Ufi/brDnP
-         ocm6Ft+5rnbd81kPp9mNI37Rdq/Mof1/icx/4Mx0yF3sMUsDmCNyROMb45g8iKhlqcPn
-         t3fp68djZpRejqSACLCM4nTv4QajDlMWO7TrzQ2WhIHeTpRWq/GLY/xuHYsUDFzYp7N0
-         Qg3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756297096; x=1756901896;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Lk37+tVypbmq7tD8itHdvPagwtmzPZc7iO9u/V3pJxI=;
-        b=Os07LoWMZuPjHMNqgeycFjyeDL610SKhOrsW6nbueNNm1CITDv1jP/en78xAx7VCr0
-         +/g9dc2Ij8KnpEEIFzd2VDEjzubOgRPQ+LzvCyvM/eMiyqQ5RGKJ20f5ne56mabiGdOF
-         9DEgxwzDWPfPSHBg6nj6U2aEdRHWvOx/y00mX4M1rJ3mpyJ6H6+ESE++oX+MB6V+ofPh
-         /l0H9j/S3GcGHCv2+E75FZoL5u1Dde25W4lFkhaEuAgyf+GYODAWLkNgvYxS9T8h/FAB
-         mw+LOPH1PHxmUbz8NUcrySD0MoZgI/udB6JE6+n/QKolC68mVBm1WqqQq08uc9wzGMTi
-         9gWQ==
-X-Gm-Message-State: AOJu0Yw188GMVGtk7JNMXCLmhkM/nag6DBdme1TU5UJsVqcqbUeAyJsi
-	lRVtIh9ULWX0A/0kWVZPsOVCD05JSCheEbaLzrFS1NCYyyI2zBwbzDXVKmopYpVh2umgINFRgIE
-	gAsFiAN8=
-X-Gm-Gg: ASbGncuxTVAHueuCDHu08R4MlJPDjoDu9Zi38bBKSaPjPpC70OYIxHD4I+IGa1nIyeR
-	xtXBqLu1n1Y1PKod8SVV9KHsoc+TFkGodlTwt8CKMjZt/RDRgfoXMTHc9n2J/QEMB238xODG9dU
-	2ZO2hPtDFuOouQZOwbNy2yoQv1PKFLmQfyLWBZDOBUyG46qsi3DN5J8nX54dfZxrBwHoKBe1X3e
-	rJei/fvbUV41a/4Dhlv3K9dU9NstUzA7bYBeI5gOCy+eUNICyv0uzzrm8LmaHZ7Ow1X+nZI8UHy
-	YX5K/Bv/ZLOIJlDrLYBqGCLVTu4xs3+rV0dYIVjIIiPedDI3XKT5lm/G4VgClxwlAoSqEIqgGDY
-	q3Vdv8ExBOTmmM64MUrUZWkSp8qfr+NOTBA==
-X-Google-Smtp-Source: AGHT+IHNjWgsy86D4oCGUNJlNDx1DAL0SuJkv9s8s3Q9iftrmIv4mkxhJ1MWSZkZszQ7UN022SzRVA==
-X-Received: by 2002:a17:903:1b6d:b0:246:b1fd:298c with SMTP id d9443c01a7336-246b1fd2fc8mr168609675ad.1.1756297096004;
-        Wed, 27 Aug 2025 05:18:16 -0700 (PDT)
-Received: from localhost ([106.38.226.228])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-246687c75b5sm120905385ad.66.2025.08.27.05.18.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Aug 2025 05:18:15 -0700 (PDT)
-From: Julian Sun <sunjunchao@bytedance.com>
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	jack@suse.cz,
-	harshadshirwadkar@gmail.com,
-	ritesh.list@gmail.com
-Subject: [PATCH] ext4: Increase IO priority of fastcommit.
-Date: Wed, 27 Aug 2025 20:18:12 +0800
-Message-Id: <20250827121812.1477634-1-sunjunchao@bytedance.com>
-X-Mailer: git-send-email 2.20.1
+	s=arc-20240116; t=1756297974; c=relaxed/simple;
+	bh=mV5rlgU/CFJxGU5w5AqoeVeGLZRe5V/Uh5NsLYLndms=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HgVVMNxbfw6q+SaEbDHyPcy/wAheVKVxPK3U1dioHAhwsFb2K53K8Ls/7UPDSHVucgxKw3B4sXs352tBkvn2VPdRNNOB+1uTht4qaugl3cinn8JAtV7pBhb/6iMy0e/NEwCBaIWHJrdnO7zsfzc+0GL6hM5bd/HRaDCBj8ej234=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GyMR+Nqy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0387C4CEF4;
+	Wed, 27 Aug 2025 12:32:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756297973;
+	bh=mV5rlgU/CFJxGU5w5AqoeVeGLZRe5V/Uh5NsLYLndms=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GyMR+Nqye+vuPW6jrC96Uknufe2hfleujjfprHV/1ax3E1WhaBhQq6qGSVXBPAO4j
+	 lLrhAsN6sxdKtV7mH2WVltH/IDe0T3H/0hcn9mV3GAR3eRH29IftSI1g60vRyBfLau
+	 NcS+FpvodXW0T5EMs3Yk5TNeuLC1YpnGKLSUCa76gYGqLG5FotLzhRz6pUChnU4PxW
+	 aUPnPQ768ubmGoHgd65HYmZoPCntkmvtWYtHWQudYkOyfNbqBbYPW/bW2qaImIKUaR
+	 oTHhNRr8bKoL+U1aPN0Kay7vEAFj8rr9mBYSACX/7oP8b8mY9h4iKGD9uDIn559IL2
+	 PtgI7UNJl1SsA==
+Date: Wed, 27 Aug 2025 14:32:49 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	viro@zeniv.linux.org.uk, amir73il@gmail.com
+Subject: Re: [PATCH v2 17/54] fs: remove the inode from the LRU list on
+ unlink/rmdir
+Message-ID: <20250827-bratkartoffeln-weltschmerz-fc60227f43e7@brauner>
+References: <cover.1756222464.git.josef@toxicpanda.com>
+ <3552943716349efa4ff107bb590ac6b980183735.1756222465.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3552943716349efa4ff107bb590ac6b980183735.1756222465.git.josef@toxicpanda.com>
 
-The following code paths may result in high latency or even task hangs:
-   1. fastcommit io is throttled by wbt.
-   2. jbd2_fc_wait_bufs() might wait for a long time while
-JBD2_FAST_COMMIT_ONGOING is set in journal->flags, and then
-jbd2_journal_commit_transaction() waits for the
-JBD2_FAST_COMMIT_ONGOING bit for a long time while holding the write
-lock of j_state_lock.
-   3. start_this_handle() waits for read lock of j_state_lock which
-results in high latency or task hang.
+On Tue, Aug 26, 2025 at 11:39:17AM -0400, Josef Bacik wrote:
+> We can end up with an inode on the LRU list or the cached list, then at
+> some point in the future go to unlink that inode and then still have an
+> elevated i_count reference for that inode because it is on one of these
+> lists.
+> 
+> The more common case is the cached list. We open a file, write to it,
+> truncate some of it which triggers the inode_add_lru code in the
+> pagecache, adding it to the cached LRU.  Then we unlink this inode, and
+> it exists until writeback or reclaim kicks in and removes the inode.
+> 
+> To handle this case, delete the inode from the LRU list when it is
+> unlinked, so we have the best case scenario for immediately freeing the
+> inode.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
 
-Given the fact that ext4_fc_commit() already modifies the current
-process' IO priority to match that of the jbd2 thread, it should be
-reasonable to match jbd2's IO submission flags as well.
+I'm not too fond of this particular change I think it's really misplaced
+and the correct place is indeed drop_nlink() and clear_nlink().
 
-Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
----
- fs/ext4/fast_commit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm pretty sure that the number of callers that hold i_lock around
+drop_nlink() and clear_nlink() is relatively small. So it might just be
+preferable to drop_nlink_locked() and clear_nlink_locked() and just
+switch the few places over to it. I think you have tooling to give you a
+preliminary glimpse what and how many callers do this...
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 42bee1d4f9f9..fa66b08de999 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -663,7 +663,7 @@ void ext4_fc_track_range(handle_t *handle, struct inode *inode, ext4_lblk_t star
- 
- static void ext4_fc_submit_bh(struct super_block *sb, bool is_tail)
- {
--	blk_opf_t write_flags = REQ_SYNC;
-+	blk_opf_t write_flags = JBD2_JOURNAL_REQ_FLAGS;
- 	struct buffer_head *bh = EXT4_SB(sb)->s_fc_bh;
- 
- 	/* Add REQ_FUA | REQ_PREFLUSH only its tail */
--- 
-2.20.1
 
+>  fs/namei.c | 30 +++++++++++++++++++++++++-----
+>  1 file changed, 25 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 138a693c2346..e56dcb5747e4 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -4438,6 +4438,7 @@ SYSCALL_DEFINE2(mkdir, const char __user *, pathname, umode_t, mode)
+>  int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
+>  		     struct dentry *dentry)
+>  {
+> +	struct inode *inode = dentry->d_inode;
+>  	int error = may_delete(idmap, dir, dentry, 1);
+>  
+>  	if (error)
+> @@ -4447,11 +4448,11 @@ int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
+>  		return -EPERM;
+>  
+>  	dget(dentry);
+> -	inode_lock(dentry->d_inode);
+> +	inode_lock(inode);
+>  
+>  	error = -EBUSY;
+>  	if (is_local_mountpoint(dentry) ||
+> -	    (dentry->d_inode->i_flags & S_KERNEL_FILE))
+> +	    (inode->i_flags & S_KERNEL_FILE))
+>  		goto out;
+>  
+>  	error = security_inode_rmdir(dir, dentry);
+> @@ -4463,12 +4464,21 @@ int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
+>  		goto out;
+>  
+>  	shrink_dcache_parent(dentry);
+> -	dentry->d_inode->i_flags |= S_DEAD;
+> +	inode->i_flags |= S_DEAD;
+>  	dont_mount(dentry);
+>  	detach_mounts(dentry);
+>  
+>  out:
+> -	inode_unlock(dentry->d_inode);
+> +	/*
+> +	 * The inode may be on the LRU list, so delete it from the LRU at this
+> +	 * point in order to make sure that the inode is freed as soon as
+> +	 * possible.
+> +	 */
+> +	spin_lock(&inode->i_lock);
+> +	inode_lru_list_del(inode);
+> +	spin_unlock(&inode->i_lock);
+> +
+> +	inode_unlock(inode);
+>  	dput(dentry);
+>  	if (!error)
+>  		d_delete_notify(dir, dentry);
+> @@ -4653,8 +4663,18 @@ int do_unlinkat(int dfd, struct filename *name)
+>  		dput(dentry);
+>  	}
+>  	inode_unlock(path.dentry->d_inode);
+> -	if (inode)
+> +	if (inode) {
+> +		/*
+> +		 * The LRU may be holding a reference, remove the inode from the
+> +		 * LRU here before dropping our hopefully final reference on the
+> +		 * inode.
+> +		 */
+> +		spin_lock(&inode->i_lock);
+> +		inode_lru_list_del(inode);
+> +		spin_unlock(&inode->i_lock);
+> +
+>  		iput(inode);	/* truncate the inode here */
+> +	}
+>  	inode = NULL;
+>  	if (delegated_inode) {
+>  		error = break_deleg_wait(&delegated_inode);
+> -- 
+> 2.49.0
+> 
 
