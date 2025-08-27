@@ -1,160 +1,112 @@
-Return-Path: <linux-ext4+bounces-9685-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9686-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC7F8B37CBD
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 10:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5878DB37D55
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 10:15:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DCC12014FD
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 08:04:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 280FE365B8F
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 08:15:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74DF73218C3;
-	Wed, 27 Aug 2025 08:03:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35EA32C31D;
+	Wed, 27 Aug 2025 08:15:36 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9011931A55C
-	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 08:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1951530CD9F
+	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 08:15:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756281831; cv=none; b=uiKmOEcVqOkxm56uWlyE7t0g2TaZ31TZbsXtDa3jzQ5m3AEBVpW8Yqa5aQrlE28Fydr+9IAQknVA1gSLLnZToisHPafqH8LhfUIM+gSWChgota1W1EyffOqWsRsWBBeOHBtQH6hU6YrQ0dpGR6lEHT+zyJmBuVc9lsUxOqhDpyw=
+	t=1756282536; cv=none; b=olw0jBzGS6sLQsmvz2dY3eo24NihjZphvDTpL3Z19Jo9bdv5lR7TZdW1SiJsAxGZDkqkhNb5hNLs8J8qJ+vmlDD7fwUakJE59KSVo1Vfn62WjBzRy4HO+TPr8FB660aZ5oMAb7CcInxwabOB8G0XlMgQ5MFMtxHun+PN3cRoUsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756281831; c=relaxed/simple;
-	bh=GKFP0cKg8X36DYXTs4AnKInFPQYLUC25oeO1ip+uIVo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=pyFoUIrPfwfbMSpY6NjkKd4Ct6HUjY9cABmK/YQ76Yi3lL6NYvJV/dpuGdxRS+syLY2P9/nMR1ueZdoPVqs1w1D36+4UCVpTMa9Q05LHiKlzuFO5jGzO7SmfQT8umC6WPCSQHHrNkTeCL+ZESLtRLEEX+l+x9YUNRFOMDLzFm5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+	s=arc-20240116; t=1756282536; c=relaxed/simple;
+	bh=g5EAdOq4nbNrMDycLfDUT5qkoEvJRCbcq/nzuV8pmmo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Wzwt7EzkFVZdbYCffxXURgnhR7hq4WkuKHY9YX/CnALVr3fw6DPVLyusbWBaZWtz2uzHmxQErRNSllu9y5SjaRX+kBCX6i8C3rVaWtARc9yWxpbQzuxYwvKxapXYD/tPa3+UnPJgQXqtN/ZTpcOC9LfEBWLn1FY+mb/ezfp8R2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3ef026c145fso18775935ab.1
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 01:03:49 -0700 (PDT)
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3e6766c3935so80013345ab.2
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 01:15:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756281829; x=1756886629;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xXVGAuQnn9XzlKQXqXAG7puergh7qbhhO9p5PMqXgkw=;
-        b=BnZflsG3IUl4veLV+zfy3KqW6jnc5y9zIrkA+OUa4Q+/d/j0OgI/hVPiTWV58+xzWz
-         yTP5ypVoNX0R9LaX71YcBHLnIogePt2UaeYPFr7TIFNgawek1O1t+v9IfzUWNYX4lhna
-         SINVx4jMrgRDMw6/NYATKmaE7QRGjcOTTf26cFuts5LVWIdqSva0470SKst4F/lLg6eP
-         ydGL5yq46c+ke+p8p7ELTMOiagxu+DmjRgy+Hvyb3ZGuCmRp+mjNkd86Ah6W2bNpLvU5
-         WrmZ1tD1vZowIMTJlcZrwDNmNi5sU4sMCOgTmwpjqGp/jvN30TNMIh2j4CxEpLbQJwBb
-         Q4eg==
-X-Forwarded-Encrypted: i=1; AJvYcCXAZp4Ile+w0T4srltFlMPbZ3ypC2uCpUqGz0vdITAHDdRNylmQj5kDU8RpUBvZ/ExEkcKZ0Uu7HFhU@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzx2ui7YlgehjIUKc4ainpGUdpaRQDHkPO8oYW63OXOCzySp2hX
-	mBXxSc01jUlK83WM9EINWY89gkABUq+w/HyilV/u3MkqB3yBmnqd38H54V4rF3Lp66d3li6oMuO
-	KZmiFq5cFDv33boWbqYRklXWz5bfhVLenBBJuMsRwKgvHnuqObVqwAMNqVtQ=
-X-Google-Smtp-Source: AGHT+IHgGgCW/4gHUt8t/levoYYyVNCC5/Uo1Faz0rZusbCMW0pjQ6aBYk5jawEFHvtzIMDbLkK5lYOmXgLbgGbFV0yzSJsjx3T1
+        d=1e100.net; s=20230601; t=1756282534; x=1756887334;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mY5T3saMw+ScB7Jfgl0MCq8x+xrVCw4jczqPzVND7KA=;
+        b=Sa1v9vZAbDiMgdFp565B5zrczBYwMTDgDoL13vnHEcrJdj67Zt6jN00sQyWirgafiw
+         6jKjuOOIpOKLbvqJMoQ7Wg149HNHrmgvZYUICz8TmXh8CwH267MkXmd3TEKxtCRQYHz4
+         if6h7FvRa49kLH9XvNUeyCzmLy3uGhmGQec1yHAmWMtVrvSRu2a4yV1poN3TnU1elBhx
+         XdxA26u48Q2RXgGNmC0fiMEUThM6ekdmhR5OjBaf/EwbXseHDtvWaHaoJkvg53p3Dmsl
+         bOe28kYZdhGvndeR0UMNL9LQk1z3qfr5+bo+Dawb7hcJedHfyP18rwcQ+UTdHK45Ep6n
+         NjgA==
+X-Gm-Message-State: AOJu0YzOc4xCyh4OGi+sMCDVDbEWfoWBjUxiHXrw99OECd84bRDAtELT
+	NLbutdBB0O1FfmOuV/ak/Oa01mqDRPu1igBdVSwSlvtn2jbSlSmriFswncs5Cr9kM4YGavYpjMS
+	FrnAYuyOcrQ3PmQWv4NLUxalWN/9rRYMSPJp+gnNxOaz+3Y15EsulS4Vpt/c=
+X-Google-Smtp-Source: AGHT+IFXBQbKGcOq5qKykhKok3Tn6HIV67C1PxK+uXdesng0mbm5G+jKzdDjNhsUTouLcjhgjsLpao5fKS6f/frf9uQ916S9Mei1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:4813:b0:3ea:114c:83a6 with SMTP id
- e9e14a558f8ab-3ea114c860fmr227055435ab.1.1756281828839; Wed, 27 Aug 2025
- 01:03:48 -0700 (PDT)
-Date: Wed, 27 Aug 2025 01:03:48 -0700
-In-Reply-To: <cover.1756222464.git.josef@toxicpanda.com>
+X-Received: by 2002:a05:6e02:3cc6:b0:3e5:7e02:a06d with SMTP id
+ e9e14a558f8ab-3e91f93e0dbmr246066775ab.4.1756282534333; Wed, 27 Aug 2025
+ 01:15:34 -0700 (PDT)
+Date: Wed, 27 Aug 2025 01:15:34 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68aebbe4.a70a0220.3cafd4.0011.GAE@google.com>
-Subject: [syzbot ci] Re: fs: rework inode reference counting
-From: syzbot ci <syzbot+ci0d448b9d8cb534fd@syzkaller.appspotmail.com>
-To: amir73il@gmail.com, brauner@kernel.org, josef@toxicpanda.com, 
-	kernel-team@fb.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	viro@zeniv.linux.org.uk
-Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Message-ID: <68aebea6.a70a0220.3cafd4.0014.GAE@google.com>
+Subject: [syzbot] Monthly ext4 report (Aug 2025)
+From: syzbot <syzbot+liste757592c95c323314d50@syzkaller.appspotmail.com>
+To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot ci has tested the following series
+Hello ext4 maintainers/developers,
 
-[v2] fs: rework inode reference counting
-https://lore.kernel.org/all/cover.1756222464.git.josef@toxicpanda.com
-* [PATCH v2 01/54] fs: make the i_state flags an enum
-* [PATCH v2 02/54] fs: add an icount_read helper
-* [PATCH v2 03/54] fs: rework iput logic
-* [PATCH v2 04/54] fs: add an i_obj_count refcount to the inode
-* [PATCH v2 05/54] fs: hold an i_obj_count reference in wait_sb_inodes
-* [PATCH v2 06/54] fs: hold an i_obj_count reference for the i_wb_list
-* [PATCH v2 07/54] fs: hold an i_obj_count reference for the i_io_list
-* [PATCH v2 08/54] fs: hold an i_obj_count reference in writeback_sb_inodes
-* [PATCH v2 09/54] fs: hold an i_obj_count reference while on the hashtable
-* [PATCH v2 10/54] fs: hold an i_obj_count reference while on the LRU list
-* [PATCH v2 11/54] fs: hold an i_obj_count reference while on the sb inode list
-* [PATCH v2 12/54] fs: stop accessing ->i_count directly in f2fs and gfs2
-* [PATCH v2 13/54] fs: hold an i_obj_count when we have an i_count reference
-* [PATCH v2 14/54] fs: add an I_LRU flag to the inode
-* [PATCH v2 15/54] fs: maintain a list of pinned inodes
-* [PATCH v2 16/54] fs: delete the inode from the LRU list on lookup
-* [PATCH v2 17/54] fs: remove the inode from the LRU list on unlink/rmdir
-* [PATCH v2 18/54] fs: change evict_inodes to use iput instead of evict directly
-* [PATCH v2 19/54] fs: hold a full ref while the inode is on a LRU
-* [PATCH v2 20/54] fs: disallow 0 reference count inodes
-* [PATCH v2 21/54] fs: make evict_inodes add to the dispose list under the i_lock
-* [PATCH v2 22/54] fs: convert i_count to refcount_t
-* [PATCH v2 23/54] fs: use refcount_inc_not_zero in igrab
-* [PATCH v2 24/54] fs: use inode_tryget in find_inode*
-* [PATCH v2 25/54] fs: update find_inode_*rcu to check the i_count count
-* [PATCH v2 26/54] fs: use igrab in insert_inode_locked
-* [PATCH v2 27/54] fs: remove I_WILL_FREE|I_FREEING check from __inode_add_lru
-* [PATCH v2 28/54] fs: remove I_WILL_FREE|I_FREEING check in inode_pin_lru_isolating
-* [PATCH v2 29/54] fs: use inode_tryget in evict_inodes
-* [PATCH v2 30/54] fs: change evict_dentries_for_decrypted_inodes to use refcount
-* [PATCH v2 31/54] block: use igrab in sync_bdevs
-* [PATCH v2 32/54] bcachefs: use the refcount instead of I_WILL_FREE|I_FREEING
-* [PATCH v2 33/54] btrfs: don't check I_WILL_FREE|I_FREEING
-* [PATCH v2 34/54] fs: use igrab in drop_pagecache_sb
-* [PATCH v2 35/54] fs: stop checking I_FREEING in d_find_alias_rcu
-* [PATCH v2 36/54] ext4: stop checking I_WILL_FREE|IFREEING in ext4_check_map_extents_env
-* [PATCH v2 37/54] fs: remove I_WILL_FREE|I_FREEING from fs-writeback.c
-* [PATCH v2 38/54] gfs2: remove I_WILL_FREE|I_FREEING usage
-* [PATCH v2 39/54] fs: remove I_WILL_FREE|I_FREEING check from dquot.c
-* [PATCH v2 40/54] notify: remove I_WILL_FREE|I_FREEING checks in fsnotify_unmount_inodes
-* [PATCH v2 41/54] xfs: remove I_FREEING check
-* [PATCH v2 42/54] landlock: remove I_FREEING|I_WILL_FREE check
-* [PATCH v2 43/54] fs: change inode_is_dirtytime_only to use refcount
-* [PATCH v2 44/54] btrfs: remove references to I_FREEING
-* [PATCH v2 45/54] ext4: remove reference to I_FREEING in inode.c
-* [PATCH v2 46/54] ext4: remove reference to I_FREEING in orphan.c
-* [PATCH v2 47/54] pnfs: use i_count refcount to determine if the inode is going away
-* [PATCH v2 48/54] fs: remove some spurious I_FREEING references in inode.c
-* [PATCH v2 49/54] xfs: remove reference to I_FREEING|I_WILL_FREE
-* [PATCH v2 50/54] ocfs2: do not set I_WILL_FREE
-* [PATCH v2 51/54] fs: remove I_FREEING|I_WILL_FREE
-* [PATCH v2 52/54] fs: remove I_REFERENCED
-* [PATCH v2 53/54] fs: remove I_LRU_ISOLATING flag
-* [PATCH v2 54/54] fs: add documentation explaining the reference count rules for inodes
+This is a 31-day syzbot report for the ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-and found the following issue:
-kernel build error
+During the period, 4 new issues were detected and 0 were fixed.
+In total, 51 issues are still open and 157 have already been fixed.
 
-Full report is available here:
-https://ci.syzbot.org/series/ccd4eafa-7a13-48d6-93b6-f40c03262bea
+Some of the still happening issues:
 
-***
-
-kernel build error
-
-tree:      torvalds
-URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux
-base:      fab1beda7597fac1cecc01707d55eadb6bbe773c
-arch:      amd64
-compiler:  Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
-config:    https://ci.syzbot.org/builds/162c03ae-2d30-4085-ab1e-a2dd1c8403eb/config
-
-fs/bcachefs/fs.c:350:20: error: incompatible pointer types passing 'struct bch_inode_info *' to parameter of type 'const struct inode *' [-Werror,-Wincompatible-pointer-types]
-
-***
-
-If these findings have caused you to resend the series or submit a
-separate fix, please add the following tag to your commit message:
-  Tested-by: syzbot@syzkaller.appspotmail.com
+Ref  Crashes Repro Title
+<1>  77827   Yes   possible deadlock in dqget
+                   https://syzkaller.appspot.com/bug?extid=6e493c165d26d6fcbf72
+<2>  2920    Yes   KASAN: out-of-bounds Read in ext4_xattr_set_entry
+                   https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
+<3>  2624    Yes   INFO: task hung in sync_inodes_sb (5)
+                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<4>  2555    Yes   kernel BUG in ext4_do_writepages
+                   https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+<5>  2135    Yes   INFO: task hung in jbd2_journal_commit_transaction (5)
+                   https://syzkaller.appspot.com/bug?extid=3071bdd0a9953bc0d177
+<6>  844     Yes   KMSAN: uninit-value in aes_encrypt (5)
+                   https://syzkaller.appspot.com/bug?extid=aeb14e2539ffb6d21130
+<7>  837     Yes   WARNING in ext4_xattr_inode_lookup_create
+                   https://syzkaller.appspot.com/bug?extid=fe42a669c87e4a980051
+<8>  476     No    KCSAN: data-race in generic_buffers_fsync_noflush / writeback_single_inode (3)
+                   https://syzkaller.appspot.com/bug?extid=35257a2200785ea628f5
+<9>  443     Yes   INFO: task hung in do_get_write_access (3)
+                   https://syzkaller.appspot.com/bug?extid=e7c786ece54bad9d1e43
+<10> 254     Yes   INFO: task hung in do_renameat2 (2)
+                   https://syzkaller.appspot.com/bug?extid=39a12f7473ed8066d2ca
 
 ---
 This report is generated by a bot. It may contain errors.
-syzbot ci engineers can be reached at syzkaller@googlegroups.com.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
