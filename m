@@ -1,148 +1,156 @@
-Return-Path: <linux-ext4+bounces-9682-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9683-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E8ABB374D4
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 00:18:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1705CB37959
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 06:57:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 047CD1B28151
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Aug 2025 22:19:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBE8936638F
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 04:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE8C283142;
-	Tue, 26 Aug 2025 22:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 188B22C0F9C;
+	Wed, 27 Aug 2025 04:57:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mbgDHg/J"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="W1G8j+C2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD6F30CDB4;
-	Tue, 26 Aug 2025 22:18:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9F626E706
+	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 04:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756246729; cv=none; b=eWT4KFvsZCfeOPTnURYI7pBBKUt9sqJDIdPi9HqQJDvDStLvD0KNvBwf+k2850L7AMUEq8WSf/8DZsG5Vb+qyC9ZPT+F4JeU69B7ylg9DlvjK/hB6xtQ52UwztEIJnVxe5ala1z0tmmvqM+e4ARhDjymxiJ0OAOFIFZ9IhykLrg=
+	t=1756270631; cv=none; b=cI9QRU0fWEOc5wMVGFUqA6LHayYcjBSH4Y5usq74/HuvKm5SgZxTgTmVEt6KiP/PxvZZp1xpSedMNryxcQWPnh2zRf76ne3uFSTxdPZMttklHVYIwjmvFF7A5Vk3CHavr2jaUg6r1l4ucPa/lOTo7Vvj71oSs0lhhHUBWsjd2Hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756246729; c=relaxed/simple;
-	bh=AetuBWMmw/6t54AG8a5ZO87tiIPQPeRZ0PeQFTc29PI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TOrgXApZOQ2bYU1PgOWpVsu9hlZguEV6PHPbljapJMj0e91zIlgjS2DK+OsXUhjefhMZssznT8gvTKJONPTUNargj0Ki94bVa9mXGFZqk7qxxBTXhudueBiRbuPjSHiTB8bQzClK9HycwPrEoGH+5zh4cTchktjv40IkS6038PA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mbgDHg/J; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-45b627ea5f3so11867325e9.1;
-        Tue, 26 Aug 2025 15:18:47 -0700 (PDT)
+	s=arc-20240116; t=1756270631; c=relaxed/simple;
+	bh=YFgitVI1mod+1pOrQ//keAVey0bcVb6xMPZF+h8Nox8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JCkZc3dvG64Lxb+c8HlUpt3bcnli3QI4/sqc/sfe0JlQh0kHD5nQBOQIbd/juDw2gyD577X/Or5P7wAamTWjJ+Kni4iK+fUe177ciYDPnnHm+ntdNXtzt0Zy4VjGanpj04ApB1HDzuNf5OWeJsFJUgIFlHuS5doAUavkxmqhaM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=W1G8j+C2; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b49dcdf018bso2236079a12.0
+        for <linux-ext4@vger.kernel.org>; Tue, 26 Aug 2025 21:57:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756246726; x=1756851526; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CsTzztZtiJ8L2utrdxff2Xitwgqo/0WZra/kFXABXtE=;
-        b=mbgDHg/JJif3uchVxFvyZH9/tyawVSPR6l0k4G1OGt/39gb8JUPE1cJHGjXTs98jmf
-         qT8tLzbM/GfINVn1ds5utdxs6RIg/8RrZoeQNOdiNIWUVaUXATEESY0Ot8Yo8WfmeR2x
-         7qUqIxqQj4cawjLtqSdC8wVnnEgBpFQ5Px49iZkC70Hamr8BsZ4wDtjIY9DwPIdfnUZb
-         bIALlYlZqUM89CNLLu2w5UU1l/jAH697UM/nJXT7SbpbeBa2OgtmrByVJMRhnPYr/Hev
-         iG6UHPzKU0sw8bueEf6mtnYdq2r6uhMICBZS+DLKpr0VJXcDy9sVekPVISz2VXHzXDl3
-         06UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756246726; x=1756851526;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1756270629; x=1756875429; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CsTzztZtiJ8L2utrdxff2Xitwgqo/0WZra/kFXABXtE=;
-        b=MJtFzBGG4FE8R0kQBpXbXb++j2l+4OxCNXmSRQJMnkqwV8cArNBHkNrtVSQswu5t06
-         09dwzK/2Z7Vwvtq2qzDO/0fmrgsh+7YJnssJAtnW0Y8YPyPYtJ3Au9ctgouBjOIeR7uM
-         1ph7sdvjWhGq/Cl17DmK0i5F7iZFKa2yhljn6eqQuOwsaWP8qdHZnAUbi+pBHulxdzXN
-         hOet0IZJBmiWetTdNcxHglYdhlLQ0r9nbvajuyfopj/OcjhLuuBqAfpLxRLK73V+0SFf
-         vLqvi7ZZuKhB2auEG9/ZJh/kaJyEYZI7u3r/BhXGoSZpQTB/DkuO1K7YcXvtxUNTNGw2
-         PgZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUdM9373w2CvAwAa3fG22jmon7q1vleGjstBuHsrlzkxPNaizovufPmtj75uTAFH9d/vzg/kmjPrfV4Yw==@vger.kernel.org, AJvYcCXUKFd2lGiarZhdrs6HVRSD8ESJDWvURtsyrlA52Bz6izdiJCvPScm189CMKGRYpQdERWDu/3Zj7Ma8IA==@vger.kernel.org, AJvYcCXg8CIN8SMGPMP8pXqtIQWhsJQaw0TigYCpaZXGDO3E0C8tIlsdDCImjXBMkG2ibBbEuvbOuoIWZ2iP@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTvozb6ml9v2m8ShoWClQoML31lqfgCbmd2mxl/vo57GIeCD1n
-	HyC/knnO4Bj7+werLebhVpLP/KMB4mjlxJiwqQU7sQ/N61gD1HHwozGj
-X-Gm-Gg: ASbGncseGidjUF778jzxSpLc5PgoFJY/UYjjC4AIAe65kTkXLC9ACDmYNbBAoCNwDxk
-	GP0CeA/jj3wfnQnre+ciMyGjk6/adYspYoODQ3gOR+nEaV7uERy+052fzH5GP7m3zL6faQRPTFS
-	Wq1iXkXheBJtrVeBmDoQLqOdR/4CEwP+k9yMqL6BI+L7fNUbGcqSvbUEJwQIss9wvvpjwbDmWnw
-	i5rITa5RCrGZ6t1mqBzHOPLqD+4TMl7ljMWkXzX2iy8HXeZEEh24FVWHIHEUPSYHarVyRmfHMAQ
-	WRehFPXUNOrhI3JtXHm/Vjddur4aaT8EZWslC/3LeSwiOOdS8Qm9VxQcg6iYBJ9edek6FjhjbuH
-	21+HeErn/+9DOHZLHBAMPfFfvED4/4ChzflJmgex3Ai5vzA==
-X-Google-Smtp-Source: AGHT+IENqGosWcuvpxyVpKc6QXcStLwWv0NFWtOjGkUDy/TTF3j9/YRV/+SwtDwSZAadW6RD9hyMcw==
-X-Received: by 2002:a05:600c:1d07:b0:459:d9a2:e952 with SMTP id 5b1f17b1804b1-45b5179f2f9mr114473495e9.1.1756246725999;
-        Tue, 26 Aug 2025 15:18:45 -0700 (PDT)
-Received: from f (cst-prg-2-200.cust.vodafone.cz. [46.135.2.200])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3cca0dd7014sm306476f8f.13.2025.08.26.15.18.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 15:18:45 -0700 (PDT)
-Date: Wed, 27 Aug 2025 00:18:37 +0200
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	brauner@kernel.org, viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 02/54] fs: add an icount_read helper
-Message-ID: <xvjqgfecmhgb4ngzmjveo7w5iib2qnh2te4x7hmpr7cjtul6mq@utgtnbfuxhco>
-References: <cover.1756222464.git.josef@toxicpanda.com>
- <9bc62a84c6b9d6337781203f60837bd98fbc4a96.1756222464.git.josef@toxicpanda.com>
+        bh=JWrnD7vTgXVERhTWDmZq09cBexK09wZndsoZC040TbQ=;
+        b=W1G8j+C2hzluIy0/vuPKEFWzkTXLQ8HyL1Vej8lsQY6XA3wIWBNMCFdagYofhyxyxR
+         +roctGqKnieinS2bvAt/LJSLumPlOJ8eL7kSW7TnO4LKvqhJmktGVkFYaPIl9wyeFHRe
+         Vao0+fSx9SgGriCrDn3W+jNZC9jb64xA1LyrVt4y9D/xnzaQv0gMdvt4byeoPgo0ujOm
+         Vh2PFL3EcKgn4IxHX6Usj/3dUzOyyQ5MuEXNFnUgnrmtyTYBFiss8bK0Vq/O3Wfeh1nE
+         XNnJ3/23sC8KFNdTR2w08PgEenqQJ7/j9Hlu/9yzs6TWCBWykleU4etblY2hSuxjTsD+
+         0sKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756270629; x=1756875429;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JWrnD7vTgXVERhTWDmZq09cBexK09wZndsoZC040TbQ=;
+        b=sdIlwEWdx8VCq+4prODS2DUFijVqQU7nbTHm080GwvnNxq/zcwgUrla45KMwvj2T8d
+         GTz8C84OjyliJNoHN2IyMYckZgYKZUfhrkdsxP7Q7tZOOtw1MRJPRpijvC4XkdGh9AM1
+         5KoZJLkAe4Bi80x8Tp0gTxEE562tA7qvR3b2R+3Tx2ttbjN3fLWd7VhpLynm+QuB+I76
+         gLYKvqj46AwOz4GLjcYT+KI2cl/dQrk3mtebRyrl2dGfXwpPwWqYUFX9t3V8iMYTaj1T
+         AsmIIgtD9zPZg9SuCupVx4MA1s8mvjRZG8xLJPDCig7Ijc0og0zj5urja6BNIzrO3YL4
+         mXIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUVfuD6Otq0KxmtRhPirPyGg8RuZ1Cdoou2R2kwPPczz9rOxndEviSESUNULQPReh5IUEwuWi2p/Tg@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYcEeGxTcYs7BRwqcRlAlXXNA4XyFZkzoBm5m5AfOIgicx90QQ
+	6NuzlOlysC6d25c1bB4l/9tb4xgMeALZYi/bkXpaVzU1IPuMgLBGvMYEfyCvuPkH7wU=
+X-Gm-Gg: ASbGncsjZZNT63RNWDMvDnMLvEUrUn/ia1gA6I4KUomOT+nnYUiYuy7vg/aFBNX9Xfo
+	FFGlCg5qLCHcAGITh31J2lqkT46Fa83FIJDhRLKJ8RhFZ4pjDvCAUOvW55wynaeQcOODpZQM62D
+	LeUQroC1oxhJMXCmWaaDKr78mBEb1uc0jYpYaReG2m2BIHGpGr4025sixNIGk8QGV0L6dIyqMh9
+	jedqdgEFbn5Pwqyf2HpqgnC0OGt3q/N0dXSIAmGcdAXjOZAsQIAbfKgXl9iOh/YWPg7wr1M0whP
+	qGmjXnocsPxGx8yBdEA2RsdqhUVoa3yFuYHwioPHVhLh7eMin3Tcjgp4nIlsjAQRXlxIxfr/kB0
+	+3NK/+FiyUMoO6Q3P5zNPkjyMtojxA6PVlkuh1VKkhQZnd2R+XXyYJ4bXf4k2NuEnHtE4jLgCLg
+	==
+X-Google-Smtp-Source: AGHT+IHSe1Wv6Qz1TSENPdlqYPQSplPk0LI9/BKyVhDPbtz6nTy4gnj0To/q8iyRtd7nnX8d+6wXdA==
+X-Received: by 2002:a17:903:11c9:b0:235:f143:9b16 with SMTP id d9443c01a7336-2462ef73b86mr242112075ad.41.1756270628533;
+        Tue, 26 Aug 2025 21:57:08 -0700 (PDT)
+Received: from [10.88.210.107] ([61.213.176.56])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2487beb7ed2sm23360825ad.55.2025.08.26.21.57.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Aug 2025 21:57:08 -0700 (PDT)
+Message-ID: <234ea0c7-601c-4262-9381-a26129d6b457@bytedance.com>
+Date: Wed, 27 Aug 2025 12:57:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9bc62a84c6b9d6337781203f60837bd98fbc4a96.1756222464.git.josef@toxicpanda.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [External] Re: [PATCH] jbd2: Increase IO priority of checkpoint.
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu, jack@suse.com, yi.zhang@huawei.com
+References: <20250825125339.1368799-1-sunjunchao@bytedance.com>
+ <877byprefg.fsf@gmail.com>
+From: Julian Sun <sunjunchao@bytedance.com>
+In-Reply-To: <877byprefg.fsf@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 26, 2025 at 11:39:02AM -0400, Josef Bacik wrote:
-> Instead of doing direct access to ->i_count, add a helper to handle
-> this. This will make it easier to convert i_count to a refcount later.
+在 2025/8/27 04:55, Ritesh Harjani (IBM) 写道:
+> Julian Sun <sunjunchao@bytedance.com> writes:
 > 
-> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
-> index 079b868552c2..46bfc543f946 100644
-> --- a/fs/notify/fsnotify.c
-> +++ b/fs/notify/fsnotify.c
-> @@ -66,7 +66,7 @@ static void fsnotify_unmount_inodes(struct super_block *sb)
->  		 * removed all zero refcount inodes, in any case.  Test to
->  		 * be sure.
->  		 */
-> -		if (!atomic_read(&inode->i_count)) {
-> +		if (!icount_read(inode)) {
->  			spin_unlock(&inode->i_lock);
->  			continue;
->  		}
-[snip]
-> +static inline int icount_read(const struct inode *inode)
-> +{
-> +	return atomic_read(&inode->i_count);
-> +}
-> +
->  extern void iget_failed(struct inode *);
->  extern void clear_inode(struct inode *);
->  extern void __destroy_inode(struct inode *);
+>> In commit 6a3afb6ac6df ("jbd2: increase the journal IO's priority"),
+>> the priority of IOs initiated by jbd2 has been raised, exempting them
+>> from WBT throttling.
+>> Checkpoint is also a crucial operation of jbd2. While no serious issues
+>> have been observed so far, it should still be reasonable to exempt
+>> checkpoint from WBT throttling.
+>>
+> 
+> Interesting.. I was wondering whether we were able to observe any
+> throttling for jbd2 log writes or for jbd2 checkpoint?
+> Maybe It would have been nice, if we had some kind of data for this.
 
-The placement issue I mentioned in another e-mail aside, I would
-recommend further error-proofing this.
+Good idea. But AFAICS wbt lacks of such a obversation mechanism now..>
+> BTW - does it make sense for fastcommit path too maybe for non-tail
+> fc write requests? I think it uses ext4_fc_submit_bh().
 
-Above I quoted an example user which treats i_count == 0 as special.
+Yeah, I think so.
+After a rough check of the code, the following code paths may result in 
+high latency or even task hangs:
+   1. fastcommit io is throttled by wbt or other block layer qos policies.
+   2. jbd2_fc_wait_bufs() might wait for a long time while 
+JBD2_FAST_COMMIT_ONGOING is set in journal->flags, and then 
+jbd2_journal_commit_transaction() waits for the 
+JBD2_FAST_COMMIT_ONGOING bit for a long time while holding the write 
+lock of j_state_lock.
+   3. start_this_handle() waits for read lock of j_state_lock which 
+results in high latency or task hang.
 
-While moving this into helpers is definitely a step in the right
-direction, I think having consumer open-code this check is avoidably
-error-prone.
+Hi, Jan, please correct me if I'm missing anything.
+> 
+> -ritesh
+> 
+> 
+>> Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+>> ---
+>>   fs/jbd2/checkpoint.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+>> index 38861ca04899..2d0719bf6d87 100644
+>> --- a/fs/jbd2/checkpoint.c
+>> +++ b/fs/jbd2/checkpoint.c
+>> @@ -131,7 +131,7 @@ __flush_batch(journal_t *journal, int *batch_count)
+>>   
+>>   	blk_start_plug(&plug);
+>>   	for (i = 0; i < *batch_count; i++)
+>> -		write_dirty_buffer(journal->j_chkpt_bhs[i], REQ_SYNC);
+>> +		write_dirty_buffer(journal->j_chkpt_bhs[i], JBD2_JOURNAL_REQ_FLAGS);
+>>   	blk_finish_plug(&plug);
+>>   
+>>   	for (i = 0; i < *batch_count; i++) {
+>> -- 
+>> 2.20.1
 
-Notably, as is there is nothing to indicate whether the consumer expects
-the value to remain stable or is perhaps doing a quick check for other
-reasons.
-
-As such, specific naming aside, I would create 2 variants:
-1. icount_read_unstable() -- the value can change from under you
-arbitrarily. I don't there are any consumers for this sucker atm.
-2. icount_read() -- the caller expects the transition 0<->1 is
-guaranteed to not take place, notably if the value is found to be 0, it
-stay at 0. to that end the caller is expected to hold the inode spinlock
-*and* the fact that the lock is held is asserted on with lockdep.
-
-All that aside, I think open-coding "is the inode unused" with an
-explicit count check is bad form -- a dedicated helper for that would
-also be nice.
-
-My 3 CZK.
+Thanks,
+-- 
+Julian Sun <sunjunchao@bytedance.com>
 
