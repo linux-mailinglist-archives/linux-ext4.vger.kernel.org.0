@@ -1,112 +1,168 @@
-Return-Path: <linux-ext4+bounces-9686-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9687-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5878DB37D55
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 10:15:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA7DFB37E74
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 11:10:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 280FE365B8F
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 08:15:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB0181881A9D
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 09:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35EA32C31D;
-	Wed, 27 Aug 2025 08:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904E535082E;
+	Wed, 27 Aug 2025 09:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SUoo4ji2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1951530CD9F
-	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 08:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F9634F46B
+	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 09:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756282536; cv=none; b=olw0jBzGS6sLQsmvz2dY3eo24NihjZphvDTpL3Z19Jo9bdv5lR7TZdW1SiJsAxGZDkqkhNb5hNLs8J8qJ+vmlDD7fwUakJE59KSVo1Vfn62WjBzRy4HO+TPr8FB660aZ5oMAb7CcInxwabOB8G0XlMgQ5MFMtxHun+PN3cRoUsw=
+	t=1756285711; cv=none; b=SMcZ+tm4Yqij3lkjZD6p2Wig+my+Z7mgHCel3TSfUVlT9DBAUsxj8M0dunj7gnEdFimqDAI4Gz8LWrSUyKuFAyFhxIjHpD8S8xaArF1JTfokyl5XtDSTcavmpcWtIVQRk0o1TkxeGMI4tYRZqa08SkxJgTl+kEmSR4zrSs+s/Ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756282536; c=relaxed/simple;
-	bh=g5EAdOq4nbNrMDycLfDUT5qkoEvJRCbcq/nzuV8pmmo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Wzwt7EzkFVZdbYCffxXURgnhR7hq4WkuKHY9YX/CnALVr3fw6DPVLyusbWBaZWtz2uzHmxQErRNSllu9y5SjaRX+kBCX6i8C3rVaWtARc9yWxpbQzuxYwvKxapXYD/tPa3+UnPJgQXqtN/ZTpcOC9LfEBWLn1FY+mb/ezfp8R2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3e6766c3935so80013345ab.2
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 01:15:34 -0700 (PDT)
+	s=arc-20240116; t=1756285711; c=relaxed/simple;
+	bh=HSoyRRGbqwKrrPWn0b3Gxv3O7atFcfaJ2Ou+bHXSKWI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KuAmJcpOwSvqPMBhJ6Up/Mr8JU/tUXIrGiyy1fckn0tlTo6YaQhyAcBKrYbH35oed85NHSwVwigdENb7uwMvcNAB/TC9qS19McWcWbqELvF3c8hKUakuQhlmGfPGGQpfxNchJ1e++TBS7DLbv8o6hHjZ9dVp66pg8hqPm2D1ZFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SUoo4ji2; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1756285704;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=btmAfnbOXrpj/8xKgw2LcnKjNrejkITdGU2HjYixq9M=;
+	b=SUoo4ji2jfYoumXrBmQEEd8PxC8sRjle6RGYlO7xHU3Qle7cXBzZaduQQZDItjDXcjT7C0
+	24N4JJrpW5Rgk6M6vyoZCVgXfO9PA3Gf/cJ05tLXHdx1y8dwyFSuncZ7/x3Pc/RvlpV6O0
+	ylro3jsXMrWYDnyRFtcsj/eYipRdmK0=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-96-vH1VJya7OpuEN2rfGnYmhQ-1; Wed, 27 Aug 2025 05:08:18 -0400
+X-MC-Unique: vH1VJya7OpuEN2rfGnYmhQ-1
+X-Mimecast-MFC-AGG-ID: vH1VJya7OpuEN2rfGnYmhQ_1756285698
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-70a9f55eb56so127151226d6.2
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 02:08:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756282534; x=1756887334;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mY5T3saMw+ScB7Jfgl0MCq8x+xrVCw4jczqPzVND7KA=;
-        b=Sa1v9vZAbDiMgdFp565B5zrczBYwMTDgDoL13vnHEcrJdj67Zt6jN00sQyWirgafiw
-         6jKjuOOIpOKLbvqJMoQ7Wg149HNHrmgvZYUICz8TmXh8CwH267MkXmd3TEKxtCRQYHz4
-         if6h7FvRa49kLH9XvNUeyCzmLy3uGhmGQec1yHAmWMtVrvSRu2a4yV1poN3TnU1elBhx
-         XdxA26u48Q2RXgGNmC0fiMEUThM6ekdmhR5OjBaf/EwbXseHDtvWaHaoJkvg53p3Dmsl
-         bOe28kYZdhGvndeR0UMNL9LQk1z3qfr5+bo+Dawb7hcJedHfyP18rwcQ+UTdHK45Ep6n
-         NjgA==
-X-Gm-Message-State: AOJu0YzOc4xCyh4OGi+sMCDVDbEWfoWBjUxiHXrw99OECd84bRDAtELT
-	NLbutdBB0O1FfmOuV/ak/Oa01mqDRPu1igBdVSwSlvtn2jbSlSmriFswncs5Cr9kM4YGavYpjMS
-	FrnAYuyOcrQ3PmQWv4NLUxalWN/9rRYMSPJp+gnNxOaz+3Y15EsulS4Vpt/c=
-X-Google-Smtp-Source: AGHT+IFXBQbKGcOq5qKykhKok3Tn6HIV67C1PxK+uXdesng0mbm5G+jKzdDjNhsUTouLcjhgjsLpao5fKS6f/frf9uQ916S9Mei1
+        d=1e100.net; s=20230601; t=1756285698; x=1756890498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=btmAfnbOXrpj/8xKgw2LcnKjNrejkITdGU2HjYixq9M=;
+        b=HxMwqKBjqcIl1eWiRVkvrkbpT8Wmr0nspzzxDrJKGCNmxDOSMriFTDQizFPhgW1ZGJ
+         b+xzhUjxQ86witfnOb2Hw1E7kClQFHl4m/nyECSh1zqQ7Ntenv92Q9TSPbZSFsvKXI3B
+         CmxT9fc8n1xbcSAbmOXk7xzbL/xAwcUYC6dvCozn7pa9XgPNzNmeexsqMsz7IjMJwQiR
+         AaytHLoffOBuWRGkCR9EcIIR6KKRnrXVZpg5v4avRqe9Re165LFlBp0lBDDJZuEW/Z7o
+         YAI12O4jztXDEisWHFeA2hmPbslWsCfSxYq6IGxsvGYYSLkGh2Lh+ZsMdlnDxJ/AIV7A
+         ieGA==
+X-Forwarded-Encrypted: i=1; AJvYcCWW6ev+QNeyy3VSOdF/zqi5QlviWCJh2hjPOejL9jHDTHy7iQ4sUWPGX9bUIuJYeOeJ3DEQk8vjR3lY@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxxxq/FIt19XLzbv+oJDLFHLziVx/jJjM8H75Dk5couNmHREk7f
+	DojgUovnnqu+KXZLZ6UHe4s8zAorkhJtNUfbI4GPjQVyvuRMioFMFilxRt3RVX4u7jgc0RQq8u8
+	KTizB/ueegHzpNAzXQ1iBylhcw02Y/Zm5vlyXRLV0PAs+GpRpI55zSZnkGF4bvwcu2l3wUCM=
+X-Gm-Gg: ASbGncu8WwLERTpS2igTITRicuaRdVW6hHfX4IyvBVPyHvbDtm9yHqKOukucZdn4Laa
+	AgXkFSzDdkalE5lKxwp6Ras303qs7KpzQ8w+QKZBYnQGm/wu01MHurHG+QohcKmBa1H/0jeJwvF
+	jfvsosjhAjUC4lanmeaNAm2BBrlvR9F3qJfnkBwHaBo4rW3ueCTSKVjtCPgOr8Al9MHBWeSqtl1
+	AhaKXp2bW8d32d261mgy1pBaxPlLhANgaMGVyGgQD+YkKq8ZRcNj6++twoIq8RU5VudhzzkLhdu
+	C5zTR/36jBw3WhPYCvUKFWpmVaKMi2d51TAs00cRrE2DlWyG3/xa5/eIne4ojHwgXHgbWTDpPYc
+	rjZDgqRfRlA==
+X-Received: by 2002:a05:6214:f2f:b0:70d:ad2e:ced8 with SMTP id 6a1803df08f44-70dad2ed051mr7559346d6.54.1756285697885;
+        Wed, 27 Aug 2025 02:08:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGKnx0Sy0uoUmTwX2Z3OLZ81WV24S78smOZB6VPkrYeFf13KoSmBl+HyiIGutNgl+jaQogtkw==
+X-Received: by 2002:a05:6214:f2f:b0:70d:ad2e:ced8 with SMTP id 6a1803df08f44-70dad2ed051mr7559106d6.54.1756285697478;
+        Wed, 27 Aug 2025 02:08:17 -0700 (PDT)
+Received: from lbulwahn-thinkpadx1carbongen9.rmtde.csb ([2a02:810d:7e01:ef00:b52:2ad9:f357:f709])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-70da72b3c1csm81764646d6.58.2025.08.27.02.08.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Aug 2025 02:08:16 -0700 (PDT)
+From: Lukas Bulwahn <lbulwahn@redhat.com>
+X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@redhat.com>
+Subject: [PATCH] ext4: remove obsolete EXT3 config options
+Date: Wed, 27 Aug 2025 11:08:08 +0200
+Message-ID: <20250827090808.80287-1-lukas.bulwahn@redhat.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3cc6:b0:3e5:7e02:a06d with SMTP id
- e9e14a558f8ab-3e91f93e0dbmr246066775ab.4.1756282534333; Wed, 27 Aug 2025
- 01:15:34 -0700 (PDT)
-Date: Wed, 27 Aug 2025 01:15:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68aebea6.a70a0220.3cafd4.0014.GAE@google.com>
-Subject: [syzbot] Monthly ext4 report (Aug 2025)
-From: syzbot <syzbot+liste757592c95c323314d50@syzkaller.appspotmail.com>
-To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello ext4 maintainers/developers,
+From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+In June 2015, commit c290ea01abb7 ("fs: Remove ext3 filesystem driver")
+removed the historic ext3 filesystem support as ext3 partitions are fully
+supported with the ext4 filesystem support. To simplify updating the kernel
+build configuration, which had only EXT3 support but not EXT4 support
+enabled, the three config options EXT3_{FS,FS_POSIX_ACL,FS_SECURITY} were
+kept, instead of immediately removing them. The three options just enable
+the corresponding EXT4 counterparts when configs from older kernel versions
+are used to build on later kernel versions. This ensures that the kernels
+from those kernel build configurations would then continue to have EXT4
+enabled for supporting booting from ext3 and ext4 file systems, to avoid
+potential unexpected surprises.
 
-During the period, 4 new issues were detected and 0 were fixed.
-In total, 51 issues are still open and 157 have already been fixed.
+Given that the kernel build configuration has no backwards-compatibility
+guarantee and this transition phase for such build configurations has been
+in place for a decade, we can reasonably expect all such users to have
+transitioned to use the EXT4 config options in their config files at this
+point in time. With that in mind, the three EXT3 config options are
+obsolete by now.
 
-Some of the still happening issues:
+Remove the obsolete EXT3 config options.
 
-Ref  Crashes Repro Title
-<1>  77827   Yes   possible deadlock in dqget
-                   https://syzkaller.appspot.com/bug?extid=6e493c165d26d6fcbf72
-<2>  2920    Yes   KASAN: out-of-bounds Read in ext4_xattr_set_entry
-                   https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
-<3>  2624    Yes   INFO: task hung in sync_inodes_sb (5)
-                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-<4>  2555    Yes   kernel BUG in ext4_do_writepages
-                   https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-<5>  2135    Yes   INFO: task hung in jbd2_journal_commit_transaction (5)
-                   https://syzkaller.appspot.com/bug?extid=3071bdd0a9953bc0d177
-<6>  844     Yes   KMSAN: uninit-value in aes_encrypt (5)
-                   https://syzkaller.appspot.com/bug?extid=aeb14e2539ffb6d21130
-<7>  837     Yes   WARNING in ext4_xattr_inode_lookup_create
-                   https://syzkaller.appspot.com/bug?extid=fe42a669c87e4a980051
-<8>  476     No    KCSAN: data-race in generic_buffers_fsync_noflush / writeback_single_inode (3)
-                   https://syzkaller.appspot.com/bug?extid=35257a2200785ea628f5
-<9>  443     Yes   INFO: task hung in do_get_write_access (3)
-                   https://syzkaller.appspot.com/bug?extid=e7c786ece54bad9d1e43
-<10> 254     Yes   INFO: task hung in do_renameat2 (2)
-                   https://syzkaller.appspot.com/bug?extid=39a12f7473ed8066d2ca
-
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/ext4/Kconfig | 27 ---------------------------
+ 1 file changed, 27 deletions(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+index c9ca41d91a6c..01873c2a34ad 100644
+--- a/fs/ext4/Kconfig
++++ b/fs/ext4/Kconfig
+@@ -1,31 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-# Ext3 configs are here for backward compatibility with old configs which may
+-# have EXT3_FS set but not EXT4_FS set and thus would result in non-bootable
+-# kernels after the removal of ext3 driver.
+-config EXT3_FS
+-	tristate "The Extended 3 (ext3) filesystem"
+-	select EXT4_FS
+-	help
+-	  This config option is here only for backward compatibility. ext3
+-	  filesystem is now handled by the ext4 driver.
+-
+-config EXT3_FS_POSIX_ACL
+-	bool "Ext3 POSIX Access Control Lists"
+-	depends on EXT3_FS
+-	select EXT4_FS_POSIX_ACL
+-	select FS_POSIX_ACL
+-	help
+-	  This config option is here only for backward compatibility. ext3
+-	  filesystem is now handled by the ext4 driver.
+-
+-config EXT3_FS_SECURITY
+-	bool "Ext3 Security Labels"
+-	depends on EXT3_FS
+-	select EXT4_FS_SECURITY
+-	help
+-	  This config option is here only for backward compatibility. ext3
+-	  filesystem is now handled by the ext4 driver.
+-
+ config EXT4_FS
+ 	tristate "The Extended 4 (ext4) filesystem"
+ 	select BUFFER_HEAD
+-- 
+2.50.1
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
 
