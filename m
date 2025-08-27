@@ -1,98 +1,150 @@
-Return-Path: <linux-ext4+bounces-9690-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9691-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DF7AB38104
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 13:26:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E03B381C0
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 13:54:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE31616C6F8
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 11:26:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73ED89814F6
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 11:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A570234F47E;
-	Wed, 27 Aug 2025 11:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B1AA2F3611;
+	Wed, 27 Aug 2025 11:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p3pGY5sK"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="QGwHXKNW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3823B39FD9;
-	Wed, 27 Aug 2025 11:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418661EDA09
+	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 11:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756293994; cv=none; b=KSADDgbJ0n7IXnoVVXULdEbEnORbHyDpJptM2bVsJ3/HMOpQtQQC7rs3/qHy8z/LeJAOtzeUWNwyRx26fPIRme0aAY0xPncyXolQflKRI5XrKfa79/bkH8SOuMhJD/PBYk3y24osFWV/wEch5tBkBiNMRZNiwEjoC5wUimnAOPo=
+	t=1756295641; cv=none; b=ClVWspT5Xy/1zlkuMOsEcnuaTiafUow9xHTzchUft+pYt9W23CurPGXB5y13Ox+lO0ftV0nLv9GsPn+1v0+3RGZFN7/Q292qnkk1ldZqd+jwWpNKNFEk4RCuH7gx71Z3yh5cMPjrAmI1ayIMZd2E7ByVujzffdVL7FSPsSzumUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756293994; c=relaxed/simple;
-	bh=l85OcvGiwhn2VrrWlEAGaZ/H57AIifVg0uM2EwRx45U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Dzv0e64SAod0FOrGxKKh4+4JEO292abYZjXlH0qjMd7ZIhRWoRGT8Lqxnjemyrjha0/s7SJRwukn+NOS4dbblbwOOd6C6bp+KWuNoGIshCi5ZJntU8A4BaTPAWx9vOPjlIpCr59tRAwkW5bxlYR65AjrmnEf/plWHbEmSenx7vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p3pGY5sK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8E2BC4CEEB;
-	Wed, 27 Aug 2025 11:26:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756293993;
-	bh=l85OcvGiwhn2VrrWlEAGaZ/H57AIifVg0uM2EwRx45U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=p3pGY5sKTjhlEhSHA7ObU3sMSrSSeIdTBUg4lTmgR4JYjWfyKNwRnFjDnxXh2uCTe
-	 IKOTYN0ao7UTqH8eKMhWXmS5nmh3RC3SjMeKWVE8PBAjDYJFHlbQ04ozdzgdye32SG
-	 ggH5j/SB23x8iJ82twloZss7kVBDc6nb5yceuTHqexRL5Bq5mNgYDBN7Cny/TWbJZ3
-	 6iQmpyEA4yy7cBt5OF5//wMCZWP3XSkN08UXnXDXRulc/GTbd+ia5NRKRJxBlYDrAZ
-	 EYUm1KydBk4HtD+ts8aUcNtd2Js8EIubzASTrbtowU7pw1FpXRnAdvn9uEcK6OMu9J
-	 jznP9IcEhuLWA==
-From: Christian Brauner <brauner@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com,
-	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	viro@ZenIV.linux.org.uk,
-	amir73il@gmail.com
-Subject: Re: (subset) [PATCH v2 02/54] fs: add an icount_read helper
-Date: Wed, 27 Aug 2025 13:25:49 +0200
-Message-ID: <20250827-liebt-anhalten-390d7eb79013@brauner>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <9bc62a84c6b9d6337781203f60837bd98fbc4a96.1756222464.git.josef@toxicpanda.com>
-References: <9bc62a84c6b9d6337781203f60837bd98fbc4a96.1756222464.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1756295641; c=relaxed/simple;
+	bh=FdSJI+1r1IkYikdA6gHoDLOHiR2shcVeIdhv+YJnghA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G9DFg3SgTU91gQrWFrlr/lQloY59u4tjsplFaG8p2iGY7mr+X8if4R8Dd4H74sE0ct9KO0/KkXlU7EBG2bIV0SAGUCqp7n5IE8VfD9DIVNgF4TCM5SOBeJmP/c2mKxiYaaxOfKs2P3WOIJ2Jhy3MfXqs4iYENRa4AyUXn8uRIc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=QGwHXKNW; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-770593ba164so3073838b3a.3
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 04:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1756295638; x=1756900438; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7eumiJJ/tmspXooWFZi0Ctwyz0M2e1H9u7mUSej35Us=;
+        b=QGwHXKNWX/md9F9AwujHpUd6coVAXVOORJVH6iTaeADGI22jdzdUVQQyme8xCK3jmV
+         9UoSZcg6mss6o6VYbXWBDqw8SMaAI5lC8luPZbd0oEsiqJi6bXKZV6K5PO1w8ERcziY4
+         EwU8rIiRByw0akyl/X63evBnK1ryoJAvDPfIN7lspSUtXAKduKYIxBPrCY0RTuH6k9XM
+         sxfhFa6VYzzakd3YDKhPSEBQ+9Z+FzHvy2BSsTZ16f9DHkWdJzauWB0sWM43CIniYnr9
+         670VzmuPyL3/UT1ig64GHmfH8Qvkl2ItgaR0UjpxDbKyvkAHbT9n2pOmq+iJ784GrR/c
+         FU0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756295638; x=1756900438;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7eumiJJ/tmspXooWFZi0Ctwyz0M2e1H9u7mUSej35Us=;
+        b=PlEz/el0qD0d4OoaGCJbjFbBP+MycjOfqQivaObkgm8S1Poad0v5ZWrbEByy5GnGNO
+         jmQ48gkXT3uiNSJCffDkj5L8v6YzUvELXcjDcCiFiR1jRfcyb07Iyindpp5mxpkpIVfF
+         eXGrVLXgOwE1Oe3Sxuzq8uPVjmueqvrKpm2kwxsi7C2joehMqleT2g9zVWeqQgjHfuuc
+         PQqW8wGesfr73ApZg8WvR+0KVuDslEasM38xwLp4HJR++9RcrZkSVoyCTtukjZl2dRLz
+         X+nMbU32K2w+DrgbTgBDkY3VUVuCR+BDHY47GmB3NF21vQCBRvqewjDMztWVN1ZSE8qD
+         hgZw==
+X-Forwarded-Encrypted: i=1; AJvYcCV/FeaEHVvYd7cYWL9wx9q1Qu4/fuv3TzTut6vrI12j8Lf093LSNftOg6bH+QUJBuHVQHnWW0QuirQX@vger.kernel.org
+X-Gm-Message-State: AOJu0YykGFsRp0C6iuWBLSng1iHgr3JYsKV93bmFoTcpEOol2sIUtwTs
+	5bXBNkyXcMLpNfVdIr23bUIyLSoGJEPP9Wo8JkXVTqPWJed1/ZeQZX0vOyQagwa4HyA=
+X-Gm-Gg: ASbGncsdvp4zyPXKZc185Pma/NvM8nBzFOatvGjStZ9UetrN30iT+OQph1DbJMj0RNK
+	JALDgVssVp9RSQd7Y5HXyaUNvw02DuIc0eVvOgPz+KXZtxfvaiiF3ZpD974EkGDcS6+KZaDnBu4
+	AOxmcKZziPiHWcRWkzxLmIuU7xCGLKKIDxP7gLFtDIORoP0qQ3bvhW+H6M7S77nZ+NYYu99P9K8
+	yfggx3S/yIBwrd21BXTW3ZCVYaId4qAP6hwIHAkp+OgFrQn4esM9PEhRl+XCMITVofOGDZbeuaG
+	+5AcD7DVu+pnpDvXy9eazrc4KKfaOLhS/nkiPh1cOUex8EjhHkCWLivhGHlhyKmcRPHrsrUKJKv
+	XM2gMmqRhDiBvQBhTSYuQWXkeqS+IyGTnKJ9X+98hLJhj3v44L/HCgubaev4u3Iw3akxNscDUgA
+	==
+X-Google-Smtp-Source: AGHT+IFndg9ORd7DdV17/AY12fGMvCqbay2qmGLnfC3MlfdGWk8UTfseAJoRNWSUPwdt97Gzn0J7PQ==
+X-Received: by 2002:a05:6a21:4a8c:b0:234:80f6:2b3a with SMTP id adf61e73a8af0-24340af1148mr27777548637.4.1756295638357;
+        Wed, 27 Aug 2025 04:53:58 -0700 (PDT)
+Received: from [10.88.210.107] ([61.213.176.55])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4c54eafaf4sm585068a12.30.2025.08.27.04.53.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Aug 2025 04:53:57 -0700 (PDT)
+Message-ID: <f6d49614-bb35-450b-a683-d514b2b52f31@bytedance.com>
+Date: Wed, 27 Aug 2025 19:53:52 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1147; i=brauner@kernel.org; h=from:subject:message-id; bh=l85OcvGiwhn2VrrWlEAGaZ/H57AIifVg0uM2EwRx45U=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSse50cavAz2/rwthlPVMwyN+2v5X+/U0XmbVNvWGBEO s/FiZ8YO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYSu4/hn3atpz/7qQ3xSRO6 yyWjrlht0Quc+cFWZsGLizvFAvmnJjP89wuevnZ71qmU0nVFC46Vuy7YtDpUs6A1I9Mk5Eq+SeY BbgA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] jbd2: Increase IO priority of checkpoint.
+To: Jan Kara <jack@suse.cz>
+Cc: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+ linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.com, yi.zhang@huawei.com
+References: <20250825125339.1368799-1-sunjunchao@bytedance.com>
+ <877byprefg.fsf@gmail.com>
+ <418cbbab-4046-494d-bfdf-899c3b66f5fc@bytedance.com>
+ <pnskj4s6nxyyootkrxcz7nl5exqzs7sdw2jfehq2z4xc6yvs67@mx7dymx7vsjk>
+From: Julian Sun <sunjunchao@bytedance.com>
+In-Reply-To: <pnskj4s6nxyyootkrxcz7nl5exqzs7sdw2jfehq2z4xc6yvs67@mx7dymx7vsjk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On Tue, 26 Aug 2025 11:39:02 -0400, Josef Bacik wrote:
-> Instead of doing direct access to ->i_count, add a helper to handle
-> this. This will make it easier to convert i_count to a refcount later.
+在 2025/8/27 19:15, Jan Kara 写道:
+> On Wed 27-08-25 12:57:32, Julian Sun wrote:
+>> 在 2025/8/27 04:55, Ritesh Harjani (IBM) 写道:
+>>> Julian Sun <sunjunchao@bytedance.com> writes:
+>>>
+>>>> In commit 6a3afb6ac6df ("jbd2: increase the journal IO's priority"),
+>>>> the priority of IOs initiated by jbd2 has been raised, exempting them
+>>>> from WBT throttling.
+>>>> Checkpoint is also a crucial operation of jbd2. While no serious issues
+>>>> have been observed so far, it should still be reasonable to exempt
+>>>> checkpoint from WBT throttling.
+>>>>
+>>>
+>>> Interesting.. I was wondering whether we were able to observe any
+>>> throttling for jbd2 log writes or for jbd2 checkpoint?
+>>> Maybe It would have been nice, if we had some kind of data for this.
+>>
+>> Good idea. But AFAICS wbt lacks of such a obversation mechanism now..>
 > 
+> Well, I guess Ritesh meant some test case which is reproducing the
+> situation where jbd2 log writes get stalled.
+
+Ah, thanks for the clarification. It may be a little bit difficult to 
+reproduce it manually, I’ll give it a shot but I’m not sure if I can do 
+it..>
+>>> BTW - does it make sense for fastcommit path too maybe for non-tail
+>>> fc write requests? I think it uses ext4_fc_submit_bh().
+>>
+>> Yeah, I think so.
+>> After a rough check of the code, the following code paths may result in high
+>> latency or even task hangs:
+>>    1. fastcommit io is throttled by wbt or other block layer qos policies.
+>>    2. jbd2_fc_wait_bufs() might wait for a long time while
+>> JBD2_FAST_COMMIT_ONGOING is set in journal->flags, and then
+>> jbd2_journal_commit_transaction() waits for the JBD2_FAST_COMMIT_ONGOING bit
+>> for a long time while holding the write lock of j_state_lock.
+>>    3. start_this_handle() waits for read lock of j_state_lock which results
+>> in high latency or task hang.
+>>
+>> Hi, Jan, please correct me if I'm missing anything.
 > 
+> I think you're correct. In fact ext4_fc_commit() does modify current
+> process' io priority to match that of jbd2 thread so it would be logical
+> to match IO submission flags as well.
 
-I moved icount_read() right after mark_inode_dirty_sync() as suggested somewhere in the thread.
+Thanks, I will send a patch to improve here.>
+> 								Honza
 
----
 
-Applied to the vfs-6.18.inode.refcount.preliminaries branch of the vfs/vfs.git tree.
-Patches in the vfs-6.18.inode.refcount.preliminaries branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.18.inode.refcount.preliminaries
-
-[02/54] fs: add an icount_read helper
-        https://git.kernel.org/vfs/vfs/c/2927b1487093
+-- 
+Julian Sun <sunjunchao@bytedance.com>
 
