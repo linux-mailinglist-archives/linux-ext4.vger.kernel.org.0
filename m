@@ -1,93 +1,95 @@
-Return-Path: <linux-ext4+bounces-9721-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9722-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5A7CB38B9F
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 23:47:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF67B38BE9
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 00:01:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 911FD16C6E7
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 21:47:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF89420416D
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 22:01:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C3D30DD2D;
-	Wed, 27 Aug 2025 21:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE11E28643A;
+	Wed, 27 Aug 2025 22:01:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="oTmL/8S2"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="U/fGG2Uw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9A4305E19
-	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 21:47:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF2E2080C8
+	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 22:01:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756331224; cv=none; b=qeR74WN5Ydai58al0Qh4Sw3tBbmA1NWmlVAApprsYXKJAxLd9LmGEjdZzq0npA8rf02ZFBYQ13eytk9hvL632LvpRGMX4h/dU2NSmjyDSUqAnbOntVaeqkkW132cYBU3wTI6ZS260wqP04S7mpHLbH2VlP0fmI9BNkkG1fQ2eI4=
+	t=1756332105; cv=none; b=NWfW4gguS9IqZ/QHPcRBW74l77OIls/H1+inLRXwnSP95AaEQkvry3pzP52DxEKf/aI1fAdW3/JIqMRwvFo80bywp29+5yNOsUSGgkUBZhA9D0BDGhM9pP1DN7kCTJVcVM4SnBalSsePIHiqMAHnLYJdwJfwIqOPnkmf7soDrWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756331224; c=relaxed/simple;
-	bh=p7brPDy2olHFfAC7S4q3Vp+PKM6Nm9aH82XdvCJ8awI=;
+	s=arc-20240116; t=1756332105; c=relaxed/simple;
+	bh=gUSbciWGHJSH/JpDm7HHHqG5lHwQEqGuzdo99M+555I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vBvnzihatQJJ1yYk3ixRbCQj9WZHibGQ20RnmqLRuPB71YMljjk42uwCLCX8hZCSYaQ6jK/EmO89rIrZmA7U2D9ic7X2mhnfCdBsFI+x2/zDgwR6K8s0amJiVdhtap5HO/RhA3QUESQCId+RW4+FS514KFwIZ07MaJTldUi9uiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=oTmL/8S2; arc=none smtp.client-ip=209.85.210.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=KevPHLBTDuvAAk3Hur8G6P5meLy2+1QwZ4MHngICFbLk7bwq1QH5AjzJk8MRaZlMAxcQ4h/F/bZS3R4ye9hB2eQ2/yu548QodcR4hpbJ/6mHq5FO1YWwPlKv3QipbmNmwjTSGWfofWpIxhnTHBF/HoGPHdsfxvVDkUt1Ft9jiXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=U/fGG2Uw; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7720c9e2900so445930b3a.0
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 14:47:01 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2449978aceaso2485735ad.2
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 15:01:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1756331221; x=1756936021; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1756332103; x=1756936903; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1brA+k4hD/Yqcu3E+OzWK4Zw3vVchK7SPI3ZmUa+ClY=;
-        b=oTmL/8S2U0QYx+4QQGCxzpTYxxbY2M847yIFjACe3uxKSxUtpm9qlqz7Ets000hEGT
-         eIlJIh/5HkEN4W8yhMs7iQIcBBI8FCGR6qgATvk8QiXPmAACVNI2FuqOYKsPDLtIC01u
-         W5n9bD10pqz1hqvN39di9RF5l7AwgDEZevx+3g0lZpbypK6Mg9oIF2eJWXPanYxofjOF
-         sfFkKPdVPpnOU8VyGa/MjGDpJYfJSq4ccjwXjn9iBdSNAR9wIaImSVISg9EHkTjc4TcF
-         aqb2Aygkz2vYxwm5obVtQ60Ayx/IneMQkZDZKAS6Fg/q94wLCXZAqV1rvfPcFRjB/hBz
-         ADRw==
+        bh=aRXemL1WOR90JqvB5azJ40zCxySpJVvRo7r3rLc3Ivg=;
+        b=U/fGG2UwBpYBMYO3JRPSzPxBQQLKLr0DdLM7TTnaccbvJWfi7CQx2CN4svzQUN6pSz
+         PAt7Y3wNatSwMR9gIUGTV+Yj9A5hPkOfb02yfajOYXdQDKs7YuEbSBcSHUDFvlJe3obg
+         YMb/exqXhqfkcOaZ+/nj4dqNeVAnpZdArm1ohnNy63uEt35s8yVVhRpYFQjobY/CvRa1
+         mYc1IsscPeojFxMjdD0HqtwoOBt+/BGg3176fiMm/krAuuvrxCtcD4Y1fMCcjGOk073W
+         6ymLH3YXMxuWTY6ZS7vI5GxYKiiMKAEwTQ5krrCGvZUlX4syMK1VkitNEEB1xC+vWzOA
+         +4/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756331221; x=1756936021;
+        d=1e100.net; s=20230601; t=1756332103; x=1756936903;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1brA+k4hD/Yqcu3E+OzWK4Zw3vVchK7SPI3ZmUa+ClY=;
-        b=h2aJHg0IESsqz/5mvTGqiZRZcvg6Nprr48xgSJdqDPOXmBd2OxM7Kuxsbxhklj11hp
-         cLLI/aYGcRaP3jmx6eZwvs3Sjq7ZSr0pnYVogAqVfVaPYd8g4Znt+j65B3L8MiTuWfK6
-         MRkNtCY0XMJ4FaaKMroviI75c9YV81NZD1QJf91MJMcapuIn2AoHHtbPb1+TZ36Ez2R1
-         XKDtrlDR72HLjjPkQ7joJ5L9BPKylOkGn82YJJWutacRhBaB13GqN9M0kp0V1S8C+Ftm
-         v1xpYmlL+phgdQEM7esUEX/qvM/NZYLKOsjSeB+XlByLGlTG5bP/mPhxy9d8L6zsu+7/
-         OF0g==
-X-Forwarded-Encrypted: i=1; AJvYcCU9OL1/IrttpriLGZFBgKD7XQxZk8Nq8f6eyu5sVcrBtKcfX4P+d9zSOc/X7UUzb56oGuR7nSrGeetc@vger.kernel.org
-X-Gm-Message-State: AOJu0YwKtHvF9Wy4qo94ZyeciFz8hvT37Lzp8oLAJDU1XqCs2gftL5cE
-	0z1yDBN80ZwYnVfu02CLRd57I1QGC+PYiNrlr7ZjYdaig6SwoS7VOiLs5q2lzGPZ8lw=
-X-Gm-Gg: ASbGnctQTeGZ/adv26Du/tyiFTaYUd0N8zRVJJ62HueDNsvWAb2W7GAv3rgJNzlIv5j
-	zj/EHU4XZb86zU2+ivBxqt7Q29cyNPhS6KGSZefwRucYMtgRKkvMILefRafDrMSCSJJyztO5GB0
-	jRx1LLDFcVcXRBeYbJNngWV8F7kCCjjrhigpIJqfkP2tWwk5c8+FL4q0A8xAmB7EY9MxWCHidnw
-	mxIWYZmra7cMucE1IBxadhOHuWMx1KQsFmSlJTQ8ncs04BJ24hsxANGZSCxvTb5bKgYVSXch3PN
-	jpE0SZWNYzVY16Cuhhw8VrdCfULEp+xU8HsrfUpVUdCx2ex2YEmQFyMuTB7jZi6hfSSybCroMnI
-	rBFvrN9YSLSXDsiXHZmftkaNiSOih586y7CZInThx6aP3o6XmoBgdAgSvbZe+5ioAsPAQEW+lhi
-	TjqbI4567H
-X-Google-Smtp-Source: AGHT+IGwubMhrkeveyZScO9SyGs6JfX0VeRusyOBY+29aVn++TMuUkFVK5pCfTn+imoo/NPkWa8qcg==
-X-Received: by 2002:a05:6a00:14ca:b0:771:ea86:3f73 with SMTP id d2e1a72fcca58-771ea864584mr15877772b3a.32.1756331221445;
-        Wed, 27 Aug 2025 14:47:01 -0700 (PDT)
+        bh=aRXemL1WOR90JqvB5azJ40zCxySpJVvRo7r3rLc3Ivg=;
+        b=CT046ObcL1I9HOQYe1geRv84cXVz5gr6EXaujualnrUrihioMMy5NWzfWH0s/RTrOy
+         UCWQYuM7yfwhwJ2c7Aly34ip6iJ2hIVbh7k+J+PF+SSmQOHZJxboD/YXGbwtpb3h7Yz9
+         TNAcqCzIHt+zFBX3QhXZDyXj6nzqNF4rCmS5iEdUDpgvtCUvupvAfBtjd8Smco3NIwBn
+         nyTEKaivohojGJgvkGtBCf/c713dztpPZ8dEfGqZEAUxkl9iMjWeveq0KJpP2J1PajDC
+         1rcFYdZ0ubOwrl5KagJrVlGbXMNNApsEv5k8QOj+cS1HZ6dgpY0BxxxavdJPY2XR2xCx
+         kVUw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2hJM+puI67NwFH6s0p+FPNCUe4l/cLnHKxle1izkae/T0cskdojVuxSBGqW8YLos6X7B3cUjKjSfJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIFkBOC8GgDlQfWaTsibiEeDfGQiRn6eUrDd89xJfxsGFvtE6G
+	mR65bZYFHqbAqnZGvrvD0vLvSVjw7+sAQpKkQAAu+u2RLQVNDvrhgPVQAqEkYLcas8U=
+X-Gm-Gg: ASbGncsiLNWoa3ODSpgCtsAu0NfNWn1T9uPvVVEsrxeBSbAWnfWS95j85I9o1voQ82B
+	e08d29iucQliv2lBNcMR1mt1vQcnrxgKql1O53zzYCGfRZZAIs8jiCZ31Uss5PIq2s7wC9WMEmB
+	pbnHtWjZsEYYKc+Vw64ZSmddqSB/HmiG5ybVlkXIIaMt+8zkhjV5Q3+LRZY9DrDgoA4ma8hWx7s
+	UEDqfcG6JRDHHIXz54V6u76eZL4w0mmP0jT5MMdVnM21Cyo2Ztbaz7uXCAovztIdfNHBamKueDQ
+	cIhXuoNP1LCT0DB6S0F1E9MyjQiQPxulq3+2fwrhQT9rf+DFWfRmopv5pb7X//h+YeGrjyUkqKT
+	yPUK3p3Q9ImnfqBdbDR+oHZP6IbE51gfQjKs0CboJoaFScwKf8XkpVJt9yqccr/ox7Q3ifo5q5K
+	8oMlaukOrQ
+X-Google-Smtp-Source: AGHT+IEYVXzII1GgnlGLrms99adMC1KeEXXIyK7Szr2EAW6KvmLtHFK4fjFkfyUzwGUkKHyjR/4qEA==
+X-Received: by 2002:a17:902:fd45:b0:244:214f:13a0 with SMTP id d9443c01a7336-2462efae428mr176577485ad.52.1756332103113;
+        Wed, 27 Aug 2025 15:01:43 -0700 (PDT)
 Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-771f34ecccesm6566839b3a.61.2025.08.27.14.47.00
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-248c34589e5sm11007985ad.9.2025.08.27.15.01.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Aug 2025 14:47:00 -0700 (PDT)
+        Wed, 27 Aug 2025 15:01:42 -0700 (PDT)
 Received: from dave by dread.disaster.area with local (Exim 4.98.2)
 	(envelope-from <david@fromorbit.com>)
-	id 1urNyr-0000000BvQF-035E;
-	Thu, 28 Aug 2025 07:46:57 +1000
-Date: Thu, 28 Aug 2025 07:46:56 +1000
+	id 1urOD5-0000000BvoF-2OcE;
+	Thu, 28 Aug 2025 08:01:39 +1000
+Date: Thu, 28 Aug 2025 08:01:39 +1000
 From: Dave Chinner <david@fromorbit.com>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, brauner@kernel.org,
+To: Christian Brauner <brauner@kernel.org>
+Cc: Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
 	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 16/54] fs: delete the inode from the LRU list on lookup
-Message-ID: <aK980KTSlSViOWXW@dread.disaster.area>
+Subject: Re: [PATCH v2 17/54] fs: remove the inode from the LRU list on
+ unlink/rmdir
+Message-ID: <aK-AQ6Xzkmz7zQ6X@dread.disaster.area>
 References: <cover.1756222464.git.josef@toxicpanda.com>
- <646d132baae6e5633064645e677dada101681850.1756222465.git.josef@toxicpanda.com>
+ <3552943716349efa4ff107bb590ac6b980183735.1756222465.git.josef@toxicpanda.com>
+ <20250827-bratkartoffeln-weltschmerz-fc60227f43e7@brauner>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -96,47 +98,45 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <646d132baae6e5633064645e677dada101681850.1756222465.git.josef@toxicpanda.com>
+In-Reply-To: <20250827-bratkartoffeln-weltschmerz-fc60227f43e7@brauner>
 
-On Tue, Aug 26, 2025 at 11:39:16AM -0400, Josef Bacik wrote:
-> When we move to holding a full reference on the inode when it is on an
-> LRU list we need to have a mechanism to re-run the LRU add logic. The
-> use case for this is btrfs's snapshot delete, we will lookup all the
-> inodes and try to drop them, but if they're on the LRU we will not call
-> ->drop_inode() because their refcount will be elevated, so we won't know
-> that we need to drop the inode.
+On Wed, Aug 27, 2025 at 02:32:49PM +0200, Christian Brauner wrote:
+> On Tue, Aug 26, 2025 at 11:39:17AM -0400, Josef Bacik wrote:
+> > We can end up with an inode on the LRU list or the cached list, then at
+> > some point in the future go to unlink that inode and then still have an
+> > elevated i_count reference for that inode because it is on one of these
+> > lists.
+> > 
+> > The more common case is the cached list. We open a file, write to it,
+> > truncate some of it which triggers the inode_add_lru code in the
+> > pagecache, adding it to the cached LRU.  Then we unlink this inode, and
+> > it exists until writeback or reclaim kicks in and removes the inode.
+> > 
+> > To handle this case, delete the inode from the LRU list when it is
+> > unlinked, so we have the best case scenario for immediately freeing the
+> > inode.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
 > 
-> Fix this by simply removing the inode from it's respective LRU list when
-> we grab a reference to it in a way that we have active users.  This will
-> ensure that the logic to add the inode to the LRU or drop the inode will
-> be run on the final iput from the user.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> I'm not too fond of this particular change I think it's really misplaced
+> and the correct place is indeed drop_nlink() and clear_nlink().
 
-Have you benchmarked this for scalability?
+I don't really like putting it in drop_nlink because that then puts
+the inode LRU in the middle of filesystem transactions when lots of
+different filesystem locks are held.
 
-The whole point of lazy LRU removal was to remove LRU lock
-contention from the hot lookup path. I suspect that putting the LRU
-locks back inside the lookup path is going to cause performance
-regressions...
+IF the LRU operations are in the VFS, then we know exactly what
+locks are held when it is performed (current behaviour). However,
+when done from the filesystem transaction context running
+drop_nlink, we'll have different sets of locks and/or execution
+contexts held for each different fs type.
 
-FWIW, why do we even need the inode LRU anymore?
+> I'm pretty sure that the number of callers that hold i_lock around
+> drop_nlink() and clear_nlink() is relatively small.
 
-We certainly don't need it anymore to keep the working set in memory
-because that's what the dentry cache LRU does (i.e. by pinning a
-reference to the inode whilst the dentry is active).
-
-And with the introduction of the cached inode list, we don't need
-the inode LRU to track  unreferenced dirty inodes around whilst
-they hang out on writeback lists. The inodes on the writeback lists
-are now referenced and tracked on the cached inode list, so they
-don't need special hooks in the mm/ code to handle the special
-transition from "unreferenced writeback" to "unreferenced LRU"
-anymore, they can just be dropped from the cached inode list....
-
-So rather than jumping through hoops to maintain an LRU we likely
-don't actually need and is likely to re-introduce old scalability
-issues, why not remove it completely?
+I think the calling context problem is wider than the obvious issue
+with i_lock....
 
 -Dave.
 -- 
