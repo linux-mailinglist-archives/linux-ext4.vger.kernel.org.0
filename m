@@ -1,210 +1,203 @@
-Return-Path: <linux-ext4+bounces-9695-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9696-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C8C6B38324
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 14:59:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0132AB3836B
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 15:11:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5532646254B
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 12:59:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5B2B7BB40B
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 13:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43163350D4F;
-	Wed, 27 Aug 2025 12:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BltaOS9D"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8914352072;
+	Wed, 27 Aug 2025 13:07:35 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EF41C8630;
-	Wed, 27 Aug 2025 12:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF98027F015
+	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 13:07:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756299550; cv=none; b=t8lfuFt8BuDwoAKXUKlw30taFvLBlDephWJMMt7ONM/h7gW2IhtWsNnK+PHaceFlR6lqYegcGEZb9mXhekhObQ+dbq21815ZF7n59aXp5mMjZGjErKThHeADosezl+KjaRK4LJgR/oiOfMsXYDUJFKhybyabSLxj3WzUFaE0/SE=
+	t=1756300055; cv=none; b=IgaCcrV3AJcvc5pQ3mMFeteY9zDxtWc0q2zYZAMoMG2EkEiaLxP5awS0BQvsRgePVgq1qYpoMBA4gPfVdgqOdKaT1LRYoz1Idw5jtJ3QwTxD/YYQiDHbxL23BU+4Klx8VhatDsFs7t7vgCjOfOyo8AHZ6W3eMOXi52LLTIr10S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756299550; c=relaxed/simple;
-	bh=k5b6V1BPHmXeEFWxbNEHIso8tp9rJVsuQrImKyzdEO8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jBpUK9chviB60i09Ml+InLI64KXyy27hNf9ofc+elN4pPedmlBA5IMAjzBvNxwxHOcBAbTrDa+diRcXveeIjEL7NyHR8OBU4isEw5Jy0H1BfyFdirD4QYFANTA2lgYZDrDq5N6zzZEZvrBzIQtMUodBhIiIMjs4xibziFj3gMbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BltaOS9D; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-45a1b0c52f3so41892695e9.3;
-        Wed, 27 Aug 2025 05:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756299547; x=1756904347; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+d4XmKGdzACc03x2MkMG9S1v87UXpY82hMtgHKV5SzQ=;
-        b=BltaOS9D+d9Pg9C5P8ZdoL7RrGoRiaXkKfRnnOab3kdMVggXmKZVlRTERzQzVFz7PD
-         A+c9i0Ui0N1OPiDI//kpv/EGdaZIn6sjhgA2pHDhm5R5bSNwzwLe+vIjq4tx528Gz9j6
-         nn5tidp8ZjdG6CblXQuDmVBm3MG+TvKTYLBzoXQDim65x6PSEYLm/aivvs8tx9jHUX9b
-         pjYuvAIssTbuKZfaschH9H4NmrXncA9T6xKe9Er74/kaitaZZFLV9x0kbPZAgUzXKlzF
-         oFFY5CqXGPxaYy8EyBmBPawpLEf4UkzLp7t1V+r/lluNs7u2lMBKRHKg4j7WrkuJahDW
-         twaA==
+	s=arc-20240116; t=1756300055; c=relaxed/simple;
+	bh=uhZEyNjpgt2nKhG1FnpuwlfVRtd/DA2+sMMguQJJMic=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=J7CIURoGrlxDzsHmQn0dG7lLOZoGjD+RdK6mCRyYlISSwetksaGwFweD8ajeJ2VfBPG29K1LuDqFjpOcFRn+ihSVZIWxQrSbLox0yTf/bAYqo6Z1Z7+n/3nWs4Te2sBXWwli4M0L5jgdvMXiaPxXF94YSIfDyJ7MqiPpjrN2Itg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3eea931c037so63436815ab.0
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 06:07:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756299547; x=1756904347;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+d4XmKGdzACc03x2MkMG9S1v87UXpY82hMtgHKV5SzQ=;
-        b=GWk2Z2o7YtiMFNwI4qc9YG/TtoTgVHqXI0AohXp/fcPHKrXZHO0vv52wFNjslnbBoL
-         UxtRa++05ij/OAzR8fmWgQ3LMbo20d3U98zYrJFejB3em4clo25SGmj2CrEjV66wjBZ1
-         BGGKYMA+1AYU7qDb+3cyWTmSP75RjGc04P2LN+Lih1iz+vd8/p0vMVQPS1pOIn/EdmgG
-         FDfVR2RSB/NgJbHSp9zTVaYJ7v5B+Is2jM0XMTsKLaWal5gPyHi/M5kS0fl2Gsr0jTX+
-         VplnVUvHPcoiHSRJHqgxKJenD05fi0jJ1l81P/SlTwTtz3JSQ+yJhVdQfzLdlUTH0JDr
-         n0Xg==
-X-Forwarded-Encrypted: i=1; AJvYcCUThOABygJKbnMsC5JOfu3gtghFoYZLnVKS+oVPUUzK/8FaZykmFTETKOPhdNKp6U+ab4xhBL6gT8Pb8A==@vger.kernel.org, AJvYcCVvb5ddJaesr2NamTDknR84W0JOWVeUoSqSrmOtvY+/YiBaqDJAKTF2nUDpzQKOmAMjtU4RPGwl/SZdIg==@vger.kernel.org, AJvYcCXoJE2ipu+E6Gd32HmR3EqSxmR6XixWtyxtUgIOhOF9jfWptTR/ZeOIf5Abep0SqY9gt5OgiqYyaW7v@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMnFjjpbmGMp6QHL1OGG7OlFrgzY3gAu2v2rvfPL9aiL/Z7G08
-	VeG6FdTOI7/6L4hd11ZL0Y0kbD7Hy2FwTCKsJSJ5Kj2rOjo9Q0cqOtV0
-X-Gm-Gg: ASbGncs1aAcUPohEYm3vjkUjGBj5c/qJeiMY5QOSCj4hUmj/L+TZa2F7UIG9rqc95cO
-	Yd5iRwV69B7SyQdmRgm6aKRM48IBPlRsCA3/Fr69lZW5aui1yHw9V884vwH8yhfm1CzQ2P28G3u
-	ARNQYcL/4m8EFU4bZGBUmSubkOOr+FLWb8strk/uPaTMcBFVWBOrXHZPrRG3Md7nXGNEwQNfKlM
-	ML+U5yrsygW9xovvDczkQNa/MvHcRsnCmz63MLRQeqX/jpfjZK+tVTUxMy/G97wu6MznWkp2YUK
-	mdSJC/H4ZmWVTzYJRFsZ3RcFOSJHynVMWSjSVi7dxgjccQweCrUKa6+xDweGalwthIu6w636au6
-	qOAR2ZSh2Joctnf9fPbstf7os2V6MsgOgRlR7ps2HFEZfrA==
-X-Google-Smtp-Source: AGHT+IEZc1bl4fzlTsX7fA5rUjaJL1ElOfoivCagPCZ4PWKyiF0ZCrPucztQdOZywJa3UqFe2dMIpQ==
-X-Received: by 2002:a5d:64cf:0:b0:3a4:f663:acb9 with SMTP id ffacd0b85a97d-3c5daa27b91mr11545441f8f.9.1756299547007;
-        Wed, 27 Aug 2025 05:59:07 -0700 (PDT)
-Received: from f (cst-prg-2-200.cust.vodafone.cz. [46.135.2.200])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b73c52735sm10522755e9.22.2025.08.27.05.59.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Aug 2025 05:59:06 -0700 (PDT)
-Date: Wed, 27 Aug 2025 14:58:51 +0200
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	brauner@kernel.org, viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 03/54] fs: rework iput logic
-Message-ID: <rrgn345nemz5xeatbrsggnybqech74ogub47d6au45mrmgch4d@jqzorhulkvre>
-References: <cover.1756222464.git.josef@toxicpanda.com>
- <be208b89bdb650202e712ce2bcfc407ac7044c7a.1756222464.git.josef@toxicpanda.com>
+        d=1e100.net; s=20230601; t=1756300052; x=1756904852;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VqAAZ2PNKYljta7EnxR4rGO0uElyvx3egJwvBQhHbdA=;
+        b=lltPi/c/mOBanXoPIZ+sQ/RwdsJrmcFfniEnCW0J6WO6KiznLbyUnzjD6T/HyduRk9
+         dD6bi5YWnp8owg7fJLtzDnByvwQgc/ZVMyatfQNaelLMX2tjwl5ESELKobMmL0eOMe2z
+         vrsO9lq5sRBUBzkva8pM37BeF5d6dXxRAL5UPKwP8LvrD4HnrFXcE9eMLEbvUBLKwUtm
+         wJA1AxJSRt6FGmZcqtd5J2LcZhfCMuUBkeuds5W8KkimXDYsIWZQwqMIJ7KjsKiKPVag
+         c2NSFutQu6wmJj1Qo2VJjzEXUk5s8gog5I5PdhUdDEKSRSKZ2TU6xkFpzUULzc44IWK9
+         Y36w==
+X-Forwarded-Encrypted: i=1; AJvYcCVzx/EEDucegUuO3ZVbiJJowcpABKXZfW/A9nST4lr9J/L11BxCSBVahY1rtHtZ72PpITv0AFRe/bNB@vger.kernel.org
+X-Gm-Message-State: AOJu0YzhXwnV+y/rGPScLvdnd5E8/Qs+MgRTphHI8HJzec6MoBrE7z7P
+	HCLtmGuxJKYxPixt+bgLiCMtvG9QNYYoJMw28gmH72fdHVgdGgLKtKQ8uVCUrHaIKw2sJXJw45w
+	lW30MJLGweQqt+K6xcLezozHXbsPWQ/xTguwuY5qBiGnmXfHY+yTyeiBqEN8=
+X-Google-Smtp-Source: AGHT+IEqs+daARbh9yMs35OsmplpX2B5BTuI9FVSQSDfBuhtSnWgP2j53rMkalQByvr/nOab0ANgDGAkdG0Vxgcbi+gNsSs4qV5l
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <be208b89bdb650202e712ce2bcfc407ac7044c7a.1756222464.git.josef@toxicpanda.com>
+X-Received: by 2002:a05:6e02:18cb:b0:3eb:2b11:441d with SMTP id
+ e9e14a558f8ab-3eb2b1146bdmr213821075ab.15.1756300051987; Wed, 27 Aug 2025
+ 06:07:31 -0700 (PDT)
+Date: Wed, 27 Aug 2025 06:07:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68af0313.a70a0220.3cafd4.0020.GAE@google.com>
+Subject: [syzbot] [block?] [ext4?] [btrfs?] INFO: rcu detected stall in
+ sys_mount (8)
+From: syzbot <syzbot+4507914ec56d21bb39ed@syzkaller.appspotmail.com>
+To: brauner@kernel.org, clm@fb.com, dsterba@suse.com, jack@suse.cz, 
+	josef@toxicpanda.com, linux-block@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Aug 26, 2025 at 11:39:03AM -0400, Josef Bacik wrote:
-> Currently, if we are the last iput, and we have the I_DIRTY_TIME bit
-> set, we will grab a reference on the inode again and then mark it dirty
-> and then redo the put.  This is to make sure we delay the time update
-> for as long as possible.
-> 
-> We can rework this logic to simply dec i_count if it is not 1, and if it
-> is do the time update while still holding the i_count reference.
-> 
-> Then we can replace the atomic_dec_and_lock with locking the ->i_lock
-> and doing atomic_dec_and_test, since we did the atomic_add_unless above.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/inode.c | 23 ++++++++++++++---------
->  1 file changed, 14 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index a3673e1ed157..13e80b434323 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -1911,16 +1911,21 @@ void iput(struct inode *inode)
->  	if (!inode)
->  		return;
->  	BUG_ON(inode->i_state & I_CLEAR);
-> -retry:
-> -	if (atomic_dec_and_lock(&inode->i_count, &inode->i_lock)) {
-> -		if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
-> -			atomic_inc(&inode->i_count);
-> -			spin_unlock(&inode->i_lock);
-> -			trace_writeback_lazytime_iput(inode);
-> -			mark_inode_dirty_sync(inode);
-> -			goto retry;
-> -		}
-> +
-> +	if (atomic_add_unless(&inode->i_count, -1, 1))
-> +		return;
-> +
-> +	if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
-> +		trace_writeback_lazytime_iput(inode);
-> +		mark_inode_dirty_sync(inode);
-> +	}
-> +
-> +	spin_lock(&inode->i_lock);
-> +	if (atomic_dec_and_test(&inode->i_count)) {
-> +		/* iput_final() drops i_lock */
->  		iput_final(inode);
-> +	} else {
-> +		spin_unlock(&inode->i_lock);
->  	}
->  }
->  EXPORT_SYMBOL(iput);
-> -- 
-> 2.49.0
-> 
+Hello,
 
-This changes semantics though.
+syzbot found the following issue on:
 
-In the stock kernel the I_DIRTY_TIME business is guaranteed to be sorted
-out before the call to iput_final().
+HEAD commit:    8f5ae30d69d7 Linux 6.17-rc1
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a85ef0580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5ac3d8b8abfcb
+dashboard link: https://syzkaller.appspot.com/bug?extid=4507914ec56d21bb39ed
+compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1455a462580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12229462580000
 
-In principle the flag may reappear after mark_inode_dirty_sync() returns
-and before the retried atomic_dec_and_lock succeeds, in which case it
-will get cleared again.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/18a2e4bd0c4a/disk-8f5ae30d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3b5395881b25/vmlinux-8f5ae30d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e875f4e3b7ff/Image-8f5ae30d.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/47be3ab62135/mount_6.gz
 
-With your change the flag is only handled once and should it reappear
-before you take the ->i_lock, it will stay there.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4507914ec56d21bb39ed@syzkaller.appspotmail.com
 
-I agree the stock handling is pretty crap though.
+watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [syz.0.563:8489]
+Modules linked in:
+irq event stamp: 251614
+hardirqs last  enabled at (251613): [<ffff80008b028df8>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
+hardirqs last  enabled at (251613): [<ffff80008b028df8>] _raw_spin_unlock_irqrestore+0x38/0x98 kernel/locking/spinlock.c:194
+hardirqs last disabled at (251614): [<ffff80008b001cbc>] __el1_irq arch/arm64/kernel/entry-common.c:650 [inline]
+hardirqs last disabled at (251614): [<ffff80008b001cbc>] el1_interrupt+0x24/0x54 arch/arm64/kernel/entry-common.c:668
+softirqs last  enabled at (251590): [<ffff8000803d88a0>] softirq_handle_end kernel/softirq.c:425 [inline]
+softirqs last  enabled at (251590): [<ffff8000803d88a0>] handle_softirqs+0xaf8/0xc88 kernel/softirq.c:607
+softirqs last disabled at (251581): [<ffff800080022028>] __do_softirq+0x14/0x20 kernel/softirq.c:613
+CPU: 1 UID: 0 PID: 8489 Comm: syz.0.563 Not tainted 6.17.0-rc1-syzkaller-g8f5ae30d69d7 #0 PREEMPT 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/30/2025
+pstate: 83400005 (Nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+pc : skip_mnt_tree fs/namespace.c:-1 [inline]
+pc : commit_tree fs/namespace.c:1201 [inline]
+pc : attach_recursive_mnt+0x1414/0x19f0 fs/namespace.c:2716
+lr : skip_mnt_tree fs/namespace.c:1184 [inline]
+lr : commit_tree fs/namespace.c:1201 [inline]
+lr : attach_recursive_mnt+0x1430/0x19f0 fs/namespace.c:2716
+sp : ffff8000a0de7960
+x29: ffff8000a0de7a60 x28: ffff0000df3956c0 x27: dfff800000000000
+x26: ffff0000d65d31c0 x25: ffff0000d65d3180 x24: ffff0000d931d600
+x23: ffff0000df3956c0 x22: ffff0000df395500 x21: ffff0000d65d2e41
+x20: ffff0000f39e5ab0 x19: ffff0000f39e5ab0 x18: 1fffe000337a0688
+x17: ffff0001fea8c8b0 x16: ffff80008afd3190 x15: 0000000000000002
+x14: 1fffe0001be72ae1 x13: 0000000000000000 x12: 0000000000000000
+x11: ffff60001be72ae3 x10: 0000000000ff0100 x9 : 0000000000000000
+x8 : 0000000000000000 x7 : 0000000000000000 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000008 x3 : 0000000000000000
+x2 : 0000000000000008 x1 : ffff0000d65d31c0 x0 : ffff0000f39e5aa8
+Call trace:
+ skip_mnt_tree fs/namespace.c:-1 [inline] (P)
+ commit_tree fs/namespace.c:1201 [inline] (P)
+ attach_recursive_mnt+0x1414/0x19f0 fs/namespace.c:2716 (P)
+ graft_tree+0x134/0x184 fs/namespace.c:2862
+ do_loopback+0x334/0x3e8 fs/namespace.c:3037
+ path_mount+0x4cc/0xde0 fs/namespace.c:4114
+ do_mount fs/namespace.c:4133 [inline]
+ __do_sys_mount fs/namespace.c:4344 [inline]
+ __se_sys_mount fs/namespace.c:4321 [inline]
+ __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4321
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+ el0_svc+0x58/0x180 arch/arm64/kernel/entry-common.c:879
+ el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:898
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 6164 Comm: udevd Not tainted 6.17.0-rc1-syzkaller-g8f5ae30d69d7 #0 PREEMPT 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/30/2025
+pstate: 83400005 (Nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+pc : __sanitizer_cov_trace_pc+0x80/0x84 kernel/kcov.c:235
+lr : path_init+0xdc0/0xe98 fs/namei.c:2537
+sp : ffff8000a43e7740
+x29: ffff8000a43e77a0 x28: dfff800000000000 x27: 1fffe00018f95664
+x26: ffff0000c7cab320 x25: 0000000000000101 x24: 1ffff0001487cf5b
+x23: ffff80008f745840 x22: ffff8000a43e7adc x21: 0000000000000100
+x20: ffff8000a43e7aa0 x19: 0000000000032fab x18: 0000000000000000
+x17: 0000000000000000 x16: ffff80008b007230 x15: 0000000000000001
+x14: 1ffff00011ee8b08 x13: 0000000000000000 x12: 0000000000000000
+x11: ffff700011ee8b09 x10: 0000000000ff0100 x9 : 0000000000000000
+x8 : ffff0000d8babd00 x7 : ffff800080daa4c4 x6 : 0000000000000000
+x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff800080da8a84
+x2 : 0000000000000000 x1 : 0000000000000004 x0 : 0000000000000001
+Call trace:
+ __sanitizer_cov_trace_pc+0x80/0x84 kernel/kcov.c:235 (P)
+ path_openat+0x13c/0x2c40 fs/namei.c:4041
+ do_filp_open+0x18c/0x36c fs/namei.c:4073
+ do_sys_openat2+0x11c/0x1b4 fs/open.c:1435
+ do_sys_open fs/open.c:1450 [inline]
+ __do_sys_openat fs/open.c:1466 [inline]
+ __se_sys_openat fs/open.c:1461 [inline]
+ __arm64_sys_openat+0x120/0x158 fs/open.c:1461
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+ el0_svc+0x58/0x180 arch/arm64/kernel/entry-common.c:879
+ el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:898
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
 
-Your change should test the flag again after taking the spin lock but
-before messing with the refcount and if need be unlock + retry.
 
-I would not hurt to assert in iput_final that the spin lock held and
-that this flag is not set.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Here is my diff to your diff to illustrate + a cosmetic change, not even
-compile-tested:
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 421e248b690f..a9ae0c790b5d 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1911,7 +1911,7 @@ void iput(struct inode *inode)
- 	if (!inode)
- 		return;
- 	BUG_ON(inode->i_state & I_CLEAR);
--
-+retry:
- 	if (atomic_add_unless(&inode->i_count, -1, 1))
- 		return;
- 
-@@ -1921,12 +1921,19 @@ void iput(struct inode *inode)
- 	}
- 
- 	spin_lock(&inode->i_lock);
-+
-+	if (inode->i_count == 1 && inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
-+		spin_unlock(&inode->i_lock);
-+		goto retry;
-+	}
-+
- 	if (atomic_dec_and_test(&inode->i_count)) {
--		/* iput_final() drops i_lock */
--		iput_final(inode);
--	} else {
- 		spin_unlock(&inode->i_lock);
-+		return;
- 	}
-+
-+	/* iput_final() drops i_lock */
-+	iput_final(inode);
- }
- EXPORT_SYMBOL(iput);
- 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
