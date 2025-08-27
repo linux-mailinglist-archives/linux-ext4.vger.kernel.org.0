@@ -1,87 +1,54 @@
-Return-Path: <linux-ext4+bounces-9708-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9707-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6491CB385A3
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 17:02:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7B0CB38591
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 16:57:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 197DB5E0C2E
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 15:02:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA0421B24599
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 14:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA9A26F2AB;
-	Wed, 27 Aug 2025 15:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F75224C06A;
+	Wed, 27 Aug 2025 14:57:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="jj8xIwc+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0CQwJeU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B9426F2A2
-	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 15:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DDC1EB5D6;
+	Wed, 27 Aug 2025 14:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756306946; cv=none; b=fV2NShiQFXoGMnxtkbwINijzlJHqhJGwDyKMI8FN09LjiOKydONwn+LXVRCT1PkO5ckSibUNjIyBV8Yf0+OI/kNFco5ZurwZOV7IrW/93F/RCmD3BzI6zCjreXV2SQTw0DkVScOc0Fy7GNICOXamK/aj+FoC/Hq5S55DzQyLri8=
+	t=1756306653; cv=none; b=lEeXzVWH7BZPCnqcqDomfo2sPIFq4spPlrkyTCrV6L2Lb7iyJWrjV/F4OJPExGyrdhVv1c2pIAGgEYkJEgQ+6V7xW5Z0uyyIbx8EUeSHQk4bZlmlIQooEQKpB/br29tzubRFJiAIHIWpvQr37naEBnb78ZvJKzwSwvO32tZwPts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756306946; c=relaxed/simple;
-	bh=p7Femr3MH0SjlXMwhy+YuUVugyvqfq1RJmpvLJsYpAs=;
+	s=arc-20240116; t=1756306653; c=relaxed/simple;
+	bh=i4SHYDxOiIZN8HFLM9Wh/5X71e+T00Dv3GVNSGrmoY8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cgh5cpFHtfVI6IviQCu4x48bpu4yaJnMAJTxbP39bcgPU6cQmGdwHzq/4aXhQhBQtGxO6Nrvovdo6U2tFxnMgQt/jfah4ltlYK8z7kQs3p/zIVhLYNHXrL0DnODHTW7r2X7nCSdN+HfThVl82MapDH59n2w7jTf4SipHX9eAW8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=jj8xIwc+; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-771eecebb09so3544930b3a.3
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 08:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756306944; x=1756911744; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4OCXs+jnWwR7FWJtHtpNrO1FLD08aYIad5UriCvf31Q=;
-        b=jj8xIwc+sA0fjj7TYNDCH/6/FotdWStvGr3ltrFqbBN6n972PejFaZ/WC/WX3tt+5B
-         RJDu8oDY+1GFjxRH2BTEkL0pdU93ec3Pk/mA/Bdh+x92f/xoDGnT3URMcPEgNewDG0z3
-         15r2W/UDqtxSrBX3TtUL7Q5TTH+Do25dVS3XJ/mDjG+UieEeaFiUha2AqzIMAWizrMiP
-         +HhRS0kv6jsB0sy3WtHElezy+5GAh4LHfezl1KddW9S0KNun67VaWt27nlzLkB/Wxg19
-         M5TC0BWKzB+kM70wz3hE7rS2gswJHCPKzQEbiCTH1BRgoI09a0MUDQCpQcdE9+br6ILw
-         4Jxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756306944; x=1756911744;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4OCXs+jnWwR7FWJtHtpNrO1FLD08aYIad5UriCvf31Q=;
-        b=PnlCtW90y98Kh/VSuaOdb2WNVjOgi0It0PPoNqH2z9g9ge4XF1CCkjUaJGvCYIRDAz
-         n9wpY+jdamVjxQguQh8Kjv6sntD56MPrN6OwVDuNH47BoGhGcyvdQOBghmdVX3zzjVCF
-         DNFnuAy59FpiozIEleq2Ljf3WwkBDywYRItzoGLo90Fu35p37BZWgbxOxACimlvzVhiN
-         s+s0X1ks7GkSBxNJlXoFUI8YU36N2TLSkya+cXbRUbvdHumk91Be+zjL8h8s1f/RTFXO
-         mMF+liDt6rd+34/loif6ZXPa+KlH533NMLatKQOqlGD59bcoAj9iB9CUpFeUSdVtsGbw
-         Rbvg==
-X-Forwarded-Encrypted: i=1; AJvYcCW9Hj2b99kzf0USwln2BRzCPapE9x4XomuJ2VWzzPuZjvPDoJIinflof3NOsywkLn+wK+f0A9C/pD9v@vger.kernel.org
-X-Gm-Message-State: AOJu0YzxaICvYKIx6EJWa9dXnhyHse20HTF92eQcossR5HoZ6jGZgqwe
-	gAuArPPmfXrQh2fgTAEjRbWmK4yVaWIUNfLm3tMUS7BWsuFm0Mvrz1GaUnL77LmTzMsSynu3RWF
-	z4Bpd
-X-Gm-Gg: ASbGncv72/utHJx9KI+LmwMtqeZmWRuN3qW2Y1j6NEHGc5Sz5BxMB4j6IbHCA4ppYFD
-	cRKX0crNM2bEG4L1ORzBl5ROmEpxw2GRZkZtGhTUZTf2v/YLcWdfMbyHLmh8uQhZuEjwMnoZp+z
-	Zcd+PAR8xDbFRF7i8vMjAqiHx+3bBIT625CdHiIW8e4tsqYvAw7xUaUf3RSdFJe2P0vlxsTPfDm
-	0mcYUJZSAou/NuHW90I2Gw06DcBP9x8rmPh5nC/PqoHFUGJPAPcFwJQHVhQwArDCT6jKE7wwGsN
-	YIACQRlPQtvnoxqSGoRE4NFHXuuI53mmo4Hq3ZG+d5WFRZVoLb+Dh+2swcMcZVA83uXyKjmFe6+
-	9Z7SRl5N21o+f39VWjuUwmJ9h1XXukKCqI9VziZxfQZswsdx4zL+mEEy81FY=
-X-Google-Smtp-Source: AGHT+IFyYOwHMJoEXmOQ8uGAH/l+ZKAO0DrXblFReatS3WwuC7vhpTGGm7wAutkG59wh9SZ1OWY6PQ==
-X-Received: by 2002:a05:690c:6805:b0:71f:95ce:ac82 with SMTP id 00721157ae682-71fdc2a89e0mr220525927b3.9.1756306491322;
-        Wed, 27 Aug 2025 07:54:51 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-72151e8f522sm1970907b3.3.2025.08.27.07.54.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Aug 2025 07:54:50 -0700 (PDT)
-Date: Wed, 27 Aug 2025 10:54:49 -0400
-From: Josef Bacik <josef@toxicpanda.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Waqbmoc6vfSX6pZEEYWd8RSe07umoTDm2FGyYKqAOAdeqOMWwM6PDi7VQ2V1blYEPTmNoiGI4Xu1kTG4R8TOsHW+gGfDPujVTifbYZ/R1HXFPwb+DbPkDom4jmvnhuPRz0DEPGSKnwagAFpMhv1IP6n7dvzGTK7xWdI5sLO7KYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0CQwJeU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95E95C4CEEB;
+	Wed, 27 Aug 2025 14:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756306651;
+	bh=i4SHYDxOiIZN8HFLM9Wh/5X71e+T00Dv3GVNSGrmoY8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G0CQwJeUVy+tqfwSAaLIVnazBx2eTebZrKS/u0TjBGQcgS5Z4nEepOWFN9Uvs88Rx
+	 isexd979rm8D+NNVe1fuhcLkL2UArPmnVnNuF9FS0NUB9nmifmamEewjDoUpsMPdzW
+	 J6PAfSi3TpxNi/tnBLpRJfvGzdwTbyNLzPtFNKbxcc0GzBrbakkJ1Q+wTotX15Ca03
+	 YVJvVBQHcghnIYSa6FUaaGcf20uHBCu3JVvs9daGgn/k6N344z/mtIvHZWSi6OvpTv
+	 uub4w70HeRQs7wqEmzC4xdgPPOn90+5xiXSigbrFwG0I3gKHKd5DJc9v3WI+IGhcD5
+	 WJkiBRxkqZJQw==
+Date: Wed, 27 Aug 2025 16:57:26 +0200
+From: Christian Brauner <brauner@kernel.org>
 To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, brauner@kernel.org,
-	viro@zeniv.linux.org.uk, amir73il@gmail.com
+Cc: Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, kernel-team@fb.com, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, viro@zeniv.linux.org.uk, amir73il@gmail.com
 Subject: Re: [PATCH v2 03/54] fs: rework iput logic
-Message-ID: <20250827145449.GA2271493@perftesting>
+Message-ID: <20250827-kraut-anekdote-35789fddbb0b@brauner>
 References: <cover.1756222464.git.josef@toxicpanda.com>
  <be208b89bdb650202e712ce2bcfc407ac7044c7a.1756222464.git.josef@toxicpanda.com>
  <rrgn345nemz5xeatbrsggnybqech74ogub47d6au45mrmgch4d@jqzorhulkvre>
@@ -92,7 +59,7 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <n6z2jkdgmgm2xfxc7y3a2a7psnkeboziffkt6bjoggrff4dlxe@vpsyl3ky6w6v>
 
@@ -165,6 +132,9 @@ On Wed, Aug 27, 2025 at 04:18:55PM +0200, Mateusz Guzik wrote:
 > > 
 > > With your change the flag is only handled once and should it reappear
 > > before you take the ->i_lock, it will stay there.
+
+Yeah, good spotting.
+
 > > 
 > > I agree the stock handling is pretty crap though.
 > > 
@@ -241,6 +211,9 @@ On Wed, Aug 27, 2025 at 04:18:55PM +0200, Mateusz Guzik wrote:
 > While here some nits:
 > 1. it makes sense to try mere atomics just in case someone else messed
 > with the count between handling of the dirty flag and taking the spin lock
+
+Which on mainline is a thing for sure.
+
 > 2. according to my quick test with bpftrace the I_DIRTY_TIME flag is
 > seen way less frequently than i_nlink != 0, so it makes sense to swap
 > the order in which they are checked. Interested parties can try it out
@@ -252,10 +225,40 @@ On Wed, Aug 27, 2025 at 04:18:55PM +0200, Mateusz Guzik wrote:
 > routine building off of your change. I can't submit a proper patch and
 > can't even compile-test. I don't need any credit should this get
 > grabbed.
+> 
+> void iput(struct inode *inode)
+> {
+>         if (!inode)
+>                 return;
+>         BUG_ON(inode->i_state & I_CLEAR);
+> retry:
+>         if (atomic_add_unless(&inode->i_count, -1, 1))
+>                 return;
+> 
+>         if ((inode->i_state & I_DIRTY_TIME) && inode->i_nlink) {
+>                 trace_writeback_lazytime_iput(inode);
+>                 mark_inode_dirty_sync(inode);
+>                 goto retry;
+>         }
+> 
+>         spin_lock(&inode->i_lock);
+>         if ((inode->i_state & I_DIRTY_TIME) && inode->i_nlink) {
+>                 spin_unlock(&inode->i_lock);
+>                 goto retry;
+>         }
+> 
+>         if (!atomic_dec_and_test(&inode->i_count)) {
+>                 spin_unlock(&inode->i_lock);
+>                 return;
+>         }
+> 
+>         /*
+>          * iput_final() drops ->i_lock, we can't assert on it as the inode may
+>          * be deallocated by the time it returns
+>          */
+>         iput_final(inode);
+> }
 
-Thanks for this Mateusz, you're right I completely changed the logic by not
-doing this under the i_lock.  This update looks reasonable to me, thank you for
-the analysis and review!
-
-Josef
+I've taken this. Though I had Josef convince me that the retry is sane
+and doesn't end up stealing a ref. Thanks.
 
