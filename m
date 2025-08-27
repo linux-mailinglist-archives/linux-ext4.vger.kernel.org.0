@@ -1,65 +1,93 @@
-Return-Path: <linux-ext4+bounces-9720-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9721-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0FC5B38A27
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 21:21:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5A7CB38B9F
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 23:47:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 539B21BA830C
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 19:21:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 911FD16C6E7
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Aug 2025 21:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1C72E0921;
-	Wed, 27 Aug 2025 19:21:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C3D30DD2D;
+	Wed, 27 Aug 2025 21:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dTzCbjET"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="oTmL/8S2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28FFEEBB;
-	Wed, 27 Aug 2025 19:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9A4305E19
+	for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 21:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756322460; cv=none; b=oXNcqPyGBzcJ+DFTarQzULPhgK6v7EU6EC2Lpq9kH+r4IHEbsSZOnl5l354HQ8wdFe3u/x8MXBu5p5x7WCLqonFcleb82XOmnzFzQfxCwZlDKwFAdhrwK5/CqHHHoovlkyy49Mxl+X6oL7O9hcWBREX76DgYuD2uYPjCBw2FN9g=
+	t=1756331224; cv=none; b=qeR74WN5Ydai58al0Qh4Sw3tBbmA1NWmlVAApprsYXKJAxLd9LmGEjdZzq0npA8rf02ZFBYQ13eytk9hvL632LvpRGMX4h/dU2NSmjyDSUqAnbOntVaeqkkW132cYBU3wTI6ZS260wqP04S7mpHLbH2VlP0fmI9BNkkG1fQ2eI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756322460; c=relaxed/simple;
-	bh=HqoUEwPRZUgZWft08BFGL1tvczLn9C8wVr1nlcGbbqs=;
+	s=arc-20240116; t=1756331224; c=relaxed/simple;
+	bh=p7brPDy2olHFfAC7S4q3Vp+PKM6Nm9aH82XdvCJ8awI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=In0oduI06FD8oS2qT4LAWzT3oozAReHFaD5moHGIgkp2KjAJzMKmNuXmZ0temvx9J/ET7juBgLl/4wwqy5BrW6mq1Du8o1sEN2otXIEhcDLSjfS3wte5ApWspSTEzjD1pJJ0vmFm1khodI424FC/A0OrMRFwD6EZes7uqDFbTZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dTzCbjET; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 985A8C4CEF4;
-	Wed, 27 Aug 2025 19:20:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756322459;
-	bh=HqoUEwPRZUgZWft08BFGL1tvczLn9C8wVr1nlcGbbqs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dTzCbjET+YqwvhhB5C+6ern478N8Fibdl9q7wolppv5cftBwlgzBm6myWn7ltnANh
-	 OHPic8rFMMKMbNylLc/tVvZ341T8jg6ppyhqYMzLCtU4P2piSoCpeZbWOoleOyA3D+
-	 wZEyBQbLEpxyHdMubNoAi5SxCAVGHgBxPC1WP3R/TSOMFfxdZRFn7g8QEnXoYfKDcH
-	 x/9y+gPeaEFzWB3BC5J/1R1hFp9MCwZubZe7AzUrofL/3yORfP/jFc/oFl7soPkyAy
-	 xBCf6arWTCssp0Eo+Bwfn1JDUxeBDIImlLoUUDQK8J8xsPdMOZTtS2izg+4ojzx8CY
-	 RrMsoQlKMEydg==
-Date: Wed, 27 Aug 2025 13:20:56 -0600
-From: Keith Busch <kbusch@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Ritesh Harjani <ritesh.list@gmail.com>, Keith Busch <kbusch@meta.com>,
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	snitzer@kernel.org, axboe@kernel.dk, dw@davidwei.uk,
-	brauner@kernel.org, hch@lst.de, martin.petersen@oracle.com,
-	djwong@kernel.org, linux-xfs@vger.kernel.org,
-	viro@zeniv.linux.org.uk, Jan Kara <jack@suse.com>,
-	Brian Foster <bfoster@redhat.com>
-Subject: Re: [PATCHv3 0/8] direct-io: even more flexible io vectors
-Message-ID: <aK9amCpLYsxIweMk@kbusch-mbp>
-References: <20250819164922.640964-1-kbusch@meta.com>
- <87a53ra3mb.fsf@gmail.com>
- <g35u5ugmyldqao7evqfeb3hfcbn3xddvpssawttqzljpigy7u4@k3hehh3grecq>
- <aKx485EMthHfBWef@kbusch-mbp>
- <87cy8ir835.fsf@gmail.com>
- <ua7ib34kk5s6yfthqkgy3m2pnbk33a34g7prezmwl7hfwv6lwq@fljhjaogd6gq>
+	 Content-Type:Content-Disposition:In-Reply-To; b=vBvnzihatQJJ1yYk3ixRbCQj9WZHibGQ20RnmqLRuPB71YMljjk42uwCLCX8hZCSYaQ6jK/EmO89rIrZmA7U2D9ic7X2mhnfCdBsFI+x2/zDgwR6K8s0amJiVdhtap5HO/RhA3QUESQCId+RW4+FS514KFwIZ07MaJTldUi9uiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=oTmL/8S2; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7720c9e2900so445930b3a.0
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Aug 2025 14:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1756331221; x=1756936021; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1brA+k4hD/Yqcu3E+OzWK4Zw3vVchK7SPI3ZmUa+ClY=;
+        b=oTmL/8S2U0QYx+4QQGCxzpTYxxbY2M847yIFjACe3uxKSxUtpm9qlqz7Ets000hEGT
+         eIlJIh/5HkEN4W8yhMs7iQIcBBI8FCGR6qgATvk8QiXPmAACVNI2FuqOYKsPDLtIC01u
+         W5n9bD10pqz1hqvN39di9RF5l7AwgDEZevx+3g0lZpbypK6Mg9oIF2eJWXPanYxofjOF
+         sfFkKPdVPpnOU8VyGa/MjGDpJYfJSq4ccjwXjn9iBdSNAR9wIaImSVISg9EHkTjc4TcF
+         aqb2Aygkz2vYxwm5obVtQ60Ayx/IneMQkZDZKAS6Fg/q94wLCXZAqV1rvfPcFRjB/hBz
+         ADRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756331221; x=1756936021;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1brA+k4hD/Yqcu3E+OzWK4Zw3vVchK7SPI3ZmUa+ClY=;
+        b=h2aJHg0IESsqz/5mvTGqiZRZcvg6Nprr48xgSJdqDPOXmBd2OxM7Kuxsbxhklj11hp
+         cLLI/aYGcRaP3jmx6eZwvs3Sjq7ZSr0pnYVogAqVfVaPYd8g4Znt+j65B3L8MiTuWfK6
+         MRkNtCY0XMJ4FaaKMroviI75c9YV81NZD1QJf91MJMcapuIn2AoHHtbPb1+TZ36Ez2R1
+         XKDtrlDR72HLjjPkQ7joJ5L9BPKylOkGn82YJJWutacRhBaB13GqN9M0kp0V1S8C+Ftm
+         v1xpYmlL+phgdQEM7esUEX/qvM/NZYLKOsjSeB+XlByLGlTG5bP/mPhxy9d8L6zsu+7/
+         OF0g==
+X-Forwarded-Encrypted: i=1; AJvYcCU9OL1/IrttpriLGZFBgKD7XQxZk8Nq8f6eyu5sVcrBtKcfX4P+d9zSOc/X7UUzb56oGuR7nSrGeetc@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKtHvF9Wy4qo94ZyeciFz8hvT37Lzp8oLAJDU1XqCs2gftL5cE
+	0z1yDBN80ZwYnVfu02CLRd57I1QGC+PYiNrlr7ZjYdaig6SwoS7VOiLs5q2lzGPZ8lw=
+X-Gm-Gg: ASbGnctQTeGZ/adv26Du/tyiFTaYUd0N8zRVJJ62HueDNsvWAb2W7GAv3rgJNzlIv5j
+	zj/EHU4XZb86zU2+ivBxqt7Q29cyNPhS6KGSZefwRucYMtgRKkvMILefRafDrMSCSJJyztO5GB0
+	jRx1LLDFcVcXRBeYbJNngWV8F7kCCjjrhigpIJqfkP2tWwk5c8+FL4q0A8xAmB7EY9MxWCHidnw
+	mxIWYZmra7cMucE1IBxadhOHuWMx1KQsFmSlJTQ8ncs04BJ24hsxANGZSCxvTb5bKgYVSXch3PN
+	jpE0SZWNYzVY16Cuhhw8VrdCfULEp+xU8HsrfUpVUdCx2ex2YEmQFyMuTB7jZi6hfSSybCroMnI
+	rBFvrN9YSLSXDsiXHZmftkaNiSOih586y7CZInThx6aP3o6XmoBgdAgSvbZe+5ioAsPAQEW+lhi
+	TjqbI4567H
+X-Google-Smtp-Source: AGHT+IGwubMhrkeveyZScO9SyGs6JfX0VeRusyOBY+29aVn++TMuUkFVK5pCfTn+imoo/NPkWa8qcg==
+X-Received: by 2002:a05:6a00:14ca:b0:771:ea86:3f73 with SMTP id d2e1a72fcca58-771ea864584mr15877772b3a.32.1756331221445;
+        Wed, 27 Aug 2025 14:47:01 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-771f34ecccesm6566839b3a.61.2025.08.27.14.47.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Aug 2025 14:47:00 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.98.2)
+	(envelope-from <david@fromorbit.com>)
+	id 1urNyr-0000000BvQF-035E;
+	Thu, 28 Aug 2025 07:46:57 +1000
+Date: Thu, 28 Aug 2025 07:46:56 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, brauner@kernel.org,
+	viro@zeniv.linux.org.uk, amir73il@gmail.com
+Subject: Re: [PATCH v2 16/54] fs: delete the inode from the LRU list on lookup
+Message-ID: <aK980KTSlSViOWXW@dread.disaster.area>
+References: <cover.1756222464.git.josef@toxicpanda.com>
+ <646d132baae6e5633064645e677dada101681850.1756222465.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,21 +96,50 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ua7ib34kk5s6yfthqkgy3m2pnbk33a34g7prezmwl7hfwv6lwq@fljhjaogd6gq>
+In-Reply-To: <646d132baae6e5633064645e677dada101681850.1756222465.git.josef@toxicpanda.com>
 
-On Wed, Aug 27, 2025 at 05:20:53PM +0200, Jan Kara wrote:
-> Now both the old and new behavior make some sense so I won't argue that the
-> new iomap_iter() behavior is wrong. But I think we should change ext4 back
-> to the old behavior of failing unaligned dio writes instead of them falling
-> back to buffered IO. I think something like the attached patch should do
-> the trick - it makes unaligned dio writes fail again while writes to holes
-> of indirect-block mapped files still correctly fall back to buffered IO.
-> Once fstests run completes, I'll do a proper submission...
+On Tue, Aug 26, 2025 at 11:39:16AM -0400, Josef Bacik wrote:
+> When we move to holding a full reference on the inode when it is on an
+> LRU list we need to have a mechanism to re-run the LRU add logic. The
+> use case for this is btrfs's snapshot delete, we will lookup all the
+> inodes and try to drop them, but if they're on the LRU we will not call
+> ->drop_inode() because their refcount will be elevated, so we won't know
+> that we need to drop the inode.
+> 
+> Fix this by simply removing the inode from it's respective LRU list when
+> we grab a reference to it in a way that we have active users.  This will
+> ensure that the logic to add the inode to the LRU or drop the inode will
+> be run on the final iput from the user.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Your suggestion looks all well and good, but I have a general question
-about fstests. I've written up some to test this series, and I have
-filesystem specific expectations for what should error or succeed. If
-you modify ext4 to fail direct-io as described, my test will have to be
-kernel version specific too. Is there a best practice in fstests for
-handling such scenarios?
+Have you benchmarked this for scalability?
+
+The whole point of lazy LRU removal was to remove LRU lock
+contention from the hot lookup path. I suspect that putting the LRU
+locks back inside the lookup path is going to cause performance
+regressions...
+
+FWIW, why do we even need the inode LRU anymore?
+
+We certainly don't need it anymore to keep the working set in memory
+because that's what the dentry cache LRU does (i.e. by pinning a
+reference to the inode whilst the dentry is active).
+
+And with the introduction of the cached inode list, we don't need
+the inode LRU to track  unreferenced dirty inodes around whilst
+they hang out on writeback lists. The inodes on the writeback lists
+are now referenced and tracked on the cached inode list, so they
+don't need special hooks in the mm/ code to handle the special
+transition from "unreferenced writeback" to "unreferenced LRU"
+anymore, they can just be dropped from the cached inode list....
+
+So rather than jumping through hoops to maintain an LRU we likely
+don't actually need and is likely to re-introduce old scalability
+issues, why not remove it completely?
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
