@@ -1,200 +1,154 @@
-Return-Path: <linux-ext4+bounces-9734-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9735-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A788B39AE6
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 13:03:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65821B39BD0
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 13:42:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00A5317F1FF
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 11:03:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D75881C24F0D
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 11:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F125B30E83B;
-	Thu, 28 Aug 2025 11:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B4530EF80;
+	Thu, 28 Aug 2025 11:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mfHwDjEO"
+	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="mLPKNi9J"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5F8273D6F;
-	Thu, 28 Aug 2025 11:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC29B30E0F7
+	for <linux-ext4@vger.kernel.org>; Thu, 28 Aug 2025 11:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756378956; cv=none; b=MwVoyqlayNCjaZJhdRF3/xTIVB5RZITIPmQXlmTKIUu1Q9OlI8repGlNT0D45wOr2fA46Z0jlyjnbN3uPvOawS2rfE8QxQORrki/1c53mAWrnLQQDU8PUln0tAaoBK2jiOOrho88HcylUt2SHAlJMcGxLh9bdW11rg9AU/M0ajY=
+	t=1756381351; cv=none; b=GZ00vH8pWRwMQcV5BUcLfPUBqHMdLWqMuMyGifTUtLz26+yaxYKuXV2KJUCmwNEG+9dcAxOdrIsZub81+zJqUabDKibchX1YsAqyZrNvfy8TntaZ54NPbhQt+TxSpXmyXwxn4Pkn69KUIt7JMfLDQxk5mobNDw6Rl3PuFxlmZ0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756378956; c=relaxed/simple;
-	bh=TiP6eDIlWCu9aD1YkXzlXykr1wDpENnY7juuPACQybw=;
+	s=arc-20240116; t=1756381351; c=relaxed/simple;
+	bh=pXGKWFVyVsRQelEkZGduol4s3jmhYKFx2akcAoEt+EU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NsZPScHpHRDCzGj4H95P4X+HwK9BEhmqsiia5VH9NSfrp+AfvfBF/FkMQMB5xRIH+JjmDtsPlXDCaD+lPA5RmPHj48MjZpE+I/5vMqu9cnCdFz5QGxwgEyxm5VaeE9N6Hwcvf4UOlYXdf+jXYK0kcDkdm/ENodrlDGaNV2pqd/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mfHwDjEO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AFD1C4CEEB;
-	Thu, 28 Aug 2025 11:02:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756378956;
-	bh=TiP6eDIlWCu9aD1YkXzlXykr1wDpENnY7juuPACQybw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mfHwDjEOLK+bj2y9uBnQW4oLdC661L9Vb0uOsSamF7weKO/k/rb6I72nk2e0VAB8P
-	 uNSg+6hmwu6kL8GaJ9NThueR2RXyzNwNqhEWIdDIPNpxRz7qH2uKjleJT5Fs1NcvS0
-	 6AaX4Ul2zApcyhJEwR3v7Z5yYmbG4f9UGQMaILaFo5UKLNk/8nmaX+9U6Vt3abXvO2
-	 xn4uhTu1U34A4gy0h8Z1qsb9AQOsjmkEr0y9yyFV/vxci+tTcIrQY6sUBEXyZgeCBD
-	 u4c+pDK2rqqgUE4Vu4cfT0ImWEAXWH8wyA7ZjtirqNrNrBp2AiKhzqgpDKjvRUiFNx
-	 HMvoDyCIuAgkQ==
-Date: Thu, 28 Aug 2025 13:02:31 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	 Content-Type:Content-Disposition:In-Reply-To; b=H44caZfHWmuCPreH0OaF7dvkj612C7qpfGfNquaBn4ikqRO+/MkpLio6svvbObjnP/+2S1vPuA8UGPANmXaUv3QsuzNqISdeoMXPrPXDbKbqdUSBlNP5ccO1xk+hZK2B4hh83dLuZk3+zf/3FM5P+O2fzXEVMCGW2NGKZn2WbIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=mLPKNi9J; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e9537b957caso569474276.2
+        for <linux-ext4@vger.kernel.org>; Thu, 28 Aug 2025 04:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda.com; s=google; t=1756381348; x=1756986148; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g2mtr4MahWN1CaeWoRERBafDml3LAYcHAVZcXe/+ugQ=;
+        b=mLPKNi9J5ZHe7J0F5ExCMHZi80W3+MBpqsLUqPcu7z8vLe7wAPSnR5y/plrVPe0q9w
+         FGiFGR4045PqryGPrpcMAhx9JrbkkMovLSGxymx7id3DvG5ZBuQYNF73/NxEE1Sm/NJo
+         ogqfMyX560Tga3w9aFBZamZzjX2y8BJ5+X4xzxRcEnQ0uEpnIZIiFxJ8yVVy2dL+uQ1J
+         aj7zwqJ1zFh0RYk8GntjbpclGFWKYlqmzEzqMDibuEbcuoPbFwMG/Q+WeijHPI/0fqmV
+         QThshVmhegEeJxXLVLFWX0bI03bHfJlZqSWDacjywovrKOLPcc3TR1f1XEtSMIMzNm8L
+         DItw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756381348; x=1756986148;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g2mtr4MahWN1CaeWoRERBafDml3LAYcHAVZcXe/+ugQ=;
+        b=WdjRP16tNctExHLsv9DM5AT9BxZdjTpD1pOQjU+eSqu3PUsb6w+K2FdZAVPWpWZI3C
+         P2K29eY9im7ZrawAMCJvMWkb27NgBZ7bpr+sYeK4Pnp/wX8fw4BshVnt7B3c2y3DZNM5
+         MYmTVW0FgNgbAX9PdhDEMLYIJXf81E85WeGQN5gJijUhChUNpXQsKBUJ3R3dlC5ZZXNK
+         HLl0pS93YEdEfLGRvCAQXoqUBj+N+QybUyj5Y8dOgPZVofyW4izhUeiYyeEStVxmQ5Ns
+         TX2AJ8FeZm8FPh505BHb1n3ZfYAW8/VpoV0ex7DTtPi3PUDU0D59FLnY072+13bdDEq+
+         IKMA==
+X-Forwarded-Encrypted: i=1; AJvYcCX6ILzcj5TnreF9l7oVTgwx2lQVrIrgOvuj7sdS58/cZD5pSpKJTYi4iPP2wiohHHHiDJmEPDjQcYNO@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYdPQecv3YugNd3HEIYgcz1/tLLCo3crx6yRfY1pFZ1TKAkl9t
+	hmP3sMMvoteomhFG8OrDjXerXf6FTpxoWPz6n6K5wJiWTNzZ1+CeYYAJQHxrU1w/hSw=
+X-Gm-Gg: ASbGncsKw59Zy/B2EXdr0GzKN2F9sGhLWk3zuokZ7dHQUHh0oQaJT37hIICk2njDx8V
+	GgFsV3vp4fBP2Nn9O42A7TNam11yJDDsp8E+JYfUq7sqg15qfKj0LBq3ZvCpAxXxepAyRzAY1bR
+	LLPtzR7igpRbC7twwFXFrWjzP2VueOK1GeLAkiC1OY2vrgepdgMeXoaoiC4CvXuQJ22nZSsNAgM
+	Wj9H75fYivTh5sHMa/J8pXcKHZqka358NajIkrP0+dGqkb1Gch41lrMwlaAT4a6LyzL6RA9Nw6p
+	KDsMBgx80MaXuP0RU4MzhwVPEQ4q5ycTyG9ir4i6xn+WAAVxFsGW0c7gEaybs0IpWYlpRaHiXUJ
+	4M/6GZ9Zu8bJ5DL1q1Wd1Y1O7Um5689U3Vg4LluRqzw82Efy7x9tmvEYhNRc=
+X-Google-Smtp-Source: AGHT+IHzU9aYDYU3YAH3hfgvOIUS16goFJso3B9bUXGDolR4NrbvimCaMQ06YKvjMpun0m8FzBSWLA==
+X-Received: by 2002:a05:6902:c06:b0:e96:f9fe:2f31 with SMTP id 3f1490d57ef6-e96f9fe30f7mr5099573276.42.1756381347519;
+        Thu, 28 Aug 2025 04:42:27 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff17093e9sm38418147b3.7.2025.08.28.04.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Aug 2025 04:42:26 -0700 (PDT)
+Date: Thu, 28 Aug 2025 07:42:25 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, brauner@kernel.org,
 	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 20/54] fs: disallow 0 reference count inodes
-Message-ID: <20250828-aufbau-abblendlicht-a9cf118d33e8@brauner>
+Subject: Re: [PATCH v2 16/54] fs: delete the inode from the LRU list on lookup
+Message-ID: <20250828114225.GA2848932@perftesting>
 References: <cover.1756222464.git.josef@toxicpanda.com>
- <df5eb3f393bd0e7cbae103c204363f709c219678.1756222465.git.josef@toxicpanda.com>
+ <646d132baae6e5633064645e677dada101681850.1756222465.git.josef@toxicpanda.com>
+ <aK980KTSlSViOWXW@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <df5eb3f393bd0e7cbae103c204363f709c219678.1756222465.git.josef@toxicpanda.com>
+In-Reply-To: <aK980KTSlSViOWXW@dread.disaster.area>
 
-On Tue, Aug 26, 2025 at 11:39:20AM -0400, Josef Bacik wrote:
-> Now that we take a full reference for inodes on the LRU, move the logic
-> to add the inode to the LRU to before we drop our last reference. This
-> allows us to ensure that if the inode has a reference count it can be
-> used, and we no longer hold onto inodes that have a 0 reference count.
+On Thu, Aug 28, 2025 at 07:46:56AM +1000, Dave Chinner wrote:
+> On Tue, Aug 26, 2025 at 11:39:16AM -0400, Josef Bacik wrote:
+> > When we move to holding a full reference on the inode when it is on an
+> > LRU list we need to have a mechanism to re-run the LRU add logic. The
+> > use case for this is btrfs's snapshot delete, we will lookup all the
+> > inodes and try to drop them, but if they're on the LRU we will not call
+> > ->drop_inode() because their refcount will be elevated, so we won't know
+> > that we need to drop the inode.
+> > 
+> > Fix this by simply removing the inode from it's respective LRU list when
+> > we grab a reference to it in a way that we have active users.  This will
+> > ensure that the logic to add the inode to the LRU or drop the inode will
+> > be run on the final iput from the user.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/inode.c | 61 ++++++++++++++++++++++++++++++++++++------------------
->  1 file changed, 41 insertions(+), 20 deletions(-)
+> Have you benchmarked this for scalability?
 > 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 9001f809add0..d1668f7fb73e 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -598,7 +598,7 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
->  
->  	if (inode->i_state & (I_FREEING | I_WILL_FREE))
->  		return;
-> -	if (icount_read(inode))
-> +	if (icount_read(inode) != 1)
->  		return;
->  	if (inode->__i_nlink == 0)
->  		return;
-> @@ -1950,28 +1950,11 @@ EXPORT_SYMBOL(generic_delete_inode);
->   * in cache if fs is alive, sync and evict if fs is
->   * shutting down.
->   */
-> -static void iput_final(struct inode *inode, bool skip_lru)
-> +static void iput_final(struct inode *inode, bool drop)
->  {
-> -	struct super_block *sb = inode->i_sb;
-> -	const struct super_operations *op = inode->i_sb->s_op;
->  	unsigned long state;
-> -	int drop;
->  
->  	WARN_ON(inode->i_state & I_NEW);
-> -
-> -	if (op->drop_inode)
-> -		drop = op->drop_inode(inode);
-> -	else
-> -		drop = generic_drop_inode(inode);
-> -
-> -	if (!drop && !skip_lru &&
-> -	    !(inode->i_state & I_DONTCACHE) &&
-> -	    (sb->s_flags & SB_ACTIVE)) {
-> -		__inode_add_lru(inode, true);
-> -		spin_unlock(&inode->i_lock);
-> -		return;
-> -	}
-> -
->  	WARN_ON(!list_empty(&inode->i_lru));
->  
->  	state = inode->i_state;
-> @@ -1993,8 +1976,37 @@ static void iput_final(struct inode *inode, bool skip_lru)
->  	evict(inode);
->  }
->  
-> +static bool maybe_add_lru(struct inode *inode, bool skip_lru)
-> +{
-> +	const struct super_operations *op = inode->i_sb->s_op;
-> +	const struct super_block *sb = inode->i_sb;
-> +	bool drop = false;
-> +
-> +	if (op->drop_inode)
-> +		drop = op->drop_inode(inode);
-> +	else
-> +		drop = generic_drop_inode(inode);
-> +
-> +	if (drop)
-> +		return drop;
-> +
-> +	if (skip_lru)
-> +		return drop;
-> +
-> +	if (inode->i_state & I_DONTCACHE)
-> +		return drop;
-> +
-> +	if (!(sb->s_flags & SB_ACTIVE))
-> +		return drop;
-> +
-> +	__inode_add_lru(inode, true);
-> +	return drop;
-> +}
-> +
->  static void __iput(struct inode *inode, bool skip_lru)
->  {
-> +	bool drop;
-> +
->  	if (!inode)
->  		return;
->  	BUG_ON(inode->i_state & I_CLEAR);
-> @@ -2010,9 +2022,18 @@ static void __iput(struct inode *inode, bool skip_lru)
->  	}
->  
->  	spin_lock(&inode->i_lock);
-> +
-> +	/*
-> +	 * If we want to keep the inode around on an LRU we will grab a ref to
-> +	 * the inode when we add it to the LRU list, so we can safely drop the
-> +	 * callers reference after this. If we didn't add the inode to the LRU
-> +	 * then the refcount will still be 1 and we can do the final iput.
-> +	 */
-> +	drop = maybe_add_lru(inode, skip_lru);
-
-So before we only put the inode on an LRU when we knew we this was the
-last reference. Now we're putting it on the LRU before we know that for
-sure.
-
-While __inode_add_lru() now checks whether this is potentially the last
-reference we're goint to but, someone could grab another full reference
-in between the check, putting it on the LRU and atomic_dec_and_test().
-So we are left with an inode on the LRU that previously would not have
-ended up there. And then later we need to remove it again. I guess the
-arguments are:
-
-(1) It's not a big deal because if the shrinker runs we'll just toss that
-    inode from the LRU again.
-(2) If it ended up being put on the cached LRU it'll stay there for at
-    least as long as the inode is referenced? I guess that's ok too.
-(3) The race is not that common?
-
-Anyway, again it would be nice to have some comments noting this
-behavior and arguing why that's ok.
-
-> +
->  	if (atomic_dec_and_test(&inode->i_count)) {
->  		/* iput_final() drops i_lock */
-> -		iput_final(inode, skip_lru);
-> +		iput_final(inode, drop);
->  	} else {
->  		spin_unlock(&inode->i_lock);
->  	}
-> -- 
-> 2.49.0
+> The whole point of lazy LRU removal was to remove LRU lock
+> contention from the hot lookup path. I suspect that putting the LRU
+> locks back inside the lookup path is going to cause performance
+> regressions...
 > 
+> FWIW, why do we even need the inode LRU anymore?
+> 
+> We certainly don't need it anymore to keep the working set in memory
+> because that's what the dentry cache LRU does (i.e. by pinning a
+> reference to the inode whilst the dentry is active).
+> 
+> And with the introduction of the cached inode list, we don't need
+> the inode LRU to track  unreferenced dirty inodes around whilst
+> they hang out on writeback lists. The inodes on the writeback lists
+> are now referenced and tracked on the cached inode list, so they
+> don't need special hooks in the mm/ code to handle the special
+> transition from "unreferenced writeback" to "unreferenced LRU"
+> anymore, they can just be dropped from the cached inode list....
+> 
+> So rather than jumping through hoops to maintain an LRU we likely
+> don't actually need and is likely to re-introduce old scalability
+> issues, why not remove it completely?
+
+That's next on the list, but we're already at 54 patches.  This won't be a hot
+path, we're not going to consistently find inodes on the LRU to remove.
+
+My rough plans are
+
+1. Get this series merged.
+2. Let it bake and see if any issues arise.
+3. Remove the inode LRU completely.
+4. Remove the i_hash and use an xarray for inode lookups.
+
+The inode LRU removal is going to be a big change, and I want it to be separate
+from this work from the LRU work in case we find that we do really need the LRU.
+If that turns out to be the case then we can revisit if this is a scalability
+issue.  Thanks,
+
+Josef
 
