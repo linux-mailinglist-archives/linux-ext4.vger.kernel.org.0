@@ -1,76 +1,95 @@
-Return-Path: <linux-ext4+bounces-9746-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9747-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D292B39DC5
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 14:51:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E1C9B39E8C
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 15:19:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A78D189D8B4
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 12:51:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19F557AFBB2
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 13:17:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EAE130FF13;
-	Thu, 28 Aug 2025 12:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8285311952;
+	Thu, 28 Aug 2025 13:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uLjkrKiZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NuyCMoEv"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88007464;
-	Thu, 28 Aug 2025 12:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4D73115B2
+	for <linux-ext4@vger.kernel.org>; Thu, 28 Aug 2025 13:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756385488; cv=none; b=B70BV9dz/ss1VO9E6y24SgMbGHeDNQoK90v/I72d5e0k0hCYnN2f6i4lVNRZPxX6Ft4cCfjATBLHxpIYYtDyC2OMHfTpqMUywXJe9Uha/wu+KDdALUNB4YilGwahhLxppOI9NR/2TYejqec/dY5r8itL7G30UfTOShpyrTvjP8M=
+	t=1756387124; cv=none; b=RCS8mm0P3rSVRchNa+c82aZMQKXWpIcYvYm6fu3+4cAb5mMl9MyEPsHJ5CiFKlu+v1bNL9vJQwKMNod7jZavgMuleHrP8m72tRJBbGuRTBpC880dUrinDRHn4qsjOYohb+wN/zNNvT8YBfhN8Vs+UAVRbvaBmbsX45yUW4VSeZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756385488; c=relaxed/simple;
-	bh=LaJZWkK8WmsFUA1HJ6m6nWUwWxJWTtCpvMy0HO35z1Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SJxqpN88ihb4u05Po7jyso30tT2OrWops8LTp8R7HFcDccLshL9pKf97R7SQ294ja15a+cYtooRsSxUfiW8ixD/v2nEBpf2ppkVbLMO8LO+F97YZOX4xS21kEjQDlnRpEP1B4oMXqsUHh8YZUW8neQiSy19WG7m5MRU2sL3Jsi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uLjkrKiZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D9B0C4CEEB;
-	Thu, 28 Aug 2025 12:51:25 +0000 (UTC)
+	s=arc-20240116; t=1756387124; c=relaxed/simple;
+	bh=UWn2JpKSOMJIolhjI3oRy/Ynzb5mqDH4/kNDuAxQ2/0=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GgpjEUbY4JYUXKGp/ndvqEMBm/Iq5urvos4O35DGSVxWqo8Wy24SsGB7HNh/D3vH/fyDPLx6QKbS9lNZ0SEivgCjimBd1FqnY1zEwf9RUQ+8gBiPdeYLvQc6SBVvCMmA31TCUYnJ5ylyIjIRCt6MUG5LxBNv9BihY/++AkDWIOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NuyCMoEv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 061A9C4CEF6
+	for <linux-ext4@vger.kernel.org>; Thu, 28 Aug 2025 13:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756385487;
-	bh=LaJZWkK8WmsFUA1HJ6m6nWUwWxJWTtCpvMy0HO35z1Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uLjkrKiZBjqRRcKwWUoS4+BMYEr48SZ9DlTxHzHIxWAYjxlBMAHOClS9iJ2thI7y+
-	 /Vo+k2jGkyHOHK7XmbovN9DAe4WDHiKxVgjSWMf8qmfgq0wSD3ot3vq+4POM2hvlZj
-	 fzis1lo0Ibl+GM1VASkoS68Kdkyg2W3v8eM05CCk11wQD3RC59UdQCHPNN+fo2Tjgi
-	 2217xigBmD8z9/GOdjx80uny0pXdeUHWZotX7tr8Vd4SzsqfhfrryUP4EcqyZe19Oa
-	 257TGz0Vv3XWQ8Kwki53yK6OjpEQYCTe33smBFxphblvIAwR4UQjmsSRcGkKl94zSP
-	 yeXQ2StUlG1bg==
-Date: Thu, 28 Aug 2025 14:51:23 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 00/54] fs: rework inode reference counting
-Message-ID: <20250828-hygiene-erfinden-81433fd05596@brauner>
-References: <cover.1756222464.git.josef@toxicpanda.com>
+	s=k20201202; t=1756387124;
+	bh=UWn2JpKSOMJIolhjI3oRy/Ynzb5mqDH4/kNDuAxQ2/0=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=NuyCMoEvg7iYJEnlcgyFLsHm5a7p3zRHCUYNg05pgquD3zzuP6/cDR2mUBrror1TE
+	 JYuHUFDawuubh9aK90dzFNFNjmLRRlUltpfKIFnHcxfiADAJJrdx7IT2sYWX3FbVAF
+	 BfwrYqbRnnrr3TXv9RIqe5NPb/VMuAsM3IEw2iab1nHSfsU3Oy4+B9G5x7q6uLlgGJ
+	 cBTgIQ+JldXsXVRTbJTq0qn00FfonkUHyc3JUYWGC6SgXebrINrYklfvp3pDOVGHmw
+	 YrVRzmtykt3POFZMAbcRCdN539KC4j3uWnwprxhthabSLSgk+9l8LmVJI2QamrmYJO
+	 Bg3SCNy4HT2Lw==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id ED4DAC433E1; Thu, 28 Aug 2025 13:18:43 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 220506] INFO: task sync:4678 blocked for more than 248 seconds.
+Date: Thu, 28 Aug 2025 13:18:43 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+ fs_ext2@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: aros@gmx.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: component assigned_to
+Message-ID: <bug-220506-13602-bqhVAjO6AL@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-220506-13602@https.bugzilla.kernel.org/>
+References: <bug-220506-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.1756222464.git.josef@toxicpanda.com>
 
-On Tue, Aug 26, 2025 at 11:39:00AM -0400, Josef Bacik wrote:
-> v1: https://lore.kernel.org/linux-fsdevel/cover.1755806649.git.josef@toxicpanda.com/
-> 
-> v1->v2:
+https://bugzilla.kernel.org/show_bug.cgi?id=3D220506
 
-I've been through the series apart from the Documentation so far (I'll
-read that later to see how it matches my own understanding.). To me this
-all looks pretty great. The death of all these flags is amazing and if
-we can experiment with the icache removal next that would be very nice.
+Artem S. Tashkinov (aros@gmx.com) changed:
 
-So I wait for some more comments and maybe a final resend but I'm quite
-happy. I'm sure I've missed subtleties but testing will hopefully also
-shake out a few additional bugs.
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+          Component|ext2                        |ext4
+           Assignee|fs_ext2@kernel-bugs.osdl.or |fs_ext4@kernel-bugs.osdl.or
+                   |g                           |g
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
