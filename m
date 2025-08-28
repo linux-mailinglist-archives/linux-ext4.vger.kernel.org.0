@@ -1,57 +1,57 @@
-Return-Path: <linux-ext4+bounces-9729-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9730-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD748B397CE
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 11:06:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31B6FB39986
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 12:21:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 932F720718B
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 09:06:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 130C97BABA5
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 10:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70DA326F281;
-	Thu, 28 Aug 2025 09:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569A130C35A;
+	Thu, 28 Aug 2025 10:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R8qbavQx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tULajMBd"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 064CC1373;
-	Thu, 28 Aug 2025 09:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A2E3093DB;
+	Thu, 28 Aug 2025 10:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756372002; cv=none; b=fpaDJoZvWq5AIu+ZMaQzYzINUsdfufPBpF8JUjlye+rOf+e7hU9P+b1JaLj/2K1ZNoszSfFB3Pr30dI4sEMzdRbf5TiAC8VXAPZNZVwdoubTXErTFo53c426XlWkeKDm+XBwCi5Z0RyrJJz7U3nouFQiImCnKZ6nWcWAIjDmxlY=
+	t=1756376290; cv=none; b=mU+V7fc0CIXxMN5u0eM2Pn844QnI09QbOlUfCo46WWRL8wIAwVn0adrW/aOqNdY4mptDMAOZuR3dfWdILx7IdJ+ygfWmlYrLAGh0c4BogwJ1HHadSbfqCk0HcEW1jb11yqa5G5iSobAAu5hEqppFbHRqE13r5Ja1qedZnxZqqo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756372002; c=relaxed/simple;
-	bh=xoFXf4tek4F79Myol8+sLgN5auxVB9US628LUrqjCD8=;
+	s=arc-20240116; t=1756376290; c=relaxed/simple;
+	bh=IrZCAV3PdWuNFsGR7eTCbmhKrE0snUqtzcfOHlYbiAg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iygS4gWfoOfjSute1cXQ4V/LE3oIqaBc7aYeaJxNXTXOxAjBxJeUW0KdFdmI28XLHHtESP+3867haGif56YI76YlU5ehCakeixK/jS2Kic1EIVnvIAnrQpIVCKCV6QZDbG3285UoSTtEKUtu14vOcqejA/vbQy0iiUL6DL/yzt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R8qbavQx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFCBCC4CEEB;
-	Thu, 28 Aug 2025 09:06:39 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jjd7X5oCbcYZYzr56dl3XL5Ov49XMU8gFh6+mSNKOf/Ikp+Zjkbm2iLwSfrfIakIbSuSFshaOi2uqTtDDHUdb5jAWz1G5UzFBkSjfwRV6T4GZcUT2mHD/zQiSdszYJdw98+Owu8CquQuJea9XiqIt+iV2EVA/nUe3Sh1t7T1Sc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tULajMBd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8946AC4CEEB;
+	Thu, 28 Aug 2025 10:18:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756372001;
-	bh=xoFXf4tek4F79Myol8+sLgN5auxVB9US628LUrqjCD8=;
+	s=k20201202; t=1756376289;
+	bh=IrZCAV3PdWuNFsGR7eTCbmhKrE0snUqtzcfOHlYbiAg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R8qbavQxhqSOB3/VphrPYPTDmOC/lYN7t4Qvu2qUfmSb+/plfN8NzgZXG36DaD3zr
-	 ETjl4SddpLQxiAyCzgmMKewusfjRzP23D0VAPeOdkdIEa7n/G0Wf/jLZjthi3XAABO
-	 CKayhBAtBHt8MIIpvpg4aGMt+OB99MExAF18l875nzpRIWsfq9XRwFiUWLa+FnSI9Y
-	 R43lbaxzJXVaxqkC1inLM4cWWG6J+fsEp8S949HlotQbrP0d5/EJIt9XulQaj4MDh4
-	 2uvugmEIXA8sJBbiK+fceSIEVVd3dxkeTPzTevO3AmxcH5bAlFu78pdP1SOXku3fzl
-	 dlVT3HhxZ5tDg==
-Date: Thu, 28 Aug 2025 11:06:37 +0200
+	b=tULajMBdSGhYNBSXwi73N9CuZt4b+Vdp0+To2kzNYbtrNRBV4Yel3+6yfdSDFURci
+	 QEQzr8obPc0y09PXgulSw4l+F+0L54iMLgj5I6Mxj4+SelcjvYqmnujVonBeFjLZuw
+	 +9Xi+FTcxdyHRSn8ddCG5zNaPwe3vYqdzg8aDkKiVhqNTTHX1PItZBuEt5S/0+l3zg
+	 xqKamDaq3hKFdsaRoneX1cxndFJjNq4h+ElH7xwjvghPJJbOZqg91KT+ehU64S3Udl
+	 E76cnzgiouYeYD5abZauTbgKGDSLiIlnrjjHRXrSeryiWj8u+5LOhGZOLYNosBeYZ3
+	 VlIhxzyBOrwpg==
+Date: Thu, 28 Aug 2025 12:18:05 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
 	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
 	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 17/54] fs: remove the inode from the LRU list on
- unlink/rmdir
-Message-ID: <20250828-leiden-getan-25237f019cf1@brauner>
+Subject: Re: [PATCH v2 18/54] fs: change evict_inodes to use iput instead of
+ evict directly
+Message-ID: <20250828-umgegangen-festbesuch-cd75065a043d@brauner>
 References: <cover.1756222464.git.josef@toxicpanda.com>
- <3552943716349efa4ff107bb590ac6b980183735.1756222465.git.josef@toxicpanda.com>
+ <2e71234c109ee6a45a469022436cc5c3d31914ed.1756222465.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,109 +60,125 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3552943716349efa4ff107bb590ac6b980183735.1756222465.git.josef@toxicpanda.com>
+In-Reply-To: <2e71234c109ee6a45a469022436cc5c3d31914ed.1756222465.git.josef@toxicpanda.com>
 
-On Tue, Aug 26, 2025 at 11:39:17AM -0400, Josef Bacik wrote:
-> We can end up with an inode on the LRU list or the cached list, then at
-> some point in the future go to unlink that inode and then still have an
-> elevated i_count reference for that inode because it is on one of these
-> lists.
+On Tue, Aug 26, 2025 at 11:39:18AM -0400, Josef Bacik wrote:
+> At evict_inodes() time, we no longer have SB_ACTIVE set, so we can
+> easily go through the normal iput path to clear any inodes. Update
+> dispose_list() to check how we need to free the inode, and then grab a
+> full reference to the inode while we're looping through the remaining
+> inodes, and simply iput them at the end.
 > 
-> The more common case is the cached list. We open a file, write to it,
-> truncate some of it which triggers the inode_add_lru code in the
-> pagecache, adding it to the cached LRU.  Then we unlink this inode, and
-> it exists until writeback or reclaim kicks in and removes the inode.
-> 
-> To handle this case, delete the inode from the LRU list when it is
-> unlinked, so we have the best case scenario for immediately freeing the
-> inode.
+> Since we're just calling iput we don't really care about the i_count on
+> the inode at the current time.  Remove the i_count checks and just call
+> iput on every inode we find.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/namei.c | 30 +++++++++++++++++++++++++-----
->  1 file changed, 25 insertions(+), 5 deletions(-)
+>  fs/inode.c | 26 +++++++++++---------------
+>  1 file changed, 11 insertions(+), 15 deletions(-)
 > 
-> diff --git a/fs/namei.c b/fs/namei.c
-> index 138a693c2346..e56dcb5747e4 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -4438,6 +4438,7 @@ SYSCALL_DEFINE2(mkdir, const char __user *, pathname, umode_t, mode)
->  int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
->  		     struct dentry *dentry)
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 399598e90693..ede9118bb649 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -933,7 +933,7 @@ static void evict(struct inode *inode)
+>   * Dispose-list gets a local list with local inodes in it, so it doesn't
+>   * need to worry about list corruption and SMP locks.
+>   */
+> -static void dispose_list(struct list_head *head)
+> +static void dispose_list(struct list_head *head, bool for_lru)
 >  {
-> +	struct inode *inode = dentry->d_inode;
->  	int error = may_delete(idmap, dir, dentry, 1);
+>  	while (!list_empty(head)) {
+>  		struct inode *inode;
+> @@ -941,8 +941,12 @@ static void dispose_list(struct list_head *head)
+>  		inode = list_first_entry(head, struct inode, i_lru);
+>  		list_del_init(&inode->i_lru);
 >  
->  	if (error)
-> @@ -4447,11 +4448,11 @@ int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
->  		return -EPERM;
->  
->  	dget(dentry);
-> -	inode_lock(dentry->d_inode);
-> +	inode_lock(inode);
->  
->  	error = -EBUSY;
->  	if (is_local_mountpoint(dentry) ||
-> -	    (dentry->d_inode->i_flags & S_KERNEL_FILE))
-> +	    (inode->i_flags & S_KERNEL_FILE))
->  		goto out;
->  
->  	error = security_inode_rmdir(dir, dentry);
-> @@ -4463,12 +4464,21 @@ int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
->  		goto out;
->  
->  	shrink_dcache_parent(dentry);
-> -	dentry->d_inode->i_flags |= S_DEAD;
-> +	inode->i_flags |= S_DEAD;
->  	dont_mount(dentry);
->  	detach_mounts(dentry);
->  
->  out:
-> -	inode_unlock(dentry->d_inode);
-> +	/*
-> +	 * The inode may be on the LRU list, so delete it from the LRU at this
-> +	 * point in order to make sure that the inode is freed as soon as
-> +	 * possible.
-> +	 */
-> +	spin_lock(&inode->i_lock);
-> +	inode_lru_list_del(inode);
-> +	spin_unlock(&inode->i_lock);
-> +
-> +	inode_unlock(inode);
->  	dput(dentry);
->  	if (!error)
->  		d_delete_notify(dir, dentry);
-> @@ -4653,8 +4663,18 @@ int do_unlinkat(int dfd, struct filename *name)
->  		dput(dentry);
+> -		evict(inode);
+> -		iobj_put(inode);
+> +		if (for_lru) {
+> +			evict(inode);
+> +			iobj_put(inode);
+> +		} else {
+> +			iput(inode);
+> +		}
 
-Why are you doing that in do_unlinkat() instead of vfs_unlink() (as
-you're doing it in vfs_rmdir() and not do_rmdir())?
+I would really like to see a transitionary comment here or at least some
+more details in the commit. Something like:
 
-Doing it in do_unlinkat() means any stacking filesystem such as
-overlayfs will end up skipping the LRU list removal as they use
-vfs_unlink() directly.
+	Once the inode has gone through iput_final() and has ended up on
+	the LRU it's inode->i_count will have gone to zero but the LRU
+	still holds an inode->i_obj_count reference. So we need to evict
+	and put that i_obj_count reference when disposing the collected
+	inodes.
 
-And does btrfs subvolume/snapshot deletion special treatment as well for
-this as it's semantically equivalent to an rmdir?
+	When the inodes have been collected via evict_inodes() e.g, on
+	umount() they will now be made to hold a full reference that we
+	can simply iput().
 
+	Calling iput() in this case is safe as we no longer have
+	SB_ACTIVE set and thus cannot be readded to the LRU.
+
+I think that's easier to follow and better describes the change.
+
+But, there's a wrinkle. It is not guaranteed that at evict_inodes() time
+SB_ACTIVE isn't raised anymore. Afaict, both bch2_fs_bdev_mark_dead()
+and fs_bdev_mark_dead() will be called with SB_ACTIVE set from the block
+layer on device removal. So in that case iput() would add them back to
+the LRU.
+
+>  		cond_resched();
 >  	}
->  	inode_unlock(path.dentry->d_inode);
-> -	if (inode)
-> +	if (inode) {
-> +		/*
-> +		 * The LRU may be holding a reference, remove the inode from the
-> +		 * LRU here before dropping our hopefully final reference on the
-> +		 * inode.
-> +		 */
-> +		spin_lock(&inode->i_lock);
-> +		inode_lru_list_del(inode);
-> +		spin_unlock(&inode->i_lock);
-> +
->  		iput(inode);	/* truncate the inode here */
-> +	}
->  	inode = NULL;
->  	if (delegated_inode) {
->  		error = break_deleg_wait(&delegated_inode);
+>  }
+> @@ -964,21 +968,13 @@ void evict_inodes(struct super_block *sb)
+>  again:
+>  	spin_lock(&sb->s_inode_list_lock);
+>  	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+> -		if (icount_read(inode))
+> -			continue;
+> -
+>  		spin_lock(&inode->i_lock);
+> -		if (icount_read(inode)) {
+> -			spin_unlock(&inode->i_lock);
+> -			continue;
+> -		}
+>  		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+>  		}
+>  
+> -		inode->i_state |= I_FREEING;
+> -		iobj_get(inode);
+> +		__iget(inode);
+>  		inode_lru_list_del(inode);
+>  		spin_unlock(&inode->i_lock);
+>  		list_add(&inode->i_lru, &dispose);
+> @@ -991,13 +987,13 @@ void evict_inodes(struct super_block *sb)
+>  		if (need_resched()) {
+>  			spin_unlock(&sb->s_inode_list_lock);
+>  			cond_resched();
+> -			dispose_list(&dispose);
+> +			dispose_list(&dispose, false);
+>  			goto again;
+>  		}
+>  	}
+>  	spin_unlock(&sb->s_inode_list_lock);
+>  
+> -	dispose_list(&dispose);
+> +	dispose_list(&dispose, false);
+>  }
+>  EXPORT_SYMBOL_GPL(evict_inodes);
+>  
+> @@ -1108,7 +1104,7 @@ long prune_icache_sb(struct super_block *sb, struct shrink_control *sc)
+>  
+>  	freed = list_lru_shrink_walk(&sb->s_inode_lru, sc,
+>  				     inode_lru_isolate, &freeable);
+> -	dispose_list(&freeable);
+> +	dispose_list(&freeable, true);
+>  	return freed;
+>  }
+>  
 > -- 
 > 2.49.0
 > 
