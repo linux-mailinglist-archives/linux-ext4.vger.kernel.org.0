@@ -1,92 +1,137 @@
-Return-Path: <linux-ext4+bounces-9726-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9727-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73DA9B395AC
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 09:43:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2C79B396CD
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 10:24:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F66D3A5030
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 07:43:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDBE6189B9E6
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 08:24:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946782D23B9;
-	Thu, 28 Aug 2025 07:43:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BE22DC323;
+	Thu, 28 Aug 2025 08:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uydcBJXL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+agvb9x"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F5D25634
-	for <linux-ext4@vger.kernel.org>; Thu, 28 Aug 2025 07:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE7B849C;
+	Thu, 28 Aug 2025 08:24:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756366988; cv=none; b=Ou/6+QhsSPGKmQ6/YxtEfO8s2cytX/4LHKJGd6VpZRa/h63bYSuWJF5knGwjYWILSoRnp5JKRGzcueXLXKZMVcnvQ7VgUfmqYF2c+ZSH/1hpBqOewLS5FBPqOjn9+VwYvE2NEPZ7kShdAK0/iUM02z6+Kfvd/cwgS8Tj7CnpC3g=
+	t=1756369448; cv=none; b=kepfNMqSbvlE+JiVXnFkG8jMV85Q4zXCotixFJlZ1uK3mrtn9zS17LxJ6Wl4NcrkNcBW37oubjohNLWpWDeb8mL4wKtnybx0/kILZgjtj4PR1MJUHD8c1k+vFbhyC1I8m4ifOMi/mH4qGnIbFYnwRN/DXbUWq4U1PJw+5Qa0Zo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756366988; c=relaxed/simple;
-	bh=Hiswn7rV1i9/LpmHdWvbmjrzXPdwHqu4fyqv6UYA/1A=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NS5MnwFrGEObkJ9swgwUyyORphNfkNkassxH63qpKh3s0dr0vw4wco7DM8RlXjDQo5JYVTMUtowyP9CHc5+Eyh5xYcr5esT8VgN9kmRYeZtf+dAATiFypzC9aYZTMINC3SXVPdiskGY7V5MWqwdAUA502EvpqJkFCTzs6qUJM2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uydcBJXL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A8C7EC4CEF5
-	for <linux-ext4@vger.kernel.org>; Thu, 28 Aug 2025 07:43:07 +0000 (UTC)
+	s=arc-20240116; t=1756369448; c=relaxed/simple;
+	bh=RwBgH5v8YJpYJqLz1ozvOeDtoOvRSy9/swn9P5xY8rA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TE4Qc9D8QWLgI24Jc7G+uSk2vbB495iGAABuIXTiS6+W/G5GFalLxOb3feH5SS7uV2NXbvGOlnACYujRLvhNLMslMxPRT0aW0MZk6QlIPlQnYeoUVHpX7Hn22P6sJTipss290INPjWAdV5rZMUXAU7jf0HCE5E3m/NT1xHXDpbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E+agvb9x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A975C4CEEB;
+	Thu, 28 Aug 2025 08:24:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756366987;
-	bh=Hiswn7rV1i9/LpmHdWvbmjrzXPdwHqu4fyqv6UYA/1A=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=uydcBJXLoVg8yQWvfrD1rQ2By/rOpGdBG3JOtT4sRFp3Panxv1O0JDM1IZnvNtJ/o
-	 eRHHke2f3ggBfvqOBbpCtN4zByJ+8UwgbXN7LrOOF5nnP++/RX0mrQmlE2JuatY43F
-	 75gvfASJlIYz54m04oY4/h1cP4UFBVYVYCHio68jcXiYoq0a3z6vzRyBNph+zv2ttE
-	 BIqTUgI66ydAIgauLM8dQ+Zy9wGnjOi/gDa6O90aUYgwQpohQ32mQq0JdOSRqOS8LE
-	 zSSI0a7iwAwAfwgGZkM/tmARIq/8/ptSzX0Q9FelbPMUt7r7Pl3cCxMk+K6QthmhK8
-	 3/bqTyEeA5T4w==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id A1BF6C41613; Thu, 28 Aug 2025 07:43:07 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 220506] INFO: task sync:4678 blocked for more than 248 seconds.
-Date: Thu, 28 Aug 2025 07:43:07 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext2@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext2
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: ionut_n2001@yahoo.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext2@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cf_kernel_version
-Message-ID: <bug-220506-13602-GbFF4wtBOP@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-220506-13602@https.bugzilla.kernel.org/>
-References: <bug-220506-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=k20201202; t=1756369448;
+	bh=RwBgH5v8YJpYJqLz1ozvOeDtoOvRSy9/swn9P5xY8rA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E+agvb9xMMS/KKbuwl4cTD/dWT1EFAzP6plhYf24nKmZds2z75NT+ZFe6gsczanFR
+	 j2ny30OJGiybUrPBrZj2jGDvw8Iwu2Pz4j9sVrUavQJID0ddJlsPMVBfTvyimayPSV
+	 kxmRFpmGvs4b8R/BXx26GrpXT2T1SbnzAuRfjO8Ygk+BhJkaSoZWtzVSnHH+KY1PBC
+	 O+EDQTDWoqID5DXtyqCFcHCeEcHaC/e+5Dns/Ob0A+mbred93Iyucu6IOD+tP1/bv9
+	 Z1AGJQrf9yBJweJ3IN3b1y4mkedBDrAK1Wyz4mbgNu0tKSEfdbQ/Q0nB2uNBWd0n3L
+	 PQ4F+oSTwhuUA==
+Date: Thu, 28 Aug 2025 10:24:03 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	viro@zeniv.linux.org.uk, amir73il@gmail.com
+Subject: Re: [PATCH v2 15/54] fs: maintain a list of pinned inodes
+Message-ID: <20250828-chorkonzert-forschen-0203eae65f7f@brauner>
+References: <cover.1756222464.git.josef@toxicpanda.com>
+ <35dc849a851470e2a31375ecdfdf70424844c871.1756222465.git.josef@toxicpanda.com>
+ <20250827-gelandet-heizt-1f250f77bfc8@brauner>
+ <20250827160756.GA2272053@perftesting>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250827160756.GA2272053@perftesting>
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D220506
+On Wed, Aug 27, 2025 at 12:07:56PM -0400, Josef Bacik wrote:
+> On Wed, Aug 27, 2025 at 05:20:17PM +0200, Christian Brauner wrote:
+> > On Tue, Aug 26, 2025 at 11:39:15AM -0400, Josef Bacik wrote:
+> > > Currently we have relied on dirty inodes and inodes with cache on them
+> > > to simply be left hanging around on the system outside of an LRU. The
+> > > only way to make sure these inodes are eventually reclaimed is because
+> > > dirty writeback will grab a reference on the inode and then iput it when
+> > > it's done, potentially getting it on the LRU. For the cached case the
+> > > page cache deletion path will call inode_add_lru when the inode no
+> > > longer has cached pages in order to make sure the inode object can be
+> > > freed eventually.  In the unmount case we walk all inodes and free them
+> > > so this all works out fine.
+> > > 
+> > > But we want to eliminate 0 i_count objects as a concept, so we need a
+> > > mechanism to hold a reference on these pinned inodes. To that end, add a
+> > > list to the super block that contains any inodes that are cached for one
+> > > reason or another.
+> > > 
+> > > When we call inode_add_lru(), if the inode falls into one of these
+> > > categories, we will add it to the cached inode list and hold an
+> > > i_obj_count reference.  If the inode does not fall into one of these
+> > > categories it will be moved to the normal LRU, which is already holds an
+> > > i_obj_count reference.
+> > > 
+> > > The dirty case we will delete it from the LRU if it is on one, and then
+> > > the iput after the writeout will make sure it's placed onto the correct
+> > > list at that point.
+> > > 
+> > > The page cache case will migrate it when it calls inode_add_lru() when
+> > > deleting pages from the page cache.
+> > > 
+> > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > > ---
+> > 
+> > Ok, I'm trying to wrap my head around the justification for this new
+> > list. Currently we have inodes with a zero reference counts that aren't
+> > on any LRU. They just appear on sb->i_sb_list and are e.g., dealt with
+> > during umount (sync_filesystem() followed by evict_inodes()).
+> > 
+> > So they're either dealt with by writeback or by the page cache and are
+> > eventually put on the regular LRU or the filesystem shuts down before
+> > that happens.
+> > 
+> > They're easy to handle and recognize because their inode->i_count is
+> > zero.
+> > 
+> > Now you make the LRUs hold a full reference so it can be grabbed from
+> > the LRU again avoiding the zombie resurrection from zero. So to
+> > recognize inodes that are pinned internally due to being dirty or having
+> > pagecache pages attached to it you need to track them in a new list
+> > otherwise you can't really differentiate them and when to move them onto
+> > the LRU after writeback and pagecache is done with them.
+> > 
+> 
+> Exactly. We need to put them somewhere so we can account for their reference.
+> 
+> We could technically just use a flag and not have a list for this, and just use
+> the flag to indicate that the inode is pinned and the flag has a full reference
+> associated with it.
+> 
+> I did it this way because if I had a nickel for every time I needed to figure
+> out where a zombie inode was and had to do the most grotesque drgn magic to find
+> it, I'd have like 15 cents, which isn't a lot but weird that it's happened 3
+> times. Having a list makes it easier from a debugging perspective.
+> 
+> But again, we have ->s_inodes, and I can just scan that list and look for
+> I_LRU_CACHED. We'd still need to hold a full reference for that, but it would
+> eliminate the need for another list if that's more preferable?  Thanks,
 
-sander44 (ionut_n2001@yahoo.com) changed:
-
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-     Kernel Version|                            |6.16.3
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+I don't mind the additional list and the sb struct is not very size
+sensitive anyway.
 
