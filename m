@@ -1,57 +1,57 @@
-Return-Path: <linux-ext4+bounces-9740-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9741-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 877A2B39D33
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 14:25:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5109B39D6A
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 14:36:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40E5B3BD26A
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 12:25:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48E1F7AEA30
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 12:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B12B30F81A;
-	Thu, 28 Aug 2025 12:25:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2335C30FC0C;
+	Thu, 28 Aug 2025 12:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jpGbjg2X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M2BS0PF0"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D2130F547;
-	Thu, 28 Aug 2025 12:25:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A6D30F937;
+	Thu, 28 Aug 2025 12:35:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756383926; cv=none; b=YERphEOWy0ZKDiKTl71dl491hTZ0Yr5C+C1QKb7DHBApIDYHQSMIPIAS/iG6E+O2+SCylEilkwZamg5hy/wGhmmTuCQfHgN09Vask8CNlo6eM9pFLKp+9UL6uFYTzL5ZXgkhKpD2WzrGQS0JsY5IRUsH+B2BTy8lt9JTuyVrnqQ=
+	t=1756384554; cv=none; b=pPdH7bZmRQFuby1czSXTnmiG+B2RjH9CRjgdoH/CttkORYDG4yE1whTUXM2+EdmbGxHAP/Z7M0+tAc+L5nlKCxtGQ5yGKub1ydHisHjWgRUXf5lSvIrncKAOedCA2z3a3edU1GYdRfDjDHJdrW1iE64JfO84fFiUcicoJC4JgsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756383926; c=relaxed/simple;
-	bh=sxFZXDa8jERLCRJzbvawXkWWrfTFVr2v+vC5TylGwyA=;
+	s=arc-20240116; t=1756384554; c=relaxed/simple;
+	bh=IDminVuXFCLI4B969mEyqWsnd3Aa+pLqtK2BNYQ1ZQc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZftlNQKNnI7yND9IdZsb8nZDPapuZaVMuVws5CqyfDs8qlTEkFNT6mYgBRDYpD0x/4fhynYIQTVL6+VE3ngbdVz2uRB8NPG6Bb4b1x81xMqk7y3bQQ2Cwo4CWwOO0gi66iWbtfIlKiPggKoeOfWcwEZWiXvWT1o1M99WYub/Cq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jpGbjg2X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 993A1C4CEEB;
-	Thu, 28 Aug 2025 12:25:23 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=HZt+Q87rgiXgNnvM9yxaC5oTwG8QUVI2K+ViBRsfpyx7/Dhn24j+z0sCe72Qa6YrMYgrhOdScdY+SP8hd3sZ9GF1m/nE2gBDlRcmFddbNxVuo45OH+fXt2bwyAdi0DMMZM0nSf82YNhCeCxhbj+bbykWZe0sGsuYTdjmrBt8mxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M2BS0PF0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85A4CC4CEF6;
+	Thu, 28 Aug 2025 12:35:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756383925;
-	bh=sxFZXDa8jERLCRJzbvawXkWWrfTFVr2v+vC5TylGwyA=;
+	s=k20201202; t=1756384554;
+	bh=IDminVuXFCLI4B969mEyqWsnd3Aa+pLqtK2BNYQ1ZQc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jpGbjg2XugK08UMPFIYdy5M/1AoseXOgOOD2lSbdT/C0HkE/WB52jjVXvn/XilyeR
-	 S0dt/PQVYIOaq1tkbU8Mfj4UFtPtvTe06yWgwJVi0vJxTDBMMQL4IyXMSvtnfeyCWj
-	 s8YRApThaUQnMXdHt1vq/pUYS1SQt3a5crpgAgL685veiSiI3zDRzr2388axm5G8GV
-	 MiGy9Af1GU62rr8XlD2dGZT0D69VFXKSzD/CjQi2oOvwJSlIYIIcRGhuKPgZy64dgJ
-	 bo9AiQcZyAtWcdslgJG6m6KTPrTUr4EHAeb9UxvjCUXOrnVbSn9w2a1x4PoSJhiylQ
-	 ni/Kv+15ltC1A==
-Date: Thu, 28 Aug 2025 14:25:21 +0200
+	b=M2BS0PF0v2MJovso2mkRO7QWGECFNvby2Mbqw7yooKIxegv0sYrzWR8mIQ3adxwk5
+	 VlIzdqGvCF8RCvsS4UB356ijy1I1tm5bQC1sfgTgwuIXbPwkx5WZCinVtbnvf/0bE+
+	 zcgGHsZQ0/nZ8Px+LrIBynG89zvwTUUPJmwZHEAzoMGoDp+vaxIm25nLjEr0w+Nozl
+	 Q0UU9IhkIfoChTW7/00c/iru+JsugVdu4MDqIS+/AnP03aKZfj0FP35657eT+cmLqW
+	 wKL3c/TOrHbd7o0IENDpb2kAjV2DfmMSWSjn96FSKqFlrg6NuqBzQcksogP/296Bjy
+	 CL280DiYOwgng==
+Date: Thu, 28 Aug 2025 14:35:50 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
 	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
 	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 30/54] fs: change evict_dentries_for_decrypted_inodes
- to use refcount
-Message-ID: <20250828-risse-negieren-f9a3d1526782@brauner>
+Subject: Re: [PATCH v2 39/54] fs: remove I_WILL_FREE|I_FREEING check from
+ dquot.c
+Message-ID: <20250828-mundtot-gedacht-577d180facf7@brauner>
 References: <cover.1756222464.git.josef@toxicpanda.com>
- <283eebefe938d9a1dd4a3a162820058f3550505c.1756222465.git.josef@toxicpanda.com>
+ <e2c8fe9fa28fb6e52d0e47e38d2ef93c9527b84f.1756222465.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,36 +60,28 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <283eebefe938d9a1dd4a3a162820058f3550505c.1756222465.git.josef@toxicpanda.com>
+In-Reply-To: <e2c8fe9fa28fb6e52d0e47e38d2ef93c9527b84f.1756222465.git.josef@toxicpanda.com>
 
-On Tue, Aug 26, 2025 at 11:39:30AM -0400, Josef Bacik wrote:
-> Instead of checking for I_WILL_FREE|I_FREEING simply use the refcount to
-> make sure we have a live inode.
+On Tue, Aug 26, 2025 at 11:39:39AM -0400, Josef Bacik wrote:
+> We can use the reference count to see if the inode is live.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
-
-I have no idea how the lifetime of such decrypted inodes are managed.
-I suppose they don't carry a separate reference but are still somehow
-safe to be accessed based on the mk_decrypted_inodes list. In any case
-something must hold an i_obj_count if we want to use igrab() since I
-don't see any relevant rcu protection here.
-
->  fs/crypto/keyring.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  fs/quota/dquot.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-> index 7557f6a88b8f..969db498149a 100644
-> --- a/fs/crypto/keyring.c
-> +++ b/fs/crypto/keyring.c
-> @@ -956,13 +956,16 @@ static void evict_dentries_for_decrypted_inodes(struct fscrypt_master_key *mk)
->  
->  	list_for_each_entry(ci, &mk->mk_decrypted_inodes, ci_master_key_link) {
->  		inode = ci->ci_inode;
-> +
+> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+> index df4a9b348769..90e69653c261 100644
+> --- a/fs/quota/dquot.c
+> +++ b/fs/quota/dquot.c
+> @@ -1030,14 +1030,16 @@ static int add_dquot_ref(struct super_block *sb, int type)
+>  	spin_lock(&sb->s_inode_list_lock);
+>  	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
 >  		spin_lock(&inode->i_lock);
-> -		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
-> +		if (inode->i_state & I_NEW) {
+> -		if ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
+> +		if ((inode->i_state & I_NEW) ||
+>  		    !atomic_read(&inode->i_writecount) ||
+>  		    !dqinit_needed(inode, type)) {
 >  			spin_unlock(&inode->i_lock);
 >  			continue;
 >  		}
@@ -98,10 +90,8 @@ don't see any relevant rcu protection here.
 > +
 > +		if (!igrab(inode))
 > +			continue;
->  		spin_unlock(&mk->mk_decrypted_inodes_lock);
->  
->  		shrink_dcache_inode(inode);
-> -- 
-> 2.49.0
-> 
+
+Using this to drop a comment that I mentioned to you. I think we should
+have an iterator for this because we have the exact same pattern in so
+many places it's annoying.
 
