@@ -1,58 +1,57 @@
-Return-Path: <linux-ext4+bounces-9727-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9728-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2C79B396CD
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 10:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 70393B397C4
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 11:02:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDBE6189B9E6
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 08:24:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EDEE1C28384
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Aug 2025 09:02:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BE22DC323;
-	Thu, 28 Aug 2025 08:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A1C2D839F;
+	Thu, 28 Aug 2025 09:00:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+agvb9x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dgwBDpgN"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE7B849C;
-	Thu, 28 Aug 2025 08:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B3D1F4CAF;
+	Thu, 28 Aug 2025 09:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756369448; cv=none; b=kepfNMqSbvlE+JiVXnFkG8jMV85Q4zXCotixFJlZ1uK3mrtn9zS17LxJ6Wl4NcrkNcBW37oubjohNLWpWDeb8mL4wKtnybx0/kILZgjtj4PR1MJUHD8c1k+vFbhyC1I8m4ifOMi/mH4qGnIbFYnwRN/DXbUWq4U1PJw+5Qa0Zo0=
+	t=1756371636; cv=none; b=tmKX3w8l8IbI8tfTqcHsqWuJLFG7/s/ntLHUxMPQl2v+H9eFcOt+gUyYc/4TCU+5Q9R3836oV5Ow5Zne0QG544XF4YwFYXvV2+ll1GAYQJkROXK4efbabXVj/bSePp6Q5YB9jtVj+oJjdFHMm3otesAewtNvgSdawo0XPCM4hWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756369448; c=relaxed/simple;
-	bh=RwBgH5v8YJpYJqLz1ozvOeDtoOvRSy9/swn9P5xY8rA=;
+	s=arc-20240116; t=1756371636; c=relaxed/simple;
+	bh=aZU+O1QhNhNZNy5evwzSIDXT12+t3PtexQ5lHoMyOBs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TE4Qc9D8QWLgI24Jc7G+uSk2vbB495iGAABuIXTiS6+W/G5GFalLxOb3feH5SS7uV2NXbvGOlnACYujRLvhNLMslMxPRT0aW0MZk6QlIPlQnYeoUVHpX7Hn22P6sJTipss290INPjWAdV5rZMUXAU7jf0HCE5E3m/NT1xHXDpbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E+agvb9x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A975C4CEEB;
-	Thu, 28 Aug 2025 08:24:06 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iv0MyAMIc1K0WdSwtuFBQ16v6WIdD6KOCpIkHfJTh2FDCctfaKui6EPpP30umnQeB47v34p1xfrd4CfvDidhcjqRg4zbEIoA3qBgSZhO24v12Av4vo+TgpJazArq1W71C+u2D50gPdwZ+tiL2I4c3jpKsEsWvJ8JGrdbvmJ9yiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dgwBDpgN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C42FDC4CEEB;
+	Thu, 28 Aug 2025 09:00:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756369448;
-	bh=RwBgH5v8YJpYJqLz1ozvOeDtoOvRSy9/swn9P5xY8rA=;
+	s=k20201202; t=1756371635;
+	bh=aZU+O1QhNhNZNy5evwzSIDXT12+t3PtexQ5lHoMyOBs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E+agvb9xMMS/KKbuwl4cTD/dWT1EFAzP6plhYf24nKmZds2z75NT+ZFe6gsczanFR
-	 j2ny30OJGiybUrPBrZj2jGDvw8Iwu2Pz4j9sVrUavQJID0ddJlsPMVBfTvyimayPSV
-	 kxmRFpmGvs4b8R/BXx26GrpXT2T1SbnzAuRfjO8Ygk+BhJkaSoZWtzVSnHH+KY1PBC
-	 O+EDQTDWoqID5DXtyqCFcHCeEcHaC/e+5Dns/Ob0A+mbred93Iyucu6IOD+tP1/bv9
-	 Z1AGJQrf9yBJweJ3IN3b1y4mkedBDrAK1Wyz4mbgNu0tKSEfdbQ/Q0nB2uNBWd0n3L
-	 PQ4F+oSTwhuUA==
-Date: Thu, 28 Aug 2025 10:24:03 +0200
+	b=dgwBDpgN6xYqCx+/drcirAnhaQSj0q0MFROKBjy2C7xglkkL+CwxDTKl+VbKPX9p8
+	 na0GzKaR+zARaNUjprGTILPJIvztsQ66ESeHWG63JjRBVT8HRthjoVQfsmouEbMwLm
+	 EPeHdCpb3MozjNfvzfheb2Hsd0jlX+YFgo1+5ohUTpGp+Uq8g7GFzcq63FZljcmgnh
+	 RUXhlLH+Uw7DPwLhas3rVZjq57OhfeoQj7ZDrZSvlJdUQwwA4uBZX2rmwqnxWwGrSV
+	 x+TtUCxtKJpFOLbE5e9pJTLElxDiSfe4AazNqVYe/UtKvwLMYe0FrP/OvygsktYtbE
+	 NKKVj7JzPX6rg==
+Date: Thu, 28 Aug 2025 11:00:31 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
 	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
 	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 15/54] fs: maintain a list of pinned inodes
-Message-ID: <20250828-chorkonzert-forschen-0203eae65f7f@brauner>
+Subject: Re: [PATCH v2 17/54] fs: remove the inode from the LRU list on
+ unlink/rmdir
+Message-ID: <20250828-perfekt-juckreiz-1f018973edf1@brauner>
 References: <cover.1756222464.git.josef@toxicpanda.com>
- <35dc849a851470e2a31375ecdfdf70424844c871.1756222465.git.josef@toxicpanda.com>
- <20250827-gelandet-heizt-1f250f77bfc8@brauner>
- <20250827160756.GA2272053@perftesting>
+ <3552943716349efa4ff107bb590ac6b980183735.1756222465.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,77 +60,89 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250827160756.GA2272053@perftesting>
+In-Reply-To: <3552943716349efa4ff107bb590ac6b980183735.1756222465.git.josef@toxicpanda.com>
 
-On Wed, Aug 27, 2025 at 12:07:56PM -0400, Josef Bacik wrote:
-> On Wed, Aug 27, 2025 at 05:20:17PM +0200, Christian Brauner wrote:
-> > On Tue, Aug 26, 2025 at 11:39:15AM -0400, Josef Bacik wrote:
-> > > Currently we have relied on dirty inodes and inodes with cache on them
-> > > to simply be left hanging around on the system outside of an LRU. The
-> > > only way to make sure these inodes are eventually reclaimed is because
-> > > dirty writeback will grab a reference on the inode and then iput it when
-> > > it's done, potentially getting it on the LRU. For the cached case the
-> > > page cache deletion path will call inode_add_lru when the inode no
-> > > longer has cached pages in order to make sure the inode object can be
-> > > freed eventually.  In the unmount case we walk all inodes and free them
-> > > so this all works out fine.
-> > > 
-> > > But we want to eliminate 0 i_count objects as a concept, so we need a
-> > > mechanism to hold a reference on these pinned inodes. To that end, add a
-> > > list to the super block that contains any inodes that are cached for one
-> > > reason or another.
-> > > 
-> > > When we call inode_add_lru(), if the inode falls into one of these
-> > > categories, we will add it to the cached inode list and hold an
-> > > i_obj_count reference.  If the inode does not fall into one of these
-> > > categories it will be moved to the normal LRU, which is already holds an
-> > > i_obj_count reference.
-> > > 
-> > > The dirty case we will delete it from the LRU if it is on one, and then
-> > > the iput after the writeout will make sure it's placed onto the correct
-> > > list at that point.
-> > > 
-> > > The page cache case will migrate it when it calls inode_add_lru() when
-> > > deleting pages from the page cache.
-> > > 
-> > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > > ---
-> > 
-> > Ok, I'm trying to wrap my head around the justification for this new
-> > list. Currently we have inodes with a zero reference counts that aren't
-> > on any LRU. They just appear on sb->i_sb_list and are e.g., dealt with
-> > during umount (sync_filesystem() followed by evict_inodes()).
-> > 
-> > So they're either dealt with by writeback or by the page cache and are
-> > eventually put on the regular LRU or the filesystem shuts down before
-> > that happens.
-> > 
-> > They're easy to handle and recognize because their inode->i_count is
-> > zero.
-> > 
-> > Now you make the LRUs hold a full reference so it can be grabbed from
-> > the LRU again avoiding the zombie resurrection from zero. So to
-> > recognize inodes that are pinned internally due to being dirty or having
-> > pagecache pages attached to it you need to track them in a new list
-> > otherwise you can't really differentiate them and when to move them onto
-> > the LRU after writeback and pagecache is done with them.
-> > 
+On Tue, Aug 26, 2025 at 11:39:17AM -0400, Josef Bacik wrote:
+> We can end up with an inode on the LRU list or the cached list, then at
+> some point in the future go to unlink that inode and then still have an
+> elevated i_count reference for that inode because it is on one of these
+> lists.
 > 
-> Exactly. We need to put them somewhere so we can account for their reference.
+> The more common case is the cached list. We open a file, write to it,
+> truncate some of it which triggers the inode_add_lru code in the
+> pagecache, adding it to the cached LRU.  Then we unlink this inode, and
+> it exists until writeback or reclaim kicks in and removes the inode.
 > 
-> We could technically just use a flag and not have a list for this, and just use
-> the flag to indicate that the inode is pinned and the flag has a full reference
-> associated with it.
+> To handle this case, delete the inode from the LRU list when it is
+> unlinked, so we have the best case scenario for immediately freeing the
+> inode.
 > 
-> I did it this way because if I had a nickel for every time I needed to figure
-> out where a zombie inode was and had to do the most grotesque drgn magic to find
-> it, I'd have like 15 cents, which isn't a lot but weird that it's happened 3
-> times. Having a list makes it easier from a debugging perspective.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/namei.c | 30 +++++++++++++++++++++++++-----
+>  1 file changed, 25 insertions(+), 5 deletions(-)
 > 
-> But again, we have ->s_inodes, and I can just scan that list and look for
-> I_LRU_CACHED. We'd still need to hold a full reference for that, but it would
-> eliminate the need for another list if that's more preferable?  Thanks,
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 138a693c2346..e56dcb5747e4 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -4438,6 +4438,7 @@ SYSCALL_DEFINE2(mkdir, const char __user *, pathname, umode_t, mode)
+>  int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
+>  		     struct dentry *dentry)
+>  {
+> +	struct inode *inode = dentry->d_inode;
+>  	int error = may_delete(idmap, dir, dentry, 1);
+>  
+>  	if (error)
+> @@ -4447,11 +4448,11 @@ int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
+>  		return -EPERM;
+>  
+>  	dget(dentry);
+> -	inode_lock(dentry->d_inode);
+> +	inode_lock(inode);
+>  
+>  	error = -EBUSY;
+>  	if (is_local_mountpoint(dentry) ||
+> -	    (dentry->d_inode->i_flags & S_KERNEL_FILE))
+> +	    (inode->i_flags & S_KERNEL_FILE))
+>  		goto out;
+>  
+>  	error = security_inode_rmdir(dir, dentry);
+> @@ -4463,12 +4464,21 @@ int vfs_rmdir(struct mnt_idmap *idmap, struct inode *dir,
+>  		goto out;
+>  
+>  	shrink_dcache_parent(dentry);
+> -	dentry->d_inode->i_flags |= S_DEAD;
+> +	inode->i_flags |= S_DEAD;
+>  	dont_mount(dentry);
+>  	detach_mounts(dentry);
+>  
+>  out:
+> -	inode_unlock(dentry->d_inode);
+> +	/*
+> +	 * The inode may be on the LRU list, so delete it from the LRU at this
+> +	 * point in order to make sure that the inode is freed as soon as
+> +	 * possible.
+> +	 */
+> +	spin_lock(&inode->i_lock);
+> +	inode_lru_list_del(inode);
+> +	spin_unlock(&inode->i_lock);
 
-I don't mind the additional list and the sb struct is not very size
-sensitive anyway.
+I think it should be possible to optimize this with an appropriate
+helper doing:
+
+static inline bool inode_on_lru(const struct inode *inode)
+{
+	return !!(READ_ONCE(inode->i_state) & (I_LRU | I_CACHED_LRU));
+}
+
+then
+
+if (inode_on_lru(inode)) {
+	spin_lock(&inode->i_lock);
+	inode_lru_list_del(inode);
+	spin_unlock(&inode->i_lock);
+}
+
+so you don't needlessly acquire i_lock.
 
