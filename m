@@ -1,302 +1,229 @@
-Return-Path: <linux-ext4+bounces-9764-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9765-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E69EB3CC62
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Aug 2025 17:55:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DBF1B3CDD1
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 Aug 2025 19:09:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B5891BA2512
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Aug 2025 15:55:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5A583BAFB5
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 Aug 2025 17:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFC92580F3;
-	Sat, 30 Aug 2025 15:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD5F12853E2;
+	Sat, 30 Aug 2025 17:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kZxJv6Fg"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I6oOpXxv"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADE722A817;
-	Sat, 30 Aug 2025 15:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA378271A7B
+	for <linux-ext4@vger.kernel.org>; Sat, 30 Aug 2025 17:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756569291; cv=none; b=Gr8ibDSP4j3rnP/5riWwfMClhPfMkGDrq/zSRs4Ih76Cgyhs21LZzBEYRxwBJPC6bqI4vP8lDYmSm9vz5jqfShe0+duFAWj8AsK9PkWAx8dR6M9MldcvgYYDVakBKSzauPBp2kuCEZAqBsnISlji4BoXd4ZA3vF37vJ2ZQZS3v8=
+	t=1756573759; cv=none; b=dgMn1uJMKA08Y5OFEPujw1V2iJRoxjo31G2FipvofNTSOUTjDKwO8WhInvvkqwdVygb9/AW2AYQf4jraciFLz4CEomAGlnfbMxaLPiHWdQM/T6N8iCSluddlp6x8UUMXve+6GwF1ajpWNmoM47S/cfV/r6Edq47Si6Lx7d7DI9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756569291; c=relaxed/simple;
-	bh=GVVHVXs4UCPiQnVcR2u/7qQBtlpWdwz3nn6Jlfw7yCw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nVx87DDYmyJM8Vx2cfA8jkGlhRQ6HSxbeM0bLdbLp7PcNLd8cH9zVQlwWsDmXOgfP8akU270qTU72Z9G3D8TZ7WpYDCIokaa6uct1dCZu39PrtDttQfmimOSljpJNU5zxke8vwHKr2aHr+znMxGkuP4VJ3bWpG40CTkfh4GpWQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kZxJv6Fg; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aff0775410eso211014566b.0;
-        Sat, 30 Aug 2025 08:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756569288; x=1757174088; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JKnJgrbmUOh2oDMSjOOuFdf8pubpSvEuvnnxtiEFkJg=;
-        b=kZxJv6FgYfp20p56z282eMsD5h5aFhsexDEwKvBCx5Td18ScqSqiY5CvPPlAFUKYP2
-         jbXqTpw/pqQ0vDDLmDsKGeiLmtgJBTpdmLkn0t0a8FUAETVmPZX+v5ct9OAwkipIe4qQ
-         InRnmaXNXHiyK3Yo9+51jzvwmf5QiqkctV2zN4m4hIhPJCZ/EQ+0aqP+KfJYbFhgYizV
-         1p9OAjrjtsp6EfVq8wPGybelEeZhZiqL4ZNycT31KFAzgcaYvXcmLyCM5pmFCtzqMucA
-         Kxkyhi7rxzImb9Xu/b5YNuxQbMRUTz/Jvl7+Hf3BPKMNXwlhqeEhHEFKYIwmNNHusIGp
-         14jw==
+	s=arc-20240116; t=1756573759; c=relaxed/simple;
+	bh=JcLfCr1fNOZJnTTEBFUzA+5oLmKS60tKVwGIhQXW+GI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HO2x/TUeybXhQeWMX1AxC9yVLZA5hwIXPwAO4HNW+COYJG/szVjOco+lnkmmdPsqRfWfa68oCGBfCRvkCE+NGmQamBPmiucHUv0auH8WhQQjggE/eW9Ezj4bWPUCCvqWnci2gAtOKi0yCTd4qkyMWVn9KNgj3zYEqQ3r9gKgkBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I6oOpXxv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1756573756;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+sQOUl1w6wrKYsvuJH5QyydsTUnK4b9iWYOLl0ehlfc=;
+	b=I6oOpXxv6bWbFKf5QtBf96xPNY97p3Ncd6xqrlUW4nk15T/wZh90ansDonpOovTcqb46t/
+	q+EwYUekiGYMwBcx+x7hqfC+v6zLEv7hCWvMaXViJFO2x3Qpc3s+2UiV49ILlRyeEHYUwn
+	Gla/N1B9bkEHgsJETBepASDU8enzlIM=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-113-NDLtSNqQNLq-i6KHtdKpRQ-1; Sat, 30 Aug 2025 13:09:14 -0400
+X-MC-Unique: NDLtSNqQNLq-i6KHtdKpRQ-1
+X-Mimecast-MFC-AGG-ID: NDLtSNqQNLq-i6KHtdKpRQ_1756573753
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-248eec89618so26639035ad.1
+        for <linux-ext4@vger.kernel.org>; Sat, 30 Aug 2025 10:09:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756569288; x=1757174088;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JKnJgrbmUOh2oDMSjOOuFdf8pubpSvEuvnnxtiEFkJg=;
-        b=mwG6ZBr9HiqAyLeciW+CYl7UE4bIYMbNb44kmyKew0ntbDgTfw3q7IXo8JRTuQKmLd
-         eUz1klYy4CrpKfRFeTSB7vOoNcjo4fjoCQBCkHOKcjM3VSr1uXryA43Lf2nQgUO9o8wV
-         Ua5TbvjFN8mj9+VedMK+Jhyjc6Kc+OmGTTWMkUFueDBt635a49zBqJsoJqa3DEwQFpke
-         ZqRhQTNzL6wJ2ij1r4cz+yPT7fI7qMfFU12H6QrgaPkgn9LvJqc8UoSw/Mubyb1KOzw2
-         V4TMl+IE8z3ioABDiCPIQisqAYFg61nUMT7FWd/MTPo3roPaEVtyYGYemFORkhO1pHi/
-         c25w==
-X-Forwarded-Encrypted: i=1; AJvYcCV2oZrw8/SueE4U7LYXpW3PK9vbJyOcNnezrTH5b8WJi4nmi5L3PNGYuxFMfPnohreHoQqI5e56GIRu8g==@vger.kernel.org, AJvYcCVi22YkWU9zmd7GLTBHxo+NPs5Dh3MdJubGEDKotCVIBFmqDhOIin6BnXg5DLOk5KnMTUO+81tOil91C9SL@vger.kernel.org, AJvYcCWUYClshOFhaHExST5SZ/vWImAQJpNnNWwa+SlEuoII0R0U8xnY6tbCQcZQ+jriiKe1xNkM3VOoedCpxA==@vger.kernel.org, AJvYcCXkOXcUYQUNOUjhWJ464HArW/f9VjyNaROp/ICRlNQwEHNeYtjynMqQhcAL0UnxjD824mJ0z9yrUv+t@vger.kernel.org, AJvYcCXov/6DBJ40RMwTVOX/eaua8OOPamK5qMn3HFUercKxPMdSFD6ygpnTEsYNSPB2I/ilXpCChjHQTCJh3TVxcg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqFYRJEVPc3AoojHPL6tRf418w6fu4otXG409XuZTx1+DZAMrA
-	j6SFTDnTZX7ZwYyFf/l2jckSJwumIdsAjGFv3UaRHc67P1jltMHAS+7w0fBIs8kjJL3vlW95D7C
-	6Wttjb1tl4J7pi/brJBJx8HaCgnl8RYw=
-X-Gm-Gg: ASbGncuQGHuJEMxurp4dJi+cSPET4Po4L3GomjNwy2xdAuPrMHPshHqEJwqs6enM22E
-	x/5HuIzNV/rrhtJwbhmPG6sIi43llMOqnApEh9D/uNJmNHpQbVkecFLPiE/rglTdO0zyMnWea73
-	nztSlc0f4lD5XtvckG5k8G3EvO3eE0R1tUECY0ZKhXBPswRBJaDm6zCriiEai8GZ3Ra5oEBt+SB
-	7EUjffpLaySSpRnNw==
-X-Google-Smtp-Source: AGHT+IElC6UnQKbYiLEokii4c0QnJGyNmpiKRwOAH3fYC7dsMe19ke8+l5PIvp3HUmB7xvmH/nqLeMEzovT7pA11oF8=
-X-Received: by 2002:a17:907:60cb:b0:afe:834e:ac6c with SMTP id
- a640c23a62f3a-b00f67e0f14mr269568466b.7.1756569287634; Sat, 30 Aug 2025
- 08:54:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1756573753; x=1757178553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+sQOUl1w6wrKYsvuJH5QyydsTUnK4b9iWYOLl0ehlfc=;
+        b=NsdX4PpVBR/QvHdT+9KByGUhvlS/uWX33VPQMMgcHNSJmAUXHayTqESE+ve7gkL1tn
+         oc/89P01obn2sBfKL9ZkWiSp84RaUJem8S76FioaCi1k7sbqGA9d9suNXwpEA8w8r+kS
+         65S9Z4GzsnLZ3hHMAeeAG9v23n/G7ymLBqaoqtTq7+GltoFNBp16maCkFSP3X+RoD2YH
+         NKvLwQ/xQ51eOhldUKC1szUek50oyQ5x4kzNKEx2+tJ0GfeTneM4RfpnB3DeZOr78cLa
+         XmGG0L5iRj1ynHqc0K9JUFjseg8wDMEAnYz3I31+/DwxX0Z1WW78gI3MJxjSOv3PmRkL
+         tatg==
+X-Forwarded-Encrypted: i=1; AJvYcCXwu8Wp4q3LpP7sQKzXVXFRDvxbX1mqtgnITSINXRDJhKwYs0MyIGGjGeaAexll9UEgXKMchpGq8FhL@vger.kernel.org
+X-Gm-Message-State: AOJu0YysNT9iEAaGNufstcu/GpCQCdN8Yqkm29ICN0m52VKzJjymudGO
+	MVosxfROvjpUvJrfUgb6SuzcEbNSinfvcat535pad/bMenTjohC7Rz0TQG2zLlxIHGkTonGV2zE
+	AhcJMTuFpB80OxIIBvuksrqQl4qbogyWq2zF5W2fXDgulxB2IpxNbfI7HND+Spic=
+X-Gm-Gg: ASbGncv9MLKLV68rdzFVYuMChN3B2dKZZnnnx36XOuad7sD1hRaieh1KiETRVVO1OMC
+	5ZK34AjKbjSX6EpLCGdkfD8cEtUYP3K0+IHAAn3Y5b8oXilmX+bbeLJW2mIH1TLJlkRKrbNoj+8
+	5lqTzh2yRsH7K5LjRLQksXMBu6zPU5PHzP1Jrc0reRWUpTLAY/CkazXI5U7O4yQxaVqboU66cXc
+	tfzf1iiR3EAjVE670Lu+3GOfOoiYFnt+1bGr/aXjAACbkH7ZUqvy0OYzJwVlfRy/Y5zkF3TMs5j
+	3LYbV+69fKFpMtt2mcP7efOl4B2JAORZ/Nn/KPMSC2GiCS9kJrFqbpXB9qZIoEjZexl6W6v2ldu
+	57vy5
+X-Received: by 2002:a17:903:190:b0:246:e8cc:8cef with SMTP id d9443c01a7336-24944870a4emr42656245ad.3.1756573753170;
+        Sat, 30 Aug 2025 10:09:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFufkm14+kWgLeyAtnWDENYX2tBc3g+OtzDJJ2/KfgKYaBdKqAHSLkaQW2S2IFh13FYgWrI7Q==
+X-Received: by 2002:a17:903:190:b0:246:e8cc:8cef with SMTP id d9443c01a7336-24944870a4emr42656025ad.3.1756573752783;
+        Sat, 30 Aug 2025 10:09:12 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24a92f89763sm16457905ad.48.2025.08.30.10.09.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Aug 2025 10:09:12 -0700 (PDT)
+Date: Sun, 31 Aug 2025 01:09:07 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, fstests@vger.kernel.org,
+	Ritesh Harjani <ritesh.list@gmail.com>, john.g.garry@oracle.com,
+	tytso@mit.edu, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v5 02/12] common/rc: Add _require_fio_version helper
+Message-ID: <20250830170907.htlqcmafntjwkjf4@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <cover.1755849134.git.ojaswin@linux.ibm.com>
+ <955d47b2534d9236adbd2bbd13598bbd1da8fc04.1755849134.git.ojaswin@linux.ibm.com>
+ <20250825160801.ffktqauw2o6l5ql3@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <aK8hUqdee-JFcFHn@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <20250828150905.GB8092@frogsfrogsfrogs>
+ <aLHcgyWtwqMTX-Mz@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250827-kraut-anekdote-35789fddbb0b@brauner> <20250827162410.4110657-1-mjguzik@gmail.com>
-In-Reply-To: <20250827162410.4110657-1-mjguzik@gmail.com>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Sat, 30 Aug 2025 17:54:35 +0200
-X-Gm-Features: Ac12FXxw_rI44Vo3uX6aJ6E7RnW-AezM7w6oV9lBe-qseTZJvVTh6oLpdGUdJuE
-Message-ID: <CAGudoHE5UmqcbZD1apLsc7G=YmUsDQ=-i=ZQHSD=4qAtsYa3yA@mail.gmail.com>
-Subject: Re: [PATCH] fs: revamp iput()
-To: brauner@kernel.org
-Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, kernel-team@fb.com, 
-	amir73il@gmail.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-xfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aLHcgyWtwqMTX-Mz@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 
-I'm writing a long response to this series, in the meantime I noticed
-this bit landed in
-https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=3Dvfs=
--6.18.inode.refcount.preliminaries&id=3D3cba19f6a00675fbc2af0987dfc90e216e6=
-cfb74
-but with some whitespace issues in comments -- they are indented with
-spaces instead of tabs after the opening line.
+On Fri, Aug 29, 2025 at 10:29:47PM +0530, Ojaswin Mujoo wrote:
+> On Thu, Aug 28, 2025 at 08:09:05AM -0700, Darrick J. Wong wrote:
+> > On Wed, Aug 27, 2025 at 08:46:34PM +0530, Ojaswin Mujoo wrote:
+> > > On Tue, Aug 26, 2025 at 12:08:01AM +0800, Zorro Lang wrote:
+> > > > On Fri, Aug 22, 2025 at 01:32:01PM +0530, Ojaswin Mujoo wrote:
+> > > > > The main motivation of adding this function on top of _require_fio is
+> > > > > that there has been a case in fio where atomic= option was added but
+> > > > > later it was changed to noop since kernel didn't yet have support for
+> > > > > atomic writes. It was then again utilized to do atomic writes in a later
+> > > > > version, once kernel got the support. Due to this there is a point in
+> > > > > fio where _require_fio w/ atomic=1 will succeed even though it would
+> > > > > not be doing atomic writes.
+> > > > > 
+> > > > > Hence, add an explicit helper to ensure tests to require specific
+> > > > > versions of fio to work past such issues.
+> > > > 
+> > > > Actually I'm wondering if fstests really needs to care about this. This's
+> > > > just a temporary issue of fio, not kernel or any fs usespace program. Do
+> > > > we need to add a seperated helper only for a temporary fio issue? If fio
+> > > > doesn't break fstests running, let it run. Just the testers install proper
+> > > > fio (maybe latest) they need. What do you and others think?
+> > 
+> > Are there obvious failures if you try to run these new atomic write
+> > tests on a system with the weird versions of fio that have the no-op
+> > atomic= functionality?  I'm concerned that some QA person is going to do
+> > that unwittingly and report that everything is ok when in reality they
+> > didn't actually test anything.
+> 
+> I think John has a bit more background but afaict, RWF_ATOMIC support
+> was added (fio commit: d01612f3ae25) but then removed (commit:
+> a25ba6c64fe1) since the feature didn't make it to kernel in time.
+> However the option seemed to be kept in place. Later, commit 40f1fc11d
+> added the support back in a later version of fio. 
+> 
+> So yes, I think there are some version where fio will accept atomic=1
+> but not act upon it and the tests may start failing with no apparent
+> reason.
 
-I verified the mail I sent does not have it, so I'm guessing this was
-copy-pasted?
+The concern from Darrick might be a problem. May I ask which fio commit
+brought in this issue, and which fio commit fixed it? If this issue be
+brought in and fixed within a fio release, it might be better. But if it
+crosses fio release, that might be bad, then we might be better to have
+this helper.
 
-Tabing them by hand does the trick, below is my copy-paste as proof,
-please indent by hand in your editor ;)
+Thanks,
+Zorro
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 2db680a37235..fe4868e2a954 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1915,10 +1915,10 @@ void iput(struct inode *inode)
-        lockdep_assert_not_held(&inode->i_lock);
-        VFS_BUG_ON_INODE(inode->i_state & I_CLEAR, inode);
-        /*
--        * Note this assert is technically racy as if the count is bogusly
--        * equal to one, then two CPUs racing to further drop it can both
--        * conclude it's fine.
--        */
-+        * Note this assert is technically racy as if the count is bogusly
-+        * equal to one, then two CPUs racing to further drop it can both
-+        * conclude it's fine.
-+        */
-        VFS_BUG_ON_INODE(atomic_read(&inode->i_count) < 1, inode);
+> 
+> Regards,
+> ojaswin
+> > 
+> > --D
+> > 
+> > > > Thanks,
+> > > > Zorro
+> > > 
+> > > Hey Zorro,
+> > > 
+> > > Sure I'm okay with not keeping the helper and letting the user make sure
+> > > the fio version is correct.
+> > > 
+> > > @John, does that sound okay?
+> > > 
+> > > Regards,
+> > > ojaswin
+> > > > 
+> > > > > 
+> > > > > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > > > > ---
+> > > > >  common/rc | 32 ++++++++++++++++++++++++++++++++
+> > > > >  1 file changed, 32 insertions(+)
+> > > > > 
+> > > > > diff --git a/common/rc b/common/rc
+> > > > > index 35a1c835..f45b9a38 100644
+> > > > > --- a/common/rc
+> > > > > +++ b/common/rc
+> > > > > @@ -5997,6 +5997,38 @@ _max() {
+> > > > >  	echo $ret
+> > > > >  }
+> > > > >  
+> > > > > +# Check the required fio version. Examples:
+> > > > > +#   _require_fio_version 3.38 (matches 3.38 only)
+> > > > > +#   _require_fio_version 3.38+ (matches 3.38 and above)
+> > > > > +#   _require_fio_version 3.38- (matches 3.38 and below)
+> > > > > +_require_fio_version() {
+> > > > > +	local req_ver="$1"
+> > > > > +	local fio_ver
+> > > > > +
+> > > > > +	_require_fio
+> > > > > +	_require_math
+> > > > > +
+> > > > > +	fio_ver=$(fio -v | cut -d"-" -f2)
+> > > > > +
+> > > > > +	case "$req_ver" in
+> > > > > +	*+)
+> > > > > +		req_ver=${req_ver%+}
+> > > > > +		test $(_math "$fio_ver >= $req_ver") -eq 1 || \
+> > > > > +			_notrun "need fio >= $req_ver (found $fio_ver)"
+> > > > > +		;;
+> > > > > +	*-)
+> > > > > +		req_ver=${req_ver%-}
+> > > > > +		test $(_math "$fio_ver <= $req_ver") -eq 1 || \
+> > > > > +			_notrun "need fio <= $req_ver (found $fio_ver)"
+> > > > > +		;;
+> > > > > +	*)
+> > > > > +		req_ver=${req_ver%-}
+> > > > > +		test $(_math "$fio_ver == $req_ver") -eq 1 || \
+> > > > > +			_notrun "need fio = $req_ver (found $fio_ver)"
+> > > > > +		;;
+> > > > > +	esac
+> > > > > +}
+> > > > > +
+> > > > >  ################################################################################
+> > > > >  # make sure this script returns success
+> > > > >  /bin/true
+> > > > > -- 
+> > > > > 2.49.0
+> > > > > 
+> > > > 
+> > > 
+> 
 
-        if (atomic_add_unless(&inode->i_count, -1, 1))
-@@ -1942,9 +1942,9 @@ void iput(struct inode *inode)
-        }
-
-        /*
--        * iput_final() drops ->i_lock, we can't assert on it as the inode =
-may
--        * be deallocated by the time the call returns.
--        */
-+        * iput_final() drops ->i_lock, we can't assert on it as the inode =
-may
-+        * be deallocated by the time the call returns.
-+        */
-        iput_final(inode);
- }
- EXPORT_SYMBOL(iput);
-
-While here, vim told me about spaces instead of tabs in 2 more spots
-in the file. Again to show the lines:
-
-diff --git a/fs/inode.c b/fs/inode.c
-index 2db680a37235..833de5457a06 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -550,11 +550,11 @@ static void __inode_add_lru(struct inode *inode,
-bool rotate)
- struct wait_queue_head *inode_bit_waitqueue(struct wait_bit_queue_entry *w=
-qe,
-                                            struct inode *inode, u32 bit)
- {
--        void *bit_address;
-+       void *bit_address;
-
--        bit_address =3D inode_state_wait_address(inode, bit);
--        init_wait_var_entry(wqe, bit_address, 0);
--        return __var_waitqueue(bit_address);
-+       bit_address =3D inode_state_wait_address(inode, bit);
-+       init_wait_var_entry(wqe, bit_address, 0);
-+       return __var_waitqueue(bit_address);
- }
- EXPORT_SYMBOL(inode_bit_waitqueue);
-@@ -2938,7 +2938,7 @@ EXPORT_SYMBOL(mode_strip_sgid);
-  */
- void dump_inode(struct inode *inode, const char *reason)
- {
--       pr_warn("%s encountered for inode %px", reason, inode);
-+       pr_warn("%s encountered for inode %px", reason, inode);
- }
-
- EXPORT_SYMBOL(dump_inode);
-
-Christian, I think it would be the most expedient if you just made
-changes on your own with whatever commit message you see fit. No need
-to mention I brought this up. If you insist I can send a patch.
-
-On Wed, Aug 27, 2025 at 6:24=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> w=
-rote:
->
-> The material change is I_DIRTY_TIME handling without a spurious ref
-> acquire/release cycle.
->
-> While here a bunch of smaller changes:
-> 1. predict there is an inode -- bpftrace suggests one is passed vast
->    majority of the time
-> 2. convert BUG_ON into VFS_BUG_ON_INODE
-> 3. assert on ->i_count
-> 4. assert ->i_lock is not held
-> 5. flip the order of I_DIRTY_TIME and nlink count checks as the former
->    is less likely to be true
->
-> I verified atomic_read(&inode->i_count) does not show up in asm if
-> debug is disabled.
->
-> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
-> ---
->
-> The routine kept annoying me, so here is a further revised variant.
->
-> I verified this compiles, but I still cannot runtime test. I'm sorry for
-> that.  My signed-off is conditional on a good samaritan making sure it
-> works :)
->
-> diff compared to the thing I sent "informally":
-> - if (unlikely(!inode))
-> - asserts
-> - slightly reworded iput_final commentary
-> - unlikely() on the second I_DIRTY_TIME check
->
-> Given the revamp I think it makes sense to attribute the change to me,
-> hence a "proper" mail.
->
-> The thing surviving from the submission by Josef is:
-> +       if (atomic_add_unless(&inode->i_count, -1, 1))
-> +               return;
->
-> And of course he is the one who brought up the spurious refcount trip in
-> the first place.
->
-> I'm happy with Reported-by, Co-developed-by or whatever other credit
-> as you guys see fit.
->
-> That aside I think it would be nice if NULL inodes passed to iput
-> became illegal, but that's a different story for another day.
->
->  fs/inode.c | 46 +++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 35 insertions(+), 11 deletions(-)
->
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 01ebdc40021e..01a554e11279 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -1908,20 +1908,44 @@ static void iput_final(struct inode *inode)
->   */
->  void iput(struct inode *inode)
->  {
-> -       if (!inode)
-> +       if (unlikely(!inode))
->                 return;
-> -       BUG_ON(inode->i_state & I_CLEAR);
-> +
->  retry:
-> -       if (atomic_dec_and_lock(&inode->i_count, &inode->i_lock)) {
-> -               if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
-> -                       atomic_inc(&inode->i_count);
-> -                       spin_unlock(&inode->i_lock);
-> -                       trace_writeback_lazytime_iput(inode);
-> -                       mark_inode_dirty_sync(inode);
-> -                       goto retry;
-> -               }
-> -               iput_final(inode);
-> +       lockdep_assert_not_held(&inode->i_lock);
-> +       VFS_BUG_ON_INODE(inode->i_state & I_CLEAR, inode);
-> +       /*
-> +        * Note this assert is technically racy as if the count is bogusl=
-y
-> +        * equal to one, then two CPUs racing to further drop it can both
-> +        * conclude it's fine.
-> +        */
-> +       VFS_BUG_ON_INODE(atomic_read(&inode->i_count) < 1, inode);
-> +
-> +       if (atomic_add_unless(&inode->i_count, -1, 1))
-> +               return;
-> +
-> +       if ((inode->i_state & I_DIRTY_TIME) && inode->i_nlink) {
-> +               trace_writeback_lazytime_iput(inode);
-> +               mark_inode_dirty_sync(inode);
-> +               goto retry;
->         }
-> +
-> +       spin_lock(&inode->i_lock);
-> +       if (unlikely((inode->i_state & I_DIRTY_TIME) && inode->i_nlink)) =
-{
-> +               spin_unlock(&inode->i_lock);
-> +               goto retry;
-> +       }
-> +
-> +       if (!atomic_dec_and_test(&inode->i_count)) {
-> +               spin_unlock(&inode->i_lock);
-> +               return;
-> +       }
-> +
-> +       /*
-> +        * iput_final() drops ->i_lock, we can't assert on it as the inod=
-e may
-> +        * be deallocated by the time the call returns.
-> +        */
-> +       iput_final(inode);
->  }
->  EXPORT_SYMBOL(iput);
->
-> --
-> 2.43.0
->
-
-
---=20
-Mateusz Guzik <mjguzik gmail.com>
 
