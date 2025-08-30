@@ -1,113 +1,302 @@
-Return-Path: <linux-ext4+bounces-9763-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9764-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E290B3CA90
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Aug 2025 13:29:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E69EB3CC62
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 Aug 2025 17:55:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EE5C567413
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Aug 2025 11:29:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B5891BA2512
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 Aug 2025 15:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0A526FA6F;
-	Sat, 30 Aug 2025 11:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFC92580F3;
+	Sat, 30 Aug 2025 15:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=maltris.org header.i=@maltris.org header.b="aD/6LoNY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kZxJv6Fg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from host6.manage-it-for.me (host6.manage-it-for.me [88.99.208.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B245E26980B
-	for <linux-ext4@vger.kernel.org>; Sat, 30 Aug 2025 11:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.99.208.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADE722A817;
+	Sat, 30 Aug 2025 15:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756553386; cv=none; b=Vr0d2U/FDSPJbQFOPnxNjH/pRUW2Jd6JbACIIBuXMOvxRe01Au93mefks/DF2qlfE+rd8vWxAL2XYo4/GquqFu3ZhGYyxRHTFDKGZgrdigt2BtV2W7HQApaY8xK0lXSeFl0/63AulQTcik67+jLrOMI5ROGnr/1PnuncqTGsUrI=
+	t=1756569291; cv=none; b=Gr8ibDSP4j3rnP/5riWwfMClhPfMkGDrq/zSRs4Ih76Cgyhs21LZzBEYRxwBJPC6bqI4vP8lDYmSm9vz5jqfShe0+duFAWj8AsK9PkWAx8dR6M9MldcvgYYDVakBKSzauPBp2kuCEZAqBsnISlji4BoXd4ZA3vF37vJ2ZQZS3v8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756553386; c=relaxed/simple;
-	bh=CImg/PEcvgX0SzR6YQ0ybMzfQ4wu7zamQ8tSYeQ8ons=;
-	h=From:To:MIME-Version:Date:Subject:Message-ID:Content-Type; b=CbOo2oN6Ak43SxA+jHQs/thEmzsh7KVSLWlGUy+f9wwbOt55jCm4LaAPqrb23s8qH9zjv3W6sLS5nye27SLv3pCB1MGKasQeGg/K240+M8nPJPbf0vbGTVGolyYF+KIZObD4Sx0pEH5w0VUVomC4pTEJSvuN+qswTRWNWhg1/7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maltris.org; spf=pass smtp.mailfrom=maltris.org; dkim=pass (2048-bit key) header.d=maltris.org header.i=@maltris.org header.b=aD/6LoNY; arc=none smtp.client-ip=88.99.208.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maltris.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maltris.org
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPA id 027AFC03D0
-	for <linux-ext4@vger.kernel.org>; Sat, 30 Aug 2025 13:29:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maltris.org; s=dkim;
-	t=1756553383; h=from:subject:date:message-id:to:mime-version:content-type:
-	 content-transfer-encoding; bh=CImg/PEcvgX0SzR6YQ0ybMzfQ4wu7zamQ8tSYeQ8ons=;
-	b=aD/6LoNYf9StoIVTzDxirG7Ylf8NKJLGu+Nl9OSNAKQXu923vnIr+xozC5DQTiqSd7QSXU
-	Xh3EHzmoXjhgiuMLBsoJQZi+dWW3VcqKBbmY2VmQ5pMr8yYb2Ytpgw+PCLW5AVNxFyFHgR
-	rMk189c1xM8KnoO4wBsr6We4tXCYbu+2ErUWYlDG1s7m4OBm1jGe3R/WeDPyjGORe7n6fK
-	RIaaifp0PFtshb5wvguT33Kt+5SwlE0nbuQ0LAcSu9O5YVf7iw4/i17yBldv/1yAw8/hmz
-	1DbVLVCEyC/wb+iaLRV2axjcMyREGb/+5L8cbpYsFv8COoYiq8a5hJ6PzaCocA==
-From: "Malte Schmidt" <m@maltris.org>
-To: linux-ext4@vger.kernel.org
-User-Agent: SOGoMail 5.12.0
+	s=arc-20240116; t=1756569291; c=relaxed/simple;
+	bh=GVVHVXs4UCPiQnVcR2u/7qQBtlpWdwz3nn6Jlfw7yCw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nVx87DDYmyJM8Vx2cfA8jkGlhRQ6HSxbeM0bLdbLp7PcNLd8cH9zVQlwWsDmXOgfP8akU270qTU72Z9G3D8TZ7WpYDCIokaa6uct1dCZu39PrtDttQfmimOSljpJNU5zxke8vwHKr2aHr+znMxGkuP4VJ3bWpG40CTkfh4GpWQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kZxJv6Fg; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aff0775410eso211014566b.0;
+        Sat, 30 Aug 2025 08:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756569288; x=1757174088; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JKnJgrbmUOh2oDMSjOOuFdf8pubpSvEuvnnxtiEFkJg=;
+        b=kZxJv6FgYfp20p56z282eMsD5h5aFhsexDEwKvBCx5Td18ScqSqiY5CvPPlAFUKYP2
+         jbXqTpw/pqQ0vDDLmDsKGeiLmtgJBTpdmLkn0t0a8FUAETVmPZX+v5ct9OAwkipIe4qQ
+         InRnmaXNXHiyK3Yo9+51jzvwmf5QiqkctV2zN4m4hIhPJCZ/EQ+0aqP+KfJYbFhgYizV
+         1p9OAjrjtsp6EfVq8wPGybelEeZhZiqL4ZNycT31KFAzgcaYvXcmLyCM5pmFCtzqMucA
+         Kxkyhi7rxzImb9Xu/b5YNuxQbMRUTz/Jvl7+Hf3BPKMNXwlhqeEhHEFKYIwmNNHusIGp
+         14jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756569288; x=1757174088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JKnJgrbmUOh2oDMSjOOuFdf8pubpSvEuvnnxtiEFkJg=;
+        b=mwG6ZBr9HiqAyLeciW+CYl7UE4bIYMbNb44kmyKew0ntbDgTfw3q7IXo8JRTuQKmLd
+         eUz1klYy4CrpKfRFeTSB7vOoNcjo4fjoCQBCkHOKcjM3VSr1uXryA43Lf2nQgUO9o8wV
+         Ua5TbvjFN8mj9+VedMK+Jhyjc6Kc+OmGTTWMkUFueDBt635a49zBqJsoJqa3DEwQFpke
+         ZqRhQTNzL6wJ2ij1r4cz+yPT7fI7qMfFU12H6QrgaPkgn9LvJqc8UoSw/Mubyb1KOzw2
+         V4TMl+IE8z3ioABDiCPIQisqAYFg61nUMT7FWd/MTPo3roPaEVtyYGYemFORkhO1pHi/
+         c25w==
+X-Forwarded-Encrypted: i=1; AJvYcCV2oZrw8/SueE4U7LYXpW3PK9vbJyOcNnezrTH5b8WJi4nmi5L3PNGYuxFMfPnohreHoQqI5e56GIRu8g==@vger.kernel.org, AJvYcCVi22YkWU9zmd7GLTBHxo+NPs5Dh3MdJubGEDKotCVIBFmqDhOIin6BnXg5DLOk5KnMTUO+81tOil91C9SL@vger.kernel.org, AJvYcCWUYClshOFhaHExST5SZ/vWImAQJpNnNWwa+SlEuoII0R0U8xnY6tbCQcZQ+jriiKe1xNkM3VOoedCpxA==@vger.kernel.org, AJvYcCXkOXcUYQUNOUjhWJ464HArW/f9VjyNaROp/ICRlNQwEHNeYtjynMqQhcAL0UnxjD824mJ0z9yrUv+t@vger.kernel.org, AJvYcCXov/6DBJ40RMwTVOX/eaua8OOPamK5qMn3HFUercKxPMdSFD6ygpnTEsYNSPB2I/ilXpCChjHQTCJh3TVxcg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqFYRJEVPc3AoojHPL6tRf418w6fu4otXG409XuZTx1+DZAMrA
+	j6SFTDnTZX7ZwYyFf/l2jckSJwumIdsAjGFv3UaRHc67P1jltMHAS+7w0fBIs8kjJL3vlW95D7C
+	6Wttjb1tl4J7pi/brJBJx8HaCgnl8RYw=
+X-Gm-Gg: ASbGncuQGHuJEMxurp4dJi+cSPET4Po4L3GomjNwy2xdAuPrMHPshHqEJwqs6enM22E
+	x/5HuIzNV/rrhtJwbhmPG6sIi43llMOqnApEh9D/uNJmNHpQbVkecFLPiE/rglTdO0zyMnWea73
+	nztSlc0f4lD5XtvckG5k8G3EvO3eE0R1tUECY0ZKhXBPswRBJaDm6zCriiEai8GZ3Ra5oEBt+SB
+	7EUjffpLaySSpRnNw==
+X-Google-Smtp-Source: AGHT+IElC6UnQKbYiLEokii4c0QnJGyNmpiKRwOAH3fYC7dsMe19ke8+l5PIvp3HUmB7xvmH/nqLeMEzovT7pA11oF8=
+X-Received: by 2002:a17:907:60cb:b0:afe:834e:ac6c with SMTP id
+ a640c23a62f3a-b00f67e0f14mr269568466b.7.1756569287634; Sat, 30 Aug 2025
+ 08:54:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sat, 30 Aug 2025 13:29:42 +0200
-Subject: =?utf-8?q?debugfs=2C?==?utf-8?q?_e2fsck=2C?= dumpe2fs on corrupted ~11 TB 
- partition - all tools filling 16 GB of memory until getting ended
-Message-ID: <6b0f6-68b2e080-9-1e084900@214889527>
-Content-Type: text/plain; charset="utf-8"
+References: <20250827-kraut-anekdote-35789fddbb0b@brauner> <20250827162410.4110657-1-mjguzik@gmail.com>
+In-Reply-To: <20250827162410.4110657-1-mjguzik@gmail.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Sat, 30 Aug 2025 17:54:35 +0200
+X-Gm-Features: Ac12FXxw_rI44Vo3uX6aJ6E7RnW-AezM7w6oV9lBe-qseTZJvVTh6oLpdGUdJuE
+Message-ID: <CAGudoHE5UmqcbZD1apLsc7G=YmUsDQ=-i=ZQHSD=4qAtsYa3yA@mail.gmail.com>
+Subject: Re: [PATCH] fs: revamp iput()
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, kernel-team@fb.com, 
+	amir73il@gmail.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+I'm writing a long response to this series, in the meantime I noticed
+this bit landed in
+https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=3Dvfs=
+-6.18.inode.refcount.preliminaries&id=3D3cba19f6a00675fbc2af0987dfc90e216e6=
+cfb74
+but with some whitespace issues in comments -- they are indented with
+spaces instead of tabs after the opening line.
 
-I am currently dealing with a corrupted ext4 filesystem of about 11 TB =
-storage. The grade of the corruption is unclear but I have been able to=
- salvage many files using file carving techniques. However it would be =
-very convenient to get the filesystem in a somewhat working state to ex=
-tract folder structures and/or filenames. I tried to run a general file=
-system check, which finds a lot of overwritten data and plenty of thing=
-s wrong with inodes. However a few seconds or minutes in all three tool=
-s start to fill memory on the machine very good, until it is full and t=
-hey get ended by the OOM killer.
+I verified the mail I sent does not have it, so I'm guessing this was
+copy-pasted?
 
-At the beginning there was about 8 GB memory in the machine, which I la=
-ter bumped up to 16 GB specifically because I found references such as:
+Tabing them by hand does the trick, below is my copy-paste as proof,
+please indent by hand in your editor ;)
 
-https://serverfault.com/questions/9218/running-out-of-memory-running-fs=
-ck-on-large-filesystems
-https://unix.stackexchange.com/questions/689714/fsck-ext4-consumes-all-=
-memory-and-gets-killed
-https://groups.google.com/g/linux.debian.user/c/tLWRzDDsYY4
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D614082
+diff --git a/fs/inode.c b/fs/inode.c
+index 2db680a37235..fe4868e2a954 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1915,10 +1915,10 @@ void iput(struct inode *inode)
+        lockdep_assert_not_held(&inode->i_lock);
+        VFS_BUG_ON_INODE(inode->i_state & I_CLEAR, inode);
+        /*
+-        * Note this assert is technically racy as if the count is bogusly
+-        * equal to one, then two CPUs racing to further drop it can both
+-        * conclude it's fine.
+-        */
++        * Note this assert is technically racy as if the count is bogusly
++        * equal to one, then two CPUs racing to further drop it can both
++        * conclude it's fine.
++        */
+        VFS_BUG_ON_INODE(atomic_read(&inode->i_count) < 1, inode);
 
-Which all more or less came down to not having enough memory, so I want=
-ed to try and fix that first.
+        if (atomic_add_unless(&inode->i_count, -1, 1))
+@@ -1942,9 +1942,9 @@ void iput(struct inode *inode)
+        }
 
-Settings such as scratch=5Ffiles was enabled with the location being on=
- a reasonably fast SSD, but that did not help either.
+        /*
+-        * iput_final() drops ->i_lock, we can't assert on it as the inode =
+may
+-        * be deallocated by the time the call returns.
+-        */
++        * iput_final() drops ->i_lock, we can't assert on it as the inode =
+may
++        * be deallocated by the time the call returns.
++        */
+        iput_final(inode);
+ }
+ EXPORT_SYMBOL(iput);
 
-I would like to still try and see what is possible, but I am kind of ou=
-t of ideas how. What would be the next steps to dive a little deeper as=
- to why the memory is filling up so fast? I suppose that many data on t=
-he filesystem, specifically towards the later end of the filesystem, is=
- actually perfectly fine. I am under the assumption that only a brief p=
-art of the beginning was overwritten. I was able to verify all superblo=
-cks on the block device except the very last one (block 2560000000). Us=
-ing mke2fs I figured where the superblocks should be located and used a=
- short script to verify the distances between them to make sure I hit t=
-he right offset for the filesystem, and do not by accident try to align=
- the filesystem starting on a backup superblock.
+While here, vim told me about spaces instead of tabs in 2 more spots
+in the file. Again to show the lines:
 
-I think the offset is right because upon trying to mount, it recognizes=
- the filesystem but tells =E2=80=9Cthe structure needs cleaning=E2=80=9D=
-. I am under the assumption that parts were overwritten because my pred=
-ecessor on the topic tried to recreate a new, clean filesystem or even =
-md raid on these disks, thinking this will not affect the data on them.=
- When I found them the partitions were wiped and some of the data overw=
-ritten. All the superblocks however seem to have survived and the actua=
-l data also, because I could already verify the results of the filecarv=
-ing to be actual very good data.
+diff --git a/fs/inode.c b/fs/inode.c
+index 2db680a37235..833de5457a06 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -550,11 +550,11 @@ static void __inode_add_lru(struct inode *inode,
+bool rotate)
+ struct wait_queue_head *inode_bit_waitqueue(struct wait_bit_queue_entry *w=
+qe,
+                                            struct inode *inode, u32 bit)
+ {
+-        void *bit_address;
++       void *bit_address;
 
-Best regards, looking forward to some interesting insights,
+-        bit_address =3D inode_state_wait_address(inode, bit);
+-        init_wait_var_entry(wqe, bit_address, 0);
+-        return __var_waitqueue(bit_address);
++       bit_address =3D inode_state_wait_address(inode, bit);
++       init_wait_var_entry(wqe, bit_address, 0);
++       return __var_waitqueue(bit_address);
+ }
+ EXPORT_SYMBOL(inode_bit_waitqueue);
+@@ -2938,7 +2938,7 @@ EXPORT_SYMBOL(mode_strip_sgid);
+  */
+ void dump_inode(struct inode *inode, const char *reason)
+ {
+-       pr_warn("%s encountered for inode %px", reason, inode);
++       pr_warn("%s encountered for inode %px", reason, inode);
+ }
 
-M. S.
+ EXPORT_SYMBOL(dump_inode);
 
+Christian, I think it would be the most expedient if you just made
+changes on your own with whatever commit message you see fit. No need
+to mention I brought this up. If you insist I can send a patch.
+
+On Wed, Aug 27, 2025 at 6:24=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> w=
+rote:
+>
+> The material change is I_DIRTY_TIME handling without a spurious ref
+> acquire/release cycle.
+>
+> While here a bunch of smaller changes:
+> 1. predict there is an inode -- bpftrace suggests one is passed vast
+>    majority of the time
+> 2. convert BUG_ON into VFS_BUG_ON_INODE
+> 3. assert on ->i_count
+> 4. assert ->i_lock is not held
+> 5. flip the order of I_DIRTY_TIME and nlink count checks as the former
+>    is less likely to be true
+>
+> I verified atomic_read(&inode->i_count) does not show up in asm if
+> debug is disabled.
+>
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+> ---
+>
+> The routine kept annoying me, so here is a further revised variant.
+>
+> I verified this compiles, but I still cannot runtime test. I'm sorry for
+> that.  My signed-off is conditional on a good samaritan making sure it
+> works :)
+>
+> diff compared to the thing I sent "informally":
+> - if (unlikely(!inode))
+> - asserts
+> - slightly reworded iput_final commentary
+> - unlikely() on the second I_DIRTY_TIME check
+>
+> Given the revamp I think it makes sense to attribute the change to me,
+> hence a "proper" mail.
+>
+> The thing surviving from the submission by Josef is:
+> +       if (atomic_add_unless(&inode->i_count, -1, 1))
+> +               return;
+>
+> And of course he is the one who brought up the spurious refcount trip in
+> the first place.
+>
+> I'm happy with Reported-by, Co-developed-by or whatever other credit
+> as you guys see fit.
+>
+> That aside I think it would be nice if NULL inodes passed to iput
+> became illegal, but that's a different story for another day.
+>
+>  fs/inode.c | 46 +++++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 35 insertions(+), 11 deletions(-)
+>
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 01ebdc40021e..01a554e11279 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -1908,20 +1908,44 @@ static void iput_final(struct inode *inode)
+>   */
+>  void iput(struct inode *inode)
+>  {
+> -       if (!inode)
+> +       if (unlikely(!inode))
+>                 return;
+> -       BUG_ON(inode->i_state & I_CLEAR);
+> +
+>  retry:
+> -       if (atomic_dec_and_lock(&inode->i_count, &inode->i_lock)) {
+> -               if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
+> -                       atomic_inc(&inode->i_count);
+> -                       spin_unlock(&inode->i_lock);
+> -                       trace_writeback_lazytime_iput(inode);
+> -                       mark_inode_dirty_sync(inode);
+> -                       goto retry;
+> -               }
+> -               iput_final(inode);
+> +       lockdep_assert_not_held(&inode->i_lock);
+> +       VFS_BUG_ON_INODE(inode->i_state & I_CLEAR, inode);
+> +       /*
+> +        * Note this assert is technically racy as if the count is bogusl=
+y
+> +        * equal to one, then two CPUs racing to further drop it can both
+> +        * conclude it's fine.
+> +        */
+> +       VFS_BUG_ON_INODE(atomic_read(&inode->i_count) < 1, inode);
+> +
+> +       if (atomic_add_unless(&inode->i_count, -1, 1))
+> +               return;
+> +
+> +       if ((inode->i_state & I_DIRTY_TIME) && inode->i_nlink) {
+> +               trace_writeback_lazytime_iput(inode);
+> +               mark_inode_dirty_sync(inode);
+> +               goto retry;
+>         }
+> +
+> +       spin_lock(&inode->i_lock);
+> +       if (unlikely((inode->i_state & I_DIRTY_TIME) && inode->i_nlink)) =
+{
+> +               spin_unlock(&inode->i_lock);
+> +               goto retry;
+> +       }
+> +
+> +       if (!atomic_dec_and_test(&inode->i_count)) {
+> +               spin_unlock(&inode->i_lock);
+> +               return;
+> +       }
+> +
+> +       /*
+> +        * iput_final() drops ->i_lock, we can't assert on it as the inod=
+e may
+> +        * be deallocated by the time the call returns.
+> +        */
+> +       iput_final(inode);
+>  }
+>  EXPORT_SYMBOL(iput);
+>
+> --
+> 2.43.0
+>
+
+
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
