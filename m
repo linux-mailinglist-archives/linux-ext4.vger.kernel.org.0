@@ -1,133 +1,295 @@
-Return-Path: <linux-ext4+bounces-9769-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9770-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC824B3DA92
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Sep 2025 09:02:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA38AB3DB93
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Sep 2025 09:55:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 908FA1772C7
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Sep 2025 07:02:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CFE67A7EFB
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Sep 2025 07:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB4E120FAAB;
-	Mon,  1 Sep 2025 07:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5A72EDD4F;
+	Mon,  1 Sep 2025 07:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2B3IJXuJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wj5HzEii";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0X/wqaGh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="i/SKOqLZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E9C45029
-	for <linux-ext4@vger.kernel.org>; Mon,  1 Sep 2025 07:01:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273D22EDD55
+	for <linux-ext4@vger.kernel.org>; Mon,  1 Sep 2025 07:55:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756710123; cv=none; b=Fb7pKpwtOfaXyZkcIf6Z8doeOeP+njTBFER1t7tNo+HwudZNN2sG2H7oyaZfegUoXGtNnO9bXJ0nf94NsiTmbFOY5IX1i1a5kbvx+Sai8fkhdByqa3F1KSV60B0j+YHHeI/Foo3IfPGqn1DrBZTSb4E3RMFhSD51Fd7m6Ze7Md8=
+	t=1756713327; cv=none; b=kMkiH0GSa7HeobfL1oi2M6LWH8jBDqNo0fX+0FyFtOtcJ0y4X9H7thyPJzfwKZ8FnbzSkghpvAIRFLoIxbiR8eKihxQcZaMDkNi56ecfsrwjNHfjPvf5w2NXJgfLaHZb8nNTfHScbImEWhHGfgjLnhfmqU0+4AA0qYzrTBhZdzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756710123; c=relaxed/simple;
-	bh=YkWkoYmemSoXe4NB9e8ozgU16d8GqwNU+/+3zHYCUoo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:CC:
-	 In-Reply-To:Content-Type; b=dfV+Cb+C5DfY2yYZrSf2XiTbqnI4vv/e8byBVTerOqxVu35gSaKp3yrYb0zQ3FKXhlTg5tQXFnS61e3deXZtVF9V1lTyzRWg4J4/5dwkZW3wTgZQp8yHJgTy3VyrYOjgAL8ofS9/80+5Zw07sBd19Ua3LRU1Ql3VQWe3AWLhx6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4cFfpS6xyhz13NGk;
-	Mon,  1 Sep 2025 14:58:08 +0800 (CST)
-Received: from kwepemo500015.china.huawei.com (unknown [7.202.194.227])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9055218048B;
-	Mon,  1 Sep 2025 15:01:57 +0800 (CST)
-Received: from [10.174.179.92] (10.174.179.92) by
- kwepemo500015.china.huawei.com (7.202.194.227) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 1 Sep 2025 15:01:56 +0800
-Message-ID: <f78e3cf5-41b1-4b84-bb25-dc0de03fd30f@huawei.com>
-Date: Mon, 1 Sep 2025 15:01:45 +0800
+	s=arc-20240116; t=1756713327; c=relaxed/simple;
+	bh=+RwnFKQ/JrHTr2cxoixiySuD7hOGWpfkqGI2TMYj/Y4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KgeMGCgqmeQOePlyEpDQT9LiUMVRutxtt6m5eI212zQQPJoOFOAr+8l8B/NXmklwLMV+ETWNIzzGRZcqWqpqAP/hqX1Lw+p/I8dcw/GY4oV4lHzoX79dCw4iMcp23TfV8M3WsgAkBTtftj17s9v5n+Z0gGCh4JykUsUh6aYT8ZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2B3IJXuJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wj5HzEii; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0X/wqaGh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=i/SKOqLZ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E30E71F38C;
+	Mon,  1 Sep 2025 07:55:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756713322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ABUKxJp+T86WUFFcprlxI51x/AMcLR4PDlibw8xA7eQ=;
+	b=2B3IJXuJgm5hOwJ7KunnKUQSib6IoJB8hQHh9Ex7sJBm1wYtGID7+HGaycJXDWwj3IR/kL
+	iOX1zCxsCGLab7fSA2TCi31LdvYgEYEuOztRiQRn8P3fjiZAABS5HZwiTHlymeOZ3YmnfM
+	/OSnOeMbv/bCjFvOcB5XdDEpc7kiST4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756713322;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ABUKxJp+T86WUFFcprlxI51x/AMcLR4PDlibw8xA7eQ=;
+	b=wj5HzEiiOAevOulX+cypKt9urEvwH6D1wtVdj5xbGMHHsOebhh43SjeGG/0rWt+r0n27WX
+	qfZmC0Wp9rFC04DA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="0X/wqaGh";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="i/SKOqLZ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756713320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ABUKxJp+T86WUFFcprlxI51x/AMcLR4PDlibw8xA7eQ=;
+	b=0X/wqaGhXQhaijZzH9Pq3750OKimXjVVk5NlCXJtY3zWcYhepsVMDzn0R1Bm6k0VVed2/R
+	I2WakCP9T+fwiBTTe7O8K7faNxrg+fjTTlRJmAKqUufZ/BO6N2OOQHbWxYUksBITApC6jy
+	7dGBBYWhmUa+ao9po4aZqbJdt6sE1wk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756713320;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ABUKxJp+T86WUFFcprlxI51x/AMcLR4PDlibw8xA7eQ=;
+	b=i/SKOqLZFaLLAX0XrDMhyD+kjmgrhL+6+91dNaEDIhFu9hzUq9o3AgxuizKHtDk/jk7YMv
+	bqaIUBM4X2Zdt6Dw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CEFFD136ED;
+	Mon,  1 Sep 2025 07:55:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id GCCDMmhRtWixTwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 01 Sep 2025 07:55:20 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 7378BA099B; Mon,  1 Sep 2025 09:55:20 +0200 (CEST)
+Date: Mon, 1 Sep 2025 09:55:20 +0200
+From: Jan Kara <jack@suse.cz>
+To: Mike Snitzer <snitzer@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Ritesh Harjani <ritesh.list@gmail.com>, 
+	Keith Busch <kbusch@kernel.org>, Keith Busch <kbusch@meta.com>, linux-block@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	axboe@kernel.dk, dw@davidwei.uk, brauner@kernel.org, hch@lst.de, 
+	martin.petersen@oracle.com, djwong@kernel.org, linux-xfs@vger.kernel.org, 
+	viro@zeniv.linux.org.uk, Jan Kara <jack@suse.com>, Brian Foster <bfoster@redhat.com>
+Subject: Re: [PATCHv3 0/8] direct-io: even more flexible io vectors
+Message-ID: <pcmvk3tb3cre3dao2suskdxjrkk6q5z2olkgbkyqoaxujelokg@34hc5pudk3lt>
+References: <20250819164922.640964-1-kbusch@meta.com>
+ <87a53ra3mb.fsf@gmail.com>
+ <g35u5ugmyldqao7evqfeb3hfcbn3xddvpssawttqzljpigy7u4@k3hehh3grecq>
+ <aKx485EMthHfBWef@kbusch-mbp>
+ <87cy8ir835.fsf@gmail.com>
+ <ua7ib34kk5s6yfthqkgy3m2pnbk33a34g7prezmwl7hfwv6lwq@fljhjaogd6gq>
+ <aK8tuTnuHbD8VOyo@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] ext4: add an update to i_disksize in
- ext4_block_page_mkwrite
-To: <linux-ext4@vger.kernel.org>
-References: <20250731140528.1554917-1-sunyongjian@huaweicloud.com>
-From: Sun Yongjian <sunyongjian1@huawei.com>
-CC: <yangerkun@huawei.com>, <yi.zhang@huawei.com>, <libaokun1@huawei.com>,
-	<tytso@mit.edu>, <jack@suse.cz>
-In-Reply-To: <20250731140528.1554917-1-sunyongjian@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- kwepemo500015.china.huawei.com (7.202.194.227)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aK8tuTnuHbD8VOyo@kernel.org>
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: E30E71F38C
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,gmail.com,kernel.org,meta.com,vger.kernel.org,kernel.dk,davidwei.uk,lst.de,oracle.com,zeniv.linux.org.uk,suse.com,redhat.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Score: -2.51
 
+Hi Mike!
 
+On Wed 27-08-25 12:09:29, Mike Snitzer wrote:
+> On Wed, Aug 27, 2025 at 05:20:53PM +0200, Jan Kara wrote:
+> > On Tue 26-08-25 10:29:58, Ritesh Harjani wrote:
+> > > Keith Busch <kbusch@kernel.org> writes:
+> > > 
+> > > > On Mon, Aug 25, 2025 at 02:07:15PM +0200, Jan Kara wrote:
+> > > >> On Fri 22-08-25 18:57:08, Ritesh Harjani wrote:
+> > > >> > Keith Busch <kbusch@meta.com> writes:
+> > > >> > >
+> > > >> > >   - EXT4 falls back to buffered io for writes but not for reads.
+> > > >> > 
+> > > >> > ++linux-ext4 to get any historical context behind why the difference of
+> > > >> > behaviour in reads v/s writes for EXT4 DIO. 
+> > > >> 
+> > > >> Hum, how did you test? Because in the basic testing I did (with vanilla
+> > > >> kernel) I get EINVAL when doing unaligned DIO write in ext4... We should be
+> > > >> falling back to buffered IO only if the underlying file itself does not
+> > > >> support any kind of direct IO.
+> > > >
+> > > > Simple test case (dio-offset-test.c) below.
+> > > >
+> > > > I also ran this on vanilla kernel and got these results:
+> > > >
+> > > >   # mkfs.ext4 /dev/vda
+> > > >   # mount /dev/vda /mnt/ext4/
+> > > >   # make dio-offset-test
+> > > >   # ./dio-offset-test /mnt/ext4/foobar
+> > > >   write: Success
+> > > >   read: Invalid argument
+> > > >
+> > > > I tracked the "write: Success" down to ext4's handling for the "special"
+> > > > -ENOTBLK error after ext4_want_directio_fallback() returns "true".
+> > > >
+> > > 
+> > > Right. Ext4 has fallback only for dio writes but not for DIO reads... 
+> > > 
+> > > buffered
+> > > static inline bool ext4_want_directio_fallback(unsigned flags, ssize_t written)
+> > > {
+> > > 	/* must be a directio to fall back to buffered */
+> > > 	if ((flags & (IOMAP_WRITE | IOMAP_DIRECT)) !=
+> > > 		    (IOMAP_WRITE | IOMAP_DIRECT))
+> > > 		return false;
+> > > 
+> > >     ...
+> > > }
+> > > 
+> > > So basically the path is ext4_file_[read|write]_iter() -> iomap_dio_rw
+> > >     -> iomap_dio_bio_iter() -> return -EINVAL. i.e. from...
+> > > 
+> > > 
+> > > 	if ((pos | length) & (bdev_logical_block_size(iomap->bdev) - 1) ||
+> > > 	    !bdev_iter_is_aligned(iomap->bdev, dio->submit.iter))
+> > > 		return -EINVAL;
+> > > 
+> > > EXT4 then fallsback to buffered-io only for writes, but not for reads. 
+> > 
+> > Right. And the fallback for writes was actually inadvertedly "added" by
+> > commit bc264fea0f6f "iomap: support incremental iomap_iter advances". That
+> > changed the error handling logic. Previously if iomap_dio_bio_iter()
+> > returned EINVAL, it got propagated to userspace regardless of what
+> > ->iomap_end() returned. After this commit if ->iomap_end() returns error
+> > (which is ENOTBLK in ext4 case), it gets propagated to userspace instead of
+> > the error returned by iomap_dio_bio_iter().
+> > 
+> > Now both the old and new behavior make some sense so I won't argue that the
+> > new iomap_iter() behavior is wrong. But I think we should change ext4 back
+> > to the old behavior of failing unaligned dio writes instead of them falling
+> > back to buffered IO. I think something like the attached patch should do
+> > the trick - it makes unaligned dio writes fail again while writes to holes
+> > of indirect-block mapped files still correctly fall back to buffered IO.
+> > Once fstests run completes, I'll do a proper submission...
+> > 
+> > 
+> > 								Honza
+> > -- 
+> > Jan Kara <jack@suse.com>
+> > SUSE Labs, CR
+> 
+> > From ce6da00a09647a03013c3f420c2e7ef7489c3de8 Mon Sep 17 00:00:00 2001
+> > From: Jan Kara <jack@suse.cz>
+> > Date: Wed, 27 Aug 2025 14:55:19 +0200
+> > Subject: [PATCH] ext4: Fail unaligned direct IO write with EINVAL
+> > 
+> > Commit bc264fea0f6f ("iomap: support incremental iomap_iter advances")
+> > changed the error handling logic in iomap_iter(). Previously any error
+> > from iomap_dio_bio_iter() got propagated to userspace, after this commit
+> > if ->iomap_end returns error, it gets propagated to userspace instead of
+> > an error from iomap_dio_bio_iter(). This results in unaligned writes to
+> > ext4 to silently fallback to buffered IO instead of erroring out.
+> > 
+> > Now returning ENOTBLK for DIO writes from ext4_iomap_end() seems
+> > unnecessary these days. It is enough to return ENOTBLK from
+> > ext4_iomap_begin() when we don't support DIO write for that particular
+> > file offset (due to hole).
+> 
+> Any particular reason for ext4 still returning -ENOTBLK for unaligned
+> DIO?
 
-在 2025/7/31 22:05, sunyongjian@huaweicloud.com 写道:
-Gentle ping.
-> From: Yongjian Sun <sunyongjian1@huawei.com>
-> 
-> After running a stress test combined with fault injection,
-> we performed fsck -a followed by fsck -fn on the filesystem
-> image. During the second pass, fsck -fn reported:
-> 
-> Inode 131512, end of extent exceeds allowed value
-> 	(logical block 405, physical block 1180540, len 2)
-> 
-> This inode was not in the orphan list. Analysis revealed the
-> following call chain that leads to the inconsistency:
-> 
->                               ext4_da_write_end()
->                                //does not update i_disksize
->                               ext4_punch_hole()
->                                //truncate folio, keep size
-> ext4_page_mkwrite()
->   ext4_block_page_mkwrite()
->    ext4_block_write_begin()
->      ext4_get_block()
->       //insert written extent without update i_disksize
-> journal commit
-> echo 1 > /sys/block/xxx/device/delete
-> 
-> da-write path updates i_size but does not update i_disksize. Then
-> ext4_punch_hole truncates the da-folio yet still leaves i_disksize
-> unchanged. Then ext4_page_mkwrite sees ext4_nonda_switch return 1
-> and takes the nodioread_nolock path, the folio about to be written
-> has just been punched out, and it’s offset sits beyond the current
-> i_disksize. This may result in a written extent being inserted, but
-> again does not update i_disksize. If the journal gets committed and
-> then the block device is yanked, we might run into this.
-> 
-> To fix this, we now check in ext4_block_page_mkwrite whether
-> i_disksize needs to be updated to cover the newly allocated blocks.
-> 
-> Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
-> ---
->   fs/ext4/inode.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index ed54c4d0f2f9..050270b265ae 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -6666,8 +6666,18 @@ static int ext4_block_page_mkwrite(struct inode *inode, struct folio *folio,
->   		goto out_error;
->   
->   	if (!ext4_should_journal_data(inode)) {
-> +		loff_t disksize = folio_pos(folio) + len;
->   		block_commit_write(folio, 0, len);
->   		folio_mark_dirty(folio);
-> +		if (disksize > READ_ONCE(EXT4_I(inode)->i_disksize)) {
-> +			down_write(&EXT4_I(inode)->i_data_sem);
-> +			if (disksize > EXT4_I(inode)->i_disksize)
-> +				EXT4_I(inode)->i_disksize = disksize;
-> +			up_write(&EXT4_I(inode)->i_data_sem);
-> +			ret = ext4_mark_inode_dirty(handle, inode);
-> +			if (ret)
-> +				goto out_error;
-> +		}
->   	} else {
->   		ret = ext4_journal_folio_buffers(handle, folio, len);
->   		if (ret)
+No, that is actually the bug I'm speaking about - ext4 should be returning
+EINVAL for unaligned DIO as other filesystems do but after recent iomap
+changes it started to return ENOTBLK.
 
+> In my experience XFS returns -EINVAL when failing unaligned DIO (but
+> maybe there are edge cases where that isn't always the case?)
+> 
+> Would be nice to have consistency across filesystems for what is
+> returned when failing unaligned DIO.
+
+Agreed although there are various corner cases like files which never
+support direct IO - e.g. with data journalling - and thus fallback to
+buffered IO happens before any alignment checks. 
+
+> The iomap code returns -ENOTBLK as "the magic error code to fall back
+> to buffered I/O".  But that seems only for page cache invalidation
+> failure, _not_ for unaligned DIO.
+> 
+> (Anyway, __iomap_dio_rw's WRITE handling can return -ENOTBLK if page
+> cache invalidation fails during DIO write. So it seems higher-level
+> code, like I've added to NFS/NFSD to check for unaligned DIO failure,
+> should check for both -EINVAL and -ENOTBLK).
+
+I think the idea here is that if page cache invalidation fails we want to
+fallback to buffered IO so that we don't cause cache coherency issues and
+that's why ENOTBLK is returned.
+
+> ps. ENOTBLK is actually much less easily confused with other random
+> uses of EINVAL (EINVAL use is generally way too overloaded, rendering
+> it a pretty unhelpful error).  But switching XFS to use ENOTBLK
+> instead of EINVAL seems like disruptive interface breakage (I suppose
+> same could be said for ext4 if it were to now return EINVAL for
+> unaligned DIO, but ext4 flip-flopping on how it handles unaligned DIO
+> prompted me to ask these questions now)
+
+Definitely. In this particular case EINVAL for unaligned DIO is there for
+ages and there likely is some userspace program somewhere that depends on
+it.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
