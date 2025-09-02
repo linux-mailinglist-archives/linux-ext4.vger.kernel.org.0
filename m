@@ -1,632 +1,517 @@
-Return-Path: <linux-ext4+bounces-9786-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9790-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5F50B4083A
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Sep 2025 16:58:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C67BB40885
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Sep 2025 17:06:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 607C25E4D02
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Sep 2025 14:56:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7AC83ADB58
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Sep 2025 15:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF6D320A03;
-	Tue,  2 Sep 2025 14:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F332F3C2C;
+	Tue,  2 Sep 2025 15:06:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TzgLrrZm"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RSrCckvO";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="bGBqIT0m"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511F431DDBF;
-	Tue,  2 Sep 2025 14:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756824882; cv=none; b=P16JXVd3liWKNOstYLFDHmtzCtfvTxeMjVG1MQf1R7eD4AUgzVMPhS900ApUH8qyu+vFoqDfra+Qj/wqaBqGDnciYZYWSe/cycPfw63+3YC+X33F7ywlk1XfFimrL7qf6jjbhgnjXNHOiYzg4Yhs1yrwBkUqsN0mkatHSw9QFRY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756824882; c=relaxed/simple;
-	bh=87s2y9MbR6vkGnJsIzaZPbo6IK/VlQxAr6Brw+tVE5Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j8h1yKT5/SDv2FM/dtISNxfjDSggDBmn/QQuyRKyP7sFrAk4PtGMVohxPDzfKz+RgU+5rdaa0IovP+hlszBpeEwU0tT3QQa0hcSc6w7SUNv7e99G0aUKsb2HSr+f+QDOohY0o81dj32knPaoBlRlVXFO9AW9ZueEAEFktcifDic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TzgLrrZm; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b042cc3954fso338977166b.0;
-        Tue, 02 Sep 2025 07:54:40 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E2AC30FC33;
+	Tue,  2 Sep 2025 15:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756825596; cv=fail; b=hdaAyQoYoYdT8qacAtUg+bpskYcD5ffoW1MWpzVn8llKqEJJPP03eThq3FpaRFDgq/VRAHG0nNL7FwoOL7sc2a7FYQ5myRHGIG10dVtDuXm05xiy/zvn/Yy6K9yD8lHZ+BNWYJ3HarLmK69UpCOGeQQ2b3A+O3WiVFR0dyv37js=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756825596; c=relaxed/simple;
+	bh=gDw59PXZpH//+tx6q3zuyaB3SFKKvOxlKMWKfLmNbJw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=gn/uDYesTRmpB4PZzP6A707ThiNlSVxmMC7N1lC9VJCsQ5mH1kEb5EJ3YzqndEwWbuRCPYe+rVrLEzsIJ8l0+4+cG6b91ZcRgi7urfFJu1VO0vGZ0Tbj/hnv3XkpM4oHb7DO3arwnO8t+n2Sb1NNz4y4e1x58r582ludePYytU4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=RSrCckvO; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=bGBqIT0m; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 582Dg21a013156;
+	Tue, 2 Sep 2025 15:06:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=1LtrNSb2afAr7JJUPnqn8kVVwlJdNDcJUw26P80Hcc4=; b=
+	RSrCckvOj1sF01hdV7gNEgNhOldlihVwD0WmD+XLIpwN576HV/iGHl0lzbsZmBfT
+	jD+5A1lPmuBQ6jVcv7MIrP6fxwdafU/DqxpN1Ynfayvm+YTN6EDZF5zRpv4mLmyc
+	68OfFc5Eu96e91gutChFo/34kNFdB50NMKE9cM/NYtsWJOeknmdWG9Onj0vhnSQW
+	38OyzsykozWRQpxZjHF7mh754W1p/w412aC4zOFlLSXK8PuKyedysaw/256WgVP5
+	0RSvtWYjYSigd5akveC14e3ZvQ03GJtN73jbG14WwwyB6U0fmryVnTbQXoKKwpAm
+	S6dJNWh41l1/G86rrTTb5g==
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48usmncahr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 02 Sep 2025 15:06:23 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 582F5aj3032616;
+	Tue, 2 Sep 2025 15:06:21 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12on2061.outbound.protection.outlook.com [40.107.244.61])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48uqrfhfse-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 02 Sep 2025 15:06:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=uDJ40fWLVvdTD60yZEPbxcj3TcuvhOY8JUwoceDv6CYVIoJUiDgSHZXh3uyDhnSPsbl8iLbOgCVIkiTNicLZo+B9T9gxNZ9aYpfMC5GKPcOPeP3cfLZJOXNT2FyoEQjVCDvjXWPHNEjO7eXtIKyKqJN+JYMe8zzOAGlWRLedrzKxRrHqBuL8iTOQtxpOAUf8CY9iPIKIfZE0oGgNBHdCi0NwSX2GvhVrlshgAetpRl8gxpDbIDiuy5IzcqtNo7T1DzSjQCrnGo+sARsZoNJn2ARrLtG1eShfKtfsaTiSDtXzv6Nlzr2S3lmBf4gYPI/tfOQkh0YdVXSI7nnBME5dLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1LtrNSb2afAr7JJUPnqn8kVVwlJdNDcJUw26P80Hcc4=;
+ b=c24Z2uN1Q1Q6q0FcFUTUwYFF0Zp6lsDWjZ+dGufcbx6wjo5z3tKjEye0LfENJDH/URLkC2Nrovbj1ibiXfOxkC7i2YsoCPu/NzO0SzYwnE8/DeczpvE98fnP5FPjlGMYKMStQnGzRyHdMzgFpKlWl54WK9sMExsHsVdm134rfxt8dY/VsO5UBO5GWr5PL/UHJ5R0TXbXvn5ESiNiQTT7BLMOhwA9M0UlJHZi37GR2S7qdImrJg2g6URVFJ7ZeRAD0S9RPJL+tHsh7PGfm9JA0hlyDVXWWVbP/lIgmEy+cirkI9BijrUKpXSp6o8kMQecf7EHleEcOuo20BJFwwH16Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756824879; x=1757429679; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xdmxW6S2htIgGYvZak+e/bKLuU7dc03qzfViFoZp6Xg=;
-        b=TzgLrrZmUJ1KavbGFYuSxCGmPh93HNZKV8AKvLzIudZDSe+fzyZnz6q942UlqDuYVV
-         jVaAwQLAkkluI7SI34YiaXNaJ5kbkaeu5pTyGKSlGMt7CW+2CsKaKRMCygdQs/ZEwTxt
-         qVIosfCu+T2DLn0W6FrUjpEKXatd2IB9J/xnTLxxZGH/qtprZjFSmbE1CnM2evFPO0SE
-         Ihlw3OLL2ss0VpLnsge3wUCvWbEp9CLvEYHRj1XxIwaS4rclSV3TlDAZRRR17jTypWs/
-         6cH5w14iS6WU4xrSrWZOZ66ScgKTRhON0F3ze7Xx/1L8otD8om9zE9oXngueonUCGYMp
-         7y2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756824879; x=1757429679;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xdmxW6S2htIgGYvZak+e/bKLuU7dc03qzfViFoZp6Xg=;
-        b=bwOWgylo8RnDR16A+1T1iasb/PK9gfTeI6F/dbdEoQbBVsgUaL75tp/XZJ/UAKf+Ot
-         Kopo+1mQwB9aMX4mcJtlTVkINrq7qyNaaifc9H7EIXxd3tKhuAqpjMLH/kvkuaPwM7FA
-         rjumufw6QmeLG3WC3SHUhrUO5VxAcJgVkLrA2eSjCyO68C88NAUZAyBOptqHdCRly6X2
-         WMwisZ0jcritfG5hNRfilPqaQkCEWhg8UqZ9trIvJzao1ZIwjQT4bp6d2EIdsbUUjcy8
-         Y5nOp3rnWBpyA76kX+VOB1lvoazp95B6JGG+joFfroc6pD/3dKilzFuD4l0EccM/RkD9
-         WgMg==
-X-Forwarded-Encrypted: i=1; AJvYcCUG8gche/Osdy22zlD1LGTLdTgyi1nBV0RKkU1kwSCD9zXCEgGXLy1qBf/LYXObzGjwgsX6iXMg+QUbwVPx@vger.kernel.org, AJvYcCUPuQGQbzyATFWdsoooW/UMHlICc5hj+prznAk9R1UfjJ4VrQSPG2xYSgoXiMCDwhC0RuFKFKvcTJbe@vger.kernel.org, AJvYcCUX4p+uBVLP5LW9+fUD6JNKNBSi7m9eC+wyM5o9wjpq/F9XaezZKRcdHRiGnUCQtO80yWeSXtIBNpotLg==@vger.kernel.org, AJvYcCV7IxfP8mCGcGUas+JVDzyLf8FmmlqgKzqMUlpnhkWYYRbLJbOhqW7tOUwFvyBbTIjbhhi80lZEe17OWdPOmA==@vger.kernel.org, AJvYcCWvvawVXhXHGn6kPeS1e3Y38kTGzTWQnzqTL2OVDchyi+RKGPO7UsR9lRBkr6eTEobHSAaxF3WsUv2Umg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwW4/qS0We4O0kmJkMKG0dK4mj67GVBXU0qdNV6Vlk/+M0hVDpz
-	pxWkGYwZGFXzAn89Xati8B9Q5v+Q9noOn1eTMYFR/3Iux45OK5QhuUEO
-X-Gm-Gg: ASbGnctJEQZd4vaX//CHzlY0EBhgnRT+dIv50wX208jpreF26zYVvsw1PRCItcL3TbW
-	bk8/WPdcbFnkU5D2zDWVuySaDAWVpBLVi4id0f/IBw/kZFKfP3VVs4XsEG7UY+qHYx6PHsHAvPq
-	WrozwPRmkcgL1zlyhsS1WkfbqwkHr8Syv4aN3Z828o+f8p+AJ9E7Vv+Tds7t7S8gbICmUeO1+Bh
-	LbGpPAhLKb4UO093g0Y1cQnmdLxW7URqtCv1jbOYyZR0eWDtkkBkfkFOxWUjPGDBXeAG/nDKYeP
-	e8OktiphgsIiwZUJpPPluxd+hPTWVkkrpeSilrTRcTl0ls3if8r98hWSnFxqqqlEPTT6ynsgvxM
-	OpP6giKeVdnJbLFaMp1pusGUvOGmQBhkVGgWWqfdqeUjcBMP0yvxl0ijvc8675Q==
-X-Google-Smtp-Source: AGHT+IFICR6xl8TzNorjPESEpiLkZomS3bG4DEW4D8celE7+0sM/x5pfIPNlfMspn6fBsUxfvLiSeQ==
-X-Received: by 2002:a17:907:6090:b0:b04:2cc2:e495 with SMTP id a640c23a62f3a-b042cc31af3mr754574066b.14.1756824878158;
-        Tue, 02 Sep 2025 07:54:38 -0700 (PDT)
-Received: from f.. (cst-prg-84-152.cust.vodafone.cz. [46.135.84.152])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b040e6845f8sm739247566b.51.2025.09.02.07.54.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Sep 2025 07:54:37 -0700 (PDT)
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: brauner@kernel.org
-Cc: viro@zeniv.linux.org.uk,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	josef@toxicpanda.com,
-	kernel-team@fb.com,
-	amir73il@gmail.com,
-	linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	Mateusz Guzik <mjguzik@gmail.com>
-Subject: [WIP RFC PATCH] fs: retire I_WILL_FREE
-Date: Tue,  2 Sep 2025 16:54:28 +0200
-Message-ID: <20250902145428.456510-1-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.43.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1LtrNSb2afAr7JJUPnqn8kVVwlJdNDcJUw26P80Hcc4=;
+ b=bGBqIT0mN2eDNL0GSrkxHiaLbU61BeS4Lr5P/lWAe7cAml3EbBo/tqTb2almtt2VbsaCFr9nOTXuRUi6dXRMOJoo8D48Rw9/UbduRcYqw7G5NwLzRgcbAy3Oi+J43dZU0ChhAtNlR2FXCb5W92cF2ruurwGXd8mNIOQkZi5V8UE=
+Received: from MN2PR10MB4320.namprd10.prod.outlook.com (2603:10b6:208:1d5::16)
+ by IA3PR10MB8274.namprd10.prod.outlook.com (2603:10b6:208:570::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9031.24; Tue, 2 Sep
+ 2025 15:06:17 +0000
+Received: from MN2PR10MB4320.namprd10.prod.outlook.com
+ ([fe80::42ec:1d58:8ba8:800c]) by MN2PR10MB4320.namprd10.prod.outlook.com
+ ([fe80::42ec:1d58:8ba8:800c%7]) with mapi id 15.20.9073.026; Tue, 2 Sep 2025
+ 15:06:14 +0000
+Message-ID: <e2892851-5426-43d3-a25e-be9d9c7f860a@oracle.com>
+Date: Tue, 2 Sep 2025 16:06:08 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 04/12] ltp/fsx.c: Add atomic writes support to fsx
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, Zorro Lang <zlang@redhat.com>,
+        fstests@vger.kernel.org
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org, tytso@mit.edu,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+References: <cover.1755849134.git.ojaswin@linux.ibm.com>
+ <8b7e007fd87918a0c3976ca7d06c089ed9b0070c.1755849134.git.ojaswin@linux.ibm.com>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <8b7e007fd87918a0c3976ca7d06c089ed9b0070c.1755849134.git.ojaswin@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO3P265CA0027.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:387::17) To MN2PR10MB4320.namprd10.prod.outlook.com
+ (2603:10b6:208:1d5::16)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4320:EE_|IA3PR10MB8274:EE_
+X-MS-Office365-Filtering-Correlation-Id: 22d979b3-9d55-4d93-8aad-08ddea324226
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?cU5uSTdyUXJIdWlZRHdzTWwvUUpBSXRsck1BL3hHUEtyYTBZQWEzMU10NzBN?=
+ =?utf-8?B?QXF4THJGS3QrU0RqdlV0SHdBRFpYY3NGUXp3c3NLVE1teUJOZ0ZHM2l1c3NV?=
+ =?utf-8?B?SDA2Zmg5ZG9nU21XY1RSeldvd0dEbDIxL2Y4U293aDYwQTNHdWRqRWZtVC9B?=
+ =?utf-8?B?c3kzdmN2cVNpQmlZSmJidjZ2REt2VzVRSjRTQ0RKdzNOVW5pT0R6V1c1NmNh?=
+ =?utf-8?B?Q3Q2U2E3ZzJvMjBDVjNadnYwZTU1TEQwWTV4ckc5MmFuZk55OFhmaVk3ZjI1?=
+ =?utf-8?B?SzlTNFN6MFFxc0JmcHhLL1YwM2NVK1RXUkgwbmhkaGxwaGlNMjdOeFhCaXlq?=
+ =?utf-8?B?cExYaEppbGttVzluMmN4VGRZVU16eERwT1p0U2N2NEsrekRhNUY2UHpVSUhs?=
+ =?utf-8?B?ZlVla3JCUWRFYmhlWEIyOTVtT2lsdW1UelRDYndkUkRQbExic05tUTNzNlhL?=
+ =?utf-8?B?aHpwNUZZaEZ3bXZvcC9mZHF1K3VaeTdXdDE2L21ROEhEYWtlL3EyRlBXYUU5?=
+ =?utf-8?B?aTNGSTVZVDZtNDJpS0UzVEVJelpST2l0T2NjUFZGZG9tNXh2TXgvYXVOTjhW?=
+ =?utf-8?B?Q2J0OTVLU1pqMHE2djRYdGdMUkNOL05ReTBDZGdVZFg2bTVybUxPYnJDOUM4?=
+ =?utf-8?B?UGQxc1ZyVU0rREhORnFTNXpBTy9RaXZaU3V0bGJHMUljTzFPOWdnL2tEekhI?=
+ =?utf-8?B?N2h6ZXdodFZzK0RBNmpIWjFEc0pxZDkzbGJ2WERYWXVBL1hUMm92dzNxRE95?=
+ =?utf-8?B?RUgwQi9BbzdNcW5BSmNuWHJDazl0djFXMHAvUTViZVJuNUZkaVRDQzRRMjVJ?=
+ =?utf-8?B?cDVBT2VBUUJmUTBPUlJ2akpjR2M0SlVIT2RqT1FYRlE4Kzg1UjZ0TndteEUw?=
+ =?utf-8?B?N2RJc3N4SGk3QWxnQzU2RWN5Q3pvQ3hKRU9yekJKOExxMFBNbkIvY0VOK0dL?=
+ =?utf-8?B?ZHlvR2dGeHNKY2F4VUNZUDk4V1MyMzJkeEVnbDFGRHVmWW5Jakt1bDgxVFFW?=
+ =?utf-8?B?MExoN0tuNnppVWNLZGlDS0lvd1VxaWxTdGcxSnh6WUY1YkZ4UWpLMXBuOGU2?=
+ =?utf-8?B?cHdSSTl6eURQM1VVd1kzLzNMY2p0Y2o5d2c0S3BVSjdNZ1JkYUEwQ3F6aWZo?=
+ =?utf-8?B?eXpaR0VmY2N4dDlJckF4bmhNMnc2Y3ZPR0NCN2ZsNXpaemY5UXNFZndEK1Rr?=
+ =?utf-8?B?QkxJVVY1WEpIWlhhVmVWdS9NM3BLcFZKd2tja2JYbWIrUzF2VGVTNjRRaVlt?=
+ =?utf-8?B?c0hISndrNUI5MHI2aWhleW1LaXVIZ2FkZVl1RjlnRVZ4eDlTTlUyZ1VnT3g2?=
+ =?utf-8?B?L3NEc2N5Ti9HcEhLQ3hBdXVLYVRraG94aTdyM25DYWFldkVmWUdQQUppQmZw?=
+ =?utf-8?B?dHhmdVBVd29wQkNUYTluOExDaCtVaFRiYkxJeU9oZW1qTzQ5emg2ekMxd1dW?=
+ =?utf-8?B?UW1QTSt0dDA1QmxpRTFFcjZBbVZuL29VTkN3bFVpSEVTcHdSa3V3OW5Jall3?=
+ =?utf-8?B?KzJJRVNIR3lUdUY3Yi9UcEV5TWYvS25FOE9MOFVJQ3YwVU51bWhNUnhQTVNr?=
+ =?utf-8?B?TmE1cVNkR011NnUwR1FwT3EvM090S29zNVYrcDdnRVFSOXlEZjMzNHh3S3Ju?=
+ =?utf-8?B?azhZWDMwdTRRRHJZdVFtRVhEYzlTYWQwWHE4TGFPMko5ck4wYVVqT3JRQXJO?=
+ =?utf-8?B?YWtuc1ZJOHl6WE42MWJRTmt3VkxrVHhYMXQwWmtwVHZxZmx5djZHc3BmcEpC?=
+ =?utf-8?B?WmptYi92aGdLblg5TmJydWRDQ3hMVFNRWWIydklVck1YSTdNbzk3elNIUUVN?=
+ =?utf-8?B?UXZteGVqT3hGa0dVREp4SnhHY1loSG9JT2JLSXpTamx5cU1PVVBoeDlUekRi?=
+ =?utf-8?B?SCsxMDdUUW04L1dRd3VrdFk4bGVtWTlNRTZMSk9mZnNOT3Z0Tm9WejVzY1dL?=
+ =?utf-8?Q?jmFJsdDHOC4=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4320.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NFc4aWJ3QWRrWE10TGc2d1h2cW9GcnhpUy9VdWR5b2U5SCt3T2t4YlFsVWlt?=
+ =?utf-8?B?bThsSEpaMVRBN1cwaUo3SDBpQld5d0hoMFpKekV0Rkg1TWZ3TURLVmtMZ2dR?=
+ =?utf-8?B?c1g5TUhvTHhjbzFyTUFHaDJYSGk3UHp1U2FyUmlEWnpocXpRWnEzSnZ3LzhJ?=
+ =?utf-8?B?U2VENHFsWXdQZHI1THRxNHEySlVkdmFET014OEs5THJoNWlBcmtLa2srcDdQ?=
+ =?utf-8?B?L2p5aTdEbGFlZzUxSGFOMUZMWnJ0V3FvMU1nTjZjLzk4MFR2SXBkU3E3Vzhv?=
+ =?utf-8?B?M01PdmVMaDBTU1NDUUQrUllPMURZVWJOT0JUSW90KzlVdXFCbFhSKzhxZnJI?=
+ =?utf-8?B?a3FuU1I4VkQyZFQ2bTkvWkdYL2JBMzBMVldIYUp2RlRBL1A1WmhQdHdGTzE2?=
+ =?utf-8?B?U0RQZTF5Z1hCTkZEK1pxMjZuZTh3RHc0VHB4dDZCQVlBUnNBTVpYbWR4RVlu?=
+ =?utf-8?B?emIrbGUvQVVKMmxMRDMvR1ROMDdBbklMb0lkcEt3MXRZWktmYldYSElCUzgw?=
+ =?utf-8?B?TE1RVGNtL2RrYkxTdktsdUtsQkNhdWZFelNkRWg4UVFDcWN3cWQxNm1lWThO?=
+ =?utf-8?B?NmxmbDZnWGJMMWRLcW5nVU15c0srMEhvU3IrVklTazN5bWlXYmN4VXVGc1ps?=
+ =?utf-8?B?N2s3elhtNi95eFQzSTBGbkp4YUxjV011bzJpQXRnZnczWXluMDZHaUE2ZTZj?=
+ =?utf-8?B?MUY4STM2Ykxad3FKMFVhOTZnL2RWSCt0WVpsdG1LM0NwRmZqb1ljREhyQzFB?=
+ =?utf-8?B?U1IwRlhuZXFMM21hTTdrU0N2ZUdIQW8zZys1ZjV0b2hVUEo2bVZFQjNBUEJR?=
+ =?utf-8?B?L0MzTUVpRk5manBHS0VaaCtvWGRMT1d4dS9ieUp6amwwMmFEMkdhankraE1E?=
+ =?utf-8?B?ZStBemlESFFubWZxRFpKR3JwaUFEZXZva0tGaEtvSVlNbjVBNmFpU1M2Sy9I?=
+ =?utf-8?B?RGVLME8wNnIxb3NxUHEranEzMTRkZXZyZ3ZQSHpXSFQ0dXptSDJSRUUzK1B3?=
+ =?utf-8?B?RjlhT3oybFphaytWVXF0dXIxUHMzbkI5dGFQQkdOaUZpTnpXLzBZV2VZeEpQ?=
+ =?utf-8?B?bTNEc2hTMi9zdHlRNjM5V1BEOERQWmh1bGRMNXdWcFRqYXNjOWpoSWF3OTNY?=
+ =?utf-8?B?VCt6Rk9oMEEydE1mL3pqVCtDTkM2UzJ0TlJyVFdIMFVMVFRzVktYSGhxZ3RH?=
+ =?utf-8?B?a0E3dHU1MzFGaG1CN1BNNy9VSTRRajFYMi9KY3dvQ09vQVlNYXlmQXVvbjF3?=
+ =?utf-8?B?Z25lbWg3VzhkSDg2dGpDVFBlczhuUmJuYmIxY0RXWDNubUZiWkxlcGZjZWpN?=
+ =?utf-8?B?Lzh5WXZhU3lPQWhTU3hLNTRDaVpBVklTL0wzVE1LVWw4S2g0WlUvTlFzM0Jh?=
+ =?utf-8?B?SlQ3U1FBRW12S3JyOHRPbkRJcERLb2krYURJbDJVQkpnNDlyZ0crMGExaU5F?=
+ =?utf-8?B?TXpIbGhCbk5RaDdnMEx1TE9DVDVwc2dqR2ZWTnVNampsem5FclJnVGZ5Y29X?=
+ =?utf-8?B?NHdRMGlRdXRRL0I0d1pYSnRTR0lDSk85MHRtTEhrTm5Iay9yejJSVGtrTzd5?=
+ =?utf-8?B?aHkveFpOSTZIUGdVaW9BOVZmRFU3UmRFUm1mWndSd1NWRjZjczYvU3NzR2or?=
+ =?utf-8?B?RFJHb2NDb0kyelhDNHBQQTZ4blUwODVGWnBWdFlYTVBGRm0vS3BiWUJ2Y0E0?=
+ =?utf-8?B?LzdSejhtYldIQnpKcTBha3FBSFlNQkJrMkVVSUJHOExQQ0QyeExwdlNFZ2x5?=
+ =?utf-8?B?VENMYzdhRVU1cGtZUVVTUFU2YW9NQ3NYd0k4NS9mOTBzSTBrZldiR1g0VXlS?=
+ =?utf-8?B?RE1tRDlKKzhId0N0RFRHOU9aK2JPanpFOFloRFdLbWxQeEk4Nkw5MHZ4TzVt?=
+ =?utf-8?B?ZTN1a3hiTDJJVldXYmFyb2IrSkFwTGpydnZQQ1d5cGlXQ1ZTNlNEQmxyZ1h0?=
+ =?utf-8?B?dlVBRHZVdlZZZ2MrS0Rsc3UzRzRpeXhCV2dHNkV6aHErWGJlSVBIT1RDZlJ2?=
+ =?utf-8?B?UHlhZWRDVUJFNVVyU0RQRWhSZkdWWlRWcmtGQjIxeFNJbklMY0RXVVhLNXBL?=
+ =?utf-8?B?cmpNZy9aWWIvMGVKb0k3NzNRbHZkZlFPeFptOWJuaHp1RFN0YkMyTm81ZHF2?=
+ =?utf-8?B?TE1SNy8wL3hTM01DRm1sSzk0R1lpODhlVXJaUTB4b09na3I5R05iUlpXTTlr?=
+ =?utf-8?B?aUE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	sW70P9w+JprhMNwcDKgeYn9IUAHZJvgmtLAdQwUnNryfhV9Q49euzCy9u/Ppl8WOILAEdryxQNYj+C3rgUHcfEqT8Y3/od/CnOIW+zHMul0XDxqSpcSNUUi5Hh2KmLhOa58+lrI4wKG98UAh84z4eP75BseegCM3jEUU8opSBjZLGcJtK0+u36Y3K+ZFBxqWkw2xymQSg0cMUqjVbW3+INaKBm/6z2FlAym1gW3KtXSzWmPV56qrmAWUp3ftToh6N7C0Qulhok9H7reoyXbMdHl0WlSJlnC5uSt518my0NozpQehtbMlZ1fFb5GZeu73vXCamF4FfINxs1QBmLNzmZe8oVo+wxlTgYzznqXP4QHE4aYooeDtfVw0FWUECgIxKVM4giSrP6LySTlUICfOt+mrMiE14j5GJQ9rgRpIgSXnFYGYs2aBatVswsjiSGXSofV01str7wGpWXCjz3cJd+ZIKHeaxJjJPdJ8U9dViuTo71F1cbG0gXo4fUOaWAFo+fjYmong0SmSJSNyaxJ61c5gtJOiyZHoGU7jxr218hr/PF7QYrgVTPq/w5lj0LQNYID7Kwp3ZQvubLnGPnk6sg5zG8vA/FCFrg8/6lACS5o=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22d979b3-9d55-4d93-8aad-08ddea324226
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4320.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2025 15:06:14.1803
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7QK2AJUSKCoWQcIqCpc50fpHaG7tSZtw+u+caP/qc4mORPTUbUuwByq8kElkMBXAAS6qiuQV1jKOyAQTTMj2Wg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA3PR10MB8274
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-02_05,2025-08-28_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2508110000 definitions=main-2509020149
+X-Proofpoint-GUID: BBEGRt-9iuOiDpMiElfH8LH6TwxHBWI_
+X-Proofpoint-ORIG-GUID: BBEGRt-9iuOiDpMiElfH8LH6TwxHBWI_
+X-Authority-Analysis: v=2.4 cv=Of2YDgTY c=1 sm=1 tr=0 ts=68b707ef b=1 cx=c_pps
+ a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
+ a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+ a=yJojWOMRYYMA:10 a=GoEa3M9JfhUA:10 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=yPCof4ZbAAAA:8 a=x80sg5X6LzuwJujQC_oA:9 a=QEXdDO2ut3YA:10
+ cc=ntf awl=host:12069
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODMwMDAzMiBTYWx0ZWRfXxPNUm0scknQu
+ XmJNBHpt+chuO5xshOkGz74Zcjrgu0mnPpems1TgQ+805hnogwGJLP2bDHoryS1SCY/MEKp0d6A
+ H6EAnFsyS175nhq1Vses6iuZHPPYdDCjPP88vAD9LPu6m+exwrKS9d5axPpzUKGf/H8pIxSFhBx
+ 7B9nBIYb102ObFh8hBnMN2qNUXMyKTizkpgwUSrTExOQOHqOHxYrZbfS2EcCIot6nxpXD/LOn53
+ qJUxDKstStd0L0PthB1O3I9zFDDv98YBMOBAIIYdadu+NFBATljdsiKZ7RbXpkCFnB2+681leeQ
+ cdbu1BB7fh9T6UWCyso67M6jyJ9PJYZzGMtzP8Nl1bBXJR5D9XofSTn70HE3Cdo1/srO+uCYvBP
+ Qx3cAnI3B/W7lc1l0izlOwFuDH+9HQ==
 
-Following up on my response to the refcount patchset, here is a churn
-patch to retire I_WILL_FREE.
+On 22/08/2025 09:02, Ojaswin Mujoo wrote:
+> Implement atomic write support to help fuzz atomic writes
+> with fsx.
+> 
+> Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-The only consumer is the drop inode routine in ocfs2.
+Generally this looks ok, but I do have some comments, so please check them:
 
-For the life of me I could not figure out if write_inode_now() is legal
-to call in ->evict_inode later and have no means to test, so I devised a
-hack: let the fs set I_FREEING ahead of time. Also note iput_final()
-issues write_inode_now() anyway but only for the !drop case, which is the
-opposite of what is being returned.
+Reviewed-by: John Garry <john.g.garry@oracle.com>
 
-One could further hack around it by having ocfs2 return *DON'T* drop but
-also set I_DONTCACHE, which would result in both issuing the write in
-iput_final() and dropping. I think the hack I did implement is cleaner.
-Preferred option is ->evict_inode from ocfs handling the i/o, but per
-the above I don't know how to do it.
+> ---
+>   ltp/fsx.c | 115 +++++++++++++++++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 110 insertions(+), 5 deletions(-)
+> 
+> diff --git a/ltp/fsx.c b/ltp/fsx.c
+> index 163b9453..1582f6d1 100644
+> --- a/ltp/fsx.c
+> +++ b/ltp/fsx.c
+> @@ -40,6 +40,7 @@
+>   #include <liburing.h>
+>   #endif
+>   #include <sys/syscall.h>
+> +#include "statx.h"
+>   
+>   #ifndef MAP_FILE
+>   # define MAP_FILE 0
+> @@ -49,6 +50,10 @@
+>   #define RWF_DONTCACHE	0x80
+>   #endif
+>   
+> +#ifndef RWF_ATOMIC
+> +#define RWF_ATOMIC	0x40
+> +#endif
+> +
+>   #define NUMPRINTCOLUMNS 32	/* # columns of data to print on each line */
+>   
+>   /* Operation flags (bitmask) */
+> @@ -110,6 +115,7 @@ enum {
+>   	OP_READ_DONTCACHE,
+>   	OP_WRITE,
+>   	OP_WRITE_DONTCACHE,
+> +	OP_WRITE_ATOMIC,
+>   	OP_MAPREAD,
+>   	OP_MAPWRITE,
+>   	OP_MAX_LITE,
+> @@ -200,6 +206,11 @@ int	uring = 0;
+>   int	mark_nr = 0;
+>   int	dontcache_io = 1;
+>   int	hugepages = 0;                  /* -h flag */
+> +int	do_atomic_writes = 1;		/* -a flag disables */
+> +
+> +/* User for atomic writes */
+> +int awu_min = 0;
+> +int awu_max = 0;
+>   
+>   /* Stores info needed to periodically collapse hugepages */
+>   struct hugepages_collapse_info {
+> @@ -288,6 +299,7 @@ static const char *op_names[] = {
+>   	[OP_READ_DONTCACHE] = "read_dontcache",
+>   	[OP_WRITE] = "write",
+>   	[OP_WRITE_DONTCACHE] = "write_dontcache",
+> +	[OP_WRITE_ATOMIC] = "write_atomic",
+>   	[OP_MAPREAD] = "mapread",
+>   	[OP_MAPWRITE] = "mapwrite",
+>   	[OP_TRUNCATE] = "truncate",
+> @@ -422,6 +434,7 @@ logdump(void)
+>   				prt("\t***RRRR***");
+>   			break;
+>   		case OP_WRITE_DONTCACHE:
+> +		case OP_WRITE_ATOMIC:
+>   		case OP_WRITE:
+>   			prt("WRITE    0x%x thru 0x%x\t(0x%x bytes)",
+>   			    lp->args[0], lp->args[0] + lp->args[1] - 1,
+> @@ -1073,6 +1086,25 @@ update_file_size(unsigned offset, unsigned size)
+>   	file_size = offset + size;
+>   }
+>   
+> +static int is_power_of_2(unsigned n) {
+> +	return ((n & (n - 1)) == 0);
+> +}
+> +
+> +/*
+> + * Round down n to nearest power of 2.
+> + * If n is already a power of 2, return n;
+> + */
+> +static int rounddown_pow_of_2(int n) {
+> +	int i = 0;
+> +
+> +	if (is_power_of_2(n))
+> +		return n;
+> +
+> +	for (; (1 << i) < n; i++);
+> +
+> +	return 1 << (i - 1);
 
-So.. the following is my proposed first step towards sanitisation of
-i_state and the lifecycle flags.
+Is this the neatest way to do this?
 
-I verified fs/inode.c and fs/fs-writeback.c compile, otherwise untested.
+> +}
+> +
+>   void
+>   dowrite(unsigned offset, unsigned size, int flags)
+>   {
+> @@ -1081,6 +1113,27 @@ dowrite(unsigned offset, unsigned size, int flags)
+>   	offset -= offset % writebdy;
+>   	if (o_direct)
+>   		size -= size % writebdy;
+> +	if (flags & RWF_ATOMIC) {
+> +		/* atomic write len must be inbetween awu_min and awu_max */
 
-Generated against vfs-6.18.inode.refcount.preliminaries
+in between
 
-Comments?
+> +		if (size < awu_min)
+> +			size = awu_min;
+> +		if (size > awu_max)
+> +			size = awu_max;
+> +
+> +		/* atomic writes need power-of-2 sizes */
+> +		size = rounddown_pow_of_2(size);
 
----
- block/bdev.c                     |  2 +-
- fs/bcachefs/fs.c                 |  2 +-
- fs/btrfs/inode.c                 |  2 +-
- fs/crypto/keyring.c              |  2 +-
- fs/drop_caches.c                 |  2 +-
- fs/ext4/inode.c                  |  2 +-
- fs/fs-writeback.c                | 18 +++++++----------
- fs/gfs2/ops_fstype.c             |  2 +-
- fs/inode.c                       | 34 +++++++++++++++++---------------
- fs/notify/fsnotify.c             |  6 +++---
- fs/ocfs2/inode.c                 |  3 +--
- fs/quota/dquot.c                 |  2 +-
- fs/xfs/scrub/common.c            |  3 +--
- include/linux/fs.h               | 32 ++++++++++++------------------
- include/trace/events/writeback.h |  3 +--
- security/landlock/fs.c           | 12 +++++------
- 16 files changed, 58 insertions(+), 69 deletions(-)
+you could have:
 
-diff --git a/block/bdev.c b/block/bdev.c
-index b77ddd12dc06..1801d89e448b 100644
---- a/block/bdev.c
-+++ b/block/bdev.c
-@@ -1265,7 +1265,7 @@ void sync_bdevs(bool wait)
- 		struct block_device *bdev;
- 
- 		spin_lock(&inode->i_lock);
--		if (inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW) ||
-+		if (inode->i_state & (I_FREEING | I_NEW) ||
- 		    mapping->nrpages == 0) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 687af0eea0c2..a62d597630d1 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -347,7 +347,7 @@ static struct bch_inode_info *bch2_inode_hash_find(struct bch_fs *c, struct btre
- 			spin_unlock(&inode->v.i_lock);
- 			return NULL;
- 		}
--		if ((inode->v.i_state & (I_FREEING|I_WILL_FREE))) {
-+		if ((inode->v.i_state & I_FREEING)) {
- 			if (!trans) {
- 				__wait_on_freeing_inode(c, inode, inum);
- 			} else {
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5bcd8e25fa78..f1d9336b903f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3856,7 +3856,7 @@ static int btrfs_add_inode_to_root(struct btrfs_inode *inode, bool prealloc)
- 		ASSERT(ret != -ENOMEM);
- 		return ret;
- 	} else if (existing) {
--		WARN_ON(!(existing->vfs_inode.i_state & (I_WILL_FREE | I_FREEING)));
-+		WARN_ON(!(existing->vfs_inode.i_state & I_FREEING));
- 	}
- 
- 	return 0;
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index 7557f6a88b8f..97f4c7049222 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -957,7 +957,7 @@ static void evict_dentries_for_decrypted_inodes(struct fscrypt_master_key *mk)
- 	list_for_each_entry(ci, &mk->mk_decrypted_inodes, ci_master_key_link) {
- 		inode = ci->ci_inode;
- 		spin_lock(&inode->i_lock);
--		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
-+		if (inode->i_state & (I_FREEING | I_NEW)) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
- 		}
-diff --git a/fs/drop_caches.c b/fs/drop_caches.c
-index 019a8b4eaaf9..40fa9b17375b 100644
---- a/fs/drop_caches.c
-+++ b/fs/drop_caches.c
-@@ -28,7 +28,7 @@ static void drop_pagecache_sb(struct super_block *sb, void *unused)
- 		 * inodes without pages but we deliberately won't in case
- 		 * we need to reschedule to avoid softlockups.
- 		 */
--		if ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
-+		if ((inode->i_state & (I_FREEING|I_NEW)) ||
- 		    (mapping_empty(inode->i_mapping) && !need_resched())) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index ed54c4d0f2f9..14209758e5be 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -425,7 +425,7 @@ void ext4_check_map_extents_env(struct inode *inode)
- 	if (!S_ISREG(inode->i_mode) ||
- 	    IS_NOQUOTA(inode) || IS_VERITY(inode) ||
- 	    is_special_ino(inode->i_sb, inode->i_ino) ||
--	    (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) ||
-+	    (inode->i_state & (I_FREEING | I_NEW)) ||
- 	    ext4_test_inode_flag(inode, EXT4_INODE_EA_INODE) ||
- 	    ext4_verity_in_progress(inode))
- 		return;
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 6088a67b2aae..5fa388820daf 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -405,10 +405,10 @@ static bool inode_do_switch_wbs(struct inode *inode,
- 	xa_lock_irq(&mapping->i_pages);
- 
- 	/*
--	 * Once I_FREEING or I_WILL_FREE are visible under i_lock, the eviction
-+	 * Once I_FREEING is visible under i_lock, the eviction
- 	 * path owns the inode and we shouldn't modify ->i_io_list.
- 	 */
--	if (unlikely(inode->i_state & (I_FREEING | I_WILL_FREE)))
-+	if (unlikely(inode->i_state & I_FREEING))
- 		goto skip_switch;
- 
- 	trace_inode_switch_wbs(inode, old_wb, new_wb);
-@@ -560,7 +560,7 @@ static bool inode_prepare_wbs_switch(struct inode *inode,
- 	/* while holding I_WB_SWITCH, no one else can update the association */
- 	spin_lock(&inode->i_lock);
- 	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
--	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
-+	    inode->i_state & (I_WB_SWITCH | I_FREEING) ||
- 	    inode_to_wb(inode) == new_wb) {
- 		spin_unlock(&inode->i_lock);
- 		return false;
-@@ -1758,7 +1758,7 @@ __writeback_single_inode(struct inode *inode, struct writeback_control *wbc)
-  * whether it is a data-integrity sync (%WB_SYNC_ALL) or not (%WB_SYNC_NONE).
-  *
-  * To prevent the inode from going away, either the caller must have a reference
-- * to the inode, or the inode must have I_WILL_FREE or I_FREEING set.
-+ * to the inode, or the inode must have I_FREEING set.
-  */
- static int writeback_single_inode(struct inode *inode,
- 				  struct writeback_control *wbc)
-@@ -1768,9 +1768,7 @@ static int writeback_single_inode(struct inode *inode,
- 
- 	spin_lock(&inode->i_lock);
- 	if (!icount_read(inode))
--		WARN_ON(!(inode->i_state & (I_WILL_FREE|I_FREEING)));
--	else
--		WARN_ON(inode->i_state & I_WILL_FREE);
-+		WARN_ON(!(inode->i_state & I_FREEING));
- 
- 	if (inode->i_state & I_SYNC) {
- 		/*
-@@ -1928,7 +1926,7 @@ static long writeback_sb_inodes(struct super_block *sb,
- 		 * kind writeout is handled by the freer.
- 		 */
- 		spin_lock(&inode->i_lock);
--		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
-+		if (inode->i_state & (I_NEW | I_FREEING)) {
- 			redirty_tail_locked(inode, wb);
- 			spin_unlock(&inode->i_lock);
- 			continue;
-@@ -2696,7 +2694,7 @@ static void wait_sb_inodes(struct super_block *sb)
- 		spin_unlock_irq(&sb->s_inode_wblist_lock);
- 
- 		spin_lock(&inode->i_lock);
--		if (inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) {
-+		if (inode->i_state & (I_FREEING | I_NEW)) {
- 			spin_unlock(&inode->i_lock);
- 
- 			spin_lock_irq(&sb->s_inode_wblist_lock);
-@@ -2844,8 +2842,6 @@ EXPORT_SYMBOL(sync_inodes_sb);
-  *
-  * This function commits an inode to disk immediately if it is dirty. This is
-  * primarily needed by knfsd.
-- *
-- * The caller must either have a ref on the inode or must have set I_WILL_FREE.
-  */
- int write_inode_now(struct inode *inode, int sync)
- {
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index c770006f8889..1393181a64dc 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -1749,7 +1749,7 @@ static void gfs2_evict_inodes(struct super_block *sb)
- 	spin_lock(&sb->s_inode_list_lock);
- 	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
- 		spin_lock(&inode->i_lock);
--		if ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) &&
-+		if ((inode->i_state & (I_FREEING | I_NEW)) &&
- 		    !need_resched()) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
-diff --git a/fs/inode.c b/fs/inode.c
-index 2db680a37235..8188b0b5dfa1 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -532,7 +532,7 @@ EXPORT_SYMBOL(ihold);
- 
- static void __inode_add_lru(struct inode *inode, bool rotate)
- {
--	if (inode->i_state & (I_DIRTY_ALL | I_SYNC | I_FREEING | I_WILL_FREE))
-+	if (inode->i_state & (I_DIRTY_ALL | I_SYNC | I_FREEING))
- 		return;
- 	if (icount_read(inode))
- 		return;
-@@ -577,7 +577,7 @@ static void inode_lru_list_del(struct inode *inode)
- static void inode_pin_lru_isolating(struct inode *inode)
- {
- 	lockdep_assert_held(&inode->i_lock);
--	WARN_ON(inode->i_state & (I_LRU_ISOLATING | I_FREEING | I_WILL_FREE));
-+	WARN_ON(inode->i_state & (I_LRU_ISOLATING | I_FREEING));
- 	inode->i_state |= I_LRU_ISOLATING;
- }
- 
-@@ -879,7 +879,7 @@ void evict_inodes(struct super_block *sb)
- 			spin_unlock(&inode->i_lock);
- 			continue;
- 		}
--		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
-+		if (inode->i_state & (I_NEW | I_FREEING)) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
- 		}
-@@ -1025,7 +1025,7 @@ static struct inode *find_inode(struct super_block *sb,
- 		if (!test(inode, data))
- 			continue;
- 		spin_lock(&inode->i_lock);
--		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
-+		if (inode->i_state & I_FREEING) {
- 			__wait_on_freeing_inode(inode, is_inode_hash_locked);
- 			goto repeat;
- 		}
-@@ -1066,7 +1066,7 @@ static struct inode *find_inode_fast(struct super_block *sb,
- 		if (inode->i_sb != sb)
- 			continue;
- 		spin_lock(&inode->i_lock);
--		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
-+		if (inode->i_state & I_FREEING) {
- 			__wait_on_freeing_inode(inode, is_inode_hash_locked);
- 			goto repeat;
- 		}
-@@ -1538,7 +1538,7 @@ EXPORT_SYMBOL(iunique);
- struct inode *igrab(struct inode *inode)
- {
- 	spin_lock(&inode->i_lock);
--	if (!(inode->i_state & (I_FREEING|I_WILL_FREE))) {
-+	if (!(inode->i_state & I_FREEING)) {
- 		__iget(inode);
- 		spin_unlock(&inode->i_lock);
- 	} else {
-@@ -1728,7 +1728,7 @@ struct inode *find_inode_rcu(struct super_block *sb, unsigned long hashval,
- 
- 	hlist_for_each_entry_rcu(inode, head, i_hash) {
- 		if (inode->i_sb == sb &&
--		    !(READ_ONCE(inode->i_state) & (I_FREEING | I_WILL_FREE)) &&
-+		    !(READ_ONCE(inode->i_state) & I_FREEING) &&
- 		    test(inode, data))
- 			return inode;
- 	}
-@@ -1767,7 +1767,7 @@ struct inode *find_inode_by_ino_rcu(struct super_block *sb,
- 	hlist_for_each_entry_rcu(inode, head, i_hash) {
- 		if (inode->i_ino == ino &&
- 		    inode->i_sb == sb &&
--		    !(READ_ONCE(inode->i_state) & (I_FREEING | I_WILL_FREE)))
-+		    !(READ_ONCE(inode->i_state) & I_FREEING))
- 		    return inode;
- 	}
- 	return NULL;
-@@ -1789,7 +1789,7 @@ int insert_inode_locked(struct inode *inode)
- 			if (old->i_sb != sb)
- 				continue;
- 			spin_lock(&old->i_lock);
--			if (old->i_state & (I_FREEING|I_WILL_FREE)) {
-+			if (old->i_state & I_FREEING) {
- 				spin_unlock(&old->i_lock);
- 				continue;
- 			}
-@@ -1862,12 +1862,19 @@ static void iput_final(struct inode *inode)
- 	int drop;
- 
- 	WARN_ON(inode->i_state & I_NEW);
-+	VFS_BUG_ON_INODE(inode->i_state & I_FREEING, inode);
- 
- 	if (op->drop_inode)
- 		drop = op->drop_inode(inode);
- 	else
- 		drop = generic_drop_inode(inode);
- 
-+	/*
-+	 * Note: the ->drop_inode routine is allowed to set I_FREEING for us,
-+	 * but this is only legal if they want to drop.
-+	 */
-+	VFS_BUG_ON_INODE(!drop && (inode->i_state & I_FREEING), inode);
-+
- 	if (!drop &&
- 	    !(inode->i_state & I_DONTCACHE) &&
- 	    (sb->s_flags & SB_ACTIVE)) {
-@@ -1877,19 +1884,14 @@ static void iput_final(struct inode *inode)
- 	}
- 
- 	state = inode->i_state;
-+	WRITE_ONCE(inode->i_state, state | I_FREEING);
- 	if (!drop) {
--		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
- 		spin_unlock(&inode->i_lock);
--
- 		write_inode_now(inode, 1);
--
- 		spin_lock(&inode->i_lock);
--		state = inode->i_state;
--		WARN_ON(state & I_NEW);
--		state &= ~I_WILL_FREE;
- 	}
-+	WARN_ON(inode->i_state & I_NEW);
- 
--	WRITE_ONCE(inode->i_state, state | I_FREEING);
- 	if (!list_empty(&inode->i_lru))
- 		inode_lru_list_del(inode);
- 	spin_unlock(&inode->i_lock);
-diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
-index 46bfc543f946..cff8417fa6db 100644
---- a/fs/notify/fsnotify.c
-+++ b/fs/notify/fsnotify.c
-@@ -47,12 +47,12 @@ static void fsnotify_unmount_inodes(struct super_block *sb)
- 	spin_lock(&sb->s_inode_list_lock);
- 	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
- 		/*
--		 * We cannot __iget() an inode in state I_FREEING,
--		 * I_WILL_FREE, or I_NEW which is fine because by that point
-+		 * We cannot __iget() an inode in state I_FREEING
-+		 * or I_NEW which is fine because by that point
- 		 * the inode cannot have any associated watches.
- 		 */
- 		spin_lock(&inode->i_lock);
--		if (inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) {
-+		if (inode->i_state & (I_FREEING | I_NEW)) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
- 		}
-diff --git a/fs/ocfs2/inode.c b/fs/ocfs2/inode.c
-index 14bf440ea4df..29549fc899e9 100644
---- a/fs/ocfs2/inode.c
-+++ b/fs/ocfs2/inode.c
-@@ -1307,12 +1307,11 @@ int ocfs2_drop_inode(struct inode *inode)
- 				inode->i_nlink, oi->ip_flags);
- 
- 	assert_spin_locked(&inode->i_lock);
--	inode->i_state |= I_WILL_FREE;
-+	inode->i_state |= I_FREEING;
- 	spin_unlock(&inode->i_lock);
- 	write_inode_now(inode, 1);
- 	spin_lock(&inode->i_lock);
- 	WARN_ON(inode->i_state & I_NEW);
--	inode->i_state &= ~I_WILL_FREE;
- 
- 	return 1;
- }
-diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index df4a9b348769..3aa916040602 100644
---- a/fs/quota/dquot.c
-+++ b/fs/quota/dquot.c
-@@ -1030,7 +1030,7 @@ static int add_dquot_ref(struct super_block *sb, int type)
- 	spin_lock(&sb->s_inode_list_lock);
- 	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
- 		spin_lock(&inode->i_lock);
--		if ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
-+		if ((inode->i_state & (I_FREEING | I_NEW)) ||
- 		    !atomic_read(&inode->i_writecount) ||
- 		    !dqinit_needed(inode, type)) {
- 			spin_unlock(&inode->i_lock);
-diff --git a/fs/xfs/scrub/common.c b/fs/xfs/scrub/common.c
-index 2ef7742be7d3..e678f944206f 100644
---- a/fs/xfs/scrub/common.c
-+++ b/fs/xfs/scrub/common.c
-@@ -1086,8 +1086,7 @@ xchk_install_handle_inode(
- 
- /*
-  * Install an already-referenced inode for scrubbing.  Get our own reference to
-- * the inode to make disposal simpler.  The inode must not be in I_FREEING or
-- * I_WILL_FREE state!
-+ * the inode to make disposal simpler.  The inode must not have I_FREEING set.
-  */
- int
- xchk_install_live_inode(
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index c4fd010cf5bf..e8ad8f0a03c7 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -671,8 +671,8 @@ is_uncached_acl(struct posix_acl *acl)
-  * I_DIRTY_DATASYNC, I_DIRTY_PAGES, and I_DIRTY_TIME.
-  *
-  * Four bits define the lifetime of an inode.  Initially, inodes are I_NEW,
-- * until that flag is cleared.  I_WILL_FREE, I_FREEING and I_CLEAR are set at
-- * various stages of removing an inode.
-+ * until that flag is cleared.  I_FREEING and I_CLEAR are set at various stages
-+ * of removing an inode.
-  *
-  * Two bits are used for locking and completion notification, I_NEW and I_SYNC.
-  *
-@@ -696,24 +696,21 @@ is_uncached_acl(struct posix_acl *acl)
-  *			New inodes set I_NEW.  If two processes both create
-  *			the same inode, one of them will release its inode and
-  *			wait for I_NEW to be released before returning.
-- *			Inodes in I_WILL_FREE, I_FREEING or I_CLEAR state can
-- *			also cause waiting on I_NEW, without I_NEW actually
-- *			being set.  find_inode() uses this to prevent returning
-- *			nearly-dead inodes.
-- * I_WILL_FREE		Must be set when calling write_inode_now() if i_count
-- *			is zero.  I_FREEING must be set when I_WILL_FREE is
-- *			cleared.
-+ *			Inodes in I_FREEING or I_CLEAR state can also cause
-+ *			waiting on I_NEW, without I_NEW actually being set.
-+ *			find_inode() uses this to prevent returning nearly-dead
-+ *			inodes.
-  * I_FREEING		Set when inode is about to be freed but still has dirty
-  *			pages or buffers attached or the inode itself is still
-  *			dirty.
-  * I_CLEAR		Added by clear_inode().  In this state the inode is
-  *			clean and can be destroyed.  Inode keeps I_FREEING.
-  *
-- *			Inodes that are I_WILL_FREE, I_FREEING or I_CLEAR are
-- *			prohibited for many purposes.  iget() must wait for
-- *			the inode to be completely released, then create it
-- *			anew.  Other functions will just ignore such inodes,
-- *			if appropriate.  I_NEW is used for waiting.
-+ *			Inodes that are I_FREEING or I_CLEAR are prohibited for
-+ *			many purposes.  iget() must wait for the inode to be
-+ *			completely released, then create it anew.  Other
-+ *			functions will just ignore such inodes, if appropriate.
-+ *			I_NEW is used for waiting.
-  *
-  * I_SYNC		Writeback of inode is running. The bit is set during
-  *			data writeback, and cleared with a wakeup on the bit
-@@ -743,8 +740,6 @@ is_uncached_acl(struct posix_acl *acl)
-  * I_LRU_ISOLATING	Inode is pinned being isolated from LRU without holding
-  *			i_count.
-  *
-- * Q: What is the difference between I_WILL_FREE and I_FREEING?
-- *
-  * __I_{SYNC,NEW,LRU_ISOLATING} are used to derive unique addresses to wait
-  * upon. There's one free address left.
-  */
-@@ -764,7 +759,7 @@ enum inode_state_flags_t {
- 	I_DIRTY_SYNC		= (1U << 4),
- 	I_DIRTY_DATASYNC	= (1U << 5),
- 	I_DIRTY_PAGES		= (1U << 6),
--	I_WILL_FREE		= (1U << 7),
-+	I_PINNING_NETFS_WB	= (1U << 7),
- 	I_FREEING		= (1U << 8),
- 	I_CLEAR			= (1U << 9),
- 	I_REFERENCED		= (1U << 10),
-@@ -775,7 +770,6 @@ enum inode_state_flags_t {
- 	I_CREATING		= (1U << 15),
- 	I_DONTCACHE		= (1U << 16),
- 	I_SYNC_QUEUED		= (1U << 17),
--	I_PINNING_NETFS_WB	= (1U << 18)
- };
- 
- #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
-@@ -2628,7 +2622,7 @@ static inline int icount_read(const struct inode *inode)
- static inline bool inode_is_dirtytime_only(struct inode *inode)
- {
- 	return (inode->i_state & (I_DIRTY_TIME | I_NEW |
--				  I_FREEING | I_WILL_FREE)) == I_DIRTY_TIME;
-+				  I_FREEING)) == I_DIRTY_TIME;
- }
- 
- extern void inc_nlink(struct inode *inode);
-diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
-index 1e23919c0da9..6e3ebecc95e9 100644
---- a/include/trace/events/writeback.h
-+++ b/include/trace/events/writeback.h
-@@ -15,7 +15,7 @@
- 		{I_DIRTY_DATASYNC,	"I_DIRTY_DATASYNC"},	\
- 		{I_DIRTY_PAGES,		"I_DIRTY_PAGES"},	\
- 		{I_NEW,			"I_NEW"},		\
--		{I_WILL_FREE,		"I_WILL_FREE"},		\
-+		{I_PINNING_NETFS_WB,	"I_PINNING_NETFS_WB"},	\
- 		{I_FREEING,		"I_FREEING"},		\
- 		{I_CLEAR,		"I_CLEAR"},		\
- 		{I_SYNC,		"I_SYNC"},		\
-@@ -27,7 +27,6 @@
- 		{I_CREATING,		"I_CREATING"},		\
- 		{I_DONTCACHE,		"I_DONTCACHE"},		\
- 		{I_SYNC_QUEUED,		"I_SYNC_QUEUED"},	\
--		{I_PINNING_NETFS_WB,	"I_PINNING_NETFS_WB"},	\
- 		{I_LRU_ISOLATING,	"I_LRU_ISOLATING"}	\
- 	)
- 
-diff --git a/security/landlock/fs.c b/security/landlock/fs.c
-index 0bade2c5aa1d..7ffcd62324fa 100644
---- a/security/landlock/fs.c
-+++ b/security/landlock/fs.c
-@@ -1290,13 +1290,13 @@ static void hook_sb_delete(struct super_block *const sb)
- 		 */
- 		spin_lock(&inode->i_lock);
- 		/*
--		 * Checks I_FREEING and I_WILL_FREE  to protect against a race
--		 * condition when release_inode() just called iput(), which
--		 * could lead to a NULL dereference of inode->security or a
--		 * second call to iput() for the same Landlock object.  Also
--		 * checks I_NEW because such inode cannot be tied to an object.
-+		 * Checks I_FREEING to protect against a race condition when
-+		 * release_inode() just called iput(), which could lead to a
-+		 * NULL dereference of inode->security or a second call to
-+		 * iput() for the same Landlock object.  Also checks I_NEW
-+		 * because such inode cannot be tied to an object.
- 		 */
--		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
-+		if (inode->i_state & (I_FREEING | I_NEW)) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
- 		}
--- 
-2.43.0
+if (size < awu_min)
+	size = awu_min;
+else if (size > awu_max)
+	size = awu_max;
+else
+	size = rounddown_pow_of_2(size);
+
+> +
+> +		/* atomic writes need naturally aligned offsets */
+> +		offset -= offset % size;
+> +
+> +		/* Skip the write if we are crossing max filesize */
+> +		if ((offset + size) > maxfilelen) {
+> +			if (!quiet && testcalls > simulatedopcount)
+> +				prt("skipping atomic write past maxfilelen\n");
+> +			log4(OP_WRITE_ATOMIC, offset, size, FL_SKIPPED);
+> +			return;
+> +		}
+> +	}
+>   	if (size == 0) {
+>   		if (!quiet && testcalls > simulatedopcount && !o_direct)
+>   			prt("skipping zero size write\n");
+> @@ -1088,7 +1141,10 @@ dowrite(unsigned offset, unsigned size, int flags)
+>   		return;
+>   	}
+>   
+> -	log4(OP_WRITE, offset, size, FL_NONE);
+> +	if (flags & RWF_ATOMIC)
+> +		log4(OP_WRITE_ATOMIC, offset, size, FL_NONE);
+> +	else
+> +		log4(OP_WRITE, offset, size, FL_NONE);
+>   
+>   	gendata(original_buf, good_buf, offset, size);
+>   	if (offset + size > file_size) {
+> @@ -1108,8 +1164,9 @@ dowrite(unsigned offset, unsigned size, int flags)
+>   		       (monitorstart == -1 ||
+>   			(offset + size > monitorstart &&
+>   			(monitorend == -1 || offset <= monitorend))))))
+> -		prt("%lld write\t0x%x thru\t0x%x\t(0x%x bytes)\tdontcache=%d\n", testcalls,
+> -		    offset, offset + size - 1, size, (flags & RWF_DONTCACHE) != 0);
+> +		prt("%lld write\t0x%x thru\t0x%x\t(0x%x bytes)\tdontcache=%d atomic_wr=%d\n", testcalls,
+> +		    offset, offset + size - 1, size, (flags & RWF_DONTCACHE) != 0,
+> +		    (flags & RWF_ATOMIC) != 0);
+
+nit:
+
+	!!(flags & RWF_ATOMIC)
+
+I find that a bit neater, but I suppose you are following the example 
+for RWF_DONTCACHE
+
+>   	iret = fsxwrite(fd, good_buf + offset, size, offset, flags);
+>   	if (iret != size) {
+>   		if (iret == -1)
+> @@ -1785,6 +1842,36 @@ do_dedupe_range(unsigned offset, unsigned length, unsigned dest)
+>   }
+>   #endif
+>   
+> +int test_atomic_writes(void) {
+> +	int ret;
+> +	struct statx stx;
+> +
+> +	if (o_direct != O_DIRECT) {
+> +		fprintf(stderr, "main: atomic writes need O_DIRECT (-Z), "
+> +				"disabling!\n");
+> +		return 0;
+> +	}
+> +
+> +	ret = xfstests_statx(AT_FDCWD, fname, 0, STATX_WRITE_ATOMIC, &stx);
+> +	if (ret < 0) {
+> +		fprintf(stderr, "main: Statx failed with %d."
+> +			" Failed to determine atomic write limits, "
+> +			" disabling!\n", ret);
+> +		return 0;
+> +	}
+> +
+> +	if (stx.stx_attributes & STATX_ATTR_WRITE_ATOMIC &&
+> +	    stx.stx_atomic_write_unit_min > 0) {
+> +		awu_min = stx.stx_atomic_write_unit_min;
+> +		awu_max = stx.stx_atomic_write_unit_max;
+> +		return 1;
+> +	}
+> +
+> +	fprintf(stderr, "main: IO Stack does not support "
+> +			"atomic writes, disabling!\n");
+
+Do we really need to spread this over multiple lines?
+
+Maybe that is the coding standard - I don't know.
+
+> +	return 0;
+> +}
+> +
+>   #ifdef HAVE_COPY_FILE_RANGE
+>   int
+>   test_copy_range(void)
+> @@ -2356,6 +2443,12 @@ have_op:
+>   			goto out;
+>   		}
+>   		break;
+> +	case OP_WRITE_ATOMIC:
+> +		if (!do_atomic_writes) {
+> +			log4(OP_WRITE_ATOMIC, offset, size, FL_SKIPPED);
+> +			goto out;
+> +		}
+> +		break;
+>   	}
+>   
+>   	switch (op) {
+> @@ -2385,6 +2478,11 @@ have_op:
+>   			dowrite(offset, size, 0);
+>   		break;
+>   
+> +	case OP_WRITE_ATOMIC:
+> +		TRIM_OFF_LEN(offset, size, maxfilelen);
+> +		dowrite(offset, size, RWF_ATOMIC);
+> +		break;
+> +
+>   	case OP_MAPREAD:
+>   		TRIM_OFF_LEN(offset, size, file_size);
+>   		domapread(offset, size);
+> @@ -2511,13 +2609,14 @@ void
+>   usage(void)
+>   {
+>   	fprintf(stdout, "usage: %s",
+> -		"fsx [-dfhknqxyzBEFHIJKLORWXZ0]\n\
+> +		"fsx [-adfhknqxyzBEFHIJKLORWXZ0]\n\
+>   	   [-b opnum] [-c Prob] [-g filldata] [-i logdev] [-j logid]\n\
+>   	   [-l flen] [-m start:end] [-o oplen] [-p progressinterval]\n\
+>   	   [-r readbdy] [-s style] [-t truncbdy] [-w writebdy]\n\
+>   	   [-A|-U] [-D startingop] [-N numops] [-P dirpath] [-S seed]\n\
+>   	   [--replay-ops=opsfile] [--record-ops[=opsfile]] [--duration=seconds]\n\
+>   	   ... fname\n\
+> +	-a: disable atomic writes\n\
+>   	-b opnum: beginning operation number (default 1)\n\
+>   	-c P: 1 in P chance of file close+open at each op (default infinity)\n\
+>   	-d: debug output for all operations\n\
+> @@ -3059,9 +3158,13 @@ main(int argc, char **argv)
+>   	setvbuf(stdout, (char *)0, _IOLBF, 0); /* line buffered stdout */
+>   
+>   	while ((ch = getopt_long(argc, argv,
+> -				 "0b:c:de:fg:hi:j:kl:m:no:p:qr:s:t:uw:xyABD:EFJKHzCILN:OP:RS:UWXZ",
+> +				 "0ab:c:de:fg:hi:j:kl:m:no:p:qr:s:t:uw:xyABD:EFJKHzCILN:OP:RS:UWXZ",
+>   				 longopts, NULL)) != EOF)
+>   		switch (ch) {
+> +		case 'a':
+> +			prt("main(): Atomic writes disabled\n");
+> +			do_atomic_writes = 0;
+
+why an opt-out (and not opt-in)?
+
+> +			break;
+>   		case 'b':
+>   			simulatedopcount = getnum(optarg, &endp);
+>   			if (!quiet)
+> @@ -3475,6 +3578,8 @@ main(int argc, char **argv)
+>   		exchange_range_calls = test_exchange_range();
+>   	if (dontcache_io)
+>   		dontcache_io = test_dontcache_io();
+> +	if (do_atomic_writes)
+> +		do_atomic_writes = test_atomic_writes();
+>   
+>   	while (keep_running())
+>   		if (!test())
 
 
