@@ -1,88 +1,62 @@
-Return-Path: <linux-ext4+bounces-9800-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9801-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E661B40F2F
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Sep 2025 23:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C3C4B41313
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Sep 2025 05:45:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FAF048839D
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Sep 2025 21:16:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7663A3AFFB9
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Sep 2025 03:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E56C27056A;
-	Tue,  2 Sep 2025 21:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02D72D0617;
+	Wed,  3 Sep 2025 03:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="FrjqaAYX"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OdrGJtMP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C9D2550BA
-	for <linux-ext4@vger.kernel.org>; Tue,  2 Sep 2025 21:16:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F861BC58;
+	Wed,  3 Sep 2025 03:44:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756847797; cv=none; b=GQiTMvrY//nbD1FEs/DMr24j2w4Kxla8GredRLneyXwb5J1romasSzllrQqW9iQCe+ps8tk3hxI1Qs3LSu6rHXuGv+oTNMs71d6ewoUCvBvA6VRdWFCZbWBrE5fHO73hET24mpj058WKMfSz3Pc9rK2vTrOgcQgVSKln3NmPxJo=
+	t=1756871099; cv=none; b=AsBkOH2PvkBb29dfigGuIRxQRw7UJplJdDR/+3K3TEIl+3RLbGrdQ53v7elWAaUvb/N9E4DshrhdvidIrAWzNc/YXjB/Dgf4QbXlG8eG2MupUMNnTRE7C70sjkgzPOABJlSdp6B/cZ5lWIY0/hKEqQuVqxk5kxT0TrCD5eMI9qE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756847797; c=relaxed/simple;
-	bh=8E/jvRDOHHG1BVOCMKNkeWwdydTDpXFSm7o5qzkPD7o=;
+	s=arc-20240116; t=1756871099; c=relaxed/simple;
+	bh=PvelsWIGe09Yeakjy9VGlt90Ro81lDt3MUlFaNnhHpM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NkZJ9BxMUIfO5TMMubxCH3SeUJ9GJ5nStytxJyHODjx8c3AVEbFQQf+pOpZDMGuaDmG9IgjcX1wEv6tCwcxZwiYpbY/pc95CEA38/OX6FtlLtQkkx3X+wG1qmSOqD8Qd/fGAvxqJbcdbauvWkTndDZivIQSVfNkEl3EWG6piNl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=FrjqaAYX; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b4c29d2ea05so272274a12.0
-        for <linux-ext4@vger.kernel.org>; Tue, 02 Sep 2025 14:16:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda.com; s=google; t=1756847794; x=1757452594; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AZZ2lB4ISamXFZAgBQq/WzJ34jlGV8NbPOBhhzgO5xc=;
-        b=FrjqaAYXTWHYDgaMwVXAK6kFa4V9Rw5rlXggdK7Zalb663iHU/gy+5z8VD8UoQOpap
-         l1WNeytFye2dniIUdK75lB4J/yDtNvXaCCo1dXSqhSva+h58F4Hwh/6TKOGAAL/1movw
-         ukP7YwSSOQFQK2I/PTE6yaUkTEXSZEqYXfaR4orQhfdCkiXPfGZX1oYwpmpcRe4Q4rcy
-         RAxgZk3KKWj8/4CElgCVVKE7yPLWBKm/fO3IjaxCt6r52XGQ04t7oyGaDhRcZ5FVHWUZ
-         twXJBqgFZg2cB7AdiUXbJjJN9dCa7aVMzRsxsSLMlChPQAmfQUZwiUSDnVTfOUED8MtX
-         /jEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756847794; x=1757452594;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AZZ2lB4ISamXFZAgBQq/WzJ34jlGV8NbPOBhhzgO5xc=;
-        b=SLSkJakFJsbpef+Jmf2xE1EI4c15WbQXy8zmPzZX7eVBxxKYdVgBT31EHiVFiKD/Cp
-         tmgFrGa07TgmoK94Q2cB1wR2AFOwhovuYfFSTV6I83JGYhm4PjLFtJDnQd7Jm1WjIDO2
-         wW0dwZQhBnf7dUtJaQoS0vCyA51ZpARm/5QTbkqRunIb0BHKebl3P6rXQvgvjSAAZ/pq
-         avlTmwv2yLQ8qh8VwJ8RaONIzH7vpu+OxZBbvxX4Kmg5K2ZpZA48A+d7Axwc7F7N+NHt
-         5gO6KF21pRCEvMH5hUPzIN5VGo0JKbB7lB2kWKwaQ5meP6TloV7+dEgkl4jbaIxEl8uq
-         DQYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXvkz6fdgBO4/LMdtcX41uhosif8ZR70lF++EImTyL5nbEi9cZ73vuPmgC3WGld+xytgwAlufM+EOGq@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxb4k/I0zoHNWdUgK3zawiuW/Nlf9VDyIivcpP4kCCYpVmhdl3a
-	GQrvgcPSyK2/kiqU1DKY2A3VrCsRq30QBinVGzDtD88VJ3I0zZgMDSw0U41Ipj6pZN0=
-X-Gm-Gg: ASbGncs2egNWWMoKkwOL4KCSrw2ujtWez3zA/yI2v/AjjooFGRTrzljSpJtAzYt+AuC
-	V4qlgBWEsqpKiHA1Kf7feDfqhzYxb4sADiBV63K/XwBGe8VN43d5tcGpTMbsusyI+EsmRwWOuAd
-	CRD623ywM+/XkkiIpyYtB3Q4iackXSbxHe0xC9Ur6EFAss/IcHbfSctVVwB/qFjihYVNafQemsR
-	7YkgUilnxL2hkKh7vgPvD7GPwxQx6WDG1NbZe2elzZAfSb+a8DH3Qz2r354/kxQ1Ooo1OsqQe0u
-	6xa+r8Bd17128Zi7Mia7fNzchuk4O23fgQx/laNv0duoEzVEWdz0Ss1JTB63W5XBNkCa4wPD3fg
-	AQgbzwk/w6Cpe+nDibA9JWg==
-X-Google-Smtp-Source: AGHT+IHqgzWZY4jO3oi/PHem49+FGqRRnap+DIQnalZ/YOlNL3IDg27pqaRPYcFtF0tDB6iYynVJPQ==
-X-Received: by 2002:a17:902:cf45:b0:244:5bbe:acdd with SMTP id d9443c01a7336-24944b38adfmr114957675ad.27.1756847793615;
-        Tue, 02 Sep 2025 14:16:33 -0700 (PDT)
-Received: from localhost ([2600:382:862e:d4b7:c2c3:195b:a4b:5b18])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24905da1b14sm138813495ad.77.2025.09.02.14.16.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Sep 2025 14:16:32 -0700 (PDT)
-Date: Tue, 2 Sep 2025 17:16:29 -0400
-From: Josef Bacik <josef@toxicpanda.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ANwhU/HPWz3A4VpdrYNO4JyYdJxGSe9WAiK1+iWcwdsy6Ppm0SAJoqCgq2jc0jWkfTIorqrqBg5pSOexZTvg/iZOMzhmXq3Ddl0FnTlARnXEc3K5EY0UcyvrbBuJ4epCJ0vpHNVJ8QesF7lYZFe+62402KJTOx1S7xyHm/7tpFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OdrGJtMP; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=h+A5Evl7rfK/8SKJfoYihpjhh8MicK5nb9DTqHwAWIE=; b=OdrGJtMPERMxCqBXjxMQ1uhglM
+	Dkg2czKqU5Xd2grdCwARTWIluIqz7abkOrYQPr0FHq/CuHsdZnrEFWS+sIWImQP0bKnK4S6g2Vzsm
+	konZ7i9syIDZdlf7Qa9OGr90EYSIm/f68+YYHd7H5TpP6J9rzq+J2HGAkWk/bpm9OKoXxX0+kwEVq
+	8L3XwOi8ke5/K0qr6VPaJ1ROohEL8aGMhXrC3I3udBN+56SRTDWMUDR696CK0svymxv+Yl/PHH8Om
+	euwwd7mxUmo6iDNaGCOqskCmV6Pr3fPMFD34lpeqvbHqjY0wVHE5tayqVUM0vAQXsAqCQNGObi9ym
+	wOg65iXw==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uteQW-0000000EieP-1FlW;
+	Wed, 03 Sep 2025 03:44:52 +0000
+Date: Wed, 3 Sep 2025 04:44:52 +0100
+From: Matthew Wilcox <willy@infradead.org>
 To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, brauner@kernel.org,
-	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 00/54] fs: rework inode reference counting
-Message-ID: <20250902211629.GA252154@fedora>
-References: <cover.1756222464.git.josef@toxicpanda.com>
- <eeu47pjcaxkfol2o2bltigfjvrz6eecdjwtilnmnprqh7dhdn7@rqi35ya5ilmv>
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>
+Subject: Re: [WIP RFC PATCH] fs: retire I_WILL_FREE
+Message-ID: <aLe5tIMaTOPEUaWe@casper.infradead.org>
+References: <20250902145428.456510-1-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -91,503 +65,544 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eeu47pjcaxkfol2o2bltigfjvrz6eecdjwtilnmnprqh7dhdn7@rqi35ya5ilmv>
+In-Reply-To: <20250902145428.456510-1-mjguzik@gmail.com>
 
-On Tue, Sep 02, 2025 at 12:06:01PM +0200, Mateusz Guzik wrote:
-> On Tue, Aug 26, 2025 at 11:39:00AM -0400, Josef Bacik wrote:
+On Tue, Sep 02, 2025 at 04:54:28PM +0200, Mateusz Guzik wrote:
+> Following up on my response to the refcount patchset, here is a churn
+> patch to retire I_WILL_FREE.
 > 
-> Hi Josef,
-> 
-> I read through the entire patchset and I think I got the hang of it.
-> 
-> Bottom line is I disagree with the core idea of the patchset and
-> majority of the justification raised in the cover letter. :)
-> 
-> I'll be very to the point, trying to be as clear as possible and
-> consequently lacking in soft-speak. Based on your name I presume you are
-> also of Slavic descent, hopefully making it fine ;-)
-> 
-> I don't have a vote per se so this is not really a NAK. Instead I'm
-> making a case to you and VFS maintaienrs to not include this.
+> The only consumer is the drop inode routine in ocfs2.
 
-Mateusz, I always value your feedback and your views. As long as you aren't
-personally attacking anybody I have no problems being told that you think I'm
-wrong, and I've never seen you be rude or combative, so I wasn't expecting to
-see anything in this email I wouldn't want to hear.  I did this as an RFC
-specifically hoping you would look at this and come up with a solution I hadn't
-thought of. Thank you for thoroughly digging through this and giving a quite
-thorough and well thought out response.
+If the only consumer is ocfs2 ... then you should cc the ocfs2 people,
+right?
 
+> For the life of me I could not figure out if write_inode_now() is legal
+> to call in ->evict_inode later and have no means to test, so I devised a
+> hack: let the fs set I_FREEING ahead of time. Also note iput_final()
+> issues write_inode_now() anyway but only for the !drop case, which is the
+> opposite of what is being returned.
+> 
+> One could further hack around it by having ocfs2 return *DON'T* drop but
+> also set I_DONTCACHE, which would result in both issuing the write in
+> iput_final() and dropping. I think the hack I did implement is cleaner.
+> Preferred option is ->evict_inode from ocfs handling the i/o, but per
+> the above I don't know how to do it.
+> 
+> So.. the following is my proposed first step towards sanitisation of
+> i_state and the lifecycle flags.
+> 
+> I verified fs/inode.c and fs/fs-writeback.c compile, otherwise untested.
+> 
+> Generated against vfs-6.18.inode.refcount.preliminaries
+> 
+> Comments?
+> 
+> ---
+>  block/bdev.c                     |  2 +-
+>  fs/bcachefs/fs.c                 |  2 +-
+>  fs/btrfs/inode.c                 |  2 +-
+>  fs/crypto/keyring.c              |  2 +-
+>  fs/drop_caches.c                 |  2 +-
+>  fs/ext4/inode.c                  |  2 +-
+>  fs/fs-writeback.c                | 18 +++++++----------
+>  fs/gfs2/ops_fstype.c             |  2 +-
+>  fs/inode.c                       | 34 +++++++++++++++++---------------
+>  fs/notify/fsnotify.c             |  6 +++---
+>  fs/ocfs2/inode.c                 |  3 +--
+>  fs/quota/dquot.c                 |  2 +-
+>  fs/xfs/scrub/common.c            |  3 +--
+>  include/linux/fs.h               | 32 ++++++++++++------------------
+>  include/trace/events/writeback.h |  3 +--
+>  security/landlock/fs.c           | 12 +++++------
+>  16 files changed, 58 insertions(+), 69 deletions(-)
+> 
+> diff --git a/block/bdev.c b/block/bdev.c
+> index b77ddd12dc06..1801d89e448b 100644
+> --- a/block/bdev.c
+> +++ b/block/bdev.c
+> @@ -1265,7 +1265,7 @@ void sync_bdevs(bool wait)
+>  		struct block_device *bdev;
+>  
+>  		spin_lock(&inode->i_lock);
+> -		if (inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW) ||
+> +		if (inode->i_state & (I_FREEING | I_NEW) ||
+>  		    mapping->nrpages == 0) {
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index 687af0eea0c2..a62d597630d1 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -347,7 +347,7 @@ static struct bch_inode_info *bch2_inode_hash_find(struct bch_fs *c, struct btre
+>  			spin_unlock(&inode->v.i_lock);
+>  			return NULL;
+>  		}
+> -		if ((inode->v.i_state & (I_FREEING|I_WILL_FREE))) {
+> +		if ((inode->v.i_state & I_FREEING)) {
+>  			if (!trans) {
+>  				__wait_on_freeing_inode(c, inode, inum);
+>  			} else {
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 5bcd8e25fa78..f1d9336b903f 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3856,7 +3856,7 @@ static int btrfs_add_inode_to_root(struct btrfs_inode *inode, bool prealloc)
+>  		ASSERT(ret != -ENOMEM);
+>  		return ret;
+>  	} else if (existing) {
+> -		WARN_ON(!(existing->vfs_inode.i_state & (I_WILL_FREE | I_FREEING)));
+> +		WARN_ON(!(existing->vfs_inode.i_state & I_FREEING));
+>  	}
+>  
+>  	return 0;
+> diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+> index 7557f6a88b8f..97f4c7049222 100644
+> --- a/fs/crypto/keyring.c
+> +++ b/fs/crypto/keyring.c
+> @@ -957,7 +957,7 @@ static void evict_dentries_for_decrypted_inodes(struct fscrypt_master_key *mk)
+>  	list_for_each_entry(ci, &mk->mk_decrypted_inodes, ci_master_key_link) {
+>  		inode = ci->ci_inode;
+>  		spin_lock(&inode->i_lock);
+> -		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
+> +		if (inode->i_state & (I_FREEING | I_NEW)) {
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+>  		}
+> diff --git a/fs/drop_caches.c b/fs/drop_caches.c
+> index 019a8b4eaaf9..40fa9b17375b 100644
+> --- a/fs/drop_caches.c
+> +++ b/fs/drop_caches.c
+> @@ -28,7 +28,7 @@ static void drop_pagecache_sb(struct super_block *sb, void *unused)
+>  		 * inodes without pages but we deliberately won't in case
+>  		 * we need to reschedule to avoid softlockups.
+>  		 */
+> -		if ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
+> +		if ((inode->i_state & (I_FREEING|I_NEW)) ||
+>  		    (mapping_empty(inode->i_mapping) && !need_resched())) {
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index ed54c4d0f2f9..14209758e5be 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -425,7 +425,7 @@ void ext4_check_map_extents_env(struct inode *inode)
+>  	if (!S_ISREG(inode->i_mode) ||
+>  	    IS_NOQUOTA(inode) || IS_VERITY(inode) ||
+>  	    is_special_ino(inode->i_sb, inode->i_ino) ||
+> -	    (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) ||
+> +	    (inode->i_state & (I_FREEING | I_NEW)) ||
+>  	    ext4_test_inode_flag(inode, EXT4_INODE_EA_INODE) ||
+>  	    ext4_verity_in_progress(inode))
+>  		return;
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index 6088a67b2aae..5fa388820daf 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -405,10 +405,10 @@ static bool inode_do_switch_wbs(struct inode *inode,
+>  	xa_lock_irq(&mapping->i_pages);
+>  
+>  	/*
+> -	 * Once I_FREEING or I_WILL_FREE are visible under i_lock, the eviction
+> +	 * Once I_FREEING is visible under i_lock, the eviction
+>  	 * path owns the inode and we shouldn't modify ->i_io_list.
+>  	 */
+> -	if (unlikely(inode->i_state & (I_FREEING | I_WILL_FREE)))
+> +	if (unlikely(inode->i_state & I_FREEING))
+>  		goto skip_switch;
+>  
+>  	trace_inode_switch_wbs(inode, old_wb, new_wb);
+> @@ -560,7 +560,7 @@ static bool inode_prepare_wbs_switch(struct inode *inode,
+>  	/* while holding I_WB_SWITCH, no one else can update the association */
+>  	spin_lock(&inode->i_lock);
+>  	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
+> -	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
+> +	    inode->i_state & (I_WB_SWITCH | I_FREEING) ||
+>  	    inode_to_wb(inode) == new_wb) {
+>  		spin_unlock(&inode->i_lock);
+>  		return false;
+> @@ -1758,7 +1758,7 @@ __writeback_single_inode(struct inode *inode, struct writeback_control *wbc)
+>   * whether it is a data-integrity sync (%WB_SYNC_ALL) or not (%WB_SYNC_NONE).
+>   *
+>   * To prevent the inode from going away, either the caller must have a reference
+> - * to the inode, or the inode must have I_WILL_FREE or I_FREEING set.
+> + * to the inode, or the inode must have I_FREEING set.
+>   */
+>  static int writeback_single_inode(struct inode *inode,
+>  				  struct writeback_control *wbc)
+> @@ -1768,9 +1768,7 @@ static int writeback_single_inode(struct inode *inode,
+>  
+>  	spin_lock(&inode->i_lock);
+>  	if (!icount_read(inode))
+> -		WARN_ON(!(inode->i_state & (I_WILL_FREE|I_FREEING)));
+> -	else
+> -		WARN_ON(inode->i_state & I_WILL_FREE);
+> +		WARN_ON(!(inode->i_state & I_FREEING));
+>  
+>  	if (inode->i_state & I_SYNC) {
+>  		/*
+> @@ -1928,7 +1926,7 @@ static long writeback_sb_inodes(struct super_block *sb,
+>  		 * kind writeout is handled by the freer.
+>  		 */
+>  		spin_lock(&inode->i_lock);
+> -		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
+> +		if (inode->i_state & (I_NEW | I_FREEING)) {
+>  			redirty_tail_locked(inode, wb);
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+> @@ -2696,7 +2694,7 @@ static void wait_sb_inodes(struct super_block *sb)
+>  		spin_unlock_irq(&sb->s_inode_wblist_lock);
+>  
+>  		spin_lock(&inode->i_lock);
+> -		if (inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) {
+> +		if (inode->i_state & (I_FREEING | I_NEW)) {
+>  			spin_unlock(&inode->i_lock);
+>  
+>  			spin_lock_irq(&sb->s_inode_wblist_lock);
+> @@ -2844,8 +2842,6 @@ EXPORT_SYMBOL(sync_inodes_sb);
+>   *
+>   * This function commits an inode to disk immediately if it is dirty. This is
+>   * primarily needed by knfsd.
+> - *
+> - * The caller must either have a ref on the inode or must have set I_WILL_FREE.
+>   */
+>  int write_inode_now(struct inode *inode, int sync)
+>  {
+> diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+> index c770006f8889..1393181a64dc 100644
+> --- a/fs/gfs2/ops_fstype.c
+> +++ b/fs/gfs2/ops_fstype.c
+> @@ -1749,7 +1749,7 @@ static void gfs2_evict_inodes(struct super_block *sb)
+>  	spin_lock(&sb->s_inode_list_lock);
+>  	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+>  		spin_lock(&inode->i_lock);
+> -		if ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) &&
+> +		if ((inode->i_state & (I_FREEING | I_NEW)) &&
+>  		    !need_resched()) {
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 2db680a37235..8188b0b5dfa1 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -532,7 +532,7 @@ EXPORT_SYMBOL(ihold);
+>  
+>  static void __inode_add_lru(struct inode *inode, bool rotate)
+>  {
+> -	if (inode->i_state & (I_DIRTY_ALL | I_SYNC | I_FREEING | I_WILL_FREE))
+> +	if (inode->i_state & (I_DIRTY_ALL | I_SYNC | I_FREEING))
+>  		return;
+>  	if (icount_read(inode))
+>  		return;
+> @@ -577,7 +577,7 @@ static void inode_lru_list_del(struct inode *inode)
+>  static void inode_pin_lru_isolating(struct inode *inode)
+>  {
+>  	lockdep_assert_held(&inode->i_lock);
+> -	WARN_ON(inode->i_state & (I_LRU_ISOLATING | I_FREEING | I_WILL_FREE));
+> +	WARN_ON(inode->i_state & (I_LRU_ISOLATING | I_FREEING));
+>  	inode->i_state |= I_LRU_ISOLATING;
+>  }
+>  
+> @@ -879,7 +879,7 @@ void evict_inodes(struct super_block *sb)
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+>  		}
+> -		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
+> +		if (inode->i_state & (I_NEW | I_FREEING)) {
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+>  		}
+> @@ -1025,7 +1025,7 @@ static struct inode *find_inode(struct super_block *sb,
+>  		if (!test(inode, data))
+>  			continue;
+>  		spin_lock(&inode->i_lock);
+> -		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
+> +		if (inode->i_state & I_FREEING) {
+>  			__wait_on_freeing_inode(inode, is_inode_hash_locked);
+>  			goto repeat;
+>  		}
+> @@ -1066,7 +1066,7 @@ static struct inode *find_inode_fast(struct super_block *sb,
+>  		if (inode->i_sb != sb)
+>  			continue;
+>  		spin_lock(&inode->i_lock);
+> -		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
+> +		if (inode->i_state & I_FREEING) {
+>  			__wait_on_freeing_inode(inode, is_inode_hash_locked);
+>  			goto repeat;
+>  		}
+> @@ -1538,7 +1538,7 @@ EXPORT_SYMBOL(iunique);
+>  struct inode *igrab(struct inode *inode)
+>  {
+>  	spin_lock(&inode->i_lock);
+> -	if (!(inode->i_state & (I_FREEING|I_WILL_FREE))) {
+> +	if (!(inode->i_state & I_FREEING)) {
+>  		__iget(inode);
+>  		spin_unlock(&inode->i_lock);
+>  	} else {
+> @@ -1728,7 +1728,7 @@ struct inode *find_inode_rcu(struct super_block *sb, unsigned long hashval,
+>  
+>  	hlist_for_each_entry_rcu(inode, head, i_hash) {
+>  		if (inode->i_sb == sb &&
+> -		    !(READ_ONCE(inode->i_state) & (I_FREEING | I_WILL_FREE)) &&
+> +		    !(READ_ONCE(inode->i_state) & I_FREEING) &&
+>  		    test(inode, data))
+>  			return inode;
+>  	}
+> @@ -1767,7 +1767,7 @@ struct inode *find_inode_by_ino_rcu(struct super_block *sb,
+>  	hlist_for_each_entry_rcu(inode, head, i_hash) {
+>  		if (inode->i_ino == ino &&
+>  		    inode->i_sb == sb &&
+> -		    !(READ_ONCE(inode->i_state) & (I_FREEING | I_WILL_FREE)))
+> +		    !(READ_ONCE(inode->i_state) & I_FREEING))
+>  		    return inode;
+>  	}
+>  	return NULL;
+> @@ -1789,7 +1789,7 @@ int insert_inode_locked(struct inode *inode)
+>  			if (old->i_sb != sb)
+>  				continue;
+>  			spin_lock(&old->i_lock);
+> -			if (old->i_state & (I_FREEING|I_WILL_FREE)) {
+> +			if (old->i_state & I_FREEING) {
+>  				spin_unlock(&old->i_lock);
+>  				continue;
+>  			}
+> @@ -1862,12 +1862,19 @@ static void iput_final(struct inode *inode)
+>  	int drop;
+>  
+>  	WARN_ON(inode->i_state & I_NEW);
+> +	VFS_BUG_ON_INODE(inode->i_state & I_FREEING, inode);
+>  
+>  	if (op->drop_inode)
+>  		drop = op->drop_inode(inode);
+>  	else
+>  		drop = generic_drop_inode(inode);
+>  
+> +	/*
+> +	 * Note: the ->drop_inode routine is allowed to set I_FREEING for us,
+> +	 * but this is only legal if they want to drop.
+> +	 */
+> +	VFS_BUG_ON_INODE(!drop && (inode->i_state & I_FREEING), inode);
+> +
+>  	if (!drop &&
+>  	    !(inode->i_state & I_DONTCACHE) &&
+>  	    (sb->s_flags & SB_ACTIVE)) {
+> @@ -1877,19 +1884,14 @@ static void iput_final(struct inode *inode)
+>  	}
+>  
+>  	state = inode->i_state;
+> +	WRITE_ONCE(inode->i_state, state | I_FREEING);
+>  	if (!drop) {
+> -		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
+>  		spin_unlock(&inode->i_lock);
+> -
+>  		write_inode_now(inode, 1);
+> -
+>  		spin_lock(&inode->i_lock);
+> -		state = inode->i_state;
+> -		WARN_ON(state & I_NEW);
+> -		state &= ~I_WILL_FREE;
+>  	}
+> +	WARN_ON(inode->i_state & I_NEW);
+>  
+> -	WRITE_ONCE(inode->i_state, state | I_FREEING);
+>  	if (!list_empty(&inode->i_lru))
+>  		inode_lru_list_del(inode);
+>  	spin_unlock(&inode->i_lock);
+> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> index 46bfc543f946..cff8417fa6db 100644
+> --- a/fs/notify/fsnotify.c
+> +++ b/fs/notify/fsnotify.c
+> @@ -47,12 +47,12 @@ static void fsnotify_unmount_inodes(struct super_block *sb)
+>  	spin_lock(&sb->s_inode_list_lock);
+>  	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+>  		/*
+> -		 * We cannot __iget() an inode in state I_FREEING,
+> -		 * I_WILL_FREE, or I_NEW which is fine because by that point
+> +		 * We cannot __iget() an inode in state I_FREEING
+> +		 * or I_NEW which is fine because by that point
+>  		 * the inode cannot have any associated watches.
+>  		 */
+>  		spin_lock(&inode->i_lock);
+> -		if (inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) {
+> +		if (inode->i_state & (I_FREEING | I_NEW)) {
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+>  		}
+> diff --git a/fs/ocfs2/inode.c b/fs/ocfs2/inode.c
+> index 14bf440ea4df..29549fc899e9 100644
+> --- a/fs/ocfs2/inode.c
+> +++ b/fs/ocfs2/inode.c
+> @@ -1307,12 +1307,11 @@ int ocfs2_drop_inode(struct inode *inode)
+>  				inode->i_nlink, oi->ip_flags);
+>  
+>  	assert_spin_locked(&inode->i_lock);
+> -	inode->i_state |= I_WILL_FREE;
+> +	inode->i_state |= I_FREEING;
+>  	spin_unlock(&inode->i_lock);
+>  	write_inode_now(inode, 1);
+>  	spin_lock(&inode->i_lock);
+>  	WARN_ON(inode->i_state & I_NEW);
+> -	inode->i_state &= ~I_WILL_FREE;
+>  
+>  	return 1;
+>  }
+> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+> index df4a9b348769..3aa916040602 100644
+> --- a/fs/quota/dquot.c
+> +++ b/fs/quota/dquot.c
+> @@ -1030,7 +1030,7 @@ static int add_dquot_ref(struct super_block *sb, int type)
+>  	spin_lock(&sb->s_inode_list_lock);
+>  	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+>  		spin_lock(&inode->i_lock);
+> -		if ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
+> +		if ((inode->i_state & (I_FREEING | I_NEW)) ||
+>  		    !atomic_read(&inode->i_writecount) ||
+>  		    !dqinit_needed(inode, type)) {
+>  			spin_unlock(&inode->i_lock);
+> diff --git a/fs/xfs/scrub/common.c b/fs/xfs/scrub/common.c
+> index 2ef7742be7d3..e678f944206f 100644
+> --- a/fs/xfs/scrub/common.c
+> +++ b/fs/xfs/scrub/common.c
+> @@ -1086,8 +1086,7 @@ xchk_install_handle_inode(
+>  
+>  /*
+>   * Install an already-referenced inode for scrubbing.  Get our own reference to
+> - * the inode to make disposal simpler.  The inode must not be in I_FREEING or
+> - * I_WILL_FREE state!
+> + * the inode to make disposal simpler.  The inode must not have I_FREEING set.
+>   */
+>  int
+>  xchk_install_live_inode(
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index c4fd010cf5bf..e8ad8f0a03c7 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -671,8 +671,8 @@ is_uncached_acl(struct posix_acl *acl)
+>   * I_DIRTY_DATASYNC, I_DIRTY_PAGES, and I_DIRTY_TIME.
+>   *
+>   * Four bits define the lifetime of an inode.  Initially, inodes are I_NEW,
+> - * until that flag is cleared.  I_WILL_FREE, I_FREEING and I_CLEAR are set at
+> - * various stages of removing an inode.
+> + * until that flag is cleared.  I_FREEING and I_CLEAR are set at various stages
+> + * of removing an inode.
+>   *
+>   * Two bits are used for locking and completion notification, I_NEW and I_SYNC.
+>   *
+> @@ -696,24 +696,21 @@ is_uncached_acl(struct posix_acl *acl)
+>   *			New inodes set I_NEW.  If two processes both create
+>   *			the same inode, one of them will release its inode and
+>   *			wait for I_NEW to be released before returning.
+> - *			Inodes in I_WILL_FREE, I_FREEING or I_CLEAR state can
+> - *			also cause waiting on I_NEW, without I_NEW actually
+> - *			being set.  find_inode() uses this to prevent returning
+> - *			nearly-dead inodes.
+> - * I_WILL_FREE		Must be set when calling write_inode_now() if i_count
+> - *			is zero.  I_FREEING must be set when I_WILL_FREE is
+> - *			cleared.
+> + *			Inodes in I_FREEING or I_CLEAR state can also cause
+> + *			waiting on I_NEW, without I_NEW actually being set.
+> + *			find_inode() uses this to prevent returning nearly-dead
+> + *			inodes.
+>   * I_FREEING		Set when inode is about to be freed but still has dirty
+>   *			pages or buffers attached or the inode itself is still
+>   *			dirty.
+>   * I_CLEAR		Added by clear_inode().  In this state the inode is
+>   *			clean and can be destroyed.  Inode keeps I_FREEING.
+>   *
+> - *			Inodes that are I_WILL_FREE, I_FREEING or I_CLEAR are
+> - *			prohibited for many purposes.  iget() must wait for
+> - *			the inode to be completely released, then create it
+> - *			anew.  Other functions will just ignore such inodes,
+> - *			if appropriate.  I_NEW is used for waiting.
+> + *			Inodes that are I_FREEING or I_CLEAR are prohibited for
+> + *			many purposes.  iget() must wait for the inode to be
+> + *			completely released, then create it anew.  Other
+> + *			functions will just ignore such inodes, if appropriate.
+> + *			I_NEW is used for waiting.
+>   *
+>   * I_SYNC		Writeback of inode is running. The bit is set during
+>   *			data writeback, and cleared with a wakeup on the bit
+> @@ -743,8 +740,6 @@ is_uncached_acl(struct posix_acl *acl)
+>   * I_LRU_ISOLATING	Inode is pinned being isolated from LRU without holding
+>   *			i_count.
+>   *
+> - * Q: What is the difference between I_WILL_FREE and I_FREEING?
+> - *
+>   * __I_{SYNC,NEW,LRU_ISOLATING} are used to derive unique addresses to wait
+>   * upon. There's one free address left.
+>   */
+> @@ -764,7 +759,7 @@ enum inode_state_flags_t {
+>  	I_DIRTY_SYNC		= (1U << 4),
+>  	I_DIRTY_DATASYNC	= (1U << 5),
+>  	I_DIRTY_PAGES		= (1U << 6),
+> -	I_WILL_FREE		= (1U << 7),
+> +	I_PINNING_NETFS_WB	= (1U << 7),
+>  	I_FREEING		= (1U << 8),
+>  	I_CLEAR			= (1U << 9),
+>  	I_REFERENCED		= (1U << 10),
+> @@ -775,7 +770,6 @@ enum inode_state_flags_t {
+>  	I_CREATING		= (1U << 15),
+>  	I_DONTCACHE		= (1U << 16),
+>  	I_SYNC_QUEUED		= (1U << 17),
+> -	I_PINNING_NETFS_WB	= (1U << 18)
+>  };
+>  
+>  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
+> @@ -2628,7 +2622,7 @@ static inline int icount_read(const struct inode *inode)
+>  static inline bool inode_is_dirtytime_only(struct inode *inode)
+>  {
+>  	return (inode->i_state & (I_DIRTY_TIME | I_NEW |
+> -				  I_FREEING | I_WILL_FREE)) == I_DIRTY_TIME;
+> +				  I_FREEING)) == I_DIRTY_TIME;
+>  }
+>  
+>  extern void inc_nlink(struct inode *inode);
+> diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
+> index 1e23919c0da9..6e3ebecc95e9 100644
+> --- a/include/trace/events/writeback.h
+> +++ b/include/trace/events/writeback.h
+> @@ -15,7 +15,7 @@
+>  		{I_DIRTY_DATASYNC,	"I_DIRTY_DATASYNC"},	\
+>  		{I_DIRTY_PAGES,		"I_DIRTY_PAGES"},	\
+>  		{I_NEW,			"I_NEW"},		\
+> -		{I_WILL_FREE,		"I_WILL_FREE"},		\
+> +		{I_PINNING_NETFS_WB,	"I_PINNING_NETFS_WB"},	\
+>  		{I_FREEING,		"I_FREEING"},		\
+>  		{I_CLEAR,		"I_CLEAR"},		\
+>  		{I_SYNC,		"I_SYNC"},		\
+> @@ -27,7 +27,6 @@
+>  		{I_CREATING,		"I_CREATING"},		\
+>  		{I_DONTCACHE,		"I_DONTCACHE"},		\
+>  		{I_SYNC_QUEUED,		"I_SYNC_QUEUED"},	\
+> -		{I_PINNING_NETFS_WB,	"I_PINNING_NETFS_WB"},	\
+>  		{I_LRU_ISOLATING,	"I_LRU_ISOLATING"}	\
+>  	)
+>  
+> diff --git a/security/landlock/fs.c b/security/landlock/fs.c
+> index 0bade2c5aa1d..7ffcd62324fa 100644
+> --- a/security/landlock/fs.c
+> +++ b/security/landlock/fs.c
+> @@ -1290,13 +1290,13 @@ static void hook_sb_delete(struct super_block *const sb)
+>  		 */
+>  		spin_lock(&inode->i_lock);
+>  		/*
+> -		 * Checks I_FREEING and I_WILL_FREE  to protect against a race
+> -		 * condition when release_inode() just called iput(), which
+> -		 * could lead to a NULL dereference of inode->security or a
+> -		 * second call to iput() for the same Landlock object.  Also
+> -		 * checks I_NEW because such inode cannot be tied to an object.
+> +		 * Checks I_FREEING to protect against a race condition when
+> +		 * release_inode() just called iput(), which could lead to a
+> +		 * NULL dereference of inode->security or a second call to
+> +		 * iput() for the same Landlock object.  Also checks I_NEW
+> +		 * because such inode cannot be tied to an object.
+>  		 */
+> -		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
+> +		if (inode->i_state & (I_FREEING | I_NEW)) {
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+>  		}
+> -- 
+> 2.43.0
 > 
-> ACHTUNG: this is *really* long and I probably forgot to mention
-> something.
 > 
-> Frankly the patchset seems to be a way to help btrfs by providing a new
-> refcount (but not in a generic-friendly manner) while taking issue with
-> refcount 0 having a "the inode is good to go if need be" meaning. I
-> provide detailed reasoning below.
-> 
-> It warrants noting there is a lot of plain crap in the VFS layer.
-> Between the wtf flags, bad docs for them, poor assert coverage,
-> open-coded & repeated access to stuff (including internal state), I have
-> to say someone(tm) needs to take a hammer to it.
-> 
-> However, as far as I can tell, modulo the quality of how things are
-> expressed in the code (so to speak), the crux of what the layer is doing
-> in terms of inode management follows idiomatic behavior I would expect
-> to see, I just needs to be done better.
-> 
-> While there are perfectly legitimate reasons to introduce a "hold"
-> reference counter, I pose the patchset at hand does not justify its
-> introduction. If anything I will argue it would be a regression to do it
-> the way it is proposed here, even if some variant of the new counter
-> will find a use case.
-> 
-> > This series is the first part of a larger body of work geared towards solving a
-> > variety of scalability issues in the VFS.
-> > 
-> 
-> Elsewhere in the thread it is mentioned that there is a plan to remove
-> the inode LRU and replace the inode hash with xarray after these changes.
-> 
-> I don't understand how this patchset paves the way for either of those
-> things.
-> 
-> If anything, per notes from other people, it would probably be best if
-> the inode LRU got removed first and this patchset got rebased on it (if
-> it is to land at all).
-> 
-> For the inode hash the real difficulty is not really in terms of
-> implementing something, but evaluating available options. Even if the
-> statically-allocated hash should go (it probably should), the hashing
-> function is not doing a good job (read: the hash is artificially
-> underperforming) and merely replacing it with something else might not
-> give an accurate picture whether the new pick for the data structure is
-> genuinely the right choice (due to skewed comparison as the hash is
-> gimped, both in terms of hashing func and global locking).
-> 
-> The minor technical problem which is there in the stock kernel and which
-> remains unaddressed by your patchset is the need to take ->i_lock. Some
-> of later commentary in this cover letter claims this is sorted out,
-> but that's only true if someone already has a ref (as in the lock is
-> only optionally ommitted).
-> 
-> In particular, if one was to implement fine-grained locking for the hash
-> with bitlocks, I'm told the resulting ordering of bitlock -> spinlock
-> would be problematic on RT kernels as the former type is a hack which
-> literally only spins and does not support any form of preemption. The
-> ordering can be swapped around to spinlock -> bitlock thanks to RCU
-> (e.g., for deletion from the hash you would find the inode using RCU
-> traversal, lock it, lock the chain and only then delete etc.).
-> 
-> Since your patchset keeps the lock in place, the kernel is in the same
-> boat in both cases (also if the new thing only uses spinlocks).
-> 
-> As far as I know the other non-fs specific bottlenecks for inode
-> handling are the super block list and dentry LRU, neither of which
-> benefit from the patchset either.
-> 
-> So again I don't see how scalability work is facilitated by this patchset.
-> 
-
-Agreed, my wording is misleading at best here.
-
-I'm tackling a wide range of things inside of the VFS. My priorities are
-
-1. Simplify. Make everything easier to reason about. Most of our bugs come from
-subtle interactions that are hard to reason about. Case in point, Christian took
-2 full days to figure out the state of inode refcounting to be able to review
-this code. This is a failure. We need core code to be easier to reason about so
-it is harder to introduce regressions.
-
-2. Efficiency. We do so many random things that make no sense. We have 4
-different things where we loop through all of the inodes. The i_hash no longer
-serves us. The LRU is unneeded overhead.
-
-3. Scalability. I think in addressing the above 2, we can get to this one.
-
-You're correct. This patchset doesn't directly address scalability. But it sets
-the stage to do these other things safely.
-
-I do not feel safe changing some of these core parts of VFS without a clearer
-view of how inode lifetimes exist.
-
-> > We have historically had a variety of foot-guns related to inode freeing.  We
-> > have I_WILL_FREE and I_FREEING flags that indicated when the inode was in the
-> > different stages of being reclaimed.  This lead to confusion, and bugs in cases
-> > where one was checked but the other wasn't.  Additionally, it's frankly
-> > confusing to have both of these flags and to deal with them in practice.
-> > 
-> 
-> Per my opening remark I agree this situation is very poorly handled in
-> the current code.
-> 
-> If my grep is right the only real consumer of I_WILL_FREE is ocfs2. In
-> your patchset your just remove the usage. Given that other filesystems
-> manage without it, I suspect the real solution is to change its
-> ->drop_inode to generic_delete_inode() and handle the write in
-> ->evict_inode.
-> 
-> The doc for the flag is most unhelpful, documenting how the flag is used
-> but not explaining what for.
-> 
-> If I understood things correctly the flag is only there to prevent
-> ->i_count acquire by other threads while the spin lock is dropped during
-> inode write out.
-> 
-> Whether your ocfs patch lands or this bit gets reworked as described
-> above, the flag is gone and we are only left with I_FREEING.
-> 
-> Hiding this behind a proper accessor (letting you know what's up with
-> the inode) should cover your concern (again see bottom of the e-mail for
-> a longer explanation).
-> 
-> > However, this exists because we have an odd behavior with inodes, we allow them
-> > to have a 0 reference count and still be usable. This again is a pretty unfun
-> > footgun, because generally speaking we want reference counts to be meaningful.
-> > 
-> 
-> This is not an odd behavior. This in fact the idiomatic handling of
-> objects which remain cached if there are no active users. I don't know
-> about the entirety of the Linux kernel, but dentries are also handled
-> the same way.
-> 
-> I come from the BSD land but I had also seen my share of Solaris and I
-> can tell you all of these also follow this core idea in places I looked.
-> 
-> If anything deviating from this should raise eyebrows.
-> 
-
-Yes, it is typical in dcache an icache. It is not typical in every other
-reference counting system. My argument is that 0 == "potentially ok to access
-under X circumstances" is a bad paradigm to have. We should strive to stick to 0
-== this object cannot be used, because this is a far more common practice WRT
-reference counting.
-
-Now I'm not saying we shouldn't every do something different, but having been in
-file systems for a while, I don't think icache is a place where we need to be
-special.
-
-> I can however agree that the current magic flags + refcount do make for
-> a buggy combination, but that's not an inherent property of using this
-> method.
-> 
-> > The problem with the way we reference inodes is the final iput(). The majority
-> > of file systems do their final truncate of a unlinked inode in their
-> > ->evict_inode() callback, which happens when the inode is actually being
-> > evicted. This can be a long process for large inodes, and thus isn't safe to
-> > happen in a variety of contexts. Btrfs, for example, has an entire delayed iput
-> > infrastructure to make sure that we do not do the final iput() in a dangerous
-> > context. We cannot expand the use of this reference count to all the places the
-> > inode is used, because there are cases where we would need to iput() in an IRQ
-> > context  (end folio writeback) or other unsafe context, which is not allowed.
-> > 
-> 
-> I don't believe ->i_obj_count is needed to facilitate this.
-> 
-> Suppose iput() needs to become callable from any context, just like
-> fput().
-> 
-> What it can do is atomically drop the ref it is not the last one or punt
-> all of it to task_work/a dedicated task queue.
-
-Agreed. Btrfs does this with the delayed iput. I had actually thought of doing
-this originally. I was worried that the overhead of adding this would be
-unwanted, so I went for the dual refcount solution instead.
-
-I'm totally happy if we want to say delayed iput is the solution and then we can
-avoid the second reference count.
-
-However, I think that i_obj_count does provide value in the cases where we want
-a lighter-weight refcount for internal tracking. ->s_inodes and the various
-writeback lists are where this is used and I think it makes the most sense. But
-again, delayed iput also accomplishes the same thing so I'm totally open to this
-being the desired solution.
-
-> 
-> Basically same thing as fput(), except the ref is expected to be dropped
-> by the code doing deferred processing if ->i_count == 1.
-> 
-> Note that with your patchset iput() still takes spinlocks, which
-> prevents it from being callable from IRQs at least.
-> 
-> But suppose ->i_obj_count makes sense to add. Below I explain why I
-> disagree with the way it is done.
-> 
-> > To that end, resolve this by introducing a new i_obj_count reference count. This
-> > will be used to control when we can actually free the inode. We then can use
-> > this reference count in all the places where we may reference the inode. This
-> > removes another huge footgun, having ways to access the inode itself without
-> > having an actual reference to it. The writeback code is one of the main places
-> > where we see this. Inodes end up on all sorts of lists here without a proper
-> > reference count. This allows us to protect the inode from being freed by giving
-> > this an other code mechanisms to protect their access to the inode.
-> > 
-> 
-> I read through writeback vs iput() handling and it is very oddly
-> written, indeed looking fishy.  I don't know the history here, given the
-> state of the code I 300% believe there were bugs in terms of lifetime
-> management/racing against iput().
-
-Exactly, this is my main argument, and I didn't do a good job articulating that
-in my summary email, my apologies.
-
-It takes a ridiculuous amount of effort to reason about what we're doing in
-these places. I want to make it simpler to reason about. Because from there we
-can start making bigger changes.
-
-> 
-> But the crux of what the code is doing is perfectly sane and in fact
-> what I would expect to happen unless there is a good reason not to.
-> 
-> The crucial point here is setting up the inode for teardown (and thus
-> preventing new refs from showing up) and stalling it as long as there
-> are pending consumers. That way they can still safely access everything
-> they need.
-> 
-> For this work the code needs a proper handshake (if you will), which
-> *is* arranged with locking -- writeback (or other code with similar
-> needs) either wins against teardown and does the write or loses and
-> pretends the inode is not there (or fails to see it). If writeback wins,
-> teardown waits. This only needs readable helpers to not pose a problem,
-> which is not hard to implement.
-> 
-> Note your patchset does not remove the need to do this, it merely
-> possibly simplifies clean up after (but see below).
-
-Agreed, that is my goal.
-
-> 
-> This brings me to the problem with how ->i_obj_count is proposed. In
-> this patchset it merely gates the actual free of the inode, allowing all
-> other teardown to progress.
-> 
-> Suppose one was to use ->i_obj_count in writeback to guarantee inode
-> liveness -- worst case iobj_put() from writeback ends up freeing the
-> inode.
-> 
-> As mentioned above, the first side of the problem is still there with
-> your patchset: you still need to synchronize against writeback starting
-> to work on the inode.
-> 
-> But let's assume the other side -- just the freeing -- is now sorted out
-> with the count.
-> 
-> The problem with it is the writeback code historically was able to
-> access the entire of the inode. With teardown progressing in parallel
-> this is no longer true an what is no longer accessible depends entirely
-> on timing. If there are "bad" accesses, you are going to find the hard
-> way.
-> 
-
-Agreed, but that was also always the case before. Now we at least have
-i_obj_count to make sure the object itself doesn't go away.
-
-A file system could always (and still can) redirty an inode while it's going
-down and writeback could miss it.  These patches do not eliminate this, it just
-makes sure we are super clear that the object itself will not be deleted.
-
-> In order to feel safe here one would need to audit the entire of
-> writeback code to make sure it does not do anything wrong here and
-> probably do quite a bit of fuzzing with KMSAN et al.
-
-I think that i_obj_count accomplishes this without all of that work.
-
-> 
-> Furthermore, imagine some time in the future one would need to add
-> something which needs to remain valid for the duration of writeback in
-> progress. Then you are back to the current state vs waiting on writeback
-> or you need to move more things around after i_obj_count drops to 0.
-> 
-> Or you can make sure iput() can safely wait for a wakeup from writeback
-> and not worry about a thorough audit of all inode accessess nor any
-> future work adding more. This is the current approach.
-> 
-> General note is that a hold count merely gating the actual free invites
-> misuse where consumers race against teardown thinking something is still
-> accessible and only crapping out when they get unlucky.
-> 
-> The ->i_obj_count refs/puts around hash and super block list
-> manipulation only serve as overhead. Suppose they are not there. With
-> the rest of your proposal it is an invariant that i_obj_count is at
-> least 1 when iput() is being called. Meaning whatever refs are present
-> or not on super block or the hash literally play no role. In fact, if
-> they are there, it is an invariant they are not the last refs to drop.
-> 
-> Even in the btrfs case you are just trying to defer actual free of the
-> inode, which is not necessarily all that safe in the long run given the
-> remarks above.
-> 
-> But suppose for whatever reason you really want to punt ->evict_inodes()
-> processing.
-> 
-> My suggestion would be the following:
-> 
-> The hooks for ->evict_inodes() can start returning -EAGAIN. Then if you
-> conclude you can't do the work in context you got called from, evict()
-> can defer you elsewhere and then you get called from a spot where you
-> CAN do it, after which the rest of evict() is progressing.
-> 
-> Something like:
-> 
-> the_rest_of_evict() {
->         if (S_ISCHR(inode->i_mode) && inode->i_cdev)
->                 cd_forget(inode);
-> 
->         remove_inode_hash(inode);
-> 	....
-> }
-> 
-> /* runs from task_work, some task queue or whatever applicable */
-> evict_deferred() {
-> 	ret = op->evict_inode(inode);
-> 	BUG_ON(ret == -EAGAIN);
-> 	the_rest_of_evict(inode);
-> }
-> 
-> evict() {
-> 	....
->         if (op->evict_inode) {
->                 ret = op->evict_inode(inode);
-> 		if (ret == -EAGAIN) {
-> 			evict_defer(inode);
-> 			return;
-> 		}
->         } else {
->                 truncate_inode_pages_final(&inode->i_data);
->                 clear_inode(inode);
->         }
-> 	
-> 	the_rest_of_evict(inode);
-> }
-> 
-> Optionally ->evict_inodes() func can get gain an argument denoting who
-> is doing the call (evict() or evict_deferred()).
-> 
-> > With this we can separate the concept of the inode being usable, and the inode
-> > being freed. 
-> [snip]
-> > With not allowing inodes to hit a refcount of 0, we can take advantage of that
-> > common pattern of using refcount_inc_not_zero() in all of the lockless places
-> > where we do inode lookup in cache.  From there we can change all the users who
-> > check I_WILL_FREE or I_FREEING to simply check the i_count. If it is 0 then they
-> > aren't allowed to do their work, othrwise they can proceed as normal.
-> 
-> But this is already doable, just avoidably open-coded.
-> 
-> In your patchset this is open-coded with icount_read() == 0, which is
-> also leaking state it should not.
-> 
-> You could hide this behind can_you_grab_a_ref().
-> 
-> On the current kernel the new helper would check the count + flags
-> instead.
-> 
-> Your consumers which no longer openly do it in this patchset would look
-> the same.
-> 
-> So here is an outline of what I suggest. First I'm going to talk about
-> sorting out ->i_state and then about inode transition tracking.
-> 
-> Accesses to ->i_state are open-coded everywhere, some places use
-> READ_ONCE/WRITE_ONCE while others use plain loads/stores. None of this
-> validates whether ->i_lock is held and for cases where the caller is
-> fine with unstable flags, there is no way to validate this is what they
-> are signing up for (for example maybe the place assumes ->i_lock is in
-> fact held?).
-> 
-> As an absolute minimum this should hide behind 3 accessors:
-> 
-> 1. istate_store, asserting the lock is held. WRITE_ONCE
-> 2. istate_load, asserting the lock is held. READ_ONCE or plain load
-> 3. istate_load_unlocked, no asserts. the consumer explicitly spells out
-> they understand the value can change from under them. another READ_ONCE
-> to prevent the compiler from fucking with reloads.
-> 
-> Maybe hide the field behind a struct so that spelled out i_state access
-> fails to compile (similarly to how atomics are handled).
-> 
-> Suppose the I_WILL_FREE flag got sorted out.
-> 
-> Then the kernel is left with I_NEW, I_CLEAR, I_FREEING and maybe
-> something extra.
-> 
-> I think this is much more manageable but still primitive.
-> 
-> An equivalent can be done with enums in a way which imo is much more
-> handy.
-> 
-> Then various spots all over the VFS layer can validate they got a state
-> which can be legally observed for their usage. Note mere refcount being
-> 0 or not does not provide that granularity as a collection of flags or
-> an enum.
-> 
-> For illustrative purposes, suppose:
-> DEAD -- either hanging out after rcu freed or never used to begin with
-> UNDER_CONSTRUCTION -- handed out by the allocator, still being created.
-> invalid (equivalent to I_NEW?)
-> CONSTRUCTED -- all done (equivalent to no flags?)
-> DESTROYING -- equivalent to I_FREEING?
-> 
-> With this in place it is handy to validate that for example you are
-> transitionting from CONSTRUCTED to DESTROYING, but not from CONSTRUCTED
-> to DEAD.
-> 
-> You can also assert no UNDER_CONSTRUCTION inode escaped into the wild
-> (this would happen in various vfs primitives, e.g., prior to taking the
-> inode rwsem)
-> 
-> This is all equivalent to the flag manipulation, except imo clearer.
-> 
-> Suppose the flags are to stay. They can definitely hide behind helpers,
-> there is no good reason for anyone outside of fs.h or inode.c to know
-> about their meaning.
-> 
-> I claim the enums *can* escape as they can be easily reasoned about.
-> 
-> So... I don't offer to do any of this, I hope I made a convincing case
-> against the patchset at least.
-
-
-Alright I see what you're suggesting. What I want is to have the refcounts be
-the ultimate arbiter of the state of the inode. We still need I_NEW and
-I_CREATING. I want to separate the dirty flags off to the side so we can use
-bitops for I_CREATING and I_NEW. From there we can do simple things about
-waiting where we need to, and eliminate i_lock for those accesses. That way
-inode lookup becomes xarray walk under RCU,
-refcount_inc_not_zero(&inode->i_count), if (unlikely(test_bit(I_NEW))) etc.
-
-This has all been long and I think I've got the gist of what you're suggesting.
-I'm going to restate it here so I'm sure we're on the same page.
-
-1. Don't do the i_obj_count thing.
-2. Clean-up all the current weirdness by defining helpers that clearly define
-the flow of the inode lifetime.
-3. Remove the flags that are no longer necessary.
-4. Continue on with my other work to remove i_hash and the i_lru.
-
-I don't disagree with this approach. I would however like to argue that changing
-the refcounting rules to be clear accomplishes a lot of the above goals, and
-gives us access to refcount_t which allows us to capture all sorts of bad
-behavior without needing to duplicate the effort.
-
-As an alternative approach, I could do the following.
-
-1. Pull the delayed iput work from btrfs into the core VFS.
-2. In all the places where we have dubious lifetime stuff (aka where I use
-i_obj_count), replace it with more i_count usage, and rely on the delayed iput
-infrastructure to save us here.
-3. Change the rules so we never have 0 refcount objects.
-4. Convert to refcount_t.
-5. Remove the various flags.
-6. Continue with my existing plans.
-
-Does this sound like a reasonable compromise?  Do my explanations make sense?
-Did I misunderstand something fundamentally in your response?
-
-I'm not married to my work, I want to find a solution we're all happy with. I'm
-starting a new job this week so my ability to pay a lot of attention to this is
-going to be slightly diminished, so I apologize if I missed something.  Thanks,
-
-Josef
 
