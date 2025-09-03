@@ -1,250 +1,223 @@
-Return-Path: <linux-ext4+bounces-9808-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9809-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35BF6B42455
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Sep 2025 17:03:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D3E7B428B0
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Sep 2025 20:31:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A081C480564
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Sep 2025 15:03:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D9CB48502A
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Sep 2025 18:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8433112C0;
-	Wed,  3 Sep 2025 15:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41F1362074;
+	Wed,  3 Sep 2025 18:31:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1+VTdxuj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="F8bYSjF0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1+VTdxuj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="F8bYSjF0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lHPkXy9f"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CE12F99A8
-	for <linux-ext4@vger.kernel.org>; Wed,  3 Sep 2025 15:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDFE1624C0;
+	Wed,  3 Sep 2025 18:31:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756911826; cv=none; b=HoKT3p18vKDdLUIRkMGkHJM93PwzbPt/YnpsxSH2eqmswvg64RVfj1L5rvwBTBev+P9nx5uWYjTNiimbOo4JDxassUlc720ZzvQ9n5BJwNRPvaLKJ68vGblwpqJXoYjLDA/QBsoRgjeae2sNv0chz97zsWY6loF/cw0I6l4PDQg=
+	t=1756924280; cv=none; b=YdjaA5BYLJ5jj6NJ10JMmZw6/h8MBKHR2enq6G1NF6uJK5WeCrEYnom69TqZO4FVlAb71C4BBPQnrloVgAyI57XAFKzbsfiI61O9mzd8lYRaB+O5ORuvrl/mZq1iLEsqcavRGXxveA8aF79RfheaW4pncyMkrXHX9dTEAJieu7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756911826; c=relaxed/simple;
-	bh=QMS3L5iyvt62DBQJ+l5vUpJeXw0qCTVCGzfLFkIIg3I=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=FWAYo1TcPrpe1dOz5t9bWJ/LzN1kXBPXdC7ul61w4pC5PRQEkCvwlemzUKRw/oz/JdakNfZF7aoo0Uv79orEPkQBk84sFiOCWwLQJDU7PZpzaZrISOrUCSsCxbrYwlMoxJCzp6yoRqpvxq7ilCmdgk7enoPYMwfJTpH38njwwdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1+VTdxuj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=F8bYSjF0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1+VTdxuj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=F8bYSjF0; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 131C91F453;
-	Wed,  3 Sep 2025 15:03:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756911822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-	bh=jk2M8TJfasQCadc0Uz3Q1t+T+Q7qvbBMT3QBKo7Aroo=;
-	b=1+VTdxuj6xml9cb+m/d+tVAEk7lhr3LKG3VsMQNYH3ZBZGsJwfnx2W+63hPEGWVtU+kL26
-	QZ0Omp3Vg/HJs/TFFZ8agSSxDjRjkYQk4NtIbLqTiK4o8KRA5ihYT/AjDOuvCxID0OTH5K
-	bR0KVnASrxToA4OUHha39+AcB2isviY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756911822;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-	bh=jk2M8TJfasQCadc0Uz3Q1t+T+Q7qvbBMT3QBKo7Aroo=;
-	b=F8bYSjF0q1a3cjRdtsp9Fp8JZqK7WYYS2oJSrh9uPYP669zIESFthoYbu+cD9rpEpZgK5W
-	HqPaBDPPXJobKbDA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1+VTdxuj;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=F8bYSjF0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756911822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-	bh=jk2M8TJfasQCadc0Uz3Q1t+T+Q7qvbBMT3QBKo7Aroo=;
-	b=1+VTdxuj6xml9cb+m/d+tVAEk7lhr3LKG3VsMQNYH3ZBZGsJwfnx2W+63hPEGWVtU+kL26
-	QZ0Omp3Vg/HJs/TFFZ8agSSxDjRjkYQk4NtIbLqTiK4o8KRA5ihYT/AjDOuvCxID0OTH5K
-	bR0KVnASrxToA4OUHha39+AcB2isviY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756911822;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-	bh=jk2M8TJfasQCadc0Uz3Q1t+T+Q7qvbBMT3QBKo7Aroo=;
-	b=F8bYSjF0q1a3cjRdtsp9Fp8JZqK7WYYS2oJSrh9uPYP669zIESFthoYbu+cD9rpEpZgK5W
-	HqPaBDPPXJobKbDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31D0313888;
-	Wed,  3 Sep 2025 15:03:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QOQfDM1YuGgkYQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 03 Sep 2025 15:03:41 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5DC00A0734; Wed,  3 Sep 2025 17:03:33 +0200 (CEST)
-Date: Wed, 3 Sep 2025 17:03:33 +0200
-From: Jan Kara <jack@suse.cz>
-To: Sun Yongjian <sunyongjian1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, yangerkun@huawei.com, yi.zhang@huawei.com, 
-	libaokun1@huawei.com, tytso@mit.edu, jack@suse.cz, 
-	Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH -next] ext4: add an update to i_disksize in
- ext4_block_page_mkwrite
-Message-ID: <ksmu3jz7ll2kp3xwemvil56ntzljrdaamv5hmdj7dbjniqsprv@25ypuymdslac>
+	s=arc-20240116; t=1756924280; c=relaxed/simple;
+	bh=Oebq/suGCC5fmC4qcEo+dhhN9f9dKTJa8nVy/6KezsM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Sc4rH86mlE8Aqg2eJSF3nHLkajE5Kiuum0JEhpbsl6t8IWBYpNjRT99t2IHaEPUkQ8mqNsfYgnMWEpnmLnErezNnBB+kdynSNVgUnc6u0NU8J7SDI14vU8TYk89cNRMruWnrN4+JT+mEAGx7Xq+DN6I0KNTAG++hu1f3KUPGA9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lHPkXy9f; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-805a1931a15so25683585a.1;
+        Wed, 03 Sep 2025 11:31:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756924278; x=1757529078; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5qSvo2uZgovlgx0FfJJeK9qSwaaMzcgiCqTuZCwC6B4=;
+        b=lHPkXy9f09j30m4+RuGsYhZzPUR3o+0o6I1E6/gXFvkO7cUqyLXY+kHMPke0U/uHaa
+         WbiQznWEaDEuDswWZc+JjTDiykBDsUP3cPH0T+LUIHY+TCgl4plf5B+qcO7IyclsNjUY
+         hOciFJLg3tMuio1USX2GC5jZN8TLXHbUKHpMwYsLXl2wvbMMljx9DOGueowMUb+ObRL6
+         X8QKxOl1gs4tuC+AWfFp1Ru+E5JatnTxCA9cAnDAgZJ3X86FSKB9FLTpzrQTF17bo7V5
+         Rsj9DKG3nMLdypUUg5NfvIu99QjOS+Y5sruCMXyQgZIAESOi7NcsKz4ZwNC4Au6netxN
+         tUzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756924278; x=1757529078;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5qSvo2uZgovlgx0FfJJeK9qSwaaMzcgiCqTuZCwC6B4=;
+        b=BNeVwvUbAB3fcQQklUMaEVYSemzTZK6Os9/RibfbZDcFmRj2udPbZIQkSQ+f15Gl6f
+         eftDHaWrpitRP82vdpAnL6uUA2Ku5uvBiaUhJkvr9jtpBw3lm28EzdywhUGCvwLSEPeH
+         94ckRBkF139SUd5ZHdJ2+eehlj7M7NutlJwhv8STHxXRu6+QPmIT7DJ9jRoudiITbuiw
+         Svfd3gxP/4YFEedwKVxZxVrsCtH27oHTxlRIRA20FO4xz7s1x9t3vajOAZYhP4cWm8G9
+         Y6UYjq8YJSQB8FS9rjKbz98OZUKKRJPwUMxA0pjUvRbQMa9VlpUjAvrqhOm74ZIDsoey
+         mwFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUWzGoCBvxJ+D2uLT6jD159SMJFMn6zPtfVYX3a/NpP7oT89jejj4XixzstAtWCGW6Nc53uo65RanMy@vger.kernel.org, AJvYcCXE9DgjnbyFOQj3MFXeAQ5jLpOMP2tTPvGXQ08UpOA42z95g5eI2sq0t7HFToOR4O6c72BTjV13kkaj@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy83Ps/HhNG4GSYxpJN9FeXE8ROKdbTdlHseVEhfwkqw5dluYvQ
+	1WZEkE+/0vSBWAypmM5jym9Ben+MRCyKCQpLFx8UJyRr6HTljQecpYGKTFlrCg4x5E6/gcj8Bb1
+	BJleoIJ6ESqie/UgCHkwQJv9yAB3FKs0=
+X-Gm-Gg: ASbGnctawBngBpM9EmoRpV0dBO/m3Jcq49lzn2O+qoVfGQIBiToTbNOUs08YFtnr5eI
+	LVgwniI2XLauNEW3ViKLpxhxQxFJSWlEMbCPjf1+7OLmyvVKQYmv4WLsclT6aqRCjQYJJxMGgHL
+	lfgQjLn/5OanLjvfDbBPFTdqv3wuQFGA0fT5sycVJbBcHRAWq2gycFNus3pWzPpqI3kfXnsk6aE
+	shC2FjVK3h7zpPkbCc=
+X-Google-Smtp-Source: AGHT+IE3XOodSa4+Yym/aMpYxbb8gIvknV1OOwtdLdTWe73FoscR9Bhnt7It4WMH/rYILUqX6BpVE5Zi5HZv3XGlSPc=
+X-Received: by 2002:a05:620a:178b:b0:7de:fa4b:773f with SMTP id
+ af79cd13be357-7ff26eaad4dmr1984699485a.17.1756924277350; Wed, 03 Sep 2025
+ 11:31:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f78e3cf5-41b1-4b84-bb25-dc0de03fd30f@huawei.com>
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,huawei.com,mit.edu,suse.cz,gmail.com];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 131C91F453
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -2.51
+References: <20250902150755.289469-1-bfoster@redhat.com> <20250902150755.289469-3-bfoster@redhat.com>
+ <CAJnrk1bmjCB=8o-YOkPScftoXMrgpBKU3vtkMOViEfFQ9LXLfg@mail.gmail.com> <aLgyELz3TH_TCZRw@bfoster>
+In-Reply-To: <aLgyELz3TH_TCZRw@bfoster>
+From: Joanne Koong <joannelkoong@gmail.com>
+Date: Wed, 3 Sep 2025 11:31:05 -0700
+X-Gm-Features: Ac12FXzXhB4BODApWtar5e62UMm9uHMNorJoBb-ra_x0jxdFtiu9ViWdjWqt9nU
+Message-ID: <CAJnrk1bwDun7EtQJsvMYi_0ODcduRLGaT+sJdXhzjNP3+Ynbeg@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] iomap: revert the iomap_iter pos on ->iomap_end() error
+To: Brian Foster <bfoster@redhat.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, jack@suse.cz, djwong@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 01-09-25 15:01:45, Sun Yongjian wrote:
-> 在 2025/7/31 22:05, sunyongjian@huaweicloud.com 写道:
-> Gentle ping.
-> > From: Yongjian Sun <sunyongjian1@huawei.com>
-> > 
-> > After running a stress test combined with fault injection,
-> > we performed fsck -a followed by fsck -fn on the filesystem
-> > image. During the second pass, fsck -fn reported:
-> > 
-> > Inode 131512, end of extent exceeds allowed value
-> > 	(logical block 405, physical block 1180540, len 2)
-> > 
-> > This inode was not in the orphan list.
+On Wed, Sep 3, 2025 at 5:14=E2=80=AFAM Brian Foster <bfoster@redhat.com> wr=
+ote:
+>
+> On Tue, Sep 02, 2025 at 02:11:35PM -0700, Joanne Koong wrote:
+> > On Tue, Sep 2, 2025 at 8:04=E2=80=AFAM Brian Foster <bfoster@redhat.com=
+> wrote:
+> > >
+> > > An iomap op iteration should not be considered successful if
+> > > ->iomap_end() fails. Most ->iomap_end() callbacks do not return
+> > > errors, and for those that do we return the error to the caller, but
+> > > this is still not sufficient in some corner cases.
+> > >
+> > > For example, if a DAX write to a shared iomap fails at ->iomap_end()
+> > > on XFS, this means the remap of shared blocks from the COW fork to
+> > > the data fork has possibly failed. In turn this means that just
+> > > written data may not be accessible in the file. dax_iomap_rw()
+> > > returns partial success over a returned error code and the operation
+> > > has already advanced iter.pos by the time ->iomap_end() is called.
+> > > This means that dax_iomap_rw() can return more bytes processed than
+> > > have been completed successfully, including partial success instead
+> > > of an error code if the first iteration happens to fail.
+> > >
+> > > To address this problem, first tweak the ->iomap_end() error
+> > > handling logic to run regardless of whether the current iteration
+> > > advanced the iter. Next, revert pos in the error handling path. Add
+> > > a new helper to undo the changes from iomap_iter_advance(). It is
+> > > static to start since the only initial user is in iomap_iter.c.
+> > >
+> > > Signed-off-by: Brian Foster <bfoster@redhat.com>
+> > > ---
+> > >  fs/iomap/iter.c | 20 +++++++++++++++++++-
+> > >  1 file changed, 19 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/fs/iomap/iter.c b/fs/iomap/iter.c
+> > > index 7cc4599b9c9b..69c993fe51fa 100644
+> > > --- a/fs/iomap/iter.c
+> > > +++ b/fs/iomap/iter.c
+> > > @@ -27,6 +27,22 @@ int iomap_iter_advance(struct iomap_iter *iter, u6=
+4 *count)
+> > >         return 0;
+> > >  }
+> > >
+> > > +/**
+> > > + * iomap_iter_revert - revert the iterator position
+> > > + * @iter: iteration structure
+> > > + * @count: number of bytes to revert
+> > > + *
+> > > + * Revert the iterator position by the specified number of bytes, un=
+doing
+> > > + * the effect of a previous iomap_iter_advance() call. The count mus=
+t not
+> > > + * exceed the amount previously advanced in the current iter.
+> > > + */
+> > > +static void iomap_iter_revert(struct iomap_iter *iter, u64 count)
+> > > +{
+> > > +       count =3D min_t(u64, iter->pos - iter->iter_start_pos, count)=
+;
+> > > +       iter->pos -=3D count;
+> > > +       iter->len +=3D count;
+> > > +}
+> > > +
+> > >  static inline void iomap_iter_done(struct iomap_iter *iter)
+> > >  {
+> > >         WARN_ON_ONCE(iter->iomap.offset > iter->pos);
+> > > @@ -80,8 +96,10 @@ int iomap_iter(struct iomap_iter *iter, const stru=
+ct iomap_ops *ops)
+> > >                                 iomap_length_trim(iter, iter->iter_st=
+art_pos,
+> > >                                                   olen),
+> > >                                 advanced, iter->flags, &iter->iomap);
+> > > -               if (ret < 0 && !advanced && !iter->status)
+> > > +               if (ret < 0 && !iter->status) {
+> > > +                       iomap_iter_revert(iter, advanced);
+> > >                         return ret;
+> > > +               }
+> >
+> > Should iomap_iter_revert() also be called in the "if (iter->status <
+> > 0)" case a few lines below? I think otherwise, that leads to the same
+> > problem in dax_iomap_rw() you pointed out in the commit message.
+> >
+>
+> My thinking was that I wanted to try for the invariant that the
+> operation/iteration is responsible to set the iter appropriately in the
+> event that it returns an error in iter.status. I.e., either not advance
+> or revert if appropriate.
+>
+> This is more consistent with how the iter is advanced and I suspect will
+> help prevent potential whack a mole issues with inconsistent
+> expectations for error handling at the iomap_iter() level. I actually
+> had iomap_iter_revert() non-static originally, but changed it since I
+> didn't spot anywhere it needed to be called as of yet. I could have
+> certainly missed something though. Did you have a particular sequence in
+> mind, or were just thinking in general?
 
-Thanks for report! Interesting... Which kernel were you using?
+Thanks for explaining your thought process. That reasoning makes sense to m=
+e.
 
-> > Analysis revealed the
-> > following call chain that leads to the inconsistency:
-> > 
-> >                               ext4_da_write_end()
-> >                                //does not update i_disksize
+Originally I thought the dax_iomap_rw() sequence needed a
+iomap_iter_revert() but looking at it again, I'm realizing now that
+that function is intended to return successfully even if the writes in
+further iterations fail.
 
-Right, for any write beyond i_disksize to unallocated blocks we update
-i_disksize only during page writeback.
+Thanks,
+Joanne
 
-> >                               ext4_punch_hole()
-> >                                //truncate folio, keep size
-
-So here offset + len passed to ext4_punch_hole() is important. Because
-there's ext4_update_disksize_before_punch() call which updates i_disksize
-to i_size if the punched hole reaches EOF. So did you punch hole in the
-middle of the file?
-
-> > ext4_page_mkwrite()
-> >   ext4_block_page_mkwrite()
-> >    ext4_block_write_begin()
-> >      ext4_get_block()
-> >       //insert written extent without update i_disksize
-
-We should insert unwritten extent here, shouldn't we? We use
-ext4_get_block_unwritten() when we are inside i_size. Ah, you mention below
-you use nodioread_nolock. Nasty :)
-
-> > journal commit
-> > echo 1 > /sys/block/xxx/device/delete
-> > 
-> > da-write path updates i_size but does not update i_disksize. Then
-> > ext4_punch_hole truncates the da-folio yet still leaves i_disksize
-> > unchanged. Then ext4_page_mkwrite sees ext4_nonda_switch return 1
-> > and takes the nodioread_nolock path, the folio about to be written
-> > has just been punched out, and it’s offset sits beyond the current
-> > i_disksize. This may result in a written extent being inserted, but
-> > again does not update i_disksize. If the journal gets committed and
-> > then the block device is yanked, we might run into this.
-> > 
-> > To fix this, we now check in ext4_block_page_mkwrite whether
-> > i_disksize needs to be updated to cover the newly allocated blocks.
-> > 
-> > Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
-
-Hum, rather than complicating this niche code what if we just
-unconditionally used ext4_get_block_unwritten() in
-ext4_block_page_mkwrite() when delalloc gets disabled? It is far from any
-performance critical path. What do people think? The code would actually
-have to be something like:
-
-	if (ext4_should_journal_data(inode))
-		get_block = ext4_get_block;
-	else
-		get_block = ext4_get_block_unwritten;
-
-to properly handle data journalling. I'm adding Ritesh to CC because I do
-remember there used to be some issues with dioread_nolock with blocksize <
-pagesize which he was able to trigger. But I think they were fixed.
-
-								Honza
-
-> > ---
-> >   fs/ext4/inode.c | 10 ++++++++++
-> >   1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index ed54c4d0f2f9..050270b265ae 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -6666,8 +6666,18 @@ static int ext4_block_page_mkwrite(struct inode *inode, struct folio *folio,
-> >   		goto out_error;
-> >   	if (!ext4_should_journal_data(inode)) {
-> > +		loff_t disksize = folio_pos(folio) + len;
-> >   		block_commit_write(folio, 0, len);
-> >   		folio_mark_dirty(folio);
-> > +		if (disksize > READ_ONCE(EXT4_I(inode)->i_disksize)) {
-> > +			down_write(&EXT4_I(inode)->i_data_sem);
-> > +			if (disksize > EXT4_I(inode)->i_disksize)
-> > +				EXT4_I(inode)->i_disksize = disksize;
-> > +			up_write(&EXT4_I(inode)->i_data_sem);
-> > +			ret = ext4_mark_inode_dirty(handle, inode);
-> > +			if (ret)
-> > +				goto out_error;
-> > +		}
-> >   	} else {
-> >   		ret = ext4_journal_folio_buffers(handle, folio, len);
-> >   		if (ret)
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>
+> FWIW, I suspect there's a reasonable argument for doing the same for
+> ->iomap_end() and make the callback responsible for reverting if
+> necessary. I went the way in this patch just because it seemed more
+> simple given the limited scope, but that may not always be the case
+> and/or may just be cleaner. I can take a closer look at that if there
+> are stronger opinions..? Thanks for the feedback.
+> > > returns partial success over a returned error code and the operation
+> > > has already advanced iter.pos by the time ->iomap_end() is called.
+> > > This means that dax_iomap_rw() can return more bytes processed than
+> > > have been completed successfully, including partial success instead
+> > > of an error code if the first iteration happens to fail.
+>
+> Brian
+>
+> > Thanks,
+> > Joanne
+> > >         }
+> > >
+> > >         /* detect old return semantics where this would advance */
+> > > --
+> > > 2.51.0
+> > >
+> > >
+> >
+>
 
