@@ -1,127 +1,63 @@
-Return-Path: <linux-ext4+bounces-9816-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9817-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48FE3B43BFC
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Sep 2025 14:46:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D0CDB44660
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Sep 2025 21:28:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0A8B3BDF16
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Sep 2025 12:45:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AAB01CC3B65
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Sep 2025 19:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73E832749CB;
-	Thu,  4 Sep 2025 12:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6EF2727F0;
+	Thu,  4 Sep 2025 19:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="WYmCXvI3"
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="aDlZPmmn"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from mail-10629.protonmail.ch (mail-10629.protonmail.ch [79.135.106.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49F745464D
-	for <linux-ext4@vger.kernel.org>; Thu,  4 Sep 2025 12:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6961271A94;
+	Thu,  4 Sep 2025 19:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756989950; cv=none; b=c8UUHEVcPNjoGTpQ8ZO/qH3Ei3l0CXtbeanV+UHfzv8+7TVSh41dkD442inPcmewLZUYCmTFGxdt1yfq1g31S0nWUVDww56DOiM5Qq84WMSV5NImOipADPrMHa++Jom/VZXRPQ9XjyHLydchWemyPgQ42rKUnY8Z8vV3KbVq8OY=
+	t=1757014105; cv=none; b=P6l9ronS/1hmsLvnIzhQTDJQse2XyIgpZ78T2u6iIB8k8T7fjyiSBx+gEAj3yQ+LK3YHatw5xmwHAbg8tmG5G6xUhETOFExMJ6MlPJCPX1i5f2eqKtrawPvs1qXGxtrT4ZkxFSIGNcoydk9Y9uouDWp+veM9p1OhkBQqdOYAb/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756989950; c=relaxed/simple;
-	bh=IizBvpQst483ETzUWS1Ne3Bx7hsq5UQ5RIrh4cYoH6o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ki5xzcOvm9ZoPk/JR1z+bdYGXhF8IVu7Ghn6Vburuwhp/80okok0KTDF/Ywc8vspEeSGjVzFCtCTvTnVrDDk5iS/ThTLlUNHKyQNPNTj0D8/XRVf5ZU+ViZ41ma2hoQveC7O6KmUUHLFC/kqR/NM2DnroDEWHSKB4YfACk7ShRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=WYmCXvI3; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-200.bstnma.fios.verizon.net [173.48.82.200])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 584CjaT1010597
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 4 Sep 2025 08:45:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1756989938; bh=y5BvKcp8yJ+qDUiBR6PAcIeiCDo/QoOFnzeDxh9f61g=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=WYmCXvI3dF3+9ANB6hKmb32SEJmZI8so1jBzq475cUj4imhmswvGOMN9fGZ2BajQe
-	 NpR1cDP5l4F0b8tAvTL7+emgtQG1LJNiiy25NyHaxsobudH/5z47PJR2bLVN3CQOl/
-	 Sc/Qdcjv1SvBpeiqQcfAjNmvenTIsepjl92C0JDDfe6oEhIkc7TGdWPWx0fDDcmVAa
-	 LqWR8KsfV+PDhd2Ff0gNLpG31eb5kykfufPguUNh0sql6qR21DUDSe9KrwencnWvJX
-	 x+nxos0QT5c3bvVG44SeU8ckKA0zfpq4Fn8UujOZjyyZKxKYPLjApYi+R1vmUYCmug
-	 FwgGIms9bDI8g==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id DCAD02E00D6; Thu, 04 Sep 2025 08:45:35 -0400 (EDT)
-Date: Thu, 4 Sep 2025 08:45:35 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Nicolas Bretz <bretznic@gmail.com>
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 RESEND] ext4: clear extent index structure after file
- delete
-Message-ID: <20250904124535.GA3267668@mit.edu>
-References: <20250903113027.261912-1-bretznic@gmail.com>
+	s=arc-20240116; t=1757014105; c=relaxed/simple;
+	bh=tdyvtOrC9bkkRx9FcafUu+t4Wzh4qIKgMhILEx5s41g=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=jlFVwUoFiQ+4e6m6OpcJHkk+4zliXNYczuTi1qhkOQBQxvOnleB78Eylpk5tzs1L3nbl4SupCOBijmcijuNYwMNAguxsRMSkMNtUNaqm+CirXiigWXgEydeYgNV52x2HthNlC93B0nr+n8SSz1Vns3uMKlbjkiuBBsFHAqocA1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=aDlZPmmn; arc=none smtp.client-ip=79.135.106.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1757014100; x=1757273300;
+	bh=tdyvtOrC9bkkRx9FcafUu+t4Wzh4qIKgMhILEx5s41g=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=aDlZPmmn9T8y+27YACId29KrcLLbiAQIRdYzvmORQ8JwiikWJQOJ5niG33+wp17oK
+	 A4ICxFLyX4gqdpxSwp7GfjzmbmlJZ7m7iQI8u8syW2NqBjc3Mzpm4km09tLX7mlVrr
+	 An/JMYap+o+UEodXbRpRVVyb0yn5Eq1kvPFbXt1xG1KDhsv0X1is1YXDB8fMjUBz56
+	 43O6pro62RXon6Yt/OqOZHEI6CFkunjh+gzz31QJMpP0T0BflZDcd0xvMfyQXlQYsV
+	 9VDZHAB/8nF0ofI02ZOJ+h6MNMY++vAunIT+vd+48A5RbYEsrzJCbkbV5DME0e3Br4
+	 y0oRQyEK+c39w==
+Date: Thu, 04 Sep 2025 19:28:15 +0000
+To: syzbot+2ff67872645e5b5ebdd5@syzkaller.appspotmail.com
+From: Roxana Nicolescu <nicolescu.roxana@protonmail.com>
+Cc: adilger.kernel@dilger.ca, brauner@kernel.org, jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, mjguzik@gmail.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [ext4?] WARNING in __ext4_iget
+Message-ID: <20250904192807.114909-1-nicolescu.roxana@protonmail.com>
+Feedback-ID: 136600343:user:proton
+X-Pm-Message-ID: 1ce9fea0631c7a56f4baa89f93f0b11dd729435a
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250903113027.261912-1-bretznic@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 03, 2025 at 04:30:27AM -0700, Nicolas Bretz wrote:
-> The extent index structure in the top inode is not being cleared after a file
-> is deleted, which leaves the path to the data blocks intact. This patch clears
-> this extent index structure.
-> 
-> Extent structures are already being cleared, so this also makes the
-> behavior consistent between extent and extent _index_ structures.
-
-Actually, if we are going to make things consistent, we would be *not*
-be clearing the extent leaf blocks if we are deleting the file ---
-when possible.
-
-Clearing the extent structures was never for security concerns.  The
-reality is that removing the pointers to the data blocks is security
-theater (e.g., like the TSA in US airports).  It makes people feel
-good, but programs like photorec can be used to find the data blocks.
-If they really want to securly delete a file, they should use shred or
-wipe to overwrite the datablocks before deleting the file.
-
-[1] https://www.cgsecurity.org/wiki/photoRec
-
-The reason why we wipe the extent structures is because when
-journalling is enabled, a file truncation or deletion might not fit in
-a single journal transaction, and might need to span two transactions.
-For that reason, we put the inode on the orphan list, and then if the
-operation doesn't fit in a single transaction, we need to keep the
-file system in a consistent state at each transaction boundary.  So
-that's why we zero out the extent structures as we go; so if we need
-to pause the truncation so we can do a journal commit, the data block
-pointers to the blocks that have been released are properly zeroed.
-
-Now, if we know that all of the blocks in an extent leaf block can be
-released in the current transaction, we could omit zeroing the leaf
-block --- so long as we can drop the pointer to the leaf block in the
-parent index block.  This also has the benefit that if we don't need
-to modify the extent leaf block, we save two 4k writes to the disk ---
-one in the journal and one in the extent leaf block, which would
-improve the performance of an "rm -rf" workload.
-
-The reason why we haven't done this is that the benefits aren't that
-big, and so we haven't gotten around toit.  But if you are interested
-in looking into it, if we can keep the code complexity down and avoid
-impacting the maintainability of the code base feel free to take a
-look at it.
-
-					- Ted
-
-P.S.  A related project would be adding support for the "secure
-deletion" flag (see the chattr man page), which is currently
-unimplemented.  The tricky bit is (a) we can't zero the blocks until
-the transaction releasing the blockshas been commited, and (b) we need
-to avoid a race where a block being zero gets reallocated since we
-don't want to zero out data belonging to a newly realocated data block
-that has been associated with an in-use inode.  The marginal utility
-is a bit small, since userspace tools like shred and wipe already
-exist, which is why no one has actually implemented to date.  But if
-you're looking for an fun/interesting project, it's a possibility.
+#sys fix: ext4: verify fast symlink length
 
 
