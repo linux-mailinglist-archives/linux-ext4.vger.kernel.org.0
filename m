@@ -1,233 +1,181 @@
-Return-Path: <linux-ext4+bounces-9814-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9815-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6596CB436B5
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Sep 2025 11:11:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FFC8B43769
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Sep 2025 11:44:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B31767B2482
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Sep 2025 09:09:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C1393B602C
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Sep 2025 09:44:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F9A32E0407;
-	Thu,  4 Sep 2025 09:11:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iyLAMvxU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uovmwDA8";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iyLAMvxU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uovmwDA8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF462F747F;
+	Thu,  4 Sep 2025 09:44:35 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F2926E70C
-	for <linux-ext4@vger.kernel.org>; Thu,  4 Sep 2025 09:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDBC52C159A
+	for <linux-ext4@vger.kernel.org>; Thu,  4 Sep 2025 09:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756977087; cv=none; b=KOZuEXy1O+YiTb9UEWhfBL07q1zn4ybdHWYMbAyo/Iq1YCixXpm6eg6cOXPcMZDu+Xlb56TLAdWRNC/oT6LDVY1RwbGYs9P9GG7GTJ8fEYQQeeqzzLctRoKuAuqpct08MIav+007qg27Vf2SphG8hxxPJniiWqhYgDs4VBZfDHw=
+	t=1756979075; cv=none; b=VIk96dkI8R5VALtkrIFpU7nNMvBIdrnFz/J1dw7ashS4KyeK0og9e7PpfZnFrbL8dYi6AOpoaOKaI64gG96QLun+/2hiDIB2VsC5IroqfgNDVMt27qjThSl0iqmpfnaUMmcqYPMxbF20FSwvY4hCGBeIe4HuiFvhPUCofBjuj44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756977087; c=relaxed/simple;
-	bh=7aGviJggifN8XtvPsy7t7L3t0HtXhvk0ncJrBDXtWBs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B9GztNNGZ5MNRC5PYIfOk6SRyh9BuAOAMBzq61M0Ud5V8ArfKym6UvBr5X64GB3/ndSzaY31UbcFTAsbGtG0ipQWqhKX08qQN+b5dXvArkwWhgmoLOkbwR95bsC0i/MSb/bTash7NTUBfZSqRYRXAe5yUC0YDp53ZoRd60yNzEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iyLAMvxU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uovmwDA8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iyLAMvxU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uovmwDA8; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8FA4A3406D;
-	Thu,  4 Sep 2025 09:11:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756977077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VdDJaZh6zncPGvr9IUP6+a5RMJExv5RRhFsyzPg78HA=;
-	b=iyLAMvxUi/LPp0RvSBXekkfgeAYf1j7P8LeMhVuLXzwqXFtyXMaeC6XstAue+1O366U7lD
-	0ZwscoeVPnBS67A7WRs+hjm2HdUf+8bCZMniqg2RAZX9lTGGCHKHSA70vcBfmjnjc4QNC6
-	cksVSHPBBGiD/xra5Xi/HP68knJ7B5w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756977077;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VdDJaZh6zncPGvr9IUP6+a5RMJExv5RRhFsyzPg78HA=;
-	b=uovmwDA8lCaplOyyKufBNx6DBubEhP3Vmj0XmIrOWhxM9Y+aeyWyv80EWE6HpPzVu7avAk
-	84zTjr1W4XA4xvDw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=iyLAMvxU;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=uovmwDA8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756977077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VdDJaZh6zncPGvr9IUP6+a5RMJExv5RRhFsyzPg78HA=;
-	b=iyLAMvxUi/LPp0RvSBXekkfgeAYf1j7P8LeMhVuLXzwqXFtyXMaeC6XstAue+1O366U7lD
-	0ZwscoeVPnBS67A7WRs+hjm2HdUf+8bCZMniqg2RAZX9lTGGCHKHSA70vcBfmjnjc4QNC6
-	cksVSHPBBGiD/xra5Xi/HP68knJ7B5w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756977077;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VdDJaZh6zncPGvr9IUP6+a5RMJExv5RRhFsyzPg78HA=;
-	b=uovmwDA8lCaplOyyKufBNx6DBubEhP3Vmj0XmIrOWhxM9Y+aeyWyv80EWE6HpPzVu7avAk
-	84zTjr1W4XA4xvDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 856C713675;
-	Thu,  4 Sep 2025 09:11:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FauPILVXuWhqFgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 04 Sep 2025 09:11:17 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 47B0AA0A2D; Thu,  4 Sep 2025 11:11:17 +0200 (CEST)
-Date: Thu, 4 Sep 2025 11:11:17 +0200
-From: Jan Kara <jack@suse.cz>
-To: Sun Yongjian <sunyongjian1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, yangerkun@huawei.com, yi.zhang@huawei.com, 
-	libaokun1@huawei.com, tytso@mit.edu, jack@suse.cz
-Subject: Re: [PATCH -next] ext4: add an update to i_disksize in
- ext4_block_page_mkwrite
-Message-ID: <uxqef2v6p6mjmkm7t3vjbqf7bpr7fcgz5ryktu27hds3cdoruv@wm7giw7hi3kx>
-References: <20250731140528.1554917-1-sunyongjian@huaweicloud.com>
- <f78e3cf5-41b1-4b84-bb25-dc0de03fd30f@huawei.com>
+	s=arc-20240116; t=1756979075; c=relaxed/simple;
+	bh=I0cHwtwiC4CVO3CbjQzwhcxi/NP8fwyFAaAKjPKgWAk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PuaQe2tYJR9X4ESsbdkWdONCnAr4j85zOjd+a3F3K66nOFQgfB7Jz7oGFPZZ7dfnHlKvSRtAZQq/H1ewb3Qn459yXTWmiGM6GKV7fT44ABSR3slj1NvMQ/mbCcA8b3ck/PDGd+X9YVMkceo8989r9nGNbxiAWmBBmEYID6YZ+ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-887427eeefbso86968939f.3
+        for <linux-ext4@vger.kernel.org>; Thu, 04 Sep 2025 02:44:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756979073; x=1757583873;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VZCqnhVKlIT0yix9BnegbQAPDYx9vgbyjeNE9iouGjg=;
+        b=RFqpwUjy5Al21hyDcKGiP73lMqeJ0OlwOPYkHO+jvujl0IIZOGIhND6PcyD93WVck1
+         SBjXaOLb6lDyv+/lbm8xY3sKtVsFJOlqPenFrlGww3WTVKI+ZzimVvKlvekvIZr5aDBS
+         55iW3kSlriHm7GwJM1U8+VCEBE5J7PHgjfzJqv8YtDLiN9zdcidhOtPnx1qYTYFdT+Ta
+         VCGPCj7DMS2Rh53GQb8BTF6pxj7ziURhRrmFZ5jX4sDIhuQbOSWYZ4YgUl0sNnTGyCuA
+         wLE5qTFtxdBC8dmxrKw/6Zu596AOp8WjY/NlDal60sCbX59Hc/L40WwbH7KVmVE9mCZ3
+         EzLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWopJUksDw/HEMX1b+0c6g8IxNll5PL8P86FCn17tjCKzzcdY4usX78h2g2BRk7XaapcMOThNfsdUCo@vger.kernel.org
+X-Gm-Message-State: AOJu0YymKRJNP3Ngl7lpN5T29YYhqjOTGHESFSKmpeSU7WgDmQsmGCWj
+	CfkowCa4mNXZEwJubhATJF+T/44yDzHjCNVdIkiuB918SBeZ0l13u594S6KU3sLgQHO8+nWiz13
+	8PGB8e4rE7Y5JbH55c3RhNadDk84fpqrGEZPuJ/s7ZPICI5aBftHxmtWzbRU=
+X-Google-Smtp-Source: AGHT+IE2D9Z5LS8p2NXwDjiPEUV3z/oUuCEDJPoSDv9Dob4WLLhjpsvB2XMHuuHLftVlAxGtK0D0mTPtAg0nVPni2PprzFOqgxnw
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f78e3cf5-41b1-4b84-bb25-dc0de03fd30f@huawei.com>
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 8FA4A3406D
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -4.01
+X-Received: by 2002:a05:6602:3fd0:b0:881:8a58:3bc2 with SMTP id
+ ca18e2360f4ac-8871f421d98mr3303805839f.6.1756979073032; Thu, 04 Sep 2025
+ 02:44:33 -0700 (PDT)
+Date: Thu, 04 Sep 2025 02:44:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68b95f81.a00a0220.eb3d.0001.GAE@google.com>
+Subject: [syzbot] [ext4?] kernel BUG in ext4_es_cache_extent (3)
+From: syzbot <syzbot+038b7bf43423e132b308@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon 01-09-25 15:01:45, Sun Yongjian wrote:
-> 在 2025/7/31 22:05, sunyongjian@huaweicloud.com 写道:
-> Gentle ping.
-> > From: Yongjian Sun <sunyongjian1@huawei.com>
-> > 
-> > After running a stress test combined with fault injection,
-> > we performed fsck -a followed by fsck -fn on the filesystem
-> > image. During the second pass, fsck -fn reported:
-> > 
-> > Inode 131512, end of extent exceeds allowed value
-> > 	(logical block 405, physical block 1180540, len 2)
-> > 
-> > This inode was not in the orphan list. Analysis revealed the
-> > following call chain that leads to the inconsistency:
-> > 
-> >                               ext4_da_write_end()
-> >                                //does not update i_disksize
-> >                               ext4_punch_hole()
-> >                                //truncate folio, keep size
-> > ext4_page_mkwrite()
-> >   ext4_block_page_mkwrite()
-> >    ext4_block_write_begin()
-> >      ext4_get_block()
-> >       //insert written extent without update i_disksize
-> > journal commit
-> > echo 1 > /sys/block/xxx/device/delete
-> > 
-> > da-write path updates i_size but does not update i_disksize. Then
-> > ext4_punch_hole truncates the da-folio yet still leaves i_disksize
-> > unchanged. Then ext4_page_mkwrite sees ext4_nonda_switch return 1
-> > and takes the nodioread_nolock path, the folio about to be written
-> > has just been punched out, and it’s offset sits beyond the current
-> > i_disksize. This may result in a written extent being inserted, but
-> > again does not update i_disksize. If the journal gets committed and
-> > then the block device is yanked, we might run into this.
-> > 
-> > To fix this, we now check in ext4_block_page_mkwrite whether
-> > i_disksize needs to be updated to cover the newly allocated blocks.
-> > 
-> > Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
+Hello,
 
-OK, after the discussion with Ritesh your solution looks like the best one.
-Just two nits below:
+syzbot found the following issue on:
 
-> > ---
-> >   fs/ext4/inode.c | 10 ++++++++++
-> >   1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index ed54c4d0f2f9..050270b265ae 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -6666,8 +6666,18 @@ static int ext4_block_page_mkwrite(struct inode *inode, struct folio *folio,
-> >   		goto out_error;
-> >   	if (!ext4_should_journal_data(inode)) {
-> > +		loff_t disksize = folio_pos(folio) + len;
+HEAD commit:    ec299e4dc21e Merge tag 'bitmap-for-6.17-rc5' of https://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1092a312580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=385d836f07b5a70d
+dashboard link: https://syzkaller.appspot.com/bug?extid=038b7bf43423e132b308
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d1fe34580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f8de62580000
 
-Use an empty line between declarations and the code please.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-ec299e4d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d15022189f21/vmlinux-ec299e4d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d73fbb71b816/bzImage-ec299e4d.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/e1c7d8ef0b25/mount_0.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=17a49e62580000)
 
-> >   		block_commit_write(folio, 0, len);
-> >   		folio_mark_dirty(folio);
-> > +		if (disksize > READ_ONCE(EXT4_I(inode)->i_disksize)) {
-> > +			down_write(&EXT4_I(inode)->i_data_sem);
-> > +			if (disksize > EXT4_I(inode)->i_disksize)
-> > +				EXT4_I(inode)->i_disksize = disksize;
-> > +			up_write(&EXT4_I(inode)->i_data_sem);
-> > +			ret = ext4_mark_inode_dirty(handle, inode);
-> > +			if (ret)
-> > +				goto out_error;
-> > +		}
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+038b7bf43423e132b308@syzkaller.appspotmail.com
 
-Since we don't support delalloc with data journalling, your code is correct
-but I think it would be more understandable if you just moved the
-i_disksize update outside of the "if (!ext4_should_journal_data(inode))"
-condition.
+EXT4-fs (loop0): 1 truncate cleaned up
+EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: none.
+------------[ cut here ]------------
+kernel BUG at fs/ext4/extents_status.c:1012!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5527 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:ext4_es_cache_extent+0x698/0x700 fs/ext4/extents_status.c:1012
+Code: ff df 80 3c 08 00 74 08 48 89 df e8 62 b0 b3 ff 48 8b 3b 48 8b 74 24 28 48 8d 54 24 60 e8 00 c3 0d 00 eb 14 e8 69 c0 4e ff 90 <0f> 0b e8 61 c0 4e ff eb 28 e8 5a c0 4e ff 31 f6 65 ff 0d 81 32 30
+RSP: 0018:ffffc900028ff420 EFLAGS: 00010293
+RAX: ffffffff8270fd97 RBX: 00000000ffffffff RCX: ffff8880330fc880
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 00000000000072ce
+RBP: ffffc900028ff528 R08: ffffffff8fa3b637 R09: 1ffffffff1f476c6
+R10: dffffc0000000000 R11: fffffbfff1f476c7 R12: 00000000000072d0
+R13: 0000000000000008 R14: 00000000000072ce R15: dffffc0000000000
+FS:  000055556eaf2500(0000) GS:ffff88808d20d000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b32463fff CR3: 0000000056f56000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ ext4_cache_extents fs/ext4/extents.c:544 [inline]
+ ext4_find_extent+0x482/0xcc0 fs/ext4/extents.c:928
+ ext4_get_verity_descriptor_location fs/ext4/verity.c:292 [inline]
+ ext4_get_verity_descriptor+0x102/0x590 fs/ext4/verity.c:346
+ fsverity_get_descriptor+0x8d/0x4b0 fs/verity/open.c:323
+ ensure_verity_info fs/verity/open.c:363 [inline]
+ __fsverity_file_open+0xd7/0x1f0 fs/verity/open.c:384
+ fsverity_file_open include/linux/fsverity.h:300 [inline]
+ ext4_file_open+0x32d/0xa40 fs/ext4/file.c:909
+ do_dentry_open+0x953/0x13f0 fs/open.c:965
+ vfs_open+0x3b/0x340 fs/open.c:1095
+ do_open fs/namei.c:3887 [inline]
+ path_openat+0x2ee5/0x3830 fs/namei.c:4046
+ do_filp_open+0x1fa/0x410 fs/namei.c:4073
+ do_sys_openat2+0x121/0x1c0 fs/open.c:1435
+ do_sys_open fs/open.c:1450 [inline]
+ __do_sys_openat fs/open.c:1466 [inline]
+ __se_sys_openat fs/open.c:1461 [inline]
+ __x64_sys_openat+0x138/0x170 fs/open.c:1461
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f5a5878ebe9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffa6498b18 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007f5a589c5fa0 RCX: 00007f5a5878ebe9
+RDX: 0000000000000000 RSI: 0000200000000100 RDI: ffffffffffffff9c
+RBP: 00007f5a58811e19 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f5a589c5fa0 R14: 00007f5a589c5fa0 R15: 0000000000000004
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_es_cache_extent+0x698/0x700 fs/ext4/extents_status.c:1012
+Code: ff df 80 3c 08 00 74 08 48 89 df e8 62 b0 b3 ff 48 8b 3b 48 8b 74 24 28 48 8d 54 24 60 e8 00 c3 0d 00 eb 14 e8 69 c0 4e ff 90 <0f> 0b e8 61 c0 4e ff eb 28 e8 5a c0 4e ff 31 f6 65 ff 0d 81 32 30
+RSP: 0018:ffffc900028ff420 EFLAGS: 00010293
+RAX: ffffffff8270fd97 RBX: 00000000ffffffff RCX: ffff8880330fc880
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 00000000000072ce
+RBP: ffffc900028ff528 R08: ffffffff8fa3b637 R09: 1ffffffff1f476c6
+R10: dffffc0000000000 R11: fffffbfff1f476c7 R12: 00000000000072d0
+R13: 0000000000000008 R14: 00000000000072ce R15: dffffc0000000000
+FS:  000055556eaf2500(0000) GS:ffff88808d20d000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b32463fff CR3: 0000000056f56000 CR4: 0000000000352ef0
 
-> >   	} else {
-> >   		ret = ext4_journal_folio_buffers(handle, folio, len);
-> >   		if (ret)
-> 
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
