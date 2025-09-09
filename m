@@ -1,244 +1,330 @@
-Return-Path: <linux-ext4+bounces-9888-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9889-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13E4EB50843
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 23:36:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60BC1B5093B
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Sep 2025 01:28:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A9C11C65F7A
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 21:36:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6572B1C640DA
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 23:29:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B733E25DB12;
-	Tue,  9 Sep 2025 21:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ckvViJoz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FB92874FB;
+	Tue,  9 Sep 2025 23:28:33 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF72725BEE1;
-	Tue,  9 Sep 2025 21:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA60286438
+	for <linux-ext4@vger.kernel.org>; Tue,  9 Sep 2025 23:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757453757; cv=none; b=pdSDK3tGxEJo/AxKg79MDx54B0/BifQ37KftOjrtoCipZ9gJDnlT4xtON1eVVsz7Kqi/8KRHl02KNpwcrWCTGoJiGyvGlApEwfWPBe15ruPNgq4xnDEILlESJ25ZmKnkFZixH1Pwbm4iPiUZEaLPM8xMp8f8PuM8aCSfpI9pglY=
+	t=1757460513; cv=none; b=ckDYUDBxejy4Vo5p445Y9LmAqDlzSHJDGaIe1G73TIBnbUD4bKphvxi4+XtKklFf7VeqzNXF7ciEHj7TEqbiHX2wEm94yCEqErrE7Rq8lU371BBYk7HnYZUEIa/UJVZpcm3FCnsUYrOUfJmKGIJuYIQ/qouuwYoWa0Ft7wNceW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757453757; c=relaxed/simple;
-	bh=2OTS+ua7rMNOu5Df4jtgr4d8L0MqVspsqk5UtTTNm+4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GqBZXbINO1KEpyIumVXiXInQcDjWAY8IX7YaZYmCqriHNz6K75uZmkmlUVttOUsD9fgxrZYhPOrwfnSRCF8p1+aqlFBKKgPJwNsJd9v9SrVeXvZW4f3hdG6RpZ8ZhAbVN/47fUy84J/96R2eIEYj1f1nk+UJLHE8lplV143hLto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ckvViJoz; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757453756; x=1788989756;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2OTS+ua7rMNOu5Df4jtgr4d8L0MqVspsqk5UtTTNm+4=;
-  b=ckvViJozYbcXAxxbymDYHxEyFD7r6ZqpD+oKyi0SI+sta26a9+KR/z31
-   mbXQYPC1NoXkXCHmLH1E5TpN7bfy/1gAI2qq5Eo5h7qJxzO24SQFuidb5
-   gU+u/cRUXLw0Edpam+d/c638/8c1fF7Gv0NwI2S+WLx6egvffmdNLfibZ
-   OGtmO+QHpitVgfO1TN0CCPGxporydj/JNKmoEDZRJLgyZoMbfGnqLOXBw
-   w8akWXHf4oFIq+tL2R5JFHyTJvt0I8bmy5ryzMRqC8OKAErZx4+HLHycl
-   efqsk8+ltdL6J5nmYjh0KQ7Qq/wBiYLaKYcyvhuqXDGB7M32QGj6KfHfv
-   Q==;
-X-CSE-ConnectionGUID: XtU1UZqtQi2gp5hxka3y1Q==
-X-CSE-MsgGUID: +zjgkKdnS2OgMJhjSE8e5g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11548"; a="77209122"
-X-IronPort-AV: E=Sophos;i="6.18,252,1751266800"; 
-   d="scan'208";a="77209122"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2025 14:35:55 -0700
-X-CSE-ConnectionGUID: CapBtIuERgin93rWMG9zLw==
-X-CSE-MsgGUID: 28T1J/9MQgywb27lt7SnrQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,252,1751266800"; 
-   d="scan'208";a="173995438"
-Received: from lkp-server01.sh.intel.com (HELO 114d98da2b6c) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 09 Sep 2025 14:33:42 -0700
-Received: from kbuild by 114d98da2b6c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uw5y7-0005Ix-2T;
-	Tue, 09 Sep 2025 21:33:39 +0000
-Date: Wed, 10 Sep 2025 05:33:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: Theodore Ts'o via B4 Relay <devnull+tytso.mit.edu@kernel.org>,
-	tytso@mit.edu
-Cc: oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
-	linux-api@vger.kernel.org
-Subject: Re: [PATCH 3/3] ext4: implemet new ioctls to set and get superblock
- parameters
-Message-ID: <202509100550.fj5qrPH5-lkp@intel.com>
-References: <20250908-tune2fs-v1-3-e3a6929f3355@mit.edu>
+	s=arc-20240116; t=1757460513; c=relaxed/simple;
+	bh=XYdbb9nmUlQUvNNDXRfpZJfu0TpFI9113iwpehoN4wA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=gNSrAdqvDjYJfJMOlzFzj97z2UgEyjuj3ZRm9SSZKO1VMO6YpA7ZsKDYCAlOqdU2Adc46alesCPw195d7LXrE1cN/H0om1M10ukMP/jIFDhskr+IjZNPckvdUjJZVV8KQPvrMws6rGdnuJoS/w0sVFafoR/gY8EluYETYxuJIoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-886e347d2afso573134739f.3
+        for <linux-ext4@vger.kernel.org>; Tue, 09 Sep 2025 16:28:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757460510; x=1758065310;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W2feQOR5gNEXOhepVFqzjcj+EcGYJbm2sxtlA9GecCs=;
+        b=cQi9TRxkyPiP+uTYFN5z3xk+Iop+kSCRXP3BG7fv6Q40OhPb/cIhJ0+vn/G2rZrnbb
+         M55Wcc7I0rq2XpZzLnKh4vKYh91Wr1icidyirLpbYFjNkZTt68KmBRgYsR6bmBgTwYQ4
+         IQDaSngx5IYJUQz2mGe7OTxWcsR34jltD5rTUIBNSkNWXB5GJ7VmS7sjQWcUu2fpqdhe
+         9Kh2lqeRIwd8bj+gM1bDmYfx499HQA4UFHJXZyoeADBTCehlK5jdokXbCGRnHRteGRrR
+         B77HJBOvbzT5J/fGQtn/e8t3i/OxCwCVmSQ8UuqngNfVpVVjjfHrRPPCtocEukSNiU+v
+         b6Ug==
+X-Forwarded-Encrypted: i=1; AJvYcCV8VuWPL5BeO8gfKLz1yMo60DE6tn7DnETXK2mo7HhnVBdz2hZfAHr2HPdRXTQCHf4lek7hlxBCXCiI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxn+ctm1jtk/kx/4pYqwlj7vUHNRNk8egUrxEDor4ewp688fQu9
+	P6exff3ZORTDNUCD09RLYhAJvTrmTgJKpIBEPHosSo+u1WD1O1wqUQwYLsuTJTmuNFKiIVn22vb
+	y3Y0S3E7sbjYQdjGg6gS0IsDrGxtSs7kbDUD/34Oyyd4aO/ELluWKRvSI8NI=
+X-Google-Smtp-Source: AGHT+IF2SITyfvOR/ctH8XHk4vnY6mOF5CEchuMfb9FFsahjvxz+GpbWzaYEdO2LbaCpio3hLGgPieSJ1TA9jpxZvQI2tdsQrwtU
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250908-tune2fs-v1-3-e3a6929f3355@mit.edu>
+X-Received: by 2002:a05:6e02:1a89:b0:414:a64f:8194 with SMTP id
+ e9e14a558f8ab-414a64f836cmr39122985ab.12.1757460510549; Tue, 09 Sep 2025
+ 16:28:30 -0700 (PDT)
+Date: Tue, 09 Sep 2025 16:28:30 -0700
+In-Reply-To: <67141631.050a0220.1e4b4d.002e.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68c0b81e.050a0220.3c6139.0015.GAE@google.com>
+Subject: Re: [syzbot] [ext4?] possible deadlock in ext4_writepages (2)
+From: syzbot <syzbot+eb5b4ef634a018917f3c@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Theodore,
+syzbot has found a reproducer for the following issue on:
 
-kernel test robot noticed the following build warnings:
+HEAD commit:    9dd1835ecda5 Merge tag 'dma-mapping-6.17-2025-09-09' of gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f94b12580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=429771c55b615e85
+dashboard link: https://syzkaller.appspot.com/bug?extid=eb5b4ef634a018917f3c
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=160e4d62580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160f6d62580000
 
-[auto build test WARNING on b320789d6883cc00ac78ce83bccbfe7ed58afcf0]
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/63dc392685dc/disk-9dd1835e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3dfcfb97806e/vmlinux-9dd1835e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ddb10128aeb8/bzImage-9dd1835e.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/0b26d5f09478/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=14aab562580000)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Theodore-Ts-o-via-B4-Relay/ext4-avoid-potential-buffer-over-read-in-parse_apply_sb_mount_options/20250909-111746
-base:   b320789d6883cc00ac78ce83bccbfe7ed58afcf0
-patch link:    https://lore.kernel.org/r/20250908-tune2fs-v1-3-e3a6929f3355%40mit.edu
-patch subject: [PATCH 3/3] ext4: implemet new ioctls to set and get superblock parameters
-config: csky-randconfig-r123-20250910 (https://download.01.org/0day-ci/archive/20250910/202509100550.fj5qrPH5-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 10.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20250910/202509100550.fj5qrPH5-lkp@intel.com/reproduce)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+eb5b4ef634a018917f3c@syzkaller.appspotmail.com
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202509100550.fj5qrPH5-lkp@intel.com/
+loop0: detected capacity change from 0 to 512
+======================================================
+WARNING: possible circular locking dependency detected
+syzkaller #0 Not tainted
+------------------------------------------------------
+syz.0.17/6097 is trying to acquire lock:
+ffff88803dfbec58 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: percpu_down_read include/linux/percpu-rwsem.h:77 [inline]
+ffff88803dfbec58 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: ext4_writepages_down_read fs/ext4/ext4.h:1786 [inline]
+ffff88803dfbec58 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: ext4_writepages+0x1cc/0x350 fs/ext4/inode.c:3024
 
-sparse warnings: (new ones prefixed by >>)
->> fs/ext4/ioctl.c:1255:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [addressable] [assigned] [usertype] errors_behavior @@     got restricted __le16 [usertype] s_errors @@
-   fs/ext4/ioctl.c:1255:29: sparse:     expected unsigned short [addressable] [assigned] [usertype] errors_behavior
-   fs/ext4/ioctl.c:1255:29: sparse:     got restricted __le16 [usertype] s_errors
->> fs/ext4/ioctl.c:1267:33: sparse: sparse: cast to restricted __le16
->> fs/ext4/ioctl.c:1267:33: sparse: sparse: cast from restricted __le32
->> fs/ext4/ioctl.c:1323:41: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] s_raid_stripe_width @@     got restricted __le16 [usertype] @@
-   fs/ext4/ioctl.c:1323:41: sparse:     expected restricted __le32 [usertype] s_raid_stripe_width
-   fs/ext4/ioctl.c:1323:41: sparse:     got restricted __le16 [usertype]
-   fs/ext4/ioctl.c: note: in included file (through include/linux/uaccess.h, include/linux/sched/task.h, include/linux/sched/signal.h, ...):
-   arch/csky/include/asm/uaccess.h:110:17: sparse: sparse: cast removes address space '__user' of expression
-   arch/csky/include/asm/uaccess.h:110:17: sparse: sparse: asm output is not an lvalue
-   arch/csky/include/asm/uaccess.h:110:17: sparse: sparse: cast removes address space '__user' of expression
-   arch/csky/include/asm/uaccess.h:110:17: sparse: sparse: cast removes address space '__user' of expression
-   arch/csky/include/asm/uaccess.h:110:17: sparse: sparse: asm output is not an lvalue
-   arch/csky/include/asm/uaccess.h:110:17: sparse: sparse: cast removes address space '__user' of expression
-   arch/csky/include/asm/uaccess.h:110:17: sparse: sparse: generating address of non-lvalue (11)
-   arch/csky/include/asm/uaccess.h:110:17: sparse: sparse: generating address of non-lvalue (11)
+but task is already holding lock:
+ffff88823bf82560 (&ei->xattr_sem){++++}-{4:4}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:164 [inline]
+ffff88823bf82560 (&ei->xattr_sem){++++}-{4:4}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:6425 [inline]
+ffff88823bf82560 (&ei->xattr_sem){++++}-{4:4}, at: __ext4_mark_inode_dirty+0x3eb/0x700 fs/ext4/inode.c:6506
 
-vim +1255 fs/ext4/ioctl.c
+which lock already depends on the new lock.
 
-  1235	
-  1236	
-  1237	#define TUNE_OPS_SUPPORTED (EXT4_TUNE_FL_ERRORS_BEHAVIOR |    \
-  1238		EXT4_TUNE_FL_MNT_COUNT | EXT4_TUNE_FL_MAX_MNT_COUNT | \
-  1239		EXT4_TUNE_FL_CHECKINTRVAL | EXT4_TUNE_FL_LAST_CHECK_TIME | \
-  1240		EXT4_TUNE_FL_RESERVED_BLOCKS | EXT4_TUNE_FL_RESERVED_UID | \
-  1241		EXT4_TUNE_FL_RESERVED_GID | EXT4_TUNE_FL_DEFAULT_MNT_OPTS | \
-  1242		EXT4_TUNE_FL_DEF_HASH_ALG | EXT4_TUNE_FL_RAID_STRIDE | \
-  1243		EXT4_TUNE_FL_RAID_STRIPE_WIDTH | EXT4_TUNE_FL_MOUNT_OPTS | \
-  1244		EXT4_TUNE_FL_FEATURES | EXT4_TUNE_FL_EDIT_FEATURES | \
-  1245		EXT4_TUNE_FL_FORCE_FSCK)
-  1246	
-  1247	static int ext4_ioctl_get_tune_sb(struct ext4_sb_info *sbi,
-  1248					  struct ext4_tune_sb_params __user *params)
-  1249	{
-  1250		struct ext4_tune_sb_params ret;
-  1251		struct ext4_super_block *es = sbi->s_es;
-  1252	
-  1253		memset(&ret, 0, sizeof(ret));
-  1254		ret.set_flags = TUNE_OPS_SUPPORTED;
-> 1255		ret.errors_behavior = es->s_errors;
-  1256		ret.mnt_count = le16_to_cpu(es->s_mnt_count);
-  1257		ret.max_mnt_count = le16_to_cpu(es->s_max_mnt_count);
-  1258		ret.checkinterval = le32_to_cpu(es->s_checkinterval);
-  1259		ret.last_check_time = le32_to_cpu(es->s_lastcheck);
-  1260		ret.reserved_blocks = ext4_r_blocks_count(es);
-  1261		ret.blocks_count = ext4_blocks_count(es);
-  1262		ret.reserved_uid = ext4_get_resuid(es);
-  1263		ret.reserved_gid = ext4_get_resgid(es);
-  1264		ret.default_mnt_opts = le32_to_cpu(es->s_default_mount_opts);
-  1265		ret.def_hash_alg = es->s_def_hash_version;
-  1266		ret.raid_stride = le16_to_cpu(es->s_raid_stride);
-> 1267		ret.raid_stripe_width = le16_to_cpu(es->s_raid_stripe_width);
-  1268		strscpy_pad(ret.mount_opts, es->s_mount_opts);
-  1269		ret.feature_compat = le32_to_cpu(es->s_feature_compat);
-  1270		ret.feature_incompat = le32_to_cpu(es->s_feature_incompat);
-  1271		ret.feature_ro_compat = le32_to_cpu(es->s_feature_ro_compat);
-  1272		ret.set_feature_compat_mask = EXT4_TUNE_SET_COMPAT_SUPP;
-  1273		ret.set_feature_incompat_mask = EXT4_TUNE_SET_INCOMPAT_SUPP;
-  1274		ret.set_feature_ro_compat_mask = EXT4_TUNE_SET_RO_COMPAT_SUPP;
-  1275		ret.clear_feature_compat_mask = EXT4_TUNE_CLEAR_COMPAT_SUPP;
-  1276		ret.clear_feature_incompat_mask = EXT4_TUNE_CLEAR_INCOMPAT_SUPP;
-  1277		ret.clear_feature_ro_compat_mask = EXT4_TUNE_CLEAR_RO_COMPAT_SUPP;
-  1278		if (copy_to_user(params, &ret, sizeof(ret)))
-  1279			return -EFAULT;
-  1280		return 0;
-  1281	}
-  1282	
-  1283	static void ext4_sb_setparams(struct ext4_sb_info *sbi,
-  1284				      struct ext4_super_block *es, const void *arg)
-  1285	{
-  1286		const struct ext4_tune_sb_params *params = arg;
-  1287	
-  1288		if (params->set_flags & EXT4_TUNE_FL_ERRORS_BEHAVIOR)
-  1289			es->s_errors = cpu_to_le16(params->errors_behavior);
-  1290		if (params->set_flags & EXT4_TUNE_FL_MNT_COUNT)
-  1291			es->s_mnt_count = cpu_to_le16(params->mnt_count);
-  1292		if (params->set_flags & EXT4_TUNE_FL_MAX_MNT_COUNT)
-  1293			es->s_max_mnt_count = cpu_to_le16(params->max_mnt_count);
-  1294		if (params->set_flags & EXT4_TUNE_FL_CHECKINTRVAL)
-  1295			es->s_checkinterval = cpu_to_le32(params->checkinterval);
-  1296		if (params->set_flags & EXT4_TUNE_FL_LAST_CHECK_TIME)
-  1297			es->s_lastcheck = cpu_to_le32(params->last_check_time);
-  1298		if (params->set_flags & EXT4_TUNE_FL_RESERVED_BLOCKS) {
-  1299			ext4_fsblk_t blk = params->reserved_blocks;
-  1300	
-  1301			es->s_r_blocks_count_lo = cpu_to_le32((u32)blk);
-  1302			es->s_r_blocks_count_hi = cpu_to_le32(blk >> 32);
-  1303		}
-  1304		if (params->set_flags & EXT4_TUNE_FL_RESERVED_UID) {
-  1305			int uid = params->reserved_uid;
-  1306	
-  1307			es->s_def_resuid = cpu_to_le16(uid & 0xFFFF);
-  1308			es->s_def_resuid_hi = cpu_to_le16(uid >> 16);
-  1309		}
-  1310		if (params->set_flags & EXT4_TUNE_FL_RESERVED_GID) {
-  1311			int gid = params->reserved_gid;
-  1312	
-  1313			es->s_def_resgid = cpu_to_le16(gid & 0xFFFF);
-  1314			es->s_def_resgid_hi = cpu_to_le16(gid >> 16);
-  1315		}
-  1316		if (params->set_flags & EXT4_TUNE_FL_DEFAULT_MNT_OPTS)
-  1317			es->s_default_mount_opts = cpu_to_le32(params->default_mnt_opts);
-  1318		if (params->set_flags & EXT4_TUNE_FL_DEF_HASH_ALG)
-  1319			es->s_def_hash_version = params->def_hash_alg;
-  1320		if (params->set_flags & EXT4_TUNE_FL_RAID_STRIDE)
-  1321			es->s_raid_stride = cpu_to_le16(params->raid_stride);
-  1322		if (params->set_flags & EXT4_TUNE_FL_RAID_STRIPE_WIDTH)
-> 1323			es->s_raid_stripe_width =
-  1324				cpu_to_le16(params->raid_stripe_width);
-  1325		strscpy_pad(es->s_mount_opts, params->mount_opts);
-  1326		if (params->set_flags & EXT4_TUNE_FL_EDIT_FEATURES) {
-  1327			es->s_feature_compat |=
-  1328				cpu_to_le32(params->set_feature_compat_mask);
-  1329			es->s_feature_incompat |=
-  1330				cpu_to_le32(params->set_feature_incompat_mask);
-  1331			es->s_feature_ro_compat |=
-  1332				cpu_to_le32(params->set_feature_ro_compat_mask);
-  1333			es->s_feature_compat &=
-  1334				~cpu_to_le32(params->clear_feature_compat_mask);
-  1335			es->s_feature_incompat &=
-  1336				~cpu_to_le32(params->clear_feature_incompat_mask);
-  1337			es->s_feature_ro_compat &=
-  1338				~cpu_to_le32(params->clear_feature_ro_compat_mask);
-  1339			if (params->set_feature_compat_mask &
-  1340			    EXT4_FEATURE_COMPAT_DIR_INDEX)
-  1341				es->s_def_hash_version = sbi->s_def_hash_version;
-  1342			if (params->set_feature_incompat_mask &
-  1343			    EXT4_FEATURE_INCOMPAT_CSUM_SEED)
-  1344				es->s_checksum_seed = cpu_to_le32(sbi->s_csum_seed);
-  1345		}
-  1346		if (params->set_flags & EXT4_TUNE_FL_FORCE_FSCK)
-  1347			es->s_state |= cpu_to_le16(EXT4_ERROR_FS);
-  1348	}
-  1349	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&ei->xattr_sem){++++}-{4:4}:
+       lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5868
+       down_write+0x3a/0x50 kernel/locking/rwsem.c:1590
+       ext4_write_lock_xattr fs/ext4/xattr.h:157 [inline]
+       ext4_xattr_set_handle+0x165/0x1590 fs/ext4/xattr.c:2362
+       ext4_initxattrs+0x9f/0x110 fs/ext4/xattr_security.c:44
+       security_inode_init_security+0x29d/0x3f0 security/security.c:1852
+       __ext4_new_inode+0x3314/0x3cb0 fs/ext4/ialloc.c:1325
+       ext4_create+0x22d/0x460 fs/ext4/namei.c:2822
+       lookup_open fs/namei.c:3708 [inline]
+       open_last_lookups fs/namei.c:3807 [inline]
+       path_openat+0x14fd/0x3840 fs/namei.c:4043
+       do_filp_open+0x1fa/0x410 fs/namei.c:4073
+       do_sys_openat2+0x121/0x1c0 fs/open.c:1435
+       do_sys_open fs/open.c:1450 [inline]
+       __do_sys_openat fs/open.c:1466 [inline]
+       __se_sys_openat fs/open.c:1461 [inline]
+       __x64_sys_openat+0x138/0x170 fs/open.c:1461
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #1 (jbd2_handle){++++}-{0:0}:
+       lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5868
+       start_this_handle+0x1fa7/0x21c0 fs/jbd2/transaction.c:444
+       jbd2__journal_start+0x2c1/0x5b0 fs/jbd2/transaction.c:501
+       __ext4_journal_start_sb+0x227/0x5c0 fs/ext4/ext4_jbd2.c:115
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:242 [inline]
+       ext4_do_writepages+0xf6f/0x4600 fs/ext4/inode.c:2913
+       ext4_writepages+0x205/0x350 fs/ext4/inode.c:3025
+       do_writepages+0x32b/0x550 mm/page-writeback.c:2634
+       __writeback_single_inode+0x145/0x1000 fs/fs-writeback.c:1680
+       writeback_sb_inodes+0x6b7/0xf60 fs/fs-writeback.c:1976
+       __writeback_inodes_wb+0x111/0x240 fs/fs-writeback.c:2047
+       wb_writeback+0x44f/0xaf0 fs/fs-writeback.c:2158
+       wb_check_old_data_flush fs/fs-writeback.c:2262 [inline]
+       wb_do_writeback fs/fs-writeback.c:2315 [inline]
+       wb_workfn+0xaf4/0xf00 fs/fs-writeback.c:2343
+       process_one_work kernel/workqueue.c:3236 [inline]
+       process_scheduled_works+0xade/0x17b0 kernel/workqueue.c:3319
+       worker_thread+0x8a0/0xda0 kernel/workqueue.c:3400
+       kthread+0x70e/0x8a0 kernel/kthread.c:463
+       ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+-> #0 (&sbi->s_writepages_rwsem){++++}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3165 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+       validate_chain+0xb9b/0x2140 kernel/locking/lockdep.c:3908
+       __lock_acquire+0xab9/0xd20 kernel/locking/lockdep.c:5237
+       lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5868
+       percpu_down_read_internal+0x48/0x1d0 include/linux/percpu-rwsem.h:53
+       percpu_down_read include/linux/percpu-rwsem.h:77 [inline]
+       ext4_writepages_down_read fs/ext4/ext4.h:1786 [inline]
+       ext4_writepages+0x1cc/0x350 fs/ext4/inode.c:3024
+       do_writepages+0x32b/0x550 mm/page-writeback.c:2634
+       __writeback_single_inode+0x145/0x1000 fs/fs-writeback.c:1680
+       writeback_single_inode+0x1d5/0x640 fs/fs-writeback.c:1801
+       write_inode_now+0x160/0x1d0 fs/fs-writeback.c:2864
+       iput_final fs/inode.c:1884 [inline]
+       iput+0x5b9/0x9d0 fs/inode.c:1923
+       ext4_xattr_block_set+0x1fce/0x2ac0 fs/ext4/xattr.c:2194
+       ext4_xattr_move_to_block fs/ext4/xattr.c:2659 [inline]
+       ext4_xattr_make_inode_space fs/ext4/xattr.c:2734 [inline]
+       ext4_expand_extra_isize_ea+0x12d5/0x1ea0 fs/ext4/xattr.c:2822
+       __ext4_expand_extra_isize+0x30d/0x400 fs/ext4/inode.c:6385
+       ext4_try_to_expand_extra_isize fs/ext4/inode.c:6428 [inline]
+       __ext4_mark_inode_dirty+0x46c/0x700 fs/ext4/inode.c:6506
+       ext4_evict_inode+0x80d/0xee0 fs/ext4/inode.c:254
+       evict+0x504/0x9c0 fs/inode.c:810
+       ext4_orphan_cleanup+0xc20/0x1460 fs/ext4/orphan.c:474
+       __ext4_fill_super fs/ext4/super.c:5609 [inline]
+       ext4_fill_super+0x57fa/0x60b0 fs/ext4/super.c:5728
+       get_tree_bdev_flags+0x40e/0x4d0 fs/super.c:1692
+       vfs_get_tree+0x8f/0x2b0 fs/super.c:1815
+       do_new_mount+0x2a2/0x9e0 fs/namespace.c:3808
+       do_mount fs/namespace.c:4136 [inline]
+       __do_sys_mount fs/namespace.c:4347 [inline]
+       __se_sys_mount+0x317/0x410 fs/namespace.c:4324
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+other info that might help us debug this:
+
+Chain exists of:
+  &sbi->s_writepages_rwsem --> jbd2_handle --> &ei->xattr_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->xattr_sem);
+                               lock(jbd2_handle);
+                               lock(&ei->xattr_sem);
+  rlock(&sbi->s_writepages_rwsem);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.0.17/6097:
+ #0: ffff88803dfbc0d0 (&type->s_umount_key#26/1){+.+.}-{4:4}, at: alloc_super+0x204/0x990 fs/super.c:345
+ #1: ffff88803dfbc778 (sb_internal){.+.+}-{0:0}, at: percpu_down_read_freezable include/linux/percpu-rwsem.h:83 [inline]
+ #1: ffff88803dfbc778 (sb_internal){.+.+}-{0:0}, at: __sb_start_write include/linux/fs.h:1799 [inline]
+ #1: ffff88803dfbc778 (sb_internal){.+.+}-{0:0}, at: sb_start_intwrite include/linux/fs.h:1982 [inline]
+ #1: ffff88803dfbc778 (sb_internal){.+.+}-{0:0}, at: ext4_evict_inode+0x2d6/0xee0 fs/ext4/inode.c:215
+ #2: ffff88823bf82560 (&ei->xattr_sem){++++}-{4:4}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:164 [inline]
+ #2: ffff88823bf82560 (&ei->xattr_sem){++++}-{4:4}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:6425 [inline]
+ #2: ffff88823bf82560 (&ei->xattr_sem){++++}-{4:4}, at: __ext4_mark_inode_dirty+0x3eb/0x700 fs/ext4/inode.c:6506
+
+stack backtrace:
+CPU: 1 UID: 0 PID: 6097 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ print_circular_bug+0x2ee/0x310 kernel/locking/lockdep.c:2043
+ check_noncircular+0x134/0x160 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3165 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+ validate_chain+0xb9b/0x2140 kernel/locking/lockdep.c:3908
+ __lock_acquire+0xab9/0xd20 kernel/locking/lockdep.c:5237
+ lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5868
+ percpu_down_read_internal+0x48/0x1d0 include/linux/percpu-rwsem.h:53
+ percpu_down_read include/linux/percpu-rwsem.h:77 [inline]
+ ext4_writepages_down_read fs/ext4/ext4.h:1786 [inline]
+ ext4_writepages+0x1cc/0x350 fs/ext4/inode.c:3024
+ do_writepages+0x32b/0x550 mm/page-writeback.c:2634
+ __writeback_single_inode+0x145/0x1000 fs/fs-writeback.c:1680
+ writeback_single_inode+0x1d5/0x640 fs/fs-writeback.c:1801
+ write_inode_now+0x160/0x1d0 fs/fs-writeback.c:2864
+ iput_final fs/inode.c:1884 [inline]
+ iput+0x5b9/0x9d0 fs/inode.c:1923
+ ext4_xattr_block_set+0x1fce/0x2ac0 fs/ext4/xattr.c:2194
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2659 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2734 [inline]
+ ext4_expand_extra_isize_ea+0x12d5/0x1ea0 fs/ext4/xattr.c:2822
+ __ext4_expand_extra_isize+0x30d/0x400 fs/ext4/inode.c:6385
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:6428 [inline]
+ __ext4_mark_inode_dirty+0x46c/0x700 fs/ext4/inode.c:6506
+ ext4_evict_inode+0x80d/0xee0 fs/ext4/inode.c:254
+ evict+0x504/0x9c0 fs/inode.c:810
+ ext4_orphan_cleanup+0xc20/0x1460 fs/ext4/orphan.c:474
+ __ext4_fill_super fs/ext4/super.c:5609 [inline]
+ ext4_fill_super+0x57fa/0x60b0 fs/ext4/super.c:5728
+ get_tree_bdev_flags+0x40e/0x4d0 fs/super.c:1692
+ vfs_get_tree+0x8f/0x2b0 fs/super.c:1815
+ do_new_mount+0x2a2/0x9e0 fs/namespace.c:3808
+ do_mount fs/namespace.c:4136 [inline]
+ __do_sys_mount fs/namespace.c:4347 [inline]
+ __se_sys_mount+0x317/0x410 fs/namespace.c:4324
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fefaad0038a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdb287c378 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffdb287c400 RCX: 00007fefaad0038a
+RDX: 0000200000000180 RSI: 00002000000001c0 RDI: 00007ffdb287c3c0
+RBP: 0000200000000180 R08: 00007ffdb287c400 R09: 0000000000800700
+R10: 0000000000800700 R11: 0000000000000246 R12: 00002000000001c0
+R13: 00007ffdb287c3c0 R14: 0000000000000473 R15: 0000200000000680
+ </TASK>
+------------[ cut here ]------------
+EA inode 11 i_nlink=2
+WARNING: CPU: 1 PID: 6097 at fs/ext4/xattr.c:1053 ext4_xattr_inode_update_ref+0x534/0x5d0 fs/ext4/xattr.c:1051
+Modules linked in:
+CPU: 1 UID: 0 PID: 6097 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
+RIP: 0010:ext4_xattr_inode_update_ref+0x534/0x5d0 fs/ext4/xattr.c:1051
+Code: 00 00 00 00 00 fc ff df 41 0f b6 44 05 00 84 c0 0f 85 86 00 00 00 41 8b 14 24 48 c7 c7 60 6d 1f 8b 4c 89 fe e8 1d 9a 07 ff 90 <0f> 0b 90 90 48 bb 00 00 00 00 00 fc ff df e9 bb fd ff ff e8 a4 2b
+RSP: 0018:ffffc900041bf1a0 EFLAGS: 00010246
+RAX: 3b7a600244a15000 RBX: dffffc0000000000 RCX: ffff88803cfa3b80
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc900041bf298 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: ffffed1017124863 R12: ffff888049711b30
+R13: 1ffff110092e2366 R14: 00000000ffffffff R15: 000000000000000b
+FS:  000055556e3f9500(0000) GS:ffff8881269bf000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f24cdec2e9c CR3: 000000002c16a000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ ext4_xattr_inode_dec_ref fs/ext4/xattr.c:1076 [inline]
+ ext4_xattr_set_entry+0xabb/0x1e20 fs/ext4/xattr.c:1714
+ ext4_xattr_ibody_set+0x254/0x6a0 fs/ext4/xattr.c:2263
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2666 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2734 [inline]
+ ext4_expand_extra_isize_ea+0x13a8/0x1ea0 fs/ext4/xattr.c:2822
+ __ext4_expand_extra_isize+0x30d/0x400 fs/ext4/inode.c:6385
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:6428 [inline]
+ __ext4_mark_inode_dirty+0x46c/0x700 fs/ext4/inode.c:6506
+ ext4_evict_inode+0x80d/0xee0 fs/ext4/inode.c:254
+ evict+0x504/0x9c0 fs/inode.c:810
+ ext4_orphan_cleanup+0xc20/0x1460 fs/ext4/orphan.c:474
+ __ext4_fill_super fs/ext4/super.c:5609 [inline]
+ ext4_fill_super+0x57fa/0x60b0 fs/ext4/super.c:5728
+ get_tree_bdev_flags+0x40e/0x4d0 fs/super.c:1692
+ vfs_get_tree+0x8f/0x2b0 fs/super.c:1815
+ do_new_mount+0x2a2/0x9e0 fs/namespace.c:3808
+ do_mount fs/namespace.c:4136 [inline]
+ __do_sys_mount fs/namespace.c:4347 [inline]
+ __se_sys_mount+0x317/0x410 fs/namespace.c:4324
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fefaad0038a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdb287c378 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffdb287c400 RCX: 00007fefaad0038a
+RDX: 0000200000000180 RSI: 00002000000001c0 RDI: 00007ffdb287c3c0
+RBP: 0000200000000180 R08: 00007ffdb287c400 R09: 0000000000800700
+R10: 0000000000800700 R11: 0000000000000246 R12: 00002000000001c0
+R13: 00007ffdb287c3c0 R14: 0000000000000473 R15: 0000200000000680
+ </TASK>
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
