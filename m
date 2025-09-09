@@ -1,128 +1,146 @@
-Return-Path: <linux-ext4+bounces-9886-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9887-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D28E2B50349
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 18:55:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D3A8B50566
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 20:35:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BFCB5415D0
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 16:55:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A204A7B2D5D
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 18:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6AF35E4DB;
-	Tue,  9 Sep 2025 16:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435FE3009E0;
+	Tue,  9 Sep 2025 18:32:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X7nTeuZo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CS+ikj6C"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D552426E165;
-	Tue,  9 Sep 2025 16:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD5B3002C4;
+	Tue,  9 Sep 2025 18:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757436889; cv=none; b=hRehAAjbYoUBivos15nKnTN9/5Be3nVDyKbJrqA4hLV++oFsacWYARXOldalfsFX+Yr+qiut91PS8g5TXKQiwdyfgDoGwuFefGdVAKQIESRzJiK6QrtrPmeEWlMJg1yJv9ZYiQiItBr5yfGsAvjCkKgfbK7A9qydQQaK86RbnbA=
+	t=1757442763; cv=none; b=umHV73Ara3SoLSBhkGR5gzJvog88dGxLOom6NE83MbkOrZyENRNQDoP15AF82knZcCMHFMnsrwCBbLx0tzXN/0lfMuUi5U/hXZIHGTcZFxfM92VudAjuCv3g1v2FZLTvB44p6Lq1TJQyHsBaJXkUeYAdcOTlBLmKnkQFTw91MrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757436889; c=relaxed/simple;
-	bh=6wDwSZQTdkZ0K6r7ARP+lPOkd/GdIG5zCPz9SFVrFE0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GiwoukhFVKgASXD7vTjrUogfE6HiUI8xIjoHD7CBp76koU8Af+WV+tt2HACgQhzveuq/pmic8vyzXNZteUG0gYoj2WKnos4q6J5B4AmvDGBGXRTy0B4fqAo4OkgOGlQPg/oi2rA8gILEepGbC01ATSFByV1uDpvvZfLjE1nUO1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X7nTeuZo; arc=none smtp.client-ip=209.85.210.180
+	s=arc-20240116; t=1757442763; c=relaxed/simple;
+	bh=GW2x3BiMlxtdXONsUQUaEy/dHtbMsT4sWtlNzRaafO4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n5UV1l6T1Y1oVNau2WoxfVBT/JCYtzvlo8vYkh7htHsjBpr+oTVQ/olfJ8IKijWXFshTvdJpA6wq5t1nexnqpRVgVN6+cMvcWoAxzMI/3UjRIwq38h6YdCOVuOTGhJkXPxdBxE1aK0l1ud1GJ0M6cg3ibyUU/t/xqjQ0SVvJazo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CS+ikj6C; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-772627dd50aso7381436b3a.1;
-        Tue, 09 Sep 2025 09:54:47 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-6188b5ad4f0so8474119a12.0;
+        Tue, 09 Sep 2025 11:32:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757436887; x=1758041687; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jDPNTwpJax4vDS4+xWgLAHPOpHhyQT4nEZr7m0wZXMw=;
-        b=X7nTeuZoaJ7zp0AxZ2342Ep5eBeoi7GIXovA/YXVm5iGIzyJ+x7ruEMFeF4L3eSzHH
-         027fQwCuFPfdI6xlAg15uaohWlFmtDM1PmsAUFF78dEMXCWZrvoLKAnge9wPvFS7ZzDT
-         x5X7BbjN57uFBz9MncuXF15iVmG6H2kTTu0gYnc7U5Mp8Bw52oBL3niVEnugyNOrWDJU
-         RBUEFs7c4bdrdIBseA2VdBKJashy89RX/+GPkhbjPCkooDk30+mS8YkvlSY09CFilfcc
-         A0E+S+W7XbhXkvyrpEySyrpSGE1+RaQ1Y/fApWCD7clK9fGSfaCRFlG5dGXJpRsTgLhx
-         kQiA==
+        d=gmail.com; s=20230601; t=1757442760; x=1758047560; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yIGs9FBrVN4ysExlh34AjdYI0YF46w+oZSmAFf3lNX4=;
+        b=CS+ikj6CoktTENcKDyOs4cIG3k7BeNGQRuCdZQ2dRTEZtuVxC3K4oqUkJ0LNWNqhWH
+         +3INlXxuqLLdLe0li8Ed/XRwv8yxjioDmPxzk5vPHBT9lfZ140r9jRaNpRvoBwl1tw9S
+         W9S0b92vtYTbPwqwEfADIEkOZIbcdDTSW+1FM81zw9VUa0cUMRPMAuXBomwM1ZJHIeJW
+         QzT6vj8H+6OP1C7tXSM4LrplfqyRAkmc/UkWb31is25zODzTTCRbaEUhhl47QYbE53x/
+         qV4trjzklcNN3qsbjXbl3zArm+M+reqYViC01q9uSpd1Crj+dx/UC1GtF0CJw/TbdUyS
+         9CSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757436887; x=1758041687;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jDPNTwpJax4vDS4+xWgLAHPOpHhyQT4nEZr7m0wZXMw=;
-        b=fVWUQUbKjHEJV3T26Rs+UMo8YoOR8x6c675TAewskKUO4AiYD4Qkbw15ZOvPw4pLZd
-         DCnmSip4fH+WGEQYuuFJkw5TPAu+Rnm9x9lckono9+Q9GK4IJjV1TmjG8OLRR6kWuY+q
-         cTy3/54S9Mpaac8WI29p7tOq56hv/0draqL9RXxKaxrHosdZOQafg2P2xcTlPp7QylH8
-         BWF43E2l0VSW706opkyKbfjJb9tFUI5WjRzX1Kr/GahxTp3Ij4R6VFWoaox/PhVwI6rF
-         rmmSOU6B8zW6v3VYoTVt5m5FZkkshscowduRWZz3a+QoYxWdottjy9BxECwkT5t5iZ9H
-         Gljw==
-X-Forwarded-Encrypted: i=1; AJvYcCViH0dbHalbZT8rmWZXnd++oFsJLo9VgZGgA1ovTfN1lPGKH9ROzuRENUsh/ce3Cv9zfH4CRbtE5P3Y@vger.kernel.org
-X-Gm-Message-State: AOJu0YxwQzvTvvv2XAaL5N9lJwV+uNz8cE1YETIZHxyQ7u8MzgYq6zPz
-	s+qi0tKSkPeDIQFJhk0NXcp43Ucbi76MPPwF4xSHorL5Gu78zoCpmk59
-X-Gm-Gg: ASbGncv5dIwRh9EzM7NlUW1ZBxGC9BgpMwW4X3LNEsvSppkk7FKFIValuLaiNLj7HyS
-	Z0SzPlmu6nQNjeE5K8sYRL0jSTUxHRxZcqopWyEWHnd+glAkhnOdKumnqW5QyW63opzOx4lLa+J
-	Jpz863waiJ22LBalMY3azBO0hH7uFY0r3ej80gOVyJaq9M5b4VmgAJmYGDn1gnpv/U3bi0Tdnp3
-	cxGsf8OdHNucAoHTYFHvtRhKG54tCcHJ7EW7XAZF0X3wqZcTbuuGOhxJiF8l68xNuuPOnvy/Ck1
-	3IaLbmde5fTfwPjxAuAPElZMaJKE7KE1G1CgkrlxAXXyzpUul/j0GD72e+NRYArPwNJNHSKpBEf
-	v/euQ5CN1NyCVrP925JrOASVUkB1ZJnQ3s+6DFg1G08A=
-X-Google-Smtp-Source: AGHT+IFrYN8CUrJUZf40DuX4y97YP/kms4GG/GBFv83blRmALDwU+NZgfuWuuuA1HX44RC7TCcek2w==
-X-Received: by 2002:a17:903:234e:b0:248:f844:678f with SMTP id d9443c01a7336-24ceff455eamr258584605ad.30.1757436886803;
-        Tue, 09 Sep 2025 09:54:46 -0700 (PDT)
-Received: from archlinux ([205.254.163.103])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25a2a921953sm2565805ad.103.2025.09.09.09.54.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Sep 2025 09:54:46 -0700 (PDT)
-From: Suchit Karunakaran <suchitkarunakaran@gmail.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	djwong@kernel.org,
-	linux-ext4@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	Suchit Karunakaran <suchitkarunakaran@gmail.com>
-Subject: [PATCH RESEND] fs/ext4: remove unused variable 'de' in ext4_init_new_dir()
-Date: Tue,  9 Sep 2025 22:24:38 +0530
-Message-ID: <20250909165438.7583-1-suchitkarunakaran@gmail.com>
-X-Mailer: git-send-email 2.51.0
+        d=1e100.net; s=20230601; t=1757442760; x=1758047560;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yIGs9FBrVN4ysExlh34AjdYI0YF46w+oZSmAFf3lNX4=;
+        b=TaLe76O8PHSNPE8vtQ+ZkNweCdJFmM0XusNtZ1lc+gbBiEbtOaXF9we3Ypdu9eN1XD
+         YYGXOrgguoiMkUHSOpxDJ7/RT+vTqAnXnbYdevluLDAG66VXOYukaMODAqdyjQdFj/ij
+         IgvkRF9+DsvR0oUFyM1nfM0vcUhvCXIUTqhPTqsASMs0LbCito4Wh2iVECAiA70pXwnk
+         KHUDj9QWQAvozjxlVio09WgkiNbsSnOK/2kPApC2BfjP205+DGaT7xv4WPsoArd9G0cm
+         Pg9UTC+dDN38G7FBgyHzouIjrVHTPnGh5dA8CGScfEMw+j0fGvCK5k7ud5iNVKjm95qt
+         zMTw==
+X-Forwarded-Encrypted: i=1; AJvYcCV0LUEGC17ZtvutdgNwXrb+UQoAlUU6jR0JhJR/6eWjUSBXpENkMGBJo97rxf5jRKHHVyP307rs2Buw+A==@vger.kernel.org, AJvYcCWKPPjNeyCwrwKv80V3xOBd69K+fXREUO+jNpqpLXaFxaQpv0NBPRZ9iLgWnbxcooffgRdYW/I6jI14ug==@vger.kernel.org, AJvYcCWbMbBG/ZKy/L3g0GUnnW01e0a7XC6Cp8Fea5LmBZMrONHcphq5faA9uuM1DJpt3x02eQRyngWs0Z0oG1yT@vger.kernel.org, AJvYcCWqpN0QFo1XxElEtdb74wAgCJWhsrLs2SFm1hqnuoMWQStOKKoeUaKpcTeDmNPVl3JrxA/U9Z0IQtTD@vger.kernel.org, AJvYcCXwKFZXTIrkhM/bT2ymo+taCIzBgUit67/3UWvQzrGrxmRV+sUDvSNPvUcHknoI0UvtaQQhy6kDiKeOOifqDw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwMaBBvfLkAZbdh77CjUGOHHMgEy2j8deULa7leTISVMXjxABio
+	LJOceoJzLZkiNJuv0QLqBszZN7wXgdoY7pLizaRdmvpQ+iowcZDHwyaQunI2rmG3DZmllP9hJ2V
+	RBK8K3V85UDFiOZpsg+97yrKeDYmGYd8=
+X-Gm-Gg: ASbGnctnHaLkk48SeGedWY1AzeV56ol9l4z/Gptvq+7bTZuiHA1h+RZcq0V/dF6j6L+
+	y9wPeOwPVcc6HI6nvELN8CPkeVMrnzIqFJVw5+n5eSi66RDYxczMzzr9iiYFC9GhCqU9dK+VtBP
+	rLYspnyalcIjLhGqD1146grQPPdsP2IaLG+zrFuRfXCNt6NftNhqiLVHfId0pEH0Lgs8gS2p8VX
+	dQbuw1BDbTLtD+IIw==
+X-Google-Smtp-Source: AGHT+IGIpYLmFMQhXwhapf2seoXIPbxx2/CNzBSDsmPVTyytD6TFl/TeK/249z9Axk5K8USmmiSQ3V6JXdtG0O8zPdM=
+X-Received: by 2002:a05:6402:3589:b0:62c:62e1:8ff4 with SMTP id
+ 4fb4d7f45d1cf-62c62e1986amr2372712a12.23.1757442760027; Tue, 09 Sep 2025
+ 11:32:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250909091344.1299099-1-mjguzik@gmail.com> <20250909091344.1299099-10-mjguzik@gmail.com>
+In-Reply-To: <20250909091344.1299099-10-mjguzik@gmail.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Tue, 9 Sep 2025 20:32:27 +0200
+X-Gm-Features: AS18NWBEChkhzDf6oUf2_3PrIR6nRSPRVkR8w4kTgZptP8cMl4B5_HTLHZwMBuQ
+Message-ID: <CAGudoHG59Q=hQg3cQpPamCj2x8NuNZ7qhTMcOamWTkYDJB4PZw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] fs: set I_FREEING instead of I_WILL_FREE in
+ iput_final() prior to writeback
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, kernel-team@fb.com, 
+	amir73il@gmail.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, ocfs2-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The variable 'de' was declared but never used in the ext4_init_new_dir()
-function, causing a compiler warning:
-variable 'de' set but not used [-Werror=unused-but-set-variable]
-Remove the unused declaration to clean up the code and fix the warning.
+On Tue, Sep 9, 2025 at 11:14=E2=80=AFAM Mateusz Guzik <mjguzik@gmail.com> w=
+rote:
+>
+> This is in preparation for I_WILL_FREE flag removal.
+>
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+> ---
+>  fs/inode.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 20f36d54348c..9c695339ec3e 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -1880,18 +1880,17 @@ static void iput_final(struct inode *inode)
+>                 return;
+>         }
+>
+> +       inode_state_add(inode, I_FREEING);
+> +
+>         if (!drop) {
+> -               inode_state_add(inode, I_WILL_FREE);
+>                 spin_unlock(&inode->i_lock);
+>
+>                 write_inode_now(inode, 1);
+>
+>                 spin_lock(&inode->i_lock);
+> -               inode_state_del(inode, I_WILL_FREE);
+>                 WARN_ON(inode_state_read(inode) & I_NEW);
+>         }
+>
+> -       inode_state_add(inode, I_FREEING);
+>         if (!list_empty(&inode->i_lru))
+>                 inode_lru_list_del(inode);
+>         spin_unlock(&inode->i_lock);
+> --
+> 2.43.0
+>
 
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-Signed-off-by: Suchit Karunakaran <suchitkarunakaran@gmail.com>
----
- fs/ext4/namei.c | 2 --
- 1 file changed, 2 deletions(-)
+With a closer look I think this is buggy. write_inode_now() makes
+assumptions that I_FREEING implies removal from the io list, but does
+not assert on it.
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index d83f91b62317..bb2370829928 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2965,7 +2965,6 @@ int ext4_init_new_dir(handle_t *handle, struct inode *dir,
- 			     struct inode *inode)
- {
- 	struct buffer_head *dir_block = NULL;
--	struct ext4_dir_entry_2 *de;
- 	ext4_lblk_t block = 0;
- 	int err;
- 
-@@ -2982,7 +2981,6 @@ int ext4_init_new_dir(handle_t *handle, struct inode *dir,
- 	dir_block = ext4_append(handle, inode, &block);
- 	if (IS_ERR(dir_block))
- 		return PTR_ERR(dir_block);
--	de = (struct ext4_dir_entry_2 *)dir_block->b_data;
- 	err = ext4_init_dirblock(handle, inode, dir_block, dir->i_ino, NULL, 0);
- 	if (err)
- 		goto out;
--- 
-2.50.1
+So I'm going to post an updated patch which moves this write down
+evict() after removal from the io list, and only issue the write
+conditionally based on the drop parameter.
 
+On top of that write_inode_now() is going to make a bunch of asserts
+about the inode being clean after the write if I_FREEING is set.
+
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
