@@ -1,162 +1,138 @@
-Return-Path: <linux-ext4+bounces-9877-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9878-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BAEEB4AC16
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 13:32:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DF17B4AC9D
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 13:46:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C595C16DAE7
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 11:32:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D27C63A95CC
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 11:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D88321F4D;
-	Tue,  9 Sep 2025 11:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB722322DA8;
+	Tue,  9 Sep 2025 11:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AoNor/uw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C52322DB6;
-	Tue,  9 Sep 2025 11:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE18C31CA43;
+	Tue,  9 Sep 2025 11:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757417461; cv=none; b=ow5kv11TnwU7qLKx/6ASZcJLrijb9cuYU8rzPgg4XNOuVQnp1uV6mGmjJUk13TF08c2fd4l7SNga6IMjqD5eSZSx3Dk492PKeB7xwfsifvZCM8icrT/p3XsrW52PepO3n/CrYM4QmObu8YchqqLOOztxYfuvOEjFDK0a0mzSyug=
+	t=1757418240; cv=none; b=ma8GBLzhcUm6ZGkul7nOSR5GM80K+PSCzESK30ynnYcTsh7s1tsSpcLiUwg2C8nD0zuliQ6P7ztf3zhSeSWiYa4+D4DRJHNiHYCea3W44gXYK0WOu/0LMVB5jREmy0nIocThH5vndTZtXm4P4/zzGykXEZHKVHEemxkJBDm0lI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757417461; c=relaxed/simple;
-	bh=7OCyzakwEIIy7WQxVykqQp22fQ35IPTmyJgB87MBafo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=s/V8YrwJWQ9Cg+vSnyJZyuhrcf78c5sn4QTQjgjxzEMyJJgb2cXh/cgN1sHRkLJZNqRas+Yaye6rqHUFAqju6bk0WlABNxHYgehzXJSJ84uim8mY1j6nzm5NYqYS7Dy5FTFlSAu8aaLGOIbOzm+m7x69AGplaDwWV4nY53HuDm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4cLhSS4nlfztTS2;
-	Tue,  9 Sep 2025 19:30:00 +0800 (CST)
-Received: from kwepemo500015.china.huawei.com (unknown [7.202.194.227])
-	by mail.maildlp.com (Postfix) with ESMTPS id ECCED1401F4;
-	Tue,  9 Sep 2025 19:30:55 +0800 (CST)
-Received: from [10.174.179.92] (10.174.179.92) by
- kwepemo500015.china.huawei.com (7.202.194.227) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 9 Sep 2025 19:30:55 +0800
-Message-ID: <a52708a8-cb3f-41bb-b73c-7d19f4830709@huawei.com>
-Date: Tue, 9 Sep 2025 19:30:43 +0800
+	s=arc-20240116; t=1757418240; c=relaxed/simple;
+	bh=bzYW/2+6ziQYO/MhfFB8b91odp8h4JDkOKF1y8eNN/8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=huZreNJgPliq8oRFfQ80KrciHgh48Kw5jZ5iBtO/K0SXsBu+PBLp9nNiYPgomJ5yyM726WBGCNuwHmtVU1+Aa8spWg/8+p0JBewrG/CHk5KY3DAY6i73EuyWUs3IqMWVOfuh5sLuyTvPQVv/PpK49w9U1J8pDvBJiOhcJRg54Mw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AoNor/uw; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58983e6L007450;
+	Tue, 9 Sep 2025 11:43:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=DDS150b9tFWsg5idldMaLWjPQsOUmj
+	jRGObpNZw9oaY=; b=AoNor/uwwrRMpNedQcipDoAB5APcAEYurQ0wF//WiYT/hf
+	v9ZAPyfP0apkN0gci8MYevw7nciayx991n3abwLBBVH96GWeognXlKAHUy5wgl9a
+	UTTj8Labja86Fc2L+GZp4Seq8RVHjSOWDTdz0kbF6lOQp2Kfmot4lTcfeOagwI1n
+	oLHjTcnXqOK1RoPYrJHrmQRzV0Xc6lpJCAFWrrTzkNgYFGmuaMpC1IzEIyMEdNn/
+	SwNlaQO1aIy8MoC/cXG+jMhcqUl1XLPiiIJ33R1e3aobZ9mUbUvRr5qXjFDsOpUY
+	n/ElBcfKDgep4a+xRhG/i8D6exRNTzGiKXR5YpZA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490ukecm5t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Sep 2025 11:43:52 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 589BhqLs006948;
+	Tue, 9 Sep 2025 11:43:52 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490ukecm5r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Sep 2025 11:43:52 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5899vVcH010604;
+	Tue, 9 Sep 2025 11:43:51 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4910smttyu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Sep 2025 11:43:51 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 589BhnZK18874694
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Sep 2025 11:43:49 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 780F720043;
+	Tue,  9 Sep 2025 11:43:49 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3245D20040;
+	Tue,  9 Sep 2025 11:43:47 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.109.219.158])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  9 Sep 2025 11:43:46 +0000 (GMT)
+Date: Tue, 9 Sep 2025 17:13:44 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
+        tytso@mit.edu, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v5 09/12] generic: Add sudden shutdown tests for multi
+ block atomic writes
+Message-ID: <aMAS8CR3taSIpmYa@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <cover.1755849134.git.ojaswin@linux.ibm.com>
+ <2b523de842ada3ac7759cedae80485ae201d7e5d.1755849134.git.ojaswin@linux.ibm.com>
+ <12281f45-c42f-4d1e-bcff-f14be46483a8@oracle.com>
+ <aLsYj1tqEbH5RpAu@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <674aa21b-4c47-4586-abdc-5198840fcea5@oracle.com>
+ <aL_M0X9Ca8LgTIR1@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <ab2ff75d-12b7-472b-897d-d929518e972a@oracle.com>
+ <aL_s_noWRd3rw_6m@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <d9ca22fb-f833-422d-8214-44117aecd68d@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ext4: increase i_disksize to offset + len in
- ext4_update_disksize_before_punch()
-To: Zhang Yi <yi.zhang@huaweicloud.com>, <linux-ext4@vger.kernel.org>
-CC: <linux-fsdevel@vger.kernel.org>, <tytso@mit.edu>, <jack@suse.cz>,
-	<yangerkun@huawei.com>, <libaokun1@huawei.com>, <chengzhihao1@huawei.com>
-References: <20250908063355.3149491-1-sunyongjian@huaweicloud.com>
- <ce8aab6c-fcea-4692-ad75-e51fa9448276@huaweicloud.com>
-From: Sun Yongjian <sunyongjian1@huawei.com>
-In-Reply-To: <ce8aab6c-fcea-4692-ad75-e51fa9448276@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemo500015.china.huawei.com (7.202.194.227)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d9ca22fb-f833-422d-8214-44117aecd68d@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA2MDE5NSBTYWx0ZWRfXyU+kCtzU5VA4
+ zu1yQ7pb6MByzCGXxnwwkzefzz8lfZWpVd0FR2UULbexU8II0OhxwWgnPPO00+bIfNgPVveExAn
+ UPPzR7zco6JTO0S6d9lhM0qviL59CVPuZ1N0SYMURTfv9SE11yDHRKABM/uZo4sPQuUZCEExqzi
+ 2SbTPupTPO2yBJLojtsmkh8/ebW1Twf4DbKhfl3QmHNGk9DujkZZIAGFmOBYMkA6PfVEDZNk7lT
+ NiwGEMNJXVMF5UONVanYtqc6LQuprFrhycMDmUQKb+A46OHmnot9FQwiiuxBEorw9luhFlBHbyt
+ pW3SZNeewoP/HCR4HmWbQ8F8wgws/oY7Y+Sn8at9JOKIa4d61DviqpGHo2St0n+MJfO949wGNPY
+ WUtT5ZcI
+X-Proofpoint-ORIG-GUID: dqJzIXnISoWsGc_c-1qEQkxNDKejV1G2
+X-Proofpoint-GUID: ltIWUq0aJiGhmh20SNXsNlZb1qKhRWQt
+X-Authority-Analysis: v=2.4 cv=StCQ6OO0 c=1 sm=1 tr=0 ts=68c012f8 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=kj9zAlcOel0A:10 a=yJojWOMRYYMA:10 a=tf6MFKNmIk4QXj8bDuIA:9
+ a=CjuIK1q_8ugA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-09_01,2025-09-08_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 malwarescore=0 bulkscore=0 clxscore=1015 adultscore=0
+ suspectscore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509060195
 
-
-
-在 2025/9/8 15:58, Zhang Yi 写道:
-> On 9/8/2025 2:33 PM, Yongjian Sun wrote:
->> From: Yongjian Sun <sunyongjian1@huawei.com>
->>
->> After running a stress test combined with fault injection,
->> we performed fsck -a followed by fsck -fn on the filesystem
->> image. During the second pass, fsck -fn reported:
->>
->> Inode 131512, end of extent exceeds allowed value
->> 	(logical block 405, physical block 1180540, len 2)
->>
->> This inode was not in the orphan list. Analysis revealed the
->> following call chain that leads to the inconsistency:
->>
->>                               ext4_da_write_end()
->>                                //does not update i_disksize
->>                               ext4_punch_hole()
->>                                //truncate folio, keep size
->> ext4_page_mkwrite()
->>   ext4_block_page_mkwrite()
->>    ext4_block_write_begin()
->>      ext4_get_block()
->>       //insert written extent without update i_disksize
->> journal commit
->> echo 1 > /sys/block/xxx/device/delete
->>
->> da-write path updates i_size but does not update i_disksize. Then
->> ext4_punch_hole truncates the da-folio yet still leaves i_disksize
->> unchanged(in the ext4_update_disksize_before_punch function, the
->> condition offset + len < size is met). Then ext4_page_mkwrite sees
->> ext4_nonda_switch return 1 and takes the nodioread_nolock path, the
->> folio about to be written has just been punched out, and it’s offset
->> sits beyond the current i_disksize. This may result in a written
->> extent being inserted, but again does not update i_disksize. If the
->> journal gets committed and then the block device is yanked, we might
->> run into this. It should be noted that replacing ext4_punch_hole with
->> ext4_zero_range in the call sequence may also trigger this issue, as
->> neither will update i_disksize under these circumstances.
->>
->> To fix this, we can modify ext4_update_disksize_before_punch to always
->> increase i_disksize to offset + len.
->>
->> Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
->> ---
->> Changes in v2:
->> - The modification of i_disksize should be moved into ext4_update_disksize_before_punch,
->>    rather than being done in ext4_page_mkwrite.
->> - Link to v1: https://lore.kernel.org/all/20250731140528.1554917-1-sunyongjian@huaweicloud.com/
->> ---
->>   fs/ext4/inode.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 5b7a15db4953..2b1ed729a0f0 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -4298,7 +4298,7 @@ int ext4_update_disksize_before_punch(struct inode *inode, loff_t offset,
->>   	loff_t size = i_size_read(inode);
->>   
->>   	WARN_ON(!inode_is_locked(inode));
->> -	if (offset > size || offset + len < size)
->> +	if (offset > size)
->>   		return 0;
->>   
->>   	if (EXT4_I(inode)->i_disksize >= size)
+On Tue, Sep 09, 2025 at 10:04:09AM +0100, John Garry wrote:
+> On 09/09/2025 10:01, Ojaswin Mujoo wrote:
+> > > you could mention "shutdown" also in the print.
+> > Umm, do you mean something like:
+> > 
+> >   "Starting shutdown data integrity tests ..."
 > 
-> Hi, Yongjian!
-> 
-> I think this check also needs to be updated; otherwise, the limitation
-> will be too lenient. If the end position of the punch hole
-> is <= i_disksize, we should also avoid updating the i_disksize (this is
-> a more general use case). Besides, I'd suggested updating the comment
-> of ext4_update_disksize_before_punch() together.
-> 
-> Regards,
-> Yi.
-> 
+> yes :)
 
-Hi!
-
-Thanks for the review! I agree with that and will send out the v3 ASAP ^_^
-
-Cheers!
-
->> @@ -4307,7 +4307,7 @@ int ext4_update_disksize_before_punch(struct inode *inode, loff_t offset,
->>   	handle = ext4_journal_start(inode, EXT4_HT_MISC, 1);
->>   	if (IS_ERR(handle))
->>   		return PTR_ERR(handle);
->> -	ext4_update_i_disksize(inode, size);
->> +	ext4_update_i_disksize(inode, min_t(loff_t, size, offset + len));
->>   	ret = ext4_mark_inode_dirty(handle, inode);
->>   	ext4_journal_stop(handle);
->>   
-> 
-
+Sure, will do thanks!
 
