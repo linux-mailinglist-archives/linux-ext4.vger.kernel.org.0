@@ -1,242 +1,353 @@
-Return-Path: <linux-ext4+bounces-9863-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9864-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71012B4A6A1
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 11:06:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A522B4A755
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 11:19:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A5731881671
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 09:05:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 426683A3255
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 09:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B73F277CA5;
-	Tue,  9 Sep 2025 09:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC7A286890;
+	Tue,  9 Sep 2025 09:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="hfpguPds";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="nGxm0ht5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bpk2jstY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABDF24166D;
-	Tue,  9 Sep 2025 09:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757408665; cv=fail; b=Qh1npoSmeQoroMy50ndAE8je2Q1WTEU/bqwvYTRmcqMFSIhaQHxCxtEXwONk1FMAexL2RmlvyES2+LxSZDOUPTQBbVTc3p0NgOnSEgc3Wo6z7d45D/0pxIZIlPZ3l0URxqMYoeMV5t+S4VW3HBU9nVmlG/Csj6WDbVZtZTgHx78=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757408665; c=relaxed/simple;
-	bh=N6VPoRX8dlO+n1IAv/c1KL2CmJYaiXDfnOfFKPQFDYE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=lojoooQt9sBR0PlBev4quHVFtfRLOkI4Tz0BOx2Nt3N+vLAeDXzNYLQn1fUo6xH181ywQkD7N7yPioOE9Ul/ht5eYKWoltDonwIQlBAkmCBCCEJ8XVaTR2qrP233x1nB2K+xT/JJpqIYReV7SMxsiXSGuEfg+WdmU0tkdGWr22o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=hfpguPds; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=nGxm0ht5; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5897frpa031618;
-	Tue, 9 Sep 2025 09:04:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=6Rc9uEz6DRgAZC968bJRn32Ee/VdISmNBog73P9Iux4=; b=
-	hfpguPds3pk78jG15stitZTNa+HC0OCp5Le3eWT9dJa1Dx9S+CRvz/VjvqrlO363
-	2uCd9Sc3wcPXIAbn0SzXtbgqPdsMPsdubnn8c0TzkOU4MISdawTdqanfXhwXObIb
-	bTuSIaF0tj4aV7NzcE77ujCjCEGIZoyprh51mS6Xf0Ia4nyYjLP1Fu7NIyWM1G1Z
-	ts3cIraUvVdthYNUbKcG20L6jy2nErthwcc3lrS/Vb8miIrb6AAYAbY7qjXOzI2T
-	YZTX/bRAIHG4dRXCy7bxLsavFHaNdm7ULqnh9rr2IvT59OVrCIU3RysiNp1UC0xv
-	ih+ZhwNcRFLyDPS1JbvypA==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4921m2shp9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 09 Sep 2025 09:04:15 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58990BuB026041;
-	Tue, 9 Sep 2025 09:04:15 GMT
-Received: from ph7pr06cu001.outbound.protection.outlook.com (mail-westus3azon11010057.outbound.protection.outlook.com [52.101.201.57])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 490bd9bd9w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 09 Sep 2025 09:04:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mzWvEkAxA2KhakgQiS5Vaju6TWxns+3dECM+bsg/hZW5yteXUSjBSIQiTTa2Rsp2ry9soIK6sm6cGJ1olG1GNB7g3voypkhp1Xnxvtrp3xMdDbuhxxH5RbWkL1PSg7HpAaMBVQUtyhm0SwgSPZSo/yG8ywndr2fAbxaNS2mJD4DWgSbbodQ1QuY1uk0hNa5j5fPVxmgTtebuZJtel/i6QoRi2132XCMAnuDAtRy5PDw+bdsnbC1sKjRYpx2JooSXx2sik0sTMapotWu5tbALycvqT09gy11lAUZokgEdltJepJ4i6GWYetKQScFvk5pOoUyXQFrotHHYNbCnxhjtbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6Rc9uEz6DRgAZC968bJRn32Ee/VdISmNBog73P9Iux4=;
- b=Og31NhbkYsl3QgLIhqkum+q+vXvmxEQ0oUD5fVnNDm9DMP/zCwaOVBbbEeHIeZqFpPH3EBabrMayDgu0La/XVkY731IASy5vGBPHD+aARmligLRxWtUlHqdbIGmE9f3uQLhTJEbM/xdtgsX3rknUsO0Lf3C0VQGPZdN8g3idunad3q14HyLwFDUrXtEU6wJQKRtCJGz20/uvGpC57f4xViZcl8L6s1kgLgLn321bY/SokjGyhQ5SidFJ3jgxPKyyFYmXnxdPAfpuiOGrfcrcXBdBjj5VLnDEHPJCrjcwrhkn0ptiaHq8cJqfEqdVEFU+7Omz0TZpc5j7pxYBohTfHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349FB285061;
+	Tue,  9 Sep 2025 09:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757409245; cv=none; b=n1K7E1iV8XBkEnWO0I5bNLztp528I5EUD2aMV6D+DWGAIHRrdfDdrQZRHDb2+6S8I3qL1ytZ0bwLcYpX9fQmfpqXTpAQvGffi+inE46RTwqjp6nNb/bCgn9nW6gRwRPf6qZ/DCTnKcycsnEUkerGaOBTmmkRfR2SUhlBaac7KqQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757409245; c=relaxed/simple;
+	bh=m7+EjSEw7wGjGIHmJWC2yW7fI5jbNMbgdH73UJbKpuE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S1aWp/abLHtI57ZmWAmpLkT/IP2j/d0i8zBaWKOl/lKm4qBQSwaHF87X5zqYLxboAlq2h4t0bDcfbfP7Aoz0GQL9Fcl4ILj1uCksXOw63KciU+gXIaLbLxHfvvAfqDxwqIJyCVdXCAoqAeJqabCgPOY//NfqmDUcye9XJ7cfCCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bpk2jstY; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3e2055ce973so2851446f8f.0;
+        Tue, 09 Sep 2025 02:14:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Rc9uEz6DRgAZC968bJRn32Ee/VdISmNBog73P9Iux4=;
- b=nGxm0ht5cgOSBN/0fyO6cr8rv/Stf920h7eirDTJ71ncgdyqlikXrz3z9WQoiLnIUWPGycU6QPRjoWBRpvrbY35cFKBX1EjILlgSaO4d65rpp9W8cMC3eQooJP8vUyHwC6FVZrAyamti741T/3keT5ZSh/HrCJGduuGBwO2796Q=
-Received: from MN2PR10MB4320.namprd10.prod.outlook.com (2603:10b6:208:1d5::16)
- by CH0PR10MB5194.namprd10.prod.outlook.com (2603:10b6:610:d9::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Tue, 9 Sep
- 2025 09:04:11 +0000
-Received: from MN2PR10MB4320.namprd10.prod.outlook.com
- ([fe80::42ec:1d58:8ba8:800c]) by MN2PR10MB4320.namprd10.prod.outlook.com
- ([fe80::42ec:1d58:8ba8:800c%7]) with mapi id 15.20.9094.021; Tue, 9 Sep 2025
- 09:04:11 +0000
-Message-ID: <d9ca22fb-f833-422d-8214-44117aecd68d@oracle.com>
-Date: Tue, 9 Sep 2025 10:04:09 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 09/12] generic: Add sudden shutdown tests for multi
- block atomic writes
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
-        Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
-        tytso@mit.edu, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-References: <cover.1755849134.git.ojaswin@linux.ibm.com>
- <2b523de842ada3ac7759cedae80485ae201d7e5d.1755849134.git.ojaswin@linux.ibm.com>
- <12281f45-c42f-4d1e-bcff-f14be46483a8@oracle.com>
- <aLsYj1tqEbH5RpAu@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <674aa21b-4c47-4586-abdc-5198840fcea5@oracle.com>
- <aL_M0X9Ca8LgTIR1@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <ab2ff75d-12b7-472b-897d-d929518e972a@oracle.com>
- <aL_s_noWRd3rw_6m@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Language: en-US
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <aL_s_noWRd3rw_6m@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0209.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:33a::16) To MN2PR10MB4320.namprd10.prod.outlook.com
- (2603:10b6:208:1d5::16)
+        d=gmail.com; s=20230601; t=1757409241; x=1758014041; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ka25j5M/VbSSUXNqqPV03aOJpdPrHGb9SiYreXMkqJ8=;
+        b=Bpk2jstY5zuP37nF8l7UqQOCigOraPRHY69F/+phDm1wcB/gq4+CbvdS/0qtiTTH7J
+         epdO5sXKiAND7nMRJbAFju3g8gInAzpp0ialFwamkyYx5bJ+anAIvvw7tCLmEFhMvs+9
+         sqtPASGaZATxpMMY5w/RVwxlek0PXMGRb1HGXoknM0JBx+miEBusVfM6lfcObmOlZ83s
+         RRBNVVrCv8DTOF7imuJYD4x4GEjDHIvyMYqr9bTbnCPR/U2nTNJINrSyQCuf4dZKztgI
+         uwjdd0P4v2v2fiCgs/mu6zAJuXjm+CYpmya6oMkEO0SsAQpaLbq/q0/W41FF7boVs022
+         JQCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757409241; x=1758014041;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ka25j5M/VbSSUXNqqPV03aOJpdPrHGb9SiYreXMkqJ8=;
+        b=b8p5DWDIyj/qVk0kGSs5VUMhtzezJaUFIzr5VCdM/Q2U1rkwIwc6ArWZb+/VoyElrQ
+         NqPO+2arlvDmY8zkjsU+Tq98hqLpFJn6dZRwyVYqQRHt2wuUKQnlACXIK5R20Lip9kDw
+         KxvQQN53SvnXRK07ujfr0ben5kFnuHM/ccCry7mb6+gi4eO8sEcHcwr0/uDYlxvnUMCe
+         WisuOQViMeBk8//j3PSI2VbuJWr3fS9aZVL+OLeMEEeMjFkyENfHRT9Fh8GU3O0bu6We
+         Tkr5VdrsUUTfMf5JhObFqDGCkBcYIHdIB80Bf+em7Zw83jhk3y8/8TcOJJl49sOowarC
+         MEfw==
+X-Forwarded-Encrypted: i=1; AJvYcCU94cAEpFe0SJd3vgxFJ4GvlfyXtBWSRWarhkqbxp7b+OGkc/2Z2C3vEDKHrIzy2s48uzJuQa4LxxvMztH6@vger.kernel.org, AJvYcCUdURounKsD6rLR1B+m38A47VUHXKBsVNbCCL92LBtGSSWU+tUPyjMXLR8734wbilCpLp8PFrWNoYl9@vger.kernel.org, AJvYcCV8QOnHEV0EmyZ8d77vmadrH5OSHiMMvxYeGX5mqFrVJKKorCry5GSDcVSW+2gc1POk20NCIL2hneFuTQ==@vger.kernel.org, AJvYcCWuYNcO4udHCSZpzQHSHQuQiB8JVgTDDXVPZBqqZ+bQTC1R2CV+4T3aP1Cbd4ASP8370cBsWgpBdkZ1lmcv2A==@vger.kernel.org, AJvYcCXfOG4t4xy34riLZDUeUmMxnZLWhARi5px58cvMz10uxzo5Rc9c7IEBJVS1vS4akKnZ3NoQlYwGawJQPA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2vpHp8NiSjlVFhtmsUeAaRzBDNI2IsTtyikNZ39yTlX7169bA
+	rlJVHZ3tw7quVbeKOrzI5YLoCLHcusJahW36ManFExoFRyzuXCwwMGRC
+X-Gm-Gg: ASbGncue0soLG5EXXGYx1+7eLcUXvv9vLmeIRZwz6zybVTIlvbabJuu0vule8oXSAPn
+	xI3WeSIQmvT9h2BF40SP9HdoCNsUHy5zzDFo+8Cd98Ekdo+LbTHLgXA1L8GzW7PkXMQwAoq4lm1
+	J4uyK7EbdwDOuTyGtHOZUKxfp77p9+wbs7089GeWvZB9GGSyIUFhpGJriFFBDVSgFNQD4YbTv8y
+	V+sdyW/q0xBUls6sSsfT+rJvHM34qTkW7oHfE5he7+b1CpoDOezWScPuIzr8fnSRiQTXi2BQ+IV
+	3VNX5K0wxpBVLnm8x46FKnxLoGP8g7wJz/Jhsq7JXMDtH4Ii0L+kWgS1h2uD/gluwPzMxeIVNKQ
+	LRa97wukdrmm6YPy402Smd+c7VW4XBV27giHSxFPftYECMx+jODw=
+X-Google-Smtp-Source: AGHT+IHFEehIPgdcNTbNx4qOhQtSRG+TRsytb4QDyjjp512DHDqKl5O00OUvTsgL0ex7EVMGQT0V4Q==
+X-Received: by 2002:a05:6000:22c3:b0:3de:78c8:11fc with SMTP id ffacd0b85a97d-3e6497c0668mr9444917f8f.63.1757409240911;
+        Tue, 09 Sep 2025 02:14:00 -0700 (PDT)
+Received: from f.. (cst-prg-84-152.cust.vodafone.cz. [46.135.84.152])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3e7521bff6esm1810784f8f.13.2025.09.09.02.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Sep 2025 02:14:00 -0700 (PDT)
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	josef@toxicpanda.com,
+	kernel-team@fb.com,
+	amir73il@gmail.com,
+	linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev,
+	Mateusz Guzik <mjguzik@gmail.com>
+Subject: [WIP RFC PATCH v2 00/10] i_state accessors + I_WILL_FREE removal
+Date: Tue,  9 Sep 2025 11:13:34 +0200
+Message-ID: <20250909091344.1299099-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4320:EE_|CH0PR10MB5194:EE_
-X-MS-Office365-Filtering-Correlation-Id: 339c2d5d-e171-4ae6-b50e-08ddef7fd7bb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?aXhSQVE3ejR5VkQ1MGRHTTdqOHM3aFBtR25CQ1JZRzJkdGF4MXZOMHVTRzhL?=
- =?utf-8?B?S3EzU3hrbzJ0eTZrU2J3MGFtU280Mmw0SG92VldKSWFlQzhwMkdTVWkxa1FY?=
- =?utf-8?B?K0VRaHlQWjFpaGtoZkdKc2tsaVRvNDZiY3BqNFdZUVlRbW5KZFlxYlNta0I2?=
- =?utf-8?B?SXRzS21DcDZtRWZPeUNvcCtDdWFFTzZEeTd0VjVmUk1kK1BTMGFhUzFOZm9X?=
- =?utf-8?B?YWdPeGlxT2RuMmtpQVVjOGR0V0xtWEhNakRLQTFFSzdQU1ZXM3oyZFpLdHVu?=
- =?utf-8?B?WEFiUnNxRkZ5TmE1TWFUdGhodnNvS3AxYTVESW5jeXNVU0FvUzlyTTN1cFVo?=
- =?utf-8?B?TkpaR0xGeHViNHFoQWJiTkVXTDh0TklDc1FQYmhHOVZ2ZGloeXI5N3RweURr?=
- =?utf-8?B?NDFBaE1PUW5VUjBwS2dybG4zNnVEakRzSzlqcE1DQzVkT1VIMTNNai9scnJ6?=
- =?utf-8?B?eFRGd21iTXpOeUVxajN0SlZvbUZ0WVBreStEVlphcUNsZHJzdjVMYm5tL2s5?=
- =?utf-8?B?UlhZWWZPSGdrL1VqZ3FJRWtMZE9ORVhOSXJlMTdGenVCZmJXSjdjQVFwL05D?=
- =?utf-8?B?dm9WbzdYS1NCa0psei82VGRPL1hzSjdPQ28rbjZIakE4cTYzaUQyWmw1d3ZN?=
- =?utf-8?B?Z0xsSEg5YUZzSDcwYzFWa3Q1VzFpVlBOVHJ1YUM4eEFWMGZBN0NOaFg2Vzh2?=
- =?utf-8?B?R05FWHJNU1hjWlhrS0hVRnRvZm11aHVNQUNrVnQvVEdWQzhMYi9EZVRQUDhY?=
- =?utf-8?B?d0RnL0hDdU1JVi9BMktFeksrMkJ5aXpDR3dmM2ErSWY1M3FSbktCRnE3bFRH?=
- =?utf-8?B?bm5yeHc0T3lLeE42eG92RHJ5dUJod2tjN2RmTU15ZWpLYmhSR3ZaZ2dvUmM4?=
- =?utf-8?B?SzE1NmJvN2d4QmF3UTVHUHc3WW1EOU0yZ3FqbFVpY05SQm9NKzBNSkJGTG5B?=
- =?utf-8?B?S0NJaFdvTkwweDJEalV0SHBEK1N0OEtKYXJVenh3aERvZkNSYnJHQUt1QU56?=
- =?utf-8?B?eHpObk8zbVRSQzVLV2R6b2MyWU4wbnhtM25PRHNrMFNBdXpWb3d0UnBnbjd4?=
- =?utf-8?B?bndjeGV1YnhUOEp2ZVJQSWRscEgxcWRsWXlwTlZwNGg0MDdDVFpQdTlZMWJw?=
- =?utf-8?B?Y2VNWmw1OWszc1J2bkZ5aEU3cERHMitJWjJPc2l2OWRSdlFXeGtLb1JJK0hF?=
- =?utf-8?B?SENSWWZSYlBrWkN6cG16NW5BUFE4Tk9WWjZndnFxRDZONzY5MDhOamM1MW5M?=
- =?utf-8?B?L1o2VmNNYTYycHErN3E4SVVkOUZyR0RlU3Nzd2xYaW5YMFpOeGNYbmgxTFo1?=
- =?utf-8?B?eW1MZjllSkNWUWtPV3cwWkIyYlYweTNONFo5VHR6S01hRjNZOURNZ05mL2kr?=
- =?utf-8?B?RHczL3VGeHRpdFZTNXRwSFY0ZXVDcHpNZXJCT2xyMi9KdUFkSGpVVkhZYXZx?=
- =?utf-8?B?SFExKzJyY0NLVC8xRWdxVUJWUUZPanZiajRLUDFyT2RkRGdvYUVUbGZFVS9m?=
- =?utf-8?B?VTd1TTdOQWJKWUpjelM1MDlxK1Y4dkJDVDA2UE5Zc3ZQMmpBRExDTWNmbTVl?=
- =?utf-8?B?SFA0bVJ5R0MyVzVsTzlhUGpPcFN1ZTJLaWZ0Wm5jR0pMZzV1bVBRa1I0Tmg3?=
- =?utf-8?B?ampvNHhwemlNMFRra0xjc3ZqdFRkcmQyUE53Zkl3NnhMSWlnMmJQYmlsTkhS?=
- =?utf-8?B?bkRheTYvT2ZuekR6WDlia3pOZGxCbnpVQW9tYnNIVXR4YmIvd1pRSFVPb2dX?=
- =?utf-8?B?alZIQVdUdmkzTWJXSml4U05NRE1BN0Q2TlFEK2VsWFVONVBxM2NZK0dxT0Nr?=
- =?utf-8?B?Ly9kOHFLTHM0MTdWZ0drWjFDUnJqWjFoWHhuU1RZUzRMa0FVNkxHQklXMWRP?=
- =?utf-8?B?WnJldGZzYmY4aVhvaTR5eGtuOHUwdjE1VGxkNFYzUnBGRlNPRGJMdEUwb1lw?=
- =?utf-8?Q?vFKT0OJ1Tz0=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4320.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Y1diWUdFS2F0NlM4STI1dVZ4a08wMjBaRjZPV2Z3NWtNdjc5a0Q5bzlvcGYr?=
- =?utf-8?B?cThhZlh3NGkzbE83eWFKeUlBc1ZkYW5aNjhBUHgrYkdNVG1qOHVWWGZLZERE?=
- =?utf-8?B?Mk5uNGxYZmZFczEvNXhqZVZTZXZobnk0d1kwTUFKZURGNXYrTEJ2VEIva3Er?=
- =?utf-8?B?LzRLcDI1bnY3SmxYa0NzRCtNVkNFSjZOenEwM09HOXN0QU1hMmd6dUl2RHI1?=
- =?utf-8?B?ZXAvb05kSUV5MGVVa2dRYnd1OUZha1lLcU02TXB6bWxuSldYaDliV3pFdGpR?=
- =?utf-8?B?SDlKTm82bzJ3QjVISys1Y1QvekpIcVUvWEI2ZzVwTnExaHZ5NzBoRnZYZGxL?=
- =?utf-8?B?SjczYVJ2c0svNW9CZlVreGxiV1Y0bE16ejIvUUVCMklzYVhaSmVLK1hxdEQx?=
- =?utf-8?B?eDFSVXFNeStuWEg5amx2MDlxVW5OREh0Mmo1dWhyL0xMNUo3T1p2ZHZ2OW5N?=
- =?utf-8?B?UWRUVzVpQ3VzTjl6NkExRE95TENUSHgwOGIyUEhLQ21qV24xVnM2R1czNGhX?=
- =?utf-8?B?WWpXZWMxOHV4cy9GUERUT2UwTkhrdEMwbExaMFFZSGs5enZHbHllNHQvR2dQ?=
- =?utf-8?B?aFBHTTZURDJ6dW1PbmxIOU1ZTzVuUGRCUml0NWt2a29wcGY3cjlPY0doQ0VQ?=
- =?utf-8?B?cHpISmlqdjM2K05WKzV5WUNXNEcybFdsQjQxRmxTNEg1TVArVlRta1JqbjAw?=
- =?utf-8?B?QS9kd2tmZDY0SWRiNFRVdkxSSllPODltaUlDQk4zRm4wOGNLS1BISUFMSDR4?=
- =?utf-8?B?clNPZlRYay9UakV0Z0tBdTBDTVhQVHZpUllNMGFwcUIzQjg2L2pBQWxYbDE0?=
- =?utf-8?B?WURQbkY3eWdBUHBrZFBvT0tYTkR2Y2hBcEpaOXArdWl5R0NqSFNoQklwQTlh?=
- =?utf-8?B?NnpzRnRWcmZJdlY4NXdPeXNwVktPbU50Zlo2MWFQRnVWOHJmYVVHWVk5NHU1?=
- =?utf-8?B?Q3BWNHlMVWVKNWx6amt4N21aeEJLVU1hYUk4WjZPc0hmWjFVMTBIQkVLbG1C?=
- =?utf-8?B?QWdRTE1NMWt4Q1hreFpLSzdLcngzL0tlaVRoYk9tdWk2R1ZpaUpQdnJRd1Fu?=
- =?utf-8?B?MlRGRmorS2p3L0lWN0pUYlVIV3RCU1RXOWNzc0JpVlFIRXR1L1oxWmRsZUVy?=
- =?utf-8?B?S2VqTVVJdHdKU3N3bzFmV2w4a0RwVE5Vc2IyQ0hKV0lWTkk5eXU5N3hPTm1x?=
- =?utf-8?B?ZzV0dFdsZnJHS0ZJemdOQ0Z1bkZiSGI3UFZERXFMdDZSMGdxMFAwUnpEY1c1?=
- =?utf-8?B?T2s0T0EwQTRIM0U0b3dKK0RScXFwREYybTFDTzRicGd0WmIrbmNjU0sxVXo3?=
- =?utf-8?B?MkFYWlI2SGNCR1FRNUh5YS8yV3RBNzY4ZjZtUFg1WFBxc0lQaGs4dUt4RHNY?=
- =?utf-8?B?MjlGRnAxWCt2c3IzSzBFOXU3NmdzMEpqUmdGTHlLK28xMEUzNUhHbVFOeGZ5?=
- =?utf-8?B?Vm4rbjg0aUM0eThHelpZekN5ay8xVGNhdmVEQ1VaKzV4Vm5LbFF2Zk5taFov?=
- =?utf-8?B?MUI2NXRiSm9nd2d5RU1TMlF0UjFVQ0k2eEZVcTdVbGlDSEtLVGFEN3VIdTRI?=
- =?utf-8?B?Zm9TM0VheS9HT1dha2U3SGV1WS9ESWFxTW9ROWxYeHZLakNaUDBFTmYwWTBV?=
- =?utf-8?B?T0VkZityRGFHQkdUNURNNU5UZ2g3MXNCRnpjU3BrZ3FYVExVQytzamZraHky?=
- =?utf-8?B?QmxnZmMvbEFPdDVxRkx4d0hmTHFkdmZzT0QwME5mS1Fuekh3Q3pRVklKU3dl?=
- =?utf-8?B?RUNocmNqVmlWTHZKWmtlMjB1elVmR2hDZzBaUHBGRUdzNWNUbnMyWlAxSUVG?=
- =?utf-8?B?a3M1NllBQ04vb1pzMitQM2ZNajFzLzRUZGFoaXhUQUtQMlVEMVBrQkxaWGg4?=
- =?utf-8?B?bnovR3VLWGFBTGl5QnJ0OU0vME9IZUxKZFd3LzJhOXFVRjMvcGNabWZlN3ZI?=
- =?utf-8?B?a3krUlpCOForUTloV1l4TkNLUEVQSXR4K3h1cTFXRFh1WktQSzlXTDQ5MUdE?=
- =?utf-8?B?UVBmM1NqU2FDQmg5MjRwVllXK2hLcTZKUUxPNFBtWm1XQ2lJSFNBZVhCaFNn?=
- =?utf-8?B?a21PTkthN05XWGg0SEVyTng1VE01S2dYQ0d0RjdjcGJPRlZidjVlL2pZcWRW?=
- =?utf-8?B?NHhlNEtOYUs4Y0pNcExvaWc5ZTdtaDlsaUViUEZUdUtXMzBuTTNMSlBiMnlO?=
- =?utf-8?B?OFE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	3eTR5RRF0QT9SGm7lvZwCJ00deszNfmMjFYRyXMlO/eBOvQAKKhow0CsvLSf86vIyRammYBmPbyM/hwD5fx4WWWbd9i8G19e3oWwLV0Pm3OBs4B6JlmBbSza5mSYxtG1/KseRJ1UD7iS+6ilct/o0Y9aYz3fymOdtUnJbNBAm53WWPvSs1ETXu4P7dtJhLyqIQpD7R4N825sQ5vjFLJJUA9/1tT86c8vI16zPWh1fhfrtSa/nnetH2F0VE7MMvauke0c74+H55tsk38VhTfglSs/c8TYZNHDBZIYK6Q2MGhNjurxySgXpG5VSPa8yEXBFI2dneieUFjbI5fk9yEllMH1qlmu1USIrM1p6zr8rcEjumuYtCaNrLOHvJTyXIm+GAmVSUSfoUrCwpkRnDcGjh2Oh96TY/EfGqOakBN6SMR+Zw4dyNg3iugI5J6G7AnNdX+X1pYYNWb1yFo2IPqDknprdyGa29P3cOD10eAUeHz+HANnWTe9+tJcN4oorF5aRq7QZfuGKhfi7GVK8P1iFByZoIDfjAlsx9oth7LA96qPc1sHV988iznA03JKGMCoyfIC8yG2IYkH0WdQS/AUi/ResyfxwvLCp9DZtakDTL0=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 339c2d5d-e171-4ae6-b50e-08ddef7fd7bb
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4320.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2025 09:04:11.7365
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: V9d1rxtlEFtwv5aAIRJYB1ivby/wqvsp/l2o571LfyiXk7HdLiSJoLy/szRaR/lDtxVtSEGy3n1K0qBl1obNyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5194
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-08_06,2025-09-08_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
- mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
- definitions=main-2509090089
-X-Proofpoint-GUID: s4O4qSvPFCyiJcd-Xj281ijUjgd4qa2x
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA4MDE1MSBTYWx0ZWRfX6pAsGT9/OlXf
- mkYFFYs9y+OtOeryYzeoOjNbAYJnmx6AQm5bI61/AAcYfPKiLsnHGy1QPf09QbGlIPenOTf5KM1
- vODbnxWo/o/XFNdCGhjluPtyyqM2Dn3JvwNyRTBdn6aT1hs39YA4nl1bcNVXrIwB90LCpE1nOdt
- IxwEq0Or5hx1t+fyZtbRcVyGTu2S1/CVh3Fl8UyC301/+VV936sXbnM/WYQa9aJTWXiKKnV6E96
- YnRjiukLMTsnqBVtfOMbV/5cTJPR4ml0mT+nkYEvRqT8dxAokQG+vP6oMULwD8UY+wXVto0Nzee
- QHnJ/t2LTaJRLm1uI2V0sp+l8jXt/E3piVttlMmwinVyORcrMneHLDwLdMt1+uMpX+sXKZrfeJ4
- dQCBQUsoLmlmVjRMUSEmaE84y9nmhw==
-X-Authority-Analysis: v=2.4 cv=Dp5W+H/+ c=1 sm=1 tr=0 ts=68bfed8f b=1 cx=c_pps
- a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=yJojWOMRYYMA:10 a=GoEa3M9JfhUA:10 a=1YhPVNteCXYCGvVM6noA:9
- a=QEXdDO2ut3YA:10 cc=ntf awl=host:13614
-X-Proofpoint-ORIG-GUID: s4O4qSvPFCyiJcd-Xj281ijUjgd4qa2x
+Content-Transfer-Encoding: 8bit
 
-On 09/09/2025 10:01, Ojaswin Mujoo wrote:
->> you could mention "shutdown" also in the print.
-> Umm, do you mean something like:
-> 
->   "Starting shutdown data integrity tests ..."
+NOTE: this is a WIP not meant to be included anywhere yet and perhaps
+should be split into 2 patchsets.
 
-yes :)
+It is generated against against:
+https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs-6.18.inode.refcount.preliminaries
+
+The first patch in the series is ready to use(tm) and was sent
+separately here:
+https://lore.kernel.org/linux-fsdevel/20250909082613.1296550-1-mjguzik@gmail.com/T/#u
+
+It is included in this posting as the newly patched routine has to get
+patched further due to the i_state accessor thing. Having it here should
+make it handier to test for interested.
+
+This is a cleaned up continuation of the churn-ey patch which merely removed I_WILL_FREE:
+https://lore.kernel.org/linux-fsdevel/20250902145428.456510-1-mjguzik@gmail.com/
+
+The entire thing is a response to the patchset by Josef Bacik concerning
+refcount changes, see:
+https://lore.kernel.org/linux-fsdevel/cover.1756222464.git.josef@toxicpanda.com/
+
+I'm writing my second reply to that patchset, but in the meantime the
+stuff below should facilitate work forward, regardless if the refcount
+patchset goes in or not.
+
+The patchset splits churn from actual changes.
+
+Plain ->i_state access is still possible to reduce upfront churn, only
+some of the tree got covered so far.
+
+short rundown:
+  fs: hide ->i_state handling behind accessors
+
+This is churn-ey and should largely be a nop, worst case there will be
+failed lock assertions if I messed up some annotations and which should
+be easy to sort out. It covers fs/*.c and friends, but no filesystems.
+
+  bcachefs: use the new ->i_state accessors
+  btrfs: use the new ->i_state accessors
+  ext4: use the new ->i_state accessors
+  gfs2: use the new ->i_state accessors
+  ocfs2: use the new ->i_state accessors
+
+This patches only the filesystems which reference I_WILL_FREE. Again
+should be a nop.
+
+  ocfs2: retire ocfs2_drop_inode() and I_WILL_FREE usage
+
+Actual change, needs ocfs2 folks approval.
+
+  fs: set I_FREEING instead of I_WILL_FREE in iput_final() prior to
+    writeback
+
+Actual change. I_WILL_FREE still exists as a macro but is no longer set
+by anything. As of right now I'm not fully confident this is correct,
+the writeback code is more fuck-ey than not. However, figuring this out
+is imo a hard prerequisite for the refcount patchset by Josef anyway.
+
+  fs: retire the I_WILL_FREE flag
+
+Churn change to whack the flag. It also uses the opportunity to do some
+cosmetics.
+
+Onto the rationale:
+
+I. i_state
+
+The handling in the stock kernel is highly error prone and with 0 assert
+coverage.
+
+Notably there is nothing guaranteeing the caller owns the necessary lock
+when making changes. But apart from that there are spots which look at
+->i_state several times and it is unclear if they think it is stable or
+not. Moreover spots used on inode teardown use WRITE_ONCE, some spots in
+hash lookup use READ_ONCE, but everyone else issues plain loads and
+stores which invites compiler mischief.
+
+All of this is easily preventable.
+
+The ideal state as I see it would also hide the field behind a struct so
+that plain open-coded accesses fail to compile. Not done yet to reduce
+churn.
+
+Another step not taken here but to be sorted out later is strict
+handling of flags, where it is illegal to clear flags which are not
+present and to set flags which are already set -- the kernel should know
+whether a given flag can legally be present or not (trivial example:
+I_FREEING).  Setting a flag which is already set is more likely to be a
+logic error than not. If it turns out there are cases where a flag can
+be legally already present/missing, an additional helper can be added to
+forego the assertion.
+
+Practical examples:
+	spin_lock(&inode->i_lock);
+	if (inode_state_read(inode) & I_WHATEVER) {
+		....
+	}
+	spin_unlock(&inode->i_lock);
+
+This asserts the lock is held.
+
+But if the caller is looking to do a lockless check first, they can do
+it and explicitly denote this is what they want:
+
+	if (inode_state_read_unlocked(inode) & I_WHATEVER) {
+		spin_lock(&inode->i_lock);
+		if (inode_state_read(inode) & I_WHATEVER) {
+			....
+		}
+		spin_unlock(&inode->i_lock);
+	}
+
+Similarly:
+	state = inode_state_read_unlocked(inode);
+	if (state & I_CRAP) {
+	} else (state & I_MEH) {
+	}
+	...
+
+We are guaranteed no mischief and the caller acknowledges the value in
+the inode could have changed from under them and the code is READ_ONCE
+(as opposed to plain ->i_state loads now).
+
+Furthermore, should better lifecycle tracking get introduced, the
+helpers can validate no flags get added when it is invalid to do so.
+
+The *current* routines are as below. I don't care about specific
+names, I do care about semantics.
+
+/*
+ * i_state handling
+ *
+ * We hide all of it behind helpers so that we can validate consumers.
+ */
+static inline enum inode_state_flags_enum inode_state_read(struct inode *inode)
+{
+        lockdep_assert_held(&inode->i_lock);
+        return inode->i_state;
+}
+
+static inline enum inode_state_flags_enum inode_state_read_unlocked(struct inode *inode)
+{
+        return READ_ONCE(inode->i_state);
+}
+
+static inline void inode_state_add(struct inode *inode,
+                                         enum inode_state_flags_enum newflags)
+{
+        lockdep_assert_held(&inode->i_lock);
+        WRITE_ONCE(inode->i_state, inode->i_state | newflags);
+}
+
+static inline void inode_state_del(struct inode *inode,
+                                         enum inode_state_flags_enum rmflags)
+{
+        lockdep_assert_held(&inode->i_lock);
+        WRITE_ONCE(inode->i_state, inode->i_state & ~rmflags);
+}
+
+static inline void inode_state_set_unchecked(struct inode *inode,
+                                                   enum inode_state_flags_enum newflags)
+{
+        WRITE_ONCE(inode->i_state, newflags);
+}
+
+The inode_state_set_unchecked() crapper is there to handle early access
+during inode construction (before it lands in the hash).
+
+II. I_WILL_FREE removal
+
+Sounds like nobody likes this flag and even the developer documenting it
+in fs.h was not able to provide a justification for its existence,
+merely stating how it is used.
+
+As far as I can tell the only use was to allow ->drop_inode() handlers
+to drop ->i_lock and still prevent anyone from picking up the inode. I
+*suspect* this was used instead of I_FREEING because the routine could
+have decided to *not* drop afterwards. Differentiating between
+indicating the inode is going down vs just telling the consumer to
+bugger off for the time being seemed like an ok idea.
+
+However, the only filesystem using today is ocfs2, it always returns
+"drop it" and this usage does not even have to be there. Removed in one
+of the patches.
+
+Apart from that the only use was write_inode_now() call in iput_final()
+prior to setting I_FREEING anyway. This probably works as posted here,
+but there might be some fuckery to sort out in writeback to truly
+eliminate the flag. In the worst case it's just some work, but *so far*
+I'm not staking anything on the patchset being fully correct yet.
+
+tl;dr the flag does not have to be there, but there may be dragons in
+writeback (to be seen). No matter what, shaking bugs out of this should
+be considered a pre-requisite for any future work regarding inode
+lifecycle (whether the refcount patchset lands or not, imo it should not
+which I'll elaborate on later in that thread).
+
+Apart from that the I_CREATING flag seems to have inconsistent handling,
+but that's for another e-mail after I get a better hang of it.
+
+So.. comments?
+
+Mateusz Guzik (10):
+  fs: expand dump_inode()
+  fs: hide ->i_state handling behind accessors
+  bcachefs: use the new ->i_state accessors
+  btrfs: use the new ->i_state accessors
+  ext4: use the new ->i_state accessors
+  gfs2: use the new ->i_state accessors
+  ocfs2: use the new ->i_state accessors
+  ocfs2: retire ocfs2_drop_inode() and I_WILL_FREE usage
+  fs: set I_FREEING instead of I_WILL_FREE in iput_final() prior to
+    writeback
+  fs: retire the I_WILL_FREE flag
+
+ block/bdev.c                     |   4 +-
+ fs/bcachefs/fs.c                 |   8 +-
+ fs/btrfs/inode.c                 |  10 +--
+ fs/buffer.c                      |   4 +-
+ fs/crypto/keyring.c              |   2 +-
+ fs/crypto/keysetup.c             |   2 +-
+ fs/dcache.c                      |   8 +-
+ fs/drop_caches.c                 |   2 +-
+ fs/ext4/inode.c                  |  10 +--
+ fs/ext4/orphan.c                 |   4 +-
+ fs/fs-writeback.c                | 131 +++++++++++++++----------------
+ fs/gfs2/file.c                   |   2 +-
+ fs/gfs2/glops.c                  |   2 +-
+ fs/gfs2/inode.c                  |   4 +-
+ fs/gfs2/ops_fstype.c             |   2 +-
+ fs/inode.c                       | 115 ++++++++++++++-------------
+ fs/libfs.c                       |   6 +-
+ fs/namei.c                       |   8 +-
+ fs/notify/fsnotify.c             |   8 +-
+ fs/ocfs2/dlmglue.c               |   2 +-
+ fs/ocfs2/inode.c                 |  27 +------
+ fs/ocfs2/inode.h                 |   1 -
+ fs/ocfs2/ocfs2_trace.h           |   2 -
+ fs/ocfs2/super.c                 |   2 +-
+ fs/pipe.c                        |   2 +-
+ fs/quota/dquot.c                 |   2 +-
+ fs/sync.c                        |   2 +-
+ fs/xfs/scrub/common.c            |   3 +-
+ include/linux/backing-dev.h      |   5 +-
+ include/linux/fs.h               |  75 ++++++++++++------
+ include/linux/writeback.h        |   4 +-
+ include/trace/events/writeback.h |  11 ++-
+ security/landlock/fs.c           |  12 +--
+ 33 files changed, 249 insertions(+), 233 deletions(-)
+
+-- 
+2.43.0
+
 
