@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-9852-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9851-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A3DCB49FD7
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 05:16:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD806B49FD6
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 05:16:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3B444E2A84
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 03:16:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC019189F3A5
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 03:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDBFD27056B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB6342701C3;
 	Tue,  9 Sep 2025 03:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lPZK+sFd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VIr4dcmw"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7266D49620;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72634D515;
 	Tue,  9 Sep 2025 03:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757387751; cv=none; b=u29B2hkSgBAZBNaq5yTT9qMzCthDovmMKoHL0Omj9TqFDsVY66bAr35AgXwiHonZ/B4SVwWHIQxnPY53rhdP0nRxdKXUT8WayK2Pw3EdCBOfX44SKqi/b6Enls8+1K4vlrzTn0ebvwYJUE/OpN6HcBmdXKONocyVRw7Olne186A=
+	t=1757387751; cv=none; b=IISvuYuK6fu5+QwD9vnXJoZ+IcxFNyN1wnvl62Rh80i//Vpah2et+UNewzgyhzw4qNMPSDql+9g/muMGUqLr9VHydvuaCd21YyDLGKZbBOk5ebk0F/hKLnekPlha30vp0tnzpUe2RsRUhJknO40nutnsPdya46KssbP+g5hplgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1757387751; c=relaxed/simple;
-	bh=1fjgACFxa8qJDM7j3UWs9Km/opZNhb3lTBI8Xu1OGyg=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=iAEM3ZpSt4Gfdl3iZN4qloUgSTqyOvhA+81F+roxI9i3r/VNZrCkjwzxjd9UVgZwoefEnOHii+kTz91QI82LJBxx025zVJgYUUVK9u8PB8FvFowVnqvPtKyXk3YQvcMB9SkccEDysyd2RJ/bakguexo6MBqL5xMyfE077T0u03o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lPZK+sFd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 12E20C4CEF1;
+	bh=Em9j3bhCiPFenVEJinrsdXyI/7gV2Mevt9vg2PwMYaM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=lRw+St4I9eS99kEhzlPh6WTTfWe43t2rGYehEEkpui1Imb4ccnPSEGhuhLQy3ls3HvSsvrMdss+0/UIhSNLILsflSlAMhCBuNPSq3vp0TKvavBR/G9hKTY3WIHSM508j90pScA7uo0vuD6tRxjM8ObAH8/i7yfq9EOy2ohEXeR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VIr4dcmw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1D7B3C4CEF5;
 	Tue,  9 Sep 2025 03:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1757387751;
-	bh=1fjgACFxa8qJDM7j3UWs9Km/opZNhb3lTBI8Xu1OGyg=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=lPZK+sFdmWCt2gdXkWFz5T0bIvYG5qWPPOST4BppZrLBULjNX84ZIIkTUTQBOcBOx
-	 j2/mavPbrNTfXHdBBoYgIxuhA2bK3Y8/Xzs4+PEI7Nqtpcj2JQ3U2hdgPaTWarzXBo
-	 WBjd9G4jVp5c/2VYV/nzfh4U+nsPUvFGjjH8cDjeVuqKegvoQMAhV6iEPPUmTRIZId
-	 wZXP5+3A1VXAB/pdc56/4HZZwWse8374DQ1OOO/Ym3zx7hj6k8BotCLjxmLMQY94fd
-	 O3vq+tiSnTZAnzIvtP6EeF0u1InwDHDCHtFtJ+kqniT0LNEBw+hJvDIxADReThyv+c
-	 H4J2bNrCMlOAg==
+	bh=Em9j3bhCiPFenVEJinrsdXyI/7gV2Mevt9vg2PwMYaM=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=VIr4dcmw9V01qZOa2gJg8sZzkngYEMcJp++Z+LSRIqfzurH+dgYR+Qoctx1nKjItz
+	 3WPT+znMQ+v2Cj3xp/rcXxqHml/PKbBlMWviTNpcfV2/Tt/cDOKinMwVpikfmDC/x8
+	 i9yKtEKQeXiId83lIUW/UbonG3JqLXn3lbt12TkFhwqWRl8qEuOaBCXfOlR9O37WQo
+	 oHac9zi3g0PIUpFPCq2VdTt9yFBRuULHlY74OD5zhFSGyta9MWl7CO/a3XRN9S7xO/
+	 /bLcdsU+v0CyGnjQ6lakRb01XGI86Aqd8fIXZ4DQe8FxPoIs+1btj8ma69KqyLkyAW
+	 b+pALS/2g27og==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 001BCCAC583;
-	Tue,  9 Sep 2025 03:15:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E3A6CAC581;
+	Tue,  9 Sep 2025 03:15:51 +0000 (UTC)
 From: Theodore Ts'o via B4 Relay <devnull+tytso.mit.edu@kernel.org>
-Subject: [PATCH 0/3] ext4: Add support for mounted updates to the
- superblock via an ioctl
-Date: Mon, 08 Sep 2025 23:15:47 -0400
-Message-Id: <20250908-tune2fs-v1-0-e3a6929f3355@mit.edu>
+Date: Mon, 08 Sep 2025 23:15:48 -0400
+Subject: [PATCH 1/3] ext4: avoid potential buffer over-read in
+ parse_apply_sb_mount_options()
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -56,58 +56,91 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAOObv2gC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI1MDC2MD3ZLSvFSjtGJdY2Nzs6TUJHMjEwNjJaDqgqLUtMwKsEnRsbW1AC8
- hKOBZAAAA
-X-Change-ID: 20250830-tune2fs-3376beb72403
+Message-Id: <20250908-tune2fs-v1-1-e3a6929f3355@mit.edu>
+References: <20250908-tune2fs-v1-0-e3a6929f3355@mit.edu>
+In-Reply-To: <20250908-tune2fs-v1-0-e3a6929f3355@mit.edu>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org, linux-api@vger.kernel.org, 
  stable@vger.kernel.org
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1179; i=tytso@mit.edu;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1761; i=tytso@mit.edu;
  h=from:subject:message-id;
- bh=1fjgACFxa8qJDM7j3UWs9Km/opZNhb3lTBI8Xu1OGyg=;
- b=owGbwMvMwMH46Wdk2FTexsWMp9WSGDL2z37amhR5d7YIL+9tpcoppX+bO1z80w/2n7PLnzexJ
- SqUefrOTkZjFgZGDgZZMUUW7cydIbf/cVRqNJqfhBnEygQyhYGLUwAmwuDO/j/uTsW951WVn5d4
- fz1s0nN9tuzjaS9VRL8bRmw7u/DHrfLY5rl95qXrP78V+BW45nKWUPpe7cnbk1dkvK8Q/b/3jsy
- ZB/wKnD2CjgzfQvWSCvXUZzDP+JgaopYYEMmjtMBw+aGo8Hl9zGnuy531n60qCkmsTed7kzQxuU
- bjYKOq2Wq1utJCkRW2R+7Yn27OcnvIdbji/y2ml7dWqEu+njs1WSo1J6LEIt4/7r8U64U9obVt3
- VevagvHqx6Kaf3pxaS76cQcnzSddVccLXOSNkbZB6b616+/7Su756mNgg67o/oB7v8HVv7ozpfx
- EUk1l5yu/NEo5MdDhi9m2v2N90TucqtPv3Oi59X07xquAA==
+ bh=Zik1NfPQHpKrfWfZaCNq+zMCfiMzKhxquLerrhs7sjY=;
+ b=owEBbQGS/pANAwAIAfL5WVaVDYGjAcsmYgBov5vlGPsmxg25/2936QiBXqo5LrbMzsXx5+eTP
+ uM64RrRXHyJATMEAAEIAB0WIQQrablU2/4IeSiBN8ny+VlWlQ2BowUCaL+b5QAKCRDy+VlWlQ2B
+ o74GB/9YF05zTZk+194F0WaTldpxSdRjWm0g1Yq7A6t3+KGENWzoMP48LSQX+/txWWQ5jFYdDaA
+ 9Tmwrb92gkRrS9RpxjaVXkUgpGXOfnfjDsYKE4iDu2VMNj2Z01jt5IsgbzjCYP76YkSw//wN66z
+ cRE97ehAowM9rPrrLpQiVkXTio0J+7W7kEEt0Tp5+r56o0/n38Ocn/RYXflt76YaoV596gC0k4n
+ eNq8sM2iVmeteuMqIk6z0vPutHZN3TEiumEUVTXBSAw9zM8kQ9MBBhL8JP+9lMnJODTdwv+GXpy
+ aiCUnGUQUO8q+EN+1AMYUw1NH5VtlINJRIXvamoB0AdfbEFp
 X-Developer-Key: i=tytso@mit.edu; a=openpgp;
  fpr=3AB057B7E78D945C8C5591FBD36F769BC11804F0
 X-Endpoint-Received: by B4 Relay for tytso@mit.edu/default with auth_id=517
 X-Original-From: Theodore Ts'o <tytso@mit.edu>
 Reply-To: tytso@mit.edu
 
-This patch series enables a future version of tune2fs to be able to
-modify certain parts of the ext4 superblock without to write to the
-block device.
+From: Theodore Ts'o <tytso@mit.edu>
 
-The first patch fixes a potential buffer overrun caused by a
-maliciously moified superblock.  The second patch adds support for
-32-bit uid and gid's which can have access to the reserved blocks pool.
-The last patch adds the ioctl's which will be used by tune2fs.
+Unlike other strings in the ext4 superblock, we rely on tune2fs to
+make sure s_mount_opts is NUL terminated.  Harden
+parse_apply_sb_mount_options() by treating s_mount_opts as a potential
+__nonstring.
 
+Cc: stable@vger.kernel.org
+Fixes: 8b67f04ab9de ("ext4: Add mount options in superblock")
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
-Theodore Ts'o (3):
-      ext4: avoid potential buffer over-read in parse_apply_sb_mount_options()
-      ext4: add support for 32-bit default reserved uid and gid values
-      ext4: implemet new ioctls to set and get superblock parameters
+ fs/ext4/super.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
- fs/ext4/ext4.h            |  16 ++++-
- fs/ext4/ioctl.c           | 256 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
- fs/ext4/super.c           |  25 +++-----
- include/uapi/linux/ext4.h |  75 ++++++++++++++++++++++
- 4 files changed, 348 insertions(+), 24 deletions(-)
----
-base-commit: b320789d6883cc00ac78ce83bccbfe7ed58afcf0
-change-id: 20250830-tune2fs-3376beb72403
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 699c15db28a82f26809bf68533454a242596f0fd..94c98446c84f9a4614971d246ca7f001de610a8a 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2460,7 +2460,7 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
+ 					struct ext4_fs_context *m_ctx)
+ {
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+-	char *s_mount_opts = NULL;
++	char s_mount_opts[65];
+ 	struct ext4_fs_context *s_ctx = NULL;
+ 	struct fs_context *fc = NULL;
+ 	int ret = -ENOMEM;
+@@ -2468,15 +2468,11 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
+ 	if (!sbi->s_es->s_mount_opts[0])
+ 		return 0;
+ 
+-	s_mount_opts = kstrndup(sbi->s_es->s_mount_opts,
+-				sizeof(sbi->s_es->s_mount_opts),
+-				GFP_KERNEL);
+-	if (!s_mount_opts)
+-		return ret;
++	strscpy_pad(s_mount_opts, sbi->s_es->s_mount_opts);
+ 
+ 	fc = kzalloc(sizeof(struct fs_context), GFP_KERNEL);
+ 	if (!fc)
+-		goto out_free;
++		return -ENOMEM;
+ 
+ 	s_ctx = kzalloc(sizeof(struct ext4_fs_context), GFP_KERNEL);
+ 	if (!s_ctx)
+@@ -2508,11 +2504,8 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
+ 	ret = 0;
+ 
+ out_free:
+-	if (fc) {
+-		ext4_fc_free(fc);
+-		kfree(fc);
+-	}
+-	kfree(s_mount_opts);
++	ext4_fc_free(fc);
++	kfree(fc);
+ 	return ret;
+ }
+ 
 
-Best regards,
 -- 
-Theodore Ts'o <tytso@mit.edu>
+2.51.0
 
 
 
