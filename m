@@ -1,171 +1,162 @@
-Return-Path: <linux-ext4+bounces-9876-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9877-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08423B4ABB6
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 13:25:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BAEEB4AC16
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 13:32:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA52A16E25C
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 11:22:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C595C16DAE7
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Sep 2025 11:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F92F23D7FC;
-	Tue,  9 Sep 2025 11:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cDubGLpH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fYbFzi4P";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bluy31Mg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="I++AyJPt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D88321F4D;
+	Tue,  9 Sep 2025 11:31:02 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF3623D28B
-	for <linux-ext4@vger.kernel.org>; Tue,  9 Sep 2025 11:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C52322DB6;
+	Tue,  9 Sep 2025 11:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757416942; cv=none; b=Tlg7vsRkhmrFpLGKrhP3hywJmHWWayIOMF4TxaBOBDqEmdXYXwHFt1FpS7dipI5If+ZBIrYvvUvOiIbxcZtMV6lc+dwgTKrppHZxmwB5qnH88C/jIkD96fRwYZRgHtU+Nr9/KHoNWuCPovx0w5IEVBGyJ5SQ4nTtvB409vNlENM=
+	t=1757417461; cv=none; b=ow5kv11TnwU7qLKx/6ASZcJLrijb9cuYU8rzPgg4XNOuVQnp1uV6mGmjJUk13TF08c2fd4l7SNga6IMjqD5eSZSx3Dk492PKeB7xwfsifvZCM8icrT/p3XsrW52PepO3n/CrYM4QmObu8YchqqLOOztxYfuvOEjFDK0a0mzSyug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757416942; c=relaxed/simple;
-	bh=CZTZkaz8fFGpJwAUtovxj3cZqwvM3fv76AdbS15IbjM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=htQ3uh4iNCVnaqXgrqgLESI6g0E1N6+44evZdAsk4OLgSzVca78If6HFQjZ8MNhzII776EMtr4215pja+29Scmga2n4bv8KkxC6XVn9aPTme+WzQS4mOI+cE2fDeWdQx4LV/eQGJDHCUm1dHyLwaAq5bSd+SIb1NciFzUBTwynE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cDubGLpH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fYbFzi4P; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bluy31Mg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=I++AyJPt; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7DB9A34297;
-	Tue,  9 Sep 2025 11:22:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1757416938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=QMCnoAoqwqhwGN5LF/XEwoPmt27NEegOFn3hOBNgeLM=;
-	b=cDubGLpHC2XzgZXwQLmCTTqPzQWDvWUpHJqQ7myCxKvrhqkX7bQIBhdfUMK1Wvn0mreWEi
-	tQvvvSD5MHD4KAuZ6YsmRAIkdfz8mkmBOibw27YM9izK8AcUZM4npWiLOHDRT0o/ttaMnH
-	qZKKHnbrVzRzR8fH8Xh08B+jxun9yA8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1757416938;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=QMCnoAoqwqhwGN5LF/XEwoPmt27NEegOFn3hOBNgeLM=;
-	b=fYbFzi4PXWBunxwZIZkqtzLznEGYAa84t1vtUTRZR6pGuZZEVS3bhYsmMW2HSXfN0ddggK
-	1rqHNyLAAHkgwNDg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1757416937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=QMCnoAoqwqhwGN5LF/XEwoPmt27NEegOFn3hOBNgeLM=;
-	b=bluy31MgIVJrmAKV+pgiOcQe+z701nJyVtWBEp9FkcBzypwNgTZZJZ+58rJmP1hu9L0S++
-	tIBe9qXng8/xGnRKqgyiyRCVsDh8CZu9MGdlNlGyxXHbSVWtz89ho5Fc1x8feaJsCnqaN0
-	inNQVfLwueOghIdlDN3zgSnuerTu/sY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1757416937;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=QMCnoAoqwqhwGN5LF/XEwoPmt27NEegOFn3hOBNgeLM=;
-	b=I++AyJPtnHYsaf9Evi83y7uBsFRlg276cU5I2DrSRw1SfDMAYy/cGV7geElXAuqzSFwBcv
-	sYgqdgzaBgMFLxAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7339E1365E;
-	Tue,  9 Sep 2025 11:22:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id knsXHOkNwGipMwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 09 Sep 2025 11:22:17 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 280EFA0A2D; Tue,  9 Sep 2025 13:22:17 +0200 (CEST)
-From: Jan Kara <jack@suse.cz>
-To: Ted Tso <tytso@mit.edu>
-Cc: <linux-ext4@vger.kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	syzbot+0b92850d68d9b12934f5@syzkaller.appspotmail.com
-Subject: [PATCH] ext4: verify orphan file size is not too big
-Date: Tue,  9 Sep 2025 13:22:07 +0200
-Message-ID: <20250909112206.10459-2-jack@suse.cz>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1757417461; c=relaxed/simple;
+	bh=7OCyzakwEIIy7WQxVykqQp22fQ35IPTmyJgB87MBafo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=s/V8YrwJWQ9Cg+vSnyJZyuhrcf78c5sn4QTQjgjxzEMyJJgb2cXh/cgN1sHRkLJZNqRas+Yaye6rqHUFAqju6bk0WlABNxHYgehzXJSJ84uim8mY1j6nzm5NYqYS7Dy5FTFlSAu8aaLGOIbOzm+m7x69AGplaDwWV4nY53HuDm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4cLhSS4nlfztTS2;
+	Tue,  9 Sep 2025 19:30:00 +0800 (CST)
+Received: from kwepemo500015.china.huawei.com (unknown [7.202.194.227])
+	by mail.maildlp.com (Postfix) with ESMTPS id ECCED1401F4;
+	Tue,  9 Sep 2025 19:30:55 +0800 (CST)
+Received: from [10.174.179.92] (10.174.179.92) by
+ kwepemo500015.china.huawei.com (7.202.194.227) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 9 Sep 2025 19:30:55 +0800
+Message-ID: <a52708a8-cb3f-41bb-b73c-7d19f4830709@huawei.com>
+Date: Tue, 9 Sep 2025 19:30:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1654; i=jack@suse.cz; h=from:subject; bh=CZTZkaz8fFGpJwAUtovxj3cZqwvM3fv76AdbS15IbjM=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBowA3e9Y8r53DBi5JIKg2JiwZlNB5F+aF303vZJ pt7XSY1tZqJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCaMAN3gAKCRCcnaoHP2RA 2XqtCAC6VhA2tgnzpehzcFviVKlD6av5lIVzD4EgLsCOft31hB8carpDCHRw7bFiYkZsaL/DgQM RDGeFdbKyHgTF7HExwWPxy+m6sBg/CW5VWcZAOO1BlCmf5nj2cIztNRDU0wWxeO9Pz3+ra92kxC bfeFqkSOzEbwVq7AWL+SGAlh7k36kA3YSNn3DM3IzAr03/vNSKx39DGEpesTGmYfhDf7jQ0faDB fmclGdiBL6JmMtP1Od+lAzOi9/zs+x4dGVIwVi+hvveUt5y2Th10UwHDu/66rAp+Qaca722TG0n hv7nzHqf+BaWP2fTKa0W3PvDpfT56Fzn/x6HGNLrgJCq4Z/V
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ext4: increase i_disksize to offset + len in
+ ext4_update_disksize_before_punch()
+To: Zhang Yi <yi.zhang@huaweicloud.com>, <linux-ext4@vger.kernel.org>
+CC: <linux-fsdevel@vger.kernel.org>, <tytso@mit.edu>, <jack@suse.cz>,
+	<yangerkun@huawei.com>, <libaokun1@huawei.com>, <chengzhihao1@huawei.com>
+References: <20250908063355.3149491-1-sunyongjian@huaweicloud.com>
+ <ce8aab6c-fcea-4692-ad75-e51fa9448276@huaweicloud.com>
+From: Sun Yongjian <sunyongjian1@huawei.com>
+In-Reply-To: <ce8aab6c-fcea-4692-ad75-e51fa9448276@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-1.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[0b92850d68d9b12934f5];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -1.30
+X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
+ kwepemo500015.china.huawei.com (7.202.194.227)
 
-In principle orphan file can be arbitrarily large. However orphan replay
-needs to traverse it all and we also pin all its buffers in memory. Thus
-filesystems with absurdly large orphan files can lead to big amounts of
-memory consumed. Limit orphan file size to a sane value and also use
-kvmalloc() for allocating array of block descriptor structures to avoid
-large order allocations for sane but large orphan files.
 
-Reported-by: syzbot+0b92850d68d9b12934f5@syzkaller.appspotmail.com
-Fixes: 02f310fcf47f ("ext4: Speedup ext4 orphan inode handling")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/orphan.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
-index 524d4658fa40..7e4f48c15c2e 100644
---- a/fs/ext4/orphan.c
-+++ b/fs/ext4/orphan.c
-@@ -587,9 +587,20 @@ int ext4_init_orphan_info(struct super_block *sb)
- 		ext4_msg(sb, KERN_ERR, "get orphan inode failed");
- 		return PTR_ERR(inode);
- 	}
-+	/*
-+	 * This is just an artificial limit to prevent corrupted fs from
-+	 * consuming absurd amounts of memory when pinning blocks of orphan
-+	 * file in memory.
-+	 */
-+	if (inode->i_size > 8 << 20) {
-+		ext4_msg(sb, KERN_ERR, "orphan file too big: %llu",
-+			 (unsigned long long)inode->i_size);
-+		ret = -EFSCORRUPTED;
-+		goto out_put;
-+	}
- 	oi->of_blocks = inode->i_size >> sb->s_blocksize_bits;
- 	oi->of_csum_seed = EXT4_I(inode)->i_csum_seed;
--	oi->of_binfo = kmalloc_array(oi->of_blocks,
-+	oi->of_binfo = kvmalloc_array(oi->of_blocks,
- 				     sizeof(struct ext4_orphan_block),
- 				     GFP_KERNEL);
- 	if (!oi->of_binfo) {
--- 
-2.51.0
+在 2025/9/8 15:58, Zhang Yi 写道:
+> On 9/8/2025 2:33 PM, Yongjian Sun wrote:
+>> From: Yongjian Sun <sunyongjian1@huawei.com>
+>>
+>> After running a stress test combined with fault injection,
+>> we performed fsck -a followed by fsck -fn on the filesystem
+>> image. During the second pass, fsck -fn reported:
+>>
+>> Inode 131512, end of extent exceeds allowed value
+>> 	(logical block 405, physical block 1180540, len 2)
+>>
+>> This inode was not in the orphan list. Analysis revealed the
+>> following call chain that leads to the inconsistency:
+>>
+>>                               ext4_da_write_end()
+>>                                //does not update i_disksize
+>>                               ext4_punch_hole()
+>>                                //truncate folio, keep size
+>> ext4_page_mkwrite()
+>>   ext4_block_page_mkwrite()
+>>    ext4_block_write_begin()
+>>      ext4_get_block()
+>>       //insert written extent without update i_disksize
+>> journal commit
+>> echo 1 > /sys/block/xxx/device/delete
+>>
+>> da-write path updates i_size but does not update i_disksize. Then
+>> ext4_punch_hole truncates the da-folio yet still leaves i_disksize
+>> unchanged(in the ext4_update_disksize_before_punch function, the
+>> condition offset + len < size is met). Then ext4_page_mkwrite sees
+>> ext4_nonda_switch return 1 and takes the nodioread_nolock path, the
+>> folio about to be written has just been punched out, and it’s offset
+>> sits beyond the current i_disksize. This may result in a written
+>> extent being inserted, but again does not update i_disksize. If the
+>> journal gets committed and then the block device is yanked, we might
+>> run into this. It should be noted that replacing ext4_punch_hole with
+>> ext4_zero_range in the call sequence may also trigger this issue, as
+>> neither will update i_disksize under these circumstances.
+>>
+>> To fix this, we can modify ext4_update_disksize_before_punch to always
+>> increase i_disksize to offset + len.
+>>
+>> Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
+>> ---
+>> Changes in v2:
+>> - The modification of i_disksize should be moved into ext4_update_disksize_before_punch,
+>>    rather than being done in ext4_page_mkwrite.
+>> - Link to v1: https://lore.kernel.org/all/20250731140528.1554917-1-sunyongjian@huaweicloud.com/
+>> ---
+>>   fs/ext4/inode.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 5b7a15db4953..2b1ed729a0f0 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -4298,7 +4298,7 @@ int ext4_update_disksize_before_punch(struct inode *inode, loff_t offset,
+>>   	loff_t size = i_size_read(inode);
+>>   
+>>   	WARN_ON(!inode_is_locked(inode));
+>> -	if (offset > size || offset + len < size)
+>> +	if (offset > size)
+>>   		return 0;
+>>   
+>>   	if (EXT4_I(inode)->i_disksize >= size)
+> 
+> Hi, Yongjian!
+> 
+> I think this check also needs to be updated; otherwise, the limitation
+> will be too lenient. If the end position of the punch hole
+> is <= i_disksize, we should also avoid updating the i_disksize (this is
+> a more general use case). Besides, I'd suggested updating the comment
+> of ext4_update_disksize_before_punch() together.
+> 
+> Regards,
+> Yi.
+> 
+
+Hi!
+
+Thanks for the review! I agree with that and will send out the v3 ASAP ^_^
+
+Cheers!
+
+>> @@ -4307,7 +4307,7 @@ int ext4_update_disksize_before_punch(struct inode *inode, loff_t offset,
+>>   	handle = ext4_journal_start(inode, EXT4_HT_MISC, 1);
+>>   	if (IS_ERR(handle))
+>>   		return PTR_ERR(handle);
+>> -	ext4_update_i_disksize(inode, size);
+>> +	ext4_update_i_disksize(inode, min_t(loff_t, size, offset + len));
+>>   	ret = ext4_mark_inode_dirty(handle, inode);
+>>   	ext4_journal_stop(handle);
+>>   
+> 
 
 
