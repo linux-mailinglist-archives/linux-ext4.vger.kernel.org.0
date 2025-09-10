@@ -1,79 +1,80 @@
-Return-Path: <linux-ext4+bounces-9897-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9898-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5655FB5184D
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Sep 2025 15:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C240B5184E
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Sep 2025 15:52:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B7A31BC0FEE
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Sep 2025 13:52:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5ACE01BC15AF
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Sep 2025 13:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130C3218AAD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A542B7081A;
 	Wed, 10 Sep 2025 13:52:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bYOJzMV+"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mWFfOiKo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFC97081A
-	for <linux-ext4@vger.kernel.org>; Wed, 10 Sep 2025 13:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A6A212578
+	for <linux-ext4@vger.kernel.org>; Wed, 10 Sep 2025 13:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757512320; cv=none; b=ulF41gBoyGhryJWPstmBsPnfu+IsIha1UkxuTtG1PAAK+/NXAl2sFXc0C/vwur3oXWmMiczyYf/sLZ7iSGrCPchT5r7lBDAb7fwHw4iB5ZvMJRXHV2hRQyewLYc2M8OYrCXZIX9UIcXidLoKoX6fX41WhTZwCJzKJrZHN5UEe5w=
+	t=1757512321; cv=none; b=PsVyEGgKp7U9KZhkfuDboRSw8D5vy94T8oZabpE0py6vKCS6wtsuaSgOrGv9jn0bfbsiloR0iVsnrUET2+lG4E1/K8/l9/LNHQ7zFa13h+/Agm39LjWRVAeSVXR2QEII2bFruYKDtgnRb8/aH4xiKlvyLMD//TXxfPowxOPGMhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757512320; c=relaxed/simple;
-	bh=2STTAvauX7fQERl5SCAPer0d2icq1EtGIjT3dfw/hR4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QGS0barAczlcRgDGfKmHRdkNvz65ysApsg4aU7TkIco+PpZQ/IB+5rjnLc3Jw1niC1UKMTTvL284X8rt3ZXYJfSi6AFauqS44Cbu2Q0Q+i+vKoP7xttaLfg18Kp4NuZ3PYiXHJ2uB4sO9IP5jLewZTyfMZFL31sUDqzHzuaPTX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bYOJzMV+; arc=none smtp.client-ip=209.85.219.41
+	s=arc-20240116; t=1757512321; c=relaxed/simple;
+	bh=rpp6Pi6eSLyGLozS+sufZuKxOGYgoS5xVLTuJZH0tlw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=B7ZTBjFqtZqTyqOtuOD7/BaXL8vfjcYHXFHXgOQCQTtYY42G3Zmt0X8xryq4bns6uhRiIMUNb/4tfUcnzFUF9+y0NwecaqOxvQ4WUdEH9AfDoGiEUg+ipCEM8pLURwhPOQdG2z/4iTWKqgkNg0l/6YQX8mCIbKLgvvkasoiR8mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mWFfOiKo; arc=none smtp.client-ip=209.85.222.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-70fa947a7acso20351926d6.2
-        for <linux-ext4@vger.kernel.org>; Wed, 10 Sep 2025 06:51:58 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-8116af074e2so480138885a.0
+        for <linux-ext4@vger.kernel.org>; Wed, 10 Sep 2025 06:51:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google; t=1757512318; x=1758117118; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Wd6JiZJGvnBinzrnYkrwSSu7SsGH1PKPgVnKbOlzro=;
-        b=bYOJzMV+zswRJPaUz57FuIz0cYfPjbtMnfVhP0NqgfFWvYWAQ7nQs6K7dJhpgPrYPm
-         yehLsnIa53y57zfP5Zw9sCE8KJ8iTQ1c0KH+/YrePgdxj51vgWYlp77ye2HdAzVDZRHo
-         gqRJu1xGO6bJTCcdIT0FhQcID1fTs7SdZOyFj/AY5h3b1gQh6SbOTzBnNosCVldiZURx
-         HIXrnpKARtMSbZEgkHtchVIWzKcr1VJMP0bzL7pYPhCDQryyQNmu88wEJVKvseGANTbJ
-         /815lE5Zolu5MKE4G5559eN0O9xU944bCxNhDW6N7LHLglpdPCuQGr1t9pk35sfupnUZ
-         A9Kg==
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LVU63+hXhbJrDswoPjqPxuOvb7/xFFxzLaYpjhjSmcI=;
+        b=mWFfOiKo+KeNxlwwfX3fsKBqGONObh5SSKGXt5SXY0iNcp9lVhLj23m7HJVZOYu6FN
+         oD/Sv203Z90nDQGoEMn8PCHxFF/xdDmNu0uxwULWQNzmJeOkvboy70pVHpy9fvJFB6QZ
+         tiQ8+LL+0miOpyVPBM+ZATYHfiHdPwy/4FfUlOxje30dYO3f4W85blf/Drmuc36lNNSI
+         c43aUVtnKCFUp+evZMFrSpK+1d99DwIFguf2KT7KbTvzoMB4H9FCkGLy5XA0SrgkEC13
+         OscCgyJy3zG8I11uxapu+U+99lqODjQlfXEGnt3vkJ0vloSSjuIq01nXEvIZBliaPPfe
+         gMjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1757512318; x=1758117118;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0Wd6JiZJGvnBinzrnYkrwSSu7SsGH1PKPgVnKbOlzro=;
-        b=xIsJEYC8n22YBw2kMzVZbwbFqFNit322ousbDqQfC1+Tk9x5zznX/wc8MvgMqrwDup
-         Ig4Fsj6gPMF6BWenJDJkDg9vSWSxUmEDncq8uAmbSTnd0IfUHePfk5ElYC4xapjRRUpn
-         3XPK0o4naAOCbquj6fRaDbnSe/Ok8fhjVL1yrvFTbaumCXnp96GtuhGSdpP/InVKafr4
-         GHDRQMHUrK6AyuH4jKXGhtLr3sbePE3F8bbaxuhfQsJQZSsl8iABkjovZ65r5NdmUMXe
-         SJf6XxCfni1XkEr6CFq26ZOqx6oqSqo3DhqcCdG397Q18H4ms/fl26HQZzkFil4Bswm8
-         EEKw==
-X-Gm-Message-State: AOJu0Yy1JaHKtaqv7ZlyfKxxNkkJNdXp0FRGZIzrjpDrR+L6+snf2a9y
-	B2RAQikUTqs3QTZeNUdLjmWiavQETUWfZInn6ppiM3HYfCs9INnzU78/TT3SecZY4uM=
-X-Gm-Gg: ASbGncucKDwLtGlHjSVSmBWS5kamAasL8GL6SwfwfbZ7FnTBd+MHsPyljeO2r2CZGl+
-	+S4k2jMPR/TD+nkhIFP+BUYDgjPnKPiN9PhaLNiIuSHblXkfvV1/PNqSygiKqOs6z30XzP9P/bY
-	vA63ciQmuPYUgDT/DmJh38b359KfGTgmH71df/GRYZhAR6YAoIF1APSJPVbfQZt4oLO8WjiGwpA
-	Qv17l7K9TzFotTAI0mP5PQPdwPfoTF0GnsHPIaoy4XiACDcnZHGQakQhWMFJKnV0/lheKtKo5gH
-	/GENH+mmuF+PJv05L3F4SUIZkHodNz2iqQVdZNZzda4Df6wKg7f2VcgL3oyeOmZEFc/GJryV5PB
-	rVoM0HfUgjXYdSJcC4A0WN2pd2vqm9YX7ff0bvQAow9Fw1jUUyGLQbZRI2oQ=
-X-Google-Smtp-Source: AGHT+IFabN7VLL271sk2nVxBsmzX82xCBcsGQHGQ3ogjpUabo1H4GpFuZd90jgzur7PuRAMaodpWPg==
-X-Received: by 2002:a05:6214:2627:b0:70d:e83a:4b86 with SMTP id 6a1803df08f44-73924e24a38mr166149206d6.17.1757512317791;
-        Wed, 10 Sep 2025 06:51:57 -0700 (PDT)
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LVU63+hXhbJrDswoPjqPxuOvb7/xFFxzLaYpjhjSmcI=;
+        b=OTm5urztVlN88UyFZthU1GTVAyf97c0GKFmEoP3PI5v8YCtVXnLji13nzDgT2miQn8
+         TroNftXENahfges3ZCm9TfCUqCsB9r5MbrWNNZpVtdlc97BYm8rcuEkjyTXPyrg79CQz
+         +7js3phafCJf+C5YKxwiMHBR6p7qkuukCJmn2iMcdmlK9PSFmn33I713K12o0tvfMNj9
+         ibsrTymdHHw2+denoqtM/H0CH6HUMVfV/9cmzNdv+F2mMbYxwbFtRlbbnA9ar5haquPz
+         Yguzx4P0ESuHsiMEYizExxJVnYahi0JXkgPyY7ODQ/uAuMvWG2AG2K5ev9K5rY0aO9Ot
+         PRyQ==
+X-Gm-Message-State: AOJu0YwavURIAGEhoDXMjHIdkWZZMxXAXpseuXMBoj/Dh5oPdb8aGlb1
+	snZsTAmiR9Z2S/mYpuVk50vIbyUsDtzcJIA1ZxlW+bhU/suh4fuLrZV1bnCgzq6CnxY=
+X-Gm-Gg: ASbGncuVAri54uG6T1sHBaoG3Rcndq9C83BegsFxSL1QVfathYiL75+SmQh12LWR8e6
+	VByYdJ1Hz4tud2VrYT+pz58VdaWmWJusNfqffpPMNza9R0Ew2QY+L6lMtzz1+iHLX9HJ0KcB7uN
+	lvuTvuHN8iJdEddz5Ikp3HtnNQtuW3GrwlQ7Ky0ejMNkjmGH7zMC0RxB2hgfBrmLgSD3nHOkuJM
+	RVOCB+ZSdskMJViINH78W73OH5609xfgKytY3xd3EAxOSz4Xrw44Y/fkYnmw9A0EvQaxbxrwbS3
+	eZpgDOQYipnXuy7IjCODEOTpsCaPF2UVaMwDt9XkNE9w600bv0GC/KbuwQgtiogIiX+g4LEv3/b
+	vJDBUzJ+9Dol9waqLkWTEqTAqpqs1jUvrgSZLgH/zQAaJErDY
+X-Google-Smtp-Source: AGHT+IF92sd4E1OzM6HE15Ryhw3dmijUzbtdGlKzHFRQQx/lNRVw5eltTFufdy8aboWAXTd3LXhApQ==
+X-Received: by 2002:a05:620a:191a:b0:812:693c:bce4 with SMTP id af79cd13be357-813c596ff46mr1808290085a.39.1757512318540;
+        Wed, 10 Sep 2025 06:51:58 -0700 (PDT)
 Received: from maple.netwinder.org ([184.147.192.2])
         by smtp.gmail.com with ESMTPSA id 6a1803df08f44-7252d6ad05asm137500176d6.62.2025.09.10.06.51.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Sep 2025 06:51:57 -0700 (PDT)
+        Wed, 10 Sep 2025 06:51:58 -0700 (PDT)
 From: Ralph Siemsen <ralph.siemsen@linaro.org>
-Subject: [PATCH v2 0/4] mke2fs: small doc and features
-Date: Wed, 10 Sep 2025 09:51:44 -0400
-Message-Id: <20250910-mke2fs-small-fixes-v2-0-55c9842494e0@linaro.org>
+Date: Wed, 10 Sep 2025 09:51:45 -0400
+Subject: [PATCH v2 1/4] mke2fs: document the hash_seed option
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -82,50 +83,52 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAHCCwWgC/32NQQ6CQAxFr2K6tmaogoMr72FYVCjQCIyZGqIh3
- N2RA7h8/+f9v4BJVDG47BaIMqtpmBLQfgd1z1MnqE1iIEe5K12J40OoNbSRhwFbfYth0ZzY1Uf
- 2Z59BEp9RtiJ5typxr/YK8bN9zNkv/Ts3Z+iwLu5MPifPLV0HnTiGQ4gdVOu6fgHLk9I6tQAAA
- A==
-X-Change-ID: 20250909-mke2fs-small-fixes-6d4a0c3a8781
+Message-Id: <20250910-mke2fs-small-fixes-v2-1-55c9842494e0@linaro.org>
+References: <20250910-mke2fs-small-fixes-v2-0-55c9842494e0@linaro.org>
+In-Reply-To: <20250910-mke2fs-small-fixes-v2-0-55c9842494e0@linaro.org>
 To: linux-ext4@vger.kernel.org
 Cc: Ralph Siemsen <ralph.siemsen@linaro.org>
 X-Mailer: b4 0.15-dev-56183
 
-Four independent fixes for mke2fs:
+For reproducible builds, it is necessary to control the random seed used
+for hashing. Document the extended option for this feature.
 
-1) document the hash_seed option
-2) support multiple '-E' arguments 
-3) add extended option for setting root inode security context
-4) minor indentation fix in man page
-
-For the third one, the main use case is when generating empty
-filesystems for use when SELinux is enabled.
-
+Fixes: e1f71006 ("AOSP: mke2fs, libext2fs: make filesystem image reproducible")
 Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
 ---
-Changes in v2:
-- multiple '-E' options are now supported
-- added 4th patch to fix man page formatting
-- Link to v1: https://lore.kernel.org/r/20250909-mke2fs-small-fixes-v1-0-c6ba28528af2@linaro.org
+ misc/mke2fs.8.in | 4 ++++
+ misc/mke2fs.c    | 1 +
+ 2 files changed, 5 insertions(+)
 
----
-Ralph Siemsen (4):
-      mke2fs: document the hash_seed option
-      mke2fs: support multiple '-E' options
-      mke2fs: add root_selinux option for root inode label
-      mke2fs: fix missing .TP in man page
+diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
+index 13ddef47..14bae326 100644
+--- a/misc/mke2fs.8.in
++++ b/misc/mke2fs.8.in
+@@ -320,6 +320,10 @@ In the default configuration, the
+ .I strict
+ flag is disabled.
+ .TP
++.BI hash_seed= UUID
++Use the specified UUID as the seed for hashing, rather than generating a
++random seed each time. Intended for use with reproducible builds.
++.TP
+ .B lazy_itable_init\fR[\fB= \fI<0 to disable, 1 to enable>\fR]
+ If enabled and the uninit_bg feature is enabled, the inode table will
+ not be fully initialized by
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index 7f81a513..3a8ff5b1 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -1180,6 +1180,7 @@ static void parse_extended_opts(struct ext2_super_block *param,
+ 			"\trevision=<revision>\n"
+ 			"\tencoding=<encoding>\n"
+ 			"\tencoding_flags=<flags>\n"
++			"\thash_seed=<UUID for hash seed>\n"
+ 			"\tquotatype=<quota type(s) to be enabled>\n"
+ 			"\tassume_storage_prezeroed=<0 to disable, 1 to enable>\n\n"),
+ 			badopt ? badopt : "");
 
- misc/mke2fs.8.in              | 19 ++++++++++++-
- misc/mke2fs.c                 | 63 ++++++++++++++++++++++++++++++++++++++++---
- tests/m_root_selinux/expect.1 | 57 +++++++++++++++++++++++++++++++++++++++
- tests/m_root_selinux/script   |  4 +++
- 4 files changed, 138 insertions(+), 5 deletions(-)
----
-base-commit: 4b02eb164221c079b428566499343af2766c2ec3
-change-id: 20250909-mke2fs-small-fixes-6d4a0c3a8781
-
-Best regards,
---  
-Ralph Siemsen <ralph.siemsen@linaro.org>
+-- 
+2.45.2.121.gc2b3f2b3cd
 
 
