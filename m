@@ -1,119 +1,89 @@
-Return-Path: <linux-ext4+bounces-9904-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9905-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 231DCB51DBB
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Sep 2025 18:31:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86648B522EF
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Sep 2025 22:51:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E4AE3A94B1
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Sep 2025 16:30:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F487583EE3
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Sep 2025 20:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0613375AB;
-	Wed, 10 Sep 2025 16:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DCF30149D;
+	Wed, 10 Sep 2025 20:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lftCrs9k"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Cfy8L6jZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D070F322DD4
-	for <linux-ext4@vger.kernel.org>; Wed, 10 Sep 2025 16:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A913301475
+	for <linux-ext4@vger.kernel.org>; Wed, 10 Sep 2025 20:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757521772; cv=none; b=WENL/zSEHCkVKdWurYyHTPB64alNHgJ9Ym76wUNd5IloxkPx6iaFC3jBc34TPUycDtLbcPwqgIZb5CjMFyaHxaODxeY4SAZmngtH+emG5lGO+k8dC5F9uEcOcVwiQQfFtpZGlOsDB+houGqVJpyRb4KbKh7KKXzkwOkmUiShkWs=
+	t=1757537150; cv=none; b=EnlxL5RJxu5fNvmhG2w4OQ9MuiNrcMaW/DUsjwhLbxM3FqsFhzvES57iaJf3TJ2ZKotoDCH/sFhfBBlE+vDWdfDGaNHuA8+LjrI1oLIxTW4mdEX6tahJuaxMUjMYVo8CrNO6niaOh/oLyWe7JTCaxVpjv+DjcJmdseKC/9GeJqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757521772; c=relaxed/simple;
-	bh=yZYH92cSVk0Fokdd/F5dyEU1ZweIT2DNcMnk5Xe6iIs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qvJiPhcSqexE/2ERr735ReyU6oKObYVmZq2zHBwAXmvsiPYzD3GYlL+KeMNhddMZKo1u3ocu1EoOlVe0AFX9Rvn2eEQU5o4ePg6ce57Pnv7FIb0dKAFt+eGe6LQZlg3kWu2EgKi/n0YZJoVprtFaYIglHLyvWmVOvyoP42RA/W8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lftCrs9k; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-32b8919e7c7so8210987a91.2
-        for <linux-ext4@vger.kernel.org>; Wed, 10 Sep 2025 09:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1757521770; x=1758126570; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yZYH92cSVk0Fokdd/F5dyEU1ZweIT2DNcMnk5Xe6iIs=;
-        b=lftCrs9kRKZ278NTmDciCM+a/ePBdFlo0TqN45wixbQd8o2EznEvSpH392azJCRaLF
-         aq+pSDRAo7MMZ02IEKJ6K/1BZGZlhiQ1DNThxLSUk4eo8c4urql9k6G35kNUkHHp1KT8
-         /qYVItm6lLHYCLcria4M2oyQqe29DtS47YRklhMIvpFlsIj+p4PUcWRrTBUduGbfPzqW
-         NKi5+jG3YkeG2gcToJ0fPUL/o+T6ZU07gEImSabkVwqKGRC5Zt73CwvSAwz1LBMX2h7l
-         k7ZN2s4OXj0J8korghA+F7CWqN3B354XUo+lagHra41WAZI7d/1HHJR32NBmo9RQtXZa
-         VbgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757521770; x=1758126570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yZYH92cSVk0Fokdd/F5dyEU1ZweIT2DNcMnk5Xe6iIs=;
-        b=RKORhVrYIRlB/P4fPHSatDoR4uRvFzbOaKifyrkTxfmuDzpYREWXiR6Z2fpNQGZ4za
-         +TymOLIcJSq1ntFuYB2TVeu/Gt3J7o35639/IyNuWuh6d1rWjmRY7LUncdkdo0eMDo1E
-         rmZYa5xZCJPGhroW8OI+t/OT7FEiILKZ3S9t9iVTArykeN99/jVgG+JsGZ46SEWRp/s/
-         9Qpz1K+eHooPW5C77HSNORpGWFgSMyB32b38rkh+sbVKCGC40LvMT97j/CyNTh0lOTQA
-         WTAit8TrqxyPpjqU62UMnpJh+bBG0hDO6G4WyYZNZq74VqWUsJEQe+QI1+e+p5+w5YaD
-         cJww==
-X-Forwarded-Encrypted: i=1; AJvYcCVxmlUpwFCqXDpTNyXbdvKMaUbwLG5iyC3P8kZysWKVkPbXlC7bKxi69qrZRQEMI4EDHIP/Dfr2BcUn@vger.kernel.org
-X-Gm-Message-State: AOJu0YykEiqc8g41Ii3IpZI75mSDy3S/49X+Vw+pSB8ZVq/fdpQZkM55
-	uknioAKl2lRVxxE9qa1WkTtOBj5VsKrPMULNFHj/uOeq8l+6X4xf2Cax/t24+MocJqbEM2LMvVa
-	RZRlBnj/IgXS4FMVVMWeie1s6/eVcFvyf5NB0RbkCvA==
-X-Gm-Gg: ASbGnct8gY34gIgw2MQPtG21kVxVNXu0SE4edhcLoBLKxfPEyhV48GYwkcB6Hd7+EGo
-	Fdac3wACDQA5y8uq+HS1KEMZ+afGdtrwHFbhVTenUPyVoA6CeZ2sNGDhPruyhCdx7dO1XTRPBJx
-	2lQr/fH+tFFeEQanb0EambYKnzIAzRKcxFkQ/Hm03ZcSoQdAgSyRqTzCOM3797pU7WXNDs1DDaW
-	jsA+vBon8FXUPZ+qw==
-X-Google-Smtp-Source: AGHT+IGMCpP0DpRhFaHyvLkho579q8Mncp2fpoDAGWDyxN2219xrS2LJ4ROTkXTTXvgoDl8fw2EKqWgCYtLQ95v+VMY=
-X-Received: by 2002:a17:90b:1dcb:b0:329:ed5b:ecdb with SMTP id
- 98e67ed59e1d1-32d43fb5b92mr20937881a91.18.1757521770015; Wed, 10 Sep 2025
- 09:29:30 -0700 (PDT)
+	s=arc-20240116; t=1757537150; c=relaxed/simple;
+	bh=GlujbSpqz67S7goDIZiAvh3kCQN8c9J3fk+Viiv8Ub8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ko0j2TxlEP1Ox5GT4IOCe/HYjg/8a3uGxsP0xTRQZShBQHUT1FSWymqjK+NB3vmAdAEBq90TXUqateJcOhChD+PSU1PYjv2jXxwZUdZetvs33+FW2zn/W6b2Tf9sdn9f9K+Qx04+WPbw3mDiuGtWclp3U6I3yNLcecrEcXavP8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Cfy8L6jZ; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-111-2.bstnma.fios.verizon.net [173.48.111.2])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58AKjhqJ017818
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Sep 2025 16:45:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1757537145; bh=JpOy2tIrua9p1Q5umq1tMDJ0HdX+EVOVXUorvMs6fp8=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=Cfy8L6jZjX0W5Va1tc2kDFRc6Exqw30r5k7Sf9/DuXoMfckx3Rnd4cXYuLC7SWGdq
+	 JTm3IIyMVD0izn70QaXOO7XT7DfItHecPU5Mbo/3MP4F+evB6jJmXtCRtqvczrFqYZ
+	 dP+HMi2i0tTNya9xFyznNptoSR1u3yM0vx3qofkd/hDeFOivjlm2ztOyMQoSlU8p2D
+	 Khj00IainY9hcHGvdPuJqZ+6NmGA7/aNeysMQPrXrybD7BqInnPAdqP5LimP1NytnS
+	 sHwAhMnBNZfaPO+7Mt2BFGhjdDmM7qaubaM7pF+Qi5O3UEUMrWzlIJUKHOivdliTc1
+	 u3FKTqtFM0GZA==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 6A4842E00D9; Wed, 10 Sep 2025 16:45:43 -0400 (EDT)
+Date: Wed, 10 Sep 2025 16:45:43 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Ralph Siemsen <ralph.siemsen@linaro.org>
+Cc: Andreas Dilger <adilger@dilger.ca>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH RFC 2/3] mke2fs.c: fail on multiple '-E' options
+Message-ID: <20250910204543.GA3659556@mit.edu>
+References: <20250909-mke2fs-small-fixes-v1-2-c6ba28528af2@linaro.org>
+ <17EED9B4-41D4-4D1C-9838-1ECF5B39C00D@dilger.ca>
+ <CANp-EDZF3sVLQWdL4+a1aQLa5uqt5R_trzOp3Hh+Kw21hRn0ZQ@mail.gmail.com>
+ <20250910145241.GA3662537@mit.edu>
+ <CANp-EDZ-5_UC+p77d+ZPMMtbH3eXAPvoL4tR_EL3dcpBk-wKeQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909-mke2fs-small-fixes-v1-2-c6ba28528af2@linaro.org>
- <17EED9B4-41D4-4D1C-9838-1ECF5B39C00D@dilger.ca> <CANp-EDZF3sVLQWdL4+a1aQLa5uqt5R_trzOp3Hh+Kw21hRn0ZQ@mail.gmail.com>
- <20250910145241.GA3662537@mit.edu>
-In-Reply-To: <20250910145241.GA3662537@mit.edu>
-From: Ralph Siemsen <ralph.siemsen@linaro.org>
-Date: Wed, 10 Sep 2025 12:29:21 -0400
-X-Gm-Features: AS18NWB-yOiF_FbJVL1VZV66MeDHnP_gGil012ctXOPhIqk3rxndARLnV2rrTzg
-Message-ID: <CANp-EDZ-5_UC+p77d+ZPMMtbH3eXAPvoL4tR_EL3dcpBk-wKeQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/3] mke2fs.c: fail on multiple '-E' options
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger@dilger.ca>, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANp-EDZ-5_UC+p77d+ZPMMtbH3eXAPvoL4tR_EL3dcpBk-wKeQ@mail.gmail.com>
 
-Hi Ted,
+On Wed, Sep 10, 2025 at 12:29:21PM -0400, Ralph Siemsen wrote:
+> > That way we can call parse_extended_opts() multiple times.
+> 
+> Note this is already occurs in mke2fs: one call to process options
+> from profile/config file, and another call for command-line args.
 
-On Wed, Sep 10, 2025 at 10:52=E2=80=AFAM Theodore Ts'o <tytso@mit.edu> wrot=
-e:
-> What I would suggest that you do is to move code which mutates the
-> file system from parse_extended_opts() so it is only interpreting the
-> options, and move that code to tuine2fs_main().
+Sorry, I've had tune2fs on the brain.  Mke2fs is different from
+tune2fs because there's only one path for configuring the newly create
+file system --- and we have to process the command-line extended
+options *after* processing the profile/config file options.
 
-Yes, I see where you are going. Being able to deny read/write to a
-block device that is mounted is a good goal.
+So in PRS, we need to save each of the -E arguments --- or concatenate
+them together into a single set of extended options, and keep the call
+site for parse_extended_options() them where it currently is located
 
-But I am talking about mke2fs rather than tune2fs. I can't really see
-a need for two code paths when creating a filesystem?
-
-It would still make sense to separate the option parsing from the
-mutation logic of course.
-
-> That way we can call parse_extended_opts() multiple times.
-
-Note this is already occurs in mke2fs: one call to process options
-from profile/config file, and another call for command-line args.
-
-So in v2 patch, I just made further calls, one for each -E argument.
-So far it seems to work without problems.
-
-Regards
--Ralph
+						- Ted
+						
 
