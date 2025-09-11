@@ -1,56 +1,55 @@
-Return-Path: <linux-ext4+bounces-9937-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9938-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E0F9B53EAC
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Sep 2025 00:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CE55B53EB3
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Sep 2025 00:31:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BA943B531E
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 22:27:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBE9B3BDCDB
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 22:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B9AE2EE60E;
-	Thu, 11 Sep 2025 22:27:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B6F2EFD89;
+	Thu, 11 Sep 2025 22:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RvcrFw3u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oyu1zX6N"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A69072EE5E1;
-	Thu, 11 Sep 2025 22:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7F32E3B11;
+	Thu, 11 Sep 2025 22:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757629621; cv=none; b=max8wVqcbEokTp6M9jqsc1eCNbErmhqf5mak5f25ug2ESonodKvaBToQIhnWnXqIFJCksOgy7s37uOpQYca8B1smKXn3e8+AmgQdkUrPupg7ZPrTotpgLgs5zWbBNgrY22F8KQ5HzlFHPZX0ZHETeGz+DnitQVNDRsAXnNGojAY=
+	t=1757629882; cv=none; b=WwLFZveVgAS8jwECbRpd5pcDTK8m/1hVrmTe0SOlXj5/b/kqCyDI35B5KUZ7KF6kh7K0CTPj9WLrxZtijUqtDTQskEOJeUQm4Kmz1GjhhA6N9247aSzhBlf4zcsa2NZJ/JOfP8Gh+08GR+hvsZlEz5TxRIhgw6oPQ5vL4C+clcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757629621; c=relaxed/simple;
-	bh=Lghux1Bntyb2GrRrZ11EdHGNaGs6O2s/wGDMZaWtbuE=;
+	s=arc-20240116; t=1757629882; c=relaxed/simple;
+	bh=UJNXFmWY2hKXgtpNoqIpGgW5xkwZlnSIC0aifyjictM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ebgl1BIseJJQsBf32DcldRxTgFUXcDuBsLLbqulLPlOWR9FyoJfudMbcUZMnUnHHmq5m8xXhLe1gyEjUIfgiUeOoiUSH1nn4djkExWexKInc9UQ+i5u0uIb/xZ4PzrN4bYM/T7RQFcjdWMtQ/Uza1meQKmo4ufS9+urmId4Cleo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RvcrFw3u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AFABC4CEF0;
-	Thu, 11 Sep 2025 22:27:01 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=s43Th5G6mpjSo2pt5a9OCfANRhB4smoJ0LCECJWcUHynosWZFuHk0A+iiOOUt46haZ2vo7B76UtT6rTzkxgeCpoIGVMhmIfve67A4i7JpBs4NW6WLffUQlXC76RhaubXn+MXcforsUvLzdBmbSd2wbukzHeYDwwT654QWTEg5Ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oyu1zX6N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8264C4CEF0;
+	Thu, 11 Sep 2025 22:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757629621;
-	bh=Lghux1Bntyb2GrRrZ11EdHGNaGs6O2s/wGDMZaWtbuE=;
+	s=k20201202; t=1757629882;
+	bh=UJNXFmWY2hKXgtpNoqIpGgW5xkwZlnSIC0aifyjictM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RvcrFw3uEAk4eWJ2JHg9mcCkmvXQlDvmE9tCwfVxdrEHJmyuI7FD3jlKNBegeK7pG
-	 sZf2uG3a41+6i79c9F6LJu93KnzoWycEdZ3Rm/t2jbvurzwTQKv7pGBTbYEDj4H7Uc
-	 r/blz9x5vwQLb14UJQYP4PW5pIZiKMr5l6ijSTj+PHPcUWm24z9jH+4Qr5F/uFe3gj
-	 HEJufOLIsvp8h1WUpv3+FQImv772fx56qRIu4ixNNG5znYVD+UOhgQL8PdSTdhoD90
-	 4a3X7ZhIhb8zZSwNXW2JwdC0kJU45LYtUHu9yscxGYwcyonlqHZa/F+2T5ocr2kGSW
-	 W19PLch3Hjqnw==
-Date: Thu, 11 Sep 2025 15:27:00 -0700
+	b=oyu1zX6NCLHVX1Ww5rrn80gw63IvaWK4a/rMfEA9PU5SQqgr6byy5r2jxrInOpPoI
+	 u9oaiWvp7yUWrohELBPi0UobLVCY+FpwzV7Tx40saEl1ifK5Za4wVCZlrSLn04LowJ
+	 BMY7JtjywKigsxXt+c9qF8QVmI51Pe6Zi0hzQRCjM/Auz+1KRBL4xgV1PR9fypB/UN
+	 XiSDsar2tOL1Aw/6JxiqAmJEES5boHjVTXq3XehJFWq/wOsSSKfv0/7zIWkvCWwWO2
+	 F0u8vArAN6UKnMfpvUBXuRDzHkuXqGcCTuAxxsP0Eivau9WxB8/KIWTsNEJRIC9+4w
+	 d8GSpet+CZpKw==
+Date: Thu, 11 Sep 2025 15:31:21 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 1/3] ext4: avoid potential buffer over-read in
- parse_apply_sb_mount_options()
-Message-ID: <20250911222700.GC8084@frogsfrogsfrogs>
+Cc: linux-ext4@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH 2/3] ext4: add support for 32-bit default reserved uid
+ and gid values
+Message-ID: <20250911223121.GD8084@frogsfrogsfrogs>
 References: <20250908-tune2fs-v1-0-e3a6929f3355@mit.edu>
- <20250908-tune2fs-v1-1-e3a6929f3355@mit.edu>
+ <20250908-tune2fs-v1-2-e3a6929f3355@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,79 +58,106 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250908-tune2fs-v1-1-e3a6929f3355@mit.edu>
+In-Reply-To: <20250908-tune2fs-v1-2-e3a6929f3355@mit.edu>
 
-On Mon, Sep 08, 2025 at 11:15:48PM -0400, Theodore Ts'o via B4 Relay wrote:
+On Mon, Sep 08, 2025 at 11:15:49PM -0400, Theodore Ts'o via B4 Relay wrote:
 > From: Theodore Ts'o <tytso@mit.edu>
 > 
-> Unlike other strings in the ext4 superblock, we rely on tune2fs to
-> make sure s_mount_opts is NUL terminated.  Harden
-> parse_apply_sb_mount_options() by treating s_mount_opts as a potential
-> __nonstring.
+> Support for specifying the default user id and group id that is
+> allowed to use the reserved block space was added way back when Linux
+> only supported 16-bit uid's and gid's.  (Yeah, that long ago.)  It's
+> not a commonly used feature, but let's add support for 32-bit user and
+> group id's.
+> 
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> ---
+>  fs/ext4/ext4.h  | 16 +++++++++++++++-
+>  fs/ext4/super.c |  8 ++++----
+>  2 files changed, 19 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 01a6e2de7fc3ef0e20b039d3200b9c9bd656f59f..4bfcd5f0c74fda30db4009ee28fbee00a2f6b76f 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1442,7 +1442,9 @@ struct ext4_super_block {
+>  	__le16  s_encoding;		/* Filename charset encoding */
+>  	__le16  s_encoding_flags;	/* Filename charset encoding flags */
+>  	__le32  s_orphan_file_inum;	/* Inode for tracking orphan inodes */
+> -	__le32	s_reserved[94];		/* Padding to the end of the block */
+> +	__le16	s_def_resuid_hi;
+> +	__le16	s_def_resgid_hi;
+> +	__le32	s_reserved[93];		/* Padding to the end of the block */
 
-Uh.... does that mean that a filesystem with exactly 64 bytes worth of
-mount option string (and no trailing null) could do something malicious?
+Does anything actually check that s_reserved is zero?  I couldn't find
+any:
 
-My guess is that s_usr_quota_inum mostly saves us, but a nastycrafted
-filesystem with more than 2^24 inodes could cause an out of bounds
-memory access?  But that most likely will just fail the mount option
-parser anyway?
+$ git grep -w s_reserved fs/ext4 fs/ext2
+fs/ext2/ext2.h:480:     __u32   s_reserved[190];        /* Padding to the end of the block */
+fs/ext4/ext4.h:1445:    __le32  s_reserved[94];         /* Padding to the end of the block */
+
+$ git grep -w s_reserved lib/ext2fs/ e2fsck/
+lib/ext2fs/ext2_fs.h:777:       __le32  s_reserved[94];         /* Padding to the end of the block */
+lib/ext2fs/swapfs.c:135:        /* catch when new fields are used from s_reserved */
+lib/ext2fs/swapfs.c:136:        EXT2FS_BUILD_BUG_ON(sizeof(sb->s_reserved) != 94 * sizeof(__le32));
+lib/ext2fs/tst_super_size.c:156:        check_field(s_reserved, 94 * 4);
+
+Is there a risk that some garbage written to s_reserved (and not caught
+by either the kernel or e2fsck) will now appear as a "legitimate" resuid
+value?
 
 --D
 
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 8b67f04ab9de ("ext4: Add mount options in superblock")
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
->  fs/ext4/super.c | 17 +++++------------
->  1 file changed, 5 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 699c15db28a82f26809bf68533454a242596f0fd..94c98446c84f9a4614971d246ca7f001de610a8a 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -2460,7 +2460,7 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
->  					struct ext4_fs_context *m_ctx)
->  {
->  	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> -	char *s_mount_opts = NULL;
-> +	char s_mount_opts[65];
->  	struct ext4_fs_context *s_ctx = NULL;
->  	struct fs_context *fc = NULL;
->  	int ret = -ENOMEM;
-> @@ -2468,15 +2468,11 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
->  	if (!sbi->s_es->s_mount_opts[0])
->  		return 0;
+>  	__le32	s_checksum;		/* crc32c(superblock) */
+>  };
 >  
-> -	s_mount_opts = kstrndup(sbi->s_es->s_mount_opts,
-> -				sizeof(sbi->s_es->s_mount_opts),
-> -				GFP_KERNEL);
-> -	if (!s_mount_opts)
-> -		return ret;
-> +	strscpy_pad(s_mount_opts, sbi->s_es->s_mount_opts);
->  
->  	fc = kzalloc(sizeof(struct fs_context), GFP_KERNEL);
->  	if (!fc)
-> -		goto out_free;
-> +		return -ENOMEM;
->  
->  	s_ctx = kzalloc(sizeof(struct ext4_fs_context), GFP_KERNEL);
->  	if (!s_ctx)
-> @@ -2508,11 +2504,8 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
->  	ret = 0;
->  
->  out_free:
-> -	if (fc) {
-> -		ext4_fc_free(fc);
-> -		kfree(fc);
-> -	}
-> -	kfree(s_mount_opts);
-> +	ext4_fc_free(fc);
-> +	kfree(fc);
->  	return ret;
+> @@ -1812,6 +1814,18 @@ static inline int ext4_valid_inum(struct super_block *sb, unsigned long ino)
+>  		 ino <= le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count));
 >  }
 >  
+> +static inline int ext4_get_resuid(struct ext4_super_block *es)
+> +{
+> +	return(le16_to_cpu(es->s_def_resuid) |
+> +	       (le16_to_cpu(es->s_def_resuid_hi) << 16));
+> +}
+> +
+> +static inline int ext4_get_resgid(struct ext4_super_block *es)
+> +{
+> +	return(le16_to_cpu(es->s_def_resgid) |
+> +	       (le16_to_cpu(es->s_def_resgid_hi) << 16));
+> +}
+> +
+>  /*
+>   * Returns: sbi->field[index]
+>   * Used to access an array element from the following sbi fields which require
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 94c98446c84f9a4614971d246ca7f001de610a8a..0256c8f7c6cee2b8d9295f2fa9a7acd904382e83 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -2951,11 +2951,11 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
+>  	}
+>  
+>  	if (nodefs || !uid_eq(sbi->s_resuid, make_kuid(&init_user_ns, EXT4_DEF_RESUID)) ||
+> -	    le16_to_cpu(es->s_def_resuid) != EXT4_DEF_RESUID)
+> +	    ext4_get_resuid(es) != EXT4_DEF_RESUID)
+>  		SEQ_OPTS_PRINT("resuid=%u",
+>  				from_kuid_munged(&init_user_ns, sbi->s_resuid));
+>  	if (nodefs || !gid_eq(sbi->s_resgid, make_kgid(&init_user_ns, EXT4_DEF_RESGID)) ||
+> -	    le16_to_cpu(es->s_def_resgid) != EXT4_DEF_RESGID)
+> +	    ext4_get_resgid(es) != EXT4_DEF_RESGID)
+>  		SEQ_OPTS_PRINT("resgid=%u",
+>  				from_kgid_munged(&init_user_ns, sbi->s_resgid));
+>  	def_errors = nodefs ? -1 : le16_to_cpu(es->s_errors);
+> @@ -5270,8 +5270,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  
+>  	ext4_set_def_opts(sb, es);
+>  
+> -	sbi->s_resuid = make_kuid(&init_user_ns, le16_to_cpu(es->s_def_resuid));
+> -	sbi->s_resgid = make_kgid(&init_user_ns, le16_to_cpu(es->s_def_resgid));
+> +	sbi->s_resuid = make_kuid(&init_user_ns, ext4_get_resuid(es));
+> +	sbi->s_resgid = make_kgid(&init_user_ns, ext4_get_resuid(es));
+>  	sbi->s_commit_interval = JBD2_DEFAULT_MAX_COMMIT_AGE * HZ;
+>  	sbi->s_min_batch_time = EXT4_DEF_MIN_BATCH_TIME;
+>  	sbi->s_max_batch_time = EXT4_DEF_MAX_BATCH_TIME;
 > 
 > -- 
 > 2.51.0
