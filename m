@@ -1,87 +1,90 @@
-Return-Path: <linux-ext4+bounces-9924-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9925-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 600AAB53A07
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 19:14:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3C7EB53A09
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 19:14:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF232168DE2
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 17:14:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DCC51CC5E84
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 17:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E5435CEAD;
-	Thu, 11 Sep 2025 17:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED9936209C;
+	Thu, 11 Sep 2025 17:14:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aKh+U673"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="i/sI+mtq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19CD35FC31;
-	Thu, 11 Sep 2025 17:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF3636207B;
+	Thu, 11 Sep 2025 17:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757610841; cv=none; b=JWAzIgzK5pXbRtkxIQ6x5Wobr/jEvr3qJXQSKsm684PM7VJsZLaLNDZJkd3xeSkL86WdnPVrfI5jdQkcAhgeffC9aK8D5a+o2M3q8fYpai+9/1iofnENkeNXgpjiKImXLriOJRH4qWkHgfbJ+MmPeXHxJ6XgKgIxFLgpQlhWJOs=
+	t=1757610844; cv=none; b=CpkWuoODA/UD2G3+aIaUpGiRDES10/YTaEi2m7QmANFce2qZzuYNrEqDdtSiXLr40dtTZYWE6Z0YW3kk/erwP4+AKnjfYfrOo4TCnDiovQR17ff/+4S/QnkSsGH1a3+aRKAvjwBo7tl1VfO7GmITsn7723VY2A/B2KrmaxvUDaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757610841; c=relaxed/simple;
-	bh=BDNsQNrPBpe6rfThQpsBF4iMqAFLVxJBmag/eQC9jYM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r/+LaJAUuS5sK54ciDJGBmJ9xOY19IuGcLBbOfhKyNFfccugTv9MjCTXW9F1jHKA4G3GLZ1Qa3OoHxd5aISy/eFzUaDuqEax/Ge3Wuvma3x/Wqxf9uyQVeoqtD7TDTltCsQP0a7r8vj9M9umvZ4mVNwBVCobAuUXmcOluzq8z8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aKh+U673; arc=none smtp.client-ip=148.163.156.1
+	s=arc-20240116; t=1757610844; c=relaxed/simple;
+	bh=w+HAnnjKd3GJVEihEy0k9c5/uycjCPovrRjLi95YrnE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=S/LUvCjfkjm5VJQ05r3OD4+RxwopENVL9kVbb9VU13nJv6rIKT8OQ6LEuk1/P9uVE0ZXXLfz7SiIXmRxgBNo+hx8wvZNbapz69XngQV6YfbWJOqql9xUlwZR7xk+KU9l2xvv7DxNMzS24SiCT7Zb3bp4cvr6p/r1+N3wdpa70BI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=i/sI+mtq; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58BFvYQN012236;
-	Thu, 11 Sep 2025 17:13:51 GMT
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58BB05Qj009190;
+	Thu, 11 Sep 2025 17:13:55 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=dIErtpctXFxEtC9xE8yUjQnLMrRNq72psn2XMdQ3t
-	6E=; b=aKh+U673jfe1z9GJ8VkREVdGg61mpK0nYUqpjYc570KhpYIHEN2mtzGXl
-	5zl7RGmjXR3mf+p9kqf/yZwQqP19jH9i94UqsvRZ25BTLLYZ+12tBYBHZwhIXbbT
-	la5JlSuuUAoTLvyDDKvH5oiJ9RWYLcowOoqh29z+rm2ai+7kFDZMz1DhpmJ2nrTn
-	5uyDNu/aXa1ZUA9Jh08zpcFgBqhpuocGOSJS5+NH7OFRQSRDlk963wUaBOdkZiba
-	FEqypt21vUtXR4cm1N0ZSb1rCTtERWHpbT1w+xt1dBG65juMEIHLgwtKSQ53yqZg
-	H6Fqqtt+X/S5XTyxazqTE4bAytK3g==
+	:content-transfer-encoding:date:from:in-reply-to:message-id
+	:mime-version:references:subject:to; s=pp1; bh=4w8BDwO1ZUf0Evazr
+	ueiJY6KTF9inKx36aKsZrlnj8c=; b=i/sI+mtq9aLN6XcA5Pe9u69DZccSTGKcs
+	d5g+cLjl1xEuRhBy3Ft26oTxeKpHaZdRlUTFsVAit5Q8jEL70SmTK/a6hOjGR1cH
+	UdJznYw1RJKyMzjNKMU97ggNRpnKD0ALOZ+LJ9s05vo3dlSzS08J8HfyprTP5kxV
+	Uy25Al636aY65fI6wyE207vdAlh85kFfAE4ccZ9zISyn7niLq+10zB9mkLI9aaPT
+	Zoi8+d2FE7VKAzBDydf5PCZZks/FyNAcohNhVDQB2e8X4JWImwkI48/oMmDNrHVY
+	qFc13CQjYAOonvtyK1/JyQyDpnGXUjblFRk0/tjU51fBxuwOiBTNg==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490cmx66dk-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490acrdgfc-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Sep 2025 17:13:51 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58BH6M2L030605;
-	Thu, 11 Sep 2025 17:13:51 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490cmx66de-1
+	Thu, 11 Sep 2025 17:13:55 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58BH8sXN024933;
+	Thu, 11 Sep 2025 17:13:54 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490acrdgf8-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Sep 2025 17:13:51 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58BGVI6W020495;
-	Thu, 11 Sep 2025 17:13:49 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 490yp171t4-1
+	Thu, 11 Sep 2025 17:13:54 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58BGgkkO011435;
+	Thu, 11 Sep 2025 17:13:53 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 490y9uq52m-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Sep 2025 17:13:49 +0000
+	Thu, 11 Sep 2025 17:13:53 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58BHDl6Q32637440
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58BHDpVu53149964
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Sep 2025 17:13:48 GMT
+	Thu, 11 Sep 2025 17:13:52 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CC7572004F;
-	Thu, 11 Sep 2025 17:13:47 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id D7AC820063;
+	Thu, 11 Sep 2025 17:13:51 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A1D6920040;
-	Thu, 11 Sep 2025 17:13:44 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 727CC2004F;
+	Thu, 11 Sep 2025 17:13:48 +0000 (GMT)
 Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.17.37])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 11 Sep 2025 17:13:44 +0000 (GMT)
+	Thu, 11 Sep 2025 17:13:48 +0000 (GMT)
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org
 Cc: Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
         john.g.garry@oracle.com, tytso@mit.edu, linux-xfs@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [PATCH v6 00/11] Add more tests for multi fs block atomic writes
-Date: Thu, 11 Sep 2025 22:43:31 +0530
-Message-ID: <cover.1757610403.git.ojaswin@linux.ibm.com>
+Subject: [PATCH v6 01/12] common/rc: Add _min() and _max() helpers
+Date: Thu, 11 Sep 2025 22:43:32 +0530
+Message-ID: <9475f8da726b894dd152b54b1416823181052c2a.1757610403.git.ojaswin@linux.ibm.com>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <cover.1757610403.git.ojaswin@linux.ibm.com>
+References: <cover.1757610403.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,153 +93,69 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lNGX7BwFNhIo7Mdjm_f9f7m4N1elrfqv
-X-Proofpoint-ORIG-GUID: aRGL50xYY8qATjYKgMym6s2uv-Bko6C2
-X-Authority-Analysis: v=2.4 cv=J52q7BnS c=1 sm=1 tr=0 ts=68c3034f cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=yJojWOMRYYMA:10 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8 a=VnNF1IyMAAAA:8
- a=RhRxWBKHx9l-Qd8VlncA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA2MDAyNSBTYWx0ZWRfX8bvEQpOLDLzC
- 8dfugEwjzt661d9bwfzce56c+BzUFcFzXrRCV058idPqLKDBrJqcXEcqILtVLAAfExXRc4jval1
- EKMnAtchWpy+cUyF3BgovTuCoxWOw9ACnYC4cgqmpNaKQoWljhJabKnA0y+IbEXpxNZd7dBDAy9
- Vbdze1UWb1wVZIUJsfxvJMQ0a1gCypd6Mty94P+wqXtbcslNTND+JKTX/bvnVUIyaBJYxlH7R8R
- Qd+VGhWDdJUCrd0uzFERW+6CV9jon3Id6TH2ctpjCpVPghFC4PbUe8LnHL0RjsnzYatotHT7b1x
- 2AiySlhkZ6DMCiB+pqXqHdEf3LxuxNUXxj/NWi6kUKSOJmeAHdHEVldbyBUAayvM1z4KtXuTDmP
- Rxfw8D+8
+X-Proofpoint-GUID: XeNOgZgpvvw0Ue7ocIDcr884w84A20b3
+X-Authority-Analysis: v=2.4 cv=Mp1S63ae c=1 sm=1 tr=0 ts=68c30353 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=yJojWOMRYYMA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=wDx1mg2EYdB0JXDzLs4A:9
+X-Proofpoint-ORIG-GUID: DkDTP1kNrScJXzhjjB6Pi-JU_pVfvOeN
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA2MDAwMCBTYWx0ZWRfX43miWC2CRvZ5
+ ezGke3OYi6qAgjk1cpwebThQsAPGkRAoLe00VK8649ehFHby9qft+Epd0glqQQdN5a8OP3BiQDA
+ OiGdyhErfJFFLWhvZ39ipzMo8okwLGg0Z5x1M+6TGf0WVpfpzkSW6Wt/VCCFBIUKvsufUPPV8jD
+ gF/L8YLytxMoSyvfZjCVYt+fHopCFDTjoLHpX8ojqkBK1RAMbkrdilWcSoFBKHZtxhYpZoX1Y6O
+ 9HjTvKwA0K2JkTxzaDyKnCEjygdwwVKpuv9K4WXtWyHvceRjEE5qAMc4Z9vfqoSrcbFN88jWYrx
+ tuJKD1FgBwSqdK0o9CbbZVMC7FXKGKuNT+irP2zztlBx5jxg/gBgczXchcY3EnbHAVpEQNqZoRr
+ bMc5Cofr
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-09-11_02,2025-09-11_02,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 clxscore=1015 suspectscore=0 spamscore=0 phishscore=0
- bulkscore=0 adultscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 malwarescore=0 clxscore=1015 phishscore=0 spamscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 suspectscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509060025
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509060000
 
-Changes in v6:
-- Picked up reviews from Darrick, Zorro and John! (Thanks)
-- Added _require_fio_atomic_writes helper in patch 3 as a wrapper arounc
-  __require_fio_version
-- minor spelling and refactors
+Many programs open code these functionalities so add it as a generic helper
+in common/rc
 
-Changes in v5: (Thanks to John & Darrick for reviews)
-- commor/rc: Add a _require_fio_version helper
-- fsx: Switch atomic writes off if direct IO (-Z) not passed
-- fio tests: better commit messages to explain what we are testing
-- ext4/06{1..2}: Refactor code, also test only a few combinations of bs
-  clustersize rather than every single
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+---
+ common/rc | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-Changes in v4: (Thanks to Darrick, John and Zorro for the reviews) [4]
-
-- g/1226,1227: Modify fio threads to not issue overlapping atomic writes
-- g/1228: Use xfs_io -c "shutdown" instead of _scratch_shutdown to avoid
-          bash overhead
-- g/1229: Remove FSX_AVOID handling for bigalloc from common/rc. It is
-          part of the specific test now
-- ext4/063: add more clearer extent diagram
-- ext4/064: Drop the test for now as im taking sometime to understand
-            the behavior better.
-- Removed test numbers from commit message
-- For tests with significant changes I've removed the RVBs
-
-[4] https://lore.kernel.org/fstests/0eb2703b-a862-4a40-b271-6b8bb27b4ad4@oracle.com/T/#mef34a8c13cbee466bfc162db637d6e1cf0a8b06d
-
-Changes in v3 [3]:
-
-- (2/13) use dumpe2fs to figure out if FS is bigalloc
-- (9/13) generic/1230: Detect device speeds for more accurate testing. ALso
-  speeds up the test
-- fio tests - switch to write followed by verify approach to avoid false
-  failures due to fio verify reads splitting and racing with atomic
-  writes. Discussion thread:
-
-  https://lore.kernel.org/fstests/0430bd73-e6c2-4ce9-af24-67b1e1fa9b5b@oracle.com/
-
-  [3] https://lore.kernel.org/fstests/cover.1752329098.git.ojaswin@linux.ibm.com/
-
-Changes in v2 [1]:
-
-- (1/13) new patch with _min and _max helpers
-- (2/13) remove setup_fs_options and add fsx specific helper
-- (4/13) skip atomic write instead of falling back to normal write (fsx)
-- (4/13) make atomic write default on instead of default off (fsx)
-- (5,6/13) refactor and cleanup fio tests
-- (7/13) refactored common code
-- (8/13) dont ignore mmap writes for fsx with atomic writes
-- (9/13) use od instead of xxd. handle cleanup of bg threads in _cleanup()
-- (10-13/13) minor refactors
-- change all tests use _fail for better consistency
-- use higher tests numbers for easier merging
-
- [1] https://lore.kernel.org/fstests/cover.1750924903.git.ojaswin@linux.ibm.com/
-
-* Original cover [2] *
-
-These are the tests we were using to verify that filesystems are not
-tearing multi fs block atomic writes. Infact some of the tests like
-generic/772 (now: g/1230) actually helped us catch and fix issues in
-ext4's early implementations of multi fs block atomic writes and hence
-we feel these tests are useful to have in xfstests.
-
-We have tested these with scsi debug as well as a real nvme device
-supporting multi fs block atomic writes.
-
-Thoughts and suggestions are welcome!
-
-[2] rfc: https://lore.kernel.org/fstests/cover.1749629233.git.ojaswin@linux.ibm.com/
-
-
-Ojaswin Mujoo (10):
-  common/rc: Add _min() and _max() helpers
-  common/rc: Add fio atomic write helpers
-  common/rc: Add a helper to run fsx on a given file
-  ltp/fsx.c: Add atomic writes support to fsx
-  generic: Add atomic write test using fio crc check verifier
-  generic: Add atomic write test using fio verify on file mixed mappings
-  generic: Add atomic write multi-fsblock O_[D]SYNC tests
-  generic: Stress fsx with atomic writes enabled
-  generic: Add sudden shutdown tests for multi block atomic writes
-  ext4: Atomic write test for extent split across leaf nodes
-
-Ritesh Harjani (IBM) (2):
-  ext4: Test atomic write and ioend codepaths with bigalloc
-  ext4: Test atomic writes allocation and write codepaths with bigalloc
-
- common/rc              |  88 +++++++++-
- ltp/fsx.c              | 115 ++++++++++++-
- tests/ext4/061         | 155 +++++++++++++++++
- tests/ext4/061.out     |   2 +
- tests/ext4/062         | 203 +++++++++++++++++++++++
- tests/ext4/062.out     |   2 +
- tests/ext4/063         | 129 +++++++++++++++
- tests/ext4/063.out     |   2 +
- tests/generic/1226     | 108 ++++++++++++
- tests/generic/1226.out |   2 +
- tests/generic/1227     | 132 +++++++++++++++
- tests/generic/1227.out |   2 +
- tests/generic/1228     | 139 ++++++++++++++++
- tests/generic/1228.out |   2 +
- tests/generic/1229     |  68 ++++++++
- tests/generic/1229.out |   2 +
- tests/generic/1230     | 368 +++++++++++++++++++++++++++++++++++++++++
- tests/generic/1230.out |   2 +
- 18 files changed, 1513 insertions(+), 8 deletions(-)
- create mode 100755 tests/ext4/061
- create mode 100644 tests/ext4/061.out
- create mode 100755 tests/ext4/062
- create mode 100644 tests/ext4/062.out
- create mode 100755 tests/ext4/063
- create mode 100644 tests/ext4/063.out
- create mode 100755 tests/generic/1226
- create mode 100644 tests/generic/1226.out
- create mode 100755 tests/generic/1227
- create mode 100644 tests/generic/1227.out
- create mode 100755 tests/generic/1228
- create mode 100644 tests/generic/1228.out
- create mode 100755 tests/generic/1229
- create mode 100644 tests/generic/1229.out
- create mode 100755 tests/generic/1230
- create mode 100644 tests/generic/1230.out
-
+diff --git a/common/rc b/common/rc
+index 81587dad..28fbbcbb 100644
+--- a/common/rc
++++ b/common/rc
+@@ -5978,6 +5978,28 @@ _require_inplace_writes()
+ 	fi
+ }
+ 
++_min() {
++	local ret
++
++	for arg in "$@"; do
++		if [ -z "$ret" ] || (( $arg < $ret )); then
++			ret="$arg"
++		fi
++	done
++	echo $ret
++}
++
++_max() {
++	local ret
++
++	for arg in "$@"; do
++		if [ -z "$ret" ] || (( $arg > $ret )); then
++			ret="$arg"
++		fi
++	done
++	echo $ret
++}
++
+ ################################################################################
+ # make sure this script returns success
+ /bin/true
 -- 
 2.49.0
 
