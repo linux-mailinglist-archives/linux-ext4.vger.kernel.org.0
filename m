@@ -1,172 +1,171 @@
-Return-Path: <linux-ext4+bounces-9908-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9909-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03927B5258A
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 03:10:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12EE4B526D0
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 05:03:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 445FC1C27006
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 01:11:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1A2A4885DE
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Sep 2025 03:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB9F1E9B22;
-	Thu, 11 Sep 2025 01:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9351B1A9F92;
+	Thu, 11 Sep 2025 03:03:49 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7063D189906;
-	Thu, 11 Sep 2025 01:10:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C964A32;
+	Thu, 11 Sep 2025 03:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757553026; cv=none; b=QVXYi3qHOKg069p34j9YdxiszOlxBRf3h+2YTEM8RmoO8CIm+cKYR9XeCGY4CxGKEWlT3uOwj6M0jciuymbCsf9y1+YKJ/d25qRyFzR/MR7XN3iKF0bzsS4g0hGk80BmOPsCwuhvZ7vjcnWEL2Pt0Lx9ltBhEpHLcSjQkf6KG4Y=
+	t=1757559829; cv=none; b=jUVBrAK/Z+fkUsMgspJxOQ4IyRRxSQG5krv58+imNU6l+3vO/Nn13zDuPVG5orzkGbt5MA7dnj0x3ogKrX+a8EqcKGV62hXc1S/fLKXpsm6FYC9QUOz7nPVE5g8GM7l3Sl6bTp4fdnpwgTDDL9jEUfkUeAYi7q/5KfvT4UQFidk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757553026; c=relaxed/simple;
-	bh=bZUjLK5SgTEcv0bBLzldU8xIbeeQxwJdj07Qn7BaKg0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mEU82/QrYZNUU41HtdN2dmco1waJ+IIFsCkM0mekHWITdMbKUvaCrHB7i3QREOB4kD2/NeMraAa2IoQQbeHEusETAqHFdaSSMX7acSBBJMvyKumbQrbNQaCpXwA1Tb0S+i9s7oRsHFHtb/Gvy9YTCJXtEc8PRIQcr3NDqmTYUQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4cMfXl1TFQz2TTNq;
-	Thu, 11 Sep 2025 09:07:03 +0800 (CST)
-Received: from kwepemo500015.china.huawei.com (unknown [7.202.194.227])
-	by mail.maildlp.com (Postfix) with ESMTPS id E89B51800B2;
-	Thu, 11 Sep 2025 09:10:19 +0800 (CST)
-Received: from [10.174.179.92] (10.174.179.92) by
- kwepemo500015.china.huawei.com (7.202.194.227) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 11 Sep 2025 09:10:19 +0800
-Message-ID: <d82a3e6f-25a2-4943-9e97-73337b33cfcc@huawei.com>
-Date: Thu, 11 Sep 2025 09:10:07 +0800
+	s=arc-20240116; t=1757559829; c=relaxed/simple;
+	bh=kG0UySyRFrCja1kzo53SphF8lwr8Xuv0SNwkLVFOTvA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=NNe5vjDQhxqQ6J9sxzQVkHxFLrLygYXXp2ppQ/4DDEIZqVc6hSPBwpbntxs10B+Ryqm5wRfykw7p8sDEMahcQvesBCGE1DP5WUxOdxMOOg5mhCF38n7EXqgx4qc1RvyYpav6kWdsvPXymqL7lztktYD9cvTIFOjWxBQVK/ToWAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cMj7N3wXRzYQvCF;
+	Thu, 11 Sep 2025 11:03:44 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 11D1F1A01A1;
+	Thu, 11 Sep 2025 11:03:43 +0800 (CST)
+Received: from huawei.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgDnMY4LPMJo3pxqCA--.9534S4;
+	Thu, 11 Sep 2025 11:03:41 +0800 (CST)
+From: Yongjian Sun <sunyongjian@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu,
+	jack@suse.cz,
+	yangerkun@huawei.com,
+	yi.zhang@huawei.com,
+	libaokun1@huawei.com,
+	chengzhihao1@huawei.com,
+	sunyongjian1@huawei.com
+Subject: [PATCH v4] ext4: increase i_disksize to offset + len in ext4_update_disksize_before_punch()
+Date: Thu, 11 Sep 2025 10:54:12 +0800
+Message-Id: <20250911025412.186872-1-sunyongjian@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
+Reply-To: sunyongjian1@huawei.com
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] ext4: increase i_disksize to offset + len in
- ext4_update_disksize_before_punch()
-To: Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<tytso@mit.edu>, <yangerkun@huawei.com>, <yi.zhang@huawei.com>,
-	<libaokun1@huawei.com>, <chengzhihao1@huawei.com>
-References: <20250910042516.3947590-1-sunyongjian@huaweicloud.com>
- <hsnzaxvcwphxncr6mmoepqnbokh7jblkytuqqyzpqsk7w3wsmr@bwutehzrrhys>
-From: Sun Yongjian <sunyongjian1@huawei.com>
-In-Reply-To: <hsnzaxvcwphxncr6mmoepqnbokh7jblkytuqqyzpqsk7w3wsmr@bwutehzrrhys>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemo500015.china.huawei.com (7.202.194.227)
+X-CM-TRANSID:gCh0CgDnMY4LPMJo3pxqCA--.9534S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFWDXr17KF45AFW8uw15Arb_yoWrGw1Dpr
+	W5GryUKr4qg34fCws7W3Wjqw1jkay5JrWxGFy7Gr4avryUZw4IqF10qrya9a1DJrs3Ar4q
+	qFs0qrsFva48Z3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
+X-CM-SenderInfo: 5vxq505qjmxt3q6k3tpzhluzxrxghudrp/
 
+From: Yongjian Sun <sunyongjian1@huawei.com>
 
+After running a stress test combined with fault injection,
+we performed fsck -a followed by fsck -fn on the filesystem
+image. During the second pass, fsck -fn reported:
 
-在 2025/9/10 16:11, Jan Kara 写道:
-> On Wed 10-09-25 12:25:16, Yongjian Sun wrote:
->> From: Yongjian Sun <sunyongjian1@huawei.com>
->>
->> After running a stress test combined with fault injection,
->> we performed fsck -a followed by fsck -fn on the filesystem
->> image. During the second pass, fsck -fn reported:
->>
->> Inode 131512, end of extent exceeds allowed value
->> 	(logical block 405, physical block 1180540, len 2)
->>
->> This inode was not in the orphan list. Analysis revealed the
->> following call chain that leads to the inconsistency:
->>
->>                               ext4_da_write_end()
->>                                //does not update i_disksize
->>                               ext4_punch_hole()
->>                                //truncate folio, keep size
->> ext4_page_mkwrite()
->>   ext4_block_page_mkwrite()
->>    ext4_block_write_begin()
->>      ext4_get_block()
->>       //insert written extent without update i_disksize
->> journal commit
->> echo 1 > /sys/block/xxx/device/delete
->>
->> da-write path updates i_size but does not update i_disksize. Then
->> ext4_punch_hole truncates the da-folio yet still leaves i_disksize
->> unchanged(in the ext4_update_disksize_before_punch function, the
->> condition offset + len < size is met). Then ext4_page_mkwrite sees
->> ext4_nonda_switch return 1 and takes the nodioread_nolock path, the
->> folio about to be written has just been punched out, and it’s offset
->> sits beyond the current i_disksize. This may result in a written
->> extent being inserted, but again does not update i_disksize. If the
->> journal gets committed and then the block device is yanked, we might
->> run into this. It should be noted that replacing ext4_punch_hole with
->> ext4_zero_range in the call sequence may also trigger this issue, as
->> neither will update i_disksize under these circumstances.
->>
->> To fix this, we can modify ext4_update_disksize_before_punch to
->> increase i_disksize to min(offset + len) when both i_size and
->> (offset + len) are greater than i_disksize.
->>
->> Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
->> ---
->> Changes in v3:
->> - Add a condition to avoid increasing i_disksize and include some comments.
->> - Link to v2: https://lore.kernel.org/all/20250908063355.3149491-1-sunyongjian@huaweicloud.com/
->> Changes in v2:
->> - The modification of i_disksize should be moved into ext4_update_disksize_before_punch,
->>    rather than being done in ext4_page_mkwrite.
->> - Link to v1: https://lore.kernel.org/all/20250731140528.1554917-1-sunyongjian@huaweicloud.com/
-> 
-> Very nice! Just some language improvements below but otherwise feel free to
-> add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 5b7a15db4953..3df03469d405 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -4287,7 +4287,10 @@ int ext4_can_truncate(struct inode *inode)
->>    * We have to make sure i_disksize gets properly updated before we truncate
->>    * page cache due to hole punching or zero range. Otherwise i_disksize update
->>    * can get lost as it may have been postponed to submission of writeback but
->> - * that will never happen after we truncate page cache.
->> + * 1) that will never happen after we truncate page cache to the end of i_size;
->> + * 2) that will get deferred after we truncate page cache in i_size but beyond
->> + *    i_disksize, another concurrent write page fault can allocate written
->> + *    blocks in the range and lead to filesystem inconsistency.
-> 
-> I'd phrase this:
->   ... that will never happen if we remove the folio containing i_size from
-> the page cache. Also if we punch hole within i_size but above i_disksize,
-> following ext4_page_mkwrite() may mistakenly allocate written blocks over
-> the hole and thus introduce allocated blocks beyond i_disksize which is not
-> allowed (e2fsck would complain in case of crash).
-> 
-> 								Honza
-> 
-Thank you, Jan! This does make it simpler and easier to understand. I'll 
-improve it.
+Inode 131512, end of extent exceeds allowed value
+	(logical block 405, physical block 1180540, len 2)
 
->>    */
->>   int ext4_update_disksize_before_punch(struct inode *inode, loff_t offset,
->>   				      loff_t len)
->> @@ -4298,9 +4301,11 @@ int ext4_update_disksize_before_punch(struct inode *inode, loff_t offset,
->>   	loff_t size = i_size_read(inode);
->>   
->>   	WARN_ON(!inode_is_locked(inode));
->> -	if (offset > size || offset + len < size)
->> +	if (offset > size)
->>   		return 0;
->>   
->> +	if (offset + len < size)
->> +		size = offset + len;
->>   	if (EXT4_I(inode)->i_disksize >= size)
->>   		return 0;
->>   
->> -- 
->> 2.39.2
->>
+This inode was not in the orphan list. Analysis revealed the
+following call chain that leads to the inconsistency:
+
+                             ext4_da_write_end()
+                              //does not update i_disksize
+                             ext4_punch_hole()
+                              //truncate folio, keep size
+ext4_page_mkwrite()
+ ext4_block_page_mkwrite()
+  ext4_block_write_begin()
+    ext4_get_block()
+     //insert written extent without update i_disksize
+journal commit
+echo 1 > /sys/block/xxx/device/delete
+
+da-write path updates i_size but does not update i_disksize. Then
+ext4_punch_hole truncates the da-folio yet still leaves i_disksize
+unchanged(in the ext4_update_disksize_before_punch function, the
+condition offset + len < size is met). Then ext4_page_mkwrite sees
+ext4_nonda_switch return 1 and takes the nodioread_nolock path, the
+folio about to be written has just been punched out, and it’s offset
+sits beyond the current i_disksize. This may result in a written
+extent being inserted, but again does not update i_disksize. If the
+journal gets committed and then the block device is yanked, we might
+run into this. It should be noted that replacing ext4_punch_hole with
+ext4_zero_range in the call sequence may also trigger this issue, as
+neither will update i_disksize under these circumstances.
+
+To fix this, we can modify ext4_update_disksize_before_punch to
+increase i_disksize to min(offset + len) when both i_size and
+(offset + len) are greater than i_disksize.
+
+Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
+---
+Changes in v4:
+- Make the comments simpler and clearer.
+- Link to v3: https://lore.kernel.org/all/20250910042516.3947590-1-sunyongjian@huaweicloud.com/
+Changes in v3:
+- Add a condition to avoid increasing i_disksize and include some comments.
+- Link to v2: https://lore.kernel.org/all/20250908063355.3149491-1-sunyongjian@huaweicloud.com/
+Changes in v2:
+- The modification of i_disksize should be moved into ext4_update_disksize_before_punch,
+  rather than being done in ext4_page_mkwrite.
+- Link to v1: https://lore.kernel.org/all/20250731140528.1554917-1-sunyongjian@huaweicloud.com/
+---
+ fs/ext4/inode.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 5b7a15db4953..f82f7fb84e17 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4287,7 +4287,11 @@ int ext4_can_truncate(struct inode *inode)
+  * We have to make sure i_disksize gets properly updated before we truncate
+  * page cache due to hole punching or zero range. Otherwise i_disksize update
+  * can get lost as it may have been postponed to submission of writeback but
+- * that will never happen after we truncate page cache.
++ * that will never happen if we remove the folio containing i_size from the
++ * page cache. Also if we punch hole within i_size but above i_disksize,
++ * following ext4_page_mkwrite() may mistakenly allocate written blocks over
++ * the hole and thus introduce allocated blocks beyond i_disksize which is
++ * not allowed (e2fsck would complain in case of crash).
+  */
+ int ext4_update_disksize_before_punch(struct inode *inode, loff_t offset,
+ 				      loff_t len)
+@@ -4298,9 +4302,11 @@ int ext4_update_disksize_before_punch(struct inode *inode, loff_t offset,
+ 	loff_t size = i_size_read(inode);
+ 
+ 	WARN_ON(!inode_is_locked(inode));
+-	if (offset > size || offset + len < size)
++	if (offset > size)
+ 		return 0;
+ 
++	if (offset + len < size)
++		size = offset + len;
+ 	if (EXT4_I(inode)->i_disksize >= size)
+ 		return 0;
+ 
+-- 
+2.39.2
 
 
