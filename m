@@ -1,78 +1,78 @@
-Return-Path: <linux-ext4+bounces-9972-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9973-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1499AB55C2B
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Sep 2025 02:59:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A2C9B55C3C
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Sep 2025 03:00:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8CDB5C4F0E
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Sep 2025 00:59:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A73171C83283
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Sep 2025 01:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D43814EC62;
-	Sat, 13 Sep 2025 00:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63A5A11CA9;
+	Sat, 13 Sep 2025 01:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ci0pMqa8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJWWdfHX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1630D14B953
-	for <linux-ext4@vger.kernel.org>; Sat, 13 Sep 2025 00:59:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF1B1548C
+	for <linux-ext4@vger.kernel.org>; Sat, 13 Sep 2025 01:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757725185; cv=none; b=i6nOzmEfJj3csysHAvlvAl+bRvPGvQeGaaf6LaBVkosF4hQn9/duWQOERP82i2Ahiwe+/XB53277s/LprHzOCbfIEtZBtQN5o7C5g3w/ITl85I0vgArQAoecmUVnQqKkMMtYUIKywT2hbvahOTdlhffU85KdXlTJnOvPe/SM2f0=
+	t=1757725249; cv=none; b=EWXSTEB0BuDFuFRqbHY9l+yXdwzFoaH9mh8la/AL20vZqQmb+TvFh0eo/YAdWbMLZWS4Ozg4mYDw1NbqA+mSALc8TiZT364VfJ0a6s9+lCoOayT3LiltQ3kkHg/5Zw7Kf/ofefcD0e36YKjpWEpSsVRKsadg+qzcqqhSr+cKg5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757725185; c=relaxed/simple;
-	bh=96PHKpKkduNWBMWlLUmXlhnRkmSl0kWQr4vXMbTyP8M=;
+	s=arc-20240116; t=1757725249; c=relaxed/simple;
+	bh=WmrSleO2XCNYN8uS+EKoWQ5+E5KvuC+dDdzgWUmiL7o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t9A7bwCCK9207h4IRO8sfo8X1bqepkldQcoAzM/ZXslTmMYbjs540HtZnzoNQbWc/FvgUpBFRmS9+cuhYyuzL9P1p4tmIBEwkLZ2eTMrlC8+zrQ/8GBkNbVZNr6OGlIqLCYx/X74pb0WZ5cMWGowVXdwkiah1ndX5cON3xR5ifw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ci0pMqa8; arc=none smtp.client-ip=209.85.218.46
+	 MIME-Version; b=oJ4FXf5F9+zhYei0KtA/9B/gyjqRpYHtNKLjivdgBmYRb3IR1G1/v25xMlbGPf4HhuRZabZLoF+huFzZDBpYsEBxB7W9wXuDXxlEPGB3U1cpDRz5+8wkFo8ibT7x5N8e3G8layEx1mfkvze5j0l1iJj1DRzeAI5UEPBVRHSKDRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJWWdfHX; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b07e081d852so68051466b.2
-        for <linux-ext4@vger.kernel.org>; Fri, 12 Sep 2025 17:59:41 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b04b55d5a2cso428224166b.2
+        for <linux-ext4@vger.kernel.org>; Fri, 12 Sep 2025 18:00:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757725180; x=1758329980; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757725246; x=1758330046; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6fWPoN959WwxjoYegCw0rDaXLTHmPmQJSliJ+OqkRJY=;
-        b=ci0pMqa8PcrROKjXJdT069LT+w8CTpISWITlbfW/qtYcYwN/E9/DcLWNr/TpFiq3Ad
-         QGOTKU53qwruWOiJs5/ZIzTaYZOVhAin6txhF3hPH2+OOlejQh98VgHulezohlcdDX2m
-         cVt2AZhT8uGbv4Nec92z8dbeQO4pbNjpEB22pjBywRVyKIrHmXfsYMflIYY46yePUVU6
-         zdaw3mLA+fJrXUrEodmWoWb+jz/WCuthgKwyfcLoSI4ydp/v7D+ibgsafGt0CUUX2ZqN
-         rS12SoggmKIRUIi+KHUDdtLvHiabq8s8eQgov8mHArCKjQL5NIxrYkQXHjJscrZKeMwI
-         odwA==
+        bh=XoEWD/ShpnwzaQ8ORuPz9c0ALO6Ls67XcNa7R8iqlGI=;
+        b=MJWWdfHXdyyxn+qZxVH4DHxwMcIT4qAafC00rGnqPEIXIU4kCt7lhJt7wWfYB4mV2/
+         b+nlHZOUEAEpw32mNdqPDuX6WDTqq/uIRW7bD1vUv96nBtUPlucQkJRTPnNJk+5noDnW
+         mKp4cAm4cmigaIxf0/9ZxG+YfkVzzcH8tVOxcUR0alnYeP6aBT+N5ORVCIcW2NRKeJKq
+         GNHfkNo4L71eYJeK8rNpATt14Lc0+jxJqU9wUlpWjBHQnxAWeCAUXmsKwoFmWjNfjnfq
+         XdF6VYrC81c7Xd4xquqLcjzB7zOhccL0yoqx7FTh5WW+sQ2vY82qrfFsQaZm/l7WuqSY
+         oWeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757725180; x=1758329980;
+        d=1e100.net; s=20230601; t=1757725246; x=1758330046;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6fWPoN959WwxjoYegCw0rDaXLTHmPmQJSliJ+OqkRJY=;
-        b=YAM5IriVVmEbnVPK8wxyl0nHS3hiMpMwx6OcY4Ppnq3e3vwFAurr9TQVKrIwxeuT88
-         wbzDEYsETNgDZSll6AWzlrEZrsoRE5RZtZctwdgdaKJWbWVxK4KfwDBSgNuDLbf42WLf
-         EI39MmNgMxsJzftv1wQV8Kd0Lg95bYn981hd37VfIiAokAMZWkoTWYLuV3Q8QBUgDea5
-         RFAoaLZXbK8x4CZaL5p+mKmixRwz/1j49pLPcZqnaeLCb5EWxZ9GabXPz4pm7CwFs37u
-         dD7xw+hy6n6ae96iDokN1mhHr0N95Vsvg9xZzYO8kgbFLK+dDxiqE0Y/I2GQVjmJ9H+p
-         rwyA==
-X-Forwarded-Encrypted: i=1; AJvYcCXtg920b/BKWtAMf6P/wPKskGQTc3PgipbSZe7R2JX55EbEmNZADB9+xYh8JNp5/fkueTxAwEBi03AK@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxt0knLs8QOfj1wI8as7j/kGAbFvTVSGqKnGmvQ4rOpqjQa52Rw
-	1XBvd2qlBpfKXQpPZ1pnpKSB7My/OCuY/A3UFieOwR8RlmhIoGkSYU+r
-X-Gm-Gg: ASbGncu/9WW9gHeW5moy0cxWroUfmHjiAv1sywO36uuACM9bf3BjJo73wxgFTTb8QKP
-	hGj2mqIXkWsbdJEohEedB8Bz5XcvPHdrRq1n9TUpET/6SZz2V8whFBKVqRCSgXjp9CFXc/0lgqE
-	990OzNudRTzei7Fqydbp0iq02izOaA/HlBWGqH2ytiIYmJIijNSd+XP7xitWTRA8HXZ1khPwyUJ
-	YqfELekTI/xTYBHHMd0cSG8l+HgTUEqTnwhP6TgdfXvDBav3elcRptzc8xInTzdlFNa6nS5T9UU
-	LidAQADtT5kti1hVfvfhLH6tVwQEhebmRkllKdy+T5RIpx5gUsb9MruPnq7k9RRnDF0EKFWZ2t4
-	hW1PwXNqRyQlDueHGN54=
-X-Google-Smtp-Source: AGHT+IGLvsatTRrbnodGqisgzpCsfnT+5kjCyZkQGsCYdRKthq/XXLBOPdic+fyhUVGMnj7YztyCUg==
-X-Received: by 2002:a17:907:3f1a:b0:b04:ae7c:703e with SMTP id a640c23a62f3a-b07c35bca5fmr458205966b.24.1757725180390;
-        Fri, 12 Sep 2025 17:59:40 -0700 (PDT)
+        bh=XoEWD/ShpnwzaQ8ORuPz9c0ALO6Ls67XcNa7R8iqlGI=;
+        b=bynyEgJj2urpKuQxy6k+TT7AmqKiNehKhiEQYiYaWGMMuF8zczRZnt35DAm6QV53Lp
+         1GL+F5Y57zWzQBLKU+0ABxgRdCihg4ZoaklX7eQGTL7xLQJ1rrOiq74/Exl+UDCQxIaZ
+         j958lR+ZxqJpM560V5QdfV7hORICZuovnnA6QY8WSvcLm8k0R55m0z4nG6kGtZGjBS1x
+         rd2TacepjOufktQztA+0gqvZBrURF7pHMn0t/rXCQ0hHHJpzuzDoFdv+PBdBzyjHOSz5
+         rLN576n4NjlUqSNzlE0zuQnVmqYXoCFeY9Fo+oImS8FcY69aoG2urQu7CRWwrNP3pRMY
+         K6mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXlL1i9Mewb8JwqNM/TbXfgo+hyANHpTt53ro+b/trDZH8mCmxOx7FaRki6U27qYPB5nQbsDWYgBQXd@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXQlyKSKlDZVt3pAwGX6dMfukKWm306RJhk0jWSjDriFB0n3I4
+	FpW661Swp/KK+mtIBRUl+OTQWRsEsv3vb8Q8l85gK9rm09iKBVAN28Ty
+X-Gm-Gg: ASbGncs9fuZG9iC4SCR1+gZYHa4vqy7nU8ENd10S2ZkDMMt1kpK5UIFilA/m30cn+0K
+	EuHoOn4Eq5qRhmfw505kwONgcv2kE7PBlTgIcjLFJSZipdtaHz8lk3Ug8X7ykiqcJu+Y1laoKtq
+	D2MlQIpIEcOEOj+VyhEJg4jgcJMxsJRnvgz2KZKi5Sr5UtFAWDCBjTP28RmE50XC1HqDYK8R9zA
+	Lb4skG390yM/bxYPyvqThP2qjZhaLAcvTn5xnPfLiMTf+nUyhd1sh3nNAJuNbevxV6opRFJ1RMa
+	Eu5vrmZSB7rWbELfp4tw9LHrzZHfNCEMyqwSYsFt6rBgfROQ2TXEqp+bgphOd7NOoWKFvJNFtwo
+	9nJwDASqMuAhCcyqbpfhiKB/KlAiELg==
+X-Google-Smtp-Source: AGHT+IFN5sGx8Mx9m2aD2jbl3cQxyHXmx0LPyYapXdwnUwhP9+XvMT+8Mvs3QRhc/UxXrnFX4WIsYg==
+X-Received: by 2002:a17:907:daa:b0:b04:7232:3e97 with SMTP id a640c23a62f3a-b07c357507cmr467580066b.21.1757725245716;
+        Fri, 12 Sep 2025 18:00:45 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b3347a2dsm471368266b.98.2025.09.12.17.59.35
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32dcf77sm470822766b.64.2025.09.12.18.00.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:59:39 -0700 (PDT)
+        Fri, 12 Sep 2025 18:00:45 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -128,9 +128,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 18/62] doc: modernize Documentation/driver-api/early-userspace/early_userspace_support.rst
-Date: Sat, 13 Sep 2025 00:37:57 +0000
-Message-ID: <20250913003842.41944-19-safinaskar@gmail.com>
+Subject: [PATCH RESEND 19/62] init: remove mentions of "ramdisk=" command line parameter
+Date: Sat, 13 Sep 2025 00:37:58 +0000
+Message-ID: <20250913003842.41944-20-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
@@ -142,52 +142,109 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Update it to reflect initrd removal
+It is already removed
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- .../early_userspace_support.rst                | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ arch/arm/boot/dts/samsung/exynos4210-origen.dts   | 2 +-
+ arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts | 2 +-
+ arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts | 2 +-
+ arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts | 2 +-
+ arch/arm/configs/exynos_defconfig                 | 2 +-
+ arch/arm/configs/s5pv210_defconfig                | 2 +-
+ drivers/block/Kconfig                             | 1 -
+ 7 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/driver-api/early-userspace/early_userspace_support.rst b/Documentation/driver-api/early-userspace/early_userspace_support.rst
-index 61bdeac1bae5..0ca923c1007b 100644
---- a/Documentation/driver-api/early-userspace/early_userspace_support.rst
-+++ b/Documentation/driver-api/early-userspace/early_userspace_support.rst
-@@ -127,28 +127,22 @@ mailing list at https://www.zytor.com/mailman/listinfo/klibc
- How does it work?
- =================
+diff --git a/arch/arm/boot/dts/samsung/exynos4210-origen.dts b/arch/arm/boot/dts/samsung/exynos4210-origen.dts
+index f1927ca15e08..4dcf794bd18b 100644
+--- a/arch/arm/boot/dts/samsung/exynos4210-origen.dts
++++ b/arch/arm/boot/dts/samsung/exynos4210-origen.dts
+@@ -36,7 +36,7 @@ aliases {
+ 	};
  
--The kernel has currently 3 ways to mount the root filesystem:
-+The kernel has currently 2 ways to mount the root filesystem:
+ 	chosen {
+-		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
++		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
+ 		stdout-path = "serial2:115200n8";
+ 	};
  
- a) all required device and filesystem drivers compiled into the kernel, no
--   initrd.  init/main.c:init() will call prepare_namespace() to mount the
-+   initramfs.  init/main.c:kernel_init_freeable() will call prepare_namespace() to mount the
-    final root filesystem, based on the root= option and optional init= to run
--   some other init binary than listed at the end of init/main.c:init().
-+   some other init binary than listed at the end of init/main.c:kernel_init().
+diff --git a/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts b/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts
+index 18f4f494093b..4cdeddeff3fc 100644
+--- a/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts
++++ b/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts
+@@ -30,7 +30,7 @@ aliases {
+ 	};
  
--b) some device and filesystem drivers built as modules and stored in an
--   initrd.  The initrd must contain a binary '/linuxrc' which is supposed to
--   load these driver modules.  It is also possible to mount the final root
--   filesystem via linuxrc and use the pivot_root syscall.  The initrd is
--   mounted and executed via prepare_namespace().
--
--c) using initramfs.  The call to prepare_namespace() must be skipped.
-+b) using initramfs.  The call to prepare_namespace() must be skipped.
-    This means that a binary must do all the work.  Said binary can be stored
-    into initramfs either via modifying usr/gen_init_cpio.c or via the new
--   initrd format, an cpio archive.  It must be called "/init".  This binary
-+   initramfs format, an cpio archive.  It must be called "/init".  This binary
-    is responsible to do all the things prepare_namespace() would do.
+ 	chosen {
+-		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
++		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
+ 		stdout-path = "serial1:115200n8";
+ 	};
  
-    To maintain backwards compatibility, the /init binary will only run if it
-    comes via an initramfs cpio archive.  If this is not the case,
--   init/main.c:init() will run prepare_namespace() to mount the final root
-+   init/main.c:kernel_init_freeable() will run prepare_namespace() to mount the final root
-    and exec one of the predefined init binaries.
+diff --git a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
+index c83fb250e664..4b18cc55d6ca 100644
+--- a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
++++ b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
+@@ -27,7 +27,7 @@ aliases {
+ 	};
  
- Bryan O'Sullivan <bos@serpentine.com>
+ 	chosen {
+-		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
++		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
+ 		stdout-path = "serial1:115200n8";
+ 	};
+ 
+diff --git a/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts b/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts
+index bb623726ef1e..4164c7c2a3eb 100644
+--- a/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts
++++ b/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts
+@@ -27,7 +27,7 @@ memory@40000000 {
+ 	};
+ 
+ 	chosen {
+-		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
++		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
+ 		stdout-path = "serial2:115200n8";
+ 	};
+ 
+diff --git a/arch/arm/configs/exynos_defconfig b/arch/arm/configs/exynos_defconfig
+index 6915c766923a..77d3521f55d4 100644
+--- a/arch/arm/configs/exynos_defconfig
++++ b/arch/arm/configs/exynos_defconfig
+@@ -15,7 +15,7 @@ CONFIG_HIGHMEM=y
+ CONFIG_SECCOMP=y
+ CONFIG_ARM_APPENDED_DTB=y
+ CONFIG_ARM_ATAG_DTB_COMPAT=y
+-CONFIG_CMDLINE="root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M console=ttySAC1,115200 init=/linuxrc mem=256M"
++CONFIG_CMDLINE="root=/dev/ram0 rw initrd=0x41000000,8M console=ttySAC1,115200 init=/linuxrc mem=256M"
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_STAT=y
+ CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=y
+diff --git a/arch/arm/configs/s5pv210_defconfig b/arch/arm/configs/s5pv210_defconfig
+index 02121eec3658..8ec82d9b51e4 100644
+--- a/arch/arm/configs/s5pv210_defconfig
++++ b/arch/arm/configs/s5pv210_defconfig
+@@ -8,7 +8,7 @@ CONFIG_KALLSYMS_ALL=y
+ CONFIG_ARCH_S5PV210=y
+ CONFIG_VMSPLIT_2G=y
+ CONFIG_ARM_APPENDED_DTB=y
+-CONFIG_CMDLINE="root=/dev/ram0 rw ramdisk=8192 initrd=0x20800000,8M console=ttySAC1,115200 init=/linuxrc"
++CONFIG_CMDLINE="root=/dev/ram0 rw initrd=0x20800000,8M console=ttySAC1,115200 init=/linuxrc"
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_STAT=y
+ CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=y
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index df38fb364904..8cf06e40f61c 100644
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -229,7 +229,6 @@ config BLK_DEV_RAM
+ 	  store a copy of a minimal root file system off of a floppy into RAM
+ 	  during the initial install of Linux.
+ 
+-	  Note that the kernel command line option "ramdisk=XX" is now obsolete.
+ 	  For details, read <file:Documentation/admin-guide/blockdev/ramdisk.rst>.
+ 
+ 	  To compile this driver as a module, choose M here: the
 -- 
 2.47.2
 
