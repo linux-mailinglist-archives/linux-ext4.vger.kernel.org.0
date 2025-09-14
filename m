@@ -1,167 +1,168 @@
-Return-Path: <linux-ext4+bounces-9995-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-9996-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7921AB561C6
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Sep 2025 17:21:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37DE9B56496
+	for <lists+linux-ext4@lfdr.de>; Sun, 14 Sep 2025 05:44:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76B277AD070
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Sep 2025 15:20:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2835189EC87
+	for <lists+linux-ext4@lfdr.de>; Sun, 14 Sep 2025 03:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C70E2F0C5B;
-	Sat, 13 Sep 2025 15:21:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914D6267B01;
+	Sun, 14 Sep 2025 03:43:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Meuoho8s"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5642BAF4
-	for <linux-ext4@vger.kernel.org>; Sat, 13 Sep 2025 15:21:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6DF32641FC
+	for <linux-ext4@vger.kernel.org>; Sun, 14 Sep 2025 03:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757776893; cv=none; b=sEtic4STQnxSqScxQL0jg0ydb+T6lJUvfA+0Vq9MO1v4veXk7pLR14FqVtsGSVZsqRANwgoaoV4qEsYr41X95JmUV7frEjKK1t9+jRZvIFp3xFlnopM3cbr5xbDiZ4ZMte2X8F+zU4gz86f/FejEUoM+yi07KlxTMu5JFDmQGBw=
+	t=1757821427; cv=none; b=W7zRt6oBEVGQ0mwlfnVy6mNWD3NCVzIOpe0/m/lD+b5HJjiztV7wY8/hMAZAKHjHPZsTCaT3w69/iFWNaBgbTmm91XA/8vgSbXcm34MdHAwi+AOMX6p2dr1n2mU6ujI7wrS6ulr3aVmmBAaAhQCtvusqYHnNEdG2V26LsNx9agk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757776893; c=relaxed/simple;
-	bh=RVD8gQbDMJ+de91MlBon7BFLDmf1Spiqsd4F3T/HbPk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rXwBVWLWV+v7soDkPD18+WN7UFeAVF16XSc5fTvV8qX90c9Cf3+yQOQiDkXJbENErS0mgJVm1CsSooNKVyfVzb9Dg19eB8/MSIaxyfwU3Y/qtOFlGvVkDbzcYqpClQDNTSh2zh+uCBJ0nsnQkvDO1yHPaaaTrhRnc/eui+BdDQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-417306d252cso34894205ab.2
-        for <linux-ext4@vger.kernel.org>; Sat, 13 Sep 2025 08:21:31 -0700 (PDT)
+	s=arc-20240116; t=1757821427; c=relaxed/simple;
+	bh=Rey/ebl7WFu2BHJpZO0tlGb9Yvux/yHNtNSpgXJUf3k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=YC6JZeQBDKQW75LKnp82kGV52M+PmZw0iiVQy+JC9W/PnJwn+6VqDv1/PL+9E6aartdu5gTG45+7ZvoyrrWNM4PCFtvi3v95pVp7hcrBkg7aMMYuVY7a/2StmEUKqf6izkxWiJrbxWvzxq58txd3Aj0SAFzUTiuMdjE3h8EzrSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Meuoho8s; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-62ed3e929d1so4306947a12.3
+        for <linux-ext4@vger.kernel.org>; Sat, 13 Sep 2025 20:43:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757821422; x=1758426222; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Edp+OfqM1e00xcpSWGvAGWC/LGQGu+BMiq7TC0KqX/w=;
+        b=Meuoho8stdCgQ03Hoq6UgAr03TaN96IypV+PgLqP/nGA44yo2zt6U929mjRx+HCq13
+         FPWIoc3jiMY7qBRlszyNQbvaQVxYynf3mcVS4ZUqM9DXZXSglG7vOuDf+9BPpKpwhOE5
+         esyrIr1LmwK1sh8FW8bsMCVhqfrrjJWn3/4I8UakoSU28KzFPHuQL9W0/2J7g0A8nZ1O
+         T5RsV+SSGzPKnwo1gUBPlfDSkMXh66xIdqSXJL7EHd2oWfyzikGuiq7xGrG+i6kSggsO
+         7dLhiHDpmeMEhTiC4sxGkbT4o1wUK7rDi6kWKBKQROziCBkBfVzJywQs93poRxb5DR22
+         ZxIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757776890; x=1758381690;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GEqce8YnI1rs4tL9ATEg3joyhTmgKU8jihNRIpGC0GY=;
-        b=CVtJrJZy3yQWX4W+6lXVXMih7pox/OKWzkUjOLRSoQtTt0Waa28CvmtJYqkqWPukRb
-         2L2b1ncWYHWTXZSn5KP73B0Uk+9jlebu6xyz06PiTuauqhSGDuRg4iBW2jo9C0Lfo9bP
-         Lc0/KaqkoDB8kQBtw+BRioJDZDWb2qJVn8PomzU7lIbcnbegRg+9gbhhR7o8qMHp1EvM
-         lB9Wo7sa1XN1pwT6t2jtZZkr8/JmrjiBfoAZFxc/ahtiviHvPvye5uvmrALBpfO4N+kl
-         sBJ1LDxXWy5wE0dpbSkOCuBYLWMwApWKwjzc0jI5AmekwrZeMkSRW9iELo1585E7+GUT
-         yp1A==
-X-Forwarded-Encrypted: i=1; AJvYcCWtwYuxDsKtNVkXnf1N6tZS59DnVFjLsh2XUo5KxGKP3osh8MqaHCOV5ZTwgfG2NkdDEssZMkyQdArB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxty11aUtcuefid07q9Bbbu8IHHF94q7Q9ulES6URCvdDBpG1pn
-	D+rCJAXGy5q6lPvUGcc45piedBZ4/iQy1Qwy4JYxdFLu0Vx4M3gDDPruTwtiGwaVyaW4Il1SH6+
-	xs8yi9Fb5H4gvDGExRlFIp6pbCldd8TEWqfvfFJtVXGJpnLs1LHt64F6dpPQ=
-X-Google-Smtp-Source: AGHT+IH5l9P4F+jp9aAtqOgrYs/hhNkgB4cL8zF7xwP/ScnbovR92IAzkKRKsd83JTy/hPg/McBha0OQ5cPM85j6BOzs5ne8jX1d
+        d=1e100.net; s=20230601; t=1757821422; x=1758426222;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Edp+OfqM1e00xcpSWGvAGWC/LGQGu+BMiq7TC0KqX/w=;
+        b=PJvUqyYApjvM4wpQD6fl1FJ+9VxoyEN6m9Oi+htxhN3N2REe/c1d0NR4PDxWDgexQI
+         e14zXCXrSqoQeGSWwStrBZz9sK2vzBHNwIkq+tWfKwGCNafrUsza2zpZDsIkNdpWGiWm
+         0iPnx3G/TqUE+54/N1cjALzMMLKNXdK/rGA3wkO5qb0DX02N/I9FE18wPdAylBp3pwy7
+         GgHdAS5RFLtoo1XMnkHqQ+P2bOXEoZYqNBgxn35/y5UHFhDv1rRBM3/u/HSpW5I26KD5
+         gfrgbrAk4MLRezABloER4hDrbnOfp5cxL7dF+BukBA6LtU1X2kdkaonSRy/BfXGxjPqo
+         VOCA==
+X-Forwarded-Encrypted: i=1; AJvYcCWDdg6j4ey5aQKbtjGQ3Mm2Y7/Um2fTm8kZd1Y1E3k/hmcuDOMmTh4tuXdt/QiBgtcTQybOKRp63yTd@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy7VBdTpiREzrZiO5Jrc3nEp0I2gCUokxx5UIbA59tW1x+UWDQm
+	BTxBNNJNxXPnlwM4pVBqiGH/+QgkI3Ue6MYGjr7r0deL2LrLJG/RiB8V
+X-Gm-Gg: ASbGnct4LwYAEMNnW281HJFrQiAjcnjaLyPkbgCFk61wh+c5Ny1eeZ4uiBFs+hFYj88
+	mpMcwkOxVydebheHjlC4xMhcbAkoiyg0zUXWDnJEfvzUtsNgaFApFOfGzU0gvn2YI8h5I2Gd3b6
+	DahAYr1ESbTsvAKb1f34IPtWy3SU3T5/G+5aJfrMvKJzHh+nZiOnByU1eDEG6OmThh2sR9YXEzB
+	I80UIby1jhJ9lzEL/kCELCXaklSnplP1iBbedaQ5+v5FCi19uKpRcvSr0Teqn7JRkMH1tK61By8
+	siCNo7ICxyODK3TCEcYKIa96V3pdIXVBLSHOtT92cTq2faDQcpn0xhxfhTwazd5qhcperj+O4Sl
+	G08nIy1JEDLkQ3yuMy4w=
+X-Google-Smtp-Source: AGHT+IET6lw3qY9XyvNvb3pybcnRN4nnQ2bci5TeiF0EBvfDGIL/USbY9x3ZkIUotRlW6z+hFZZ7Dw==
+X-Received: by 2002:a17:907:72c9:b0:af9:6bfb:58b7 with SMTP id a640c23a62f3a-b07c354e9b4mr721980466b.5.1757821422077;
+        Sat, 13 Sep 2025 20:43:42 -0700 (PDT)
+Received: from localhost ([212.73.77.104])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07d2870da1sm345137366b.13.2025.09.13.20.43.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Sep 2025 20:43:40 -0700 (PDT)
+From: Askar Safin <safinaskar@gmail.com>
+To: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	Christoph Hellwig <hch@lst.de>,
+	Jens Axboe <axboe@kernel.dk>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Aleksa Sarai <cyphar@cyphar.com>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>,
+	Gao Xiang <hsiangkao@linux.alibaba.com>,
+	Art Nikpal <email2tema@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Eric Curtin <ecurtin@redhat.com>,
+	Alexander Graf <graf@amazon.com>,
+	Rob Landley <rob@landley.net>,
+	Lennart Poettering <mzxreary@0pointer.de>,
+	linux-arch@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	x86@kernel.org,
+	Ingo Molnar <mingo@redhat.com>,
+	linux-block@vger.kernel.org,
+	initramfs@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	"Theodore Y . Ts'o" <tytso@mit.edu>,
+	linux-acpi@vger.kernel.org,
+	Michal Simek <monstr@monstr.eu>,
+	devicetree@vger.kernel.org,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	Thorsten Blum <thorsten.blum@linux.dev>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	patches@lists.linux.dev
+Subject: [PATCH RESEND 37/62] init: remove root_mountflags from init/do_mounts.h
+Date: Sun, 14 Sep 2025 06:43:35 +0300
+Message-ID: <20250914034335.3506706-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
+References: <20250913003842.41944-1-safinaskar@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:19ce:b0:412:fa25:dd4e with SMTP id
- e9e14a558f8ab-4209d40ff57mr76176315ab.1.1757776890614; Sat, 13 Sep 2025
- 08:21:30 -0700 (PDT)
-Date: Sat, 13 Sep 2025 08:21:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68c58bfa.050a0220.3c6139.04d2.GAE@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in ext4_write_inline_data (3)
-From: syzbot <syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+It is already declared in include/linux/kernel.h
 
-syzbot found the following issue on:
-
-HEAD commit:    5f540c4aade9 Add linux-next specific files for 20250910
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10025d62580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5ed48faa2cb8510d
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3185be57d7e8dda32b8
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/df0dfb072f52/disk-5f540c4a.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/20649042ae30/vmlinux-5f540c4a.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4c16358268b8/bzImage-5f540c4a.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at fs/ext4/inline.c:240!
-Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
-CPU: 0 UID: 0 PID: 28152 Comm: syz.8.5004 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
-RIP: 0010:ext4_write_inline_data+0x43c/0x440 fs/ext4/inline.c:240
-Code: c1 38 c1 0f 8c 19 ff ff ff 48 89 df 49 89 d7 e8 fa c8 b0 ff 4c 89 fa e9 06 ff ff ff e8 7d c2 4c ff 90 0f 0b e8 75 c2 4c ff 90 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f
-RSP: 0018:ffffc900045273a8 EFLAGS: 00010287
-RAX: ffffffff8272facb RBX: 0000000000003000 RCX: 0000000000080000
-RDX: ffffc90016e08000 RSI: 0000000000001d1a RDI: 0000000000001d1b
-RBP: ffff888012035472 R08: ffff88807cd4e387 R09: 1ffff1100f9a9c70
-R10: dffffc0000000000 R11: ffffed100f9a9c71 R12: 000000000000003c
-R13: ffffc90004527460 R14: 0000000000002000 R15: ffff888012034f18
-FS:  00007f73a18866c0(0000) GS:ffff8881259f0000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b30511ff8 CR3: 0000000049be6000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- ext4_write_inline_data_end+0x336/0xab0 fs/ext4/inline.c:807
- generic_perform_write+0x627/0x900 mm/filemap.c:4230
- ext4_buffered_write_iter+0xce/0x3a0 fs/ext4/file.c:299
- ext4_file_write_iter+0x298/0x1bc0 fs/ext4/file.c:-1
- iter_file_splice_write+0x972/0x10e0 fs/splice.c:738
- do_splice_from fs/splice.c:938 [inline]
- direct_splice_actor+0xfe/0x160 fs/splice.c:1161
- splice_direct_to_actor+0x5a8/0xcc0 fs/splice.c:1105
- do_splice_direct_actor fs/splice.c:1204 [inline]
- do_splice_direct+0x181/0x270 fs/splice.c:1230
- do_sendfile+0x4da/0x7e0 fs/read_write.c:1370
- __do_sys_sendfile64 fs/read_write.c:1431 [inline]
- __se_sys_sendfile64+0x13e/0x190 fs/read_write.c:1417
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f73a098eba9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f73a1886038 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00007f73a0bd5fa0 RCX: 00007f73a098eba9
-RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000004
-RBP: 00007f73a0a11e19 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000020fffe82 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f73a0bd6038 R14: 00007f73a0bd5fa0 R15: 00007ffcafa37c38
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_write_inline_data+0x43c/0x440 fs/ext4/inline.c:240
-Code: c1 38 c1 0f 8c 19 ff ff ff 48 89 df 49 89 d7 e8 fa c8 b0 ff 4c 89 fa e9 06 ff ff ff e8 7d c2 4c ff 90 0f 0b e8 75 c2 4c ff 90 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f
-RSP: 0018:ffffc900045273a8 EFLAGS: 00010287
-RAX: ffffffff8272facb RBX: 0000000000003000 RCX: 0000000000080000
-RDX: ffffc90016e08000 RSI: 0000000000001d1a RDI: 0000000000001d1b
-RBP: ffff888012035472 R08: ffff88807cd4e387 R09: 1ffff1100f9a9c70
-R10: dffffc0000000000 R11: ffffed100f9a9c71 R12: 000000000000003c
-R13: ffffc90004527460 R14: 0000000000002000 R15: ffff888012034f18
-FS:  00007f73a18866c0(0000) GS:ffff8881259f0000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8fb8e97d58 CR3: 0000000049be6000 CR4: 00000000003526f0
-
-
+Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ init/do_mounts.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/init/do_mounts.h b/init/do_mounts.h
+index 90422fb07c02..e225d594dd06 100644
+--- a/init/do_mounts.h
++++ b/init/do_mounts.h
+@@ -12,8 +12,6 @@
+ #include <linux/task_work.h>
+ #include <linux/file.h>
+ 
+-extern int root_mountflags;
+-
+ /* Ensure that async file closing finished to prevent spurious errors. */
+ static inline void init_flush_fput(void)
+ {
+-- 
+2.47.2
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
