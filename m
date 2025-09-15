@@ -1,73 +1,59 @@
-Return-Path: <linux-ext4+bounces-10045-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10046-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B339B57D75
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Sep 2025 15:36:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD881B57DAB
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Sep 2025 15:44:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D75022A0FA5
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Sep 2025 13:34:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A8282A1044
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Sep 2025 13:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 991DA3191BD;
-	Mon, 15 Sep 2025 13:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57F4531B811;
+	Mon, 15 Sep 2025 13:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJGZ1vBQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nTVCKsBS"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4792313291;
-	Mon, 15 Sep 2025 13:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39C731986F;
+	Mon, 15 Sep 2025 13:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757943281; cv=none; b=kCNzxLouwtx8lvaGWcXqci7Kn71XRx8w2dQ1fLwM/DXh9iDxqXvsXYeJzPj1jHfIAOL1phX7A68L3FGvGSWP/IUQitJJj9IHvy0j4zvMk3lcnQ7/HaWG6iSgFATOW47d7fA+U7rAqv4BkNgwQjonsa6i6PW1cD8xwOtR+R2krKk=
+	t=1757943667; cv=none; b=e7OK11f+Hdlfv1bT9i8QLJNMfrKrcxemYBwTNNMvSj2cMYm+CaCBF0V6nxK+OCaumzenuClUXspYFcMvrL7dSLEHglWZrZM9DDzYjCLGOhWAD9MWskhcLNC1ZPaW4m0pKLvlzbbzlfWT2YeibeL9gUNrKdr4Ek9sZcpxvjNu80o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757943281; c=relaxed/simple;
-	bh=G1pxbFOuDJsJnBF0m+5CY6Xwwfubv5cFdvznrZJvWPg=;
+	s=arc-20240116; t=1757943667; c=relaxed/simple;
+	bh=VDLORfLKka5X/8PhdR6E7ilqkJcXYuBbGf75wpi+r+s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OkfHiPj1UpfBq8XCfhhzzHPDGr9xBeZaX7wPEA1SOYykFR7UBSgp0wkVo2BBFYed+ECtfAmcx/kTpNpTTEqv2oNAs8tIPopgbduz/YzdO6pwjGTIbD7wplQT9aK9SN6DdzWj0CGvL9zj8ggJjuwp+n3TVsqYQZHImRxsTB3LVsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BJGZ1vBQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06662C4CEF5;
-	Mon, 15 Sep 2025 13:34:28 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=eI2eWZK/qzMHa4qqGZ0fQs0Bb3wWnEPA78yQFJ3LRuWAS8Z4Y4AaZF31zvPbEC7pBfMErTXHgHcnHnqP1WKQ4mmBsqgJEXCg4i7VwZJvD3U/7KVUNOBQpcZgblKj946GxaZ572ApXu1iv6ZZk3iJ8/WC3+14U7SMJCM/X9ged1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nTVCKsBS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA215C4CEF5;
+	Mon, 15 Sep 2025 13:41:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757943280;
-	bh=G1pxbFOuDJsJnBF0m+5CY6Xwwfubv5cFdvznrZJvWPg=;
+	s=k20201202; t=1757943667;
+	bh=VDLORfLKka5X/8PhdR6E7ilqkJcXYuBbGf75wpi+r+s=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BJGZ1vBQTvO1OLFpsKgtQvIkjtAVvJey56ZqhZxYzVB3EDoeucwA9j3Ikra0r96a5
-	 jQw9/XHjAdC85R6jORBqXH6OkpLRRmI0UaRxSBMlJTyGu8sObrPf6EYsRHYnpzWABK
-	 4guOhpliPb5aYSSJ1cikDCiA9fl38O9CJLfhWdf/1FUDPbaUHhsgjd/BUigP/DwSAR
-	 ZgzXa5kZ1LN2Vwu2d8y8wxYWU6XMdt47ld5N4t1CFweo+0HtUX4GHSNgmsq7QjI/jF
-	 wghZzlNvaq7LpEjMzkOqler37Pf0I1gD2UiJKUJFEipxphTk6d9TTXloxjbYPhi7oP
-	 Dxi908vsrFrMg==
-Date: Mon, 15 Sep 2025 15:34:26 +0200
+	b=nTVCKsBSCbnc2DScS5sG9dC7zfwep0s3pxzrPi3qgLq/idFr0YOlHS+XFqsVdjK9r
+	 lpc1mHs571V8SRqJTAnfaN1D1X+CbboBKQXBXHamDkBTIjj5tz8bJQELVflMbgehzf
+	 a9raZrsOaOi7Wc5cA9TD/PROoxV1WBDXhYPgayF85sMbGt1vwMOACrahqRCoVl6Lk7
+	 ypgPSNqZRx5BYBe2bYMKplLtCXzGAYX6L0mfS1s0P0IeG9FtgH0QjkNVkLpFB2+o43
+	 zlulvGNMM2+LVDMEDpatNlUtx06Ryq4VoVnO8OU4HQScVHJgJ5Z0BlTMU6LvUiIqHe
+	 nSTJ13a40aN3g==
+Date: Mon, 15 Sep 2025 15:41:02 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Askar Safin <safinaskar@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, 
-	Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	Aleksa Sarai <cyphar@cyphar.com>, 
-	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
-	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>, 
-	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>, 
-	Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, 
-	x86@kernel.org, Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org, 
-	initramfs@vger.kernel.org, linux-api@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>, 
-	linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, devicetree@vger.kernel.org, 
-	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
-	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
-Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
-Message-ID: <20250915-modebranche-marken-fc832a25e05d@brauner>
-References: <20250913003842.41944-1-safinaskar@gmail.com>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com, 
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	ocfs2-devel@lists.linux.dev
+Subject: Re: [PATCH v3 2/4] fs: hide ->i_state handling behind accessors
+Message-ID: <20250915-tricksen-militant-406d4cb8ebda@brauner>
+References: <20250911045557.1552002-1-mjguzik@gmail.com>
+ <20250911045557.1552002-3-mjguzik@gmail.com>
+ <20250915-erstflug-kassieren-37e5b3f5b998@brauner>
+ <CAGudoHG7uPDFH9K9sjnEZxZ_DtXC-ZqSkwzCJUmw1yKAzEA+dQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -76,26 +62,64 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGudoHG7uPDFH9K9sjnEZxZ_DtXC-ZqSkwzCJUmw1yKAzEA+dQ@mail.gmail.com>
 
-On Sat, Sep 13, 2025 at 12:37:39AM +0000, Askar Safin wrote:
-> Intro
-> ====
-> This patchset removes classic initrd (initial RAM disk) support,
-> which was deprecated in 2020.
+On Mon, Sep 15, 2025 at 03:27:16PM +0200, Mateusz Guzik wrote:
+> On Mon, Sep 15, 2025 at 2:41 PM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Thu, Sep 11, 2025 at 06:55:55AM +0200, Mateusz Guzik wrote:
+> > > Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+> > > ---
+> >
+> > I would do:
+> >
+> > inode_state()
+> > inode_state_raw()
+> >
+> > Similar to
+> >
+> > rcu_derefence()
+> > rcu_dereference_raw()
+> >
+> 
+> I don't follow how to fit this in here.
+> 
+> Here is the complete list:
+> inode_state_read
+> inode_state_read_unstable
+> 
+> first is a plain read + lockdep assert, second is a READ_ONCE
+> 
+> inode_state_add
+> inode_state_add_unchecked
+> inode_state_del
+> inode_state_del_unchecked
+> inode_state_set_unchecked
+> 
+> Routine with _unchecked forego asserts, otherwise the op checks lockdep.
+> 
+> I guess _unchecked could be _raw, but I don't see how to fit this into
+> the read thing.
 
-This is a good idea but the patchset does a bit too much and it's pretty
-convoluted and mixes cleanups with the removal of initrd support and so
-it's not that great to review let alone merge especially considering
-that a revert might be needed.
+_raw() is adapted from rcu which is why I'm very familiar with what it
+means: rcu_dereference() performs checks and rcu_dereference_raw()
+doesn't. It's just a naming convention that we already have and are
+accustomed to.
 
-Split it up into multiple patch series. Send a first series that
-focusses only on removing the generic infrastructure keeping it as
-contained as possible. Only do non-generic cleanups that are absolutely
-essential for the removal. Then the cleanups can go in separate series
-later.
+> 
+> Can you just spell out the names you want for all of these?
 
-As usual I'm happy to try to shed old code but I wouldn't be too
-optimistic that we'll get away with this and if so it needs to be
-surgical.
+just use _raw() imho
+
+> 
+> > But you need some actual commit messages etc...
+> >
+> 
+> Ye and I need to runtime test at least with xfs and btrfs.
+
+Something I plan to do soon is more automated testing as soon as patch
+series are pulled into one of the VFS trees. And by that I mean visible
+to the author of the series. It'll be a while though unless we get
+manpower for that.
 
