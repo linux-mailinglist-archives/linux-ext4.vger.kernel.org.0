@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-10054-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10055-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37827B5879A
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 00:38:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E5AB5879B
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 00:38:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64A0F7A1ACF
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Sep 2025 22:36:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCA912035EE
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Sep 2025 22:38:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6E92D46B7;
-	Mon, 15 Sep 2025 22:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A44B2D46AF;
+	Mon, 15 Sep 2025 22:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S90ZPbR0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P/NS1D8F"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCD42C236D
-	for <linux-ext4@vger.kernel.org>; Mon, 15 Sep 2025 22:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0B52D052
+	for <linux-ext4@vger.kernel.org>; Mon, 15 Sep 2025 22:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757975894; cv=none; b=CghH7SSCP66iuJ9GzYtSYLfpeCizpUpzUCIgfn0cp6DbN/Ol0CpniIgIerO0mcKjvPQC27Hr2o1bgu7D/qU7hZrSgKuswWLO5UmTsFBLHGuJIUVLXZIwm0Bt66rHWiXMV2k/1zYFo+nFkVeXu7bCs3tg8C2ztzgzbiat1ZWX628=
+	t=1757975910; cv=none; b=hTWGsbVn7iVSyglOC++QkeW8+0Cvc3JR6KDQW9LCE5dJRhAf0V+phxywkGw0CWYMKWuJqkhnCQ2UmY2r0TNSHJaP7edYBG4HAVVAIbQXvYKQpXc4ibsrSeMpgGoH9y7C0dj91YKXBEMbn7lVpId6abLizvDyrrld9rhV2TiEL/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757975894; c=relaxed/simple;
-	bh=MDc9E4MVP6maeBz5e3kcImL0EaRxzQHs4Ru3zcjIvJM=;
+	s=arc-20240116; t=1757975910; c=relaxed/simple;
+	bh=y2SAowTCinK9xYskAy7nNuJDm/hD3M9iy0XMyVjsGFM=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oc0WlJmnb/15eJT63Y7p6tNJ7Gp3+q/jaUK1oTZajt7yP/MqIeS391hXQbbibBErYXzK/T8XQs3F6wVzHRxJGsVP9hkVVmX0NNSpix8AWl8emdmKgnosQdBHkWY9u7NMn1aZa+GwofkJYfUnViEIWHlSj4W7D6f7tlwFazbJecs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S90ZPbR0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50085C4CEF1;
-	Mon, 15 Sep 2025 22:38:14 +0000 (UTC)
+	 MIME-Version:Content-Type; b=R2Byt4bKJx0k4NnWIarTd8brjtplGeKip4V43PFfTTgGj/zUMls+/8riRpk3T0ohmQxA28Clcjv2ljX6bKYHl4hC3zBh8mXUsGhZ5sEvxDeOy0UTCYiJIJgbAiKTDig+ikgEXvqOU46mAPYzkTE8gKhklcrve3++I+6YD+qMWqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P/NS1D8F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EADFFC4CEF1;
+	Mon, 15 Sep 2025 22:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757975894;
-	bh=MDc9E4MVP6maeBz5e3kcImL0EaRxzQHs4Ru3zcjIvJM=;
+	s=k20201202; t=1757975910;
+	bh=y2SAowTCinK9xYskAy7nNuJDm/hD3M9iy0XMyVjsGFM=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=S90ZPbR0RlogzH1DQo4yxkOxk5v0OUnvQb0KyXDBln2zlXCuvA1cR15gkgpTkfyA/
-	 TBPJ1JBbHxeH4Rix6Enc7tpgnMkmV3q0je60LU/XENTbfTWIigpXy5v+WTuU+AGcVh
-	 lzdJCdksTDYSKpIWQbLQsz9iq3+gNZjYWP9Ls3KsniU2mXofDDeUUzCExVQ96f4oDH
-	 A3AaHZImVywApktFJKCPTX7qmYhzjNoNPlzLZ9iRVhhaZ0prXw2+DpehlOAFVIRgfX
-	 swIoRxhy3FK30fkgZ27+eeMmu5V/Gt1CmpXuDHWzc6Kz3Bu+dFuER7Z+YWaw/OUPCL
-	 OruvnmJ8oXnaQ==
-Date: Mon, 15 Sep 2025 15:38:13 -0700
-Subject: [PATCH 02/12] libext2fs: don't look for O_EXCL in the F_GETFL output
+	b=P/NS1D8FMjIoPc4ew/F0yO8YryVkHHewy9f0XtbRXfgxSOAdo76y7BfDRAdtSG3Fy
+	 k9DhfK18NJmntyIOyJVLVH0+bo3mblaHngJdc/9bh1B0XNpxXBe3JkBd746dKv5Xe1
+	 hhyqmJbJvUYWCeuOm7ly1BdZApl/2DZ9uK3mpol4JplfUWR23lCQe+aXjzO8cbE4j+
+	 s8NpnHc/yCJqiKtR9+6nYpsabd4rjpjRfuQJj7QSq+K2TlMVlQeRlGoE420wjjQvjj
+	 xzPOteImY5OQckepTbH1GJSeQpi8c5zIq02ZPxPl77EF/hzqrFnJ/Sax9MdKHNSVJD
+	 wOuH1ApVkEpjA==
+Date: Mon, 15 Sep 2025 15:38:29 -0700
+Subject: [PATCH 03/12] fuse2fs: update manpage
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org, linux-ext4@vger.kernel.org
-Message-ID: <175797569655.245695.8543695297980818018.stgit@frogsfrogsfrogs>
+Cc: linux-ext4@vger.kernel.org
+Message-ID: <175797569673.245695.5213142680462010974.stgit@frogsfrogsfrogs>
 In-Reply-To: <175797569564.245695.4628729304068635201.stgit@frogsfrogsfrogs>
 References: <175797569564.245695.4628729304068635201.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,43 +60,82 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-For decades, Linux has never propagated O_EXCL into the user-visible
-file flags in do_dentry_open:
+Update the manpage to list current options for fuse2fs.  While we're at
+it, alphabetize the non-grouped mount options (e.g. rw/ro, *df).
 
-	f->f_flags &= ~(O_CREAT | O_EXCL | O_NOCTTY | O_TRUNC);
-
-Therefore, one cannot use F_GETFL to determine if the file was opened
-with O_EXCL.  The unixfd IO manager will have to trust that the caller
-opened the file in O_EXCL mode.  Without this patch, the upcoming flock
-patch will not work correctly in determining the lock mode to keep other
-copies of fuse4fs and/or systemd from touching a fuse4fs mounted
-filesystem.
-
-Cc: <linux-ext4@vger.kernel.org> # v1.43.2
-Fixes: 4ccf9e4fe165cf ("libext2fs: add unixfd_io_manager")
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- lib/ext2fs/unix_io.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ misc/fuse2fs.1.in |   42 +++++++++++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 15 deletions(-)
 
 
-diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
-index adbdd5f6603d74..723a5c2474cdd5 100644
---- a/lib/ext2fs/unix_io.c
-+++ b/lib/ext2fs/unix_io.c
-@@ -1090,11 +1090,10 @@ static errcode_t unixfd_open(const char *str_fd, int flags,
- 	if (fd_flags == -1)
- 		return EBADF;
- 
--	flags = 0;
-+	/* O_EXCL is cleared by Linux at open and not returned by F_GETFL */
-+	flags &= IO_FLAG_EXCLUSIVE;
- 	if (fd_flags & O_RDWR)
- 		flags |= IO_FLAG_RW;
--	if (fd_flags & O_EXCL)
--		flags |= IO_FLAG_EXCLUSIVE;
- #if defined(O_DIRECT)
- 	if (fd_flags & O_DIRECT)
- 		flags |= IO_FLAG_DIRECT_IO;
+diff --git a/misc/fuse2fs.1.in b/misc/fuse2fs.1.in
+index 21f5760742c639..69fc6b01d7b639 100644
+--- a/misc/fuse2fs.1.in
++++ b/misc/fuse2fs.1.in
+@@ -36,21 +36,33 @@ .SS "fuse2fs options:"
+ \fB-o\fR ro
+ read-only mount
+ .TP
+-\fB-o\fR errors=panic
+-dump core on error
++\fB-o\fR rw
++read-write mount (default)
++.TP
++\fB-o\fR bsddf
++bsd-style df (default)
+ .TP
+ \fB-o\fR minixdf
+ minix-style df
+ .TP
++\fB-o\fR acl
++enable file access control lists
++.TP
++\fB-o\fR cache_size
++Set the disk cache size to this quantity.
++The quantity may contain the suffixes k, m, or g.
++By default, the size is 32MB.
++The size may not be larger than 2GB.
++.TP
++\fB-o\fR direct
++Use O_DIRECT to access the block device.
++.TP
++\fB-o\fR errors=panic
++dump core on error
++.TP
+ \fB-o\fR fakeroot
+ pretend to be root for permission checks
+ .TP
+-\fB-o\fR no_default_opts
+-do not include default fuse options
+-.TP
+-\fB-o\fR norecovery
+-do not replay the journal and mount the file system read-only
+-.TP
+ \fB-o\fR fuse2fs_debug
+ enable fuse2fs debugging
+ .TP
+@@ -63,14 +75,14 @@ .SS "fuse2fs options:"
+ .I nosuid
+ ) later.
+ .TP
+-\fB-o\fR direct
+-Use O_DIRECT to access the block device.
++\fB-o\fR lockfile=path
++use this file to control access to the filesystem
+ .TP
+-\fB-o\fR cache_size
+-Set the disk cache size to this quantity.
+-The quantity may contain the suffixes k, m, or g.
+-By default, the size is 32MB.
+-The size may not be larger than 2GB.
++\fB-o\fR no_default_opts
++do not include default fuse options
++.TP
++\fB-o\fR norecovery
++do not replay the journal and mount the file system read-only
+ .SS "FUSE options:"
+ .TP
+ \fB-d -o\fR debug
 
 
