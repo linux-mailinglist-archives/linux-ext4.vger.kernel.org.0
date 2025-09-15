@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-10053-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10054-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97702B58799
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 00:38:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37827B5879A
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 00:38:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 577344C2EB6
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Sep 2025 22:38:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64A0F7A1ACF
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Sep 2025 22:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A322D1F7C;
-	Mon, 15 Sep 2025 22:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6E92D46B7;
+	Mon, 15 Sep 2025 22:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s9v9ItpO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S90ZPbR0"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557BD2D052
-	for <linux-ext4@vger.kernel.org>; Mon, 15 Sep 2025 22:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCD42C236D
+	for <linux-ext4@vger.kernel.org>; Mon, 15 Sep 2025 22:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757975879; cv=none; b=iDdCbtAQltlUpG1BcgpXBKLmapzWPA7tHERP7FHHyPEtzxL+QSXJGFORJfj2uFs1Yb0X/r+32qT3yq3trGN1BhQI3bwvivQUPQMqVy/TIrpjsyUUiC8IIltzUk1HbVSVxTaDiP501cb92RLRi3B2uszpQSca38bfF79mv9EIk+k=
+	t=1757975894; cv=none; b=CghH7SSCP66iuJ9GzYtSYLfpeCizpUpzUCIgfn0cp6DbN/Ol0CpniIgIerO0mcKjvPQC27Hr2o1bgu7D/qU7hZrSgKuswWLO5UmTsFBLHGuJIUVLXZIwm0Bt66rHWiXMV2k/1zYFo+nFkVeXu7bCs3tg8C2ztzgzbiat1ZWX628=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757975879; c=relaxed/simple;
-	bh=r+YysSLmhZgbQU1W61N7rL0NvHp5qXjJGT+qPwNJ2pE=;
+	s=arc-20240116; t=1757975894; c=relaxed/simple;
+	bh=MDc9E4MVP6maeBz5e3kcImL0EaRxzQHs4Ru3zcjIvJM=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R5Yusl8EAcx7OCEnsQfyGu7wWGglZVH0/GVyDOETVG5TmBFN40ztP2FRA0r5qqjUcExEArKMnr0as9vXb2Cb8/P9j50LeG+xj5gUfHW1kgLQorhEPc5B9+5HtGSpEedHLxMjhAoIkhO0WJpmUbnOW8pFvtSW7EVyUlm5fyp/oxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s9v9ItpO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB071C4CEF1;
-	Mon, 15 Sep 2025 22:37:58 +0000 (UTC)
+	 MIME-Version:Content-Type; b=oc0WlJmnb/15eJT63Y7p6tNJ7Gp3+q/jaUK1oTZajt7yP/MqIeS391hXQbbibBErYXzK/T8XQs3F6wVzHRxJGsVP9hkVVmX0NNSpix8AWl8emdmKgnosQdBHkWY9u7NMn1aZa+GwofkJYfUnViEIWHlSj4W7D6f7tlwFazbJecs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S90ZPbR0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50085C4CEF1;
+	Mon, 15 Sep 2025 22:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757975878;
-	bh=r+YysSLmhZgbQU1W61N7rL0NvHp5qXjJGT+qPwNJ2pE=;
+	s=k20201202; t=1757975894;
+	bh=MDc9E4MVP6maeBz5e3kcImL0EaRxzQHs4Ru3zcjIvJM=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=s9v9ItpOEHOIptT7fd0WRL8LD/UVNLMgWSS+O+gUafN0mV3GkPxJo9o37dY4X4gfg
-	 YL55gN9jdCXKblPVOvbAx6Hypdybq6rDmHVoX2nx81lj5jlESxwrvdcTmi9vSSPUys
-	 gzd3MytiBHLcv/p0581g33DwpZth06ynwCwsZNjY/wW4tmyvZCYkjisUrbxhCHy6L2
-	 KjO1UAbvW/D6CuKlch2gYbBGwSjxgdvMStU32dF0107FppRPV6COjmWnOnFug055b2
-	 YimI1byoD+Kt1SbzFpaDsnlw6ShX322OBpwW7W8V1fDBkEVJ0g+Ym+WzRPgiACm6ee
-	 8niTpgpTErOlg==
-Date: Mon, 15 Sep 2025 15:37:58 -0700
-Subject: [PATCH 01/12] libext2fs: use F_GETFL, not F_GETFD, in unixfd_open
+	b=S90ZPbR0RlogzH1DQo4yxkOxk5v0OUnvQb0KyXDBln2zlXCuvA1cR15gkgpTkfyA/
+	 TBPJ1JBbHxeH4Rix6Enc7tpgnMkmV3q0je60LU/XENTbfTWIigpXy5v+WTuU+AGcVh
+	 lzdJCdksTDYSKpIWQbLQsz9iq3+gNZjYWP9Ls3KsniU2mXofDDeUUzCExVQ96f4oDH
+	 A3AaHZImVywApktFJKCPTX7qmYhzjNoNPlzLZ9iRVhhaZ0prXw2+DpehlOAFVIRgfX
+	 swIoRxhy3FK30fkgZ27+eeMmu5V/Gt1CmpXuDHWzc6Kz3Bu+dFuER7Z+YWaw/OUPCL
+	 OruvnmJ8oXnaQ==
+Date: Mon, 15 Sep 2025 15:38:13 -0700
+Subject: [PATCH 02/12] libext2fs: don't look for O_EXCL in the F_GETFL output
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org, linux-ext4@vger.kernel.org
-Message-ID: <175797569637.245695.9797418204966811004.stgit@frogsfrogsfrogs>
+Message-ID: <175797569655.245695.8543695297980818018.stgit@frogsfrogsfrogs>
 In-Reply-To: <175797569564.245695.4628729304068635201.stgit@frogsfrogsfrogs>
 References: <175797569564.245695.4628729304068635201.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,30 +60,43 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-F_GETFD is the fcntl command that returns FD_* flags, but the callsite
-wants to look at the O_* flags.  F_GETFL is the fcntl command that
-returns the O_* flags, so change the subcommand to be correct.
+For decades, Linux has never propagated O_EXCL into the user-visible
+file flags in do_dentry_open:
+
+	f->f_flags &= ~(O_CREAT | O_EXCL | O_NOCTTY | O_TRUNC);
+
+Therefore, one cannot use F_GETFL to determine if the file was opened
+with O_EXCL.  The unixfd IO manager will have to trust that the caller
+opened the file in O_EXCL mode.  Without this patch, the upcoming flock
+patch will not work correctly in determining the lock mode to keep other
+copies of fuse4fs and/or systemd from touching a fuse4fs mounted
+filesystem.
 
 Cc: <linux-ext4@vger.kernel.org> # v1.43.2
 Fixes: 4ccf9e4fe165cf ("libext2fs: add unixfd_io_manager")
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- lib/ext2fs/unix_io.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/ext2fs/unix_io.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 
 diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
-index cb408f51779aa7..adbdd5f6603d74 100644
+index adbdd5f6603d74..723a5c2474cdd5 100644
 --- a/lib/ext2fs/unix_io.c
 +++ b/lib/ext2fs/unix_io.c
-@@ -1086,7 +1086,7 @@ static errcode_t unixfd_open(const char *str_fd, int flags,
- 
- 	fd = atoi(str_fd);
- #if defined(HAVE_FCNTL)
--	fd_flags = fcntl(fd, F_GETFD);
-+	fd_flags = fcntl(fd, F_GETFL);
+@@ -1090,11 +1090,10 @@ static errcode_t unixfd_open(const char *str_fd, int flags,
  	if (fd_flags == -1)
  		return EBADF;
  
+-	flags = 0;
++	/* O_EXCL is cleared by Linux at open and not returned by F_GETFL */
++	flags &= IO_FLAG_EXCLUSIVE;
+ 	if (fd_flags & O_RDWR)
+ 		flags |= IO_FLAG_RW;
+-	if (fd_flags & O_EXCL)
+-		flags |= IO_FLAG_EXCLUSIVE;
+ #if defined(O_DIRECT)
+ 	if (fd_flags & O_DIRECT)
+ 		flags |= IO_FLAG_DIRECT_IO;
 
 
