@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-10105-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10106-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E15DB588D1
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 02:05:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 059B7B588D5
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 02:05:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3988E4E1838
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 00:05:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E53F7A5CB5
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 00:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B894A00;
-	Tue, 16 Sep 2025 00:05:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A701C6A3;
+	Tue, 16 Sep 2025 00:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t5Rr6eHn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NOlVoiZ5"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED43D22615
-	for <linux-ext4@vger.kernel.org>; Tue, 16 Sep 2025 00:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1505BE571
+	for <linux-ext4@vger.kernel.org>; Tue, 16 Sep 2025 00:05:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757981121; cv=none; b=JWWJYUpmojaJoiXZmSFSbmZVAJMrG9WB55MrvQnabwoDITgyenq96kFRmOEWuyDACgfArShiCIcN/s12QKhTgSJzN2nF/dKKHVsPeZY5+RHU5FY3+3s2Cie/rJVSUt2VTC7YneV+POxScI65PZPc6q0Lh41HykcQnN4L+FMdkn0=
+	t=1757981137; cv=none; b=km9cJcdI4Vm5wrtnL02uEE1/BJ9mj3zZEfrdRIJ3pZNxlPxoaOwycHXMeeq/rkcb4KoyLBj1ZOBI6r+j0mLYv3rOmjjvjoT1O5MXclzbY9p/wm2x5LALT/+N5QF5aZhQlNbHid+E9eivtHMSxx6kM5jNkVwEE7l8OFeu0NRB31Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757981121; c=relaxed/simple;
-	bh=cbirfAA8JrdCVDI9a4KYaWkU5sj5nodeVDSZU5ACA5o=;
+	s=arc-20240116; t=1757981137; c=relaxed/simple;
+	bh=ZR2RB4kexZiT5mqLlPUj7SRI96S44NyYhYNsYTsOrlw=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JmGGgu3pS3UFKnbwd93dlkuB64q+k3HcH+3/I5ZThXxcJZQRF/AOQ8LtM1ChW9/5A2HKEzwGyAxfv4tdLmpH6YzJIpOzgrDEBGqsNGR1Hly6d71Nekrsgq8cQ9DpWds2Hp0umPMG1jovIXyfX9LKJwufiwpfjzQRBWvs3qLRC60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t5Rr6eHn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0ACDC4CEF1;
-	Tue, 16 Sep 2025 00:05:20 +0000 (UTC)
+	 MIME-Version:Content-Type; b=OeY2R3zaq3nmaTcmN88NdmIop7MLyJI1ldmx/Bg6fL4G1w/nk6uPgPG3LEjekb5ZZlh4Q0h2LMOeARvPvosbQlp5vQJWqW8CVtc7CUGXooQ3wEBUFwrzl4/sUUSnRf4jGm+sld7/hmEKMvHojdIcezEvQwjLxfXPu5j+hPSeXXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NOlVoiZ5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86040C4CEF1;
+	Tue, 16 Sep 2025 00:05:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757981120;
-	bh=cbirfAA8JrdCVDI9a4KYaWkU5sj5nodeVDSZU5ACA5o=;
+	s=k20201202; t=1757981136;
+	bh=ZR2RB4kexZiT5mqLlPUj7SRI96S44NyYhYNsYTsOrlw=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=t5Rr6eHnaw0+LfN787kmeLQop0+JBc2ATRKuSxSGO+bpz+5w1T5/fds0QbqYsBKDF
-	 +u1DNlcL9H7wYWTShoT9o79RLxcOkBKcs1HkS2NHepb6qgtcZiZi6qf+yQvSQY5wWW
-	 kvtE0EtFmW6XNq3mufSW7WrTqon9GaDzdggYkyMRrJ9mDv7y3QNBcDN7aI+iUiXwRE
-	 YajugN3z0GFUsl7Wm1u8p2Gk204mQQMc4sbLtvq0X6uw10vdcJjXFGhRYHzDsVj4BV
-	 2ERJrk9/DIHQIAiesUwPcLxC0QyFpqtIN3XCPR3N7CArA9Cn3iXMKmKh7Vbg3qH3DL
-	 h8nRG6TGBU0cA==
-Date: Mon, 15 Sep 2025 17:05:20 -0700
-Subject: [PATCH 2/3] fuse2fs: track our own writable state
+	b=NOlVoiZ5mt+515qRhwqIzxxdCDb08Ipop+fkJS2j8WSgtj9nTHjOO961V7+aafAex
+	 srQHqeJQ7Vf97/uVGbO758Zm2cIPWnxIbhHVsoItN2FmSX8XC2zPkQaqzJhREIb4jY
+	 IOJE5JzUSXyCo445ejseNuXJY4s9duetVljE12IrPoOsygB803lHrOVDnxmkYO+KdD
+	 ZZzHHyomdmnIPV7Jt36Zf3KKA3Dzelq7Ub+a25JToBL/nz+bB+nCeZfR3QVSL/iVtz
+	 yFYCvC8Usvb8gibrN3z0xUkSdiEt0Rgjcy5Vc1Auh7tEDcJe46hegr63xJ6+ky5uBq
+	 12stH8BxtZ+JQ==
+Date: Mon, 15 Sep 2025 17:05:35 -0700
+Subject: [PATCH 3/3] fuse2fs: enable the shutdown ioctl
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <175798065192.350393.12399832147314031434.stgit@frogsfrogsfrogs>
+Message-ID: <175798065210.350393.10163706639168342705.stgit@frogsfrogsfrogs>
 In-Reply-To: <175798065146.350393.10618193797364129539.stgit@frogsfrogsfrogs>
 References: <175798065146.350393.10618193797364129539.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,134 +60,101 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Track our own willingness to write to the filesystem in a separate
-variable from that of libext2fs.  There's a small window between opening
-the filesystem and mounting it where the library is rw but we might fail
-a mount task and therefore don't want to write anything more.
+Implement a bastardized version of EXT4_IOC_SHUTDOWN, because the people
+who invented the ioctl got the direction wrong, so we can't actually
+read the flags.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |   28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ misc/fuse2fs.c |   42 ++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 38 insertions(+), 4 deletions(-)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index dd731d84c4535f..80d1c79b5cce1c 100644
+index 80d1c79b5cce1c..101f0fa03c397d 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -218,6 +218,11 @@ struct fuse2fs_file_handle {
- 	int check_flags;
+@@ -221,6 +221,7 @@ struct fuse2fs_file_handle {
+ enum fuse2fs_opstate {
+ 	F2OP_READONLY,
+ 	F2OP_WRITABLE,
++	F2OP_SHUTDOWN,
  };
  
-+enum fuse2fs_opstate {
-+	F2OP_READONLY,
-+	F2OP_WRITABLE,
-+};
-+
  /* Main program context */
- #define FUSE2FS_MAGIC		(0xEF53DEADUL)
- struct fuse2fs {
-@@ -243,6 +248,7 @@ struct fuse2fs {
- 	int unmount_in_destroy;
- 	int noblkdev;
+@@ -276,7 +277,7 @@ struct fuse2fs {
+ 		} \
+ 	} while (0)
  
-+	enum fuse2fs_opstate opstate;
- 	int logfd;
- 	int blocklog;
- 	unsigned int blockmask;
-@@ -611,8 +617,6 @@ static int update_atime(ext2_filsys fs, ext2_ino_t ino)
- 	struct timespec atime, mtime, now;
- 	double datime, dmtime, dnow;
+-#define __FUSE2FS_CHECK_CONTEXT(ff, retcode) \
++#define __FUSE2FS_CHECK_CONTEXT(ff, retcode, shutcode) \
+ 	do { \
+ 		if ((ff) == NULL || (ff)->magic != FUSE2FS_MAGIC) { \
+ 			fprintf(stderr, \
+@@ -285,14 +286,17 @@ struct fuse2fs {
+ 			fflush(stderr); \
+ 			retcode; \
+ 		} \
++		if ((ff)->opstate == F2OP_SHUTDOWN) { \
++			shutcode; \
++		} \
+ 	} while (0)
  
--	if (!(fs->flags & EXT2_FLAG_RW))
--		return 0;
- 	err = fuse2fs_read_inode(fs, ino, &inode);
- 	if (err)
- 		return translate_error(fs, ino, err);
-@@ -728,9 +732,8 @@ static int fs_can_allocate(struct fuse2fs *ff, blk64_t num)
+ #define FUSE2FS_CHECK_CONTEXT(ff) \
+-	__FUSE2FS_CHECK_CONTEXT((ff), return -EUCLEAN)
++	__FUSE2FS_CHECK_CONTEXT((ff), return -EUCLEAN, return -EIO)
+ #define FUSE2FS_CHECK_CONTEXT_RETURN(ff) \
+-	__FUSE2FS_CHECK_CONTEXT((ff), return)
++	__FUSE2FS_CHECK_CONTEXT((ff), return, return)
+ #define FUSE2FS_CHECK_CONTEXT_ABORT(ff) \
+-	__FUSE2FS_CHECK_CONTEXT((ff), abort())
++	__FUSE2FS_CHECK_CONTEXT((ff), abort(), abort())
  
- static int fuse2fs_is_writeable(struct fuse2fs *ff)
- {
--	ext2_filsys fs = ff->fs;
--
--	return (fs->flags & EXT2_FLAG_RW) && (fs->super->s_error_count == 0);
-+	return ff->opstate == F2OP_WRITABLE &&
-+		(ff->fs->super->s_error_count == 0);
+ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
+ 			     const char *func, int line);
+@@ -4566,6 +4570,33 @@ static int ioctl_fitrim(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
  }
+ #endif /* FITRIM */
  
- static inline int is_superuser(struct fuse2fs *ff, struct fuse_context *ctxt)
-@@ -946,6 +949,7 @@ static errcode_t fuse2fs_open(struct fuse2fs *ff, int libext2_flags)
- 	}
- 
- 	snprintf(options, sizeof(options) - 1, "offset=%lu", ff->offset);
-+	ff->opstate = F2OP_READONLY;
- 
- 	if (ff->directio)
- 		flags |= EXT2_FLAG_DIRECT_IO;
-@@ -1083,6 +1087,7 @@ static int fuse2fs_mount(struct fuse2fs *ff)
-  _("Warning: fuse2fs does not support using the journal.\n"
-    "There may be file system corruption or data loss if\n"
-    "the file system is not gracefully unmounted.\n"));
-+		ff->opstate = F2OP_WRITABLE;
- 	}
- 
- 	if (!(fs->super->s_state & EXT2_VALID_FS))
-@@ -1105,7 +1110,7 @@ static int fuse2fs_mount(struct fuse2fs *ff)
- 		ff->errors_behavior = fs->super->s_errors;
- 
- 	/* Clear the valid flag so that an unclean shutdown forces a fsck */
--	if (fs->flags & EXT2_FLAG_RW) {
-+	if (ff->opstate == F2OP_WRITABLE) {
- 		fs->super->s_mnt_count++;
- 		ext2fs_set_tstamp(fs->super, s_mtime, time(NULL));
- 		fs->super->s_state &= ~EXT2_VALID_FS;
-@@ -1129,7 +1134,7 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
- 	fs = fuse2fs_start(ff);
- 
- 	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
--	if (fs->flags & EXT2_FLAG_RW) {
-+	if (ff->opstate == F2OP_WRITABLE) {
- 		fs->super->s_state |= EXT2_VALID_FS;
- 		if (fs->super->s_error_count)
- 			fs->super->s_state |= EXT2_ERROR_FS;
-@@ -1337,7 +1342,7 @@ static void *op_init(struct fuse_conn_info *conn
- 		log_printf(ff, "%s %s.\n", _("mounted filesystem"), uuid);
- 	}
- 
--	if (ff->fs->flags & EXT2_FLAG_RW)
++#ifndef EXT4_IOC_SHUTDOWN
++# define EXT4_IOC_SHUTDOWN	_IOR('X', 125, __u32)
++#endif
++
++static int ioctl_shutdown(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
++			  void *data)
++{
++	struct fuse_context *ctxt = fuse_get_context();
++	ext2_filsys fs = ff->fs;
++
++	if (!is_superuser(ff, ctxt))
++		return -EPERM;
++
++	err_printf(ff, "%s.\n", _("shut down requested"));
++
++	/*
++	 * EXT4_IOC_SHUTDOWN inherited the inverted polarity on the ioctl
++	 * direction from XFS.  Unfortunately, that means we can't implement
++	 * any of the flags.  Flush whatever is dirty and shut down.
++	 */
 +	if (ff->opstate == F2OP_WRITABLE)
- 		fuse2fs_read_bitmaps(ff);
- 
- 	return ff;
-@@ -3427,7 +3432,7 @@ static int op_statfs(const char *path EXT2FS_ATTR((unused)),
- 	fsid ^= *f;
- 	buf->f_fsid = fsid;
- 	buf->f_flag = 0;
--	if (!(fs->flags & EXT2_FLAG_RW))
-+	if (ff->opstate != F2OP_WRITABLE)
- 		buf->f_flag |= ST_RDONLY;
- 	buf->f_namemax = EXT2_NAME_LEN;
- 	fuse2fs_finish(ff, 0);
-@@ -5218,6 +5223,7 @@ int main(int argc, char *argv[])
- 	memset(&fctx, 0, sizeof(fctx));
- 	fctx.magic = FUSE2FS_MAGIC;
- 	fctx.logfd = -1;
-+	fctx.opstate = F2OP_WRITABLE;
- 
- 	ret = fuse_opt_parse(&args, &fctx, fuse2fs_opts, fuse2fs_opt_proc);
- 	if (ret)
-@@ -5600,9 +5606,11 @@ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
-  _("Continuing after errors; is this a good idea?"));
++		ext2fs_flush2(fs, 0);
++	ff->opstate = F2OP_SHUTDOWN;
++
++	return 0;
++}
++
+ #if FUSE_VERSION >= FUSE_MAKE_VERSION(2, 8)
+ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
+ #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
+@@ -4612,6 +4643,9 @@ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
+ 		ret = ioctl_fitrim(ff, fh, data);
  		break;
- 	case EXT2_ERRORS_RO:
--		if (fs->flags & EXT2_FLAG_RW)
-+		if (ff->opstate == F2OP_WRITABLE) {
- 			err_printf(ff, "%s\n",
-  _("Remounting read-only due to errors."));
-+			ff->opstate = F2OP_READONLY;
-+		}
- 		fs->flags &= ~EXT2_FLAG_RW;
- 		break;
- 	case EXT2_ERRORS_PANIC:
+ #endif
++	case EXT4_IOC_SHUTDOWN:
++		ret = ioctl_shutdown(ff, fh, data);
++		break;
+ 	default:
+ 		dbg_printf(ff, "%s: Unknown ioctl %d\n", __func__, cmd);
+ 		ret = -ENOTTY;
 
 
