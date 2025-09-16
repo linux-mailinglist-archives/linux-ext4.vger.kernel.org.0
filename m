@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-10088-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10089-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AD39B588B8
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 02:01:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EFDBB588BA
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 02:01:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE9AA7AE0A9
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Sep 2025 23:59:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8649E188932E
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Sep 2025 00:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED5D9450FE;
-	Tue, 16 Sep 2025 00:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A632B2D7;
+	Tue, 16 Sep 2025 00:01:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TUx7z8i3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uzkL5XZZ"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918B27494
-	for <linux-ext4@vger.kernel.org>; Tue, 16 Sep 2025 00:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296262AD02
+	for <linux-ext4@vger.kernel.org>; Tue, 16 Sep 2025 00:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757980853; cv=none; b=YU+B/bxgwJS2V3RYYcTK2F45zUeVLNU5Amyz6CutTV5kflSXIx1l+m4cAzh8MOiYdIbj0fudjWEmce16nrBv05ZRHHOeVZqiTtdno8xQ7p7EsK0xT289bvJAhiZY1jnECrcjd7crD+BP7GxF57b3vnmw1gRj3aBw8OsacVCx0UY=
+	t=1757980869; cv=none; b=pDhHxafQYYLjIXGZfbH0GzH+KPY44tSDtT1lSiXBCZMlntqXAaukO6Qg763TUe156QLSfReTKqIa76+1801i+WU0Vuz0rfXTicIS449ocS+RJv5pwJVhZ3yG9Uzw3TZ/FakKoGcJeEGg/blN0ibJOFy3wLqbwb7XNji/vEnmpd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757980853; c=relaxed/simple;
-	bh=0UWiOv+jQMVHgSnzRDeE8mle6LtI3fHMiKnfz9zy0eU=;
+	s=arc-20240116; t=1757980869; c=relaxed/simple;
+	bh=iq95NugmOGwI1Ox1hsvhc8uC0KhcEr98Z6dfUL9cBhU=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OtNU8kpsvr62NEMlnYEf7PiLHrWZ5K/USyYFQ7iIJ2n37gOypjfx/XRbyWWvglFElGJOi7sPpNfDGW0/k8nc5yMTq/JCf6UpnFhlR1wCEbY6clFsaQKw29Yzc0K52a2YZBbsxpYqQ9DfOZLeN1DJMMNcgMON9JzEbaR88ug1kCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TUx7z8i3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00616C4CEF1;
-	Tue, 16 Sep 2025 00:00:52 +0000 (UTC)
+	 MIME-Version:Content-Type; b=f89xokn+SaeCllsTPWA0ZiIL10YFmvGY07DAZQuGcJwuXnPcX90AVYNezebJOuVUU3K8sLvY/B5WyiXpRyfQB1XkR4xhvjKV1ux4zJgj+mgwnB/O/VdkU/jJ6u3vQV3wsxcD3FD+qPrMXPqw0YI0URhdeqQbACZazFcxkfrBjPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uzkL5XZZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91631C4CEF1;
+	Tue, 16 Sep 2025 00:01:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757980853;
-	bh=0UWiOv+jQMVHgSnzRDeE8mle6LtI3fHMiKnfz9zy0eU=;
+	s=k20201202; t=1757980868;
+	bh=iq95NugmOGwI1Ox1hsvhc8uC0KhcEr98Z6dfUL9cBhU=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=TUx7z8i3jWwIJL+q4FGpmHY513z+Vqc5EA0RT9wsFU7V3CpU2kz135d3gAVfu9TXu
-	 oCmB0qPPk94BpBOGNijLz1+9OaT6uOe7xrgi+4Qkm70qupeMPQJv+7mAq22dfjIowT
-	 EXCjRYihNBUaSqtXkixKr0psN3aGWugn7eGAeHWvx6Gl0Y7Tn4N+ED+JlBgpMQzd1m
-	 fxeOYkjliGlwkyWeAkGpDDSUQ9y76lKsGihj2PDHiZc36Mz7gv4MwHjza0MTrrED98
-	 3mue9PxRqS9qq9Bgpm4tzHh1KVUMos7LW2MizN+C6uAP9c/Kp55RlUOEcxl2mOtZv2
-	 d6jYmuXD+tcjA==
-Date: Mon, 15 Sep 2025 17:00:52 -0700
-Subject: [PATCH 7/9] fuse2fs: clean up operation completion
+	b=uzkL5XZZYhR78sAkklEzqXEByjwcmzmugIeEPEDrjvGu/aUKJxENRlgovdXVoBMeF
+	 OH9ipj27i95wvCDvUvddlIoWleAAtkhDq6UU18n2u8lq9yHUcnSVX0eDa6MK4ve9bN
+	 xreaIICZmIgEtfc+14wCK5mFCYImnD7pkJOCJP+pHLYT7zrzNzgD68/sxfVEvYLi10
+	 9IskKKTaFijNiRHWRIONlq6jeC5yAJfVzYy02KVHNJHCTZh5j1vbJmAT5S1KXUfeBM
+	 2sF7uNn6SjzXlsGtSaEu9vJz7dsMAiHyc8VyHKIDAmzT444IcKtHS82x922GI+0VQR
+	 yKnzv4xbTQUOQ==
+Date: Mon, 15 Sep 2025 17:01:08 -0700
+Subject: [PATCH 8/9] fuse2fs: clean up more boilerplate
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <175798064221.349283.10566068410497082317.stgit@frogsfrogsfrogs>
+Message-ID: <175798064239.349283.7180905633207368855.stgit@frogsfrogsfrogs>
 In-Reply-To: <175798064057.349283.17144996472212778619.stgit@frogsfrogsfrogs>
 References: <175798064057.349283.17144996472212778619.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,322 +60,423 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Create a helper to release the BFL and log any errors.  This cuts down
-on the boilerplate.
+Clean up these opencoded bits everywhere.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |   73 +++++++++++++++++++++++++++++++-------------------------
- 1 file changed, 41 insertions(+), 32 deletions(-)
+ misc/fuse2fs.c |  146 +++++++++++++++++++++++++-------------------------------
+ 1 file changed, 64 insertions(+), 82 deletions(-)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 9ea42eeeb13bfd..b856cc3a6f23ed 100644
+index b856cc3a6f23ed..23420c23be240c 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -443,6 +443,15 @@ static inline ext2_filsys fuse2fs_start(struct fuse2fs *ff)
- 	return ff->fs;
+@@ -437,6 +437,25 @@ static inline errcode_t fuse2fs_write_inode(ext2_filsys fs, ext2_ino_t ino,
+ 				       sizeof(*inode));
  }
  
-+static inline void __fuse2fs_finish(struct fuse2fs *ff, int ret,
-+				    const char *func)
++static inline struct fuse2fs *fuse2fs_get(void)
 +{
-+	if (ret)
-+		dbg_printf(ff, "%s: libfuse ret=%d\n", func, ret);
-+	pthread_mutex_unlock(&ff->bfl);
-+}
-+#define fuse2fs_finish(ff, ret) __fuse2fs_finish((ff), (ret), __func__)
++	struct fuse_context *ctxt = fuse_get_context();
 +
- static void get_now(struct timespec *now)
++	return ctxt->private_data;
++}
++
++static inline struct fuse2fs_file_handle *
++fuse2fs_get_handle(const struct fuse_file_info *fp)
++{
++	return (struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++}
++
++static inline void
++fuse2fs_set_handle(struct fuse_file_info *fp, struct fuse2fs_file_handle *fh)
++{
++	fp->fh = (uintptr_t)fh;
++}
++
+ static inline ext2_filsys fuse2fs_start(struct fuse2fs *ff)
  {
- #ifdef CLOCK_REALTIME
-@@ -817,7 +826,7 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
- 		log_printf(ff, "%s %s.\n", _("unmounting filesystem"), uuid);
- 	}
+ 	pthread_mutex_lock(&ff->bfl);
+@@ -782,8 +801,7 @@ static int check_inum_access(struct fuse2fs *ff, ext2_ino_t ino, int mask)
  
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, 0);
- }
+ static void op_destroy(void *p EXT2FS_ATTR((unused)))
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	errcode_t err;
  
- /* Reopen @stream with @fileno */
-@@ -1106,7 +1115,7 @@ static int op_getattr(const char *path, struct stat *statbuf
- 		goto out;
- 	ret = stat_inode(fs, ino, statbuf);
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
+@@ -955,8 +973,7 @@ static void *op_init(struct fuse_conn_info *conn
+ #endif
+ 			)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
  
-@@ -1179,7 +1188,7 @@ static int op_readlink(const char *path, char *buf, size_t len)
- 	}
+ 	FUSE2FS_CHECK_CONTEXT_ABORT(ff);
+@@ -1069,8 +1086,7 @@ static int __fuse2fs_file_ino(struct fuse2fs *ff, const char *path,
  
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
+ #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
+ 	if (fp) {
+-		struct fuse2fs_file_handle *fh =
+-			(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++		struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
  
-@@ -1488,7 +1497,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
- 		goto out2;
+ 		if (fh->ino == 0)
+ 			return -ESTALE;
+@@ -1102,8 +1118,7 @@ static int op_getattr(const char *path, struct stat *statbuf
+ #endif
+ 			)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	ext2_ino_t ino;
+ 	int ret = 0;
+@@ -1121,8 +1136,7 @@ static int op_getattr(const char *path, struct stat *statbuf
  
- out2:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- out:
- 	free(temp_path);
- 	return ret;
-@@ -1623,7 +1632,7 @@ static int op_mkdir(const char *path, mode_t mode)
- out3:
- 	ext2fs_free_mem(&block);
- out2:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- out:
- 	free(temp_path);
- 	return ret;
-@@ -1823,7 +1832,7 @@ static int op_unlink(const char *path)
+ static int op_readlink(const char *path, char *buf, size_t len)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	errcode_t err;
+ 	ext2_ino_t ino;
+@@ -1377,7 +1391,7 @@ static void fuse2fs_set_extra_isize(struct fuse2fs *ff, ext2_ino_t ino,
+ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+ {
+ 	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	ext2_ino_t parent, child;
+ 	char *temp_path;
+@@ -1506,7 +1520,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+ static int op_mkdir(const char *path, mode_t mode)
+ {
+ 	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	ext2_ino_t parent, child;
+ 	char *temp_path;
+@@ -1825,8 +1839,7 @@ static int __op_unlink(struct fuse2fs *ff, const char *path)
+ 
+ static int op_unlink(const char *path)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	int ret;
+ 
  	FUSE2FS_CHECK_CONTEXT(ff);
- 	fuse2fs_start(ff);
- 	ret = __op_unlink(ff, path);
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
+@@ -1949,8 +1962,7 @@ static int __op_rmdir(struct fuse2fs *ff, const char *path)
  
-@@ -1947,7 +1956,7 @@ static int op_rmdir(const char *path)
+ static int op_rmdir(const char *path)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	int ret;
+ 
  	FUSE2FS_CHECK_CONTEXT(ff);
- 	fuse2fs_start(ff);
- 	ret = __op_rmdir(ff, path);
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
+@@ -1963,7 +1975,7 @@ static int op_rmdir(const char *path)
+ static int op_symlink(const char *src, const char *dest)
+ {
+ 	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	ext2_ino_t parent, child;
+ 	char *temp_path;
+@@ -2099,8 +2111,7 @@ static int op_rename(const char *from, const char *to
+ #endif
+ 			)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	errcode_t err;
+ 	ext2_ino_t from_ino, to_ino, to_dir_ino, from_dir_ino;
+@@ -2335,8 +2346,7 @@ static int op_rename(const char *from, const char *to
  
-@@ -2055,7 +2064,7 @@ static int op_symlink(const char *src, const char *dest)
- 		goto out2;
+ static int op_link(const char *src, const char *dest)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	char *temp_path;
+ 	errcode_t err;
+@@ -2480,7 +2490,7 @@ static int get_req_groups(struct fuse2fs *ff, gid_t **gids, size_t *nr_gids)
+ static int in_file_group(struct fuse_context *ctxt,
+ 			 const struct ext2_inode_large *inode)
+ {
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	gid_t *gids = NULL;
+ 	size_t i, nr_gids = 0;
+ 	gid_t gid = inode_gid(*inode);
+@@ -2524,7 +2534,7 @@ static int op_chmod(const char *path, mode_t mode
+ 			)
+ {
+ 	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	errcode_t err;
+ 	ext2_ino_t ino;
+@@ -2595,7 +2605,7 @@ static int op_chown(const char *path, uid_t owner, gid_t group
+ 			)
+ {
+ 	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	errcode_t err;
+ 	ext2_ino_t ino;
+@@ -2736,8 +2746,7 @@ static int op_truncate(const char *path, off_t len
+ #endif
+ 			)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_ino_t ino;
+ 	int ret = 0;
  
- out2:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- out:
- 	free(temp_path);
- 	return ret;
-@@ -2320,7 +2329,7 @@ static int op_rename(const char *from, const char *to
- 	free(temp_from);
- 	free(temp_to);
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
- 
-@@ -2415,7 +2424,7 @@ static int op_link(const char *src, const char *dest)
- 		goto out2;
- 
- out2:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- out:
- 	free(temp_path);
- 	return ret;
-@@ -2575,7 +2584,7 @@ static int op_chmod(const char *path, mode_t mode
+@@ -2857,7 +2866,7 @@ static int __op_open(struct fuse2fs *ff, const char *path,
  	}
  
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
- 
-@@ -2645,7 +2654,7 @@ static int op_chown(const char *path, uid_t owner, gid_t group
- 	}
+ 	file->check_flags = check;
+-	fp->fh = (uintptr_t)file;
++	fuse2fs_set_handle(fp, file);
  
  out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
+ 	if (ret)
+@@ -2867,8 +2876,7 @@ static int __op_open(struct fuse2fs *ff, const char *path,
  
-@@ -2748,7 +2757,7 @@ static int op_truncate(const char *path, off_t len
- 		goto out;
+ static int op_open(const char *path, struct fuse_file_info *fp)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	int ret;
  
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
- 
-@@ -2865,7 +2874,7 @@ static int op_open(const char *path, struct fuse_file_info *fp)
  	FUSE2FS_CHECK_CONTEXT(ff);
- 	fuse2fs_start(ff);
- 	ret = __op_open(ff, path, fp);
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
+@@ -2882,10 +2890,8 @@ static int op_read(const char *path EXT2FS_ATTR((unused)), char *buf,
+ 		   size_t len, off_t offset,
+ 		   struct fuse_file_info *fp)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+-	struct fuse2fs_file_handle *fh =
+-		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++	struct fuse2fs *ff = fuse2fs_get();
++	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
+ 	ext2_filsys fs;
+ 	ext2_file_t efp;
+ 	errcode_t err;
+@@ -2938,10 +2944,8 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
+ 		    const char *buf, size_t len, off_t offset,
+ 		    struct fuse_file_info *fp)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+-	struct fuse2fs_file_handle *fh =
+-		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++	struct fuse2fs *ff = fuse2fs_get();
++	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
+ 	ext2_filsys fs;
+ 	ext2_file_t efp;
+ 	errcode_t err;
+@@ -3009,10 +3013,8 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
+ static int op_release(const char *path EXT2FS_ATTR((unused)),
+ 		      struct fuse_file_info *fp)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+-	struct fuse2fs_file_handle *fh =
+-		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++	struct fuse2fs *ff = fuse2fs_get();
++	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
+ 	ext2_filsys fs;
+ 	errcode_t err;
+ 	int ret = 0;
+@@ -3042,10 +3044,8 @@ static int op_fsync(const char *path EXT2FS_ATTR((unused)),
+ 		    int datasync EXT2FS_ATTR((unused)),
+ 		    struct fuse_file_info *fp)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+-	struct fuse2fs_file_handle *fh =
+-		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++	struct fuse2fs *ff = fuse2fs_get();
++	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
+ 	ext2_filsys fs;
+ 	errcode_t err;
+ 	int ret = 0;
+@@ -3068,8 +3068,7 @@ static int op_fsync(const char *path EXT2FS_ATTR((unused)),
+ static int op_statfs(const char *path EXT2FS_ATTR((unused)),
+ 		     struct statvfs *buf)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	uint64_t fsid, *f;
+ 	blk64_t overhead, reserved, free;
+@@ -3138,8 +3137,7 @@ static int validate_xattr_name(const char *name)
+ static int op_getxattr(const char *path, const char *key, char *value,
+ 		       size_t len)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	void *ptr;
+ 	size_t plen;
+@@ -3212,8 +3210,7 @@ static int copy_names(char *name, char *value EXT2FS_ATTR((unused)),
  
-@@ -2921,7 +2930,7 @@ static int op_read(const char *path EXT2FS_ATTR((unused)), char *buf,
- 			goto out;
- 	}
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return got ? (int) got : ret;
- }
+ static int op_listxattr(const char *path, char *names, size_t len)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	struct ext2_xattr_handle *h;
+ 	unsigned int bufsz;
+@@ -3289,8 +3286,7 @@ static int op_setxattr(const char *path EXT2FS_ATTR((unused)),
+ 		       const char *key, const char *value,
+ 		       size_t len, int flags)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	struct ext2_xattr_handle *h;
+ 	ext2_ino_t ino;
+@@ -3380,8 +3376,7 @@ static int op_setxattr(const char *path EXT2FS_ATTR((unused)),
  
-@@ -2993,7 +3002,7 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
- 		goto out;
+ static int op_removexattr(const char *path, const char *key)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	struct ext2_xattr_handle *h;
+ 	void *buf;
+@@ -3571,10 +3566,8 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
+ #endif
+ 			)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+-	struct fuse2fs_file_handle *fh =
+-		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++	struct fuse2fs *ff = fuse2fs_get();
++	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
+ 	errcode_t err;
+ 	struct readdir_iter i = {
+ 		.ff = ff,
+@@ -3611,8 +3604,7 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
  
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return got ? (int) got : ret;
- }
+ static int op_access(const char *path, int mask)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	errcode_t err;
+ 	ext2_ino_t ino;
+@@ -3639,7 +3631,7 @@ static int op_access(const char *path, int mask)
+ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
+ {
+ 	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	ext2_ino_t parent, child;
+ 	char *temp_path;
+@@ -3770,10 +3762,8 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
+ static int op_ftruncate(const char *path EXT2FS_ATTR((unused)),
+ 			off_t len, struct fuse_file_info *fp)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+-	struct fuse2fs_file_handle *fh =
+-		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++	struct fuse2fs *ff = fuse2fs_get();
++	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
+ 	ext2_filsys fs;
+ 	ext2_file_t efp;
+ 	errcode_t err;
+@@ -3823,11 +3813,9 @@ static int op_fgetattr(const char *path EXT2FS_ATTR((unused)),
+ 		       struct stat *statbuf,
+ 		       struct fuse_file_info *fp)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+-	struct fuse2fs_file_handle *fh =
+-		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
+ 	int ret = 0;
  
-@@ -3022,7 +3031,7 @@ static int op_release(const char *path EXT2FS_ATTR((unused)),
- 	}
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+@@ -3847,8 +3835,7 @@ static int op_utimens(const char *path, const struct timespec ctv[2]
+ #endif
+ 			)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	struct timespec tv[2];
+ 	ext2_filsys fs;
+ 	errcode_t err;
+@@ -4262,10 +4249,8 @@ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
+ 		    struct fuse_file_info *fp,
+ 		    unsigned int flags EXT2FS_ATTR((unused)), void *data)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+-	struct fuse2fs_file_handle *fh =
+-		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++	struct fuse2fs *ff = fuse2fs_get();
++	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
+ 	int ret = 0;
  
- 	fp->fh = 0;
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
+ 	FUSE2FS_CHECK_CONTEXT(ff);
+@@ -4312,8 +4297,7 @@ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
+ static int op_bmap(const char *path, size_t blocksize EXT2FS_ATTR((unused)),
+ 		   uint64_t *idx)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
++	struct fuse2fs *ff = fuse2fs_get();
+ 	ext2_filsys fs;
+ 	ext2_ino_t ino;
+ 	errcode_t err;
+@@ -4566,10 +4550,8 @@ static int op_fallocate(const char *path EXT2FS_ATTR((unused)), int mode,
+ 			off_t offset, off_t len,
+ 			struct fuse_file_info *fp)
+ {
+-	struct fuse_context *ctxt = fuse_get_context();
+-	struct fuse2fs *ff = (struct fuse2fs *)ctxt->private_data;
+-	struct fuse2fs_file_handle *fh =
+-		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
++	struct fuse2fs *ff = fuse2fs_get();
++	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
+ 	ext2_filsys fs;
+ 	int ret;
  
- 	ext2fs_free_mem(&fh);
- 
-@@ -3051,7 +3060,7 @@ static int op_fsync(const char *path EXT2FS_ATTR((unused)),
- 		if (err)
- 			ret = translate_error(fs, fh->ino, err);
- 	}
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 
- 	return ret;
- }
-@@ -3100,7 +3109,7 @@ static int op_statfs(const char *path EXT2FS_ATTR((unused)),
- 	if (!(fs->flags & EXT2_FLAG_RW))
- 		buf->f_flag |= ST_RDONLY;
- 	buf->f_namemax = EXT2_NAME_LEN;
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, 0);
- 
- 	return 0;
- }
-@@ -3174,7 +3183,7 @@ static int op_getxattr(const char *path, const char *key, char *value,
- 
- 	ext2fs_free_mem(&ptr);
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 
- 	return ret;
- }
-@@ -3271,7 +3280,7 @@ static int op_listxattr(const char *path, char *names, size_t len)
- 	if (err && !ret)
- 		ret = translate_error(fs, ino, err);
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 
- 	return ret;
- }
-@@ -3364,7 +3373,7 @@ static int op_setxattr(const char *path EXT2FS_ATTR((unused)),
- 	if (!ret && err)
- 		ret = translate_error(fs, ino, err);
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 
- 	return ret;
- }
-@@ -3459,7 +3468,7 @@ static int op_removexattr(const char *path, const char *key)
- 	if (err && !ret)
- 		ret = translate_error(fs, ino, err);
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 
- 	return ret;
- }
-@@ -3596,7 +3605,7 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
- 			goto out;
- 	}
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
- 
-@@ -3623,7 +3632,7 @@ static int op_access(const char *path, int mask)
- 		goto out;
- 
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
- 
-@@ -3751,7 +3760,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
- 		goto out2;
- 
- out2:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- out:
- 	free(temp_path);
- 	return ret;
-@@ -3806,7 +3815,7 @@ static int op_ftruncate(const char *path EXT2FS_ATTR((unused)),
- 		goto out;
- 
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
- 
-@@ -3826,7 +3835,7 @@ static int op_fgetattr(const char *path EXT2FS_ATTR((unused)),
- 	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
- 	fs = fuse2fs_start(ff);
- 	ret = stat_inode(fs, fh->ino, statbuf);
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 
- 	return ret;
- }
-@@ -3899,7 +3908,7 @@ static int op_utimens(const char *path, const struct timespec ctv[2]
- 	}
- 
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
- 
-@@ -4294,7 +4303,7 @@ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
- 		dbg_printf(ff, "%s: Unknown ioctl %d\n", __func__, cmd);
- 		ret = -ENOTTY;
- 	}
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 
- 	return ret;
- }
-@@ -4326,7 +4335,7 @@ static int op_bmap(const char *path, size_t blocksize EXT2FS_ATTR((unused)),
- 	}
- 
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 	return ret;
- }
- 
-@@ -4582,7 +4591,7 @@ static int op_fallocate(const char *path EXT2FS_ATTR((unused)), int mode,
- 	else
- 		ret = fuse2fs_allocate_range(ff, fh, mode, offset, len);
- out:
--	pthread_mutex_unlock(&ff->bfl);
-+	fuse2fs_finish(ff, ret);
- 
- 	return ret;
- }
 
 
