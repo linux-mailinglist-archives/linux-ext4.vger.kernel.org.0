@@ -1,59 +1,59 @@
-Return-Path: <linux-ext4+bounces-10225-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10227-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8EE8B7FB3F
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Sep 2025 16:04:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C29C3B7EB52
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Sep 2025 14:58:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B3BF1691A5
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Sep 2025 03:28:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37B8C1C01E29
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Sep 2025 03:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E36E2F616E;
-	Wed, 17 Sep 2025 03:28:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379132F7461;
+	Wed, 17 Sep 2025 03:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="AgkAfn8e"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Tiw0dVdR"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D895230D0F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D98C2C15AA
 	for <linux-ext4@vger.kernel.org>; Wed, 17 Sep 2025 03:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758079711; cv=none; b=auklpnSCI9lpAXfPoUPixrd48UHJ/Pmi6tsq/qg7LOrGanmHpyjmm32k98U4pjJFM2Dwn7uZbzcp7IN+fclFDTbG3KsIKBGCROnzyvdiqU7ITzAZbKFRWxfewkd8ccLTKHg/ou0m+4HRb3pxobJ23F/ZtoWUNGxjW/w2aOE4hVI=
+	t=1758079711; cv=none; b=mpTFTQooT7Y8fDaRjmp1wtgQFqPCgJQlN0KrXBtGcWC4NYHvHmsHzhNoznlYdbjOjHLH2jPh8IfkYzWnbEgiqLEd4auUceuhTVd7cjIV6CQsbLBBb7WvkFZbqSG6CjmkoiIcDyTEv8KAlao/BarCkhbQIkAuGq8nj3NJVuGuvpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758079711; c=relaxed/simple;
-	bh=ZRzs2dhSF0eNl8qNM3Mn8AaskNGxuOY21szdfig70oY=;
+	bh=V32rewVT6gBBhnr2dLeZ7xkK1pvAgMDrtdaMdynH30c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kW2NFTx87P/tbJJNnsKZoKltbz8f2kI5iFd5i/mJMdR0b+PwTfKfHM+4yvJpcMwmxaeLmvduikGTKakFZm//NKwjf8F/2miG5WEfQ23d7v5LA9fXcAnqiEZZHL1aDwdEAuifnxL6blquROFr5d1kN3tkgzLpe+7yg8/sGUxS904=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=AgkAfn8e; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version; b=fouGuJdsrcJUyNzEOybXf3QWHxVXj8AzOc7pcFshVMVSHzXCZqhBU7zAgI+nsQtGqJd1EgRj24xYvLdL9GfHVOvgrKAXjmOYiz9gSSQmOVxnLSUrSD6wCJbBHBSoZ0NydvbBPqSIgh2pSZ4bflHuE4JpLMWyK5TFkgS6m1z7eN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Tiw0dVdR; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-116-225.bstnma.fios.verizon.net [173.48.116.225])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58H3SJ2L001494
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58H3SJ9E001496
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 16 Sep 2025 23:28:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1758079700; bh=Wg3NJJuZ0pkokI8jvJJBZJpVn+tBfAahhAR6zEwvxvo=;
+	t=1758079700; bh=x+VekIH1pN1AN+GLDBaGjaZJIaAc9vMGqMwO+yEcTzE=;
 	h=From:Subject:Date:Message-ID:MIME-Version;
-	b=AgkAfn8edSQZfzpYcI96Qv0fT1QB9PPXxD3B2XJ0DJrcLwYxNyjisJe6Nj/+/9SdO
-	 FwXyjiEvEzeLrffGDuzlKOC+u5Npq9w49cIe0YhN6UYb7SH06zjFiYLLt6hwoMB736
-	 3Sxn8q6hVuwpGhkwpk2XTUHZoY2oRexlkniZbrI/hvTAEEUvm8A9YKpCOBCovi2yDD
-	 AeTxjdHz44QqiB3bdIViuRudx44zECgij3L1y6N/uAI5x6uD4IIH5YHI40HCLJYb6R
-	 ve8UuyEnlsmY5YBeJDbU3Lk4TaCq+scVYgIpXnxmY7KbBKfqqL1l5rhZE5DjLu+tiC
-	 hkTKqIxBSGSCg==
+	b=Tiw0dVdRKFiVI40ZS1IiHqnm3ye7RAddVPrZtqyJkTkBnO9e9mpDkNW9r9+0KpfQ3
+	 2jPKeSR0lbpmzoqn/OJa15UkBnFv4cA8c63WUjJhgPj0pSnYZhBj4rRskTawdjdqy9
+	 jYZeMUl7D52mU/0h9I8pwI5e2FsGWbTbosxpaJ9sD/C8fEIQqSXxMecIfsLCz6nmeD
+	 J+RC+KNpyF0ri7gkwH6wTZw6w/slcd9dHhy9rbGgk183Wp87A8qnfJ2Q2fHuNZS1tf
+	 T4JebDhLBRN6h5xKajBzZeckeuxbb56Qf6eiVWAbrSueMXSO7vS8u5NVXZcg5xuyFM
+	 sMIzWD2jfIJLQ==
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 3A0122E00DB; Tue, 16 Sep 2025 23:28:19 -0400 (EDT)
+	id 3C77D2E00DC; Tue, 16 Sep 2025 23:28:19 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
 To: Ext4 Developers List <linux-ext4@vger.kernel.org>
 Cc: "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH 2/3] tune2fs: rework parse_extended_opts() so it only parses the option string
-Date: Tue, 16 Sep 2025 23:28:13 -0400
-Message-ID: <20250917032814.395887-3-tytso@mit.edu>
+Subject: [PATCH 3/3] tune2fs: try to use the SET_TUNE_SB_PARAM ioctl on mounted file systems
+Date: Tue, 16 Sep 2025 23:28:14 -0400
+Message-ID: <20250917032814.395887-4-tytso@mit.edu>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250917032814.395887-1-tytso@mit.edu>
 References: <20250917032814.395887-1-tytso@mit.edu>
@@ -65,452 +65,464 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The parse_extended_opts() was doing two things: interpreting the
-string passed into the command line and modifying the file system's
-superblock.  Separate out the file system modification and move it out
-from parse_extended_opts().
-
-This allows the user to specify more than one -E command-line option,
-and it also allows some of the file system changes to be modified via
-an ioctl for a mounted file system.
+Try to uuse the new EXT4_IOC_GET_TUNE_SB_PARAM ioctl to update the
+superblock if the file system is mounted.
 
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
- misc/tune2fs.c | 211 +++++++++++++++++++++++++++----------------------
- 1 file changed, 118 insertions(+), 93 deletions(-)
+ misc/tune2fs.c | 352 +++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 267 insertions(+), 85 deletions(-)
 
 diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index 1b3716e1..e752c328 100644
+index e752c328..b1ec3991 100644
 --- a/misc/tune2fs.c
 +++ b/misc/tune2fs.c
-@@ -123,8 +123,19 @@ extern int ask_yn(const char *string, int def);
- #define OPT_JOURNAL_OPTS	18
- #define OPT_MNTOPTS		19
- #define OPT_FEATURES		20
--#define OPT_EXTENDED_CMD	21
--#define MAX_OPTS		22
-+#define OPT_CLEAR_MMP		21
-+#define OPT_MMP_INTERVAL	22
-+#define OPT_FORCE_FSCK		23
-+#define OPT_TEST_FS		24
-+#define OPT_CLEAR_TEST_FS	25
-+#define OPT_RAID_STRIDE		26
-+#define OPT_RAID_STRIPE_WIDTH	27
-+#define OPT_HASH_ALG		28
-+#define OPT_MOUNT_OPTS		29
-+#define OPT_ENCODING		30
-+#define OPT_ENCODING_FLAGS	31
-+#define OPT_ORPHAN_FILE_SIZE	32
-+#define MAX_OPTS		33
- static bool opts[MAX_OPTS];
+@@ -101,6 +101,64 @@ struct fsuuid {
+ #define EXT4_IOC_SETFSUUID	_IOW('f', 44, struct fsuuid)
+ #endif
  
- const char *program_name = "tune2fs";
-@@ -132,7 +143,6 @@ char *device_name;
- char *new_label, *new_last_mounted, *requested_uuid;
- char *io_options;
++#if (!defined(EXT4_IOC_GET_TUNE_SB_PARAM) && defined(__linux__))
++
++struct ext4_tune_sb_params {
++	__u32 set_flags;
++	__u32 checkinterval;
++	__u16 errors_behavior;
++	__u16 mnt_count;
++	__u16 max_mnt_count;
++	__u16 raid_stride;
++	__u64 last_check_time;
++	__u64 reserved_blocks;
++	__u64 blocks_count;
++	__u32 default_mnt_opts;
++	__u32 reserved_uid;
++	__u32 reserved_gid;
++	__u32 raid_stripe_width;
++	__u16 encoding;
++	__u16 encoding_flags;
++	__u8  def_hash_alg;
++	__u8  pad_1;
++	__u16 pad_2;
++	__u32 feature_compat;
++	__u32 feature_incompat;
++	__u32 feature_ro_compat;
++	__u32 set_feature_compat_mask;
++	__u32 set_feature_incompat_mask;
++	__u32 set_feature_ro_compat_mask;
++	__u32 clear_feature_compat_mask;
++	__u32 clear_feature_incompat_mask;
++	__u32 clear_feature_ro_compat_mask;
++	__u8  mount_opts[64];
++	__u8  pad[64];
++};
++
++#define EXT4_TUNE_FL_ERRORS_BEHAVIOR	0x00000001
++#define EXT4_TUNE_FL_MNT_COUNT		0x00000002
++#define EXT4_TUNE_FL_MAX_MNT_COUNT	0x00000004
++#define EXT4_TUNE_FL_CHECKINTRVAL	0x00000008
++#define EXT4_TUNE_FL_LAST_CHECK_TIME	0x00000010
++#define EXT4_TUNE_FL_RESERVED_BLOCKS	0x00000020
++#define EXT4_TUNE_FL_RESERVED_UID	0x00000040
++#define EXT4_TUNE_FL_RESERVED_GID	0x00000080
++#define EXT4_TUNE_FL_DEFAULT_MNT_OPTS	0x00000100
++#define EXT4_TUNE_FL_DEF_HASH_ALG	0x00000200
++#define EXT4_TUNE_FL_RAID_STRIDE	0x00000400
++#define EXT4_TUNE_FL_RAID_STRIPE_WIDTH	0x00000800
++#define EXT4_TUNE_FL_MOUNT_OPTS		0x00001000
++#define EXT4_TUNE_FL_FEATURES		0x00002000
++#define EXT4_TUNE_FL_EDIT_FEATURES	0x00004000
++#define EXT4_TUNE_FL_FORCE_FSCK		0x00008000
++#define EXT4_TUNE_FL_ENCODING		0x00010000
++#define EXT4_TUNE_FL_ENCODING_FLAGS	0x00020000
++
++#define EXT4_IOC_GET_TUNE_SB_PARAM	_IOR('f', 45, struct ext4_tune_sb_params)
++#define EXT4_IOC_SET_TUNE_SB_PARAM	_IOW('f', 46, struct ext4_tune_sb_params)
++
++#endif
++
+ extern int ask_yn(const char *string, int def);
+ 
+ #define OPT_MAX_MOUNTCOUNT	 1
+@@ -145,6 +203,8 @@ char *io_options;
  static int force, do_list_super, sparse_value = -1;
--static int clear_mmp;
  static time_t last_check_time;
  static int max_mount_count, mount_count, mount_flags;
++static int fs_fd = -1;
++static char mntpt[PATH_MAX + 1];
  static unsigned long interval;
-@@ -140,12 +150,16 @@ static blk64_t reserved_blocks;
+ static blk64_t reserved_blocks;
  static double reserved_ratio;
- static unsigned long resgid, resuid;
- static unsigned short errors;
-+static unsigned long mmp_interval;
-+static int hash_alg;
-+static char *hash_alg_str;
-+static int encoding;
-+static __u16 encoding_flags;
-+static char *encoding_str, *encoding_flags_str;
- static int open_flag;
- static char *features_cmd;
- static char *mntopts_cmd;
- static int stride, stripe_width;
--static int stride_set, stripe_width_set;
--static char *extended_cmd;
- static unsigned long new_inode_size;
- static char *ext_mount_opts;
- static int quota_enable[MAXQUOTAS];
-@@ -153,7 +167,6 @@ static int rewrite_checksums;
- static int feature_64bit;
- static int fsck_requested;
- static char *undo_file;
--int enabling_casefold;
- 
- int journal_size, journal_fc_size, journal_flags;
- char *journal_device;
-@@ -184,6 +197,8 @@ void do_findfs(int argc, char **argv);
- int journal_enable_debug = -1;
- #endif
- 
-+static int parse_extended_opts(const char *ext_opts);
-+
- static void usage(void)
- {
- 	fprintf(stderr,
-@@ -1645,7 +1660,6 @@ mmp_error:
- 		}
- 		fs->super->s_encoding = EXT4_ENC_UTF8_12_1;
- 		fs->super->s_encoding_flags = e2p_get_encoding_flags(EXT4_ENC_UTF8_12_1);
--		enabling_casefold = 1;
- 	}
- 
- 	if (FEATURE_OFF(E2P_FEATURE_INCOMPAT, EXT4_FEATURE_INCOMPAT_CASEFOLD)) {
-@@ -1661,7 +1675,6 @@ mmp_error:
- 		}
- 		fs->super->s_encoding = 0;
- 		fs->super->s_encoding_flags = 0;
--		enabling_casefold = 0;
- 	}
- 
- 	if (FEATURE_ON(E2P_FEATURE_INCOMPAT,
-@@ -2066,8 +2079,8 @@ static void parse_tune2fs_options(int argc, char **argv)
+@@ -2052,6 +2112,10 @@ static void parse_tune2fs_options(int argc, char **argv)
  			}
- 			break;
- 		case 'E':
--			opts[OPT_EXTENDED_CMD] = true;
--			extended_cmd = optarg;
-+			if (parse_extended_opts(optarg))
-+				exit(1);
- 			break;
- 		case 'f': /* Force */
- 			force++;
-@@ -2259,6 +2272,11 @@ static void parse_tune2fs_options(int argc, char **argv)
- 			argv[optind]);
- 		exit(1);
- 	}
-+	if (opts[OPT_ENCODING_FLAGS] && !opts[OPT_ENCODING]) {
-+		fprintf(stderr, _("error: An encoding must be explicitly "
-+				  "specified when passing encoding-flags\n"));
-+		exit(1);
-+	}
- }
- 
- #ifdef CONFIG_BUILD_FINDFS
-@@ -2282,23 +2300,22 @@ void do_findfs(int argc, char **argv)
- }
- #endif
- 
--static int parse_extended_opts(ext2_filsys fs, const char *opts)
-+#define member_size(type, member) (sizeof( ((type *)0)->member ))
-+
-+static int parse_extended_opts(const char *ext_opts)
- {
--	struct ext2_super_block *sb = fs->super;
- 	char	*buf, *token, *next, *p, *arg;
--	int	len, hash_alg;
-+	int	len;
- 	int	r_usage = 0;
--	int encoding = 0;
--	char	*encoding_flags = NULL;
- 
--	len = strlen(opts);
-+	len = strlen(ext_opts);
- 	buf = malloc(len+1);
- 	if (!buf) {
- 		fprintf(stderr, "%s",
- 			_("Couldn't allocate memory to parse options!\n"));
- 		return 1;
- 	}
--	strcpy(buf, opts);
-+	strcpy(buf, ext_opts);
- 	for (token = buf; token && *token; token = next) {
- 		p = strchr(token, ',');
- 		next = 0;
-@@ -2313,14 +2330,13 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
- 		}
- 		if (strcmp(token, "clear-mmp") == 0 ||
- 		    strcmp(token, "clear_mmp") == 0) {
--			clear_mmp = 1;
-+			opts[OPT_CLEAR_MMP] = true;
- 		} else if (strcmp(token, "mmp_update_interval") == 0) {
--			unsigned long intv;
- 			if (!arg) {
- 				r_usage++;
- 				continue;
- 			}
--			intv = strtoul(arg, &p, 0);
-+			mmp_interval = strtoul(arg, &p, 0);
- 			if (*p) {
- 				fprintf(stderr,
- 					_("Invalid mmp_update_interval: %s\n"),
-@@ -2328,34 +2344,22 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
- 				r_usage++;
- 				continue;
- 			}
--			if (intv == 0) {
--				intv = EXT4_MMP_UPDATE_INTERVAL;
--			} else if (intv > EXT4_MMP_MAX_UPDATE_INTERVAL) {
-+			if (mmp_interval == 0) {
-+				mmp_interval = EXT4_MMP_UPDATE_INTERVAL;
-+			} else if (mmp_interval > EXT4_MMP_MAX_UPDATE_INTERVAL) {
- 				fprintf(stderr,
- 					_("mmp_update_interval too big: %lu\n"),
--					intv);
-+					mmp_interval);
- 				r_usage++;
- 				continue;
- 			}
--			printf(P_("Setting multiple mount protection update "
--				  "interval to %lu second\n",
--				  "Setting multiple mount protection update "
--				  "interval to %lu seconds\n", intv),
--			       intv);
--			sb->s_mmp_update_interval = intv;
--			ext2fs_mark_super_dirty(fs);
-+			opts[OPT_MMP_INTERVAL] = true;
- 		} else if (!strcmp(token, "force_fsck")) {
--			sb->s_state |= EXT2_ERROR_FS;
--			printf(_("Setting filesystem error flag to force fsck.\n"));
--			ext2fs_mark_super_dirty(fs);
-+			opts[OPT_FORCE_FSCK] = true;
- 		} else if (!strcmp(token, "test_fs")) {
--			sb->s_flags |= EXT2_FLAGS_TEST_FILESYS;
--			printf("Setting test filesystem flag\n");
--			ext2fs_mark_super_dirty(fs);
-+			opts[OPT_TEST_FS] = true;
- 		} else if (!strcmp(token, "^test_fs")) {
--			sb->s_flags &= ~EXT2_FLAGS_TEST_FILESYS;
--			printf("Clearing test filesystem flag\n");
--			ext2fs_mark_super_dirty(fs);
-+			opts[OPT_CLEAR_TEST_FS] = true;
- 		} else if (strcmp(token, "stride") == 0) {
- 			if (!arg) {
- 				r_usage++;
-@@ -2369,7 +2373,7 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
- 				r_usage++;
- 				continue;
- 			}
--			stride_set = 1;
-+			opts[OPT_RAID_STRIDE] = true;
- 		} else if (strcmp(token, "stripe-width") == 0 ||
- 			   strcmp(token, "stripe_width") == 0) {
- 			if (!arg) {
-@@ -2384,7 +2388,7 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
- 				r_usage++;
- 				continue;
- 			}
--			stripe_width_set = 1;
-+			opts[OPT_RAID_STRIPE_WIDTH] = true;
- 		} else if (strcmp(token, "hash_alg") == 0 ||
- 			   strcmp(token, "hash-alg") == 0) {
- 			if (!arg) {
-@@ -2399,21 +2403,21 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
- 				r_usage++;
- 				continue;
- 			}
--			sb->s_def_hash_version = hash_alg;
--			printf(_("Setting default hash algorithm "
--				 "to %s (%d)\n"),
--			       arg, hash_alg);
--			ext2fs_mark_super_dirty(fs);
-+			hash_alg_str = strdup(arg);
-+			opts[OPT_HASH_ALG] = true;
- 		} else if (!strcmp(token, "mount_opts")) {
- 			if (!arg) {
- 				r_usage++;
- 				continue;
- 			}
--			if (strlen(arg) >= sizeof(fs->super->s_mount_opts)) {
-+			if (strlen(arg) >=
-+			    member_size(struct ext2_super_block,
-+					s_mount_opts)) {
- 				fprintf(stderr,
- 					"Extended mount options too long\n");
- 				continue;
- 			}
-+			opts[OPT_MOUNT_OPTS] = true;
- 			ext_mount_opts = strdup(arg);
- 		} else if (!strcmp(token, "encoding")) {
- 			if (!arg) {
-@@ -2426,36 +2430,33 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
- 				r_usage++;
- 				continue;
- 			}
--			if (ext2fs_has_feature_casefold(sb) && !enabling_casefold) {
--				fprintf(stderr, _("Cannot alter existing encoding\n"));
--				r_usage++;
--				continue;
--			}
- 			encoding = e2p_str2encoding(arg);
- 			if (encoding < 0) {
- 				fprintf(stderr, _("Invalid encoding: %s\n"), arg);
- 				r_usage++;
- 				continue;
- 			}
--			enabling_casefold = 1;
--			sb->s_encoding = encoding;
--			printf(_("Setting encoding to '%s'\n"), arg);
--			sb->s_encoding_flags =
--				e2p_get_encoding_flags(sb->s_encoding);
-+			encoding_str = strdup(arg);
-+			opts[OPT_ENCODING] = true;
- 		} else if (!strcmp(token, "encoding_flags")) {
- 			if (!arg) {
- 				r_usage++;
- 				continue;
- 			}
--			encoding_flags = arg;
-+			if (e2p_str2encoding_flags(EXT4_ENC_UTF8_12_1,
-+						   arg, &encoding_flags)) {
-+				fprintf(stderr,
-+		_("error: Invalid encoding flag: %s\n"), arg);
-+				r_usage++;
+ 			if (max_mount_count == 0)
+ 				max_mount_count = -1;
++			else if (max_mount_count == 65536) {
++				max_mount_count = EXT2_DFL_MAX_MNT_COUNT +
++					(random() % EXT2_DFL_MAX_MNT_COUNT);
 +			}
-+			encoding_flags_str = strdup(arg);
-+			opts[OPT_ENCODING_FLAGS] = true;
- 		} else if (!strcmp(token, "orphan_file_size")) {
- 			if (!arg) {
- 				r_usage++;
- 				continue;
+ 			break;
+ 		case 'C':
+ 			opts[OPT_MOUNTCOUNT] = true;
+@@ -2134,6 +2198,12 @@ static void parse_tune2fs_options(int argc, char **argv)
+ 					_("bad interval - %s"), optarg);
+ 				usage();
  			}
--			orphan_file_blocks = parse_num_blocks2(arg,
--						 fs->super->s_log_block_size);
--
-+			orphan_file_blocks = parse_num_blocks2(arg, 0);
- 			if (orphan_file_blocks < 1) {
- 				fprintf(stderr,
- 					_("Invalid size of orphan file %s\n"),
-@@ -2463,30 +2464,10 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
- 				r_usage++;
- 				continue;
- 			}
-+			opts[OPT_ORPHAN_FILE_SIZE] = true;
- 		} else
- 			r_usage++;
- 	}
--
--	if (encoding > 0 && !r_usage) {
--		sb->s_encoding_flags =
--			e2p_get_encoding_flags(sb->s_encoding);
--
--		if (encoding_flags &&
--		    e2p_str2encoding_flags(sb->s_encoding, encoding_flags,
--					   &sb->s_encoding_flags)) {
--			fprintf(stderr, _("error: Invalid encoding flag: %s\n"),
--					encoding_flags);
--			r_usage++;
--		} else if (encoding_flags)
--			printf(_("Setting encoding_flags to '%s'\n"),
--				 encoding_flags);
--		ext2fs_set_feature_casefold(sb);
--		ext2fs_mark_super_dirty(fs);
--	} else if (encoding_flags && !r_usage) {
--		fprintf(stderr, _("error: An encoding must be explicitly "
--				  "specified when passing encoding-flags\n"));
--		r_usage++;
--	}
- 	if (r_usage) {
- 		fprintf(stderr, "%s", _("\nBad options specified.\n\n"
- 			"Extended options are separated by commas, "
-@@ -3518,27 +3499,64 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 		if (rc)
- 			goto closefs;
- 	}
-+	if (ext2fs_has_feature_casefold(sb) && opts[OPT_ENCODING]) {
-+		fprintf(stderr, _("Cannot alter existing encoding\n"));
-+		rc = 1;
-+		goto closefs;
++			if ((unsigned long long)interval >= (1ULL << 32)) {
++				com_err(program_name, 0,
++					_("interval between checks is too big (%lu)"),
++					interval);
++				exit(1);
++			}
+ 			break;
+ 		case 'j':
+ 			opts[OPT_JOURNAL_SIZE] = true;
+@@ -3105,73 +3175,204 @@ fs_update_journal_user(struct ext2_super_block *sb, __u8 old_uuid[UUID_SIZE])
+ 	return 0;
+ }
+ 
+-/*
+- * Use FS_IOC_SETFSLABEL or FS_IOC_GETFSLABEL to set/get file system label
+- * Return:	0 on success
+- *		1 on error
+- *		-1 when the old method should be used
+- */
+-static int handle_fslabel(int setlabel)
++static int get_mount_flags()
++{
++	errcode_t	ret;
++
++	ret = ext2fs_check_mount_point(device_name, &mount_flags,
++				       mntpt, sizeof(mntpt));
++	if (ret) {
++		com_err("ext2fs_check_mount_point", ret,
++			_("while determining whether %s is mounted."),
++			device_name);
++		return -1;
 +	}
- 	if (features_cmd) {
- 		rc = update_feature_set(fs, features_cmd);
- 		if (rc)
- 			goto closefs;
- 	}
--	if (extended_cmd) {
--		rc = parse_extended_opts(fs, extended_cmd);
--		if (rc)
--			goto closefs;
--		if (clear_mmp && !force) {
-+	if (opts[OPT_CLEAR_MMP]) {
-+		if (!force) {
- 			fputs(_("Error in using clear_mmp. "
- 				"It must be used with -f\n"),
- 			      stderr);
- 			rc = 1;
- 			goto closefs;
++
++#ifdef __linux__
++	if ((ret == 0) &&
++	    (mount_flags & EXT2_MF_MOUNTED) &&
++	    mntpt[0])
++		fs_fd = open(mntpt, O_RDONLY);
++#endif
++	return 0;
++}
++
++static int try_mounted_tune2fs()
+ {
+ #ifdef __linux__
+ 	errcode_t ret;
+-	int mnt_flags, fd;
+ 	char label[FSLABEL_MAX];
+-	unsigned int maxlen = FSLABEL_MAX - 1;
+-	char mntpt[PATH_MAX + 1];
++	struct ext4_tune_sb_params params;
++	__u64 fs_blocks_count;
++	__u32 fs_feature_array[3], kernel_set_mask[3], kernel_clear_mask[3];
++	__u32 default_mnt_opts;
++	int fs_set_ops = 0;
+ 
+-	ret = ext2fs_check_mount_point(device_name, &mnt_flags,
+-					  mntpt, sizeof(mntpt));
+-	if (ret)
+-		return -1;
++	if (fs_fd < 0)
++		return 0;
+ 
+-	if (!(mnt_flags & EXT2_MF_MOUNTED) ||
+-	    (setlabel && (mnt_flags & EXT2_MF_READONLY)))
+-		return -1;
++	if (opts[OPT_PRINT_LABEL] &&
++	    !ioctl(fs_fd, FS_IOC_GETFSLABEL, &label)) {
++		printf("%.*s\n", EXT2_LEN_STR(label));
++		opts[OPT_PRINT_LABEL] = false;
++	}
+ 
+-	if (!mntpt[0])
+-		return -1;
++	if (mount_flags & EXT2_MF_READONLY)
++		return 0;
+ 
+-	fd = open(mntpt, O_RDONLY);
+-	if (fd < 0)
+-		return -1;
++	if (opts[OPT_LABEL]) {
++		unsigned int maxlen = FSLABEL_MAX - 1;
+ 
+-	/* Get fs label */
+-	if (!setlabel) {
+-		if (ioctl(fd, FS_IOC_GETFSLABEL, &label)) {
+-			close(fd);
+-			if (errno == ENOTTY)
+-				return -1;
+-			com_err(mntpt, errno, _("while trying to get fs label"));
+-			return 1;
++		/* If it's extN file system, truncate the label
++		   to appropriate size */
++		if (mount_flags & EXT2_MF_EXTFS)
++			maxlen = EXT2_LABEL_LEN;
++		if (strlen(new_label) > maxlen) {
++			fputs(_("Warning: label too long, truncating.\n"),
++			      stderr);
++			new_label[maxlen] = '\0';
  		}
--	}
--	if (clear_mmp) {
- 		rc = ext2fs_mmp_clear(fs);
- 		goto closefs;
+-		close(fd);
+-		printf("%.*s\n", EXT2_LEN_STR(label));
+-		return 0;
++		if (ioctl(fs_fd, FS_IOC_SETFSLABEL, new_label) == 0)
++			opts[OPT_LABEL] = false;
  	}
-+	if (opts[OPT_MMP_INTERVAL]) {
-+		printf(P_("Setting multiple mount protection update "
-+			  "interval to %lu second\n",
-+			  "Setting multiple mount protection update "
-+			  "interval to %lu seconds\n", mmp_interval),
-+		       mmp_interval);
-+		sb->s_mmp_update_interval = mmp_interval;
-+		ext2fs_mark_super_dirty(fs);
+ 
+-	/* If it's extN file system, truncate the label to appropriate size */
+-	if (mnt_flags & EXT2_MF_EXTFS)
+-		maxlen = EXT2_LABEL_LEN;
+-	if (strlen(new_label) > maxlen) {
+-		fputs(_("Warning: label too long, truncating.\n"),
+-		      stderr);
+-		new_label[maxlen] = '\0';
+-	}
++	if (ioctl(fs_fd, EXT4_IOC_GET_TUNE_SB_PARAM, &params))
++		return 0;
+ 
+-	/* Set fs label */
+-	if (ioctl(fd, FS_IOC_SETFSLABEL, new_label)) {
+-		close(fd);
+-		if (errno == ENOTTY)
++	fs_set_ops = params.set_flags;
++	fs_blocks_count = params.blocks_count;
++	fs_feature_array[0] = params.feature_compat;
++	fs_feature_array[1] = params.feature_incompat;
++	fs_feature_array[2] = params.feature_ro_compat;
++	kernel_set_mask[0] = params.set_feature_compat_mask;
++	kernel_set_mask[1] = params.set_feature_incompat_mask;
++	kernel_set_mask[2] = params.set_feature_ro_compat_mask;
++	kernel_clear_mask[0] = params.clear_feature_compat_mask;
++	kernel_clear_mask[1] = params.clear_feature_incompat_mask;
++	kernel_clear_mask[2] = params.clear_feature_ro_compat_mask;
++	default_mnt_opts = params.default_mnt_opts;
++
++	memset(&params, 0, sizeof(params));
++
++#define SIMPLE_SET_PARAM(OPT, FLAG, PARAM_FIELD, VALUE) \
++	if (opts[OPT] && (fs_set_ops & FLAG)) { 	\
++		params.set_flags |= FLAG; 		\
++		params.PARAM_FIELD = VALUE;		\
 +	}
-+	if (opts[OPT_FORCE_FSCK]) {
-+		sb->s_state |= EXT2_ERROR_FS;
-+		printf(_("Setting filesystem error flag to force fsck.\n"));
-+		ext2fs_mark_super_dirty(fs);
++	SIMPLE_SET_PARAM(OPT_ERROR_BEHAVIOR, EXT4_TUNE_FL_ERRORS_BEHAVIOR,
++			 errors_behavior, errors);
++	SIMPLE_SET_PARAM(OPT_MOUNTCOUNT, EXT4_TUNE_FL_MNT_COUNT,
++			 set_flags, mount_count);
++	SIMPLE_SET_PARAM(OPT_MAX_MOUNTCOUNT, EXT4_TUNE_FL_MAX_MNT_COUNT,
++			 set_flags, max_mount_count);
++	SIMPLE_SET_PARAM(OPT_CHECKINTERVAL, EXT4_TUNE_FL_CHECKINTRVAL,
++			 set_flags, interval);
++	SIMPLE_SET_PARAM(OPT_CHECKTIME, EXT4_TUNE_FL_LAST_CHECK_TIME,
++			 last_check_time, last_check_time);
++	SIMPLE_SET_PARAM(OPT_RESUID, EXT4_TUNE_FL_RESERVED_UID,
++			 reserved_uid, resuid);
++	SIMPLE_SET_PARAM(OPT_RESGID, EXT4_TUNE_FL_RESERVED_GID,
++			 reserved_gid, resgid);
++	if (opts[OPT_RESERVED_RATIO] && !opts[OPT_RESERVED_BLOCKS]) {
++		reserved_blocks = reserved_ratio * fs_blocks_count / 100.0;
++		opts[OPT_RESERVED_BLOCKS] = true;
 +	}
-+	if (opts[OPT_TEST_FS]) {
-+		sb->s_flags |= EXT2_FLAGS_TEST_FILESYS;
-+		printf("Setting test filesystem flag\n");
-+		ext2fs_mark_super_dirty(fs);
++	SIMPLE_SET_PARAM(OPT_RESERVED_BLOCKS, EXT4_TUNE_FL_RESERVED_BLOCKS,
++			 reserved_blocks, reserved_blocks);
++	SIMPLE_SET_PARAM(OPT_RAID_STRIDE, EXT4_TUNE_FL_RAID_STRIDE,
++			 raid_stride, stride);
++	SIMPLE_SET_PARAM(OPT_RAID_STRIPE_WIDTH, EXT4_TUNE_FL_RAID_STRIPE_WIDTH,
++			 raid_stripe_width, stripe_width);
++	SIMPLE_SET_PARAM(OPT_ENCODING, EXT4_TUNE_FL_ENCODING,
++			encoding, encoding);
++	SIMPLE_SET_PARAM(OPT_ENCODING_FLAGS, EXT4_TUNE_FL_ENCODING_FLAGS,
++			encoding_flags, encoding_flags);
++	if (opts[OPT_MNTOPTS] &&
++	    (fs_set_ops & EXT4_TUNE_FL_DEFAULT_MNT_OPTS)) {
++		if (e2p_edit_mntopts(mntopts_cmd, &default_mnt_opts, ~0)) {
++			fprintf(stderr, _("Invalid mount option set: %s\n"),
++				mntopts_cmd);
+ 			return -1;
+-		com_err(mntpt, errno, _("while trying to set fs label"));
+-		return 1;
++		}
++		params.set_flags |= EXT4_TUNE_FL_DEFAULT_MNT_OPTS;
++		params.default_mnt_opts = default_mnt_opts;
 +	}
-+	if (opts[OPT_CLEAR_TEST_FS]) {
-+		sb->s_flags &= ~EXT2_FLAGS_TEST_FILESYS;
-+		printf("Clearing test filesystem flag\n");
-+		ext2fs_mark_super_dirty(fs);
++	if (opts[OPT_MOUNT_OPTS] &&
++	    (fs_set_ops & EXT4_TUNE_FL_MOUNT_OPTS)) {
++		params.set_flags |= EXT4_TUNE_FL_MOUNT_OPTS;
++		strncpy(params.mount_opts, ext_mount_opts,
++			sizeof(params.mount_opts));
++		params.mount_opts[sizeof(params.mount_opts) - 1] = 0;
 +	}
-+	if (opts[OPT_ENCODING]) {
-+		ext2fs_set_feature_casefold(sb);
-+		sb->s_encoding = encoding;
-+		printf(_("Setting encoding to '%s'\n"), encoding_str);
-+		if (opts[OPT_ENCODING_FLAGS]) {
-+			sb->s_encoding_flags = encoding_flags;
++	if (opts[OPT_FEATURES] &&
++	    (fs_set_ops & EXT4_TUNE_FL_FEATURES) &&
++	    !e2p_edit_feature2(features_cmd, fs_feature_array,
++			       kernel_set_mask, kernel_clear_mask,
++			       NULL, NULL)) {
++		params.set_flags |= EXT4_TUNE_FL_FEATURES;
++		params.feature_compat = fs_feature_array[0];
++		params.feature_incompat = fs_feature_array[1];
++		params.feature_ro_compat = fs_feature_array[2];
++	}
++	if (opts[OPT_FORCE_FSCK] &&
++	    (fs_set_ops & EXT4_TUNE_FL_FORCE_FSCK))
++		params.set_flags |= EXT4_TUNE_FL_FORCE_FSCK;
++
++	if (ioctl(fs_fd, EXT4_IOC_SET_TUNE_SB_PARAM, &params) == 0) {
++		if (opts[OPT_ERROR_BEHAVIOR])
++			printf(_("Setting error behavior to %d\n"), errors);
++		if (opts[OPT_MOUNTCOUNT])
++			printf(_("Setting current mount count to %d\n"),
++			       mount_count);
++		if (opts[OPT_MAX_MOUNTCOUNT])
++			printf(_("Setting maximal mount count to %d\n"),
++			       max_mount_count);
++		if (opts[OPT_CHECKINTERVAL])
++			printf(_("Setting interval between checks to %lu seconds\n"),
++			       interval);
++		if (opts[OPT_CHECKTIME])
++			printf(_("Setting time filesystem last checked to %s\n"),
++			       ctime(&last_check_time));
++		if (opts[OPT_RESUID])
++			printf(_("Setting reserved blocks uid to %lu\n"),
++			       resuid);
++		if (opts[OPT_RESGID])
++			printf(_("Setting reserved blocks gid to %lu\n"),
++			       resgid);
++		if (opts[OPT_RESERVED_BLOCKS])
++			printf(_("Setting reserved blocks count to %llu\n"),
++			       (unsigned long long) reserved_blocks);
++		if (opts[OPT_RAID_STRIDE])
++			printf(_("Setting stride size to %d\n"), stride);
++		if (opts[OPT_RAID_STRIPE_WIDTH])
++			printf(_("Setting stripe width to %d\n"),
++			       stripe_width);
++		if (opts[OPT_MOUNT_OPTS])
++			printf(_("Setting extended default mount options to '%s'\n"),
++			       ext_mount_opts);
++		if (opts[OPT_ENCODING])
++			printf(_("Setting encoding to '%s'\n"), encoding_str);
++		if (opts[OPT_ENCODING_FLAGS])
 +			printf(_("Setting encoding_flags to '%s'\n"),
 +			       encoding_flags_str);
-+		} else
-+			sb->s_encoding_flags =
-+				e2p_get_encoding_flags(sb->s_encoding);
-+			ext2fs_mark_super_dirty(fs);
-+	}
- 	if (journal_size || journal_device) {
- 		rc = add_journal(fs);
- 		if (rc)
-@@ -3554,6 +3572,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 			rc = 1;
- 			goto closefs;
- 		}
-+		orphan_file_blocks >>= fs->super->s_log_block_size;
- 		err = ext2fs_create_orphan_file(fs, orphan_file_blocks);
- 		if (err) {
- 			com_err(program_name, err, "%s",
-@@ -3764,17 +3783,23 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
++		if (opts[OPT_FORCE_FSCK])
++			printf(_("Setting filesystem error flag to force fsck.\n"));
++		opts[OPT_ERROR_BEHAVIOR] = opts[OPT_MOUNTCOUNT] =
++			opts[OPT_MAX_MOUNTCOUNT] = opts[OPT_CHECKINTERVAL] =
++			opts[OPT_CHECKTIME] = opts[OPT_RESUID] =
++			opts[OPT_RESGID] = opts[OPT_RESERVED_RATIO] =
++			opts[OPT_RESERVED_BLOCKS] = opts[OPT_MNTOPTS] =
++			opts[OPT_RAID_STRIDE] = opts[OPT_RAID_STRIPE_WIDTH] =
++			opts[OPT_MOUNT_OPTS] = opts[OPT_FEATURES] =
++			opts[OPT_FORCE_FSCK] = opts[OPT_ENCODING] =
++			opts[OPT_ENCODING_FLAGS] = false;
++		printf("online tune superblock succeeded\n");
++	} else {
++		perror("ioctl EXT4_IOC_SET_TUNE_SB_PARAM");
++		return -1;
+ 	}
+-	close(fd);
+-	return 0;
+-#else
+-	return -1;
+ #endif
++	return 0;
+ }
  
- 	if (do_list_super)
- 		list_super(sb);
--	if (stride_set) {
-+	if (opts[OPT_RAID_STRIDE]) {
- 		sb->s_raid_stride = stride;
- 		ext2fs_mark_super_dirty(fs);
- 		printf(_("Setting stride size to %d\n"), stride);
- 	}
--	if (stripe_width_set) {
-+	if (opts[OPT_RAID_STRIPE_WIDTH]) {
- 		sb->s_raid_stripe_width = stripe_width;
- 		ext2fs_mark_super_dirty(fs);
- 		printf(_("Setting stripe width to %d\n"), stripe_width);
- 	}
--	if (ext_mount_opts) {
-+	if (opts[OPT_HASH_ALG]) {
-+		sb->s_def_hash_version = hash_alg;
-+		printf(_("Setting default hash algorithm to %s (%d)\n"),
-+		       hash_alg_str, hash_alg);
-+		ext2fs_mark_super_dirty(fs);
+ #ifndef BUILD_AS_LIB
+@@ -3186,7 +3387,6 @@ int tune2fs_main(int argc, char **argv)
+ 	io_manager io_ptr, io_ptr_orig = NULL;
+ 	int rc = 0;
+ 	char default_undo_file[1] = { 0 };
+-	char mntpt[PATH_MAX + 1] = { 0 };
+ 	int fd = -1;
+ 	struct fsuuid *fsuuid = NULL;
+ 
+@@ -3220,19 +3420,21 @@ int tune2fs_main(int argc, char **argv)
+ #endif
+ 		io_ptr = unix_io_manager;
+ 
+-	/*
+-	 * Try the get/set fs label using ioctls before we even attempt
+-	 * to open the file system.
+-	 */
+-	if (opts[OPT_LABEL] || opts[OPT_PRINT_LABEL]) {
+-		rc = handle_fslabel(opts[OPT_LABEL]);
+-		if (rc != -1) {
+-#ifndef BUILD_AS_LIB
+-			exit(rc);
++	if (get_mount_flags() < 0 || try_mounted_tune2fs() << 0) {
++#ifdef BUILD_AS_LIB
++		return -1;
++#else
++		exit(1);
++#endif
 +	}
-+	if (opts[OPT_MOUNT_OPTS]) {
- 		strncpy((char *)(fs->super->s_mount_opts), ext_mount_opts,
- 			sizeof(fs->super->s_mount_opts));
- 		fs->super->s_mount_opts[sizeof(fs->super->s_mount_opts)-1] = 0;
++
++	if (!tune_opts_requested()) {
++		/* printf("No further tune opts left\n"); */
++#ifdef BUILD_AS_LIB
++		return 0;
++#else
++		exit(0);
+ #endif
+-			return rc;
+-		}
+-		rc = 0;
+ 	}
+ 
+ retry_open:
+@@ -3338,16 +3540,6 @@ retry_open:
+ 		goto closefs;
+ 	}
+ 
+-	retval = ext2fs_check_mount_point(device_name, &mount_flags,
+-					mntpt, sizeof(mntpt));
+-	if (retval) {
+-		com_err("ext2fs_check_mount_point", retval,
+-			_("while determining whether %s is mounted."),
+-			device_name);
+-		rc = 1;
+-		goto closefs;
+-	}
+-
+ #ifdef NO_RECOVERY
+ 	/* Warn if file system needs recovery and it is opened for writing. */
+ 	if ((open_flag & EXT2_FLAG_RW) && !(mount_flags & EXT2_MF_MOUNTED) &&
+@@ -3382,9 +3574,6 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 	fs->flags |= EXT2_FLAG_SUPER_ONLY;
+ 
+ 	if (opts[OPT_MAX_MOUNTCOUNT]) {
+-		if (max_mount_count == 65536)
+-			max_mount_count = EXT2_DFL_MAX_MNT_COUNT +
+-				(random() % EXT2_DFL_MAX_MNT_COUNT);
+ 		sb->s_max_mnt_count = max_mount_count;
+ 		ext2fs_mark_super_dirty(fs);
+ 		printf(_("Setting maximal mount count to %d\n"),
+@@ -3410,13 +3599,6 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 		}
+ 	}
+ 	if (opts[OPT_CHECKINTERVAL]) {
+-		if ((unsigned long long)interval >= (1ULL << 32)) {
+-			com_err(program_name, 0,
+-				_("interval between checks is too big (%lu)"),
+-				interval);
+-			rc = 1;
+-			goto closefs;
+-		}
+ 		sb->s_checkinterval = interval;
+ 		ext2fs_mark_super_dirty(fs);
+ 		printf(_("Setting interval between checks to %lu seconds\n"),
+@@ -3494,7 +3676,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 			sizeof(sb->s_last_mounted));
+ 		ext2fs_mark_super_dirty(fs);
+ 	}
+-	if (mntopts_cmd) {
++	if (opts[OPT_MNTOPTS]) {
+ 		rc = update_mntopts(fs, mntopts_cmd);
+ 		if (rc)
+ 			goto closefs;
 -- 
 2.51.0
 
