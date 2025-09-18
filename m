@@ -1,143 +1,119 @@
-Return-Path: <linux-ext4+bounces-10236-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10237-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8177DB81489
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Sep 2025 20:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B4A2B833CD
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 08:59:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9B9D5240FD
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Sep 2025 18:01:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EB62625DB5
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 06:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDBC301024;
-	Wed, 17 Sep 2025 18:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="g1LtUuBN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5BB32E371F;
+	Thu, 18 Sep 2025 06:58:59 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from good-out-07.clustermail.de (good-out-07.clustermail.de [212.223.35.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9AE32F28F9
-	for <linux-ext4@vger.kernel.org>; Wed, 17 Sep 2025 18:00:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60B32E2296
+	for <linux-ext4@vger.kernel.org>; Thu, 18 Sep 2025 06:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.223.35.26
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758132049; cv=none; b=svbQFeznW6fiEHDS7o5Obf2yRXW7NXkMJZWK2tk1RW7Y+5Rm3BihHQDIpl+k2vHa4xsqFPyeUXKX1yXRtBkRUwGRo3Fz+pP2/S0lkZXLVuU0txGFAAWsm+P8T7b5Mi4iw7xp5Rm04ZMTv+DqwWwmyaGp8rjwLEm8yd/Eqi+6Bxk=
+	t=1758178739; cv=none; b=BR8dt4d3lw/syBNtnZJqzHXf+kAa9PPNv72lfq6wKuD2amnsTL9ii7vtH+f8YGNkWftzNiyQ7H3iwpPKAFoJ2HqLROZEC0J4Pl9k4CjCrxzUWfhjvR3gsVjWg1mFPpXbVSYDN4H/Q2MP1FG9RL6JSBL1NjmA1vPH4b2+pKtBIPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758132049; c=relaxed/simple;
-	bh=DLDcGQ3mu3T/MPVKq0NF9V2I5Jn6ILZwFaw9KVQfhOo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SEpLowpb9c2WeJrgZZOOtpRLXKLMYE+WRJ6LCbzqb4b8CdAnchR4i0x0HOgLb5B1V+cSQQ7rGxb4GWB/vlxxUPU84whDGQ4BnZBCobTe0tP0FmJQKIXJN8MQIwRbtuodMy0/NsPqveo5UW40MjMxEdzf9QCxhLY/dDUD3z5ZiHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=g1LtUuBN; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-55f76454f69so135554e87.0
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Sep 2025 11:00:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1758132044; x=1758736844; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0Pv4dFUExNQfPloEDat7jfEF9BkjeLOy7zrinjdnc80=;
-        b=g1LtUuBN2lj4qvyQzWAdLKTewMPpvB0BMgAm3EhYmOSEcT379TNMgVSmJk7DCmgjc/
-         T0eHokwlFMY3Yd+mXYCz+ekytPn0ndF69T0GJJIC1YMQr15FXnETUToESn8hAOjjN4TJ
-         wc+dE3joK8Hj6X0qrUlvmHpmCBRx7/hVESh3NV1/RSPbebawN77L/JxPYbAY8rno5NPR
-         h45BlMuQrVS79kOiLhszZHO32mHd/xwXNvhKNiRJJPEEOxGanxAq7D4RvCoxMPnsrP0o
-         gtEy+UX8pbw1CA/Tbhp0++SKDmI4SgqYBJ/2EKyXEOwvuyrgRQgYTYLI+VQny1h7rWhV
-         /NkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758132044; x=1758736844;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0Pv4dFUExNQfPloEDat7jfEF9BkjeLOy7zrinjdnc80=;
-        b=QE6bB9T/56bMCvTAorLKiiTeua91lsrbNiK/fuO42KIDxLkO5ocAyvhY49/vr2ny3t
-         KWtghmFZ7WCP/x/K3c0ONH9e1mN41xdo8zpZKpyDnpUFvcwR/HNiVZqBV453bQ7mxyyS
-         0xK+ADh5t2Fdk0JXtCsWf2iJVvByMau9JM8RcQtVVls8jR296N/G19AoOlIulg9VSr3a
-         iO8Sw5cKZPIXORVX9iCKAU3fK9MRw1fw5f0AoZkzOZ68BzdsCd911BwFWE8vV9nZ0ovO
-         y93+Zcr3CQyJpm4LnNXWFys1HNQv+HAh0OaFT3gglmI2bGI6BQI1PH2FTeNUyA2f5d2V
-         iw7A==
-X-Forwarded-Encrypted: i=1; AJvYcCU4Latj6kXHbkm146CyAuD6dPH6BwKygW43KVbvhT0G+pfIuXkeqPCZW5VbsqRVGNLx/zYinYJEyiJr@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywoan831l4M6xRgdPror/ktwV3mdRjQS58bWYSh1vsya+8Hk5lZ
-	qj7VLsbJwiT9cqkDSL7RM5janlcjnkFCoRQLip7WiLlFVCu2zxjNuvoWaRI1w5Xbe1BCL6ABCr1
-	GRG7/dacATtttGd+pROgBx7bKHjXSovUS85ldwd43
-X-Gm-Gg: ASbGncsNjN0aHNcVPRwIOn6yDD1mX1jV1TYdyByAaN98hwDdyU+TkfV4gTaUp2ukd8v
-	G+V/01YLuOmTp5T3rvDOjZlSfiV/dnLAJBSsulYy5P++1+wCxkiSh7WdFW7NPPeNkdwj5KJXCEm
-	ZgqSTyJyj0zyjn8UncLRvig0mzuog8XfbEugC/Ia98pzLPY4td7ZlWc6Ut5Jnq789ZwBmgR53wX
-	EgPGQ==
-X-Google-Smtp-Source: AGHT+IGI+xF2OSgRbI6+fabXiqu9Xwuf5bxWYwnja/rNGOUuSmNzhH42MNUAKuR34Ox7ov8nmiujA9clDhMS84oRbmU=
-X-Received: by 2002:ac2:4e09:0:b0:576:d217:3f2f with SMTP id
- 2adb3069b0e04-57796b5e819mr1028160e87.3.1758132043747; Wed, 17 Sep 2025
- 11:00:43 -0700 (PDT)
+	s=arc-20240116; t=1758178739; c=relaxed/simple;
+	bh=pHAoGJlyh9lmJu+IhLLed0wcIOF1z+6yGYCa2YKwzgY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=mvqZRyT4iuScXdOBThh2QpjwTQdeQ3mKXTjsffP7eSCoYbKt8w7K1zZ0aQKWfh9+K5/dxr8lguDPZTk5fzcJ0VqUAltuEpklHzcx9WA4VpOQYhWTjbbfNCxZPpFEzIdhOHhj6lWIND9T/9EkUHtW622EOGm48gHeu74D36M9+nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gin.de; spf=pass smtp.mailfrom=gin.de; arc=none smtp.client-ip=212.223.35.26
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gin.de
+Received: from [10.0.0.7] (helo=frontend.clustermail.de)
+	by smtpout-02.clustermail.de with esmtp (Exim 4.96)
+	(envelope-from <rafael.richter.extern@gin.de>)
+	id 1uz7cN-00EHgD-0B;
+	Thu, 18 Sep 2025 07:55:44 +0200
+Received: from [62.157.191.2] (helo=GIN-GR-EXCH01.gin-domain.local)
+	by frontend.clustermail.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <rafael.richter.extern@gin.de>)
+	id 1uz7cO-005i1U-0W;
+	Thu, 18 Sep 2025 07:55:44 +0200
+Received: from GIN-GR-EXCH01.gin-domain.local (10.160.128.6) by
+ GIN-GR-EXCH01.gin-domain.local (10.160.128.6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.10; Thu, 18 Sep 2025 07:55:45 +0200
+Received: from GIN-GR-EXCH01.gin-domain.local ([fe80::e5fc:2fc4:ac69:9303]) by
+ GIN-GR-EXCH01.gin-domain.local ([fe80::e5fc:2fc4:ac69:9303%10]) with mapi id
+ 15.02.1748.010; Thu, 18 Sep 2025 07:55:45 +0200
+From: "Richter, Rafael" <rafael.richter.extern@gin.de>
+To: Jan Kara <jack@suse.cz>
+CC: "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: =?utf-8?B?QVc6IGV4dDQ6IHNsb3cgdW5tb3VudCB3aXRoIGxhcmdlIGNsZWFuIHBhZ2Ug?=
+ =?utf-8?B?Y2FjaGU7IGlzIGZzZnJlZXpl4oaSdW1vdW50IHJlY29tbWVuZGVkPw==?=
+Thread-Topic: =?utf-8?B?ZXh0NDogc2xvdyB1bm1vdW50IHdpdGggbGFyZ2UgY2xlYW4gcGFnZSBjYWNo?=
+ =?utf-8?B?ZTsgaXMgZnNmcmVlemXihpJ1bW91bnQgcmVjb21tZW5kZWQ/?=
+Thread-Index: AQHcI/BK6ZMeAt0WPEaCLFkCkm5WYbSXbnqAgAEKuio=
+Date: Thu, 18 Sep 2025 05:55:45 +0000
+Message-ID: <b76d3334a0b14a709ef3c3c197f5ddf5@gin.de>
+References: <5008ea1dfc7a49babd670e94ce5dbda7@gin.de>,<db7ikfrvqkz6ovmpsaahkwozdizeq34ev6nhnxaldwlhbklx7x@vxl5e6hu2c6e>
+In-Reply-To: <db7ikfrvqkz6ovmpsaahkwozdizeq34ev6nhnxaldwlhbklx7x@vxl5e6hu2c6e>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-esetresult: clean, is OK
+x-esetid: 37303A2952B005506D7462
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250912223937.3735076-1-safinaskar@zohomail.com> <0342fbda-9901-4293-afa7-ba6085eb1688@landley.net>
-In-Reply-To: <0342fbda-9901-4293-afa7-ba6085eb1688@landley.net>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Wed, 17 Sep 2025 11:00:32 -0700
-X-Gm-Features: AS18NWAGwakGZ9zjxjq7MnfN8O7ZgOJb6fmKIJ0JIML7P3j0NnlDZ27eNb5S7Es
-Message-ID: <CALCETrXHxOkHoS+0zhvc4cfpZqJ0wpfQUDnXW-A-qyQkqur-DQ@mail.gmail.com>
-Subject: Re: [PATCH 00/62] initrd: remove classic initrd support
-To: Rob Landley <rob@landley.net>
-Cc: Askar Safin <safinaskar@zohomail.com>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, 
-	Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	Aleksa Sarai <cyphar@cyphar.com>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
-	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
-	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>, 
-	Alexander Graf <graf@amazon.com>, Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, 
-	Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org, 
-	linux-api@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	"Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, 
-	devicetree@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
-	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 15, 2025 at 10:09=E2=80=AFAM Rob Landley <rob@landley.net> wrot=
-e:
-
-> While you're at it, could you fix static/builtin initramfs so PID 1 has
-> a valid stdin/stdout/stderr?
->
-> A static initramfs won't create /dev/console if the embedded initramfs
-> image doesn't contain it, which a non-root build can't mknod, so the
-> kernel plumbing won't see it dev in the directory we point it at unless
-> we build with root access.
-
-I have no current insight as to whether there's a kernel issue here,
-but why are you trying to put actual device nodes in an actual
-filesystem as part of a build process?  It's extremely straightforward
-to emit devices nodes in cpio format, and IMO it's far *more*
-straightforward to do that than to make a whole directory, try to get
-all the modes right, and cpio it up.
-
-I wrote an absolutely trivial tool for this several years ago:
-
-https://github.com/amluto/virtme/blob/master/virtme/cpiowriter.py
-
-it would be barely more complicated to strip the trailer off an cpio
-file from some other source, add some device nodes, and stick the
-trailer back on.  But it's also really, really, really easy to emit an
-entire, functioning cpio-formatted initramfs from plain user code with
-no filesystem manipulation at all.  This also makes that portion of
-the build reproducible, which is worth quite a bit IMO.
-
---Andy
+SGkhDQoNCj4gWWVzLiBUaGlzIGlzIGJlY2F1c2Ugd2l0aCB0aGlzIGtlcm5lbCB2ZXJzaW9uIFhG
+UyB1c2VzIGxhcmdlIGZvbGlvcyAodXB0bw0KPiAyTUIgaW4gc2l6ZSkgd2hpbGUgZXh0NCB1c2Vz
+IG9ubHkgNGsgZm9saW9zIGZvciB0aGUgcGFnZSBjYWNoZS4gQW5kDQo+IGV2aWN0aW5nIHRoYXQg
+bWFueSBmb2xpb3MgaW4gZXh0NCB0YWtlcyB0aW1lLiBMYXJnZSBmb2xpbyBzdXBwb3J0IGhhcyBi
+ZWVuDQo+IGFkZGVkIHRvIGV4dDQgcmVjZW50bHkgKDYuMTY/KSBzbyB3aXRoIHRoYXQgeW91IHNo
+b3VsZCBzZWUgc2ltaWxhciB1bW91bnQNCj4gdGltZXMgYWdhaW4uDQpUaGFuayB5b3UgZm9yIHRo
+aXMgdmFsdWFibGUgaW5mb3JtYXRpb24uIEkgd2lsbCBnaXZlIGl0IGEgdHJ5Lg0KDQoNClZvbjog
+SmFuIEthcmEgPGphY2tAc3VzZS5jej4NCkdlc2VuZGV0OiBNaXR0d29jaCwgMTcuIFNlcHRlbWJl
+ciAyMDI1IDE3OjU4DQpBbjogUmljaHRlciwgUmFmYWVsDQpDYzogbGludXgtZXh0NEB2Z2VyLmtl
+cm5lbC5vcmcNCkJldHJlZmY6IFJlOiBleHQ0OiBzbG93IHVubW91bnQgd2l0aCBsYXJnZSBjbGVh
+biBwYWdlIGNhY2hlOyBpcyBmc2ZyZWV6ZeKGknVtb3VudCByZWNvbW1lbmRlZD8NCsKgICAgDQpD
+QVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRlIG9mIHRoZSBvcmdhbml6
+YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Ug
+cmVjb2duaXplIHRoZSBzZW5kZXIgYW5kIGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZS4NCg0KSGkh
+DQoNCk9uIEZyaSAxMi0wOS0yNSAxNDoyMDoxMywgUmljaHRlciwgUmFmYWVsIHdyb3RlOg0KPiB3
+ZSBjb25zaXN0ZW50bHkgc2VlIHNsb3cgdW5tb3VudHMgKH424oCTOHMpIG9uIGV4dDQgYWZ0ZXIg
+aGVhdnkgYnVmZmVyZWQgd3JpdGVzDQo+IChlLmcuLCBkZCB+MzAgR2lCKSB0aGF0IGdyb3cgdGhl
+IHBhZ2UgY2FjaGUuIFNhbWUgdGVzdCBvbiBYRlMgdW5tb3VudHMgPDFzIG9uDQo+IHRoZSBzYW1l
+IGhhcmR3YXJlLCBidXQgd2UgbXVzdCBzdGF5IG9uIGV4dDQuDQo+DQo+IEVudjoNCj7CoMKgIC0g
+S2VybmVsOiA2LjYuMzYgKFlvY3RvLWJhc2VkKQ0KPsKgwqAgLSBEZXZpY2U6IFNTRCB2aWEgbWRy
+YWlkICgvZGV2L21kMHAxKQ0KPsKgwqAgLSBNb3VudDogZXh0NCBvbiAvbW50L2Rpc2sgKGRlZmF1
+bHRzKQ0KPg0KPiBSZXBybzoNCj7CoMKgIGRkIGlmPS9kZXYvemVybyBvZj0vbW50L2Rpc2svYmln
+LmJpbiBicz0xTSBjb3VudD0zMDcyMCBzdGF0dXM9cHJvZ3Jlc3MNCj7CoMKgIHN5bmMgLWYgL21u
+dC9kaXNrDQo+wqDCoCB0aW1lIHVtb3VudCAvbW50L2Rpc2vCoMKgwqDCoMKgICMgZXh0NDogfjbi
+gJM4cw0KDQpZZXMuIFRoaXMgaXMgYmVjYXVzZSB3aXRoIHRoaXMga2VybmVsIHZlcnNpb24gWEZT
+IHVzZXMgbGFyZ2UgZm9saW9zICh1cHRvDQoyTUIgaW4gc2l6ZSkgd2hpbGUgZXh0NCB1c2VzIG9u
+bHkgNGsgZm9saW9zIGZvciB0aGUgcGFnZSBjYWNoZS4gQW5kDQpldmljdGluZyB0aGF0IG1hbnkg
+Zm9saW9zIGluIGV4dDQgdGFrZXMgdGltZS4gTGFyZ2UgZm9saW8gc3VwcG9ydCBoYXMgYmVlbg0K
+YWRkZWQgdG8gZXh0NCByZWNlbnRseSAoNi4xNj8pIHNvIHdpdGggdGhhdCB5b3Ugc2hvdWxkIHNl
+ZSBzaW1pbGFyIHVtb3VudA0KdGltZXMgYWdhaW4uDQoNCj4gT2JzZXJ2YXRpb25zOg0KPsKgwqAg
+LSBEaXJ0eS9Xcml0ZWJhY2sgYXJlIH4wIGJlZm9yZSB1bm1vdW50Lg0KPsKgwqAgLSBgZnNmcmVl
+emUgLWYgL21udC9kaXNrYCBpbW1lZGlhdGVseSBiZWZvcmUgYHVtb3VudGAgbWFrZXMgdW5tb3Vu
+dCB2ZXJ5IGZhc3QuDQo+wqDCoCAtIGBtb3VudCAtbyByZW1vdW50LHJvYCBiZWZvcmUgYHVtb3Vu
+dGAgZG9lcyBOT1QgaW1wcm92ZSB1bm1vdW50IHRpbWUuDQoNCldlbGwsIHRoaXMgaXMgZGVmaW5p
+dGVseSBub3QgcmVjb21tZW5kZWQuIGZzZnJlZXplIC1mIHdpbGwgYWNxdWlyZQ0Kc3VwZXJibG9j
+ayByZWZlcmVuY2Ugd2hpY2ggbWVhbnMgdGhhdCB0aGUgZmlsZXN5c3RlbSBhY3R1YWxseSBzdGF5
+cyBtb3VudGVkDQppbiB0aGUgYmFja2dyb3VuZCBhZnRlciB1bW91bnQgdW50aWwgeW91IHVuZnJl
+ZXplIGl0IChmb3Igd2hpY2ggeW91IG5lZWQgdG8NCm1vdW50IGl0IGFnYWluIDspKS4gVGhhdCdz
+IGEgYml0IG9mIGEgY2F0Y2ggd2l0aCBmc2ZyZWV6ZS4NCg0KwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEhvbnphDQoN
+Ci0tDQpKYW4gS2FyYSA8amFja0BzdXNlLmNvbT4NClNVU0UgTGFicywgQ1INCg0KDQogICAg
 
