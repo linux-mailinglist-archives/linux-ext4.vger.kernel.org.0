@@ -1,526 +1,147 @@
-Return-Path: <linux-ext4+bounces-10243-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10244-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CA67B86509
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 19:47:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2100DB86557
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 19:56:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35DF51CC44FA
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 17:47:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D63343ACEBB
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 17:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F612459DD;
-	Thu, 18 Sep 2025 17:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584B1284888;
+	Thu, 18 Sep 2025 17:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KSVltbPK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z5aUatVN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E972934BA52
-	for <linux-ext4@vger.kernel.org>; Thu, 18 Sep 2025 17:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F2B283FD6
+	for <linux-ext4@vger.kernel.org>; Thu, 18 Sep 2025 17:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758217646; cv=none; b=BVWQ95I5QGjZ9r7bjXszlqG7d/452qIhxR6L2vtCXLnLpSdQDI1pAjr+l+aGn7MHQFApiSQYhXTVosHDxMfJEK1KVvCxMzWILVj4SDR2ftyWk5vcx+SphirKIcVb7U61z7MlQ4U2BZHPnMQzlOWQLlqQeG3RUmA/xwpvlV/HzIQ=
+	t=1758218207; cv=none; b=qwJza+mguBypW48YFgzhQWQvNpRESAXkhQdGYYT6818Box3JpB767nza51+iCIw9UJ7VqbAFaCt95P68DNmOY19uAvoCE2rxeHRfbgRB0s4Lzh6ggfIWqwNSrUTm0jnYPJWClN/AAbOuofOB4DrzEqBAJ3AqGU7ZOBBjVHkOtW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758217646; c=relaxed/simple;
-	bh=VzKe/3YLFD2ysV+L5a9XalHZKFLmhFbSQs/hivHl+9U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sSlzhWE+xfTo9YhVzS19maO/DJwC1fOX1RJ+eDNR8FGOfXZXaj3lrHiq/wkHvHrXoAqZ+9xoq/jH3CcpykV3vl6vkb2/enfnhhVzzBUk1RG0EYqLlk52f/SXkLudr3+YZo+6IoLYuJevXlkppQm1XmB/EqznA+44HN8m1+hp+7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KSVltbPK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6267DC4CEE7;
-	Thu, 18 Sep 2025 17:47:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758217645;
-	bh=VzKe/3YLFD2ysV+L5a9XalHZKFLmhFbSQs/hivHl+9U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KSVltbPKxE5yHDf9YxB0Y0o3j+0Q4htUmO8nBtx1ILXaRxvr+8mYMzPH85rMXymkX
-	 KvkEpoGBnA71hzkVWouh7+pGBdLRYViw8mhBX7SdmLRi30ccnjvsQ//gbRW3oQkY3p
-	 e07q7+T0OlaStEmwjBWu2y3mezhaX7g5/I/pDmdvWofvx/3qUzYP4tcnwqSWjr+DbN
-	 JgsXA4KFNtLpHCbNa3F2Enyt2PgjczyG0g//6BYllg6NsgXOTVc0OL41xx/Db+vTf0
-	 /opmEMdDgHoYFCyZgi4KueUNvLNZokwrYk2vE2nYSczdJISLSNGh5GjNCfJ5Q2bqIr
-	 nVpSxk7r7WBUQ==
-Date: Thu, 18 Sep 2025 10:47:24 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 3/3] tune2fs: try to use the SET_TUNE_SB_PARAM ioctl on
- mounted file systems
-Message-ID: <20250918174724.GH8084@frogsfrogsfrogs>
-References: <20250917032814.395887-1-tytso@mit.edu>
- <20250917032814.395887-4-tytso@mit.edu>
+	s=arc-20240116; t=1758218207; c=relaxed/simple;
+	bh=U8iHdE1DU42lSzhiPs8MNTQ6En/hzji2xtgp/3h/Nak=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=PyAkCIGoSkkMqd13WDEyS7LNnjqfR2un4HPgjghy3npv24CqzYWIoRXhUimixDK+z4OCPgLa6NJ/qgRsB1Eec86CSWTMwuKyju7bOtBHUxErqq8W2sTbA7NnTkdT65T0CFeE6YPU9mf2gp/RBFgRKFe1QpU183WaeCqFHqy+tW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z5aUatVN; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-45f29dd8490so11233015e9.1
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Sep 2025 10:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758218204; x=1758823004; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UdvxtgG+W0bP4h9lSXAZ6eBdnNjpx+XRSyEW/uzBUNU=;
+        b=Z5aUatVNbXaEGRGtBpVop6/YYuJH6Xv/hHN262iv+e/E8ktbggZ/1FDXDqNUaxhPnS
+         +q6HY5x1KOxC0Uqt8j8LrZEQE4O292RRD0QsRjSsVQzhQxrusWMed8u/xN1oovzZQfCZ
+         djA+DoVnjYZzZCr3O0kGrKPJ51cFtLT/n8X/mAApErXYPmI/hquVF1NtodKit+M2/3om
+         HoDJpJWT3ZfQmJi2DcO87kQFEJwqiPoYMRQTnieQT3ZdfmG60x7AQPfC9f1W+GLfIHFx
+         8PeRUbhH2GSeMyFyu2MSTMS0ypjDpzViRvny2TE9cb2/rEy0vHfO7Tf+3NqiNGf0ASjR
+         S+QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758218204; x=1758823004;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UdvxtgG+W0bP4h9lSXAZ6eBdnNjpx+XRSyEW/uzBUNU=;
+        b=BhZTr3S6YxC0ZbTawT1QG75pxWPe/TknKlJDouuEUveXA46tmcYUWaORIgIDMuY+Uz
+         ZZYSKEl40x7G92FuM1QKfHOwBNW8P6Ng+oIcNnP5F7aAeZVLDw3iKDw/8Mr9zhgPBw0m
+         tv5b8MhdTuXdAVyZ3GTObEh+ivmNfRItpB6Y2fndSEy4znTMU3Dtu7Y3C6G9NaDq+E85
+         f8XznEW6w5ZoecCJK7F87UvXY7J/2njAygZgdKZWVYEhlHWU4g9xQ0FmNsjezal6KvY1
+         1agDrq4iegWjPnx2GkZ1HUQn0ZqVGRRofW9qVQNRTa8FpnBw04QirA3Gk1OkkfFDbwKv
+         9E5A==
+X-Gm-Message-State: AOJu0Ywl2c3fKw11kqCsuay2fJAbdFDiYDKXr3kctomJJFrJxOMTNhGZ
+	ac/Ykm+vSqoPQUWCL71AtUABjlngMmuRECWH3pUvMfMUynctO7hHt9Ph
+X-Gm-Gg: ASbGnct/xm7644R+NhJ82WwFNMUSeNm9L3AQ4/wedV5nMTtAhBsYg0cOx7E31dr/+dN
+	+FEFzQGYkgio0yzG/XNAQGDVlzZEwvuC8wIr1OKvdBrw0dVMuLjeWdxuGLABGDPVnaAuBoHhiu1
+	9jNRnQZWgrUnIbjmj6J9UWVCU23grh0s54Gs/tWQVPGtF03I33Tt1cLiRBE/7j/ATjpzCeclaNP
+	mQfFgc84+5QfVGk1HHMGPf2F8Bi8rFDX4F0uNAr9II5m0KsK/nwfwzZCD1BbexvsffM9MRlSU7i
+	y1koNNrOSVuoEed8uZhLmZpo3ZAL2Lm/ZZzjiHYRVFU34vPunfHqPs+xYXHdTTNxhkUvp2PQ4/z
+	wNZC7uKjCKoLf2bD6ur+gZgZAbAUZykUJcswHpbn2L4oy
+X-Google-Smtp-Source: AGHT+IG+LlafBp1zHMJXHSQ3atVCRalq4bFvAwyFj+H8A+XPdD7ZEb4MccJq0WgSxA9gQ0ZMkg+RYQ==
+X-Received: by 2002:a05:6000:1885:b0:3d1:c805:81e with SMTP id ffacd0b85a97d-3ee7c925550mr136862f8f.4.1758218203390;
+        Thu, 18 Sep 2025 10:56:43 -0700 (PDT)
+Received: from eray-kasa.local ([88.233.220.67])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3ee0fbc7300sm4369752f8f.34.2025.09.18.10.56.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Sep 2025 10:56:43 -0700 (PDT)
+From: Ahmet Eray Karadag <eraykrdg1@gmail.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Ahmet Eray Karadag <eraykrdg1@gmail.com>,
+	Albin Babu Varghese <albinbabuvarghese20@gmail.com>
+Subject: [PATCH] Fix: ext4: guard against EA inode refcount underflow in xattr update 
+Date: Thu, 18 Sep 2025 20:55:46 +0300
+Message-Id: <20250918175545.48297-1-eraykrdg1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250917032814.395887-4-tytso@mit.edu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 16, 2025 at 11:28:14PM -0400, Theodore Ts'o wrote:
-> Try to uuse the new EXT4_IOC_GET_TUNE_SB_PARAM ioctl to update the
-> superblock if the file system is mounted.
-> 
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> ---
->  misc/tune2fs.c | 352 +++++++++++++++++++++++++++++++++++++------------
->  1 file changed, 267 insertions(+), 85 deletions(-)
-> 
-> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> index e752c328..b1ec3991 100644
-> --- a/misc/tune2fs.c
-> +++ b/misc/tune2fs.c
-> @@ -101,6 +101,64 @@ struct fsuuid {
->  #define EXT4_IOC_SETFSUUID	_IOW('f', 44, struct fsuuid)
->  #endif
->  
-> +#if (!defined(EXT4_IOC_GET_TUNE_SB_PARAM) && defined(__linux__))
-> +
-> +struct ext4_tune_sb_params {
-> +	__u32 set_flags;
-> +	__u32 checkinterval;
-> +	__u16 errors_behavior;
-> +	__u16 mnt_count;
-> +	__u16 max_mnt_count;
-> +	__u16 raid_stride;
-> +	__u64 last_check_time;
-> +	__u64 reserved_blocks;
-> +	__u64 blocks_count;
-> +	__u32 default_mnt_opts;
-> +	__u32 reserved_uid;
-> +	__u32 reserved_gid;
-> +	__u32 raid_stripe_width;
-> +	__u16 encoding;
-> +	__u16 encoding_flags;
-> +	__u8  def_hash_alg;
-> +	__u8  pad_1;
-> +	__u16 pad_2;
-> +	__u32 feature_compat;
-> +	__u32 feature_incompat;
-> +	__u32 feature_ro_compat;
-> +	__u32 set_feature_compat_mask;
-> +	__u32 set_feature_incompat_mask;
-> +	__u32 set_feature_ro_compat_mask;
-> +	__u32 clear_feature_compat_mask;
-> +	__u32 clear_feature_incompat_mask;
-> +	__u32 clear_feature_ro_compat_mask;
-> +	__u8  mount_opts[64];
-> +	__u8  pad[64];
-> +};
-> +
-> +#define EXT4_TUNE_FL_ERRORS_BEHAVIOR	0x00000001
-> +#define EXT4_TUNE_FL_MNT_COUNT		0x00000002
-> +#define EXT4_TUNE_FL_MAX_MNT_COUNT	0x00000004
-> +#define EXT4_TUNE_FL_CHECKINTRVAL	0x00000008
-> +#define EXT4_TUNE_FL_LAST_CHECK_TIME	0x00000010
-> +#define EXT4_TUNE_FL_RESERVED_BLOCKS	0x00000020
-> +#define EXT4_TUNE_FL_RESERVED_UID	0x00000040
-> +#define EXT4_TUNE_FL_RESERVED_GID	0x00000080
-> +#define EXT4_TUNE_FL_DEFAULT_MNT_OPTS	0x00000100
-> +#define EXT4_TUNE_FL_DEF_HASH_ALG	0x00000200
-> +#define EXT4_TUNE_FL_RAID_STRIDE	0x00000400
-> +#define EXT4_TUNE_FL_RAID_STRIPE_WIDTH	0x00000800
-> +#define EXT4_TUNE_FL_MOUNT_OPTS		0x00001000
-> +#define EXT4_TUNE_FL_FEATURES		0x00002000
-> +#define EXT4_TUNE_FL_EDIT_FEATURES	0x00004000
-> +#define EXT4_TUNE_FL_FORCE_FSCK		0x00008000
-> +#define EXT4_TUNE_FL_ENCODING		0x00010000
-> +#define EXT4_TUNE_FL_ENCODING_FLAGS	0x00020000
-> +
-> +#define EXT4_IOC_GET_TUNE_SB_PARAM	_IOR('f', 45, struct ext4_tune_sb_params)
-> +#define EXT4_IOC_SET_TUNE_SB_PARAM	_IOW('f', 46, struct ext4_tune_sb_params)
-> +
-> +#endif
-> +
->  extern int ask_yn(const char *string, int def);
->  
->  #define OPT_MAX_MOUNTCOUNT	 1
-> @@ -145,6 +203,8 @@ char *io_options;
->  static int force, do_list_super, sparse_value = -1;
->  static time_t last_check_time;
->  static int max_mount_count, mount_count, mount_flags;
-> +static int fs_fd = -1;
-> +static char mntpt[PATH_MAX + 1];
->  static unsigned long interval;
->  static blk64_t reserved_blocks;
->  static double reserved_ratio;
-> @@ -2052,6 +2112,10 @@ static void parse_tune2fs_options(int argc, char **argv)
->  			}
->  			if (max_mount_count == 0)
->  				max_mount_count = -1;
-> +			else if (max_mount_count == 65536) {
-> +				max_mount_count = EXT2_DFL_MAX_MNT_COUNT +
-> +					(random() % EXT2_DFL_MAX_MNT_COUNT);
-> +			}
->  			break;
->  		case 'C':
->  			opts[OPT_MOUNTCOUNT] = true;
-> @@ -2134,6 +2198,12 @@ static void parse_tune2fs_options(int argc, char **argv)
->  					_("bad interval - %s"), optarg);
->  				usage();
->  			}
-> +			if ((unsigned long long)interval >= (1ULL << 32)) {
-> +				com_err(program_name, 0,
-> +					_("interval between checks is too big (%lu)"),
-> +					interval);
-> +				exit(1);
-> +			}
->  
-> -/*
-> - * Use FS_IOC_SETFSLABEL or FS_IOC_GETFSLABEL to set/get file system label
-> - * Return:	0 on success
-> - *		1 on error
-> - *		-1 when the old method should be used
-> - */
-> -static int handle_fslabel(int setlabel)
-> +static int get_mount_flags()
-> +{
-> +	errcode_t	ret;
-> +
-> +	ret = ext2fs_check_mount_point(device_name, &mount_flags,
-> +				       mntpt, sizeof(mntpt));
-> +	if (ret) {
-> +		com_err("ext2fs_check_mount_point", ret,
-> +			_("while determining whether %s is mounted."),
-> +			device_name);
-> +		return -1;
-> +	}
-> +
-> +#ifdef __linux__
-> +	if ((ret == 0) &&
-> +	    (mount_flags & EXT2_MF_MOUNTED) &&
-> +	    mntpt[0])
-> +		fs_fd = open(mntpt, O_RDONLY);
-> +#endif
-> +	return 0;
-> +}
-> +
-> +static int try_mounted_tune2fs()
->  {
->  #ifdef __linux__
->  	errcode_t ret;
-> -	int mnt_flags, fd;
->  	char label[FSLABEL_MAX];
-> -	unsigned int maxlen = FSLABEL_MAX - 1;
-> -	char mntpt[PATH_MAX + 1];
-> +	struct ext4_tune_sb_params params;
-> +	__u64 fs_blocks_count;
-> +	__u32 fs_feature_array[3], kernel_set_mask[3], kernel_clear_mask[3];
-> +	__u32 default_mnt_opts;
-> +	int fs_set_ops = 0;
->  
-> -	ret = ext2fs_check_mount_point(device_name, &mnt_flags,
-> -					  mntpt, sizeof(mntpt));
-> -	if (ret)
-> -		return -1;
-> +	if (fs_fd < 0)
-> +		return 0;
->  
-> -	if (!(mnt_flags & EXT2_MF_MOUNTED) ||
-> -	    (setlabel && (mnt_flags & EXT2_MF_READONLY)))
-> -		return -1;
-> +	if (opts[OPT_PRINT_LABEL] &&
-> +	    !ioctl(fs_fd, FS_IOC_GETFSLABEL, &label)) {
-> +		printf("%.*s\n", EXT2_LEN_STR(label));
-> +		opts[OPT_PRINT_LABEL] = false;
-> +	}
->  
-> -	if (!mntpt[0])
-> -		return -1;
-> +	if (mount_flags & EXT2_MF_READONLY)
-> +		return 0;
->  
-> -	fd = open(mntpt, O_RDONLY);
-> -	if (fd < 0)
-> -		return -1;
-> +	if (opts[OPT_LABEL]) {
-> +		unsigned int maxlen = FSLABEL_MAX - 1;
->  
-> -	/* Get fs label */
-> -	if (!setlabel) {
-> -		if (ioctl(fd, FS_IOC_GETFSLABEL, &label)) {
-> -			close(fd);
-> -			if (errno == ENOTTY)
-> -				return -1;
-> -			com_err(mntpt, errno, _("while trying to get fs label"));
-> -			return 1;
-> +		/* If it's extN file system, truncate the label
-> +		   to appropriate size */
-> +		if (mount_flags & EXT2_MF_EXTFS)
-> +			maxlen = EXT2_LABEL_LEN;
-> +		if (strlen(new_label) > maxlen) {
-> +			fputs(_("Warning: label too long, truncating.\n"),
-> +			      stderr);
-> +			new_label[maxlen] = '\0';
->  		}
-> -		close(fd);
-> -		printf("%.*s\n", EXT2_LEN_STR(label));
-> -		return 0;
-> +		if (ioctl(fs_fd, FS_IOC_SETFSLABEL, new_label) == 0)
-> +			opts[OPT_LABEL] = false;
->  	}
->  
-> -	/* If it's extN file system, truncate the label to appropriate size */
-> -	if (mnt_flags & EXT2_MF_EXTFS)
-> -		maxlen = EXT2_LABEL_LEN;
-> -	if (strlen(new_label) > maxlen) {
-> -		fputs(_("Warning: label too long, truncating.\n"),
-> -		      stderr);
-> -		new_label[maxlen] = '\0';
-> -	}
-> +	if (ioctl(fs_fd, EXT4_IOC_GET_TUNE_SB_PARAM, &params))
-> +		return 0;
->  
-> -	/* Set fs label */
-> -	if (ioctl(fd, FS_IOC_SETFSLABEL, new_label)) {
-> -		close(fd);
-> -		if (errno == ENOTTY)
-> +	fs_set_ops = params.set_flags;
-> +	fs_blocks_count = params.blocks_count;
-> +	fs_feature_array[0] = params.feature_compat;
-> +	fs_feature_array[1] = params.feature_incompat;
-> +	fs_feature_array[2] = params.feature_ro_compat;
-> +	kernel_set_mask[0] = params.set_feature_compat_mask;
-> +	kernel_set_mask[1] = params.set_feature_incompat_mask;
-> +	kernel_set_mask[2] = params.set_feature_ro_compat_mask;
-> +	kernel_clear_mask[0] = params.clear_feature_compat_mask;
-> +	kernel_clear_mask[1] = params.clear_feature_incompat_mask;
-> +	kernel_clear_mask[2] = params.clear_feature_ro_compat_mask;
-> +	default_mnt_opts = params.default_mnt_opts;
-> +
-> +	memset(&params, 0, sizeof(params));
-> +
-> +#define SIMPLE_SET_PARAM(OPT, FLAG, PARAM_FIELD, VALUE) \
-> +	if (opts[OPT] && (fs_set_ops & FLAG)) { 	\
-> +		params.set_flags |= FLAG; 		\
-> +		params.PARAM_FIELD = VALUE;		\
-> +	}
-> +	SIMPLE_SET_PARAM(OPT_ERROR_BEHAVIOR, EXT4_TUNE_FL_ERRORS_BEHAVIOR,
-> +			 errors_behavior, errors);
-> +	SIMPLE_SET_PARAM(OPT_MOUNTCOUNT, EXT4_TUNE_FL_MNT_COUNT,
-> +			 set_flags, mount_count);
-> +	SIMPLE_SET_PARAM(OPT_MAX_MOUNTCOUNT, EXT4_TUNE_FL_MAX_MNT_COUNT,
-> +			 set_flags, max_mount_count);
-> +	SIMPLE_SET_PARAM(OPT_CHECKINTERVAL, EXT4_TUNE_FL_CHECKINTRVAL,
-> +			 set_flags, interval);
-> +	SIMPLE_SET_PARAM(OPT_CHECKTIME, EXT4_TUNE_FL_LAST_CHECK_TIME,
-> +			 last_check_time, last_check_time);
-> +	SIMPLE_SET_PARAM(OPT_RESUID, EXT4_TUNE_FL_RESERVED_UID,
-> +			 reserved_uid, resuid);
-> +	SIMPLE_SET_PARAM(OPT_RESGID, EXT4_TUNE_FL_RESERVED_GID,
-> +			 reserved_gid, resgid);
-> +	if (opts[OPT_RESERVED_RATIO] && !opts[OPT_RESERVED_BLOCKS]) {
-> +		reserved_blocks = reserved_ratio * fs_blocks_count / 100.0;
-> +		opts[OPT_RESERVED_BLOCKS] = true;
-> +	}
-> +	SIMPLE_SET_PARAM(OPT_RESERVED_BLOCKS, EXT4_TUNE_FL_RESERVED_BLOCKS,
-> +			 reserved_blocks, reserved_blocks);
-> +	SIMPLE_SET_PARAM(OPT_RAID_STRIDE, EXT4_TUNE_FL_RAID_STRIDE,
-> +			 raid_stride, stride);
-> +	SIMPLE_SET_PARAM(OPT_RAID_STRIPE_WIDTH, EXT4_TUNE_FL_RAID_STRIPE_WIDTH,
-> +			 raid_stripe_width, stripe_width);
-> +	SIMPLE_SET_PARAM(OPT_ENCODING, EXT4_TUNE_FL_ENCODING,
-> +			encoding, encoding);
-> +	SIMPLE_SET_PARAM(OPT_ENCODING_FLAGS, EXT4_TUNE_FL_ENCODING_FLAGS,
-> +			encoding_flags, encoding_flags);
-> +	if (opts[OPT_MNTOPTS] &&
-> +	    (fs_set_ops & EXT4_TUNE_FL_DEFAULT_MNT_OPTS)) {
-> +		if (e2p_edit_mntopts(mntopts_cmd, &default_mnt_opts, ~0)) {
-> +			fprintf(stderr, _("Invalid mount option set: %s\n"),
-> +				mntopts_cmd);
->  			return -1;
-> -		com_err(mntpt, errno, _("while trying to set fs label"));
-> -		return 1;
-> +		}
-> +		params.set_flags |= EXT4_TUNE_FL_DEFAULT_MNT_OPTS;
-> +		params.default_mnt_opts = default_mnt_opts;
-> +	}
-> +	if (opts[OPT_MOUNT_OPTS] &&
-> +	    (fs_set_ops & EXT4_TUNE_FL_MOUNT_OPTS)) {
-> +		params.set_flags |= EXT4_TUNE_FL_MOUNT_OPTS;
-> +		strncpy(params.mount_opts, ext_mount_opts,
-> +			sizeof(params.mount_opts));
-> +		params.mount_opts[sizeof(params.mount_opts) - 1] = 0;
-> +	}
-> +	if (opts[OPT_FEATURES] &&
-> +	    (fs_set_ops & EXT4_TUNE_FL_FEATURES) &&
-> +	    !e2p_edit_feature2(features_cmd, fs_feature_array,
-> +			       kernel_set_mask, kernel_clear_mask,
-> +			       NULL, NULL)) {
-> +		params.set_flags |= EXT4_TUNE_FL_FEATURES;
-> +		params.feature_compat = fs_feature_array[0];
-> +		params.feature_incompat = fs_feature_array[1];
-> +		params.feature_ro_compat = fs_feature_array[2];
-> +	}
-> +	if (opts[OPT_FORCE_FSCK] &&
-> +	    (fs_set_ops & EXT4_TUNE_FL_FORCE_FSCK))
-> +		params.set_flags |= EXT4_TUNE_FL_FORCE_FSCK;
-> +
-> +	if (ioctl(fs_fd, EXT4_IOC_SET_TUNE_SB_PARAM, &params) == 0) {
-> +		if (opts[OPT_ERROR_BEHAVIOR])
-> +			printf(_("Setting error behavior to %d\n"), errors);
-> +		if (opts[OPT_MOUNTCOUNT])
-> +			printf(_("Setting current mount count to %d\n"),
-> +			       mount_count);
-> +		if (opts[OPT_MAX_MOUNTCOUNT])
-> +			printf(_("Setting maximal mount count to %d\n"),
-> +			       max_mount_count);
-> +		if (opts[OPT_CHECKINTERVAL])
-> +			printf(_("Setting interval between checks to %lu seconds\n"),
-> +			       interval);
-> +		if (opts[OPT_CHECKTIME])
-> +			printf(_("Setting time filesystem last checked to %s\n"),
-> +			       ctime(&last_check_time));
-> +		if (opts[OPT_RESUID])
-> +			printf(_("Setting reserved blocks uid to %lu\n"),
-> +			       resuid);
-> +		if (opts[OPT_RESGID])
-> +			printf(_("Setting reserved blocks gid to %lu\n"),
-> +			       resgid);
-> +		if (opts[OPT_RESERVED_BLOCKS])
-> +			printf(_("Setting reserved blocks count to %llu\n"),
-> +			       (unsigned long long) reserved_blocks);
-> +		if (opts[OPT_RAID_STRIDE])
-> +			printf(_("Setting stride size to %d\n"), stride);
-> +		if (opts[OPT_RAID_STRIPE_WIDTH])
-> +			printf(_("Setting stripe width to %d\n"),
-> +			       stripe_width);
-> +		if (opts[OPT_MOUNT_OPTS])
-> +			printf(_("Setting extended default mount options to '%s'\n"),
-> +			       ext_mount_opts);
-> +		if (opts[OPT_ENCODING])
-> +			printf(_("Setting encoding to '%s'\n"), encoding_str);
-> +		if (opts[OPT_ENCODING_FLAGS])
-> +			printf(_("Setting encoding_flags to '%s'\n"),
-> +			       encoding_flags_str);
-> +		if (opts[OPT_FORCE_FSCK])
-> +			printf(_("Setting filesystem error flag to force fsck.\n"));
-> +		opts[OPT_ERROR_BEHAVIOR] = opts[OPT_MOUNTCOUNT] =
-> +			opts[OPT_MAX_MOUNTCOUNT] = opts[OPT_CHECKINTERVAL] =
-> +			opts[OPT_CHECKTIME] = opts[OPT_RESUID] =
-> +			opts[OPT_RESGID] = opts[OPT_RESERVED_RATIO] =
-> +			opts[OPT_RESERVED_BLOCKS] = opts[OPT_MNTOPTS] =
-> +			opts[OPT_RAID_STRIDE] = opts[OPT_RAID_STRIPE_WIDTH] =
-> +			opts[OPT_MOUNT_OPTS] = opts[OPT_FEATURES] =
-> +			opts[OPT_FORCE_FSCK] = opts[OPT_ENCODING] =
-> +			opts[OPT_ENCODING_FLAGS] = false;
-> +		printf("online tune superblock succeeded\n");
-> +	} else {
-> +		perror("ioctl EXT4_IOC_SET_TUNE_SB_PARAM");
-> +		return -1;
->  	}
-> -	close(fd);
-> -	return 0;
-> -#else
-> -	return -1;
+syzkaller found a path where ext4_xattr_inode_update_ref() reads an EA
+inode refcount that is already <= 0 and then applies ref_change (often
+-1). That lets the refcount underflow and we proceed with a bogus value,
+triggering errors like:
 
-Shouldn't this still return 1 if this isn't being built on __linux__?
+  EXT4-fs error: EA inode <n> ref underflow: ref_count=-1 ref_change=-1
+  EXT4-fs warning: ea_inode dec ref err=-117
 
->  #endif
-> +	return 0;
->  }
->  
->  #ifndef BUILD_AS_LIB
-> @@ -3186,7 +3387,6 @@ int tune2fs_main(int argc, char **argv)
->  	io_manager io_ptr, io_ptr_orig = NULL;
->  	int rc = 0;
->  	char default_undo_file[1] = { 0 };
-> -	char mntpt[PATH_MAX + 1] = { 0 };
->  	int fd = -1;
->  	struct fsuuid *fsuuid = NULL;
->  
-> @@ -3220,19 +3420,21 @@ int tune2fs_main(int argc, char **argv)
->  #endif
->  		io_ptr = unix_io_manager;
->  
-> -	/*
-> -	 * Try the get/set fs label using ioctls before we even attempt
-> -	 * to open the file system.
-> -	 */
-> -	if (opts[OPT_LABEL] || opts[OPT_PRINT_LABEL]) {
-> -		rc = handle_fslabel(opts[OPT_LABEL]);
-> -		if (rc != -1) {
-> -#ifndef BUILD_AS_LIB
-> -			exit(rc);
-> +	if (get_mount_flags() < 0 || try_mounted_tune2fs() << 0) {
+Make the invariant explicit: if the current refcount is non-positive,
+treat this as on-disk corruption, emit EXT4_ERROR_INODE(), and fail the
+operation with -EFSCORRUPTED instead of updating the refcount. Delete the
+WARN_ONCE() as negative refcounts are now impossible; keep error reporting
+in ext4_error_inode().
 
-Why shift left here                                        ^^ ??
+This prevents the underflow and the follow-on orphan/cleanup churn.
 
-> +#ifdef BUILD_AS_LIB
-> +		return -1;
-> +#else
-> +		exit(1);
-> +#endif
-> +	}
-> +
-> +	if (!tune_opts_requested()) {
-> +		/* printf("No further tune opts left\n"); */
-> +#ifdef BUILD_AS_LIB
-> +		return 0;
-> +#else
-> +		exit(0);
->  #endif
-> -			return rc;
-> -		}
-> -		rc = 0;
->  	}
->  
->  retry_open:
-> @@ -3338,16 +3540,6 @@ retry_open:
->  		goto closefs;
->  	}
->  
-> -	retval = ext2fs_check_mount_point(device_name, &mount_flags,
-> -					mntpt, sizeof(mntpt));
-> -	if (retval) {
-> -		com_err("ext2fs_check_mount_point", retval,
-> -			_("while determining whether %s is mounted."),
-> -			device_name);
-> -		rc = 1;
-> -		goto closefs;
-> -	}
-> -
->  #ifdef NO_RECOVERY
->  	/* Warn if file system needs recovery and it is opened for writing. */
->  	if ((open_flag & EXT2_FLAG_RW) && !(mount_flags & EXT2_MF_MOUNTED) &&
-> @@ -3382,9 +3574,6 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
->  	fs->flags |= EXT2_FLAG_SUPER_ONLY;
->  
->  	if (opts[OPT_MAX_MOUNTCOUNT]) {
-> -		if (max_mount_count == 65536)
-> -			max_mount_count = EXT2_DFL_MAX_MNT_COUNT +
-> -				(random() % EXT2_DFL_MAX_MNT_COUNT);
->  		sb->s_max_mnt_count = max_mount_count;
->  		ext2fs_mark_super_dirty(fs);
->  		printf(_("Setting maximal mount count to %d\n"),
-> @@ -3410,13 +3599,6 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
->  		}
->  	}
->  	if (opts[OPT_CHECKINTERVAL]) {
-> -		if ((unsigned long long)interval >= (1ULL << 32)) {
-> -			com_err(program_name, 0,
-> -				_("interval between checks is too big (%lu)"),
-> -				interval);
-> -			rc = 1;
-> -			goto closefs;
-> -		}
->  		sb->s_checkinterval = interval;
->  		ext2fs_mark_super_dirty(fs);
->  		printf(_("Setting interval between checks to %lu seconds\n"),
-> @@ -3494,7 +3676,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
->  			sizeof(sb->s_last_mounted));
->  		ext2fs_mark_super_dirty(fs);
->  	}
-> -	if (mntopts_cmd) {
-> +	if (opts[OPT_MNTOPTS]) {
->  		rc = update_mntopts(fs, mntopts_cmd);
->  		if (rc)
->  			goto closefs;
-> -- 
-> 2.51.0
-> 
-> 
+Fixes: https://syzbot.org/bug?extid=0be4f339a8218d2a5bb1
+Co-developed-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
+Signed-off-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
+Signed-off-by: Ahmet Eray Karadag <eraykrdg1@gmail.com>
+---
+ fs/ext4/xattr.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index 5a6fe1513fd2..a056f98579c3 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -1030,6 +1030,13 @@ static int ext4_xattr_inode_update_ref(handle_t *handle, struct inode *ea_inode,
+ 
+ 	ref_count = ext4_xattr_inode_get_ref(ea_inode);
+ 	ref_count += ref_change;
++	if (ref_count < 0) {
++		ext4_error_inode(ea_inode, __func__, __LINE__, 0,
++				"EA inode %lu ref underflow: ref_count=%lld ref_change=%d",
++				ea_inode->i_ino, ref_count, ref_change);
++		ret = -EFSCORRUPTED;
++		goto out;
++	}
+ 	ext4_xattr_inode_set_ref(ea_inode, ref_count);
+ 
+ 	if (ref_change > 0) {
+@@ -1044,9 +1051,6 @@ static int ext4_xattr_inode_update_ref(handle_t *handle, struct inode *ea_inode,
+ 			ext4_orphan_del(handle, ea_inode);
+ 		}
+ 	} else {
+-		WARN_ONCE(ref_count < 0, "EA inode %lu ref_count=%lld",
+-			  ea_inode->i_ino, ref_count);
+-
+ 		if (ref_count == 0) {
+ 			WARN_ONCE(ea_inode->i_nlink != 1,
+ 				  "EA inode %lu i_nlink=%u",
+-- 
+2.34.1
+
 
