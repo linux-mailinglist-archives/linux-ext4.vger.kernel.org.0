@@ -1,126 +1,162 @@
-Return-Path: <linux-ext4+bounces-10245-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10246-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 728A6B86668
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 20:18:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8D66B86CE9
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 21:58:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31D4F585D3B
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 18:18:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6049A1CC410A
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Sep 2025 19:59:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B949326A0C6;
-	Thu, 18 Sep 2025 18:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1939314B6F;
+	Thu, 18 Sep 2025 19:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gWRyRKCG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hNlT1dRM"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574B372628;
-	Thu, 18 Sep 2025 18:18:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3FF13081D4
+	for <linux-ext4@vger.kernel.org>; Thu, 18 Sep 2025 19:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758219482; cv=none; b=K7nv0lA1otcThho1+jxs8v3WUP3QDiYmmEcIpM8Og4fitNmlYEY2hpaF1UvJly0g3HDY6uZkerMw79GQW8NZOebMK5+taJaKEHPRBYXgnc15rpFLd6m6wupjYqwG+qrov6kIupBVh4V7V3DfM+ov0U+qy5zJz4hkXw1gZfw+upM=
+	t=1758225501; cv=none; b=n5VhOla7/f+4Ceo8axWoUEFMqNIdcCbzJIFYl0eWDhIv3XAAdvnf/4w2xmx/ru9kC49XvkZtDHh2M+x2jyJNUsJEpfjhJfrzOZnBsp2Nzuw1binrU01op6HpLLEVGAgPFdE0j+XrxxGH/ceaXQ+fs3F+/jb1rfnCJ3Qc45rQP8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758219482; c=relaxed/simple;
-	bh=qufkgZZKy7ZxxYOj9C7tikS569ucn5i+tCKgORZvN1o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M8sw7E3k9+H3mcSYTLiUb0AghsdEoiTA5zQ7A62bwOppbFhtr/9NyctrtzvDbcsEyLcevd1ktiJ6bRUzugbXQMpRrwI8bYMlNvB/gDX59k37ltBtUXEB++9pHXaRGwHQ7QcwHKp68P/gCv7vS6H+aEjbZi3mo1mfiPsPbAHx0b8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gWRyRKCG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C965CC4CEE7;
-	Thu, 18 Sep 2025 18:18:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758219481;
-	bh=qufkgZZKy7ZxxYOj9C7tikS569ucn5i+tCKgORZvN1o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gWRyRKCGQJieRPPDTFdYziXCuu9h2uRIFu6l+4JgDL/FrBUoF12ThYjZ4U63MIzzd
-	 g2MDGGecmVjzXj8E1r00f3cjJU97FigcPWIRzk92ogH44Fs8K4jMoFCfFCLp4fkBB9
-	 Eks+pBFCFK9/21H2sQP/hwt8GnUluSjjrd306N9WLrcjWtwBvQAVDPTz4cGOxAtcvb
-	 dO0WMXeZXClkAdbNJRahEoL9EFOSs6I9OKa+Lf/2cxYm2V98D5WBwDVImQjfvy1mz8
-	 CBlkbtuZTE0+W2sBf/UZWVg7xL4RvO1MCjzH7crSE5tovJRxMv/reD+OOGv/sISpSS
-	 Ep7wYMw0ttolQ==
-Date: Thu, 18 Sep 2025 11:18:01 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Ahmet Eray Karadag <eraykrdg1@gmail.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	s=arc-20240116; t=1758225501; c=relaxed/simple;
+	bh=hrTKVKMuOKbLilzSA+VEl+XSSF0VIocT2KvCzkuRjcw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=iOuqnDzSzpuJaC2/tq+y/FVG5rKb8WjzIN7s8k88xlpScA+wM1je5TtdYOY4AuOLC3ckdBwc2YsTrIZzjCCzDtgBCrLnz9bA4sWYvwoCUfPxAVZx+VBynuY8+SXJO83FCAmd7tB8gxpxztlxZvROovMR53HusW/fkMh9wId1MPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hNlT1dRM; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-62f4a8dfadcso1604117a12.1
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Sep 2025 12:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758225496; x=1758830296; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9McvDjxp1cOQ8m8DQ7zr8KAOkClRv+R613f7KwPZqLk=;
+        b=hNlT1dRMFhV3nNEO8OCPXfEiZjy7HadMXu4vRgp3Ipj8QW/pTjkxFRxYZEa69pe80J
+         R5WZR6uBlmeIbF+VQhBUi3wnRJuDxh3ZSYPm2HtEzHdmYgYFzaLOTkBNZpxqwUsXFCi5
+         xh48TC/I8mOWxP2I4D6qthvi1wAkVJadHw9+Q6aETqCdcS+tzshGNcO1qODnTVXpUxR3
+         DzGuLf7FRf7YNLECrqzb9ayMBLdTqRvBk0ivmzKueGmRkmu1GRq1Uqn5Uc0kg8EqXgPJ
+         5wCj9Urjk2M3jfgX+oYXsBuDx3I+zNM2GW5fMn6rB/kk6qlx/ZV55XBxceRxo80pIEfP
+         n68Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758225496; x=1758830296;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9McvDjxp1cOQ8m8DQ7zr8KAOkClRv+R613f7KwPZqLk=;
+        b=sPA1nlIbrLsnNpLkHfuTj5fxYG8xamhXvc+hFTj2SZpF6aLe7R8UU29gOf2RI+Y5f8
+         tGciH5THC/4pSpckoQ+TfifT49MSxmUPMccJPcsqiTzH8WPvTcmMe81qIuIfqp4nSS7b
+         0CSlM8yQ3czViaEYd1nZHgmZgOl4mXEEAEBbybezjbNtI0UGkB0Bq2leNQntsxTfDDNZ
+         tTgyEiG9mSxSjKYkWfLmQpj+/oPlKzjDq2gDXBuF4oze4K0QzEe5PQRnjY3luN0rCkEX
+         0NLraXda8/45vQISokvClwlZ+M0fYZQQ5n/nWnptWl7PJFdvbQIMe+L1BjRH+CwZr6Ee
+         qS0g==
+X-Forwarded-Encrypted: i=1; AJvYcCVG5xY8t91AjuBEQ1cP6oHO5Sk+w27xQ8f5HitORnPPfhYEgWg3CwBuHqhF3cWnt8ct20c2OPmOx292@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5Wzt8b3TAES7xhhfq6OeTz0Oyu/njbVbaKIIelcYXn6o3uYhA
+	9zswkrMXNRi0Qx7Pi3pVPeWQhI9ehJNfv9+QmoZ4+ILFDSO7BfkrojTV
+X-Gm-Gg: ASbGncs+ckZElgKGp/551XqrF8EdG3Xa3DUMRgpE2uDe1qFkDn4BDc+kdyMoQKFYdE/
+	BrIa85dOFz3qUW8HjRZtUZimZBuh8IB+J5+CvxOSqZqxw52CmZiJwUX3CQ1WhwoYeGF69VOyMkD
+	VSAQbWkJOCOvMKGJUdTkcyu2URN1DuCN4AImr3S0qnlX84sKECOea6EN3dfH9gYRlIEYODCr6Ci
+	896Lv77sG+l095C9XkpR+ZfsX3Zu2EP16KMOAf+31OiDILbvEGGx+Bnl3onACcM7O6P1IspeOfA
+	5dulxSe+IiiRdu325ttggbeZzIJbuF3FArFf66egS2Kl3PVmY/MqOcmUHZMROcj484D0zGJLJ+M
+	zjAk9NAg1xNJoBSWGuU5J0HRptx07SmVKcud9/A==
+X-Google-Smtp-Source: AGHT+IH2NBu6L+bASXNqg9sJUcZ42MFCB2aqzEFiqoDEW6um54A4CtHcJnO37auTgFbi6nwycKDm8A==
+X-Received: by 2002:a17:907:a089:b0:b19:969a:86 with SMTP id a640c23a62f3a-b24f35aa177mr45885966b.37.1758225496090;
+        Thu, 18 Sep 2025 12:58:16 -0700 (PDT)
+Received: from localhost ([212.73.77.104])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b1fd1101c44sm264530466b.82.2025.09.18.12.58.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Sep 2025 12:58:15 -0700 (PDT)
+From: Askar Safin <safinaskar@gmail.com>
+To: nschichan@freebox.fr
+Cc: akpm@linux-foundation.org,
+	andy.shevchenko@gmail.com,
+	axboe@kernel.dk,
+	brauner@kernel.org,
+	cyphar@cyphar.com,
+	devicetree@vger.kernel.org,
+	ecurtin@redhat.com,
+	email2tema@gmail.com,
+	graf@amazon.com,
+	gregkh@linuxfoundation.org,
+	hca@linux.ibm.com,
+	hch@lst.de,
+	hsiangkao@linux.alibaba.com,
+	initramfs@vger.kernel.org,
+	jack@suse.cz,
+	julian.stecklina@cyberus-technology.de,
+	kees@kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-block@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-Subject: Re: [PATCH] Fix: ext4: guard against EA inode refcount underflow in
- xattr update
-Message-ID: <20250918181801.GI8084@frogsfrogsfrogs>
-References: <20250918175545.48297-1-eraykrdg1@gmail.com>
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	mcgrof@kernel.org,
+	mingo@redhat.com,
+	monstr@monstr.eu,
+	mzxreary@0pointer.de,
+	patches@lists.linux.dev,
+	rob@landley.net,
+	safinaskar@gmail.com,
+	sparclinux@vger.kernel.org,
+	thomas.weissschuh@linutronix.de,
+	thorsten.blum@linux.dev,
+	torvalds@linux-foundation.org,
+	tytso@mit.edu,
+	viro@zeniv.linux.org.uk,
+	x86@kernel.org
+Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
+Date: Thu, 18 Sep 2025 22:58:06 +0300
+Message-ID: <20250918195806.6337-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20250918152830.438554-1-nschichan@freebox.fr>
+References: <20250918152830.438554-1-nschichan@freebox.fr>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250918175545.48297-1-eraykrdg1@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 18, 2025 at 08:55:46PM +0300, Ahmet Eray Karadag wrote:
-> syzkaller found a path where ext4_xattr_inode_update_ref() reads an EA
-> inode refcount that is already <= 0 and then applies ref_change (often
-> -1). That lets the refcount underflow and we proceed with a bogus value,
-> triggering errors like:
-> 
->   EXT4-fs error: EA inode <n> ref underflow: ref_count=-1 ref_change=-1
->   EXT4-fs warning: ea_inode dec ref err=-117
-> 
-> Make the invariant explicit: if the current refcount is non-positive,
-> treat this as on-disk corruption, emit EXT4_ERROR_INODE(), and fail the
-> operation with -EFSCORRUPTED instead of updating the refcount. Delete the
-> WARN_ONCE() as negative refcounts are now impossible; keep error reporting
-> in ext4_error_inode().
-> 
-> This prevents the underflow and the follow-on orphan/cleanup churn.
-> 
-> Fixes: https://syzbot.org/bug?extid=0be4f339a8218d2a5bb1
-> Co-developed-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-> Signed-off-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-> Signed-off-by: Ahmet Eray Karadag <eraykrdg1@gmail.com>
-> ---
->  fs/ext4/xattr.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 5a6fe1513fd2..a056f98579c3 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -1030,6 +1030,13 @@ static int ext4_xattr_inode_update_ref(handle_t *handle, struct inode *ea_inode,
->  
->  	ref_count = ext4_xattr_inode_get_ref(ea_inode);
->  	ref_count += ref_change;
-> +	if (ref_count < 0) {
+> When booting with root=/dev/ram0 in the kernel commandline,
+> handle_initrd() where the deprecation message resides is never called,
+> which is rather unfortunate (init/do_mounts_initrd.c):
 
-Shouldn't this check ref_count >= ref_change *before* updating it?
+Yes, this is unfortunate.
 
---D
+I personally still think that initrd should be removed.
 
-> +		ext4_error_inode(ea_inode, __func__, __LINE__, 0,
-> +				"EA inode %lu ref underflow: ref_count=%lld ref_change=%d",
-> +				ea_inode->i_ino, ref_count, ref_change);
-> +		ret = -EFSCORRUPTED;
-> +		goto out;
-> +	}
->  	ext4_xattr_inode_set_ref(ea_inode, ref_count);
->  
->  	if (ref_change > 0) {
-> @@ -1044,9 +1051,6 @@ static int ext4_xattr_inode_update_ref(handle_t *handle, struct inode *ea_inode,
->  			ext4_orphan_del(handle, ea_inode);
->  		}
->  	} else {
-> -		WARN_ONCE(ref_count < 0, "EA inode %lu ref_count=%lld",
-> -			  ea_inode->i_ino, ref_count);
-> -
->  		if (ref_count == 0) {
->  			WARN_ONCE(ea_inode->i_nlink != 1,
->  				  "EA inode %lu i_nlink=%u",
-> -- 
-> 2.34.1
-> 
-> 
+I suggest using workaround I described in cover letter.
+
+Also, for unknown reasons I didn't get your letter in my inbox.
+(Not even in spam folder.) I ocasionally found it on lore.kernel.org .
+
+-- 
+Askar Safin
 
