@@ -1,87 +1,87 @@
-Return-Path: <linux-ext4+bounces-10263-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10265-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 820A4B880EE
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 08:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA174B88106
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 08:53:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D8087C0E58
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 06:51:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 678897C2DC5
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 06:51:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4602D77E3;
-	Fri, 19 Sep 2025 06:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B95822DC790;
+	Fri, 19 Sep 2025 06:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="LZaQA80U"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ac9TCyC0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDA272C2356;
-	Fri, 19 Sep 2025 06:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA04729C33D;
+	Fri, 19 Sep 2025 06:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758264542; cv=none; b=rK3KnOXlrrD80YKgf8JWoxnsdGuHzctsmuJKwF7lrvTO+cE9sK/lX9qkBFe07oUkMIh1XmFBc0ihG34ljFQvOEjSfzzdIZ9FuOd2W2kroEArX5dAj2hb4lEjLaTcjEvW6gozk1i/PLGa3uvDGvbY0tYtFlEjxgqFC7eWZBrCGjs=
+	t=1758264552; cv=none; b=CmC/jClW2hhTR0nPN3lpuTFnR2BbRof6wVspqkCOvq/tsozUdUtsySGpX0EMG75xH0x8maAEeMJfhGYwy+RG0QuWY4quiss1AH89NOGUvBNyzzXN8RaaOox1Z/eYviNNaTSx7+6da8ijDg7MwpJEE10BiV9plWZBJP2JgLxQo2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758264542; c=relaxed/simple;
-	bh=/dAIy0nEihrCd/H2CLq+qnSEnaJT7cWIBOh5/Pwnnmw=;
+	s=arc-20240116; t=1758264552; c=relaxed/simple;
+	bh=AbuoGFdbt5Nlsepwq1pcM/3iTAcG8d6i8S+4mWjlAYE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jeKMris6wdQrqufpq1CdojgzDKTgFP2t428iYFUK7hzA50nVTZUHriTh20t6MvGp/1iR9HU4RwBHw49Wok7oaTVH32csom4mBonXlBC+uBKDa7eo0j4LsGIhGzDH1ULUCLLB/hSjs/0FY/9eWrOY4eUvGktW9DUNmDSffot5qjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=LZaQA80U; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=TXwfLxyQ4Y9tLhKtgLPZr3em62QKEXI1wnHocHQK90wBQRR0n0HM5zIjt8ZW4d+abw/POm8l8x+GeCTmKSQkRAdX958Y3SR/2M5CmzMzhOv8f/x29wFH6spmjSok1KDeUUjuktYP9hDsrf4eTc3kLDhUKE5W+QkyajQAh524Gqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ac9TCyC0; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58J2U8X6011266;
-	Fri, 19 Sep 2025 06:48:52 GMT
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58J0Q89j027677;
+	Fri, 19 Sep 2025 06:48:57 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=9DamNFw+yvGG3nqW3
-	SMA+ylj0WVex2u22K5E7mhw8/o=; b=LZaQA80UsR90BC2VFJiWN3mV9giiIthh1
-	QvVQNixUqaeeqp9TBUNGvY1dWxvqumKTM0Up4SKmXy4f7my02oRR9Asvmpp6OQRm
-	kU8iLuta2qAz3ZyONRpCdB+HKLt8e5ZCQgqk06VAvr5an5QCaNRDrlHqC3yYUGTg
-	ywRDEVCJwyRiSLt7kl9Ir4T977uT8e76bWNkF1bDcrHGt/r+QCd5412icsh+IghM
-	lyY9FXHFCl+8k+5S/bTBNzd9wBqWNvAn0xV4TVdVVC7zAILx5cscbaiJBdEV1DXS
-	usQstxNJSfiEmRActihFyCTGb0/wXelVz4HL2/5iL7wLYoAmf4wPw==
+	:mime-version:references:subject:to; s=pp1; bh=DTRxxUzb0Dsn0/GBD
+	P5OgVL94Y67Y6ZSK7VjxTYr85w=; b=Ac9TCyC0G0vyJslvG200Ekf99+najjGH+
+	+Fuyuew/vtnjzh5TENYxYL4BtuX987XL0YsOiElENY+19PHZhLteojR9P6vQnY3w
+	IGaIz0yecE5mkK4WopXoBCmoK/gXO2sLCKrcoD6GO1yO+0I92LJg/5DIVUQmBoz3
+	m/0V6ONBSrXCkj4fdSJI7oOC2pWmThXByQKEDWKRnJevT+HFCW1S/h9UjJj6/MNw
+	tRqHlPHDrqeQVYEXfn7xQC+b2kcidSPFEQkAP11TV/s9RJwSMOY84tKgVUbFIcyM
+	0LWNrKmOXmeAtAe20+gtmqTZTM1PJ3E0LE8eyFie/i1ZgFwCpCf+Q==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4npbvx-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4pf155-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Sep 2025 06:48:52 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58J6jvJt023032;
-	Fri, 19 Sep 2025 06:48:52 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4npbvu-1
+	Fri, 19 Sep 2025 06:48:57 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58J6mnBE016892;
+	Fri, 19 Sep 2025 06:48:56 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4pf153-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Sep 2025 06:48:51 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58J30khW008987;
-	Fri, 19 Sep 2025 06:48:51 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 495nn3t9x9-1
+	Fri, 19 Sep 2025 06:48:56 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58J4lk1o029498;
+	Fri, 19 Sep 2025 06:48:55 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 495kb1atr4-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Sep 2025 06:48:51 +0000
+	Fri, 19 Sep 2025 06:48:55 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58J6mn6Z56558058
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58J6mruQ34276046
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 19 Sep 2025 06:48:49 GMT
+	Fri, 19 Sep 2025 06:48:53 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 536E120040;
+	by IMSVA (Postfix) with ESMTP id 51AC120043;
+	Fri, 19 Sep 2025 06:48:53 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D851820040;
 	Fri, 19 Sep 2025 06:48:49 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 300E82004B;
-	Fri, 19 Sep 2025 06:48:46 +0000 (GMT)
 Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.215.51])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 19 Sep 2025 06:48:45 +0000 (GMT)
+	Fri, 19 Sep 2025 06:48:49 +0000 (GMT)
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org
 Cc: Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
         john.g.garry@oracle.com, tytso@mit.edu, linux-xfs@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [PATCH v7 10/12] ext4: Test atomic write and ioend codepaths with bigalloc
-Date: Fri, 19 Sep 2025 12:18:03 +0530
-Message-ID: <a48832c898f5346630040da68ea86cfabff1b364.1758264169.git.ojaswin@linux.ibm.com>
+Subject: [PATCH v7 11/12] ext4: Test atomic writes allocation and write codepaths with bigalloc
+Date: Fri, 19 Sep 2025 12:18:04 +0530
+Message-ID: <98a68b6e35ef0b810ea46c007fbece75d41b911b.1758264169.git.ojaswin@linux.ibm.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1758264169.git.ojaswin@linux.ibm.com>
 References: <cover.1758264169.git.ojaswin@linux.ibm.com>
@@ -93,32 +93,33 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=MN5gmNZl c=1 sm=1 tr=0 ts=68ccfcd4 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwNCBTYWx0ZWRfX4ZjqxM5x2xZv
+ 3MNNbIK3hT7DRcJU6Y4RindtEHSgCyIEhejI++8Be2clDwwNSGjAMlORFPqazGa78MmQKQl1z+7
+ ygkvDrjy9pGY7CNVwwgy+WtuZ5FSzKLHcwytmZ6VbVhTZ6mRVTiiuVHt2iA8itjr0s/TbtKK1dQ
+ GQPylO/b5qRV9qgzzflCEexjocwums6qFqkNy5OFuQ4o+5aqe0YJ5KZxriW5YD5RCnFm8v9UBXG
+ p3mivpVW6xJHgmx2Zp8syCKPP5RZNktqam3w08j/c5dAvDm9tk5e3PoKoyHAQ7V9YQDxtE5IGoW
+ 1NnzWDyqVxMIXlubXBf+K7Ynds/xVRrt51gQPVrVdkDuZGO0l4dLGosJ62sWMnDHlj1/RVLOPIc
+ WYhzVT+P
+X-Proofpoint-ORIG-GUID: tZlZ9dwt5-8YiUkgycuNsO5dbUNbp_NH
+X-Proofpoint-GUID: 2ZZhgRa_VA7Tp4JGVyU8kexT_2uZ6cko
+X-Authority-Analysis: v=2.4 cv=cNzgskeN c=1 sm=1 tr=0 ts=68ccfcd9 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
  a=yJojWOMRYYMA:10 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8
- a=VnNF1IyMAAAA:8 a=KekteOT-tD_VQUBAREkA:9
-X-Proofpoint-GUID: uLWUbRL3MUXTw19gY0UjD8hcJtOhgd1K
-X-Proofpoint-ORIG-GUID: UIctzot_ScCafPkOo147-Q95M9C7fBk_
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwNCBTYWx0ZWRfX6aioTMEJaAAG
- 3AdSrauEne0QrC5dX6DpmFFn/Dc5vFYC5V8haH0DeYtXFC5KEVfB1aIZUZt6bTKHu0EWJbl395Q
- iE413jfree2qsGiRPoZJ32sIYROaIhxxIWpzuI9lBSe2weZ1zQq1Q5PE6m7GQG/R1x9KY+eQrhA
- 5OdPZ+z628zmAKByF4YpNrTzwwmwSuGqmOTXwKNR9LXqCMMfLfrZmtJAaf3cL4+EsWCkhATjmEo
- NREmTRJ62tJLun+lURb+fcgHNKdLw3bdL63cd5oRmioYoImBWSsWkrYgzylcA23JOICQL52M1+N
- 5an/lk8bGoD6mxxhScxBXZYWzllgv2xz7/bCNWr52nAFyWI4R53S9l64isGpZW3ganY5MNHIz53
- 1VbkBAL6
+ a=VnNF1IyMAAAA:8 a=o-vKpyFH2n2aPF30nXYA:9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-09-18_03,2025-09-19_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 spamscore=0 priorityscore=1501 bulkscore=0 impostorscore=0
- malwarescore=0 adultscore=0 phishscore=0 suspectscore=0
+ suspectscore=0 clxscore=1015 spamscore=0 bulkscore=0 malwarescore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 phishscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509160204
 
 From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 
-This test does a lot of parallel RWF_ATOMIC IO on a preallocated file to
-stress the write and end-io unwritten conversion code paths. We brute
+This test does a parallel RWF_ATOMIC IO on a multiple truncated files in
+a small FS. The idea is to stress ext4 allocator to ensure we are able
+to handle low space scenarios correctly with atomic writes. We brute
 force this for different blocksize and clustersizes and after each
 iteration we ensure the data was not torn or corrupted using fio crc
 verification.
@@ -138,27 +139,28 @@ Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 Reviewed-by: John Garry <john.g.garry@oracle.com>
 Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- tests/ext4/061     | 155 +++++++++++++++++++++++++++++++++++++++++++++
- tests/ext4/061.out |   2 +
- 2 files changed, 157 insertions(+)
- create mode 100755 tests/ext4/061
- create mode 100644 tests/ext4/061.out
+ tests/ext4/062     | 203 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/ext4/062.out |   2 +
+ 2 files changed, 205 insertions(+)
+ create mode 100755 tests/ext4/062
+ create mode 100644 tests/ext4/062.out
 
-diff --git a/tests/ext4/061 b/tests/ext4/061
+diff --git a/tests/ext4/062 b/tests/ext4/062
 new file mode 100755
-index 00000000..1d61c8b0
+index 00000000..05cce696
 --- /dev/null
-+++ b/tests/ext4/061
-@@ -0,0 +1,155 @@
++++ b/tests/ext4/062
+@@ -0,0 +1,203 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
 +#
-+# FS QA Test 061
++# FS QA Test 062
 +#
-+# This test does a lot of parallel RWF_ATOMIC IO on a preallocated file to
-+# stress the write and end-io unwritten conversion code paths. We brute force
-+# this for all possible blocksize and clustersizes and after each iteration we
++# This test does a parallel RWF_ATOMIC IO on a multiple truncated files in a
++# small FS. The idea is to stress ext4 allocator to ensure we are able to
++# handle low space scenarios correctly with atomic writes.. We brute force this
++# for all possible blocksize and clustersizes and after each iteration we
 +# ensure the data was not torn or corrupted using fio crc verification.
 +#
 +# Note that in this test we use overlapping atomic writes of same io size.
@@ -170,6 +172,7 @@ index 00000000..1d61c8b0
 +# The value of this test is that we make sure the RWF_ATOMIC is handled
 +# correctly by ext4 as well as test that the block layer doesn't split or only
 +# generate multiple bios for an atomic write.
++#
 +
 +. ./common/preamble
 +. ./common/atomicwrites
@@ -180,10 +183,10 @@ index 00000000..1d61c8b0
 +_require_fio_atomic_writes
 +_require_aiodio
 +
-+FIO_LOAD=$(($(nproc) * 2 * LOAD_FACTOR))
-+SIZE=$((100*1024*1024))
++FSSIZE=$((360*1024*1024))
++FIO_LOAD=$(($(nproc) * LOAD_FACTOR))
 +
-+# Calculate fsblocksize as per bdev atomic write units.
++# Calculate bs as per bdev atomic write units.
 +bdev_awu_min=$(_get_atomic_write_unit_min $SCRATCH_DEV)
 +bdev_awu_max=$(_get_atomic_write_unit_max $SCRATCH_DEV)
 +bs=$(_max 4096 "$bdev_awu_min")
@@ -199,24 +202,48 @@ index 00000000..1d61c8b0
 +{
 +	local bsize=$1
 +cat >$fio_verify_config <<EOF
-+	[aio-dio-aw-verify]
++	[global]
 +	direct=1
 +	ioengine=libaio
 +	rw=read
 +	bs=$bsize
-+	fallocate=native
-+	filename=$SCRATCH_MNT/test-file
-+	size=$SIZE
++	fallocate=truncate
++	size=$((FSSIZE / 12))
 +	iodepth=$FIO_LOAD
 +	numjobs=$FIO_LOAD
-+	atomic=1
 +	group_reporting=1
++	atomic=1
 +
 +	verify_only=1
 +	verify_state_save=0
 +	verify=crc32c
 +	verify_fatal=1
 +	verify_write_sequence=0
++
++	[verify-job1]
++	filename=$SCRATCH_MNT/testfile-job1
++
++	[verify-job2]
++	filename=$SCRATCH_MNT/testfile-job2
++
++	[verify-job3]
++	filename=$SCRATCH_MNT/testfile-job3
++
++	[verify-job4]
++	filename=$SCRATCH_MNT/testfile-job4
++
++	[verify-job5]
++	filename=$SCRATCH_MNT/testfile-job5
++
++	[verify-job6]
++	filename=$SCRATCH_MNT/testfile-job6
++
++	[verify-job7]
++	filename=$SCRATCH_MNT/testfile-job7
++
++	[verify-job8]
++	filename=$SCRATCH_MNT/testfile-job8
++
 +EOF
 +}
 +
@@ -224,14 +251,13 @@ index 00000000..1d61c8b0
 +{
 +	local bsize=$1
 +cat >$fio_aw_config <<EOF
-+	[aio-dio-aw]
++	[global]
 +	direct=1
 +	ioengine=libaio
 +	rw=randwrite
 +	bs=$bsize
-+	fallocate=native
-+	filename=$SCRATCH_MNT/test-file
-+	size=$SIZE
++	fallocate=truncate
++	size=$((FSSIZE / 12))
 +	iodepth=$FIO_LOAD
 +	numjobs=$FIO_LOAD
 +	group_reporting=1
@@ -240,6 +266,30 @@ index 00000000..1d61c8b0
 +	verify_state_save=0
 +	verify=crc32c
 +	do_verify=0
++
++	[write-job1]
++	filename=$SCRATCH_MNT/testfile-job1
++
++	[write-job2]
++	filename=$SCRATCH_MNT/testfile-job2
++
++	[write-job3]
++	filename=$SCRATCH_MNT/testfile-job3
++
++	[write-job4]
++	filename=$SCRATCH_MNT/testfile-job4
++
++	[write-job5]
++	filename=$SCRATCH_MNT/testfile-job5
++
++	[write-job6]
++	filename=$SCRATCH_MNT/testfile-job6
++
++	[write-job7]
++	filename=$SCRATCH_MNT/testfile-job7
++
++	[write-job8]
++	filename=$SCRATCH_MNT/testfile-job8
 +
 +EOF
 +}
@@ -250,21 +300,20 @@ index 00000000..1d61c8b0
 +	local iosize=$3
 +
 +	MKFS_OPTIONS="-O bigalloc -b $bs -C $cs"
-+	_scratch_mkfs_ext4  >> $seqres.full 2>&1 || return
++	_scratch_mkfs_sized "$FSSIZE" >> $seqres.full 2>&1 || return
 +	if _try_scratch_mount >> $seqres.full 2>&1; then
-+		echo "== Testing: bs=$bs cs=$cs iosize=$iosize ==" >> $seqres.full
++		echo "Testing: bs=$bs cs=$cs iosize=$iosize" >> $seqres.full
 +
 +		touch $SCRATCH_MNT/f1
 +		create_fio_configs $iosize
 +
 +		cat $fio_aw_config >> $seqres.full
-+		echo >> $seqres.full
 +		cat $fio_verify_config >> $seqres.full
 +
 +		$FIO_PROG $fio_aw_config >> $seqres.full
 +		ret1=$?
 +
-+		$FIO_PROG $fio_verify_config >> $seqres.full
++		$FIO_PROG $fio_verify_config  >> $seqres.full
 +		ret2=$?
 +
 +		_scratch_unmount
@@ -298,20 +347,20 @@ index 00000000..1d61c8b0
 +_require_fio $fio_aw_config
 +
 +for ((bs=$bs; bs <= $(_get_page_size); bs = $bs << 1)); do
-+	run_test $bs
++	run_test $bs $cs $iosize
 +done
 +
 +# success, all done
 +echo Silence is golden
 +status=0
 +exit
-diff --git a/tests/ext4/061.out b/tests/ext4/061.out
+diff --git a/tests/ext4/062.out b/tests/ext4/062.out
 new file mode 100644
-index 00000000..273be9e0
+index 00000000..a1578f48
 --- /dev/null
-+++ b/tests/ext4/061.out
++++ b/tests/ext4/062.out
 @@ -0,0 +1,2 @@
-+QA output created by 061
++QA output created by 062
 +Silence is golden
 -- 
 2.49.0
