@@ -1,95 +1,147 @@
-Return-Path: <linux-ext4+bounces-10299-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10300-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D749AB8A265
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 17:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6701B8A434
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 17:25:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CFE21C803B0
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 15:03:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52ED11C811EF
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 15:25:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FC7D1F3FEC;
-	Fri, 19 Sep 2025 15:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1764D318142;
+	Fri, 19 Sep 2025 15:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="oCgxBSyM"
+	dkim=pass (2048-bit key) header.d=freebox-fr.20230601.gappssmtp.com header.i=@freebox-fr.20230601.gappssmtp.com header.b="xbo3W1UF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 312EB70830
-	for <linux-ext4@vger.kernel.org>; Fri, 19 Sep 2025 15:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79A931813F
+	for <linux-ext4@vger.kernel.org>; Fri, 19 Sep 2025 15:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758294078; cv=none; b=S+5pKuRLsciMcRaAQSnfhhRisYCn+foExrPUyfZSUSUwBvRKxp0B4f9EjYlNk1YaSlTzedRiTM2iDw0qRuMWBsGrN8LH2G4mQgbYCxxDpXbR47i4yvmQk00KuUzMXoczCPzLgwRKLuiAIq/uhPup8QDZogMbJaK1Xg8GU8MGlzk=
+	t=1758295504; cv=none; b=mBlktZwGMNwn4El8+64zrAGMEkeOY6xS/2iyKgEifh6wd8mnwFWVsSAXg65YnN7tGWgsjgT7lMM3MMHpZU4yDUdOXldWl8Ag4sOL7IWF7LFvQHTdw0Q3HdJUAEqbhsoWqDmNGvJC9ufw9NXljyqpSznFnaKS+2FwrZt41bRhcks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758294078; c=relaxed/simple;
-	bh=8aN+DlUTdqttobU0990s2RW/d/B4GK0UVxCQhhuXBBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dACdcCNwv1Gp0ekLSzq6b2PD6GjsW/79UeAZQA0nB7yt+d48UdXNqLyqY6VdUCiMehnBBZ8Arn6pnp+knuGDTUi8VDHiAIrwR7bSvd9F2TCl6mXhZentPw7HcW85DY8U0ZYpLcXKyaEQqqvB4/wnRblbz87585KJwFmWjWkllMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=oCgxBSyM; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-111-47.bstnma.fios.verizon.net [173.48.111.47])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58JF163a032702
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Sep 2025 11:01:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1758294067; bh=V63PF0gcyphNJ5XBdiakmPH+M9mQXya2Wa4EroQjS50=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=oCgxBSyMLrdxwEtaBt3GBQAYw/gwmFjLNjAvPf73R/dHb02dHD4TF1o2mc0eU59/G
-	 N9qebJ7XDVasMk49A2jX2vHRD+V6zY/c/e8liCLNPJF57lyPv0DsCaFREtiwli2Xxk
-	 eZFGr/YuSQ1nryda3UpNSqpd+SI0nhAAcHoPALzDENmpzza+k1YVVt2xdFhKn7/7kI
-	 49w2ySSwpvB+p5CN2cKwZ+FXT10czDq7tXkBD4/5q7lmOtcgp3A75yJ99lLgbRcWCA
-	 mGmc6EsGoawPOpirifjLIC7MErTY+00K2ptNY3OKUAhXSbN9OpO16l0QIwAiPWG1fJ
-	 /Xi1xBxLCh06w==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 4C7972E00D9; Fri, 19 Sep 2025 11:01:06 -0400 (EDT)
-Date: Fri, 19 Sep 2025 11:01:06 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 3/3] tune2fs: try to use the SET_TUNE_SB_PARAM ioctl on
- mounted file systems
-Message-ID: <20250919150106.GG416742@mit.edu>
-References: <20250917032814.395887-1-tytso@mit.edu>
- <20250917032814.395887-4-tytso@mit.edu>
- <20250918174724.GH8084@frogsfrogsfrogs>
+	s=arc-20240116; t=1758295504; c=relaxed/simple;
+	bh=tIBWHHOOKfm2qL1G0oNEg1lQ/EY8RTTkm2B9w+25Bvk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pbMqiDluawR510nIjqOzUl+duz286VrRh/qg4d2NbGYTN7XoyAA/MH0s6wXQ83J6MqEYv0QRy65aIuH237PTH9h1yRRHH8TaWjFt2kvwMVUIAStfwcqwc3OCyVCZbp9xxqLrr3S4o7JqGZMUaShQleGOpXpBaGVznDSh48unku4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freebox.fr; spf=pass smtp.mailfrom=freebox.fr; dkim=pass (2048-bit key) header.d=freebox-fr.20230601.gappssmtp.com header.i=@freebox-fr.20230601.gappssmtp.com header.b=xbo3W1UF; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freebox.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=freebox.fr
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-55f7ab2a84eso2641343e87.1
+        for <linux-ext4@vger.kernel.org>; Fri, 19 Sep 2025 08:25:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1758295500; x=1758900300; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EztjVQ+y07YMfegmHOd0VyK62XkODMWu0LdNE29WAS0=;
+        b=xbo3W1UFpKFkZ1p3cmir9bHExoubmn+zN65uKZIOYM/VNr4k3So7pYfDI6mX/D9Xs7
+         tKrFxrKGsa1OUV4/BaJm81tBW61J4ZGYYxqxZFHL+2WJXFRTEp/mhXDIaLf+cQRcgUXe
+         AYqPNZvLbxLN1AyYo7ig5n8eVxO+iPi1huE+4hW6lV7MZkf7YHIdjHXfXdto2VLmATJZ
+         knqRg3MYiebrHRGL5TV4krfrv3EaVDwqo3YKPYYlEuRSeFOsywbR4G16hcwfzRVUvkmK
+         +8rrea1TuR59LvTS19HlGLqGt+kLHJ+F5+322OVOV6/84SIcgYqHnsi5cc3ulWFd4ja5
+         pnpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758295500; x=1758900300;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EztjVQ+y07YMfegmHOd0VyK62XkODMWu0LdNE29WAS0=;
+        b=AUuxmRk70y7WrQ55t6QMIHRrPiyQRNgpLB63HCLtzxlRrKrG4WR4KuLb8UmiBAb73/
+         +FobafrAB1OkRDge3hEzxHX/x2Y5+zJOUlnNy4ljBcw6Uz57su3m/NjfP9Uj7ExP671O
+         9TfK/VPbjTLoUijdX4ITGh+y/zDOhaSAxsSgItL/xK38nM+V8bpaGjUssqXP3ozxpd+k
+         Jcr6yK1dspQXv5ScFbYABShubCucOh5hIX/HdcXqh3q8r2w7FM/z4ItIRDd3rIHSxmNH
+         8eP4w3Sd4HgKt20NWjDYw4xKEBH/V2xTY1dJk0zkMoaXhgYvhlkVm7aqbq8i5vvKNVyB
+         gQfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV6zhui7iwEQVM1u7XDI6rpjZMwf5zPE54i8L22NnqgnnoVzk6WoHjW8kkrqz1+wvYZpp1QkQ9TAXkX@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWwZBqpCsqGQ5shYHQLe7eJI9UbZf5hr44q/EQeKUZDQrTlQ0D
+	NGKuUYZy2V7NK/J131Qm7dnqDKcSwTfI5wfeuzbqBK8FroWjR3JeOeNGfqgTv+UrGSVP/gEj+tC
+	ps5H2zhcl+bJ3oguLfXodbNI+m/M72zAAl/spt1oW1Q==
+X-Gm-Gg: ASbGncv8tFco/rwZHcgyC/QLMq8PrSX0Fa2c7UozqrZqju6/Z7UONLiN/dLcf4EZ95k
+	4LpPLjkUQ3/OugZiNBDn8NYLHuj81056yX+1bjyKb/xB78PYli67Oz+4V3Szl8O7IM2S0+TyB7z
+	9BehOVC25Z8i15f3j7uLTrlauMKqJIGoFPMqcg1hbdy27Bj/gNNKDJv0FM+IMZUSFuAeRpgwSQs
+	5QdVewDBtOpgaY=
+X-Google-Smtp-Source: AGHT+IHin4gQus9SrkFEog2pTedfunr2Ers950l0f82oxrEtfjemfexmsAorW/Dsqdjvay/GpFMt6pfW/hwC+qBHF14=
+X-Received: by 2002:a05:6512:2c0b:b0:571:b70b:7dbf with SMTP id
+ 2adb3069b0e04-579e2507c81mr1455897e87.17.1758295499599; Fri, 19 Sep 2025
+ 08:24:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250918174724.GH8084@frogsfrogsfrogs>
+References: <20250918152830.438554-1-nschichan@freebox.fr> <20250918195806.6337-1-safinaskar@gmail.com>
+In-Reply-To: <20250918195806.6337-1-safinaskar@gmail.com>
+From: Nicolas Schichan <nschichan@freebox.fr>
+Date: Fri, 19 Sep 2025 17:24:48 +0200
+X-Gm-Features: AS18NWBwMqIXE_dMXDlT0ngUIReSbekPPTszWv5gIfg03bAEg3Id33JL3Yqjedw
+Message-ID: <CAHNNwZAzecVcJXZmycX063-=p-M5jVkfStfgYVKJruOFo7y9zg@mail.gmail.com>
+Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
+To: Askar Safin <safinaskar@gmail.com>
+Cc: akpm@linux-foundation.org, andy.shevchenko@gmail.com, axboe@kernel.dk, 
+	brauner@kernel.org, cyphar@cyphar.com, devicetree@vger.kernel.org, 
+	ecurtin@redhat.com, email2tema@gmail.com, graf@amazon.com, 
+	gregkh@linuxfoundation.org, hca@linux.ibm.com, hch@lst.de, 
+	hsiangkao@linux.alibaba.com, initramfs@vger.kernel.org, jack@suse.cz, 
+	julian.stecklina@cyberus-technology.de, kees@kernel.org, 
+	linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, mcgrof@kernel.org, 
+	mingo@redhat.com, monstr@monstr.eu, mzxreary@0pointer.de, 
+	patches@lists.linux.dev, rob@landley.net, sparclinux@vger.kernel.org, 
+	thomas.weissschuh@linutronix.de, thorsten.blum@linux.dev, 
+	torvalds@linux-foundation.org, tytso@mit.edu, viro@zeniv.linux.org.uk, 
+	x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Sep 18, 2025 at 10:47:24AM -0700, Darrick J. Wong wrote:
-> > -#else
-> > -	return -1;
-> 
-> Shouldn't this still return 1 if this isn't being built on __linux__?
-> 
-> >  #endif
-> > +	return 0;
-> >  }
+Hello,
 
-The calling convention for try_mounted_tune2fs() is to return -1 if
-the caller should bail out and exit; and 0 if we should fall back to
-modifying the block device thle old fashioned way.  So that's what
-should happen if tune2fs is run on FreeBSD or GNU Hurd.
+> > When booting with root=/dev/ram0 in the kernel commandline,
+> > handle_initrd() where the deprecation message resides is never called,
+> > which is rather unfortunate (init/do_mounts_initrd.c):
 
-I'll add a comment documenting this.
+> Yes, this is unfortunate.
+>
+> I personally still think that initrd should be removed.
 
-> > +	if (get_mount_flags() < 0 || try_mounted_tune2fs() << 0) {
-> 
-> Why shift left here                                        ^^ ??
+Considering that the deprecation message didn't get displayed in some
+configurations, maybe it's a bit early at the very least.
 
-Whoops, typo that should have been < 0.
+> I suggest using workaround I described in cover letter.
 
-		     	  	      	     - Ted
+I'm not too keen on having an initramfs just to loop-mount
+/sys/firmware/initrd, after all current kernels are able to handle the
+use case just fine.
+
+It looks like there is a lot of code calling into specific filesystems
+so that the initrd code can guess the size of the file system before
+copying into /dev/ram0, and I believe this is what causes the main
+gripe against initrd today. What is wrong with just copying
+/initrd.image using its actual size into /dev/ram0 instead of guessing
+it with the help of filesystem specific code ?
+
+> Also, for unknown reasons I didn't get your letter in my inbox.
+> (Not even in spam folder.) I ocasionally found it on lore.kernel.org .
+
+Sorry about that, When I used git-send-email yesterday to reply, the
+SMTP server I used wasn't authenticated to google, so all gmail
+recipients were dropped. Hopefully this work better today.
+
+Regards,
+
+-- 
+Nicolas Schichan
 
