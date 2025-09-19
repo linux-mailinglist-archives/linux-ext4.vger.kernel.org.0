@@ -1,90 +1,118 @@
-Return-Path: <linux-ext4+bounces-10264-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10266-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E0BB880E2
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 08:51:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBD91B88C9B
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 12:18:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 827B116693A
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 06:51:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87A7562669C
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 10:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08412D94AD;
-	Fri, 19 Sep 2025 06:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A862FB994;
+	Fri, 19 Sep 2025 10:18:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dixeyOKm"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="fjL8z8mj"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com [3.74.81.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16DC277C95;
-	Fri, 19 Sep 2025 06:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEEDC2ECE85;
+	Fri, 19 Sep 2025 10:18:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.74.81.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758264548; cv=none; b=VjKQUe+57da4rtVexuKK2lkhAj0n+Lyy9TD3JNlDwvu5ObDdpDJFBKalJuv2xsr/cgD/Z7qHJLwW792hxEARr0fVUmWieZkxOFB/8yDhkuc/D72hwqX+7f5aBFjX0q/e7X/aawYv89Z51F7u71nT/SBsYjv6kFtQ1ZDrvThhfsU=
+	t=1758277096; cv=none; b=nKI50IrBS4Kx+3gmTVJigXM8JLNghJHaWOrrNkLSEOFRFpuMoVjXrC8Gf6wRIDdp3U82MVLMtgJx2XBon+5rhLqkGtHm++bVlHdnqjjY0P8fH7OHWz6z8DDlJZazZz4fxwLQrWJ1738jZ7KqCbPnOze3O/DC3uBFLKvNpshyjhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758264548; c=relaxed/simple;
-	bh=/23TnMcmUpdflLUBR/TKi4uqya8y8NfSo8bYiPAZYPk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fdjLPEmJRUXuk6HcTD9qkxVHqnKBACpBeeNQwKkhY7vzh1yExbpZluLxVKTUXC6XbxHzIlgyN33HrtRdrmu3DdScgoE1OBEvYfUwVXyxMPl1/hp1tz8pAvj/ranY1yKihinGKYHTbDzR4klIhP/yMrag38cgV4kVJ2uvkQuby2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dixeyOKm; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58INLuSD023783;
-	Fri, 19 Sep 2025 06:49:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=vRTNUGKdoq8A+YlHn
-	I5gzyY7Rjkkw4gAzlowW/XKnQg=; b=dixeyOKmFhOlH03bWANFowZ6qWNru7M0B
-	4l4Ep41RmoJS9wYH9jhbBbtZrKnCpRXIuCPqqUP91ZcAhy/yl1v5tepV5cmt+dyS
-	MH5+G50FdpXyqeg9ER0xETAaWMd5vgd+mjge2ngyip4qtNu+jYYPvdoZIMWuYLJs
-	pF6LVVRXAtIrRA5stwxunm3o4qM5HWIHPsEBUy/3nviYxTLHciU6Tdf8s12bl8ls
-	sfjNO7ERV6HmW2IK3D2nvfE3SYKxU3i5zxJjEAkPziEfjl3ggxBCg35HSoVL89OM
-	fCIK6POyOiGCipA4qRBRLK8lLP6gBwtmQlivfYuCBdx2zeCQxxO5A==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4qxatp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Sep 2025 06:49:00 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58J6kx81022278;
-	Fri, 19 Sep 2025 06:48:59 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4qxatk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Sep 2025 06:48:59 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58J51vwm029468;
-	Fri, 19 Sep 2025 06:48:59 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 495kb1atr9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Sep 2025 06:48:58 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58J6muNb56558066
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 19 Sep 2025 06:48:57 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C71ED20040;
-	Fri, 19 Sep 2025 06:48:56 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EEBF220043;
-	Fri, 19 Sep 2025 06:48:53 +0000 (GMT)
-Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.215.51])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 19 Sep 2025 06:48:53 +0000 (GMT)
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org
-Cc: Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
-        john.g.garry@oracle.com, tytso@mit.edu, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [PATCH v7 12/12] ext4: Atomic write test for extent split across leaf nodes
-Date: Fri, 19 Sep 2025 12:18:05 +0530
-Message-ID: <721505bb10ec191d93f0612f5ad98b864ba5c980.1758264169.git.ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1758264169.git.ojaswin@linux.ibm.com>
-References: <cover.1758264169.git.ojaswin@linux.ibm.com>
+	s=arc-20240116; t=1758277096; c=relaxed/simple;
+	bh=YJdsYm70lqmrjZhD7jBaV8cdfUCAbDW2tpB1Od6r91s=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DV5HPFwZzEqcW5TVIkpvyWdQy6q+0ypsClB6hMR+ftQ9BgO9CVWUGqfVZ7/ZZD0ZoEXX7Hc+gpsG+sn7M6OT0KrlCGSN3kD0vUiNpdo6Y7xP9v55rjUHyfQF2mJzmP752GlLh1gO05IRAbCQXoXtmOlJfC9WZkwwjId/kb/7fvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=fjL8z8mj; arc=none smtp.client-ip=3.74.81.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1758277094; x=1789813094;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BxXd7aLvDai7evuJPWIvJpLyCQkjko3tn6jQCrrWhJk=;
+  b=fjL8z8mj0eMIoChdIs8U9FiBsNbuQUiVVPlT3zrMd2QY4qshSQGFLsCZ
+   I3RvurginN0A0zChNMESd2d9w8s3xOy5oVmh614EDqw2yBhb/QmmcPOe3
+   wAAtuxQ+v2eRIjVuLFIedVBHsV3Rb12raStNei1WJf2DEDd/aHXHZhmeN
+   a76yJ5Nd+Gk7nlpcDtvLOt5sY92VddMIhaXr5b8MVqqxkEyG5Fzb9cBYs
+   NZ2BX/TzsOfyqIh85A+I7sEL6a70FKGDlX46GqPiXZuw3OnvDWvZsHlvS
+   OHWNraZNTBCZiIHocmYMS/MclFB/5eIGDNbYlGQCbqgvw6N7wcVazh2wF
+   A==;
+X-CSE-ConnectionGUID: jIqyC7qOQMmU/YsQW+R8ug==
+X-CSE-MsgGUID: YteI4yn4Q++iTijrRm1r6A==
+X-IronPort-AV: E=Sophos;i="6.18,277,1751241600"; 
+   d="scan'208";a="2367150"
+Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
+  by internal-fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:18:03 +0000
+Received: from EX19MTAEUA001.ant.amazon.com [54.240.197.233:23074]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.8.212:2525] with esmtp (Farcaster)
+ id 74144341-cb99-482b-a66c-2682d68c7588; Fri, 19 Sep 2025 10:18:03 +0000 (UTC)
+X-Farcaster-Flow-ID: 74144341-cb99-482b-a66c-2682d68c7588
+Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
+ EX19MTAEUA001.ant.amazon.com (10.252.50.192) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
+ Fri, 19 Sep 2025 10:18:02 +0000
+Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
+ (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 19 Sep 2025
+ 10:17:34 +0000
+From: Eliav Farber <farbere@amazon.com>
+To: <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
+	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
+	<luto@kernel.org>, <peterz@infradead.org>, <tglx@linutronix.de>,
+	<mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>,
+	<tony.luck@intel.com>, <qiuxu.zhuo@intel.com>, <mchehab@kernel.org>,
+	<james.morse@arm.com>, <rric@kernel.org>, <harry.wentland@amd.com>,
+	<sunpeng.li@amd.com>, <alexander.deucher@amd.com>,
+	<christian.koenig@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+	<evan.quan@amd.com>, <james.qian.wang@arm.com>, <liviu.dudau@arm.com>,
+	<mihail.atanassov@arm.com>, <brian.starkey@arm.com>,
+	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+	<tzimmermann@suse.de>, <robdclark@gmail.com>, <sean@poorly.run>,
+	<jdelvare@suse.com>, <linux@roeck-us.net>, <fery@cypress.com>,
+	<dmitry.torokhov@gmail.com>, <agk@redhat.com>, <snitzer@redhat.com>,
+	<dm-devel@redhat.com>, <rajur@chelsio.com>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
+	<joabreu@synopsys.com>, <mcoquelin.stm32@gmail.com>, <malattia@linux.it>,
+	<hdegoede@redhat.com>, <mgross@linux.intel.com>, <intel-linux-scu@intel.com>,
+	<artur.paszkiewicz@intel.com>, <jejb@linux.ibm.com>,
+	<martin.petersen@oracle.com>, <sakari.ailus@linux.intel.com>,
+	<gregkh@linuxfoundation.org>, <clm@fb.com>, <josef@toxicpanda.com>,
+	<dsterba@suse.com>, <jack@suse.com>, <tytso@mit.edu>,
+	<adilger.kernel@dilger.ca>, <dushistov@mail.ru>,
+	<luc.vanoostenryck@gmail.com>, <rostedt@goodmis.org>, <pmladek@suse.com>,
+	<sergey.senozhatsky@gmail.com>, <andriy.shevchenko@linux.intel.com>,
+	<linux@rasmusvillemoes.dk>, <minchan@kernel.org>, <ngupta@vflare.org>,
+	<akpm@linux-foundation.org>, <kuznet@ms2.inr.ac.ru>,
+	<yoshfuji@linux-ipv6.org>, <pablo@netfilter.org>, <kadlec@netfilter.org>,
+	<fw@strlen.de>, <jmaloy@redhat.com>, <ying.xue@windriver.com>,
+	<willy@infradead.org>, <farbere@amazon.com>, <sashal@kernel.org>,
+	<ruanjinjie@huawei.com>, <David.Laight@ACULAB.COM>,
+	<herve.codina@bootlin.com>, <Jason@zx2c4.com>, <bvanassche@acm.org>,
+	<keescook@chromium.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>,
+	<linux-edac@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
+	<dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+	<freedreno@lists.freedesktop.org>, <linux-hwmon@vger.kernel.org>,
+	<linux-input@vger.kernel.org>, <linux-media@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+	<platform-driver-x86@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+	<linux-staging@lists.linux.dev>, <linux-btrfs@vger.kernel.org>,
+	<linux-ext4@vger.kernel.org>, <linux-sparse@vger.kernel.org>,
+	<linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>,
+	<coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>,
+	<stable@vger.kernel.org>
+CC: <jonnyc@amazon.com>
+Subject: [PATCH 00/27 5.10.y] Backport minmax.h updates from v6.17-rc6
+Date: Fri, 19 Sep 2025 10:17:00 +0000
+Message-ID: <20250919101727.16152-1-farbere@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -92,189 +120,167 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: wm3CUYiP2jcwdxdBnktZHmOUjCLCpJE9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwNCBTYWx0ZWRfX+dEkyR9DnSsM
- ivR3pqJnB5O5F3egjsOokko1KlRm/StTwbbiZjFEqKAIBt7t/M+KBNm6CeC/iSFtlnFpweUSRKe
- CNIzmt2QzAQuyHGUNFfD3Ad0bfnsQn6FXlkojp9l0+RhYcxIuCqmAYuBsUwI6Hf2B7g0oKYWSLn
- h8BddfsZOSKUzFXSAcjBFVsX5/lAjR7PLz8BTK7qykJJgJXlnj726WDie4RkgHQo+Zp9UBpP4l8
- eKzhq0GaYAKklM8mwrBHXC/TcvOhm3zggtgXvlJuGAaREHJLsvCovN+/PqrLo2XphdQm9hOpH6W
- aw0nPD06sdjVYyJU45rrtmr6ccOIiHaBYbj6DvfHppn/4ujEwP2fAdc1lLJn4LYSoKBTUDbxepy
- jow2iNFL
-X-Authority-Analysis: v=2.4 cv=R8oDGcRX c=1 sm=1 tr=0 ts=68ccfcdc cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=yJojWOMRYYMA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=BtNrGSYHu5IGmLxdGZgA:9
-X-Proofpoint-GUID: L13-LolBoW-NPJ0NajznfdqwYExF1W6G
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-18_03,2025-09-19_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 suspectscore=0 malwarescore=0 bulkscore=0 spamscore=0
- adultscore=0 impostorscore=0 priorityscore=1501 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509160204
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D043UWC001.ant.amazon.com (10.13.139.202) To
+ EX19D018EUA004.ant.amazon.com (10.252.50.85)
 
-In ext4, even if an allocated range is physically and logically
-contiguous, it can still be split into 2 extents. This is because ext4
-does not merge extents across leaf nodes. This is an issue for atomic
-writes since even for a continuous extent the map block could (in rare
-cases) return a shorter map, hence tearning the write. This test creates
-such a file and ensures that the atomic write handles this case
-correctly
+This series includes a total of 27 patches, to align minmax.h of
+v5.15.y with v6.17-rc6.
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
----
- tests/ext4/063     | 129 +++++++++++++++++++++++++++++++++++++++++++++
- tests/ext4/063.out |   2 +
- 2 files changed, 131 insertions(+)
- create mode 100755 tests/ext4/063
- create mode 100644 tests/ext4/063.out
+The set consists of 24 commits that directly update minmax.h:
+1) 92d23c6e9415 ("overflow, tracing: Define the is_signed_type() macro
+   once")
+2) 5efcecd9a3b1 ("minmax: sanity check constant bounds when clamping")
+3) 2122e2a4efc2 ("minmax: clamp more efficiently by avoiding extra
+   comparison")
+4) f9bff0e31881 ("minmax: add in_range() macro")
+5) c952c748c7a9 ("minmax: Introduce {min,max}_array()")
+6) 5e57418a2031 ("minmax: deduplicate __unconst_integer_typeof()")
+7) f6e9d38f8eb0 ("minmax: fix header inclusions")
+8) d03eba99f5bf ("minmax: allow min()/max()/clamp() if the arguments
+   have the same signedness.")
+9) f4b84b2ff851 ("minmax: fix indentation of __cmp_once() and
+   __clamp_once()")
+10) 4ead534fba42 ("minmax: allow comparisons of 'int' against 'unsigned
+    char/short'")
+11) 867046cc7027 ("minmax: relax check to allow comparison between
+    unsigned arguments and signed constants")
+12) 3a7e02c040b1 ("minmax: avoid overly complicated constant
+    expressions in VM code")
+14) 017fa3e89187 ("minmax: simplify and clarify min_t()/max_t()
+    implementation")
+15) 1a251f52cfdc ("minmax: make generic MIN() and MAX() macros
+    available everywhere")
+18) dc1c8034e31b ("minmax: simplify min()/max()/clamp()
+    implementation")
+19) 22f546873149 ("minmax: improve macro expansion and type
+    checking")
+20) 21b136cc63d2 ("minmax: fix up min3() and max3() too")
+21) 71ee9b16251e ("minmax.h: add whitespace around operators and after
+    commas")
+22) 10666e992048 ("minmax.h: update some comments")
+23) b280bb27a9f7 ("minmax.h: reduce the #define expansion of min(),
+    max() and clamp()")
+24) a5743f32baec ("minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi
+    test in clamp()")
+25) c3939872ee4a ("minmax.h: move all the clamp() definitions after the
+    min/max() ones")
+26) 495bba17cdf9 ("minmax.h: simplify the variants of clamp()")
+27) 2b97aaf74ed5 ("minmax.h: remove some #defines that are only
+    expanded once")
 
-diff --git a/tests/ext4/063 b/tests/ext4/063
-new file mode 100755
-index 00000000..9d6265a8
---- /dev/null
-+++ b/tests/ext4/063
-@@ -0,0 +1,129 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2025 IBM Corporation. All Rights Reserved.
-+#
-+# In ext4, even if an allocated range is physically and logically contiguous,
-+# it can still be split into 2 or more extents. This is because ext4 does not
-+# merge extents across leaf nodes. This is an issue for atomic writes since
-+# even for a continuous extent the map block could (in rare cases) return a
-+# shorter map, hence tearing the write. This test creates such a file and
-+# ensures that the atomic write handles this case correctly
-+#
-+. ./common/preamble
-+. ./common/atomicwrites
-+_begin_fstest auto atomicwrites
-+
-+_require_scratch_write_atomic_multi_fsblock
-+_require_atomic_write_test_commands
-+_require_command "$DEBUGFS_PROG" debugfs
-+
-+prep() {
-+	local bs=`_get_block_size $SCRATCH_MNT`
-+	local ex_hdr_bytes=12
-+	local ex_entry_bytes=12
-+	local entries_per_blk=$(( (bs - ex_hdr_bytes) / ex_entry_bytes ))
-+
-+	# fill the extent tree leaf with bs len extents at alternate offsets.
-+	# The tree should look as follows
-+	#
-+	#                    +---------+---------+
-+	#                    | index 1 | index 2 |
-+	#                    +-----+---+-----+---+
-+	#                   +------+         +-----------+
-+	#                   |                            |
-+	#      +-------+-------+---+---------+     +-----+----+
-+	#      | ex 1  | ex 2  |   |  ex n   |     |  ex n+1  |
-+	#      | off:0 | off:2 |...| off:678 |     |  off:680 |
-+	#      | len:1 | len:1 |   |  len:1  |     |   len:1  |
-+	#      +-------+-------+---+---------+     +----------+
-+	#
-+	for i in $(seq 0 $entries_per_blk)
-+	do
-+		$XFS_IO_PROG -fc "pwrite -b $bs $((i * 2 * bs)) $bs" $testfile > /dev/null
-+	done
-+	sync $testfile
-+
-+	echo >> $seqres.full
-+	echo "Create file with extents spanning 2 leaves. Extents:">> $seqres.full
-+	echo "...">> $seqres.full
-+	$DEBUGFS_PROG -R "ex `basename $testfile`" $SCRATCH_DEV |& tail >> $seqres.full
-+
-+	# Now try to insert a new extent ex(new) between ex(n) and ex(n+1).
-+	# Since this is a new FS the allocator would find continuous blocks
-+	# such that ex(n) ex(new) ex(n+1) are physically(and logically)
-+	# contiguous. However, since we don't merge extents across leaf we will
-+	# end up with a tree as:
-+	#
-+	#                    +---------+---------+
-+	#                    | index 1 | index 2 |
-+	#                    +-----+---+-----+---+
-+	#                   +------+         +------------+
-+	#                   |                             |
-+	#      +-------+-------+---+---------+     +------+-----------+
-+	#      | ex 1  | ex 2  |   |  ex n   |     |  ex n+1 (merged) |
-+	#      | off:0 | off:2 |...| off:678 |     |      off:679     |
-+	#      | len:1 | len:1 |   |  len:1  |     |      len:2       |
-+	#      +-------+-------+---+---------+     +------------------+
-+	#
-+	echo >> $seqres.full
-+	torn_ex_offset=$((((entries_per_blk * 2) - 1) * bs))
-+	$XFS_IO_PROG -c "pwrite $torn_ex_offset $bs" $testfile >> /dev/null
-+	sync $testfile
-+
-+	echo >> $seqres.full
-+	echo "Perform 1 block write at $torn_ex_offset to create torn extent. Extents:">> $seqres.full
-+	echo "...">> $seqres.full
-+	$DEBUGFS_PROG -R "ex `basename $testfile`" $SCRATCH_DEV |& tail >> $seqres.full
-+
-+	_scratch_cycle_mount
-+}
-+
-+_scratch_mkfs >> $seqres.full
-+_scratch_mount >> $seqres.full
-+
-+testfile=$SCRATCH_MNT/testfile
-+touch $testfile
-+awu_max=$(_get_atomic_write_unit_max $testfile)
-+
-+echo >> $seqres.full
-+echo "# Prepping the file" >> $seqres.full
-+prep
-+
-+torn_aw_offset=$((torn_ex_offset - (torn_ex_offset % awu_max)))
-+
-+echo >> $seqres.full
-+echo "# Performing atomic IO on the torn extent range. Command: " >> $seqres.full
-+echo $XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $awu_max $torn_aw_offset $awu_max" >> $seqres.full
-+$XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $awu_max $torn_aw_offset $awu_max" >> $seqres.full
-+
-+echo >> $seqres.full
-+echo "Extent state after atomic write:">> $seqres.full
-+echo "...">> $seqres.full
-+$DEBUGFS_PROG -R "ex `basename $testfile`" $SCRATCH_DEV |& tail >> $seqres.full
-+
-+echo >> $seqres.full
-+echo "# Checking data integrity" >> $seqres.full
-+
-+# create a dummy file with expected data
-+$XFS_IO_PROG -fc "pwrite -S 0x61 -b $awu_max 0 $awu_max" $testfile.exp >> /dev/null
-+expected_data=$(od -An -t x1 -j 0 -N $awu_max $testfile.exp)
-+
-+# We ensure that the data after atomic writes should match the expected data
-+actual_data=$(od -An -t x1 -j $torn_aw_offset -N $awu_max $testfile)
-+if [[ "$actual_data" != "$expected_data" ]]
-+then
-+	echo "Checksum match failed at off: $torn_aw_offset size: $awu_max"
-+	echo
-+	echo "Expected: "
-+	echo "$expected_data"
-+	echo
-+	echo "Actual contents: "
-+	echo "$actual_data"
-+
-+	_fail
-+fi
-+
-+echo -n "Data verification at offset $torn_aw_offset succeeded!" >> $seqres.full
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/ext4/063.out b/tests/ext4/063.out
-new file mode 100644
-index 00000000..de35fc52
---- /dev/null
-+++ b/tests/ext4/063.out
-@@ -0,0 +1,2 @@
-+QA output created by 063
-+Silence is golden
+2 prerequisite commits that adjust users of MIN and MAX macros (to
+prevent compilation issues):
+13) 4477b39c32fd ("minmax: add a few more MIN_T/MAX_T users")
+17) cb04e8b1d2f2 ("minmax: don't use max() in situations that want a C
+    constant expression")
+
+1 additional commit introduced to resolve a build failures during the
+backport:
+16) lib: zstd: drop local MIN/MAX macros in favor of generic ones
+
+The primary motivation is to bring in commit (8).
+In mainline, this change allows min()/max()/clamp() to accept mixed
+argument types when both share the same signedness.
+Backported patches to v5.10.y that use such forms trigger compiler
+warnings, which in turn cause build failures when -Werror is enabled.
+
+Originaly I aligned 5.10.y to 5.15.y, but David Laight commented that I
+need to pick up the later changes (from Linus) as well.
+
+Andy Shevchenko (2):
+  minmax: deduplicate __unconst_integer_typeof()
+  minmax: fix header inclusions
+
+Bart Van Assche (1):
+  overflow, tracing: Define the is_signed_type() macro once
+
+David Laight (11):
+  minmax: allow min()/max()/clamp() if the arguments have the same
+    signedness.
+  minmax: fix indentation of __cmp_once() and __clamp_once()
+  minmax: allow comparisons of 'int' against 'unsigned char/short'
+  minmax: relax check to allow comparison between unsigned arguments and
+    signed constants
+  minmax.h: add whitespace around operators and after commas
+  minmax.h: update some comments
+  minmax.h: reduce the #define expansion of min(), max() and clamp()
+  minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
+  minmax.h: move all the clamp() definitions after the min/max() ones
+  minmax.h: simplify the variants of clamp()
+  minmax.h: remove some #defines that are only expanded once
+
+Eliav Farber (1):
+  lib: zstd: drop local MIN/MAX macros in favor of generic ones
+
+Herve Codina (1):
+  minmax: Introduce {min,max}_array()
+
+Jason A. Donenfeld (2):
+  minmax: sanity check constant bounds when clamping
+  minmax: clamp more efficiently by avoiding extra comparison
+
+Linus Torvalds (8):
+  minmax: avoid overly complicated constant expressions in VM code
+  minmax: add a few more MIN_T/MAX_T users
+  minmax: simplify and clarify min_t()/max_t() implementation
+  minmax: make generic MIN() and MAX() macros available everywhere
+  minmax: don't use max() in situations that want a C constant
+    expression
+  minmax: simplify min()/max()/clamp() implementation
+  minmax: improve macro expansion and type checking
+  minmax: fix up min3() and max3() too
+
+Matthew Wilcox (Oracle) (1):
+  minmax: add in_range() macro
+
+ arch/arm/mm/pageattr.c                        |   6 +-
+ arch/um/drivers/mconsole_user.c               |   2 +
+ arch/x86/mm/pgtable.c                         |   2 +-
+ drivers/edac/sb_edac.c                        |   4 +-
+ drivers/edac/skx_common.h                     |   1 -
+ .../drm/amd/display/modules/hdcp/hdcp_ddc.c   |   2 +
+ .../drm/amd/pm/powerplay/hwmgr/ppevvmath.h    |  14 +-
+ .../drm/arm/display/include/malidp_utils.h    |   2 +-
+ .../display/komeda/komeda_pipeline_state.c    |  24 +-
+ drivers/gpu/drm/drm_color_mgmt.c              |   2 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |   6 -
+ drivers/gpu/drm/radeon/evergreen_cs.c         |   2 +
+ drivers/hwmon/adt7475.c                       |  24 +-
+ drivers/input/touchscreen/cyttsp4_core.c      |   2 +-
+ drivers/md/dm-integrity.c                     |   2 +-
+ drivers/media/dvb-frontends/stv0367_priv.h    |   3 +
+ .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   |  18 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
+ drivers/net/fjes/fjes_main.c                  |   4 +-
+ drivers/nfc/pn544/i2c.c                       |   2 -
+ drivers/platform/x86/sony-laptop.c            |   1 -
+ drivers/scsi/isci/init.c                      |   6 +-
+ .../pci/hive_isp_css_include/math_support.h   |   5 -
+ fs/btrfs/misc.h                               |   2 -
+ fs/btrfs/tree-checker.c                       |   2 +-
+ fs/ext2/balloc.c                              |   2 -
+ fs/ext4/ext4.h                                |   2 -
+ fs/ufs/util.h                                 |   6 -
+ include/linux/compiler.h                      |  15 +
+ include/linux/minmax.h                        | 267 ++++++++++++++----
+ include/linux/overflow.h                      |   1 -
+ include/linux/trace_events.h                  |   2 -
+ kernel/trace/preemptirq_delay_test.c          |   2 -
+ lib/btree.c                                   |   1 -
+ lib/decompress_unlzma.c                       |   2 +
+ lib/logic_pio.c                               |   3 -
+ lib/vsprintf.c                                |   2 +-
+ lib/zstd/zstd_internal.h                      |   2 -
+ mm/zsmalloc.c                                 |   1 -
+ net/ipv4/proc.c                               |   2 +-
+ net/ipv6/proc.c                               |   2 +-
+ net/netfilter/nf_nat_core.c                   |   6 +-
+ net/tipc/core.h                               |   2 +-
+ net/tipc/link.c                               |  10 +-
+ 44 files changed, 306 insertions(+), 164 deletions(-)
+
 -- 
-2.49.0
+2.47.3
 
 
