@@ -1,242 +1,250 @@
-Return-Path: <linux-ext4+bounces-10252-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10253-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42A59B87BAA
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 04:34:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01CC6B88085
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 08:48:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D66421CC13C8
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 02:35:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B10A456772F
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Sep 2025 06:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99464259CAC;
-	Fri, 19 Sep 2025 02:34:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8569C2BDC28;
+	Fri, 19 Sep 2025 06:48:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o/5Hvyoj"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sEu2b2GN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374EB257852
-	for <linux-ext4@vger.kernel.org>; Fri, 19 Sep 2025 02:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DDB25A33A;
+	Fri, 19 Sep 2025 06:48:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758249275; cv=none; b=OwEDOAFHu5fJZHnWUdM1OG6QzbWyZCCk3L4o4++IFCV4dBPeVhkCDHpNZ67GMKZajGN1HMVA6HfpHcN3tj2bhqhUUtYB2ymoRbpGZgB4t5Vzoob10PeEftzGVgyWUgXJ04nylgg8tIMf1tbyPgsFPCJZZZ16uESLlKVIT7KkwhQ=
+	t=1758264506; cv=none; b=b0/Vexrg53pC2Fcosa35qzYgUohDitlee2WNaWMpIfIqNYwC5ila47oKT4XbcLMSFxuvseTClkxZ2zivb3LIduzGdda626NYEFBRDhs35LQNV/DJbhC2KPNV2Szz/RKcNlG9nH4akSmgaxV0Ds9bKxd3g8JYYcAiz7eJlr7fzbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758249275; c=relaxed/simple;
-	bh=j/dWPq4YFWIryUm+SlfOUKY0qJl5tfzc88bGQe0Rs50=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=men3hq+1C2OFRgUE0Zt3k8+FEOlMosLP2WPyn/aATl9lttd7fukJF0QpgLutfliPzw9tlo9zZXNUCS1siqw5GM0zmUrY2ZoSqdnw27zT+bFn+d38zo+LVAxpuM28BsGD/WGTm7CmOuZ4wbnmwwlcVnPZZxtxlgnyeO4kPdWg55E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o/5Hvyoj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AF829C4CEF7
-	for <linux-ext4@vger.kernel.org>; Fri, 19 Sep 2025 02:34:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758249274;
-	bh=j/dWPq4YFWIryUm+SlfOUKY0qJl5tfzc88bGQe0Rs50=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=o/5HvyojQ4ydmEEj42fQl1j85BJeR8M19pblZwNofGx/BSobMIDvt1PAiUBJSFEE/
-	 xHg8MrMdrQF7iqpJdT5c8rjbhIfxVC6ruTYS7ZJk/3vrvoMnSKY9FtPVbMNO/UoRiP
-	 U/sYVhoMP8gEoFebbswpk8/clo4jRq9VogcVuWxWqxyXxeRQg/Zo3pMgYN73hM4esO
-	 p7o4IzUZG13bGBKhKBdNt0lIPw0SgksbAXhL5+FHF8IkSQGj9K4vr00yAr5ACDBN56
-	 2HyG104W5CNvcnLqW1c6WXx7IW+EWpWWdf7f3EeDL1dG3f+jRI2o5NKiLwAaJreZnq
-	 Wgyh83qhZECMg==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 9EC69C41614; Fri, 19 Sep 2025 02:34:34 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 220535] ext4 __jbd2_log_wait_for_space soft lockup and CPU
- stuck for 134s
-Date: Fri, 19 Sep 2025 02:34:34 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: waxihus@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-220535-13602-JaLqHptZf4@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-220535-13602@https.bugzilla.kernel.org/>
-References: <bug-220535-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1758264506; c=relaxed/simple;
+	bh=p/lJeks8maYs2wRwqTBLGhIVXRz9P4BEtOTbrt/UBhI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kwBF6UZFKHrW190DqP3+AK9OgKuypI3qcB7iusw+yGT6hC2cAjIv01CK1U5B7hkUWPYgy707K6UdmeC9aEKqSfTzetMR5rcT/76nZFkwdEXFIlHxk4AloZn/2q0VMJUjQ4w+0CoPXE9T8dDwAcrfQ3t+SyglWsTtgsQe91WP0h4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sEu2b2GN; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58J1pcIj011459;
+	Fri, 19 Sep 2025 06:48:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=ZX79AQL6Vwm9BH3DfNk7vDVB87Dqmx7tyyrSRLc//
+	+I=; b=sEu2b2GN8a1IZRGy2/wIsfbRALoIt/j3w4weCYUV0RMdZfZal9xOE8mEv
+	ReOlZVuwUoskqCMDWELRR33VFshzwn9sqrKAxLHUn6R1JfP9Ydor+SdrYPhk8Yvv
+	NQL0tTVB7/4gRet9GQssPT5ALD6C0c/mS0elYzn2lZTqdCn8gep/ADzC8DCqgGvm
+	YdhrwyrArrL5laZXhKOsTkWvlH/wWMR6ZGtGsbXXdqnaZtB2QcaMrJX5m2wTXca0
+	Q6P41Ukc119oGsqCuy+LquGcICUWfJJ04tvUhIGYG4ldMryB2mNSp2tVhMkoMdcd
+	jhnUqybCdBJibp9+ixMe1XOlOjKMQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4jey8n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Sep 2025 06:48:14 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58J6ZHOg027447;
+	Fri, 19 Sep 2025 06:48:14 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4jey8j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Sep 2025 06:48:14 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58J4mduD029472;
+	Fri, 19 Sep 2025 06:48:13 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 495kb1atnj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Sep 2025 06:48:12 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58J6mBMU12190142
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Sep 2025 06:48:11 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0AC4220043;
+	Fri, 19 Sep 2025 06:48:11 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 779EE20040;
+	Fri, 19 Sep 2025 06:48:07 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.215.51])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 19 Sep 2025 06:48:07 +0000 (GMT)
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, djwong@kernel.org,
+        john.g.garry@oracle.com, tytso@mit.edu, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [PATCH v7 00/11] Add more tests for multi fs block atomic writes
+Date: Fri, 19 Sep 2025 12:17:53 +0530
+Message-ID: <cover.1758264169.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=Qf5mvtbv c=1 sm=1 tr=0 ts=68ccfcae cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=yJojWOMRYYMA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=yPCof4ZbAAAA:8
+ a=RhRxWBKHx9l-Qd8VlncA:9
+X-Proofpoint-ORIG-GUID: kfx3m9WDgkzZzsBmRhSH3TOGEpwbSmo_
+X-Proofpoint-GUID: SwVC9rzFHYAD5Xhimknwegv1nU0byj2S
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwNCBTYWx0ZWRfX7Sj/XePoDbAp
+ thtlhCmp7UZGaS8SsuxahpzJhG+YTDtHFszqEHChS/6V1pJu5wrc7XDOf59zGICP27RreS39rDI
+ q/Otx8vna/aY5UIlauS93wh/SpI1s1vhAWle4bJ5luDpCxH102jcJ/qk4s9erTkXTpiAIBCV/Li
+ 13w1me8De99dF2S88VoGh5CWNgzHIRvEGZy23K9QHGb6XSqaq80KTZQWDDXZ/+yNZdypvWsqoFx
+ 5qGg1vMQvpQU+GlhsN4sWCnKiH6NVQEKMkgUoWSkEX2u2uK9Obahl49DhIWdEZhVSVFt+Oxgqk6
+ kA9EOaWhSWVs74mLRX1Jux1lug9BF8WqDZbakvj5HZ5V4c/qzSa1TPLFEv8fmWQvzddWnlz0UWq
+ Ighfc5Dy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-18_03,2025-09-19_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 clxscore=1015 phishscore=0 suspectscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509160204
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D220535
+Changes in v7:
+- Picked up reviews from John! (Thanks)
+- [9/11] Change "integrity test.." -> "torn write test.." for better
+  clarity
 
---- Comment #7 from waxihus@gmail.com ---
-have reproduced with the latest version and untainted kernel, see attachment
-for more dmesg log:
-source code clone from 46a51f4f5edade43ba66b3c151f0e25ec8b69cb6
-[  533.816688] INFO: task kworker/u778:1:1854 blocked for more than 481
-seconds.
-[  533.816713]       Not tainted 6.17.0-rc6-master-default #2
-[  533.816723] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables =
-this
-message.
-[  533.816734] task:kworker/u778:1  state:D stack:0     pid:1854  tgid:1854=
-=20
-ppid:2      task_flags:0x4248060 flags:0x00004000
-[  533.816751] Workqueue: writeback wb_workfn (flush-259:1)
-[  533.816766] Call Trace:
-[  533.816773]  <TASK>
-[  533.816782]  __schedule+0x462/0x1400
-[  533.816793]  ? sysvec_apic_timer_interrupt+0xf/0x90
-[  533.816804]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  533.816817]  schedule+0x27/0xd0
-[  533.816825]  schedule_preempt_disabled+0x15/0x30
-[  533.816834]  __mutex_lock.constprop.0+0x357/0x940
-[  533.816846]  mutex_lock_io+0x41/0x50
-[  533.816857]  __jbd2_log_wait_for_space+0xda/0x1f0 [jbd2
-371d593b5f5403746c7713ab4dc9d5e5c1953199]
-[  533.816877]  add_transaction_credits+0x2f2/0x300 [jbd2
-371d593b5f5403746c7713ab4dc9d5e5c1953199]
-[  533.816895]  start_this_handle+0xfe/0x520 [jbd2
-371d593b5f5403746c7713ab4dc9d5e5c1953199]
-[  533.816910]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  533.816921]  jbd2__journal_start+0xfe/0x200 [jbd2
-371d593b5f5403746c7713ab4dc9d5e5c1953199]
-[  533.816936]  ext4_do_writepages+0x46a/0xee0 [ext4
-893473fac91f34d580e31648f305d1177dd81b63]
-[  533.816968]  ? __dequeue_entity+0x3c0/0x480
-[  533.816977]  ? update_load_avg+0x80/0x760
-[  533.816985]  ? srso_alias_return_thunk+0x5/0xfbef5
-[  533.816996]  ? ext4_writepages+0xbe/0x190 [ext4
-893473fac91f34d580e31648f305d1177dd81b63]
-[  533.817019]  ext4_writepages+0xbe/0x190 [ext4
-893473fac91f34d580e31648f305d1177dd81b63]
-[  533.817044]  do_writepages+0xc7/0x160
-[  533.817055]  __writeback_single_inode+0x41/0x340
-[  533.817066]  writeback_sb_inodes+0x215/0x4c0
-[  533.817084]  __writeback_inodes_wb+0x4c/0xe0
-[  533.817094]  wb_writeback+0x192/0x300
-[  533.817105]  ? get_nr_inodes+0x3b/0x60
-[  533.817116]  wb_workfn+0x38a/0x460
-[  533.817126]  process_one_work+0x1a1/0x3e0
-[  533.817137]  worker_thread+0x292/0x420
-[  533.817147]  ? __pfx_worker_thread+0x10/0x10
-[  533.817156]  kthread+0xfc/0x240
-[  533.817165]  ? __pfx_kthread+0x10/0x10
-[  533.817174]  ? __pfx_kthread+0x10/0x10
-[  533.817182]  ret_from_fork+0x1c1/0x1f0
-[  533.817192]  ? __pfx_kthread+0x10/0x10
-[  533.817200]  ret_from_fork_asm+0x1a/0x30
+Changes in v6:[5]
+- Picked up reviews from Darrick, Zorro and John! (Thanks)
+- Added _require_fio_atomic_writes helper in patch 3 as a wrapper arounc
+  __require_fio_version
+- minor spelling and refactors
+
+[5] https://lore.kernel.org/fstests/cover.1757610403.git.ojaswin@linux.ibm.com/
+
+Changes in v5: (Thanks to John & Darrick for reviews)
+- commor/rc: Add a _require_fio_version helper
+- fsx: Switch atomic writes off if direct IO (-Z) not passed
+- fio tests: better commit messages to explain what we are testing
+- ext4/06{1..2}: Refactor code, also test only a few combinations of bs
+  clustersize rather than every single
+
+Changes in v4: (Thanks to Darrick, John and Zorro for the reviews) [4]
+
+- g/1226,1227: Modify fio threads to not issue overlapping atomic writes
+- g/1228: Use xfs_io -c "shutdown" instead of _scratch_shutdown to avoid
+          bash overhead
+- g/1229: Remove FSX_AVOID handling for bigalloc from common/rc. It is
+          part of the specific test now
+- ext4/063: add more clearer extent diagram
+- ext4/064: Drop the test for now as im taking sometime to understand
+            the behavior better.
+- Removed test numbers from commit message
+- For tests with significant changes I've removed the RVBs
+
+[4] https://lore.kernel.org/fstests/0eb2703b-a862-4a40-b271-6b8bb27b4ad4@oracle.com/T/#mef34a8c13cbee466bfc162db637d6e1cf0a8b06d
+
+Changes in v3 [3]:
+
+- (2/13) use dumpe2fs to figure out if FS is bigalloc
+- (9/13) generic/1230: Detect device speeds for more accurate testing. ALso
+  speeds up the test
+- fio tests - switch to write followed by verify approach to avoid false
+  failures due to fio verify reads splitting and racing with atomic
+  writes. Discussion thread:
+
+  https://lore.kernel.org/fstests/0430bd73-e6c2-4ce9-af24-67b1e1fa9b5b@oracle.com/
+
+  [3] https://lore.kernel.org/fstests/cover.1752329098.git.ojaswin@linux.ibm.com/
+
+Changes in v2 [1]:
+
+- (1/13) new patch with _min and _max helpers
+- (2/13) remove setup_fs_options and add fsx specific helper
+- (4/13) skip atomic write instead of falling back to normal write (fsx)
+- (4/13) make atomic write default on instead of default off (fsx)
+- (5,6/13) refactor and cleanup fio tests
+- (7/13) refactored common code
+- (8/13) dont ignore mmap writes for fsx with atomic writes
+- (9/13) use od instead of xxd. handle cleanup of bg threads in _cleanup()
+- (10-13/13) minor refactors
+- change all tests use _fail for better consistency
+- use higher tests numbers for easier merging
+
+ [1] https://lore.kernel.org/fstests/cover.1750924903.git.ojaswin@linux.ibm.com/
+
+* Original cover [2] *
+
+These are the tests we were using to verify that filesystems are not
+tearing multi fs block atomic writes. Infact some of the tests like
+generic/772 (now: g/1230) actually helped us catch and fix issues in
+ext4's early implementations of multi fs block atomic writes and hence
+we feel these tests are useful to have in xfstests.
+
+We have tested these with scsi debug as well as a real nvme device
+supporting multi fs block atomic writes.
+
+Thoughts and suggestions are welcome!
+
+[2] rfc: https://lore.kernel.org/fstests/cover.1749629233.git.ojaswin@linux.ibm.com/
 
 
-Also have a soft lockup, but the probability is very low.
-[  329.157094] watchdog: BUG: soft lockup - CPU#21 stuck for 67s!
-[kworker/u513:2:795]
-[  329.157169] Workqueue: writeback wb_workfn (flush-259:8)
-[  329.157176] RIP: 0010:queued_read_lock_slowpath+0x52/0x130
-[  329.157194] Call Trace:
-[  329.157196]  <TASK>
-[  329.157200]  start_this_handle+0x99/0x520 [jbd2
-0a56678a235e076a07e3222376de4dc1cbec6f17]
-[  329.157216]  ? finish_task_switch.isra.0+0x97/0x2c0
-[  329.157220]  jbd2__journal_start+0xfe/0x200 [jbd2
-0a56678a235e076a07e3222376de4dc1cbec6f17]
-[  329.157226]  ext4_do_writepages+0x46a/0xee0 [ext4
-bcac05fee1dc1aaf21870e1e652c064619591c71]
-[  329.157273]  ? find_get_block_common+0x1a8/0x3f0
-[  329.157277]  ? ext4_writepages+0xbe/0x190 [ext4
-bcac05fee1dc1aaf21870e1e652c064619591c71]
-[  329.157303]  ext4_writepages+0xbe/0x190 [ext4
-bcac05fee1dc1aaf21870e1e652c064619591c71]
-[  329.157328]  do_writepages+0xc7/0x160
-[  329.157331]  __writeback_single_inode+0x41/0x340
-[  329.157334]  writeback_sb_inodes+0x215/0x4c0
-[  329.157339]  __writeback_inodes_wb+0x4c/0xe0
-[  329.157341]  wb_writeback+0x192/0x300
-[  329.157344]  ? get_nr_inodes+0x3b/0x60
-[  329.157347]  wb_workfn+0x291/0x460
-[  329.157350]  process_one_work+0x1a1/0x3e0
-[  329.157353]  worker_thread+0x292/0x420
-[  329.157356]  ? __pfx_worker_thread+0x10/0x10
-[  329.157358]  kthread+0xfc/0x240
-[  329.157360]  ? __pfx_kthread+0x10/0x10
-[  329.157361]  ? __pfx_kthread+0x10/0x10
-[  329.157362]  ret_from_fork+0x1c1/0x1f0
-[  329.157365]  ? __pfx_kthread+0x10/0x10
-[  329.157366]  ret_from_fork_asm+0x1a/0x30
+Ojaswin Mujoo (10):
+  common/rc: Add _min() and _max() helpers
+  common/rc: Add fio atomic write helpers
+  common/rc: Add a helper to run fsx on a given file
+  ltp/fsx.c: Add atomic writes support to fsx
+  generic: Add atomic write test using fio crc check verifier
+  generic: Add atomic write test using fio verify on file mixed mappings
+  generic: Add atomic write multi-fsblock O_[D]SYNC tests
+  generic: Stress fsx with atomic writes enabled
+  generic: Add sudden shutdown tests for multi block atomic writes
+  ext4: Atomic write test for extent split across leaf nodes
 
-Reproduction Steps:
-Format 10 NVMe drives with XFS and run 3 concurrent 100GB file reads on each
-drive.
-Format 1 NVMe drive with EXT4 and run 256 concurrent operations for creating
-files and folders, as well as adding and deleting xattrs (the issue can als=
-o be
-reproduced with 192 concurrent operations, though the probability is lower).
+Ritesh Harjani (IBM) (2):
+  ext4: Test atomic write and ioend codepaths with bigalloc
+  ext4: Test atomic writes allocation and write codepaths with bigalloc
 
-cpuinfo=EF=BC=9A
-# lscpu
-Architecture:          x86_64
-CPU op-mode(s):        32-bit, 64-bit
-Byte Order:            Little Endian
-CPU(s):                192
-On-line CPU(s) list:   0-191
-Thread(s) per core:    2
-Core(s) per socket:    96
-Socket(s):             1
-NUMA node(s):          2
-Vendor ID:             AuthenticAMD
-CPU family:            25
-Model:                 17
-Model name:            AMD EPYC 9A14 96-Core Processor
-Stepping:              1
-CPU MHz:               3699.375
-CPU max MHz:           3703.3760
-CPU min MHz:           1500.0000
-BogoMIPS:              5200.37
-Virtualization:        AMD-V
-L1d cache:             32K
-L1i cache:             32K
-L2 cache:              1024K
-L3 cache:              32768K
-NUMA node0 CPU(s):     0-47,96-143
-NUMA node1 CPU(s):     48-95,144-191
-Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge=
- mca
-cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe=
-1gb
-rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid
-extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1
-sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic
-cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topo=
-ext
-perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp=
-_l3
-hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase
-bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap
-avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec
-xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk
-avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd amd_ppin cppc arat npt =
-lbrv
-svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilt=
-er
-pfthreshold avic v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi um=
-ip
-pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg
-avx512_vpopcntdq la57 rdpid overflow_recov succor smca fsrm flush_l1d
-debug_swap
+ common/rc              |  88 +++++++++-
+ ltp/fsx.c              | 115 ++++++++++++-
+ tests/ext4/061         | 155 +++++++++++++++++
+ tests/ext4/061.out     |   2 +
+ tests/ext4/062         | 203 +++++++++++++++++++++++
+ tests/ext4/062.out     |   2 +
+ tests/ext4/063         | 129 +++++++++++++++
+ tests/ext4/063.out     |   2 +
+ tests/generic/1226     | 108 ++++++++++++
+ tests/generic/1226.out |   2 +
+ tests/generic/1227     | 132 +++++++++++++++
+ tests/generic/1227.out |   2 +
+ tests/generic/1228     | 138 ++++++++++++++++
+ tests/generic/1228.out |   2 +
+ tests/generic/1229     |  68 ++++++++
+ tests/generic/1229.out |   2 +
+ tests/generic/1230     | 368 +++++++++++++++++++++++++++++++++++++++++
+ tests/generic/1230.out |   2 +
+ 18 files changed, 1512 insertions(+), 8 deletions(-)
+ create mode 100755 tests/ext4/061
+ create mode 100644 tests/ext4/061.out
+ create mode 100755 tests/ext4/062
+ create mode 100644 tests/ext4/062.out
+ create mode 100755 tests/ext4/063
+ create mode 100644 tests/ext4/063.out
+ create mode 100755 tests/generic/1226
+ create mode 100644 tests/generic/1226.out
+ create mode 100755 tests/generic/1227
+ create mode 100644 tests/generic/1227.out
+ create mode 100755 tests/generic/1228
+ create mode 100644 tests/generic/1228.out
+ create mode 100755 tests/generic/1229
+ create mode 100644 tests/generic/1229.out
+ create mode 100755 tests/generic/1230
+ create mode 100644 tests/generic/1230.out
 
---=20
-You may reply to this email to add a comment.
+-- 
+2.49.0
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
 
