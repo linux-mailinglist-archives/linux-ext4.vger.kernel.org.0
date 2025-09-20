@@ -1,129 +1,142 @@
-Return-Path: <linux-ext4+bounces-10311-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10312-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A1D5B8BF11
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 Sep 2025 06:31:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF6AB8C00C
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 Sep 2025 07:48:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05AC016F474
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 Sep 2025 04:31:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 889511C02CA3
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 Sep 2025 05:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F622222C0;
-	Sat, 20 Sep 2025 04:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1502218580;
+	Sat, 20 Sep 2025 05:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fLuGppCK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jvFQtz/e"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A5EE2AD31
-	for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 04:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90520214204
+	for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 05:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758342688; cv=none; b=h/rcEroq9cFaSWIYR40/lv8GP/IkOyeA3yGlw4GFUATwL0TPR22sEefGSy3oZqBkyr4HonXBN8E7eT60xxxMJhd8oApe8fHZsikJqbAaILsnLfkgotCkxPs10woQ95cllPRJDzWVsstXK1jr2n5sGJklISyYgRw3VxJd77JhHb0=
+	t=1758347283; cv=none; b=BlLrYhezhhfuC8ViNInw9NgHcL3rRU+KH+0sdLZiPuqeLDJ5jSc0Z4jQ8QHfhSic91EM2+g3CFc9yOMzLKwzbrgRkiBJzz6xWV155VwEiXEHgA2j9dDM6Ffkky/AyUotLyO+1fK3psxc9CMF8LsVOaVWqO1I7qMk8Hi9DxTMu9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758342688; c=relaxed/simple;
-	bh=kAny4aRymFDIo+7FPT/ml2qL4nKq50MkuxSYtUo1xdk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D34shcCHuHjXBiSvJAphO/ANAR/eo47RKoVlxmvwYsOYGbAvhk2h4UFI09iJ79CA4tnI1LkZtUZKLX1dGrNfdQtLM7QrTgg4Cn2mx518NXJ4pnkpIcoCryXvNnGiWBRtaopbIXowNvfhu1poBFzMlDVKdvVsMKkP6mK4zxOSbh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fLuGppCK; arc=none smtp.client-ip=209.85.166.173
+	s=arc-20240116; t=1758347283; c=relaxed/simple;
+	bh=o437aCkcf1xCxm+rv0mPwnGQtCoz+9QjMvmAbd5CG3k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jsIF7sXnC6FETL2g8z29+vnEEVF/6RwQxElBRjjlMuPIzewgWusbINMMQussUydzx2HP0rEw+cN9Ng9KZcXL7JWNmR37OYmq0DMKFlPz5azbToDQNVZFhIhho1ZCxzmT7hcJz33uIoySUfHWQPlP6ni0JzGoAnxv4s1kDLpnKS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jvFQtz/e; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-42487ec747eso10717605ab.2
-        for <linux-ext4@vger.kernel.org>; Fri, 19 Sep 2025 21:31:26 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-631845b51e2so232870a12.3
+        for <linux-ext4@vger.kernel.org>; Fri, 19 Sep 2025 22:48:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758342686; x=1758947486; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mAMf/yo/OOBBY5X1PTbs08x/sucOGtYlA3nCLcNTs+g=;
-        b=fLuGppCK4DAjqW2augM3XZ8Si1RMcFrTAkhTtUvRhH0k/DXAIsFNsnQe33qYOjkDng
-         nNwrfJWpcAk++ei1tdRu0b/xa/dqgXyvawOXT8SsK/3ZzsRHv1grK/yp2oAR8fVcAXwR
-         aPLMAYcsE04tGb7zBj/O6Qr417zM0P4kI/UM02G3avJZ5HQDfbHVXmexAcnnqoce6IS2
-         9FBhY/pEVVjVVg5xdbQ9mKV3F8F4pQOU6bNtMts9IsOZfNrtNgB2MR2fO9OUWzHlSwGv
-         rXbKeVem2CeEgaM0ME0xcM9hP7hYEEqA6iIC8ZpUfEdjXSYAS+7rUZe5/gatEBHDMS+Y
-         mUaw==
+        d=gmail.com; s=20230601; t=1758347279; x=1758952079; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fyN9RcfnRhBee1hQgE+lsezNr/j9kdfLGgOBZcxycjE=;
+        b=jvFQtz/eYM+NLGU5wKQz8AH8+J1N6i7yiK70ybgHeyj1Nqt3MpUnt0ptB0V5rqNNdx
+         y9FCHiVC4NzIj4m/dqvUSDf5Ay7MA6YPbem+VbXf2aZ0NWpkzKgfjdRZZx0qc+lJjsEw
+         KAvK+Pum6jWrqeQMgjhX+xnQz8SaKlMj3bdzaQ4YFGLqThdG8cQMiriMz9AX/WwdePxH
+         VSIt6PWxgmFAwad3XxwSL0FMZB4cr8xZ/cdU8oBWLpOix39fJYgBXTFjH1sNNnLsowm1
+         lNDp+A1teDRrWiE+un0tv30D/PKCul57wt6iJ+dl+oycDfEYGKivtfb8s8kpAJb7b/vY
+         vowg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758342686; x=1758947486;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mAMf/yo/OOBBY5X1PTbs08x/sucOGtYlA3nCLcNTs+g=;
-        b=lnJ4siMDaiSOaTrkxBJuGiPoTjarV4IzAwcr83uDW1KhEnUQQO4Cn1oWigPgcvPYb8
-         q2B5ngydlB8z+AXTkQZq9PzInvzYTQpXrfHf4xv9+PGKQ6HeleNZSmofGCbFQc6vretI
-         7NEMiPpDTa8ZrNun9KeUly7Q+gtGd9e63Oedydw6IjqjK3BgF0RxOrLO2kkyH3fNnIep
-         n+17nU0AHpbUxSMPmycRtpp2a0XyqBXEiahynIrfx/z098dQPeI2ksK2h0ARC3m4h1gI
-         0a0/LhCDZdISrt4JNoTot6dDJ+fEjNcMxY8yUoPnC6MxF5LFQhorINZ/nIpX4oQ09CtK
-         BYFA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxIhQLDgOJRBbd0YibCw2p06mOWJNmst5ox6xLqBABNnpD2TNFVUIwNJ3cMKWXyKAthZsDgDqw+D/g@vger.kernel.org
-X-Gm-Message-State: AOJu0YyefgOHnmxdHAQ2Cwoih0uWTskubLTLH6RlLRoWtGhVPzhmZU4/
-	q3f5VUqlZ+Ak26NmDkhB6AwZ8e3BHE64nUpyLmiCWn9pRrH4OjPR7Yqp
-X-Gm-Gg: ASbGncuGc0vV6oZG8CpXnfviwgSqamhZhJe2AWhpIvZ6yOqHdh3dqGydHfd+qJLnOiY
-	Os/M+L7uhoPe6yEH6Pme46JqZMA1EUZdQ3HdE26QxHKDCXLw88mmaLA4OEe1hCSxP42TuVpRxj3
-	s4jHzUHep59C8Ny4Y31tXwZ2t6bnifNaRJfLDKF0u6evDLLi/0bNGPGkO29fhLJSv4otnZKRs8E
-	yIDwW+HmJ61HHJSNF8MqFDJcHs75IGtNCz8NfEqtcgKvkzGS37Do49/RbN5gMyJJgl+rB6hVGWc
-	EUrrBw8AjrwBuNjh9D3YNkXMWMjidVL92f0JONEEya2gbvHqNG3VOWqZwM8cWQ6LZ4Qd1RD1vd3
-	n/kwmcbxej9HXCP2Lj9U1Ma+2ye2P+oBUVsF1LQ==
-X-Google-Smtp-Source: AGHT+IFcG4QqJ4nlgO3oq0I1YnwOZ/K7SIrMHUnkDcvBmlrkEhfFU8B8mZqzq5hu5cnZ8bWVDrbaVA==
-X-Received: by 2002:a05:6e02:156b:b0:424:30f:8e7c with SMTP id e9e14a558f8ab-42481909f5emr98881625ab.10.1758342686244;
-        Fri, 19 Sep 2025 21:31:26 -0700 (PDT)
-Received: from ?IPV6:2600:6c56:7d00:582f::64e? ([2600:6c56:7d00:582f::64e])
-        by smtp.googlemail.com with ESMTPSA id 8926c6da1cb9f-53d56e429f3sm2997444173.74.2025.09.19.21.31.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Sep 2025 21:31:24 -0700 (PDT)
-Message-ID: <73885a08-f255-4638-8a53-f136537f4b4c@gmail.com>
-Date: Fri, 19 Sep 2025 23:31:22 -0500
+        d=1e100.net; s=20230601; t=1758347279; x=1758952079;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fyN9RcfnRhBee1hQgE+lsezNr/j9kdfLGgOBZcxycjE=;
+        b=a8hdyCU5lYVJefRd5Km12Bm/t9U6HbIlOQrz+PPg3bse1Mag0Dfq4bbdSm6w+3VNSS
+         y6b51F2zTiW03EQFGFpKkqsL3AzZeICH/VDK0dPSOkM5ZN0w7+GNCFBdSk9txVBnfbIo
+         Oh2ozJmz1PRxC1oj/6mqvXOO6abLy9EbP+ecI6U8u7DQS20oWFNLLL0OQbUGi4YAr/PH
+         M7ezsazAeSJ+WWfo9R6RNNaA71R4o+OTADFDdhuH6pgT1tY1FwAw2r4r7wUMPNAj1OtC
+         JWooYg9tD11gX6srFvy6LeoYHAc2hqpr0Q9VD5G23RbA3p6lQfRcd03K159vczunDo+J
+         eB7w==
+X-Forwarded-Encrypted: i=1; AJvYcCX7w+EyrSj2HBGZpFRDf+jIF3Wb5mVl8CayYPvXiA8LH3sUFV2T+JdmGktzY4CafeEjsW0xXgCZSy8G@vger.kernel.org
+X-Gm-Message-State: AOJu0YzmcugQTji/ii8K026uuEXPQ2jun7SUBIlJ5rvU6eyRPPkqfHNW
+	qXKDmFIaDlTiSm9yo2Mry6pw8tzEji/maEXwF3ACndOuycmzQ1Rk+4KzspfMBAEodsuspj+Oc84
+	mz27o3WRJkPW+jivE53Rfk1EVkY5xAtE=
+X-Gm-Gg: ASbGnct5F+VFAEj0DCDtzYAFnJHmVnLk3Ha990IUP+cM+XGHjkTZUf6JYaDYqFDbOeC
+	q4BI2o5rInEU5sKjDQWv9Qq3LTqEhodW/I8htJD3AIkF44BDnN9HzbmnP7CUkJK5vi4RPHqNQZc
+	sGxyGJwRtPuX5dFvAJ3M9GbK1hxFndPzm/+0stGktN+LATacZX+AwZFcrsqV98VdmnSiXW/LTZh
+	7IBOopFxehBUyOIZRLtR2L0MZL/JqvtS0DAu8I=
+X-Google-Smtp-Source: AGHT+IGXjKiqqwRe65Vudg38Ap/YqUkQCp5A7+RF7b7HLmhZNE/B/g21D2F70GxNir3tx2mYIaHz6z79YrnZKfqUJP8=
+X-Received: by 2002:a05:6402:23d2:b0:62f:9cfb:7d76 with SMTP id
+ 4fb4d7f45d1cf-62fc0a8376bmr4633977a12.37.1758347278669; Fri, 19 Sep 2025
+ 22:47:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20250919154905.2592318-1-mjguzik@gmail.com> <73885a08-f255-4638-8a53-f136537f4b4c@gmail.com>
+In-Reply-To: <73885a08-f255-4638-8a53-f136537f4b4c@gmail.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Sat, 20 Sep 2025 07:47:46 +0200
+X-Gm-Features: AS18NWCzvbrmV0HH3sAfFvM4WSZtLcuzJvUuWZCgEFT-KVn1SkU22A6rQ1aMITw
+Message-ID: <CAGudoHHnhej-jxkSBG5im+QXh5GZfp1KsO40EV=PPDxuGbco8Q@mail.gmail.com>
 Subject: Re: [PATCH v5 0/4] hide ->i_state behind accessors
-To: Mateusz Guzik <mjguzik@gmail.com>, brauner@kernel.org
-Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, kernel-team@fb.com,
- amir73il@gmail.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org,
- linux-unionfs@vger.kernel.org
-References: <20250919154905.2592318-1-mjguzik@gmail.com>
-Content-Language: en-US
-From: Russell Haley <yumpusamongus@gmail.com>
-In-Reply-To: <20250919154905.2592318-1-mjguzik@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Russell Haley <yumpusamongus@gmail.com>
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com, 
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/19/25 10:49 AM, Mateusz Guzik wrote:
-> This is generated against:
-> https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs-6.18.inode.refcount.preliminaries
-> 
-> First commit message quoted verbatim with rationable + API:
-> 
-> [quote]
-> Open-coded accesses prevent asserting they are done correctly. One
-> obvious aspect is locking, but significantly more can checked. For
-> example it can be detected when the code is clearing flags which are
-> already missing, or is setting flags when it is illegal (e.g., I_FREEING
-> when ->i_count > 0).
-> 
-> Given the late stage of the release cycle this patchset only aims to
-> hide access, it does not provide any of the checks.
-> 
-> Consumers can be trivially converted. Suppose flags I_A and I_B are to
-> be handled, then:
-> 
-> state = inode->i_state  	=> state = inode_state_read(inode)
-> inode->i_state |= (I_A | I_B) 	=> inode_state_add(inode, I_A | I_B)
-> inode->i_state &= ~(I_A | I_B) 	=> inode_state_del(inode, I_A | I_B)
-> inode->i_state = I_A | I_B	=> inode_state_set(inode, I_A | I_B)
-> [/quote]
+On Sat, Sep 20, 2025 at 6:31=E2=80=AFAM Russell Haley <yumpusamongus@gmail.=
+com> wrote:
+>
+> On 9/19/25 10:49 AM, Mateusz Guzik wrote:
+> > This is generated against:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=
+=3Dvfs-6.18.inode.refcount.preliminaries
+> >
+> > First commit message quoted verbatim with rationable + API:
+> >
+> > [quote]
+> > Open-coded accesses prevent asserting they are done correctly. One
+> > obvious aspect is locking, but significantly more can checked. For
+> > example it can be detected when the code is clearing flags which are
+> > already missing, or is setting flags when it is illegal (e.g., I_FREEIN=
+G
+> > when ->i_count > 0).
+> >
+> > Given the late stage of the release cycle this patchset only aims to
+> > hide access, it does not provide any of the checks.
+> >
+> > Consumers can be trivially converted. Suppose flags I_A and I_B are to
+> > be handled, then:
+> >
+> > state =3D inode->i_state        =3D> state =3D inode_state_read(inode)
+> > inode->i_state |=3D (I_A | I_B)         =3D> inode_state_add(inode, I_A=
+ | I_B)
+> > inode->i_state &=3D ~(I_A | I_B)        =3D> inode_state_del(inode, I_A=
+ | I_B)
+> > inode->i_state =3D I_A | I_B    =3D> inode_state_set(inode, I_A | I_B)
+> > [/quote]
+>
+> Drive-by bikeshedding: s/set/replace/g
+>
+> "replace" removes ambiguity with the concept of setting a bit ( |=3D ). A=
+n
+> alternative would be "set_only".
+>
 
-Drive-by bikeshedding: s/set/replace/g
+I agree _set may be ambiguous here. I was considering something like
+_assign or _set_value instead.
 
-"replace" removes ambiguity with the concept of setting a bit ( |= ). An
-alternative would be "set_only".
+I'm not that fond of _replace but I'm not going to really going to
+argue about any particular variant.
 
+The good news is that whatever the naming, sed indeed can be used to
+adjust the patchset. :)
 
