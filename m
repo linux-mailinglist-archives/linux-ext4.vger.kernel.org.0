@@ -1,88 +1,138 @@
-Return-Path: <linux-ext4+bounces-10325-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10326-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8D3B8D473
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 05:44:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39200B8D541
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 07:23:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 313EB4449A0
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 03:44:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 401107B2415
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 05:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77AE281529;
-	Sun, 21 Sep 2025 03:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F029296BCB;
+	Sun, 21 Sep 2025 05:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dCPUyDc/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2141FA95E
-	for <linux-ext4@vger.kernel.org>; Sun, 21 Sep 2025 03:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8107249E5
+	for <linux-ext4@vger.kernel.org>; Sun, 21 Sep 2025 05:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758426247; cv=none; b=I0ba3veDM9gL9T7TLsaoje8+khNxioBItx0TsNPvxTuEHU+U9qSDud95M9y3Reuu4t5Sj5rFctpHb4qCPGOH6HhhnHdG6+6DoT+SS0P+lNgZUV/KQJuiKs60Dw2wkp/+IwKZHyrhcgnFmeylIAj4mZkRX9q3Iw1l6O/S/OFd32k=
+	t=1758432204; cv=none; b=Q5iszdaxPEz8l7e7CxS3qcqExmgWTJszc/s/45tjiAU8De/uahcQykwYWtQ6NfUQcsepSVBxLGyw80Jg61JgQifArk1QvIzFzV4zqjSqNHa7YZUCOh2wn/uMIM/1i9c44vFRsoFg7Kz6W3jObygSTBa8K6pRifYWGARhkxCBT1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758426247; c=relaxed/simple;
-	bh=9Vyy6nzZefHF8h6kYfMkiN13MLdI0fokQqb3A0KLQT8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=cyLL2BenhdR3vTP6bVC0MVXfxU1/TEKkDTj8trC8S4g9HD//Cu3gmRH4MSaYfKgQ9cz5q5WEGegWJ+gAlL/FSV+E95yJGdJlLmqt/Bd9tWhVwB69KEOY+4zxtSwU+99l0AUOUeEppHCbXuad0GsYjiArwfhpNWmD77/n3QTmftI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-893656f5776so375545139f.0
-        for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 20:44:05 -0700 (PDT)
+	s=arc-20240116; t=1758432204; c=relaxed/simple;
+	bh=McF/z5lXBP7Ah9glPGzxglvf0lJ+HR5H+K7VjrPVKbs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WHpKkRfOft1z7r6eV3t2kXdpE25EGoh3a8bwsL/RT8ZYWhycGL/S0vIOPqSXqxJkhsr2az57GHYt8twfWYKJWHBlVXRzD2xQd/RfcQ/d6upbHQTyiarJDIKOp+kJdBFOTeLZVxIbMjeM0L8SGtCxxQn/Gr4jBXZPfJN/FYIIRgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dCPUyDc/; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-77f207d0891so485855b3a.1
+        for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 22:23:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758432202; x=1759037002; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i/raf1KHNuoZawiMU7Nd52+wsbJC6EopsKr3p+fS6TI=;
+        b=dCPUyDc/paT/Plu2Oe7LAYofcPbA8wH4F3pwl7DYT/GoQLHxmDFEfsvB8Jf7FSiQUd
+         wfzoMbbvtSJKgsDNbY5ZRI89BvX9xXkmgO2bHzdDjbNccn0G+gJuBjdNoWN5r8aN/6yB
+         gIfcsFw+Iu6Ju42ri6IxdGRbNz55YECqylY4LTWO27YwXUa9XrB1spuVsEud0UJZ+x1Z
+         TP6f1pXbLa15zd1VuD4H14e4P68HSgTFHhLQpFc7Tz8HB22SuzDyH8SMPvDapn//yRGT
+         0yttHn952AKvF1TDhZEnW4Wb2lOKjI51+2DBOtWlxsXlNFlTlRrDCc9l4v/kEBZaYrfa
+         DMXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758426245; x=1759031045;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AdjgHlcbaWhWVIx5piaEC27S+dMD/Hjc0fOFih9t3Gc=;
-        b=VAdbeUavtQrjNZbzbS+K//ndD/2hlXjvo6/Fztac+G0TA8YbPk+0nCbKkBwBz+iTUC
-         eNz1JlFOZU0CdALjAxKR0oNBw/pTL3XJs4BJvQl6ezmygee+tC9Tq37O90Iywp4mQdr0
-         k+1SQIg9wm8KPcpEQBzj8hPYTqpIcdjjVJUljrL+zhkq4t8G9c7NVRGLl2Uu1Cafsv/G
-         KmQdaGbcyEtEzpc+fUETJjSdPQ/QHZVM73EOWn1Y7HeBr2ljqK126lWXpjnITlrgtVSF
-         6qKRJUjuJkxO/gCLCloByMyzy+4XTeZrpGAcAkK1Wao+0vSfI3dy2VUD0OXQt9W7ifHx
-         Ccyw==
-X-Forwarded-Encrypted: i=1; AJvYcCUMcCe8A9FTu95FEzelzgg1et6FPBwDxewNYVKlWldR0NSacECmSqf5BWCZGHsl7rLCDgw9dZb2JGDF@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYOCU/q0CIoO08KoUy/SUkGiXw7bkTQNgh3qfkEE9lC+j1JTul
-	Ozc/4vb2AVsOF94N+iLMbHDaRnumgB0dB7ywcQT3WZgs88t/I4282kvISP3lweeT4FDIN1Qxh8r
-	UGaQxUlSEDOwdAkV6O0u9QVX9/NmDIyzOnUK97BXVDYto1I0Zp6kFgm+lOqA=
-X-Google-Smtp-Source: AGHT+IHFhT9ux74NVmmSHs0E1OXa90ayjxf4uFnXIyvS/j3oomieCbVSs+xUPwqp9DnUBLxek0rWmB7CW0Xlo/6nbyWPFRsZXf3e
+        d=1e100.net; s=20230601; t=1758432202; x=1759037002;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i/raf1KHNuoZawiMU7Nd52+wsbJC6EopsKr3p+fS6TI=;
+        b=qlhkwP2uck+bDZz/AeU8eXu3lO9lJMDfpbi6x52zh5/9y/e4T98LrhXv5iiGOD+ci9
+         LKU98DWy6DdSNqakt4/Gqoop37uCQ4tjeBvHToN5nO6kVZBg5j/quIYbNkN+nQZ6poGD
+         5z53NacPqttbOmY+5gQfcdKr/TLU8joIs4KEoMK4Mf3TFz94jt6v6gp92eIfBP+mhDtp
+         Jkv1EQvhj0+s65fVjvHyyfHLm4yki21oB5AHHlKp52IjkmvEZsyKvwr3jadkQIssfnls
+         pyIyZBGb1NsuuXIw846jMaD52qoARH9jdMy1lAARFTPZU1pLFr3C/8okDLSyr+HeqCSV
+         KCPw==
+X-Gm-Message-State: AOJu0YxFQnEBXe8jyvFjROGYdapKBM/kbCoY9AVRPeS+ILLe2FR7mrIL
+	T0j2yCY7uES5FjOzW0nCXbFUplrJ3aqs0vYNCW+RcAckv6UFoFYjRG3i
+X-Gm-Gg: ASbGncu4dwpYdnFS+8rad5a2+heEzqKEDVwoHZJRVk77Gomh90YSOI46mCZhYvtZOq6
+	5CX0bj8W1a5yGKLco87uzMbyg4pZ2QsFdhlUYOuKj+W7twX3SOTnEAI8g7KWhXeMjCTeWTANSNw
+	om53HEOSBw1znu2fe74okM/6MSBQLjAREkk8KG+c74wgKclQV4i8pdOI6UUR05chr27X+TQ2rZO
+	kgfFsB1NBkWF+3VmfpdbJ/3cFgpGAmHKaghMfU2e/ggFS1zCPST28H7HXnQb9cHvGyy6KhatNDs
+	aeT5r6edyP6FQpDted9+86PYH8lE2lboiOQzoRiL8CTDM9fK2t5mZGkIejwRzfeEJ8G5GBxuUzt
+	ABkLtNztj0uQj8kCmHQVOL2McMbawryFVlB4fnC42rrQK6f7iI60ZW1ggqfOhiF5GfIncVCE147
+	zt4JE=
+X-Google-Smtp-Source: AGHT+IE7sk2/QI9x5a6PC0rz1xQPiS7oGhVmRLqRl1OKWtlPZ60Vk2kU++eRbYWB+hakKz/2eZ24wg==
+X-Received: by 2002:a05:6a21:329e:b0:247:f6ab:69db with SMTP id adf61e73a8af0-2927182b69emr12433096637.40.1758432201918;
+        Sat, 20 Sep 2025 22:23:21 -0700 (PDT)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:9135:55f6:8a14:ad5c])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b551518480asm6618264a12.28.2025.09.20.22.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Sep 2025 22:23:21 -0700 (PDT)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: skhan@linuxfoundation.org,
+	david.hunter.linux@gmail.com
+Cc: linux-ext4@vger.kernel.org,
+	Deepanshu Kartikey <kartikey406@gmail.com>,
+	syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
+Subject: [PATCH] nsfs: reject file handles with invalid inode number
+Date: Sun, 21 Sep 2025 10:53:15 +0530
+Message-ID: <20250921052315.836564-1-kartikey406@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12e9:b0:41b:3987:b3d4 with SMTP id
- e9e14a558f8ab-424819743e9mr113994275ab.21.1758426245239; Sat, 20 Sep 2025
- 20:44:05 -0700 (PDT)
-Date: Sat, 20 Sep 2025 20:44:05 -0700
-In-Reply-To: <20250921031859.833667-1-kartikey406@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68cf7485.a00a0220.37dadf.0037.GAE@google.com>
-Subject: Re: [syzbot] [nfs?] WARNING in nsfs_fh_to_dentry
-From: syzbot <syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com>
-To: kartikey406@gmail.com, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Reject nsfs file handles that claim to have inode number 0, as no
+legitimate namespace can have inode 0. This prevents a warning in
+nsfs_fh_to_dentry() when open_by_handle_at() is called with malformed
+file handles.
+
+The issue occurs when userspace provides a file handle with valid
+namespace type and ID but claims the namespace has inode number 0.
+The namespace lookup succeeds but triggers VFS_WARN_ON_ONCE() when
+comparing the real inode number against the impossible claim of 0.
+
+Since inode 0 is reserved in all filesystems and no namespace can
+legitimately have inode 0, we can safely reject such handles early
+to prevent reaching the consistency check that triggers the warning.
+
+Testing confirmed that other invalid inode numbers (1, 255) do not
+trigger the same issue, indicating this is specific to inode 0 rather
+than a general problem with incorrect inode numbers.
+
 
 Reported-by: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
 Tested-by: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
+Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
 
-Tested on:
+---
+ fs/nsfs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-commit:         846bd222 Add linux-next specific files for 20250919
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17d650e2580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=135377594f35b576
-dashboard link: https://syzkaller.appspot.com/bug?extid=9eefe09bedd093f156c2
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15c650e2580000
+diff --git a/fs/nsfs.c b/fs/nsfs.c
+index 32cb8c835a2b..42672cec293c 100644
+--- a/fs/nsfs.c
++++ b/fs/nsfs.c
+@@ -469,7 +469,8 @@ static struct dentry *nsfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
+ 
+ 	if (fh_len < NSFS_FID_SIZE_U32_VER0)
+ 		return NULL;
+-
++	if (fid->ns_inum == 0)
++		return NULL;
+ 	/* Check that any trailing bytes are zero. */
+ 	if ((fh_len > NSFS_FID_SIZE_U32_LATEST) &&
+ 	    memchr_inv((void *)fid + NSFS_FID_SIZE_U32_LATEST, 0,
+-- 
+2.43.0
 
-Note: testing is done by a robot and is best-effort only.
 
