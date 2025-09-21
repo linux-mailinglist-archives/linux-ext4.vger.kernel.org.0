@@ -1,173 +1,140 @@
-Return-Path: <linux-ext4+bounces-10320-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10321-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5C61B8D220
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 00:59:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09B94B8D2D4
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 02:52:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A784317FD90
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 Sep 2025 22:59:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5E1F17F5A5
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 00:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAFBD261388;
-	Sat, 20 Sep 2025 22:59:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C138C208D0;
+	Sun, 21 Sep 2025 00:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="NASXzWdj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J6YV82Nc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352F22571BC
-	for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 22:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B32199BC
+	for <linux-ext4@vger.kernel.org>; Sun, 21 Sep 2025 00:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758409156; cv=none; b=Kt9ANvo0BM9yMVCG6pVJ+Silut13dURfSFkO2jmC6awIpEAsAHEVsuWe/umXcQhgLmKWwOjKiFQqw3Wq/53XaJIPAFTmI7//PZ25WbfSFB1cbtnLVFBIWU1xcC50qKiLP/yfkSHNkYI1vEnguUJ66T4KeFgbTmQgrbugqwZxZhk=
+	t=1758415917; cv=none; b=azSQ2N2wYnbWIr5YKyed3O0DKbQWAMwu8UD8TatxMaF/4Thas9V4dEFrgEKeKHXY8Kg+WfryvnSNdphuBB3XYNsNFSuK+B1QXiTo08uQPa/6v/GrznkZDCg1rctxJvh66K2J5RtoyUGCZ8vT+M/e3XRLkievJYm5uGx514zkU4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758409156; c=relaxed/simple;
-	bh=/AX9alijyFc9rxkmqUgXWsAoXd3e8k2Jcv0ATUaHRLo=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=JKKwkHGQF7c3Wql02OyNy/aNw3zv/jNE3qDia9TpT+BKbMg299TeHfO5MVjhe/HRc7U6ZgQLPetKu2TMcRucQSRW2M9A+lGAs/W3UhXiX2EOPWbr0FRebMJicNmv3CDPgt3hbhQSTwsWH4bVeX5qdyH4XLtWLFpldVoBEZu78Kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=NASXzWdj; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b5229007f31so2460460a12.2
-        for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 15:59:13 -0700 (PDT)
+	s=arc-20240116; t=1758415917; c=relaxed/simple;
+	bh=PoRHjMaK9cl3ZUSV7wRstEajxreJfadcTH8KxOCIYA4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lRGJGMuaqTWHbmFyTh4kJEMn5k0tNz2GxLVFHPVa/r5/Bm5yRokjyBB68+1X2KCsnRW3bGNnd95gYrm/MTw6hzaOwWHnbKZXZFS27/p9aNsZJCchZxVNkJLmtpBM2WsFnAN0tkToxvkL/vdsC7LCDxfBUgeHcvW86TSXYOF/ZOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J6YV82Nc; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b4c29d2ea05so3196495a12.0
+        for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 17:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1758409153; x=1759013953; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MEz76/Vs41fnvJuc5kakJw4s/0kzYdkfRVOudgrBm3k=;
-        b=NASXzWdjfpsicY4HU42PxjtURnPyNu7EcT0OFpG7c6/7EKq9o/trYMgCVGyW+OfsrR
-         iyhUvz46IbzrVsOrfEpa/cmAH6uUfhA5zKtmC+Cykx71MP4YgGXEj5wpFvpK+WmnWGpJ
-         NzGeGMl2OxbY50Z7yMOa2UmTfzr7dvmuTTWjqkQ4+nSdGGi/qHw8gYEm15slA1A1EGqh
-         u3VG8raYcpj7GuHNYGMkD9HkN3S1OLW1HKrCjKZxkOTyOgGX5pG0EQLzdYvYlnBA41/K
-         SKiHZuApqRhOdQuteS6JXz7ny/Aukth9+GyCJSZFzCQhLHM++pru4RaNu+c7kyX0Csja
-         3nvA==
+        d=gmail.com; s=20230601; t=1758415915; x=1759020715; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vrnGLrfF8sa1arNZn1Fafdegznbwome1oxqjSMd6TZA=;
+        b=J6YV82NcouyQBq8ARJc5yJM4bGagMRGhmUW3FA8rCicQFezPPPKKdgjy0luHYcueYK
+         w92GTybQcMhu8j1Ub38OrEl8IWHHDu+OsX6V0jY3B+kJtHwNSIMQiSINtgJxFuG8tPDl
+         Juh4sVMwTELV/jaOtDu10LdNA/1i32S0EVX8uaj5XyE3X3x9aAgVW+HmopXTQ7QMsBQM
+         UNUtsfqaEXuxWzvRZU8wnkQKQgkS6+/I6JM0clif7Lx9+XVg0Id9+zuAXy353pONDEvK
+         MX/TtrweVezuY8U8yF0Z6JfQ750+sT6/vHvKF7kO1y7hYm+Zweq716u4BDF6cTuzrJ4g
+         HhYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758409153; x=1759013953;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MEz76/Vs41fnvJuc5kakJw4s/0kzYdkfRVOudgrBm3k=;
-        b=A3e3V1g0HoElfsm02b/RdUf2nTzeh3Cj6NaVLNImWHx3CwMWTva84RUmQ1kpOyYX7Q
-         kWC53R4sfnapXLg8tFcVFlMImO4iNPfkd+ZG/kC+n043ln8EtPKCyGk0rzs5WlYIeHfF
-         iR0RyhiwrYlQ55G6+rWQFZ4ce/3T5dXZgemXcdwgZT7xo1tMw2RP1rNoOz64XqHeuyvk
-         fphMemKCh1eIfaJ2lcvMShtGacrqOQsZp+/fzXhGMtEixkus5K9iYv3cvTVGH1Cu6ORq
-         37w9Vv6IfPXkzcPmmXY0B/iFwGTtL1EZ46gnnexRFZEL2pqmAh/Sv0tXiu2CuIoAU0K2
-         PwSw==
-X-Gm-Message-State: AOJu0YynE7XZz67/p+6PlPY05lsVFvVCv16ilnNFs6xZPeD3K2e5EMN/
-	ANE+z0Egj2PRzGMv5uEiXhrkZ2uBPIbepiZkbIwOcAfn56P4J/j4MBke/G1tBllFSbcXL3Sz89u
-	7kJOF
-X-Gm-Gg: ASbGnctO1n56K2YKERTLL+CpSZcA5YrZijkvAIXMEhZArLj6W4UEQEtrfkY7SFWFhgu
-	JjoDZML3Cy6II4PLDdjupBPU9QRZnYvgUXgItzyBraLQRQ28SAfoubl/sRgwmTE9Oa7y2Q7WmOY
-	WljixFXmfnDnjHFzdYmZzfByeuIyWuKxKBpKEf56/yuOnJsEFs5Bai8NlKqFdYr/hIt0uzYq7PP
-	S7Uh28aK+1Sn9Y7HXqWCzbkaSSPaR04mzRhjOyrd9hVthZejvUkD5y7GnU4culuVDUS7URrq/GM
-	KZvLqfWpGzddEFAj/xXIsricN7BDzUX0ArAy4YhKTotylWowdYPWOqRN91A3fNQvMWadYIpj880
-	SGfuJWHDgkH40LRS5gX+URlhcnmWkbovWt3nQYSI7i/N9S08JaQ8QthbwJqdsC/KI4by3PV8=
-X-Google-Smtp-Source: AGHT+IFtIPnSuzZ1EbUTVRWqG/Mp/YEyCCt9bC6lckSTRWP77Ngf27Y0cm392QAotGY08DCfFA4yWg==
-X-Received: by 2002:a17:90b:3a4f:b0:32b:d089:5c12 with SMTP id 98e67ed59e1d1-3309838e042mr10161409a91.33.1758409153447;
-        Sat, 20 Sep 2025 15:59:13 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32ea101ef2fsm6512118a91.5.2025.09.20.15.59.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 20 Sep 2025 15:59:12 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <728E8839-CC3D-4316-9FD6-7819CCE0DC07@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_76DB856E-4AD7-4D3C-9B59-9B25FFBCD0CB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        d=1e100.net; s=20230601; t=1758415915; x=1759020715;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vrnGLrfF8sa1arNZn1Fafdegznbwome1oxqjSMd6TZA=;
+        b=E/Gc5dbDR9hzMqOgVdKXiHM7ghHDGDyekGGecsoaDOwZj0PN2ZSBu6wbN4eDxyw4Uq
+         bjIdNp9Ehnx36sw2ZFK62FQJEFRv1Zuum8HgT4PpEtWKhAuW43NdDXssdibHLswXyZzA
+         ci25zS7RhPm8lZ0UNG8N4bXJK9GwaY7RV/9xD9ljYmKtGlCDLJigLtsap9B4oXUAePbn
+         59oPsBo77P572eC/5x3KVRe48rdfg6MiN+AsXpaa2mtKXhkLjAO4W3UVcehB8ZyGe/XM
+         ylG/cwNsuH7BuEsvWSqhLHHg5S/3bdRhoabXbH7+t4WzwEvSk7Sls4tR5sXH1pi2qWiD
+         seyA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzg/UhvEgfWofDbffRbfRYCUgTKtiXvpZrLzOmwUcL/pPx8IOGGLoIaBaB94QY/CoPRrby2XCbG8aF@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyo7naMpeKuKvKj7HF6KbnqFRD7DxsVYAaZFY+no0i1CiMbTUaj
+	YM62omwhqUzHqbiFPQVN4i69unDk0VlMEJLS0IHbvDHTEeUhMZicDU7K
+X-Gm-Gg: ASbGnctP1krFj8rsEOdswu/MpJfXWkVBJITMpS8HoPtwbMAcWx/KWJ+YusFqYdU1bkQ
+	i1hWAv+H53lqu7N77v+8ADsLheuXdkou2p9FYNsMBuGO8cakrqt1lbKR6MAZXKlPeJ5htp6dqFO
+	qxNhy1yQ/jKoc9ch6ZpZMN7WO/6U9qYYojy/q7QQhX0kDiRaIdzpIkIqyx0n4enHJn++C/YZP09
+	5A6avzAkqaIkMi+yUBQ4eKCX4Mh2RDAIAe09vZdD5DXGfRVnPTMc6Z+B+BBPpTRLeuMU646pC52
+	humMy0tTAMfuj+2UjjnwjFDsfsVoiY8iIcqgfB6nF5I8JDWGcu1xE0hvkHo0JDXQwbDcax7jZFa
+	ak9UL+larHmZVDilEEQAaosSqvWBNxqHZg+VtTxJvXHhxWB0ox9rMe8ZDFSTjc4OzPhL2wopEoX
+	Ky99c=
+X-Google-Smtp-Source: AGHT+IHCMtXZKy7Znd85IPXIwP3sRzvIRAyKaak2jIng6HMNURtyv6VelR4ElkRAXLjimuFJS2hlyQ==
+X-Received: by 2002:a17:90b:48c1:b0:32e:716d:4d2b with SMTP id 98e67ed59e1d1-33091914ec7mr9725420a91.3.1758415915063;
+        Sat, 20 Sep 2025 17:51:55 -0700 (PDT)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:9135:55f6:8a14:ad5c])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-330607e9475sm9272742a91.19.2025.09.20.17.51.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Sep 2025 17:51:54 -0700 (PDT)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
+Cc: syzkaller-bugs@googlegroups.com,
+	linux-ext4@vger.kernel.org,
+	Deepanshu Kartikey <kartikey406@gmail.com>
+Subject: [PATCH] nsfs: validate file handle type and data in nsfs_fh_to_dentry()
+Date: Sun, 21 Sep 2025 06:21:47 +0530
+Message-ID: <20250921005147.786379-1-kartikey406@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2 4/4] mke2fs: fix missing .TP in man page
-Date: Sat, 20 Sep 2025 16:59:10 -0600
-In-Reply-To: <20250910-mke2fs-small-fixes-v2-4-55c9842494e0@linaro.org>
-Cc: linux-ext4@vger.kernel.org
-To: Ralph Siemsen <ralph.siemsen@linaro.org>
-References: <20250910-mke2fs-small-fixes-v2-0-55c9842494e0@linaro.org>
- <20250910-mke2fs-small-fixes-v2-4-55c9842494e0@linaro.org>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
+ #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
 
---Apple-Mail=_76DB856E-4AD7-4D3C-9B59-9B25FFBCD0CB
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Add comprehensive validation of file handle type and data in
+nsfs_fh_to_dentry() to prevent processing of handles with incorrect
+types or malformed data. This fixes a warning triggered when
+open_by_handle_at() is called with invalid handle data on nsfs files.
 
-On Sep 10, 2025, at 7:51 AM, Ralph Siemsen <ralph.siemsen@linaro.org> =
-wrote:
->=20
-> Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
+The issue occurs when a user provides a file handle with an incorrect
+handle type or valid FILEID_NSFS type but malformed data structure.
+Although the export subsystem routes the call to nsfs, the function
+needs to validate that both the handle type and data are appropriate
+for nsfs files.
 
-Looks fine.  I found a related formatting issue with a duplicate .TP =
-marker
-in another part of mke2fs.8.in, and have submitted a separate patch for =
-that.
+The reproducer sends fh_type=0xf1 (FILEID_NSFS) but with a data
+structure from FILEID_INO32_GEN_PARENT, resulting in invalid ns_type
+values that trigger warnings in the namespace lookup code.
 
-It looks like this patch could have:
-Fixes: 3fffe9dd6be5 ("tune2fs: replace the -r option with -E =
-revision=3D<fs-rev>")
+Reported-by: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
+Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
+---
+ fs/nsfs.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+diff --git a/fs/nsfs.c b/fs/nsfs.c
+index 32cb8c835a2b..7f3c8e8c97e2 100644
+--- a/fs/nsfs.c
++++ b/fs/nsfs.c
+@@ -461,8 +461,17 @@ static int nsfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
+ static struct dentry *nsfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
+ 					int fh_len, int fh_type)
+ {
++	if (fh_type != FILEID_NSFS)
++		return ERR_PTR(-EINVAL);
++	if (fh_len < sizeof(struct nsfs_file_handle) / sizeof(u32))
++		return ERR_PTR(-EINVAL);
+ 	struct path path __free(path_put) = {};
+ 	struct nsfs_file_handle *fid = (struct nsfs_file_handle *)fh;
++	if (fid->ns_type != CLONE_NEWNS && fid->ns_type != CLONE_NEWCGROUP &&
++	    fid->ns_type != CLONE_NEWUTS && fid->ns_type != CLONE_NEWIPC &&
++	    fid->ns_type != CLONE_NEWUSER && fid->ns_type != CLONE_NEWPID &&
++	    fid->ns_type != CLONE_NEWNET)
++		return ERR_PTR(-EINVAL);
+ 	struct user_namespace *owning_ns = NULL;
+ 	struct ns_common *ns;
+ 	int ret;
+-- 
+2.43.0
 
-> ---
-> misc/mke2fs.8.in | 1 +
-> 1 file changed, 1 insertion(+)
->=20
-> diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
-> index ffe02eb0..94d82082 100644
-> --- a/misc/mke2fs.8.in
-> +++ b/misc/mke2fs.8.in
-> @@ -739,6 +739,7 @@ the manual page
-> Quiet execution.  Useful if
-> .B mke2fs
-> is run in a script.
-> +.TP
-> .B \-S
-> Write superblock and group descriptors only.  This is an extreme
-> measure to be taken only in the very unlikely case that all of
->=20
-> --
-> 2.45.2.121.gc2b3f2b3cd
->=20
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_76DB856E-4AD7-4D3C-9B59-9B25FFBCD0CB
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmjPMb4ACgkQcqXauRfM
-H+ARBRAApR+hAzVcCqAuXxtcY2y8B6ldxH5oSp3j8UuFdmRTa/o6hMw6t1WUp4OE
-7AD7KimA/hvibHG3hDHVZLMzWL7NO5/faLemS2UPMBqxStx3qkz8umyuUp0MqYP2
-HC1cRahaERwrYXd0kd309gPzXMxz2YlVEOS+/6M8CMOY3jT9CPIOhQWJbuGV4h9j
-1nefhYYqrJvTBuFtSGvRYC6+22uK2dfuFvsXihln1l3oOIrKUAWdkQcYPBKbvGIJ
-oNyZe5QNRh55CewSA/Jg2sFlYc3lsggRy4yfqAf/FncOFWtrkWpeo7d0BVOxIhCS
-W+Nkg14kEWRb0lrpTbliI/uC9L5PdQCAUYs0cSsUddjGaMpRQEjT3gPy1WmFxALH
-LHYxRxFeX2jWtI28C2krRsQ/o4QY/f8BmOvjXHZTx5EQHMXmxt3g7eqeXgyCF2zM
-A1WGHr4JCT84BTUgc1CNaHs+tvrE0MGlWEzUfivbfx2S+8xe2V59cWbNzkJvo0MF
-8Kq2bAgedDAk7AYuuhr4e7afUIDgbOvdUqe9iXpulpbM4Ipl5Jyf07jaZOJgWg3P
-hZ3wssFq10Wj/WgUhRdVS78XCMjSR14Lh+igehKS9w1A2WKRlDGTw2ixlDVm0070
-hMoO6dUntm5o1jQiepOKe6FHUeOwRRxBSCZ7zi8N+aLAf8oZVCE=
-=Ueam
------END PGP SIGNATURE-----
-
---Apple-Mail=_76DB856E-4AD7-4D3C-9B59-9B25FFBCD0CB--
 
