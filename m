@@ -1,89 +1,166 @@
-Return-Path: <linux-ext4+bounces-10327-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10328-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9A46B8D56C
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 08:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0729BB8E1EB
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 19:29:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5CE0189BA1F
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 06:03:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFE72189BDE9
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 17:29:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7C88248898;
-	Sun, 21 Sep 2025 06:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2C4270EC3;
+	Sun, 21 Sep 2025 17:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oNji14LK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3891A5B8D
-	for <linux-ext4@vger.kernel.org>; Sun, 21 Sep 2025 06:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62AB918EB0;
+	Sun, 21 Sep 2025 17:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758434585; cv=none; b=RsMFux6PGWrCB3HiFd16kw0FWoBr8N9GnCiL+7PdMSuYSh7w90aeO/q+TPKNsJILYH11hrAM3lwoLgS7MHurmiN8IsbHJdwbhCBNiQ9hi1dHjHm4HzNRvizhgmwaCyJfKCWvO9nlRqyKo9ht0ABFi6Xr+ZbhNwmjwpFiM1e3gtU=
+	t=1758475727; cv=none; b=sOJy37ZvvJF/rleRS3I9lBsWgsAGi53Q3oecgGwlPpWKNDLb5yHMuzKhG/TjnU7nrN6PDBmu96r/NQmb/MCI1BaDmdKaaN1K2VGoeapNHb0Nhj92zm2Ybtoe32gaVf9U9Ynse7RykB0RwTEDQKQ+x0tNivJ6qVIuHb4Hir4mlsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758434585; c=relaxed/simple;
-	bh=psSr2bM3JnMxufeL/g3AsGHtXT6h1LwOif5UPWk/5xk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=L3GRMmlvbKLf6ONASqGc6PNsIOC8Kjj7kf1nKQsjBXMzeUsK9SjoFVZj0WbvO4HYbXGnI1Pn6TNqFVsQF8660erl9ZPQoxYTylCZul+hGNJIrcprlr6Z9AzUCOh2S6sfNbgO3WN4qIdgOXAZSSFixbFX0Ihidp2Rp0N5ZX8lwFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-88c2f1635e1so348192639f.0
-        for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 23:03:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758434583; x=1759039383;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q6dDx9Z14ty0hRGDOpEn56adgVcnRxlC2O4IbjHD4vg=;
-        b=YHCbVtE7NNhhvmbIigemyJ3sEsC6KlV+94p/uHezKHrG9daRQ28JPbJoye/zkkNJR8
-         91j1bL2r/4qGmZPoJ/wirLzpmjmiieR4RulUskDlV3K0sO+jv+LXlFTN1PeRSzt2o+JT
-         HCB6Lcfby8hdXK2WeM59l4Q8rWf3/FhtDwxmyZV4/ZxbogdxIQAIXA+ndZZGavHlKLD/
-         FBwiu0jR6e5QcPAxrWVE94EOBHGTVkNxwW3zr1HqXBxkWhr6s5JnXK5CkSm/FoeM3El9
-         Xz8IOFiJQz/qjCT30WX9clzBQ/ZQT2Ucd+qxMCpadkPmqx59THpQycdklrjq7268ElXc
-         H3fA==
-X-Forwarded-Encrypted: i=1; AJvYcCXQjCD77GA2Ukzxg4mrZSqGOyhQ3StltF5RFB6906SfEw9TR1JrnnZav0XyWG8kufqhsfS6ktFLl8KL@vger.kernel.org
-X-Gm-Message-State: AOJu0YybS1PqL7yZgm76aJpR8lSIoLRxzufwNJK17jwaqszjyoZCbt0/
-	rG6xpL8fbo8cyfiwI8c8ALQ9LNr9irO/R0Dqs0yHezdpaHzCAmStH1ZojAG2EZu1g9C7GsoNjAL
-	4nXf8VDwI/QC+3S/Mw6T/PcsAkzm+cnVg2g76621TatMZvAgxVyCvuTL10ak=
-X-Google-Smtp-Source: AGHT+IGWwS22f/HXMtlGtGzvUELXrtInlWeTZjRaQZNAq+YXsKmdVFMT1RRz8383+U1FP/Tbm08Nr8w9q7SdqTwnbPn/T1hJPuBp
+	s=arc-20240116; t=1758475727; c=relaxed/simple;
+	bh=OhAKhAi+AnzI3Qc3qjl3chOvflGQ1Z6G7nQKCQgIA6k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JuPr5dIW1ixZuyWe44ZzOdSr41wfxfYgGXFy7a7pxwkDbkKRnRPNgsnZ0o4s8njNs/JgwyQiuLityq6PZVdZVBpcf9DMX1bw9BJr6PThPXIjlJcYu3m+6BryRzjSPCuFGL9MI2ZqDmdbwG97mDa9bsddGcdpuCbPDxCOgxre/mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=oNji14LK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22692C4CEE7;
+	Sun, 21 Sep 2025 17:28:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1758475727;
+	bh=OhAKhAi+AnzI3Qc3qjl3chOvflGQ1Z6G7nQKCQgIA6k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oNji14LKsaN74d6/6VxXQLAaEWqiMK1odhhlWG54PmdesR086HbzOQPsvLp4l8W8h
+	 erd/geKCs7blyB1imhKlNfDZtIHl2vwbNw8z3TSYAfWxPI4STRspwkbfLQuyq+0pRc
+	 wfxpVS7OtRaNl868jtRKMkgfZDW20Ck1f7t2BQsw=
+Date: Sun, 21 Sep 2025 19:28:44 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Eliav Farber <farbere@amazon.com>
+Cc: linux@armlinux.org.uk, jdike@addtoit.com, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, dave.hansen@linux.intel.com,
+	luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+	tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
+	james.morse@arm.com, rric@kernel.org, harry.wentland@amd.com,
+	sunpeng.li@amd.com, alexander.deucher@amd.com,
+	christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+	evan.quan@amd.com, james.qian.wang@arm.com, liviu.dudau@arm.com,
+	mihail.atanassov@arm.com, brian.starkey@arm.com,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, robdclark@gmail.com, sean@poorly.run,
+	jdelvare@suse.com, linux@roeck-us.net, fery@cypress.com,
+	dmitry.torokhov@gmail.com, agk@redhat.com, snitzer@redhat.com,
+	dm-devel@redhat.com, rajur@chelsio.com, davem@davemloft.net,
+	kuba@kernel.org, peppe.cavallaro@st.com, alexandre.torgue@st.com,
+	joabreu@synopsys.com, mcoquelin.stm32@gmail.com, malattia@linux.it,
+	hdegoede@redhat.com, mgross@linux.intel.com,
+	intel-linux-scu@intel.com, artur.paszkiewicz@intel.com,
+	jejb@linux.ibm.com, martin.petersen@oracle.com,
+	sakari.ailus@linux.intel.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, jack@suse.com, tytso@mit.edu,
+	adilger.kernel@dilger.ca, dushistov@mail.ru,
+	luc.vanoostenryck@gmail.com, rostedt@goodmis.org, pmladek@suse.com,
+	sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+	linux@rasmusvillemoes.dk, minchan@kernel.org, ngupta@vflare.org,
+	akpm@linux-foundation.org, kuznet@ms2.inr.ac.ru,
+	yoshfuji@linux-ipv6.org, pablo@netfilter.org, kadlec@netfilter.org,
+	fw@strlen.de, jmaloy@redhat.com, ying.xue@windriver.com,
+	willy@infradead.org, sashal@kernel.org, ruanjinjie@huawei.com,
+	David.Laight@aculab.com, herve.codina@bootlin.com, Jason@zx2c4.com,
+	bvanassche@acm.org, keescook@chromium.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-um@lists.infradead.org, linux-edac@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+	linux-hwmon@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-staging@lists.linux.dev, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-sparse@vger.kernel.org,
+	linux-mm@kvack.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, tipc-discussion@lists.sourceforge.net,
+	stable@vger.kernel.org, jonnyc@amazon.com
+Subject: Re: [PATCH 00/27 5.10.y] Backport minmax.h updates from v6.17-rc6
+Message-ID: <2025092136-unelected-skirt-d91d@gregkh>
+References: <20250919101727.16152-1-farbere@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c24c:0:b0:424:7e36:f873 with SMTP id
- e9e14a558f8ab-42481999b76mr109605535ab.26.1758434583227; Sat, 20 Sep 2025
- 23:03:03 -0700 (PDT)
-Date: Sat, 20 Sep 2025 23:03:03 -0700
-In-Reply-To: <20250921052315.836564-1-kartikey406@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68cf9517.050a0220.13cd81.002b.GAE@google.com>
-Subject: Re: [syzbot] [nfs?] WARNING in nsfs_fh_to_dentry
-From: syzbot <syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com>
-To: david.hunter.linux@gmail.com, kartikey406@gmail.com, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	skhan@linuxfoundation.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250919101727.16152-1-farbere@amazon.com>
 
-Hello,
+On Fri, Sep 19, 2025 at 10:17:00AM +0000, Eliav Farber wrote:
+> This series includes a total of 27 patches, to align minmax.h of
+> v5.15.y with v6.17-rc6.
+> 
+> The set consists of 24 commits that directly update minmax.h:
+> 1) 92d23c6e9415 ("overflow, tracing: Define the is_signed_type() macro
+>    once")
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+But this isn't in 5.15.y, so how is this syncing things up?
 
-Reported-by: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
-Tested-by: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
+I'm all for this, but I got confused here, at the first commit :)
 
-Tested on:
+> 2) 5efcecd9a3b1 ("minmax: sanity check constant bounds when clamping")
 
-commit:         846bd222 Add linux-next specific files for 20250919
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=127fa712580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=135377594f35b576
-dashboard link: https://syzkaller.appspot.com/bug?extid=9eefe09bedd093f156c2
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16ff1534580000
 
-Note: testing is done by a robot and is best-effort only.
+
+> 3) 2122e2a4efc2 ("minmax: clamp more efficiently by avoiding extra
+>    comparison")
+> 4) f9bff0e31881 ("minmax: add in_range() macro")
+> 5) c952c748c7a9 ("minmax: Introduce {min,max}_array()")
+> 6) 5e57418a2031 ("minmax: deduplicate __unconst_integer_typeof()")
+> 7) f6e9d38f8eb0 ("minmax: fix header inclusions")
+> 8) d03eba99f5bf ("minmax: allow min()/max()/clamp() if the arguments
+>    have the same signedness.")
+> 9) f4b84b2ff851 ("minmax: fix indentation of __cmp_once() and
+>    __clamp_once()")
+> 10) 4ead534fba42 ("minmax: allow comparisons of 'int' against 'unsigned
+>     char/short'")
+> 11) 867046cc7027 ("minmax: relax check to allow comparison between
+>     unsigned arguments and signed constants")
+> 12) 3a7e02c040b1 ("minmax: avoid overly complicated constant
+>     expressions in VM code")
+> 14) 017fa3e89187 ("minmax: simplify and clarify min_t()/max_t()
+>     implementation")
+> 15) 1a251f52cfdc ("minmax: make generic MIN() and MAX() macros
+>     available everywhere")
+> 18) dc1c8034e31b ("minmax: simplify min()/max()/clamp()
+>     implementation")
+> 19) 22f546873149 ("minmax: improve macro expansion and type
+>     checking")
+> 20) 21b136cc63d2 ("minmax: fix up min3() and max3() too")
+> 21) 71ee9b16251e ("minmax.h: add whitespace around operators and after
+>     commas")
+> 22) 10666e992048 ("minmax.h: update some comments")
+> 23) b280bb27a9f7 ("minmax.h: reduce the #define expansion of min(),
+>     max() and clamp()")
+> 24) a5743f32baec ("minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi
+>     test in clamp()")
+> 25) c3939872ee4a ("minmax.h: move all the clamp() definitions after the
+>     min/max() ones")
+> 26) 495bba17cdf9 ("minmax.h: simplify the variants of clamp()")
+> 27) 2b97aaf74ed5 ("minmax.h: remove some #defines that are only
+>     expanded once")
+
+Some of these are also only in newer kernels, which, as you know, is
+generally a bad thing (i.e. I can't take patches only for older
+kernels.)
+
+I want these changes, as they are great, but can you perhaps provide
+patch series for newer kernels first so that I can then take these?
+
+thanks,
+
+greg k-h
 
