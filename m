@@ -1,140 +1,121 @@
-Return-Path: <linux-ext4+bounces-10322-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10323-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ACD3B8D2E6
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 02:54:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AE48B8D382
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 04:14:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5008B18A1C20
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 00:54:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 969E72A211D
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 02:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BAA345948;
-	Sun, 21 Sep 2025 00:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SZf6JRG1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E6E817A2E6;
+	Sun, 21 Sep 2025 02:14:05 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F3B3D994
-	for <linux-ext4@vger.kernel.org>; Sun, 21 Sep 2025 00:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4042F2D
+	for <linux-ext4@vger.kernel.org>; Sun, 21 Sep 2025 02:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758416046; cv=none; b=MRy4fAN1nUuDHFD7tcX7CPgXpM9nOftjUchmM07UjlY/QpIkOYpSTtVUEzMOMQwgqW8t7/Q+xMTItRVqje9rFMvA6lRyECx4/kQp1c63tmBR1i3dBjsmWpK3gusGN6nO6sWe8DygOLEO7NXKICkhJ7MTy7NyAoiaaDCkAmASh8Q=
+	t=1758420844; cv=none; b=TMivAC96eKNoz3moGWpEdkq3D0+irEXppE0TDADZNGnndzAP+Ntp/Zajt2vghgc5IonCl7Bce3iCQQi8V8BdcS4mJq0NFXIOW+fqP6+PWv+zDJqoNR/tShnpeps89nsXarXcpVFPVOo1ugNvKAhBkbvfIMzU9eYWfHWau2t/tO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758416046; c=relaxed/simple;
-	bh=XJLcnpyFDbcrUNJK0RLa8lSJbTVEk9it7w3F6E4Ersw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ny0k9mtI83hlZLfzV2R8J0ul29m/lLWPx4Dys/sg73vJcb5HLYviCUk8RBKAdsjG5rxIg+67EhHzX8i5q7gRkwu6DVQPm4138yEK3Pc+q2J8lVoz1qD2xvugsXs4ap/dLHQs3qFjcFRG54xKHv8IzIYtD2Ik0fiGgXjQygGlpEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SZf6JRG1; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b551b040930so1176355a12.2
-        for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 17:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758416044; x=1759020844; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=u+h1Kg1XUADh46XM87Pzv9Q7V3EM4p/bXxTvuNim9YA=;
-        b=SZf6JRG1+V5KA0ZyTY/kEeKEIrfftIQ25I6rTv7Vbtqd6VKAiay1V1YPMOv9VJqt50
-         3ySowLuDhswoxaBGjdTAJmAdU396d+9oW5wBdv+aR9KZdZoouTiqwqVxgnodq1h9ELnf
-         jYJ9KaCsi7SsPweClTtJdirHdX/Dk0C8YPMOClbCZe86+82gxzWooJ5QBx6S2O3ZC+pC
-         Q5TkoqKzBEapQzd3wZ3n1WtOvclx9XclvrpUyUKgux5r166W00QYV9UUtq4CgKQ1EP93
-         TPjj5GqjJaE5LJk1B8ky3Bhz/AVbLkcE3iidg/iOdouJv8PHGlr5FTosQ7sA/wB0HP06
-         f/dg==
+	s=arc-20240116; t=1758420844; c=relaxed/simple;
+	bh=hf7muTCUqbRksybhCo1gbTg9UWQmA650h/pgK7sj2xE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=H70XvclfQJ41BjLZ1mZkpY9wfGTTD/6SkRMUSGlETqhxR9pWfoZ6eZf11/0izJH6PXWYPPUGGt8JQiA8Lvbc7CLAJLrg8Fyc9J9InO43wNWHrevH5ZlAZid+R5Mznd0Mt1SpBRPdieVrCxcQpb1zJBhPQgnDtUG2gpXRsauOojA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-4248b59ea91so37915865ab.1
+        for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 19:14:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758416044; x=1759020844;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u+h1Kg1XUADh46XM87Pzv9Q7V3EM4p/bXxTvuNim9YA=;
-        b=oLtEZe1/BcFO/yG6rUnHmdnp/6Wm1ITL7w4R8O2gp7dWVTD9K1eTenVpiRApHIbwYa
-         uOTmSUwqMrj7XT3RSP9Li54Plc5v8BiE/Dkm9jb8t2XQABfxvdqP/6cudUlVJJbWzMWe
-         KbGm1bKKbPon0LzJWca79VbK5TD6KxmKA0Aj05vjTdjnV6r9RYJigBZHZGkbcMLpIlUB
-         2fqxXdrk6zstUfpgb79fg2K56iPWz7Q6aU44BoO0syN9xLIBdYneCWPku2ShRB3HH4lA
-         5vgrfQp5+i09RrsXsaG1mzEmIgwyYyP7MI8hu2eF3wuY+tDa/chS/KsB0uKo3YFvoHXh
-         FfFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXnFv9sQ5BoTFIJc2WrED5TlnPVOwQElCb20TmP+6jVD9xmWer99yfpoco4eUQ0H2CR2+LnfjDHecEY@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzuK9kTqfNSdqelkXJWPaV/ihzlI2f/afxJ5oJ4Qwb35snVoSI
-	gFDLhNZuy1EztyYzoAvtYnWju36Us+XkWSr0HASQ9oUMUdboS/tJYdHW
-X-Gm-Gg: ASbGncu/Elp8pdWRLk/0ydCzr84TSN+Rpb2aX81NIizTRXS1lFhXu3WKJ+nfxKXZwOI
-	PIHrW8smHGu6oHFh2O4dy6CBp8BCnUlVpkKc36gNIry2bgV4qxUuxVTMzBQcEoNvE8fMKhBqegg
-	/XuuxJUBhT9XUdmH0ndEaH0mBaRB0BqmrnywfSjoBWD8qmiqFDbm9AUsr4ZbHQatOfNaitzefRG
-	qyl5GkTj0I7UURv+rTqC8L50yukLO9mNuMt6tZidXNFJKGhBqSKwa28Em1uf5BVVKC+8MfXRkLL
-	yVUs8BJEWCj7WzexmMSIeE4C1hlUZfJPf4Ws9f88MckR7Sg8h4GRjqyho+pITE14OPBatBXVo4F
-	I41fC1z9S8OcnoxqlH2W/PvQ8fZ6vllbXzXN0dcPnnWv3noqwplsGjL7P5YYS9uHGZ/jkMyhhlY
-	jEr9k=
-X-Google-Smtp-Source: AGHT+IH5wvagxzQ11EQaBVs/POhQHg5J/z8nO5Itigu2Q6lwT3rHAD8jftfGEklAkycuTsBUUctYoA==
-X-Received: by 2002:a05:6a20:5491:b0:251:9f29:453e with SMTP id adf61e73a8af0-2926e840fc8mr12024483637.39.1758416043683;
-        Sat, 20 Sep 2025 17:54:03 -0700 (PDT)
-Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:9135:55f6:8a14:ad5c])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b551380444asm6544282a12.27.2025.09.20.17.54.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Sep 2025 17:54:03 -0700 (PDT)
-From: Deepanshu Kartikey <kartikey406@gmail.com>
-To: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
-Cc: syzkaller-bugs@googlegroups.com,
-	linux-ext4@vger.kernel.org,
-	Deepanshu Kartikey <kartikey406@gmail.com>
-Subject: [PATCH] nsfs: validate file handle type and data in nsfs_fh_to_dentry()
-Date: Sun, 21 Sep 2025 06:23:56 +0530
-Message-ID: <20250921005357.786637-1-kartikey406@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1758420842; x=1759025642;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eBth2xJBkE/XNRiK0yQ6sDHQX9eT1PGzxZiWjJqzGac=;
+        b=m2zDgTqf3aU+U0zJBCOiERFrrL+Ul+ySOtaQ6k6LK0oYberoLdCK9Avt5uRub8ooV/
+         k4zY8WS9M969PWZOkTBJfyNjCwAKz6BO3ZHmwEh3o3RpOHvonSnTdjFTwbG3o7oJXu9S
+         4mYHkAnj78L6/TWihRr5X8dE/YxWnULwiq/d0Feprv6cUvkeVcsSsTCRXkgwjxMFWXas
+         I+qWOYWlB81f2SwsR3Q7+i+Q51HgJ2cXn7AEvvuPLNGD1iW6mjjv66tK4TwuDBVA7Scp
+         cZ43fkMSZvdjS6R6kQhH6sVQrT43MxbMw6x8mfWJmE4sAVKc2/fdZRdZL36MjFW6t5JU
+         iB1A==
+X-Forwarded-Encrypted: i=1; AJvYcCXFNsa2kOPsRHG3ijE/q1NsdlYmrsrxkay88sHcc/Ujy2lKnGOx6q/vKwMxXAULnK8KbaQ2OdzwRbao@vger.kernel.org
+X-Gm-Message-State: AOJu0YwC9qdY9hlCNRDaL7sW5E8tprPDX9sO0XG+DYL2/zyl5/nFhHuX
+	aHhScvHlcDDHybaOTOKjxRBXz05DtiSqOqya6p8a6P0BqawgARU43GXjM6m4y1W12XwzMCWIl79
+	uK+rrePqtPxBmqDzD6OCc4wL1qDS4EQf2cjguKmyLbSgAODZyYhEZfypRUxE=
+X-Google-Smtp-Source: AGHT+IGzL/P+MXCmkEGi5cX0/1+LSqaFnYHTJyxEupR/WHMul8DDTVtRC/by3Ty0MagQaBrokA8YuabbCzv0rW/mr7hPkMR2/XhQ
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1093:b0:424:8535:6512 with SMTP id
+ e9e14a558f8ab-42485356581mr82612545ab.23.1758420842606; Sat, 20 Sep 2025
+ 19:14:02 -0700 (PDT)
+Date: Sat, 20 Sep 2025 19:14:02 -0700
+In-Reply-To: <20250921005357.786637-1-kartikey406@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68cf5f6a.050a0220.13cd81.0027.GAE@google.com>
+Subject: Re: [syzbot] [nfs?] WARNING in nsfs_fh_to_dentry
+From: syzbot <syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com>
+To: kartikey406@gmail.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+Hello,
 
-Add comprehensive validation of file handle type and data in
-nsfs_fh_to_dentry() to prevent processing of handles with incorrect
-types or malformed data. This fixes a warning triggered when
-open_by_handle_at() is called with invalid handle data on nsfs files.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in nsfs_fh_to_dentry
 
-The issue occurs when a user provides a file handle with an incorrect
-handle type or valid FILEID_NSFS type but malformed data structure.
-Although the export subsystem routes the call to nsfs, the function
-needs to validate that both the handle type and data are appropriate
-for nsfs files.
+------------[ cut here ]------------
+WARNING: fs/nsfs.c:502 at nsfs_fh_to_dentry+0xcde/0xe00 fs/nsfs.c:502, CPU#0: syz.0.17/6525
+Modules linked in:
+CPU: 0 UID: 0 PID: 6525 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
+RIP: 0010:nsfs_fh_to_dentry+0xcde/0xe00 fs/nsfs.c:502
+Code: 5c 24 60 e9 08 f8 ff ff e8 2f 01 79 ff 90 0f 0b 90 e9 72 f6 ff ff e8 21 01 79 ff 90 0f 0b 90 e9 da f6 ff ff e8 13 01 79 ff 90 <0f> 0b 90 e9 1a f7 ff ff e8 c5 88 46 09 e8 00 01 79 ff 31 db e9 cd
+RSP: 0018:ffffc90003007a20 EFLAGS: 00010293
+RAX: ffffffff8247180d RBX: 00000000effffffd RCX: ffff88801bba5ac0
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000effffffd
+RBP: ffffc90003007b10 R08: ffffffff8fe4db77 R09: 1ffffffff1fc9b6e
+R10: dffffc0000000000 R11: fffffbfff1fc9b6f R12: dffffc0000000000
+R13: ffff888027365694 R14: ffffffff8e3df738 R15: 0000000000000000
+FS:  00007f46068b46c0(0000) GS:ffff8881257a2000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b30363fff CR3: 00000000706b4000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ exportfs_decode_fh_raw+0x178/0x6e0 fs/exportfs/expfs.c:456
+ do_handle_to_path+0xa4/0x1a0 fs/fhandle.c:276
+ handle_to_path fs/fhandle.c:400 [inline]
+ do_handle_open+0x6b4/0x8f0 fs/fhandle.c:415
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f460598ec29
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f46068b4038 EFLAGS: 00000246 ORIG_RAX: 0000000000000130
+RAX: ffffffffffffffda RBX: 00007f4605bd5fa0 RCX: 00007f460598ec29
+RDX: 0000000000400040 RSI: 0000200000000000 RDI: 0000000000000003
+RBP: 00007f4605a11e41 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f4605bd6038 R14: 00007f4605bd5fa0 R15: 00007ffed9ea2cf8
+ </TASK>
 
-The reproducer sends fh_type=0xf1 (FILEID_NSFS) but with a data
-structure from FILEID_INO32_GEN_PARENT, resulting in invalid ns_type
-values that trigger warnings in the namespace lookup code.
 
-Reported-by: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
-Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
----
- fs/nsfs.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Tested on:
 
-diff --git a/fs/nsfs.c b/fs/nsfs.c
-index 32cb8c835a2b..7f3c8e8c97e2 100644
---- a/fs/nsfs.c
-+++ b/fs/nsfs.c
-@@ -461,8 +461,17 @@ static int nsfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
- static struct dentry *nsfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
- 					int fh_len, int fh_type)
- {
-+	if (fh_type != FILEID_NSFS)
-+		return ERR_PTR(-EINVAL);
-+	if (fh_len < sizeof(struct nsfs_file_handle) / sizeof(u32))
-+		return ERR_PTR(-EINVAL);
- 	struct path path __free(path_put) = {};
- 	struct nsfs_file_handle *fid = (struct nsfs_file_handle *)fh;
-+	if (fid->ns_type != CLONE_NEWNS && fid->ns_type != CLONE_NEWCGROUP &&
-+	    fid->ns_type != CLONE_NEWUTS && fid->ns_type != CLONE_NEWIPC &&
-+	    fid->ns_type != CLONE_NEWUSER && fid->ns_type != CLONE_NEWPID &&
-+	    fid->ns_type != CLONE_NEWNET)
-+		return ERR_PTR(-EINVAL);
- 	struct user_namespace *owning_ns = NULL;
- 	struct ns_common *ns;
- 	int ret;
--- 
-2.43.0
+commit:         846bd222 Add linux-next specific files for 20250919
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10ef70e2580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=135377594f35b576
+dashboard link: https://syzkaller.appspot.com/bug?extid=9eefe09bedd093f156c2
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10e888e2580000
 
 
