@@ -1,131 +1,88 @@
-Return-Path: <linux-ext4+bounces-10324-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10325-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5033B8D408
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 05:19:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A8D3B8D473
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 05:44:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AF3E44254F
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 03:19:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 313EB4449A0
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Sep 2025 03:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426CA1A9FAB;
-	Sun, 21 Sep 2025 03:19:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fnCBt/Ed"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77AE281529;
+	Sun, 21 Sep 2025 03:44:07 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806B6288AD
-	for <linux-ext4@vger.kernel.org>; Sun, 21 Sep 2025 03:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2141FA95E
+	for <linux-ext4@vger.kernel.org>; Sun, 21 Sep 2025 03:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758424748; cv=none; b=ayy/P1C22RWm8oiLZptRAxAID37g1Qc0RYMyuO7nPinfsbFu6D9hVLSxa0ZXNTC7hlsV2j/H/oNl29Aa0dsEpNdiALo2eoAJV/qypNreXUR8gKHcNxceOYk5b+mZlSmXZMbfz1sASbQ84jwnXD4WC4RzKiVaXbCvkZw1erKYOiU=
+	t=1758426247; cv=none; b=I0ba3veDM9gL9T7TLsaoje8+khNxioBItx0TsNPvxTuEHU+U9qSDud95M9y3Reuu4t5Sj5rFctpHb4qCPGOH6HhhnHdG6+6DoT+SS0P+lNgZUV/KQJuiKs60Dw2wkp/+IwKZHyrhcgnFmeylIAj4mZkRX9q3Iw1l6O/S/OFd32k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758424748; c=relaxed/simple;
-	bh=rkyr8El1QG9xfP3bNM8EnCzak+/eGaju9S7oTVE80mw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DEbeQkLTxMu6bYLuHW1JeGCleckmc4bzOek5h2tmtFEzbwDq/uD+/dTseL43jlHybWIOaRmbuUtu7P2hH9eEGhaXsyf1msChkmE0kC9SFupFJkZStq4TiWxaEvoj+zj6ezw2PcjpRNHB8KfBe53vpvOPW20u0LHi2FJAmLtCzuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fnCBt/Ed; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-267dff524d1so24222835ad.3
-        for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 20:19:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758424747; x=1759029547; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=v27yUUCN2XYXf9kcSTCTqOJ6dqxNwwbD3lEPkBSdGvs=;
-        b=fnCBt/EdagRg5MK2+9PjAWLINDPMLPzXQKuT8M/pZUlNgRgu5/INI7NvArGs/l511q
-         uoO0rH7WCHGXku1AHODaafPvHhmH2tzNfYD5aTRCjV3e8HtkdZbqB9g80pro6D91v1/k
-         T5R7olSajY69Vn4yaG92iEPkX8BkWlyFvx0z4nrrG0UwD0v6Jrt90MM+gNGypGV5r+3m
-         I+pzhN1RjeNPK2ACUgU/paMEbbkirkI7pHbjia5dod+WR7+EOFbc0ciW1khLiCjsrWlX
-         DrS4wIGF+4mhC2EEydHa3ZpN12qC6+dfQga0ssXoYsfbIvmA5udTtGJAW0wgcAVWu9Wt
-         ivGQ==
+	s=arc-20240116; t=1758426247; c=relaxed/simple;
+	bh=9Vyy6nzZefHF8h6kYfMkiN13MLdI0fokQqb3A0KLQT8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=cyLL2BenhdR3vTP6bVC0MVXfxU1/TEKkDTj8trC8S4g9HD//Cu3gmRH4MSaYfKgQ9cz5q5WEGegWJ+gAlL/FSV+E95yJGdJlLmqt/Bd9tWhVwB69KEOY+4zxtSwU+99l0AUOUeEppHCbXuad0GsYjiArwfhpNWmD77/n3QTmftI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-893656f5776so375545139f.0
+        for <linux-ext4@vger.kernel.org>; Sat, 20 Sep 2025 20:44:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758424747; x=1759029547;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v27yUUCN2XYXf9kcSTCTqOJ6dqxNwwbD3lEPkBSdGvs=;
-        b=LgqjT3qdZTdsv6AbUK7BXhh1wLD9G/OMhrmIA7ywGfAHAVWIvh8FeJOrpx7NLNwUu/
-         0AaSP5wXNHXjltrzz8wAO3MMt9W9rajnIYls1ZpB7dkohKMSgpWustlMzgMuiX954GHw
-         Z0ksF4NlK0qpcONiET9LcZj3BE+c1s5WjH4PBuHzZTE/z2K1rrWw1FHvxCSO2M7wxZvF
-         YC2eStymeZ49F3jWqfDLrZsX01qSCIacB70MQ3DgC2ZljskWOa15niCfOGSkUGo2t1J1
-         2tglR6cH9IjActx/lPmZ50+CAXgP5iOCzFvEE/o3rwILW0kth/2FtR+XbWbGBaysPQAC
-         fXFg==
-X-Forwarded-Encrypted: i=1; AJvYcCVx9h8k/zcAT2Rk3c7Vhfap4fYXlL08t25N1yM4PaU5i3Sw1Vw6bCtXZgnbzGaeRfrSdjW475adAz7l@vger.kernel.org
-X-Gm-Message-State: AOJu0YwpYY+Z//SdTV6uQ2GQzyZUc8cl5ZXXMoVXM+Xtd6vCUTRhlwt0
-	DoQOn8ZpY1tma67EiQEtK7Yq6cKHvt/AAn/OjPL7FDLgmXim65Ybfw2GbsxZUsoY
-X-Gm-Gg: ASbGncsy8A5diEhutNGYwwTDaMSLD05p6wsF2sJP3K/l6MOZSeaezgFhthU5aGhYjF6
-	xNfMEwnl6RFUMCwhFWxh9oTE2u9fBbYV10q7gkCtkVNCy8DR3dipk6tEtzeMbtdQvYaf/15+MDm
-	cj+PvXZaDRR6EeJMJGUZTzx9++LZYQYAgdyCcGSd0lPtYVFsORgIuayrBSCncZpJJ/snszmQslQ
-	Q8o7pE8kIvJ0WJK73vDLmdoIUgkH8bknWGDQoMVBSSKjFKMVUsNdtz3JEB8QhztT/eFBhaeppAL
-	J3OgV8KZqoRjasP87DrUi3n6J0MMFKMZQ+JkVOGsPEJJ2IeZznQsMh/3cQN1QmXbyC01X+Zd5n/
-	dHvsZVLyxn7Gn8Q4sZewOgqrQ10SArYZSoZWefyRpDpT5866Fn1uE5eTQ9pWxwg0H0aBHpXgd5/
-	Exe10=
-X-Google-Smtp-Source: AGHT+IEx6dZmRM34rJ/St32hHEtgLOXTfv9QEALwoT9oGtWB+mIz9nrDQF0rrrNP+N7OHwsQB1rz+Q==
-X-Received: by 2002:a17:903:c12:b0:252:a80c:3cc5 with SMTP id d9443c01a7336-269ba48cb1bmr90439615ad.22.1758424746727;
-        Sat, 20 Sep 2025 20:19:06 -0700 (PDT)
-Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:9135:55f6:8a14:ad5c])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2698018a9b7sm95826265ad.61.2025.09.20.20.19.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Sep 2025 20:19:06 -0700 (PDT)
-From: Deepanshu Kartikey <kartikey406@gmail.com>
-To: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
-Cc: syzkaller-bugs@googlegroups.com,
-	linux-ext4@vger.kernel.org,
-	Deepanshu Kartikey <kartikey406@gmail.com>
-Subject: [PATCH] nsfs: reject file handles with invalid inode number
-Date: Sun, 21 Sep 2025 08:48:59 +0530
-Message-ID: <20250921031859.833667-1-kartikey406@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1758426245; x=1759031045;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AdjgHlcbaWhWVIx5piaEC27S+dMD/Hjc0fOFih9t3Gc=;
+        b=VAdbeUavtQrjNZbzbS+K//ndD/2hlXjvo6/Fztac+G0TA8YbPk+0nCbKkBwBz+iTUC
+         eNz1JlFOZU0CdALjAxKR0oNBw/pTL3XJs4BJvQl6ezmygee+tC9Tq37O90Iywp4mQdr0
+         k+1SQIg9wm8KPcpEQBzj8hPYTqpIcdjjVJUljrL+zhkq4t8G9c7NVRGLl2Uu1Cafsv/G
+         KmQdaGbcyEtEzpc+fUETJjSdPQ/QHZVM73EOWn1Y7HeBr2ljqK126lWXpjnITlrgtVSF
+         6qKRJUjuJkxO/gCLCloByMyzy+4XTeZrpGAcAkK1Wao+0vSfI3dy2VUD0OXQt9W7ifHx
+         Ccyw==
+X-Forwarded-Encrypted: i=1; AJvYcCUMcCe8A9FTu95FEzelzgg1et6FPBwDxewNYVKlWldR0NSacECmSqf5BWCZGHsl7rLCDgw9dZb2JGDF@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYOCU/q0CIoO08KoUy/SUkGiXw7bkTQNgh3qfkEE9lC+j1JTul
+	Ozc/4vb2AVsOF94N+iLMbHDaRnumgB0dB7ywcQT3WZgs88t/I4282kvISP3lweeT4FDIN1Qxh8r
+	UGaQxUlSEDOwdAkV6O0u9QVX9/NmDIyzOnUK97BXVDYto1I0Zp6kFgm+lOqA=
+X-Google-Smtp-Source: AGHT+IHFhT9ux74NVmmSHs0E1OXa90ayjxf4uFnXIyvS/j3oomieCbVSs+xUPwqp9DnUBLxek0rWmB7CW0Xlo/6nbyWPFRsZXf3e
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:12e9:b0:41b:3987:b3d4 with SMTP id
+ e9e14a558f8ab-424819743e9mr113994275ab.21.1758426245239; Sat, 20 Sep 2025
+ 20:44:05 -0700 (PDT)
+Date: Sat, 20 Sep 2025 20:44:05 -0700
+In-Reply-To: <20250921031859.833667-1-kartikey406@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68cf7485.a00a0220.37dadf.0037.GAE@google.com>
+Subject: Re: [syzbot] [nfs?] WARNING in nsfs_fh_to_dentry
+From: syzbot <syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com>
+To: kartikey406@gmail.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+Hello,
 
-Reject nsfs file handles that claim to have inode number 0, as no
-legitimate namespace can have inode 0. This prevents a warning in
-nsfs_fh_to_dentry() when open_by_handle_at() is called with malformed
-file handles.
-
-The issue occurs when userspace provides a file handle with valid
-namespace type and ID but claims the namespace has inode number 0.
-The namespace lookup succeeds but triggers VFS_WARN_ON_ONCE() when
-comparing the real inode number against the impossible claim of 0.
-
-Since inode 0 is reserved in all filesystems and no namespace can
-legitimately have inode 0, we can safely reject such handles early
-to prevent reaching the consistency check that triggers the warning.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
 Reported-by: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
-Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
----
- fs/nsfs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Tested-by: syzbot+9eefe09bedd093f156c2@syzkaller.appspotmail.com
 
-diff --git a/fs/nsfs.c b/fs/nsfs.c
-index 32cb8c835a2b..42672cec293c 100644
---- a/fs/nsfs.c
-+++ b/fs/nsfs.c
-@@ -469,7 +469,8 @@ static struct dentry *nsfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
- 
- 	if (fh_len < NSFS_FID_SIZE_U32_VER0)
- 		return NULL;
--
-+	if (fid->ns_inum == 0)
-+		return NULL;
- 	/* Check that any trailing bytes are zero. */
- 	if ((fh_len > NSFS_FID_SIZE_U32_LATEST) &&
- 	    memchr_inv((void *)fid + NSFS_FID_SIZE_U32_LATEST, 0,
--- 
-2.43.0
+Tested on:
 
+commit:         846bd222 Add linux-next specific files for 20250919
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17d650e2580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=135377594f35b576
+dashboard link: https://syzkaller.appspot.com/bug?extid=9eefe09bedd093f156c2
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=15c650e2580000
+
+Note: testing is done by a robot and is best-effort only.
 
