@@ -1,171 +1,142 @@
-Return-Path: <linux-ext4+bounces-10332-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10333-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72404B903D8
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Sep 2025 12:46:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69841B90507
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Sep 2025 13:11:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 481E27A013D
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Sep 2025 10:45:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 431791898EE6
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Sep 2025 11:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCFB3019AB;
-	Mon, 22 Sep 2025 10:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338D9302743;
+	Mon, 22 Sep 2025 11:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="Sv99FDLC"
+	dkim=pass (1024-bit key) header.d=viavisolutions.com header.i=@viavisolutions.com header.b="sFzefzow"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fra-out-002.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-002.esa.eu-central-1.outbound.mail-perimeter.amazon.com [3.65.3.180])
+Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11020073.outbound.protection.outlook.com [52.101.201.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA9942AA9;
-	Mon, 22 Sep 2025 10:45:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.65.3.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758537944; cv=none; b=dSvbWoXA2HRZ6Ujekl86cZDka3epJp68Uk/E/q6g3AHmevdt5buJ4bihE2Cw6jBsTqhWLbWY+ivxr1IFHPsqIN0MBvT4zf0NAjAVgI0jH1j5iyhUX6AYvNVG6dPeyl74toA3PuA1YpW5szQXUvmowtOXxwqE3h6/pQvUzPPDThw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758537944; c=relaxed/simple;
-	bh=pwDlNzth5nMROXqz5kAkkxuxkWM/ATKQc6A9J9A4BoY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Em4B+5Enbh8Gve84nQG/c6f3TmRwyGUI1mDq30HhqmhMpfvzxHV0ouwkVSWhhQQeLgcYr8VoaB0GLr9WE7JtLYB1uQjdqJoTeUlG5ROn7jT4OfvA8fOsnuN/qHY9t45lT3zx+yb7T4U5eQxPM4kB9ZuPrs3NV+7pETzca9EEeGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=Sv99FDLC; arc=none smtp.client-ip=3.65.3.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1758537942; x=1790073942;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=jHPTQZFCaC0QVf/rAslU2rF+GKEtXGi5htBMXx8M8BI=;
-  b=Sv99FDLCJke7R2kkVtUondV85mgv57Pd4ZaGqz37iM3HgwASx20V4P3A
-   gFaNPRrqOC7huGzjtnpB2mfIYOr4j8gpMzWXmlG04Zyj9AmeulsnVzR+T
-   8WETfPx/1sCchBsRAgmF0fanX8+IiedjGxLEv8FP7vTmQg6DG0sNangCe
-   ILlIAQPR387Vj6zpB16WEBW6iyB3JUoVcj4ARcW8dMsme/8mSV2DLwF6k
-   XRVl81i6aYl2tSCd9RqZsQ/zfMaJ24WT1DKm8kJQy5gNxTJyLdwtzeapA
-   dkUm2S5EopS94zo35BAhKupBenIlCx0kKER+1D+lMXecxMsx/ilOLgWH2
-   Q==;
-X-CSE-ConnectionGUID: 6hOHCxAKSfC6e+p5CvVdZw==
-X-CSE-MsgGUID: YBSxBrJDRxalvxjSB5/Ebw==
-X-IronPort-AV: E=Sophos;i="6.18,285,1751241600"; 
-   d="scan'208";a="2482713"
-Received: from ip-10-6-3-216.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.3.216])
-  by internal-fra-out-002.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2025 10:45:38 +0000
-Received: from EX19MTAEUB002.ant.amazon.com [54.240.197.232:29409]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.10.226:2525] with esmtp (Farcaster)
- id f47c06f5-2d15-4c95-af11-de6ff2958513; Mon, 22 Sep 2025 10:45:38 +0000 (UTC)
-X-Farcaster-Flow-ID: f47c06f5-2d15-4c95-af11-de6ff2958513
-Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUB002.ant.amazon.com (10.252.51.79) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Mon, 22 Sep 2025 10:45:38 +0000
-Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19D018EUA004.ant.amazon.com (10.252.50.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Mon, 22 Sep 2025 10:45:37 +0000
-Received: from EX19D018EUA004.ant.amazon.com ([fe80::e53:84f8:3456:a97d]) by
- EX19D018EUA004.ant.amazon.com ([fe80::e53:84f8:3456:a97d%3]) with mapi id
- 15.02.2562.020; Mon, 22 Sep 2025 10:45:37 +0000
-From: "Farber, Eliav" <farbere@amazon.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-CC: "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "jdike@addtoit.com"
-	<jdike@addtoit.com>, "richard@nod.at" <richard@nod.at>,
-	"anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"luto@kernel.org" <luto@kernel.org>, "peterz@infradead.org"
-	<peterz@infradead.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-	"tony.luck@intel.com" <tony.luck@intel.com>, "qiuxu.zhuo@intel.com"
-	<qiuxu.zhuo@intel.com>, "mchehab@kernel.org" <mchehab@kernel.org>,
-	"james.morse@arm.com" <james.morse@arm.com>, "rric@kernel.org"
-	<rric@kernel.org>, "harry.wentland@amd.com" <harry.wentland@amd.com>,
-	"sunpeng.li@amd.com" <sunpeng.li@amd.com>, "alexander.deucher@amd.com"
-	<alexander.deucher@amd.com>, "christian.koenig@amd.com"
-	<christian.koenig@amd.com>, "airlied@linux.ie" <airlied@linux.ie>,
-	"daniel@ffwll.ch" <daniel@ffwll.ch>, "evan.quan@amd.com" <evan.quan@amd.com>,
-	"james.qian.wang@arm.com" <james.qian.wang@arm.com>, "liviu.dudau@arm.com"
-	<liviu.dudau@arm.com>, "mihail.atanassov@arm.com" <mihail.atanassov@arm.com>,
-	"brian.starkey@arm.com" <brian.starkey@arm.com>,
-	"maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
-	"mripard@kernel.org" <mripard@kernel.org>, "tzimmermann@suse.de"
-	<tzimmermann@suse.de>, "robdclark@gmail.com" <robdclark@gmail.com>,
-	"sean@poorly.run" <sean@poorly.run>, "jdelvare@suse.com" <jdelvare@suse.com>,
-	"linux@roeck-us.net" <linux@roeck-us.net>, "fery@cypress.com"
-	<fery@cypress.com>, "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
-	"agk@redhat.com" <agk@redhat.com>, "snitzer@redhat.com" <snitzer@redhat.com>,
-	"dm-devel@redhat.com" <dm-devel@redhat.com>, "rajur@chelsio.com"
-	<rajur@chelsio.com>, "davem@davemloft.net" <davem@davemloft.net>,
-	"kuba@kernel.org" <kuba@kernel.org>, "peppe.cavallaro@st.com"
-	<peppe.cavallaro@st.com>, "alexandre.torgue@st.com"
-	<alexandre.torgue@st.com>, "joabreu@synopsys.com" <joabreu@synopsys.com>,
-	"mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "malattia@linux.it"
-	<malattia@linux.it>, "hdegoede@redhat.com" <hdegoede@redhat.com>,
-	"mgross@linux.intel.com" <mgross@linux.intel.com>,
-	"intel-linux-scu@intel.com" <intel-linux-scu@intel.com>,
-	"artur.paszkiewicz@intel.com" <artur.paszkiewicz@intel.com>,
-	"jejb@linux.ibm.com" <jejb@linux.ibm.com>, "martin.petersen@oracle.com"
-	<martin.petersen@oracle.com>, "sakari.ailus@linux.intel.com"
-	<sakari.ailus@linux.intel.com>, "clm@fb.com" <clm@fb.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>, "dsterba@suse.com"
-	<dsterba@suse.com>, "jack@suse.com" <jack@suse.com>, "tytso@mit.edu"
-	<tytso@mit.edu>, "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-	"dushistov@mail.ru" <dushistov@mail.ru>, "luc.vanoostenryck@gmail.com"
-	<luc.vanoostenryck@gmail.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"pmladek@suse.com" <pmladek@suse.com>, "sergey.senozhatsky@gmail.com"
-	<sergey.senozhatsky@gmail.com>, "andriy.shevchenko@linux.intel.com"
-	<andriy.shevchenko@linux.intel.com>, "linux@rasmusvillemoes.dk"
-	<linux@rasmusvillemoes.dk>, "minchan@kernel.org" <minchan@kernel.org>,
-	"ngupta@vflare.org" <ngupta@vflare.org>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>,
-	"yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>, "pablo@netfilter.org"
-	<pablo@netfilter.org>, "kadlec@netfilter.org" <kadlec@netfilter.org>,
-	"fw@strlen.de" <fw@strlen.de>, "jmaloy@redhat.com" <jmaloy@redhat.com>,
-	"ying.xue@windriver.com" <ying.xue@windriver.com>, "willy@infradead.org"
-	<willy@infradead.org>, "sashal@kernel.org" <sashal@kernel.org>,
-	"ruanjinjie@huawei.com" <ruanjinjie@huawei.com>, "David.Laight@aculab.com"
-	<David.Laight@aculab.com>, "herve.codina@bootlin.com"
-	<herve.codina@bootlin.com>, "Jason@zx2c4.com" <Jason@zx2c4.com>,
-	"bvanassche@acm.org" <bvanassche@acm.org>, "keescook@chromium.org"
-	<keescook@chromium.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-um@lists.infradead.org"
-	<linux-um@lists.infradead.org>, "linux-edac@vger.kernel.org"
-	<linux-edac@vger.kernel.org>, "amd-gfx@lists.freedesktop.org"
-	<amd-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, "linux-arm-msm@vger.kernel.org"
-	<linux-arm-msm@vger.kernel.org>, "freedreno@lists.freedesktop.org"
-	<freedreno@lists.freedesktop.org>, "linux-hwmon@vger.kernel.org"
-	<linux-hwmon@vger.kernel.org>, "linux-input@vger.kernel.org"
-	<linux-input@vger.kernel.org>, "linux-media@vger.kernel.org"
-	<linux-media@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-stm32@st-md-mailman.stormreply.com"
-	<linux-stm32@st-md-mailman.stormreply.com>,
-	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	"linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-	"linux-sparse@vger.kernel.org" <linux-sparse@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, "netfilter-devel@vger.kernel.org"
-	<netfilter-devel@vger.kernel.org>, "coreteam@netfilter.org"
-	<coreteam@netfilter.org>, "tipc-discussion@lists.sourceforge.net"
-	<tipc-discussion@lists.sourceforge.net>, "stable@vger.kernel.org"
-	<stable@vger.kernel.org>, "Chocron, Jonathan" <jonnyc@amazon.com>
-Subject: RE: [PATCH 00/27 5.10.y] Backport minmax.h updates from v6.17-rc6
-Thread-Topic: [PATCH 00/27 5.10.y] Backport minmax.h updates from v6.17-rc6
-Thread-Index: AQHcK64HHJftfGNvN0Cy23wGYTG5SQ==
-Date: Mon, 22 Sep 2025 10:45:37 +0000
-Message-ID: <df8d65b372864d149035eb1f016f08ae@amazon.com>
-References: <20250919101727.16152-1-farbere@amazon.com>
- <2025092136-unelected-skirt-d91d@gregkh>
- <4f497306c58240a88c0bb001786c3ad2@amazon.com>
- <2025092203-untreated-sloppily-23b5@gregkh>
-In-Reply-To: <2025092203-untreated-sloppily-23b5@gregkh>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C262FBDF5
+	for <linux-ext4@vger.kernel.org>; Mon, 22 Sep 2025 11:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.201.73
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758539480; cv=fail; b=bZvxBE/IrjzabtpZU4VgCeBEO48ZPh5osvp5vzzEmEPzTIKzOhkbgrAHKJOSXHk5Ts7/lDOwIssjlX+b+NbSygfkpwbPupi0CBnBvLOzEWiwswxejo1g8ty97wPBlYOrmktRDgzG7ArLbT6hA3NL932zPcGHR2w9WWF0b9rNrnE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758539480; c=relaxed/simple;
+	bh=fm/VrkvxJE72KMhwhHwLyjqX/1s8YOWs2lw6WWJzDUw=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=KpeAGyR/LoGfNSsMwr0vSfMyzVxDiv1XYQ8RJTMAH3NuWl9+SzOLOvGHpgBVkjbf/UgiTTicAv5QrVEk1Cf7YM0Hwb9GrwgxA8LDxKBg6ukqAOVjvDB5fAdmo6/VGDUZgM4P/ON6lNOJdcqy8WWSem8fFKH5dm4LPdVo9l58HC8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=viavisolutions.com; spf=pass smtp.mailfrom=viavisolutions.com; dkim=pass (1024-bit key) header.d=viavisolutions.com header.i=@viavisolutions.com header.b=sFzefzow; arc=fail smtp.client-ip=52.101.201.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=viavisolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=viavisolutions.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=PFXFHwWQpRkcb2Mgvji7vRqUAN7wjVEO9w2rsou03p4anK8e3S9Ib1O5NLfN+6pFe1ZJVDQAiiF98tvc7CIlMf8KpAb2BUVAz0oDfcSLMED1EeXkCUiIwd3B+6127p1x2i9cQ+bKkZmS/p253pIsKdO3/yLj55RngUAplzHfZ8sNqg79pF8QJzl0C4WYouswMDRmZ5GOezOOaVUkaYxAq/8sWD+Vs+HF7MlzgrMV6wOgxV5tnoHBz56MhpJtCb7ZqtoRrkvfd+LlRu65YR+uFfjJlxfQTQ2UjvDSlRo59M17CSwzrYT3WevWrhjkB+t0ANPUjU9G0N5K42OHKHD8jg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fm/VrkvxJE72KMhwhHwLyjqX/1s8YOWs2lw6WWJzDUw=;
+ b=cBXwAbs7mUwHISIJ89Laow+QBOFPRKS0wfOXZJQUNwlGA5MIEZGNbyFybhAcAAFqkYDBoaFY6UHtNqYEVy1+M1Tsxsib7eNpRlf1dheJb1dYLSQIrpCgJrmZdtVHsqBn4Loqds8CKTdsMRcl+BoIIJ+3u5kLCWmpdhnvmNwdm8iAaqUt773DKmnbIyXz7pLWTD2egQBypoAQfUe9593Z3XOFjPRwa8AIXTg5YHwti7W0fA95EkdsN1A46vAe4S/ZNvNmugnyFHzp4hYVoy3VMCiOv/4qwozP728+trrkZhUXrH27uXGGYZzyBPrnXoVH53x+pBMW0vnZJUitEucleA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=viavisolutions.com; dmarc=pass action=none
+ header.from=viavisolutions.com; dkim=pass header.d=viavisolutions.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=viavisolutions.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fm/VrkvxJE72KMhwhHwLyjqX/1s8YOWs2lw6WWJzDUw=;
+ b=sFzefzowWZDD/77Bm/N6xcD4qW5+bq3dyTPMKXBw7KOvI57h52+CPfBUzTCB1YGBU3YxYgMHbTwvCz7yYA8z3pGMktFeWymNL6EVwf085gMVcNC0Nl6RwF0/F+FPPh0bJXnm4danVQJY9f5bb0DEOh//cEGdH8eozuXm04G6Lbo=
+Received: from BN9PR18MB4219.namprd18.prod.outlook.com (2603:10b6:408:118::21)
+ by LV8PR18MB5605.namprd18.prod.outlook.com (2603:10b6:408:18f::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9137.19; Mon, 22 Sep
+ 2025 11:11:15 +0000
+Received: from BN9PR18MB4219.namprd18.prod.outlook.com
+ ([fe80::1594:8bd0:f209:8f4d]) by BN9PR18MB4219.namprd18.prod.outlook.com
+ ([fe80::1594:8bd0:f209:8f4d%3]) with mapi id 15.20.9137.018; Mon, 22 Sep 2025
+ 11:11:15 +0000
+From: Andrea Biardi <Andrea.Biardi@viavisolutions.com>
+To: linux-ext4 <linux-ext4@vger.kernel.org>
+Subject: ext4: failed to convert unwritten extents (6.12.31 regression)
+Thread-Topic: ext4: failed to convert unwritten extents (6.12.31 regression)
+Thread-Index: AQHcK6iCPuGMPLxpBkiY14A/LyLZgw==
+Date: Mon, 22 Sep 2025 11:11:15 +0000
+Message-ID:
+ <BN9PR18MB4219FBD6D79413965DDEFA6D9812A@BN9PR18MB4219.namprd18.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="us-ascii"
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=viavisolutions.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR18MB4219:EE_|LV8PR18MB5605:EE_
+x-ms-office365-filtering-correlation-id: 76b55cb8-8beb-448d-12ea-08ddf9c8bf40
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|38070700021;
+x-microsoft-antispam-message-info:
+ =?iso-8859-1?Q?nBDDoeeudSX62waL3KPFZm5do5bpUiIXVGK2akZOcwjgjuxvlunYxPEwnd?=
+ =?iso-8859-1?Q?wVhIHE2mVLptsU9sNUWCsMpDI6fWjNpTcpxSmCzdIbnqRhfkLZU/acVk2d?=
+ =?iso-8859-1?Q?wvuQcwGawqNvEdF80ccI3c86CLsXicpdPjDij0eNqV5469dD/hyj891VBd?=
+ =?iso-8859-1?Q?21yzG1Ebf4KSkGTD8tm687lb4QMICqWOQqKdezyQW2ATPU90ErfSJtu43f?=
+ =?iso-8859-1?Q?t8nh1Z2UJnPyGgA0U9oGPGUihyBaw+Xa1k9XS7kFEYXde+77U9s6kzPNrz?=
+ =?iso-8859-1?Q?FkaMf/jHxiUbB89KieQAd56KEHZuKiq0FC7uPb63u6/A8ZyuXJ98G4Lrug?=
+ =?iso-8859-1?Q?qn3k1xTGvwuCORIND6JMQJHNne6pqYb6YTUAOP6BVjT0nJFatlHByFalm7?=
+ =?iso-8859-1?Q?pmMCiaJeK/EE7mIYQ7iqyH8m27IMVua0cgDxt87AriqMkVkKHYelLG5oBK?=
+ =?iso-8859-1?Q?GROxWvXI1566HyUgYJI3345j2jdGoQl1GJ893UwNg7t+FtnRgbnOgQ5hAR?=
+ =?iso-8859-1?Q?yk6v+sEDbwxMjaWNgTM1FxSR67R9/+IOII6aw08x437iPSw8FKPc5Uqf8y?=
+ =?iso-8859-1?Q?BWI74q2a5wYDyoDR/aMT2Fcr0km21xlGsFQa7x4kqKqCz1rlOAeQDX1a40?=
+ =?iso-8859-1?Q?Z3vEjV9rIKanOevFvFqe8c3utj8xcBke0wASy5L/yYPdtjN+cCuIodDu1M?=
+ =?iso-8859-1?Q?hkwjAQlGOCf/ANT+vEh0ugPzdwknlLKpbythKTkYJWSEhLxFJq6hIyWJVM?=
+ =?iso-8859-1?Q?6Gozeadt6KGm4t1kdVfqlCyJ7qZGKo9/7IEzkvz/rrG0I6cmUr/IKrMvyw?=
+ =?iso-8859-1?Q?sVjvpkJqtDvgZsde/uqjwmDrp1/Ow+17HdGZ2L2zLQ4QEy/cucLWxNb1V9?=
+ =?iso-8859-1?Q?zPjHoN7wMqjfdn5nmi4puQUDCuNn0r53c/lAurvH10oVKmauCLm55z+Uud?=
+ =?iso-8859-1?Q?BIyWeKqEmdDlNXPhE6tpg6/WBEewp2ZMeLAGNSlj8bmja5uADEW+/FiIjQ?=
+ =?iso-8859-1?Q?7Xe3VBVELe8kWiw0bm7qLuCN8ymJSgBC7hAFN+w2S/2HHComIFjF+s/aqd?=
+ =?iso-8859-1?Q?fMs5v3vOslZDPOF750M1Q2Zza9J+irAvw0SIpra9TXM2zR3zmVC+IgCXHx?=
+ =?iso-8859-1?Q?8nO06AfaIg7hEZ0/6WEEsenshOSlRDDp9uRJfryIE6WFRVZyKDwSftB9wF?=
+ =?iso-8859-1?Q?N1tdXrTI9b8L6jNIeM0tWPDQCCJVnX2v8b9U8p4xhuJfdYWb5kMSiw0E0f?=
+ =?iso-8859-1?Q?/aM3arpOdLN7ziZZ/GO1Ys1OPB307zCgLtog7ImQmq+0xwaRGgRUNMu+p7?=
+ =?iso-8859-1?Q?vPtz1gQnGl4W6JTSoN4e3JszOTXao418L1oXb51OZeBjEBn3GLQPf0lJBz?=
+ =?iso-8859-1?Q?vCOHWTBulk3sl1Nkpw7+uPNRlkK+1yhLwbyTdL9hxenNv/6mM7Rmco6mH8?=
+ =?iso-8859-1?Q?3ive0EpLaF1YdG+Wb5RrlDHZKE/FOF4NwVZ4h8DCDdZLc6AB6SF4ZG6yCb?=
+ =?iso-8859-1?Q?zx5pLTzXtxq0iEYHGOoOy6wZYU3fuuy6jZGbW5MMipaQ=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR18MB4219.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(38070700021);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?LaxoeSr7vsWrR7jZmRkrx9zBVWCoGul0gMLmfYqE8RRKDdcEryAB2R/nEd?=
+ =?iso-8859-1?Q?jaGQ57NPeSzfemiNedou6rpNra0wgJ7AgU7RJu4hga11qkJPH+5B2fmCS2?=
+ =?iso-8859-1?Q?Ke2dQpe6QS08Bmw51AXSo9YFUfYUHksC/Oc0sF9by332v6U6run4EM2bwX?=
+ =?iso-8859-1?Q?QqWAqzZpG+gSApRBRWdwpl1JL3In6/6YTBsbrcdg/syyQrqvriEDb5Dru+?=
+ =?iso-8859-1?Q?Hwsqw+Qo/lbj5F+CHq3Jx7FLgZCm+ZIXKTWPz0SwX5TBEiZSF9PdCt1jAf?=
+ =?iso-8859-1?Q?NS/UArg21ji5vsK7B95cTFuA0Bjw8ibYH1lVavCWNj02gd3WIt2jtd7m9h?=
+ =?iso-8859-1?Q?d9cVyoKIk7oLw0snAmzdGwByYJVJCarpn/wrv5y2N6+HfulOD9bDKQbaZ4?=
+ =?iso-8859-1?Q?GvZuKR3IRyMmnprbRk5H+VXB6HTl93Hx2DrIG4ADzLX8EaXm0dmSdtQqqP?=
+ =?iso-8859-1?Q?yVf48MeIoLxroag2/6koFdxpFiJgcNXOeTe6ZsSCMP7/kkhXPW2ql2XGBA?=
+ =?iso-8859-1?Q?4BqOBg0zTdFXCFUPPIcgR/QdQ1GlhRdcntXYVW2PxYj3EcrVPgwmQuq4vR?=
+ =?iso-8859-1?Q?a/g8NWooZ84dMv6A5Q7BAdz3RNebfLZ+5R5GWbQhdBuLo4h37pt2WrjgOh?=
+ =?iso-8859-1?Q?9F+qn9ocyE7riNa6UGPc5U7ktdckXMdbTz5MRLGZU7hC50sjUn1a3/YSNQ?=
+ =?iso-8859-1?Q?fH8I1h6nAgrwI7WVJbIoMuRg55KPDgMe39kWGOxbup4NKgDjHpKSUypnIl?=
+ =?iso-8859-1?Q?M6IQb+wQeXN/1IbA0UTqqLXCYakoj42miG+RpFFY2vCkTJn/kZlElqds+y?=
+ =?iso-8859-1?Q?nIvxHN9AUTV8NFaEbJWC7/dIySxrelnUtPZ5HLVJ1hfxfQJjpxyiT60zkw?=
+ =?iso-8859-1?Q?ymNBtXKo8J2LFPZs3xP3FFce2AqCxA9FGzEYHFiBqCvWPuyHo45crvKvYj?=
+ =?iso-8859-1?Q?AjrWI4Zh/Bk52/zgWnfiSqM9v2IHpXc0DCmvxnB2TILIGDGlyG15xmkUal?=
+ =?iso-8859-1?Q?QY9eY2DrXjKEjYOMSoHjCQv0tHEhPDvEPaHRW4aZ9a+snzLlpEzFD/ZcEe?=
+ =?iso-8859-1?Q?vQLj6CTc1L9uOpPkv62NW+Eik/UIEiinV13GJfI/+OUjoN1zL2kNUE1Q6g?=
+ =?iso-8859-1?Q?CcKzg9eOSnxDcf2A82jsCsKT9Ddk/TNPKFMmsxBkOvSLF3MDOdWu1vp+lk?=
+ =?iso-8859-1?Q?wWygz0q5AJ90F+VYHi5D8waRgnSqyoEMdNgGDeG8WKZnSXjcPnDnRtj7mM?=
+ =?iso-8859-1?Q?wRI2PodrJM51F7HsNgs/HncMhXUUsxAiVQpwIJHm06veMuKN246m5jJOB5?=
+ =?iso-8859-1?Q?6+S0TK1leiYs1px4t8kioLEZoWXeaYLBahcLyrNbmrVeVDk2uvnzzhpxLN?=
+ =?iso-8859-1?Q?xd8NoL+C0Tefs107mmDBehmVYn1xLtQ+hwIA8vv5PAdRsVe2Lh8TTttFMI?=
+ =?iso-8859-1?Q?jod3RpIb03ymt56OHPEhM6YaSXTLUY6HDHnX1tR0aOvv1Vj3nWL1zgZ900?=
+ =?iso-8859-1?Q?evsVwiUC76bmL1ZHuyPMdEZG08YRLT1cMGO22iN/ZyD82FDOkNOi4ENHq8?=
+ =?iso-8859-1?Q?R49tX2QS+/qIM5H68n3ZK57BcY3leHPxduyP5qU62Ve3gna16xsL/gZYj5?=
+ =?iso-8859-1?Q?6DD3MuyNGQIxbGq5Gn+CxcX2wKIaan0uL8TDRota1BuH1ZuglzRvqqQQ?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -173,52 +144,125 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-OriginatorOrg: viavisolutions.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR18MB4219.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76b55cb8-8beb-448d-12ea-08ddf9c8bf40
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2025 11:11:15.3560
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c44ec86f-d007-4b6c-8795-8ea75e4a6f9b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7qYvOgBcmIHiMq5zc0JhXBSnbCHo0hMEqs6omn66UgUq/cWBAsSJAqTY3TDBh10oD/9u0n69NyruCgui8bqu0iz8xaJNK/dCuJeb7PzSxrJeFt741qJrtAeVVFpvYIQY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR18MB5605
 
-> On Sun, Sep 21, 2025 at 09:37:02PM +0000, Farber, Eliav wrote:
-> > > On Fri, Sep 19, 2025 at 10:17:00AM +0000, Eliav Farber wrote:
-> > > > This series includes a total of 27 patches, to align minmax.h of=20
-> > > > v5.15.y with v6.17-rc6.
-> > > >
-> > > > The set consists of 24 commits that directly update minmax.h:
-> > > > 1) 92d23c6e9415 ("overflow, tracing: Define the is_signed_type() ma=
-cro
-> > > >    once")
-> > >
-> > > But this isn't in 5.15.y, so how is this syncing things up?
-> > >
-> > > I'm all for this, but I got confused here, at the first commit :)
-> >
-> > It's a typo.
-> > It should be 5.10.y and not 5.15.y.
-> >
-> > > Some of these are also only in newer kernels, which, as you know, is=
-=20
-> > > generally a bad thing (i.e. I can't take patches only for older
-> > > kernels.)
-> > >
-> > > I want these changes, as they are great, but can you perhaps provide=
-=20
-> > > patch series for newer kernels first so that I can then take these?
-> >
-> > So you'd first like first to align 6.16 with 6.17, then 6.15 with=20
-> > 6.16, then 6.12 with 6.15, then 6.6 with 6.12, and so on until we=20
-> > eventually align 5.10 and even 5.4?
->
-> Yes please!
-
-Stable 6.16.8 didn't require any changs.
-
-I pulled the changes for 6.12.48:
-https://lore.kernel.org/stable/20250922103123.14538-1-farbere@amazon.com/T/=
-#t
-and 6.6.107:
-https://lore.kernel.org/stable/20250922103241.16213-1-farbere@amazon.com/T/=
-#t
-
-Once approved, I'll continue with other longterm branches.
-
----
-Regards, Eliav
-
-
+Hi All,=0A=
+=0A=
+The CI process of a product that I'm working on involves the creation of a =
+temporary KVM VM which boots a cdrom image containing a custom kernel + bus=
+ybox in order to flash a filesystem image to /dev/vda, then shuts it down a=
+nd exports the VM (that's my "deliverable" for the next stage).=0A=
+=0A=
+For this custom kernel, I have used 6.6.x for a long time; after upgrading =
+to 6.12, I started observing filesystem corruption in the deliverable image=
+ and these messages in dmesg (these are produced by the imaging kernel duri=
+ng flashing):=0A=
+=0A=
+[ =A0 10.188754] EXT4-fs (vda2): mounted filesystem 42e94213-17de-4a91-9c58=
+-c39852446bf2 r/w with ordered data mode. Quota mode: none.=0A=
+[ =A0 11.612142] EXT4-fs (vda1): mounted filesystem e32da11b-d5d4-4621-a7d4=
+-8b9bc5034c83 r/w with ordered data mode. Quota mode: none.=0A=
+[ =A0174.903010] I/O error, dev vda, sector 167922 op 0x1:(WRITE) flags 0x0=
+ phys_seg 2 prio class 0=0A=
+[ =A0174.903023] I/O error, dev vda, sector 167938 op 0x1:(WRITE) flags 0x4=
+000 phys_seg 254 prio class 0=0A=
+[ =A0174.903027] I/O error, dev vda, sector 169970 op 0x1:(WRITE) flags 0x0=
+ phys_seg 2 prio class 0=0A=
+[ =A0174.903031] EXT4-fs warning (device vda1): ext4_end_bio:353: I/O error=
+ 10 writing to inode 16 starting block 84985)=0A=
+[ =A0174.903106] I/O error, dev vda, sector 169986 op 0x1:(WRITE) flags 0x4=
+000 phys_seg 254 prio class 0=0A=
+[ =A0174.903172] I/O error, dev vda, sector 172018 op 0x1:(WRITE) flags 0x0=
+ phys_seg 2 prio class 0=0A=
+[ =A0174.903176] EXT4-fs warning (device vda1): ext4_end_bio:353: I/O error=
+ 10 writing to inode 16 starting block 86009)=0A=
+[ =A0174.903239] I/O error, dev vda, sector 172034 op 0x1:(WRITE) flags 0x4=
+000 phys_seg 254 prio class 0=0A=
+[ =A0174.903297] I/O error, dev vda, sector 174066 op 0x1:(WRITE) flags 0x0=
+ phys_seg 2 prio class 0=0A=
+[ =A0174.903300] EXT4-fs warning (device vda1): ext4_end_bio:353: I/O error=
+ 10 writing to inode 16 starting block 87033)=0A=
+[ =A0174.903371] I/O error, dev vda, sector 174082 op 0x1:(WRITE) flags 0x4=
+000 phys_seg 254 prio class 0=0A=
+[ =A0174.903401] EXT4-fs (vda1): failed to convert unwritten extents to wri=
+tten extents -- potential data loss! =A0(inode 16, error -5)=0A=
+[ =A0174.906697] Buffer I/O error on device vda1, logical block 84993=0A=
+[ =A0174.906708] Buffer I/O error on device vda1, logical block 84994=0A=
+[ =A0174.906710] Buffer I/O error on device vda1, logical block 84995=0A=
+[ =A0174.906712] Buffer I/O error on device vda1, logical block 84996=0A=
+[ =A0174.906716] Buffer I/O error on device vda1, logical block 84997=0A=
+[ =A0174.906718] Buffer I/O error on device vda1, logical block 84998=0A=
+[ =A0174.906719] Buffer I/O error on device vda1, logical block 84999=0A=
+[ =A0174.906721] Buffer I/O error on device vda1, logical block 85000=0A=
+[ =A0174.906723] Buffer I/O error on device vda1, logical block 85001=0A=
+[ =A0174.906724] Buffer I/O error on device vda1, logical block 85002=0A=
+[ =A0174.928451] EXT4-fs warning (device vda1): ext4_end_bio:353: I/O error=
+ 10 writing to inode 16 starting block 83961)=0A=
+[ =A0174.928787] EXT4-fs (vda1): failed to convert unwritten extents to wri=
+tten extents -- potential data loss! =A0(inode 16, error -5)=0A=
+[ =A0175.019677] EXT4-fs warning (device vda1): ext4_end_bio:353: I/O error=
+ 10 writing to inode 16 starting block 88169)=0A=
+[ =A0175.019752] EXT4-fs (vda1): failed to convert unwritten extents to wri=
+tten extents -- potential data loss! =A0(inode 16, error -5)=0A=
+[ =A0183.121276] EXT4-fs (vda1): unmounting filesystem e32da11b-d5d4-4621-a=
+7d4-8b9bc5034c83.=0A=
+[ =A0183.711275] EXT4-fs (vda2): unmounting filesystem 42e94213-17de-4a91-9=
+c58-c39852446bf2.=0A=
+=0A=
+The relevant sequence of events inside the imaging VM is:=0A=
+1) sfdisk /dev/vda (creates: vda1 for /boot, vda2 for the root filesystem)=
+=0A=
+2) mke2fs -t ext4 on both=0A=
+3) mount at /mnt and /mnt/boot and rsync the source image (~100k files)=0A=
+4) chroot to make a couple modifications, install grub and rebuild the init=
+rd=0A=
+5) shutdown=0A=
+=0A=
+The error I'm now seeing always occurs as a result of rebuilding the initrd=
+ (although I'm not sure why, certainly the rsync sees a lot more I/O over t=
+he 3 preceding minutes). As the sole purpose of this VM is to flash a files=
+ystem image, nothing else is happening in the background.=0A=
+=0A=
+I've done a rough bisection based on kernel releases and this problem occur=
+s on 6.12.31 (212 out of 365 runs) and later, including 6.16.7 (6.12.30 is =
+fine, just as 6.6.106 was).=0A=
+=0A=
+Looking at the changelog for 6.12.31, commit 785ac699113320e3c3968754ca0c78=
+d40a013107 "ext4: do not convert the unwritten extents if data writeback fa=
+ils" stands out.=0A=
+=0A=
+The configuration of the custom kernel used in the VM is fairly generic -- =
+mostly a default x86_64 config with stuff that I don't need turned off: IPv=
+6, sound, wireless, a few other bits.=0A=
+=0A=
+I can rule out issues with the underlying hardware (tried on 3 different KV=
+M hosts and nothing in host's dmesg either).=0A=
+=0A=
+Also, I have a similar procedure (same custom kernel, same imagaging script=
+s) that runs against ESXi and Hyper-V hypervisors (to create ESXi or Hyper-=
+V VM images, respectively) and neither exhibits this problem (the notable d=
+ifference, I suppose, is the block device being sda, i.e. not virtio).=0A=
+=0A=
+For reasons that I don't understand, the regression occurs only if the imag=
+ing involves 2 distinct partitions / filesystems (boot and root). If I make=
+ a single partition/filesystem and mount that at /mnt, the error doesn't tr=
+igger. This may be a coincidence, however it's hard to ignore the fact the =
+the file corruption always happens on the mounted /boot (that's where dracu=
+t writes the initrd), and in the single-partition case there's a single ext=
+4 filesystem (disclaimer: haven't done hundreds of runs for this case).=0A=
+=0A=
+Any ideas?=0A=
+=0A=
+Thanks=0A=
+Andrea.=0A=
 
