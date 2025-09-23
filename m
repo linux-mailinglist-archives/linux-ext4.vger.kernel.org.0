@@ -1,62 +1,94 @@
-Return-Path: <linux-ext4+bounces-10372-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10374-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 352ECB95C88
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 14:10:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BE9DB95FC6
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 15:17:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A10813A77D8
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 12:10:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFA953B4765
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 13:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A36322DC9;
-	Tue, 23 Sep 2025 12:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C520F326D77;
+	Tue, 23 Sep 2025 13:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="TBTj2fHD"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="yGwEv5jd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB6F322DA7
-	for <linux-ext4@vger.kernel.org>; Tue, 23 Sep 2025 12:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65195322DDF
+	for <linux-ext4@vger.kernel.org>; Tue, 23 Sep 2025 13:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758629411; cv=none; b=ZnWtfh7goxPlG1B8ZMHEEWg7Ciu7x9ZosItZdbrBFl+3tR/G+nY8KXH3d4/nZsqedDR+ew8Fh+JH4gayzzlipvYE1JlQ4xq+brF2z1rUrP96sCvWyQ1zmh2I3qWB1IX/BdPW7th06XYVa/2jYYIO5lywlXrRg1+Qxx7uf5CnFSE=
+	t=1758633427; cv=none; b=eqX0dG6lnRFwqP+DZ0CLL3/S27YZc6/Ukeaiua6o28n2MYgv3Hk1GvFwVXtBdTW9Y5OyZAlbTKinYERi1B3bXvvjRC2xoKQo+HTONG6OjwaEuUaurnpC7/AQS6lELUOib1AKoYdXvCcjtlLcHFXMgI9HclcxLPQ1UIfchAd3EQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758629411; c=relaxed/simple;
-	bh=86ujaIA25Y7ndJzivkOtthSsdvh4Gt2SZ0tHSdykE3Y=;
+	s=arc-20240116; t=1758633427; c=relaxed/simple;
+	bh=MjdyuQrqVvsTBegSnd3yU00JR+DMJq7p6mLUJWTlZdU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lkoW1yHgyxUhYAIr3B1nacEHYMCs1bfHS79kodc3nAI7575t5IOHl4ESZElJnfXJB/9FBZs1DwVDdPNV7ujbku+HHX2VK6eIvEgC6oNfw7BVkJF0DZFXS/DRcIkEz3oAZX2WWNbX/4qlV9wXs/L0+AmPXNiWPgHYwuh56u6JwQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=TBTj2fHD; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-111-223.bstnma.fios.verizon.net [173.48.111.223])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58NC9sO7032033
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Sep 2025 08:09:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1758629396; bh=49iSOLLb1QbNUwpl4qSuS6TXaZr85TUR3lyHl4NFknM=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=TBTj2fHDDkjX5dnKLKb7ihDbF/qWAya+ZHrGysVeEzWuGWTfVXxWpDvJlTVUdeKTt
-	 Deytw8r5LEXUbKI7t4bpOfHH6IeawWmTwwBpAACeSrvbLauOn4D1sLUPsqNVOTRnLp
-	 mqeWRUVjmeWSGLs7juijAauFLQpo4W9rcw0V85tIThdYOVYsbnW1n/usYOLezkQMnz
-	 XoHO6wnsMH0KrTej51GodS3qAUfV5YcsklVJHjTgMkXRsOBEaQgrUnNMuXshyxbMJR
-	 HgAkqJf9lvESjV1l+zWQdhYVI05kYO4Lt2BT5+h4bR4y5+DRiaNb/7WSnN4BNBr+E6
-	 q3vcbWIzo1Ghg==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 2B5832E00D9; Tue, 23 Sep 2025 08:09:54 -0400 (EDT)
-Date: Tue, 23 Sep 2025 08:09:54 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Deepanshu Kartikey <kartikey406@gmail.com>
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+4c9d23743a2409b80293@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: validate xattr entries in ext4_xattr_move_to_block
-Message-ID: <20250923120954.GA531144@mit.edu>
-References: <20250923092512.1088241-1-kartikey406@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WcX86kEUGY8n+DqS9bzY4soDm4zBERuTCWZGcAQ09uy4aBqVqFE+QEAc/EaDbyWz35tJGcQEF0BtCEsx8l9v3gMddXhxsakYUTucwUlAA4n9Ip7/3oDK99m+4sl/RQQtamhuohwI3kVx8DBZ86jZSQ12P5UGD17oVABr6x76P2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=yGwEv5jd; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-b553412a19bso1941946a12.1
+        for <linux-ext4@vger.kernel.org>; Tue, 23 Sep 2025 06:17:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1758633424; x=1759238224; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DGZ8DWqCix+BtHtElOYwM96MkEfMXUBhKMzH5BSjHrU=;
+        b=yGwEv5jdMt4Rgfi0m0bN3rxya9s2FAbia8xtqcTwhc19IK5r4PXmdK+C7UWreg1NfH
+         4sk+1SJaFqWoZk8UMTPHgcndklOJpzScvLF5bjkG6gqoUSKB2k3ZVGlgvwgMKVkiX9tQ
+         HMMHDCD3TrzFuqxXTV9HAJcgYYX2He2h5yQzLxkZURdzd28u2rXo3M/TKNd/GoKCTF5R
+         SSJHzKnVcZ1kR/S8ehZjuwzeAqAlS4edQgRc1y0V8xkXIINs5b4r82gsRo8F8hz5liGg
+         WFWMrwFtm4OO2twE/EkvNGL9ESDPBnyP6iVe3AlnhcR6cmuUPbA6c7z1EUU5XrhnwxMP
+         WISA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758633424; x=1759238224;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DGZ8DWqCix+BtHtElOYwM96MkEfMXUBhKMzH5BSjHrU=;
+        b=Y6+Qu/D2BTpaDaBGUKS8vSab5mmaKgN8r4gMqT5KP1iNGklEQ4jlAqo5/az9kNNTTC
+         XLgJKT21K4tlNQP9pikYHtSpRNGQ47gHSs87lDbHTODkcy0XXsZf32tFL99kXaLYh/8S
+         w9+osu6dX5L2YYAZybjFU1V3py6DfZ8Tw5D8oAh+t1+mbjd6D0gNObO8XcaHiMA2jU7u
+         aTIGPghn14FK4TqACKx8gF5sKx3FPUJJPgVXi5ceA0Qiu3lDPJfGOC41xGMVCPS4EkgF
+         6NAb408yWM8k6HlG0huCHi698Ky9uVRKDujsMNopfdETnqsUPUqjaKbhW5Og4se7bqzz
+         50mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXJcdS2xKCzpfe/KZKxg43/RmjQ5NFtvF1vCFFmZhDegEWIW+lXIHCRJsgQteY4/3r9wUPe7MHM0Sj@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFBoVCB9WPPa9cBMsnTLS1OJH/DWZE8nEXP2jVE+X4KJ0w2u8w
+	GRDpNUU/uuERE3ZwHJ8EBmTcD8TSJcr/LezPcjCa5zfnM/UhYF1IXNV1jt4801vsgQo=
+X-Gm-Gg: ASbGncuyUnZ3JzpWN2dbyGGCWzR6ralVeyguqFkDfCfI1nD/IHjpkIxs/aKFVO8FEn0
+	PsprstQWubvBq+mPODzIXQ0QzdB40p7c6Q9iBXN0/448vuJMy1SSIEuT5Z0H8houXLjPjBIzFVj
+	1OF94Tim2Mwc/FrZAiqjB0PE1Ztzso1q7g6s2RBxzFv/7XSt0MU4EQox2jkm9YKrWVWqlv6rXGk
+	sM6skVynXRBQ/GMbJdI7U/ej+dJ/jNul0YwEMeM6K+C9G2BlIGIxSRJ+lw47H6mDX9xqd68pWZ5
+	WdzlXIyfu0ni5KyqkMaLwdOl2mnopjxwW6fW+RNedTJXwj8iQKDeipsk3vmvwGhfX0RYpVMFg0X
+	E5dC4D5SK4xQqajQdrdl0q4BCS2Zh5hSb5u+PrFug7GOo+TKa96BdCuSPWZGBDZlG6m4Lfcspv6
+	RHtIkJBAmo
+X-Google-Smtp-Source: AGHT+IEK7PfWxNFc7fb1bUErPP+++ZIWocUE2B9M31SxyszIkGAjugG30aXgLbzSTbCpFRJZYYXACg==
+X-Received: by 2002:a17:90b:17cc:b0:32b:9750:10e4 with SMTP id 98e67ed59e1d1-332a95e0514mr2945365a91.27.1758633423462;
+        Tue, 23 Sep 2025 06:17:03 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b551705bd02sm12047994a12.41.2025.09.23.06.17.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Sep 2025 06:17:02 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.98.2)
+	(envelope-from <david@fromorbit.com>)
+	id 1v12t9-00000005h4t-0IOy;
+	Tue, 23 Sep 2025 23:16:59 +1000
+Date: Tue, 23 Sep 2025 23:16:59 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v6 0/4] hide ->i_state behind accessors
+Message-ID: <aNKdy1vYsWoMvU3c@dread.disaster.area>
+References: <20250923104710.2973493-1-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,58 +97,43 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250923092512.1088241-1-kartikey406@gmail.com>
+In-Reply-To: <20250923104710.2973493-1-mjguzik@gmail.com>
 
-On Tue, Sep 23, 2025 at 02:55:12PM +0530, Deepanshu Kartikey wrote:
-> During inode expansion, ext4_xattr_move_to_block() processes xattr entries
-> from on-disk structures without validating their integrity. Corrupted
-> filesystems may contain xattr entries where e_value_size is zero but
-> e_value_inum is non-zero, indicating the entry claims to store its value
-> in a separate inode but has no actual value.
+On Tue, Sep 23, 2025 at 12:47:06PM +0200, Mateusz Guzik wrote:
+> First commit message quoted verbatim with rationable + API:
 > 
-> This corruption pattern leads to a WARNING in ext4_xattr_block_set() when
-> it encounters i->value_len of zero while i->in_inode is set, violating
-> the function's invariant that in-inode xattrs must have non-zero length.
+> [quote]
+> Open-coded accesses prevent asserting they are done correctly. One
+> obvious aspect is locking, but significantly more can checked. For
+> example it can be detected when the code is clearing flags which are
+> already missing, or is setting flags when it is illegal (e.g., I_FREEING
+> when ->i_count > 0).
 > 
-> Add validation in ext4_xattr_move_to_block() to detect this specific
-> corruption pattern and return -EFSCORRUPTED, preventing the invalid
-> data from propagating to downstream functions and causing warnings.
+> Given the late stage of the release cycle this patchset only aims to
+> hide access, it does not provide any of the checks.
 > 
-> Reported-by: syzbot+4c9d23743a2409b80293@syzkaller.appspotmail.com
-> Link: https://syzkaller.appspot.com/bug?extid=4c9d23743a2409b80293
-> Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
+> Consumers can be trivially converted. Suppose flags I_A and I_B are to
+> be handled, then:
+> 
+> state = inode->i_state          => state = inode_state_read(inode)
+> inode->i_state |= (I_A | I_B)   => inode_state_set(inode, I_A | I_B)
+> inode->i_state &= ~(I_A | I_B)  => inode_state_clear(inode, I_A | I_B)
+> inode->i_state = I_A | I_B      => inode_state_assign(inode, I_A | I_B)
+> [/quote]
+> 
+> Right now this is one big NOP, except for READ_ONCE/WRITE_ONCE for every access.
+> 
+> Given this, I decided to not submit any per-fs patches. Instead, the
+> conversion is done in 2 parts: coccinelle and whatever which was missed.
+> 
+> Generated against:
+> https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs-6.18.inode.refcount.preliminaries
 
-Thanks for the patch!  Could you try moving the validation test to the
-check_xattrs() function?  This should hopefully catch other
-maliciously fuzzed file systems so it might address other syzbot
-complaints.
+Much simpler and nicer than the earlier versions. Looks good.
 
-Something like:
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 
-		if (ea_ino && !size) {
-			err_str = "invalid size in ea xattr";
-			goto errout;
-		}
-
-In retrospect, we probably should have had the code interpret
-e_value_size==0 as meaning that the xattr entry is always unused, so
-that tests such as:
-
-		if (!last->e_value_inum && last->e_value_size) {
-
-could become
-
-		if (last->e_value_size) {
-
-But there are also places where the code assumes that if e_value_inum
-is non-zero, it doesn't need to test e_value_size.
-
-It should be the case where whenever we clear e_value_inum, we also
-set i_value_size to zero.  So having e_value_num!=0 && e_value_size==0
-should only be the case when someone is trying to maliciously play
-games with us.
-
-Cheers,
-
-						- Ted
+-- 
+Dave Chinner
+david@fromorbit.com
 
