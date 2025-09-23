@@ -1,61 +1,84 @@
-Return-Path: <linux-ext4+bounces-10359-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10362-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ABA1B93DF0
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 03:32:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A3FBB94443
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 07:02:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F2A47AFF1A
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 01:30:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54333480EAD
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 05:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6348E288C0E;
-	Tue, 23 Sep 2025 01:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B37C26E16F;
+	Tue, 23 Sep 2025 05:02:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELAJ9YQF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C9D2701CC;
-	Tue, 23 Sep 2025 01:29:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2CC378F20
+	for <linux-ext4@vger.kernel.org>; Tue, 23 Sep 2025 05:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758590978; cv=none; b=TACv1PdBCL8qIdvpwD2Fq+rKjXe2BMGt4irLTSAKA+oEYvBKKXnE+afRgcb1xiZQVmKnjU7NPD1G/9kwjYIZjmDneDUgsXktlRUM31/ogtevzbs1twXuHVSDjUsjVqBowUD9BXALzUNEHcnX2sTT4i2H+N2FySGoaoYMIdki1Q0=
+	t=1758603732; cv=none; b=ELVwmy3Bnr/Xc5fIt92y9JpEKfcgepzM0v1axcF9KkrG9Va8lit7/83D07kqvQVLhPXd/1qhu+13UUnzQ+cVXJ71cVpiYk7UYy+qxn1PW9YeN7VvY2ESUapEAJP6KEoA0UlD2Qx6G12tvg/Q85jVvcNoOyQtvjFfiunz34YpvjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758590978; c=relaxed/simple;
-	bh=iYYIRGCB7NPJVlkdCLHGL2lRgfqtqHxpKMJU6D74P5E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vum/uILT4r8N64c/RwzZXlsky3/GYRsGG+IVqpgQC04NCM6JtS6lZALNw09cGZX80ZHI8eZ5+y2y53jFvt0rw2fy83VPugkb93WIvZb6GJkfON1pr4tFFWBMkqWthzsY9Egchk+sP83/KrDBnsNN36A1S23cK06/DuRAOUkO/C0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cW2Sv6LR2zYQv3t;
-	Tue, 23 Sep 2025 09:29:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 0F02C1A104C;
-	Tue, 23 Sep 2025 09:29:25 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.50.85.155])
-	by APP4 (Coremail) with SMTP id gCh0CgAXKWHq99FoGYYGAg--.10941S17;
-	Tue, 23 Sep 2025 09:29:24 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	libaokun1@huawei.com,
-	yukuai3@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH 13/13] ext4: add two trace points for moving extents
-Date: Tue, 23 Sep 2025 09:27:23 +0800
-Message-ID: <20250923012724.2378858-14-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20250923012724.2378858-1-yi.zhang@huaweicloud.com>
-References: <20250923012724.2378858-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1758603732; c=relaxed/simple;
+	bh=vfvHFHivXpm2GLoydUt958HZdWhXkPb1nbk7pJWOtcA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M10BXsg+RcfTxiJuRgji7n5Iv+N2erlqXUxHbibMYBjyU8wEzNwbxk1huoYVzyoEzmCKdamfIpoTvhrcmfePHGFpOire1BpxgPfF6Mg+u3namqzUys7f5of5zQ/mVrQsVSoKOUimFBwxL6B3KEPTPkWZC2AGRca3Kuv8kWscbog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ELAJ9YQF; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b55197907d1so2636038a12.0
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Sep 2025 22:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758603730; x=1759208530; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ijvaMyHz28Wr8WMJfd+NS9yUCply/npKuLTTiTKdsaw=;
+        b=ELAJ9YQFQnfGDr+nsg0+c+DTd2QKWv607oJy+3ga9JMNHSdEmvYJLM0tJT2Qrw9vCh
+         4hViNxuoC+LCiUDKbQdfLEvTDdu33BRooD7+xJGJg1Dw8RP2uqdy6wm7BLIQioq4/NFA
+         GK2QTMWcDsOcOD8iRfrnBJf6W3C9Kp6HxF7uIQLFEpp6GXh50R032hu8bGoBb8l0+6SS
+         OGfZKvdWga9u62eDve+kHkZDdza/bBkWKWS8Ch1wyFRc6QuDFGTtZQLCOrVuOeNY8TXn
+         nyUTevnCN8kK1UHRjZTWV9WoSYkq6i2BWjpvbxSqT3VraaKXPAdUIwmabjLxtDta9mZZ
+         zPXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758603730; x=1759208530;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ijvaMyHz28Wr8WMJfd+NS9yUCply/npKuLTTiTKdsaw=;
+        b=emWyD/Mch3ObdiCDzsSa9Vr8pnN16RVwN0Ved/zchKpI57fMUHDp54bK/xWBtK6U/c
+         AoTJbbxXXa1OeYWK0OAriSFRA30a/QBQfy1lQ3ekPwl48CTiIZCFAijZK9TaDEtUVfRn
+         c7qtB9PVCdvodEGUENEIvkDf6nJZWhzbwRg7oyCx4NfAieOakaBD9eoL1Waz6Lo87ypl
+         FNubfVEHT/832eNKokYbETIdFeydvVVDsIIBsPHcDrbZ0H/Z9KVh9ImTCm5yDkf8jn93
+         OfLqACY/sqZaNNBQIdO/ztDBltnQSC295ygADDWFU8RGymckkyeod6Uibzu30hsMOF35
+         dLEA==
+X-Gm-Message-State: AOJu0YzaDTAIe2ypy7qXQMQeTEQeT7OoPLq1zXhiQElJXp4Jdf61HNJK
+	jdxslxkmkIh1rKlhKTTzDUaeBy3Il/tg9F/JpzLIENppLJ4DGX7/zbft
+X-Gm-Gg: ASbGncuJPDB9PHJQYGq/mQ6TQMDsAYefUHoHT/83eQNA9c5IYkbrNXYu140ep9Oylla
+	+FN/lQ8UrNBG7tmHcj+dqWASpm+x+nHCzi47pHKnkmNrwfYfTF2gr8iN+qXlefmIBfVIquffMDZ
+	2czJ5FQFhnG56pQYikt1wsF9t2epdl5rOHCWXwn6Ik3Vk4gATDfPh+MnSN2NIDGnGgmvENzPlVN
+	hJrvYU2NzBMkeZ/CZtnoSmPh1GHUTMSAZAvx/f55q3d+IVj4qclZHA8oDvbWqFXcA6eWwfJ969s
+	hvXf+WDthnsbUZp5UeK+v8x1yUI6h7HpWbvOC1+xs7e6d1/OXEadjESRlbWmBjt2Ys1VDgqabsj
+	cGy/wNtjDxsebEoTBNUNsrYOs2QGiF2GYAgSVh04XkHNwmCjY6zxDa+Wr95OkoVRB0cno0r69uf
+	iiaQebXRbHhaiYcg==
+X-Google-Smtp-Source: AGHT+IHOhPABf3Rr+hi67v7au+4lS24Va9ve3+NZkk5kHyaUUBFrqMr5EAbsQhsBZIXsyn76OjknOA==
+X-Received: by 2002:a17:90a:d407:b0:32e:7270:94aa with SMTP id 98e67ed59e1d1-332a95c6dbamr1609347a91.19.1758603729747;
+        Mon, 22 Sep 2025 22:02:09 -0700 (PDT)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:e2e5:573d:ece2:1f90])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77cfbb7c3bbsm14372716b3a.7.2025.09.22.22.02.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Sep 2025 22:02:09 -0700 (PDT)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: syzbot+4c9d23743a2409b80293@syzkaller.appspotmail.com
+Cc: linux-ext4@vger.kernel.org,
+	Deepanshu Kartikey <kartikey406@gmail.com>
+Subject: [PATCH] ext4: skip inode expansion on  readonly filesystems
+Date: Tue, 23 Sep 2025 10:32:02 +0530
+Message-ID: <20250923050202.1078052-1-kartikey406@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -63,164 +86,48 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXKWHq99FoGYYGAg--.10941S17
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFyDAF4DAF1kWFykWFykZrb_yoWruw15pF
-	n7AFy5K3ykXaya934xCw48Zr45ua4IkrWUKrySg343XayxtrnFgr4kta1jyF9YyrW8Kryf
-	XFWjyryDKa45W3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
-	4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBI
-	daVFxhVjvjDU0xZFpf9x0JUWMKtUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-From: Zhang Yi <yi.zhang@huawei.com>
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-To facilitate tracking the length, type, and outcome of the move extent,
-add a trace point at both the entry and exit of mext_move_extent().
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Fix WARNING in ext4_xattr_block_set() during orphan cleanup on readonly
+filesystems when debug_want_extra_isize mount option is used.
+The issue occurs when ext4_try_to_expand_extra_isize() attempts to modify
+inodes on readonly filesystems during orphan cleanup, leading to warnings
+when encountering invalid xattr entries. Add a readonly check to skip
+expansion in this case.
+
+Reported-by: syzbot+4c9d23743a2409b80293@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=4c9d23743a2409b80293
+Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
 ---
- fs/ext4/move_extent.c       | 14 ++++++-
- include/trace/events/ext4.h | 74 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 86 insertions(+), 2 deletions(-)
+ fs/ext4/inode.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-index c15294ce2aab..3ea616b0e929 100644
---- a/fs/ext4/move_extent.c
-+++ b/fs/ext4/move_extent.c
-@@ -13,6 +13,8 @@
- #include "ext4.h"
- #include "ext4_extents.h"
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 5b7a15db4953..ff51a4567c4f 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -6345,7 +6345,8 @@ static int __ext4_expand_extra_isize(struct inode *inode,
+ 	unsigned int inode_size = EXT4_INODE_SIZE(inode->i_sb);
+ 	struct ext4_inode_info *ei = EXT4_I(inode);
+ 	int error;
+-
++	if (sb_rdonly(inode->i_sb))
++		return 0;
+ 	/* this was checked at iget time, but double check for good measure */
+ 	if ((EXT4_GOOD_OLD_INODE_SIZE + ei->i_extra_isize > inode_size) ||
+ 	    (ei->i_extra_isize & 3)) {
+@@ -6403,6 +6404,8 @@ static int ext4_try_to_expand_extra_isize(struct inode *inode,
+ 					  struct ext4_iloc iloc,
+ 					  handle_t *handle)
+ {
++	if (sb_rdonly(inode->i_sb))
++		return 0;
+ 	int no_expand;
+ 	int error;
  
-+#include <trace/events/ext4.h>
-+
- struct mext_data {
- 	struct inode *orig_inode;	/* Origin file inode */
- 	struct inode *donor_inode;	/* Donor file inode */
-@@ -311,10 +313,14 @@ static int mext_move_extent(struct mext_data *mext, u64 *m_len)
- 	int ret, ret2;
- 
- 	*m_len = 0;
-+	trace_ext4_move_extent_enter(orig_inode, orig_map, donor_inode,
-+				     mext->donor_lblk);
- 	credits = ext4_chunk_trans_extent(orig_inode, 0) * 2;
- 	handle = ext4_journal_start(orig_inode, EXT4_HT_MOVE_EXTENTS, credits);
--	if (IS_ERR(handle))
--		return PTR_ERR(handle);
-+	if (IS_ERR(handle)) {
-+		ret = PTR_ERR(handle);
-+		goto out;
-+	}
- 
- 	ret = mext_move_begin(mext, folio, &move_type);
- 	if (ret)
-@@ -372,6 +378,10 @@ static int mext_move_extent(struct mext_data *mext, u64 *m_len)
- 	mext_folio_double_unlock(folio);
- stop_handle:
- 	ext4_journal_stop(handle);
-+out:
-+	trace_ext4_move_extent_exit(orig_inode, orig_map->m_lblk, donor_inode,
-+				    mext->donor_lblk, orig_map->m_len, *m_len,
-+				    move_type, ret);
- 	return ret;
- 
- repair_branches:
-diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-index 6a0754d38acf..a05bdd48e16e 100644
---- a/include/trace/events/ext4.h
-+++ b/include/trace/events/ext4.h
-@@ -3016,6 +3016,80 @@ TRACE_EVENT(ext4_update_sb,
- 		  __entry->fsblk, __entry->flags)
- );
- 
-+TRACE_EVENT(ext4_move_extent_enter,
-+	TP_PROTO(struct inode *orig_inode, struct ext4_map_blocks *orig_map,
-+		 struct inode *donor_inode, ext4_lblk_t donor_lblk),
-+
-+	TP_ARGS(orig_inode, orig_map, donor_inode, donor_lblk),
-+
-+	TP_STRUCT__entry(
-+		__field(dev_t, dev)
-+		__field(ino_t, orig_ino)
-+		__field(ext4_lblk_t, orig_lblk)
-+		__field(unsigned int, orig_flags)
-+		__field(ino_t, donor_ino)
-+		__field(ext4_lblk_t, donor_lblk)
-+		__field(unsigned int, len)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->dev		= orig_inode->i_sb->s_dev;
-+		__entry->orig_ino	= orig_inode->i_ino;
-+		__entry->orig_lblk	= orig_map->m_lblk;
-+		__entry->orig_flags	= orig_map->m_flags;
-+		__entry->donor_ino	= donor_inode->i_ino;
-+		__entry->donor_lblk	= donor_lblk;
-+		__entry->len		= orig_map->m_len;
-+	),
-+
-+	TP_printk("dev %d,%d origin ino %lu lblk %u flags %s donor ino %lu lblk %u len %u",
-+		  MAJOR(__entry->dev), MINOR(__entry->dev),
-+		  (unsigned long) __entry->orig_ino,  __entry->orig_lblk,
-+		  show_mflags(__entry->orig_flags),
-+		  (unsigned long) __entry->donor_ino,  __entry->donor_lblk,
-+		  __entry->len)
-+);
-+
-+TRACE_EVENT(ext4_move_extent_exit,
-+	TP_PROTO(struct inode *orig_inode, ext4_lblk_t orig_lblk,
-+		 struct inode *donor_inode, ext4_lblk_t donor_lblk,
-+		 unsigned int m_len, u64 move_len, int move_type, int ret),
-+
-+	TP_ARGS(orig_inode, orig_lblk, donor_inode, donor_lblk, m_len,
-+		move_len, move_type, ret),
-+
-+	TP_STRUCT__entry(
-+		__field(dev_t, dev)
-+		__field(ino_t, orig_ino)
-+		__field(ext4_lblk_t, orig_lblk)
-+		__field(ino_t, donor_ino)
-+		__field(ext4_lblk_t, donor_lblk)
-+		__field(unsigned int, m_len)
-+		__field(u64, move_len)
-+		__field(int, move_type)
-+		__field(int, ret)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->dev		= orig_inode->i_sb->s_dev;
-+		__entry->orig_ino	= orig_inode->i_ino;
-+		__entry->orig_lblk	= orig_lblk;
-+		__entry->donor_ino	= donor_inode->i_ino;
-+		__entry->donor_lblk	= donor_lblk;
-+		__entry->m_len		= m_len;
-+		__entry->move_len	= move_len;
-+		__entry->move_type	= move_type;
-+		__entry->ret		= ret;
-+	),
-+
-+	TP_printk("dev %d,%d origin ino %lu lblk %u donor ino %lu lblk %u m_len %u, move_len %llu type %d ret %d",
-+		  MAJOR(__entry->dev), MINOR(__entry->dev),
-+		  (unsigned long) __entry->orig_ino,  __entry->orig_lblk,
-+		  (unsigned long) __entry->donor_ino,  __entry->donor_lblk,
-+		  __entry->m_len, __entry->move_len, __entry->move_type,
-+		  __entry->ret)
-+);
-+
- #endif /* _TRACE_EXT4_H */
- 
- /* This part must be outside protection */
 -- 
-2.46.1
+2.43.0
 
 
