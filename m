@@ -1,87 +1,94 @@
-Return-Path: <linux-ext4+bounces-10365-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10366-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC50B953CD
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 11:25:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2F8DB957D4
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 12:47:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F54616DE1E
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 09:25:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D7833B065F
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Sep 2025 10:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513CA31BCA3;
-	Tue, 23 Sep 2025 09:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2713218C7;
+	Tue, 23 Sep 2025 10:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S5f62Dcp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TBo+ivWt"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A9930F545
-	for <linux-ext4@vger.kernel.org>; Tue, 23 Sep 2025 09:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2355D31D741
+	for <linux-ext4@vger.kernel.org>; Tue, 23 Sep 2025 10:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758619522; cv=none; b=BqF+1UZte5aO6oiUG11JRaoZmwubsNTrOTaC6Ijm1/tsuxGBAL9ciUXjbSEYzm31PPN/Phm1Nw03y8O07HpR7PMdHUspWaM49GaUQaI1aoL0CVZNzlYJUEpogzsf+AizjNIDb33msBI5aafd+XK7oohYjnaPRKvR27+lfmxuTrk=
+	t=1758624447; cv=none; b=k9sMZueeS0fT4+AxLWACB9iM5khieM3eJtcEHKronyrnpuTh6QvZb3CMkz5PpH1JRncQoQv0aYoTlK+uSfP/HatY5l+cjSKmsq2paP7xlvEkXlicb/uAHlLjxSnlEoYhjOVmkf4S9BtDuiiQcAgpPJiAHQfh4OSxhkkgn6u9qbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758619522; c=relaxed/simple;
-	bh=PHiv/oFqAssT7C2vXwJaDcIHi9lPA2xHzt6CUrRq4Pk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hFwnY4/NkCYsmJShb18rtPJIHu4rXxGxZzuTmMSadEx7zeMxUSu7uQ4CkHJ/+osEU08pARz46obFGqERqTJ61rGsUUMSR1yP6wWe3PmyJ2paC2lEZVv060AROvdBIfPezpJdjmx6yc/SKC26inIqKA4YOS9kMt5OFBBxFyjX2Q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S5f62Dcp; arc=none smtp.client-ip=209.85.214.169
+	s=arc-20240116; t=1758624447; c=relaxed/simple;
+	bh=y/G4XbLsOtwbe7wZLOUdsUIV02Do/ytAsS2jVq680LY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SVzHOiNgFdTwMzrWpV7cQ3Q0W6gN/mREsfGmrB/EcRCfAZsaMkoexsd1dHLZBSNydOs1IECVLD7hK8qs1+SRLczRY+UrU1+hgZMCVIZz3IoYyGZRZ6+ehMPtahVYiAygLwGBcjZ0EHozpjpMu4TzgWjv699hMinlEJbxXhdPuLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TBo+ivWt; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-27c369f8986so9403595ad.3
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Sep 2025 02:25:20 -0700 (PDT)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-46cb53c5900so25881825e9.3
+        for <linux-ext4@vger.kernel.org>; Tue, 23 Sep 2025 03:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758619520; x=1759224320; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758624442; x=1759229242; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t0zopWVobPuDweXBkACHWGSxHrDh+qcAB4VX8MwOBTo=;
-        b=S5f62DcpiUUsYU+Ygi1dc+PaUmAsV7QQrvqx6TAuPpF1a8XC6lRzCnqdXUwcWoReKF
-         4ZVTI38f11Ip5gB07Rz15OKyVjvYPAnfS3tHcrVGdl6+Zsj7ctSTxzteLZn3tft4OJyX
-         FnJkysEXoSRUthXpvcpB0lzGv1i12LCbgJRXz/cd2L9dxrVQKV63I3tAogl66DcBzffY
-         UeK76IS8eI4GW8qga6ItrqJs+KcuhApPDpLcQ3Rmgj1J13QCFpux6rHvyUo8gFeC8bO5
-         A1v/90ffd8WsBCaRvXEXkaZy/ZTLVsWeZzrYSAqMrErbEm4lMNpXNixeUA7Xjh7DctpB
-         At3w==
+        bh=NQ/yJT0cXoTi93BkEkS2U1cj1fcL5N5BV/EnPhmld9E=;
+        b=TBo+ivWtKLw2hvE4/ADdLULoCxdkqBngZ17HuFzdjLfw12wejEHkhAMxEp3Ee+g4r/
+         QkY+gyF49Zdjshfp2GkfrTXeAkGqlPQPAwE5XnEKSBlx7KePFyhqCq5xtq2poZu3WhTU
+         tosNaDOevVyDAjGj57CGR/WNm4sSmAc1pvRLpDxuXhPArh3IRdKSfwacAoyRWbOsMVEL
+         +35zAFhSYquvoPUN4+OUJngaR3cg/BGoGVAU9OQF/nMXU6B0pjoZeTUj1l7jRA9Li5nm
+         cslIYloBZQl8e+x/dmZ4oq3JQBz6BExLlD7Qx/73qgdd+i3Wit9F0JWCDrQ/QGaSftPX
+         bGAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758619520; x=1759224320;
+        d=1e100.net; s=20230601; t=1758624442; x=1759229242;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=t0zopWVobPuDweXBkACHWGSxHrDh+qcAB4VX8MwOBTo=;
-        b=KZC2LewfXKEUEe79F0SHYH801eOuvKQJ8WP+laR0TKyoQKPZ4jCBVka8RPnBHAFntz
-         KbHtz1tmBMUSjZBfpgYDKUfwhYKI5ayw5LRBqVV0ZIusQLlA+up2Qa5e9p3UK3vIT8hg
-         +OZ16V/dBARM9C4dQzfTiEgI0AcWyq/booqq1RoqTCl1ktlt0F5Q+eigKrjLe1R1KFJt
-         Oq3Wxhz0niNdtP/HLV60wo0Kgrv0wf1J5t/Bx8mwF8gdnnsc3UVIl17x5FeX7/+qX6wj
-         1ZPkV9SPFDkUjvGG/lLBmPGuEJ2m4NmEi80MNw7jA5ZDgPeZI5lF+p7C7Au/R9nvWFRC
-         1IcA==
-X-Forwarded-Encrypted: i=1; AJvYcCVlHVCDeYOlAmAoh5PBSWSSXTdq3IthslG75WsmxO3rZEmBWcEQ6d3FzZE8N2vtVYaSNAn096y6F6mX@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXMqQuBhbhzmeAqRZ3Da2OtnjDrXybCKyafNqTxwMGuaH0Yusx
-	laeJGWBtUyN7IpJcMsLqSJejdiLhZjaEgFwzTv4LbgMqMAZQLtgPYRjJ
-X-Gm-Gg: ASbGnculhDPggdUIwdegwORMpg/mCi++qClf8ziYtjp1sIoNI2E50Q+tZXfA0fIqm9g
-	7P2RdkctwdsY0uKoSB0w1sUeaWYc5inxqi41tJ5AuGu/U4qANR090PJG3EZBs7s1NVn4bAEAMeX
-	Gkd7AKaqA0U5DJGZ7Cu+IPrzXmvzoZIeN86DnMun+nEGrGT0mwgXJeK2yHnLqr3hvZIKkrEmQ+b
-	vNgmwEqzsALU79WExLhxS6GV+XXiqFLLx8uTg0SRp9DhgyHCtss1ohtnEDW8oWQt+DC1vuIqoWY
-	FMu6D92gbdD1fzGjzX2nywi8V2CWf6sQEOThw25yuk829ApudaQc0LOSi1T5giWzpAXKfUUfGKQ
-	xQBuU/xEVZlqRKHv/nXpV1RmAJAku6RlF4p9tzW+pIuavHLXbrs7qLjUN0w/mIkKzMNhG1h07JA
-	GA
-X-Google-Smtp-Source: AGHT+IGn7aSKodmfL9W3POGby8TbXXLOzrsHEIGZd2B2OQ1QB9XffdinzZ+NDU0Z9FIqeA8PqUP8VA==
-X-Received: by 2002:a17:902:e5c5:b0:273:31fb:a86d with SMTP id d9443c01a7336-27cc8654955mr20149525ad.48.1758619519808;
-        Tue, 23 Sep 2025 02:25:19 -0700 (PDT)
-Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:5a:8db4:4ddc:e3c5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269802df74asm156690375ad.94.2025.09.23.02.25.16
+        bh=NQ/yJT0cXoTi93BkEkS2U1cj1fcL5N5BV/EnPhmld9E=;
+        b=l1BVtoHeplbXhR6C3nm2hlYNttvw5JisX0iP/Kgxn9l/VKPQob+4J7f6yHLTnqRutg
+         SM+UTij8t3J4LtvDLBL3E8a6l8bYk5yoPeUvMSd2y4hXBglYNJzsL7COA4D8chyibVPh
+         bXtrjICvXdzrOjRfYutDzbonISUNTZE7Khdf7V6ABMk0ZRa8DXO7G4V8hPxKHO5xWGJx
+         BMHs+PqdVN+Q2YX/Xsg5d5ci8uD1K0CMtvOdtAgzNtwhLw8nKBt79vx6tlH2hkOSJmoh
+         qU4rjM20abVmc8bH7u9YK8QUn54T/uc6GFt0crZH5jv7kpaThVRKbCsEJwWu85+YcC5D
+         ANoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXzvxIet3j2zBclNtvTzDLqAtS6EG4fHuo8InpXy/3tWmxChBbnp1jOqtuZvmsZWij0oxiUsTmNuU2E@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy8ijcw6UnuJr/asyuCfpkErAZkRUOUJdnO7slA7IISqev6Ol/h
+	lhxjGtMKiilf4CLztIAEIKx3wsYkTYPqyR9FWLKwwt2Zc8zObn707CXk
+X-Gm-Gg: ASbGnctX/Hu130ggZQxDf2rV3I+U4rTWjqjNK6Q8yZGOZ03VSuaUrpKSSCjJ0+yEJae
+	eUBNmlxldlR8F5VHSN11jERlC/Q0fnlh0GvxHu+W2Zh69iAYuV1wyl7ls/GkwEVgy31ZDxk5o93
+	u8oR0WuSuby91KsJV+oR6G8aerY892RUI81QAWKQLRXegiW2VXja/MxMNGwmNJ3Q2j9M+tYVdJz
+	u6rvSnhHWhoLAfgj6sRTyCNFT00Vhr3cjYDWzAfEmwhqIYZaeBFQswgua2Vlk9fotu4eZfkAOdv
+	O9euqUMVSn3hDwtVKDvAql07SxFxTRZuGkzh9hAnNJDYBu0O+VQqbyAap8r0fWHpBiZ2eTmphXk
+	JAjA8rj3bzKLU9bOPXEPMUMFkzKVlFRGeWJkroYo03hZvc/vNkVW3VEK6txJPdWuba4I0bw==
+X-Google-Smtp-Source: AGHT+IGft/P7UVkw9hjNEMIp8gNGN2bfm7hLyZ+3GJgcSiUgUNJfZvWbxjLWOrPgRhiQYwqyWsexaA==
+X-Received: by 2002:a05:600c:3baa:b0:46e:1f92:49aa with SMTP id 5b1f17b1804b1-46e1f924cd6mr18699845e9.15.1758624442124;
+        Tue, 23 Sep 2025 03:47:22 -0700 (PDT)
+Received: from f.. (cst-prg-21-74.cust.vodafone.cz. [46.135.21.74])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e23adce1bsm9710525e9.24.2025.09.23.03.47.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Sep 2025 02:25:18 -0700 (PDT)
-From: Deepanshu Kartikey <kartikey406@gmail.com>
-To: tytso@mit.edu
-Cc: adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
+        Tue, 23 Sep 2025 03:47:21 -0700 (PDT)
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk,
+	jack@suse.cz,
 	linux-kernel@vger.kernel.org,
-	Deepanshu Kartikey <kartikey406@gmail.com>,
-	syzbot+4c9d23743a2409b80293@syzkaller.appspotmail.com
-Subject: [PATCH] ext4: validate xattr entries in ext4_xattr_move_to_block
-Date: Tue, 23 Sep 2025 14:55:12 +0530
-Message-ID: <20250923092512.1088241-1-kartikey406@gmail.com>
+	linux-fsdevel@vger.kernel.org,
+	josef@toxicpanda.com,
+	kernel-team@fb.com,
+	amir73il@gmail.com,
+	linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org,
+	linux-unionfs@vger.kernel.org,
+	Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH v6 0/4] hide ->i_state behind accessors
+Date: Tue, 23 Sep 2025 12:47:06 +0200
+Message-ID: <20250923104710.2973493-1-mjguzik@gmail.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -91,43 +98,162 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-During inode expansion, ext4_xattr_move_to_block() processes xattr entries
-from on-disk structures without validating their integrity. Corrupted
-filesystems may contain xattr entries where e_value_size is zero but
-e_value_inum is non-zero, indicating the entry claims to store its value
-in a separate inode but has no actual value.
+First commit message quoted verbatim with rationable + API:
 
-This corruption pattern leads to a WARNING in ext4_xattr_block_set() when
-it encounters i->value_len of zero while i->in_inode is set, violating
-the function's invariant that in-inode xattrs must have non-zero length.
+[quote]
+Open-coded accesses prevent asserting they are done correctly. One
+obvious aspect is locking, but significantly more can checked. For
+example it can be detected when the code is clearing flags which are
+already missing, or is setting flags when it is illegal (e.g., I_FREEING
+when ->i_count > 0).
 
-Add validation in ext4_xattr_move_to_block() to detect this specific
-corruption pattern and return -EFSCORRUPTED, preventing the invalid
-data from propagating to downstream functions and causing warnings.
+Given the late stage of the release cycle this patchset only aims to
+hide access, it does not provide any of the checks.
 
-Reported-by: syzbot+4c9d23743a2409b80293@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=4c9d23743a2409b80293
-Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
----
- fs/ext4/xattr.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Consumers can be trivially converted. Suppose flags I_A and I_B are to
+be handled, then:
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 5a6fe1513fd2..60e224c622b4 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2607,7 +2607,10 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
- 	struct ext4_xattr_ibody_header *header = IHDR(inode, raw_inode);
- 	int needs_kvfree = 0;
- 	int error;
--
-+	if (value_size == 0 && entry->e_value_inum != 0) {
-+		error = -EFSCORRUPTED;
-+		goto out;
-+	}
- 	is = kzalloc(sizeof(struct ext4_xattr_ibody_find), GFP_NOFS);
- 	bs = kzalloc(sizeof(struct ext4_xattr_block_find), GFP_NOFS);
- 	b_entry_name = kmalloc(entry->e_name_len + 1, GFP_NOFS);
+state = inode->i_state          => state = inode_state_read(inode)
+inode->i_state |= (I_A | I_B)   => inode_state_set(inode, I_A | I_B)
+inode->i_state &= ~(I_A | I_B)  => inode_state_clear(inode, I_A | I_B)
+inode->i_state = I_A | I_B      => inode_state_assign(inode, I_A | I_B)
+[/quote]
+
+Right now this is one big NOP, except for READ_ONCE/WRITE_ONCE for every access.
+
+Given this, I decided to not submit any per-fs patches. Instead, the
+conversion is done in 2 parts: coccinelle and whatever which was missed.
+
+Generated against:
+https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs-6.18.inode.refcount.preliminaries
+
+v6:
+- rename routines:
+set -> assign; add -> set; del -> clear
+- update commentary in patch 3 replacing smp_store/load with smp_wmb/rmb
+
+v5:
+- drop lockdep for the time being
+
+v4:
+https://lore.kernel.org/linux-fsdevel/CAGudoHFViBUZ4TPNuLWC7qyK0v8LRwxbpZd9Mx3rHdh5GW9CrQ@mail.gmail.com/T/#m866b3b5740691de9b4008184a9a3f922dfa8e439
+
+
+Mateusz Guzik (4):
+  fs: provide accessors for ->i_state
+  Convert the kernel to use ->i_state accessors
+  Manual conversion of ->i_state uses
+  fs: make plain ->i_state access fail to compile
+
+ Documentation/filesystems/porting.rst |   2 +-
+ block/bdev.c                          |   4 +-
+ drivers/dax/super.c                   |   2 +-
+ fs/9p/vfs_inode.c                     |   2 +-
+ fs/9p/vfs_inode_dotl.c                |   2 +-
+ fs/affs/inode.c                       |   2 +-
+ fs/afs/dynroot.c                      |   6 +-
+ fs/afs/inode.c                        |   6 +-
+ fs/bcachefs/fs.c                      |   8 +-
+ fs/befs/linuxvfs.c                    |   2 +-
+ fs/bfs/inode.c                        |   2 +-
+ fs/btrfs/inode.c                      |  10 +--
+ fs/buffer.c                           |   4 +-
+ fs/ceph/cache.c                       |   2 +-
+ fs/ceph/crypto.c                      |   4 +-
+ fs/ceph/file.c                        |   4 +-
+ fs/ceph/inode.c                       |  28 +++---
+ fs/coda/cnode.c                       |   4 +-
+ fs/cramfs/inode.c                     |   2 +-
+ fs/crypto/keyring.c                   |   2 +-
+ fs/crypto/keysetup.c                  |   2 +-
+ fs/dcache.c                           |   8 +-
+ fs/drop_caches.c                      |   2 +-
+ fs/ecryptfs/inode.c                   |   6 +-
+ fs/efs/inode.c                        |   2 +-
+ fs/erofs/inode.c                      |   2 +-
+ fs/ext2/inode.c                       |   2 +-
+ fs/ext4/inode.c                       |  10 +--
+ fs/ext4/orphan.c                      |   4 +-
+ fs/f2fs/data.c                        |   2 +-
+ fs/f2fs/inode.c                       |   2 +-
+ fs/f2fs/namei.c                       |   4 +-
+ fs/f2fs/super.c                       |   2 +-
+ fs/freevxfs/vxfs_inode.c              |   2 +-
+ fs/fs-writeback.c                     | 123 +++++++++++++-------------
+ fs/fuse/inode.c                       |   4 +-
+ fs/gfs2/file.c                        |   2 +-
+ fs/gfs2/glops.c                       |   2 +-
+ fs/gfs2/inode.c                       |   4 +-
+ fs/gfs2/ops_fstype.c                  |   2 +-
+ fs/hfs/btree.c                        |   2 +-
+ fs/hfs/inode.c                        |   2 +-
+ fs/hfsplus/super.c                    |   2 +-
+ fs/hostfs/hostfs_kern.c               |   2 +-
+ fs/hpfs/dir.c                         |   2 +-
+ fs/hpfs/inode.c                       |   2 +-
+ fs/inode.c                            | 100 ++++++++++-----------
+ fs/isofs/inode.c                      |   2 +-
+ fs/jffs2/fs.c                         |   4 +-
+ fs/jfs/file.c                         |   4 +-
+ fs/jfs/inode.c                        |   2 +-
+ fs/jfs/jfs_txnmgr.c                   |   2 +-
+ fs/kernfs/inode.c                     |   2 +-
+ fs/libfs.c                            |   6 +-
+ fs/minix/inode.c                      |   2 +-
+ fs/namei.c                            |   8 +-
+ fs/netfs/misc.c                       |   8 +-
+ fs/netfs/read_single.c                |   6 +-
+ fs/nfs/inode.c                        |   2 +-
+ fs/nfs/pnfs.c                         |   2 +-
+ fs/nfsd/vfs.c                         |   2 +-
+ fs/nilfs2/cpfile.c                    |   2 +-
+ fs/nilfs2/dat.c                       |   2 +-
+ fs/nilfs2/ifile.c                     |   2 +-
+ fs/nilfs2/inode.c                     |  10 +--
+ fs/nilfs2/sufile.c                    |   2 +-
+ fs/notify/fsnotify.c                  |   2 +-
+ fs/ntfs3/inode.c                      |   2 +-
+ fs/ocfs2/dlmglue.c                    |   2 +-
+ fs/ocfs2/inode.c                      |  10 +--
+ fs/omfs/inode.c                       |   2 +-
+ fs/openpromfs/inode.c                 |   2 +-
+ fs/orangefs/inode.c                   |   2 +-
+ fs/orangefs/orangefs-utils.c          |   6 +-
+ fs/overlayfs/dir.c                    |   2 +-
+ fs/overlayfs/inode.c                  |   6 +-
+ fs/overlayfs/util.c                   |  10 +--
+ fs/pipe.c                             |   2 +-
+ fs/qnx4/inode.c                       |   2 +-
+ fs/qnx6/inode.c                       |   2 +-
+ fs/quota/dquot.c                      |   2 +-
+ fs/romfs/super.c                      |   2 +-
+ fs/smb/client/cifsfs.c                |   2 +-
+ fs/smb/client/inode.c                 |  14 +--
+ fs/squashfs/inode.c                   |   2 +-
+ fs/sync.c                             |   2 +-
+ fs/ubifs/file.c                       |   2 +-
+ fs/ubifs/super.c                      |   2 +-
+ fs/udf/inode.c                        |   2 +-
+ fs/ufs/inode.c                        |   2 +-
+ fs/xfs/scrub/common.c                 |   2 +-
+ fs/xfs/scrub/inode_repair.c           |   2 +-
+ fs/xfs/scrub/parent.c                 |   2 +-
+ fs/xfs/xfs_bmap_util.c                |   2 +-
+ fs/xfs/xfs_health.c                   |   4 +-
+ fs/xfs/xfs_icache.c                   |   6 +-
+ fs/xfs/xfs_inode.c                    |   6 +-
+ fs/xfs/xfs_inode_item.c               |   4 +-
+ fs/xfs/xfs_iops.c                     |   2 +-
+ fs/xfs/xfs_reflink.h                  |   2 +-
+ fs/zonefs/super.c                     |   4 +-
+ include/linux/backing-dev.h           |   7 +-
+ include/linux/fs.h                    |  42 ++++++++-
+ include/linux/writeback.h             |   4 +-
+ include/trace/events/writeback.h      |   8 +-
+ mm/backing-dev.c                      |   2 +-
+ security/landlock/fs.c                |   2 +-
+ 107 files changed, 345 insertions(+), 307 deletions(-)
+
 -- 
 2.43.0
 
