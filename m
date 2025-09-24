@@ -1,120 +1,202 @@
-Return-Path: <linux-ext4+bounces-10405-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10406-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27D9BB9C646
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Sep 2025 00:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49B9DB9C972
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Sep 2025 01:33:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61DE919C604C
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Sep 2025 22:54:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F6FC1BC4234
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Sep 2025 23:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5BF27FB3A;
-	Wed, 24 Sep 2025 22:53:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCD0286D55;
+	Wed, 24 Sep 2025 23:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="il2GGEWM"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="aO7GILTo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF851B423C
-	for <linux-ext4@vger.kernel.org>; Wed, 24 Sep 2025 22:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A49921DF75B
+	for <linux-ext4@vger.kernel.org>; Wed, 24 Sep 2025 23:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758754431; cv=none; b=o/xTIB+6ppdqHP6A+08mF85RjclpSdJcOgc/ngTUR9f2iRiy2pKMPN1Qb4ta+vc+nENhaqDlbbLMAIgafXCBnkH+w2me6EEMPEJcW9PSI1C1FId7Hs8q1Av1HjNGlAUjJ31KJ1kOyK751q5acA8AEXKIpnWVW/8uuE2NfCKcSEs=
+	t=1758756803; cv=none; b=kpv/cXXkeUlg7IA9fIdI9RAo7B2X8Drnuv/654JkhPaIdi7nZ9v7Ieb/Aptp5E+yHnlgJM6/0s3awjxCckXXroGJ65cy3Yl+MOxkcHGA7fgKXCvDxbBoC2fML0RuvLm4hsZIh40elARUxMRpCKP9cf4I/gTiDpNLu8fiKvy6KXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758754431; c=relaxed/simple;
-	bh=qHDaN4fxq+33TeuPxLHXVx+PAknon7egB4iDvCqkcNc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hBCTE4CajuWhNsf0BidQ/3x2Wzy4telMARdJYQBv/DJdvsdRhYPBPUGG91FVP1cH2dZaYFh6VF4bkayGmSMZHiS5rFGu+IJx2HOx6vdMFhVRvR2fVUpAw9C9f9oGldDEBTmRqefBYztmg7K2+kKEW7U4VQCEO/soo6bcpox/2mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=il2GGEWM; arc=none smtp.client-ip=209.85.160.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-4d2686300f6so3816901cf.2
-        for <linux-ext4@vger.kernel.org>; Wed, 24 Sep 2025 15:53:49 -0700 (PDT)
+	s=arc-20240116; t=1758756803; c=relaxed/simple;
+	bh=BexvBLWe9ilLyfjQx7lfSxdU87TTc4v75SbAwVdNq3M=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=Nr4mqRRR8lTau73BlTmAWPrurkjZQ26ZxgEXVch5d+oEKsZPKH97HqXgN7TKbp0DA7KrJayG0YYPGJqkqsZClKCRFoWbwB7vC+4ObGqNSKo79EqMSG/hdJJRoPc+nz9OEXv/ic2UmYoK01NwUhPP4LcvAwfyAoDp/KAlbFX19zQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=aO7GILTo; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-26c209802c0so4194615ad.0
+        for <linux-ext4@vger.kernel.org>; Wed, 24 Sep 2025 16:33:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758754429; x=1759359229; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=OMv6M4S9k49MdsUE0Vs8ZejZ+912P5gb20KbIpJokts=;
-        b=il2GGEWMHExJSWERcxGMQFs3J5CUXvievwD8Cz0y4QDOZyok72+0aSux/LrgEKzYEA
-         ePi/HUCVeD3PIRd8z+GB057rGt6BOpBFSwra7H4hQVVoF3iFDubLtUJuFrJ82hZPnSLX
-         4ttXiC1TzuLnk/l9jMmpUotIbVMiXrvq+qedGU7YVum2H9IZ8Z3JwQy74qKMbw9AGOd1
-         nlv0qNyyWTpvLcyfDwMC3vZsSblz66vTYrK54igubNX5FBw6WOp9bNJIsty7vsy/cmkq
-         c6cZ1eDy/WdJpJmE8r/TsqALlotOsZllcxqD5rYeZ1ctzyt7NZLUrwvxhvsbwh5m7LwC
-         65VA==
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1758756800; x=1759361600; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=M13+AL5iaWUxovfWXVCx02kI2l71HfeV5Z/VI+kVLQI=;
+        b=aO7GILToMkYEct6DtBRpGUTBHsLIv63pfOYkpzetm1mRbz2E7+odJiET1UIR9ZdTxI
+         A3HaDnP9StsazNVHfUACn+FQe1mMJDal6vAypgErjoHwFa6vrbdYzEYAGhcNxCDmUIvq
+         K3LGriXYzp4XY6Boyxbi9ap1ENgUu4ShdnmBeZ3RrSG5JAABiN4v1DEvnWpDoh6/7tOk
+         yB+21D8u589SMVCCWUrLkb4FXbBAxuKZZ05rB3z3eRvlpbOEIdTSZmEokl8zGLxkMErj
+         iQO/vhO2/lj+66x4Mxqlm/hdUXRahlO0JXQ9Og3apvKtamr5nuhdHJoC7xgXFTzr+fV+
+         Gcfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758754429; x=1759359229;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMv6M4S9k49MdsUE0Vs8ZejZ+912P5gb20KbIpJokts=;
-        b=du96oqKkh6h4iTiiFOHXecM7PiFw8yqTvtZxx+cg7B+OHX7XSBEPI1iqhlvobhZ7IF
-         zxzjjrA3oC5ud0mo5ID/gx1itLs64EYYg9Ua5+TibMBKMw2pYe1s6RQ3ZFFg8BK3Z3SK
-         nePixlDrtp6tXAsBIRG32qCjZTLBBYTB20yrgM5QYZ+XoXXaDdGJfuMhn6xJg3arxTCu
-         0HNWeWGEjKlI++upsVBjh+A5yg6zBhHkwG2QyXQoofwJcc9LrKsgHsmGidlRrBFLAVNG
-         BbOkE3YBQblHK8wzklbH7iqoYziN0RxyeQZd+fAdr4TAul8TeFSUSHXrarzdcomiHAE6
-         BLcw==
-X-Forwarded-Encrypted: i=1; AJvYcCX1Bm8TutWHWtd7yXhJiqFa3oCq/ijrE0V2OQGHcx4y8A29otk2LcFk1hut9STr9yCOAHAcDcZcAQ5D@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyfbkc9Ac0DSqlta6Z9b0GbDDNpdJOPc+y4HxIkHM3GxsoiEdbJ
-	g1KagOogC+s2G6QwYrzngmZWAfLRqSpX5JfEirWhVIAkZWLfChKXGM4a
-X-Gm-Gg: ASbGncvByVUa/PnIGfRx4RE9Xg0c5KTVOvxjEE1+siCHJDCi76zlpQSIyP7XBmOWDM0
-	iGWt5Z+N6IDl6GC87x0GcwluWV6LKogP7JiRbLw4rCVEN1Qs0lOu++UfU7vIvn3Q8Y8lvr9CL89
-	9XTJjvB8ke+lrGxMdfPp361BeNW+R7qYSwd1blq5wWWVeRxHjlRQ+3qDR/vUy3+UWTbFtmFvdug
-	Hbp6bMFldeagIRIvR3khCs+2N6s1eYvHTeCnfZN9UuKwL2ZjHLJ0O+wG/7zoJzG9THPil9321hq
-	P9H11K67JwZ9GQXDUaMWLt8/YHbG0KuYrsktXjZXvHQdGWvIbTskdjW9W/EXS/TYl0sILVQE9Tj
-	v11EimEYz1l6XRMd/Cg==
-X-Google-Smtp-Source: AGHT+IEBC+joViliP/PQ25auOrWeoPG1kaQmBfu5QNRWbNYA+rQQb3vtViLCUnZuYqfGk3yWHCfqXg==
-X-Received: by 2002:a05:622a:610b:b0:4d4:7311:3cd2 with SMTP id d75a77b69052e-4da4cd4cc5cmr19410541cf.74.1758754428694;
-        Wed, 24 Sep 2025 15:53:48 -0700 (PDT)
-Received: from arch-box ([2607:fea8:54de:2200::dd5f])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4db0b94599esm772621cf.16.2025.09.24.15.53.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Sep 2025 15:53:48 -0700 (PDT)
-Date: Wed, 24 Sep 2025 18:53:46 -0400
-From: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Ahmet Eray Karadag <eraykrdg1@gmail.com>, tytso@mit.edu,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+0be4f339a8218d2a5bb1@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] Fix: ext4: guard against EA inode refcount underflow
- in xattr update
-Message-ID: <aNR2erc6QYubynYK@arch-box>
-References: <20250918175545.48297-1-eraykrdg1@gmail.com>
- <20250920021342.45575-1-eraykrdg1@gmail.com>
- <20250923233934.GJ8084@frogsfrogsfrogs>
+        d=1e100.net; s=20230601; t=1758756800; x=1759361600;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=M13+AL5iaWUxovfWXVCx02kI2l71HfeV5Z/VI+kVLQI=;
+        b=So/OJb826U5iFrQS4KWLJJ/8Qde1n81oLwHOgQuTQTpuMPkOdcAa2D2P0yW+r4KLmy
+         3/BoHdzdvSixqgThzX7NF8AGnFx5egNFTy/rASW/4PLqoePsXzWuRw9bnGcDD5w20RHj
+         jcWKaZgQK3dwpVwn3g/bmTG4Kdqf1WZJBdcxvwhlkSineRqojw1eAcxxSmcY6JHDw/4U
+         2uWOhHIVTqYJYsG6ltG6FOTNXX+zhctZr0wom9mHQJAc+A2jG4p3KS02Ptp8JjiCL3xM
+         SJkQ0wTXyAJYocUiDTLxNz0JzbjvLaAEZ/MGeiGb90NlGMLllxkJccOpu7daO+UY5HwV
+         ybgw==
+X-Forwarded-Encrypted: i=1; AJvYcCVw6D0Yv2BTQz1+hjD8yXbUDrTyAcPrsSKwz7rPQneJZrW6b1TBz8P/9reqOu6e3qbBxndPb/ZXRzPW@vger.kernel.org
+X-Gm-Message-State: AOJu0YzI+d4Le5FB9keRUgTaha2ffDMsBwN5YDWtEVIfpSo2EvC1Vbog
+	NE1x8ys9Mf271fNytLLTbl41y82d+If9O+p2mUFUH6LqrTNiIttV0kYmDgLdttVmvSbbNHmCw5J
+	zAOospQc=
+X-Gm-Gg: ASbGnct71ErVbHNbrE7WBBQt21arv+XgWZuE7TyJdmg32kwwHxtMtsqJqPVI9BFM7i0
+	IA2PGLh8U4BIidpqwbySDut+SJpSMiavUZMX8NLwvxpQzk+o64wvYm88eVEFwul9psvjHUZfR7I
+	/Hple8uXmOgYf/++EILW77K/een9HCFfFKHppsjLgyuJf43+I7AKI7i9x7Ide7t9kq4j98UxvAq
+	sN9jBpDSZgXyWCMWKqYyJdjCAQaeeFDGZlDQRFrlHgl+jVJ5EXmhxaR5O/BKWJN5aQ//w6jR+zk
+	crmuIf57blPjjtvN0eNEJSGTVkAPMyFbA8OAOHCCmts/ASNUDIfUsBuYyEhO0SBjNKegWuVw1y1
+	uJoRmylhyWWUk5A6I9udVfAQAFq0QCXXJ8ld1ArZEG34uNkD6fEBjG1p7pIlvHp1flJj+yv8=
+X-Google-Smtp-Source: AGHT+IHrf/fFd6VIegG3nlmHmbRRevDnQaITsbK7dyzLoVqitycl0QpxaLZ5UAv8wQee8BzV4NI6EQ==
+X-Received: by 2002:a17:902:ce01:b0:271:479d:3ddc with SMTP id d9443c01a7336-27ed4a1a371mr14270405ad.15.1758756799797;
+        Wed, 24 Sep 2025 16:33:19 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-27ed66d3ac4sm4542475ad.5.2025.09.24.16.33.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Sep 2025 16:33:19 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <294A93D3-4FBA-46E7-8814-1C7E0CC82359@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_F14A5A4F-4995-4DD7-853B-9A5FD1AB60CB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250923233934.GJ8084@frogsfrogsfrogs>
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: fix allocation failure in ext4_mb_load_buddy_gfp
+Date: Wed, 24 Sep 2025 17:33:15 -0600
+In-Reply-To: <20250924011600.1095949-1-kartikey406@gmail.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ linux-ext4 <linux-ext4@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ syzbot+fd3f70a4509fca8c265d@syzkaller.appspotmail.com
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+References: <20250924011600.1095949-1-kartikey406@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 
-Hi Darrick, Ted,
 
-Thanks a lot for taking the time to review this patch and for the helpful
-suggestions. 
+--Apple-Mail=_F14A5A4F-4995-4DD7-853B-9A5FD1AB60CB
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-> /me wonders if you could use check_add_overflow for this, but otherwise
-> everthing looks fine to me...
-We looked at check_add_overflow() and check_sub_overflow(), but our
-understanding is that they are mainly useful if ref_change can vary beyond the
-current ±1. Since the call site appear to only pass increments or decrements
-of one, would you prefer we still use the helpers for defensive hardening, or
-is it acceptable to rely on explicit 0 / U64_MAX boundary checks in this case?
+On Sep 23, 2025, at 7:16 PM, Deepanshu Kartikey <kartikey406@gmail.com> =
+wrote:
+>=20
+> Fix WARNING in __alloc_pages_slowpath() when =
+ext4_discard_preallocations()
+> is called during memory pressure.
+>=20
+> The issue occurs when __GFP_NOFAIL is used during memory reclaim =
+context,
+> which can lead to allocation warnings. Avoid using __GFP_NOFAIL when
+> the current process is already in memory allocation context to prevent
+> potential deadlocks and warnings.
 
-> ...though while you're modifying the precondition checking here, I think
-> these i_nlink preconditions should also be hoisted to the top and cause
-> an EFSCORRUPTED return on bad inputs.
-Thanks for pointing this out. We will include this in V3.
+This quiets the memory allocation warning, but will result in a =
+filesystem
+error being generated (read-only or panic) if the allocation fails, if =
+you
+follow the code a few lines further down.  That is not good error =
+handling
+for a memory allocation failure during cache cleanup.
 
-Cheers,
-	Albin
+When __GFP_NOFAIL was *always* passed, then the error could never be =
+hit,
+which is why it was put there in the first place.
+
+It looks like this function can return an error and the caller will =
+retry,
+so that would be preferable to causing the filesystem to abort in this =
+case.
+
+Cheers, Andreas
+
+>=20
+> Reported-by: syzbot+fd3f70a4509fca8c265d@syzkaller.appspotmail.com
+> Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
+> Tested-by: syzbot+fd3f70a4509fca8c265d@syzkaller.appspotmail.com
+> ---
+> fs/ext4/mballoc.c | 6 ++++--
+> 1 file changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 5898d92ba19f..61ee009717f1 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -5656,9 +5656,11 @@ void ext4_discard_preallocations(struct inode =
+*inode)
+> 	list_for_each_entry_safe(pa, tmp, &list, u.pa_tmp_list) {
+> 		BUG_ON(pa->pa_type !=3D MB_INODE_PA);
+> 		group =3D ext4_get_group_number(sb, pa->pa_pstart);
+> +		gfp_t flags =3D GFP_NOFS;
+> +		if (!(current->flags & PF_MEMALLOC))
+> +			flags |=3D __GFP_NOFAIL;
+>=20
+> -		err =3D ext4_mb_load_buddy_gfp(sb, group, &e4b,
+> -					     GFP_NOFS|__GFP_NOFAIL);
+> +		err =3D ext4_mb_load_buddy_gfp(sb, group, &e4b, flags);
+> 		if (err) {
+> 			ext4_error_err(sb, -err, "Error %d loading buddy =
+information for %u",
+> 				       err, group);
+> --
+> 2.43.0
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_F14A5A4F-4995-4DD7-853B-9A5FD1AB60CB
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmjUf7sACgkQcqXauRfM
+H+A+2Q/+KhJn/qn6CJFMmsDY7t2UYqBz99PI3ZQiloG9zhN8TiA1Dm1sVIBfgjBO
+y97wluHI1O+Jg4ZvAsfXGDeCXazItLhxWaBSeV4BZcmQTZLXB71VfP9KNgMWkaLe
+h8zNtri+m3zE1/+KHr9K82HnufpLwg1jjOIrl3TBHElR8coCHb7QrQdvyvXlU30n
+2HN5kSwxCMdB4VbUxND0IQuTaIC928T2zDB4b+8A65cyBt6Fc5BqfaL/p0rhTZyh
+lqna+ssQ6U2ONnNY4/u2uDo/GfYzvWIKMn0uUjeK+ITFurr3keqtY9vveHFT7mol
+5eJsfzfM2ArYscESF4N8T5uEyBvN9nO2V++wpn76vK/uStlmN3miRP1YX24/Cw6N
+T/AtSLblEWP3+zYFkRp4As/1ZmktUCvm6XAT/XFvtjvQP6g50ZL/bOxRxMhVvvN4
+7lr0Pz0FtlkQIkkOZiJR5DlpUT+VK3msa2G7rr4CbB+gsC0vUZ9IkWVC+388rthT
+oCTu2Z5scLiaZAo54VOOELRL17h1iGi5vCT+eXEGrBbbtz/du0WAkbnUqrKSacps
+/x8invmHwsTVImMzX8bAJVy4klP+Ch5ntqna0NTjEfgV+nt6f1Q4bkRnDRKafyrE
+elZX8EiaAviMlq4xiPh2CRL+2drmqI48dQPQV5MWDSo4e8taIOc=
+=lAjr
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_F14A5A4F-4995-4DD7-853B-9A5FD1AB60CB--
 
