@@ -1,63 +1,65 @@
-Return-Path: <linux-ext4+bounces-10452-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10441-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8169EBA5427
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 23:49:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B212ABA53EE
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 23:48:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C06E62419A
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 21:49:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0063A1C0092F
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 21:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF1A30F926;
-	Fri, 26 Sep 2025 21:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB7029A30A;
+	Fri, 26 Sep 2025 21:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="noAULKeq"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="kxixSHYF"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD852BE7CB
-	for <linux-ext4@vger.kernel.org>; Fri, 26 Sep 2025 21:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B4228B4FD
+	for <linux-ext4@vger.kernel.org>; Fri, 26 Sep 2025 21:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758923311; cv=none; b=e/SZZSVTufcBQYXkjW+q1ixj0jo+sRdwTyKUkcDJ9/NltUcWkDRdK98DRcrdCoab9TXB7ubmTs8K85bEs9JqNs9sQ2eRGOVk1tNPm5ec3eEw7pq5haW1wBCF3CqqAX0ChaOHzm4bBSiVyTkxi6LizwDkuxfOuasaNdljNFhs0Ec=
+	t=1758923282; cv=none; b=KtYFSXvsCYY4RsinlY9LArXc2GsQyubU8Xt0DUVwi2E2q2DYkG7guhGQ9/YHVGFs1nIA5o2vXeDvBtcoYTb9x7BbxCfFfwWu87VSTSlGr93nXKe0vYjN8R9qbEk39duZnJMJza7GJKprZ2ieYwlvPW+uB/Fv993r9VUmea1f+2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758923311; c=relaxed/simple;
-	bh=lxiRKOPjNBCLYP3Ujf6wO7spHZA6f5jBkt47JWpquLY=;
+	s=arc-20240116; t=1758923282; c=relaxed/simple;
+	bh=9NNO5o373SqWmt6lRk8DvxTwe9onkIyB00giMfN4AYA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aTect1s7m/PE6UuVCLc/ir+l0uMXHjG5A5CTV200trXe4ckqOUa01hJXzMA3fkDbw/3uuCE8rw080qurSBkfVOtoIbS/SX1DZdsFn54WvUuBK+MiLJXnxQT4SfxDsEQDIcOLd9E7YbbY01aFN8mQeeQtxsgiKa3FiUYh7Baqh90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=noAULKeq; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=KguWTpFcHyvwyaXolk72Oj3TOX7Xpu93bpUmn6xgZMPM5SMXE3EhFQRQqQB/GCVS6dT4rOVs0ug7WxInzfIi/2e9XmbOnFycXOpPJR913ZPzfCtHLcp1mxE6k3D0RxGvGedLg6DvaI7zqHpaHBzPC2FK3rdi3NQ8i5IBYVBy7gQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=kxixSHYF; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-115-162.bstnma.fios.verizon.net [173.48.115.162])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58QLls72014699
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58QLlslu014684
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 26 Sep 2025 17:47:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1758923276; bh=b0n4CKQmMvBflrA5RwASZQlbaLxfJAPAjhaY01zc4ss=;
+	t=1758923276; bh=5zfWWRMDmJQ6sgyIHjdjHF2ZrLrX84iVpbUGQfi3jjs=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=noAULKeqqDfqnmLGreY3DN958Z1BeM+Ifs4m4MLThAm2J2cROngHMOfxMAGc3HMBb
-	 AEH+2dPJdVZ4+ZsG5/diepBY9m/O+YYs5JtUEmvPMcwQkGLGpEnsKl96A/MWpGywtW
-	 w/jnWQxcJKxSqvMVQvnFjUCGbbrD/SLhKm7vmpp68OK9OLGjIfyDPCaPKmRbAq9qR4
-	 TOaw4ovRg3ua7qhRfowliUCiG+Qqq4YcpbtVIZLz0dQzRZ6DJyafqU9y7UFfK4hbmB
-	 dABvwLuJn+3OE+2yUc/Yqt+QstlYkPTloX8+UZrU9QFpxoiL7Su3Iqs/cj8DwTPJuM
-	 2Kd9Z2tWD4j/Q==
+	b=kxixSHYF6P1m94PzYyxOuBt82NAYLUHFK9vEdlDALwwVYgr8QsYmUOyLpV6RBIJ4f
+	 G6DAvXllMeLqUdcUjDBGllNpwmcMCqV+nDBbFqn/vjLrdnQ8jF5/Qbaq1bolxWW3o3
+	 eZ1RXymYlJpeGh1/jz9FSKiXRCdK3OBBnBn9IlxMPpfesKd6NnUA6aXRfFEyNIKoGy
+	 sWHbbTS2EPT2iqzQcKDbGfaAllg/n048smGwJwl0ZTTKrF+/7ltJYHgMhEKmIrzbyY
+	 0bFP+dl653KnehjvZe/ymzfUYUTG+iLp9LuZ2Xf2szztiw+5knoh4YxaO+Yn4VOxIQ
+	 58KC8iLSx5eVg==
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id D18332E00D9; Fri, 26 Sep 2025 17:47:53 -0400 (EDT)
+	id D31B82E00D5; Fri, 26 Sep 2025 17:47:53 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: adilger.kernel@dilger.ca, chuguangqing <chuguangqing@inspur.com>
+To: adilger.kernel@dilger.ca, Ahmet Eray Karadag <eraykrdg1@gmail.com>
 Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] fs: ext4: change GFP_KERNEL to GFP_NOFS to avoid deadlock
-Date: Fri, 26 Sep 2025 17:47:34 -0400
-Message-ID: <175892300639.128029.10746757557072943307.b4-ty@mit.edu>
+        linux-kernel@vger.kernel.org,
+        syzbot+0be4f339a8218d2a5bb1@syzkaller.appspotmail.com,
+        Albin Babu Varghese <albinbabuvarghese20@gmail.com>
+Subject: Re: [PATCH v2] Fix: ext4: guard against EA inode refcount underflow in xattr update
+Date: Fri, 26 Sep 2025 17:47:35 -0400
+Message-ID: <175892300646.128029.18166257596583769324.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250806022849.1415-2-chuguangqing@inspur.com>
-References: <20250806022849.1415-1-chuguangqing@inspur.com> <20250806022849.1415-2-chuguangqing@inspur.com>
+In-Reply-To: <20250920021342.45575-1-eraykrdg1@gmail.com>
+References: <20250918175545.48297-1-eraykrdg1@gmail.com> <20250920021342.45575-1-eraykrdg1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,15 +70,21 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Wed, 06 Aug 2025 10:28:49 +0800, chuguangqing wrote:
-> The parent function ext4_xattr_inode_lookup_create already uses GFP_NOFS for memory alloction, so the function ext4_xattr_inode_cache_find should use same gfp_flag.
+On Sat, 20 Sep 2025 05:13:43 +0300, Ahmet Eray Karadag wrote:
+> syzkaller found a path where ext4_xattr_inode_update_ref() reads an EA
+> inode refcount that is already <= 0 and then applies ref_change (often
+> -1). That lets the refcount underflow and we proceed with a bogus value,
+> triggering errors like:
 > 
+>   EXT4-fs error: EA inode <n> ref underflow: ref_count=-1 ref_change=-1
+>   EXT4-fs warning: ea_inode dec ref err=-117
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] fs: ext4: change GFP_KERNEL to GFP_NOFS to avoid deadlock
-      commit: 1534f72dc2a11ded38b0e0268fbcc0ca24e9fd4a
+[1/1] Fix: ext4: guard against EA inode refcount underflow in xattr update
+      commit: 57295e835408d8d425bef58da5253465db3d6888
 
 Best regards,
 -- 
