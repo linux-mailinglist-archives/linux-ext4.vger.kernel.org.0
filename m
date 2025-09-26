@@ -1,92 +1,84 @@
-Return-Path: <linux-ext4+bounces-10437-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10452-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A826FBA5376
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 23:31:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8169EBA5427
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 23:49:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CF011C04AD3
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 21:31:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C06E62419A
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 21:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26F029A310;
-	Fri, 26 Sep 2025 21:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF1A30F926;
+	Fri, 26 Sep 2025 21:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XnRrOQNc"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="noAULKeq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44657262FE5
-	for <linux-ext4@vger.kernel.org>; Fri, 26 Sep 2025 21:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD852BE7CB
+	for <linux-ext4@vger.kernel.org>; Fri, 26 Sep 2025 21:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758922200; cv=none; b=sAUfzoVZwVS5EWHsSvqNNXsCxbDYniovbtJDQxA1rN7HDwCBXja09iIEky5NQeDaJxkoHJTLJSY6IORUreNsbm+uGp/y44ETTACevvK5A08FgCSVbzBw2OMS1O82EogWtPakMRxwzE851l7tSYdETHWdY3jOtv8fB79419A80QQ=
+	t=1758923311; cv=none; b=e/SZZSVTufcBQYXkjW+q1ixj0jo+sRdwTyKUkcDJ9/NltUcWkDRdK98DRcrdCoab9TXB7ubmTs8K85bEs9JqNs9sQ2eRGOVk1tNPm5ec3eEw7pq5haW1wBCF3CqqAX0ChaOHzm4bBSiVyTkxi6LizwDkuxfOuasaNdljNFhs0Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758922200; c=relaxed/simple;
-	bh=XjyzAhJGNgbnCTpF6Q06ehDUiUnI1Qq9zKdsVE4FoLE=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=uNGYnnYrqUD+DlHuOgQwkTXd9r0KH6rkYf7gmO/XWuloGsRrmM1Idip8GQyoXMXOuPBeSP+WdlhMtGBrNSSo5Zc2IW9qxjaeastLKzmgpjRcixx6RewOJM21YUZHFo89TO921nsW4gtLbpxoCKgt4r8F+zmYvBnJwAC6s36pebU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XnRrOQNc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CFB5FC113CF
-	for <linux-ext4@vger.kernel.org>; Fri, 26 Sep 2025 21:29:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758922199;
-	bh=XjyzAhJGNgbnCTpF6Q06ehDUiUnI1Qq9zKdsVE4FoLE=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=XnRrOQNcEurbE7qigYcr2UEc0W0gCG3Wsa1k2pOc+2ucQjsPW4p1zaPfpVEU3ky9b
-	 jVNNlbhnfVMi/hE22nf4KpFBJvkLxvOQwKIUasLLtt714VujpOMcpAuB5S7if+AAFx
-	 mEOm/yDsGE9rwnDKWIrYT1IIftGv4nzv5+NMHY8716EXNbP0KxuoTdtLI98PtS3NPQ
-	 rZOYvYeO8t4j4MWL0cmtsWPgPFIAsfhpfp0vFt081iIwHdzHmvGpN2uT9vStq+8uM6
-	 WUosQ+GJoN7a6k6VhSZdJgY/17AsS9oSwlZ7Wn4mqARMc4UwDu8WUNUYfygbbXsIzU
-	 ydcO/wDgJE1vg==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id BEB4CC53BBF; Fri, 26 Sep 2025 21:29:59 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 220594] Online defragmentation has broken in 6.16
-Date: Fri, 26 Sep 2025 21:29:59 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: low
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: REOPENED
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-220594-13602-5QZ8wQkkBV@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-220594-13602@https.bugzilla.kernel.org/>
-References: <bug-220594-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1758923311; c=relaxed/simple;
+	bh=lxiRKOPjNBCLYP3Ujf6wO7spHZA6f5jBkt47JWpquLY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aTect1s7m/PE6UuVCLc/ir+l0uMXHjG5A5CTV200trXe4ckqOUa01hJXzMA3fkDbw/3uuCE8rw080qurSBkfVOtoIbS/SX1DZdsFn54WvUuBK+MiLJXnxQT4SfxDsEQDIcOLd9E7YbbY01aFN8mQeeQtxsgiKa3FiUYh7Baqh90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=noAULKeq; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-115-162.bstnma.fios.verizon.net [173.48.115.162])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58QLls72014699
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Sep 2025 17:47:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1758923276; bh=b0n4CKQmMvBflrA5RwASZQlbaLxfJAPAjhaY01zc4ss=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=noAULKeqqDfqnmLGreY3DN958Z1BeM+Ifs4m4MLThAm2J2cROngHMOfxMAGc3HMBb
+	 AEH+2dPJdVZ4+ZsG5/diepBY9m/O+YYs5JtUEmvPMcwQkGLGpEnsKl96A/MWpGywtW
+	 w/jnWQxcJKxSqvMVQvnFjUCGbbrD/SLhKm7vmpp68OK9OLGjIfyDPCaPKmRbAq9qR4
+	 TOaw4ovRg3ua7qhRfowliUCiG+Qqq4YcpbtVIZLz0dQzRZ6DJyafqU9y7UFfK4hbmB
+	 dABvwLuJn+3OE+2yUc/Yqt+QstlYkPTloX8+UZrU9QFpxoiL7Su3Iqs/cj8DwTPJuM
+	 2Kd9Z2tWD4j/Q==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id D18332E00D9; Fri, 26 Sep 2025 17:47:53 -0400 (EDT)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: adilger.kernel@dilger.ca, chuguangqing <chuguangqing@inspur.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] fs: ext4: change GFP_KERNEL to GFP_NOFS to avoid deadlock
+Date: Fri, 26 Sep 2025 17:47:34 -0400
+Message-ID: <175892300639.128029.10746757557072943307.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20250806022849.1415-2-chuguangqing@inspur.com>
+References: <20250806022849.1415-1-chuguangqing@inspur.com> <20250806022849.1415-2-chuguangqing@inspur.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D220594
 
---- Comment #6 from Theodore Tso (tytso@mit.edu) ---
-The reproducer file system which Artem sent me doesn't fail for me on both =
-6.16
-and 6.17-rc4.   So it maybe something which is specific to Artem's kernel or
-hardwaare configuration.
+On Wed, 06 Aug 2025 10:28:49 +0800, chuguangqing wrote:
+> The parent function ext4_xattr_inode_lookup_create already uses GFP_NOFS for memory alloction, so the function ext4_xattr_inode_cache_find should use same gfp_flag.
+> 
+> 
 
---=20
-You may reply to this email to add a comment.
+Applied, thanks!
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+[1/1] fs: ext4: change GFP_KERNEL to GFP_NOFS to avoid deadlock
+      commit: 1534f72dc2a11ded38b0e0268fbcc0ca24e9fd4a
+
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
