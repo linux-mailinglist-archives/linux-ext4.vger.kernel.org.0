@@ -1,63 +1,62 @@
-Return-Path: <linux-ext4+bounces-10439-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10438-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2D8CBA53EB
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 23:48:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F5C5BA53E5
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 23:48:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61E34560A88
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 21:48:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5106E1C009B3
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Sep 2025 21:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA91296BC2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D41C28BAB1;
 	Fri, 26 Sep 2025 21:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="D9f57CKC"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="pQBbs9YR"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B011F287253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59CC8286894
 	for <linux-ext4@vger.kernel.org>; Fri, 26 Sep 2025 21:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758923282; cv=none; b=LqZjhPM1EEQMJz/sP2sOgJYXj/jlta8vhD87qPs/HM2pM0BDDrpodXQNedESxv1tFj1g2pd926m4OuHn52XvzuP6KNTD4z7hhVZwVge8zv7oGrMqmjD3CcYs0ssFOHh08JQv7/iV5Y3lm+oFi3xU0LUaNu4hPK8vNuar/UxZO18=
+	t=1758923282; cv=none; b=ARwqmH88r62g2kanShGOB7B8D4LVBJNRdm5aJ9/SjH82Xqu+vF+l07oztqpVSTEcWvT3+JZiqnLBpjdsPGVeDV8hnF/6884cq5ApyVUR1KOGsJp1nvGP7cQI/HsFQyYcBWviJdwveF8wKy/xD8s6nA7WTXHvkbIqFp1DIAr2lSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758923282; c=relaxed/simple;
-	bh=bNkHR/nLj7QeVWub7ZOwMbGz0IioNwY2+YRCCQb8XdY=;
+	bh=5oG4t0nfrm9fFwvjD36mzMEZQbeSsVBao177LpOvaKw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ksz9PJyLASlhstPZ7lqcs5mLJOxPFZvLwrFtJJRY7YlbZtdapwCHaopPV9gE6jroWi9zbTequ0nN/b4jV4j4zT/cLLn5KtLjMO6G5bpf6v4N+lJTZa8JyMuACdAO5Q26wBOcVhmcjzolAw2s9dqV7vlu4sVZx/Q4w9rgopfevn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=D9f57CKC; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=Er4OGjA7RIIWig1NekChcrF1oQT7HetMC8iqxWq4hCk/YNdM03kmfFYK3LyjhgcUa5Y5GZtEm+28aautH9n9g2p8uWlyYt/d688fZDOqItQDye1XKAxjZtI/jmZ7pvpZEh9mv1N4lvarDSEP5fftjRyLSNuPBcy4Y3o4djUbzF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=pQBbs9YR; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-115-162.bstnma.fios.verizon.net [173.48.115.162])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58QLlspT014685
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58QLlsu2014694
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 26 Sep 2025 17:47:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1758923275; bh=QYFU1eQAxRVovSWl9ik2D0LP7H7akVffIJQCa6m6zLk=;
+	t=1758923275; bh=OdcokRjutK0YxbkiBd/GdaZqoODTCBY5QGX9e+e4tqc=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=D9f57CKCCTruD3EIyyMDpRkt6ZIa7qus3+KLtR4YlNNMV2bQ2qyh6+Hrnw1ZTilbi
-	 jfOvqSB2s5EoJ6P/KRH5hg1o/hhH03c0DDd1j2S5ljrIKtHfK2b0Nq+N57LAswnlRU
-	 QXtFJ8H8yuEFYI4iOzr7m/NilWLJYdDBWgjL/NfMGm4pp1oxuM5XMqRc/Ol+qleewK
-	 TRKP+trwZG+/AYNT4ncYkEJrzVeMgNlkCBSjKMpK+OwkgXqyvwur4FPRtALQW3Jbvq
-	 gLPPC4HSQL96HI+CQttebkAraih7+eAlbwF/wfUrSYFqZDzLtc3iRWM67BdWvLnYRV
-	 umKIgzlWI3VcQ==
+	b=pQBbs9YRIxk7gfJy/ygcvKbRvxCt3pYxoGwCMCXJBUK8PInRl+BmW0X+RXTYjkqNn
+	 SQPoUR6Y0IpUfqPI+Ao22myS4emfUS7tBtPgQETSmnujuEWvTPYFnFcwaLiZOOVcn+
+	 PM5WsT3xiHDZDHkiKK/AH/VV9j1eLJr7Nu1v2lQc4Vw3lKUisiq6+YnEWph4sH8YV0
+	 Z82oIZsvhs3cMs3Lsk0n03OxzwZdsF4hazY24g2iJRsQ82zbuNzpNHXIUxjncsI2DA
+	 X71Pr1o9RtooRoa7ovZVNrQj2XhTue/czuzj/X+Sjl1Yf9lGcKzigHf/g/8hMO2OxW
+	 Hc4W9NqyOlHzw==
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id D5EF72E00DB; Fri, 26 Sep 2025 17:47:53 -0400 (EDT)
+	id D86692E00DC; Fri, 26 Sep 2025 17:47:53 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
 To: Jan Kara <jack@suse.cz>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH] ext4: Fail unaligned direct IO write with EINVAL
-Date: Fri, 26 Sep 2025 17:47:36 -0400
-Message-ID: <175892300643.128029.2423032449227240852.b4-ty@mit.edu>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: Fix checks for orphan inodes
+Date: Fri, 26 Sep 2025 17:47:37 -0400
+Message-ID: <175892300647.128029.6799624233457058163.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250901112739.32484-2-jack@suse.cz>
-References: <20250901112739.32484-2-jack@suse.cz>
+In-Reply-To: <20250925123038.20264-2-jack@suse.cz>
+References: <20250925123038.20264-2-jack@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,20 +67,25 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Mon, 01 Sep 2025 13:27:40 +0200, Jan Kara wrote:
-> Commit bc264fea0f6f ("iomap: support incremental iomap_iter advances")
-> changed the error handling logic in iomap_iter(). Previously any error
-> from iomap_dio_bio_iter() got propagated to userspace, after this commit
-> if ->iomap_end returns error, it gets propagated to userspace instead of
-> an error from iomap_dio_bio_iter(). This results in unaligned writes to
-> ext4 to silently fallback to buffered IO instead of erroring out.
+On Thu, 25 Sep 2025 14:30:39 +0200, Jan Kara wrote:
+> When orphan file feature is enabled, inode can be tracked as orphan
+> either in the standard orphan list or in the orphan file. The first can
+> be tested by checking ei->i_orphan list head, the second is recorded by
+> EXT4_STATE_ORPHAN_FILE inode state flag. There are several places where
+> we want to check whether inode is tracked as orphan and only some of
+> them properly check for both possibilities. Luckily the consequences are
+> mostly minor, the worst that can happen is that we track an inode as
+> orphan although we don't need to and e2fsck then complains (resulting in
+> occasional ext4/307 xfstest failures). Fix the problem by introducing a
+> helper for checking whether an inode is tracked as orphan and use it in
+> appropriate places.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: Fail unaligned direct IO write with EINVAL
-      commit: 963845748fe67125006859229487b45485564db7
+[1/1] ext4: Fix checks for orphan inodes
+      commit: acf943e9768ec9d9be80982ca0ebc4bfd6b7631e
 
 Best regards,
 -- 
