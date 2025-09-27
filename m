@@ -1,119 +1,192 @@
-Return-Path: <linux-ext4+bounces-10455-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10456-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1364BBA5695
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Sep 2025 02:19:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B6FFBA5859
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 Sep 2025 05:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8C352A83C2
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Sep 2025 00:19:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24EB47AD296
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 Sep 2025 02:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 659111D8A10;
-	Sat, 27 Sep 2025 00:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5F0F21B9F1;
+	Sat, 27 Sep 2025 03:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S4rjcdoe"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Q3gfDCKq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A991D5CC7
-	for <linux-ext4@vger.kernel.org>; Sat, 27 Sep 2025 00:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E12149E17
+	for <linux-ext4@vger.kernel.org>; Sat, 27 Sep 2025 03:01:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758932369; cv=none; b=FaG0ZTl/DrSS886Q3yIq1vYlk/NtHF7bVzPHqG7b1BOiYaCOs1X+W302v3QEW+fb11Cbj0c0d1cOPf1wILa+fk2sfgpuZkeKYYNWk4IQD2YGALYwYQlt3QL/NuHz3/Px6OnhQaS01YXiuWMwYUsBPT9M0YWJpqvsXtY4PelqaxY=
+	t=1758942089; cv=none; b=Dtm9bd96H/nSaXR3JSk8u7f6tOia9Mt7Fsa1QE+436A0PTYXXlSNMnd25B/riM06Y97n2qjfciOONcot6jhnU1o3zabIi3g71Bvcw4haOnoMunrlQQ6T8wP7g9uazPAGWiWjrIkuPIGTBDqfBnDuWfN4ZbQXmBI2I1QpB6W7pgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758932369; c=relaxed/simple;
-	bh=OCMM1i+marxjh6pUkwTDhMRBuqlU+02sLHnJrahSSHk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DQxsuVOvV94VS0MYy3OL9HQe//fkRHGICIAoSEaIMjSAS7gbbVqeiHiJ6lets4fRwzrAK5GttejUpIQSAJXpJF5TzHLswyh7AONP23I822uSvfNYHzlLzl44XkwrgjkA4nEP29QZcRCuimYijwN/cVREb/7InkBdNPHxot8MCnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S4rjcdoe; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-77db1bcf4d3so2034891b3a.1
-        for <linux-ext4@vger.kernel.org>; Fri, 26 Sep 2025 17:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758932367; x=1759537167; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xoCdX6M4UpRUuPuNk8r9g0MkweOF1WQ1ahjsQ+1be2I=;
-        b=S4rjcdoeIs9jU0BTqiLrlyb6a/8aqICebB31RSHLaiZRy03SFga1DOK5U/bMvY6U+G
-         VLwVFGDTM43+zcEV3sczCU31T3QEAg6fjwU0PbkNWMi7utPrfZGV6RX7g1CM/F08C3PY
-         QP4Gf5j0K/EJmJppZuYcUgUiB3KBmtC6wo1bD+4e7tvXNpx16kovq9/Mk0YKmsjjilTG
-         m2BUmmySeUd1d3mMhQddIMJnDYt8DPyEcbsL3zNOA+rBBlLcya/r1stbTtdE2AYQtQCq
-         2Wa68STwkT2auO/NFIPq5XXAT53WWXM4x2O2Pl9/WGhSZd0ohgYd0+rqkEQLSLwdkM2y
-         Z/JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758932367; x=1759537167;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xoCdX6M4UpRUuPuNk8r9g0MkweOF1WQ1ahjsQ+1be2I=;
-        b=bQc1AgEvHH53EwhmZpAyyS5DLI9rl2VUQU8PzMd9U2MuSc/peKuim7+ARcoMPnCuFz
-         AIZerXCKHi68NF5ZQ+yLxcfu/l5Kg7lR3R6U0HiStvWw9X9GoaUCxFJI4X+lxa1Zrjz7
-         vW0p7zgYxiiiqlOMbYNhZtbOvYxO8qU5THhcFlK4mmucGcN47eaVToZw0ejJfrmmJM1H
-         of2utok3z19rkv8cAseEPhL6wE0pywJL3lBIukA2Zi9NPGd8Wk/+LGTwcdWFIkulghUH
-         fb+cWk1LPbejc6bjRMKrMQSGmx5kxyzCPMFVDSJi4cMfTHc2kPjzRddADEkVWhEOLWJL
-         0PRw==
-X-Gm-Message-State: AOJu0YxGcpuA2WxQtaLt8s1hnHE2B2qtt6T2eB1i9+iWFBpHIhfGvqu/
-	1IA1lCxWhI37+slwB0rSsid0IAglE8gb0McgmthHG6mzXjzwM7d94OQo
-X-Gm-Gg: ASbGncvjmRrUzoS0lZ1SHNpag2X2Ty3UFmYi8pn96e950n2MQ1OY358P8o8kWbCL/UN
-	Tq8pWFAA6E0DrR6ds+ojQWUvm7ew83K5vXfF220/0xcawYUJn7QTH5Yz3idOtQAk7nW/ct97iqL
-	+FT2l1NAhiMkzYIahTrKPdQjqZ56T64hL+OoV1tfhDNGN73Y/0UQi+fn4LdYB3HrRjHRiHysBSr
-	2Qf5IwU8rqBChRoRDgu1Zr2x6UBYinB+RYCnJ6K1NLzORkfBrWx70mwjqgoLIAqSUMg+8p7xJAv
-	dGNVHXAznZ4n43jN3Rcwvab+5y/S3WEPYG9H2LBlz279JlmJ1NLGSpNicFjVo4Arhgv1TBYbssJ
-	Aj8rDAZDyk9wa6Ob5GQLoQPTpLk3Wn2Jin9CjhwKZDOiuy8sG5QAZ/KWvCEDb1QiQmS9a9Oan2y
-	rS1SV9zLrsViZx
-X-Google-Smtp-Source: AGHT+IEGXz9nq0dyTCKbVTjjCxNnClX5GvwmdbGRHAf5pY+Z3ZHeyoRmROyP6uUGmVc5qJYOutyh/g==
-X-Received: by 2002:a05:6a20:3d85:b0:2b6:3182:be22 with SMTP id adf61e73a8af0-2e7cf2bee47mr12013101637.31.1758932366792;
-        Fri, 26 Sep 2025 17:19:26 -0700 (PDT)
-Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:9584:386:9d60:7b43])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-781023c26d4sm5454319b3a.37.2025.09.26.17.19.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Sep 2025 17:19:26 -0700 (PDT)
-From: Deepanshu Kartikey <kartikey406@gmail.com>
-To: adilger.kernel@dilger.ca,
-	tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1758942089; c=relaxed/simple;
+	bh=iqEzu6MSOCS+4xe5CLs8SDXx79JrEPYtjCeDbWq9KhE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HO+KE+96AdBtnwekzQjZA5CT7n+z6k9uP9XUzThaVeJyBBggyoSBcGrrzaKLuaD4Iy0bNC6i0LQhggOEAdkSkteNz13RHxefRODIE2DcwNsiHj3pZl24RwDxaHrUy75VAUFQZJFRf/zcfXsR+6GNHvaCulIfAs4FMNV74B2zMQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Q3gfDCKq; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-115-162.bstnma.fios.verizon.net [173.48.115.162])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58R31D43016618
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Sep 2025 23:01:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1758942075; bh=7f/gHNEv1YusOJ53J0jDbxjcFQ7pwqP5o4dTkzgBhDk=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=Q3gfDCKqpmAlNw0hO1Q7K84mYKfb8+F7BQoGq8cwfoxwwnFc8b10ktK0jRhSHhja9
+	 9EvFF0RDkmwc/EkAyxQT/swoZlQTrGb5ELM9i2mKF4IZFfdIJ5ZmJBF6daK4zS8DD+
+	 qA0VC6L92w6dVHKFFPfP58atVBaw2Nqns/G3tk4Gwm6EAOMfEThoT94xStMUtd38TR
+	 47i8mDPzecucrsw3+Iiuyd6o9qJWthBSAGAh66Fxx+cNsb7R9VwjQebkIGZVcYCTXS
+	 DfN/x/OuXU0a6iP1ZlAFB6kJtH3Okw/eGzKd9Dp8SNIEwi2zR5XaaGtzflfJ3YtOFB
+	 I4lTltXnMJCDQ==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 781462E00D9; Fri, 26 Sep 2025 23:01:13 -0400 (EDT)
+Date: Fri, 26 Sep 2025 23:01:13 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] ext4: fix allocation failure in ext4_mb_load_buddy_gfp
-Date: Sat, 27 Sep 2025 05:49:21 +0530
-Message-ID: <20250927001921.16747-1-kartikey406@gmail.com>
-X-Mailer: git-send-email 2.43.0
+Message-ID: <20250927030113.GD118657@mit.edu>
+References: <20250927001815.16635-1-kartikey406@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250927001815.16635-1-kartikey406@gmail.com>
 
-Hi Andreas,
+On Sat, Sep 27, 2025 at 05:48:15AM +0530, Deepanshu Kartikey wrote:
+> 
+> Your -EAGAIN suggestion makes sense. The approach would be:
+> 1. During memory reclaim, use GFP_NOFS without __GFP_NOFAIL
+> 2. If allocation fails, return -EAGAIN to let reclaim skip this inode
+> 3. Preallocation cleanup happens later when memory is available
+> 
+> I understand this requires modifying the function signature and updating all call 
+> sites. I'm willing to do this work and properly test each caller's error handling. 
+> 
+> Questions on implementation:
+> - Should callers like ext4_clear_inode() ignore -EAGAIN (leave cleanup for later)?
 
-Thank you for the detailed analysis of the tradeoffs.
+It's not so simple.  The call path that involes ext4_clear_inode() is
+part of evict() which is called when the inode is evicted, and this is
+called from prune_icache_sb():
 
-Looking at the syzbot report (https://syzkaller.appspot.com/bug?extid=fd3f70a4509fca8c265d), 
-this WARNING appears 4 times, so while not frequent, it's a real issue that occurs 
-under memory pressure conditions.
+   https://syzkaller.appspot.com/bug?extid=fd3f70a4509fca8c265d
 
-Your -EAGAIN suggestion makes sense. The approach would be:
-1. During memory reclaim, use GFP_NOFS without __GFP_NOFAIL
-2. If allocation fails, return -EAGAIN to let reclaim skip this inode
-3. Preallocation cleanup happens later when memory is available
+The problem is that none of the code paths allow for the inode
+eviction to be delayed.  And once the inode is evicted, it's *gone*
+from memory, so there's no place to store the information needed so we
+can "clean up the inode later".
 
-I understand this requires modifying the function signature and updating all call 
-sites. I'm willing to do this work and properly test each caller's error handling. 
+The inode eviction might *take* a while, since there might be pages
+that need to be written back first.  And in order to do the writeback,
+the flusher thread might need to do some block allocations, and that
+might require some memory allocations.  But since that's happening on
+another thread, it doesn't cause any warnings.
 
-Questions on implementation:
-- Should callers like ext4_clear_inode() ignore -EAGAIN (leave cleanup for later)?
-- Should callers like ext4_truncate() retry or also defer?
-- For the unused "int needed" parameter you mentioned - should I remove it in the 
-  same patch or separately?
+This is why in some sense the warning in __alloc_pages_slowpaths() is
+a little silly, and it's not really all that bad in practice:
 
-I'd like to implement this fix properly rather than leaving the WARNING unaddressed. 
-Could you provide guidance on the preferred error handling for the different caller 
-contexts?
+		/*
+		 * PF_MEMALLOC request from this context is rather bizarre
+		 * because we cannot reclaim anything and only can loop waiting
+		 * for somebody to do a work for us.
+		 */
 
-Best regards,
-Deepanshu
+Sure, we might need to loop waiting for someone to work to release
+pages.  But in the inode eviction path, we are doing that *anyway*:
+
+	/*
+	 * Wait for flusher thread to be done with the inode so that filesystem
+	 * does not start destroying it while writeback is still running. Since
+	 * the inode has I_FREEING set, flusher thread won't start new work on
+	 * the inode.  We just have to wait for running writeback to finish.
+	 */
+	inode_wait_for_writeback(inode);
+
+(And writeback can require memory allocations. Oh, noos!)
+
+In actual practice, it's not that bad, since looping until te memory
+can be released is just *fine*.  The OOM killer might news to whack
+some processes to free memory, but if you're running so close to the
+memory exhaustion, it's generally acceptable to have lower priority
+jobs get nuked in order to keep the system.  And if that's not
+acceptable, then don't run the system that close to the edge!  :-)
+
+So the only reason why this is a problem is if someone is silly enough
+to run with panic on warn enabled.  (Don't do that.)  Or if you've
+gotten sucked int the gamification of syzbot.  Personally, if the mm
+folks want to insist on putting that WARN_ON_ONCE() there, I'm not
+going to worry about the syzbot complaint.  :-)
+
+
+If you *really* want to solve the problem, we probably need to have
+some way to that file system set a flag indicating that if you are
+trying to prunce the inode cache, and you're in a memory reclaim
+context, skip trying to evict this inode.  For that matter, if we're
+in a memory reclaim context, and the inode has dirty pages which are
+being written back --- maybe we should just skip that inode since
+there are probably easier and faster inodes to eject if we are so
+desperate that we're in memory reclaim mode.
+
+Another potential solution might be to pin the buddy bitmap and bitmap
+blocks in meory and don't let them to get evicted if we know that
+there might be preallocations pending for that partcular block group.
+This will prevent the need to do the memory allocation, and also
+avoids needing to do I/O to bring in the bitmap metadata.  The
+downside is this increases memory usage, all in the name of trying to
+avoid that silly mm warning.
+
+Yet another possibility is to have a pool of spare pages *just* for
+ext4, and in the case where we are in memory reclaim --- drop the
+__GFP_NOFAIL, and use the pool of spare pagese --- and if the pool of
+spare pages is exhausted, just wait and do a retry loop on the allocation.
+
+Or we could just drop the __GFP_NOFAIL and just add hard-coded retry
+loop.  It's what we used to do when the mm people tried to deprecate
+__GFP_NOFAIL, and issued a warning whenever someone trid to use
+__GFP_NOFAIL --- and so we said, "OK, if you really hate the
+GFP_NOFAIL, we'll just open code the retry in the file system, since
+data loss is unacceptable, and if that means the system might become
+unresponsive for a bit when the system is under heavy memory pressure,
+that's an acceptable tradeoff."  But then the mm folks said, no wait,
+if you do the retry loop in the caller we won't know that the memory
+allocation Really Really Needs to Suceed.  And so they dropped the
+__GFP_NOFAIL warning, and we dropped the hard-coded retry loop.
+
+> I'd like to implement this fix properly rather than leaving the WARNING unaddressed. 
+> Could you provide guidance on the preferred error handling for the different caller 
+> contexts?
+
+Quite frankly, I'mm not sure any of these choices are worth it
+compared to just leaving the WARNING unaddressed.
+
+If it were up to me, I'd have a WARN_DONT_PANIC() message which
+doesn't actually print the word "WARNING" so it doesn't trigger
+syzbot, and which does't force a panic on warn.  That it satisfies the
+mm folks who have never liked __GFP_NOFAIL, since they can let the
+kernel whine; it satifies the people who think this is a "securty
+problem" because there are people who are silly enough to do panic on
+warn; it satisfies the people who buy into the syzbot gamification;
+and it avoids file system corruption, which keeps the file system
+people happy.
+
+Or we could just drop this particular warning altogether.  Silly
+warning.  :-)
+
+Cheers,
+
+						- Ted
 
