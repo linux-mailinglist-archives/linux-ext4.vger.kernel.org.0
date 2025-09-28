@@ -1,95 +1,66 @@
-Return-Path: <linux-ext4+bounces-10467-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10468-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61257BA70CF
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Sep 2025 15:19:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33FD6BA77FB
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Sep 2025 23:03:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A58A179750
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Sep 2025 13:19:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DD367AAF3F
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Sep 2025 21:01:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8182D878C;
-	Sun, 28 Sep 2025 13:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26C42BE024;
+	Sun, 28 Sep 2025 21:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FT4GYT/2"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="ditG3cKt"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87CF2231A24
-	for <linux-ext4@vger.kernel.org>; Sun, 28 Sep 2025 13:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D6C22BDC28
+	for <linux-ext4@vger.kernel.org>; Sun, 28 Sep 2025 21:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759065576; cv=none; b=aA6E0G2pPhf7h/x7PebooWqSuPVlX9Z3ZSG0y6Kh2M5Emf9dadxLC4TVGHOxDICXSvuTewSl2SgBrIhxb4N+TR5G0JU+7zsgkrHW0k7r9Hdf/zyjyrA6JNGp3T5FJ6IYF9O0QFedDeHPIYehxYntTQgDfgm+AK9MtKoOkEswBhA=
+	t=1759093363; cv=none; b=QoVMkSU6Xydy3rGE/uQB889JCc2Vkm46+H/krkmdW5G5QKuYJoQSq/PYgPTvGbvCEcTNQiDbsfXH6l5bn6xDbtuIZVeWemnJcic4BwQCKddgWCiHui6Afg9kU54+5L47j0HzZoEvRUq5FQ1jdXDPs/WWY9cVbSUPnjS8btC94WM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759065576; c=relaxed/simple;
-	bh=KczxhiO3rq4LfuMibjOQzQvDn+yuz+agq6FXGFipxHM=;
+	s=arc-20240116; t=1759093363; c=relaxed/simple;
+	bh=eOZJDjxDLsGeUXdktt5w9o5XoD9LbygNObm9oVakIew=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lQyfXb0fJUeh1+hutiMso4kC2XqHAsrfRn1nyQsoJczUZgtkNSOqwkbB901IKmu+2+5f7OhL8shUy7l4ND6AdPcAb7i/5avL+iGHvrv/af8+tCm8zEJO0Dtd1V1MYV5WjDCrIxOtHtbjm1agUaJY1IuUKCRSUUD2IzpDWOCp2C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FT4GYT/2; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1759065573;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=snNrG5EeW/S+hcRKJgw63KoPcdk3l0w22xmJa+ekRf8=;
-	b=FT4GYT/2++6njNY53SO4lAdnJ03aiJai0sDAVcmd3rnbBGoLcfkJhTTjDthSJr3zCN7akJ
-	cuJ6GiCDFkCKJ3sTabyUpbFoLOme55yAWRyKyGj/HwMRGzjGI8uMg6yqcsKiYazbUrHJgg
-	AnjjmCM5fVEkduWtzP17IJm5Ni2waWU=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-551-9es8GdIGOJGqRz8mSe47Zg-1; Sun, 28 Sep 2025 09:19:32 -0400
-X-MC-Unique: 9es8GdIGOJGqRz8mSe47Zg-1
-X-Mimecast-MFC-AGG-ID: 9es8GdIGOJGqRz8mSe47Zg_1759065571
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-783604212ebso957805b3a.3
-        for <linux-ext4@vger.kernel.org>; Sun, 28 Sep 2025 06:19:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759065571; x=1759670371;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=snNrG5EeW/S+hcRKJgw63KoPcdk3l0w22xmJa+ekRf8=;
-        b=FSUZiU+3/wNS4Qnr9rqU9KC3p8mvv3j6dTIzpWZyc9c1odetjZifEGv6/K/rbosALk
-         Rnpf8VHvKkJGcseXedUzCBqijvRVvnhMTfMoEcpU+BePgHxAhE8tLEAGhIGFM8cqsKIQ
-         YtXdiKRmwV5BHHKvpAmBcEnAdMzMIYVagPPD5UMs4lzcOSNwnCEZIhmUHgS/499RFI7E
-         WoiL8f1ZJYw+1FjXxqb+htGeQWpqsR0Yo9LIRNR5OwKPMANNY5tnx7P0LvZE1194Lw/e
-         EaEdeYuShgXfPFPg2DOVVGaiNkd3P87//9Gpgq5DDW3oVUmgf5Kwk1clcSMDJ/rmT6Yd
-         K+hQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWvsoCkq7Q+JvhVTwhQIib1ozvysqMTyagkh5udbkJ07zZYxgyBQPWiUHUhZGOkAi1oLvYSVjsFw1E5@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/kO6M+veBoXGmA0FVzsQS3QcTQvt4QhJj043t5drWVspzTjbY
-	82XjLyke49kgzgMalDj76vEwgz/NQV/Xu7GSDoG3e65++UhJUmFtxOz65+uX1WYIYaavOoUpzlZ
-	WcIygS33AlajMekcSVSsODhsZhnSBu/pfprGU7D+OgWkrgP6n5DoxaBWDVCNB9o4=
-X-Gm-Gg: ASbGncuYJ0c6R+e7m3NSSQOr6xQRihyMNv9QQGleQ4b1HrrpsnEOG56njqEfYlVO+tP
-	8/YTLvrP55Iu6mUPHsBo/yrKMhyCwUt0LtmcQSPX2a1dFXUAdBMoELB7rUPqpdP4j7L68CT8xhb
-	P7Nl89M512Y9WoQAXeuvhnK6cQ+MFAFTJu5nNIf/lt+Tp/3ezBbgAIqLyl7MRBhNFkNa+wkwLYI
-	KbPucqjmeDY7ahjczB7tYrvZYSUC4QRNQE5Mja0GXFV7OtXrv38f9K3XS0XslvJ7VtWYppWFUHn
-	fgtWbNXvf3vUmaCsRDMVEetoe8ZdYwPuAVUBeAlQYBCwGRKDJUTEXBIx6xQm+CamEIM2kK8Ebnl
-	T5Vlg
-X-Received: by 2002:a05:6a00:3e27:b0:781:2538:bf95 with SMTP id d2e1a72fcca58-7812538c1afmr5753909b3a.10.1759065571012;
-        Sun, 28 Sep 2025 06:19:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGoygR7HngElZikzt76IKHuWl2MqmxpbWRCgwmp2pHOfMa3v0CliuV3U0gtlzeqwn7G94AEeQ==
-X-Received: by 2002:a05:6a00:3e27:b0:781:2538:bf95 with SMTP id d2e1a72fcca58-7812538c1afmr5753895b3a.10.1759065570588;
-        Sun, 28 Sep 2025 06:19:30 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-782e36c803fsm2078160b3a.38.2025.09.28.06.19.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Sep 2025 06:19:30 -0700 (PDT)
-Date: Sun, 28 Sep 2025 21:19:24 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: fstests@vger.kernel.org, Ritesh Harjani <ritesh.list@gmail.com>,
-	djwong@kernel.org, john.g.garry@oracle.com, tytso@mit.edu,
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v7 04/12] ltp/fsx.c: Add atomic writes support to fsx
-Message-ID: <20250928131924.b472fjxwir7vphsr@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1758264169.git.ojaswin@linux.ibm.com>
- <c3a040b249485b02b569b9269b649d02d721d995.1758264169.git.ojaswin@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FxJQdRnu+/hCCG6L1Sli4xXf//BpUY9imMMkZAKl3mznDBpkNeJ8AevWDtaxLv2eA48CjFaZ4kaZIw91xox7YIC/1UQqmO0uZOvzeTIW3o2gxn5IzkAm4vtGBx9ZKOjoepxk1GDzipBqlb3loX6ZRWcom6H1gkraVnfvgotv8Sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=ditG3cKt; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-115-162.bstnma.fios.verizon.net [173.48.115.162])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 58SL2WrV024890
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 28 Sep 2025 17:02:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1759093354; bh=zvXXLvFjlqoldoeuu5tYNsX3TKw+NwoELdnEwPXHtdI=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=ditG3cKt+I59PSpNkY+wH9SIJMaEuiZ8J6CUH/NzCpaWlMlgqxKKNvUQEuX9Z8COu
+	 1LACvQ+hp40Upukh62CxrScTicHcrT69x/7AO/SdvYRil0dyF07NdGi47r+YjOy8V7
+	 Uc2rrW4l+SGi97mTtgeY9eNoWE1n8GgFIgb8wSfdPPMiy9+uJ46q94y///QT13glHZ
+	 Ga0ODaUeA+53WR+axAvdDM0XLgpACqqIYMU9/wtsZFRYLMOBjtFMHWV4TyT3gssBhA
+	 qsoX3V+oCMeFsC23nfb6xoBG6DJKfx80EXZ3uOICyQ9xOl3mdAWyoSoTdIhAbTgJWA
+	 R797xAq0KVm9g==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id CDC302E00D9; Sun, 28 Sep 2025 17:02:31 -0400 (EDT)
+Date: Sun, 28 Sep 2025 17:02:31 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Julian Sun <sunjunchao2870@gmail.com>
+Cc: Harshad Shirwadkar <harshadshirwadkar@gmail.com>, adilger@dilger.ca,
+        jack@suse.cz, Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] ext4: reimplement ext4_empty_dir() using
+ is_dirent_block_empty
+Message-ID: <20250928210231.GB274922@mit.edu>
+References: <20200407064616.221459-3-harshadshirwadkar@gmail.com>
+ <c7a41ba13a3551fca25d7498b9d4542a104fac74.camel@gmail.com>
+ <CAHB1NagYz+BLXdEtUa7C_6-A6DDCT9Q+A7Vg6PXSwm9D7ZyAkQ@mail.gmail.com>
+ <20250928034638.GC200463@mit.edu>
+ <CAHB1NaifpACESRtCMsbF3f8EACD__gnM0bsXyyi4sQ0HYcJs=A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -98,270 +69,180 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c3a040b249485b02b569b9269b649d02d721d995.1758264169.git.ojaswin@linux.ibm.com>
+In-Reply-To: <CAHB1NaifpACESRtCMsbF3f8EACD__gnM0bsXyyi4sQ0HYcJs=A@mail.gmail.com>
 
-On Fri, Sep 19, 2025 at 12:17:57PM +0530, Ojaswin Mujoo wrote:
-> Implement atomic write support to help fuzz atomic writes
-> with fsx.
+On Sun, Sep 28, 2025 at 02:51:09PM +0800, Julian Sun wrote:
+> Emm. I checked the code and found that support for 3-level htrees was
+> added in 2017 via commit e08ac99fa2a2 ("ext4: add largedir feature"),
+> but this patch was submitted in 2020. Did I make a mistake somewhere?
+
+I made that statement when I tried forward porting Harshad's patches
+to 6.17-rc4, and one of the patch conflicts seemed to implyyy that
+dx_probe predated the3-level htree change.  But I could have been
+mistaken about why the patch conflict eixsts.
+
+> > There are
+> > also some hardening against maliciously fuzzed file systems that will
+> > prevent the patches from applying cleanly.
 > 
-> Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
+> Is this included in the xfstests test suite?
 
-Hmm... this patch causes more regular fsx test cases fail on old kernel,
-(e.g. g/760, g/617, g/263 ...) except set "FSX_AVOID=-a". Is there a way
-to disable "atomic write" automatically if it's not supported by current
-system?
+For better or for worse, no.  The reason for this is that xfstests
+tends to avoid using pre-generated file systems becase they aren't
+portable to different file system types.  And in order to test
+deliberately corrupted, you generally need to include small corrupted
+file systems into xfstests.  You *could* try to create them as an
+ext4-specific test using debugfs to introduce the corruption, but
+that's quite painful, and in some cases the only way to corrupt the
+file system in that very specific way would require a hex editor.
 
-Thanks,
-Zorro
+That being said, it's generally pretty obvious when bullet-proofing
+code has been added and it causes a merge conflict.  For example, I
+skipped forward-porting the third patch, "ext4: reimplement
+ext4_empty_dir() using is_dirent_block_empty" because there was some
+bullet-proofing code added in ext4_empty_dir() which caused the patch
+application to fail, and I was too third try to deal with it, and it
+strictly speaking wasn't necessary for the patch shrinking
+functionality.  That being said, the bullet proofing which was added
+to ext4_empty_dir(), *should* be added to the newly created
+i_dirent_block_empty() function introduced in the 2/3 patch in this
+series.
 
->  ltp/fsx.c | 115 +++++++++++++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 110 insertions(+), 5 deletions(-)
+> > Then we'd need to run regression tests on a variety of different ext4
+> > configurations to see if there are any regressions, and if so, they
+> > would need to be fixed.
 > 
-> diff --git a/ltp/fsx.c b/ltp/fsx.c
-> index 163b9453..bdb87ca9 100644
-> --- a/ltp/fsx.c
-> +++ b/ltp/fsx.c
-> @@ -40,6 +40,7 @@
->  #include <liburing.h>
->  #endif
->  #include <sys/syscall.h>
-> +#include "statx.h"
->  
->  #ifndef MAP_FILE
->  # define MAP_FILE 0
-> @@ -49,6 +50,10 @@
->  #define RWF_DONTCACHE	0x80
->  #endif
->  
-> +#ifndef RWF_ATOMIC
-> +#define RWF_ATOMIC	0x40
-> +#endif
-> +
->  #define NUMPRINTCOLUMNS 32	/* # columns of data to print on each line */
->  
->  /* Operation flags (bitmask) */
-> @@ -110,6 +115,7 @@ enum {
->  	OP_READ_DONTCACHE,
->  	OP_WRITE,
->  	OP_WRITE_DONTCACHE,
-> +	OP_WRITE_ATOMIC,
->  	OP_MAPREAD,
->  	OP_MAPWRITE,
->  	OP_MAX_LITE,
-> @@ -200,6 +206,11 @@ int	uring = 0;
->  int	mark_nr = 0;
->  int	dontcache_io = 1;
->  int	hugepages = 0;                  /* -h flag */
-> +int	do_atomic_writes = 1;		/* -a flag disables */
-> +
-> +/* User for atomic writes */
-> +int awu_min = 0;
-> +int awu_max = 0;
->  
->  /* Stores info needed to periodically collapse hugepages */
->  struct hugepages_collapse_info {
-> @@ -288,6 +299,7 @@ static const char *op_names[] = {
->  	[OP_READ_DONTCACHE] = "read_dontcache",
->  	[OP_WRITE] = "write",
->  	[OP_WRITE_DONTCACHE] = "write_dontcache",
-> +	[OP_WRITE_ATOMIC] = "write_atomic",
->  	[OP_MAPREAD] = "mapread",
->  	[OP_MAPWRITE] = "mapwrite",
->  	[OP_TRUNCATE] = "truncate",
-> @@ -422,6 +434,7 @@ logdump(void)
->  				prt("\t***RRRR***");
->  			break;
->  		case OP_WRITE_DONTCACHE:
-> +		case OP_WRITE_ATOMIC:
->  		case OP_WRITE:
->  			prt("WRITE    0x%x thru 0x%x\t(0x%x bytes)",
->  			    lp->args[0], lp->args[0] + lp->args[1] - 1,
-> @@ -1073,6 +1086,25 @@ update_file_size(unsigned offset, unsigned size)
->  	file_size = offset + size;
->  }
->  
-> +static int is_power_of_2(unsigned n) {
-> +	return ((n & (n - 1)) == 0);
-> +}
-> +
-> +/*
-> + * Round down n to nearest power of 2.
-> + * If n is already a power of 2, return n;
-> + */
-> +static int rounddown_pow_of_2(int n) {
-> +	int i = 0;
-> +
-> +	if (is_power_of_2(n))
-> +		return n;
-> +
-> +	for (; (1 << i) < n; i++);
-> +
-> +	return 1 << (i - 1);
-> +}
-> +
->  void
->  dowrite(unsigned offset, unsigned size, int flags)
->  {
-> @@ -1081,6 +1113,27 @@ dowrite(unsigned offset, unsigned size, int flags)
->  	offset -= offset % writebdy;
->  	if (o_direct)
->  		size -= size % writebdy;
-> +	if (flags & RWF_ATOMIC) {
-> +		/* atomic write len must be between awu_min and awu_max */
-> +		if (size < awu_min)
-> +			size = awu_min;
-> +		if (size > awu_max)
-> +			size = awu_max;
-> +
-> +		/* atomic writes need power-of-2 sizes */
-> +		size = rounddown_pow_of_2(size);
-> +
-> +		/* atomic writes need naturally aligned offsets */
-> +		offset -= offset % size;
-> +
-> +		/* Skip the write if we are crossing max filesize */
-> +		if ((offset + size) > maxfilelen) {
-> +			if (!quiet && testcalls > simulatedopcount)
-> +				prt("skipping atomic write past maxfilelen\n");
-> +			log4(OP_WRITE_ATOMIC, offset, size, FL_SKIPPED);
-> +			return;
-> +		}
-> +	}
->  	if (size == 0) {
->  		if (!quiet && testcalls > simulatedopcount && !o_direct)
->  			prt("skipping zero size write\n");
-> @@ -1088,7 +1141,10 @@ dowrite(unsigned offset, unsigned size, int flags)
->  		return;
->  	}
->  
-> -	log4(OP_WRITE, offset, size, FL_NONE);
-> +	if (flags & RWF_ATOMIC)
-> +		log4(OP_WRITE_ATOMIC, offset, size, FL_NONE);
-> +	else
-> +		log4(OP_WRITE, offset, size, FL_NONE);
->  
->  	gendata(original_buf, good_buf, offset, size);
->  	if (offset + size > file_size) {
-> @@ -1108,8 +1164,9 @@ dowrite(unsigned offset, unsigned size, int flags)
->  		       (monitorstart == -1 ||
->  			(offset + size > monitorstart &&
->  			(monitorend == -1 || offset <= monitorend))))))
-> -		prt("%lld write\t0x%x thru\t0x%x\t(0x%x bytes)\tdontcache=%d\n", testcalls,
-> -		    offset, offset + size - 1, size, (flags & RWF_DONTCACHE) != 0);
-> +		prt("%lld write\t0x%x thru\t0x%x\t(0x%x bytes)\tdontcache=%d atomic_wr=%d\n", testcalls,
-> +		    offset, offset + size - 1, size, (flags & RWF_DONTCACHE) != 0,
-> +		    (flags & RWF_ATOMIC) != 0);
->  	iret = fsxwrite(fd, good_buf + offset, size, offset, flags);
->  	if (iret != size) {
->  		if (iret == -1)
-> @@ -1785,6 +1842,36 @@ do_dedupe_range(unsigned offset, unsigned length, unsigned dest)
->  }
->  #endif
->  
-> +int test_atomic_writes(void) {
-> +	int ret;
-> +	struct statx stx;
-> +
-> +	if (o_direct != O_DIRECT) {
-> +		fprintf(stderr, "main: atomic writes need O_DIRECT (-Z), "
-> +				"disabling!\n");
-> +		return 0;
-> +	}
-> +
-> +	ret = xfstests_statx(AT_FDCWD, fname, 0, STATX_WRITE_ATOMIC, &stx);
-> +	if (ret < 0) {
-> +		fprintf(stderr, "main: Statx failed with %d."
-> +			" Failed to determine atomic write limits, "
-> +			" disabling!\n", ret);
-> +		return 0;
-> +	}
-> +
-> +	if (stx.stx_attributes & STATX_ATTR_WRITE_ATOMIC &&
-> +	    stx.stx_atomic_write_unit_min > 0) {
-> +		awu_min = stx.stx_atomic_write_unit_min;
-> +		awu_max = stx.stx_atomic_write_unit_max;
-> +		return 1;
-> +	}
-> +
-> +	fprintf(stderr, "main: IO Stack does not support "
-> +			"atomic writes, disabling!\n");
-> +	return 0;
-> +}
-> +
->  #ifdef HAVE_COPY_FILE_RANGE
->  int
->  test_copy_range(void)
-> @@ -2356,6 +2443,12 @@ have_op:
->  			goto out;
->  		}
->  		break;
-> +	case OP_WRITE_ATOMIC:
-> +		if (!do_atomic_writes) {
-> +			log4(OP_WRITE_ATOMIC, offset, size, FL_SKIPPED);
-> +			goto out;
-> +		}
-> +		break;
->  	}
->  
->  	switch (op) {
-> @@ -2385,6 +2478,11 @@ have_op:
->  			dowrite(offset, size, 0);
->  		break;
->  
-> +	case OP_WRITE_ATOMIC:
-> +		TRIM_OFF_LEN(offset, size, maxfilelen);
-> +		dowrite(offset, size, RWF_ATOMIC);
-> +		break;
-> +
->  	case OP_MAPREAD:
->  		TRIM_OFF_LEN(offset, size, file_size);
->  		domapread(offset, size);
-> @@ -2511,13 +2609,14 @@ void
->  usage(void)
->  {
->  	fprintf(stdout, "usage: %s",
-> -		"fsx [-dfhknqxyzBEFHIJKLORWXZ0]\n\
-> +		"fsx [-adfhknqxyzBEFHIJKLORWXZ0]\n\
->  	   [-b opnum] [-c Prob] [-g filldata] [-i logdev] [-j logid]\n\
->  	   [-l flen] [-m start:end] [-o oplen] [-p progressinterval]\n\
->  	   [-r readbdy] [-s style] [-t truncbdy] [-w writebdy]\n\
->  	   [-A|-U] [-D startingop] [-N numops] [-P dirpath] [-S seed]\n\
->  	   [--replay-ops=opsfile] [--record-ops[=opsfile]] [--duration=seconds]\n\
->  	   ... fname\n\
-> +	-a: disable atomic writes\n\
->  	-b opnum: beginning operation number (default 1)\n\
->  	-c P: 1 in P chance of file close+open at each op (default infinity)\n\
->  	-d: debug output for all operations\n\
-> @@ -3059,9 +3158,13 @@ main(int argc, char **argv)
->  	setvbuf(stdout, (char *)0, _IOLBF, 0); /* line buffered stdout */
->  
->  	while ((ch = getopt_long(argc, argv,
-> -				 "0b:c:de:fg:hi:j:kl:m:no:p:qr:s:t:uw:xyABD:EFJKHzCILN:OP:RS:UWXZ",
-> +				 "0ab:c:de:fg:hi:j:kl:m:no:p:qr:s:t:uw:xyABD:EFJKHzCILN:OP:RS:UWXZ",
->  				 longopts, NULL)) != EOF)
->  		switch (ch) {
-> +		case 'a':
-> +			prt("main(): Atomic writes disabled\n");
-> +			do_atomic_writes = 0;
-> +			break;
->  		case 'b':
->  			simulatedopcount = getnum(optarg, &endp);
->  			if (!quiet)
-> @@ -3475,6 +3578,8 @@ main(int argc, char **argv)
->  		exchange_range_calls = test_exchange_range();
->  	if (dontcache_io)
->  		dontcache_io = test_dontcache_io();
-> +	if (do_atomic_writes)
-> +		do_atomic_writes = test_atomic_writes();
->  
->  	while (keep_running())
->  		if (!test())
-> -- 
-> 2.49.0
+> Is testing with xfstests sufficient? Or are there any other test
+> suites that can be used to test this patch set?
+
+Testing with xfstests are sufficient, but we need to test multiple
+file system configurations, but just the default "ext4 using a 4k
+blocksize".  So I tried to do a quick-and-dirty forward port of the
+patches, and they compiled and passed the 15-20 minute smoke test
+(running "kvm-xfstests smoke", or "gce-xfstests smoke").  But when I
+ran the full set of tests, this is what I found.  
+
+ext4/4k: 594 tests, 4 failures, 65 skipped, 5196 seconds
+  Failures: generic/426 generic/756
+  Flaky: generic/041: 20% (1/5)   generic/049: 20% (1/5)
+ext4/1k: 588 tests, 3 failures, 69 skipped, 6306 seconds
+  Failures: generic/426 generic/756
+  Flaky: generic/043: 20% (1/5)
+ext4/ext3: 586 tests, 3 failures, 149 skipped, 4958 seconds
+  Flaky: generic/041: 40% (2/5)   generic/426: 60% (3/5)   
+    generic/756: 60% (3/5)
+ext4/encrypt: 569 tests, 3 failures, 181 skipped, 3263 seconds
+  Failures: generic/426 generic/756
+  Flaky: generic/049: 40% (2/5)
+ext4/nojournal: 586 tests, 3 failures, 137 skipped, 3918 seconds
+  Failures: ext4/045 generic/426 generic/756
+ext4/ext3conv: 591 tests, 4 failures, 67 skipped, 5408 seconds
+  Failures: generic/426 generic/756
+  Flaky: ext4/045: 40% (2/5)   generic/040: 60% (3/5)
+ext4/adv: 587 tests, 10 failures, 73 skipped, 5487 seconds
+  Failures: [generic/347] generic/426 generic/756 [generic/757] [generic/764]
+    [generic/777]
+  Flaky: generic/047: 40% (2/5)   generic/475: 20% (1/5)   
+    [generic/482: 40% (2/5)]   generic/547: 20% (1/5)
+ext4/dioread_nolock: 592 tests, 3 failures, 65 skipped, 4996 seconds
+  Failures: generic/426 generic/756
+  Flaky: generic/047: 40% (2/5)
+ext4/data_journal: 587 tests, 6 failures, 141 skipped, 5151 seconds
+  Failures: [generic/127] generic/426 generic/756
+  Flaky: generic/049: 60% (3/5)   generic/475: 60% (3/5)   
+    generic/645: 40% (2/5)
+ext4/bigalloc_4k: 565 tests, 4 failures, 68 skipped, 5066 seconds
+  Failures: ext4/045
+  Flaky: generic/320: 60% (3/5)   generic/426: 60% (3/5)   
+    generic/756: 60% (3/5)
+ext4/bigalloc_1k: 566 tests, 3 failures, 79 skipped, 5096 seconds
+  Failures: generic/426 generic/756
+  Flaky: generic/049: 20% (1/5)
+ext4/dax: 578 tests, 5 failures, 170 skipped, 3198 seconds
+  Failures: [generic/344] [generic/363] generic/426 generic/756
+  Flaky: generic/043: 20% (1/5)
+Totals: 7193 tests, 1264 skipped, 190 failures, 0 errors, 53862s
+
+(Tests in square brackets were failing with stock 6.17-rc4, so don't
+represent regressions.  Ignore them for the purposes of trying to fix
+up this patch set.)
+
+Now, some of thsee may be failures caused by my making a mistake when
+doing the forward port.  Basically, I bashed the patches until they
+built; and then I ran the smoke test; and then I kicked of the full
+test run, which takes about 2.5 hours using a dozen VM's.
+
+I don't have time to take this any further, so with your permission,
+if you're OK with my handing fiishing off this project to you, I'll
+send the patches as a reply to this message, and then "Your mission,
+should you use to accept it" (quoting from the "Mission Impossible" TV
+Show / Movie) would be:
+
+1) Investigate the failures deailed above, and fix them.  Again, some
+of these failures may not be Harshads; it could be mine when I did the
+forward port.  Either way, we need to fix them before we can merge the
+changes upstream.
+
+2) Do more cleanups on the patches as necessary.  While doing the
+forward port, I noted the following issues that should really be
+fixed.  You might find more things that need improvement; if so,
+please go for it!
+
+2a) Although we are potentially modifying more metadata blocks in
+ext4_try_dir_shrink(), the number of journal credits requested by
+callers to ext4_delete_entry() were not increased.  This could result
+in the handle running out of credits, which will trigger a warning,
+and if the transaction runs out of space, could trigger a journal
+abort.  One way would simply be to increase the credits passed to
+ext4_journal_start().
+
+The other way would be to queue up the work and do the directory
+shrinking in workqueue, where the changes would be done in a
+completely separate journal handle.  This has the advantage that it
+avoids increasing the latency to the unlink() system call, since there
+is no reason why the change needs to happen as part of the system
+call, or in the same transaction as the unlink.
+
+2b) Error checking is missing in some of the newly added code.  In
+particular the function calls in make_unindexed() are ignoring error
+returns.  More generally, while we do the directory shrnk, we need to
+check for potential problems; and if there are any failures, we need
+to leave the directory unchanged, possibly calling ext4_error() if
+file system corruption is dicovered, or just skipping the directory
+shirnk operation if it is some transient error --- for example, a
+memory allocation failure.
+
+2c) As mentioned above, I skipped forward porting the 3rd patch
+series, and there is code to rigorously check for inconsistent file
+system corruptions lest we trigger a BUG or WARN or worse which is
+causing the patch application to fail.  That checking needs to be
+added to is_dirent_block_empty(), and while you're at it, please check
+all of the newly added code to make sure it won't misbehave if the
+file system structures have been corrupted in a particualrly inventive
+way.
+
+2d)  Once (2c) is done forward port patch #3.
+
+3) As discussed in this thread, once these patches are landed, the
+further work to merge leaf notes; to remove empty htree nodes; and to
+shorten the htree depth when necessary.
+
+> > Also, please note that this first set of changes doesn't really make a
+> > big difference for real-world use casses, since a directory block
+> > won't get dropped when it is completely empty....
 > 
+> Yes, I think the biggest beneficiary is rm -rf-type workloads.
+
+The thing about rm -rf workloads is that if you eventually rmdir() the
+directory, all of the blocks will be released anyway.  That's probably
+why this feature is one that hasn't been high priority.  If you delete
+75% of the files in a directory, you *could* do something like "mkdir
+foo.new ; mv foo/* foo.new ; rmdir foo ; mv foo.new foo", but of
+course that won't work if some other process is actively accessing the
+files when you are trying to do the "DIY directory shrink operation".
+
+Cheers,
+
+					- Ted
 
 
