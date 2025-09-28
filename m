@@ -1,397 +1,151 @@
-Return-Path: <linux-ext4+bounces-10465-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10466-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A0B3BA6C2C
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Sep 2025 10:55:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D58D5BA6EC0
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Sep 2025 12:09:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ACB83BDB7B
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Sep 2025 08:55:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24DDB1880577
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Sep 2025 10:10:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF882BFC8F;
-	Sun, 28 Sep 2025 08:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815C02DC33F;
+	Sun, 28 Sep 2025 10:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jKa5oyEZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JudKWoKZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3134C2BEC34
-	for <linux-ext4@vger.kernel.org>; Sun, 28 Sep 2025 08:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7FC42D9EE3
+	for <linux-ext4@vger.kernel.org>; Sun, 28 Sep 2025 10:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759049727; cv=none; b=jqMJAK1hQ2mhHplZjYWrLJUtQtBfHlObwOtteluUx2OqniMqGoT3QFpRdln9GAf8fQ4sn3ksmyidcwQAs5B2BlfuMqsJ8qcUGilva5xGhzldyWiTAdG3c/VdxmQXiC3/z8KL1W4Gg3WE7kv476w8oh/YlgDv0z4d8Haw59UF4cU=
+	t=1759054196; cv=none; b=JyJ5w4jMQ46xLTL94BNighZiBD7URiDUEt/IeZJSa1d3SM0vwQ/gh7FUwoEn8Or3GECbCbDvxRUvvbDGlnsKNCAHv0WxfUJByhehAMHAyyXGb4diurKDMLp+AbFc8Ef7zVyQH8CXcPgHvNVHkVIw8qR7dt/Cug0NFAHGzq8ISC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759049727; c=relaxed/simple;
-	bh=47L4z2ZubzufgHKx7Sf83hXtAFm/muAd2nyS7yOjgY4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JETzI9eZaEqJj/iq7SjWg4ihErFeh6SXd89M98QzXllwlazDkP8HDaf+BcbWExK2AexZLwNN0v9DieZmZvnx93uN1WgV5uatL0pxArn7Q0c0sLZVTZyU8OxDkUXfdBjoEba+lTDKTZ/WWmSPrU/YmvuGK0gbneuVaozBlO16E24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jKa5oyEZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1759049724;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d1S5xY96n9JukFLzowEfCehiE9MIZUz+dxfbandNPMg=;
-	b=jKa5oyEZaSkMxtkW3UlDFml5pjkO45FuJVmPr6KSYKE161yViFeOVrd6x1hOfRus5VaAPB
-	CILu287Fuxhnz2A3XwdP2kxifeVS8ReN8M8ECEvI2fARnc58kRULKUWGsAgpjKJdiPUDH9
-	i6oqn+2nl1qibnYw8sHwZwRVqLqHxKk=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-330-Q0dYpH1HOW-aLpmG4xyLqw-1; Sun, 28 Sep 2025 04:55:22 -0400
-X-MC-Unique: Q0dYpH1HOW-aLpmG4xyLqw-1
-X-Mimecast-MFC-AGG-ID: Q0dYpH1HOW-aLpmG4xyLqw_1759049721
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-26983c4d708so33953385ad.3
-        for <linux-ext4@vger.kernel.org>; Sun, 28 Sep 2025 01:55:22 -0700 (PDT)
+	s=arc-20240116; t=1759054196; c=relaxed/simple;
+	bh=rTIEfIHyol16evnoilqvUSKNW7krl5FuRjb+UuNeQQg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OYzKVMj2KyMysGZg0S8rH96w9oww1G/LcIlThAdFw+CHu/pQO6YsW4IF/BKnb7UHFEOLWTBgvDhrUZNabapcv8xSFTMHxE49cZd/TDEbVPfA+e5CK7yIKpn8ubdcTEVevD+Uc5obEjYe2HxxTVIlKGhgyYvbL9jmAB+M9bwcSrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JudKWoKZ; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-27edcbbe7bfso37716255ad.0
+        for <linux-ext4@vger.kernel.org>; Sun, 28 Sep 2025 03:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759054194; x=1759658994; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HEaRyqcNalrKfX0bmpo1LGgUVgua5hE0vbu7vpC1J+A=;
+        b=JudKWoKZxkB40WVKiwYh2uHef98wcxQmxo7PIAbclDenWCwQ4PVMzM00fboYIwz/qh
+         jqMzbAB8YRBLwcTsnba4dbVKu46uiGYwArtDHkLvuUB6Rd386iDf6wTijcxL2KMYkLXu
+         5MueIzvNEBM1I/vHGKgUFtpUZ6x35CBgtBi6Zlk8SQacH8fGQCiTT5k8IZUPxRyDmlFM
+         SqrXq8InEzXKWxzf8uYD/3GcLtknslRKvYX+OIns6r9VJx7Kpi3R9R4iqDDBNYaAzSIq
+         zCs5bdjHw0gSrI/e+lSGzSGldYRpL+OcslHzoYWSa+SLC1ZM0rp15JRxg0CAplpmSwM/
+         J0PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759049721; x=1759654521;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d1S5xY96n9JukFLzowEfCehiE9MIZUz+dxfbandNPMg=;
-        b=OQe+x6fE49aZ7QL0Wpe6MDSh0Qb3Ia20GFK50H5JMpjvGeJdsc55PKTDJCtHUwZL5H
-         2MAm+EH6u3tNqZZup3i1qhOXQWyrXPVOrpdMqYpLkQ1c+sSrDmPaqqVIBd3ODT6nRWpL
-         o/z3+/bZ3+m6pB6cHoUL4fdt9QZMHf5CK2HjKjjc5G9Zgulty6PpqTsJX9ap5yEH06bJ
-         KlZ1hb9LBMKUmoZs5gCOrL8RoY0f+wv5XVyPsbF6KN8RnW6f5tpNxm9eKyVoYG0IQ+Pc
-         OvEaTuz0cfiSILWgYovNowLfKJaEqzNbxpK/6TELTKJT0yc/w42ipvYEDj0zTG46M7ye
-         eHqA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRp+QLOejEmvaWrGcEuaIFOT2H1ZDL+84a1ou2+cN81C94wkFFkhfgixcuCOmKqNNoGE9wH69emf1d@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw+a/gf4Ae2o2iXGtj/4UGlxhjLyR+RHwt2lzozv8H2DrhhnWFM
-	UIa0T/ZsCI1T05tniHVjNec4d8f8cnozAlFNNULbcP9UQhJIPQ/0r4psKd0jc/JyxAUL60tqVjn
-	7wYmuB7O5Cn/cynf3cCa54Favj63l6M9aS+r4SCusmPksq7R3TJ//1VbrVKVxlVM=
-X-Gm-Gg: ASbGncsDPkeVZAKBJZTWrx2G2ClJzltvmBw9EYRB9VG4AS+DKado2MHCtp4HvdfJhsf
-	zbmLw9AhRGWT/v3Xvb3taIMzpAnZF6FNCFTLjn1GJ5tTnf2q5RmUVSZcUzun29sy8UlvvVnHru7
-	HHYZpZB1+aMy01uJGDi5YHUn6SC0BJ74MUbfXREViytImDkvOAX1VFIxSwYrZo0l2D1LlShdLlx
-	EFpboVoS0yREMwdz4r495Xe4OaLVxYnQzndZuTarE6j4EiyfFQjODHu2bPh2wYaVMljM27ldYSS
-	CojqMruhv//TjOgKrjvwNu++Z13V/stdZ3GH4+2L/lN6v0m39WeXPSJ3X5nDYeY4qozO4NKqoiY
-	dh77i
-X-Received: by 2002:a17:902:ec89:b0:27e:f06b:ae31 with SMTP id d9443c01a7336-27ef06bb0b8mr88880045ad.61.1759049721226;
-        Sun, 28 Sep 2025 01:55:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHDc1Umotj4jXQHlcyKodu4MkpzRnRU3+gH6QjdJJVK9GnYoAoP2k6fHZFQhnUMYVj73kDMjw==
-X-Received: by 2002:a17:902:ec89:b0:27e:f06b:ae31 with SMTP id d9443c01a7336-27ef06bb0b8mr88879845ad.61.1759049720665;
-        Sun, 28 Sep 2025 01:55:20 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-27ed65e8e89sm101399075ad.0.2025.09.28.01.55.17
+        d=1e100.net; s=20230601; t=1759054194; x=1759658994;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HEaRyqcNalrKfX0bmpo1LGgUVgua5hE0vbu7vpC1J+A=;
+        b=IsLManAkO+3nmF3mbBRtEJw48VTbzEIVCX75SBIcfyNjBimn6jPm3opc9TfBbLF6ms
+         5aW3M/QvRlj7PwN38ViAZ2/sjG3L0GFFnh0HLTrlgOm8SOV46/BgVaf8phL4jJahGSwz
+         mF1jAKOFZsVgVwOksMiTVAaRXP4bs0972ZZ4n9WIddIZgbCpIphuMj84PNCb5/shbn5Q
+         aoavcnuDTYSpqCA9Cr9+epBEim7cQWK2qHcdF0hJaXyA2wJ1Oz0h/tVIjoyBbR0C/Gq9
+         EVy2PkcM55ZdNrqH6cSmcbFZHKHKwSHhPsiSsWBG5GTM2zem9BowJAA/Ie3xUgtResWA
+         6GtA==
+X-Gm-Message-State: AOJu0YyAE2qazAmW13ZKIqurETp6/qlZuU+pVQyELk0guHPodHgLtAyX
+	u2N390llkRkqAqiMsizRIjqh9OO4g3Y9sSPg9e25pxMbCSQ3hCqI1qUD
+X-Gm-Gg: ASbGncuyBc4bSJ1z+Zlt5YvLVYthNNwSTYP3heBDz4O9mlHbPvItBg3q8s0rnC+qVTt
+	48cX7NTrR5bUk44FE4SQelib0Shobg8mMTGdQJE8ObjM2unOHWmLHV394vQa+GzHWsI1jE8vwnT
+	AhYce3WGBIW8n65jF7JYr7j4kc8NKxd1/SFuzau+ekWnSebe6/Jj7/g7B0HKNKt2V5jHN5qCwRQ
+	+U3FIuqfbjTFnlV/0PSeRY+5by+4qe4c9UeY3GfmJ/JGNliPm1YBAQLuvsMjN0WEy2uOReTJrwF
+	96Z7a57r86A4hL40yaRWxgwZpNFy2NKx1GO/dD0jqbfpULaT++zs5MqWwT7H4n5993ozSDLQv+9
+	7NVdr0sSsswaYtnbaOh4n0guluErfMDCc6y3dZiMtzXVX/E9CArkRLdW0PUVJzHt3fcswwVj7MN
+	f0hu2FfgcUE/vSXg==
+X-Google-Smtp-Source: AGHT+IGQn6LWV6iO53lyCYBVGI/gp6UKhS19n/WsBwNq3wacSvChYo5sSsOyWQJP3LB28kS3hR4IVQ==
+X-Received: by 2002:a17:903:244a:b0:25c:d4b6:f117 with SMTP id d9443c01a7336-27ed4a3de3cmr143931065ad.35.1759054194123;
+        Sun, 28 Sep 2025 03:09:54 -0700 (PDT)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:aa9a:16e7:7fcc:f4d0])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3347224b0f7sm10473322a91.7.2025.09.28.03.09.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Sep 2025 01:55:20 -0700 (PDT)
-Date: Sun, 28 Sep 2025 16:55:14 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: fstests@vger.kernel.org, Ritesh Harjani <ritesh.list@gmail.com>,
-	djwong@kernel.org, john.g.garry@oracle.com, tytso@mit.edu,
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v7 04/12] ltp/fsx.c: Add atomic writes support to fsx
-Message-ID: <20250928085514.6cosenx2n2kipu2w@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1758264169.git.ojaswin@linux.ibm.com>
- <c3a040b249485b02b569b9269b649d02d721d995.1758264169.git.ojaswin@linux.ibm.com>
+        Sun, 28 Sep 2025 03:09:53 -0700 (PDT)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Deepanshu Kartikey <kartikey406@gmail.com>,
+	syzbot+038b7bf43423e132b308@syzkaller.appspotmail.com
+Subject: [PATCH] ext4: validate extent entries before caching in ext4_find_extent()
+Date: Sun, 28 Sep 2025 15:39:46 +0530
+Message-ID: <20250928100946.12445-1-kartikey406@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3a040b249485b02b569b9269b649d02d721d995.1758264169.git.ojaswin@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 19, 2025 at 12:17:57PM +0530, Ojaswin Mujoo wrote:
-> Implement atomic write support to help fuzz atomic writes
-> with fsx.
-> 
-> Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
->  ltp/fsx.c | 115 +++++++++++++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 110 insertions(+), 5 deletions(-)
-> 
-> diff --git a/ltp/fsx.c b/ltp/fsx.c
-> index 163b9453..bdb87ca9 100644
-> --- a/ltp/fsx.c
-> +++ b/ltp/fsx.c
-> @@ -40,6 +40,7 @@
->  #include <liburing.h>
->  #endif
->  #include <sys/syscall.h>
-> +#include "statx.h"
->  
->  #ifndef MAP_FILE
->  # define MAP_FILE 0
-> @@ -49,6 +50,10 @@
->  #define RWF_DONTCACHE	0x80
->  #endif
->  
-> +#ifndef RWF_ATOMIC
-> +#define RWF_ATOMIC	0x40
-> +#endif
-> +
->  #define NUMPRINTCOLUMNS 32	/* # columns of data to print on each line */
->  
->  /* Operation flags (bitmask) */
-> @@ -110,6 +115,7 @@ enum {
->  	OP_READ_DONTCACHE,
->  	OP_WRITE,
->  	OP_WRITE_DONTCACHE,
-> +	OP_WRITE_ATOMIC,
->  	OP_MAPREAD,
->  	OP_MAPWRITE,
->  	OP_MAX_LITE,
-> @@ -200,6 +206,11 @@ int	uring = 0;
->  int	mark_nr = 0;
->  int	dontcache_io = 1;
->  int	hugepages = 0;                  /* -h flag */
-> +int	do_atomic_writes = 1;		/* -a flag disables */
-> +
-> +/* User for atomic writes */
-> +int awu_min = 0;
-> +int awu_max = 0;
->  
->  /* Stores info needed to periodically collapse hugepages */
->  struct hugepages_collapse_info {
-> @@ -288,6 +299,7 @@ static const char *op_names[] = {
->  	[OP_READ_DONTCACHE] = "read_dontcache",
->  	[OP_WRITE] = "write",
->  	[OP_WRITE_DONTCACHE] = "write_dontcache",
-> +	[OP_WRITE_ATOMIC] = "write_atomic",
->  	[OP_MAPREAD] = "mapread",
->  	[OP_MAPWRITE] = "mapwrite",
->  	[OP_TRUNCATE] = "truncate",
-> @@ -422,6 +434,7 @@ logdump(void)
->  				prt("\t***RRRR***");
->  			break;
->  		case OP_WRITE_DONTCACHE:
-> +		case OP_WRITE_ATOMIC:
->  		case OP_WRITE:
->  			prt("WRITE    0x%x thru 0x%x\t(0x%x bytes)",
->  			    lp->args[0], lp->args[0] + lp->args[1] - 1,
-> @@ -1073,6 +1086,25 @@ update_file_size(unsigned offset, unsigned size)
->  	file_size = offset + size;
->  }
->  
-> +static int is_power_of_2(unsigned n) {
-> +	return ((n & (n - 1)) == 0);
-> +}
-> +
-> +/*
-> + * Round down n to nearest power of 2.
-> + * If n is already a power of 2, return n;
-> + */
-> +static int rounddown_pow_of_2(int n) {
-> +	int i = 0;
-> +
-> +	if (is_power_of_2(n))
-> +		return n;
-> +
-> +	for (; (1 << i) < n; i++);
-> +
-> +	return 1 << (i - 1);
-> +}
-> +
->  void
->  dowrite(unsigned offset, unsigned size, int flags)
->  {
-> @@ -1081,6 +1113,27 @@ dowrite(unsigned offset, unsigned size, int flags)
->  	offset -= offset % writebdy;
->  	if (o_direct)
->  		size -= size % writebdy;
-> +	if (flags & RWF_ATOMIC) {
-> +		/* atomic write len must be between awu_min and awu_max */
-> +		if (size < awu_min)
-> +			size = awu_min;
-> +		if (size > awu_max)
-> +			size = awu_max;
-> +
-> +		/* atomic writes need power-of-2 sizes */
-> +		size = rounddown_pow_of_2(size);
-> +
-> +		/* atomic writes need naturally aligned offsets */
-> +		offset -= offset % size;
-> +
-> +		/* Skip the write if we are crossing max filesize */
-> +		if ((offset + size) > maxfilelen) {
-> +			if (!quiet && testcalls > simulatedopcount)
-> +				prt("skipping atomic write past maxfilelen\n");
-> +			log4(OP_WRITE_ATOMIC, offset, size, FL_SKIPPED);
-> +			return;
-> +		}
-> +	}
->  	if (size == 0) {
->  		if (!quiet && testcalls > simulatedopcount && !o_direct)
->  			prt("skipping zero size write\n");
-> @@ -1088,7 +1141,10 @@ dowrite(unsigned offset, unsigned size, int flags)
->  		return;
->  	}
->  
-> -	log4(OP_WRITE, offset, size, FL_NONE);
-> +	if (flags & RWF_ATOMIC)
-> +		log4(OP_WRITE_ATOMIC, offset, size, FL_NONE);
-> +	else
-> +		log4(OP_WRITE, offset, size, FL_NONE);
->  
->  	gendata(original_buf, good_buf, offset, size);
->  	if (offset + size > file_size) {
-> @@ -1108,8 +1164,9 @@ dowrite(unsigned offset, unsigned size, int flags)
->  		       (monitorstart == -1 ||
->  			(offset + size > monitorstart &&
->  			(monitorend == -1 || offset <= monitorend))))))
-> -		prt("%lld write\t0x%x thru\t0x%x\t(0x%x bytes)\tdontcache=%d\n", testcalls,
-> -		    offset, offset + size - 1, size, (flags & RWF_DONTCACHE) != 0);
-> +		prt("%lld write\t0x%x thru\t0x%x\t(0x%x bytes)\tdontcache=%d atomic_wr=%d\n", testcalls,
-> +		    offset, offset + size - 1, size, (flags & RWF_DONTCACHE) != 0,
-> +		    (flags & RWF_ATOMIC) != 0);
->  	iret = fsxwrite(fd, good_buf + offset, size, offset, flags);
->  	if (iret != size) {
->  		if (iret == -1)
-> @@ -1785,6 +1842,36 @@ do_dedupe_range(unsigned offset, unsigned length, unsigned dest)
->  }
->  #endif
->  
-> +int test_atomic_writes(void) {
-> +	int ret;
-> +	struct statx stx;
-> +
-> +	if (o_direct != O_DIRECT) {
-> +		fprintf(stderr, "main: atomic writes need O_DIRECT (-Z), "
-> +				"disabling!\n");
+syzbot reported a BUG_ON in ext4_es_cache_extent() triggered when
+opening a verity file on a corrupted ext4 filesystem mounted without
+a journal.
 
-This patch causes some fsx test cases fail (e.g. g/127, g/231) as:
+The issue occurs when the extent tree contains out-of-order extents,
+which can happen in a corrupted filesystem. ext4_find_extent() calls
+ext4_cache_extents() without validating the extent entries when the
+tree depth is 0 (leaf level). This allows corrupted extent trees with
+out-of-order extents to be cached, triggering a BUG_ON in
+ext4_es_cache_extent() due to integer underflow when calculating hole
+sizes:
 
---- /dev/fd/63	2025-09-26 17:25:48.413212392 -0400
-+++ generic/127.out.bad	2025-09-26 17:25:48.177803644 -0400
-@@ -1,7 +1,13 @@
- QA output created by 127
-+main: atomic writes need O_DIRECT (-Z), disabling!
- All 100000 operations completed A-OK!
-+main: atomic writes need O_DIRECT (-Z), disabling!
- All 100000 operations completed A-OK!
-+main: atomic writes need O_DIRECT (-Z), disabling!
- All 100000 operations completed A-OK!
-+main: atomic writes need O_DIRECT (-Z), disabling!
- All 100000 operations completed A-OK!
-+main: atomic writes need O_DIRECT (-Z), disabling!
- All 100000 operations completed A-OK!
-+main: atomic writes need O_DIRECT (-Z), disabling!
- All 100000 operations completed A-OK!
+  If prev = 4352 and lblk = 1280:
+  lblk - prev = 1280 - 4352 = -3072 (as signed)
+  = 4294964224 (as unsigned)
+  end = lblk + len - 1 = 4352 + 4294964224 - 1 = 1279 (after overflow)
+  BUG_ON(end < lblk) triggers because 1279 < 4352
 
-Due to you didn't deal with the "-q" (quiet) option at here. If you don't have
-objection, I'll change this part as:
+Fix this by adding extent entry validation using the existing
+ext4_valid_extent_entries() function before caching. This ensures
+corrupted extent trees are detected and handled properly through the
+error path, preventing both the BUG_ON and potential use-after-free
+issues.
 
-  if (o_direct != O_DIRECT && !quiet)
+Reported-and-tested-by: syzbot+038b7bf43423e132b308@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=038b7bf43423e132b308
+Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
+---
+ fs/ext4/extents.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-And ...
-
-> +		return 0;
-> +	}
-> +
-> +	ret = xfstests_statx(AT_FDCWD, fname, 0, STATX_WRITE_ATOMIC, &stx);
-> +	if (ret < 0) {
-> +		fprintf(stderr, "main: Statx failed with %d."
-> +			" Failed to determine atomic write limits, "
-> +			" disabling!\n", ret);
-> +		return 0;
-> +	}
-> +
-> +	if (stx.stx_attributes & STATX_ATTR_WRITE_ATOMIC &&
-> +	    stx.stx_atomic_write_unit_min > 0) {
-> +		awu_min = stx.stx_atomic_write_unit_min;
-> +		awu_max = stx.stx_atomic_write_unit_max;
-> +		return 1;
-> +	}
-> +
-> +	fprintf(stderr, "main: IO Stack does not support "
-> +			"atomic writes, disabling!\n");
-
-... change this line as:
-
-if (!quiet)
-	fprintf(stderr, "main: IO Stack does not support "
-			"atomic writes, disabling!\n");
-
-When I merge it.
-
-Thanks,
-Zorro
-
-> +	return 0;
-> +}
-> +
->  #ifdef HAVE_COPY_FILE_RANGE
->  int
->  test_copy_range(void)
-> @@ -2356,6 +2443,12 @@ have_op:
->  			goto out;
->  		}
->  		break;
-> +	case OP_WRITE_ATOMIC:
-> +		if (!do_atomic_writes) {
-> +			log4(OP_WRITE_ATOMIC, offset, size, FL_SKIPPED);
-> +			goto out;
-> +		}
-> +		break;
->  	}
->  
->  	switch (op) {
-> @@ -2385,6 +2478,11 @@ have_op:
->  			dowrite(offset, size, 0);
->  		break;
->  
-> +	case OP_WRITE_ATOMIC:
-> +		TRIM_OFF_LEN(offset, size, maxfilelen);
-> +		dowrite(offset, size, RWF_ATOMIC);
-> +		break;
-> +
->  	case OP_MAPREAD:
->  		TRIM_OFF_LEN(offset, size, file_size);
->  		domapread(offset, size);
-> @@ -2511,13 +2609,14 @@ void
->  usage(void)
->  {
->  	fprintf(stdout, "usage: %s",
-> -		"fsx [-dfhknqxyzBEFHIJKLORWXZ0]\n\
-> +		"fsx [-adfhknqxyzBEFHIJKLORWXZ0]\n\
->  	   [-b opnum] [-c Prob] [-g filldata] [-i logdev] [-j logid]\n\
->  	   [-l flen] [-m start:end] [-o oplen] [-p progressinterval]\n\
->  	   [-r readbdy] [-s style] [-t truncbdy] [-w writebdy]\n\
->  	   [-A|-U] [-D startingop] [-N numops] [-P dirpath] [-S seed]\n\
->  	   [--replay-ops=opsfile] [--record-ops[=opsfile]] [--duration=seconds]\n\
->  	   ... fname\n\
-> +	-a: disable atomic writes\n\
->  	-b opnum: beginning operation number (default 1)\n\
->  	-c P: 1 in P chance of file close+open at each op (default infinity)\n\
->  	-d: debug output for all operations\n\
-> @@ -3059,9 +3158,13 @@ main(int argc, char **argv)
->  	setvbuf(stdout, (char *)0, _IOLBF, 0); /* line buffered stdout */
->  
->  	while ((ch = getopt_long(argc, argv,
-> -				 "0b:c:de:fg:hi:j:kl:m:no:p:qr:s:t:uw:xyABD:EFJKHzCILN:OP:RS:UWXZ",
-> +				 "0ab:c:de:fg:hi:j:kl:m:no:p:qr:s:t:uw:xyABD:EFJKHzCILN:OP:RS:UWXZ",
->  				 longopts, NULL)) != EOF)
->  		switch (ch) {
-> +		case 'a':
-> +			prt("main(): Atomic writes disabled\n");
-> +			do_atomic_writes = 0;
-> +			break;
->  		case 'b':
->  			simulatedopcount = getnum(optarg, &endp);
->  			if (!quiet)
-> @@ -3475,6 +3578,8 @@ main(int argc, char **argv)
->  		exchange_range_calls = test_exchange_range();
->  	if (dontcache_io)
->  		dontcache_io = test_dontcache_io();
-> +	if (do_atomic_writes)
-> +		do_atomic_writes = test_atomic_writes();
->  
->  	while (keep_running())
->  		if (!test())
-> -- 
-> 2.49.0
-> 
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index ca5499e9412b..f8e45623f7ea 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -924,8 +924,18 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
+ 	path[0].p_bh = NULL;
+ 
+ 	i = depth;
+-	if (!(flags & EXT4_EX_NOCACHE) && depth == 0)
++	if (!(flags & EXT4_EX_NOCACHE) && depth == 0) {
++		ext4_fsblk_t pblk = 0;
++
++		if (!ext4_valid_extent_entries(inode, eh, 0, &pblk, 0)) {
++			EXT4_ERROR_INODE(inode,
++				"invalid extent entries, pblk %llu",
++				pblk);
++			ret = -EFSCORRUPTED;
++			goto err;
++		}
+ 		ext4_cache_extents(inode, eh);
++	}
+ 	/* walk through the tree */
+ 	while (i) {
+ 		ext_debug(inode, "depth %d: num %d, max %d\n",
+-- 
+2.43.0
 
 
