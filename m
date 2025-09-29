@@ -1,74 +1,74 @@
-Return-Path: <linux-ext4+bounces-10493-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10494-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33DEDBAA26F
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 19:22:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC5B5BAA5ED
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 20:39:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E89C4421E59
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 17:22:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 494461894C7A
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 18:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0BBB30DEA2;
-	Mon, 29 Sep 2025 17:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64F3255E53;
+	Mon, 29 Sep 2025 18:39:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="fcXwy0xZ"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="nqZw28ij"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from fra-out-005.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-005.esa.eu-central-1.outbound.mail-perimeter.amazon.com [63.176.194.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6B530C0F0;
-	Mon, 29 Sep 2025 17:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7058922F76F;
+	Mon, 29 Sep 2025 18:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.176.194.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759166536; cv=none; b=eoX2Y6dCaxvXM0Xa6dhzOEmZQhQoFuz3FrgB484FjApQphFAGM7VsuSHha5Yxyz0DToFnYO4Efe9FI7q6NsD3ytmkpR+8RsNTgapFASDAEl9qr2E8fSwWUj4lc5IVj8RbfX/XWGXSDR3j/zw0MdWTrqftrG9SsSa9cjRJZcpirw=
+	t=1759171151; cv=none; b=qnL9wt4gXlFeT2ptRxBkoXNt5ZsJIYvHqYHZ2nug/Ezf6SUIvzrA3hJXFGm/wMN9A8Y+GJs1C+lKwsO2kGOw4/aoNT8HCEMhrqiK89q+dsY/VkKN2MLUgIh+/PCZFjh+4VwZEOVX54P7KrkJf50hwob/mXrP2QfHxbd1SBuarT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759166536; c=relaxed/simple;
-	bh=rPvAb70eX+xtNxLsT31tJqXSjUME1o5yfKSfCT5CPok=;
+	s=arc-20240116; t=1759171151; c=relaxed/simple;
+	bh=vJ7eD2nV/4N7AIUA9/+6epf2vjH4s0akBoFco89HihE=;
 	h=Subject:From:To:CC:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=fDvEqNhO31fEMODo+2dv4KYxTaS4Rt/WCVE16Ck7B1KaPagYptjSMtEtKytng8Pku3txV7lCQS6Pp2vVAAIGJw8wcp1hdeSqoJXs+iUciWPlS8jF//IHL0Z7w5sD9QJVY+ovlVEXvZHYxXs9mpHijNc5Uh2DXSH3okp4nQM3uVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=fcXwy0xZ; arc=none smtp.client-ip=63.176.194.123
+	 Content-Type:MIME-Version; b=gvOP+pN1ec/tRVlFDNDiYi0Rz7pXtQHqK5KboU4WywaQ8rAEI+uMgF9IkWK2kcULHbbT1j6ce4C6LPlPFLrK5WOjQAtPEIHMSYTZ8eZVSAODhT1xGPCUSLA0bDgNgF7NjjJoRUSzt9w0rgh2mJXlVQchL6lLdEuudTnaa1LpPIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=nqZw28ij; arc=none smtp.client-ip=63.176.194.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1759166534; x=1790702534;
+  t=1759171149; x=1790707149;
   h=from:to:cc:date:message-id:references:in-reply-to:
    content-transfer-encoding:mime-version:subject;
-  bh=gKvaxmrs9uqyIGzbajJ1O5Hd1/ndu7xAtdLZV5bBh5k=;
-  b=fcXwy0xZFAjAG5ioqFJQdp7u9bZ9wRmoEjyyVPcJ36wXTbuWjbqRrDi7
-   B49UmJ1lE87OmyPGFnRTh4urVX2YvQ7BXyR0RaXgcG7ZphjDe/kmHXrch
-   8yMJE3K0TKE+hsJqDwrj7oH+nXc34eAmsI7+WFQJIOHItZAhtpdX+ZnQI
-   7CGMQXfX1PkHmzrlfTxQrOs8M8lTX6D3juk6EXZ+fWXR3a/j4oqby4k6T
-   uky/VIhuvQcXk1okeqSY4uphf4dKMuUnlZOkbaJyQUD/TMYbtSr8f2ZPJ
-   6o70OCOZNPv81QXGcsSUwhJTee+FiHKucpAf2Ma6YL9IFbOzwdWM1ewpv
+  bh=vJ7eD2nV/4N7AIUA9/+6epf2vjH4s0akBoFco89HihE=;
+  b=nqZw28ijwkrb/pB3DBjusC/TpdcVATjo7BQwbZXC4YwamHadT5WG8QCW
+   ffympzEULPkfZQCMr9EvIqKsHMpQd2nqPrIB6lSUCv14gEfmi3Gas73YW
+   7iQv4+U/Eb37b+qK+xVl+TH4Ioa8ZSmhntyZLrsePmReX8t1DgcfX4p2R
+   7l+L4UzPttMIvL/N429rUWFzYpFgqwfAsdp5aLJr/zT4hqGbA1e3ltZhf
+   tFaueNq62ojOlCToSiZSe9e+aY07I48qtcf/UPAQh/7GiHCNeXcFaMLXm
+   gpgbkN8jc2yYE9GeOXoVO3suffMUCPbX9QQlG0PnThmZOZvsccXcUHnw4
    w==;
-X-CSE-ConnectionGUID: IafcEd3hQO6oGZOiLnLKqg==
-X-CSE-MsgGUID: Itl7dVAmRv28mSSF4DAfeA==
+X-CSE-ConnectionGUID: EC85rEzURZ+CERFt3YJdKA==
+X-CSE-MsgGUID: tnl/cymrQVqCkLCX53HUhQ==
 X-IronPort-AV: E=Sophos;i="6.18,302,1751241600"; 
-   d="scan'208";a="2841710"
+   d="scan'208";a="2844874"
 Subject: RE: [PATCH 07/19 v6.1.y] minmax: make generic MIN() and MAX() macros
  available everywhere
 Thread-Topic: [PATCH 07/19 v6.1.y] minmax: make generic MIN() and MAX() macros available
  everywhere
 Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
-  by internal-fra-out-005.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2025 17:22:02 +0000
-Received: from EX19MTAEUA002.ant.amazon.com [54.240.197.232:7433]
+  by internal-fra-out-005.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2025 18:39:02 +0000
+Received: from EX19MTAEUB002.ant.amazon.com [54.240.197.232:4036]
  by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.19.222:2525] with esmtp (Farcaster)
- id 39c95fb2-68e2-4279-8b5a-834631637cab; Mon, 29 Sep 2025 17:22:01 +0000 (UTC)
-X-Farcaster-Flow-ID: 39c95fb2-68e2-4279-8b5a-834631637cab
+ id a320107e-9e0a-4760-b3dc-26c5d986714d; Mon, 29 Sep 2025 18:39:01 +0000 (UTC)
+X-Farcaster-Flow-ID: a320107e-9e0a-4760-b3dc-26c5d986714d
 Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
+ EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Mon, 29 Sep 2025 17:21:59 +0000
+ Mon, 29 Sep 2025 18:39:00 +0000
 Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
  EX19D018EUA004.ant.amazon.com (10.252.50.85) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Mon, 29 Sep 2025 17:21:59 +0000
+ Mon, 29 Sep 2025 18:39:00 +0000
 Received: from EX19D018EUA004.ant.amazon.com ([fe80::e53:84f8:3456:a97d]) by
  EX19D018EUA004.ant.amazon.com ([fe80::e53:84f8:3456:a97d%3]) with mapi id
- 15.02.2562.020; Mon, 29 Sep 2025 17:21:59 +0000
+ 15.02.2562.020; Mon, 29 Sep 2025 18:39:00 +0000
 From: "Farber, Eliav" <farbere@amazon.com>
 To: Greg KH <gregkh@linuxfoundation.org>
 CC: "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "richard@nod.at"
@@ -177,15 +177,13 @@ CC: "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "richard@nod.at"
 	<linux-kselftest@vger.kernel.org>, "stable@vger.kernel.org"
 	<stable@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>,
 	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Thread-Index: AQHcLZHEroQ9W2lH4EW9XJumD1KlZrSqNL0AgAAM8ACAAAMmgIAAKtlA
-Date: Mon, 29 Sep 2025 17:21:58 +0000
-Message-ID: <e754fed7d53040fb92e1ef9b64c64f6e@amazon.com>
+Thread-Index: AQHcLZHEroQ9W2lH4EW9XJumD1KlZrSqNL0AgABQRkA=
+Date: Mon, 29 Sep 2025 18:39:00 +0000
+Message-ID: <f32d53131d0a4b61a7be4862c7a7f237@amazon.com>
 References: <20250924202320.32333-1-farbere@amazon.com>
  <20250924202320.32333-8-farbere@amazon.com>
  <2025092923-stove-rule-a00f@gregkh>
- <85a995bb59474300aa3d5f973d279a13@amazon.com>
- <2025092955-module-landfall-ed45@gregkh>
-In-Reply-To: <2025092955-module-landfall-ed45@gregkh>
+In-Reply-To: <2025092923-stove-rule-a00f@gregkh>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach:
@@ -199,31 +197,19 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-> On Mon, Sep 29, 2025 at 02:39:26PM +0000, Farber, Eliav wrote:
-> > > On Wed, Sep 24, 2025 at 08:23:08PM +0000, Eliav Farber wrote:
-> > > > From: Linus Torvalds <torvalds@linux-foundation.org>
-> > > >
-> > > > [ Upstream commit 1a251f52cfdc417c84411a056bc142cbd77baef4 ]
-> > >
-> > > <snip>
-> > >
-> > > As this didn't go into 6.6.y yet, I'll stop here on this series for n=
-ow.
-> > > Please fix up for newer kernels first and then resend these.
-> >
-> > For 6.6.y I backported 15 commits:
-> > https://lore.kernel.org/stable/20250922103241.16213-1-farbere@amazon.co=
-m/T/#t
-> >
-> > Why weren't all of them picked?
+On Wed, Sep 24, 2025 at 08:23:08PM +0000, Eliav Farber wrote:
+> From: Linus Torvalds <torvalds@linux-foundation.org>
 >
-> Because one of them broke the build, as I wrote a week ago here:
->         https://lore.kernel.org/all/2025092209-owl-whisking-03e3@gregkh/
+> [ Upstream commit 1a251f52cfdc417c84411a056bc142cbd77baef4 ]
 
-Fixed:
-https://lore.kernel.org/stable/20250929171733.20671-1-farbere@amazon.com/T/=
-#t
+<snip>
+
+As this didn't go into 6.6.y yet, I'll stop here on this series for now.
+Please fix up for newer kernels first and then resend these.
+
+The fix for 6.6.y was applied also on 6.1.y:
+https://lore.kernel.org/stable/20250929183358.18982-1-farbere@amazon.com/
 
 ---
-Thanks, Eliav
+Regards, Eliav
 
