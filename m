@@ -1,130 +1,141 @@
-Return-Path: <linux-ext4+bounces-10487-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10488-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89D3BBA96D4
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 15:50:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1453FBA9767
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 16:00:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00E797A1E3B
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 13:48:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C89481C2E96
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 14:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 316C03090D6;
-	Mon, 29 Sep 2025 13:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6D13090C4;
+	Mon, 29 Sep 2025 14:00:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2IR/w1Nh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GGRcIS/3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8312A2AD24;
-	Mon, 29 Sep 2025 13:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69C34308F3B
+	for <linux-ext4@vger.kernel.org>; Mon, 29 Sep 2025 14:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759153800; cv=none; b=FfEpG40vNgmDbGbR1AiTpKYQoDXO7nmx14qTzejjhTUbCePZiD9vjkNaZPjRNE6N5pwzJTbJcCOfbuPmt6nTQn7tiurbV2cLoGikGtZkv1uzf1B6WD9z2IbrVBIfZccTOLluTYeeFuufuvejZFOVuiBGRezLgb0GOxUA9RQQwAk=
+	t=1759154446; cv=none; b=rgpUFkGTUxAvL8KxpRBhvW86SItMycxCRfzcvGiytF/uOq/jNk0ixbxqAY6Ak36RAtr1B/BUpUDNg4+m+njAcMCVFNHbjJLGR3f7bVM/+HbcII10Y+TD1g9DlsEFXpzy6Wq0gj+NUc17HEVbq2sg0LseWBr8R8MPZdsmO/6VP7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759153800; c=relaxed/simple;
-	bh=ZP+96JhjkkrBnIK+mwXVIYMy7g62X4hPExrb6o1Qe/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g6XKS7nPhbh950zA2K8+x3h3QFYuDWeVRV8F0IfpcurRSqF5Tw4M5WnX7Lgi84DBRf2e/znONUwjhAskkJZMmMaa6KDUgsRo1bplIRvNRbSTQ5rPJzNxg4a9175jjZ8Cvl/z2kDGZqrexwZKpY4zmRT5iI7SVLNhUY+6YrLOWEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=2IR/w1Nh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F31BC4CEF7;
-	Mon, 29 Sep 2025 13:49:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1759153800;
-	bh=ZP+96JhjkkrBnIK+mwXVIYMy7g62X4hPExrb6o1Qe/s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=2IR/w1NhD6rO3VZzjaHsa/G5y5Y6EFTRaRCQoBFOIMmzFRk3gM0W0Mf+I/1sje/zM
-	 6eTkAuMiRzcWzHrNhmk6po9GpoWWRMGPau/mhN/FLC8qEKMftJ9tX/aLdXfc1Agx/E
-	 GgRNIXRtdpmNbgceNNbtDpd4ehAmTPd7HqANSrhw=
-Date: Mon, 29 Sep 2025 15:49:56 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Eliav Farber <farbere@amazon.com>
-Cc: linux@armlinux.org.uk, richard@nod.at, anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net, dave.hansen@linux.intel.com,
-	luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-	tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
-	james.morse@arm.com, rric@kernel.org, harry.wentland@amd.com,
-	sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
-	alexander.deucher@amd.com, christian.koenig@amd.com,
-	Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-	evan.quan@amd.com, james.qian.wang@arm.com, liviu.dudau@arm.com,
-	mihail.atanassov@arm.com, brian.starkey@arm.com,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, robdclark@gmail.com, quic_abhinavk@quicinc.com,
-	dmitry.baryshkov@linaro.org, sean@poorly.run, jdelvare@suse.com,
-	linux@roeck-us.net, linus.walleij@linaro.org,
-	dmitry.torokhov@gmail.com, maz@kernel.org, wens@csie.org,
-	jernej.skrabec@gmail.com, samuel@sholland.org, agk@redhat.com,
-	snitzer@kernel.org, dm-devel@redhat.com, rajur@chelsio.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, peppe.cavallaro@st.com,
-	alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-	mcoquelin.stm32@gmail.com, krzysztof.kozlowski@linaro.org,
-	malattia@linux.it, hdegoede@redhat.com, markgross@kernel.org,
-	artur.paszkiewicz@intel.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, sakari.ailus@linux.intel.com,
-	fei1.li@intel.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, jack@suse.com, tytso@mit.edu,
-	adilger.kernel@dilger.ca, dushistov@mail.ru,
-	luc.vanoostenryck@gmail.com, rostedt@goodmis.org,
-	mhiramat@kernel.org, pmladek@suse.com, senozhatsky@chromium.org,
-	andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-	minchan@kernel.org, ngupta@vflare.org, akpm@linux-foundation.org,
-	yoshfuji@linux-ipv6.org, dsahern@kernel.org, pablo@netfilter.org,
-	kadlec@netfilter.org, fw@strlen.de, jmaloy@redhat.com,
-	ying.xue@windriver.com, andrii@kernel.org, mykolal@fb.com,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	jolsa@kernel.org, shuah@kernel.org, keescook@chromium.org,
-	wad@chromium.org, willy@infradead.org, sashal@kernel.org,
-	ruanjinjie@huawei.com, quic_akhilpo@quicinc.com,
-	David.Laight@aculab.com, herve.codina@bootlin.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-edac@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-	linux-hwmon@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-sunxi@lists.linux.dev, linux-media@vger.kernel.org,
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-sparse@vger.kernel.org,
-	linux-mm@kvack.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, tipc-discussion@lists.sourceforge.net,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	stable@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Subject: Re: [PATCH 07/19 v6.1.y] minmax: make generic MIN() and MAX() macros
- available everywhere
-Message-ID: <2025092923-stove-rule-a00f@gregkh>
-References: <20250924202320.32333-1-farbere@amazon.com>
- <20250924202320.32333-8-farbere@amazon.com>
+	s=arc-20240116; t=1759154446; c=relaxed/simple;
+	bh=L3hhvqA/El0jd36qHGLM1VYJVkRhpNs+PRg1E92fOMM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tp+fWc9TcSSY4h43c6Ir2a1l/Y13cPKRRYZmXQjE6W2B0Dd5dMpzoKqDOrPegkT8ue+yDlZ7QvPW/sYpDmRxHMpYlJ9Tuw1ZtusvuOChLyw/6OhaHHwtoaB7Lb1FWi0qC8dIc0QXtG9r17JZqrQ7lovRmAKD/gTudONDFUZuzxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GGRcIS/3; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-781010ff051so3184253b3a.0
+        for <linux-ext4@vger.kernel.org>; Mon, 29 Sep 2025 07:00:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759154445; x=1759759245; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aR+9721anmN0NfZgwpWwYRBIe5Rks3tZnJySwmuBqqs=;
+        b=GGRcIS/38DrR1WOnQv7EdIINFaQDXqav3Lau5cQGrkW8UdP5NNXwwxt8W3aHBG/zhD
+         qfUWc9Twk3pmncBZqsCW13dcqMqzykdaTpeiSpZkfDoq7v7qjJ4ydYwx7hMnGVQ+MhBj
+         H6kysqnWU27J8TmDqpb+EdY2AGx0s4y6uBlK1SLZViAQXglfRJ72oj54wmROT5q8NUxg
+         cPt26feDWjgJvwPJqpGo/S0CIR+2h+Q5+SWCXzZJjDp896G27nPD9axr9gF95+8jLhB+
+         u75V/hJbf2TdfGcBKCG4i7DeaxtxNt427B1xkN1iNdEHOwoTlIc+JvCxvqpu0nMe8XXo
+         dwEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759154445; x=1759759245;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aR+9721anmN0NfZgwpWwYRBIe5Rks3tZnJySwmuBqqs=;
+        b=jKh3d0mQERpusbawKDt68rA0RyO1mTdoo+skWdixTj68NsF4wNFmQDwAJ4VzpJxDeC
+         LB0bBMQrBRV/bF4RPV5G5xMzXYON2JvIGv6aeHGw3OQHAxJrS+kPbdRZ3Q4MRRCu/R6+
+         XNOIgyiEHEc6c6PdWuywpuWD50rxvLiTcJiQovFD80RaEGdC6D4nslSgOFY4REI7atfh
+         nG9m6phelpXtvXlxdICj75hxjAE7N6l0a3oHGVMBKG25bpCjOqgcSdRvfs8UjPSnDeHP
+         R7mAVrLL1v8IDGBbsxyKOk+R+9XFX8wLd94JpeBNbGQgyMu3kJt7EWSRtyI3fHPrBsqu
+         CL3A==
+X-Gm-Message-State: AOJu0Yxpoo7yiyEVnJH9+y0SIQf8weaYDQvdOVkoxXqkdjch432Gk6oa
+	4fUXWN3mKsnglNVD9U3kR5nM5l8OeGPRqluQ7pcDX3CiuqF+gvGKyvpL
+X-Gm-Gg: ASbGncutMAhGrwi9iz1E8kHSNbRgwcI1JaGDPIokni04Az2kbhFSSxr+zxWRD1DG2Eo
+	FeM1F/S778GyCgFQe1mlQuU1F8MPf06cYgovOUISxMBNMvACsndigaATD+/oGogjITvThrAQ247
+	+ls9eWf7RCa0dYHUKj22GfzAwV/1uyQnnMbwqnmqXlMoyOQ8jeXaTQw6e+KuM2ii9JLOuXyU1Un
+	+qIfBQKrpPJcHGDINs3a+1WgA6lxoDl6BxJ4LkPyH0BKz7ATk/6rvNZJ1V/aMiZOIejVN5FkYXe
+	HbIew4Unoksr1cnwgaxGzelHkivZtrVIJoq/NXhEbFa7bvXW7BPVzDznrx9k9AjrGGeZmkwJ/LP
+	BxP16JRrYPDaxzEK608obYPRamhBmsuA2H4OPeQnk9hv/FAynxES+ZqS2/ZOO2FHwHE1L33Xh8Y
+	coOaGQFhR75VT/Pw==
+X-Google-Smtp-Source: AGHT+IFyEzVLBvCaooSzhsbGe6NUtoHLRegynxWuFI3ToSvZIgdKofrC23BninBk1aBm7R4wrSgf0A==
+X-Received: by 2002:a05:6a21:b95:b0:2f5:e435:4066 with SMTP id adf61e73a8af0-2f5e43564b0mr13284239637.44.1759154443044;
+        Mon, 29 Sep 2025 07:00:43 -0700 (PDT)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:3094:2b82:239a:7350:ef6b])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-781023c8aebsm11165375b3a.28.2025.09.29.07.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Sep 2025 07:00:41 -0700 (PDT)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	yi.zhang@huaweicloud.com
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: validate extent entries before caching in ext4_find_extent()
+Date: Mon, 29 Sep 2025 19:30:36 +0530
+Message-ID: <20250929140037.354258-1-kartikey406@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250924202320.32333-8-farbere@amazon.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 24, 2025 at 08:23:08PM +0000, Eliav Farber wrote:
-> From: Linus Torvalds <torvalds@linux-foundation.org>
-> 
-> [ Upstream commit 1a251f52cfdc417c84411a056bc142cbd77baef4 ]
+Zhang Yi,
 
-<snip>
+Thank you for pointing out the validation issue and your concerns about redundant checks. Let me provide a complete explanation of what's happening.
 
-As this didn't go into 6.6.y yet, I'll stop here on this series for now.
-Please fix up for newer kernels first and then resend these.
+## Initial Problem
+The reproducer triggers a BUG_ON in ext4_es_cache_extent() when opening a verity file on a corrupted ext4 filesystem. The issue occurs because the extent tree contains out-of-order extents that cause integer underflow when calculating hole sizes.
 
-thanks,
+## Why ext4_ext_check_inode() Doesn't Catch This
+You correctly asked why the existing validation in __ext4_iget() doesn't catch this corruption. After investigation with debug code, I found:
 
-greg k-h
+DEBUG: verity inode 15, inline=0, extents=1, test_inode_flag_inline_data=1
+DEBUG: First time check inode 15 - flag=1, i_inline_off=0, has_inline=0  
+DEBUG: Second time check inode 15 - flag=1, i_inline_off=164, has_inline=1
+DEBUG: Skipping validation for inode 15 (has inline data)
+
+The corrupted filesystem has inode 15 with:
+1. EXT4_INODE_INLINE_DATA flag set (test_inode_flag returns 1)
+2. EXT4_INODE_VERITY flag set (it's a verity file)
+3. i_inline_off containing value 164 (from corrupted on-disk data)
+4. Out-of-order extents in the extent tree
+
+## The Validation Bypass Mechanism
+The validation code in __ext4_iget():
+} else if (!ext4_has_inline_data(inode)) {
+    /* validate the block references in the inode */
+
+The ext4_has_inline_data() function returns:
+return ext4_test_inode_flag(inode, EXT4_INODE_INLINE_DATA) && 
+       EXT4_I(inode)->i_inline_off;
+
+Initially i_inline_off=0, so ext4_has_inline_data() returns false (1 && 0 = 0). But by the time validation check happens, i_inline_off=164 (loaded from corrupted on-disk data), making ext4_has_inline_data() return true (1 && 164 = 1), which skips validation.
+
+## Proper Solution
+You're correct that we should avoid redundant checks. The proper fix is to detect this invalid combination early in ext4_iget():
+
+if (ext4_test_inode_flag(inode, EXT4_INODE_VERITY) &&
+    ext4_test_inode_flag(inode, EXT4_INODE_INLINE_DATA)) {
+    ext4_error_inode(inode, __func__, __LINE__, 0,
+                     "inode has both verity and inline data flags");
+    ret = -EFSCORRUPTED;
+    goto bad_inode;
+}
+
+This addresses the root cause without adding overhead to the extent lookup path. I'll prepare a v2 patch implementing this approach instead of adding validation in ext4_find_extent().
+
+Thank you for the thorough review that led to finding the actual root cause.
+
+Best regards,
+Deepanshu
 
