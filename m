@@ -1,281 +1,110 @@
-Return-Path: <linux-ext4+bounces-10484-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10485-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CBEEBA91E1
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 13:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44015BA925B
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 14:07:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DD00172F88
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 11:50:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0B2B17E5A6
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 12:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360A4304BBA;
-	Mon, 29 Sep 2025 11:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x7XE9PkW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wot1Z8VS";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x7XE9PkW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wot1Z8VS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3316B305051;
+	Mon, 29 Sep 2025 12:07:34 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A07246BB6
-	for <linux-ext4@vger.kernel.org>; Mon, 29 Sep 2025 11:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47877305045;
+	Mon, 29 Sep 2025 12:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759146614; cv=none; b=ZRaeAL0Vot6B4y/02F3BfIwQOOi20NOM03vv0bzUOUUt7004VrhOjHrQo2MD8U6GT9/eaPNtC3aqTbj8Qm22hjnh1gH2qzcLYf6L5DAAQJYC8LbaCt4Tu+QBb60NGlqT90JHdNx81VYJ4LnrhuFeYkEdO6SmmcsXExf0m3UJ5xA=
+	t=1759147654; cv=none; b=CbB2z/5TJmgTUyZZrGs9zQ7XgZTQMzaynNCAf5kRCYxAsk8huneR2ZbF8zlSL8yxV1GCAVq/gKZShuQdS2IzPS/hIqJ7WJVWLJE+J5hhkOoDTh2kG+xwPMI2mNKqZqAZFHasEVOZ/AMGy0fyIVm88ci4P/Vb9ErlK3hTjvvGimM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759146614; c=relaxed/simple;
-	bh=9j/gKWeBV8W7Xm1Kjn/LCWNqEr5BuINKb/yoKy/Ifx4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YpdQr4DxEYpTbo4VO51qvrg1buUzWmk//RrkEHoZVAX9E24TjwAsgMqqeXjh4Ucj4F+0qcxjWkTAeKPjg6BgIQGTyx9qnl73dCdWGGBey6jLAB/0cJ4q9W2rVawSUsD0PuQlKxN+TE1ZUOb5ef0vS9ZY68wPoh5G56yWjEEwOxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x7XE9PkW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wot1Z8VS; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x7XE9PkW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wot1Z8VS; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2361A31AF3;
-	Mon, 29 Sep 2025 11:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759146609; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mhU1lqYXGXju5aeAWCfAkcmAEShO+lmEqPcT3URjaMo=;
-	b=x7XE9PkW9wQizwWe9LaNBRgqIZz17riSNCIn9Q9RnwOrAklEvW5ERjTJ9AuQSkibGT+l9d
-	psN9vSNirJxSyMtJe1YOL/9+WshUo7EmJB6v/s5i/tTppxHQdQ49drNU3fBbcsiw8bDAC2
-	UItS76CngkZDV5kZz4sQ8LscEl/J5RA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759146609;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mhU1lqYXGXju5aeAWCfAkcmAEShO+lmEqPcT3URjaMo=;
-	b=Wot1Z8VSPEtL8dVJWulj7w4q79zowLcGsJughLOgRdcw506Kveu5SNU1EWMps3R9hUb5pv
-	mrrmdGF39r+PurDA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759146609; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mhU1lqYXGXju5aeAWCfAkcmAEShO+lmEqPcT3URjaMo=;
-	b=x7XE9PkW9wQizwWe9LaNBRgqIZz17riSNCIn9Q9RnwOrAklEvW5ERjTJ9AuQSkibGT+l9d
-	psN9vSNirJxSyMtJe1YOL/9+WshUo7EmJB6v/s5i/tTppxHQdQ49drNU3fBbcsiw8bDAC2
-	UItS76CngkZDV5kZz4sQ8LscEl/J5RA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759146609;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mhU1lqYXGXju5aeAWCfAkcmAEShO+lmEqPcT3URjaMo=;
-	b=Wot1Z8VSPEtL8dVJWulj7w4q79zowLcGsJughLOgRdcw506Kveu5SNU1EWMps3R9hUb5pv
-	mrrmdGF39r+PurDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1035713A21;
-	Mon, 29 Sep 2025 11:50:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FnXuA3Fy2mjAdwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 29 Sep 2025 11:50:09 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B51B2A0A96; Mon, 29 Sep 2025 13:50:08 +0200 (CEST)
-Date: Mon, 29 Sep 2025 13:50:08 +0200
-From: Jan Kara <jack@suse.cz>
-To: Julian Sun <sunjunchao@bytedance.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-ext4@vger.kernel.org, ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	clm@fb.com, dsterba@suse.com, xiubli@redhat.com, idryomov@gmail.com, 
-	tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org, 
-	willy@infradead.org, jack@suse.cz, brauner@kernel.org, agruenba@redhat.com
-Subject: Re: [PATCH v2] fs: Make wbc_to_tag() inline and use it in fs.
-Message-ID: <77x7h6m5klki4pish2i3fhza26i6mhjw3cx66cpokg5kopthzk@7umq2wu7hyol>
-References: <20250929111349.448324-1-sunjunchao@bytedance.com>
+	s=arc-20240116; t=1759147654; c=relaxed/simple;
+	bh=6xXpK4jRrtsiepa1z7gZsQBCzfMazbL2vEZotmsifcc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M0q/0pKX0Ry2gH4RouhtGv0FLCkvRrL0e0BHmfcXezeernHWje2JMA2pQE1UTO6L+riK1nz8+k+UNUgzsWKMRTxP1qniGCKY5RNSmQxfjqQzQyw5MUChGGyeySqfDGaYAljmsRPltHnGd1xmOYSjPQ9xNm+PnAdcgryvbpQkHHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cb0L440v6zKHMx4;
+	Mon, 29 Sep 2025 20:07:08 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 8AE131A0D78;
+	Mon, 29 Sep 2025 20:07:22 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgD3CGF4dtpomU3dBA--.2477S3;
+	Mon, 29 Sep 2025 20:07:22 +0800 (CST)
+Message-ID: <5e9c229f-cbd9-4fcb-a349-4605e52f13a1@huaweicloud.com>
+Date: Mon, 29 Sep 2025 20:07:20 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250929111349.448324-1-sunjunchao@bytedance.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.sourceforge.net,fb.com,suse.com,redhat.com,gmail.com,mit.edu,dilger.ca,kernel.org,infradead.org,suse.cz];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: validate extent entries before caching in
+ ext4_find_extent()
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250929052718.334986-1-kartikey406@gmail.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20250929052718.334986-1-kartikey406@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgD3CGF4dtpomU3dBA--.2477S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7WryxJw4rGw1fGFyUJryrJFb_yoW8Ww1UpF
+	W3GF1DKrn5GFW7WF92ya1jqF9Y9wn7Zw45Jrs8GF9rJFyYgF1xta43trWYvF47G3W5Aayj
+	vF40vry7Xas0yaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU80fO7UUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Mon 29-09-25 19:13:49, Julian Sun wrote:
-> The logic in wbc_to_tag() is widely used in file systems, so modify this
-> function to be inline and use it in file systems.
+On 9/29/2025 1:27 PM, Deepanshu Kartikey wrote:
+> Zhang Yi,
 > 
-> This patch has only passed compilation tests, but it should be fine.
+> You're correct that ext4_ext_check_inode() should catch this. I investigated and found why it doesn't:
+> [   18.824142] DEBUG: Validating inode 2 (no inline data)
+> [   18.835777] DEBUG: verity inode 15, inline=0, extents=1
+> [   18.836793] DEBUG: Skipping validation for inode 15 (has inline data)
 > 
-> Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+> The verity inode reports inline=0 when checking the flag directly, but ext4_has_inline_data() returns true at the validation check, causing validation to be skipped.
 
-Looks good. Feel free to add:
+This makes me confused, how can this inode report inline=0 when checking
+the flag directly, but ext4_has_inline_data() returns true?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Does this mean that this inode has both the EXT4_INODE_EXTENTS and
+EXT4_INODE_INLINE_DATA flags set? If so, we should detect this in
+ext4_iget() and call ext4_error_inode().
 
-								Honza
-
-> ---
->  fs/btrfs/extent_io.c      | 5 +----
->  fs/ceph/addr.c            | 6 +-----
->  fs/ext4/inode.c           | 5 +----
->  fs/f2fs/data.c            | 5 +----
->  fs/gfs2/aops.c            | 5 +----
->  include/linux/writeback.h | 7 +++++++
->  mm/page-writeback.c       | 6 ------
->  7 files changed, 12 insertions(+), 27 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index b21cb72835cc..0fea58287175 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2390,10 +2390,7 @@ static int extent_write_cache_pages(struct address_space *mapping,
->  			       &BTRFS_I(inode)->runtime_flags))
->  		wbc->tagged_writepages = 1;
->  
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> -		tag = PAGECACHE_TAG_TOWRITE;
-> -	else
-> -		tag = PAGECACHE_TAG_DIRTY;
-> +	tag = wbc_to_tag(wbc);
->  retry:
->  	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
->  		tag_pages_for_writeback(mapping, index, end);
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index 322ed268f14a..63b75d214210 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -1045,11 +1045,7 @@ void ceph_init_writeback_ctl(struct address_space *mapping,
->  	ceph_wbc->index = ceph_wbc->start_index;
->  	ceph_wbc->end = -1;
->  
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages) {
-> -		ceph_wbc->tag = PAGECACHE_TAG_TOWRITE;
-> -	} else {
-> -		ceph_wbc->tag = PAGECACHE_TAG_DIRTY;
-> -	}
-> +	ceph_wbc->tag = wbc_to_tag(wbc);
->  
->  	ceph_wbc->op_idx = -1;
->  	ceph_wbc->num_ops = 0;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 5b7a15db4953..196eba7fa39c 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -2619,10 +2619,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
->  	handle_t *handle = NULL;
->  	int bpp = ext4_journal_blocks_per_folio(mpd->inode);
->  
-> -	if (mpd->wbc->sync_mode == WB_SYNC_ALL || mpd->wbc->tagged_writepages)
-> -		tag = PAGECACHE_TAG_TOWRITE;
-> -	else
-> -		tag = PAGECACHE_TAG_DIRTY;
-> +	tag = wbc_to_tag(mpd->wbc);
->  
->  	mpd->map.m_len = 0;
->  	mpd->next_pos = mpd->start_pos;
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 7961e0ddfca3..101e962845db 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -3003,10 +3003,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
->  		if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
->  			range_whole = 1;
->  	}
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> -		tag = PAGECACHE_TAG_TOWRITE;
-> -	else
-> -		tag = PAGECACHE_TAG_DIRTY;
-> +	tag = wbc_to_tag(wbc);
->  retry:
->  	retry = 0;
->  	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
-> index 47d74afd63ac..12394fc5dd29 100644
-> --- a/fs/gfs2/aops.c
-> +++ b/fs/gfs2/aops.c
-> @@ -311,10 +311,7 @@ static int gfs2_write_cache_jdata(struct address_space *mapping,
->  			range_whole = 1;
->  		cycled = 1; /* ignore range_cyclic tests */
->  	}
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> -		tag = PAGECACHE_TAG_TOWRITE;
-> -	else
-> -		tag = PAGECACHE_TAG_DIRTY;
-> +	tag = wbc_to_tag(wbc);
->  
->  retry:
->  	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-> index a2848d731a46..dde77d13a200 100644
-> --- a/include/linux/writeback.h
-> +++ b/include/linux/writeback.h
-> @@ -240,6 +240,13 @@ static inline void inode_detach_wb(struct inode *inode)
->  	}
->  }
->  
-> +static inline xa_mark_t wbc_to_tag(struct writeback_control *wbc)
-> +{
-> +	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> +		return PAGECACHE_TAG_TOWRITE;
-> +	return PAGECACHE_TAG_DIRTY;
-> +}
-> +
->  void wbc_attach_fdatawrite_inode(struct writeback_control *wbc,
->  		struct inode *inode);
->  
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 3e248d1c3969..ae1181a46dea 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2434,12 +2434,6 @@ static bool folio_prepare_writeback(struct address_space *mapping,
->  	return true;
->  }
->  
-> -static xa_mark_t wbc_to_tag(struct writeback_control *wbc)
-> -{
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> -		return PAGECACHE_TAG_TOWRITE;
-> -	return PAGECACHE_TAG_DIRTY;
-> -}
->  
->  static pgoff_t wbc_end(struct writeback_control *wbc)
->  {
-> -- 
-> 2.39.5
+> This corrupted filesystem has a verity file that somehow triggers the inline data check to return true, even though verity files should never have inline data. This allows the corrupted out-of-order extents to bypass validation.
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> My patch adds validation before caching extents, which catches such corruption regardless of why the inline data check fails. This provides necessary defense against corrupted filesystems at the point where extents are actually used.
+
+Generally speaking, we should avoid redundant checks. It is sufficient to
+verify the metadata after reading it from the disk, without considering
+scenarios which intentionally corrupted the metadata by directly writing
+to the bdev. Adding checks in ext4_find_extent() would introduce
+unnecessary overhead.
+
+Thanks,
+Yi.
+
 
