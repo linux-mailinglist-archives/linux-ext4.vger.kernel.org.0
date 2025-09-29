@@ -1,110 +1,149 @@
-Return-Path: <linux-ext4+bounces-10485-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10486-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44015BA925B
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 14:07:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57F3FBA940C
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 14:57:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0B2B17E5A6
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 12:07:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D2F8188FFC1
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Sep 2025 12:57:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3316B305051;
-	Mon, 29 Sep 2025 12:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A4D30507B;
+	Mon, 29 Sep 2025 12:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FCgn4P2K"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47877305045;
-	Mon, 29 Sep 2025 12:07:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD943054F1
+	for <linux-ext4@vger.kernel.org>; Mon, 29 Sep 2025 12:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759147654; cv=none; b=CbB2z/5TJmgTUyZZrGs9zQ7XgZTQMzaynNCAf5kRCYxAsk8huneR2ZbF8zlSL8yxV1GCAVq/gKZShuQdS2IzPS/hIqJ7WJVWLJE+J5hhkOoDTh2kG+xwPMI2mNKqZqAZFHasEVOZ/AMGy0fyIVm88ci4P/Vb9ErlK3hTjvvGimM=
+	t=1759150599; cv=none; b=PU+5F+ZQvaZXVHoSx4xqubL8tWIS7uUu/FTOj0s6I4cHtAKbXCbdO7k4XrpJneVQF5mQB2CiqZeA7QDIzqwfrw0p+AfTSSa98Gko7iX7CbGKmF/Bunf3Wcj9KFifJtUK6Wz9DvOGejKbfmfQllPrVoyefn9QA5Gt5MYwqnKgbeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759147654; c=relaxed/simple;
-	bh=6xXpK4jRrtsiepa1z7gZsQBCzfMazbL2vEZotmsifcc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M0q/0pKX0Ry2gH4RouhtGv0FLCkvRrL0e0BHmfcXezeernHWje2JMA2pQE1UTO6L+riK1nz8+k+UNUgzsWKMRTxP1qniGCKY5RNSmQxfjqQzQyw5MUChGGyeySqfDGaYAljmsRPltHnGd1xmOYSjPQ9xNm+PnAdcgryvbpQkHHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cb0L440v6zKHMx4;
-	Mon, 29 Sep 2025 20:07:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 8AE131A0D78;
-	Mon, 29 Sep 2025 20:07:22 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgD3CGF4dtpomU3dBA--.2477S3;
-	Mon, 29 Sep 2025 20:07:22 +0800 (CST)
-Message-ID: <5e9c229f-cbd9-4fcb-a349-4605e52f13a1@huaweicloud.com>
-Date: Mon, 29 Sep 2025 20:07:20 +0800
+	s=arc-20240116; t=1759150599; c=relaxed/simple;
+	bh=czoR4K1G+s7y76NbjlWpJJ4z4V3QKtSDAu6HI/RHErw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=psqwlUwkBR2Oh28rPmx8Q3fl9uMENdEsAYCiBbfaIl4k2MkosfTEUKckJfSyXLOO42FK0zh7fqFe6H3qPHmnm2rcNCeCZK54N3zpj51KxQhHStMUqVKmI26vceMmFvl5b8ZCIQ7vDg28G8E8LCpEP6zBZ0byXMDSreeXa5PZHKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FCgn4P2K; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-afcb78ead12so801805066b.1
+        for <linux-ext4@vger.kernel.org>; Mon, 29 Sep 2025 05:56:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759150595; x=1759755395; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vT64PoBlF5OmMwmdMDL2m5IBI9zs1VxmhdKVWW/7dn8=;
+        b=FCgn4P2K1bIgFAJoDuau++Y6+Tu6orG3eYikQptlTbn2qk5fvnEX7rNz9xsa4ZIAk9
+         TNz6RZf1mVEJ+Su1njyT9bIYaseGuw0JWXQMPRpP00jx3gM9a4BJqrnV9kYHqPXbJaOq
+         dhlEb8pqe7t8ANKhDaOdu1T1Y/mpR47EeDuatvBM511yYbhWL6Uu/rIc2s4AYq5Ndc0a
+         fop7n/Pv7EAT0po0BdS0IYOt4RiIvQ6Mn+1uZG2p8wrWzsrtqds8fVEJ48NrNm2Iofnq
+         nfDx40KqhrUAlKvyAFMaZdew5N8LuEja0ysIg0wwj2ntDhoqum1eyE8GcCYO/dnVabBV
+         mIUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759150595; x=1759755395;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vT64PoBlF5OmMwmdMDL2m5IBI9zs1VxmhdKVWW/7dn8=;
+        b=DjNeAmtt1rg9V7yB4PlFjxZaZcROQvR6biehgb0E1jHJZYVeqJTegSJ/eJoVyKVP2f
+         a+H+gSY8J3NnxFo4afj3/NBHGSwiENlpTvml/XP/xAlhKxs861EM4UpjTDSvofDqq3JS
+         d7R0790o3mQU1CWv2Gvo95brWwChET5tFs0KRJs8AAhWb1hC4AQAyXpolublLmGXnhuh
+         dS3DkVM13z2dBdcpWhtOKDmgqsJFi5waX1hf7GGBI8vfAufPzoBqmFDBVFXrkVuYw0Jk
+         ylM13CqSNQvDf00lGrhHf4wbzn3b/HU3L13Y6H3UZRTI76Vms7PS5dRLbNFw1iistDn0
+         wbJA==
+X-Forwarded-Encrypted: i=1; AJvYcCXBvN59GzL3yQB0txQ/N4GY6jJyCVet9hxEk74lzgCDT8LGZ62J8LeLnYzpdog51k0SoAu5hHDapsft@vger.kernel.org
+X-Gm-Message-State: AOJu0YyODH42kEPmSYCq1cmgMltUSysOXmqHZ6ZnVPfoYzkVLcKB4xhx
+	KLCfNVY23NVfEWWZCBRS+gKpF5MUWNUXqN4NzyYqrt8Z4ZQY5RVd1qnXX/pz7ZP1wjPN1/qDUt2
+	GWR/8+uwD3WJ7/UzDUMwDSagHUTwpyHg=
+X-Gm-Gg: ASbGncsBKXVmGgOwRhAOtNXDLIdq3gZxh8XL2LEw1+rMX8FCQTxywGSIPGBbaozeD36
+	Rp9Wja6KaD0qgUXCWz7+zZukSgHJ2XMdMrZKzvqatZkrmHb0USZirnePG62/E4LM7Jotqsrme5H
+	2bVJFKQi8ZdJUTvCKR0KTEupAdMs65MgR/2XyaDAL5XvDR5oTBV+C4FK94JKi+M3nu/if8IjVHW
+	XduyQwHJzWPA5g0ukRE4V1icOcEhRNIBLqASKyfRfrRf9IH3gNXjdzG62HHLLM=
+X-Google-Smtp-Source: AGHT+IHwgU6a7k1Tl/htBp66waMHN4IzraB7wwO8zA//bOHkHjYwuv41WV4gECwjjXP36V6Dgiwj6qkk1Bdqwjmi4TU=
+X-Received: by 2002:a17:907:7291:b0:b3f:9eaa:2bba with SMTP id
+ a640c23a62f3a-b3f9eaa2f1dmr276916766b.63.1759150595150; Mon, 29 Sep 2025
+ 05:56:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: validate extent entries before caching in
- ext4_find_extent()
-To: Deepanshu Kartikey <kartikey406@gmail.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250929052718.334986-1-kartikey406@gmail.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20250929052718.334986-1-kartikey406@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgD3CGF4dtpomU3dBA--.2477S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WryxJw4rGw1fGFyUJryrJFb_yoW8Ww1UpF
-	W3GF1DKrn5GFW7WF92ya1jqF9Y9wn7Zw45Jrs8GF9rJFyYgF1xta43trWYvF47G3W5Aayj
-	vF40vry7Xas0yaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU80fO7UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+References: <20250923104710.2973493-1-mjguzik@gmail.com> <20250929-samstag-unkenntlich-623abeff6085@brauner>
+In-Reply-To: <20250929-samstag-unkenntlich-623abeff6085@brauner>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Mon, 29 Sep 2025 14:56:23 +0200
+X-Gm-Features: AS18NWAQppLQGH4Q4QepXGfVar_40_jU-wol-wjJISWMpqe1GoM3Cv27IqmClpo
+Message-ID: <CAGudoHFm9_-AuRh52-KRCADQ8suqUMmYUUsg126kmA+N8Ah+6g@mail.gmail.com>
+Subject: Re: [PATCH v6 0/4] hide ->i_state behind accessors
+To: Christian Brauner <brauner@kernel.org>
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, kernel-team@fb.com, 
+	amir73il@gmail.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/29/2025 1:27 PM, Deepanshu Kartikey wrote:
-> Zhang Yi,
-> 
-> You're correct that ext4_ext_check_inode() should catch this. I investigated and found why it doesn't:
-> [   18.824142] DEBUG: Validating inode 2 (no inline data)
-> [   18.835777] DEBUG: verity inode 15, inline=0, extents=1
-> [   18.836793] DEBUG: Skipping validation for inode 15 (has inline data)
-> 
-> The verity inode reports inline=0 when checking the flag directly, but ext4_has_inline_data() returns true at the validation check, causing validation to be skipped.
+This was a stripped down version (no lockdep) in hopes of getting into
+6.18. It also happens to come with some renames.
 
-This makes me confused, how can this inode report inline=0 when checking
-the flag directly, but ext4_has_inline_data() returns true?
+Given that the inclusion did not happen, I'm going to send a rebased
+and updated with new names variant but with lockdep.
 
-Does this mean that this inode has both the EXT4_INODE_EXTENTS and
-EXT4_INODE_INLINE_DATA flags set? If so, we should detect this in
-ext4_iget() and call ext4_error_inode().
+So the routines will be:
+inode_state_read_once
+inode_state_read
 
-> 
-> This corrupted filesystem has a verity file that somehow triggers the inline data check to return true, even though verity files should never have inline data. This allows the corrupted out-of-order extents to bypass validation.
-> 
-> My patch adds validation before caching extents, which catches such corruption regardless of why the inline data check fails. This provides necessary defense against corrupted filesystems at the point where extents are actually used.
+inode_state_set{,_raw}
+inode_state_clear{,_raw}
+inode_state_assign{,_raw}
 
-Generally speaking, we should avoid redundant checks. It is sufficient to
-verify the metadata after reading it from the disk, without considering
-scenarios which intentionally corrupted the metadata by directly writing
-to the bdev. Adding checks in ext4_find_extent() would introduce
-unnecessary overhead.
+Probably way later today or tomorrow.
 
-Thanks,
-Yi.
-
+On Mon, Sep 29, 2025 at 11:30=E2=80=AFAM Christian Brauner <brauner@kernel.=
+org> wrote:
+>
+> On Tue, 23 Sep 2025 12:47:06 +0200, Mateusz Guzik wrote:
+> > First commit message quoted verbatim with rationable + API:
+> >
+> > [quote]
+> > Open-coded accesses prevent asserting they are done correctly. One
+> > obvious aspect is locking, but significantly more can checked. For
+> > example it can be detected when the code is clearing flags which are
+> > already missing, or is setting flags when it is illegal (e.g., I_FREEIN=
+G
+> > when ->i_count > 0).
+> >
+> > [...]
+>
+> Applied to the vfs-6.19.inode branch of the vfs/vfs.git tree.
+> Patches in the vfs-6.19.inode branch should appear in linux-next soon.
+>
+> Please report any outstanding bugs that were missed during review in a
+> new review to the original patch series allowing us to drop it.
+>
+> It's encouraged to provide Acked-bys and Reviewed-bys even though the
+> patch has now been applied. If possible patch trailers will be updated.
+>
+> Note that commit hashes shown below are subject to change due to rebase,
+> trailer updates or similar. If in doubt, please check the listed branch.
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+> branch: vfs-6.19.inode
+>
+> [1/4] fs: provide accessors for ->i_state
+>       https://git.kernel.org/vfs/vfs/c/e9d1a9abd054
+> [2/4] Convert the kernel to use ->i_state accessors
+>       https://git.kernel.org/vfs/vfs/c/67d2f3e3d033
+> [3/4] Manual conversion of ->i_state uses
+>       https://git.kernel.org/vfs/vfs/c/b8173a2f1a0a
+> [4/4] fs: make plain ->i_state access fail to compile
+>       https://git.kernel.org/vfs/vfs/c/3c2b8d921da8
 
