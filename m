@@ -1,145 +1,157 @@
-Return-Path: <linux-ext4+bounces-10559-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10560-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65B68BB3AD6
-	for <lists+linux-ext4@lfdr.de>; Thu, 02 Oct 2025 12:42:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A3A5BB3CA7
+	for <lists+linux-ext4@lfdr.de>; Thu, 02 Oct 2025 13:40:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B593342042E
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Oct 2025 10:42:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4794D17552D
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Oct 2025 11:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028D130BBB3;
-	Thu,  2 Oct 2025 10:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F69A30FF29;
+	Thu,  2 Oct 2025 11:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Is5IduLX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TW1/86Ro"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE0B30B536
-	for <linux-ext4@vger.kernel.org>; Thu,  2 Oct 2025 10:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95921F582B;
+	Thu,  2 Oct 2025 11:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759401724; cv=none; b=pELE+GSSebbYaFSWZWeKYcy8EPFzGOERMrePTA/U3lQ0i4pkyWdezUnWjgWetGCtRKuAh7rmTzILgwNbZwMGQ4R2ZoDlESNvp1/f5Prj9sGnXnjS6tOl4mbOEy+F9wgM5tXnm6g09ZqVUkxMkLli6a4iYMsLNytcIgRipiaS+3M=
+	t=1759405199; cv=none; b=VBFcsD4jIuOusMdbL1d7J1dx1d411HMDRxChvH8jotp5wpZzGGU7iQiJ4xrapz+yv2pqmSkH7GG5faO4cc7FdP6lfrIm+ZJDxlkxaJNrhkwzYYJtRZr7dqotIm5EjIkXuO/2Dx9TArKTJqcMTDXuMnC96OQGXIHFhKF48QNS+DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759401724; c=relaxed/simple;
-	bh=r1Iv5PxlSFXBdk6FkJyAuWVSJJAJTI855hgQ2son99M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iMf41ICl3B2bkGwD2xR7ku0BqE8glY4f06xr0lnV59z5aB9PmKRtdptEb+2K5yHzaPpuUEqclogUILQGX8DiiE/x3ZGrbGb+RxO+vmtKTotSbvN/9dd6FtbYCc+lXafnSftQV9LwOvkry+Oq9qG+fOX7DHBJyfGxhYFuoKNS+z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Is5IduLX; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-33255011eafso1004703a91.1
-        for <linux-ext4@vger.kernel.org>; Thu, 02 Oct 2025 03:42:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759401721; x=1760006521; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=m0rfQXn18l2tTAMnF1By1OoocjO9lOTD4YqEsuU82z4=;
-        b=Is5IduLXHH6wirBNF6cvQdOZNCPMAzvI8cfI5U3ereQyB2EIcl0dZvHjkctm7Z3pv/
-         Let+aZYcCbVDTVm/n3ujca76ejKbVeUAcij2/dj4kGVArQcho6FyDX4FB4jZk2vWPQ9O
-         Mks2Eq3FytnEXW/+XqV5AvANrNUR7k/LeshItd+QYvZzfmuNQZb+ziNmkxC1HerLLhw1
-         9BMIXYbo8FHBIfb5Wlp4Vu7TnnNojqA57fQ7Mjt6rKBzrK+RN1dtxICPpsYH99miNG95
-         q1tzbyO+8Wqd8r+cxcdH1nXeuX5rhgvPYFc87ippM7tWFQcxXGJosxFIbrnZOmOlhW1V
-         jNlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759401721; x=1760006521;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m0rfQXn18l2tTAMnF1By1OoocjO9lOTD4YqEsuU82z4=;
-        b=KUUfaJr/snCBT5sCr2MPnGfhLyBELMV0u+Lo6OpwWr6w7mNjoA8Elp3cGqImKSO/II
-         /FtTffuuYPDrQBR71yFWJdLQlA10kW4tOYpkXwv1SWXgiFpXPEczfvp0oOvqggBTa3S/
-         kdhCYwrSON2Ll0ehnHkrdY35rUu6jFxevV2hmTE68YmOkFEcVVurILSUo6Vv8jMQ6JwU
-         /7U5ksFX/FefDD887KRbFKk/8Ls1uuV0t88kf3Ky8ndSTZMlnhMl2YUx5pRZY7c1Jf5Y
-         qr5A4OmA6bUX/uXPhBFoV4obAw4JVB2e8u9vsSr8abS5YJmBFkVy5WEHQdnFBk6rSzPs
-         i8mw==
-X-Gm-Message-State: AOJu0Yw13LNLcUa0fZ7bZt1q0n9HpfII4YGX8dq/+yb8s/Su4w7lLrrR
-	ryPVY6uEY4BVRTqIXkngJDdRdgpt9xKf0HXu1XQMoPNm7ChiiZHCMnNU
-X-Gm-Gg: ASbGnctd2lormjfWRnFA1f3SgHFsb0OevAU+hKuiEzdg7loIusmNzmjxJNGgHZc44ZC
-	WIOJ9olTzbgqKN/GI9TqRi/bTpKtyq2yC+WtaKvy5C/bQ7lhWf6u5gh8HdK94e9WH08xkyrLy1m
-	Msud5aMIIZzDvVyAk8FxY8X2MNdyWV0xU9gzqUSxkJ3/KHSUn37o91EU0zWPuVBXImFqlVjn2rG
-	msWfxGmthDm/NXXY/frd1zKZrmf4j5oP6wF6uH2kzgwJteZH1jdZAlqn6jodz0/YqpVlbEmFkY7
-	nn9pBgxLCDiGTAJrFIL9O9gugzDP+8rgFvMt5PlPXC0qBd6ZFjTT2zOKBD4Ib/yxyw2Q9B/Ffix
-	QfkfNYQpjTrCWfGDQsr/RgL+P8YKBbrnA8XyFS7X8/IKjUELm6bAofLlxWkVweyEfcvVw607Nx+
-	T7UjOdW6uho+Kqtrnr1dKY0toN2reGp5/s3VowlA==
-X-Google-Smtp-Source: AGHT+IGQ2AWzZDPz/YAhggZ0WM3ScwDOuQ20HhIL/1AKelC3gwa3qTa+zyPA6jKSa0nR6Ejrp3NNDQ==
-X-Received: by 2002:a17:90b:4d0a:b0:330:6f16:c4e0 with SMTP id 98e67ed59e1d1-339a6e94003mr9490535a91.12.1759401721223;
-        Thu, 02 Oct 2025 03:42:01 -0700 (PDT)
-Received: from deepanshu-kernel-hacker.. ([2405:201:682f:389d:5615:a275:dd45:da86])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6099af3cf6sm1714004a12.13.2025.10.02.03.41.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Oct 2025 03:42:00 -0700 (PDT)
-From: Deepanshu Kartikey <kartikey406@gmail.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Deepanshu Kartikey <kartikey406@gmail.com>,
-	syzbot+3ee481e21fd75e14c397@syzkaller.appspotmail.com
-Subject: [PATCH] ext4: reject inline data flag when i_extra_isize is zero
-Date: Thu,  2 Oct 2025 16:11:51 +0530
-Message-ID: <20251002104151.2392385-1-kartikey406@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1759405199; c=relaxed/simple;
+	bh=AqM4M+MGYM63wBzkJdjM+deX6L3r76MLEIOrwOOOwJs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I5xXjLHQECGHfFW7wtUoGDHJLYZjJdthnESF+9CC29YB5TQsPRe5booLuXRpPU+TmFNw7hiYt3CpIqkd5KqXA8N0pwaCpJRuy2UHrDvsLJahNrpHZrU4iAMoutz4SVvEC235Di78niwzs9fVzo5AH9UAkKOC7ZlyLpxBVBFd50U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TW1/86Ro; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB65CC4CEF4;
+	Thu,  2 Oct 2025 11:39:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759405199;
+	bh=AqM4M+MGYM63wBzkJdjM+deX6L3r76MLEIOrwOOOwJs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TW1/86RoVUn8qaQrgHMvsQvcXg86d9INUtwu3WmMM1sNr7Nnhsdu5LGDe4wj5Nmcd
+	 h3ahbC+1P18XctdTn5Su30qTYLkv7UarZVkeP70mkiGhbyiaB4Tf6m6FHeWhLlYVJv
+	 LhShOrKMSXkpVSMXLKYov1x2dryfuR3xlR/mL6dZWVfYhX3Zictu/5mKj4LvKtKxkm
+	 Ma7bsVvTVvu3F16nnUTBVa3mDEJ/xjXtgVjwBY+8URYSBCdEXXcChHc80acWuzep8i
+	 mXGvMQLTMLWWC7+zGhRkCVamXaRa0GZJHQuGz3SNFpxw4WC4iKaqKbkQ2SmMMevhe3
+	 M2PF47W5eCD9A==
+Date: Thu, 2 Oct 2025 12:39:31 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Byungchul Park <byungchul@sk.com>
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+	will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+	joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+	duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+	tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+	amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
+	linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+	minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+	sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+	ngupta@vflare.org, linux-block@vger.kernel.org,
+	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
+	djwong@kernel.org, dri-devel@lists.freedesktop.org,
+	rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+	hamohammed.sa@gmail.com, harry.yoo@oracle.com,
+	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
+	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com,
+	yeoreum.yun@arm.com, netdev@vger.kernel.org,
+	matthew.brost@intel.com, her0gyugyu@gmail.com, corbet@lwn.net,
+	catalin.marinas@arm.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, luto@kernel.org,
+	sumit.semwal@linaro.org, gustavo@padovan.org,
+	christian.koenig@amd.com, andi.shyti@kernel.org, arnd@arndb.de,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+	rppt@kernel.org, surenb@google.com, mcgrof@kernel.org,
+	petr.pavlu@suse.com, da.gomez@kernel.org, samitolvanen@google.com,
+	paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+	chuck.lever@oracle.com, neil@brown.name, okorniev@redhat.com,
+	Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
+	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
+	clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
+	kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
+	kevin.brodsky@arm.com, dwmw@amazon.co.uk, shakeel.butt@linux.dev,
+	ast@kernel.org, ziy@nvidia.com, yuzhao@google.com,
+	baolin.wang@linux.alibaba.com, usamaarif642@gmail.com,
+	joel.granados@kernel.org, richard.weiyang@gmail.com,
+	geert+renesas@glider.be, tim.c.chen@linux.intel.com,
+	linux@treblig.org, alexander.shishkin@linux.intel.com,
+	lillian@star-ark.net, chenhuacai@kernel.org, francesco@valla.it,
+	guoweikang.kernel@gmail.com, link@vivo.com, jpoimboe@kernel.org,
+	masahiroy@kernel.org, brauner@kernel.org,
+	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com,
+	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
+	rcu@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH v17 09/47] arm64, dept: add support
+ CONFIG_ARCH_HAS_DEPT_SUPPORT to arm64
+Message-ID: <a7f41101-d80a-4cee-ada5-9c591321b1d7@sirena.org.uk>
+References: <20251002081247.51255-1-byungchul@sk.com>
+ <20251002081247.51255-10-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="KmVT2ZbmJlsEn2vS"
+Content-Disposition: inline
+In-Reply-To: <20251002081247.51255-10-byungchul@sk.com>
+X-Cookie: idleness, n.:
 
-Prevent use-after-free in ext4_search_dir by rejecting inodes that
-claim to have inline data but have no extra inode space allocated.
 
-ext4 inline data is stored in the extra inode space beyond the
-standard 128-byte inode structure. This requires i_extra_isize to be
-non-zero to provide space for the system.data xattr that stores the
-inline directory entries or file data.
+--KmVT2ZbmJlsEn2vS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-However, a corrupted filesystem can craft an inode with both:
-- i_extra_isize == 0 (no extra space)
-- EXT4_INODE_INLINE_DATA flag set (claims to use extra space)
+On Thu, Oct 02, 2025 at 05:12:09PM +0900, Byungchul Park wrote:
+> dept needs to notice every entrance from user to kernel mode to treat
+> every kernel context independently when tracking wait-event dependencies.
+> Roughly, system call and user oriented fault are the cases.
+>=20
+> Make dept aware of the entrances of arm64 and add support
+> CONFIG_ARCH_HAS_DEPT_SUPPORT to arm64.
 
-This creates a fundamental inconsistency. When i_extra_isize is zero,
-ext4_iget() skips calling ext4_iget_extra_inode(), which means the
-inline xattr validation in check_xattrs() never runs. Later, when
-ext4_find_inline_entry() attempts to access the inline data, it reads
-unvalidated and potentially corrupt xattr structures, leading to
-out-of-bounds memory access and use-after-free.
+The description of what needs to be tracked probably needs some
+tightening up here, it's not clear to me for example why exceptions for
+mops or the vector extensions aren't included here, or what the
+distinction is with error faults like BTI or GCS not being tracked?
 
-Fix this by validating in ext4_iget() that if an inode has the
-EXT4_INODE_INLINE_DATA flag set, i_extra_isize must be non-zero.
-This catches the corruption at inode load time before any inline
-data operations are attempted.
+--KmVT2ZbmJlsEn2vS
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Reported-by: syzbot+3ee481e21fd75e14c397@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=3ee481e21fd75e14c397
-Tested-by: syzbot+3ee481e21fd75e14c397@syzkaller.appspotmail.com
-Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
----
- fs/ext4/inode.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 5b7a15db4953..d082fff675ac 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5417,6 +5417,12 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 
- 	if (EXT4_INODE_SIZE(inode->i_sb) > EXT4_GOOD_OLD_INODE_SIZE) {
- 		if (ei->i_extra_isize == 0) {
-+			if (ext4_has_inline_data(inode)) {
-+				ext4_error_inode(inode, function, line, 0,
-+						 "inline data flag set but i_extra_isize is zero");
-+				ret = -EFSCORRUPTED;
-+				goto bad_inode;
-+			}
- 			/* The extra space is currently unused. Use it. */
- 			BUILD_BUG_ON(sizeof(struct ext4_inode) & 3);
- 			ei->i_extra_isize = sizeof(struct ext4_inode) -
--- 
-2.43.0
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmjeZHIACgkQJNaLcl1U
+h9C/NQf6AxgZ6UzPOMzfmL9NSrLltWX75xfq7wx8SUKs1A6RFEWCR/s8jeaJZeCx
+834KNHe3AuR4JVKLLGCZS/c26uVb8ee5itMM53Hv9CN8sQFUNuw/xdO1WCQVmZOI
+pHaKeDBxXVnmeBO3uxS+3ITFDSNIPz6DOUAhqdFLhC6EhioGurq1dr8EtQu0aL3A
+CqG9/M48cKPZRG7a1vLkqKbg8o15SYytfgXtl1kBey51IR89HXUZA4xdNc1CP0Sf
+t2jQUg9ne/qxFnWt0CZEL+07IEC/enVs8gcO+mSpVX1r8yRDs496wZ29z7TjDaXB
+8wuHMVCoKqwssyLsusjOjgef5XgKoQ==
+=Ipx4
+-----END PGP SIGNATURE-----
 
+--KmVT2ZbmJlsEn2vS--
 
