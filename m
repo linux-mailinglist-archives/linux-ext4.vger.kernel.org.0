@@ -1,128 +1,176 @@
-Return-Path: <linux-ext4+bounces-10561-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10562-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EA24BB3CC4
-	for <lists+linux-ext4@lfdr.de>; Thu, 02 Oct 2025 13:42:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28CFBB3F3E
+	for <lists+linux-ext4@lfdr.de>; Thu, 02 Oct 2025 14:56:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7FBA17B9C1
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Oct 2025 11:42:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ABCF1899BD4
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Oct 2025 12:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CCA030FC26;
-	Thu,  2 Oct 2025 11:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="wwF2dHn4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EA9311589;
+	Thu,  2 Oct 2025 12:56:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F0FC2797AF;
-	Thu,  2 Oct 2025 11:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E162F7ABE
+	for <linux-ext4@vger.kernel.org>; Thu,  2 Oct 2025 12:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759405369; cv=none; b=pQYuynUYaZEX8QHtvpPwvAG132SQN53vrGa6725Ah2lj+IPQaZWPGk/9fK/VsLQpu1bU59VMyedN/A1xyiHsV1H5+j5Om8Kj2SZYtKqcFMf/j3GV8l6opgEhSxf46muk918yl7O45vnQl95Hw2ZzL1Ybaz14ZK9xI0UF67K0JYY=
+	t=1759409784; cv=none; b=IbnBmd9E/1Frf2LdXJyaR9AZtXlNPZvdllyKRw3NlyDk+h3kB6B3zGMPoggRNcRmGqQ32anZM55ZvBke2G3m5u1PWjUpZKKCcnynFblwTP1mE92EutiRX2lppWpaOTqEHjE/1TsddF7/D+wM+URHnI2mqDqmlwCCRNXaBE13H8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759405369; c=relaxed/simple;
-	bh=zSH9797fJ78xiisbHGjTWoEbZLjtnPdnxj+9risSCs0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LP15osQdDp1aueLfcdJMjx9wgoTDNr2AK1xb9j+uDnuPPi0A3K3rSULrwW7TKuy8e79YwBsAwjkDOxMy6zr6FhNdJ2LtjEOChU9qKq3zPgxvOzzxa59Nipu2vx3bbgeMo5/zQHzPRd4Ui+6XZ2juSGiVizc+u7QY87cJg/ZQsek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=wwF2dHn4; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1759405357; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=yfqJW3Keyz7btvmQhBVyThI19zXN+mtr///MNA4fQb4=;
-	b=wwF2dHn4fBTG7oib9ikM7uA5N79XM2sSWc47LkzqoYjupQnZyned4VjIvoBfauopXCvA1TP6Y3wqWOkkWilVexuQMxUZ9DP8JAjh+l8kXtUIHiTv1U3krumVixKlSdpoOXtnS5gqrnk4vZd3aawvMsazyqrSK+mOiz2/vH1rVdk=
-Received: from 30.180.0.242(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0WpHqq9F_1759405355 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 02 Oct 2025 19:42:36 +0800
-Message-ID: <4a152e1b-c468-4fbf-ac0b-dbb76fa1e2ac@linux.alibaba.com>
-Date: Thu, 2 Oct 2025 19:42:34 +0800
+	s=arc-20240116; t=1759409784; c=relaxed/simple;
+	bh=Bzm3UVzy5UmWZcilLMKv+UlC3Okbitce2Is02Gaxtrg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LXYoWLLI1OreCsLXSabsLXq2WToNM8ZQj2LwPsBbOxLralGbD686u3uVA7Qdmsp9CTeQQW0lEcXoEP0TF7+KMoWKPiBh13DB2KWllsNfyE3lipqvK4aRQOX321TpJeEk8N6MAgl6zqCqiSpxcgcwPmwO6wh8epo7Y+qZH4zazAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-8e401b11bfaso322387241.3
+        for <linux-ext4@vger.kernel.org>; Thu, 02 Oct 2025 05:56:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759409781; x=1760014581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ec+ndxQ3jnu1a8VNviNr06HkWUDsCBC6MfDIjOmWDIU=;
+        b=LQPSuPCgCuIcCDNZpafn4rxfiNvQa3vr+8c7o18BIAFAJiLet3JWYEFueuDeHh8bDf
+         UqmPhnJKsXVW2zsUUeq9Vji4zWnAk9wF6OO3k4YkzPCk161z1s6+Y8nStw8Olwcr7iEm
+         aBMsQWeFrXnAe1zvRchsgUuv7zaWYexq/yncMVl5EkViB6A/NnPQIlzWn+9tcWrv5Q+q
+         Ab2cHK5YFYFBMct0XGbWUCUNsCroaJUKFPdY5QnFkSrE2v4Tbmu9W5dJNc4ikC16QqJz
+         dbbiguEY8rwv+JZ93U76p85tsS9mqXQrzof7jXq4Giiywfo8KR239fga4D++cPy38Udp
+         9wdA==
+X-Forwarded-Encrypted: i=1; AJvYcCV4F5sgRNhdEHXKUFc+/NBSy3RkGS4TQIliodHgOXdaWL9ib2X5mUjLolSKMOXvb6ecDbrAwBYZJ1xR@vger.kernel.org
+X-Gm-Message-State: AOJu0YxvQTxKnCg/wU2KLsqh76nik9qaJY5lIqI5+jvB9ROIAKLw2NvX
+	P19g4lU9i1lOhXmNM2PYRLbUcoSbasItN2WXzJ4NR23YfRN3QlSaZ267FjzOf0i74OPkwQ==
+X-Gm-Gg: ASbGncsJLVc1XguOVeXlBQ6CvU3y9Uq5WyzDIJvLmKPxRroJFQwEIevX90JGCHtVQj6
+	rqxJTNr9obl1FGmdGiCkKh9asdmw3+P4Aesx3MWDuc/YWB0XldPk01MbhGJchmQw/0SDNkT4H+2
+	6B5ekyHqSQiv8ihcH7k1cYHK6fie4uzZb6Qu+ow/DyYI4sFnYkVVrzYtypAQMTktOvqsAyxLWqJ
+	uOSmv93HC9qnLt/zY9AqikWuoIplqaz908neFWzCfqNC76zG+PgD9AZ9UauRPfgwtr3d0gvagQd
+	KtsN83oQ30qrx0L4oEA+3L1yvuO9DRnMi68hvLaEkxstaG+hi/mdpN0JhdvqzxlRTuWajp8e2Bf
+	kHesEKkUDOyUXRccFPOqW7a+O0Psjp7y/RAJVvuxW9RneIkam5S1DsL34NbZsmHgf8kKG79/10m
+	cn/o3w+FvF
+X-Google-Smtp-Source: AGHT+IGJH4R7qP858ao3aRwF1Te6HZQsRLvnszECZN4TjGOxge4ZGb64TtKHnVrxSofoumXbMXNeUQ==
+X-Received: by 2002:a05:6102:5111:b0:529:1815:ae8f with SMTP id ada2fe7eead31-5d3fe37d7femr3066315137.0.1759409780959;
+        Thu, 02 Oct 2025 05:56:20 -0700 (PDT)
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com. [209.85.217.51])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-5d40c50d3b0sm575020137.8.2025.10.02.05.56.20
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Oct 2025 05:56:20 -0700 (PDT)
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-5ccccc1f7caso566168137.1
+        for <linux-ext4@vger.kernel.org>; Thu, 02 Oct 2025 05:56:20 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXuYnP2lvpzipzULeyXPzpviZFjD6ABQ9+p7DikvuUWy1nEDVAISIzG2XlxCViUfRPngf2rDfTenpc4@vger.kernel.org
+X-Received: by 2002:a67:f74a:0:b0:5d3:fecb:e4e8 with SMTP id
+ ada2fe7eead31-5d3fecbe643mr2057033137.5.1759409779799; Thu, 02 Oct 2025
+ 05:56:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] ext4: fix an data corruption issue in nojournal mode
-To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
- libaokun1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
-References: <20250916093337.3161016-1-yi.zhang@huaweicloud.com>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20250916093337.3161016-1-yi.zhang@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20251002081247.51255-1-byungchul@sk.com> <20251002081247.51255-3-byungchul@sk.com>
+ <2025100255-tapestry-elite-31b0@gregkh>
+In-Reply-To: <2025100255-tapestry-elite-31b0@gregkh>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 2 Oct 2025 14:56:08 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWXuXh4SVu-ORghAqsZa7U6_mcW44++id9ioUm5Y4KTLw@mail.gmail.com>
+X-Gm-Features: AS18NWCmqHU8DKNueQjpF6Ifrv2W5fzYfUTjQ8XBBt-1KrFWqeUHHsvmYo_0fpY
+Message-ID: <CAMuHMdWXuXh4SVu-ORghAqsZa7U6_mcW44++id9ioUm5Y4KTLw@mail.gmail.com>
+Subject: Re: [PATCH v17 02/47] dept: implement DEPT(DEPendency Tracker)
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org, kernel_team@skhynix.com, 
+	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com, 
+	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca, 
+	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org, 
+	will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org, 
+	joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch, 
+	duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu, 
+	willy@infradead.org, david@fromorbit.com, amir73il@gmail.com, 
+	kernel-team@lge.com, linux-mm@kvack.org, akpm@linux-foundation.org, 
+	mhocko@kernel.org, minchan@kernel.org, hannes@cmpxchg.org, 
+	vdavydov.dev@gmail.com, sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, 
+	cl@linux.com, penberg@kernel.org, rientjes@google.com, vbabka@suse.cz, 
+	ngupta@vflare.org, linux-block@vger.kernel.org, josef@toxicpanda.com, 
+	linux-fsdevel@vger.kernel.org, jack@suse.cz, jlayton@kernel.org, 
+	dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org, 
+	dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com, 
+	melissa.srw@gmail.com, hamohammed.sa@gmail.com, harry.yoo@oracle.com, 
+	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com, 
+	max.byungchul.park@gmail.com, boqun.feng@gmail.com, longman@redhat.com, 
+	yunseong.kim@ericsson.com, ysk@kzalloc.com, yeoreum.yun@arm.com, 
+	netdev@vger.kernel.org, matthew.brost@intel.com, her0gyugyu@gmail.com, 
+	corbet@lwn.net, catalin.marinas@arm.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, luto@kernel.org, 
+	sumit.semwal@linaro.org, gustavo@padovan.org, christian.koenig@amd.com, 
+	andi.shyti@kernel.org, arnd@arndb.de, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, rppt@kernel.org, surenb@google.com, 
+	mcgrof@kernel.org, petr.pavlu@suse.com, da.gomez@kernel.org, 
+	samitolvanen@google.com, paulmck@kernel.org, frederic@kernel.org, 
+	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, josh@joshtriplett.org, 
+	urezki@gmail.com, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, 
+	qiang.zhang@linux.dev, juri.lelli@redhat.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, 
+	vschneid@redhat.com, chuck.lever@oracle.com, neil@brown.name, 
+	okorniev@redhat.com, Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org, 
+	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de, clrkwllms@kernel.org, 
+	mark.rutland@arm.com, ada.coupriediaz@arm.com, kristina.martsenko@arm.com, 
+	wangkefeng.wang@huawei.com, broonie@kernel.org, kevin.brodsky@arm.com, 
+	dwmw@amazon.co.uk, shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com, 
+	yuzhao@google.com, baolin.wang@linux.alibaba.com, usamaarif642@gmail.com, 
+	joel.granados@kernel.org, richard.weiyang@gmail.com, geert+renesas@glider.be, 
+	tim.c.chen@linux.intel.com, linux@treblig.org, 
+	alexander.shishkin@linux.intel.com, lillian@star-ark.net, 
+	chenhuacai@kernel.org, francesco@valla.it, guoweikang.kernel@gmail.com, 
+	link@vivo.com, jpoimboe@kernel.org, masahiroy@kernel.org, brauner@kernel.org, 
+	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com, 
+	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, 
+	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org, 
+	rcu@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-rt-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Ted,
+Hi Greg,
 
-On 2025/9/16 17:33, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Hello!
-> 
-> This series fixes an data corruption issue reported by Gao Xiang in
-> nojournal mode. The problem is happened after a metadata block is freed,
-> it can be immediately reallocated as a data block. However, the metadata
-> on this block may still be in the process of being written back, which
-> means the new data in this block could potentially be overwritten by the
-> stale metadata and trigger a data corruption issue. Please see below
-> discussion with Jan for more details:
-> 
->    https://lore.kernel.org/linux-ext4/a9417096-9549-4441-9878-b1955b899b4e@huaweicloud.com/
-> 
-> Patch 1 strengthens the same case in ordered journal mode, theoretically
-> preventing the occurrence of stale data issues.
-> Patch 2 fix this issue in nojournal mode.
+On Thu, 2 Oct 2025 at 10:25, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > @@ -0,0 +1,446 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * DEPT(DEPendency Tracker) - runtime dependency tracker
+> > + *
+> > + * Started by Byungchul Park <max.byungchul.park@gmail.com>:
+> > + *
+> > + *  Copyright (c) 2020 LG Electronics, Inc., Byungchul Park
+> > + *  Copyright (c) 2024 SK hynix, Inc., Byungchul Park
+>
+> Nit, it's now 2025 :)
 
-It seems this series is not applied, is it ignored?
+The last non-trivial change to this file was between the last version
+posted in 2024 (v14) and the first version posted in 2025 (v15),
+so 2024 doesn't sound that off to me.
+You are not supposed to bump the copyright year when republishing
+without any actual changes.  It is meant to be the work=E2=80=99s first yea=
+r
+of publication.
 
-When ext4 nojournal mode is used, it is actually a very
-serious bug since data corruption can happen very easily
-in specific conditions (we actually have a specific
-environment which can reproduce the issue very quickly)
+Gr{oetje,eeting}s,
 
-Also it seems AWS folks reported this issue years ago
-(2021), the phenomenon was almost the same, but the issue
-still exists until now:
-https://lore.kernel.org/linux-ext4/20211108173520.xp6xphodfhcen2sy@u87e72aa3c6c25c.ant.amazon.com/
+                        Geert
 
-Some of our internal businesses actually rely on EXT4
-no_journal mode and when they upgrade the kernel from
-4.19 to 5.10, they actually read corrupted data after
-page cache memory is reclaimed (actually the on-disk
-data was corrupted even earlier).
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-So personally I wonder what's the current status of
-EXT4 no_journal mode since this issue has been existing
-for more than 5 years but some people may need
-an extent-enabled ext2 so they selected this mode.
-
-We already released an announcement to advise customers
-not using no_journal mode because it seems lack of
-enough maintainence (yet many end users are interested
-in this mode):
-https://www.alibabacloud.com/help/en/alinux/support/data-corruption-risk-and-solution-in-ext4-nojounral-mode
-
-Thanks,
-Gao Xiang
-
-> 
-> Regards,
-> Yi.
-> 
-> Zhang Yi (2):
->    jbd2: ensure that all ongoing I/O complete before freeing blocks
->    ext4: wait for ongoing I/O to complete before freeing blocks
-> 
->   fs/ext4/ext4_jbd2.c   | 11 +++++++++--
->   fs/jbd2/transaction.c | 13 +++++++++----
->   2 files changed, 18 insertions(+), 6 deletions(-)
-> 
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
