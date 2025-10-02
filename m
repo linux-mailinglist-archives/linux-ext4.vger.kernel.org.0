@@ -1,70 +1,70 @@
-Return-Path: <linux-ext4+bounces-10567-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10565-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DE49BB4A39
-	for <lists+linux-ext4@lfdr.de>; Thu, 02 Oct 2025 19:16:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A43C3BB4A27
+	for <lists+linux-ext4@lfdr.de>; Thu, 02 Oct 2025 19:16:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCB9B19E4535
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Oct 2025 17:17:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63A2B3C2489
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Oct 2025 17:16:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826842701CE;
-	Thu,  2 Oct 2025 17:16:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F3B7D07D;
+	Thu,  2 Oct 2025 17:16:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Dygwg2+/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eNCO/t1r"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CDF26F2B7
-	for <linux-ext4@vger.kernel.org>; Thu,  2 Oct 2025 17:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96032BD03
+	for <linux-ext4@vger.kernel.org>; Thu,  2 Oct 2025 17:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759425401; cv=none; b=YQT2BPkoHn0H847zWqQroUhxyL7mqxpDcRwhep3day9xRrYd4km5NOWMyV7CgqVzlqYx6cqx59bXQeUtos8JAbrU8ifQ6lLpkdxPgjbHH6+yZ8xaGiS7sgovk9JNb1HxrBJxZydp+LYcV6lUYXO3Y2wiRapwCxdu1c03STZENP4=
+	t=1759425395; cv=none; b=kKf0NrVb4Cv2FPr3bpIHk5hJB5RtkF0KjWiOoCJLhRIQHHyzFehl5/IWWOhX0x4jGhXrubrzqBsTUlYu8LPRUU/Q4xDyZnfS6DAn3XA+gf4kwhpm1pfYH49kEWrjx6GdWXCpzPJxtUZMXa94IHSsLxnAYIpdFF55LMLai7EFlaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759425401; c=relaxed/simple;
-	bh=MhbcOwX2MxS51mmnD4KeIrKi3jxNGwv7djuoxh2v8yM=;
+	s=arc-20240116; t=1759425395; c=relaxed/simple;
+	bh=GYb2+ToHnzWVjuFJGD9ON0xpfYNgyBnSnJFW2RA9wIo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oX1NQYotqgvC7gqdj/MacSnNNS0e1y3OjUhjb+d06FLxCYGE9tnYdOUrCiQPGYLEmg7CB7UAmkuIiX5NaWnxgFXn86m5JG7Yy78LGG6D+Yi1Na2iOmsUwVSivqnEPw05A2QUH4dRxTOi2AT43E9T76cLNcn/rbLpDFUMz10vxBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Dygwg2+/; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=DbuZp3PB+pPnEGDP4NoRZKLZRdtUR05N2XMEctCG3CGyMi0j3VM5Knu8Fb++qZN96lW9SY3Pf6FTnnD0jcPcofonS8q3oHn6CMxosoSPuH+/htaUv6rKLh1Dk/jAsA05JDQx9W/VXRU/4fpIWGXJeZVMghoyHkOd+5JdSuEX490=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eNCO/t1r; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1759425398;
+	s=mimecast20190719; t=1759425392;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=roK87h7SJk0xMszRssGEGW3y5zhgvRYMHOpqvKw92wA=;
-	b=Dygwg2+/D14CSNSeyTZrtpBDVbVKT7wTP4NrY+Z4yCAUJjdKnTdRs7PrugsSy77fbW/HRZ
-	c8q13klwPKi8dMBuiFzfppnv2H2TO/SppUBKHQv075vhoRfBiuNRK0NAUl61SY+JXwmzIe
-	trGVzlSBF3gqDOS15WQ1HAoRkn6/TDE=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=jRBTs2P2/0wRUicB8nEZSbQd2L+zPdsrgJYblEMyMnc=;
+	b=eNCO/t1rkF8SLOJxKq8BL4L+Myu5E8TFEkHB+bjuc50dG0M8YL1hvMEiVhbmIk76GrVIpZ
+	7RjBRcorkoW+mKAmw0nAyl4s/oEiC7xlsSe4sorngb/aNd3/9Crrki1Vz8LNMBnFiNa7on
+	DyjWTB0P4S+dvJWF3vCrvDhkQnmKTj0=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-470-jrwbawWkPbqUHy4IhGhxZQ-1; Thu,
- 02 Oct 2025 13:16:30 -0400
-X-MC-Unique: jrwbawWkPbqUHy4IhGhxZQ-1
-X-Mimecast-MFC-AGG-ID: jrwbawWkPbqUHy4IhGhxZQ_1759425389
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-232-2KzQTsUaORe1siw3GFATVA-1; Thu,
+ 02 Oct 2025 13:16:31 -0400
+X-MC-Unique: 2KzQTsUaORe1siw3GFATVA-1
+X-Mimecast-MFC-AGG-ID: 2KzQTsUaORe1siw3GFATVA_1759425390
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1D5FD195608B;
-	Thu,  2 Oct 2025 17:16:29 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6DB231800350;
+	Thu,  2 Oct 2025 17:16:30 +0000 (UTC)
 Received: from bfoster.redhat.com (unknown [10.22.64.54])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 30E021800452;
-	Thu,  2 Oct 2025 17:16:28 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 616D8180047F;
+	Thu,  2 Oct 2025 17:16:29 +0000 (UTC)
 From: Brian Foster <bfoster@redhat.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org
 Cc: Christian Brauner <brauner@kernel.org>
-Subject: [PATCH v2 1/2] iomap: prioritize iter.status error over ->iomap_end()
-Date: Thu,  2 Oct 2025 13:20:37 -0400
-Message-ID: <20251002172038.477207-2-bfoster@redhat.com>
+Subject: [PATCH v2 2/2] iomap: revert the iomap_iter pos on ->iomap_end() error
+Date: Thu,  2 Oct 2025 13:20:38 -0400
+Message-ID: <20251002172038.477207-3-bfoster@redhat.com>
 In-Reply-To: <20251002172038.477207-1-bfoster@redhat.com>
 References: <20251002172038.477207-1-bfoster@redhat.com>
 Precedence: bulk
@@ -77,46 +77,73 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-Jan Kara reports that commit bc264fea0f6f subtly changed error
-handling behavior in iomap_iter() in the case where both iter.status
-and ->iomap_end() return error codes. Previously, iter.status had
-priority and would return to the caller regardless of the
-->iomap_end() result. After the change, an ->iomap_end() error
-returns immediately.
+An iomap op iteration should not be considered successful if
+->iomap_end() fails. Most ->iomap_end() callbacks do not return
+errors, and for those that do we return the error to the caller, but
+this is still not sufficient in some corner cases.
 
-This had the unexpected side effect of enabling a DIO fallback to
-buffered write on ext4 because ->iomap_end() could return -ENOTBLK
-and overload an -EINVAL error from the core iomap direct I/O code.
+For example, if a DAX write to a shared iomap fails at ->iomap_end()
+on XFS, this means the remap of shared blocks from the COW fork to
+the data fork has possibly failed. In turn this means that just
+written data may not be accessible in the file. dax_iomap_rw()
+returns partial success over a returned error code and the operation
+has already advanced iter.pos by the time ->iomap_end() is called.
+This means that dax_iomap_rw() can return more bytes processed than
+have been completed successfully, including partial success instead
+of an error code if the first iteration happens to fail.
 
-This has been fixed independently in ext4, but nonetheless the
-change in iomap was unintentional. Since other filesystems may use
-this in similar ways, restore long standing behavior and always
-return the value of iter.status if it happens to contain an error
-code.
+To address this problem, first tweak the ->iomap_end() error
+handling logic to run regardless of whether the current iteration
+advanced the iter. Next, revert pos in the error handling path. Add
+a new helper to undo the changes from iomap_iter_advance(). It is
+static to start since the only initial user is in iomap_iter.c.
 
-Fixes: bc264fea0f6f ("iomap: support incremental iomap_iter advances")
-Diagnosed-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/iomap/iter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/iomap/iter.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/fs/iomap/iter.c b/fs/iomap/iter.c
-index cef77ca0c20b..7cc4599b9c9b 100644
+index 7cc4599b9c9b..69c993fe51fa 100644
 --- a/fs/iomap/iter.c
 +++ b/fs/iomap/iter.c
-@@ -80,7 +80,7 @@ int iomap_iter(struct iomap_iter *iter, const struct iomap_ops *ops)
+@@ -27,6 +27,22 @@ int iomap_iter_advance(struct iomap_iter *iter, u64 *count)
+ 	return 0;
+ }
+ 
++/**
++ * iomap_iter_revert - revert the iterator position
++ * @iter: iteration structure
++ * @count: number of bytes to revert
++ *
++ * Revert the iterator position by the specified number of bytes, undoing
++ * the effect of a previous iomap_iter_advance() call. The count must not
++ * exceed the amount previously advanced in the current iter.
++ */
++static void iomap_iter_revert(struct iomap_iter *iter, u64 count)
++{
++	count = min_t(u64, iter->pos - iter->iter_start_pos, count);
++	iter->pos -= count;
++	iter->len += count;
++}
++
+ static inline void iomap_iter_done(struct iomap_iter *iter)
+ {
+ 	WARN_ON_ONCE(iter->iomap.offset > iter->pos);
+@@ -80,8 +96,10 @@ int iomap_iter(struct iomap_iter *iter, const struct iomap_ops *ops)
  				iomap_length_trim(iter, iter->iter_start_pos,
  						  olen),
  				advanced, iter->flags, &iter->iomap);
--		if (ret < 0 && !advanced)
-+		if (ret < 0 && !advanced && !iter->status)
+-		if (ret < 0 && !advanced && !iter->status)
++		if (ret < 0 && !iter->status) {
++			iomap_iter_revert(iter, advanced);
  			return ret;
++		}
  	}
  
+ 	/* detect old return semantics where this would advance */
 -- 
 2.51.0
 
