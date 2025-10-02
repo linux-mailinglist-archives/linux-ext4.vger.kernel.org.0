@@ -1,161 +1,215 @@
-Return-Path: <linux-ext4+bounces-10506-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10507-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D73AEBAF074
-	for <lists+linux-ext4@lfdr.de>; Wed, 01 Oct 2025 04:54:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D762BB21B7
+	for <lists+linux-ext4@lfdr.de>; Thu, 02 Oct 2025 02:10:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BAFC1C22FA
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Oct 2025 02:54:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C123192216F
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Oct 2025 00:11:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2374327AC21;
-	Wed,  1 Oct 2025 02:54:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="YKXBgfpj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396E54A32;
+	Thu,  2 Oct 2025 00:10:36 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C0835940
-	for <linux-ext4@vger.kernel.org>; Wed,  1 Oct 2025 02:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3651BA41
+	for <linux-ext4@vger.kernel.org>; Thu,  2 Oct 2025 00:10:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759287255; cv=none; b=RMvNwZrbzzC8+abUIyWzXBM+FjxNSzhbswxQthFDh4G+kUCVxTjFOzn1VosHKA8MjTcGlw1n/IITV6aRxX36iqMVN6fytTWd+uTEKwfiT2Ish+6PejlkbgQociuS4a8dJVaVqRuZoD+0GwO0gfXIl54Pv22xAkipesnnZI4Z1IA=
+	t=1759363836; cv=none; b=cGojQkkPlcmcoHmlgp0XwDViLoUODL4kQCjRAlP89u9gWPzfZlv+Q3auej6Y4Qzq+OsKWomlt256qsVNFW+zjhXR6VURrWFMpQ+oPEC9agmvpm6CHgpRAmRjLNfAfz3J4I54OlKuQJ+mVJj4wWyjdAUevKYO+z5STCPpdlYqLq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759287255; c=relaxed/simple;
-	bh=XcdUOVP2ST66bgN0i3mM03qMLhQASrIrftRuGgxZqFU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=XwYlrXW8Wcb4idccIcnICAZrz77+bWb2x1eXV4QXQ85nrwgTjlHDndhhAeVYYwQ3druSeG9yIYDdFcyL7QmEyXS4dh4k6N/nkauxCj99NMOpiIm+b3XbanAtI7oQBv/qK1ghb5OqZC3rI27j6tddrwHItyTAgiggUpx/IJfzAKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=YKXBgfpj; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-113-189.bstnma.fios.verizon.net [173.48.113.189])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5912s1Ys017031
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Sep 2025 22:54:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1759287242; bh=Qf7UtKUlYjyeQyEVGZWBThbfyxqAnNWIuRrsdjjbR9U=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=YKXBgfpjwyAcEeNkTa3oNpnggEgl0U4YZOXtugodEBZsyrQShJQ8dInFuuPv4Qo+m
-	 iuxv8P6XborkhlWxNojqTqgl7JHScR2W4itRevADbiUbOba8HF9ma+vgQRx1pXCQNX
-	 af3VQMUr2KRVwu1IUokAqWCHhv9XwSBY/om0LCMKd2XXIsh7kp50J+EEYJ6YSPvoxA
-	 Bv/33iPlkq9MWLfJaNynDKLqthb7DqJ5Buz5Qg/MQ5Nei0hDJJDq0gltBP/cpf9A55
-	 NszBOnnvuewO7Vj98KGGnHkb3HhFb8VgCcawKIryt9f5JYPpfTi/FBd5vAns76f4/x
-	 zzorRAx80Ezuw==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id D02CF2E00D9; Tue, 30 Sep 2025 22:54:00 -0400 (EDT)
-Date: Tue, 30 Sep 2025 22:54:00 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: [GIT PULL] ext4 updates for 6.18-rc1
-Message-ID: <20251001025400.GA333371@mit.edu>
+	s=arc-20240116; t=1759363836; c=relaxed/simple;
+	bh=nGtG//UwSiOC7j/s5aI7uBONsY6W4rhN9Dt7OdwLsnw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=b+6vEn4fU42tTEmQCyMaHkwWRJUEctFmzzB21cgRNJyhTrxZFW9k6q1BcImUAM1H/+J3U0Qz2WTc65I9xTQlIwJnbtskxnunYyfwP7To05D09nFs1ZFHIFunq/P33xHV/w4AhP1+MhlP0AeQftV0i3fYH1AV9ekRX2I22JnSTJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-9374627bb7eso198631239f.1
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Oct 2025 17:10:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759363833; x=1759968633;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GFVNWbWuQMVw9msMpATVBSpa9OIDNQOKyA+W7+Ch6m4=;
+        b=RIIeSZeVV2s+vUjyg3SULUezUrx7BRhsaBSQO2XPuQe4ik/OeIkfdrGzrQheCCPHii
+         yC/ElNoj/tbtGzzMLMpTjQQMOXnKqj6rNLXvp5xwMtkTxJBEQ5EFu/mmiwolXD+9VSn5
+         lPyQNtthCrLmaCEwsNBNbdWr3gvjKOcz17nEAOpeJ3POZwztaFhL+21+Anyxqal+Rr6j
+         QsMQpnpnGeRUlzmLFq4QVnJVpMEkrxCXjPho7Gj+Z8QDOk+83WL0WKDtkarE5kUdIE1s
+         r6a0gJxZuK4j+vmc9sKFYJiDu2YRtZ9pD2/7U/DqoVxWvoVotj750iYbA3Zj+hPJXiZG
+         Hl6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWc6zXjMazpNZz5Y/kRRk9kt8STeUjT2Q8E3Xov8JvEC0W5A/nYsJM8Hi39FnTUv9PQ4k9yB9eShsb3@vger.kernel.org
+X-Gm-Message-State: AOJu0YysLmOt37+FdLTbqJfm8aE6+n5NG6/T+eU9yzs1CQs+4V/6L7ek
+	YRsA20d5peAtZ+sQsdh2pxhyppAb/NBV4VmUy14WbbdsgUGPZXOQseaQYelNkNxrWNJo0gJ8/yx
+	oZLfQztROYCiPPaRdbETXxYEIAWC5Yrp3+DdCLMbq/iXgnrFfuaw3UaS+fYA=
+X-Google-Smtp-Source: AGHT+IGjb5hEJ/7yJWBDWVALOD8pfVf18BhtT3dObGhNTlszT0T+Ul7PXrG2U9XM76i1MfGdVvICIpeipf/ZWOuMFO9Is1rRcq+g
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6e02:1fc6:b0:424:7128:a06a with SMTP id
+ e9e14a558f8ab-42d8b1b2759mr20435535ab.7.1759363833281; Wed, 01 Oct 2025
+ 17:10:33 -0700 (PDT)
+Date: Wed, 01 Oct 2025 17:10:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68ddc2f9.a00a0220.102ee.006d.GAE@google.com>
+Subject: [syzbot] [ext4?] KASAN: slab-out-of-bounds Read in ext4_search_dir
+From: syzbot <syzbot+3ee481e21fd75e14c397@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-The following changes since commit b320789d6883cc00ac78ce83bccbfe7ed58afcf0:
+Hello,
 
-  Linux 6.17-rc4 (2025-08-31 15:33:07 -0700)
+syzbot found the following issue on:
 
-are available in the Git repository at:
+HEAD commit:    50c19e20ed2e Merge tag 'nolibc-20250928-for-6.18-1' of git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15bd8092580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ee1d7eda39c03d2c
+dashboard link: https://syzkaller.appspot.com/bug?extid=3ee481e21fd75e14c397
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14f30a7c580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1109e942580000
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-6.18-rc1
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-50c19e20.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/33a22a854fe0/vmlinux-50c19e20.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e68f79994eb8/bzImage-50c19e20.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/921fccc3cfcf/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=16c42092580000)
 
-for you to fetch changes up to acf943e9768ec9d9be80982ca0ebc4bfd6b7631e:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3ee481e21fd75e14c397@syzkaller.appspotmail.com
 
-  ext4: fix checks for orphan inodes (2025-09-26 08:36:08 -0400)
+==================================================================
+BUG: KASAN: use-after-free in ext4_search_dir+0xf1/0x1b0 fs/ext4/namei.c:1469
+Read of size 1 at addr ffff8880528ccb57 by task syz.0.24/5691
 
-----------------------------------------------------------------
-New ext4 features:
+CPU: 0 UID: 0 PID: 5691 Comm: syz.0.24 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:378 [inline]
+ print_report+0xca/0x240 mm/kasan/report.c:482
+ kasan_report+0x118/0x150 mm/kasan/report.c:595
+ ext4_search_dir+0xf1/0x1b0 fs/ext4/namei.c:1469
+ ext4_find_inline_entry+0x492/0x5f0 fs/ext4/inline.c:1621
+ __ext4_find_entry+0x2fd/0x1f20 fs/ext4/namei.c:1542
+ ext4_lookup_entry fs/ext4/namei.c:1703 [inline]
+ ext4_lookup+0x13d/0x6c0 fs/ext4/namei.c:1771
+ lookup_open fs/namei.c:3774 [inline]
+ open_last_lookups fs/namei.c:3895 [inline]
+ path_openat+0x1101/0x3830 fs/namei.c:4131
+ do_filp_open+0x1fa/0x410 fs/namei.c:4161
+ do_sys_openat2+0x121/0x1c0 fs/open.c:1435
+ do_sys_open fs/open.c:1450 [inline]
+ __do_sys_openat fs/open.c:1466 [inline]
+ __se_sys_openat fs/open.c:1461 [inline]
+ __x64_sys_openat+0x138/0x170 fs/open.c:1461
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f807b98eec9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f807c806038 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007f807bbe6090 RCX: 00007f807b98eec9
+RDX: 0000000000000042 RSI: 0000200000000040 RDI: ffffffffffffff9c
+RBP: 00007f807ba11f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f807bbe6128 R14: 00007f807bbe6090 R15: 00007ffea28141a8
+ </TASK>
 
-  * Add support so tune2fs can modify/update the superblock using an
-    ioctl, without needing write access to the block device.
-  * Add support for 32-bit reserved uid's and gid's.
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x7fe26f59e pfn:0x528cc
+flags: 0x4fff00000000000(node=1|zone=1|lastcpupid=0x7ff)
+raw: 04fff00000000000 ffffea00014a3348 ffffea00014a3208 0000000000000000
+raw: 00000007fe26f59e 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as freed
+page last allocated via order 0, migratetype Movable, gfp_mask 0x140dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO|__GFP_COMP), pid 5688, tgid 5688 (rm), ts 112106822009, free_ts 112155145845
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1851
+ prep_new_page mm/page_alloc.c:1859 [inline]
+ get_page_from_freelist+0x21e4/0x22c0 mm/page_alloc.c:3858
+ __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:5148
+ alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2416
+ folio_alloc_mpol_noprof mm/mempolicy.c:2435 [inline]
+ vma_alloc_folio_noprof+0xe4/0x200 mm/mempolicy.c:2470
+ folio_prealloc+0x30/0x180 mm/memory.c:-1
+ alloc_anon_folio mm/memory.c:4997 [inline]
+ do_anonymous_page mm/memory.c:5054 [inline]
+ do_pte_missing mm/memory.c:4232 [inline]
+ handle_pte_fault mm/memory.c:6052 [inline]
+ __handle_mm_fault+0x2ab9/0x5440 mm/memory.c:6195
+ handle_mm_fault+0x40a/0x8e0 mm/memory.c:6364
+ do_user_addr_fault+0xa7c/0x1380 arch/x86/mm/fault.c:1336
+ handle_page_fault arch/x86/mm/fault.c:1476 [inline]
+ exc_page_fault+0x76/0xf0 arch/x86/mm/fault.c:1532
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+page last free pid 5688 tgid 5688 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1395 [inline]
+ free_unref_folios+0xdbd/0x1520 mm/page_alloc.c:2952
+ folios_put_refs+0x559/0x640 mm/swap.c:999
+ free_pages_and_swap_cache+0x277/0x520 mm/swap_state.c:264
+ __tlb_batch_free_encoded_pages mm/mmu_gather.c:136 [inline]
+ tlb_batch_pages_flush mm/mmu_gather.c:149 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:397 [inline]
+ tlb_flush_mmu+0x3a0/0x680 mm/mmu_gather.c:404
+ tlb_finish_mmu+0xc3/0x1d0 mm/mmu_gather.c:497
+ exit_mmap+0x44c/0xb50 mm/mmap.c:1293
+ __mmput+0x118/0x430 kernel/fork.c:1130
+ exit_mm+0x1da/0x2c0 kernel/exit.c:582
+ do_exit+0x648/0x2300 kernel/exit.c:949
+ do_group_exit+0x21c/0x2d0 kernel/exit.c:1102
+ __do_sys_exit_group kernel/exit.c:1113 [inline]
+ __se_sys_exit_group kernel/exit.c:1111 [inline]
+ __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1111
+ x64_sys_call+0x21f7/0x2200 arch/x86/include/generated/asm/syscalls_64.h:232
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-Bug fixes:
+Memory state around the buggy address:
+ ffff8880528cca00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880528cca80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff8880528ccb00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                                 ^
+ ffff8880528ccb80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880528ccc00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
 
-  * Fix potential warnings and other failures caused by corrupted / fuzzed
-    file systems.
-  * Fail unaligned direct I/O write with EINVAL instead of silently
-    falling back to buffered I/O
-  * Correectly handle fsmap queries for metadata mappings
-  * Avoid journal stalls caused by writeback throttling
-  * Add some missing GFP_NOFAIL flags to avoid potential deadlocks
-    under extremem memory pressure
 
-Cleanups:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-  * Remove obsolete EXT3 Kconfigs
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-----------------------------------------------------------------
-Ahmet Eray Karadag (1):
-      ext4: guard against EA inode refcount underflow in xattr update
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Baokun Li (2):
-      ext4: add ext4_sb_bread_nofail() helper function for ext4_free_branches()
-      ext4: fix potential null deref in ext4_mb_init()
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-Deepanshu Kartikey (1):
-      ext4: validate ea_ino and size in check_xattrs
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Jan Kara (3):
-      ext4: fail unaligned direct IO write with EINVAL
-      ext4: verify orphan file size is not too big
-      ext4: fix checks for orphan inodes
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-Julian Sun (2):
-      jbd2: increase IO priority of checkpoint
-      ext4: increase IO priority of fastcommit
-
-Lukas Bulwahn (1):
-      ext4: remove obsolete EXT3 config options
-
-Ojaswin Mujoo (1):
-      ext4: correctly handle queries for metadata mappings
-
-Theodore Ts'o (3):
-      ext4: avoid potential buffer over-read in parse_apply_sb_mount_options()
-      ext4: add support for 32-bit default reserved uid and gid values
-      ext4: implemet new ioctls to set and get superblock parameters
-
-Xichao Zhao (1):
-      ext4: replace min/max nesting with clamp()
-
-Yongjian Sun (1):
-      ext4: increase i_disksize to offset + len in ext4_update_disksize_before_punch()
-
-Zhang Yi (1):
-      ext4: fix an off-by-one issue during moving extents
-
-chuguangqing (1):
-      fs: ext4: change GFP_KERNEL to GFP_NOFS to avoid deadlock
-
- fs/ext4/Kconfig           |  27 -------
- fs/ext4/ext4.h            |  28 ++++++-
- fs/ext4/fast_commit.c     |   2 +-
- fs/ext4/file.c            |   2 +-
- fs/ext4/fsmap.c           |  14 ++--
- fs/ext4/indirect.c        |   2 +-
- fs/ext4/inode.c           |  47 +++---------
- fs/ext4/ioctl.c           | 312 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
- fs/ext4/mballoc.c         |  10 +++
- fs/ext4/mmp.c             |   6 +-
- fs/ext4/move_extent.c     |   2 +-
- fs/ext4/orphan.c          |  19 +++--
- fs/ext4/super.c           |  38 +++++-----
- fs/ext4/xattr.c           |  21 ++++--
- fs/jbd2/checkpoint.c      |   2 +-
- include/uapi/linux/ext4.h |  53 +++++++++++++
- 16 files changed, 467 insertions(+), 118 deletions(-)
+If you want to undo deduplication, reply with:
+#syz undup
 
