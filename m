@@ -1,248 +1,104 @@
-Return-Path: <linux-ext4+bounces-10591-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10592-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 288A5BB599D
-	for <lists+linux-ext4@lfdr.de>; Fri, 03 Oct 2025 01:20:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE10EBB5AF6
+	for <lists+linux-ext4@lfdr.de>; Fri, 03 Oct 2025 02:51:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 91B004E35E9
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Oct 2025 23:20:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F71E19C3D19
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Oct 2025 00:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B6129C343;
-	Thu,  2 Oct 2025 23:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019251ADFFB;
+	Fri,  3 Oct 2025 00:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="UlZXQBIH";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UPWCT2uX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mqLZeOSW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from flow-b1-smtp.messagingengine.com (flow-b1-smtp.messagingengine.com [202.12.124.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD99288530;
-	Thu,  2 Oct 2025 23:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995DD2F85B
+	for <linux-ext4@vger.kernel.org>; Fri,  3 Oct 2025 00:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759447213; cv=none; b=p2bQPuwC/u9KevDZ3EAXC4W+J4uwW1Jb3j8nFmg1oV0NH5+wpRUJZ1kRHKR00OTa1w3a6IccgPOevQafD6J8mDa+Z5vuFdXSukCrzfYZrogWsqj4OC1+EUHZNDzCEiVNQyhjy7m+18AwkLyQaGkwOzcP1I5o84PonqJlhpM1IvE=
+	t=1759452674; cv=none; b=EmpSb+XRyHL9kPQw5obc9UDfQk9rRrIsgwpjGwFOdsnK341xtpHP8/rqA9+fcmcZw8nqu7ohywXYIuhkGeiEYE0xuD0DHO4dxCaUF9+0y+vSiRk1vtnCaCmXeV7a/7WCL73u0CNNZLeoe0EvC3mV6+xT7nMXMy7VAUdNPbR+dzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759447213; c=relaxed/simple;
-	bh=BR/jqWo92itmdMH1ocfUuKDAP7WulChibnIwAiSXhT4=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=As55O0BgHHu7XadPt6rE8gWYgT1KYrbqPzeVZGWgC5JFMIasraf95uQ+Xd16EXZcK4J5Z1KOPYSUcJZhHASyGrDj5IfenDbmLy4YpVNuJ7mk1Frg/O0JkIGOztW6eK+6l2sWg+PLUHk+LTAtWw4lg/mSmQe2zIAawEffjygT5Jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=UlZXQBIH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UPWCT2uX; arc=none smtp.client-ip=202.12.124.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailflow.stl.internal (Postfix) with ESMTP id DB1F41300343;
-	Thu,  2 Oct 2025 19:20:09 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Thu, 02 Oct 2025 19:20:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1759447209;
-	 x=1759454409; bh=8eLJoj9XRO384G/VvXT2HeFOAWEdoc6vPNt14uKR73A=; b=
-	UlZXQBIHPI3UaJe+qvjb/0azu1Oe5qtfVSOgfR9F74ejhfdVcoLT5yCscAFxGXg8
-	pwym4mpSChHvERlZa3eyvyx08BV44zMw3YGN0tM+vPnhSUz76Sq/1sLgdMvN//1t
-	MgHWqimhr0AzYrwUzdnliiWe0Dm9Z34Ogn+/sldz60VOggZ3d7nAO9W0sjAS+ODa
-	YJDWUIJqUD3rBGsCWCRyC9s7i9AA9pS/qByHexvhH8G1gQsu2dD8k1LeI24HGUWh
-	/03Dje8K6N7L4VyDIt3NIojzwr6tdgIOBwfeBK5umF7roU56mWwwY3FulE7R0j2n
-	QUpOkKf5lBp7bdgkzhLbPw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1759447209; x=
-	1759454409; bh=8eLJoj9XRO384G/VvXT2HeFOAWEdoc6vPNt14uKR73A=; b=U
-	PWCT2uXT/GxiygPtmHbccRddiUfCEYjhtJdXJccb/5YerEHrZjTt4d9N2RDQu1Wk
-	qyOu+HowFfq+mSzSu4jBKZpxK4j61odikvauJS62BQvPo05HzMc2V0Q02lDG/KuV
-	xFOFsUSRnUOVxEuk/jp9b7DJX/6hFCwfMhDmrQ+Gjgp+bzUnTy9kM9MFcHK3eQR5
-	T9dRhCCh7CnFM2shDd7H9AIA40TS7O85KP3muQgcpbkTId7BGzFMnUMJQzEW6cKC
-	RXT0xfdCbnheksb/9HE80aFjG/+J9g7pqLK4D083rrfitbbZ+Xq2jg/7x8JM1H12
-	rJ7EgoklB90Zb+f1OtOPw==
-X-ME-Sender: <xms:pwjfaGV4JN0Ma44cNnMBrUtL97DgMZmD0pMjmYN8l-menv5GZtsfLg>
-    <xme:pwjfaNbUXFszpshl1sBUhW_dmCbyy6ss_a2I-2pSkgussU5ZHyuAg_MFZejD8O402
-    j78984Anpb1DwJaQlM1svAPgMii0eUG1MbwQfJ4GQa5C5t5JGIzwDY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdekjeefvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
-    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
-    hnpefhtdfhvddtfeehudekteeggffghfejgeegteefgffgvedugeduveelvdekhfdvieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
-    esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeegledpmhhouggvpehsmhhtphhouhht
-    pdhrtghpthhtohepughrihdquggvvhgvlheslhhishhtshdrfhhrvggvuggvshhkthhoph
-    drohhrghdprhgtphhtthhopehlihhnuhigqdgrrhhmqdhkvghrnhgvlheslhhishhtshdr
-    ihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnrghrohdqmhhmqdhsihhgse
-    hlihhsthhsrdhlihhnrghrohdrohhrghdprhgtphhtthhopehlihhnuhigqdhrthdquggv
-    vhgvlheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopegtohhrsggvtheslh
-    ifnhdrnhgvthdprhgtphhtthhopehthihtshhosehmihhtrdgvughupdhrtghpthhtohep
-    jhhovghlrghgnhgvlhhfsehnvhhiughirgdrtghomhdprhgtphhtthhopeiiihihsehnvh
-    hiughirgdrtghomhdprhgtphhtthhopegurghmihgvnhdrlhgvmhhorghlsehophgvnhhs
-    ohhurhgtvgdrfigutgdrtghomh
-X-ME-Proxy: <xmx:pwjfaJ2BSQWnOhQ8IplrbbGK-gyE5_grSXYP3j9439lOC_jvlo5zZA>
-    <xmx:pwjfaGp-w5NGLIBr_AoLUes9YDJp8xiczs-IYhNS4F_HgHxvLrrzZA>
-    <xmx:pwjfaHE7EXWw8nb_0yF2EO6HFQilk8UVSNu6kLKe14icznmhBIcCwA>
-    <xmx:pwjfaI62HivFrwmWVnm93cq4CY8LYM9QpIUA5yL17t5fpoJyAMu_1w>
-    <xmx:qQjfaCYKV7n5Om4PDcHknSXz-bYbngxY5RgrPIa40VVrCIhGD4C03q0Q>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 38369700065; Thu,  2 Oct 2025 19:20:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1759452674; c=relaxed/simple;
+	bh=X5kSDsxxb+XD9CPJBYVIOtNwcZLhvc6wqQVQXU6X/oU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kMjWMXPM6Ln0LV2DoRxfgRNWaIGw4M1XjSFRd70Klu0HPdddOhnB5Qf+AT5YgsE8lJf4TyIPVeuzeMGz8xS3lfqKQD6kkr3SCs+ytgiOo8QXOPH3rkjuFNG5cfXUO/i+mHk3wDRPh4m3gsFIKmCpzSAz0TYAjee45U45aiLfGXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mqLZeOSW; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7833765433cso2281134b3a.0
+        for <linux-ext4@vger.kernel.org>; Thu, 02 Oct 2025 17:51:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759452669; x=1760057469; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T6bHVlibpYYb4K/JC7+xFZW8SMHjF8M/EaQn4o+DfFI=;
+        b=mqLZeOSWe/r8sA2Y3IxX5SsGblBscay8wiM5sTHlk3B7yOi+C2HO7Hhr+EPGWkqGoQ
+         6qpSCiLwQ7IMsk8Kg2AOQEkrksvkrsUtqHCi2VqYW/w15foG+zBQK1AFTvqGW6DmIKp1
+         yg7OkkaYCHAisSPM9kz3sF9QdXd0jEtz26JCCbHgAdH/pMPtw2FqIER7VC9pQjeQZfA5
+         IhbelqRMtArPj1qRvKn0GjEVMaQP1JneeOmbVLVY2t+9un+A9/toxr0aVHRWMBA8CsYM
+         d+Ru2e0TcsorQKR2xXh7vBFnugypSOE5okQ2oUaPsrBFEfhSM4IP1gzy2+nfKujv97uQ
+         1yTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759452669; x=1760057469;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T6bHVlibpYYb4K/JC7+xFZW8SMHjF8M/EaQn4o+DfFI=;
+        b=KMIlXmGPULDDezxmk6vq3ngOtfDTdFrqO6AbD4gbWbYFuPLCMA1VruLuFVzcAjLKsj
+         FfZqwGFaNoyHkP2uZDBfv2cyL8DuuOEe/4U+WKD4b8jNv26fcbdyX7UKxoS7n33GDBcA
+         i13ei5kguy+0XZmfvYIIdc2uEvqBD05/BHSraM40GShQF58mnVk3jjyx/aT8V6uy7bnJ
+         dakmguka/z/UMeLRNG0hbtp9P8eFTcyttv+lpEnKHnu1uE29ECJckywo8OOtmc5FkiCQ
+         GH5UWPzVxqt9lLrbbw+t8t/xeVj1fSFQkDdMwPuY2BZ71xh1yuQpQSf7PJSJnjqX9R4a
+         TQyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWq3gddHM2n6mnLUHPvpuGnLPaoTl3KYFtnhfEVkaSrLugT6oQHilMlgW7PXxcyjGHj+bdrKxDn1Wjo@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWvwG5ZX0AHht0qbT9sCoxUgPH/gm2jabkWysA2lpHlTnu/UK5
+	7QOvw9y06BCXkRsfmAJkwmBt2aGyq3Z4yS26RlmryYXMH4KyJYGhoZ4afBfcoGf2
+X-Gm-Gg: ASbGncsZqAZeflnDiGfWwFqNv5mOcaiVHIyAMBdfvR4eMoH5W7EZNC79mlodVaOrDpF
+	3zU+FscF6h3G37zt/HZQiBCfXaUbrs9EBXYNRtAXO2IThYhD2cziBwp5J55u/eIs8Wi0oHxd2O9
+	wh8ul4rKO6ae0Vbu7uoyKSqheAqxspRWsYi7X0SmiVXSVQ3nKiANx5SOVCw62np/gtJif3iRecU
+	iw2UQ/FNo8h7xgu1GLWgmW/orzysu9pEB2IW3aNvzPcrl669wMje5kDkWZC31EceNio3TUyfBKg
+	QYxO9JCsDBRhswDO1Lhcxcs0nMl7XGTDkF76MaqxGbLfQIKqTgNDsMndLifsLAkQ8XGPiRGtRr2
+	5Rp5kkn7dLwQsc+2Wkqh2grn73jYpCAfm4ktAQ/CQoYdKPWZdQMuSkpJUcOWlpkhGyMQ+gwPDMs
+	tgr1ijTA0BPObieDC27zJ6/PHgSn44kV794zfi
+X-Google-Smtp-Source: AGHT+IEwpomN/IBM+LnVDO+n8UtyRhkgfYEiaynqtsEYJ7oxGVacvwjycgRmKHI0Uzq7yJYetl1FYQ==
+X-Received: by 2002:a05:6a00:188e:b0:781:2558:6a3e with SMTP id d2e1a72fcca58-78c98d61decmr1842426b3a.14.1759452668771;
+        Thu, 02 Oct 2025 17:51:08 -0700 (PDT)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:389d:38c3:a5e9:d69a:7a4])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-78b01fb28adsm3271827b3a.35.2025.10.02.17.51.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Oct 2025 17:51:08 -0700 (PDT)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: tytso@mit.edu
+Cc: adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: reject inline data flag when i_extra_isize is zero
+Date: Fri,  3 Oct 2025 06:21:03 +0530
+Message-ID: <20251003005103.2399934-1-kartikey406@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: Aghr8S2aY07B
-Date: Fri, 03 Oct 2025 01:19:33 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Byungchul Park" <byungchul@sk.com>
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
- "Linus Torvalds" <torvalds@linux-foundation.org>,
- "Damien Le Moal" <damien.lemoal@opensource.wdc.com>,
- linux-ide@vger.kernel.org, "Andreas Dilger" <adilger.kernel@dilger.ca>,
- linux-ext4@vger.kernel.org, "Ingo Molnar" <mingo@redhat.com>,
- "Peter Zijlstra" <peterz@infradead.org>, "Will Deacon" <will@kernel.org>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Joel Fernandes" <joel@joelfernandes.org>,
- "Sasha Levin" <sashal@kernel.org>,
- "Daniel Vetter" <daniel.vetter@ffwll.ch>, duyuyang@gmail.com,
- "Johannes Berg" <johannes.berg@intel.com>, "Tejun Heo" <tj@kernel.org>,
- "Theodore Ts'o" <tytso@mit.edu>, "Matthew Wilcox" <willy@infradead.org>,
- "Dave Chinner" <david@fromorbit.com>,
- "Amir Goldstein" <amir73il@gmail.com>, kernel-team@lge.com,
- linux-mm@kvack.org, "Andrew Morton" <akpm@linux-foundation.org>,
- "Michal Hocko" <mhocko@kernel.org>, "Minchan Kim" <minchan@kernel.org>,
- "Johannes Weiner" <hannes@cmpxchg.org>, vdavydov.dev@gmail.com,
- "SeongJae Park" <sj@kernel.org>, jglisse@redhat.com,
- "Dennis Zhou" <dennis@kernel.org>, "Christoph Lameter" <cl@linux.com>,
- "Pekka Enberg" <penberg@kernel.org>,
- "David Rientjes" <rientjes@google.com>,
- "Vlastimil Babka" <vbabka@suse.cz>, ngupta@vflare.org,
- linux-block@vger.kernel.org, "Josef Bacik" <josef@toxicpanda.com>,
- linux-fsdevel@vger.kernel.org, "Jan Kara" <jack@suse.cz>,
- "Jeff Layton" <jlayton@kernel.org>,
- "Dan Williams" <dan.j.williams@intel.com>,
- "Christoph Hellwig" <hch@infradead.org>,
- "Darrick J. Wong" <djwong@kernel.org>, dri-devel@lists.freedesktop.org,
- rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
- hamohammed.sa@gmail.com, harry.yoo@oracle.com, chris.p.wilson@intel.com,
- "Gwan-gyeong Mun" <gwan-gyeong.mun@intel.com>,
- max.byungchul.park@gmail.com, "Boqun Feng" <boqun.feng@gmail.com>,
- "Waiman Long" <longman@redhat.com>, yunseong.kim@ericsson.com,
- ysk@kzalloc.com, "Yeoreum Yun" <yeoreum.yun@arm.com>,
- Netdev <netdev@vger.kernel.org>,
- "Matthew Brost" <matthew.brost@intel.com>, her0gyugyu@gmail.com,
- "Jonathan Corbet" <corbet@lwn.net>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, "Andy Lutomirski" <luto@kernel.org>,
- "Sumit Semwal" <sumit.semwal@linaro.org>, gustavo@padovan.org,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Andi Shyti" <andi.shyti@kernel.org>,
- "Lorenzo Stoakes" <lorenzo.stoakes@oracle.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- "Mike Rapoport" <rppt@kernel.org>,
- "Suren Baghdasaryan" <surenb@google.com>,
- "Luis Chamberlain" <mcgrof@kernel.org>,
- "Petr Pavlu" <petr.pavlu@suse.com>, da.gomez@kernel.org,
- "Sami Tolvanen" <samitolvanen@google.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- "Frederic Weisbecker" <frederic@kernel.org>, neeraj.upadhyay@kernel.org,
- joelagnelf@nvidia.com, "Josh Triplett" <josh@joshtriplett.org>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- "Lai Jiangshan" <jiangshanlai@gmail.com>, qiang.zhang@linux.dev,
- "Juri Lelli" <juri.lelli@redhat.com>,
- "Vincent Guittot" <vincent.guittot@linaro.org>,
- "Dietmar Eggemann" <dietmar.eggemann@arm.com>,
- "Benjamin Segall" <bsegall@google.com>, "Mel Gorman" <mgorman@suse.de>,
- "Valentin Schneider" <vschneid@redhat.com>,
- "Chuck Lever" <chuck.lever@oracle.com>, neil@brown.name,
- okorniev@redhat.com, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>, trondmy@kernel.org,
- "Anna Schumaker" <anna@kernel.org>, "Kees Cook" <kees@kernel.org>,
- "Sebastian Andrzej Siewior" <bigeasy@linutronix.de>,
- "Clark Williams" <clrkwllms@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>, ada.coupriediaz@arm.com,
- kristina.martsenko@arm.com, "Kefeng Wang" <wangkefeng.wang@huawei.com>,
- "Mark Brown" <broonie@kernel.org>,
- "Kevin Brodsky" <kevin.brodsky@arm.com>,
- "David Woodhouse" <dwmw@amazon.co.uk>,
- "Shakeel Butt" <shakeel.butt@linux.dev>,
- "Alexei Starovoitov" <ast@kernel.org>, "Zi Yan" <ziy@nvidia.com>,
- "Yu Zhao" <yuzhao@google.com>,
- "Baolin Wang" <baolin.wang@linux.alibaba.com>, usamaarif642@gmail.com,
- joel.granados@kernel.org, "Wei Yang" <richard.weiyang@gmail.com>,
- "Geert Uytterhoeven" <geert+renesas@glider.be>,
- tim.c.chen@linux.intel.com, linux <linux@treblig.org>,
- "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
- lillian@star-ark.net, "Huacai Chen" <chenhuacai@kernel.org>,
- francesco@valla.it, guoweikang.kernel@gmail.com, link@vivo.com,
- "Josh Poimboeuf" <jpoimboe@kernel.org>,
- "Masahiro Yamada" <masahiroy@kernel.org>,
- "Christian Brauner" <brauner@kernel.org>,
- =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
- "Oleg Nesterov" <oleg@redhat.com>, "Mateusz Guzik" <mjguzik@gmail.com>,
- "Andrii Nakryiko" <andrii@kernel.org>, wangfushuai@baidu.com,
- linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
- linux-i2c@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
- linux-modules@vger.kernel.org, rcu <rcu@vger.kernel.org>,
- linux-nfs@vger.kernel.org, linux-rt-devel@lists.linux.dev
-Message-Id: <3bbe14af-ccdc-4c78-a7ca-d4ed39fa6b5d@app.fastmail.com>
-In-Reply-To: <63034035-03e4-4184-afce-7e1a897a90e9@efficios.com>
-References: <20251002081247.51255-1-byungchul@sk.com>
- <20251002081247.51255-2-byungchul@sk.com>
- <2025100230-grafted-alias-22a2@gregkh>
- <63034035-03e4-4184-afce-7e1a897a90e9@efficios.com>
-Subject: Re: [PATCH v17 01/47] llist: move llist_{head,node} definition to types.h
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 2, 2025, at 15:53, Mathieu Desnoyers wrote:
-> On 2025-10-02 04:24, Greg KH wrote:
->> On Thu, Oct 02, 2025 at 05:12:01PM +0900, Byungchul Park wrote:
->>> llist_head and llist_node can be used by some other header files.  For
->>> example, dept for tracking dependencies uses llist in its header.  To
->>> avoid header dependency, move them to types.h.
->> 
->> If you need llist in your code, then include llist.h.  Don't force all
->> types.h users to do so as there is not a dependency in types.h for
->> llist.h.
->> 
->> This patch shouldn't be needed as you are hiding "header dependency" for
->> other files.
->
-> I agree that moving this into a catch-all types.h is not what we should
-> aim for.
->
-> However, it's a good practice to move the type declarations to a
-> separate header file, so code that only cares about type and not
-> implementation of static inline functions can include just that.
->
-> Perhaps we can move struct llist_head and struct llist_node to a new
-> include/linux/llist_types.h instead ?
 
-We have around a dozen types of linked lists, and the most common
-two of them are currently defined in linux/types.h, while the
-rest of them are each defined in the same header as the inteface
-definition.
+Looking at the syzbot logs more carefully, I see the initial 'acceptance' was 
+because the filesystem failed to mount ('VFS: Can't find ext4 filesystem'), 
+so the bug couldn't be triggered at all. My patches were never actually tested 
+against the real bug.
 
-Duplicating each of those headers by splitting out the trivial
-type definition doesn't quite seem right either, as we'd end
-up with even more headers that have to be included indirectly
-in each compilation unit.
+I apologize for the confusion. I still cannot test locally to determine what 
+the actual corruption scenario is. Today I have re-tested my same patch in 
+syzbot and it is failing.
 
-Maybe a shared linux/list_types.h would work, to specifically
-contain all the list_head variants that are meant to be included
-in larger structures?
-
-    Arnd
+Best regards,
+Deepanshu
 
