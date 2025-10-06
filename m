@@ -1,143 +1,155 @@
-Return-Path: <linux-ext4+bounces-10634-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10635-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51D56BBDB1E
-	for <lists+linux-ext4@lfdr.de>; Mon, 06 Oct 2025 12:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59A5FBBDC7D
+	for <lists+linux-ext4@lfdr.de>; Mon, 06 Oct 2025 12:49:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0B8514EA34D
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Oct 2025 10:31:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3B1704EC4F9
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Oct 2025 10:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFF723D7C5;
-	Mon,  6 Oct 2025 10:31:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540C926E6FB;
+	Mon,  6 Oct 2025 10:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JiOpXpLX"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="E597mMN/"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF76723BD1A;
-	Mon,  6 Oct 2025 10:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F8D4259C83;
+	Mon,  6 Oct 2025 10:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759746695; cv=none; b=EBRtJ8cbyfY4J5gfyIyF2bCkUyt5AYRFk/8vkB3lHvT1cDm4DbEaQmUKeqzCTHNW5WIzMmR3alxcesF0P2KmcQ6EANo47vTCAgJhEL2U4UPtqMiBoFaggNzI0GgzqENGYbBjjqv3/18UBqvOzUL/0ynCSbq3r2AjFisqd1k4yr0=
+	t=1759747669; cv=none; b=tml4xtVwYWs7mwKu465pxaD9M1wNYmsIhsvhYxtQe8J4IYyauWoIwFyBOajIomUKRi+FbYs4heASeBAJovYd3/4qXOaToPNs2uKLWlmDGAxuudifybv/pb6Jz16G0BR61jbzOUzpKpUlXQcLdtryVBvskiTo1m9DbqRTPnXAq0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759746695; c=relaxed/simple;
-	bh=cG36zcMsqBxk2WJ2EVZoOITToowjiuE8hiD3wFiNkKw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WNUPYoQhwg2WKwqhDpmnFAgQ67AuhIz/FhSJgBGTBB7u8SNUnGBZWo46lB94nxw/d17BepGY8LKOpb7RF6CAMQ1CgooMxCQhvrnqz4LADMlqo4/AXFy2RFP/GOyroqiBpEOT/iOYhcXNUeAjeR7ArgzoEUjzvJcP+jH3TP3eI28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JiOpXpLX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BF7AC4CEF5;
-	Mon,  6 Oct 2025 10:31:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759746695;
-	bh=cG36zcMsqBxk2WJ2EVZoOITToowjiuE8hiD3wFiNkKw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JiOpXpLX1LOti/71X2UY6glPDDySKuuiLbKds+cJJHu0B1lKcZpieTyywhNJwGyE3
-	 eXIQGEKdFFgQ955uRo8h9VPQr+NGSUISfwLhN7OpNU8QxYJebWD2rKAB2lWg30g1Ri
-	 P21jCrkS0KGwVUGnoD6kECgMatJl7mnewiAo9TVuIfBiuY06ihWPPbrcGBXoDQhgy7
-	 aJ2iIL5m4R+10hJD19JsyvaasBoEOSGFgBSLO7jUKzHX7s6kB23SaNYfwZEqp1qY5R
-	 w4tWBg5qfQz6MgAlnVxmZ7nlZnn5JiNCz238vF5GWTJDh78sUjIbFVH/ADKbnJLcfB
-	 hfDxUZ3MbpfNQ==
-From: Christian Brauner <brauner@kernel.org>
-To: Julian Sun <sunjunchao@bytedance.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	clm@fb.com,
-	dsterba@suse.com,
-	xiubli@redhat.com,
-	idryomov@gmail.com,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jaegeuk@kernel.org,
-	chao@kernel.org,
-	willy@infradead.org,
-	jack@suse.cz,
-	agruenba@redhat.com,
-	linux-fsdevel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-ext4@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] fs: Make wbc_to_tag() inline and use it in fs.
-Date: Mon,  6 Oct 2025 12:30:44 +0200
-Message-ID: <20251006-exhumieren-staub-bbd9b043162d@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250929111349.448324-1-sunjunchao@bytedance.com>
-References: <20250929111349.448324-1-sunjunchao@bytedance.com>
+	s=arc-20240116; t=1759747669; c=relaxed/simple;
+	bh=FX1Lzu7+bvM9e8qmukvbO1hpPMzmlxgfp1qFo7AK/EQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=miDG5M6zH2nR+N4KhMGspZyicQXFTmDEh9ybswXjTlXN3HR+mLrxpPwebHxHysiiOqDHjMS/H8EKFHhQdNj4df9F7p4DBzVyfAygw1GCUL1GC9xovSEVk5dzcfGjbrAE8tYY2km5ucrFKZ8EY44tph7O1wcpbAS0IbE7mE7jP10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=E597mMN/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FDD7C4CEF5;
+	Mon,  6 Oct 2025 10:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1759747669;
+	bh=FX1Lzu7+bvM9e8qmukvbO1hpPMzmlxgfp1qFo7AK/EQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E597mMN/x7YVkjNX1Bc0G8W7GHt89kk8u2seksXgi5q2H3Gw9DqBry/MoIgd7Hl/f
+	 QcuYuZ/DwxfZxXg04LwRoNwgtiAl8T7SsOstK7UXK8SyqkUmffohAckrwzORjzcTe+
+	 /i/1SV3Pn0pttPu3dXePy8Hlmyjuwx9fL801o6Qw=
+Date: Mon, 6 Oct 2025 12:47:45 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Eliav Farber <farbere@amazon.com>
+Cc: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+	dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+	hpa@zytor.com, tony.luck@intel.com, qiuxu.zhuo@intel.com,
+	james.morse@arm.com, rric@kernel.org, airlied@linux.ie,
+	daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org, tzimmermann@suse.de, robdclark@gmail.com,
+	sean@poorly.run, jdelvare@suse.com, linux@roeck-us.net,
+	linus.walleij@linaro.org, dmitry.torokhov@gmail.com, maz@kernel.org,
+	wens@csie.org, jernej.skrabec@gmail.com, agk@redhat.com,
+	snitzer@redhat.com, dm-devel@redhat.com, davem@davemloft.net,
+	kuba@kernel.org, mcoquelin.stm32@gmail.com,
+	krzysztof.kozlowski@canonical.com, malattia@linux.it,
+	hdegoede@redhat.com, mgross@linux.intel.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, sakari.ailus@linux.intel.com,
+	clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, jack@suse.com,
+	tytso@mit.edu, adilger.kernel@dilger.ca, dushistov@mail.ru,
+	luc.vanoostenryck@gmail.com, rostedt@goodmis.org, pmladek@suse.com,
+	senozhatsky@chromium.org, andriy.shevchenko@linux.intel.com,
+	linux@rasmusvillemoes.dk, minchan@kernel.org, ngupta@vflare.org,
+	akpm@linux-foundation.org, yoshfuji@linux-ipv6.org,
+	dsahern@kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
+	fw@strlen.de, jmaloy@redhat.com, ying.xue@windriver.com,
+	shuah@kernel.org, willy@infradead.org, sashal@kernel.org,
+	quic_akhilpo@quicinc.com, ruanjinjie@huawei.com,
+	David.Laight@aculab.com, herve.codina@bootlin.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-um@lists.infradead.org, linux-edac@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+	linux-hwmon@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-sunxi@lists.linux.dev, linux-media@vger.kernel.org,
+	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+	platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-staging@lists.linux.dev, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-sparse@vger.kernel.org,
+	linux-mm@kvack.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, tipc-discussion@lists.sourceforge.net,
+	linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Subject: Re: [PATCH v2 07/19 5.15.y] minmax: simplify and clarify
+ min_t()/max_t() implementation
+Message-ID: <2025100648-capable-register-101b@gregkh>
+References: <20251003130006.41681-1-farbere@amazon.com>
+ <20251003130006.41681-8-farbere@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2176; i=brauner@kernel.org; h=from:subject:message-id; bh=cG36zcMsqBxk2WJ2EVZoOITToowjiuE8hiD3wFiNkKw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQ8nlX/0Jvr3gGB1U+cVD/bOZmZhZ/Zqn9B+WvB+U6zF KZpPi+Pd5SyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEwk+jAjw8qd51l/at8+xuU3 e0Hd3EPTu6JebI0xStikH9h9cJnw8ScM/2z/sHCHmyuJGqS7vu+vmb3+6kYehrkssi19t6seP1d 04gEA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251003130006.41681-8-farbere@amazon.com>
 
-On Mon, 29 Sep 2025 19:13:49 +0800, Julian Sun wrote:
-> The logic in wbc_to_tag() is widely used in file systems, so modify this
-> function to be inline and use it in file systems.
+On Fri, Oct 03, 2025 at 12:59:54PM +0000, Eliav Farber wrote:
+> From: Linus Torvalds <torvalds@linux-foundation.org>
 > 
-> This patch has only passed compilation tests, but it should be fine.
+> [ Upstream commit 017fa3e89187848fd056af757769c9e66ac3e93d ]
 > 
+> This simplifies the min_t() and max_t() macros by no longer making them
+> work in the context of a C constant expression.
 > 
+> That means that you can no longer use them for static initializers or
+> for array sizes in type definitions, but there were only a couple of
+> such uses, and all of them were converted (famous last words) to use
+> MIN_T/MAX_T instead.
+> 
+> Cc: David Laight <David.Laight@aculab.com>
+> Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Eliav Farber <farbere@amazon.com>
 
-Folding:
+Eliav, your testing infrastructure needs some work, this patch breaks
+the build on this kernel tree:
 
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index dde77d13a200..1e60d463f226 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -196,6 +196,13 @@ static inline void wait_on_inode(struct inode *inode)
-                       !(READ_ONCE(inode->i_state) & I_NEW));
- }
+In file included from ./include/linux/kernel.h:16,
+                 from ./include/linux/list.h:9,
+                 from ./include/linux/wait.h:7,
+                 from ./include/linux/wait_bit.h:8,
+                 from ./include/linux/fs.h:6,
+                 from fs/erofs/internal.h:10,
+                 from fs/erofs/zdata.h:9,
+                 from fs/erofs/zdata.c:6:
+fs/erofs/zdata.c: In function ‘z_erofs_decompress_pcluster’:
+fs/erofs/zdata.h:185:61: error: ISO C90 forbids variable length array ‘pages_onstack’ [-Werror=vla]
+  185 |         min_t(unsigned int, THREAD_SIZE / 8 / sizeof(struct page *), 96U)
+      |                                                             ^~~~
+./include/linux/minmax.h:49:23: note: in definition of macro ‘__cmp_once_unique’
+   49 |         ({ type ux = (x); type uy = (y); __cmp(op, ux, uy); })
+      |                       ^
+./include/linux/minmax.h:164:27: note: in expansion of macro ‘__cmp_once’
+  164 | #define min_t(type, x, y) __cmp_once(min, type, x, y)
+      |                           ^~~~~~~~~~
+fs/erofs/zdata.h:185:9: note: in expansion of macro ‘min_t’
+  185 |         min_t(unsigned int, THREAD_SIZE / 8 / sizeof(struct page *), 96U)
+      |         ^~~~~
+fs/erofs/zdata.c:847:36: note: in expansion of macro ‘Z_EROFS_VMAP_ONSTACK_PAGES’
+  847 |         struct page *pages_onstack[Z_EROFS_VMAP_ONSTACK_PAGES];
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
 
-+static inline xa_mark_t wbc_to_tag(struct writeback_control *wbc)
-+{
-+       if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-+               return PAGECACHE_TAG_TOWRITE;
-+       return PAGECACHE_TAG_DIRTY;
-+}
-+
- #ifdef CONFIG_CGROUP_WRITEBACK
 
- #include <linux/cgroup.h>
-@@ -240,13 +247,6 @@ static inline void inode_detach_wb(struct inode *inode)
-        }
- }
+I'll drop this whole series, please do a bit more testing before sending
+out a new version.
 
--static inline xa_mark_t wbc_to_tag(struct writeback_control *wbc)
--{
--       if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
--               return PAGECACHE_TAG_TOWRITE;
--       return PAGECACHE_TAG_DIRTY;
--}
--
- void wbc_attach_fdatawrite_inode(struct writeback_control *wbc,
-                struct inode *inode);
+thanks,
 
-since wbc_to_tag() cannot be conditional on cgroup writeback.
-
----
-
-Applied to the vfs-6.19.misc branch of the vfs/vfs.git tree.
-Patches in the vfs-6.19.misc branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.19.misc
-
-[1/1] fs: Make wbc_to_tag() inline and use it in fs.
-      https://git.kernel.org/vfs/vfs/c/48b6926673f7
+greg k-h
 
