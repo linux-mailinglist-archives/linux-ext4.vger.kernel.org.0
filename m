@@ -1,137 +1,106 @@
-Return-Path: <linux-ext4+bounces-10641-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10642-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B40BBE5E0
-	for <lists+linux-ext4@lfdr.de>; Mon, 06 Oct 2025 16:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D90BBE96D
+	for <lists+linux-ext4@lfdr.de>; Mon, 06 Oct 2025 18:07:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3821898F77
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Oct 2025 14:37:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C20C1891C74
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Oct 2025 16:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A752D5A19;
-	Mon,  6 Oct 2025 14:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE352D9EDF;
+	Mon,  6 Oct 2025 16:06:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="RerWQn8w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IN2jIQgn"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B40286890;
-	Mon,  6 Oct 2025 14:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FAAF2D97B9
+	for <linux-ext4@vger.kernel.org>; Mon,  6 Oct 2025 16:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759761447; cv=none; b=L3qgBt+afWD168TagYJHzrYnPXlIsUFsmEZj/HMhEvXySz7B6w0RjRpdRll2TgP+8FA41kpLPit3pq9PbUputhFj+9X5e5J4eTLL9sO1uF0tC+zCasALy1s2EM8uCtYgFMU5mIro5PmrmSQYIJNKZFC4c34S78hnYgMmJyZmbvE=
+	t=1759766793; cv=none; b=mqdoLEskFYAPseHpKfC3jVwx1fTO9SaGCCUjM78aMYjjTsCEFR9a+T6HeoAy3St2kvyZBJBcBX9PC29jfQ6C5xlrm6Q3iDmOA3W/i2mzIt44f63kIIB0pwd89T1EvOwq95NIBu1O+WVjLj7v0PJoNra2lOih43mjsE58x8BZ0hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759761447; c=relaxed/simple;
-	bh=jGMLnJv9dXRh8RhNuUQfVvRt25nKmaUQw9AMgdQGEFk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nWMBDEWGIIRuY1e+NWv5xKQATvJzQakj2Hi9hS0U9iYu7n43Kl74VGGbI4NZcGrx37BbajlF0sKq1sf50wgGD2CPTQB/0G/UVuCxjsEVUfcKhcyU0j+Hn8Xm2SiyZwnjXTwDTh0BqhJz4UxnDG8NdTRBe/ljlwJl9OKbC39HRqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=RerWQn8w; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1759761434; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=MRd7MjBmC/eEJdzsD2vXfxk4wEMOk8EoYAwSAk67oLo=;
-	b=RerWQn8wGPehTSnKlHMekX+1T4pJ+p8FobtcRqEuBybHmSdnXWebFgx1+CFWPZMq2w+Ej09lFr0hP1nDZdvHZSBTfOyqCrH1axojqfLqsAqsU+MLCJAuhs+EFYeoAwB2ForvB8XiC+T4iACGysleot/bcm26VNTQ3i57x7k7jN4=
-Received: from 30.180.0.242(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0WpXtsPz_1759761433 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 06 Oct 2025 22:37:14 +0800
-Message-ID: <7b05f88d-2e8f-4fbb-aecb-14b37b7bc99e@linux.alibaba.com>
-Date: Mon, 6 Oct 2025 22:37:12 +0800
+	s=arc-20240116; t=1759766793; c=relaxed/simple;
+	bh=5YjdkOtBWl09IAaG0yTZACRz/VwY9fqmxCrdH9KnY3M=;
+	h=Content-Type:From:To:Subject:Message-ID:Date:MIME-Version; b=sRkiSzHfLTTQ+77AU1gn5iR9GHdOeHoEn08a8vTIxK6Jck6ykwTexs7IQ4pwjESqz88vy/9V89i/fohJMCCdsWm+P68b1kSUcuCfBE0obO2sk4ADgBTbKdqXhyJB4kQ3HgUl+NgKzgiZkTsRAz3MDMmKDSlfYMQ0i7wLGtFjlTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IN2jIQgn; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-781997d195aso3362310b3a.3
+        for <linux-ext4@vger.kernel.org>; Mon, 06 Oct 2025 09:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759766791; x=1760371591; darn=vger.kernel.org;
+        h=mime-version:date:content-transfer-encoding:message-id:subject
+         :reply-to:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5YjdkOtBWl09IAaG0yTZACRz/VwY9fqmxCrdH9KnY3M=;
+        b=IN2jIQgnJjrGYrgi6dum9Ymhq09iiHqD75T/NrFRlWvfXHAOUsVsmsnlQOsH9w/fR8
+         /jO18FXewE2gLCwXr/Id5VwGH890r9pnuDCNOUe/wC41NE7cA6GZGm24AmpoEQzinmZ1
+         fA65KpgeKNsXrO8PDG4HTiwT+uidFsfimLiIYzh3UDHWZQ3MCprJac7ME2ZgXIju5Y0w
+         YKMuKuwkaRHcQMcaCr71GDvApbWK6UAE0JaxQHS5NtkJY5awa37TZ6YL67NlUx6TzLaP
+         MkD0xMmtUPgb6FBnsZTUJV+GsUzhVHoZYJMkQuGwHD4ph+LVxsYhh7qln2mS8B78NzuP
+         kizQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759766791; x=1760371591;
+        h=mime-version:date:content-transfer-encoding:message-id:subject
+         :reply-to:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5YjdkOtBWl09IAaG0yTZACRz/VwY9fqmxCrdH9KnY3M=;
+        b=QAq+si95MMd8ZTJuvoeI6IZzBqTpCVCygbQdhZHEtstxA/tH7MHsWzm3Uce9bCPXgj
+         1nDG47B2CB7MwPh2YV6dJ9IrFDXK3lEsPblh5Aiw+uYOq5l4b1ol7Zv867Q5uyCOvpkM
+         3K52YJnS/oBpxX2ye+ilP7ha22bK+y2zGP9LZifcIEE8zkC2LkI6c3gvfXgMN6igaMgg
+         PzQjazZ3mAw+fTqozm7XZBv6MpP/ZkqgE3SRBtEuuYC94r3v/SVs3YDawenVdpj0K2Sr
+         f74plCYeQLPrezsTamCXdEz0vwIKZqNvxCPfPwQ2IcrWQ78hBnhMcifKepXWDqh8m6+B
+         YolA==
+X-Gm-Message-State: AOJu0Yxkf47nM44NliujbgZJ46d7qxh1ySfMOcQ3v17zllxixWDjzcj7
+	M6L6uoTo4iDEiMfeXAFIoOxx3wA40Ae+ULfx31h61l1u1hagJjw1Z0CRMpLDRQ==
+X-Gm-Gg: ASbGncuq2psll4baslOcMPB0PbdZkETMMk4LDq7J1bb1KsCMFKAlQe019LmdWF462x+
+	BajkE0sPS9nsMchwBL5wEHKwP8kw/LcJ2cU8adkD7ViX4NK272MyqjjJs2AXul75giUosWLOouy
+	HT3E53+hNUVTd77Y4HZwpQ/wNTmcC8Rt/vsGZb5aJOsFVcB/klsMmK/Sqt+tSrDay4bu8HhetRk
+	XUCg3PbfGytwjtEhXMbMkKrZFEQtsDaPP9No8+6vVBktKAyUcgVrPvRVa1ZLxGw9vbCfKAchii2
+	WKB+Q8uBBfTCBpWYKBb+octN+W8tImXdi62eNoD3TiforLiX7JHdXDEmNDlndhi5elTR6EGEDOm
+	KbhUnzDmFikpL6N8/h1kCfztZVZ70ikiTRxfunqUr/okjjtPy4+5RB2Yv+ecbTyScOcfq98GEnU
+	o=
+X-Google-Smtp-Source: AGHT+IGvj3LokI1VKtQnOLzU+VYchwgSI7WQU1TofMZdzt8Zmnch+PsSVdGawyKXMdzooH5Iy6RkNQ==
+X-Received: by 2002:a05:6a20:430e:b0:2d5:e559:d23a with SMTP id adf61e73a8af0-32b62119f67mr17011337637.55.1759766791031;
+        Mon, 06 Oct 2025 09:06:31 -0700 (PDT)
+Received: from [127.0.0.1] ([154.80.22.164])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6099add290sm12323579a12.6.2025.10.06.09.06.28
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Oct 2025 09:06:30 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+From: Alan Nicolas <alannicolasces@gmail.com>
+To: linux-ext4@vger.kernel.org
+Reply-To: chrismorgance@gmail.com
+Subject: Project Estimating
+Message-ID: <110ff1e1-64a1-bcd6-0b74-9541f0268315@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 06 Oct 2025 16:06:27 +0000
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] ext4: fix an data corruption issue in nojournal mode
-To: Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
-Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- adilger.kernel@dilger.ca, yi.zhang@huawei.com, libaokun1@huawei.com,
- yukuai3@huawei.com, yangerkun@huawei.com
-References: <20250916093337.3161016-1-yi.zhang@huaweicloud.com>
- <4a152e1b-c468-4fbf-ac0b-dbb76fa1e2ac@linux.alibaba.com>
- <5vukrmwjsvvucw7ugpirmetr2inzgimkap4fhevb77dxqa7uff@yutnpju2e472>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <5vukrmwjsvvucw7ugpirmetr2inzgimkap4fhevb77dxqa7uff@yutnpju2e472>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi Jan,
+Hi,
 
-On 2025/10/6 21:52, Jan Kara wrote:
-> Hi Ted!
-> 
-> I think this patch series has fallen through the cracks. Can you please
-> push it to Linus? Given there are real users hitting the data corruption,
-> we should do it soon (although it isn't a new issue so it isn't
-> supercritical).
+Looking for reliable and accurate construction cost estimates for your=
+ next project?
 
-Thanks for the ping.
+We provide detailed estimates using the latest software and=
+ techniques, tailored to your specific project goals, scope, and =
+requirements.
 
-> 
+Contact us today for consultation and pricing information. =
+Thanks.
 
-..
-
-> 
->> Some of our internal businesses actually rely on EXT4
->> no_journal mode and when they upgrade the kernel from
->> 4.19 to 5.10, they actually read corrupted data after
->> page cache memory is reclaimed (actually the on-disk
->> data was corrupted even earlier).
->>
->> So personally I wonder what's the current status of
->> EXT4 no_journal mode since this issue has been existing
->> for more than 5 years but some people may need
->> an extent-enabled ext2 so they selected this mode.
-> 
-> The nojournal mode is fully supported. There are many enterprise customers
-> (mostly cloud vendors) that depend on it. Including Ted's employer ;)
-
-.. yet honestly, this issue can be easily observed in
-no_journal + memory pressure, and our new 5.10 kernel
-setup (previous 4.19) can catch this issue very easily.
-
-Unless the memory is sufficient, the valid page cache can
-cover up this issue, but the on-disk data could be still
-corrupted.
-
-So we wonder how large scale no_journal mode is used for
-now, and if they have  memory pressure workload.
-
-> 
->> We already released an announcement to advise customers
->> not using no_journal mode because it seems lack of
->> enough maintainence (yet many end users are interested
->> in this mode):
->> https://www.alibabacloud.com/help/en/alinux/support/data-corruption-risk-and-solution-in-ext4-nojounral-mode
-> 
-> Well, it's good to be cautious but the reality is that data corruption
-> issues do happen from time to time. Both in nojournal mode and in normal
-> journalled mode. And this one exists since the beginning when nojournal
-> mode was implemented. So it apparently requires rather specific conditions
-> to hit.
-
-The original issue (the one fixed by Yi in 2019) existed
-for a quite long time and I think it was hard to reproduce
-(compared to this one), but the regression out of lack of
-clean_bdev_aliases() and clean_bdev_bh_alias() makes another
-serious regression (which exists since 2019 until now) which
-can be easily reproduced on some specific VM setup (our
-workload is also create and delete some small and big files,
-and data corruption can be observed since some data is filled
-with extent layout, much like the previous AWS one).
-
-Thanks,
-Gao Xiang
-
-> 
-> 								Honza
-> 
-
+Regards,
+Alan Nicolas
+Estimation Department
+City Estimating, LLC
 
