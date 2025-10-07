@@ -1,189 +1,171 @@
-Return-Path: <linux-ext4+bounces-10648-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10649-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC99BC1638
-	for <lists+linux-ext4@lfdr.de>; Tue, 07 Oct 2025 14:41:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D392BC1905
+	for <lists+linux-ext4@lfdr.de>; Tue, 07 Oct 2025 15:49:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 265864F5B86
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Oct 2025 12:41:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF79C19A3EEA
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Oct 2025 13:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5792D97B8;
-	Tue,  7 Oct 2025 12:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791652E0B6E;
+	Tue,  7 Oct 2025 13:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NSJn3ZJh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WHF/q9uQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NSJn3ZJh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WHF/q9uQ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HBHkYXmo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NDUoJNmw";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HBHkYXmo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NDUoJNmw"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D58C2D5C97
-	for <linux-ext4@vger.kernel.org>; Tue,  7 Oct 2025 12:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2B5EACD
+	for <linux-ext4@vger.kernel.org>; Tue,  7 Oct 2025 13:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759840906; cv=none; b=nHW5locuCt25HGJyVZ31zDtSpw1Uz70KymfUQHLMTAoOBQNy9AF/rzwWQ3OXjMmJWwQosKKVUx6tlGo1bbB7PmdLlho2/cnASW/0qJCfQrXV+ZZwmvef6eZt1QIquayvNxy8bABD3f3yR1+ASNQioC3ynXi2jgmHL59s4g/FVVw=
+	t=1759844988; cv=none; b=JchEaWR4rg88gpwC1m0teS6Rp36IDVmJb1najCb9H1AYjMtkg+yccMtTukRxZfV43x7qI5SptvX/O1obf9IywgCZonT7D0yFuet2CgsHIEAHX9lSwliDJggJibrMIFeKQsh3OoSS/7mkxDdJd8KPLVUNJSAmu1hZFaz0URKyofM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759840906; c=relaxed/simple;
-	bh=feNSRSwEtoz7YZLF7NAE0/7KPXjzEWRq4gd7BjxquxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sBuIrouVGxM+NPA1NIyFOXoIwJb5WQcJ1u23CpXV1X48UzDJvaYmUxJ2fvsqZV0plp44OJ5aXwgMLqfC7m83L9qBLvSZ3pirWs6qmBjvldwZtM/76vp4BNkoNb/af9/+oow5sYnmbw92HvPeRxl+9boc3LRVQS1YsTZtOoPI5I0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NSJn3ZJh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WHF/q9uQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NSJn3ZJh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WHF/q9uQ; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1759844988; c=relaxed/simple;
+	bh=NiiRiZ4Op4aVyd5iExR2avn2rAwSL6W62Gw4k/rtg60=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kP6ZSKHqYPSd8Jyq6snywI3iLM0Lg/kATr05aLpusEQPEv3BFccTd97Z+fOcIxQQmxsBH/Sm5rvPqQ7QZaYSAqzahj3OozJ2KiAbym0+7AOWa83zZ2aBIQ7yAFd3wcxCXiazhOzJowIuDljwhIYJf4UC9W+28sdDoFPDPbyETtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HBHkYXmo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NDUoJNmw; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HBHkYXmo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NDUoJNmw; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AA21B1F7DE;
-	Tue,  7 Oct 2025 12:41:42 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 90DCA1F7C5;
+	Tue,  7 Oct 2025 13:49:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759840902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c7OBybBhLl7N+S0TusTWlygZX4BfpcVyM4TEZK3o3Cw=;
-	b=NSJn3ZJho3/MjC6jAuyErBHgstEzAj/Tdy3vVQGmdPxeZx4ic8qhXYiO4SewbEpqmQjxqd
-	L2g8zuvQXBXYP1VjWX2y4u+fSaIuGGlY/FtgcJnKqAGH+eg0zCK+k3UEqxt4ZD6cubN7Qo
-	XaeY/JSODUeSE3OaEyrwunnU4/tVC/k=
+	t=1759844984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=l2oUPBTs99/ZV8SuZiabo1B5Y9QYxp4YpATQ5sHiDGA=;
+	b=HBHkYXmojuh4bsZ0KEUdNr+BpnVpfR2mOwwiq/ZcXbdOFYzA8gcNjdWEb+i0RU1l7pvPZl
+	E2qv3Zbt4gSB7rO59Jbe0uCiA62l8n/VWJNT0PtbF0eAkMs0S6mh3sfgK0SUqIIOgaQL4e
+	6l7cPJhww4gBjrx9txk4uLB0JymCOMc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759840902;
+	s=susede2_ed25519; t=1759844984;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c7OBybBhLl7N+S0TusTWlygZX4BfpcVyM4TEZK3o3Cw=;
-	b=WHF/q9uQhUTNLnT9rYTpcSNeP7/qxZ/gbBcahv24sIWOBQk9Mp9frHrV030ZwC2y5kWwIE
-	Ted53uORMG8U4WAA==
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=l2oUPBTs99/ZV8SuZiabo1B5Y9QYxp4YpATQ5sHiDGA=;
+	b=NDUoJNmw0OySA9j09HxxzKydP62C5kgIkZHcwUeA8RLA8nn18Lru2LcVjpNZJae7rvwIS7
+	tGekILVsLca10eDQ==
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=HBHkYXmo;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=NDUoJNmw
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759840902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c7OBybBhLl7N+S0TusTWlygZX4BfpcVyM4TEZK3o3Cw=;
-	b=NSJn3ZJho3/MjC6jAuyErBHgstEzAj/Tdy3vVQGmdPxeZx4ic8qhXYiO4SewbEpqmQjxqd
-	L2g8zuvQXBXYP1VjWX2y4u+fSaIuGGlY/FtgcJnKqAGH+eg0zCK+k3UEqxt4ZD6cubN7Qo
-	XaeY/JSODUeSE3OaEyrwunnU4/tVC/k=
+	t=1759844984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=l2oUPBTs99/ZV8SuZiabo1B5Y9QYxp4YpATQ5sHiDGA=;
+	b=HBHkYXmojuh4bsZ0KEUdNr+BpnVpfR2mOwwiq/ZcXbdOFYzA8gcNjdWEb+i0RU1l7pvPZl
+	E2qv3Zbt4gSB7rO59Jbe0uCiA62l8n/VWJNT0PtbF0eAkMs0S6mh3sfgK0SUqIIOgaQL4e
+	6l7cPJhww4gBjrx9txk4uLB0JymCOMc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759840902;
+	s=susede2_ed25519; t=1759844984;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c7OBybBhLl7N+S0TusTWlygZX4BfpcVyM4TEZK3o3Cw=;
-	b=WHF/q9uQhUTNLnT9rYTpcSNeP7/qxZ/gbBcahv24sIWOBQk9Mp9frHrV030ZwC2y5kWwIE
-	Ted53uORMG8U4WAA==
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=l2oUPBTs99/ZV8SuZiabo1B5Y9QYxp4YpATQ5sHiDGA=;
+	b=NDUoJNmw0OySA9j09HxxzKydP62C5kgIkZHcwUeA8RLA8nn18Lru2LcVjpNZJae7rvwIS7
+	tGekILVsLca10eDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9415513AAC;
-	Tue,  7 Oct 2025 12:41:42 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 813CA13693;
+	Tue,  7 Oct 2025 13:49:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 5qAfJIYK5WhpFQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 07 Oct 2025 12:41:42 +0000
+	id tEyEH3ga5WjvLwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 07 Oct 2025 13:49:44 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id D209FA0A58; Tue,  7 Oct 2025 14:41:41 +0200 (CEST)
-Date: Tue, 7 Oct 2025 14:41:41 +0200
+	id DDF4DA0A58; Tue,  7 Oct 2025 15:49:43 +0200 (CEST)
 From: Jan Kara <jack@suse.cz>
-To: Chris Mason <clm@meta.com>
-Cc: Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>, 
-	linux-ext4@vger.kernel.org, syzbot+0b92850d68d9b12934f5@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: verify orphan file size is not too big
-Message-ID: <qwkid6zi3wekavyp5ravu32wlyfqgo5osfnlnsjctsp7godboc@ekwo4ooyutum>
-References: <20250909112206.10459-2-jack@suse.cz>
- <20251006172822.2762117-1-clm@meta.com>
+To: Ted Tso <tytso@mit.edu>
+Cc: <linux-ext4@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Chris Mason <clm@meta.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] ext4: free orphan info with kvfree
+Date: Tue,  7 Oct 2025 15:49:37 +0200
+Message-ID: <20251007134936.7291-2-jack@suse.cz>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251006172822.2762117-1-clm@meta.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.30 / 50.00];
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1066; i=jack@suse.cz; h=from:subject; bh=NiiRiZ4Op4aVyd5iExR2avn2rAwSL6W62Gw4k/rtg60=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBo5RpwB/rCWfcexwuZyzOrWB+lT4z0ESu78mdHu gHRC5G6t+uJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCaOUacAAKCRCcnaoHP2RA 2YulCACix7Xw8IL22lx6ZoEemDaRwVcTlWN2ssT7WmxGY6Lz5GUPzCjBK+nj5os2CSVpFukTTCP sd+qwcVO/+n6WIWeV1JsMJwpqo5+GkpPUyCFKgCLIK+7LPtg6u2qMHXON2eCCCwNt47XcJ8CZvI YuQyKBrmYSuT7iVr6x/b+wpk24kkbUOAZQ8MvSw+xqlFAeH4d44T8i7FCP7xoMbu8mOmCCfT9kK 2RMnSF9q7d5gSUEed9W43p870ZOCSwz+BqrhuFqEjyMKxqawGR7yMGK/+pIb+U6411dXVmtueVu KQSJGJcON7mDh4E4fuenM/n/EJGFK43QBjUEY0QQ1v30wFVp
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MISSING_XM_UA(0.00)[];
+	MX_GOOD(-0.01)[];
 	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_EQ_ENVFROM(0.00)[];
-	TAGGED_RCPT(0.00)[0b92850d68d9b12934f5];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email]
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[suse.cz:+]
 X-Spam-Flag: NO
-X-Spam-Score: -2.30
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 90DCA1F7C5
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
-On Mon 06-10-25 10:28:10, Chris Mason wrote:
-> On Tue,  9 Sep 2025 13:22:07 +0200 Jan Kara <jack@suse.cz> wrote:
-> 
-> > In principle orphan file can be arbitrarily large. However orphan replay
-> > needs to traverse it all and we also pin all its buffers in memory. Thus
-> > filesystems with absurdly large orphan files can lead to big amounts of
-> > memory consumed. Limit orphan file size to a sane value and also use
-> > kvmalloc() for allocating array of block descriptor structures to avoid
-> > large order allocations for sane but large orphan files.
-> > 
-> > Reported-by: syzbot+0b92850d68d9b12934f5@syzkaller.appspotmail.com
-> > Fixes: 02f310fcf47f ("ext4: Speedup ext4 orphan inode handling")
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> > ---
-> >  fs/ext4/orphan.c | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
-> > index 524d4658fa40..7e4f48c15c2e 100644
-> > --- a/fs/ext4/orphan.c
-> > +++ b/fs/ext4/orphan.c
-> > @@ -587,9 +587,20 @@ int ext4_init_orphan_info(struct super_block *sb)
-> >  		ext4_msg(sb, KERN_ERR, "get orphan inode failed");
-> >  		return PTR_ERR(inode);
-> >  	}
-> > +	/*
-> > +	 * This is just an artificial limit to prevent corrupted fs from
-> > +	 * consuming absurd amounts of memory when pinning blocks of orphan
-> > +	 * file in memory.
-> > +	 */
-> > +	if (inode->i_size > 8 << 20) {
-> > +		ext4_msg(sb, KERN_ERR, "orphan file too big: %llu",
-> > +			 (unsigned long long)inode->i_size);
-> > +		ret = -EFSCORRUPTED;
-> > +		goto out_put;
-> > +	}
-> >  	oi->of_blocks = inode->i_size >> sb->s_blocksize_bits;
-> >  	oi->of_csum_seed = EXT4_I(inode)->i_csum_seed;
-> > -	oi->of_binfo = kmalloc_array(oi->of_blocks,
-> > +	oi->of_binfo = kvmalloc_array(oi->of_blocks,
-> >  				     sizeof(struct ext4_orphan_block),
-> >  				     GFP_KERNEL);
-> >  	if (!oi->of_binfo) {
-> 
-> Hi everyone,
-> 
-> I tripped over this while testing some review automation on linux-next.
-> 
-> Should we swap all the kfree(oi->of_binfo) to kvfree?
+Orphan info is now getting allocated with kvmalloc_array(). Free it with
+kvfree() instead of kfree() to avoid complaints from mm.
 
-Yes, we should. Thanks for spotting this. I'll send a fix.
+Reported-by: Chris Mason <clm@meta.com>
+Fixes: 0a6ce20c1564 ("ext4: verify orphan file size is not too big")
+CC: stable@vger.kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/orphan.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-								Honza
+diff --git a/fs/ext4/orphan.c b/fs/ext4/orphan.c
+index 33c3a89396b1..82d5e7501455 100644
+--- a/fs/ext4/orphan.c
++++ b/fs/ext4/orphan.c
+@@ -513,7 +513,7 @@ void ext4_release_orphan_info(struct super_block *sb)
+ 		return;
+ 	for (i = 0; i < oi->of_blocks; i++)
+ 		brelse(oi->of_binfo[i].ob_bh);
+-	kfree(oi->of_binfo);
++	kvfree(oi->of_binfo);
+ }
+ 
+ static struct ext4_orphan_block_tail *ext4_orphan_block_tail(
+@@ -637,7 +637,7 @@ int ext4_init_orphan_info(struct super_block *sb)
+ out_free:
+ 	for (i--; i >= 0; i--)
+ 		brelse(oi->of_binfo[i].ob_bh);
+-	kfree(oi->of_binfo);
++	kvfree(oi->of_binfo);
+ out_put:
+ 	iput(inode);
+ 	return ret;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.51.0
+
 
