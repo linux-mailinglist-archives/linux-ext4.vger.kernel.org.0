@@ -1,127 +1,94 @@
-Return-Path: <linux-ext4+bounces-10652-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10653-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B3CFBC3152
-	for <lists+linux-ext4@lfdr.de>; Wed, 08 Oct 2025 02:47:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3F82BC365E
+	for <lists+linux-ext4@lfdr.de>; Wed, 08 Oct 2025 07:52:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1996B3C6437
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Oct 2025 00:47:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52C223C7D57
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Oct 2025 05:52:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04EF9287508;
-	Wed,  8 Oct 2025 00:47:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ht+7uV4b"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EE3D2EA490;
+	Wed,  8 Oct 2025 05:52:05 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9513C2874F6;
-	Wed,  8 Oct 2025 00:47:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F001B29E10C
+	for <linux-ext4@vger.kernel.org>; Wed,  8 Oct 2025 05:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759884438; cv=none; b=Wgy1k/NPCoSQYKp7gAJ2ESB774qBMsnlF8uwCmQsdnacJTDzkoMOQJ48qdml0aWiQoKvSWMbMwzLzpxUvSQLlfYmDnj74+jzTQcBXCjPd9dLNtXIkM/LCGRTPKOn8J7Gzl8Sy1fioefxB+3nBDrEwYqZBo/kbxo1PfVttSrPihg=
+	t=1759902725; cv=none; b=ODfi9BCE6A076iWcNvCz8oL+fptcN8ijfa4j29JMVmTTU0LBWOUsqGLv96xP3EXjdjG4MjgnrtElvbnm5i43lj/LcyJld2rfdpnjC7b4oq5HZbDOvTN3AbMwtKmGURu5O7lcddAciwd2mDa8amLtX6n7a8poOZu6cV7ABD9RgwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759884438; c=relaxed/simple;
-	bh=YxZh3W+XSiyq1owAkNfMx7aVLQPQxF4PtBRHasFhUrY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W4M0XLU9VtgP41YATFoCuT8XwtV19/OHvJEMR3Inl+9JsivSsH1UZkUnRr03S2I6kXoYjtIt4gniNo2jbx6cJezzLS6jITazqt1LnGkyRvFSXb8EGM1HlisnKPiM1bIWRy+caCMR7GiYwC9rg+Nb3V+u96SplxyAkpu721Fe060=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ht+7uV4b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09D38C4CEF1;
-	Wed,  8 Oct 2025 00:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759884438;
-	bh=YxZh3W+XSiyq1owAkNfMx7aVLQPQxF4PtBRHasFhUrY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ht+7uV4br8p5eS8cfZ0/0cIbG8A64P3Y5kUVIzk71eQtPq2pvYQgwdFfB1e4tp1de
-	 Oc5Po6LZOuJysaprDDc+yK3RBzz1U3IRbh3xzYjUvUGpPOqiWoYvPnDQ3/oPNvpQr9
-	 zuRlw2ysYcrgH/ytYO4qCia2dvPyTHpI2NKUbtcrrQJ4uJHJOI1lLYRsXndm9beFTF
-	 9zbMDhV4iFCM8bb6fn9OqyWhOTXaR7CmDzLk1Fv/puEAoRMInH8CDJc5ALoof/mtv3
-	 xI8slQ+8j54XbL48LlCp1kM3gJwcvf6E+cVi8+mMm8A4EKZH4k/Fd8lDqYpLVfZR8I
-	 0CwtMQXY3r4eA==
-Date: Tue, 7 Oct 2025 17:47:17 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Ahmet Eray Karadag <eraykrdg1@gmail.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, david.hunter.linux@gmail.com,
-	skhan@linuxfoundation.org,
-	syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com,
-	Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-Subject: Re: [PATCH] Fix: ext4: add sanity check for inode inline write range
-Message-ID: <20251008004717.GL8084@frogsfrogsfrogs>
-References: <20251007234221.28643-2-eraykrdg1@gmail.com>
+	s=arc-20240116; t=1759902725; c=relaxed/simple;
+	bh=rISreA05oSPphUeXePaG+iNGh6KKZHmaHX0gxIZn55s=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Qdt1v087n0J6/HzPQ4QKbObIIMgj4MSvS9zsNdc/ewGHkC784RAIFHoRedB5gE5kg/y+aRX/SP0Ma/L3yeV8pX/5KrKcdrmo47ErfbHhG0mlvRrrYQwgw4X75CcvInb/KC9ZetBtVJsDxpxxtCGwGgyLF1SFzrQDnOEckZzaKnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-42f8befcb06so1430385ab.3
+        for <linux-ext4@vger.kernel.org>; Tue, 07 Oct 2025 22:52:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759902723; x=1760507523;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2A6jgIs23tCx0rnkILPWDEiPNOjzuEXCnKHJ2BUu/Ow=;
+        b=bAhWM3ZMOVVcCG+ZYVlvzO0Vd3xl67x0qzmRPK5INZr7e+z5xYJ4YzNRB6RBO9RiOj
+         JvKVdv8cCrJGZiMczBEYXAzgxCOQD8YBMIFXTafhLMCWWl6iNCsAib/l1vPmJJbfENn8
+         BszBZKEsOdWv5bg3rF10zmALDnTRp/SZdmV9gr/RyxuNV7lOqRHCxch5mTd4YKQqkvoN
+         YLZy9DnKVmydVDOwK1aQBf9DoLcqKlApZST+ZozVJsSDJuoqyZ3MKHzIyaZu//s13+xM
+         izFUI80PcTS8y9O5YLqApOMASQKWAAHtsdOcF0D/5BDLiVRcrFMQ3CYbQqPUoKWl+gkJ
+         fWHA==
+X-Forwarded-Encrypted: i=1; AJvYcCXK+pQKLKunzzalQBv265LZzh6QGrNPZTb3WRjvvlpZ8Ff944Vi13qvO6vEcEln8UwiImCfBm2PPLqv@vger.kernel.org
+X-Gm-Message-State: AOJu0YyS1f54FTJxe6ddd/iNXIlNsGo4iKOLLaiTZ1yCc8DLMUTfafAZ
+	OgsYayTlYeTiqrllZ8umKvFjGX47rmZ2jlC6Ps078JHMuKrl968oAKPyJAwQIAkAwLrHlFwMg1q
+	oToxt0DDKYFJXroInm21nF+QtuuGbnNxcVAqdRNJzMaiVgHWDVGk/8O2uels=
+X-Google-Smtp-Source: AGHT+IGptM0/W+RC8JNNbvxwbL47syZs+ieVCOeFF3bOYyE+bsCsNYCyWyGD3xDDyj9zvgbuTmomwlV0EBz0plohKVovC+Xba1uN
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251007234221.28643-2-eraykrdg1@gmail.com>
+X-Received: by 2002:a05:6e02:1d98:b0:42d:7f38:a9b4 with SMTP id
+ e9e14a558f8ab-42f8741b733mr17558735ab.31.1759902723031; Tue, 07 Oct 2025
+ 22:52:03 -0700 (PDT)
+Date: Tue, 07 Oct 2025 22:52:03 -0700
+In-Reply-To: <00000000000054d8540619f43b86@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68e5fc03.a00a0220.298cc0.0488.GAE@google.com>
+Subject: Re: [syzbot] [exfat] INFO: task hung in vfs_rmdir (2)
+From: syzbot <syzbot+42986aeeddfd7ed93c8b@syzkaller.appspotmail.com>
+To: brauner@kernel.org, hdanton@sina.com, jack@suse.cz, linkinjeon@kernel.org, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, sj1557.seo@samsung.com, 
+	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk, 
+	yuezhang.mo@sony.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Oct 08, 2025 at 02:42:22AM +0300, Ahmet Eray Karadag wrote:
-> Add a simple check in ext4_try_to_write_inline_data() to prevent
-> writes that extend past the inode's inline data area. The function
-> now returns -EINVAL if pos + len exceeds i_inline_size.
-> 
-> This avoids invalid inline write attempts and keeps the write path
-> consistent with the inode limits.
-> 
-> Reported-by: syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com
-> Link: https://syzkaller.appspot.com/bug?extid=f3185be57d7e8dda32b8
-> Co-developed-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com> 
-> Signed-off-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-> Signed-off-by: Ahmet Eray Karadag <eraykrdg1@gmail.com>
-> ---
->  fs/ext4/inline.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index 1b094a4f3866..13ba56e8e334 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -782,6 +782,16 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
->  	struct ext4_iloc iloc;
->  	int ret = 0, ret2;
->  
-> +	if ((pos + len) > EXT4_I(inode)->i_inline_size) {
-> +			ext4_warning_inode(inode,
-> +				"inline write beyond capacity (pos=%lld, len=%u, inline_size=%d)",
-> +				pos, len, EXT4_I(inode)->i_inline_size);
-> +		folio_unlock(folio);
-> +		folio_put(folio);
-> +		ret = -EINVAL;
-> +		goto out;
+syzbot suspects this issue was fixed by commit:
 
-Shouldn't write_begin have converted the file to block format if the
-range to be written exceeds the possible inlinedata size?
+commit 79c1587b6cda74deb0c86fc7ba194b92958c793c
+Author: Namjae Jeon <linkinjeon@kernel.org>
+Date:   Sat Aug 30 05:44:35 2025 +0000
 
-> +	}
-> +
->  	if (unlikely(copied < len) && !folio_test_uptodate(folio))
->  		copied = 0;
->  
-> @@ -838,8 +848,8 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
->  	 */
->  	if (pos + len > inode->i_size && ext4_can_truncate(inode))
->  		ext4_orphan_add(handle, inode);
-> -
-> -	ret2 = ext4_journal_stop(handle);
-> +	if (handle)
-> +		ret2 = ext4_journal_stop(handle);
+    exfat: validate cluster allocation bits of the allocation bitmap
 
-What is this??
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1695f92f980000
+start commit:   4a4be1ad3a6e Revert "vfs: Delete the associated dentry whe..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=47d282ddffae809f
+dashboard link: https://syzkaller.appspot.com/bug?extid=42986aeeddfd7ed93c8b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a5b3ec980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103820f2980000
 
---D
+If the result looks correct, please mark the issue as fixed by replying with:
 
->  	if (!ret)
->  		ret = ret2;
->  	if (pos + len > inode->i_size) {
-> -- 
-> 2.43.0
-> 
-> 
+#syz fix: exfat: validate cluster allocation bits of the allocation bitmap
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
