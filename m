@@ -1,54 +1,57 @@
-Return-Path: <linux-ext4+bounces-10694-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10695-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36986BC6BC1
-	for <lists+linux-ext4@lfdr.de>; Thu, 09 Oct 2025 00:04:39 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA51FBC6C22
+	for <lists+linux-ext4@lfdr.de>; Thu, 09 Oct 2025 00:09:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 310DE19E0A1E
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Oct 2025 22:05:02 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BEA2A4E1A09
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Oct 2025 22:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869BA2C11F9;
-	Wed,  8 Oct 2025 22:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2792C11F9;
+	Wed,  8 Oct 2025 22:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="epV1zfrN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nh7itxjW"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208F61E25F9
-	for <linux-ext4@vger.kernel.org>; Wed,  8 Oct 2025 22:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A53221FDA;
+	Wed,  8 Oct 2025 22:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759961076; cv=none; b=OpZT07+S3RfR9DOcdvGvNJcZ5knBUn4qAMMQ2IoM5HzOqSmnpx8J3/B6nM9mdlDvhQWq78gQqDNFIjpukhLpDBMAh/BBGdyxD38Y9QE5ClAIv2eeMv36NoljK6h+FvdzDFKSZj44I6WAkT0NEQnVuhf5I1RJtA+oA0G5OFkmQ3s=
+	t=1759961381; cv=none; b=m/lGBIwgAwbgJVjIFgrBYB5DC1p5zibwZGn0j61gPn4cEOGQS+Ymf86R24gDOXSvL9burQn9OsqjoAFjlOKbMwV5BGDitvS5+6U+zYqalssm5E2nbRh9YvawNCFJjglwGYyGmBUyFzbda/+g6/XJFpzAo7jS12m37/oddHtnkPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759961076; c=relaxed/simple;
-	bh=duvYUI29Nzo/23seB5TluWHUuch3xgXPc1ER95J80+M=;
+	s=arc-20240116; t=1759961381; c=relaxed/simple;
+	bh=tjoL8DPttIC6yxJYjGYZmdTZmlKaUXVFyWCT4sRmGzA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y099MiCsZn/MtOyhbrDinAqN5PJSKpiLHc0E2GEdiWJl9jKQ34nqU2fSdaqZ6vo9srlSva8N02kWtCsp6LDgUj4zQAU6rFsgnOqjgBI6uiQN1D7RCHB+yRHA9wKKQqKsEbC9sDoz/aMJ2vKmlCLzaYcZecUeIgtNLuuQRMb+kPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=epV1zfrN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98D53C4CEF9;
-	Wed,  8 Oct 2025 22:04:35 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=GSTXrpiqqZ/RxoNfIn5YVLWCDpvIW+fhI0kPasm4nYXyUrHkThikg/byBB/0RZe3/F0egCPTSeCx0QE1EC9kB38eB/WddAQ3+Crqq/WlAMyJcFL9Bw0mPMrNmsG5IBXgAGQXPzBCzQ0uvuOnLgi5Z4iVINzDLt+N6M+BD3irZGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nh7itxjW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3516C4CEF8;
+	Wed,  8 Oct 2025 22:09:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759961075;
-	bh=duvYUI29Nzo/23seB5TluWHUuch3xgXPc1ER95J80+M=;
+	s=k20201202; t=1759961380;
+	bh=tjoL8DPttIC6yxJYjGYZmdTZmlKaUXVFyWCT4sRmGzA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=epV1zfrNdCfzbB+pR8AKzPdsU+Fz9Cfw/kfiEWuXhFiag9m9IZUNvgz6FWHn7I76Q
-	 FAGJ1swcr5B21pjZf8B4TNgcUe11Jlnl9S+iR5RuvaPCUN8fIAwuigXCGtWlFNaCBZ
-	 KRw9pdiEdkYG+5Z8nObA8NbDQrP6+0An/kBzAJX5MuqDmOeZGEcF8Z2ScHqEeSfMkX
-	 iAqjJkTnm5ClGTnI2+Yj4zHXolwsXsK5YN+6fj4creiCKBIqS1WVZl+WESXVuE0+TP
-	 ZaYx8iUmIblnnVBm/wbtXkSr6wPxBaE/1F+LkvQ16P26zpLK4cfpwOJIQGP2yrv5iP
-	 VgxwmWfuDpJQA==
-Date: Wed, 8 Oct 2025 15:04:34 -0700
+	b=nh7itxjW9R8ymgo6j1ZCYDwyQlZ3UODIeUuVu8sCcYOKJ8sMi1e2v3EfT/AFbYUNR
+	 cCSKqnHwY0cke0oZwnXi4qPJk9ixhP112SW3TpkqQXcqtYhgOYxINYXW3faR4B8GsC
+	 c8dHYsDJKfYAhzR72IsqMRSLHhitWE23x5/08NvPP0wNQXGKzPtpQP8HWHJt60EQNL
+	 AmtMbAPO8fE2jMt0CzPpvNKxay265oCOFCrmrsR3Hq7nlANDavCtMLlrICYxRoUjgJ
+	 Eeqn674jnHmAFIz01TT64U/Fm5u93Vh5/idt6sH8J/wzyFdiXzqg+H9pXTskka2bQD
+	 0M1K7z5HmU54w==
+Date: Wed, 8 Oct 2025 15:09:40 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/3] fuse2fs: enable the shutdown ioctl
-Message-ID: <20251008220434.GA6170@frogsfrogsfrogs>
-References: <175798065146.350393.10618193797364129539.stgit@frogsfrogsfrogs>
- <175798065210.350393.10163706639168342705.stgit@frogsfrogsfrogs>
+Cc: miklos@szeredi.hu, neal@gompa.dev, linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, John@groves.net, bernd@bsbernd.com,
+	joannelkoong@gmail.com
+Subject: Re: [PATCH 10/10] libext2fs: add posix advisory locking to the unix
+ IO manager
+Message-ID: <20251008220940.GB6170@frogsfrogsfrogs>
+References: <175798161283.390072.8565583077948994821.stgit@frogsfrogsfrogs>
+ <175798161504.390072.1450648323017490117.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,123 +60,144 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <175798065210.350393.10163706639168342705.stgit@frogsfrogsfrogs>
+In-Reply-To: <175798161504.390072.1450648323017490117.stgit@frogsfrogsfrogs>
 
-On Mon, Sep 15, 2025 at 05:05:35PM -0700, Darrick J. Wong wrote:
+On Mon, Sep 15, 2025 at 05:58:43PM -0700, Darrick J. Wong wrote:
 > From: Darrick J. Wong <djwong@kernel.org>
 > 
-> Implement a bastardized version of EXT4_IOC_SHUTDOWN, because the people
-> who invented the ioctl got the direction wrong, so we can't actually
-> read the flags.
+> Add support for using flock() to protect the files opened by the Unix IO
+> manager so that we can't mount the same fs multiple times.  This also
+> prevents systemd and udev from accessing the device while e2fsprogs is
+> doing something with the device.
 > 
+> Link: https://systemd.io/BLOCK_DEVICE_LOCKING/
 > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> ---
->  misc/fuse2fs.c |   42 ++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 38 insertions(+), 4 deletions(-)
-> 
-> 
-> diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-> index 80d1c79b5cce1c..101f0fa03c397d 100644
-> --- a/misc/fuse2fs.c
-> +++ b/misc/fuse2fs.c
-> @@ -221,6 +221,7 @@ struct fuse2fs_file_handle {
->  enum fuse2fs_opstate {
->  	F2OP_READONLY,
->  	F2OP_WRITABLE,
-> +	F2OP_SHUTDOWN,
->  };
->  
->  /* Main program context */
-> @@ -276,7 +277,7 @@ struct fuse2fs {
->  		} \
->  	} while (0)
->  
-> -#define __FUSE2FS_CHECK_CONTEXT(ff, retcode) \
-> +#define __FUSE2FS_CHECK_CONTEXT(ff, retcode, shutcode) \
->  	do { \
->  		if ((ff) == NULL || (ff)->magic != FUSE2FS_MAGIC) { \
->  			fprintf(stderr, \
-> @@ -285,14 +286,17 @@ struct fuse2fs {
->  			fflush(stderr); \
->  			retcode; \
->  		} \
-> +		if ((ff)->opstate == F2OP_SHUTDOWN) { \
-> +			shutcode; \
-> +		} \
->  	} while (0)
->  
->  #define FUSE2FS_CHECK_CONTEXT(ff) \
-> -	__FUSE2FS_CHECK_CONTEXT((ff), return -EUCLEAN)
-> +	__FUSE2FS_CHECK_CONTEXT((ff), return -EUCLEAN, return -EIO)
->  #define FUSE2FS_CHECK_CONTEXT_RETURN(ff) \
-> -	__FUSE2FS_CHECK_CONTEXT((ff), return)
-> +	__FUSE2FS_CHECK_CONTEXT((ff), return, return)
 
-This change means that we return early from op_destroy on a shut down
-filesystem, which means that on iomap filesystems we don't actually
-uphold the requirement that we've closed the block device before
-replying to the FUSE_DESTROY message that the kernel gives us during
-unmount.  This causes odd regressions on generic/730 and generic/635,
-both of which are due to fstests not being able to format a new
-filesystem because fuse4fs hasn't quite exited yet.
+This actually causes a lot of problems with fstests -- if fuse2fs
+flock()s the block device, then udevd will spin in a slow trylock loop
+until the bdev can be locked.  Meanwhile, any scripts calling udevadm
+settle will block until fuse2fs exits (or it gives up after 2 minutes go
+by), because udev still has a uevent that it cannot settle.  This causes
+any test that uses udevadm settle to take forever to run.
 
->  #define FUSE2FS_CHECK_CONTEXT_ABORT(ff) \
-> -	__FUSE2FS_CHECK_CONTEXT((ff), abort())
-> +	__FUSE2FS_CHECK_CONTEXT((ff), abort(), abort())
->  
->  static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
->  			     const char *func, int line);
-> @@ -4566,6 +4570,33 @@ static int ioctl_fitrim(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
->  }
->  #endif /* FITRIM */
->  
-> +#ifndef EXT4_IOC_SHUTDOWN
-> +# define EXT4_IOC_SHUTDOWN	_IOR('X', 125, __u32)
-> +#endif
-> +
-> +static int ioctl_shutdown(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
-> +			  void *data)
-> +{
-> +	struct fuse_context *ctxt = fuse_get_context();
-> +	ext2_filsys fs = ff->fs;
-> +
-> +	if (!is_superuser(ff, ctxt))
-> +		return -EPERM;
-> +
-> +	err_printf(ff, "%s.\n", _("shut down requested"));
-> +
-> +	/*
-> +	 * EXT4_IOC_SHUTDOWN inherited the inverted polarity on the ioctl
-> +	 * direction from XFS.  Unfortunately, that means we can't implement
-> +	 * any of the flags.  Flush whatever is dirty and shut down.
-> +	 */
-> +	if (ff->opstate == F2OP_WRITABLE)
-> +		ext2fs_flush2(fs, 0);
-> +	ff->opstate = F2OP_SHUTDOWN;
+In general, we don't want to block udev from reading the block device
+while fuse2fs has it mounted.  For block devices this is unnecessary
+anyway because we have O_EXCL.
 
-This needs to clear EXT2_FLAG_RW or else ext2fs_close2() will try to
-write the group descriptors/superblock even though the filesystem was
-supposedly shut down.
+However, the advisory locking is still useful for coordinating access to
+filesystem images in regular files, so I'll rework this to only do it
+for regular files.
 
 --D
 
+> ---
+>  lib/ext2fs/unix_io.c |   64 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+> 
+> 
+> diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
+> index 068be689326443..55007ad7d2ae15 100644
+> --- a/lib/ext2fs/unix_io.c
+> +++ b/lib/ext2fs/unix_io.c
+> @@ -65,6 +65,12 @@
+>  #include <pthread.h>
+>  #endif
+>  
+> +#if defined(HAVE_SYS_FILE_H) && defined(HAVE_SIGNAL_H)
+> +# include <sys/file.h>
+> +# include <signal.h>
+> +# define WANT_LOCK_UNIX_FD
+> +#endif
 > +
-> +	return 0;
+>  #if defined(__linux__) && defined(_IO) && !defined(BLKROGET)
+>  #define BLKROGET   _IO(0x12, 94) /* Get read-only status (0 = read_write).  */
+>  #endif
+> @@ -149,6 +155,9 @@ struct unix_private_data {
+>  	pthread_mutex_t bounce_mutex;
+>  	pthread_mutex_t stats_mutex;
+>  #endif
+> +#ifdef WANT_LOCK_UNIX_FD
+> +	int	lock_flags;
+> +#endif
+>  };
+>  
+>  #define IS_ALIGNED(n, align) ((((uintptr_t) n) & \
+> @@ -897,6 +906,47 @@ int ext2fs_fstat(int fd, ext2fs_struct_stat *buf)
+>  #endif
+>  }
+>  
+> +#ifdef WANT_LOCK_UNIX_FD
+> +static void unix_lock_alarm_handler(int signal, siginfo_t *data, void *p)
+> +{
+> +	/* do nothing, the signal will abort the flock operation */
 > +}
 > +
->  #if FUSE_VERSION >= FUSE_MAKE_VERSION(2, 8)
->  static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
->  #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
-> @@ -4612,6 +4643,9 @@ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
->  		ret = ioctl_fitrim(ff, fh, data);
->  		break;
->  #endif
-> +	case EXT4_IOC_SHUTDOWN:
-> +		ret = ioctl_shutdown(ff, fh, data);
-> +		break;
->  	default:
->  		dbg_printf(ff, "%s: Unknown ioctl %d\n", __func__, cmd);
->  		ret = -ENOTTY;
+> +static int unix_lock_fd(int fd, int flags)
+> +{
+> +	struct sigaction newsa = {
+> +		.sa_flags = SA_SIGINFO,
+> +		.sa_sigaction = unix_lock_alarm_handler,
+> +	};
+> +	struct sigaction oldsa;
+> +	const int operation = (flags & IO_FLAG_EXCLUSIVE) ? LOCK_EX : LOCK_SH;
+> +	int ret;
+> +
+> +	/* wait five seconds for the lock */
+> +	ret = sigaction(SIGALRM, &newsa, &oldsa);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alarm(5);
+> +
+> +	ret = flock(fd, operation);
+> +	if (ret == 0)
+> +		ret = operation;
+> +	else if (errno == EINTR) {
+> +		errno = EWOULDBLOCK;
+> +		ret = -1;
+> +	}
+> +
+> +	alarm(0);
+> +	sigaction(SIGALRM, &oldsa, NULL);
+> +	return ret;
+> +}
+> +
+> +static void unix_unlock_fd(int fd)
+> +{
+> +	flock(fd, LOCK_UN);
+> +}
+> +#endif
+>  
+>  static errcode_t unix_open_channel(const char *name, int fd,
+>  				   int flags, io_channel *channel,
+> @@ -935,6 +985,16 @@ static errcode_t unix_open_channel(const char *name, int fd,
+>  	if (retval)
+>  		goto cleanup;
+>  
+> +#ifdef WANT_LOCK_UNIX_FD
+> +	if (flags & IO_FLAG_RW) {
+> +		data->lock_flags = unix_lock_fd(fd, flags);
+> +		if (data->lock_flags < 0) {
+> +			retval = errno;
+> +			goto cleanup;
+> +		}
+> +	}
+> +#endif
+> +
+>  	strcpy(io->name, name);
+>  	io->private_data = data;
+>  	io->block_size = 1024;
+> @@ -1200,6 +1260,10 @@ static errcode_t unix_close(io_channel channel)
+>  	if (retval2 && !retval)
+>  		retval = retval2;
+>  
+> +#ifdef WANT_LOCK_UNIX_FD
+> +	if (data->lock_flags)
+> +		unix_unlock_fd(data->dev);
+> +#endif
+>  	if (close(data->dev) < 0 && !retval)
+>  		retval = errno;
+>  	free_cache(data);
 > 
 > 
 
