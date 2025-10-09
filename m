@@ -1,120 +1,139 @@
-Return-Path: <linux-ext4+bounces-10716-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10717-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 641BFBC812D
-	for <lists+linux-ext4@lfdr.de>; Thu, 09 Oct 2025 10:39:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5363BBC8154
+	for <lists+linux-ext4@lfdr.de>; Thu, 09 Oct 2025 10:43:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0F4EA34E887
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Oct 2025 08:39:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A6C31A608B9
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Oct 2025 08:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3192BE7AD;
-	Thu,  9 Oct 2025 08:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5391A2D2483;
+	Thu,  9 Oct 2025 08:43:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="A3rprOKG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sd1CQWr6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F26434BA3F
-	for <linux-ext4@vger.kernel.org>; Thu,  9 Oct 2025 08:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEFF2D192B
+	for <linux-ext4@vger.kernel.org>; Thu,  9 Oct 2025 08:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759999138; cv=none; b=TmRMvc87ClQPGNwSGJANXpY3TTBaSZ04FmILIjR3/TI58aUQA3NPS3skL+pykCUl9/mJbFs6tEz90yMZt5Jaft+FD8fJD9aVoqES23q2Sas00wV0TUCrlM+LlQaGHJ+0ZHTgNRLAPM9/0oe5+ZBaoq/gcyQ5yqEyPZ2XTTmpDTY=
+	t=1759999418; cv=none; b=h7cCMNRA2UGMhOquMSXprugX08dTBhjWrc/LIa7C1pmnmzPtD0TVvDKm14imq8p3vlD/cUdAViN0aBb7IGeZl/E6xn5VdNlIAZ7GQu+1NjPgGpp/I/kELgaSA9wrWnhgqZVlWX47/5R4l3e1YBo3ArmcBHD1wmaEJtLrmPu/owE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759999138; c=relaxed/simple;
-	bh=qhhKwgudoRE9wV/4NXn2yDOWRmKWDI5xqflwdVd6u6s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vAlTFeB7VLvsSCVBbsuI8om03qoOBJyQB+W/1YFXA83O9PCEkqC/5yzO0VZhr3MGEuxk+St51g4mejyIW57AUQM73Y9mgMs4fCE9MYh/L10djg38PAWrVyR8CKckrK7fP0zP3CLCOCZpWm9dyLOxZ1eMpLWPfDbPh3c6k91Q+bQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=A3rprOKG; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4cj3F84zRqz9tJf;
-	Thu,  9 Oct 2025 10:38:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1759999132;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eCEzNY6Q2L5RQfSo6QPJSEiF5DxS6FHWs3pg4zy65m0=;
-	b=A3rprOKGaJoI2ZzaMYYY8ag8xKrhSgP6MOqlQZc8BBCiL28DbQzOnMCbptA6n6J3L8TUdN
-	hV3LGFmGukzutm3I7+0o2mZ4+yx4B2qSd3gv5S1WOCZXxVlxKx1p2PK8dKs5H6TN6Pgwu8
-	n6YWvyKwV7E/lpY31fvyStiTHGqplWrCWmNcqqmdIRHsvYweRz+TLlvylZ/UR4I/xDxmQK
-	w+pQb2rmOyHP7Njut7Uuh0ulBylOQVef6wn50ygKUXyMmyDkYsorETQgGNAp8ANQ7bjyJW
-	UnLKNN0ugvNglDF1aLfbo/tF3ysR1ZB0qjVFuQmQXuioi6udn3nbBNqSFWaXOw==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=pass (outgoing_mbo_mout: domain of kernel@pankajraghav.com designates 2001:67c:2050:b231:465::102 as permitted sender) smtp.mailfrom=kernel@pankajraghav.com
-Message-ID: <29ae1a6f-64da-4fdd-bd30-24c715f6faf0@pankajraghav.com>
-Date: Thu, 9 Oct 2025 10:38:48 +0200
+	s=arc-20240116; t=1759999418; c=relaxed/simple;
+	bh=oOmLRNO4yxmZr9GGl+AUsKcQlyU35gqHSeHKaWhtPwQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lho5+ua1u9sosByfFSDBGFy+VrH6GyIlqMTPlhipcvTZRKxm/NYntpMNkqodJLEcSf+HM7Oyhkvx6l3ZNA8J9//rWb2UMT6fe4vrARV8vUCt+hlaQ5dJhRyoyH3W46JurF7AVmcOA7Wyj5/LfZ9C3+OeALi45gDSMQOr1NWxawc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sd1CQWr6; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-77fac63ba26so7195587b3.3
+        for <linux-ext4@vger.kernel.org>; Thu, 09 Oct 2025 01:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759999416; x=1760604216; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oOmLRNO4yxmZr9GGl+AUsKcQlyU35gqHSeHKaWhtPwQ=;
+        b=Sd1CQWr65JLYzY9EVKrEmyokZCi5vMbs6EjxpG+7QH6YGT3tDWbcej0s4cZgoeqQuS
+         JarC6ZTWUL+kjcHPGBPAUN8Ppb1QBAPtlSxQfjpNRglhJxMMypRIPnB6rYYKLQvZjKiN
+         y72xO5wzZc7AAEZk+IBKqraBb7+6wC4+Imv7nbjEtku9PO6PAKcYEb1vRHgafdvgR9U2
+         dCS1DB4VwniCeBOnc8XLvNltoejI4ecSgvo1PpGG1tSl6PrUxnfallIONRoeLTNOEzbX
+         FvDKAaN4VsNHkaBPKCCqR4S+rBMFmJJlJYY4H+OBfaZXGyq7o1ppfnH/vgJ3jgRm0T4d
+         tz9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759999416; x=1760604216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oOmLRNO4yxmZr9GGl+AUsKcQlyU35gqHSeHKaWhtPwQ=;
+        b=Ue3d3E7YPjNTIbmMWfGSpAc/dqZ3JFThBNDzI3ZLEc8RjTRospL856rofPMvhiIqyC
+         py05eu/pheuhTtfU6Z+XkkKDV3q0N8NUP1z53CDt4zuJy1mi1Yw9nXbP/i+ryAF9Z2Y1
+         KPvQTTMJVewE3gu83qCgJnOxfiDsvYzuvLO/sBFU/YMVxAPpYprVz2s77B+2f8IctwvL
+         hyIQxjSFjUXh7IlT4pICTnWwGrt7+Yh2Y2zm14xSEkZbFnfJ7DRIZSZRkF0ig1WWzTxC
+         /KlWhE3+JybqtKqamrtKD1zZSGpm0ZpIdWE1EMTUYHjT1ryZ2KWWpDvtg1qJvoSR/cIu
+         LNZw==
+X-Forwarded-Encrypted: i=1; AJvYcCWZGvyDfK3m1u1pivXJ0Ijgdobu03EUL6PsEeqPtDnaspKPliId5+OcRR+LGYjC6AWYZUrVXl3A6Q0j@vger.kernel.org
+X-Gm-Message-State: AOJu0YxC9uI2L+YT0aL0WeCl8JpRS7mCqmYEfFykgGckxFukvlwG9U+k
+	hSezTDdNCmnt6wvYlHLxPn4kLtRKqM92JauY6Ej7i2YaRZIbj5MPzX1lm+iYWtPTZj7lYKkQ5lv
+	hCscKk8FXrTwrYX1wZ6LsYD9rUCpQI3Q=
+X-Gm-Gg: ASbGncvzBxwXp16y1DC2JrPtsTQLnRflAKpnh5vrTmKU3RkJiUOQ36AqMmz2XjRaw5n
+	kATfUxSrD4geZAYZ2mfcQ2NoRCJxvz559aGKePrfs+yAKDfJOL11dOMO6nDFb0H7Sc5GETFluzv
+	AptuYyuDVfd1snGgMUNsCSIvuKtga0pKw09Ha10G8mExnch6pyBKHzdsjku/21NlsxzeOueq7Yu
+	mer9/XAQxF8YH7ZsqARcFnl4kwjr+y+F6/e/vOPqg==
+X-Google-Smtp-Source: AGHT+IHqqt7JHMFlL5DEMxX8/4fuWke6o7x715NV65SuEycRYAp5q8y3uA9SPr+Cccah/gPAgRpT2LfWBS7AmxUm0/4=
+X-Received: by 2002:a05:690e:146:b0:635:4ece:20a9 with SMTP id
+ 956f58d0204a3-63ccb91d5e0mr4410660d50.46.1759999415603; Thu, 09 Oct 2025
+ 01:43:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: LBS support for ext4
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Baokun Li <libaokun1@huawei.com>, Luis Chamberlain <mcgrof@kernel.org>,
- Swarna Prabhu <s.prabhu@samsung.com>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- Zhang Yi <yi.zhang@huawei.com>
-References: <c0ea5334-6439-4ec9-a1eb-a9eb0863c3b7@pankajraghav.com>
- <69b42833-87ce-4a16-8f1b-7130fdfd23dc@huaweicloud.com>
-Content-Language: en-US
-From: Pankaj Raghav <kernel@pankajraghav.com>
-In-Reply-To: <69b42833-87ce-4a16-8f1b-7130fdfd23dc@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 4cj3F84zRqz9tJf
+References: <20250918152830.438554-1-nschichan@freebox.fr> <20250918195806.6337-1-safinaskar@gmail.com>
+ <CAHNNwZAzecVcJXZmycX063-=p-M5jVkfStfgYVKJruOFo7y9zg@mail.gmail.com>
+ <CAPnZJGDwETQVVURezSRxZB8ZAwBETQ5fwbXyeMpfDLuLW4rVdg@mail.gmail.com> <CAHNNwZC7gC7zaZGiSBhobSAb4m2O1BuoZ4r=SQBF-tCQyuAPvw@mail.gmail.com>
+In-Reply-To: <CAHNNwZC7gC7zaZGiSBhobSAb4m2O1BuoZ4r=SQBF-tCQyuAPvw@mail.gmail.com>
+From: Askar Safin <safinaskar@gmail.com>
+Date: Thu, 9 Oct 2025 11:42:59 +0300
+X-Gm-Features: AS18NWA7xuLtf9pobQHoPGHI9uL9SjsnEaZg-EuuD52zBO81KbUszIYBPPZ5wRY
+Message-ID: <CAPnZJGAp-wG+9wDmmisfpxvFbRtXkG-RipAuZe=fi1BWy-3G-Q@mail.gmail.com>
+Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
+To: Nicolas Schichan <nschichan@freebox.fr>
+Cc: akpm@linux-foundation.org, andy.shevchenko@gmail.com, axboe@kernel.dk, 
+	brauner@kernel.org, cyphar@cyphar.com, devicetree@vger.kernel.org, 
+	ecurtin@redhat.com, email2tema@gmail.com, graf@amazon.com, 
+	gregkh@linuxfoundation.org, hca@linux.ibm.com, hch@lst.de, 
+	hsiangkao@linux.alibaba.com, initramfs@vger.kernel.org, jack@suse.cz, 
+	julian.stecklina@cyberus-technology.de, kees@kernel.org, 
+	linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, mcgrof@kernel.org, 
+	mingo@redhat.com, monstr@monstr.eu, mzxreary@0pointer.de, 
+	patches@lists.linux.dev, rob@landley.net, sparclinux@vger.kernel.org, 
+	thomas.weissschuh@linutronix.de, thorsten.blum@linux.dev, 
+	torvalds@linux-foundation.org, tytso@mit.edu, viro@zeniv.linux.org.uk, 
+	x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/9/25 10:07, Zhang Yi wrote:
-> [added ext4 list to CC]
-> 
-> Hi, Pankaj! Thank you for your letter.
-> 
-> On 10/7/2025 7:21 PM, Pankaj Raghav wrote:
->> Hi Baokun and Zhang,
->>
->>   I hope you both are doing well.
->>
->> I was wondering recently about LBS support for ext4. You said you were working on them and have some
->> local patches that enabled them [1]. Is there any update on that and when do you plan to post them
->> on the mailing list? :)
->>
-> 
-> The current development work for ext4 LBS is essentially complete, and
-> testing is underway using various configurations of xfstests-bld.
-> However, since many test cases in the existing xfstests have
-> dependencies, such as rely on a 4KB block size image. So numerous cases
-> have failed. It is now necessary to analyze each failed case
-> individually and establish a new testing baseline.
-> 
+On Mon, Sep 22, 2025 at 5:29=E2=80=AFPM Nicolas Schichan <nschichan@freebox=
+.fr> wrote:
+> > Then in September 2026 I will fully remove initrd.
+>
+> Is there a way to find some kind of middle ground here ?
 
-Yes, we had similar issues with XFS where the test assumed the block size
-can never be > PS. I fixed most of the issues in generic but I am not sure
-about ext4 specific test cases.
+I still plan to fully remove initrd in September 2026.
+Maintainers will decide whether they will merge my patchset.
+You may try to convince them.
 
->> We are very interested in adding this support to ext4, so please let us know if you need some help
->> with the review or testing.
->>
-> 
-> Baokun has been working on this, but the failure cases have not yet been
-> fully analyzed and he is currently on an urgent business trip. We can
-> send out an RFC series by mid to late this month after he returns.
-> Testing, analysis and review are welcome!
-> 
+> I can send a patch for that but first I need to sort out my SMTP
+> issues from the other day.
 
-Perfect. Thanks a lot for the update and including the list in the conversation :)
+If you still have mail issues, consider applying for @linux.dev email,
+they are free for Linux devs ( https://linux.dev/ ).
 
---
-Pankaj
+Also, I just tried to test whether your use case is still supported in
+mainline (i. e. uncompressed initrd with root=3D/dev/ram0).
+It turned out that on modern kernels you need to enable
+recently introduced CONFIG_BLK_DEV_WRITE_MOUNTED to
+make this work.
+So, make sure to enable this when upgrading kernel.
 
+--=20
+Askar Safin
 
