@@ -1,121 +1,131 @@
-Return-Path: <linux-ext4+bounces-10720-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10721-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9871BC875C
-	for <lists+linux-ext4@lfdr.de>; Thu, 09 Oct 2025 12:23:11 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D30BEBC8C14
+	for <lists+linux-ext4@lfdr.de>; Thu, 09 Oct 2025 13:21:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19E331889124
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Oct 2025 10:23:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 836304FA6B6
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Oct 2025 11:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2082DA75B;
-	Thu,  9 Oct 2025 10:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D923F2DC33F;
+	Thu,  9 Oct 2025 11:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b="U8II0m/C"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jNoiJ37l"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-yx1-f50.google.com (mail-yx1-f50.google.com [74.125.224.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1A32D94A6
-	for <linux-ext4@vger.kernel.org>; Thu,  9 Oct 2025 10:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 722282DECAA
+	for <linux-ext4@vger.kernel.org>; Thu,  9 Oct 2025 11:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760005385; cv=none; b=YbNZDTjy9ek8votW/85WsIlHcLHDUM+cvJa2VECWeLDWNo7g7cfWtiD/Hypy2bEph4ovFpMnPlqpdKCon0LpoMcwF6CC1GgGgTiDpWYgyD8yAeJ0s3CBQHlCgPpUqh9NQUNWdOzYcgI9Z+L3NeFOD2cakxMDrrR7SYwHH69nCdg=
+	t=1760008784; cv=none; b=V95IsytBPeCErsuvWufFVRFxvNf5g1HULPNrEpcy7uITOuV4LQREeKEu7lCZpffMjPG2/a4SMegILl3ToS4UlC1StmCTWHuhbQdC1CfcpuypSnpzh2fuGB6QS24jgwM6GrDdCrkVcCrGThUIGiedktPld4ADAExgd3O2xwFFkGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760005385; c=relaxed/simple;
-	bh=l7QzGI7FmuzLiWBMITL6HLIWO89vnW9gY5iIdUxjrpQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=bDuapq0uBCtt0aTE6+gRL5zPcVVzdLngkOP4b/SttBLEyNU0ytPmX7u8YjcCgrj7/iylQMMertHirSIZBfyGMad6dViMS5Jk/J1eIjnuajA9IoxWJNIrV+VDOUUlAZpgFSwVTxSn3hklPDcjAsWAO13MNXeMu4osJjgC53GEM+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b=U8II0m/C; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=readmodwrite.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-46e2c3b6d4cso5387845e9.3
-        for <linux-ext4@vger.kernel.org>; Thu, 09 Oct 2025 03:23:03 -0700 (PDT)
+	s=arc-20240116; t=1760008784; c=relaxed/simple;
+	bh=mzeWOdj3lBj+Ke0QviDFWI2aF1kcLsskxWN0A79AnHU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YXwfF5ownZwPeBVB93kCipNIujQMBa3+eksIMLaMhSd6GCPV+8T0aaQvjIuFfSnLM26Gi9bu0WtBg1bB/mcDV46w1HQobaKz/dEkFq3MDcDYWBdewA/EjCLbvEj5W9a8KZEROGwdUJNqDA9Wcu4uLJwJD0X9027i8PIPSu9IVcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jNoiJ37l; arc=none smtp.client-ip=74.125.224.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yx1-f50.google.com with SMTP id 956f58d0204a3-633bca5451cso865040d50.1
+        for <linux-ext4@vger.kernel.org>; Thu, 09 Oct 2025 04:19:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=readmodwrite-com.20230601.gappssmtp.com; s=20230601; t=1760005382; x=1760610182; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=h7QtmyaStV9Cg/SiLzcIFBH2QrCmrrCZZBI5xKAFZzk=;
-        b=U8II0m/Cj5yciEwOhl+9+q2n1zL0VJ8txNNESrxpElyWHbpGGnwHprG6I+gMXghbhz
-         GWFD+Sn4Fwwd/EzexRWS3+hwlBhwKpwkB7dOqzm+PeouxhNCYAwjjeUUAXsXc0YDeRqZ
-         57Xdkk/gqHHmztstOKP+Qx8ypu+0Rr0Gp5W8by86jueg43t9OWW8Xqw7E0ELFFffO/XW
-         af4hguikER5MQXTVRKziRjCADGg/ZIFtQd3i3e06rKm7NhumQgmozG96D8lWpKbDmMQw
-         v66AL9eg9xh59Ov0hsJExWjrdJ4a7yjES9RPZH0aKyvMu+hXdWsPrURGNh8vI53ayfn+
-         kHZQ==
+        d=gmail.com; s=20230601; t=1760008779; x=1760613579; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mzeWOdj3lBj+Ke0QviDFWI2aF1kcLsskxWN0A79AnHU=;
+        b=jNoiJ37lCUQ9Hrm2hMpur0n3OpmXylsTAvQFzFo0gEHLdPW1H7xLOEfZx9IMP3xJGG
+         VvaFojxgSsr0dFIBvT0p9gx6C2qVKiKNUQeCfRio9yhV6GZjq9rpyyrteqxqW9Ew3dBm
+         wtvaqMjirKwpcBo4MgJpiCLn7sWEkQpEyqFiwGTjc5zHrlT4QCRizWiXWVk6zMf3FYYn
+         bzUTIQSKLADIffCIHWelPhf43EqQYtzVSfMGzuGbrzIwj9QJsP6FN+oluyC+bzTKhDgF
+         5nZ3Uo6yeEy5h0e9DLaazODqWGp9Q080LEkzOtn2P2FcQKQiw+6Kon0LQ4PFBZDDcg2+
+         Grtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760005382; x=1760610182;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h7QtmyaStV9Cg/SiLzcIFBH2QrCmrrCZZBI5xKAFZzk=;
-        b=gxDcJkdB6EYYqNBCCo4JAS3NNr9GXfOYuHwikigJk//CEwPv5N5K/o8kx8VmUJ/S7r
-         Jby51LblwnLDqBJykgTUkaIaN82VUljrQcNEwG7+griJOPbGAToj61Pj116lgkIfHRNw
-         Cq4sDDoRcqOs4i2R1vEbBl7MOdcM96zpgDG3L0rTYxUHkEwBO/9sdO8iJr1ElRGsNFAu
-         25F3BPRc8YM8JunpePhn/MGuQG+xII2ZhWClWs+BomFXOHRJ9fQ607pfBtpV3IXZF9bf
-         Rvvzq78wtyDIylhZfXzbB1cohrcSL5CIdSsfFjr0b8vqd0azldfg0c9fOct8JQHwXoAI
-         L8OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXvnrMnEqOdQheACKfcFDRmn3I9JF83iBLooyNncuN6vZm/PqdOpi2/yjT1wxY1nFUYsqyyYX9xDIht@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPKGp4oS9rfnY84IV81rGqnQFa1XrBU+QKvuPFflX7LAJWOOUW
-	UN/ZYkis2xQoUJnxm81m/PoiGljJkT1vBCrbPumF4YI/5e432qiqBVUx4MgKLDfR9fc=
-X-Gm-Gg: ASbGnct0kTs0yl/SrToCAOfAA61JrJlwKtMhvlbbCfU5M8ImXM8n3OPXxlvfyMKDSgx
-	gL6P27T1OiLXUKBe+s2iMwQeEgqJR9ffJvi6R+3Nmw3PJGlr5hdfH7DH72Y6EuRbgT1HUgwKyTM
-	zIZNW/03ESQeSv7yxVdjRirBGxijpwLzDGy2BuuAN4V2zOG8I+GF/t725Ej8lYIjw/cstRwTNs9
-	jN9F+dZawYMgRKCetzcKZAju61dNEL0SFWc3YX6G8gQIpv4OhLAgPaTtDUFYVvVAJ8AdK7M7wAq
-	H9Uj6hGX3JWTAMiG++lqWLTP26YKgaFUMKhT8AgJu7vJSCsBTckcxrHCr0t71D36p3WGxBqyUla
-	SUD71a2BevK9f9ZdPeNL4rIttXXr7Hh/JvxlXfbzoBUpN+hZuPvE0RcdoXw==
-X-Google-Smtp-Source: AGHT+IEStIkragv6qCXCo8V3gHP7SZNoyJGu9SkTjAiRd/XZfLMJTPJ93VfbPipyaCKgSacW7ychVQ==
-X-Received: by 2002:a05:600c:528b:b0:46e:6042:4667 with SMTP id 5b1f17b1804b1-46fa9b11b24mr49480295e9.33.1760005381887;
-        Thu, 09 Oct 2025 03:23:01 -0700 (PDT)
-Received: from matt-Precision-5490.. ([2a09:bac1:2880:f0::2e0:b5])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fab4e22d8sm33204695e9.5.2025.10.09.03.23.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Oct 2025 03:23:01 -0700 (PDT)
-From: Matt Fleming <matt@readmodwrite.com>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	kernel-team@cloudflare.com,
-	libaokun1@huawei.com,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	willy@infradead.org
-Subject: Re: ext4 writeback performance issue in 6.12
-Date: Thu,  9 Oct 2025 11:22:59 +0100
-Message-Id: <20251009102259.529708-1-matt@readmodwrite.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20251008162655.GB502448@mit.edu>
-References: <20251006115615.2289526-1-matt@readmodwrite.com> <20251008150705.4090434-1-matt@readmodwrite.com> <20251008162655.GB502448@mit.edu>
+        d=1e100.net; s=20230601; t=1760008779; x=1760613579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mzeWOdj3lBj+Ke0QviDFWI2aF1kcLsskxWN0A79AnHU=;
+        b=HVDNJ9uNNPJHEZneg2mWov3hwxCWYcIdvbVVvA/5adTyNBtRhrrFmZrDM7pGXkyd1R
+         BqpIdWHElnJXc4xziZoOFauVOfVCSYpBhp02jfMYYIw2AQUYrGkemqPY1Y7YXDOiLxAs
+         e5v9C9FQ08j66WnYU6kM3KujwU2coU+tX6hoUel4MhXlwAWxTqOIZ+Bp+IhFFQNXqGTe
+         4lxb4mfzIK0h8wedbEXDJ862Poqg6oF22/dAEnDlLFnlYT4rXOGqRvhALLtZtIvaJE5W
+         4qMciUHq67z194cWpVbY/GiNWWNMm9w6iJk8sP2pbBom+paAxEl/g1P+NlodmC8hN7A3
+         cBgg==
+X-Forwarded-Encrypted: i=1; AJvYcCUskkIDZnQ6/7D4pk9a1uAN5ttsjDoBlxM9P2462GgvVUwtHefpa+gykvCdwgottBTo0TQhdOe9DNfZ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzbZ2/a4keq2iGvQ7PLetAmZWsv/S3fJhdu7FUu50MCqrOuRCZ1
+	3nZM0fY+82YM1+6fZjNoxQbh5SKz4XQXaeBBkYil+Hesnql37TQjlmlK3vBfJPNZAObonzAppei
+	CpTqc3ehY6OhWHgfObwD12iIR/Ksivio=
+X-Gm-Gg: ASbGncuXKOnv2A4BPBduYm7ZF/cGMTojvPH4FKQDXgO8wr6cnS+5p1slyRaGzLfa6O1
+	5ckGhVmA70df66ndOPRIjMVICq9E+VL7WGDdJ7nNYntf1gThJZuIeB8YVztZ4/X49WBRASidE++
+	7u7dki7dPtC+7IEu/Zo8qLSoUjm4BZBLhKyVCfKXgU6/gODRnix84BmMgnujG0+NuXpKevtB1h/
+	zJHoiT5DcoAD0aUYn6KagtM5Uggr8Y=
+X-Google-Smtp-Source: AGHT+IE5U7JyGi1AmeLjDi25hUOta+sU2hpJbVTN9Ai63ARDyOdLqRjdCN3h5Wr4u+tqZlHZJ+/pg/7Xr5jCWFq4BIc=
+X-Received: by 2002:a53:d048:0:10b0:63b:8e80:c017 with SMTP id
+ 956f58d0204a3-63ccb672a0emr6807745d50.0.1760008779377; Thu, 09 Oct 2025
+ 04:19:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20250913003842.41944-1-safinaskar@gmail.com> <20250913003842.41944-29-safinaskar@gmail.com>
+ <20250913054837.GAaMUFtd4YlaPqL2Ov@fat_crate.local> <20250913055851.GBaMUIGyF8VhpUsOZg@fat_crate.local>
+In-Reply-To: <20250913055851.GBaMUIGyF8VhpUsOZg@fat_crate.local>
+From: Askar Safin <safinaskar@gmail.com>
+Date: Thu, 9 Oct 2025 14:19:03 +0300
+X-Gm-Features: AS18NWAGN6ExXhEWeXK-ERFvGpf6JdjWShiWpIPYOnPjMCR9bXVHwIY8E_1WxIc
+Message-ID: <CAPnZJGBwFqNAybORpTtRfjtGwMQiBtd+rATD=mh8ZgE3owT_ow@mail.gmail.com>
+Subject: Re: [PATCH RESEND 28/62] init: alpha, arc, arm, arm64, csky, m68k,
+ microblaze, mips, nios2, openrisc, parisc, powerpc, s390, sh, sparc, um, x86,
+ xtensa: rename initrd_{start,end} to virt_external_initramfs_{start,end}
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, 
+	Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Aleksa Sarai <cyphar@cyphar.com>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
+	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Alexander Graf <graf@amazon.com>, 
+	Rob Landley <rob@landley.net>, Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, 
+	Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	"Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, 
+	devicetree@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 08, 2025 at 12:26:55PM -0400, Theodore Ts'o wrote:
-> On Wed, Oct 08, 2025 at 04:07:05PM +0100, Matt Fleming wrote:
-> > > 
-> > > These machines are striped and are using noatime:
-> > > 
-> > > $ grep ext4 /proc/mounts
-> > > /dev/md127 /state ext4 rw,noatime,stripe=1280 0 0
-> > > 
-> > > Is there some tunable or configuration option that I'm missing that
-> > > could help here to avoid wasting time in
-> > > ext4_mb_find_good_group_avg_frag_lists() when it's most likely going to
-> > > fail an order 9 allocation anyway?
-> 
-> Can you try disabling stripe parameter?  If you are willing to try the
-> latest mainline kernel, there are some changes that *might* make a
-> different, but RAID stripe alignment has been causing problems.
+On Sat, Sep 13, 2025 at 9:00=E2=80=AFAM Borislav Petkov <bp@alien8.de> wrot=
+e:
+> Ooh, now I see it - you have virtual and physical initramfs address thing=
+s. We
+> usually call those "va" and "pa". So
+>
+> initramfs_{va,pa}_{start,end}
 
-Thanks Ted. I'm going to try disabling the stripe parameter now. I'll report
-back shortly.
+Okay, I will call external_initramfs_{va,pa}_{start,end}
+(after I will remove initrd, which will happen after a year)
+
+"external" means "bootloader-supplied" as opposed to builtin initramfs.
+
+--=20
+Askar Safin
 
