@@ -1,203 +1,152 @@
-Return-Path: <linux-ext4+bounces-10695-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10696-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA51FBC6C22
-	for <lists+linux-ext4@lfdr.de>; Thu, 09 Oct 2025 00:09:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 388C3BC72E3
+	for <lists+linux-ext4@lfdr.de>; Thu, 09 Oct 2025 04:11:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BEA2A4E1A09
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Oct 2025 22:09:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2F1F3C6D23
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Oct 2025 02:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2792C11F9;
-	Wed,  8 Oct 2025 22:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nh7itxjW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB6119CC27;
+	Thu,  9 Oct 2025 02:11:11 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A53221FDA;
-	Wed,  8 Oct 2025 22:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD261F92E;
+	Thu,  9 Oct 2025 02:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759961381; cv=none; b=m/lGBIwgAwbgJVjIFgrBYB5DC1p5zibwZGn0j61gPn4cEOGQS+Ymf86R24gDOXSvL9burQn9OsqjoAFjlOKbMwV5BGDitvS5+6U+zYqalssm5E2nbRh9YvawNCFJjglwGYyGmBUyFzbda/+g6/XJFpzAo7jS12m37/oddHtnkPM=
+	t=1759975871; cv=none; b=DHioYfT1EWJIdjeijC/7hp5Nzag33PW0Tn6ysyazO9wbOqXQHX4EAEU/GBcEatkluBBV4Gacs5Mqj6p7QgzD/H3zb7yml5tF6Ud7JD1JUzPLn3z/XWvZa/JCvLcQ7Pd1+SgU533ur5RqSYEcjQcdJcW7Yzh0ZhRZmj4PSXiviPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759961381; c=relaxed/simple;
-	bh=tjoL8DPttIC6yxJYjGYZmdTZmlKaUXVFyWCT4sRmGzA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GSTXrpiqqZ/RxoNfIn5YVLWCDpvIW+fhI0kPasm4nYXyUrHkThikg/byBB/0RZe3/F0egCPTSeCx0QE1EC9kB38eB/WddAQ3+Crqq/WlAMyJcFL9Bw0mPMrNmsG5IBXgAGQXPzBCzQ0uvuOnLgi5Z4iVINzDLt+N6M+BD3irZGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nh7itxjW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3516C4CEF8;
-	Wed,  8 Oct 2025 22:09:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759961380;
-	bh=tjoL8DPttIC6yxJYjGYZmdTZmlKaUXVFyWCT4sRmGzA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nh7itxjW9R8ymgo6j1ZCYDwyQlZ3UODIeUuVu8sCcYOKJ8sMi1e2v3EfT/AFbYUNR
-	 cCSKqnHwY0cke0oZwnXi4qPJk9ixhP112SW3TpkqQXcqtYhgOYxINYXW3faR4B8GsC
-	 c8dHYsDJKfYAhzR72IsqMRSLHhitWE23x5/08NvPP0wNQXGKzPtpQP8HWHJt60EQNL
-	 AmtMbAPO8fE2jMt0CzPpvNKxay265oCOFCrmrsR3Hq7nlANDavCtMLlrICYxRoUjgJ
-	 Eeqn674jnHmAFIz01TT64U/Fm5u93Vh5/idt6sH8J/wzyFdiXzqg+H9pXTskka2bQD
-	 0M1K7z5HmU54w==
-Date: Wed, 8 Oct 2025 15:09:40 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: tytso@mit.edu
-Cc: miklos@szeredi.hu, neal@gompa.dev, linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org, John@groves.net, bernd@bsbernd.com,
-	joannelkoong@gmail.com
-Subject: Re: [PATCH 10/10] libext2fs: add posix advisory locking to the unix
- IO manager
-Message-ID: <20251008220940.GB6170@frogsfrogsfrogs>
-References: <175798161283.390072.8565583077948994821.stgit@frogsfrogsfrogs>
- <175798161504.390072.1450648323017490117.stgit@frogsfrogsfrogs>
+	s=arc-20240116; t=1759975871; c=relaxed/simple;
+	bh=F2JPeRTrb+18FKIQe3AusKYskJOkhvJMDhq3VVgEGck=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KNb9Xp1CXB41DEx9N/wNmgEEleCnrvFxlEKNcBLUDT8KvGtk6PwhydGuchywFIPbI6dJdudi8Gc1WJ/bdhQixL+Vr+PCE8ijBDcgRnXK5MJKZ1FqcOpbW6Y4MAs9RRzndd/1hYbvgC2tL22TZ8JcfKlArXT/aoNOV72kmghXOao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4chtd63c8zzKHMQH;
+	Thu,  9 Oct 2025 10:10:34 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id ABA9D1A12FB;
+	Thu,  9 Oct 2025 10:11:02 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP4 (Coremail) with SMTP id gCh0CgDX6GC0GedozBwgCQ--.12174S3;
+	Thu, 09 Oct 2025 10:11:01 +0800 (CST)
+Message-ID: <4962e5a0-a03e-4e9a-8f8e-5db04504c30e@huaweicloud.com>
+Date: Thu, 9 Oct 2025 10:11:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <175798161504.390072.1450648323017490117.stgit@frogsfrogsfrogs>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] ext4: detect invalid INLINE_DATA + EXTENTS flag
+ combination
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ syzbot+038b7bf43423e132b308@syzkaller.appspotmail.com,
+ Zhang Yi <yi.zhang@huawei.com>
+References: <20250930112810.315095-1-kartikey406@gmail.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20250930112810.315095-1-kartikey406@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgDX6GC0GedozBwgCQ--.12174S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw45JrWkXw1kuw4rXF1kXwb_yoW5ArWDpF
+	ZxC3WDJ34DX34DGa97Kr17XF4jg3WrGr4UJrZIvw1UZas8KFyxKF4xtF13ZF1DGr48Z3Wj
+	vF1rKr1UCw1UArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Mon, Sep 15, 2025 at 05:58:43PM -0700, Darrick J. Wong wrote:
-> From: Darrick J. Wong <djwong@kernel.org>
+On 9/30/2025 7:28 PM, Deepanshu Kartikey wrote:
+> syzbot reported a BUG_ON in ext4_es_cache_extent() when opening a verity
+> file on a corrupted ext4 filesystem mounted without a journal.
 > 
-> Add support for using flock() to protect the files opened by the Unix IO
-> manager so that we can't mount the same fs multiple times.  This also
-> prevents systemd and udev from accessing the device while e2fsprogs is
-> doing something with the device.
+> The issue is that the filesystem has an inode with both the INLINE_DATA
+> and EXTENTS flags set:
 > 
-> Link: https://systemd.io/BLOCK_DEVICE_LOCKING/
-> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+>     EXT4-fs error (device loop0): ext4_cache_extents:545: inode #15:
+>     comm syz.0.17: corrupted extent tree: lblk 0 < prev 66
+> 
+> Investigation revealed that the inode has both flags set:
+>     DEBUG: inode 15 - flag=1, i_inline_off=164, has_inline=1, extents_flag=1
+> 
+> This is an invalid combination since an inode should have either:
+> - INLINE_DATA: data stored directly in the inode
+> - EXTENTS: data stored in extent-mapped blocks
+> 
+> Having both flags causes ext4_has_inline_data() to return true, skipping
+> extent tree validation in __ext4_iget(). The unvalidated out-of-order
+> extents then trigger a BUG_ON in ext4_es_cache_extent() due to integer
+> underflow when calculating hole sizes.
+> 
+> Fix this by detecting this invalid flag combination early in ext4_iget()
+> and rejecting the corrupted inode.
+> 
+> Reported-and-tested-by: syzbot+038b7bf43423e132b308@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=038b7bf43423e132b308
+> Suggested-by: Zhang Yi <yi.zhang@huawei.com>
+> Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
 
-This actually causes a lot of problems with fstests -- if fuse2fs
-flock()s the block device, then udevd will spin in a slow trylock loop
-until the bdev can be locked.  Meanwhile, any scripts calling udevadm
-settle will block until fuse2fs exits (or it gives up after 2 minutes go
-by), because udev still has a uevent that it cannot settle.  This causes
-any test that uses udevadm settle to take forever to run.
+Thanks for the fix, it looks good to me.
 
-In general, we don't want to block udev from reading the block device
-while fuse2fs has it mounted.  For block devices this is unnecessary
-anyway because we have O_EXCL.
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
-However, the advisory locking is still useful for coordinating access to
-filesystem images in regular files, so I'll rework this to only do it
-for regular files.
-
---D
-
+> 
 > ---
->  lib/ext2fs/unix_io.c |   64 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
+> Changes in v4:
+> - Move check to right after ext4_set_inode_flags() as suggested by Zhang Yi,
+>   since we're checking flags directly (not ext4_has_inline_data() return value)
 > 
+> Changes in v3:
+> - Fix code alignment and use existing function/line variables per Zhang Yi
 > 
-> diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
-> index 068be689326443..55007ad7d2ae15 100644
-> --- a/lib/ext2fs/unix_io.c
-> +++ b/lib/ext2fs/unix_io.c
-> @@ -65,6 +65,12 @@
->  #include <pthread.h>
->  #endif
->  
-> +#if defined(HAVE_SYS_FILE_H) && defined(HAVE_SIGNAL_H)
-> +# include <sys/file.h>
-> +# include <signal.h>
-> +# define WANT_LOCK_UNIX_FD
-> +#endif
-> +
->  #if defined(__linux__) && defined(_IO) && !defined(BLKROGET)
->  #define BLKROGET   _IO(0x12, 94) /* Get read-only status (0 = read_write).  */
->  #endif
-> @@ -149,6 +155,9 @@ struct unix_private_data {
->  	pthread_mutex_t bounce_mutex;
->  	pthread_mutex_t stats_mutex;
->  #endif
-> +#ifdef WANT_LOCK_UNIX_FD
-> +	int	lock_flags;
-> +#endif
->  };
->  
->  #define IS_ALIGNED(n, align) ((((uintptr_t) n) & \
-> @@ -897,6 +906,47 @@ int ext2fs_fstat(int fd, ext2fs_struct_stat *buf)
->  #endif
->  }
->  
-> +#ifdef WANT_LOCK_UNIX_FD
-> +static void unix_lock_alarm_handler(int signal, siginfo_t *data, void *p)
-> +{
-> +	/* do nothing, the signal will abort the flock operation */
-> +}
-> +
-> +static int unix_lock_fd(int fd, int flags)
-> +{
-> +	struct sigaction newsa = {
-> +		.sa_flags = SA_SIGINFO,
-> +		.sa_sigaction = unix_lock_alarm_handler,
-> +	};
-> +	struct sigaction oldsa;
-> +	const int operation = (flags & IO_FLAG_EXCLUSIVE) ? LOCK_EX : LOCK_SH;
-> +	int ret;
-> +
-> +	/* wait five seconds for the lock */
-> +	ret = sigaction(SIGALRM, &newsa, &oldsa);
-> +	if (ret)
-> +		return ret;
-> +
-> +	alarm(5);
-> +
-> +	ret = flock(fd, operation);
-> +	if (ret == 0)
-> +		ret = operation;
-> +	else if (errno == EINTR) {
-> +		errno = EWOULDBLOCK;
-> +		ret = -1;
+> Changes in v2:
+> - Instead of adding validation in ext4_find_extent(), detect the invalid
+>   INLINE_DATA + EXTENTS flag combination in ext4_iget() as suggested by
+>   Zhang Yi to avoid redundant checks in the extent lookup path
+> ---
+>  fs/ext4/inode.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 5b7a15db4953..2fef378dbc97 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5348,6 +5348,14 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+>  	}
+>  	ei->i_flags = le32_to_cpu(raw_inode->i_flags);
+>  	ext4_set_inode_flags(inode, true);
+> +	/* Detect invalid flag combination - can't have both inline data and extents */
+> +	if (ext4_test_inode_flag(inode, EXT4_INODE_INLINE_DATA) &&
+> +	    ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)) {
+> +		ext4_error_inode(inode, function, line, 0,
+> +			"inode has both inline data and extents flags");
+> +		ret = -EFSCORRUPTED;
+> +		goto bad_inode;
 > +	}
-> +
-> +	alarm(0);
-> +	sigaction(SIGALRM, &oldsa, NULL);
-> +	return ret;
-> +}
-> +
-> +static void unix_unlock_fd(int fd)
-> +{
-> +	flock(fd, LOCK_UN);
-> +}
-> +#endif
->  
->  static errcode_t unix_open_channel(const char *name, int fd,
->  				   int flags, io_channel *channel,
-> @@ -935,6 +985,16 @@ static errcode_t unix_open_channel(const char *name, int fd,
->  	if (retval)
->  		goto cleanup;
->  
-> +#ifdef WANT_LOCK_UNIX_FD
-> +	if (flags & IO_FLAG_RW) {
-> +		data->lock_flags = unix_lock_fd(fd, flags);
-> +		if (data->lock_flags < 0) {
-> +			retval = errno;
-> +			goto cleanup;
-> +		}
-> +	}
-> +#endif
-> +
->  	strcpy(io->name, name);
->  	io->private_data = data;
->  	io->block_size = 1024;
-> @@ -1200,6 +1260,10 @@ static errcode_t unix_close(io_channel channel)
->  	if (retval2 && !retval)
->  		retval = retval2;
->  
-> +#ifdef WANT_LOCK_UNIX_FD
-> +	if (data->lock_flags)
-> +		unix_unlock_fd(data->dev);
-> +#endif
->  	if (close(data->dev) < 0 && !retval)
->  		retval = errno;
->  	free_cache(data);
-> 
-> 
+>  	inode->i_blocks = ext4_inode_blocks(raw_inode, ei);
+>  	ei->i_file_acl = le32_to_cpu(raw_inode->i_file_acl_lo);
+>  	if (ext4_has_feature_64bit(sb))
+
 
