@@ -1,106 +1,125 @@
-Return-Path: <linux-ext4+bounces-10730-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10731-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3674ABCB664
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 04:04:57 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2545BBCB748
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 04:49:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AD74B34BDE6
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 02:04:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CFD104E9004
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 02:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE95229B2A;
-	Fri, 10 Oct 2025 02:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23E1253954;
+	Fri, 10 Oct 2025 02:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="NTEEm1fF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="elQ/QoLE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f46.google.com (mail-yx1-f46.google.com [74.125.224.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40476288AD
-	for <linux-ext4@vger.kernel.org>; Fri, 10 Oct 2025 02:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CF722D9ED
+	for <linux-ext4@vger.kernel.org>; Fri, 10 Oct 2025 02:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760061892; cv=none; b=N0bxgOYQkfAEq76rx9IJVPy+aUoobSsIB+YGMWYch5bOHxhQmTKBo58rpls6m5D6nee+oLXCGJapZD8RS5DN4k+me7hfpWIB3ilYwb5Umf67NGdG/yFz3d316hJSGjJkW0kJlZdE7JkOoVwfaECEqH4MczyeOMnCKlcpyQY9Ofw=
+	t=1760064527; cv=none; b=ADSjyzpfpuaGz88uY3jAKlA02HcEgYkpt8LV1a0CK0gf4wLHqq0eariOWIN3zenLPju7wW9PkQwWh6+WRhbUoUvalUTWikgPj+ktgK6us39DgIocZvPkTYTdi7K5gGipR8BGfnvSwH8wfMghuW4f5/23YuPlhdSl5Ll0EJdwlCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760061892; c=relaxed/simple;
-	bh=mSVicwHPNwBYbc5eIDs/6z7/izHRfWM3fLKw/ysKU6o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AD+zL3YaD7vCS8etZRir5D/tXzRh2NXyp8mEop36cdjGZMj4T36NDfiKEfoGKd963Qmx+TqMchXS74hQFRgjA5AomMc8d4oHDhwCZTPXAg2uXufkD9wyTj+tpHUW8iX9mPIEyNke/nVqTVDqP9jZKCCEMHpKLPWOmyxncnY/zMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=NTEEm1fF; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-118-62.bstnma.fios.verizon.net [173.48.118.62])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 59A24Ala032648
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 9 Oct 2025 22:04:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1760061858; bh=+i9CZvHErpX1gMxpBo/MZPquUnlVUXMm2JZ6XHVAh6U=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=NTEEm1fF4+b4oTPLfR+Olw6dJMTie0wWcphlTqcCpqkDbhw7EWTo1YRG0kJi3tNUa
-	 rgibmZnB8b34ZCzBwgkEKRfWku1ekXeTnzobuHj/lBw27mXbc6KuLa4JWh7ZsIYTyt
-	 aS6lXn486jRIcgGBRUQXoM7BsDUWo+lQHEq3y4b5drmRYQhtCxzPP1qTBOseSub+bg
-	 wiNOHo8pYZvXUGOH5ODlBFjueImhSemtjSjw3YD12VpIvc66i1Dg/HKu1e8/Ph1Sfl
-	 Scw0Q4j2zZCDGbXI1tHWV8Ar81pASC9f92Q/9ZfNyMc/wxgc+6oWH416IdouJSxhvv
-	 vktZhk0HaeRqg==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 66A832E00D9; Thu, 09 Oct 2025 22:04:10 -0400 (EDT)
-Date: Thu, 9 Oct 2025 22:04:10 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Matt Fleming <matt@readmodwrite.com>
-Cc: adilger.kernel@dilger.ca, jack@suse.cz, kernel-team@cloudflare.com,
-        libaokun1@huawei.com, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        willy@infradead.org
-Subject: Re: ext4 writeback performance issue in 6.12
-Message-ID: <20251010020410.GE354523@mit.edu>
-References: <20251006115615.2289526-1-matt@readmodwrite.com>
- <20251008150705.4090434-1-matt@readmodwrite.com>
- <20251008162655.GB502448@mit.edu>
- <20251009102259.529708-1-matt@readmodwrite.com>
- <20251009175254.d6djmzn3vk726pao@matt-Precision-5490>
+	s=arc-20240116; t=1760064527; c=relaxed/simple;
+	bh=SUvjTYrAKggs3w1tKlxCJydt04WX0hyij5ZVnNtO2rY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B1NdutBP80nBv+hXo/214Q8J4H2MAn8R7/4NECrTsHfMnixHaYtzn7TBfcRPatf1oH1nMVevoWJReuS7plBWgkYVm/0Pv/VcdS5VkMToXafCrxP243/luBayTfox51C94Bn1dQ8lciI7TlRLqDNbLwhi82mQTVyFZXSia/jMuo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=elQ/QoLE; arc=none smtp.client-ip=74.125.224.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yx1-f46.google.com with SMTP id 956f58d0204a3-633be3be1e6so2501658d50.1
+        for <linux-ext4@vger.kernel.org>; Thu, 09 Oct 2025 19:48:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760064523; x=1760669323; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SUvjTYrAKggs3w1tKlxCJydt04WX0hyij5ZVnNtO2rY=;
+        b=elQ/QoLEl07oguGQwVeaLuPvx9pg+ZF3HObzItQAr16R2PwjJJ/BJhHlsBagHWRo1E
+         q4f4I5TainPicRHfP4mxi/QA8fweTGrjQlrXERSkdlr6KgU4ZilfiRp9i5MkNzxdmJFE
+         GqtJBFbDrYJM4r8+ph0NGbgZ2YQn4dQX2PL+zpJpSkH6dn2eia2X9CYfK8q38r3RGNos
+         FYWwKOjsxbNPoX+OU5D0/LZM5lIAyQ56jv8iMtnZPsc8rn7rN4UBS2EkrASRagSQ6iHh
+         M0HiA7o+kBUytakpqhUfCayQ9hhTHxglANqJie8IdxhcFjjr6XDM3XOMyO0pRXWHPZL7
+         uJTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760064523; x=1760669323;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SUvjTYrAKggs3w1tKlxCJydt04WX0hyij5ZVnNtO2rY=;
+        b=tB2N71dA1njZGwYPUTB/vja2xCwLrZXq2/jsGPph4xEuXogdaCF6qc5liWhG3rbC0V
+         i2TEpfRqg9s118+mLM76VD8w1NbmRG8JCxBwrpw5F46okVUbCzt5/CdhnVwotDyJsWWd
+         9joBiD28Tn35JxISIuCikNA51q+ADW86H8NSPCNCqguuWjw5InG2CcQpTl0sTzoCIrXT
+         ZW8Xjc4wsk9+xosmj8tqTtZXgw8Vag8vz2MhpbA7pMxka5boOERc9A802QxMN0mHwB+4
+         s/7dwb1xHbKH/5C8NoSZHwMQfdvPjEGuKoptMZEYfAsqyiyxPo8CY+W5nmmWvX65t4Q/
+         n2JA==
+X-Forwarded-Encrypted: i=1; AJvYcCWBGoCAW93xwOS+eWJNVrafEMOPt24ToAFx1izguqo+7OXmWC5rZmg4dxi4KllUihqBrgR2UTEJYcxl@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxrBQbC0kX4iO6RqMinrTCulhQEjdHjVoTwAMwlLZopjuhNEQg
+	w72sCnekpFSvOsqQ13TXl4CYplB3o1pazhKZh5a5OHfWwLljNwhSe1U9HH9NqNhkotECGPvUbx/
+	yQPdG6lzqDiXiDrgA4oeDo8HQOGfh/L8=
+X-Gm-Gg: ASbGnctCZN5E3UP9P8qnx65UdLM45ykrziCMimpo/NSLqkvRx/CdI4SL+dw/LTz6CM0
+	TPjdGee0yRjr9nyVxAuDAuBlOgQnwZmbcagaFTkXuZJmsw/P9jXuS76ua8ujhdx+4R2qUAJ4HX+
+	9hWEUs/qujDFlPgtSk54PJHieMBgzQ8DmpesKu9ReQng19Z76Xn4au7Gu3Rg2U8rb4mDzYHUO3i
+	20iJIQ/xs2WbDvMaQWboEBGHmdxur2sCq9kV8LV8g==
+X-Google-Smtp-Source: AGHT+IE/ruZR0Nl+gZjd7KSfaZ+4Yt5azf8Eoz6teA2EZ5XcCIQ6BBXF8AxOCZshaSTrV+l7WDzDAJYCcqNIJ+IMELc=
+X-Received: by 2002:a53:cd0e:0:b0:635:4ed0:571e with SMTP id
+ 956f58d0204a3-63ccc4fd4b5mr7697871d50.22.1760064522649; Thu, 09 Oct 2025
+ 19:48:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251009175254.d6djmzn3vk726pao@matt-Precision-5490>
+References: <20250913003842.41944-1-safinaskar@gmail.com> <20250913003842.41944-22-safinaskar@gmail.com>
+ <a079375f-38c2-4f38-b2be-57737084fde8@kernel.org>
+In-Reply-To: <a079375f-38c2-4f38-b2be-57737084fde8@kernel.org>
+From: Askar Safin <safinaskar@gmail.com>
+Date: Fri, 10 Oct 2025 05:48:06 +0300
+X-Gm-Features: AS18NWC-iakvkxLfUlO1LRxakg0fg4KV7Trw_hsIF2wxGpnmpWZvHTCQ7Z3GaoE
+Message-ID: <CAPnZJGDK08eDWaMTmvVQwkAAThUvgB0XgAapqqV4_ZmWeay-iw@mail.gmail.com>
+Subject: Re: [PATCH RESEND 21/62] init: remove all mentions of root=/dev/ram*
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, 
+	Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Aleksa Sarai <cyphar@cyphar.com>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
+	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>, 
+	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>, 
+	Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, 
+	Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	"Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, 
+	devicetree@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 09, 2025 at 06:52:54PM +0100, Matt Fleming wrote:
-> On Thu, Oct 09, 2025 at 11:22:59AM +0100, Matt Fleming wrote:
-> > 
-> > Thanks Ted. I'm going to try disabling the stripe parameter now. I'll report
-> > back shortly.
-> 
-> Initial results look very good. No blocked tasks so far and the mb
-> allocator latency is much improved.
+On Sun, Sep 14, 2025 at 1:06=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.or=
+g> wrote:
+> Please wrap commit message according to Linux coding style / submission
+I will do this for v2
 
-OK, so that definitely confirms the theory of what's going on.  There
-have been some changes in the latest kernel that *might* address what
-you're seeing.  The challenge is that we don't have a easy reproducer
-that doesn't involve using a large file system running a production
-workload.  If you can only run this on a production server, it's
-probably not fair to ask you to try running 6.17.1 and see if it shows
-up there.
+> To me your patchset is way too big bomb, too difficult to review. You
+v2 will be small.
 
-I do think in the long term, we need to augment thy buddy bitmap in
-fs/ext4/mballoc.c with some data structure which tracks free space in
-units of stripe blocks, so we can do block allocation in a much more
-efficient way for RAID systems.  The simplest way would be to add a
-counter of the number of aligned free stripes in the group info
-structure, plus a bit array which indicates which aligned stripes are
-free.  This is not just to improve stripe allocation, but also when
-doing sub-stripe allocation, we preferentially try allocating out of
-stripes which are already partially in use.
-
-Out of curiosity, are you using the stride parameter because you're
-using a SSD-based RAID array, or a HDD-based RAID array?
-
-      		       	      	   	     	  - Ted
+--
+Askar Safin
 
