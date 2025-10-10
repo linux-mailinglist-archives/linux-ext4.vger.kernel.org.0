@@ -1,93 +1,92 @@
-Return-Path: <linux-ext4+bounces-10757-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10758-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DC9EBCD532
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 15:47:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8032BCD54D
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 15:49:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 114111898DB7
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 13:48:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 748354220A4
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 13:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B38F22F3C3B;
-	Fri, 10 Oct 2025 13:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 462DF2F3C32;
+	Fri, 10 Oct 2025 13:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qyjV93bF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FXIPxXvm";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qyjV93bF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FXIPxXvm"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pXY51EHG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0+AtvTuZ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Sg+3iEnw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UUqxNBxW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81BA8288535
-	for <linux-ext4@vger.kernel.org>; Fri, 10 Oct 2025 13:47:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2163288C25
+	for <linux-ext4@vger.kernel.org>; Fri, 10 Oct 2025 13:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760104055; cv=none; b=d5qekQeLN0m1l/jFerxQMbERc1UAOn4OEH6TbcWaB6rMpGGZWhHNacjN6c2meoen8GIq3gvYVN7QwYEgzZ1KdAQN2F/eImIEjVra4Kg3HKmoPcvJH2IyQM9S4arBRbLoUV314e/SDCx/N5yvOqnU+FIVZYKHW/9inDJAc5bvGN0=
+	t=1760104133; cv=none; b=SGcmcvHnmzwiUpyfXY84+DSlOXwZ9RQU9TviulfZIYi2zat7GWWD5tfKHfIS/fZimwZuSQKjot+EKA540SRTpfN5Qg8HdjjH6M45jLOxYRkayPEE8k5E9pGgCDALNS5iUXCdYuTx7nfz4RHdUEvaZsJIix8XinHdMJDOP0mRFRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760104055; c=relaxed/simple;
-	bh=cL1HPOXOoRQqAW+trFcBYQam/s1EVUwH+wJ87rh29Ro=;
+	s=arc-20240116; t=1760104133; c=relaxed/simple;
+	bh=QsAwv6Nn2tamITT/ImGiQJewV6cUmybG5oeFODYldbo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sBFuktATV7hsozJj0nkpi9GhOp+/r017bUQvjNIYAeYbBXpoY4MyHbAix9VyrouncNXJGGNioNhZVaPIC2u+tLBQRvSbDGPrC3laOTjq37xxJGRoLHlQxKkc+zpGagBub1+yWffLlVXgJjXREHRCkcgcIng1NFSnp6Wt1L5WkOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qyjV93bF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FXIPxXvm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qyjV93bF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FXIPxXvm; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bv8A/WnMiRD3UFR32biMVxCKTs/1DCU6xna5p7UNBOukIo8UOLO0vNbiLoQq3mXZF2bMrKNUB6r/rdWfdwkeuJMzwm8o6+LCtIJ2p4ehLIqmJ6C38ZaFHMSbe0XCDuzXkYSXYVGEqth2L1ivD8SLIOA6W6HzRNsgTaLr+0meK78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pXY51EHG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0+AtvTuZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Sg+3iEnw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UUqxNBxW; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B1CA421F2A;
-	Fri, 10 Oct 2025 13:47:31 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EE7291F397;
+	Fri, 10 Oct 2025 13:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760104051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1760104130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sufIZEkjBSCUUgqxs7dtAgeGm55696GDPH5Hgw3fgYQ=;
-	b=qyjV93bFgQlwTMgKr4frsx/E5m1C2OSypShgH0rutvL7HIHgQFW3OubC0Lzr+N7EbpVufZ
-	uf8qu3WuMkB7Iq1lcLfEV9dB6SkvrtXDtWA4aPum7pnPDOInwdUDqwGnbD4KnQgKZ7RpFQ
-	vZ1Nzn2NOCm/WzpQSvpKBw7eiik/cN4=
+	bh=cv/PTISQGEuORcVGM2HqO43chsYeH6RDeKCSF0LXeJU=;
+	b=pXY51EHGrWXlDBzn6Sdx/gAL2pqRRSQkrinUySxUyzz7JyPNKbgoXZV8LYqVDs9crw/C81
+	K4pkJR5rRDxnKrRD3sLRyBwYOopbe+YuyPkvyVnKJVxbhi9WwlEElFyLsaLPOcAbEoOhWV
+	TlqSZhSb9GRfjKpRsOhKpznKpataLus=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760104051;
+	s=susede2_ed25519; t=1760104130;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sufIZEkjBSCUUgqxs7dtAgeGm55696GDPH5Hgw3fgYQ=;
-	b=FXIPxXvmgwWYErOpREz6leTDKWtSeZ42OMsEq1KUQAir39bv0T10EQFd2QegDpW/3hFVUG
-	d0ctEbF/QuROzuBA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qyjV93bF;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FXIPxXvm
+	bh=cv/PTISQGEuORcVGM2HqO43chsYeH6RDeKCSF0LXeJU=;
+	b=0+AtvTuZZ9BAW1TRnKhaIVd8qZakEnJSF8h0LILf8nce3HrOfFiLEjQSH5bFNENQg1Colg
+	0Qoz4EwfYFIyEGDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760104051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1760104129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sufIZEkjBSCUUgqxs7dtAgeGm55696GDPH5Hgw3fgYQ=;
-	b=qyjV93bFgQlwTMgKr4frsx/E5m1C2OSypShgH0rutvL7HIHgQFW3OubC0Lzr+N7EbpVufZ
-	uf8qu3WuMkB7Iq1lcLfEV9dB6SkvrtXDtWA4aPum7pnPDOInwdUDqwGnbD4KnQgKZ7RpFQ
-	vZ1Nzn2NOCm/WzpQSvpKBw7eiik/cN4=
+	bh=cv/PTISQGEuORcVGM2HqO43chsYeH6RDeKCSF0LXeJU=;
+	b=Sg+3iEnwb0jNqqaNsiynd62OHa/4soMd6oFnBJjmyBEfIH1azh78+LaaYlq4+hK1iIdknp
+	aF2PyrLxDvfbM1UNfPaO0FZvaOFeQLntEsKiAGsMhJULmUXxXpcz0dme7/s/Oz4HsDyUlu
+	oXx5WrD5CaETstRIECrRhIOg29OsBVQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760104051;
+	s=susede2_ed25519; t=1760104129;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sufIZEkjBSCUUgqxs7dtAgeGm55696GDPH5Hgw3fgYQ=;
-	b=FXIPxXvmgwWYErOpREz6leTDKWtSeZ42OMsEq1KUQAir39bv0T10EQFd2QegDpW/3hFVUG
-	d0ctEbF/QuROzuBA==
+	bh=cv/PTISQGEuORcVGM2HqO43chsYeH6RDeKCSF0LXeJU=;
+	b=UUqxNBxWa1GYEVE5do+5K2Q0Zlg1CHYIRJmrzCc/ghkWHq/jvbGhPFwUwI3KTqxcp2kQQt
+	cm15y/kYg6kqcfCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E9DE1375D;
-	Fri, 10 Oct 2025 13:47:31 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C7F801375D;
+	Fri, 10 Oct 2025 13:48:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id K4nJInMO6WivbgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 10 Oct 2025 13:47:31 +0000
+	id UL/cMMEO6WiEcAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 10 Oct 2025 13:48:49 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id D5EADA0A58; Fri, 10 Oct 2025 15:47:30 +0200 (CEST)
-Date: Fri, 10 Oct 2025 15:47:30 +0200
+	id 32007A0A58; Fri, 10 Oct 2025 15:48:49 +0200 (CEST)
+Date: Fri, 10 Oct 2025 15:48:49 +0200
 From: Jan Kara <jack@suse.cz>
 To: Mateusz Guzik <mjguzik@gmail.com>
 Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz, 
@@ -95,11 +94,11 @@ Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
 	kernel-team@fb.com, amir73il@gmail.com, linux-btrfs@vger.kernel.org, 
 	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
 	linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v7 01/14] fs: move wait_on_inode() from writeback.h to
- fs.h
-Message-ID: <ftmhmoslzb6h3z2w4fuumvqcwmis5xeqep5nlgbhdklrcwzok4@re6ar7llo7ol>
+Subject: Re: [PATCH v7 02/14] fs: spell out fenced ->i_state accesses with
+ explicit smp_wmb/smp_rmb
+Message-ID: <qssdmjcp4fh2op7en3qinn4l24hivhf2vfuve674fvftcvrbfp@sf2lfrpx7cmo>
 References: <20251009075929.1203950-1-mjguzik@gmail.com>
- <20251009075929.1203950-2-mjguzik@gmail.com>
+ <20251009075929.1203950-3-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -108,102 +107,87 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251009075929.1203950-2-mjguzik@gmail.com>
-X-Rspamd-Queue-Id: B1CA421F2A
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
+In-Reply-To: <20251009075929.1203950-3-mjguzik@gmail.com>
+X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	URIBL_BLOCKED(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim];
-	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,suse.cz,vger.kernel.org,toxicpanda.com,fb.com,gmail.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,suse.cz,vger.kernel.org,toxicpanda.com,fb.com,gmail.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim]
-X-Rspamd-Action: no action
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email]
 X-Spam-Flag: NO
-X-Spam-Score: -4.01
+X-Spam-Score: -3.80
 X-Spam-Level: 
 
-On Thu 09-10-25 09:59:15, Mateusz Guzik wrote:
-> The only consumer outside of fs/inode.c is gfs2 and it already includes
-> fs.h in the relevant file.
+On Thu 09-10-25 09:59:16, Mateusz Guzik wrote:
+> The incomming helpers don't ship with _release/_acquire variants, for
+> the time being anyway.
 > 
 > Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
 
-Fair. Feel free to add:
+Looks good. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  include/linux/fs.h        | 10 ++++++++++
->  include/linux/writeback.h | 11 -----------
->  2 files changed, 10 insertions(+), 11 deletions(-)
+>  fs/fs-writeback.c           | 5 +++--
+>  include/linux/backing-dev.h | 5 +++--
+>  2 files changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index ac62b9d10b00..b35014ba681b 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -949,6 +949,16 @@ static inline void inode_fake_hash(struct inode *inode)
->  	hlist_add_fake(&inode->i_hash);
->  }
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index 2b35e80037fe..9cda19a40ca2 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -476,10 +476,11 @@ static bool inode_do_switch_wbs(struct inode *inode,
+>  	switched = true;
+>  skip_switch:
+>  	/*
+> -	 * Paired with load_acquire in unlocked_inode_to_wb_begin() and
+> +	 * Paired with an acquire fence in unlocked_inode_to_wb_begin() and
+>  	 * ensures that the new wb is visible if they see !I_WB_SWITCH.
+>  	 */
+> -	smp_store_release(&inode->i_state, inode->i_state & ~I_WB_SWITCH);
+> +	smp_wmb();
+> +	inode->i_state &= ~I_WB_SWITCH;
 >  
-> +static inline void wait_on_inode(struct inode *inode)
-> +{
-> +	wait_var_event(inode_state_wait_address(inode, __I_NEW),
-> +		       !(READ_ONCE(inode->i_state) & I_NEW));
-> +	/*
-> +	 * Pairs with routines clearing I_NEW.
-> +	 */
+>  	xa_unlock_irq(&mapping->i_pages);
+>  	spin_unlock(&inode->i_lock);
+> diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
+> index 3e64f14739dd..065cba5dc111 100644
+> --- a/include/linux/backing-dev.h
+> +++ b/include/linux/backing-dev.h
+> @@ -277,10 +277,11 @@ unlocked_inode_to_wb_begin(struct inode *inode, struct wb_lock_cookie *cookie)
+>  	rcu_read_lock();
+>  
+>  	/*
+> -	 * Paired with store_release in inode_switch_wbs_work_fn() and
+> +	 * Paired with a release fence in inode_do_switch_wbs() and
+>  	 * ensures that we see the new wb if we see cleared I_WB_SWITCH.
+>  	 */
+> -	cookie->locked = smp_load_acquire(&inode->i_state) & I_WB_SWITCH;
+> +	cookie->locked = inode->i_state & I_WB_SWITCH;
 > +	smp_rmb();
-> +}
-> +
->  /*
->   * inode->i_rwsem nesting subclasses for the lock validator:
->   *
-> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-> index e1e1231a6830..06195c2a535b 100644
-> --- a/include/linux/writeback.h
-> +++ b/include/linux/writeback.h
-> @@ -189,17 +189,6 @@ void wakeup_flusher_threads_bdi(struct backing_dev_info *bdi,
->  void inode_wait_for_writeback(struct inode *inode);
->  void inode_io_list_del(struct inode *inode);
 >  
-> -/* writeback.h requires fs.h; it, too, is not included from here. */
-> -static inline void wait_on_inode(struct inode *inode)
-> -{
-> -	wait_var_event(inode_state_wait_address(inode, __I_NEW),
-> -		       !(READ_ONCE(inode->i_state) & I_NEW));
-> -	/*
-> -	 * Pairs with routines clearing I_NEW.
-> -	 */
-> -	smp_rmb();
-> -}
-> -
->  #ifdef CONFIG_CGROUP_WRITEBACK
->  
->  #include <linux/cgroup.h>
+>  	if (unlikely(cookie->locked))
+>  		xa_lock_irqsave(&inode->i_mapping->i_pages, cookie->flags);
 > -- 
 > 2.34.1
 > 
