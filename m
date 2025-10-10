@@ -1,106 +1,79 @@
-Return-Path: <linux-ext4+bounces-10777-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10778-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20720BCE123
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 19:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFFA5BCE400
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 20:31:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0D81189CF6E
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 17:24:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3C0519A39C2
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 18:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B107421D590;
-	Fri, 10 Oct 2025 17:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7744C2FE05B;
+	Fri, 10 Oct 2025 18:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1OxWOKu+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1NhIdrOQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1OxWOKu+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1NhIdrOQ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QRqYpj93"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B7321ABAC
-	for <linux-ext4@vger.kernel.org>; Fri, 10 Oct 2025 17:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD8829B205;
+	Fri, 10 Oct 2025 18:31:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760117039; cv=none; b=gwbXx3StjuJ5X0WoejOSiqcwtZUPvMZbfIImDJm9KzTsnslyphyeZC1l4kzLb/cMFWwTFcOvY54FZjft4Nbmy5/VtWATS7Jaz1qEF4WBi8gzit7shCizBywTbXJGwwga09wi5XvdSB8DQrYRNNB0DMwU1bVRqlXf5eQHesmJAxI=
+	t=1760121078; cv=none; b=g4C8vhOG7qymyu5v30KLSMQOltm40G6Glz/zqk9p+bWe/m499LU+G7xHT81Zk3oymWzMBHP2j2RIGt7xsXQh5Jj7NDaMiTwCobndtOvfoDP1VV1tqYn7tlGcAW0U5K4iPdqDKl1YslQPd+gCTbFDt08+zQB+57Wsi5c/XQdU34g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760117039; c=relaxed/simple;
-	bh=khQBrh7iIFxCcZodsB1RIMfB8GCvKXdrxqcMvButon4=;
+	s=arc-20240116; t=1760121078; c=relaxed/simple;
+	bh=QlgFLsM67oJyv4smbMUCo2bF9B4WOQ+VhwaUGLwWeH0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iJtqRYF4wbrDqeT+6na9EDNZKOQO1UlQM4hGqUWvTHUr24b6EUszB2/51+J1q2zLobeUXjNTHWy8inJazPYF0MouZSeKiQYFmRoFqd4fJ9WzQcaGpInwEWTNhqAtZzKmHU0I7hAXzw1y5zR7cFP4K/00+Mxv0jkRTc78FqJqkNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1OxWOKu+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1NhIdrOQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1OxWOKu+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1NhIdrOQ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 484451F84E;
-	Fri, 10 Oct 2025 17:23:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760117035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2r0Y2zd9Y9wO+ftaMPA4yxgNkyWpqDr7EAewUvgQdZo=;
-	b=1OxWOKu+1ALG/J2FOf3zNc4dIfSe5n3cFKZlEFvi8wzRKCJamp2OLr1ls2o6Mi7n2Rlxw/
-	o0F99edfgIDLRHJl6VK6VL15Nzhn5BJGreohyScK9NJzm3Z+zbW3x1ZuXd8edgdv8Qz68r
-	DX32lcTQPzk93xmS7MaGJjmV0Ymjopo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760117035;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2r0Y2zd9Y9wO+ftaMPA4yxgNkyWpqDr7EAewUvgQdZo=;
-	b=1NhIdrOQMTtPb/5quhU+GH/0xYy4HX884CUOsPZLs8zSR7hY2snrpLbsimaMjzynUTn8Zf
-	svSfoQlR6mZESOBA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1OxWOKu+;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1NhIdrOQ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760117035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2r0Y2zd9Y9wO+ftaMPA4yxgNkyWpqDr7EAewUvgQdZo=;
-	b=1OxWOKu+1ALG/J2FOf3zNc4dIfSe5n3cFKZlEFvi8wzRKCJamp2OLr1ls2o6Mi7n2Rlxw/
-	o0F99edfgIDLRHJl6VK6VL15Nzhn5BJGreohyScK9NJzm3Z+zbW3x1ZuXd8edgdv8Qz68r
-	DX32lcTQPzk93xmS7MaGJjmV0Ymjopo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760117035;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2r0Y2zd9Y9wO+ftaMPA4yxgNkyWpqDr7EAewUvgQdZo=;
-	b=1NhIdrOQMTtPb/5quhU+GH/0xYy4HX884CUOsPZLs8zSR7hY2snrpLbsimaMjzynUTn8Zf
-	svSfoQlR6mZESOBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B22613A40;
-	Fri, 10 Oct 2025 17:23:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id j0prDitB6WjGOwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 10 Oct 2025 17:23:55 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CA414A0A58; Fri, 10 Oct 2025 19:23:54 +0200 (CEST)
-Date: Fri, 10 Oct 2025 19:23:54 +0200
-From: Jan Kara <jack@suse.cz>
-To: Matt Fleming <matt@readmodwrite.com>
-Cc: Jan Kara <jack@suse.cz>, adilger.kernel@dilger.ca, 
-	kernel-team@cloudflare.com, libaokun1@huawei.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu, willy@infradead.org
-Subject: Re: ext4 writeback performance issue in 6.12
-Message-ID: <ok5xj3zppjeg7n6ltuv4gnd5bj5adyd6w5pbvaaaenz7oyb2sz@653qwjse63x7>
-References: <20251006115615.2289526-1-matt@readmodwrite.com>
- <20251008150705.4090434-1-matt@readmodwrite.com>
- <2nuegl4wtmu3lkprcomfeluii77ofrmkn4ukvbx2gesnqlsflk@yx466sbd7bni>
- <20251009101748.529277-1-matt@readmodwrite.com>
- <ytvfwystemt45b32upwcwdtpl4l32ym6qtclll55kyyllayqsh@g4kakuary2qw>
- <20251009172153.kx72mao26tc7v2yu@matt-Precision-5490>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SuobRBd88OX0lF8BJh0rihcPhJNW3pNla+dvyLbEg9Pxuaj756Il/y1CHJjaRDnSN8D6EqKXdaP8kSFeBLKxcRPdrSyZOOSDnYET3TQ12BDES+ho8lDls3xwd4GIPUSzC+KuRYvYTfY9sKi/kxDzZ9fiU8Or9RT85O8fXcbYu6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QRqYpj93; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1760121076; x=1791657076;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QlgFLsM67oJyv4smbMUCo2bF9B4WOQ+VhwaUGLwWeH0=;
+  b=QRqYpj93Hb8sepNw+NQf8a12RchX8z81MpgI5q6pKjQ6l5n9mAHdSMZ1
+   t5BYjG9ZObocBeNYPIZFRpsvaCvgmtANFo36HPmNGYI9GQP+1gnE48sZV
+   EB58i75xNLUmA/TyZdaRRn7RYA9ZKpa+OzwahtA8WqA5hqR2K9BYvIWpB
+   dSqx5fLvNU6Bo3B4c3SLmG54CI7UC0LiaQXNvGWNmcEZBNzzcKcUdP+YU
+   mATqL19vPdeRCLpMvhZ6Td4/Edg9zipGUhLQdbxXTGldlgzBhyB/2cEBE
+   UtRdhzJFPST4nY3RE3y/0AInBtmwxwYKPFskXNx6pYY/5+bZqoxu+AW23
+   A==;
+X-CSE-ConnectionGUID: Fv1WNyYWRCeOSr3Yub2mQg==
+X-CSE-MsgGUID: 531/reSWQSSa/X83MeMhdg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11578"; a="64966090"
+X-IronPort-AV: E=Sophos;i="6.19,219,1754982000"; 
+   d="scan'208";a="64966090"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2025 11:31:13 -0700
+X-CSE-ConnectionGUID: 7qHq3mJMQueTtryl/0Qa6A==
+X-CSE-MsgGUID: Z1/skLZmSmqM8i/EOmStNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,219,1754982000"; 
+   d="scan'208";a="185062413"
+Received: from lkp-server01.sh.intel.com (HELO 6a630e8620ab) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 10 Oct 2025 11:31:11 -0700
+Received: from kbuild by 6a630e8620ab with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1v7HtU-00033h-2k;
+	Fri, 10 Oct 2025 18:31:08 +0000
+Date: Sat, 11 Oct 2025 02:31:02 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ranganath V N <vnranganath.20@gmail.com>, tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	skhan@linuxfoundation.org, david.hunter.linux@gmail.com,
+	khalid@kernel.org, Ranganath V N <vnranganath.20@gmail.com>
+Subject: Re: [PATCH] fs: ext4: fix uninitialized symbols
+Message-ID: <202510110215.0tTIOF83-lkp@intel.com>
+References: <20251008171614.12129-1-vnranganath.20@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -109,58 +82,82 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251009172153.kx72mao26tc7v2yu@matt-Precision-5490>
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 484451F84E
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MISSING_XM_UA(0.00)[];
-	ARC_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.01
+In-Reply-To: <20251008171614.12129-1-vnranganath.20@gmail.com>
 
-On Thu 09-10-25 18:21:53, Matt Fleming wrote:
-> On Thu, Oct 09, 2025 at 02:29:07PM +0200, Jan Kara wrote:
-> > 
-> > OK, so even if we reduce the somewhat pointless CPU load in the allocator
-> > you aren't going to see substantial increase in your writeback throughput.
-> > Reducing the CPU load is obviously a worthy goal but I'm not sure if that's
-> > your motivation or something else that I'm missing :).
->  
-> I'm not following. If you reduce the time it takes to allocate blocks
-> during writeback, why will that not improve writeback throughput?
+Hi Ranganath,
 
-Maybe I misunderstood what you wrote about your profiles but you wrote that
-we were spending about 4% of CPU time in the block allocation code. Even if
-we get that close to 0%, you'd still gain only 4%. Or am I misunderstanding
-something?
+kernel test robot noticed the following build warnings:
 
-								Honza
+[auto build test WARNING on tytso-ext4/dev]
+[also build test WARNING on linus/master v6.17 next-20251010]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Ranganath-V-N/fs-ext4-fix-uninitialized-symbols/20251010-065232
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+patch link:    https://lore.kernel.org/r/20251008171614.12129-1-vnranganath.20%40gmail.com
+patch subject: [PATCH] fs: ext4: fix uninitialized symbols
+config: sparc-randconfig-002-20251010 (https://download.01.org/0day-ci/archive/20251011/202510110215.0tTIOF83-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 8.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251011/202510110215.0tTIOF83-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202510110215.0tTIOF83-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/uapi/linux/posix_types.h:5,
+                    from include/uapi/linux/types.h:14,
+                    from include/linux/types.h:6,
+                    from include/linux/kasan-checks.h:5,
+                    from include/asm-generic/rwonce.h:26,
+                    from ./arch/sparc/include/generated/asm/rwonce.h:1,
+                    from include/linux/compiler.h:382,
+                    from arch/sparc/include/asm/bug.h:6,
+                    from include/linux/bug.h:5,
+                    from include/linux/vfsdebug.h:5,
+                    from include/linux/fs.h:5,
+                    from fs/ext4/inode.c:22:
+   fs/ext4/inode.c: In function 'ext4_map_blocks_atomic_write_slow':
+>> include/linux/stddef.h:8:14: warning: initialization of 'ext4_fsblk_t' {aka 'long long unsigned int'} from 'void *' makes integer from pointer without a cast [-Wint-conversion]
+    #define NULL ((void *)0)
+                 ^
+   fs/ext4/inode.c:3547:27: note: in expansion of macro 'NULL'
+     ext4_fsblk_t next_pblk = NULL;
+                              ^~~~
+--
+   In file included from include/uapi/linux/posix_types.h:5,
+                    from include/uapi/linux/types.h:14,
+                    from include/linux/types.h:6,
+                    from include/linux/kasan-checks.h:5,
+                    from include/asm-generic/rwonce.h:26,
+                    from arch/sparc/include/generated/asm/rwonce.h:1,
+                    from include/linux/compiler.h:382,
+                    from arch/sparc/include/asm/bug.h:6,
+                    from include/linux/bug.h:5,
+                    from include/linux/vfsdebug.h:5,
+                    from include/linux/fs.h:5,
+                    from inode.c:22:
+   inode.c: In function 'ext4_map_blocks_atomic_write_slow':
+>> include/linux/stddef.h:8:14: warning: initialization of 'ext4_fsblk_t' {aka 'long long unsigned int'} from 'void *' makes integer from pointer without a cast [-Wint-conversion]
+    #define NULL ((void *)0)
+                 ^
+   inode.c:3547:27: note: in expansion of macro 'NULL'
+     ext4_fsblk_t next_pblk = NULL;
+                              ^~~~
+
+
+vim +8 include/linux/stddef.h
+
+^1da177e4c3f41 Linus Torvalds   2005-04-16  6  
+^1da177e4c3f41 Linus Torvalds   2005-04-16  7  #undef NULL
+^1da177e4c3f41 Linus Torvalds   2005-04-16 @8  #define NULL ((void *)0)
+6e218287432472 Richard Knutsson 2006-09-30  9  
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
