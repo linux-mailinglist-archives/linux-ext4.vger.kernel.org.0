@@ -1,90 +1,67 @@
-Return-Path: <linux-ext4+bounces-10729-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10730-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED38BCA6F9
-	for <lists+linux-ext4@lfdr.de>; Thu, 09 Oct 2025 19:53:17 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3674ABCB664
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 04:04:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 146984FB13A
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Oct 2025 17:53:11 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AD74B34BDE6
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 02:04:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D6051E2614;
-	Thu,  9 Oct 2025 17:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE95229B2A;
+	Fri, 10 Oct 2025 02:04:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b="UYxA8Kp2"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="NTEEm1fF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F07248F64
-	for <linux-ext4@vger.kernel.org>; Thu,  9 Oct 2025 17:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40476288AD
+	for <linux-ext4@vger.kernel.org>; Fri, 10 Oct 2025 02:04:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760032379; cv=none; b=ltZhyp/uYVg+WrTQD4itceialvxm63+62yZNWI5BUSUZf0/bCiEUYyoJX7HI2rXl7M90lKlskjkwX7MEWd7X1oSRbUJqJqSKdYlyrgn/bam3bK4bLV1Ap8Wcg08rfNGkpA2xRn1620oVxu3BKerOwPxjWS/3hl2OO8vlGRYP9WM=
+	t=1760061892; cv=none; b=N0bxgOYQkfAEq76rx9IJVPy+aUoobSsIB+YGMWYch5bOHxhQmTKBo58rpls6m5D6nee+oLXCGJapZD8RS5DN4k+me7hfpWIB3ilYwb5Umf67NGdG/yFz3d316hJSGjJkW0kJlZdE7JkOoVwfaECEqH4MczyeOMnCKlcpyQY9Ofw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760032379; c=relaxed/simple;
-	bh=ebOvcIfmi3GafyZIz6Mk3JkcM4lI40dZoDVr0qN254M=;
+	s=arc-20240116; t=1760061892; c=relaxed/simple;
+	bh=mSVicwHPNwBYbc5eIDs/6z7/izHRfWM3fLKw/ysKU6o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZEpvalhvmfSI0dZzVBI9UushKawF81/+spdCXUZRWbVx8D7Jobgkh54R0OOWZbIiViV3x5oF23iQ04w3YXiMpPb5K922czHQ2du48zDNULAXRNjUUPEmjZ37pMOkP4TPthiTPa43LqGlmOQj66hUVxqoRmKLBvulek6B9rdC9AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b=UYxA8Kp2; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=readmodwrite.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3ee130237a8so1166330f8f.0
-        for <linux-ext4@vger.kernel.org>; Thu, 09 Oct 2025 10:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=readmodwrite-com.20230601.gappssmtp.com; s=20230601; t=1760032376; x=1760637176; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BJOsN41yoa3YyKSJ9TTkHzxgmGK8HIKNRuuL8EXcrYo=;
-        b=UYxA8Kp2JwGCpnXHTTdtWeghWv3lgRedYwTpgLxsS7XazmpAyt5RSNjMyjp55zgEKg
-         yI32RZX3nX3nmr7ulqNDwBq/sUJFlpPlk+yS2HTonJRLPrJkUofLQNPwIcTk0j9SAV/4
-         GHLTthRjphk92TUJEB809GRHBPIj3DeMFR3wzTCYxAvmH44wBDqSflSc369T8Zj9a83R
-         sT/1Hj20hMFb9sFfMyQX3iteNJ44fc8wk9xltn9D5kxt4H8Yu2gUn6KJjGUFeSqwWPd1
-         p/wrvFw5lySNcXvp6OSfZzpkN0Tjuxr0tC1MKege3yJxtyZ/cAK2LULYQ0eHmaouD3BJ
-         eQxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760032376; x=1760637176;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BJOsN41yoa3YyKSJ9TTkHzxgmGK8HIKNRuuL8EXcrYo=;
-        b=kdXMQsIwTQkmzZcvhXOKV9nxVCHRXDM50cyozcsIG6r8qxnFI+uxbqloy/QAVg1lHe
-         YI6lyq4eCpkuMDM34bdWT1DNoDmvAxqe44D02TiBivQEeObeuzr/QkQ94NOFxyvAkv58
-         6fxmWy/VSmL4W6duVxKkByR45flbvPKr/PxytiGKu8QNTORWKBRfC5RidTTq/CvUq+3n
-         jDfHtaUDc8GDIRRJ1x6nJERfAF3qaNg+oCfIr7YBU/IZ3NpvAvde/uNm9FklV11+yYwq
-         EyGOrlzEAR6AgbGDS3qx3psKOSVcgULNHHybkhw+NXdkDikTCemDF7LvfYXGCgjQoFiC
-         1InQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUl5aCQooM07NWxnIazOomj2rxLOrXqNFXLgMVr+HCyJDjkMMxhyoKnKSfAUxs4TTYV21cOy2UXdW5S@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdhV+XebTzMCgR5cePBGhcHwIyQhL9yYqZBFHS1h/Oy9sTmE+1
-	vn66QTNKQR8rZyTJOMi7N2/3JbNkF2nKhremwF2/YgjZaJf+OhGS+UDTVVS95+cOZkg=
-X-Gm-Gg: ASbGncs4sCDLX6g3FKesFY95xHs1fWQX7J2UVxPAB+5OL+2Pt87eByJxoDRPBbJNIaX
-	ZpgMx5ttibsF1qC3TYcSK1fSDfZs1s3A/UDElgS6zbl0JpVVQelXtEDsN+WAPxAbdV76zgwjqG5
-	cBJD216RLijGcCGrsQa9cflm6qd7x4uogqides578/a042rfXtuHqcIO96ZkIgdN4Z+eWSXcGcf
-	vZyFKBPWKgL/zNxiJ7QFem0QzMcL0bkAya+F2cuzjHecCGmL8Yeyuzm4741+HynjQla2kk9qcZK
-	Rtvyj1h+S6yaRx0KQgUZDz/7MRw+CVqc9kMvL/Vmvp46o7axTss5q2pGUtKvYLpFw7v3EkOnKF2
-	O2+CNndw0JpDpn2aZ2vMYoXSeGMXycXA=
-X-Google-Smtp-Source: AGHT+IH4pkZ5LUcz1UVUD+dIXY7lwVVUALuhd5+O3JFYRmZLgI9Otm/vnGqmQzZUzY0VBhTbKmteqQ==
-X-Received: by 2002:a05:6000:4313:b0:3ea:6680:8fb5 with SMTP id ffacd0b85a97d-42666ab29d5mr4804842f8f.2.1760032375892;
-        Thu, 09 Oct 2025 10:52:55 -0700 (PDT)
-Received: from localhost ([2a09:bac1:2880:f0::3d8:48])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e81d2sm103917f8f.49.2025.10.09.10.52.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Oct 2025 10:52:55 -0700 (PDT)
-Date: Thu, 9 Oct 2025 18:52:54 +0100
-From: Matt Fleming <matt@readmodwrite.com>
-To: Theodore Ts'o <tytso@mit.edu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AD+zL3YaD7vCS8etZRir5D/tXzRh2NXyp8mEop36cdjGZMj4T36NDfiKEfoGKd963Qmx+TqMchXS74hQFRgjA5AomMc8d4oHDhwCZTPXAg2uXufkD9wyTj+tpHUW8iX9mPIEyNke/nVqTVDqP9jZKCCEMHpKLPWOmyxncnY/zMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=NTEEm1fF; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-118-62.bstnma.fios.verizon.net [173.48.118.62])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 59A24Ala032648
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 9 Oct 2025 22:04:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1760061858; bh=+i9CZvHErpX1gMxpBo/MZPquUnlVUXMm2JZ6XHVAh6U=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=NTEEm1fF4+b4oTPLfR+Olw6dJMTie0wWcphlTqcCpqkDbhw7EWTo1YRG0kJi3tNUa
+	 rgibmZnB8b34ZCzBwgkEKRfWku1ekXeTnzobuHj/lBw27mXbc6KuLa4JWh7ZsIYTyt
+	 aS6lXn486jRIcgGBRUQXoM7BsDUWo+lQHEq3y4b5drmRYQhtCxzPP1qTBOseSub+bg
+	 wiNOHo8pYZvXUGOH5ODlBFjueImhSemtjSjw3YD12VpIvc66i1Dg/HKu1e8/Ph1Sfl
+	 Scw0Q4j2zZCDGbXI1tHWV8Ar81pASC9f92Q/9ZfNyMc/wxgc+6oWH416IdouJSxhvv
+	 vktZhk0HaeRqg==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 66A832E00D9; Thu, 09 Oct 2025 22:04:10 -0400 (EDT)
+Date: Thu, 9 Oct 2025 22:04:10 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Matt Fleming <matt@readmodwrite.com>
 Cc: adilger.kernel@dilger.ca, jack@suse.cz, kernel-team@cloudflare.com,
-	libaokun1@huawei.com, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	willy@infradead.org
+        libaokun1@huawei.com, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        willy@infradead.org
 Subject: Re: ext4 writeback performance issue in 6.12
-Message-ID: <20251009175254.d6djmzn3vk726pao@matt-Precision-5490>
+Message-ID: <20251010020410.GE354523@mit.edu>
 References: <20251006115615.2289526-1-matt@readmodwrite.com>
  <20251008150705.4090434-1-matt@readmodwrite.com>
  <20251008162655.GB502448@mit.edu>
  <20251009102259.529708-1-matt@readmodwrite.com>
+ <20251009175254.d6djmzn3vk726pao@matt-Precision-5490>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -93,41 +70,37 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251009102259.529708-1-matt@readmodwrite.com>
+In-Reply-To: <20251009175254.d6djmzn3vk726pao@matt-Precision-5490>
 
-On Thu, Oct 09, 2025 at 11:22:59AM +0100, Matt Fleming wrote:
+On Thu, Oct 09, 2025 at 06:52:54PM +0100, Matt Fleming wrote:
+> On Thu, Oct 09, 2025 at 11:22:59AM +0100, Matt Fleming wrote:
+> > 
+> > Thanks Ted. I'm going to try disabling the stripe parameter now. I'll report
+> > back shortly.
 > 
-> Thanks Ted. I'm going to try disabling the stripe parameter now. I'll report
-> back shortly.
+> Initial results look very good. No blocked tasks so far and the mb
+> allocator latency is much improved.
 
-Initial results look very good. No blocked tasks so far and the mb
-allocator latency is much improved.
+OK, so that definitely confirms the theory of what's going on.  There
+have been some changes in the latest kernel that *might* address what
+you're seeing.  The challenge is that we don't have a easy reproducer
+that doesn't involve using a large file system running a production
+workload.  If you can only run this on a production server, it's
+probably not fair to ask you to try running 6.17.1 and see if it shows
+up there.
 
-mfleming@node:~$ sudo perf ftrace latency -b  -a -T ext4_mb_regular_allocator -- sleep 10
-#   DURATION     |      COUNT | GRAPH                                          |
-     0 - 1    us |          0 |                                                |
-     1 - 2    us |          0 |                                                |
-     2 - 4    us |         41 |                                                |
-     4 - 8    us |        499 | ###########                                    |
-     8 - 16   us |        246 | #####                                          |
-    16 - 32   us |        126 | ##                                             |
-    32 - 64   us |        103 | ##                                             |
-    64 - 128  us |         74 | #                                              |
-   128 - 256  us |        109 | ##                                             |
-   256 - 512  us |        293 | ######                                         |
-   512 - 1024 us |        448 | ##########                                     |
-     1 - 2    ms |         36 |                                                |
-     2 - 4    ms |         11 |                                                |
-     4 - 8    ms |          1 |                                                |
-     8 - 16   ms |          0 |                                                |
-    16 - 32   ms |          0 |                                                |
-    32 - 64   ms |          0 |                                                |
-    64 - 128  ms |          0 |                                                |
-   128 - 256  ms |          0 |                                                |
-   256 - 512  ms |          0 |                                                |
-   512 - 1024 ms |          0 |                                                |
-     1 - ...   s |          0 |                                                |
+I do think in the long term, we need to augment thy buddy bitmap in
+fs/ext4/mballoc.c with some data structure which tracks free space in
+units of stripe blocks, so we can do block allocation in a much more
+efficient way for RAID systems.  The simplest way would be to add a
+counter of the number of aligned free stripes in the group info
+structure, plus a bit array which indicates which aligned stripes are
+free.  This is not just to improve stripe allocation, but also when
+doing sub-stripe allocation, we preferentially try allocating out of
+stripes which are already partially in use.
 
-Thanks,
-Matt
+Out of curiosity, are you using the stride parameter because you're
+using a SSD-based RAID array, or a HDD-based RAID array?
+
+      		       	      	   	     	  - Ted
 
