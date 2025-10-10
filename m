@@ -1,85 +1,58 @@
-Return-Path: <linux-ext4+bounces-10737-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10748-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE323BCC710
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 11:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A590CBCC8E5
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 12:37:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 97A6A4EFBFF
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 09:53:09 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A26BC4FD7E8
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Oct 2025 10:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90BC42C0299;
-	Fri, 10 Oct 2025 09:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="ea+bOKNg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D002F5306;
+	Fri, 10 Oct 2025 10:34:45 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E2220A5EA
-	for <linux-ext4@vger.kernel.org>; Fri, 10 Oct 2025 09:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C92F2F0C63;
+	Fri, 10 Oct 2025 10:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760089984; cv=none; b=hUg4v8eLEAcpu0l3oF5PoCoHJnW7d4dfGTNMuZNQVH2jOLBgMVQs/NsLNJUAF4NcEXCcX47RzU5iLaP7X9L+sIaq3ZnSWngT887IIFVGrK79+9F+H70gvEyyIv1QOJG06V7pK8cHh+oKb2E4UVjMWf7eq6T/flJIU5SeQmePnm8=
+	t=1760092484; cv=none; b=r0ixp3/NwL3XULfn3qdXlRc/F7BxvTWUst8TQLYxbkjqXaj7l6Io31FsP11v4pfMM3U1TBnQ/xYTALA2AJrPYCVJGSCmO/s5KikcKuZqBsdtMiEYJ2BbQryXdD8bUpx10fSWa8Tt9Ub5N9KEi9ttzJYIxkix534qorPcCiVVhuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760089984; c=relaxed/simple;
-	bh=8BXppt1U4NxWfdmTe9Ool97G27PND00cmpzoCWr7mcQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qzwTDL5+spezfOpktowkBHkWPE8VH3NyZjVXJTaC1gHI6avd6RE0ZPUzubOkiwwZcxZf3xGYlTb+s+2ybWcuc4jP+sLAgweGy38gf/lSAuyy64QphNtSHZ9Wri5FEKH8kJ7niNvYSbgz6FZJDzb3r+cG9UGntah+xt+HCslMAs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=ea+bOKNg; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b5507d3ccd8so1519845a12.0
-        for <linux-ext4@vger.kernel.org>; Fri, 10 Oct 2025 02:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1760089981; x=1760694781; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BRHyJDXOD3j1aH2KvtqZcQOhtcceIzAv+sdnNE0oQVA=;
-        b=ea+bOKNgvJBuOLyJhFoUz70Q7RhCsw33ZR6/ZqD1pg2NGwgGPZHKJjbmQBmOYNIrEc
-         mHPrg0Fbg3X6o3F7MVZ3tdSjORgBFHGGa07JF6Oj5/nQFwohQPhwiUt5JUmmPz4I8phQ
-         SNisyEt+x8Xt/hiTCQ5NggPU9m3rUdG10zO9ppsKwrdOTDVtQMhXg8XLfKVOMGwp2Q+w
-         9zDMgyBTiz4rrifNWD3XDAEZ5wGAoFE/lKd5HfUqLf0F0PJkk218ktfPHCMc+pxvCBhe
-         PfJoA+vyonNZAYZsKdDQA20vHm2iyfnnRvCgiEwSx3+wc8Hr6R7NdFA9oQhGkHV/j1Ra
-         7bxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760089981; x=1760694781;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BRHyJDXOD3j1aH2KvtqZcQOhtcceIzAv+sdnNE0oQVA=;
-        b=Q0qBL/qolv3XBkK7Ne+JDFUu4+V9o/3jW/JQP2iMDCKopD1dJ4dT6DYtkRoLsXo8ft
-         qGcM+6uPldWR4JlXfxY74OUgRPGzIuELaOLSwj3OoIlSBR5rvyUn/x0wWYYntbZ7its+
-         SddC717LD4r5JuIH0huOiZGlOxrV5eWbN0aZHWqBWNGhbTGRUOO1eNmwLty0fgMKp2t5
-         DIHtFgSlLlEN+kK7mrctqmbEGzEOQq97P9a4fnKpKbzCbYaOlHnvPf4ixoqpN5X1corg
-         X2TsobPpjElkTxkQoQoCFHyhlOnxReQ20pjER8dfucjG+APq+MilfQOeT452Er3gpSGw
-         kpOw==
-X-Gm-Message-State: AOJu0YwaOFjIeBBpVcIfK3EJTK3kFnmAwrD+HQ7YS4pfBaNcvvNoJkpH
-	OM6tsDsbhNWNTczV9FLkfyypK7XeVVgTaLohgjgzNmyhssm7YFuFjqmkEAtZbCZdvdpsxTgCg9G
-	5xGCz/ds71g==
-X-Gm-Gg: ASbGncvv/au7b0Otb15YFNu8hufMaT7v0z7iqYprq36+Wlf6ea8lycCwTO+iQvo3oAS
-	pkciiQxzIOTNUxCqz0XFOmd7P236SlTRJ+adiUoaqVeD5SxmPx8p8UIvKKrGh+TStfefXLXw5QW
-	4sVlclV7S9/IHPmr7Z7/ZOf515byiMhn/2jGltt7np/i8Qnd2qvyJ7NogByeZv1tJIozRvemWKB
-	L4K4aFEllJ7cBMols8qd+pdnYrQtCs9ItcXb0SFV5b7fgxXr7DURZOn0XEkuTpSvIiJIVUG0At1
-	UZkeXEiCR9kyLMiI1FiBdV3amEzZ4+cMF70ZvSqfCCQ4M8qiQfaEk0syRNDa/6JQErIyX+8UHbm
-	nPd4tPYuRrbfjFDDK2Feb9/gXL/X4rddJpA8n/w4NOGPWg0AjEOiTM9FsM6rcaA==
-X-Google-Smtp-Source: AGHT+IFhQus0IMdKIuHREnYY5GhZUGnUcjk+Kk7q21BYWUbv/wFkOFKm+FFnmogTJHEm5ndKmUdZGg==
-X-Received: by 2002:a17:903:1aef:b0:250:1c22:e7b with SMTP id d9443c01a7336-290272e3a78mr144520735ad.43.1760089981239;
-        Fri, 10 Oct 2025 02:53:01 -0700 (PDT)
-Received: from localhost ([106.38.226.85])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29034f56c04sm52164555ad.110.2025.10.10.02.53.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Oct 2025 02:53:00 -0700 (PDT)
-From: Julian Sun <sunjunchao@bytedance.com>
+	s=arc-20240116; t=1760092484; c=relaxed/simple;
+	bh=GoOB+ZZKWQc/jzWg0Zyt7t6XIDgoA7zWTdLvBDqr01A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hUoAQkTZrjCjAztD0RLvRzY7UdLmlxsHl8Apj/6uvJpIppdG9ByWW+fDEDmIqE0v1fOObagtCPBaibPwLRuzT3t7q1BYzm7OGdIbeUMOH1QuOzTa/Wvgg8btBsdsFMA+mUewd53cOmQtT7eLec7nrRBbThImJY5cGEdQ4OBAUKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cjjlW68qSzYQvL2;
+	Fri, 10 Oct 2025 18:33:59 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 113C51A1439;
+	Fri, 10 Oct 2025 18:34:34 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.85.155])
+	by APP4 (Coremail) with SMTP id gCh0CgCHS2Ms4ehoxOK5CQ--.63632S4;
+	Fri, 10 Oct 2025 18:34:31 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
 To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
 	adilger.kernel@dilger.ca,
-	drosen@google.com
-Subject: [PATCH] ext4: Make error code in __ext4fs_dirhash() consistent.
-Date: Fri, 10 Oct 2025 17:52:57 +0800
-Message-Id: <20251010095257.3008275-1-sunjunchao@bytedance.com>
-X-Mailer: git-send-email 2.39.5
+	jack@suse.cz,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	libaokun1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v3 00/12] ext4: optimize online defragment
+Date: Fri, 10 Oct 2025 18:33:14 +0800
+Message-ID: <20251010103326.3353700-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -87,30 +60,159 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCHS2Ms4ehoxOK5CQ--.63632S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gw1kAr4ktFyDXryrWr4rKrg_yoW7AFykpa
+	yakw48trykJw1kG3yxAFs2qryYkw4rGr47CF1UGr15CF45XFy8WFWrKa98ZFy8ArW8Z34Y
+	va1Iyr1Uu3WUAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Currently __ext4fs_dirhash() returns -1 (-EPERM) if fscrypt doesn't
-have encryption key, which may confuse users. Make the error code here
-consistent with existing error code.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
----
- fs/ext4/hash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v2:
+ - Rebase patches to the 6.18-5472d60c129f.
+ - Patch 02, add a TODO comment, we should optimize the increasement of
+   the extents sequence counter ext4_es_insert_extent() in the future as
+   Jan suggested.
+ - Patch 09, add a WARN_ON_ONCE if ext4_swap_extents() return
+   successfully but the swapped length is shorter than required. Also,
+   copy data if some extents have been swapped to prevent data loss.
+   Finally, fix the comment as Jan suggested.
+ - Patch 10, fix the increasement of moved_len in ext4_move_extents()
+   as Jan pointed out.
+ - Patch 11, fix potential overflow issues on the left shift as Jan
+   pointed out.
+ - Add review tag in patch 01-08,11-12 from Jan.
+Changes since v1:
+ - Fix the syzbot issues reported in v1 by adjusting the order of
+   parameter checks in mext_check_validity() in patches 07 and 08.
 
-diff --git a/fs/ext4/hash.c b/fs/ext4/hash.c
-index 33cd5b6b02d5..48483cd015d3 100644
---- a/fs/ext4/hash.c
-+++ b/fs/ext4/hash.c
-@@ -268,7 +268,7 @@ static int __ext4fs_dirhash(const struct inode *dir, const char *name, int len,
- 			combined_hash = fscrypt_fname_siphash(dir, &qname);
- 		} else {
- 			ext4_warning_inode(dir, "Siphash requires key");
--			return -1;
-+			return -EINVAL;
- 		}
- 
- 		hash = (__u32)(combined_hash >> 32);
+v2: https://lore.kernel.org/linux-ext4/20250925092610.1936929-1-yi.zhang@huaweicloud.com/
+v1: https://lore.kernel.org/linux-ext4/20250923012724.2378858-1-yi.zhang@huaweicloud.com/
+
+
+Original Description:
+
+Currently, the online defragmentation of the ext4 is primarily
+implemented through the move extent operation in the kernel. This
+extent-moving operates at the granularity of PAGE_SIZE, iteratively
+performing extent swapping and data movement operations, which is quite
+inefficient. Especially since ext4 now supports large folios, iterations
+at the PAGE_SIZE granularity are no longer practical and fail to
+leverage the advantages of large folios. Additionally, the current
+implementation is tightly coupled with buffer_head, making it unable to
+support after the conversion of buffered I/O processes to the iomap
+infrastructure.
+
+This patch set (based on 6.17-rc7) optimizes the extent-moving process,
+deprecates the old move_extent_per_page() interface, and introduces a
+new mext_move_extent() interface. The new interface iterates over and
+copies data based on the extents of the original file instead of the
+PAGE_SIZE, and supporting large folios. The data processing logic in the
+iteration remains largely consistent with previous versions, with no
+additional optimizations or changes made. 
+
+Additionally, the primary objective of this set of patches is to prepare
+for converting the buffered I/O process for regular files to the iomap
+infrastructure. These patches decouple the buffer_head from the main
+extent-moving process, restricting its use to only the helpers
+mext_folio_mkwrite() and mext_folio_mkuptodate(), which handle updating
+and marking pages in the swapped page cache as dirty. The overall coding
+style of the extent-moving process aligns with the iomap infrastructure,
+laying the foundation for supporting online defragmentation once the
+iomap infrastructure is adopted.
+
+Patch overview:
+
+Patch 1:    Fix a minor issue related to validity checking.
+Patch 2-4:  Introduce a sequence counter for the mapping extent status
+            tree, this also prepares for the iomap infrastructure.
+Patch 5-7:  Refactor the mext_check_arguments() helper function and the
+            validity checking to improve code readability.
+Patch 8-12: Drop move_extent_per_page() and switch to using the new
+            mext_move_extent(). Additionally, add support for large
+            folios.
+
+With this patch set, the efficiency of online defragmentation for the
+ext4 file system can also be improved under general circumstances. Below
+is a set of typical test obtained using the fio e4defrag ioengine on the
+environment with Intel Xeon Gold 6240 CPU, 400G memory and a NVMe SSD
+device.
+
+  [defrag]
+  directory=/mnt
+  filesize=400G
+  buffered=1
+  fadvise_hint=0
+  ioengine=e4defrag
+  bs=4k         # 4k,32k,128k
+  donorname=test.def
+  filename=test
+  inplace=0
+  rw=write
+  overwrite=0   # 0 for unwritten extent and 1 for written extent
+  numjobs=1
+  iodepth=1
+  runtime=30s
+
+  [w/o]
+   U 4k:    IOPS=225k,  BW=877MiB/s      # U: unwritten extent-moving
+   U 32k:   IOPS=33.2k, BW=1037MiB/s
+   U 128k:  IOPS=8510,  BW=1064MiB/s
+   M 4k:    IOPS=19.8k, BW=77.2MiB/s     # M: written extent-moving
+   M 32k:   IOPS=2502,  BW=78.2MiB/s
+   M 128k:  IOPS=635,   BW=79.5MiB/s
+
+  [w]
+   U 4k:    IOPS=246k,  BW=963MiB/s
+   U 32k:   IOPS=209k,  BW=6529MiB/s
+   U 128k:  IOPS=146k,  BW=17.8GiB/s
+   M 4k:    IOPS=19.5k, BW=76.2MiB/s
+   M 32k:   IOPS=4091,  BW=128MiB/s
+   M 128k:  IOPS=2814,  BW=352MiB/s 
+
+Best Regards,
+Yi.
+
+
+Zhang Yi (12):
+  ext4: correct the checking of quota files before moving extents
+  ext4: introduce seq counter for the extent status entry
+  ext4: make ext4_es_lookup_extent() pass out the extent seq counter
+  ext4: pass out extent seq counter when mapping blocks
+  ext4: use EXT4_B_TO_LBLK() in mext_check_arguments()
+  ext4: add mext_check_validity() to do basic check
+  ext4: refactor mext_check_arguments()
+  ext4: rename mext_page_mkuptodate() to mext_folio_mkuptodate()
+  ext4: introduce mext_move_extent()
+  ext4: switch to using the new extent movement method
+  ext4: add large folios support for moving extents
+  ext4: add two trace points for moving extents
+
+ fs/ext4/ext4.h              |   3 +
+ fs/ext4/extents.c           |   2 +-
+ fs/ext4/extents_status.c    |  31 +-
+ fs/ext4/extents_status.h    |   2 +-
+ fs/ext4/inode.c             |  28 +-
+ fs/ext4/ioctl.c             |  10 -
+ fs/ext4/move_extent.c       | 780 +++++++++++++++++-------------------
+ fs/ext4/super.c             |   1 +
+ include/trace/events/ext4.h |  97 ++++-
+ 9 files changed, 499 insertions(+), 455 deletions(-)
+
 -- 
-2.39.5
+2.46.1
 
 
