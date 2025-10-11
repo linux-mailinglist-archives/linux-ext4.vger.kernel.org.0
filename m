@@ -1,188 +1,207 @@
-Return-Path: <linux-ext4+bounces-10785-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10786-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7275BCF089
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Oct 2025 08:38:47 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7A3FBCF16C
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 Oct 2025 09:48:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 802B53AADB1
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Oct 2025 06:38:46 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9FFC24E0599
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 Oct 2025 07:48:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB042147E6;
-	Sat, 11 Oct 2025 06:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11008226CF1;
+	Sat, 11 Oct 2025 07:48:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="decIIU/7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YCykTuiZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6669921930A
-	for <linux-ext4@vger.kernel.org>; Sat, 11 Oct 2025 06:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82B51B85FD;
+	Sat, 11 Oct 2025 07:48:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760164722; cv=none; b=ebAVDJh/WA40McLtDlAVn0vbRQRd2rDZ6PVdzHXkMxZ1fkXNRG1A8I/GIubfb0s0r9mK0CW/j5x1boLcpvkS5P7yItXOKaEK3h7m/Uk0O+F1VbD/d5PHj1zgvKv+GvGsy/1PV20CSnEOOzshgrDjIWAh3pgcqOnLwLeO+TUrijU=
+	t=1760168914; cv=none; b=L4/ah0cqb3YotwOvnwvHLSLsNFHcQabvcuPWTx8E11staWCWTYEiB4tMilbxT1ygUagY/Y/Eh3kbynMOt6UwTECLVqsG4gHFZERyJpvdHLlZYaWX+4O9lAcAUxiHQ6fP1LVC0/U6spRFukENbjp+8vfcNXLEHC7835MrTRqeAdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760164722; c=relaxed/simple;
-	bh=LjdMP4wX5K2PJoIkDNssZ0x5qpw4jYUvKfOFzldt+78=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=leRkfqeqxE509+rNiTrvOJGFUWY72RiHxafVPS+vLAyJ1675GFT8gInXuSp0xH+WlewpREQQ+GYMxTqd9eWxhqK119i561QyyCllxLAK1i0L1NdPj6+3h+nzjF0UAjde5/R/NgJTDqI9ABD906nEgeRmpjXmNvU+znDZCTH92ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=decIIU/7; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-32ebcef552eso640468a91.0
-        for <linux-ext4@vger.kernel.org>; Fri, 10 Oct 2025 23:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760164720; x=1760769520; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i4KsdyrgfWB/FqT6OOcbFSO1XBvuLxrHfzAVePQ1iTY=;
-        b=decIIU/7mEcJBYlwWbXUi7CyqhPn2bqONs86NcMs4yZ8v40vy95Pp8EXXBdCbhim6R
-         1/A6YfAiKaeguMLCJ7wukvmh9c9iRqNGQAJebMu040WCSw9PT2nIgvreKlAKZKFcTEWt
-         3jUYy61zKCuwsdmlU87zZvoCvhr2TkusC0Z4/3tyBNvlWBp0fhKWX6XmRp/cdwwbHWyG
-         10S3I5tjmefWq2MVe3GUrne03Le4U15ukBXEGpQudijXHLCXWuGMUPHXhLeba918dmyn
-         GAhS8mjS/UxYHO8up2PL15Un7f0nYSNjUuAE8eoBm3fi5ubyxZn7hgHGwN0TVfZco/S+
-         6P7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760164720; x=1760769520;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i4KsdyrgfWB/FqT6OOcbFSO1XBvuLxrHfzAVePQ1iTY=;
-        b=mHE4c4yPkJs03ocgsreZCuHKfFkksabTps5isjpS7l/A9S6g5g5LmqOAAA+1Pf9Gno
-         N1ko6mW+Of7zCJzoctkUoGLJ5Oe09NrfDX+EwMSoSHl5RS9AQ0HeZC8YUeFhVe20RKvH
-         /u4S/y7NuZhFWsM66YrP8vJ3p8596dqMAauIDAx+AYe7jUJ9qBA7X4zo3V7VWsFaL/8d
-         9rFVptmjkFlsKchZ+k3znhLo2GUCcgfchPPWEYDfUTXpG3FGzoTncLNR5qDQsm/ukw8Q
-         2jnVbCou0goKGoTrEMTQ1Oi8ycuwDDjFA+9ZwoO7lUtw9Xeb+94LLvF8mpDuuPCpVTKP
-         setA==
-X-Forwarded-Encrypted: i=1; AJvYcCXEjz17rBOXNUAq1vRuaeiYjnPq3ByJ35coNd8PQ+l3xUWMBTt58lpbVsDtffsnXkJNLyGJVcusA1MV@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCzO6xXaSSdXoy9ey49T538Eo5xDLZ9grWUS0BTjO/+A+zNzMM
-	gJMU0QEhGFNl6xPSWAp1VOKyGCG6XiiiNd9QAh3SlMwJjdFK9pi9fE33
-X-Gm-Gg: ASbGncuiy2NFK2F+93vWiNH2O1XM/S+bWRVW9EtKpHzfwXKOdTmMTUpfUp7dpiWFHJZ
-	m5qkS9jKS2BTKc804sA63O3ionKGtaiUrIs9YGsXpMEO+ewJBbWN0pHl5nPvKGNIz4wkPRkxM+M
-	/lpMdLC0JinqAWCN8w6ItOR6hAXImqy1tJB0aiDI4W6wwSgRpJVvWyf5qoj+1cgT1KZLuxQChDj
-	MlDX/HJKPdy8byYKn4GTFae6/N9GaCN/xIiordsiJi9LDV1G/xtH8PwUvsMFB02jj/T7V9MLxA/
-	3a/gW/v6vLzGJIhX6qtV4cEvyC1MHuSl2cs3aKbQrwckaWmf1Cu6/MnuTk4JwQrFTBH8qf1ouxl
-	1pOHFBsxcRKr4OJSoXUYKK9Q33QFlshuZxd0jOSQDPs+ONwSh
-X-Google-Smtp-Source: AGHT+IF1JQXObCuG7xFhogMbxfyVhO5SQR9FmzcjivYXOk8ZFuH6BJG6HLBb/IJlGVfYnt4qekicwg==
-X-Received: by 2002:a17:903:1a6f:b0:257:3283:b859 with SMTP id d9443c01a7336-29027321d06mr119587995ad.9.1760164720383;
-        Fri, 10 Oct 2025 23:38:40 -0700 (PDT)
-Received: from ranganath.. ([2406:7400:98:ffd0:8dcb:f5b3:8234:d05])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29034dea083sm76040465ad.24.2025.10.10.23.38.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Oct 2025 23:38:39 -0700 (PDT)
-From: Ranganath V N <vnranganath.20@gmail.com>
-To: lkp@intel.com
-Cc: adilger.kernel@dilger.ca,
-	david.hunter.linux@gmail.com,
-	khalid@kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
+	s=arc-20240116; t=1760168914; c=relaxed/simple;
+	bh=LHHPf2UPJZHB06XnOCsmcRYEMeWIuhBk1mgQHMhJ01g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dkc2uB1WY2zRik7Bq1lPpAIaftySyEIDauznvmCxRAfsuoaPj6EygeCfUhhCSkeky4MD2KC6sXP0kZur3ntJUwB5mfqcM1p82wr/kONxLePWzmmiYZ9/WW4Q0dqcTAKopwkJD/Y1BphB6+RZ4KeWnSJZ6rK1SiwvHSvnCB/uPv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YCykTuiZ; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1760168913; x=1791704913;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LHHPf2UPJZHB06XnOCsmcRYEMeWIuhBk1mgQHMhJ01g=;
+  b=YCykTuiZ25hIfXYT2xtcmAGHHUo4NnbCAOMmykZ3nDFZgokd5WiA0nCD
+   TtDHBFxiZWdb/DC3Pi0Zf4guMGyZx0mwGdJM7R4w6hORjEii4GdZRdLmW
+   TTJtQuQN3nYf1rEKdy/qPrVBgLPbjNcd9IAJHpZhBrF6m9uAaR2aN6cDO
+   xBEWextGJJs/3GG1+Y5QIzI6/4MLb6tyYi7/DH03tXejpAV/5sJKQM6zQ
+   h/ckYfkirl0umLhm0+HVtcS+EaX5k+VnRCWyutOwmn12/w6pDNASY9kVz
+   yH1u2KnTeu2PWHHIP26igywa1nEjk9bNT7DFPtAhd85vgxPODArdEEdUq
+   g==;
+X-CSE-ConnectionGUID: oQzvBHz+S7ajz1WhwgG4Ww==
+X-CSE-MsgGUID: mn0cXySjRciEYQInxxumew==
+X-IronPort-AV: E=McAfee;i="6800,10657,11578"; a="73820260"
+X-IronPort-AV: E=Sophos;i="6.19,220,1754982000"; 
+   d="scan'208";a="73820260"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2025 00:48:31 -0700
+X-CSE-ConnectionGUID: ZK1hUfyNTlGOlZ3+a5VOhg==
+X-CSE-MsgGUID: kvHUn0d+S8ip7VmHV25tLQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,220,1754982000"; 
+   d="scan'208";a="181168851"
+Received: from lkp-server01.sh.intel.com (HELO 6a630e8620ab) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 11 Oct 2025 00:48:28 -0700
+Received: from kbuild by 6a630e8620ab with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1v7UL4-0003ch-0V;
+	Sat, 11 Oct 2025 07:48:26 +0000
+Date: Sat, 11 Oct 2025 15:48:00 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ranganath V N <vnranganath.20@gmail.com>, tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	oe-kbuild-all@lists.linux.dev,
-	skhan@linuxfoundation.org,
-	tytso@mit.edu,
-	vnranganath.20@gmail.com
-Subject: [PATCH v2] fs: ext4: fix uninitialized symbols
-Date: Sat, 11 Oct 2025 12:08:29 +0530
-Message-ID: <20251011063830.47485-1-vnranganath.20@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <202510110207.yBvUMr5Z-lkp@intel.com>
-References: <202510110207.yBvUMr5Z-lkp@intel.com>
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	skhan@linuxfoundation.org, david.hunter.linux@gmail.com,
+	khalid@kernel.org, Ranganath V N <vnranganath.20@gmail.com>
+Subject: Re: [PATCH] fs: ext4: fix uninitialized symbols
+Message-ID: <202510111521.OLlwqh7d-lkp@intel.com>
+References: <20251008171614.12129-1-vnranganath.20@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251008171614.12129-1-vnranganath.20@gmail.com>
 
-Fix the issue detected by the smatch tool.
+Hi Ranganath,
 
-fs/ext4/inode.c:3583 ext4_map_blocks_atomic_write_slow() error: uninitialized symbol 'next_pblk'.
-fs/ext4/namei.c:1776 ext4_lookup() error: uninitialized symbol 'de'.
-fs/ext4/namei.c:1829 ext4_get_parent() error: uninitialized symbol 'de'.
-fs/ext4/namei.c:3162 ext4_rmdir() error: uninitialized symbol 'de'.
-fs/ext4/namei.c:3242 __ext4_unlink() error: uninitialized symbol 'de'.
-fs/ext4/namei.c:3697 ext4_find_delete_entry() error: uninitialized symbol 'de'.
+kernel test robot noticed the following build warnings:
 
-These changes enhance code clarity, address static analysis tool errors.
+[auto build test WARNING on tytso-ext4/dev]
+[also build test WARNING on linus/master v6.17 next-20251010]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Ranganath V N <vnranganath.20@gmail.com>
----
+url:    https://github.com/intel-lab-lkp/linux/commits/Ranganath-V-N/fs-ext4-fix-uninitialized-symbols/20251010-065232
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+patch link:    https://lore.kernel.org/r/20251008171614.12129-1-vnranganath.20%40gmail.com
+patch subject: [PATCH] fs: ext4: fix uninitialized symbols
+config: i386-randconfig-063-20251011 (https://download.01.org/0day-ci/archive/20251011/202510111521.OLlwqh7d-lkp@intel.com/config)
+compiler: gcc-13 (Debian 13.3.0-16) 13.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251011/202510111521.OLlwqh7d-lkp@intel.com/reproduce)
 
-v2:
-corrected the kernel test robot noticed build errors.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202510111521.OLlwqh7d-lkp@intel.com/
 
- fs/ext4/inode.c |  2 +-
- fs/ext4/namei.c | 10 +++++-----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+sparse warnings: (new ones prefixed by >>)
+>> fs/ext4/inode.c:3547:34: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned long long [usertype] next_pblk @@     got void * @@
+   fs/ext4/inode.c:3547:34: sparse:     expected unsigned long long [usertype] next_pblk
+   fs/ext4/inode.c:3547:34: sparse:     got void *
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 5b7a15db4953..f20db3f4ef68 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3544,7 +3544,7 @@ static int ext4_map_blocks_atomic_write_slow(handle_t *handle,
- 	ext4_lblk_t m_lblk = map->m_lblk;
- 	unsigned int m_len = map->m_len;
- 	unsigned int mapped_len = 0, m_flags = 0;
--	ext4_fsblk_t next_pblk;
-+	ext4_fsblk_t next_pblk = 0;
- 	bool check_next_pblk = false;
- 	int ret = 0;
- 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 2cd36f59c9e3..045616033515 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1762,7 +1762,7 @@ static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
- static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
- {
- 	struct inode *inode;
--	struct ext4_dir_entry_2 *de;
-+	struct ext4_dir_entry_2 *de = NULL;
- 	struct buffer_head *bh;
- 
- 	if (dentry->d_name.len > EXT4_NAME_LEN)
-@@ -1818,7 +1818,7 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
- struct dentry *ext4_get_parent(struct dentry *child)
- {
- 	__u32 ino;
--	struct ext4_dir_entry_2 * de;
-+	struct ext4_dir_entry_2 * de = NULL;
- 	struct buffer_head *bh;
- 
- 	bh = ext4_find_entry(d_inode(child), &dotdot_name, &de, NULL);
-@@ -3133,7 +3133,7 @@ static int ext4_rmdir(struct inode *dir, struct dentry *dentry)
- 	int retval;
- 	struct inode *inode;
- 	struct buffer_head *bh;
--	struct ext4_dir_entry_2 *de;
-+	struct ext4_dir_entry_2 *de = NULL;
- 	handle_t *handle = NULL;
- 
- 	retval = ext4_emergency_state(dir->i_sb);
-@@ -3224,7 +3224,7 @@ int __ext4_unlink(struct inode *dir, const struct qstr *d_name,
- {
- 	int retval = -ENOENT;
- 	struct buffer_head *bh;
--	struct ext4_dir_entry_2 *de;
-+	struct ext4_dir_entry_2 *de = NULL;
- 	handle_t *handle;
- 	int skip_remove_dentry = 0;
- 
-@@ -3688,7 +3688,7 @@ static int ext4_find_delete_entry(handle_t *handle, struct inode *dir,
- {
- 	int retval = -ENOENT;
- 	struct buffer_head *bh;
--	struct ext4_dir_entry_2 *de;
-+	struct ext4_dir_entry_2 *de = NULL;
- 
- 	bh = ext4_find_entry(dir, d_name, &de, NULL);
- 	if (IS_ERR(bh))
+vim +3547 fs/ext4/inode.c
+
+  3540	
+  3541	static int ext4_map_blocks_atomic_write_slow(handle_t *handle,
+  3542				struct inode *inode, struct ext4_map_blocks *map)
+  3543	{
+  3544		ext4_lblk_t m_lblk = map->m_lblk;
+  3545		unsigned int m_len = map->m_len;
+  3546		unsigned int mapped_len = 0, m_flags = 0;
+> 3547		ext4_fsblk_t next_pblk = NULL;
+  3548		bool check_next_pblk = false;
+  3549		int ret = 0;
+  3550	
+  3551		WARN_ON_ONCE(!ext4_has_feature_bigalloc(inode->i_sb));
+  3552	
+  3553		/*
+  3554		 * This is a slow path in case of mixed mapping. We use
+  3555		 * EXT4_GET_BLOCKS_CREATE_ZERO flag here to make sure we get a single
+  3556		 * contiguous mapped mapping. This will ensure any unwritten or hole
+  3557		 * regions within the requested range is zeroed out and we return
+  3558		 * a single contiguous mapped extent.
+  3559		 */
+  3560		m_flags = EXT4_GET_BLOCKS_CREATE_ZERO;
+  3561	
+  3562		do {
+  3563			ret = ext4_map_blocks(handle, inode, map, m_flags);
+  3564			if (ret < 0 && ret != -ENOSPC)
+  3565				goto out_err;
+  3566			/*
+  3567			 * This should never happen, but let's return an error code to
+  3568			 * avoid an infinite loop in here.
+  3569			 */
+  3570			if (ret == 0) {
+  3571				ret = -EFSCORRUPTED;
+  3572				ext4_warning_inode(inode,
+  3573					"ext4_map_blocks() couldn't allocate blocks m_flags: 0x%x, ret:%d",
+  3574					m_flags, ret);
+  3575				goto out_err;
+  3576			}
+  3577			/*
+  3578			 * With bigalloc we should never get ENOSPC nor discontiguous
+  3579			 * physical extents.
+  3580			 */
+  3581			if ((check_next_pblk && next_pblk != map->m_pblk) ||
+  3582					ret == -ENOSPC) {
+  3583				ext4_warning_inode(inode,
+  3584					"Non-contiguous allocation detected: expected %llu, got %llu, "
+  3585					"or ext4_map_blocks() returned out of space ret: %d",
+  3586					next_pblk, map->m_pblk, ret);
+  3587				ret = -EFSCORRUPTED;
+  3588				goto out_err;
+  3589			}
+  3590			next_pblk = map->m_pblk + map->m_len;
+  3591			check_next_pblk = true;
+  3592	
+  3593			mapped_len += map->m_len;
+  3594			map->m_lblk += map->m_len;
+  3595			map->m_len = m_len - mapped_len;
+  3596		} while (mapped_len < m_len);
+  3597	
+  3598		/*
+  3599		 * We might have done some work in above loop, so we need to query the
+  3600		 * start of the physical extent, based on the origin m_lblk and m_len.
+  3601		 * Let's also ensure we were able to allocate the required range for
+  3602		 * mixed mapping case.
+  3603		 */
+  3604		map->m_lblk = m_lblk;
+  3605		map->m_len = m_len;
+  3606		map->m_flags = 0;
+  3607	
+  3608		ret = ext4_map_blocks(handle, inode, map,
+  3609				      EXT4_GET_BLOCKS_QUERY_LAST_IN_LEAF);
+  3610		if (ret != m_len) {
+  3611			ext4_warning_inode(inode,
+  3612				"allocation failed for atomic write request m_lblk:%u, m_len:%u, ret:%d\n",
+  3613				m_lblk, m_len, ret);
+  3614			ret = -EINVAL;
+  3615		}
+  3616		return ret;
+  3617	
+  3618	out_err:
+  3619		/* reset map before returning an error */
+  3620		map->m_lblk = m_lblk;
+  3621		map->m_len = m_len;
+  3622		map->m_flags = 0;
+  3623		return ret;
+  3624	}
+  3625	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
