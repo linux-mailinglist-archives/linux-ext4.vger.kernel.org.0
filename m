@@ -1,182 +1,98 @@
-Return-Path: <linux-ext4+bounces-10852-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10853-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93462BD3357
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 15:30:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4101EBD398A
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 16:38:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 659F14E0F3C
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 13:30:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB8E4189FDCE
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 14:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0D0307AEE;
-	Mon, 13 Oct 2025 13:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C00268C42;
+	Mon, 13 Oct 2025 14:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nKRLzPXZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JyjqRqSN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-yx1-f46.google.com (mail-yx1-f46.google.com [74.125.224.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CABA307ACD
-	for <linux-ext4@vger.kernel.org>; Mon, 13 Oct 2025 13:30:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591B810942
+	for <linux-ext4@vger.kernel.org>; Mon, 13 Oct 2025 14:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760362226; cv=none; b=EqHaoO9gWmdtzkN+5ju6odMN/Jixayvn3zx3k+9WcZCr4xRnl8Op+4mUXfIVx7W8TRFxEca4OFMoHcZRUhmEoOnno0pdCDyrGTmgAkrxe4t//J0taO7KFpVy8E2fucOxOVYcneLySdnp0l7XI1PWLlE1uDlizM9vW5N0bLubeqA=
+	t=1760366100; cv=none; b=hgzNjlHWAPiJcJBvrmePJtdcjoc476xLm+WUv3AygYPMYU0d0pA+7zhnyFoLy1hqb6gp6ZmG1fEGZ1B2vpgWcKy446J/3Heo3TWyk1R6cVCIlw+aydoAHaorruGfNQkiK7SqEafzUpk7BpqtP2Lv/dNRo9BHMsZcLeMTNMwsDF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760362226; c=relaxed/simple;
-	bh=pYKv/ZHAQal8b6v/icrawjp0xeugJB+Yhx7Gqtpqskc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IdD0uO73ckjAn/nCYrVI1q3+ASUov91Qzz/a7RH/sk2T3XChpkQtwM3a+jD2jNnI3dO9KRoM2/p/McdkeGEzzhY+Y++iKvPB1zSnWHQuRfW5TFPnQL4/JmM7M5S9BMI1lxo4WDqa3IW73xh8z0B+xGs4+TR64V/ZMuEyx6YBtGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nKRLzPXZ; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1760366100; c=relaxed/simple;
+	bh=OUBzFA0EWu6+C2ZUWePVBWalhb+/XSYRn8tZPem7vlY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iJFGMos1gN73DtYCM+/j+TElo8UPmmnpPBjRnH+Btw85mki7zztquebKA8QKOwrXqcFLdmi/UEbWEm8AOU8VGqfcCXKUH2G3ek9uQqS77qj/u16J+qbsdQq3wsn/vvyF9Ylx9zQt02m/5Fr6r/7ehWKl+lI9nQ0lWRG9GKAqQ7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JyjqRqSN; arc=none smtp.client-ip=74.125.224.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-46e34052bb7so50936175e9.2
-        for <linux-ext4@vger.kernel.org>; Mon, 13 Oct 2025 06:30:25 -0700 (PDT)
+Received: by mail-yx1-f46.google.com with SMTP id 956f58d0204a3-6354af028c6so4223456d50.3
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Oct 2025 07:34:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760362224; x=1760967024; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DZlmO7Er2VNfUt2lW8HD8G8xjeR52/0o/FyblKyrXi0=;
-        b=nKRLzPXZnQf9ilLT2raNaKwPMG6B8Vee1uWqwMVCnAKqSukvQpx/qcvB400LvbTRYx
-         fDZe5SHGtw9N/OmQD1fp+c20mNiIoCa7S0RTxayO7va4bk0AYZIOyHwbOj4vNB4tb9lN
-         bDY5zZQosZZ3k6ApeKSFrEUwzob5gRGlEPeWCe+hfRjO2Q4+2xbXi8K5lIkkNpIQxvYy
-         V8OGvKAJ6FdFO0bcqmacw5NecjeQUrtEPOZoUl8g/Buiy3JLKQg1IuddCiXv65nA1IlB
-         jsEr6eXzXiqQ7TnC3MZw/sBS5/L3XBvLIZRHM2jk0DCOxNJHcyWKzuTSIlA8saTZEdtO
-         vVeg==
+        d=gmail.com; s=20230601; t=1760366098; x=1760970898; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OUBzFA0EWu6+C2ZUWePVBWalhb+/XSYRn8tZPem7vlY=;
+        b=JyjqRqSNf0aHm1e0wI7D8IMTkbZFdzBXxlkaV5ImUpnd1oi8nzMJt2UmWXUbBsKyf9
+         2ohdTWeouQeK8ATmOJw/45XynzeNQmvlD2iGCyZcNH0Dr3RAMMDlucCW52gBTL9Qp4kx
+         ehg0239ym6QWWTJLVZIybj9q3M/+vbW7uT0xVbEllXjGZ8dNGOrabtuTiXpvGQqVMRSk
+         fUUuEax2OEhtWgwbgEbU/HWaW/ueKKVFd8EhCsbmEDb+whcX/DhebM3cjNRYNnXv3xsc
+         sR9X7DADJ02kIJ/ln5Soj8G3T/kTInCaVnD/6UMqZX23qdAWuzoqKwhlHBHqVZFfc7+Y
+         afHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760362224; x=1760967024;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DZlmO7Er2VNfUt2lW8HD8G8xjeR52/0o/FyblKyrXi0=;
-        b=GxrgLqNmJ0d58oTV4kKRzXI+8LnbtFnBHoVfeXYEe2v0E6lxTxGgog+ABJIPcMSC7/
-         hsclMiPia0fVa2WGIpi+q7xhbcsHa8Gj/Mw0PD9/jguf2nZ0XcqfQzC32FSqghi4LD5g
-         Ahp1xhKKSw1SGOyTQ2TyduZn7W6E3I18niaWzPQNlu8i95adCROT+bDFWdXqDveB8YI4
-         LIvMIR4xGMV3P4ytO+wrBPCrhZGR4mi43socJyshgyh14yHildtk8sHXeVr2XyHvyKfw
-         RPvV2dM3SW70vvZ197u7SDho/4KiIn7bClfNSMZDDjEuYi8NxlqHuFFmAcJlLvMUKyN9
-         zYaA==
-X-Forwarded-Encrypted: i=1; AJvYcCXaUSCVuy7COAzqUbN03vRoyBnb0JKJ0nfFCoD09TJjUZ+Wnxr0FCOI4RRyfdkE0SXL7a0SWF3UtPfs@vger.kernel.org
-X-Gm-Message-State: AOJu0YykEfYf07myMlnkM6p35qhBr6MAr2rkkuWZ/QaQdD2T4CSG7oJw
-	gL6NAhGG6lmWCGvwoAe+qqAWwa30eAmQHBVw7JUrdSwCb+1M7jTZ5jBt
-X-Gm-Gg: ASbGncvjBXTR/PjvkXeRXYREOITj7h3gvJRvyFCXs5h8WtNZrJZhAbz4++8Ep3ZjdmS
-	afl9BkeDGqvLX9yeHv33kem0UMb+D7IN1gIP1K/owoQcdys7yR2eS4ZU1hwt+8He6hNPlLQyRJm
-	DWX8+89CB2rGCWWItciQWMvrPOplYWXP8nruTj24p09VkOL92p9A11lufvUXqjD/Yg0cI6t4MBO
-	1FWPYHumNKN0msPTzCe8guDCGDFgsXqQ7Cm8E1zDLrOKgesfFbK5ecZFkTV3hk1m/ESBRLqgSzH
-	wu1RUcYcdrBcyhmKkJkSX1VyDUGoHWphDrtYZ+6Ar6QU1PzmeU/E1sWnUij20+HtjhaaiJVkVtc
-	RIfzCV2uLfxWncMG8ot3J8Dxd4OAlIti+e+TxbQepZqfi7a3QFpZTzzAauw5syPwV7wCz99M1Kn
-	j2cUVCJ2Zv
-X-Google-Smtp-Source: AGHT+IFb8vtBJitNnjBlDbVIUCm2gATTzzIuI7S2acOd2FoeBSuIxAzk1vmdrirRWyHwbC1aiC5zwg==
-X-Received: by 2002:a05:600c:6092:b0:45d:e28c:8741 with SMTP id 5b1f17b1804b1-46fa9b02e5amr148223315e9.29.1760362223296;
-        Mon, 13 Oct 2025 06:30:23 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c096:325:77fd:1068:74c8:af87? ([2620:10d:c092:600::1:eb09])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fb49c3e49sm185108555e9.16.2025.10.13.06.30.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Oct 2025 06:30:22 -0700 (PDT)
-Message-ID: <d785cc8e-d8fd-4bee-950c-7f3f7d452efc@gmail.com>
-Date: Mon, 13 Oct 2025 14:31:32 +0100
+        d=1e100.net; s=20230601; t=1760366098; x=1760970898;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OUBzFA0EWu6+C2ZUWePVBWalhb+/XSYRn8tZPem7vlY=;
+        b=aDZUZU0k94hVBN++5tUKaf+BXsshRbqxEi/qxH8x9kivxqwDvHc0yBK4FfyFv55AQD
+         c+sZ0lQ4f4v7NkuzSC1+T18oNu1A8njDVU3F7FHb8qT203+lM3KyoTVqgCXT9yE6m7mj
+         Q4l6juNL8aTSlP0ZfPvW4H3gU2uarnp5tzqgJVmGDzgacBibU/YoPP7HLWLFTx/eirkJ
+         XB+nzoyUCAPIExp77T0h7x8/zpnoQu0HAzk7iusiV0NPnvYer5qluaP3ehivQKvvC1/8
+         zX9T43S1NcOxcc/x7DKrBm1EOICEXef3BNkA37SOK6UJdpny+khTMk52sKoQO72MA4Q8
+         siIg==
+X-Forwarded-Encrypted: i=1; AJvYcCXsh/dYyrVRZK2mC4G0gQ5G6FOKENhGzqHVRBD9XqlTApuQarZAgWzwjxQhuCWwCPYfbvNaoKwRKjF6@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyT2Z6HpRR9J3X9FsdFKQ1aQZZSWaz4l0b8vfi4aY1q0nLOdxE
+	dfxXNmJVMarwISUrzB2cCWer/JE4NyfqiWvLVPdQVerfXVEkmpsK1svD8vZlTOPf/aLAHCaPYuJ
+	j6uk2ITY5gD6/sc8G8LAuHIqCHPjjOV0=
+X-Gm-Gg: ASbGncvIMQ8k7ZG7Zg/YRpFEN+vEYe7+002bI0StiMiQ6EAo2u3zKJWA/BEbM0ffnuR
+	HlQGsX2hVNFJGZO0TJa7pE/t6zGDPXx7gTUkzYVro3FOsUj9LjtM5gEcn/j803y+uhJhWsghAcH
+	faPxKyOiSRCaKA6aFeaclEJRg0AwHdmyGRrSI+C2YBq9WqlpEHJIyVdOpR3/hwNHr2PWJYM8IjZ
+	aV2NfI4isGTWn2vMZEb6kcFptpZQR6jiaP0TdFjMio8QcxLVeE2OD7a7BQFJWHLACoock5UOH7E
+	sKXr1x4up/SE9es=
+X-Google-Smtp-Source: AGHT+IHLCK4ACBaTIUEA/LGVtl3MWQLwbAyoauPQDGgrE+Yd88kcEKxoUMbTBKKt6QPyVCxc2yUDu07Tlaopdnhokyw=
+X-Received: by 2002:a05:690e:246:b0:63c:da95:21a4 with SMTP id
+ 956f58d0204a3-63cda9524a8mr11633399d50.25.1760366098354; Mon, 13 Oct 2025
+ 07:34:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External] Re: [PATCH] block: enable per-cpu bio cache by default
-To: Fengnan Chang <changfengnan@bytedance.com>,
- Christoph Hellwig <hch@infradead.org>
-Cc: fengnan chang <fengnanchang@gmail.com>, axboe@kernel.dk,
- viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
- willy@infradead.org, djwong@kernel.org, ritesh.list@gmail.com,
- linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org
-References: <20251011013312.20698-1-changfengnan@bytedance.com>
- <aOxxBS8075_gMXgy@infradead.org>
- <CALWNXx8pDOvDdNvw+v0rEyi33W8TL+OZW1YiFbF6Gns3PeWOLA@mail.gmail.com>
- <aOyb-NyCopUKridK@infradead.org>
- <CAPFOzZumoCERUj+VuegQNoAwFCoGxiaASD6R_4bE+p1TVbspUA@mail.gmail.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAPFOzZumoCERUj+VuegQNoAwFCoGxiaASD6R_4bE+p1TVbspUA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20250930112810.315095-1-kartikey406@gmail.com> <4962e5a0-a03e-4e9a-8f8e-5db04504c30e@huaweicloud.com>
+In-Reply-To: <4962e5a0-a03e-4e9a-8f8e-5db04504c30e@huaweicloud.com>
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+Date: Mon, 13 Oct 2025 20:04:46 +0530
+X-Gm-Features: AS18NWA6PkfGAzcoJajFKMNWANM0EYZlmu0IVwjM_yZHVDaXZ0OiTvbHLF7CG7g
+Message-ID: <CADhLXY7Q87ZAMV_j0a003pNqJ0GNqEpC9gBLAeTaW1pz=589UQ@mail.gmail.com>
+Subject: Re: [PATCH v4] ext4: detect invalid INLINE_DATA + EXTENTS flag combination
+To: tytso@mit.edu
+Cc: Zhang Yi <yi.zhang@huaweicloud.com>, adilger.kernel@dilger.ca, 
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzbot+038b7bf43423e132b308@syzkaller.appspotmail.com, 
+	Zhang Yi <yi.zhang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/13/25 13:58, Fengnan Chang wrote:
-> Christoph Hellwig <hch@infradead.org> 于2025年10月13日周一 14:28写道：
->>
->> On Mon, Oct 13, 2025 at 01:42:47PM +0800, fengnan chang wrote:
->>>> Just set the req flag in the branch instead of unconditionally setting
->>>> it and then clearing it.
->>>
->>> clearing this flag is necessary, because bio_alloc_clone will call this in
->>> boot stage, maybe the bs->cache of the new bio is not initialized yet.
->>
->> Given that we're using the flag by default and setting it here,
->> bio_alloc_clone should not inherit it.  In fact we should probably
->> figure out a way to remove it entirely, but if that is not possible
->> it should only be set when the cache was actually used.
-> 
-> For now bio_alloc_clone will inherit all flag of source bio, IMO if only not
-> inherit REQ_ALLOC_CACHE, it's a little strange.
-> The REQ_ALLOC_CACHE flag can not remove entirely.  maybe we can
-> modify like this:
-> 
-> if (bs->cache && nr_vecs <= BIO_INLINE_VECS) {
->      opf |= REQ_ALLOC_CACHE;
->      bio = bio_alloc_percpu_cache(bdev, nr_vecs, opf,
->      gfp_mask, bs);
->      if (bio)
->          return bio;
->      /*
->       * No cached bio available, bio returned below marked with
->       * REQ_ALLOC_CACHE to participate in per-cpu alloc cache.
->      */
-> } else
->          opf &= ~REQ_ALLOC_CACHE;
-> 
->>
->>>>> +     /*
->>>>> +      * Even REQ_ALLOC_CACHE is enabled by default, we still need this to
->>>>> +      * mark bio is allocated by bio_alloc_bioset.
->>>>> +      */
->>>>>        if (rq->cmd_flags & REQ_ALLOC_CACHE && (nr_vecs <= BIO_INLINE_VECS)) {
->>>>
->>>> I can't really parse the comment, can you explain what you mean?
->>>
->>> This is to tell others that REQ_ALLOC_CACHE can't be deleted here, and
->>> that this flag
->>> serves other purposes here.
->>
->> So what can't it be deleted?
-> 
-> blk_rq_map_bio_alloc use REQ_ALLOC_CACHE to tell whether to use
-> bio_alloc_bioset or bio_kmalloc, I considered removing the flag in
-> blk_rq_map_bio_alloc, but then there would have to be the introduction
-> of a new flag like  REQ_xx. So I keep this and comment.
+Hi Theodore,
 
-That can likely be made unconditional as well. Regardless of that,
-it can't be removed without additional changes because it's used to
-avoid de-allocating into the pcpu cache requests that wasn't
-allocated for it. i.e.
+Just following up on this patch to check if there are any further
+comments or if anything else is needed from my side
 
-if (bio->bi_opf & REQ_ALLOC_CACHE)
-	bio_put_percpu_cache(bio);
-else
-	bio_free(bio);
-
-Without it under memory pressure you can end up in a situation
-where bios are put into pcpu caches of other CPUs and can't be
-reallocated by the current CPU, effectively loosing the mempool
-forward progress guarantees. See:
-
-commit 759aa12f19155fe4e4fb4740450b4aa4233b7d9f
-Author: Pavel Begunkov <asml.silence@gmail.com>
-Date:   Wed Nov 2 15:18:20 2022 +0000
-
-     bio: don't rob starving biosets of bios
-
--- 
-Pavel Begunkov
-
+Thanks
 
