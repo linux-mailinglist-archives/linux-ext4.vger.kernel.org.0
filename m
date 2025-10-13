@@ -1,109 +1,110 @@
-Return-Path: <linux-ext4+bounces-10843-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10844-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61212BD2CC2
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 13:35:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2498EBD2DE2
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 13:58:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9CBC6348D1C
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 11:35:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2C823C2858
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 11:58:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443B4263F22;
-	Mon, 13 Oct 2025 11:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41F7263F49;
+	Mon, 13 Oct 2025 11:58:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VvBNMu31";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eIxwR+o+";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VvBNMu31";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eIxwR+o+"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LHzybpyB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Qgh3oEVH";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ME29yvbc";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+GQ6nB/u"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4322325A343
-	for <linux-ext4@vger.kernel.org>; Mon, 13 Oct 2025 11:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB3C20CCFE
+	for <linux-ext4@vger.kernel.org>; Mon, 13 Oct 2025 11:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760355292; cv=none; b=XCwo5evoBwhviuxfPpYYY7wBdYcNb/Dx1GK3vWhbckGLpUo2Ue00JlcWutLE31m0gPCUIOU3K+H+oh9bY/bJ2dBHuV47u/ZdcAZIP2zNGpmi/zry+eyZs+XPnqqryDNWcC35V/mCnmUE3z8MLTD9C6sEMoTqxqbENAtqyITUzns=
+	t=1760356704; cv=none; b=is0PsYaPm6JlkTNng24jEcBrH5EmNFv7tVZT/c7lTHHUbkSUAMbkEKOJMXpA3MGBSUBeY7uTYcThtWQK6d7SN2itgIIMW7DACAbk9Fb7D737OsyuIdDu+P+T8aZ+6kiUSky9kQsR79QEFRlcLRGskh067OWiBu+op+H8Ob2GWqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760355292; c=relaxed/simple;
-	bh=IPK5+g4OJiHIz59a98xtTy3KkJqMxFh29aL+Vuj2Esk=;
+	s=arc-20240116; t=1760356704; c=relaxed/simple;
+	bh=1/voeyOH+3bfRyIpXxZZWKU2x+V7cyuKOmi/1F1Wyzo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tEfvco/ww9H1sqnqZeGm4Z9HhNGNG7Szi11tzQPE6eOIFj1TlDKHjhojp0NuDF80QdVq5BjNWPPUi303H2aEjZ3nrl2AEtWN0KiCiXDDaF4wm35/DSjWWGOwUCdmHSMVarFLZ6sZ/JffC+EHZ6MerQEHi3z+xZoeIn3ZUlJ2G8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VvBNMu31; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eIxwR+o+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VvBNMu31; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eIxwR+o+; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=TlJSrwc5JLv8u6T2h/6gBYS1hKCrAJPVU+5/6J2ZlkCbkvIhtediPXg9sCAqQxMZS7ga2HdF7etMiaPtkPzTIDwWvq1/gUXC5auBYGv9nu/S044V9Iz6p0kyUUR5NTRQfKr6nte3noGUrlX4DLawsMjrVm+96iCpb750H2X6/+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LHzybpyB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Qgh3oEVH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ME29yvbc; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+GQ6nB/u; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8C39321A23;
-	Mon, 13 Oct 2025 11:34:49 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D99E2219AB;
+	Mon, 13 Oct 2025 11:58:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760355289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1760356700; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZruJ2vBh/q3aJxQpIVa0GdVinSL6t74qWuGCsK+kFcE=;
-	b=VvBNMu317BLFpyXxQhUXDUkOIY2f93s7yBDExd2dJ1Wip2HTbvnMxf2pDOtx1jG+WwGmNr
-	NvkgEtj8LFuUQbg0FgsMPMO61RbFJLm5BSFIoUa1LeqiLgGucURHQ0DrD2mFIlVHY/Cqi2
-	pXVFeiJmkQ6m8Mq4xjYyrTB0whJQge0=
+	bh=BPZNntVP7wQ8uxjyDhXSga5p6bLX+QQQQkULf/eXU6Q=;
+	b=LHzybpyB0GLJakHDKi3v7mSUdW9sAkVSckJjEIYU7uionamZ8B8jl1KTbGeKT00iy1lEuI
+	WKI43I0cicxVj/CLUtuUgnH8+OkMsKb5FLUoSmCTkm7TMt+dSjcvbp5TsWFGzuPh567c2G
+	38FD0LDh/nHQBeFHEXPf32xy4RS8GrM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760355289;
+	s=susede2_ed25519; t=1760356700;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZruJ2vBh/q3aJxQpIVa0GdVinSL6t74qWuGCsK+kFcE=;
-	b=eIxwR+o+i99D6DbKhFQXkZC3sTtXrJ9ZPNH+LEnDSYsN/hrMWUAJh0H6bTqAE/+nRdMTEy
-	GroDypH7K6FlH7Dw==
+	bh=BPZNntVP7wQ8uxjyDhXSga5p6bLX+QQQQkULf/eXU6Q=;
+	b=Qgh3oEVHWWIesaXhtgPESImlj3Mbme3RyXo8inUKxZESl8DLVG9QTAg2Lti/jFyfIiiau9
+	B2fY66kOepwpv7Cg==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760355289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1760356699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZruJ2vBh/q3aJxQpIVa0GdVinSL6t74qWuGCsK+kFcE=;
-	b=VvBNMu317BLFpyXxQhUXDUkOIY2f93s7yBDExd2dJ1Wip2HTbvnMxf2pDOtx1jG+WwGmNr
-	NvkgEtj8LFuUQbg0FgsMPMO61RbFJLm5BSFIoUa1LeqiLgGucURHQ0DrD2mFIlVHY/Cqi2
-	pXVFeiJmkQ6m8Mq4xjYyrTB0whJQge0=
+	bh=BPZNntVP7wQ8uxjyDhXSga5p6bLX+QQQQkULf/eXU6Q=;
+	b=ME29yvbcQ/MbJF53rFA6iT5e32yP3OhIHjaDcaOMTyWZug0IIw6GrktxYOOzwhwmM5fvV3
+	nd3sCEW/6Ew1uGaomnCVpxSwK+mYoJmrdqoxHaAiBwEyOjz7ZRKy2dyNZh1KXf3D8oSUzU
+	zLvv73wixItoXsvggoNyAvHt5BKHaDQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760355289;
+	s=susede2_ed25519; t=1760356699;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZruJ2vBh/q3aJxQpIVa0GdVinSL6t74qWuGCsK+kFcE=;
-	b=eIxwR+o+i99D6DbKhFQXkZC3sTtXrJ9ZPNH+LEnDSYsN/hrMWUAJh0H6bTqAE/+nRdMTEy
-	GroDypH7K6FlH7Dw==
+	bh=BPZNntVP7wQ8uxjyDhXSga5p6bLX+QQQQkULf/eXU6Q=;
+	b=+GQ6nB/uGXVIcxmT+F8khHkzFYthRB5g+YdjO+rW4+iS7ALtG00KT8SsjWel7sDbDJ1Yih
+	7Mnz5AnHeYOb11Cw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7623C1374A;
-	Mon, 13 Oct 2025 11:34:49 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C6F3213874;
+	Mon, 13 Oct 2025 11:58:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FcPUHNnj7GjwaQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 13 Oct 2025 11:34:49 +0000
+	id zHCMMFvp7GgCAgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 13 Oct 2025 11:58:19 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id F1018A0A58; Mon, 13 Oct 2025 13:34:48 +0200 (CEST)
-Date: Mon, 13 Oct 2025 13:34:48 +0200
+	id 72419A0A58; Mon, 13 Oct 2025 13:58:15 +0200 (CEST)
+Date: Mon, 13 Oct 2025 13:58:15 +0200
 From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
-	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
-	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Josef Bacik <josef@toxicpanda.com>, Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org, 
-	v9fs@lists.linux.dev, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, jfs-discussion@lists.sourceforge.net, 
-	ocfs2-devel@lists.linux.dev, linux-xfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 03/10] ocfs2: don't opencode filemap_fdatawrite_range in
- ocfs2_journal_submit_inode_data_buffers
-Message-ID: <cqprjkby6ge4vvcxmmxrdhngsbigp2mms4oqxaspai63dkuvgg@3wtgz7qgxgbt>
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Eric Van Hensbergen <ericvh@kernel.org>, 
+	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
+	Christian Schoenebeck <linux_oss@crudebyte.com>, Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, 
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
+	Joseph Qi <joseph.qi@linux.alibaba.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Josef Bacik <josef@toxicpanda.com>, Jan Kara <jack@suse.cz>, 
+	linux-block@vger.kernel.org, v9fs@lists.linux.dev, linux-btrfs@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	jfs-discussion@lists.sourceforge.net, ocfs2-devel@lists.linux.dev, linux-xfs@vger.kernel.org, 
+	linux-mm@kvack.org
+Subject: Re: [PATCH 06/10] mm,btrfs: add a filemap_fdatawrite_kick_nr helper
+Message-ID: <4bcpiwrhbrraau7nlp6mxbffprtnlv3piqyn7xkm7j2txxqlmn@3knyilc526ts>
 References: <20251013025808.4111128-1-hch@lst.de>
- <20251013025808.4111128-4-hch@lst.de>
+ <20251013025808.4111128-7-hch@lst.de>
+ <74593bac-929b-4496-80e0-43d0f54d6b4c@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -112,7 +113,8 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251013025808.4111128-4-hch@lst.de>
+In-Reply-To: <74593bac-929b-4496-80e0-43d0f54d6b4c@kernel.org>
+X-Spam-Level: 
 X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -123,7 +125,7 @@ X-Spamd-Result: default: False [-3.80 / 50.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
+	RCPT_COUNT_TWELVE(0.00)[25];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
 	TO_DN_SOME(0.00)[];
@@ -132,55 +134,42 @@ X-Spamd-Result: default: False [-3.80 / 50.00];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,imap1.dmz-prg2.suse.org:helo,lst.de:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,lst.de:email,imap1.dmz-prg2.suse.org:helo]
 X-Spam-Flag: NO
 X-Spam-Score: -3.80
-X-Spam-Level: 
 
-On Mon 13-10-25 11:57:58, Christoph Hellwig wrote:
-> Use filemap_fdatawrite_range instead of opencoding the logic using
-> filemap_fdatawrite_wbc.  There is a slight change in the conversion
-> as nr_to_write is now set to LONG_MAX instead of double the number
-> of the pages in the range.  LONG_MAX is the usual nr_to_write for
-> WB_SYNC_ALL writeback, and the value expected by lower layers here.
+On Mon 13-10-25 17:01:01, Damien Le Moal wrote:
+> On 2025/10/13 11:58, Christoph Hellwig wrote:
+> > Abstract out the btrfs-specific behavior of kicking off I/O on a number
+> > of pages on an address_space into a well-defined helper.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> One nit below.
+> 
+> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+> 
+> 
+> > +/*
+> > + * Start writeback on @nr_to_write pages from @mapping.  No one but the existing
+> > + * btrfs caller should be using this.  Talk to linux-mm if you think adding a
+> > + * new caller is a good idea.
+> > + */
+> > +int filemap_fdatawrite_kick_nr(struct address_space *mapping, long *nr_to_write)
+> 
+> Not a huge fan of this name. Maybe filemap_fdatawrite_nrpages() ?
 
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
+I don't love filemap_fdatawrite_kick_nr() either. Your
+filemap_fdatawrite_nrpages() is better but so far we had the distinction
+that filemap_fdatawrite* is for data integrity writeback and filemap_flush
+is for memory cleaning writeback. And in some places this is important
+distinction which I'd like to keep obvious in the naming. So I'd prefer
+something like filemap_flush_nrpages() (to stay consistent with previous
+naming) or if Christoph doesn't like flush (as that's kind of overloaded
+word) we could have filemap_writeback_nrpages().
 
 								Honza
 
-> ---
->  fs/ocfs2/journal.c | 11 ++---------
->  1 file changed, 2 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-> index e5f58ff2175f..85239807dec7 100644
-> --- a/fs/ocfs2/journal.c
-> +++ b/fs/ocfs2/journal.c
-> @@ -902,15 +902,8 @@ int ocfs2_journal_alloc(struct ocfs2_super *osb)
->  
->  static int ocfs2_journal_submit_inode_data_buffers(struct jbd2_inode *jinode)
->  {
-> -	struct address_space *mapping = jinode->i_vfs_inode->i_mapping;
-> -	struct writeback_control wbc = {
-> -		.sync_mode =  WB_SYNC_ALL,
-> -		.nr_to_write = mapping->nrpages * 2,
-> -		.range_start = jinode->i_dirty_start,
-> -		.range_end = jinode->i_dirty_end,
-> -	};
-> -
-> -	return filemap_fdatawrite_wbc(mapping, &wbc);
-> +	return filemap_fdatawrite_range(jinode->i_vfs_inode->i_mapping,
-> +			jinode->i_dirty_start, jinode->i_dirty_end);
->  }
->  
->  int ocfs2_journal_init(struct ocfs2_super *osb, int *dirty)
-> -- 
-> 2.47.3
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
