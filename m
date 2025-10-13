@@ -1,230 +1,223 @@
-Return-Path: <linux-ext4+bounces-10790-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10801-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B17F4BD1185
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 03:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97DE1BD124D
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 03:56:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 641BC3BB6B0
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 01:29:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E88483C13E7
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Oct 2025 01:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6635D228C9D;
-	Mon, 13 Oct 2025 01:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256FD2F3C14;
+	Mon, 13 Oct 2025 01:52:51 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D79934BA2C;
-	Mon, 13 Oct 2025 01:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA062F1FD5;
+	Mon, 13 Oct 2025 01:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760318947; cv=none; b=jHLlFOOvvmbU3tl9Sgd8ZltdJ3279SNotS11xw21knQLp1OYTOF2DhLFWos6WQHVDrplLhP+1itt3dm6E8yek/4cpQAwLZM7v8xTPmCQHacp0k2N//vHBfNZ9NOc3usMLy/qL0WGFwO3OvV5FM63M0GvR5VVIbyEX4XUC9gRPv0=
+	t=1760320370; cv=none; b=CiCQ80zNcyIhsnz/RABMLbEX8gxAnrZTi5NkkKloGMMmHOAwCUAWmmVTPxQxbT3Z0s/Uz068b3H/fN/xiQ7xVKFsibfDHGhJGypoYpmI0OGsC/c5Bvyz1zUw7faNIbuomupzn35bhTMw/oCPKS11yIn35Lkv+UMEnDja/UXZgog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760318947; c=relaxed/simple;
-	bh=pF3SfRA5dJFIspkqg6jyyfpkzqFi8q+zCIaQtyNC6+s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rm/z4HuNUrH2f0B2kqBDUe6r+12cXwaaglrAyQiO6JqXbmVIEu9hpTit23sH9/+JVMk06B+AQAdiYEaKamLaZQoOsLI39pJcUumjQWnyvXSdSysvKjUER/G0OU5VfOVHQTUCIkt0i77CI97gMMPXHittGKqebTc8OF9apttupF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c45ff70000001609-c3-68ec55dc0baf
-Date: Mon, 13 Oct 2025 10:28:55 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-	will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-	joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-	duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-	tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-	amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
-	linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-	minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-	sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-	ngupta@vflare.org, linux-block@vger.kernel.org,
-	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-	jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
-	djwong@kernel.org, dri-devel@lists.freedesktop.org,
-	rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-	hamohammed.sa@gmail.com, harry.yoo@oracle.com,
-	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
-	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
-	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com,
-	yeoreum.yun@arm.com, netdev@vger.kernel.org,
-	matthew.brost@intel.com, her0gyugyu@gmail.com, corbet@lwn.net,
-	catalin.marinas@arm.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-	sumit.semwal@linaro.org, gustavo@padovan.org,
-	christian.koenig@amd.com, andi.shyti@kernel.org, arnd@arndb.de,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
-	rppt@kernel.org, surenb@google.com, mcgrof@kernel.org,
-	petr.pavlu@suse.com, da.gomez@kernel.org, samitolvanen@google.com,
-	paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
-	chuck.lever@oracle.com, neil@brown.name, okorniev@redhat.com,
-	Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
-	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
-	clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
-	kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
-	broonie@kernel.org, kevin.brodsky@arm.com, dwmw@amazon.co.uk,
-	shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
-	yuzhao@google.com, baolin.wang@linux.alibaba.com,
-	usamaarif642@gmail.com, joel.granados@kernel.org,
-	richard.weiyang@gmail.com, geert+renesas@glider.be,
-	tim.c.chen@linux.intel.com, linux@treblig.org,
-	alexander.shishkin@linux.intel.com, lillian@star-ark.net,
-	chenhuacai@kernel.org, francesco@valla.it,
-	guoweikang.kernel@gmail.com, link@vivo.com, jpoimboe@kernel.org,
-	masahiroy@kernel.org, brauner@kernel.org,
-	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com,
-	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
-	rcu@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v17 28/47] dept: add documentation for dept
-Message-ID: <20251013012855.GB52546@system.software.com>
-References: <20251002081247.51255-1-byungchul@sk.com>
- <20251002081247.51255-29-byungchul@sk.com>
- <aN84jKyrE1BumpLj@archie.me>
+	s=arc-20240116; t=1760320370; c=relaxed/simple;
+	bh=N3uVvVMN5IAh4yxwxEKCNtnywoGkrorWxTZ5T1ObEKY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NHDeXDiJgzevtNesEAAKLucJvu+Lx+ej1KaL8HM/wBycramIkxdcnvluEelxje9oLyip6KLJmIRA00iAYJP1GivW0HM4bR6OVyiGTUw5Askm2utXuqiu8baac6cavNX0nU9mHTrKyyhdxe4lZXbSNumknzsLn1u/QxWlGF62iDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4clL1r5pQQzYQtLs;
+	Mon, 13 Oct 2025 09:52:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 6BF6C1A13E6;
+	Mon, 13 Oct 2025 09:52:39 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.85.155])
+	by APP2 (Coremail) with SMTP id Syh0CgCn_UVfW+xoNhu7AA--.53067S4;
+	Mon, 13 Oct 2025 09:52:38 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	libaokun1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v4 00/12] ext4: optimize online defragment
+Date: Mon, 13 Oct 2025 09:51:16 +0800
+Message-ID: <20251013015128.499308-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aN84jKyrE1BumpLj@archie.me>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTZxjG853Ldw4N1WNl4VNiiF3IhESxC+o754VptpwlGjRG3dSojRxt
-	lYspysREbcPFimNTlmIojktKkLFGpSioKCmNgkRbLip2g1FuIkTLH1oqWCCjGKP//d7ned4n
-	7x8vTyvc7EJem3JM0qWok5RYxsi8oWVLu7e/1iz3N30LnQY7A0ZbIQueMSOCqfwmDnwTXRyY
-	DAhMfYMYLo0YGDAPFXHg9dSzMFVwBALOVhoumdoQDF8/i2D0Oob2V5PUTBRDQXU4TFRUcfDY
-	0s1AkfMJC5N9Kmj6+yUHV72tLNj+eYDA97SPAuuvQzSU5ZQzUFjcjcE45UOgL3rHQpv9EQuP
-	mh4y0Nfrnhkv5rHgvvACgaHRwsCbcj8DzXl2Cs4O12PIKa+moMHYS8H9a3UU2KydGGpsJhpM
-	k0YMhrceBIHxyxj+9KniVWJ2xxQWrcVWJAbe5yPxtvk/Tsxq+JcTS23Hxaz7XlasqYwRLXdH
-	KNFWdQ6Loy4XJ5bpTbRY3LJV7JoeoMW8zFEs3s72sFvCd8nWJEpJ2nRJF7tuv0xzb9zFHD0f
-	dsJflIn0yDInF4XwRIgjnaWt6COX9DvYIDNCFPE6G2Z1LHxF3O4JOshhwhLSUjPO5SIZTwt1
-	EaT9xsCsMV9YT1zPrLMLcgGIr64EBUMKwYCIK+8G88GYR1oKB2eZFmKIe3qEykX8DEeQK9N8
-	UA4RoonH6cVB/kL4kthrm6lgDxH6Q0hPiRt/uHQBaax0MxeQYP6s1vxZrflTbSmiq5BCm5Ke
-	rNYmxS3TZKRoTyw7kJpsQzP/VnFqcvct9KZtmwMJPFKGyjX1rzQKVp2elpHsQISnlWHyiznD
-	GoU8UZ1xUtKl7tMdT5LSHCiCZ5Th8q/9vyQqhEPqY9IRSToq6T66FB+yUI/iv4l1/Lz3+WKc
-	r1q52bVh400cGZqwrrry6rsHcwM9fHT2zjP31iyKGk+ODhyO+uG3xJxTrvZbe9pr167yDODf
-	O/pdmZl3Vm+3D46N1Pq78CZ9XcJ3BwsSLC0vT1f8NBbZ4di647KlN/59bNaCoUjLH9831/c4
-	U+c2rlj541/quHO7whVKJk2jVsXQujT1/6oVpudrAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTZxTHfe69vffSUHLtSngUh0mNuhGBmWh2si2bn+aNi8ZoFqNmmTfz
-	xjaUYlpXxYWEWtkYvqx0aZFWpULoDNSBpaiM1DR1q0Eo2oFKJtDhqoLQsYzyJhTWsizzy8nv
-	nN/5J+fDYUl5QrKaVWuPiTqtoFHSUkq6631T3sCn46p3JhtWwSOjn4KpeAUFF5vdNFR4aiTw
-	4McmBJGpCgQz8w4SytuXKEhYggzE554wYDUiWPIFEdjCFhLcXiMBky2LNIzd+RuBdThKQ/Wo
-	kYIJ11kE9ucOBkZ/2Q6xSIcElgZfEPB4ehyBK7pIQNT/DYKErRBq61ppmA/dJ6Ha+gDBleFB
-	EkZaktIbHELgu3qKhmfmNhJ6oxnQNzVBQ6f1DA2x8EUC/myhwXnKJ4FLDgsCU30zDbZLHgra
-	f/+JgfDYAgEDNgsBTZ6dEHE9p6DLXEck70tuXc8CR7WJSJYRAqzXOgiYczUy0F0/QIGrbD04
-	Qr0SeHrVzsDC8GZYchZDsOkFA4PfWaltNsTPlJ+n+MbWGwRf/muC5t2X3Yiff2VBfLzBRPLl
-	5mR7Z3yC5E+3HucbusZp/tXUQ5r3TTsp/l4d5qtCeXy7fZDhT9/+jdn93gHpB4dFjdog6go+
-	PCRV+WZ7qKNnFCemHSZUhuozKlEai7ktuPZpQJJiiluPY6HbKMU0txH398+RKVZwb+HO1lmm
-	EklZkruZjcPeP5bFG9xHuOehezkg4wDHb9ai1JKcMyLcc85L/StW4s6a6DKTXC7uXxwlKhGb
-	5Gz8wyKbGqdxb+NIKEanOJNbh/037hJmJLO/lra/lrb/n3YishEp1FpDkaDWbM3XF6pKtOoT
-	+V8UF3lQ8ildpQtVt1C8d3sAcSxSpstUHWMquUQw6EuKAgizpFIhq/p6RCWXHRZKToq64s91
-	X2pEfQBls5QyS7Zjn3hIzh0RjomFonhU1P1nCTZtdRny1e4xXT8y9MRW9RJrMrW33u14PNTd
-	pzj4cYH35Q5DW9Ce2RxOLzDTipx9e3M/c3hItrt4Y9aKPZIN/q41+7e9uTUnbl678EhIK32m
-	adty4ORfm2LpwmT27NkLBuf3gcim46Ur/TUVI4nRn2fOF+Wv+KTh2wtfhWN5fTmGtXczVlUO
-	KSm9SticS+r0wj/gdz/3kAMAAA==
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgCn_UVfW+xoNhu7AA--.53067S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3JFyfAF1xGFyxCw1DuFWkCrg_yoW7ZFykpa
+	yakw48KrykJw1ku3yxAFs2qryYkw4rGr47CF15Jr15CF4YqFy8WFWFga98ZFy8ArWxX34Y
+	vF4Iyr1Du3WDAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoWlkDUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Fri, Oct 03, 2025 at 09:44:28AM +0700, Bagas Sanjaya wrote:
-> On Thu, Oct 02, 2025 at 05:12:28PM +0900, Byungchul Park wrote:
-> > This document describes the concept and APIs of dept.
-> >
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > ---
-> >  Documentation/dependency/dept.txt     | 735 ++++++++++++++++++++++++++
-> >  Documentation/dependency/dept_api.txt | 117 ++++
-> >  2 files changed, 852 insertions(+)
-> >  create mode 100644 Documentation/dependency/dept.txt
-> >  create mode 100644 Documentation/dependency/dept_api.txt
-> 
-> What about writing dept docs in reST (like the rest of kernel documentation)?
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Sorry for late reply, but sure.  I should and will.  Thank you!
+Changes since v3:
+ - Patch 09, preserve the error number when copying data in
+   mext_move_extent().
+ - Add review tag in patch 10 from Jan.
+Changes since v2:
+ - Rebase patches to the 6.18-5472d60c129f.
+ - Patch 02, add a TODO comment, we should optimize the increasement of
+   the extents sequence counter ext4_es_insert_extent() in the future as
+   Jan suggested.
+ - Patch 09, add a WARN_ON_ONCE if ext4_swap_extents() return
+   successfully but the swapped length is shorter than required. Also,
+   copy data if some extents have been swapped to prevent data loss.
+   Finally, fix the comment as Jan suggested.
+ - Patch 10, fix the increasement of moved_len in ext4_move_extents()
+   as Jan pointed out.
+ - Patch 11, fix potential overflow issues on the left shift as Jan
+   pointed out.
+ - Add review tag in patch 01-08,11-12 from Jan.
+Changes since v1:
+ - Fix the syzbot issues reported in v1 by adjusting the order of
+   parameter checks in mext_check_validity() in patches 07 and 08.
 
-> ---- >8 ----
-> diff --git a/Documentation/dependency/dept.txt b/Documentation/locking/dept.rst
-> similarity index 92%
-> rename from Documentation/dependency/dept.txt
-> rename to Documentation/locking/dept.rst
-> index 5dd358b96734e6..7b90a0d95f0876 100644
-> --- a/Documentation/dependency/dept.txt
-> +++ b/Documentation/locking/dept.rst
+v3: https://lore.kernel.org/linux-ext4/20251010103326.3353700-1-yi.zhang@huaweicloud.com/
+v2: https://lore.kernel.org/linux-ext4/20250925092610.1936929-1-yi.zhang@huaweicloud.com/
+v1: https://lore.kernel.org/linux-ext4/20250923012724.2378858-1-yi.zhang@huaweicloud.com/
 
-However, I'm not sure if dept is about locking.  dept is about general
-waits e.g. wait_for_completion(), wait_event(), and so on, rather than
-just waits involved in typical locking mechanisms e.g. spin lock, mutex,
-and so on.
 
-[snip]
+Original Description:
 
-> > +
-> > +   context X            context Y
-> > +
-			     /*
-			      * Acquired A.
-			      */
-> > +                        mutex_lock A
+Currently, the online defragmentation of the ext4 is primarily
+implemented through the move extent operation in the kernel. This
+extent-moving operates at the granularity of PAGE_SIZE, iteratively
+performing extent swapping and data movement operations, which is quite
+inefficient. Especially since ext4 now supports large folios, iterations
+at the PAGE_SIZE granularity are no longer practical and fail to
+leverage the advantages of large folios. Additionally, the current
+implementation is tightly coupled with buffer_head, making it unable to
+support after the conversion of buffered I/O processes to the iomap
+infrastructure.
 
-			     /*
-			      * Request something that will be handled
-			      * through e.g. wq, deamon or any its own
-			      * way, and then do 'complete B'.
-			      */
-			     request_xxx_and_complete_B();
-        /*
-	 * The request from
-	 * context Y has been
-	 * done.  So running
-	 * toward 'complete B'.
-	 */
+This patch set (based on 6.17-rc7) optimizes the extent-moving process,
+deprecates the old move_extent_per_page() interface, and introduces a
+new mext_move_extent() interface. The new interface iterates over and
+copies data based on the extents of the original file instead of the
+PAGE_SIZE, and supporting large folios. The data processing logic in the
+iteration remains largely consistent with previous versions, with no
+additional optimizations or changes made. 
 
-	/*
-	 * Wait for A to be
-	 * released, but will
-	 * never happen.
-	 */
-> > +   mutex_lock A <- DEADLOCK
-			     /*
-			      * Wait for 'complete B' to happen, but
-			      * will never happen.
-			      */
-> > +                        wait_for_complete B <- DEADLOCK
-	/*
-	 * Never reachable.
-	 */
-> > +   complete B
+Additionally, the primary objective of this set of patches is to prepare
+for converting the buffered I/O process for regular files to the iomap
+infrastructure. These patches decouple the buffer_head from the main
+extent-moving process, restricting its use to only the helpers
+mext_folio_mkwrite() and mext_folio_mkuptodate(), which handle updating
+and marking pages in the swapped page cache as dirty. The overall coding
+style of the extent-moving process aligns with the iomap infrastructure,
+laying the foundation for supporting online defragmentation once the
+iomap infrastructure is adopted.
 
-			     /*
-			      * Never reachable.
-			      */
-> > +                        mutex_unlock A
-> > +   mutex_unlock A
-> 
-> Can you explain how DEPT detects deadlock on the second example above (like
-> the first one being described in "How DEPT works" section)?
+Patch overview:
 
-Sure.  I added the explanation inline above.  Don't hesitate if you have
-any questions.  Thanks.
+Patch 1:    Fix a minor issue related to validity checking.
+Patch 2-4:  Introduce a sequence counter for the mapping extent status
+            tree, this also prepares for the iomap infrastructure.
+Patch 5-7:  Refactor the mext_check_arguments() helper function and the
+            validity checking to improve code readability.
+Patch 8-12: Drop move_extent_per_page() and switch to using the new
+            mext_move_extent(). Additionally, add support for large
+            folios.
 
-	Byungchul
-> 
-> Confused...
-> 
-> --
-> An old man doll... just what I always wanted! - Clara
+With this patch set, the efficiency of online defragmentation for the
+ext4 file system can also be improved under general circumstances. Below
+is a set of typical test obtained using the fio e4defrag ioengine on the
+environment with Intel Xeon Gold 6240 CPU, 400G memory and a NVMe SSD
+device.
+
+  [defrag]
+  directory=/mnt
+  filesize=400G
+  buffered=1
+  fadvise_hint=0
+  ioengine=e4defrag
+  bs=4k         # 4k,32k,128k
+  donorname=test.def
+  filename=test
+  inplace=0
+  rw=write
+  overwrite=0   # 0 for unwritten extent and 1 for written extent
+  numjobs=1
+  iodepth=1
+  runtime=30s
+
+  [w/o]
+   U 4k:    IOPS=225k,  BW=877MiB/s      # U: unwritten extent-moving
+   U 32k:   IOPS=33.2k, BW=1037MiB/s
+   U 128k:  IOPS=8510,  BW=1064MiB/s
+   M 4k:    IOPS=19.8k, BW=77.2MiB/s     # M: written extent-moving
+   M 32k:   IOPS=2502,  BW=78.2MiB/s
+   M 128k:  IOPS=635,   BW=79.5MiB/s
+
+  [w]
+   U 4k:    IOPS=246k,  BW=963MiB/s
+   U 32k:   IOPS=209k,  BW=6529MiB/s
+   U 128k:  IOPS=146k,  BW=17.8GiB/s
+   M 4k:    IOPS=19.5k, BW=76.2MiB/s
+   M 32k:   IOPS=4091,  BW=128MiB/s
+   M 128k:  IOPS=2814,  BW=352MiB/s 
+
+Best Regards,
+Yi.
+
+
+Zhang Yi (12):
+  ext4: correct the checking of quota files before moving extents
+  ext4: introduce seq counter for the extent status entry
+  ext4: make ext4_es_lookup_extent() pass out the extent seq counter
+  ext4: pass out extent seq counter when mapping blocks
+  ext4: use EXT4_B_TO_LBLK() in mext_check_arguments()
+  ext4: add mext_check_validity() to do basic check
+  ext4: refactor mext_check_arguments()
+  ext4: rename mext_page_mkuptodate() to mext_folio_mkuptodate()
+  ext4: introduce mext_move_extent()
+  ext4: switch to using the new extent movement method
+  ext4: add large folios support for moving extents
+  ext4: add two trace points for moving extents
+
+ fs/ext4/ext4.h              |   3 +
+ fs/ext4/extents.c           |   2 +-
+ fs/ext4/extents_status.c    |  31 +-
+ fs/ext4/extents_status.h    |   2 +-
+ fs/ext4/inode.c             |  28 +-
+ fs/ext4/ioctl.c             |  10 -
+ fs/ext4/move_extent.c       | 786 +++++++++++++++++-------------------
+ fs/ext4/super.c             |   1 +
+ include/trace/events/ext4.h |  97 ++++-
+ 9 files changed, 505 insertions(+), 455 deletions(-)
+
+-- 
+2.46.1
+
 
