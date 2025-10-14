@@ -1,109 +1,96 @@
-Return-Path: <linux-ext4+bounces-10872-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10873-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CAABDB4E0
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 22:46:13 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC307BDB815
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 23:57:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CD4A3AD2A6
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 20:46:03 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 89097354F7A
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 21:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A6AE307486;
-	Tue, 14 Oct 2025 20:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35C6C30CD9F;
+	Tue, 14 Oct 2025 21:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="D74hUHsV"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="T9FjswIc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADEB2DECB1
-	for <linux-ext4@vger.kernel.org>; Tue, 14 Oct 2025 20:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85A62E88B6
+	for <linux-ext4@vger.kernel.org>; Tue, 14 Oct 2025 21:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760474757; cv=none; b=m7+pHEXYop6vwZHpz8ef0/1tYgokzFslXkkiiH3NaRVWHlCdrWzbnUl6cmPJitbCPG7DQuxx53SayixmZL0NWaLhwE0G97KS6atKddu+F6zmkyiVlwsyiqoQwVQnuHRN1Yt2teFlZP5sgMXC86TfnPQoF3gdGeE8fd3eCPn7/AY=
+	t=1760479048; cv=none; b=Deu1BxTHIE9GpR3Tdoo7hVbZd0UE7w/aWUFxMZRHpvAXWuICC7oVUVsfAkrO7skdYiV5NFOYW0jSj2xYnvNW5V55eqw/u9bVWwNG79Tu97qp1v0gvkVIKzz+3bUGZqe5VaSqBkLplc0VhBd4rKzIsgBQQUqsZkiFSHnHW9bsFl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760474757; c=relaxed/simple;
-	bh=mLMiOvkuQ1waPsYJBAJdPUyickusJQ8ORxj4y3Zep3Q=;
+	s=arc-20240116; t=1760479048; c=relaxed/simple;
+	bh=lbp/svBrqIT8k+MRq3/jmjxuU8akOPgMPTESYka1epE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WXOlfqqDmV/suyCenDJyCGmPBJO0OSH0aB/U2UaxbEzHD9OvEQ/ECj0ATi7yc6Vg0Cc/6XpZaw9Bk560NZuIpLOLv/wtZ664C1ricgt6IZPKpf4HGXdQe1clwLoD9WjlIu2AhHIi+TiNitiOKLMOVRB4xxhlHIEWH5sPfnUjik4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=D74hUHsV; arc=none smtp.client-ip=209.85.216.41
+	 Content-Type:Content-Disposition:In-Reply-To; b=tkHil6ySS/arTpewtAsSvU+OfSqI0ScG0Nu5eqmYNvNKu2ys4gWCO61urw+1jsdTJQPSa4mk8t/u7p9GxGYd7YCirhFNhUDNFhq+o7G09qTIww5aTzjArho0vXowxQNOvEjMQpxpiI1Ge4RxLO2s3PkAR2HCcvOPLbbLVS6Bb9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=T9FjswIc; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-33082aed31dso6064732a91.3
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Oct 2025 13:45:55 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-794e300e20dso245089b3a.1
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Oct 2025 14:57:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1760474754; x=1761079554; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1760479046; x=1761083846; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ProMLWdJiYhd+ReUg4Q/nfu5OGup3NKBCnvPEIlS8hk=;
-        b=D74hUHsVIAuXAszKT9OyaSP01aDFJeS4dtESAdmyVJsGXoAAl6SoLYFzgqG8sO3LVj
-         6ERxo1FSU1Y3JKmYIIaOBI7kPi3x4Gpy/qkXd2rlwvWCRrTYb1eyGj+5O2baZ6fukQik
-         Gb4qo2yhiBLvajFZ1uKdHX00YcoaXpBLLYt1ZH+9jgc4mxK3LSaG3HibkB4KlKCev0e7
-         3Xiuj63FONPcDeoK99vIV5AkSYSkhgQq6jbXRMFs8xps1Rd79gaHNdZeCeH0pQZyYIlX
-         43GH4VKUCNcsCnnFnPE93PllXNK2XvANDk2T9wezW0mBUN0nkZ9WgYK8q0nQIF3CpbgA
-         CMfA==
+        bh=AL/bnV/py/dxrrqchUFB69kdjG2EwxKxcNMsAmNeKP0=;
+        b=T9FjswIcdHH/j2782D1jjnXNP42OV1TStmHEnhaKyPrqOsbVq9lQfvfZv3GCqPnHD8
+         FexeoNXr3/gm3oCR/0fP2A3kMQ4O8hZjZlZs5bHR6KK7D52M04Q8LLKmoNukfj521A3p
+         sx4DxPtKTjzkrOpxhir6wMCuPKzdV7iifb99ogfvN80U8/qJNKEJttNWXwOGOxyovtPt
+         1KybvFhAZBPZ7QT3cLgvrcVjxoWkmfgcEIbeRc0d7Kf044/O1eXmAKkl6zfRrqnsnBAZ
+         ZrXMMCoeBhowPB7sMJ/esusntK1LQWjp/Pc4IlmJ2IJBA4N+e8cCd1lN8kPIsP3nlgzP
+         zp9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760474754; x=1761079554;
+        d=1e100.net; s=20230601; t=1760479046; x=1761083846;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ProMLWdJiYhd+ReUg4Q/nfu5OGup3NKBCnvPEIlS8hk=;
-        b=VNwcxoW+H/Z7/TDLod5JvO4fsQqpmuG+5Wtp3EYMY+dqimxBhlhozqA7+q4yyWnABq
-         6SdgIFD548zXQZ3F5qdoc6ehI0fH/TauPu1D1xcICVx38cOd3xfs2ZMt9Igp7B9u2M55
-         ApDQueBO6JfRLb2TdQko27ytIRsvULxa5+1HuPUbxF7WpRsF392nx1CZqQZGzXuL9umV
-         eVW7toaA7KY2yuWYpWiUsuGelPcn9QPs3xgq2fDTScrPJxlr6gD6q0mqFk4YRpksLO9P
-         wl7eWoRFE4LFAftgMgYLXvUiO97vMolTThB5Gu4Yemb+YqC46bBvflKW+ekDbNfjTw7p
-         So6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWvM5xdIhL4GxTRMMcgSseLuq5afC569hzJtXhW7aLpPRd38ZoLh5lg8xzvbR648TLVZdzPm7qiBett@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzjj4H8WnWHqtkbAIU2n90VaYrBJFwmvpgrc9361qgvrf2tj/Af
-	UyuFt9tMoNqbPPHlofxmhEKgUOkkFDCoVe45r5946gC3ms1j7Wco600mod+7EF5xDKY=
-X-Gm-Gg: ASbGncszwDesbMzmooAZgWBdur2Q8hIQrpAFZUsl6PQ7XUZItcPr2VSiWl8usqJ57FT
-	V/U9JFPwxa2saAdhV1x9uo/LxgTLg1t8qiCkDjg8MUEk6cAzY2flr9eTKJmh6hSHN3F13wl9c+k
-	bSuEgOuIIVEK5pvPsEUyYt+6LeK5XKzytxx8YyYOuhzfAEUwFF/oxFU54tJJUjWC8kBvsL/RVRq
-	2DPQUM+dSc3bVAlhGMporfVu3fetlTpHSooqRpdCmlJRxROPCqlP0PFDeYuionxtacxXHRejsjL
-	1YMf1bCkK1bJc/bZ2tv4AEaNyYoL5TFF/CSNkHgROY5KlOPQQz8VYGhi1KZX+q67ZZCY3nOchW3
-	7GBBc0GLQ1zXU+sSjWoSP1aZSXtpQLOa7lHoyNHMo+hyZ4J3t0sO7Sx1rPMM15NsfciE/Ug6KRX
-	wGNAVOWoHJQBltTN+u
-X-Google-Smtp-Source: AGHT+IEha/464YLIDe1S05FMmmIwJiiHJqNozxP/E/7ahWiUSHSloNCgr/S9uHudRNKH/rfSTuG4WQ==
-X-Received: by 2002:a17:90b:3947:b0:31e:c95a:cef8 with SMTP id 98e67ed59e1d1-33b5139a259mr32044929a91.32.1760474754350;
-        Tue, 14 Oct 2025 13:45:54 -0700 (PDT)
+        bh=AL/bnV/py/dxrrqchUFB69kdjG2EwxKxcNMsAmNeKP0=;
+        b=I91YEf1mWhwPmQWljsUgIXdQd3CEanPdc6xFaCS6bNU7lBClgDxKao3F/hptY3rtIL
+         CBlCsun+9/II+2ycz+CRKbhHZUbBgnqPlkW7NiQqf0O2vCl/DbAr2090Gq3GVZmx6TB1
+         gao/lXIhOwbo2yRSkUu2JSu6r7ZM9+XHiHEPp9XipvXk23b6qhwR2U566FcXGXTYMKv+
+         EkJ+hHNs4OFHSZ/+M+vzrZpeS/enZqvN2GUnCQ/jAwF6GI/2yqrdZSAgxB5FQRi/uwvt
+         69pBIuRxXk8GktLlyhD/fOS+79Atr0ZeW4M1E0TSw4NwXY5NV6t9WWKftsipddCs2jQW
+         yZww==
+X-Forwarded-Encrypted: i=1; AJvYcCWE29anDdX4NPAcDqwk7PvNU10chTiSrkVS+15WEhKZ+QcNw631ZQbPf1kPSLiL2jzv2DyM8CPvD4Go@vger.kernel.org
+X-Gm-Message-State: AOJu0YzViUbiUBtldguYo1Ahl6sSkrNyBkEjvPNBr2ddu5n0B/L7Oq29
+	OhZ3QseKrQ9wLgGgIYAXwRXriUi9Vq+T1I7mdrTbjJh8+5w/Jb9IAZdl6yq8JFqgvBk=
+X-Gm-Gg: ASbGnct1gts5SkT10s3IeQ2i0hcjxKNQRkMDRHDbjaC7mFI0uWIbvrzWjLIUUDwihqd
+	IGwbbXmNkd85bRNTlvK+W+WhczFOAVoxhYW5xSai8NVEud8nbswrCwMZGPn5y1spoMx2SzPYVC/
+	l4qYZoJIVgaSPGt8c+ta5IJwJUGLlEWBOF5MWAE3WnD/JpOpxvEIFreHR41SScyZmKCXxsf+YLZ
+	FO1FnfL4xd3Dtd/h3Nbgo4+fy46C+Fo8J/wBz39+HIpLwVFJ5mE+EbDqT/N2rv7FlAtlOOFpP0h
+	itNkJIHCMpvhv8ZWfqX/ZeN3q1oVdI8AUyX7oEUNTFu0fZGRCmshlLBAaTQY0uCE8r3J3mjx52i
+	O6Gq6BBty4wUoY5XYujWDR9BwI6Hhn20f/9eRdF2caeJMPTcpNAokfLa44Q/n44dqC/5serZZ43
+	vjU5e9N4/5wzcTKewO+ZoESIT7xkqF5umgr6bDVg==
+X-Google-Smtp-Source: AGHT+IFEm7YEffZsxkb8K+nehDd+qD29oTSduQqQSjJ7xgEV6CAlDHsQGWe8Y3vIo1bRLa8jllHUlA==
+X-Received: by 2002:a05:6a21:3383:b0:2ac:7445:4947 with SMTP id adf61e73a8af0-32da8f7b6b6mr32112486637.19.1760479045581;
+        Tue, 14 Oct 2025 14:57:25 -0700 (PDT)
 Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33b62631266sm16839994a91.3.2025.10.14.13.45.53
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b678dcbf919sm12945398a12.9.2025.10.14.14.57.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Oct 2025 13:45:53 -0700 (PDT)
+        Tue, 14 Oct 2025 14:57:24 -0700 (PDT)
 Received: from dave by dread.disaster.area with local (Exim 4.98.2)
 	(envelope-from <david@fromorbit.com>)
-	id 1v8lu3-0000000Es6g-0Y5G;
-	Wed, 15 Oct 2025 07:45:51 +1100
-Date: Wed, 15 Oct 2025 07:45:51 +1100
+	id 1v8n1G-0000000EtZi-0ICM;
+	Wed, 15 Oct 2025 08:57:22 +1100
+Date: Wed, 15 Oct 2025 08:57:22 +1100
 From: Dave Chinner <david@fromorbit.com>
 To: Jan Kara <jack@suse.cz>
-Cc: Christoph Hellwig <hch@lst.de>, Damien Le Moal <dlemoal@kernel.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>, linux-block@vger.kernel.org,
-	v9fs@lists.linux.dev, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	jfs-discussion@lists.sourceforge.net, ocfs2-devel@lists.linux.dev,
-	linux-xfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 06/10] mm,btrfs: add a filemap_fdatawrite_kick_nr helper
-Message-ID: <aO62fx2B5ZZLsRVM@dread.disaster.area>
-References: <20251013025808.4111128-1-hch@lst.de>
- <20251013025808.4111128-7-hch@lst.de>
- <74593bac-929b-4496-80e0-43d0f54d6b4c@kernel.org>
- <4bcpiwrhbrraau7nlp6mxbffprtnlv3piqyn7xkm7j2txxqlmn@3knyilc526ts>
- <20251014044723.GA30978@lst.de>
- <qh7xhmefm54k3hgny3iwkxbdrgjf35swqokiiicu5gg3ahvf4s@xhyw4sfagjgw>
+Cc: Mateusz Guzik <mjguzik@gmail.com>, brauner@kernel.org,
+	viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, josef@toxicpanda.com,
+	kernel-team@fb.com, amir73il@gmail.com, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v7 03/14] fs: provide accessors for ->i_state
+Message-ID: <aO7HQkF8UOfjXGcd@dread.disaster.area>
+References: <20251009075929.1203950-1-mjguzik@gmail.com>
+ <20251009075929.1203950-4-mjguzik@gmail.com>
+ <h2etb4acmmlmcvvfyh2zbwgy7bd4xeuqqyciqjw6k5zd3thmzq@vwhxpsoauli7>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -112,40 +99,34 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <qh7xhmefm54k3hgny3iwkxbdrgjf35swqokiiicu5gg3ahvf4s@xhyw4sfagjgw>
+In-Reply-To: <h2etb4acmmlmcvvfyh2zbwgy7bd4xeuqqyciqjw6k5zd3thmzq@vwhxpsoauli7>
 
-On Tue, Oct 14, 2025 at 11:33:26AM +0200, Jan Kara wrote:
-> On Tue 14-10-25 06:47:23, Christoph Hellwig wrote:
-> > On Mon, Oct 13, 2025 at 01:58:15PM +0200, Jan Kara wrote:
-> > > I don't love filemap_fdatawrite_kick_nr() either. Your
-> > > filemap_fdatawrite_nrpages() is better but so far we had the distinction
-> > > that filemap_fdatawrite* is for data integrity writeback and filemap_flush
-> > > is for memory cleaning writeback. And in some places this is important
-> > > distinction which I'd like to keep obvious in the naming. So I'd prefer
-> > > something like filemap_flush_nrpages() (to stay consistent with previous
-> > > naming) or if Christoph doesn't like flush (as that's kind of overloaded
-> > > word) we could have filemap_writeback_nrpages().
-> > 
-> > Not a big fan of flush, but the important point in this series is
-> > to have consistent naming.
+On Fri, Oct 10, 2025 at 04:44:19PM +0200, Jan Kara wrote:
+> On Thu 09-10-25 09:59:17, Mateusz Guzik wrote:
+> > +static inline void inode_state_set_raw(struct inode *inode,
+> > +				       enum inode_state_flags_enum flags)
+> > +{
+> > +	WRITE_ONCE(inode->i_state, inode->i_state | flags);
+> > +}
 > 
-> I fully agree on that.
+> I think this shouldn't really exist as it is dangerous to use and if we
+> deal with XFS, nobody will actually need this function.
 
-*nod*
+XFS does it's own inode caching outside the VFS, so for the moment
+it needs to have access to the same VFS inode initialisation APIs as
+the core VFS inode cache instantiation functions to maintain the
+same externally visible behaviours.
 
-> >  If we don't like the kick naming we should standardize on _flush (or
-> >  whatever) and have the _range and _nrpages variants of whatever we pick
-> >  for the base name.
-> > 
-> > Anyone with strong feelings and or good ideas about naming please speak
-> > up now.
-> 
-> I agree with either keeping filemap_flush* or using filemap_writeback* (and
-> renaming filemap_flush to filemap_writeback).
+Yes, if we change how the VFS inode caches initialise inodes, we
+have to update the XFS code, but that's always been the case. This
+isn't very hard to do....
 
-I'd prefer filemap_flush* because most people are already familiar
-with that naming and the expected semnatics. But I could live with
-filemap_writebacki*, too. Both are better than "kick", IMO.
+Keep in mind that XFS has been caching inodes outside the VFS and
+doing external state initialisation since it was first ported to
+Linux (i.e. ~25 years ago). It's kinda strange to suddenly hear
+people claim that this sort of VFS inode state manipulation thing is
+"too dangerous" to allow anyone to use given how long we've actually
+been doing this....
 
 -Dave.
 -- 
