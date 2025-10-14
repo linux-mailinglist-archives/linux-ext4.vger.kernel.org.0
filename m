@@ -1,191 +1,83 @@
-Return-Path: <linux-ext4+bounces-10856-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10857-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58158BD71BF
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 04:39:02 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E96D2BD74C4
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 06:44:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CF4D134E9E6
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 02:39:01 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EC38D4F6415
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 04:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48DA4306B2E;
-	Tue, 14 Oct 2025 02:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="fqOdyATx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE9730BBB5;
+	Tue, 14 Oct 2025 04:44:30 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADE4306B11
-	for <linux-ext4@vger.kernel.org>; Tue, 14 Oct 2025 02:38:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9984519C54F;
+	Tue, 14 Oct 2025 04:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760409538; cv=none; b=BArzHNTeZh/vogTb6n7mQzjNQtjCh+C8f17PD4JGKzxtg5WlrDJ3xRCh21avdcwYRNlzOGh/hdHJ9WfqHhMNl5FrbI54ANjA/oBXm1kDADIObTd9YT1QwoKY/YpGxa60lNqGSsizwcbbbJZdmCMyGjPbcGiTexqrU/h+HA0a4ZI=
+	t=1760417070; cv=none; b=BjjMA+Yx3dpwHpEROdMmQArdyDkPv7q5icVxSoddCbZ1Yqt8GoZU38lJR45kVo5f4n2aW0RVwGK+p9JFhOP7444v0rUaHs3caKTfhHL475uSG4eEwm84HiY7j/3kIHZCpQ3nQ/Vlrm68s23H66tSK1q3vQcqOdGupuLVsw+Dp1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760409538; c=relaxed/simple;
-	bh=XeoEz+BWxO/GEUuwbp8y7/YZ6e6tmUqWW80GEDF9jB0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=szfL/dq/QOdIc7egrm3phXtogU6m5t+AGn2EjKoA52Jb82WjFmtGPVPNkHBycKxol0Y0pGIAeSHSEXtCh+1bfolezNDXoTYwRVRp+eOAIAeMmn5Z/t9W20pNRCf92Ea36Shwek8cQbxNyv5a2eKC/iGtCMlP9sVm6tofIVVEAgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=fqOdyATx; arc=none smtp.client-ip=209.85.160.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-3729f8eaa10so891032fac.3
-        for <linux-ext4@vger.kernel.org>; Mon, 13 Oct 2025 19:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1760409534; x=1761014334; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P4L1zhkBqvLQzDevAfrUfktHs5nXflBPR+xwPlqwGNI=;
-        b=fqOdyATxaByLDlljotibKBrmWvBXpnx28MEoc7mBeCjOc9+xO5WQnzgBQZeW55id9x
-         GU2Na8HQiO/5AD2rdZv6JszIaHXyWMqW5DQ6flea3/p0EI2cs2AKMQvmPC+vgQunBzVR
-         ZHoZ0saE8acJNv7P7dzmoN/jPa45M7nVzV1tjmZ0hwvXk9d/70Ukuc0v5eSs6uMSHQpc
-         sQ3tTLf3pRtgP28YqpfYqsP6YAvAz6RJ1xg19Zt/nqANAgiX17iSLh0lORNZagGmK2sB
-         wVmaJRt8txc1LHHrk4i7HUdUWV9K7j9Qn6+SZJYmjLqX+V6l6yrJ+YphMeCwwM+DE6/R
-         L0rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760409534; x=1761014334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P4L1zhkBqvLQzDevAfrUfktHs5nXflBPR+xwPlqwGNI=;
-        b=daRjH6sGqAEZIdmYfqcPT8OdwVXQGfr/MpmpPuyh5GMmuqkAFzYwdwlHtcqBrY+EDa
-         XPR6yp+eam6EctEMcM8HDtQsHzrZUa2BEFpgyAGQVGH4SdIPVYqP7Ax/YOnQ5IMdSXxY
-         YEdCuJK+P0/d9BRs1sQz1XIf8qjNm+/b4RRhh3BNCTtYfFDP3xeDKQF+OFICVCfbl9tD
-         +mob7mjHqGUwEHp5P9O80HuiY5z5WoxCC8sjJXLHDMQIa3+uI+y7YVQEboo1E4HytYZ9
-         AqYmoG2qhgdpWLPt0hParoXAe6T/vaUHPrvO9ALO7J4vp3FyRpr3ly38ctCCvqOy4I9B
-         kg0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUap8OjDxbKAoZZVbRDAHZ+QmMoqQFzrWRbvhzGksc3wj+qdNAhoFy/Emug/yhpBpo5njAD/ULvjoqp@vger.kernel.org
-X-Gm-Message-State: AOJu0YzALfJIS2WD3QApJtJ8rnnll02sEirMtyW70ElQOC8V2x7IEceX
-	mraOSlmfSqo/1k9bE8f6crRXsz7yaYjbfc0KJeV2OwTAu3aguQnmsXlq58jdaThzmtEzZV8DT8b
-	BkGdAn++T1rUuJpsgxdrc4VyKhDTXlNUBHh7418WxNw==
-X-Gm-Gg: ASbGnctfYcprptxrSfV+uawZPzmftVEmyR+YHNUVgXzcDwXZSgjLwhiAsHmrgoaQDPF
-	3H0aMLZgFksReQB9LhPuxzY+UTE8C/eZom9yTh+E+S3Sd9Sh5b5hGXL24BhEokYaaBU+WJN5tbW
-	Mrygczpq0nR7JyAhsBlHiwR1078AEuom488OJsG/XeruTo98Wybnl7lp6sgdhsgi8L0D0Xgljjj
-	2NBFWyEaRpy0N1Kzvzu/YbjBngmWjDw10M=
-X-Google-Smtp-Source: AGHT+IGQB7yz9d/NTqBoNxUfSU6VqXWYlLIOaf82MjkY0LCd2An9VUVdyDl70ezObbIGAYkR9zA2rthSY6/YNH42+m0=
-X-Received: by 2002:a05:6870:a54a:b0:35b:7d80:b175 with SMTP id
- 586e51a60fabf-3c0f81feda8mr9491761fac.44.1760409533973; Mon, 13 Oct 2025
- 19:38:53 -0700 (PDT)
+	s=arc-20240116; t=1760417070; c=relaxed/simple;
+	bh=3xzfzkbgYIg9IfR3Ir94hE3O8Ov0sXJ49fRS3a8QW2U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZfTpAj+lcDKIucQK1ecMBf6PUYBTqHjpQoVQi04q3IqZk3Cw5oH7bG/4KzoV14jDofyEH4nTQFp5FfFmagFS47HSbxL8Znh509JxKQYAK5l0TTSfCtBaPgRrNXbDjrx3gJkM/rgJZ/8PAf1JUgZufmCEOrOufniPluF+Vi+h4vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 26F11227A87; Tue, 14 Oct 2025 06:44:22 +0200 (CEST)
+Date: Tue, 14 Oct 2025 06:44:21 +0200
+From: hch <hch@lst.de>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: hch <hch@lst.de>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>, Jan Kara <jack@suse.cz>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"v9fs@lists.linux.dev" <v9fs@lists.linux.dev>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"jfs-discussion@lists.sourceforge.net" <jfs-discussion@lists.sourceforge.net>,
+	"ocfs2-devel@lists.linux.dev" <ocfs2-devel@lists.linux.dev>,
+	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 04/10] btrfs: use the local tmp_inode variable in
+ start_delalloc_inodes
+Message-ID: <20251014044421.GA30920@lst.de>
+References: <20251013025808.4111128-1-hch@lst.de> <20251013025808.4111128-5-hch@lst.de> <aae79ea0-f056-4da7-8a87-4d4fd6aea85f@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251011013312.20698-1-changfengnan@bytedance.com>
- <aOxxBS8075_gMXgy@infradead.org> <CALWNXx8pDOvDdNvw+v0rEyi33W8TL+OZW1YiFbF6Gns3PeWOLA@mail.gmail.com>
- <aOyb-NyCopUKridK@infradead.org> <CAPFOzZumoCERUj+VuegQNoAwFCoGxiaASD6R_4bE+p1TVbspUA@mail.gmail.com>
- <d785cc8e-d8fd-4bee-950c-7f3f7d452efc@gmail.com>
-In-Reply-To: <d785cc8e-d8fd-4bee-950c-7f3f7d452efc@gmail.com>
-From: Fengnan Chang <changfengnan@bytedance.com>
-Date: Tue, 14 Oct 2025 10:38:43 +0800
-X-Gm-Features: AS18NWANM39t4RPcrlXYrv0Im7Lg9gLSnbpSWNZytM4PRJZOtaL1X_BkUQywkT4
-Message-ID: <CAPFOzZs5mJ9Ts+TYkhioO8aAYfzevcgw7O3hjexFNb_tM+kEZA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] block: enable per-cpu bio cache by default
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>, fengnan chang <fengnanchang@gmail.com>, axboe@kernel.dk, 
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, 
-	willy@infradead.org, djwong@kernel.org, ritesh.list@gmail.com, 
-	linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aae79ea0-f056-4da7-8a87-4d4fd6aea85f@wdc.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Pavel Begunkov <asml.silence@gmail.com> =E4=BA=8E2025=E5=B9=B410=E6=9C=8813=
-=E6=97=A5=E5=91=A8=E4=B8=80 21:30=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 10/13/25 13:58, Fengnan Chang wrote:
-> > Christoph Hellwig <hch@infradead.org> =E4=BA=8E2025=E5=B9=B410=E6=9C=88=
-13=E6=97=A5=E5=91=A8=E4=B8=80 14:28=E5=86=99=E9=81=93=EF=BC=9A
-> >>
-> >> On Mon, Oct 13, 2025 at 01:42:47PM +0800, fengnan chang wrote:
-> >>>> Just set the req flag in the branch instead of unconditionally setti=
-ng
-> >>>> it and then clearing it.
-> >>>
-> >>> clearing this flag is necessary, because bio_alloc_clone will call th=
-is in
-> >>> boot stage, maybe the bs->cache of the new bio is not initialized yet=
-.
-> >>
-> >> Given that we're using the flag by default and setting it here,
-> >> bio_alloc_clone should not inherit it.  In fact we should probably
-> >> figure out a way to remove it entirely, but if that is not possible
-> >> it should only be set when the cache was actually used.
-> >
-> > For now bio_alloc_clone will inherit all flag of source bio, IMO if onl=
-y not
-> > inherit REQ_ALLOC_CACHE, it's a little strange.
-> > The REQ_ALLOC_CACHE flag can not remove entirely.  maybe we can
-> > modify like this:
-> >
-> > if (bs->cache && nr_vecs <=3D BIO_INLINE_VECS) {
-> >      opf |=3D REQ_ALLOC_CACHE;
-> >      bio =3D bio_alloc_percpu_cache(bdev, nr_vecs, opf,
-> >      gfp_mask, bs);
-> >      if (bio)
-> >          return bio;
-> >      /*
-> >       * No cached bio available, bio returned below marked with
-> >       * REQ_ALLOC_CACHE to participate in per-cpu alloc cache.
-> >      */
-> > } else
-> >          opf &=3D ~REQ_ALLOC_CACHE;
-> >
-> >>
-> >>>>> +     /*
-> >>>>> +      * Even REQ_ALLOC_CACHE is enabled by default, we still need =
-this to
-> >>>>> +      * mark bio is allocated by bio_alloc_bioset.
-> >>>>> +      */
-> >>>>>        if (rq->cmd_flags & REQ_ALLOC_CACHE && (nr_vecs <=3D BIO_INL=
-INE_VECS)) {
-> >>>>
-> >>>> I can't really parse the comment, can you explain what you mean?
-> >>>
-> >>> This is to tell others that REQ_ALLOC_CACHE can't be deleted here, an=
-d
-> >>> that this flag
-> >>> serves other purposes here.
-> >>
-> >> So what can't it be deleted?
-> >
-> > blk_rq_map_bio_alloc use REQ_ALLOC_CACHE to tell whether to use
-> > bio_alloc_bioset or bio_kmalloc, I considered removing the flag in
-> > blk_rq_map_bio_alloc, but then there would have to be the introduction
-> > of a new flag like  REQ_xx. So I keep this and comment.
->
-> That can likely be made unconditional as well. Regardless of that,
-Agree, IMO we can remove bio_kmalloc in blk_rq_map_bio_alloc, just
-use bio_alloc_bioset.  Do this in another patch maybe better ?
+On Mon, Oct 13, 2025 at 08:11:35AM +0000, Johannes Thumshirn wrote:
+> If you have to repost this for some reason, can you rename tmp_inode to 
+> vfs_inode or sth like that?
+> 
+> The name is really confusing and the commit introducing it doesn't 
+> describe it really either.
 
-> it can't be removed without additional changes because it's used to
-> avoid de-allocating into the pcpu cache requests that wasn't
-> allocated for it. i.e.
->
-> if (bio->bi_opf & REQ_ALLOC_CACHE)
->         bio_put_percpu_cache(bio);
-> else
->         bio_free(bio);
->
-> Without it under memory pressure you can end up in a situation
-> where bios are put into pcpu caches of other CPUs and can't be
-> reallocated by the current CPU, effectively loosing the mempool
-> forward progress guarantees. See:
+It is.  vfs_inode is kinda weird, too.  The problem is that inode
+is used for the btrfs_inode.  But if there's consensus on a name
+I'll happily change it.
 
-Thanks for your remind.
-
->
-> commit 759aa12f19155fe4e4fb4740450b4aa4233b7d9f
-> Author: Pavel Begunkov <asml.silence@gmail.com>
-> Date:   Wed Nov 2 15:18:20 2022 +0000
->
->      bio: don't rob starving biosets of bios
->
-> --
-> Pavel Begunkov
->
 
