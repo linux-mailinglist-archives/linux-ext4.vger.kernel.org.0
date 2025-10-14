@@ -1,264 +1,277 @@
-Return-Path: <linux-ext4+bounces-10869-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10870-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3572BD9C8F
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 15:41:32 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8AFDBDA2FA
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 16:59:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 426673E69BB
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 13:41:29 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0CE1C3489D0
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Oct 2025 14:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61797314A62;
-	Tue, 14 Oct 2025 13:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03BE62FFF8F;
+	Tue, 14 Oct 2025 14:59:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cIbYryWJ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ndGMd3vk"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502D8313E10;
-	Tue, 14 Oct 2025 13:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760449284; cv=fail; b=tbfazl1c+84A6qUbTk6YXuwu38MZV5mO67fqKZ718ulRUKVv5ppNuSh12p+C+w97ThjhTBqPD5U36RvcsV5yA1hlA6TZpRrBnvlmmFAiJmYHqBJk547WaUq4RVOq5y+v677YWUHzOITsgYPIXSe9qU4KG/AMBLgGzegj3nSrXa0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760449284; c=relaxed/simple;
-	bh=s9tR5u8oUZl/PtnWR1ZaLYKc4TPyu2EMvjVSW1AlckI=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=AxPkQY1ACAkVjb/90BzvtqH773i8h5B4WswYTWOMaPOcP8ckVGKSo8k8Q5coAVInb/QAtC/UuvobnA8Qe+eF7TckKBacC3LAek17tJb9epOYV6NP7CsAWIoMIHjHcQgcQT8YujkOO+1g1Y3BLCRZ0MmIHqX73ReUrsXJReRRvgs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cIbYryWJ; arc=fail smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1760449282; x=1791985282;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=s9tR5u8oUZl/PtnWR1ZaLYKc4TPyu2EMvjVSW1AlckI=;
-  b=cIbYryWJ+5vP3BWgH3ES5gwNGTI4khxB4rrG7F6lcj67J52tBsPmDKjo
-   CPCLhoNIkt3t1G1pujUZn9TkWQopmv3C/uTu07e2PQhGQ1c2VryHocuBc
-   zvwRAv8x32fOpwVM49BXPgljGuzWXCnXGC4uPU1mD33SC/r54/k12EoDp
-   JrtXpqeKnNt1WcYPeqLClSYP/69E28Ex0aVzsFmuYVRanJLDtOt3qlDpd
-   qO/Sl67TP/F32SJgfRUp3nzEQpWdK/ifZBAOZfTSya0QFP0IKdmSWOv+x
-   4LD2YHTHx0uzbUpVRD+ElNDpdJeEL6d2OAfF1nJqqRKwX172VvPZWwNPv
-   Q==;
-X-CSE-ConnectionGUID: tdhyTbrkR+uA0PwnL3C4PA==
-X-CSE-MsgGUID: DeYv7K+gSMO5ZjuN2UPwZw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11582"; a="62499164"
-X-IronPort-AV: E=Sophos;i="6.19,228,1754982000"; 
-   d="scan'208";a="62499164"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2025 06:41:21 -0700
-X-CSE-ConnectionGUID: TYuL3nkZTt6y7nqjDJ3sQQ==
-X-CSE-MsgGUID: zbmkE2v8TxG2g4JfCO7H1Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,228,1754982000"; 
-   d="scan'208";a="182331075"
-Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2025 06:41:23 -0700
-Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Tue, 14 Oct 2025 06:41:20 -0700
-Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27 via Frontend Transport; Tue, 14 Oct 2025 06:41:20 -0700
-Received: from PH0PR06CU001.outbound.protection.outlook.com (40.107.208.67) by
- edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Tue, 14 Oct 2025 06:41:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=c0o8ot3uVWSPkubZ0c/X3GDqbad3I2Di9envhabst9X1vdzKULPGuoRRdnSRl322GLOB1jkn0iBjj42gGIZilc3RlwEK36r9f427M7w+IfqZ0iOtMAHcwqT+0iOz+0T8I6FjPffHUHgqyQE35S8Hv2keABSpfkVDZU4GYV4lf8FtG9brJ9jOQ+hBKMTDKcl4AEWCRvh1acgrS1PMTxfJV+ac9Rxqx2OuufrW3x6zA35ZcnQHgKLT+5AaY2g8p3v9rfmHYY99fDpamncBJ5+aDHEgSEsMli5rUg+ymkIdvYMxDPIXY/gj9kef8LBu21CEvYLfxKhnfCEndWYqjf+/tQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cmpbvAVykKwjtTdKyn2VijQYwFnaeBwhZuRdCQ4oqxs=;
- b=BAP9Gc1aLdIAAUOInyV5Y/iAbJk4qEdbKRjr4ctoqaYxBdU/KUcNqzBwjuuQxaHSsuczLqkedS3Cb3JYWCa0XYQMun1oRg4ryoHrgjFzB5FnYZJtfDx2neK62EohPh0P2VdKXpkTyuDbhs98GDHJ2tuXkyfEQZPl1Q9ISNselggX++FacNq2XH/Ynrsw7HeVNUXO7N3xM00sF7EGuey5toX4PYZweyceHLyzMMx4PcSY827w71qKVGjBQEEy/jLPxKESCFPqDtj/zL2KXTuzmp+BEu74yGGwnbjDid0NyZWg3ngr8SpY2sDwcTVE2JVEQDb5bLAe3uhwhTI4Cpi3TQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by PH3PPF8B755DBFD.namprd11.prod.outlook.com (2603:10b6:518:1::d36) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9203.12; Tue, 14 Oct
- 2025 13:41:18 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c%5]) with mapi id 15.20.9203.009; Tue, 14 Oct 2025
- 13:41:18 +0000
-Date: Tue, 14 Oct 2025 21:41:08 +0800
-From: kerne test robot <oliver.sang@intel.com>
-To: syzbot <syzbot+3ee481e21fd75e14c397@syzkaller.appspotmail.com>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, Deepanshu Kartikey
-	<kartikey406@gmail.com>, <linux-ext4@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>,
-	<oliver.sang@intel.com>
-Subject: Re: Forwarded: [PATCH] ext4: reject inline data flag when
- i_extra_isize is zero
-Message-ID: <202510142118.8033d04d-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <68df92d7.050a0220.2c17c1.0020.GAE@google.com>
-X-ClientProxiedBy: KU0P306CA0081.MYSP306.PROD.OUTLOOK.COM
- (2603:1096:d10:2b::17) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B3D32FF16E
+	for <linux-ext4@vger.kernel.org>; Tue, 14 Oct 2025 14:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760453949; cv=none; b=PYcoECbwVL6XKcJixV5p/niwG+Em1Q7tdCgEdrHeeou3z+8j15yyNyubFaFMa/m3yKlbFzoBlj2T050gIOFS/RwnsNtEEAuip+qO1XCg7X63rXhswF02ucU3mQIfPN6KQOuslPlgSCid4fFQvBnxmjXVX21/ts7T1KNxkVtvC+4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760453949; c=relaxed/simple;
+	bh=NhtmRhm7ndhen0e3a4IWvzrXrj6/aX6wOhDZxyZza5g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J73uYNeeglNkxdRcK9YUvXDD9vzr9yNILBSTE+lPr8sRWCzP35AUgLSVrBoa/fX8AOGgvwB/wiW4FRDRmW6EHJMgrSf31aqG5cavELUIVHUAkksko7bll1rsEN2Wf1537vHyepVpT/aRzPYF1j9Rb1hjeDSwYj15zHBKL/5nJWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ndGMd3vk; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-6504ca65496so17677eaf.1
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Oct 2025 07:59:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1760453946; x=1761058746; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bkA3DsnAjaOe1kWah6dgRh2HdZ2TK46Tu48uO23EzeA=;
+        b=ndGMd3vk8jM1pIYbJnfvoTiyi8FoRhleqwrBh31iZR28Wn3YgnoAWe323XjA24DQWW
+         3RIS2gjhnka7kANi06kgYbRZtTEOeJrzScSbvpoCqM7tMmr5xAlMSTD2BVeala0UFu1n
+         D2RDDyeypXc4xRZXQJZ4Y3PV7O1QGVMuXt7eZIKyfRKUh2yJk6RMSecQymqu4pVaojO2
+         8Enm5uC2r1Set8a1vnegn/f/MPYzDZ23e6s8GXYPnQtVgT3FrUUWmJtNLSfMBgFT5iJL
+         DCVB4jEyAR7zNqInLJ1HinK1nfxOy4hyu5hh+uh5W4pJxqgNjTYXWcHx16tv5wZf9hz7
+         o6/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760453946; x=1761058746;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bkA3DsnAjaOe1kWah6dgRh2HdZ2TK46Tu48uO23EzeA=;
+        b=cUQ7c3TI8nk5IF3eifjgbajwiwY64Sx3A5Sa6ZCFdR/HxeT1r8hohB75PEt6VnHzZ/
+         YMBBdghh0rZMTr4e05tGRylwGBFSwuU7MiTj2hnczskZtbb3DybOCDzXpVps0NY22/mF
+         bbVbFzR8S35ZxpCRYOw9v4yQB7SkLgK1V3yG1W+8W/OHMoqzO3PvjOFtJ0X1/s2yPJSb
+         okRizJecHZjMOqnNHdwoblWYvMWaQNT17oJzpJeAAH7dVzlIk4kZTted3uxJjd/PT1qL
+         RncYObQEkEWqe8K8pFoMZJ0b713bljaXaPJM9+9AtTt7Cc3GHYi1nPS+vc2QsnoQPmBu
+         d1iQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVm35w98SRrk2rMAkG6WaAoAXI7Rrpdq502peCa7tuftZGOsciJXlIxJUCdilYkINbY5stRiriY5czS@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxd8XcmMhyKjFZb2M2Bv/iR38f5qT7qHRujJ8KZaH93bRuz9iFQ
+	i453UbV0Ps365Hg2wAq4FpZq9fiy1UOWZUSatA3PENDZwRBS1SCIxwkI9VEUi6Wzn+pdEVz4LGX
+	tYu47znT7qeyrTHuE0mGT/ZLY4vEbKLEi/GX9hL1rNa0d+J8Op04anl0AX+k=
+X-Gm-Gg: ASbGncvAmEdgeiJwplO/NVFZqYEhqPd7xUTSj7pEVf6DKdyxXZJLVxIs/tWaWVNcrks
+	D157F0BsyHRp3fbyAo0wAhOPmCHhZqWPYd+HstEQWVp2W/sLn+7uHHHWxY78U7Nwi8WhW9IQdmV
+	b0yXm8alr17ApaQRHSzY7veYy/kJyG8666RJe2RBmb5ShKXleEbswgwPjlowB+Ca3h2G/KUY+zP
+	NbV53R/iCSCk2cn8nUmAbIA2qoPu9wDh4yyxBUn4RVrgdOQAxbtIEhWR6UvfK/RTeTD8Jm17OSs
+	INp07MAQ
+X-Google-Smtp-Source: AGHT+IHixQM4D7/C9rvMcEsB1y1V6c33YBzzOkECVikf4/w8buGAafM7wqHTb2wd9uqoervTXG8HHlEiUKNWOxEwi7A=
+X-Received: by 2002:a05:6808:11c6:b0:43f:afc9:b889 with SMTP id
+ 5614622812f47-4417b4080edmr10801592b6e.50.1760453946012; Tue, 14 Oct 2025
+ 07:59:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|PH3PPF8B755DBFD:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7eabe74f-24ea-450a-c79f-08de0b275a11
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?h0WtjVbd/wcWGDAZbLEMLv3PQLbCqox3sGV6CnnAoyjZ5HfBvMj2utyXe0AL?=
- =?us-ascii?Q?WwldSdsmHynrjWkmA9355ZE4hUg4kS53dKv6WR+5HgHT10p6s3JufAOvuaFh?=
- =?us-ascii?Q?jj4ZowdF8EComV2sOr9UIWARTyHiJHzo8r6UsE2D3OuKMHSSZE3Vv3ym8Z4q?=
- =?us-ascii?Q?Hf11pQyBu8OihZQyAAi01TmJI35Dmamxf1fjpgLjk4vHTHf82iTSw4R1nBOu?=
- =?us-ascii?Q?Zos+xI0NaJFSo38xH46G3cbvmi/CXYNkRtSKyLRB4Es/B1Wtn4creibG6yTe?=
- =?us-ascii?Q?OGfEknxpGGacrugFWOiFUIJFewRfBhXOG6nyGd1NazLXnYiBlSaJY1frtq2f?=
- =?us-ascii?Q?ywZlxeV7JRnHYqjQqZfJqe0ID1H/ipVpEbd6IRZs4IX+lI4s1L9KUPpReZcy?=
- =?us-ascii?Q?sAY8sgQ03pN2NHy+eooLSkaMFhdVqm+mHcmiPOTujzCwNvm7DFM+kqg3bcld?=
- =?us-ascii?Q?zC5jwDGz/alGW0+KR4PWWN9M8uTbDZrbT0BBX3OjgEh0STtat+9cZjFskdO7?=
- =?us-ascii?Q?tkNAhixNVwm85j8hNLYWkzEwsUUlIjaODA8rrjXzEGs6h+Wo66OC5wKhJXYY?=
- =?us-ascii?Q?cw9v2zUs2FI4gBOKgrIeEhZWJrIV4LkYZhr5bx9X/Wxd+USHdwjXNEzoTgCK?=
- =?us-ascii?Q?DYMFbJdkv7Qqu/0P7SWiLW9G4YYg5WwOBwHTus+WLJeue9d5sefJ6/23VuTD?=
- =?us-ascii?Q?w6HMsJUBuTqay3Pw4J/tInM1cx05cooB5halNv6y/F622GTuLVZXdg2QtSis?=
- =?us-ascii?Q?QuG9QG23ZC3L8ePS1PiuPXUGsaODW1pel921wz9ihjpOZ0tP05Cv5H0c1V5h?=
- =?us-ascii?Q?aTG4z5Aj1AIOjTBISPOWUiBZAhUGBEnxxoSicyWqgIHO9zmhlcRqGUfefiqI?=
- =?us-ascii?Q?M5ZmKaHzbHIDRGUA5YvLedzp2mzOTULxmMWbvv2l30L7qRpRaKK6x29up1eF?=
- =?us-ascii?Q?cHJ3XiNs3LI73vYS6SboSNx+e6u2A/fi7F/FSA1VzDdEn3Jb9+cEAsDcp2xO?=
- =?us-ascii?Q?+yxwOyPlsCBgpBhVS9fY1HpAffjnOkGgxt/zY9zVUwWb6zqXjxacB+V1RAhi?=
- =?us-ascii?Q?I5R+p+IMrHBws49o8iAc+xtChkfPPpctwp0ubHMEuoLlzpu7rAe+vNmoSHWB?=
- =?us-ascii?Q?GrLH7MvdAneQ9LPWqyYrOaLeBxmtLJ/tEIl/Jmy3YWLgb5UsAVfCkaUYd+Z6?=
- =?us-ascii?Q?sVo7WFJ3hk++YxRJmcbxl30UhBczZU5tRhU3IPIwwFf0xmmTVcmBfOG+1VMu?=
- =?us-ascii?Q?1chhB6AUHh8J+MnmvFLj5/zrZw2nsmeGtb0MlUbgo/9qTMC7nmEH8qlCBzGa?=
- =?us-ascii?Q?h0VqUwbpLYm7uCh8pOZrwOf2Z5N5i15+hAEFOIYAefZe1oxjVBbszYOjXtD0?=
- =?us-ascii?Q?+cNP4gl7Qp+8SiiAeyGQKLPBM6Zf+D1ImI4GxnsLaeCeQUeH+sy5gYKQxUeB?=
- =?us-ascii?Q?7AhZC8zMrRQ=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LyLy8zFCWXEte3EyiLpljmbiDsSEjQuOO3ytKgNxel6UJlq/SPv5+dXNBfb3?=
- =?us-ascii?Q?wq4j8a7VOPlpRIVefTSZ1jWBwvO8HeUq640d/UwGAsgW3pmZ2r2yK7HVMth5?=
- =?us-ascii?Q?u+ht8WPt6+jmwGzOA9GETdL8PHxeY/mCtpjwWmLxvf9R7LMHgIxWWJd5ApiP?=
- =?us-ascii?Q?keF57vGvI9zQ/7A4iPHYGsBvFoIcqXWY5YR8txBIkiU83nWb9Hg3OmWhpeB4?=
- =?us-ascii?Q?fuEF67FHWIL0XssSt2VDLNW7B+/czSI72BgXkwjN5lbFetWS3ygayGyVb85y?=
- =?us-ascii?Q?xNW76fe0sIrchT5rPyj3J4xTyxjZE53AnZ40O61TTEWUTWxcSV59cHPH/hOV?=
- =?us-ascii?Q?xwt23oqgqbofbtvBN4fexNB+QSto/GLpKuzuoJBhlpXi1mTj/8IIVVDaqtlj?=
- =?us-ascii?Q?4Z4NEdgHPBWTibJ8/+sCE+yDlhRjeT0yVsSdm76eoTSVVnD4mz7pl3wd65xx?=
- =?us-ascii?Q?P9JReJJXclP/EI86aff2ZL5l/qa8jKxuW+wNVCFXa8HZRb+bpIW+rn7+ov1N?=
- =?us-ascii?Q?+/Y131UK/Ihc1Kthv9FFIRYS4fBEAdfc9EyJaUvtKmGKkMYHvp7k4/+pK0Vg?=
- =?us-ascii?Q?9u26UhKOvUFNsT42D+pj4G/vs/pUEkcTRdmVZ3p5b8HHZnezimRqX4z+XDT9?=
- =?us-ascii?Q?cfOG3p1Rj+nbYXLI72JGtcJ/2MKCeEKGtvC5Ao2O66atDRfBH5+0H/CRyr4j?=
- =?us-ascii?Q?FY0QCvKcsvWrDsL9aKKCfqNw/MRbiiurWVlGhy63Zllw4MMDdi2sylu4iakG?=
- =?us-ascii?Q?3YW+1FTT+8JKsmso8pE6s3SAdJNZWO+vBrbuseyXrVK0kugCXLSp7XrR1x3A?=
- =?us-ascii?Q?QTzGfPNtrzIqOXTdH1B3rarSZjmDnq/vQ8ez4JlvRTd39etBv81rhPoesQ7Y?=
- =?us-ascii?Q?TzRSuKXQ4AazV+MW/vYr76JWd8gYCWdttkAWUYF1q4sLqOscx9luFowFfkbl?=
- =?us-ascii?Q?LqXufvi3C7kwEGfZXFn9MdSbiOgTbgO/uz1El4nGf1kzocoOSEcqtjIGHKKB?=
- =?us-ascii?Q?If7XfP0zRTnj29uXD7PFCXDxx3oi+Mzlz1Xw5IHW0gqApY5qYrSRK3QnytFi?=
- =?us-ascii?Q?alErMVIo8DwQ7nzjRmTT80dauN/ZV3InPUVlOy4TFsjSFhSNWklO4+cV6Hko?=
- =?us-ascii?Q?Y6/x/8f/poSUX9VGPg6j7FViXnbKpfvj5bMSQgWDY/20ANK0V9NH42SoohQs?=
- =?us-ascii?Q?WnvWobOZIPC1d+pNBJG3Z07ockSGnmZzATRyrkHtDeRu+1+ejdbZJXY7JUVo?=
- =?us-ascii?Q?I7b1HV/cGkyNgJ7IDC6kbLuAJH+2NkWmo5nxDD9R1bTxJf3lEuRf1RyZdg3Z?=
- =?us-ascii?Q?wX8kI2O1hEmkzb9hb/KuBeB3zKmKqjSrwzxrga+WwVHHhxbB42Hp/YAKRxSz?=
- =?us-ascii?Q?CaJQpJI6H5m7UlRPjzVYSBD1QE/e/kUE66eHidmpn56euxrCVL+hPOlGXICL?=
- =?us-ascii?Q?zWWl6FV9boMODukagylT+q01zpw8lJNYQGsmhOlEK0WSsTchHdyF/sPAU2pu?=
- =?us-ascii?Q?95WXvuNcYjYcqjklCLnfBw+sFuGBaVEnvT/j/BvIfC/6sWseLri6emZEiFkZ?=
- =?us-ascii?Q?pkEwato9/bsw1DoZbmGlpZgaThoytNnE6aAIEsKT?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7eabe74f-24ea-450a-c79f-08de0b275a11
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2025 13:41:18.0008
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m2TWHxovohb1NrthH063cYclyBRhuELRAnzV8w1rbduTYkjttZdW7iGvU7LkvWYZAL06sfysIN+++lKp2LASBA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH3PPF8B755DBFD
-X-OriginatorOrg: intel.com
+References: <68ee633c.050a0220.1186a4.002a.GAE@google.com>
+In-Reply-To: <68ee633c.050a0220.1186a4.002a.GAE@google.com>
+From: Aleksandr Nogikh <nogikh@google.com>
+Date: Tue, 14 Oct 2025 16:58:54 +0200
+X-Gm-Features: AS18NWCNgIb01RCF4Y9Jg-O5lmrWBTRPt9GoCeuQXeptheZO1YJO6W6vZZWdYBA
+Message-ID: <CANp29Y6VadSqY3Pt8Leih+W+czo7-yYZE33juiaCKLHYZQ1p4w@mail.gmail.com>
+Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in fscrypt_crypt_data_unit
+To: syzbot <syzbot+7add5c56bc2a14145d20@syzkaller.appspotmail.com>
+Cc: davem@davemloft.net, herbert@gondor.apana.org.au, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, linux-ext4@vger.kernel.org, 
+	linux-fscrypt@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+#syz set subsystems: ext4, fscrypt
 
-
-Hello,
-
-kernel test robot noticed "xfstests.generic.482.fail" on:
-
-commit: a0c31dc212c0f22e40ee114504562030264e1246 ("Forwarded: [PATCH] ext4: reject inline data flag when i_extra_isize is zero")
-url: https://github.com/intel-lab-lkp/linux/commits/syzbot/Forwarded-PATCH-ext4-reject-inline-data-flag-when-i_extra_isize-is-zero/20251003-171522
-base: https://git.kernel.org/cgit/linux/kernel/git/tytso/ext4.git dev
-patch link: https://lore.kernel.org/all/68df92d7.050a0220.2c17c1.0020.GAE@google.com/
-patch subject: Forwarded: [PATCH] ext4: reject inline data flag when i_extra_isize is zero
-
-in testcase: xfstests
-version: xfstests-x86_64-5a9cd3ef-1_20250910
-with following parameters:
-
-	disk: 4HDD
-	fs: ext4
-	test: generic-482
-
-
-
-config: x86_64-rhel-9.4-func
-compiler: gcc-14
-test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz (Skylake) with 16G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202510142118.8033d04d-lkp@intel.com
-
-2025-10-09 22:02:09 cd /lkp/benchmarks/xfstests
-2025-10-09 22:02:10 export TEST_DIR=/fs/sda1
-2025-10-09 22:02:10 export TEST_DEV=/dev/sda1
-2025-10-09 22:02:10 export FSTYP=ext4
-2025-10-09 22:02:10 export SCRATCH_MNT=/fs/scratch
-2025-10-09 22:02:10 mkdir /fs/scratch -p
-2025-10-09 22:02:10 export SCRATCH_DEV=/dev/sda4
-2025-10-09 22:02:10 export LOGWRITES_DEV=/dev/sda2
-2025-10-09 22:02:10 echo generic/482
-2025-10-09 22:02:10 ./check -E tests/exclude/ext4 generic/482
-FSTYP         -- ext4
-PLATFORM      -- Linux/x86_64 lkp-skl-d07 6.17.0-rc4-00019-ga0c31dc212c0 #1 SMP PREEMPT_DYNAMIC Fri Oct 10 05:40:27 CST 2025
-MKFS_OPTIONS  -- -F /dev/sda4
-MOUNT_OPTIONS -- -o acl,user_xattr /dev/sda4 /fs/scratch
-
-generic/482       [failed, exit status 1]- output mismatch (see /lkp/benchmarks/xfstests/results//generic/482.out.bad)
-    --- tests/generic/482.out	2025-09-10 01:40:16.000000000 +0000
-    +++ /lkp/benchmarks/xfstests/results//generic/482.out.bad	2025-10-09 22:03:12.185850079 +0000
-    @@ -1,2 +1,3 @@
-     QA output created by 482
-    -Silence is golden
-    +_check_generic_filesystem: filesystem on /dev/mapper/thin-vol.482 is inconsistent
-    +(see /lkp/benchmarks/xfstests/results//generic/482.full for details)
-    ...
-    (Run 'diff -u /lkp/benchmarks/xfstests/tests/generic/482.out /lkp/benchmarks/xfstests/results//generic/482.out.bad'  to see the entire diff)
-Ran: generic/482
-Failures: generic/482
-Failed 1 of 1 tests
-
-
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20251014/202510142118.8033d04d-lkp@intel.com
-
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+On Tue, Oct 14, 2025 at 4:50=E2=80=AFPM syzbot
+<syzbot+7add5c56bc2a14145d20@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    3a8660878839 Linux 6.18-rc1
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D13d25dcd98000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dbbd3e7f3c2e28=
+265
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D7add5c56bc2a141=
+45d20
+> compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b797=
+6-1~exp1~20250708183702.136), Debian LLD 20.1.8
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/d996feb56093/dis=
+k-3a866087.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/fa6f6bc3b02a/vmlinu=
+x-3a866087.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/7571083a68d6/b=
+zImage-3a866087.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+7add5c56bc2a14145d20@syzkaller.appspotmail.com
+>
+> EXT4-fs (loop5): mounted filesystem 00000000-0000-0000-0000-000000000000 =
+r/w without journal. Quota mode: writeback.
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> BUG: KMSAN: uninit-value in subshift lib/crypto/aes.c:150 [inline]
+> BUG: KMSAN: uninit-value in aes_encrypt+0x1239/0x1960 lib/crypto/aes.c:28=
+3
+>  subshift lib/crypto/aes.c:150 [inline]
+>  aes_encrypt+0x1239/0x1960 lib/crypto/aes.c:283
+>  aesti_encrypt+0x7d/0xf0 crypto/aes_ti.c:31
+>  crypto_ecb_crypt crypto/ecb.c:23 [inline]
+>  crypto_ecb_encrypt2+0x142/0x300 crypto/ecb.c:40
+>  crypto_lskcipher_crypt_sg+0x3ac/0x930 crypto/lskcipher.c:188
+>  crypto_lskcipher_encrypt_sg+0x8b/0xc0 crypto/lskcipher.c:207
+>  crypto_skcipher_encrypt+0x111/0x1e0 crypto/skcipher.c:194
+>  xts_encrypt+0x2e1/0x570 crypto/xts.c:269
+>  crypto_skcipher_encrypt+0x18a/0x1e0 crypto/skcipher.c:195
+>  fscrypt_crypt_data_unit+0x38e/0x590 fs/crypto/crypto.c:139
+>  fscrypt_encrypt_pagecache_blocks+0x430/0x900 fs/crypto/crypto.c:197
+>  ext4_bio_write_folio+0x1383/0x30d0 fs/ext4/page-io.c:552
+>  mpage_submit_folio fs/ext4/inode.c:2080 [inline]
+>  mpage_process_page_bufs+0xf1b/0x13e0 fs/ext4/inode.c:2191
+>  mpage_prepare_extent_to_map+0x1792/0x2a10 fs/ext4/inode.c:2736
+>  ext4_do_writepages+0x11b6/0x8020 fs/ext4/inode.c:2877
+>  ext4_writepages+0x338/0x870 fs/ext4/inode.c:3025
+>  do_writepages+0x3f2/0x860 mm/page-writeback.c:2604
+>  filemap_fdatawrite_wbc mm/filemap.c:389 [inline]
+>  __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+>  file_write_and_wait_range+0x6f0/0x7d0 mm/filemap.c:797
+>  generic_buffers_fsync_noflush+0x79/0x3c0 fs/buffer.c:609
+>  ext4_fsync_nojournal fs/ext4/fsync.c:88 [inline]
+>  ext4_sync_file+0x587/0x12f0 fs/ext4/fsync.c:147
+>  vfs_fsync_range+0x1a1/0x240 fs/sync.c:187
+>  generic_write_sync include/linux/fs.h:3046 [inline]
+>  ext4_buffered_write_iter+0xae9/0xce0 fs/ext4/file.c:305
+>  ext4_file_write_iter+0x2a2/0x3d90 fs/ext4/file.c:-1
+>  new_sync_write fs/read_write.c:593 [inline]
+>  vfs_write+0xbe2/0x15d0 fs/read_write.c:686
+>  ksys_pwrite64 fs/read_write.c:793 [inline]
+>  __do_sys_pwrite64 fs/read_write.c:801 [inline]
+>  __se_sys_pwrite64 fs/read_write.c:798 [inline]
+>  __x64_sys_pwrite64+0x2ab/0x3b0 fs/read_write.c:798
+>  x64_sys_call+0xe77/0x3e30 arch/x86/include/generated/asm/syscalls_64.h:1=
+9
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xd9/0xfa0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>
+> Uninit was stored to memory at:
+>  le128_xor include/crypto/b128ops.h:69 [inline]
+>  xts_xor_tweak+0x566/0xbd0 crypto/xts.c:123
+>  xts_xor_tweak_pre crypto/xts.c:135 [inline]
+>  xts_encrypt+0x278/0x570 crypto/xts.c:268
+>  crypto_skcipher_encrypt+0x18a/0x1e0 crypto/skcipher.c:195
+>  fscrypt_crypt_data_unit+0x38e/0x590 fs/crypto/crypto.c:139
+>  fscrypt_encrypt_pagecache_blocks+0x430/0x900 fs/crypto/crypto.c:197
+>  ext4_bio_write_folio+0x1383/0x30d0 fs/ext4/page-io.c:552
+>  mpage_submit_folio fs/ext4/inode.c:2080 [inline]
+>  mpage_process_page_bufs+0xf1b/0x13e0 fs/ext4/inode.c:2191
+>  mpage_prepare_extent_to_map+0x1792/0x2a10 fs/ext4/inode.c:2736
+>  ext4_do_writepages+0x11b6/0x8020 fs/ext4/inode.c:2877
+>  ext4_writepages+0x338/0x870 fs/ext4/inode.c:3025
+>  do_writepages+0x3f2/0x860 mm/page-writeback.c:2604
+>  filemap_fdatawrite_wbc mm/filemap.c:389 [inline]
+>  __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+>  file_write_and_wait_range+0x6f0/0x7d0 mm/filemap.c:797
+>  generic_buffers_fsync_noflush+0x79/0x3c0 fs/buffer.c:609
+>  ext4_fsync_nojournal fs/ext4/fsync.c:88 [inline]
+>  ext4_sync_file+0x587/0x12f0 fs/ext4/fsync.c:147
+>  vfs_fsync_range+0x1a1/0x240 fs/sync.c:187
+>  generic_write_sync include/linux/fs.h:3046 [inline]
+>  ext4_buffered_write_iter+0xae9/0xce0 fs/ext4/file.c:305
+>  ext4_file_write_iter+0x2a2/0x3d90 fs/ext4/file.c:-1
+>  new_sync_write fs/read_write.c:593 [inline]
+>  vfs_write+0xbe2/0x15d0 fs/read_write.c:686
+>  ksys_pwrite64 fs/read_write.c:793 [inline]
+>  __do_sys_pwrite64 fs/read_write.c:801 [inline]
+>  __se_sys_pwrite64 fs/read_write.c:798 [inline]
+>  __x64_sys_pwrite64+0x2ab/0x3b0 fs/read_write.c:798
+>  x64_sys_call+0xe77/0x3e30 arch/x86/include/generated/asm/syscalls_64.h:1=
+9
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xd9/0xfa0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>
+> Uninit was created at:
+>  __alloc_frozen_pages_noprof+0x689/0xf00 mm/page_alloc.c:5206
+>  alloc_pages_mpol+0x328/0x860 mm/mempolicy.c:2416
+>  alloc_frozen_pages_noprof mm/mempolicy.c:2487 [inline]
+>  alloc_pages_noprof mm/mempolicy.c:2507 [inline]
+>  folio_alloc_noprof+0x109/0x360 mm/mempolicy.c:2517
+>  filemap_alloc_folio_noprof+0x9d/0x420 mm/filemap.c:1020
+>  __filemap_get_folio+0xb45/0x1930 mm/filemap.c:2012
+>  write_begin_get_folio include/linux/pagemap.h:784 [inline]
+>  ext4_write_begin+0x6d9/0x2d70 fs/ext4/inode.c:1318
+>  generic_perform_write+0x365/0x1050 mm/filemap.c:4242
+>  ext4_buffered_write_iter+0x61a/0xce0 fs/ext4/file.c:299
+>  ext4_file_write_iter+0x2a2/0x3d90 fs/ext4/file.c:-1
+>  new_sync_write fs/read_write.c:593 [inline]
+>  vfs_write+0xbe2/0x15d0 fs/read_write.c:686
+>  ksys_pwrite64 fs/read_write.c:793 [inline]
+>  __do_sys_pwrite64 fs/read_write.c:801 [inline]
+>  __se_sys_pwrite64 fs/read_write.c:798 [inline]
+>  __x64_sys_pwrite64+0x2ab/0x3b0 fs/read_write.c:798
+>  x64_sys_call+0xe77/0x3e30 arch/x86/include/generated/asm/syscalls_64.h:1=
+9
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xd9/0xfa0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>
+> CPU: 1 UID: 0 PID: 5879 Comm: syz.5.3882 Tainted: G        W           sy=
+zkaller #0 PREEMPT(none)
+> Tainted: [W]=3DWARN
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 10/02/2025
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion visit https://groups.google.com/d/msgid/syzkaller=
+-bugs/68ee633c.050a0220.1186a4.002a.GAE%40google.com.
 
