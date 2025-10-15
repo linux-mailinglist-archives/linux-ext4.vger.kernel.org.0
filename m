@@ -1,222 +1,202 @@
-Return-Path: <linux-ext4+bounces-10882-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10883-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5FCCBDC56E
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 05:28:23 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5ED9BDCA28
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 07:47:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA6261925D25
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 03:28:46 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 94BF74EEC76
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 05:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A73F29B79A;
-	Wed, 15 Oct 2025 03:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0E34303A1B;
+	Wed, 15 Oct 2025 05:46:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="LJv22Fqd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Adq31IJP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0930218AA0
-	for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 03:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64014E555
+	for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 05:46:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760498897; cv=none; b=pA5L4NQj4mR6B+A2Qpn1rcpcsniMBiNaC4cQRAygyN1L/0xeylBaWe/MlfvKeQ1qswqEPUUgEdbWXYRCZrMoqefJp/ucxRmOxzjVFDgroitGZ87lTKrmr8dCOHMEbMQeK8yrBZOy0trSB9aQF4SmUj3WuYdUeIaPX8nW9sf4PGI=
+	t=1760507215; cv=none; b=rLuMdUFuv02kXfeWinABxVP62sl9UQqp5UB5lxBC4MN2R4uh5FYcNMmQx0qnd1DPNGPc0dwAD3iIfzzS+SzngRgriuG1yvF478gvjaC1UDQat9W9aw7B1Gu/nZjH8ivcWeq7Wao34+jIOzTI7bmfTh6sHOZ+AjSrcmmeAh53aYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760498897; c=relaxed/simple;
-	bh=qH9EBqbfeSqqcPyfWFX24676N86ZkdD2YciNFP2TwWg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=O45WFv+tty+mNUpNEP5iHAqn9ScmeAcv4IUsx4ZFW+cFeVc997q2S2HJtXd0GOHDiEPjH3djXhIKelX8F2aolWW88XHq+pJqRFGbov+bCV5aEjK3uaxh6iHqcJdfmqTftAPy3H/3IIAKNkY7HQ0WDDaeZQqpbTe8VW92yEFRRRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=LJv22Fqd; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-113-184.bstnma.fios.verizon.net [173.48.113.184])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 59F3SBdM006355
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 14 Oct 2025 23:28:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1760498892; bh=imxYGjKfN6hBHRxVh0v6B9uYgdXS9ORTOJugxIL1QM8=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=LJv22FqdDckl7BFBLtyC3VemBj8wxClznisgRRavXKTK2LA5YCBd/MKj6jAbT+q9r
-	 K3gWo0bqyX00i25qnJkwxZbUduBzb3P+jWb1pHCDYW3CobDhnxhKt/wKZDFWZGWIqE
-	 dxyM9gHjSDMpAmh4CpK+QtpFSHOdP7LS4JGfnt4v5KoQfMgFPEbewMZa74nK/1nDBu
-	 kiLxdkNIDO58e5kHsOKIW4HJ4+0x3eyu7r7GLHr1JJbIJDHltpISpsmrwhUfhjoBVC
-	 CEKsZFROYTC/MDEyThTbOdUa2YUZ7iakfSBHkYIs6ImND2GJfBqK+01tK6T+5+gSJ4
-	 ef4rmuaemKv/A==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id E5B9C2E00D9; Tue, 14 Oct 2025 23:28:10 -0400 (EDT)
-Date: Tue, 14 Oct 2025 23:28:10 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: [GIT PULL] ext4 bug fixes for 6.18-rc2
-Message-ID: <20251015032810.GA780453@mit.edu>
+	s=arc-20240116; t=1760507215; c=relaxed/simple;
+	bh=L9yQzwfiK6AnAj53w+M42/OMTEMETYOV7eUVo5HxABI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=elzqGkmkQ3ih9EhJLzV8vKJ/5a46eiSGbFFvm7sf/HBkvSkScnZtlpM9nNNsBDWMAyhNW5f5izVV+26tj8Y7CCnBDCv7uNYXXTFY7guiviHQC64SptDDlgeuNcYkhOHVtNwEC6Qgq8omlSNMFu9Uz3Vg6jFtGMrKcz+9PvSkYYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Adq31IJP; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b3c2db014easo316731866b.0
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Oct 2025 22:46:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760507212; x=1761112012; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YB/8HRPSkZavRfQHyIpXrXhIqH5dcxDgrAKATWLCf7Y=;
+        b=Adq31IJPv30T6zUoF2y3H73X7Rg3/pWXDTmdnh8kEFGnxj427QLrLxman9/5UI5W2U
+         /BfcMAJFP39b/qTttenN83pLLoKQgHruzLRnAyI7r33JHzbAxexU4Hz4JiFgvuSvRjJE
+         S++28Isa33yMokJkwd5NGNEH7zm9pAspIgg8tWWicxPMILY3fP7EpgtkzrPlnN9oCzqo
+         SQu04Tg9CVpi8kJtTRzyZWVdYdhZeaWchM2nnDVNUJKPESyQa0SuKLSXQM6tLXz/b52R
+         uQ3D4kBfWD7qTw59FT/+Jkb7USrhxoKZYNVLTLXfM7hILg+wbYpzLX/4KHTjP7OIQI4C
+         +66Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760507212; x=1761112012;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YB/8HRPSkZavRfQHyIpXrXhIqH5dcxDgrAKATWLCf7Y=;
+        b=AzkBZw5Kt7yjpaR1DAYnqpOUmjxoEuHliK2wJM3UuMjh5Ao3Q8XT6eiaIoBJRzZL4J
+         gZHIgXcdhy+xYH+lZliOqL0aAewieL5/RV5Scb4oZtGoQ2DwmIJvSzRFiRnwGP+uyzig
+         vkl4e0wGGiO7sA5g0IIVVf3asJRAPIPfdLWOsozASwRUKrIv1LnfEHJ2Nk0uSN8OAt9z
+         iu2lLGNiTOfm/JWa7fNAHxaKJE359X33YjgCe6oAPUapuhr54yZz3WQL/uHeOvqDibSp
+         fwPxiMkTjYZbqSt4g8sI5uRVJzqv36uzbJ7n+i6aYyVa3991qioXRdhBWC23G/HUTdFQ
+         a7MA==
+X-Forwarded-Encrypted: i=1; AJvYcCVa+DO+13QU6hWckiodKjJJqEFmnu0Y3bAzFGbeaqQGGSikDtZINyw1Pz5uYDq4d0kzz2mgwvHfsNfx@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvC27dc7QbZtW73jPFnxdE/iKnGNrHdBtXNQdLR/F56ssD6GdR
+	OivDWVNds3Vy3a/oFNFgwKN3NK6YiLVs2Zv6ec4G4uFjdk4MaTL4iiQrGc56p24W1vxlafCnWUN
+	rSXQumkPFAqKDctsfxFA7SCha9fwaizo=
+X-Gm-Gg: ASbGncsHa+Zov8msYn/5a5oVQT6dPu3HP98E9L2g61RBsQwUlU2yip+8lCwUXVW4B3v
+	dul1rEPTGgCIGcgSy2TRvi6zQpC+wsh6pOOIUaAn0wHAlwpHjhJ/0CA2nYy7pC0gjQ0HxyrloDj
+	MxiLe08fB78T3UUSi6490dBtP461sPFxVAH0go1Ea3XsPiXe+sBFEO83b0tZK6tvLKpESheX5yo
+	iCz2AWTM0fZIxrUGkPOXZBB9LDdR2gkTSezsKasQN18wewXXJ1KDPEepyo4QsC2xa/r
+X-Google-Smtp-Source: AGHT+IHBOaBguuSDBJ8tBqccd4wBxjcgREccPEa2q0OFeN3z0LhFrlL5e17WKU2nQANyrLyL2KnfgEnaFifFE19VDgQ=
+X-Received: by 2002:a17:907:72c6:b0:b46:8bad:6970 with SMTP id
+ a640c23a62f3a-b50abaa43b4mr3121817866b.36.1760507211571; Tue, 14 Oct 2025
+ 22:46:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20251009075929.1203950-1-mjguzik@gmail.com> <20251009075929.1203950-4-mjguzik@gmail.com>
+ <h2etb4acmmlmcvvfyh2zbwgy7bd4xeuqqyciqjw6k5zd3thmzq@vwhxpsoauli7>
+ <CAGudoHFJxFOj=cbxcjmMtkzXCagg4vgfmexTG1e_Fo1M=QXt-g@mail.gmail.com> <aO7NqqB41VYCw4Bh@dread.disaster.area>
+In-Reply-To: <aO7NqqB41VYCw4Bh@dread.disaster.area>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Wed, 15 Oct 2025 07:46:39 +0200
+X-Gm-Features: AS18NWCB_4h8LHu2yt-FYyIBzUwuIR3RlLlbdhbf0H9i_Il0fvD54KG0vSEA_Mc
+Message-ID: <CAGudoHFpoo0Qm=b4Z85tbJJmhh+vmSHuNnm3pVaLaQsmX9mURg@mail.gmail.com>
+Subject: Re: [PATCH v7 03/14] fs: provide accessors for ->i_state
+To: Dave Chinner <david@fromorbit.com>
+Cc: Jan Kara <jack@suse.cz>, brauner@kernel.org, viro@zeniv.linux.org.uk, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com, 
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit acf943e9768ec9d9be80982ca0ebc4bfd6b7631e:
+On Wed, Oct 15, 2025 at 12:24=E2=80=AFAM Dave Chinner <david@fromorbit.com>=
+ wrote:
+>
+> On Fri, Oct 10, 2025 at 05:51:06PM +0200, Mateusz Guzik wrote:
+> > On Fri, Oct 10, 2025 at 4:44=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+> > >
+> > > On Thu 09-10-25 09:59:17, Mateusz Guzik wrote:
+> > > > +static inline void inode_state_set_raw(struct inode *inode,
+> > > > +                                    enum inode_state_flags_enum fl=
+ags)
+> > > > +{
+> > > > +     WRITE_ONCE(inode->i_state, inode->i_state | flags);
+> > > > +}
+> > >
+> > > I think this shouldn't really exist as it is dangerous to use and if =
+we
+> > > deal with XFS, nobody will actually need this function.
+> > >
+> >
+> > That's not strictly true, unless you mean code outside of fs/inode.c
+> >
+> > First, something is still needed to clear out the state in
+> > inode_init_always_gfp().
+> >
+> > Afterwards there are few spots which further modify it without the
+> > spinlock held (for example see insert_inode_locked4()).
+> >
+> > My take on the situation is that the current I_NEW et al handling is
+> > crap and the inode hash api is also crap.
+>
+> The inode hash implementation is crap, too. The historically poor
+> scalability characteristics of the VFS inode cache is the primary
+> reason we've never considered ever trying to port XFS to use it,
+> even if we ignore all the inode lifecycle issues that would have to
+> be solved first...
+>
 
-  ext4: fix checks for orphan inodes (2025-09-26 08:36:08 -0400)
+I don't know of anyone defending the inode hash tho. The performance
+of the thing was already bashed a few times, I did not see anyone
+dunking on the API ;)
 
-are available in the Git repository at:
+> > For starters freshly allocated inodes should not be starting with 0,
+> > but with I_NEW.
+>
+> Not all inodes are cached filesystem inodes. e.g. anonymous inodes
+> are initialised to inode->i_state =3D I_DIRTY.  pipe inodes also start
+> at I_DIRTY. socket inodes don't touch i_state at init, so they
+> essentially init i_state =3D 0....
+>
+> IOWs, the initial inode state depends on what the inode is being
+> used for, and I_NEW is only relevant to inodes that are cached and
+> can be found before the filesystem has fully initialised the VFS
+> inode.
+>
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git ext4_for_linus-6.18-rc2
+Well it is true that currently the I_NEW flag is there to help out
+entities like the hash inode hash.
 
-for you to fetch changes up to c065b6046b3493a878c2ceb810aed845431badb4:
+I'm looking to change it into a generic indicator of an uninitialized
+inode. This is completely harmless for the consumers which currently
+operate on inodes which never had the flag.
 
-  Use CONFIG_EXT4_FS instead of CONFIG_EXT3_FS in all of the defconfigs (2025-10-13 21:50:40 -0400)
+Here is one use: I'd like to introduce a mandatory routine to call
+when the filesystem at hand claims the inode is ready to use.
 
-----------------------------------------------------------------
-Ext4 bug fixes for 6.18-rc2, including
+Said routine would have 2 main purposes:
+- validate the state of the inode (for example that a valid mode is
+set; this would have caught some of the syzkaller bugs from the get
+go)
+- pre-compute a bunch of stuff, for example see this crapper:
 
- * Fix regression caused by removing CONFIG_EXT3_FS when testing some
-   very old defconfigs
- * Avoid a BUG_ON when opening a file on a maliciously corrupted file system
- * Avoid mm warnings when freeing a very large orphan file metadata
- * Avoid a theoretical races between metadata wrtteback and checkpoints.
-   (It's very hard to hit in practice, since the race requires that the
-   writeback take a very long time.)
+   static inline int do_inode_permission(struct mnt_idmap *idmap,
+                                        struct inode *inode, int mask)
+  {
+          if (unlikely(!(inode->i_opflags & IOP_FASTPERM))) {
+                  if (likely(inode->i_op->permission))
+                          return inode->i_op->permission(idmap, inode,
+mask);
 
-----------------------------------------------------------------
-Deepanshu Kartikey (1):
-      ext4: detect invalid INLINE_DATA + EXTENTS flag combination
+                  /* This gets set once for the inode lifetime */
+                  spin_lock(&inode->i_lock);
+                  inode->i_opflags |=3D IOP_FASTPERM;
+                  spin_unlock(&inode->i_lock);
+          }
+          return generic_permission(idmap, inode, mask);
+  }
 
-Jan Kara (1):
-      ext4: free orphan info with kvfree
+The IOP_FASTPERM could be computed by the new routine, so this would
+simplify to:
+  static inline int do_inode_permission(struct mnt_idmap *idmap,
+                                        struct inode *inode, int mask)
+  {
+          if (unlikely(!(inode->i_opflags & IOP_FASTPERM)))
+                  return inode->i_op->permission(idmap, inode, mask);
+          return generic_permission(idmap, inode, mask);
+  }
 
-Theodore Ts'o (1):
-      Use CONFIG_EXT4_FS instead of CONFIG_EXT3_FS in all of the defconfigs
+The routine would assert the inode is I_NEW and would clear the flag,
+replacing it with something else indicating the inode is indeed ready
+to use.
 
-Zeno Endemann (1):
-      ext4, doc: fix and improve directory hash tree description
+While technically the I_NEW change is not necessarily to get there, I
+do think it makes things cleaner.
 
-Zhang Yi (2):
-      jbd2: ensure that all ongoing I/O complete before freeing blocks
-      ext4: wait for ongoing I/O to complete before freeing blocks
-
- Documentation/filesystems/ext4/directory.rst | 63 +++++++++++++++++++++++++++++-----------------------------
- arch/arc/configs/axs101_defconfig            |  2 +-
- arch/arc/configs/axs103_defconfig            |  2 +-
- arch/arc/configs/axs103_smp_defconfig        |  2 +-
- arch/arc/configs/hsdk_defconfig              |  2 +-
- arch/arc/configs/vdk_hs38_defconfig          |  2 +-
- arch/arc/configs/vdk_hs38_smp_defconfig      |  2 +-
- arch/arm/configs/axm55xx_defconfig           |  2 +-
- arch/arm/configs/bcm2835_defconfig           |  4 ++--
- arch/arm/configs/davinci_all_defconfig       |  2 +-
- arch/arm/configs/dove_defconfig              |  4 ++--
- arch/arm/configs/ep93xx_defconfig            |  4 ++--
- arch/arm/configs/imx_v6_v7_defconfig         |  6 +++---
- arch/arm/configs/ixp4xx_defconfig            |  4 ++--
- arch/arm/configs/mmp2_defconfig              |  2 +-
- arch/arm/configs/moxart_defconfig            |  2 +-
- arch/arm/configs/multi_v5_defconfig          |  2 +-
- arch/arm/configs/mv78xx0_defconfig           |  4 ++--
- arch/arm/configs/mvebu_v5_defconfig          |  2 +-
- arch/arm/configs/nhk8815_defconfig           |  2 +-
- arch/arm/configs/omap1_defconfig             |  2 +-
- arch/arm/configs/omap2plus_defconfig         |  2 +-
- arch/arm/configs/orion5x_defconfig           |  4 ++--
- arch/arm/configs/pxa_defconfig               |  6 +++---
- arch/arm/configs/qcom_defconfig              |  2 +-
- arch/arm/configs/rpc_defconfig               |  2 +-
- arch/arm/configs/s3c6400_defconfig           |  6 +++---
- arch/arm/configs/sama7_defconfig             |  2 +-
- arch/arm/configs/socfpga_defconfig           |  2 +-
- arch/arm/configs/spear13xx_defconfig         |  4 ++--
- arch/arm/configs/spear3xx_defconfig          |  4 ++--
- arch/arm/configs/spear6xx_defconfig          |  4 ++--
- arch/arm/configs/spitz_defconfig             |  4 ++--
- arch/arm/configs/stm32_defconfig             |  2 +-
- arch/arm/configs/tegra_defconfig             |  6 +++---
- arch/arm/configs/u8500_defconfig             |  2 +-
- arch/arm/configs/vexpress_defconfig          |  2 +-
- arch/hexagon/configs/comet_defconfig         |  6 +++---
- arch/loongarch/configs/loongson3_defconfig   |  6 +++---
- arch/m68k/configs/stmark2_defconfig          |  6 +++---
- arch/microblaze/configs/mmu_defconfig        |  2 +-
- arch/mips/configs/bigsur_defconfig           |  6 +++---
- arch/mips/configs/cobalt_defconfig           |  6 +++---
- arch/mips/configs/decstation_64_defconfig    |  6 +++---
- arch/mips/configs/decstation_defconfig       |  6 +++---
- arch/mips/configs/decstation_r4k_defconfig   |  6 +++---
- arch/mips/configs/fuloong2e_defconfig        |  2 +-
- arch/mips/configs/ip22_defconfig             |  6 +++---
- arch/mips/configs/ip27_defconfig             |  6 +++---
- arch/mips/configs/ip28_defconfig             |  6 +++---
- arch/mips/configs/ip30_defconfig             |  6 +++---
- arch/mips/configs/ip32_defconfig             |  6 +++---
- arch/mips/configs/jazz_defconfig             |  2 +-
- arch/mips/configs/lemote2f_defconfig         |  6 +++---
- arch/mips/configs/loongson1b_defconfig       |  6 +++---
- arch/mips/configs/loongson1c_defconfig       |  6 +++---
- arch/mips/configs/loongson2k_defconfig       |  6 +++---
- arch/mips/configs/loongson3_defconfig        |  6 +++---
- arch/mips/configs/malta_defconfig            |  2 +-
- arch/mips/configs/malta_kvm_defconfig        |  2 +-
- arch/mips/configs/malta_qemu_32r6_defconfig  |  2 +-
- arch/mips/configs/maltaaprp_defconfig        |  2 +-
- arch/mips/configs/maltasmvp_defconfig        |  6 +++---
- arch/mips/configs/maltasmvp_eva_defconfig    |  2 +-
- arch/mips/configs/maltaup_defconfig          |  2 +-
- arch/mips/configs/maltaup_xpa_defconfig      |  2 +-
- arch/mips/configs/mtx1_defconfig             |  6 +++---
- arch/mips/configs/rm200_defconfig            |  2 +-
- arch/openrisc/configs/or1klitex_defconfig    |  2 +-
- arch/openrisc/configs/virt_defconfig         |  4 ++--
- arch/parisc/configs/generic-32bit_defconfig  |  4 ++--
- arch/parisc/configs/generic-64bit_defconfig  |  4 ++--
- arch/sh/configs/ap325rxa_defconfig           |  6 +++---
- arch/sh/configs/apsh4a3a_defconfig           |  2 +-
- arch/sh/configs/apsh4ad0a_defconfig          |  2 +-
- arch/sh/configs/ecovec24_defconfig           |  6 +++---
- arch/sh/configs/edosk7760_defconfig          |  2 +-
- arch/sh/configs/espt_defconfig               |  2 +-
- arch/sh/configs/landisk_defconfig            |  2 +-
- arch/sh/configs/lboxre2_defconfig            |  2 +-
- arch/sh/configs/magicpanelr2_defconfig       |  4 ++--
- arch/sh/configs/r7780mp_defconfig            |  2 +-
- arch/sh/configs/r7785rp_defconfig            |  2 +-
- arch/sh/configs/rsk7264_defconfig            |  2 +-
- arch/sh/configs/rsk7269_defconfig            |  2 +-
- arch/sh/configs/sdk7780_defconfig            |  4 ++--
- arch/sh/configs/sdk7786_defconfig            |  2 +-
- arch/sh/configs/se7343_defconfig             |  2 +-
- arch/sh/configs/se7712_defconfig             |  2 +-
- arch/sh/configs/se7721_defconfig             |  2 +-
- arch/sh/configs/se7722_defconfig             |  2 +-
- arch/sh/configs/se7724_defconfig             |  6 +++---
- arch/sh/configs/sh03_defconfig               |  4 ++--
- arch/sh/configs/sh2007_defconfig             |  2 +-
- arch/sh/configs/sh7757lcr_defconfig          |  2 +-
- arch/sh/configs/sh7763rdp_defconfig          |  2 +-
- arch/sh/configs/sh7785lcr_32bit_defconfig    |  2 +-
- arch/sh/configs/sh7785lcr_defconfig          |  2 +-
- arch/sh/configs/shx3_defconfig               |  2 +-
- arch/sh/configs/titan_defconfig              |  4 ++--
- arch/sh/configs/ul2_defconfig                |  2 +-
- arch/sh/configs/urquell_defconfig            |  2 +-
- arch/sparc/configs/sparc64_defconfig         |  6 +++---
- arch/xtensa/configs/audio_kc705_defconfig    |  2 +-
- arch/xtensa/configs/cadence_csp_defconfig    |  2 +-
- arch/xtensa/configs/generic_kc705_defconfig  |  2 +-
- arch/xtensa/configs/nommu_kc705_defconfig    |  2 +-
- arch/xtensa/configs/smp_lx200_defconfig      |  2 +-
- arch/xtensa/configs/virt_defconfig           |  2 +-
- arch/xtensa/configs/xip_kc705_defconfig      |  2 +-
- fs/ext4/ext4_jbd2.c                          | 11 ++++++++--
- fs/ext4/inode.c                              |  8 ++++++++
- fs/ext4/orphan.c                             |  4 ++--
- fs/jbd2/transaction.c                        | 13 ++++++++----
- 114 files changed, 242 insertions(+), 221 deletions(-)
+Note unlock_new_inode() and similar are not mandatory to call.
 
