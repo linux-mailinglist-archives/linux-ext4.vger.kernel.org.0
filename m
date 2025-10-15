@@ -1,258 +1,221 @@
-Return-Path: <linux-ext4+bounces-10887-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10888-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12770BE0E64
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Oct 2025 00:07:05 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E44B7BE10D0
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Oct 2025 01:41:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A4F884E3AE7
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 22:07:02 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CBB054F1E9A
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 23:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C53305960;
-	Wed, 15 Oct 2025 22:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06EA03176EE;
+	Wed, 15 Oct 2025 23:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="bRv3Iqc9"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gi1kxSR4"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7053043A5
-	for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 22:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93923168F3
+	for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 23:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760566012; cv=none; b=b94f99tLAlOrE9cTMALrmvbfzCh75bUVBGTw5Cghi8IfzHLGIPm/7wJm9krmBZOL2HJbcrMroefS5f0AsUWGl2gcxMQqx00BFvworKLLOcaVrT22Fgwoug4weoZhc1OipPCeLzgGnltDDrQaHAkXsI9O5/j2KseZ2q7acSYUENs=
+	t=1760571706; cv=none; b=l8lk1PMuqGBZrtMs4qdKnQPs1ifZRAHu1UJgi0Og3BGJsyP/9BVg+wmcJbmWrM31KhHMF/P5rMMQWJsJepk/ktwLv9WpkrXSIMAhIHSCgPjsjdxGONBbgh28z4c6LdIpl7ZDxjkR6ifGEjBSCW2asjrGXraa2XEk8yE/tDGNmss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760566012; c=relaxed/simple;
-	bh=Wdpn2gTjQJBFZWl/cSLc/YQoQqtEHLVGvOPx+0pSDek=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b46cWWkznauZhkMU8QyaxgYLOZhflv8y+TITj/D3Ln4+7XG7zJ9u1nsvUNKzo4ebCqH17PnDnyhI310fcED3yFNkUrPDldreZ9JI4v5gfXVjYMKTjCd0DBY6qr0jI2OdNEvFDjqhUtaViq2LzWhhXZm6/fAAL5I0t3wOdMhMhhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=bRv3Iqc9; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-33b9e390d74so117640a91.0
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 15:06:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1760566010; x=1761170810; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=M6eApBBDQQL/Q0ea8jzVs7vVBk+VLf27Z3qhgm/L8eI=;
-        b=bRv3Iqc9FEJ5J2g2UTfE4Tkljw64+G5CFEGGhMGkaDDmAImRVEVmXuW2Zpun6MFr+U
-         zJUerIu31tZ8jIEKVOmIwL3wqI5C6K2+nnNRmcgMLvKglF4gwx322QisWM5aS4dyJygy
-         /JNWrhr4Tlqe/tv85QvhMcTbK+ykeukpVuKVuQILU+wmujb1hN0YuyRRetvmynrzcktu
-         YMpmZtiW4U6ow0dyqdEqVxrZdP/PinkTNWdwRF+nOauKXyCalw+1364F/dazvW62m13m
-         4+HXXzo10FLiRO54cpoCsG2x60E5uYXMqNZa3zltcIjzGlrspz7tv2vGactXkodWeybB
-         KSHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760566010; x=1761170810;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M6eApBBDQQL/Q0ea8jzVs7vVBk+VLf27Z3qhgm/L8eI=;
-        b=xH/A4+uPxwVUJGNREJQh+DOOWpBtB9SvrBxxBwNC7Ewn9TLbLWippNziLnOtJ7mUrE
-         93wwwjMvYDqX0e9Zhw8zMMVRMKvK5WCplp/bRRb1yNz7nluOBBki04p1jTfy+sMc4kv9
-         mH4JspOlqGfPHNNnuK9HgF5SCcjompCQh5Jlr1f4O+CG/xB6SrZn7QXc6yAUp+GFmBfL
-         DflWSCizvV8KQJDfdj5IseSe0gA5/PqlW8ODly0UznYj0SKe5bwuSDUumNkoA4DnK6nl
-         tce+wjFjbNiTu63oOhMXfVIcVdCsUvDgQhAzK3u1P2ZZIxk2DH6fE0sJe6AzJvlzNxtw
-         59dw==
-X-Forwarded-Encrypted: i=1; AJvYcCVyBOPp2MPzJzBWTUhwIdBcBPxeIw17oqz0IUbGJoFTQEDo/hkZpWcE8C72g4nPJFb7kBpNiED0e/+c@vger.kernel.org
-X-Gm-Message-State: AOJu0YziOz2o3j+VdgBAlM0JOzaGKgXioN7/f/mVDOE3+TC641ypIYff
-	NzU25TkVkEkDmz4X7xHSdIKu6ee2EnuLbcfi0C6cR2OqeTMcIOUh9TdxbSWtQ/p1oh4=
-X-Gm-Gg: ASbGncuxCXKHTMiNzvFB+hwZIjjkHA/sIN/BcSpUDhvRFlO1QlesszCmeDzPig4jOHv
-	r4gmHKkr4vOn24yoED5HTMB4P0Wqgqr09jt96jpUDlJUsxOoI50WQy8osJ6UTWHgHrueEBNzVqe
-	bIpyGzN8LcXVbOkdM9ZoUPlnHxUSeA2pAlP/51+oNxOGlUaBoGICy4lfBGM+ERUNHeBTsHAmuHD
-	sI0a06ruw5lRWGdPmY7vAiB4ilq1VS0hzbLbXrFK6gsADFIQmHxWYvKBBWP+QDMfoJkbZUbB26A
-	XkbS6YaVX6pIWj+Ac0B6vQqCTJnlEG+sG5KoSDdHepTWHt/BddPUWuEX8WCh+GugJUhy094lRhL
-	HieJLdkuBSS8DgoIbVfOXtE4wq4QzMoqFkJ2F6bHA8sZkCuaCbmLNIFAIXhZ1dZ/gw5bJuCYezK
-	W2RI0akxrfLNjhrVLfFB5ogbiUoDku8LhC/l9YXJ0heItfE3JCNL2ZY9QXkK0a6w==
-X-Google-Smtp-Source: AGHT+IFm6y/lppOf0Edu2tNY3405NaNnHIA0Sq0GymYj/emWFWGXsYmduItLrpe8rLNIyLezcWkacw==
-X-Received: by 2002:a17:90b:1b11:b0:32e:3c57:8a9e with SMTP id 98e67ed59e1d1-33b513a1ffbmr41330010a91.35.1760566009498;
-        Wed, 15 Oct 2025 15:06:49 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33badfe8abdsm71776a91.1.2025.10.15.15.06.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Oct 2025 15:06:48 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.98.2)
-	(envelope-from <david@fromorbit.com>)
-	id 1v99dt-0000000FKma-1fVY;
-	Thu, 16 Oct 2025 09:06:45 +1100
-Date: Thu, 16 Oct 2025 09:06:45 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: Jan Kara <jack@suse.cz>, brauner@kernel.org, viro@zeniv.linux.org.uk,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com,
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v7 03/14] fs: provide accessors for ->i_state
-Message-ID: <aPAa9fz-4OG_9pVX@dread.disaster.area>
-References: <20251009075929.1203950-1-mjguzik@gmail.com>
- <20251009075929.1203950-4-mjguzik@gmail.com>
- <h2etb4acmmlmcvvfyh2zbwgy7bd4xeuqqyciqjw6k5zd3thmzq@vwhxpsoauli7>
- <CAGudoHFJxFOj=cbxcjmMtkzXCagg4vgfmexTG1e_Fo1M=QXt-g@mail.gmail.com>
- <aO7NqqB41VYCw4Bh@dread.disaster.area>
- <CAGudoHFpoo0Qm=b4Z85tbJJmhh+vmSHuNnm3pVaLaQsmX9mURg@mail.gmail.com>
+	s=arc-20240116; t=1760571706; c=relaxed/simple;
+	bh=PYj0vIBM6kYpIzAu9CmXffXJEQccEaEy9U2+hI7AZFg=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=oxnf/4YqHf5ED7eWtl97tHFFn82tx4HSkWcKZRbIrkfGkTF8tHYkjqOSPRaJvAgi0y2Fle/CBCmlECqj92F7KTK8KKL1CtuBXkfrYQUC5/k3s473/+wJBYkHHxn5rP6wuoCepuxfc044vbYQ4Hg0aJev2jRta18nqo85WxsTfi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gi1kxSR4; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1760571704; x=1792107704;
+  h=date:from:to:cc:subject:message-id;
+  bh=PYj0vIBM6kYpIzAu9CmXffXJEQccEaEy9U2+hI7AZFg=;
+  b=Gi1kxSR4PJIPGEcc+VeU0kCBke3jWIvlQ9zVbV/R5FhUJ2jhD5+zGB/J
+   jif4m2Mjleq064pvG5cRZT5SBY4qGA6D9rn5E01l3O/zPA3F6PfG5Al0o
+   O0v459lLuiQ2iJIfTxfy+e/Nxorc1z9sYoO6m7B74XrYkYjd8rth/dVNr
+   nihafSxfrRArGhsenFzHFNGh0SIUXz/YAinxTSkXzhhFVCd4atkKLbUCW
+   aK/sm8Ks3ELyd6OkbjFTYWXbXWFmltSrCgEWRMWL2HTQWMG9ldoFns9Zq
+   rDQ3jcfUo4F4Jv1QoIlcCkXPbaS8ZHG0XOw7j6oVyj9mnvFOR92R+rFTp
+   A==;
+X-CSE-ConnectionGUID: WczJn1ROQG6G65J3FidvtA==
+X-CSE-MsgGUID: YPKpps2WTfO+vjLHEJHesg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="62687894"
+X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
+   d="scan'208";a="62687894"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2025 16:41:44 -0700
+X-CSE-ConnectionGUID: Vecf4l8HRYSc48Q2bReDQQ==
+X-CSE-MsgGUID: FkRYd677RaqsLUl+UBvj2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,232,1754982000"; 
+   d="scan'208";a="186313991"
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by orviesa003.jf.intel.com with ESMTP; 15 Oct 2025 16:41:43 -0700
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1v9B7k-0004IT-25;
+	Wed, 15 Oct 2025 23:41:40 +0000
+Date: Thu, 16 Oct 2025 07:40:50 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ c065b6046b3493a878c2ceb810aed845431badb4
+Message-ID: <202510160745.fzQbSEpF-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGudoHFpoo0Qm=b4Z85tbJJmhh+vmSHuNnm3pVaLaQsmX9mURg@mail.gmail.com>
 
-On Wed, Oct 15, 2025 at 07:46:39AM +0200, Mateusz Guzik wrote:
-> On Wed, Oct 15, 2025 at 12:24 AM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Fri, Oct 10, 2025 at 05:51:06PM +0200, Mateusz Guzik wrote:
-> > > On Fri, Oct 10, 2025 at 4:44 PM Jan Kara <jack@suse.cz> wrote:
-> > > >
-> > > > On Thu 09-10-25 09:59:17, Mateusz Guzik wrote:
-> > > > > +static inline void inode_state_set_raw(struct inode *inode,
-> > > > > +                                    enum inode_state_flags_enum flags)
-> > > > > +{
-> > > > > +     WRITE_ONCE(inode->i_state, inode->i_state | flags);
-> > > > > +}
-> > > >
-> > > > I think this shouldn't really exist as it is dangerous to use and if we
-> > > > deal with XFS, nobody will actually need this function.
-> > > >
-> > >
-> > > That's not strictly true, unless you mean code outside of fs/inode.c
-> > >
-> > > First, something is still needed to clear out the state in
-> > > inode_init_always_gfp().
-> > >
-> > > Afterwards there are few spots which further modify it without the
-> > > spinlock held (for example see insert_inode_locked4()).
-> > >
-> > > My take on the situation is that the current I_NEW et al handling is
-> > > crap and the inode hash api is also crap.
-> >
-> > The inode hash implementation is crap, too. The historically poor
-> > scalability characteristics of the VFS inode cache is the primary
-> > reason we've never considered ever trying to port XFS to use it,
-> > even if we ignore all the inode lifecycle issues that would have to
-> > be solved first...
-> >
-> 
-> I don't know of anyone defending the inode hash tho. The performance
-> of the thing was already bashed a few times, I did not see anyone
-> dunking on the API ;)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: c065b6046b3493a878c2ceb810aed845431badb4  Use CONFIG_EXT4_FS instead of CONFIG_EXT3_FS in all of the defconfigs
 
-I think it goes without saying that the amount of
-similar-but-slightly-different-and-inconsistently-named functions
-that have simply grown organically as individual fs needs have
-occurred has resulted in a bit of a mess that nobody really wants to
-tackle... :/
+elapsed time: 1054m
 
-> > > For starters freshly allocated inodes should not be starting with 0,
-> > > but with I_NEW.
-> >
-> > Not all inodes are cached filesystem inodes. e.g. anonymous inodes
-> > are initialised to inode->i_state = I_DIRTY.  pipe inodes also start
-> > at I_DIRTY. socket inodes don't touch i_state at init, so they
-> > essentially init i_state = 0....
-> >
-> > IOWs, the initial inode state depends on what the inode is being
-> > used for, and I_NEW is only relevant to inodes that are cached and
-> > can be found before the filesystem has fully initialised the VFS
-> > inode.
-> >
-> 
-> Well it is true that currently the I_NEW flag is there to help out
-> entities like the hash inode hash.
-> 
-> I'm looking to change it into a generic indicator of an uninitialized
-> inode. This is completely harmless for the consumers which currently
-> operate on inodes which never had the flag.
-> 
-> Here is one use: I'd like to introduce a mandatory routine to call
-> when the filesystem at hand claims the inode is ready to use.
+configs tested: 128
+configs skipped: 3
 
-I like the idea, but I don't think that overloading I_NEW is the
-right thing to do nor is it that simple.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-e.g. We added the I_CREATING state years ago as a subset of I_NEW so
-that VFS inodes being instantiated can't be found -at all- by the
-open-by-handle interface doing direct inode hash lookups. However,
-only some of the inode hash APIs add this flag, and only overlay as
-a filesystem adds it in certain circumstances.
+tested configs:
+alpha                            alldefconfig    gcc-15.1.0
+alpha                             allnoconfig    gcc-15.1.0
+alpha                            allyesconfig    gcc-15.1.0
+arc                              allmodconfig    gcc-15.1.0
+arc                               allnoconfig    gcc-15.1.0
+arc                              allyesconfig    gcc-15.1.0
+arc                     haps_hs_smp_defconfig    gcc-15.1.0
+arc                   randconfig-001-20251015    gcc-8.5.0
+arc                   randconfig-002-20251015    gcc-8.5.0
+arm                              allmodconfig    gcc-15.1.0
+arm                               allnoconfig    clang-22
+arm                              allyesconfig    gcc-15.1.0
+arm                        mvebu_v7_defconfig    clang-22
+arm                   randconfig-001-20251015    clang-22
+arm                   randconfig-002-20251015    clang-22
+arm                   randconfig-003-20251015    gcc-8.5.0
+arm                   randconfig-004-20251015    clang-22
+arm                           tegra_defconfig    gcc-15.1.0
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-15.1.0
+arm64                 randconfig-001-20251015    clang-22
+arm64                 randconfig-002-20251015    gcc-13.4.0
+arm64                 randconfig-003-20251015    clang-22
+arm64                 randconfig-004-20251015    clang-22
+csky                              allnoconfig    gcc-15.1.0
+csky                  randconfig-001-20251015    gcc-15.1.0
+csky                  randconfig-002-20251015    gcc-9.5.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-22
+hexagon                          allyesconfig    clang-22
+hexagon               randconfig-001-20251015    clang-22
+hexagon               randconfig-002-20251015    clang-19
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                             allyesconfig    gcc-14
+i386        buildonly-randconfig-001-20251015    gcc-13
+i386        buildonly-randconfig-002-20251015    gcc-14
+i386        buildonly-randconfig-003-20251015    clang-20
+i386        buildonly-randconfig-004-20251015    clang-20
+i386        buildonly-randconfig-005-20251015    clang-20
+i386        buildonly-randconfig-006-20251015    clang-20
+i386                                defconfig    clang-20
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-22
+loongarch             randconfig-001-20251015    gcc-15.1.0
+loongarch             randconfig-002-20251015    gcc-15.1.0
+m68k                             allmodconfig    gcc-15.1.0
+m68k                              allnoconfig    gcc-15.1.0
+m68k                             allyesconfig    gcc-15.1.0
+microblaze                       allmodconfig    gcc-15.1.0
+microblaze                        allnoconfig    gcc-15.1.0
+microblaze                       allyesconfig    gcc-15.1.0
+microblaze                          defconfig    gcc-15.1.0
+mips                              allnoconfig    gcc-15.1.0
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    gcc-11.5.0
+nios2                 randconfig-001-20251015    gcc-8.5.0
+nios2                 randconfig-002-20251015    gcc-8.5.0
+openrisc                          allnoconfig    gcc-15.1.0
+openrisc                         allyesconfig    gcc-15.1.0
+openrisc                            defconfig    gcc-15.1.0
+parisc                           allmodconfig    gcc-15.1.0
+parisc                            allnoconfig    gcc-15.1.0
+parisc                           allyesconfig    gcc-15.1.0
+parisc                              defconfig    gcc-15.1.0
+parisc                randconfig-001-20251015    gcc-9.5.0
+parisc                randconfig-002-20251015    gcc-8.5.0
+parisc64                            defconfig    gcc-15.1.0
+powerpc                          allmodconfig    gcc-15.1.0
+powerpc                           allnoconfig    gcc-15.1.0
+powerpc                          allyesconfig    clang-22
+powerpc                      chrp32_defconfig    clang-19
+powerpc               randconfig-001-20251015    gcc-15.1.0
+powerpc               randconfig-002-20251015    gcc-12.5.0
+powerpc               randconfig-003-20251015    clang-22
+powerpc64             randconfig-001-20251015    clang-22
+powerpc64             randconfig-002-20251015    clang-22
+powerpc64             randconfig-003-20251015    gcc-13.4.0
+riscv                            allmodconfig    clang-22
+riscv                             allnoconfig    gcc-15.1.0
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    clang-22
+riscv                 randconfig-001-20251015    gcc-10.5.0
+riscv                 randconfig-002-20251015    clang-22
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-22
+s390                             allyesconfig    gcc-15.1.0
+s390                                defconfig    clang-22
+s390                  randconfig-001-20251015    gcc-12.5.0
+s390                  randconfig-002-20251015    clang-22
+sh                               allmodconfig    gcc-15.1.0
+sh                                allnoconfig    gcc-15.1.0
+sh                               allyesconfig    gcc-15.1.0
+sh                                  defconfig    gcc-15.1.0
+sh                         ecovec24_defconfig    gcc-15.1.0
+sh                    randconfig-001-20251015    gcc-11.5.0
+sh                    randconfig-002-20251015    gcc-11.5.0
+sh                             sh03_defconfig    gcc-15.1.0
+sparc                            allmodconfig    gcc-15.1.0
+sparc                             allnoconfig    gcc-15.1.0
+sparc                               defconfig    gcc-15.1.0
+sparc                 randconfig-001-20251015    gcc-8.5.0
+sparc                 randconfig-002-20251015    gcc-13.4.0
+sparc64                             defconfig    clang-20
+sparc64               randconfig-001-20251015    clang-22
+sparc64               randconfig-002-20251015    gcc-11.5.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-22
+um                               allyesconfig    gcc-14
+um                                  defconfig    clang-22
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20251015    clang-22
+um                    randconfig-002-20251015    clang-22
+um                           x86_64_defconfig    clang-22
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20251015    clang-20
+x86_64      buildonly-randconfig-002-20251015    gcc-14
+x86_64      buildonly-randconfig-003-20251015    clang-20
+x86_64      buildonly-randconfig-004-20251015    clang-20
+x86_64      buildonly-randconfig-005-20251015    gcc-14
+x86_64      buildonly-randconfig-006-20251015    gcc-13
+x86_64                              defconfig    gcc-14
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    gcc-15.1.0
+xtensa                  cadence_csp_defconfig    gcc-15.1.0
+xtensa                randconfig-001-20251015    gcc-9.5.0
+xtensa                randconfig-002-20251015    gcc-15.1.0
 
-IOWs, even during initialisation, different filesystems need to
-behave differently w.r.t. how the core VFS performs various
-operations on the inode during the initialisation stage...
-
-FWIW, XFS has the XFS_INEW state that wraps around the outside of
-the VFS inode initialisation process that prevents it from being
-found via any type of inode cache lookup (internal or external)
-until the inode is fully initialised.
-
-IOWs, features that XFS has
-supported for 25+ years (like open-by-handle) is supported natively
-by the XFS inode cache and the XFS inode life cycle state machine.
-
-In contrast, The way the VFS inode cache handles stuff like this is
-very much a hacked-in "oops we didn't think of that" after-thought
-that doesn't actually cover all the different APIs or filesystems...
-
-> Said routine would have 2 main purposes:
-> - validate the state of the inode (for example that a valid mode is
-> set; this would have caught some of the syzkaller bugs from the get
-> go)
-
-I think that's going to be harder than it sounds (speaking as the
-architect of the comprehensive on-disk metadata validation
-infrastructure in XFS).
-
-> - pre-compute a bunch of stuff, for example see this crapper:
-> 
->    static inline int do_inode_permission(struct mnt_idmap *idmap,
->                                         struct inode *inode, int mask)
->   {
->           if (unlikely(!(inode->i_opflags & IOP_FASTPERM))) {
->                   if (likely(inode->i_op->permission))
->                           return inode->i_op->permission(idmap, inode,
-> mask);
-> 
->                   /* This gets set once for the inode lifetime */
->                   spin_lock(&inode->i_lock);
->                   inode->i_opflags |= IOP_FASTPERM;
->                   spin_unlock(&inode->i_lock);
->           }
->           return generic_permission(idmap, inode, mask);
->   }
-
-Yup, that would be useful.
-
-> Note unlock_new_inode() and similar are not mandatory to call.
-
-To a point. i.e. if you are using a VFS inode hash implemtation that
-sets I_NEW, then it is definitely mandatory to call
-unlock_new_inode().  Documentation/filesystems/porting.rst even says
-that.
-
-However, if you aren't using a VFS inode cache implemenation that
-sets I_NEW, then you've got to set it yourself and clear it
-appropriately so the rest of the VFS functionality does the right
-thing whilst the inode is published but still being initialised.
-e.g. putting an inode still undergoing initialisation on the
-sb->s_inodes list without it being marked as I_NEW is, quite simply,
-a bug.
-
-Hence it may not be mandatory to use unlock_new_inode(), but if you
-are publishing a partially initialised inode on any VFS list or
-cache, you still need to be doing the right thing w.r.t. locking,
-I_NEW, I_CREATING and calling unlock_new_inode() during inode
-initialisation and cache lookups.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
