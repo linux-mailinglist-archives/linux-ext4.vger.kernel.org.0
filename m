@@ -1,141 +1,258 @@
-Return-Path: <linux-ext4+bounces-10886-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10887-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56701BE0D4E
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 23:40:33 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12770BE0E64
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Oct 2025 00:07:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 06C804E687D
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 21:40:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A4F884E3AE7
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 22:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D601D2FFDDC;
-	Wed, 15 Oct 2025 21:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C53305960;
+	Wed, 15 Oct 2025 22:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3M2nxyf"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="bRv3Iqc9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7577C2D3220
-	for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 21:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7053043A5
+	for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 22:06:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760564429; cv=none; b=d3PiHk0oY57ZHHEr/5SbVLPD/ygur3d1TRkNjmcIYH3Hhtw09ymlzoWiu7GPIPe93Wj/yDsrPkNJa6GxOvAEDnP9yr1Km/R27rCMi7wFk+7AzuOfce9JKhlpAVwWkGEr3FdZD4cpjh+EuHHeWPXyd7hg9YXPAPmBtq3I00EamDI=
+	t=1760566012; cv=none; b=b94f99tLAlOrE9cTMALrmvbfzCh75bUVBGTw5Cghi8IfzHLGIPm/7wJm9krmBZOL2HJbcrMroefS5f0AsUWGl2gcxMQqx00BFvworKLLOcaVrT22Fgwoug4weoZhc1OipPCeLzgGnltDDrQaHAkXsI9O5/j2KseZ2q7acSYUENs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760564429; c=relaxed/simple;
-	bh=MjmM2nao1xSprOo/wXi1fdMsaWQH6yUtYap+xyDpI78=;
+	s=arc-20240116; t=1760566012; c=relaxed/simple;
+	bh=Wdpn2gTjQJBFZWl/cSLc/YQoQqtEHLVGvOPx+0pSDek=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NcGXYKaxVuV9b+fhgSweDP93tQr2to7vFWTm5qMvKLwo/Z9eOs5vJGnQRpN1qqZs7/C+nII7HyWgunt6yGER7h5EPzr7nsg/8Ag9UdmQ2F6uSznONBQy5KHHlYsRgWC9so7Lpfv1zu2VTp4DkYvmYgusUgmT/enha2gxSSGtjzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f3M2nxyf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D447FC4CEF8;
-	Wed, 15 Oct 2025 21:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760564428;
-	bh=MjmM2nao1xSprOo/wXi1fdMsaWQH6yUtYap+xyDpI78=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f3M2nxyfid1IpgVQlipZ/NtZFkrk9qIzEfiNKkdGqHr0ZDy7T6TzM4d/DPrWKFXwB
-	 le/5SQVVVc6H2AqnFic5kZ7ZyOcWGXgWoL0P9Bjf9HnF/xvHgwp1yKBYtYxcMUdCdz
-	 4W2uVauiwLLajWMA6CtlCfAtjzJCFSF3mmgmZeOKNVXshU425AigifFNKmBE2ziV9E
-	 w/Ekc9ueKGqe+NlmO9IP6zbVyfHXYr91BExR4CbPwHoDC1/0vsB/yQH4njOZrzI/Tg
-	 P7k5obvHqaQ9fVmPBJoBtsJLRjP3VNUbqqIo1DF1cOj5bintfZGL+//fiRKAnaxR2P
-	 fNT+Wue0urqdg==
-Date: Wed, 15 Oct 2025 14:40:28 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Dave Dykstra <dwd@cern.ch>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] fuse2fs: reopen filesystem read-write for read-only
- journal recovery
-Message-ID: <20251015214028.GE6170@frogsfrogsfrogs>
-References: <20251010214735.22683-1-dave.dykstra@cern.ch>
- <20251015011505.GD6170@frogsfrogsfrogs>
- <aO--1J4bOVMYgbBt@cern.ch>
+	 Content-Type:Content-Disposition:In-Reply-To; b=b46cWWkznauZhkMU8QyaxgYLOZhflv8y+TITj/D3Ln4+7XG7zJ9u1nsvUNKzo4ebCqH17PnDnyhI310fcED3yFNkUrPDldreZ9JI4v5gfXVjYMKTjCd0DBY6qr0jI2OdNEvFDjqhUtaViq2LzWhhXZm6/fAAL5I0t3wOdMhMhhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=bRv3Iqc9; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-33b9e390d74so117640a91.0
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 15:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1760566010; x=1761170810; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=M6eApBBDQQL/Q0ea8jzVs7vVBk+VLf27Z3qhgm/L8eI=;
+        b=bRv3Iqc9FEJ5J2g2UTfE4Tkljw64+G5CFEGGhMGkaDDmAImRVEVmXuW2Zpun6MFr+U
+         zJUerIu31tZ8jIEKVOmIwL3wqI5C6K2+nnNRmcgMLvKglF4gwx322QisWM5aS4dyJygy
+         /JNWrhr4Tlqe/tv85QvhMcTbK+ykeukpVuKVuQILU+wmujb1hN0YuyRRetvmynrzcktu
+         YMpmZtiW4U6ow0dyqdEqVxrZdP/PinkTNWdwRF+nOauKXyCalw+1364F/dazvW62m13m
+         4+HXXzo10FLiRO54cpoCsG2x60E5uYXMqNZa3zltcIjzGlrspz7tv2vGactXkodWeybB
+         KSHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760566010; x=1761170810;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=M6eApBBDQQL/Q0ea8jzVs7vVBk+VLf27Z3qhgm/L8eI=;
+        b=xH/A4+uPxwVUJGNREJQh+DOOWpBtB9SvrBxxBwNC7Ewn9TLbLWippNziLnOtJ7mUrE
+         93wwwjMvYDqX0e9Zhw8zMMVRMKvK5WCplp/bRRb1yNz7nluOBBki04p1jTfy+sMc4kv9
+         mH4JspOlqGfPHNNnuK9HgF5SCcjompCQh5Jlr1f4O+CG/xB6SrZn7QXc6yAUp+GFmBfL
+         DflWSCizvV8KQJDfdj5IseSe0gA5/PqlW8ODly0UznYj0SKe5bwuSDUumNkoA4DnK6nl
+         tce+wjFjbNiTu63oOhMXfVIcVdCsUvDgQhAzK3u1P2ZZIxk2DH6fE0sJe6AzJvlzNxtw
+         59dw==
+X-Forwarded-Encrypted: i=1; AJvYcCVyBOPp2MPzJzBWTUhwIdBcBPxeIw17oqz0IUbGJoFTQEDo/hkZpWcE8C72g4nPJFb7kBpNiED0e/+c@vger.kernel.org
+X-Gm-Message-State: AOJu0YziOz2o3j+VdgBAlM0JOzaGKgXioN7/f/mVDOE3+TC641ypIYff
+	NzU25TkVkEkDmz4X7xHSdIKu6ee2EnuLbcfi0C6cR2OqeTMcIOUh9TdxbSWtQ/p1oh4=
+X-Gm-Gg: ASbGncuxCXKHTMiNzvFB+hwZIjjkHA/sIN/BcSpUDhvRFlO1QlesszCmeDzPig4jOHv
+	r4gmHKkr4vOn24yoED5HTMB4P0Wqgqr09jt96jpUDlJUsxOoI50WQy8osJ6UTWHgHrueEBNzVqe
+	bIpyGzN8LcXVbOkdM9ZoUPlnHxUSeA2pAlP/51+oNxOGlUaBoGICy4lfBGM+ERUNHeBTsHAmuHD
+	sI0a06ruw5lRWGdPmY7vAiB4ilq1VS0hzbLbXrFK6gsADFIQmHxWYvKBBWP+QDMfoJkbZUbB26A
+	XkbS6YaVX6pIWj+Ac0B6vQqCTJnlEG+sG5KoSDdHepTWHt/BddPUWuEX8WCh+GugJUhy094lRhL
+	HieJLdkuBSS8DgoIbVfOXtE4wq4QzMoqFkJ2F6bHA8sZkCuaCbmLNIFAIXhZ1dZ/gw5bJuCYezK
+	W2RI0akxrfLNjhrVLfFB5ogbiUoDku8LhC/l9YXJ0heItfE3JCNL2ZY9QXkK0a6w==
+X-Google-Smtp-Source: AGHT+IFm6y/lppOf0Edu2tNY3405NaNnHIA0Sq0GymYj/emWFWGXsYmduItLrpe8rLNIyLezcWkacw==
+X-Received: by 2002:a17:90b:1b11:b0:32e:3c57:8a9e with SMTP id 98e67ed59e1d1-33b513a1ffbmr41330010a91.35.1760566009498;
+        Wed, 15 Oct 2025 15:06:49 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33badfe8abdsm71776a91.1.2025.10.15.15.06.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Oct 2025 15:06:48 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.98.2)
+	(envelope-from <david@fromorbit.com>)
+	id 1v99dt-0000000FKma-1fVY;
+	Thu, 16 Oct 2025 09:06:45 +1100
+Date: Thu, 16 Oct 2025 09:06:45 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: Jan Kara <jack@suse.cz>, brauner@kernel.org, viro@zeniv.linux.org.uk,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v7 03/14] fs: provide accessors for ->i_state
+Message-ID: <aPAa9fz-4OG_9pVX@dread.disaster.area>
+References: <20251009075929.1203950-1-mjguzik@gmail.com>
+ <20251009075929.1203950-4-mjguzik@gmail.com>
+ <h2etb4acmmlmcvvfyh2zbwgy7bd4xeuqqyciqjw6k5zd3thmzq@vwhxpsoauli7>
+ <CAGudoHFJxFOj=cbxcjmMtkzXCagg4vgfmexTG1e_Fo1M=QXt-g@mail.gmail.com>
+ <aO7NqqB41VYCw4Bh@dread.disaster.area>
+ <CAGudoHFpoo0Qm=b4Z85tbJJmhh+vmSHuNnm3pVaLaQsmX9mURg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aO--1J4bOVMYgbBt@cern.ch>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGudoHFpoo0Qm=b4Z85tbJJmhh+vmSHuNnm3pVaLaQsmX9mURg@mail.gmail.com>
 
-On Wed, Oct 15, 2025 at 10:33:40AM -0500, Dave Dykstra wrote:
-> On Tue, Oct 14, 2025 at 06:15:05PM -0700, Darrick J. Wong wrote:
-> > On Fri, Oct 10, 2025 at 04:47:35PM -0500, Dave Dykstra wrote:
-> > > This changes the strategy added in c7f2688540d95e7f2cbcd178f8ff62ebe079faf7
-> > > for recovery of journals when read-only is requested.
-> ...
-> > ro and EXT2_FLAG_RW are not the same thing!
+On Wed, Oct 15, 2025 at 07:46:39AM +0200, Mateusz Guzik wrote:
+> On Wed, Oct 15, 2025 at 12:24 AM Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > On Fri, Oct 10, 2025 at 05:51:06PM +0200, Mateusz Guzik wrote:
+> > > On Fri, Oct 10, 2025 at 4:44 PM Jan Kara <jack@suse.cz> wrote:
+> > > >
+> > > > On Thu 09-10-25 09:59:17, Mateusz Guzik wrote:
+> > > > > +static inline void inode_state_set_raw(struct inode *inode,
+> > > > > +                                    enum inode_state_flags_enum flags)
+> > > > > +{
+> > > > > +     WRITE_ONCE(inode->i_state, inode->i_state | flags);
+> > > > > +}
+> > > >
+> > > > I think this shouldn't really exist as it is dangerous to use and if we
+> > > > deal with XFS, nobody will actually need this function.
+> > > >
+> > >
+> > > That's not strictly true, unless you mean code outside of fs/inode.c
+> > >
+> > > First, something is still needed to clear out the state in
+> > > inode_init_always_gfp().
+> > >
+> > > Afterwards there are few spots which further modify it without the
+> > > spinlock held (for example see insert_inode_locked4()).
+> > >
+> > > My take on the situation is that the current I_NEW et al handling is
+> > > crap and the inode hash api is also crap.
+> >
+> > The inode hash implementation is crap, too. The historically poor
+> > scalability characteristics of the VFS inode cache is the primary
+> > reason we've never considered ever trying to port XFS to use it,
+> > even if we ignore all the inode lifecycle issues that would have to
+> > be solved first...
+> >
 > 
-> I understand that.
+> I don't know of anyone defending the inode hash tho. The performance
+> of the thing was already bashed a few times, I did not see anyone
+> dunking on the API ;)
+
+I think it goes without saying that the amount of
+similar-but-slightly-different-and-inconsistently-named functions
+that have simply grown organically as individual fs needs have
+occurred has resulted in a bit of a mess that nobody really wants to
+tackle... :/
+
+> > > For starters freshly allocated inodes should not be starting with 0,
+> > > but with I_NEW.
+> >
+> > Not all inodes are cached filesystem inodes. e.g. anonymous inodes
+> > are initialised to inode->i_state = I_DIRTY.  pipe inodes also start
+> > at I_DIRTY. socket inodes don't touch i_state at init, so they
+> > essentially init i_state = 0....
+> >
+> > IOWs, the initial inode state depends on what the inode is being
+> > used for, and I_NEW is only relevant to inodes that are cached and
+> > can be found before the filesystem has fully initialised the VFS
+> > inode.
+> >
 > 
-> ...
-> > I don't like this, because we should open the filesystem with
-> > EXT2_FLAG_RW set by default and only downgrade to !EXT2_FLAG_RW if we
-> > can't open it...
+> Well it is true that currently the I_NEW flag is there to help out
+> entities like the hash inode hash.
 > 
-> I was following the suggestion of tytso at
->     https://github.com/tytso/e2fsprogs/issues/244#issuecomment-3390084495
+> I'm looking to change it into a generic indicator of an uninitialized
+> inode. This is completely harmless for the consumers which currently
+> operate on inodes which never had the flag.
 > 
-> However, I think your suggestion might be better.  I will try that.
+> Here is one use: I'd like to introduce a mandatory routine to call
+> when the filesystem at hand claims the inode is ready to use.
 
-Urrrrrgh, external conversations that need to be on the mailing list.
-Already covered here:
-https://lore.kernel.org/linux-ext4/175798064776.350013.6744611652039454651.stgit@frogsfrogsfrogs/
+I like the idea, but I don't think that overloading I_NEW is the
+right thing to do nor is it that simple.
 
-> ...
+e.g. We added the I_CREATING state years ago as a subset of I_NEW so
+that VFS inodes being instantiated can't be found -at all- by the
+open-by-handle interface doing direct inode hash lookups. However,
+only some of the inode hash APIs add this flag, and only overlay as
+a filesystem adds it in certain circumstances.
+
+IOWs, even during initialisation, different filesystems need to
+behave differently w.r.t. how the core VFS performs various
+operations on the inode during the initialisation stage...
+
+FWIW, XFS has the XFS_INEW state that wraps around the outside of
+the VFS inode initialisation process that prevents it from being
+found via any type of inode cache lookup (internal or external)
+until the inode is fully initialised.
+
+IOWs, features that XFS has
+supported for 25+ years (like open-by-handle) is supported natively
+by the XFS inode cache and the XFS inode life cycle state machine.
+
+In contrast, The way the VFS inode cache handles stuff like this is
+very much a hacked-in "oops we didn't think of that" after-thought
+that doesn't actually cover all the different APIs or filesystems...
+
+> Said routine would have 2 main purposes:
+> - validate the state of the inode (for example that a valid mode is
+> set; this would have caught some of the syzkaller bugs from the get
+> go)
+
+I think that's going to be harder than it sounds (speaking as the
+architect of the comprehensive on-disk metadata validation
+infrastructure in XFS).
+
+> - pre-compute a bunch of stuff, for example see this crapper:
 > 
-> > ...if the close fails, you just leaked the old global_fs context.
-> > ext2fs_close_free is what you want (and yes that's a bug in fuse2fs).
+>    static inline int do_inode_permission(struct mnt_idmap *idmap,
+>                                         struct inode *inode, int mask)
+>   {
+>           if (unlikely(!(inode->i_opflags & IOP_FASTPERM))) {
+>                   if (likely(inode->i_op->permission))
+>                           return inode->i_op->permission(idmap, inode,
+> mask);
 > 
-> Ok, thanks, I'll use that.
-> 
-> ...
-> > ...and also, if you re-do ext2fs_open2(), you then have to re-check all
-> > the feature support bits above because we unlocked the filesystem
-> > device, which means its contents could have been replaced completely
-> > in the interim.
-> 
-> I'm not convinced that's something to worry about, but in any case
-> your suggestion of only opening ro if rw fails should avoid it.
+>                   /* This gets set once for the inode lifetime */
+>                   spin_lock(&inode->i_lock);
+>                   inode->i_opflags |= IOP_FASTPERM;
+>                   spin_unlock(&inode->i_lock);
+>           }
+>           return generic_permission(idmap, inode, mask);
+>   }
 
-...and then in the pile of patches I break up all the stuff in main() so
-that there's one fuse2fs_open() routine, after which the fs context
-doesn't change and the fd stays open:
-https://lore.kernel.org/linux-ext4/175798064597.349841.13113367506205034632.stgit@frogsfrogsfrogs/
+Yup, that would be useful.
 
-> > Also note that I have a /very large/ pile of fuse2fs improvements and
-> > rewrites and cleanups that are out for review on the list; you might
-> > want to look at those first.
-> 
-> I do appreciate your efforts.  Unfortunately I have too many other
-> priorities to have enough bandwidth to take on general responsibility
-> for reviewing fuse2fs patches.  I also don't have much experience with
-> filesystems.  I'm only trying to help here because it is impacting a
+> Note unlock_new_inode() and similar are not mandatory to call.
 
-This exact mentality is why filesystem development has become very
-frustrating...
+To a point. i.e. if you are using a VFS inode hash implemtation that
+sets I_NEW, then it is definitely mandatory to call
+unlock_new_inode().  Documentation/filesystems/porting.rst even says
+that.
 
-> case that I support.  I was very happy when I found that the fuse2fs in
-> v1.47.3 of e2fsprogs fixed another user-reported problem, but the new
-> version ended up causing a couple of new problems.
+However, if you aren't using a VFS inode cache implemenation that
+sets I_NEW, then you've got to set it yourself and clear it
+appropriately so the rest of the VFS functionality does the right
+thing whilst the inode is published but still being initialised.
+e.g. putting an inode still undergoing initialisation on the
+sb->s_inodes list without it being marked as I_NEW is, quite simply,
+a bug.
 
-...though I'm not blaming you (or any other user for that matter),
-just venting about the development community. :(
+Hence it may not be mandatory to use unlock_new_inode(), but if you
+are publishing a partially initialised inode on any VFS list or
+cache, you still need to be doing the right thing w.r.t. locking,
+I_NEW, I_CREATING and calling unlock_new_inode() during inode
+initialisation and cache lookups.
 
-Are there other problems I should know about?
-
-> Having said that, if there are particular patches that you think are
-> important bug fixes that you would like to call my attention to, please
-> send me a direct message. I could test them and respond.
-
-They're all just waiting for Ted to put out the last 1.47.x release and
-open up 1.48 development.
-
---D
-
-> Dave
-> 
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
