@@ -1,229 +1,251 @@
-Return-Path: <linux-ext4+bounces-10875-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10876-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C7C4BDBDB6
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 02:02:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEA3ABDBF80
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 03:15:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 025613530D7
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 00:02:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69B4E3C1873
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Oct 2025 01:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BCFA7E0E4;
-	Wed, 15 Oct 2025 00:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E632F5485;
+	Wed, 15 Oct 2025 01:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="eNvsGT62"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ewLrPDDV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6135A125A9
-	for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 00:02:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2E82F6176
+	for <linux-ext4@vger.kernel.org>; Wed, 15 Oct 2025 01:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760486542; cv=none; b=faALfUpwADXyufvDwkJg1yzS7AV6b5z8dmNVI47HbuOx9fqoNHlv6XS5huAeZP57iK0RkoNFXSzwDEwVdo9pGbeMPLK3X9vyFPj7j1bTj6jh0qMctk+rqSX96Ljwi/5Q+0qbMEr0U10N8XMENoxX/5cj8Qv9XRwVMpyJJ/9vjVQ=
+	t=1760490907; cv=none; b=BOeqoy5Kd7rdxjQPC5QXN1O7cj0XV8P6sEgt0RJmsWwKmdk18tmA1O7jBIprPd6L80cpDvTKRxudqSPnCrsSZadppuBxnv82t4q1cV4yvJ5J9xgIiLW5mWHSOq3CFcKpg8pMNPJd+xTT/VTh3M88cUshNmc4V7DX0ydATVC/fFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760486542; c=relaxed/simple;
-	bh=GJVi7Uls4ieWZ3bCIzyejkrCVwWN+vWqRyC0z9mQwkI=;
+	s=arc-20240116; t=1760490907; c=relaxed/simple;
+	bh=Yy9owtTi/yAxSJw/spwWSzSuAacHbrDAYS0eaCgFAys=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W/FgqFsjDxT/Ori73ltRYXTgAbnXqQ3Hb8kqDsWpTxOv5menoSLd4z3zdITlNmFoxSaPnc9fp7uVmQD4iVPXipaUs9juVK/IjEdsOM7Tr8MBgC7Teflz0TeJmfoo9jNSXvj68cLYBAsT4M9n+8zo8rd/hw+j1nQZX/xTLivPyZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=eNvsGT62; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-33b8a8aa73bso1794572a91.0
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Oct 2025 17:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1760486538; x=1761091338; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5lWnsuwkzpeApWk2ViOA5FQ8lFTBV0LeMgWGpahdtj0=;
-        b=eNvsGT620FsuqNk3mQttW1M9Tz0dvDGYG3obDZzkYv76UULuvqq6pmbJt41Exq1ftT
-         OFaJ2uVM7FVyVg/XqTniQzbXxRyiSGtWfLzLvnpgJ0+srLasKhRVGALb/ADwS9h1kgQC
-         Y+wk4C3rPvUA+Fhgzj72jmz8koRmj8xyWnsLYx0bJFJo34+TM5vLziRE7748uIW6KHZh
-         pCyiGYaLAgeICDO1ta5v/ivQz5jQbhjmJlSitGwuqfzqpY2ZtXuf8SJlPv8pzehu4pSq
-         R9MU4LtWzZGPAajjEYeGZjgYLN9a1yKiExVYHPTj3FJ8ph06LZ6s7DOQEnuFLZv2ThzF
-         p3sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760486538; x=1761091338;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5lWnsuwkzpeApWk2ViOA5FQ8lFTBV0LeMgWGpahdtj0=;
-        b=MRdiPZmJoqyAUHgmPZIwEbwHnEkM2vNGxiyL6yqamS5G0vbMf8T8dHCvd34m0xImbB
-         +6wPS/RoDmJyKmk23Ev2MoudOcitaHh7qXUboDgggfzyfAoyyacNfznz/a6I0b+GklIN
-         J2HBhm3tAh6CqY6a9zCKKZE9JZM4q+oPHBtNbrf6e5wUCP2lfW+uT26uxkPHcPQ7Q4HP
-         P/Wg0OH19BbsnEkGCAx4COeeJ/+s3TNePDquFRY4fVQBFV8zi8Vn6zjxlA1X0tYr49e/
-         IuiaN4j7gojD6CvSP045QRz7k0AAQyg6NTMMB+Pt/MxdIwOWmiAXzqWLptnLXB/4MwPg
-         6jUg==
-X-Forwarded-Encrypted: i=1; AJvYcCV88wzizQssGkTtNrH7RlAhy6sPGfbgs2XIYwLoe8pSEou6jD59OgnUcbRi6lfPhG8255dH6S1pdqqK@vger.kernel.org
-X-Gm-Message-State: AOJu0YwE28n17336e30vP3t8CRj1Pe9+2ALqQltp4bjC3WJJw7HJFE4V
-	uvhqpCdGEMSGCxCkJ+Uppe5VmJVqDgBb1f9HY6LFzfB3ivXV1JF8kWfkIM5LS1bAr/Q=
-X-Gm-Gg: ASbGncvV8KsWlHDhg4aj+ZajJw/HczVsCqAUDIU1ndu+UGApchDIDOM/x8e8xyOtuWd
-	kq8B7rzJigU+JjeSY+7duEN95u2kjOjAbQTDvfq6dBSLoeJPFqH0bQ7Gr6U0LMQFqn6XIipUpRq
-	if0zjOMzEDTaVpkyn3Sql+odj0wztuPz0kb+QN+V+ijhq3sB1QhyybxIcOoo6vsLfEXeY75FBdx
-	S1Avl1OERNht+rfHxclwTrMAku9NPQjO4yIkcSv2zThRkRahIWHcmJaru2YgtI4ANa7i+XgfsWt
-	djz5GCY7O1DTyVIGTm7VmScvemCizFXpGieNnaZXFSD3mgk7egAFM4+cUVPdOxClTCuUkhSv7Mv
-	MLoI2Wei5TapC4NyZQ5ghctQ3UtbOHR1u7wWXpxnzVZGsXY2ia7a3hbD5ILMGdfusqXplsUt9ao
-	NeMcvyMbimT9YRRENL
-X-Google-Smtp-Source: AGHT+IGoMUjacqS/V8o1WNbZPsHJJvFetdCeeZRacPCwQ/XYo2nNnoscuKOLgAnWu1qaNz9uyKQLiQ==
-X-Received: by 2002:a17:90b:4a84:b0:32e:a10b:ce48 with SMTP id 98e67ed59e1d1-33b51114f9emr38707009a91.12.1760486538088;
-        Tue, 14 Oct 2025 17:02:18 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33b61b11ca9sm17310305a91.24.2025.10.14.17.02.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Oct 2025 17:02:17 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.98.2)
-	(envelope-from <david@fromorbit.com>)
-	id 1v8oy6-0000000EvuK-45Dp;
-	Wed, 15 Oct 2025 11:02:14 +1100
-Date: Wed, 15 Oct 2025 11:02:14 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: Jan Kara <jack@suse.cz>, brauner@kernel.org, viro@zeniv.linux.org.uk,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com,
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v7 13/14] xfs: use the new ->i_state accessors
-Message-ID: <aO7khoBHdfPlEBAE@dread.disaster.area>
-References: <20251009075929.1203950-1-mjguzik@gmail.com>
- <20251009075929.1203950-14-mjguzik@gmail.com>
- <ua3koqbakm6e4dpbzfmhei2evc566c5p2t65nsvmlab5yyibxu@u6zp4pwex5s7>
- <CAGudoHGckJHiWN9yCngP1JMGNa1PPNvnpSuriCxSM1mwWhpBUQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WbXgZqjtyxK1/iYFiRbJzq0UCn6C+F/G3BpWVrc60FP6euip6d+IBPcj0D4AheVqzzY96/O1D4nPbWDMp0GdlaJVFW7JoT7d5k5WT5O9TX+rsqLSwLExlCGO39poC+62sm6chm//5yRgHxTNIZeL+J2GA5EhQp4fKNKnihz2FS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ewLrPDDV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E144C4CEE7;
+	Wed, 15 Oct 2025 01:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760490906;
+	bh=Yy9owtTi/yAxSJw/spwWSzSuAacHbrDAYS0eaCgFAys=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ewLrPDDV//xaOE3e+yK0CGIKyMFzsBs+nqKTOeSduRfbFT2NxhmCKqnuqHE9ZLEMK
+	 h/6/98RMp0FjsD9Ddz0B2Hu8PXk7Cd6/Dz1k2OA1CgHIhaoS8h4NdP0iElcN4qixoT
+	 h/EoJEmCDAw2kxUHKmCroGBjLY3pWDY5JoiO7Z+BFlbskyUilC7jZ0f3xJCfbkl3vO
+	 PwxPeq80yaUT7z9mLF2PCbMSngtRYFI0aZHVcvYBuc1ujKRIit/eaCmXnu/PVctRzx
+	 BsAnMzMxh+osy7Pig8nwMBs/NAtOZwF0aDlSFE8/9E6D0/lzetxqRVOwoyIM1zMrW+
+	 H9XQlr+J9H3ag==
+Date: Tue, 14 Oct 2025 18:15:05 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Dave Dykstra <dave.dykstra@cern.ch>
+Cc: linux-ext4@vger.kernel.org,
+	Dave Dykstra <2129743+DrDaveD@users.noreply.github.com>
+Subject: Re: [PATCH] fuse2fs: reopen filesystem read-write for read-only
+ journal recovery
+Message-ID: <20251015011505.GD6170@frogsfrogsfrogs>
+References: <20251010214735.22683-1-dave.dykstra@cern.ch>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGudoHGckJHiWN9yCngP1JMGNa1PPNvnpSuriCxSM1mwWhpBUQ@mail.gmail.com>
+In-Reply-To: <20251010214735.22683-1-dave.dykstra@cern.ch>
 
-On Fri, Oct 10, 2025 at 05:40:49PM +0200, Mateusz Guzik wrote:
-> On Fri, Oct 10, 2025 at 4:41 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Thu 09-10-25 09:59:27, Mateusz Guzik wrote:
-> > > Change generated with coccinelle and fixed up by hand as appropriate.
-> > >
-> > > Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
-> >
-> > ...
-> >
-> > > @@ -2111,7 +2111,7 @@ xfs_rename_alloc_whiteout(
-> > >        */
-> > >       xfs_setup_iops(tmpfile);
-> > >       xfs_finish_inode_setup(tmpfile);
-> > > -     VFS_I(tmpfile)->i_state |= I_LINKABLE;
-> > > +     inode_state_set_raw(VFS_I(tmpfile), I_LINKABLE);
-> > >
-> > >       *wip = tmpfile;
-> > >       return 0;
-> > > @@ -2330,7 +2330,7 @@ xfs_rename(
-> > >                * flag from the inode so it doesn't accidentally get misused in
-> > >                * future.
-> > >                */
-> > > -             VFS_I(du_wip.ip)->i_state &= ~I_LINKABLE;
-> > > +             inode_state_clear_raw(VFS_I(du_wip.ip), I_LINKABLE);
-> > >       }
-> > >
-> > >  out_commit:
-> >
-> > These two accesses look fishy (not your fault but when we are doing this
-> > i_state exercise better make sure all the places are correct before
-> > papering over bugs with _raw function variant). How come they cannot race
-> > with other i_state modifications and thus corrupt i_state?
-> >
+On Fri, Oct 10, 2025 at 04:47:35PM -0500, Dave Dykstra wrote:
+> This changes the strategy added in c7f2688540d95e7f2cbcd178f8ff62ebe079faf7
+> for recovery of journals when read-only is requested.  That strategy always
+> opened the filesystem file read-write first, in case there was a journal to
+> recover.  A big problem with that strategy was that the user might not have
+> write access to the file.  The new strategy with read-only mounts is to
+> open the filesystem read-only first, then if there is a journal that needs
+> recovery, attempt to reopen it read-write.  If that works and the journal
+> is recovered, reopen it again read-only.
 > 
-> I asked about this here:
-> https://lore.kernel.org/linux-xfs/CAGudoHEi05JGkTQ9PbM20D98S9fv0hTqpWRd5fWjEwkExSiVSw@mail.gmail.com/
+> - Fixes https://github.com/tytso/e2fsprogs/issues/244
+> 
+> Signed-off-by: Dave Dykstra <2129743+DrDaveD@users.noreply.github.com>
+> ---
+>  misc/fuse2fs.c | 62 ++++++++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 55 insertions(+), 7 deletions(-)
+> 
+> diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+> index cb5620c7..30a46976 100644
+> --- a/misc/fuse2fs.c
+> +++ b/misc/fuse2fs.c
+> @@ -4607,8 +4607,7 @@ int main(int argc, char *argv[])
+>  	FILE *orig_stderr = stderr;
+>  	char extra_args[BUFSIZ];
+>  	int ret;
+> -	int flags = EXT2_FLAG_64BITS | EXT2_FLAG_THREADS | EXT2_FLAG_EXCLUSIVE |
+> -		    EXT2_FLAG_RW;
+> +	int flags = EXT2_FLAG_64BITS | EXT2_FLAG_THREADS | EXT2_FLAG_EXCLUSIVE;
+>  
+>  	memset(&fctx, 0, sizeof(fctx));
+>  	fctx.magic = FUSE2FS_MAGIC;
+> @@ -4689,6 +4688,8 @@ int main(int argc, char *argv[])
+>  
+>  	/* Start up the fs (while we still can use stdout) */
+>  	ret = 2;
+> +	if (!fctx.ro)
 
-Yes, as I said, we can add locking here if necessary, but locking
-isn't necessary at this point in time because nothing else can
-change the state of the newly allocated whiteout inode until we
-unlock it.
+ro and EXT2_FLAG_RW are not the same thing!
 
-Keep in mind the reason why we need I_LINKABLE here - it's not
-needed for correctness - it's needed to avoid a warning embedded
-in inc_nlink() because filesystems aren't trusted to implement
-link counts correctly anymore.
+The rw/ro arguments are passed through to the kernel; they determine
+whether or not user programs can write to the directory tree.  That's up
+to the kernel.
 
-Now we're being told that "it is too dangerous to let filesystems
-manage inode state themselves" and so we have to add extra overhead
-to code that we were forced to add to avoid VFS warnings added
-because the VFS doesn't trust filesystems to maintain some other
-important inode state....
+EXT2_FLAG_RW determines if the filesystem can be written to at all.
+It's set by default, but it is cleared if the user passes norecovery
+as an option or the block device can't be opened.
 
-So, if you want to get rid of XFS using I_LINKABLE here, please fix
-the nlink VFS api to allow us to call inc_nlink_<something>() on a
-zero link inode without I_LINKABLE needing to be set. We do actually
-know what we are doing here, and as such needing I_LINKABLE here is
-nothing but a hacky workaround for inflexible, trustless VFS APIs...
+You can have a ro mount of a EXT2_FLAG_RW filesystem.  That means that
+the filesystem can modify/reorganize itself, even if users can't write
+to files.
 
-> > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > > index caff0125faea..ad94fbf55014 100644
-> > > --- a/fs/xfs/xfs_iops.c
-> > > +++ b/fs/xfs/xfs_iops.c
-> > > @@ -1420,7 +1420,7 @@ xfs_setup_inode(
-> > >       bool                    is_meta = xfs_is_internal_inode(ip);
-> > >
-> > >       inode->i_ino = ip->i_ino;
-> > > -     inode->i_state |= I_NEW;
-> > > +     inode_state_set_raw(inode, I_NEW);
+> +		flags |= EXT2_FLAG_RW;
+>  	char options[50];
+>  	sprintf(options, "offset=%lu", fctx.offset);
+>  	if (fctx.directio)
+> @@ -4751,8 +4752,12 @@ int main(int argc, char *argv[])
+>  	 * ext4 can't do COW of shared blocks, so if the feature is enabled,
+>  	 * we must force ro mode.
+>  	 */
+> -	if (ext2fs_has_feature_shared_blocks(global_fs->super))
+> +	if (ext2fs_has_feature_shared_blocks(global_fs->super) && !fctx.ro) {
+> +		log_printf(&fctx, "%s\n",
+> + _("Mounting read-only because shared blocks feature is enabled."));
+>  		fctx.ro = 1;
+> +		/* Note that EXT2_FLAG_RW is left set */
+> +	}
 
-"set" is wrong and will introduce a regression. This must be an
-"add" operation as inode->i_state may have already been modified
-by the time we get here. From 2021:
+Yeah, the logging here could be improved.
 
-commit f38a032b165d812b0ba8378a5cd237c0888ff65f
-Author: Dave Chinner <dchinner@redhat.com>
-Date:   Tue Aug 24 19:13:04 2021 -0700
+>  
+>  	if (ext2fs_has_feature_journal_needs_recovery(global_fs->super)) {
+>  		if (fctx.norecovery) {
+> @@ -4761,6 +4766,27 @@ int main(int argc, char *argv[])
+>  			fctx.ro = 1;
+>  			global_fs->flags &= ~EXT2_FLAG_RW;
+>  		} else {
+> +			if (!(flags & EXT2_FLAG_RW)) {
 
-    xfs: fix I_DONTCACHE
+I don't like this, because we should open the filesystem with
+EXT2_FLAG_RW set by default and only downgrade to !EXT2_FLAG_RW if we
+can't open it...
 
-    Yup, the VFS hoist broke it, and nobody noticed. Bulkstat workloads
-    make it clear that it doesn't work as it should.
+> +				/* Attempt to re-open read-write */
+> +				err = ext2fs_close(global_fs);
+> +				if (err)
+> +					com_err(argv[0], err,
+> +						"while closing filesystem");
+> +				global_fs = NULL;
 
-    Fixes: dae2f8ed7992 ("fs: Lift XFS_IDONTCACHE to the VFS layer")
-    Signed-off-by: Dave Chinner <dchinner@redhat.com>
-    Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-    Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+...if the close fails, you just leaked the old global_fs context.
+ext2fs_close_free is what you want (and yes that's a bug in fuse2fs).
 
-diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-index a3fe4c5307d3..f2210d927481 100644
---- a/fs/xfs/xfs_icache.c
-+++ b/fs/xfs/xfs_icache.c
-@@ -84,8 +84,9 @@ xfs_inode_alloc(
-                return NULL;
-        }
+> +				flags |= EXT2_FLAG_RW;
+> +				err = ext2fs_open2(fctx.device, options, flags,
+> +						   0, 0, unix_io_manager,
+> +						   &global_fs);
+> +				if (err) {
+> +					err_printf(&fctx, "%s.\n",
+> +						   error_message(err));
+> +					err_printf(&fctx, "%s\n",
+> + _("Journal needs recovery but filesystem cannot be reopened read-write."));
+> +					err_printf(&fctx, "%s\n",
+> + _("Please run e2fsck -fy."));
+> +					goto out;
+> +				}
 
--       /* VFS doesn't initialise i_mode! */
-+       /* VFS doesn't initialise i_mode or i_state! */
-        VFS_I(ip)->i_mode = 0;
-+       VFS_I(ip)->i_state = 0;
+...and also, if you re-do ext2fs_open2(), you then have to re-check all
+the feature support bits above because we unlocked the filesystem
+device, which means its contents could have been replaced completely
+in the interim.
 
-        XFS_STATS_INC(mp, vn_active);
-        ASSERT(atomic_read(&ip->i_pincount) == 0);
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index 0ff0cca94092..a607d6aca5c4 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -1344,7 +1344,7 @@ xfs_setup_inode(
-        gfp_t                   gfp_mask;
+Also note that I have a /very large/ pile of fuse2fs improvements and
+rewrites and cleanups that are out for review on the list; you might
+want to look at those first.
 
-        inode->i_ino = ip->i_ino;
--       inode->i_state = I_NEW;
-+       inode->i_state |= I_NEW;
+--D
 
-        inode_sb_list_add(inode);
-        /* make the inode look hashed for the writeback code */
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> +			}
+>  			log_printf(&fctx, "%s\n", _("Recovering journal."));
+>  			err = ext2fs_run_ext3_journal(&global_fs);
+>  			if (err) {
+> @@ -4772,12 +4798,32 @@ int main(int argc, char *argv[])
+>  			ext2fs_clear_feature_journal_needs_recovery(global_fs->super);
+>  			ext2fs_mark_super_dirty(global_fs);
+>  		}
+> +	} else if (fctx.ro && !(flags & EXT2_FLAG_RW)) {
+> +		log_printf(&fctx, "%s\n", _("Mounting read-only."));
+>  	}
+>  
+> -	if (global_fs->flags & EXT2_FLAG_RW) {
+> +	if (fctx.ro && (flags & EXT2_FLAG_RW)) {
+> +		/* Re-open read-only */
+> +		err = ext2fs_close(global_fs);
+> +		if (err)
+> +			com_err(argv[0], err, "while closing filesystem");
+> +		global_fs = NULL;
+> +		flags &= ~EXT2_FLAG_RW;
+> +		err = ext2fs_open2(fctx.device, options, flags, 0, 0,
+> +				   unix_io_manager, &global_fs);
+> +		if (err) {
+> +			err_printf(&fctx, "%s.\n", error_message(err));
+> +			err_printf(&fctx, "%s\n",
+> + _("Failed to remount read-only."));
+> +			goto out;
+> +		}
+> +		log_printf(&fctx, "%s\n", _("Remounted read-only."));
+> +	}
+> +
+> +	if (!fctx.ro) {
+>  		if (ext2fs_has_feature_journal(global_fs->super))
+>  			log_printf(&fctx, "%s",
+> - _("Warning: fuse2fs does not support using the journal.\n"
+> + _("Warning: fuse2fs does not support writing the journal.\n"
+>     "There may be file system corruption or data loss if\n"
+>     "the file system is not gracefully unmounted.\n"));
+>  		err = ext2fs_read_inode_bitmap(global_fs);
+> @@ -4833,8 +4879,10 @@ int main(int argc, char *argv[])
+>  	if (fctx.no_default_opts == 0)
+>  		fuse_opt_add_arg(&args, extra_args);
+>  
+> -	if (fctx.ro)
+> +	if (fctx.ro) {
+> +		/* This is in case ro was implied above and not passed in */
+>  		fuse_opt_add_arg(&args, "-oro");
+> +	}
+>  
+>  	if (fctx.fakeroot) {
+>  #ifdef HAVE_MOUNT_NODEV
+> @@ -4892,7 +4940,6 @@ int main(int argc, char *argv[])
+>  		ret = 0;
+>  		break;
+>  	}
+> -out:
+>  	if (ret & 1) {
+>  		fprintf(orig_stderr, "%s\n",
+>   _("Mount failed due to unrecognized options.  Check dmesg(1) for details."));
+> @@ -4903,6 +4950,7 @@ out:
+>   _("Mount failed while opening filesystem.  Check dmesg(1) for details."));
+>  		fflush(orig_stderr);
+>  	}
+> +out:
+>  	if (global_fs) {
+>  		err = ext2fs_close(global_fs);
+>  		if (err)
+> -- 
+> 2.43.5
+> 
+> 
 
