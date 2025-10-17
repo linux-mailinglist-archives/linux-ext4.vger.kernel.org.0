@@ -1,67 +1,68 @@
-Return-Path: <linux-ext4+bounces-10914-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10915-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9ECBE76BA
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Oct 2025 11:09:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9FEFBE7601
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Oct 2025 11:06:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D88C3A5FA0
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Oct 2025 09:06:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F30341AA1CD7
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Oct 2025 09:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58BBB2D5C8E;
-	Fri, 17 Oct 2025 09:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E2DB2D77FE;
+	Fri, 17 Oct 2025 09:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="GtOnZaic"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="cxkK2KXT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.162.73.231])
+Received: from pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.34.181.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D8026CE36;
-	Fri, 17 Oct 2025 09:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.162.73.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1552D4B68;
+	Fri, 17 Oct 2025 09:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.34.181.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760691948; cv=none; b=NfDPIDBQudI5qMZwCpp3G/XeqWgS+mXzDJqgWX+8yaYLpc/gzrcDX5R/jxdhi07Cgzk2E31JhTapYewWUOQKdQIgzevlsjy95ql+TxeITBW509j/ythRag75cQuJSrUE3tFNHSBiXvELxBzxSDXX2O/HAuHtVW5aWYP3JlRvoW0=
+	t=1760691958; cv=none; b=jP+fgRL8hHNMjBrV921rpXXy3GJcyAwkaSHDQ+1H8315Xq+7n6VXBArCyS/U7swViadsGQ4vQUAZIxBtyThtwN3sAQkflGev9p5BZBWZ0TIr6b+aEZCwHiSEDYcN31So17TWbK/kk3dqoAeui8YMZmD98e3IrrpYH5o+PaXRfM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760691948; c=relaxed/simple;
-	bh=r3aRMRxLlDgna5pGqlhOhcl+QTURmPg1ODwkm06HnuM=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XlZ8P735Fu5sFuXNfGLa5eZHpZfKs6pT6x1Or0dvCetv9rkzSiFBMlHthIEfHu9bKVcJJNO2nmJxdVVBnYp2RjlISi5JJFMjQ1vYhH6h2pPF35P4HbOE2zZSr891OXY7VDKK5eAYcuKEfYFXYue2WZhDyJks+a15Ss1eLJDcPr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=GtOnZaic; arc=none smtp.client-ip=35.162.73.231
+	s=arc-20240116; t=1760691958; c=relaxed/simple;
+	bh=iPEPgHemou0qrDVghj1OXxcDI/Ce8jbw5/y7P1X8EXU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Mlw03Ec6NHihoyQpk7Qx/FIMMK6s4+GPpsJACcbu0sNH6A71TaQNLFXGeGqr5Uv+CF+c/nzo2TyDkkBmMgSScfPsOSiw3pZBrKHNDFai/eK8OyLiskgryG5Q79oNNR2A7N3CXq9vv4f3KyqJ3VBzaa6maoutjyyyxT8BX+PhR+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=cxkK2KXT; arc=none smtp.client-ip=52.34.181.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1760691946; x=1792227946;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zbj2mTisKzioKQVYABevmwS3PD+KbTl4NbCfwfEx+Qc=;
-  b=GtOnZaicVGt0CAIJVQ+xp3gaWEamEukP3V98oU7vj6IcDxNdslbM4uCi
-   nBRS83dgbraDB4b0qfoyn3/j/Cez3ZZrF4gRgPzIrv6ENq+RCTIHVbsKl
-   RiVaNBf9VMSksFotLgDR9qGIf2EkQpAHYInScRWhEUzqaFSHJze+IKpMu
-   vh/wKCuGiF6ktSd7y621h48VURBklFvJ2vS2yHqVrUT4UxOWdmr2EyPK3
-   0WcdJICH4jxmJq9bJdsaQte6sv3ZNc1ranA1Uii4ZUxlEgJXHm2NXK2NV
-   7gHCCYWot5IJSa/r7smvYEtdFP5QoMU7hJS/HsP+jbPuWS9VjWFfwHlp4
-   g==;
-X-CSE-ConnectionGUID: sSNJqLpZTHKHoAwfMM8Y6A==
-X-CSE-MsgGUID: BK1WnszkRHiFffu8t9LkpA==
-X-IronPort-AV: E=Sophos;i="6.19,236,1754956800"; 
-   d="scan'208";a="4877932"
+  t=1760691957; x=1792227957;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=kFRk/YEfanxcwxn3T4iYIqsiSiWmkv1ShCNggWcZo/w=;
+  b=cxkK2KXTGMe+4xuTUF5gr+bP2faaAdiXzuRNI+WmQi/EQoTGeK2tzz2y
+   k9KRIuuFrx6Ma3WLy0r5lRyb4MV1D6AE+UdedU1ONE3bHQcA+kp5Lfs5D
+   dD7WSpymXC1k5XWcDnI42/xAGTVlprYouQ+6+GhCrkMrIh/lGwyOf9RPE
+   nZ9DvJCLzwNA9HcjqdNalDB5GCbfRf+QIZVZwr5wVzY0VyNMBDCyiMMO3
+   zc9farIfVO7U7pQ5WYWNDSbcVOWwiItCKH34KKBLuxagdZfBbKvN7ggXL
+   lYpGrdv8O+LV6MV0m9Y0ipL+4q3QPLVshIwa6ZKB5mpO6d2FH/upSS2y2
+   w==;
+X-CSE-ConnectionGUID: mmWdkVVjTsyPnw62us7gdA==
+X-CSE-MsgGUID: zCG8tz2uQkG3AJR2iQRSzQ==
+X-IronPort-AV: E=Sophos;i="6.18,263,1751241600"; 
+   d="scan'208";a="5073156"
 Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
-  by internal-pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:05:44 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.111:26941]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.17.61:2525] with esmtp (Farcaster)
- id 74f44794-e502-4348-a685-c94d2b887051; Fri, 17 Oct 2025 09:05:44 +0000 (UTC)
-X-Farcaster-Flow-ID: 74f44794-e502-4348-a685-c94d2b887051
+  by internal-pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:05:55 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.234:9202]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.38.191:2525] with esmtp (Farcaster)
+ id b995c6ee-454b-49f6-9b2c-0072079f78ab; Fri, 17 Oct 2025 09:05:54 +0000 (UTC)
+X-Farcaster-Flow-ID: b995c6ee-454b-49f6-9b2c-0072079f78ab
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 17 Oct 2025 09:05:38 +0000
+ Fri, 17 Oct 2025 09:05:54 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 17 Oct 2025
- 09:05:23 +0000
+ 09:05:38 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
@@ -110,10 +111,17 @@ To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>,
 	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
 	<tipc-discussion@lists.sourceforge.net>
-Subject: [PATCH v2 00/27 5.10.y] Backport minmax.h updates from v6.17-rc7
-Date: Fri, 17 Oct 2025 09:04:52 +0000
-Message-ID: <20251017090519.46992-1-farbere@amazon.com>
+CC: Arnd Bergmann <arnd@arndb.de>, Dan Williams <dan.j.williams@intel.com>,
+	Eric Dumazet <edumazet@google.com>, Isabella Basso <isabbasso@riseup.net>,
+	Josh Poimboeuf <jpoimboe@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Sander Vanheule <sander@svanheule.net>, Vlastimil Babka <vbabka@suse.cz>,
+	Yury Norov <yury.norov@gmail.com>
+Subject: [PATCH v2 01/27 5.10.y] overflow, tracing: Define the is_signed_type() macro once
+Date: Fri, 17 Oct 2025 09:04:53 +0000
+Message-ID: <20251017090519.46992-2-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251017090519.46992-1-farbere@amazon.com>
+References: <20251017090519.46992-1-farbere@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -125,144 +133,90 @@ Content-Type: text/plain
 X-ClientProxiedBy: EX19D045UWA003.ant.amazon.com (10.13.139.46) To
  EX19D001UWA001.ant.amazon.com (10.13.138.214)
 
-This series backports 27 patches to update minmax.h in the 5.10.y
-branch, aligning it with v6.17-rc7.
+From: Bart Van Assche <bvanassche@acm.org>
 
-The ultimate goal is to synchronize all long-term branches so that they
-include the full set of minmax.h changes.
+[ Upstream commit 92d23c6e94157739b997cacce151586a0d07bb8a ]
 
-- 6.12.y has already been backported; the changes are included in
-  v6.12.49.
-- 6.6.y has already been backported; the changes are included in
-  v6.6.109.
-- 6.1.y has already been backported; the changes are currently in the
-  6.1-stable tree.
-- 5.15.y has already been backported; the changes are currently in the
-  5.15-stable tree.
+There are two definitions of the is_signed_type() macro: one in
+<linux/overflow.h> and a second definition in <linux/trace_events.h>.
 
-The key motivation is to bring in commit d03eba99f5bf ("minmax: allow
-min()/max()/clamp() if the arguments have the same signedness"), which
-is missing in kernel 5.10.y.
+As suggested by Linus Torvalds, move the definition of the
+is_signed_type() macro into the <linux/compiler.h> header file. Change
+the definition of the is_signed_type() macro to make sure that it does
+not trigger any sparse warnings with future versions of sparse for
+bitwise types. See also:
+https://lore.kernel.org/all/CAHk-=whjH6p+qzwUdx5SOVVHjS3WvzJQr6mDUwhEyTf6pJWzaQ@mail.gmail.com/
+https://lore.kernel.org/all/CAHk-=wjQGnVfb4jehFR0XyZikdQvCZouE96xR_nnf5kqaM5qqQ@mail.gmail.com/
 
-In mainline, this change enables min()/max()/clamp() to accept mixed
-argument types, provided both have the same signedness. Without it,
-backported patches that use these forms may trigger compiler warnings,
-which escalate to build failures when -Werror is enabled.
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Isabella Basso <isabbasso@riseup.net>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Sander Vanheule <sander@svanheule.net>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Yury Norov <yury.norov@gmail.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20220826162116.1050972-3-bvanassche@acm.org
+Signed-off-by: Eliav Farber <farbere@amazon.com>
+---
+ include/linux/compiler.h     | 6 ++++++
+ include/linux/overflow.h     | 1 -
+ include/linux/trace_events.h | 2 --
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
-The first two patches in this series were added to prevent build
-failures caused by changes introduced later in minmax.h.
-
- - Commit 92d23c6e9415 ("overflow, tracing: Define the is_signed_type()
-   macro once") is needed for commit 75ca38c1960f ("minmax: allow
-   min()/max()/clamp()").
-
- - Commit cea628008fc8 ("btrfs: remove duplicated in_range() macro") is
-   needed for commit f9bff0e31881 ("minmax: add in_range() macro").
-
-The changes were tested using `make allyesconfig` and
-`make allmodconfig` for arm64, arm, x86_64 and i386 architectures.
-
-Changes in v2:
-The series was updated after initially backporting and approving the
-newer long-term branches.
-
-Andy Shevchenko (2):
-  minmax: deduplicate __unconst_integer_typeof()
-  minmax: fix header inclusions
-
-Bart Van Assche (1):
-  overflow, tracing: Define the is_signed_type() macro once
-
-David Laight (11):
-  minmax: allow min()/max()/clamp() if the arguments have the same
-    signedness.
-  minmax: fix indentation of __cmp_once() and __clamp_once()
-  minmax: allow comparisons of 'int' against 'unsigned char/short'
-  minmax: relax check to allow comparison between unsigned arguments and
-    signed constants
-  minmax.h: add whitespace around operators and after commas
-  minmax.h: update some comments
-  minmax.h: reduce the #define expansion of min(), max() and clamp()
-  minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
-  minmax.h: move all the clamp() definitions after the min/max() ones
-  minmax.h: simplify the variants of clamp()
-  minmax.h: remove some #defines that are only expanded once
-
-Herve Codina (1):
-  minmax: Introduce {min,max}_array()
-
-Jason A. Donenfeld (2):
-  minmax: sanity check constant bounds when clamping
-  minmax: clamp more efficiently by avoiding extra comparison
-
-Johannes Thumshirn (1):
-  btrfs: remove duplicated in_range() macro
-
-Linus Torvalds (8):
-  minmax: avoid overly complicated constant expressions in VM code
-  minmax: add a few more MIN_T/MAX_T users
-  minmax: simplify and clarify min_t()/max_t() implementation
-  minmax: make generic MIN() and MAX() macros available everywhere
-  minmax: don't use max() in situations that want a C constant
-    expression
-  minmax: simplify min()/max()/clamp() implementation
-  minmax: improve macro expansion and type checking
-  minmax: fix up min3() and max3() too
-
-Matthew Wilcox (Oracle) (1):
-  minmax: add in_range() macro
-
- arch/arm/mm/pageattr.c                        |   6 +-
- arch/um/drivers/mconsole_user.c               |   2 +
- arch/x86/mm/pgtable.c                         |   2 +-
- drivers/edac/sb_edac.c                        |   4 +-
- drivers/edac/skx_common.h                     |   1 -
- .../drm/amd/display/modules/hdcp/hdcp_ddc.c   |   2 +
- .../drm/amd/pm/powerplay/hwmgr/ppevvmath.h    |  14 +-
- .../drm/arm/display/include/malidp_utils.h    |   2 +-
- .../display/komeda/komeda_pipeline_state.c    |  24 +-
- drivers/gpu/drm/drm_color_mgmt.c              |   2 +-
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |   6 -
- drivers/gpu/drm/radeon/evergreen_cs.c         |   2 +
- drivers/hwmon/adt7475.c                       |  24 +-
- drivers/input/touchscreen/cyttsp4_core.c      |   2 +-
- drivers/md/dm-integrity.c                     |   6 +-
- drivers/media/dvb-frontends/stv0367_priv.h    |   3 +
- .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   |  18 +-
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
- drivers/net/fjes/fjes_main.c                  |   4 +-
- drivers/nfc/pn544/i2c.c                       |   2 -
- drivers/platform/x86/sony-laptop.c            |   1 -
- drivers/scsi/isci/init.c                      |   6 +-
- .../pci/hive_isp_css_include/math_support.h   |   5 -
- fs/btrfs/ctree.h                              |   2 -
- fs/btrfs/extent_io.c                          |   1 +
- fs/btrfs/file-item.c                          |   1 +
- fs/btrfs/misc.h                               |   2 -
- fs/btrfs/raid56.c                             |   1 +
- fs/btrfs/tree-checker.c                       |   2 +-
- fs/erofs/zdata.h                              |   2 +-
- fs/ext2/balloc.c                              |   2 -
- fs/ext4/ext4.h                                |   2 -
- fs/ufs/util.h                                 |   6 -
- include/linux/compiler.h                      |  15 +
- include/linux/minmax.h                        | 267 ++++++++++++++----
- include/linux/overflow.h                      |   1 -
- include/linux/trace_events.h                  |   2 -
- kernel/trace/preemptirq_delay_test.c          |   2 -
- lib/btree.c                                   |   1 -
- lib/decompress_unlzma.c                       |   2 +
- lib/logic_pio.c                               |   3 -
- lib/vsprintf.c                                |   2 +-
- lib/zstd/zstd_internal.h                      |   2 -
- mm/zsmalloc.c                                 |   1 -
- net/ipv4/proc.c                               |   2 +-
- net/ipv6/proc.c                               |   2 +-
- net/netfilter/nf_nat_core.c                   |   6 +-
- net/tipc/core.h                               |   2 +-
- net/tipc/link.c                               |  10 +-
- 49 files changed, 312 insertions(+), 169 deletions(-)
-
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index bbd74420fa21..004a030d5ad2 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -245,6 +245,12 @@ static inline void *offset_to_ptr(const int *off)
+ /* &a[0] degrades to a pointer: a different type from an array */
+ #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+ 
++/*
++ * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
++ * bool and also pointer types.
++ */
++#define is_signed_type(type) (((type)(-1)) < (__force type)1)
++
+ /*
+  * This is needed in functions which generate the stack canary, see
+  * arch/x86/kernel/smpboot.c::start_secondary() for an example.
+diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+index 73bc67ec2136..e6bf14f462e9 100644
+--- a/include/linux/overflow.h
++++ b/include/linux/overflow.h
+@@ -29,7 +29,6 @@
+  * https://mail-index.netbsd.org/tech-misc/2007/02/05/0000.html -
+  * credit to Christian Biere.
+  */
+-#define is_signed_type(type)       (((type)(-1)) < (type)1)
+ #define __type_half_max(type) ((type)1 << (8*sizeof(type) - 1 - is_signed_type(type)))
+ #define type_max(T) ((T)((__type_half_max(T) - 1) + __type_half_max(T)))
+ #define type_min(T) ((T)((T)-type_max(T)-(T)1))
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 5af2acb9fb7d..0c8c3cf36f96 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -700,8 +700,6 @@ extern int trace_add_event_call(struct trace_event_call *call);
+ extern int trace_remove_event_call(struct trace_event_call *call);
+ extern int trace_event_get_offsets(struct trace_event_call *call);
+ 
+-#define is_signed_type(type)	(((type)(-1)) < (type)1)
+-
+ int ftrace_set_clr_event(struct trace_array *tr, char *buf, int set);
+ int trace_set_clr_event(const char *system, const char *event, int set);
+ int trace_array_set_clr_event(struct trace_array *tr, const char *system,
 -- 
 2.47.3
 
