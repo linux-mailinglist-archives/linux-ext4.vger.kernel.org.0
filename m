@@ -1,55 +1,56 @@
-Return-Path: <linux-ext4+bounces-10953-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10954-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30425BEB614
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Oct 2025 21:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D1918BEB64D
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Oct 2025 21:38:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED7BA404306
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Oct 2025 19:24:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EE503BADED
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Oct 2025 19:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704352F7455;
-	Fri, 17 Oct 2025 19:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0376D311964;
+	Fri, 17 Oct 2025 19:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZVdd0IMm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EU/ljWNe"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0666F33F8A5
-	for <linux-ext4@vger.kernel.org>; Fri, 17 Oct 2025 19:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9771533F8DD
+	for <linux-ext4@vger.kernel.org>; Fri, 17 Oct 2025 19:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760729097; cv=none; b=nwKrUEYqVPT8VgqNt8sg+hSCWX6A5oGD5C8dJmimV5ljHKrfaWsRGs/TOQ9PtMNj/Y8O8PpKOqmlH7/GUkSUlCbzCrQPMOssGYlBfgGvgQxFbg9o1+ipNyxTnMDBSLAhzhEbz9D5vJfpJ95mTXpfbl9bz85KlusKvnn4Zo73z48=
+	t=1760729922; cv=none; b=ktIQ49KdTAvPgIgb3AuaUojMsY3TSpANbKWjXoxGRqehQvlWCrNH9WCMVhfiFB9Yw/ieRGoG1BA3ASE3BLQEFm97xVdYSbd9NvNPugwVhhXf1zUlbG2BRrK/vINNiX8NqrObGQBl/nyBVSodq2wiyA6iMTp6+/etAB2v4g8W2Qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760729097; c=relaxed/simple;
-	bh=V0FWF77fBUf0wF2BfPnQ0/ommV10TP68zdmApRwPb4U=;
+	s=arc-20240116; t=1760729922; c=relaxed/simple;
+	bh=3V6LGP0oSfA+ZLcU3myPrlCtGAEGUtpu4y3QxOwSYm4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O2Th4AMDN3Rgo60HKdpgKrR2dAqAp7vK9fg39fDWbIr54QVK4hJXGuxgDymxMeem/CUodT/O50QuCVPd6OHYRTQ4CZAXCjJIi1X+39BNLXtrBHF+rWFFAPCcWgEqCNnV1Q+V1nK60ahCozdSfbAuA2MTOKt9XrAuRuyMVv2wZhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZVdd0IMm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8D33C4CEE7;
-	Fri, 17 Oct 2025 19:24:56 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=SEvnXLPPgU2J427QAmSuPyJ18T/BQz/Vfsl8gTquAQ45ZDGNgPF6yne20sIVqcPaBFWt3yQOZ0RMK72b5Asvm+SQYjw67JrNbAdEMMpxZwkDra5jgOowBc9mmjnd2qvvFx0NJic9Y/RHxB4NBlidwDrUFWs69+0zS4k+yzEPMjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EU/ljWNe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13C15C4CEE7;
+	Fri, 17 Oct 2025 19:38:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760729096;
-	bh=V0FWF77fBUf0wF2BfPnQ0/ommV10TP68zdmApRwPb4U=;
+	s=k20201202; t=1760729922;
+	bh=3V6LGP0oSfA+ZLcU3myPrlCtGAEGUtpu4y3QxOwSYm4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZVdd0IMm6WJ0Q0z3cEmbeTgfabr2IGlKLrTDIfYgHZfO7ibKSerhL4/iA12P9K4/o
-	 JGo8qP8HR0iDDlcAAhgYvPMKk8YcYurXvRmBhMubvvgM5y5ZIw5GUIUx2suWAL1rNT
-	 d/nKOeUh2bOzu+gm4W41SfSzVutmi5S6YO/PyRh1mClMihNXscJYKb0nxYg+ivTCCj
-	 rvWOTD0o1aR8hSsbGpTXPMWV3pFLPavKzjfuj+jByx/G7HsVighixIShk3f6Vtz8WZ
-	 OKCuPUOTdES4f/RGs4FiwlvMlrE6KvmcKvb4Qzhx2v/9DVHumMLJECf2UyWkoDhhlH
-	 LNWEmw9DP2Y1g==
-Date: Fri, 17 Oct 2025 12:24:56 -0700
+	b=EU/ljWNeGSheSerfhvsqsDVU0OLCbpt8Uuxu2RpBjsSdvPUw2pa/BF1OL4GkOb68O
+	 P7kETR5TqDfrn2cpAEMWYzXbj6lcrXrAD/tugmhIsqgUhJgbu5hhfbd/PjduJAVnbR
+	 msd93GLRlrYPrsmD1MrhmTG6aSIGr6n2jtx+7rzlHzPSdwF9a8H2YUcw5SoZEmA4b5
+	 /I9HDloRisnZEJxJpb23ja/R2pSZBpMobYFl4jQUHkJeEWBdj8aYCGLTjdgUaDxjIo
+	 spnSpe4q06NTHfbPgV3y6UryQy+BZVuVau7Sq4ozlXP5KleaRaCttnWbKxs24xVqur
+	 Qkgzev5Bjupyg==
+Date: Fri, 17 Oct 2025 12:38:41 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: Dave Dykstra <dave.dykstra@cern.ch>
-Cc: linux-ext4@vger.kernel.org,
-	Dave Dykstra <2129743+DrDaveD@users.noreply.github.com>
-Subject: Re: [PATCH] fuse2fs: open read-only when ro option and image
- non-writable
-Message-ID: <20251017192456.GG6170@frogsfrogsfrogs>
-References: <20251016200206.3035-1-dave.dykstra@cern.ch>
+To: Dave Dykstra <dwd@cern.ch>
+Cc: tytso@mit.edu, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/2] fuse2fs: mount norecovery if main block device is
+ readonly
+Message-ID: <20251017193841.GH6170@frogsfrogsfrogs>
+References: <175798064753.350013.16579522589765092470.stgit@frogsfrogsfrogs>
+ <175798064776.350013.6744611652039454651.stgit@frogsfrogsfrogs>
+ <aPFIultQzQd6fk-o@cern.ch>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -58,106 +59,67 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251016200206.3035-1-dave.dykstra@cern.ch>
+In-Reply-To: <aPFIultQzQd6fk-o@cern.ch>
 
-On Thu, Oct 16, 2025 at 03:02:06PM -0500, Dave Dykstra wrote:
-> This opens the image read-only when an ro option is given and the
-> image is not writable.  If it is then found that a journal recovery
-> is needed, an error is returned then.
+On Thu, Oct 16, 2025 at 02:34:18PM -0500, Dave Dykstra wrote:
+> I have a few problems with this patch, details below.
 > 
-> The ret value is set to 4 after the option checks so that if there's
-> an error resulting in "goto out" it won't print an error about
-> unrecognized options.
+> I have proposed an alternative at
+>     https://github.com/tytso/e2fsprogs/pull/250
+> and I'll email that here next.
 > 
-> Also submitted as PR https://github.com/tytso/e2fsprogs/pull/250
-> for the issue https://github.com/tytso/e2fsprogs/issues/244.
+> On Mon, Sep 15, 2025 at 05:03:14PM -0700, Darrick J. Wong wrote:
+> ...
+> > diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+> > index 48473321f469dc..fb44b0a79b53e6 100644
+> > --- a/misc/fuse2fs.c
+> > +++ b/misc/fuse2fs.c
+> > @@ -946,6 +946,15 @@ static errcode_t fuse2fs_open(struct fuse2fs *ff, int libext2_flags)
+> >  
+> >  	err = ext2fs_open2(ff->device, options, flags, 0, 0, unix_io_manager,
+> >  			   &ff->fs);
+> > +	if (err == EPERM) {
 > 
-> Replaces 
->     https://lore.kernel.org/linux-ext4/20251010214735.22683-1-dave.dykstra@cern.ch/T/#u
->     https://lore.kernel.org/linux-ext4/175798064776.350013.6744611652039454651.stgit@frogsfrogsfrogs/#t
-> 
-> Signed-off-by: Dave Dykstra <2129743+DrDaveD@users.noreply.github.com>
-> ---
->  misc/fuse2fs.c | 27 +++++++++++++++++++++++----
->  1 file changed, 23 insertions(+), 4 deletions(-)
-> 
-> diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-> index cb5620c7..2ae2fc1a 100644
-> --- a/misc/fuse2fs.c
-> +++ b/misc/fuse2fs.c
-> @@ -4696,9 +4696,19 @@ int main(int argc, char *argv[])
->  	err = ext2fs_open2(fctx.device, options, flags, 0, 0, unix_io_manager,
->  			   &global_fs);
->  	if (err) {
-> -		err_printf(&fctx, "%s.\n", error_message(err));
-> -		err_printf(&fctx, "%s\n", _("Please run e2fsck -fy."));
-> -		goto out;
-> +		if (((err == EACCES) || (err == EPERM)) && fctx.ro) {
+> In my case the error here is EACCES (Permission denied) rather than EPERM
+> so I in my patch I included both.
 
-This is not correct.  mount(8) for the kernel ext4 driver responds to
-the block device being readonly by retrying with an ro mount.  The user
-is not required to specify 'ro':
+Ok, I'll go update my own patch.
 
-# blockdev --setro/ dev/sda
-# strace -e mount mount /dev/sda /mnt
-40677<mount> 12:19:36 (+     0.000102) mount("/dev/sda", "/mnt", "ext4", 0, NULL) = -1 EACCES (Permission denied)
-40677<mount> 12:19:36 (+     0.000285) mount("/dev/sda", "/mnt", "ext4", MS_RDONLY, NULL) = 0
+> > +		err_printf(ff, "%s.\n",
+> > +			   _("read-only device, trying to mount norecovery"));
+> > +		flags &= ~EXT2_FLAG_RW;
+> > +		ff->ro = 1;
+> > +		ff->norecovery = 1;
+> 
+> I don't think it's good to switch to read-only+norecovery even when a
+> read-write mode was requested.  That goes too far.
 
-> +			// read-only requested and don't have write access
-> +			dbg_printf(&fctx, "%s: %s\n", __func__,
-> + _("Permission denied with writable, trying without.\n"));
-> +			flags &= ~EXT2_FLAG_RW;
-> +			err = ext2fs_open2(fctx.device, options, flags, 0, 0, 
-> +					   unix_io_manager, &global_fs);
-> +		}
-> +		if (err) {
-> +			err_printf(&fctx, "%s.\n", error_message(err));
-> +			err_printf(&fctx, "%s\n", _("Please run e2fsck -fy."));
-> +			goto out;
-> +		}
->  	}
->  	fctx.fs = global_fs;
->  	global_fs->priv_data = &fctx;
-> @@ -4741,6 +4751,8 @@ int main(int argc, char *argv[])
->  		goto out;
->  	}
->  
-> +	ret = 4;
+The block device cannot be opened for write, so the mount cannot allow
+user programs to write to files, and the fs driver cannot recover the
+journal and it cannot write to the disk.  The only other choice would
+be to fail the mount.
 
-Why 4?  Is this an internal mount bug?
+norecovery is wrong though.  The kernel fails the mount if the journal
+needs recovery, the block device is ro, and the user didn't specify
+norecovery.
+
+> It also doesn't catch when recovery is needed.
+
+What specifically do you mean "catch when recovery is needed"?  68 lines
+down from the ext2fs_open2 call is a check for the needsrecovery state,
+followed by recovering the journal.
+
+> My proposed patch only reopens read-only
+> when ro was requested and then later checks to see if recovery is needed
+> and if so, errors out.
+
+Your patch also didn't re-check the feature support after reopening the
+block device, which you dismissed even though that can lead to
+catastrophic behavior.
 
 --D
 
-> +
->  	if (global_fs->super->s_state & EXT2_ERROR_FS) {
->  		err_printf(&fctx, "%s\n",
->   _("Errors detected; running e2fsck is required."));
-> @@ -4760,6 +4772,11 @@ int main(int argc, char *argv[])
->   _("Mounting read-only without recovering journal."));
->  			fctx.ro = 1;
->  			global_fs->flags &= ~EXT2_FLAG_RW;
-> +		} else if (fctx.ro && !(flags & EXT2_FLAG_RW)) {
-> +			err_printf(&fctx, "%s\n",
-> + _("Journal needs recovery but filesystem could not be opened read-write."));
-> +			err_printf(&fctx, "%s\n", _("Please run e2fsck -fy."));
-> +			goto out;
->  		} else {
->  			log_printf(&fctx, "%s\n", _("Recovering journal."));
->  			err = ext2fs_run_ext3_journal(&global_fs);
-> @@ -4833,8 +4850,10 @@ int main(int argc, char *argv[])
->  	if (fctx.no_default_opts == 0)
->  		fuse_opt_add_arg(&args, extra_args);
->  
-> -	if (fctx.ro)
-> +	if (fctx.ro) {
-> +		/* This is in case ro was implied above and not passed in */
->  		fuse_opt_add_arg(&args, "-oro");
-> +	}
->  
->  	if (fctx.fakeroot) {
->  #ifdef HAVE_MOUNT_NODEV
-> -- 
-> 2.43.5
 > 
+> Dave
 > 
 
