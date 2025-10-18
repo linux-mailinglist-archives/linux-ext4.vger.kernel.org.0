@@ -1,154 +1,170 @@
-Return-Path: <linux-ext4+bounces-10965-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10966-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC26BEC015
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 Oct 2025 01:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B51F9BED3BC
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 Oct 2025 18:16:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 591F45E8322
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Oct 2025 23:33:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 712375E26A5
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 Oct 2025 16:16:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F0E29ACF6;
-	Fri, 17 Oct 2025 23:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494591FE46D;
+	Sat, 18 Oct 2025 16:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RsuJjVey"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KD8vw0jA"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4943223BF91
-	for <linux-ext4@vger.kernel.org>; Fri, 17 Oct 2025 23:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F260B672
+	for <linux-ext4@vger.kernel.org>; Sat, 18 Oct 2025 16:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760743976; cv=none; b=ndzsduTzqurRpLLuXx+CFpeUI4NbMnQmAIByoBniEsUd7yfEhoWbhsfW8cwtkF1PxgFDMBl5Fb6eV7P8a70fEDG6eGb8r0rGP2OXkkG3rmNtEXxWsMlLqXPXBfdYjOZ3F2JrgcncOHWqn44vr76DHN2+3SuoVpWC3Mi7pkeQA2M=
+	t=1760804177; cv=none; b=b1ugvrIQhQUTArxzobgS1xB3vxJJkPis/j6GDG8veZMy/P+VT1YuZzcUKkcEIKbGAta/mVY3/49y5i4/7P+T3AIgYCbACBLDcYIs4V/QTj1I/vvjcLgIxsnaMtO47+ZlVrWJPZuJ72q+by2yvelt2IiC4ykHbdd+DTssgv4f0tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760743976; c=relaxed/simple;
-	bh=zs1v+GRTCMF2iz82+kmbHm2gBAyX8OuK3v2RfFstACE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hldfDxlIZVN7x1gCvGLsC9RXy4W3MEZJYyRVGF9Vdq6OFSU9eoFXE+vKw7YbudU2o/B5EKr7qA4X1EDVWP8FUZaPMCJrKGAnViNf380fXy8dvA1CNZvxQRmLT89m2frpgyJwLuXM+JWWEaC4KD3ect113aph09xCjvv3eaC7cJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RsuJjVey; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB05FC4CEE7;
-	Fri, 17 Oct 2025 23:32:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760743975;
-	bh=zs1v+GRTCMF2iz82+kmbHm2gBAyX8OuK3v2RfFstACE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RsuJjVeyMyuWnf9F+jqXvqHmS8oUtImRSixkXOf7BY/UbfNWgwhv7AzrDx083G7lx
-	 nhskN1+IpYBUJRSZNH6KFmzL1P5FD2BVL6VP8qynPvVp0pmjaZSlIkv6cYCBZXXT2A
-	 vc9su8PlnwIxnT+ZS9/+Jcz2y0FNBC39HiKYGn5lZdjjOoaMWpSB4c11iR/OJYTNs9
-	 oMmYb9lmFcfsHV2RiAAiTKdULKuNraRIKG9ufnooxOyApOLVMmliFQi9vpyK7XRGJs
-	 qiYV2T/hy+g13inUod1UcLJTckg+DFybQxfuoDmxtuE1Z2uR5+8tWqiMiIaeSGmE9w
-	 yICfMDtbiEwtw==
-Date: Fri, 17 Oct 2025 16:32:55 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Dave Dykstra <dave.dykstra@cern.ch>, Theodore Ts'o <tytso@mit.edu>
+	s=arc-20240116; t=1760804177; c=relaxed/simple;
+	bh=+3gAvnzI+cuGaiZxUWSd19HgWxd+NZJ02iVRQAzsYdY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Rf96mkF7w0USBawfJAiGgAe1AFpzUIlQ7XabCZVyrRDDPpsDmlnb2LYZ4a4uvFPKyt91/f/5tbSATAvOMz8XPySFVSzOhan8tY0QUf589N4sTdhzLtmKRtSB7nSHNpLMrIenSOZVGfLA3EzIf4Z+URfGIkoc3qp6qEz0MzrYIwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KD8vw0jA; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-29226bc4bafso13926955ad.0
+        for <linux-ext4@vger.kernel.org>; Sat, 18 Oct 2025 09:16:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760804175; x=1761408975; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wSdDV+77YGHONmky4lHEZ+t4EXPNjUiuSFX0q2ZUFEE=;
+        b=KD8vw0jA6LbOB0yYtLSAvEiEIg4SQQzOyaW5A7vGAKpGHSxxbjdQj8Ztp/uhCZQ6Rz
+         Nr+ZHDgawr0rhfZlVec3HR5KvSZH7/uqsqP4JfDrcMWgZfCwVCTOknQ+AETd7TKoV70K
+         LEyLPAS/76izq4Rsy2C4PNmzOdHpNKBtNGgwF9xQWaCuTqiROU2HJLSkyrupwcUvGgPy
+         HxAGsvnhSELo1q3b9UhOi2NQJQ+GA0j3bjvLN9074oLQuGZeNLUAD9M/5PmAblO5iJ9J
+         Gus7WNeAt+BbSm3S8DHD0L8/WjscXgnL+CpCNqCAK/6abIpjMWRuj8ZxoC4HhKGrbX1Q
+         oVkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760804175; x=1761408975;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wSdDV+77YGHONmky4lHEZ+t4EXPNjUiuSFX0q2ZUFEE=;
+        b=IF7BzqQDoJlLwb6/5J8Ao00ZARmGwU+lBEDMGPy/YpIbmJREdHAu++HfEJASNflQnh
+         mZpuAGSsb3UjHzs8E2m7DI+XLwVjDo7IUfKj0BYOThZAI+PwgP8VCJpdHPvkaYC8CgRL
+         SijAGLEA4hkaNLoZ/RBKZO6aFY8eJN0GeXEuGQ7kozkr+FS/CjO8B0oubhsMVEJwP159
+         VZ28qKG3vTuGM1OgeQLLz0R+GV/rmKo7Q1qruLSBrckYDAdnNWf3+wrG3OWDiPkgZr81
+         lzO1jZ3dwTXg2kEmmuVmqjorhH+7rrveIb8ov0Fk7/YndD7meHcAW2f8+P2WKuhwgTZl
+         BSvg==
+X-Gm-Message-State: AOJu0YxOiCp49hoovHSg7Ip8SBNmyvqYCtR9GhCh5dY24NKlK9rR9lNa
+	wDb6wlOXucpEE4BqvyqqptiCVnIIaREVMNjVSnG+uIRqN/xJb7+e66lY
+X-Gm-Gg: ASbGncv9GV6Y8ty/hJeBLSitP2ZPoAg/5nJ6E2jdUQJj9nbn3J+hs+GCaWoN7uaxfg6
+	znSnlGgOqDk0OYWt9AbDAy41hArowUcCx6lWHkud/qtzU6kPiKJR8D7ZoD9QJ185WvomrBYumXJ
+	6mwo/UsRvyIo592UXsuX/vOPdQA6MZB7IufB6EJuaNxPzXndCYhnX6WVTvfTE41NvynjmHnioL3
+	Ui26B/q/0qGVnB79ihvOhp3RDu8S2TyRvQOHBEgh1oRFAdUc+kxqm3AmnBA+i1LThCrC+ELbjIo
+	xziVk/t3LNfPP8xdbCCZ6KsEygdlMfs1HHHGYW3lttZoQhEfPNSOzjeYfmVpExAKoJmBEJTU+lp
+	fySjPI3mGiqCNoijPD/urrOrzwsfuXj/ddHlHICnFApSwazKeXb8bNx0ZwfTx6VAaXlzX8UtVFf
+	xbmWzOSA/qPWdw4/2f/nenyRWtUZ0lizpEcKiS82doSQXgNhccllxggpPEubdJjtYtqzw=
+X-Google-Smtp-Source: AGHT+IHYI+FFaaDvVpaxlIAX/sl/GzLTAOyuwL7XHMuLFvxKBqk1F72Br/+q3CnnYmwEGgo8GUd0nw==
+X-Received: by 2002:a17:902:e88e:b0:24b:25f:5f81 with SMTP id d9443c01a7336-290c9ca72bcmr105157945ad.17.1760804174643;
+        Sat, 18 Oct 2025 09:16:14 -0700 (PDT)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:389d:f9a4:de93:6765:f5dd])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471d598asm30006445ad.63.2025.10.18.09.16.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Oct 2025 09:16:13 -0700 (PDT)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca
 Cc: linux-ext4@vger.kernel.org,
-	Dave Dykstra <2129743+DrDaveD@users.noreply.github.com>
-Subject: Re: [PATCH] fuse2fs: open read-only when image is not writable
-Message-ID: <20251017233255.GL6170@frogsfrogsfrogs>
-References: <20251017211130.8507-1-dave.dykstra@cern.ch>
+	linux-kernel@vger.kernel.org,
+	Deepanshu Kartikey <kartikey406@gmail.com>,
+	syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com
+Subject: [PATCH] ext4: fix inline data overflow when xattr value is empty
+Date: Sat, 18 Oct 2025 21:46:06 +0530
+Message-ID: <20251018161606.412713-1-kartikey406@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251017211130.8507-1-dave.dykstra@cern.ch>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 17, 2025 at 04:11:30PM -0500, Dave Dykstra wrote:
-> This opens the image read-only when the image is not writable. If it is then found that a journal recovery is needed, an error is returned then.
-> 
-> The ret value is set to 2 after the option checks so that if there's an error resulting in "goto out" it won't print an error about unrecognized options.
-> 
-> Also submitted as PR https://github.com/tytso/e2fsprogs/pull/250
-> for the issue https://github.com/tytso/e2fsprogs/issues/244.
-> 
-> Replaces 
->   https://lore.kernel.org/linux-ext4/20251016200206.3035-1-dave.dykstra@cern.ch/
->   https://lore.kernel.org/linux-ext4/175798064776.350013.6744611652039454651.stgit@frogsfrogsfrogs/
-> 
-> Signed-off-by: Dave Dykstra <2129743+DrDaveD@users.noreply.github.com>
+When a file has inline data with an xattr entry but e_value_size is 0,
+ext4_prepare_inline_data() incorrectly uses the theoretical maximum
+inline size (128 bytes) instead of the actual current capacity (60 bytes
+from i_block only). This causes it to accept writes that exceed the
+actual capacity, leading to a kernel crash in ext4_write_inline_data_end()
+when the BUG_ON(pos + len > EXT4_I(inode)->i_inline_size) is triggered.
 
-Please slow down and give me a chance to reshuffle and QA my existing
-fixes for the problems you've complained about.
+This scenario occurs when:
+1. A file is created with inline data
+2. The file is truncated, leaving an xattr entry with e_value_size=0
+3. A write is attempted that exceeds i_block capacity (>60 bytes)
 
---D
+The bug occurs because ext4_prepare_inline_data() calls
+ext4_get_max_inline_size() which returns the theoretical maximum (128)
+even when the xattr value space is not allocated. This leads to:
+- ext4_prepare_inline_data() thinks the write will fit (120 < 128)
+- Does not return -ENOSPC
+- Inline write path is taken
+- ext4_write_inline_data_end() detects overflow and crashes
 
-> ---
->  misc/fuse2fs.c | 32 ++++++++++++++++++++++++++++----
->  1 file changed, 28 insertions(+), 4 deletions(-)
-> 
-> diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-> index cb5620c7..6a107d2b 100644
-> --- a/misc/fuse2fs.c
-> +++ b/misc/fuse2fs.c
-> @@ -4696,9 +4696,24 @@ int main(int argc, char *argv[])
->  	err = ext2fs_open2(fctx.device, options, flags, 0, 0, unix_io_manager,
->  			   &global_fs);
->  	if (err) {
-> -		err_printf(&fctx, "%s.\n", error_message(err));
-> -		err_printf(&fctx, "%s\n", _("Please run e2fsck -fy."));
-> -		goto out;
-> +		if ((err == EACCES) || (err == EPERM)) {
-> +			if (fctx.ro) {
-> +				dbg_printf(&fctx, "%s: %s\n", __func__,
-> + _("Permission denied with writable, trying without.\n"));
-> +			} else {
-> +				dbg_printf(&fctx, "%s: %s\n", __func__,
-> + _("No write access, opening read-only.\n"));
-> +				fctx.ro = 1;
-> +			}
-> +			flags &= ~EXT2_FLAG_RW;
-> +			err = ext2fs_open2(fctx.device, options, flags, 0, 0, 
-> +					   unix_io_manager, &global_fs);
-> +		}
-> +		if (err) {
-> +			err_printf(&fctx, "%s.\n", error_message(err));
-> +			err_printf(&fctx, "%s\n", _("Please run e2fsck -fy."));
-> +			goto out;
-> +		}
->  	}
->  	fctx.fs = global_fs;
->  	global_fs->priv_data = &fctx;
-> @@ -4741,6 +4756,8 @@ int main(int argc, char *argv[])
->  		goto out;
->  	}
->  
-> +	ret = 2;
-> +
->  	if (global_fs->super->s_state & EXT2_ERROR_FS) {
->  		err_printf(&fctx, "%s\n",
->   _("Errors detected; running e2fsck is required."));
-> @@ -4760,6 +4777,11 @@ int main(int argc, char *argv[])
->   _("Mounting read-only without recovering journal."));
->  			fctx.ro = 1;
->  			global_fs->flags &= ~EXT2_FLAG_RW;
-> +		} else if (fctx.ro && !(flags & EXT2_FLAG_RW)) {
-> +			err_printf(&fctx, "%s\n",
-> + _("Journal needs recovery but filesystem could not be opened read-write."));
-> +			err_printf(&fctx, "%s\n", _("Please run e2fsck -fy."));
-> +			goto out;
->  		} else {
->  			log_printf(&fctx, "%s\n", _("Recovering journal."));
->  			err = ext2fs_run_ext3_journal(&global_fs);
-> @@ -4833,8 +4855,10 @@ int main(int argc, char *argv[])
->  	if (fctx.no_default_opts == 0)
->  		fuse_opt_add_arg(&args, extra_args);
->  
-> -	if (fctx.ro)
-> +	if (fctx.ro) {
-> +		/* This is in case ro was implied above and not passed in */
->  		fuse_opt_add_arg(&args, "-oro");
-> +	}
->  
->  	if (fctx.fakeroot) {
->  #ifdef HAVE_MOUNT_NODEV
-> -- 
-> 2.43.5
-> 
-> 
+The fix checks e_value_size in ext4_prepare_inline_data():
+- If e_value_size is 0: xattr exists but has no data, cannot expand,
+  use actual current capacity (i_inline_size)
+- If e_value_size > 0: xattr has data, expansion possible,
+  use theoretical maximum (ext4_get_max_inline_size)
+- If no xattr entry: use theoretical maximum
+
+This ensures the capacity check accurately reflects available space,
+triggering proper conversion to extents when needed and preventing
+the overflow crash.
+
+Reported-by: syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=f3185be57d7e8dda32b8
+Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
+---
+ fs/ext4/inline.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 1b094a4f3866..3a3aa2d803db 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -413,7 +413,30 @@ static int ext4_prepare_inline_data(handle_t *handle, struct inode *inode,
+ 	if (!ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
+ 		return -ENOSPC;
+ 
+-	size = ext4_get_max_inline_size(inode);
++	if (ei->i_inline_off) {
++		struct ext4_iloc iloc;
++		struct ext4_inode *raw_inode;
++		struct ext4_xattr_entry *entry;
++
++		ret = ext4_get_inode_loc(inode, &iloc);
++		if (ret)
++			return ret;
++
++		raw_inode = ext4_raw_inode(&iloc);
++		entry = (struct ext4_xattr_entry *)
++			((void *)raw_inode + ei->i_inline_off);
++
++		if (le32_to_cpu(entry->e_value_size) == 0) {
++			ext4_find_inline_data_nolock(inode);
++			size = ei->i_inline_size;
++		} else {
++			size = ext4_get_max_inline_size(inode);
++		}
++
++		brelse(iloc.bh);
++	} else {
++		size = ext4_get_max_inline_size(inode);
++	}
+ 	if (size < len)
+ 		return -ENOSPC;
+ 
+-- 
+2.43.0
+
 
