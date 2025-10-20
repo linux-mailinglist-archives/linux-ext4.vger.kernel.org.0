@@ -1,162 +1,150 @@
-Return-Path: <linux-ext4+bounces-10977-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-10978-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD01BEF6C9
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Oct 2025 08:10:56 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02922BEFA1E
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Oct 2025 09:16:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C1663ABEDE
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Oct 2025 06:10:10 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 321504F1EAB
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Oct 2025 07:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2BA2D47EE;
-	Mon, 20 Oct 2025 06:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YiCweczO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2029E2E9EA9;
+	Mon, 20 Oct 2025 07:11:28 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FAE22D46D6
-	for <linux-ext4@vger.kernel.org>; Mon, 20 Oct 2025 06:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2A72DC76A
+	for <linux-ext4@vger.kernel.org>; Mon, 20 Oct 2025 07:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760940587; cv=none; b=UF8Ubcj3hIxCZXedwH02aDMC9lDTbdp+1/eEyrQ3CZoqYJE4lp1915yJWpHGEt0hFC2hiaxvswrddElsH7fBlk0ZRlxvGA2+GmKizi85xT+xFlpHecY3mecZlYfPk1V5a5FzrX8NGEswEMu6XMO9rtKjIl1DT2SJIGEw+ygayvo=
+	t=1760944287; cv=none; b=Yqrsn191qyCuS3cdclzKgk4nH3tMXbYxTtJLjQjHJTYqslO7lkp1vDBgMkwJboB4teUHIbngwhh7Zfpqn0LWBS17A4MS0oNZAhvJbaR5ff+qosg0tk3Z7/pqLBaCLWZpDe2XH0lNOayw9RCL47MRO/0RFrOMiMZt8yoDZZXkSU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760940587; c=relaxed/simple;
-	bh=TSkXx9p+cdcuN4RyjU/7+bxJX0eR43d5i9gSdUnyWqA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AuBhcKp/7HQBaTCF4bdqazP2LYuWClRjKoStCa2YP5LQ1RbT5J3q4UvR6S7POZits7tKeqpfjpaKAW4ygJKXHj6ptEvGozLBU9pvngvsRs6mMOXLvmCu2oM5vz2rY8iOxjmgNDJ1MVBXnfcOATj0c1jWAVHAJ0mQyAomiH2P0Mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YiCweczO; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-79ef9d1805fso3688422b3a.1
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Oct 2025 23:09:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760940585; x=1761545385; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7dfL7kTT70td9Gucubeing58DEa3GtXtMFuhoAEWKt4=;
-        b=YiCweczO7qL0bLIbEhBFkfC41vj6JjZ5fu2QrSxURZo9Fj6/stOUNOl19sJiKfVeAJ
-         7NcZ6pFWeCNqpo+T4BZHAoc89jp/JzQ9cdAE1u6KxF7Y55rqGe2Gzy4bApllbbh+i9SF
-         1XXHwjaWoUHSRVHwDh8B094H/cbYmNapKWlGvhkvJQ+oTHWAl94NpTckDOdWUleFa9J+
-         8R1joWKwnjdGABGF1Z7sWVYpoQsHqsn69U3EEyEOt6O3kTSUqFUZi/IW3wewx77p4QxA
-         hbXOAxpCFixDoqNpr1bxfYYY1mf90af3x6zonVWjgv+rqO1wnqjw0jEaLPPNWcLxH6v4
-         DF/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760940585; x=1761545385;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7dfL7kTT70td9Gucubeing58DEa3GtXtMFuhoAEWKt4=;
-        b=or2drpRdRfkCbQXbTR5VXRbQRo1tQjQ8LIH/OGZDankbSmc/QYmTJzBFg5zor/oT5I
-         T4CvQalKpzi1iWu31ebK0lGXSrzS80L10qb1b5Zum77NGsPC3MrY+jedAnaUCXfuKkQE
-         l3ZnEGPczKtw4LwmwKpUIF6FrHxaD4IAdDdW42hEMV4vNKS6LLP/bNCji98BdbdAQW9U
-         mTak0nDc2o1dsNzCisvFRfqdY1NvsPzZVCATuT1uUHIsZTgritHr+efMaGbPKW0UcxEt
-         LBz6TvnWHvN1FL/hnovDpkPiWyJa5AlIh6G1N1mDr3uIWDwKWZtnbvBhUA6cFkrQWznP
-         npBQ==
-X-Gm-Message-State: AOJu0YzMHhP+EZkOY6Xt5TTZqVr77Kz1SAQ7iwmq85xlmdGMvlg06e3L
-	BaY0ic8VfGtvPTYrez09VJXo1a553SaDKWtq3Qp1rgmuXQeX1bcTnirJ
-X-Gm-Gg: ASbGncuBtWRIHxWlL+SUnDIT1se/7opetaQVvU8s20+UXFxoOhJfPssUUZFxYQ5RidO
-	Ao4xDtlcbwCyQqZ1Tq0VrsgCgJ2kJy3K4OefNUFSBNuyozSsm6znIooR1juPMTJt72fjp69XrrW
-	fGQS0nGy9Yws4pG9mEvNpvqpNYBiabBEkozHv023E1YVoDh4A/jRUWlPsRIf4hhFNWoCzSPz/Nq
-	49MIvs8aPpWtMU6EsxkN18UHOG/mEWktXZyPmetnr1qY4J9V6ru/4FywGykTH5CjPADUt+vneEi
-	ZdM12RAUil5nBka9850nJlh+yD/Ht7lF/TfXML/Kr9Ahy4j+rLg2DWCo1h63Uxeu20p9uNzMR5s
-	pVrbXLj7GG2SIH4HC6C00BLFfkkH3cebMMGJQaMOOAofexB+7hzsQdL2iZXIJ2ls8ByLDp+1Dey
-	qjTkh9zwGNsKqw/3BIfZze5aTMKJKBaGbZ2w==
-X-Google-Smtp-Source: AGHT+IHP0ZsMUNHsK2KdZWrtS/RspPbYrWPfyaSqgIWpmkMx5f88SNl3aodjR9lUNwOI0e0SwDclHg==
-X-Received: by 2002:a05:6a00:1493:b0:77f:3149:3723 with SMTP id d2e1a72fcca58-7a220d3464dmr13900320b3a.29.1760940584630;
-        Sun, 19 Oct 2025 23:09:44 -0700 (PDT)
-Received: from deepanshu-kernel-hacker.. ([2405:201:682f:389d:af1f:624:50a9:430c])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a2301211besm7169019b3a.68.2025.10.19.23.09.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Oct 2025 23:09:43 -0700 (PDT)
-From: Deepanshu Kartikey <kartikey406@gmail.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Deepanshu Kartikey <kartikey406@gmail.com>,
-	syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com,
-	stable@kernel.org
-Subject: [PATCH v2] ext4: refresh inline data size before write operations
-Date: Mon, 20 Oct 2025 11:39:36 +0530
-Message-ID: <20251020060936.474314-1-kartikey406@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1760944287; c=relaxed/simple;
+	bh=k5fL67YRPU/t5xHMjnChlFVtg2UKLO+YlA+FT6PyvAU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gDPyDAf2SDD9u3mb6qubDHaHAH2URJn+FuBKbbYpQoAtOlRn53Jk7KLbj+f7yqU+mJJQFmbPecfoGZfy5jTAzi0CVUo8CbQ5UlUASkszl12/1la3yi3jyPPRniUKiVMLUqQvAdncyXVkCj9TeCTQE2XsTrTvb2I9dXCPQESDMpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cqmm615xjzKHLyS
+	for <linux-ext4@vger.kernel.org>; Mon, 20 Oct 2025 15:10:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id C3E071A16CB
+	for <linux-ext4@vger.kernel.org>; Mon, 20 Oct 2025 15:11:14 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP2 (Coremail) with SMTP id Syh0CgBHnESQ4PVoHKXxAw--.18657S3;
+	Mon, 20 Oct 2025 15:11:14 +0800 (CST)
+Message-ID: <ebe38d8f-0b09-47b8-9503-2d8e0585672a@huaweicloud.com>
+Date: Mon, 20 Oct 2025 15:11:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Possible regression in pin_user_pages_fast() behavior after
+ commit 7ac67301e82f ("ext4: enable large folio for regular file")
+To: Karol Wachowski <karol.wachowski@linux.intel.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca
+References: <844e5cd4-462e-4b88-b3b5-816465a3b7e3@linux.intel.com>
+ <a5452767-40bf-4621-8bbd-b693224ce6fd@linux.intel.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <a5452767-40bf-4621-8bbd-b693224ce6fd@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgBHnESQ4PVoHKXxAw--.18657S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw1kGw1fArWDJr4fKry5CFg_yoW5CrW8pr
+	1xtryrKryjq3yvkr1jk3WDtryUAw4DJr1DX398tF4UA3y5W34j9w45Xay2gF1DZr4xAFnY
+	q34jgwnxuay8CF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUgvb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+	6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+	CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+	0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+	AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
+	Ja73UjIFyTuYvjxUzsqWUUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
+Hi, Karol.
 
-The cached ei->i_inline_size can become stale between the initial size
-check and when ext4_update_inline_data()/ext4_create_inline_data() use
-it. Although ext4_get_max_inline_size() reads the correct value at the
-time of the check, concurrent xattr operations can modify i_inline_size
-before ext4_write_lock_xattr() is acquired.
+Thank you for the report! I am trying to figure out how this issue
+occurred. Could you provide a way to reproduce it? It would also be
+helpful if you could include the kernel configuration and hardware
+environment information.
 
-This causes ext4_update_inline_data() and ext4_create_inline_data() to
-work with stale capacity values, leading to a BUG_ON() crash in
-ext4_write_inline_data():
+Thanks,
+Yi
 
-  kernel BUG at fs/ext4/inline.c:1331!
-  BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
-
-The race window:
-1. ext4_get_max_inline_size() reads i_inline_size = 60 (correct)
-2. Size check passes for 50-byte write
-3. [Another thread adds xattr, i_inline_size changes to 40]
-4. ext4_write_lock_xattr() acquires lock
-5. ext4_update_inline_data() uses stale i_inline_size = 60
-6. Attempts to write 50 bytes but only 40 bytes actually available
-7. BUG_ON() triggers
-
-Fix this by recalculating i_inline_size via ext4_find_inline_data_nolock()
-immediately after acquiring xattr_sem. This ensures ext4_update_inline_data()
-and ext4_create_inline_data() work with current values that are protected
-from concurrent modifications.
-
-This is similar to commit a54c4613dac1 ("ext4: fix race writing to an
-inline_data file while its xattrs are changing") which fixed i_inline_off
-staleness. This patch addresses the related i_inline_size staleness issue.
-
-Reported-by: syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=f3185be57d7e8dda32b8
-Cc: stable@kernel.org
-Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
----
-Changes in v2:
-- Simplified to single-line fix (refresh i_inline_size after taking lock)
-- The refresh protects ext4_update_inline_data()/ext4_create_inline_data()
-  from using stale i_inline_size that may have changed between the initial
-  size check and lock acquisition
-- Follows same pattern as commit a54c4613dac1 for consistency
----
- fs/ext4/inline.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 1b094a4f3866..b48c7dbe76a2 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -418,7 +418,12 @@ static int ext4_prepare_inline_data(handle_t *handle, struct inode *inode,
- 		return -ENOSPC;
- 
- 	ext4_write_lock_xattr(inode, &no_expand);
--
-+	/*
-+	 * ei->i_inline_size may have changed since the initial check
-+	 * if other xattrs were added. Recalculate to ensure
-+	 * ext4_update_inline_data() validates against current capacity.
-+	 */
-+	(void) ext4_find_inline_data_nolock(inode);
- 	if (ei->i_inline_off)
- 		ret = ext4_update_inline_data(handle, inode, len);
- 	else
--- 
-2.43.0
+On 10/17/2025 9:30 PM, Karol Wachowski wrote:
+> Actually the threshold after which is starts to hang is 2 megabytes.
+> 
+> On 10/17/2025 3:24 PM, Karol Wachowski wrote:
+>> Hi,
+>>
+>> I’m not entirely sure if this is right way to report this.
+>>
+>> I’ve encountered what appears to be a regression (or at least a
+>> behavioral change) related to pin_user_pages_fast() when used with
+>> FOLL_LONGTERM on a Copy-on-Write (CoW) mapping (i.e. VM_MAYWRITE without
+>> VM_SHARED). Specifically, the call never finishes when the requested
+>> size exceeds 8 MB.
+>>
+>> The same scenario works correctly prior to the following change:
+>> commit 7ac67301e82f02b77a5c8e7377a1f414ef108b84
+>> Author: Zhang Yi <yi.zhang@huawei.com>
+>> Date:   Mon May 12 14:33:19 2025 +0800
+>>
+>>     ext4: enable large folio for regular file
+>>
+>> It seems the issue manifests when pin_user_pages_fast() falls back to
+>> _gup_longterm_locked(). In that case, we end up calling
+>> handle_mm_fault() with FAULT_FLAG_UNSHARE, which splits the PMD. 
+>> From ftrace, it looks like the kernel enters an apparent infinite loop
+>> of handle_mm_fault() which in turn invokes filemap_map_pages() from the
+>> ext4 ops.
+>>
+>>   1)   1.553 us    |      handle_mm_fault();
+>>   1)   0.126 us    |      __cond_resched();
+>>   1)   0.055 us    |      vma_pgtable_walk_begin();
+>>   1)   0.057 us    |      _raw_spin_lock();
+>>   1)   0.111 us    |      _raw_spin_unlock();
+>>   1)   0.050 us    |      vma_pgtable_walk_end();
+>>   1)   1.521 us    |      handle_mm_fault();
+>>   1)   0.122 us    |      __cond_resched();
+>>   1)   0.055 us    |      vma_pgtable_walk_begin();
+>>   1)   0.288 us    |      _raw_spin_lock();
+>>   1)   0.053 us    |      _raw_spin_unlock();
+>>   1)   0.048 us    |      vma_pgtable_walk_end();
+>>   1)   1.484 us    |      handle_mm_fault();
+>>   1)   0.124 us    |      __cond_resched();
+>>   1)   0.056 us    |      vma_pgtable_walk_begin();
+>>   1)   0.272 us    |      _raw_spin_lock();
+>>   1)   0.051 us    |      _raw_spin_unlock();
+>>   1)   0.050 us    |      vma_pgtable_walk_end();
+>>   1)   1.566 us    |      handle_mm_fault();
+>>   1)   0.211 us    |      __cond_resched();
+>>   1)   0.107 us    |      vma_pgtable_walk_begin();
+>>   1)   0.054 us    |      _raw_spin_lock();
+>>   1)   0.052 us    |      _raw_spin_unlock();
+>>   1)   0.049 us    |      vma_pgtable_walk_end();
+>>
+>> I haven’t been able to gather more detailed diagnostics yet, but I’d
+>> appreciate any guidance on whether this is a known issue, or if
+>> additional debugging information would be helpful.
+>>
+>> -
+>> Karol
+>>
 
 
