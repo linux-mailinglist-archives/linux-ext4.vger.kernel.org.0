@@ -1,101 +1,59 @@
-Return-Path: <linux-ext4+bounces-11020-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11021-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3AC2BFB715
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Oct 2025 12:49:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 842A0BFB8FC
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Oct 2025 13:12:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 50A0B4E2F67
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Oct 2025 10:49:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5CCF3A6237
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Oct 2025 11:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D54322C81;
-	Wed, 22 Oct 2025 10:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="n2dhaER+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kHGN08JH";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CMCR+Bv5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fMr+MjQ+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F2A32BF22;
+	Wed, 22 Oct 2025 11:12:02 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E870287257
-	for <linux-ext4@vger.kernel.org>; Wed, 22 Oct 2025 10:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F89811CA9;
+	Wed, 22 Oct 2025 11:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761130158; cv=none; b=uermR/I967x5+ul+edBcRY2Salemm6eUyMWlIbl50sXxElc202vDCxGjewrqm8SISodZ/q3/clQxT+ocIXYZCWrPZZ/gBInU2iGGhcJ6aiGraHfU2bwQPYkKtPzTAfDQaLt8C91uV+Qm1zS/dD4LHs58SH19xJ6iF7En7oscubQ=
+	t=1761131522; cv=none; b=mub4VibXDcSx0iv7/D5ngsEZtYz+t+C8hOeVAj5WiCdqKgyZAR5j2/KXnVj6rP9FWc5DJH2SOJ4fGrx/2308mm00DwRqVDb1aKG9K//OzH+ZyKiWi0buemKsySUtSznf9rWs/ite1hynDYWdrKAwZyhWkPvmAzawXoTm4nTyuto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761130158; c=relaxed/simple;
-	bh=EWGo/RWGIyYoPVGb3f16ctlnVeUGPqTObxnyPQYyuhU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WvpgEyMp8dJsHku5AWxcQPp537E2zVMuFA9C5hnl8q/2jc/KryXNkYsnJTRfyuIKQmmKrPJuESs/CI9m5VcKWv3/9z3FHo6n5v8wIRAB4GiwjC2naVlQid3Bg0sRG05tEHjg9bRvXPz4DhnPKrW2irTah08pQ6kwcog4ARDo3/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=n2dhaER+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kHGN08JH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CMCR+Bv5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fMr+MjQ+; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8CC122116A;
-	Wed, 22 Oct 2025 10:49:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761130150; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ooiTj9BKflCYybLypC999pmvVmEGAdtqZGEpOENNzqM=;
-	b=n2dhaER+i7tb/HJ+Yrt9FoikNaQhP1t5MtH1AfDBEYL54uJg1hW5SwePEGaT2bRLi8u52n
-	qBl/dlOgTZCa6xSFm6bpHaPPWzU/+fdDzKT59JVcuKjq+fZbMl6GnkuWLSxTdx2kU05/dm
-	qSS+aGJfCq7s0xNOzXxc0+ONpaqNUZc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761130150;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ooiTj9BKflCYybLypC999pmvVmEGAdtqZGEpOENNzqM=;
-	b=kHGN08JHyzy1azGe5mRbIZI/Q5rb2c5+Nd6wv91fanLOAOJIV+0TxCudKnZnUsM/fx9X+q
-	2Z04tWx+Cx5fivDA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=CMCR+Bv5;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fMr+MjQ+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761130146; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ooiTj9BKflCYybLypC999pmvVmEGAdtqZGEpOENNzqM=;
-	b=CMCR+Bv5XNtW2tGgP1M5dFyuPwTrl6c8/K9sD6nqQmif+YsuSM0dcOMsC2lbVjGrAaYP2+
-	21zxV//OLVgjQrX35opgMCLSBFuPex9fr1mtZhNIg1jb4GJO4XKyNRsXXvaYif1D+ohArC
-	auVZpbsfVX5Mvu5XUVq6enbF0WiOruo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761130146;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ooiTj9BKflCYybLypC999pmvVmEGAdtqZGEpOENNzqM=;
-	b=fMr+MjQ+XsHx7UhIuPJSMDJl0vjqAIOfTMohAXJluqyfAN3XrJXIOqd538Z1+HglMMxGCJ
-	ePHdo10zyhjKk2DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8399B13AAD;
-	Wed, 22 Oct 2025 10:49:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TOUZIKK2+GiUUQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 22 Oct 2025 10:49:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0AA83A0990; Wed, 22 Oct 2025 12:49:06 +0200 (CEST)
-Date: Wed, 22 Oct 2025 12:49:05 +0200
-From: Jan Kara <jack@suse.cz>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, 
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] jbd2: assign different lock_class_key for different
- filesystem
-Message-ID: <rajbaoxp7zvaiftmuip4mxdvrdxthhgvbjvtuq3zrwijtdab2j@ouligqrqxyth>
+	s=arc-20240116; t=1761131522; c=relaxed/simple;
+	bh=5UpbW5vWG0sKkOVn393oZxy1cQ9r0yyAQQeqLNxH94M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hmoVPhyT1SE57GjG9gDqUr8Q82MMEN3p2qlmRGbX01mSCRrLjvO8hT1ML0b14p8NnesC7TvJboC3eJDMjGdVLeBpdbgL4l9LK0D41NANi9oA8y+raAfP2fuJWUabhDLkP7NA459NjlcyyOUymQk2EWRt+pDapjcxdjzz+rVfWr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 59MBBceu083811;
+	Wed, 22 Oct 2025 20:11:38 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 59MBBc28083808
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 22 Oct 2025 20:11:38 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <987110fc-5470-457a-a218-d286a09dd82f@I-love.SAKURA.ne.jp>
+Date: Wed, 22 Oct 2025 20:11:37 +0900
+Precedence: bulk
+X-Mailing-List: linux-ext4@vger.kernel.org
+List-Id: <linux-ext4.vger.kernel.org>
+List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH v2] jbd2: allocate lock_class_key for jbd2_handle dynamically
+To: Jan Kara <jack@suse.cz>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 References: <e42f1471-a88a-4938-8743-1d5b171c47ec@I-love.SAKURA.ne.jp>
  <fwsxrb7ugi5zeosugo6hyjdbhw36ppa5kekfi6n7we2vvi3r7m@ljrizqoagsg7>
  <93744126-237b-4e36-8a62-a33e1fb52051@I-love.SAKURA.ne.jp>
@@ -103,81 +61,92 @@ References: <e42f1471-a88a-4938-8743-1d5b171c47ec@I-love.SAKURA.ne.jp>
  <96c8fca1-7568-46c8-a5ad-af4699b95d5e@I-love.SAKURA.ne.jp>
  <doq4csrkuhpha7v5lunesdrscmqmjvt3flids3iai2gvpbhp3j@mxldi4yvvymw>
  <a6fcc693-42f0-4d70-a1af-fc1bfb328eb7@I-love.SAKURA.ne.jp>
-Precedence: bulk
-X-Mailing-List: linux-ext4@vger.kernel.org
-List-Id: <linux-ext4.vger.kernel.org>
-List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6fcc693-42f0-4d70-a1af-fc1bfb328eb7@I-love.SAKURA.ne.jp>
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 8CC122116A
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.01
+ <rajbaoxp7zvaiftmuip4mxdvrdxthhgvbjvtuq3zrwijtdab2j@ouligqrqxyth>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <rajbaoxp7zvaiftmuip4mxdvrdxthhgvbjvtuq3zrwijtdab2j@ouligqrqxyth>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Virus-Status: clean
+X-Anti-Virus-Server: fsav203.rs.sakura.ne.jp
 
-On Wed 22-10-25 19:04:33, Tetsuo Handa wrote:
-> On 2025/10/21 22:39, Jan Kara wrote:
-> >>> Yes, something like this. In fact, I think we could get away with just
-> >>> jbd2_trans_commit_key. There's definitely no need for j_revoke_lock,
-> >>> j_list_lock, j_history_lock, j_state_lock, j_abort_mutex keys as these are
-> >>> internal to jbd2. j_checkpoint_mutex and j_barrier do wrap around some
-> >>> filesystem code so maybe we'll need to specify keys for them but I'd start
-> >>> with just jbd2_trans_commit_key and wait whether syzbot manages to trigger
-> >>> another false positive report with that.
-> >>
-> >> I tried https://syzkaller.appspot.com/x/patch.diff?x=11b4dde2580000 .
-> >> But I think https://syzkaller.appspot.com/x/patch.diff?x=1644c3cd980000
-> >> pattern which all mutex_init_with_key() users follow seems more simpler
-> >> and easier to apply. What do you think?
-> > 
-> > Yes, the second version looks nicer. Thanks! BTW, did you verify that
-> > annotating j_barrier, j_checkpoint_mutex, and j_abort_mutex is really
-> > needed? Because I'd be slightly surprised if it really was...
-> 
-> No. https://syzkaller.appspot.com/x/patch.diff?x=13a94e7c580000 was sufficient
-> for this specific report. But I don't know what will happen with ocfs2 which has
-> so complicated locking dependency ( https://syzkaller.appspot.com/upstream/s/ocfs2
-> has currently 27 open "possible deadlock" reports).
-> 
-> Do you want me to try this minimal change in linux-next via my tree for a while?
-> Or do you want to just apply this minimal change first?
+syzbot is reporting possibility of deadlock due to sharing lock_class_key
+for jbd2_handle across ext4 and ocfs2. But this is a false positive, for
+one disk partition can't have two filesystems at the same time.
 
-Please just submit the minimal change and we'll merge it through ext4 tree.
-If syzbot manages to trigger more reports, we can always add more
-complications :). Thanks!
+Reported-by: syzbot+6e493c165d26d6fcbf72@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=6e493c165d26d6fcbf72
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Tested-by: syzbot+6e493c165d26d6fcbf72@syzkaller.appspotmail.com
+---
+ fs/jbd2/journal.c    | 6 ++++--
+ include/linux/jbd2.h | 6 ++++++
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-								Honza
-
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index d480b94117cd..f43474002f50 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1521,7 +1521,6 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 			struct block_device *fs_dev,
+ 			unsigned long long start, int len, int blocksize)
+ {
+-	static struct lock_class_key jbd2_trans_commit_key;
+ 	journal_t *journal;
+ 	int err;
+ 	int n;
+@@ -1530,6 +1529,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	if (!journal)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	lockdep_register_key(&journal->jbd2_trans_commit_key);
+ 	journal->j_blocksize = blocksize;
+ 	journal->j_dev = bdev;
+ 	journal->j_fs_dev = fs_dev;
+@@ -1560,7 +1560,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	journal->j_max_batch_time = 15000; /* 15ms */
+ 	atomic_set(&journal->j_reserved_credits, 0);
+ 	lockdep_init_map(&journal->j_trans_commit_map, "jbd2_handle",
+-			 &jbd2_trans_commit_key, 0);
++			 &journal->jbd2_trans_commit_key, 0);
+ 
+ 	/* The journal is marked for error until we succeed with recovery! */
+ 	journal->j_flags = JBD2_ABORT;
+@@ -1611,6 +1611,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	kfree(journal->j_wbuf);
+ 	jbd2_journal_destroy_revoke(journal);
+ 	journal_fail_superblock(journal);
++	lockdep_unregister_key(&journal->jbd2_trans_commit_key);
+ 	kfree(journal);
+ 	return ERR_PTR(err);
+ }
+@@ -2187,6 +2188,7 @@ int jbd2_journal_destroy(journal_t *journal)
+ 		jbd2_journal_destroy_revoke(journal);
+ 	kfree(journal->j_fc_wbuf);
+ 	kfree(journal->j_wbuf);
++	lockdep_unregister_key(&journal->jbd2_trans_commit_key);
+ 	kfree(journal);
+ 
+ 	return err;
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 43b9297fe8a7..f5eaf76198f3 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1253,6 +1253,12 @@ struct journal_s
+ 	 */
+ 	struct lockdep_map	j_trans_commit_map;
+ #endif
++	/**
++	 * @jbd2_trans_commit_key:
++	 *
++	 * "struct lock_class_key" for @j_trans_commit_map
++	 */
++	struct lock_class_key	jbd2_trans_commit_key;
+ 
+ 	/**
+ 	 * @j_fc_cleanup_callback:
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.47.3
+
+
 
