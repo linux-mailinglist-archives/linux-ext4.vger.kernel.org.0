@@ -1,141 +1,223 @@
-Return-Path: <linux-ext4+bounces-11022-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11023-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB474BFEBCD
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Oct 2025 02:22:00 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC10BFEF94
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Oct 2025 05:04:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7883118C64E8
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Oct 2025 00:22:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 990D54E2C94
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Oct 2025 03:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B23E155CB3;
-	Thu, 23 Oct 2025 00:21:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HoU2c57I"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED70202997;
+	Thu, 23 Oct 2025 03:04:22 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C0D2F85B
-	for <linux-ext4@vger.kernel.org>; Thu, 23 Oct 2025 00:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87EC1448D5
+	for <linux-ext4@vger.kernel.org>; Thu, 23 Oct 2025 03:04:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761178915; cv=none; b=Czk3M/XEvLYETb7ZOzBKtSazuQ8zBCsakbBoJaKVBWUsT/to9HKdxUwiGce8GFsMZDdAjBwmoW3tBSZ3mt7cv7ogqR661kBfsNdERv0/FZ7nWt3SuXamjecr3RjAp7zC2Uqtzg3At4zmKYPO8BPX2TbIbfL0+xTo0S1iJn785BM=
+	t=1761188662; cv=none; b=RnRuc1XW5uAPJ1L97HGVaCT02hvIagGE9i/I3Kt32/UYqILPBhUALWiC+bNIP78rYE4lf5zF2ftM8B3fCelefXUl5V5cnMu9xTYF4WRHx0JTF57dFkkjpbJnfB+91XrlQffhNHkrW9xD2NbtN4praq1jkvWu063+16i4wRAR07M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761178915; c=relaxed/simple;
-	bh=G9bNz4VJ823w9m6icPHR6Cl+YfsTOnmiJLFec+mR54I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BFYGDUKEU0MEy/27/CMVQYi2xFBORBYTadxHC2NFVEys3X22RcEZrJXVqavxtKunPl1nsBYLZ5ii4lDyYZgq2myoLQNGM+5MbVaSK2x0ah723CTditPA8bETJs9t35C/XRksoZCXCVFUm4AbRdyeFJFvltFSNnYInO7GUTitggY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HoU2c57I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BDDFC4CEE7;
-	Thu, 23 Oct 2025 00:21:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761178915;
-	bh=G9bNz4VJ823w9m6icPHR6Cl+YfsTOnmiJLFec+mR54I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HoU2c57Ie0nXik22jVoe4sqxz0TEC8Xyqayg55QosHWlI52o1Zt10JO9coJVxNFyT
-	 nc4WrMkI6U9nAzqwZpmG/Gm0QbCwQVDmSATwZaVMx0KKghn0wztcTvbPAggm1EY+td
-	 QdZi5OL95tJ+iZ312P828gF4YR+/Z8LPDX7V5McGGEszk9qjWQGofKF8QLMZh+USAk
-	 U1fKOpuhyDmwAX5MS9BF4LsQQs6BnsPlmimAHFYu2R4c4P2CnH7QC+BLMDtnavJ5uR
-	 8ICFQv6v4mFuyzgY1vhgG3aFRFE+3YN/sBGqWTEo8izNt3W67NM1buFMSIWuovH3Xf
-	 HxRS3+oBxIgbg==
-Date: Wed, 22 Oct 2025 17:21:54 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Theodore Tso <tytso@mit.edu>
-Cc: Dave Dykstra <dwd@cern.ch>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] fuse2fs: updates for message reporting journal is not
- supported
-Message-ID: <20251023002154.GQ6170@frogsfrogsfrogs>
-References: <20251016200903.3508-1-dave.dykstra@cern.ch>
- <20251017191800.GF6170@frogsfrogsfrogs>
- <aPKilSNCQRW9c6rl@cern.ch>
- <20251017232521.GI6170@frogsfrogsfrogs>
- <aPgKP-wUhhfwqKke@cern.ch>
- <20251022013605.GC6859@macsyma-3.local>
+	s=arc-20240116; t=1761188662; c=relaxed/simple;
+	bh=owwlx0WxF3RftqHtLit2+R+UEwZfO8DO8mpYsRLF+88=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bJZbYBhjr5gVq/ix+yPeBcBT7NDKlZH6Qg0itbEMZd2h9RIvFZ3lUEOrnv/gnUByjbn+9Qswv2/+LuQLewHxkUplCOtldN2q3iFcfsYJeI97ks+KCdX+z4BmPLUrNskdbpXBc5zs8eidPK0sCu1nZnspO8+4c0Mg/qLt+6KlwwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4csW7W6JKWzKHMPc
+	for <linux-ext4@vger.kernel.org>; Thu, 23 Oct 2025 11:03:19 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 9C0461A0AD3
+	for <linux-ext4@vger.kernel.org>; Thu, 23 Oct 2025 11:04:08 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP2 (Coremail) with SMTP id Syh0CgBnvUUmm_lolsEzBQ--.42363S3;
+	Thu, 23 Oct 2025 11:04:08 +0800 (CST)
+Message-ID: <610d89e2-6970-4924-824b-f27a2424979b@huaweicloud.com>
+Date: Thu, 23 Oct 2025 11:04:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251022013605.GC6859@macsyma-3.local>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Possible regression in pin_user_pages_fast() behavior after
+ commit 7ac67301e82f ("ext4: enable large folio for regular file")
+To: David Hildenbrand <david@redhat.com>,
+ Karol Wachowski <karol.wachowski@linux.intel.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-mm@kvack.org,
+ linux-ext4@vger.kernel.org
+References: <ebe38d8f-0b09-47b8-9503-2d8e0585672a@huaweicloud.com>
+ <20251020084736.591739-1-karol.wachowski@linux.intel.com>
+ <0fec500c-52ea-473d-b276-826c0f4dd76f@huaweicloud.com>
+ <43cc7217-93bc-4ee6-99d2-83d9b26eb31a@redhat.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <43cc7217-93bc-4ee6-99d2-83d9b26eb31a@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgBnvUUmm_lolsEzBQ--.42363S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxtr1fJF15CFWDJF1UZw13Jwb_yoWxGF47pr
+	ykKa4YkFW5Jrn5Kr17Ww4qgFy0yw4UJayDWFyrJFyUArn8Ar12vr4UX390gry7Xr4fAr40
+	qr4UXry3ZF1UCaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Tue, Oct 21, 2025 at 06:36:05PM -0700, Theodore Tso wrote:
-> On Tue, Oct 21, 2025 at 05:33:35PM -0500, Dave Dykstra wrote:
-> > I understood that, but does the filesystem actually write metadata after
-> > the journal is recovered, such that if the fuse2fs process dies without
-> > a clean unmount there might be file corruption or data loss?  That is,
-> > in the case of ro when there is write access, does the warning message
-> > really apply?
+On 10/22/2025 4:30 PM, David Hildenbrand wrote:
+> On 22.10.25 04:46, Zhang Yi wrote:
+>> [add mm list to CC]
+>>
+>> On 10/20/2025 4:47 PM, Karol Wachowski wrote:
+>>> Hi,
+>>>
+>>> I can reproduce this on Intel's x86 (Meteor Lake and Lunar Lake Intel CPUs
+>>> but I believe it's not platform dependent). It reproduces on stable.
+>>> I have bisected this to the mentioned commit: 7ac67301e82f02b77a5c8e7377a1f414ef108b84
+>>> and it reproduces every time if that commit is present. I have attached a patch at the
+>>> end of this message that provides a very simple driver that creates character device
+>>> which calls pin_user_pages_fast() on user provided user pointer and simple test application
+>>> that creates 2 MB file on a filesystem (you have to ensure it's location is on ext4) and
+>>> does IOCTL with pointer obtained through mmap of that file with specific flags to reproduce
+>>> the issue.
+>>>
+>>> When it reproduces user application hangs indefinitely and has to be interrupted.
+>>>
+>>> I have also noticed that if we don't write to the file prior to mmap or the write size is less than
+>>> 2 MB issue does not reproduce.
+>>>
+>>> Patch with reproductor is attached at the end of this message, please let me know if that helps or
+>>> if there's anything else I can provide to help to determine if it's a real issue.
+>>>
+>>> -
+>>> Karol
+>>>
+>> Thank you for the reproducer. I can reproduce this issue on my x86 virtual
+>> machine. After debugging and analyzing, I found that this is not a
+>> filesystem issue, we can reproduce it on any filesystem that supports
+>> large folios, such as XFS. However, anyway, IIUC, I think it's a real
+>> issue.
+>>
+>> The root cause of this issue is that calling pin_user_pages_fast() triggers
+>> an infinite loop in __get_user_pages() when a PMD-sized(2MB on x86) and COW
+>> mmaped large folio is passed to pin. To trigger this issue on x86, the
+>> following conditions must be met. The specific triggering process is as
+>> follows:
+>>
+>> 1. Call mmap with a 2MB size in MAP_PRIVATE mode for a file that has a 2MB
+>>     folio installed in the page cache.
+>>
+>>     addr = mmap(NULL, 2 * 1024 * 1024, PROT_READ, MAP_PRIVATE, file_fd, 0);
+>> 2. The kernel driver pass this mapped address to pin_user_pages_fast() in
+>>     FOLL_LONGTERM mode.
+>>
+>>     pin_user_pages_fast(addr, nr_pages, FOLL_LONGTERM, pages);
+>>
+>>    ->  pin_user_pages_fast()
+>>    |   gup_fast_fallback()
+>>    |    __gup_longterm_locked()
+>>    |     __get_user_pages_locked()
+>>    |      __get_user_pages()
+>>    |       follow_page_mask()
+>>    |        follow_p4d_mask()
+>>    |         follow_pud_mask()
+>>    |          follow_pmd_mask() //pmd_leaf(pmdval) is true since it's pmd
+>>    |                            //installed, This is normal in the first
+>>    |                            //round, but it shouldn't happen in the
+>>    |                            //second round.
+>>    |           follow_huge_pmd() //gup_must_unshare() is always true
 > 
-> As an example, if file system inconsistencies is detected by the
-> kernel, it will update various fields in the superblock to indicate
-> that file system is corrupted, as well as when and where the
-> corruption is detected:
 > 
-> 	__le32	s_error_count;		/* number of fs errors */
-> 	__le32	s_first_error_time;	/* first time an error happened */
-> 	__le32	s_first_error_ino;	/* inode involved in first error */
-> 	__le64	s_first_error_block;	/* block involved of first error */
-> 	__u8	s_first_error_func[32] __nonstring;	/* function where the error happened */
-> 	__le32	s_first_error_line;	/* line number where error happened */
-> 	__le32	s_last_error_time;	/* most recent time of an error */
-> 	__le32	s_last_error_ino;	/* inode involved in last error */
-> 	__le32	s_last_error_line;	/* line number where error happened */
-> 	__le64	s_last_error_block;	/* block involved of last error */
-> 	__u8	s_last_error_func[32] __nonstring;	/* function where the error happened */
+> FOLL_LONGTERM in a private mapping needs an anon folio, so this checks out.
 > 
-> Since this is a singleton 4k update the superblock, we don't really
-> need to worry about problems caused by a non-atomic update of this
-> metadata.  And similarly, with the journal replay, if we get
-> interrupted while doing the journal replay, the replay is idempotent,
-> so we can just restart the journal replay from scratch.
+>>    |            return -EMLINK
+>>    |   faultin_page()
+>>    |    handle_mm_fault()
+>>    |     wp_huge_pmd() //split pmd and fault back to PTE
 > 
-> As far as the warning message, if you mean the warning message printed
-> by fuse2fs indicating that it doen't have journal support, and so if
-> you are modifying the file system and the system or fuse2fs crashes,
-> there may be file system corruption and/or data loss, that only needs
-> to be printed when mounting read-write.  It should be safe to skip
-> printing that warning message if the file system is mounted with -o
-> ro, based on the resoning abovce.
+> Oh, that's nasty. Indeed, we don't remap the PMD to be mapped by PTEs but instead zap it.
+> 
+> __split_huge_pmd_locked() contains that handling.
+> 
+> We have to do that because we did not preallocate a page table we can just throw in.
+> 
+> We could do that on this path instead: remap the PMD to be mapped by a PTE table. We'd have to preallocate a page table.
+> 
+> That would avoid the do_pte_missing() below for such faults.
+> 
+> that could be done later on top of this fix.
 
-/me notes that (as I pointed out elsewhere in the thread) the fuse
-server isn't notified if a mount goes from ro -> rw, so fuse2fs really
-ought to print the warning unconditionally.
+Yeah, thank you for the explanation! I have another question, just curious.
+Why do we have to fall back to installing the PTE table instead of creating
+a new anonymous large folio (2M) and setting a new leaf huge PMD?
 
---D
+> 
+>>    |     handle_pte_fault()  //
+>>    |      do_pte_missing()
+>>    |       do_fault()
+>>    |        do_read_fault() //FAULT_FLAG_WRITE is not set
+>>    |         finish_fault()
+>>    |          do_set_pmd() //install leaf pmd again, I think this is wrong!!!
+>>    |      do_wp_page() //copy private anno pages
+>>    <-    goto retry
+>>
+>> Due to an incorrectly large PMD set in do_read_fault(), follow_pmd_mask()
+>> always returns -EMLINK, causing an infinite loop. Under normal
+>> circumstances, I suppose it should fall back to do_wp_page(), which installs
+>> the anonymous page into the PTE. This is also why mappings smaller than 2MB
+>> do not trigger this issue. In addition, if you add FOLL_WRITE when calling
+>> pin_user_pages_fast(), it also will not trigger this issue becasue do_fault()
+>> will call do_cow_fault() to create anonymous pages.
+>>
+>> The above is my analysis, and I tried the following fix, which can solve
+>> the issue (I haven't done a full test yet). But I am not expert in the MM
+>> field, I might have missed something, and this needs to be reviewed by MM
+>> experts.
+>>
+>> Best regards,
+>> Yi.
+>>
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 74b45e258323..64846a030a5b 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -5342,6 +5342,10 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct folio *folio, struct page *pa
+>>       if (!thp_vma_suitable_order(vma, haddr, PMD_ORDER))
+>>           return ret;
+>>
+>> +    if (vmf->flags & (FAULT_FLAG_WRITE|FAULT_FLAG_UNSHARE) &&
+>> +        !pmd_write(*vmf->pmd))
+>> +        return ret;
+> 
+> Likely we would want to make this depend on is_cow_mapping().
+> 
+> /*
+>  * We're about to trigger CoW, so never map it through a PMD.
+>  */
+> if (is_cow_mapping(vma->vm_flags &&
+>     vmf->flags & (FAULT_FLAG_WRITE|FAULT_FLAG_UNSHARE)))
+>     return ret;
+> 
 
-> > > Are you running fstests QA on these patches before you send them out?
-> > 
-> > I had not heard of them, and do not see them documented anywhere in
-> > e2fsprogs, so I don't know how I was supposed to have known they were
-> > needed.  Ideally there would be an automated CI test suite.  The patches
-> > have passed the github CI checks (which don't show up in the standard
-> > pull request place, but I found them in my own repo's Actions tab).
-> > 
-> > Are you talking about the tests at https://github.com/btrfs/fstests?
-> > If so, it looks like there are a ton of options.  Is there a standard
-> > way to run them with fuse2fs?
-> 
-> This is btrfs's local form of https://github.com/btrfs/fstests of
-> xfstests (or fstests, as it is now sometimes called).  We do have an
-> automated way of running them for ext4 kernel code.   See [1][2]
-> 
-> [1] https://thunk.org/gce-xfstests
-> [2] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
-> 
-> Darrick has been doing a lot of really good work to run fuse2fs using
-> fstests/xfstests.  There isn't a turnkey way of running fuse2fs using
-> this test suite yet.  It's on my todo list to add an easy way to do
-> this via kvm-xfstests/gce-xfstests but I'm probably not going to get
-> to it until sometime next year.  If someone would like to give it a
-> try --- patches would be gratefully accepted.
-> 
-> 						- Ted
-> 						
-> 
+Sure, adding a cow check would be better. I will send out an official patch.
+
+Thanks,
+Yi.
+
 
