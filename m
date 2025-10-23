@@ -1,152 +1,141 @@
-Return-Path: <linux-ext4+bounces-11021-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11022-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 842A0BFB8FC
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Oct 2025 13:12:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB474BFEBCD
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Oct 2025 02:22:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5CCF3A6237
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Oct 2025 11:12:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7883118C64E8
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Oct 2025 00:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F2A32BF22;
-	Wed, 22 Oct 2025 11:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B23E155CB3;
+	Thu, 23 Oct 2025 00:21:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HoU2c57I"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F89811CA9;
-	Wed, 22 Oct 2025 11:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C0D2F85B
+	for <linux-ext4@vger.kernel.org>; Thu, 23 Oct 2025 00:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761131522; cv=none; b=mub4VibXDcSx0iv7/D5ngsEZtYz+t+C8hOeVAj5WiCdqKgyZAR5j2/KXnVj6rP9FWc5DJH2SOJ4fGrx/2308mm00DwRqVDb1aKG9K//OzH+ZyKiWi0buemKsySUtSznf9rWs/ite1hynDYWdrKAwZyhWkPvmAzawXoTm4nTyuto=
+	t=1761178915; cv=none; b=Czk3M/XEvLYETb7ZOzBKtSazuQ8zBCsakbBoJaKVBWUsT/to9HKdxUwiGce8GFsMZDdAjBwmoW3tBSZ3mt7cv7ogqR661kBfsNdERv0/FZ7nWt3SuXamjecr3RjAp7zC2Uqtzg3At4zmKYPO8BPX2TbIbfL0+xTo0S1iJn785BM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761131522; c=relaxed/simple;
-	bh=5UpbW5vWG0sKkOVn393oZxy1cQ9r0yyAQQeqLNxH94M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hmoVPhyT1SE57GjG9gDqUr8Q82MMEN3p2qlmRGbX01mSCRrLjvO8hT1ML0b14p8NnesC7TvJboC3eJDMjGdVLeBpdbgL4l9LK0D41NANi9oA8y+raAfP2fuJWUabhDLkP7NA459NjlcyyOUymQk2EWRt+pDapjcxdjzz+rVfWr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 59MBBceu083811;
-	Wed, 22 Oct 2025 20:11:38 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 59MBBc28083808
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 22 Oct 2025 20:11:38 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <987110fc-5470-457a-a218-d286a09dd82f@I-love.SAKURA.ne.jp>
-Date: Wed, 22 Oct 2025 20:11:37 +0900
+	s=arc-20240116; t=1761178915; c=relaxed/simple;
+	bh=G9bNz4VJ823w9m6icPHR6Cl+YfsTOnmiJLFec+mR54I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BFYGDUKEU0MEy/27/CMVQYi2xFBORBYTadxHC2NFVEys3X22RcEZrJXVqavxtKunPl1nsBYLZ5ii4lDyYZgq2myoLQNGM+5MbVaSK2x0ah723CTditPA8bETJs9t35C/XRksoZCXCVFUm4AbRdyeFJFvltFSNnYInO7GUTitggY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HoU2c57I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BDDFC4CEE7;
+	Thu, 23 Oct 2025 00:21:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761178915;
+	bh=G9bNz4VJ823w9m6icPHR6Cl+YfsTOnmiJLFec+mR54I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HoU2c57Ie0nXik22jVoe4sqxz0TEC8Xyqayg55QosHWlI52o1Zt10JO9coJVxNFyT
+	 nc4WrMkI6U9nAzqwZpmG/Gm0QbCwQVDmSATwZaVMx0KKghn0wztcTvbPAggm1EY+td
+	 QdZi5OL95tJ+iZ312P828gF4YR+/Z8LPDX7V5McGGEszk9qjWQGofKF8QLMZh+USAk
+	 U1fKOpuhyDmwAX5MS9BF4LsQQs6BnsPlmimAHFYu2R4c4P2CnH7QC+BLMDtnavJ5uR
+	 8ICFQv6v4mFuyzgY1vhgG3aFRFE+3YN/sBGqWTEo8izNt3W67NM1buFMSIWuovH3Xf
+	 HxRS3+oBxIgbg==
+Date: Wed, 22 Oct 2025 17:21:54 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Theodore Tso <tytso@mit.edu>
+Cc: Dave Dykstra <dwd@cern.ch>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] fuse2fs: updates for message reporting journal is not
+ supported
+Message-ID: <20251023002154.GQ6170@frogsfrogsfrogs>
+References: <20251016200903.3508-1-dave.dykstra@cern.ch>
+ <20251017191800.GF6170@frogsfrogsfrogs>
+ <aPKilSNCQRW9c6rl@cern.ch>
+ <20251017232521.GI6170@frogsfrogsfrogs>
+ <aPgKP-wUhhfwqKke@cern.ch>
+ <20251022013605.GC6859@macsyma-3.local>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH v2] jbd2: allocate lock_class_key for jbd2_handle dynamically
-To: Jan Kara <jack@suse.cz>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <e42f1471-a88a-4938-8743-1d5b171c47ec@I-love.SAKURA.ne.jp>
- <fwsxrb7ugi5zeosugo6hyjdbhw36ppa5kekfi6n7we2vvi3r7m@ljrizqoagsg7>
- <93744126-237b-4e36-8a62-a33e1fb52051@I-love.SAKURA.ne.jp>
- <mjzb7q6juxndqtmoaee3con6xtma5vfzkgfcicjjmt7ltv2gtt@ps2np5r36vn3>
- <96c8fca1-7568-46c8-a5ad-af4699b95d5e@I-love.SAKURA.ne.jp>
- <doq4csrkuhpha7v5lunesdrscmqmjvt3flids3iai2gvpbhp3j@mxldi4yvvymw>
- <a6fcc693-42f0-4d70-a1af-fc1bfb328eb7@I-love.SAKURA.ne.jp>
- <rajbaoxp7zvaiftmuip4mxdvrdxthhgvbjvtuq3zrwijtdab2j@ouligqrqxyth>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <rajbaoxp7zvaiftmuip4mxdvrdxthhgvbjvtuq3zrwijtdab2j@ouligqrqxyth>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav203.rs.sakura.ne.jp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251022013605.GC6859@macsyma-3.local>
 
-syzbot is reporting possibility of deadlock due to sharing lock_class_key
-for jbd2_handle across ext4 and ocfs2. But this is a false positive, for
-one disk partition can't have two filesystems at the same time.
+On Tue, Oct 21, 2025 at 06:36:05PM -0700, Theodore Tso wrote:
+> On Tue, Oct 21, 2025 at 05:33:35PM -0500, Dave Dykstra wrote:
+> > I understood that, but does the filesystem actually write metadata after
+> > the journal is recovered, such that if the fuse2fs process dies without
+> > a clean unmount there might be file corruption or data loss?  That is,
+> > in the case of ro when there is write access, does the warning message
+> > really apply?
+> 
+> As an example, if file system inconsistencies is detected by the
+> kernel, it will update various fields in the superblock to indicate
+> that file system is corrupted, as well as when and where the
+> corruption is detected:
+> 
+> 	__le32	s_error_count;		/* number of fs errors */
+> 	__le32	s_first_error_time;	/* first time an error happened */
+> 	__le32	s_first_error_ino;	/* inode involved in first error */
+> 	__le64	s_first_error_block;	/* block involved of first error */
+> 	__u8	s_first_error_func[32] __nonstring;	/* function where the error happened */
+> 	__le32	s_first_error_line;	/* line number where error happened */
+> 	__le32	s_last_error_time;	/* most recent time of an error */
+> 	__le32	s_last_error_ino;	/* inode involved in last error */
+> 	__le32	s_last_error_line;	/* line number where error happened */
+> 	__le64	s_last_error_block;	/* block involved of last error */
+> 	__u8	s_last_error_func[32] __nonstring;	/* function where the error happened */
+> 
+> Since this is a singleton 4k update the superblock, we don't really
+> need to worry about problems caused by a non-atomic update of this
+> metadata.  And similarly, with the journal replay, if we get
+> interrupted while doing the journal replay, the replay is idempotent,
+> so we can just restart the journal replay from scratch.
+> 
+> As far as the warning message, if you mean the warning message printed
+> by fuse2fs indicating that it doen't have journal support, and so if
+> you are modifying the file system and the system or fuse2fs crashes,
+> there may be file system corruption and/or data loss, that only needs
+> to be printed when mounting read-write.  It should be safe to skip
+> printing that warning message if the file system is mounted with -o
+> ro, based on the resoning abovce.
 
-Reported-by: syzbot+6e493c165d26d6fcbf72@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=6e493c165d26d6fcbf72
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Tested-by: syzbot+6e493c165d26d6fcbf72@syzkaller.appspotmail.com
----
- fs/jbd2/journal.c    | 6 ++++--
- include/linux/jbd2.h | 6 ++++++
- 2 files changed, 10 insertions(+), 2 deletions(-)
+/me notes that (as I pointed out elsewhere in the thread) the fuse
+server isn't notified if a mount goes from ro -> rw, so fuse2fs really
+ought to print the warning unconditionally.
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index d480b94117cd..f43474002f50 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1521,7 +1521,6 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 			struct block_device *fs_dev,
- 			unsigned long long start, int len, int blocksize)
- {
--	static struct lock_class_key jbd2_trans_commit_key;
- 	journal_t *journal;
- 	int err;
- 	int n;
-@@ -1530,6 +1529,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	if (!journal)
- 		return ERR_PTR(-ENOMEM);
- 
-+	lockdep_register_key(&journal->jbd2_trans_commit_key);
- 	journal->j_blocksize = blocksize;
- 	journal->j_dev = bdev;
- 	journal->j_fs_dev = fs_dev;
-@@ -1560,7 +1560,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	journal->j_max_batch_time = 15000; /* 15ms */
- 	atomic_set(&journal->j_reserved_credits, 0);
- 	lockdep_init_map(&journal->j_trans_commit_map, "jbd2_handle",
--			 &jbd2_trans_commit_key, 0);
-+			 &journal->jbd2_trans_commit_key, 0);
- 
- 	/* The journal is marked for error until we succeed with recovery! */
- 	journal->j_flags = JBD2_ABORT;
-@@ -1611,6 +1611,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	kfree(journal->j_wbuf);
- 	jbd2_journal_destroy_revoke(journal);
- 	journal_fail_superblock(journal);
-+	lockdep_unregister_key(&journal->jbd2_trans_commit_key);
- 	kfree(journal);
- 	return ERR_PTR(err);
- }
-@@ -2187,6 +2188,7 @@ int jbd2_journal_destroy(journal_t *journal)
- 		jbd2_journal_destroy_revoke(journal);
- 	kfree(journal->j_fc_wbuf);
- 	kfree(journal->j_wbuf);
-+	lockdep_unregister_key(&journal->jbd2_trans_commit_key);
- 	kfree(journal);
- 
- 	return err;
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 43b9297fe8a7..f5eaf76198f3 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1253,6 +1253,12 @@ struct journal_s
- 	 */
- 	struct lockdep_map	j_trans_commit_map;
- #endif
-+	/**
-+	 * @jbd2_trans_commit_key:
-+	 *
-+	 * "struct lock_class_key" for @j_trans_commit_map
-+	 */
-+	struct lock_class_key	jbd2_trans_commit_key;
- 
- 	/**
- 	 * @j_fc_cleanup_callback:
--- 
-2.47.3
+--D
 
-
+> > > Are you running fstests QA on these patches before you send them out?
+> > 
+> > I had not heard of them, and do not see them documented anywhere in
+> > e2fsprogs, so I don't know how I was supposed to have known they were
+> > needed.  Ideally there would be an automated CI test suite.  The patches
+> > have passed the github CI checks (which don't show up in the standard
+> > pull request place, but I found them in my own repo's Actions tab).
+> > 
+> > Are you talking about the tests at https://github.com/btrfs/fstests?
+> > If so, it looks like there are a ton of options.  Is there a standard
+> > way to run them with fuse2fs?
+> 
+> This is btrfs's local form of https://github.com/btrfs/fstests of
+> xfstests (or fstests, as it is now sometimes called).  We do have an
+> automated way of running them for ext4 kernel code.   See [1][2]
+> 
+> [1] https://thunk.org/gce-xfstests
+> [2] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+> 
+> Darrick has been doing a lot of really good work to run fuse2fs using
+> fstests/xfstests.  There isn't a turnkey way of running fuse2fs using
+> this test suite yet.  It's on my todo list to add an easy way to do
+> this via kvm-xfstests/gce-xfstests but I'm probably not going to get
+> to it until sometime next year.  If someone would like to give it a
+> try --- patches would be gratefully accepted.
+> 
+> 						- Ted
+> 						
+> 
 
