@@ -1,80 +1,56 @@
-Return-Path: <linux-ext4+bounces-11042-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11043-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FDB5C04F9E
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Oct 2025 10:08:58 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8238EC058FB
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Oct 2025 12:25:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B36319A147D
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Oct 2025 08:08:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B4C734E7BFC
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Oct 2025 10:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35AD53019D3;
-	Fri, 24 Oct 2025 08:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="D6AogjIs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C1630F939;
+	Fri, 24 Oct 2025 10:24:33 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6590B2FDC3E;
-	Fri, 24 Oct 2025 08:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A229230F81B;
+	Fri, 24 Oct 2025 10:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761293189; cv=none; b=s56Sbwh1pIMNbLkgPLpjrDWUxmERVecFX6acl35/uyxq7Gxai5yzUOS6QFQeiyHQb7QyqTOWpcLXQsXigXvJc4ZwPbSoBvBCmHjeVhrHITFn/+lJ8nZgWIoY0nTEwIJLGf8NtUwIaIcBFiDNkART2YHUWabq3OX7Y7+eC/wqZPY=
+	t=1761301473; cv=none; b=nusA3iBUpNwfVuiYboPeqUolTPbLpRh9dER3suZVQqH9jOn1RJMVHya5sbddVwr0BAc/vNMQTl7A+j4eaDVCGwQ7zeWp7mPthiUl6sTEeuNjKlrCiBSeau1u26HGiLlWc/P98+aqV1AF//ex+MjEDrzM5M+jaY8VEVHkDoRlNdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761293189; c=relaxed/simple;
-	bh=fwUWvRaQsLFX3LqP3Ew3i68VLcwmDW8xgH2gbbo9sQI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QwjxqzXILQca5L1PPiQv1W5S8LhMt1b3NuLfDV/4uZbHdrXTTiWT1o1evXQ5x68/8AV6Ca7y3OuaP41bbbnDsEC0QZ8mDInitWacy6UFozTLrD0mPFozcRmOA9i2wciyPee2qtsR8LtLn1V5GfjmdQw+26uQljL7WAoEBbgRK9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=D6AogjIs; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=CK4+A+XQ8xSWXf+Z9tTtAvh9OT31XsHF6kx6Btc5iA8=; b=D6AogjIsaOXIaEKMP8+nYzb2S/
-	Oi9fBsDLQ/QDLj8zWUOszOIZUXoUGJEGD6oOe3/gwwa36ob+z5Y4jnXIMl/I47R2yybCHjHy9PVpp
-	u9rk8NVCJvRsT7wc5scuOjf+d0qjgiv7xQKVzrHmYhwZolySV+SEki+Hm9VEk4MYwcBCOKWh8kE/L
-	vlzlOWvLC6nPNVOCQn/9gA1eRi4wHGrw+7X1beFwTeRlaIDXxs6ij8o/wGIbY6gxmKmEmayQZ5noV
-	iBvVRW/cRH9N2cvm1YrB7NcZkATFE2g0crlK/d+n5Fpb75Kk12b+O+FG+yCLdiKH/xMwQRP6Ju0xM
-	N9qYV9hw==;
-Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vCCoa-00000008cQn-37yb;
-	Fri, 24 Oct 2025 08:06:25 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>,
-	Mark Fasheh <mark@fasheh.com>,
-	Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Jan Kara <jack@suse.cz>,
-	linux-block@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	jfs-discussion@lists.sourceforge.net,
-	ocfs2-devel@lists.linux.dev,
-	linux-xfs@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [PATCH 10/10] mm: rename filemap_fdatawrite_range_kick to filemap_flush_range
-Date: Fri, 24 Oct 2025 10:04:21 +0200
-Message-ID: <20251024080431.324236-11-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251024080431.324236-1-hch@lst.de>
-References: <20251024080431.324236-1-hch@lst.de>
+	s=arc-20240116; t=1761301473; c=relaxed/simple;
+	bh=4aXgPaoneg7kOwVyEUmk0Cfpvw3kNsYUH7QYV3d1Qow=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GD+baMx5wSvAaicY7aoJW8S1FH1mfTxN957dYi2bvwwRBX1J7Q84/Z2IHK6jGe5bMpfrtKe18IfAMz14uqgmqB82Pyef0BEBB0o+HXOnPt73W3ndSnE1kyh7PNU5y7qQIBRFGxges4DooxzrN7Myqy3RRf3jDV3wN87SjPfK3Yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4ctJs4195KzKHMfM;
+	Fri, 24 Oct 2025 18:23:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id CB02A1A0D93;
+	Fri, 24 Oct 2025 18:24:26 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.85.155])
+	by APP1 (Coremail) with SMTP id cCh0CgBHbVDSU_toXgS2BQ--.15501S4;
+	Fri, 24 Oct 2025 18:24:25 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-mm@kvack.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	david@redhat.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	karol.wachowski@linux.intel.com,
+	wangkefeng.wang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v2] mm: do not install PMD mappings when handling a COW fault
+Date: Fri, 24 Oct 2025 18:22:37 +0800
+Message-ID: <20251024102237.3332200-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -82,108 +58,103 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-CM-TRANSID:cCh0CgBHbVDSU_toXgS2BQ--.15501S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw1fWw4fCFykCw13Zr13Jwb_yoW5Ww48pa
+	yxGa1YkFWfWrn2yF1fuw4vkr45ZwsxGay8WFyxGryj9F15Gr1Y939Yga13A3yUGr18JFWr
+	Xr45Kryq9F4q937anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	tVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZYFZUUU
+	UU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Rename filemap_fdatawrite_range_kick to filemap_flush_range because it
-is the ranged version of filemap_flush.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+When pinning a page with FOLL_LONGTERM in a CoW VMA and a PMD-aligned
+(2MB on x86) large folio follow_page_mask() failed to obtain a valid
+anonymous page, resulting in an infinite loop issue. The specific
+triggering process is as follows:
+
+1. User call mmap with a 2MB size in MAP_PRIVATE mode for a file that
+   has a 2MB large folio installed in the page cache.
+
+   addr = mmap(NULL, 2*1024*1024, PROT_READ, MAP_PRIVATE, file_fd, 0);
+
+2. The kernel driver pass this mapped address to pin_user_pages_fast()
+   in FOLL_LONGTERM mode.
+
+   pin_user_pages_fast(addr, 512, FOLL_LONGTERM, pages);
+
+  ->  pin_user_pages_fast()
+  |   gup_fast_fallback()
+  |    __gup_longterm_locked()
+  |     __get_user_pages_locked()
+  |      __get_user_pages()
+  |       follow_page_mask()
+  |        follow_p4d_mask()
+  |         follow_pud_mask()
+  |          follow_pmd_mask() //pmd_leaf(pmdval) is true because the
+  |                            //huge PMD is installed. This is normal
+  |                            //in the first round, but it shouldn't
+  |                            //happen in the second round.
+  |           follow_huge_pmd() //require an anonymous page
+  |            return -EMLINK;
+  |   faultin_page()
+  |    handle_mm_fault()
+  |     wp_huge_pmd() //remove PMD and fall back to PTE
+  |     handle_pte_fault()
+  |      do_pte_missing()
+  |       do_fault()
+  |        do_read_fault() //FAULT_FLAG_WRITE is not set
+  |         finish_fault()
+  |          do_set_pmd() //install a huge PMD again, this is wrong!!!
+  |      do_wp_page() //create private anonymous pages
+  <-    goto retry;
+
+Due to an incorrectly large PMD set in do_read_fault(),
+follow_pmd_mask() always returns -EMLINK, causing an infinite loop.
+
+David pointed out that we can preallocate a page table and remap the PMD
+to be mapped by a PTE table in wp_huge_pmd() in the future. But now we
+can avoid this issue by not installing PMD mappings when handling a COW
+and unshare fault in do_set_pmd().
+
+Fixes: a7f226604170 ("mm/gup: trigger FAULT_FLAG_UNSHARE when R/O-pinning a possibly shared anonymous page")
+Reported-by: Karol Wachowski <karol.wachowski@linux.intel.com>
+Closes: https://lore.kernel.org/linux-ext4/844e5cd4-462e-4b88-b3b5-816465a3b7e3@linux.intel.com/
+Suggested-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 ---
- fs/sync.c          | 3 +--
- include/linux/fs.h | 6 +++---
- mm/fadvise.c       | 2 +-
- mm/filemap.c       | 8 ++++----
- 4 files changed, 9 insertions(+), 10 deletions(-)
+ mm/memory.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/sync.c b/fs/sync.c
-index 6d8b04e04c3c..1759f6ba36cd 100644
---- a/fs/sync.c
-+++ b/fs/sync.c
-@@ -285,8 +285,7 @@ int sync_file_range(struct file *file, loff_t offset, loff_t nbytes,
- 			ret = filemap_fdatawrite_range(mapping, offset,
- 					endbyte);
- 		else
--			ret = filemap_fdatawrite_range_kick(mapping, offset,
--					endbyte);
-+			ret = filemap_flush_range(mapping, offset, endbyte);
- 		if (ret < 0)
- 			goto out;
- 	}
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index c895146c1444..a5dbfa20f8d7 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3014,7 +3014,7 @@ extern int __must_check file_fdatawait_range(struct file *file, loff_t lstart,
- extern int __must_check file_check_and_advance_wb_err(struct file *file);
- extern int __must_check file_write_and_wait_range(struct file *file,
- 						loff_t start, loff_t end);
--int filemap_fdatawrite_range_kick(struct address_space *mapping, loff_t start,
-+int filemap_flush_range(struct address_space *mapping, loff_t start,
- 		loff_t end);
+diff --git a/mm/memory.c b/mm/memory.c
+index 0ba4f6b71847..0748a31367df 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5212,6 +5212,11 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct folio *folio, struct page *pa
+ 	if (!thp_vma_suitable_order(vma, haddr, PMD_ORDER))
+ 		return ret;
  
- static inline int file_write_and_wait(struct file *file)
-@@ -3051,8 +3051,8 @@ static inline ssize_t generic_write_sync(struct kiocb *iocb, ssize_t count)
- 	} else if (iocb->ki_flags & IOCB_DONTCACHE) {
- 		struct address_space *mapping = iocb->ki_filp->f_mapping;
- 
--		filemap_fdatawrite_range_kick(mapping, iocb->ki_pos - count,
--					      iocb->ki_pos - 1);
-+		filemap_flush_range(mapping, iocb->ki_pos - count,
-+				iocb->ki_pos - 1);
- 	}
- 
- 	return count;
-diff --git a/mm/fadvise.c b/mm/fadvise.c
-index f1be619f0e58..67028e30aa91 100644
---- a/mm/fadvise.c
-+++ b/mm/fadvise.c
-@@ -111,7 +111,7 @@ int generic_fadvise(struct file *file, loff_t offset, loff_t len, int advice)
- 		spin_unlock(&file->f_lock);
- 		break;
- 	case POSIX_FADV_DONTNEED:
--		filemap_fdatawrite_range_kick(mapping, offset, endbyte);
-+		filemap_flush_range(mapping, offset, endbyte);
- 
- 		/*
- 		 * First and last FULL page! Partial pages are deliberately
-diff --git a/mm/filemap.c b/mm/filemap.c
-index f90f5bb2b825..fa770768ea3a 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -419,7 +419,7 @@ int filemap_fdatawrite(struct address_space *mapping)
- EXPORT_SYMBOL(filemap_fdatawrite);
- 
- /**
-- * filemap_fdatawrite_range_kick - start writeback on a range
-+ * filemap_flush_range - start writeback on a range
-  * @mapping:	target address_space
-  * @start:	index to start writeback on
-  * @end:	last (inclusive) index for writeback
-@@ -429,12 +429,12 @@ EXPORT_SYMBOL(filemap_fdatawrite);
-  *
-  * Return: %0 on success, negative error code otherwise.
-  */
--int filemap_fdatawrite_range_kick(struct address_space *mapping, loff_t start,
-+int filemap_flush_range(struct address_space *mapping, loff_t start,
- 				  loff_t end)
- {
- 	return filemap_writeback(mapping, start, end, WB_SYNC_NONE, NULL);
- }
--EXPORT_SYMBOL_GPL(filemap_fdatawrite_range_kick);
-+EXPORT_SYMBOL_GPL(filemap_flush_range);
- 
- /**
-  * filemap_flush - mostly a non-blocking flush
-@@ -447,7 +447,7 @@ EXPORT_SYMBOL_GPL(filemap_fdatawrite_range_kick);
-  */
- int filemap_flush(struct address_space *mapping)
- {
--	return filemap_fdatawrite_range_kick(mapping, 0, LLONG_MAX);
-+	return filemap_flush_range(mapping, 0, LLONG_MAX);
- }
- EXPORT_SYMBOL(filemap_flush);
- 
++	/* We're about to trigger CoW, so never map it through a PMD. */
++	if (is_cow_mapping(vma->vm_flags) &&
++	    (vmf->flags & (FAULT_FLAG_WRITE|FAULT_FLAG_UNSHARE)))
++		return ret;
++
+ 	if (folio_order(folio) != HPAGE_PMD_ORDER)
+ 		return ret;
+ 	page = &folio->page;
 -- 
-2.47.3
+2.46.1
 
 
