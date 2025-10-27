@@ -1,68 +1,60 @@
-Return-Path: <linux-ext4+bounces-11088-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11089-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6017C0C298
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Oct 2025 08:40:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BEEAC0C345
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Oct 2025 08:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DADBE4EEEAA
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Oct 2025 07:40:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAB783A5B93
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Oct 2025 07:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1C22DF710;
-	Mon, 27 Oct 2025 07:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFAD72E54B2;
+	Mon, 27 Oct 2025 07:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PiheCWsq"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="huV3is2O"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77C527E06C;
-	Mon, 27 Oct 2025 07:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF1A2E283E;
+	Mon, 27 Oct 2025 07:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761550814; cv=none; b=tHYnzODnzfleJl2uAo/g9TUvedpYcVloz4LlMugReHRZHnWXOKmKTunUNMwhxEJ1fxf91wJOkNSGGWhKNCSDaPbCZMsbDJAmX44LNwka6noyqsY9XS/U6lyV2Hx7VhZPcOisgGj3Mr6arGy9aoWf8RRxdYJPG+dGbJ5k63G+yEE=
+	t=1761551697; cv=none; b=ZF+rQwBpUptdIWsujo3Xw5o9k1Pdthfxa2dHn7oFtJp5sgohJ7alXMF7G6/jlwyVBiFnEc2K8ESPa0IR9sSFf624cyZMkTl9qw4CbAeAsPZVQe68oZOueODPmyWwUDOPgaCnoIvTX/JYqf/BcOHlSObLwtcnf4PvuNuxN+iFjps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761550814; c=relaxed/simple;
-	bh=4AUKMRAsAp22IJZUtp5f+8gpkrQvUtZ8fKI89RfiftI=;
+	s=arc-20240116; t=1761551697; c=relaxed/simple;
+	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jxaftd7bmQnvHz/WDp8rukruI6rMJ5kJ8Wf736e5czl+Z5ec3M/qYGrIMDEFO1Qd6TDijgZqREkZKiOcze5ER1f/8ZDz03y8edNzah95rqWQowAFaYyqsWv0aP1kth/ewOgu2ND/BzDjocZigaq1WA4LCNV8Y1jQN+yCoq6qOU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PiheCWsq; arc=none smtp.client-ip=198.137.202.133
+	 Content-Type:Content-Disposition:In-Reply-To; b=nPbWcL1gDqkD7OZ+jdsegqNGvAzaMY90b2/O9RZ4sTl4ah37c5Wng6pG247cfSylXMr9ih7cccfswX5kXSmI2LeyhZBUXoiSQB56TPp8ut4+TMC2i78xjVPPEaR4URyhQQa5Pa1tb0sa1DUMmlYJdbHDOkG83D+Q0iTIrbK1AHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=huV3is2O; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
 	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=9jMl20VeWz5/kixKog9nGx1c3XBZkDdSCBaR7mjSQx8=; b=PiheCWsq42Vhc0KTiC/bg8ndkG
-	MeK55Ev+k6GwF8Vb5G4IDqHCtpXpfby7eMipiOb16PeGrIljYOjpJEdHJqF95VaEMSdVojOn6Nv/A
-	EG/mDPY166eH6hQ1JSoHjFVhYQT5TSZol8BJqgbJBEnM8vrIbge33wl3i0a7ePlte9O4fs5+i22tt
-	qLKNBCWPGm9yg0JrOc6ivDGSWeVOOFu3DW31rm53IlzXqlAiVzK5KJlOCDoPgUhefNlokG+TJ3MH2
-	fXm3s8eNmp786D/xL/55EOEiQJh8OrDFryydlujf/BM8QHr3/Frek4i0leO8GuZhM4DKOVH0zr/XT
-	v946VGTA==;
+	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=huV3is2O0rvpgOVcbIqBzTZkfK
+	WAzOStuQPcv9pwT2TzZfNYAHjivYSDy0TJ0o+j5vJot+PESEQy5IsiGovP9yNf+rSMymG3j5kQ9bf
+	C15vFDAfW1F2pyUQ3G1IYshCkRVxkPdgckgR1JgpqUsh3QTU6Err3lgAHP3eSO9OjlBrKcF7t4Wwx
+	p8TdssQsW5EZjvv9Gi6HC0sZ4lqoSdIh6/RywFGhuK03yTyrBVboRWeQtNqwagET/VlFRxggRXJKv
+	v8cnq+N0/Be/zOmiypR3hWtvdQJ06AX+pY9XKT3U+DOwVCrfB/nwNIFzH2Kn7rJzy3AcZ8BeZeRtA
+	6KUXkNzA==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDHpm-0000000DI50-0JnV;
-	Mon, 27 Oct 2025 07:40:06 +0000
-Date: Mon, 27 Oct 2025 00:40:06 -0700
+	id 1vDI46-0000000DJFv-2P6J;
+	Mon, 27 Oct 2025 07:54:54 +0000
+Date: Mon, 27 Oct 2025 00:54:54 -0700
 From: Christoph Hellwig <hch@infradead.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Baokun Li <libaokun@huaweicloud.com>,
-	"Darrick J. Wong" <djwong@kernel.org>, linux-ext4@vger.kernel.org,
-	tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-	linux-kernel@vger.kernel.org, kernel@pankajraghav.com,
-	mcgrof@kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, yi.zhang@huawei.com, yangerkun@huawei.com,
-	chengzhihao1@huawei.com, libaokun1@huawei.com,
-	catherine.hoang@oracle.com
-Subject: Re: [PATCH 22/25] fs/buffer: prevent WARN_ON in
- __alloc_pages_slowpath() when BS > PS
-Message-ID: <aP8h1jz8JEN-3du0@infradead.org>
-References: <20251025032221.2905818-1-libaokun@huaweicloud.com>
- <20251025032221.2905818-23-libaokun@huaweicloud.com>
- <aPxV6QnXu-OufSDH@casper.infradead.org>
- <adccaa99-ffbc-4fbf-9210-47932724c184@huaweicloud.com>
- <aP0PachXS8Qxjo9Q@casper.infradead.org>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 04/10] ext4: Use folio_next_pos()
+Message-ID: <aP8lTs-NiC602Kia@infradead.org>
+References: <20251024170822.1427218-1-willy@infradead.org>
+ <20251024170822.1427218-5-willy@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -71,24 +63,11 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aP0PachXS8Qxjo9Q@casper.infradead.org>
+In-Reply-To: <20251024170822.1427218-5-willy@infradead.org>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Sat, Oct 25, 2025 at 06:56:57PM +0100, Matthew Wilcox wrote:
-> If filesystems actually require __GFP_NOFAIL for high-order allocations,
-> then this is a new requirement that needs to be communicated to the MM
-> developers, not hacked around in filesystems (or the VFS).  And that
-> communication needs to be a separate thread with a clear subject line
-> to attract the right attention, not buried in patch 26/28.
+Looks good:
 
-It's not really new.  XFS had this basically since day 1, but with
-Linus having a religious aversion against __GFP_NOFAIL most folks
-have given up on trying to improve it as it just ends up in shouting
-matches in political grounds.  XFS just ends up with it's own fallback
-in xfs_buf_alloc_backing_mem which survives the various rounds of
-refactoring since XFS was merged.  Given that weird behavior in some
-of the memory allocators where GFP_NOFAIL is simply ignored for too
-large allocations that seems like by far the sanest option in the
-current Linux environment unfortunately.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
 
