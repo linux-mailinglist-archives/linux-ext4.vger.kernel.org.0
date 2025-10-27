@@ -1,192 +1,94 @@
-Return-Path: <linux-ext4+bounces-11087-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11088-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2764BC0BB85
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Oct 2025 03:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6017C0C298
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Oct 2025 08:40:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D3E734E8EA6
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Oct 2025 02:57:31 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DADBE4EEEAA
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Oct 2025 07:40:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EBE12D239A;
-	Mon, 27 Oct 2025 02:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1C22DF710;
+	Mon, 27 Oct 2025 07:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="c/3+pTM4"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PiheCWsq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout01.his.huawei.com (canpmsgout01.his.huawei.com [113.46.200.216])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E882A274B59;
-	Mon, 27 Oct 2025 02:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77C527E06C;
+	Mon, 27 Oct 2025 07:40:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761533844; cv=none; b=gvKhgO8wtyR5whADvQnW4H6XgxPbiJqtPtB4P+xUvf+hN9x1Nv7okSt8FCeFLdZucwEUb8RuRORnSsLuHlXAHZ6KRj7EXJ2XojKE6yGijzdHYo+YICYYDnGQ6gH4HvjDVQYiqCYKTglsXWKYad8My4gzJlzkejqxnmLVEQDMu2s=
+	t=1761550814; cv=none; b=tHYnzODnzfleJl2uAo/g9TUvedpYcVloz4LlMugReHRZHnWXOKmKTunUNMwhxEJ1fxf91wJOkNSGGWhKNCSDaPbCZMsbDJAmX44LNwka6noyqsY9XS/U6lyV2Hx7VhZPcOisgGj3Mr6arGy9aoWf8RRxdYJPG+dGbJ5k63G+yEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761533844; c=relaxed/simple;
-	bh=vicwMSkBC8SiYCHGfcE17HKJUhro6jph1byqn8KWXZo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=VwLAsgKidVH1XHu6nMWAqWAy/o3znZ8FVuXqKFmmlXed8cZcINujok03QfhhXpDVzNdxQSyh994irw+/1WCNsUVg4Ah3LpV2ZP8T+3SVyH6EympO4BaiqCIEBsQClxHGe/smD0B2yi72OxzRQ/f/h2fx1PWsu0SYdNGg/C8Up+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=c/3+pTM4; arc=none smtp.client-ip=113.46.200.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=bmKr3gs2o9uU3aOUtwCT4DF/FX3VA2tgiedTv3vuvRk=;
-	b=c/3+pTM4U8FSRw10vA2AeHj0gabjZulb7wdAhA8uw2gblZ2Xp2TjEkoUjwO2h2EJUch1F74Wk
-	4c6X7APTEccLl4DMvNL07Efjc/z1nregFeU9v5LLEOPDUERXQTKtIMAtfWklCzxu86uf2xUk+dt
-	zN85c0VETcO4PEJuTWDpGSo=
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4cvynY2VLYz1T4Fg;
-	Mon, 27 Oct 2025 10:56:17 +0800 (CST)
-Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 15FA21400C8;
-	Mon, 27 Oct 2025 10:57:18 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
- (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 27 Oct
- 2025 10:57:16 +0800
-Message-ID: <2d5ee2b9-e348-4d4e-a514-6c698f19f7e5@huawei.com>
-Date: Mon, 27 Oct 2025 10:57:15 +0800
+	s=arc-20240116; t=1761550814; c=relaxed/simple;
+	bh=4AUKMRAsAp22IJZUtp5f+8gpkrQvUtZ8fKI89RfiftI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jxaftd7bmQnvHz/WDp8rukruI6rMJ5kJ8Wf736e5czl+Z5ec3M/qYGrIMDEFO1Qd6TDijgZqREkZKiOcze5ER1f/8ZDz03y8edNzah95rqWQowAFaYyqsWv0aP1kth/ewOgu2ND/BzDjocZigaq1WA4LCNV8Y1jQN+yCoq6qOU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PiheCWsq; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=9jMl20VeWz5/kixKog9nGx1c3XBZkDdSCBaR7mjSQx8=; b=PiheCWsq42Vhc0KTiC/bg8ndkG
+	MeK55Ev+k6GwF8Vb5G4IDqHCtpXpfby7eMipiOb16PeGrIljYOjpJEdHJqF95VaEMSdVojOn6Nv/A
+	EG/mDPY166eH6hQ1JSoHjFVhYQT5TSZol8BJqgbJBEnM8vrIbge33wl3i0a7ePlte9O4fs5+i22tt
+	qLKNBCWPGm9yg0JrOc6ivDGSWeVOOFu3DW31rm53IlzXqlAiVzK5KJlOCDoPgUhefNlokG+TJ3MH2
+	fXm3s8eNmp786D/xL/55EOEiQJh8OrDFryydlujf/BM8QHr3/Frek4i0leO8GuZhM4DKOVH0zr/XT
+	v946VGTA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vDHpm-0000000DI50-0JnV;
+	Mon, 27 Oct 2025 07:40:06 +0000
+Date: Mon, 27 Oct 2025 00:40:06 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Baokun Li <libaokun@huaweicloud.com>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-ext4@vger.kernel.org,
+	tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+	linux-kernel@vger.kernel.org, kernel@pankajraghav.com,
+	mcgrof@kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+	chengzhihao1@huawei.com, libaokun1@huawei.com,
+	catherine.hoang@oracle.com
+Subject: Re: [PATCH 22/25] fs/buffer: prevent WARN_ON in
+ __alloc_pages_slowpath() when BS > PS
+Message-ID: <aP8h1jz8JEN-3du0@infradead.org>
+References: <20251025032221.2905818-1-libaokun@huaweicloud.com>
+ <20251025032221.2905818-23-libaokun@huaweicloud.com>
+ <aPxV6QnXu-OufSDH@casper.infradead.org>
+ <adccaa99-ffbc-4fbf-9210-47932724c184@huaweicloud.com>
+ <aP0PachXS8Qxjo9Q@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 22/25] fs/buffer: prevent WARN_ON in
- __alloc_pages_slowpath() when BS > PS
-Content-Language: en-GB
-To: Matthew Wilcox <willy@infradead.org>
-CC: "Darrick J. Wong" <djwong@kernel.org>, <linux-ext4@vger.kernel.org>,
-	<tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
-	<mcgrof@kernel.org>, <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-	<catherine.hoang@oracle.com>, Baokun Li <libaokun@huaweicloud.com>, Linus
- Torvalds <torvalds@linux-foundation.org>
-References: <20251025032221.2905818-1-libaokun@huaweicloud.com>
- <20251025032221.2905818-23-libaokun@huaweicloud.com>
- <aPxV6QnXu-OufSDH@casper.infradead.org>
- <adccaa99-ffbc-4fbf-9210-47932724c184@huaweicloud.com>
- <aP0PachXS8Qxjo9Q@casper.infradead.org>
-From: Baokun Li <libaokun1@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <aP0PachXS8Qxjo9Q@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- dggpemf500013.china.huawei.com (7.185.36.188)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 2025-10-26 01:56, Matthew Wilcox wrote:
-> On Sat, Oct 25, 2025 at 02:32:45PM +0800, Baokun Li wrote:
->> On 2025-10-25 12:45, Matthew Wilcox wrote:
->>> On Sat, Oct 25, 2025 at 11:22:18AM +0800, libaokun@huaweicloud.com wrote:
->>>> +	while (1) {
->>>> +		folio = __filemap_get_folio(mapping, index, fgp_flags,
->>>> +					    gfp & ~__GFP_NOFAIL);
->>>> +		if (!IS_ERR(folio) || !(gfp & __GFP_NOFAIL))
->>>> +			return folio;
->>>> +
->>>> +		if (PTR_ERR(folio) != -ENOMEM && PTR_ERR(folio) != -EAGAIN)
->>>> +			return folio;
->>>> +
->>>> +		memalloc_retry_wait(gfp);
->>>> +	}
->>> No, absolutely not.  We're not having open-coded GFP_NOFAIL semantics.
->>> The right way forward is for ext4 to use iomap, not for buffer heads
->>> to support large block sizes.
->> ext4 only calls getblk_unmovable or __getblk when reading critical
->> metadata. Both of these functions set __GFP_NOFAIL to ensure that
->> metadata reads do not fail due to memory pressure.
+On Sat, Oct 25, 2025 at 06:56:57PM +0100, Matthew Wilcox wrote:
 > If filesystems actually require __GFP_NOFAIL for high-order allocations,
 > then this is a new requirement that needs to be communicated to the MM
 > developers, not hacked around in filesystems (or the VFS).  And that
 > communication needs to be a separate thread with a clear subject line
 > to attract the right attention, not buried in patch 26/28.
 
-EXT4 is not the first filesystem to support LBS. I believe other
-filesystems that already support LBS, even if they manage their own
-metadata, have similar requirements. A filesystem cannot afford to become
-read-only, shut down, or enter an inconsistent state due to memory
-allocation failures in critical paths. Large folios have been around for
-some time, and the fact that this warning still exists shows that the
-problem is not trivial to solve.
-
-Therefore, following the approach of filesystems that already support LBS,
-such as XFS and the soon-to-be-removed bcachefs, I avoid adding
-__GFP_NOFAIL for large allocations and instead retry internally to prevent
-failures.
-
-I do not intend to hide this issue in Patch 22/25. I cc’d linux-mm@kvack.org
-precisely to invite memory management experts to share their thoughts on
-the current situation.
-
-Here is my limited understanding of the history of __GFP_NOFAIL:
-
-Originally, in commit 4923abf9f1a4 ("Don't warn about order-1 allocations
-with __GFP_NOFAIL"), Linus Torvalds raised the warning order from 0 to 1,
-and commented,
-    "Maybe we should remove this warning entirely."
-
-We had considered removing this warning, but then saw the discussion below.
-
-Previously we used WARN_ON_ONCE_GFP, which meant the warning could be
-suppressed with __GFP_NOWARN. But with the introduction of large folios,
-memory allocation and reclaim have become much more challenging.
-__GFP_NOFAIL can still fail, and many callers do not check the return
-value, leading to potential NULL pointer dereferences.
-
-Linus also noted that __GFP_NOFAIL is heavily abused, and even said in [1]:
-“Honestly, I'm perfectly fine with just removing that stupid useless flag
- entirely.”
-"Because the blame should go *there*, and it should not even remotely look
- like "oh, the MM code failed". No. The caller was garbage."
-
-[1]:
-https://lore.kernel.org/linux-mm/CAHk-=wgv2-=Bm16Gtn5XHWj9J6xiqriV56yamU+iG07YrN28SQ@mail.gmail.com/
-
-
-From this, my understanding is that handling or retrying large allocation
-failures in the caller is the direction going forward.
-
-As for why retries are done in the VFS, there are two reasons: first, both
-ext4 and jbd2 read metadata through blkdev, so a unified change is simpler.
-Second, retrying here allows other buffer-head-based filesystems to support
-LBS more easily.
-
-For now, until large memory allocation and reclaim are properly handled,
-this approach serves as a practical workaround.
-
-> For what it's worth, I think you have a good case.  This really is
-> a new requirement (bs>PS) and in this scenario, we should be able to
-> reclaim page cache memory of the appropriate order to satisfy the NOFAIL
-> requirement.  There will be concerns that other users will now be able to
-> use it without warning, but I think eventually this use case will prevail.
-Yeah, it would be best if the memory subsystem could add a flag like
-__GFP_LBS to suppress these warnings and guide allocation and reclaim to
-perform optimizations suited for this scenario.
->> Both functions eventually call grow_dev_folio(), which is why we
->> handle the __GFP_NOFAIL logic there. xfs_buf_alloc_backing_mem()
->> has similar logic, but XFS manages its own metadata, allowing it
->> to use vmalloc for memory allocation.
-> The other possibility is that we switch ext4 away from the buffer cache
-> entirely.  This is a big job!  I know Catherine has been working on
-> a generic replacement for the buffer cache, but I'm not sure if it's
-> ready yet.
->
-The key issue is not whether ext4 uses buffer heads; even using vmalloc
-with __GFP_NOFAIL for large allocations faces the same problem. 
- 
-As Linus also mentioned in the link[1] above:  
-"It has then expanded and is now a problem. The cases using GFP_NOFAIL
- for things like vmalloc() - which is by definition not a small
- allocation - should be just removed as outright bugs."
-
-
-Thanks,
-Baokun
+It's not really new.  XFS had this basically since day 1, but with
+Linus having a religious aversion against __GFP_NOFAIL most folks
+have given up on trying to improve it as it just ends up in shouting
+matches in political grounds.  XFS just ends up with it's own fallback
+in xfs_buf_alloc_backing_mem which survives the various rounds of
+refactoring since XFS was merged.  Given that weird behavior in some
+of the memory allocators where GFP_NOFAIL is simply ignored for too
+large allocations that seems like by far the sanest option in the
+current Linux environment unfortunately.
 
 
