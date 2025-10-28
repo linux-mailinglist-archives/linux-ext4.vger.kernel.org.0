@@ -1,227 +1,151 @@
-Return-Path: <linux-ext4+bounces-11118-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11119-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FEBFC16BCC
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 21:11:29 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9204DC173A2
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 23:48:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AB20D354B2C
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 20:11:18 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 27116348E80
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 22:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AACDF350A14;
-	Tue, 28 Oct 2025 20:11:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C49E36A5E7;
+	Tue, 28 Oct 2025 22:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IlvWkAOt"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="W30sudym"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1113502A7
-	for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 20:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87F92369977
+	for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 22:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761682272; cv=none; b=KY5JZ2Vj9rWLNFoffDNs7dojM+CVmydtIY+KAF4CxSBvonHVFT2qKtHJVF4NkUMsfCyqgMsZlSNX3Y1RkIfrjbPjbJFJ99jOcEiSogm1lOqt3UjJm0Ke6ImVSEA7D5nUA3qVawEcp95JQ6bj/R8S72FyjDN3Yvi0uobSD0XmNfA=
+	t=1761691682; cv=none; b=mMY+pRAJo7ZaCPtuDGTEGDpxjSCzS8XSMZWzpa1mp190I+UUQRk2AIvhiFg18eLzAiM4hedf6DTWkjcrSvuyn/lkWMvTzzvnIJcFVjrwcUeTQuQFMBuHnNtxuBq/jTDCWTacrhOcm8Nf8PElwRfQsVKl6W0YY6KaMXpOIkoLcUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761682272; c=relaxed/simple;
-	bh=WIEkkOtTRi4Tg7Vn4nXnOi0itFtJNK1QxhxwSLvXlAQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a4tJZTF+ekApeacakfVcf8af6x5pF//bM3q4ahb9Bn5DF34TYEl3TpfH0mxq5HO4zYMxRIp8aDVcw7HCiqecgpEsC2EdXpAiFE7CpL4z8bFpHnq+Zz9684F68jZP5tPGzRSNUA3DLBIFuOcyZ0Gq/ewdmLdO+6o0sCVEbdD1TmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IlvWkAOt; arc=none smtp.client-ip=209.85.160.171
+	s=arc-20240116; t=1761691682; c=relaxed/simple;
+	bh=1/WE+xbvc6Dal5pEAP6nQ5I9Rm9+W8PbrmOyYOyQAU4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vECH3NiuA5BNFgieWdUtGA3p7TTfzn9W7qdayIHiNpI61XsPgqLrOdskeD0c9HWrYBltGs2rIfqRfrRmFGHNId48jXUzLpOunN40EmT7q181Ub135CzDZkT/+mXIgO4iOR0t2ZPnzMVucI3t4n+eJR/1WncRKK7WDCiVNYiz3MY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=W30sudym; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4ed0c8e4dbcso95031cf.0
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 13:11:10 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-290da96b37fso49475ad.1
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 15:48:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761682269; x=1762287069; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=272mfK03DhLZ+PWwFMbt/hjHyzJqiJdlddFvMA6SlA0=;
-        b=IlvWkAOtPlv02gwgeErA0sc9AqWJLiGQx8j6V62nAOV3FFPJ6it5ckQ+jJ7v7fKyGx
-         6eRjppfilOi0P9AN1pKN21LMWwDmnWb/FjWsJD4pl9L9qeuoGOc8oiip2Xyk4RbamUzp
-         EfcVUnHgg2ePt6F1sXm1lSG4tDa601bAAXdleRYRBwflbVm3GBv3Ire/+vPlqIFz5yJs
-         WJya5zbl7X9nMf8kWKrLNQ0bSo/qAE5yNEVo1N56r1Nbu86rka3+jkfXVqpl7j65VHnQ
-         owIcHnaW9Z3IGAS7An0miWR6y+YPjAFe01HWOJmvFoUmb3fMGTzABJdQhfd+eSPexCQt
-         +fRw==
+        d=google.com; s=20230601; t=1761691680; x=1762296480; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bDTzcXmi62N+bAdKsA9MM3K6VkUn2QF2TaFyCxaOopA=;
+        b=W30sudymZZrp4ynjftUHozOz2HuSQFvA/SRpYciZNEHK9RVgbZgYBBZ8W1sK0FSLz3
+         GOUTFmW2eBvBklT+YTI0bBWHn+t+3xdwwtZc7j7ORSbELnpUw+uq88Vi1ywFkF+0FrZo
+         5WBb/LecWkBKHxMB///Xs+yY6b8a0zx0ORcbhLkaxXB0sao9IE1fnM/EFUwfWcfB8Uwd
+         tqTtCTb/h77fdJ+X5DzOw/ZqpIz87V5aPE0ameONgc0T7bP6XxUI3KYVgIQ0IAvt7gv0
+         Lt7GJBAtjtB8vI1nvrLUswp7Rm+ey1+6VmxdG+g1AICdR/8x18p5ixQpdcCRYZMlYkZ+
+         vtNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761682269; x=1762287069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=272mfK03DhLZ+PWwFMbt/hjHyzJqiJdlddFvMA6SlA0=;
-        b=S5G8jOyJ2Hab85Xx/p+WK+k5Hwom2kR2fjFvoDFmkErFImEoMdDhB5m8YnMc1/ZD/S
-         dOCe6nXWgbvqhLt0AUXLv9CZyJz1znkyex+aHeRbuelm3SMQghFLQKLGYRNk5j7p2nXs
-         Ynb0bpWidzhsCAPJZelRuitHRue0VFfjDDa7AHxB1g9YhUmiuRo7MaNx1vifptef6LHe
-         2cF6FApiPPchnDiBDh3h/Nc4N6Wf44Hd4SQ+Fs0dlepDWGGpMkRlaSFIxg9i7x3RnUiL
-         VQodHSqPwlSzpubBfSnKZkEzNemo16jR+NqVNDrZd6Z+XwWD9BOfgDHOVZ0geYT03RZx
-         dpKg==
-X-Forwarded-Encrypted: i=1; AJvYcCVjpH4F+cw75bjyhvZ9xeGdu3KPqBe1tU8TxSKzJQH9tQFtkec9C5YzPmAG2tNsTBt3rETYDcBDOmYR@vger.kernel.org
-X-Gm-Message-State: AOJu0YwwNQbtW2mh++Do6/Zq56VbNscCoQp7AX6WV2kUgMGACgt0Czdw
-	6oHs8/LFNkskDCY2vyIU68kFrYq7cqYKpHbRl+4EcI4uPzY35lTXAimc9ADhaRELZhy8YMRnfHW
-	3fI1m98EHnvlBJ/Pwh/tAvsTwywJHSXWHCqQ4dy76
-X-Gm-Gg: ASbGncsa36Ncfy9/g/onVhH6g4p9mkQRqf7RLsRC7fTvdYRiZm8/D6isk6/YwSK1Xg+
-	mTPVwzQlarHuf/0NPsdSGs3slKjwV6GcVBQfi9n3jtzhbGAi+RU2xFptCNKK9mZss+WFuM4jf0E
-	Jf4v9BJp465vPn9aP1qxgViU4SknW2YkHaHMZ5igxUMBHXl0DIwvJXfvTqQZGvBKX1C3lrNzBEk
-	En/E+JueeB6YFQ96j0+m0ZaH0Hip/q25Nk+G2+PE6I1TeBymOa+wfiTFIoSf9uk/w7ByfecP12c
-	o8QxmyUyc0w0wUgkONOIGGdSiQ==
-X-Google-Smtp-Source: AGHT+IHZ8asVKG/p+GFrVFe2FQcRmFBWn+JUKCAiirVC9RvAmQHOreZsnq5pWKHohmAMzCiCmCmV6Iy74RqHQl/cez4=
-X-Received: by 2002:ac8:7c44:0:b0:4e7:1e07:959c with SMTP id
- d75a77b69052e-4ed1589cf0emr1560601cf.10.1761682269006; Tue, 28 Oct 2025
- 13:11:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1761691680; x=1762296480;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bDTzcXmi62N+bAdKsA9MM3K6VkUn2QF2TaFyCxaOopA=;
+        b=SDfb/MRYD7MJyTOUXnv53TWH9qNRKWXMA05BiY++xAOSAJFgEsvtArpRokK/RTBTuR
+         /txim+uVo/9b88zKrvNz01QbCPFUHDIT8p8tB6lDd4I13bipsnyUr5egebdXoLm6comw
+         q8gQZaIAo82ilj9sGpwxWiwJSI9abB5h7E2SEsqpECu9/MdXEusd9s+Gw6qH0FACbwdC
+         sqNEsgB43Jl2zENlq6jgw98auldzjgT5o/iVlj6phxU9rkUXN0EeNacmHrbmNXEliXQv
+         f8rBA4/B/bRfy4KWjBUqzdKjF9DNhQYl3o91EjgGToLSM84NU4V0gFaqCnAoXM69m/4E
+         wrpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWcX+Od2U3uCDsZEIXQClATb5nCsOwDkkFBEp2J4LNIZquQAxeK0nTk4+sq48ntiny/QhX2r53NghhR@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx95kydWDB9soeXI0Co0C/blRuIKns5/xR9I/jD606Sm/C8452t
+	w8cZDP5Sg4BOTt3rnMfiaOrPKEWgQ6p2FHzESxKphRzRnOL4bV+2PKBsRpxg4/t9qQ==
+X-Gm-Gg: ASbGncvFoCzU47/ei3hh8H3TZpeSn7/tznrTtjJ7twtpTagq1TiWlaiZSBjcXxNpIan
+	rpCC0lIevmoEHBwyDFFxAERZAP+J1CKp9JTI+lEiKXPDo9GPLvOr09X1RFmCbR1LXiiurhMHZpI
+	6Dyf/bmZCVGFhc/YiFxUCpxJ+r1tSMXRlvpiZFqYtFlwXtNMRL1QyRqXUx784Souqsr1AjtoowM
+	DaxxGrdjBR5e28Zuu70r8pG1hlhlaDaH6VCIshDsZmjx4+95KjU6QxgXcsmTe6J5LQ6SM6x5EDb
+	SBwaqbl0p7tn7+hVzgLLC540ObV9WWwrUvJbTP4/FBg6lkgf8r8uXypWqT77KcpctLXxdOFi6hm
+	0kvBLP04OfJtjfDtDAp4eppDx04RzWqSrwrHAa6puFRehk7YaeXSDLu2UQ4GXeYYH0qc+nWGPVW
+	pAgTjL0/OQ7w4HuCOSLR1znXJTFQZhKIzSJUOaNI7JscOByVk5oTkDzthkp86xUMIedli8mclNh
+	EOPa3sMifOB5B3ySjonut2KswD7NW5IT5c=
+X-Google-Smtp-Source: AGHT+IGVgm4/IjLLQT0cmQiv9nPeepYGw4HODw55Q9JYgkuJimkY420lDMBroEQm+to1DoESC9iCmA==
+X-Received: by 2002:a17:902:f693:b0:291:6488:5af5 with SMTP id d9443c01a7336-294dffb2cecmr1077105ad.1.1761691679356;
+        Tue, 28 Oct 2025 15:47:59 -0700 (PDT)
+Received: from google.com (235.215.125.34.bc.googleusercontent.com. [34.125.215.235])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498d4287bsm131385965ad.80.2025.10.28.15.47.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Oct 2025 15:47:58 -0700 (PDT)
+Date: Tue, 28 Oct 2025 22:47:53 +0000
+From: Carlos Llamas <cmllamas@google.com>
+To: Keith Busch <kbusch@kernel.org>
+Cc: Keith Busch <kbusch@meta.com>, linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, hch@lst.de, axboe@kernel.dk,
+	Hannes Reinecke <hare@suse.de>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCHv4 5/8] iomap: simplify direct io validity check
+Message-ID: <aQFIGaA5M4kDrTlw@google.com>
+References: <20250827141258.63501-1-kbusch@meta.com>
+ <20250827141258.63501-6-kbusch@meta.com>
+ <aP-c5gPjrpsn0vJA@google.com>
+ <aP-hByAKuQ7ycNwM@kbusch-mbp>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251027122847.320924-1-harry.yoo@oracle.com> <20251027122847.320924-5-harry.yoo@oracle.com>
-In-Reply-To: <20251027122847.320924-5-harry.yoo@oracle.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 28 Oct 2025 13:10:56 -0700
-X-Gm-Features: AWmQ_bmhs1hdkHxO3mmC1NyEAmbGlRZHViudswGppVrbFdffFaapHoJsuste_o8
-Message-ID: <CAJuCfpEesdC-yoUb3X+er0Rsm59SiYqXu=i4cHzJDcrO2=QmiQ@mail.gmail.com>
-Subject: Re: [RFC PATCH V3 4/7] mm/slab: use stride to access slabobj_ext
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
-	cl@linux.com, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
-	rientjes@google.com, roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, 
-	shakeel.butt@linux.dev, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, 
-	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aP-hByAKuQ7ycNwM@kbusch-mbp>
 
-On Mon, Oct 27, 2025 at 5:29=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wr=
-ote:
->
-> Use a configurable stride value when accessing slab object extension
-> metadata instead of assuming a fixed sizeof(struct slabobj_ext).
->
-> Store stride value in free bits of slab->counters field. This allows
-> for flexibility in cases where the extension is embedded within
-> slab objects.
->
-> Since these free bits exist only on 64-bit, any future optimizations
-> that need to change stride value cannot be enabled on 32-bit architecture=
-s.
->
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+On Mon, Oct 27, 2025 at 10:42:47AM -0600, Keith Busch wrote:
+> On Mon, Oct 27, 2025 at 04:25:10PM +0000, Carlos Llamas wrote:
+> > Hey Keith, I'be bisected an LTP issue down to this patch. There is a
+> > O_DIRECT read test that expects EINVAL for a bad buffer alignment.
+> > However, if I understand the patchset correctly, this is intentional
+> > move which makes this LTP test obsolete, correct?
+> > 
+> > The broken test is "test 5" here:
+> > https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/read/read02.c
+> > 
+> > ... and this is what I get now:
+> >   read02.c:87: TFAIL: read() failed unexpectedly, expected EINVAL: EIO (5)
+> 
+> Yes, the changes are intentional. Your test should still see the read
+> fail since it looks like its attempting a byte aligned memory offset,
+> and most storage controllers don't advertise support for byte aligned
+> DMA. So the problem is that you got EIO instead of EINVAL? The block
+> layer that finds your misaligned address should have still failed with
+> EINVAL, but that check is deferred to pretty low in the stack rather
+> than preemptively checked as before. The filesystem may return a generic
+> EIO in that case, but not sure. What filesystem was this using?
 
-I hope slab_obj_exts() can be removed in the next revision, but otherwise L=
-GTM.
+Cc: Eric Biggers <ebiggers@google.com>
 
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+Ok, I did a bit more digging. I'm using f2fs but the problem in this
+case is the blk_crypto layer. The OP_READ request goes through
+submit_bio() which then calls blk_crypto_bio_prep() and if the bio has
+crypto context then it checks for bio_crypt_check_alignment().
 
-> ---
->  mm/slab.h | 37 +++++++++++++++++++++++++++++++++----
->  mm/slub.c |  2 ++
->  2 files changed, 35 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/slab.h b/mm/slab.h
-> index df2c987d950d..22ee28cb55e1 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -83,6 +83,14 @@ struct slab {
->                                                          * that the slab =
-was corrupted
->                                                          */
->                                                         unsigned frozen:1=
-;
-> +#ifdef CONFIG_64BIT
-> +                                                       /*
-> +                                                        * Some optimizat=
-ions use free bits in 'counters' field
-> +                                                        * to save memory=
-. In case ->stride field is not available,
-> +                                                        * such optimizat=
-ions are disabled.
-> +                                                        */
-> +                                                       unsigned short st=
-ride;
-> +#endif
->                                                 };
->                                         };
->                                 };
-> @@ -550,6 +558,26 @@ static inline unsigned long slab_obj_exts(struct sla=
-b *slab)
->         return obj_exts & ~OBJEXTS_FLAGS_MASK;
->  }
->
-> +#ifdef CONFIG_64BIT
-> +static inline void slab_set_stride(struct slab *slab, unsigned short str=
-ide)
-> +{
-> +       slab->stride =3D stride;
-> +}
-> +static inline unsigned short slab_get_stride(struct slab *slab)
-> +{
-> +       return slab->stride;
-> +}
-> +#else
-> +static inline void slab_set_stride(struct slab *slab, unsigned short str=
-ide)
-> +{
-> +       VM_WARN_ON_ONCE(stride !=3D sizeof(struct slabobj_ext));
-> +}
-> +static inline unsigned short slab_get_stride(struct slab *slab)
-> +{
-> +       return sizeof(struct slabobj_ext);
-> +}
-> +#endif
-> +
->  /*
->   * slab_obj_ext - get the pointer to the slab object extension metadata
->   * associated with an object in a slab.
-> @@ -563,13 +591,10 @@ static inline struct slabobj_ext *slab_obj_ext(stru=
-ct slab *slab,
->                                                unsigned long obj_exts,
->                                                unsigned int index)
->  {
-> -       struct slabobj_ext *obj_ext;
-> -
->         VM_WARN_ON_ONCE(!slab_obj_exts(slab));
->         VM_WARN_ON_ONCE(obj_exts !=3D slab_obj_exts(slab));
->
-> -       obj_ext =3D (struct slabobj_ext *)obj_exts;
-> -       return &obj_ext[index];
-> +       return (struct slabobj_ext *)(obj_exts + slab_get_stride(slab) * =
-index);
->  }
->
->  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
-> @@ -588,6 +613,10 @@ static inline struct slabobj_ext *slab_obj_ext(struc=
-t slab *slab,
->         return NULL;
->  }
->
-> +static inline void slab_set_stride(struct slab *slab, unsigned int strid=
-e) { }
-> +static inline unsigned int slab_get_stride(struct slab *slab) { return 0=
-; }
-> +
-> +
->  #endif /* CONFIG_SLAB_OBJ_EXT */
->
->  static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
-> diff --git a/mm/slub.c b/mm/slub.c
-> index ae73403f8c29..4383740a4d34 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2134,6 +2134,8 @@ int alloc_slab_obj_exts(struct slab *slab, struct k=
-mem_cache *s,
->  #endif
->         old_exts =3D READ_ONCE(slab->obj_exts);
->         handle_failed_objexts_alloc(old_exts, vec, objects);
-> +       slab_set_stride(slab, sizeof(struct slabobj_ext));
-> +
->         if (new_slab) {
->                 /*
->                  * If the slab is brand new and nobody can yet access its
-> --
-> 2.43.0
->
+This is where the LTP tests fails the alignment. However, the propagated
+error goes through "bio->bi_status = BLK_STS_IOERR" which in bio_endio()
+get translates to EIO due to blk_status_to_errno().
+
+I've verified this restores the original behavior matching the LTP test,
+so I'll write up a patch and send it a bit later.
+
+diff --git a/block/blk-crypto.c b/block/blk-crypto.c
+index 1336cbf5e3bd..a417843e7e4a 100644
+--- a/block/blk-crypto.c
++++ b/block/blk-crypto.c
+@@ -293,7 +293,7 @@ bool __blk_crypto_bio_prep(struct bio **bio_ptr)
+ 	}
+ 
+ 	if (!bio_crypt_check_alignment(bio)) {
+-		bio->bi_status = BLK_STS_IOERR;
++		bio->bi_status = BLK_STS_INVAL;
+ 		goto fail;
+ 	}
+ 
 
