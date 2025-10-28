@@ -1,89 +1,89 @@
-Return-Path: <linux-ext4+bounces-11116-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11117-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2D66C1642A
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 18:44:31 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E96E4C165A1
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 19:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB624188E4F2
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 17:44:51 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2A15150910A
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 17:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85417345751;
-	Tue, 28 Oct 2025 17:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8C434C9AF;
+	Tue, 28 Oct 2025 17:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0hGLHRNV"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="t5pqJX0Q"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B3826B2D5
-	for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 17:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2540B34C9A1
+	for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 17:55:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761673411; cv=none; b=DVTkMNCe7/1CDukCnBRnJNXZAf499z2mWcn/VzM/zvrrccBFuw7du+YFVf8AJDOfAwQhsdN6maQLbGrazzv6Xf9+ZOb2kJLU0L3Ls0iOQk50/qdqCkY8uXpTA0zN2MUkyUhDuC5moH+CnK/dIm5044VauDMZhV0uVxe6SJO0MWo=
+	t=1761674154; cv=none; b=GCNaZvrRgooG9S2pLdEKp8a4p6ZTdryUnOjuKiXq4BxYBiA1Avl7dtuqJbB11xJ0b0sOVCHiGh6eazwjz80V0qrwOfs+nn9xDqUema9d8lVKNOVyYLVT1yjqU2rYkbq7k32kEmYCTQ/5BYeyGrJLRGXK9ST4R9OmudnKNkO0BjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761673411; c=relaxed/simple;
-	bh=OJsTYMzbe/UDLrK6Bw+bsAXFWG7YtvhKytf26d44Q68=;
+	s=arc-20240116; t=1761674154; c=relaxed/simple;
+	bh=vq5e8fIjrWj9RhPW/Zc8fFi8d2F6f4O2//w8hDNaqoE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LtDHFHd+cnmtmqNuGZk/WBVD2Mo+EmDcfSJDCWwRvhu51C9vq72QGVIpuM8Os2l/X415IXc2HCYhZLrxLlAVyztLwU2C8cgBXtmb1d6wn9ltPmM/WbCV9Sh4vlPli9rHDXCCC6OHBNj5UI/gXWaV5UfR8tFTooYP+K6Ly50mVB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0hGLHRNV; arc=none smtp.client-ip=209.85.160.173
+	 To:Cc:Content-Type; b=NgWsGmUnkoKLLTpgG+ivFghaicK9/YTXeH0uyY/JS/kn/8UN+kbVIKd/WWx7F0wxsZ42kkX7HokCJqKoCwaNZQXuftTFKtzodEw/4OF9iVWsT1WAw0bjPI+rguFSUgUtYtib2MqmlHIHuY8LUloojK1y7f/zbtp0NJpINMlo7HQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=t5pqJX0Q; arc=none smtp.client-ip=209.85.160.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4ecfafb92bcso26071cf.1
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 10:43:29 -0700 (PDT)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4ecfafb92bcso31381cf.1
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 10:55:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761673408; x=1762278208; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1761674151; x=1762278951; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Tm84HDvajvdUeYx0RetHD/996j4kdkLd2nXgDOVyMuw=;
-        b=0hGLHRNV7cCeSwAeH+GuHFgtA8k5j+LWuR2nhN0elJcozyqqKbfxnwsAeZ/SVMwyxO
-         ElWekUQEzyrULtBVoQJvDMDFGFpF9fTlitKzfzVz/jj8hTGjpId2P0UZDWWcZZJlR6OI
-         gCiB2/TS9wOIUN+Rf3JUH4zdk7l7H1xAN2nLbukIHwQYkpmylq104gUamdkON6s/vs+F
-         kF0pPtvk3H/NclTvnd705OgakJYf63UyiH7as2vOzQX12vUztOKk5O1GwRouxUPtl9NU
-         Ge1i8wEN4/XmevbzxUQLu1u/fSOir0KpJzUQgDbhTK22fWJ5wqHKxHtad0YVsle2YHda
-         HVag==
+        bh=SEQPDQeMOb+zP03ZLfbq8HiFiymDeHxHs9qyniKVrJQ=;
+        b=t5pqJX0Qe/lJO3GH9UFPOx8JGGJ3/tfzn3uwkBN+XWOSEBM7v8NeYfcKW7gyHhXUCU
+         n1MZkefLR7XnnftwyhV9z1NFT1umn3swzZyoTuMQBW+u7/y6EQaMGnrph0RW+o8+E2bU
+         sQZXyrPCmdnpqAjX77VohrJrgpGU2OFHJ7EGrU7GVUnz+wEEVZZzD/ZUDGMJE4FrvXct
+         WOnBzwRlmbB/O3lcJv5F6foEbQgsJu1wXY+T862/APLg5RQELQ9Jcndl96YBl8qQcOp0
+         yuGxy3n8KtWtFMlX31Vc4kqGXWt1HeJgj9zhTXKPY8DIPqeaE4ODZZpX8oaT1yIHRqYw
+         mkLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761673408; x=1762278208;
+        d=1e100.net; s=20230601; t=1761674151; x=1762278951;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Tm84HDvajvdUeYx0RetHD/996j4kdkLd2nXgDOVyMuw=;
-        b=OlXWuGwAWr+1EsNGgq2/4qSG3d1UhAxWFEuX+CDCvODn0gNuOHQW6Z4lVRPJgmYUWR
-         eqM/7NmpztkO2ld+CkEehXfJNoaAHbFmNRljvGgZ3q5YB09DLJr+w60flv9gzdOwkht5
-         t5mIj5qGtFLlAPSb+AOW2IE5v5qrWgyFeloWEUQnI/V5YW05IZCJKFd+WlnndMb96cbC
-         8BxOtl4cbnLLko3UkdSm8gM+YBQiOClwclgNdeR1HAd2lMMkSG33FRdKFLvF7TrwbUQm
-         w00z5wI4LWBjmcCYtkxbQu0v3YNZc0HvUijOrLG1RJg2/EdBo2C0qJi2sEIaUTftQZt5
-         SF2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUXmX60YNs6AJl4V66G1ApYXXROPpVuK7fP8FqJYIU5288KFE2eSefO2U4X6EVSr63kDoCPXJEiC1Am@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8XVA0uk83zwIfVDPrWDLLkAI/P0sEtLrs//YF97Tod7qefUqF
-	3B7mPkbAzUXOYrG14q23GFyZFJ+YxBjedhgUIbZ+T4xikNi1SlWIPMbYj0YK/tkCgA6AVAQlZBi
-	RMWLptgBFcEkrWe4BFkqoyrOl+Pn/trToobeoXCon
-X-Gm-Gg: ASbGnct5GpiuCjGBV/jwoXSuaen04HMU5kvvIo7nV+fvyPL0uB/wKJJGubrtkdXkgi2
-	2rtEbipu30ZbBD9TNhMYglDG4psuaZpjRb5+NEcBobPpWUYdqornJjI/EOO38Gco7aY1oLIdFOb
-	lRDgHn3b2yuNCPe7X4db35QIJuQE5splnanuIJ3ldtth/1aOwrzxK0W9Ed3EV4/nbRjtxebYuBp
-	nH+kuLf8QwK4VgaCcPl9X4B0qCI2XNgkbyEDKQOKOgWmxMhuZQahS9Ed9IqjJGjgdD84mgislyz
-	OgAZweMhtDYEriwX9fzOGnv2LA==
-X-Google-Smtp-Source: AGHT+IHqOw0wVAMZdI9HPTfn0JRAVi2UYS5cUsNnlCDAZHhG876N53Uqz0wugy8aVXJs9k9838Yo4Ajkv/Cn41vL3UM=
-X-Received: by 2002:ac8:57c4:0:b0:4b7:a72f:55d9 with SMTP id
- d75a77b69052e-4ed1593d02dmr323231cf.13.1761673407812; Tue, 28 Oct 2025
- 10:43:27 -0700 (PDT)
+        bh=SEQPDQeMOb+zP03ZLfbq8HiFiymDeHxHs9qyniKVrJQ=;
+        b=m+LOkrQYtCqZe6CzGlfKyqoHUvDs5TB2DThbULQ0j18gnCp2+fS/FrMJwUTYs7HJ9P
+         8Y+AYi0u4Q7f/Z+O+ymCUwrTf7GgdjPOnMmLMTD1dZixr5Ah8z+uXoj+hhxrTwQBcewz
+         5dML1pthleBmT++wZ6EhbVIHQIzv9/GmWwyPFbXc0GXGV7WZVsqfcyx8zjjC6vVBUf/j
+         FbWSoqpa5jqkH601ZkEkJHnCh3mDuUJMJweNPvqSUbsaPa9SgEux30AxYDrzfCoxS2zU
+         fBU+D7M1hw4/3D+K3wNPRKKnJA0SdGGdf97Vj4/liUfxfaAnSGgDacgHbA57/j0AKdHh
+         BqUw==
+X-Forwarded-Encrypted: i=1; AJvYcCXZOaFVsS0E0I2t0nfrz5KVSFN3guzYeGgtogP3tVWyGQStnZi4vQ2pIqPnB5U/QE8xrASzSWvjIOz7@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMLcNGvgH+/5ftnny6XVpT3fXbrXeMfwzOyAXSquBV7lAGpzk0
+	rBxjb4r0I3qzhp4I3SiFdMVbayVlLoeAYriU6SXK5AIugDjXhD4INSDMT/XlxwqEv85Ko4tY6Y2
+	+AQ6TiyUDPivwFuQldLDHsHND7W23qQRC6E6CG28h
+X-Gm-Gg: ASbGncuYhyBnciBXqspVtkmY1zMgpuWp5/T72eG/QVCpOJntSGPWPHL6a9A6KVsBvHc
+	QNiNASn7SKemd9q1WbsWd2yN5mDeTk7GJebV5KtIbPpF7HdtUtwpj0+Xd99ZlRj2mQooHJDGSH7
+	afMDGaLSxydgGoSN6K1oZPNDHqHYt41yEsgfphCf3UKfhQzYlcKh5n4GrkGYcne/p3vSlhA3isM
+	QxsrJqWTjIrLNeNrnFFHNwFB7z8qy9JbW4bCVFf9jRLxGNWkhfvafccZNtnhuI8aZQ2VUWiW01/
+	CK/9yYiEx719eKRS3AB6RrGTAw==
+X-Google-Smtp-Source: AGHT+IE4E344p3HvFpIsLYI5M9X4WV2Y7oB0kX580su6zBAwlKd1hdG3cfoOpCRO56waorA3KTYtH/DLpgCm8hLFEkg=
+X-Received: by 2002:a05:622a:1307:b0:4e8:b04a:82e3 with SMTP id
+ d75a77b69052e-4ed1588e627mr400851cf.10.1761674150355; Tue, 28 Oct 2025
+ 10:55:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251027122847.320924-1-harry.yoo@oracle.com> <20251027122847.320924-2-harry.yoo@oracle.com>
-In-Reply-To: <20251027122847.320924-2-harry.yoo@oracle.com>
+References: <20251027122847.320924-1-harry.yoo@oracle.com> <20251027122847.320924-4-harry.yoo@oracle.com>
+In-Reply-To: <20251027122847.320924-4-harry.yoo@oracle.com>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 28 Oct 2025 10:43:16 -0700
-X-Gm-Features: AWmQ_bkEq6fU-X83NBs-FScowfdztSWFRPMtVvCpjCocisVvI5BwLCPHsCScVHY
-Message-ID: <CAJuCfpF5gG63njY436vctG-Tzbco8X9a1w3YA=u1AGrRqxVshg@mail.gmail.com>
-Subject: Re: [RFC PATCH V3 1/7] mm/slab: allow specifying freepointer offset
- when using constructor
+Date: Tue, 28 Oct 2025 10:55:39 -0700
+X-Gm-Features: AWmQ_bndOQ1c1b7afJ0YZYVN9VO4Il9GK8ViNlP50-zWVw6oU176SbWk_uCfUOQ
+Message-ID: <CAJuCfpE9PRvd1Tsm6gAvxKvPFgVt640q3vSbt0wAWOa3G4tnfA@mail.gmail.com>
+Subject: Re: [RFC PATCH V3 3/7] mm/slab: abstract slabobj_ext access via new
+ slab_obj_ext() helper
 To: Harry Yoo <harry.yoo@oracle.com>
 Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
 	cl@linux.com, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
@@ -98,73 +98,382 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Oct 27, 2025 at 5:29=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wr=
 ote:
 >
-> When a slab cache has a constructor, the free pointer is placed after the
-> object because certain fields must not be overwritten even after the
-> object is freed.
+> Currently, the slab allocator assumes that slab->obj_exts is a pointer
+> to an array of struct slabobj_ext objects. However, to support storage
+> methods where struct slabobj_ext is embedded within objects, the slab
+> allocator should not make this assumption. Instead of directly
+> dereferencing the slabobj_exts array, abstract access to
+> struct slabobj_ext via helper functions.
 >
-> However, some fields that the constructor does not care can safely be
-> overwritten. Allow specifying the free pointer offset within the object,
-> reducing the overall object size when some fields can be reused for the
-> free pointer.
+> Introduce a new API slabobj_ext metadata access:
+>
+>   slab_obj_ext(slab, obj_exts, index) - returns the pointer to
+>   struct slabobj_ext element at the given index.
+>
+> Directly dereferencing the return value of slab_obj_exts() is no longer
+> allowed. Instead, slab_obj_ext() must always be used to access
+> individual struct slabobj_ext objects.
 
-Documentation explicitly says that ctor currently isn't supported with
-custom free pointers:
-https://elixir.bootlin.com/linux/v6.18-rc3/source/include/linux/slab.h#L318
-It obviously needs to be updated but I suspect there was a reason for
-this limitation. Have you investigated why it's not supported? I
-remember looking into it when I was converting vm_area_struct cache to
-use SLAB_TYPESAFE_BY_RCU but I can't recall the details now...
+If direct access to the vector is not allowed, it would be better to
+eliminate slab_obj_exts() function completely and use the new
+slab_obj_ext() instead. I think that's possible. We might need an
+additional `bool is_slab_obj_exts()` helper for an early check before
+we calculate the object index but that's quite easy.
 
+>
+> Convert all users to use these APIs.
+> No functional changes intended.
 >
 > Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
 > ---
->  mm/slab_common.c | 2 +-
->  mm/slub.c        | 6 ++++--
->  2 files changed, 5 insertions(+), 3 deletions(-)
+>  mm/memcontrol.c | 23 ++++++++++++++++-------
+>  mm/slab.h       | 43 ++++++++++++++++++++++++++++++++++++------
+>  mm/slub.c       | 50 ++++++++++++++++++++++++++++---------------------
+>  3 files changed, 82 insertions(+), 34 deletions(-)
 >
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 932d13ada36c..2c2ed2452271 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -231,7 +231,7 @@ static struct kmem_cache *create_cache(const char *na=
-me,
->         err =3D -EINVAL;
->         if (args->use_freeptr_offset &&
->             (args->freeptr_offset >=3D object_size ||
-> -            !(flags & SLAB_TYPESAFE_BY_RCU) ||
-> +            (!(flags & SLAB_TYPESAFE_BY_RCU) && !args->ctor) ||
->              !IS_ALIGNED(args->freeptr_offset, __alignof__(freeptr_t))))
->                 goto out;
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 8dd7fbed5a94..2a9dc246e802 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2566,7 +2566,8 @@ struct mem_cgroup *mem_cgroup_from_obj_folio(struct=
+ folio *folio, void *p)
+>          * slab->obj_exts.
+>          */
+>         if (folio_test_slab(folio)) {
+> -               struct slabobj_ext *obj_exts;
+> +               unsigned long obj_exts;
+> +               struct slabobj_ext *obj_ext;
+>                 struct slab *slab;
+>                 unsigned int off;
 >
+> @@ -2576,8 +2577,9 @@ struct mem_cgroup *mem_cgroup_from_obj_folio(struct=
+ folio *folio, void *p)
+>                         return NULL;
+>
+>                 off =3D obj_to_index(slab->slab_cache, slab, p);
+> -               if (obj_exts[off].objcg)
+> -                       return obj_cgroup_memcg(obj_exts[off].objcg);
+> +               obj_ext =3D slab_obj_ext(slab, obj_exts, off);
+> +               if (obj_ext->objcg)
+> +                       return obj_cgroup_memcg(obj_ext->objcg);
+>
+>                 return NULL;
+>         }
+> @@ -3168,6 +3170,9 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache=
+ *s, struct list_lru *lru,
+>         }
+>
+>         for (i =3D 0; i < size; i++) {
+> +               unsigned long obj_exts;
+> +               struct slabobj_ext *obj_ext;
+> +
+>                 slab =3D virt_to_slab(p[i]);
+>
+>                 if (!slab_obj_exts(slab) &&
+> @@ -3190,29 +3195,33 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cac=
+he *s, struct list_lru *lru,
+>                                         slab_pgdat(slab), cache_vmstat_id=
+x(s)))
+>                         return false;
+>
+> +               obj_exts =3D slab_obj_exts(slab);
+>                 off =3D obj_to_index(s, slab, p[i]);
+> +               obj_ext =3D slab_obj_ext(slab, obj_exts, off);
+>                 obj_cgroup_get(objcg);
+> -               slab_obj_exts(slab)[off].objcg =3D objcg;
+> +               obj_ext->objcg =3D objcg;
+>         }
+>
+>         return true;
+>  }
+>
+>  void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> -                           void **p, int objects, struct slabobj_ext *ob=
+j_exts)
+> +                           void **p, int objects, unsigned long obj_exts=
+)
+>  {
+>         size_t obj_size =3D obj_full_size(s);
+>
+>         for (int i =3D 0; i < objects; i++) {
+>                 struct obj_cgroup *objcg;
+> +               struct slabobj_ext *obj_ext;
+>                 unsigned int off;
+>
+>                 off =3D obj_to_index(s, slab, p[i]);
+> -               objcg =3D obj_exts[off].objcg;
+> +               obj_ext =3D slab_obj_ext(slab, obj_exts, off);
+> +               objcg =3D obj_ext->objcg;
+>                 if (!objcg)
+>                         continue;
+>
+> -               obj_exts[off].objcg =3D NULL;
+> +               obj_ext->objcg =3D NULL;
+>                 refill_obj_stock(objcg, obj_size, true, -obj_size,
+>                                  slab_pgdat(slab), cache_vmstat_idx(s));
+>                 obj_cgroup_put(objcg);
+> diff --git a/mm/slab.h b/mm/slab.h
+> index d63cc9b5e313..df2c987d950d 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -528,10 +528,12 @@ static inline bool slab_in_kunit_test(void) { retur=
+n false; }
+>   * associated with a slab.
+>   * @slab: a pointer to the slab struct
+>   *
+> - * Returns a pointer to the object extension vector associated with the =
+slab,
+> - * or NULL if no such vector has been associated yet.
+> + * Returns the address of the object extension vector associated with th=
+e slab,
+> + * or zero if no such vector has been associated yet.
+> + * Do not dereference the return value directly; use slab_obj_ext() to a=
+ccess
+> + * its elements.
+>   */
+> -static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
+> +static inline unsigned long slab_obj_exts(struct slab *slab)
+>  {
+>         unsigned long obj_exts =3D READ_ONCE(slab->obj_exts);
+>
+> @@ -544,7 +546,30 @@ static inline struct slabobj_ext *slab_obj_exts(stru=
+ct slab *slab)
+>                        obj_exts !=3D OBJEXTS_ALLOC_FAIL, slab_page(slab))=
+;
+>         VM_BUG_ON_PAGE(obj_exts & MEMCG_DATA_KMEM, slab_page(slab));
+>  #endif
+> -       return (struct slabobj_ext *)(obj_exts & ~OBJEXTS_FLAGS_MASK);
+> +
+> +       return obj_exts & ~OBJEXTS_FLAGS_MASK;
+> +}
+> +
+> +/*
+> + * slab_obj_ext - get the pointer to the slab object extension metadata
+> + * associated with an object in a slab.
+> + * @slab: a pointer to the slab struct
+> + * @obj_exts: a pointer to the object extension vector
+> + * @index: an index of the object
+> + *
+> + * Returns a pointer to the object extension associated with the object.
+> + */
+> +static inline struct slabobj_ext *slab_obj_ext(struct slab *slab,
+> +                                              unsigned long obj_exts,
+> +                                              unsigned int index)
+> +{
+> +       struct slabobj_ext *obj_ext;
+> +
+> +       VM_WARN_ON_ONCE(!slab_obj_exts(slab));
+> +       VM_WARN_ON_ONCE(obj_exts !=3D slab_obj_exts(slab));
+> +
+> +       obj_ext =3D (struct slabobj_ext *)obj_exts;
+> +       return &obj_ext[index];
+>  }
+>
+>  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+> @@ -552,7 +577,13 @@ int alloc_slab_obj_exts(struct slab *slab, struct km=
+em_cache *s,
+>
+>  #else /* CONFIG_SLAB_OBJ_EXT */
+>
+> -static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
+> +static inline unsigned long slab_obj_exts(struct slab *slab)
+> +{
+> +       return false;
+> +}
+> +
+> +static inline struct slabobj_ext *slab_obj_ext(struct slab *slab,
+> +                                              unsigned int index)
+>  {
+>         return NULL;
+>  }
+> @@ -569,7 +600,7 @@ static inline enum node_stat_item cache_vmstat_idx(st=
+ruct kmem_cache *s)
+>  bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru =
+*lru,
+>                                   gfp_t flags, size_t size, void **p);
+>  void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> -                           void **p, int objects, struct slabobj_ext *ob=
+j_exts);
+> +                           void **p, int objects, unsigned long obj_exts=
+);
+>  #endif
+>
+>  void kvfree_rcu_cb(struct rcu_head *head);
 > diff --git a/mm/slub.c b/mm/slub.c
-> index 462a39d57b3a..64705cb3734f 100644
+> index 64705cb3734f..ae73403f8c29 100644
 > --- a/mm/slub.c
 > +++ b/mm/slub.c
-> @@ -7781,7 +7781,8 @@ static int calculate_sizes(struct kmem_cache_args *=
-args, struct kmem_cache *s)
->         s->inuse =3D size;
+> @@ -2031,7 +2031,7 @@ static bool freelist_corrupted(struct kmem_cache *s=
+, struct slab *slab,
 >
->         if (((flags & SLAB_TYPESAFE_BY_RCU) && !args->use_freeptr_offset)=
- ||
-> -           (flags & SLAB_POISON) || s->ctor ||
-> +           (flags & SLAB_POISON) ||
-> +           (s->ctor && !args->use_freeptr_offset) ||
->             ((flags & SLAB_RED_ZONE) &&
->              (s->object_size < sizeof(void *) || slub_debug_orig_size(s))=
-)) {
->                 /*
-> @@ -7802,7 +7803,8 @@ static int calculate_sizes(struct kmem_cache_args *=
-args, struct kmem_cache *s)
->                  */
->                 s->offset =3D size;
->                 size +=3D sizeof(void *);
-> -       } else if ((flags & SLAB_TYPESAFE_BY_RCU) && args->use_freeptr_of=
-fset) {
-> +       } else if (((flags & SLAB_TYPESAFE_BY_RCU) || s->ctor) &&
-> +                       args->use_freeptr_offset) {
->                 s->offset =3D args->freeptr_offset;
->         } else {
->                 /*
+>  static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
+>  {
+> -       struct slabobj_ext *slab_exts;
+> +       unsigned long slab_exts;
+>         struct slab *obj_exts_slab;
+>
+>         obj_exts_slab =3D virt_to_slab(obj_exts);
+> @@ -2039,9 +2039,12 @@ static inline void mark_objexts_empty(struct slabo=
+bj_ext *obj_exts)
+>         if (slab_exts) {
+>                 unsigned int offs =3D obj_to_index(obj_exts_slab->slab_ca=
+che,
+>                                                  obj_exts_slab, obj_exts)=
+;
+> +               struct slabobj_ext *ext =3D slab_obj_ext(obj_exts_slab,
+> +                                                      slab_exts, offs);
+> +
+>                 /* codetag should be NULL */
+> -               WARN_ON(slab_exts[offs].ref.ct);
+> -               set_codetag_empty(&slab_exts[offs].ref);
+> +               WARN_ON(ext->ref.ct);
+> +               set_codetag_empty(&ext->ref);
+>         }
+>  }
+>
+> @@ -2159,7 +2162,7 @@ int alloc_slab_obj_exts(struct slab *slab, struct k=
+mem_cache *s,
+>
+>  static inline void free_slab_obj_exts(struct slab *slab)
+>  {
+> -       struct slabobj_ext *obj_exts;
+> +       unsigned long obj_exts;
+>
+>         obj_exts =3D slab_obj_exts(slab);
+>         if (!obj_exts)
+> @@ -2172,11 +2175,11 @@ static inline void free_slab_obj_exts(struct slab=
+ *slab)
+>          * NULL, therefore replace NULL with CODETAG_EMPTY to indicate th=
+at
+>          * the extension for obj_exts is expected to be NULL.
+>          */
+> -       mark_objexts_empty(obj_exts);
+> +       mark_objexts_empty((struct slabobj_ext *)obj_exts);
+>         if (unlikely(READ_ONCE(slab->obj_exts) & OBJEXTS_NOSPIN_ALLOC))
+> -               kfree_nolock(obj_exts);
+> +               kfree_nolock((void *)obj_exts);
+>         else
+> -               kfree(obj_exts);
+> +               kfree((void *)obj_exts);
+>         slab->obj_exts =3D 0;
+>  }
+>
+> @@ -2201,9 +2204,10 @@ static inline void free_slab_obj_exts(struct slab =
+*slab)
+>  #ifdef CONFIG_MEM_ALLOC_PROFILING
+>
+>  static inline struct slabobj_ext *
+> -prepare_slab_obj_exts_hook(struct kmem_cache *s, gfp_t flags, void *p)
+> +prepare_slab_obj_ext_hook(struct kmem_cache *s, gfp_t flags, void *p)
+>  {
+>         struct slab *slab;
+> +       unsigned long obj_exts;
+>
+>         if (!p)
+>                 return NULL;
+> @@ -2215,30 +2219,32 @@ prepare_slab_obj_exts_hook(struct kmem_cache *s, =
+gfp_t flags, void *p)
+>                 return NULL;
+>
+>         slab =3D virt_to_slab(p);
+> -       if (!slab_obj_exts(slab) &&
+> +       obj_exts =3D slab_obj_exts(slab);
+> +       if (!obj_exts &&
+>             alloc_slab_obj_exts(slab, s, flags, false)) {
+>                 pr_warn_once("%s, %s: Failed to create slab extension vec=
+tor!\n",
+>                              __func__, s->name);
+>                 return NULL;
+>         }
+>
+> -       return slab_obj_exts(slab) + obj_to_index(s, slab, p);
+> +       obj_exts =3D slab_obj_exts(slab);
+> +       return slab_obj_ext(slab, obj_exts, obj_to_index(s, slab, p));
+>  }
+>
+>  /* Should be called only if mem_alloc_profiling_enabled() */
+>  static noinline void
+>  __alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_=
+t flags)
+>  {
+> -       struct slabobj_ext *obj_exts;
+> +       struct slabobj_ext *obj_ext;
+>
+> -       obj_exts =3D prepare_slab_obj_exts_hook(s, flags, object);
+> +       obj_ext =3D prepare_slab_obj_ext_hook(s, flags, object);
+>         /*
+>          * Currently obj_exts is used only for allocation profiling.
+>          * If other users appear then mem_alloc_profiling_enabled()
+>          * check should be added before alloc_tag_add().
+>          */
+> -       if (likely(obj_exts))
+> -               alloc_tag_add(&obj_exts->ref, current->alloc_tag, s->size=
+);
+> +       if (likely(obj_ext))
+> +               alloc_tag_add(&obj_ext->ref, current->alloc_tag, s->size)=
+;
+>  }
+>
+>  static inline void
+> @@ -2253,8 +2259,8 @@ static noinline void
+>  __alloc_tagging_slab_free_hook(struct kmem_cache *s, struct slab *slab, =
+void **p,
+>                                int objects)
+>  {
+> -       struct slabobj_ext *obj_exts;
+>         int i;
+> +       unsigned long obj_exts;
+>
+>         /* slab->obj_exts might not be NULL if it was created for MEMCG a=
+ccounting. */
+>         if (s->flags & (SLAB_NO_OBJ_EXT | SLAB_NOLEAKTRACE))
+> @@ -2267,7 +2273,7 @@ __alloc_tagging_slab_free_hook(struct kmem_cache *s=
+, struct slab *slab, void **p
+>         for (i =3D 0; i < objects; i++) {
+>                 unsigned int off =3D obj_to_index(s, slab, p[i]);
+>
+> -               alloc_tag_sub(&obj_exts[off].ref, s->size);
+> +               alloc_tag_sub(&slab_obj_ext(slab, obj_exts, off)->ref, s-=
+>size);
+>         }
+>  }
+>
+> @@ -2326,7 +2332,7 @@ static __fastpath_inline
+>  void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void =
+**p,
+>                           int objects)
+>  {
+> -       struct slabobj_ext *obj_exts;
+> +       unsigned long obj_exts;
+>
+>         if (!memcg_kmem_online())
+>                 return;
+> @@ -2341,7 +2347,8 @@ void memcg_slab_free_hook(struct kmem_cache *s, str=
+uct slab *slab, void **p,
+>  static __fastpath_inline
+>  bool memcg_slab_post_charge(void *p, gfp_t flags)
+>  {
+> -       struct slabobj_ext *slab_exts;
+> +       unsigned long obj_exts;
+> +       struct slabobj_ext *obj_ext;
+>         struct kmem_cache *s;
+>         struct folio *folio;
+>         struct slab *slab;
+> @@ -2381,10 +2388,11 @@ bool memcg_slab_post_charge(void *p, gfp_t flags)
+>                 return true;
+>
+>         /* Ignore already charged objects. */
+> -       slab_exts =3D slab_obj_exts(slab);
+> -       if (slab_exts) {
+> +       obj_exts =3D slab_obj_exts(slab);
+> +       if (obj_exts) {
+>                 off =3D obj_to_index(s, slab, p);
+> -               if (unlikely(slab_exts[off].objcg))
+> +               obj_ext =3D slab_obj_ext(slab, obj_exts, off);
+> +               if (unlikely(obj_ext->objcg))
+>                         return true;
+>         }
+>
 > --
 > 2.43.0
 >
