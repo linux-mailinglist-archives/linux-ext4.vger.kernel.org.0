@@ -1,111 +1,137 @@
-Return-Path: <linux-ext4+bounces-11110-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11111-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 661CAC1463E
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 12:34:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9617EC14C6D
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 14:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79EED1886B6C
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 11:35:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC08B1B2538B
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 13:11:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED053081AC;
-	Tue, 28 Oct 2025 11:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676E73314B9;
+	Tue, 28 Oct 2025 13:10:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="KypOQ6kh"
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="e+ok+RGN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A4531DFD9A;
-	Tue, 28 Oct 2025 11:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A00781E834B;
+	Tue, 28 Oct 2025 13:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761651282; cv=none; b=i+jqPcarDGrXAiHHnf876MygidiWW+FXnefmOaVCPHjRranyEw2NequAnv+3mYGXzMc2REcsBGbyULTHrt3sr+S0g1amAw624E38WOgyBwxeF9NOvG4/glC7aX5Gxzwlm1aLm/etxt5MO1SRYurw2RFH+mvclx+/Ld+HO5VfDK0=
+	t=1761657031; cv=none; b=O8VBH/uJIvZdtZHF2Td1rquk1ldE25P+tNfc7w/uryXnlqTz4NEMnmbZzP2SaTnhuxVlXU4DATx/kijsUaokAUkw4a764roT4R1k7J91tTy2LB3dsH6POIqDJ4SmCt/GCdK2KYL5o0L6AAoyjavFx4aVSvySNnU42gRVpOL94rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761651282; c=relaxed/simple;
-	bh=gQZZM4lcznGRZS8I3IWM/tDcOEPQ6eY9N2gX1znop88=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=JZBP262BfYVyaMzH8dNPaViwkU8OfStME0nCyrUpNuwqcv+OJQJZn8nmvzXwFEs0SUqLNpA+W9eWyJIHncS69ovyXD4CKm9cN6IUkem92mPfVMp92guv1oK3VykZ7lEODrafwEp3htUloHS4yV/vmrRilxNkWRmPRrfKHzhcz1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=KypOQ6kh; arc=none smtp.client-ip=113.46.200.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=1GjYzMJtxwUYSJRrlX1Q50Z/DZctAh99tRfgcgS2498=;
-	b=KypOQ6khyprwh08G51e/Y8KM8U16zTA7ml2b+k+yEzQZvqcpxDLrqNeY7f1m/9a6lhBRykTuK
-	QdqGSk0J+AiAc70h1k7RugQFg2gZGD4NslizyTxs31yBt75Lzj8oJ+IOELrzXApeCf5pL7r+q4x
-	cSj+ApnFGY5V3yE60V744Tg=
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4cwpCg2FBtzpStg;
-	Tue, 28 Oct 2025 19:33:19 +0800 (CST)
-Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5CF38180493;
-	Tue, 28 Oct 2025 19:34:36 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
- (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 28 Oct
- 2025 19:34:35 +0800
-Message-ID: <7bb8d73b-6394-4cb2-9e36-76cfbd584a76@huawei.com>
-Date: Tue, 28 Oct 2025 19:34:34 +0800
+	s=arc-20240116; t=1761657031; c=relaxed/simple;
+	bh=ouhV2HDV8Ni9J87rpuxzeZNp/ogsqBij7QucXH4rKTU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z7hs6jAYRfevgfUUnuPUfHEiPO+/ZejuheX40HmBPBg/z0xU5iNgg78A4CeNvHDVP3lHxZnOBQn3ljEkf+dYfH4XfC6COJPADuX867hRs8LL/GBq4utM3W+otjOZXUXdSFwRqc1PHlXSEx7UAH8cBNH6qMXDZMct23FUIipC1HA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=e+ok+RGN; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from debian.intra.ispras.ru (unknown [10.10.165.13])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 20B17407618C;
+	Tue, 28 Oct 2025 13:10:18 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 20B17407618C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1761657018;
+	bh=+A37THDd2QvH4j4+lDg0mcsg8AKgH1f26eTMcOLh8RA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=e+ok+RGNA49IYelbni2UUJqMd9MinTd2BnIE4kxQwdlZoNLruPwbkY/p/zvtlnq9Y
+	 +zq+RBW2WH7Ge4uqtq+rPYNm9Ah+IdsNPPsip3YxBRoyyBeVaVmlC/oxaPq4UdIAZ5
+	 WXcc7it2vvUtu6jPFsN6P1CVYWgS2AC8dqissFvM=
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jan Kara <jack@suse.cz>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kees Cook <kees@kernel.org>,
+	lvc-project@linuxtesting.org
+Subject: [PATCH 1/2] ext4: fix up copying of mount_opts in superblock tuning ioctls
+Date: Tue, 28 Oct 2025 16:09:47 +0300
+Message-ID: <20251028130949.599847-1-pchelkin@ispras.ru>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4/048: Fix hangup due to no free inodes
-Content-Language: en-GB
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-CC: Zorro Lang <zlang@redhat.com>, <fstests@vger.kernel.org>, Leah Rumancik
-	<lrumancik@google.com>, <linux-ext4@vger.kernel.org>, Yang Erkun
-	<yangerkun@huawei.com>
-References: <20251028071743.1507168-1-ojaswin@linux.ibm.com>
- <89dbd368-4e76-45b5-8c82-9102db9f302e@huawei.com>
- <aQCPQ1V8DuAMpmVc@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <aQCPQ1V8DuAMpmVc@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- dggpemf500013.china.huawei.com (7.185.36.188)
 
-On 2025-10-28 17:39, Ojaswin Mujoo wrote:
-> On Tue, Oct 28, 2025 at 03:57:00PM +0800, Baokun Li wrote:
->> On 2025-10-28 15:17, Ojaswin Mujoo wrote:
->>> We currently mkfs a 128MB filesystem, which gives use ~2048 free inodes
->>> on 64k blocksize. The test then keeps adding new files to a directory to
->>> trigger an htree split. For 64k this takes more than the total free
->>> inodes, which causes touch to return -ENOSPC. This leads to the while
->>> loop in induce_node_split() to never finish.
->>>
->>> To fix this:
->>> 1. Format a 1G FS which gives us atleast 16K inodes to work with.
->>> 2. _fail if there's any error while trying to induce node split, so we
->>>    dont get stuck in loop
->>>
->>> Fixes: 466ddbfd1151 ("ext4: add test for ext4_dir_entry2 wipe")
->>> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->>> ---
->> Yeah, I also hit this issue when testing LBS — file creation kept failing
->> without breaking out of the loop, which resulted in the test case spinning
->> endlessly.
->>
->> Looks good to me. Feel free to add:
->>
->> Reviewed-by: Baokun Li <libaokun1@huawei.com>
-> Hi Baokun, I was planning to CC you since I thought you might've hit it,
-> but missed it while sending the mail.
+Judging by commit 8ecb790ea8c3 ("ext4: avoid potential buffer over-read in
+parse_apply_sb_mount_options()"), the contents of s_mount_opts should be
+treated as __nonstring, i.e. there might be no NUL-terminator in the
+provided buffer.
 
-No worries, the mailing list can see it as well.
+Then the same holds for the corresponding mount_opts field of the struct
+ext4_tune_sb_params exchanged with userspace via a recently implemented
+superblock tuning ioctl.
 
-Thanks for testing and fixing this. 🤝
+The problem is that strscpy_pad() can't work properly with non-NUL-term
+strings.  String fortifying infrastructure would complain if that happens.
+Commit 0efc5990bca5 ("string.h: Introduce memtostr() and memtostr_pad()")
+gives additional information in that regard.
 
+Both buffers are just raw arrays of the similar fixed size, essentially
+they should represent the same contents.  As they don't necessarily have
+NUL-terminators, in both directions use plain memcpy() to copy their
+contents.
 
-Cheers,
-Baokun
+Found by Linux Verification Center (linuxtesting.org).
+
+Fixes: 04a91570ac67 ("ext4: implemet new ioctls to set and get superblock parameters")
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+---
+
+The 1/2 patch of the current series fixes an issue existing only in 6.18-rc
+while 2/2 fixes the commit which was in turn backported to stable kernels.
+That's the reasoning for separation.
+
+ fs/ext4/ioctl.c           | 4 ++--
+ include/uapi/linux/ext4.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index a93a7baae990..c39b87d52cb0 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -1292,7 +1292,7 @@ static int ext4_ioctl_get_tune_sb(struct ext4_sb_info *sbi,
+ 	ret.raid_stripe_width = le32_to_cpu(es->s_raid_stripe_width);
+ 	ret.encoding = le16_to_cpu(es->s_encoding);
+ 	ret.encoding_flags = le16_to_cpu(es->s_encoding_flags);
+-	strscpy_pad(ret.mount_opts, es->s_mount_opts);
++	memcpy(ret.mount_opts, es->s_mount_opts, sizeof(ret.mount_opts));
+ 	ret.feature_compat = le32_to_cpu(es->s_feature_compat);
+ 	ret.feature_incompat = le32_to_cpu(es->s_feature_incompat);
+ 	ret.feature_ro_compat = le32_to_cpu(es->s_feature_ro_compat);
+@@ -1353,7 +1353,7 @@ static void ext4_sb_setparams(struct ext4_sb_info *sbi,
+ 		es->s_encoding = cpu_to_le16(params->encoding);
+ 	if (params->set_flags & EXT4_TUNE_FL_ENCODING_FLAGS)
+ 		es->s_encoding_flags = cpu_to_le16(params->encoding_flags);
+-	strscpy_pad(es->s_mount_opts, params->mount_opts);
++	memcpy(es->s_mount_opts, params->mount_opts, sizeof(es->s_mount_opts));
+ 	if (params->set_flags & EXT4_TUNE_FL_EDIT_FEATURES) {
+ 		es->s_feature_compat |=
+ 			cpu_to_le32(params->set_feature_compat_mask);
+diff --git a/include/uapi/linux/ext4.h b/include/uapi/linux/ext4.h
+index 411dcc1e4a35..8ed9acbd0e03 100644
+--- a/include/uapi/linux/ext4.h
++++ b/include/uapi/linux/ext4.h
+@@ -138,7 +138,7 @@ struct ext4_tune_sb_params {
+ 	__u32 clear_feature_compat_mask;
+ 	__u32 clear_feature_incompat_mask;
+ 	__u32 clear_feature_ro_compat_mask;
+-	__u8  mount_opts[64];
++	__u8  mount_opts[64] __nonstring;
+ 	__u8  pad[64];
+ };
+ 
+-- 
+2.51.0
 
 
