@@ -1,155 +1,165 @@
-Return-Path: <linux-ext4+bounces-11113-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11114-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81901C14DC8
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 14:33:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DB86C161E7
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 18:23:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A47BE3ADD29
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 13:32:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 315151C22B89
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 17:23:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B33238D54;
-	Tue, 28 Oct 2025 13:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC127345739;
+	Tue, 28 Oct 2025 17:22:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="CuP7S02l"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2qZW45Tk"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FC8217736;
-	Tue, 28 Oct 2025 13:32:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A265F34B408
+	for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 17:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761658345; cv=none; b=PYws+G9XeO5sC5eEsdprXvYKzhrBX9j337B6Zee0OYk8DFE+JNZlJ9RGR6Cy3RFy4XWRGu5lahp7uwkHVUpwB8nGo7D0vOTcPC/6eSDpvANTfMRmNRrRqhGfRFIOznFEMz9Yv4xPDIbCVs6mjXkZ3h5S6dCjW1C7V1zXxZgb3lE=
+	t=1761672160; cv=none; b=O2xxJYJLfddwkayWb+EKWzQAbaC6XiuORzafXTjbKlHFCF1tCgUJZkBdFvYoobskqzN+L1BRQwdks6dv4E68jSz+Iiwdx6antAo+zhceEPQui8GjGIJNbWcLvDJEq3RKGd5JaDMj9zoyEWQ0hjgJq94HdxKHpEOHXBd4q7tp9K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761658345; c=relaxed/simple;
-	bh=SnwPB+S21saEVcU1tJiDY79Pr0vMZTC2F4f36XPcMV4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vn0gCyKdfLB/W7JoTt5TxsmK0JWn44xJgRJWoiXcVaeyHm0DQMD6xCd8Zm2ievdjTNwujr7CjrJmQgB9CqokvWgdiKh+B4GbKaQGBPwSiSgy5+30gEDOcrDXt6Ih2GMNLH1fNj7Ri1Pv03OcnTya9JgedBZiqcXYpHGWWBgHUCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=CuP7S02l; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from localhost (unknown [10.10.165.13])
-	by mail.ispras.ru (Postfix) with UTF8SMTPSA id EFE0440D3C55;
-	Tue, 28 Oct 2025 13:32:19 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru EFE0440D3C55
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1761658340;
-	bh=gHVq0+X/D7guqM+78XubJUagF1+VqweiN71ZpFr6YLQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CuP7S02lgKQM4Ht70AGackWojq+ECvMgsjZthV7vp77614evIjZdqGGRlo1pF3DF6
-	 n+3I1HcpAO9YOt3TwRt0MPJ5yJsnlawEE6P6N6xFAfou1m3fPZ7s6WePvl/BtTXllR
-	 z+xgwck5ROXu/SUgtsck3WY0/GI+4Db+SzVTixhs=
-Date: Tue, 28 Oct 2025 16:32:19 +0300
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>, 
-	"Darrick J. Wong" <djwong@kernel.org>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kees Cook <kees@kernel.org>, lvc-project@linuxtesting.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] ext4: fix string copying in
- parse_apply_sb_mount_options()
-Message-ID: <20251028162613-b7674fe12860ef66accbc78b-pchelkin@ispras>
-References: <20251028130949.599847-1-pchelkin@ispras.ru>
- <20251028130949.599847-2-pchelkin@ispras.ru>
+	s=arc-20240116; t=1761672160; c=relaxed/simple;
+	bh=czfMh/vqBpBe75z8OObBCid+NjEj0Nwd1XTPGM1Rih8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iGVRc0sHccKtqskcvJ2rcH9ftWmiUz+TpQ2okIvC4OR6aRNkqgDTu2bTgYREy83qOc03PVHbEUddBh2SPtKcya6NpEIKbygqc7VPW7cnzWPmWRBHxytdbhx4cf6lnVNyzUeBzeVvhN0qg45QpKvHxEpaaI5fe2TEkmsmiQQyToU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2qZW45Tk; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-4ea12242d2eso17931cf.1
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Oct 2025 10:22:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1761672157; x=1762276957; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WXkInKYza36OKEjDJ9gQla/X4/pbEXOW59mglWVYVe0=;
+        b=2qZW45Tkj7JoP1BwSLq/31YPaaLAUwl8m+SqaOSCrgqK/kdXKWiIlxfcN51QEVwv18
+         E5SgA5WACPnds2Ja6eB7fn821NcBUEQvnpC4lLOPMhDjKtCCKlUxnaViuNcxlmMGMslp
+         JoRMOgzou/e+lPcj9Oh0x21+GWoMv8l8VuXNP8TXNm9eb1cijCEUU1I+Ocjk1gInfH17
+         msullDmMRc9aBMmei++FAPXo18o4CCuX6670yHWfKSdpzsKuLDHNJ5I0KVkwdE4SG4oB
+         OFOn83UGPQRDhmB/ooJ+8usDXUf3z1+PwmMgeKiu9nnidwJQz/SAIDTZ2lZQBA1lurxw
+         hiPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761672157; x=1762276957;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WXkInKYza36OKEjDJ9gQla/X4/pbEXOW59mglWVYVe0=;
+        b=RdaAyT5xvnopqswP2f6lTaFBr4jYxCuQgcRmUuasJJ2wHs2pzaeEXU9HPRLsCoI+BT
+         0m7FpMMV66claBuyLyafCoKx5t37EG5ggXVxDAmdvyArmmx7KiBq+5UDExzFFqWPa6Qq
+         go9wV8uUDo2QPPecM3OdE92exPW2Fcc90u7q7T3zuiRfaAtpq3ZhCO4E8AlkSs1I43mC
+         SPV+g8NQoyphXbevOhp4rHrlf8j39jX0BydJ7jyZh7QpnIoIHKVUA+6CgtShTh+ktsnC
+         Ww/izBJoT7MdCXi4SpeQSqdYistqbBbo3kIZcLF17HsPw3vuqES4gUBD9w5nEQEj27rl
+         wa8g==
+X-Forwarded-Encrypted: i=1; AJvYcCWSN/kOojw9PgiJLOXsvFcDiCbvxee3U/7VOdp/Fp9XQ3TKh5stKRhLv+aDWFrdDlDbQIt+wRutQIqD@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw62sc6ZNNPNEtc5hFlY8xkvI6+YVOnM8lHe5aj6cXvWl87fwps
+	cUtoWo2tV0fuF0vJ7HSiWmZlll8naVuxmBOTnyX7OQcUsr80wOTeaiUYToBTWtTPoI+37DX6N1J
+	glvl7xgxhdouboHGLhbFNu1DVjgMLJi0+CCqiyqOO
+X-Gm-Gg: ASbGncvvwHU6YlGV1QTbccC8cw7JWfZnYINT2xeTtOgWVoEQSwsfSyzcs4VC6Z5Sv3+
+	mQygtRRZNM2z+Iq9KvfwmO3Vv8ZSTokQWVHujeUR++Tc+16+DPewPr6aMuwTH5hhJ0xTOBv/Il7
+	b/Qep/HVuC8AfuzH4tESlV/+DDepDgEpYhS/W4CaCrxcbgGGT9bCvdri872gW1YXH6Np+DTmluI
+	L6tFqp6TBdRbg1TUKiJmA3l6BWrdXojAG0VmkeqnREE7neT1ckhznsKCgwt9QXGYDojPU/bESbq
+	izc8G755rzhVdA2Mxl1xIUT0Ng==
+X-Google-Smtp-Source: AGHT+IHn/oTfm/JuwLti1FuzoxQ+/oX/hUBOtVlQ025ocwE7vk9a+/tdWJJNQoH1S/B6JBQomz11gO7zAkAgU9yuzGA=
+X-Received: by 2002:a05:622a:244d:b0:4b7:9b06:ca9f with SMTP id
+ d75a77b69052e-4ed157de56amr256901cf.2.1761672157120; Tue, 28 Oct 2025
+ 10:22:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20251028130949.599847-2-pchelkin@ispras.ru>
+References: <20251027122847.320924-1-harry.yoo@oracle.com> <20251027122847.320924-3-harry.yoo@oracle.com>
+In-Reply-To: <20251027122847.320924-3-harry.yoo@oracle.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 28 Oct 2025 10:22:24 -0700
+X-Gm-Features: AWmQ_blgmjSynkbbdCoPvFJY7HzNhE5kHecWMsBfPzVUZdQoPVaPzHQJsWkzclk
+Message-ID: <CAJuCfpGo=m9vdRQCqa-2MtAb9GBNsF4+6YXm7vzGFYtqsOzq1A@mail.gmail.com>
+Subject: Re: [RFC PATCH V3 2/7] ext4: specify the free pointer offset for ext4_inode_cache
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
+	cl@linux.com, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
+	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
+	rientjes@google.com, roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, 
+	shakeel.butt@linux.dev, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, 
+	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 28. Oct 16:09, Fedor Pchelkin wrote:
-> strscpy_pad() can't be used to copy a possibly non-NUL-term string into a
-> NUL-term string.  Commit 0efc5990bca5 ("string.h: Introduce memtostr() and
-> memtostr_pad()") provides additional information in that regard.  So if
-> this happens, the following warning is observed:
-> 
-> strnlen: detected buffer overflow: 65 byte read of buffer size 64
-> WARNING: CPU: 0 PID: 28655 at lib/string_helpers.c:1032 __fortify_report+0x96/0xc0 lib/string_helpers.c:1032
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 28655 Comm: syz-executor.3 Not tainted 6.12.54-syzkaller-00144-g5f0270f1ba00 #0
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> RIP: 0010:__fortify_report+0x96/0xc0 lib/string_helpers.c:1032
-> Call Trace:
->  <TASK>
->  __fortify_panic+0x1f/0x30 lib/string_helpers.c:1039
->  strnlen include/linux/fortify-string.h:235 [inline]
->  sized_strscpy include/linux/fortify-string.h:309 [inline]
->  parse_apply_sb_mount_options fs/ext4/super.c:2504 [inline]
->  __ext4_fill_super fs/ext4/super.c:5261 [inline]
->  ext4_fill_super+0x3c35/0xad00 fs/ext4/super.c:5706
->  get_tree_bdev_flags+0x387/0x620 fs/super.c:1636
->  vfs_get_tree+0x93/0x380 fs/super.c:1814
->  do_new_mount fs/namespace.c:3553 [inline]
->  path_mount+0x6ae/0x1f70 fs/namespace.c:3880
->  do_mount fs/namespace.c:3893 [inline]
->  __do_sys_mount fs/namespace.c:4103 [inline]
->  __se_sys_mount fs/namespace.c:4080 [inline]
->  __x64_sys_mount+0x280/0x300 fs/namespace.c:4080
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x64/0x140 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> 
-> Since s_es->s_mount_opts might be non-NUL-term, annotate it with
-> __nonstring and use the proper memtostr_pad() routine to get its NULL-term
-> copy.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
-> 
-> Fixes: 8ecb790ea8c3 ("ext4: avoid potential buffer over-read in parse_apply_sb_mount_options()")
-
-
-Though giving it a second glance I wonder what overflow problem does the
-commit in Fixes address?
-
-Behavior actually stays the same: before the blamed patch in case of a
-non-NUL-term string kstrndup() just allocates a buffer of `size + 1`
-(which equals to 65 here) and no overflow is possible, as far as I can
-see.
-
-If it's actually true, maybe we'd better just revert 8ecb790ea8c3 ("ext4:
-avoid potential buffer over-read in parse_apply_sb_mount_options()") ?
-
-
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+On Mon, Oct 27, 2025 at 5:29=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wr=
+ote:
+>
+> Convert ext4_inode_cache to use the kmem_cache_args interface and
+> specify a free pointer offset.
+>
+> Since ext4_inode_cache uses a constructor, the free pointer would be
+> placed after the object to overwriting fields used by the constructor.
+> However, some fields such as ->i_flags are not used by the constructor
+> and can safely be repurposed for the free pointer.
+>
+> Specify the free pointer offset at i_flags to reduce the object size.
+>
+> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
 > ---
->  fs/ext4/ext4.h  | 2 +-
->  fs/ext4/super.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 57087da6c7be..4c8698316457 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1429,7 +1429,7 @@ struct ext4_super_block {
->  	__le64	s_last_error_block;	/* block involved of last error */
->  	__u8	s_last_error_func[32] __nonstring;	/* function where the error happened */
->  #define EXT4_S_ERR_END offsetof(struct ext4_super_block, s_mount_opts)
-> -	__u8	s_mount_opts[64];
-> +	__u8	s_mount_opts[64] __nonstring;
->  	__le32	s_usr_quota_inum;	/* inode for tracking user quota */
->  	__le32	s_grp_quota_inum;	/* inode for tracking group quota */
->  	__le32	s_overhead_clusters;	/* overhead blocks/clusters in fs */
+>  fs/ext4/super.c | 20 ++++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
+>
 > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 33e7c08c9529..57df129873e3 100644
+> index 699c15db28a8..2860e0ee913f 100644
 > --- a/fs/ext4/super.c
 > +++ b/fs/ext4/super.c
-> @@ -2483,7 +2483,7 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
->  	if (!sbi->s_es->s_mount_opts[0])
->  		return 0;
->  
-> -	strscpy_pad(s_mount_opts, sbi->s_es->s_mount_opts);
-> +	memtostr_pad(s_mount_opts, sbi->s_es->s_mount_opts);
->  
->  	fc = kzalloc(sizeof(struct fs_context), GFP_KERNEL);
->  	if (!fc)
-> -- 
-> 2.51.0
-> 
+> @@ -1474,12 +1474,20 @@ static void init_once(void *foo)
+>
+>  static int __init init_inodecache(void)
+>  {
+> -       ext4_inode_cachep =3D kmem_cache_create_usercopy("ext4_inode_cach=
+e",
+> -                               sizeof(struct ext4_inode_info), 0,
+> -                               SLAB_RECLAIM_ACCOUNT | SLAB_ACCOUNT,
+> -                               offsetof(struct ext4_inode_info, i_data),
+> -                               sizeof_field(struct ext4_inode_info, i_da=
+ta),
+> -                               init_once);
+> +       struct kmem_cache_args args =3D {
+> +               .align =3D 0,
+> +               .useroffset =3D offsetof(struct ext4_inode_info, i_data),
+> +               .usersize =3D sizeof_field(struct ext4_inode_info, i_data=
+),
+> +               .use_freeptr_offset =3D true,
+> +               .freeptr_offset =3D offsetof(struct ext4_inode_info, i_fl=
+ags),
+
+Hi Harry,
+AFAIK freeptr_offset can be used only with SLAB_TYPESAFE_BY_RCU caches
+(see https://elixir.bootlin.com/linux/v6.18-rc3/source/include/linux/slab.h=
+#L302)
+and check at https://elixir.bootlin.com/linux/v6.18-rc3/source/mm/slab_comm=
+on.c#L234
+should fail otherwise. The cache you are changing does not seem to
+have this flag set.
+Thanks,
+Suren.
+
+> +               .ctor =3D init_once,
+> +       };
+> +
+> +       ext4_inode_cachep =3D kmem_cache_create("ext4_inode_cache",
+> +                               sizeof(struct ext4_inode_info),
+> +                               &args,
+> +                               SLAB_RECLAIM_ACCOUNT | SLAB_ACCOUNT);
+> +
+>         if (ext4_inode_cachep =3D=3D NULL)
+>                 return -ENOMEM;
+>         return 0;
+> --
+> 2.43.0
+>
 
