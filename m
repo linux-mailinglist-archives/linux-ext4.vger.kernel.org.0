@@ -1,46 +1,47 @@
-Return-Path: <linux-ext4+bounces-11111-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11112-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9617EC14C6D
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 14:10:38 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D260FC14C73
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 14:10:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC08B1B2538B
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 13:11:01 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1769F4F2199
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 13:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676E73314B9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677AE3314BC;
 	Tue, 28 Oct 2025 13:10:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="e+ok+RGN"
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="F2ypRzLO"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
 	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A00781E834B;
-	Tue, 28 Oct 2025 13:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8BA730C600;
+	Tue, 28 Oct 2025 13:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761657031; cv=none; b=O8VBH/uJIvZdtZHF2Td1rquk1ldE25P+tNfc7w/uryXnlqTz4NEMnmbZzP2SaTnhuxVlXU4DATx/kijsUaokAUkw4a764roT4R1k7J91tTy2LB3dsH6POIqDJ4SmCt/GCdK2KYL5o0L6AAoyjavFx4aVSvySNnU42gRVpOL94rc=
+	t=1761657031; cv=none; b=bfHns12PbIR/dpWYnK7Xsqr8RHYyfaPoHXOokcomAfzMCvxot92jBMzfQjYWKruxbPS0kSKp4VEgUz+DRZ5cNhDayKmupA8ziG9BF51J41OIzQABhnyh/NsRByYUg0/jg1N7L6JgIgMKIdvmDOUHhXBPjGQQ2x97TfYKKolBqxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1761657031; c=relaxed/simple;
-	bh=ouhV2HDV8Ni9J87rpuxzeZNp/ogsqBij7QucXH4rKTU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z7hs6jAYRfevgfUUnuPUfHEiPO+/ZejuheX40HmBPBg/z0xU5iNgg78A4CeNvHDVP3lHxZnOBQn3ljEkf+dYfH4XfC6COJPADuX867hRs8LL/GBq4utM3W+otjOZXUXdSFwRqc1PHlXSEx7UAH8cBNH6qMXDZMct23FUIipC1HA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=e+ok+RGN; arc=none smtp.client-ip=83.149.199.84
+	bh=5AcqVujVKBPgf69fTtFsxf65JIeizyTHqi10Ci/8OCc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=aZjmzfClJRamSeUTlyM7Bh6PjXBy/teohvT/Qqx99sVBgpqzkMQfqaJGWfUNwLdiEmB8AV7QtmqmPN75NQbsnjv5HzCTiUrRnM+A0v2TqQm5u0/u/qaauoIbQjG8uGa3L8Rz58WzDWpd1V6OSgbJlGDZah+wwCRpz1ZU8gWBJSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=F2ypRzLO; arc=none smtp.client-ip=83.149.199.84
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
 Received: from debian.intra.ispras.ru (unknown [10.10.165.13])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 20B17407618C;
-	Tue, 28 Oct 2025 13:10:18 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 20B17407618C
+	by mail.ispras.ru (Postfix) with ESMTPSA id 833FB40D3C55;
+	Tue, 28 Oct 2025 13:10:19 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 833FB40D3C55
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1761657018;
-	bh=+A37THDd2QvH4j4+lDg0mcsg8AKgH1f26eTMcOLh8RA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=e+ok+RGNA49IYelbni2UUJqMd9MinTd2BnIE4kxQwdlZoNLruPwbkY/p/zvtlnq9Y
-	 +zq+RBW2WH7Ge4uqtq+rPYNm9Ah+IdsNPPsip3YxBRoyyBeVaVmlC/oxaPq4UdIAZ5
-	 WXcc7it2vvUtu6jPFsN6P1CVYWgS2AC8dqissFvM=
+	s=default; t=1761657019;
+	bh=tlkcOsH3XzAfIdHxh1tv8lnDx92rtQpnwREuXOUdXXs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=F2ypRzLOg/9SplRY0ZvqzYZvrXx12WVoCs45+mVjFvu/NVtPQlYWppASHGztKW2Gq
+	 hnVH2H749E0bP0zQuuKsG5z9pj4zMxQAajiCnFOkUZoVzC8pnHqTK1U7G+Jk8+C1gS
+	 InZN9mTfQouQRONG/rhwbshSI744WX7RfE5C4/es=
 From: Fedor Pchelkin <pchelkin@ispras.ru>
 To: "Theodore Ts'o" <tytso@mit.edu>
 Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
@@ -50,11 +51,14 @@ Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
 	linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Kees Cook <kees@kernel.org>,
-	lvc-project@linuxtesting.org
-Subject: [PATCH 1/2] ext4: fix up copying of mount_opts in superblock tuning ioctls
-Date: Tue, 28 Oct 2025 16:09:47 +0300
-Message-ID: <20251028130949.599847-1-pchelkin@ispras.ru>
+	lvc-project@linuxtesting.org,
+	stable@vger.kernel.org
+Subject: [PATCH 2/2] ext4: fix string copying in parse_apply_sb_mount_options()
+Date: Tue, 28 Oct 2025 16:09:48 +0300
+Message-ID: <20251028130949.599847-2-pchelkin@ispras.ru>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251028130949.599847-1-pchelkin@ispras.ru>
+References: <20251028130949.599847-1-pchelkin@ispras.ru>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -63,74 +67,77 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Judging by commit 8ecb790ea8c3 ("ext4: avoid potential buffer over-read in
-parse_apply_sb_mount_options()"), the contents of s_mount_opts should be
-treated as __nonstring, i.e. there might be no NUL-terminator in the
-provided buffer.
+strscpy_pad() can't be used to copy a possibly non-NUL-term string into a
+NUL-term string.  Commit 0efc5990bca5 ("string.h: Introduce memtostr() and
+memtostr_pad()") provides additional information in that regard.  So if
+this happens, the following warning is observed:
 
-Then the same holds for the corresponding mount_opts field of the struct
-ext4_tune_sb_params exchanged with userspace via a recently implemented
-superblock tuning ioctl.
+strnlen: detected buffer overflow: 65 byte read of buffer size 64
+WARNING: CPU: 0 PID: 28655 at lib/string_helpers.c:1032 __fortify_report+0x96/0xc0 lib/string_helpers.c:1032
+Modules linked in:
+CPU: 0 UID: 0 PID: 28655 Comm: syz-executor.3 Not tainted 6.12.54-syzkaller-00144-g5f0270f1ba00 #0
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:__fortify_report+0x96/0xc0 lib/string_helpers.c:1032
+Call Trace:
+ <TASK>
+ __fortify_panic+0x1f/0x30 lib/string_helpers.c:1039
+ strnlen include/linux/fortify-string.h:235 [inline]
+ sized_strscpy include/linux/fortify-string.h:309 [inline]
+ parse_apply_sb_mount_options fs/ext4/super.c:2504 [inline]
+ __ext4_fill_super fs/ext4/super.c:5261 [inline]
+ ext4_fill_super+0x3c35/0xad00 fs/ext4/super.c:5706
+ get_tree_bdev_flags+0x387/0x620 fs/super.c:1636
+ vfs_get_tree+0x93/0x380 fs/super.c:1814
+ do_new_mount fs/namespace.c:3553 [inline]
+ path_mount+0x6ae/0x1f70 fs/namespace.c:3880
+ do_mount fs/namespace.c:3893 [inline]
+ __do_sys_mount fs/namespace.c:4103 [inline]
+ __se_sys_mount fs/namespace.c:4080 [inline]
+ __x64_sys_mount+0x280/0x300 fs/namespace.c:4080
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x64/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
-The problem is that strscpy_pad() can't work properly with non-NUL-term
-strings.  String fortifying infrastructure would complain if that happens.
-Commit 0efc5990bca5 ("string.h: Introduce memtostr() and memtostr_pad()")
-gives additional information in that regard.
+Since s_es->s_mount_opts might be non-NUL-term, annotate it with
+__nonstring and use the proper memtostr_pad() routine to get its NULL-term
+copy.
 
-Both buffers are just raw arrays of the similar fixed size, essentially
-they should represent the same contents.  As they don't necessarily have
-NUL-terminators, in both directions use plain memcpy() to copy their
-contents.
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
 
-Found by Linux Verification Center (linuxtesting.org).
-
-Fixes: 04a91570ac67 ("ext4: implemet new ioctls to set and get superblock parameters")
+Fixes: 8ecb790ea8c3 ("ext4: avoid potential buffer over-read in parse_apply_sb_mount_options()")
+Cc: stable@vger.kernel.org
 Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
 ---
+ fs/ext4/ext4.h  | 2 +-
+ fs/ext4/super.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-The 1/2 patch of the current series fixes an issue existing only in 6.18-rc
-while 2/2 fixes the commit which was in turn backported to stable kernels.
-That's the reasoning for separation.
-
- fs/ext4/ioctl.c           | 4 ++--
- include/uapi/linux/ext4.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index a93a7baae990..c39b87d52cb0 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1292,7 +1292,7 @@ static int ext4_ioctl_get_tune_sb(struct ext4_sb_info *sbi,
- 	ret.raid_stripe_width = le32_to_cpu(es->s_raid_stripe_width);
- 	ret.encoding = le16_to_cpu(es->s_encoding);
- 	ret.encoding_flags = le16_to_cpu(es->s_encoding_flags);
--	strscpy_pad(ret.mount_opts, es->s_mount_opts);
-+	memcpy(ret.mount_opts, es->s_mount_opts, sizeof(ret.mount_opts));
- 	ret.feature_compat = le32_to_cpu(es->s_feature_compat);
- 	ret.feature_incompat = le32_to_cpu(es->s_feature_incompat);
- 	ret.feature_ro_compat = le32_to_cpu(es->s_feature_ro_compat);
-@@ -1353,7 +1353,7 @@ static void ext4_sb_setparams(struct ext4_sb_info *sbi,
- 		es->s_encoding = cpu_to_le16(params->encoding);
- 	if (params->set_flags & EXT4_TUNE_FL_ENCODING_FLAGS)
- 		es->s_encoding_flags = cpu_to_le16(params->encoding_flags);
--	strscpy_pad(es->s_mount_opts, params->mount_opts);
-+	memcpy(es->s_mount_opts, params->mount_opts, sizeof(es->s_mount_opts));
- 	if (params->set_flags & EXT4_TUNE_FL_EDIT_FEATURES) {
- 		es->s_feature_compat |=
- 			cpu_to_le32(params->set_feature_compat_mask);
-diff --git a/include/uapi/linux/ext4.h b/include/uapi/linux/ext4.h
-index 411dcc1e4a35..8ed9acbd0e03 100644
---- a/include/uapi/linux/ext4.h
-+++ b/include/uapi/linux/ext4.h
-@@ -138,7 +138,7 @@ struct ext4_tune_sb_params {
- 	__u32 clear_feature_compat_mask;
- 	__u32 clear_feature_incompat_mask;
- 	__u32 clear_feature_ro_compat_mask;
--	__u8  mount_opts[64];
-+	__u8  mount_opts[64] __nonstring;
- 	__u8  pad[64];
- };
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 57087da6c7be..4c8698316457 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1429,7 +1429,7 @@ struct ext4_super_block {
+ 	__le64	s_last_error_block;	/* block involved of last error */
+ 	__u8	s_last_error_func[32] __nonstring;	/* function where the error happened */
+ #define EXT4_S_ERR_END offsetof(struct ext4_super_block, s_mount_opts)
+-	__u8	s_mount_opts[64];
++	__u8	s_mount_opts[64] __nonstring;
+ 	__le32	s_usr_quota_inum;	/* inode for tracking user quota */
+ 	__le32	s_grp_quota_inum;	/* inode for tracking group quota */
+ 	__le32	s_overhead_clusters;	/* overhead blocks/clusters in fs */
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 33e7c08c9529..57df129873e3 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2483,7 +2483,7 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
+ 	if (!sbi->s_es->s_mount_opts[0])
+ 		return 0;
  
+-	strscpy_pad(s_mount_opts, sbi->s_es->s_mount_opts);
++	memtostr_pad(s_mount_opts, sbi->s_es->s_mount_opts);
+ 
+ 	fc = kzalloc(sizeof(struct fs_context), GFP_KERNEL);
+ 	if (!fc)
 -- 
 2.51.0
 
