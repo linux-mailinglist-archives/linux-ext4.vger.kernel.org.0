@@ -1,62 +1,58 @@
-Return-Path: <linux-ext4+bounces-11122-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11123-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13CC8C1744B
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 00:04:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17BCCC178A0
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 01:28:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C52164F8355
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Oct 2025 23:04:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A12941AA8A90
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 00:28:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA13736A5EA;
-	Tue, 28 Oct 2025 23:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998C8283FF9;
+	Wed, 29 Oct 2025 00:27:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UitXAtQ+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LTwTWK7K"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588AC199931;
-	Tue, 28 Oct 2025 23:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3769E3A1CD;
+	Wed, 29 Oct 2025 00:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761692633; cv=none; b=WU6b12kFAexuY48nH1qIteo0cvXUKFK2KSRi8CbjJASkoyk33OYG+CwgF44RApHesBESH5zUrSoZtS/6V9D/dLnP8NuuTGRmV2eUKkDsYpCHusbPoiIO35AZ8f9XhMnC6aUXpFLyUGtysy1sH8S+VYGF6dNBRzDjYlUK0kIxnYY=
+	t=1761697676; cv=none; b=KTjps5I6AaVx/ho1YRjMxHoMiCuZXiixOSz+la9Ff6hUFBJtAetBo6TckKvEFWGwIZKjgjmhGKe4ZpUPBV7g7eyL8HMairQnNVnTLs1H9RgVEhSh5t+0YaovUlx2mXF8yGRV7KADh0vSLxY0F8VngLP71Peaw4uwbI0rXIztqr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761692633; c=relaxed/simple;
-	bh=kgX4g6vUYkvgZSZP1fvrdIYXiC9PY9BfKX/VN+ui3hw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z4lOLDILYJzwC4Pg9pltD0VVzkex0PRfw6atNjQB5HrPAvtIeNVdt4W+CEWZjMsqKOxmvzsXfxOLrjvBYBla2APjb+Dtg298wE6fgNY/ef5g1SZhZFD+6fPaUDxSYc1y1izQyMK17iac250pPxmUvoqB910vYrYmXeuLNj+Ofs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UitXAtQ+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FB94C4CEE7;
-	Tue, 28 Oct 2025 23:03:52 +0000 (UTC)
+	s=arc-20240116; t=1761697676; c=relaxed/simple;
+	bh=zK3Uedm3CZT16mNFd3TLzP0KpphAljz+7EQ6t2r7+5o=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=hqIkm4nYn+1NrujyenCfDCuX4YAPeBlv8s8LNOA0TQpx5xt7KtiW0G139HBqpGDwlPMybDqwO9jFV1yO3g7chhPtwZP3iwf9xXsDuzYXEW07taGShF4Ili7qPdzFGdNMfC7Cy63qWNQL4SmXgx69OtC/gs9a14B2uoYW4X6x0qQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LTwTWK7K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B15BDC4CEE7;
+	Wed, 29 Oct 2025 00:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761692632;
-	bh=kgX4g6vUYkvgZSZP1fvrdIYXiC9PY9BfKX/VN+ui3hw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UitXAtQ+ZUQ9Pn9+px3V6NR+FRxoklye0tQSSoWExizr1U8ODSP0DqrADg8Va1IlL
-	 sqwUgTk5ScjgGkrAMJfBhVcyVE3LhHbxB38slMtsnhRIzJmsiUu62coD4x/gcDOrYj
-	 f3Anr7AzIRiNB1MYTe6eu4FNeQlnF9y3YMlBVhuMxaTmWvyCJmL9nbg7C7vRytPG0W
-	 Im0kvOsKKLmzbjsMLhvnLjC1WJ6PBU5vpisfNj04Ebulit1ohS/PMm2PtfhXsJDaPi
-	 7W9Wv411rpbjAHdXtGH+1k9xg7pPNl+qtaUxWwea+86zkNWU17NTnJpufsc+eInCsS
-	 s68rycFoWURDA==
-Date: Tue, 28 Oct 2025 23:03:50 +0000
-From: Eric Biggers <ebiggers@kernel.org>
-To: Carlos Llamas <cmllamas@google.com>
-Cc: Keith Busch <kbusch@kernel.org>, Keith Busch <kbusch@meta.com>,
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, hch@lst.de,
-	axboe@kernel.dk, Hannes Reinecke <hare@suse.de>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCHv4 5/8] iomap: simplify direct io validity check
-Message-ID: <20251028230350.GB1639650@google.com>
-References: <20250827141258.63501-1-kbusch@meta.com>
- <20250827141258.63501-6-kbusch@meta.com>
- <aP-c5gPjrpsn0vJA@google.com>
- <aP-hByAKuQ7ycNwM@kbusch-mbp>
- <aQFIGaA5M4kDrTlw@google.com>
- <20251028225648.GA1639650@google.com>
+	s=k20201202; t=1761697675;
+	bh=zK3Uedm3CZT16mNFd3TLzP0KpphAljz+7EQ6t2r7+5o=;
+	h=Date:From:To:Cc:Subject:From;
+	b=LTwTWK7KX1zpnlqe/hjz/Vdmzy2raENMMYQ1i2hul9i80oVFqxaBZzVmsGM0nfrrQ
+	 pZSMlgZlNiWrpGnFgdQl53f2r81d96SOwg1QMmC0GGV0apUsAcrwolOFTE9Yv09evX
+	 jauWvhpxYxDmPKwB3R8mNKaKZp0osb0QVDyOdHPbsK2bN9+MmyHg6Fsg5ePDUIJozx
+	 /xJduDXU/sgFm0T59u19hsxPbUDoqePwiD0dmGY+vDqoonSgG8PMFRKczr/N16s9wJ
+	 IrGSjRekAJk63zxlxkDp7lF6P0oYikagrGb07wVGVfFp5jLNkUOZEFQMDmSnHAQ5YJ
+	 N4aXeAT6ydn4g==
+Date: Tue, 28 Oct 2025 17:27:55 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Bernd Schubert <bernd@bsbernd.com>,
+	Joanne Koong <joannelkoong@gmail.com>,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>, Neal Gompa <neal@gompa.dev>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>
+Subject: [PATCHBOMB v6] fuse: containerize ext4 for safer operation
+Message-ID: <20251029002755.GK6174@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,67 +61,82 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251028225648.GA1639650@google.com>
 
-On Tue, Oct 28, 2025 at 10:56:48PM +0000, Eric Biggers wrote:
-> On Tue, Oct 28, 2025 at 10:47:53PM +0000, Carlos Llamas wrote:
-> > Ok, I did a bit more digging. I'm using f2fs but the problem in this
-> > case is the blk_crypto layer. The OP_READ request goes through
-> > submit_bio() which then calls blk_crypto_bio_prep() and if the bio has
-> > crypto context then it checks for bio_crypt_check_alignment().
-> > 
-> > This is where the LTP tests fails the alignment. However, the propagated
-> > error goes through "bio->bi_status = BLK_STS_IOERR" which in bio_endio()
-> > get translates to EIO due to blk_status_to_errno().
-> > 
-> > I've verified this restores the original behavior matching the LTP test,
-> > so I'll write up a patch and send it a bit later.
-> > 
-> > diff --git a/block/blk-crypto.c b/block/blk-crypto.c
-> > index 1336cbf5e3bd..a417843e7e4a 100644
-> > --- a/block/blk-crypto.c
-> > +++ b/block/blk-crypto.c
-> > @@ -293,7 +293,7 @@ bool __blk_crypto_bio_prep(struct bio **bio_ptr)
-> >  	}
-> >  
-> >  	if (!bio_crypt_check_alignment(bio)) {
-> > -		bio->bi_status = BLK_STS_IOERR;
-> > +		bio->bi_status = BLK_STS_INVAL;
-> >  		goto fail;
-> >  	}
-> 
-> That change looks fine, but I'm wondering how this case was reached in
-> the first place.  Upper layers aren't supposed to be submitting
-> misaligned bios like this.  For example, ext4 and f2fs require
-> filesystem logical block size alignment for direct I/O on encrypted
-> files.  They check for this early, before getting to the point of
-> submitting a bio, and fall back to buffered I/O if needed.
+Look ma, no more RFC tag!
 
-I suppose it's this code in f2fs_should_use_dio():
+This is the sixth public draft of a prototype to connect the Linux fuse
+driver to fs-iomap for regular file IO operations to and from files
+whose contents persist to locally attached storage devices.  With this
+release, I show that it's possible to build a fuse server for a real
+filesystem (ext4) that runs entirely in userspace yet maintains most of
+its performance.  Furthermore, I also show that the userspace program
+runs with minimal privilege, which means that we no longer need to have
+filesystem metadata parsing be a privileged (== risky) operation.
 
-	/*
-	 * Direct I/O not aligned to the disk's logical_block_size will be
-	 * attempted, but will fail with -EINVAL.
-	 *
-	 * f2fs additionally requires that direct I/O be aligned to the
-	 * filesystem block size, which is often a stricter requirement.
-	 * However, f2fs traditionally falls back to buffered I/O on requests
-	 * that are logical_block_size-aligned but not fs-block aligned.
-	 *
-	 * The below logic implements this behavior.
-	 */
-	align = iocb->ki_pos | iov_iter_alignment(iter);
-	if (!IS_ALIGNED(align, i_blocksize(inode)) &&
-	    IS_ALIGNED(align, bdev_logical_block_size(inode->i_sb->s_bdev)))
-		return false;
+Why would you want to do that?  Most filesystem drivers are seriously
+vulnerable to metadata parsing attacks, as syzbot has shown repeatedly
+over almost a decade of its existence.  Faulty code can lead to total
+kernel compromise, and I think there's a very strong incentive to move
+all that parsing out to userspace where we can containerize the fuse
+server process.
 
-So it relies on the alignment check in iomap in the case where the
-request is neither logical_block_size nor filesystem_block_size aligned.
+willy's folios conversion project (and to a certain degree RH's new
+mount API) have also demonstrated that treewide changes to the core
+mm/pagecache/fs code are very very difficult to pull off and take years
+because you have to understand every filesystem's bespoke use of that
+core code.  Eeeugh.
 
-f2fs_should_use_dio() probably should just handle that case explicitly.
+The fuse command plumbing is very simple -- the ->iomap_begin,
+->iomap_end, and iomap ->ioend calls within iomap are turned into
+upcalls to the fuse server via a trio of new fuse commands.  Pagecache
+writeback is now a directio write.  The fuse server is now able to
+upsert mappings into the kernel for cached access (== zero upcalls for
+rereads and pure overwrites!) and the iomap cache revalidation code
+works.
 
-But making __blk_crypto_bio_prep() use a better error code sounds good
-too.
+At this stage I still get about 95% of the kernel ext4 driver's
+streaming directio performance on streaming IO, and 110% of its
+streaming buffered IO performance.  Random buffered IO is about 85% as
+fast as the kernel.  Random direct IO is about 80% as fast as the
+kernel; see the cover letter for the fuse2fs iomap changes for more
+details.  Unwritten extent conversions on random direct writes are
+especially painful for fuse+iomap (~90% more overhead) due to upcall
+overhead.  And that's with (now dynamic) debugging turned on!
 
-- Eric
+These items have been addressed since the fifth RFC:
+
+1. After seven months of work, I can get seven of my 15 or so testing
+   profiles to pass fstests, most days.  There are a few flakey tests
+   like generic/347 that (I think) sometimes fail because there's no
+   journalling in jbd2.  That's better than kernel ext4, which never
+   gets all the way to passing here.
+
+2. Swap files, filesystem freeze and thaw, and shutdowns now work.
+
+3. fuse4fs can now use PSI information as a clue that it's time for it
+   to flush its caches and evict them.
+
+There are some warts remaining:
+
+a. I would like to start a discussion about how the design review of
+   this code should be structured, and how might I go about creating new
+   userspace filesystem servers -- lightweight new ones based off the
+   existing userspace tools?  Or by merging lklfuse?
+
+b. ext4 doesn't support out of place writes so I don't know if that
+   actually works correctly.
+
+c. fuse2fs doesn't support the ext4 journal.  Urk.
+
+d. There's a VERY large quantity of fuse2fs improvements that need to be
+   applied before we get to the fuse-iomap parts.  I'm not sending these
+   (or the fstests changes) to keep the size of the patchbomb at
+   "unreasonably large". :P  As a result, the fstests and e2fsprogs
+   postings are very targeted.
+
+I'll work on these in November, but now I'm much more serious about
+getting this merged for 6.19 now that the LTS is past and the coast is
+clear.
+
+--Darrick
 
