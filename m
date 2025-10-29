@@ -1,90 +1,90 @@
-Return-Path: <linux-ext4+bounces-11340-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11341-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64599C1BCE2
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 16:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E7FF4C1BC5E
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 16:48:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0D9085A72C0
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 15:24:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 87D04586B47
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 15:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 911A5311C06;
-	Wed, 29 Oct 2025 15:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FDBD2FFFA9;
+	Wed, 29 Oct 2025 15:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PLxJP1vK"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QgjFDuIi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7A33043D1
-	for <linux-ext4@vger.kernel.org>; Wed, 29 Oct 2025 15:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D152D3EDF
+	for <linux-ext4@vger.kernel.org>; Wed, 29 Oct 2025 15:29:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761751492; cv=none; b=Sx+0ryv+P9XrLbcmj1FMurcsYv+TDvUoaLn2203GKJOcHT3PGHyE4dcp6VBXCLWM1MtFCSIRFRGMt2Sl0zvbrZ2MBLK8DqEmF4CATy1lHjQF+56T4gl0lEEmjZecjXQq7CZb00mX2gpKWtzgAIvaZr7n6dbI3IgekcwJ8PdQ/CM=
+	t=1761751753; cv=none; b=KZtVC+94LTR4eUadnvOxFGiIBl1hPuKqcQ1qXK2zL54lT1lcgPF3eLB95mDr3qFabBtrB0+dWWosTpcqqtt75VUWAK/MEU7Yh69GAvqvk+w5aRDY3kZerP0FbnCLhoem7OQxWSlPbLcvZBB0n4K4TYiSGR7GAYGsra4GpOQMbDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761751492; c=relaxed/simple;
-	bh=KvM3yAit5/aU5CrrYY64Jjy9JkZfQApA1gRH0OBVsOc=;
+	s=arc-20240116; t=1761751753; c=relaxed/simple;
+	bh=WtXohkJCbWS4jbO4cmof6PHddRZcBco3Bznw9PsDWdI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LGbH17Lk9veCSs7Lh0Fr9qZaLxIdhA4kirfKEaJWL2J2MHdTwtMDqS9JcfIp47wtZiY8ZP9w8gYvf97nSW8w/+Gt1WdYjqxjk0jdad9K9dxzH2x3u+NE2SWQlC9Pln7mKccTWB1XUl4j9K/UZSpO/ZKtg3LSIa3aVqwa6CZt92s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PLxJP1vK; arc=none smtp.client-ip=209.85.208.48
+	 To:Cc:Content-Type; b=TberTX9wHul9GQmQVBWpqhJKUQWO9Bzq2LZSlOijKF4wvGd+Z6iz+JUXfWurNLgNY99pXT7RAMYVFi5h/1vhzQ1y3Mwrm8GQXNZUc5bGwpJX9itnGHpmDewLbg9JuYUW0gFgl3SpUwbZGnxDCuiw2fUi7LMJkRoD+folZo+LgW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QgjFDuIi; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-62faa04afd9so10993a12.1
-        for <linux-ext4@vger.kernel.org>; Wed, 29 Oct 2025 08:24:50 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-63c44ea68f6so12929a12.0
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Oct 2025 08:29:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761751489; x=1762356289; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1761751749; x=1762356549; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L2iJ+gYl0WvAKtN7IryWto0AZlGcZPV36GKYmbq25K0=;
-        b=PLxJP1vKjV1inw/eXjaPWqq1hNjviK6y8ad/zMP8biGQ+LEi26mYpSws9YbHDtgqYK
-         pPBME9obWeVzTRod1fpx68mMBKHDEj6YSt5+sv7Zh63lvPikkgk8YRwhxD28TfgEpFrZ
-         heN4PCwbqYkryFJpD26uJnexTM2W7HCLlhwedjw5r7S8RBKO/8Qo3Y6GM+lPG7YYoJvY
-         +2cV727f3hebry8RbZ0U+qbfZ01pVrGBmLVLv0XvoUCl7oi7TGog94/O7yY5No+ysROw
-         KCSONOPwDvNNxf0jl4AcQsA2eGKA0hjvD0bME6hkhCh2anCK9zYQ1uFcfCi06gdRBIik
-         GfWA==
+        bh=f625dWb+wusHB9zK0OBpFfEoYrOJJpBna/xRpvKUY48=;
+        b=QgjFDuIinkogf9UkGuZSA0+qfhSDPx19+sh/JFBQrzCWijQQEkenLcC8xfSnNWzqni
+         O08RYSZ7CQSzYayVtRETABaC2DUgxycjk13UbBTR6m80yFosjVi831+2Nfj28jBxYXxY
+         WzHIdll/P9WP2cSmnff+AAs1ygDpKPEn7i2OvRyZqWSGyy571cam7rjR7jya28xfplpc
+         /V7Whimxrba1gqUW2HjjnBHupHL10nHOFd6k9C/Mbv3BC/BEE/f3ejNbPBkrUNOSg39n
+         f07f6/BtmO5Li9tyfpY/aGGNU0u77Lag2wkJR4jr0GHFhCiYLovOlzKcWICpG+rUlGBP
+         KB4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761751489; x=1762356289;
+        d=1e100.net; s=20230601; t=1761751749; x=1762356549;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L2iJ+gYl0WvAKtN7IryWto0AZlGcZPV36GKYmbq25K0=;
-        b=J6ixMmV+uC5o9Gu65zvg+2MGyppdI2gmxy6rHJ6ETjTb0rLh7flDnYJgHlpVE9A9Xo
-         1sHZejecvGOUNzadryzCyCmx78chADw5vmLC5Q39LmAUw8ohoJgbCAlUOFwWgzHruTLr
-         TV90O/Tsol6yC7VZvhJ+BBmoAc8RZRRwgFMdGg3s2HIen8bravizOSt9dJmOtqrGE9zc
-         BGE0ly8Fe5k0GMbUgJC13Ew9EcH1klQkmRynPPh2wJTBVVaPjpRntAo39MTHrgy9cxfH
-         6O4gSKgqnStxU/jzk7jYQoahtgaC+CXn3gtIwXRKwOrqlxOI5JfL3bJsqK+AME5g9AkM
-         1w6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUgKXOxMSuVB8pL8Z2U5MKs60LyVNV5Ws4j3Mkj2EW+xireyIn47q2ywTrlv7dFmHK7OzO571RQZQA1@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMgBG66kF4wOenLboOqbMzWB63LS9QTBAoZOOnTlas8G+kOgMQ
-	LPi6gXl5oYv6Jfy8t4o8ng1BGUZIi/9NUl0iuJbfzLQsh8NA3+GAEKltiV3qz+2PUkAtmqqxbXM
-	E9vXa6edgCyMTx53OvRAZ6q3f3O3/ey6F/5CnP7eA
-X-Gm-Gg: ASbGncsjGlLcIIOQqnQyvwdXHUJ9iyXpaC2EWN1bMlKgAVB9Pp70fFGsClTfj3INwjO
-	qchK2nFCI0qVe3L5gPWd90sG4AIl+hOYz9m3TXOc2LlLkfyGh7LOQmcM3fo4uHAU3aW8DUeBl4s
-	OkvB20NpuJ5T94afLdkCi5Km7Eet4sEDAx64MTb8WfqqO8s5jlwiNjbyLlJWTpu2GgACXvMoPEm
-	hd8mnwrCdxvLTvfs1FfESzJQUWkrLMMG7sSiR7M/bI5ygPMbClYsQ7+l8KBBsK0UT9WaTMgx+fG
-	hsWRxYQMqI1XVrE6FI5/I4fxzg==
-X-Google-Smtp-Source: AGHT+IGU+esMxf3ccvuz4aU0iKC9IRrUhCYYRzaNs+SjfV5pALSJtfH3UmgORTtgzOclQeamunCFAq3K9fIJ6y1muIQ=
-X-Received: by 2002:a05:6402:24c9:b0:634:90ba:2361 with SMTP id
- 4fb4d7f45d1cf-640452b67b6mr123042a12.7.1761751488647; Wed, 29 Oct 2025
- 08:24:48 -0700 (PDT)
+        bh=f625dWb+wusHB9zK0OBpFfEoYrOJJpBna/xRpvKUY48=;
+        b=i68hrfAur5oD0aOgYLLLVF0fNTbQc5+MuATI2KT4SI1qkvkO6nyO1xaDEmL9HjEccD
+         ldicPI1wx8QcTvHPPS7duGR5OxHRIZF/91AIcAzNMoUiLYvYsU5kpreWIHxe3ZlwgKAe
+         uaxPLz9xB2KvIHlknCBjabho0ki4R5mSo1SvpxkqbrMq82dl8c4bI8CaJOkJr8vDKBMD
+         N4mDLHdjAAsuAGw9IlD8xTYVpvLs3YvbiKe5kMQWVZ7KjHvrS8SAcwViDvzEi+o7Xt7n
+         g8Zfe/hR/hHbbVo83z/rvlwNt3V/bazXs0osIiCj+oxYFPnuknqkwITkHMNu91PbjU+E
+         8UwA==
+X-Forwarded-Encrypted: i=1; AJvYcCXTLWIJKp8+TId9goyC7GleQQhG/5TvXsQ7HqbKy5cGYGPdijP2cHQs7HwpcC9RqFHZ0g0S5Gc4/Lx/@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJIQR+vjOsLfJ4UZeyGokqoEIsPd4MjKT4m9pkGLEd649J+kmi
+	lhhvDw0/AdNACH+2KTqukUdR6CJmbx0uCWPvgrfuHQYC06GZm/7d4wu957KUiBV31unEoHbCLJu
+	tSV9NzbbMV3jh7bCMGNnKKSBzC9cvsVSsPWCOMnCw
+X-Gm-Gg: ASbGncvANS6wsMGXU8yd197ARy4zIC/PWh0BsEnAhRu16up5Y9qbGo3G0RxoAGsG+j5
+	EIPDIw5Z27MoQJq5QBG3i6Q+B0KkzaMXi9kckOL4N7zDlj9/QHNMSCmOYex4jNPvPJWDRMzioog
+	miHs4QsHJnUcEPo1pBuJnIVDTPHTJ2bv8/a3WYNcwM4lqP9tribxewwqGAzMfe5XsbUiWq8+O7T
+	7Kv/qAxCz7nlDGy16AAmFy39QKVr+Or8fv9oHsz3jwVXeiv85nGU1/GXOBppdQES9JMWAXLTcr3
+	9q5ZsaK2b0BeNpc=
+X-Google-Smtp-Source: AGHT+IGJr15cLDbC+fbHSXbTnzvTz28tTliyWmFftwEcXMbXCQuxnWdN03oQ6RERl24adkiisnp+L7hn3wCKpUANYfE=
+X-Received: by 2002:a05:6402:713:b0:63e:11ae:ff2e with SMTP id
+ 4fb4d7f45d1cf-6404519b54emr90964a12.3.1761751749371; Wed, 29 Oct 2025
+ 08:29:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251027122847.320924-1-harry.yoo@oracle.com> <20251027122847.320924-4-harry.yoo@oracle.com>
- <CAJuCfpE9PRvd1Tsm6gAvxKvPFgVt640q3vSbt0wAWOa3G4tnfA@mail.gmail.com> <aQHVB_8NVMZ2cuvh@hyeyoo>
-In-Reply-To: <aQHVB_8NVMZ2cuvh@hyeyoo>
+References: <20251027122847.320924-1-harry.yoo@oracle.com> <20251027122847.320924-6-harry.yoo@oracle.com>
+ <CAJuCfpG=Lb4WhYuPkSpdNO4Ehtjm1YcEEK0OM=3g9i=LxmpHSQ@mail.gmail.com> <aQHLDTwwEuswvNWv@hyeyoo>
+In-Reply-To: <aQHLDTwwEuswvNWv@hyeyoo>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 29 Oct 2025 08:24:35 -0700
-X-Gm-Features: AWmQ_blnOhRrDyAN8bKG9PnCSCcBONfyThj1KPKRqtofem1VL-BK-gJoV4GKMAw
-Message-ID: <CAJuCfpGFPuoUceB7SvAJPtVvzOOCzqS50yCcjbuMxV2a0e0KWA@mail.gmail.com>
-Subject: Re: [RFC PATCH V3 3/7] mm/slab: abstract slabobj_ext access via new
- slab_obj_ext() helper
+Date: Wed, 29 Oct 2025 08:28:56 -0700
+X-Gm-Features: AWmQ_bmezBnR6pc25_StLvVfGCVbr2qQzQa79QlxZjsxwYQHjSt8eI_UKHmKW6w
+Message-ID: <CAJuCfpERqLpAkbK-+X32s9o2udOfLtqeoU5=9BykbucFePv7Ww@mail.gmail.com>
+Subject: Re: [RFC PATCH V3 5/7] mm/memcontrol,alloc_tag: handle slabobj_ext
+ access under KASAN poison
 To: Harry Yoo <harry.yoo@oracle.com>
 Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
 	cl@linux.com, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
@@ -96,48 +96,64 @@ Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 29, 2025 at 1:49=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wr=
+On Wed, Oct 29, 2025 at 1:06=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wr=
 ote:
 >
-> On Tue, Oct 28, 2025 at 10:55:39AM -0700, Suren Baghdasaryan wrote:
+> On Tue, Oct 28, 2025 at 04:03:22PM -0700, Suren Baghdasaryan wrote:
 > > On Mon, Oct 27, 2025 at 5:29=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com=
 > wrote:
 > > >
-> > > Currently, the slab allocator assumes that slab->obj_exts is a pointe=
-r
-> > > to an array of struct slabobj_ext objects. However, to support storag=
-e
-> > > methods where struct slabobj_ext is embedded within objects, the slab
-> > > allocator should not make this assumption. Instead of directly
-> > > dereferencing the slabobj_exts array, abstract access to
-> > > struct slabobj_ext via helper functions.
-> > >
-> > > Introduce a new API slabobj_ext metadata access:
-> > >
-> > >   slab_obj_ext(slab, obj_exts, index) - returns the pointer to
-> > >   struct slabobj_ext element at the given index.
-> > >
-> > > Directly dereferencing the return value of slab_obj_exts() is no long=
-er
-> > > allowed. Instead, slab_obj_ext() must always be used to access
-> > > individual struct slabobj_ext objects.
+> > > In the near future, slabobj_ext may reside outside the allocated slab
+> > > object range within a slab, which could be reported as an out-of-boun=
+ds
+> > > access by KASAN. To prevent false positives, explicitly disable KASAN
+> > > and KMSAN checks when accessing slabobj_ext.
 > >
-> > If direct access to the vector is not allowed, it would be better to
-> > eliminate slab_obj_exts() function completely and use the new
-> > slab_obj_ext() instead. I think that's possible. We might need an
-> > additional `bool is_slab_obj_exts()` helper for an early check before
-> > we calculate the object index but that's quite easy.
+> > Hmm. This is fragile IMO. Every time someone accesses slabobj_ext they
+> > should remember to call
+> > metadata_access_enable/metadata_access_disable.
 >
-> Good point, but that way we cannot avoid reading slab->obj_exts
-> multiple times when we access slabobj_ext of multiple objects
-> as it's accessed via READ_ONCE().
+> Good point!
+>
+> > Have you considered replacing slab_obj_ext() function with
+> > get_slab_obj_ext()/put_slab_obj_ext()? get_slab_obj_ext() can call
+> > metadata_access_enable() and return slabobj_ext as it does today.
+> > put_slab_obj_ext() will simple call metadata_access_disable(). WDYT?
+>
+> I did think about it, and I thought introducing get and put helpers
+> may be misunderstood as doing some kind of reference counting...
 
-True. I think we use slab->obj_exts to loop over its elements only in
-two places: __memcg_slab_post_alloc_hook() and
-__memcg_slab_free_hook(). I guess we could implement some kind of
-slab_objext_foreach() construct to loop over all elements of
-slab->obj_exts?
+Maybe there are better names but get/put I think are appropriate here.
+get_cpu_ptr()/put_cpu_ptr() example is very similar to this.
 
+>
+> but yeah probably I'm being too paranoid and
+> I'll try this and document that
+>
+> 1) the user needs to use get and put pair to access slabobj_ext
+>    metadata, and
+>
+> 2) calling get and put pair multiple times has no effect.
+
+Yes, I think this would be less error-prone.
+
+>
+> > > While an alternative approach could be to unpoison slabobj_ext,
+> > > out-of-bounds accesses outside the slab allocator are generally more
+> > > common.
+> > >
+> > > Move metadata_access_enable()/disable() helpers to mm/slab.h so that
+> > > it can be used outside mm/slub.c. Wrap accesses to slabobj_ext metada=
+ta
+> > > in memcg and alloc_tag code with these helpers.
+> > >
+> > > Call kasan_reset_tag() in slab_obj_ext() before returning the address=
+ to
+> > > prevent SW or HW tag-based KASAN from reporting false positives.
+> > >
+> > > Suggested-by: Andrey Konovalov <andreyknvl@gmail.com>
+> > > Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+> > > ---
 >
 > --
 > Cheers,
