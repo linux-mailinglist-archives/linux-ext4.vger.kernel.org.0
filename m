@@ -1,138 +1,91 @@
-Return-Path: <linux-ext4+bounces-11344-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11345-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9A0AC1CD1B
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 19:46:14 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51952C1DCF3
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Oct 2025 00:52:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFC8E3B6B6C
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 18:46:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4197E4E3595
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 23:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762A735771C;
-	Wed, 29 Oct 2025 18:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6D002E7192;
+	Wed, 29 Oct 2025 23:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qd16Sndz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VLQMaBua"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBAE6357716
-	for <linux-ext4@vger.kernel.org>; Wed, 29 Oct 2025 18:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD1E1C2BD;
+	Wed, 29 Oct 2025 23:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761763567; cv=none; b=Tl4dsE66cJgCq8ZGLaVDXh5IkeM9FvFF1OjfHkFQg+YrmjdNBYlgAMdYUXpnOI/ouxbVuUoy1MofPg+ElfWWELnBP5Xa5zLwfg7JvQFf2a23ZSVM7oPs5txNTBUG3uDg2Tlr7iPDvKwqVzm0LNQDLL1uBJSfNBLsqd1fmWpSsOM=
+	t=1761781955; cv=none; b=JJ7JNozjP/PD1QIsmAF+uvacyPxu7aClPY/ahM7w5YjPh0ps9k34SdvI6SjZU3xik+0wVgOB8Xk8jnKaEWTV6XXMSPmHoldJRXyZ19+b7z9OqO2I8EPZzpju4un3sS7giowzvGc7a3XhKSTOTXRA+oKvdIh7ssoajdyDQh4W80Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761763567; c=relaxed/simple;
-	bh=OrWlJ6JZLo/BrlSCnylCjyhXG4lAUpfhVMbOLTF90HI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n0Lxzo3u6y+9Vw2QjLmyJHDRDIHp9hzqfUPV5BJ6gJH1LY7+7e6pJ7BcfT8rkf4wr+/j4LIwASYGwLXAfk6UPi8fVVMeuWBkZ6ugTH1jAFcbOrFuaUKc1o34psoSfyXbHdYE7Sg51CZ9Dqu8jui8Uo69s53MaVDKAWkxUMuf/Lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qd16Sndz; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-57bd7f0e2daso12236e87.0
-        for <linux-ext4@vger.kernel.org>; Wed, 29 Oct 2025 11:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761763559; x=1762368359; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VWrPcr+YHQwlDYGWW/C60xpax+dwnoF3boq6mvUGiOQ=;
-        b=Qd16Sndztk8IIVz1rCM7JHnkKcdoEtitrpyjt883YBevgoMP4CS/Pl3sRifi/FLUxV
-         CKkVhBmAXCwlVdveB2cnGchhM57qldVOiABHaDNa7PR611LnGN6HWIOzVQrD7nj+6ls/
-         g520fcSyWC8wp1YfbtOLkYAqKBxhiF1PO+UYAVlq6YvxYmWLuzj9davXzPgYNfs8YsRB
-         r4wJEXhFvcgcIO1rSqoFT71szRljIjsIvuCA5JRng/Xu2jI4yWOujerYmChLGdibdicv
-         Szs9svoflbXABPwaparVy/Yp/cFY1DgVb5Q83Edur26ntyrlFBTJHoGlz6rltvlx4oC1
-         64ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761763559; x=1762368359;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VWrPcr+YHQwlDYGWW/C60xpax+dwnoF3boq6mvUGiOQ=;
-        b=oywi/7C/dPlM7qP2UFnk7qBluDC8iPaq8lHcEJMBY8VAaacB2tMXk3EL+Rx2GJ2tmh
-         GT8XTZTLukhtCgYQwT8lZTIp8lhy4yOFYYp+RmjX9Nz8Lf8JfiMuRhkfwR9TYbxdR8Ek
-         SBENWBlsc97pxLkHFR/7rugYLKD7V+vQu+NTtkkdN+VbbfTJq4N9L9TleR3a+OPkKoes
-         ChwTGGqDuMW9k1qHFrnXZzr6QJrHI7jjGqhSfbFm2dwASDa6LV8odNILLspy26LXlykk
-         /E1WgCHsNyStE0kbllx90zcoUV7A5DFF+eZawvm9kYs0WgpYD35WGWDH9O/wl+Umq4mN
-         iyuA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4HyAJyzB1uCDVjd30pkyRnF7t4hYewLVmcH2j+V2q8nlaJrZeib6G+jZii9ROCoyutV4QCGMg4nd8@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfYP4g7TZ/+/w450VZVcqOqv/EuFRZg2KzMGXGxXWrP23engL2
-	yU4zTJhkmz4Hstrw+M6n4YpvK6EbbH1ESOgGMMBG8bDfR322ou/87Hzs
-X-Gm-Gg: ASbGncsko8i/la5QLzzygKmMTn4TA3mScoC2fkHRTuvMObaRzMIovJ4sW/chS0Hk3VW
-	KSRN9I4BuKonNkRdubgIExCkRULeimiWxRqsQG3cH79im07arrDUndlj/FLgseZNOvximDoG19q
-	As7n4cymdRIJFhSmkqqhV/lZW8NkQSYpmuyd7d4kferP6x1wEVdjHJN1lNlxXeIX6oekZEcp6oc
-	9Xg9W2tF7lGJF/rwnGIEd/3GrWywAbNCskXryTRpGZXlTONiD5bXBMlPi0cfCcjZ52f3+GrDZE4
-	xkctA1ot9EXeX50kNl5GA4C8166GzUDimWPVu8OmYJTtN3E1JaCC6AnTZfOKPGECdrFVUp9wqSu
-	vkAxoUyECZpa/091kS/+VTTZfCemUdKmKNIJtqzVBN/EPm3qOHmv5QuKsEl4QhhKr2zF6D9k4CE
-	egajKVuQ==
-X-Google-Smtp-Source: AGHT+IGuEzsNziCkBkpixVM7TgXRYPDuuncHpPEAXKQDJA0pf9GlMeK+fWS7c2BxL9a+qZkeWch5IQ==
-X-Received: by 2002:a05:6512:2246:b0:579:2ddf:996d with SMTP id 2adb3069b0e04-5941286a767mr855964e87.3.1761763558572;
-        Wed, 29 Oct 2025 11:45:58 -0700 (PDT)
-Received: from [10.214.35.248] ([80.93.240.68])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59301f5098bsm4044641e87.40.2025.10.29.11.45.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Oct 2025 11:45:51 -0700 (PDT)
-Message-ID: <c8f89f0a-a327-441e-9bd6-17523c5fa65c@gmail.com>
-Date: Wed, 29 Oct 2025 19:45:32 +0100
+	s=arc-20240116; t=1761781955; c=relaxed/simple;
+	bh=V2XrcyvN6/8XRYF1YiXjH0P5KLrXEXLSKJ61uFr7rIY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BwDvlUvU3hG16DpRp5xd6446WvQYMv7MpWGJ56+zIvEZ5wWoW5pikTX78plnk/zsN0yNJ6bFjW3Nr21NgaY/q7qtMhoPXzZEo6CimOqSyJ3t3hiKkQy3m74VKw9q/tLBeg6ImVhRhvUVIsXYvaFbDYzsP3V+oGYyImoSLuCZfRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VLQMaBua; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E794BC4CEF7;
+	Wed, 29 Oct 2025 23:52:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761781955;
+	bh=V2XrcyvN6/8XRYF1YiXjH0P5KLrXEXLSKJ61uFr7rIY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VLQMaBuaQA/xHXPdgS+DZGAbO/jlykqLUBRrChTKyTGsqH6u5CuHJTRU5qMGa6YsU
+	 bD9WqfAibi9RyDLNS0QLJ7NGM5cnFyc1JqDXHElxw7hvkkwDGaz2vDtoZM2aAjfY/C
+	 cxTGrx8Xc36Ry5F7mwBkSQRvt22TVAaFZgQR1XReB9G6x5Usl6FFTXoomqWw3MGcPt
+	 604pIrsJ9DX8X+YF6rEuo65PnuWeLB3vic1pOc7tddh580o00dmned4ygudj0KlxwG
+	 r0DsSvrBmn+C3j0Q/RiYz6hNZk7F5WtvRSqdg6xa9EUzf+sKf0PozBCAV7fUQ+PQPf
+	 3moo1ELrl18FQ==
+Date: Wed, 29 Oct 2025 16:52:34 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: zlang@redhat.com, fstests@vger.kernel.org, neal@gompa.dev,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	joannelkoong@gmail.com, bernd@bsbernd.com
+Subject: Re: [PATCHSET v6] fstests: support ext4 fuse testing
+Message-ID: <20251029235234.GZ6178@frogsfrogsfrogs>
+References: <20251029002755.GK6174@frogsfrogsfrogs>
+ <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
+ <aQHf3UGaURFzC17U@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH V3 6/7] mm/slab: save memory by allocating slabobj_ext
- array from leftover
-To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org,
- vbabka@suse.cz
-Cc: andreyknvl@gmail.com, cl@linux.com, dvyukov@google.com,
- glider@google.com, hannes@cmpxchg.org, linux-mm@kvack.org,
- mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, surenb@google.com,
- vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu,
- adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20251027122847.320924-1-harry.yoo@oracle.com>
- <20251027122847.320924-7-harry.yoo@oracle.com>
-Content-Language: en-US
-From: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-In-Reply-To: <20251027122847.320924-7-harry.yoo@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aQHf3UGaURFzC17U@infradead.org>
 
+On Wed, Oct 29, 2025 at 02:35:25AM -0700, Christoph Hellwig wrote:
+> I find the series a bit hard to follow, because it mixes generic
+> with fs specific with test specific patches totally randomly.  Can
+> you get a bit of an order into it?  And maybe just send a series
+> with the conceptual core changes first outside the giant patch bombs?
+> Or if parts are useful outside the fuse ext4 context just send them
+> out in a self-contained series?  Bonus points for a bit of a highlevel
+> summary why these changes are needed in the cover letter.
 
+Well TBH there's a lot of accumulated stuff including some treewide
+cleanups in my fstests branch that needs to go upstream before the
+fuse2fs changes.  I've been waiting the entire year to see if
+check-parallel will get finished... and I'm not going to wait anymore.
+That's why I haven't tidied up this patchset at all.
 
-On 10/27/25 1:28 PM, Harry Yoo wrote:
+The TLDR version is that FSTYP=fuse.ext4 is how you select the fuse
+server, and you ought to have mkfs.fuse.ext4/fsck.fuse.ext4 point to the
+appropriate e2fsprogs programs; a [fuse.ext4] section in mke2fs.conf;
+and fuse4fs installed as /sbin/mount.fuse.ext4 or /sbin/ext4 depending
+on how your libfuse is configured.
 
->  
-> +#ifdef CONFIG_SLAB_OBJ_EXT
-> +
-> +/*
-> + * Check if memory cgroup or memory allocation profiling is enabled.
-> + * If enabled, SLUB tries to reduce memory overhead of accounting
-> + * slab objects. If neither is enabled when this function is called,
-> + * the optimization is simply skipped to avoid affecting caches that do not
-> + * need slabobj_ext metadata.
-> + *
-> + * However, this may disable optimization when memory cgroup or memory
-> + * allocation profiling is used, but slabs are created too early
-> + * even before those subsystems are initialized.
-> + */
-> +static inline bool need_slab_obj_exts(struct kmem_cache *s)
-> +{
-> +	if (!mem_cgroup_disabled() && (s->flags & SLAB_ACCOUNT))
+Then this series is basically making sure that FSTYP=fuse.ext* works,
+and turning off feature tests for things that aren't supported by
+fuse2fs.
 
-Shouldn't this be !memcg_kmem_online() check?
-In case of disabled kmem accounting via 'cgroup.memory=nokmem'
-
-> +		return true;
-> +
-> +	if (mem_alloc_profiling_enabled())
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
+--D
 
