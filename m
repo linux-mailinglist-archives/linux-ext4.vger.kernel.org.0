@@ -1,569 +1,101 @@
-Return-Path: <linux-ext4+bounces-11323-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11324-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0857BC18604
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 07:03:31 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F86C18978
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 08:11:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EE9B44EC840
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 06:03:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BDEAE4E6A52
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 07:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E366D2FBE16;
-	Wed, 29 Oct 2025 06:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qjHEvG/q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967D730BF79;
+	Wed, 29 Oct 2025 07:06:42 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D92C189F3B;
-	Wed, 29 Oct 2025 06:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07A7309EF2;
+	Wed, 29 Oct 2025 07:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761717800; cv=none; b=moklZwZ+jZp6BM4EinMz3kubkGU+vmdUYA2he18q9oS592ybhyqqHMWcKvUiWPggCrbsHJ2q733WKF7TSPZ4RnZE+R38jkUMXkgwIzqODXkitb6gruf+18xOFVMtE2DISATD6Mg04TacDeLOLeFq+vF8bJEUFjlcTrYGx/I2Q04=
+	t=1761721602; cv=none; b=m3C8yZjXCwcuLyAe1n0LScKLD5AFzJYsZ8Zb+ZJ1gx7FTGezu0x5QZc/PKCH5kzmts/zLAkVAm11cUSrZJE38UtVbWQXLnd6aG4khxQiUsU+wRM/bPNqM6Hlhwrj3/0VWEJAbnAcScmwUl6tPtFMDfoeHkX6rJFZAJ2ynsNR3Aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761717800; c=relaxed/simple;
-	bh=m/Z5rZ/2RLbxQL9Irw7zainaqUlp824NkhHvbWSEq54=;
+	s=arc-20240116; t=1761721602; c=relaxed/simple;
+	bh=9/SnsoO/WS+8t0J3jBEAceX5RkSw9F4ltTtJY/0MQ+Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dbVwDyEK6gpG0y1cIOWa1W0WVaBXC91EAo3JAgANaO11mfJKnWKJifS19lXBi4cSWYeTww9uPrWbwHN+Qc7j3g1d+p6LszLTv4IqwjQiOnY/b6LtLWJZcra/6L67hZfySzQM+AVqlKY+i4vNXcD/cspDdwWI18RIiG/WY9NzGlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qjHEvG/q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14AFAC4CEF7;
-	Wed, 29 Oct 2025 06:03:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761717800;
-	bh=m/Z5rZ/2RLbxQL9Irw7zainaqUlp824NkhHvbWSEq54=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qjHEvG/qooFngb8LnwuYbYsZzFqesd6gbuvsgs9YXEBwitUtDADw1m9bLtILmNvSW
-	 AjvGxnBlj8sxABXfnNQRvZinUFW5yk+NW+hfyPTTCWxdFmCKvEVzyoKLvyxUw9vjtl
-	 DD7HBOrDRxjGsuIricND2w4sr1n/5ETVnE5RYRJKYI27ZxUFDqameDdavaYNlxzB2l
-	 p/9iFysyA3NmWDUso2orSDVvygtVJJ9zL5JNpu8J2+IOkqVZiRdfJiNWlWYn4ESQje
-	 ZCnDUroofUzdsi0bO/9OevATVclFWt3S7Sw+clNDtV/pnevRbf0zJFO/lUamBJ7wVv
-	 8e85dplTS0JZA==
-Date: Tue, 28 Oct 2025 23:03:19 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: zlang@redhat.com
-Cc: neal@gompa.dev, fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, joannelkoong@gmail.com,
-	bernd@bsbernd.com
-Subject: Re: [PATCH 31/33] ext4/022: enabl
-Message-ID: <20251029060319.GT6170@frogsfrogsfrogs>
-References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
- <176169820554.1433624.16533934556600338284.stgit@frogsfrogsfrogs>
+	 Content-Type:Content-Disposition:In-Reply-To; b=c5TiURF1id5XiXPT16lcIMOCaCj2pikmYCoLmVKojA6eAYWKRXGZftOiJqmWOCSYOHZ0T7ZuDjsNglkUOd8JGUOmIr8K+1uNLm6/7+/ybLVQY8CpGab4bqLWBMTEa/IPq+zUhqD8XHz//O0jtO5UHbZBBk61pOThfxFtbous9aY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id D391C227AAC; Wed, 29 Oct 2025 08:06:21 +0100 (CET)
+Date: Wed, 29 Oct 2025 08:06:18 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Carlos Llamas <cmllamas@google.com>, Keith Busch <kbusch@kernel.org>,
+	Keith Busch <kbusch@meta.com>, linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, hch@lst.de, axboe@kernel.dk,
+	Hannes Reinecke <hare@suse.de>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCHv4 5/8] iomap: simplify direct io validity check
+Message-ID: <20251029070618.GA29697@lst.de>
+References: <20250827141258.63501-1-kbusch@meta.com> <20250827141258.63501-6-kbusch@meta.com> <aP-c5gPjrpsn0vJA@google.com> <aP-hByAKuQ7ycNwM@kbusch-mbp> <aQFIGaA5M4kDrTlw@google.com> <20251028225648.GA1639650@google.com> <20251028230350.GB1639650@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <176169820554.1433624.16533934556600338284.stgit@frogsfrogsfrogs>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251028230350.GB1639650@google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Tue, Oct 28, 2025 at 06:28:30PM -0700, Darrick J. Wong wrote:
-> From: Darrick J. Wong <djwong@kernel.org>
+I think we need to take a step back and talk about what alignment
+we're talking about here, as there are two dimensions to it.
 
-What a commit message!
+The first dimension is: disk alignment vs memory alignment.
 
-ext4/022: adjust to fuse2fs i_extra_size behavior
+Disk alignment:
+  Direct I/O obviously needs to be aligned to on-disk sectors to have
+  a chance to work, as that is the lowest possible granularity of access.
 
-fuse2fs doesn't get fancy about changing i_extra_size in response to
-changes in the xattr structure, so it needs a separate .out file to
-reflect that.
+  For fіle systems that write out of place we also need to align writes
+  to the logical block size of the file system.
 
-Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+  With blk-crypto we need to align to the DUN if it is larger than the
+  disk-sector dize.
 
---D
+Memory alignment:
 
-> 
-> ---
->  tests/ext4/022             |    9 +
->  tests/ext4/022.cfg         |    1 
->  tests/ext4/022.out.default |    0 
->  tests/ext4/022.out.fuse2fs |  432 ++++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 442 insertions(+)
->  create mode 100644 tests/ext4/022.cfg
->  rename tests/ext4/{022.out => 022.out.default} (100%)
->  create mode 100644 tests/ext4/022.out.fuse2fs
-> 
-> 
-> diff --git a/tests/ext4/022 b/tests/ext4/022
-> index eb04cc9d900069..5440c9f7947d16 100755
-> --- a/tests/ext4/022
-> +++ b/tests/ext4/022
-> @@ -6,6 +6,7 @@
->  #
->  # Test extending of i_extra_isize code
->  #
-> +seqfull=$0
->  . ./common/preamble
->  _begin_fstest auto quick attr dangerous
->  
-> @@ -21,6 +22,14 @@ do_setfattr()
->  _exclude_fs ext2
->  _exclude_fs ext3
->  
-> +features=""
-> +if [[ "$FSTYP" =~ fuse.ext[234] ]]; then
-> +	# fuse2fs doesn't change extra_isize after inode creation
-> +	features="fuse2fs"
-> +fi
-> +_link_out_file "$features"
-> +
-> +
->  _require_scratch
->  _require_dumpe2fs
->  _require_command "$DEBUGFS_PROG" debugfs
-> diff --git a/tests/ext4/022.cfg b/tests/ext4/022.cfg
-> new file mode 100644
-> index 00000000000000..16f2eaa224bc50
-> --- /dev/null
-> +++ b/tests/ext4/022.cfg
-> @@ -0,0 +1 @@
-> +fuse2fs: fuse2fs
-> diff --git a/tests/ext4/022.out b/tests/ext4/022.out.default
-> similarity index 100%
-> rename from tests/ext4/022.out
-> rename to tests/ext4/022.out.default
-> diff --git a/tests/ext4/022.out.fuse2fs b/tests/ext4/022.out.fuse2fs
-> new file mode 100644
-> index 00000000000000..9dfe65eff48e08
-> --- /dev/null
-> +++ b/tests/ext4/022.out.fuse2fs
-> @@ -0,0 +1,432 @@
-> +QA output created by 022
-> +
-> +# file: SCRATCH_MNT/couple_xattrs
-> +user.0="aa"
-> +user.1="aa"
-> +user.2="aa"
-> +user.3="aa"
-> +
-> +# file: SCRATCH_MNT/just_enough_xattrs
-> +user.0="aa"
-> +user.1="aa"
-> +user.2="aa"
-> +user.3="aa"
-> +user.4="aa"
-> +user.5="aa"
-> +user.6="aa"
-> +
-> +# file: SCRATCH_MNT/one_extra_xattr
-> +user.0="aa"
-> +user.1="aa"
-> +user.2="aa"
-> +user.3="aa"
-> +user.4="aa"
-> +user.5="aa"
-> +user.6="aa"
-> +user.7="aa"
-> +
-> +# file: SCRATCH_MNT/full_xattrs
-> +user.0="aa"
-> +user.1="aa"
-> +user.2="aa"
-> +user.3="aa"
-> +user.4="aa"
-> +user.5="aa"
-> +user.6="aa"
-> +user.7="aa"
-> +user.8="aa"
-> +user.9="aa"
-> +
-> +# file: SCRATCH_MNT/one_extra_xattr_ext
-> +user.0="aa"
-> +user.1="aa"
-> +user.2="aa"
-> +user.3="aa"
-> +user.4="aa"
-> +user.5="aa"
-> +user.6="aa"
-> +user.7="aa"
-> +user.e0="01234567890123456789012345678901234567890123456789"
-> +
-> +# file: SCRATCH_MNT/full_xattrs_ext
-> +user.0="aa"
-> +user.10="aa"
-> +user.1="aa"
-> +user.2="aa"
-> +user.3="aa"
-> +user.4="aa"
-> +user.5="aa"
-> +user.6="aa"
-> +user.7="aa"
-> +user.8="aa"
-> +user.9="aa"
-> +
-> +# file: SCRATCH_MNT/full_xattrs_almost_full_ext
-> +user.0="aa"
-> +user.100="aa"
-> +user.101="aa"
-> +user.102="aa"
-> +user.103="aa"
-> +user.104="aa"
-> +user.105="aa"
-> +user.106="aa"
-> +user.107="aa"
-> +user.108="aa"
-> +user.109="aa"
-> +user.10="aa"
-> +user.110="aa"
-> +user.111="aa"
-> +user.112="aa"
-> +user.113="aa"
-> +user.114="aa"
-> +user.115="aa"
-> +user.116="aa"
-> +user.117="aa"
-> +user.118="aa"
-> +user.119="aa"
-> +user.11="aa"
-> +user.120="aa"
-> +user.121="aa"
-> +user.122="aa"
-> +user.123="aa"
-> +user.124="aa"
-> +user.125="aa"
-> +user.126="aa"
-> +user.127="aa"
-> +user.128="aa"
-> +user.129="aa"
-> +user.12="aa"
-> +user.130="aa"
-> +user.131="aa"
-> +user.132="aa"
-> +user.133="aa"
-> +user.134="aa"
-> +user.135="aa"
-> +user.136="aa"
-> +user.137="aa"
-> +user.138="aa"
-> +user.139="aa"
-> +user.13="aa"
-> +user.140="aa"
-> +user.141="aa"
-> +user.142="aa"
-> +user.143="aa"
-> +user.144="aa"
-> +user.145="aa"
-> +user.146="aa"
-> +user.147="aa"
-> +user.148="aa"
-> +user.149="aa"
-> +user.14="aa"
-> +user.150="aa"
-> +user.151="aa"
-> +user.152="aa"
-> +user.153="aa"
-> +user.154="aa"
-> +user.155="aa"
-> +user.156="aa"
-> +user.157="aa"
-> +user.158="aa"
-> +user.159="aa"
-> +user.15="aa"
-> +user.160="aa"
-> +user.161="aa"
-> +user.162="aa"
-> +user.163="aa"
-> +user.164="aa"
-> +user.165="aa"
-> +user.166="aa"
-> +user.167="aa"
-> +user.168="aa"
-> +user.169="aa"
-> +user.16="aa"
-> +user.170="aa"
-> +user.171="aa"
-> +user.172="aa"
-> +user.173="aa"
-> +user.174="aa"
-> +user.175="aa"
-> +user.176="aa"
-> +user.177="aa"
-> +user.17="aa"
-> +user.18="aa"
-> +user.19="aa"
-> +user.1="aa"
-> +user.20="aa"
-> +user.21="aa"
-> +user.22="aa"
-> +user.23="aa"
-> +user.24="aa"
-> +user.25="aa"
-> +user.26="aa"
-> +user.27="aa"
-> +user.28="aa"
-> +user.29="aa"
-> +user.2="aa"
-> +user.30="aa"
-> +user.31="aa"
-> +user.32="aa"
-> +user.33="aa"
-> +user.34="aa"
-> +user.35="aa"
-> +user.36="aa"
-> +user.37="aa"
-> +user.38="aa"
-> +user.39="aa"
-> +user.3="aa"
-> +user.40="aa"
-> +user.41="aa"
-> +user.42="aa"
-> +user.43="aa"
-> +user.44="aa"
-> +user.45="aa"
-> +user.46="aa"
-> +user.47="aa"
-> +user.48="aa"
-> +user.49="aa"
-> +user.4="aa"
-> +user.50="aa"
-> +user.51="aa"
-> +user.52="aa"
-> +user.53="aa"
-> +user.54="aa"
-> +user.55="aa"
-> +user.56="aa"
-> +user.57="aa"
-> +user.58="aa"
-> +user.59="aa"
-> +user.5="aa"
-> +user.60="aa"
-> +user.61="aa"
-> +user.62="aa"
-> +user.63="aa"
-> +user.64="aa"
-> +user.65="aa"
-> +user.66="aa"
-> +user.67="aa"
-> +user.68="aa"
-> +user.69="aa"
-> +user.6="aa"
-> +user.70="aa"
-> +user.71="aa"
-> +user.72="aa"
-> +user.73="aa"
-> +user.74="aa"
-> +user.75="aa"
-> +user.76="aa"
-> +user.77="aa"
-> +user.78="aa"
-> +user.79="aa"
-> +user.7="aa"
-> +user.80="aa"
-> +user.81="aa"
-> +user.82="aa"
-> +user.83="aa"
-> +user.84="aa"
-> +user.85="aa"
-> +user.86="aa"
-> +user.87="aa"
-> +user.88="aa"
-> +user.89="aa"
-> +user.8="aa"
-> +user.90="aa"
-> +user.91="aa"
-> +user.92="aa"
-> +user.93="aa"
-> +user.94="aa"
-> +user.95="aa"
-> +user.96="aa"
-> +user.97="aa"
-> +user.98="aa"
-> +user.99="aa"
-> +user.9="aa"
-> +
-> +# file: SCRATCH_MNT/full_xattrs_full_ext
-> +user.0="aa"
-> +user.100="aa"
-> +user.101="aa"
-> +user.102="aa"
-> +user.103="aa"
-> +user.104="aa"
-> +user.105="aa"
-> +user.106="aa"
-> +user.107="aa"
-> +user.108="aa"
-> +user.109="aa"
-> +user.10="aa"
-> +user.110="aa"
-> +user.111="aa"
-> +user.112="aa"
-> +user.113="aa"
-> +user.114="aa"
-> +user.115="aa"
-> +user.116="aa"
-> +user.117="aa"
-> +user.118="aa"
-> +user.119="aa"
-> +user.11="aa"
-> +user.120="aa"
-> +user.121="aa"
-> +user.122="aa"
-> +user.123="aa"
-> +user.124="aa"
-> +user.125="aa"
-> +user.126="aa"
-> +user.127="aa"
-> +user.128="aa"
-> +user.129="aa"
-> +user.12="aa"
-> +user.130="aa"
-> +user.131="aa"
-> +user.132="aa"
-> +user.133="aa"
-> +user.134="aa"
-> +user.135="aa"
-> +user.136="aa"
-> +user.137="aa"
-> +user.138="aa"
-> +user.139="aa"
-> +user.13="aa"
-> +user.140="aa"
-> +user.141="aa"
-> +user.142="aa"
-> +user.143="aa"
-> +user.144="aa"
-> +user.145="aa"
-> +user.146="aa"
-> +user.147="aa"
-> +user.148="aa"
-> +user.149="aa"
-> +user.14="aa"
-> +user.150="aa"
-> +user.151="aa"
-> +user.152="aa"
-> +user.153="aa"
-> +user.154="aa"
-> +user.155="aa"
-> +user.156="aa"
-> +user.157="aa"
-> +user.158="aa"
-> +user.159="aa"
-> +user.15="aa"
-> +user.160="aa"
-> +user.161="aa"
-> +user.162="aa"
-> +user.163="aa"
-> +user.164="aa"
-> +user.165="aa"
-> +user.166="aa"
-> +user.167="aa"
-> +user.168="aa"
-> +user.169="aa"
-> +user.16="aa"
-> +user.170="aa"
-> +user.171="aa"
-> +user.172="aa"
-> +user.173="aa"
-> +user.174="aa"
-> +user.175="aa"
-> +user.176="aa"
-> +user.177="aa"
-> +user.178="aa"
-> +user.17="aa"
-> +user.18="aa"
-> +user.19="aa"
-> +user.1="aa"
-> +user.20="aa"
-> +user.21="aa"
-> +user.22="aa"
-> +user.23="aa"
-> +user.24="aa"
-> +user.25="aa"
-> +user.26="aa"
-> +user.27="aa"
-> +user.28="aa"
-> +user.29="aa"
-> +user.2="aa"
-> +user.30="aa"
-> +user.31="aa"
-> +user.32="aa"
-> +user.33="aa"
-> +user.34="aa"
-> +user.35="aa"
-> +user.36="aa"
-> +user.37="aa"
-> +user.38="aa"
-> +user.39="aa"
-> +user.3="aa"
-> +user.40="aa"
-> +user.41="aa"
-> +user.42="aa"
-> +user.43="aa"
-> +user.44="aa"
-> +user.45="aa"
-> +user.46="aa"
-> +user.47="aa"
-> +user.48="aa"
-> +user.49="aa"
-> +user.4="aa"
-> +user.50="aa"
-> +user.51="aa"
-> +user.52="aa"
-> +user.53="aa"
-> +user.54="aa"
-> +user.55="aa"
-> +user.56="aa"
-> +user.57="aa"
-> +user.58="aa"
-> +user.59="aa"
-> +user.5="aa"
-> +user.60="aa"
-> +user.61="aa"
-> +user.62="aa"
-> +user.63="aa"
-> +user.64="aa"
-> +user.65="aa"
-> +user.66="aa"
-> +user.67="aa"
-> +user.68="aa"
-> +user.69="aa"
-> +user.6="aa"
-> +user.70="aa"
-> +user.71="aa"
-> +user.72="aa"
-> +user.73="aa"
-> +user.74="aa"
-> +user.75="aa"
-> +user.76="aa"
-> +user.77="aa"
-> +user.78="aa"
-> +user.79="aa"
-> +user.7="aa"
-> +user.80="aa"
-> +user.81="aa"
-> +user.82="aa"
-> +user.83="aa"
-> +user.84="aa"
-> +user.85="aa"
-> +user.86="aa"
-> +user.87="aa"
-> +user.88="aa"
-> +user.89="aa"
-> +user.8="aa"
-> +user.90="aa"
-> +user.91="aa"
-> +user.92="aa"
-> +user.93="aa"
-> +user.94="aa"
-> +user.95="aa"
-> +user.96="aa"
-> +user.97="aa"
-> +user.98="aa"
-> +user.99="aa"
-> +user.9="aa"
-> +Size of extra inode fields: 640
-> +Size of extra inode fields: 640
-> +Size of extra inode fields: 640
-> +Size of extra inode fields: 640
-> +Size of extra inode fields: 640
-> +Size of extra inode fields: 640
-> +Size of extra inode fields: 640
-> +Size of extra inode fields: 640
-> +Size of extra inode fields: 640
-> 
-> 
+  This is the alignment of the buffer in-memory.  Hardware only really
+  cares about this when DMA engines discard the lowest bits, so a typical
+  hardware alignment requirement is to only require a dword (4 byte)
+  alignment.   For drivers that process the payload in software such
+  low alignment have a tendency to cause bugs as they're not written
+  thinking about it.  Similarly for any additional processing like
+  encryption, parity or checksums.
+
+The second dimension is for the entire operation vs individual vectors,
+this has implications both for the disk and memory alignment.  Keith
+has done work there recently to relax the alignment of the vectors to
+only require the memory alignment, so that preadv/pwritev-like calls
+can have lots of unaligned segments.
+
+I think it's the latter that's tripping up here now.  Hard coding these
+checks in the file systems seem like a bad idea, we really need to
+advertise them in the queue limits, which is complicated by the fact that
+we only want to do that for bios using block layer encryption. i.e., we
+probably need a separate queue limit that mirrors dma_alignment, but only
+for encrypted bios, and which is taken into account in the block layer
+splitting and communicated up by file systems only for encrypted bios.
+For blk-crypto-fallback we'd need DUN alignment so that the algorithms
+just work (assuming the crypto API can't scatter over misaligned
+segments), but for hardware blk-crypto I suspect that the normal DMA
+engine rules apply, and we don't need to restrict alignment.
+
 
