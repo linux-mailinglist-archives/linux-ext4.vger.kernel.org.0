@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-11291-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11292-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5DB0C17DD7
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 02:23:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3089C17DE9
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 02:23:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B9D004F626C
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 01:22:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0127D426723
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 01:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8365B2DC76A;
-	Wed, 29 Oct 2025 01:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893482DCC17;
+	Wed, 29 Oct 2025 01:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="beC2hefu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qsmvyJ0U"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FFA17A310;
-	Wed, 29 Oct 2025 01:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF9C248176;
+	Wed, 29 Oct 2025 01:21:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761700889; cv=none; b=SM4QGJLQgdlk+ATHzj4ZDXTQyCCSTzz5NxyY3g5X5jk4a6kNPf/loHD4P5w/qg9axres/5+nHutBbGB6VofpoNDI0HjHuGkCPad1nN8WbjKIymaVwCA6dSwNw6bBSH9I+ACsQCsIhdRKvSE6aWIgL36IuyWPhhjOaHmlAcdNR8s=
+	t=1761700905; cv=none; b=tDjco1M8TIFK6zjpFrkZTQXcXIfOpIcvdVSOAWs/+x7M3qmE4YageBOw7bXLGmOJDOqX4nThXAcEmaJ0IG9QS6pywZ6ZC7Aj5eYFyhiqCMSI2zxaqW3Rr6SA+jq44N+xdvLCyLnAJYoOQuEvWV1j6nmf05p/srO+6sabQu3lIDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761700889; c=relaxed/simple;
-	bh=ZT7VHykUE9fHgQIgd7r8OqmbBY0Ngy6nPm9moquinYU=;
+	s=arc-20240116; t=1761700905; c=relaxed/simple;
+	bh=2L2DXZPDwxDu7RqbgH2ll7dMOVq4LY/bsusjuLek8ts=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fV5vn1dvfN5wU5RYAJ0WXHstCUvyHk6n35yfOCZWi79LKCyOOewDZx28cqwrTAVQX2WjrkBEVl+9NjsjswZQGZQvxx3an6GRDDxxJYu3KWN6z+GvXaRz/sRF4B/tZ2mgnyht26T3a4dHfH3B2M1JFliGkH9HRS+PstSyiPomFbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=beC2hefu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE584C4CEE7;
-	Wed, 29 Oct 2025 01:21:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=SqbtOLoW/+qs70PVoJrV6B4QvNEV7n5Pl9AsYKg0Do98VzxKXse1Yu0F00+Z5fRarvvwCww79tSfaY6WGtVqosXdsdVCY/GjmRpqE6MKNmIK5xK3zF6SYgw2BtiV0XBhHiniZKyYZQrS6znt+IMiSNTjO6beqNJsdrNvoXP1/n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qsmvyJ0U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95B9AC4CEE7;
+	Wed, 29 Oct 2025 01:21:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761700889;
-	bh=ZT7VHykUE9fHgQIgd7r8OqmbBY0Ngy6nPm9moquinYU=;
+	s=k20201202; t=1761700904;
+	bh=2L2DXZPDwxDu7RqbgH2ll7dMOVq4LY/bsusjuLek8ts=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=beC2hefuL3Bze+Vog/oEevdOe8oVzTiJoOnQSbyaNoW0yJ1YZ4vbbSX7PoAiJf35D
-	 JQ5rlEX6P3OT5u2GVgBGtTougqw4kLFSJ38tAqD+DsSmooKzBL3Z2nHBvPU/GmRx8R
-	 GPi7SSRU18l43xJirdpxVVxT7UV0s9Bu2NVkW/KQcdkke4XOxGMf7v+05dZP7f2LtY
-	 T4Ae5fjjPwy1ez7X88Tm0xqvF0XnGqbC3P86PHKlUEPlnBdggqbnB6DV6jamJurQ87
-	 KaWxOEOiAZB+ULiaT5ts35oVObkoVymJZSin9SFnmD39Rmo1MioG72Bcxsh3aktHju
-	 v/J12nt2VlQoQ==
-Date: Tue, 28 Oct 2025 18:21:28 -0700
-Subject: [PATCH 04/33] common/rc: skip test if swapon doesn't work
+	b=qsmvyJ0UmplRPJlf11J7Vx+Q7nKJS+XScZHsL3dPaplQzw/0BRpgCbMTz7xtLBjeI
+	 FimRy2SQ23q1oVDiKgfCCO23B/0saMXrbP6jTuF3yNpNn/e2uuzcfh+0djjIvqZaww
+	 ZSnbzquGVD7QPvgJrcGFuw0cTkksjs0GwsZ2FwzX/vgQ/A5SjhMyRDvMtLj1EXBjz6
+	 xQOE5Lu6BmxiPYFMWKE/4Zsm5ZkSMHrxxl80vP4ZFG3IFQ/4p25FWohYDBldGliex8
+	 sxmilnek5ia2k+HEIKm5vp68Az6f5vCibDKOj7eSrbwN3Y+cNmivUHAHdfnjE/o1++
+	 X2qvLBWneBZzg==
+Date: Tue, 28 Oct 2025 18:21:44 -0700
+Subject: [PATCH 05/33] common/rc: streamline _scratch_remount
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: djwong@kernel.org, zlang@redhat.com
 Cc: neal@gompa.dev, fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, joannelkoong@gmail.com, bernd@bsbernd.com
-Message-ID: <176169820051.1433624.4158113392739761085.stgit@frogsfrogsfrogs>
+Message-ID: <176169820070.1433624.9318265704888391346.stgit@frogsfrogsfrogs>
 In-Reply-To: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
 References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -61,8 +61,14 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-In _require_scratch_swapfile, skip the test if swapon fails for whatever
-reason, just like all the other filesystems.
+Remounting a filesystem should be pretty straightforward invocation of
+mount -o remount,XXX.  Instead, we go through _try_scratch_mount, which
+recomputes the filesystem type and the mount options, which is probably
+not what the caller actually wanted.  Streamline this by calling the
+_mount wrapper directly.
+
+This also means that /sbin/mount.$FSTYP won't be invoked for a remount,
+which doesn't work if that binary is actually a fuse filesystem driver.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
@@ -71,17 +77,17 @@ Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 
 
 diff --git a/common/rc b/common/rc
-index 18d11e2c5cad3a..98609cb6e7a058 100644
+index 98609cb6e7a058..182a782a16783e 100644
 --- a/common/rc
 +++ b/common/rc
-@@ -3278,7 +3278,7 @@ _require_scratch_swapfile()
- 				_notrun "swapfiles are not supported"
- 			else
- 				_scratch_unmount
--				_fail "swapon failed for $FSTYP"
-+				_notrun "swapon failed for $FSTYP"
- 			fi
- 		fi
- 		;;
+@@ -552,7 +552,7 @@ _scratch_remount()
+     local opts="$1"
+ 
+     if test -n "$opts"; then
+-	_try_scratch_mount "-o remount,$opts"
++	_mount $SCRATCH_MNT "-o remount,$opts"
+     fi
+ }
+ 
 
 
