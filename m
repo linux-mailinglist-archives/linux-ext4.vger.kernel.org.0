@@ -1,91 +1,106 @@
-Return-Path: <linux-ext4+bounces-11345-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11346-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51952C1DCF3
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Oct 2025 00:52:43 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C940C1DE07
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Oct 2025 01:13:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4197E4E3595
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Oct 2025 23:52:42 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7DE16348EB2
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Oct 2025 00:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6D002E7192;
-	Wed, 29 Oct 2025 23:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D0613D638;
+	Thu, 30 Oct 2025 00:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VLQMaBua"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gt1DagFT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f52.google.com (mail-yx1-f52.google.com [74.125.224.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD1E1C2BD;
-	Wed, 29 Oct 2025 23:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B859513BC0C
+	for <linux-ext4@vger.kernel.org>; Thu, 30 Oct 2025 00:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761781955; cv=none; b=JJ7JNozjP/PD1QIsmAF+uvacyPxu7aClPY/ahM7w5YjPh0ps9k34SdvI6SjZU3xik+0wVgOB8Xk8jnKaEWTV6XXMSPmHoldJRXyZ19+b7z9OqO2I8EPZzpju4un3sS7giowzvGc7a3XhKSTOTXRA+oKvdIh7ssoajdyDQh4W80Y=
+	t=1761783175; cv=none; b=YXVx6s0nZ17GncU517BmkAU14hAHW9BAmOJywXSA7IundJMXsQVStMF6ShSBB7LVcETVzjkjB3Eo2TFU8rIObNvyO+mMQGLXTkGsrp2LOAVdFsOFkQ6T8CRy7Ksn7UWmwwiMU0dFXHY5xnEueUcgQq3ex3O+AUobZLN2JvgZH5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761781955; c=relaxed/simple;
-	bh=V2XrcyvN6/8XRYF1YiXjH0P5KLrXEXLSKJ61uFr7rIY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BwDvlUvU3hG16DpRp5xd6446WvQYMv7MpWGJ56+zIvEZ5wWoW5pikTX78plnk/zsN0yNJ6bFjW3Nr21NgaY/q7qtMhoPXzZEo6CimOqSyJ3t3hiKkQy3m74VKw9q/tLBeg6ImVhRhvUVIsXYvaFbDYzsP3V+oGYyImoSLuCZfRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VLQMaBua; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E794BC4CEF7;
-	Wed, 29 Oct 2025 23:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761781955;
-	bh=V2XrcyvN6/8XRYF1YiXjH0P5KLrXEXLSKJ61uFr7rIY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VLQMaBuaQA/xHXPdgS+DZGAbO/jlykqLUBRrChTKyTGsqH6u5CuHJTRU5qMGa6YsU
-	 bD9WqfAibi9RyDLNS0QLJ7NGM5cnFyc1JqDXHElxw7hvkkwDGaz2vDtoZM2aAjfY/C
-	 cxTGrx8Xc36Ry5F7mwBkSQRvt22TVAaFZgQR1XReB9G6x5Usl6FFTXoomqWw3MGcPt
-	 604pIrsJ9DX8X+YF6rEuo65PnuWeLB3vic1pOc7tddh580o00dmned4ygudj0KlxwG
-	 r0DsSvrBmn+C3j0Q/RiYz6hNZk7F5WtvRSqdg6xa9EUzf+sKf0PozBCAV7fUQ+PQPf
-	 3moo1ELrl18FQ==
-Date: Wed, 29 Oct 2025 16:52:34 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: zlang@redhat.com, fstests@vger.kernel.org, neal@gompa.dev,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	joannelkoong@gmail.com, bernd@bsbernd.com
-Subject: Re: [PATCHSET v6] fstests: support ext4 fuse testing
-Message-ID: <20251029235234.GZ6178@frogsfrogsfrogs>
-References: <20251029002755.GK6174@frogsfrogsfrogs>
- <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
- <aQHf3UGaURFzC17U@infradead.org>
+	s=arc-20240116; t=1761783175; c=relaxed/simple;
+	bh=Pt+XWVpX7W4+wpuWhwGPAsTClncvQbYcOUcfu0ntAWk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FejoxylyW2ItVYAWwnv1uW2kU2s3Celvkc8Frd2FE8SnuiVtfiFnDrsMeSuUwn9pHdZ7Y8RBTNIYejWjf4EBNdUPMOjXTs0LmJvJh4c2WYo4xKqbQiJ7Hx6dkOzil3RLQuES7VQxb5TViJ3cPrWGawn8pRd/zrnq+lmV5I321oU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gt1DagFT; arc=none smtp.client-ip=74.125.224.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yx1-f52.google.com with SMTP id 956f58d0204a3-63e19642764so637269d50.1
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Oct 2025 17:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761783173; x=1762387973; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pt+XWVpX7W4+wpuWhwGPAsTClncvQbYcOUcfu0ntAWk=;
+        b=gt1DagFTIEunIXXIOkOAgNqOmYo3zlgeR/je+tBx/FAKS/ZDZlNDFvfn36Gyz9wMTk
+         sUHbr8F6/dxLOgw3lh51DW8Yzo3BAE8wBWJjPtkrC5yeOmLD7Lk/W2nB4vpzie1sKAtg
+         XPGWpSbP/CLftAoANFwvTDQhp0ZJc4UWAh6pHba8ctPJsxZ3QZENRMwJV5kOipG47jGd
+         Ti0bjZ2tyso/dOgX8NLPO+mPMGiaiWNaJun04oPylRjh+3bqYMP8i7gBXRLRgXgRLlT8
+         S5EwVKCuTqENWTb59aKmRggY+d0r+ivF283LFjyohUb+gc+dLXTQV4owONLolC//VLCP
+         /0ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761783173; x=1762387973;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pt+XWVpX7W4+wpuWhwGPAsTClncvQbYcOUcfu0ntAWk=;
+        b=aVbfmVq+zQ1lqscuy+VIR7ND0siIXJz79wadC/u99SeJAltYvdQkmtUOP6GhSQ48d5
+         yg+pDyLTHt+Ivgm0QXytRTT6ROS6k3WHh+4QQCA8437f5PyUWvFao1hksqzKawxfMGf2
+         j7IlJDK7mlryL03RpJyV9GnLXgoV7Y7Ky0qVFeIsqskiSxOD2dMua7pOdQ9PLT4944p+
+         +LWm+5e84+0FW+tsJR9W6W5zLK3i4q7fm2OWpKjrpjpq2SFwZiN6PmezTbibhjDZzjD3
+         QT0XNQ65xYghAUA+y6syAbOqI+bZUp+sHnPwjlbl4s7yjQtn76lcIWfVfONZ2a70+bM2
+         0JJg==
+X-Gm-Message-State: AOJu0YwtMDQcckqxNJlnBXDAVreWAjPyk9C0SHaQFrgwTlJGGnakoZ/1
+	jsW2TTpODPvv4qRZ5PL3VfhZQhRNjUQV04mf8+N8elkt0eSDRV8eS8L5Ay/FRxtGIpz9aCPynas
+	ybwIGZ+ZwMgfk6OkRmId+mLi/jo458fc=
+X-Gm-Gg: ASbGncvOJvnh5z3AVJMxDSQHLjCuCAXHRTLnGdUwXMK7x+MbeOvIF6alEwqp0d1WUj0
+	xCVqBYGkuFJSGPFoGTPu1kW0HFSxOUDMokfoWJG/KopzxIvmRVp4Ywn7/tUOjMGeKS8lWj3pnIZ
+	lTiNdN+8OYtJP6XT328FOAR0C1fVG5HBF0D+GQ4wuH3g7bKu7kDiJJdbetOr5v93lznBlcbq0YJ
+	QXnaIPrdiT8jDId7QdHE7oyb0ArCp+H2A7ZsqUGL5ug8gCGN2FC4nVgNtkS0EPh8RNDxxdpJAQB
+	C0kl2Dsd6ZXSR5k7q34Gu3kbqw==
+X-Google-Smtp-Source: AGHT+IGkcPVeUHOyzzeaDCgQVV7N1DsbtwKzZjCLECXQw783opykaLZ09jb2jif+KNRmNzEauIlnK78eUmwkI+IK53E=
+X-Received: by 2002:a05:690c:6d8f:b0:782:69fc:3911 with SMTP id
+ 00721157ae682-78628e531d6mr50674607b3.21.1761783172633; Wed, 29 Oct 2025
+ 17:12:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aQHf3UGaURFzC17U@infradead.org>
+References: <20251020060936.474314-1-kartikey406@gmail.com>
+In-Reply-To: <20251020060936.474314-1-kartikey406@gmail.com>
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+Date: Thu, 30 Oct 2025 05:42:40 +0530
+X-Gm-Features: AWmQ_bnMfR5x5ZdWlkGeeYXa0-DzGpDM7pDrxlQdwW98XmHQJqd2qfcHjX0iTHM
+Message-ID: <CADhLXY4GzRDC0ReKwhy50UAfwugvmBb5ffsuCQG_7GNDk3NcUw@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: refresh inline data size before write operations
+To: tytso@mit.edu, adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com, stable@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Oct 29, 2025 at 02:35:25AM -0700, Christoph Hellwig wrote:
-> I find the series a bit hard to follow, because it mixes generic
-> with fs specific with test specific patches totally randomly.  Can
-> you get a bit of an order into it?  And maybe just send a series
-> with the conceptual core changes first outside the giant patch bombs?
-> Or if parts are useful outside the fuse ext4 context just send them
-> out in a self-contained series?  Bonus points for a bit of a highlevel
-> summary why these changes are needed in the cover letter.
+Hi Theodore and ext4 maintainers,
 
-Well TBH there's a lot of accumulated stuff including some treewide
-cleanups in my fstests branch that needs to go upstream before the
-fuse2fs changes.  I've been waiting the entire year to see if
-check-parallel will get finished... and I'm not going to wait anymore.
-That's why I haven't tidied up this patchset at all.
+I submitted this patch on October 20th to fix a race condition in
+inline data handling that causes BUG_ON crashes:
 
-The TLDR version is that FSTYP=fuse.ext4 is how you select the fuse
-server, and you ought to have mkfs.fuse.ext4/fsck.fuse.ext4 point to the
-appropriate e2fsprogs programs; a [fuse.ext4] section in mke2fs.conf;
-and fuse4fs installed as /sbin/mount.fuse.ext4 or /sbin/ext4 depending
-on how your libfuse is configured.
+https://lore.kernel.org/linux-ext4/20251020060936.474314-1-kartikey406@gmail.com/T/#u
 
-Then this series is basically making sure that FSTYP=fuse.ext* works,
-and turning off feature tests for things that aren't supported by
-fuse2fs.
+I wanted to gently ping to see if there are any concerns or if any
+changes are needed. I understand maintainers are busy and happy to
+wait, just wanted to ensure the patch didn't get lost.
+The patch addresses a similar issue to commit a54c4613dac1 by
+refreshing i_inline_size after taking the xattr lock.
 
---D
+Thank you for your time!
+
+Best regards,
+Deepanshu Kartikey
 
