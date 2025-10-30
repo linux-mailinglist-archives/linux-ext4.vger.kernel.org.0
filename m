@@ -1,232 +1,272 @@
-Return-Path: <linux-ext4+bounces-11361-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11362-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F1C5C1FD5C
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Oct 2025 12:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03A3AC1FD89
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Oct 2025 12:35:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B97564EB2F8
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Oct 2025 11:32:28 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 833CB4E5A72
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Oct 2025 11:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04FE22E2667;
-	Thu, 30 Oct 2025 11:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29573334C15;
+	Thu, 30 Oct 2025 11:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iQjV4Qkw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="APYEF91G";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MOvoqIVB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wArq54LY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RPIvBRaM"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A982E093C
-	for <linux-ext4@vger.kernel.org>; Thu, 30 Oct 2025 11:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3812F1FD2
+	for <linux-ext4@vger.kernel.org>; Thu, 30 Oct 2025 11:35:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761823928; cv=none; b=lhxdKI6MUWoS1Koqe5BQkXtLLKmg/6jcg8a6361krhUjBEg+NQj5co54GZqeACb6/iJUkCfR9fQqBUXvNYw6dIqa79t0SZhQrNyesing145+aCu+EqhZgJRmn8zNj65cs/XHIg+xvpgFKjfLlrilxWQMamtqepjeNLWPpi9NT/M=
+	t=1761824109; cv=none; b=gp6w4485GSs0wRMTSDpD3zNLaya4yJJbvq9XCh7awoaU1NFT5SYiGl4W9clnnEl/Y2vJnCf4q/cfLiuIHZg95hBmCQFX7RwGphxXMoc/w1nzQpgxZs556F/a1zU0lzQPqlwb6U9cSeEMIScyMCTHd51Ar4ykPPTkKwFjKoHoKFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761823928; c=relaxed/simple;
-	bh=OZ3Yq4YdDmWhDi/hUxHScmEubonH1DIfS5EheJ/DK3U=;
+	s=arc-20240116; t=1761824109; c=relaxed/simple;
+	bh=KlaYOnB2zIrOGxYethYD5P8DhWL9RjFbSyuNDnc9yxM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TnlrsWrj1P7c+WhGpRWqMJhIHOZ2gwFce2tCpFtovDAX96zU5iIKN6RW/3XIbbzwQWI2KQZl+batCCM8tW4qr/UOkGy+PVc1GE5mt72/Nr6yWm/RxNSh4BljjrFnH2lOJD9tTOuotX1jxtpwBwcPNpTXBMJjimRxzh8piibDHiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iQjV4Qkw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=APYEF91G; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MOvoqIVB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wArq54LY; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C263D3370D;
-	Thu, 30 Oct 2025 11:32:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761823924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ntw06CVPtYKA20BePGYDvcSPKowAchzswyZRcPGcQqs=;
-	b=iQjV4QkwkctgtDR0/g883064ybVchiq/QmGKncpucj8wgHtn2qpN8Rq9SPdUdQv+hWoFhX
-	Tmo+bPJbU3FCIm/dUeTNJdyNQ2eURN2IMLr9KPCuHCyg02zyse1qn4uO4/yoz4FRhVUC1o
-	Uoq/2oPXgyvdLXt9Qn7vjpqszi7oe/M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761823924;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ntw06CVPtYKA20BePGYDvcSPKowAchzswyZRcPGcQqs=;
-	b=APYEF91GxFI+yR6Mip4jKTTT7Dmr6yyjkMVDhWfeqRX91yTP4UHMu8kmswBb9qWiRdqnpx
-	bFchAEGXRbVz4sDw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MOvoqIVB;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wArq54LY
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761823922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ntw06CVPtYKA20BePGYDvcSPKowAchzswyZRcPGcQqs=;
-	b=MOvoqIVBUlXjCsKDPCoKy1sAGtX5virqZ5SXbUwaG2l96SDllOR/UAjOWSQll7fp+xWppD
-	6UEDwkD4rczojsJdVBtryz2kNUm7bWAOCKvvHvN9/nHciOCbza5rUV3rJjqiRfOromIYY3
-	RwgC06sp5Ok2T+zNWJ2txge5wgYkN7c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761823922;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ntw06CVPtYKA20BePGYDvcSPKowAchzswyZRcPGcQqs=;
-	b=wArq54LYoiQ4MYXRHLzZurpiYk5/OJPzr8ipIn+tuDskxBlxdAUkPzHi7lGhjFUdJdmjQF
-	xkoBYKZu/PbnDVAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B32E81396A;
-	Thu, 30 Oct 2025 11:32:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fyy6K7JMA2mebgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 30 Oct 2025 11:32:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id ED0F8A0AD6; Thu, 30 Oct 2025 12:32:01 +0100 (CET)
-Date: Thu, 30 Oct 2025 12:32:01 +0100
-From: Jan Kara <jack@suse.cz>
-To: Fedor Pchelkin <pchelkin@ispras.ru>
-Cc: Theodore Ts'o <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, Kees Cook <kees@kernel.org>, 
-	lvc-project@linuxtesting.org
-Subject: Re: [PATCH 1/2] ext4: fix up copying of mount_opts in superblock
- tuning ioctls
-Message-ID: <yq6rbx54jt4btntsh37urd6u63wwcd3lyhovbrm6w7occaveea@riljfkx5jmhi>
-References: <20251028130949.599847-1-pchelkin@ispras.ru>
+	 Content-Type:Content-Disposition:In-Reply-To; b=k3vyNCzNjaptaxkvq9zJDAVMypHBrMfi7bBi2g2eMwRtYllbweN5SCSN22DwNiCBzQ/w//n3FykvwiuL8cB3C3sE4J0OMlR6rElgAvoUkBu9idQjjvcimNXzLc43SSm74HGX/BZJc8xifNeUlZFEQZref6rshLNRDhTwZR0sOqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RPIvBRaM; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-63c523864caso1922907a12.1
+        for <linux-ext4@vger.kernel.org>; Thu, 30 Oct 2025 04:35:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761824105; x=1762428905; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1jQRJbq3W7ySqtjHUuXZDxThzL24ICiKDNUdWjz+YrM=;
+        b=RPIvBRaME0TzsEGkqGarsH6SLFhE3ns4F76uwbg3lAuRG6dx3c5uZX2lji/hMPa7Hj
+         8wepcqZ9WTr1W0X8UBzDjBmDB2QG1v47Z6bL5LRN5q6Yq7BDjop1Rx3JjEAi64v8pO/y
+         uTsJx0LmEhqegYzK2+8DBQCPEFrS/wm/JGMaBMqRX8he2ozic6Gwwxv1XZcO0meZpyxy
+         hnyV3FNtxCRClKuyYIi7VgtSAvfLLQMkaJ2RjO7fJJRDKyNA0fgp+eR9iryw7KmnKfxK
+         9w4jTG8zGKTxe7Rd6GOCl6W6JBFc4TqgMuN8c96EAF81UDcPHkF+IasPKAb31pg7f25Q
+         4n5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761824105; x=1762428905;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1jQRJbq3W7ySqtjHUuXZDxThzL24ICiKDNUdWjz+YrM=;
+        b=pnUl8V7iFEnbXFF+6P/lETbc45utVSyZ9TOjayvtm1NYV3kfkEeXm2NidBUMog8qlL
+         rU4w1q27N/xVmdmspBsLZcC8AVulR4a13JTMUGxyAdkt6H9tsecsp6tRvezUfRyNikU2
+         GyCj2R6kCjulYL9mOl/oTlH8JrF4j8Qe4IGZcd1kUB2QUcLfXKp0ztQsdkliGOQOgwiv
+         OeBGxr295Ukn1f+1lJrOWi8JAY/8dqWAQqbrRBF7nbdTl6TAeonafqaToNjWniXkETOq
+         wbgs+/UAE4xwZFuLQXdkO1GQOi/olQ70PEYZUGe8p0qQLwAXrl3Yt+3CNckrRnR/XT5r
+         6fbw==
+X-Forwarded-Encrypted: i=1; AJvYcCWAzsr4RFfMffMy8jHLZKclbOjqmXp/RPm/zxbV/ILt1nIrHnCV+YkZn21QRC2Nwt7s173VyEzAdYMa@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxMpSWBn2juoOycmcW9EOSUYYmQiShtQp3rI+5p4P54duIURgL
+	NI9yHuF0UmEhQ6lqujUeEONA9JhSCEQ66IDDjSfVftygfSEiPoMcMmsd/FAASimbRaw=
+X-Gm-Gg: ASbGncuwELnQ6zJsXdHtnzjpPENQY11BoGEwalDJhLrxT5sD3fQlnd0wieDgSYG4yhk
+	moArUQ9JjbBr91iD8ChwtVcQxj+IA9otngsbQWcTNJQ8EuzflTr2ckxH2BgGOEo/KqgXAcyl4Qo
+	5UNkzJjwTnOzgb8jXTSePqtL298DTtdh7cDOrgKJmtolh7wB+pV3IR2XS7E2XtOURyJO+bHx5we
+	N5oieAqqTmdhA6kUplcry/w3XtRe5lpKcu6+2n453375YTI91frZ6dIqJRr3AzeVT8l84OFe2Ql
+	X13IMCfm2mjjPL/Ahw5tsEM95xP35+IMyBumO8KckI7z4x5RJvQ2Ienq/9oHLe8CL3EgURE3AVz
+	xKq9ZpjZpxJgyk42TeD9a4Xi4AT0gPwbp3m/Jl4PpzfLBMcHjAvOq+ZO4SfqIQc+6SA4Nah94ZB
+	mfMwz6ok8HIJE5ErgfEM+N8TivG8xNmb2NBg/OXDIEyQvpS+ZtmUz3gygtxmo5Tj5/zSyIFaVIp
+	x9yog==
+X-Google-Smtp-Source: AGHT+IHwPDKpUkOtm37RUMhU0moYLn2XhmQqKXqCiHnNlwZMBqWVtEYi/CrdV0k+N7ak8l8WbmVrkA==
+X-Received: by 2002:a05:6402:1ecd:b0:63e:19ec:c8e4 with SMTP id 4fb4d7f45d1cf-64044375786mr5486197a12.28.1761824104954;
+        Thu, 30 Oct 2025 04:35:04 -0700 (PDT)
+Received: from localhost (2001-1c00-570d-ee00-c54a-34bd-5130-fdd5.cable.dynamic.v6.ziggo.nl. [2001:1c00:570d:ee00:c54a:34bd:5130:fdd5])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63e7ef95e8dsm14189735a12.20.2025.10.30.04.35.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Oct 2025 04:35:03 -0700 (PDT)
+Date: Thu, 30 Oct 2025 12:35:03 +0100
+From: Amir Goldstein <amir73il@gmail.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: zlang@redhat.com, neal@gompa.dev, fstests@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	joannelkoong@gmail.com, bernd@bsbernd.com
+Subject: Re: [PATCH 22/33] generic/631: don't run test if we can't mount
+ overlayfs
+Message-ID: <aQNNZ6lxeMntTifa@amir-ThinkPad-T480>
+References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
+ <176169820388.1433624.12333256574549591904.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="ZpygF3SuZCs2oZOn"
+Content-Disposition: inline
+In-Reply-To: <176169820388.1433624.12333256574549591904.stgit@frogsfrogsfrogs>
+
+
+--ZpygF3SuZCs2oZOn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251028130949.599847-1-pchelkin@ispras.ru>
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: C263D3370D
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,ispras.ru:email,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.01
 
-On Tue 28-10-25 16:09:47, Fedor Pchelkin wrote:
-> Judging by commit 8ecb790ea8c3 ("ext4: avoid potential buffer over-read in
-> parse_apply_sb_mount_options()"), the contents of s_mount_opts should be
-> treated as __nonstring, i.e. there might be no NUL-terminator in the
-> provided buffer.
+On Tue, Oct 28, 2025 at 06:26:09PM -0700, Darrick J. Wong wrote:
+> From: Darrick J. Wong <djwong@kernel.org>
 > 
-> Then the same holds for the corresponding mount_opts field of the struct
-> ext4_tune_sb_params exchanged with userspace via a recently implemented
-> superblock tuning ioctl.
+> This test fails on fuse2fs with the following:
 > 
-> The problem is that strscpy_pad() can't work properly with non-NUL-term
-> strings.  String fortifying infrastructure would complain if that happens.
-> Commit 0efc5990bca5 ("string.h: Introduce memtostr() and memtostr_pad()")
-> gives additional information in that regard.
+> +mount: /opt/merged0: wrong fs type, bad option, bad superblock on overlay, missing codepage or helper program, or other error.
+> +       dmesg(1) may have more information after failed mount system call.
 > 
-> Both buffers are just raw arrays of the similar fixed size, essentially
-> they should represent the same contents.  As they don't necessarily have
-> NUL-terminators, in both directions use plain memcpy() to copy their
-> contents.
+> dmesg logs the following:
 > 
-> Found by Linux Verification Center (linuxtesting.org).
+> [  764.775172] overlayfs: upper fs does not support tmpfile.
+> [  764.777707] overlayfs: upper fs does not support RENAME_WHITEOUT.
 > 
-> Fixes: 04a91570ac67 ("ext4: implemet new ioctls to set and get superblock parameters")
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-
-I agree there are some holes in the logic of 8ecb790ea8c3 ("ext4: avoid
-potential buffer over-read in parse_apply_sb_mount_options()") and
-consequently 04a91570ac67 may need fixing up as well. But I think the fixes
-should look differently. The clear intended use of s_mount_opts field is
-that it is at most 63 characters long with the last byte guaranteed to be
-0. This is how userspace utilities use it and they complain if you try
-setting more than 63 characters long string. So I think strscpy_pad() use
-in ext4_ioctl_get_tune_sb() is actually fine (sizes of both buffers match).
-In ext4_sb_setparams() we should actually make sure userspace buffer is
-properly Nul-terminated and return error otherwise. And the buffer in
-parse_apply_sb_mount_options() should actually be only 64 bytes long to
-match the size of the source buffer at which point using strscpy_pad()
-becomes correct. How does that sound?
-
-								Honza
-
+> From this, it's pretty clear why the test fails -- overlayfs checks that
+> the upper filesystem (fuse2fs) supports RENAME_WHITEOUT and O_TMPFILE.
+> fuse2fs doesn't support either of these, so the mount fails and then the
+> test goes wild.
+> 
+> Instead of doing that, let's do an initial test mount with the same
+> options as the workers, and _notrun if that first mount doesn't succeed.
+> 
+> Fixes: 210089cfa00315 ("generic: test a deadlock in xfs_rename when whiteing out files")
+> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 > ---
+>  tests/generic/631 |   22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 > 
-> The 1/2 patch of the current series fixes an issue existing only in 6.18-rc
-> while 2/2 fixes the commit which was in turn backported to stable kernels.
-> That's the reasoning for separation.
 > 
->  fs/ext4/ioctl.c           | 4 ++--
->  include/uapi/linux/ext4.h | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index a93a7baae990..c39b87d52cb0 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -1292,7 +1292,7 @@ static int ext4_ioctl_get_tune_sb(struct ext4_sb_info *sbi,
->  	ret.raid_stripe_width = le32_to_cpu(es->s_raid_stripe_width);
->  	ret.encoding = le16_to_cpu(es->s_encoding);
->  	ret.encoding_flags = le16_to_cpu(es->s_encoding_flags);
-> -	strscpy_pad(ret.mount_opts, es->s_mount_opts);
-> +	memcpy(ret.mount_opts, es->s_mount_opts, sizeof(ret.mount_opts));
->  	ret.feature_compat = le32_to_cpu(es->s_feature_compat);
->  	ret.feature_incompat = le32_to_cpu(es->s_feature_incompat);
->  	ret.feature_ro_compat = le32_to_cpu(es->s_feature_ro_compat);
-> @@ -1353,7 +1353,7 @@ static void ext4_sb_setparams(struct ext4_sb_info *sbi,
->  		es->s_encoding = cpu_to_le16(params->encoding);
->  	if (params->set_flags & EXT4_TUNE_FL_ENCODING_FLAGS)
->  		es->s_encoding_flags = cpu_to_le16(params->encoding_flags);
-> -	strscpy_pad(es->s_mount_opts, params->mount_opts);
-> +	memcpy(es->s_mount_opts, params->mount_opts, sizeof(es->s_mount_opts));
->  	if (params->set_flags & EXT4_TUNE_FL_EDIT_FEATURES) {
->  		es->s_feature_compat |=
->  			cpu_to_le32(params->set_feature_compat_mask);
-> diff --git a/include/uapi/linux/ext4.h b/include/uapi/linux/ext4.h
-> index 411dcc1e4a35..8ed9acbd0e03 100644
-> --- a/include/uapi/linux/ext4.h
-> +++ b/include/uapi/linux/ext4.h
-> @@ -138,7 +138,7 @@ struct ext4_tune_sb_params {
->  	__u32 clear_feature_compat_mask;
->  	__u32 clear_feature_incompat_mask;
->  	__u32 clear_feature_ro_compat_mask;
-> -	__u8  mount_opts[64];
-> +	__u8  mount_opts[64] __nonstring;
->  	__u8  pad[64];
->  };
+> diff --git a/tests/generic/631 b/tests/generic/631
+> index 72bf85e30bdd4b..64e2f911fdd10e 100755
+> --- a/tests/generic/631
+> +++ b/tests/generic/631
+> @@ -64,6 +64,26 @@ stop_workers() {
+>  	done
+>  }
 >  
-> -- 
-> 2.51.0
+> +require_overlayfs() {
+> +	local tag="check"
+> +	local mergedir="$SCRATCH_MNT/merged$tag"
+> +	local l="lowerdir=$SCRATCH_MNT/lowerdir:$SCRATCH_MNT/lowerdir1"
+> +	local u="upperdir=$SCRATCH_MNT/upperdir$tag"
+> +	local w="workdir=$SCRATCH_MNT/workdir$tag"
+> +	local i="index=off"
+> +
+> +	rm -rf $SCRATCH_MNT/merged$tag
+> +	rm -rf $SCRATCH_MNT/upperdir$tag
+> +	rm -rf $SCRATCH_MNT/workdir$tag
+> +	mkdir $SCRATCH_MNT/merged$tag
+> +	mkdir $SCRATCH_MNT/workdir$tag
+> +	mkdir $SCRATCH_MNT/upperdir$tag
+> +
+> +	_mount -t overlay overlay -o "$l,$u,$w,$i" $mergedir || \
+> +		_notrun "cannot mount overlayfs"
+> +	umount $mergedir
+> +}
+> +
+>  worker() {
+>  	local tag="$1"
+>  	local mergedir="$SCRATCH_MNT/merged$tag"
+> @@ -91,6 +111,8 @@ worker() {
+>  	rm -f $SCRATCH_MNT/workers/$tag
+>  }
+>  
+> +require_overlayfs
+> +
+>  for i in $(seq 0 $((4 + LOAD_FACTOR)) ); do
+>  	worker $i &
+>  done
 > 
+
+I agree in general, but please consider this (untested) cleaner patch
+
+Thanks,
+Amir.
+
+
+--ZpygF3SuZCs2oZOn
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-generic-631-don-t-run-test-if-we-can-t-mount-overlay.patch"
+
+From 470e7e26dc962b58ee1aabd578e63fe7a0df8cdd Mon Sep 17 00:00:00 2001
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 30 Oct 2025 12:24:21 +0100
+Subject: [PATCH] generic/631: don't run test if we can't mount overlayfs
+
+---
+ tests/generic/631 | 39 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 28 insertions(+), 11 deletions(-)
+
+diff --git a/tests/generic/631 b/tests/generic/631
+index c38ab771..7dc335aa 100755
+--- a/tests/generic/631
++++ b/tests/generic/631
+@@ -46,7 +46,6 @@ _require_extra_fs overlay
+ 
+ _scratch_mkfs >> $seqres.full
+ _scratch_mount
+-_supports_filetype $SCRATCH_MNT || _notrun "overlayfs test requires d_type"
+ 
+ mkdir $SCRATCH_MNT/lowerdir
+ mkdir $SCRATCH_MNT/lowerdir1
+@@ -64,7 +63,7 @@ stop_workers() {
+ 	done
+ }
+ 
+-worker() {
++mount_overlay() {
+ 	local tag="$1"
+ 	local mergedir="$SCRATCH_MNT/merged$tag"
+ 	local l="lowerdir=$SCRATCH_MNT/lowerdir:$SCRATCH_MNT/lowerdir1"
+@@ -72,25 +71,43 @@ worker() {
+ 	local w="workdir=$SCRATCH_MNT/workdir$tag"
+ 	local i="index=off"
+ 
++	rm -rf $SCRATCH_MNT/merged$tag
++	rm -rf $SCRATCH_MNT/upperdir$tag
++	rm -rf $SCRATCH_MNT/workdir$tag
++	mkdir $SCRATCH_MNT/merged$tag
++	mkdir $SCRATCH_MNT/workdir$tag
++	mkdir $SCRATCH_MNT/upperdir$tag
++
++	mount -t overlay overlay -o "$l,$u,$w,$i" "$mergedir"
++}
++
++unmount_overlay() {
++	local tag="$1"
++	local mergedir="$SCRATCH_MNT/merged$tag"
++
++	_unmount $mergedir
++}
++
++worker() {
++	local tag="$1"
++	local mergedir="$SCRATCH_MNT/merged$tag"
++
+ 	touch $SCRATCH_MNT/workers/$tag
+ 	while test -e $SCRATCH_MNT/running; do
+-		rm -rf $SCRATCH_MNT/merged$tag
+-		rm -rf $SCRATCH_MNT/upperdir$tag
+-		rm -rf $SCRATCH_MNT/workdir$tag
+-		mkdir $SCRATCH_MNT/merged$tag
+-		mkdir $SCRATCH_MNT/workdir$tag
+-		mkdir $SCRATCH_MNT/upperdir$tag
+-
+-		mount -t overlay overlay -o "$l,$u,$w,$i" $mergedir
++		mount_overlay $tag
+ 		mv $mergedir/etc/access.conf $mergedir/etc/access.conf.bak
+ 		touch $mergedir/etc/access.conf
+ 		mv $mergedir/etc/access.conf $mergedir/etc/access.conf.bak
+ 		touch $mergedir/etc/access.conf
+-		_unmount $mergedir
++		unmount_overlay $tag
+ 	done
+ 	rm -f $SCRATCH_MNT/workers/$tag
+ }
+ 
++mount_overlay check || \
++	_notrun "cannot mount overlayfs with underlying filesystem $FSTYP"
++unmount_overlay check
++
+ for i in $(seq 0 $((4 + LOAD_FACTOR)) ); do
+ 	worker $i &
+ done
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.51.1
+
+
+--ZpygF3SuZCs2oZOn--
 
