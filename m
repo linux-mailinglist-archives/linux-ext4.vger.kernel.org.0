@@ -1,89 +1,168 @@
-Return-Path: <linux-ext4+bounces-11388-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11389-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F52EC241AA
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 Oct 2025 10:21:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8725C24C76
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 Oct 2025 12:29:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC66F1A23C68
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 Oct 2025 09:18:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88B083BBBE7
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 Oct 2025 11:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B52330313;
-	Fri, 31 Oct 2025 09:18:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22523451AF;
+	Fri, 31 Oct 2025 11:28:57 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C714330305;
-	Fri, 31 Oct 2025 09:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819863254B1;
+	Fri, 31 Oct 2025 11:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761902307; cv=none; b=ZjdHfg86dlkBC3WMTCXFBWUHlwE0PMp7y7phSLeNActxITfHwnovyMWNbopR4zngdl3Xs97fJmXJMBGcdH3mXRQd9d7IJadWM6ezlq8y8r6caGUX40smweELac5HFfLYfzG5MmH08vp8FLOWHu/C/7r4C+KrZi/BIA2qiSojtMM=
+	t=1761910137; cv=none; b=j7M79vr+rZYuNlZZYm4SScQ/kGIwwpVc62R6kn2jq6shAp/MNhtRPAs/0E989D5HtDjg/h1gpGYhy3oRZYm8iTt+QYwEyNpmW+NMGbGLulor9mVBTG+5CoAi4H0OkGBMJsyd+Nbwn3T8ljouhi7kPYS04asa9e/wlrulapsLglI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761902307; c=relaxed/simple;
-	bh=QSgD+O92En9+Myk3lhAO0vJmvltIk/8SqFaNAmHxHH4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JrcmtZ6tTfbW//5NUWwk0ETvTesEFx20z3k5bRiLFCLK0nKuNCQbTD57xY3lH97Loyx8GmF0AyyiNZkDTllPXQqnly93SaO38vRz7yGaFd8PMzcwO6tBeSQX/ZVdjYWczoWUhWyZqLmn6NgtRekKs1LjINcgik/48RmK6iIyTOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id B3534227AAC; Fri, 31 Oct 2025 10:18:20 +0100 (CET)
-Date: Fri, 31 Oct 2025 10:18:20 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Carlos Llamas <cmllamas@google.com>,
-	Keith Busch <kbusch@kernel.org>, Keith Busch <kbusch@meta.com>,
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	axboe@kernel.dk, Hannes Reinecke <hare@suse.de>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCHv4 5/8] iomap: simplify direct io validity check
-Message-ID: <20251031091820.GA9508@lst.de>
-References: <20250827141258.63501-1-kbusch@meta.com> <20250827141258.63501-6-kbusch@meta.com> <aP-c5gPjrpsn0vJA@google.com> <aP-hByAKuQ7ycNwM@kbusch-mbp> <aQFIGaA5M4kDrTlw@google.com> <20251028225648.GA1639650@google.com> <20251028230350.GB1639650@google.com> <20251029070618.GA29697@lst.de> <20251030174015.GC1624@sol>
+	s=arc-20240116; t=1761910137; c=relaxed/simple;
+	bh=hra7z6zhXatI9pcxh/dwkLABHgq4bkUJMjPULu42SOY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Not0WRKJBr0Qtpj1r8iWeaQizF/vqiKDWUhgxfykK0QNotwN4Bxnw209j/p+lwf9SGOX4QAc4jPwa748AY/9EhLi1kZI7QK3ggHUXTocbjT48eCBrq8pY8E5C8v4OgWNvqjxwq6coviCJwUvfKRMfV7sy5YMG9cmNErn4NkBGnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 59VBSYRM034127;
+	Fri, 31 Oct 2025 20:28:34 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 59VBSXFf034124
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Fri, 31 Oct 2025 20:28:33 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <8482e4e3-b233-4540-aa47-4573ee87fe96@I-love.SAKURA.ne.jp>
+Date: Fri, 31 Oct 2025 20:28:34 +0900
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251030174015.GC1624@sol>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] jbd2: allocate lock_class_key for jbd2_handle
+ dynamically
+To: Jan Kara <jack@suse.cz>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <e42f1471-a88a-4938-8743-1d5b171c47ec@I-love.SAKURA.ne.jp>
+ <fwsxrb7ugi5zeosugo6hyjdbhw36ppa5kekfi6n7we2vvi3r7m@ljrizqoagsg7>
+ <93744126-237b-4e36-8a62-a33e1fb52051@I-love.SAKURA.ne.jp>
+ <mjzb7q6juxndqtmoaee3con6xtma5vfzkgfcicjjmt7ltv2gtt@ps2np5r36vn3>
+ <96c8fca1-7568-46c8-a5ad-af4699b95d5e@I-love.SAKURA.ne.jp>
+ <doq4csrkuhpha7v5lunesdrscmqmjvt3flids3iai2gvpbhp3j@mxldi4yvvymw>
+ <a6fcc693-42f0-4d70-a1af-fc1bfb328eb7@I-love.SAKURA.ne.jp>
+ <rajbaoxp7zvaiftmuip4mxdvrdxthhgvbjvtuq3zrwijtdab2j@ouligqrqxyth>
+ <987110fc-5470-457a-a218-d286a09dd82f@I-love.SAKURA.ne.jp>
+ <vgpy66rcs3mvitijmt2v2yfwuhkijh33z3s76ghlsqq6yjgmtw@prlpxdeoitif>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <vgpy66rcs3mvitijmt2v2yfwuhkijh33z3s76ghlsqq6yjgmtw@prlpxdeoitif>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Anti-Virus-Server: fsav102.rs.sakura.ne.jp
+X-Virus-Status: clean
 
-On Thu, Oct 30, 2025 at 10:40:15AM -0700, Eric Biggers wrote:
-> Allowing DIO segments to be aligned (in memory address and/or length) to
-> less than crypto_data_unit_size on encrypted files has been attempted
-> and discussed before.  Read the cover letter of
-> https://lore.kernel.org/linux-fscrypt/20220128233940.79464-1-ebiggers@kernel.org/
+Who can take this patch?
 
-Hmm, where does "First, it
-necessarily causes it to be possible that crypto data units span bvecs.
-Splits cannot occur at such locations; however the block layer currently
-assumes that bios can be split at any bvec boundary.? come from?  The
-block layer splits at arbitrary boundaries that don't need any kind of
-bvec alignment.
-
-> We eventually decided to proceed with DIO support without it, since it
-> would have added a lot of complexity.  It would have made the bio
-> splitting code in the block layer split bios at boundaries where the
-> length isn't aligned to crypto_data_unit_size, it would have caused a
-> lot of trouble for blk-crypto-fallback, and it even would have been
-> incompatible with some of the hardware drivers (e.g. ufs-exynos.c).
-
-Ok, if hardware drivers can't handle it that's a good argument.  I can
-see why handling it in the software case is very annoying, but non-stupid
-hardware should not be affected.  Stupid me assuming UFS might not be
-dead stupid of course.
-
-> It also didn't seem to be all that useful, and it would have introduced
-> edge cases that don't get tested much.  All reachable to unprivileged
-> userspace code too, of course.
-
-xfstests just started exercising this and we're getting lots of interesting
-reports (for the non-fscrypt case).
+On 2025/10/23 16:59, Jan Kara wrote:
+> On Wed 22-10-25 20:11:37, Tetsuo Handa wrote:
+>> syzbot is reporting possibility of deadlock due to sharing lock_class_key
+>> for jbd2_handle across ext4 and ocfs2. But this is a false positive, for
+>> one disk partition can't have two filesystems at the same time.
+>>
+>> Reported-by: syzbot+6e493c165d26d6fcbf72@syzkaller.appspotmail.com
+>> Closes: https://syzkaller.appspot.com/bug?extid=6e493c165d26d6fcbf72
+>> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>> Tested-by: syzbot+6e493c165d26d6fcbf72@syzkaller.appspotmail.com
+> 
+> Thanks! Tha patch looks good. Feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> 								Honza
+> 
+>> ---
+>>  fs/jbd2/journal.c    | 6 ++++--
+>>  include/linux/jbd2.h | 6 ++++++
+>>  2 files changed, 10 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>> index d480b94117cd..f43474002f50 100644
+>> --- a/fs/jbd2/journal.c
+>> +++ b/fs/jbd2/journal.c
+>> @@ -1521,7 +1521,6 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>>  			struct block_device *fs_dev,
+>>  			unsigned long long start, int len, int blocksize)
+>>  {
+>> -	static struct lock_class_key jbd2_trans_commit_key;
+>>  	journal_t *journal;
+>>  	int err;
+>>  	int n;
+>> @@ -1530,6 +1529,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>>  	if (!journal)
+>>  		return ERR_PTR(-ENOMEM);
+>>  
+>> +	lockdep_register_key(&journal->jbd2_trans_commit_key);
+>>  	journal->j_blocksize = blocksize;
+>>  	journal->j_dev = bdev;
+>>  	journal->j_fs_dev = fs_dev;
+>> @@ -1560,7 +1560,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>>  	journal->j_max_batch_time = 15000; /* 15ms */
+>>  	atomic_set(&journal->j_reserved_credits, 0);
+>>  	lockdep_init_map(&journal->j_trans_commit_map, "jbd2_handle",
+>> -			 &jbd2_trans_commit_key, 0);
+>> +			 &journal->jbd2_trans_commit_key, 0);
+>>  
+>>  	/* The journal is marked for error until we succeed with recovery! */
+>>  	journal->j_flags = JBD2_ABORT;
+>> @@ -1611,6 +1611,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>>  	kfree(journal->j_wbuf);
+>>  	jbd2_journal_destroy_revoke(journal);
+>>  	journal_fail_superblock(journal);
+>> +	lockdep_unregister_key(&journal->jbd2_trans_commit_key);
+>>  	kfree(journal);
+>>  	return ERR_PTR(err);
+>>  }
+>> @@ -2187,6 +2188,7 @@ int jbd2_journal_destroy(journal_t *journal)
+>>  		jbd2_journal_destroy_revoke(journal);
+>>  	kfree(journal->j_fc_wbuf);
+>>  	kfree(journal->j_wbuf);
+>> +	lockdep_unregister_key(&journal->jbd2_trans_commit_key);
+>>  	kfree(journal);
+>>  
+>>  	return err;
+>> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+>> index 43b9297fe8a7..f5eaf76198f3 100644
+>> --- a/include/linux/jbd2.h
+>> +++ b/include/linux/jbd2.h
+>> @@ -1253,6 +1253,12 @@ struct journal_s
+>>  	 */
+>>  	struct lockdep_map	j_trans_commit_map;
+>>  #endif
+>> +	/**
+>> +	 * @jbd2_trans_commit_key:
+>> +	 *
+>> +	 * "struct lock_class_key" for @j_trans_commit_map
+>> +	 */
+>> +	struct lock_class_key	jbd2_trans_commit_key;
+>>  
+>>  	/**
+>>  	 * @j_fc_cleanup_callback:
+>> -- 
+>> 2.47.3
+>>
+>>
 
 
