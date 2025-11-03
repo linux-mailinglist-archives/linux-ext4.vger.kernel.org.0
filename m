@@ -1,315 +1,227 @@
-Return-Path: <linux-ext4+bounces-11399-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11400-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96CEC2A003
-	for <lists+linux-ext4@lfdr.de>; Mon, 03 Nov 2025 04:57:47 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E70C2A0A1
+	for <lists+linux-ext4@lfdr.de>; Mon, 03 Nov 2025 06:01:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EAAC24E7D2F
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Nov 2025 03:57:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 810374E3235
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Nov 2025 05:01:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7FA288502;
-	Mon,  3 Nov 2025 03:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="niHF++bj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6E9B652;
+	Mon,  3 Nov 2025 05:01:42 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013015.outbound.protection.outlook.com [52.101.83.15])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB192882D3
-	for <linux-ext4@vger.kernel.org>; Mon,  3 Nov 2025 03:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762142263; cv=fail; b=WPEjxUTc5fOefPu2ChMR4R27epZzPMIRCKGVs+csIHBX5TvPg4SAuO7VH50hMRzYFNnCgknGVmPdBEVWQ1FUF6WRSviBbqPOP/b5b2ECrJNSPcgtcgBa1Q5oHJSDzB5oKdtimAeOsc9k7ML/mT1jlguFoBmnM96F+sR3fOHKzvU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762142263; c=relaxed/simple;
-	bh=TxOCJcUT79VowLgxkQc9ipgjHuvd5jqpxR6bOzwbnss=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=rtm2wRhkDOoha6WOmyU7kTlSlSMHQltntdee7AYGDs0TmtZfR/0KvTl11+iFyZuc6zfdtjVGPcW89LzKEVKr/khZ/UdLkiQSPchswr2ltzz1dnqYeFVn3tlzOu4l6Idm49tZNg7MRqzyQZugeWKj0d0eylmnkt4yjVBM8tPY58Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=niHF++bj; arc=fail smtp.client-ip=52.101.83.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Nz/81t2HC7x9Zwap8/rkqjZ1hpIlQpNpYDx7kWwZCmMCFpXdX84VQa5KlwerhytN3kuLS4IBdp68m51cpwgQgHLyV1liGBxHsD3AYUicRV1BG3xoTxsE6uquhNZBRT6Vb63KK4UsiKNNgbYYpx2eqRV8J5Wa7yI7OxSvYTgACn3SDT/mUquBthX0buxpMbO1hHi53hDwzFpVOQkUE1JC9vCxvDLpxVWFe0jenkpH3W45WedFUQINWT0JuA1RxBnWr+9UbB4txbA9Gti4YdDGo2TE+aketSzVAxI5aBKH4qiM12rvWM10F4BgfOOdr0idQY4X7dhWRjVppQwWVIf1og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TxOCJcUT79VowLgxkQc9ipgjHuvd5jqpxR6bOzwbnss=;
- b=EfMgSvi4g78mDfeQaD47xW8GPPR3MCSHzuPh/WaOkyJB3cu8OWSZb8B3fcLIVMkYg9sZJ4sxNcVxARXJdN3oEJkCfz8+cszOdX/1pCKXfprcl19jGXx+vcQH3yxEqjxagHQS+rG+tYcZ1mPrKo3SCh6gzi+0EDscTjICk80D30Tr1xCsIKVVuia3vudze3Jq2x7rHuYPagCDosE2DqMsNnT2wVQNF32y+JLeqxlmbkw3fOEnfgzFAtFg2EZZ5JYJtiqdPYbph99u9eYsDWuNCUbGCEvDhIMDGWrsH9DMMRASvIwlE/upvzTsj8zAqdYdpZhBIiGRWO32ueTR72kYBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TxOCJcUT79VowLgxkQc9ipgjHuvd5jqpxR6bOzwbnss=;
- b=niHF++bjKzJm0N96Npmu4/Lq/VuH5ZVZqO4JdV+LuMELaTwDdhH93UYO50ZXUugz59YcNH19IZru+BO9YINa+ygKpMUl0WFYAwz+YYdyXX8WY89iGW7shmU29MPlvVxGUK/zZY6CxDfEvwBl5hEaBFf61f85/rU2B/nQQDWD0Un07ScwxPv0vbj2C+Rv0Nx05mc306HIqdlj+ntV4vKywosg0eGE5fQZzvDmAk1LbZ3N5uiW6ZLg8M5c43JiQzz3vDkbx2oP6DrsPtivgPVxfbzwvqYIq7cB+h7IcrunNRyrSMkfI96kzTcrhK+fQqHnh7zIbj+P9bYD1FWWpmYmFg==
-Received: from AS1PR04MB9502.eurprd04.prod.outlook.com (2603:10a6:20b:4d0::13)
- by PAXPR04MB8622.eurprd04.prod.outlook.com (2603:10a6:102:219::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.16; Mon, 3 Nov
- 2025 03:57:38 +0000
-Received: from AS1PR04MB9502.eurprd04.prod.outlook.com
- ([fe80::d0bc:1643:ba58:96f4]) by AS1PR04MB9502.eurprd04.prod.outlook.com
- ([fe80::d0bc:1643:ba58:96f4%4]) with mapi id 15.20.9275.015; Mon, 3 Nov 2025
- 03:57:37 +0000
-From: Bough Chen <haibo.chen@nxp.com>
-To: Theodore Tso <tytso@mit.edu>
-CC: "jack@suse.cz" <jack@suse.cz>, "adilger.kernel@dilger.ca"
-	<adilger.kernel@dilger.ca>, "linux-ext4@vger.kernel.org"
-	<linux-ext4@vger.kernel.org>, "imx@lists.linux.dev" <imx@lists.linux.dev>
-Subject: RE: ext4 issue on  linux-next(next-20251030)
-Thread-Topic: ext4 issue on  linux-next(next-20251030)
-Thread-Index: AQHcSY39a0Ma/Wi8bkOn2EN1sRJ6jbTbeaOAgAANL3CABMiZIA==
-Date: Mon, 3 Nov 2025 03:57:37 +0000
-Message-ID:
- <AS1PR04MB950288682BF1CA58C32AE0F390C7A@AS1PR04MB9502.eurprd04.prod.outlook.com>
-References: <20251023-qm_dts-v1-0-9830d6a45939@nxp.com>
- <20251023-qm_dts-v1-2-9830d6a45939@nxp.com>
- <DU0PR04MB9496D99F17904D1B2EFB9E5090FBA@DU0PR04MB9496.eurprd04.prod.outlook.com>
- <20251031013335.GA10593@macsyma-3.local>
- <DU0PR04MB9496B72135BFB95A93DB577E90F8A@DU0PR04MB9496.eurprd04.prod.outlook.com>
-In-Reply-To:
- <DU0PR04MB9496B72135BFB95A93DB577E90F8A@DU0PR04MB9496.eurprd04.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS1PR04MB9502:EE_|PAXPR04MB8622:EE_
-x-ms-office365-filtering-correlation-id: bf4567df-5d62-47be-cf30-08de1a8d20eb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|19092799006|366016|376014|1800799024|38070700021;
-x-microsoft-antispam-message-info:
- =?gb2312?B?MUliTVh6MnlDZUV5WjE3bE44MmdpemxkNXMydDdJRTl0QXpNTENycUdPSXAz?=
- =?gb2312?B?T1BIR3RVd3F4TDQxbWFHMWk0RmNmMVZSMFg0dm04RW50dmdUNzBaQUFQR3Zm?=
- =?gb2312?B?Ym9HMnkwaTVjSk9uWGRFc3dPWkVpd05zQk80QjZCbmFmRkNZell0dnRWUzRu?=
- =?gb2312?B?SDZxbm1EMnI1OWpEUlNwelBzZlpSYi9TdkdzNW1Cck5yZVFhS29MenJSWFpZ?=
- =?gb2312?B?Q3h6Rk5qMzljRnlRb1I2T1gzVWhxMDRkZEdibDQyUUJiSkxYSTlkREdYT0pV?=
- =?gb2312?B?RGhjcUQ1KzZNTWd1VEFlZ2p4aEdudEFmdWh5bFU0R2ZFUzVXemZINncyam9s?=
- =?gb2312?B?ektlVWZDdUU2ejllWVM1UTM1K1RkQVJtd2czQmd2eGlMNWZrcGxtK1kvWW1Q?=
- =?gb2312?B?Q0pIUmtqdzdWZHFmSi93SEV3Wnd4dGhDUnVmOTJwRDRlaDUveHEwYnNhMHYw?=
- =?gb2312?B?d1R5ZnNjejhvK2RGaTdWUE9FcjJnV203cmdUcXdxV1Z2QXBGWTVTbWsxUzZX?=
- =?gb2312?B?Y1lFZUt1UmpkNSsvQTJUWVE2VVdxdkpxc2c5UG1hSHhqSGpUd2JrOXRsamZt?=
- =?gb2312?B?eHUzbXB3djg4YmVNYXgxV2dpb09aTHR1UHYwM2Mrei9iTUtrTjdmVFZNVmlW?=
- =?gb2312?B?VlR5UWZvdFV3cWp3SmlNRFYrVVJZUWZDMUNuaWNrNG1oSW94dDF4K1p2anhz?=
- =?gb2312?B?Qi9NSVVualZRdmxLZTMxWG5WSGV5RHZHSXVpRlRSRVZxa1NmMUx5N0l5dWhE?=
- =?gb2312?B?bm1na2I4MkJ4UnR1TXhHejQyeDZDKzZuUHE1TEhPNGpnbzhmYjdNdEhFT1F4?=
- =?gb2312?B?aXpQZk80VkJXTW15SjJaMXFHM3hzblJaOHk5SHg4aUtBL3Naemp4NUh0OEZ4?=
- =?gb2312?B?Z3Zyemhpb3EyN0YydElYMXNMR1dSajJUeWMvTmk2WUJtN1UwZnFuYlpXcjJZ?=
- =?gb2312?B?VGRITHZQOUxCTGl6Z25FcmJhOGZ0Z1VXZEtnNExneWFKK01GSTV5Q09QeS9N?=
- =?gb2312?B?Q00vbDFiZ1JvWW0xZEgvNDVnT1JISXl2ZzZSUEZpMEtqeFVmUWZ4Mk5JUkxs?=
- =?gb2312?B?eXJiL0pIZENFZW16ZzhnbG1paGNtQkl0S2dzeHBPUjVNblpLZ1YzalJNRjgx?=
- =?gb2312?B?Z3dTQnVUaXNGNTRyMFgvdHpZRmFpUDk4TXllcE16ZExaK3o0VU1YSzBjemVW?=
- =?gb2312?B?TkRTVE9LRkhnQ0t5US9ZRTlQWTNDT1ZLbUplRnFTU1hKK29BR3FFZGZia0F4?=
- =?gb2312?B?NXRvSGpTNGZNbmNrNmlOK3hRTk5Mc0hDdUdPRjBKUUtLODJwdncyTk11VUpB?=
- =?gb2312?B?YXhuME1wQUZXdk1FY2lpL1VXamZFTThZQ1crelBVN2JVNGVCbmVmaitCaFBp?=
- =?gb2312?B?TGNMMXBBeE04TnBKOWhLcytoOTdSL1RXcDVBR1gzZXZaNkc1b2RFZWg2U2k2?=
- =?gb2312?B?Vk5wSGIyTHgzWHBOVFE1Tk1KRVJhbjFhK2JoWGs0cGNOck12STB5eEQ2SUY4?=
- =?gb2312?B?dGRVbzVlQmRBVnR1QkNJZ1gzTENwL1JBeWFnSExHY2NPeGNtN3NnS204TGtF?=
- =?gb2312?B?cUp5Q2RhUzYvMTVyaHRXM1lUVGFtaFNxN3YyVUxyYkNIbDZvY2c1cVdZLzl5?=
- =?gb2312?B?UXdUazJXMzRHeGovcDVocDF3QmVwZjJxTDhWbUoxVEw3TzQ2bXI0S3E2U3VX?=
- =?gb2312?B?V1A3bkpGa3BKR1dVOW5wd05DeWJNYWwwUVhsS0V3dnVSQkJkRkNsZ3Z5MXZx?=
- =?gb2312?B?OWtlRksxTGIxOHY4V3pYM0V1ZWg1Z2hibnJTREtzelVDdXZRT0VIeXFWS0s1?=
- =?gb2312?B?R0FVZHZGemFOZkZoYmhIRlFGRktVZGpLR2Q1U3MrcmE1R3Z1MXhxWHFXaGlm?=
- =?gb2312?B?azZaUEhhQXpDUlFadk9sM1BoaUtYRVhPWmVOeWhKSDFCKzZuaVU1M0haMjlU?=
- =?gb2312?B?dCtJMWFaMlJtZkVkVVVmUkFOMEo2eURsait4TlFsZHdFbHJmbGJwVkVOa2or?=
- =?gb2312?B?RkJLZVMzWnVtUnVMM2xSa2NKTjhuQVdjdTk3aUtnVHJMUDRTMFJCbGZRQ2pa?=
- =?gb2312?Q?1vw97l?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS1PR04MB9502.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(366016)(376014)(1800799024)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?gb2312?B?am9wN0s3Tm0zYWN4elFIZ3o0Q0oveFdXUnlIb2FBZU8zQ0R2K3RyVU9jbXhv?=
- =?gb2312?B?ZnJCRVpEUHF2YmtiRnExV3A4OVRXajB5bWNxWEJvWG1NRnpYaXducGFIL2Rw?=
- =?gb2312?B?WlFqYVBEbXlzcVdjTmM0bUpkYldKbGNqdWRTNEZlSzN1cVhQYUhDZlA2VUpt?=
- =?gb2312?B?L3VQQ1hwVWZPZTArTTNCNXRLc0g3VFlJYXgzZ2MvMFF4dEJvcTE1Nm9FWWo1?=
- =?gb2312?B?WFlBcWR0eG1SaUFBT3NpMzRrc3JHVWtPbW4yNG5uOHNIbmlsNUdQS1hxM2pk?=
- =?gb2312?B?WjdJRURIYm1USmREb095UEN5ZDRLQWJldzFsYUVoUkM3RjZOc3lQYmN2Skc4?=
- =?gb2312?B?eCtnME9vQlhOWjM2OHNrc3kvRXdzYnlmeHFITDNVZDh2dy8vMGZ5Qmg0Wm5J?=
- =?gb2312?B?ajlSbE5SQnlJcW4ydHpTdHBNa0lDc1BDYWVUWjNjRDV6Z1ZSbFpjZ0VWZ1dY?=
- =?gb2312?B?d0F4UWFVS1VSVE41Mm1lVjFzQ1lkZkZRWEVXV1dvVCtZZzRLMnpFUm5CY2JF?=
- =?gb2312?B?Yk5xbll1NnJhZXVWSzluZ29qcVlaRnVURkh5bVpwTU9aNWJLcWZVT05teVgx?=
- =?gb2312?B?UEFpclN4WWlacE10MkV1NFZkT3ZyUkR3UE5OK3Q3ME1FVXNRbkZaL01rTmlN?=
- =?gb2312?B?QXJuNE5ROEcyRUh4TjN3MmJkNW1QbTVSVGNsdXgvRDNyd2xSL2pHb1FlYS8x?=
- =?gb2312?B?YlZzZjV6eW5YMGtxL3I2RTViTjZtcmthZE03blZGZWtiUmZaNGVxM2p5cytr?=
- =?gb2312?B?TFBEbGRaY3NWdlYrVXV2Zk5KMWVoNnJ3c2FnWU8xV1pTalZVZGV6OXpCVXYv?=
- =?gb2312?B?NXU4Y2NoQUR3S2FBbHl2SFc1c0VKR2VpVnR1SE1CZVpsWGF6cmxlS0FFbmJB?=
- =?gb2312?B?TkM4ZDRTQ3Y2dTBkZ0Q1bi9nRDRyZTNyMkhQQnFVL0hSd2Q5TEk2a3JPcjcw?=
- =?gb2312?B?VUZocnVEODRscm1SQVlyemRpS2FCVDV2dUR5Z1FURUVUaWZRUTEwNnNWSmZt?=
- =?gb2312?B?OVNMOW1NanJNT2EwL3FSME9EZ2Q2OVpIazRUQjJFeHA1U2ZobkV4dktVNWpR?=
- =?gb2312?B?d1dvR2dGRk5QbVpWQWdNTU5Xd3dEcDVuSWJ6LzROWXFzNHFRdklmRFhpV2xk?=
- =?gb2312?B?MEx0SDQwcDMrNFlOZmJuQzQrbi8rNW91Vkc4TzZKTDUrZTVkZ0dYeTdCMnQy?=
- =?gb2312?B?MnNNczBFQ21HNndOdTluVmpNbXFkTUZVd0dSOGFKUnY4Q0VKUnZlcFd3YWR4?=
- =?gb2312?B?bmtCRkhzdml6SnBPVGRoWHVkcFVVUmk5Vlg3N2l0cWtBYzNadGQ0UnByTzNI?=
- =?gb2312?B?K3NlQUJ3U25aM2NZOERHamVpZlhMY2paU1dzOXJUQ2RTZlRYKy8wYkRBUWFn?=
- =?gb2312?B?bEFPdnNDNlJ6ZFk3T25nUEV1NzNNckFaVG5jWlQ0VjByMVF0RlkrVjFoMTlI?=
- =?gb2312?B?enlvK2Z3NG52UStJdGMvcW4rYU5HVDd2UjFBSDlhN3ZmYUxuaHRtRGNLM2Fr?=
- =?gb2312?B?WVZObkdKYndsam90OTcyRG4zbzBmZS9CS3kvYmhPQmFIajN5eWZaQzVtK3BR?=
- =?gb2312?B?RS9jV0lSaityK2pFc0d0WS9vai9tb0pjRUV2UHJ6aUZnTDdpd3gxazBlTTBH?=
- =?gb2312?B?ZnRRZ2VJeUN0OWRBV0lqVkloTU5vMVJoVnJFMHdPcFNFa1lBODRhc0dQaDd5?=
- =?gb2312?B?RHNjWjlIbmEwUTJ2SFoza2JFRW5wR0hMTUN4NkdzRngyUmJ0M1pTRk51YVo5?=
- =?gb2312?B?UFhIWkxXYmdBSG5jMW5mbVZRYVZPQVY2S1RyM3ZqbGw2c2JkWGRUT2hnaElU?=
- =?gb2312?B?VUdEQVN0MHV0ZG93L2ttTExCRktsMDVTYnR2OFJQUGpNZldJSVgzYmVISE8y?=
- =?gb2312?B?RTE1VTQ1M3M2MDMvbmh2bkpSbzNhZnVuL0x1YTZuRlQrY0NzRWRZMEtSNU9H?=
- =?gb2312?B?eDB6cW54ZnM0RGZxUzU2Q2h6VmVlbm9uSjVzYitsMk9EU1VXclR3QTZWb3Yz?=
- =?gb2312?B?ak85MmYyaUprUll4VlprK3BiWVlHOEo5Y3JGMUp6KzRSaCtpYm1ZWlB3dUph?=
- =?gb2312?B?OXVMM2pVUnJjTHcrSHc4NzdTMUpqRTBMMHI0bDBLK2c0TlJsaWY0NzJUdm5p?=
- =?gb2312?Q?edAo=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15AFC38D
+	for <linux-ext4@vger.kernel.org>; Mon,  3 Nov 2025 05:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762146102; cv=none; b=HmO/ML2lyNZvcPuuSi1GKvOSGen8/fEwC9REWEWgg6tnIbLuMHVFJPrP+wt6NSqqWAVkrUC95A+YkMG6+IhcGre/NSClsnihl8sDiXH3RFnypMc4jRxenF2+PkffD7uV8ONHpyVAExkt7JE7aBxeDSlHeQ5zZg+qQSl8BFOSF/8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762146102; c=relaxed/simple;
+	bh=qr/qVIhWzHAH06ZQI1A1de9zlK+Tt4TVAetjgX02mM8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OaCQAECLP7Z3CG8rDHGjLbxpVT2lsETGhn28r/twvC8N5VIRAdqplYv+0uwXavnzZMHJNsKc167CA9ugqKM26wVIbXP4e8lwrUQNv1G67QUgyEZ3+8Uvi6/XESOLXvBW6EsqEgB0lR24iSl6ErVpnioYgcOgoAMt58saheFDQIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d0KDr1cK8zKHMMB
+	for <linux-ext4@vger.kernel.org>; Mon,  3 Nov 2025 13:01:32 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 168C41A0A3B
+	for <linux-ext4@vger.kernel.org>; Mon,  3 Nov 2025 13:01:36 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP2 (Coremail) with SMTP id Syh0CgBHnEQuNwhprNclCg--.34005S3;
+	Mon, 03 Nov 2025 13:01:35 +0800 (CST)
+Message-ID: <b3ee16de-e04b-4e95-a839-f1563b292bfa@huaweicloud.com>
+Date: Mon, 3 Nov 2025 13:01:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS1PR04MB9502.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf4567df-5d62-47be-cf30-08de1a8d20eb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2025 03:57:37.8036
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EuKHTMd+9JFeKBEzUaSpYvZRGuM0b/DMx06bLLoFi2Xfj5D3fIoyEWTJZbp2m11B2pgzZwKCIeWkENmx7/hUXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8622
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] ext4: rename EXT4_GET_BLOCKS_PRE_IO
+To: Yang Erkun <yangerkun@huawei.com>, linux-ext4@vger.kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz
+Cc: libaokun1@huawei.com, yangerkun@huaweicloud.com
+References: <20251027122303.1146352-1-yangerkun@huawei.com>
+ <20251027122303.1146352-2-yangerkun@huawei.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20251027122303.1146352-2-yangerkun@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgBHnEQuNwhprNclCg--.34005S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ar13CF4fXFWfJrWrCrWDCFg_yoWxJF47pr
+	sFvF1xtF4vqa45u34xJF4jqr12vw1xGa1DCFyYg3yYka98tryrKF1YyFyFkFyYgr4rZFs0
+	vrWF934DKas3GrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-SGkgQWxsLA0KDQpJIGZpbmQgc29tZXRoaW5nIHdoZW4gZGVidWcsIHNoYXJlIHRoZSBmaW5kaW5n
-IGhlcmU6DQoNCkkgbm90aWNlIGV2ZXJ5IHRpbWUgdGhpcyBpc3N1ZSBoYXBwZW4sIHRoZSBsb2cg
-YWx3YXlzIHNob3cgaW5vZGUgMSwgc28gSSB0aGluayB0aGlzIGlzIHN1cHBlciBpbm9kZSByZWxh
-dGVkLiBBbmQgc2VlbXMgcmVsYXRlZCB0byB0aGUgaV9zdGF0ZV9mbGFncyBvZiBzdHJ1Y3QgZXh0
-NF9pbm9kZV9pbmZvDQoNClsgIDIxMC4xMDQ2NjNdIDQ4ODEyNTc4OiBmNmJmZmFkZiAwMDAwMDAw
-MCAwMDAwMDAwMCAwMDAwMDAwMA0KDQpIZXJlIHRoZSBpX3N0YXRlX2ZsYWdzID0gMHhmNmJmZmFk
-ZiwgdGhlIElub2RlIGR5bmFtaWMgc3RhdGUgZmxhZ3Mgb25seSB0b3VjaCB0byBiaXQwfmJpdDEy
-LCBzbyB0aGlzIGlfc3RhdGVfZmxhZ3MgaXMgYWJub3JtYWwuDQoNCldoZW4gSSBhZGQgdGhlIGZv
-bGxvd2luZyBjaGFuZ2VzLCB0aGlzIGlzc3VlIGdvbmU6DQoNCmRpZmYgLS1naXQgYS9mcy9leHQ0
-L3N1cGVyLmMgYi9mcy9leHQ0L3N1cGVyLmMNCmluZGV4IDY2ZjkyZjgzMmIwZmIuLmM2YzJkMzJk
-NTUzMWIgMTAwNjQ0DQotLS0gYS9mcy9leHQ0L3N1cGVyLmMNCisrKyBiL2ZzL2V4dDQvc3VwZXIu
-Yw0KQEAgLTEzOTYsNiArMTM5Niw3IEBAIHN0YXRpYyBzdHJ1Y3QgaW5vZGUgKmV4dDRfYWxsb2Nf
-aW5vZGUoc3RydWN0IHN1cGVyX2Jsb2NrICpzYikNCg0KICAgICAgICBpbm9kZV9zZXRfaXZlcnNp
-b24oJmVpLT52ZnNfaW5vZGUsIDEpOw0KICAgICAgICBlaS0+aV9mbGFncyA9IDA7DQorICAgICAg
-IGV4dDRfY2xlYXJfc3RhdGVfZmxhZ3MoZWkpOw0KICAgICAgICBzcGluX2xvY2tfaW5pdCgmZWkt
-PmlfcmF3X2xvY2spOw0KICAgICAgICBlaS0+aV9wcmVhbGxvY19ub2RlID0gUkJfUk9PVDsNCiAg
-ICAgICAgYXRvbWljX3NldCgmZWktPmlfcHJlYWxsb2NfYWN0aXZlLCAwKTsNCg0KDQpUaGlzIGNh
-biBleHBsYWluIHdoeSB0aGlzIGlzc3VlIGNhbid0IGJlIHJlcHJvZHVjZSAxMDAlLiBBbmQgY2Fu
-IGFsc28gZXhwbGFpbiB3aHkgb25seSBpbXg2Lzcgc2VyaWVzIG1lZXQgdGhpcyBpc3N1ZSwgYnV0
-IGlteDgvOSBub3QsIGJlY2F1c2UgaW14Ni83IGlzIGFybTMyIGNvcmUsIGl0IHVzZSBpX3N0YXRl
-X2ZsYWdzLCBidXQgaW14OC85IHVzZSBhcm02NCBjb3JlLCBkbyBub3QgdXNlIGlfc3RhdGVfZmxh
-Z3MuDQoNClRoaXMgaXNzdWUgbWF5IGV4aXN0IGxvbmcgdGltZSwgYnV0IEphY2sncyBwYXRjaCB0
-cmlnZ2VyIHRoaXMgaXNzdWUuDQoNCkkgYWxzbyBoYXZlIHRoZSBmb2xsb3dpbmcgY29uY2VybjoN
-CldoeSBuZWVkIHRvIGRpc3Rpbmd1aXNoIGFyY2gzMiBhbmQgYXJjaDY0LCB3aHkgbm90IHVzZSB1
-NjQgdG8gbWVyZ2UgdGhlc2UgdHdvIGNhc2Vlcz8NCg0KZGlmZiAtLWdpdCBhL2ZzL2V4dDQvZXh0
-NC5oIGIvZnMvZXh0NC9leHQ0LmgNCmluZGV4IDQ2ZjU0ZDBhNGJmZTkuLjczNjllMTY1ZWZjMGYg
-MTAwNjQ0DQotLS0gYS9mcy9leHQ0L2V4dDQuaA0KKysrIGIvZnMvZXh0NC9leHQ0LmgNCkBAIC0x
-MDM0LDEwICsxMDM0LDcgQEAgc3RydWN0IGV4dDRfaW5vZGVfaW5mbyB7DQogICAgICAgICAqLw0K
-ICAgICAgICBleHQ0X2dyb3VwX3QgICAgaV9ibG9ja19ncm91cDsNCiAgICAgICAgZXh0NF9sYmxr
-X3QgICAgIGlfZGlyX3N0YXJ0X2xvb2t1cDsNCi0jaWYgKEJJVFNfUEVSX0xPTkcgPCA2NCkNCi0g
-ICAgICAgdW5zaWduZWQgbG9uZyAgIGlfc3RhdGVfZmxhZ3M7ICAgICAgICAgIC8qIER5bmFtaWMg
-c3RhdGUgZmxhZ3MgKi8NCi0jZW5kaWYNCi0gICAgICAgdW5zaWduZWQgbG9uZyAgIGlfZmxhZ3M7
-DQorICAgICAgIHU2NCAgICAgaV9mbGFnczsNCg0KICAgICAgICAvKg0KICAgICAgICAgKiBFeHRl
-bmRlZCBhdHRyaWJ1dGVzIGNhbiBiZSByZWFkIGluZGVwZW5kZW50bHkgb2YgdGhlIG1haW4gZmls
-ZQ0KQEAgLTE5NzMsMjEgKzE5NzAsMTIgQEAgRVhUNF9JTk9ERV9CSVRfRk5TKGZsYWcsIGZsYWdz
-LCAwKQ0KIHN0YXRpYyBpbmxpbmUgaW50IGV4dDRfdGVzdF9pbm9kZV9zdGF0ZShzdHJ1Y3QgaW5v
-ZGUgKmlub2RlLCBpbnQgYml0KTsNCiBzdGF0aWMgaW5saW5lIHZvaWQgZXh0NF9zZXRfaW5vZGVf
-c3RhdGUoc3RydWN0IGlub2RlICppbm9kZSwgaW50IGJpdCk7DQogc3RhdGljIGlubGluZSB2b2lk
-IGV4dDRfY2xlYXJfaW5vZGVfc3RhdGUoc3RydWN0IGlub2RlICppbm9kZSwgaW50IGJpdCk7DQot
-I2lmIChCSVRTX1BFUl9MT05HIDwgNjQpDQotRVhUNF9JTk9ERV9CSVRfRk5TKHN0YXRlLCBzdGF0
-ZV9mbGFncywgMCkNCi0NCi1zdGF0aWMgaW5saW5lIHZvaWQgZXh0NF9jbGVhcl9zdGF0ZV9mbGFn
-cyhzdHJ1Y3QgZXh0NF9pbm9kZV9pbmZvICplaSkNCi17DQotICAgICAgIChlaSktPmlfc3RhdGVf
-ZmxhZ3MgPSAwOw0KLX0NCi0jZWxzZQ0KIEVYVDRfSU5PREVfQklUX0ZOUyhzdGF0ZSwgZmxhZ3Ms
-IDMyKQ0KDQogc3RhdGljIGlubGluZSB2b2lkIGV4dDRfY2xlYXJfc3RhdGVfZmxhZ3Moc3RydWN0
-IGV4dDRfaW5vZGVfaW5mbyAqZWkpDQogew0KICAgICAgICAvKiBXZSBkZXBlbmQgb24gdGhlIGZh
-Y3QgdGhhdCBjYWxsZXJzIHdpbGwgc2V0IGlfZmxhZ3MgKi8NCiB9DQotI2VuZGlmDQogI2Vsc2UN
-CiAvKiBBc3N1bWUgdGhhdCB1c2VyIG1vZGUgcHJvZ3JhbXMgYXJlIHBhc3NpbmcgaW4gYW4gZXh0
-NGZzIHN1cGVyYmxvY2ssIG5vdA0KICAqIGEga2VybmVsIHN0cnVjdCBzdXBlcl9ibG9jay4gIFRo
-aXMgd2lsbCBhbGxvdyB1cyB0byBjYWxsIHRoZSBmZWF0dXJlLXRlc3QNCg0KUmVnYXJkcw0KSGFp
-Ym8gQ2hlbg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEJvdWdoIENo
-ZW4NCj4gU2VudDogMjAyNcTqMTDUwjMxyNUgMTA6MzENCj4gVG86IFRoZW9kb3JlIFRzbyA8dHl0
-c29AbWl0LmVkdT4NCj4gQ2M6IGphY2tAc3VzZS5jejsgYWRpbGdlci5rZXJuZWxAZGlsZ2VyLmNh
-OyANCj4gbGludXgtZXh0NEB2Z2VyLmtlcm5lbC5vcmc7IGlteEBsaXN0cy5saW51eC5kZXYNCj4g
-U3ViamVjdDogUkU6IGV4dDQgaXNzdWUgb24gbGludXgtbmV4dChuZXh0LTIwMjUxMDMwKQ0KPiAN
-Cj4gSGkgVGhlb2RvcmUsDQo+IA0KPiBUaGFua3MgZm9yIHlvdXIgcXVpY2sgcmVwbHkuDQo+IA0K
-PiByb290QGlteDZ1bDdkOn4jIGUyaW1hZ2UgLVEgL2Rldi9tbWNibGsycDIgZnMucWNvdzIgZTJp
-bWFnZSAxLjQ3LjMNCj4gKDgtSnVsLTIwMjUpIHJvb3RAaW14NnVsN2Q6fiMgYnppcDIgLXogZnMu
-cWNvdzINCj4gDQo+IGZvciB0aGUgZnMucWNvdzIuYnosIHBsZWFzZSByZWZlciB0byB0aGUgYXR0
-YWNoZW1lbnQuDQo+IA0KPiBGb3IgdGhpcyAvZGV2L21tY2JsazJwMiwgc29tZXRpbWVzIHVtb3Vu
-dCBkbyBub3QgbWVldCB0aGlzIGlzc3VlLCBidXQgDQo+IGFmdGVyIHNldmVyYWwgbW91bnQvdW1v
-dW50IG9wZXJhdGlvbiwgdGhpcyBpc3N1ZSBjb21lIHVwIGFnYWluLg0KPiANCj4gSSBhbHNvIHBh
-c3RlIHRoZSBsb2cgb2YgeW91ciBzZWNvbmQgc3VnZ2VzdGlvbjoNCj4gDQo+IHJvb3RAaW14NnVs
-N2Q6fiMgZHVtcGUyZnMgLWggL2Rldi9tbWNibGsycDIgWzE2LzE5MjJdIGR1bXBlMmZzIDEuNDcu
-MyANCj4gKDgtSnVsLTIwMjUpDQo+IEZpbGVzeXN0ZW0gdm9sdW1lIG5hbWU6ICAgcm9vdA0KPiBM
-YXN0IG1vdW50ZWQgb246ICAgICAgICAgIDxub3QgYXZhaWxhYmxlPg0KPiBGaWxlc3lzdGVtIFVV
-SUQ6ICAgICAgICAgIGRjMDYwNDhlLTkzOWItNDgyNy05N2VmLWY4MTU0ODZmNTA1Zg0KPiBGaWxl
-c3lzdGVtIG1hZ2ljIG51bWJlcjogIDB4RUY1Mw0KPiBGaWxlc3lzdGVtIHJldmlzaW9uICM6ICAg
-IDEgKGR5bmFtaWMpDQo+IEZpbGVzeXN0ZW0gZmVhdHVyZXM6ICAgICAgaGFzX2pvdXJuYWwgZXh0
-X2F0dHIgcmVzaXplX2lub2RlIGRpcl9pbmRleA0KPiBvcnBoYW5fZmlsZSBmaWxldHlwZSBleHRl
-bnQgNjRiaXQgZmxleF9iZyBtZXRhZGF0YV9jc3VtX3NlZWQgDQo+IHNwYXJzZV9zdXBlciBsYXJn
-ZV9maWxlIGh1Z2VfZmlsZSBkaXJfbmxpIG5rIGV4dHJhX2lzaXplIG1ldGFkYXRhX2NzdW0NCj4g
-RmlsZXN5c3RlbSBmbGFnczogICAgICAgICBzaWduZWRfZGlyZWN0b3J5X2hhc2gNCj4gRGVmYXVs
-dCBtb3VudCBvcHRpb25zOiAgICB1c2VyX3hhdHRyIGFjbA0KPiBGaWxlc3lzdGVtIHN0YXRlOiAg
-ICAgICAgIGNsZWFuDQo+IEVycm9ycyBiZWhhdmlvcjogICAgICAgICAgQ29udGludWUNCj4gRmls
-ZXN5c3RlbSBPUyB0eXBlOiAgICAgICBMaW51eA0KPiBJbm9kZSBjb3VudDogICAgICAgICAgICAg
-IDU3MDA4MA0KPiBCbG9jayBjb3VudDogICAgICAgICAgICAgIDExMzkyOTgNCj4gUmVzZXJ2ZWQg
-YmxvY2sgY291bnQ6ICAgICA1Njk2NA0KPiBPdmVyaGVhZCBjbHVzdGVyczogICAgICAgIDU2NTQ4
-DQo+IEZyZWUgYmxvY2tzOiAgICAgICAgICAgICAgNDE5ODA2DQo+IEZyZWUgaW5vZGVzOiAgICAg
-ICAgICAgICAgNTA1MTIxDQo+IEZpcnN0IGJsb2NrOiAgICAgICAgICAgICAgMA0KPiBCbG9jayBz
-aXplOiAgICAgICAgICAgICAgIDQwOTYNCj4gRnJhZ21lbnQgc2l6ZTogICAgICAgICAgICA0MDk2
-DQo+IEdyb3VwIGRlc2NyaXB0b3Igc2l6ZTogICAgNjQNCj4gUmVzZXJ2ZWQgR0RUIGJsb2Nrczog
-ICAgICA1NTYNCj4gQmxvY2tzIHBlciBncm91cDogICAgICAgICAzMjc2OA0KPiBGcmFnbWVudHMg
-cGVyIGdyb3VwOiAgICAgIDMyNzY4DQo+IElub2RlcyBwZXIgZ3JvdXA6ICAgICAgICAgMTYyODgN
-Cj4gSW5vZGUgYmxvY2tzIHBlciBncm91cDogICAxMDE4DQo+IEZsZXggYmxvY2sgZ3JvdXAgc2l6
-ZTogICAgMTYNCj4gRmlsZXN5c3RlbSBjcmVhdGVkOiAgICAgICBUdWUgQXByICA1IDIzOjAwOjAw
-IDIwMTENCj4gTGFzdCBtb3VudCB0aW1lOiAgICAgICAgICBGcmkgT2N0IDMxIDAyOjE4OjE2IDIw
-MjUNCj4gTGFzdCB3cml0ZSB0aW1lOiAgICAgICAgICBGcmkgT2N0IDMxIDAyOjE4OjE3IDIwMjUN
-Cj4gTW91bnQgY291bnQ6ICAgICAgICAgICAgICA2DQo+IE1heGltdW0gbW91bnQgY291bnQ6ICAg
-ICAgLTENCj4gTGFzdCBjaGVja2VkOiAgICAgICAgICAgICBUaHUgT2N0IDMwIDEwOjM1OjQ4IDIw
-MjUNCj4gQ2hlY2sgaW50ZXJ2YWw6ICAgICAgICAgICAwICg8bm9uZT4pDQo+IExpZmV0aW1lIHdy
-aXRlczogICAgICAgICAgNDI0OCBNQg0KPiBSZXNlcnZlZCBibG9ja3MgdWlkOiAgICAgIDAgKHVz
-ZXIgcm9vdCkNCj4gUmVzZXJ2ZWQgYmxvY2tzIGdpZDogICAgICAwIChncm91cCByb290KQ0KPiBG
-aXJzdCBpbm9kZTogICAgICAgICAgICAgIDExDQo+IElub2RlIHNpemU6ICAgICAgICAgICAgICAg
-MjU2DQo+IFJlcXVpcmVkIGV4dHJhIGlzaXplOiAgICAgMzINCj4gRGVzaXJlZCBleHRyYSBpc2l6
-ZTogICAgICAzMg0KPiBKb3VybmFsIGlub2RlOiAgICAgICAgICAgIDgNCj4gRGVmYXVsdCBkaXJl
-Y3RvcnkgaGFzaDogICBoYWxmX21kNA0KPiBEaXJlY3RvcnkgSGFzaCBTZWVkOiAgICAgIGZmMTNi
-NTViLTgwNTUtNTBkNS04OGQ1LTgwNzgyZDJlOGU4Ng0KPiBKb3VybmFsIGJhY2t1cDogICAgICAg
-ICAgIGlub2RlIGJsb2Nrcw0KPiBDaGVja3N1bSB0eXBlOiAgICAgICAgICAgIGNyYzMyYw0KPiBD
-aGVja3N1bTogICAgICAgICAgICAgICAgIDB4ZmY4MzFkMjENCj4gQ2hlY2tzdW0gc2VlZDogICAg
-ICAgICAgICAweDc5NGYyY2NjDQo+IE9ycGhhbiBmaWxlIGlub2RlOiAgICAgICAgMTINCj4gSm91
-cm5hbCBmZWF0dXJlczogICAgICAgICAobm9uZSkNCj4gVG90YWwgam91cm5hbCBzaXplOiAgICAg
-ICA2NE0NCj4gVG90YWwgam91cm5hbCBibG9ja3M6ICAgICAxNjM4NA0KPiBNYXggdHJhbnNhY3Rp
-b24gbGVuZ3RoOiAgIDE2Mzg0DQo+IEZhc3QgY29tbWl0IGxlbmd0aDogICAgICAgMA0KPiBKb3Vy
-bmFsIHNlcXVlbmNlOiAgICAgICAgIDB4MDAwMDAwMDINCj4gSm91cm5hbCBzdGFydDogICAgICAg
-ICAgICAwDQo+IA0KPiBSZWdhcmRzDQo+IEhhaWJvIENoZW4NCj4gDQo+ID4gLS0tLS1PcmlnaW5h
-bCBNZXNzYWdlLS0tLS0NCj4gPiBGcm9tOiBUaGVvZG9yZSBUc28gPHR5dHNvQG1pdC5lZHU+DQo+
-ID4gU2VudDogMjAyNcTqMTDUwjMxyNUgOTozNA0KPiA+IFRvOiBCb3VnaCBDaGVuIDxoYWliby5j
-aGVuQG54cC5jb20+DQo+ID4gQ2M6IGphY2tAc3VzZS5jejsgYWRpbGdlci5rZXJuZWxAZGlsZ2Vy
-LmNhOyANCj4gPiBsaW51eC1leHQ0QHZnZXIua2VybmVsLm9yZzsgaW14QGxpc3RzLmxpbnV4LmRl
-dg0KPiA+IFN1YmplY3Q6IFJlOiBleHQ0IGlzc3VlIG9uIGxpbnV4LW5leHQobmV4dC0yMDI1MTAz
-MCkNCj4gPg0KPiA+IE9uIFRodSwgT2N0IDMwLCAyMDI1IGF0IDExOjExOjUxQU0gKzAwMDAsIEJv
-dWdoIENoZW4gd3JvdGU6DQo+ID4gPiBIaSBKYWNrLA0KPiA+ID4NCj4gPiA+IE9uIHRoZSBsYXRl
-c3QgbGludXgtbmV4dCwgSSBmaW5kIHlvdXIgcGF0Y2ggYWNmOTQzZTk3NjhlICgiZXh0NDogDQo+
-ID4gPiBmaXggY2hlY2tzIGZvcg0KPiA+IG9ycGhhbiBpbm9kZXMiKSB0cmlnZ2VyIHRoZSBmb2xs
-b3dpbmcgaXNzdWUgb24gb3VyIGlteDdkLXNkYiBib2FyZC4NCj4gPiA+IEkgZG8gbm90IGhhdmUg
-ZW5vdWdoIGJhY2tncm91bmQga25vd2xlZGdlIG9mIGV4dDQsIHNvIGRvbid0IGtub3cgDQo+ID4g
-PiB3aHkgdGhlcmUgYXJlIG9ycGhhbiBpbm9kZXMgb24gdGhlIHBhcnRpdGlvbiB3aXRoIGV4dDQu
-IE5vdCBzdXJlIA0KPiA+ID4gd2hldGhlciB0aGlzIGlzIGENCj4gPiByZWFsIGlzc3VlIG9yIHdl
-IG5lZWQgc29tZSBzcGVjaWFsIG9wZXJhdGlvbiBvbiBjdXJyZW50IGV4dDQgcGFydGl0aW9uLg0K
-PiA+DQo+ID4gSWYgeW91IGFyZSB3aWxsaW5nIHRvIGxldCBtZSB0byBzZWUgeW91ciBmaWxlIG5h
-bWVzLCB5b3UgY291bGQgc2VuZCANCj4gPiBtZSBqdXN0IHRoZSBtZXRhZGF0YSBibG9ja3Mgc28g
-SSBjYW4gZXhhbWluZSBmaWxlIHN5c3RlbSBpbWFnZS4gIFRoZSANCj4gPiBkZXRhaWxzIGFyZSBp
-biB0aGUgUkVQT1JUSU5HIEJVR1Mgc2VjdGlvbiBvZiB0aGUgZTJmc2NrIG1hbiBwYWdlIGFuZCAN
-Cj4gPiBhcyB3ZWxsIGFzIHRoZSBSQVcgSU1BR0UgRklMRSBhbmQgUUNPVzIgSU1BR0UgRklMRSBz
-ZWN0aW9ucyBvZiB0aGUgDQo+ID4gZTJpbWFnZSBtYW4gcGFnZSwgYnV0IHRoZSBzaG9ydCB2ZXJz
-aW9uIGlzOg0KPiA+DQo+ID4NCj4gPiAgICAgICAgICAgICBlMmltYWdlIC1RIC9kZXYvbW1jYmxr
-cDJwMiBmcy5xY293Mg0KPiA+ICAgICAgICAgICAgIGJ6aXAyIC16IGZzLnFjb3cyDQo+ID4NCj4g
-PiAuLi4gYW5kIHRoZW4gc2VuZCBtZSB0aGUgZnMucWNvdzIuYnogZmlsZS4NCj4gPg0KPiA+IElm
-IHlvdSBhcmVuJ3QgcGxlYXNlIHRyeSBydW5uaW5nICJkdW1wZTJmcyAtaCAvZGV2L21tY2JsazJw
-MiIgYW5kIA0KPiA+IHNlbmQgbWUgdGhlIG91dHB1dC4NCj4gPg0KPiA+IFRoYW5rcywNCj4gPg0K
-PiA+IAkJCQkJCS0gVGVkDQo=
+On 10/27/2025 8:23 PM, Yang Erkun wrote:
+> This flag has been generalized to split an unwritten extent when we do
+> dio or dioread_nolock writeback, or to avoid merge new extents which was
+> created by extents split. Update some related comments too.
+> 
+> Signed-off-by: Yang Erkun <yangerkun@huawei.com>
+
+Thanks for the patch! This overall looks good to me besides one nit
+below.
+
+> ---
+>  fs/ext4/ext4.h              | 21 +++++++++++++++------
+>  fs/ext4/extents.c           | 16 ++++++++--------
+>  include/trace/events/ext4.h |  2 +-
+>  3 files changed, 24 insertions(+), 15 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 57087da6c7be..5a035d0e2761 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -694,13 +694,22 @@ enum {
+>  	/* Caller is from the delayed allocation writeout path
+>  	 * finally doing the actual allocation of delayed blocks */
+>  #define EXT4_GET_BLOCKS_DELALLOC_RESERVE	0x0004
+> -	/* caller is from the direct IO path, request to creation of an
+> -	unwritten extents if not allocated, split the unwritten
+> -	extent if blocks has been preallocated already*/
+> -#define EXT4_GET_BLOCKS_PRE_IO			0x0008
+> -#define EXT4_GET_BLOCKS_CONVERT			0x0010
+> -#define EXT4_GET_BLOCKS_IO_CREATE_EXT		(EXT4_GET_BLOCKS_PRE_IO|\
+> +	/*
+> +	 * Means we cannot merge new allocated extent or split the unwritten
+> +	 * extent if we found one
+> +	 */
+
+There is something wrong with this comment, it should be as follows.
+
+This means that we cannot merge newly allocated extents, and if we
+found an unwritten extent, we need to split it.
+
+Thanks,
+Yi.
+
+> +#define EXT4_GET_BLOCKS_SPLIT_NOMERGE		0x0008
+> +	/*
+> +	 * Caller is from the dio or dioread_nolock buffer writeback,
+> +	 * request to creation of an unwritten extent if not exist or split
+> +	 * the found unwritten extent. Also do not merge the new create
+> +	 * unwritten extent, io end will convert unwritten to written, and
+> +	 * try to merge the written extent.
+> +	 */
+> +#define EXT4_GET_BLOCKS_IO_CREATE_EXT		(EXT4_GET_BLOCKS_SPLIT_NOMERGE|\
+>  					 EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT)
+> +	/* Convert unwritten extent to initialized. */
+> +#define EXT4_GET_BLOCKS_CONVERT			0x0010
+>  	/* Eventual metadata allocation (due to growing extent tree)
+>  	 * should not fail, so try to use reserved blocks for that.*/
+>  #define EXT4_GET_BLOCKS_METADATA_NOFAIL		0x0020
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index ca5499e9412b..241b5f5d29ad 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -333,7 +333,7 @@ ext4_force_split_extent_at(handle_t *handle, struct inode *inode,
+>  			   int nofail)
+>  {
+>  	int unwritten = ext4_ext_is_unwritten(path[path->p_depth].p_ext);
+> -	int flags = EXT4_EX_NOCACHE | EXT4_GET_BLOCKS_PRE_IO;
+> +	int flags = EXT4_EX_NOCACHE | EXT4_GET_BLOCKS_SPLIT_NOMERGE;
+>  
+>  	if (nofail)
+>  		flags |= EXT4_GET_BLOCKS_METADATA_NOFAIL | EXT4_EX_NOFAIL;
+> @@ -2002,7 +2002,7 @@ ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
+>  	}
+>  
+>  	/* try to insert block into found extent and return */
+> -	if (ex && !(gb_flags & EXT4_GET_BLOCKS_PRE_IO)) {
+> +	if (ex && !(gb_flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE)) {
+>  
+>  		/*
+>  		 * Try to see whether we should rather test the extent on
+> @@ -2181,7 +2181,7 @@ ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
+>  
+>  merge:
+>  	/* try to merge extents */
+> -	if (!(gb_flags & EXT4_GET_BLOCKS_PRE_IO))
+> +	if (!(gb_flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE))
+>  		ext4_ext_try_to_merge(handle, inode, path, nearex);
+>  
+>  	/* time to correct all indexes above */
+> @@ -3224,7 +3224,7 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
+>  		else
+>  			ext4_ext_mark_initialized(ex);
+>  
+> -		if (!(flags & EXT4_GET_BLOCKS_PRE_IO))
+> +		if (!(flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE))
+>  			ext4_ext_try_to_merge(handle, inode, path, ex);
+>  
+>  		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+> @@ -3368,7 +3368,7 @@ static struct ext4_ext_path *ext4_split_extent(handle_t *handle,
+>  
+>  	if (map->m_lblk + map->m_len < ee_block + ee_len) {
+>  		split_flag1 = split_flag & EXT4_EXT_MAY_ZEROOUT;
+> -		flags1 = flags | EXT4_GET_BLOCKS_PRE_IO;
+> +		flags1 = flags | EXT4_GET_BLOCKS_SPLIT_NOMERGE;
+>  		if (unwritten)
+>  			split_flag1 |= EXT4_EXT_MARK_UNWRIT1 |
+>  				       EXT4_EXT_MARK_UNWRIT2;
+> @@ -3739,7 +3739,7 @@ static struct ext4_ext_path *ext4_split_convert_extents(handle_t *handle,
+>  			      EXT4_EXT_MAY_ZEROOUT : 0;
+>  		split_flag |= (EXT4_EXT_MARK_UNWRIT2 | EXT4_EXT_DATA_VALID2);
+>  	}
+> -	flags |= EXT4_GET_BLOCKS_PRE_IO;
+> +	flags |= EXT4_GET_BLOCKS_SPLIT_NOMERGE;
+>  	return ext4_split_extent(handle, inode, path, map, split_flag, flags,
+>  				 allocated);
+>  }
+> @@ -3911,7 +3911,7 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
+>  						*allocated, newblock);
+>  
+>  	/* get_block() before submitting IO, split the extent */
+> -	if (flags & EXT4_GET_BLOCKS_PRE_IO) {
+> +	if (flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE) {
+>  		path = ext4_split_convert_extents(handle, inode, map, path,
+>  				flags | EXT4_GET_BLOCKS_CONVERT, allocated);
+>  		if (IS_ERR(path))
+> @@ -5618,7 +5618,7 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
+>  			path = ext4_split_extent_at(handle, inode, path,
+>  					start_lblk, split_flag,
+>  					EXT4_EX_NOCACHE |
+> -					EXT4_GET_BLOCKS_PRE_IO |
+> +					EXT4_GET_BLOCKS_SPLIT_NOMERGE |
+>  					EXT4_GET_BLOCKS_METADATA_NOFAIL);
+>  		}
+>  
+> diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
+> index a374e7ea7e57..ada2b9223df5 100644
+> --- a/include/trace/events/ext4.h
+> +++ b/include/trace/events/ext4.h
+> @@ -39,7 +39,7 @@ struct partial_cluster;
+>  	{ EXT4_GET_BLOCKS_CREATE,		"CREATE" },		\
+>  	{ EXT4_GET_BLOCKS_UNWRIT_EXT,		"UNWRIT" },		\
+>  	{ EXT4_GET_BLOCKS_DELALLOC_RESERVE,	"DELALLOC" },		\
+> -	{ EXT4_GET_BLOCKS_PRE_IO,		"PRE_IO" },		\
+> +	{ EXT4_GET_BLOCKS_SPLIT_NOMERGE,	"SPLIT_NOMERGE" },	\
+>  	{ EXT4_GET_BLOCKS_CONVERT,		"CONVERT" },		\
+>  	{ EXT4_GET_BLOCKS_METADATA_NOFAIL,	"METADATA_NOFAIL" },	\
+>  	{ EXT4_GET_BLOCKS_NO_NORMALIZE,		"NO_NORMALIZE" },	\
+
 
