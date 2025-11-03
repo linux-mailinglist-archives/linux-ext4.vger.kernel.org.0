@@ -1,150 +1,134 @@
-Return-Path: <linux-ext4+bounces-11424-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11425-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B23AC2DB82
-	for <lists+linux-ext4@lfdr.de>; Mon, 03 Nov 2025 19:45:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AE7EC2DE66
+	for <lists+linux-ext4@lfdr.de>; Mon, 03 Nov 2025 20:28:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92E2D3BAC0B
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Nov 2025 18:43:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE2C8189A916
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Nov 2025 19:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5447628D8D9;
-	Mon,  3 Nov 2025 18:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F4363191B9;
+	Mon,  3 Nov 2025 19:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nsm2mDd1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gCgIe0wW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DBB28D836
-	for <linux-ext4@vger.kernel.org>; Mon,  3 Nov 2025 18:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C48128507E;
+	Mon,  3 Nov 2025 19:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762195408; cv=none; b=q3qqXjmz8wiQ83iffXq1Xk25DI787IyKvkwuJWtiz5VmpBKTXPiAMqC4zdKojb3enU8oJxdxyOt8mu1xKgaj1fkbV/poJegNdTKpep8qaAtzvteWgz91dRdnXP6XpxZDlkoiewL9+JpjkJdM4RIf2Vl3HhOBkr6WJrmdKhsbLbo=
+	t=1762198082; cv=none; b=Gt10cva9JyuS9pZky899Unq4xhOu+5/4S/h1shs1dkHgg90cKuD0itt7fkY7Bhp9FqrDfAcdu2B+jvflFOM57E07C1Tfv+kY0AHFXXr91NxqPiiNPeBaK3NbKhS4HrAEyDxhlxyLnEsmSFVBaDZub+d8hsewRdBbJtcZby7QIRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762195408; c=relaxed/simple;
-	bh=JRvEfwdNrH1jWa7Nt9cTkKPH9OSy4b97bdzQ5qIg5/M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fleTodnB1RHVfmDCN+YkT3F2Tr3K0SdFcldn62LniF54CFl+J3hTWzoekN6pDOYVGq5pYgEW+38GdpQJXzJeGrf0JvkILzxDqbYS4jVdZ7Dj139M9u/2ln5AaVa0399cF9j7757gHvQsNLjZsW5J88MH7KEi3adccDlXOrTfCyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nsm2mDd1; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4ecee8ce926so45166421cf.1
-        for <linux-ext4@vger.kernel.org>; Mon, 03 Nov 2025 10:43:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762195403; x=1762800203; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MPRq0/jLykorT35rYQJikOHRvZCzdbVAx+CzfNAZXtk=;
-        b=nsm2mDd1+FhVnVigMvemk0aJRFbtxZ18gA+Te7IQkYMViknSEU8ct9PXD2XJhHxJRy
-         8vZQVF06zrPRzeUkHyefsZwzZpqiXmBA8lt1zTR/RHJ3VAx+R+P8WxbIlXQEOlF7WRfr
-         +cdlb0uwb62XKOmJLkqLlXOoF2qrFLhvZwYDMWSpt/t+bZlKLIXSoDnz5p3u+Xby4gwq
-         l66kU4gu7DxYoh2FZnriIajrhtmLXcO86J0nxfCNoFagdSAOPnawKkGAJACPrUY166DZ
-         zohAyGdt6hqezE4r1chzJj6jpvpYpfRkoah0SLbzYVkIrz+r9G+zS8xFSQaD6/UMS8bk
-         Wysg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762195403; x=1762800203;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MPRq0/jLykorT35rYQJikOHRvZCzdbVAx+CzfNAZXtk=;
-        b=GRgiXP0MXc2DKxnDQiLvcunnmNV0au2by75dGqeaFsw8IJ8iiedNPcKxGe1/qk/LIp
-         qOLgokNcqpV5Skn3+F60O6sRChEuDQdIa0qEDAWowPYj6RmtzRxi6m2earqhz3hMkpzF
-         JZib8Qj1P0HEOEmGgAgoG5WNfA6Zy9X5nZewX/Huse9DqaVCOME+VrOhksS5MHadERN+
-         lpWbDpTGYG2Na++fMGakdTBHY2fXp1B0pUJERVBw9MPztFQfm96gdMkGQj0JhGnGcGek
-         2t3wumw2eD4FJJNr3yJaABhPHOt4z+p1qBSNuod8Cx78pqDCdLmFmkazMAm2F5viaVHD
-         27SQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXMkmbApSdtV0GX1LYaNc0TcuwG+pJPP7f8lJoebCJoNmH4DoO2v2QiqpmjXIlo4fB2p7udohWXi3fF@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQyALumUmfLOAI36NgL6r2GII3aAmew/en+A8TeCU+YwfDjtLN
-	lft5OwRK2td2gzVe3KR8PNhmaEJ4F8d0EhFmh2EQ5iOVzjsH0Qv2Mz+Ap685ghU+GifKvkSk0ff
-	+l19lYmNmisxB4jAGRx6Di6uH97vSRXQ=
-X-Gm-Gg: ASbGnctRZ7AMAPpgrFut4r9RCItjpsVHC44MzOPi+lFzES/W13yRg6POOQiiPDK0ci/
-	bL2r8ZwFe5GIS4fjxE7J6yK0VtC6XL4KCVn2mCh3hlv6+8LtgwJueDu+mfNFp9ADIet3bpvbN6w
-	IAXftaNlqG4y6fhXciaiIvvi/AgT+Mi2fIcNwyQH4nXVduv3e4QQzxgfDB9SHUKYvGPv67DvnzW
-	jIyqTnHGqCawslEnuT5N7ata/3LHSYu1mR0HWBzTdpeyFwz5XPf6Ck4wq6qwVw7TROGDZkAPk+3
-	3NbZywna7q9KVNyiMlCDy0r9OhETD/pv
-X-Google-Smtp-Source: AGHT+IErPEdNx0wqHWwFqPPvC6I8WnttkIybTSpvpGzXyM/MnNuYE2oKaiMZ6SYAlHWG3wtzYjNQsAw/xPgkyJ54Z+g=
-X-Received: by 2002:a05:622a:15c6:b0:4c4:dfac:683f with SMTP id
- d75a77b69052e-4ed310dc12emr184521571cf.56.1762195403358; Mon, 03 Nov 2025
- 10:43:23 -0800 (PST)
+	s=arc-20240116; t=1762198082; c=relaxed/simple;
+	bh=5KMnpLPtvjbvFVBho8EJRznqNn21Vj1NX/IuhlDW2i8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CYcTrCPfhNR9k+3JXzas+6FJYfIqYqDOghZf0FH3TcMScFmCQD4q2KkR8kYoHKfiaOw44cdRtysdaOg8RxsXpFMwb0blVnxvSHVyf0a2vCW+Ypv/7XSLFmUB9EsYpHCVkM8dHKTUQplMfq+gShEWzb3wVXMsffN8+TAD/txE6wI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gCgIe0wW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B26C4CEE7;
+	Mon,  3 Nov 2025 19:28:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762198081;
+	bh=5KMnpLPtvjbvFVBho8EJRznqNn21Vj1NX/IuhlDW2i8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gCgIe0wWVRcvrVNcrhjgqDkGCJPDiOPQyRc56pG2T1kgXIipp0vEYdEWmhRW524Pl
+	 LYmLlbz53DFm3P4Fj2UUNQeXVhApVbz9hfByPm1vNo3HnZmGMVUaAK0UAfouBJQvaO
+	 XgrwJTdw2XRnLl9YNhb9BYUfoM6eYA2STYAiA2rZV7I9SsJ0gYRr6Gc+bHJTs2RTi9
+	 maDZOXMRH2Y8wbezzEfB2lFkZMd2VJhP72aTYUq0PmI2R7OZjAmVxkomx0A81F+zP2
+	 /B1BQpKnEfD0XMnCFYBn+STvk7FiJI8rJLNm8K2mnx40QajcgmpAFhANHaP6cGn/cO
+	 LXzx2CZef5TBw==
+Date: Mon, 3 Nov 2025 11:28:01 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Joanne Koong <joannelkoong@gmail.com>
+Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 3/5] fuse: implement file attributes mask for statx
+Message-ID: <20251103192801.GA196391@frogsfrogsfrogs>
+References: <176169809222.1424347.16562281526870178424.stgit@frogsfrogsfrogs>
+ <176169809317.1424347.1031452366030061035.stgit@frogsfrogsfrogs>
+ <CAJnrk1ZgQy7osiYfb6_Ra=a4-G4nxiiFJZgNLLZYnGtL=a7QBg@mail.gmail.com>
+ <CAJnrk1b+0B5h4A4=5zRJ04Kdw-OxbGW_m9s+5U=HZpw+q1umqg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <176169809222.1424347.16562281526870178424.stgit@frogsfrogsfrogs>
- <176169809317.1424347.1031452366030061035.stgit@frogsfrogsfrogs> <CAJnrk1ZgQy7osiYfb6_Ra=a4-G4nxiiFJZgNLLZYnGtL=a7QBg@mail.gmail.com>
-In-Reply-To: <CAJnrk1ZgQy7osiYfb6_Ra=a4-G4nxiiFJZgNLLZYnGtL=a7QBg@mail.gmail.com>
-From: Joanne Koong <joannelkoong@gmail.com>
-Date: Mon, 3 Nov 2025 10:43:10 -0800
-X-Gm-Features: AWmQ_bl8_b5M8z7y7iTRjCOgLlfUlrV_P9O5FvOprblPvPhDuc_qsxYw589fdVM
-Message-ID: <CAJnrk1b+0B5h4A4=5zRJ04Kdw-OxbGW_m9s+5U=HZpw+q1umqg@mail.gmail.com>
-Subject: Re: [PATCH 3/5] fuse: implement file attributes mask for statx
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJnrk1b+0B5h4A4=5zRJ04Kdw-OxbGW_m9s+5U=HZpw+q1umqg@mail.gmail.com>
 
-On Mon, Nov 3, 2025 at 10:30=E2=80=AFAM Joanne Koong <joannelkoong@gmail.co=
-m> wrote:
->
-> > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> > index a8068bee90af57..8c47d103c8ffa6 100644
-> > --- a/fs/fuse/fuse_i.h
-> > +++ b/fs/fuse/fuse_i.h
-> > @@ -140,6 +140,10 @@ struct fuse_inode {
-> >         /** Version of last attribute change */
-> >         u64 attr_version;
+On Mon, Nov 03, 2025 at 10:43:10AM -0800, Joanne Koong wrote:
+> On Mon, Nov 3, 2025 at 10:30 AM Joanne Koong <joannelkoong@gmail.com> wrote:
 > >
-> > +       /** statx file attributes */
-> > +       u64 statx_attributes;
-> > +       u64 statx_attributes_mask;
-> > +
-> >         union {
-> >                 /* read/write io cache (regular file only) */
-> >                 struct {
-> > @@ -1235,6 +1239,39 @@ void fuse_change_attributes_common(struct inode =
-*inode, struct fuse_attr *attr,
-> >                                    u64 attr_valid, u32 cache_mask,
-> >                                    u64 evict_ctr);
+> > > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+> > > index a8068bee90af57..8c47d103c8ffa6 100644
+> > > --- a/fs/fuse/fuse_i.h
+> > > +++ b/fs/fuse/fuse_i.h
+> > > @@ -140,6 +140,10 @@ struct fuse_inode {
+> > >         /** Version of last attribute change */
+> > >         u64 attr_version;
+> > >
+> > > +       /** statx file attributes */
+> > > +       u64 statx_attributes;
+> > > +       u64 statx_attributes_mask;
+> > > +
+> > >         union {
+> > >                 /* read/write io cache (regular file only) */
+> > >                 struct {
+> > > @@ -1235,6 +1239,39 @@ void fuse_change_attributes_common(struct inode *inode, struct fuse_attr *attr,
+> > >                                    u64 attr_valid, u32 cache_mask,
+> > >                                    u64 evict_ctr);
+> > >
+> > > +/*
+> > > + * These statx attribute flags are set by the VFS so mask them out of replies
+> > > + * from the fuse server for local filesystems.  Nonlocal filesystems are
+> > > + * responsible for enforcing and advertising these flags themselves.
+> > > + */
+> > > +#define FUSE_STATX_LOCAL_VFS_ATTRIBUTES (STATX_ATTR_IMMUTABLE | \
+> > > +                                        STATX_ATTR_APPEND)
 > >
-> > +/*
-> > + * These statx attribute flags are set by the VFS so mask them out of =
-replies
-> > + * from the fuse server for local filesystems.  Nonlocal filesystems a=
-re
-> > + * responsible for enforcing and advertising these flags themselves.
-> > + */
-> > +#define FUSE_STATX_LOCAL_VFS_ATTRIBUTES (STATX_ATTR_IMMUTABLE | \
-> > +                                        STATX_ATTR_APPEND)
->
-> for STATX_ATTR_IMMUTABLE and STATX_ATTR_APPEND, I see in
-> generic_fill_statx_attr() that they get set if the inode has the
-> S_IMMUTABLE flag and the S_APPEND flag set, but I'm not seeing how
-> this is relevant to fuse. I'm not seeing anywhere in the vfs layer
-> that sets S_APPEND or STATX_ATTR_IMMUTABLE, I only see specific
-> filesystems setting them, which fuse doesn't do. Is there something
-> I'm missing?
+> > for STATX_ATTR_IMMUTABLE and STATX_ATTR_APPEND, I see in
+> > generic_fill_statx_attr() that they get set if the inode has the
+> > S_IMMUTABLE flag and the S_APPEND flag set, but I'm not seeing how
+> > this is relevant to fuse. I'm not seeing anywhere in the vfs layer
+> > that sets S_APPEND or STATX_ATTR_IMMUTABLE, I only see specific
+> > filesystems setting them, which fuse doesn't do. Is there something
+> > I'm missing?
+> 
+> Ok, I see. In patchset 6/8 patch 3/9 [1],
+> FUSE_ATTR_SYNC/FUSE_ATTR_IMMUTABLE/FUSE_ATTR_APPEND flags get added
+> which signify that S_SYNC/S_IMMUTABLE/S_APPEND should get set on the
 
-Ok, I see. In patchset 6/8 patch 3/9 [1],
-FUSE_ATTR_SYNC/FUSE_ATTR_IMMUTABLE/FUSE_ATTR_APPEND flags get added
-which signify that S_SYNC/S_IMMUTABLE/S_APPEND should get set on the
-inode.  Hmm I'm confused why we would want to mask them out for local
-filesystems. If FUSE_ATTR_SYNC/FUSE_ATTR_IMMUTABLE/FUSE_ATTR_APPEND
-are getting passed in by the fuse server and getting enforced, why
-don't we want them to show up in stax?
+<nod>  Originally I was going to hide /all/ of this behind the
+per-fuse_inode iomap flag, but the Miklos and I started talking about
+having a separate "behaves like local fs" flag for a few things so that
+non-iomap fuseblk servers could take advantage of them too.  Right now
+it's limited to these vfs inode flags and the posix acl transformation
+functions since the assumption is that a regular fuse server either does
+the transformations on its own or forwards the request to a remote node
+which (presumably if it cares) does the transformation on its own.
 
-Thanks,
-Joanne
+> inode.  Hmm I'm confused why we would want to mask them out for local
+> filesystems. If FUSE_ATTR_SYNC/FUSE_ATTR_IMMUTABLE/FUSE_ATTR_APPEND
+> are getting passed in by the fuse server and getting enforced, why
+> don't we want them to show up in stax?
 
-[1] https://lore.kernel.org/linux-fsdevel/176169811656.1426244.114744490879=
-22753694.stgit@frogsfrogsfrogs/
->
+We do, but the VFS sets those statx flags for us:
+https://elixir.bootlin.com/linux/v6.17.7/source/fs/stat.c#L124
+
+--D
+
 > Thanks,
 > Joanne
+> 
+> [1] https://lore.kernel.org/linux-fsdevel/176169811656.1426244.11474449087922753694.stgit@frogsfrogsfrogs/
+> >
+> > Thanks,
+> > Joanne
 
