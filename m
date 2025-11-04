@@ -1,170 +1,91 @@
-Return-Path: <linux-ext4+bounces-11459-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11460-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C270C32F2C
-	for <lists+linux-ext4@lfdr.de>; Tue, 04 Nov 2025 21:43:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B01EC32FA7
+	for <lists+linux-ext4@lfdr.de>; Tue, 04 Nov 2025 21:56:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DBE618C26AE
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Nov 2025 20:43:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87AFE188A99A
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Nov 2025 20:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E282F0670;
-	Tue,  4 Nov 2025 20:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ABF02E7F0A;
+	Tue,  4 Nov 2025 20:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NF4B26cu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vOVgxcS0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF3A2E8B9E
-	for <linux-ext4@vger.kernel.org>; Tue,  4 Nov 2025 20:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C142DD27E;
+	Tue,  4 Nov 2025 20:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762288968; cv=none; b=sn1mHI8IKSvcgKNaJ6dLbV2wzh0tu6o3YsNO7Gv8+KPSCZkMaCzq6oiYkeMJOItCS4PlBwojim/FqpJoc5DtMfxj6qI9bRpq+M2CTBxohf4tKyDJ+v+P/Jg7TI3c4uiltIGi7xno2FY+gE7nSUA3gLj4DmqSbobyef1EvRBeCbg=
+	t=1762289769; cv=none; b=Pdayhy/A0zpKn/6j4z1JJmC3lCzc+U5U/M5XPsPge1bHGqZK3C9zkZVCdCJ58mv7DQJR7UPfv5zy0rwT21hoyCTDhx3VbLy7QxP69pTSZeKI+LcDd5UyF7BPOKkGVJX6DOd3FkYcJpERoxP3DpvaNBCMuPeL/+Kdj42lEi0TcA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762288968; c=relaxed/simple;
-	bh=JGsJhmJeF5q8J7Ype2nL15gIcp7qqgcNpRYXX2zKA1U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iAkL4gS9h9KgjJAht1o71E4jQ9RZ9KI/pGo8I6FaKtaSCKWJFyEz5+KRz1iyHIrtfv6kCiPLCz6nl9iXF774Jap+cBiuSfFWNvvQAGdATGuEnV45UuDlKYp1gqokf/uj+i/tUCDoQ+vUOog+ImzGXezM7458/HZnwaqeNVLCtVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NF4B26cu; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-429c19b5de4so899230f8f.3
-        for <linux-ext4@vger.kernel.org>; Tue, 04 Nov 2025 12:42:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762288964; x=1762893764; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=3/I2a0uZTAnglwIVDCoK1EV+nWMPjHOXPCZYdwAgCYY=;
-        b=NF4B26cuPHjv3gz17Rsd4oUx/nd3H2cVMGfdAtWNrXbFRIn90kvaIWFt3FX9h1quZJ
-         kLLp5i6VaIXIirF0hn9FPubdMMfmwIMNzylZN3OiRuxw32b2UMKihBm8DYldouUrhFym
-         2tqjhuNCieP75phG/5Dlp3EO/UP3JX5c/ckIbEo/zfl/KaTbCzNlVwJ8zwHt+CIsG2xM
-         BbHYPVW3s4uJC6BrZ1ZN58sX2ZOp21+aJX+ytIjJG5vkbyhnIn9xz/tD7NXW599Y3jpK
-         v8PhPVLh8vmgGdnZqIE6CobxZEn+jhXyhzFecnCon9lim+OttiR3GX6GdmzS77ICPWGM
-         RCNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762288964; x=1762893764;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3/I2a0uZTAnglwIVDCoK1EV+nWMPjHOXPCZYdwAgCYY=;
-        b=jPu0d1UGYZL1M71mSph1tU9+Xa5Bjoh+SPXbNjTzT6UbpcmAm0M0TiNUjAKUJr76SB
-         gdplTaccQXS0e17F0hs/VPvE3Fd2C6UHNlXsWHkg9Q9RN0NieR5161Trg8fnuRlFvZMz
-         Y1+Yf0qfvef1rV8wj9E7oHXeK6WmjxPS9JJ4bfvJAm5knoxI3jmABhGZc4vAxwuuwfiu
-         CfNCDN0BBzNPCo/cJEU3gWLtkWFdAx1XkNv1TDws0LEluJgjXnpoU2d5i0bWI+6oepRC
-         IO25HguPC9Lp1xpC7ki3T1SMs5ZaRMdBop7nLmfpl5IRAqZNGmATH/wHMOIT4RJ1kikI
-         9afg==
-X-Forwarded-Encrypted: i=1; AJvYcCXEcqWqs2DFzZMxCeZxSvrfI9TxONgb/SIpZvzS7puymMGcM/tV7gHYWi0RIoKkuhFeJUb2wX9qmfL4@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8Pevr8YrqY4PPPRICI03wphTgXStFHjqMe0ZbxM7wLUbheCzu
-	lomyJMozCOt166y3K84rz/5MvkalQBqG8T99ul1njYasudVk22Ewmrhnp1/8mczXv6M=
-X-Gm-Gg: ASbGnctYeecNKAiFA3UkCvyrBLKMmhQt6d/PqcOqSf+3H1JQH+1yZnkfbe0g5KI2KIO
-	j0V8YVGauL6MyCAcQSt2lsVhuoZADk/h8nfkHX88ugndbt3e8cOFVxauMk/ViGqGBhvEUZlYgM/
-	FbZrpCseBlAJS4o7svai1DqDaugJqzx6Br4OzJuSul56YO8gVKNhX2DYEwmn9uik3Tr0LrzzODn
-	y3nbFMTdrwjHFMPRRSRMIau7dCeYY4EssFz1SProLoG/CDqnRdyopnQuoRPl1hGgf5sNJPAplgu
-	r4LoPByEF30ykbFP/EZEyLjiZEVGjXlS14XLtKCF+nYnp6cDKGnLvu8xX+RVHKLEIjrKI9Wsfok
-	vwwKdf13mjf1n4onR0QOMr7oGvf9UM7XBEJVQuM6HQu+yo/0/apUchQAF5cJcIUyuk1qEQBMc7P
-	zJlGpxGB9cawnzO5o3uLjq1z4ZkgFh
-X-Google-Smtp-Source: AGHT+IG8Z203PhFCyhJhz48A8l8UhXjLU1AaikFIf0iJkmfVY5x+Gi/GZMr6bL+04r89yb9RlNQzVA==
-X-Received: by 2002:a05:6000:26d3:b0:429:c851:69bc with SMTP id ffacd0b85a97d-429e32dd761mr472461f8f.8.1762288963767;
-        Tue, 04 Nov 2025 12:42:43 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::e9d? (2403-580d-fda1--e9d.ip6.aussiebb.net. [2403:580d:fda1::e9d])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7acd3246e7bsm3976191b3a.8.2025.11.04.12.42.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Nov 2025 12:42:43 -0800 (PST)
-Message-ID: <247c8075-60d3-4090-a76d-8d59d9e859ca@suse.com>
-Date: Wed, 5 Nov 2025 07:12:38 +1030
+	s=arc-20240116; t=1762289769; c=relaxed/simple;
+	bh=CTwm0rIOhacb72jtcjpFSe+ocHf2I6iphM3+Xt9t/Kc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sjD78DWe39rrwleu27sRT/68r+fhsUd3WTeKlfNKg5u3fjK1J4xOdciUMbuxcHCxf49gO7FwCXihlDn5droqm80S0Ams9QHIIA9N9ylfGBcsxmsYZZ+rAynKPJ167qRMpFIyOmVe7V6Pz/zQgmiePSbVACVGb35FnOwqxC8YUKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vOVgxcS0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B00FC4CEF7;
+	Tue,  4 Nov 2025 20:56:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762289764;
+	bh=CTwm0rIOhacb72jtcjpFSe+ocHf2I6iphM3+Xt9t/Kc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vOVgxcS0aIQJht/b8AzRar6NDg+NMYHEI6W3uU5+EMMqvaGT6JVgo3yhgJ84lnnsy
+	 p226OiGF7nQzycvBKSO+ki1oVXDsOualYVQunHi8WdlaoPVQSS2gpvo6Cht0XKWlmp
+	 FTvQNtxHNeWp4KFy3X6rRQ1tTMmy9bIBJeOSFwbNHVOUsQzUy8RQrOmuzpZi7YsvX2
+	 BhUlg8RXHGDDvZMNGmGxVs6DM48vSurV/qr33/BqMec5xBF58HRjOP7OK8vMK8ZZ7c
+	 DwFfH1zxgTteSank4iO/GHvzuL5vVoVKGoe3gfESyjnV7OpMWPy2E8jbDBFfjL1A5t
+	 SUCJaQdYPt8nw==
+Date: Tue, 4 Nov 2025 21:56:00 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-btrfs@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH RFC 4/8] btrfs: use super write guard in sb_start_write()
+Message-ID: <20251104-abgearbeitet-rotwild-09b3c0375625@brauner>
+References: <20251104-work-guards-v1-0-5108ac78a171@kernel.org>
+ <20251104-work-guards-v1-4-5108ac78a171@kernel.org>
+ <cxrp3a7wu5lz5o6fiwleqiqwqm6xyevdjiega77mwxy5aekeab@522tt37vnwip>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 2/8] btrfs: use super write guard in
- btrfs_reclaim_bgs_work()
-To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
- linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org
-References: <20251104-work-guards-v1-0-5108ac78a171@kernel.org>
- <20251104-work-guards-v1-2-5108ac78a171@kernel.org>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20251104-work-guards-v1-2-5108ac78a171@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cxrp3a7wu5lz5o6fiwleqiqwqm6xyevdjiega77mwxy5aekeab@522tt37vnwip>
 
-
-
-在 2025/11/4 22:42, Christian Brauner 写道:
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> ---
->   fs/btrfs/block-group.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+On Tue, Nov 04, 2025 at 06:00:29PM +0100, Mateusz Guzik wrote:
+> On Tue, Nov 04, 2025 at 01:12:33PM +0100, Christian Brauner wrote:
+> > Signed-off-by: Christian Brauner <brauner@kernel.org>
+> > ---
+> >  fs/btrfs/volumes.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> > index 2bec544d8ba3..4152b0a5537a 100644
+> > --- a/fs/btrfs/volumes.c
+> > +++ b/fs/btrfs/volumes.c
+> > @@ -4660,7 +4660,8 @@ static int balance_kthread(void *data)
+> >  	struct btrfs_fs_info *fs_info = data;
+> >  	int ret = 0;
+> >  
+> > -	sb_start_write(fs_info->sb);
+> > +	guard(super_write)(fs_info->sb);
+> > +
+> >  	mutex_lock(&fs_info->balance_mutex);
+> >  	if (fs_info->balance_ctl)
+> >  		ret = btrfs_balance(fs_info, fs_info->balance_ctl, NULL);
+> > 
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 5322ef2ae015..8284b9435758 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1850,7 +1850,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
->   	if (!btrfs_should_reclaim(fs_info))
->   		return;
->   
-> -	sb_start_write(fs_info->sb);
-> +	guard(super_write)(fs_info->sb);
->   
->   	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE)) {
->   		sb_end_write(fs_info->sb);
+> this missed sb_end_write call removal
 
-This one is still left using the old scheme, and there is another one in 
-the mutex_trylock() branch.
-
-I'm wondering how safe is the new scope based auto freeing.
-
-Like when the freeing function is called? Will it break the existing 
-freeing/locking sequence in other locations?
-
-For this call site, sb_end_write() is always called last so it's fine.
-
-Thanks,
-Qu
-
-> @@ -2030,7 +2030,6 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
->   	list_splice_tail(&retry_list, &fs_info->reclaim_bgs);
->   	spin_unlock(&fs_info->unused_bgs_lock);
->   	btrfs_exclop_finish(fs_info);
-> -	sb_end_write(fs_info->sb);
->   }
->   
->   void btrfs_reclaim_bgs(struct btrfs_fs_info *fs_info)
-> 
-
+Thanks, fixed!
 
