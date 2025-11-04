@@ -1,108 +1,170 @@
-Return-Path: <linux-ext4+bounces-11458-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11459-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B197C32D91
-	for <lists+linux-ext4@lfdr.de>; Tue, 04 Nov 2025 20:59:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C270C32F2C
+	for <lists+linux-ext4@lfdr.de>; Tue, 04 Nov 2025 21:43:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4923F3BFC7A
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Nov 2025 19:59:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DBE618C26AE
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Nov 2025 20:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5872B2DF3DA;
-	Tue,  4 Nov 2025 19:59:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E282F0670;
+	Tue,  4 Nov 2025 20:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bl+2armP"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NF4B26cu"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAEE22127A
-	for <linux-ext4@vger.kernel.org>; Tue,  4 Nov 2025 19:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF3A2E8B9E
+	for <linux-ext4@vger.kernel.org>; Tue,  4 Nov 2025 20:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762286387; cv=none; b=tE79ch8R85tptzZfF19qNXzdTMQKZ5i+KjqnraeslbZcE4ByqbCv+KgicSgewEdLI/YXsw+6V+EhwCiXpzur/WkDgsDxKYkfifnMFBthzxA2ZpyXwLqWAvRuhI5t7Mo07r//MxSw31XnDnWHrOklydiCuedTbJswzJj6eKOCX4M=
+	t=1762288968; cv=none; b=sn1mHI8IKSvcgKNaJ6dLbV2wzh0tu6o3YsNO7Gv8+KPSCZkMaCzq6oiYkeMJOItCS4PlBwojim/FqpJoc5DtMfxj6qI9bRpq+M2CTBxohf4tKyDJ+v+P/Jg7TI3c4uiltIGi7xno2FY+gE7nSUA3gLj4DmqSbobyef1EvRBeCbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762286387; c=relaxed/simple;
-	bh=uX5r1UKRh5hgHYfFHLXZmC8nv6FyW44YAn4VdccjSK8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KyxBQxIBX0GxvstckCG7bjjVcGZlb/EqSBSgBXMJH4V0JawTHfrpGr5HFl19Embu1L6NeeY6kXmS0kl9vCWkaneparJ8XzOZyHjWDMRKxTx29kHLTcLvWcxti/N7VWjbeK0129pmbV0AsFmr+z2bmwgf1ywD6SWr0BdCaFBtdFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bl+2armP; arc=none smtp.client-ip=209.85.160.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4ecf2244f58so56832101cf.3
-        for <linux-ext4@vger.kernel.org>; Tue, 04 Nov 2025 11:59:45 -0800 (PST)
+	s=arc-20240116; t=1762288968; c=relaxed/simple;
+	bh=JGsJhmJeF5q8J7Ype2nL15gIcp7qqgcNpRYXX2zKA1U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iAkL4gS9h9KgjJAht1o71E4jQ9RZ9KI/pGo8I6FaKtaSCKWJFyEz5+KRz1iyHIrtfv6kCiPLCz6nl9iXF774Jap+cBiuSfFWNvvQAGdATGuEnV45UuDlKYp1gqokf/uj+i/tUCDoQ+vUOog+ImzGXezM7458/HZnwaqeNVLCtVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NF4B26cu; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-429c19b5de4so899230f8f.3
+        for <linux-ext4@vger.kernel.org>; Tue, 04 Nov 2025 12:42:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762286384; x=1762891184; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=36eMqKQl+uirAL1DF9qIP4HwS9UCvveHLkgtu9cSplc=;
-        b=Bl+2armP1z4USVfymA4A7DLqbOFcGUvKpEyRaJqyXJ4YwCwyLLnrHac7cM5PRz1cpC
-         FNLKXUeRv+M6j2owJPWxYHBJ8rEHiXq2lEOnX/C/YTf9oPmmYIcyX+dw45EkVgmAkOeO
-         uRu0qVf+5jZVxJhsqjhyMtCCgq2WyFgr6h7aSKoG1tUdt8h9o86SQsQY2a40RsUvyjbJ
-         nq6h7VnZraeJVabYrqSTTKPD0XskUgiOVFIdA39IPQBSnN24En5i3Sldv4/GlWIWkrkH
-         No+fqyd2uMy1qhyMSesgKMcWQGk9ylO34LZsGrnRHwIU2LItb5zcm0mgiHnRzrIwIwQe
-         zRhg==
+        d=suse.com; s=google; t=1762288964; x=1762893764; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=3/I2a0uZTAnglwIVDCoK1EV+nWMPjHOXPCZYdwAgCYY=;
+        b=NF4B26cuPHjv3gz17Rsd4oUx/nd3H2cVMGfdAtWNrXbFRIn90kvaIWFt3FX9h1quZJ
+         kLLp5i6VaIXIirF0hn9FPubdMMfmwIMNzylZN3OiRuxw32b2UMKihBm8DYldouUrhFym
+         2tqjhuNCieP75phG/5Dlp3EO/UP3JX5c/ckIbEo/zfl/KaTbCzNlVwJ8zwHt+CIsG2xM
+         BbHYPVW3s4uJC6BrZ1ZN58sX2ZOp21+aJX+ytIjJG5vkbyhnIn9xz/tD7NXW599Y3jpK
+         v8PhPVLh8vmgGdnZqIE6CobxZEn+jhXyhzFecnCon9lim+OttiR3GX6GdmzS77ICPWGM
+         RCNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762286384; x=1762891184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=36eMqKQl+uirAL1DF9qIP4HwS9UCvveHLkgtu9cSplc=;
-        b=KIehKIaPs+tXs7EEAOQKS5r4EemPwRwr1DSe4Qe+kHDz0NRQb5VPcI+U/l2bQzzv1N
-         Wme9FOAwXLao/OrYhY6rTeakcmDPmiFgIQsjYYx2u+SezWHnsoRop1z0ZJVOzcVbk3gY
-         YvGradaK2XkdAJoMJIjS6d+ZC0Q3y8TnwUj4rtjftXVG+5Q5P7ig2SMqTch0GnJV7RuR
-         XQ4wM+Lpym83ZIrjoKGHgsiT1SufXgB1b4vWgEn7HNLPqnkr/PeAaK/cP3vBdcFtFrpp
-         2v6QsJ7L9Aq838cIYUxOvc0f4uUqU3RIWuFnxYmxWS5UZqqL2yrG8FKcdvxKnDc+Wr5s
-         hbAA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOJvwcDKcuYMOvR2am8w/xg2dy8WFBg3cIuBRhCHH0H+RdEuGrLA1BVX2ncXILjv6jz2eR01sESmFe@vger.kernel.org
-X-Gm-Message-State: AOJu0YwjNcVk+BrSUDn2z/15XnV/ymLFja0xGyA5cBYDcpW7HaXZDgk6
-	u8pELhSuv1ZMIRnspg0Nob6fMyRqhseNWDWOtzMSgydSmHWsbFkI9hU2sWbobt3igve8YRYX+EQ
-	CZAAVWiAkhMr5DfLG+q7RYfaz2T5uKSNhIA==
-X-Gm-Gg: ASbGncsC/6waHP9NjxlB+iu8rHWj8KUxgQiWFiY0NIE7+QqkbODVuHXlE2ShjOuAExa
-	xIMAFTylqXw3njw0WDH7jAFQJCX0S/9anuLd1W9tZp0iDhc799DfUZRck/JZMiBzEnV9fSj0Ify
-	hnmW03oO3TRrE6OJFwaLlq5qYXk4Yp3tSRzciKp95MTgoUu5MyFWE0plxrearjJPpzCLDLVO7/y
-	IUKzZ3MWqOXujBO1EU82RRvl8vlJ7QFzZ5l8a7wzNSKRltBw4x5bsW7oBEoGKbTY6GXvGHZI1U1
-	hI9pL8xXgQ95SCrFZEi7Ovl2u5uPuREN
-X-Google-Smtp-Source: AGHT+IFYUEk67d6wkrel09WbcgZrushIXlVlBxALy1cPC783ZW824tJLnztCsyN2ea6YD8lujb+bG2kRyCR6kw7wRfk=
-X-Received: by 2002:ac8:59d3:0:b0:4ed:6324:f53f with SMTP id
- d75a77b69052e-4ed72626098mr10004961cf.39.1762286384520; Tue, 04 Nov 2025
- 11:59:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1762288964; x=1762893764;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3/I2a0uZTAnglwIVDCoK1EV+nWMPjHOXPCZYdwAgCYY=;
+        b=jPu0d1UGYZL1M71mSph1tU9+Xa5Bjoh+SPXbNjTzT6UbpcmAm0M0TiNUjAKUJr76SB
+         gdplTaccQXS0e17F0hs/VPvE3Fd2C6UHNlXsWHkg9Q9RN0NieR5161Trg8fnuRlFvZMz
+         Y1+Yf0qfvef1rV8wj9E7oHXeK6WmjxPS9JJ4bfvJAm5knoxI3jmABhGZc4vAxwuuwfiu
+         CfNCDN0BBzNPCo/cJEU3gWLtkWFdAx1XkNv1TDws0LEluJgjXnpoU2d5i0bWI+6oepRC
+         IO25HguPC9Lp1xpC7ki3T1SMs5ZaRMdBop7nLmfpl5IRAqZNGmATH/wHMOIT4RJ1kikI
+         9afg==
+X-Forwarded-Encrypted: i=1; AJvYcCXEcqWqs2DFzZMxCeZxSvrfI9TxONgb/SIpZvzS7puymMGcM/tV7gHYWi0RIoKkuhFeJUb2wX9qmfL4@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8Pevr8YrqY4PPPRICI03wphTgXStFHjqMe0ZbxM7wLUbheCzu
+	lomyJMozCOt166y3K84rz/5MvkalQBqG8T99ul1njYasudVk22Ewmrhnp1/8mczXv6M=
+X-Gm-Gg: ASbGnctYeecNKAiFA3UkCvyrBLKMmhQt6d/PqcOqSf+3H1JQH+1yZnkfbe0g5KI2KIO
+	j0V8YVGauL6MyCAcQSt2lsVhuoZADk/h8nfkHX88ugndbt3e8cOFVxauMk/ViGqGBhvEUZlYgM/
+	FbZrpCseBlAJS4o7svai1DqDaugJqzx6Br4OzJuSul56YO8gVKNhX2DYEwmn9uik3Tr0LrzzODn
+	y3nbFMTdrwjHFMPRRSRMIau7dCeYY4EssFz1SProLoG/CDqnRdyopnQuoRPl1hGgf5sNJPAplgu
+	r4LoPByEF30ykbFP/EZEyLjiZEVGjXlS14XLtKCF+nYnp6cDKGnLvu8xX+RVHKLEIjrKI9Wsfok
+	vwwKdf13mjf1n4onR0QOMr7oGvf9UM7XBEJVQuM6HQu+yo/0/apUchQAF5cJcIUyuk1qEQBMc7P
+	zJlGpxGB9cawnzO5o3uLjq1z4ZkgFh
+X-Google-Smtp-Source: AGHT+IG8Z203PhFCyhJhz48A8l8UhXjLU1AaikFIf0iJkmfVY5x+Gi/GZMr6bL+04r89yb9RlNQzVA==
+X-Received: by 2002:a05:6000:26d3:b0:429:c851:69bc with SMTP id ffacd0b85a97d-429e32dd761mr472461f8f.8.1762288963767;
+        Tue, 04 Nov 2025 12:42:43 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::e9d? (2403-580d-fda1--e9d.ip6.aussiebb.net. [2403:580d:fda1::e9d])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7acd3246e7bsm3976191b3a.8.2025.11.04.12.42.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Nov 2025 12:42:43 -0800 (PST)
+Message-ID: <247c8075-60d3-4090-a76d-8d59d9e859ca@suse.com>
+Date: Wed, 5 Nov 2025 07:12:38 +1030
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <176169809222.1424347.16562281526870178424.stgit@frogsfrogsfrogs> <176169809296.1424347.6509219210054935670.stgit@frogsfrogsfrogs>
-In-Reply-To: <176169809296.1424347.6509219210054935670.stgit@frogsfrogsfrogs>
-From: Joanne Koong <joannelkoong@gmail.com>
-Date: Tue, 4 Nov 2025 11:59:33 -0800
-X-Gm-Features: AWmQ_bliLv8l5EMdKsrWCti1ZZIHas10dyMFCTrkaG3nWk2BbLH5E6LmnFVgPEU
-Message-ID: <CAJnrk1akz4YKkB_rywe=9bPn8Uur-WS4f6hCxx2K7kXuMeEJJg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] fuse: signal that a fuse inode should exhibit local
- fs behaviors
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 2/8] btrfs: use super write guard in
+ btrfs_reclaim_bgs_work()
+To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org
+References: <20251104-work-guards-v1-0-5108ac78a171@kernel.org>
+ <20251104-work-guards-v1-2-5108ac78a171@kernel.org>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20251104-work-guards-v1-2-5108ac78a171@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Oct 28, 2025 at 5:43=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> From: Darrick J. Wong <djwong@kernel.org>
->
-> Create a new fuse inode flag that indicates that the kernel should
-> implement various local filesystem behaviors instead of passing vfs
-> commands straight through to the fuse server and expecting the server to
-> do all the work.  For example, this means that we'll use the kernel to
-> transform some ACL updates into mode changes, and later to do
-> enforcement of the immutable and append iflags.
->
-> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 
-Reviewed-by: Joanne Koong <joannelkoong@gmail.com>
+
+在 2025/11/4 22:42, Christian Brauner 写道:
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> ---
+>   fs/btrfs/block-group.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 5322ef2ae015..8284b9435758 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1850,7 +1850,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+>   	if (!btrfs_should_reclaim(fs_info))
+>   		return;
+>   
+> -	sb_start_write(fs_info->sb);
+> +	guard(super_write)(fs_info->sb);
+>   
+>   	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE)) {
+>   		sb_end_write(fs_info->sb);
+
+This one is still left using the old scheme, and there is another one in 
+the mutex_trylock() branch.
+
+I'm wondering how safe is the new scope based auto freeing.
+
+Like when the freeing function is called? Will it break the existing 
+freeing/locking sequence in other locations?
+
+For this call site, sb_end_write() is always called last so it's fine.
+
+Thanks,
+Qu
+
+> @@ -2030,7 +2030,6 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+>   	list_splice_tail(&retry_list, &fs_info->reclaim_bgs);
+>   	spin_unlock(&fs_info->unused_bgs_lock);
+>   	btrfs_exclop_finish(fs_info);
+> -	sb_end_write(fs_info->sb);
+>   }
+>   
+>   void btrfs_reclaim_bgs(struct btrfs_fs_info *fs_info)
+> 
+
 
