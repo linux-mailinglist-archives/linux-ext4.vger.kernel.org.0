@@ -1,74 +1,106 @@
-Return-Path: <linux-ext4+bounces-11431-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11432-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21755C30C22
-	for <lists+linux-ext4@lfdr.de>; Tue, 04 Nov 2025 12:36:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54FFEC30E8D
+	for <lists+linux-ext4@lfdr.de>; Tue, 04 Nov 2025 13:14:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01E2C3AFD66
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Nov 2025 11:35:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9DBE189E41D
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Nov 2025 12:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59AB2E8E00;
-	Tue,  4 Nov 2025 11:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99E92EDD58;
+	Tue,  4 Nov 2025 12:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LVDlSM8B"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D562D8DA3;
-	Tue,  4 Nov 2025 11:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD262ECE9E;
+	Tue,  4 Nov 2025 12:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762256142; cv=none; b=g34cXEF7NK4AZ/oHroNRTbCoA73tp7nXDrwFgedHimqNqDTbAMGw5Hmh6SNUq2AiZ/t2jSfVOYnB06EvnnPWrdvJrQuHJCTdthM/JeyIdUgh9IWLW1I31XUMqyIazsh58CQ4MiYxCJtXrA25m7XQKi5mplwKuLdx0tUp0fNzNg0=
+	t=1762258360; cv=none; b=HZQdY/T7BoqAQRsrxSkEhZUXGhMqg92PFL+i/LyhSTbt4fUKvQnf2HK4uBZ6nvOhbwqFyh4tWmaZjS5HZkDEAAwmK4LB/rd298vBl/xp4W4q6xW2SR8xHKnfaXvaUNcR664+nC+2W34EW8D+h4T5+OdA9hVutMMYk+krFb0PRqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762256142; c=relaxed/simple;
-	bh=/2+/x3sO/+F7ImXUwtGE8QJTGQj23rd60LUxSwDhPuM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ETC1P4xOd4Wth1fMkO8yf+Ij4V7E/VXSPZ3xR7z3QF+wbjniFM4MgaC/QdYPVAjxdjkgbMKAvhT06hSmnMrlwwMPeWymbzRQkMyu3q2l8yaax5b5AXcwyGcfrQHFPUjeWnUuLXKUgCk3jtsJK03oxkV9M9lcrTBNBB26/5LGLk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 11D27227A8E; Tue,  4 Nov 2025 12:35:36 +0100 (CET)
-Date: Tue, 4 Nov 2025 12:35:35 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Keith Busch <kbusch@kernel.org>
-Cc: Eric Biggers <ebiggers@kernel.org>, Christoph Hellwig <hch@lst.de>,
-	Carlos Llamas <cmllamas@google.com>, Keith Busch <kbusch@meta.com>,
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	axboe@kernel.dk, Hannes Reinecke <hare@suse.de>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCHv4 5/8] iomap: simplify direct io validity check
-Message-ID: <20251104113535.GA14479@lst.de>
-References: <aP-c5gPjrpsn0vJA@google.com> <aP-hByAKuQ7ycNwM@kbusch-mbp> <aQFIGaA5M4kDrTlw@google.com> <20251028225648.GA1639650@google.com> <20251028230350.GB1639650@google.com> <20251029070618.GA29697@lst.de> <20251030174015.GC1624@sol> <20251031091820.GA9508@lst.de> <20251103181031.GI1735@sol> <aQjzwh3iAQREjndH@kbusch-mbp>
+	s=arc-20240116; t=1762258360; c=relaxed/simple;
+	bh=CIuyhA1SE77JCvvV7gCQAcX8DXg3tOccPVuCi/0awLU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=dJ4ytGyPS/SVEQCv6qMKqzCvSkCwr1uIcUzS5w/bU49azB8dAjqfuFVX7OPxtXlY+C6zhdXyRBwrea7ZfG5Vx7D8ugDQ/N0LIND+1Dn7yGbfg+vefLZyBa2LhwzhHajXf0s9PJAAjR64tMwK3tYMof06Fr1F2yzKye71Fn8uHDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LVDlSM8B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15144C4CEF7;
+	Tue,  4 Nov 2025 12:12:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762258358;
+	bh=CIuyhA1SE77JCvvV7gCQAcX8DXg3tOccPVuCi/0awLU=;
+	h=From:Subject:Date:To:Cc:From;
+	b=LVDlSM8B8MEG0S4WDNJ4bkaJqLmR65+8+LOK0k4a4t3evokZWqPaRDJ+SFJWpiiAN
+	 m0B54ljecsDO0jzUbjDWlM7YqRgrQP7H9PcFUzn1MnoSm17xDy9fazysa5ArAgtD6K
+	 AA22YHjvznNjvwwpb79sWR40921OQWA5pQxUOxoQ7v+vOPLDo20FY4Q7Dh8f5HYIAv
+	 BxCVrgcN6YqCI9BeCRy+Zrh5s6+G/PAXSw8F+GuN6eTljy9TpgFA2HzxSdzDd+RJBO
+	 50arLI3ISJAihDYz0rqxe1x9JiNsLqjCPnUQTJGk5KpjJm24maWFUb1WtI/0/92q+X
+	 0lufpjS5UoU7Q==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH RFC 0/8] fs: introduce super write guard
+Date: Tue, 04 Nov 2025 13:12:29 +0100
+Message-Id: <20251104-work-guards-v1-0-5108ac78a171@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aQjzwh3iAQREjndH@kbusch-mbp>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAK3tCWkC/x2MQQ6CMBAAv0L27JK2iKJXEx/g1XhY2gUaQzG7i
+ iaEv1s9ziQzCyhLZIVjsYDwHDVOKYPdFOAHSj1jDJnBGVdba7b4nuSO/YskKHZchT2ZA7u6gVw
+ 8hLv4+d+ucDmf4JZlS8rYCiU//EYj6ZOlnHelbVB8Bev6BfndiZuFAAAA
+X-Change-ID: 20251104-work-guards-fe3d7a09e258
+To: linux-fsdevel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+ linux-xfs@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+X-Mailer: b4 0.15-dev-a6db3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1248; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=CIuyhA1SE77JCvvV7gCQAcX8DXg3tOccPVuCi/0awLU=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWRyvt2iPkvi+JrF+Uc6WnfcK2EwD04W+J144XDV2VkzN
+ r5qyC2a2FHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCR2EWMDG8WbvTTvJj0dWno
+ 6ZZUBd4L7U6zH3xpUErZpH5u3tyfFrcZGV7rncs6UH51+qySNXZuIr+KW+M03ocynE20eMdeVnp
+ bmQcA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-On Mon, Nov 03, 2025 at 11:26:10AM -0700, Keith Busch wrote:
-> I've been using these memory alignment capabilities in production for
-> quite some time without issue on real hardware, and it's proven very
-> useful at reducing memory and cpu utilization because that's really how
-> the data alignment comes into the services responisble for running the
-> disk io, and the alignment is outside the service's control.
-> 
-> Christoph is testing different use cases with check summing and finding
-> much of the infrastructure wasn't ready to accept the more arbitrary
-> memory offsets and lengths.
+Hey,
 
-Well, I've mostly just wired up the alignment reporting to the legacy
-XFS ioctl, and now xfstests actually tried it.  Which found breakage
-in the PI code and in null_blk pretty quickly, and I suspect it might
-find more in drivers that access the data in software and don't just
-DMA map it.
+I'm in the process of adding a few more guards for vfs constructs.
+I've chosen the easy case of super_start_write() and super_end_write()
+and converted eligible callers. I think long-term we can move a lot of
+the manual placement to completely rely on guards - where sensible.
+
+Christian
+
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+Christian Brauner (8):
+      fs: add super_write_guard
+      btrfs: use super write guard in btrfs_reclaim_bgs_work()
+      btrfs: use super write guard btrfs_run_defrag_inode()
+      btrfs: use super write guard in sb_start_write()
+      ext4: use super write guard in write_mmp_block()
+      btrfs: use super write guard in relocating_repair_kthread()
+      open: use super write guard in do_ftruncate()
+      xfs: use super write guard in xfs_file_ioctl()
+
+ fs/btrfs/block-group.c | 3 +--
+ fs/btrfs/defrag.c      | 7 +++----
+ fs/btrfs/volumes.c     | 7 ++++---
+ fs/ext4/mmp.c          | 8 ++------
+ fs/open.c              | 9 +++------
+ fs/xfs/xfs_ioctl.c     | 6 ++----
+ include/linux/fs.h     | 5 +++++
+ 7 files changed, 20 insertions(+), 25 deletions(-)
+---
+base-commit: dcb6fa37fd7bc9c3d2b066329b0d27dedf8becaa
+change-id: 20251104-work-guards-fe3d7a09e258
 
 
