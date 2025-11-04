@@ -1,219 +1,195 @@
-Return-Path: <linux-ext4+bounces-11450-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11451-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEAD7C3170C
-	for <lists+linux-ext4@lfdr.de>; Tue, 04 Nov 2025 15:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA352C31887
+	for <lists+linux-ext4@lfdr.de>; Tue, 04 Nov 2025 15:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DA7C4230C3
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Nov 2025 14:07:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7D91462B32
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Nov 2025 14:30:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B154932BF5B;
-	Tue,  4 Nov 2025 14:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC7A331A78;
+	Tue,  4 Nov 2025 14:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NA195JRs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OWok5sSB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NA195JRs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OWok5sSB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD64C32B9B7
-	for <linux-ext4@vger.kernel.org>; Tue,  4 Nov 2025 14:06:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B39832ED5B
+	for <linux-ext4@vger.kernel.org>; Tue,  4 Nov 2025 14:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762265220; cv=none; b=bDqvRUVGGZJSmt9HJiuAVX3ACuo0p4MHGRNu5+hbNk0sk878o1a9cucwq7CHCu/pI/Wp3H/f0DqUp5EhQiCHTctQdHx6gCkWtnYSKnS2K2GkpZI3hFqUhKOJqdoruPcpq55eug2c1N8iVe+ofljoOM1tLel8N+oncD0ypXyknvA=
+	t=1762266536; cv=none; b=RIr2Nq9POPASTZ3pQyIlIqPGzWfVKD43aDu5gqcNUnC9d2AIgoi1dJ8agFkEbM09K5VaeyAfFmK0EOIvUNkQ06A4gLKl+/ToGVs09zv7Un6OTJxDJuwtvcvPAfG53WUTxrzzMq0jByq3gzu8OEgk7if9Rv/mudllG/omTQOk4w4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762265220; c=relaxed/simple;
-	bh=ZpthrUQzxisyxY3hTfibFSSt36hcXK+bw04Bqc/Nljw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k4WSFKHZv2Fonu20gtPoew8Zc1m12lyfqygp/CYEUeRiFuCylnM4USMm3/9UQxKzEbcegqb1/vdGzwC4mF5+61jL2j5EZ3NbI9GZiDx1LP8TpAQn9LkjVEhH6ArcgR/K+Jk9iLwd6VHWeV5YxFi6gXLFh2/kzJDgSyf9IFRd8Lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d19HY0DVyzKHMjQ
-	for <linux-ext4@vger.kernel.org>; Tue,  4 Nov 2025 22:06:49 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id DFF871A0C1C
-	for <linux-ext4@vger.kernel.org>; Tue,  4 Nov 2025 22:06:54 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP2 (Coremail) with SMTP id Syh0CgCn_UV7CApppuvBCg--.58806S3;
-	Tue, 04 Nov 2025 22:06:54 +0800 (CST)
-Message-ID: <4df9f64b-2345-43f4-806e-7aff13f020b6@huaweicloud.com>
-Date: Tue, 4 Nov 2025 22:06:51 +0800
+	s=arc-20240116; t=1762266536; c=relaxed/simple;
+	bh=dP6tDYguZ2LB5z1lCvKjXVSScqlg3pZNdBGb75F+TQQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O9efqSsXfW4o6YjHC+LYPGFlNkc7sFq+1jxYMIHk+A10z2X2mpe0nUoe2m+YMEiuUvUeUrRV4cEpMZyGAA1gjW285+1VHYx3TNNjtViMi/H3EVgx5rKtA2ArC9mOWBTJjye0G09dUre9NO67t25Sl5Hok/vSX7piGod8fNGyrUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NA195JRs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OWok5sSB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NA195JRs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OWok5sSB; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4B2481F391;
+	Tue,  4 Nov 2025 14:28:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762266532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B5arVQIu36jUhvZQ/tXX/W3R7trzIl47WR+eF4rlTis=;
+	b=NA195JRs2MQ7TzyvpvSzNoxtg4h0xk3OvDxBJUhrYcr8g2Pgp9wgPtGRlpm19AJ20+W4MU
+	sgdL2v0pTicTXJZF0cLCfQyuo3/IUuoUE0WMJdaYokPpC+N/jDQe8RZxPIY+uY2mHkb9mp
+	lB0QeMWJEfGPXBBYJHs2bHyzJQbQS9A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762266532;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B5arVQIu36jUhvZQ/tXX/W3R7trzIl47WR+eF4rlTis=;
+	b=OWok5sSBA2Z+4SF5DrpafZjejka33RBEcsXGyMKb//o5PjEUhNPr5ANT59DjyNo2cCBixI
+	spqEp2cEezIvFBBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=NA195JRs;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OWok5sSB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762266532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B5arVQIu36jUhvZQ/tXX/W3R7trzIl47WR+eF4rlTis=;
+	b=NA195JRs2MQ7TzyvpvSzNoxtg4h0xk3OvDxBJUhrYcr8g2Pgp9wgPtGRlpm19AJ20+W4MU
+	sgdL2v0pTicTXJZF0cLCfQyuo3/IUuoUE0WMJdaYokPpC+N/jDQe8RZxPIY+uY2mHkb9mp
+	lB0QeMWJEfGPXBBYJHs2bHyzJQbQS9A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762266532;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B5arVQIu36jUhvZQ/tXX/W3R7trzIl47WR+eF4rlTis=;
+	b=OWok5sSBA2Z+4SF5DrpafZjejka33RBEcsXGyMKb//o5PjEUhNPr5ANT59DjyNo2cCBixI
+	spqEp2cEezIvFBBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37D6B13A31;
+	Tue,  4 Nov 2025 14:28:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lZCeDaQNCmmPTQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 04 Nov 2025 14:28:52 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C847AA28EA; Tue,  4 Nov 2025 15:28:51 +0100 (CET)
+Date: Tue, 4 Nov 2025 15:28:51 +0100
+From: Jan Kara <jack@suse.cz>
+To: Yang Erkun <yangerkun@huawei.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	jack@suse.cz, yi.zhang@huawei.com, libaokun1@huawei.com, 
+	yangerkun@huaweicloud.com
+Subject: Re: [PATCH v2 1/4] ext4: remove useless code in
+ ext4_map_create_blocks
+Message-ID: <j7hzyzb6ounq5tofuxg6mwmb4w5c2ldmkat6ngaf2ijt3rgsfc@fdty7kn7bdjn>
+References: <20251104131750.1581541-1-yangerkun@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] ext4: rename EXT4_GET_BLOCKS_PRE_IO
-To: Yang Erkun <yangerkun@huawei.com>, linux-ext4@vger.kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz
-Cc: libaokun1@huawei.com, yangerkun@huaweicloud.com
-References: <20251104131750.1581541-1-yangerkun@huawei.com>
- <20251104131750.1581541-2-yangerkun@huawei.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20251104131750.1581541-2-yangerkun@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgCn_UV7CApppuvBCg--.58806S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ar1DtrWDXFyDCFW3KF15Jwb_yoW7Kr13pr
-	sFvF1xJF4kta45u34xGF4jqr12vw1xGa1DCFyYg3yYkay5tryrKF1Yy3WFkFy5Kr45ZFs0
-	vryF934DKas3GrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251104131750.1581541-1-yangerkun@huawei.com>
+X-Rspamd-Queue-Id: 4B2481F391
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Spam-Level: 
 
-On 11/4/2025 9:17 PM, Yang Erkun wrote:
-> This flag has been generalized to split an unwritten extent when we do
-> dio or dioread_nolock writeback, or to avoid merge new extents which was
-> created by extents split. Update some related comments too.
+On Tue 04-11-25 21:17:47, Yang Erkun wrote:
+> IO path with EXT4_GET_BLOCKS_PRE_IO means dio within i_size or
+> dioread_nolock buffer writeback, they all means we need a unwritten
+> extent(or this extent has already been initialized), and the split won't
+> zero the range we really write. So this check seems useless. Besides,
+> even if we repeatedly execute ext4_es_insert_extent, there won't
+> actually be any issues.
 > 
+> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 > Signed-off-by: Yang Erkun <yangerkun@huawei.com>
 
-Looks good to me.
+I agree the check isn't needed for correctness but it seems to be
+reasonable performance optimization for a common case of writing back
+already written data in dioread_nolock mode?
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+								Honza
 
 > ---
->  fs/ext4/ext4.h              | 21 +++++++++++++++------
->  fs/ext4/extents.c           | 16 ++++++++--------
->  include/trace/events/ext4.h |  2 +-
->  3 files changed, 24 insertions(+), 15 deletions(-)
+>  fs/ext4/inode.c | 11 -----------
+>  1 file changed, 11 deletions(-)
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 57087da6c7be..96d7d649ccb0 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -694,13 +694,22 @@ enum {
->  	/* Caller is from the delayed allocation writeout path
->  	 * finally doing the actual allocation of delayed blocks */
->  #define EXT4_GET_BLOCKS_DELALLOC_RESERVE	0x0004
-> -	/* caller is from the direct IO path, request to creation of an
-> -	unwritten extents if not allocated, split the unwritten
-> -	extent if blocks has been preallocated already*/
-> -#define EXT4_GET_BLOCKS_PRE_IO			0x0008
-> -#define EXT4_GET_BLOCKS_CONVERT			0x0010
-> -#define EXT4_GET_BLOCKS_IO_CREATE_EXT		(EXT4_GET_BLOCKS_PRE_IO|\
-> +	/*
-> +	 * This means that we cannot merge newly allocated extents, and if we
-> +	 * found an unwritten extent, we need to split it.
-> +	 */
-> +#define EXT4_GET_BLOCKS_SPLIT_NOMERGE		0x0008
-> +	/*
-> +	 * Caller is from the dio or dioread_nolock buffer writeback,
-> +	 * request to creation of an unwritten extent if not exist or split
-> +	 * the found unwritten extent. Also do not merge the new create
-> +	 * unwritten extent, io end will convert unwritten to written, and
-> +	 * try to merge the written extent.
-> +	 */
-> +#define EXT4_GET_BLOCKS_IO_CREATE_EXT		(EXT4_GET_BLOCKS_SPLIT_NOMERGE|\
->  					 EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT)
-> +	/* Convert unwritten extent to initialized. */
-> +#define EXT4_GET_BLOCKS_CONVERT			0x0010
->  	/* Eventual metadata allocation (due to growing extent tree)
->  	 * should not fail, so try to use reserved blocks for that.*/
->  #define EXT4_GET_BLOCKS_METADATA_NOFAIL		0x0020
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index ca5499e9412b..241b5f5d29ad 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -333,7 +333,7 @@ ext4_force_split_extent_at(handle_t *handle, struct inode *inode,
->  			   int nofail)
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index e99306a8f47c..e8bac93ca668 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -583,7 +583,6 @@ static int ext4_map_query_blocks(handle_t *handle, struct inode *inode,
+>  static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
+>  				  struct ext4_map_blocks *map, int flags)
 >  {
->  	int unwritten = ext4_ext_is_unwritten(path[path->p_depth].p_ext);
-> -	int flags = EXT4_EX_NOCACHE | EXT4_GET_BLOCKS_PRE_IO;
-> +	int flags = EXT4_EX_NOCACHE | EXT4_GET_BLOCKS_SPLIT_NOMERGE;
+> -	struct extent_status es;
+>  	unsigned int status;
+>  	int err, retval = 0;
 >  
->  	if (nofail)
->  		flags |= EXT4_GET_BLOCKS_METADATA_NOFAIL | EXT4_EX_NOFAIL;
-> @@ -2002,7 +2002,7 @@ ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
+> @@ -644,16 +643,6 @@ static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
+>  			return err;
 >  	}
 >  
->  	/* try to insert block into found extent and return */
-> -	if (ex && !(gb_flags & EXT4_GET_BLOCKS_PRE_IO)) {
-> +	if (ex && !(gb_flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE)) {
->  
->  		/*
->  		 * Try to see whether we should rather test the extent on
-> @@ -2181,7 +2181,7 @@ ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
->  
->  merge:
->  	/* try to merge extents */
-> -	if (!(gb_flags & EXT4_GET_BLOCKS_PRE_IO))
-> +	if (!(gb_flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE))
->  		ext4_ext_try_to_merge(handle, inode, path, nearex);
->  
->  	/* time to correct all indexes above */
-> @@ -3224,7 +3224,7 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
->  		else
->  			ext4_ext_mark_initialized(ex);
->  
-> -		if (!(flags & EXT4_GET_BLOCKS_PRE_IO))
-> +		if (!(flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE))
->  			ext4_ext_try_to_merge(handle, inode, path, ex);
->  
->  		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
-> @@ -3368,7 +3368,7 @@ static struct ext4_ext_path *ext4_split_extent(handle_t *handle,
->  
->  	if (map->m_lblk + map->m_len < ee_block + ee_len) {
->  		split_flag1 = split_flag & EXT4_EXT_MAY_ZEROOUT;
-> -		flags1 = flags | EXT4_GET_BLOCKS_PRE_IO;
-> +		flags1 = flags | EXT4_GET_BLOCKS_SPLIT_NOMERGE;
->  		if (unwritten)
->  			split_flag1 |= EXT4_EXT_MARK_UNWRIT1 |
->  				       EXT4_EXT_MARK_UNWRIT2;
-> @@ -3739,7 +3739,7 @@ static struct ext4_ext_path *ext4_split_convert_extents(handle_t *handle,
->  			      EXT4_EXT_MAY_ZEROOUT : 0;
->  		split_flag |= (EXT4_EXT_MARK_UNWRIT2 | EXT4_EXT_DATA_VALID2);
->  	}
-> -	flags |= EXT4_GET_BLOCKS_PRE_IO;
-> +	flags |= EXT4_GET_BLOCKS_SPLIT_NOMERGE;
->  	return ext4_split_extent(handle, inode, path, map, split_flag, flags,
->  				 allocated);
->  }
-> @@ -3911,7 +3911,7 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
->  						*allocated, newblock);
->  
->  	/* get_block() before submitting IO, split the extent */
-> -	if (flags & EXT4_GET_BLOCKS_PRE_IO) {
-> +	if (flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE) {
->  		path = ext4_split_convert_extents(handle, inode, map, path,
->  				flags | EXT4_GET_BLOCKS_CONVERT, allocated);
->  		if (IS_ERR(path))
-> @@ -5618,7 +5618,7 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
->  			path = ext4_split_extent_at(handle, inode, path,
->  					start_lblk, split_flag,
->  					EXT4_EX_NOCACHE |
-> -					EXT4_GET_BLOCKS_PRE_IO |
-> +					EXT4_GET_BLOCKS_SPLIT_NOMERGE |
->  					EXT4_GET_BLOCKS_METADATA_NOFAIL);
->  		}
->  
-> diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-> index a374e7ea7e57..ada2b9223df5 100644
-> --- a/include/trace/events/ext4.h
-> +++ b/include/trace/events/ext4.h
-> @@ -39,7 +39,7 @@ struct partial_cluster;
->  	{ EXT4_GET_BLOCKS_CREATE,		"CREATE" },		\
->  	{ EXT4_GET_BLOCKS_UNWRIT_EXT,		"UNWRIT" },		\
->  	{ EXT4_GET_BLOCKS_DELALLOC_RESERVE,	"DELALLOC" },		\
-> -	{ EXT4_GET_BLOCKS_PRE_IO,		"PRE_IO" },		\
-> +	{ EXT4_GET_BLOCKS_SPLIT_NOMERGE,	"SPLIT_NOMERGE" },	\
->  	{ EXT4_GET_BLOCKS_CONVERT,		"CONVERT" },		\
->  	{ EXT4_GET_BLOCKS_METADATA_NOFAIL,	"METADATA_NOFAIL" },	\
->  	{ EXT4_GET_BLOCKS_NO_NORMALIZE,		"NO_NORMALIZE" },	\
-
+> -	/*
+> -	 * If the extent has been zeroed out, we don't need to update
+> -	 * extent status tree.
+> -	 */
+> -	if (flags & EXT4_GET_BLOCKS_PRE_IO &&
+> -	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
+> -		if (ext4_es_is_written(&es))
+> -			return retval;
+> -	}
+> -
+>  	status = map->m_flags & EXT4_MAP_UNWRITTEN ?
+>  			EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+>  	ext4_es_insert_extent(inode, map->m_lblk, map->m_len, map->m_pblk,
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
