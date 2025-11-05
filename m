@@ -1,87 +1,87 @@
-Return-Path: <linux-ext4+bounces-11499-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11500-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC987C37580
-	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 19:37:18 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48C67C37589
+	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 19:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C26314F116D
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 18:36:25 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E883634F9E0
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 18:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E3C2FD1AD;
-	Wed,  5 Nov 2025 18:33:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E503286D70;
+	Wed,  5 Nov 2025 18:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SjKKMhOk"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fYVCN4Of"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A78D72BEC2A
-	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 18:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF63D27FB3E
+	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 18:37:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762367629; cv=none; b=ZsBNgIe389C7XBJHPh8MAIq+nWeMgI5UrecXl8NMH0N34waHjM8yM4fVoB+CS8nO5Fo7j0lmXhFZjKRl8rlEJXYxCqW1f5Ed2DUA23af50kv59sfdIp+teJA9o4qoSa+gUflU63TX0Bsm31apHhIZiEfblBlpddtkk/qN/x43GU=
+	t=1762367835; cv=none; b=and2fpe69rPTL1eI5ogZ23qdjpyTDXlxISLAQ1m0riDg5xI8NC7nMQde1Us2gl7au/EzZWu78XKjeO8jfv8K8BqzRd3qz3RFDZBAx+ZqL0QZ/DCDZetgp3ks1zGhq/C/Y6VIsEE5uNiCMumGw9mj7Ceqb5K3Jz5YfwkfgaLXO30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762367629; c=relaxed/simple;
-	bh=QdIsCbGU61ikoVL7GQujIgBmKZhEQF493waeOpnzVho=;
+	s=arc-20240116; t=1762367835; c=relaxed/simple;
+	bh=w1KYQIP//0eBMv4//DhZ5KFx9PNW1UPFH7nnebTruwA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DAebfwpQouhpDze90L4kaLH+OLk/vKIQWLjB9s1iLPEs6F18F66cpUP2Sym6YjI4kxZ+uN5PtPPca9LTG/v4seWTbGg9jVsHpcaxvQP7ApdL6Znh+vJbIPVPyZHPr8/s0ADEdBmwnyMIxfZQMklWa4F+B8HtoV2Dt+STpQ6GT6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SjKKMhOk; arc=none smtp.client-ip=209.85.221.51
+	 To:Cc:Content-Type; b=DPsfhaGaSSegNLXR3td+lslgdKbqy7HJ9k/1cV8cmiYMJEQbF/q+kvfHPxRSo4brGwEz5RcAmzvMDEtgNl7AHwcspYKKgwZFRVKqKaqbP7pytBJY0e0hWNcH81BIk1kWu6HMWpVjcB/nBbokNG7WRFRR1FFS4dsbXJW5Sd/Wj4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fYVCN4Of; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-429b7eecf7cso106595f8f.0
-        for <linux-ext4@vger.kernel.org>; Wed, 05 Nov 2025 10:33:47 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-421851bcb25so80597f8f.2
+        for <linux-ext4@vger.kernel.org>; Wed, 05 Nov 2025 10:37:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762367626; x=1762972426; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1762367832; x=1762972632; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xw9BgXv3xuEvlMmxJm1mpqDieF/LQYS6cC55AYGAEG0=;
-        b=SjKKMhOkVclgt5wp06tjOozRABfkZ157n3Ix5SYUyCzRY+YcIQn4QR4INg0zTXV7c3
-         XQqAs/5SJF8dWArGKQr5D8jX+CBl8EQVU7u+hurVf1xXm1M0uR3lMX+wHxb8vRNPuSPK
-         x4WoIBrMnpNbP+QNvjLsL3J8WYSLS2PzrFwkVegZOaDDYG5rYoQY90YxxZe2tqFrcVZ/
-         NsAs0WqPGEAVPNGME6r72Hs9paI8xPPjpmqTY97a0odiAAIGcM8+DhblCWihcvFVsiCq
-         v42x1ScK1W7eFMjWRS/gnctfipQXCjKwSEDOC/acfQ41eI3++x+s0/1tRNrYLaCQPmfx
-         A5cA==
+        bh=wVms5zHRqmmTEZveui8rFB3VRHHPz5yVXKILCesT61s=;
+        b=fYVCN4OfbHIr8B6q0Fi2RkHSRnuiG8B6MV/syAoNmWfmZuE8ZlusEVg3Pxq17sxR2v
+         7AkJFhY7iCk+P/zK0QeVYfM3eWMSeeYDlikkK639vYgdmNG49juLIQskyq3AZY6yMYjx
+         yTev4+Oj088dMF8IXyH2XTXsnz8C/6Eh3kSn9HIovoxccDTgbLnSmWSHcQZ+WNckNFiK
+         lCaMSfbb7ZZoq+2+O9PX8PodM/MiZP0K/rYwn/z2RdZo++j2yZBUqEJfQZpV/HGQLTQH
+         zhanoIv2dkwGV4Pe0knKElXwBIAVqJqXT6PhTpFHxfSlSI/40HlRhhEC+nRYsoGS3n/h
+         UT0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762367626; x=1762972426;
+        d=1e100.net; s=20230601; t=1762367832; x=1762972632;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Xw9BgXv3xuEvlMmxJm1mpqDieF/LQYS6cC55AYGAEG0=;
-        b=djUX92xhpUDLysxDieLk1dTKOaJwGjJBJVOLC7SIbK3fv/pyTL8To1ooI/EuZno+Q+
-         +Oq33rOu9OZdi+/qfcT03XSMib9bBH0VgOhSA1HmI13uM6xxbB76paahAbViY7/ioGON
-         rnYsGYU4jJ3XKSrL1w3HvhpUG2IrfQnVWwGL/A4jBURqGoXqJzJ6JrvfltGzjZtigLfK
-         p8HlonvxYaCt2pA/rtHmz/FHg/9pqxJrAFkljuyCUk2mG6fXfdRls5HkS6AEEADUwSBk
-         c79A8oc7GDhqRHAMb2/cHEFSvnJiVxusdK9mxtlE9+ls0ogBbnOziepFxDZy8s5SO1Fq
-         BBZA==
-X-Forwarded-Encrypted: i=1; AJvYcCVngjHzLDXoYLWG/IQD4nAvtRuzecbHmQ/Bz+TDgGoWHbhNYfcHj6S3nuzLV1RYJDw6k0v+ak43NfEj@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKfd8NldxCoXTa5hlzGqIsTRc6f74ZxVtQNXgsTIlsvtUgorNi
-	z62ud/R5MJk0weQ8KxlE1YSL5RL75Np3rz4aObPnkgsSg9FOF9SD7Y4Lvf6cmbnd8ulOfzvcF3g
-	PojJh+R5FhNqPmcxmqdRpBzicqmh80wPv+ZRMYmjI5w==
-X-Gm-Gg: ASbGncu7JufTdJjkd47uHJI+saNZO1JOBXbUwkz0kxJi43OVHOu6GVslnK4Xy2Zpg+j
-	ylde3n2Jd/UCnP6eMv1XoZH90RsBUXAz1icDfOLdfxnvfgXCmsweO76tWIjiT4oDEp+wH61MpTs
-	ujDqGjK11wYK6QKTpmdFA3kbpFGTv5zI7uauMprKpVX/bkIXkEdG5UckAnTEYEuzbGKE6CsbkXH
-	X4lCjEw37tg8A0cycrTIQZFMZkMsJI4wbmzyvq7OjZn8jZTjbBaLjYpJdmX/OTfUpX97FVvQOyk
-	Se1Gpr/4Dfii9ERQ5oy00OfPPVwxLG1f0ZTfJzSPG8F4OKuMeCNCOv/xVg==
-X-Google-Smtp-Source: AGHT+IFCZTc3E2XHwDCl+YRtQQFR97QktfT8RGPDVIDrhNNHjq8LIXQFn/CmjbQ3aTH0Rp5kdEDKiM0TTWzYhWFlzC4=
-X-Received: by 2002:a05:6000:1849:b0:426:f9d3:2feb with SMTP id
- ffacd0b85a97d-429eb18aaacmr432745f8f.23.1762367625965; Wed, 05 Nov 2025
- 10:33:45 -0800 (PST)
+        bh=wVms5zHRqmmTEZveui8rFB3VRHHPz5yVXKILCesT61s=;
+        b=gRdr621OnuSVDBdMa0jamWrwYvqqarSxDP4BaSpIksh5oPwtWKSOy/ROPtkBGAue/1
+         ZsMg4gh4hbtbzbcZExKghMhLIqxDcgbPw9UQ+mTF6mUaFQ/HN/PUIJnuNjaBbIirrqal
+         J7ZmpREPTfkSgYUAMzh26MaO3Y/BlPliN1mqpR7g3d6bU5FZTi1vNagFQkSBTLekHRY2
+         /KZ0AJ4PpMVAcMmH7VXosojPqW0ETqQ/dpMzej28gwt18vLS65DQjPCn0lBstirAefvm
+         pKjtuzHNEIW2cAG9M/SG1KHdOOZGN658wWCQICMHXhvBuoOPdmutqMa0kcMGXZeJtM3u
+         TgTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVIGaf2XhKczcnNMGd3heE7cx7GU2kBqbmWIIBrxN05brHGt5jmJfzoLeCkrOgT0cTG2yfyxNDjlCez@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz/FcnBn7q6yi4btO8DsLi6bsBu1SwGd9dS2lmDWO72OCE3RaDV
+	nCxLKl4v4KXIzQOuPdSlnBTFybdMN97qUjOh7NQRj6xaaK3ETOMvgpkmyc3vvNKTQbxysyt3Rrb
+	aACrJOfdtrFtDxg9JwDSWo6phH0ZH5LLEdwGABCQWWSB9ynPr0xab
+X-Gm-Gg: ASbGncu2ZBUNVMawLjHzA4TpTP+Q2xXC1JHHY5lcltUrk5mlY8N88WY+3EcFfVzHvds
+	n2jLSMyf6o2U7uT7WqEKuRb/r7n1yy1HKvFShHqRJu81D+sXqEpLBB6c0KT7WvysV4rUJO8/95d
+	zKVPpBWM3QIhimiMb72ifOwf9jOq2Bs6LRZu9PdiX9lMYy3CYQw44jPiCzfWn4y3e5QZF0JUy/Y
+	LFQJ4C2S4dFQWlDZXQotDEhfhzE0PLgCLhz+9V5bK26E/61aNtMebsFsl7Cpj3OTJyi3aIhd9e2
+	PlUOjzLgC2HdpnKa469yriVy7edL2QjZGoWlQelpqy6/ihltFTQZ8rLgtR7zL17ZVhXN
+X-Google-Smtp-Source: AGHT+IG5bZpCpAJS0uB9KNssTM0G9hDscPSWpbhRk73gTjzcEZVb+SiJRjSt3rx+GFSKRtyh83PP5p7jyKcIDWTsbQs=
+X-Received: by 2002:a05:6000:4593:b0:429:de20:3d84 with SMTP id
+ ffacd0b85a97d-429e35d299emr2327042f8f.6.1762367832176; Wed, 05 Nov 2025
+ 10:37:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251104-work-guards-v1-0-5108ac78a171@kernel.org> <20251104-work-guards-v1-5-5108ac78a171@kernel.org>
-In-Reply-To: <20251104-work-guards-v1-5-5108ac78a171@kernel.org>
+References: <20251104-work-guards-v1-0-5108ac78a171@kernel.org> <20251104-work-guards-v1-7-5108ac78a171@kernel.org>
+In-Reply-To: <20251104-work-guards-v1-7-5108ac78a171@kernel.org>
 From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 5 Nov 2025 19:33:35 +0100
-X-Gm-Features: AWmQ_bl6PadzQPI3bpD_bJBLSeiXboTP6hljfgJQkUA_P8mn02EqfL9ZuICWSd8
-Message-ID: <CAPjX3FeEZd7gX1OeCxRXrdBMafHOONB2WQO_JOZuxKoVEygzuQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 5/8] ext4: use super write guard in write_mmp_block()
+Date: Wed, 5 Nov 2025 19:37:01 +0100
+X-Gm-Features: AWmQ_bmfaeOypajqSuDAqK1J5uivhcjJ2drotaSadJ4EnDW1YFSkgONoikGnaIQ
+Message-ID: <CAPjX3Feor+wY-_rniWOaGQf_7RPaUQLDZmmjABDkAav8AExaxA@mail.gmail.com>
+Subject: Re: [PATCH RFC 7/8] open: use super write guard in do_ftruncate()
 To: Christian Brauner <brauner@kernel.org>
 Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, 
 	Jan Kara <jack@suse.cz>, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
@@ -92,38 +92,34 @@ On Tue, 4 Nov 2025 at 13:16, Christian Brauner <brauner@kernel.org> wrote:
 >
 > Signed-off-by: Christian Brauner <brauner@kernel.org>
 > ---
->  fs/ext4/mmp.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+>  fs/open.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
 >
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index ab1ff51302fb..6f57c181ff77 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -57,16 +57,12 @@ static int write_mmp_block_thawed(struct super_block *sb,
+> diff --git a/fs/open.c b/fs/open.c
+> index 3d64372ecc67..1d73a17192da 100644
+> --- a/fs/open.c
+> +++ b/fs/open.c
+> @@ -191,12 +191,9 @@ int do_ftruncate(struct file *file, loff_t length, int small)
+>         if (error)
+>                 return error;
 >
->  static int write_mmp_block(struct super_block *sb, struct buffer_head *bh)
->  {
-> -       int err;
+> -       sb_start_write(inode->i_sb);
+> -       error = do_truncate(file_mnt_idmap(file), dentry, length,
+> -                           ATTR_MTIME | ATTR_CTIME, file);
+> -       sb_end_write(inode->i_sb);
 > -
->         /*
->          * We protect against freezing so that we don't create dirty buffers
->          * on frozen filesystem.
->          */
-> -       sb_start_write(sb);
-> -       err = write_mmp_block_thawed(sb, bh);
-> -       sb_end_write(sb);
-> -       return err;
-> +       scoped_guard(super_write, sb)
-> +               return write_mmp_block_thawed(sb, bh);
+> -       return error;
+> +       scoped_guard(super_write, inode->i_sb)
+> +               return do_truncate(file_mnt_idmap(file), dentry, length,
+> +                                  ATTR_MTIME | ATTR_CTIME, file);
 
-Why the scoped_guard here? Should the simple guard(super_write)(sb) be
-just as fine here?
+Again, why scoped_guard? It does not make sense, or do I miss something?
 
 --nX
 
 >  }
 >
->  /*
+>  int do_sys_ftruncate(unsigned int fd, loff_t length, int small)
 >
 > --
 > 2.47.3
