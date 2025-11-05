@@ -1,176 +1,253 @@
-Return-Path: <linux-ext4+bounces-11489-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11490-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D0B7C35854
-	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 12:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10721C358E7
+	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 13:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B9B864F828C
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 11:51:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8DADF4E9CB6
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 12:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF663112DB;
-	Wed,  5 Nov 2025 11:51:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0CB31327E;
+	Wed,  5 Nov 2025 12:04:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EaDFH1P+"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="e9ucpd1Z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2YFLjJ/b";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="e9ucpd1Z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2YFLjJ/b"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554DA2FC034
-	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 11:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC68191493
+	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 12:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762343493; cv=none; b=SwI/QMU9xxY39jk6QFYiFd3jdIlBLecsk87cZ/Ctk1kl2QYDlCEy5BpG+fWwwCZEKKab7SAxAYWwTZ1YTf5OcejKiLuQN0Z1pMvWPebmZTKYPyUVSlIebk08gGYnLESJF4u75Fr2DSMGV7mPeINsYpK5NmG75sdYEQg7++7K39s=
+	t=1762344297; cv=none; b=lELkUM8CVSuptXto6Mf15wqcCbVIbBtKaSYWS9AyjmtlRf776/9pWC6k9TbMgIGAmPGm8pnw81pBwEoVP1p/pTNyI2MbLO8TJKFU+iM6Z4isEozddRwLqJzMiUspD8QE14/39WtiQwTWmPVTqeJJmNe5HwTEb6LIE22ZYS0iWkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762343493; c=relaxed/simple;
-	bh=Tu9n9NnovVctLVlXdzYT3XTzj4GBSdV2bG12rdYeYhg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dyjFybSXwnkMoBdRYuZy6ygixJbyztJc2vchw9n9M4ocih89e+2b3rMx6WSqCXwfUyBWnzw0rZB4lvnqViWkkFccE9vtr/A9+194T9TIN1zf5DeG33gzDHqyOCI6/TM1Sy+g36pxx0qnChTrs5ZFouaI5uLRueMuwB9HY4xXgYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EaDFH1P+; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-640b2a51750so6627593a12.0
-        for <linux-ext4@vger.kernel.org>; Wed, 05 Nov 2025 03:51:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762343490; x=1762948290; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OBOSl6pD9va2npR8bvYE6uY0VVOqzBIXrSyh8Q41oCY=;
-        b=EaDFH1P+xt+cfCxJqjduzXKkIIOTl+KIQaxaDb9+jMXB1rliOpRyq87HWs+WZwBfQ8
-         3+kVWxgV2pf63zl8bvAvszUGIokKKpnElS3cOg3jCLx6Y63sGXK91favapx5WVleuC/g
-         3m4C20F2Fx9kFpvq3UYaMGl/yq9AxZ24ZU1EOMPGLh2PwmoQNkqDEGdQoVtb7LtH5Uu7
-         rfb8e72PNysvzQoQeDVVhBsJ9YzA06qov9y5lCrGb5MuY46fedCC5wT+Aqe+Kkz0OvsB
-         LyS//fx3QyeIas1bt+OEKia/mz9Zy/3ufDDp9LL067kmUMfWiLlJCSOToyolctgpSEzN
-         J1kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762343490; x=1762948290;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OBOSl6pD9va2npR8bvYE6uY0VVOqzBIXrSyh8Q41oCY=;
-        b=Yv1ln34voCbA0hwk6IcXgMAxLXwepua/g/v0sUQQfcMm21OtEYu7hgEcyx6+4QXXNO
-         oLgOMYavQ7hQ76sKyaXdpEE3BXXyJMJYnuby5cma3h2L4duObyn0p76OEv7vNpWKCUyA
-         9ggy21jWcbo3pyMiXZO6nweFulFnQwSF/OephpltXCiblkf/dmgA75fum5uQUHKN991G
-         MIJGPXgDmkTn/NM7y09ycGqFDpi5pedjRP7CxxIVFV4y7gxXz6r1nX+arQd8yw0BXunQ
-         XreGi8xbzAf6NlL+w2kbvgnMMISM04N4QkqbGAmUB3WUFwSpRJ/zn7omv/6314YiZ01X
-         Sykg==
-X-Forwarded-Encrypted: i=1; AJvYcCVnevVCveZNQCXTBdOWxoMREL1JgLfIZKO/+z9QuGpq4iu1U3g7acSLL2YjTUCqdI8JZE+buFYKYv3d@vger.kernel.org
-X-Gm-Message-State: AOJu0YzYhscgTGoongtmdIOVvjW950/fOl9Gk7rAOwW5JF4k8l9i0F7S
-	Wb6ccNvzQDrOJZw0McZ6lUCx0iQouvnif+vUx92DtF7DDOESbHBCVuUekbg+Jn6vKC3iITzngzu
-	/5B8dwMtVj+kO+e0ZKjZYNBJPNY5fjUI=
-X-Gm-Gg: ASbGncuu7WuCiM7bG3fnDWThWaIL+s10NOkJ5DD9xOxlilRO71+Hn1GwWC8k4tkDo9r
-	H60r3SQfL+/QoTM8HkXNo0ZP7mwy4RWk0E5A/YtwtQsCYc1smei0nxYzTr+dYLfQvnUGbLEsjjH
-	yQaHI6EaN/jM+Eu5YFb8L0AV6BxWCf24yOXgx2dG9sA2xU4d2WOw5AQW+Qb3O3NRjyL2OavjOjW
-	g3S9lbOn+8bmerw0Dw5IF8E/dJ0e+FUz9wOK8igMdRjbv+A000IRj549XbxsWz2UKN7E6zrm8Di
-	SNZzd2abgG067+I=
-X-Google-Smtp-Source: AGHT+IFxmWNp2BQNRRARVBw1UkvbAPrXqb7by6fcY2sFoKYINuOjwAC+gpfmeJUhpea01PtyF9yDw6J53Cypt4ETdms=
-X-Received: by 2002:a05:6402:144a:b0:640:bb31:cbf4 with SMTP id
- 4fb4d7f45d1cf-641058b30c2mr2389322a12.11.1762343489390; Wed, 05 Nov 2025
- 03:51:29 -0800 (PST)
+	s=arc-20240116; t=1762344297; c=relaxed/simple;
+	bh=w9JcTzxd6YAsTJ9pWbHeAiOROCWEMtgOElM6VuRWRwU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MYERdmpVILPmiMdEe5E+78Q0dnvcC42NP5dMepCPYE99xcNcGuUbT7wF+P14BtyWzJNzDA+Fb0/Dpq+Zh/wpApF2FH6R9EepAazBwiPbCjPZ7OjxLdwnOhStwAt1iz8+Gl9Jp5zbwtZw34TKv0NBlgImQ97EhVwLpxaawcOK1Qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=e9ucpd1Z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2YFLjJ/b; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=e9ucpd1Z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2YFLjJ/b; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 28E741F44F;
+	Wed,  5 Nov 2025 12:04:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762344292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1h/gJ32w5R4YcpxPIF+ppPWL+XXWJoG88t2CwEGf52Y=;
+	b=e9ucpd1ZISfPslVb14qhEwIDBJ43UrRXC1JEtzGXziNMCP/cfTeP08C/bp2A6bAzXdboBZ
+	PRGfPWitm5JfATMo0JgYXhk7bR0Y9JwgBd7XRunmvLT0Vz295yDzkt0rDfLndtIG09oy4W
+	RpO74z0cPqG6F4PEln46FDTPXkLgxyg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762344292;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1h/gJ32w5R4YcpxPIF+ppPWL+XXWJoG88t2CwEGf52Y=;
+	b=2YFLjJ/boLjqDQNNvoJ5PrPceF+xX87IFELiSZiFFjkNDTxT4h3sqT8/21sOB5dzBft3nG
+	o4uPMwiOMoKQ+1Dg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=e9ucpd1Z;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="2YFLjJ/b"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762344292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1h/gJ32w5R4YcpxPIF+ppPWL+XXWJoG88t2CwEGf52Y=;
+	b=e9ucpd1ZISfPslVb14qhEwIDBJ43UrRXC1JEtzGXziNMCP/cfTeP08C/bp2A6bAzXdboBZ
+	PRGfPWitm5JfATMo0JgYXhk7bR0Y9JwgBd7XRunmvLT0Vz295yDzkt0rDfLndtIG09oy4W
+	RpO74z0cPqG6F4PEln46FDTPXkLgxyg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762344292;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1h/gJ32w5R4YcpxPIF+ppPWL+XXWJoG88t2CwEGf52Y=;
+	b=2YFLjJ/boLjqDQNNvoJ5PrPceF+xX87IFELiSZiFFjkNDTxT4h3sqT8/21sOB5dzBft3nG
+	o4uPMwiOMoKQ+1Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DF8913699;
+	Wed,  5 Nov 2025 12:04:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QyhLB2Q9C2lAOgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 05 Nov 2025 12:04:52 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CCEAEA28C2; Wed,  5 Nov 2025 13:04:51 +0100 (CET)
+Date: Wed, 5 Nov 2025 13:04:51 +0100
+From: Jan Kara <jack@suse.cz>
+To: sunyongjian1@huawei.com
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	tytso@mit.edu, jack@suse.cz, yangerkun@huawei.com, yi.zhang@huawei.com, 
+	libaokun1@huawei.com, chengzhihao1@huawei.com
+Subject: Re: [PATCH 2/2] ext4: improve integrity checking in __mb_check_buddy
+ by enhancing order-0 validation
+Message-ID: <6mjxlmvxs4p7k3rgs2cx3ny5u3o5tuikzpxxuqepq5yv6xcxk3@nvmzrpu2ooel>
+References: <20251105074250.3517687-1-sunyongjian@huaweicloud.com>
+ <20251105074250.3517687-3-sunyongjian@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHk-=wiKyMzE26G7KMa_D1KXa6hCPu5+3ZEPUN0zB613kc5g4Q@mail.gmail.com>
- <CAHk-=wiB6vJNexDzBhc3xEwPTJ8oYURvcRLsRKDNNDeFTSTORg@mail.gmail.com>
- <CAHk-=whSzc75TLLPWskV0xuaHR4tpWBr=LduqhcCFr4kCmme_w@mail.gmail.com>
- <a7gys7zvegqwj2box4cs56bvvgb5ft3o3kn4e7iz43hojd4c6g@d3hihtreqdoy>
- <CAHk-=wgEvF3_+sa5BOuYG2J_hXv72iOiQ8kpmSzCpegUhqg4Zg@mail.gmail.com>
- <CAGudoHGxr5gYb0JqPqF_J0MoSAb_qqoF4gaJMEdOhp51yobbLw@mail.gmail.com>
- <20250412215257.GF13132@mit.edu> <CAHk-=wifig365Ej8JQrXBzK1_BzU9H9kqvvbBGuboF7CzR28VQ@mail.gmail.com>
- <20250412235535.GH13132@mit.edu> <CAGudoHEJZ32rDUt4+n2-L-RU=bpGgkYMroxtdMF6MQjKRsW24w@mail.gmail.com>
- <20250413124054.GA1116327@mit.edu> <CAGudoHFciRp7qJtaHSOhLAxpCfT1NEf0+MN0iprnOYORYgXKbw@mail.gmail.com>
-In-Reply-To: <CAGudoHFciRp7qJtaHSOhLAxpCfT1NEf0+MN0iprnOYORYgXKbw@mail.gmail.com>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Wed, 5 Nov 2025 12:51:16 +0100
-X-Gm-Features: AWmQ_blIK6-wuX86CTfA092C43j9omx8HCq1kgLMG--DuF0my_1OyHjIGCxPiEo
-Message-ID: <CAGudoHHrUkcGvhE3kwc9+kgdia_NREEeTj=_UBtiHCpUGEYwZg@mail.gmail.com>
-Subject: Re: generic_permission() optimization
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
-	Jan Kara <jack@suse.cz>, Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251105074250.3517687-3-sunyongjian@huaweicloud.com>
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 28E741F44F
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Score: -4.01
 
-On Wed, Nov 5, 2025 at 12:50=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> w=
-rote:
->
-> On Sun, Apr 13, 2025 at 2:40=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wro=
-te:
-> >
-> > On Sun, Apr 13, 2025 at 11:41:47AM +0200, Mateusz Guzik wrote:
-> > > This is the rootfs of the thing, so I tried it out with merely
-> > > printing it. I got 70 entries at boot time. I don't think figuring ou=
-t
-> > > what this is specifically is warranted (it is on debian though).
-> >
-> > Well, can you run:
-> >
-> > debugfs -R "stat <INO>" /dev/ROOT_DEV
-> >
-> > on say, two or three of the inodes (replace INO with a number, and
-> > ROOT_DEV with the root file system device) and send me the result?
-> > That would be really helpful in understanding what might be going on.
-> >
-> > > So... I think this is good enough to commit? I had no part in writing
-> > > the patch and I'm not an ext4 person, so I'm not submitting it myself=
-.
-> > >
-> > > Ted, you seem fine with the patch, so perhaps you could do the needfu=
-l(tm)?
-> >
-> > Sure, I'll put together a more formal patch and do full QA run and
-> > checking of the code paths, as a supposed a fairly superficial review
-> > and hack.
-> >
->
-> It looks like this well through the cracks.
->
-> To recount, here is the patch (by Linus, not me):
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index f386de8c12f6..3e0ba7c4723a 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -5109,6 +5109,11 @@ struct inode *__ext4_iget(struct super_block *sb=
-, unsigned long ino,
-> >                 goto bad_inode;
-> >         brelse(iloc.bh);
-> >
-> > +       if (test_opt(sb, DEBUG) &&
-> > +           (ext4_test_inode_state(inode, EXT4_STATE_XATTR) ||
-> > +            ei->i_file_acl))
-> > +               ext4_msg(sb, KERN_DEBUG, "has xattr ino %lu", inode->i_=
-ino);
-> > +
-> >         unlock_new_inode(inode);
-> >         return inode;
->
+On Wed 05-11-25 15:42:50, Yongjian Sun wrote:
+> From: Yongjian Sun <sunyongjian1@huawei.com>
+> 
+> When the MB_CHECK_ASSERT macro is enabled, we found that the
+> current validation logic in __mb_check_buddy has a gap in
+> detecting certain invalid buddy states, particularly related
+> to order-0 (bitmap) bits.
+> 
+> The original logic consists of three steps:
+> 1. Validates higher-order buddies: if a higher-order bit is
+> set, at most one of the two corresponding lower-order bits
+> may be free; if a higher-order bit is clear, both lower-order
+> bits must be allocated (and their bitmap bits must be 0).
+> 2. For any set bit in order-0, ensures all corresponding
+> higher-order bits are not free.
+> 3. Verifies that all preallocated blocks (pa) in the group
+> have pa_pstart within bounds and their bitmap bits marked as
+> allocated.
+> 
+> However, this approach fails to properly validate cases where
+> order-0 bits are incorrectly cleared (0), allowing some invalid
+> configurations to pass:
+> 
+>                corrupt            integral
+> 
+> order 3           1                  1
+> order 2       1       1          1       1
+> order 1     1   1   1   1      1   1   1   1
+> order 0    0 0 1 1 1 1 1 1    1 1 1 1 1 1 1 1
+> 
+> Here we get two adjacent free blocks at order-0 with inconsistent
+> higher-order state, and the right one shows the correct scenario.
+> 
+> The root cause is insufficient validation of order-0 zero bits.
+> To fix this and improve completeness without significant performance
+> cost, we refine the logic:
+> 
+> 1. Maintain the top-down higher-order validation, but we no longer
+> check the cases where the higher-order bit is 0, as this case will
+> be covered in step 2.
+> 2. Enhance order-0 checking by examining pairs of bits:
+>    - If either bit in a pair is set (1), all corresponding
+>      higher-order bits must not be free.
+>    - If both bits are clear (0), then exactly one of the
+>      corresponding higher-order bits must be free
+> 3. Keep the preallocation (pa) validation unchanged.
+> 
+> This change closes the validation gap, ensuring illegal buddy states
+> involving order-0 are correctly detected, while removing redundant
+> checks and maintaining efficiency.
+> 
+> Fixes: c9de560ded61f ("ext4: Add multi block allocator for ext4")
+> Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
+> Reviewed-by: Baokun Li <libaokun1@huawei.com>
 
-sigh, copy-pasto, the patch is:
-  --- a/fs/ext4/inode.c
-  +++ b/fs/ext4/inode.c
-  @@ -5011,6 +5011,11 @@ struct inode *__ext4_iget(...
-        }
+The idea looks good but I have one question regarding the implementation...
 
-        brelse(iloc.bh);
-  +
-  +     /* Initialize the "no ACL's" state for the simple cases */
-  +     if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_file_=
-acl)
-  +             cache_no_acl(inode);
-  +
-        unlock_new_inode(inode);
-        return inode;
+> @@ -747,15 +756,29 @@ static void __mb_check_buddy(struct ext4_buddy *e4b, char *file,
+>  				fragments++;
+>  				fstart = i;
+>  			}
+> -			continue;
+> +		} else {
+> +			fstart = -1;
+>  		}
+> -		fstart = -1;
+> -		/* check used bits only */
+> -		for (j = 0; j < e4b->bd_blkbits + 1; j++) {
+> -			buddy2 = mb_find_buddy(e4b, j, &max2);
+> -			k = i >> j;
+> -			MB_CHECK_ASSERT(k < max2);
+> -			MB_CHECK_ASSERT(mb_test_bit(k, buddy2));
+> +		if (!(i & 1)) {
+> +			int in_use, zero_bit_count;
+> +
+> +			in_use = mb_test_bit(i, buddy) || mb_test_bit(i + 1, buddy);
+> +			zero_bit_count = 0;
+> +			for (j = 1; j < e4b->bd_blkbits + 2; j++) {
+> +				buddy2 = mb_find_buddy(e4b, j, &max2);
+> +				k = i >> j;
+> +				MB_CHECK_ASSERT(k < max2);
+> +				if (in_use) {
+> +					/* can not contain any 0 at all orders */
+> +					MB_CHECK_ASSERT(mb_test_bit(k, buddy2));
+> +				} else {
+> +					/* there is and can only be one 0 at all orders */
+> +					if (!mb_test_bit(k, buddy2)) {
+> +						zero_bit_count++;
+> +						MB_CHECK_ASSERT(zero_bit_count == 1);
+> +					}
+> +				}
 
-> In my tests it covered most real-world lookups on my debian box.
->
-> Sorting this out acts as blocker for a lookup optimization I'm working
-> on which bypasses all perm checking if an inode has a flag indicating
-> everyone can traverse through it.
+Your variant doesn't seem to properly assert that at least 1 bit in the
+buddy is 0 above 0 bit in the bitmap because the MB_CHECK_ASSERT() doesn't
+get executed in that case at all AFAICT.  I think it would be more
+understandable to have the loop like:
+
+			for (j = 1; j < e4b->bd_blkbits + 2; j++) {
+				buddy2 = mb_find_buddy(e4b, j, &max2);
+				k = i >> j;
+				MB_CHECK_ASSERT(k < max2);
+				if (!mb_test_bit(k, buddy2))
+					zero_bit_count++;
+			}
+			MB_CHECK_ASSERT(zero_bit_count == !in_use);
+
+									Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
