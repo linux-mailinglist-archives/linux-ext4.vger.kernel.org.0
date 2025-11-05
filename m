@@ -1,175 +1,134 @@
-Return-Path: <linux-ext4+bounces-11478-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11479-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B6ABC34E73
-	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 10:40:19 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89296C34EF4
+	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 10:47:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7B45566199
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 09:33:29 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B4CEC4FC3FB
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 09:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED5A302758;
-	Wed,  5 Nov 2025 09:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EEDC304BC2;
+	Wed,  5 Nov 2025 09:44:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="b/IzLKtj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+OGkLBWa";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GPUxJ8E7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+kwgkb2s"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="Xl4yr03g"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout07.his.huawei.com (canpmsgout07.his.huawei.com [113.46.200.222])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1385941760
-	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 09:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38F4302CCA;
+	Wed,  5 Nov 2025 09:44:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762335187; cv=none; b=e0Hu3K5BUR8Y25J2ggO2H17RReAZazDkigs19B1SIK5oIrkD7lucravm78dmaedzg6tcJI25PRYkAwKYYk8dY2osTQ5iWPSebuax/62tTNuPKP3jk3EX0VpRxMfh3LmUgQh1uB8cu+lVFticx7/SqV7Sp7Yv8qMpZDvDTnvzQlI=
+	t=1762335877; cv=none; b=vCwuu3nxCTH6hnsq+QQtYbQkYY/xGsdz39LovbfDkkFJqE2kwGcST4jgB5KP/8DwWKcnGetuefkXH4xdP7AlHgVwKF+l9PuWchE/gzE405ZuMzy3N3GyqgMMPjKv7fBjylAeiRwt24HiM9BdH0ixMz79n4V9icjUoiHD/gRFpWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762335187; c=relaxed/simple;
-	bh=aA2bXPltNT3imaXp7EnIRakEH7GhK3nJTc3gLVvHbtI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mvBowHsW+3ptqVYFkADDlfMPzZJfui5JUt7V8ebtPm+n/njcKR6gg1FQCHDL3JYkxtUw8vMxQlusK+/21DDLlfdoj1i5qqluBSDoD6ilymqpa8YjMLaIU1Fa8iKjEsWqKe5LpS3O+j//N7Dt9E5Cwn3ZeWLeSFlGBYtcLy00XoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=b/IzLKtj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+OGkLBWa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GPUxJ8E7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+kwgkb2s; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EEE4221186;
-	Wed,  5 Nov 2025 09:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762335184; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=720QJ5QwK5/vr5g/qY55TBuX1V7STFt/v1biLS/zSUc=;
-	b=b/IzLKtjV/0eAAbmf17eH6rNdv8R2um9sbE+sD+meEbCy7bs7qxejCiVOSCU/FsH1i+uzu
-	ZDPf1HPEqFuJts7cR/HfGh/7BHZnLqHVbeNv/R6JGJZEg0KxrTMMfKkjoAnjtIB3jC7sqG
-	z98+1sv+rG/5Llvi/1KwuZpo20EwvDY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762335184;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=720QJ5QwK5/vr5g/qY55TBuX1V7STFt/v1biLS/zSUc=;
-	b=+OGkLBWaNbzrk+xAlP2+3LXX4So3KFAyvyUh0fDLObqSwVxEM+QzcRPG+7uC3p1ATeXm8x
-	2U8BnIhsXul6TpBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762335182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=720QJ5QwK5/vr5g/qY55TBuX1V7STFt/v1biLS/zSUc=;
-	b=GPUxJ8E7snsfPumu7Mni5yFht/9aqf9kvUjX9sQm5ZoryA4NYy5IzTkmEv+07lGkkgnV9C
-	aCTgU+6szYKO5dDqLw88OM4FbleP/BdRG/cDHf1RUbGCLWhMXOqRBqlYvW+xblPeYXsa6P
-	ffIBO9EKVaswdWZZBfLrcL+rFRthUFQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762335182;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=720QJ5QwK5/vr5g/qY55TBuX1V7STFt/v1biLS/zSUc=;
-	b=+kwgkb2slUfC1ZEC2lfxhjoL8X0/ffjeTDP6GpQgeG354nOdxItk+VsF3iYCBdDhelPpWv
-	vRkc8RY6KvvUrsCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E37E7132DD;
-	Wed,  5 Nov 2025 09:33:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id hVCKN84ZC2nYHwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 05 Nov 2025 09:33:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A430CA083B; Wed,  5 Nov 2025 10:33:02 +0100 (CET)
-Date: Wed, 5 Nov 2025 10:33:02 +0100
-From: Jan Kara <jack@suse.cz>
-To: libaokun@huaweicloud.com
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	jack@suse.cz, linux-kernel@vger.kernel.org, kernel@pankajraghav.com, 
-	mcgrof@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com, 
-	libaokun1@huawei.com
-Subject: Re: [PATCH 20/25] ext4: support large block size in
- __ext4_block_zero_page_range()
-Message-ID: <cyj4y73fcmqykv5xnrixngivx6hfkhczdtuo5rxs6kwqcc4aao@vok4hhzzjbog>
-References: <20251025032221.2905818-1-libaokun@huaweicloud.com>
- <20251025032221.2905818-21-libaokun@huaweicloud.com>
+	s=arc-20240116; t=1762335877; c=relaxed/simple;
+	bh=h+qwVUZjthoiqyJjkeXnangp0W/CiVcIiWMmF/sC3DM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=En7i3tWpX1QiKN5oEsW+yE8yPt5SgKi1D4GKfxvXr7QTpXqEIiXHj1/3BwQcjgvRMmLkxpqvj1kRKAbC50E3N4LnaOBnHeRkZXoD73VPFlB/9qyfgVMI3EEeMsunt33B8G1tkEWNKgSPL0j6WHeWLERCyoTXX7JXIdxbB+++7HI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=Xl4yr03g; arc=none smtp.client-ip=113.46.200.222
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=ULBjQjfTQ2PhD78f/wqD4u2pFSqPbYJY7fZ9PMrAk2g=;
+	b=Xl4yr03g/f6ZMnj5GicYAb2bjUPpNqrsDwGaUvWjzZYt3z8PRrBWnK0IkFrfkeg8NaXIfqMw0
+	2a5b3MBSA+BOdYGDHZvzQaLEFUUqjI+TLkwAnXhnAfK3K8mGxH0qimjxp0gfk6NGvDEac1aFfvf
+	6apkBZlSE41pxIdeWt789mg=
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4d1gNd4sY5zLlSM;
+	Wed,  5 Nov 2025 17:42:57 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 91B751402C3;
+	Wed,  5 Nov 2025 17:44:32 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 5 Nov
+ 2025 17:44:31 +0800
+Message-ID: <5280bbc0-be8b-4e46-8410-28719cb79ef0@huawei.com>
+Date: Wed, 5 Nov 2025 17:44:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251025032221.2905818-21-libaokun@huaweicloud.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-0.30 / 50.00];
-	SEM_URIBL(3.50)[huaweicloud.com:email];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,suse.cz:email,imap1.dmz-prg2.suse.org:helo,huawei.com:email,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Score: -0.30
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/25] ext4: support large block size in
+ ext4_mb_get_buddy_page_lock()
+Content-Language: en-GB
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
+	<mcgrof@kernel.org>, <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+	<libaokun@huaweicloud.com>, Baokun Li <libaokun1@huawei.com>
+References: <20251025032221.2905818-1-libaokun@huaweicloud.com>
+ <20251025032221.2905818-13-libaokun@huaweicloud.com>
+ <5kbyz6ilhj7zde4dtv7fhy33yks3bhs2g6xesdzwptdenrrfdg@ydurgdouhuwn>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <5kbyz6ilhj7zde4dtv7fhy33yks3bhs2g6xesdzwptdenrrfdg@ydurgdouhuwn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-On Sat 25-10-25 11:22:16, libaokun@huaweicloud.com wrote:
-> From: Zhihao Cheng <chengzhihao1@huawei.com>
-> 
-> Use the EXT4_P_TO_LBLK() macro to convert folio indexes to blocks to avoid
-> negative left shifts after supporting blocksize greater than PAGE_SIZE.
-> 
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+On 2025-11-05 17:13, Jan Kara wrote:
+> On Sat 25-10-25 11:22:08, libaokun@huaweicloud.com wrote:
+>> From: Baokun Li <libaokun1@huawei.com>
+>>
+>> Currently, ext4_mb_get_buddy_page_lock() uses blocks_per_page to calculate
+>> folio index and offset. However, when blocksize is larger than PAGE_SIZE,
+>> blocks_per_page becomes zero, leading to a potential division-by-zero bug.
+>>
+>> To support BS > PS, use bytes to compute folio index and offset within
+>> folio to get rid of blocks_per_page.
+>>
+>> Also, since ext4_mb_get_buddy_page_lock() already fully supports folio,
+>> rename it to ext4_mb_get_buddy_folio_lock().
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+> Looks good, just two typo fixes below. Feel free to add:
+>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 3494c6fe5bfb..d42d768a705a 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -1510,50 +1510,52 @@ static int ext4_mb_init_cache(struct folio *folio, char *incore, gfp_t gfp)
+>>  }
+>>  
+> Let's fix some typos when updating the comment:
 
-Looks good. Feel free to add:
+I’ll fix these typos in the next update.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Thank you for your review!
 
-								Honza
 
-> ---
->  fs/ext4/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index ce48cc6780a3..b3fa29923a1d 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -4066,7 +4066,7 @@ static int __ext4_block_zero_page_range(handle_t *handle,
->  
->  	blocksize = inode->i_sb->s_blocksize;
->  
-> -	iblock = folio->index << (PAGE_SHIFT - inode->i_sb->s_blocksize_bits);
-> +	iblock = EXT4_P_TO_LBLK(inode, folio->index);
->  
->  	bh = folio_buffers(folio);
->  	if (!bh)
-> -- 
-> 2.46.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+Baokun
+
+>
+>>  /*
+>> - * Lock the buddy and bitmap pages. This make sure other parallel init_group
+>> - * on the same buddy page doesn't happen whild holding the buddy page lock.
+>> - * Return locked buddy and bitmap pages on e4b struct. If buddy and bitmap
+>> - * are on the same page e4b->bd_buddy_folio is NULL and return value is 0.
+>> + * Lock the buddy and bitmap folios. This make sure other parallel init_group
+> 					     ^^^ makes
+>
+>> + * on the same buddy folio doesn't happen whild holding the buddy folio lock.
+> 					     ^^ while
+>
+>> + * Return locked buddy and bitmap folios on e4b struct. If buddy and bitmap
+>> + * are on the same folio e4b->bd_buddy_folio is NULL and return value is 0.
+>>   */
+> 								Honza
+
+
 
