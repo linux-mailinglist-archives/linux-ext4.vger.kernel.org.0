@@ -1,93 +1,93 @@
-Return-Path: <linux-ext4+bounces-11480-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11481-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93EE9C34F2A
-	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 10:50:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5113DC34FEE
+	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 10:59:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E8D7A34D845
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 09:50:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B21C718C177D
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 10:00:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A7C30AAA9;
-	Wed,  5 Nov 2025 09:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6435430AAA9;
+	Wed,  5 Nov 2025 09:59:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sJ5F9DRo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iQMwDzZ7";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sJ5F9DRo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iQMwDzZ7"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kI0QejRy";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="m415Ww6m";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kI0QejRy";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="m415Ww6m"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843873043DA
-	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 09:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE2A2FB09B
+	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 09:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762336231; cv=none; b=PXoZbHlnvx9RBY0338Vsx3FS8h8pkTCOuY8D8ZU9hJxzD8jgMAtJ/46fyn1broNZocFN09HISgeyKv9wKImJW8u20A8nqLLFUmGCk4tehAE+gwJT/WMTbNPxbVm85FDcP5FP+adldX8TkJ4YYLZv/mUGqjxSAokFD/w6fyj/XZc=
+	t=1762336781; cv=none; b=A7DhgaGkcpoEACuK2W6S6yAwipbpDMB9FQvUCJPRAiCLDi4Na+9lRAJqkK7oTbMtokXHJZMNMohXxNsrJyO8Z+REzz6dqmFwlnHEWgsGIh+hCflYN4L0roqH73y+BEGLdhpkTpFcBW76RIg6QbtTKSNofKjGzDCAon2Beu7DGzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762336231; c=relaxed/simple;
-	bh=SaHx5AqH25u5jS1zdJna9eVUvittlFvbU/WKy3a1lQk=;
+	s=arc-20240116; t=1762336781; c=relaxed/simple;
+	bh=qNKq8m60y/OwLLO7jRETtlYhLR0ar0wXCsRyTlawI2g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RwfnRMgX/bc4nepiYleedNcoaXjI495MM9wyLbGjd83QSDWpAeAuhUPo3QC8sQMU2WhzrI1Rdv+bHhWxR28jKtZDM5E12OaaEhy0qVxM/pEfZ1ZtY1Rz+im2Xo8/Qs3mHrIfB38iL1/xDvo5E3C9iQy8Pg83VfsQzOjZ0JTrPc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sJ5F9DRo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iQMwDzZ7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sJ5F9DRo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iQMwDzZ7; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dvz/frC7KeB1YVUBpkKl5hlrB6B1CLNqZgPoFUnf+He7kBfuA9a4sP5AF7wO8tfCl60HFIf67w3W7bRgfOiL+ODpf3wXF+J0HOCPgD9alPxKB0ABpFz/rdQTL9BqZCU+zRPkVI9nY449wDp6Kv1xrwYO8JvHZu8JOIi/qeq+J38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kI0QejRy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=m415Ww6m; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kI0QejRy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=m415Ww6m; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9438F21190;
-	Wed,  5 Nov 2025 09:50:26 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 64B542116F;
+	Wed,  5 Nov 2025 09:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762336226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762336777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cY5ii2iDdhZ8VdCxHaGIdjUSBVcQnRly9m7bibgj8xY=;
-	b=sJ5F9DRouVc6UaiCoRTKMPUvE0xokRFGY3dcZTAt0qjt3Wh5IprrWhyNm7HicsXAy/UYBb
-	LvEIyHEPITaNtLJMzxryjzcH+3zJnuttYdx1p6GqMtoYsmiQvzkokXlRPXKzTwVBqogq9R
-	FhvZelBXeB+6gdHd78Yq0N6yZDwjUfI=
+	bh=r1Ss//4cSgMvifGeWImkl64oHq4TXjdrB0of3t6e6oo=;
+	b=kI0QejRy1xQMo6/OlQcZ/X1tRn0MFaHDbTEU7srbrDJ5m8CqwFoxjrEA5qNMv3kcwW6pyo
+	2hIybOCZzJkELbu7gmzmz8KIqaVgzg5vEzTgo+sHldpBWvYhfLit+xb1Fiu6JA6/aqQdaF
+	7rPrDUb/RLq64PjxJDTdrGRy9aSO3uA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762336226;
+	s=susede2_ed25519; t=1762336777;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cY5ii2iDdhZ8VdCxHaGIdjUSBVcQnRly9m7bibgj8xY=;
-	b=iQMwDzZ7CiXw/caoRiyc8sBxyuvzbbxUp90wjCTqSNANDiUPnE7I+X3wFP0+zm0ZAqvVIq
-	S++hRsEQPjJ1pRAw==
+	bh=r1Ss//4cSgMvifGeWImkl64oHq4TXjdrB0of3t6e6oo=;
+	b=m415Ww6mKZ1x8BvTd7SrZRtqgGp5HzBCazCYjdlSnSWJHQTIki9uPWO6uWwVsZIIvOXEvD
+	DjDDVVmycJCtKFAQ==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=sJ5F9DRo;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=iQMwDzZ7
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=kI0QejRy;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=m415Ww6m
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762336226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762336777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cY5ii2iDdhZ8VdCxHaGIdjUSBVcQnRly9m7bibgj8xY=;
-	b=sJ5F9DRouVc6UaiCoRTKMPUvE0xokRFGY3dcZTAt0qjt3Wh5IprrWhyNm7HicsXAy/UYBb
-	LvEIyHEPITaNtLJMzxryjzcH+3zJnuttYdx1p6GqMtoYsmiQvzkokXlRPXKzTwVBqogq9R
-	FhvZelBXeB+6gdHd78Yq0N6yZDwjUfI=
+	bh=r1Ss//4cSgMvifGeWImkl64oHq4TXjdrB0of3t6e6oo=;
+	b=kI0QejRy1xQMo6/OlQcZ/X1tRn0MFaHDbTEU7srbrDJ5m8CqwFoxjrEA5qNMv3kcwW6pyo
+	2hIybOCZzJkELbu7gmzmz8KIqaVgzg5vEzTgo+sHldpBWvYhfLit+xb1Fiu6JA6/aqQdaF
+	7rPrDUb/RLq64PjxJDTdrGRy9aSO3uA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762336226;
+	s=susede2_ed25519; t=1762336777;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cY5ii2iDdhZ8VdCxHaGIdjUSBVcQnRly9m7bibgj8xY=;
-	b=iQMwDzZ7CiXw/caoRiyc8sBxyuvzbbxUp90wjCTqSNANDiUPnE7I+X3wFP0+zm0ZAqvVIq
-	S++hRsEQPjJ1pRAw==
+	bh=r1Ss//4cSgMvifGeWImkl64oHq4TXjdrB0of3t6e6oo=;
+	b=m415Ww6mKZ1x8BvTd7SrZRtqgGp5HzBCazCYjdlSnSWJHQTIki9uPWO6uWwVsZIIvOXEvD
+	DjDDVVmycJCtKFAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84C0813699;
-	Wed,  5 Nov 2025 09:50:26 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5B2EC13699;
+	Wed,  5 Nov 2025 09:59:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uPFjIOIdC2lZMQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 05 Nov 2025 09:50:26 +0000
+	id pnBBFgkgC2l+OgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 05 Nov 2025 09:59:37 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 381C2A083B; Wed,  5 Nov 2025 10:50:26 +0100 (CET)
-Date: Wed, 5 Nov 2025 10:50:26 +0100
+	id 1C8C8A083B; Wed,  5 Nov 2025 10:59:37 +0100 (CET)
+Date: Wed, 5 Nov 2025 10:59:37 +0100
 From: Jan Kara <jack@suse.cz>
 To: libaokun@huaweicloud.com
 Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
@@ -95,11 +95,11 @@ Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
 	mcgrof@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
 	yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com, 
 	libaokun1@huawei.com
-Subject: Re: [PATCH 21/25] ext4: make online defragmentation support large
- block size
-Message-ID: <vkbarfyd6ozrrljhvwhmy2cq23mby6mxl2kxlsxp2wqgmvxvgi@6sgmqhhdnmru>
+Subject: Re: [PATCH 24/25] ext4: add checks for large folio incompatibilities
+ when BS > PS
+Message-ID: <arj5yptdhk2tptkqu6q2kwbyhh5cx4ncfyz3hfhlfikx57yf4a@nolkehxy2kqs>
 References: <20251025032221.2905818-1-libaokun@huaweicloud.com>
- <20251025032221.2905818-22-libaokun@huaweicloud.com>
+ <20251025032221.2905818-25-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -108,97 +108,156 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251025032221.2905818-22-libaokun@huaweicloud.com>
-X-Rspamd-Queue-Id: 9438F21190
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -0.21
+In-Reply-To: <20251025032221.2905818-25-libaokun@huaweicloud.com>
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-0.21 / 50.00];
 	SEM_URIBL(3.50)[huaweicloud.com:email];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	BAD_REP_POLICIES(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	R_DKIM_ALLOW(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	R_DKIM_ALLOW(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	TO_DN_NONE(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,huaweicloud.com:email,huawei.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
 X-Spamd-Bar: /
+X-Rspamd-Queue-Id: 64B542116F
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -0.21
 
-On Sat 25-10-25 11:22:17, libaokun@huaweicloud.com wrote:
-> From: Zhihao Cheng <chengzhihao1@huawei.com>
+On Sat 25-10-25 11:22:20, libaokun@huaweicloud.com wrote:
+> From: Baokun Li <libaokun1@huawei.com>
 > 
-> There are several places assuming that block size <= PAGE_SIZE, modify
-> them to support large block size (bs > ps).
+> Supporting a block size greater than the page size (BS > PS) requires
+> support for large folios. However, several features (e.g., verity, encrypt)
+> and mount options (e.g., data=journal) do not yet support large folios.
 > 
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> To prevent conflicts, this patch adds checks at mount time to prohibit
+> these features and options from being used when BS > PS. Since the data
+> mode cannot be changed on remount, there is no need to check on remount.
+> 
+> A new mount flag, EXT4_MF_LARGE_FOLIO, is introduced. This flag is set
+> after the checks pass, indicating that the filesystem has no features or
+> mount options incompatible with large folios. Subsequent checks can simply
+> test for this flag to avoid redundant verifications.
+> 
 > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
-...
+Looks good. Feel free to add:
 
-> @@ -565,7 +564,7 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
->  	struct inode *orig_inode = file_inode(o_filp);
->  	struct inode *donor_inode = file_inode(d_filp);
->  	struct ext4_ext_path *path = NULL;
-> -	int blocks_per_page = PAGE_SIZE >> orig_inode->i_blkbits;
-> +	int blocks_per_page = 1;
->  	ext4_lblk_t o_end, o_start = orig_blk;
->  	ext4_lblk_t d_start = donor_blk;
->  	int ret;
-> @@ -608,6 +607,9 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
->  		return -EOPNOTSUPP;
->  	}
->  
-> +	if (i_blocksize(orig_inode) < PAGE_SIZE)
-> +		blocks_per_page = PAGE_SIZE >> orig_inode->i_blkbits;
-> +
-
-I think these are strange and the only reason for this is that
-ext4_move_extents() tries to make life easier to move_extent_per_page() and
-that doesn't really work with larger folios anymore. I think
-ext4_move_extents() just shouldn't care about pages / folios at all and
-pass 'cur_len' as the length to the end of extent / moved range and
-move_extent_per_page() will trim the length based on the folios it has got.
-
-Also then we can rename some of the variables and functions from 'page' to
-'folio'.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
->  	/* Protect orig and donor inodes against a truncate */
->  	lock_two_nondirectories(orig_inode, donor_inode);
+> ---
+>  fs/ext4/ext4.h  |  3 ++-
+>  fs/ext4/inode.c | 10 ++++------
+>  fs/ext4/super.c | 26 ++++++++++++++++++++++++++
+>  3 files changed, 32 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 8223ed29b343..f1163deb0812 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1859,7 +1859,8 @@ static inline int ext4_get_resgid(struct ext4_super_block *es)
+>  enum {
+>  	EXT4_MF_MNTDIR_SAMPLED,
+>  	EXT4_MF_FC_INELIGIBLE,	/* Fast commit ineligible */
+> -	EXT4_MF_JOURNAL_DESTROY	/* Journal is in process of destroying */
+> +	EXT4_MF_JOURNAL_DESTROY,/* Journal is in process of destroying */
+> +	EXT4_MF_LARGE_FOLIO,	/* large folio is support */
+>  };
 >  
-> @@ -665,10 +667,8 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
->  		if (o_end - o_start < cur_len)
->  			cur_len = o_end - o_start;
+>  static inline void ext4_set_mount_flag(struct super_block *sb, int bit)
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index b3fa29923a1d..04f9380d4211 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5143,14 +5143,12 @@ static bool ext4_should_enable_large_folio(struct inode *inode)
+>  {
+>  	struct super_block *sb = inode->i_sb;
 >  
-> -		orig_page_index = o_start >> (PAGE_SHIFT -
-> -					       orig_inode->i_blkbits);
-> -		donor_page_index = d_start >> (PAGE_SHIFT -
-> -					       donor_inode->i_blkbits);
-> +		orig_page_index = EXT4_LBLK_TO_P(orig_inode, o_start);
-> +		donor_page_index = EXT4_LBLK_TO_P(donor_inode, d_start);
->  		offset_in_page = o_start % blocks_per_page;
->  		if (cur_len > blocks_per_page - offset_in_page)
->  			cur_len = blocks_per_page - offset_in_page;
+> -	if (!S_ISREG(inode->i_mode))
+> -		return false;
+> -	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
+> -	    ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
+> +	if (!ext4_test_mount_flag(sb, EXT4_MF_LARGE_FOLIO))
+>  		return false;
+> -	if (ext4_has_feature_verity(sb))
+> +
+> +	if (!S_ISREG(inode->i_mode))
+>  		return false;
+> -	if (ext4_has_feature_encrypt(sb))
+> +	if (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
+>  		return false;
+>  
+>  	return true;
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 7338c708ea1d..fdc006a973aa 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5034,6 +5034,28 @@ static const char *ext4_has_journal_option(struct super_block *sb)
+>  	return NULL;
+>  }
+>  
+> +static int ext4_check_large_folio(struct super_block *sb)
+> +{
+> +	const char *err_str = NULL;
+> +
+> +	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)
+> +		err_str = "data=journal";
+> +	else if (ext4_has_feature_verity(sb))
+> +		err_str = "verity";
+> +	else if (ext4_has_feature_encrypt(sb))
+> +		err_str = "encrypt";
+> +
+> +	if (!err_str) {
+> +		ext4_set_mount_flag(sb, EXT4_MF_LARGE_FOLIO);
+> +	} else if (sb->s_blocksize > PAGE_SIZE) {
+> +		ext4_msg(sb, KERN_ERR, "bs(%lu) > ps(%lu) unsupported for %s",
+> +			 sb->s_blocksize, PAGE_SIZE, err_str);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int ext4_load_super(struct super_block *sb, ext4_fsblk_t *lsb,
+>  			   int silent)
+>  {
+> @@ -5310,6 +5332,10 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>  
+>  	ext4_apply_options(fc, sb);
+>  
+> +	err = ext4_check_large_folio(sb);
+> +	if (err < 0)
+> +		goto failed_mount;
+> +
+>  	err = ext4_encoding_init(sb, es);
+>  	if (err)
+>  		goto failed_mount;
 > -- 
 > 2.46.1
 > 
