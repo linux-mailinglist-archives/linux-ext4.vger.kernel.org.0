@@ -1,254 +1,333 @@
-Return-Path: <linux-ext4+bounces-11504-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11505-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A32C3824A
-	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 23:08:32 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF914C38449
+	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 23:55:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 652734E5D03
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 22:08:31 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1E5E74EDD91
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 22:54:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC0E2EF667;
-	Wed,  5 Nov 2025 22:08:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A5212D7DDE;
+	Wed,  5 Nov 2025 22:53:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PeKuCXyT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1C9287505
-	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 22:08:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974972D0631;
+	Wed,  5 Nov 2025 22:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762380506; cv=none; b=mNM3NuQmj6KxqEyIxwwpqRtTBi1L/DNUr1+4+SVlt+uC5PLXtLvPCt2pGLzley5gNE+tSGPaJYFC0l6DX1MTBjh66XCZfP7l8J5cvk3iqZbMJ5ixl7nulEiWpm9XStFss5Wwq271M1JXF/rMi2S6YC1IiGVrIroUN9al4bBRKpk=
+	t=1762383236; cv=none; b=aUUwkHkyH70eWfZblN3ddAAvKo8gETXwqVnYksj+yK5XEWn1N7Q1kVtbuf/7L0jD+V4cf/1tQarF2Jq4e0nFUC3IT7GTtoPtTFwZou+QwE6+yeX7dAwlTHGJo02MbzgQiZxJyScdzqc2avwqvDHxApnYXZoxBDl3iW+8KtXz7t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762380506; c=relaxed/simple;
-	bh=jO5A6/0emAC0ankZQl2hqCF6Fyqyn2kff+AFOGzMyds=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=nrifhJ7r01Moy+9r8PtKoA8M6IVF9HDVzC6wC/Qo88+rAWecogq4SsjWhmPcO1AB+QxyRVXULXN7pQrWw81eTv8oSyX02uqDEPmtANspadyK9FN0H5+NjEty593cJXGpMdconOD9qbNJzt+EUbjVi76umEOpY75WwXRQiHmKnXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-433312ee468so4180685ab.1
-        for <linux-ext4@vger.kernel.org>; Wed, 05 Nov 2025 14:08:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762380503; x=1762985303;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rqMwYr3BjHdzinG8ZFoCorMwCsBmiueglpCVzEdIyys=;
-        b=jiWjWiTFwnalYcb7SORWavECaIMVFpj9zbgbQAEbDb+kvCMiOib5xC6shVaHSjwA61
-         tbgqxFSXsEEyKiYQziFzZcHb1Z+Ys3bjgNg+T2Gr/jjiwW2nY0yDI6oTzJEkMvp6Jf5s
-         CowOifgJqlgH3/bwmCRU4ple32T3yGSOW6I2FNJaBYV81dAiuF+Spguv871FYlzWE5o7
-         +7x2HiqHOCySNHuvFmuStuJ3QPfYpGQd2ag8pjhm6FBo929wgRbwDKhkV26CRaJibg7B
-         Ad/zaxbqP2mqpMstrHIDRODGwl0yAlmmN1xtdyCrE1UC9R6g/Epk7r3XSmxBRQp1a3BN
-         Cw5A==
-X-Forwarded-Encrypted: i=1; AJvYcCXmz4433mIr6IOIYXMNY27UwxetDvUJUH67d3feuGdTiNElR6pwPl9W6HXbBJ5i5ihiBn4RYsPaa7Z5@vger.kernel.org
-X-Gm-Message-State: AOJu0YzeB9MBy8eBz3pdgdyQmf/pCppeQU3oEaWdEYEevgacpZC8hEAq
-	cc+u7e+46ah81lVjYCCToNYS3PS45DSwf8aDXBGbq/bNGffaInpPqJc4ujDOvHWJ7bsZ/thxeFV
-	eF/v5nxA8e/ORACcBydBgoTFVejNYzH3TN8ofUm36fimqVgx/TIg/sU8FETo=
-X-Google-Smtp-Source: AGHT+IFxZr/UvsGMSHTbKllzwqi/KTdS3u96fHeL+YXXSHHMTOgS48FzCeJ/mj1UNbG1bd9iomrxlgngiWKK6yE/RxDFQWPYbgyY
+	s=arc-20240116; t=1762383236; c=relaxed/simple;
+	bh=ynMLpSbNVbUJVeGYFfQcm4ptkEtNwDrG6gEBd+Y4KiQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MKCWbrvbbLgURtpQVcts6VVGYXqar0rgDXjK+VyBbWX6ITwkAziPSQ8DjViPsjrotR2hj6wlmEVEzEeG54DPyasGmSCUjGCXG1u0XLBAWe8OzathG+jhKnekQs0B5srKinZeqM77FTv5SPVSZCEhG2dHF09E0YRiQo+RSvLiwyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PeKuCXyT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13C4DC4CEF5;
+	Wed,  5 Nov 2025 22:53:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762383236;
+	bh=ynMLpSbNVbUJVeGYFfQcm4ptkEtNwDrG6gEBd+Y4KiQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PeKuCXyTYy0rVSoo3qcRZjwB2oovzip75nL11bbXc53halFJGTMaDHIJPgTps5vGT
+	 OfWhwH6rfmOtG+WoC33f6zwopYzoN6bTtnsYeo1VnV4f3jiY1txXznbN7krFF/zUve
+	 m06os6NNfj42lBEVJJhGj/2ptFrqiEXvpq4xHDLzeictMGb4WU93LlQbkTkNQfiTbj
+	 eA2eoE8lAiDIBk6OjGJlH21Wt/Z1J90vc3Z1/8b3fYNfMyQtkHshXTax3VjnBrxaqT
+	 5pvePJt5obrgU4G6wNpsiVl/VGBB68nWrTNxw0axFw2A/dISOjCiBw9JBflJ9mVA3S
+	 4827zmrJrZH+A==
+Date: Wed, 5 Nov 2025 14:53:55 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: zlang@redhat.com, neal@gompa.dev, fstests@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	joannelkoong@gmail.com, bernd@bsbernd.com
+Subject: Re: [PATCH 01/33] misc: adapt tests to handle the fuse ext[234]
+ drivers
+Message-ID: <20251105225355.GC196358@frogsfrogsfrogs>
+References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
+ <176169819994.1433624.4365613323075287467.stgit@frogsfrogsfrogs>
+ <CAOQ4uxj7yaX5qLEs4BOJBJwybkHzv8WmNsUt0w_zehueOLLP9A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cdae:0:b0:433:2dd5:f573 with SMTP id
- e9e14a558f8ab-4334ee28845mr20651065ab.3.1762380503691; Wed, 05 Nov 2025
- 14:08:23 -0800 (PST)
-Date: Wed, 05 Nov 2025 14:08:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <690bcad7.050a0220.baf87.0076.GAE@google.com>
-Subject: [syzbot] [ext4?] possible deadlock in ext4_destroy_inline_data (2)
-From: syzbot <syzbot+bb2455d02bda0b5701e3@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxj7yaX5qLEs4BOJBJwybkHzv8WmNsUt0w_zehueOLLP9A@mail.gmail.com>
 
-Hello,
+On Thu, Oct 30, 2025 at 10:51:06AM +0100, Amir Goldstein wrote:
+> On Wed, Oct 29, 2025 at 2:22 AM Darrick J. Wong <djwong@kernel.org> wrote:
+> >
+> > From: Darrick J. Wong <djwong@kernel.org>
+> >
+> > It would be useful to be able to run fstests against the userspace
+> > ext[234] driver program fuse2fs.  A convention (at least on Debian)
+> > seems to be to install fuse drivers as /sbin/mount.fuse.XXX so that
+> > users can run "mount -t fuse.XXX" to start a fuse driver for a
+> > disk-based filesystem type XXX.
+> >
+> > Therefore, we'll adopt the practice of setting FSTYP=fuse.ext4 to
+> > test ext4 with fuse2fs.  Change all the library code as needed to handle
+> > this new type alongside all the existing ext[234] checks, which seems a
+> > little cleaner than FSTYP=fuse FUSE_SUBTYPE=ext4, which also would
+> > require even more treewide cleanups to work properly because most
+> > fstests code switches on $FSTYP alone.
+> >
+> 
+> I agree that FSTYP=fuse.ext4 is cleaner than
+> FSTYP=fuse FUSE_SUBTYPE=ext4
+> but it is not extendable to future (e.g. fuse.xfs)
+> and it is still a bit ugly.
+> 
+> Consider:
+> FSTYP=fuse.ext4
+> MKFSTYP=ext4
+> 
+> I think this is the correct abstraction -
+> fuse2fs/ext4 are formatted that same and mounted differently
+> 
+> See how some of your patch looks nicer and naturally extends to
+> the imaginary fuse.xfs...
 
-syzbot found the following issue on:
+Maybe I'd rather do it the other way around for fuse4fs:
 
-HEAD commit:    1c353dc8d962 Merge tag 'media/v6.18-2' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14f3a17c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e46b8a1c645465a9
-dashboard link: https://syzkaller.appspot.com/bug?extid=bb2455d02bda0b5701e3
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+FSTYP=ext4
+MOUNT_FSTYP=fuse.ext4
 
-Unfortunately, I don't have any reproducer for this issue yet.
+(obviously, MOUNT_FSTYP=$FSTYP if the test runner hasn't overridden it)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f64756196024/disk-1c353dc8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c1384c2077fb/vmlinux-1c353dc8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/cfa64f995332/bzImage-1c353dc8.xz
+Where $MOUNT_FSTYP is what you pass to mount -t and what you'd see in
+/proc/mounts.  The only weirdness with that is that some of the helpers
+will end up with code like:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bb2455d02bda0b5701e3@syzkaller.appspotmail.com
+	case $FSTYP in
+	ext4)
+		# do ext4 stuff
+		;;
+	esac
 
-======================================================
-WARNING: possible circular locking dependency detected
-syzkaller #0 Not tainted
-------------------------------------------------------
-kworker/u8:8/30962 is trying to acquire lock:
-ffff88807e672708 (&ei->xattr_sem){++++}-{4:4}, at: ext4_write_lock_xattr fs/ext4/xattr.h:157 [inline]
-ffff88807e672708 (&ei->xattr_sem){++++}-{4:4}, at: ext4_destroy_inline_data+0x28/0xe0 fs/ext4/inline.c:1787
+	case $MOUNT_FSTYP in
+	fuse.ext4)
+		# do fuse4fs stuff that overrides ext4
+		;;
+	esac
 
-but task is already holding lock:
-ffff8880277c4b98 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: percpu_down_read include/linux/percpu-rwsem.h:77 [inline]
-ffff8880277c4b98 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: ext4_writepages_down_read fs/ext4/ext4.h:1796 [inline]
-ffff8880277c4b98 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: ext4_writepages+0x1cc/0x350 fs/ext4/inode.c:3024
+which would be a little weird.
 
-which lock already depends on the new lock.
+_scratch_mount would end up with:
 
+	$MOUNT_PROG -t $MOUNT_FSTYP ...
 
-the existing dependency chain (in reverse order) is:
+and detecting it would be
 
--> #1 (&sbi->s_writepages_rwsem){++++}-{0:0}:
-       lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5868
-       percpu_down_read_internal+0x48/0x1c0 include/linux/percpu-rwsem.h:53
-       percpu_down_read include/linux/percpu-rwsem.h:77 [inline]
-       ext4_writepages_down_read fs/ext4/ext4.h:1796 [inline]
-       ext4_writepages+0x1cc/0x350 fs/ext4/inode.c:3024
-       do_writepages+0x32e/0x550 mm/page-writeback.c:2604
-       __writeback_single_inode+0x145/0xff0 fs/fs-writeback.c:1719
-       writeback_single_inode+0x1f9/0x6a0 fs/fs-writeback.c:1840
-       write_inode_now+0x160/0x1d0 fs/fs-writeback.c:2903
-       iput_final fs/inode.c:1901 [inline]
-       iput+0x830/0xc50 fs/inode.c:1966
-       ext4_xattr_block_set+0x1fce/0x2ac0 fs/ext4/xattr.c:2199
-       ext4_xattr_move_to_block fs/ext4/xattr.c:2664 [inline]
-       ext4_xattr_make_inode_space fs/ext4/xattr.c:2739 [inline]
-       ext4_expand_extra_isize_ea+0x12da/0x1ea0 fs/ext4/xattr.c:2827
-       __ext4_expand_extra_isize+0x30d/0x400 fs/ext4/inode.c:6364
-       ext4_try_to_expand_extra_isize fs/ext4/inode.c:6407 [inline]
-       __ext4_mark_inode_dirty+0x46c/0x700 fs/ext4/inode.c:6485
-       ext4_evict_inode+0x80d/0xee0 fs/ext4/inode.c:254
-       evict+0x504/0x9c0 fs/inode.c:810
-       ext4_orphan_cleanup+0xc20/0x1460 fs/ext4/orphan.c:470
-       __ext4_fill_super fs/ext4/super.c:5617 [inline]
-       ext4_fill_super+0x5920/0x61e0 fs/ext4/super.c:5736
-       get_tree_bdev_flags+0x40e/0x4d0 fs/super.c:1691
-       vfs_get_tree+0x92/0x2b0 fs/super.c:1751
-       fc_mount fs/namespace.c:1208 [inline]
-       do_new_mount_fc fs/namespace.c:3651 [inline]
-       do_new_mount+0x302/0xa10 fs/namespace.c:3727
-       do_mount fs/namespace.c:4050 [inline]
-       __do_sys_mount fs/namespace.c:4238 [inline]
-       __se_sys_mount+0x313/0x410 fs/namespace.c:4215
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+	grep -q -w $MOUNT_FSTYP /proc/mounts || _fail "booooo"
 
--> #0 (&ei->xattr_sem){++++}-{4:4}:
-       check_prev_add kernel/locking/lockdep.c:3165 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
-       validate_chain+0xb9b/0x2140 kernel/locking/lockdep.c:3908
-       __lock_acquire+0xab9/0xd20 kernel/locking/lockdep.c:5237
-       lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5868
-       down_write+0x96/0x1f0 kernel/locking/rwsem.c:1590
-       ext4_write_lock_xattr fs/ext4/xattr.h:157 [inline]
-       ext4_destroy_inline_data+0x28/0xe0 fs/ext4/inline.c:1787
-       ext4_do_writepages+0x526/0x4610 fs/ext4/inode.c:2810
-       ext4_writepages+0x205/0x350 fs/ext4/inode.c:3025
-       do_writepages+0x32e/0x550 mm/page-writeback.c:2604
-       __writeback_single_inode+0x145/0xff0 fs/fs-writeback.c:1719
-       writeback_sb_inodes+0x6c7/0x1010 fs/fs-writeback.c:2015
-       wb_writeback+0x43b/0xaf0 fs/fs-writeback.c:2195
-       wb_do_writeback fs/fs-writeback.c:2342 [inline]
-       wb_workfn+0x409/0xef0 fs/fs-writeback.c:2382
-       process_one_work kernel/workqueue.c:3263 [inline]
-       process_scheduled_works+0xae1/0x17b0 kernel/workqueue.c:3346
-       worker_thread+0x8a0/0xda0 kernel/workqueue.c:3427
-       kthread+0x711/0x8a0 kernel/kthread.c:463
-       ret_from_fork+0x4bc/0x870 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+Hrm?
 
-other info that might help us debug this:
+--D
 
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(&sbi->s_writepages_rwsem);
-                               lock(&ei->xattr_sem);
-                               lock(&sbi->s_writepages_rwsem);
-  lock(&ei->xattr_sem);
-
- *** DEADLOCK ***
-
-3 locks held by kworker/u8:8/30962:
- #0: ffff88801c69b948 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3238 [inline]
- #0: ffff88801c69b948 ((wq_completion)writeback){+.+.}-{0:0}, at: process_scheduled_works+0x9b4/0x17b0 kernel/workqueue.c:3346
- #1: ffffc9000b36fba0 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3239 [inline]
- #1: ffffc9000b36fba0 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_scheduled_works+0x9ef/0x17b0 kernel/workqueue.c:3346
- #2: ffff8880277c4b98 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: percpu_down_read include/linux/percpu-rwsem.h:77 [inline]
- #2: ffff8880277c4b98 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: ext4_writepages_down_read fs/ext4/ext4.h:1796 [inline]
- #2: ffff8880277c4b98 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: ext4_writepages+0x1cc/0x350 fs/ext4/inode.c:3024
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 30962 Comm: kworker/u8:8 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/02/2025
-Workqueue: writeback wb_workfn (flush-7:4)
-Call Trace:
- <TASK>
- dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
- print_circular_bug+0x2ee/0x310 kernel/locking/lockdep.c:2043
- check_noncircular+0x134/0x160 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3165 [inline]
- check_prevs_add kernel/locking/lockdep.c:3284 [inline]
- validate_chain+0xb9b/0x2140 kernel/locking/lockdep.c:3908
- __lock_acquire+0xab9/0xd20 kernel/locking/lockdep.c:5237
- lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5868
- down_write+0x96/0x1f0 kernel/locking/rwsem.c:1590
- ext4_write_lock_xattr fs/ext4/xattr.h:157 [inline]
- ext4_destroy_inline_data+0x28/0xe0 fs/ext4/inline.c:1787
- ext4_do_writepages+0x526/0x4610 fs/ext4/inode.c:2810
- ext4_writepages+0x205/0x350 fs/ext4/inode.c:3025
- do_writepages+0x32e/0x550 mm/page-writeback.c:2604
- __writeback_single_inode+0x145/0xff0 fs/fs-writeback.c:1719
- writeback_sb_inodes+0x6c7/0x1010 fs/fs-writeback.c:2015
- wb_writeback+0x43b/0xaf0 fs/fs-writeback.c:2195
- wb_do_writeback fs/fs-writeback.c:2342 [inline]
- wb_workfn+0x409/0xef0 fs/fs-writeback.c:2382
- process_one_work kernel/workqueue.c:3263 [inline]
- process_scheduled_works+0xae1/0x17b0 kernel/workqueue.c:3346
- worker_thread+0x8a0/0xda0 kernel/workqueue.c:3427
- kthread+0x711/0x8a0 kernel/kthread.c:463
- ret_from_fork+0x4bc/0x870 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-EXT4-fs error (device loop4): ext4_mb_generate_buddy:1289: group 0, block bitmap and bg descriptor inconsistent: 25 vs 4128793 free clusters
-EXT4-fs (loop4): Delayed block allocation failed for inode 15 at logical offset 0 with max blocks 1 with error 28
-EXT4-fs (loop4): This should not happen!! Data will be lost
-
-EXT4-fs (loop4): Total free blocks count 0
-EXT4-fs (loop4): Free/Dirty block details
-EXT4-fs (loop4): free_blocks=66060288
-EXT4-fs (loop4): dirty_blocks=64
-EXT4-fs (loop4): Block reservation details
-EXT4-fs (loop4): i_reserved_data_blocks=4
-EXT4-fs (loop4): Delayed block allocation failed for inode 15 at logical offset 65537 with max blocks 44 with error 28
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> 
+> > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+> > ---
+> >  check             |   24 +++++++++++++++++-------
+> >  common/casefold   |    4 ++++
+> >  common/config     |   11 ++++++++---
+> >  common/defrag     |    2 +-
+> >  common/encrypt    |   16 ++++++++--------
+> >  common/log        |   10 +++++-----
+> >  common/populate   |   14 +++++++-------
+> >  common/quota      |    9 +++++++++
+> >  common/rc         |   50 +++++++++++++++++++++++++++++---------------------
+> >  common/report     |    2 +-
+> >  common/verity     |    8 ++++----
+> >  tests/generic/020 |    2 +-
+> >  tests/generic/067 |    2 +-
+> >  tests/generic/441 |    2 +-
+> >  tests/generic/496 |    2 +-
+> >  tests/generic/621 |    2 +-
+> >  tests/generic/740 |    2 +-
+> >  tests/generic/746 |    4 ++--
+> >  tests/generic/765 |    4 ++--
+> >  19 files changed, 103 insertions(+), 67 deletions(-)
+> >
+> >
+> > diff --git a/check b/check
+> > index 9bb80a22440f97..81cd03f73ce155 100755
+> > --- a/check
+> > +++ b/check
+> > @@ -140,12 +140,25 @@ get_sub_group_list()
+> >         echo $grpl
+> >  }
+> >
+> > +get_group_dirs()
+> > +{
+> > +       local fsgroup="$FSTYP"
+> > +
+> > +       case "$FSTYP" in
+> > +       ext2|ext3|fuse.ext[234])
+> > +               fsgroup=ext4
+> > +               ;;
+> > +       esac
+> > +
+> > +       echo $SRC_GROUPS
+> > +       echo $fsgroup
+> > +}
+> > +
+> >  get_group_list()
+> >  {
+> >         local grp=$1
+> >         local grpl=""
+> >         local sub=$(dirname $grp)
+> > -       local fsgroup="$FSTYP"
+> >
+> >         if [ -n "$sub" -a "$sub" != "." -a -d "$SRC_DIR/$sub" ]; then
+> >                 # group is given as <subdir>/<group> (e.g. xfs/quick)
+> > @@ -154,10 +167,7 @@ get_group_list()
+> >                 return
+> >         fi
+> >
+> > -       if [ "$FSTYP" = ext2 -o "$FSTYP" = ext3 ]; then
+> > -           fsgroup=ext4
+> > -       fi
+> > -       for d in $SRC_GROUPS $fsgroup; do
+> > +       for d in $(get_group_dirs); do
+> >                 if ! test -d "$SRC_DIR/$d" ; then
+> >                         continue
+> >                 fi
+> > @@ -171,7 +181,7 @@ get_group_list()
+> >  get_all_tests()
+> >  {
+> >         touch $tmp.list
+> > -       for d in $SRC_GROUPS $FSTYP; do
+> > +       for d in $(get_group_dirs); do
+> >                 if ! test -d "$SRC_DIR/$d" ; then
+> >                         continue
+> >                 fi
+> > @@ -387,7 +397,7 @@ if [ -n "$FUZZ_REWRITE_DURATION" ]; then
+> >  fi
+> >
+> >  if [ -n "$subdir_xfile" ]; then
+> > -       for d in $SRC_GROUPS $FSTYP; do
+> > +       for d in $(get_group_dirs); do
+> >                 [ -f $SRC_DIR/$d/$subdir_xfile ] || continue
+> >                 for f in `sed "s/#.*$//" $SRC_DIR/$d/$subdir_xfile`; do
+> >                         exclude_tests+=($d/$f)
+> > diff --git a/common/casefold b/common/casefold
+> > index 2aae5e5e6c8925..fcdb4d210028ac 100644
+> > --- a/common/casefold
+> > +++ b/common/casefold
+> > @@ -6,6 +6,10 @@
+> >  _has_casefold_kernel_support()
+> >  {
+> >         case $FSTYP in
+> > +       fuse.ext[234])
+> > +               # fuse2fs does not support casefolding
+> > +               false
+> > +               ;;
+> 
+> This would not be needed
+> 
+> >         ext4)
+> >                 test -f '/sys/fs/ext4/features/casefold'
+> >                 ;;
+> > diff --git a/common/config b/common/config
+> > index 7fa97319d7d0ca..0cd2b33c4ade40 100644
+> > --- a/common/config
+> > +++ b/common/config
+> > @@ -386,6 +386,11 @@ _common_mount_opts()
+> >         overlay)
+> >                 echo $OVERLAY_MOUNT_OPTIONS
+> >                 ;;
+> > +       fuse.ext[234])
+> > +               # fuse sets up secure defaults, so we must explicitly tell
+> > +               # fuse2fs to use the more relaxed kernel access behaviors.
+> > +               echo "-o kernel $EXT_MOUNT_OPTIONS"
+> > +               ;;
+> >         ext2|ext3|ext4)
+> >                 # acls & xattrs aren't turned on by default on ext$FOO
+> >                 echo "-o acl,user_xattr $EXT_MOUNT_OPTIONS"
+> > @@ -472,7 +477,7 @@ _mkfs_opts()
+> >  _fsck_opts()
+> >  {
+> >         case $FSTYP in
+> 
+> This would obviously be $MKFSTYP with no further changes
+> 
+> > -       ext2|ext3|ext4)
+> > +       ext2|ext3|fuse.ext[234]|ext4)
+> >                 export FSCK_OPTIONS="-nf"
+> >                 ;;
+> >         reiser*)
+> > @@ -514,11 +519,11 @@ _source_specific_fs()
+> >
+> >                 . ./common/btrfs
+> >                 ;;
+> > -       ext4)
+> > +       fuse.ext4|ext4)
+> >                 [ "$MKFS_EXT4_PROG" = "" ] && _fatal "mkfs.ext4 not found"
+> >                 . ./common/ext4
+> >                 ;;
+> > -       ext2|ext3)
+> > +       ext2|ext3|fuse.ext[23])
+> >                 . ./common/ext4
+> 
+> same here
+> 
+> >                 ;;
+> >         f2fs)
+> > diff --git a/common/defrag b/common/defrag
+> > index 055d0d0e9182c5..c054e62bde6f4d 100644
+> > --- a/common/defrag
+> > +++ b/common/defrag
+> > @@ -12,7 +12,7 @@ _require_defrag()
+> >          _require_xfs_io_command "falloc"
+> >          DEFRAG_PROG="$XFS_FSR_PROG"
+> >         ;;
+> > -    ext4)
+> > +    fuse.ext4|ext4)
+> >         testfile="$TEST_DIR/$$-test.defrag"
+> >         donorfile="$TEST_DIR/$$-donor.defrag"
+> >         bsize=`_get_block_size $TEST_DIR`
+> 
+> and here
+> 
+> > diff --git a/common/encrypt b/common/encrypt
+> > index f2687631b214cf..4fa7b6853fd461 100644
+> > --- a/common/encrypt
+> > +++ b/common/encrypt
+> > @@ -191,7 +191,7 @@ _require_hw_wrapped_key_support()
+> >  _scratch_mkfs_encrypted()
+> >  {
+> >         case $FSTYP in
+> > -       ext4|f2fs)
+> > +       fuse.ext4|ext4|f2fs)
+> >                 _scratch_mkfs -O encrypt
+> >                 ;;
+> 
+> and here
+> 
+> >         ubifs)
+> > @@ -210,7 +210,7 @@ _scratch_mkfs_encrypted()
+> >  _scratch_mkfs_sized_encrypted()
+> >  {
+> >         case $FSTYP in
+> > -       ext4|f2fs)
+> > +       fuse.ext4|ext4|f2fs)
+> >                 MKFS_OPTIONS="$MKFS_OPTIONS -O encrypt" _scratch_mkfs_sized $*
+> >                 ;;
+> 
+> and here... I think you got my point.
+> 
+> Thanks,
+> Amir.
+> 
 
