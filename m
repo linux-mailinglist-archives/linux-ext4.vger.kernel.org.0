@@ -1,75 +1,75 @@
-Return-Path: <linux-ext4+bounces-11488-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11489-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0557C3581A
-	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 12:52:50 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0B7C35854
+	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 12:54:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4BB794FB248
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 11:50:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B9B864F828C
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 11:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62224311966;
-	Wed,  5 Nov 2025 11:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF663112DB;
+	Wed,  5 Nov 2025 11:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fVQJJ/r+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EaDFH1P+"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5794130F957
-	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 11:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554DA2FC034
+	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 11:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762343426; cv=none; b=WbmG7QrA1G5g9kUFDs8o3qokaSBwvwfLVJsQrOhn6oSDrbVpmEM0rW31LblObw+X7dxtithVGdZPYeFHSWodL/witHpywLuCTPUE6JG3LZWK4vbxe5EmJ5TmSunrkFDTzMYg2n1NirVFyR/hGy/yXas10XQyInytc+DaLnizV9k=
+	t=1762343493; cv=none; b=SwI/QMU9xxY39jk6QFYiFd3jdIlBLecsk87cZ/Ctk1kl2QYDlCEy5BpG+fWwwCZEKKab7SAxAYWwTZ1YTf5OcejKiLuQN0Z1pMvWPebmZTKYPyUVSlIebk08gGYnLESJF4u75Fr2DSMGV7mPeINsYpK5NmG75sdYEQg7++7K39s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762343426; c=relaxed/simple;
-	bh=CN1LseI8wwaJJz+Yhu+BcRAFCY+7Ou3dAsGH6hbaFl8=;
+	s=arc-20240116; t=1762343493; c=relaxed/simple;
+	bh=Tu9n9NnovVctLVlXdzYT3XTzj4GBSdV2bG12rdYeYhg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c4+TKCvoMnwgtJw2jrirWZn831MJoEbM11SIYXadijUD4I3nxvOx7gFmkOwrZaXpf7YdQXJVO4TsuugKlNXLCiUhfTW+SIJxPyQQqOP5dfhQUL4W6VkzJZw4YrMrM1KNfQrzE9o6/RgyHkFywZrjLK0z33noQivaihieI6zpQK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fVQJJ/r+; arc=none smtp.client-ip=209.85.218.46
+	 To:Cc:Content-Type; b=dyjFybSXwnkMoBdRYuZy6ygixJbyztJc2vchw9n9M4ocih89e+2b3rMx6WSqCXwfUyBWnzw0rZB4lvnqViWkkFccE9vtr/A9+194T9TIN1zf5DeG33gzDHqyOCI6/TM1Sy+g36pxx0qnChTrs5ZFouaI5uLRueMuwB9HY4xXgYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EaDFH1P+; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b727f330dd2so27310366b.2
-        for <linux-ext4@vger.kernel.org>; Wed, 05 Nov 2025 03:50:24 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-640b2a51750so6627593a12.0
+        for <linux-ext4@vger.kernel.org>; Wed, 05 Nov 2025 03:51:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762343423; x=1762948223; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762343490; x=1762948290; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/psyIBp1deb+sQYGw/uMYU7k4vt3eFFEkdfa8ASj+ds=;
-        b=fVQJJ/r+ZjX44d8LXn4NgHlpp/d/oo/58YT8GjIgIa2097w+VrCmukq0yfHcI5gypG
-         c5W/QkZa/Bq51pIMPuDzc7XxvfdlYxmWNMZBrwKjuFTx3W0yKD4S5+1MpWP08uPhr37H
-         sr/HqWbeh2aSFkypaYgwu34CNW8aOLJwOA3X7z7ag3cQQuvxXt3efoMcPbGk1mP8v4fO
-         f1ySJLAYrFvVCsrQEpOAzbKrx0sXom+vafK46pBAHPvsI5MZpYbPNwUHq5l/Tu3j3rys
-         tUmcx5eXlBT3bVjgdATdEkw+2ugG7xJUd0Mz/EYrPrPhBwoJ5iJfPeLTMXEyW4ozP7YY
-         cyMA==
+        bh=OBOSl6pD9va2npR8bvYE6uY0VVOqzBIXrSyh8Q41oCY=;
+        b=EaDFH1P+xt+cfCxJqjduzXKkIIOTl+KIQaxaDb9+jMXB1rliOpRyq87HWs+WZwBfQ8
+         3+kVWxgV2pf63zl8bvAvszUGIokKKpnElS3cOg3jCLx6Y63sGXK91favapx5WVleuC/g
+         3m4C20F2Fx9kFpvq3UYaMGl/yq9AxZ24ZU1EOMPGLh2PwmoQNkqDEGdQoVtb7LtH5Uu7
+         rfb8e72PNysvzQoQeDVVhBsJ9YzA06qov9y5lCrGb5MuY46fedCC5wT+Aqe+Kkz0OvsB
+         LyS//fx3QyeIas1bt+OEKia/mz9Zy/3ufDDp9LL067kmUMfWiLlJCSOToyolctgpSEzN
+         J1kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762343423; x=1762948223;
+        d=1e100.net; s=20230601; t=1762343490; x=1762948290;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/psyIBp1deb+sQYGw/uMYU7k4vt3eFFEkdfa8ASj+ds=;
-        b=BgeoFfJcmeXwI/SbmxsnR/jFw4vnsC99jeEay971GEPDiaXw+RImGhlNt3rhUKoR+T
-         sTmSyKMtskJlEsntsSE8sDF4Y7YrrXzNbmOUs/EtN/4oTcl0/qy4+qKXAZx1Sq/4w6KC
-         zNkyf4pMhVfMkUM+lPnUTu1h7fiqiXVYi61cNWUCU/YWU0GOMV5TnD9wpnGUyVweE4+G
-         5MAurgrz5mV/DdZ1AXvL1Czidp/iQ0C3peHye7uejuJQB8QGOHFAMo1aSzvID6Pn3l3l
-         Yz8nlH2CJLGu09kKsn6GIG1baYFUKZdUNoO42NI20mklLSHE985MbFleAlo0aA0qvC0D
-         tE6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUG5EY6V8uk5pAoqSi7QlqRn6LsrlhpX17Mb1TAjr92KOkgA7/8cJMnYUwvaWiHKYGCTMFTxuTYzf9r@vger.kernel.org
-X-Gm-Message-State: AOJu0YydlPCjA/YcgT/93KAfYyq6kZFQhsc3CbBx/UX+IBc1XaNuJOfv
-	XRRRJGhvRNJEeh3s/keLNTq7x2x2xBlrIl2zWSuRqgjsK/KKdUp3j+P23OmEfy3qd87IaYjqqvq
-	bpi2mSUC/dOjWL97z0WuXPUPF17Cijkk=
-X-Gm-Gg: ASbGncvb8ojszmtvPKan8rIpBfv0zH7HC7O9PVS/kvNqdxcvnDb/wsGV2LLmDSUng3R
-	R7Q7eXWJm8V6LTp/0/Pw6N792sxaSOIEszGtwC/1B3vjMQgoFkuvrvqhszfwbots0XiZXAfufp/
-	/4S+DrLqbgX31JUk+8pVdlaz1OgudGKj++pDDoxEMXzK5bDBE4L7E5/IWo1JHFDNPQrXUrJlZZ9
-	IiNy2EsM0hU83pbLky7Fdl/dvcTNzMTqybJZT3/pYXk0L6Y2gnfOzqN5h8yZTO5yVkwN8JWBCKM
-	cma0qYatnWUXJ0k=
-X-Google-Smtp-Source: AGHT+IEtU3lRWf5x1hxqjxtGZrq7F9QSfqDpcgBQPa1KDHc8/XkN76onavaj3uG4WD1930D5cSNesEukx/CuB7ZtOTA=
-X-Received: by 2002:a17:906:730b:b0:b6d:6c1a:31ae with SMTP id
- a640c23a62f3a-b7265559368mr280494466b.49.1762343422441; Wed, 05 Nov 2025
- 03:50:22 -0800 (PST)
+        bh=OBOSl6pD9va2npR8bvYE6uY0VVOqzBIXrSyh8Q41oCY=;
+        b=Yv1ln34voCbA0hwk6IcXgMAxLXwepua/g/v0sUQQfcMm21OtEYu7hgEcyx6+4QXXNO
+         oLgOMYavQ7hQ76sKyaXdpEE3BXXyJMJYnuby5cma3h2L4duObyn0p76OEv7vNpWKCUyA
+         9ggy21jWcbo3pyMiXZO6nweFulFnQwSF/OephpltXCiblkf/dmgA75fum5uQUHKN991G
+         MIJGPXgDmkTn/NM7y09ycGqFDpi5pedjRP7CxxIVFV4y7gxXz6r1nX+arQd8yw0BXunQ
+         XreGi8xbzAf6NlL+w2kbvgnMMISM04N4QkqbGAmUB3WUFwSpRJ/zn7omv/6314YiZ01X
+         Sykg==
+X-Forwarded-Encrypted: i=1; AJvYcCVnevVCveZNQCXTBdOWxoMREL1JgLfIZKO/+z9QuGpq4iu1U3g7acSLL2YjTUCqdI8JZE+buFYKYv3d@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYhscgTGoongtmdIOVvjW950/fOl9Gk7rAOwW5JF4k8l9i0F7S
+	Wb6ccNvzQDrOJZw0McZ6lUCx0iQouvnif+vUx92DtF7DDOESbHBCVuUekbg+Jn6vKC3iITzngzu
+	/5B8dwMtVj+kO+e0ZKjZYNBJPNY5fjUI=
+X-Gm-Gg: ASbGncuu7WuCiM7bG3fnDWThWaIL+s10NOkJ5DD9xOxlilRO71+Hn1GwWC8k4tkDo9r
+	H60r3SQfL+/QoTM8HkXNo0ZP7mwy4RWk0E5A/YtwtQsCYc1smei0nxYzTr+dYLfQvnUGbLEsjjH
+	yQaHI6EaN/jM+Eu5YFb8L0AV6BxWCf24yOXgx2dG9sA2xU4d2WOw5AQW+Qb3O3NRjyL2OavjOjW
+	g3S9lbOn+8bmerw0Dw5IF8E/dJ0e+FUz9wOK8igMdRjbv+A000IRj549XbxsWz2UKN7E6zrm8Di
+	SNZzd2abgG067+I=
+X-Google-Smtp-Source: AGHT+IFxmWNp2BQNRRARVBw1UkvbAPrXqb7by6fcY2sFoKYINuOjwAC+gpfmeJUhpea01PtyF9yDw6J53Cypt4ETdms=
+X-Received: by 2002:a05:6402:144a:b0:640:bb31:cbf4 with SMTP id
+ 4fb4d7f45d1cf-641058b30c2mr2389322a12.11.1762343489390; Wed, 05 Nov 2025
+ 03:51:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -84,12 +84,12 @@ References: <CAHk-=wiKyMzE26G7KMa_D1KXa6hCPu5+3ZEPUN0zB613kc5g4Q@mail.gmail.com>
  <CAGudoHGxr5gYb0JqPqF_J0MoSAb_qqoF4gaJMEdOhp51yobbLw@mail.gmail.com>
  <20250412215257.GF13132@mit.edu> <CAHk-=wifig365Ej8JQrXBzK1_BzU9H9kqvvbBGuboF7CzR28VQ@mail.gmail.com>
  <20250412235535.GH13132@mit.edu> <CAGudoHEJZ32rDUt4+n2-L-RU=bpGgkYMroxtdMF6MQjKRsW24w@mail.gmail.com>
- <20250413124054.GA1116327@mit.edu>
-In-Reply-To: <20250413124054.GA1116327@mit.edu>
+ <20250413124054.GA1116327@mit.edu> <CAGudoHFciRp7qJtaHSOhLAxpCfT1NEf0+MN0iprnOYORYgXKbw@mail.gmail.com>
+In-Reply-To: <CAGudoHFciRp7qJtaHSOhLAxpCfT1NEf0+MN0iprnOYORYgXKbw@mail.gmail.com>
 From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Wed, 5 Nov 2025 12:50:10 +0100
-X-Gm-Features: AWmQ_bnS1G1Gd1LQ2Jc6nGUipYMZeP5XUsL5HdztHQzw4JohAps7_MLiyL5Bq8Q
-Message-ID: <CAGudoHFciRp7qJtaHSOhLAxpCfT1NEf0+MN0iprnOYORYgXKbw@mail.gmail.com>
+Date: Wed, 5 Nov 2025 12:51:16 +0100
+X-Gm-Features: AWmQ_blIK6-wuX86CTfA092C43j9omx8HCq1kgLMG--DuF0my_1OyHjIGCxPiEo
+Message-ID: <CAGudoHHrUkcGvhE3kwc9+kgdia_NREEeTj=_UBtiHCpUGEYwZg@mail.gmail.com>
 Subject: Re: generic_permission() optimization
 To: "Theodore Ts'o" <tytso@mit.edu>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, 
@@ -98,57 +98,79 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christian Brauner <brauner@k
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 13, 2025 at 2:40=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote=
-:
+On Wed, Nov 5, 2025 at 12:50=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> w=
+rote:
 >
-> On Sun, Apr 13, 2025 at 11:41:47AM +0200, Mateusz Guzik wrote:
-> > This is the rootfs of the thing, so I tried it out with merely
-> > printing it. I got 70 entries at boot time. I don't think figuring out
-> > what this is specifically is warranted (it is on debian though).
->
-> Well, can you run:
->
-> debugfs -R "stat <INO>" /dev/ROOT_DEV
->
-> on say, two or three of the inodes (replace INO with a number, and
-> ROOT_DEV with the root file system device) and send me the result?
-> That would be really helpful in understanding what might be going on.
->
-> > So... I think this is good enough to commit? I had no part in writing
-> > the patch and I'm not an ext4 person, so I'm not submitting it myself.
+> On Sun, Apr 13, 2025 at 2:40=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wro=
+te:
 > >
-> > Ted, you seem fine with the patch, so perhaps you could do the needful(=
-tm)?
+> > On Sun, Apr 13, 2025 at 11:41:47AM +0200, Mateusz Guzik wrote:
+> > > This is the rootfs of the thing, so I tried it out with merely
+> > > printing it. I got 70 entries at boot time. I don't think figuring ou=
+t
+> > > what this is specifically is warranted (it is on debian though).
+> >
+> > Well, can you run:
+> >
+> > debugfs -R "stat <INO>" /dev/ROOT_DEV
+> >
+> > on say, two or three of the inodes (replace INO with a number, and
+> > ROOT_DEV with the root file system device) and send me the result?
+> > That would be really helpful in understanding what might be going on.
+> >
+> > > So... I think this is good enough to commit? I had no part in writing
+> > > the patch and I'm not an ext4 person, so I'm not submitting it myself=
+.
+> > >
+> > > Ted, you seem fine with the patch, so perhaps you could do the needfu=
+l(tm)?
+> >
+> > Sure, I'll put together a more formal patch and do full QA run and
+> > checking of the code paths, as a supposed a fairly superficial review
+> > and hack.
+> >
 >
-> Sure, I'll put together a more formal patch and do full QA run and
-> checking of the code paths, as a supposed a fairly superficial review
-> and hack.
+> It looks like this well through the cracks.
+>
+> To recount, here is the patch (by Linus, not me):
+> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > index f386de8c12f6..3e0ba7c4723a 100644
+> > --- a/fs/ext4/inode.c
+> > +++ b/fs/ext4/inode.c
+> > @@ -5109,6 +5109,11 @@ struct inode *__ext4_iget(struct super_block *sb=
+, unsigned long ino,
+> >                 goto bad_inode;
+> >         brelse(iloc.bh);
+> >
+> > +       if (test_opt(sb, DEBUG) &&
+> > +           (ext4_test_inode_state(inode, EXT4_STATE_XATTR) ||
+> > +            ei->i_file_acl))
+> > +               ext4_msg(sb, KERN_DEBUG, "has xattr ino %lu", inode->i_=
+ino);
+> > +
+> >         unlock_new_inode(inode);
+> >         return inode;
 >
 
-It looks like this well through the cracks.
+sigh, copy-pasto, the patch is:
+  --- a/fs/ext4/inode.c
+  +++ b/fs/ext4/inode.c
+  @@ -5011,6 +5011,11 @@ struct inode *__ext4_iget(...
+        }
 
-To recount, here is the patch (by Linus, not me):
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index f386de8c12f6..3e0ba7c4723a 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5109,6 +5109,11 @@ struct inode *__ext4_iget(struct super_block *sb, =
-unsigned long ino,
->                 goto bad_inode;
->         brelse(iloc.bh);
+        brelse(iloc.bh);
+  +
+  +     /* Initialize the "no ACL's" state for the simple cases */
+  +     if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_file_=
+acl)
+  +             cache_no_acl(inode);
+  +
+        unlock_new_inode(inode);
+        return inode;
+
+> In my tests it covered most real-world lookups on my debian box.
 >
-> +       if (test_opt(sb, DEBUG) &&
-> +           (ext4_test_inode_state(inode, EXT4_STATE_XATTR) ||
-> +            ei->i_file_acl))
-> +               ext4_msg(sb, KERN_DEBUG, "has xattr ino %lu", inode->i_in=
-o);
-> +
->         unlock_new_inode(inode);
->         return inode;
-
-In my tests it covered most real-world lookups on my debian box.
-
-Sorting this out acts as blocker for a lookup optimization I'm working
-on which bypasses all perm checking if an inode has a flag indicating
-everyone can traverse through it.
+> Sorting this out acts as blocker for a lookup optimization I'm working
+> on which bypasses all perm checking if an inode has a flag indicating
+> everyone can traverse through it.
 
