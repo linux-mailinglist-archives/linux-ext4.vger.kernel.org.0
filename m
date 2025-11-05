@@ -1,143 +1,93 @@
-Return-Path: <linux-ext4+bounces-11464-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11465-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F026C33AED
-	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 02:39:19 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22906C345B1
+	for <lists+linux-ext4@lfdr.de>; Wed, 05 Nov 2025 08:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5967E4E5CF5
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 01:39:18 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4170C4EB6FC
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Nov 2025 07:51:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC8022127A;
-	Wed,  5 Nov 2025 01:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="5mv2i+Lg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9CB2D5C9B;
+	Wed,  5 Nov 2025 07:51:16 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720F228DC4
-	for <linux-ext4@vger.kernel.org>; Wed,  5 Nov 2025 01:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA2A2D3EF2;
+	Wed,  5 Nov 2025 07:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762306753; cv=none; b=Q8d6ywh+BWm+26/0FsY+3cBgpztN3WUIipCyDp5WB05HNZ9eEcHoM0f+1UytL+s5PDyUpxhV6wkdQoPkWjE7jjwhYERnBHBr/K8wyxECDoII1HVcFdGEtu0916sDsdlXdIFp+PtsqmF2BkMUDOzlYmOUvZv3ohEub2m41s53hQg=
+	t=1762329076; cv=none; b=XszjePNXWj+fjl+MgJWp/ZK60FWmQKJKWSJP7yjjy9K2a7YXkEvdQHuKAUW4udzg5h5jPsSnsf3M714bha3+5p4Wou3RYQf1oZ4jV03v/ST2xSFDwBGvbiH+7MAOm9tbcevHHH11bqxqmWsFogKskU7zr8ljG2m2/y7ZJa8bOvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762306753; c=relaxed/simple;
-	bh=L0ilZKX29ZJ2iH3epKctEou+1MP4s1hcBqaZQbzjkdc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=p1C5skKxvY1JxfjYMQMk5Z3vIp1dxLTP7R7Vt5W2/3ldFBCckiw9T5ndBcdG9JP+0zjNGLyRnK9MseWItiudZ0r7LFiRy7Q4H8vnDIwDeL+iGkXFj4hP2/U3ggx2sTQvfSDEY/kozZdSYpicyl0XQrborIiRZA0r0N+iAn32WY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=5mv2i+Lg; arc=none smtp.client-ip=113.46.200.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=/wkCPjEUqSdB3HKsy7A+Wmr+BsWOJm/T3Y87LFtNb+I=;
-	b=5mv2i+LgmihkDrkrSdk7FmIkTb06pVsFFPwGx3AwdZSfxJU5xnUL0C3T4gQvvU1X2KIW5Rrio
-	fTTaXh9ZCPcKzmqL9zTHsgb5P1ck86rlbYuju9MkGq0G8qcvWT5wDsS6O9NMEl4LrGLhaSU4RhZ
-	Oz+0N7x2vVBiV6llH5SRvJs=
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4d1ScQ2qj2zcZxy;
-	Wed,  5 Nov 2025 09:37:26 +0800 (CST)
-Received: from kwepemf100006.china.huawei.com (unknown [7.202.181.220])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6FAA8180491;
-	Wed,  5 Nov 2025 09:39:02 +0800 (CST)
-Received: from [10.174.177.210] (10.174.177.210) by
- kwepemf100006.china.huawei.com (7.202.181.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 5 Nov 2025 09:39:01 +0800
-Message-ID: <09cae118-2ee1-745f-afb8-6c6723b59e7d@huawei.com>
-Date: Wed, 5 Nov 2025 09:39:01 +0800
+	s=arc-20240116; t=1762329076; c=relaxed/simple;
+	bh=GcHIDROv4Fr5TWfluLvmmBRAc0i1hJy5IIBrVOzS/EE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=T31fcFPJjjoB2H7uQXB2/d5CkLEIMmBMRQ+Dt/2owQ+Us+pDEHYuQcBFXEHniN+u7Fbv5C72qQm1/o/+NUw4l94z7EkJffs0S0DxTmaq7ZnIK9dxHaH64iGG+8l4zczjcqP3CiqLkHN6gna24YSbGUVrnwBriZof7aXVq+yHulA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d1cvL6XV6zYQvM7;
+	Wed,  5 Nov 2025 15:50:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 13E0C1A1970;
+	Wed,  5 Nov 2025 15:51:11 +0800 (CST)
+Received: from huawei.com (unknown [10.50.87.129])
+	by APP2 (Coremail) with SMTP id Syh0CgCn_UXuAQtpwcIVCw--.9854S4;
+	Wed, 05 Nov 2025 15:51:10 +0800 (CST)
+From: Yongjian Sun <sunyongjian@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu,
+	jack@suse.cz,
+	yangerkun@huawei.com,
+	yi.zhang@huawei.com,
+	libaokun1@huawei.com,
+	chengzhihao1@huawei.com,
+	sunyongjian1@huawei.com
+Subject: [PATCH 0/2] ext4: fixes for mb_check_buddy integrity checks
+Date: Wed,  5 Nov 2025 15:42:48 +0800
+Message-Id: <20251105074250.3517687-1-sunyongjian@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
+Reply-To: sunyongjian1@huawei.com
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v2 1/4] ext4: remove useless code in
- ext4_map_create_blocks
-To: Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<yi.zhang@huawei.com>, <libaokun1@huawei.com>, <yangerkun@huaweicloud.com>
-References: <20251104131750.1581541-1-yangerkun@huawei.com>
- <j7hzyzb6ounq5tofuxg6mwmb4w5c2ldmkat6ngaf2ijt3rgsfc@fdty7kn7bdjn>
-From: yangerkun <yangerkun@huawei.com>
-In-Reply-To: <j7hzyzb6ounq5tofuxg6mwmb4w5c2ldmkat6ngaf2ijt3rgsfc@fdty7kn7bdjn>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemf100006.china.huawei.com (7.202.181.220)
+X-CM-TRANSID:Syh0CgCn_UXuAQtpwcIVCw--.9854S4
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYn7kC6x804xWl14x267AKxVW8JVW5JwAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r
+	4UJVWxJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAK
+	I48JMxAqzxv26xkF7I0En4kS14v26r1q6r43MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+	CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
+	xUoKsjUUUUU
+X-CM-SenderInfo: 5vxq505qjmxt3q6k3tpzhluzxrxghudrp/
 
+From: Yongjian Sun <sunyongjian1@huawei.com>
 
+Yongjian Sun (2):
+  ext4: fix incorrect group number assertion in mb_check_buddy for
+    exhausted preallocations
+  ext4: improve integrity checking in __mb_check_buddy by enhancing
+    order-0 validation
 
-在 2025/11/4 22:28, Jan Kara 写道:
-> On Tue 04-11-25 21:17:47, Yang Erkun wrote:
->> IO path with EXT4_GET_BLOCKS_PRE_IO means dio within i_size or
->> dioread_nolock buffer writeback, they all means we need a unwritten
->> extent(or this extent has already been initialized), and the split won't
->> zero the range we really write. So this check seems useless. Besides,
->> even if we repeatedly execute ext4_es_insert_extent, there won't
->> actually be any issues.
->>
->> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
->> Signed-off-by: Yang Erkun <yangerkun@huawei.com>
-> 
-> I agree the check isn't needed for correctness but it seems to be
-> reasonable performance optimization for a common case of writing back
-> already written data in dioread_nolock mode?
+ fs/ext4/mballoc.c | 59 +++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 42 insertions(+), 17 deletions(-)
 
-Hi!
+-- 
+2.39.2
 
-Thank you for your detailed review! I believe you are referring to
-writing back a block within the written extent in dioread_nolock mode.
-If that's the case, we might never enter ext4_map_create_blocks because
-ext4_map_query_blocks will return the block as MAPPED. Please correct me
-if I misunderstood!
-
-Thanks,
-Erkun.
-
-> 
-> 								Honza
-> 
->> ---
->>   fs/ext4/inode.c | 11 -----------
->>   1 file changed, 11 deletions(-)
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index e99306a8f47c..e8bac93ca668 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -583,7 +583,6 @@ static int ext4_map_query_blocks(handle_t *handle, struct inode *inode,
->>   static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
->>   				  struct ext4_map_blocks *map, int flags)
->>   {
->> -	struct extent_status es;
->>   	unsigned int status;
->>   	int err, retval = 0;
->>   
->> @@ -644,16 +643,6 @@ static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
->>   			return err;
->>   	}
->>   
->> -	/*
->> -	 * If the extent has been zeroed out, we don't need to update
->> -	 * extent status tree.
->> -	 */
->> -	if (flags & EXT4_GET_BLOCKS_PRE_IO &&
->> -	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
->> -		if (ext4_es_is_written(&es))
->> -			return retval;
->> -	}
->> -
->>   	status = map->m_flags & EXT4_MAP_UNWRITTEN ?
->>   			EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
->>   	ext4_es_insert_extent(inode, map->m_lblk, map->m_len, map->m_pblk,
->> -- 
->> 2.39.2
->>
 
