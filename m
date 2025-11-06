@@ -1,54 +1,54 @@
-Return-Path: <linux-ext4+bounces-11587-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11588-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3ED1C3DA1F
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:38:39 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBFAC3DA22
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:38:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6119E4E42A3
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:38:38 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 72AD434DAD6
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B0D12E0934;
-	Thu,  6 Nov 2025 22:38:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD1F308F11;
+	Thu,  6 Nov 2025 22:38:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZDp3XaSg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gvHn4pGN"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8FA2F6598
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A942E0934
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468712; cv=none; b=bTZ0N81y4p33byqUvxZzV9T/3NezrYQoP0+o1D4s+fkP/h9LqSQcpVcL4j5ZQpFUmq651zE5qbk2sE/0wYyNXFyDN1tpTFWg8nCVKwNfSbyuFGqLy2bq0j8D4uOrEcwLC8DLT+mCGDJzy44pdNedA7i7YOq98NgiYZDcEj/g25Q=
+	t=1762468728; cv=none; b=Wx+V3AcCMH8CYUXkhpZ+l5sbo2usXWYt77XJTmIWlborokkzpcs4r8xCzLdU8Ekd6CJ3hM0x87pe2ctx2TgZrkWY1qe1mtzxBPZUezr44wAdkEz7Id/fyCQi3NEORhULKU0aE3w8fGHl5At74abbGnncTIwmp90TH2DwBAWiX4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468712; c=relaxed/simple;
-	bh=59MuZLzc4sFS7b6J74mD/dKUn25Pp9d0TvTWx0p8RKw=;
+	s=arc-20240116; t=1762468728; c=relaxed/simple;
+	bh=E8ceHZ7Q1JtA5fYz0IEdJOCElYLW4V9pFrfmuAIwaz8=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VgHhcSkNc7aL4CusOwfOMLX3awtiqYo3DBXTBYyxmhCo7i49fomZnwcmZ15OQrkDSXPwOzkGrErzIGUR220gqcjFr/KqDH3UaDn1vp2lhdpgNn5/YBL8fDBaBXy0kesZTzBixERNJUb0XbzPlXQSoX4fKuhzqkRY9oLVsD4Ies8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZDp3XaSg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B27FC4CEF7;
-	Thu,  6 Nov 2025 22:38:32 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bQ1TsDqbzLxSfWnE/YcgriWjHnngipK7bHhPRGck0FJ3IsXvRg2QTBsWsKKUmYrMNtUHDS2wWe7tZtTf4OZkJRGl5PhYGGe/A1mJ6DrsXQRTOLBD7YTDDQpBD1CMbtF+s7KxzjyqPaU0taHkzLlY9/iciPQPTJJxJZoUdWkeZPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gvHn4pGN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7471FC4CEF7;
+	Thu,  6 Nov 2025 22:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468712;
-	bh=59MuZLzc4sFS7b6J74mD/dKUn25Pp9d0TvTWx0p8RKw=;
+	s=k20201202; t=1762468728;
+	bh=E8ceHZ7Q1JtA5fYz0IEdJOCElYLW4V9pFrfmuAIwaz8=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=ZDp3XaSgjJbC51IwfEYtG/Q5nBRfecPDYvjTyjirDwWGkaOkYZMsEt9n2GqXWaq/g
-	 Pp9AwO2eOJvvlSvYFe1P3sv6knEdH5XIqbRjWFFKwsaP11dUPZR8jWLJszNng0mB1S
-	 cn44oXAZZt8Z2V06vtemTLdHtoYtXTNewv+tAkJg0ZLQLycfDO6XLJILoxoawBPYed
-	 JyTUzq0u6VtcrlKG+2ksR9B7+Xf55RC3qGjCvoyUqZIrjIAHU3cYyE8mr6bZy7bC7h
-	 yeoHXGkRJG6OsKtIkpuIKHKtoR1hIOf0z9g3SV09M0StdtPbBuJVWzg64/uaBxurJF
-	 aNpK/Ga0qRkZA==
-Date: Thu, 06 Nov 2025 14:38:31 -0800
-Subject: [PATCH 9/9] fuse2fs: collect runtime of various operations
+	b=gvHn4pGNneFNDZguLgi6hH3TIYoqR4o0+t+c8QqI6xfirE9RuaUjetLXYWZ74pVSV
+	 ZpjZWh8Cq8cU69HVx6OiaB/GiSswSFBOzXB87i8lr6qyEUErXCtODdPCG6HfOdYtBM
+	 vqblxeyeAuGLg299ewg8VGpZ5t8a8qRewiI7R4SzHiSved4qwKIbW9lpw8LRdm7NJg
+	 iO3Q6hxn4LyKl96rH+MHTyLMbDGPA/II0a9gM00POo7HEab11xU5LHBXFK3bHu9rHx
+	 vxiW4H31AJGJb9Et/ySeXnYoBSxtDifDtJ8XrwGkJKfpUHa4ZG0EmeWlOrYh32tPdO
+	 TVqLwtEPH/66Q==
+Date: Thu, 06 Nov 2025 14:38:47 -0800
+Subject: [PATCH 1/3] fuse2fs: get rid of the global_fs variable
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246794327.2862990.177650256432240806.stgit@frogsfrogsfrogs>
-In-Reply-To: <176246794125.2862990.7275258954976277948.stgit@frogsfrogsfrogs>
-References: <176246794125.2862990.7275258954976277948.stgit@frogsfrogsfrogs>
+Message-ID: <176246794479.2863378.5447111099174164770.stgit@frogsfrogsfrogs>
+In-Reply-To: <176246794450.2863378.4457886029233676166.stgit@frogsfrogsfrogs>
+References: <176246794450.2863378.4457886029233676166.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,188 +60,204 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Collect the run time of various operations so that we can do some simple
-profiling.
+Get rid of this global variable now that we don't need it anywhere.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- configure       |   37 +++++++++++++++++++++++++++++++++++++
- configure.ac    |   19 +++++++++++++++++++
- lib/config.h.in |    3 +++
- misc/fuse2fs.c  |   43 ++++++++++++++++++++++++++++++++++++++++++-
- 4 files changed, 101 insertions(+), 1 deletion(-)
+ misc/fuse2fs.c |   73 +++++++++++++++++++++++++++-----------------------------
+ 1 file changed, 35 insertions(+), 38 deletions(-)
 
 
-diff --git a/configure b/configure
-index 2ed61db3602dc9..ba2e5380f6d20b 100755
---- a/configure
-+++ b/configure
-@@ -14725,6 +14725,43 @@ then
- printf "%s\n" "#define FUSE_USE_VERSION $FUSE_USE_VERSION" >>confdefs.h
- 
- fi
-+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for CLOCK_MONOTONIC" >&5
-+printf %s "checking for CLOCK_MONOTONIC... " >&6; }
-+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-+/* end confdefs.h.  */
-+
-+#define _GNU_SOURCE
-+#include <time.h>
-+
-+int
-+main (void)
-+{
-+
-+struct timespec nuts;
-+clock_gettime(CLOCK_MONOTONIC, &nuts);
-+
-+  ;
-+  return 0;
-+}
-+
-+_ACEOF
-+if ac_fn_c_try_link "$LINENO"
-+then :
-+  have_clock_monotonic=yes
-+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-+printf "%s\n" "yes" >&6; }
-+else $as_nop
-+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-+printf "%s\n" "no" >&6; }
-+fi
-+rm -f core conftest.err conftest.$ac_objext conftest.beam \
-+    conftest$ac_exeext conftest.$ac_ext
-+if test "$have_clock_monotonic" = yes; then
-+
-+printf "%s\n" "#define HAVE_CLOCK_MONOTONIC 1" >>confdefs.h
-+
-+fi
-+
- { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for optreset" >&5
- printf %s "checking for optreset... " >&6; }
- if test ${ac_cv_have_optreset+y}
-diff --git a/configure.ac b/configure.ac
-index bdd5f1f69d267d..051161c5848072 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -1452,6 +1452,25 @@ then
- 	AC_DEFINE_UNQUOTED(FUSE_USE_VERSION, $FUSE_USE_VERSION,
- 		[Define to the version of FUSE to use])
- fi
-+dnl
-+dnl see if CLOCK_MONOTONIC exists
-+dnl
-+AC_MSG_CHECKING(for CLOCK_MONOTONIC)
-+AC_LINK_IFELSE(
-+[	AC_LANG_PROGRAM([[
-+#define _GNU_SOURCE
-+#include <time.h>
-+	]], [[
-+struct timespec nuts;
-+clock_gettime(CLOCK_MONOTONIC, &nuts);
-+	]])
-+], have_clock_monotonic=yes
-+   AC_MSG_RESULT(yes),
-+   AC_MSG_RESULT(no))
-+if test "$have_clock_monotonic" = yes; then
-+  AC_DEFINE(HAVE_CLOCK_MONOTONIC, 1, [Define to 1 if CLOCK_MONOTONIC is present])
-+fi
-+
- dnl
- dnl See if optreset exists
- dnl
-diff --git a/lib/config.h.in b/lib/config.h.in
-index 480717abd9b4be..364d6e865b7115 100644
---- a/lib/config.h.in
-+++ b/lib/config.h.in
-@@ -683,4 +683,7 @@
- /* Define for large files, on AIX-style hosts. */
- #undef _LARGE_FILES
- 
-+/* Define to 1 if CLOCK_MONOTONIC is present */
-+#undef HAVE_CLOCK_MONOTONIC
-+
- #include <dirpaths.h>
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 9d50ebb6d08f8a..9db0b17af27438 100644
+index 9db0b17af27438..0020d149949835 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -166,6 +166,12 @@ static inline uint64_t round_down(uint64_t b, unsigned int align)
- 		fflush(stderr); \
- 	} while (0)
- 
-+#define timing_printf(fuse2fs, format, ...) \
-+	while ((fuse2fs)->timing) { \
-+		printf("FUSE2FS (%s): " format, (fuse2fs)->shortdev, ##__VA_ARGS__); \
-+		break; \
-+	}
-+
- #if FUSE_VERSION >= FUSE_MAKE_VERSION(2, 8)
- # ifdef _IOR
- #  ifdef _IOW
-@@ -246,6 +252,13 @@ struct fuse2fs {
- 	struct bthread *mmp_thread;
- 	unsigned int mmp_update_interval;
+@@ -123,8 +123,6 @@
  #endif
-+#ifdef HAVE_CLOCK_MONOTONIC
-+	double lock_start_time;
-+	double op_start_time;
-+
-+	/* options set by fuse_opt_parse must be of type int */
-+	int timing;
-+#endif
- };
+ #endif /* !defined(ENODATA) */
  
- #define FUSE2FS_CHECK_HANDLE(ff, fh) \
-@@ -494,13 +507,38 @@ static inline errcode_t fuse2fs_write_inode(ext2_filsys fs, ext2_ino_t ino,
- 
- static inline ext2_filsys fuse2fs_start(struct fuse2fs *ff)
+-static ext2_filsys global_fs; /* Try not to use this directly */
+-
+ static inline uint64_t round_up(uint64_t b, unsigned int align)
  {
--	pthread_mutex_lock(&ff->bfl);
-+	if (ff->timing) {
-+		double lock_time = gettime_monotonic();
-+
-+		pthread_mutex_lock(&ff->bfl);
-+
-+		ff->op_start_time = gettime_monotonic();
-+		ff->lock_start_time = lock_time;
-+	} else {
-+		pthread_mutex_lock(&ff->bfl);
-+	}
-+
- 	return ff->fs;
- }
+ 	unsigned int m;
+@@ -1265,7 +1263,7 @@ static void *op_init(struct fuse_conn_info *conn
+ 		log_printf(ff, "%s %s.\n", _("mounted filesystem"), uuid);
+ 	}
  
-+static inline void fuse2fs_finish_timing(struct fuse2fs *ff, const char *func)
-+{
-+	double now;
-+
-+	if (!ff->timing)
-+		return;
-+
-+	now = gettime_monotonic();
-+
-+	timing_printf(ff, "%s: lock=%.2fms elapsed=%.2fms\n", func,
-+		      (ff->op_start_time - ff->lock_start_time) * 1000.0,
-+		      (now - ff->op_start_time) * 1000.0);
-+}
-+
- static inline void __fuse2fs_finish(struct fuse2fs *ff, int ret,
- 				    const char *func)
- {
-+	fuse2fs_finish_timing(ff, func);
+-	if (global_fs->flags & EXT2_FLAG_RW)
++	if (ff->fs->flags & EXT2_FLAG_RW)
+ 		fuse2fs_read_bitmaps(ff);
+ 
+ 	/*
+@@ -5287,7 +5285,7 @@ int main(int argc, char *argv[])
+ 	deadline = init_deadline(FUSE2FS_OPEN_TIMEOUT);
+ 	do {
+ 		err = ext2fs_open2(fctx.device, options, flags, 0, 0,
+-				   unix_io_manager, &global_fs);
++				   unix_io_manager, &fctx.fs);
+ 		if ((err == EPERM || err == EACCES) &&
+ 		    (!fctx.ro || (flags & EXT2_FLAG_RW))) {
+ 			/*
+@@ -5325,17 +5323,17 @@ int main(int argc, char *argv[])
+ 	 * uevent and cause weird userspace stalls, and block devices have
+ 	 * O_EXCL so we don't need this there.
+ 	 */
+-	if (!(global_fs->io->flags & CHANNEL_FLAGS_BLOCK_DEVICE)) {
++	if (!(fctx.fs->io->flags & CHANNEL_FLAGS_BLOCK_DEVICE)) {
+ 		unsigned int lock_flags = IO_CHANNEL_FLOCK_TRYLOCK;
+ 
+-		if (global_fs->flags & IO_FLAG_RW)
++		if (fctx.fs->flags & IO_FLAG_RW)
+ 			lock_flags |= IO_CHANNEL_FLOCK_EXCLUSIVE;
+ 		else
+ 			lock_flags |= IO_CHANNEL_FLOCK_SHARED;
+ 
+ 		deadline = init_deadline(FUSE2FS_OPEN_TIMEOUT);
+ 		do {
+-			err = io_channel_flock(global_fs->io, lock_flags);
++			err = io_channel_flock(fctx.fs->io, lock_flags);
+ 		} while (err == EWOULDBLOCK && retry_before_deadline(deadline));
+ 		if (err) {
+ 			err_printf(&fctx, "%s: %s\n",
+@@ -5344,8 +5342,7 @@ int main(int argc, char *argv[])
+ 		}
+ 	}
+ 
+-	fctx.fs = global_fs;
+-	global_fs->priv_data = &fctx;
++	fctx.fs->priv_data = &fctx;
+ 	fctx.blocklog = u_log2(fctx.fs->blocksize);
+ 	fctx.blockmask = fctx.fs->blocksize - 1;
+ 
+@@ -5358,7 +5355,7 @@ int main(int argc, char *argv[])
+ 
+ 		snprintf(buf, sizeof(buf), "cache_blocks=%llu",
+ 			 FUSE2FS_B_TO_FSBT(&fctx, fctx.cache_size));
+-		err = io_channel_set_options(global_fs->io, buf);
++		err = io_channel_set_options(fctx.fs->io, buf);
+ 		if (err) {
+ 			err_printf(&fctx, "%s %lluk: %s\n",
+ 				   _("cannot set disk cache size to"),
+@@ -5377,23 +5374,23 @@ int main(int argc, char *argv[])
+ 	 * ext4 can't do COW of shared blocks, so if the feature is enabled,
+ 	 * we must force ro mode.
+ 	 */
+-	if (ext2fs_has_feature_shared_blocks(global_fs->super))
++	if (ext2fs_has_feature_shared_blocks(fctx.fs->super))
+ 		fctx.ro = 1;
+ 
+-	if (ext2fs_has_feature_journal_needs_recovery(global_fs->super)) {
++	if (ext2fs_has_feature_journal_needs_recovery(fctx.fs->super)) {
+ 		if (fctx.norecovery) {
+ 			log_printf(&fctx, "%s\n",
+  _("Mounting read-only without recovering journal."));
+ 			fctx.ro = 1;
+-			global_fs->flags &= ~EXT2_FLAG_RW;
+-		} else if (!(global_fs->flags & EXT2_FLAG_RW)) {
++			fctx.fs->flags &= ~EXT2_FLAG_RW;
++		} else if (!(fctx.fs->flags & EXT2_FLAG_RW)) {
+ 			err_printf(&fctx, "%s\n",
+  _("Cannot replay journal on read-only device."));
+ 			ret = 32;
+ 			goto out;
+ 		} else {
+ 			log_printf(&fctx, "%s\n", _("Recovering journal."));
+-			err = ext2fs_run_ext3_journal(&global_fs);
++			err = ext2fs_run_ext3_journal(&fctx.fs);
+ 			if (err) {
+ 				err_printf(&fctx, "%s.\n", error_message(err));
+ 				err_printf(&fctx, "%s\n",
+@@ -5405,58 +5402,58 @@ int main(int argc, char *argv[])
+ 			if (err)
+ 				goto out;
+ 		}
+-	} else if (ext2fs_has_feature_journal(global_fs->super)) {
+-		err = ext2fs_check_ext3_journal(global_fs);
++	} else if (ext2fs_has_feature_journal(fctx.fs->super)) {
++		err = ext2fs_check_ext3_journal(fctx.fs);
+ 		if (err) {
+-			translate_error(global_fs, 0, err);
++			translate_error(fctx.fs, 0, err);
+ 			goto out;
+ 		}
+ 	}
+ 
+-	ret = fuse2fs_check_root_dir(global_fs);
++	ret = fuse2fs_check_root_dir(fctx.fs);
  	if (ret)
- 		dbg_printf(ff, "%s: libfuse ret=%d\n", func, ret);
- 	pthread_mutex_unlock(&ff->bfl);
-@@ -4959,6 +4997,9 @@ static struct fuse_opt fuse2fs_opts[] = {
- 	FUSE2FS_OPT("acl",		acl,			1),
- 	FUSE2FS_OPT("noacl",		acl,			0),
- 	FUSE2FS_OPT("lockfile=%s",	lockfile,		0),
-+#ifdef HAVE_CLOCK_MONOTONIC
-+	FUSE2FS_OPT("timing",		timing,			1),
-+#endif
+ 		goto out;
  
- 	FUSE_OPT_KEY("user_xattr",	FUSE2FS_IGNORED),
- 	FUSE_OPT_KEY("noblock_validity", FUSE2FS_IGNORED),
+-	if (global_fs->flags & EXT2_FLAG_RW) {
+-		if (ext2fs_has_feature_journal(global_fs->super))
++	if (fctx.fs->flags & EXT2_FLAG_RW) {
++		if (ext2fs_has_feature_journal(fctx.fs->super))
+ 			log_printf(&fctx, "%s",
+  _("Warning: fuse2fs does not support using the journal.\n"
+    "There may be file system corruption or data loss if\n"
+    "the file system is not gracefully unmounted.\n"));
+ 	}
+ 
+-	if (!(global_fs->super->s_state & EXT2_VALID_FS))
++	if (!(fctx.fs->super->s_state & EXT2_VALID_FS))
+ 		err_printf(&fctx, "%s\n",
+  _("Warning: Mounting unchecked fs, running e2fsck is recommended."));
+-	if (global_fs->super->s_max_mnt_count > 0 &&
+-	    global_fs->super->s_mnt_count >= global_fs->super->s_max_mnt_count)
++	if (fctx.fs->super->s_max_mnt_count > 0 &&
++	    fctx.fs->super->s_mnt_count >= fctx.fs->super->s_max_mnt_count)
+ 		err_printf(&fctx, "%s\n",
+  _("Warning: Maximal mount count reached, running e2fsck is recommended."));
+-	if (global_fs->super->s_checkinterval > 0 &&
+-	    (time_t) (global_fs->super->s_lastcheck +
+-		      global_fs->super->s_checkinterval) <= time(0))
++	if (fctx.fs->super->s_checkinterval > 0 &&
++	    (time_t) (fctx.fs->super->s_lastcheck +
++		      fctx.fs->super->s_checkinterval) <= time(0))
+ 		err_printf(&fctx, "%s\n",
+  _("Warning: Check time reached; running e2fsck is recommended."));
+-	if (global_fs->super->s_last_orphan)
++	if (fctx.fs->super->s_last_orphan)
+ 		err_printf(&fctx, "%s\n",
+  _("Orphans detected; running e2fsck is recommended."));
+ 
+ 	/* Clear the valid flag so that an unclean shutdown forces a fsck */
+-	if (global_fs->flags & EXT2_FLAG_RW) {
+-		global_fs->super->s_mnt_count++;
+-		ext2fs_set_tstamp(global_fs->super, s_mtime, time(NULL));
+-		global_fs->super->s_state &= ~EXT2_VALID_FS;
+-		ext2fs_mark_super_dirty(global_fs);
+-		err = ext2fs_flush2(global_fs, 0);
++	if (fctx.fs->flags & EXT2_FLAG_RW) {
++		fctx.fs->super->s_mnt_count++;
++		ext2fs_set_tstamp(fctx.fs->super, s_mtime, time(NULL));
++		fctx.fs->super->s_state &= ~EXT2_VALID_FS;
++		ext2fs_mark_super_dirty(fctx.fs);
++		err = ext2fs_flush2(fctx.fs, 0);
+ 		if (err) {
+-			translate_error(global_fs, 0, err);
++			translate_error(fctx.fs, 0, err);
+ 			ret |= 32;
+ 			goto out;
+ 		}
+ 	}
+ 
+ 	if (!fctx.errors_behavior)
+-		fctx.errors_behavior = global_fs->super->s_errors;
++		fctx.errors_behavior = fctx.fs->super->s_errors;
+ 
+ 	/* Initialize generation counter */
+ 	get_random_bytes(&fctx.next_generation, sizeof(unsigned int));
+@@ -5545,8 +5542,8 @@ int main(int argc, char *argv[])
+ 		fflush(orig_stderr);
+ 	}
+ 	fuse2fs_mmp_destroy(&fctx);
+-	if (global_fs) {
+-		err = ext2fs_close_free(&global_fs);
++	if (fctx.fs) {
++		err = ext2fs_close_free(&fctx.fs);
+ 		if (err)
+ 			com_err(argv[0], err, "while closing fs");
+ 	}
 
 
