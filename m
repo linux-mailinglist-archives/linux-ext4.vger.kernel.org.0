@@ -1,103 +1,102 @@
-Return-Path: <linux-ext4+bounces-11524-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11525-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 441C3C39CE0
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 10:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE89AC39F72
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 10:59:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BC0634F099C
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 09:25:03 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 995335016D9
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 09:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD5830C353;
-	Thu,  6 Nov 2025 09:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F5EB30F520;
+	Thu,  6 Nov 2025 09:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UE0J+gbg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RFadnBqJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UE0J+gbg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RFadnBqJ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mOGFYZdB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oTk3RRCR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VpFzHZKz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9u0tum4U"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623AA30BBAB
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 09:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42D330CDB7
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 09:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762421090; cv=none; b=fNSfxumt3jnBW7pqVyRHeQXJ0SGjR7HCjZsZZF5046ufZKp+eblFaOSY0TfsDEf0CgeyOl99ZQrsBFvC1cupt5OB7XoNPZ/DQI50ObzNUMi3j4khmlpqFB3fm9d8bXc5Ko6RamuT1nhef2J+JeMOXqPopvP1hHbGzHXyHv0hl40=
+	t=1762422753; cv=none; b=tj35p2sAgbVDoMOrL0AqhdQO0Vrx51jqofVS/+l7JBMd1w0XAyyzeC1/gXuQMxY4g/VKtT9MwbAjEEJLUqd7pjpc6QO0uHsVNlpNWtNwP5z1uIUBg18Q9z1RwccMcXc5XeeLjV/1bgNAgI3PPUom/KEGMOFtfTP0Mup0knFNhvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762421090; c=relaxed/simple;
-	bh=7bJ5qJttfQJKBc0MB3rn6hspKUOagptxg/C8vQlss78=;
+	s=arc-20240116; t=1762422753; c=relaxed/simple;
+	bh=3z9tKiixu75cZygPG7DEIhtsy5nshE6QhyCC2aOakFs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UpY7+oFS5YyR2U8Ax9lMAi+wtmd86r2wkJfO2v0heZt5xs1iEddKJzM7ZlZQfPB4GXzhrE3roi7VFpd4Svnad2dSie5feXcQWbm0qpjwp05CSLJQCUoXVVVoXNKc3JUEigFN/VjBA0BurC3EPiQNDBDAu6A7AeU26TN6c22pBZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UE0J+gbg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RFadnBqJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UE0J+gbg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RFadnBqJ; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=FIWj+76k0xPZ9athcj28RfoPKBSkDzdM+ZOSiIsihaRPluhEytLmUoQOzwvRUnsfI0vQjq0huNmXrzvFxwibIumAk8TNMw4oREiRkFa2Dx45qSe+kIOpQ2GcOHssPVjKAHz/yhAuSaAWmsg5PQUUEr29utO56F8KyUTXT/B4z8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mOGFYZdB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oTk3RRCR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VpFzHZKz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9u0tum4U; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2FEDA1F457;
-	Thu,  6 Nov 2025 09:24:41 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 252B7211C7;
+	Thu,  6 Nov 2025 09:52:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762421081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762422750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v/YrHEvc8gVeJ9aboOAbmD9J9A1DDwTG3TFGxeCLdak=;
-	b=UE0J+gbgOPcmB85ZJdiHFm9YvaF2TJyy/WGNOAmfto77nDfDIxVOwEApB07dqK4Gx2sUIp
-	cR/uryaOhjMePAfvQDYHNYpBYXsoiCgP1w47Td+769g8NL3dLXNhd1PHyJjvzrlTljy0qq
-	euhuMVHzZo9FNVUfGp5O2YJzvkf3jpw=
+	bh=bPqnD4mmA6cHcO1NRezM92gePmu8aG6SvFf8KMO34c8=;
+	b=mOGFYZdBqHKpcZVGcmrS7wuFUtBuGhFrNhr/8vyLkgopPDn2KVTCkSoiVK7qLW2fESwrCE
+	cCNbuBm4GKiTnHgEY/nQxi52GofltzdqAc2vZQwEtwQulXZnYYC7cGRIt55KLDe7TXmMtH
+	RjA0cuYOspsyVYnAGM2Xgvp7KjMNaUw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762421081;
+	s=susede2_ed25519; t=1762422750;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v/YrHEvc8gVeJ9aboOAbmD9J9A1DDwTG3TFGxeCLdak=;
-	b=RFadnBqJHFgvyMyjJsWo9QF3A1UD+bx++PZTMS2863DlKsquniVoCWXRSFrh3BKfrWy5wU
-	vb4BZsiubx8+IMBg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UE0J+gbg;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RFadnBqJ
+	bh=bPqnD4mmA6cHcO1NRezM92gePmu8aG6SvFf8KMO34c8=;
+	b=oTk3RRCRFs+N6ivHodgC9R0J7iahYFJnhHkQtXgkreRm4ortj4rC27iHoZEN4kqkASFF1l
+	lXwlWCjmP66Q9fDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762421081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762422749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v/YrHEvc8gVeJ9aboOAbmD9J9A1DDwTG3TFGxeCLdak=;
-	b=UE0J+gbgOPcmB85ZJdiHFm9YvaF2TJyy/WGNOAmfto77nDfDIxVOwEApB07dqK4Gx2sUIp
-	cR/uryaOhjMePAfvQDYHNYpBYXsoiCgP1w47Td+769g8NL3dLXNhd1PHyJjvzrlTljy0qq
-	euhuMVHzZo9FNVUfGp5O2YJzvkf3jpw=
+	bh=bPqnD4mmA6cHcO1NRezM92gePmu8aG6SvFf8KMO34c8=;
+	b=VpFzHZKzt6ElQkTPRuDl0M7K1GviJSGUqeIDhC69lTmzXoX79Ip04u2IOT1nzyXf+CD1cr
+	AGqRp6PaDw3yMBgfwVo2kR2LHqmM063PSP/cJA5+1IYMSGGYYmRNwNJHHADZivu/2ColCr
+	nEShgVvGdtvU4CJtWo1QViLr9vArWh8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762421081;
+	s=susede2_ed25519; t=1762422749;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v/YrHEvc8gVeJ9aboOAbmD9J9A1DDwTG3TFGxeCLdak=;
-	b=RFadnBqJHFgvyMyjJsWo9QF3A1UD+bx++PZTMS2863DlKsquniVoCWXRSFrh3BKfrWy5wU
-	vb4BZsiubx8+IMBg==
+	bh=bPqnD4mmA6cHcO1NRezM92gePmu8aG6SvFf8KMO34c8=;
+	b=9u0tum4UHAxT3iYAuUaJo0unhlyEtpqztxglC11YzH3XI2Hyr6Td6h5AlAVk4CUFHXWHjs
+	Ulv7t4oj98NRk+BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1A426139A9;
-	Thu,  6 Nov 2025 09:24:41 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1A25B139A9;
+	Thu,  6 Nov 2025 09:52:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wSBhBllpDGnNEAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 06 Nov 2025 09:24:41 +0000
+	id exZXBt1vDGmJLQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 06 Nov 2025 09:52:29 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id BC7D7A0927; Thu,  6 Nov 2025 10:24:40 +0100 (CET)
-Date: Thu, 6 Nov 2025 10:24:40 +0100
+	id BED5CA0948; Thu,  6 Nov 2025 10:52:20 +0100 (CET)
+Date: Thu, 6 Nov 2025 10:52:20 +0100
 From: Jan Kara <jack@suse.cz>
-To: Daniel Vacek <neelx@suse.com>
-Cc: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-btrfs@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH RFC 5/8] ext4: use super write guard in write_mmp_block()
-Message-ID: <5puaizn2a4dpoinvkct2nz5zdvvv5vdrlrmwcz7j6vl7qrxicb@b4qi4yfk4a5u>
-References: <20251104-work-guards-v1-0-5108ac78a171@kernel.org>
- <20251104-work-guards-v1-5-5108ac78a171@kernel.org>
- <CAPjX3FeEZd7gX1OeCxRXrdBMafHOONB2WQO_JOZuxKoVEygzuQ@mail.gmail.com>
+To: sunyongjian1@huawei.com
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	tytso@mit.edu, jack@suse.cz, yangerkun@huawei.com, yi.zhang@huawei.com, 
+	libaokun1@huawei.com, chengzhihao1@huawei.com
+Subject: Re: [PATCH v2 2/2] ext4: improve integrity checking in
+ __mb_check_buddy by enhancing order-0 validation
+Message-ID: <hbb6z62m4km5nm22tyn7xa4bcdbtqqnzwtygbqjosa4gayl2db@gcdpvei7rsjo>
+References: <20251106060614.631382-1-sunyongjian@huaweicloud.com>
+ <20251106060614.631382-3-sunyongjian@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -106,78 +105,175 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPjX3FeEZd7gX1OeCxRXrdBMafHOONB2WQO_JOZuxKoVEygzuQ@mail.gmail.com>
+In-Reply-To: <20251106060614.631382-3-sunyongjian@huaweicloud.com>
 X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 2FEDA1F457
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
+X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	RCVD_COUNT_THREE(0.00)[3];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_NONE(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.01
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-On Wed 05-11-25 19:33:35, Daniel Vacek wrote:
-> On Tue, 4 Nov 2025 at 13:16, Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > Signed-off-by: Christian Brauner <brauner@kernel.org>
-> > ---
-> >  fs/ext4/mmp.c | 8 ++------
-> >  1 file changed, 2 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> > index ab1ff51302fb..6f57c181ff77 100644
-> > --- a/fs/ext4/mmp.c
-> > +++ b/fs/ext4/mmp.c
-> > @@ -57,16 +57,12 @@ static int write_mmp_block_thawed(struct super_block *sb,
-> >
-> >  static int write_mmp_block(struct super_block *sb, struct buffer_head *bh)
-> >  {
-> > -       int err;
-> > -
-> >         /*
-> >          * We protect against freezing so that we don't create dirty buffers
-> >          * on frozen filesystem.
-> >          */
-> > -       sb_start_write(sb);
-> > -       err = write_mmp_block_thawed(sb, bh);
-> > -       sb_end_write(sb);
-> > -       return err;
-> > +       scoped_guard(super_write, sb)
-> > +               return write_mmp_block_thawed(sb, bh);
+On Thu 06-11-25 14:06:14, Yongjian Sun wrote:
+> From: Yongjian Sun <sunyongjian1@huawei.com>
 > 
-> Why the scoped_guard here? Should the simple guard(super_write)(sb) be
-> just as fine here?
+> When the MB_CHECK_ASSERT macro is enabled, we found that the
+> current validation logic in __mb_check_buddy has a gap in
+> detecting certain invalid buddy states, particularly related
+> to order-0 (bitmap) bits.
+> 
+> The original logic consists of three steps:
+> 1. Validates higher-order buddies: if a higher-order bit is
+> set, at most one of the two corresponding lower-order bits
+> may be free; if a higher-order bit is clear, both lower-order
+> bits must be allocated (and their bitmap bits must be 0).
+> 2. For any set bit in order-0, ensures all corresponding
+> higher-order bits are not free.
+> 3. Verifies that all preallocated blocks (pa) in the group
+> have pa_pstart within bounds and their bitmap bits marked as
+> allocated.
+> 
+> However, this approach fails to properly validate cases where
+> order-0 bits are incorrectly cleared (0), allowing some invalid
+> configurations to pass:
+> 
+>                corrupt            integral
+> 
+> order 3           1                  1
+> order 2       1       1          1       1
+> order 1     1   1   1   1      1   1   1   1
+> order 0    0 0 1 1 1 1 1 1    1 1 1 1 1 1 1 1
+> 
+> Here we get two adjacent free blocks at order-0 with inconsistent
+> higher-order state, and the right one shows the correct scenario.
+> 
+> The root cause is insufficient validation of order-0 zero bits.
+> To fix this and improve completeness without significant performance
+> cost, we refine the logic:
+> 
+> 1. Maintain the top-down higher-order validation, but we no longer
+> check the cases where the higher-order bit is 0, as this case will
+> be covered in step 2.
+> 2. Enhance order-0 checking by examining pairs of bits:
+>    - If either bit in a pair is set (1), all corresponding
+>      higher-order bits must not be free.
+>    - If both bits are clear (0), then exactly one of the
+>      corresponding higher-order bits must be free
+> 3. Keep the preallocation (pa) validation unchanged.
+> 
+> This change closes the validation gap, ensuring illegal buddy states
+> involving order-0 are correctly detected, while removing redundant
+> checks and maintaining efficiency.
+> 
+> Fixes: c9de560ded61f ("ext4: Add multi block allocator for ext4")
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
+> Reviewed-by: Baokun Li <libaokun1@huawei.com>
 
-Not sure about Ted but I prefer scoped_guard() to plain guard() because the
-scoping makes it more visually obvious where the unlocking happens. Of
-course there has to be a balance as the indentation level can go through
-the roof but that's not the case here...
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
+
+> ---
+>  fs/ext4/mballoc.c | 49 +++++++++++++++++++++++++++++++----------------
+>  1 file changed, 32 insertions(+), 17 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 194a9f995c36..65335248825c 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -682,6 +682,24 @@ do {									\
+>  	}								\
+>  } while (0)
+>  
+> +/*
+> + * Perform buddy integrity check with the following steps:
+> + *
+> + * 1. Top-down validation (from highest order down to order 1, excluding order-0 bitmap):
+> + *    For each pair of adjacent orders, if a higher-order bit is set (indicating a free block),
+> + *    at most one of the two corresponding lower-order bits may be clear (free).
+> + *
+> + * 2. Order-0 (bitmap) validation, performed on bit pairs:
+> + *    - If either bit in a pair is set (1, allocated), then all corresponding higher-order bits
+> + *      must not be free (0).
+> + *    - If both bits in a pair are clear (0, free), then exactly one of the corresponding
+> + *      higher-order bits must be free (0).
+> + *
+> + * 3. Preallocation (pa) list validation:
+> + *    For each preallocated block (pa) in the group:
+> + *    - Verify that pa_pstart falls within the bounds of this block group.
+> + *    - Ensure the corresponding bit(s) in the order-0 bitmap are marked as allocated (1).
+> + */
+>  static void __mb_check_buddy(struct ext4_buddy *e4b, char *file,
+>  				const char *function, int line)
+>  {
+> @@ -723,15 +741,6 @@ static void __mb_check_buddy(struct ext4_buddy *e4b, char *file,
+>  				continue;
+>  			}
+>  
+> -			/* both bits in buddy2 must be 1 */
+> -			MB_CHECK_ASSERT(mb_test_bit(i << 1, buddy2));
+> -			MB_CHECK_ASSERT(mb_test_bit((i << 1) + 1, buddy2));
+> -
+> -			for (j = 0; j < (1 << order); j++) {
+> -				k = (i * (1 << order)) + j;
+> -				MB_CHECK_ASSERT(
+> -					!mb_test_bit(k, e4b->bd_bitmap));
+> -			}
+>  			count++;
+>  		}
+>  		MB_CHECK_ASSERT(e4b->bd_info->bb_counters[order] == count);
+> @@ -747,15 +756,21 @@ static void __mb_check_buddy(struct ext4_buddy *e4b, char *file,
+>  				fragments++;
+>  				fstart = i;
+>  			}
+> -			continue;
+> +		} else {
+> +			fstart = -1;
+>  		}
+> -		fstart = -1;
+> -		/* check used bits only */
+> -		for (j = 0; j < e4b->bd_blkbits + 1; j++) {
+> -			buddy2 = mb_find_buddy(e4b, j, &max2);
+> -			k = i >> j;
+> -			MB_CHECK_ASSERT(k < max2);
+> -			MB_CHECK_ASSERT(mb_test_bit(k, buddy2));
+> +		if (!(i & 1)) {
+> +			int in_use, zero_bit_count = 0;
+> +
+> +			in_use = mb_test_bit(i, buddy) || mb_test_bit(i + 1, buddy);
+> +			for (j = 1; j < e4b->bd_blkbits + 2; j++) {
+> +				buddy2 = mb_find_buddy(e4b, j, &max2);
+> +				k = i >> j;
+> +				MB_CHECK_ASSERT(k < max2);
+> +				if (!mb_test_bit(k, buddy2))
+> +					zero_bit_count++;
+> +			}
+> +			MB_CHECK_ASSERT(zero_bit_count == !in_use);
+>  		}
+>  	}
+>  	MB_CHECK_ASSERT(!EXT4_MB_GRP_NEED_INIT(e4b->bd_info));
+> -- 
+> 2.39.2
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
