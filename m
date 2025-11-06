@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-11568-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11569-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AADAC3D9DA
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31548C3D9DD
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:33:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35FC63A9A58
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:33:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E01893A6EE6
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F4C730DED7;
-	Thu,  6 Nov 2025 22:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6988730DED7;
+	Thu,  6 Nov 2025 22:33:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OsH6c5Z8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uhlm5io7"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21E833074AC
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC052FBDFA
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:33:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468409; cv=none; b=g2VIFw3UNG1EVmMZz+P3SFKgQcAPCpkd1OhCvTW4fYRNIZs2B11ojZtwdMBu+OEfn8K2W2QQDw9XfsvDCj88MsX4xNlkOHsMV+J2oalYB5uiulOOtKTpRQbZL6KVXPS8okWcTB7J8W93tyushmpL9hR3cDWDe2VLfbS15Id0b0I=
+	t=1762468425; cv=none; b=lUQlQ2CulisTNwka5Kmd4k/AC5pTQVeGnwK9COlH+/LCG/wshDMx58xEpwTO+DyPyeuRgQXg+8Tkkz1m8wPoXzz2QxRkB6Bbkus5dZSVK4abOjhjYLr2NEoTV9f93JXhS/pszeZetpTw+467iRdBARGbTQHvKwxkxUbKmMu2mpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468409; c=relaxed/simple;
-	bh=9rdqShHP/dlJicAqtmK9EanUObMRQSG5YpJVYvxgsd4=;
+	s=arc-20240116; t=1762468425; c=relaxed/simple;
+	bh=9k9T61FxKCRkwrh7WhS1tkL4gfH6J81j8cHZxZYsYzE=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gMR8wamCIfJKB2mqgMQ54VftSo5jY/D+2GdF+CWqysf8kdYiSD7T29l4rX4YTbsgz89u3Xg7iyEkrCX9h2daLnEoud9CSF6T7w9yzRtJrPJcd70PtqtpZfL6h5Civ44X7IO8bQwAfke4KVPVDmtlW0QOCIORh7iiPNLH2nJypG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OsH6c5Z8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE96CC4CEFB;
-	Thu,  6 Nov 2025 22:33:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=i5b/QsqugnSaq9WvpuPw2dpHbzhthWi6D7zlK1MOEJ5bpguwWHeiCyLhye5Tun274p8FZvbpYLWRA7emZZhQfoFtP99GriPgrMc1PP/aV6C5DhXM7wbbEMO8+PfEep77e0w6rvrEg4G4XM/8wN/ZzVTkQFMpIPYSbErRZGqxQ3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uhlm5io7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1A05C4CEF7;
+	Thu,  6 Nov 2025 22:33:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468409;
-	bh=9rdqShHP/dlJicAqtmK9EanUObMRQSG5YpJVYvxgsd4=;
+	s=k20201202; t=1762468424;
+	bh=9k9T61FxKCRkwrh7WhS1tkL4gfH6J81j8cHZxZYsYzE=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=OsH6c5Z8VXXne3D24x+kR+dtSXIEXrS2AUi52ZOT9Xv6870+aGv5dRVS+5Ye8rmAg
-	 TDtcsH+ZdnPaBHj+PQFDh6BTk6Dv0Ox4Dcuitp1oqp0KJEfPnjtdcZx3otU9otDFUy
-	 oWQUlAcyXg9uByyRSC1ErdNcSZdN7/GCzMKPR+GSlfpsZSjR+Xe2LLg8/50IxRAqZk
-	 172nc+oSLH2TMZYzz13N2MYCwW6UdG1nlmkss8QDpOY8sx2xOP5W7MlSPknwcQxKwg
-	 FWzONg/3KqutfFufcCEUKO86INr0LJ4h2Qt9HuGnLc6IqBSb111ZJRFX7OKbA11QUd
-	 R1JS42MjMUe4g==
-Date: Thu, 06 Nov 2025 14:33:28 -0800
-Subject: [PATCH 09/19] fuse2fs: implement dir seeking
+	b=uhlm5io7QfL7ZchoYa9OUCcvCS/GI8nDsjU+1ukxjnKp3fseFbrTYtb3BtLhEfuTL
+	 8iigf4cHjlJo3ZVzZkE3CgvAxeIPPYfLvZSUsPNWrxSC89apF6t8C6IZpVKKYxsHxF
+	 uTNgWu0jEra6jRjrmdvtjRev0oH0I2J1/8zPoxfSoFEBSvx8KERSLrfFkL6ZffB9zX
+	 M5f2IUYBv/NVyPABtzdx1NAno8kr6rh26dlpy8fth8JTo7SjU+W45lx9qv8LpB1KGu
+	 n96PKr/qm7kpvCkI5Hr1LBIPmErLN1JjFFPA2GCqWuvijmmAZtmv7OLNPi5GC1gOE8
+	 oXajgiQpBl1WQ==
+Date: Thu, 06 Nov 2025 14:33:44 -0800
+Subject: [PATCH 10/19] fuse2fs: implement readdirplus
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246793791.2862242.4687973298096620781.stgit@frogsfrogsfrogs>
+Message-ID: <176246793809.2862242.16758268369729874701.stgit@frogsfrogsfrogs>
 In-Reply-To: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 References: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,77 +60,72 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Report (fake) directory offsets to readdir so that libfuse can send
-smaller datasets to the kernel.
+Implement "readdirplus", which I think means that we return full stat
+information for directory entries as part of the readdir results.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |   24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ misc/fuse2fs.c |   25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 5e0a1f1fd58be4..1f52d7e4e37713 100644
+index 1f52d7e4e37713..16492d54f7ed1d 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -3441,6 +3441,11 @@ struct readdir_iter {
- 	void *buf;
- 	ext2_filsys fs;
+@@ -3443,6 +3443,9 @@ struct readdir_iter {
  	fuse_fill_dir_t func;
-+
-+	struct fuse2fs *ff;
-+	unsigned int nr;
-+	off_t startpos;
-+	off_t dirpos;
- };
  
- static inline mode_t dirent_fmode(ext2_filsys fs,
-@@ -3484,9 +3489,15 @@ static int op_readdir_iter(ext2_ino_t dir EXT2FS_ATTR((unused)),
- 	};
- 	int ret;
+ 	struct fuse2fs *ff;
++#if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
++	enum fuse_readdir_flags flags;
++#endif
+ 	unsigned int nr;
+ 	off_t startpos;
+ 	off_t dirpos;
+@@ -3493,8 +3496,23 @@ static int op_readdir_iter(ext2_ino_t dir EXT2FS_ATTR((unused)),
+ 	if (i->startpos >= i->dirpos)
+ 		return 0;
  
-+	i->dirpos++;
-+	if (i->startpos >= i->dirpos)
-+		return 0;
+-	dbg_printf(i->ff, "READDIR %u dirpos %llu\n", i->nr++,
++	dbg_printf(i->ff, "READDIR%s %u dirpos %llu\n",
++#if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
++			i->flags == FUSE_READDIR_PLUS ? "PLUS" : "",
++#else
++			"",
++#endif
++			i->nr++,
+ 			(unsigned long long)i->dirpos);
 +
-+	dbg_printf(i->ff, "READDIR %u dirpos %llu\n", i->nr++,
-+			(unsigned long long)i->dirpos);
++#if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
++	if (i->flags == FUSE_READDIR_PLUS) {
++		ret = stat_inode(i->fs, dirent->inode, &stat);
++		if (ret)
++			return DIRENT_ABORT;
++	}
++#endif
++
  	memcpy(namebuf, dirent->name, dirent->name_len & 0xFF);
  	namebuf[dirent->name_len & 0xFF] = 0;
--	ret = i->func(i->buf, namebuf, &stat, 0
-+	ret = i->func(i->buf, namebuf, &stat, i->dirpos
- #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
- 			, 0
- #endif
-@@ -3499,7 +3510,7 @@ static int op_readdir_iter(ext2_ino_t dir EXT2FS_ATTR((unused)),
- 
- static int op_readdir(const char *path EXT2FS_ATTR((unused)),
- 		      void *buf, fuse_fill_dir_t fill_func,
--		      off_t offset EXT2FS_ATTR((unused)),
-+		      off_t offset,
+ 	ret = i->func(i->buf, namebuf, &stat, i->dirpos
+@@ -3513,7 +3531,7 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
+ 		      off_t offset,
  		      struct fuse_file_info *fp
  #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
- 			, enum fuse_readdir_flags flags EXT2FS_ATTR((unused))
-@@ -3511,13 +3522,18 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
- 	struct fuse2fs_file_handle *fh =
- 		(struct fuse2fs_file_handle *)(uintptr_t)fp->fh;
- 	errcode_t err;
--	struct readdir_iter i;
-+	struct readdir_iter i = {
-+		.ff = ff,
-+		.dirpos = 0,
-+		.startpos = offset,
-+	};
+-			, enum fuse_readdir_flags flags EXT2FS_ATTR((unused))
++			, enum fuse_readdir_flags flags
+ #endif
+ 			)
+ {
+@@ -3526,6 +3544,9 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
+ 		.ff = ff,
+ 		.dirpos = 0,
+ 		.startpos = offset,
++#if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
++		.flags = flags,
++#endif
+ 	};
  	int ret = 0;
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	i.fs = ff->fs;
- 	FUSE2FS_CHECK_MAGIC(i.fs, fh, FUSE2FS_FILE_MAGIC);
--	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
-+	dbg_printf(ff, "%s: ino=%d offset=%llu\n", __func__, fh->ino,
-+			(unsigned long long)offset);
- 	pthread_mutex_lock(&ff->bfl);
- 	i.buf = buf;
- 	i.func = fill_func;
 
 
