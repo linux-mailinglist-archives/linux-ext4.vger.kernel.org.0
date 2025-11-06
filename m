@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-11573-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11574-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C8CDC3D9EF
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC867C3D9F2
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:35:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 420B8188C64F
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:35:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9160B18893A8
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 450B730EF91;
-	Thu,  6 Nov 2025 22:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D4B430DED7;
+	Thu,  6 Nov 2025 22:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k4vJCee1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ImayrKI2"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7C72C3252
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBD02C3252
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468488; cv=none; b=p6gtRNL0b0BqBwX/Yo7F5jffTTCCszUjYlRn0JwONB27WYzcbZhXn89jLv4o6VOGZDev3zEicIh7QUOeR41PwHLSU3X9J2PS1F7/L9ea8o3+yImN1ndW5pIGpEjxDVzH7/LCum8E/k9JZs9ugmayl9Bm/FAukuFXIXCYa1b2KlA=
+	t=1762468505; cv=none; b=LIA1xF7uC0KV6GQ19lymScpaA2T/bC4cfKS9JLsKVewrvs0+EraMOPUZGlurTfaqmFCJFKiZHGJNl2hoQoaR95m8fehOgSLAFOBtUsmPPQjkjC1ruejLmCWsPuVBwsAqMnT/EXm/g/nCaZoTyEMYLpqUcTnM/jL2n4KSct58dqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468488; c=relaxed/simple;
-	bh=cU8s6nSqdTRKmtLAeRO8xCV6PytkQq0Et0AzL9iqimQ=;
+	s=arc-20240116; t=1762468505; c=relaxed/simple;
+	bh=tvujOlGqkNoIZkRmjUwJh5MN8c4sWzOkgcd8bdPdixA=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eUNjUfmjtr/cdt1pTDs4sSDyOuV7U504VeNbAImxMSMJQHksQfgc6F6OQYaSvLWLMry4FordBRyU7eVPojFlou1DMVLTHRCcX3suLIPUnsheyqajagkELD05LxyWD2+Zc5nPRGix24DnLKK95G2YHcpDOsgeEuq128wBnaK+b6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k4vJCee1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A43CBC4CEF7;
-	Thu,  6 Nov 2025 22:34:48 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Hn7AvDQhTBOivAQ5AYtzCUD2nGmOZHGqDgnr7wFPpjrQceZPvSqUPEiY4T+POi2gEySQf/gRA/5NjYeLpuE/i2ETlbo+peQZMUvNPBwWdU9r/zz1eNRsLuZPIzP2XjNsFY+hd6zfX+NQqBAesBieGlMLKoII7cSU6OaoDcgQuOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ImayrKI2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B7DC116C6;
+	Thu,  6 Nov 2025 22:35:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468488;
-	bh=cU8s6nSqdTRKmtLAeRO8xCV6PytkQq0Et0AzL9iqimQ=;
+	s=k20201202; t=1762468504;
+	bh=tvujOlGqkNoIZkRmjUwJh5MN8c4sWzOkgcd8bdPdixA=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=k4vJCee1PCgC4czTZbPaUj1OsPeR5hf30s3vb01jB4NzDxlgjCOUsqWPd14fiUrmK
-	 ajGetH3w2dFcQRfufHJ+VQqJWkG/bvsUyUUsDG5+dIWNcQjC2MdNP7je9VeobHy40F
-	 x0/1TXgL055dNRQQR0KIVw72M0Ah5K4DZTLw3kS9c2zR535Q062I74ptSJjjoNlFrN
-	 jFft3UD5iPFgPehtR+sc4OZRKfRCcs+VMHZF2vrwvTfKnJlf41YKM5+xjeaRh0Jq6O
-	 DHWhF/rMYc/ZXDUDFzg20Y4K96NbMBd766PmiQlBtPOu7yxKgrcB9D5vicSRZO4ggh
-	 lKVmTe5zMQYFQ==
-Date: Thu, 06 Nov 2025 14:34:48 -0800
-Subject: [PATCH 14/19] fuse2fs: cache symlink targets in the kernel
+	b=ImayrKI2CHxVPyzEJSr6WKYMeE50/RH6Ac4sOSgcYtUQAZzE6JrHz0OOzpiHLtvBF
+	 tDK17UvDm4xrWfCRve1+hSvRQaZaCnBdm727GAA4fepxokTdH7AoS+4EQaZL5rM4kI
+	 EwWXalzpWEE34Yq/Mkb8qrAPXoiF9VZPHb3iz4cLRpiVv/yicHddtgmIi0gdR+gWE/
+	 Jlb2t/4Aj5YFASpDmSbZvsqTtUn9w7TXPh3ErTYlAzjOXe4+rg3RPUKPlc4OOejaHP
+	 ZU3jiscD6EIIRuvsPLxay3+QVlRofu37bukXiP+JKzzMjYyCnNv2nG6xGYQM0c7ekn
+	 2ivNHD/SbHooQ==
+Date: Thu, 06 Nov 2025 14:35:03 -0800
+Subject: [PATCH 15/19] fuse2fs: constrain worker thread count
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246793882.2862242.10188686900712408135.stgit@frogsfrogsfrogs>
+Message-ID: <176246793900.2862242.841536140540610467.stgit@frogsfrogsfrogs>
 In-Reply-To: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 References: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,27 +60,34 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Speed up symlinks by allowing the kernel to cache them.
+fuse2fs isn't all that scalable -- there's a big kernel lock around all
+the libext2fs code.  Constrain the fuse worker thread count to reduce
+unnecessary lock contention.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |    3 +++
- 1 file changed, 3 insertions(+)
+ misc/fuse2fs.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index f1fb7227f1d077..c1bd76ba449370 100644
+index c1bd76ba449370..d890855df9c0f3 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -1031,6 +1031,9 @@ static void *op_init(struct fuse_conn_info *conn
- 	if (ff->acl)
- 		conn->want |= FUSE_CAP_POSIX_ACL;
- #endif
-+#ifdef FUSE_CAP_CACHE_SYMLINKS
-+	conn->want |= FUSE_CAP_CACHE_SYMLINKS;
-+#endif
- #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
- 	conn->time_gran = 1;
- 	cfg->use_ino = 1;
+@@ -5259,6 +5259,14 @@ int main(int argc, char *argv[])
+  "-oallow_other,default_permissions,suid,dev");
+ 	}
+ 
++	/*
++	 * Since there's a Big Kernel Lock around all the libext2fs code, we
++	 * only need to start four threads -- one to decode a request, another
++	 * to do the filesystem work, a third to transmit the reply, and a
++	 * fourth to handle fuse notifications.
++	 */
++	fuse_opt_insert_arg(&args, 1, "-omax_threads=4");
++
+ 	if (fctx.debug) {
+ 		int	i;
+ 
 
 
