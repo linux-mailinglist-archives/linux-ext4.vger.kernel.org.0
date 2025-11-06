@@ -1,274 +1,167 @@
-Return-Path: <linux-ext4+bounces-11534-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11535-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2CFFC3C3F7
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 17:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D1376C3CFF9
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 19:03:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 688184EFC99
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 16:03:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9C82F4E0541
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 18:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB3DE2EB860;
-	Thu,  6 Nov 2025 16:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C48D22D8DA9;
+	Thu,  6 Nov 2025 18:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3bBJM7M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H4XyW7vN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD39434C127;
-	Thu,  6 Nov 2025 16:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C0B2DA76C
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 18:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762444969; cv=none; b=fVLg8Fkl2wTHebPCRECXHkHS8apEuzfVkXLbg8ZXSJX5AnKzFp504JyjMFoaiMY2M14chTEvuh957+QdpktFZ0maErttn5ftVMVWBo0IvGzgpzKq8F33778/Dileue4HNYR5Ak6e6xVrsOvFVnbvyPiDbLofXUMPjyj1BLp+dsc=
+	t=1762452074; cv=none; b=CnEtIMtB7XI7y7VOP7COc/OFg0twLzKhAHVl6bF7yuErUpUlwE6OiS2+hgeb4mG8aZd+YVQxR9qXqo4DUdca8L0lpCK9WyUULVtIyRoCJdOhTSSh+Hi2HnsbKrrLbaV7BR6Jh1hBosvtaMZZN44XoY0tZR3Vp0zmgvOEj//i4e0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762444969; c=relaxed/simple;
-	bh=HY4WkagOCSSLnIUoikHDOt/pBlqaTxH2hmXbuOnRe6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pGXAOpvjkYcM/Umir4LfCJhsErmZt4dH41xbL+qkP3lUVyteIZm2y/dvK5uPOIp/kEwHXrLz4ADzWOKodPhBOEZw3jAVW0TP5267mnTu8dCS4DyqAtau+FqpmDFbjY8bGcyovBc+rj7sRj6JDYKq3HXrDZlf2voEmsrHfM1hVlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f3bBJM7M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18787C4CEFB;
-	Thu,  6 Nov 2025 16:02:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762444968;
-	bh=HY4WkagOCSSLnIUoikHDOt/pBlqaTxH2hmXbuOnRe6Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f3bBJM7MWHciQta/a44zHsq26o7EEcl95Gj9sYuDxNZ2W3qohpu6JacKFC4MkIY5/
-	 oipfbgirthcXoz0hns1dpiMAKvLYEOFUQuNvIW/GZfCc2NvZp3wgQp5J2z+j3qFmWK
-	 0BtGHSR4x5EvhzrA2Epco5Y9hyiv+moKWc1whuc28dZgAzQk4wjTVECygwZIgY180t
-	 EXqNxeL6ItFADftwme0msZ0EzoH5w2qqipiFrXmSAT59G97N3LIpTwUuQc7wjoNtVy
-	 L2KiyutXTNEu4f51KkGOuvgZRxMuhNnZhYLLOLFIBM2fmiJvyVrbNlw6DbT6bWhQkc
-	 yV+/yJrsx6owQ==
-Date: Thu, 6 Nov 2025 08:02:47 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: zlang@redhat.com, neal@gompa.dev, fstests@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	joannelkoong@gmail.com, bernd@bsbernd.com
-Subject: Re: [PATCH 22/33] generic/631: don't run test if we can't mount
- overlayfs
-Message-ID: <20251106160247.GH196391@frogsfrogsfrogs>
-References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
- <176169820388.1433624.12333256574549591904.stgit@frogsfrogsfrogs>
- <aQNNZ6lxeMntTifa@amir-ThinkPad-T480>
- <20251105231228.GG196358@frogsfrogsfrogs>
- <CAOQ4uxhQt6LNo7QaN3rWy3eCeAS9r0xNcMW4ZvdrY5YgMbq66g@mail.gmail.com>
+	s=arc-20240116; t=1762452074; c=relaxed/simple;
+	bh=d6fcH4YBy4tJrSO/61Sxb3Q4+XTZBualHoVt8LZv+l4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K6TZDYE2JJQF562gwBA87lgWI2fkHtGRKiFVIJ6Nzeu0p33T+BnUbr2qOS6N0LHWlfWM3sBN+2KmK8cWVmN/xHZ04ibLoNoNnJJ+PqgWBup+OuuAnNaOrhvJUptM5e1ZRiT+TgDSNSLGtJrPLX2/WAs1lF1yvjGeeDsHE6mZecQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H4XyW7vN; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b713c7096f9so103128266b.3
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Nov 2025 10:01:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762452071; x=1763056871; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2T3N0BT2STs8n+iZkoEMWI+F1MMhUxu61N6/yM0vzrc=;
+        b=H4XyW7vNizeqxrowPTLAfeOBkxdjSJITunlBteHpteph+J+7BmYmJCpR9GrFefnTTY
+         6nZipxgJ1VsZ41P0dGGWhJqrSOhiAemwl6HohvZVI4zDTK/VThxaM4QARJZ2wVFOPtRn
+         90oB05KIAkDTE6XFXDh9ySSGNPKt/2ZNo1bFKI1nzutr9tBLe+W2s+2/qc9ATVQ6NxYF
+         opKDplbrNWInoix5Pir7KA9QAt4ig5OudhDDU8wPkTjNULayXg5VZX0MsSbZcXPof6CJ
+         mljex2KoNGh0VOdAMvKaMes93OGIqGHv7VXc4oMJkvrP5MNecRl91Iw920w7WttD9AHo
+         he7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762452071; x=1763056871;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2T3N0BT2STs8n+iZkoEMWI+F1MMhUxu61N6/yM0vzrc=;
+        b=QWq0Xun43jb1KPuV2JxBFiHKBvpDcJnIlSDgThJ3AjOaQ4f1IlDnEuMVYKIwKC81KO
+         ncSaryvd4V7joFHU9B0ambLNIBht6XKd4D+4S3M/lPFn9qeLfpmZ7NjQGevtJrGunTxJ
+         wAYdkSkQJCbAr890caC8WiMM/ls/Bqle0qvp5JhNksKTUXWokt2q0/NRsk82KEMafT0k
+         7mnNQobH3MkqQYQ9XOc+5Na2WBvWOGaceTvcGkzTVOW83OiN7Nr786otR+2iDiT8C05i
+         MfvqMTD4H1kZe9gVSWorTRNAeIDwdYJCZ56BeC2uXB7PEitptlAqLAAPTCqiH/XhFB2u
+         ZJEg==
+X-Forwarded-Encrypted: i=1; AJvYcCU81xj3A2177NYBPofWIKJ3/U2pt5znZ3D7Giel8+aPrtAtewdPNnSVHCrIMqqleakv/C8BqNFytNV4@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxj0MA1OsTGIrvcsN6Q/QsEuqH8jMTrYdnd1Es5j/28Ua0krySE
+	nwdRCKv5cW36n5mZiolJ/xyEj+DhpOktPtrOsn2k0LPskWod7SpreCeXMU/0Zipi
+X-Gm-Gg: ASbGncuz/hX158Dvbo4Ramwu7SLm4IYK22BAYdskDrw2/sUFj30dlTNSMoHDvHPxc7k
+	D1/UdOxMokLgRIwUcfLRjiunqvo6fjfxEKMroqg3m0/rP1I+p9UGwEXT3u9fE041q0ZUVrBUobJ
+	uY1/+qyJ6jDfZYK7kGYNKW7ertBY3z7/pVJFs67Rk6fDRTnqcU2wYlqCttxPs0ICHF4EWMwvTzu
+	PwUiAidxNCxMFinUdsxu7iavbX3KL5k/2BwwLWFTSndMT2FwAJim7tpiUVMtvkpwO56jNlhuu2z
+	q2ymbmqTFOrdFVUcBYwrneTVmPT5cnIWGly7pmSV1phtzZy78KWB1ptl5mSO0pEIrAwN2bWkSdE
+	24wq0RueHpB5S/EtiA0otdoCcokidWzZRzqXSxKJkNYt1FE56k0BZ1dEh8VQ+mpZvTX8OdNs1wi
+	PGaWNPl9tWr2MVpc4v9FtLB7XfW/GQPoTnJYn3F7mIvO5buP+m
+X-Google-Smtp-Source: AGHT+IHjp607z6cdgZ7HFt5E5SFL6QJoNHGzb+TT6QDSql6CaQ0lp76FRbpfISADQTjtlAYn9VTXPA==
+X-Received: by 2002:a17:907:9607:b0:b70:b5b9:1f82 with SMTP id a640c23a62f3a-b72c0abcb78mr4492966b.31.1762452070474;
+        Thu, 06 Nov 2025 10:01:10 -0800 (PST)
+Received: from f.. (cst-prg-14-82.cust.vodafone.cz. [46.135.14.82])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b72bfa0f1bbsm15430466b.65.2025.11.06.10.01.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Nov 2025 10:01:09 -0800 (PST)
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	tytso@mit.edu,
+	torvalds@linux-foundation.org,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org,
+	Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH v2 0/4] permission check avoidance during lookup
+Date: Thu,  6 Nov 2025 19:00:58 +0100
+Message-ID: <20251106180103.923856-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxhQt6LNo7QaN3rWy3eCeAS9r0xNcMW4ZvdrY5YgMbq66g@mail.gmail.com>
 
-On Thu, Nov 06, 2025 at 10:23:04AM +0100, Amir Goldstein wrote:
-> On Thu, Nov 6, 2025 at 12:12 AM Darrick J. Wong <djwong@kernel.org> wrote:
-> >
-> > On Thu, Oct 30, 2025 at 12:35:03PM +0100, Amir Goldstein wrote:
-> > > On Tue, Oct 28, 2025 at 06:26:09PM -0700, Darrick J. Wong wrote:
-> > > > From: Darrick J. Wong <djwong@kernel.org>
-> > > >
-> > > > This test fails on fuse2fs with the following:
-> > > >
-> > > > +mount: /opt/merged0: wrong fs type, bad option, bad superblock on overlay, missing codepage or helper program, or other error.
-> > > > +       dmesg(1) may have more information after failed mount system call.
-> > > >
-> > > > dmesg logs the following:
-> > > >
-> > > > [  764.775172] overlayfs: upper fs does not support tmpfile.
-> > > > [  764.777707] overlayfs: upper fs does not support RENAME_WHITEOUT.
-> > > >
-> > > > From this, it's pretty clear why the test fails -- overlayfs checks that
-> > > > the upper filesystem (fuse2fs) supports RENAME_WHITEOUT and O_TMPFILE.
-> > > > fuse2fs doesn't support either of these, so the mount fails and then the
-> > > > test goes wild.
-> > > >
-> > > > Instead of doing that, let's do an initial test mount with the same
-> > > > options as the workers, and _notrun if that first mount doesn't succeed.
-> > > >
-> > > > Fixes: 210089cfa00315 ("generic: test a deadlock in xfs_rename when whiteing out files")
-> > > > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> > > > ---
-> > > >  tests/generic/631 |   22 ++++++++++++++++++++++
-> > > >  1 file changed, 22 insertions(+)
-> > > >
-> > > >
-> > > > diff --git a/tests/generic/631 b/tests/generic/631
-> > > > index 72bf85e30bdd4b..64e2f911fdd10e 100755
-> > > > --- a/tests/generic/631
-> > > > +++ b/tests/generic/631
-> > > > @@ -64,6 +64,26 @@ stop_workers() {
-> > > >     done
-> > > >  }
-> > > >
-> > > > +require_overlayfs() {
-> > > > +   local tag="check"
-> > > > +   local mergedir="$SCRATCH_MNT/merged$tag"
-> > > > +   local l="lowerdir=$SCRATCH_MNT/lowerdir:$SCRATCH_MNT/lowerdir1"
-> > > > +   local u="upperdir=$SCRATCH_MNT/upperdir$tag"
-> > > > +   local w="workdir=$SCRATCH_MNT/workdir$tag"
-> > > > +   local i="index=off"
-> > > > +
-> > > > +   rm -rf $SCRATCH_MNT/merged$tag
-> > > > +   rm -rf $SCRATCH_MNT/upperdir$tag
-> > > > +   rm -rf $SCRATCH_MNT/workdir$tag
-> > > > +   mkdir $SCRATCH_MNT/merged$tag
-> > > > +   mkdir $SCRATCH_MNT/workdir$tag
-> > > > +   mkdir $SCRATCH_MNT/upperdir$tag
-> > > > +
-> > > > +   _mount -t overlay overlay -o "$l,$u,$w,$i" $mergedir || \
-> > > > +           _notrun "cannot mount overlayfs"
-> > > > +   umount $mergedir
-> > > > +}
-> > > > +
-> > > >  worker() {
-> > > >     local tag="$1"
-> > > >     local mergedir="$SCRATCH_MNT/merged$tag"
-> > > > @@ -91,6 +111,8 @@ worker() {
-> > > >     rm -f $SCRATCH_MNT/workers/$tag
-> > > >  }
-> > > >
-> > > > +require_overlayfs
-> > > > +
-> > > >  for i in $(seq 0 $((4 + LOAD_FACTOR)) ); do
-> > > >     worker $i &
-> > > >  done
-> > > >
-> > >
-> > > I agree in general, but please consider this (untested) cleaner patch
-> >
-> > Yes, this works too.  Since this is your code, could you send it to the
-> > list with a proper commit message (or even just copy mine) and then I
-> > can ack it?
-> >
-> 
-> Attached.
-> Now it's even tested.
-> 
-> I put you down as Suggested-by.
-> Feel free to choose your own roles...
-> 
-> Thanks,
-> Amir.
+To quote from patch 1:
+<quote>
+Vast majority of real-world lookups happen on directories which are
+traversable by anyone. Figuring out that this holds for a given inode
+can be done when instantiating it or changing permissions, avoiding the
+overhead during lookup. Stats below.
 
-> From dc31352d6c926e0f6da6238eccbcaa96b1fb89c2 Mon Sep 17 00:00:00 2001
-> From: Amir Goldstein <amir73il@gmail.com>
-> Date: Thu, 30 Oct 2025 12:24:21 +0100
-> Subject: [PATCH] generic/631: don't run test if we can't mount overlayfs
-> 
-> This test fails on fuse2fs with the following:
-> 
-> mount: /opt/merged0: wrong fs type, bad option, bad superblock on overlay,
->        missing codepage or helper program, or other error.
->        dmesg(1) may have more information after failed mount system call.
-> 
-> dmesg logs the following:
-> 
-> [  764.775172] overlayfs: upper fs does not support tmpfile.
-> [  764.777707] overlayfs: upper fs does not support RENAME_WHITEOUT.
-> 
-> From this, it's pretty clear why the test fails -- overlayfs checks that
-> the upper filesystem (fuse2fs) supports RENAME_WHITEOUT and O_TMPFILE.
-> fuse2fs doesn't support either of these, so the mount fails and then the
-> test goes wild.
-> 
-> Instead of doing that, let's do an initial test mount with the same
-> options as the workers, and _notrun if that first mount doesn't succeed.
-> 
-> Fixes: 210089cfa00315 ("generic: test a deadlock in xfs_rename when whiteing out files")
-> Suggested-by: "Darrick J. Wong" <djwong@kernel.org>
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+A simple microbench of stating /usr/include/linux/fs.h on ext4 in a loop
+on Sapphire Rapids (ops/s):
+before: 3640352
+after:  3797258 (+4%)
+</quote>
 
-Works for me,
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+During a kernel build about 90% of all lookups managed to skip
+permission checks in my setup, see the commit message for a breakdown.
 
---D
+WARNING: more testing is needed for correctness, but I'm largely happy
+with the state as is.
 
-> ---
->  tests/generic/631 | 39 ++++++++++++++++++++++++++++-----------
->  1 file changed, 28 insertions(+), 11 deletions(-)
-> 
-> diff --git a/tests/generic/631 b/tests/generic/631
-> index c38ab771..7dc335aa 100755
-> --- a/tests/generic/631
-> +++ b/tests/generic/631
-> @@ -46,7 +46,6 @@ _require_extra_fs overlay
->  
->  _scratch_mkfs >> $seqres.full
->  _scratch_mount
-> -_supports_filetype $SCRATCH_MNT || _notrun "overlayfs test requires d_type"
->  
->  mkdir $SCRATCH_MNT/lowerdir
->  mkdir $SCRATCH_MNT/lowerdir1
-> @@ -64,7 +63,7 @@ stop_workers() {
->  	done
->  }
->  
-> -worker() {
-> +mount_overlay() {
->  	local tag="$1"
->  	local mergedir="$SCRATCH_MNT/merged$tag"
->  	local l="lowerdir=$SCRATCH_MNT/lowerdir:$SCRATCH_MNT/lowerdir1"
-> @@ -72,25 +71,43 @@ worker() {
->  	local w="workdir=$SCRATCH_MNT/workdir$tag"
->  	local i="index=off"
->  
-> +	rm -rf $SCRATCH_MNT/merged$tag
-> +	rm -rf $SCRATCH_MNT/upperdir$tag
-> +	rm -rf $SCRATCH_MNT/workdir$tag
-> +	mkdir $SCRATCH_MNT/merged$tag
-> +	mkdir $SCRATCH_MNT/workdir$tag
-> +	mkdir $SCRATCH_MNT/upperdir$tag
-> +
-> +	mount -t overlay overlay -o "$l,$u,$w,$i" "$mergedir"
-> +}
-> +
-> +unmount_overlay() {
-> +	local tag="$1"
-> +	local mergedir="$SCRATCH_MNT/merged$tag"
-> +
-> +	_unmount $mergedir
-> +}
-> +
-> +worker() {
-> +	local tag="$1"
-> +	local mergedir="$SCRATCH_MNT/merged$tag"
-> +
->  	touch $SCRATCH_MNT/workers/$tag
->  	while test -e $SCRATCH_MNT/running; do
-> -		rm -rf $SCRATCH_MNT/merged$tag
-> -		rm -rf $SCRATCH_MNT/upperdir$tag
-> -		rm -rf $SCRATCH_MNT/workdir$tag
-> -		mkdir $SCRATCH_MNT/merged$tag
-> -		mkdir $SCRATCH_MNT/workdir$tag
-> -		mkdir $SCRATCH_MNT/upperdir$tag
-> -
-> -		mount -t overlay overlay -o "$l,$u,$w,$i" $mergedir
-> +		mount_overlay $tag
->  		mv $mergedir/etc/access.conf $mergedir/etc/access.conf.bak
->  		touch $mergedir/etc/access.conf
->  		mv $mergedir/etc/access.conf $mergedir/etc/access.conf.bak
->  		touch $mergedir/etc/access.conf
-> -		_unmount $mergedir
-> +		unmount_overlay $tag
->  	done
->  	rm -f $SCRATCH_MNT/workers/$tag
->  }
->  
-> +mount_overlay check || \
-> +	_notrun "cannot mount overlayfs with underlying filesystem $FSTYP"
-> +unmount_overlay check
-> +
->  for i in $(seq 0 $((4 + LOAD_FACTOR)) ); do
->  	worker $i &
->  done
-> -- 
-> 2.51.1
-> 
+WARNING: I'm assuming the following bit is applied:
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 78ea864fa8cd..eaf776cd4175 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5518,6 +5518,10 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+                goto bad_inode;
+        brelse(iloc.bh);
+ 
++       /* Initialize the "no ACL's" state for the simple cases */
++       if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_file_acl)
++               cache_no_acl(inode);
++
+        unlock_new_inode(inode);
+        return inode;
+
+Lack of the patch does not affect correctness, but it does make the
+patch ineffective for ext4. I did not include it in the posting as other
+people promised to sort it out.
+
+Discussion is here with an ack from Jan:
+https://lore.kernel.org/linux-fsdevel/kn44smk4dgaj5rqmtcfr7ruecixzrik6omur2l2opitn7lbvfm@rm4y24fcfzbz/T/#m30d6cea6be48e95c0d824e98a328fb90c7a5766d
+and full thread:
+https://lore.kernel.org/linux-fsdevel/kn44smk4dgaj5rqmtcfr7ruecixzrik6omur2l2opitn7lbvfm@rm4y24fcfzbz/T/#t
+
+v2:
+- productize
+- btrfs and tmpfs support
+
+Mateusz Guzik (4):
+  fs: speed up path lookup with cheaper MAY_EXEC checks
+  ext4: opt-in for IOP_MAY_FAST_EXEC
+  btrfs: opt-in for IOP_MAY_FAST_EXEC
+  tmpfs: opt-in for IOP_MAY_FAST_EXEC
+
+ fs/attr.c          |  1 +
+ fs/btrfs/inode.c   | 12 +++++-
+ fs/ext4/inode.c    |  2 +
+ fs/ext4/namei.c    |  1 +
+ fs/namei.c         | 95 +++++++++++++++++++++++++++++++++++++++++++++-
+ fs/posix_acl.c     |  1 +
+ fs/xattr.c         |  1 +
+ include/linux/fs.h | 21 +++++++---
+ mm/shmem.c         |  9 +++++
+ 9 files changed, 134 insertions(+), 9 deletions(-)
+
+-- 
+2.48.1
 
 
