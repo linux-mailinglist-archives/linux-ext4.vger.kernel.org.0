@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-11577-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11578-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 202F7C3D9FB
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 535C2C3D9FE
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:36:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92EA0188C962
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:36:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C34FC188D457
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6989033858F;
-	Thu,  6 Nov 2025 22:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E49F339709;
+	Thu,  6 Nov 2025 22:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NgKmnd+K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l2jXlOD4"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEF3337690
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5973376A5
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:36:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468553; cv=none; b=XnmSDbe+xL3cmsf51Zed7HNgLbbkt3ukDSTzLvhsqXNHel9KgEc14lH1T+gGwKZA4hKqM/59owIj9Ca1tiByg299Wy817PyJAVC3WvhnStMFjQDx1dMTVx3YiI74tdNbRNtmaXVTBOx9mmnC5Xuxw6UO/ydmfiUWqymZSoS4h8Q=
+	t=1762468568; cv=none; b=D0Rg55+CK3MF5YOVeTr1SC5QOfge5uzPxtQfVGXy8J2LWgMjge5U9vtsZsohAwzSvxh3VqJf1nHWmtvH79VIP7agUeeKkO4AFpqhtkWvB8JsnvUB4PJMlpaxnKWFhbeesH7Oo2FTIqzFJdLYW8wwpfqn8XjyMAov+CVMIK+JPXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468553; c=relaxed/simple;
-	bh=TkwTiX+Nnnm3hFYoHDSsXscVqok6ms3rm2cF6LC1KB4=;
+	s=arc-20240116; t=1762468568; c=relaxed/simple;
+	bh=Qiqfns9yPMPuK3l0iSq0pwwWHXAV1bRule9H4csrJG4=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=l8Z1Cn9hllQEdBvFmHs7vp9itla33CcdPuwHTVsogTCoqm9ltTU5tQ7EHiuED4qhS2f03DswNPKbcixFpfeFTgf321hHQE4mLSykBZq4FCXwewqDDnU7Sa5D96JpRHfShH/a6SdeaKjyZO7A4wh9JF4UIGEsi8/PhY4LfvtUDn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NgKmnd+K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7972EC4CEF7;
-	Thu,  6 Nov 2025 22:35:52 +0000 (UTC)
+	 MIME-Version:Content-Type; b=gqbs9zlR5OD3qtF89IBGoJKiZnaohBSN8ZxfWO/IEnY9tRpHnvFaHGIA3TTm2WA0TZfXYmdQHsneyLNEKDdzLZyuC/C8xrEm8P5hvhlHLlzrEA2TGbVuuoGgxnDx3VPTyXL0hs9OBw++QupxXcxfEdHCKJgsIdnhqB2117h5iLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l2jXlOD4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67B36C4CEF7;
+	Thu,  6 Nov 2025 22:36:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468552;
-	bh=TkwTiX+Nnnm3hFYoHDSsXscVqok6ms3rm2cF6LC1KB4=;
+	s=k20201202; t=1762468568;
+	bh=Qiqfns9yPMPuK3l0iSq0pwwWHXAV1bRule9H4csrJG4=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=NgKmnd+KQIH55A47FbbiAFPn6mChehsgHjyeIbpWCFuWNBz27ncNJZQZCoPTBc1jj
-	 UOubf95HO43RGk2kHPnU0lP2/mGvPwigS8uTTinnzv8kOkmsg6raZCgxZr3pdQCTW/
-	 FPMjH+LhyQ/P9LELL2oHWoP3//Po9gvQsEiyO+jogkxu7TN3FxfUXUUXyzyzwDQ6qD
-	 9WjpdeBV/gUZjuUCq86ummLuQAqbhjkeiQyK0kXAxBqTr8/C+GdGbJ1wTBBVJeIxE3
-	 ZqQwYzFtqjm3VFvZ9Vhmy4A+1KiaOEJ2SgVkYTEzJzYrrfKImYEFRuxwNjCZtyLQoI
-	 zRx4AvE7+tMYA==
-Date: Thu, 06 Nov 2025 14:35:51 -0800
-Subject: [PATCH 18/19] libsupport: add background thread manager
+	b=l2jXlOD47KP4UrEscQwunMNwgIfb7BaWhL3yV5S7P/JevSGB98RqvU0qnkFy5bxN4
+	 CRemmdAa0raSQQJer6d1ovks/52iT/J8fdR2yWGkSdm9DhsjQVTqVGMD3cHBsfxMd/
+	 517wMNDnYlng/eWrW7SoQU1mJ3ty5lAN7dyViZp72BawBLcQLy2fEFJ2KyvEBR7gw/
+	 +kqdiAx8rqO5/QagJTNKrdCthKUJyxo7cxTQkzJeNLO9r2lxVPuPP1hPjXapEAupXx
+	 V912XD+RvNK5JnbUKoOpWkZVkeDNuZL6lrKi95hHiaeRvhAdI5VtGMglYe4I0FV4oI
+	 fwwwOXFIoGKVA==
+Date: Thu, 06 Nov 2025 14:36:07 -0800
+Subject: [PATCH 19/19] fuse2fs: implement MMP updates
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246793955.2862242.13813774537220961463.stgit@frogsfrogsfrogs>
+Message-ID: <176246793973.2862242.8082873020640643812.stgit@frogsfrogsfrogs>
 In-Reply-To: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 References: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,290 +60,238 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Add some simple code to manage a background thread that wakes up
-periodically.  This will be needed for MMP in fuse2fs, among other
-things.
+Periodically rewrite the MMP block while we're mounted like the Linux
+driver does, so that other potential users don't see EXT4_MMP_SEQ_FSCK
+and erroneously report that the ext4 filesystem is being fscked.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- lib/support/bthread.h   |   27 ++++++
- lib/support/Makefile.in |    6 +
- lib/support/bthread.c   |  201 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 233 insertions(+), 1 deletion(-)
- create mode 100644 lib/support/bthread.h
- create mode 100644 lib/support/bthread.c
+ misc/fuse2fs.c |  148 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 145 insertions(+), 3 deletions(-)
 
 
-diff --git a/lib/support/bthread.h b/lib/support/bthread.h
-new file mode 100644
-index 00000000000000..cb29a655b815e5
---- /dev/null
-+++ b/lib/support/bthread.h
-@@ -0,0 +1,27 @@
-+/*
-+ * bthread.h - Background thread manager
-+ *
-+ * Copyright (C) 2025 Oracle.
-+ *
-+ * %Begin-Header%
-+ * This file may be redistributed under the terms of the GNU Public
-+ * License.
-+ * %End-Header%
-+ */
-+#ifndef __BTHREAD_H__
-+#define __BTHREAD_H__
-+
-+typedef void (*bthread_fn_t)(void *data);
-+struct bthread;
-+
-+int bthread_create(const char *name, bthread_fn_t fn, void *data,
-+		   unsigned int period, struct bthread **btp);
-+void bthread_destroy(struct bthread **btp);
-+
-+int bthread_start(struct bthread *bt);
-+void bthread_stop(struct bthread *bt);
-+
-+int bthread_cancel(struct bthread *bt);
-+int bthread_cancelled(struct bthread *bt);
-+
-+#endif /* __BTHREAD_H__ */
-diff --git a/lib/support/Makefile.in b/lib/support/Makefile.in
-index 3f26cd30172f51..6383816fd99cd4 100644
---- a/lib/support/Makefile.in
-+++ b/lib/support/Makefile.in
-@@ -13,7 +13,8 @@ MKDIR_P = @MKDIR_P@
- 
- all::
- 
--OBJS=		cstring.o \
-+OBJS=		bthread.o \
-+		cstring.o \
- 		mkquota.o \
- 		plausible.o \
- 		profile.o \
-@@ -28,6 +29,7 @@ OBJS=		cstring.o \
- 		devname.o
- 
- SRCS=		$(srcdir)/argv_parse.c \
-+		$(srcdir)/bthread.c \
- 		$(srcdir)/cstring.c \
- 		$(srcdir)/mkquota.c \
- 		$(srcdir)/parse_qtype.c \
-@@ -108,6 +110,8 @@ $(OBJS):
- #
- argv_parse.o: $(srcdir)/argv_parse.c $(top_builddir)/lib/config.h \
-  $(top_builddir)/lib/dirpaths.h $(srcdir)/argv_parse.h
-+bthread.o: $(srcdir)/bthread.c $(top_builddir)/lib/config.h \
-+ $(srcdir)/bthread.h
- cstring.o: $(srcdir)/cstring.c $(top_builddir)/lib/config.h \
-  $(top_builddir)/lib/dirpaths.h $(srcdir)/cstring.h
- mkquota.o: $(srcdir)/mkquota.c $(top_builddir)/lib/config.h \
-diff --git a/lib/support/bthread.c b/lib/support/bthread.c
-new file mode 100644
-index 00000000000000..f59fde976920f9
---- /dev/null
-+++ b/lib/support/bthread.c
-@@ -0,0 +1,201 @@
-+/*
-+ * bthread.c - Background thread manager
-+ *
-+ * Copyright (C) 2025 Oracle.
-+ *
-+ * %Begin-Header%
-+ * This file may be redistributed under the terms of the GNU Public
-+ * License.
-+ * %End-Header%
-+ */
-+#include "config.h"
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <pthread.h>
-+#include <string.h>
-+
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index b1cac46ddce567..589599f91b4390 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -46,6 +46,7 @@
+ #include "ext2fs/ext2fs.h"
+ #include "ext2fs/ext2_fs.h"
+ #include "ext2fs/ext2fsP.h"
 +#include "support/bthread.h"
-+
-+enum bthread_state {
-+	/* waiting to be put in the running state */
-+	BT_WAITING,
-+	/* running */
-+	BT_RUNNING,
-+	/* cancelled */
-+	BT_CANCELLED,
-+};
-+
-+struct bthread {
-+	enum bthread_state state;
-+	pthread_t thread;
-+	pthread_mutex_t lock;
-+	pthread_cond_t cond;
-+	bthread_fn_t fn;
-+	void *data;
-+	unsigned int period; /* seconds */
-+	int can_join:1;
-+};
-+
-+/* Wait for a signal or for the periodic interval */
-+static inline int bthread_wait(struct bthread *bt)
+ #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
+ # define FUSE_PLATFORM_OPTS	""
+ #else
+@@ -241,6 +242,10 @@ struct fuse2fs {
+ 	unsigned int next_generation;
+ 	unsigned long long cache_size;
+ 	char *lockfile;
++#ifdef CONFIG_MMP
++	struct bthread *mmp_thread;
++	unsigned int mmp_update_interval;
++#endif
+ };
+ 
+ #define FUSE2FS_CHECK_MAGIC(fs, ptr, num) do {if ((ptr)->magic != (num)) \
+@@ -466,6 +471,133 @@ static inline errcode_t fuse2fs_write_inode(ext2_filsys fs, ext2_ino_t ino,
+ 				       sizeof(*inode));
+ }
+ 
++#ifdef CONFIG_MMP
++static bool fuse2fs_mmp_wanted(const struct fuse2fs *ff)
 +{
-+	struct timespec ts;
++	ext2_filsys fs = ff->fs;
 +
-+	clock_gettime(CLOCK_REALTIME, &ts);
-+	ts.tv_sec += bt->period;
-+	return pthread_cond_timedwait(&bt->cond, &bt->lock, &ts);
++	if (!fs || !ext2fs_has_feature_mmp(fs->super) ||
++	    !(fs->flags & EXT2_FLAG_RW) || (fs->flags & EXT2_FLAG_SKIP_MMP))
++		return false;
++	return true;
 +}
 +
-+static void *bthread_run(void *arg)
++static int fuse2fs_mmp_touch(struct fuse2fs *ff, bool immediate)
 +{
-+	struct bthread *bt = arg;
-+	int ret;
++	ext2_filsys fs = ff->fs;
++	struct mmp_struct *mmp = fs->mmp_buf;
++	struct mmp_struct *mmp_cmp = fs->mmp_cmp;
++	struct timeval tv;
++	errcode_t retval = 0;
 +
-+	while (1) {
-+		pthread_mutex_lock(&bt->lock);
-+		ret = bthread_wait(bt);
-+		switch (bt->state) {
-+		case BT_WAITING:
-+			/* waiting to be runnable, go around again */
-+			pthread_mutex_unlock(&bt->lock);
-+			break;
-+		case BT_RUNNING:
-+			/* running; call our function if we timed out */
-+			pthread_mutex_unlock(&bt->lock);
-+			if (ret == ETIMEDOUT)
-+				bt->fn(bt->data);
-+			break;
-+		case BT_CANCELLED:
-+			/* exit if we're cancelled */
-+			pthread_mutex_unlock(&bt->lock);
-+			return NULL;
-+		}
-+	}
++	gettimeofday(&tv, 0);
++	if (!immediate &&
++	    tv.tv_sec - fs->mmp_last_written < ff->mmp_update_interval)
++		return 0;
 +
-+	return NULL;
-+}
++	retval = ext2fs_mmp_read(fs, fs->super->s_mmp_block, NULL);
++	if (retval)
++		return translate_error(fs, 0, retval);
 +
-+/* Create background thread and have it wait to be started */
-+int bthread_create(const char *name,  bthread_fn_t fn, void *data,
-+		   unsigned int period, struct bthread **btp)
-+{
-+	struct bthread *bt;
-+	int error;
++	if (memcmp(mmp, mmp_cmp, sizeof(*mmp_cmp)))
++		return translate_error(fs, 0, EXT2_ET_MMP_CHANGE_ABORT);
 +
-+	if (!period)
-+		return EINVAL;
++	/*
++	 * Believe it or not, ext2fs_mmp_read actually overwrites fs->mmp_cmp
++	 * and leaves fs->mmp_buf untouched.  Hence we copy mmp_cmp into
++	 * mmp_buf, update mmp_buf, and write mmp_buf out to disk.
++	 */
++	memcpy(mmp, mmp_cmp, sizeof(*mmp_cmp));
++	mmp->mmp_time = tv.tv_sec;
++	mmp->mmp_seq = ext2fs_mmp_new_seq();
 +
-+	bt = calloc(1, sizeof(struct bthread));
-+	if (!bt)
-+		return ENOMEM;
-+	bt->state = BT_WAITING;
-+	bt->fn = fn;
-+	bt->data = data;
-+	bt->period = period;
-+	bt->can_join = 1;
++	retval = ext2fs_mmp_write(fs, fs->super->s_mmp_block, fs->mmp_buf);
++	if (retval)
++		return translate_error(fs, 0, retval);
 +
-+	bt->lock = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
-+	bt->cond = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
-+
-+	error = pthread_create(&bt->thread, NULL, bthread_run, bt);
-+	if (error)
-+		goto out_cond;
-+
-+	pthread_setname_np(bt->thread, name);
-+
-+	*btp = bt;
 +	return 0;
-+
-+out_cond:
-+	pthread_cond_destroy(&bt->cond);
-+	pthread_mutex_destroy(&bt->lock);
-+	free(bt);
-+	return error;
 +}
 +
-+/* Stop the thread (if running) and tear everything down */
-+void bthread_destroy(struct bthread **btp)
++static void fuse2fs_mmp_bthread(void *data)
 +{
-+	struct bthread *bt = *btp;
++	struct fuse2fs *ff = data;
 +
-+	if (bt) {
-+		bthread_stop(bt);
-+
-+		pthread_cond_destroy(&bt->cond);
-+		pthread_mutex_destroy(&bt->lock);
-+
-+		free(bt);
-+	}
-+
-+	*btp = NULL;
++	pthread_mutex_lock(&ff->bfl);
++	if (fuse2fs_mmp_wanted(ff) && !bthread_cancelled(ff->mmp_thread))
++		fuse2fs_mmp_touch(ff, false);
++	pthread_mutex_unlock(&ff->bfl);
 +}
 +
-+/* Start background thread, put it in waiting state */
-+int bthread_start(struct bthread *bt)
-+{
-+	int err;
-+
-+	pthread_mutex_lock(&bt->lock);
-+	bt->state = BT_RUNNING;
-+	err = pthread_cond_signal(&bt->cond);
-+	pthread_mutex_unlock(&bt->lock);
-+
-+	return err;
-+}
-+
-+/* Has this thread been cancelled? */
-+int bthread_cancelled(struct bthread *bt)
++static void fuse2fs_mmp_start(struct fuse2fs *ff)
 +{
 +	int ret;
 +
-+	pthread_mutex_lock(&bt->lock);
-+	ret = bt->state == BT_CANCELLED;
-+	pthread_mutex_unlock(&bt->lock);
++	if (!fuse2fs_mmp_wanted(ff))
++		return;
 +
-+	return ret;
-+}
-+
-+/* Ask the thread to cancel itself, but don't wait */
-+int bthread_cancel(struct bthread *bt)
-+{
-+	int err = 0;
-+
-+	pthread_mutex_lock(&bt->lock);
-+	switch (bt->state) {
-+	case BT_CANCELLED:
-+		break;
-+	case BT_WAITING:
-+	case BT_RUNNING:
-+		bt->state = BT_CANCELLED;
-+		err = pthread_cond_signal(&bt->cond);
-+		break;
++	ret = bthread_create("fuse2fs_mmp", fuse2fs_mmp_bthread, ff,
++			     ff->mmp_update_interval, &ff->mmp_thread);
++	if (ret) {
++		err_printf(ff, "MMP: %s.\n", error_message(ret));
++		return;
 +	}
-+	pthread_mutex_unlock(&bt->lock);
 +
-+	return err;
++	ret = bthread_start(ff->mmp_thread);
++	if (ret)
++		err_printf(ff, "MMP: %s.\n", error_message(ret));
 +}
 +
-+/* Ask the thread to cancel itself and wait for it */
-+void bthread_stop(struct bthread *bt)
++static void fuse2fs_mmp_cancel(struct fuse2fs *ff)
 +{
-+	int need_join = 0;
-+
-+	pthread_mutex_lock(&bt->lock);
-+	switch (bt->state) {
-+	case BT_CANCELLED:
-+		need_join = bt->can_join;
-+		break;
-+	case BT_WAITING:
-+	case BT_RUNNING:
-+		bt->state = BT_CANCELLED;
-+		need_join = 1;
-+		pthread_cond_signal(&bt->cond);
-+		break;
-+	}
-+	if (need_join)
-+		bt->can_join = 0;
-+	pthread_mutex_unlock(&bt->lock);
-+
-+	if (need_join)
-+		pthread_join(bt->thread, NULL);
++	if (ff->mmp_thread)
++		bthread_cancel(ff->mmp_thread);
 +}
++
++static void fuse2fs_mmp_config(struct fuse2fs *ff)
++{
++	ext2_filsys fs = ff->fs;
++	struct mmp_struct *mmp_s = fs->mmp_buf;
++	unsigned int mmp_update_interval = fs->super->s_mmp_update_interval;
++
++	if (!ext2fs_has_feature_mmp(fs->super) ||
++	    !(fs->flags & EXT2_FLAG_RW) ||
++	    (fs->flags & EXT2_FLAG_SKIP_MMP))
++		return;
++
++	/*
++	 * If update_interval in MMP block is larger, use that instead of
++	 * update_interval from the superblock.
++	 */
++	if (mmp_s->mmp_check_interval > mmp_update_interval)
++		mmp_update_interval = mmp_s->mmp_check_interval;
++
++	/* Clamp to the relevant(?) interval values */
++	if (mmp_update_interval < EXT4_MMP_MIN_CHECK_INTERVAL)
++		mmp_update_interval = EXT4_MMP_MIN_CHECK_INTERVAL;
++	if (mmp_update_interval > EXT4_MMP_MAX_UPDATE_INTERVAL)
++		mmp_update_interval = EXT4_MMP_MAX_UPDATE_INTERVAL;
++
++	ff->mmp_update_interval = mmp_update_interval;
++
++	/*
++	 * libext2fs writes EXT4_MMP_SEQ_FSCK after mounting, so we need to
++	 * update it immediately so that it doesn't look like another node is
++	 * actually running fsck.
++	 */
++	fuse2fs_mmp_touch(ff, true);
++}
++
++static void fuse2fs_mmp_destroy(struct fuse2fs *ff)
++{
++	bthread_destroy(&ff->mmp_thread);
++}
++#else
++# define fuse2fs_mmp_start(...)		((void)0)
++# define fuse2fs_mmp_cancel(...)	((void)0)
++# define fuse2fs_mmp_config(...)	((void)0)
++# define fuse2fs_mmp_destroy(...)	((void)0)
++#endif
++
+ static void get_now(struct timespec *now)
+ {
+ #ifdef CLOCK_REALTIME
+@@ -1052,6 +1184,13 @@ static void *op_init(struct fuse_conn_info *conn
+ 	if (global_fs->flags & EXT2_FLAG_RW)
+ 		fuse2fs_read_bitmaps(ff);
+ 
++	/*
++	 * Background threads must be started from op_init because libfuse
++	 * might daemonize us in fuse_main() by forking, and threads are not
++	 * conveyed to the new child process.
++	 */
++	fuse2fs_mmp_start(ff);
++
+ 	return ff;
+ }
+ 
+@@ -5018,6 +5157,7 @@ int main(int argc, char *argv[])
+ 	memset(&fctx, 0, sizeof(fctx));
+ 	fctx.magic = FUSE2FS_MAGIC;
+ 	fctx.logfd = -1;
++	fctx.bfl = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+ 
+ 	ret = fuse_opt_parse(&args, &fctx, fuse2fs_opts, fuse2fs_opt_proc);
+ 	if (ret)
+@@ -5193,6 +5333,8 @@ int main(int argc, char *argv[])
+ 	fctx.blocklog = u_log2(fctx.fs->blocksize);
+ 	fctx.blockmask = fctx.fs->blocksize - 1;
+ 
++	fuse2fs_mmp_config(&fctx);
++
+ 	if (!fctx.cache_size)
+ 		fctx.cache_size = default_cache_size();
+ 	if (fctx.cache_size) {
+@@ -5351,10 +5493,7 @@ int main(int argc, char *argv[])
+ 		fflush(stdout);
+ 	}
+ 
+-	pthread_mutex_init(&fctx.bfl, NULL);
+ 	ret = fuse_main(args.argc, args.argv, &fs_ops, &fctx);
+-	pthread_mutex_destroy(&fctx.bfl);
+-
+ 	switch(ret) {
+ 	case 0:
+ 		/* success */
+@@ -5389,6 +5528,7 @@ int main(int argc, char *argv[])
+  _("Mount failed while opening filesystem.  Check dmesg(1) for details."));
+ 		fflush(orig_stderr);
+ 	}
++	fuse2fs_mmp_destroy(&fctx);
+ 	if (global_fs) {
+ 		err = ext2fs_close_free(&global_fs);
+ 		if (err)
+@@ -5405,6 +5545,7 @@ int main(int argc, char *argv[])
+ 	}
+ 	if (fctx.device)
+ 		free(fctx.device);
++	pthread_mutex_destroy(&fctx.bfl);
+ 	fuse_opt_free_args(&args);
+ 	return ret;
+ }
+@@ -5575,6 +5716,7 @@ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
+ 		if (fs->flags & EXT2_FLAG_RW)
+ 			err_printf(ff, "%s\n",
+  _("Remounting read-only due to errors."));
++		fuse2fs_mmp_cancel(ff);
+ 		fs->flags &= ~EXT2_FLAG_RW;
+ 		break;
+ 	case EXT2_ERRORS_PANIC:
 
 
