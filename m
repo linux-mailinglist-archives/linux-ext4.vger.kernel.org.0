@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-11552-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11553-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E51BC3D98F
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:29:18 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0313C3D99B
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:29:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8BD3B4E4087
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:29:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A99154E71B3
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B1130EF91;
-	Thu,  6 Nov 2025 22:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1520A33342D;
+	Thu,  6 Nov 2025 22:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xg6iL5dk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c2rFTZA+"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A1D332904
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3FC30EF91
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468153; cv=none; b=AHh4ExcD8eiMUJxaw/vYJgXh0IixVn2SIe0ABF5ckgQb/Bd8kP9LKYepfE8vMT/svRvyvAm9xMFUn0PK4QJ+Wro2+cIqdIngZMlHU/zBb8uolkrH1zkp32q/JEt2TwORU7flGOumVrnzTYZrSBD5Gfdqlc1+YrancRqlMDZ7wwk=
+	t=1762468169; cv=none; b=uqhMt1rIrBNLar2a97hPcn+N+xczeQTCb67t1mIG7u+a8WGUWF2vYCXnH6NB2AkOFrrGZ77FOwjWa6SJcif0KnKC2RZitTtLJZA86tFIsxZBs9Iv2wOXe0yejhntxcxnpkx0tuI3eYNY4plw4IVwPKptkLm3ikfkZigVtmWaT3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468153; c=relaxed/simple;
-	bh=+BM0D7D7WGzq4+KenNtLKFhp1iZLzWXDiz0jqY2bGjA=;
+	s=arc-20240116; t=1762468169; c=relaxed/simple;
+	bh=unvLVV18pZApSORmdmqJug+aXSNf/f5nBVprVBPC0dI=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qp9s/aESOTDNzCQzK9OsexsLdga9Ksj2m1JwzV8BOPahQUFsyA0s/KwiOVr+KJLQdNP97xTp6A/dxE1+89rg0/2BcC0j7myxJOYSfVSMt0RKsLb2zTigYu8pvZKOM0mDPJkIWcuO8GXBiJaazsk1jfZDYkD2dV9wqAG8bf2cUAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xg6iL5dk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F9FBC4CEF7;
-	Thu,  6 Nov 2025 22:29:13 +0000 (UTC)
+	 MIME-Version:Content-Type; b=FwKjv2X6WBxlkdmDhajWY7GP70p1JF35rRLudEbmHg98XGttpxsUzDVJSCSS7zVLZJJaszeMdWp8kboBIez5p/dF16q+R5g4qwGYWHdXPhAEje0my3g15DogKSxFu08AXPmabRhR7IMAtg6IUQeRcWdhtk9SfLP2818pQiOUgng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c2rFTZA+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C85EC4CEF7;
+	Thu,  6 Nov 2025 22:29:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468153;
-	bh=+BM0D7D7WGzq4+KenNtLKFhp1iZLzWXDiz0jqY2bGjA=;
+	s=k20201202; t=1762468169;
+	bh=unvLVV18pZApSORmdmqJug+aXSNf/f5nBVprVBPC0dI=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=Xg6iL5dkALk0KOLZ/uZxKef2fgoNCsBurdFJfOu+KLEoLfOP/ghBfy57z80Y9LToo
-	 Ah86DwsLOkg+eOrSaLtbzSvPZmGjAHrPQTZ+N9LgowlMgo2EnoTwmawAx4trrXX+Nt
-	 iGXu2o2s7ZTt27T4s2NXKPUg/TP6hnF+mQwQwFZLXzNRHr8KtKsDAKcGVjskk5gUmR
-	 HOlTU+RCq8xJwMirnDfTrHJq+deM14SRrnHYcEmtPmi2Nz4sJiZqhAFXEYcpNUAbTb
-	 4Q3FUavvHXvHhB7vGl2hDL9YKpTabOVTvQiPBgZ4z9yeEZh1HgsHrxJTGy4KCBeFtG
-	 r6cmyEnXjYwPQ==
-Date: Thu, 06 Nov 2025 14:29:12 -0800
-Subject: [PATCHSET 6/9] fuse2fs: improve operation tracing
+	b=c2rFTZA+IL2GZ3MA/LrIEPfQYgzh9cud8aX+Wjo61jea8fBAZ3JSmAtXhhUxV8Jea
+	 tYtZPV9swlOoomGFXgg5fuJvhlsPUHak4T2H8QCsBSGVeKnDkHaozDWj7d04OSApMI
+	 iBJfXfyUiILUOcxDcjK0C3l6Hj9XArHQehOG5aEcq/rQvumnZm4dYgGxwuyde8B0XY
+	 BRJLEn+VTaICcdiCmCq4iAxUY04vM5nATgewk521cPnOsXbZ8L6/eJEz5robWlyChD
+	 5fVEiVluXTN6WtsuG0raeglORI9JNDF5vTZLpsyBDOV6mO5Hb5vIRK+MFDEpu6yRSo
+	 j8kld3UkHiRvQ==
+Date: Thu, 06 Nov 2025 14:29:28 -0800
+Subject: [PATCHSET 7/9] fuse2fs: better tracking of writable state
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246794829.2863722.7643052073534781800.stgit@frogsfrogsfrogs>
+Message-ID: <176246795040.2863930.4974772996705539351.stgit@frogsfrogsfrogs>
 In-Reply-To: <20251106221440.GJ196358@frogsfrogsfrogs>
 References: <20251106221440.GJ196358@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,11 +60,15 @@ Content-Transfer-Encoding: 7bit
 
 Hi all,
 
-This series improves the ability for developers to trace the activities
-of fuse2fs by adding more debugging printfs and tracing abilities of
-fuse2fs.  It also registers a com_err handler for libext2fs so we can
-capture errors coming out of there, and changes filesystem error
-reporting to tell us the function name instead of just fuse2fs.c.
+There are multiple mutability variables in play in fuse2fs -- first,
+EXT2_FLAG_RW tracks whether or not we can write anything to the
+filesystem.  However, there's a second state, which is whether or not
+we actually want to write to the filesystem, regardless of the library
+state.  This can happen if we open libext2fs for writing, but then
+discover something about the filesystem that makes us not want to write
+to it after all.
+
+Split out this second variable into an explicit variable in fuse2fs.
 
 If you're going to start using this code, I strongly recommend pulling
 from my git trees, which are linked below.
@@ -72,15 +76,14 @@ from my git trees, which are linked below.
 Comments and questions are, as always, welcome.
 
 e2fsprogs git tree:
-https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-tracing
+https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-writability
 ---
 Commits in this patchset:
- * fuse2fs: hook library error message printing
- * fuse2fs: print the function name in error messages, not the file name
- * fuse2fs: improve tracing for file range operations
- * fuse2fs: record thread id in debug trace data
+ * fuse2fs: pass a struct fuse2fs to fs_writeable
+ * fuse2fs: track our own writable state
+ * fuse2fs: enable the shutdown ioctl
 ---
- misc/fuse2fs.c |   93 ++++++++++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 69 insertions(+), 24 deletions(-)
+ misc/fuse2fs.c |  102 ++++++++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 73 insertions(+), 29 deletions(-)
 
 
