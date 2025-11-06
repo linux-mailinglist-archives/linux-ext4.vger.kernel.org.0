@@ -1,54 +1,54 @@
-Return-Path: <linux-ext4+bounces-11559-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11560-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 589C2C3D9BF
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:31:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1819FC3D9C0
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:31:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3CFEE4E469F
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:31:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86FD2189123E
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E382E8E08;
-	Thu,  6 Nov 2025 22:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6FD62E8E08;
+	Thu,  6 Nov 2025 22:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CoFuTQqZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lDUiDhUV"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CEF3FBA7
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C59B199949
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468265; cv=none; b=KfQYQ/X+cdNNovLsfiTKXRNi2qolgGNgxIbr/lgMPWb/jNZ8ey5Q3qLoESIm5fJc7FeBFVeVPYOVQDIi0euw2WZXDRtXtq1tMcepYpK1fMRsOA/YZn8FqBc9oznR2V/v5go8/gy93kufLrVVxRuFaiHR46oF81I+BWOQxk6SaZo=
+	t=1762468281; cv=none; b=mrBRe4qr0I29k5fIXc8IBQZNEBduIKN/BfQzEmvSejk+0ZFliarXX6mqFhX8GEMX3JNG50FMzOy7gfoK6kY2eBxRVdOccMKWvgI/ZFoX5kWDifUuX6sO4J7KNQiqtF/6BAVKbI0nAXlITvxSswBRitWebj/lS/JZSrXrUV8D3/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468265; c=relaxed/simple;
-	bh=sO0+EwQnL2rv/3Dh0AzbZPy5uUZUiWLrX1y7y5n7sVA=;
+	s=arc-20240116; t=1762468281; c=relaxed/simple;
+	bh=654/DacJSC32SupGfmuULh0BHjmOLQtF6iBChICeG24=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WQAN/1qLpIUzw2JN2aysiePqNhjtAjOVEhO59JZ5pmMgMesumys11GmmZJoFBKXVbgBfBwK0DuifN1+KjHSN8bDfaYdikDRKHJ40gybssTJy1LCG8cpH5c0LL3qzUDctGKRitDNjw+sX9UK/MPdSlsYs5xiXTN38+hWvF63Vvts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CoFuTQqZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 399F7C4CEF7;
-	Thu,  6 Nov 2025 22:31:05 +0000 (UTC)
+	 MIME-Version:Content-Type; b=mXMDWAGScR1NvaY6ac/6EpRCTui4Wb+ePBGM8J/P0cY3fJahUbs5AHtzSC1Nhs11PsiGasjmUovMqaCvF4ljBWI70b987+gTd48SUULwv7t+7F7txUlP7sF3P3ZVQsevw2M4vqEVIl4uduoGLL/VPxxUYpQmgKOVM4ZddmWoM68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lDUiDhUV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29DE2C4CEF7;
+	Thu,  6 Nov 2025 22:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468265;
-	bh=sO0+EwQnL2rv/3Dh0AzbZPy5uUZUiWLrX1y7y5n7sVA=;
+	s=k20201202; t=1762468281;
+	bh=654/DacJSC32SupGfmuULh0BHjmOLQtF6iBChICeG24=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=CoFuTQqZm+RhomuiKZwo2K6oGPW62xyJrkl6/oi0D+Ns5IdPj74zbH2LWvrgApwKo
-	 pXwO+nVfVcdd1e70aRPQ8aRmwaS8ULjrb74z5ZQ41zUsK9NtPx+XTD1oFN5kkVzmd2
-	 Zmtt6oNDS7f6PBzGVpdObJFP9RktTbbG/h9BJGfFniiZZiXuRT2Qz4U3t2qpxsJou6
-	 oFO02q90e/VIrwdkqU5TicoTJ8EmZKsOeeT9nfHYgVbBQINiF5KF/n/IfLcyngrqQ2
-	 3fxPBmCs8z6xCg+aXCDkRIDeyEbRYpqn8tXXP5aUmSweQPiIyPz2giyIISATcJrHoc
-	 rnnABNjaBaPbg==
-Date: Thu, 06 Nov 2025 14:31:04 -0800
-Subject: [PATCH 4/4] fuse2fs: try to grab block device O_EXCL repeatedly
+	b=lDUiDhUVNUu3uxVlQwZvhBOPcbfaxemdhCrbaDEueer3BwQQRAIztA7g4sC4U1yNB
+	 FY1gSGfBSoDxX58kzaZhyn9Cx2Ay8lXqnCi0QVDtDvgVsgZ5O760WCOdy4dv7Ghr8u
+	 ZX99bkiz/uGOxnvnU0WpYTSoscvj9mhl1swmTe6pPmv+A5moSXz0HSQy9HXu+PFOQv
+	 8idvZTuWITwVoXGFyWabwyGTFsMfnDXswpf6D/wj3FIrB8d8pXiSdNa+BGeD0cLc/L
+	 hdDh0mcIseltMTLFUbh+JIU93SQRupom7wRUD6quV0FQFo1HMADz8PidqyigJn9wvd
+	 nq22Zo3X7HLvQ==
+Date: Thu, 06 Nov 2025 14:31:20 -0800
+Subject: [PATCH 01/19] libext2fs: initialize htree when expanding directory
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org, linux-ext4@vger.kernel.org
-Message-ID: <176246793402.2862036.10955988600913253295.stgit@frogsfrogsfrogs>
-In-Reply-To: <176246793314.2862036.15869840216751367735.stgit@frogsfrogsfrogs>
-References: <176246793314.2862036.15869840216751367735.stgit@frogsfrogsfrogs>
+Cc: linux-ext4@vger.kernel.org
+Message-ID: <176246793645.2862242.1032124733438679877.stgit@frogsfrogsfrogs>
+In-Reply-To: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
+References: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,128 +60,279 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-generic/646 keeps failing to mount in this fashion:
+Teach ext2fs_link to initialize the htree when we're expanding a
+directory beyond the first block.  This brings fuse2fs' behavior in line
+with the kernel and dramatically improves performance.  It also is the
+start of a bunch of bug fixing for ext4/045.  This is a straight port of
+fs/ext4/namei.c.
 
- run fstests generic/646 at 2025-10-20 17:10:26
- [U] FUSE2FS (sda4): mounted filesystem f8f21d10-2ec9-4aef-a509-b32659b4e6b0.
- fuse: EXPERIMENTAL iomap feature enabled.  Use at your own risk!
- [U] FUSE2FS (sda4): shut down requested.
- [U] FUSE2FS (sda4): unmounted filesystem f8f21d10-2ec9-4aef-a509-b32659b4e6b0.
- [U] FUSE2FS (sda4): mounted filesystem 9efc6297-74c0-448c-b253-cecffd947239.
- fuse: EXPERIMENTAL iomap feature enabled.  Use at your own risk!
- [U] FUSE2FS (sda4): shut down requested.
- [U] FUSE2FS (sda4): unmounted filesystem 9efc6297-74c0-448c-b253-cecffd947239.
- [U] FUSE2FS (sda4): mounted filesystem 9efc6297-74c0-448c-b253-cecffd947239.
- [U] FUSE2FS (sda4): Warning: Mounting unchecked fs, running e2fsck is recommended.
- [U] FUSE2FS (sda4): Device or resource busy.
- [U] FUSE2FS (sda4): Please run e2fsck -fy.
- [U] Mount failed while opening filesystem.  Check dmesg(1) for details.
- [U] FUSE2FS (sda4): unmounted filesystem 9efc6297-74c0-448c-b253-cecffd947239.
+This patch is needed for the next patch, which fixes the dir_nlink
+functionality, because apparently the two features are intertwined.
 
-It turns out that one can mount a fuse filesystem and unmount it before
-the kernel even has a chance to send FUSE_INIT to the fuse server.  If
-this occurs, the unmount code will abort the FUSE_INIT request and tear
-down the fs mount immediately.
-
-Unfortunately for fstests, the fuse server may have already opened the
-block device with O_EXCL and will keep running with the bdev open until
-libfuse notices that the connection to the kernel died and tells the
-fuse server to destroy itself.  That might not happen for a long time
-after the unmount program exits, in which case a subsequent invocation
-of the fuse server can race with the dying fuse server to open the block
-device.  When this happens, the new invocation fails with "Device or
-resource busy".
-
-This is exactly what's happening in this test, which is only noticeable
-because it cycles the scratch mount so quickly.
-
-Cc: <linux-ext4@vger.kernel.org> # v1.43
-Fixes: 81cbf1ef4f5dab ("misc: add fuse2fs, a FUSE server for e2fsprogs")
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |   67 +++++++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 54 insertions(+), 13 deletions(-)
+ lib/ext2fs/link.c |  241 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 241 insertions(+)
 
 
-diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index bbd79d6c09f4bc..76872d793ea394 100644
---- a/misc/fuse2fs.c
-+++ b/misc/fuse2fs.c
-@@ -4821,21 +4821,62 @@ int main(int argc, char *argv[])
- 	sprintf(options, "offset=%lu", fctx.offset);
- 	if (fctx.directio)
- 		flags |= EXT2_FLAG_DIRECT_IO;
--	err = ext2fs_open2(fctx.device, options, flags, 0, 0, unix_io_manager,
--			   &global_fs);
--	if ((err == EPERM || err == EACCES) &&
--	    (!fctx.ro || (flags & EXT2_FLAG_RW))) {
--		/*
--		 * Source device cannot be opened for write.  Under these
--		 * circumstances, mount(8) will try again with a ro mount,
--		 * and the kernel will open the block device readonly.
--		 */
--		log_printf(&fctx, "%s\n",
-- _("WARNING: source write-protected, mounted read-only."));
--		flags &= ~EXT2_FLAG_RW;
--		fctx.ro = 1;
+diff --git a/lib/ext2fs/link.c b/lib/ext2fs/link.c
+index 1697da39f8855f..83d3ea7d00c3ed 100644
+--- a/lib/ext2fs/link.c
++++ b/lib/ext2fs/link.c
+@@ -599,6 +599,237 @@ static errcode_t dx_link(ext2_filsys fs, ext2_ino_t dir,
+ 	return retval;
+ }
+ 
++struct fake_dirent
++{
++	__le32 inode;
++	__le16 rec_len;
++	__u8 name_len;
++	__u8 file_type;
++};
 +
-+	/*
-+	 * If the filesystem is stored on a block device, the _EXCLUSIVE flag
-+	 * causes libext2fs to try to open the block device with O_EXCL.  If
-+	 * the block device is already opened O_EXCL by something else, the
-+	 * open call returns EBUSY.
-+	 *
-+	 * Unfortunately, there's a nasty race between fuse2fs going through
-+	 * its startup sequence (open fs, parse superblock, daemonize, create
-+	 * mount, respond to FUSE_INIT) in response to a mount(8) invocation
-+	 * and another process that calls umount(2) on the same mount.
-+	 *
-+	 * If fuse2fs is being run as a mount(8) helper and has daemonized, the
-+	 * original fuse2fs subprocess exits and so will mount(8).  This can
-+	 * occur before the kernel issues a FUSE_INIT request to fuse2fs.  If
-+	 * a process then umount(2)'s the mount, the kernel will abort the
-+	 * fuse connection.  If the FUSE_INIT request hasn't been issued, now
-+	 * it won't ever be issued.  The kernel tears down the mount and
-+	 * returns from umount(2), but fuse2fs has no idea that any of this has
-+	 * happened because it receives no requests.
-+	 *
-+	 * At this point, the original fuse2fs server holds the block device
-+	 * open O_EXCL.  If mount(8) is invoked again on the same device, the
-+	 * new fuse2fs server will try to open the block device O_EXCL and
-+	 * fail.  A crappy solution here is to retry for 5 seconds, hoping that
-+	 * the first fuse2fs server will wake up and exit.
-+	 *
-+	 * If the filesystem is in a regular file, O_EXCL (without O_CREAT) has
-+	 * no defined behavior, but it never returns EBUSY.
-+	 */
-+	deadline = init_deadline(FUSE2FS_OPEN_TIMEOUT);
-+	do {
- 		err = ext2fs_open2(fctx.device, options, flags, 0, 0,
- 				   unix_io_manager, &global_fs);
-+		if ((err == EPERM || err == EACCES) &&
-+		    (!fctx.ro || (flags & EXT2_FLAG_RW))) {
-+			/*
-+			 * Source device cannot be opened for write.  Under
-+			 * these circumstances, mount(8) will try again with a
-+			 * ro mount, and the kernel will open the block device
-+			 * readonly.
-+			 */
-+			log_printf(&fctx, "%s\n",
-+ _("WARNING: source write-protected, mounted read-only."));
-+			flags &= ~EXT2_FLAG_RW;
-+			fctx.ro = 1;
++/*
++ * dx_root_info is laid out so that if it should somehow get overlaid by a
++ * dirent the two low bits of the hash version will be zero.  Therefore, the
++ * hash version mod 4 should never be 0.  Sincerely, the paranoia department.
++ */
 +
-+			/* Force the loop to run once more */
-+			err = -1;
++struct dx_root
++{
++	struct fake_dirent dot;
++	char dot_name[4];
++	struct fake_dirent dotdot;
++	char dotdot_name[4];
++	struct ext2_dx_root_info info;
++	struct ext2_dx_entry entries[];
++};
++
++static int check_dx_root(ext2_filsys fs, ext2_ino_t ino, struct dx_root *root)
++{
++	struct fake_dirent *fde;
++	char *error_msg;
++	unsigned int rlen;
++	char *blockend = (char *)root + fs->blocksize;
++
++	fde = &root->dot;
++	if (fde->name_len != 1) {
++		error_msg = "invalid name_len for '.'";
++		goto corrupted;
++	}
++	if (strncmp(root->dot_name, ".", fde->name_len)) {
++		error_msg = "invalid name for '.'";
++		goto corrupted;
++	}
++
++	ext2fs_get_rec_len(fs, (struct ext2_dir_entry *)fde, &rlen);
++	if ((char *)fde + rlen >= blockend) {
++		error_msg = "invalid rec_len for '.'";
++		goto corrupted;
++	}
++
++	fde = &root->dotdot;
++	if (fde->name_len != 2) {
++		error_msg = "invalid name_len for '..'";
++		goto corrupted;
++	}
++	if (strncmp(root->dotdot_name, "..", fde->name_len)) {
++		error_msg = "invalid name for '..'";
++		goto corrupted;
++	}
++	ext2fs_get_rec_len(fs, (struct ext2_dir_entry *)fde, &rlen);
++	if ((char *)fde + rlen >= blockend) {
++		error_msg = "invalid rec_len for '..'";
++		goto corrupted;
++	}
++
++	return 1;
++
++corrupted:
++	fprintf(stderr, "Corrupt dir %u: %s, running e2fsck is recommended\n",
++			 ino, error_msg);
++	return 0;
++}
++
++static inline struct ext2_dir_entry *
++ext2fs_next_entry(ext2_filsys fs, struct ext2_dir_entry *p)
++{
++	unsigned int rlen;
++
++	ext2fs_get_rec_len(fs, p, &rlen);
++	return (struct ext2_dir_entry *)((char *)p + rlen);
++}
++
++static inline void dx_set_block(struct ext2_dx_entry *entry, unsigned value)
++{
++	entry->block = ext2fs_cpu_to_le32(value);
++}
++
++static inline void dx_set_count(struct ext2_dx_entry *entries, unsigned value)
++{
++	((struct ext2_dx_countlimit *) entries)->count = ext2fs_cpu_to_le16(value);
++}
++
++static inline void dx_set_limit(struct ext2_dx_entry *entries, unsigned value)
++{
++	((struct ext2_dx_countlimit *) entries)->limit = ext2fs_cpu_to_le16(value);
++}
++
++static inline unsigned dx_root_limit(ext2_filsys fs, unsigned infosize)
++{
++	unsigned int entry_space = fs->blocksize -
++			ext2fs_dir_rec_len(1, 0) -
++			ext2fs_dir_rec_len(2, 0) - infosize;
++
++	if (ext2fs_has_feature_metadata_csum(fs->super))
++		entry_space -= sizeof(struct ext2_dx_tail);
++	return entry_space / sizeof(struct ext2_dx_entry);
++}
++
++/*
++ * This converts a one block unindexed directory to a 3 block indexed
++ * directory, and adds the dentry to the indexed directory.  Returns 0 if the
++ * index was not created; EAGAIN if it was; or an errcode_t on error.
++ */
++static errcode_t try_make_indexed_dir(ext2_filsys fs, ext2_ino_t dir,
++				      const char *name, ext2_ino_t ino,
++				      int flags)
++{
++	struct ext2_inode inode;
++	char *buf0, *buf1, *top;
++	struct dx_root *root;
++	struct ext2_dx_entry *entries;
++	struct fake_dirent *fde;
++	struct ext2_dir_entry *de, *de2;
++	blk64_t pblk0, pblk1;
++	unsigned int len;
++	const unsigned int blocksize = fs->blocksize;
++	int csum_size = 0;
++	errcode_t retval;
++
++	retval = ext2fs_read_inode(fs, dir, &inode);
++	if (retval)
++		return retval;
++
++	if (inode.i_size > fs->blocksize || (inode.i_flags & EXT2_INDEX_FL))
++		return 0;
++
++	if (ext2fs_has_feature_metadata_csum(fs->super))
++		csum_size = sizeof(struct ext2_dir_entry_tail);
++
++	retval = ext2fs_get_mem(blocksize, &buf0);
++	if (retval)
++		return retval;
++
++	retval = ext2fs_get_mem(blocksize, &buf1);
++	if (retval)
++		goto out_buf0;
++
++	retval = ext2fs_bmap2(fs, dir, &inode, NULL, 0, 0, NULL, &pblk0);
++	if (retval)
++		goto out_buf1;
++
++	retval = ext2fs_read_dir_block4(fs, pblk0, buf0, 0, dir);
++	if (retval)
++		goto out_buf1;
++
++	root = (struct dx_root *)buf0;
++	if (!check_dx_root(fs, dir, root)) {
++		retval = EXT2_ET_DIR_CORRUPTED;
++		goto out_buf1;
++	}
++
++	/* The 0th block becomes the root, move the dirents out */
++	fde = &root->dotdot;
++	de = ext2fs_next_entry(fs, (struct ext2_dir_entry *)fde);
++	len = ((char *) root) + (blocksize - csum_size) - (char *) de;
++
++	/* Allocate new block for the 0th block's dirents */
++	retval = ext2fs_bmap2(fs, dir, &inode, NULL, BMAP_ALLOC | BMAP_ZERO, 1,
++			      NULL, &pblk1);
++	if (retval)
++		goto out_buf1;
++
++	memcpy(buf1, de, len);
++	memset(de, 0, len); /* wipe old data */
++
++	de = (struct ext2_dir_entry *)buf1;
++	top = buf1 + len;
++	while ((char *)(de2 = ext2fs_next_entry(fs, de)) < top) {
++#if 0
++		if (ext4_check_dir_entry(dir, NULL, de, bh2, buf1, len,
++					(char *)de - buf1)) {
++			retval = EXT2_ET_DIR_CORRUPTED;
++			goto out_buf1;
 +		}
-+	} while (err == -1 ||
-+		 (err == EBUSY && retry_before_deadline(deadline)));
-+	if (err == EBUSY) {
-+		err_printf(&fctx, "%s: %s.\n",
-+ _("Could not lock filesystem block device"), error_message(err));
-+		goto out;
- 	}
- 	if (err) {
- 		err_printf(&fctx, "%s.\n", error_message(err));
++#endif
++		de = de2;
++	}
++	retval = ext2fs_set_rec_len(fs,
++			buf1 + (blocksize - csum_size) - (char *) de, de);
++	if (retval)
++		goto out_buf1;
++
++	if (csum_size)
++		ext2fs_initialize_dirent_tail(fs,
++				EXT2_DIRENT_TAIL(buf1, fs->blocksize));
++
++	/* Initialize the root; the dot dirents already exist */
++	de = (struct ext2_dir_entry *) (&root->dotdot);
++	retval = ext2fs_set_rec_len(fs, blocksize - ext2fs_dir_rec_len(2, 0),
++				    de);
++	memset (&root->info, 0, sizeof(root->info));
++	root->info.info_length = sizeof(root->info);
++	if (ext4_hash_in_dirent(&inode))
++		root->info.hash_version = EXT2_HASH_SIPHASH;
++	else
++		root->info.hash_version = fs->super->s_def_hash_version;
++
++	entries = root->entries;
++	dx_set_block(entries, 1);
++	dx_set_count(entries, 1);
++	dx_set_limit(entries, dx_root_limit(fs, sizeof(root->info)));
++
++	retval = ext2fs_write_dir_block4(fs, pblk1, buf1, 0, dir);
++	if (retval)
++		goto out_buf1;
++
++	retval = ext2fs_write_dir_block4(fs, pblk0, buf0, 0, dir);
++	if (retval)
++		goto out_buf1;
++
++	inode.i_flags |= EXT2_INDEX_FL;
++	inode.i_size += fs->blocksize;
++	retval = ext2fs_write_inode(fs, dir, &inode);
++	if (retval)
++		goto out_buf1;
++
++	retval = EAGAIN;
++out_buf1:
++	ext2fs_free_mem(&buf1);
++out_buf0:
++	ext2fs_free_mem(&buf0);
++	return retval;
++}
++
+ /*
+  * Note: the low 3 bits of the flags field are used as the directory
+  * entry filetype.
+@@ -671,6 +902,16 @@ errcode_t ext2fs_link(ext2_filsys fs, ext2_ino_t dir, const char *name,
+ 	if (!ls.done) {
+ 		if (!(flags & EXT2FS_LINK_EXPAND))
+ 			return EXT2_ET_DIR_NO_SPACE;
++
++		if (ext2fs_has_feature_dir_index(fs->super)) {
++			retval = try_make_indexed_dir(fs, dir, name, ino,
++						      flags);
++			if (retval == EAGAIN)
++				goto retry;
++			if (retval)
++				return retval;
++		}
++
+ 		retval = ext2fs_expand_dir(fs, dir);
+ 		if (retval)
+ 			return retval;
 
 
