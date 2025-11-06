@@ -1,75 +1,75 @@
-Return-Path: <linux-ext4+bounces-11520-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11521-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D088C39B1F
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 09:59:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB8CDC39BAC
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 10:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0359F4F5CE1
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 08:58:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D988E1A23EB9
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 09:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A13ED309DAF;
-	Thu,  6 Nov 2025 08:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70607309EED;
+	Thu,  6 Nov 2025 09:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sz6Qetui"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WYTuwoHs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7123093C8
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 08:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400DE272E4E
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 09:03:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762419523; cv=none; b=SbkAtGLejLiS4KThtXD1cxiWC9jGkVbH6Vz6JwUi7dZn7acgDnuA9d1omt6WTa2/4A/EqCUBWtLYP5mtP7zrDH1kcf70GpkiljdQB3fTfdJ/kCj3BqKBtZSXInjY+Jk3Nb5YoxqrbdnPdB16gScLMGTWXC6cESt6ERD/fCn1Lgs=
+	t=1762419792; cv=none; b=n8umNcxJNsgt4UjCzHvyHyroUiOdKKbDP2HkefYB49enB48/dteWIHAv8ic92mk7/Dww/NLWTSHxQvlIEED7kBLW/Cdvfedj2jisVBHpt1mrn0Zo+PeZDBn2y3+YGf4PX9nFi2C2/pz3BF03MTbm//T0WQXsB7iBpopZOMuZVwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762419523; c=relaxed/simple;
-	bh=jZcI5+1Ss6TPvgkAAV76GUd62OE9+TiURdgHBGyzwoU=;
+	s=arc-20240116; t=1762419792; c=relaxed/simple;
+	bh=0EKAehxKkI/bTw9WUORbVkGz8/nS+B2Kso4BX+bmOcU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=srXERISAJE7ZvFTFWCqI+9V+4QCr/vzCKdWK+dCt2oh9v7+oCi1Rv+4SZYQJqwv8r4bkbNwsgMvTsGXWqhQDxpXqXbUtiLsVfcid3efVLd8qjadkYbIxP1Dk3npae+/tAkK+j+qmZSAAdic2G5YwJcNC4bjtdDd7JxNczpHDFKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sz6Qetui; arc=none smtp.client-ip=209.85.208.42
+	 To:Cc:Content-Type; b=mXjcVDWebTFlaj6PXGv+gykzWNGw2PDDwxbtRnJt1ANAdf+YnfHUhGeuKDHJkBc/bhGZru+8U4H6cnC4cwqonhXjtdL3wnI683nEjB1ZkDH+a+BB06ajm6eKP87qyPGJ4CfgJiO1zZFS/cMGu15Y/yGAYmlwuuj8XjlJqXC9yxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WYTuwoHs; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-6399328ff1fso1059997a12.0
-        for <linux-ext4@vger.kernel.org>; Thu, 06 Nov 2025 00:58:41 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-6408f9cb1dcso1100774a12.3
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Nov 2025 01:03:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762419520; x=1763024320; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762419789; x=1763024589; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ck0m8wFZB9XcmaKq8dytQ0ONqq6wW9ZN3Xn7nrKuDWc=;
-        b=Sz6QetuiUOHkA3tM+NddvSdrLzzIvP6a/nXsDbGgIdL56l1FE2G16HlcbU8kQ7PFLA
-         HfMSQVIEcrsCnz/+YSltV/EHvolDeDWRC10b/XRskjSzE61iY6qDxDSSaBFc2IM4HCyq
-         YnmVFnSY+7gslOmfhj7DAIydVezdn+1/AqgPUDUrjqDyHJqOuB4Zc/vhXcCO9pUcayiQ
-         Xx+/j33PiEOVlTNfTjhn+ocM5j9Z8HXjN5Pv6J2Ow4N3FaBHZdPesil5a2LODYrj6hhj
-         +pCMCg6QEm58dQEGpBnmYanvL3/HQeywq8Fgjy8nkYZpUSkFNWb1eXTH7xcj12VU1Cbm
-         iY7A==
+        bh=veIj9WdBpJJNLGbbTumRAOZ1DVwrSRtT1QGKYvneLtE=;
+        b=WYTuwoHswTDQdrk2J9Byqj7f/Husd4nnYTfT5hDwYM9qbNvMrqzk3jWBqpFf5pF9IZ
+         xzOtmQrbMenNPXGpT4RowxdsBgEo6JvsQhAR1wbpO//4K7gzZeCyE75Wpf/NeEP4k/iT
+         VbQO44VulP2dMtkPiivIc/uRMrYO5qbcx3rNe471ERaRKb1SVvMz61pm5UKvSAA8D7nb
+         AR9GSbYzwdw5ZQYPqfoAuRZLbkUTooohJKnjOjfmLeJ8srPqEDgBSge2sJx/uMciNPgf
+         d+gF5HL/2mL8yg1lylzuq1scROxUHlX2IhXfKjGIl0dm+8hGFrkqvkcp1z69l1Jgf0Y2
+         5KMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762419520; x=1763024320;
+        d=1e100.net; s=20230601; t=1762419789; x=1763024589;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ck0m8wFZB9XcmaKq8dytQ0ONqq6wW9ZN3Xn7nrKuDWc=;
-        b=s4e29M6TMVMfSTH1KoMGM/+G1T+HmpD+EXtbgT9L8T6HoWd8Cz/XDnRD8MHtff7SkA
-         UbvS3zrJANkDvjuI8PsLEAvfnnSJWpjLXMrUYnec+DOGt7jvkj1hT7uZ0OMNZ9fO0S+7
-         NQ1KIfJIujgMgwXoaOuBsz/NbGoa2JBM+1mUGXXDvrcY6LBQ/3RVEzd8L7x0VbNuDoOt
-         eRxMV9xze6X0l+bHpVe7yZTMUmnM7mGtGFiPmxEk/5SMHFgAczBlV4V3jeg45qVw4yU9
-         sCK+5QMClS+NBHOZpEoUSaqWW9/IpIa5CCnZAIzew90hIL2lGKRyyvBc/HZRqQzvRthF
-         iD8g==
-X-Forwarded-Encrypted: i=1; AJvYcCVj/47YCTOZjXI0PBC8I4GTs00/C4H2VvzulwoObCI7Zz+p+kcWQnDiJ99WwPLg2vw0Ggy2Du3LmjLv@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFHJnV4i1B8SzyP8AC68KgbxmPgh76oeELmXYMGZXyU63yXy4m
-	cVUbgl5ogOTagd1u5TPkPwU4pQXhsYowDS6lnAZFYW2tHE9xEWjPhVCMjfmD0mIFqJ3nzNQijKx
-	Fokhve4PFA16ROgopFm3HE3TikcNaxGU=
-X-Gm-Gg: ASbGnctAacwLdXvZHWzpES0UKRyMoho10J+U+6t84Lk9GnKHcPKc6Qs0G88xlYVGKfV
-	3oBdro24V7XCuxp6L7F8cBBeGOsOfHW5l7xHJn9hNXYG7iap9gLQRWWhs0fzJe+DniSP4D07kZg
-	vnAR9yhpn1NJ7jN0QedwV33OZy0/DoWp5EzF2gOtMDYmWtCBVZILCKPJ8pMJETPH8lHhVIOtiVj
-	LtPZSEeKRhGZmRyttbO4tuyt0u5Hb7gUOMpZs6NDbjHXH05X7NcoZPQFgrj70h7Acu4qJQ0mzlm
-	OjD6ffSqjXEpliCZKRU=
-X-Google-Smtp-Source: AGHT+IEHawD1xB6GQmLFykw+yW+B52duLhBw9u10AbP5tS5Ky2pbjNedqdkSkvdgV804kceaE8LvNF0HWEEdMMxXtws=
-X-Received: by 2002:a05:6402:4301:b0:634:ab36:3c74 with SMTP id
- 4fb4d7f45d1cf-641058bbcafmr5577723a12.9.1762419519709; Thu, 06 Nov 2025
- 00:58:39 -0800 (PST)
+        bh=veIj9WdBpJJNLGbbTumRAOZ1DVwrSRtT1QGKYvneLtE=;
+        b=KaCYGkJTajw3sG+ZsAFsdCuadKmYvEMhmNveVH4s233QDngImnjwEMOib5hzXkNOlz
+         w6KD3/bECDiZCxNiyBZhUGRNyt9Sm3k9D+Y52xJsJ/GhUnuGEFu0U25uG4yTv7kR5xy0
+         miluHEiXWpQOcsU1UlPS/pBRZ8yMmkDmXyDKM4v2vToUbDUym/tyeOnaqk6AKInj9orw
+         hrcZERXr1VLdVSKe1xNyyhIragUAmhGN+p52jN+pA/Y2iC2iFsOGVGGQFnLguTmwn8V+
+         QGA4mTBFHoGWpTNzhXbreEKHxhCqTt6u/j0azaLWuFk+jjOvEL/gkIFTygSzMGZwCqr0
+         lLSA==
+X-Forwarded-Encrypted: i=1; AJvYcCXixHS4JHqAlcZg0VGLxRH6sDrXYoHYfWtG+Y7RmyFu6ME1tknHDfw0D032KKkGx2TUVU0igzFmdVfQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvRf//mz3/QF+3na7d7i4sJdL1nfjhW5wOR80vGQ6GeJ2gxjdc
+	aWrKdDl3fIRtf3Y3XoZbW9/CcZMniokHUm2YsrjYo1dxx0T/zgIHaO3yfFQGu3PugPMpyoriFup
+	2r08raDQArnNUDnNqUKXDh0LJf8QOvfY=
+X-Gm-Gg: ASbGncu2p+K6IZ5SthkEEeXiTrrrFdb0p9ajd0bHb9FqAN0aGAVaADCG15mDh/srCeY
+	RgIcLgl9EFQdtAEKu1FOaK52emNwuPo9sK97msCj/O3iOIpJj0mejAXKr31O/ktCqDEs7VHS7cA
+	90AldriC9lk1c5Fv2DgW9Q3aYe6jlFSsxEIBE4hv2ElHjitHK/LtBWMr3Tf4vKapUzrNvJ78v58
+	OjeYzLAjfSYQ1TDpIwEY3DMd5uKSK4oHAY3ib7g9ZgGo38pf75vs7MXdQgvV6zKLcPZ+GTs5Cbt
+	Mi/jBLDCHA6HavSC0P+Pl2y9D6IJtA==
+X-Google-Smtp-Source: AGHT+IGzG4L1zsLSrPolVgz53k8qLjyW8wdBsccQu20dip4z2Ulliwm8dDW4Lw75AwMHZ0hiIPIToqA/2u2N+i4Tu34=
+X-Received: by 2002:a05:6402:34c6:b0:640:abd5:8642 with SMTP id
+ 4fb4d7f45d1cf-64105a477d4mr5755119a12.21.1762419788438; Thu, 06 Nov 2025
+ 01:03:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -77,14 +77,14 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
- <176169819994.1433624.4365613323075287467.stgit@frogsfrogsfrogs>
- <CAOQ4uxj7yaX5qLEs4BOJBJwybkHzv8WmNsUt0w_zehueOLLP9A@mail.gmail.com> <20251105225355.GC196358@frogsfrogsfrogs>
-In-Reply-To: <20251105225355.GC196358@frogsfrogsfrogs>
+ <176169820014.1433624.17059077666167415725.stgit@frogsfrogsfrogs>
+ <CAOQ4uxhgCqf8pj-ebUiC_HNG4VLyv7UEOausCt5Cs831_AnGUg@mail.gmail.com> <20251105225609.GD196358@frogsfrogsfrogs>
+In-Reply-To: <20251105225609.GD196358@frogsfrogsfrogs>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 6 Nov 2025 09:58:28 +0100
-X-Gm-Features: AWmQ_bl5E-AoHE-1AuDyZsQmdfkMyiI2gUbeKfvAWpOXmZ3IVywzlGkMPg_nxeA
-Message-ID: <CAOQ4uxjC+rFKrp3SMMabyBwSKOWDGGpVR7-5gyodGbH80ucnkA@mail.gmail.com>
-Subject: Re: [PATCH 01/33] misc: adapt tests to handle the fuse ext[234] drivers
+Date: Thu, 6 Nov 2025 10:02:57 +0100
+X-Gm-Features: AWmQ_bn2fAKjP1LvxTPOzsC5eSdfONWi8mVFNaKjNuG1RFoEXsyn3eS71zosukU
+Message-ID: <CAOQ4uxhqVQYZvgNp=yN_u9rqoEw4wZ_YuAfwnpgrnduBruNMbg@mail.gmail.com>
+Subject: Re: [PATCH 02/33] generic/740: don't run this test for fuse ext* implementations
 To: "Darrick J. Wong" <djwong@kernel.org>
 Cc: zlang@redhat.com, neal@gompa.dev, fstests@vger.kernel.org, 
 	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
@@ -92,94 +92,72 @@ Cc: zlang@redhat.com, neal@gompa.dev, fstests@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 5, 2025 at 11:53=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
+On Wed, Nov 5, 2025 at 11:56=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
  wrote:
 >
-> On Thu, Oct 30, 2025 at 10:51:06AM +0100, Amir Goldstein wrote:
-> > On Wed, Oct 29, 2025 at 2:22=E2=80=AFAM Darrick J. Wong <djwong@kernel.=
+> On Thu, Oct 30, 2025 at 10:59:00AM +0100, Amir Goldstein wrote:
+> > On Wed, Oct 29, 2025 at 2:30=E2=80=AFAM Darrick J. Wong <djwong@kernel.=
 org> wrote:
 > > >
 > > > From: Darrick J. Wong <djwong@kernel.org>
 > > >
-> > > It would be useful to be able to run fstests against the userspace
-> > > ext[234] driver program fuse2fs.  A convention (at least on Debian)
-> > > seems to be to install fuse drivers as /sbin/mount.fuse.XXX so that
-> > > users can run "mount -t fuse.XXX" to start a fuse driver for a
-> > > disk-based filesystem type XXX.
+> > > mke2fs disables foreign filesystem detection no matter what type you
+> > > pass in, so we need to block this for both fuse server variants.
 > > >
-> > > Therefore, we'll adopt the practice of setting FSTYP=3Dfuse.ext4 to
-> > > test ext4 with fuse2fs.  Change all the library code as needed to han=
-dle
-> > > this new type alongside all the existing ext[234] checks, which seems=
- a
-> > > little cleaner than FSTYP=3Dfuse FUSE_SUBTYPE=3Dext4, which also woul=
-d
-> > > require even more treewide cleanups to work properly because most
-> > > fstests code switches on $FSTYP alone.
+> > > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+> > > ---
+> > >  common/rc         |    2 +-
+> > >  tests/generic/740 |    1 +
+> > >  2 files changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > >
+> > > diff --git a/common/rc b/common/rc
+> > > index 3fe6f53758c05b..18d11e2c5cad3a 100644
+> > > --- a/common/rc
+> > > +++ b/common/rc
+> > > @@ -1889,7 +1889,7 @@ _do()
+> > >  #
+> > >  _exclude_fs()
+> > >  {
+> > > -       [ "$1" =3D "$FSTYP" ] && \
+> > > +       [[ $FSTYP =3D~ $1 ]] && \
+> > >                 _notrun "not suitable for this filesystem type: $FSTY=
+P"
+> >
+> > If you accept my previous suggestion of MKFSTYP, then could add:
+> >
+> >        [[ $MKFSTYP =3D~ $1 ]] && \
+> >                _notrun "not suitable for this filesystem on-disk
+> > format: $MKFSTYP"
+> >
+> >
+> > >  }
+> > >
+> > > diff --git a/tests/generic/740 b/tests/generic/740
+> > > index 83a16052a8a252..e26ae047127985 100755
+> > > --- a/tests/generic/740
+> > > +++ b/tests/generic/740
+> > > @@ -17,6 +17,7 @@ _begin_fstest mkfs auto quick
+> > >  _exclude_fs ext2
+> > >  _exclude_fs ext3
+> > >  _exclude_fs ext4
+> > > +_exclude_fs fuse.ext[234]
+> > >  _exclude_fs jfs
+> > >  _exclude_fs ocfs2
+> > >  _exclude_fs udf
+> > >
 > > >
 > >
-> > I agree that FSTYP=3Dfuse.ext4 is cleaner than
-> > FSTYP=3Dfuse FUSE_SUBTYPE=3Dext4
-> > but it is not extendable to future (e.g. fuse.xfs)
-> > and it is still a bit ugly.
+> > And then you wont need to add fuse.ext[234] to exclude list
 > >
-> > Consider:
-> > FSTYP=3Dfuse.ext4
-> > MKFSTYP=3Dext4
-> >
-> > I think this is the correct abstraction -
-> > fuse2fs/ext4 are formatted that same and mounted differently
-> >
-> > See how some of your patch looks nicer and naturally extends to
-> > the imaginary fuse.xfs...
+> > At the (very faint) risk of having a test that only wants to exclude ex=
+t4 and
+> > does not want to exclude fuse.ext4, I think this is worth it.
 >
-> Maybe I'd rather do it the other way around for fuse4fs:
->
-> FSTYP=3Dext4
-> MOUNT_FSTYP=3Dfuse.ext4
->
+> I guess we could try to do [[ $MKFSTYP =3D~ ^$1 ]]; ?
 
-Sounds good. Will need to see the final patch.
-
-> (obviously, MOUNT_FSTYP=3D$FSTYP if the test runner hasn't overridden it)
->
-> Where $MOUNT_FSTYP is what you pass to mount -t and what you'd see in
-> /proc/mounts.  The only weirdness with that is that some of the helpers
-> will end up with code like:
->
->         case $FSTYP in
->         ext4)
->                 # do ext4 stuff
->                 ;;
->         esac
->
->         case $MOUNT_FSTYP in
->         fuse.ext4)
->                 # do fuse4fs stuff that overrides ext4
->                 ;;
->         esac
->
-> which would be a little weird.
->
-
-Sounds weird, but there is always going to be weirdness
-somewhere - need to pick the least weird result or most
-easy to understand code IMO.
-
-> _scratch_mount would end up with:
->
->         $MOUNT_PROG -t $MOUNT_FSTYP ...
->
-> and detecting it would be
->
->         grep -q -w $MOUNT_FSTYP /proc/mounts || _fail "booooo"
->
-> Hrm?
-
-Those look obviously nice.
-
-Maybe the answer is to have all MOUNT_FSTYP, MKFS_FSTYP
-and FSTYP and use whichever best fits in the context.
+Yeh of course, either that or [ $MKFSTYP =3D $1 ]
+if we do not care to add pattern matching.
 
 Thanks,
 Amir.
