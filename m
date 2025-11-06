@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-11614-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11615-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89F0C3DAA1
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D6BC3DAA4
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:46:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 764EF34FD96
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:45:52 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 62D9334FCDF
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D586D2BFC8F;
-	Thu,  6 Nov 2025 22:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5BB1F8723;
+	Thu,  6 Nov 2025 22:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A6GsGsu3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q+m9dJvn"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787E5308F27
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7012C21CB
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762469128; cv=none; b=gPbgRm039pYFzs2nrB/fYJIjvGVyvQPk38QV6NOciPw6VftUlOYX9jn5xHrAVlE60vgeWXfQncaXyEHK/6kbtSKXU9IZ8zFRMydF+q5eGsDFSQpAfSB0vu4tbS/QUX2Vx6DHlRoXw8G69+QvFQsmv6beKwJ1jkXSPgYnF6U+7Cs=
+	t=1762469144; cv=none; b=k7Ay25LWAzpWxEuNH2THSI45WF/Hi3gLNCdkgEaJ1Xg8RgQOPMaQKKBwZReUhXRGJxj3yY0XrlNB2IPk5pjv4DJIi//glWN9Sn7dkL1nVVAjKSTAEhnqGGb9rKV6owAS8CrP1DytdY207zIYgBx6KU9urNzr+TzZqYbCuPimKpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762469128; c=relaxed/simple;
-	bh=z7kGfGapJOINdUkRtV0OmOwbB6aP3Hb16I1mgZSR1jc=;
+	s=arc-20240116; t=1762469144; c=relaxed/simple;
+	bh=zTTGSumEzu7+K3Aspedwr4YQ4+8FhoBobNCJVV73dYI=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VspUuiqXGOVFVWKdUbnUKNqeSZ+6Zqr0oCdn/LzLo0kvZvmqgJkaJ2uETWewMZEP2//RokS2UT9mIUuOYbgmtFq4P34uD7dgemEvq7REbLtXRptUHjbS8quYld0W51CPWFokliuavxBKZu0jHLIDVc4Sw5jtsPkuUxJgohHFMcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A6GsGsu3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EE34C19422;
-	Thu,  6 Nov 2025 22:45:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=QhV/JEH/ARHSMj4Pj8byX8+DVd8adXIPxRHC3tnl+qN0Ms+1ld5L1MA0/v2qU5NsdxTcXvXxQOL7C7PrlBhgM1JcINYm8f86C+h9K30I1Hp5/2qnym3mdN179LVuYOgIqULkpAJ3Y+mjTbsH4ZJJ5E6zAuqPUbfzoaYZCyYQgI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q+m9dJvn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B9B7C16AAE;
+	Thu,  6 Nov 2025 22:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762469128;
-	bh=z7kGfGapJOINdUkRtV0OmOwbB6aP3Hb16I1mgZSR1jc=;
+	s=k20201202; t=1762469144;
+	bh=zTTGSumEzu7+K3Aspedwr4YQ4+8FhoBobNCJVV73dYI=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=A6GsGsu3kjrGZpzCW17nYv3dUw3nLiJBXf3JFLu/BUDYc+MlYniPTfY7ptgeDKMt5
-	 LGOgla8ehnRWa7qxoMpI5ELVcxZjKqabqjp6WajD1p/6n0+teVkTDmGS4NIZ2FyeRl
-	 0FkFX/Indcd0To98nhEVJNsuia3YF4Tbu/+7AIf7a51HWjNYi/wyhBFDbOOOUTEcA1
-	 rugjeT2VrDti/2CpsoJ09qqH6HGWvFTzyy6FrvFKoR2+JUa3H2iuHKkkAjfVLTCyvI
-	 W7IAJ/LEYIRk8Fyr6VMaYeq8SyYb+DeEbx6urp5cywPKd53Q5oOIZoMAMNOgWQXp6w
-	 O+5OcspYw50LA==
-Date: Thu, 06 Nov 2025 14:45:27 -0800
-Subject: [PATCH 09/23] cache: use modern list iterator macros
+	b=q+m9dJvnbbvoIvPpPkuu16OQTaOuf8IOMTLtb+Kfy2OrpJXGIThRp+X9crLFPLb+/
+	 unClu+E0Qp3SlsVsRbnug/fTGuar6fjOsOtN7NRwEsSY8/MkU5u64/ZsHG2UL3soYh
+	 LHrm7WSwzSpXaWz7ktAH46Seu+T8gUby8Ab+kf9XLCPA7a97tqK76IAnJ1MW8kPU6M
+	 6XHHUvpaS/3L3rDmp8r7fyPLnalPO/xMr3UB2Kap1Om2D1YOC++6xeCtqTreA7eRp6
+	 ap0q1rO5IP6T/IEMkAc2rsXg61AzeWMx63vM3dLn+tjG28f5XRidFHWZ9pOkyb5Rec
+	 Whxq+/R3VrDsQ==
+Date: Thu, 06 Nov 2025 14:45:43 -0800
+Subject: [PATCH 10/23] cache: embed struct cache in the owner
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246795730.2864310.11956914504670731265.stgit@frogsfrogsfrogs>
+Message-ID: <176246795748.2864310.3588411214964514986.stgit@frogsfrogsfrogs>
 In-Reply-To: <176246795459.2864310.10641701647593035148.stgit@frogsfrogsfrogs>
 References: <176246795459.2864310.10641701647593035148.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,168 +60,129 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Use the list iterator macros from list.h.
+It'll be easier to embed a struct cache into the object that owns the
+cache rather than passing pointers around.  This is the prelude to the
+next patch, which will enable cache functions to walk back to the owning
+struct.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- lib/support/cache.c |   71 +++++++++++++++++----------------------------------
- 1 file changed, 24 insertions(+), 47 deletions(-)
+ lib/support/cache.h |   10 ++++++++--
+ lib/support/cache.c |   38 ++++++++++++++++++++------------------
+ 2 files changed, 28 insertions(+), 20 deletions(-)
 
 
+diff --git a/lib/support/cache.h b/lib/support/cache.h
+index 16b17a9b7a1a51..993f1385dedcee 100644
+--- a/lib/support/cache.h
++++ b/lib/support/cache.h
+@@ -122,8 +122,14 @@ struct cache {
+ 	unsigned int 		c_max;		/* max nodes ever used */
+ };
+ 
+-struct cache *cache_init(int, unsigned int, const struct cache_operations *);
+-void cache_destroy(struct cache *);
++static inline bool cache_initialized(const struct cache *cache)
++{
++	return cache->hash != NULL;
++}
++
++int cache_init(int flags, unsigned int size,
++	       const struct cache_operations *ops, struct cache *cache);
++void cache_destroy(struct cache *cache);
+ void cache_walk(struct cache *, cache_walk_t);
+ void cache_purge(struct cache *);
+ void cache_flush(struct cache *);
 diff --git a/lib/support/cache.c b/lib/support/cache.c
-index 08e0b484cca298..d8f8231ac36d28 100644
+index d8f8231ac36d28..8b4f9f03c3899b 100644
 --- a/lib/support/cache.c
 +++ b/lib/support/cache.c
-@@ -98,20 +98,18 @@ cache_expand(
+@@ -12,6 +12,7 @@
+ #include <stdbool.h>
+ #include <stddef.h>
+ #include <stdint.h>
++#include <errno.h>
  
- void
- cache_walk(
--	struct cache *		cache,
-+	struct cache		*cache,
- 	cache_walk_t		visit)
- {
--	struct cache_hash *	hash;
--	struct list_head *	head;
--	struct list_head *	pos;
-+	struct cache_hash	*hash;
-+	struct cache_node	*pos;
- 	unsigned int		i;
+ #include "list.h"
+ #include "cache.h"
+@@ -33,23 +34,18 @@
  
- 	for (i = 0; i < cache->c_hashsize; i++) {
- 		hash = &cache->c_hash[i];
--		head = &hash->ch_list;
- 		pthread_mutex_lock(&hash->ch_mutex);
--		for (pos = head->next; pos != head; pos = pos->next)
--			visit((struct cache_node *)pos);
-+		list_for_each_entry(pos, &hash->ch_list, cn_hash)
-+			visit(pos);
- 		pthread_mutex_unlock(&hash->ch_mutex);
- 	}
- }
-@@ -218,12 +216,9 @@ cache_shake(
- 	bool			purge)
- {
- 	struct cache_mru	*mru;
--	struct cache_hash *	hash;
-+	struct cache_hash	*hash;
- 	struct list_head	temp;
--	struct list_head *	head;
--	struct list_head *	pos;
--	struct list_head *	n;
--	struct cache_node *	node;
-+	struct cache_node	*node, *n;
- 	unsigned int		count;
+ static unsigned int cache_generic_bulkrelse(struct cache *, struct list_head *);
  
- 	ASSERT(priority <= CACHE_DIRTY_PRIORITY);
-@@ -233,13 +228,9 @@ cache_shake(
- 	mru = &cache->c_mrus[priority];
- 	count = 0;
- 	list_head_init(&temp);
--	head = &mru->cm_list;
- 
- 	pthread_mutex_lock(&mru->cm_mutex);
--	for (pos = head->prev, n = pos->prev; pos != head;
--						pos = n, n = pos->prev) {
--		node = list_entry(pos, struct cache_node, cn_mru);
--
-+	list_for_each_entry_safe_reverse(node, n, &mru->cm_list, cn_mru) {
- 		if (pthread_mutex_trylock(&node->cn_mutex) != 0)
- 			continue;
- 
-@@ -376,31 +367,25 @@ __cache_node_purge(
-  */
- int
- cache_node_get(
--	struct cache *		cache,
-+	struct cache		*cache,
- 	cache_key_t		key,
--	struct cache_node **	nodep)
-+	struct cache_node	**nodep)
- {
--	struct cache_node *	node = NULL;
--	struct cache_hash *	hash;
--	struct cache_mru *	mru;
--	struct list_head *	head;
--	struct list_head *	pos;
--	struct list_head *	n;
-+	struct cache_hash	*hash;
-+	struct cache_mru	*mru;
-+	struct cache_node	*node = NULL, *n;
- 	unsigned int		hashidx;
- 	int			priority = 0;
- 	int			purged = 0;
- 
- 	hashidx = cache->hash(key, cache->c_hashsize, cache->c_hashshift);
- 	hash = cache->c_hash + hashidx;
--	head = &hash->ch_list;
- 
- 	for (;;) {
- 		pthread_mutex_lock(&hash->ch_mutex);
--		for (pos = head->next, n = pos->next; pos != head;
--						pos = n, n = pos->next) {
-+		list_for_each_entry_safe(node, n, &hash->ch_list, cn_hash) {
- 			int result;
- 
--			node = list_entry(pos, struct cache_node, cn_hash);
- 			result = cache->compare(node, key);
- 			switch (result) {
- 			case CACHE_HIT:
-@@ -568,23 +553,19 @@ cache_node_get_priority(
-  */
- int
- cache_node_purge(
--	struct cache *		cache,
-+	struct cache		*cache,
- 	cache_key_t		key,
--	struct cache_node *	node)
-+	struct cache_node	*node)
- {
--	struct list_head *	head;
--	struct list_head *	pos;
--	struct list_head *	n;
--	struct cache_hash *	hash;
-+	struct cache_node	*pos, *n;
-+	struct cache_hash	*hash;
- 	int			count = -1;
- 
- 	hash = cache->c_hash + cache->hash(key, cache->c_hashsize,
- 					   cache->c_hashshift);
--	head = &hash->ch_list;
- 	pthread_mutex_lock(&hash->ch_mutex);
--	for (pos = head->next, n = pos->next; pos != head;
--						pos = n, n = pos->next) {
--		if ((struct cache_node *)pos != node)
-+	list_for_each_entry_safe(pos, n, &hash->ch_list, cn_hash) {
-+		if (pos != node)
- 			continue;
- 
- 		count = __cache_node_purge(cache, node);
-@@ -642,12 +623,10 @@ cache_purge(
-  */
- void
- cache_flush(
--	struct cache *		cache)
+-struct cache *
++int
+ cache_init(
+ 	int			flags,
+ 	unsigned int		hashsize,
+-	const struct cache_operations	*cache_operations)
++	const struct cache_operations	*cache_operations,
 +	struct cache		*cache)
  {
--	struct cache_hash *	hash;
--	struct list_head *	head;
--	struct list_head *	pos;
--	struct cache_node *	node;
-+	struct cache_hash	*hash;
-+	struct cache_node	*node;
- 	int			i;
+-	struct cache *		cache;
+ 	unsigned int		i, maxcount;
  
- 	if (!cache->flush)
-@@ -657,9 +636,7 @@ cache_flush(
- 		hash = &cache->c_hash[i];
+ 	maxcount = hashsize * HASH_CACHE_RATIO;
  
- 		pthread_mutex_lock(&hash->ch_mutex);
--		head = &hash->ch_list;
--		for (pos = head->next; pos != head; pos = pos->next) {
--			node = (struct cache_node *)pos;
-+		list_for_each_entry(node, &hash->ch_list, cn_hash) {
- 			pthread_mutex_lock(&node->cn_mutex);
- 			cache->flush(node);
- 			pthread_mutex_unlock(&node->cn_mutex);
+-	if (!(cache = malloc(sizeof(struct cache))))
+-		return NULL;
+-	if (!(cache->c_hash = calloc(hashsize, sizeof(struct cache_hash)))) {
+-		free(cache);
+-		return NULL;
+-	}
++	memset(cache, 0, sizeof(*cache));
+ 
+ 	cache->c_flags = flags;
+ 	cache->c_count = 0;
+@@ -57,8 +53,6 @@ cache_init(
+ 	cache->c_hits = 0;
+ 	cache->c_misses = 0;
+ 	cache->c_maxcount = maxcount;
+-	cache->c_hashsize = hashsize;
+-	cache->c_hashshift = fls(hashsize) - 1;
+ 	cache->hash = cache_operations->hash;
+ 	cache->alloc = cache_operations->alloc;
+ 	cache->flush = cache_operations->flush;
+@@ -70,18 +64,26 @@ cache_init(
+ 	cache->put = cache_operations->put;
+ 	pthread_mutex_init(&cache->c_mutex, NULL);
+ 
++	for (i = 0; i <= CACHE_DIRTY_PRIORITY; i++) {
++		list_head_init(&cache->c_mrus[i].cm_list);
++		cache->c_mrus[i].cm_count = 0;
++		pthread_mutex_init(&cache->c_mrus[i].cm_mutex, NULL);
++	}
++
++	cache->c_hash = calloc(hashsize, sizeof(struct cache_hash));
++	if (!cache->c_hash)
++		return ENOMEM;
++
++	cache->c_hashsize = hashsize;
++	cache->c_hashshift = fls(hashsize) - 1;
++
+ 	for (i = 0; i < hashsize; i++) {
+ 		list_head_init(&cache->c_hash[i].ch_list);
+ 		cache->c_hash[i].ch_count = 0;
+ 		pthread_mutex_init(&cache->c_hash[i].ch_mutex, NULL);
+ 	}
+ 
+-	for (i = 0; i <= CACHE_DIRTY_PRIORITY; i++) {
+-		list_head_init(&cache->c_mrus[i].cm_list);
+-		cache->c_mrus[i].cm_count = 0;
+-		pthread_mutex_init(&cache->c_mrus[i].cm_mutex, NULL);
+-	}
+-	return cache;
++	return 0;
+ }
+ 
+ static void
+@@ -153,7 +155,7 @@ cache_destroy(
+ 	}
+ 	pthread_mutex_destroy(&cache->c_mutex);
+ 	free(cache->c_hash);
+-	free(cache);
++	memset(cache, 0, sizeof(*cache));
+ }
+ 
+ static unsigned int
 
 
