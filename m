@@ -1,52 +1,53 @@
-Return-Path: <linux-ext4+bounces-11560-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11561-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1819FC3D9C0
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:31:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49B91C3D9C5
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86FD2189123E
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:31:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F01503B0E69
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6FD62E8E08;
-	Thu,  6 Nov 2025 22:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093133FBA7;
+	Thu,  6 Nov 2025 22:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lDUiDhUV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hqWsP2Au"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C59B199949
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CB12DBF4B
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468281; cv=none; b=mrBRe4qr0I29k5fIXc8IBQZNEBduIKN/BfQzEmvSejk+0ZFliarXX6mqFhX8GEMX3JNG50FMzOy7gfoK6kY2eBxRVdOccMKWvgI/ZFoX5kWDifUuX6sO4J7KNQiqtF/6BAVKbI0nAXlITvxSswBRitWebj/lS/JZSrXrUV8D3/Q=
+	t=1762468297; cv=none; b=Nyjvdk2XAWhJymb7U0D0DocKaaXnktpUK3PkBqwRcT75gmloGgRnPZswZtwR0PIjU0XiOAfYJtMq0TlGcwmteuIV6fl0xsByyAWH3JHoqyL+cNGZGO3+eOc8tl1fDCwsLVq5ebGEiplxiuqoWkzPKmxlzMNwau6mW1oIh2whj/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468281; c=relaxed/simple;
-	bh=654/DacJSC32SupGfmuULh0BHjmOLQtF6iBChICeG24=;
+	s=arc-20240116; t=1762468297; c=relaxed/simple;
+	bh=UdVXQ3zSGGIFMNmWcKcAkLNqPA0TQrIS+IeKbQavYkg=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mXMDWAGScR1NvaY6ac/6EpRCTui4Wb+ePBGM8J/P0cY3fJahUbs5AHtzSC1Nhs11PsiGasjmUovMqaCvF4ljBWI70b987+gTd48SUULwv7t+7F7txUlP7sF3P3ZVQsevw2M4vqEVIl4uduoGLL/VPxxUYpQmgKOVM4ZddmWoM68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lDUiDhUV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29DE2C4CEF7;
-	Thu,  6 Nov 2025 22:31:21 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Us2eGaWtyVevTxSR85CphgGB5zvc1ibwWRS7msA3Zx8GmkQcGKQg3Qze1bY0fOKHBefg4G/J4DU8NBpOzfm+4uCO1qTdqGYfEC0zHx+yhjW6IiwGlAx26o/AVPIjyaTewNRbehQDJAJ2J/xCQ0OVCrFNKSeHG4l9FAKyTFvjdR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hqWsP2Au; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FF5AC113D0;
+	Thu,  6 Nov 2025 22:31:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468281;
-	bh=654/DacJSC32SupGfmuULh0BHjmOLQtF6iBChICeG24=;
+	s=k20201202; t=1762468297;
+	bh=UdVXQ3zSGGIFMNmWcKcAkLNqPA0TQrIS+IeKbQavYkg=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=lDUiDhUVNUu3uxVlQwZvhBOPcbfaxemdhCrbaDEueer3BwQQRAIztA7g4sC4U1yNB
-	 FY1gSGfBSoDxX58kzaZhyn9Cx2Ay8lXqnCi0QVDtDvgVsgZ5O760WCOdy4dv7Ghr8u
-	 ZX99bkiz/uGOxnvnU0WpYTSoscvj9mhl1swmTe6pPmv+A5moSXz0HSQy9HXu+PFOQv
-	 8idvZTuWITwVoXGFyWabwyGTFsMfnDXswpf6D/wj3FIrB8d8pXiSdNa+BGeD0cLc/L
-	 hdDh0mcIseltMTLFUbh+JIU93SQRupom7wRUD6quV0FQFo1HMADz8PidqyigJn9wvd
-	 nq22Zo3X7HLvQ==
-Date: Thu, 06 Nov 2025 14:31:20 -0800
-Subject: [PATCH 01/19] libext2fs: initialize htree when expanding directory
+	b=hqWsP2AuJKD6iPi1z+kSSL8Axoy43T9PxLonfXcaXWO3YAqay46yq2EGWS2dOXTIH
+	 YKWwAIh2ebne7DCiEy/i8s9Xl4bIrk43ObHofeF/fze6l/Zar6KzuE3vJn3yL2fYYb
+	 2yWil6AgaIC6gDOfIPPNGZ1McM1IogNszONR4XwCZF2+mhPK1sCK1yUctk3xnhJW83
+	 0hxAj/+Ysx6IoD4PBPTyXbcJiE6ppUKdR4iJM/j1yxU1IRWWf7275mphrwsly6STFS
+	 4BjxzxA5VXheVdE9afosfJ5NiIJ9sUFtzjYQ3GWnPjCcq+jUcm+OkquuKPgNSauESE
+	 mjOhCeJWPmD1g==
+Date: Thu, 06 Nov 2025 14:31:36 -0800
+Subject: [PATCH 02/19] libext2fs: create link count adjustment helpers for
+ dir_nlink
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246793645.2862242.1032124733438679877.stgit@frogsfrogsfrogs>
+Cc: linux-ext4@vger.kernel.org, linux-ext4@vger.kernel.org
+Message-ID: <176246793663.2862242.16511721570975301138.stgit@frogsfrogsfrogs>
 In-Reply-To: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 References: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,279 +61,139 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Teach ext2fs_link to initialize the htree when we're expanding a
-directory beyond the first block.  This brings fuse2fs' behavior in line
-with the kernel and dramatically improves performance.  It also is the
-start of a bunch of bug fixing for ext4/045.  This is a straight port of
-fs/ext4/namei.c.
+Create some helpers to deal with link count adjustments for directories
+on dir_nlink filesystems that become large enough to have an htree
+index.  In other words, fix the problem that creating a new child
+subdirectory can overflow the link count of the parent directory.
 
-This patch is needed for the next patch, which fixes the dir_nlink
-functionality, because apparently the two features are intertwined.
+The unused library functions created by this patch will be used in the
+next patch to fix problems with fuse2fs.
 
+Cc: <linux-ext4@vger.kernel.org> # v1.40
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- lib/ext2fs/link.c |  241 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 241 insertions(+)
+ lib/ext2fs/ext2fs.h          |    5 ++++
+ debian/libext2fs2t64.symbols |    5 ++++
+ lib/ext2fs/link.c            |   49 ++++++++++++++++++++++++++++++++++++++++++
+ lib/ext2fs/mkdir.c           |    2 +-
+ 4 files changed, 60 insertions(+), 1 deletion(-)
 
 
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index bb2170b78d6308..dec48b80d341db 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -1840,6 +1840,11 @@ errcode_t ext2fs_link(ext2_filsys fs, ext2_ino_t dir, const char *name,
+ 		      ext2_ino_t ino, int flags);
+ errcode_t ext2fs_unlink(ext2_filsys fs, ext2_ino_t dir, const char *name,
+ 			ext2_ino_t ino, int flags);
++int ext2fs_dir_is_dx(ext2_filsys fs, const struct ext2_inode *inode);
++void ext2fs_inc_nlink(ext2_filsys fs, struct ext2_inode *inode);
++void ext2fs_dec_nlink(struct ext2_inode *inode);
++int ext2fs_dir_link_max(ext2_filsys fs, struct ext2_inode_large *inode);
++int ext2fs_dir_link_empty(struct ext2_inode *inode);
+ 
+ /* symlink.c */
+ errcode_t ext2fs_symlink(ext2_filsys fs, ext2_ino_t parent, ext2_ino_t ino,
+diff --git a/debian/libext2fs2t64.symbols b/debian/libext2fs2t64.symbols
+index b4d80161f1e1b4..01f4f269a2660e 100644
+--- a/debian/libext2fs2t64.symbols
++++ b/debian/libext2fs2t64.symbols
+@@ -173,6 +173,7 @@ libext2fs.so.2 libext2fs2t64 #MINVER#
+  ext2fs_dblist_iterate@Base 1.37
+  ext2fs_dblist_sort2@Base 1.42
+  ext2fs_dblist_sort@Base 1.37
++ ext2fs_dec_nlink@Base 1.47.4
+  ext2fs_decode_extent@Base 1.46.0
+  ext2fs_default_journal_size@Base 1.40
+  ext2fs_default_orphan_file_blocks@Base 1.47.0
+@@ -182,6 +183,9 @@ libext2fs.so.2 libext2fs2t64 #MINVER#
+  ext2fs_dir_block_csum_verify@Base 1.43
+  ext2fs_dir_iterate2@Base 1.37
+  ext2fs_dir_iterate@Base 1.37
++ ext2fs_dir_is_dx@Base 1.47.4
++ ext2fs_dir_link_empty@Base 1.47.4
++ ext2fs_dir_link_max@Base 1.47.4
+  ext2fs_dirent_csum_verify@Base 1.43
+  ext2fs_dirent_file_type@Base 1.43
+  ext2fs_dirent_has_tail@Base 1.43
+@@ -376,6 +380,7 @@ libext2fs.so.2 libext2fs2t64 #MINVER#
+  ext2fs_image_inode_write@Base 1.37
+  ext2fs_image_super_read@Base 1.37
+  ext2fs_image_super_write@Base 1.37
++ ext2fs_inc_nlink@Base 1.47.4
+  ext2fs_init_csum_seed@Base 1.43
+  ext2fs_init_dblist@Base 1.37
+  ext2fs_initialize@Base 1.37
 diff --git a/lib/ext2fs/link.c b/lib/ext2fs/link.c
-index 1697da39f8855f..83d3ea7d00c3ed 100644
+index 83d3ea7d00c3ed..eccbf0d23b5d6c 100644
 --- a/lib/ext2fs/link.c
 +++ b/lib/ext2fs/link.c
-@@ -599,6 +599,237 @@ static errcode_t dx_link(ext2_filsys fs, ext2_ino_t dir,
- 	return retval;
+@@ -919,3 +919,52 @@ errcode_t ext2fs_link(ext2_filsys fs, ext2_ino_t dir, const char *name,
+ 	}
+ 	return 0;
  }
- 
-+struct fake_dirent
++
++/* Does this directory have an htree index? */
++int ext2fs_dir_is_dx(ext2_filsys fs, const struct ext2_inode *inode)
 +{
-+	__le32 inode;
-+	__le16 rec_len;
-+	__u8 name_len;
-+	__u8 file_type;
-+};
-+
-+/*
-+ * dx_root_info is laid out so that if it should somehow get overlaid by a
-+ * dirent the two low bits of the hash version will be zero.  Therefore, the
-+ * hash version mod 4 should never be 0.  Sincerely, the paranoia department.
-+ */
-+
-+struct dx_root
-+{
-+	struct fake_dirent dot;
-+	char dot_name[4];
-+	struct fake_dirent dotdot;
-+	char dotdot_name[4];
-+	struct ext2_dx_root_info info;
-+	struct ext2_dx_entry entries[];
-+};
-+
-+static int check_dx_root(ext2_filsys fs, ext2_ino_t ino, struct dx_root *root)
-+{
-+	struct fake_dirent *fde;
-+	char *error_msg;
-+	unsigned int rlen;
-+	char *blockend = (char *)root + fs->blocksize;
-+
-+	fde = &root->dot;
-+	if (fde->name_len != 1) {
-+		error_msg = "invalid name_len for '.'";
-+		goto corrupted;
-+	}
-+	if (strncmp(root->dot_name, ".", fde->name_len)) {
-+		error_msg = "invalid name for '.'";
-+		goto corrupted;
-+	}
-+
-+	ext2fs_get_rec_len(fs, (struct ext2_dir_entry *)fde, &rlen);
-+	if ((char *)fde + rlen >= blockend) {
-+		error_msg = "invalid rec_len for '.'";
-+		goto corrupted;
-+	}
-+
-+	fde = &root->dotdot;
-+	if (fde->name_len != 2) {
-+		error_msg = "invalid name_len for '..'";
-+		goto corrupted;
-+	}
-+	if (strncmp(root->dotdot_name, "..", fde->name_len)) {
-+		error_msg = "invalid name for '..'";
-+		goto corrupted;
-+	}
-+	ext2fs_get_rec_len(fs, (struct ext2_dir_entry *)fde, &rlen);
-+	if ((char *)fde + rlen >= blockend) {
-+		error_msg = "invalid rec_len for '..'";
-+		goto corrupted;
-+	}
-+
-+	return 1;
-+
-+corrupted:
-+	fprintf(stderr, "Corrupt dir %u: %s, running e2fsck is recommended\n",
-+			 ino, error_msg);
-+	return 0;
-+}
-+
-+static inline struct ext2_dir_entry *
-+ext2fs_next_entry(ext2_filsys fs, struct ext2_dir_entry *p)
-+{
-+	unsigned int rlen;
-+
-+	ext2fs_get_rec_len(fs, p, &rlen);
-+	return (struct ext2_dir_entry *)((char *)p + rlen);
-+}
-+
-+static inline void dx_set_block(struct ext2_dx_entry *entry, unsigned value)
-+{
-+	entry->block = ext2fs_cpu_to_le32(value);
-+}
-+
-+static inline void dx_set_count(struct ext2_dx_entry *entries, unsigned value)
-+{
-+	((struct ext2_dx_countlimit *) entries)->count = ext2fs_cpu_to_le16(value);
-+}
-+
-+static inline void dx_set_limit(struct ext2_dx_entry *entries, unsigned value)
-+{
-+	((struct ext2_dx_countlimit *) entries)->limit = ext2fs_cpu_to_le16(value);
-+}
-+
-+static inline unsigned dx_root_limit(ext2_filsys fs, unsigned infosize)
-+{
-+	unsigned int entry_space = fs->blocksize -
-+			ext2fs_dir_rec_len(1, 0) -
-+			ext2fs_dir_rec_len(2, 0) - infosize;
-+
-+	if (ext2fs_has_feature_metadata_csum(fs->super))
-+		entry_space -= sizeof(struct ext2_dx_tail);
-+	return entry_space / sizeof(struct ext2_dx_entry);
++	return ext2fs_has_feature_dir_index(fs->super) &&
++		S_ISDIR(inode->i_mode) && (inode->i_flags & EXT2_INDEX_FL);
 +}
 +
 +/*
-+ * This converts a one block unindexed directory to a 3 block indexed
-+ * directory, and adds the dentry to the indexed directory.  Returns 0 if the
-+ * index was not created; EAGAIN if it was; or an errcode_t on error.
++ * Set directory link count to 1 if nlinks > EXT2_LINK_MAX, or if nlinks == 2
++ * since this indicates that nlinks count was previously 1 to avoid overflowing
++ * the 16-bit i_links_count field on disk.  Directories with i_nlink == 1 mean
++ * that subdirectory link counts are not being maintained accurately.
++ *
++ * The caller has already checked for i_nlink overflow in case the DIR_LINK
++ * feature is not enabled and returned -EMLINK.  The is_dx() check is a proxy
++ * for checking S_ISDIR(inode) (since the INODE_INDEX feature will not be set
++ * on regular files) and to avoid creating huge/slow non-HTREE directories.
 + */
-+static errcode_t try_make_indexed_dir(ext2_filsys fs, ext2_ino_t dir,
-+				      const char *name, ext2_ino_t ino,
-+				      int flags)
++void ext2fs_inc_nlink(ext2_filsys fs, struct ext2_inode *inode)
 +{
-+	struct ext2_inode inode;
-+	char *buf0, *buf1, *top;
-+	struct dx_root *root;
-+	struct ext2_dx_entry *entries;
-+	struct fake_dirent *fde;
-+	struct ext2_dir_entry *de, *de2;
-+	blk64_t pblk0, pblk1;
-+	unsigned int len;
-+	const unsigned int blocksize = fs->blocksize;
-+	int csum_size = 0;
-+	errcode_t retval;
++	inode->i_links_count++;
 +
-+	retval = ext2fs_read_inode(fs, dir, &inode);
-+	if (retval)
-+		return retval;
-+
-+	if (inode.i_size > fs->blocksize || (inode.i_flags & EXT2_INDEX_FL))
-+		return 0;
-+
-+	if (ext2fs_has_feature_metadata_csum(fs->super))
-+		csum_size = sizeof(struct ext2_dir_entry_tail);
-+
-+	retval = ext2fs_get_mem(blocksize, &buf0);
-+	if (retval)
-+		return retval;
-+
-+	retval = ext2fs_get_mem(blocksize, &buf1);
-+	if (retval)
-+		goto out_buf0;
-+
-+	retval = ext2fs_bmap2(fs, dir, &inode, NULL, 0, 0, NULL, &pblk0);
-+	if (retval)
-+		goto out_buf1;
-+
-+	retval = ext2fs_read_dir_block4(fs, pblk0, buf0, 0, dir);
-+	if (retval)
-+		goto out_buf1;
-+
-+	root = (struct dx_root *)buf0;
-+	if (!check_dx_root(fs, dir, root)) {
-+		retval = EXT2_ET_DIR_CORRUPTED;
-+		goto out_buf1;
-+	}
-+
-+	/* The 0th block becomes the root, move the dirents out */
-+	fde = &root->dotdot;
-+	de = ext2fs_next_entry(fs, (struct ext2_dir_entry *)fde);
-+	len = ((char *) root) + (blocksize - csum_size) - (char *) de;
-+
-+	/* Allocate new block for the 0th block's dirents */
-+	retval = ext2fs_bmap2(fs, dir, &inode, NULL, BMAP_ALLOC | BMAP_ZERO, 1,
-+			      NULL, &pblk1);
-+	if (retval)
-+		goto out_buf1;
-+
-+	memcpy(buf1, de, len);
-+	memset(de, 0, len); /* wipe old data */
-+
-+	de = (struct ext2_dir_entry *)buf1;
-+	top = buf1 + len;
-+	while ((char *)(de2 = ext2fs_next_entry(fs, de)) < top) {
-+#if 0
-+		if (ext4_check_dir_entry(dir, NULL, de, bh2, buf1, len,
-+					(char *)de - buf1)) {
-+			retval = EXT2_ET_DIR_CORRUPTED;
-+			goto out_buf1;
-+		}
-+#endif
-+		de = de2;
-+	}
-+	retval = ext2fs_set_rec_len(fs,
-+			buf1 + (blocksize - csum_size) - (char *) de, de);
-+	if (retval)
-+		goto out_buf1;
-+
-+	if (csum_size)
-+		ext2fs_initialize_dirent_tail(fs,
-+				EXT2_DIRENT_TAIL(buf1, fs->blocksize));
-+
-+	/* Initialize the root; the dot dirents already exist */
-+	de = (struct ext2_dir_entry *) (&root->dotdot);
-+	retval = ext2fs_set_rec_len(fs, blocksize - ext2fs_dir_rec_len(2, 0),
-+				    de);
-+	memset (&root->info, 0, sizeof(root->info));
-+	root->info.info_length = sizeof(root->info);
-+	if (ext4_hash_in_dirent(&inode))
-+		root->info.hash_version = EXT2_HASH_SIPHASH;
-+	else
-+		root->info.hash_version = fs->super->s_def_hash_version;
-+
-+	entries = root->entries;
-+	dx_set_block(entries, 1);
-+	dx_set_count(entries, 1);
-+	dx_set_limit(entries, dx_root_limit(fs, sizeof(root->info)));
-+
-+	retval = ext2fs_write_dir_block4(fs, pblk1, buf1, 0, dir);
-+	if (retval)
-+		goto out_buf1;
-+
-+	retval = ext2fs_write_dir_block4(fs, pblk0, buf0, 0, dir);
-+	if (retval)
-+		goto out_buf1;
-+
-+	inode.i_flags |= EXT2_INDEX_FL;
-+	inode.i_size += fs->blocksize;
-+	retval = ext2fs_write_inode(fs, dir, &inode);
-+	if (retval)
-+		goto out_buf1;
-+
-+	retval = EAGAIN;
-+out_buf1:
-+	ext2fs_free_mem(&buf1);
-+out_buf0:
-+	ext2fs_free_mem(&buf0);
-+	return retval;
++	if (ext2fs_dir_is_dx(fs, inode) &&
++	    (inode->i_links_count > EXT2_LINK_MAX || inode->i_links_count == 2))
++		inode->i_links_count = 1;
 +}
 +
- /*
-  * Note: the low 3 bits of the flags field are used as the directory
-  * entry filetype.
-@@ -671,6 +902,16 @@ errcode_t ext2fs_link(ext2_filsys fs, ext2_ino_t dir, const char *name,
- 	if (!ls.done) {
- 		if (!(flags & EXT2FS_LINK_EXPAND))
- 			return EXT2_ET_DIR_NO_SPACE;
++/*
++ * If a directory had nlink == 1, then we should let it be 1. This indicates
++ * directory has >EXT2_LINK_MAX subdirs.
++ */
++void ext2fs_dec_nlink(struct ext2_inode *inode)
++{
++	if (!S_ISDIR(inode->i_mode) || inode->i_links_count > 2)
++		inode->i_links_count--;
++}
 +
-+		if (ext2fs_has_feature_dir_index(fs->super)) {
-+			retval = try_make_indexed_dir(fs, dir, name, ino,
-+						      flags);
-+			if (retval == EAGAIN)
-+				goto retry;
-+			if (retval)
-+				return retval;
-+		}
++int ext2fs_dir_link_max(ext2_filsys fs, struct ext2_inode_large *inode)
++{
++	return inode->i_links_count >= EXT2_LINK_MAX &&
++	       !(ext2fs_dir_is_dx(fs, EXT2_INODE(inode)) &&
++		 ext2fs_has_feature_dir_nlink(fs->super));
++}
 +
- 		retval = ext2fs_expand_dir(fs, dir);
++int ext2fs_dir_link_empty(struct ext2_inode *inode)
++{
++	return inode->i_links_count == 2 || inode->i_links_count == 1;
++}
+diff --git a/lib/ext2fs/mkdir.c b/lib/ext2fs/mkdir.c
+index 45f6e9e27164d2..c0a08c88560bd2 100644
+--- a/lib/ext2fs/mkdir.c
++++ b/lib/ext2fs/mkdir.c
+@@ -182,7 +182,7 @@ errcode_t ext2fs_mkdir2(ext2_filsys fs, ext2_ino_t parent, ext2_ino_t ino,
+ 		retval = ext2fs_read_inode(fs, parent, &parent_inode);
  		if (retval)
- 			return retval;
+ 			goto cleanup;
+-		parent_inode.i_links_count++;
++		ext2fs_inc_nlink(fs, &parent_inode);
+ 		retval = ext2fs_write_inode(fs, parent, &parent_inode);
+ 		if (retval)
+ 			goto cleanup;
 
 
