@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-11550-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11551-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF0EC3D986
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:28:50 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64351C3D98C
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:29:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2711C3A86FF
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:28:49 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 55CDB4E7E9E
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0BC332904;
-	Thu,  6 Nov 2025 22:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E84334C33;
+	Thu,  6 Nov 2025 22:28:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aewQ+tY5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="moB3Xbhk"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AAB30EF91
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30003328F9
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:28:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468121; cv=none; b=nBezGs2s0CA4xn6D1ifixE0HWA+Z+V8hOY39DBRNzoTNXcgSS4KOvHAT4KvszSnjLlRJdFUcFF917H0BIjoO5G9ty5PUpUr4H8FHXaXvP4kdgdSc4y6H82QnCfmgBHp5P5JPkWBsVrNKrGlu84Ikonq0S10BEq0pCFOGmuGhZ70=
+	t=1762468137; cv=none; b=boJvvcU6w9802MvWumP54tMBPNZBPj+pK9mztgqN6qwudXLXHxJqwLuCJN5nX8Oc44JvK2AE+e0t/EzJzK5XkY6jURG9V0UWNtKb47jeB/BIAiQoVC5//WZ1Y8jghGeprGIWeJYeXsOvnL4yjqAiDv+6oOkAq3a+CitQ6lTljkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468121; c=relaxed/simple;
-	bh=oKtdYd18xdpAxWKN6pN5ZZaAw7EzlnU32K39U4NDYd8=;
+	s=arc-20240116; t=1762468137; c=relaxed/simple;
+	bh=1VSTJItfyxVH+MQqXue7Y2y8zIjl/EGT6/0+6nvKbfU=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YN6q34DK1zC/Jqnq/RmSGdc8qwo3FqVVN6GSeaMpm5ozu6no15oZWBhwIjTzq8SEuPxjQ/+nK94zn2kw6/THJ4LbP0fyLmidmxpqTiEEiVg8r5EuaDz91DdYW5vsCQFCvQCBPp3XxciFuRN/B/4HuYpC2DvBC/XC5Q2gN+rjXEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aewQ+tY5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 305F2C4CEFB;
-	Thu,  6 Nov 2025 22:28:41 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UD8IiDCKtIO4muLGqWmow/w0Ffxt6/v/hK46W5yOYoDuH1voa5SbAy8YYztEsB9U3uTzF6ih8yZ5J6bBALiW3y7u+4arJxe/MBGwHLEuoO1l+x5zjG4BAJPu7akqmQSPqt18Q9NZOOC7BpmQ3w9923DAPgUpqTOwRrpxNRCKX0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=moB3Xbhk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B9F6C113D0;
+	Thu,  6 Nov 2025 22:28:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468121;
-	bh=oKtdYd18xdpAxWKN6pN5ZZaAw7EzlnU32K39U4NDYd8=;
+	s=k20201202; t=1762468137;
+	bh=1VSTJItfyxVH+MQqXue7Y2y8zIjl/EGT6/0+6nvKbfU=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=aewQ+tY5Brl5dzD1ujeoFnfityghzDKhRdw4WXIgsscYctxN1myOjgrLUyO4Dnwe7
-	 oBWKLNt1pPzNjPLVDsF+Tu6AQ+2OGPFPpDoXWYuSnKrBM8IgBT4rAbeJRVhTgZ8hZP
-	 X5t3YYEsGKDtgC4GTPqRNBcvrgc44UB3gu2iCU+YnqxrO3t1Fpw8s75CSDrSAFPntc
-	 Dcx1ghmfu/dmxEfyWUgfnRkiMYEg8E1xYvVgt9+JxXwXtUJfgRShhVGn60VkkFriVx
-	 CkFNh84z8pRlsX4PQwy8qlqTDcUvVBNDXxsRyQVNN/aIKWvda0mb+0eJd2oWe7X+u0
-	 1pWi0qFaYG2tw==
-Date: Thu, 06 Nov 2025 14:28:40 -0800
-Subject: [PATCHSET 4/9] fuse2fs: refactor unmount code
+	b=moB3Xbhkiwk/0YAbnoFMV3G/3TFM1tEv8MC93BIvi9NkNTTELOIqWcvgJfvcJ//Ur
+	 GkFrZUyC2ub9a9cDdoIij7k8WMSSDt3r3Mf6xx7IfFjdnQ3fzTGqYyEHAbSXBwAVSR
+	 kwFNh0dUX9/CPOXShKaG7zUMWHkPS2PoqFHBEDU5fLY/pNVLwUpPMC+pot9ogQHKxn
+	 aT+nEqMC8rxwn7if4Wi4PGvgcwcOrlEngFe78tRCXJt8AvCsxIF7poKLWB2bQHzpYF
+	 rYjtSNb21bQ67n1PJdDfc8Job7DW+9+0weRs9pv+VvF/4ATgucxEVv9rmi5Xy0cHA6
+	 /Mlj+NUv/OS+w==
+Date: Thu, 06 Nov 2025 14:28:56 -0800
+Subject: [PATCHSET 5/9] fuse2fs: refactor mount code
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246794450.2863378.4457886029233676166.stgit@frogsfrogsfrogs>
+Message-ID: <176246794639.2863550.14252706802579101303.stgit@frogsfrogsfrogs>
 In-Reply-To: <20251106221440.GJ196358@frogsfrogsfrogs>
 References: <20251106221440.GJ196358@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,11 +60,10 @@ Content-Transfer-Encoding: 7bit
 
 Hi all,
 
-In this series, we refactor the code around ext2fs_close to get ready
-for iomap mode.  The significant part of this series is moving the
-unmount code to op_destroy, because we want to release the block device
-as a part of the umount(2) process to maintain expected behavior of the
-in-kernel local filesystem drivers.
+Here, we hoist the mounting code out of main() into a pile of separate
+helper functions to reduce the complexity of understanding the mount
+code.  This isn't strictly required for iomap, but it makes main() a lot
+easier to understand.
 
 If you're going to start using this code, I strongly recommend pulling
 from my git trees, which are linked below.
@@ -72,14 +71,17 @@ from my git trees, which are linked below.
 Comments and questions are, as always, welcome.
 
 e2fsprogs git tree:
-https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-refactor-unmounting
+https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-refactor-mounting
 ---
 Commits in this patchset:
- * fuse2fs: get rid of the global_fs variable
- * fuse2fs: hoist lockfile code
- * fuse2fs: hoist unmount code from main
+ * fuse2fs: split filesystem mounting into helper functions
+ * fuse2fs: register as an IO flusher thread
+ * fuse2fs: adjust OOM killer score if possible
 ---
- misc/fuse2fs.c |  195 ++++++++++++++++++++++++++++++--------------------------
- 1 file changed, 106 insertions(+), 89 deletions(-)
+ configure       |   37 +++
+ configure.ac    |   19 ++
+ lib/config.h.in |    3 
+ misc/fuse2fs.c  |  634 +++++++++++++++++++++++++++++++------------------------
+ 4 files changed, 413 insertions(+), 280 deletions(-)
 
 
