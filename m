@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-11598-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11599-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF924C3DA4C
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:41:38 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94FCDC3DA4F
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:41:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5093918836C5
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:41:59 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1A53234ED23
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B473330B51B;
-	Thu,  6 Nov 2025 22:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDCC92E92C3;
+	Thu,  6 Nov 2025 22:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o+Yy+EGa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f2gTJWf2"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570B72DBF4B
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F4F92F6180
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468888; cv=none; b=BK4iMdP6TA+2QOgrvP+Isngde6PYCtDH7l9nU/CdpFe4sLqudvCooW6F7ynBAEswMnfqYL0VdJrjb8AlNI6/0Fp3Ov4SmvAkSGjA0p+BQvlXnweqlZjoA+qAYn61ezXP7VhjsnWxVSY10dgWETsESXhTigkXy/ddCIPNP3OBz0w=
+	t=1762468904; cv=none; b=vBvFF182dLkI7pt/Vg9ciuRj3SrwN/Yiok8sTnVctTiTbVCH48X/9mCFabRA6bTzyUGvSQKA8fccWTAX0HrTX8sAWUyUzuq2YKONlDK2v1Who9w1uwwe/PejBlSwUyGbxvWJOBNBpZI+jI/sJ4RoEAK6FMWfxqlLAZzMrlgcbro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468888; c=relaxed/simple;
-	bh=VUVqo7gYV2M0M2R+g80+6Nghp8kN7+ELbTVptOlZZdQ=;
+	s=arc-20240116; t=1762468904; c=relaxed/simple;
+	bh=bSS72xlUsHwqHxnUgVjRhdUNlSZKH+rRciNrHOL0GlM=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HDGebWuHsAHjWr9p2uSe2Z8N6coySWecWjl94SjFpujvG6JKYJWSvY/d4siPL9Ikj798NeJwCkLE/0mZtw7XzZz9vHyap453wnWTd9aK2xmPS7tBASOjvcrjvVUx12WEXg+SgO+1aS6n6/i5I6ugfdpatbM9xvqoRcbmOPjaFJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o+Yy+EGa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FAB5C4CEFB;
-	Thu,  6 Nov 2025 22:41:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UaYcAxMUCltCmCvVZQDZ4+ji70oN+Dp/uqPrDSbcp+nuLZvoLy195kwiNt5sO4E8zZs87ZcHx5X0ciqwTyM4Yo/SXevLDErfR8VjZTeBfbLO14iRbAhYDWw+lUQH+51CjbR92ie+O7mw9CuHKHt5pukCrI3LX2EHsJBRhrwuTMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f2gTJWf2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 145A4C16AAE;
+	Thu,  6 Nov 2025 22:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468888;
-	bh=VUVqo7gYV2M0M2R+g80+6Nghp8kN7+ELbTVptOlZZdQ=;
+	s=k20201202; t=1762468904;
+	bh=bSS72xlUsHwqHxnUgVjRhdUNlSZKH+rRciNrHOL0GlM=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=o+Yy+EGaTJ5UlffFaqaWX72OGFmsWa1xoqD9psfe9Oc3VdeQ++h236XQGfxEBbDv5
-	 zUB3CLQVTkKHNF2fdeDazcMYDc1seSMv4Lmt73XcCDs9LgBPgwrriFnMxiM4BlRYO/
-	 Wx7tVE8X0ybJJvra63eDWTbGfA/7J2eHLnXOTp24GLc6tEtKm9qThI4ZSUq7Xdk55J
-	 1g684+K+p2HYeGtPRrCwuCKy0BPp9qaRft3A7ttV9pj9CUlcf32qXM4eK71FoJ1cgr
-	 QbMjLACOkveaoFjhfVRpZeeU0LMl0C8L6BKUZrwNgM8UxO6ljVdZ2RNOqhEf6kQbR9
-	 J1og2GopiL6sg==
-Date: Thu, 06 Nov 2025 14:41:27 -0800
-Subject: [PATCH 1/3] fuse2fs: pass a struct fuse2fs to fs_writeable
+	b=f2gTJWf2pJ9lpElG4qgkvtFRTSXpy+95tcP87IQjthwecPiQaHb6jHg06zRV9eeRC
+	 nASKA65aidTqw/g3HYab0OgVeibGEuDd5TFeA7IklKb+/cnsUrCulFqSxAw0Cg5387
+	 iYDfsn0G/gWTaTvBDSMxyMSowf+AGy1CJFR9TNkpG0CGTOBNT5OHg8xdoriDpoC79m
+	 krPKTOFBpsGkxLsRHVpLKsfSY79D1/C9uv3NtEwUNr9M/SJaFcGq3+tRKRsiEAJh3Q
+	 KYbZJ1YIJWDTaJ7MuIYSC8FEtvD0hfw+JdqrqkKB96Fy+B2bblzT+7rSBD+8GoKFBY
+	 5AOcwXs7KHyGg==
+Date: Thu, 06 Nov 2025 14:41:43 -0800
+Subject: [PATCH 2/3] fuse2fs: track our own writable state
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246795068.2863930.16927910558736451438.stgit@frogsfrogsfrogs>
+Message-ID: <176246795086.2863930.12714189998385617158.stgit@frogsfrogsfrogs>
 In-Reply-To: <176246795040.2863930.4974772996705539351.stgit@frogsfrogsfrogs>
 References: <176246795040.2863930.4974772996705539351.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,144 +60,143 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Pass the outer fuse2fs context to fs_writable in preparation for the
-next patch.
+Track our own willingness to write to the filesystem in a separate
+variable from that of libext2fs.  There's a small window between opening
+the filesystem and mounting it where the library is rw but we might fail
+a mount task and therefore don't want to write anything more.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |   31 +++++++++++++++----------------
- 1 file changed, 15 insertions(+), 16 deletions(-)
+ misc/fuse2fs.c |   30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 33e456aa0a964c..1aa391b5a56456 100644
+index 1aa391b5a56456..8d5b705280b72f 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -882,8 +882,10 @@ static int fs_can_allocate(struct fuse2fs *ff, blk64_t num)
- 	return ext2fs_free_blocks_count(fs->super) > reserved + num;
- }
+@@ -219,6 +219,11 @@ struct fuse2fs_file_handle {
+ 	int check_flags;
+ };
  
--static int fs_writeable(ext2_filsys fs)
-+static int fuse2fs_is_writeable(struct fuse2fs *ff)
- {
-+	ext2_filsys fs = ff->fs;
++enum fuse2fs_opstate {
++	F2OP_READONLY,
++	F2OP_WRITABLE,
++};
 +
- 	return (fs->flags & EXT2_FLAG_RW) && (fs->super->s_error_count == 0);
- }
+ /* Main program context */
+ #define FUSE2FS_MAGIC		(0xEF53DEADUL)
+ struct fuse2fs {
+@@ -242,6 +247,7 @@ struct fuse2fs {
+ 	int acl;
+ 	int dirsync;
  
-@@ -912,12 +914,10 @@ static inline int want_check_owner(struct fuse2fs *ff,
- static int check_iflags_access(struct fuse2fs *ff, ext2_ino_t ino,
- 			       const struct ext2_inode *inode, int mask)
++	enum fuse2fs_opstate opstate;
+ 	int logfd;
+ 	int blocklog;
+ 	int oom_score_adj;
+@@ -553,7 +559,7 @@ static bool fuse2fs_mmp_wanted(const struct fuse2fs *ff)
+ 	ext2_filsys fs = ff->fs;
+ 
+ 	if (!fs || !ext2fs_has_feature_mmp(fs->super) ||
+-	    !(fs->flags & EXT2_FLAG_RW) || (fs->flags & EXT2_FLAG_SKIP_MMP))
++	    ff->opstate != F2OP_WRITABLE || (fs->flags & EXT2_FLAG_SKIP_MMP))
+ 		return false;
+ 	return true;
+ }
+@@ -767,8 +773,6 @@ static int update_atime(ext2_filsys fs, ext2_ino_t ino)
+ 	struct timespec atime, mtime, now;
+ 	double datime, dmtime, dnow;
+ 
+-	if (!(fs->flags & EXT2_FLAG_RW))
+-		return 0;
+ 	err = fuse2fs_read_inode(fs, ino, &inode);
+ 	if (err)
+ 		return translate_error(fs, ino, err);
+@@ -884,9 +888,8 @@ static int fs_can_allocate(struct fuse2fs *ff, blk64_t num)
+ 
+ static int fuse2fs_is_writeable(struct fuse2fs *ff)
  {
 -	ext2_filsys fs = ff->fs;
 -
- 	EXT2FS_BUILD_BUG_ON((A_OK & (R_OK | W_OK | X_OK | F_OK)) != 0);
+-	return (fs->flags & EXT2_FLAG_RW) && (fs->super->s_error_count == 0);
++	return ff->opstate == F2OP_WRITABLE &&
++		(ff->fs->super->s_error_count == 0);
+ }
  
- 	/* no writing or metadata changes to read-only or broken fs */
--	if ((mask & (W_OK | A_OK)) && !fs_writeable(fs))
-+	if ((mask & (W_OK | A_OK)) && !fuse2fs_is_writeable(ff))
- 		return -EROFS;
- 
- 	dbg_printf(ff, "access ino=%d mask=e%s%s%s%s iflags=0x%x\n",
-@@ -950,7 +950,7 @@ static int check_inum_access(struct fuse2fs *ff, ext2_ino_t ino, int mask)
- 	int ret;
- 
- 	/* no writing to read-only or broken fs */
--	if ((mask & (W_OK | A_OK)) && !fs_writeable(fs))
-+	if ((mask & (W_OK | A_OK)) && !fuse2fs_is_writeable(ff))
- 		return -EROFS;
- 
- 	err = ext2fs_read_inode(fs, ino, &inode);
-@@ -1761,7 +1761,7 @@ static int op_readlink(const char *path, char *buf, size_t len)
- 	}
- 	buf[len] = 0;
- 
--	if (fs_writeable(fs)) {
-+	if (fuse2fs_is_writeable(ff)) {
- 		ret = update_atime(fs, ino);
- 		if (ret)
- 			goto out;
-@@ -3549,7 +3549,7 @@ static int op_read(const char *path EXT2FS_ATTR((unused)), char *buf,
- 		goto out;
+ static inline int is_superuser(struct fuse2fs *ff, struct fuse_context *ctxt)
+@@ -1135,6 +1138,7 @@ static errcode_t fuse2fs_open(struct fuse2fs *ff)
  	}
  
--	if (fh->check_flags != X_OK && fs_writeable(fs)) {
-+	if (fh->check_flags != X_OK && fuse2fs_is_writeable(ff)) {
- 		ret = update_atime(fs, fh->ino);
- 		if (ret)
- 			goto out;
-@@ -3576,7 +3576,7 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
- 	dbg_printf(ff, "%s: ino=%d off=0x%llx len=0x%zx\n", __func__, fh->ino,
- 		   (unsigned long long) offset, len);
- 	fs = fuse2fs_start(ff);
--	if (!fs_writeable(fs)) {
-+	if (!fuse2fs_is_writeable(ff)) {
- 		ret = -EROFS;
- 		goto out;
+ 	snprintf(options, sizeof(options) - 1, "offset=%lu", ff->offset);
++	ff->opstate = F2OP_READONLY;
+ 
+ 	if (ff->directio)
+ 		flags |= EXT2_FLAG_DIRECT_IO;
+@@ -1337,6 +1341,7 @@ static int fuse2fs_mount(struct fuse2fs *ff)
+  _("Warning: fuse2fs does not support using the journal.\n"
+    "There may be file system corruption or data loss if\n"
+    "the file system is not gracefully unmounted.\n"));
++		ff->opstate = F2OP_WRITABLE;
  	}
-@@ -3644,7 +3644,7 @@ static int op_release(const char *path EXT2FS_ATTR((unused)),
+ 
+ 	if (!(fs->super->s_state & EXT2_VALID_FS))
+@@ -1359,7 +1364,7 @@ static int fuse2fs_mount(struct fuse2fs *ff)
+ 		ff->errors_behavior = fs->super->s_errors;
+ 
+ 	/* Clear the valid flag so that an unclean shutdown forces a fsck */
+-	if (fs->flags & EXT2_FLAG_RW) {
++	if (ff->opstate == F2OP_WRITABLE) {
+ 		fs->super->s_mnt_count++;
+ 		ext2fs_set_tstamp(fs->super, s_mtime, time(NULL));
+ 		fs->super->s_state &= ~EXT2_VALID_FS;
+@@ -1383,7 +1388,7 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
  	fs = fuse2fs_start(ff);
  
- 	if ((fp->flags & O_SYNC) &&
--	    fs_writeable(fs) &&
-+	    fuse2fs_is_writeable(ff) &&
- 	    (fh->open_flags & EXT2_FILE_WRITE)) {
- 		err = ext2fs_flush2(fs, EXT2_FLAG_FLUSH_NO_SYNC);
- 		if (err)
-@@ -3674,7 +3674,7 @@ static int op_fsync(const char *path EXT2FS_ATTR((unused)),
- 	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
- 	fs = fuse2fs_start(ff);
- 	/* For now, flush everything, even if it's slow */
--	if (fs_writeable(fs) && fh->open_flags & EXT2_FILE_WRITE) {
-+	if (fuse2fs_is_writeable(ff) && fh->open_flags & EXT2_FILE_WRITE) {
- 		err = ext2fs_flush2(fs, 0);
- 		if (err)
- 			ret = translate_error(fs, fh->ino, err);
-@@ -4212,7 +4212,7 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
- 		goto out;
- 	}
+ 	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
+-	if (fs->flags & EXT2_FLAG_RW) {
++	if (ff->opstate == F2OP_WRITABLE) {
+ 		fs->super->s_state |= EXT2_VALID_FS;
+ 		if (fs->super->s_error_count)
+ 			fs->super->s_state |= EXT2_ERROR_FS;
+@@ -1574,7 +1579,7 @@ static void *op_init(struct fuse_conn_info *conn
+ 	cfg->nullpath_ok = 1;
+ #endif
  
--	if (fs_writeable(i.fs)) {
-+	if (fuse2fs_is_writeable(ff)) {
- 		ret = update_atime(i.fs, fh->ino);
- 		if (ret)
- 			goto out;
-@@ -4394,7 +4394,7 @@ static int op_ftruncate(const char *path EXT2FS_ATTR((unused)),
- 	dbg_printf(ff, "%s: ino=%d len=%jd\n", __func__, fh->ino,
- 		   (intmax_t) len);
- 	fs = fuse2fs_start(ff);
--	if (!fs_writeable(fs)) {
-+	if (!fuse2fs_is_writeable(ff)) {
- 		ret = -EROFS;
- 		goto out;
- 	}
-@@ -4772,7 +4772,7 @@ static int ioctl_fitrim(struct fuse2fs *ff, struct fuse2fs_file_handle *fh,
- 	blk64_t max_blks = ext2fs_blocks_count(fs->super);
- 	errcode_t err = 0;
+-	if (ff->fs->flags & EXT2_FLAG_RW)
++	if (ff->opstate == F2OP_WRITABLE)
+ 		fuse2fs_read_bitmaps(ff);
  
--	if (!fs_writeable(fs))
-+	if (!fuse2fs_is_writeable(ff))
- 		return -EROFS;
- 
- 	start = FUSE2FS_B_TO_FSBT(ff, fr->start);
-@@ -5190,7 +5190,6 @@ static int op_fallocate(const char *path EXT2FS_ATTR((unused)), int mode,
- {
- 	struct fuse2fs *ff = fuse2fs_get();
- 	struct fuse2fs_file_handle *fh = fuse2fs_get_handle(fp);
--	ext2_filsys fs;
- 	int ret;
- 
- 	/* Catch unknown flags */
-@@ -5199,8 +5198,8 @@ static int op_fallocate(const char *path EXT2FS_ATTR((unused)), int mode,
- 
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
--	fs = fuse2fs_start(ff);
--	if (!fs_writeable(fs)) {
-+	fuse2fs_start(ff);
-+	if (!fuse2fs_is_writeable(ff)) {
- 		ret = -EROFS;
- 		goto out;
- 	}
+ 	/*
+@@ -3724,7 +3729,7 @@ static int op_statfs(const char *path EXT2FS_ATTR((unused)),
+ 	fsid ^= *f;
+ 	buf->f_fsid = fsid;
+ 	buf->f_flag = 0;
+-	if (!(fs->flags & EXT2_FLAG_RW))
++	if (ff->opstate != F2OP_WRITABLE)
+ 		buf->f_flag |= ST_RDONLY;
+ 	buf->f_namemax = EXT2_NAME_LEN;
+ 	fuse2fs_finish(ff, 0);
+@@ -5568,6 +5573,7 @@ int main(int argc, char *argv[])
+ 		.logfd = -1,
+ 		.bfl = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER,
+ 		.oom_score_adj = -500,
++		.opstate = F2OP_WRITABLE,
+ 	};
+ 	errcode_t err;
+ 	FILE *orig_stderr = stderr;
+@@ -5861,9 +5867,11 @@ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
+  _("Continuing after errors; is this a good idea?"));
+ 		break;
+ 	case EXT2_ERRORS_RO:
+-		if (fs->flags & EXT2_FLAG_RW)
++		if (ff->opstate == F2OP_WRITABLE) {
+ 			err_printf(ff, "%s\n",
+  _("Remounting read-only due to errors."));
++			ff->opstate = F2OP_READONLY;
++		}
+ 		fuse2fs_mmp_cancel(ff);
+ 		fs->flags &= ~EXT2_FLAG_RW;
+ 		break;
 
 
