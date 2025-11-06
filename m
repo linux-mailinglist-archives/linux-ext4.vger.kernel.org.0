@@ -1,278 +1,171 @@
-Return-Path: <linux-ext4+bounces-11511-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11512-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A951C3873F
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 01:19:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25F3CC38E9E
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 03:46:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10BCA1A23DCD
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 00:19:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25A933B6AFD
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 02:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F47155326;
-	Thu,  6 Nov 2025 00:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCF824E4BD;
+	Thu,  6 Nov 2025 02:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R1A5OGiW"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="xgwHqogv"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF8710957;
-	Thu,  6 Nov 2025 00:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73BD245022;
+	Thu,  6 Nov 2025 02:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762388356; cv=none; b=T/2/3wE6JQ3A3EdlZPZ3kWofIOIih2jhSmobT2e1BPFUSOiQUpZQW/P6RgRwxRcN+Cn2nKTAZijN4r+1EtktgU5RJLicQig942kh7Ef+Kt2A66xxDirdorBkjs2FKGHNHqGOXDQFn0Rl6rMgJa7JBugPuY2GHLWiiLvAdNnPVeI=
+	t=1762397065; cv=none; b=jVAUobPwiNXMSq/inXJgO5s7i1RXgMDaThNmDIZMlTzC6Cp9cxTO6Tu8Ouu16ZVMCP/YyZ81Kjh31MgMzx/soQqajpMuGwg6IkSj8IlX4RH5+VA0oomsJBKVt31xqUpsY73sTR0NEUdhYy8eD89dm6tmGVlzPyqvXykdSUlrYbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762388356; c=relaxed/simple;
-	bh=yuz8cRWpXPaa88jkV7mgefpgHkZ19yoPK0xCS4Ul/VI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M7w+Ptp2P9FIfHRFkhBXSQi2pg0pvvpxrOQhiL1tSIfx/oIZ58AONqdZQ18ZI3GQIbFtFC69jaYpdDLRaxk0cCO8azFPNkbG2pcWOxkIaqb2S3zJTcQTWL4EgEdggURPDk+vRtG+yh3XWzunROASUd5tAtXjmw0yF12UNyrS6FE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R1A5OGiW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 229EBC4CEF5;
-	Thu,  6 Nov 2025 00:19:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762388355;
-	bh=yuz8cRWpXPaa88jkV7mgefpgHkZ19yoPK0xCS4Ul/VI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R1A5OGiWP68niBI+otgdSkB33I3FvHoFZwPtlQ2+S2ILENyq30G7KJcdjvLPFVrmS
-	 9/aan1z5hYSsu4PHxcYDmrM74iZ2ZP7DK0kpKf6MBBqv6EhIOc48qRKj5gL8XpCZFI
-	 PHDBZ3dNLnzyAT6IfCfSGgXh2wCJKS+o7NFgaUpcfVWom/c3Ave7gz8SibOfk2EaVz
-	 xxKrYZNVH4uUqNwrIIk6LKsvkPA1Dz9u49MnmGxYPNuDxFH4ZqzLAi1D8M6kkcfCWG
-	 gd/4Fk4As0CzOl2wlcjffbHt2mVsRyvzf3og4/RfnJhPWirGFPIJz2xvdDOYG3rBKd
-	 k3aDV+/PPQyyA==
-Date: Wed, 5 Nov 2025 16:19:14 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Bernd Schubert <bernd@bsbernd.com>
-Cc: Joanne Koong <joannelkoong@gmail.com>, miklos@szeredi.hu,
-	neal@gompa.dev, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/5] fuse: flush pending fuse events before aborting the
- connection
-Message-ID: <20251106001914.GI196358@frogsfrogsfrogs>
-References: <176169809222.1424347.16562281526870178424.stgit@frogsfrogsfrogs>
- <176169809274.1424347.4813085698864777783.stgit@frogsfrogsfrogs>
- <CAJnrk1ZovORC=tLW-Q94XXY5M4i5WUd4CgRKEo7Lc7K2Sg+Kog@mail.gmail.com>
- <20251103221349.GE196370@frogsfrogsfrogs>
- <CAJnrk1a4d__8RHu0EGN2Yfk3oOhqZLJ7fBCNQYdHoThPrvnOaQ@mail.gmail.com>
- <a9c0c66e-c3ce-4cdd-bd83-dd04bc5f9379@bsbernd.com>
+	s=arc-20240116; t=1762397065; c=relaxed/simple;
+	bh=IcASH1qtY0SIFs42x0ctyhoiDa7gsdtJ7fmK5+xGdLU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=XP/9O3Rc7jjHDHwJgkHyD8UpCVGjHECQB8mzFQBfhe2kzsZ2+ezqEL011YMElXif/kM9yFjZE4JsaMUX39mC8kD0mQhEFoESEhQ6x+WjpWbdGiaT5y4bh3dewl504GqQu80YtJze7RadhPD7yeoG687Mkat1OmazTPqqL+9IkfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=xgwHqogv; arc=none smtp.client-ip=113.46.200.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=SmiGeerJpItekeBrZ0vp8zm0YzZ1kocpU6u3YhL4BMc=;
+	b=xgwHqogvKdjdSjQOEiNXt3yMJngtWo0Y3iXn2mRqv7EpqxcVd312T/rdqLXC8B4Ld5dCDQJdA
+	X16AvLmzek4Fl5/+heqACTw+WUdIqjjuNZrTxJVMbinUXaT0bUyaJ/Ii3lrIm7lg+Ev+H+0MyZb
+	Uq/4Xu/yXujZiDi+0Wfnd1s=
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4d261908K0z1prKm;
+	Thu,  6 Nov 2025 10:42:37 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4B608140276;
+	Thu,  6 Nov 2025 10:44:13 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 6 Nov
+ 2025 10:44:12 +0800
+Message-ID: <242f4438-d84d-46a6-86fe-8629c7e028cf@huawei.com>
+Date: Thu, 6 Nov 2025 10:44:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 25/25] ext4: enable block size larger than page size
+Content-Language: en-GB
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
+	<mcgrof@kernel.org>, <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+	<libaokun1@huawei.com>, Baokun Li <libaokun@huaweicloud.com>
+References: <20251025032221.2905818-1-libaokun@huaweicloud.com>
+ <20251025032221.2905818-26-libaokun@huaweicloud.com>
+ <yp4gorgjhh6c3qeopjabmknimeifhnpbz63irrrtjpplatnk4k@ycofoucc4ry3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <yp4gorgjhh6c3qeopjabmknimeifhnpbz63irrrtjpplatnk4k@ycofoucc4ry3>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a9c0c66e-c3ce-4cdd-bd83-dd04bc5f9379@bsbernd.com>
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-On Tue, Nov 04, 2025 at 10:47:52PM +0100, Bernd Schubert wrote:
-> 
-> 
-> On 11/4/25 20:22, Joanne Koong wrote:
-> > On Mon, Nov 3, 2025 at 2:13 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> >>
-> >> On Mon, Nov 03, 2025 at 09:20:26AM -0800, Joanne Koong wrote:
-> >>> On Tue, Oct 28, 2025 at 5:43 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> >>>>
-> >>>> From: Darrick J. Wong <djwong@kernel.org>
-> >>>>
-> >>>> generic/488 fails with fuse2fs in the following fashion:
-> >>>>
-> >>>> generic/488       _check_generic_filesystem: filesystem on /dev/sdf is inconsistent
-> >>>> (see /var/tmp/fstests/generic/488.full for details)
-> >>>>
-> >>>> This test opens a large number of files, unlinks them (which really just
-> >>>> renames them to fuse hidden files), closes the program, unmounts the
-> >>>> filesystem, and runs fsck to check that there aren't any inconsistencies
-> >>>> in the filesystem.
-> >>>>
-> >>>> Unfortunately, the 488.full file shows that there are a lot of hidden
-> >>>> files left over in the filesystem, with incorrect link counts.  Tracing
-> >>>> fuse_request_* shows that there are a large number of FUSE_RELEASE
-> >>>> commands that are queued up on behalf of the unlinked files at the time
-> >>>> that fuse_conn_destroy calls fuse_abort_conn.  Had the connection not
-> >>>> aborted, the fuse server would have responded to the RELEASE commands by
-> >>>> removing the hidden files; instead they stick around.
-> >>>>
-> >>>> For upper-level fuse servers that don't use fuseblk mode this isn't a
-> >>>> problem because libfuse responds to the connection going down by pruning
-> >>>> its inode cache and calling the fuse server's ->release for any open
-> >>>> files before calling the server's ->destroy function.
-> >>>>
-> >>>> For fuseblk servers this is a problem, however, because the kernel sends
-> >>>> FUSE_DESTROY to the fuse server, and the fuse server has to close the
-> >>>> block device before returning.  This means that the kernel must flush
-> >>>> all pending FUSE_RELEASE requests before issuing FUSE_DESTROY.
-> >>>>
-> >>>> Create a function to push all the background requests to the queue and
-> >>>> then wait for the number of pending events to hit zero, and call this
-> >>>> before sending FUSE_DESTROY.  That way, all the pending events are
-> >>>> processed by the fuse server and we don't end up with a corrupt
-> >>>> filesystem.
-> >>>>
-> >>>> Note that we use a wait_event_timeout() loop to cause the process to
-> >>>> schedule at least once per second to avoid a "task blocked" warning:
-> >>>>
-> >>>> INFO: task umount:1279 blocked for more than 20 seconds.
-> >>>>       Not tainted 6.17.0-rc7-xfsx #rc7
-> >>>> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this messag.
-> >>>> task:umount          state:D stack:11984 pid:1279  tgid:1279  ppid:10690
-> >>>>
-> >>>> Earlier in the threads about this patch there was a (self-inflicted)
-> >>>> dispute as to whether it was necessary to call touch_softlockup_watchdog
-> >>>> in the loop body.  Because the process goes to sleep, it's not necessary
-> >>>> to touch the softlockup watchdog because we're not preventing another
-> >>>> process from being scheduled on a CPU.
-> >>>>
-> >>>> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> >>>> ---
-> >>>>  fs/fuse/fuse_i.h |    5 +++++
-> >>>>  fs/fuse/dev.c    |   35 +++++++++++++++++++++++++++++++++++
-> >>>>  fs/fuse/inode.c  |   11 ++++++++++-
-> >>>>  3 files changed, 50 insertions(+), 1 deletion(-)
-> >>>>
-> >>>>
-> >>>> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> >>>> index c2f2a48156d6c5..aaa8574fd72775 100644
-> >>>> --- a/fs/fuse/fuse_i.h
-> >>>> +++ b/fs/fuse/fuse_i.h
-> >>>> @@ -1274,6 +1274,11 @@ void fuse_request_end(struct fuse_req *req);
-> >>>>  void fuse_abort_conn(struct fuse_conn *fc);
-> >>>>  void fuse_wait_aborted(struct fuse_conn *fc);
-> >>>>
-> >>>> +/**
-> >>>> + * Flush all pending requests and wait for them.
-> >>>> + */
-> >>>> +void fuse_flush_requests_and_wait(struct fuse_conn *fc);
-> >>>> +
-> >>>>  /* Check if any requests timed out */
-> >>>>  void fuse_check_timeout(struct work_struct *work);
-> >>>>
-> >>>> diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
-> >>>> index 132f38619d7072..ecc0a5304c59d1 100644
-> >>>> --- a/fs/fuse/dev.c
-> >>>> +++ b/fs/fuse/dev.c
-> >>>> @@ -24,6 +24,7 @@
-> >>>>  #include <linux/splice.h>
-> >>>>  #include <linux/sched.h>
-> >>>>  #include <linux/seq_file.h>
-> >>>> +#include <linux/nmi.h>
-> >>>>
-> >>>>  #include "fuse_trace.h"
-> >>>>
-> >>>> @@ -2430,6 +2431,40 @@ static void end_polls(struct fuse_conn *fc)
-> >>>>         }
-> >>>>  }
-> >>>>
-> >>>> +/*
-> >>>> + * Flush all pending requests and wait for them.  Only call this function when
-> >>>> + * it is no longer possible for other threads to add requests.
-> >>>> + */
-> >>>> +void fuse_flush_requests_and_wait(struct fuse_conn *fc)
-> >>>> +{
-> >>>> +       spin_lock(&fc->lock);
-> >>>
-> >>> Do we need to grab the fc lock? fc->connected is protected under the
-> >>> bg_lock, afaict from fuse_abort_conn().
-> >>
-> >> Oh, heh.  Yeah, it does indeed take both fc->lock and fc->bg_lock.
-> >> Will fix that, thanks. :)
-> >>
-> >> FWIW I don't think it's a big deal if we see a stale connected==1 value
-> >> because the events will all get cancelled and the wait loop won't run
-> >> anyway, but I agree with being consistent about lock ordering. :)
-> >>
-> >>>> +       if (!fc->connected) {
-> >>>> +               spin_unlock(&fc->lock);
-> >>>> +               return;
-> >>>> +       }
-> >>>> +
-> >>>> +       /* Push all the background requests to the queue. */
-> >>>> +       spin_lock(&fc->bg_lock);
-> >>>> +       fc->blocked = 0;
-> >>>> +       fc->max_background = UINT_MAX;
-> >>>> +       flush_bg_queue(fc);
-> >>>> +       spin_unlock(&fc->bg_lock);
-> >>>> +       spin_unlock(&fc->lock);
-> >>>> +
-> >>>> +       /*
-> >>>> +        * Wait for all pending fuse requests to complete or abort.  The fuse
-> >>>> +        * server could take a significant amount of time to complete a
-> >>>> +        * request, so run this in a loop with a short timeout so that we don't
-> >>>> +        * trip the soft lockup detector.
-> >>>> +        */
-> >>>> +       smp_mb();
-> >>>> +       while (wait_event_timeout(fc->blocked_waitq,
-> >>>> +                       !fc->connected || atomic_read(&fc->num_waiting) == 0,
-> >>>> +                       HZ) == 0) {
-> >>>> +               /* empty */
-> >>>> +       }
-> >>>
-> >>> I'm wondering if it's necessary to wait here for all the pending
-> >>> requests to complete or abort?
-> >>
-> >> I'm not 100% sure what the fuse client shutdown sequence is supposed to
-> >> be.  If someone kills a program with a large number of open unlinked
-> >> files and immediately calls umount(), then the fuse client could be in
-> >> the process of sending FUSE_RELEASE requests to the server.
-> >>
-> >> [background info, feel free to speedread this paragraph]
-> >> For a non-fuseblk server, unmount aborts all pending requests and
-> >> disconnects the fuse device.  This means that the fuse server won't see
-> >> all the FUSE_REQUESTs before libfuse calls ->destroy having observed the
-> >> fusedev shutdown.  The end result is that (on fuse2fs anyway) you end up
-> >> with a lot of .fuseXXXXX files that nobody cleans up.
-> >>
-> >> If you make ->destroy release all the remaining open files, now you run
-> >> into a second problem, which is that if there are a lot of open unlinked
-> >> files, freeing the inodes can collectively take enough time that the
-> >> FUSE_DESTROY request times out.
-> >>
-> >> On a fuseblk server with libfuse running in multithreaded mode, there
-> >> can be several threads reading fuse requests from the fusedev.  The
-> >> kernel actually sends its own FUSE_DESTROY request, but there's no
-> >> coordination between the fuse workers, which means that the fuse server
-> >> can process FUSE_DESTROY at the same time it's processing FUSE_RELEASE.
-> >> If ->destroy closes the filesystem before the FUSE_RELEASE requests are
-> >> processed, you end up with the same .fuseXXXXX file cleanup problem.
-> > 
-> > imo it is the responsibility of the server to coordinate this and make
-> > sure it has handled all the requests it has received before it starts
-> > executing the destruction logic. imo the only responsibility of the
-> > kernel is to actually send the background requests before it sends the
-> > FUSE_DESTROY. I think non-fuseblk servers should also receive the
-> > FUSE_DESTROY request.
-> 
-> Hmm, good idea, I guess we can add that in libfuse, maybe with some kind
-> of timeout.
-> 
-> There is something I don't understand though, how can FUSE_DESTROY
-> happen before FUSE_RELEASE is completed?
-> 
-> ->release / fuse_release
->    fuse_release_common
->       fuse_file_release
->          fuse_file_put
->             fuse_simple_background
->             <userspace>
->             <userspace-reply>
->                fuse_release_end
->                   iput()
-> 
-> I.e. how can it release the superblock (which triggers FUSE_DESTROY)
+On 2025-11-05 18:14, Jan Kara wrote:
+> On Sat 25-10-25 11:22:21, libaokun@huaweicloud.com wrote:
+>> From: Baokun Li <libaokun1@huawei.com>
+>>
+>> Since block device (See commit 3c20917120ce ("block/bdev: enable large
+>> folio support for large logical block sizes")) and page cache (See commit
+>> ab95d23bab220ef8 ("filemap: allocate mapping_min_order folios in the page
+>> cache")) has the ability to have a minimum order when allocating folio,
+>> and ext4 has supported large folio in commit 7ac67301e82f ("ext4: enable
+>> large folio for regular file"), now add support for block_size > PAGE_SIZE
+>> in ext4.
+>>
+>> set_blocksize() -> bdev_validate_blocksize() already validates the block
+>> size, so ext4_load_super() does not need to perform additional checks.
+>>
+>> Here we only need to enable large folio by default when s_min_folio_order
+>> is greater than 0 and add the FS_LBS bit to fs_flags.
+>>
+>> In addition, mark this feature as experimental.
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+> ...
+>
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 04f9380d4211..ba6cf05860ae 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -5146,6 +5146,9 @@ static bool ext4_should_enable_large_folio(struct inode *inode)
+>>  	if (!ext4_test_mount_flag(sb, EXT4_MF_LARGE_FOLIO))
+>>  		return false;
+>>  
+>> +	if (EXT4_SB(sb)->s_min_folio_order)
+>> +		return true;
+>> +
+> But now files with data journalling flag enabled will get large folios
+> possibly significantly greater that blocksize. I don't think there's a
+> fundamental reason why data journalling doesn't work with large folios, the
+> only thing that's likely going to break is that credit estimates will go
+> through the roof if there are too many blocks per folio. But that can be
+> handled by setting max folio order to be equal to min folio order when
+> journalling data for the inode.
+>
+> It is a bit scary to be modifying max folio order in
+> ext4_change_inode_journal_flag() but I guess less scary than setting new
+> aops and if we prune the whole page cache before touching the order and
+> inode flag, we should be safe (famous last words ;).
+>
+Good point! This looks feasible.
 
-The short answer is that fuse_file_put doesn't wait for the backgrounded
-release request to complete and returns; and that FUSE_DESTROY is sent
-synchronously and with args->force = true so it jumps the queue.
+We just need to adjust the folio order range based on the journal data,
+and in ext4_inode_journal_mode only ignore the inode’s journal data flag
+when max_order > min_order.
 
-(See my longer reply to Joanne for more details)
+I’ll make the adaptation and run some tests.
+Thank you for your review!
 
---D
 
-> 
-> Thanks,
-> Bernd
-> 
+Cheers,
+Baokun
+
+>
+>>  	if (!S_ISREG(inode->i_mode))
+>>  		return false;
+>>  	if (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index fdc006a973aa..4c0bd79bdf68 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -5053,6 +5053,9 @@ static int ext4_check_large_folio(struct super_block *sb)
+>>  		return -EINVAL;
+>>  	}
+>>  
+>> +	if (sb->s_blocksize > PAGE_SIZE)
+>> +		ext4_msg(sb, KERN_NOTICE, "EXPERIMENTAL bs(%lu) > ps(%lu) enabled.",
+>> +			 sb->s_blocksize, PAGE_SIZE);
+>>  	return 0;
+>>  }
+>>  
+>> @@ -7432,7 +7435,8 @@ static struct file_system_type ext4_fs_type = {
+>>  	.init_fs_context	= ext4_init_fs_context,
+>>  	.parameters		= ext4_param_specs,
+>>  	.kill_sb		= ext4_kill_sb,
+>> -	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME,
+>> +	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME |
+>> +				  FS_LBS,
+>>  };
+>>  MODULE_ALIAS_FS("ext4");
+>>  
+>> -- 
+>> 2.46.1
+>>
+
 
