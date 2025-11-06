@@ -1,52 +1,53 @@
-Return-Path: <linux-ext4+bounces-11575-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11576-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E67B6C3D9F5
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:35:26 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BD4C3D9F8
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CC7964E4AC8
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:35:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7E7774E641D
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FFF30EF91;
-	Thu,  6 Nov 2025 22:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A78233890E;
+	Thu,  6 Nov 2025 22:35:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dnrMDSIp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S6aRR/Hn"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7E02C3252
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12923376A5
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468520; cv=none; b=E0Kebg9H3SoxIZx9eiwPrzVNfcNSe7+RX9sSS1JCewSiIIg8B3CpsuzFISFrinWwVv1C7ED26U/kOJLZSIZ6Tz+S5QYXUwDKq7AkttrDj2xdir/F0U8VPBWj7emI+zRvkWvNBbAd4pcWXykEEs7UEX64N/Oa2S8M9OsPTxYuLqc=
+	t=1762468536; cv=none; b=P7qdUatt+dDvSVbRNQvTP2lur6ZptfaFQGL+7c2PBN3gz/vjHcXc85To4ox1Zft6GUp1FN1u7ZBYgUSBT90biwtZAM713JBltz3ZrvyACapErKX9QHLW0ToBkNI08VS9nn4J44va5SNkhiuPW4A1P21EBJw/4s//sD1o8HDiiF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468520; c=relaxed/simple;
-	bh=EGT5EnA8i7OfwPjDbNnN3iaDIonRoabgf32cJMV9JOw=;
+	s=arc-20240116; t=1762468536; c=relaxed/simple;
+	bh=oHKqH1tGAcU180GkeFMmUXq5wZC/BQmHLIZB/OgWZ5E=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TGAHQviBLxfKK7JD+/bHCXiu38pqwzeWtPK7/DzZJjbkX0HWrUO35tcEdppj6i/meOWhTAU+CiWqpZe2pQMUWcockKQ4XnmLRp7IUS8EJYsDl+2ltc4K1GEOWLKvzXH+oHygxqxMVnYkR6/XVLT3bs0LkDodH3o2yRJ6a4R9lx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dnrMDSIp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A36AC4CEF7;
-	Thu,  6 Nov 2025 22:35:20 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ZP/gphCbP3BfLjoI8yxzz/5dwDIb+m+ghZ+MRcp7AAX7RZq2f1wTgKIPYQFCCHRYWSaE0m6u4/l/Y2q6mKOyCaBlzYImSnEzqCJ5m1hfn3MnmtgljV4g2Glo7tyyKbH5t0rhlMLzIJRYafG2DJy7KEb1FhBLjNpW+VpjfnicUHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S6aRR/Hn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87FD8C113D0;
+	Thu,  6 Nov 2025 22:35:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468520;
-	bh=EGT5EnA8i7OfwPjDbNnN3iaDIonRoabgf32cJMV9JOw=;
+	s=k20201202; t=1762468536;
+	bh=oHKqH1tGAcU180GkeFMmUXq5wZC/BQmHLIZB/OgWZ5E=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=dnrMDSIpy+i+q42Gk1G0qescwi3Fn1482ZJGEugxIb5ECioCa2mP+3e7Mx3cSKy20
-	 badM5ksIT+FIZ/obndruoG36n2Q9XEl015tZP2ej3PzR/YSiCftGFAGAVtlaTPhdys
-	 4fIf+YofeNiuMc8eTBedsxSZDcXAnj+AHG7pIrhTWhGiJ6eUqy3OR/wZpI927FeARh
-	 0K8+3/epIKq8gmcXnF3jqsgg5db82Gay1qAoAcTM3ZRgNcTefCBuanr8IlCHMC1Vtb
-	 RFa5nbsz17QAg8RZZFxnnaVzO4oBrOgU9GwE67WxZI5QWMThgXDNX1OgBxwCECjkjm
-	 +n3L15LkKNJug==
-Date: Thu, 06 Nov 2025 14:35:19 -0800
-Subject: [PATCH 16/19] fuse2fs: improve error handling behaviors
+	b=S6aRR/HnUwt+H0lHSh8sc026xISPef+s35BVs9QuHQnw5uxu9xFqEwTwwdS8cnyBp
+	 WQCK18PJ8X9qox+dPBlOJ3Eymei6wtucOieTvcxmriKB1mhQBYk2r/u1YXIvHsKxpf
+	 sLYc6p8VQV6SN3jacpWGKBBQeLDCFxsS3gCSd7+qq3u2AsQvB0DEc5pJm2T9+ZUowF
+	 tQ5D0Eu3iySGAjeMxUY+itjtvP3Eejp5eN8pcuC1C7kuc2xpfusE4+8YapzZOZgjT9
+	 EepkzxTXoNzS8nQHo1KIHOw9h/sn1piNFoWqZj79EN3dt4ziSomcQSoQn+4n/FM5/8
+	 afBSM9rBVZNXg==
+Date: Thu, 06 Nov 2025 14:35:35 -0800
+Subject: [PATCH 17/19] fuse2fs: fix link count overflows on dir_nlink
+ filesystems
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246793918.2862242.3615380767315397985.stgit@frogsfrogsfrogs>
+Cc: linux-ext4@vger.kernel.org, linux-ext4@vger.kernel.org
+Message-ID: <176246793936.2862242.4057006934868513614.stgit@frogsfrogsfrogs>
 In-Reply-To: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 References: <176246793541.2862242.16879509838698966689.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,136 +61,179 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Make the behavior of fuse2fs on filesystem errors consistent with what
-the kernel driver does.  Sort of.  We can't panic the kernel, but we can
-abort the server, which leaves a dead mount.
+On a dir_nlink filesystem, a dir with more than 65000 subdirs ends up
+with i_links_count (aka nlink) of 1.  libext2fs wraps around and does
+the wrong thing, which may have caused a lot of havoc over the years.
+The kernel actually knows how to do this properly (it freezes the link
+count at 1 when it would overflow) so use the helpers we added in the
+previous patch to make fuse2fs behave the same as the kernel.
 
+This is a convenient time to fix the annoying behavior that one has to
+call remove_inode twice to rmdir a directory, and actually check for
+link count overflows when renaming or hardlinking files.
+
+Found via ext4/045.
+
+Cc: <linux-ext4@vger.kernel.org> # v1.43
+Fixes: 81cbf1ef4f5dab ("misc: add fuse2fs, a FUSE server for e2fsprogs")
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.1.in |    6 ++++++
- misc/fuse2fs.c    |   42 +++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 45 insertions(+), 3 deletions(-)
+ misc/fuse2fs.c |   85 +++++++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 69 insertions(+), 16 deletions(-)
 
 
-diff --git a/misc/fuse2fs.1.in b/misc/fuse2fs.1.in
-index b18b7f3464bc74..6acfa092851292 100644
---- a/misc/fuse2fs.1.in
-+++ b/misc/fuse2fs.1.in
-@@ -60,6 +60,12 @@ .SS "fuse2fs options:"
- \fB-o\fR dirsync
- Flush dirty metadata to disk after every directory update.
- .TP
-+\fB-o\fR errors=continue
-+ignore errors
-+.TP
-+\fB-o\fR errors=remount-ro
-+stop allowing writes after errors
-+.TP
- \fB-o\fR errors=panic
- dump core on error
- .TP
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index d890855df9c0f3..fd21f546db7fb1 100644
+index fd21f546db7fb1..b1cac46ddce567 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -224,7 +224,7 @@ struct fuse2fs {
- 	int ro;
- 	int debug;
- 	int no_default_opts;
--	int panic_on_error;
-+	int errors_behavior; /* actually an enum */
- 	int minixdf;
- 	int fakeroot;
- 	int alloc_all_blocks;
-@@ -4771,6 +4771,7 @@ enum {
- 	FUSE2FS_HELPFULL,
- 	FUSE2FS_CACHE_SIZE,
- 	FUSE2FS_DIRSYNC,
-+	FUSE2FS_ERRORS_BEHAVIOR,
- };
+@@ -1798,21 +1798,34 @@ static int remove_inode(struct fuse2fs *ff, ext2_ino_t ino)
+ 	dbg_printf(ff, "%s: put ino=%d links=%d\n", __func__, ino,
+ 		   inode.i_links_count);
  
- #define FUSE2FS_OPT(t, p, v) { t, offsetof(struct fuse2fs, p), v }
-@@ -4778,7 +4779,6 @@ enum {
- static struct fuse_opt fuse2fs_opts[] = {
- 	FUSE2FS_OPT("ro",		ro,			1),
- 	FUSE2FS_OPT("rw",		ro,			0),
--	FUSE2FS_OPT("errors=panic",	panic_on_error,		1),
- 	FUSE2FS_OPT("minixdf",		minixdf,		1),
- 	FUSE2FS_OPT("bsddf",		minixdf,		0),
- 	FUSE2FS_OPT("fakeroot",		fakeroot,		1),
-@@ -4798,6 +4798,7 @@ static struct fuse_opt fuse2fs_opts[] = {
- 	FUSE_OPT_KEY("nodelalloc",	FUSE2FS_IGNORED),
- 	FUSE_OPT_KEY("cache_size=%s",	FUSE2FS_CACHE_SIZE),
- 	FUSE_OPT_KEY("dirsync",		FUSE2FS_DIRSYNC),
-+	FUSE_OPT_KEY("errors=%s",	FUSE2FS_ERRORS_BEHAVIOR),
- 
- 	FUSE_OPT_KEY("-V",             FUSE2FS_VERSION),
- 	FUSE_OPT_KEY("--version",      FUSE2FS_VERSION),
-@@ -4832,6 +4833,21 @@ static int fuse2fs_opt_proc(void *data, const char *arg,
- 			return -1;
- 		}
- 
-+		/* do not pass through to libfuse */
-+		return 0;
-+	case FUSE2FS_ERRORS_BEHAVIOR:
-+		if (strcmp(arg + 7, "continue") == 0)
-+			ff->errors_behavior = EXT2_ERRORS_CONTINUE;
-+		else if (strcmp(arg + 7, "remount-ro") == 0)
-+			ff->errors_behavior = EXT2_ERRORS_RO;
-+		else if (strcmp(arg + 7, "panic") == 0)
-+			ff->errors_behavior = EXT2_ERRORS_PANIC;
-+		else {
-+			fprintf(stderr, "%s: %s\n", arg,
-+ _("unknown errors behavior."));
-+			return -1;
-+		}
-+
- 		/* do not pass through to libfuse */
- 		return 0;
- 	case FUSE2FS_IGNORED:
-@@ -4859,6 +4875,8 @@ static int fuse2fs_opt_proc(void *data, const char *arg,
- 	"                           allow_others,default_permissions,suid,dev\n"
- 	"    -o directio            use O_DIRECT to read and write the disk\n"
- 	"    -o cache_size=N[KMG]   use a disk cache of this size\n"
-+	"    -o errors=             behavior when an error is encountered:\n"
-+	"                           continue|remount-ro|panic\n"
- 	"\n",
- 			outargs->argv[0]);
- 		if (key == FUSE2FS_HELPFULL) {
-@@ -5226,6 +5244,9 @@ int main(int argc, char *argv[])
- 		}
+-	switch (inode.i_links_count) {
+-	case 0:
+-		return 0; /* XXX: already done? */
+-	case 1:
+-		inode.i_links_count--;
++	if (S_ISDIR(inode.i_mode)) {
++		/*
++		 * Caller should have checked that this is an empty directory
++		 * before starting the unlink process.  nlink is usually 2, but
++		 * it could be 1 if this dir ever had more than 65000 subdirs.
++		 * Zero the link count.
++		 */
++		if (!ext2fs_dir_link_empty(EXT2_INODE(&inode)))
++			return translate_error(fs, ino, EXT2_ET_INODE_CORRUPTED);
++		inode.i_links_count = 0;
+ 		ext2fs_set_dtime(fs, EXT2_INODE(&inode));
+-		break;
+-	default:
++	} else {
++		/*
++		 * Any other file type can be hardlinked, so all we need to do
++		 * is decrement the nlink.
++		 */
++		if (inode.i_links_count == 0)
++			return translate_error(fs, ino, EXT2_ET_INODE_CORRUPTED);
+ 		inode.i_links_count--;
++		if (!inode.i_links_count)
++			ext2fs_set_dtime(fs, EXT2_INODE(&inode));
  	}
  
-+	if (!fctx.errors_behavior)
-+		fctx.errors_behavior = global_fs->super->s_errors;
-+
- 	/* Initialize generation counter */
- 	get_random_bytes(&fctx.next_generation, sizeof(unsigned int));
+ 	ret = update_ctime(fs, ino, &inode);
+ 	if (ret)
+ 		return ret;
  
-@@ -5492,8 +5513,23 @@ static int __translate_error(ext2_filsys fs, ext2_ino_t ino, errcode_t err,
- 	fs->super->s_error_count++;
- 	ext2fs_mark_super_dirty(fs);
- 	ext2fs_flush(fs);
--	if (ff->panic_on_error)
-+	switch (ff->errors_behavior) {
-+	case EXT2_ERRORS_CONTINUE:
-+		err_printf(ff, "%s\n",
-+ _("Continuing after errors; is this a good idea?"));
-+		break;
-+	case EXT2_ERRORS_RO:
-+		if (fs->flags & EXT2_FLAG_RW)
-+			err_printf(ff, "%s\n",
-+ _("Remounting read-only due to errors."));
-+		fs->flags &= ~EXT2_FLAG_RW;
-+		break;
-+	case EXT2_ERRORS_PANIC:
-+		err_printf(ff, "%s\n",
-+ _("Aborting filesystem mount due to errors."));
- 		abort();
-+		break;
-+	}
++	/* Still linked?  Leave it be. */
+ 	if (inode.i_links_count)
+ 		goto write_out;
  
- 	return ret;
+@@ -1964,10 +1977,6 @@ static int __op_rmdir(struct fuse2fs *ff, const char *path)
+ 	}
+ 
+ 	ret = fuse2fs_unlink(ff, path, &parent);
+-	if (ret)
+-		goto out;
+-	/* Directories have to be "removed" twice. */
+-	ret = remove_inode(ff, child);
+ 	if (ret)
+ 		goto out;
+ 	ret = remove_inode(ff, child);
+@@ -1982,8 +1991,7 @@ static int __op_rmdir(struct fuse2fs *ff, const char *path)
+ 			ret = translate_error(fs, rds.parent, err);
+ 			goto out;
+ 		}
+-		if (inode.i_links_count > 1)
+-			inode.i_links_count--;
++		ext2fs_dec_nlink(EXT2_INODE(&inode));
+ 		ret = update_mtime(fs, rds.parent, &inode);
+ 		if (ret)
+ 			goto out;
+@@ -2149,6 +2157,41 @@ static int update_dotdot_helper(ext2_ino_t dir EXT2FS_ATTR((unused)),
+ 	return 0;
  }
+ 
++/*
++ * If we're moving a directory, make sure that the new parent of that directory
++ * can handle the nlink bump.
++ */
++static int fuse2fs_check_from_dir_nlink(struct fuse2fs *ff, ext2_ino_t from_ino,
++					ext2_ino_t to_ino,
++					ext2_ino_t from_dir_ino,
++					ext2_ino_t to_dir_ino)
++{
++	struct ext2_inode_large inode;
++	errcode_t err;
++
++	err = fuse2fs_read_inode(ff->fs, from_ino, &inode);
++	if (err)
++		return translate_error(ff->fs, from_ino, err);
++
++	if (!S_ISDIR(inode.i_mode))
++		return 0;
++
++	if (to_ino != 0)
++		return 0;
++
++	if (to_dir_ino == from_dir_ino)
++		return 0;
++
++	err = fuse2fs_read_inode(ff->fs, to_dir_ino, &inode);
++	if (err)
++		return translate_error(ff->fs, from_ino, err);
++
++	if (ext2fs_dir_link_max(ff->fs, &inode))
++		return -EMLINK;
++
++	return 0;
++}
++
+ static int op_rename(const char *from, const char *to
+ #if FUSE_VERSION >= FUSE_MAKE_VERSION(3, 0)
+ 			, unsigned int flags EXT2FS_ATTR((unused))
+@@ -2275,6 +2318,11 @@ static int op_rename(const char *from, const char *to
+ 	if (ret)
+ 		goto out2;
+ 
++	ret = fuse2fs_check_from_dir_nlink(ff, from_ino, to_ino, from_dir_ino,
++					   to_dir_ino);
++	if (ret)
++		goto out2;
++
+ 	/* If the target exists, unlink it first */
+ 	if (to_ino != 0) {
+ 		err = ext2fs_read_inode(fs, to_ino, &inode);
+@@ -2337,7 +2385,7 @@ static int op_rename(const char *from, const char *to
+ 			ret = translate_error(fs, from_dir_ino, err);
+ 			goto out2;
+ 		}
+-		inode.i_links_count--;
++		ext2fs_dec_nlink(&inode);
+ 		err = ext2fs_write_inode(fs, from_dir_ino, &inode);
+ 		if (err) {
+ 			ret = translate_error(fs, from_dir_ino, err);
+@@ -2350,7 +2398,7 @@ static int op_rename(const char *from, const char *to
+ 			ret = translate_error(fs, to_dir_ino, err);
+ 			goto out2;
+ 		}
+-		inode.i_links_count++;
++		ext2fs_inc_nlink(fs, &inode);
+ 		err = ext2fs_write_inode(fs, to_dir_ino, &inode);
+ 		if (err) {
+ 			ret = translate_error(fs, to_dir_ino, err);
+@@ -2453,7 +2501,12 @@ static int op_link(const char *src, const char *dest)
+ 	if (ret)
+ 		goto out2;
+ 
+-	inode.i_links_count++;
++	if (ext2fs_dir_link_max(ff->fs, &inode)) {
++		ret = -EMLINK;
++		goto out2;
++	}
++
++	ext2fs_inc_nlink(fs, EXT2_INODE(&inode));
+ 	ret = update_ctime(fs, ino, &inode);
+ 	if (ret)
+ 		goto out2;
 
 
