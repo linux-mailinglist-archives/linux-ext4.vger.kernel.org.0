@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-11584-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11585-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54037C3DA16
-	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:37:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17089C3DA19
+	for <lists+linux-ext4@lfdr.de>; Thu, 06 Nov 2025 23:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8A161883048
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:38:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F9E618854F0
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Nov 2025 22:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CC230102C;
-	Thu,  6 Nov 2025 22:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D943081D7;
+	Thu,  6 Nov 2025 22:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kYefnuQa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tMTHHLCE"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120BC2E62B3
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054B830B511
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Nov 2025 22:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762468665; cv=none; b=Oz1BgLpBCLjgSQBZujPizcObTfzELhzVryxiEE9IAl7GPI6649StACi+2BULL6ypq+ZJcclLZE7U1DghEh2jG4gnsPIlOpEwCXQoSpSoy436Y54aDnx5QdOJ7IoMAv3xF9iOrHYgKFt+hgLywFLJ7Ht112vaQRZBh3CNBr+eiFQ=
+	t=1762468681; cv=none; b=OGREIP9T4x0O+uYTr+7mdZjJw2i7yB07gz2nAp9vKioWF/QDkEESDI/0WheK6UmHLLHJNy6rlwh/B5c8ZVXBL9760kTvNjfmFOIFweJ4hhMtt6mUvDRZiCqyaz0MIBZxM1AtNiBJiDk0dFFsp7edHp1CVE1sy0P+GT7i1E1WRko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762468665; c=relaxed/simple;
-	bh=NflNO1/X2lcIRwtU+3d800TTyF2LSNssqkOkWl2sc0c=;
+	s=arc-20240116; t=1762468681; c=relaxed/simple;
+	bh=J8ShEgPD3u5JUxAGaY5FJJm56eUXwdxTTWhmDz+TzCY=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LjETw1DJHwGdlPZB28NR3y0LWd7gxdyneSDadc/5uiX2FmZsj+Z/Pz8D4poDrhURS/T7LyE/CxyuElNjZDeQvSWdQXO2z6mMIwo1/JXZ81Csbs9qKa0mXgR3w8P+9wSfERwbE6FbGL4Ti0CiFGmQ3RG7ohhYVOlWhMPWufsPueQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kYefnuQa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82567C4CEF7;
-	Thu,  6 Nov 2025 22:37:44 +0000 (UTC)
+	 MIME-Version:Content-Type; b=umHcHv+LJr3g3+pKGri/XqjczUpX2FF9nlMGmiAat1mjmXU0Drx8AVVMIGAEIymZG1xhr7MGXiM/z16sYtb306jzdjGEzDyO37weTUILLnUjOJZb8Vm/Xvx+nB9m5v0PelKapXPKWG/HFT++woAY7FJTZcOFZa5gF/mubjvnNtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tMTHHLCE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85B32C116D0;
+	Thu,  6 Nov 2025 22:38:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762468664;
-	bh=NflNO1/X2lcIRwtU+3d800TTyF2LSNssqkOkWl2sc0c=;
+	s=k20201202; t=1762468680;
+	bh=J8ShEgPD3u5JUxAGaY5FJJm56eUXwdxTTWhmDz+TzCY=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=kYefnuQaMGeC4zMhy6w94f8vQ/zPzwVuImLsdsM6+WkXD7GB5rX8mEQhO7/o1Tb1o
-	 nycmCA83XcTHa+jgElaVGY4ync7A2u4fMJBrHnhoUHn3VJE94X+WED4Q3GEWr7U/nU
-	 3VDEMIn88BP3+1I8nJaoYah5Jh2+yohS1BWtwwcJzU2ODY1Fl24Ksv10pV0ahPlNF8
-	 JBBkQdjCT1q0AGS0yYDPKJmpSFdUijLiKVmau3+Vmq8uaX4/u8B80ocsV4uzoFYSy0
-	 yIRiP4w+nZ0s2V6F3+19IFu++CS2n1AiMm98akI82G13TQNenvASgnNGFTp14v4ong
-	 rhWwrWnfqicSA==
-Date: Thu, 06 Nov 2025 14:37:43 -0800
-Subject: [PATCH 6/9] fuse2fs: clean up operation startup
+	b=tMTHHLCEcKDSspgPS2V8pARTwjrBU9NYMc6VarR2lVrg+8zFXhi+FwKpONoMLkTOQ
+	 yMpJ7FNUWcYKTDUQ9xu/QVNGvLQsuFqIdqcRySGr+L/6is7euJuNyv6BcDWDrOl0Jy
+	 1+CZbx9jg2sDtyyDr5cQJ4guNhpISMENNzf8OFpJBFoBdD35FgZMa5m07eXiai4PPZ
+	 tbtgaZaTO1tNxXC6qaaLZGReuxUI6dud/+EmTrux8M38/gederIaxMjb6Qqiw5XTg9
+	 Hk0+Nt7PoUX8JzuOKGfiFz1ppOpnIl+ywPhdLmB7jnDzjH4338DMu1+qE+/Nq5/trR
+	 smEuLoyOFGqbA==
+Date: Thu, 06 Nov 2025 14:37:59 -0800
+Subject: [PATCH 7/9] fuse2fs: clean up operation completion
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: tytso@mit.edu
 Cc: linux-ext4@vger.kernel.org
-Message-ID: <176246794273.2862990.9031003355759528212.stgit@frogsfrogsfrogs>
+Message-ID: <176246794291.2862990.6883410373261367333.stgit@frogsfrogsfrogs>
 In-Reply-To: <176246794125.2862990.7275258954976277948.stgit@frogsfrogsfrogs>
 References: <176246794125.2862990.7275258954976277948.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -60,357 +60,331 @@ Content-Transfer-Encoding: 7bit
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Create a helper to take the BFL and give us a reference to the
-ext2_filsys that we're protecting with the BFL.  This eliminates a
-theoretical race with any code that sets or clears fuse2fs:fs.  But
-really it just cuts down on the boilerplate.
+Create a helper to release the BFL and log any errors.  This cuts down
+on the boilerplate.
 
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- misc/fuse2fs.c |   99 ++++++++++++++++++++++----------------------------------
- 1 file changed, 39 insertions(+), 60 deletions(-)
+ misc/fuse2fs.c |   75 +++++++++++++++++++++++++++++++-------------------------
+ 1 file changed, 42 insertions(+), 33 deletions(-)
 
 
 diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
-index 63c1227faa0d7a..3baeec67c2b4b7 100644
+index 3baeec67c2b4b7..77d0eddbe805dc 100644
 --- a/misc/fuse2fs.c
 +++ b/misc/fuse2fs.c
-@@ -492,6 +492,12 @@ static inline errcode_t fuse2fs_write_inode(ext2_filsys fs, ext2_ino_t ino,
- 				       sizeof(*inode));
+@@ -498,6 +498,15 @@ static inline ext2_filsys fuse2fs_start(struct fuse2fs *ff)
+ 	return ff->fs;
  }
  
-+static inline ext2_filsys fuse2fs_start(struct fuse2fs *ff)
++static inline void __fuse2fs_finish(struct fuse2fs *ff, int ret,
++				    const char *func)
 +{
-+	pthread_mutex_lock(&ff->bfl);
-+	return ff->fs;
++	if (ret)
++		dbg_printf(ff, "%s: libfuse ret=%d\n", func, ret);
++	pthread_mutex_unlock(&ff->bfl);
 +}
++#define fuse2fs_finish(ff, ret) __fuse2fs_finish((ff), (ret), __func__)
 +
  #ifdef CONFIG_MMP
  static bool fuse2fs_mmp_wanted(const struct fuse2fs *ff)
  {
-@@ -543,7 +549,7 @@ static void fuse2fs_mmp_bthread(void *data)
- {
- 	struct fuse2fs *ff = data;
- 
--	pthread_mutex_lock(&ff->bfl);
-+	fuse2fs_start(ff);
+@@ -552,7 +561,7 @@ static void fuse2fs_mmp_bthread(void *data)
+ 	fuse2fs_start(ff);
  	if (fuse2fs_mmp_wanted(ff) && !bthread_cancelled(ff->mmp_thread))
  		fuse2fs_mmp_touch(ff, false);
- 	pthread_mutex_unlock(&ff->bfl);
-@@ -986,8 +992,7 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, 0);
+ }
  
- 	FUSE2FS_CHECK_CONTEXT_DESTROY(ff);
+ static void fuse2fs_mmp_start(struct fuse2fs *ff)
+@@ -1029,7 +1038,7 @@ static void op_destroy(void *p EXT2FS_ATTR((unused)))
+ 		log_printf(ff, "%s %s.\n", _("unmounting filesystem"), uuid);
+ 	}
  
--	pthread_mutex_lock(&ff->bfl);
--	fs = ff->fs;
-+	fs = fuse2fs_start(ff);
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, 0);
+ }
  
- 	dbg_printf(ff, "%s: dev=%s\n", __func__, fs->device_name);
- 	if (fs->flags & EXT2_FLAG_RW) {
-@@ -1314,8 +1319,7 @@ static int op_getattr(const char *path, struct stat *statbuf
- 	int ret = 0;
- 
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	ret = fuse2fs_file_ino(ff, path, fi, &ino);
- 	if (ret)
+ /* Reopen @stream with @fileno */
+@@ -1325,7 +1334,7 @@ static int op_getattr(const char *path, struct stat *statbuf
  		goto out;
-@@ -1339,8 +1343,7 @@ static int op_readlink(const char *path, char *buf, size_t len)
+ 	ret = stat_inode(fs, ino, statbuf);
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	dbg_printf(ff, "%s: path=%s\n", __func__, path);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	err = ext2fs_namei(fs, EXT2_ROOT_INO, EXT2_ROOT_INO, path, &ino);
- 	if (err || ino == 0) {
- 		ret = translate_error(fs, 0, err);
-@@ -1612,8 +1615,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
- 	a = *node_name;
- 	*node_name = 0;
+@@ -1398,7 +1407,7 @@ static int op_readlink(const char *path, char *buf, size_t len)
+ 	}
  
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!fs_can_allocate(ff, 2)) {
- 		ret = -ENOSPC;
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
+ 
+@@ -1707,7 +1716,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
  		goto out2;
-@@ -1743,8 +1745,7 @@ static int op_mkdir(const char *path, mode_t mode)
- 	a = *node_name;
- 	*node_name = 0;
  
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!fs_can_allocate(ff, 1)) {
- 		ret = -ENOSPC;
- 		goto out2;
-@@ -2052,7 +2053,7 @@ static int op_unlink(const char *path)
- 	int ret;
- 
+ out2:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ out:
+ 	free(temp_path);
+ 	return ret;
+@@ -1842,7 +1851,7 @@ static int op_mkdir(const char *path, mode_t mode)
+ out3:
+ 	ext2fs_free_mem(&block);
+ out2:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ out:
+ 	free(temp_path);
+ 	return ret;
+@@ -2055,7 +2064,7 @@ static int op_unlink(const char *path)
  	FUSE2FS_CHECK_CONTEXT(ff);
--	pthread_mutex_lock(&ff->bfl);
-+	fuse2fs_start(ff);
+ 	fuse2fs_start(ff);
  	ret = __op_unlink(ff, path);
- 	pthread_mutex_unlock(&ff->bfl);
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
  	return ret;
-@@ -2171,7 +2172,7 @@ static int op_rmdir(const char *path)
- 	int ret;
+ }
  
+@@ -2174,7 +2183,7 @@ static int op_rmdir(const char *path)
  	FUSE2FS_CHECK_CONTEXT(ff);
--	pthread_mutex_lock(&ff->bfl);
-+	fuse2fs_start(ff);
+ 	fuse2fs_start(ff);
  	ret = __op_rmdir(ff, path);
- 	pthread_mutex_unlock(&ff->bfl);
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
  	return ret;
-@@ -2206,8 +2207,7 @@ static int op_symlink(const char *src, const char *dest)
- 	a = *node_name;
- 	*node_name = 0;
+ }
  
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!fs_can_allocate(ff, 1)) {
- 		ret = -ENOSPC;
+@@ -2282,7 +2291,7 @@ static int op_symlink(const char *src, const char *dest)
  		goto out2;
-@@ -2372,8 +2372,7 @@ static int op_rename(const char *from, const char *to
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	dbg_printf(ff, "%s: renaming %s to %s\n", __func__, from, to);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!fs_can_allocate(ff, 5)) {
- 		ret = -ENOSPC;
- 		goto out;
-@@ -2620,8 +2619,7 @@ static int op_link(const char *src, const char *dest)
- 	a = *node_name;
- 	*node_name = 0;
+ out2:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ out:
+ 	free(temp_path);
+ 	return ret;
+@@ -2587,7 +2596,7 @@ static int op_rename(const char *from, const char *to
+ 	free(temp_from);
+ 	free(temp_to);
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
  
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!fs_can_allocate(ff, 2)) {
- 		ret = -ENOSPC;
+@@ -2687,7 +2696,7 @@ static int op_link(const char *src, const char *dest)
  		goto out2;
-@@ -2797,8 +2795,7 @@ static int op_chmod(const char *path, mode_t mode
- 	int ret = 0;
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	ret = fuse2fs_file_ino(ff, path, fi, &ino);
- 	if (ret)
+ out2:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ out:
+ 	free(temp_path);
+ 	return ret;
+@@ -2847,7 +2856,7 @@ static int op_chmod(const char *path, mode_t mode
+ 	}
+ 
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
+ 
+@@ -2917,7 +2926,7 @@ static int op_chown(const char *path, uid_t owner, gid_t group
+ 	}
+ 
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
+ 
+@@ -3020,7 +3029,7 @@ static int op_truncate(const char *path, off_t len
  		goto out;
-@@ -2869,8 +2866,7 @@ static int op_chown(const char *path, uid_t owner, gid_t group
- 	int ret = 0;
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	ret = fuse2fs_file_ino(ff, path, fi, &ino);
- 	if (ret)
- 		goto out;
-@@ -3009,7 +3005,7 @@ static int op_truncate(const char *path, off_t len
- 	int ret = 0;
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
  
+@@ -3137,7 +3146,7 @@ static int op_open(const char *path, struct fuse_file_info *fp)
  	FUSE2FS_CHECK_CONTEXT(ff);
--	pthread_mutex_lock(&ff->bfl);
-+	fuse2fs_start(ff);
- 	ret = fuse2fs_file_ino(ff, path, fi, &ino);
- 	if (ret)
- 		goto out;
-@@ -3139,7 +3135,7 @@ static int op_open(const char *path, struct fuse_file_info *fp)
- 	int ret;
- 
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	pthread_mutex_lock(&ff->bfl);
-+	fuse2fs_start(ff);
+ 	fuse2fs_start(ff);
  	ret = __op_open(ff, path, fp);
- 	pthread_mutex_unlock(&ff->bfl);
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
  	return ret;
-@@ -3163,8 +3159,7 @@ static int op_read(const char *path EXT2FS_ATTR((unused)), char *buf,
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
- 	dbg_printf(ff, "%s: ino=%d off=%jd len=%jd\n", __func__, fh->ino,
- 		   (intmax_t) offset, len);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	err = ext2fs_file_open(fs, fh->ino, fh->open_flags, &efp);
- 	if (err) {
- 		ret = translate_error(fs, fh->ino, err);
-@@ -3220,8 +3215,7 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
- 	dbg_printf(ff, "%s: ino=%d off=%jd len=%jd\n", __func__, fh->ino,
- 		   (intmax_t) offset, (intmax_t) len);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!fs_writeable(fs)) {
- 		ret = -EROFS;
+ }
+ 
+@@ -3193,7 +3202,7 @@ static int op_read(const char *path EXT2FS_ATTR((unused)), char *buf,
+ 			goto out;
+ 	}
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return got ? (int) got : ret;
+ }
+ 
+@@ -3265,7 +3274,7 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
  		goto out;
-@@ -3289,8 +3283,7 @@ static int op_release(const char *path EXT2FS_ATTR((unused)),
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
- 	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
  
- 	if ((fp->flags & O_SYNC) &&
- 	    fs_writeable(fs) &&
-@@ -3323,8 +3316,7 @@ static int op_fsync(const char *path EXT2FS_ATTR((unused)),
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
- 	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	/* For now, flush everything, even if it's slow */
- 	if (fs_writeable(fs) && fh->open_flags & EXT2_FILE_WRITE) {
- 		err = ext2fs_flush2(fs, 0);
-@@ -3347,8 +3339,7 @@ static int op_statfs(const char *path EXT2FS_ATTR((unused)),
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return got ? (int) got : ret;
+ }
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	dbg_printf(ff, "%s: path=%s\n", __func__, path);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	buf->f_bsize = fs->blocksize;
- 	buf->f_frsize = 0;
+@@ -3294,7 +3303,7 @@ static int op_release(const char *path EXT2FS_ATTR((unused)),
+ 	}
  
-@@ -3423,8 +3414,7 @@ static int op_getxattr(const char *path, const char *key, char *value,
- 		return -ENODATA;
+ 	fp->fh = 0;
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!ext2fs_has_feature_xattr(fs->super)) {
- 		ret = -ENOTSUP;
+ 	ext2fs_free_mem(&fh);
+ 
+@@ -3323,7 +3332,7 @@ static int op_fsync(const char *path EXT2FS_ATTR((unused)),
+ 		if (err)
+ 			ret = translate_error(fs, fh->ino, err);
+ 	}
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 
+ 	return ret;
+ }
+@@ -3372,7 +3381,7 @@ static int op_statfs(const char *path EXT2FS_ATTR((unused)),
+ 	if (!(fs->flags & EXT2_FLAG_RW))
+ 		buf->f_flag |= ST_RDONLY;
+ 	buf->f_namemax = EXT2_NAME_LEN;
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, 0);
+ 
+ 	return 0;
+ }
+@@ -3446,7 +3455,7 @@ static int op_getxattr(const char *path, const char *key, char *value,
+ 
+ 	ext2fs_free_mem(&ptr);
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 
+ 	return ret;
+ }
+@@ -3543,7 +3552,7 @@ static int op_listxattr(const char *path, char *names, size_t len)
+ 	if (err && !ret)
+ 		ret = translate_error(fs, ino, err);
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 
+ 	return ret;
+ }
+@@ -3636,7 +3645,7 @@ static int op_setxattr(const char *path EXT2FS_ATTR((unused)),
+ 	if (!ret && err)
+ 		ret = translate_error(fs, ino, err);
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 
+ 	return ret;
+ }
+@@ -3731,7 +3740,7 @@ static int op_removexattr(const char *path, const char *key)
+ 	if (err && !ret)
+ 		ret = translate_error(fs, ino, err);
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 
+ 	return ret;
+ }
+@@ -3868,7 +3877,7 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
+ 			goto out;
+ 	}
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
+ 
+@@ -3895,7 +3904,7 @@ static int op_access(const char *path, int mask)
  		goto out;
-@@ -3495,8 +3485,7 @@ static int op_listxattr(const char *path, char *names, size_t len)
- 	int ret = 0;
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!ext2fs_has_feature_xattr(fs->super)) {
- 		ret = -ENOTSUP;
- 		goto out;
-@@ -3578,8 +3567,7 @@ static int op_setxattr(const char *path EXT2FS_ATTR((unused)),
- 		return -EINVAL;
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!ext2fs_has_feature_xattr(fs->super)) {
- 		ret = -ENOTSUP;
- 		goto out;
-@@ -3676,8 +3664,7 @@ static int op_removexattr(const char *path, const char *key)
- 		return -ENODATA;
- 
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!ext2fs_has_feature_xattr(fs->super)) {
- 		ret = -ENOTSUP;
- 		goto out;
-@@ -3866,8 +3853,7 @@ static int op_readdir(const char *path EXT2FS_ATTR((unused)),
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
- 	dbg_printf(ff, "%s: ino=%d offset=%llu\n", __func__, fh->ino,
- 			(unsigned long long)offset);
--	i.fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	i.fs = fuse2fs_start(ff);
- 	i.buf = buf;
- 	i.func = fill_func;
- 	err = ext2fs_dir_iterate2(i.fs, fh->ino, 0, NULL, op_readdir_iter, &i);
-@@ -3897,8 +3883,7 @@ static int op_access(const char *path, int mask)
- 
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	dbg_printf(ff, "%s: path=%s mask=0x%x\n", __func__, path, mask);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	err = ext2fs_namei(fs, EXT2_ROOT_INO, EXT2_ROOT_INO, path, &ino);
- 	if (err || ino == 0) {
- 		ret = translate_error(fs, 0, err);
-@@ -3944,8 +3929,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
- 	a = *node_name;
- 	*node_name = 0;
- 
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!fs_can_allocate(ff, 1)) {
- 		ret = -ENOSPC;
+@@ -4023,7 +4032,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
  		goto out2;
-@@ -4062,8 +4046,7 @@ static int op_ftruncate(const char *path EXT2FS_ATTR((unused)),
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
- 	dbg_printf(ff, "%s: ino=%d len=%jd\n", __func__, fh->ino,
- 		   (intmax_t) len);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!fs_writeable(fs)) {
- 		ret = -EROFS;
+ 
+ out2:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ out:
+ 	free(temp_path);
+ 	return ret;
+@@ -4078,7 +4087,7 @@ static int op_ftruncate(const char *path EXT2FS_ATTR((unused)),
  		goto out;
-@@ -4113,8 +4096,7 @@ static int op_fgetattr(const char *path EXT2FS_ATTR((unused)),
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
+ 
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
+ 
+@@ -4098,7 +4107,7 @@ static int op_fgetattr(const char *path EXT2FS_ATTR((unused)),
  	dbg_printf(ff, "%s: ino=%d\n", __func__, fh->ino);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
+ 	fs = fuse2fs_start(ff);
  	ret = stat_inode(fs, fh->ino, statbuf);
- 	pthread_mutex_unlock(&ff->bfl);
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
  
-@@ -4139,8 +4121,7 @@ static int op_utimens(const char *path, const struct timespec ctv[2]
- 	int ret = 0;
+ 	return ret;
+ }
+@@ -4171,7 +4180,7 @@ static int op_utimens(const char *path, const struct timespec ctv[2]
+ 	}
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	ret = fuse2fs_file_ino(ff, path, fi, &ino);
- 	if (ret)
- 		goto out;
-@@ -4552,7 +4533,7 @@ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
--	pthread_mutex_lock(&ff->bfl);
-+	fuse2fs_start(ff);
- 	switch ((unsigned long) cmd) {
- #ifdef SUPPORT_I_FLAGS
- 	case EXT2_IOC_GETFLAGS:
-@@ -4602,8 +4583,7 @@ static int op_bmap(const char *path, size_t blocksize EXT2FS_ATTR((unused)),
- 	int ret = 0;
+@@ -4566,7 +4575,7 @@ static int op_ioctl(const char *path EXT2FS_ATTR((unused)),
+ 		dbg_printf(ff, "%s: Unknown ioctl %d\n", __func__, cmd);
+ 		ret = -ENOTTY;
+ 	}
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	err = ext2fs_namei(fs, EXT2_ROOT_INO, EXT2_ROOT_INO, path, &ino);
- 	if (err) {
- 		ret = translate_error(fs, 0, err);
-@@ -4862,8 +4842,7 @@ static int op_fallocate(const char *path EXT2FS_ATTR((unused)), int mode,
+ 	return ret;
+ }
+@@ -4598,7 +4607,7 @@ static int op_bmap(const char *path, size_t blocksize EXT2FS_ATTR((unused)),
+ 	}
  
- 	FUSE2FS_CHECK_CONTEXT(ff);
- 	FUSE2FS_CHECK_HANDLE(ff, fh);
--	fs = ff->fs;
--	pthread_mutex_lock(&ff->bfl);
-+	fs = fuse2fs_start(ff);
- 	if (!fs_writeable(fs)) {
- 		ret = -EROFS;
- 		goto out;
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 	return ret;
+ }
+ 
+@@ -4854,7 +4863,7 @@ static int op_fallocate(const char *path EXT2FS_ATTR((unused)), int mode,
+ 	else
+ 		ret = fuse2fs_allocate_range(ff, fh, mode, offset, len);
+ out:
+-	pthread_mutex_unlock(&ff->bfl);
++	fuse2fs_finish(ff, ret);
+ 
+ 	return ret;
+ }
 
 
