@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-11666-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11670-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A59C40785
-	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 15:57:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9395C4075E
+	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 15:55:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 872D53B7AE8
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 14:54:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F0D81A42347
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 14:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0FF33342D;
-	Fri,  7 Nov 2025 14:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39CC53375B9;
+	Fri,  7 Nov 2025 14:51:39 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E493346B7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F1A3346BE;
 	Fri,  7 Nov 2025 14:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762527098; cv=none; b=HoUaDGosghCW6obEN79teIBYa81Q/WgQ1uOhKij6jmzkg8m8Tr9EmwSl7vr/pcoiC+ZCF2G8ccocHmMN56NLwz6+45ILzK9d94NXMlC9wqr4UCY4+jpqlQu3+8+NDCVr8qWH5AjHsMguzgRhaslevuAgn15d9PC+l6jBt5k2YF8=
+	t=1762527098; cv=none; b=BfoI3JqxUmgUIBShSsxpqqGaPwHcW8jEBJ+7d/gpM5oZ3DbVuOLly/N05Qe2MCtWNMa9QcyfrbR8+KP7gkhyXVsVfvqHTY6gVTKSIBshQneXmMuK0CO7PwHWZyVAlOC7ed7oAl7uQOaHmdR8Ob9+qB1NgHc7mQ+lV2ji8Lv4mbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762527098; c=relaxed/simple;
-	bh=MhQZdVtNV60jS2GyEmHos/LN33zQjrocq608zQghUq8=;
+	bh=aXwOsn20Pm+/NMlLDHkm9DHSsfNa3WBpYv5brZ6yaqA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pLRrtIh7ozuQX5ZqfFiHnjE83V8OV+asp/X4WznMJ0a4JAWhtWIEp4xQZ97q44hIm/rWT3sN0o8FJBjj3IJykM1fZ6AjbaD78/aQM8AH3tf1GEQUNFo7J7SiSuq/q7lDcLacJVlhinNXg8/8j6LXhsq4mPGawmDsB5T3TTi8wjU=
+	 MIME-Version; b=K8yi7n2HuiDy7whnbylJcFgZWTOl8xl0oV84ijx2/vVOGE4YuOqk+mRRy9uvG7wwvASL6t6nUkI4UbrLOkc52yZkWUCtuXvp1tV4hTZkEGP4Ea0hDBIXtqh6N+8Cq6a/Qz64NnptvlloV+J9TyFAm1v8zLG51k5gbnOm51qcHq8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d327P4LvtzKHMfc;
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d327P51h1zKHMgd;
 	Fri,  7 Nov 2025 22:51:13 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id E511B1A0EC7;
-	Fri,  7 Nov 2025 22:51:23 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 07DFE1A0ECF;
+	Fri,  7 Nov 2025 22:51:24 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.50.87.129])
-	by APP2 (Coremail) with SMTP id Syh0CgDnPUZoBw5pRwgbDA--.60770S12;
+	by APP2 (Coremail) with SMTP id Syh0CgDnPUZoBw5pRwgbDA--.60770S13;
 	Fri, 07 Nov 2025 22:51:23 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
@@ -53,9 +53,9 @@ Cc: tytso@mit.edu,
 	chengzhihao1@huawei.com,
 	libaokun1@huawei.com,
 	libaokun@huaweicloud.com
-Subject: [PATCH v2 08/24] ext4: support large block size in ext4_readdir()
-Date: Fri,  7 Nov 2025 22:42:33 +0800
-Message-Id: <20251107144249.435029-9-libaokun@huaweicloud.com>
+Subject: [PATCH v2 09/24] ext4: add EXT4_LBLK_TO_B macro for logical block to bytes conversion
+Date: Fri,  7 Nov 2025 22:42:34 +0800
+Message-Id: <20251107144249.435029-10-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20251107144249.435029-1-libaokun@huaweicloud.com>
 References: <20251107144249.435029-1-libaokun@huaweicloud.com>
@@ -66,10 +66,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgDnPUZoBw5pRwgbDA--.60770S12
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF15KF1fWw1rZry8CrWktFb_yoW8GrWfpF
-	Zag3W8Kry8ur40939rtFy7ZrWY9a97GFWUWrWYy345W3s3X34Skr9xtF1jvF1UW3yxAa4r
-	ZF12yFy3GF15JrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgDnPUZoBw5pRwgbDA--.60770S13
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ar4rKryxZw43ZF43ZFWDArb_yoWxCw43pF
+	Z09F18GF409Fyj9r48KFWDZr12g3W7K3yUXFWru34YgF9rtr1FqF1ktF1fZFy5trWxZ3ZI
+	vF45K347Ww43GrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUQa14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -82,49 +82,183 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7KF15KF1fWw1rZry8CrWktFb_yoW8GrWfpF
 	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
 	vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
 	x2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
 	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdsqAUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAFBWkNxrAU1wAFsW
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAFBWkNxrAU2AAAsc
 
 From: Baokun Li <libaokun1@huawei.com>
 
-In ext4_readdir(), page_cache_sync_readahead() is used to readahead mapped
-physical blocks. With LBS support, this can lead to a negative right shift.
-
-To fix this, the page index is now calculated by first converting the
-physical block number (pblk) to a file position (pos) before converting
-it to a page index. Also, the correct number of pages to readahead is now
-passed.
+No functional changes.
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/dir.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/ext4/ext4.h    |  1 +
+ fs/ext4/extents.c |  2 +-
+ fs/ext4/inode.c   | 20 +++++++++-----------
+ fs/ext4/namei.c   |  8 +++-----
+ fs/ext4/verity.c  |  2 +-
+ 5 files changed, 15 insertions(+), 18 deletions(-)
 
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index d4164c507a90..256fe2c1d4c1 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -192,13 +192,13 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 			continue;
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 6fe8cc3bf9a5..c00ce6db69f0 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -368,6 +368,7 @@ struct ext4_io_submit {
+ 								  blkbits))
+ #define EXT4_B_TO_LBLK(inode, offset) \
+ 	(round_up((offset), i_blocksize(inode)) >> (inode)->i_blkbits)
++#define EXT4_LBLK_TO_B(inode, lblk) ((loff_t)(lblk) << (inode)->i_blkbits)
+ 
+ /* Translate a block number to a cluster number */
+ #define EXT4_B2C(sbi, blk)	((blk) >> (sbi)->s_cluster_bits)
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index c7d219e6c6d8..13c3cfeb13bc 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4562,7 +4562,7 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+ 		 * allow a full retry cycle for any remaining allocations
+ 		 */
+ 		retries = 0;
+-		epos = (loff_t)(map.m_lblk + ret) << blkbits;
++		epos = EXT4_LBLK_TO_B(inode, map.m_lblk + ret);
+ 		inode_set_ctime_current(inode);
+ 		if (new_size) {
+ 			if (epos > new_size)
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 9faa0cf77075..1153a26ff963 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -831,9 +831,8 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 		    !(flags & EXT4_GET_BLOCKS_ZERO) &&
+ 		    !ext4_is_quota_file(inode) &&
+ 		    ext4_should_order_data(inode)) {
+-			loff_t start_byte =
+-				(loff_t)map->m_lblk << inode->i_blkbits;
+-			loff_t length = (loff_t)map->m_len << inode->i_blkbits;
++			loff_t start_byte = EXT4_LBLK_TO_B(inode, map->m_lblk);
++			loff_t length = EXT4_LBLK_TO_B(inode, map->m_len);
+ 
+ 			if (flags & EXT4_GET_BLOCKS_IO_SUBMIT)
+ 				ret = ext4_jbd2_inode_add_wait(handle, inode,
+@@ -2233,7 +2232,6 @@ static int mpage_process_folio(struct mpage_da_data *mpd, struct folio *folio,
+ 	ext4_lblk_t lblk = *m_lblk;
+ 	ext4_fsblk_t pblock = *m_pblk;
+ 	int err = 0;
+-	int blkbits = mpd->inode->i_blkbits;
+ 	ssize_t io_end_size = 0;
+ 	struct ext4_io_end_vec *io_end_vec = ext4_last_io_end_vec(io_end);
+ 
+@@ -2259,7 +2257,8 @@ static int mpage_process_folio(struct mpage_da_data *mpd, struct folio *folio,
+ 					err = PTR_ERR(io_end_vec);
+ 					goto out;
+ 				}
+-				io_end_vec->offset = (loff_t)mpd->map.m_lblk << blkbits;
++				io_end_vec->offset = EXT4_LBLK_TO_B(mpd->inode,
++								mpd->map.m_lblk);
+ 			}
+ 			*map_bh = true;
+ 			goto out;
+@@ -2269,7 +2268,7 @@ static int mpage_process_folio(struct mpage_da_data *mpd, struct folio *folio,
+ 			bh->b_blocknr = pblock++;
  		}
- 		if (err > 0) {
--			pgoff_t index = map.m_pblk >>
--					(PAGE_SHIFT - inode->i_blkbits);
-+			pgoff_t index = map.m_pblk << inode->i_blkbits >>
-+					PAGE_SHIFT;
- 			if (!ra_has_index(&file->f_ra, index))
- 				page_cache_sync_readahead(
- 					sb->s_bdev->bd_mapping,
--					&file->f_ra, file,
--					index, 1);
-+					&file->f_ra, file, index,
-+					1 << EXT4_SB(sb)->s_min_folio_order);
- 			file->f_ra.prev_pos = (loff_t)index << PAGE_SHIFT;
- 			bh = ext4_bread(NULL, inode, map.m_lblk, 0);
- 			if (IS_ERR(bh)) {
+ 		clear_buffer_unwritten(bh);
+-		io_end_size += (1 << blkbits);
++		io_end_size += i_blocksize(mpd->inode);
+ 	} while (lblk++, (bh = bh->b_this_page) != head);
+ 
+ 	io_end_vec->size += io_end_size;
+@@ -2471,7 +2470,7 @@ static int mpage_map_and_submit_extent(handle_t *handle,
+ 	io_end_vec = ext4_alloc_io_end_vec(io_end);
+ 	if (IS_ERR(io_end_vec))
+ 		return PTR_ERR(io_end_vec);
+-	io_end_vec->offset = ((loff_t)map->m_lblk) << inode->i_blkbits;
++	io_end_vec->offset = EXT4_LBLK_TO_B(inode, map->m_lblk);
+ 	do {
+ 		err = mpage_map_one_extent(handle, mpd);
+ 		if (err < 0) {
+@@ -3511,8 +3510,8 @@ static void ext4_set_iomap(struct inode *inode, struct iomap *iomap,
+ 		iomap->dax_dev = EXT4_SB(inode->i_sb)->s_daxdev;
+ 	else
+ 		iomap->bdev = inode->i_sb->s_bdev;
+-	iomap->offset = (u64) map->m_lblk << blkbits;
+-	iomap->length = (u64) map->m_len << blkbits;
++	iomap->offset = EXT4_LBLK_TO_B(inode, map->m_lblk);
++	iomap->length = EXT4_LBLK_TO_B(inode, map->m_len);
+ 
+ 	if ((map->m_flags & EXT4_MAP_MAPPED) &&
+ 	    !ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+@@ -3686,7 +3685,6 @@ static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
+ 			    unsigned int flags)
+ {
+ 	handle_t *handle;
+-	u8 blkbits = inode->i_blkbits;
+ 	int ret, dio_credits, m_flags = 0, retries = 0;
+ 	bool force_commit = false;
+ 
+@@ -3745,7 +3743,7 @@ static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
+ 	 * i_disksize out to i_size. This could be beyond where direct I/O is
+ 	 * happening and thus expose allocated blocks to direct I/O reads.
+ 	 */
+-	else if (((loff_t)map->m_lblk << blkbits) >= i_size_read(inode))
++	else if (EXT4_LBLK_TO_B(inode, map->m_lblk) >= i_size_read(inode))
+ 		m_flags = EXT4_GET_BLOCKS_CREATE;
+ 	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+ 		m_flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 045616033515..c4b5e252af0e 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1076,7 +1076,7 @@ static int htree_dirblock_to_tree(struct file *dir_file,
+ 	for (; de < top; de = ext4_next_entry(de, dir->i_sb->s_blocksize)) {
+ 		if (ext4_check_dir_entry(dir, NULL, de, bh,
+ 				bh->b_data, bh->b_size,
+-				(block<<EXT4_BLOCK_SIZE_BITS(dir->i_sb))
++				EXT4_LBLK_TO_B(dir, block)
+ 					 + ((char *)de - bh->b_data))) {
+ 			/* silently ignore the rest of the block */
+ 			break;
+@@ -1630,7 +1630,7 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
+ 		}
+ 		set_buffer_verified(bh);
+ 		i = search_dirblock(bh, dir, fname,
+-			    block << EXT4_BLOCK_SIZE_BITS(sb), res_dir);
++				    EXT4_LBLK_TO_B(dir, block), res_dir);
+ 		if (i == 1) {
+ 			EXT4_I(dir)->i_dir_start_lookup = block;
+ 			ret = bh;
+@@ -1710,7 +1710,6 @@ static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
+ 			struct ext4_filename *fname,
+ 			struct ext4_dir_entry_2 **res_dir)
+ {
+-	struct super_block * sb = dir->i_sb;
+ 	struct dx_frame frames[EXT4_HTREE_LEVEL], *frame;
+ 	struct buffer_head *bh;
+ 	ext4_lblk_t block;
+@@ -1729,8 +1728,7 @@ static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
+ 			goto errout;
+ 
+ 		retval = search_dirblock(bh, dir, fname,
+-					 block << EXT4_BLOCK_SIZE_BITS(sb),
+-					 res_dir);
++					 EXT4_LBLK_TO_B(dir, block), res_dir);
+ 		if (retval == 1)
+ 			goto success;
+ 		brelse(bh);
+diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
+index b0acb0c50313..415d9c4d8a32 100644
+--- a/fs/ext4/verity.c
++++ b/fs/ext4/verity.c
+@@ -302,7 +302,7 @@ static int ext4_get_verity_descriptor_location(struct inode *inode,
+ 
+ 	end_lblk = le32_to_cpu(last_extent->ee_block) +
+ 		   ext4_ext_get_actual_len(last_extent);
+-	desc_size_pos = (u64)end_lblk << inode->i_blkbits;
++	desc_size_pos = EXT4_LBLK_TO_B(inode, end_lblk);
+ 	ext4_free_ext_path(path);
+ 
+ 	if (desc_size_pos < sizeof(desc_size_disk))
 -- 
 2.46.1
 
