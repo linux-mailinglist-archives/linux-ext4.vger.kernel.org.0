@@ -1,234 +1,207 @@
-Return-Path: <linux-ext4+bounces-11679-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11680-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 389BFC41960
-	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 21:29:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FBD4C41A9A
+	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 21:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF6D218894F1
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 20:29:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F25554202E9
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 20:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3532430BF59;
-	Fri,  7 Nov 2025 20:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F69818C2C;
+	Fri,  7 Nov 2025 20:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c5EGbW91"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bk4rFnQc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443E518E1F
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Nov 2025 20:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A097D272816
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Nov 2025 20:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762547357; cv=none; b=ar3Ov+lGKD3x9bpT6B0PJo/tVsHksxMxd1/DLuNm2+AJUsPcZrgJQNyj0e7z9km33Smab/iqa9xNHCPjnjRwj2Niwg9zfMZvrwyDP6a+9ZdI/tsuyf1pwhvTiLkrhmKkNjpi5e0/Le4kj46hEQmIsqBBJzLzP1BTnv4YawMOjEY=
+	t=1762548954; cv=none; b=NPE332TapVnzvBTYD+xXAJynCoQSg41WfsZMobOxip5+FqMujFwkCRXUICoXM077vjwHceuY5SJvHoFrO+uVGTgCs8cU2J7guF2lQ7UbbNK4kH38NdxrpXv1/iEJ/s7P4aI8eOLr2s2jJ5YSx7NuecWOVTEMB6ETZh4sQMRxmW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762547357; c=relaxed/simple;
-	bh=xrNMcMljnkU4shizQu6E/3fnfyrJLUbYnYB9foY90B8=;
+	s=arc-20240116; t=1762548954; c=relaxed/simple;
+	bh=UMO6ycD1cgWnF8R8KGIbhxQbGcfO55AKo71pC38XAXI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mwXbQSssTJQCnPxTHRFnwMQv/iYSgXihwVu4tRnUsRZ0YbMKJ9s6u2r8uN1ZtnS3PUePKCXB/ecaiZLFanYRT52ZtykouV3WcSAyIvSKWs3pfTYe4D0ozPGGOSpY4LtY6KK7jEQ9GwMD2iaMeEINodQtafH+Go8az4vqerdH2cE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c5EGbW91; arc=none smtp.client-ip=209.85.160.170
+	 To:Cc:Content-Type; b=lUAWurhXWsSw4ixXLULC6I1Aq8ePlKXxyq/giZuqnQ5CbCBFxx16Heng2yyKcii19o0ohEenxyAtJNNPNbq2DkZxouW0aQcdaI4qLeO8pVbbZZRaNe4YbR6QxxzxpCdd3lPRG8FiLnUtPG4tsOVwPRCPVBGRd70zMRTwRzIrzvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bk4rFnQc; arc=none smtp.client-ip=209.85.160.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4ed9c1924adso5679451cf.1
-        for <linux-ext4@vger.kernel.org>; Fri, 07 Nov 2025 12:29:16 -0800 (PST)
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-4e4d9fc4316so9852681cf.2
+        for <linux-ext4@vger.kernel.org>; Fri, 07 Nov 2025 12:55:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762547355; x=1763152155; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762548951; x=1763153751; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MUU1NRMFjEAu/Jp6zbFkzbopK3BLE+djAoRc+VPripk=;
-        b=c5EGbW913pg58PWfy7KAVBrAUazdPSXudmCIK0NB2rm1aWidFBoy5DtRpClRg9jNTT
-         dVHu1OzWy+OOLMqMqiMZClZlGMa3SwDF3toIhcZNsIC8MjPtpbLPrkqgvy8i8IQQKVXx
-         qgHp9IBbOYk8SwRA1ixuOHG6264kMF1wV2N+TNshW7ibxwgv0zOJgx0DDvENF8J1WHDL
-         WUeQt3JaYkykozCUc9ioi6jFEIZTy7jh17uZEuxUwnTI9yJ6p6WKirNP2u+GSTNg9G80
-         wMvUIvvTSUyP1+fmf93Bf/PWQJm3Xrev/kogoczl+t3rYRzGafpllCuh3i5JGU+gSVXu
-         lvIw==
+        bh=VoMzJO4VtHoyqxy4fHt/I9xUqvoQQ5zinC0+ZtdmI60=;
+        b=bk4rFnQcnUYaX0vsoN6AqZEHADO7JfjmUatAEBKa+dt0e6lKyfwDEYvzpiGy96MrfZ
+         OdwW//iEBliYxFTp1Mc2vpHJPbRFYIbdGhHhPy2SwbbyWR8n91k/ZiBJ4c064ovtEHoT
+         G0TpdV/4JgbQbntvNYSA/be5fjHRD6rSZ45rGqh2cC71ubK3AM15z2s+MMPB5G8OYEcn
+         cBV0kWqQtr+3DiqIHpJMWTxpmFuiV0Z/g0UaHyCpyybjcGjRUr8DAbQMcyVMXKlRMi3J
+         9Zw7Ws5g6V9eCrwRbu7U6iYqeRvFZ923I3mdHALh7PWvRQYNS3X6QRS+DaGA+JHVAQeZ
+         qt1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762547355; x=1763152155;
+        d=1e100.net; s=20230601; t=1762548951; x=1763153751;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=MUU1NRMFjEAu/Jp6zbFkzbopK3BLE+djAoRc+VPripk=;
-        b=rYcjbPd53W96iSh7b3knl2j1ku3di+MNjqy6VNij2G9vVBEvh060o3OT/RfvkBn8ZZ
-         J/mMHYblqq4WCo5Ey04erOAyfNfusrlQR8jizCc2j/wqGN8zoueAsVACDuoQOW6dDUIn
-         l3xXtlj/6T7wmhSU0ckphNiTvqUF5KtdMjPFbyx+65V8k8dcFXT1puHTqhhF3zQmqw9F
-         Ra2M6eF9KdJ8HvQbwfCEbT4gfyppggGWq10dhlvPWtz5nbhN7uOGBok5ztYOP13SyJ6/
-         y2jM+H6M92O4Mofoue3qZtP4aEkneN1EeGEugNIkf7e5sr05z/ZwRCYLPz95YS1D9Yu0
-         mGQg==
-X-Forwarded-Encrypted: i=1; AJvYcCWv/gXxAp7CSc2uYYDjZl9G6Ed1mtmaaHDOtaDk7PyyVt9IpsvoXKs7D/709eQsk6sjpumAW31+R5Bw@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2RB28BIn1724NXsLpSrBMqOyPcZnEgbQ8hvc5x2MviIBi8wu+
-	vY0NXSgOXdk18YGViFWuAqiE3246vRwmReCoe+t/wz+gB4kEaZbUNrKA87Dmhcr5ic9pg6hlQus
-	2AJqMOqni+Ml0lugaCX40ZZdcN6xXAI8=
-X-Gm-Gg: ASbGncvvuLnLN9hUq8Madok9LstT59pd65m+pS7izkp+WUL525Uot6XycwtAyZgp+iG
-	IrsAWp0gRMSoJvnMk0rJsMUgtdRld4y5Nfx5C9od/i0XCFqrb8+59A5DkUVLuA2k6a4MTd6WZHK
-	8LBYYhVDZwpoNpc3iLUAVmGskE3wJLQR3gC3Ybz8tezwLwYMUc5usTY5/zW4KUSB5tDaNevtT6Z
-	RYvSHsFBOz/kZhvktLZFsLTZHxvDOZlHpFh7bwJPfzoRu+jA0uxNjYq8gzTH/KyABd71QO9JvWE
-	FRHVJMBM0lAClpqv8mF95CQym2a+cqd7oOmq
-X-Google-Smtp-Source: AGHT+IHixkARPlTHHvCp/UKGr0JQOjtmSbXhYfVUl8tLacVauUj/Le+z4WvhwByMUHWQJ+gNyOVStCKnkQA7oyXy8h4=
-X-Received: by 2002:a05:622a:389:b0:4e8:a1eb:3e2d with SMTP id
- d75a77b69052e-4eda4e733e4mr6276641cf.2.1762547355148; Fri, 07 Nov 2025
- 12:29:15 -0800 (PST)
+        bh=VoMzJO4VtHoyqxy4fHt/I9xUqvoQQ5zinC0+ZtdmI60=;
+        b=L03JePwKkXwnyExD8MDuwCQE1NENPE4TeGnYW6CRLJLb6STSmm3LDkZv+zZE5fGhlA
+         SH7Bw++5So4ZMBgj4QfKdfEnQ3KJDFqkiQsI+Ef1pMxqNKVGKpRqkXki+TYw8N/gD7ng
+         cXhJNm9DECL9iothDR852/V+mcsim/7iWQOtIBWe/Bi5nGbsbvk02TxkacgGafZxA6ld
+         B37l3bFCH7OUN21V5h3J4kDZACNVtY4+/9yWtQAl94/KGImDntqzRdr6kutxQMXbxWKe
+         sG617GE0kpAjJwa18u3/hyUdI7c7/qnJIuWCblIH6O0M641AnqahvDwN0wW9783XyVhq
+         eRFA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6zy2m29V6IBewCFCxJPewhVe3LgnhquDp260lhr6l0i1FVI8Ly0V1MZb+ORPz4JjhgdsCQTDNVxJk@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzc5H2JONorY/FL29E1up/SQcbh7d3d83+ucfcPDuSUKC0Ie6Tz
+	CxPfw28NovZzCc6yA2Msn3r4EyvfYc1tsTBaGQgxuZM3jN93InMFSyZsoRFDPdq7aa3Ba6HcKwd
+	FfCyVfeKNyDyrDmT9xaZz4nwzEX5Hd5A=
+X-Gm-Gg: ASbGncugFB+Q07JkzOr7nPr/Pf6liRDseDtq/l0fLNXnbYOBc6Pvct8KO+4PoLCgyDA
+	LLt3iV01YA2Q4pLlAQ3mlYQozqsgd3UQyI1aT7Fcjxt81wGthw22jh5Uz22gOR0VXSg+7Psa9bF
+	cqWcHVmdXSZXhkduTEjc3erzL72pvMrYVaHLnVif8K7K/8y9l/g4I1cPQFL/Y0OhgXuvCV5Op4H
+	vi1chOPX3+kl9aW2Q7kZ3yTz2ZGN56IoLhkca/aJO/ftHX88oR/Lps02rgb0fXxg+uFJOdumPjv
+	zoBRszqfej4ogsJ36zmQHQEsqg==
+X-Google-Smtp-Source: AGHT+IEuWGaM7OOt9q4DCJYeCgDx1zplDWcT1PAZMTC+hU6m5kmuW5xOUH9HfeUqKWxd0uEAxY0XQ9IlVf2CXMX1/oE=
+X-Received: by 2002:ac8:7d0a:0:b0:4ed:1ccb:e609 with SMTP id
+ d75a77b69052e-4eda4e7b0b6mr6888581cf.6.1762548951523; Fri, 07 Nov 2025
+ 12:55:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <176169809222.1424347.16562281526870178424.stgit@frogsfrogsfrogs> <176169809339.1424347.12261722424900811903.stgit@frogsfrogsfrogs>
-In-Reply-To: <176169809339.1424347.12261722424900811903.stgit@frogsfrogsfrogs>
+References: <176169809796.1424693.4820699158982303428.stgit@frogsfrogsfrogs> <176169809851.1424693.14006418302806790576.stgit@frogsfrogsfrogs>
+In-Reply-To: <176169809851.1424693.14006418302806790576.stgit@frogsfrogsfrogs>
 From: Joanne Koong <joannelkoong@gmail.com>
-Date: Fri, 7 Nov 2025 12:29:04 -0800
-X-Gm-Features: AWmQ_bmXVow5z-6eczbqjoGM2gOJ-0n5euhSkho1W4aXUrHDv--HLfbvcpvqMQc
-Message-ID: <CAJnrk1apJbki7aZq2tNnnBcbkGKUmWDfmXVBD5YaMKUH2Fd-FA@mail.gmail.com>
-Subject: Re: [PATCH 4/5] fuse: update file mode when updating acls
+Date: Fri, 7 Nov 2025 12:55:39 -0800
+X-Gm-Features: AWmQ_bnBvVrLwoICHkOzPpLrlqc2Qxavt7gBfG3R7R1QTwvvjbcK4kK6Y-kvGgc
+Message-ID: <CAJnrk1YJP9z2k7zy-NyirMV-Rs8md4WF1MSNJOAfKNaB-Lv_yg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] fuse_trace: move the passthrough-specific code back
+ to passthrough.c
 To: "Darrick J. Wong" <djwong@kernel.org>
 Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev, 
 	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 28, 2025 at 5:43=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
+On Tue, Oct 28, 2025 at 5:44=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
  wrote:
 >
 > From: Darrick J. Wong <djwong@kernel.org>
 >
-> If someone sets ACLs on a file that can be expressed fully as Unix DAC
-> mode bits, most local filesystems will then update the mode bits and
-> drop the ACL xattr to reduce inefficiency in the file access paths.
-> Let's do that too.  Note that means that we can setacl and end up with
-> no ACL xattrs, so we also need to tolerate ENODATA returns from
-> fuse_removexattr.
->
-> Note that here we define a "local" fuse filesystem as one that uses
-> fuseblk mode; we'll shortly add fuse servers that use iomap for the file
-> IO path to that list.
+> Add tracepoints for the previous patch.
 >
 > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 > ---
->  fs/fuse/fuse_i.h |    2 +-
->  fs/fuse/acl.c    |   43 ++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 43 insertions(+), 2 deletions(-)
+>  fs/fuse/fuse_trace.h |   35 +++++++++++++++++++++++++++++++++++
+>  fs/fuse/backing.c    |    5 +++++
+>  2 files changed, 40 insertions(+)
 >
 >
-> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index 8c47d103c8ffa6..d550937770e16e 100644
-> --- a/fs/fuse/fuse_i.h
-> +++ b/fs/fuse/fuse_i.h
-> @@ -1050,7 +1050,7 @@ static inline struct fuse_mount *get_fuse_mount(str=
-uct inode *inode)
->         return get_fuse_mount_super(inode->i_sb);
->  }
+> diff --git a/fs/fuse/fuse_trace.h b/fs/fuse/fuse_trace.h
+> index bbe9ddd8c71696..286a0845dc0898 100644
+> --- a/fs/fuse/fuse_trace.h
+> +++ b/fs/fuse/fuse_trace.h
+> @@ -124,6 +124,41 @@ TRACE_EVENT(fuse_request_end,
+>                   __entry->unique, __entry->len, __entry->error)
+>  );
 >
-> -static inline struct fuse_conn *get_fuse_conn(struct inode *inode)
-> +static inline struct fuse_conn *get_fuse_conn(const struct inode *inode)
->  {
->         return get_fuse_mount_super(inode->i_sb)->fc;
->  }
-> diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
-> index 8f484b105f13ab..72bb4c94079b7b 100644
-> --- a/fs/fuse/acl.c
-> +++ b/fs/fuse/acl.c
-> @@ -11,6 +11,18 @@
->  #include <linux/posix_acl.h>
->  #include <linux/posix_acl_xattr.h>
->
-> +/*
-> + * If this fuse server behaves like a local filesystem, we can implement=
- the
-> + * kernel's optimizations for ACLs for local filesystems instead of pass=
-ing
-> + * the ACL requests straight through to another server.
-> + */
-> +static inline bool fuse_inode_has_local_acls(const struct inode *inode)
-> +{
-> +       const struct fuse_conn *fc =3D get_fuse_conn(inode);
+> +#ifdef CONFIG_FUSE_BACKING
+> +TRACE_EVENT(fuse_backing_class,
+> +       TP_PROTO(const struct fuse_conn *fc, unsigned int idx,
+> +                const struct fuse_backing *fb),
 > +
-> +       return fc->posix_acl && fuse_inode_is_exclusive(inode);
-> +}
+> +       TP_ARGS(fc, idx, fb),
 > +
->  static struct posix_acl *__fuse_get_acl(struct fuse_conn *fc,
->                                         struct inode *inode, int type, bo=
-ol rcu)
->  {
-> @@ -98,6 +110,7 @@ int fuse_set_acl(struct mnt_idmap *idmap, struct dentr=
-y *dentry,
->         struct inode *inode =3D d_inode(dentry);
->         struct fuse_conn *fc =3D get_fuse_conn(inode);
->         const char *name;
-> +       umode_t mode =3D inode->i_mode;
->         int ret;
+> +       TP_STRUCT__entry(
+> +               __field(dev_t,                  connection)
+> +               __field(unsigned int,           idx)
+> +               __field(unsigned long,          ino)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               struct inode *inode =3D file_inode(fb->file);
+> +
+> +               __entry->connection     =3D       fc->dev;
+> +               __entry->idx            =3D       idx;
+> +               __entry->ino            =3D       inode->i_ino;
+> +       ),
+> +
+> +       TP_printk("connection %u idx %u ino 0x%lx",
+> +                 __entry->connection,
+> +                 __entry->idx,
+> +                 __entry->ino)
+> +);
+> +#define DEFINE_FUSE_BACKING_EVENT(name)                \
+> +DEFINE_EVENT(fuse_backing_class, name,         \
+> +       TP_PROTO(const struct fuse_conn *fc, unsigned int idx, \
+> +                const struct fuse_backing *fb), \
+> +       TP_ARGS(fc, idx, fb))
+> +DEFINE_FUSE_BACKING_EVENT(fuse_backing_open);
+> +DEFINE_FUSE_BACKING_EVENT(fuse_backing_close);
+> +#endif /* CONFIG_FUSE_BACKING */
+> +
+>  #endif /* _TRACE_FUSE_H */
 >
->         if (fuse_is_bad(inode))
-> @@ -113,6 +126,18 @@ int fuse_set_acl(struct mnt_idmap *idmap, struct den=
-try *dentry,
->         else
->                 return -EINVAL;
+>  #undef TRACE_INCLUDE_PATH
+> diff --git a/fs/fuse/backing.c b/fs/fuse/backing.c
+> index f5efbffd0f456b..b83a3c1b2dff7a 100644
+> --- a/fs/fuse/backing.c
+> +++ b/fs/fuse/backing.c
+> @@ -72,6 +72,7 @@ static int fuse_backing_id_free(int id, void *p, void *=
+data)
 >
-> +       /*
-> +        * If the ACL can be represented entirely with changes to the mod=
-e
-> +        * bits, then most filesystems will update the mode bits and dele=
-te
-> +        * the ACL xattr.
-> +        */
-> +       if (acl && type =3D=3D ACL_TYPE_ACCESS &&
-> +           fuse_inode_has_local_acls(inode)) {
-> +               ret =3D posix_acl_update_mode(idmap, inode, &mode, &acl);
-> +               if (ret)
-> +                       return ret;
-> +       }
+>         WARN_ON_ONCE(refcount_read(&fb->count) !=3D 1);
+>
+> +       trace_fuse_backing_close((struct fuse_conn *)data, id, fb);
+>         fuse_backing_free(fb);
+>         return 0;
+>  }
+> @@ -145,6 +146,8 @@ int fuse_backing_open(struct fuse_conn *fc, struct fu=
+se_backing_map *map)
+>                 fb =3D NULL;
+>                 goto out;
+>         }
+> +
+> +       trace_fuse_backing_open(fc, res, fb);
+>  out:
+>         pr_debug("%s: fb=3D0x%p, ret=3D%i\n", __func__, fb, res);
+>
+> @@ -194,6 +197,8 @@ int fuse_backing_close(struct fuse_conn *fc, int back=
+ing_id)
+>         if (err)
+>                 goto out_fb;
+>
+> +       trace_fuse_backing_close(fc, backing_id, fb);
+> +
 
-nit: this could be inside the if (acl) block below.
+If I'm understanding it correctly, the lines above (added from the
+previous patch) are
 
-I'm not too familiar with ACLs so i'll abstain from adding my
-Reviewed-by to this.
++ err =3D ops->may_admin ? ops->may_admin(fc, 0) : 0;
++ if (err)
++       goto out_fb;
++
++ err =3D ops->may_close ? ops->may_close(fc, fb->file) : 0;
++ if (err)
++        goto out_fb;
+
+and will also do the close in the out_fb goto. So should the
+trace_fuse_backing_close() be moved to before the "err =3D
+ops->may_admin..." line so it doesn't get missed in the "if (err)..."
+cases?
 
 Thanks,
 Joanne
 
-> +
->         if (acl) {
->                 unsigned int extra_flags =3D 0;
->                 /*
-> @@ -143,7 +168,7 @@ int fuse_set_acl(struct mnt_idmap *idmap, struct dent=
-ry *dentry,
->                  * through POSIX ACLs. Such daemons don't expect setgid b=
-its to
->                  * be stripped.
->                  */
-> -               if (fc->posix_acl &&
-> +               if (fc->posix_acl && mode =3D=3D inode->i_mode &&
->                     !in_group_or_capable(idmap, inode,
->                                          i_gid_into_vfsgid(idmap, inode))=
-)
->                         extra_flags |=3D FUSE_SETXATTR_ACL_KILL_SGID;
-> @@ -152,6 +177,22 @@ int fuse_set_acl(struct mnt_idmap *idmap, struct den=
-try *dentry,
->                 kfree(value);
->         } else {
->                 ret =3D fuse_removexattr(inode, name);
-> +               /* If the acl didn't exist to start with that's fine. */
-> +               if (ret =3D=3D -ENODATA)
-> +                       ret =3D 0;
-> +       }
-> +
-> +       /* If we scheduled a mode update above, push that to userspace no=
-w. */
-> +       if (!ret) {
-> +               struct iattr attr =3D { };
-> +
-> +               if (mode !=3D inode->i_mode) {
-> +                       attr.ia_valid |=3D ATTR_MODE;
-> +                       attr.ia_mode =3D mode;
-> +               }
-> +
-> +               if (attr.ia_valid)
-> +                       ret =3D fuse_do_setattr(idmap, dentry, &attr, NUL=
-L);
->         }
->
->         if (fc->posix_acl) {
+>         err =3D -ENOENT;
+>         test_fb =3D fuse_backing_id_remove(fc, backing_id);
+>         if (!test_fb)
 >
 
