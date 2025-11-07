@@ -1,58 +1,93 @@
-Return-Path: <linux-ext4+bounces-11646-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11647-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C158C3FD8B
-	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 13:07:02 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D3CBC404A3
+	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 15:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2D4A64E856D
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 12:07:01 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E3C1C3435F7
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 14:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9062F327211;
-	Fri,  7 Nov 2025 12:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78004328B63;
+	Fri,  7 Nov 2025 14:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FIwMtlhg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38DD32720F
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Nov 2025 12:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FC431A808
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Nov 2025 14:21:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762517213; cv=none; b=u19/ua04rojwxIOwUhxaGAneDm5G8DbtFMor/6xvxcz/5huzDtgnPbPfHDKSFVtnsP68jIuNlc4iBlqovehoPUQGv7/JvGZaC7LXxXEUMDoJr3qNTtekpTe+2YHXC1R1Z9wWvyjSBHLi6Aknt8oDsLeEX5Qi2EewD4CghpIC6kw=
+	t=1762525320; cv=none; b=tLUu5+3Gz/jkyoileVSdR/DZRc0pY3VEFoyVlZ3OjM3F9Joac/NWDTzYegGrQHYS2lsHYOTnpL1Gh2XCahXShRyyylnlXOSdoQZhG3UOeHBxA96cNQ8q+9qVa4Jb7J98OfI6w0ae+TJlMdXQhvBY5pbNkH7T5DVvwx+M07iwG7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762517213; c=relaxed/simple;
-	bh=LQpPmxmXyWck9yY2x4oMVBhL0o0IIrxPGwse5EbLKNM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ipiwfy4QLPuXy2pOw7lDWxcJ9FkLDZyIdEpLLUZUnhsTFjWll/Vc/ovLvpgvL4DwenlxYOFaab4e5BT+qXJV9VFSZ9LYhtUdJniPRDHnCp85OU/zCSztL9VzCgNfDXR4fsuF5gf2mdYFwV8GPx2xPGnqjg10bioi6GlXmuSeM8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d2yTB5pzYzYQtrf
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Nov 2025 20:06:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id C7C791A1023
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Nov 2025 20:06:42 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.50.87.129])
-	by APP1 (Coremail) with SMTP id cCh0CgAnTVDO4A1pyNToCw--.7597S6;
-	Fri, 07 Nov 2025 20:06:42 +0800 (CST)
-From: Yang Erkun <yangerkun@huawei.com>
-To: linux-ext4@vger.kernel.org,
+	s=arc-20240116; t=1762525320; c=relaxed/simple;
+	bh=4YA7rnYANBJbSIxSqVtePmwnGUnHrdSlVUABR4BCN1E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BrvBsk+A2Q4jXpIhuCtpacn9AzxPma60CPFD9sAUbVJeX4BB+cAEYY7csp01zcIbWrZAxEbdiSc2RO3KHzljKAo/KkAD/6eUiIuEOTKWKThCiIn5P/xd+R+AlyAE6vtEMbgJXwcIOMyTEWmLMIMTTUYmJJDI5/NdyTZAIRQCHkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FIwMtlhg; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-640b9c7eab9so1575590a12.1
+        for <linux-ext4@vger.kernel.org>; Fri, 07 Nov 2025 06:21:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762525317; x=1763130117; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8ScNFRclv7Ib95LOsyE3eeWyv7nmH8lB+sNT5DkF52E=;
+        b=FIwMtlhgRRHb42jG4xF2+KwRKd9EoY9Z+Msfsc2XiHljGQTjDUIsxCQF2UenqsShcx
+         LGAYWAyEGxww6NpDxPAHJBBPo9eR5ZBY4k7cbZKxQ4hYUq36li+6WOstaQDzOCyC5wM5
+         5e1g7VbZFByt8Rf4foW6My9ceu1aGjl26F66DvHzvuK2RAiUp/AOixJEeMnZpOZfMQIa
+         41qwPZxNdZBnx4992oSL8Wzrr/DtpoybWKfd2j+8h4V6Wy5hUmWUOg/hz5m1qtkIt7HW
+         hBETLgadW/3mHmuDEYxqJxw4by+qa2eCIR/HA99GA77bMuDKI5SvuijmOt5GPsjiAmAs
+         iGDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762525317; x=1763130117;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8ScNFRclv7Ib95LOsyE3eeWyv7nmH8lB+sNT5DkF52E=;
+        b=hF17VpHllEVUbvqN0z6UQQChNDVTrdyc7j0Poh2E34mBBJ2wCRUARcDtlBbhq6IBUI
+         UCq07bM85fQMimTTg8rG5Krwbz6mkGYwIofVh7zyVisaHjI07Z8R438QJ8wxxu31o9nO
+         EIFCiWhlEmOMiHHeCqtPV+Gua5dowNHDvOmvh1xtqq82y4+jDGVisJc332h9oAYFKe/L
+         t8GAwV8K+C9wMBRe+twqkHOfMeACS6yM+HzTDJGsPsLFkhXnMfYSetxZg9OnRqv+0lX7
+         aoUMie/LyagSD0BEv52DL6SyxDsBhV7WSO1Tm6UrI9P23rLMe6Qkj2b2XGu7zIL2Z2Ue
+         jUaA==
+X-Forwarded-Encrypted: i=1; AJvYcCW8YrdHFNWWJs9SZPcaowjhJS578Jrofd82aFpH00UANWXYNCHA5NtbBt9JWkttT7SRUssmY6VKOlz5@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxx8gFxQP0CiFeJpy8FebfHcE6EMtZwA8udwkRnKwX2uXd6+GoE
+	5S8dC4JyphRaSeEoFd76JmChd649LA21tHvpGnstKkOksd067FSOFpk+
+X-Gm-Gg: ASbGnctsKHss04f5NmnJb1PDCAniCM9F76j+N73U9lnbZNl9e9vw7HM2tE70BbemyZ9
+	mUZUQtsPlu8SDOSHXBiLDAYfKKyMkxxnvA/zDtz/7GPX2w0KMLY5IN8zKfB8YRgN5PTafqCLVBa
+	6/NCRdlEfjfNVbfqrkYU9J+CCoTvcoKx38kSi+qINchOtqRBEDpYjheFPsKOrxjjFgj0aJjz/Vb
+	zRIXlZxrY0zcTPN+Z4G+Dtn3mJvI7wsasMXrbvUO8X2IbO3A4HtC/9CzlyFNN//fCKki+gbNoZQ
+	W4K10j3ObOUWkVqhTmIuTO16X6EyTPTSH4icYgHtj2UctJJjeAHJyC/P/Yf/r4/jmT9YuH3hBhC
+	kPXWTSjda9DwtjYrd7dnn73hgOrvitt9UPCbOMjQ5TB1BPe4rGrjIlsynFq+a1QnMRnR4FzLCVd
+	iUG57CG9w2n8aYRolBUvoivngHgCZJbGHjDmILi+brn7KS2Tv/
+X-Google-Smtp-Source: AGHT+IGGYwqyyUENw1V0QXHKNHeOJ8/rc+O+s/OC/PAhV+9kOen2ldV0JAlre4vOLRyVBu782YEqbw==
+X-Received: by 2002:a17:907:c1d:b0:b49:2021:793f with SMTP id a640c23a62f3a-b72c0d9fae1mr392049066b.53.1762525316591;
+        Fri, 07 Nov 2025 06:21:56 -0800 (PST)
+Received: from f.. (cst-prg-14-82.cust.vodafone.cz. [46.135.14.82])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b72bf97e563sm253322766b.41.2025.11.07.06.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Nov 2025 06:21:56 -0800 (PST)
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
 	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz
-Cc: yi.zhang@huawei.com,
-	libaokun1@huawei.com,
-	yangerkun@huawei.com,
-	yangerkun@huaweicloud.com
-Subject: [PATCH v3 3/3] ext4: cleanup for ext4_map_blocks
-Date: Fri,  7 Nov 2025 19:58:10 +0800
-Message-Id: <20251107115810.47199-3-yangerkun@huawei.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20251107115810.47199-1-yangerkun@huawei.com>
-References: <20251107115810.47199-1-yangerkun@huawei.com>
+	torvalds@linux-foundation.org,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org,
+	Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH v3 0/3] cheaper MAY_EXEC handling for path lookup
+Date: Fri,  7 Nov 2025 15:21:46 +0100
+Message-ID: <20251107142149.989998-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,73 +95,36 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAnTVDO4A1pyNToCw--.7597S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFy5try8AFWUJF1UKr1Dtrb_yoW8XF4Dp3
-	y3Cr1rGr1UWrWY9w4FyF1UZF12kayFk3y8ZFWfZr95Z343Arn3tr1jyF1SkFZ8trWfJw4U
-	XF4jyry5CwsYka7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmEb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkE
-	bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjsIEF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I
-	0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxAIw28IcVAKzI0EY4vE52x082I5MxC2
-	0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-	0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-	14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
-	vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8
-	JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8ha9DUUUUU==
-Sender: yangerkun@huaweicloud.com
-X-CM-SenderInfo: 51dqwvhunx0q5kxd4v5lfo033gof0z/
 
-Retval from ext4_map_create_blocks means we really create some blocks,
-cannot happened with m_flags without EXT4_MAP_UNWRITTEN and
-EXT4_MAP_MAPPED.
+Commit message in patch 1 says it all.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Yang Erkun <yangerkun@huawei.com>
----
- fs/ext4/inode.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+In short, MAY_WRITE checks are elided.
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index e8bac93ca668..3d8ada26d5cd 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -799,7 +799,13 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 	down_write(&EXT4_I(inode)->i_data_sem);
- 	retval = ext4_map_create_blocks(handle, inode, map, flags);
- 	up_write((&EXT4_I(inode)->i_data_sem));
--	if (retval > 0 && map->m_flags & EXT4_MAP_MAPPED) {
-+
-+	if (retval < 0)
-+		ext_debug(inode, "failed with err %d\n", retval);
-+	if (retval <= 0)
-+		return retval;
-+
-+	if (map->m_flags & EXT4_MAP_MAPPED) {
- 		ret = check_block_validity(inode, map);
- 		if (ret != 0)
- 			return ret;
-@@ -828,12 +834,8 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 				return ret;
- 		}
- 	}
--	if (retval > 0 && (map->m_flags & EXT4_MAP_UNWRITTEN ||
--				map->m_flags & EXT4_MAP_MAPPED))
--		ext4_fc_track_range(handle, inode, map->m_lblk,
--					map->m_lblk + map->m_len - 1);
--	if (retval < 0)
--		ext_debug(inode, "failed with err %d\n", retval);
-+	ext4_fc_track_range(handle, inode, map->m_lblk, map->m_lblk +
-+			    map->m_len - 1);
- 	return retval;
- }
- 
+This obsoletes the idea of pre-computing if perm checks are necessary as
+that turned out to be too hairy. The new code has 2 more branches per
+path component compared to that idea, but the perf difference for
+typical paths (< 6 components) was basically within noise. To be
+revisited if someone(tm) removes other slowdowns.
+
+Instead of the pre-computing thing I added IOP_FASTPERM_MAY_EXEC so that
+filesystems like btrfs can still avoid the hard work.
+
+v3:
+- drop the pre-computation idea and inline the perm check
+- add IOP_FASTPERM_MAY_EXEC for filesystems with ->permission hooks so
+  that they can also take advantage of it
+
+Mateusz Guzik (3):
+  fs: speed up path lookup with cheaper handling of MAY_EXEC
+  btrfs: utilize IOP_FASTPERM_MAY_EXEC
+  fs: retire now stale MAY_WRITE predicts in inode_permission()
+
+ fs/btrfs/inode.c   | 12 +++++++++++-
+ fs/namei.c         | 47 ++++++++++++++++++++++++++++++++++++++++++----
+ include/linux/fs.h | 13 +++++++------
+ 3 files changed, 61 insertions(+), 11 deletions(-)
+
 -- 
-2.39.2
+2.48.1
 
 
