@@ -1,61 +1,112 @@
-Return-Path: <linux-ext4+bounces-11637-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11638-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B590EC3E717
-	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 05:26:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42C2FC3EB1F
+	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 08:08:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EC6D44E50F3
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 04:26:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F2F03AD170
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 07:08:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313A024E4BD;
-	Fri,  7 Nov 2025 04:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346DB3074BB;
+	Fri,  7 Nov 2025 07:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="seyI/SuE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aOHhVvM7";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="oHKV63Kq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BECCE1E5205;
-	Fri,  7 Nov 2025 04:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED39C306D37
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Nov 2025 07:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762489580; cv=none; b=QuN+8ys9Pmwd9sifiyr/ZfvwPLI/E8zzP3+GF0U2+ziUOVg3wEkf8vIiV56ogXB6JDOSsnx7MUlml1inDrv3qNLHbyFgNnGhn+Wt49aS9g93utLbtNMqnyNfr5wRv66XVW3OAcgJwVU56nWmzKoDaWN0Scn3ijtSSlfdVIUgWgI=
+	t=1762499312; cv=none; b=KTrOvhMX2CjaipsUZYVBwM0Rc8+A+wwkQrW7DC2amaUMV97/bo8uGGTFKlo7TcHwNiYlQNAHe5Ctb80ZliZ0g/b5ZxnO7c/xH0/DsU+qj4RHQPWDWKdCO/+ki0flWpaay70eIDQCGadfq6XTobLLi8sGUpVECwgPl6L0KL8xMEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762489580; c=relaxed/simple;
-	bh=pD6kbLKaDY/zwWCCD/NiwSC+Y7S7n9017lqLrEIs9nQ=;
+	s=arc-20240116; t=1762499312; c=relaxed/simple;
+	bh=rkWnS0D+0mddtDBOb/4th2VMSY2roDcrp9Q+CfNVVGg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dDSfXXLkIIFKtiG1/PYrV8SvpFuLKI0jVi3YJGQMVSR4jDmDbZJZWMYRore18bstfb2xZX4zyLhG+lXnmdT9ob2i3uZQpMtJtnAs2r0SyW7cT5I0pXJ9umfH8/s9sI0b7bbAExm2PY6cyiHx1SOOAp/EWr5qWFIOM62vLzjAtWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=seyI/SuE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B8C4C116C6;
-	Fri,  7 Nov 2025 04:26:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762489580;
-	bh=pD6kbLKaDY/zwWCCD/NiwSC+Y7S7n9017lqLrEIs9nQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=seyI/SuE+Dz9ftvh7Ixgebiy9fpOFOam7BUoIPJDgO3ov5/ckNXcawMpsfSbL5aTI
-	 B0w8lu0Gpu+lmNpuBMIq5z6hDe6cljJwdW5W4FQbMGIolcLXgUoLQkDhl3W8ONxvTO
-	 pTfjbAI3rAin4Ezn2V4zQdCwq01U7VmtI7W4P2a9aZFQ1M6XRToTI+xelSQGIj+eDz
-	 P119sawiUQWUYG3qf+HTEHpW2t18dWXU3LdEU3Dwqu2DkvuIE5yGe9Mn21Gtl5SPzl
-	 +1PnA/w+ITS6tU0o0Rhb34Ukm59UD0KWRQonQ1pxAIvbEPCXiWbzkjp2ALTIBtR6Z1
-	 /Z8jdpY0Ur7+w==
-Date: Thu, 6 Nov 2025 20:26:19 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Joanne Koong <joannelkoong@gmail.com>
-Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/5] fuse: flush pending fuse events before aborting the
- connection
-Message-ID: <20251107042619.GK196358@frogsfrogsfrogs>
-References: <176169809222.1424347.16562281526870178424.stgit@frogsfrogsfrogs>
- <176169809274.1424347.4813085698864777783.stgit@frogsfrogsfrogs>
- <CAJnrk1ZovORC=tLW-Q94XXY5M4i5WUd4CgRKEo7Lc7K2Sg+Kog@mail.gmail.com>
- <20251103221349.GE196370@frogsfrogsfrogs>
- <CAJnrk1a4d__8RHu0EGN2Yfk3oOhqZLJ7fBCNQYdHoThPrvnOaQ@mail.gmail.com>
- <20251106001730.GH196358@frogsfrogsfrogs>
- <CAJnrk1Ycsw0pn+Qdo5+4adVrjha=ypofE_Wk0GwLwrandpjLeQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WjrUnYvpI2twPSAZprS6TD2eRuAz/vSKjjORg3CFlN/W/t16W2q4b2e7rHY0kldHeCSDvjVGh5YiVpA3I9e3SiklbyGordOdoLIUIMjAAT6c5oEVvcb0LvtzBEmwhU2L0OgzNz+nsOLxpNedTqHu2tFK7z3/wDToGy55ryzj4m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aOHhVvM7; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=oHKV63Kq; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762499310;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yerLGJx7gBZqKU4HNq5xwJA95EiCLHLf/kDEUKD/Wjk=;
+	b=aOHhVvM7ENiruk/PtjrJLbGbQfcO17pAfyXlnnGsdTz9ActPVlBrzmcjsZuZWEyNZrExKC
+	jPZikZt6u57O7Ii0bJpTt+a/Xf0d9jGc3ulCCMvDn6rW8GVfIBt8kUUqZILa3m+XdW6A/k
+	oGn2cUfotyQfbTXe5rwzv3TMX1mdIZg=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-31-A6pBg8wJNJyr15Xd_w94Gg-1; Fri, 07 Nov 2025 02:08:28 -0500
+X-MC-Unique: A6pBg8wJNJyr15Xd_w94Gg-1
+X-Mimecast-MFC-AGG-ID: A6pBg8wJNJyr15Xd_w94Gg_1762499307
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-28eb14e3cafso10803805ad.1
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Nov 2025 23:08:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1762499307; x=1763104107; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yerLGJx7gBZqKU4HNq5xwJA95EiCLHLf/kDEUKD/Wjk=;
+        b=oHKV63KqHyIGk2JouP+pM5Om9c15GPZw+etlpVEIFuMnc90ybFw53EBOS0ky2uD+JC
+         e6wtbr0I8raBSNp27kAuqS7zo7mOXlaXJKxj/xb/M4UyDJfT7azrcBC/mSEF393LWLM3
+         GQKLqyI6W2yHRLh8ErRIN3wsjLd5y1j4wxMK2zL7XZCLSnXUkgprVYStedFqVCZi91hJ
+         9eAowNYNvv5cm8om5qYYETn9bncaCz7nxiXgrEqC7GaaTAA3Haup8natEjei+cqK5+2V
+         L3njrdLB587Hlf+apUUYA3bbcjgrnuzbMTHW43hi01xROzWjUkN5t00Fu0PLmkMtNPrp
+         /I1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762499307; x=1763104107;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yerLGJx7gBZqKU4HNq5xwJA95EiCLHLf/kDEUKD/Wjk=;
+        b=ujXIjQeUEcKrg3iA0t7B6e45sldGub2gnOhzSvpdUWyJfDfUiukmwJNn0znyDxuUo0
+         qTnMDiPZTDLMiAaRERbtJCdW9fDC5oXFsT5EJXetLfT+DKVYH20QJ5dLezdE/6zJef8L
+         ese+qbmXqfyoSFKb/YfKfD7DGxPvEp6FWMrQh8aaSQ904iBAT7sr7VmvKHYTq45CJ6m5
+         aq0nItRAXO7BYb3M0smEaB5yJpC6nvAngA0+3F8NFGcVvPgEVTDEhUmzJpOt1lWOosg/
+         SHkCWdIrvlD9PaKDetTjOi9p9ABIVyYzSBPDDasAlMEUkpePWTLLiaTpGuJ4cuQiGJph
+         N/fg==
+X-Forwarded-Encrypted: i=1; AJvYcCWQU6aB6aGQoFV2KyZRuBhAC6IYjufVMrp0HDeMV1wjg4DW0tqz/3SisSTNEhYIoBPQ33yf0EoeIwxJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzlCgQd0tpxnn+AtO0oCFsnIpMaGI1jYvmOVDxkMIFchZuj7LyI
+	Lavkf+Yv1+aGcMBzW9232kWcabuPQgeETa1XnCx/oXAZ5hyCEVE30NSdCakkkGEs63vi55L/Wgr
+	1ffuxdNvzE/oPIMYQqoBuW20dCc6FI4K1CN2iIeBSrJBMd2wgcP95KOfgOsdV4wQ=
+X-Gm-Gg: ASbGncsgCKCgTLQm6JEx0nGGHlAyK+svlQJltQg7gIig+WCWD0RemIsEa5v0NaWyBDS
+	fPvBJ9fInCPt4vywrHKiOZSjsYvj99wgEuBfcuR71gmPrO0tmBbSvZUQNJhUz5vJYsAq0sL4Rd6
+	/pPDJdwcn1q59ANfvhK50c//klgWDQr+PJXmi/aZL64aY4ZJUHHu+PtPriTIQzHPY/VVNcAJ/1m
+	Vdh1FNCOzLGv4P7EQ8YdkrORJlEmXQ0pDdFGFk9H5rpyFJhq2jMHcrDXmgZlvkYpAktMQXvyMxq
+	9yCv+1PIISIpjESxztvuhdQasbJyb+j8f3qvnWcyVsTwwaY2sLSIwxrVZr9XqH7AAyj6XHVTMAV
+	2UH2VZDt/kRs1fdO4HL2fHDq4i36PunKpK2mPhIg=
+X-Received: by 2002:a17:902:e784:b0:295:70b1:edc8 with SMTP id d9443c01a7336-297c0389e74mr33041485ad.2.1762499307105;
+        Thu, 06 Nov 2025 23:08:27 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH9fly+Wc+YihTvNqEBuwjA19haWK5XSmHSuGiSWWoCjn97gDfrteqMvZADgN28pNxE0akWCg==
+X-Received: by 2002:a17:902:e784:b0:295:70b1:edc8 with SMTP id d9443c01a7336-297c0389e74mr33041085ad.2.1762499306592;
+        Thu, 06 Nov 2025 23:08:26 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29651c93c8dsm50850245ad.80.2025.11.06.23.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Nov 2025 23:08:25 -0800 (PST)
+Date: Fri, 7 Nov 2025 15:08:20 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: "Darrick J. Wong" <djwong@kernel.org>,
+	Amir Goldstein <amir73il@gmail.com>
+Cc: neal@gompa.dev, fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, joannelkoong@gmail.com,
+	bernd@bsbernd.com
+Subject: Re: [PATCH 01/33] misc: adapt tests to handle the fuse ext[234]
+ drivers
+Message-ID: <20251107070820.6mil3ptmkkyauyts@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
+ <176169819994.1433624.4365613323075287467.stgit@frogsfrogsfrogs>
+ <CAOQ4uxj7yaX5qLEs4BOJBJwybkHzv8WmNsUt0w_zehueOLLP9A@mail.gmail.com>
+ <20251105225355.GC196358@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,328 +116,304 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJnrk1Ycsw0pn+Qdo5+4adVrjha=ypofE_Wk0GwLwrandpjLeQ@mail.gmail.com>
+In-Reply-To: <20251105225355.GC196358@frogsfrogsfrogs>
 
-[I read this email backwards, like I do]
-
-On Thu, Nov 06, 2025 at 10:37:41AM -0800, Joanne Koong wrote:
-> On Wed, Nov 5, 2025 at 4:17 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> >
-> > On Tue, Nov 04, 2025 at 11:22:26AM -0800, Joanne Koong wrote:
-> >
-> > <snipping here because this thread has gotten very long>
-> >
-> > > > > > +       while (wait_event_timeout(fc->blocked_waitq,
-> > > > > > +                       !fc->connected || atomic_read(&fc->num_waiting) == 0,
-> > > > > > +                       HZ) == 0) {
-> > > > > > +               /* empty */
-> > > > > > +       }
-> > > > >
-> > > > > I'm wondering if it's necessary to wait here for all the pending
-> > > > > requests to complete or abort?
-> > > >
-> > > > I'm not 100% sure what the fuse client shutdown sequence is supposed to
-> > > > be.  If someone kills a program with a large number of open unlinked
-> > > > files and immediately calls umount(), then the fuse client could be in
-> > > > the process of sending FUSE_RELEASE requests to the server.
-> > > >
-> > > > [background info, feel free to speedread this paragraph]
-> > > > For a non-fuseblk server, unmount aborts all pending requests and
-> > > > disconnects the fuse device.  This means that the fuse server won't see
-> > > > all the FUSE_REQUESTs before libfuse calls ->destroy having observed the
-> > > > fusedev shutdown.  The end result is that (on fuse2fs anyway) you end up
-> > > > with a lot of .fuseXXXXX files that nobody cleans up.
-> > > >
-> > > > If you make ->destroy release all the remaining open files, now you run
-> > > > into a second problem, which is that if there are a lot of open unlinked
-> > > > files, freeing the inodes can collectively take enough time that the
-> > > > FUSE_DESTROY request times out.
-> > > >
-> > > > On a fuseblk server with libfuse running in multithreaded mode, there
-> > > > can be several threads reading fuse requests from the fusedev.  The
-> > > > kernel actually sends its own FUSE_DESTROY request, but there's no
-> > > > coordination between the fuse workers, which means that the fuse server
-> > > > can process FUSE_DESTROY at the same time it's processing FUSE_RELEASE.
-> > > > If ->destroy closes the filesystem before the FUSE_RELEASE requests are
-> > > > processed, you end up with the same .fuseXXXXX file cleanup problem.
+On Wed, Nov 05, 2025 at 02:53:55PM -0800, Darrick J. Wong wrote:
+> On Thu, Oct 30, 2025 at 10:51:06AM +0100, Amir Goldstein wrote:
+> > On Wed, Oct 29, 2025 at 2:22 AM Darrick J. Wong <djwong@kernel.org> wrote:
 > > >
-> > > imo it is the responsibility of the server to coordinate this and make
-> > > sure it has handled all the requests it has received before it starts
-> > > executing the destruction logic.
-> >
-> > I think we're all saying that some sort of fuse request reordering
-> > barrier is needed here, but there's at least three opinions about where
-> > that barrier should be implemented.  Clearly I think the barrier should
-> > be in the kernel, but let me think more about where it could go if it
-> > were somewhere else.
-> >
-> > First, Joanne's suggestion for putting it in the fuse server itself:
-> >
-> > I don't see how it's generally possible for the fuse server to know that
-> > it's processed all the requests that the kernel might have sent it.
-> > AFAICT each libfuse thread does roughly this:
-> >
-> > 1. read() a request from the fusedev fd
-> > 2. decode the request data and maybe do some allocations or transform it
-> > 3. call fuse server with request
-> > 4. fuse server does ... something with the request
-> > 5. fuse server finishes, hops back to libfuse / calls fuse_reply_XXX
-> >
-> > Let's say thread 1 is at step 4 with a FUSE_DESTROY.  How does it find
-> > out if there are other fuse worker threads that are somewhere in steps
-> > 2 or 3?  AFAICT the library doesn't keep track of the number of threads
-> > that are waiting in fuse_session_receive_buf_internal, so fuse servers
-> > can't ask the library about that either.
-> >
-> > Taking a narrower view, it might be possible for the fuse server to
-> > figure this out by maintaining an open resource count.  It would
-> > increment this counter when a FUSE_{OPEN,CREATE} request succeeds and
-> > decrement it when FUSE_RELEASE comes in.  Assuming that FUSE_RELEASE is
-> > the only kind of request that can be pending when a FUSE_DESTROY comes
-> > in, then destroy just has to wait for the counter to hit zero.
-> 
-> I was thinking this logic could be in libfuse's fuse_loop_mt.c. Where
-> if there are X worker threads that are all running fuse_do_work( )
-> then if you get a FUSE_DESTROY on one of those threads that thread can
-> set some se->destroyed field. At this point the other threads will
-> have already called fuse_session_receive_buf_internal() on all the
-> flushed background requests, so after they process it and return from
-> fuse_session_process_buf_internal(), then they check if se->destroyed
-> was set, and if it is they exit the thread, while in the thread that
-> got the FUSE_DESTROY it sleeps until all the threads have completed
-> and then it executes the destroy logic.That to me seems like the
-> cleanest approach.
-
-Hrm.  Well now (scrolling to the bottom and back) that I know that the
-FUSE_DESTROY won't get put on the queue ahead of the FUSE_RELEASEs, I
-think that /could/ work.
-
-One tricky thing with having worker threads check a flag and exit is
-that they can be sleeping in the kernel (from _fuse_session_receive_buf)
-when the "just go away" flag gets set.  If the thread never wakes up,
-then it'll never exit.  In theory you could have the FUSE_DESTROY thread
-call pthread_cancel on all the other worker threads to eliminate them
-once they emerge from PTHREAD_CANCEL_DISABLE state, but I still have
-nightmares from adventures in pthread_cancel at Sun in 2002. :P
-
-Maybe an easier approach would be to have fuse_do_work increment a
-counter when it receives a buffer and decrement it when it finishes with
-that buffer.  The FUSE_DESTROY thread merely has to wait for that
-counter to reach 1, at which point it's the only thread with a request
-to process, so it can call do_destroy.  That at least would avoid adding
-a new user of pthread_cancel() into the mt loop code.
-
-> >
-> > Is the above assumption correct?
-> >
-> > I don't see any fuse servers that actually *do* this, though.  I
-> > perceive that there are a lot of fuse servers out there that aren't
-> > packaged in Debian, though, so is this actually a common thing for
-> > proprietary fuse servers which I wouldn't know about?
-> >
-> > Downthread, Bernd suggested doing this in libfuse instead of making the
-> > fuse servers do it.  He asks:
-> >
-> > "There is something I don't understand though, how can FUSE_DESTROY
-> > happen before FUSE_RELEASE is completed?
-> >
-> > "->release / fuse_release
-> >    fuse_release_common
-> >       fuse_file_release
-> >          fuse_file_put
-> >             fuse_simple_background
-> >             <userspace>
-> >             <userspace-reply>
-> >                fuse_release_end
-> >                   iput()"
-> >
-> > The answer to this is: fuse_file_release is always asynchronous now, so
-> > the FUSE_RELEASE is queued to the background and the kernel moves on
-> > with its life.
-> >
-> > It's likely much more effective to put the reordering barrier in the
-> > library (ignoring all the vendored libfuse out there) assuming that the
-> > above assumption holds.  I think it wouldn't be hard to have _do_open
-> > (fuse_lowlevel.c) increment a counter in fuse_session, decrement it in
-> > _do_release, and then _do_destroy would wait for it to hit zero.
-> >
-> > For a single-threaded fuse server I think this might not even be an
-> > issue because the events are (AFAICT) processed in order.  However,
-> > you'd have to be careful about how you did that for a multithreaded fuse
-> > server.  You wouldn't want to spin in _do_destroy because that takes out
-> > a thread that could be doing work.  Is there a way to park a request?
-> 
-> If the background requests are flushed before the destroy request,
-> then this doesn't take out a thread because al the background requests
-> will already have been or are being serviced.
-
-<nod>
-
-I'm still concerned about a few things with the libfuse approach though.
-The kernel is the initiator, so it knows the data dependencies between
-requests.  Consequently, it's in the best position to know that if
-request R2 depends on R1, then it shouldn't issue R2 until it has
-received an acknowledgement for R1.  The fuse server is the target, it
-shouldn't be second-guessing what the initiator wants.
-
-The second concern is that if a request timeout is in effect, then all
-the time that libfuse spends waiting for other request to drain is
-charged to that request.  IOWs, if the timeout is 60s and libfuse holds
-the FUSE_DESTROY for 40s, the fuse server only has 20s to reply to the
-request whereas the sysadmin might have assumed that the server would
-have a full 60s to flush the filesystem and exit.
-
-If you're worried about no-timeout fuse servers hanging the unmount
-process, what about killing the fuse server?  Or telling the kernel to
-abort the connection?  Either should suffice to kill the wait_event
-loop.
-
-The third thing is that the iomap patchset will change the unmount
-request sequence:
-
-1. <some number of FUSE_RELEASEs>
-2. FUSE_SYNCFS to tell the fuse server to write all its dirty data
-3. FUSE_DESTROY to close the filesystem
-
-If we put the ordering barrier in libfuse, then we'll have to modify
-libfuse to flush all of (1) before processing (2), and then wait for (2)
-to finish before processing (3).  But libfuse doesn't know that a
-particular FUSE_SYNCFS will be succeeded by a FUSE_DESTROY.  I could
-drop the SYNCFS and let DESTROY handle all the flushing.  But again, the
-kernel already knows the ordering that it requires, so it should enforce
-that ordering directly.
-
-(Sorry, I feel like I'm belaboring the point excessively, I'll stop)
-
-The libfuse approach /does/ have the small advantage that it can start
-working on the FUSE_DESTROY as soon as the other workers quiesce because
-it doesn't have to wait for the kernel to see the last FUSE_RELEASE
-reply and generate the DESTROY request.
-
-> > Note that both of these approaches come with the risk that the kernel
-> > could decide to time out and abort the FUSE_DESTROY while the server is
-> > still waiting for the counter to hit zero.
-> >
-> > For a fuseblk filesystem this abort is very dangerous because the kernel
-> > releases its O_EXCL hold on the block device in kill_block_super before
-> > the fuse server has a chance to finish up and close the block device.
-> > The fuseblk server itself could not have opened the block device O_EXCL
-> > so that means there's a period where another process (or even another
-> > fuseblk mount) could open the bdev O_EXCL and both try to write to the
-> > block device.
-> >
-> > (I actually have been wondering who uses the fuse request timeouts?  In
-> > my testing even 30min wasn't sufficient to avoid aborts for some of the
-> > truncate/inactivation fstests.)
-> 
-> Meta uses fuse request timeouts. We saw a few cases of deadlocks in
-> some buggy fuse server implementations, so we now enforce default
-> timeouts. The timeout is set to a pretty large number though. Our main
-> use of it is to free/cleanup system resources if the server is
-> deadlocked.
-
-If you can share, how long of a timeout?  I've noticed that some clouds
-set their iscsi timeouts to 12h or more(!) and that's for a single SCSI
-command.
-
-> If it takes 30 minutes to do all the cleanup, then I think it's worse
-> to have unmounting take that long, than to just do a quicker unmount
-
-If you don't handle unlinked lists in a O(n) (or O(1) way) then
-unprivileged userspace programs can manipulate the filesystem so that it
-actually /can/ take hours to unmount.  XFS, ext4, and now fuse4fs have
-learned that the hard way. ;)
-
-> and have lingering unlinked files on the server. As a user, if I were
-> unmounting something and it took that long, I would probably just kill
-> the whole thing anyways.
-
-That very much depends on what you're going to do with that filesystem.
-If you're disposing of a container then, meh, fire away.  Some people
-"use" FS_IOC_SHUTDOWN to "terminate" containers quickly.
-
-> >
-> > Aside: The reason why I abandoned making fuse2fs a fuseblk server is
-> > because I realized this exact trap -- the fuse server MUST have
-> > exclusive write access to the device at all times, or else it can race
-> > with other programs (e.g. tune2fs) and corrupt the filesystem.  In
-> > fuseblk mode the kernel owns the exclusive access and but doesn't
-> > install that file in the server's fd table.  At best the fuse server can
-> > pretend that it has exclusive write access, but the kernel can make that
-> > go away without telling the fuse server, which opens a world of hurt.
-> >
-> > > imo the only responsibility of the
-> > > kernel is to actually send the background requests before it sends the
-> > > FUSE_DESTROY. I think non-fuseblk servers should also receive the
-> > > FUSE_DESTROY request.
-> >
-> > They do receive it because fuse_session_destroy calls ->destroy if no
-> > event has been received from the kernel after the fusedev shuts down.
-> >
-> > > >
-> > > > Here, if you make a fuseblk server's ->destroy release all the remaining
-> > > > open files, you have an even worse problem, because that could race with
-> > > > an existing libfuse worker that's processing a FUSE_RELEASE for the same
-> > > > open file.
-> > > >
-> > > > In short, the client has a FUSE_RELEASE request that pairs with the
-> > > > FUSE_OPEN request.  During regular operations, an OPEN always ends with
-> > > > a RELEASE.  I don't understand why unmount is special in that it aborts
-> > > > release requests without even sending them to the server; that sounds
-> > > > like a bug to me.  Worse yet, I looked on Debian codesearch, and nearly
-> > > > all of the fuse servers I found do not appear to handle this correctly.
-> > > > My guess is that it's uncommon to close 100,000 unlinked open files on a
-> > > > fuse filesystem and immediately unmount it.  Network filesystems can get
-> > > > away with not caring.
-> > > >
-> > > > For fuse+iomap, I want unmount to send FUSE_SYNCFS after all open files
-> > > > have been RELEASEd so that client can know that (a) the filesystem (at
-> > > > least as far as the kernel cares) is quiesced, and (b) the server
-> > > > persisted all dirty metadata to disk.  Only then would I send the
-> > > > FUSE_DESTROY.
+> > > From: Darrick J. Wong <djwong@kernel.org>
 > > >
-> > > Hmm, is FUSE_FLUSH not enough? As I recently learned (from Amir),
-> > > every close() triggers a FUSE_FLUSH. For dirty metadata related to
-> > > writeback, every release triggers a synchronous write_inode_now().
-> >
-> > It's not sufficient, because there might be other cached dirty metadata
-> > that needs to be flushed out to disk.  A fuse server could respond to a
-> > FUSE_FLUSH by pushing out that inode's dirty metadata to disk but go no
-> > farther.  Plumbing in FUSE_SYNCFS for iomap helps a lot in that regard
-> > because that's a signal that we need to push dirty ext4 bitmaps and
-> > group descriptors and whatnot out to storage; without it we end up doing
-> > all that at destroy time.
-> >
-> > > > > We are already guaranteeing that the
-> > > > > background requests get sent before we issue the FUSE_DESTROY, so it
-> > > > > seems to me like this is already enough and we could skip the wait
-> > > > > because the server should make sure it completes the prior requests
-> > > > > it's received before it executes the destruction logic.
-> > > >
-> > > > That's just the thing -- fuse_conn_destroy calls fuse_abort_conn which
-> > > > aborts all the pending background requests so the server never sees
-> > > > them.
+> > > It would be useful to be able to run fstests against the userspace
+> > > ext[234] driver program fuse2fs.  A convention (at least on Debian)
+> > > seems to be to install fuse drivers as /sbin/mount.fuse.XXX so that
+> > > users can run "mount -t fuse.XXX" to start a fuse driver for a
+> > > disk-based filesystem type XXX.
 > > >
-> > > The FUSE_DESTROY request gets sent before fuse_abort_conn() is called,
-> > > so to me, it seems like if we flush all the background requests and
-> > > then send the FUSE_DESTROY, that suffices.
-> >
-> > I think it's worse than that -- fuse_send_destroy sets fuse_args::force
-> > and sends the request synchronously, which (afaict) means it jumps ahead
-> > of the backgrounded requests.
+> > > Therefore, we'll adopt the practice of setting FSTYP=fuse.ext4 to
+> > > test ext4 with fuse2fs.  Change all the library code as needed to handle
+> > > this new type alongside all the existing ext[234] checks, which seems a
+> > > little cleaner than FSTYP=fuse FUSE_SUBTYPE=ext4, which also would
+> > > require even more treewide cleanups to work properly because most
+> > > fstests code switches on $FSTYP alone.
+
+Thanks Darrick, a big patchset again :)
+
+> > >
+> > 
+> > I agree that FSTYP=fuse.ext4 is cleaner than
+> > FSTYP=fuse FUSE_SUBTYPE=ext4
+> > but it is not extendable to future (e.g. fuse.xfs)
+> > and it is still a bit ugly.
+> > 
+> > Consider:
+> > FSTYP=fuse.ext4
+> > MKFSTYP=ext4
+
+No matter this ^^^, or ...
+
+> > 
+> > I think this is the correct abstraction -
+> > fuse2fs/ext4 are formatted that same and mounted differently
+> > 
+> > See how some of your patch looks nicer and naturally extends to
+> > the imaginary fuse.xfs...
 > 
-> Hmm, where are you seeing that? afaict, args->force forces the request
-> to be sent to userspace even if interrupted and it skips the
-> fuse_block_alloc() check.
-
-Oh!  You're right, the FUSE_DESTROY request is list_add_tail'd to
-fiq->pending, just like every other req, because they all go through
-fuse_dev_queue_req.  Sorry about misreading that, but thank /you/ for
-pointing it out! :)
-
---D
-
-> Thanks,
-> Joanne
+> Maybe I'd rather do it the other way around for fuse4fs:
 > 
+> FSTYP=ext4
+> MOUNT_FSTYP=fuse.ext4
+
+... this ^^^, I think this discussion brings in a topic:
+If the same on-disk fstype can be mounted with different drivers, what does
+original $FSTYP stand for? Is it stand for the running fs driver, or the the
+on-disk fs type? Besides the code looks ugly or not, the basic parameters must
+be clear in meaning I think.
+
+If the same on-disk fstype can be mounted with different drivers, we might
+need two parameters to avoid this confusion. Due to we sometimes depends on
+the on-disk type, e.g. mkfs, fsck, xfs_db, metadump and so on, sometimes
+depend on running-time fs driver, e.g. mount, quota and so on.
+
+We can let FSTYP stands for the running-time fs driver, as it's mostly treated
+as that I think. And set MKFSTYP=$FSTYP by default, if MKFSTYP isn't specified.
+Then change those "FSTYP judgement" code to MKFSTYP, if they need ondisk fstype
+actually.
+
+I don't mind the parameter name, but the meaning should not be confused. What
+do you think? Feel free to correct me if I miss anything.
+
+Thanks,
+Zorro
+
+> 
+> (obviously, MOUNT_FSTYP=$FSTYP if the test runner hasn't overridden it)
+> 
+> Where $MOUNT_FSTYP is what you pass to mount -t and what you'd see in
+> /proc/mounts.  The only weirdness with that is that some of the helpers
+> will end up with code like:
+> 
+> 	case $FSTYP in
+> 	ext4)
+> 		# do ext4 stuff
+> 		;;
+> 	esac
+> 
+> 	case $MOUNT_FSTYP in
+> 	fuse.ext4)
+> 		# do fuse4fs stuff that overrides ext4
+> 		;;
+> 	esac
+> 
+> which would be a little weird.
+> 
+> _scratch_mount would end up with:
+> 
+> 	$MOUNT_PROG -t $MOUNT_FSTYP ...
+> 
+> and detecting it would be
+> 
+> 	grep -q -w $MOUNT_FSTYP /proc/mounts || _fail "booooo"
+> 
+> Hrm?
+> 
+> --D
+> 
+> > 
+> > > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+> > > ---
+> > >  check             |   24 +++++++++++++++++-------
+> > >  common/casefold   |    4 ++++
+> > >  common/config     |   11 ++++++++---
+> > >  common/defrag     |    2 +-
+> > >  common/encrypt    |   16 ++++++++--------
+> > >  common/log        |   10 +++++-----
+> > >  common/populate   |   14 +++++++-------
+> > >  common/quota      |    9 +++++++++
+> > >  common/rc         |   50 +++++++++++++++++++++++++++++---------------------
+> > >  common/report     |    2 +-
+> > >  common/verity     |    8 ++++----
+> > >  tests/generic/020 |    2 +-
+> > >  tests/generic/067 |    2 +-
+> > >  tests/generic/441 |    2 +-
+> > >  tests/generic/496 |    2 +-
+> > >  tests/generic/621 |    2 +-
+> > >  tests/generic/740 |    2 +-
+> > >  tests/generic/746 |    4 ++--
+> > >  tests/generic/765 |    4 ++--
+> > >  19 files changed, 103 insertions(+), 67 deletions(-)
+> > >
+> > >
+> > > diff --git a/check b/check
+> > > index 9bb80a22440f97..81cd03f73ce155 100755
+> > > --- a/check
+> > > +++ b/check
+> > > @@ -140,12 +140,25 @@ get_sub_group_list()
+> > >         echo $grpl
+> > >  }
+> > >
+> > > +get_group_dirs()
+> > > +{
+> > > +       local fsgroup="$FSTYP"
+> > > +
+> > > +       case "$FSTYP" in
+> > > +       ext2|ext3|fuse.ext[234])
+> > > +               fsgroup=ext4
+> > > +               ;;
+> > > +       esac
+> > > +
+> > > +       echo $SRC_GROUPS
+> > > +       echo $fsgroup
+> > > +}
+> > > +
+> > >  get_group_list()
+> > >  {
+> > >         local grp=$1
+> > >         local grpl=""
+> > >         local sub=$(dirname $grp)
+> > > -       local fsgroup="$FSTYP"
+> > >
+> > >         if [ -n "$sub" -a "$sub" != "." -a -d "$SRC_DIR/$sub" ]; then
+> > >                 # group is given as <subdir>/<group> (e.g. xfs/quick)
+> > > @@ -154,10 +167,7 @@ get_group_list()
+> > >                 return
+> > >         fi
+> > >
+> > > -       if [ "$FSTYP" = ext2 -o "$FSTYP" = ext3 ]; then
+> > > -           fsgroup=ext4
+> > > -       fi
+> > > -       for d in $SRC_GROUPS $fsgroup; do
+> > > +       for d in $(get_group_dirs); do
+> > >                 if ! test -d "$SRC_DIR/$d" ; then
+> > >                         continue
+> > >                 fi
+> > > @@ -171,7 +181,7 @@ get_group_list()
+> > >  get_all_tests()
+> > >  {
+> > >         touch $tmp.list
+> > > -       for d in $SRC_GROUPS $FSTYP; do
+> > > +       for d in $(get_group_dirs); do
+> > >                 if ! test -d "$SRC_DIR/$d" ; then
+> > >                         continue
+> > >                 fi
+> > > @@ -387,7 +397,7 @@ if [ -n "$FUZZ_REWRITE_DURATION" ]; then
+> > >  fi
+> > >
+> > >  if [ -n "$subdir_xfile" ]; then
+> > > -       for d in $SRC_GROUPS $FSTYP; do
+> > > +       for d in $(get_group_dirs); do
+> > >                 [ -f $SRC_DIR/$d/$subdir_xfile ] || continue
+> > >                 for f in `sed "s/#.*$//" $SRC_DIR/$d/$subdir_xfile`; do
+> > >                         exclude_tests+=($d/$f)
+> > > diff --git a/common/casefold b/common/casefold
+> > > index 2aae5e5e6c8925..fcdb4d210028ac 100644
+> > > --- a/common/casefold
+> > > +++ b/common/casefold
+> > > @@ -6,6 +6,10 @@
+> > >  _has_casefold_kernel_support()
+> > >  {
+> > >         case $FSTYP in
+> > > +       fuse.ext[234])
+> > > +               # fuse2fs does not support casefolding
+> > > +               false
+> > > +               ;;
+> > 
+> > This would not be needed
+> > 
+> > >         ext4)
+> > >                 test -f '/sys/fs/ext4/features/casefold'
+> > >                 ;;
+> > > diff --git a/common/config b/common/config
+> > > index 7fa97319d7d0ca..0cd2b33c4ade40 100644
+> > > --- a/common/config
+> > > +++ b/common/config
+> > > @@ -386,6 +386,11 @@ _common_mount_opts()
+> > >         overlay)
+> > >                 echo $OVERLAY_MOUNT_OPTIONS
+> > >                 ;;
+> > > +       fuse.ext[234])
+> > > +               # fuse sets up secure defaults, so we must explicitly tell
+> > > +               # fuse2fs to use the more relaxed kernel access behaviors.
+> > > +               echo "-o kernel $EXT_MOUNT_OPTIONS"
+> > > +               ;;
+> > >         ext2|ext3|ext4)
+> > >                 # acls & xattrs aren't turned on by default on ext$FOO
+> > >                 echo "-o acl,user_xattr $EXT_MOUNT_OPTIONS"
+> > > @@ -472,7 +477,7 @@ _mkfs_opts()
+> > >  _fsck_opts()
+> > >  {
+> > >         case $FSTYP in
+> > 
+> > This would obviously be $MKFSTYP with no further changes
+> > 
+> > > -       ext2|ext3|ext4)
+> > > +       ext2|ext3|fuse.ext[234]|ext4)
+> > >                 export FSCK_OPTIONS="-nf"
+> > >                 ;;
+> > >         reiser*)
+> > > @@ -514,11 +519,11 @@ _source_specific_fs()
+> > >
+> > >                 . ./common/btrfs
+> > >                 ;;
+> > > -       ext4)
+> > > +       fuse.ext4|ext4)
+> > >                 [ "$MKFS_EXT4_PROG" = "" ] && _fatal "mkfs.ext4 not found"
+> > >                 . ./common/ext4
+> > >                 ;;
+> > > -       ext2|ext3)
+> > > +       ext2|ext3|fuse.ext[23])
+> > >                 . ./common/ext4
+> > 
+> > same here
+> > 
+> > >                 ;;
+> > >         f2fs)
+> > > diff --git a/common/defrag b/common/defrag
+> > > index 055d0d0e9182c5..c054e62bde6f4d 100644
+> > > --- a/common/defrag
+> > > +++ b/common/defrag
+> > > @@ -12,7 +12,7 @@ _require_defrag()
+> > >          _require_xfs_io_command "falloc"
+> > >          DEFRAG_PROG="$XFS_FSR_PROG"
+> > >         ;;
+> > > -    ext4)
+> > > +    fuse.ext4|ext4)
+> > >         testfile="$TEST_DIR/$$-test.defrag"
+> > >         donorfile="$TEST_DIR/$$-donor.defrag"
+> > >         bsize=`_get_block_size $TEST_DIR`
+> > 
+> > and here
+> > 
+> > > diff --git a/common/encrypt b/common/encrypt
+> > > index f2687631b214cf..4fa7b6853fd461 100644
+> > > --- a/common/encrypt
+> > > +++ b/common/encrypt
+> > > @@ -191,7 +191,7 @@ _require_hw_wrapped_key_support()
+> > >  _scratch_mkfs_encrypted()
+> > >  {
+> > >         case $FSTYP in
+> > > -       ext4|f2fs)
+> > > +       fuse.ext4|ext4|f2fs)
+> > >                 _scratch_mkfs -O encrypt
+> > >                 ;;
+> > 
+> > and here
+> > 
+> > >         ubifs)
+> > > @@ -210,7 +210,7 @@ _scratch_mkfs_encrypted()
+> > >  _scratch_mkfs_sized_encrypted()
+> > >  {
+> > >         case $FSTYP in
+> > > -       ext4|f2fs)
+> > > +       fuse.ext4|ext4|f2fs)
+> > >                 MKFS_OPTIONS="$MKFS_OPTIONS -O encrypt" _scratch_mkfs_sized $*
+> > >                 ;;
+> > 
+> > and here... I think you got my point.
+> > 
+> > Thanks,
+> > Amir.
+> > 
+> 
+
 
