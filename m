@@ -1,228 +1,785 @@
-Return-Path: <linux-ext4+bounces-11639-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11641-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80F70C3ED0D
-	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 08:51:20 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8469C3EE39
+	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 09:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 040DE1883C25
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 07:51:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3C6FE4EB575
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 08:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A09B30BB89;
-	Fri,  7 Nov 2025 07:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1683A30F80F;
+	Fri,  7 Nov 2025 08:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HsK+QnaS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KT0xJoCn"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C6E82D5C91
-	for <linux-ext4@vger.kernel.org>; Fri,  7 Nov 2025 07:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C87830F81B
+	for <linux-ext4@vger.kernel.org>; Fri,  7 Nov 2025 08:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762501874; cv=none; b=eVRCF6ga92E7+bbw3R/gqmWXM9uqwpKrjFDCwtqEu4ofF1GA87ihj4yPSDizV/iKMEZX9hIO3cRPM47T1QK6DZipDnkjobf0ZILq8j0e6eDrvZjRJyjIY2jvuhcVYT+LcqSxuWnLtRE4roKebb47xM4uD3vJmJIxdGC9Q8y2n2k=
+	t=1762503026; cv=none; b=GlZFt8wjfRR/6YuvOT4l+yxK2YNKiiF+j8XyEpffPHY+D6JdxC35ChSB3s0MT/Sn7hdjAHlTTqaKRprxXo/YHmOik/uHbKkhIb9dWOWd9xeX6I2IinECsnwhSOzLqZq+hPtxxukCXU8LHJDRBw9PcodlXnI/dBbxoSryPpqrHMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762501874; c=relaxed/simple;
-	bh=DBkxoSNlKaSPUMK4zellr7NQI5sAgx6z9H/pZ4MGVqI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qcU1cCZ/yNga7CpBjyuM/zOyO0P5z0X90mfCADq0HpbZCp2jS0MelMsNYXiwIK19+VYc8cui2R6E+7mpr9LnOucQ38hKfg+zpWtx5QvK4fSPkF55LRWlNGxLT5RAlxqEy+UGDgFlF9lzCCPaZxTIwqBu9/ok5zagFOR/DFtHU+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HsK+QnaS; arc=none smtp.client-ip=209.85.208.46
+	s=arc-20240116; t=1762503026; c=relaxed/simple;
+	bh=xs1pVFwuQ6nktKG/due04RMqcgwsV8/9PaYK7UKAX6U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=slrKQ0+LVkrH7fTNT9DKKnN+Z688uDIlRTpan6udrkyLIWDsxWEQJ7jKYex5NR7cgZzRxRlN1PKa1+sbBcO5c431Ym7w6LH5O6JQg+r1sqx0h+DZR0gyxdupWX+Kx/aKnvkSl6cki4dnx9oei+Q+m1nJmv+3uR8G4ayLLe7jq4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KT0xJoCn; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-640aa1445c3so739016a12.1
-        for <linux-ext4@vger.kernel.org>; Thu, 06 Nov 2025 23:51:12 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-63bdfd73e6eso745623a12.0
+        for <linux-ext4@vger.kernel.org>; Fri, 07 Nov 2025 00:10:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762501871; x=1763106671; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gypdu32AjBdl8JRh/paj6OCLfQy8ztkLDfHJejFEMqc=;
-        b=HsK+QnaS3sPxVxk2m3RzVCU2iYIyNIc5wvyVaCv24AUeONkHsTfrSk8lNa4Jb4QQFL
-         5dR+H8N2sTQ3cf1WWLirpqmLue1oB3LfW4aRXBKDU0iBKiPPBYHMEhkVwdGYjDOKNxTd
-         TrOSZAA4k9wUBFklMWGF45+1uQObdRWWMIec4W4HcxcKsvJJQYrue2iAzlYshrj1YsLL
-         q9p68hUnqC5ArqOUb9bsCKL0f97NwUNIbMhhU8l3EduOpqtzjVoGVBS7dkOsvK7B5tCU
-         P9f8bIq1ZAnk2t/t+h8jR4nOVRVJSuw4jOxou26H3NPehG0Cwbp60DT1hYQwK31A1fZi
-         unBw==
+        d=gmail.com; s=20230601; t=1762503021; x=1763107821; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XzLxdcW1j6StcdhRc1eZeW5Ljdrh14gi296eSGm39Cc=;
+        b=KT0xJoCnkOjZt07YbslWUVSGAilUzOL/1uQxniiEoQkDbS3U6W5ALZ4q/WbQ/vaWwg
+         hB+PHwQ3o30zhz0Q1pqmHdpzrvni8W5J+TpzTxYTAjCZql7izakJdsSMx03ltXfAxrkJ
+         h+A/DchEx99/On8GfK5bnk2uXxVVRJoHcY1xYpoqrRTQaKRv32v2knneoOO7s7IfyjE+
+         yp37fqQIcXAw2b6v6rP2dL7XnAuuSek05hYmltK0dknMZrRooIkMUS+pYt97Dxu93o6K
+         n7XR8F8Ev4HDYWSP/s+XHjN6HqrD7Tck+7tEsek2ED2Oh8eQqPP/P7UtPg5IjMnLR7yf
+         ceSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762501871; x=1763106671;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=gypdu32AjBdl8JRh/paj6OCLfQy8ztkLDfHJejFEMqc=;
-        b=S0bHiKs2mX+C9O6bd3YuMPeeJbVpAhFpkBqo4rj2vzUuaB5kKXDvTD46fbnPGC5NPc
-         3SqCNOF+C8WCjxvRoGqsAPkVzT5is5Zb/SuRYCOF9sTKdoXGTt0qVDO91/Ym/aAu+1c7
-         yAfqzszEMJirpKftl78rijR1qx7AvkqGWHR1qz4kGg1SulKGfQY53L2akm27+QmHyBPq
-         kz5MRHt8mTuq3VvAwpO96u+KXQbkHX8vKWrjcnlu2Y1MFRXlrz+PjR9xZ2O4WbCvzYbM
-         aziNHt1lO7i2OD6D2zb6o4WwZoLFrcIO1+9SM8wS02C74ShrySDRwfhmPSVWTxOYqtOc
-         Cyzw==
-X-Forwarded-Encrypted: i=1; AJvYcCWguQTQFy4ZOpO57U4tqDt2fQHhVWSWVqRLxmlOvjZiN0CAs47lvAIQAImROyfhSFe26YFF4FFv2McR@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5hyX9XMHejz0ojfOCeE2Kvko1lYZe4VkLyRG2UUQ1kBgxtTpW
-	3I1J12dwBgiwhAGPMJ7XD6vlhhagoAa8TdTolnutWuBnFfqKDgedChpBHkevvcpPOn7Vx8TqhSg
-	oLBfqvIE4N6a9MeL4fDBT6OYqnwDltSI=
-X-Gm-Gg: ASbGncsbmFZ3ms0fvxvEWul2vyUU5ZicG/1TZLn8edIjqdCsbzwhMn5+nwW5OnwVk+G
-	u2pKUcq3e6v6psAHvAsw8wH2slJSGOWkWga10xJv437n82ZVIyq+4A+aJ4gvQfYkQSOjk0NEE7g
-	h3WRmHFihkiuXjXepB2mpHsQKevSanVBHRVXbHY2g79/5YlB5WkB+vYbnQ0EsuVPt2igop7fPG6
-	HblFdwAxNJr8V5Nzx0QJOsRefY8pL5bj6ux9yzfGJmCMKr8GISC7uT00iYbHO2DPJiSXNn0mGZf
-	gXkuTeyZktbeilKeDZg=
-X-Google-Smtp-Source: AGHT+IE0wn+JgXGDP+/X23JJiJR87uZ3bU9Eku9RD/Xf6SIQu9XEELdfWfIJb6UWtw6QwSr76TEb6t86wyo+1imQhyo=
-X-Received: by 2002:a05:6402:51c6:b0:640:ca67:848d with SMTP id
- 4fb4d7f45d1cf-6413eeb9fb6mr2107882a12.8.1762501870320; Thu, 06 Nov 2025
- 23:51:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1762503021; x=1763107821;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XzLxdcW1j6StcdhRc1eZeW5Ljdrh14gi296eSGm39Cc=;
+        b=C0GEE1mRGr8AaisVsh0yZ8kqhZI9o9pCgYiEDVJKbNNWxI3geWTewyBr45f6zzanko
+         xxCIOTfLhhx70hMPoCXQBE8lDOi50NZwsWHFZkD2ds9JnncL29Lo+cyHQxxeoKKnS6FT
+         cffBF6yI3SiM1juLg7JhFO67VaPDLWU/oz0Yxf8g4q2HyK9W2WhE+acpqYfHNbXaWrnp
+         cnYlI1rIQB4MMY5HCGyQYFRbOsYSENHrnNy6oTUjLiD22CBq7lH4U8i4LfNkqfil0Lmk
+         D+h3E4YFaGWpxTaPqjCIuNITrJpuQjTAO6AeNBCVSVmpf/09SmwY6KU9je+ToI3t8qH3
+         kGGg==
+X-Forwarded-Encrypted: i=1; AJvYcCXeMOEFjm7lBnIbPhv6YLgjpDEwlALZDFZbugOMgqoBdF85H61f1965SMjF+vO3Nkk65dqdyfIsH84A@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyMVw6tjyQmOEdvfme4Z+ynnWpJkgbD5O57SDxCjbaVLuayfkq
+	ykTtVp8rvPoVefmZhjNF3sRiYSk2C8gemQmYtKvDSviY55i1WNehcwklargNw65bVKQ=
+X-Gm-Gg: ASbGncvWp+gCEFKqjRhPbdiT1kqIyRHMXx43k7hPUNNFhLUam+SMiOcc0A7OoYIqi8G
+	V4nIX1dS5u+4TwBhBiPkD8uDZGPA/leZNx8M/uEosfWg9exm7/vCP5QPXI+0JWEOVjyLbTvv+3U
+	KUL5bAI9tGPTJkq1QX59KFjDoPVpKfbFwRz1yZOWQPCSoFLvyYwQ9nE6YT67ZiHoqWPH6KuqdVd
+	5l46cWjfBypJI7wAm8SNH289FZwdOVDcNSq6eHmiuQ6+f5k8Ph5f0+LDfaD74BnshvBi6rKg4p9
+	flwWMjWWa76KaFrTXjehkgIE5o5dEeb6ihEqVRWPq54GvGc+BWqn7psO+YfG/hGgoYeI+EGgCIu
+	nhAFOEwPL9Bjxpk5mi9LK/smrzUVpicUJMIBpR7aKjE+DM89hHUeFJREdOTtPJy6+AmzG2RGuGQ
+	R+gWlS0e8rlDKnvqZLighDWWfi1Wmga0RfErKGOqi9Ffjcpiza5MURcW4QmNnM5L/kB2rRl/Tny
+	glswA==
+X-Google-Smtp-Source: AGHT+IGb/yIr/HsAKG8Lc1i9njYeSqqvnkaNSFR/4MlvAy39WJ46GA2oxZo527s3JSUNfe57nQ25ug==
+X-Received: by 2002:a17:907:7f28:b0:b6d:5b07:c3f2 with SMTP id a640c23a62f3a-b72d0b1e26emr94324266b.32.1762503021166;
+        Fri, 07 Nov 2025 00:10:21 -0800 (PST)
+Received: from localhost (2001-1c00-570d-ee00-6e74-78de-3330-56c7.cable.dynamic.v6.ziggo.nl. [2001:1c00:570d:ee00:6e74:78de:3330:56c7])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b72bf4fbf3csm177041366b.26.2025.11.07.00.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Nov 2025 00:10:19 -0800 (PST)
+Date: Fri, 7 Nov 2025 09:09:58 +0100
+From: Amir Goldstein <amir73il@gmail.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: tytso@mit.edu, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 04/23] fuse4fs: namespace some helpers
+Message-ID: <aQ2pVgns-GwNFnW6@amir-ThinkPad-T480>
+References: <176246795459.2864310.10641701647593035148.stgit@frogsfrogsfrogs>
+ <176246795639.2864310.2926261571911454655.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
- <176169819994.1433624.4365613323075287467.stgit@frogsfrogsfrogs>
- <CAOQ4uxj7yaX5qLEs4BOJBJwybkHzv8WmNsUt0w_zehueOLLP9A@mail.gmail.com>
- <20251105225355.GC196358@frogsfrogsfrogs> <CAOQ4uxjC+rFKrp3SMMabyBwSKOWDGGpVR7-5gyodGbH80ucnkA@mail.gmail.com>
- <20251106231215.GC196366@frogsfrogsfrogs>
-In-Reply-To: <20251106231215.GC196366@frogsfrogsfrogs>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 7 Nov 2025 08:50:58 +0100
-X-Gm-Features: AWmQ_bka4NhoB4_0GzsMDp2JL8GmrqvBcI2VdjLITQEvTx--8zNv2vTizrwbetI
-Message-ID: <CAOQ4uxjBpm_2cUDHyU72pSRc5KLDNm9tRgGYsoaAtp6tM6yFwg@mail.gmail.com>
-Subject: Re: [PATCH 01/33] misc: adapt tests to handle the fuse ext[234] drivers
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: zlang@redhat.com, neal@gompa.dev, fstests@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	joannelkoong@gmail.com, bernd@bsbernd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <176246795639.2864310.2926261571911454655.stgit@frogsfrogsfrogs>
 
-On Fri, Nov 7, 2025 at 12:12=E2=80=AFAM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> On Thu, Nov 06, 2025 at 09:58:28AM +0100, Amir Goldstein wrote:
-> > On Wed, Nov 5, 2025 at 11:53=E2=80=AFPM Darrick J. Wong <djwong@kernel.=
-org> wrote:
-> > >
-> > > On Thu, Oct 30, 2025 at 10:51:06AM +0100, Amir Goldstein wrote:
-> > > > On Wed, Oct 29, 2025 at 2:22=E2=80=AFAM Darrick J. Wong <djwong@ker=
-nel.org> wrote:
-> > > > >
-> > > > > From: Darrick J. Wong <djwong@kernel.org>
-> > > > >
-> > > > > It would be useful to be able to run fstests against the userspac=
-e
-> > > > > ext[234] driver program fuse2fs.  A convention (at least on Debia=
-n)
-> > > > > seems to be to install fuse drivers as /sbin/mount.fuse.XXX so th=
-at
-> > > > > users can run "mount -t fuse.XXX" to start a fuse driver for a
-> > > > > disk-based filesystem type XXX.
-> > > > >
-> > > > > Therefore, we'll adopt the practice of setting FSTYP=3Dfuse.ext4 =
-to
-> > > > > test ext4 with fuse2fs.  Change all the library code as needed to=
- handle
-> > > > > this new type alongside all the existing ext[234] checks, which s=
-eems a
-> > > > > little cleaner than FSTYP=3Dfuse FUSE_SUBTYPE=3Dext4, which also =
-would
-> > > > > require even more treewide cleanups to work properly because most
-> > > > > fstests code switches on $FSTYP alone.
-> > > > >
-> > > >
-> > > > I agree that FSTYP=3Dfuse.ext4 is cleaner than
-> > > > FSTYP=3Dfuse FUSE_SUBTYPE=3Dext4
-> > > > but it is not extendable to future (e.g. fuse.xfs)
-> > > > and it is still a bit ugly.
-> > > >
-> > > > Consider:
-> > > > FSTYP=3Dfuse.ext4
-> > > > MKFSTYP=3Dext4
-> > > >
-> > > > I think this is the correct abstraction -
-> > > > fuse2fs/ext4 are formatted that same and mounted differently
-> > > >
-> > > > See how some of your patch looks nicer and naturally extends to
-> > > > the imaginary fuse.xfs...
-> > >
-> > > Maybe I'd rather do it the other way around for fuse4fs:
-> > >
-> > > FSTYP=3Dext4
-> > > MOUNT_FSTYP=3Dfuse.ext4
-> > >
-> >
-> > Sounds good. Will need to see the final patch.
-> >
-> > > (obviously, MOUNT_FSTYP=3D$FSTYP if the test runner hasn't overridden=
- it)
-> > >
-> > > Where $MOUNT_FSTYP is what you pass to mount -t and what you'd see in
-> > > /proc/mounts.  The only weirdness with that is that some of the helpe=
-rs
-> > > will end up with code like:
-> > >
-> > >         case $FSTYP in
-> > >         ext4)
-> > >                 # do ext4 stuff
-> > >                 ;;
-> > >         esac
-> > >
-> > >         case $MOUNT_FSTYP in
-> > >         fuse.ext4)
-> > >                 # do fuse4fs stuff that overrides ext4
-> > >                 ;;
-> > >         esac
-> > >
-> > > which would be a little weird.
-> > >
-> >
-> > Sounds weird, but there is always going to be weirdness
-> > somewhere - need to pick the least weird result or most
-> > easy to understand code IMO.
-> >
-> > > _scratch_mount would end up with:
-> > >
-> > >         $MOUNT_PROG -t $MOUNT_FSTYP ...
-> > >
-> > > and detecting it would be
-> > >
-> > >         grep -q -w $MOUNT_FSTYP /proc/mounts || _fail "booooo"
-> > >
-> > > Hrm?
-> >
-> > Those look obviously nice.
-> >
-> > Maybe the answer is to have all MOUNT_FSTYP, MKFS_FSTYP
-> > and FSTYP and use whichever best fits in the context.
->
-> Hrmm well I would /like/ avoid adding MKFS_FSTYP since ext4 is ext4, no
-> matter whether we're using the kernel or fuse42fs.  Do you have a use
-> case for adding such a thing?
->
+On Thu, Nov 06, 2025 at 02:44:07PM -0800, Darrick J. Wong wrote:
+> From: Darrick J. Wong <djwong@kernel.org>
+> 
+> Prepend "fuse4fs_" to all helper functions that take a struct fuse4fs
+> object pointer.
+> 
+> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+> ---
+>  fuse4fs/fuse4fs.c |  177 +++++++++++++++++++++++++++--------------------------
+>  1 file changed, 90 insertions(+), 87 deletions(-)
+> 
+> 
+> diff --git a/fuse4fs/fuse4fs.c b/fuse4fs/fuse4fs.c
+> index daf22e0fe7fde5..2ef5ad60163639 100644
+> --- a/fuse4fs/fuse4fs.c
+> +++ b/fuse4fs/fuse4fs.c
+> @@ -2,6 +2,7 @@
+>   * fuse4fs.c - FUSE low-level server for e2fsprogs.
+>   *
+>   * Copyright (C) 2014-2025 Oracle.
+> + * Copyright (C) 2025 CTERA Networks.
 
-No use case, beyond more flexibility in writing clear code.
-I agree with Zorro that ext4 is not only ext4.
-ext4 is ext4 on-disk format and it is ext4 driver and this ambiguity
-can be a source of confusion sometimes.
-
-I don't see the problem with defining MKFS_FSTYP
-the controversial part IMO is what FSTYP should be
-referring to, the flesh or the spirit...
-
-Trying to think up a use case, ntfs has at least 3 Linux drivers
-that I know of (ntfs,ntfs3 and fuse.ntfs-3g) and another one that was recen=
-tly
-proposed (ntfsplus). At least some have also their matching mkfs
-and should be able to cross mount an ntfs formatted by other mkfs.
-
-So testing any variation of MKFS_FSTYP and MOUNT_FSTYP
-makes sense.
-
-Using MKFS_FSTYP in mkfs and fsck helpers and using MOUNT_FSTYP
-in mount helpers is always good practice IMO.
-
-My intuition is that FSTYP should be defined to whichever
-results in less churn and less weird looking code, but I don't know
-which one that would be.
+I think this belongs to next patch :)
 
 Thanks,
 Amir.
+
+>   *
+>   * %Begin-Header%
+>   * This file may be redistributed under the terms of the GNU Public
+> @@ -852,7 +853,7 @@ static int ext2_file_type(unsigned int mode)
+>  	return 0;
+>  }
+>  
+> -static int fs_can_allocate(struct fuse4fs *ff, blk64_t num)
+> +static int fuse4fs_can_allocate(struct fuse4fs *ff, blk64_t num)
+>  {
+>  	ext2_filsys fs = ff->fs;
+>  	blk64_t reserved;
+> @@ -879,21 +880,22 @@ static int fs_can_allocate(struct fuse4fs *ff, blk64_t num)
+>  	return ext2fs_free_blocks_count(fs->super) > reserved + num;
+>  }
+>  
+> -static int fuse4fs_is_writeable(struct fuse4fs *ff)
+> +static int fuse4fs_is_writeable(const struct fuse4fs *ff)
+>  {
+>  	return ff->opstate == F4OP_WRITABLE &&
+>  		(ff->fs->super->s_error_count == 0);
+>  }
+>  
+> -static inline int is_superuser(struct fuse4fs *ff, struct fuse_context *ctxt)
+> +static inline int fuse4fs_is_superuser(struct fuse4fs *ff,
+> +				       const struct fuse_context *ctxt)
+>  {
+>  	if (ff->fakeroot)
+>  		return 1;
+>  	return ctxt->uid == 0;
+>  }
+>  
+> -static inline int want_check_owner(struct fuse4fs *ff,
+> -				   struct fuse_context *ctxt)
+> +static inline int fuse4fs_want_check_owner(struct fuse4fs *ff,
+> +					   const struct fuse_context *ctxt)
+>  {
+>  	/*
+>  	 * The kernel is responsible for access control, so we allow anything
+> @@ -901,14 +903,14 @@ static inline int want_check_owner(struct fuse4fs *ff,
+>  	 */
+>  	if (ff->kernel)
+>  		return 0;
+> -	return !is_superuser(ff, ctxt);
+> +	return !fuse4fs_is_superuser(ff, ctxt);
+>  }
+>  
+>  /* Test for append permission */
+>  #define A_OK	16
+>  
+> -static int check_iflags_access(struct fuse4fs *ff, ext2_ino_t ino,
+> -			       const struct ext2_inode *inode, int mask)
+> +static int fuse4fs_iflags_access(struct fuse4fs *ff, ext2_ino_t ino,
+> +				 const struct ext2_inode *inode, int mask)
+>  {
+>  	EXT2FS_BUILD_BUG_ON((A_OK & (R_OK | W_OK | X_OK | F_OK)) != 0);
+>  
+> @@ -936,7 +938,7 @@ static int check_iflags_access(struct fuse4fs *ff, ext2_ino_t ino,
+>  	return 0;
+>  }
+>  
+> -static int check_inum_access(struct fuse4fs *ff, ext2_ino_t ino, int mask)
+> +static int fuse4fs_inum_access(struct fuse4fs *ff, ext2_ino_t ino, int mask)
+>  {
+>  	struct fuse_context *ctxt = fuse_get_context();
+>  	ext2_filsys fs = ff->fs;
+> @@ -968,7 +970,7 @@ static int check_inum_access(struct fuse4fs *ff, ext2_ino_t ino, int mask)
+>  	if (mask == 0)
+>  		return 0;
+>  
+> -	ret = check_iflags_access(ff, ino, &inode, mask);
+> +	ret = fuse4fs_iflags_access(ff, ino, &inode, mask);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -977,7 +979,7 @@ static int check_inum_access(struct fuse4fs *ff, ext2_ino_t ino, int mask)
+>  		return 0;
+>  
+>  	/* Figure out what root's allowed to do */
+> -	if (is_superuser(ff, ctxt)) {
+> +	if (fuse4fs_is_superuser(ff, ctxt)) {
+>  		/* Non-file access always ok */
+>  		if (!LINUX_S_ISREG(inode.i_mode))
+>  			return 0;
+> @@ -1783,8 +1785,8 @@ static int op_readlink(const char *path, char *buf, size_t len)
+>  	return ret;
+>  }
+>  
+> -static int __getxattr(struct fuse4fs *ff, ext2_ino_t ino, const char *name,
+> -		      void **value, size_t *value_len)
+> +static int fuse4fs_getxattr(struct fuse4fs *ff, ext2_ino_t ino,
+> +			    const char *name, void **value, size_t *value_len)
+>  {
+>  	ext2_filsys fs = ff->fs;
+>  	struct ext2_xattr_handle *h;
+> @@ -1814,8 +1816,8 @@ static int __getxattr(struct fuse4fs *ff, ext2_ino_t ino, const char *name,
+>  	return ret;
+>  }
+>  
+> -static int __setxattr(struct fuse4fs *ff, ext2_ino_t ino, const char *name,
+> -		      void *value, size_t valuelen)
+> +static int fuse4fs_setxattr(struct fuse4fs *ff, ext2_ino_t ino,
+> +			    const char *name, void *value, size_t valuelen)
+>  {
+>  	ext2_filsys fs = ff->fs;
+>  	struct ext2_xattr_handle *h;
+> @@ -1845,8 +1847,8 @@ static int __setxattr(struct fuse4fs *ff, ext2_ino_t ino, const char *name,
+>  	return ret;
+>  }
+>  
+> -static int propagate_default_acls(struct fuse4fs *ff, ext2_ino_t parent,
+> -				  ext2_ino_t child, mode_t mode)
+> +static int fuse4fs_propagate_default_acls(struct fuse4fs *ff, ext2_ino_t parent,
+> +					  ext2_ino_t child, mode_t mode)
+>  {
+>  	void *def;
+>  	size_t deflen;
+> @@ -1855,8 +1857,8 @@ static int propagate_default_acls(struct fuse4fs *ff, ext2_ino_t parent,
+>  	if (!ff->acl || S_ISDIR(mode))
+>  		return 0;
+>  
+> -	ret = __getxattr(ff, parent, XATTR_NAME_POSIX_ACL_DEFAULT, &def,
+> -			 &deflen);
+> +	ret = fuse4fs_getxattr(ff, parent, XATTR_NAME_POSIX_ACL_DEFAULT, &def,
+> +			       &deflen);
+>  	switch (ret) {
+>  	case -ENODATA:
+>  	case -ENOENT:
+> @@ -1868,7 +1870,8 @@ static int propagate_default_acls(struct fuse4fs *ff, ext2_ino_t parent,
+>  		return ret;
+>  	}
+>  
+> -	ret = __setxattr(ff, child, XATTR_NAME_POSIX_ACL_DEFAULT, def, deflen);
+> +	ret = fuse4fs_setxattr(ff, child, XATTR_NAME_POSIX_ACL_DEFAULT, def,
+> +			       deflen);
+>  	ext2fs_free_mem(&def);
+>  	return ret;
+>  }
+> @@ -1997,7 +2000,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+>  	*node_name = 0;
+>  
+>  	fs = fuse4fs_start(ff);
+> -	if (!fs_can_allocate(ff, 2)) {
+> +	if (!fuse4fs_can_allocate(ff, 2)) {
+>  		ret = -ENOSPC;
+>  		goto out2;
+>  	}
+> @@ -2009,7 +2012,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+>  		goto out2;
+>  	}
+>  
+> -	ret = check_inum_access(ff, parent, A_OK | W_OK);
+> +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -2079,7 +2082,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
+>  
+>  	ext2fs_inode_alloc_stats2(fs, child, 1, 0);
+>  
+> -	ret = propagate_default_acls(ff, parent, child, inode.i_mode);
+> +	ret = fuse4fs_propagate_default_acls(ff, parent, child, inode.i_mode);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -2127,7 +2130,7 @@ static int op_mkdir(const char *path, mode_t mode)
+>  	*node_name = 0;
+>  
+>  	fs = fuse4fs_start(ff);
+> -	if (!fs_can_allocate(ff, 1)) {
+> +	if (!fuse4fs_can_allocate(ff, 1)) {
+>  		ret = -ENOSPC;
+>  		goto out2;
+>  	}
+> @@ -2139,7 +2142,7 @@ static int op_mkdir(const char *path, mode_t mode)
+>  		goto out2;
+>  	}
+>  
+> -	ret = check_inum_access(ff, parent, A_OK | W_OK);
+> +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -2212,7 +2215,7 @@ static int op_mkdir(const char *path, mode_t mode)
+>  		goto out3;
+>  	}
+>  
+> -	ret = propagate_default_acls(ff, parent, child, inode.i_mode);
+> +	ret = fuse4fs_propagate_default_acls(ff, parent, child, inode.i_mode);
+>  	if (ret)
+>  		goto out3;
+>  
+> @@ -2253,7 +2256,7 @@ static int fuse4fs_unlink(struct fuse4fs *ff, const char *path,
+>  		base_name = filename;
+>  	}
+>  
+> -	ret = check_inum_access(ff, dir, W_OK);
+> +	ret = fuse4fs_inum_access(ff, dir, W_OK);
+>  	if (ret) {
+>  		free(filename);
+>  		return ret;
+> @@ -2275,8 +2278,8 @@ static int fuse4fs_unlink(struct fuse4fs *ff, const char *path,
+>  	return 0;
+>  }
+>  
+> -static int remove_ea_inodes(struct fuse4fs *ff, ext2_ino_t ino,
+> -			    struct ext2_inode_large *inode)
+> +static int fuse4fs_remove_ea_inodes(struct fuse4fs *ff, ext2_ino_t ino,
+> +				    struct ext2_inode_large *inode)
+>  {
+>  	ext2_filsys fs = ff->fs;
+>  	struct ext2_xattr_handle *h;
+> @@ -2320,7 +2323,7 @@ static int remove_ea_inodes(struct fuse4fs *ff, ext2_ino_t ino,
+>  	return 0;
+>  }
+>  
+> -static int remove_inode(struct fuse4fs *ff, ext2_ino_t ino)
+> +static int fuse4fs_remove_inode(struct fuse4fs *ff, ext2_ino_t ino)
+>  {
+>  	ext2_filsys fs = ff->fs;
+>  	errcode_t err;
+> @@ -2366,7 +2369,7 @@ static int remove_inode(struct fuse4fs *ff, ext2_ino_t ino)
+>  		goto write_out;
+>  
+>  	if (ext2fs_has_feature_ea_inode(fs->super)) {
+> -		ret = remove_ea_inodes(ff, ino, &inode);
+> +		ret = fuse4fs_remove_ea_inodes(ff, ino, &inode);
+>  		if (ret)
+>  			return ret;
+>  	}
+> @@ -2407,7 +2410,7 @@ static int __op_unlink(struct fuse4fs *ff, const char *path)
+>  		goto out;
+>  	}
+>  
+> -	ret = check_inum_access(ff, ino, W_OK);
+> +	ret = fuse4fs_inum_access(ff, ino, W_OK);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -2415,7 +2418,7 @@ static int __op_unlink(struct fuse4fs *ff, const char *path)
+>  	if (ret)
+>  		goto out;
+>  
+> -	ret = remove_inode(ff, ino);
+> +	ret = fuse4fs_remove_inode(ff, ino);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -2483,7 +2486,7 @@ static int __op_rmdir(struct fuse4fs *ff, const char *path)
+>  	}
+>  	dbg_printf(ff, "%s: rmdir path=%s ino=%d\n", __func__, path, child);
+>  
+> -	ret = check_inum_access(ff, child, W_OK);
+> +	ret = fuse4fs_inum_access(ff, child, W_OK);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -2502,7 +2505,7 @@ static int __op_rmdir(struct fuse4fs *ff, const char *path)
+>  		goto out;
+>  	}
+>  
+> -	ret = check_inum_access(ff, rds.parent, W_OK);
+> +	ret = fuse4fs_inum_access(ff, rds.parent, W_OK);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -2514,7 +2517,7 @@ static int __op_rmdir(struct fuse4fs *ff, const char *path)
+>  	ret = fuse4fs_unlink(ff, path, &parent);
+>  	if (ret)
+>  		goto out;
+> -	ret = remove_inode(ff, child);
+> +	ret = fuse4fs_remove_inode(ff, child);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -2587,7 +2590,7 @@ static int op_symlink(const char *src, const char *dest)
+>  	*node_name = 0;
+>  
+>  	fs = fuse4fs_start(ff);
+> -	if (!fs_can_allocate(ff, 1)) {
+> +	if (!fuse4fs_can_allocate(ff, 1)) {
+>  		ret = -ENOSPC;
+>  		goto out2;
+>  	}
+> @@ -2599,7 +2602,7 @@ static int op_symlink(const char *src, const char *dest)
+>  		goto out2;
+>  	}
+>  
+> -	ret = check_inum_access(ff, parent, A_OK | W_OK);
+> +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -2746,7 +2749,7 @@ static int op_rename(const char *from, const char *to,
+>  	FUSE4FS_CHECK_CONTEXT(ff);
+>  	dbg_printf(ff, "%s: renaming %s to %s\n", __func__, from, to);
+>  	fs = fuse4fs_start(ff);
+> -	if (!fs_can_allocate(ff, 5)) {
+> +	if (!fuse4fs_can_allocate(ff, 5)) {
+>  		ret = -ENOSPC;
+>  		goto out;
+>  	}
+> @@ -2772,12 +2775,12 @@ static int op_rename(const char *from, const char *to,
+>  		goto out;
+>  	}
+>  
+> -	ret = check_inum_access(ff, from_ino, W_OK);
+> +	ret = fuse4fs_inum_access(ff, from_ino, W_OK);
+>  	if (ret)
+>  		goto out;
+>  
+>  	if (to_ino) {
+> -		ret = check_inum_access(ff, to_ino, W_OK);
+> +		ret = fuse4fs_inum_access(ff, to_ino, W_OK);
+>  		if (ret)
+>  			goto out;
+>  	}
+> @@ -2815,7 +2818,7 @@ static int op_rename(const char *from, const char *to,
+>  		goto out2;
+>  	}
+>  
+> -	ret = check_inum_access(ff, from_dir_ino, W_OK);
+> +	ret = fuse4fs_inum_access(ff, from_dir_ino, W_OK);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -2840,7 +2843,7 @@ static int op_rename(const char *from, const char *to,
+>  		goto out2;
+>  	}
+>  
+> -	ret = check_inum_access(ff, to_dir_ino, W_OK);
+> +	ret = fuse4fs_inum_access(ff, to_dir_ino, W_OK);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -2992,7 +2995,7 @@ static int op_link(const char *src, const char *dest)
+>  	*node_name = 0;
+>  
+>  	fs = fuse4fs_start(ff);
+> -	if (!fs_can_allocate(ff, 2)) {
+> +	if (!fuse4fs_can_allocate(ff, 2)) {
+>  		ret = -ENOSPC;
+>  		goto out2;
+>  	}
+> @@ -3005,7 +3008,7 @@ static int op_link(const char *src, const char *dest)
+>  		goto out2;
+>  	}
+>  
+> -	ret = check_inum_access(ff, parent, A_OK | W_OK);
+> +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -3021,7 +3024,7 @@ static int op_link(const char *src, const char *dest)
+>  		goto out2;
+>  	}
+>  
+> -	ret = check_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
+> +	ret = fuse4fs_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -3066,7 +3069,7 @@ static int op_link(const char *src, const char *dest)
+>  }
+>  
+>  /* Obtain group ids of the process that sent us a command(?) */
+> -static int get_req_groups(struct fuse4fs *ff, gid_t **gids, size_t *nr_gids)
+> +static int fuse4fs_get_groups(struct fuse4fs *ff, gid_t **gids, size_t *nr_gids)
+>  {
+>  	ext2_filsys fs = ff->fs;
+>  	errcode_t err;
+> @@ -3111,8 +3114,8 @@ static int get_req_groups(struct fuse4fs *ff, gid_t **gids, size_t *nr_gids)
+>   * that initiated the fuse request?  Returns 1 for yes, 0 for no, or a negative
+>   * errno.
+>   */
+> -static int in_file_group(struct fuse_context *ctxt,
+> -			 const struct ext2_inode_large *inode)
+> +static int fuse4fs_in_file_group(struct fuse_context *ctxt,
+> +				 const struct ext2_inode_large *inode)
+>  {
+>  	struct fuse4fs *ff = fuse4fs_get();
+>  	gid_t *gids = NULL;
+> @@ -3124,7 +3127,7 @@ static int in_file_group(struct fuse_context *ctxt,
+>  	if (ctxt->gid == gid)
+>  		return 1;
+>  
+> -	ret = get_req_groups(ff, &gids, &nr_gids);
+> +	ret = fuse4fs_get_groups(ff, &gids, &nr_gids);
+>  	if (ret == -ENOENT) {
+>  		/* magic return code for "could not get caller group info" */
+>  		return 0;
+> @@ -3167,11 +3170,11 @@ static int op_chmod(const char *path, mode_t mode, struct fuse_file_info *fi)
+>  		goto out;
+>  	}
+>  
+> -	ret = check_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
+> +	ret = fuse4fs_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
+>  	if (ret)
+>  		goto out;
+>  
+> -	if (want_check_owner(ff, ctxt) && ctxt->uid != inode_uid(inode)) {
+> +	if (fuse4fs_want_check_owner(ff, ctxt) && ctxt->uid != inode_uid(inode)) {
+>  		ret = -EPERM;
+>  		goto out;
+>  	}
+> @@ -3181,8 +3184,8 @@ static int op_chmod(const char *path, mode_t mode, struct fuse_file_info *fi)
+>  	 * of the user's groups, but FUSE only tells us about the primary
+>  	 * group.
+>  	 */
+> -	if (!is_superuser(ff, ctxt)) {
+> -		ret = in_file_group(ctxt, &inode);
+> +	if (!fuse4fs_is_superuser(ff, ctxt)) {
+> +		ret = fuse4fs_in_file_group(ctxt, &inode);
+>  		if (ret < 0)
+>  			goto out;
+>  
+> @@ -3236,14 +3239,14 @@ static int op_chown(const char *path, uid_t owner, gid_t group,
+>  		goto out;
+>  	}
+>  
+> -	ret = check_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
+> +	ret = fuse4fs_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
+>  	if (ret)
+>  		goto out;
+>  
+>  	/* FUSE seems to feed us ~0 to mean "don't change" */
+>  	if (owner != (uid_t) ~0) {
+>  		/* Only root gets to change UID. */
+> -		if (want_check_owner(ff, ctxt) &&
+> +		if (fuse4fs_want_check_owner(ff, ctxt) &&
+>  		    !(inode_uid(inode) == ctxt->uid && owner == ctxt->uid)) {
+>  			ret = -EPERM;
+>  			goto out;
+> @@ -3253,7 +3256,7 @@ static int op_chown(const char *path, uid_t owner, gid_t group,
+>  
+>  	if (group != (gid_t) ~0) {
+>  		/* Only root or the owner get to change GID. */
+> -		if (want_check_owner(ff, ctxt) &&
+> +		if (fuse4fs_want_check_owner(ff, ctxt) &&
+>  		    inode_uid(inode) != ctxt->uid) {
+>  			ret = -EPERM;
+>  			goto out;
+> @@ -3363,7 +3366,7 @@ static int op_truncate(const char *path, off_t len, struct fuse_file_info *fi)
+>  		goto out;
+>  	dbg_printf(ff, "%s: ino=%d len=%jd\n", __func__, ino, (intmax_t) len);
+>  
+> -	ret = check_inum_access(ff, ino, W_OK);
+> +	ret = fuse4fs_inum_access(ff, ino, W_OK);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -3445,7 +3448,7 @@ static int __op_open(struct fuse4fs *ff, const char *path,
+>  	}
+>  	dbg_printf(ff, "%s: ino=%d\n", __func__, file->ino);
+>  
+> -	ret = check_inum_access(ff, file->ino, check);
+> +	ret = fuse4fs_inum_access(ff, file->ino, check);
+>  	if (ret) {
+>  		/*
+>  		 * In a regular (Linux) fs driver, the kernel will open
+> @@ -3457,7 +3460,7 @@ static int __op_open(struct fuse4fs *ff, const char *path,
+>  		 * also employ undocumented hacks (see above).
+>  		 */
+>  		if (check == R_OK) {
+> -			ret = check_inum_access(ff, file->ino, X_OK);
+> +			ret = fuse4fs_inum_access(ff, file->ino, X_OK);
+>  			if (ret)
+>  				goto out;
+>  			check = X_OK;
+> @@ -3568,7 +3571,7 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
+>  		goto out;
+>  	}
+>  
+> -	if (!fs_can_allocate(ff, FUSE4FS_B_TO_FSB(ff, len))) {
+> +	if (!fuse4fs_can_allocate(ff, FUSE4FS_B_TO_FSB(ff, len))) {
+>  		ret = -ENOSPC;
+>  		goto out;
+>  	}
+> @@ -3768,11 +3771,11 @@ static int op_getxattr(const char *path, const char *key, char *value,
+>  	}
+>  	dbg_printf(ff, "%s: ino=%d name=%s\n", __func__, ino, key);
+>  
+> -	ret = check_inum_access(ff, ino, R_OK);
+> +	ret = fuse4fs_inum_access(ff, ino, R_OK);
+>  	if (ret)
+>  		goto out;
+>  
+> -	ret = __getxattr(ff, ino, key, &ptr, &plen);
+> +	ret = fuse4fs_getxattr(ff, ino, key, &ptr, &plen);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -3838,7 +3841,7 @@ static int op_listxattr(const char *path, char *names, size_t len)
+>  	}
+>  	dbg_printf(ff, "%s: ino=%d\n", __func__, ino);
+>  
+> -	ret = check_inum_access(ff, ino, R_OK);
+> +	ret = fuse4fs_inum_access(ff, ino, R_OK);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -3919,7 +3922,7 @@ static int op_setxattr(const char *path EXT2FS_ATTR((unused)),
+>  	}
+>  	dbg_printf(ff, "%s: ino=%d name=%s\n", __func__, ino, key);
+>  
+> -	ret = check_inum_access(ff, ino, W_OK);
+> +	ret = fuse4fs_inum_access(ff, ino, W_OK);
+>  	if (ret == -EACCES) {
+>  		ret = -EPERM;
+>  		goto out;
+> @@ -4008,7 +4011,7 @@ static int op_removexattr(const char *path, const char *key)
+>  		goto out;
+>  	}
+>  
+> -	if (!fs_can_allocate(ff, 1)) {
+> +	if (!fuse4fs_can_allocate(ff, 1)) {
+>  		ret = -ENOSPC;
+>  		goto out;
+>  	}
+> @@ -4020,7 +4023,7 @@ static int op_removexattr(const char *path, const char *key)
+>  	}
+>  	dbg_printf(ff, "%s: ino=%d name=%s\n", __func__, ino, key);
+>  
+> -	ret = check_inum_access(ff, ino, W_OK);
+> +	ret = fuse4fs_inum_access(ff, ino, W_OK);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -4207,7 +4210,7 @@ static int op_access(const char *path, int mask)
+>  		goto out;
+>  	}
+>  
+> -	ret = check_inum_access(ff, ino, mask);
+> +	ret = fuse4fs_inum_access(ff, ino, mask);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -4247,7 +4250,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
+>  	*node_name = 0;
+>  
+>  	fs = fuse4fs_start(ff);
+> -	if (!fs_can_allocate(ff, 1)) {
+> +	if (!fuse4fs_can_allocate(ff, 1)) {
+>  		ret = -ENOSPC;
+>  		goto out2;
+>  	}
+> @@ -4259,7 +4262,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
+>  		goto out2;
+>  	}
+>  
+> -	ret = check_inum_access(ff, parent, A_OK | W_OK);
+> +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -4326,7 +4329,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
+>  
+>  	ext2fs_inode_alloc_stats2(fs, child, 1, 0);
+>  
+> -	ret = propagate_default_acls(ff, parent, child, inode.i_mode);
+> +	ret = fuse4fs_propagate_default_acls(ff, parent, child, inode.i_mode);
+>  	if (ret)
+>  		goto out2;
+>  
+> @@ -4374,7 +4377,7 @@ static int op_utimens(const char *path, const struct timespec ctv[2],
+>  	 */
+>  	if (ctv[0].tv_nsec == UTIME_NOW && ctv[1].tv_nsec == UTIME_NOW)
+>  		access |= A_OK;
+> -	ret = check_inum_access(ff, ino, access);
+> +	ret = fuse4fs_inum_access(ff, ino, access);
+>  	if (ret)
+>  		goto out;
+>  
+> @@ -4459,7 +4462,7 @@ static int ioctl_setflags(struct fuse4fs *ff, struct fuse4fs_file_handle *fh,
+>  	if (err)
+>  		return translate_error(fs, fh->ino, err);
+>  
+> -	if (want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
+> +	if (fuse4fs_want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
+>  		return -EPERM;
+>  
+>  	ret = set_iflags(&inode, flags);
+> @@ -4508,7 +4511,7 @@ static int ioctl_setversion(struct fuse4fs *ff, struct fuse4fs_file_handle *fh,
+>  	if (err)
+>  		return translate_error(fs, fh->ino, err);
+>  
+> -	if (want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
+> +	if (fuse4fs_want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
+>  		return -EPERM;
+>  
+>  	inode.i_generation = generation;
+> @@ -4633,7 +4636,7 @@ static int ioctl_fssetxattr(struct fuse4fs *ff, struct fuse4fs_file_handle *fh,
+>  	if (err)
+>  		return translate_error(fs, fh->ino, err);
+>  
+> -	if (want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
+> +	if (fuse4fs_want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
+>  		return -EPERM;
+>  
+>  	ret = set_xflags(&inode, fsx->fsx_xflags);
+> @@ -4762,7 +4765,7 @@ static int ioctl_shutdown(struct fuse4fs *ff, struct fuse4fs_file_handle *fh,
+>  	struct fuse_context *ctxt = fuse_get_context();
+>  	ext2_filsys fs = ff->fs;
+>  
+> -	if (!is_superuser(ff, ctxt))
+> +	if (!fuse4fs_is_superuser(ff, ctxt))
+>  		return -EPERM;
+>  
+>  	err_printf(ff, "%s.\n", _("shut down requested"));
+> @@ -4884,7 +4887,7 @@ static int fuse4fs_allocate_range(struct fuse4fs *ff,
+>  		   (unsigned long long)len,
+>  		   (unsigned long long)start,
+>  		   (unsigned long long)end);
+> -	if (!fs_can_allocate(ff, FUSE4FS_B_TO_FSB(ff, len)))
+> +	if (!fuse4fs_can_allocate(ff, FUSE4FS_B_TO_FSB(ff, len)))
+>  		return -ENOSPC;
+>  
+>  	err = fuse4fs_read_inode(fs, fh->ino, &inode);
+> @@ -4927,9 +4930,9 @@ static int fuse4fs_allocate_range(struct fuse4fs *ff,
+>  	return err;
+>  }
+>  
+> -static errcode_t clean_block_middle(struct fuse4fs *ff, ext2_ino_t ino,
+> -				    struct ext2_inode_large *inode,
+> -				    off_t offset, off_t len, char **buf)
+> +static errcode_t fuse4fs_zero_middle(struct fuse4fs *ff, ext2_ino_t ino,
+> +				     struct ext2_inode_large *inode,
+> +				     off_t offset, off_t len, char **buf)
+>  {
+>  	ext2_filsys fs = ff->fs;
+>  	blk64_t blk;
+> @@ -4963,9 +4966,9 @@ static errcode_t clean_block_middle(struct fuse4fs *ff, ext2_ino_t ino,
+>  	return io_channel_write_blk64(fs->io, blk, 1, *buf);
+>  }
+>  
+> -static errcode_t clean_block_edge(struct fuse4fs *ff, ext2_ino_t ino,
+> -				  struct ext2_inode_large *inode, off_t offset,
+> -				  int clean_before, char **buf)
+> +static errcode_t fuse4fs_zero_edge(struct fuse4fs *ff, ext2_ino_t ino,
+> +				   struct ext2_inode_large *inode, off_t offset,
+> +				   int clean_before, char **buf)
+>  {
+>  	ext2_filsys fs = ff->fs;
+>  	blk64_t blk;
+> @@ -5056,13 +5059,13 @@ static int fuse4fs_punch_range(struct fuse4fs *ff,
+>  
+>  	/* Zero everything before the first block and after the last block */
+>  	if (FUSE4FS_B_TO_FSBT(ff, offset) == FUSE4FS_B_TO_FSBT(ff, offset + len))
+> -		err = clean_block_middle(ff, fh->ino, &inode, offset,
+> +		err = fuse4fs_zero_middle(ff, fh->ino, &inode, offset,
+>  					 len, &buf);
+>  	else {
+> -		err = clean_block_edge(ff, fh->ino, &inode, offset, 0, &buf);
+> +		err = fuse4fs_zero_edge(ff, fh->ino, &inode, offset, 0, &buf);
+>  		if (!err)
+> -			err = clean_block_edge(ff, fh->ino, &inode,
+> -					       offset + len, 1, &buf);
+> +			err = fuse4fs_zero_edge(ff, fh->ino, &inode,
+> +						offset + len, 1, &buf);
+>  	}
+>  	if (buf)
+>  		ext2fs_free_mem(&buf);
+> 
 
