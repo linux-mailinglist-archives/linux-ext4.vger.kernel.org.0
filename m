@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-11675-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11659-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87BF5C4077C
-	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 15:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78729C40713
+	for <lists+linux-ext4@lfdr.de>; Fri, 07 Nov 2025 15:53:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D97031A437A9
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 14:56:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D74A2189F57D
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Nov 2025 14:53:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C395233C50D;
-	Fri,  7 Nov 2025 14:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB1632ED46;
+	Fri,  7 Nov 2025 14:51:33 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A659337694;
-	Fri,  7 Nov 2025 14:51:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4666432D0C0;
+	Fri,  7 Nov 2025 14:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762527101; cv=none; b=T84O6igDKcF/fipEDvyZFSgRikRml9mqXSTMk+9ANwStZ0++aHwj6/ZyM4icaC/zPYs5AVQfo6HRcx/STKN4BlLq+i7Z5EfQfct6hBAyPGtO0QCfLJ/gBSbdRqXW3FanUNd6qE3wKDrLvinjO2UggBa3xWPmMH0tMhPkuR/MFAk=
+	t=1762527093; cv=none; b=BYv95/z0crv6T1jxlYH74CZAHagVwEiTkYlGj2dEASXpqevCq/g6/Lrm2KjN/Aewbmox4ZgUE6yeYV2V6TzIJtf0VdE55EjM3rhsohwaPfQDojTdTX5atpHrhommvpONFRsOGuh8dALuVZw7DLTU1/OKmuUeeKWQSss82acXz1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762527101; c=relaxed/simple;
-	bh=GUmH/tJHuyD4vWxcAuOvGmfo+GiRreSrhnayX5WBJ1U=;
+	s=arc-20240116; t=1762527093; c=relaxed/simple;
+	bh=dVoOH5mGAhrPScTZXWE+bMUY8L1DmWDBNb1pvV1WJ3E=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EvAP80MFgAwGQv1ixKeiMMJLs1vnZotrpTsJOqADaqZiqG5t4wJIKvc9b4lMvaJ2VxUdhw2VBvs+EqDlITfftb7UtcFbBtdx+xd454kdGzIMFn6f/ZtYROfFMbJVEuFgfcKFG/b1F9+jceIgGWaUupHVFYZIFxeUgArygp7MpZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=nnvuLh5DBEjwDDA5E39wc6M569jLoPjS9LL8FaADoIpbrqf8be95xU/OA9PH6NCZ75AjJai4ulZB4H3hVsVKO/XsV84hvhqwKBw5Wys2Rma6YjApamviQwzX9igrsFPHHq8aG07nwAMN4sLXlxNnIhJjTsCUXvwOPmv/PmGO/b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d327Q2v6LzKHMjG;
-	Fri,  7 Nov 2025 22:51:14 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d327D4cjQzYQv40;
+	Fri,  7 Nov 2025 22:51:04 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id B458D1A0EFB;
+	by mail.maildlp.com (Postfix) with ESMTP id CB6E61A0EFB;
 	Fri,  7 Nov 2025 22:51:24 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.50.87.129])
-	by APP2 (Coremail) with SMTP id Syh0CgDnPUZoBw5pRwgbDA--.60770S22;
+	by APP2 (Coremail) with SMTP id Syh0CgDnPUZoBw5pRwgbDA--.60770S23;
 	Fri, 07 Nov 2025 22:51:24 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
@@ -53,9 +53,9 @@ Cc: tytso@mit.edu,
 	chengzhihao1@huawei.com,
 	libaokun1@huawei.com,
 	libaokun@huaweicloud.com
-Subject: [PATCH v2 18/24] ext4: support large block size in mpage_map_and_submit_buffers()
-Date: Fri,  7 Nov 2025 22:42:43 +0800
-Message-Id: <20251107144249.435029-19-libaokun@huaweicloud.com>
+Subject: [PATCH v2 19/24] ext4: support large block size in mpage_prepare_extent_to_map()
+Date: Fri,  7 Nov 2025 22:42:44 +0800
+Message-Id: <20251107144249.435029-20-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20251107144249.435029-1-libaokun@huaweicloud.com>
 References: <20251107144249.435029-1-libaokun@huaweicloud.com>
@@ -66,10 +66,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgDnPUZoBw5pRwgbDA--.60770S22
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF4rWFW3XF4xGw15Cw45Jrb_yoW8Xw1xpF
-	W5W3yDWFs5urWI9F4IqF1DZrnrtayIga1UXFWFv34aqFyUKr10krn5t3W8Zan5JFWxtrW8
-	XF1SkryxW3W3CrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgDnPUZoBw5pRwgbDA--.60770S23
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF4rWFW3XF4xGw15Cw45Jrb_yoW8WrWfpF
+	W5W3ykCr4fX342gFWSgF1qvwsrtas3GayUJFW5tFyYqa45Kr95uryUtFnYvFs5tFWxAryr
+	XF4SkryfWa1xJFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUQa14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -84,7 +84,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7CF4rWFW3XF4xGw15Cw45Jrb_yoW8Xw1xpF
 	x2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw2
 	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
 	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdsqAUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAFBWkNxrUVIwAAsg
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAFBWkNxrAU3gAAsa
 
 From: Baokun Li <libaokun1@huawei.com>
 
@@ -96,40 +96,40 @@ Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/inode.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ fs/ext4/inode.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 80c2860abed2..1ac7ca9479eb 100644
+index 1ac7ca9479eb..c09859786563 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -2297,15 +2297,14 @@ static int mpage_map_and_submit_buffers(struct mpage_da_data *mpd)
- 	struct folio_batch fbatch;
- 	unsigned nr, i;
- 	struct inode *inode = mpd->inode;
--	int bpp_bits = PAGE_SHIFT - inode->i_blkbits;
- 	pgoff_t start, end;
+@@ -2618,7 +2618,6 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+ 	pgoff_t end = mpd->end_pos >> PAGE_SHIFT;
+ 	xa_mark_t tag;
+ 	int i, err = 0;
+-	int blkbits = mpd->inode->i_blkbits;
  	ext4_lblk_t lblk;
- 	ext4_fsblk_t pblock;
- 	int err;
- 	bool map_bh = false;
+ 	struct buffer_head *head;
+ 	handle_t *handle = NULL;
+@@ -2657,7 +2656,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+ 			 */
+ 			if (mpd->wbc->sync_mode == WB_SYNC_NONE &&
+ 			    mpd->wbc->nr_to_write <=
+-			    mpd->map.m_len >> (PAGE_SHIFT - blkbits))
++			    EXT4_LBLK_TO_PG(mpd->inode, mpd->map.m_len))
+ 				goto out;
  
--	start = mpd->map.m_lblk >> bpp_bits;
--	end = (mpd->map.m_lblk + mpd->map.m_len - 1) >> bpp_bits;
-+	start = EXT4_LBLK_TO_PG(inode, mpd->map.m_lblk);
-+	end = EXT4_LBLK_TO_PG(inode, mpd->map.m_lblk + mpd->map.m_len - 1);
- 	pblock = mpd->map.m_pblk;
- 
- 	folio_batch_init(&fbatch);
-@@ -2316,7 +2315,7 @@ static int mpage_map_and_submit_buffers(struct mpage_da_data *mpd)
- 		for (i = 0; i < nr; i++) {
- 			struct folio *folio = fbatch.folios[i];
- 
--			lblk = folio->index << bpp_bits;
-+			lblk = EXT4_PG_TO_LBLK(inode, folio->index);
- 			err = mpage_process_folio(mpd, folio, &lblk, &pblock,
- 						 &map_bh);
- 			/*
+ 			/* If we can't merge this page, we are done. */
+@@ -2735,8 +2734,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+ 				mpage_folio_done(mpd, folio);
+ 			} else {
+ 				/* Add all dirty buffers to mpd */
+-				lblk = ((ext4_lblk_t)folio->index) <<
+-					(PAGE_SHIFT - blkbits);
++				lblk = EXT4_PG_TO_LBLK(mpd->inode, folio->index);
+ 				head = folio_buffers(folio);
+ 				err = mpage_process_page_bufs(mpd, head, head,
+ 						lblk);
 -- 
 2.46.1
 
