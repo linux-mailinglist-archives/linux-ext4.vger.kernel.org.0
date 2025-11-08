@@ -1,758 +1,440 @@
-Return-Path: <linux-ext4+bounces-11689-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11690-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D92BC42205
-	for <lists+linux-ext4@lfdr.de>; Sat, 08 Nov 2025 01:25:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8CC7C42244
+	for <lists+linux-ext4@lfdr.de>; Sat, 08 Nov 2025 01:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F356B1897F30
-	for <lists+linux-ext4@lfdr.de>; Sat,  8 Nov 2025 00:26:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3505C18987DD
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Nov 2025 00:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30266202961;
-	Sat,  8 Nov 2025 00:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A5B728134C;
+	Sat,  8 Nov 2025 00:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rtssR7WL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qDhdLF1S"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A7034D38B
-	for <linux-ext4@vger.kernel.org>; Sat,  8 Nov 2025 00:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD591FBC8E;
+	Sat,  8 Nov 2025 00:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762561543; cv=none; b=DCnBiXV3VMsyXQ/A6vZNMaEjM8+mknzjVfQF7+VbhxKrax1QLHAJGzl5nvl4mhNhxne6H0XNDjBBCkLUrA0dRqTzJhXl8e/8RY4Vc8onSeXBYJnaSZsMUkl3v1i7Yb8/3wgsufsTY8Ex50mlt9gf3l/O0fkBooYX8W0dlzUHEL0=
+	t=1762562584; cv=none; b=S4sDUfNqE3yxPqRi+gylOTDA++bNh/yroyjGCOzl31QmZ/AcDabsWoKr8B+L5eMbcAdKPFMgw5LoYmZUe1QrYK55q+E/mJgZPdmNR5CqplUdPn4xL2KDxC7LDep/hUmXm7ubd0Hj8syTk8JXvWGQzG3sqZT1/ZtHUzCrJK6oiHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762561543; c=relaxed/simple;
-	bh=T6TAd5/oQs8gxDEHt7fntLYTqCkQQ7yD9KyOuIezDVI=;
+	s=arc-20240116; t=1762562584; c=relaxed/simple;
+	bh=ulHpxB9JZKh9cp1iDm6npE/+i3YrZm82kKD4/C8mFTc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u0G9ZpdczebGuioiYhW4BSlspxmmpma7uuTWVvBfnLPP3ku0rSyFbVTJpDtediwqTbsnFhp4e0tr6kTGESP2fxfyJjrR2vT51jTKsubfc+sEyFa+6TfD6z2HYqfNHbDT8KVzkF5gVKi64cnuikA2EGz/DpuMrgLWj9WCw8m0eXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rtssR7WL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60222C4CEF8;
-	Sat,  8 Nov 2025 00:25:43 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=QZhGR/VUbcmwa1dLIJVXT9pE98f8Yv3Py+7QGhv5qS1OSu5DZOh9zqaNXC5y2YNOq3eoGn7EtoygOTsBQiH5MgtNZq0UjYlQkw9a+c53zmuScmOAJmyRsx7U1aZk80jms/ZSG92LdwTa5QHsMCOmFf0uYW15PkDrsDOg+LUWeKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qDhdLF1S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE5BAC4CEF5;
+	Sat,  8 Nov 2025 00:43:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762561543;
-	bh=T6TAd5/oQs8gxDEHt7fntLYTqCkQQ7yD9KyOuIezDVI=;
+	s=k20201202; t=1762562584;
+	bh=ulHpxB9JZKh9cp1iDm6npE/+i3YrZm82kKD4/C8mFTc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rtssR7WLCBI6VGqt3GuLLSEiOyIefPYuDn8RDtWXvllNiTkhOZa/PvfZrtz4QOUti
-	 lvvnDHqTFE6eI7VuF2UcojpDK1HPnJNCXjrGVCPRjIDCJyC5YzXqaDdbsh4YlBwrJL
-	 wmLh1TzPxpycXaf+WuEhof6eGXTUHtJpGWZzpQq8O9vjWHS8iHJxQOSQGQ/ill88yp
-	 UEZh9fbSH+TONhlC0VsMCg5jH/dKLPFnCEbBwYD21D5DSRa9jOUyxlRDmi1sHM2qVD
-	 iG8Q/PeDXGDx3EXPV1wr834svn9lVyxnhXH7h/rk+Lx8rla/i8Qu8VMPI5IBI0Km5T
-	 oNq97qOFnc/Pg==
-Date: Fri, 7 Nov 2025 16:25:42 -0800
+	b=qDhdLF1Sa9cNp5b+Nh0KdBNmd685Vk9yu0VZkieyl+bt5Hro8PEREAuBPBhw5b3nL
+	 bZ7S+qRSMy2POnPqVHYDNjdAgEzJAh1sVMe8TcuSecKO8rwIy8eNQrhji4ji9p8Sth
+	 76oiOZibdkDAgHoKy+BFZJ+IJAjR6aHEdOoZJdtJxVWY0DA1keUNLerJVffp9PSd0m
+	 0VFPX5qfGVXC/fNOKcPOTJtRwUKB9NOh7xW9INlbpmaxMXpeD4TKA/gMN3TpfeYOKK
+	 v48huhF2pv0R5iRjVhlAoUpvJ/R4BxQkRpLDz6WtHdAO04f7BWzncraU6o5U8mRCQK
+	 JHY8v4kLWJ55g==
+Date: Fri, 7 Nov 2025 16:43:03 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: tytso@mit.edu, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 04/23] fuse4fs: namespace some helpers
-Message-ID: <20251108002542.GN196391@frogsfrogsfrogs>
-References: <176246795459.2864310.10641701647593035148.stgit@frogsfrogsfrogs>
- <176246795639.2864310.2926261571911454655.stgit@frogsfrogsfrogs>
- <aQ2pVgns-GwNFnW6@amir-ThinkPad-T480>
+To: Joanne Koong <joannelkoong@gmail.com>
+Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/5] fuse: flush pending fuse events before aborting the
+ connection
+Message-ID: <20251108004303.GX196362@frogsfrogsfrogs>
+References: <176169809222.1424347.16562281526870178424.stgit@frogsfrogsfrogs>
+ <176169809274.1424347.4813085698864777783.stgit@frogsfrogsfrogs>
+ <CAJnrk1ZovORC=tLW-Q94XXY5M4i5WUd4CgRKEo7Lc7K2Sg+Kog@mail.gmail.com>
+ <20251103221349.GE196370@frogsfrogsfrogs>
+ <CAJnrk1a4d__8RHu0EGN2Yfk3oOhqZLJ7fBCNQYdHoThPrvnOaQ@mail.gmail.com>
+ <20251106001730.GH196358@frogsfrogsfrogs>
+ <CAJnrk1Ycsw0pn+Qdo5+4adVrjha=ypofE_Wk0GwLwrandpjLeQ@mail.gmail.com>
+ <20251107042619.GK196358@frogsfrogsfrogs>
+ <CAJnrk1Yqy5t5U3Y3VHgdtTTaK7NRkDu0UBy4zGEnq=tvXEhoiQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aQ2pVgns-GwNFnW6@amir-ThinkPad-T480>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJnrk1Yqy5t5U3Y3VHgdtTTaK7NRkDu0UBy4zGEnq=tvXEhoiQ@mail.gmail.com>
 
-On Fri, Nov 07, 2025 at 09:09:58AM +0100, Amir Goldstein wrote:
-> On Thu, Nov 06, 2025 at 02:44:07PM -0800, Darrick J. Wong wrote:
-> > From: Darrick J. Wong <djwong@kernel.org>
-> > 
-> > Prepend "fuse4fs_" to all helper functions that take a struct fuse4fs
-> > object pointer.
-> > 
-> > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> > ---
-> >  fuse4fs/fuse4fs.c |  177 +++++++++++++++++++++++++++--------------------------
-> >  1 file changed, 90 insertions(+), 87 deletions(-)
-> > 
-> > 
-> > diff --git a/fuse4fs/fuse4fs.c b/fuse4fs/fuse4fs.c
-> > index daf22e0fe7fde5..2ef5ad60163639 100644
-> > --- a/fuse4fs/fuse4fs.c
-> > +++ b/fuse4fs/fuse4fs.c
-> > @@ -2,6 +2,7 @@
-> >   * fuse4fs.c - FUSE low-level server for e2fsprogs.
-> >   *
-> >   * Copyright (C) 2014-2025 Oracle.
-> > + * Copyright (C) 2025 CTERA Networks.
+On Fri, Nov 07, 2025 at 11:18:33AM -0800, Joanne Koong wrote:
+> On Thu, Nov 6, 2025 at 8:26 PM Darrick J. Wong <djwong@kernel.org> wrote:
+> >
+> > [I read this email backwards, like I do]
+> >
+> > On Thu, Nov 06, 2025 at 10:37:41AM -0800, Joanne Koong wrote:
+> > > On Wed, Nov 5, 2025 at 4:17 PM Darrick J. Wong <djwong@kernel.org> wrote:
+> > > >
+> > > > On Tue, Nov 04, 2025 at 11:22:26AM -0800, Joanne Koong wrote:
+> > > >
+> > > > <snipping here because this thread has gotten very long>
+> > > >
+> > > > > > > > +       while (wait_event_timeout(fc->blocked_waitq,
+> > > > > > > > +                       !fc->connected || atomic_read(&fc->num_waiting) == 0,
+> > > > > > > > +                       HZ) == 0) {
+> > > > > > > > +               /* empty */
+> > > > > > > > +       }
+> > > > > > >
+> > > > > > > I'm wondering if it's necessary to wait here for all the pending
+> > > > > > > requests to complete or abort?
+> > > > > >
+> > > > > > I'm not 100% sure what the fuse client shutdown sequence is supposed to
+> > > > > > be.  If someone kills a program with a large number of open unlinked
+> > > > > > files and immediately calls umount(), then the fuse client could be in
+> > > > > > the process of sending FUSE_RELEASE requests to the server.
+> > > > > >
+> > > > > > [background info, feel free to speedread this paragraph]
+> > > > > > For a non-fuseblk server, unmount aborts all pending requests and
+> > > > > > disconnects the fuse device.  This means that the fuse server won't see
+> > > > > > all the FUSE_REQUESTs before libfuse calls ->destroy having observed the
+> > > > > > fusedev shutdown.  The end result is that (on fuse2fs anyway) you end up
+> > > > > > with a lot of .fuseXXXXX files that nobody cleans up.
+> > > > > >
+> > > > > > If you make ->destroy release all the remaining open files, now you run
+> > > > > > into a second problem, which is that if there are a lot of open unlinked
+> > > > > > files, freeing the inodes can collectively take enough time that the
+> > > > > > FUSE_DESTROY request times out.
+> > > > > >
+> > > > > > On a fuseblk server with libfuse running in multithreaded mode, there
+> > > > > > can be several threads reading fuse requests from the fusedev.  The
+> > > > > > kernel actually sends its own FUSE_DESTROY request, but there's no
+> > > > > > coordination between the fuse workers, which means that the fuse server
+> > > > > > can process FUSE_DESTROY at the same time it's processing FUSE_RELEASE.
+> > > > > > If ->destroy closes the filesystem before the FUSE_RELEASE requests are
+> > > > > > processed, you end up with the same .fuseXXXXX file cleanup problem.
+> > > > >
+> > > > > imo it is the responsibility of the server to coordinate this and make
+> > > > > sure it has handled all the requests it has received before it starts
+> > > > > executing the destruction logic.
+> > > >
+> > > > I think we're all saying that some sort of fuse request reordering
+> > > > barrier is needed here, but there's at least three opinions about where
+> > > > that barrier should be implemented.  Clearly I think the barrier should
+> > > > be in the kernel, but let me think more about where it could go if it
+> > > > were somewhere else.
+> > > >
+> > > > First, Joanne's suggestion for putting it in the fuse server itself:
+> > > >
+> > > > I don't see how it's generally possible for the fuse server to know that
+> > > > it's processed all the requests that the kernel might have sent it.
+> > > > AFAICT each libfuse thread does roughly this:
+> > > >
+> > > > 1. read() a request from the fusedev fd
+> > > > 2. decode the request data and maybe do some allocations or transform it
+> > > > 3. call fuse server with request
+> > > > 4. fuse server does ... something with the request
+> > > > 5. fuse server finishes, hops back to libfuse / calls fuse_reply_XXX
+> > > >
+> > > > Let's say thread 1 is at step 4 with a FUSE_DESTROY.  How does it find
+> > > > out if there are other fuse worker threads that are somewhere in steps
+> > > > 2 or 3?  AFAICT the library doesn't keep track of the number of threads
+> > > > that are waiting in fuse_session_receive_buf_internal, so fuse servers
+> > > > can't ask the library about that either.
+> > > >
+> > > > Taking a narrower view, it might be possible for the fuse server to
+> > > > figure this out by maintaining an open resource count.  It would
+> > > > increment this counter when a FUSE_{OPEN,CREATE} request succeeds and
+> > > > decrement it when FUSE_RELEASE comes in.  Assuming that FUSE_RELEASE is
+> > > > the only kind of request that can be pending when a FUSE_DESTROY comes
+> > > > in, then destroy just has to wait for the counter to hit zero.
+> > >
+> > > I was thinking this logic could be in libfuse's fuse_loop_mt.c. Where
+> > > if there are X worker threads that are all running fuse_do_work( )
+> > > then if you get a FUSE_DESTROY on one of those threads that thread can
+> > > set some se->destroyed field. At this point the other threads will
+> > > have already called fuse_session_receive_buf_internal() on all the
+> > > flushed background requests, so after they process it and return from
+> > > fuse_session_process_buf_internal(), then they check if se->destroyed
+> > > was set, and if it is they exit the thread, while in the thread that
+> > > got the FUSE_DESTROY it sleeps until all the threads have completed
+> > > and then it executes the destroy logic.That to me seems like the
+> > > cleanest approach.
+> >
+> > Hrm.  Well now (scrolling to the bottom and back) that I know that the
+> > FUSE_DESTROY won't get put on the queue ahead of the FUSE_RELEASEs, I
+> > think that /could/ work.
+> >
+> > One tricky thing with having worker threads check a flag and exit is
+> > that they can be sleeping in the kernel (from _fuse_session_receive_buf)
+> > when the "just go away" flag gets set.  If the thread never wakes up,
+> > then it'll never exit.  In theory you could have the FUSE_DESTROY thread
+> > call pthread_cancel on all the other worker threads to eliminate them
+> > once they emerge from PTHREAD_CANCEL_DISABLE state, but I still have
+> > nightmares from adventures in pthread_cancel at Sun in 2002. :P
+> >
+> > Maybe an easier approach would be to have fuse_do_work increment a
+> > counter when it receives a buffer and decrement it when it finishes with
+> > that buffer.  The FUSE_DESTROY thread merely has to wait for that
+> > counter to reach 1, at which point it's the only thread with a request
+> > to process, so it can call do_destroy.  That at least would avoid adding
+> > a new user of pthread_cancel() into the mt loop code.
+> >
+> > > >
+> > > > Is the above assumption correct?
+> > > >
+> > > > I don't see any fuse servers that actually *do* this, though.  I
+> > > > perceive that there are a lot of fuse servers out there that aren't
+> > > > packaged in Debian, though, so is this actually a common thing for
+> > > > proprietary fuse servers which I wouldn't know about?
+> > > >
+> > > > Downthread, Bernd suggested doing this in libfuse instead of making the
+> > > > fuse servers do it.  He asks:
+> > > >
+> > > > "There is something I don't understand though, how can FUSE_DESTROY
+> > > > happen before FUSE_RELEASE is completed?
+> > > >
+> > > > "->release / fuse_release
+> > > >    fuse_release_common
+> > > >       fuse_file_release
+> > > >          fuse_file_put
+> > > >             fuse_simple_background
+> > > >             <userspace>
+> > > >             <userspace-reply>
+> > > >                fuse_release_end
+> > > >                   iput()"
+> > > >
+> > > > The answer to this is: fuse_file_release is always asynchronous now, so
+> > > > the FUSE_RELEASE is queued to the background and the kernel moves on
+> > > > with its life.
+> > > >
+> > > > It's likely much more effective to put the reordering barrier in the
+> > > > library (ignoring all the vendored libfuse out there) assuming that the
+> > > > above assumption holds.  I think it wouldn't be hard to have _do_open
+> > > > (fuse_lowlevel.c) increment a counter in fuse_session, decrement it in
+> > > > _do_release, and then _do_destroy would wait for it to hit zero.
+> > > >
+> > > > For a single-threaded fuse server I think this might not even be an
+> > > > issue because the events are (AFAICT) processed in order.  However,
+> > > > you'd have to be careful about how you did that for a multithreaded fuse
+> > > > server.  You wouldn't want to spin in _do_destroy because that takes out
+> > > > a thread that could be doing work.  Is there a way to park a request?
+> > >
+> > > If the background requests are flushed before the destroy request,
+> > > then this doesn't take out a thread because al the background requests
+> > > will already have been or are being serviced.
+> >
+> > <nod>
+> >
+> > I'm still concerned about a few things with the libfuse approach though.
+> > The kernel is the initiator, so it knows the data dependencies between
+> > requests.  Consequently, it's in the best position to know that if
+> > request R2 depends on R1, then it shouldn't issue R2 until it has
+> > received an acknowledgement for R1.  The fuse server is the target, it
+> > shouldn't be second-guessing what the initiator wants.
+> >
+> > The second concern is that if a request timeout is in effect, then all
+> > the time that libfuse spends waiting for other request to drain is
+> > charged to that request.  IOWs, if the timeout is 60s and libfuse holds
+> > the FUSE_DESTROY for 40s, the fuse server only has 20s to reply to the
+> > request whereas the sysadmin might have assumed that the server would
+> > have a full 60s to flush the filesystem and exit.
+> >
+> > If you're worried about no-timeout fuse servers hanging the unmount
+> > process, what about killing the fuse server?  Or telling the kernel to
+> > abort the connection?  Either should suffice to kill the wait_event
+> > loop.
+> >
+> > The third thing is that the iomap patchset will change the unmount
+> > request sequence:
+> >
+> > 1. <some number of FUSE_RELEASEs>
+> > 2. FUSE_SYNCFS to tell the fuse server to write all its dirty data
+> > 3. FUSE_DESTROY to close the filesystem
 > 
-> I think this belongs to next patch :)
+> imo it's the responsibility of FUSE_DESTROY to write out any lingering
+> dirty data before tearing down state and there shouldn't need to be an
+> extra FUSE_SYNCFS issued before the destroy.
+> 
+> >
+> > If we put the ordering barrier in libfuse, then we'll have to modify
+> > libfuse to flush all of (1) before processing (2), and then wait for (2)
+> > to finish before processing (3).  But libfuse doesn't know that a
+> > particular FUSE_SYNCFS will be succeeded by a FUSE_DESTROY.  I could
+> > drop the SYNCFS and let DESTROY handle all the flushing.  But again, the
+> > kernel already knows the ordering that it requires, so it should enforce
+> > that ordering directly.
+> >
+> > (Sorry, I feel like I'm belaboring the point excessively, I'll stop)
+> >
+> > The libfuse approach /does/ have the small advantage that it can start
+> > working on the FUSE_DESTROY as soon as the other workers quiesce because
+> > it doesn't have to wait for the kernel to see the last FUSE_RELEASE
+> > reply and generate the DESTROY request.
+> 
+> imo the main advantage is that handling this in userspace offers
+> servers a lot more flexibility for controlling unmount/destroy
+> behavior. If we have this logic in the kernel, we're guaranteeing that
+> all previous requests must be completed (no matter how long they take)
+> before the server sees FUSE_DESTROY. For example if some servers in
+> the future want to prioritize fast unmounts over having lingering
+> unlinked files, then this allows for that. Or if the server wants to
+> write out data while RELEASE is happening, they can do that too
+> instead of having to wait for the RELEASE to finish.
+> 
+> I'm not sure if we even really do need to wait for RELEASE to finish
+> before replying back to the DESTROY request. For unlinking files and
+> writing data out to storage for example, can't you do all of that
+> still even after replying back to the DESTROY request? The connection
+> will be aborted but that seems fine, that just means the client can't
+> communicate with the server. This would let the unmount finish quickly
+> while meanwhile the server logic can run still even after the unmount
+> / connection abort, and the server could then do/finish all the
+> unlinking logic / writing to storage. Then when all of that is
+> finished, the server could officially clean everything up and exit.
 
-Moved; thanks for the feedback!
+No, because fuseblk and fuse-iomap servers MUST close the block devices
+before the umount(2) call returns so that an immediate mount(8) doesn't
+fail because the block device is still open O_EXCL.  This is a
+fundamental behavior of all local filesystems because O_EXCL is the
+*only* mechanism that prevents two separate mounts of the same device,
+and mount(2) fails immediately if it can't open a block device O_EXCL.
+
+fstests and many other scripts rely on the behavior that the block
+device is always free when umount returns.  I know it's tempting to make
+regular unmount return ASAP even if the filesystem isn't quite done, but
+that's what umount -l is for.
 
 --D
 
-> Thanks,
-> Amir.
+> > > > For a fuseblk filesystem this abort is very dangerous because the kernel
+> > > > releases its O_EXCL hold on the block device in kill_block_super before
+> > > > the fuse server has a chance to finish up and close the block device.
+> > > > The fuseblk server itself could not have opened the block device O_EXCL
+> > > > so that means there's a period where another process (or even another
+> > > > fuseblk mount) could open the bdev O_EXCL and both try to write to the
+> > > > block device.
+> > > >
+> > > > (I actually have been wondering who uses the fuse request timeouts?  In
+> > > > my testing even 30min wasn't sufficient to avoid aborts for some of the
+> > > > truncate/inactivation fstests.)
+> > >
+> > > Meta uses fuse request timeouts. We saw a few cases of deadlocks in
+> > > some buggy fuse server implementations, so we now enforce default
+> > > timeouts. The timeout is set to a pretty large number though. Our main
+> > > use of it is to free/cleanup system resources if the server is
+> > > deadlocked.
+> >
+> > If you can share, how long of a timeout?  I've noticed that some clouds
+> > set their iscsi timeouts to 12h or more(!) and that's for a single SCSI
+> > command.
 > 
-> >   *
-> >   * %Begin-Header%
-> >   * This file may be redistributed under the terms of the GNU Public
-> > @@ -852,7 +853,7 @@ static int ext2_file_type(unsigned int mode)
-> >  	return 0;
-> >  }
-> >  
-> > -static int fs_can_allocate(struct fuse4fs *ff, blk64_t num)
-> > +static int fuse4fs_can_allocate(struct fuse4fs *ff, blk64_t num)
-> >  {
-> >  	ext2_filsys fs = ff->fs;
-> >  	blk64_t reserved;
-> > @@ -879,21 +880,22 @@ static int fs_can_allocate(struct fuse4fs *ff, blk64_t num)
-> >  	return ext2fs_free_blocks_count(fs->super) > reserved + num;
-> >  }
-> >  
-> > -static int fuse4fs_is_writeable(struct fuse4fs *ff)
-> > +static int fuse4fs_is_writeable(const struct fuse4fs *ff)
-> >  {
-> >  	return ff->opstate == F4OP_WRITABLE &&
-> >  		(ff->fs->super->s_error_count == 0);
-> >  }
-> >  
-> > -static inline int is_superuser(struct fuse4fs *ff, struct fuse_context *ctxt)
-> > +static inline int fuse4fs_is_superuser(struct fuse4fs *ff,
-> > +				       const struct fuse_context *ctxt)
-> >  {
-> >  	if (ff->fakeroot)
-> >  		return 1;
-> >  	return ctxt->uid == 0;
-> >  }
-> >  
-> > -static inline int want_check_owner(struct fuse4fs *ff,
-> > -				   struct fuse_context *ctxt)
-> > +static inline int fuse4fs_want_check_owner(struct fuse4fs *ff,
-> > +					   const struct fuse_context *ctxt)
-> >  {
-> >  	/*
-> >  	 * The kernel is responsible for access control, so we allow anything
-> > @@ -901,14 +903,14 @@ static inline int want_check_owner(struct fuse4fs *ff,
-> >  	 */
-> >  	if (ff->kernel)
-> >  		return 0;
-> > -	return !is_superuser(ff, ctxt);
-> > +	return !fuse4fs_is_superuser(ff, ctxt);
-> >  }
-> >  
-> >  /* Test for append permission */
-> >  #define A_OK	16
-> >  
-> > -static int check_iflags_access(struct fuse4fs *ff, ext2_ino_t ino,
-> > -			       const struct ext2_inode *inode, int mask)
-> > +static int fuse4fs_iflags_access(struct fuse4fs *ff, ext2_ino_t ino,
-> > +				 const struct ext2_inode *inode, int mask)
-> >  {
-> >  	EXT2FS_BUILD_BUG_ON((A_OK & (R_OK | W_OK | X_OK | F_OK)) != 0);
-> >  
-> > @@ -936,7 +938,7 @@ static int check_iflags_access(struct fuse4fs *ff, ext2_ino_t ino,
-> >  	return 0;
-> >  }
-> >  
-> > -static int check_inum_access(struct fuse4fs *ff, ext2_ino_t ino, int mask)
-> > +static int fuse4fs_inum_access(struct fuse4fs *ff, ext2_ino_t ino, int mask)
-> >  {
-> >  	struct fuse_context *ctxt = fuse_get_context();
-> >  	ext2_filsys fs = ff->fs;
-> > @@ -968,7 +970,7 @@ static int check_inum_access(struct fuse4fs *ff, ext2_ino_t ino, int mask)
-> >  	if (mask == 0)
-> >  		return 0;
-> >  
-> > -	ret = check_iflags_access(ff, ino, &inode, mask);
-> > +	ret = fuse4fs_iflags_access(ff, ino, &inode, mask);
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > @@ -977,7 +979,7 @@ static int check_inum_access(struct fuse4fs *ff, ext2_ino_t ino, int mask)
-> >  		return 0;
-> >  
-> >  	/* Figure out what root's allowed to do */
-> > -	if (is_superuser(ff, ctxt)) {
-> > +	if (fuse4fs_is_superuser(ff, ctxt)) {
-> >  		/* Non-file access always ok */
-> >  		if (!LINUX_S_ISREG(inode.i_mode))
-> >  			return 0;
-> > @@ -1783,8 +1785,8 @@ static int op_readlink(const char *path, char *buf, size_t len)
-> >  	return ret;
-> >  }
-> >  
-> > -static int __getxattr(struct fuse4fs *ff, ext2_ino_t ino, const char *name,
-> > -		      void **value, size_t *value_len)
-> > +static int fuse4fs_getxattr(struct fuse4fs *ff, ext2_ino_t ino,
-> > +			    const char *name, void **value, size_t *value_len)
-> >  {
-> >  	ext2_filsys fs = ff->fs;
-> >  	struct ext2_xattr_handle *h;
-> > @@ -1814,8 +1816,8 @@ static int __getxattr(struct fuse4fs *ff, ext2_ino_t ino, const char *name,
-> >  	return ret;
-> >  }
-> >  
-> > -static int __setxattr(struct fuse4fs *ff, ext2_ino_t ino, const char *name,
-> > -		      void *value, size_t valuelen)
-> > +static int fuse4fs_setxattr(struct fuse4fs *ff, ext2_ino_t ino,
-> > +			    const char *name, void *value, size_t valuelen)
-> >  {
-> >  	ext2_filsys fs = ff->fs;
-> >  	struct ext2_xattr_handle *h;
-> > @@ -1845,8 +1847,8 @@ static int __setxattr(struct fuse4fs *ff, ext2_ino_t ino, const char *name,
-> >  	return ret;
-> >  }
-> >  
-> > -static int propagate_default_acls(struct fuse4fs *ff, ext2_ino_t parent,
-> > -				  ext2_ino_t child, mode_t mode)
-> > +static int fuse4fs_propagate_default_acls(struct fuse4fs *ff, ext2_ino_t parent,
-> > +					  ext2_ino_t child, mode_t mode)
-> >  {
-> >  	void *def;
-> >  	size_t deflen;
-> > @@ -1855,8 +1857,8 @@ static int propagate_default_acls(struct fuse4fs *ff, ext2_ino_t parent,
-> >  	if (!ff->acl || S_ISDIR(mode))
-> >  		return 0;
-> >  
-> > -	ret = __getxattr(ff, parent, XATTR_NAME_POSIX_ACL_DEFAULT, &def,
-> > -			 &deflen);
-> > +	ret = fuse4fs_getxattr(ff, parent, XATTR_NAME_POSIX_ACL_DEFAULT, &def,
-> > +			       &deflen);
-> >  	switch (ret) {
-> >  	case -ENODATA:
-> >  	case -ENOENT:
-> > @@ -1868,7 +1870,8 @@ static int propagate_default_acls(struct fuse4fs *ff, ext2_ino_t parent,
-> >  		return ret;
-> >  	}
-> >  
-> > -	ret = __setxattr(ff, child, XATTR_NAME_POSIX_ACL_DEFAULT, def, deflen);
-> > +	ret = fuse4fs_setxattr(ff, child, XATTR_NAME_POSIX_ACL_DEFAULT, def,
-> > +			       deflen);
-> >  	ext2fs_free_mem(&def);
-> >  	return ret;
-> >  }
-> > @@ -1997,7 +2000,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
-> >  	*node_name = 0;
-> >  
-> >  	fs = fuse4fs_start(ff);
-> > -	if (!fs_can_allocate(ff, 2)) {
-> > +	if (!fuse4fs_can_allocate(ff, 2)) {
-> >  		ret = -ENOSPC;
-> >  		goto out2;
-> >  	}
-> > @@ -2009,7 +2012,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
-> >  		goto out2;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, parent, A_OK | W_OK);
-> > +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -2079,7 +2082,7 @@ static int op_mknod(const char *path, mode_t mode, dev_t dev)
-> >  
-> >  	ext2fs_inode_alloc_stats2(fs, child, 1, 0);
-> >  
-> > -	ret = propagate_default_acls(ff, parent, child, inode.i_mode);
-> > +	ret = fuse4fs_propagate_default_acls(ff, parent, child, inode.i_mode);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -2127,7 +2130,7 @@ static int op_mkdir(const char *path, mode_t mode)
-> >  	*node_name = 0;
-> >  
-> >  	fs = fuse4fs_start(ff);
-> > -	if (!fs_can_allocate(ff, 1)) {
-> > +	if (!fuse4fs_can_allocate(ff, 1)) {
-> >  		ret = -ENOSPC;
-> >  		goto out2;
-> >  	}
-> > @@ -2139,7 +2142,7 @@ static int op_mkdir(const char *path, mode_t mode)
-> >  		goto out2;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, parent, A_OK | W_OK);
-> > +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -2212,7 +2215,7 @@ static int op_mkdir(const char *path, mode_t mode)
-> >  		goto out3;
-> >  	}
-> >  
-> > -	ret = propagate_default_acls(ff, parent, child, inode.i_mode);
-> > +	ret = fuse4fs_propagate_default_acls(ff, parent, child, inode.i_mode);
-> >  	if (ret)
-> >  		goto out3;
-> >  
-> > @@ -2253,7 +2256,7 @@ static int fuse4fs_unlink(struct fuse4fs *ff, const char *path,
-> >  		base_name = filename;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, dir, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, dir, W_OK);
-> >  	if (ret) {
-> >  		free(filename);
-> >  		return ret;
-> > @@ -2275,8 +2278,8 @@ static int fuse4fs_unlink(struct fuse4fs *ff, const char *path,
-> >  	return 0;
-> >  }
-> >  
-> > -static int remove_ea_inodes(struct fuse4fs *ff, ext2_ino_t ino,
-> > -			    struct ext2_inode_large *inode)
-> > +static int fuse4fs_remove_ea_inodes(struct fuse4fs *ff, ext2_ino_t ino,
-> > +				    struct ext2_inode_large *inode)
-> >  {
-> >  	ext2_filsys fs = ff->fs;
-> >  	struct ext2_xattr_handle *h;
-> > @@ -2320,7 +2323,7 @@ static int remove_ea_inodes(struct fuse4fs *ff, ext2_ino_t ino,
-> >  	return 0;
-> >  }
-> >  
-> > -static int remove_inode(struct fuse4fs *ff, ext2_ino_t ino)
-> > +static int fuse4fs_remove_inode(struct fuse4fs *ff, ext2_ino_t ino)
-> >  {
-> >  	ext2_filsys fs = ff->fs;
-> >  	errcode_t err;
-> > @@ -2366,7 +2369,7 @@ static int remove_inode(struct fuse4fs *ff, ext2_ino_t ino)
-> >  		goto write_out;
-> >  
-> >  	if (ext2fs_has_feature_ea_inode(fs->super)) {
-> > -		ret = remove_ea_inodes(ff, ino, &inode);
-> > +		ret = fuse4fs_remove_ea_inodes(ff, ino, &inode);
-> >  		if (ret)
-> >  			return ret;
-> >  	}
-> > @@ -2407,7 +2410,7 @@ static int __op_unlink(struct fuse4fs *ff, const char *path)
-> >  		goto out;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, ino, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, ino, W_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -2415,7 +2418,7 @@ static int __op_unlink(struct fuse4fs *ff, const char *path)
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > -	ret = remove_inode(ff, ino);
-> > +	ret = fuse4fs_remove_inode(ff, ino);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -2483,7 +2486,7 @@ static int __op_rmdir(struct fuse4fs *ff, const char *path)
-> >  	}
-> >  	dbg_printf(ff, "%s: rmdir path=%s ino=%d\n", __func__, path, child);
-> >  
-> > -	ret = check_inum_access(ff, child, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, child, W_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -2502,7 +2505,7 @@ static int __op_rmdir(struct fuse4fs *ff, const char *path)
-> >  		goto out;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, rds.parent, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, rds.parent, W_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -2514,7 +2517,7 @@ static int __op_rmdir(struct fuse4fs *ff, const char *path)
-> >  	ret = fuse4fs_unlink(ff, path, &parent);
-> >  	if (ret)
-> >  		goto out;
-> > -	ret = remove_inode(ff, child);
-> > +	ret = fuse4fs_remove_inode(ff, child);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -2587,7 +2590,7 @@ static int op_symlink(const char *src, const char *dest)
-> >  	*node_name = 0;
-> >  
-> >  	fs = fuse4fs_start(ff);
-> > -	if (!fs_can_allocate(ff, 1)) {
-> > +	if (!fuse4fs_can_allocate(ff, 1)) {
-> >  		ret = -ENOSPC;
-> >  		goto out2;
-> >  	}
-> > @@ -2599,7 +2602,7 @@ static int op_symlink(const char *src, const char *dest)
-> >  		goto out2;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, parent, A_OK | W_OK);
-> > +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -2746,7 +2749,7 @@ static int op_rename(const char *from, const char *to,
-> >  	FUSE4FS_CHECK_CONTEXT(ff);
-> >  	dbg_printf(ff, "%s: renaming %s to %s\n", __func__, from, to);
-> >  	fs = fuse4fs_start(ff);
-> > -	if (!fs_can_allocate(ff, 5)) {
-> > +	if (!fuse4fs_can_allocate(ff, 5)) {
-> >  		ret = -ENOSPC;
-> >  		goto out;
-> >  	}
-> > @@ -2772,12 +2775,12 @@ static int op_rename(const char *from, const char *to,
-> >  		goto out;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, from_ino, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, from_ino, W_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> >  	if (to_ino) {
-> > -		ret = check_inum_access(ff, to_ino, W_OK);
-> > +		ret = fuse4fs_inum_access(ff, to_ino, W_OK);
-> >  		if (ret)
-> >  			goto out;
-> >  	}
-> > @@ -2815,7 +2818,7 @@ static int op_rename(const char *from, const char *to,
-> >  		goto out2;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, from_dir_ino, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, from_dir_ino, W_OK);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -2840,7 +2843,7 @@ static int op_rename(const char *from, const char *to,
-> >  		goto out2;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, to_dir_ino, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, to_dir_ino, W_OK);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -2992,7 +2995,7 @@ static int op_link(const char *src, const char *dest)
-> >  	*node_name = 0;
-> >  
-> >  	fs = fuse4fs_start(ff);
-> > -	if (!fs_can_allocate(ff, 2)) {
-> > +	if (!fuse4fs_can_allocate(ff, 2)) {
-> >  		ret = -ENOSPC;
-> >  		goto out2;
-> >  	}
-> > @@ -3005,7 +3008,7 @@ static int op_link(const char *src, const char *dest)
-> >  		goto out2;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, parent, A_OK | W_OK);
-> > +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -3021,7 +3024,7 @@ static int op_link(const char *src, const char *dest)
-> >  		goto out2;
-> >  	}
-> >  
-> > -	ret = check_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
-> > +	ret = fuse4fs_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -3066,7 +3069,7 @@ static int op_link(const char *src, const char *dest)
-> >  }
-> >  
-> >  /* Obtain group ids of the process that sent us a command(?) */
-> > -static int get_req_groups(struct fuse4fs *ff, gid_t **gids, size_t *nr_gids)
-> > +static int fuse4fs_get_groups(struct fuse4fs *ff, gid_t **gids, size_t *nr_gids)
-> >  {
-> >  	ext2_filsys fs = ff->fs;
-> >  	errcode_t err;
-> > @@ -3111,8 +3114,8 @@ static int get_req_groups(struct fuse4fs *ff, gid_t **gids, size_t *nr_gids)
-> >   * that initiated the fuse request?  Returns 1 for yes, 0 for no, or a negative
-> >   * errno.
-> >   */
-> > -static int in_file_group(struct fuse_context *ctxt,
-> > -			 const struct ext2_inode_large *inode)
-> > +static int fuse4fs_in_file_group(struct fuse_context *ctxt,
-> > +				 const struct ext2_inode_large *inode)
-> >  {
-> >  	struct fuse4fs *ff = fuse4fs_get();
-> >  	gid_t *gids = NULL;
-> > @@ -3124,7 +3127,7 @@ static int in_file_group(struct fuse_context *ctxt,
-> >  	if (ctxt->gid == gid)
-> >  		return 1;
-> >  
-> > -	ret = get_req_groups(ff, &gids, &nr_gids);
-> > +	ret = fuse4fs_get_groups(ff, &gids, &nr_gids);
-> >  	if (ret == -ENOENT) {
-> >  		/* magic return code for "could not get caller group info" */
-> >  		return 0;
-> > @@ -3167,11 +3170,11 @@ static int op_chmod(const char *path, mode_t mode, struct fuse_file_info *fi)
-> >  		goto out;
-> >  	}
-> >  
-> > -	ret = check_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
-> > +	ret = fuse4fs_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > -	if (want_check_owner(ff, ctxt) && ctxt->uid != inode_uid(inode)) {
-> > +	if (fuse4fs_want_check_owner(ff, ctxt) && ctxt->uid != inode_uid(inode)) {
-> >  		ret = -EPERM;
-> >  		goto out;
-> >  	}
-> > @@ -3181,8 +3184,8 @@ static int op_chmod(const char *path, mode_t mode, struct fuse_file_info *fi)
-> >  	 * of the user's groups, but FUSE only tells us about the primary
-> >  	 * group.
-> >  	 */
-> > -	if (!is_superuser(ff, ctxt)) {
-> > -		ret = in_file_group(ctxt, &inode);
-> > +	if (!fuse4fs_is_superuser(ff, ctxt)) {
-> > +		ret = fuse4fs_in_file_group(ctxt, &inode);
-> >  		if (ret < 0)
-> >  			goto out;
-> >  
-> > @@ -3236,14 +3239,14 @@ static int op_chown(const char *path, uid_t owner, gid_t group,
-> >  		goto out;
-> >  	}
-> >  
-> > -	ret = check_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
-> > +	ret = fuse4fs_iflags_access(ff, ino, EXT2_INODE(&inode), W_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> >  	/* FUSE seems to feed us ~0 to mean "don't change" */
-> >  	if (owner != (uid_t) ~0) {
-> >  		/* Only root gets to change UID. */
-> > -		if (want_check_owner(ff, ctxt) &&
-> > +		if (fuse4fs_want_check_owner(ff, ctxt) &&
-> >  		    !(inode_uid(inode) == ctxt->uid && owner == ctxt->uid)) {
-> >  			ret = -EPERM;
-> >  			goto out;
-> > @@ -3253,7 +3256,7 @@ static int op_chown(const char *path, uid_t owner, gid_t group,
-> >  
-> >  	if (group != (gid_t) ~0) {
-> >  		/* Only root or the owner get to change GID. */
-> > -		if (want_check_owner(ff, ctxt) &&
-> > +		if (fuse4fs_want_check_owner(ff, ctxt) &&
-> >  		    inode_uid(inode) != ctxt->uid) {
-> >  			ret = -EPERM;
-> >  			goto out;
-> > @@ -3363,7 +3366,7 @@ static int op_truncate(const char *path, off_t len, struct fuse_file_info *fi)
-> >  		goto out;
-> >  	dbg_printf(ff, "%s: ino=%d len=%jd\n", __func__, ino, (intmax_t) len);
-> >  
-> > -	ret = check_inum_access(ff, ino, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, ino, W_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -3445,7 +3448,7 @@ static int __op_open(struct fuse4fs *ff, const char *path,
-> >  	}
-> >  	dbg_printf(ff, "%s: ino=%d\n", __func__, file->ino);
-> >  
-> > -	ret = check_inum_access(ff, file->ino, check);
-> > +	ret = fuse4fs_inum_access(ff, file->ino, check);
-> >  	if (ret) {
-> >  		/*
-> >  		 * In a regular (Linux) fs driver, the kernel will open
-> > @@ -3457,7 +3460,7 @@ static int __op_open(struct fuse4fs *ff, const char *path,
-> >  		 * also employ undocumented hacks (see above).
-> >  		 */
-> >  		if (check == R_OK) {
-> > -			ret = check_inum_access(ff, file->ino, X_OK);
-> > +			ret = fuse4fs_inum_access(ff, file->ino, X_OK);
-> >  			if (ret)
-> >  				goto out;
-> >  			check = X_OK;
-> > @@ -3568,7 +3571,7 @@ static int op_write(const char *path EXT2FS_ATTR((unused)),
-> >  		goto out;
-> >  	}
-> >  
-> > -	if (!fs_can_allocate(ff, FUSE4FS_B_TO_FSB(ff, len))) {
-> > +	if (!fuse4fs_can_allocate(ff, FUSE4FS_B_TO_FSB(ff, len))) {
-> >  		ret = -ENOSPC;
-> >  		goto out;
-> >  	}
-> > @@ -3768,11 +3771,11 @@ static int op_getxattr(const char *path, const char *key, char *value,
-> >  	}
-> >  	dbg_printf(ff, "%s: ino=%d name=%s\n", __func__, ino, key);
-> >  
-> > -	ret = check_inum_access(ff, ino, R_OK);
-> > +	ret = fuse4fs_inum_access(ff, ino, R_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > -	ret = __getxattr(ff, ino, key, &ptr, &plen);
-> > +	ret = fuse4fs_getxattr(ff, ino, key, &ptr, &plen);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -3838,7 +3841,7 @@ static int op_listxattr(const char *path, char *names, size_t len)
-> >  	}
-> >  	dbg_printf(ff, "%s: ino=%d\n", __func__, ino);
-> >  
-> > -	ret = check_inum_access(ff, ino, R_OK);
-> > +	ret = fuse4fs_inum_access(ff, ino, R_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -3919,7 +3922,7 @@ static int op_setxattr(const char *path EXT2FS_ATTR((unused)),
-> >  	}
-> >  	dbg_printf(ff, "%s: ino=%d name=%s\n", __func__, ino, key);
-> >  
-> > -	ret = check_inum_access(ff, ino, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, ino, W_OK);
-> >  	if (ret == -EACCES) {
-> >  		ret = -EPERM;
-> >  		goto out;
-> > @@ -4008,7 +4011,7 @@ static int op_removexattr(const char *path, const char *key)
-> >  		goto out;
-> >  	}
-> >  
-> > -	if (!fs_can_allocate(ff, 1)) {
-> > +	if (!fuse4fs_can_allocate(ff, 1)) {
-> >  		ret = -ENOSPC;
-> >  		goto out;
-> >  	}
-> > @@ -4020,7 +4023,7 @@ static int op_removexattr(const char *path, const char *key)
-> >  	}
-> >  	dbg_printf(ff, "%s: ino=%d name=%s\n", __func__, ino, key);
-> >  
-> > -	ret = check_inum_access(ff, ino, W_OK);
-> > +	ret = fuse4fs_inum_access(ff, ino, W_OK);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -4207,7 +4210,7 @@ static int op_access(const char *path, int mask)
-> >  		goto out;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, ino, mask);
-> > +	ret = fuse4fs_inum_access(ff, ino, mask);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -4247,7 +4250,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
-> >  	*node_name = 0;
-> >  
-> >  	fs = fuse4fs_start(ff);
-> > -	if (!fs_can_allocate(ff, 1)) {
-> > +	if (!fuse4fs_can_allocate(ff, 1)) {
-> >  		ret = -ENOSPC;
-> >  		goto out2;
-> >  	}
-> > @@ -4259,7 +4262,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
-> >  		goto out2;
-> >  	}
-> >  
-> > -	ret = check_inum_access(ff, parent, A_OK | W_OK);
-> > +	ret = fuse4fs_inum_access(ff, parent, A_OK | W_OK);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -4326,7 +4329,7 @@ static int op_create(const char *path, mode_t mode, struct fuse_file_info *fp)
-> >  
-> >  	ext2fs_inode_alloc_stats2(fs, child, 1, 0);
-> >  
-> > -	ret = propagate_default_acls(ff, parent, child, inode.i_mode);
-> > +	ret = fuse4fs_propagate_default_acls(ff, parent, child, inode.i_mode);
-> >  	if (ret)
-> >  		goto out2;
-> >  
-> > @@ -4374,7 +4377,7 @@ static int op_utimens(const char *path, const struct timespec ctv[2],
-> >  	 */
-> >  	if (ctv[0].tv_nsec == UTIME_NOW && ctv[1].tv_nsec == UTIME_NOW)
-> >  		access |= A_OK;
-> > -	ret = check_inum_access(ff, ino, access);
-> > +	ret = fuse4fs_inum_access(ff, ino, access);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > @@ -4459,7 +4462,7 @@ static int ioctl_setflags(struct fuse4fs *ff, struct fuse4fs_file_handle *fh,
-> >  	if (err)
-> >  		return translate_error(fs, fh->ino, err);
-> >  
-> > -	if (want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
-> > +	if (fuse4fs_want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
-> >  		return -EPERM;
-> >  
-> >  	ret = set_iflags(&inode, flags);
-> > @@ -4508,7 +4511,7 @@ static int ioctl_setversion(struct fuse4fs *ff, struct fuse4fs_file_handle *fh,
-> >  	if (err)
-> >  		return translate_error(fs, fh->ino, err);
-> >  
-> > -	if (want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
-> > +	if (fuse4fs_want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
-> >  		return -EPERM;
-> >  
-> >  	inode.i_generation = generation;
-> > @@ -4633,7 +4636,7 @@ static int ioctl_fssetxattr(struct fuse4fs *ff, struct fuse4fs_file_handle *fh,
-> >  	if (err)
-> >  		return translate_error(fs, fh->ino, err);
-> >  
-> > -	if (want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
-> > +	if (fuse4fs_want_check_owner(ff, ctxt) && inode_uid(inode) != ctxt->uid)
-> >  		return -EPERM;
-> >  
-> >  	ret = set_xflags(&inode, fsx->fsx_xflags);
-> > @@ -4762,7 +4765,7 @@ static int ioctl_shutdown(struct fuse4fs *ff, struct fuse4fs_file_handle *fh,
-> >  	struct fuse_context *ctxt = fuse_get_context();
-> >  	ext2_filsys fs = ff->fs;
-> >  
-> > -	if (!is_superuser(ff, ctxt))
-> > +	if (!fuse4fs_is_superuser(ff, ctxt))
-> >  		return -EPERM;
-> >  
-> >  	err_printf(ff, "%s.\n", _("shut down requested"));
-> > @@ -4884,7 +4887,7 @@ static int fuse4fs_allocate_range(struct fuse4fs *ff,
-> >  		   (unsigned long long)len,
-> >  		   (unsigned long long)start,
-> >  		   (unsigned long long)end);
-> > -	if (!fs_can_allocate(ff, FUSE4FS_B_TO_FSB(ff, len)))
-> > +	if (!fuse4fs_can_allocate(ff, FUSE4FS_B_TO_FSB(ff, len)))
-> >  		return -ENOSPC;
-> >  
-> >  	err = fuse4fs_read_inode(fs, fh->ino, &inode);
-> > @@ -4927,9 +4930,9 @@ static int fuse4fs_allocate_range(struct fuse4fs *ff,
-> >  	return err;
-> >  }
-> >  
-> > -static errcode_t clean_block_middle(struct fuse4fs *ff, ext2_ino_t ino,
-> > -				    struct ext2_inode_large *inode,
-> > -				    off_t offset, off_t len, char **buf)
-> > +static errcode_t fuse4fs_zero_middle(struct fuse4fs *ff, ext2_ino_t ino,
-> > +				     struct ext2_inode_large *inode,
-> > +				     off_t offset, off_t len, char **buf)
-> >  {
-> >  	ext2_filsys fs = ff->fs;
-> >  	blk64_t blk;
-> > @@ -4963,9 +4966,9 @@ static errcode_t clean_block_middle(struct fuse4fs *ff, ext2_ino_t ino,
-> >  	return io_channel_write_blk64(fs->io, blk, 1, *buf);
-> >  }
-> >  
-> > -static errcode_t clean_block_edge(struct fuse4fs *ff, ext2_ino_t ino,
-> > -				  struct ext2_inode_large *inode, off_t offset,
-> > -				  int clean_before, char **buf)
-> > +static errcode_t fuse4fs_zero_edge(struct fuse4fs *ff, ext2_ino_t ino,
-> > +				   struct ext2_inode_large *inode, off_t offset,
-> > +				   int clean_before, char **buf)
-> >  {
-> >  	ext2_filsys fs = ff->fs;
-> >  	blk64_t blk;
-> > @@ -5056,13 +5059,13 @@ static int fuse4fs_punch_range(struct fuse4fs *ff,
-> >  
-> >  	/* Zero everything before the first block and after the last block */
-> >  	if (FUSE4FS_B_TO_FSBT(ff, offset) == FUSE4FS_B_TO_FSBT(ff, offset + len))
-> > -		err = clean_block_middle(ff, fh->ino, &inode, offset,
-> > +		err = fuse4fs_zero_middle(ff, fh->ino, &inode, offset,
-> >  					 len, &buf);
-> >  	else {
-> > -		err = clean_block_edge(ff, fh->ino, &inode, offset, 0, &buf);
-> > +		err = fuse4fs_zero_edge(ff, fh->ino, &inode, offset, 0, &buf);
-> >  		if (!err)
-> > -			err = clean_block_edge(ff, fh->ino, &inode,
-> > -					       offset + len, 1, &buf);
-> > +			err = fuse4fs_zero_edge(ff, fh->ino, &inode,
-> > +						offset + len, 1, &buf);
-> >  	}
-> >  	if (buf)
-> >  		ext2fs_free_mem(&buf);
-> > 
+> Right now the default is 30 minutes.
+> 
+> Thanks,
+> Joanne
+> 
+> >
+> > > If it takes 30 minutes to do all the cleanup, then I think it's worse
+> > > to have unmounting take that long, than to just do a quicker unmount
+> >
+> > If you don't handle unlinked lists in a O(n) (or O(1) way) then
+> > unprivileged userspace programs can manipulate the filesystem so that it
+> > actually /can/ take hours to unmount.  XFS, ext4, and now fuse4fs have
+> > learned that the hard way. ;)
+> >
+> > > and have lingering unlinked files on the server. As a user, if I were
+> > > unmounting something and it took that long, I would probably just kill
+> > > the whole thing anyways.
+> >
+> > That very much depends on what you're going to do with that filesystem.
+> > If you're disposing of a container then, meh, fire away.  Some people
+> > "use" FS_IOC_SHUTDOWN to "terminate" containers quickly.
+> >
+> > > >
+> > > > Aside: The reason why I abandoned making fuse2fs a fuseblk server is
+> > > > because I realized this exact trap -- the fuse server MUST have
+> > > > exclusive write access to the device at all times, or else it can race
+> > > > with other programs (e.g. tune2fs) and corrupt the filesystem.  In
+> > > > fuseblk mode the kernel owns the exclusive access and but doesn't
+> > > > install that file in the server's fd table.  At best the fuse server can
+> > > > pretend that it has exclusive write access, but the kernel can make that
+> > > > go away without telling the fuse server, which opens a world of hurt.
+> > > >
+> > > > > imo the only responsibility of the
+> > > > > kernel is to actually send the background requests before it sends the
+> > > > > FUSE_DESTROY. I think non-fuseblk servers should also receive the
+> > > > > FUSE_DESTROY request.
+> > > >
+> > > > They do receive it because fuse_session_destroy calls ->destroy if no
+> > > > event has been received from the kernel after the fusedev shuts down.
+> > > >
+> > > > > >
+> > > > > > Here, if you make a fuseblk server's ->destroy release all the remaining
+> > > > > > open files, you have an even worse problem, because that could race with
+> > > > > > an existing libfuse worker that's processing a FUSE_RELEASE for the same
+> > > > > > open file.
+> > > > > >
+> > > > > > In short, the client has a FUSE_RELEASE request that pairs with the
+> > > > > > FUSE_OPEN request.  During regular operations, an OPEN always ends with
+> > > > > > a RELEASE.  I don't understand why unmount is special in that it aborts
+> > > > > > release requests without even sending them to the server; that sounds
+> > > > > > like a bug to me.  Worse yet, I looked on Debian codesearch, and nearly
+> > > > > > all of the fuse servers I found do not appear to handle this correctly.
+> > > > > > My guess is that it's uncommon to close 100,000 unlinked open files on a
+> > > > > > fuse filesystem and immediately unmount it.  Network filesystems can get
+> > > > > > away with not caring.
+> > > > > >
+> > > > > > For fuse+iomap, I want unmount to send FUSE_SYNCFS after all open files
+> > > > > > have been RELEASEd so that client can know that (a) the filesystem (at
+> > > > > > least as far as the kernel cares) is quiesced, and (b) the server
+> > > > > > persisted all dirty metadata to disk.  Only then would I send the
+> > > > > > FUSE_DESTROY.
+> > > > >
+> > > > > Hmm, is FUSE_FLUSH not enough? As I recently learned (from Amir),
+> > > > > every close() triggers a FUSE_FLUSH. For dirty metadata related to
+> > > > > writeback, every release triggers a synchronous write_inode_now().
+> > > >
+> > > > It's not sufficient, because there might be other cached dirty metadata
+> > > > that needs to be flushed out to disk.  A fuse server could respond to a
+> > > > FUSE_FLUSH by pushing out that inode's dirty metadata to disk but go no
+> > > > farther.  Plumbing in FUSE_SYNCFS for iomap helps a lot in that regard
+> > > > because that's a signal that we need to push dirty ext4 bitmaps and
+> > > > group descriptors and whatnot out to storage; without it we end up doing
+> > > > all that at destroy time.
+> > > >
+> > > > > > > We are already guaranteeing that the
+> > > > > > > background requests get sent before we issue the FUSE_DESTROY, so it
+> > > > > > > seems to me like this is already enough and we could skip the wait
+> > > > > > > because the server should make sure it completes the prior requests
+> > > > > > > it's received before it executes the destruction logic.
+> > > > > >
+> > > > > > That's just the thing -- fuse_conn_destroy calls fuse_abort_conn which
+> > > > > > aborts all the pending background requests so the server never sees
+> > > > > > them.
+> > > > >
+> > > > > The FUSE_DESTROY request gets sent before fuse_abort_conn() is called,
+> > > > > so to me, it seems like if we flush all the background requests and
+> > > > > then send the FUSE_DESTROY, that suffices.
+> > > >
+> > > > I think it's worse than that -- fuse_send_destroy sets fuse_args::force
+> > > > and sends the request synchronously, which (afaict) means it jumps ahead
+> > > > of the backgrounded requests.
+> > >
+> > > Hmm, where are you seeing that? afaict, args->force forces the request
+> > > to be sent to userspace even if interrupted and it skips the
+> > > fuse_block_alloc() check.
+> >
+> > Oh!  You're right, the FUSE_DESTROY request is list_add_tail'd to
+> > fiq->pending, just like every other req, because they all go through
+> > fuse_dev_queue_req.  Sorry about misreading that, but thank /you/ for
+> > pointing it out! :)
+> >
+> > --D
+> >
+> > > Thanks,
+> > > Joanne
+> > >
+> 
 
