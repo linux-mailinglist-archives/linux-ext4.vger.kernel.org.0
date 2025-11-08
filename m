@@ -1,55 +1,58 @@
-Return-Path: <linux-ext4+bounces-11697-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11698-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9953AC42646
-	for <lists+linux-ext4@lfdr.de>; Sat, 08 Nov 2025 04:55:24 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6481C4265B
+	for <lists+linux-ext4@lfdr.de>; Sat, 08 Nov 2025 05:05:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 127393B705F
-	for <lists+linux-ext4@lfdr.de>; Sat,  8 Nov 2025 03:55:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D90474E36E5
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Nov 2025 04:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667302D3A7B;
-	Sat,  8 Nov 2025 03:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D047F2D738A;
+	Sat,  8 Nov 2025 04:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="z+OFQe8c"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="g3gswGtw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout09.his.huawei.com (canpmsgout09.his.huawei.com [113.46.200.224])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9607D098
-	for <linux-ext4@vger.kernel.org>; Sat,  8 Nov 2025 03:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.224
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43975213E89;
+	Sat,  8 Nov 2025 04:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762574119; cv=none; b=Qs/RZ9dxGrVGcYq9bZUQG9yFsOhA3oRudrMheUXHOMRkbTdtDuiQMPaZycUWlyRavWrQAYijiGaE7FuFTm+FFQnYXJvz+LFNtw+jS6ujNQsIwakGtahDavyx+22oPS4odW3w1JpY3YDW8DQaGvHbJhfCvVlS/4JjuxfejeRArDM=
+	t=1762574703; cv=none; b=Hs2+sWqwglzSpWjoxBegiKWPMQpdmaR6UJdmlZKfQWyj4rZ7CYG4DhjoFbFCN4hYcrYDWC88Z5UMiwZi2B8C90iTnCKxTlOS5m6VtIDlXFJ/Ze6rgBgWZVq+r2jAlPtaKS8G1NBcmbRl47+cImTiK7kTs6rO7+IIXopONgPZ6BE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762574119; c=relaxed/simple;
-	bh=KR+X32PpwVpEOO08zVik+s6kP9+lVgZQEjyjHdu1Kfc=;
+	s=arc-20240116; t=1762574703; c=relaxed/simple;
+	bh=DAPBOunjrN2WBG1qy858QFtGOAdDA5SvkDZT8mq+yTc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=iPmomodLnhcJvJQiaQpeLMbxq1lc48XYbUD4qtm2Va+DH/YeVTTurnEWy0DVuqmLvvBMYIjZwvjVlJMs8y6k/MvJ9MSbH8ZeLBZb6RoIfiMYqInIB95SMawR6A4nzTJGsCEWb73BahuVlwSXrI8/EfhJboQUOMurgJEarG2Lkec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=z+OFQe8c; arc=none smtp.client-ip=113.46.200.224
+	 In-Reply-To:Content-Type; b=JGk4LYUtUXqQpvED93ZSMQgR5nV0Fq03erWKfSb9KNPDAjf5/cM69owDTXhz6WWhx32EKN5yoFBA52HQ8f3QoRwRJhzB/XChIUkceK2dDiHMSNBeDqOnXC6znH61RAKvB0tUJa+OLrT/XFKd1rLgtSxslChIkLbqs7I2etRD09Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=g3gswGtw; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from canpmsgout06.his.huawei.com (unknown [172.19.92.157])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4d3Mdm54HDzThDX;
+	Sat,  8 Nov 2025 12:00:12 +0800 (CST)
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=d6RxkWxtdTbMtb/K0EZCVnhRx0xGZ+mRRTv6q61zDK8=;
-	b=z+OFQe8cRdHA0B1at6t14IF8yBealNzi/Bd4o+KGKEtIeZYHAAUrujHzz8OOaetNomzO5eW0I
-	5HneTNviHAaPiSkCky78LmcvUhy4KTO02tlTt0PTc8AGON/W+yAT9R564arEPTYY9mo044xrQ7w
-	HoNHUazz9OMCvKczGknAZp8=
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by canpmsgout09.his.huawei.com (SkyGuard) with ESMTPS id 4d3MV770jMz1cyT1;
-	Sat,  8 Nov 2025 11:53:35 +0800 (CST)
+	bh=lqgvkFa3e8i8MM1SshqaM3MIjNOge6PEtlvJ9SHBLBk=;
+	b=g3gswGtw+MWqpjhot7+3x63T2c+j1EPMEHCwWwtp1u8aQZeuAWJYBdd++dZgb3Qxr3fPPkUwX
+	0zBMKiD1H+e8lI+DQqk6trAevmhC8v8DkLrEr45KOwwY/yX+blMti+GSreYFI50AuZdCZD5QEJk
+	giXuE6u8mxaNqZghKHUCJMA=
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4d3MjD5pJtzRhRF;
+	Sat,  8 Nov 2025 12:03:12 +0800 (CST)
 Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 40DCE140142;
-	Sat,  8 Nov 2025 11:55:13 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 45CA318048E;
+	Sat,  8 Nov 2025 12:04:49 +0800 (CST)
 Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
  (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Sat, 8 Nov
- 2025 11:55:12 +0800
-Message-ID: <212cc909-0236-44b1-b492-2e148f0d1546@huawei.com>
-Date: Sat, 8 Nov 2025 11:55:11 +0800
+ 2025 12:04:48 +0800
+Message-ID: <7350e19f-f2d2-4b2a-8ced-b57c73f4fccb@huawei.com>
+Date: Sat, 8 Nov 2025 12:04:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,104 +60,103 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] jbd2: fix the inconsistency between checksum and data
- in memory for journal sb
+Subject: Re: [PATCH v2 1/2] ext4: fix string copying in
+ parse_apply_sb_mount_options()
 Content-Language: en-GB
-To: Ye Bin <yebin@huaweicloud.com>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<linux-ext4@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
-References: <20251103010123.3753631-1-yebin@huaweicloud.com>
+To: Fedor Pchelkin <pchelkin@ispras.ru>
+CC: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+	<linux-ext4@vger.kernel.org>, Andreas Dilger <adilger.kernel@dilger.ca>,
+	"Darrick J. Wong" <djwong@kernel.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>, <stable@vger.kernel.org>
+References: <20251101160430.222297-1-pchelkin@ispras.ru>
 From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20251103010123.3753631-1-yebin@huaweicloud.com>
+In-Reply-To: <20251101160430.222297-1-pchelkin@ispras.ru>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
  dggpemf500013.china.huawei.com (7.185.36.188)
 
-On 2025-11-03 09:01, Ye Bin wrote:
-> From: Ye Bin <yebin10@huawei.com>
+On 2025-11-02 00:04, Fedor Pchelkin wrote:
+> strscpy_pad() can't be used to copy a non-NUL-term string into a NUL-term
+> string of possibly bigger size.  Commit 0efc5990bca5 ("string.h: Introduce
+> memtostr() and memtostr_pad()") provides additional information in that
+> regard.  So if this happens, the following warning is observed:
 >
-> Copying the file system while it is mounted as read-only results in
-> a mount failure:
-> [~]# mkfs.ext4 -F /dev/sdc
-> [~]# mount /dev/sdc -o ro /mnt/test
-> [~]# dd if=/dev/sdc of=/dev/sda bs=1M
-> [~]# mount /dev/sda /mnt/test1
-> [ 1094.849826] JBD2: journal checksum error
-> [ 1094.850927] EXT4-fs (sda): Could not load journal inode
-> mount: mount /dev/sda on /mnt/test1 failed: Bad message
+> strnlen: detected buffer overflow: 65 byte read of buffer size 64
+> WARNING: CPU: 0 PID: 28655 at lib/string_helpers.c:1032 __fortify_report+0x96/0xc0 lib/string_helpers.c:1032
+> Modules linked in:
+> CPU: 0 UID: 0 PID: 28655 Comm: syz-executor.3 Not tainted 6.12.54-syzkaller-00144-g5f0270f1ba00 #0
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+> RIP: 0010:__fortify_report+0x96/0xc0 lib/string_helpers.c:1032
+> Call Trace:
+>  <TASK>
+>  __fortify_panic+0x1f/0x30 lib/string_helpers.c:1039
+>  strnlen include/linux/fortify-string.h:235 [inline]
+>  sized_strscpy include/linux/fortify-string.h:309 [inline]
+>  parse_apply_sb_mount_options fs/ext4/super.c:2504 [inline]
+>  __ext4_fill_super fs/ext4/super.c:5261 [inline]
+>  ext4_fill_super+0x3c35/0xad00 fs/ext4/super.c:5706
+>  get_tree_bdev_flags+0x387/0x620 fs/super.c:1636
+>  vfs_get_tree+0x93/0x380 fs/super.c:1814
+>  do_new_mount fs/namespace.c:3553 [inline]
+>  path_mount+0x6ae/0x1f70 fs/namespace.c:3880
+>  do_mount fs/namespace.c:3893 [inline]
+>  __do_sys_mount fs/namespace.c:4103 [inline]
+>  __se_sys_mount fs/namespace.c:4080 [inline]
+>  __x64_sys_mount+0x280/0x300 fs/namespace.c:4080
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0x64/0x140 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x76/0x7e
 >
-> The process described above is just an abstracted way I came up with to
-> reproduce the issue. In the actual scenario, the file system was mounted
-> read-only and then copied while it was still mounted. It was found that
-> the mount operation failed. The user intended to verify the data or use
-> it as a backup, and this action was performed during a version upgrade.
-> Above issue may happen as follows:
-> ext4_fill_super
->  set_journal_csum_feature_set(sb)
->   if (ext4_has_metadata_csum(sb))
->    incompat = JBD2_FEATURE_INCOMPAT_CSUM_V3;
->   if (test_opt(sb, JOURNAL_CHECKSUM)
->    jbd2_journal_set_features(sbi->s_journal, compat, 0, incompat);
->     lock_buffer(journal->j_sb_buffer);
->     sb->s_feature_incompat  |= cpu_to_be32(incompat);
->     //The data in the journal sb was modified, but the checksum was not
->       updated, so the data remaining in memory has a mismatch between the
->       data and the checksum.
->     unlock_buffer(journal->j_sb_buffer);
+> Since userspace is expected to provide s_mount_opts field to be at most 63
+> characters long with the ending byte being NUL-term, use a 64-byte buffer
+> which matches the size of s_mount_opts, so that strscpy_pad() does its job
+> properly.  Return with error if the user still managed to provide a
+> non-NUL-term string here.
 >
-> In this case, the journal sb copied over is in a state where the checksum
-> and data are inconsistent, so mounting fails.
-> To solve the above issue, update the checksum in memory after modifying
-> the journal sb.
+> Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
 >
-> Fixes: 4fd5ea43bc11 ("jbd2: checksum journal superblock")
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Fixes: 8ecb790ea8c3 ("ext4: avoid potential buffer over-read in parse_apply_sb_mount_options()")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
 
-Updating features on a read-only mount looks strange, but we still need
-to update the checksum when touching the jbd2 superblock.
+Looks good to me.
 
 Reviewed-by: Baokun Li <libaokun1@huawei.com>
 
 > ---
->  fs/jbd2/journal.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
 >
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index d480b94117cd..bf255f8b5eeb 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -2349,6 +2349,12 @@ int jbd2_journal_set_features(journal_t *journal, unsigned long compat,
->  	sb->s_feature_compat    |= cpu_to_be32(compat);
->  	sb->s_feature_ro_compat |= cpu_to_be32(ro);
->  	sb->s_feature_incompat  |= cpu_to_be32(incompat);
-> +	/*
-> +	 * Update the checksum now so that it is valid even for read-only
-> +	 * filesystems where jbd2_write_superblock() doesn't get called.
-> +	 */
-> +	if (jbd2_journal_has_csum_v2or3(journal))
-> +		sb->s_checksum = jbd2_superblock_csum(sb);
->  	unlock_buffer(journal->j_sb_buffer);
->  	jbd2_journal_init_transaction_limits(journal);
+> v2: - treat non-NUL-term s_mount_opts as invalid case (Jan Kara)
+>     - swap order of patches in series so the fixing-one goes first
+>
+> v1: https://lore.kernel.org/lkml/20251028130949.599847-1-pchelkin@ispras.ru/T/#u
+>
+>  fs/ext4/super.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 33e7c08c9529..15bef41f08bd 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -2475,7 +2475,7 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
+>  					struct ext4_fs_context *m_ctx)
+>  {
+>  	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> -	char s_mount_opts[65];
+> +	char s_mount_opts[64];
+>  	struct ext4_fs_context *s_ctx = NULL;
+>  	struct fs_context *fc = NULL;
+>  	int ret = -ENOMEM;
+> @@ -2483,7 +2483,8 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
+>  	if (!sbi->s_es->s_mount_opts[0])
+>  		return 0;
 >  
-> @@ -2378,9 +2384,17 @@ void jbd2_journal_clear_features(journal_t *journal, unsigned long compat,
+> -	strscpy_pad(s_mount_opts, sbi->s_es->s_mount_opts);
+> +	if (strscpy_pad(s_mount_opts, sbi->s_es->s_mount_opts) < 0)
+> +		return -E2BIG;
 >  
->  	sb = journal->j_superblock;
->  
-> +	lock_buffer(journal->j_sb_buffer);
->  	sb->s_feature_compat    &= ~cpu_to_be32(compat);
->  	sb->s_feature_ro_compat &= ~cpu_to_be32(ro);
->  	sb->s_feature_incompat  &= ~cpu_to_be32(incompat);
-> +	/*
-> +	 * Update the checksum now so that it is valid even for read-only
-> +	 * filesystems where jbd2_write_superblock() doesn't get called.
-> +	 */
-> +	if (jbd2_journal_has_csum_v2or3(journal))
-> +		sb->s_checksum = jbd2_superblock_csum(sb);
-> +	unlock_buffer(journal->j_sb_buffer);
->  	jbd2_journal_init_transaction_limits(journal);
->  }
->  EXPORT_SYMBOL(jbd2_journal_clear_features);
+>  	fc = kzalloc(sizeof(struct fs_context), GFP_KERNEL);
+>  	if (!fc)
 
 
 
