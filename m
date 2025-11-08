@@ -1,55 +1,55 @@
-Return-Path: <linux-ext4+bounces-11696-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11697-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADFFBC425BE
-	for <lists+linux-ext4@lfdr.de>; Sat, 08 Nov 2025 04:23:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9953AC42646
+	for <lists+linux-ext4@lfdr.de>; Sat, 08 Nov 2025 04:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6114B188CC17
-	for <lists+linux-ext4@lfdr.de>; Sat,  8 Nov 2025 03:23:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 127393B705F
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Nov 2025 03:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E477C2D23A5;
-	Sat,  8 Nov 2025 03:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667302D3A7B;
+	Sat,  8 Nov 2025 03:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="WYG3dmFb"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="z+OFQe8c"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
+Received: from canpmsgout09.his.huawei.com (canpmsgout09.his.huawei.com [113.46.200.224])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57B9253956;
-	Sat,  8 Nov 2025 03:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9607D098
+	for <linux-ext4@vger.kernel.org>; Sat,  8 Nov 2025 03:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.224
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762572185; cv=none; b=ioDx3WaRq5WveBuifKjyIKY+JGpd6M4yi5Hqh6XSyfEhNIVoTpbxWxPkfXo2GxwDAn3qtTOXKSqqWIFEK/d5NQ7st11D0x9jp9oJIfmaFw8GsTFvmZbBWWr9uGBxQs45GtsvLmjS2nM3ylnPjWSeEs/N4mtt/K9mEpawzwLs6KY=
+	t=1762574119; cv=none; b=Qs/RZ9dxGrVGcYq9bZUQG9yFsOhA3oRudrMheUXHOMRkbTdtDuiQMPaZycUWlyRavWrQAYijiGaE7FuFTm+FFQnYXJvz+LFNtw+jS6ujNQsIwakGtahDavyx+22oPS4odW3w1JpY3YDW8DQaGvHbJhfCvVlS/4JjuxfejeRArDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762572185; c=relaxed/simple;
-	bh=3db6kDgcp6ZBaCWoMiT07aEdoBIn2fyq56Cj1ZzUUFw=;
+	s=arc-20240116; t=1762574119; c=relaxed/simple;
+	bh=KR+X32PpwVpEOO08zVik+s6kP9+lVgZQEjyjHdu1Kfc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=htOrC64EhXw9vZNFVO5V4ujZZnZ+jgzFK87Ob8P09wrDd483LWE8Xcoynhc9NAGsSKH+TRPXmmSLe417TzT8l8GrBfXHyvYi/3ZLzNsBtqILitNi9ssyRHYsf4r34FRdqh0ENOAsmuj8OfOsPNAL8pm6eJQMslxcJJ/JCTuElco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=WYG3dmFb; arc=none smtp.client-ip=113.46.200.218
+	 In-Reply-To:Content-Type; b=iPmomodLnhcJvJQiaQpeLMbxq1lc48XYbUD4qtm2Va+DH/YeVTTurnEWy0DVuqmLvvBMYIjZwvjVlJMs8y6k/MvJ9MSbH8ZeLBZb6RoIfiMYqInIB95SMawR6A4nzTJGsCEWb73BahuVlwSXrI8/EfhJboQUOMurgJEarG2Lkec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=z+OFQe8c; arc=none smtp.client-ip=113.46.200.224
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=qZpdxuNaZJ5yTrvmKWL9bmcWjXTZFnV3j45z8dY7gZo=;
-	b=WYG3dmFbG8rzR/MN5MvXPHAcQZowG4JneABCdOdvePd0iFkkb4zAHegLxioAyhiAdD703l7Jn
-	mxY8fVF2zjY3X8SV23ant75X/iLdJT9pAOguu6oKemTSKGqugFwfSPYtFRQj4tCq7m9CX2wxHTB
-	XSugBg9Q17r3T1oGSAMVO1U=
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4d3Lmz0SyfzpStp;
-	Sat,  8 Nov 2025 11:21:23 +0800 (CST)
+	bh=d6RxkWxtdTbMtb/K0EZCVnhRx0xGZ+mRRTv6q61zDK8=;
+	b=z+OFQe8cRdHA0B1at6t14IF8yBealNzi/Bd4o+KGKEtIeZYHAAUrujHzz8OOaetNomzO5eW0I
+	5HneTNviHAaPiSkCky78LmcvUhy4KTO02tlTt0PTc8AGON/W+yAT9R564arEPTYY9mo044xrQ7w
+	HoNHUazz9OMCvKczGknAZp8=
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by canpmsgout09.his.huawei.com (SkyGuard) with ESMTPS id 4d3MV770jMz1cyT1;
+	Sat,  8 Nov 2025 11:53:35 +0800 (CST)
 Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 83D16180B69;
-	Sat,  8 Nov 2025 11:22:58 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 40DCE140142;
+	Sat,  8 Nov 2025 11:55:13 +0800 (CST)
 Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
  (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Sat, 8 Nov
- 2025 11:22:57 +0800
-Message-ID: <e564bcc0-c4ea-466c-b6a9-5bce5406c475@huawei.com>
-Date: Sat, 8 Nov 2025 11:22:56 +0800
+ 2025 11:55:12 +0800
+Message-ID: <212cc909-0236-44b1-b492-2e148f0d1546@huawei.com>
+Date: Sat, 8 Nov 2025 11:55:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,82 +57,104 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: clear i_state_flags when alloc inode
+Subject: Re: [PATCH v2] jbd2: fix the inconsistency between checksum and data
+ in memory for journal sb
 Content-Language: en-GB
-To: Haibo Chen <haibo.chen@nxp.com>
-CC: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
-	Zhang Yi <yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>,
-	<linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<imx@lists.linux.dev>
-References: <20251104-ext4-v1-1-73691a0800f9@nxp.com>
+To: Ye Bin <yebin@huaweicloud.com>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<linux-ext4@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
+References: <20251103010123.3753631-1-yebin@huaweicloud.com>
 From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20251104-ext4-v1-1-73691a0800f9@nxp.com>
+In-Reply-To: <20251103010123.3753631-1-yebin@huaweicloud.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
  dggpemf500013.china.huawei.com (7.185.36.188)
 
-On 2025-11-04 16:12, Haibo Chen wrote:
-> i_state_flags used on 32-bit archs, need to clear this flag when
-> alloc inode.
-> Find this issue when umount ext4, sometimes track the inode as orphan
-> accidently, cause ext4 mesg dump.
+On 2025-11-03 09:01, Ye Bin wrote:
+> From: Ye Bin <yebin10@huawei.com>
 >
-> Fixes: acf943e9768e ("ext4: fix checks for orphan inodes")
-> Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+> Copying the file system while it is mounted as read-only results in
+> a mount failure:
+> [~]# mkfs.ext4 -F /dev/sdc
+> [~]# mount /dev/sdc -o ro /mnt/test
+> [~]# dd if=/dev/sdc of=/dev/sda bs=1M
+> [~]# mount /dev/sda /mnt/test1
+> [ 1094.849826] JBD2: journal checksum error
+> [ 1094.850927] EXT4-fs (sda): Could not load journal inode
+> mount: mount /dev/sda on /mnt/test1 failed: Bad message
+>
+> The process described above is just an abstracted way I came up with to
+> reproduce the issue. In the actual scenario, the file system was mounted
+> read-only and then copied while it was still mounted. It was found that
+> the mount operation failed. The user intended to verify the data or use
+> it as a backup, and this action was performed during a version upgrade.
+> Above issue may happen as follows:
+> ext4_fill_super
+>  set_journal_csum_feature_set(sb)
+>   if (ext4_has_metadata_csum(sb))
+>    incompat = JBD2_FEATURE_INCOMPAT_CSUM_V3;
+>   if (test_opt(sb, JOURNAL_CHECKSUM)
+>    jbd2_journal_set_features(sbi->s_journal, compat, 0, incompat);
+>     lock_buffer(journal->j_sb_buffer);
+>     sb->s_feature_incompat  |= cpu_to_be32(incompat);
+>     //The data in the journal sb was modified, but the checksum was not
+>       updated, so the data remaining in memory has a mismatch between the
+>       data and the checksum.
+>     unlock_buffer(journal->j_sb_buffer);
+>
+> In this case, the journal sb copied over is in a state where the checksum
+> and data are inconsistent, so mounting fails.
+> To solve the above issue, update the checksum in memory after modifying
+> the journal sb.
+>
+> Fixes: 4fd5ea43bc11 ("jbd2: checksum journal superblock")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-Looks good. Feel free to add:
+Updating features on a read-only mount looks strange, but we still need
+to update the checksum when touching the jbd2 superblock.
 
 Reviewed-by: Baokun Li <libaokun1@huawei.com>
 
 > ---
->  fs/ext4/ialloc.c | 1 -
->  fs/ext4/inode.c  | 1 -
->  fs/ext4/super.c  | 1 +
->  3 files changed, 1 insertion(+), 2 deletions(-)
+>  fs/jbd2/journal.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 >
-> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-> index ba4fd9aba1c14de56b89ebbeb4597f7becf947ff..b20a1bf866abedf3a768ee8a147f108ea09ecb01 100644
-> --- a/fs/ext4/ialloc.c
-> +++ b/fs/ext4/ialloc.c
-> @@ -1293,7 +1293,6 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
->  		ei->i_csum_seed = ext4_chksum(csum, (__u8 *)&gen, sizeof(gen));
->  	}
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index d480b94117cd..bf255f8b5eeb 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -2349,6 +2349,12 @@ int jbd2_journal_set_features(journal_t *journal, unsigned long compat,
+>  	sb->s_feature_compat    |= cpu_to_be32(compat);
+>  	sb->s_feature_ro_compat |= cpu_to_be32(ro);
+>  	sb->s_feature_incompat  |= cpu_to_be32(incompat);
+> +	/*
+> +	 * Update the checksum now so that it is valid even for read-only
+> +	 * filesystems where jbd2_write_superblock() doesn't get called.
+> +	 */
+> +	if (jbd2_journal_has_csum_v2or3(journal))
+> +		sb->s_checksum = jbd2_superblock_csum(sb);
+>  	unlock_buffer(journal->j_sb_buffer);
+>  	jbd2_journal_init_transaction_limits(journal);
 >  
-> -	ext4_clear_state_flags(ei); /* Only relevant on 32-bit archs */
->  	ext4_set_inode_state(inode, EXT4_STATE_NEW);
+> @@ -2378,9 +2384,17 @@ void jbd2_journal_clear_features(journal_t *journal, unsigned long compat,
 >  
->  	ei->i_extra_isize = sbi->s_want_extra_isize;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index a163c087137314c541ec10c011488c5392fb7011..bf6786d373ff57c32d5a84cfd73ea8a33cb68b16 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5285,7 +5285,6 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
->  	ei->i_projid = make_kprojid(&init_user_ns, i_projid);
->  	set_nlink(inode, le16_to_cpu(raw_inode->i_links_count));
+>  	sb = journal->j_superblock;
 >  
-> -	ext4_clear_state_flags(ei);	/* Only relevant on 32-bit archs */
->  	ei->i_inline_off = 0;
->  	ei->i_dir_start_lookup = 0;
->  	ei->i_dtime = le32_to_cpu(raw_inode->i_dtime);
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 33e7c08c9529c357d291f40269863398753dc650..3dcc9410c09a55d5dce2dbff388a97bf4f133818 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1396,6 +1396,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
->  
->  	inode_set_iversion(&ei->vfs_inode, 1);
->  	ei->i_flags = 0;
-> +	ext4_clear_state_flags(ei);	/* Only relevant on 32-bit archs */
->  	spin_lock_init(&ei->i_raw_lock);
->  	ei->i_prealloc_node = RB_ROOT;
->  	atomic_set(&ei->i_prealloc_active, 0);
->
-> ---
-> base-commit: 9823120909776bbca58a3c55ef1f27d49283c1f3
-> change-id: 20251104-ext4-3f9647dcedd0
->
-> Best regards,
+> +	lock_buffer(journal->j_sb_buffer);
+>  	sb->s_feature_compat    &= ~cpu_to_be32(compat);
+>  	sb->s_feature_ro_compat &= ~cpu_to_be32(ro);
+>  	sb->s_feature_incompat  &= ~cpu_to_be32(incompat);
+> +	/*
+> +	 * Update the checksum now so that it is valid even for read-only
+> +	 * filesystems where jbd2_write_superblock() doesn't get called.
+> +	 */
+> +	if (jbd2_journal_has_csum_v2or3(journal))
+> +		sb->s_checksum = jbd2_superblock_csum(sb);
+> +	unlock_buffer(journal->j_sb_buffer);
+>  	jbd2_journal_init_transaction_limits(journal);
+>  }
+>  EXPORT_SYMBOL(jbd2_journal_clear_features);
 
 
 
