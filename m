@@ -1,123 +1,178 @@
-Return-Path: <linux-ext4+bounces-11699-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11700-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D8ABC42661
-	for <lists+linux-ext4@lfdr.de>; Sat, 08 Nov 2025 05:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7934C42814
+	for <lists+linux-ext4@lfdr.de>; Sat, 08 Nov 2025 07:13:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B9883BA48E
-	for <lists+linux-ext4@lfdr.de>; Sat,  8 Nov 2025 04:06:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8139D3AECE0
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Nov 2025 06:13:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F532D641F;
-	Sat,  8 Nov 2025 04:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7421E2DEA97;
+	Sat,  8 Nov 2025 06:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="lMHptgO+"
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="B+D3byKt"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E376213E89;
-	Sat,  8 Nov 2025 04:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+Received: from submarine.notk.org (submarine.notk.org [62.210.214.84])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6822C0270;
+	Sat,  8 Nov 2025 06:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.210.214.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762574754; cv=none; b=aOEegXVs4K8XEYEtpj7FDAGqWHrTu+5mZnh3d91HC6+zDVIEEzK5pkmTVsvpJ1PrHbODXiGMHHMo4NPXIuw8i6SL1HT8lKMDfif4POsZUjmbcOSn+NPFVcWR3NMdKHZNHGwi7PU0alfOP8bikh96+6agn9dqpZbfxsIDWUDXyTs=
+	t=1762582386; cv=none; b=h1pusQwfaQxnPeg6yU3BqrThk4NwPltas9Shxy60ruowit28ttmw02GAZer2DX6aHj4SYN6RT7Ay32QppMdQarTBfFmUP9UohsBwSLIqmHM9IjQdULOolIb7ltCUJ4DciUgXu2FYv8MpFmDC4+9a7EjRsX60UtHHWw2RXcYVY5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762574754; c=relaxed/simple;
-	bh=84Fwes13GQzGGIEKu/rtOQJBIgj5vBKKGERWcmYs8MU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Dd3WA1wkdmd7tl7879KC99Z90LyUO4Lyx70rKdYrfRLsOtt7WklKgUZdsGSs2Ft0JvgwLRiPmDAELYO8nvRCKhIh+uSHmwpAAttZRHi1yNR5ivBaloeHfKV5nn/Mmi8EYs+FrQSDMJ4Veuba7H6lYmm3Ma1AHA5VkOrTvCpX+eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=lMHptgO+; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from canpmsgout04.his.huawei.com (unknown [172.19.92.133])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4d3Mfn12d9zThDX;
-	Sat,  8 Nov 2025 12:01:05 +0800 (CST)
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=HPF/NcM3BtVLLC/sYQIVIuePAJPLl0cbuAATnLa0jMs=;
-	b=lMHptgO+H1iEUVemG9PWkgd1tHuEkyMtmBpiHpsl0kLCj2rM9vbN9/ihOuzizPdf2g/aCKtNW
-	WWJx1/ipZYLFpElKGMysMbKSDcDLBodoDbu5Sknp4BQMD0uqJOx4YYrw2PxEqoEZKSzAnsXiOoe
-	+p0G/93HOv1wL/TBzsMHTEE=
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4d3MkL0dwGz1prMm;
-	Sat,  8 Nov 2025 12:04:10 +0800 (CST)
-Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9A18D180B5A;
-	Sat,  8 Nov 2025 12:05:47 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
- (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Sat, 8 Nov
- 2025 12:05:46 +0800
-Message-ID: <d4e265dd-a4c0-4e06-995e-98602275100c@huawei.com>
-Date: Sat, 8 Nov 2025 12:05:45 +0800
+	s=arc-20240116; t=1762582386; c=relaxed/simple;
+	bh=DgH5GUT7j3a/+liLaMLDQ+ppgc87s/ERzvidbBqi8Oc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bkikl/JRoX4zln4YTg/f/wrUrA+yGv5EE4xNA2rco9ct1p3/Ep5t5+ccuLWMtRTY0rjfC0TZpHDgxaxIbymlkTKFPAEjnUy3Pv5GTMV9SHITJvc/mS4ym28yzZzas4icQjD63IrTsk21HMoVa6qVLROFf7rJ/2/TH8os8YoZzn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=B+D3byKt; arc=none smtp.client-ip=62.210.214.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by submarine.notk.org (Postfix) with ESMTPS id A419014C2D3;
+	Sat,  8 Nov 2025 07:12:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org;
+	s=2; t=1762582373;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LTM5LkyL3mfB0IbHJeS1oRharyj4iNDNdaZ7y5irjmg=;
+	b=B+D3byKtJ5aLyRiu2rooP0B2TJlyh9NnWKaBHKY3oGl5WrI9R/ZTOokRqfrmQkRjA4d6PF
+	hVA+2jtaIxDHKJVm19YOlIu00RJFzbMjiJ2IJMY5v8SjTtfCjEZWBxEPfRtzuPasj++KiY
+	8Sahe5eVbfmwmhQeo5uzL3Rp7AKK7Nzr7m3ipU5qmaiTEStLej1x9iBcfVqKnY9WidAi8X
+	rwVB6qqUGBZMEcUSkoPWBbqf240gmgWcLbAb7B4RNHuho0O1rPy72OuweBfiXGGrgaJqO1
+	amO1aDXHVrMyRWIApKs7c+o9NFvUODZZvMkcXugNCGdZ2S65dzPgh2BACKmoHA==
+Received: from localhost (gaia.codewreck.org [local])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 26a2c8b4;
+	Sat, 8 Nov 2025 06:12:25 +0000 (UTC)
+Date: Sat, 8 Nov 2025 15:12:10 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Sterba <dsterba@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+	Chris Mason <clm@fb.com>, Xiubo Li <xiubli@redhat.com>,
+	Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>,
+	coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
+	Jeremy Kerr <jk@ozlabs.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Yuezhang Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	Muchun Song <muchun.song@linux.dev>,
+	Oscar Salvador <osalvador@suse.de>,
+	David Hildenbrand <david@redhat.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Bob Copeland <me@bobcopeland.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Hans de Goede <hansg@kernel.org>, Carlos Maiolino <cem@kernel.org>,
+	Hugh Dickins <hughd@google.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	NeilBrown <neilb@ownmail.net>, linux-kernel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
+	ecryptfs@vger.kernel.org, linux-efi@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	gfs2@lists.linux.dev, linux-um@lists.infradead.org,
+	linux-mm@kvack.org, linux-mtd@lists.infradead.org,
+	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev,
+	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2] vfs: remove the excl argument from the ->create()
+ inode_operation
+Message-ID: <aQ7fOmknHIxcxuha@codewreck.org>
+References: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] ext4: check if mount_opts is NUL-terminated in
- ext4_ioctl_set_tune_sb()
-Content-Language: en-GB
-To: Fedor Pchelkin <pchelkin@ispras.ru>
-CC: Theodore Ts'o <tytso@mit.edu>, <linux-ext4@vger.kernel.org>, Jan Kara
-	<jack@suse.cz>, Andreas Dilger <adilger.kernel@dilger.ca>, "Darrick J. Wong"
-	<djwong@kernel.org>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-References: <20251101160430.222297-1-pchelkin@ispras.ru>
- <20251101160430.222297-2-pchelkin@ispras.ru>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20251101160430.222297-2-pchelkin@ispras.ru>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- dggpemf500013.china.huawei.com (7.185.36.188)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
 
-On 2025-11-02 00:04, Fedor Pchelkin wrote:
-> params.mount_opts may come as potentially non-NUL-term string.  Userspace
-> is expected to pass a NUL-term string.  Add an extra check to ensure this
-> holds true.  Note that further code utilizes strscpy_pad() so this is just
-> for proper informing the user of incorrect data being provided.
->
-> Found by Linux Verification Center (linuxtesting.org).
->
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Jeff Layton wrote on Fri, Nov 07, 2025 at 10:05:03AM -0500:
+> With two exceptions, ->create() methods provided by filesystems ignore
+> the "excl" flag.  Those exception are NFS and GFS2 which both also
+> provide ->atomic_open.
+> 
+> Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
+> the "excl" argument to the ->create() inode_operation is always set to
+> true in vfs_create(). The ->create() call in lookup_open() sets it
+> according to the O_EXCL open flag, but is never called if the filesystem
+> provides ->atomic_open().
+> 
+> The excl flag is therefore always either ignored or true.  Remove it,
+> and change NFS and GFS2 to act as if it were always true.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-Looks good to me.
-
-Reviewed-by: Baokun Li <libaokun1@huawei.com>
-
-> ---
->
-> v2: check length of mount_opts in superblock tuning ioctl (Jan Kara)
->
->     Can't plainly return error at strscpy_pad() call site in
->     ext4_sb_setparams(), that's a void ext4_update_sb_callback.
->
-> v1: https://lore.kernel.org/lkml/20251028130949.599847-1-pchelkin@ispras.ru/T/#u
->
->  fs/ext4/ioctl.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index a93a7baae990..3dec26c939fd 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -1394,6 +1394,10 @@ static int ext4_ioctl_set_tune_sb(struct file *filp,
->  	if (copy_from_user(&params, in, sizeof(params)))
->  		return -EFAULT;
->  
-> +	if (strnlen(params.mount_opts, sizeof(params.mount_opts)) ==
-> +	    sizeof(params.mount_opts))
-> +		return -E2BIG;
-> +
->  	if ((params.set_flags & ~TUNE_OPS_SUPPORTED) != 0)
->  		return -EOPNOTSUPP;
->  
+Good cleanup, just one whitespace nitpick below but:
+Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
 
 
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index 4f13b01e42eb5e2ad9d60cbbce7e47d09ad831e6..7a55e491e0c87a0d18909bd181754d6d68318059 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -505,7 +505,10 @@ otherwise noted.
+>  	if you want to support regular files.  The dentry you get should
+>  	not have an inode (i.e. it should be a negative dentry).  Here
+>  	you will probably call d_instantiate() with the dentry and the
+> -	newly created inode
+> +        newly created inode. This operation should always provide O_EXCL
+
+This and the block below change halfway from tab (old text) to spaces
+(your patch)
+
+Looks like the file has a few space-indented sections though so it won't
+be the first if that goes in as is, the html-rendering doesn't seem to
+care :)
+
+Cheers,
+-- 
+Dominique Martinet | Asmadeus
 
