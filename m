@@ -1,131 +1,131 @@
-Return-Path: <linux-ext4+bounces-11719-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11720-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57ED5C46672
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 12:55:58 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8933BC4679B
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 13:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B272188F11D
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 11:56:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6F8054E9D46
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 12:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC6130AACE;
-	Mon, 10 Nov 2025 11:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE0C530F543;
+	Mon, 10 Nov 2025 12:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="Lcd3QpnY"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="l3oQ412n"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+Received: from canpmsgout01.his.huawei.com (canpmsgout01.his.huawei.com [113.46.200.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1730B24BC07;
-	Mon, 10 Nov 2025 11:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF96330E0EB;
+	Mon, 10 Nov 2025 12:09:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762775751; cv=none; b=MWPo5ksA2zoEt99RQ6Yh0+EeWMVmP+Dx80j0V+pBQmbzVlNOs3gXJVZOBkVOQ0fuvkkX9zA0Ioo5BPGmXKTZun3QR+MQHT3oZcoTvXpLyEtmcZ28U0+9dGgUPL23Q8JNVdbVxO0ka5xTR8I5P8kA9XJM6KrGHwk1iwLTsYoaTV0=
+	t=1762776553; cv=none; b=F8iMtLrbOMv4I9IYFQrEvUJQw2VShd8xQZBg1Ah8pEUR4rlqLtuLla1dzvnSinZQOh3BhxprLD6ihGIdB7TCpEATmWczDhWTydnfq2yV9uMj4qKimTSp+IvUOrZ5BITytbvmm6YNbR1L+f6iRw/fTqsT4iRsi1SqQ7ZUu1QGk5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762775751; c=relaxed/simple;
-	bh=BG/R3SxEAtIIo0LWOHrCfcSUHdJTZWPLY5lx1lGieTM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dx3B5TZFKA5TT2QLXJ4Z5gFl74BXrnWtK69jPPCGvBXTMgl4V/lM68tMIXvsoSdR44KzI8PA9xfXJCBjaMTqoS/XXCAISxzD58DytFvTIav7sy3zT4FqRg3IpGEEBQANnaTfL7DTc923P7Biv+VqWuJiynllotPsWJsPpWEoZ6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=Lcd3QpnY; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=zq/UYqU7b99yJOfWIAe6XEkp8akZneMuARWWpOHmJ8s=; b=Lcd3QpnYwO6bBhf01O3jwhiMdb
-	FqaGkD6CqogBGXEZbIYOJrIYqD4gz8nnJTUG62KIgur4FnnnjowkKIPhAwtDcfZ/Ceok2EsAq0rF3
-	YWLEDq5CNPeKs4eLM6whVs0KmVM534XOLBAivtUIfVABZ4Z86ixHLovuIV2VG/e4khsncCyKGTOU+
-	ezT9orBGOv5J2Ibow62qrzFa96fWT3S11gf2fxJ9hgQr69XJLIA8xtvqcX+xpF+N2zCN0AXSEMm0l
-	Tql1LGOwAK6Hhzr1wMnoOCE8HGw0dDJ4h1g1RJR1j2NNrCPJR5XQ24lvllIGxKiR/NVjNfWmqqO9j
-	JFTjPliw==;
-Received: from 179-125-86-112-dinamico.pombonet.net.br ([179.125.86.112] helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1vIQUe-004aQX-9A; Mon, 10 Nov 2025 12:55:32 +0100
-Date: Mon, 10 Nov 2025 08:55:26 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: Raphael Pinsonneault-Thibeault <rpthibeault@gmail.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev,
-	skhan@linuxfoundation.org,
-	syzbot+3ee481e21fd75e14c397@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: validate xattrs to avoid OOB in
- ext4_find_inline_entry
-Message-ID: <aRHSrpFone-SSkZa@quatroqueijos.cascardo.eti.br>
-References: <20251108202545.1524330-2-rpthibeault@gmail.com>
+	s=arc-20240116; t=1762776553; c=relaxed/simple;
+	bh=wAxgJBYGwoDSZb5hfNyKWteHhF4+zFD+4XO9Wrvw84A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=hT/32iRBZ99yTMbqEtdKB9JiI+HpUAQ7SlWvMaKmT6GitcN3RtIYbXvK/w9cPceCDvusdFaROvg8h0EsNmPGNli7GyIp9HjiEgXBrbfwmaoR29Q7uYQkAMOL/ApmufZVvjNS7SLiL7e/fuYsZT7Qol8h0OmIGOJFj4+SxxbfVTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=l3oQ412n; arc=none smtp.client-ip=113.46.200.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=Dpr0clA3/b4+Xp5u9Y8yrX10+2A/jOXibdQOlE+wxHU=;
+	b=l3oQ412nH1fuO9oM0/uvt5tXULfRiSyzZSKhuQa23tPFZhA2othjJDOEtM+cUIw1szvpIadhQ
+	qYDBKiD/Shaqei/MtnbnK/O17H+xEvqOrQp7Im9AgOaotNHjK8l+s0GiSXHvtPQciOsjUrD5W6r
+	nL35AokzoWzfoasQNjij1og=
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4d4pMJ3W6Rz1T4Fv;
+	Mon, 10 Nov 2025 20:07:40 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2DF291402DB;
+	Mon, 10 Nov 2025 20:09:01 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 10 Nov
+ 2025 20:09:00 +0800
+Message-ID: <1360a439-8c95-41e4-840c-163685751110@huawei.com>
+Date: Mon, 10 Nov 2025 20:08:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251108202545.1524330-2-rpthibeault@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 22/24] ext4: support verifying data from large folios
+ with fs-verity
+Content-Language: en-GB
+To: Jan Kara <jack@suse.cz>, <libaokun@huaweicloud.com>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
+	<mcgrof@kernel.org>, <ebiggers@kernel.org>, <willy@infradead.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>
+References: <20251107144249.435029-1-libaokun@huaweicloud.com>
+ <20251107144249.435029-23-libaokun@huaweicloud.com>
+ <tyeh5ds2dezr4hrqxs46riwi3ps7ugwhcx46fqmpzarughiokz@q26eyruagm6v>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <tyeh5ds2dezr4hrqxs46riwi3ps7ugwhcx46fqmpzarughiokz@q26eyruagm6v>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-On Sat, Nov 08, 2025 at 03:25:46PM -0500, Raphael Pinsonneault-Thibeault wrote:
-> When looking for an entry in an inlined directory, if e_value_offs is
-> changed underneath the filesystem by some change in the block device, it
-> will lead to an out-of-bounds access that KASAN detects as a
-> use-after-free.
-> 
-> This is a similar problem as fixed by
-> commit c6b72f5d82b1 ("ext4: avoid OOB when system.data xattr changes underneath the filesystem")
-> whose fix was to call ext4_xattr_ibody_find() right after reading the
-> inode with ext4_get_inode_loc() to check the validity of the xattrs.
-> 
-> However, ext4_xattr_ibody_find() only checks xattr names, via
-> xattr_find_entry(), not e_value_offs.
-> 
-> Fix by calling xattr_check_inode() which performs a full check on the
-> xattrs in inode.
-> 
-> Reported-by: syzbot+3ee481e21fd75e14c397@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3ee481e21fd75e14c397
-> Tested-by: syzbot+3ee481e21fd75e14c397@syzkaller.appspotmail.com
-> Fixes: c6b72f5d82b10 ("ext4: avoid OOB when system.data xattr changes underneath the filesystem")
-> Signed-off-by: Raphael Pinsonneault-Thibeault <rpthibeault@gmail.com>
-> ---
->  fs/ext4/inline.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index 1b094a4f3866..7d46e1e16b52 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -1593,6 +1593,13 @@ struct buffer_head *ext4_find_inline_entry(struct inode *dir,
->  
->  	down_read(&EXT4_I(dir)->xattr_sem);
->  
-> +	if (EXT4_INODE_HAS_XATTR_SPACE(dir)) {
-> +		ret = xattr_check_inode(dir, IHDR(dir, ext4_raw_inode(&is.iloc)),
-> +					ITAIL(dir, ext4_raw_inode(&is.iloc)));
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
+On 2025-11-10 17:54, Jan Kara wrote:
+> On Fri 07-11-25 22:42:47, libaokun@huaweicloud.com wrote:
+>> From: Baokun Li <libaokun1@huawei.com>
+>>
+>> Eric Biggers already added support for verifying data from large folios
+>> several years ago in commit 5d0f0e57ed90 ("fsverity: support verifying
+>> data from large folios").
+>>
+>> With ext4 now supporting large block sizes, the fs-verity tests
+>> `kvm-xfstests -c ext4/64k -g verity -x encrypt` pass without issues.
+>>
+>> Therefore, remove the restriction and allow LBS to be enabled together
+>> with fs-verity.
+>>
+>> Cc: Eric Biggers <ebiggers@kernel.org>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Nice!
+>
+>> @@ -5175,7 +5173,8 @@ void ext4_set_inode_mapping_order(struct inode *inode)
+>>  		return;
+>>  
+>>  	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
+>> -	    ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
+>> +	    ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA) ||
+>> +	    ext4_has_feature_verity(inode->i_sb))
+>>  		max_order = EXT4_SB(inode->i_sb)->s_min_folio_order;
+>>  	else
+>>  		max_order = EXT4_MAX_PAGECACHE_ORDER(inode);
+> Is there a reason why fsverity needs the folio order to match the block
+> size? I didn't find any by a quick glance. If yes, please state it in
+> the changelog. If no, then I'd just use EXT4_MAX_PAGECACHE_ORDER() because
+> it will give us some performance e.g. for mmapped executables protected by
+> fsverify...
+>
+> 								Honza
+>
+There is no real limitation that prevents verity from using
+EXT4_MAX_PAGECACHE_ORDER(). The reason I did not enable it by default
+is that none of the filesystems supporting fs-verity had large folios
+support at the time, and thus fs-verity with large folios has not yet
+been tested in practice. For this reason, I only enabled it when LBS
+is turned on.
 
-ext4_xattr_ibody_find used to call xattr_check_inode until commit
-5701875f9609 ("ext4: fix out-of-bound read in ext4_xattr_inode_dec_ref_all()").
+As you pointed out, turning it on gives some performance gains. And
+it also lets fs-verity get more testing. I’ll switch to
+EXT4_MAX_PAGECACHE_ORDER(inode) in the next version.
 
-So every other place where ext4_xattr_ibody_find was protecting against such
-block device changes is not working since.
+Thank you for your review!
 
-At least, the Fixes: line should change to point out to that commit, but I
-wonder if the inode checking should be put back there. I haven't investigated if
-that would regress the bug it fixes, though.
 
-Cascardo.
+Cheers,
+Baokun
 
->  	ret = ext4_xattr_ibody_find(dir, &i, &is);
->  	if (ret)
->  		goto out;
-> -- 
-> 2.43.0
-> 
 
