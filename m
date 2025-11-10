@@ -1,110 +1,286 @@
-Return-Path: <linux-ext4+bounces-11706-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11707-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03150C45120
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 07:19:04 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE984C45AA5
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 10:36:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA18C188E9BE
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 06:19:28 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 733304ED4B3
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 09:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F621227B9F;
-	Mon, 10 Nov 2025 06:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DDDB2FF658;
+	Mon, 10 Nov 2025 09:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="EAsxVgkE"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gVuUHJQH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h4fGrzxO";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gVuUHJQH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h4fGrzxO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CFF14D283;
-	Mon, 10 Nov 2025 06:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D0828506F
+	for <linux-ext4@vger.kernel.org>; Mon, 10 Nov 2025 09:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762755536; cv=none; b=h/r5ekw8XnBGWplWAnKw3PevZPNh/iZiQQ2f8dej+SRaIjaLW+/KPUQ2kB1gf8ljMMwOI1u7cWnw9dxbQNf3UhfPusmFspHB/4mZ4O0MKABry3e/6Ng76AU0bXJ0ITe1IXMz8Uwbk9aW7Lxi/W4V5KMu31jgGc5v1IINZ6u2ki8=
+	t=1762767161; cv=none; b=jvNwSSI0DKTN/5UX/wj0TIHnuF5PcARFnJH/ntSEGTclsOob897OdAqvpcQwwNTa51i/XopE7RKtCYdPfulhZacPIy3TjhyWdl16/VDsW8NdLsLO9a+crmyliAtsIll2z+WXfI5pR7Jw9u4K4/chGIfzCPF3ZRo3tmQdUJ25A50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762755536; c=relaxed/simple;
-	bh=PL8zB/p5Utl9T7P/bqyzQ+BJ4D1se8aHDQ/9RhrXrp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=R5JV5nWnjH4tJ/fov13+AEqkB298NB60HSy6TwSNZP2b3XTVLxgw/THpGX9fJr052uyRPR6EciOAfh6aMIbZMSiGG0CHeqaQ17d9Te4X4lbhJ6K4a9lhJBs6OO4269rexe3LDZp6zELlqxVZvH/jpoDB0kjLjC1zyVmN6WNnnMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=EAsxVgkE; arc=none smtp.client-ip=113.46.200.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=xDNON/pyA4w9sSn5npGbkSra1PS7hPcDGXPKn7rpI6Q=;
-	b=EAsxVgkE0Wa/EpknZDXWMCXq+epH7UAa9adI/VeaaUfC5x/5KPMJGf03jRcDk9Yj279k2hQJi
-	tbJiq1Yx0nUkL2TOM5ptcxw2ElrxO1BpOtq+cDKMKmuVg4ryKvt7gNdsjx8L05VCq9UgcXIac9I
-	X5uKbjWLc4IUPJkP2MRWy8M=
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4d4fZf1vHWzcb04;
-	Mon, 10 Nov 2025 14:16:58 +0800 (CST)
-Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id D34DF180B65;
-	Mon, 10 Nov 2025 14:18:43 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
- (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 10 Nov
- 2025 14:18:42 +0800
-Message-ID: <6d6945a4-6672-45d1-a7fc-0736df452895@huawei.com>
-Date: Mon, 10 Nov 2025 14:18:41 +0800
+	s=arc-20240116; t=1762767161; c=relaxed/simple;
+	bh=7hbXW0FSpzvsRZIz/+hPE1FdSHXb4N+2bP9835gVzhw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fTH2sAUQaB/EKE+8eEsFNmUuUsFRDfFk+s9YroomEnlV26s3K096CmGkU49kc0Ezk4dMCmbhXg3Ado2A022B0HZBv5mD57xzH0f//R4tO8MGJkdTBp15uxvtbXfhNMx7naZtbf6MjB+/z5LB2IG0gRTDtbKc011GYSbKJXf+THY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gVuUHJQH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h4fGrzxO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gVuUHJQH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h4fGrzxO; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BE7751F397;
+	Mon, 10 Nov 2025 09:32:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762767151; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wvGKfJ1HNUvIhpALd9hXLro+NefA36B4ILvuVBGUeHo=;
+	b=gVuUHJQHD4mpH/CELdGOYG46YbCkzAxPTkE7AYVoCmvrSye69k2/Sxb4/JQKCbeFHjpMjK
+	ZtpLKjnfQ7a43GRXx2ugxauZ58kLKxSj25ZA+da68T8zFr/7AGPH9XRrhVHBVtR7AOxdRk
+	BEvwnCMy/K8jsb1vdXfPjrkiqJ4jmR4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762767151;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wvGKfJ1HNUvIhpALd9hXLro+NefA36B4ILvuVBGUeHo=;
+	b=h4fGrzxOjucmfUawUImMK1trx7NPH4jnGfhhrcFTjlqRD6oQvCDnotVSLBJ2o/EOas4TuM
+	Zom3VL999AL7W3BA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762767151; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wvGKfJ1HNUvIhpALd9hXLro+NefA36B4ILvuVBGUeHo=;
+	b=gVuUHJQHD4mpH/CELdGOYG46YbCkzAxPTkE7AYVoCmvrSye69k2/Sxb4/JQKCbeFHjpMjK
+	ZtpLKjnfQ7a43GRXx2ugxauZ58kLKxSj25ZA+da68T8zFr/7AGPH9XRrhVHBVtR7AOxdRk
+	BEvwnCMy/K8jsb1vdXfPjrkiqJ4jmR4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762767151;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wvGKfJ1HNUvIhpALd9hXLro+NefA36B4ILvuVBGUeHo=;
+	b=h4fGrzxOjucmfUawUImMK1trx7NPH4jnGfhhrcFTjlqRD6oQvCDnotVSLBJ2o/EOas4TuM
+	Zom3VL999AL7W3BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ACC3213BF3;
+	Mon, 10 Nov 2025 09:32:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id IQQnKi+xEWmwbAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 10 Nov 2025 09:32:31 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 4893FA28B1; Mon, 10 Nov 2025 10:32:31 +0100 (CET)
+Date: Mon, 10 Nov 2025 10:32:31 +0100
+From: Jan Kara <jack@suse.cz>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	tytso@mit.edu, torvalds@linux-foundation.org, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] fs: speed up path lookup with cheaper handling of
+ MAY_EXEC
+Message-ID: <qfoni4sufho6ruxsuxvcwnw4xryptydtt3wimsflf7kwfcortf@372gbykgkctf>
+References: <20251107142149.989998-1-mjguzik@gmail.com>
+ <20251107142149.989998-2-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/24] ext4: enable block size larger than page size
-To: Theodore Ts'o <tytso@mit.edu>
-CC: <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
-	<mcgrof@kernel.org>, <ebiggers@kernel.org>, <willy@infradead.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-	<libaokun1@huawei.com>, Baokun Li <libaokun@huaweicloud.com>
-References: <20251107144249.435029-1-libaokun@huaweicloud.com>
- <20251110043226.GD2988753@mit.edu>
-Content-Language: en-GB
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20251110043226.GD2988753@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- dggpemf500013.china.huawei.com (7.185.36.188)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251107142149.989998-2-mjguzik@gmail.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	MISSING_XM_UA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-On 2025-11-10 12:32, Theodore Ts'o wrote:
-> I've started looking at this patch series and playing with it, and one
-> thing which is worth noting is that CONFIG_TRANSPARENT_HUGEPAGE needs
-> to be enabled, or else sb_set_blocksize() will fail for block size >
-> page size.  This isn't specific to ext4, and maybe I'm missing
-> something, but apparently this isn't documented.  I had to go digging
-> through the source code to figure out what was needed.
->
-> I wonder if we should have some kind of warning in sb_set_blocksize()
-> where if there is an attempt to set a blocksize > page size and
-> transparent hugepages is not configured, we issue a printk_once()
-> giving a hint to the user that the reason that the mount failed was
-> because transparent hugepages wasn't enabled at compile time.
->
-> It **really** isn't obvious that large block size support and
-> transparent hugepages are linked.
->
-Thank you for the review!
+On Fri 07-11-25 15:21:47, Mateusz Guzik wrote:
+> The generic inode_permission() routine does work which is known to be of
+> no significance for lookup. There are checks for MAY_WRITE, while the
+> requested permission is MAY_EXEC. Additionally devcgroup_inode_permission()
+> is called to check for devices, but it is an invariant the inode is a
+> directory.
+> 
+> Absent a ->permission func, execution lands in generic_permission()
+> which checks upfront if the requested permission is granted for
+> everyone.
+> 
+> We can elide the branches which are guaranteed to be false and cut
+> straight to the check if everyone happens to be allowed MAY_EXEC on the
+> inode (which holds true most of the time).
+> 
+> Moreover, filesystems which provide their own ->permission routine can
+> take advantage of the optimization by setting the IOP_FASTPERM_MAY_EXEC
+> flag on their inodes, which they can legitimately do if their MAY_EXEC
+> handling matches generic_permission().
+> 
+> As a simple benchmark, as part of compilation gcc issues access(2) on
+> numerous long paths, for example /usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o
+> 
+> Issuing access(2) on it in a loop on ext4 on Sapphire Rapids (ops/s):
+> before: 3797556
+> after:  3987789 (+5%)
+> 
+> Note: this depends on the not-yet-landed ext4 patch to mark inodes with
+> cache_no_acl()
+> 
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
 
-Yes, supporting block sizes larger than the page size requires large
-folios, so it is indeed necessary to enable CONFIG_TRANSPARENT_HUGEPAGE
-to support large folios. Because the code is wrapped in multiple layers,
-the connection between the two is somewhat hidden, and users may not
-notice it or know how to enable LBS.
+The gain is nice. I'm just wondering where exactly is it coming from? I
+don't see that we'd be saving some memory load or significant amount of
+work. So is it really coming from the more compact code and saved several
+unlikely branches and function calls?
 
-I will add some hints in sb_set_blocksize to make users aware of this
-relationship. Thanks for the suggestion!
+								Honza
 
-
-Cheers,
-Baokun
-
-
+> ---
+>  fs/namei.c         | 43 +++++++++++++++++++++++++++++++++++++++++--
+>  include/linux/fs.h | 13 +++++++------
+>  2 files changed, 48 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index a9f9d0453425..6b2a5a5478e7 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -540,6 +540,9 @@ static inline int do_inode_permission(struct mnt_idmap *idmap,
+>   * @mask: Right to check for (%MAY_READ, %MAY_WRITE, %MAY_EXEC)
+>   *
+>   * Separate out file-system wide checks from inode-specific permission checks.
+> + *
+> + * Note: lookup_inode_permission_may_exec() does not call here. If you add
+> + * MAY_EXEC checks, adjust it.
+>   */
+>  static int sb_permission(struct super_block *sb, struct inode *inode, int mask)
+>  {
+> @@ -602,6 +605,42 @@ int inode_permission(struct mnt_idmap *idmap,
+>  }
+>  EXPORT_SYMBOL(inode_permission);
+>  
+> +/**
+> + * lookup_inode_permission_may_exec - Check traversal right for given inode
+> + *
+> + * This is a special case routine for may_lookup() making assumptions specific
+> + * to path traversal. Use inode_permission() if you are doing something else.
+> + *
+> + * Work is shaved off compared to inode_permission() as follows:
+> + * - we know for a fact there is no MAY_WRITE to worry about
+> + * - it is an invariant the inode is a directory
+> + *
+> + * Since majority of real-world traversal happens on inodes which grant it for
+> + * everyone, we check it upfront and only resort to more expensive work if it
+> + * fails.
+> + *
+> + * Filesystems which have their own ->permission hook and consequently miss out
+> + * on IOP_FASTPERM can still get the optimization if they set IOP_FASTPERM_MAY_EXEC
+> + * on their directory inodes.
+> + */
+> +static __always_inline int lookup_inode_permission_may_exec(struct mnt_idmap *idmap,
+> +	struct inode *inode, int mask)
+> +{
+> +	/* Lookup already checked this to return -ENOTDIR */
+> +	VFS_BUG_ON_INODE(!S_ISDIR(inode->i_mode), inode);
+> +	VFS_BUG_ON((mask & ~MAY_NOT_BLOCK) != 0);
+> +
+> +	mask |= MAY_EXEC;
+> +
+> +	if (unlikely(!(inode->i_opflags & (IOP_FASTPERM | IOP_FASTPERM_MAY_EXEC))))
+> +		return inode_permission(idmap, inode, mask);
+> +
+> +	if (unlikely(((inode->i_mode & 0111) != 0111) || !no_acl_inode(inode)))
+> +		return inode_permission(idmap, inode, mask);
+> +
+> +	return security_inode_permission(inode, mask);
+> +}
+> +
+>  /**
+>   * path_get - get a reference to a path
+>   * @path: path to get the reference to
+> @@ -1855,7 +1894,7 @@ static inline int may_lookup(struct mnt_idmap *idmap,
+>  	int err, mask;
+>  
+>  	mask = nd->flags & LOOKUP_RCU ? MAY_NOT_BLOCK : 0;
+> -	err = inode_permission(idmap, nd->inode, mask | MAY_EXEC);
+> +	err = lookup_inode_permission_may_exec(idmap, nd->inode, mask);
+>  	if (likely(!err))
+>  		return 0;
+>  
+> @@ -1870,7 +1909,7 @@ static inline int may_lookup(struct mnt_idmap *idmap,
+>  	if (err != -ECHILD)	// hard error
+>  		return err;
+>  
+> -	return inode_permission(idmap, nd->inode, MAY_EXEC);
+> +	return lookup_inode_permission_may_exec(idmap, nd->inode, 0);
+>  }
+>  
+>  static int reserve_stack(struct nameidata *nd, struct path *link)
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 03e450dd5211..7d5de647ac7b 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -647,13 +647,14 @@ is_uncached_acl(struct posix_acl *acl)
+>  	return (long)acl & 1;
+>  }
+>  
+> -#define IOP_FASTPERM	0x0001
+> -#define IOP_LOOKUP	0x0002
+> -#define IOP_NOFOLLOW	0x0004
+> -#define IOP_XATTR	0x0008
+> +#define IOP_FASTPERM		0x0001
+> +#define IOP_LOOKUP		0x0002
+> +#define IOP_NOFOLLOW		0x0004
+> +#define IOP_XATTR		0x0008
+>  #define IOP_DEFAULT_READLINK	0x0010
+> -#define IOP_MGTIME	0x0020
+> -#define IOP_CACHED_LINK	0x0040
+> +#define IOP_MGTIME		0x0020
+> +#define IOP_CACHED_LINK		0x0040
+> +#define IOP_FASTPERM_MAY_EXEC	0x0080
+>  
+>  /*
+>   * Inode state bits.  Protected by inode->i_lock
+> -- 
+> 2.48.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
