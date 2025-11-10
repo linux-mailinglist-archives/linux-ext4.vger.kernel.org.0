@@ -1,112 +1,117 @@
-Return-Path: <linux-ext4+bounces-11728-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11729-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C96C47870
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 16:27:44 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6863C4796B
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 16:39:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC0501884115
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 15:25:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 505EB4ED5A7
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 15:35:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4AB1A3029;
-	Mon, 10 Nov 2025 15:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74FA8257841;
+	Mon, 10 Nov 2025 15:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="W2UsTThZ"
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="BP4u4OZ+"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476DF2206B1
-	for <linux-ext4@vger.kernel.org>; Mon, 10 Nov 2025 15:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C6D19F41C;
+	Mon, 10 Nov 2025 15:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762788304; cv=none; b=lAPkCUNy7i+x8sGW8F5FlBo6cZg8w5cpYjAja7D29oNhVpCpC6YPGmHcgDrGnisgIgHgCDybkBwwKSq9Lt/8MNlbJ0YYRoD35jEdmfax5ynOcsoBlCvk0Owb4wID9zzBn4ePcDJc+6H7a8HyIcF2/pspVBi15rNuQgWqXLNzkC4=
+	t=1762788902; cv=none; b=nObfPzv+UtD0ps1dCwtd1g1KGYZZRMy7epg3K+0LlDoJi3N5YraG90DUqF5Kd7lkMgCsQvS1Kss8Nwi2s955HPB63XmD6DwQ36gCpaEkTS8jhgEFE6NrQdNFvBmbF4nEFgxfjbD3fyAW9Tm9UOitszd5pgzjLGyuWgp+SQgpzSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762788304; c=relaxed/simple;
-	bh=Hf70xnTUzHT0AbtUYSYilJ3of2QDSmVqTAwGyxAZSMk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eGoJD84RIUaiPaa6kMAQHINPQ7fSmPvfbxYjlqPJxTM6uYrjwUeCT1gHNkkAy/LOe0YUlNuwJuBX2oAbdpbw0ZlAvSfAeRz9jI5jgljPA5XE+IVl+PiJt1mQKUc9kzfPxMfuU88P6dHiIHKTW9wMyqcV9l3PWB9nBI3zNJmKHLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=W2UsTThZ; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-122-154.bstnma.fios.verizon.net [173.48.122.154])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5AAFNb2W023077
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 10 Nov 2025 10:23:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1762788220; bh=LWsOtKf98HJ2h4K/ocg2B4qyQO2r0tUF3y7tZbw+0o8=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=W2UsTThZmVADUsN7gV4UmUcms2ZqQ2i4nHb4X8F/LPNuVxXsqL9R0711RQL/dMXcv
-	 iQmLiX389vap5x6c4WWDQQtcsEO449v+0mPqYbB4ly6sPpQ2ID6U5t0mcdGtepwnzX
-	 TicOy2AMVPWAl1BIB8yCyQeAydknyQH1ezopxMa2/i8GZHg7Sq/6wV8tH/zXMMbVUH
-	 kyRNykUcEr3LT0idsob0Jsh5y4ikEq/I/SzmRz6UtcT0Vcu7pJCSHhgp7kVNEE7PRi
-	 fm2myIyBHQyT8ccYxn4L2BnTi2DP6eDJrf2KP0nAtPIYXuOhd/nzwnBnY2/IwUcczn
-	 IRalfEGgFo0Tg==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 1D24C2E00D9; Mon, 10 Nov 2025 10:23:37 -0500 (EST)
-Date: Mon, 10 Nov 2025 10:23:37 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Pankaj Raghav <kernel@pankajraghav.com>
-Cc: libaokun@huaweicloud.com, linux-ext4@vger.kernel.org,
-        adilger.kernel@dilger.ca, jack@suse.cz, linux-kernel@vger.kernel.org,
-        mcgrof@kernel.org, ebiggers@kernel.org, willy@infradead.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
-        libaokun1@huawei.com
-Subject: Re: [PATCH v2 24/24] ext4: enable block size larger than page size
-Message-ID: <20251110152337.GF2988753@mit.edu>
-References: <20251107144249.435029-1-libaokun@huaweicloud.com>
- <20251107144249.435029-25-libaokun@huaweicloud.com>
- <52401c3a-26aa-473f-b7e2-1c658550dd37@pankajraghav.com>
+	s=arc-20240116; t=1762788902; c=relaxed/simple;
+	bh=ZWjJD/1xH/fH/g6Z2KPOz2SHy5oPswPbHfvVgre9lho=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pUlh3G+uBDtY1Wxi0JclM8+yGGPhCOT3bYgR6t7ptKPiP70E/FiolFXqqRF6fzfDwwMwIMiyKr5qmxRDlA64H8G494iCv32F3RytSi068mJr3aD0mALagJ17yUB18Zi881pzolI55Et/JhDwr7Sr18ASsT8kyMGbkaMVNHklga0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=BP4u4OZ+; arc=none smtp.client-ip=80.241.56.161
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4d4tyS1s4Fz9tnx;
+	Mon, 10 Nov 2025 16:34:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1762788896;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=D1KeoCbtv75IlU4XoXDiuWf8VyMocOvzgZGay5xD3M8=;
+	b=BP4u4OZ++RbvrdZGXlvL6nkwYIZu1vFtvKhEfQaIoLn3htMmnKxnSDlNvMqIwzPoGSyMYr
+	bVgyV07WHq6gls3khUNbU9x0oMYqFEWtTwUh3q4+O+01X4cIN97C9XHK9HIwlZttPv19Sn
+	EVe9xkmh+kWhk2mrGkij6GnJBCQn7+C6eXNUyjC/K72NbvqrhWNHTBJ2tLhMAnJcPiyJN7
+	d/TbT5zFKeEKxr0RgJk+6dSVc/wnuJO+r5WAgytk+3R4uEgVv6cj4HzJuS2/UsnqOFhMSW
+	c92zUNb+GUB1LwLRsg7BHPB5f5hKzX2aH4jrLNQEchS9J9Z+Koz/ndnscj1LVA==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=none;
+	spf=pass (outgoing_mbo_mout: domain of kernel@pankajraghav.com designates 2001:67c:2050:b231:465::102 as permitted sender) smtp.mailfrom=kernel@pankajraghav.com
+Message-ID: <4bbea425-e896-4047-b30d-6598ff7e9165@pankajraghav.com>
+Date: Mon, 10 Nov 2025 16:34:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <52401c3a-26aa-473f-b7e2-1c658550dd37@pankajraghav.com>
+Subject: Re: [PATCH v2 00/24] ext4: enable block size larger than page size
+To: Theodore Ts'o <tytso@mit.edu>, libaokun@huaweicloud.com
+Cc: linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+ linux-kernel@vger.kernel.org, mcgrof@kernel.org, ebiggers@kernel.org,
+ willy@infradead.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ chengzhihao1@huawei.com, libaokun1@huawei.com
+References: <20251107144249.435029-1-libaokun@huaweicloud.com>
+ <20251110043226.GD2988753@mit.edu>
+Content-Language: en-US
+From: Pankaj Raghav <kernel@pankajraghav.com>
+In-Reply-To: <20251110043226.GD2988753@mit.edu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 4d4tyS1s4Fz9tnx
 
-On Mon, Nov 10, 2025 at 01:51:28PM +0100, Pankaj Raghav wrote:
+On 11/10/25 05:32, Theodore Ts'o wrote:
+> I've started looking at this patch series and playing with it, and one
+> thing which is worth noting is that CONFIG_TRANSPARENT_HUGEPAGE needs
+> to be enabled, or else sb_set_blocksize() will fail for block size >
+> page size.  This isn't specific to ext4, and maybe I'm missing
+> something, but apparently this isn't documented.  I had to go digging
+> through the source code to figure out what was needed.
 > 
-> Are you adding the experimental flag because allocation failures can occur with
-> LBS configuration or because it is a new feature (or both)?
+> I wonder if we should have some kind of warning in sb_set_blocksize()
+> where if there is an attempt to set a blocksize > page size and
+> transparent hugepages is not configured, we issue a printk_once()
+> giving a hint to the user that the reason that the mount failed was
+> because transparent hugepages wasn't enabled at compile time.
+> 
 
-I'm going to guess that it was added to mirror what XFS did.
+I added something similar for block devices[1]. Probably we might need something
+here as well as a stop gap.
 
-I'll note that this is generally not the pattern for ext4, where we
-tend to put these warnings in mke2fs/mkfs.ext4, and by not enabling
-them by default.  We haven't historically put them as a warning printk
-because I don't believe most users read dmesg output.  :-)
+> It **really** isn't obvious that large block size support and
+> transparent hugepages are linked.
 
-When we've wanted to put some kind of warning or disclaimer in the
-kernel, my bias has been to add some kind of Kconfig feature flag,
-say, "CONFIG_FS_LARGE_BLOCKSIZE" or "CONFIG_EXT4_LARGE_BLOCKSIZE"
-which can either have a warning of its experimental nature in the
-config descrption, or if it's *reallY* on the edge (not in this case,
-in my opinion) by putting an explicit dependency on
-CONFIG_EXPERIMENTAL.
+Funny that you mention this because I have talk about this topic:
+Decoupling Large Folios from Transparent Huge Pages in LPC under MM MC [2].
+You are more than welcome to come to the talk :)
 
-I will admit that most users don't read the Kconfig help text, since
-most uesrs aren't even compiling their own kernels :-), but it does
-allow for more description of why it might be considered
-"experimental" for distribution engineers, and it's less disruptive
-when we inevitably forget to remove the experimental warning.  :-)
+But just a small summary: When large folios were introduced, it used
+THP infrastructure for splitting the folios (for example when we do a truncate).
 
-That being said, this is a personal preference sort of thing, and
-people of good will can disagree about what's the best way to approach
-this sort of warning.
+I hope we will soon be able to sort it out so that we don't have
+to sprinkle CONFIG_THP everywhere.
 
-Cheers,
+--
+Pankaj
 
-						- Ted
+[1] https://lore.kernel.org/all/20250704092134.289491-1-p.raghav@samsung.com/
+[2] https://lpc.events/event/19/contributions/2139/>
+> 					- Ted
+> 
 
-P.S.  I'm happy not having any kind of experimental warning for bs >
-ps, since users would have to affirmatively request a 64k blocksize in
-mkfs, and most users don't override the default when creating file
-systems, so I assume that people who do so Know What They Are Doing.
 
