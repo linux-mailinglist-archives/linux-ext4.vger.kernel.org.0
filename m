@@ -1,179 +1,130 @@
-Return-Path: <linux-ext4+bounces-11717-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11718-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2AABC45DCA
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 11:16:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63180C46654
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 12:54:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55C1F3ACC85
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 10:15:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EEA11883B94
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Nov 2025 11:54:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743DD3064A6;
-	Mon, 10 Nov 2025 10:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74607309EFF;
+	Mon, 10 Nov 2025 11:53:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="u9H4zuVK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PaD2TIJH";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="u9H4zuVK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PaD2TIJH"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="RzfKYxSW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A522305942
-	for <linux-ext4@vger.kernel.org>; Mon, 10 Nov 2025 10:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247432EB87F;
+	Mon, 10 Nov 2025 11:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762769722; cv=none; b=ZJJgDKMZJQ3WLVvkyqONwIv0oWzA0igyHlpDx/iRd+sq9gSLZW3FgD+RsUmp6tpMjVsgLtliU6IgqvFfLmoNaqAE3C1nRDm++74U85JscBrM/GPUOx0itTNMsbD9G89bHANyIJvspuNnPtMuuqLJ8eSpBS2sfRyR3y2O70zecds=
+	t=1762775631; cv=none; b=RtH79nI8vFYZAw/SFq7GTrIxgzcemsDaq3lz7bRhgjDHeLoLafAYk03xcIWfTLJRwxaiBeQrOEZ4PBnSvgJL+cepgOoPkaflp2BEdRAzscFOpkfq4bslJp9pvFMoU1WMS6Nl1WPesq85R8uhUvCiWRvP4aaPWQ9nYeC7RqIvnRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762769722; c=relaxed/simple;
-	bh=5+KpAfE6e5+SNEfojqNpLo+3z5Dm2ls1XvlYKx9dPNU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fjOu2eMX6dIhx0Kl7qCqtopya/0WDVsP+N9DzPdVxHhghapkh5hCWQJhOptSf1Fgu3W+RoSBjc+Ig6oTuk/xTPBhBuBj7aFk2Sq+f0c+3+DqJJ8xRzFxR4It0r5SvoiG23IoEQV8AtyljIuYV7nulawiFDxTD/9h5FAaa8+Ye6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=u9H4zuVK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PaD2TIJH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=u9H4zuVK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PaD2TIJH; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AF9F81F397;
-	Mon, 10 Nov 2025 10:15:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762769717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wpAzgZwgaXAMUhdZYvJPS1DCHf4SfTjZHBEO9W1TBJM=;
-	b=u9H4zuVKJKqp3iHsc/n18IQlHYpZ1HdzXla8kf7aMlg2Dh7JBq33sb1DChWjLyPjbpCP0J
-	XnhcIZWKZtWFGFJXEoZPO6QqlNU2LG3VprK5hev59eaUxkvQnsntOP/vOSwEQI1o+/PNeI
-	OrC+b38+TdIKonDzKVauPCeyYcXZiLQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762769717;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wpAzgZwgaXAMUhdZYvJPS1DCHf4SfTjZHBEO9W1TBJM=;
-	b=PaD2TIJHgfwMBJzptGA8wKZxnXlghGGcjvppW0dtHQAKC99x05/G8Zie1FN6T6bf9M9bWV
-	6RhXxjT7EuksrcAQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762769717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wpAzgZwgaXAMUhdZYvJPS1DCHf4SfTjZHBEO9W1TBJM=;
-	b=u9H4zuVKJKqp3iHsc/n18IQlHYpZ1HdzXla8kf7aMlg2Dh7JBq33sb1DChWjLyPjbpCP0J
-	XnhcIZWKZtWFGFJXEoZPO6QqlNU2LG3VprK5hev59eaUxkvQnsntOP/vOSwEQI1o+/PNeI
-	OrC+b38+TdIKonDzKVauPCeyYcXZiLQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762769717;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wpAzgZwgaXAMUhdZYvJPS1DCHf4SfTjZHBEO9W1TBJM=;
-	b=PaD2TIJHgfwMBJzptGA8wKZxnXlghGGcjvppW0dtHQAKC99x05/G8Zie1FN6T6bf9M9bWV
-	6RhXxjT7EuksrcAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0C9B14338;
-	Mon, 10 Nov 2025 10:15:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id jSwrJzW7EWmLFgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 10 Nov 2025 10:15:17 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5B75BA28B1; Mon, 10 Nov 2025 11:15:17 +0100 (CET)
-Date: Mon, 10 Nov 2025 11:15:17 +0100
-From: Jan Kara <jack@suse.cz>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	tytso@mit.edu, torvalds@linux-foundation.org, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] fs: retire now stale MAY_WRITE predicts in
- inode_permission()
-Message-ID: <holqxdoanjsu7cnuczcrdmnzd2u73lbc6do4hxupi6nctwrhzp@yrp4dz73tbde>
-References: <20251107142149.989998-1-mjguzik@gmail.com>
- <20251107142149.989998-4-mjguzik@gmail.com>
+	s=arc-20240116; t=1762775631; c=relaxed/simple;
+	bh=RXMDFWHoPjtIXzowWCmTOgffUV+hgTt3ySQLyBH/QU0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=f2x1Dzv0ij9iVWQ3ZqmO3lroS3Cyp4TXCjwKH6gwF21SHeR+uQ/OuSDGS61WaR+3++wsReQaWn0g0szhn2+hRd0CJDRgol9zdPDd5PNBRFXSNUwcQ/upbaNI2ai1yzTUhfl+6Mxeq7UgMKhbJ5zSDVzIuf0QJKDW5RFBUOkKFeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=RzfKYxSW; arc=none smtp.client-ip=113.46.200.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=yEGmkXbOr7mtjgPnoGoKfiUGT9PqeS/urvU4eY+8abI=;
+	b=RzfKYxSWPftH1sI93cHul55M/JGzdsmo6aGP29YWE2lAcCfPPnQorIqza1ZA7u0++rteDM5N3
+	OFgdaGLQ6Mtk0ppVVlTNjOfuBDMYRW6uEXQc0cXFicbMY8qmX4qLqGhjwUO5XeFzYNTaX7b6wnB
+	lTt2NTJC2PvjfxHc/ZeJ/V4=
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4d4p1J3wwBz1prKK;
+	Mon, 10 Nov 2025 19:52:04 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7EB70140258;
+	Mon, 10 Nov 2025 19:53:43 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 10 Nov
+ 2025 19:53:42 +0800
+Message-ID: <5be37f62-500f-42cb-838b-e017a5c227fd@huawei.com>
+Date: Mon, 10 Nov 2025 19:53:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251107142149.989998-4-mjguzik@gmail.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	MISSING_XM_UA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 21/24] ext4: make data=journal support large block size
+Content-Language: en-GB
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
+	<mcgrof@kernel.org>, <ebiggers@kernel.org>, <willy@infradead.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+	<libaokun@huaweicloud.com>
+References: <20251107144249.435029-1-libaokun@huaweicloud.com>
+ <20251107144249.435029-22-libaokun@huaweicloud.com>
+ <4xsntqfuxy3xiezmztf26qytijdfi3zwxjjgvkpsmxnumkpsf5@2gr4h36mti3g>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <4xsntqfuxy3xiezmztf26qytijdfi3zwxjjgvkpsmxnumkpsf5@2gr4h36mti3g>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-On Fri 07-11-25 15:21:49, Mateusz Guzik wrote:
-> The primary non-MAY_WRITE consumer now uses lookup_inode_permission_may_exec().
-> 
-> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+On 2025-11-10 17:48, Jan Kara wrote:
+> On Fri 07-11-25 22:42:46, libaokun@huaweicloud.com wrote:
+>> From: Baokun Li <libaokun1@huawei.com>
+>>
+>> Currently, ext4_set_inode_mapping_order() does not set max folio order
+>> for files with the data journalling flag. For files that already have
+>> large folios enabled, ext4_inode_journal_mode() ignores the data
+>> journalling flag once max folio order is set.
+>>
+>> This is not because data journalling cannot work with large folios, but
+>> because credit estimates will go through the roof if there are too many
+>> blocks per folio.
+>>
+>> Since the real constraint is blocks-per-folio, to support data=journal
+>> under LBS, we now set max folio order to be equal to min folio order for
+>> files with the journalling flag. When LBS is disabled, the max folio order
+>> remains unset as before.
+>>
+>> Additionally, the max_order check in ext4_inode_journal_mode() is removed,
+>> and mapping order is reset in ext4_change_inode_journal_flag().
+>>
+>> Suggested-by: Jan Kara <jack@suse.cz>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ...
+>
+>> @@ -6585,6 +6590,7 @@ int ext4_change_inode_journal_flag(struct inode *inode, int val)
+>>  		ext4_clear_inode_flag(inode, EXT4_INODE_JOURNAL_DATA);
+>>  	}
+>>  	ext4_set_aops(inode);
+>> +	ext4_set_inode_mapping_order(inode);
+>>  
+>>  	jbd2_journal_unlock_updates(journal);
+>>  	ext4_writepages_up_write(inode->i_sb, alloc_ctx);
+> I think more needs to be done here because this way we could leave folios
+> in the page cache that would be now larger than max order. To simplify the
+> logic I'd make filemap_write_and_wait() call in
+> ext4_change_inode_journal_flag() unconditional and add there
+> truncate_pagecache() call to evict all the page cache before we switch the
+> inode journalling mode.
+>
+> 								Honza
 
-Makes sense. Feel free to add:
+That makes sense. I forgot to truncate the old page cache here.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+I will make the changes according to your suggestion in the next version.
 
-								Honza
+Thank you for your advice!
 
-> ---
->  fs/namei.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/namei.c b/fs/namei.c
-> index 6b2a5a5478e7..2a112b2c0951 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -546,7 +546,7 @@ static inline int do_inode_permission(struct mnt_idmap *idmap,
->   */
->  static int sb_permission(struct super_block *sb, struct inode *inode, int mask)
->  {
-> -	if (unlikely(mask & MAY_WRITE)) {
-> +	if (mask & MAY_WRITE) {
->  		umode_t mode = inode->i_mode;
->  
->  		/* Nobody gets write access to a read-only fs. */
-> @@ -577,7 +577,7 @@ int inode_permission(struct mnt_idmap *idmap,
->  	if (unlikely(retval))
->  		return retval;
->  
-> -	if (unlikely(mask & MAY_WRITE)) {
-> +	if (mask & MAY_WRITE) {
->  		/*
->  		 * Nobody gets write access to an immutable file.
->  		 */
-> -- 
-> 2.48.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+Cheers,
+Baokun
+
 
