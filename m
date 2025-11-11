@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-11765-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11768-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7187C4E84D
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 15:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C825AC4E85C
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 15:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E16964F41FE
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 14:35:43 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 21ED54F48FD
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 14:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A72BD303A00;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4D330EF86;
 	Tue, 11 Nov 2025 14:35:31 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ECD9274FCB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409FF2DC791;
 	Tue, 11 Nov 2025 14:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762871731; cv=none; b=LYDjpZTFkG9rjUm4gGiwngCUqEYRkyeAkZ3MgS+25AvTFj32ze58lHiDUZCSYHCagqkn0xocw7mrj7APjbre0IAvkH+RuIDAf9AJEhGKhB6A7jXS/mXF3/xeG0UzkgLmOQdGIv524roKTm7pXiH1+XtNBEpPAJ41orrohB/6UN4=
+	t=1762871731; cv=none; b=f8RRbkIyP7SVW/DRWaxP4DU7CfHj1xWOtWmal3UFKGBOqHOipHlvws6Fm0eA9nhwXxfpO8+ZOQsl462KNxJwwwJUjrjuOAemb4N85n9x1SAUvSNN2plh5vqwhd0MbgLJBYS6PgbHWkciTJcRFHz5itXG7I2TFQkrMLzy+Gd0kaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762871731; c=relaxed/simple;
-	bh=AhUusC2kbbSPQvDU5qsnaDrLaqG9n15u4RVCkzxGSW0=;
+	bh=PAq48xhpNfbZiBhJxNmVlz2A4X/rr2K55fdYckxZBQg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WvzI/kJQUraik0OZT4fnxyleUo6a3EKq7xO6vEgVCBvmebY6QLB6zFnb2rBxwni4uNFeFv+LV57QuGjzZMJvaxugFsIgFoQsQByzfBrasx3Gqf7E8qTZQRXPiA2WfI8iaeo7FeiaoaMjLXTm8lXkH5xMPaVSJ1reO7Ywbjo4o8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=o4Ct8YH1G64rzHFGULy1uIXmZYK5c1p6n9xCPHAm3XBN/sDpWFTap8Y8RL6t2cjJR2G9lkl+lqZ9ohwWMfsXTKZmAMsIiqmJnSplhBAwYmAaAva7bWeYm302M6o8f0nmIQPE1wFNilZrQPpzwnoyVFoCOYGVpe2IZcTK4XwFT5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d5TZr27K9zYQv0K;
-	Tue, 11 Nov 2025 22:35:00 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d5Tb30hNJzKHMQB;
+	Tue, 11 Nov 2025 22:35:11 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 2E2F61A1978;
+	by mail.maildlp.com (Postfix) with ESMTP id 47B191A0DD8;
 	Tue, 11 Nov 2025 22:35:27 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.50.87.129])
-	by APP2 (Coremail) with SMTP id Syh0CgBHo3mrSRNpgYWKAQ--.32556S9;
-	Tue, 11 Nov 2025 22:35:26 +0800 (CST)
+	by APP2 (Coremail) with SMTP id Syh0CgBHo3mrSRNpgYWKAQ--.32556S10;
+	Tue, 11 Nov 2025 22:35:27 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
@@ -52,10 +52,11 @@ Cc: tytso@mit.edu,
 	yangerkun@huawei.com,
 	chengzhihao1@huawei.com,
 	libaokun1@huawei.com,
-	libaokun@huaweicloud.com
-Subject: [PATCH v3 05/24] ext4: enable DIOREAD_NOLOCK by default for BS > PS as well
-Date: Tue, 11 Nov 2025 22:26:15 +0800
-Message-Id: <20251111142634.3301616-6-libaokun@huaweicloud.com>
+	libaokun@huaweicloud.com,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: [PATCH v3 06/24] ext4: introduce s_min_folio_order for future BS > PS support
+Date: Tue, 11 Nov 2025 22:26:16 +0800
+Message-Id: <20251111142634.3301616-7-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20251111142634.3301616-1-libaokun@huaweicloud.com>
 References: <20251111142634.3301616-1-libaokun@huaweicloud.com>
@@ -66,53 +67,99 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBHo3mrSRNpgYWKAQ--.32556S9
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF18GFWrWFykGry8Kr47twb_yoWftrcEva
-	yfJrWUWr4rGr4S93WrCa1UAFs0kw4xur1rGws5tr1rXwnIqrWxX34qqr95WF15uF4FqFWr
-	Ars5XF13Wry2gjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbm8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
-	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
-	F7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
-	1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-	v20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJVW8
-	JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
-	ka0xkIwI1lw4CEc2x0rVAKj4xxMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48J
-	MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-	AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-	0xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26c
-	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-	wI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdsqAUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAJBWkSsJdDIAAAsy
+X-CM-TRANSID:Syh0CgBHo3mrSRNpgYWKAQ--.32556S10
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrWfJFyxtr4xKFyrCw13CFg_yoW8Kw45pF
+	nxCFyfGrW8Zry8uFs2gFsrX348Kay8KayUXr4a9w15urWaq3409r1DtF1UAFWYqrW8JFWS
+	qF1UKry7Cr13C37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUQ214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
+	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
+	IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr0_
+	Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8c
+	xan2IY04v7M4kE6xkIj40Ew7xC0wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxG
+	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+	vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+	x2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUo0PSUUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAJBWkSsJdDIQAAsz
 
 From: Baokun Li <libaokun1@huawei.com>
 
-The dioread_nolock related processes already support large folio, so
-dioread_nolock is enabled by default regardless of whether the blocksize
-is less than, equal to, or greater than PAGE_SIZE.
+This commit introduces the s_min_folio_order field to the ext4_sb_info
+structure. This field will store the minimum folio order required by the
+current filesystem, laying groundwork for future support of block sizes
+greater than PAGE_SIZE.
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
 ---
- fs/ext4/super.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/ext4/ext4.h  |  3 +++
+ fs/ext4/inode.c |  3 ++-
+ fs/ext4/super.c | 10 +++++-----
+ 3 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 760c9d7588be..a9fa824487f9 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4390,8 +4390,7 @@ static void ext4_set_def_opts(struct super_block *sb,
- 	    ((def_mount_opts & EXT4_DEFM_NODELALLOC) == 0))
- 		set_opt(sb, DELALLOC);
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 3d18e6bf43cf..6fe8cc3bf9a5 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1688,6 +1688,9 @@ struct ext4_sb_info {
+ 	/* record the last minlen when FITRIM is called. */
+ 	unsigned long s_last_trim_minblks;
  
--	if (sb->s_blocksize <= PAGE_SIZE)
--		set_opt(sb, DIOREAD_NOLOCK);
-+	set_opt(sb, DIOREAD_NOLOCK);
++	/* minimum folio order of a page cache allocation */
++	unsigned int s_min_folio_order;
++
+ 	/* Precomputed FS UUID checksum for seeding other checksums */
+ 	__u32 s_csum_seed;
+ 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 6fec3aa2268a..9faa0cf77075 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5181,7 +5181,8 @@ void ext4_set_inode_mapping_order(struct inode *inode)
+ 	if (!ext4_should_enable_large_folio(inode))
+ 		return;
+ 
+-	mapping_set_folio_order_range(inode->i_mapping, 0,
++	mapping_set_folio_order_range(inode->i_mapping,
++				      EXT4_SB(inode->i_sb)->s_min_folio_order,
+ 				      EXT4_MAX_PAGECACHE_ORDER(inode));
  }
  
- static int ext4_handle_clustersize(struct super_block *sb)
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index a9fa824487f9..a6314a3de51d 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5107,11 +5107,8 @@ static int ext4_load_super(struct super_block *sb, ext4_fsblk_t *lsb,
+ 	 * If the default block size is not the same as the real block size,
+ 	 * we need to reload it.
+ 	 */
+-	if (sb->s_blocksize == blocksize) {
+-		*lsb = logical_sb_block;
+-		sbi->s_sbh = bh;
+-		return 0;
+-	}
++	if (sb->s_blocksize == blocksize)
++		goto success;
+ 
+ 	/*
+ 	 * bh must be released before kill_bdev(), otherwise
+@@ -5142,6 +5139,9 @@ static int ext4_load_super(struct super_block *sb, ext4_fsblk_t *lsb,
+ 		ext4_msg(sb, KERN_ERR, "Magic mismatch, very weird!");
+ 		goto out;
+ 	}
++
++success:
++	sbi->s_min_folio_order = get_order(blocksize);
+ 	*lsb = logical_sb_block;
+ 	sbi->s_sbh = bh;
+ 	return 0;
 -- 
 2.46.1
 
