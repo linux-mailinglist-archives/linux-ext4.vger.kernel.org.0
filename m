@@ -1,134 +1,169 @@
-Return-Path: <linux-ext4+bounces-11748-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11749-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B86CC4B5B5
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 04:43:28 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBEB0C4C729
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 09:45:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A254D4EBD9E
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 03:43:20 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6819534EC7C
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 08:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61B934A774;
-	Tue, 11 Nov 2025 03:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 052592561AE;
+	Tue, 11 Nov 2025 08:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="BjMPtRNL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WOIC3tZ8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8167640E;
-	Tue, 11 Nov 2025 03:43:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0C44A01
+	for <linux-ext4@vger.kernel.org>; Tue, 11 Nov 2025 08:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762832595; cv=none; b=srkF9q+J9nB7hQ45b4unBX2wUnTkHgcHPhEf0E3hSOig1rZvgoY5GzeKz9EauIBFbiREgb5Kr4LORQAYYDiIWhCdOL9UOxezP+bjfZ2i/VFByr+BJpJOrg+tmortX1C2Cyj8EiNi6ZSXcAcVhpUw4hAtE2ExC0IzpV6/KsAcRTw=
+	t=1762850742; cv=none; b=UcLKr3Fgxwzo8HR+MsZxI0sjBb+AjDQZLvwi1Jd4w2aQkG6yu0nkyOjJatbPdszKAstDcKZbkBWnVTcV5ScIrohdNTef7ZqNwIuJ6c3KpWXcwAJiPYLzpNqtN/cD8eBRFpxWw4F1I7oWIJ8mZ4HN8coXGVjbuSeJVPBHBJIKM4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762832595; c=relaxed/simple;
-	bh=UmbMwPFQDhX0sgemsDZP1cEnjvFz1CTV1maBqxb2RPo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XMIedw4EKXhCIPIALw66A4swR6hvx+58xnkJSYy9clWundU27B1+ZURc/vhhnXSWXyEFkHkUtqPD4qUG6sKysq4VQ5TVCYOeK+eFQJEuXBnjtyH//KwZaWnNljXJMOCf9mzffd6sYMP7qnU8lW2HGrCtpm2q7TYbaAafJnMXBYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=BjMPtRNL; arc=none smtp.client-ip=113.46.200.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=0kaa3vUiwcAr53RbTBFcjCZZteWEUfi4Wdgy/IuyaD8=;
-	b=BjMPtRNLi+CcIV6s6FBTzainP0aydUB3TmqKoZGdqEmnOiFKUJmBgDMKhlSQls1S43E6WM7+p
-	114ek8lmUZbarbWH+isnSzgy2y50xikq4gxFeynLc75PZKPdYTON4BnDEEAKrdmKqDdxTq8GK0t
-	yx04ydq9h37K7jgZfg+4em4=
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4d5C4k2c1fz1prLS;
-	Tue, 11 Nov 2025 11:41:26 +0800 (CST)
-Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id B4EBF180087;
-	Tue, 11 Nov 2025 11:43:05 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
- (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 11 Nov
- 2025 11:43:04 +0800
-Message-ID: <46c68bcf-8ad4-45ed-9fba-cc908328069b@huawei.com>
-Date: Tue, 11 Nov 2025 11:43:03 +0800
+	s=arc-20240116; t=1762850742; c=relaxed/simple;
+	bh=oS1LAumOqXWizhvJYI0jHuzv5GuWqmwpGq7/WL2Q0Js=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WLlGeMdnYJuEYafLYkaLWsQ9f5YK+nvcRsttZyXGz0sfYcwfsubA3XlpwnofMtSUPlEIm++2hAhYrAPF6sXsHRk6nq7Bwv7Gp/GkdQUKVr+G1Xs4AfyXDhhGtksv3Y4RFm+UxN0KLt9xNmfiDkHZTyIVKyCM23mzBUR3uc39hGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WOIC3tZ8; arc=none smtp.client-ip=209.85.219.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-87c13813464so50962886d6.1
+        for <linux-ext4@vger.kernel.org>; Tue, 11 Nov 2025 00:45:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762850740; x=1763455540; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RoHCmC6TleJl196mHX278WWXDC/QAAy93w1AuUQ3Ou8=;
+        b=WOIC3tZ8JIAAFXbBwqGROK7yXmff5RrpOmLi1cmVWtCJ7OQHL3ine8MvgEvObCBuE2
+         6N9LY8H3tzDBFOLwV2IuQn/tFGS99NVUdDl0rycgoSIafp7EjE5Ak4LZ8GMmBaj/wyjO
+         naDlBNPd5Z1OqQCSZq65dY7gCqtzzZErCy7gRPA9TuauOTd/mTqNm7Sa163S0l9LX3Nz
+         nnzLFPsNokrQPF1qlt8WRV0Q5NfRnAOtGiX1x26/rrRiSmjmudFfh15J7RFvGg5y65fr
+         jYuwfx6cSZurAd1O4SHFLAWa31qBE+ZTP5TCCiko/03X02dXgFPErg9N7snv6k+1tmk3
+         wisw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762850740; x=1763455540;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RoHCmC6TleJl196mHX278WWXDC/QAAy93w1AuUQ3Ou8=;
+        b=a5KclCHvFKr5SrlcXa92DZ9366y6a4+XW/1MhTKIxS+/pkovdKoo4NiJq/f2WPLiKx
+         CKawX6qFKst5US61H5QvmTSQdoSGPxuhXGo67B1PGcU0mFZef340iyJ8t0Uj6R2f2UIs
+         b00a8UuncexWv5nGUMqKuguGTW5+10mD1tV4kCqmDs39Bvu8HLhGHWefPShXzLFVx5Yw
+         W3X9AfNPrF89BXRoHdReE5DJ6UFivJmsaqciVsDo0nsht/dvLqu4aWmP6PYtXawbi8WQ
+         M2QV3CuvKQymMwiZBnvVdbuPRoQs4AJKCfdRHNXhRnAKUAEDfGnXzSf4Ovgn/OMpuJj4
+         ArSA==
+X-Forwarded-Encrypted: i=1; AJvYcCWXbGvixKAaxjFsNQGhYqGG/aVEu2gaZMt34NBue34Ydyaim/w+e4CxT94JzWXHuFF1vAP61KLTwV/D@vger.kernel.org
+X-Gm-Message-State: AOJu0YyuA0ZV0+fhDrQmfssDMIB6M5LXKw6CPk0S9q9lUiUQWuviMq36
+	cXD9GT1kIPgqjPG+flERLXSJkump8ZIaOcjsNnzxKvRQHli3CbVqtrMn
+X-Gm-Gg: ASbGncvG/3h4ylok0gi3D/w91ws46NLwOLamGAYD4gdRTvmOZrPY5SjNEmScwAVeHYM
+	aT5LnfDejx6+7R57lL46AFOOP+LGhfiDXR5KNXQi59haZj3ySvqNRDbqciflpvx04GO/smNW/AL
+	wfJxqMfuViFQyreeSXPeAAvkGvUrgx1reF81hxLQQ+u1LTmeNN9eiy0cOpFvzCfJhXdcZeC33mC
+	rCzEMGib7KGNuY+HbkA8UqAxUFD2fNqt/ZFC3CwMWO6g/DluMXKea6ga6eU+Vsy0yY7UfNymm6n
+	o3NafBm4FSRHglnXhx886PD6Q88IE2r4OOmmJNSDBKDCkPwX52hCVMrNRrZiZqp53Z2tvHfxrFE
+	pMmIMoqutava20+gf3crci4/ZrLphSFZsnzTCBRgc4RpSUAvpWq3Fs7KOlFcAa/K1P3rPoMFWmt
+	Ppul4BeA==
+X-Google-Smtp-Source: AGHT+IHIakMjA0T9qTUzAb59bDuV1/F1paRxmjYObQTAMoQEgBG2c3QI9Jg7psPckbshmRUirHX17w==
+X-Received: by 2002:a05:6214:e42:b0:880:51ab:a3e3 with SMTP id 6a1803df08f44-882387621d9mr168252606d6.67.1762850739953;
+        Tue, 11 Nov 2025 00:45:39 -0800 (PST)
+Received: from arch-box ([2607:fea8:54de:2200::c98d])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88238b7499esm68465066d6.41.2025.11.11.00.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Nov 2025 00:45:39 -0800 (PST)
+Date: Tue, 11 Nov 2025 03:45:37 -0500
+From: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>,
+	syzbot+f3185be57d7e8dda32b8@syzkaller.appspotmail.com,
+	Ahmet Eray Karadag <eraykrdg1@gmail.com>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: synchronize free block counter when detecting
+ corruption
+Message-ID: <aRL3sT7AbUgZTbem@arch-box>
+References: <20251010073801.5921-1-albinbabuvarghese20@gmail.com>
+ <20251106153035.GA3125470@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 24/24] ext4: enable block size larger than page size
-Content-Language: en-GB
-To: Theodore Ts'o <tytso@mit.edu>
-CC: <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
-	<mcgrof@kernel.org>, <ebiggers@kernel.org>, <willy@infradead.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-	<libaokun@huaweicloud.com>, Baokun Li <libaokun1@huawei.com>
-References: <20251107144249.435029-1-libaokun@huaweicloud.com>
- <20251107144249.435029-25-libaokun@huaweicloud.com>
- <20251110151604.GE2988753@mit.edu>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20251110151604.GE2988753@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- dggpemf500013.china.huawei.com (7.185.36.188)
+In-Reply-To: <20251106153035.GA3125470@mit.edu>
 
-On 2025-11-10 23:16, Theodore Ts'o wrote:
-> On Fri, Nov 07, 2025 at 10:42:49PM +0800, libaokun@huaweicloud.com wrote:
->> From: Baokun Li <libaokun1@huawei.com>
->>
->> Since block device (See commit 3c20917120ce ("block/bdev: enable large
->> folio support for large logical block sizes")) and page cache (See commit
->> ab95d23bab220ef8 ("filemap: allocate mapping_min_order folios in the page
->> cache")) has the ability to have a minimum order when allocating folio,
->> and ext4 has supported large folio in commit 7ac67301e82f ("ext4: enable
->> large folio for regular file"), now add support for block_size > PAGE_SIZE
->> in ext4.
->>
->> set_blocksize() -> bdev_validate_blocksize() already validates the block
->> size, so ext4_load_super() does not need to perform additional checks.
->>
->> Here we only need to add the FS_LBS bit to fs_flags.
->>
->> In addition, allocation failures for large folios may trigger warn_alloc()
->> warnings. Therefore, as with XFS, mark this feature as experimental.
->>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-> Could you add:
->
-> #ifdef CONFIG_TRANSPARENT_HUGEPAGES
-> EXT4_ATTR_FEATURE(blocksize_gt_pagesize);
-> #endif
->
-> in fs/sys/sysfs.c, so that userspace programs (like those in e2fsprogs
-> and xfstests) can test /sys/fs/ext4/features/... to determine whether
-> or not blocksize > pagesize is supported?  That way we can more easily
-> determine whether to test the 64k blocksize configurations in
-> xfstests, and so we can supress the mke2fs warnings:
->
-> mke2fs: 65536-byte blocks too big for system (max 4096)
-> Proceed anyway? (y,N) y
-> Warning: 65536-byte blocks too big for system (max 4096), forced to continue
->
-> ... if the feature flag file is present.
->
-Good idea — sure!
+Hey Ted, Thanks for the feedback.
 
-In my earlier tests I just dropped the warning in mke2fs. That’s a bit
-clumsy though; adding an interface so mke2fs and the kernel can work
-together is much nicer.
+On Thu, Nov 06, 2025 at 10:30:35AM -0500, Theodore Ts'o wrote:
+> On Fri, Oct 10, 2025 at 03:38:00AM -0400, Albin Babu Varghese wrote:
+> > When ext4_mb_generate_buddy() detects block group descriptor
+> > corruption (free block count mismatch between descriptor and
+> > bitmap), it corrects the in-memory group descriptor (grp->bb_free)
+> > but does not synchronize the percpu free clusters counter.
+> 
+> Actually, we do.  This happens in ext4_mark_group_bitmap_corrupted in
+> fs/ext4/super.c.
+> 
+> 	if (flags & EXT4_GROUP_INFO_BBITMAP_CORRUPT) {
+> 		ret = ext4_test_and_set_bit(EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT,
+> 					    &grp->bb_state);
+> 		if (!ret)
+> 			percpu_counter_sub(&sbi->s_freeclusters_counter,
+> 					   grp->bb_free);
+> 	}
+> 
+> So we've *already* subtracted out the blocks that were in the block
+> group which we've busied out.
 
-It also lets us do what was mentioned in another thread: warn in mke2fs
-instead of in the kernel. I’ll take your suggestion in the next version
-and drop the experimental tag.
+Thanks for pointing that out. It was naive of me to overlook the other
+occurences.
 
-Thank you for your suggestion!
+> > This causes delayed allocation to read stale counter values when
+> > checking for available space. The allocator believes space is
+> > available based on the stale counter, makes reservation promises,
+> > but later fails during writeback when trying to allocate actual
+> > blocks from the bitmap. This results in "Delayed block allocation
+> > failed" errors and potential system crashes.
+> 
+> I suspect there is something else going on with s_freeclusters_counter
+> being incorrect, but adding an additional correction to
+> s_freeclusters_counter is not the answer.
+> 
+> How is the system crashing?  If we have errors=continue, then we
+> really shouldn't let the system crash.  If there is delayed allocation
+> failures, the user might lose data, but if the user really cares about
+> that, they shouldn't be using errors=continue.
 
+I think the existing check in `ext4_mb_generate_buddy` is for runtime errors,
+and the issue here is happening at mount time due to an already corrupted
+filesystem. The value of `grp->bb_free` and `s_freeclusters_counter` was
+`150994969` vs `25`, which is the actual free clusters count. The existing
+update call subtracts `grp->bb_free` from `s_freeclusters_counter` assuming
+that the group descriptor is accurate, but in this case it is not. So we
+still end up with an incorrect global counter.
 
-Regards,
-Baokun
+I tried the patch here: 
+https://syzkaller.appspot.com/text?tag=Patch&x=1771a7cd980000
 
+In that version, I attempted to compute and pass the corrected value to the
+update function, but it failed with the warning at `ext4_dirty_folio`: 
+https://syzkaller.appspot.com/x/report.txt?x=1306a7cd980000
+
+From what I understand, even after adjusting the counter, the dirty buffers had
+already been created, so it returns an error that unmapped dirty buffers
+remain.
+
+My earlier fix ended up making `s_freeclusters_counter` become 0 due to the
+update in `ext4_mark_group_bitmap_corrupted()` that I had overlooked. As a
+result, no warnings or errors were triggered at that time.
+
+I might be off here, and I’m not sure how best to proceed.
+
+Best,
+	Albin
 
