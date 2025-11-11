@@ -1,64 +1,62 @@
-Return-Path: <linux-ext4+bounces-11793-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11791-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1776C4FAC1
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 21:10:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC9EC4FABB
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 21:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 457DA34B6CC
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 20:10:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE297189ADDB
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 20:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22D33A9BE4;
-	Tue, 11 Nov 2025 20:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BCBA3A8D7A;
+	Tue, 11 Nov 2025 20:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="gYgG8oNh"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="FLibgbGt"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19353A9BE2
-	for <linux-ext4@vger.kernel.org>; Tue, 11 Nov 2025 20:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7501527A917
+	for <linux-ext4@vger.kernel.org>; Tue, 11 Nov 2025 20:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762891800; cv=none; b=Y81ZeecEZHTF5zShbbMKBOfAN76KCdsWdyhrAE8X9Dpnd5X9fJYh65j7raPy7nzDS09aTojQXL+1jWG/zuRZVQEPXvcEKUyKtZXR0N96TDhWNjIJ+duHcZ8JC1lFbqBxrVWm2WGkXf+W0hFPkF/it+xbwsDGLZTCxPxlmUgkaqM=
+	t=1762891798; cv=none; b=gYQxt9p/DOAcmyJZxDL5Nuasc2rShiEEBxlXYt+UKrMFNF6dlDcQyeN90ff6pxEWQ8bh31okteuenXqdd7Bs7WoNOfjM1I9Phz/pgH6Q/MDXzNwaM2hefvmdY4t6IrTDxnMvpJSDFWx4zJYYI0c87WCzeMb2e+AnrtPXd8V856c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762891800; c=relaxed/simple;
-	bh=aKU7CwRoFN7GwAUk/VpcFt8d8rBypsRl8Gnocq6cGlY=;
+	s=arc-20240116; t=1762891798; c=relaxed/simple;
+	bh=/BIqHtYI6MUFcfcNp5LvHoK7xOafRE8I3kdazk00vNE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Qyr1Vu1yawIEUIsRJW3WQ6Whh5JJLMjU6ftC8TB+bjWORzxnO1TzzHzRJTpJ/mTnd/tXxvkneWEXoljBqszP56OyBtUbkYG48b6dZim/SKeIL/uXzZBrWNX2mj1l2poiw+i/VlB2Xj6GlsvL7bHKV3JVDokLtbpcXRhtcKqHsFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=gYgG8oNh; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=YxL6XnapFvgK0jvXvOZfgDGWwGZNS7InusmjwG5TqMEF8zFYLIWrABCLGSv8TWUFTbjxfp4b2sXlVVWqvVlZvMe/oGI2JjX1T6TbWS2hv4VLfgMd+L3dezaBV5TcQ2lsl6mR/EKbl+SrYI6+Cp6vIKn6Te43JTcf4ITWZ86lytM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=FLibgbGt; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-122-154.bstnma.fios.verizon.net [173.48.122.154])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5ABK9ow4008978
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5ABK9oMN008980
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 11 Nov 2025 15:09:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1762891792; bh=rGKSYEkWslJh+Ex2G50XKu2IgwJMeDD9JJcg3/TUlCU=;
+	t=1762891791; bh=kV15s0gG90M8rpuRukzzQRdglv/UxT3lKSrGpvMLYnw=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=gYgG8oNhOwFxh8c5gDdlVLX4n0abFeLNwsVvdM4kXkovttB4PaAtgWiwRjVc6AgGA
-	 nyFr5q7wLjzjqa+Yq/9EgxcMj90z1+c3C9nfws4zVs3jkLWE4rLrketniBG48wAU1u
-	 J8Q4uTOVyk5/k+/riCzzjX+zmH6pRiNBHsrfLvkpjs6hwDx235RT74DyrBGO+YSj4f
-	 ww5Ubhi1pHmQT52Q3ZNAOhtUXyZk3xLPK1hIhcFlhzFGGNEn3jdXzko8KKDwWlYwV7
-	 JtiewaFCVTZcbWw2VdPyd/Dn4/kI8A3eS0khzPZmFfEodq8cb47PSTcmsJYM8Ib1dI
-	 xdRrOCm5DA8Pg==
+	b=FLibgbGtUp5P+T4MDh5fUW2BIgYlj8Y0rtu1A87YBkcGPmO91QbH1F5UmXbs4y2NE
+	 iXTCzKwlLvoLalo7v1nm5KGPVDpg5luztnMvDZNuLxBeGb7C5ansmQwiodOdfH0Sho
+	 6eqC7otjmKEK73To8zFK1DMUnQ8GqaPocbTvn3eijeUQT59vvPM6M6ercr6kBHU08Z
+	 x6UerhNYxV4jOrEQQENB2VTgF4cN0bYV3Ld9tmTfg5/apKT2XPXQ7PQ6cWDPItZCEO
+	 yX/1RSVen28Zhq9BoHec3pBRNUBTtX/+t2ZFOhIfewn6V34r9B3o5gFQ1PFt2m/3bw
+	 8pACQ6jFxXuGw==
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 502FD2E00D6; Tue, 11 Nov 2025 15:09:50 -0500 (EST)
+	id 53EBC2E00DB; Tue, 11 Nov 2025 15:09:50 -0500 (EST)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Andreas Dilger <adilger@dilger.ca>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger@whamcloud.com>,
-        Li Dongyang <dongyangli@ddn.com>
-Subject: Re: [PATCHv2] ext2fs: fix fast symlink blocks check
-Date: Tue, 11 Nov 2025 15:09:46 -0500
-Message-ID: <176289177750.1399954.9061912181115390685.b4-ty@mit.edu>
+To: linux-ext4@vger.kernel.org, Ralph Siemsen <ralph.siemsen@linaro.org>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Subject: Re: [PATCH v2 0/4] mke2fs: small doc and features
+Date: Tue, 11 Nov 2025 15:09:47 -0500
+Message-ID: <176289177750.1399954.17574653015978817576.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250808080505.1307694-1-adilger@dilger.ca>
-References: <20250808080505.1307694-1-adilger@dilger.ca>
+In-Reply-To: <20250910-mke2fs-small-fixes-v2-0-55c9842494e0@linaro.org>
+References: <20250910-mke2fs-small-fixes-v2-0-55c9842494e0@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -69,20 +67,26 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Fri, 08 Aug 2025 02:04:27 -0600, Andreas Dilger wrote:
-> Use ext4_inode_is_fast_symlink() in ext2fs_inode_has_valid_blocks2()
-> instead of depending exclusively on i_blocks == 0 to determine
-> if an inode is a fast symlink. Otherwise, if a fast symlink has a
-> large external xattr inode that increases i_blocks, it will be
-> incorrectly reported as having invalid blocks.
+On Wed, 10 Sep 2025 09:51:44 -0400, Ralph Siemsen wrote:
+> Four independent fixes for mke2fs:
 > 
+> 1) document the hash_seed option
+> 2) support multiple '-E' arguments
+> 3) add extended option for setting root inode security context
+> 4) minor indentation fix in man page
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext2fs: fix fast symlink blocks check
-      commit: ae7370a5fa175c609bd7c780a5ffaefdd58efc91
+[1/4] mke2fs: document the hash_seed option
+      commit: 6096dffaaf22d483f246166f6287dc4742e4e54c
+[2/4] mke2fs: support multiple '-E' options
+      commit: 06f50e001b7df448df523231bba26f1ca488f456
+[3/4] mke2fs: add root_selinux option for root inode label
+      commit: 9fc251d0d687f987975ac7c8011c600065e87d94
+[4/4] mke2fs: fix missing .TP in man page
+      commit: 041412cf2351c6d275547d65df33eec1cf36df8d
 
 Best regards,
 -- 
