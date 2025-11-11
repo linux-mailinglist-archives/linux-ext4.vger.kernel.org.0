@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-11787-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11775-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B65AEC4E89E
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 15:42:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 592C0C4E880
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 15:41:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 10EF84F3DD8
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 14:39:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E218018959C8
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Nov 2025 14:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37AF3469F0;
-	Tue, 11 Nov 2025 14:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 555FD33CE82;
+	Tue, 11 Nov 2025 14:35:36 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E933346AE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 814E43328E6;
 	Tue, 11 Nov 2025 14:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762871738; cv=none; b=cVmNboTLzbhVJsWCsKm2Mx+9tCD+tLrRqgw6Qm7dWGfFK9lIdbbcy1Vnn5J8RXxR6Fuf1HYn5TWo6y5Iwl+3s5GjcvPFMG7pn61nHqBkCAJzBfgDdTmf1/HD/FpLR4Tb1thfUPsaqf5jZ7Dzdqmztbldcxy3k4ItWSf+9SIjS5w=
+	t=1762871735; cv=none; b=ZxcC6ZYeBBKHoFK7IU4L3ozqONbHW0zfAtXwsSAZdmrITXy4AZR5ZIvtglnHQ/yiNPWASl2OYUYuz14pAZsppHcczzqoavCWUuKWqNTOsC7n0lYd4b8UcI/e9kBlSMTFMTTXWgChcFrSXqeTiu8uMM+MXDcOkU8J5TtOI8LgJ44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762871738; c=relaxed/simple;
-	bh=8z07ORJLuvNM84vCR2wCkKmp4t1hudpgLUW5sLQvkow=;
+	s=arc-20240116; t=1762871735; c=relaxed/simple;
+	bh=/XgSakDfjLXFQZ0fNtaKp9PDSIuKVtLaor6BRknOcXs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=T8rPLuafwhRNTdQLxDkbbNs0RuNulIZ0BxIlDAzjizYcbLdqaTnmLwW3veaSzdsW0ntnowFa74HdcGoiDe9VwK+hI1+HvduEl798TBNsoYmOcHZF/SdYh7eEtvygMPvRC09r56JiLILv2vH4feMQLCEzi6DKE4DwTawlPiVE94A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=XQ++5JbJSDFKeABABKgODKdco3txuGz6q4ZGsUsbNWbJVOiLx/xzBCWLpuptXZ+TollIcB6gtOk15yQ/7sjfvgWyuS/Bpa7LAoYz6rHBnspjcL/aABUmSAEhC6rVJUtJoAhiHKdZuj25nKUDnSn9K5YOwEXJ0e7lG0teQ6RkO3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d5TZr6zSTzYQv2b;
-	Tue, 11 Nov 2025 22:35:00 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d5Tb353PwzKHMdf;
+	Tue, 11 Nov 2025 22:35:11 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id D355B1A13D7;
+	by mail.maildlp.com (Postfix) with ESMTP id E1C021A018D;
 	Tue, 11 Nov 2025 22:35:27 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.50.87.129])
-	by APP2 (Coremail) with SMTP id Syh0CgBHo3mrSRNpgYWKAQ--.32556S17;
+	by APP2 (Coremail) with SMTP id Syh0CgBHo3mrSRNpgYWKAQ--.32556S18;
 	Tue, 11 Nov 2025 22:35:27 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
@@ -53,9 +53,9 @@ Cc: tytso@mit.edu,
 	chengzhihao1@huawei.com,
 	libaokun1@huawei.com,
 	libaokun@huaweicloud.com
-Subject: [PATCH v3 13/24] ext4: support large block size in ext4_mb_init_cache()
-Date: Tue, 11 Nov 2025 22:26:23 +0800
-Message-Id: <20251111142634.3301616-14-libaokun@huaweicloud.com>
+Subject: [PATCH v3 14/24] ext4: prepare buddy cache inode for BS > PS with large folios
+Date: Tue, 11 Nov 2025 22:26:24 +0800
+Message-Id: <20251111142634.3301616-15-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20251111142634.3301616-1-libaokun@huaweicloud.com>
 References: <20251111142634.3301616-1-libaokun@huaweicloud.com>
@@ -66,10 +66,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBHo3mrSRNpgYWKAQ--.32556S17
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw1ktr1DWw4UKFyfKr4UArb_yoWruw4Dpa
-	9xKr15Gr18Wa9rW3ZrWayvvF1fG34xZF47GFWxXr1xCFy7Xw1FgFnrtr18JryUtFZrJF95
-	XF15Ar13ZF1UXw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgBHo3mrSRNpgYWKAQ--.32556S18
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFWxXFy3WF4kCw4DtrWxXrb_yoW8JFWfpa
+	17GF18Gr18Way5CF4xGFy8Xa4xKa1xWay7JrZ29w1jvF9rWFyFkFsrtry29FW8AFWfAayf
+	XF47uw13ur45GaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUQa14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -84,137 +84,39 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxZw1ktr1DWw4UKFyfKr4UArb_yoWruw4Dpa
 	x2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw2
 	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
 	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdsqAUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAJBWkSsJdDJAACs0
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAJBWkSsIpDTgAAsC
 
 From: Baokun Li <libaokun1@huawei.com>
 
-Currently, ext4_mb_init_cache() uses blocks_per_page to calculate the
-folio index and offset. However, when blocksize is larger than PAGE_SIZE,
-blocks_per_page becomes zero, leading to a potential division-by-zero bug.
+We use EXT4_BAD_INO for the buddy cache inode number. This inode is not
+accessed via __ext4_new_inode() or __ext4_iget(), meaning
+ext4_set_inode_mapping_order() is not called to set its folio order range.
 
-Since we now have the folio, we know its exact size. This allows us to
-convert {blocks, groups}_per_page to {blocks, groups}_per_folio, thus
-supporting block sizes greater than page size.
+However, future block size greater than page size support requires this
+inode to support large folios, and the buddy cache code already handles
+BS > PS. Therefore, ext4_set_inode_mapping_order() is now explicitly
+called for this specific inode to set its folio order range.
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/mballoc.c | 44 ++++++++++++++++++++------------------------
- 1 file changed, 20 insertions(+), 24 deletions(-)
+ fs/ext4/mballoc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index b454a41dd6c1..3f10c64ab2b1 100644
+index 3f10c64ab2b1..102c6439eb11 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -1329,26 +1329,25 @@ static void mb_regenerate_buddy(struct ext4_buddy *e4b)
-  * block bitmap and buddy information. The information are
-  * stored in the inode as
-  *
-- * {                        page                        }
-+ * {                        folio                        }
-  * [ group 0 bitmap][ group 0 buddy] [group 1][ group 1]...
-  *
-  *
-  * one block each for bitmap and buddy information.
-- * So for each group we take up 2 blocks. A page can
-- * contain blocks_per_page (PAGE_SIZE / blocksize)  blocks.
-- * So it can have information regarding groups_per_page which
-- * is blocks_per_page/2
-+ * So for each group we take up 2 blocks. A folio can
-+ * contain blocks_per_folio (folio_size / blocksize)  blocks.
-+ * So it can have information regarding groups_per_folio which
-+ * is blocks_per_folio/2
-  *
-  * Locking note:  This routine takes the block group lock of all groups
-- * for this page; do not hold this lock when calling this routine!
-+ * for this folio; do not hold this lock when calling this routine!
-  */
--
- static int ext4_mb_init_cache(struct folio *folio, char *incore, gfp_t gfp)
- {
- 	ext4_group_t ngroups;
- 	unsigned int blocksize;
--	int blocks_per_page;
--	int groups_per_page;
-+	int blocks_per_folio;
-+	int groups_per_folio;
- 	int err = 0;
- 	int i;
- 	ext4_group_t first_group, group;
-@@ -1365,27 +1364,24 @@ static int ext4_mb_init_cache(struct folio *folio, char *incore, gfp_t gfp)
- 	sb = inode->i_sb;
- 	ngroups = ext4_get_groups_count(sb);
- 	blocksize = i_blocksize(inode);
--	blocks_per_page = PAGE_SIZE / blocksize;
-+	blocks_per_folio = folio_size(folio) / blocksize;
-+	WARN_ON_ONCE(!blocks_per_folio);
-+	groups_per_folio = DIV_ROUND_UP(blocks_per_folio, 2);
- 
- 	mb_debug(sb, "init folio %lu\n", folio->index);
- 
--	groups_per_page = blocks_per_page >> 1;
--	if (groups_per_page == 0)
--		groups_per_page = 1;
--
- 	/* allocate buffer_heads to read bitmaps */
--	if (groups_per_page > 1) {
--		i = sizeof(struct buffer_head *) * groups_per_page;
-+	if (groups_per_folio > 1) {
-+		i = sizeof(struct buffer_head *) * groups_per_folio;
- 		bh = kzalloc(i, gfp);
- 		if (bh == NULL)
- 			return -ENOMEM;
- 	} else
- 		bh = &bhs;
- 
--	first_group = folio->index * blocks_per_page / 2;
--
- 	/* read all groups the folio covers into the cache */
--	for (i = 0, group = first_group; i < groups_per_page; i++, group++) {
-+	first_group = EXT4_PG_TO_LBLK(inode, folio->index) / 2;
-+	for (i = 0, group = first_group; i < groups_per_folio; i++, group++) {
- 		if (group >= ngroups)
- 			break;
- 
-@@ -1393,7 +1389,7 @@ static int ext4_mb_init_cache(struct folio *folio, char *incore, gfp_t gfp)
- 		if (!grinfo)
- 			continue;
- 		/*
--		 * If page is uptodate then we came here after online resize
-+		 * If folio is uptodate then we came here after online resize
- 		 * which added some new uninitialized group info structs, so
- 		 * we must skip all initialized uptodate buddies on the folio,
- 		 * which may be currently in use by an allocating task.
-@@ -1413,7 +1409,7 @@ static int ext4_mb_init_cache(struct folio *folio, char *incore, gfp_t gfp)
- 	}
- 
- 	/* wait for I/O completion */
--	for (i = 0, group = first_group; i < groups_per_page; i++, group++) {
-+	for (i = 0, group = first_group; i < groups_per_folio; i++, group++) {
- 		int err2;
- 
- 		if (!bh[i])
-@@ -1423,8 +1419,8 @@ static int ext4_mb_init_cache(struct folio *folio, char *incore, gfp_t gfp)
- 			err = err2;
- 	}
- 
--	first_block = folio->index * blocks_per_page;
--	for (i = 0; i < blocks_per_page; i++) {
-+	first_block = EXT4_PG_TO_LBLK(inode, folio->index);
-+	for (i = 0; i < blocks_per_folio; i++) {
- 		group = (first_block + i) >> 1;
- 		if (group >= ngroups)
- 			break;
-@@ -1501,7 +1497,7 @@ static int ext4_mb_init_cache(struct folio *folio, char *incore, gfp_t gfp)
- 
- out:
- 	if (bh) {
--		for (i = 0; i < groups_per_page; i++)
-+		for (i = 0; i < groups_per_folio; i++)
- 			brelse(bh[i]);
- 		if (bh != &bhs)
- 			kfree(bh);
+@@ -3493,6 +3493,8 @@ static int ext4_mb_init_backend(struct super_block *sb)
+ 	 * this will avoid confusion if it ever shows up during debugging. */
+ 	sbi->s_buddy_cache->i_ino = EXT4_BAD_INO;
+ 	EXT4_I(sbi->s_buddy_cache)->i_disksize = 0;
++	ext4_set_inode_mapping_order(sbi->s_buddy_cache);
++
+ 	for (i = 0; i < ngroups; i++) {
+ 		cond_resched();
+ 		desc = ext4_get_group_desc(sb, i, NULL);
 -- 
 2.46.1
 
