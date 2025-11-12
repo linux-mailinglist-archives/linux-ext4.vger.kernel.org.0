@@ -1,243 +1,207 @@
-Return-Path: <linux-ext4+bounces-11806-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11807-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9537FC50D42
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 08:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6A2C511DF
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 09:30:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C71C188C196
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 07:01:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA9D11897364
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 08:31:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0112E719C;
-	Wed, 12 Nov 2025 06:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A342D23BC;
+	Wed, 12 Nov 2025 08:30:38 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF32B212F98;
-	Wed, 12 Nov 2025 06:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F471F428C
+	for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 08:30:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762930603; cv=none; b=K/lggWry1TNgJy0XG+bm1dHRZ41zJtK8B3e6P79VFinh5CCS9PXn4aBfIx1UH4k3UzPsymeR4+wTYnG0vbzlZRVeFzbBmsoo7RXxedIe0qa5G4QydCn3q8ljjc5NpXVMu68yGP6ozMbgxRWGlUwNrmzulZ3G1o3Od3E3yl/TrtI=
+	t=1762936238; cv=none; b=SPTUWAWTzsnqfpv2vqMhCr2z1+FyAxvlHfXvaqjUqSdwxWQ4Da8Ju4WHrsJ2deZgCjCsYmjpOiwAABKWb39Hx68FtUX2gf5L3E4UYERAWVjRrtQvsptMjrKSRE/ttuQkDq6egDhtEAgZvirTwb928GFpGdj4F78nseQJWYiRWTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762930603; c=relaxed/simple;
-	bh=PpprAHAsPdz3yIbk6xTNfUr18VSWAtQ7Udns6Fw/W4I=;
+	s=arc-20240116; t=1762936238; c=relaxed/simple;
+	bh=jOAodWQOnBsaRxgRwJAkp73MDohrL3Tisxnl7DxYqnM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DgxZV16xCovX5y8/wsA3JLONNV4UCx+Ylhbi+RTN3JG7SyhnS/NsPCW4QgJM5JLlOiMlN9y9W2EAUx06Ar66uDSRL/1EiU1iE6siMv2oJBXFXxgnrW7j2+9bmhpx0FghYC54LqDW7iQblN7W5TWLflkDxUFVClAef+nxgjrHnsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=e8Bx79h6++P8/wDRUmDggLVfAphbRPBZm2r+AZWBhxo8+sBCnAqqm10mHObGgq95PCFVSNSFJaEbnk5DOOf0bRcUrAlIvMC2+cEhkF6UmCl6x2r1Rj0Lq5s9+FOEChJqWCVYIPeBbxXNNoksN1JZHuW+EbMv3bHJKnfuOtyxvT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d5vLy6JtmzYQtwq;
-	Wed, 12 Nov 2025 14:56:10 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d5xRV6C88zKHMhp
+	for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 16:30:14 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id DF0D01A1D65;
-	Wed, 12 Nov 2025 14:56:38 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP2 (Coremail) with SMTP id Syh0CgAnhXulLxRp4c3ZAQ--.3517S3;
-	Wed, 12 Nov 2025 14:56:38 +0800 (CST)
-Message-ID: <ba84c018-916c-4e26-889b-368d3610225d@huaweicloud.com>
-Date: Wed, 12 Nov 2025 14:56:37 +0800
+	by mail.maildlp.com (Postfix) with ESMTP id 2C3CB1A07C0
+	for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 16:30:32 +0800 (CST)
+Received: from [10.174.177.210] (unknown [10.174.177.210])
+	by APP2 (Coremail) with SMTP id Syh0CgBHo3mlRRRpgG_hAQ--.56590S3;
+	Wed, 12 Nov 2025 16:30:30 +0800 (CST)
+Message-ID: <2385bfd4-bc58-6dd3-5d33-9a21cb36ca6e@huaweicloud.com>
+Date: Wed, 12 Nov 2025 16:30:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 23/24] ext4: add checks for large folio
- incompatibilities when BS > PS
-To: libaokun@huaweicloud.com, linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
- linux-kernel@vger.kernel.org, kernel@pankajraghav.com, mcgrof@kernel.org,
- ebiggers@kernel.org, willy@infradead.org, yangerkun@huawei.com,
- chengzhihao1@huawei.com, libaokun1@huawei.com
-References: <20251111142634.3301616-1-libaokun@huaweicloud.com>
- <20251111142634.3301616-24-libaokun@huaweicloud.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20251111142634.3301616-24-libaokun@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgAnhXulLxRp4c3ZAQ--.3517S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxKw1fuw43Jry3GFy8KF1xZrb_yoW7AF48pF
-	W3CF1furW8ZF9rurs7tanrXr1Yvay8tayUJ34xua4UJr9xt34IkFW09F1FyFyUtrWUXryx
-	Xa18try29wsrKFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	0PfPUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v3 1/3] ext4: remove useless code in
+ ext4_map_create_blocks
+To: Zhang Yi <yi.zhang@huaweicloud.com>, Yang Erkun <yangerkun@huawei.com>,
+ linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ jack@suse.cz
+Cc: libaokun1@huawei.com
+References: <20251107115810.47199-1-yangerkun@huawei.com>
+ <72def5a4-c30a-4461-8bce-c6c2b09b044c@huaweicloud.com>
+From: yangerkun <yangerkun@huaweicloud.com>
+In-Reply-To: <72def5a4-c30a-4461-8bce-c6c2b09b044c@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgBHo3mlRRRpgG_hAQ--.56590S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3GFW5Xr18tFyDJry3uryrtFb_yoW7XryxpF
+	ZakF1xGr4kt3y8urWIkF1DXFyYgw1UGrW7CrW7Gw1UKa45tryS9F1Sya4F9Fy0grZ5Za1Y
+	qFWFya4ku3Z8AaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+	IcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+	67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+	IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+	nxnUUI43ZEXa7VUbSfO7UUUUU==
+X-CM-SenderInfo: 51dqwvhunx0q5kxd4v5lfo033gof0z/
 
-On 11/11/2025 10:26 PM, libaokun@huaweicloud.com wrote:
-> From: Baokun Li <libaokun1@huawei.com>
-> 
-> Supporting a block size greater than the page size (BS > PS) requires
-> support for large folios. However, several features (e.g., encrypt)
-> do not yet support large folios.
-> 
-> To prevent conflicts, this patch adds checks at mount time to prohibit
-> these features from being used when BS > PS. Since these features cannot
-> be changed on remount, there is no need to check on remount.
-> 
-> This patch adds s_max_folio_order, initialized during mount according to
-> filesystem features and mount options. If s_max_folio_order is 0, large
-> folios are disabled.
-> 
-> With this in place, ext4_set_inode_mapping_order() can be simplified by
-> checking s_max_folio_order, avoiding redundant checks.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Looks good to me.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-
-> ---
->  fs/ext4/ext4.h  |  4 +++-
->  fs/ext4/inode.c | 38 ++++++++++----------------------------
->  fs/ext4/super.c | 39 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 52 insertions(+), 29 deletions(-)
+在 2025/11/12 12:46, Zhang Yi 写道:
+> Hi!
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 4bc0b2b7288a..79dc231d6e22 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1696,7 +1696,9 @@ struct ext4_sb_info {
->  	unsigned long s_last_trim_minblks;
->  
->  	/* minimum folio order of a page cache allocation */
-> -	unsigned int s_min_folio_order;
-> +	u16 s_min_folio_order;
-> +	/* supported maximum folio order, 0 means not supported */
-> +	u16 s_max_folio_order;
->  
->  	/* Precomputed FS UUID checksum for seeding other checksums */
->  	__u32 s_csum_seed;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 7b979e64f481..c38cb811f2ae 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5146,41 +5146,23 @@ static int check_igot_inode(struct inode *inode, ext4_iget_flags flags,
->  	return -EFSCORRUPTED;
->  }
->  
-> -static bool ext4_should_enable_large_folio(struct inode *inode)
-> +void ext4_set_inode_mapping_order(struct inode *inode)
->  {
->  	struct super_block *sb = inode->i_sb;
-> +	u16 min_order, max_order;
->  
-> -	if (!S_ISREG(inode->i_mode))
-> -		return false;
-> -	if (ext4_has_feature_encrypt(sb))
-> -		return false;
-> -
-> -	return true;
-> -}
-> -
-> -/*
-> - * Limit the maximum folio order to 2048 blocks to prevent overestimation
-> - * of reserve handle credits during the folio writeback in environments
-> - * where the PAGE_SIZE exceeds 4KB.
-> - */
-> -#define EXT4_MAX_PAGECACHE_ORDER(i)		\
-> -		umin(MAX_PAGECACHE_ORDER, (11 + (i)->i_blkbits - PAGE_SHIFT))
-> -void ext4_set_inode_mapping_order(struct inode *inode)
-> -{
-> -	u32 max_order;
-> +	max_order = EXT4_SB(sb)->s_max_folio_order;
-> +	if (!max_order)
-> +		return;
->  
-> -	if (!ext4_should_enable_large_folio(inode))
-> +	min_order = EXT4_SB(sb)->s_min_folio_order;
-> +	if (!min_order && !S_ISREG(inode->i_mode))
->  		return;
->  
-> -	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
-> -	    ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
-> -		max_order = EXT4_SB(inode->i_sb)->s_min_folio_order;
-> -	else
-> -		max_order = EXT4_MAX_PAGECACHE_ORDER(inode);
-> +	if (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
-> +		max_order = min_order;
->  
-> -	mapping_set_folio_order_range(inode->i_mapping,
-> -				      EXT4_SB(inode->i_sb)->s_min_folio_order,
-> -				      max_order);
-> +	mapping_set_folio_order_range(inode->i_mapping, min_order, max_order);
->  }
->  
->  struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 0d32370a459a..f1aeba47b0e3 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5040,6 +5040,41 @@ static const char *ext4_has_journal_option(struct super_block *sb)
->  	return NULL;
->  }
->  
-> +/*
-> + * Limit the maximum folio order to 2048 blocks to prevent overestimation
-> + * of reserve handle credits during the folio writeback in environments
-> + * where the PAGE_SIZE exceeds 4KB.
-> + */
-> +#define EXT4_MAX_PAGECACHE_ORDER(sb)		\
-> +		umin(MAX_PAGECACHE_ORDER, (11 + (sb)->s_blocksize_bits - PAGE_SHIFT))
-> +static void ext4_set_max_mapping_order(struct super_block *sb)
-> +{
-> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> +
-> +	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)
-> +		sbi->s_max_folio_order = sbi->s_min_folio_order;
-> +	else
-> +		sbi->s_max_folio_order = EXT4_MAX_PAGECACHE_ORDER(sb);
-> +}
-> +
-> +static int ext4_check_large_folio(struct super_block *sb)
-> +{
-> +	const char *err_str = NULL;
-> +
-> +	if (ext4_has_feature_encrypt(sb))
-> +		err_str = "encrypt";
-> +
-> +	if (!err_str) {
-> +		ext4_set_max_mapping_order(sb);
-> +	} else if (sb->s_blocksize > PAGE_SIZE) {
-> +		ext4_msg(sb, KERN_ERR, "bs(%lu) > ps(%lu) unsupported for %s",
-> +			 sb->s_blocksize, PAGE_SIZE, err_str);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int ext4_load_super(struct super_block *sb, ext4_fsblk_t *lsb,
->  			   int silent)
->  {
-> @@ -5316,6 +5351,10 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  
->  	ext4_apply_options(fc, sb);
->  
-> +	err = ext4_check_large_folio(sb);
-> +	if (err < 0)
-> +		goto failed_mount;
-> +
->  	err = ext4_encoding_init(sb, es);
->  	if (err)
->  		goto failed_mount;
+> On 11/7/2025 7:58 PM, Yang Erkun wrote:
+>> IO path with EXT4_GET_BLOCKS_PRE_IO means dio within i_size or
+>> dioread_nolock buffer writeback, they all means we need a unwritten
+>> extent(or this extent has already been initialized), and the split won't
+>> zero the range we really write. So this check seems useless. Besides,
+>> even if we repeatedly execute ext4_es_insert_extent, there won't
+>> actually be any issues.
+>>
+>> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+>> Reviewed-by: Jan Kara <jack@suse.cz>
+>> Signed-off-by: Yang Erkun <yangerkun@huawei.com>
+>> ---
+>>   fs/ext4/inode.c | 11 -----------
+>>   1 file changed, 11 deletions(-)
+>>
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index e99306a8f47c..e8bac93ca668 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -583,7 +583,6 @@ static int ext4_map_query_blocks(handle_t *handle, struct inode *inode,
+>>   static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
+>>   				  struct ext4_map_blocks *map, int flags)
+>>   {
+>> -	struct extent_status es;
+>>   	unsigned int status;
+>>   	int err, retval = 0;
+>>   
+>> @@ -644,16 +643,6 @@ static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
+>>   			return err;
+>>   	}
+>>   
+>> -	/*
+>> -	 * If the extent has been zeroed out, we don't need to update
+>> -	 * extent status tree.
+>> -	 */
+>> -	if (flags & EXT4_GET_BLOCKS_PRE_IO &&
+>> -	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
+>> -		if (ext4_es_is_written(&es))
+>> -			return retval;
+>> -	}
+>> -
+> 
+> Sorry, I think I was wrong and I now realize that we need to keep this code
+> snippet. Because ext4_split_extent() may convert the on-disk extent to written
+> with the EXT4_EXT_MAY_ZEROOUT flag set. If we drop this check, it will add an
+> unwritten extent into the extent status tree, which is inconsistent with the
+> real one.
+> 
+> Although this might not seem like a practical issue now, it's a potential
+> problem and conflicts with the ext4_es_cache_extent() extension I am currently
+> developing[1], which triggers a mismatch alarm when caching extents.
+> 
+> Besides, I also notice there is a potential stale data issue about the
+> EXT4_EXT_MAY_ZEROOUT flag.
+> 
+> Assume we have an unwritten file, and then DIO writes the second half.
+> 
+>     [UUUUUUUUUUUUUUUU] on-disk extent
+>     [UUUUUUUUUUUUUUUU] extent status tree
+>              |<----->| dio write
+> 
+> 1. ext4_iomap_alloc() call ext4_map_blocks() with EXT4_GET_BLOCKS_PRE_IO,
+>     EXT4_GET_BLOCKS_UNWRIT_EXT and EXT4_GET_BLOCKS_CREATE flags set.
+> 2. ext4_map_blocks() find this extent and call ext4_split_convert_extents()
+>     with EXT4_GET_BLOCKS_CONVERT and the above flags set.
+> 3. call ext4_split_extent() with EXT4_EXT_MAY_ZEROOUT, EXT4_EXT_MARK_UNWRIT2 and
+>     EXT4_EXT_DATA_VALID2 flags set.
+> 4. call ext4_split_extent_at() to split the second half with EXT4_EXT_DATA_VALID2,
+>     EXT4_EXT_MARK_UNWRIT1, EXT4_EXT_MAY_ZEROOUT and EXT4_EXT_MARK_UNWRIT2 flags
+>     set.
+> 5. We failed to insert extent since -NOSPC in ext4_split_extent_at().
+> 6. ext4_split_extent_at() zero out the first half but convert the entire on-disk
+>     extent to written since the EXT4_EXT_DATA_VALID2 flag set, and left the second
+>     half as unwritten in the extent status tree.
+> 
+>     [0000000000SSSSSS]  data
+>     [WWWWWWWWWWWWWWWW]  on-disk extent
+>     [WWWWWWWWWWUUUUUU]  extent status tree
+> 
+> 7. If the dio failed to write data to the disk, If DIO fails to write data, the
+>     stale data in the second half will be exposed.
+> 
+> Therefore, I think we should zero out the entire extent range to zero for this
+> case, and also mark the extent as written in the extent status tree (that is the
+> another reason I think we should keep this code snippet). I was still confirming
+> this issue and thinking about how to fix it, but I believe it would be better
+> not to merge this patch for now. What do you think?
+
+
+Hi,
+
+Thank you very much for your detailed analysis!
+
+Yes, ext4_split_extent with EXT4_EXT_DATA_VALID2 indicates that the
+mapped range has been written and contains valid data. It seems correct
+that ext4_convert_unwritten_extents_endio calls
+ext4_split_convert_extents with EXT4_GET_BLOCKS_CONVERT. However, for
+the I/O submit context, which calls ext4_split_convert_extents with
+EXT4_GET_BLOCKS_CONVERT from ext4_ext_handle_unwritten_extents, the
+mapped range is still an unwritten extent and does not contain valid
+data. This could lead to the stale data issue you described. Therefore,
+the root cause is that we cannot use EXT4_GET_BLOCKS_CONVERT in the I/O
+submit context, but it appears difficult to prevent this.
+
+Additionally, I agree with you that merging this patch should be
+avoided. Thanks again for your thorough review!
+
+Thanks,
+Erkun.
+
+> 
+> [1]. https://lore.kernel.org/linux-ext4/20251031062905.4135909-1-yi.zhang@huaweicloud.com/
+> 
+> Thanks,
+> Yi.
+> 
+>>   	status = map->m_flags & EXT4_MAP_UNWRITTEN ?
+>>   			EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+>>   	ext4_es_insert_extent(inode, map->m_lblk, map->m_len, map->m_pblk,
 
 
