@@ -1,85 +1,119 @@
-Return-Path: <linux-ext4+bounces-11831-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11832-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE96FC53E2D
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 19:20:47 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD199C53F2F
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 19:42:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E69E834542C
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 18:20:13 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 79CE44F0765
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 18:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A65A3451CD;
-	Wed, 12 Nov 2025 18:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81BA334CFCB;
+	Wed, 12 Nov 2025 18:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GYwMJrmD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vIN//E/o"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075FE285C98;
-	Wed, 12 Nov 2025 18:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE0483587BC;
+	Wed, 12 Nov 2025 18:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762971607; cv=none; b=V52ELbgxgqzlQXgoOATKAGFvyI6eXV1ZlmPMjwlT2LZ8vjmK1SxFg7UrsQmrp2Da9PmHx3vb1R+FZ0LCMNQXhx6NkTPcAvCQgZlxXkDRxNF4IgBpKZ6EXqZcrf6v2WDeebdmwR4cG2ZHee1DpXvr6XgcQ6tNXVkKVCGTal4tmac=
+	t=1762971979; cv=none; b=PBQV8Rcj1mnpLFyCZ+9QWK258ITPOCMmp/PNn899SwtVfgNCw2rAfWBY9b8S9jI/4Cr4XWBv7Bua2hv7LI8Hy/7+yHs06blv6ovJnnL1ripj42hBXhnm4lBuAVJNc3lwsIeDXNsNWqTI/Fmia3Eu3e6A2+wYXT+7xmVQydtKT2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762971607; c=relaxed/simple;
-	bh=oWVtEyxa/USf6lDPU9HhuH0iewSOT4SAsW56JKxlpLU=;
+	s=arc-20240116; t=1762971979; c=relaxed/simple;
+	bh=M2QaiZHzhlVmKdu1Ysw4zOqywmtC0K6SP9pJS6pFKZU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NIG4sMhaSPaqyT3F8IbZ81ZrqVg6/TJ7PMzHxB6r+vnq/r2JNRk/aWnKBMO2ycDDdUnF1KMdXnofAeQdXVBVrQ3P7NKyzYYYzUYKfv1+PKsnIQE2dPu57iyqceXkBU5Hx1KtT/yAbZyxcIic99cbk64B0/bD6fozJ228T4Wq1x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GYwMJrmD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ED7AC4CEF8;
-	Wed, 12 Nov 2025 18:20:05 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=dMk2ci0GjnJOZK0KxmCTeygp3Q+goH7Hn1FMmfD/d8S9AyTSwIUNTJ7D0kLVETBcSmmizXG+f7x5PXLoJPKWlj45wWahc+SumkghQfd+sDvC25vcVRi56QEwyEqlAAWK1Pk4HwnuvR9LCa1vDljHFLTIk89ZIWc+5vRJivhy9uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vIN//E/o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FB41C19421;
+	Wed, 12 Nov 2025 18:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762971605;
-	bh=oWVtEyxa/USf6lDPU9HhuH0iewSOT4SAsW56JKxlpLU=;
+	s=k20201202; t=1762971978;
+	bh=M2QaiZHzhlVmKdu1Ysw4zOqywmtC0K6SP9pJS6pFKZU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GYwMJrmDGELNaHahDcgS7sTeERxcyAE5K9xIaLmuhefK1+zcMIDw3+oGHedjmLP7U
-	 g3ZHnBFWxXM2CYg3JiGscyTZhvSvqVAGvuDeXqbKua3GUvAmb8rS4Rlh6k75SzOZ3q
-	 upoHFTqAleqzOp59Nw+XyzB4jDhGg6Hxks2w7tPhjMW+KAflWWsharq5WdDFCQlKJ2
-	 G9y/XEsXzQY1JX2w+3XX1AL46OZsIQJ5KLOiosOJxsdVadmQHQ9Tc8G5L82loq8DhX
-	 B00dI7AKI8XLoQbD93RWXHHq49ClCTLiKZF1EQQarCS10dxxV2fPdC33DTH5+6JjgJ
-	 D45CJBHWsBc0Q==
-Date: Wed, 12 Nov 2025 10:20:04 -0800
+	b=vIN//E/oQ1vxpNSBmDP/lsaElc/MyeK8RIhdQpkM5IbjPQHN4ML5LjL5Vh7NHm3Ht
+	 8xoh4ideAyxQt36+pfmpig3GCO252aTCFKzrAVezz0j/SjunEfBq1tBmZp9k/U2rTt
+	 SMYd5gXvV7LBEFnU23qZI9eho9gtKrAhSopgk4r6gEm+iREOhGBZGc1LeUcYdlR+cz
+	 T7RRggiD8lNVVfWAxMhpjZsVSUCPnUrB154RVac0OHSonpAkU8S1KA04C8gfZ0hTXe
+	 Syjn+g56FawapdI75HAgt7T62lsAn1OdBy4czMoIN/6qTmaC44BosthBSnuzaRmfnd
+	 FaIvqaD0VLtLA==
+Date: Wed, 12 Nov 2025 10:26:17 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: zlang@redhat.com, fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 4/7] generic/019: skip test when there is no journal
-Message-ID: <20251112182004.GG196366@frogsfrogsfrogs>
-References: <176279908967.605950.2192923313361120314.stgit@frogsfrogsfrogs>
- <176279909079.605950.17890053232268440120.stgit@frogsfrogsfrogs>
- <aRMB0JlJvduJCxF_@infradead.org>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: zlang@redhat.com, neal@gompa.dev, fstests@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	joannelkoong@gmail.com, bernd@bsbernd.com
+Subject: Re: [PATCH 04/33] common/rc: skip test if swapon doesn't work
+Message-ID: <20251112182617.GH196366@frogsfrogsfrogs>
+References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
+ <176169820051.1433624.4158113392739761085.stgit@frogsfrogsfrogs>
+ <016f51ff-6129-4265-827e-3c2ae8314fe1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aRMB0JlJvduJCxF_@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <016f51ff-6129-4265-827e-3c2ae8314fe1@huawei.com>
 
-On Tue, Nov 11, 2025 at 01:28:48AM -0800, Christoph Hellwig wrote:
-> On Mon, Nov 10, 2025 at 10:27:04AM -0800, Darrick J. Wong wrote:
+On Wed, Nov 12, 2025 at 02:35:32PM +0800, Baokun Li wrote:
+> Hi Darrick,
+> 
+> On 2025-10-29 09:21, Darrick J. Wong wrote:
 > > From: Darrick J. Wong <djwong@kernel.org>
-> > 
-> > This test checks a filesystem's ability to recover from a noncritical
-> > disk failure (e.g. journal replay) without becoming inconsistent.  This
-> > isn't true for any filesystem that doesn't have a journal, so we should
-> > skip the test on those platforms.
+> >
+> > In _require_scratch_swapfile, skip the test if swapon fails for whatever
+> > reason, just like all the other filesystems.
+> >
+> > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+> > ---
+> >  common/rc |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> >
+> > diff --git a/common/rc b/common/rc
+> > index 18d11e2c5cad3a..98609cb6e7a058 100644
+> > --- a/common/rc
+> > +++ b/common/rc
+> > @@ -3278,7 +3278,7 @@ _require_scratch_swapfile()
+> >  				_notrun "swapfiles are not supported"
+> >  			else
+> >  				_scratch_unmount
+> > -				_fail "swapon failed for $FSTYP"
+> > +				_notrun "swapon failed for $FSTYP"
+> >  			fi
+> >  		fi
+> >  		;;
 > 
-> This is triggered by your fuse ext4 I guess?
-
-Yep.
-
---D
-
-> Either way, looks good:
+> Could you also clean up the corresponding comments?
 > 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>     # ext* has supported all variants of swap files since their
+>     # introduction, so swapon should not fail.
 > 
-> > 
-> ---end quoted text---
+> At present, swap files don’t support block sizes greater than the page
+> size, which means swapon will fail when LBS is enabled.
+
+Well at that point we might as well collapse everything into:
+
+	if ! swapon "$SCRATCH_MNT/swap" >/dev/null 2>&1; then
+		_scratch_unmount
+		_notrun "swapfiles are not supported for $FSTYP"
+	fi
+
+(note the removal of the case "$FSTYP"...esac code)
+
+---D
+
+> 
+> Thanks,
+> Baokun
+> 
 > 
 
