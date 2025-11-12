@@ -1,100 +1,275 @@
-Return-Path: <linux-ext4+bounces-11828-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11826-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C66C538FC
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 18:02:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16792C539C8
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 18:14:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A5A15547207
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 16:00:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 765585668FF
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 15:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB0E309EE9;
-	Wed, 12 Nov 2025 15:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7ED34402D;
+	Wed, 12 Nov 2025 15:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b="c9+bFVhd"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xvaa7OU1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IpJmCaF/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xvaa7OU1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IpJmCaF/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [13.76.142.27])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA6D1339A4;
-	Wed, 12 Nov 2025 15:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.76.142.27
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C17F3396E5
+	for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 15:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762963175; cv=none; b=OLt8wcFRDPv5F6DuZJDdhEQ2TqlIkN0/+D4Zb7N543j0HFlwdoamd+FAZmP8g2cw8HEBv678fRf6WSYpYSfCGVX7KjU4dXuzudFbLoeFW9d8h6XOcyGTg+pCv8Ig7OxYFMvDDHq2/ZRcdokBOyIh7whM155DfxyWwUvnTu4vFuk=
+	t=1762963018; cv=none; b=mfdFqonRWvjGY9ndAN+vGYr2V3hQPh5DMjcZe5ZDQXtg9omlBS5OWsSfRmttXdTYNeeKCIOcJBk2K2rtNJRDt7Bo+2dWjiESxKZCWRTKDbYKL04mtdFUVefta903zD0IjwD+Dj7GeKMIj9BcZ0UYA/tUOtyn0mUKnGPljGueOwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762963175; c=relaxed/simple;
-	bh=PsjPaE4lZoLTPqrzivsYPbw6hTDiG4sJvFzbGnjYUwY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V2EzpW6ru8DOjk5bIM/Des8oqZjP6CuEPnDpH23lfFIe3x6lc/qAnukX7uBDsTLO5PTxFL6uycYbzXqneehAKUzV+YUA/V/FNSA4w9qDr68g+/oJ54HvsA6BsilbVEmA3maqJ5G9gOMQWc/jN6qDMiSvJKFcvKFUrXF1dQhW9E0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=c9+bFVhd; arc=none smtp.client-ip=13.76.142.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mails.tsinghua.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=mails.tsinghua.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:
-	Date:Message-ID:MIME-Version:Content-Transfer-Encoding; bh=8AhE/
-	aG7KhI0jDuF9HucPWyrSJmKir5bczNqavi8w4I=; b=c9+bFVhdSkRVk76c4Yx9l
-	lI7tikyUDRxzZ8qdgu5RR9AQyEw3Npv/E5F8PUkR2Ig9irI6XK3I+OLRRCFiaJq6
-	GrBnCEMN4APhLicTE3+G/fGz3JbwDst33LjNR2o7jHjcLAnCcFzvvETSZKNuNEen
-	QbpkrBQIhLXY66yORacT30=
-Received: from localhost.localdomain (unknown [183.172.8.203])
-	by web2 (Coremail) with SMTP id yQQGZQBH7CzTrhRp9F1wAA--.27113S2;
-	Wed, 12 Nov 2025 23:59:16 +0800 (CST)
-From: Haodong Tian <tianhd25@mails.tsinghua.edu.cn>
-To: tytso@mit.edu
-Cc: adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Haodong Tian <tianhd25@mails.tsinghua.edu.cn>
-Subject: [PATCH] fs/ext4: fix typo in comment
-Date: Wed, 12 Nov 2025 23:59:16 +0800
-Message-ID: <20251112155916.3007639-1-tianhd25@mails.tsinghua.edu.cn>
-X-Mailer: git-send-email 2.47.3
+	s=arc-20240116; t=1762963018; c=relaxed/simple;
+	bh=YewLhtlCBuR+qUWb4ZgFZVbrKB4EmN5db0vzQJjeaIQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tgIkA6SL8gd/JxWB80a8xwO1ZEGr30kSt0BEDRiIwkb0DL3+Bn+x1PNk/q2SCH0ky/XXZ95xTg2+Uh6L27fOUQx01KiGw5OBucHRW11mI/FkyBMMukS1Jj9wA6cE//DJavzueMsWQrxyROWNY2qzrN+QqyLKrreCGP2YeL1i4B8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xvaa7OU1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IpJmCaF/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xvaa7OU1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IpJmCaF/; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 64F9F1F841;
+	Wed, 12 Nov 2025 15:56:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762963014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MU0KYNfEXJCSQOiseOltKllEwRxMN9AqV6tFWCTlD6U=;
+	b=xvaa7OU1NsiOa+ULOWk+vKgTpY7hv37flEw8E2qIndk1vzdmev8YNIIg5BAQ8pETxQw3I5
+	V/nCr6xNfFW24bB6Gub0mz9ZRONdmCIrkt7N1Dx28NClXRzGeaUJf8HEW9l6Spql6fctFZ
+	kVvN+BE+OQyBhmytWcD6gJrxZOxb5P0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762963014;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MU0KYNfEXJCSQOiseOltKllEwRxMN9AqV6tFWCTlD6U=;
+	b=IpJmCaF/GuhHFKRULcsN0OfG9pmsxsFwT9a2nHwANoCptHEBou7xIz9mb2IL6q3O2SM29K
+	RDLCxk/Yy7pXFOAg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xvaa7OU1;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="IpJmCaF/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762963014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MU0KYNfEXJCSQOiseOltKllEwRxMN9AqV6tFWCTlD6U=;
+	b=xvaa7OU1NsiOa+ULOWk+vKgTpY7hv37flEw8E2qIndk1vzdmev8YNIIg5BAQ8pETxQw3I5
+	V/nCr6xNfFW24bB6Gub0mz9ZRONdmCIrkt7N1Dx28NClXRzGeaUJf8HEW9l6Spql6fctFZ
+	kVvN+BE+OQyBhmytWcD6gJrxZOxb5P0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762963014;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MU0KYNfEXJCSQOiseOltKllEwRxMN9AqV6tFWCTlD6U=;
+	b=IpJmCaF/GuhHFKRULcsN0OfG9pmsxsFwT9a2nHwANoCptHEBou7xIz9mb2IL6q3O2SM29K
+	RDLCxk/Yy7pXFOAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37B2A3EA61;
+	Wed, 12 Nov 2025 15:56:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rhKUDUauFGloDAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 12 Nov 2025 15:56:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 5B00DA06F7; Wed, 12 Nov 2025 16:56:53 +0100 (CET)
+Date: Wed, 12 Nov 2025 16:56:53 +0100
+From: Jan Kara <jack@suse.cz>
+To: libaokun@huaweicloud.com
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	jack@suse.cz, linux-kernel@vger.kernel.org, kernel@pankajraghav.com, 
+	mcgrof@kernel.org, ebiggers@kernel.org, willy@infradead.org, yi.zhang@huawei.com, 
+	yangerkun@huawei.com, chengzhihao1@huawei.com, libaokun1@huawei.com
+Subject: Re: [PATCH v3 21/24] ext4: make data=journal support large block size
+Message-ID: <o7udqn5qfsay5kt4dlewtms23je65prmvqqlc6szbxtpke2v3f@bj2fnzdplnzn>
+References: <20251111142634.3301616-1-libaokun@huaweicloud.com>
+ <20251111142634.3301616-22-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:yQQGZQBH7CzTrhRp9F1wAA--.27113S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7XrWxCr48ZrWfAr15GF1ftFb_yoW3Jrc_Wa
-	9rAFW8Z34rtr1Skan2yr45KryFk348tr45Gr13Jr9xXa45ta1v9w1kA39xAFnxWFyayrZx
-	ZryrZry3CayrWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb-xFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-	1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-	w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMc
-	vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-	4I1lc7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6ryrMxAIw28IcxkI7VAKI48JMxC20s
-	026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-	JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-	v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
-	j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJV
-	W8JbIYCTnIWIevJa73UjIFyTuYvjfU8q2MUUUUU
-X-CM-SenderInfo: hwld0xrgsvqzpdlo2hxwvl0wxkxdhvlgxou0/1tbiAgQEAmkUKZu2VwABsv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251111142634.3301616-22-libaokun@huaweicloud.com>
+X-Rspamd-Queue-Id: 64F9F1F841
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -0.21
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.21 / 50.00];
+	SEM_URIBL(3.50)[huaweicloud.com:email];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	BAD_REP_POLICIES(0.10)[];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.cz:email,suse.cz:dkim,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	R_DKIM_ALLOW(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spamd-Bar: /
 
-Correct 'metdata' -> 'metadata' in comment.
+On Tue 11-11-25 22:26:31, libaokun@huaweicloud.com wrote:
+> From: Baokun Li <libaokun1@huawei.com>
+> 
+> Currently, ext4_set_inode_mapping_order() does not set max folio order
+> for files with the data journalling flag. For files that already have
+> large folios enabled, ext4_inode_journal_mode() ignores the data
+> journalling flag once max folio order is set.
+> 
+> This is not because data journalling cannot work with large folios, but
+> because credit estimates will go through the roof if there are too many
+> blocks per folio.
+> 
+> Since the real constraint is blocks-per-folio, to support data=journal
+> under LBS, we now set max folio order to be equal to min folio order for
+> files with the journalling flag. When LBS is disabled, the max folio order
+> remains unset as before.
+> 
+> Therefore, before ext4_change_inode_journal_flag() switches the journalling
+> mode, we call truncate_pagecache() to drop all page cache for that inode,
+> and filemap_write_and_wait() is called unconditionally.
+> 
+> After that, once the journalling mode has been switched, we can safely
+> reset the inode mapping order, and the mapping_large_folio_support() check
+> in ext4_inode_journal_mode() can be removed.
+> 
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Signed-off-by: Haodong Tian <tianhd25@mails.tsinghua.edu.cn>
----
- fs/ext4/balloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks good. Feel free to add:
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index c9329ed5c094..8040c731b3e4 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -752,7 +752,7 @@ ext4_fsblk_t ext4_new_meta_blocks(handle_t *handle, struct inode *inode,
- 		*count = ar.len;
- 	/*
- 	 * Account for the allocated meta blocks.  We will never
--	 * fail EDQUOT for metdata, but we do account for it.
-+	 * fail EDQUOT for metadata, but we do account for it.
- 	 */
- 	if (!(*errp) && (flags & EXT4_MB_DELALLOC_RESERVED)) {
- 		dquot_alloc_block_nofail(inode,
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/ext4_jbd2.c |  3 +--
+>  fs/ext4/inode.c     | 32 ++++++++++++++++++--------------
+>  2 files changed, 19 insertions(+), 16 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+> index a0e66bc10093..05e5946ed9b3 100644
+> --- a/fs/ext4/ext4_jbd2.c
+> +++ b/fs/ext4/ext4_jbd2.c
+> @@ -16,8 +16,7 @@ int ext4_inode_journal_mode(struct inode *inode)
+>  	    ext4_test_inode_flag(inode, EXT4_INODE_EA_INODE) ||
+>  	    test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
+>  	    (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA) &&
+> -	    !test_opt(inode->i_sb, DELALLOC) &&
+> -	    !mapping_large_folio_support(inode->i_mapping))) {
+> +	    !test_opt(inode->i_sb, DELALLOC))) {
+>  		/* We do not support data journalling for encrypted data */
+>  		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode))
+>  			return EXT4_INODE_ORDERED_DATA_MODE;  /* ordered */
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 22d215f90c64..613a989bf750 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5152,9 +5152,6 @@ static bool ext4_should_enable_large_folio(struct inode *inode)
+>  
+>  	if (!S_ISREG(inode->i_mode))
+>  		return false;
+> -	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
+> -	    ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
+> -		return false;
+>  	if (ext4_has_feature_verity(sb))
+>  		return false;
+>  	if (ext4_has_feature_encrypt(sb))
+> @@ -5172,12 +5169,20 @@ static bool ext4_should_enable_large_folio(struct inode *inode)
+>  		umin(MAX_PAGECACHE_ORDER, (11 + (i)->i_blkbits - PAGE_SHIFT))
+>  void ext4_set_inode_mapping_order(struct inode *inode)
+>  {
+> +	u32 max_order;
+> +
+>  	if (!ext4_should_enable_large_folio(inode))
+>  		return;
+>  
+> +	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
+> +	    ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
+> +		max_order = EXT4_SB(inode->i_sb)->s_min_folio_order;
+> +	else
+> +		max_order = EXT4_MAX_PAGECACHE_ORDER(inode);
+> +
+>  	mapping_set_folio_order_range(inode->i_mapping,
+>  				      EXT4_SB(inode->i_sb)->s_min_folio_order,
+> -				      EXT4_MAX_PAGECACHE_ORDER(inode));
+> +				      max_order);
+>  }
+>  
+>  struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+> @@ -6553,14 +6558,14 @@ int ext4_change_inode_journal_flag(struct inode *inode, int val)
+>  	 * dirty data which can be converted only after flushing the dirty
+>  	 * data (and journalled aops don't know how to handle these cases).
+>  	 */
+> -	if (val) {
+> -		filemap_invalidate_lock(inode->i_mapping);
+> -		err = filemap_write_and_wait(inode->i_mapping);
+> -		if (err < 0) {
+> -			filemap_invalidate_unlock(inode->i_mapping);
+> -			return err;
+> -		}
+> +	filemap_invalidate_lock(inode->i_mapping);
+> +	err = filemap_write_and_wait(inode->i_mapping);
+> +	if (err < 0) {
+> +		filemap_invalidate_unlock(inode->i_mapping);
+> +		return err;
+>  	}
+> +	/* Before switch the inode journalling mode evict all the page cache. */
+> +	truncate_pagecache(inode, 0);
+>  
+>  	alloc_ctx = ext4_writepages_down_write(inode->i_sb);
+>  	jbd2_journal_lock_updates(journal);
+> @@ -6585,12 +6590,11 @@ int ext4_change_inode_journal_flag(struct inode *inode, int val)
+>  		ext4_clear_inode_flag(inode, EXT4_INODE_JOURNAL_DATA);
+>  	}
+>  	ext4_set_aops(inode);
+> +	ext4_set_inode_mapping_order(inode);
+>  
+>  	jbd2_journal_unlock_updates(journal);
+>  	ext4_writepages_up_write(inode->i_sb, alloc_ctx);
+> -
+> -	if (val)
+> -		filemap_invalidate_unlock(inode->i_mapping);
+> +	filemap_invalidate_unlock(inode->i_mapping);
+>  
+>  	/* Finally we can mark the inode as dirty. */
+>  
+> -- 
+> 2.46.1
+> 
 -- 
-2.47.3
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
