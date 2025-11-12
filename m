@@ -1,55 +1,55 @@
-Return-Path: <linux-ext4+bounces-11797-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11798-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 482A5C5051A
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 03:19:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90950C505C7
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 03:49:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 772834E66D6
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 02:19:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 402933B2CB3
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 02:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43AC17B50A;
-	Wed, 12 Nov 2025 02:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0132BE7B8;
+	Wed, 12 Nov 2025 02:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="HdaiMBT6"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="M47v9p3D"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
+Received: from canpmsgout05.his.huawei.com (canpmsgout05.his.huawei.com [113.46.200.220])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B3E43AA6;
-	Wed, 12 Nov 2025 02:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57A022370D;
+	Wed, 12 Nov 2025 02:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762913956; cv=none; b=IBOYFtEUzi3D1UW3t2Rq0EtlenLz1Zt8mVyjw9CbSC57ovRdjrb4kDheLQdJSQwK/D+D1/2RoUFA0vJL2PgcPL/uqilRmc7oZaUcekSZPG+DYZ2/lDuZ+b5LuBeU2qlD+I0OsTbobYIkwLuyqcW8XZaHnk4g6fOL/A8vsgVwvCw=
+	t=1762915768; cv=none; b=AQBvC5wmRe2HkG1Z0etuNiz3qij+wuuxnnWTnDzP2sXhFd93638SIu3MOiYw6KzZYpDlKUaxtAyQgofRXAeUIPtYUwCcHu9UhE3VTAWLJ2yXFVbzcOUz06yiuuduePXisW9G5n7ec3bYLsNWpt5AgsrBLbpZW8w/PD+LbnnEWBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762913956; c=relaxed/simple;
-	bh=F8XxUIM3yIy+6z1yNTLw0RnKTrw4OdzsgB708h2dU5k=;
+	s=arc-20240116; t=1762915768; c=relaxed/simple;
+	bh=NfccugIYhndvBb+kuG2+eYbKWwIe8Xj4KA5yc2Be1WY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=K2LM/mETSyGYMm37Qn7++niMfBpbrr1Tx+LgrNcvK/woZeeN7JG3cRHKTno0DlwGB/r+br7mO8VFeqptwGldaaemsgqMkPqzP/n2TroBucr3dJFGN72xQLvpAGqGEHAP2dxB2DSYzmsieFXFBRpazYCxe+UDAyTlX8uUK1dUkD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=HdaiMBT6; arc=none smtp.client-ip=113.46.200.217
+	 In-Reply-To:Content-Type; b=SvSTevMCdEhMAw9vxqm0kMcKqbCmSKPC5fcCp5YW06lnrM3zETqRxvasj+zy/GUh4ukoEuloYlAszDpi84m5VOHNB5Zu5QbD9Va8Gn2pi/zr4oR5WmSfYsHbkGx8taCGoNOzjtfFGjfHkekiI73a7VI4KeJ8uPnQy6aUWkWvVEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=M47v9p3D; arc=none smtp.client-ip=113.46.200.220
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=erUVTco8o2+hBJGvs1apSs9kGKtkqV621pqBIW0ytZQ=;
-	b=HdaiMBT6EDnADITFKkJgS5J6D3dUMxPEQ7MXGTtp8xc+TjMfdjSxpM81renDgxNB49Sj7SaMK
-	qaojQkzge/HVfNSIzPQ44PZ3+y3lFcItf6inMFyyUHdxACoccAmyQFDnCETCY65f3nnsH/4c9FT
-	gK6+t8lZYf2LS+O0+EUqwHc=
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4d5n9C2hLGzcb01;
-	Wed, 12 Nov 2025 10:17:19 +0800 (CST)
+	bh=oomezv5sc04wZxicbFNiyan/N9zzELOXB6j+qKWz3nI=;
+	b=M47v9p3DYz6SuLAwyRe2U5uCRcQjpCEDcLI6Hnml1M/ZYva8DEIQcZOhkO71mHkqKu9qrnN5g
+	Xcpyrq02GQyhNtc897k60U9pNtZGAhRQ4UsxKvkoiNuwNlfwpq9I1B5oGXeXqov5Rk90o0QLldo
+	AZ8yFehvDstHJSQjMVuMSY0=
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4d5nrQ1qCrz12LCr;
+	Wed, 12 Nov 2025 10:47:50 +0800 (CST)
 Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 51386140258;
-	Wed, 12 Nov 2025 10:19:08 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id EB831180495;
+	Wed, 12 Nov 2025 10:49:21 +0800 (CST)
 Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
  (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 12 Nov
- 2025 10:19:07 +0800
-Message-ID: <44d3fbd7-1c53-4f94-a4c8-586873a47146@huawei.com>
-Date: Wed, 12 Nov 2025 10:19:06 +0800
+ 2025 10:49:20 +0800
+Message-ID: <cd2201c9-ff7f-4cfd-acfc-2bba265b3a29@huawei.com>
+Date: Wed, 12 Nov 2025 10:49:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,14 +64,14 @@ CC: <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
 	<linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
 	<mcgrof@kernel.org>, <ebiggers@kernel.org>, <willy@infradead.org>,
 	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-	Baokun Li <libaokun1@huawei.com>, Baokun Li <libaokun@huaweicloud.com>
+	<libaokun@huaweicloud.com>, Baokun Li <libaokun1@huawei.com>
 References: <20251107144249.435029-1-libaokun@huaweicloud.com>
  <20251111235452.GM2988753@mit.edu>
 From: Baokun Li <libaokun1@huawei.com>
 In-Reply-To: <20251111235452.GM2988753@mit.edu>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
  dggpemf500013.china.huawei.com (7.185.36.188)
 
 On 2025-11-12 07:54, Theodore Ts'o wrote:
@@ -121,7 +121,23 @@ On 2025-11-12 07:54, Theodore Ts'o wrote:
 > swapon: /vdc/swap: insecure permissions 0644, 0600 suggested.
 > swapon: /vdc/swap: swapon failed: Invalid argument
 > root@kvm-xfstests:~# 
->
+
+I checked the code of the swapon syscall in mm/swapfile.c, and currently
+the swapfile does not support LBS. Therefore, some failing test cases can
+be filtered out based on this.
+
+         /*
+          * The swap subsystem needs a major overhaul to support this.
+          * It doesn't work yet so just disable it for now.
+          */
+         if (mapping_min_folio_order(mapping) > 0) {
+                 error = -EINVAL;
+                 goto bad_swap_unlock_inode;
+         }
+
+Regards,
+Baokun
+
 > A number of the other tests (generic/493, generic/494, generic/495,
 > generic/496, generic/497, generic/554) are all swapfile tests.
 >
@@ -134,54 +150,5 @@ On 2025-11-12 07:54, Theodore Ts'o wrote:
 >
 > 					- Ted
 >
-I am using a slightly older version of xfstests, and when running the
-64k tests I also encountered similar failures. The cover letter stated
-"no Oops" for the 64k tests rather than "no new failures," meaning that
-some cases did fail, but no severe issues such as BUG_ON or softlock
-were observed.
-
-I had been traveling frequently and didn’t have time to analyze.
-In October, Pankaj asked about ext4 LBS progress and offered to help with
-testing/review once the patches were out, so I rebased the existing code
-and sent it out.
-
-The analysis of the failing cases has been ongoing, but it keeps getting
-interrupted by various high‑priority internal tasks. In the next few days
-I will make time to analyze the failing cases and optimize the checksum
-performance issues introduced by large blocks.
-
-Below are my previous 64k test results:
-
--------------------- Summary report
-KERNEL:    kernel 6.18.0-rc4-xfstests-00041-g13ad1f4f1378 #1007 SMP
-PREEMPT_DYNAMIC Tue Nov 11 16:55:01 CST 2025 x86_64
-CPUS:      2
-MEM:       7944.36
-
-ext4/64k: 563 tests, 20 failures, 81 skipped, 4992 seconds
-  Failures: ext4/033 ext4/048 generic/219 generic/251 generic/436
-    generic/472 generic/493 generic/494 generic/495 generic/496
-    generic/497 generic/554 generic/563 generic/569 generic/620
-    generic/636 generic/641 generic/643
-  Flaky: generic/320: 80% (4/5)   generic/347: 60% (3/5)
-Totals: 643 tests, 81 skipped, 97 failures, 0 errors, 4652s
-
-FSTESTVER: blktests 698f1a0 (Mon, 27 May 2024 11:30:36 +0900)
-FSTESTVER: fio  fio-3.28 (Wed, 8 Sep 2021 08:59:48 -0600)
-FSTESTVER: fsverity v1.6 (Wed, 20 Mar 2024 21:21:46 -0700)
-FSTESTVER: libaio   libaio-0.3.108-81-g1b18bfa (Mon, 28 Mar 2022 11:30:33
--0400)
-FSTESTVER: quota  v4.05-43-gd2256ac (Fri, 17 Sep 2021 14:04:16 +0200)
-FSTESTVER: xfsprogs v5.13.0 (Fri, 20 Aug 2021 12:03:57 -0400)
-FSTESTVER: xfstests-bld 1bdd10a-dirty (Fri, 3 May 2024 16:14:41 -0400)
-FSTESTVER: xfstests v2024.05.12 (Sun, 12 May 2024 20:28:48 +0800)
-FSTESTCFG: ext4/64k
-FSTESTSET: -g auto
-FSTESTOPT: aex
-Truncating test artifacts in /results to 31k
-
-
-Cheers,
-Baokun
 
 
