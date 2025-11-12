@@ -1,99 +1,228 @@
-Return-Path: <linux-ext4+bounces-11823-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11824-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E02DCC532E7
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 16:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BB38C53780
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 17:42:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E25B4219FE
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 15:32:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAB674A5EE2
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 15:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E419C33F8CF;
-	Wed, 12 Nov 2025 15:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="bVHixlYn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB03433F39D;
+	Wed, 12 Nov 2025 15:50:11 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C16A33B6E6
-	for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 15:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236E433F375
+	for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 15:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762961455; cv=none; b=M2eo7iajrFeu6GRCKamoMUnwseCK28xSyJtP2GDSuh0ssfyK1mGIeSGe6AAu5KShNRxLw4bpy91HXiU2KfQx7/GuRNGWcnS0RNxYxX1A01CkplJ7Goyz461aQE3nsBeA6wORYavzP0G24L71djAgQNUE9LFbubPfgJpFwr0Z0KU=
+	t=1762962611; cv=none; b=ugp3X/x71mCgXq7gSNRny6p/0jpOUJr+gVXucC0rsu/Qa6NrUIyxLYFCua4G39uro2eo2RCZR/NDYaekGjcU25ITnzrEBCK0KDdRMJx4Eyg0kSSTTiQVf5IL6ioK9aNC9SnxQA7TFP+fiF6JTSFZyZD0LTov7y9vPM0fTbtnvwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762961455; c=relaxed/simple;
-	bh=jti/WDC1KJeLUCxADdUS9GjNHsV+LzcXVJp+I1E5YvA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C1sYBQhNT6/7BLEWhzKy1wz76gPQOJdD6tkjgPhmWGVisVxyPVhR1ArlbXJ+uhzo12c897r9PjfAEAZfWNycqvJzQFXU1w5g9FBQo8ydI2hI2sb8XHbi5oCqXnlB8VWcZWY/xJbUUQ9Ik788++WDmyHvqpSe7THv7lmwFdI4qPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=bVHixlYn; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-200.bstnma.fios.verizon.net [173.48.82.200])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5ACFTXXi022626
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 12 Nov 2025 10:29:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1762961379; bh=fFEV1yEu0f2ULh0OpDxAMyYySFsuiDTjToDP1kfqcxE=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=bVHixlYnoXOntlmD86NN2BdGh+eHnNuVozQh1KtMaDTh8lG0lFAxzabpXEjHhf/Pb
-	 TF5YNFgPA4iGPyQaBJjd4wDdDZXlS4U/pQENXWH7uxKSzC/AJy6LoDKEwwHkA86HgX
-	 4P5Efgltsm5SE9Mze0T8fl3yiePumdgNXjCpDSF/Q49tYHu7vEOvMPRxU8PCBVT3KS
-	 vGKMcEXZMTMCSQnNL1Fzg1cl4LDqkAYOb4ncyoHN65IMJ3DDDV8R9wbSgpL/mE9jWi
-	 7t42GUyZczx5rSeDGCKG50K8Oxiyh9qMdNCbT//KVWm7AnmV2VMwMne43aXlhDsmj5
-	 k5XO7rEC02AWA==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 0A5342E00D9; Wed, 12 Nov 2025 10:29:33 -0500 (EST)
-Date: Wed, 12 Nov 2025 10:29:33 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        linux-kernel@vger.kernel.org, kernel@pankajraghav.com,
-        mcgrof@kernel.org, ebiggers@kernel.org, willy@infradead.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
-        Baokun Li <libaokun@huaweicloud.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v2 00/24] ext4: enable block size larger than page size
-Message-ID: <20251112152933.GC3131573@mit.edu>
-References: <20251112040220.GO2988753@mit.edu>
- <21efa577-a577-48ce-a82b-bce446539fba@huawei.com>
+	s=arc-20240116; t=1762962611; c=relaxed/simple;
+	bh=06stUVdVrCwvUplAh76gT2K++oQBpkVUJo5TM4Bsguw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=PZRTwNkviiMzQCqkFuWyNDOl62jDCij4HLsWkWaUexQlLVOU5JriEKScm+bJEapGDKgFUwxUJowD/YYwvBxybK6PGXUGZuISfQgPZOzgChum5tr25KdGoWbebebIL71dDbm7A79xm+ujLhnNn9egsEGlotu18xQYB5VSmKUl1Uo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-433199c7fb4so8927135ab.3
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 07:50:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762962608; x=1763567408;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3zTsXzAL2O8FBHRHQuZTZdGfLgKf82AqMuTf8WBrX6k=;
+        b=aqC4pGd4i1aym3TefXA49Fshaym4Vh0SClowUbxgLwyv2pWAC16OmMJ/IfFIx8CPuk
+         uLETwtKFWz1WHQuDegESYsy8nOva+/hNPUp+KyLVAh8n/g75uYW9qGQjSYvtm6Fy5/Mu
+         GEzPU4s0w8FJD+IHtxv3ohBj2sKaGqKAUIM2TVIZjJzIMK71pbptkskwMRlunjF5fM0c
+         LCuJ96Czc8j7GKnCLF6OXO36f9ZUZuoe031i6+vk5QlGaar1VG7jrzuvXNTO2DC7NNqO
+         2nqJSiKiT7Q8MRNEEXOfbrzs4VVN2oD2+GedyI77npXW4XYlEfZT2Hr2hUAiHA+UN83C
+         DA9A==
+X-Forwarded-Encrypted: i=1; AJvYcCUDGmQnnyn9AqWy+Bez8uHA7dU8B1FSLMe93b38B5GWCibfHxXpuapS73VmZK5ACjJrjxOx6SxP/anD@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxgy4n9gyYVITLZHQviWTu2QFlJSdSv1EOUXvIMIevHKcDrDGEy
+	uPHBdgwOfT7DF4ORrov7OPDS11BZ1fVNenmnFMykRnOc0vU18EGwA18MUA/VYRLAhPXfwVrBWS+
+	YceAE2B4ekGByoVKqe8kVNlogwheqRdtJSrZSdrxnxmwFa/17hyFqOmvwq+w=
+X-Google-Smtp-Source: AGHT+IHmXHfyTAC7o3gX451a5IIahr28v38z8/NoQnIggiwkPwHCChNJsSaHf6XMCJZzy1ZplwASB2f9wVZN0PHDzjagie+boMEe
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <21efa577-a577-48ce-a82b-bce446539fba@huawei.com>
+X-Received: by 2002:a05:6e02:3521:b0:433:481d:fd61 with SMTP id
+ e9e14a558f8ab-43473d92995mr43099555ab.18.1762962608328; Wed, 12 Nov 2025
+ 07:50:08 -0800 (PST)
+Date: Wed, 12 Nov 2025 07:50:08 -0800
+In-Reply-To: <cover.1762945505.git.ojaswin@linux.ibm.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6914acb0.050a0220.3565dc.0004.GAE@google.com>
+Subject: [syzbot ci] Re: xfs: single block atomic writes for buffered IO
+From: syzbot ci <syzbot+cie14707853a77f22b@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, dchinner@redhat.com, 
+	djwong@kernel.org, hch@lst.de, jack@suse.cz, john.g.garry@oracle.com, 
+	linux-block@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, martin.petersen@oracle.com, nilay@linux.ibm.com, 
+	ojaswin@linux.ibm.com, ritesh.list@gmail.com, rostedt@goodmis.org, 
+	tytso@mit.edu, willy@infradead.org
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Nov 12, 2025 at 02:27:19PM +0800, Baokun Li wrote:
-> Darrick’s reply in another thread has already made a similar change,
-> so we can apply that patch first for testing.
+syzbot ci has tested the following series
 
-I'll give that a try when I have a chance.  For now, here's a test run
-using a version of my test appliance which excludes the way group for
-the config ext4/lbs, and which has a modified e2fsprogs (built from
-the latest e2fsprogs git repo) which suppresses both warnings when
-using large block sizes if the kernel has the blocksize_gt_pagesize
-feature detected.
+[v1] xfs: single block atomic writes for buffered IO
+https://lore.kernel.org/all/cover.1762945505.git.ojaswin@linux.ibm.com
+* [RFC PATCH 1/8] fs: Rename STATX{_ATTR}_WRITE_ATOMIC -> STATX{_ATTR}_WRITE_ATOMIC_DIO
+* [RFC PATCH 2/8] mm: Add PG_atomic
+* [RFC PATCH 3/8] fs: Add initial buffered atomic write support info to statx
+* [RFC PATCH 4/8] iomap: buffered atomic write support
+* [RFC PATCH 5/8] iomap: pin pages for RWF_ATOMIC buffered write
+* [RFC PATCH 6/8] xfs: Report atomic write min and max for buf io as well
+* [RFC PATCH 7/8] iomap: Add bs<ps buffered atomic writes support
+* [RFC PATCH 8/8] xfs: Lift the bs == ps restriction for HW buffered atomic writes
 
-ext4/lbs: 595 tests, 6 failures, 101 skipped, 6656 seconds
-  Failures: ext4/033 generic/620 generic/759 generic/760
-  Flaky: generic/251: 60% (3/5)   generic/645: 40% (2/5)
-Totals: 619 tests, 101 skipped, 25 failures, 0 errors, 6291s
+and found the following issue:
+KASAN: slab-out-of-bounds Read in __bitmap_clear
 
-Fixing all of these filures is not a blocker for getting this patchset
-upstream, but it would be nice for us to figure out the root cause for
-them, so we can decide whether it's better to exclude the tests for
-now, or whether there's an easy fix.
+Full report is available here:
+https://ci.syzbot.org/series/430a088a-50e2-46d3-87ff-a1f0fa67b66c
 
-Thanks,
+***
 
-					- Ted
+KASAN: slab-out-of-bounds Read in __bitmap_clear
+
+tree:      linux-next
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next
+base:      ab40c92c74c6b0c611c89516794502b3a3173966
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/02d3e137-5d7e-4c95-8f32-43b8663d95df/config
+C repro:   https://ci.syzbot.org/findings/92a3582f-40a6-4936-8fcd-dc55c447a432/c_repro
+syz repro: https://ci.syzbot.org/findings/92a3582f-40a6-4936-8fcd-dc55c447a432/syz_repro
+
+==================================================================
+BUG: KASAN: slab-out-of-bounds in __bitmap_clear+0x155/0x180 lib/bitmap.c:395
+Read of size 8 at addr ffff88816ced7cd0 by task kworker/0:1/10
+
+CPU: 0 UID: 0 PID: 10 Comm: kworker/0:1 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Workqueue: xfs-conv/loop0 xfs_end_io
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:378 [inline]
+ print_report+0xca/0x240 mm/kasan/report.c:482
+ kasan_report+0x118/0x150 mm/kasan/report.c:595
+ __bitmap_clear+0x155/0x180 lib/bitmap.c:395
+ bitmap_clear include/linux/bitmap.h:496 [inline]
+ ifs_clear_range_atomic fs/iomap/buffered-io.c:241 [inline]
+ iomap_clear_range_atomic+0x25c/0x630 fs/iomap/buffered-io.c:268
+ iomap_finish_folio_write+0x2f0/0x410 fs/iomap/buffered-io.c:1971
+ iomap_finish_ioend_buffered+0x223/0x5e0 fs/iomap/ioend.c:58
+ iomap_finish_ioends+0x116/0x2b0 fs/iomap/ioend.c:295
+ xfs_end_ioend+0x50b/0x690 fs/xfs/xfs_aops.c:168
+ xfs_end_io+0x253/0x2d0 fs/xfs/xfs_aops.c:205
+ process_one_work+0x94a/0x15d0 kernel/workqueue.c:3267
+ process_scheduled_works kernel/workqueue.c:3350 [inline]
+ worker_thread+0x9b0/0xee0 kernel/workqueue.c:3431
+ kthread+0x711/0x8a0 kernel/kthread.c:463
+ ret_from_fork+0x599/0xb30 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+Allocated by task 5952:
+ kasan_save_stack mm/kasan/common.c:56 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:77
+ poison_kmalloc_redzone mm/kasan/common.c:397 [inline]
+ __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:414
+ kasan_kmalloc include/linux/kasan.h:262 [inline]
+ __do_kmalloc_node mm/slub.c:5672 [inline]
+ __kmalloc_noprof+0x41d/0x800 mm/slub.c:5684
+ kmalloc_noprof include/linux/slab.h:961 [inline]
+ kzalloc_noprof include/linux/slab.h:1094 [inline]
+ ifs_alloc+0x1e4/0x530 fs/iomap/buffered-io.c:356
+ iomap_writeback_folio+0x81c/0x26a0 fs/iomap/buffered-io.c:2084
+ iomap_writepages+0x162/0x2d0 fs/iomap/buffered-io.c:2168
+ xfs_vm_writepages+0x28a/0x300 fs/xfs/xfs_aops.c:701
+ do_writepages+0x32e/0x550 mm/page-writeback.c:2598
+ filemap_writeback mm/filemap.c:387 [inline]
+ filemap_fdatawrite_range mm/filemap.c:412 [inline]
+ file_write_and_wait_range+0x23e/0x340 mm/filemap.c:786
+ xfs_file_fsync+0x195/0x800 fs/xfs/xfs_file.c:137
+ generic_write_sync include/linux/fs.h:2639 [inline]
+ xfs_file_buffered_write+0x723/0x8a0 fs/xfs/xfs_file.c:1015
+ do_iter_readv_writev+0x623/0x8c0 fs/read_write.c:-1
+ vfs_writev+0x31a/0x960 fs/read_write.c:1057
+ do_pwritev fs/read_write.c:1153 [inline]
+ __do_sys_pwritev2 fs/read_write.c:1211 [inline]
+ __se_sys_pwritev2+0x179/0x290 fs/read_write.c:1202
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff88816ced7c80
+ which belongs to the cache kmalloc-96 of size 96
+The buggy address is located 0 bytes to the right of
+ allocated 80-byte region [ffff88816ced7c80, ffff88816ced7cd0)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x16ced7
+flags: 0x57ff00000000000(node=1|zone=2|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 057ff00000000000 ffff888100041280 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000080200020 00000000f5000000 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x252800(GFP_NOWAIT|__GFP_NORETRY|__GFP_COMP|__GFP_THISNODE), pid 1, tgid 1 (swapper/0), ts 12041529441, free_ts 0
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1851
+ prep_new_page mm/page_alloc.c:1859 [inline]
+ get_page_from_freelist+0x2365/0x2440 mm/page_alloc.c:3920
+ __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:5209
+ alloc_slab_page mm/slub.c:3086 [inline]
+ allocate_slab+0x71/0x350 mm/slub.c:3257
+ new_slab mm/slub.c:3311 [inline]
+ ___slab_alloc+0xf56/0x1990 mm/slub.c:4671
+ __slab_alloc+0x65/0x100 mm/slub.c:4794
+ __slab_alloc_node mm/slub.c:4870 [inline]
+ slab_alloc_node mm/slub.c:5266 [inline]
+ __kmalloc_cache_node_noprof+0x4b7/0x6f0 mm/slub.c:5799
+ kmalloc_node_noprof include/linux/slab.h:983 [inline]
+ alloc_node_nr_active kernel/workqueue.c:4908 [inline]
+ __alloc_workqueue+0x6a9/0x1b80 kernel/workqueue.c:5762
+ alloc_workqueue_noprof+0xd4/0x210 kernel/workqueue.c:5822
+ nbd_dev_add+0x4f1/0xae0 drivers/block/nbd.c:1961
+ nbd_init+0x168/0x1f0 drivers/block/nbd.c:2691
+ do_one_initcall+0x25a/0x860 init/main.c:1378
+ do_initcall_level+0x104/0x190 init/main.c:1440
+ do_initcalls+0x59/0xa0 init/main.c:1456
+ kernel_init_freeable+0x334/0x4b0 init/main.c:1688
+ kernel_init+0x1d/0x1d0 init/main.c:1578
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff88816ced7b80: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+ ffff88816ced7c00: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+>ffff88816ced7c80: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+                                                 ^
+ ffff88816ced7d00: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+ ffff88816ced7d80: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+==================================================================
+
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
