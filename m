@@ -1,228 +1,83 @@
-Return-Path: <linux-ext4+bounces-11824-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11825-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB38C53780
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 17:42:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B670C534F7
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 17:13:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAB674A5EE2
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 15:54:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B38A5048EB
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 15:58:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB03433F39D;
-	Wed, 12 Nov 2025 15:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BCB3342CB2;
+	Wed, 12 Nov 2025 15:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MI7on72x"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236E433F375
-	for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 15:50:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02D113396E5;
+	Wed, 12 Nov 2025 15:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762962611; cv=none; b=ugp3X/x71mCgXq7gSNRny6p/0jpOUJr+gVXucC0rsu/Qa6NrUIyxLYFCua4G39uro2eo2RCZR/NDYaekGjcU25ITnzrEBCK0KDdRMJx4Eyg0kSSTTiQVf5IL6ioK9aNC9SnxQA7TFP+fiF6JTSFZyZD0LTov7y9vPM0fTbtnvwE=
+	t=1762962991; cv=none; b=jkOUVsfUvP8NR1AcDTZhE/5N/ZxJZVZoBInDe7cwFrUempSeISsRqymQhfy2t9xVvmwcW5A52knhngOyP3DzkVU+udWD/0USg9saHx4vBSpnAPPImRAgjBeIbT1AI+UN9B9Wl2QAJ5lo3a7tWENFaUkVu6PfpPVL0/2d/bfUbl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762962611; c=relaxed/simple;
-	bh=06stUVdVrCwvUplAh76gT2K++oQBpkVUJo5TM4Bsguw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=PZRTwNkviiMzQCqkFuWyNDOl62jDCij4HLsWkWaUexQlLVOU5JriEKScm+bJEapGDKgFUwxUJowD/YYwvBxybK6PGXUGZuISfQgPZOzgChum5tr25KdGoWbebebIL71dDbm7A79xm+ujLhnNn9egsEGlotu18xQYB5VSmKUl1Uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-433199c7fb4so8927135ab.3
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 07:50:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762962608; x=1763567408;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3zTsXzAL2O8FBHRHQuZTZdGfLgKf82AqMuTf8WBrX6k=;
-        b=aqC4pGd4i1aym3TefXA49Fshaym4Vh0SClowUbxgLwyv2pWAC16OmMJ/IfFIx8CPuk
-         uLETwtKFWz1WHQuDegESYsy8nOva+/hNPUp+KyLVAh8n/g75uYW9qGQjSYvtm6Fy5/Mu
-         GEzPU4s0w8FJD+IHtxv3ohBj2sKaGqKAUIM2TVIZjJzIMK71pbptkskwMRlunjF5fM0c
-         LCuJ96Czc8j7GKnCLF6OXO36f9ZUZuoe031i6+vk5QlGaar1VG7jrzuvXNTO2DC7NNqO
-         2nqJSiKiT7Q8MRNEEXOfbrzs4VVN2oD2+GedyI77npXW4XYlEfZT2Hr2hUAiHA+UN83C
-         DA9A==
-X-Forwarded-Encrypted: i=1; AJvYcCUDGmQnnyn9AqWy+Bez8uHA7dU8B1FSLMe93b38B5GWCibfHxXpuapS73VmZK5ACjJrjxOx6SxP/anD@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxgy4n9gyYVITLZHQviWTu2QFlJSdSv1EOUXvIMIevHKcDrDGEy
-	uPHBdgwOfT7DF4ORrov7OPDS11BZ1fVNenmnFMykRnOc0vU18EGwA18MUA/VYRLAhPXfwVrBWS+
-	YceAE2B4ekGByoVKqe8kVNlogwheqRdtJSrZSdrxnxmwFa/17hyFqOmvwq+w=
-X-Google-Smtp-Source: AGHT+IHmXHfyTAC7o3gX451a5IIahr28v38z8/NoQnIggiwkPwHCChNJsSaHf6XMCJZzy1ZplwASB2f9wVZN0PHDzjagie+boMEe
+	s=arc-20240116; t=1762962991; c=relaxed/simple;
+	bh=uLDieheKOzLy4GDpWlq07ziKepek+0aifH9IiDXeUXE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KeLwRADB4okkxMOWQzKQZcD2kjjzjfHUgiI1NqY0M9Xsh2y2c5w/5kP0FOfGgsAcV7lQv4rVpunZKiJ7gzbQiZ7O5JL9iqAncv4x/h33v2GfPG9OXM1srhIK33y/aEOe2cS5tEiH23a+B+aFJTjfBBACAgRoLZj7cJneLfHwiZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MI7on72x; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=unTZnhIKbo/kPjktubhrqmYbcE5u2DsI4RiHT1r059I=; b=MI7on72xw2kf/B0fnp/Td1CmSV
+	cU9dbT/g+mZGa1UNpCIHupjk46WxBL+uRHMUEeWxwLRSkXz17Be9Hne9VcX6KQdww6djkwn9ioHUy
+	aH17QCGTqVUWDLtpdaZdhL2ibY70RahsDhZ47uDJKzVCKDXDHtAIkciT+X+oZPq2xGTQKnUjSXAt9
+	XcJ5YUbQ5SdLn0wYzI1hCu+1eqmst/T2SVkPRcnqOc56dc7Cpc1aK9cytD0hdTWtwVmewWHNt5GAY
+	CqXjbe2HM5IMYV/N8UWZhtq+Jn4qR3w4265TBNhvAI2OMRzWsEptBnvVN11hXrCNrX7VeS64P/vMI
+	ednyePxw==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vJDCh-000000068nw-2KVV;
+	Wed, 12 Nov 2025 15:56:15 +0000
+Date: Wed, 12 Nov 2025 15:56:15 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: Christian Brauner <brauner@kernel.org>, djwong@kernel.org,
+	ritesh.list@gmail.com, john.g.garry@oracle.com, tytso@mit.edu,
+	dchinner@redhat.com, hch@lst.de, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, jack@suse.cz,
+	nilay@linux.ibm.com, martin.petersen@oracle.com,
+	rostedt@goodmis.org, axboe@kernel.dk, linux-block@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/8] mm: Add PG_atomic
+Message-ID: <aRSuH82gM-8BzPCU@casper.infradead.org>
+References: <cover.1762945505.git.ojaswin@linux.ibm.com>
+ <5f0a7c62a3c787f2011ada10abe3826a94f99e17.1762945505.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3521:b0:433:481d:fd61 with SMTP id
- e9e14a558f8ab-43473d92995mr43099555ab.18.1762962608328; Wed, 12 Nov 2025
- 07:50:08 -0800 (PST)
-Date: Wed, 12 Nov 2025 07:50:08 -0800
-In-Reply-To: <cover.1762945505.git.ojaswin@linux.ibm.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6914acb0.050a0220.3565dc.0004.GAE@google.com>
-Subject: [syzbot ci] Re: xfs: single block atomic writes for buffered IO
-From: syzbot ci <syzbot+cie14707853a77f22b@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, dchinner@redhat.com, 
-	djwong@kernel.org, hch@lst.de, jack@suse.cz, john.g.garry@oracle.com, 
-	linux-block@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, martin.petersen@oracle.com, nilay@linux.ibm.com, 
-	ojaswin@linux.ibm.com, ritesh.list@gmail.com, rostedt@goodmis.org, 
-	tytso@mit.edu, willy@infradead.org
-Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f0a7c62a3c787f2011ada10abe3826a94f99e17.1762945505.git.ojaswin@linux.ibm.com>
 
-syzbot ci has tested the following series
+On Wed, Nov 12, 2025 at 04:36:05PM +0530, Ojaswin Mujoo wrote:
+> From: John Garry <john.g.garry@oracle.com>
+> 
+> Add page flag PG_atomic, meaning that a folio needs to be written back
+> atomically. This will be used by for handling RWF_ATOMIC buffered IO
+> in upcoming patches.
 
-[v1] xfs: single block atomic writes for buffered IO
-https://lore.kernel.org/all/cover.1762945505.git.ojaswin@linux.ibm.com
-* [RFC PATCH 1/8] fs: Rename STATX{_ATTR}_WRITE_ATOMIC -> STATX{_ATTR}_WRITE_ATOMIC_DIO
-* [RFC PATCH 2/8] mm: Add PG_atomic
-* [RFC PATCH 3/8] fs: Add initial buffered atomic write support info to statx
-* [RFC PATCH 4/8] iomap: buffered atomic write support
-* [RFC PATCH 5/8] iomap: pin pages for RWF_ATOMIC buffered write
-* [RFC PATCH 6/8] xfs: Report atomic write min and max for buf io as well
-* [RFC PATCH 7/8] iomap: Add bs<ps buffered atomic writes support
-* [RFC PATCH 8/8] xfs: Lift the bs == ps restriction for HW buffered atomic writes
-
-and found the following issue:
-KASAN: slab-out-of-bounds Read in __bitmap_clear
-
-Full report is available here:
-https://ci.syzbot.org/series/430a088a-50e2-46d3-87ff-a1f0fa67b66c
-
-***
-
-KASAN: slab-out-of-bounds Read in __bitmap_clear
-
-tree:      linux-next
-URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next
-base:      ab40c92c74c6b0c611c89516794502b3a3173966
-arch:      amd64
-compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-config:    https://ci.syzbot.org/builds/02d3e137-5d7e-4c95-8f32-43b8663d95df/config
-C repro:   https://ci.syzbot.org/findings/92a3582f-40a6-4936-8fcd-dc55c447a432/c_repro
-syz repro: https://ci.syzbot.org/findings/92a3582f-40a6-4936-8fcd-dc55c447a432/syz_repro
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in __bitmap_clear+0x155/0x180 lib/bitmap.c:395
-Read of size 8 at addr ffff88816ced7cd0 by task kworker/0:1/10
-
-CPU: 0 UID: 0 PID: 10 Comm: kworker/0:1 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Workqueue: xfs-conv/loop0 xfs_end_io
-Call Trace:
- <TASK>
- dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:378 [inline]
- print_report+0xca/0x240 mm/kasan/report.c:482
- kasan_report+0x118/0x150 mm/kasan/report.c:595
- __bitmap_clear+0x155/0x180 lib/bitmap.c:395
- bitmap_clear include/linux/bitmap.h:496 [inline]
- ifs_clear_range_atomic fs/iomap/buffered-io.c:241 [inline]
- iomap_clear_range_atomic+0x25c/0x630 fs/iomap/buffered-io.c:268
- iomap_finish_folio_write+0x2f0/0x410 fs/iomap/buffered-io.c:1971
- iomap_finish_ioend_buffered+0x223/0x5e0 fs/iomap/ioend.c:58
- iomap_finish_ioends+0x116/0x2b0 fs/iomap/ioend.c:295
- xfs_end_ioend+0x50b/0x690 fs/xfs/xfs_aops.c:168
- xfs_end_io+0x253/0x2d0 fs/xfs/xfs_aops.c:205
- process_one_work+0x94a/0x15d0 kernel/workqueue.c:3267
- process_scheduled_works kernel/workqueue.c:3350 [inline]
- worker_thread+0x9b0/0xee0 kernel/workqueue.c:3431
- kthread+0x711/0x8a0 kernel/kthread.c:463
- ret_from_fork+0x599/0xb30 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-
-Allocated by task 5952:
- kasan_save_stack mm/kasan/common.c:56 [inline]
- kasan_save_track+0x3e/0x80 mm/kasan/common.c:77
- poison_kmalloc_redzone mm/kasan/common.c:397 [inline]
- __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:414
- kasan_kmalloc include/linux/kasan.h:262 [inline]
- __do_kmalloc_node mm/slub.c:5672 [inline]
- __kmalloc_noprof+0x41d/0x800 mm/slub.c:5684
- kmalloc_noprof include/linux/slab.h:961 [inline]
- kzalloc_noprof include/linux/slab.h:1094 [inline]
- ifs_alloc+0x1e4/0x530 fs/iomap/buffered-io.c:356
- iomap_writeback_folio+0x81c/0x26a0 fs/iomap/buffered-io.c:2084
- iomap_writepages+0x162/0x2d0 fs/iomap/buffered-io.c:2168
- xfs_vm_writepages+0x28a/0x300 fs/xfs/xfs_aops.c:701
- do_writepages+0x32e/0x550 mm/page-writeback.c:2598
- filemap_writeback mm/filemap.c:387 [inline]
- filemap_fdatawrite_range mm/filemap.c:412 [inline]
- file_write_and_wait_range+0x23e/0x340 mm/filemap.c:786
- xfs_file_fsync+0x195/0x800 fs/xfs/xfs_file.c:137
- generic_write_sync include/linux/fs.h:2639 [inline]
- xfs_file_buffered_write+0x723/0x8a0 fs/xfs/xfs_file.c:1015
- do_iter_readv_writev+0x623/0x8c0 fs/read_write.c:-1
- vfs_writev+0x31a/0x960 fs/read_write.c:1057
- do_pwritev fs/read_write.c:1153 [inline]
- __do_sys_pwritev2 fs/read_write.c:1211 [inline]
- __se_sys_pwritev2+0x179/0x290 fs/read_write.c:1202
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-The buggy address belongs to the object at ffff88816ced7c80
- which belongs to the cache kmalloc-96 of size 96
-The buggy address is located 0 bytes to the right of
- allocated 80-byte region [ffff88816ced7c80, ffff88816ced7cd0)
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x16ced7
-flags: 0x57ff00000000000(node=1|zone=2|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 057ff00000000000 ffff888100041280 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000080200020 00000000f5000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x252800(GFP_NOWAIT|__GFP_NORETRY|__GFP_COMP|__GFP_THISNODE), pid 1, tgid 1 (swapper/0), ts 12041529441, free_ts 0
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1851
- prep_new_page mm/page_alloc.c:1859 [inline]
- get_page_from_freelist+0x2365/0x2440 mm/page_alloc.c:3920
- __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:5209
- alloc_slab_page mm/slub.c:3086 [inline]
- allocate_slab+0x71/0x350 mm/slub.c:3257
- new_slab mm/slub.c:3311 [inline]
- ___slab_alloc+0xf56/0x1990 mm/slub.c:4671
- __slab_alloc+0x65/0x100 mm/slub.c:4794
- __slab_alloc_node mm/slub.c:4870 [inline]
- slab_alloc_node mm/slub.c:5266 [inline]
- __kmalloc_cache_node_noprof+0x4b7/0x6f0 mm/slub.c:5799
- kmalloc_node_noprof include/linux/slab.h:983 [inline]
- alloc_node_nr_active kernel/workqueue.c:4908 [inline]
- __alloc_workqueue+0x6a9/0x1b80 kernel/workqueue.c:5762
- alloc_workqueue_noprof+0xd4/0x210 kernel/workqueue.c:5822
- nbd_dev_add+0x4f1/0xae0 drivers/block/nbd.c:1961
- nbd_init+0x168/0x1f0 drivers/block/nbd.c:2691
- do_one_initcall+0x25a/0x860 init/main.c:1378
- do_initcall_level+0x104/0x190 init/main.c:1440
- do_initcalls+0x59/0xa0 init/main.c:1456
- kernel_init_freeable+0x334/0x4b0 init/main.c:1688
- kernel_init+0x1d/0x1d0 init/main.c:1578
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff88816ced7b80: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
- ffff88816ced7c00: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
->ffff88816ced7c80: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
-                                                 ^
- ffff88816ced7d00: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
- ffff88816ced7d80: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
-==================================================================
-
-
-***
-
-If these findings have caused you to resend the series or submit a
-separate fix, please add the following tag to your commit message:
-  Tested-by: syzbot@syzkaller.appspotmail.com
-
----
-This report is generated by a bot. It may contain errors.
-syzbot ci engineers can be reached at syzkaller@googlegroups.com.
+Page flags are a precious resource.  I'm not thrilled about allocating one
+to this rather niche usecase.  Wouldn't this be more aptly a flag on the
+address_space rather than the folio?  ie if we're doing this kind of write
+to a file, aren't most/all of the writes to the file going to be atomic?
 
