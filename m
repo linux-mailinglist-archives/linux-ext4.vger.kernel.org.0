@@ -1,191 +1,100 @@
-Return-Path: <linux-ext4+bounces-11827-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11828-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09E7BC534E2
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 17:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C66C538FC
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 18:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 56B475661BB
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 15:59:13 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A5A15547207
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Nov 2025 16:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE0E3385BE;
-	Wed, 12 Nov 2025 15:57:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB0E309EE9;
+	Wed, 12 Nov 2025 15:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JC/2mvv7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AtVOsWKT";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JC/2mvv7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AtVOsWKT"
+	dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b="c9+bFVhd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E3F27E7EC
-	for <linux-ext4@vger.kernel.org>; Wed, 12 Nov 2025 15:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [13.76.142.27])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA6D1339A4;
+	Wed, 12 Nov 2025 15:59:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.76.142.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762963058; cv=none; b=EGgY+M/blYk/XlEeQLKtJd2h/sBnzUaOsrkabEKWDx5xm5fPbSvyU7vxQd5KwalTDdvCp73djA+FR/s5RSaS0q+x+lmhPesJTFNiROpXukN1bJwV4ECz2etZYFj7/wXZvfNqQE+6XD3rXDjrloakRAck0/AOk/pLR6uIDLTxsqw=
+	t=1762963175; cv=none; b=OLt8wcFRDPv5F6DuZJDdhEQ2TqlIkN0/+D4Zb7N543j0HFlwdoamd+FAZmP8g2cw8HEBv678fRf6WSYpYSfCGVX7KjU4dXuzudFbLoeFW9d8h6XOcyGTg+pCv8Ig7OxYFMvDDHq2/ZRcdokBOyIh7whM155DfxyWwUvnTu4vFuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762963058; c=relaxed/simple;
-	bh=8IfGrcNDfjAXTmVInxj0ypQxDSqSAByraKqszCASrWw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ayKjC4W7qLBtB707KcWghAjG+4HKzH2/z43hhPI04soyMF+w+g5XDf/6jkUhFZa6prPseYWrKgssiSzjMwI07MBsyadY62bhdlZjp0nWqVO7KVSkwfaCTMmxIXpYy+sSs+sZWogc68U/RpKAN3MrI7eO8sF5jeT0Yo0sNjmXS7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JC/2mvv7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AtVOsWKT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JC/2mvv7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AtVOsWKT; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3A6681F7EC;
-	Wed, 12 Nov 2025 15:57:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762963055; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OlmEZwH04UfCIRcxPM58fl4ppWhMTD09ZsyALxO8U54=;
-	b=JC/2mvv7RwK54GCW7dqWPAc8n7tVcbcQqbITh8MJppE07j52YINnsbD2JqAfeyLkyWeIOj
-	Afw4LYJj/K2DykfjhVpDcI/mewwZVxuZ15ep29Tm0AQDb2IZdkO6xoN/0xOtliLTmoA/02
-	pp2lmXiFQgLJ0aS+upPUGHVv8vmnvQs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762963055;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OlmEZwH04UfCIRcxPM58fl4ppWhMTD09ZsyALxO8U54=;
-	b=AtVOsWKTdkHo2bgCV5byVLDXr3xeYpsuJgt2W8tmXBjTOEZ6Bjb0sRn2xHPiYuMZTA4+jo
-	n+OncV322rpMc2Aw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="JC/2mvv7";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=AtVOsWKT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762963055; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OlmEZwH04UfCIRcxPM58fl4ppWhMTD09ZsyALxO8U54=;
-	b=JC/2mvv7RwK54GCW7dqWPAc8n7tVcbcQqbITh8MJppE07j52YINnsbD2JqAfeyLkyWeIOj
-	Afw4LYJj/K2DykfjhVpDcI/mewwZVxuZ15ep29Tm0AQDb2IZdkO6xoN/0xOtliLTmoA/02
-	pp2lmXiFQgLJ0aS+upPUGHVv8vmnvQs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762963055;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OlmEZwH04UfCIRcxPM58fl4ppWhMTD09ZsyALxO8U54=;
-	b=AtVOsWKTdkHo2bgCV5byVLDXr3xeYpsuJgt2W8tmXBjTOEZ6Bjb0sRn2xHPiYuMZTA4+jo
-	n+OncV322rpMc2Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1D2A63EA61;
-	Wed, 12 Nov 2025 15:57:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id F6gYB2+uFGnaDAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 12 Nov 2025 15:57:35 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id AE06EA06F7; Wed, 12 Nov 2025 16:57:34 +0100 (CET)
-Date: Wed, 12 Nov 2025 16:57:34 +0100
-From: Jan Kara <jack@suse.cz>
-To: libaokun@huaweicloud.com
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	jack@suse.cz, linux-kernel@vger.kernel.org, kernel@pankajraghav.com, 
-	mcgrof@kernel.org, ebiggers@kernel.org, willy@infradead.org, yi.zhang@huawei.com, 
-	yangerkun@huawei.com, chengzhihao1@huawei.com, libaokun1@huawei.com
-Subject: Re: [PATCH v3 22/24] ext4: support verifying data from large folios
- with fs-verity
-Message-ID: <bs3vcttp6r7bmdrwo45rx2kn2zlqmnjyeiqdmr4dlda7ti3u6v@hkv5pnk4jmew>
-References: <20251111142634.3301616-1-libaokun@huaweicloud.com>
- <20251111142634.3301616-23-libaokun@huaweicloud.com>
+	s=arc-20240116; t=1762963175; c=relaxed/simple;
+	bh=PsjPaE4lZoLTPqrzivsYPbw6hTDiG4sJvFzbGnjYUwY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V2EzpW6ru8DOjk5bIM/Des8oqZjP6CuEPnDpH23lfFIe3x6lc/qAnukX7uBDsTLO5PTxFL6uycYbzXqneehAKUzV+YUA/V/FNSA4w9qDr68g+/oJ54HvsA6BsilbVEmA3maqJ5G9gOMQWc/jN6qDMiSvJKFcvKFUrXF1dQhW9E0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=c9+bFVhd; arc=none smtp.client-ip=13.76.142.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mails.tsinghua.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=mails.tsinghua.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:
+	Date:Message-ID:MIME-Version:Content-Transfer-Encoding; bh=8AhE/
+	aG7KhI0jDuF9HucPWyrSJmKir5bczNqavi8w4I=; b=c9+bFVhdSkRVk76c4Yx9l
+	lI7tikyUDRxzZ8qdgu5RR9AQyEw3Npv/E5F8PUkR2Ig9irI6XK3I+OLRRCFiaJq6
+	GrBnCEMN4APhLicTE3+G/fGz3JbwDst33LjNR2o7jHjcLAnCcFzvvETSZKNuNEen
+	QbpkrBQIhLXY66yORacT30=
+Received: from localhost.localdomain (unknown [183.172.8.203])
+	by web2 (Coremail) with SMTP id yQQGZQBH7CzTrhRp9F1wAA--.27113S2;
+	Wed, 12 Nov 2025 23:59:16 +0800 (CST)
+From: Haodong Tian <tianhd25@mails.tsinghua.edu.cn>
+To: tytso@mit.edu
+Cc: adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Haodong Tian <tianhd25@mails.tsinghua.edu.cn>
+Subject: [PATCH] fs/ext4: fix typo in comment
+Date: Wed, 12 Nov 2025 23:59:16 +0800
+Message-ID: <20251112155916.3007639-1-tianhd25@mails.tsinghua.edu.cn>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251111142634.3301616-23-libaokun@huaweicloud.com>
-X-Rspamd-Queue-Id: 3A6681F7EC
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -0.21
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.21 / 50.00];
-	SEM_URIBL(3.50)[huaweicloud.com:email];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	BAD_REP_POLICIES(0.10)[];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	R_DKIM_ALLOW(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	TO_DN_NONE(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email,suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,huaweicloud.com:email]
-X-Spamd-Bar: /
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:yQQGZQBH7CzTrhRp9F1wAA--.27113S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XrWxCr48ZrWfAr15GF1ftFb_yoW3Jrc_Wa
+	9rAFW8Z34rtr1Skan2yr45KryFk348tr45Gr13Jr9xXa45ta1v9w1kA39xAFnxWFyayrZx
+	ZryrZry3CayrWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb-xFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+	1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+	w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMc
+	vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+	4I1lc7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6ryrMxAIw28IcxkI7VAKI48JMxC20s
+	026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+	JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+	v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
+	j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJV
+	W8JbIYCTnIWIevJa73UjIFyTuYvjfU8q2MUUUUU
+X-CM-SenderInfo: hwld0xrgsvqzpdlo2hxwvl0wxkxdhvlgxou0/1tbiAgQEAmkUKZu2VwABsv
 
-On Tue 11-11-25 22:26:32, libaokun@huaweicloud.com wrote:
-> From: Baokun Li <libaokun1@huawei.com>
-> 
-> Eric Biggers already added support for verifying data from large folios
-> several years ago in commit 5d0f0e57ed90 ("fsverity: support verifying
-> data from large folios").
-> 
-> With ext4 now supporting large block sizes, the fs-verity tests
-> `kvm-xfstests -c ext4/64k -g verity -x encrypt` pass without issues.
-> 
-> Therefore, remove the restriction and allow large folios to be enabled
-> together with fs-verity.
-> 
-> Cc: Eric Biggers <ebiggers@kernel.org>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Correct 'metdata' -> 'metadata' in comment.
 
-Looks good. Feel free to add:
+Signed-off-by: Haodong Tian <tianhd25@mails.tsinghua.edu.cn>
+---
+ fs/ext4/balloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/inode.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 613a989bf750..7b979e64f481 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5152,8 +5152,6 @@ static bool ext4_should_enable_large_folio(struct inode *inode)
->  
->  	if (!S_ISREG(inode->i_mode))
->  		return false;
-> -	if (ext4_has_feature_verity(sb))
-> -		return false;
->  	if (ext4_has_feature_encrypt(sb))
->  		return false;
->  
-> -- 
-> 2.46.1
-> 
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index c9329ed5c094..8040c731b3e4 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -752,7 +752,7 @@ ext4_fsblk_t ext4_new_meta_blocks(handle_t *handle, struct inode *inode,
+ 		*count = ar.len;
+ 	/*
+ 	 * Account for the allocated meta blocks.  We will never
+-	 * fail EDQUOT for metdata, but we do account for it.
++	 * fail EDQUOT for metadata, but we do account for it.
+ 	 */
+ 	if (!(*errp) && (flags & EXT4_MB_DELALLOC_RESERVED)) {
+ 		dquot_alloc_block_nofail(inode,
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.47.3
+
 
