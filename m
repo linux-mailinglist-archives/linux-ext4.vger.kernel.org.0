@@ -1,81 +1,102 @@
-Return-Path: <linux-ext4+bounces-11855-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11856-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A7CCC571C6
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Nov 2025 12:12:03 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1FB4C572ED
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Nov 2025 12:29:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5A7263420D2
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Nov 2025 11:07:14 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 711644E39B2
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Nov 2025 11:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B443337680;
-	Thu, 13 Nov 2025 11:07:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF86833BBD8;
+	Thu, 13 Nov 2025 11:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="e3UU9TyP"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tTkNB/iL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uykkzG4v";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="v0zpEWp0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CDY5ES+i"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F702E2663;
-	Thu, 13 Nov 2025 11:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E738133BBCD
+	for <linux-ext4@vger.kernel.org>; Thu, 13 Nov 2025 11:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763032029; cv=none; b=r+tR30AEK8naGxEl6uLf7Lns9PmvBLgzBnTT2Szh5SZnPp6eiyhdoezUwNmMm2Aa+l3nwfpNKQWjAAuSSF5w5D/Od4Hi0tFkKTLXkHUv4ft1HyLM5fYA2+UnbjRIdF6/NB3/8SVZRKwcBzJbehjbzJHrH33vyf25/Rc2vD3Xii4=
+	t=1763033284; cv=none; b=SDK6LT6ewMZibnQCr+Bn9owppsy5QSFW51atpT7jiI3DI/3H9+kMzBb1JlP2AnaC2YuBreFtNXfglD6mhNaFiL/3iEOhxbISax7PxBtTc4WfMoo3utpEsgw4XSQQz4QmMNhqDTGAXv5XJwNReyjgTvC0iqwTlRWwcSLnRxnQbgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763032029; c=relaxed/simple;
-	bh=v/SClx6pDneiH8NjxDA69Lseo/C85tR7TlS11Ig/icg=;
+	s=arc-20240116; t=1763033284; c=relaxed/simple;
+	bh=tNFjSh+Q+51b2FExvAGz0XzrpTRcG3fxp9OUX4D9lVw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gucaaiqjVVTRhE8LdwxdRNZPZtMbKpd7eRRUfsEewXO6F4xahFlz2pFHNuz3/pnguf7y+JskJl+Hs4JlUooSwOo0jWx8lgCck0rpq71gIkX03QShX7JdnSUdzDDc8cZg3Wb9c15c6ZhO41V//7rQibBU7N6VWqr8qcatlJI62n8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=e3UU9TyP; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AD2Zrtb021035;
-	Thu, 13 Nov 2025 11:06:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=v0SZnCYKi5R08FsOGh+wdrFNkCfbgv
-	DcqU5jhlslYdI=; b=e3UU9TyP5eYuElA9R8CKkm4USbwcQunmfQ0h3nFV4FS4nB
-	X7ZqkManUZUk2yUh4i16GzRce5M8OuKfuECTujOAaIPb3WAN4A4F4YhTlIHXiq3p
-	RgMjaUdq+F/jkcw8ZPyIVsBnne36Y7HvW6wQ3YC8cujyXBilMxlWVNSHA7V/pIoL
-	BtQPRlbEzt07oV9CIUIfjhEIc9Vn7MpFwYP+kAbpT5XfbvgB3HWnCdtlWJHzak1C
-	yg/l4yyEMzPrs1bJWF1YASdMVGmSui58tHi5kh+6d8n1cFdS7oFAFG4s2/VaHyJl
-	DGR8wDSRG8/u+ukUlt3MpZGd+wzzDE+i9GILfU8g==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aa5cjebwx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 13 Nov 2025 11:06:56 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AD8kgBv007368;
-	Thu, 13 Nov 2025 11:06:55 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4aajdjn7f3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 13 Nov 2025 11:06:55 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5ADB6rjk55837020
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 13 Nov 2025 11:06:53 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C0BE120040;
-	Thu, 13 Nov 2025 11:06:53 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8A3A120043;
-	Thu, 13 Nov 2025 11:06:52 +0000 (GMT)
-Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.211.50])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 13 Nov 2025 11:06:52 +0000 (GMT)
-Date: Thu, 13 Nov 2025 16:36:49 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: zlang@redhat.com, fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/7] generic/778: fix background loop control with
- sentinel files
-Message-ID: <aRW7yWziEnN_kkk5@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-References: <176279908967.605950.2192923313361120314.stgit@frogsfrogsfrogs>
- <176279909060.605950.10294250986845341696.stgit@frogsfrogsfrogs>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hu8pwiStJ9x6QNPO1jxNYQNLCn2wlsRdEKXKzi4ZXTH6a/45yo3mcx6cAh/jqozGtl5JDvnzEAcxHAdWQtOyMOvc+gvcvKGuoos9diugxnbImo/vHzN8lKyMSUC4uZN2CHRiQe7yRCmDRTO85IngzElcdGUfywyHyxYfiOEOOGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tTkNB/iL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uykkzG4v; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=v0zpEWp0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CDY5ES+i; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E8DC121275;
+	Thu, 13 Nov 2025 11:28:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763033281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KXRmss8T2+CNX/9rF/GTDsiJMzpye64aPPQY4ay9AlI=;
+	b=tTkNB/iL6zyIvbSZaNsYB1hnRviqQoONEsPMHhJ6hYA804F/W3FuSuiLnp8Tsfx8eiQQGs
+	GpGSYhzhmst0tX4GxJs+Xiaz4pOGPX90Tfaj1tWmvj1ZaPIKgz3+PSnGYbguTr37dFSjme
+	oFP7yCLEX6015RMAYLVWtA1uAnC8tuA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763033281;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KXRmss8T2+CNX/9rF/GTDsiJMzpye64aPPQY4ay9AlI=;
+	b=uykkzG4vvRLBMdqkfPj9zn3b2gEqTyTTqsugfyWwQbpaJ4xnnfhiR7hNJQHYLhZT7K02xg
+	ea6ER+YbIgNp7LBA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763033280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KXRmss8T2+CNX/9rF/GTDsiJMzpye64aPPQY4ay9AlI=;
+	b=v0zpEWp07M72eeE3MJB/B5zS+2KYLR9JJnivKME4a3Rf2AnU/nE3STG/AKhPtW0sqkU9LZ
+	kSic/u3tU7QO340FBXwogao10nDo6ZboOvzrLID5O8g4Ch65B8y5vz0+zvvLm+NFlCq0n/
+	8iZJy7WMmc1NEVNbMB5m3Ktg4sZ+JEg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763033280;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KXRmss8T2+CNX/9rF/GTDsiJMzpye64aPPQY4ay9AlI=;
+	b=CDY5ES+iEPyC/VY4O8DZ/8bX5Zkg0mMzxJ101to+GY9etbkex3sra9oVmUWghE8WWo8rET
+	k9bg0rhExAJCIyBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DD8C53EA61;
+	Thu, 13 Nov 2025 11:28:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id AcMQNsDAFWmYawAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 13 Nov 2025 11:28:00 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CB086A0976; Thu, 13 Nov 2025 12:27:54 +0100 (CET)
+Date: Thu, 13 Nov 2025 12:27:54 +0100
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Yang Erkun <yangerkun@huawei.com>, linux-ext4@vger.kernel.org, 
+	tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, libaokun1@huawei.com, 
+	yangerkun@huaweicloud.com
+Subject: Re: [PATCH v3 1/3] ext4: remove useless code in
+ ext4_map_create_blocks
+Message-ID: <mxecryxfba54eb4a5etvumjsqs4cayxbv47wufo7mso3gxlzf5@qqftillhryo6>
+References: <20251107115810.47199-1-yangerkun@huawei.com>
+ <72def5a4-c30a-4461-8bce-c6c2b09b044c@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -84,158 +105,126 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <176279909060.605950.10294250986845341696.stgit@frogsfrogsfrogs>
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=Ss+dKfO0 c=1 sm=1 tr=0 ts=6915bbd0 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=kj9zAlcOel0A:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=1I0DakYQcCtwVW00KZIA:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTA4MDA5NSBTYWx0ZWRfX2C1GDFXmLxXV
- Sm5Gxs7Mu36yWdJzl8pRnO1hGqH1TBy3QeSv5bRfON7/xrW8ouafMQZHP9lG0JloFUGsUE76Jn+
- baql0noHEEF3I3Cgssb9XpSLQKEUs2+hukYxdbU8tRf5mdYqYcqAop+mTs/0AOg9AqZW1JdQh8K
- PCqG/wLsiPHKXLbOiOvwtB3Q19Rc+2VPcCVnLG0U4UmZFH9035kmbV5MG48f0mpl+7sHzgvkHjR
- fRCjr0/E0feUild9hMzFH1PGMR7NQ1RHd6dQrjEsnkT7mn3wZ8mzRml/yIYTDhJrf32GpSKWHSu
- XyME7CWksTYFprQJ3M+pmsooQj/b/iTwf8huTIc2elRVCSK8uuVI8HRyNX7StVyHduHGpAzY1kV
- ihovU4ipkTHZy21mnFNYlKlwBo1twg==
-X-Proofpoint-GUID: YJVR3fePGEH0PyaM8stqFYH35beUEwqj
-X-Proofpoint-ORIG-GUID: YJVR3fePGEH0PyaM8stqFYH35beUEwqj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-13_01,2025-11-12_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 suspectscore=0 impostorscore=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 adultscore=0 priorityscore=1501 spamscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511080095
+In-Reply-To: <72def5a4-c30a-4461-8bce-c6c2b09b044c@huaweicloud.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,huawei.com:email,suse.cz:email]
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-On Mon, Nov 10, 2025 at 10:26:48AM -0800, Darrick J. Wong wrote:
-> From: Darrick J. Wong <djwong@kernel.org>
-> 
-> This test fails on my slowish QA VM with 32k-fsblock xfs:
-> 
->  --- /run/fstests/bin/tests/generic/778.out      2025-10-20 10:03:43.432910446 -0700
->  +++ /var/tmp/fstests/generic/778.out.bad        2025-11-04 12:01:31.137813652 -0800
->  @@ -1,2 +1,137 @@
->   QA output created by 778
->  -Silence is golden
->  +umount: /opt: target is busy.
->  +mount: /opt: /dev/sda4 already mounted on /opt.
->  +       dmesg(1) may have more information after failed mount system call.
->  +cycle mount failed
->  +(see /var/tmp/fstests/generic/778.full for details)
-> 
-> Injecting a 'ps auxfww' into the _scratch_cycle_mount helper reveals
-> that this process is still sitting on /opt:
-> 
-> root     1804418  9.0  0.8 144960 134368 pts/0   Dl+  12:01   0:00 /run/fstests/xfsprogs/io/xfs_io -i -c open -fsd /opt/testfile -c pwrite -S 0x61 -DA -V1 -b 134217728 134217728 134217728
-> 
-> Yes, that's the xfs_io process started by atomic_write_loop.
-> Inexplicably, the awloop killing code terminates the subshell running
-> the for loop in atomic_write_loop but only waits for the subshell itself
-> to exit.  It doesn't wait for any of that subshell's children, and
-> that's why the unmount fails.
+Hi!
 
-Ouch, thanks for catching this. This approach looks good to me.
+On Wed 12-11-25 12:46:26, Zhang Yi wrote:
+> On 11/7/2025 7:58 PM, Yang Erkun wrote:
+> > IO path with EXT4_GET_BLOCKS_PRE_IO means dio within i_size or
+> > dioread_nolock buffer writeback, they all means we need a unwritten
+> > extent(or this extent has already been initialized), and the split won't
+> > zero the range we really write. So this check seems useless. Besides,
+> > even if we repeatedly execute ext4_es_insert_extent, there won't
+> > actually be any issues.
+> > 
+> > Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > Signed-off-by: Yang Erkun <yangerkun@huawei.com>
+> > ---
+> >  fs/ext4/inode.c | 11 -----------
+> >  1 file changed, 11 deletions(-)
+> > 
+> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > index e99306a8f47c..e8bac93ca668 100644
+> > --- a/fs/ext4/inode.c
+> > +++ b/fs/ext4/inode.c
+> > @@ -583,7 +583,6 @@ static int ext4_map_query_blocks(handle_t *handle, struct inode *inode,
+> >  static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
+> >  				  struct ext4_map_blocks *map, int flags)
+> >  {
+> > -	struct extent_status es;
+> >  	unsigned int status;
+> >  	int err, retval = 0;
+> >  
+> > @@ -644,16 +643,6 @@ static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
+> >  			return err;
+> >  	}
+> >  
+> > -	/*
+> > -	 * If the extent has been zeroed out, we don't need to update
+> > -	 * extent status tree.
+> > -	 */
+> > -	if (flags & EXT4_GET_BLOCKS_PRE_IO &&
+> > -	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
+> > -		if (ext4_es_is_written(&es))
+> > -			return retval;
+> > -	}
+> > -
+> 
+> Sorry, I think I was wrong and I now realize that we need to keep this code
+> snippet. Because ext4_split_extent() may convert the on-disk extent to written
+> with the EXT4_EXT_MAY_ZEROOUT flag set. If we drop this check, it will add an
+> unwritten extent into the extent status tree, which is inconsistent with the
+> real one.
+> 
+> Although this might not seem like a practical issue now, it's a potential
+> problem and conflicts with the ext4_es_cache_extent() extension I am currently
+> developing[1], which triggers a mismatch alarm when caching extents.
+> 
+> Besides, I also notice there is a potential stale data issue about the
+> EXT4_EXT_MAY_ZEROOUT flag.
+> 
+> Assume we have an unwritten file, and then DIO writes the second half.
+> 
+>    [UUUUUUUUUUUUUUUU] on-disk extent
+>    [UUUUUUUUUUUUUUUU] extent status tree
+>             |<----->| dio write
+> 
+> 1. ext4_iomap_alloc() call ext4_map_blocks() with EXT4_GET_BLOCKS_PRE_IO,
+>    EXT4_GET_BLOCKS_UNWRIT_EXT and EXT4_GET_BLOCKS_CREATE flags set.
+> 2. ext4_map_blocks() find this extent and call ext4_split_convert_extents()
+>    with EXT4_GET_BLOCKS_CONVERT and the above flags set.
+> 3. call ext4_split_extent() with EXT4_EXT_MAY_ZEROOUT, EXT4_EXT_MARK_UNWRIT2 and
+>    EXT4_EXT_DATA_VALID2 flags set.
+> 4. call ext4_split_extent_at() to split the second half with EXT4_EXT_DATA_VALID2,
+>    EXT4_EXT_MARK_UNWRIT1, EXT4_EXT_MAY_ZEROOUT and EXT4_EXT_MARK_UNWRIT2 flags
+>    set.
+> 5. We failed to insert extent since -NOSPC in ext4_split_extent_at().
+> 6. ext4_split_extent_at() zero out the first half but convert the entire on-disk
+>    extent to written since the EXT4_EXT_DATA_VALID2 flag set, and left the second
+>    half as unwritten in the extent status tree.
+> 
+>    [0000000000SSSSSS]  data
+>    [WWWWWWWWWWWWWWWW]  on-disk extent
+>    [WWWWWWWWWWUUUUUU]  extent status tree
+> 
+> 7. If the dio failed to write data to the disk, If DIO fails to write data, the
+>    stale data in the second half will be exposed.
 
-Feel free to add:
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Right. That looks like a bug.
 
-Regards,
-ojaswin
+> Therefore, I think we should zero out the entire extent range to zero for this
+> case, and also mark the extent as written in the extent status tree (that is the
+> another reason I think we should keep this code snippet).
 
-> 
-> A bare "wait" (without the $awloop_pid parameter) also doesn't wait for
-> the xfs_io because the parent shell sees the subshell exit and treats
-> that as job completion.  We can't use killall here because the system
-> could be running check-parallel, nor can we use pkill here because the
-> pid namespace containment code was removed.
-> 
-> The simplest stupid answer is to use sentinel files to control the loop.
-> 
-> Cc: <fstests@vger.kernel.org> # v2025.10.20
-> Fixes: ca954527ff9d97 ("generic: Add sudden shutdown tests for multi block atomic writes")
-> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> ---
->  tests/generic/778 |   36 ++++++++++++++++++++++++++++++------
->  1 file changed, 30 insertions(+), 6 deletions(-)
-> 
-> 
-> diff --git a/tests/generic/778 b/tests/generic/778
-> index 7cfabc3a47a521..715de458268ebc 100755
-> --- a/tests/generic/778
-> +++ b/tests/generic/778
-> @@ -21,6 +21,9 @@ _scratch_mount >> $seqres.full
->  testfile=$SCRATCH_MNT/testfile
->  touch $testfile
->  
-> +awloop_runfile=$tmp.awloop_running
-> +awloop_killfile=$tmp.awloop_kill
-> +
->  awu_max=$(_get_atomic_write_unit_max $testfile)
->  blksz=$(_get_block_size $SCRATCH_MNT)
->  echo "Awu max: $awu_max" >> $seqres.full
-> @@ -31,25 +34,48 @@ num_blocks=$((awu_max / blksz))
->  filesize=$(( 10 * 1024 * 1024 * 1024 ))
->  
->  _cleanup() {
-> -	[ -n "$awloop_pid" ] && kill $awloop_pid &> /dev/null
-> -	wait
-> +	kill_awloop
->  }
->  
->  atomic_write_loop() {
->  	local off=0
->  	local size=$awu_max
-> +
-> +	rm -f $awloop_killfile
-> +	touch $awloop_runfile
-> +
->  	for ((i=0; i<$((filesize / $size )); i++)); do
->  		# Due to sudden shutdown this can produce errors so just
->  		# redirect them to seqres.full
->  		$XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $size $off $size" >> /dev/null 2>>$seqres.full
-> +		if [ ! -w "$testfile" ] || [ -e "$awloop_killfile" ]; then
-> +			break
-> +		fi
->  		echo "Written to offset: $((off + size))" >> $tmp.aw
->  		off=$((off + size))
->  	done
-> +
-> +	rm -f $awloop_runfile
-> +}
-> +
-> +# Use sentinel files to control the loop execution because we don't know the
-> +# pid of the xfs_io process and so we can't wait for it directly.  A bare
-> +# wait command won't wait for a D-state xfs_io process so we can't do that
-> +# either.  We can't use killall because check-parallel, and we can't pkill
-> +# because the pid namespacing code was removed withotu fixing check-parallel.
-> +kill_awloop() {
-> +	test -e $awloop_runfile || return
-> +
-> +	touch $awloop_killfile
-> +
-> +	for ((i=0;i<300;i++)); do
-> +		test -e $awloop_runfile || break
-> +		sleep 0.1
-> +	done
->  }
->  
->  start_atomic_write_and_shutdown() {
->  	atomic_write_loop &
-> -	awloop_pid=$!
->  	local max_loops=100
->  
->  	local i=0
-> @@ -70,9 +96,7 @@ start_atomic_write_and_shutdown() {
->  	echo "# Shutting down filesystem while write is running" >> $seqres.full
->  	_scratch_shutdown
->  
-> -	kill $awloop_pid 2>/dev/null  # the process might have finished already
-> -	wait $awloop_pid
-> -	unset $awloop_pid
-> +	kill_awloop
->  }
->  
->  # This test has the following flow:
-> 
+I agree this is probably the easiest fix.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
