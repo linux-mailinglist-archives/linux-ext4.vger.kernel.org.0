@@ -1,90 +1,89 @@
-Return-Path: <linux-ext4+bounces-11858-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11859-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C32C57718
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Nov 2025 13:38:18 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6558C58A67
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Nov 2025 17:17:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D1DF3BD749
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Nov 2025 12:34:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B1CA84F3FEB
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Nov 2025 15:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B47934A763;
-	Thu, 13 Nov 2025 12:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEA73570B6;
+	Thu, 13 Nov 2025 15:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EOp/uNGL"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="YotyaSVI"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9782435979;
-	Thu, 13 Nov 2025 12:34:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656463563DD
+	for <linux-ext4@vger.kernel.org>; Thu, 13 Nov 2025 15:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763037269; cv=none; b=ND73IWODeRgk/0JnrsLoTalqAwXjAZZW12uMREkITrKiqglrZn+qZCVTMMIEi1fWhVFrcPfb5Gmzynruq1u+wpcaa7HjDR7H8WqEejJLGAMTm20qJFe+IYn1eMRJgNcgQ5CFjEc+520YquoEAdetjT2m29pEmPvLxBuan1mxQII=
+	t=1763049196; cv=none; b=GvnsNaHEriMQwxnoUaHOeP6r0sIdyeLKRPr2l3SNzzBqEWdpyIX4CTABjZEyowEIfHbLZrxOKVYSXZLOA38JVSTIpvGrn04whgf5CJO9uz3Kz9GZByGE2hM6zGkvARGkgKYIh1DZ1W2m8GQLG+nXOHCvmQUUNaBgAghZGt3lduQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763037269; c=relaxed/simple;
-	bh=y1FfFIuMb0svp4ymlKmSDs7EFvaJvR5A3gJ3lpcq8Uk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qZ7k2dnf6qFEtUZrvWCDqqivuKl4+p+2tTs8xewhXErHgK/qsFoksVQBp+eDiJfeu6ouBcb/8rwNRQ/BdEApqF3Ps/x/yHnaP6v+WurXjyzKlBUs8JqVEv/38D9guXzZ8KCEMnNy/PwqL/RbOPEJs3GLN5emUO6KdKUT80ujDeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EOp/uNGL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95A64C4CEF8;
-	Thu, 13 Nov 2025 12:34:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763037269;
-	bh=y1FfFIuMb0svp4ymlKmSDs7EFvaJvR5A3gJ3lpcq8Uk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EOp/uNGLEJX2/o1A0Oqqre+Il30QU6+REZ6YFDPWH0Meu5sP92HduOMkUe8kYKDAB
-	 VdMLglbLi+06rRrPRmZtPa85qJJEDgpngLeHOzUgN1sNS8CURZ8cVUCHj7//ChyqxF
-	 VuOuLY62yswpDC7bqM25vTrSPw6RUWv/LeQgStQLbLM2OrQuNcrt/3iInfvUmER6AV
-	 Nc+T6QelxZUkCLsxA1HPvQevv9ZkT7AKrzBRgRHmpmiBzB/hsqvjQmmfHqp2ZR80oO
-	 H3l+CR6hjebnQdqloBIy7TOa2FcbeyT4jGxT7OutE15lQOo+L85dtISsLNkHoQJUIp
-	 agdcL9uWkwFxQ==
-Message-ID: <13db54a4-5f02-4b57-8ff9-6298c2c4b8d3@kernel.org>
-Date: Thu, 13 Nov 2025 13:34:22 +0100
+	s=arc-20240116; t=1763049196; c=relaxed/simple;
+	bh=icK/x1mZRyTFn/O1BF3dVwJOlKkZ37+PfErcArasTm4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dEkn/bofb+iwSKG4EtWnJIVMY602Mji8FtZCCGDD4Ulb32VSAlBzOhEpxEuvT4FLAbVn9sNwd08MqIP9XMaMXJfMgDUzUjDWXcvjFpG1yu4O+EWFJPO1X3haKts7eq+6LGSUN/4n7JzMyb+ZLpwMve/gfMi/uPfm+NGuEWKfWtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=YotyaSVI; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-82-200.bstnma.fios.verizon.net [173.48.82.200])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5ADFqIZg018196
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 13 Nov 2025 10:52:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1763049140; bh=YL7gxcG2OTqVIPj/P1PvvSsMZTMZe31BJDoBxi6S53w=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=YotyaSVITefZW+iWBr+ECnkDi0X++o38vle6nzikwKG2QBFmFhzcNezx1GaYqso/P
+	 GSESl+g5sdxYNDxrQ8En0Ih6E3joczt3rgVYFdj8A8B/AE0CXc+7G8R+HdK4z6+/tU
+	 Er+KPldtPR9M+iVXXfwflG3O5TID1N7GkJOSXooBvVFZgp/DyNADS6F78xgpAkzpd7
+	 4dAVFhTwdhRsUpNMiS+bss9PUkiBuvEQ8nUvhQptQrdm4giz29AHO24IuNMH8JYsgo
+	 mWUV5ipP/vhincFiC9ABgiLcQYBOnKEfJAXk5Flsbv4Abt/LgEMlD99Q9jP0zyIeew
+	 AdVswnj4y1XUg==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 2302F2E00D9; Thu, 13 Nov 2025 10:52:18 -0500 (EST)
+Date: Thu, 13 Nov 2025 10:52:18 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Baokun Li <libaokun1@huawei.com>, zlang@redhat.com, neal@gompa.dev,
+        fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, joannelkoong@gmail.com,
+        bernd@bsbernd.com
+Subject: Re: [PATCH v6.1 04/33] common/rc: skip test if swapon doesn't work
+Message-ID: <20251113155218.GP2988753@mit.edu>
+References: <176169819804.1433624.11241650941850700038.stgit@frogsfrogsfrogs>
+ <176169820051.1433624.4158113392739761085.stgit@frogsfrogsfrogs>
+ <016f51ff-6129-4265-827e-3c2ae8314fe1@huawei.com>
+ <20251112182617.GH196366@frogsfrogsfrogs>
+ <20251112200540.GD3131573@mit.edu>
+ <20251112222920.GO196358@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/8] mm: Add PG_atomic
-To: Matthew Wilcox <willy@infradead.org>,
- Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: Christian Brauner <brauner@kernel.org>, djwong@kernel.org,
- ritesh.list@gmail.com, john.g.garry@oracle.com, tytso@mit.edu,
- dchinner@redhat.com, hch@lst.de, linux-xfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, jack@suse.cz,
- nilay@linux.ibm.com, martin.petersen@oracle.com, rostedt@goodmis.org,
- axboe@kernel.dk, linux-block@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-References: <cover.1762945505.git.ojaswin@linux.ibm.com>
- <5f0a7c62a3c787f2011ada10abe3826a94f99e17.1762945505.git.ojaswin@linux.ibm.com>
- <aRSuH82gM-8BzPCU@casper.infradead.org>
-From: "David Hildenbrand (Red Hat)" <david@kernel.org>
-Content-Language: en-US
-In-Reply-To: <aRSuH82gM-8BzPCU@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251112222920.GO196358@frogsfrogsfrogs>
 
-On 12.11.25 16:56, Matthew Wilcox wrote:
-> On Wed, Nov 12, 2025 at 04:36:05PM +0530, Ojaswin Mujoo wrote:
->> From: John Garry <john.g.garry@oracle.com>
->>
->> Add page flag PG_atomic, meaning that a folio needs to be written back
->> atomically. This will be used by for handling RWF_ATOMIC buffered IO
->> in upcoming patches.
+On Wed, Nov 12, 2025 at 02:29:20PM -0800, Darrick J. Wong wrote:
+> From: Darrick J. Wong <djwong@kernel.org>
 > 
-> Page flags are a precious resource.  I'm not thrilled about allocating one
-> to this rather niche usecase.
+> In _require_scratch_swapfile, skip the test if swapon fails for whatever
+> reason, just like all the other filesystems.  There are certain ext4
+> configurations where swapon isn't supported, such as S_DAX files on
+> pmem, and (for now) blocksize > pagesize filesystems.
+> 
+> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 
-Fully agreed.
+Thanks!!
 
--- 
-Cheers
-
-David
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 
