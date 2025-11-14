@@ -1,230 +1,101 @@
-Return-Path: <linux-ext4+bounces-11864-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11865-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74DD8C5C4D8
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Nov 2025 10:36:09 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C4B2C5D554
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Nov 2025 14:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 99945500967
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Nov 2025 09:23:36 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2A4FD4EF485
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Nov 2025 13:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B8F3081D2;
-	Fri, 14 Nov 2025 09:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151A3314A75;
+	Fri, 14 Nov 2025 13:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="h6fojIGy"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uhTAacUV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A0D3074BC
-	for <linux-ext4@vger.kernel.org>; Fri, 14 Nov 2025 09:22:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F405030F52B;
+	Fri, 14 Nov 2025 13:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763112152; cv=none; b=Z5TbFb+KbNhIl8QWZNjR6MbtiFn5w79+v7flk7bHT2PmcboFH5nhDJba5FGqXOnmgGEQB4r8EyKf1LL09Tk9qdNFEw8sdQxu/zaIKLzi9j6cVpWtoZ3LWXosGZlnQrQNLct4eim/WGgG78c+3WZkAeen+RljxnHwmdySqWnFkjU=
+	t=1763126222; cv=none; b=W4Mkx9/DGkwCF+SWm3GFdWJjnmNywXMFrkGJc5vAbzr2PWfvENq4+Etu5B5zawMsWD9mbVb9Jl2ZfuQYIxVw96MNi3DWlMwtR159El0mmqUYV//y5lGgS7DxQPdQuR9HBbkx+jhBocIwCNTdKTTuuCSeeAaYwthKPGV7R76Ty9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763112152; c=relaxed/simple;
-	bh=UIab7wtwL7MJOqUh9OsFCLgRkvtJ87T6L6S86OEG8/0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IR77KP5gq81fsiFCY8+XS0wRTpINniQmy6/TTa8rNE31X0AakcJtEkqvYnze8Ehhm6s9SfdXXqt92XEVF/ir5zQKhCmi7QvYuH75xHWKKGd6CHxoDsCK2/2BQNkj1EyWk1AORxcMl02gzkydgsFEd8UjaEyK1fV8/qNyAqHdkTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=h6fojIGy; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2958db8ae4fso17395735ad.2
-        for <linux-ext4@vger.kernel.org>; Fri, 14 Nov 2025 01:22:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1763112150; x=1763716950; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QuX17fCzmjSlKD2oTV0BAVWCX3GMVQ03UEsOj2aXO/w=;
-        b=h6fojIGym1MMNKbJRIEDjGtNAPDQ2j1OghWgSnZEzYaWtO4DGTWcizz33YWHJQoDA6
-         mH2mNbY1SEWYykiLBC/8l1JW9NVbY6uca56/EnWLhVjSvXjNXZ/EK54PjSIG78+v7uN6
-         rA/IQPg6xou2bxRZzeHsxdd6UePdam1uPREkOGjPQ1MVT8DOMBD2b7WHYgGzUESpghQB
-         4ASIxx6kPC3ovxKFie51S/IMGRjismQY/aJAx7QWSQfKkR6CuCK15wbnD9mUijpBnlLs
-         kw5vdS3MFxBWGw3wyL3kajwzX9zYWUYwZKaxRYT2tRcX/OLlelxp1Au8hjAbrUGmT2i4
-         1nKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763112150; x=1763716950;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=QuX17fCzmjSlKD2oTV0BAVWCX3GMVQ03UEsOj2aXO/w=;
-        b=WAMG1otR9znxNnXPLrkaLT+VkhM/jLVQVmXvH4WAm9ReR7NlVhw5C3eH2n51L0kZ2h
-         9st29EunfWncbBvt05YTZMp98n597cI1A8cxDujHEuii7NDTJ3xSE1V8WyR9Rv4rW9VS
-         0/ZvF4bmJVt/KHHaTD8eh8Rg47Vx1v5371UUXuivpq44gcoIgws5CE5zVwp4sPSbletY
-         eAv1TLV5ueZQ0VBiOc2454a9fwgwATwO7tKV4PYfGLqmuUC/75YYQ1sO5zJ1zw29PCjF
-         CF05tNhIcr+v0Y1te82Y7EwSxrtBp642H7N1ND81lHSmHbsKjx2NXiG2XKKFRv/SJEzo
-         0M5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWRiCIe9ezjukRD8gO7i38/Y2XLnOBOyAenc7S+UKljpNcLc1z82PgpnT5aDI+/H+j8h/oMT832QT0l@vger.kernel.org
-X-Gm-Message-State: AOJu0YwkDajfP0GSjxRDWxi+4ZRwbOBaHr5pwXb1XDfoue9N+WS/uuIh
-	x+nMjCmsvp1ISBynNIn7/Khmfiv6atuj3298xfdIh5rh49nIhuRHRWkU89TzqHcqf7w=
-X-Gm-Gg: ASbGncs6Jm0Zg9/FP/Ge9exIm204rUXYOcL4qydlIIzJ6sIY7m7wU7w7Hjun6sgiHZb
-	+xB3eOlW5jUhn24JwhwqSqf4/7UlWb3nikq7rJ9fzNvgudiJVsO7ZGNvHYnywA78j9RrmPfkE3s
-	OmBSod0NW/QZcf/1RBLLLsXdxrakOfL3Nvxe/Dx9gnSzZVKmetD6MIRogf400xQMF7VrxwPEoQh
-	YkX5yMU74/KKdypwKeC+7Gq/LDDCvX3jMlCTKK6rTuaF6DnBkU2MaLejyEE1Bqa4fTPI5R2R7oP
-	ATtnS8/ncnHsDaiy9mTKv2NFNzXACYO8L01+xC6v8Nb6o4M5jw2xFMTQa3xmbxEX+11fxMllUBs
-	r/N67In9E6qgw0Ehq6zh1M9HaxBlW2l+Yre2Wu3W4JL2LejfeIK8JtT0EuMfSRV8+GB596BxK7b
-	lQ+lKphll9nYaZ1B7hlH6CgUiuZ6ihRVM4XQ==
-X-Google-Smtp-Source: AGHT+IE5EpOKhzEVc2rBcafP7dwFxgYiV1vDTAUPbL2qqYMIRb4HDnxBwlI0YiLG3+RKWslwz123UA==
-X-Received: by 2002:a17:903:380b:b0:297:dd7f:f1e0 with SMTP id d9443c01a7336-2986a751eb6mr23592765ad.43.1763112149863;
-        Fri, 14 Nov 2025 01:22:29 -0800 (PST)
-Received: from localhost.localdomain ([203.208.167.151])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2b0fe9sm48725735ad.65.2025.11.14.01.22.24
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 14 Nov 2025 01:22:29 -0800 (PST)
-From: Fengnan Chang <changfengnan@bytedance.com>
-To: axboe@kernel.dk,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	asml.silence@gmail.com,
-	willy@infradead.org,
-	djwong@kernel.org,
-	hch@infradead.org,
-	ritesh.list@gmail.com,
-	linux-fsdevel@vger.kernel.org,
-	io-uring@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	ming.lei@redhat.com,
-	linux-nvme@lists.infradead.org
-Cc: Fengnan Chang <changfengnan@bytedance.com>
-Subject: [PATCH v3 2/2] block: enable per-cpu bio cache by default
-Date: Fri, 14 Nov 2025 17:21:49 +0800
-Message-Id: <20251114092149.40116-3-changfengnan@bytedance.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20251114092149.40116-1-changfengnan@bytedance.com>
-References: <20251114092149.40116-1-changfengnan@bytedance.com>
+	s=arc-20240116; t=1763126222; c=relaxed/simple;
+	bh=m25Ht5MJmYjNkEujCtZhivVNuoNdHi2llzCoTBXzsv0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=faUkkKPVboDcIKTbVRyNDVNV+gOsPDgykr0FSJfNDA5MzLQMFQj2kEqhBOzktZr8z43/4l9tuxeEOawYJh7Gn0EWxTs047MgRGs4jpV+sPeV3zg1VxqVMEDgvOT7bAu/ayCi4RAgg581gDbhYSdZ+Afh2QBqmMoXjIpklJHlLVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=uhTAacUV; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Vo+N5YbzZDjZeiNvAhfJhGp+deegDT8E/3cOAOwzUvY=; b=uhTAacUV/flhXWxNQV5FeR3HnC
+	dbisfExygmslgLyDpvLG+2/Hlg/pmt0VQFR60ENfWSheMwZ71gSfJvn5cpAz3jQ4C8GbW22mGZnvr
+	IAvWXV16IcxEqXlj9aGECgc6jWa+TYNslUF/UG5UZnNeVmX9uCBtHkF3/PhZqpKloo53DY7lQjfBs
+	aJlrIOpHrSuxqQ5zFLrpzFxS0hDURfOE1mKKnlaxrFAzISnDVMx2YoDYjEeGrpZfA+xmHgA5z4Aqa
+	ikMn5lzxyvLtVuWvtU3KSheAYA6RnH67j72rXcCqX5yw2ewTbxE7qcEs/APRhRTTgydkga2huH2E1
+	f93tK/uw==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vJtfX-00000009Mru-0lqh;
+	Fri, 14 Nov 2025 13:16:51 +0000
+Date: Fri, 14 Nov 2025 13:16:50 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Ritesh Harjani <ritesh.list@gmail.com>
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Christian Brauner <brauner@kernel.org>, djwong@kernel.org,
+	john.g.garry@oracle.com, tytso@mit.edu, dchinner@redhat.com,
+	hch@lst.de, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, jack@suse.cz, nilay@linux.ibm.com,
+	martin.petersen@oracle.com, rostedt@goodmis.org, axboe@kernel.dk,
+	linux-block@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/8] mm: Add PG_atomic
+Message-ID: <aRcrwgxV6cBu2_RH@casper.infradead.org>
+References: <cover.1762945505.git.ojaswin@linux.ibm.com>
+ <5f0a7c62a3c787f2011ada10abe3826a94f99e17.1762945505.git.ojaswin@linux.ibm.com>
+ <aRSuH82gM-8BzPCU@casper.infradead.org>
+ <87ecq18azq.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ecq18azq.ritesh.list@gmail.com>
 
-Since after commit 12e4e8c7ab59 ("io_uring/rw: enable bio caches for
-IRQ rw"), bio_put is safe for task and irq context, bio_alloc_bioset is
-safe for task context and no one calls in irq context, so we can enable
-per cpu bio cache by default.
+On Fri, Nov 14, 2025 at 10:30:09AM +0530, Ritesh Harjani wrote:
+> Matthew Wilcox <willy@infradead.org> writes:
+> 
+> > On Wed, Nov 12, 2025 at 04:36:05PM +0530, Ojaswin Mujoo wrote:
+> >> From: John Garry <john.g.garry@oracle.com>
+> >> 
+> >> Add page flag PG_atomic, meaning that a folio needs to be written back
+> >> atomically. This will be used by for handling RWF_ATOMIC buffered IO
+> >> in upcoming patches.
+> >
+> > Page flags are a precious resource.  I'm not thrilled about allocating one
+> > to this rather niche usecase.  Wouldn't this be more aptly a flag on the
+> > address_space rather than the folio?  ie if we're doing this kind of write
+> > to a file, aren't most/all of the writes to the file going to be atomic?
+> 
+> As of today the atomic writes functionality works on the per-write
+> basis (given it's a per-write characteristic). 
+> 
+> So, we can have two types of dirty folios sitting in the page cache of
+> an inode. Ones which were done using atomic buffered I/O flag
+> (RWF_ATOMIC) and the other ones which were non-atomic writes. Hence a
+> need of a folio flag to distinguish between the two writes.
 
-Benchmarked with t/io_uring and ext4+nvme:
-taskset -c 6 /root/fio/t/io_uring  -p0 -d128 -b4096 -s1 -c1 -F1 -B1 -R1
--X1 -n1 -P1  /mnt/testfile
-base IOPS is 562K, patch IOPS is 574K. The CPU usage of bio_alloc_bioset
-decrease from 1.42% to 1.22%.
-
-The worst case is allocate bio in CPU A but free in CPU B, still use
-t/io_uring and ext4+nvme:
-base IOPS is 648K, patch IOPS is 647K.
-
-Also use fio test ext4/xfs with libaio/sync/io_uring on null_blk and
-nvme, no obvious performance regression.
-
-Signed-off-by: Fengnan Chang <changfengnan@bytedance.com>
----
- block/bio.c        | 26 ++++++++++++--------------
- block/fops.c       |  4 ----
- include/linux/fs.h |  3 ---
- io_uring/rw.c      |  1 -
- 4 files changed, 12 insertions(+), 22 deletions(-)
-
-diff --git a/block/bio.c b/block/bio.c
-index b3a79285c278..64a1599a5930 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -516,20 +516,18 @@ struct bio *bio_alloc_bioset(struct block_device *bdev, unsigned short nr_vecs,
- 	if (WARN_ON_ONCE(!mempool_initialized(&bs->bvec_pool) && nr_vecs > 0))
- 		return NULL;
- 
--	if (opf & REQ_ALLOC_CACHE) {
--		if (bs->cache && nr_vecs <= BIO_INLINE_VECS) {
--			bio = bio_alloc_percpu_cache(bdev, nr_vecs, opf,
--						     gfp_mask, bs);
--			if (bio)
--				return bio;
--			/*
--			 * No cached bio available, bio returned below marked with
--			 * REQ_ALLOC_CACHE to particpate in per-cpu alloc cache.
--			 */
--		} else {
--			opf &= ~REQ_ALLOC_CACHE;
--		}
--	}
-+	if (bs->cache && nr_vecs <= BIO_INLINE_VECS) {
-+		opf |= REQ_ALLOC_CACHE;
-+		bio = bio_alloc_percpu_cache(bdev, nr_vecs, opf,
-+					     gfp_mask, bs);
-+		if (bio)
-+			return bio;
-+		/*
-+		 * No cached bio available, bio returned below marked with
-+		 * REQ_ALLOC_CACHE to participate in per-cpu alloc cache.
-+		 */
-+	} else
-+		opf &= ~REQ_ALLOC_CACHE;
- 
- 	/*
- 	 * submit_bio_noacct() converts recursion to iteration; this means if
-diff --git a/block/fops.c b/block/fops.c
-index 5e3db9fead77..7ef2848244b1 100644
---- a/block/fops.c
-+++ b/block/fops.c
-@@ -184,8 +184,6 @@ static ssize_t __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter,
- 	loff_t pos = iocb->ki_pos;
- 	int ret = 0;
- 
--	if (iocb->ki_flags & IOCB_ALLOC_CACHE)
--		opf |= REQ_ALLOC_CACHE;
- 	bio = bio_alloc_bioset(bdev, nr_pages, opf, GFP_KERNEL,
- 			       &blkdev_dio_pool);
- 	dio = container_of(bio, struct blkdev_dio, bio);
-@@ -333,8 +331,6 @@ static ssize_t __blkdev_direct_IO_async(struct kiocb *iocb,
- 	loff_t pos = iocb->ki_pos;
- 	int ret = 0;
- 
--	if (iocb->ki_flags & IOCB_ALLOC_CACHE)
--		opf |= REQ_ALLOC_CACHE;
- 	bio = bio_alloc_bioset(bdev, nr_pages, opf, GFP_KERNEL,
- 			       &blkdev_dio_pool);
- 	dio = container_of(bio, struct blkdev_dio, bio);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index c895146c1444..1be899ac8b5a 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -365,8 +365,6 @@ struct readahead_control;
- /* iocb->ki_waitq is valid */
- #define IOCB_WAITQ		(1 << 19)
- #define IOCB_NOIO		(1 << 20)
--/* can use bio alloc cache */
--#define IOCB_ALLOC_CACHE	(1 << 21)
- /*
-  * IOCB_DIO_CALLER_COMP can be set by the iocb owner, to indicate that the
-  * iocb completion can be passed back to the owner for execution from a safe
-@@ -399,7 +397,6 @@ struct readahead_control;
- 	{ IOCB_WRITE,		"WRITE" }, \
- 	{ IOCB_WAITQ,		"WAITQ" }, \
- 	{ IOCB_NOIO,		"NOIO" }, \
--	{ IOCB_ALLOC_CACHE,	"ALLOC_CACHE" }, \
- 	{ IOCB_DIO_CALLER_COMP,	"CALLER_COMP" }, \
- 	{ IOCB_AIO_RW,		"AIO_RW" }, \
- 	{ IOCB_HAS_METADATA,	"AIO_HAS_METADATA" }
-diff --git a/io_uring/rw.c b/io_uring/rw.c
-index 5b2241a5813c..c0c59eb358a8 100644
---- a/io_uring/rw.c
-+++ b/io_uring/rw.c
-@@ -862,7 +862,6 @@ static int io_rw_init_file(struct io_kiocb *req, fmode_t mode, int rw_type)
- 	ret = kiocb_set_rw_flags(kiocb, rw->flags, rw_type);
- 	if (unlikely(ret))
- 		return ret;
--	kiocb->ki_flags |= IOCB_ALLOC_CACHE;
- 
- 	/*
- 	 * If the file is marked O_NONBLOCK, still allow retry for it if it
--- 
-2.39.5 (Apple Git-154)
-
+I know, but is this useful?  AFAIK, the files where Postgres wants to
+use this functionality are the log files, and all writes to the log
+files will want to use the atomic functionality.  What's the usecase
+for "I want to mix atomic and non-atomic buffered writes to this file"?
 
