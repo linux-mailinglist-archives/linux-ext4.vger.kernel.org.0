@@ -1,185 +1,232 @@
-Return-Path: <linux-ext4+bounces-11873-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11874-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C34FC63E67
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Nov 2025 12:47:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45DFAC649DD
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Nov 2025 15:21:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8E9E8342525
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Nov 2025 11:42:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72FE23A7824
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Nov 2025 14:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECDF316198;
-	Mon, 17 Nov 2025 11:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E98133343E;
+	Mon, 17 Nov 2025 14:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cCOTva+S"
+	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="IQ5EDc2m"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D935625BEE7
-	for <linux-ext4@vger.kernel.org>; Mon, 17 Nov 2025 11:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C576B30FC2A
+	for <linux-ext4@vger.kernel.org>; Mon, 17 Nov 2025 14:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763379750; cv=none; b=gqI0fOULFRYxd52OWKlqpMnXfHb2a5kFh5VTQpI8QYcLj8+jk2L3cBCk0dtCoaV0k5EBhvaQhX4aF5OCHtF1d2QYrHZafS70yKbQ8kqt2c/cOIekUZ1lx1vIZD7dCuJM/U6x8kJURo11YzcOVd3FhfgqganSUzeSIuZrSj6EShw=
+	t=1763389253; cv=none; b=K20woIHNDBEC8dB1sfHrKIAHleQCQR1u/t0BMjUtc19InKVkZWGn6lXbk4fMKGoZcZz73axAwCawKGjsFrgHRmxkUkewhjqop2sK5DLfiZe3m+ykK4tcttdGTXJez3dDoZ70+revqaFs5rP7RqVSOj0PsAVYTy6dJpQoSVnD/WU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763379750; c=relaxed/simple;
-	bh=DrDWvhIc7N1/SPrlaITwzd/VtRJq8MJIiZF/4gOQrs4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oB25mcxddXGYXfNWc4HZlzveWupDeVEBuUBHELlmfJh/+s5xfMdDeR90AGUI8AysADWkYewWDfCpigFlCTahwtzX4SiybbPb0QPc7MM6DzggMZpCTMlsvNmwGrOqnt5ZKCpAwEILLmwNpRg9dIyMuAcL3bmLyfmgwX5WEAGgt3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cCOTva+S; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b736d883ac4so495098566b.2
-        for <linux-ext4@vger.kernel.org>; Mon, 17 Nov 2025 03:42:28 -0800 (PST)
+	s=arc-20240116; t=1763389253; c=relaxed/simple;
+	bh=uOFmWd34SNOW0WSeH9ve8vatlJxo806lXJIQDOR18cs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BVMCR3Nf7TEEXRsbW2Ugn04+SZnUiVsgJQG0hIR8bN8EV39Jy82b8s2Zu0BuX0M4qAVqyC7r9W26TCR8kdiZhW8ct/L+i9qX6hsLoH85RcikwlLmzZwU8X17p1N82ezYNZ9TfVVns4UhWmTKutPMU0inDrYZC4WXc+QY+iVr9sE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=IQ5EDc2m; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-343774bd9b4so4046037a91.2
+        for <linux-ext4@vger.kernel.org>; Mon, 17 Nov 2025 06:20:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763379747; x=1763984547; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CLByek/00m1CKj+kC5ilafItJoPjq2T9oK+xnr6qUYg=;
-        b=cCOTva+SLeZ+6sLekokOiQHnIPy2/o48YdSGAMYpf+h2Juej+hvh6dDyAL6z8pXWYR
-         xq0DmUSKPhdVQ+5zzucgr5WNMGcT6f5D6/CCdwLCHAXBt748xRZq7cYLJZJcYki1aJKx
-         ZWvZMrToq0vOFDlq1ej7yv+bejZySo0ZbtKPCxBf5zdstxl7PtwoI2FsFnuBVEnJsorV
-         cZynwsFHeINYQSnA9IxMF9gB12ur4TQXOWsfEzwl7JQiGuGjVKbDzXERpO58+ctPqbl9
-         70PksuUkSe+iycZvT8+H9xbyJs17SgnWKlajTONI+wxAKg4gi/Dr6w5W87jeg6DrK4NL
-         BL0g==
+        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1763389249; x=1763994049; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WDjwQ+AQw6XteHbhrcM93QrZO2AXe3GggbYl4g1PYWE=;
+        b=IQ5EDc2mPK61X6n2a1zEjVn4nLylSI2FW0vZW9DdKnPLJoCX2M5esik0/3bAIqPw3g
+         F/AZOjEPjWxjzPBFi0xAOLwXsVoFN4Yidoqsuef8t9dQb3tGZJdERIEWGLO/tdDk+Rmw
+         eAslQ9+j4eAHVjm+cCL+nX9/+vvR62MjLqqbGq7wpLU2/RiFJgKtFF/16CPw3bG+Oeuo
+         YxSrmMmgh7JixnbS82ekDPCFVkx9QeQ8jNAlrZViD0E9D/vybDxdTOIofiFdkPBqblWu
+         oDerlMYc+k3+S94cI//2ULSHyx4uB0A8YY+w0LOWBLCWhdipOd1yXh7kGkSEtqvwJqkV
+         MTsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763379747; x=1763984547;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=CLByek/00m1CKj+kC5ilafItJoPjq2T9oK+xnr6qUYg=;
-        b=Sq8qKMbeU1/vL9phgxIkpLBgnFwxWNKIMJc4yFHCWhHnk/k+dMN/W+PRQ8nURHXBxu
-         q2/kvVgMZ+cnelZtearGevbElcrM91Sv/79M/yTZ96q8miVggmtz0f0G8+EzJuDlzFBN
-         1OKwFvTmsaYM2xQX7oamm7tNFK6l03X7MW9VFWOuH18HwCZa5fqb6U0nsrnMGtqzANlE
-         XepLes4gXtUAO2bO+SvyxO3nWA1o6yLV9TSBEOFeZ2PIXVd9/ME5Bg4d/t0F/vG1mNau
-         JALHkoNNih2OfzUueiteO6zevQlShPjxAF1DK+I60T2hDSeHPlh/rwjq2rAjsD/vMoG7
-         nXKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVw6crOVm1DnqQ97YvWBbk+wToXA4XKx3i7TjVgrP6tsmFPWaSCZfbLAjckVdKbWwynzxtK6x4jcCyo@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy30T6vkaLHHyHXkEIfNlgVGbMb5RgzLHDn4+iV+/cvpQC9QPOx
-	dqPMd8Xdx2oMWSOAgt3tQfKiw3LOcpt1sFg5I9JlNbqPGCgihCWgJaespsX8GoHh8yOlWHDj2jr
-	UiXlRZ1dulw0R4uHbGeKLfbwDFXb1Vy8=
-X-Gm-Gg: ASbGncvz+9ANqS1gRTh4lb6dICDFUW7dfDsGRJnUoRt3WSvZGBDBVfWqvuNKm699rqz
-	HRwZt6bS6ZkFiOxsibXRSFRCKRfC5j3FMW861BQSxvf66AjLS7wDMNvxA1lBq3dOpEPcxSpXteH
-	YVDc3Nq40oBg02ZtWdSxerJ/Df+P+mgvng6oQ2W/CBM32fSkRh751uqKt9BhtXqX+0u2eJszXWu
-	OyBmUKhZdCqgS40U0fIJlOzW2Pg6oVJIx4Yt4Ti2kk8K83DJkOwNEcz6Maw2CMahvOK6/AieWoP
-	CMPrwfuEYAoJpzM=
-X-Google-Smtp-Source: AGHT+IEMz1pZGeRCmDO84z5zBHCRYvIz6t+XVK/Tcz4Q2SDOXvfnD5p7amEncJuWUSE7VUtMLAKvuBSlA5WPOPIRyC0=
-X-Received: by 2002:a17:906:ef0a:b0:b73:210a:44e with SMTP id
- a640c23a62f3a-b7367badf35mr1155691466b.30.1763379747060; Mon, 17 Nov 2025
- 03:42:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763389249; x=1763994049;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WDjwQ+AQw6XteHbhrcM93QrZO2AXe3GggbYl4g1PYWE=;
+        b=PKffA61Ok4wZraFdcp7XKEok7KcBsinv+6vHTJTXudERXjuACckkW99MhZO9Ab4Gs3
+         Ircmxft8jUFU6CgcUPjNpudPFsxFOSPM0sgdo5KxNN8++Xmva5y+HPyHV2I+AW3auJZ+
+         2AvdE43Mpdg52ab0F3VQxGxRmkVWbNOBDSfEKPB153xoYT5apDHM+vr3y1Sm00mwCvpL
+         BToERHRML4/yChyNZzZgPScQ5XQ8I6GGBfT00agPzcmK2ucoBjPAAX14Yw9C/CBrpDM9
+         4qe9YmzryxD0doHkTnxHqPC1E/qzAJeD/+l7ekxY8WlUA8UpHOZWvdt7sogu0MIrFeO7
+         x91A==
+X-Forwarded-Encrypted: i=1; AJvYcCW4iTkb5C+Q/aPOkgoIgYzeX2mqAm2XLYCDIAHjLpZs6j1oJ0l6Kgu9wA/F03xldJyqVEDQFXGJN7Kq@vger.kernel.org
+X-Gm-Message-State: AOJu0YzV8NL7HRQrcbciTI5PlBrFIKMaYBcXNLmdLjgoW6e5CRAfbR4W
+	7QT/ZED+wk29AEGwk5uVG2QRT6Cif9O10uiAEIhh4UHF5mzl5hvpsboWf3SdEzujxnw=
+X-Gm-Gg: ASbGncuL7s0rspwmMKOGQzIcIIblDDucH3fFAKdVdQZ8cxHo4Kuqzv0SXlQ/VrRxU4y
+	PlriS1RZzzob8G9NB4pDd1ytUdMeUU01qPmPw7IWzu+VgFHweVCliaNrL3RyaJUU+ymhEo4EHh8
+	RBNM27UvY5AdYyylbc3uMbFmwWDGvA9Bu2LELKNWMEZgR+vIAAI7p1kR1PA3ZA+gz9ukBxCN3+M
+	8dHJh9eDUVgp6uei2iukyeby0TS32tyiFV/7HBAR+S+oP5A613WqUqJ5XLOpaJKoLw9oagDw4Rz
+	+SaCjP2Scm+gMlcCM31ShqVo2GX8A+Vy8gMHQoQg8FGjBZPN/1m2ecdencZot7Ctp4ICuEaybVZ
+	ynDDQ1yynr7e5cQ0qtDqwb0seVwoz3Sq2mQKfxJlK6wKomKMoxGal6ubYarytaSvwk41mKV/wGb
+	wfZqD6prva7/rM/AG6uvDnt7MDzEwAQJA=
+X-Google-Smtp-Source: AGHT+IH9BR8qFPAX7WtHfrZp+wziPSn5kFimyaTjHjveuWTGxlwiZFjVicXc5llUq5ydaR55j1pBCw==
+X-Received: by 2002:a17:90b:2790:b0:340:e8e9:cc76 with SMTP id 98e67ed59e1d1-343f9e9f3a9mr15610880a91.11.1763389248980;
+        Mon, 17 Nov 2025 06:20:48 -0800 (PST)
+Received: from wu-Pro-E500-G6-WS720T ([2001:288:7001:2703:d709:f3be:9719:dfe])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-343e07b4b23sm18321505a91.13.2025.11.17.06.20.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Nov 2025 06:20:48 -0800 (PST)
+Date: Mon, 17 Nov 2025 22:20:45 +0800
+From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+To: David Laight <david.laight.linux@gmail.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	visitorckw@gmail.com
+Subject: Re: [PATCH] ext4: improve str2hashbuf by processing 4-byte chunks
+Message-ID: <aRsvPXiuBSun/eVp@wu-Pro-E500-G6-WS720T>
+References: <20251116130105.1988020-1-409411716@gms.tku.edu.tw>
+ <20251116193513.0f90712a@pumpkin>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a7gys7zvegqwj2box4cs56bvvgb5ft3o3kn4e7iz43hojd4c6g@d3hihtreqdoy>
- <CAHk-=wgEvF3_+sa5BOuYG2J_hXv72iOiQ8kpmSzCpegUhqg4Zg@mail.gmail.com>
- <CAGudoHGxr5gYb0JqPqF_J0MoSAb_qqoF4gaJMEdOhp51yobbLw@mail.gmail.com>
- <20250412215257.GF13132@mit.edu> <CAHk-=wifig365Ej8JQrXBzK1_BzU9H9kqvvbBGuboF7CzR28VQ@mail.gmail.com>
- <20250412235535.GH13132@mit.edu> <CAGudoHEJZ32rDUt4+n2-L-RU=bpGgkYMroxtdMF6MQjKRsW24w@mail.gmail.com>
- <20250413124054.GA1116327@mit.edu> <CAGudoHFciRp7qJtaHSOhLAxpCfT1NEf0+MN0iprnOYORYgXKbw@mail.gmail.com>
- <CAGudoHHrUkcGvhE3kwc9+kgdia_NREEeTj=_UBtiHCpUGEYwZg@mail.gmail.com> <kn44smk4dgaj5rqmtcfr7ruecixzrik6omur2l2opitn7lbvfm@rm4y24fcfzbz>
-In-Reply-To: <kn44smk4dgaj5rqmtcfr7ruecixzrik6omur2l2opitn7lbvfm@rm4y24fcfzbz>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Mon, 17 Nov 2025 12:42:14 +0100
-X-Gm-Features: AWmQ_bkp5BvsOjiXXaa5Aj-p35DXC0RODFdIzcv9D6Pi2YUWc3peCqwVjmYekmw
-Message-ID: <CAGudoHFeS6GUxMdm9dJoswEViHHFvgV+FEbSqo4+RP4L_P84zw@mail.gmail.com>
-Subject: Re: generic_permission() optimization
-To: Jan Kara <jack@suse.cz>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
-	Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251116193513.0f90712a@pumpkin>
 
-On Wed, Nov 5, 2025 at 2:37=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Wed 05-11-25 12:51:16, Mateusz Guzik wrote:
-> > On Wed, Nov 5, 2025 at 12:50=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.co=
-m> wrote:
-> > >
-> > > On Sun, Apr 13, 2025 at 2:40=E2=80=AFPM Theodore Ts'o <tytso@mit.edu>=
- wrote:
-> > > >
-> > > > On Sun, Apr 13, 2025 at 11:41:47AM +0200, Mateusz Guzik wrote:
-> > > > > This is the rootfs of the thing, so I tried it out with merely
-> > > > > printing it. I got 70 entries at boot time. I don't think figurin=
-g out
-> > > > > what this is specifically is warranted (it is on debian though).
-> > > >
-> > > > Well, can you run:
-> > > >
-> > > > debugfs -R "stat <INO>" /dev/ROOT_DEV
-> > > >
-> > > > on say, two or three of the inodes (replace INO with a number, and
-> > > > ROOT_DEV with the root file system device) and send me the result?
-> > > > That would be really helpful in understanding what might be going o=
-n.
-> > > >
-> > > > > So... I think this is good enough to commit? I had no part in wri=
-ting
-> > > > > the patch and I'm not an ext4 person, so I'm not submitting it my=
-self.
-> > > > >
-> > > > > Ted, you seem fine with the patch, so perhaps you could do the ne=
-edful(tm)?
-> > > >
-> > > > Sure, I'll put together a more formal patch and do full QA run and
-> > > > checking of the code paths, as a supposed a fairly superficial revi=
-ew
-> > > > and hack.
-> > > >
-> > >
-> > > It looks like this well through the cracks.
-> > >
-> > > To recount, here is the patch (by Linus, not me):
-> > > > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > > > index f386de8c12f6..3e0ba7c4723a 100644
-> > > > --- a/fs/ext4/inode.c
-> > > > +++ b/fs/ext4/inode.c
-> > > > @@ -5109,6 +5109,11 @@ struct inode *__ext4_iget(struct super_block=
- *sb, unsigned long ino,
-> > > >                 goto bad_inode;
-> > > >         brelse(iloc.bh);
-> > > >
-> > > > +       if (test_opt(sb, DEBUG) &&
-> > > > +           (ext4_test_inode_state(inode, EXT4_STATE_XATTR) ||
-> > > > +            ei->i_file_acl))
-> > > > +               ext4_msg(sb, KERN_DEBUG, "has xattr ino %lu", inode=
-->i_ino);
-> > > > +
-> > > >         unlock_new_inode(inode);
-> > > >         return inode;
-> > >
-> >
-> > sigh, copy-pasto, the patch is:
-> >   --- a/fs/ext4/inode.c
-> >   +++ b/fs/ext4/inode.c
-> >   @@ -5011,6 +5011,11 @@ struct inode *__ext4_iget(...
-> >         }
-> >
-> >         brelse(iloc.bh);
-> >   +
-> >   +     /* Initialize the "no ACL's" state for the simple cases */
-> >   +     if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_f=
-ile_acl)
-> >   +             cache_no_acl(inode);
-> >   +
-> >         unlock_new_inode(inode);
-> >         return inode;
->
-> This looks fine. Feel free to add:
->
-> Reviewed-by: Jan Kara <jack@suse.cz>
+Hi David,
+
+On Sun, Nov 16, 2025 at 07:35:13PM +0000, David Laight wrote:
+> On Sun, 16 Nov 2025 21:01:05 +0800
+> Guan-Chun Wu <409411716@gms.tku.edu.tw> wrote:
+> 
+> > The original byte-by-byte implementation with modulo checks is less
+> > efficient. Refactor str2hashbuf_unsigned() and str2hashbuf_signed()
+> > to process input in explicit 4-byte chunks instead of using a
+> > modulus-based loop to emit words byte by byte.
+> 
+> There are much bigger gains to be made - the current code is horrid.
+> Not least due to the costs of the indirect calls.
+> It is better to use conditionals than indirect calls. 
 >
 
-ping?
+Thanks for the feedback. I'll remove the redundant casts, and for the
+unsigned version I'll switch to using get_unaligned_be32() to avoid
+duplicating the implementation. If this approach looks reasonable, I
+can send a v2 that replaces the indirect calls with conditionals.
 
-the window to get this in 6.19 is closing (if not too late already),
-would be a bummer if it did not make it
+Best regards,
+Guan-Chun
+
+> 
+> > 
+> > This change removes per-byte modulo checks and reduces loop iterations,
+> > improving efficiency.
+> > 
+> > Performance test (x86_64, Intel Core i7-10700 @ 2.90GHz, average over 10000
+> > runs, using kernel module for testing):
+> > 
+> >     len | orig_s | new_s | orig_u | new_u
+> >     ----+--------+-------+--------+-------
+> >       1 |   70   |   71  |   63   |   63
+> >       8 |   68   |   64  |   64   |   62
+> >      32 |   75   |   70  |   75   |   63
+> >      64 |   96   |   71  |  100   |   68
+> >     255 |  192   |  108  |  187   |   84
+> > 
+> > Signed-off-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+> > ---
+> >  fs/ext4/hash.c | 48 ++++++++++++++++++++++++++++++++----------------
+> >  1 file changed, 32 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/fs/ext4/hash.c b/fs/ext4/hash.c
+> > index 33cd5b6b02d5..75105828e8b4 100644
+> > --- a/fs/ext4/hash.c
+> > +++ b/fs/ext4/hash.c
+> > @@ -141,21 +141,29 @@ static void str2hashbuf_signed(const char *msg, int len, __u32 *buf, int num)
+> >  	pad = (__u32)len | ((__u32)len << 8);
+> >  	pad |= pad << 16;
+> >  
+> > -	val = pad;
+> >  	if (len > num*4)
+> >  		len = num * 4;
+> > -	for (i = 0; i < len; i++) {
+> > -		val = ((int) scp[i]) + (val << 8);
+> > -		if ((i % 4) == 3) {
+> > -			*buf++ = val;
+> > -			val = pad;
+> > -			num--;
+> > -		}
+> > +
+> > +	while (len >= 4) {
+> > +		val = ((int)scp[0] << 24) + ((int)scp[1] << 16) +
+> > +				((int)scp[2] << 8) + (int)scp[3];
+> 
+> The (int) casts are unnecessary (throughout), 'char' is always promoted to
+> 'signed int' before any arithmetic.
+> 
+> > +		*buf++ = val;
+> > +		scp += 4;
+> > +		len -= 4;
+> > +		num--;
+> >  	}
+> > +
+> > +	val = pad;
+> > +
+> > +	for (i = 0; i < len; i++)
+> > +		val = (int)scp[i] + (val << 8);
+> > +
+> >  	if (--num >= 0)
+> >  		*buf++ = val;
+> > +
+> >  	while (--num >= 0)
+> >  		*buf++ = pad;
+> > +
+> >  }
+> >  
+> >  static void str2hashbuf_unsigned(const char *msg, int len, __u32 *buf, int num)
+> > @@ -167,21 +175,29 @@ static void str2hashbuf_unsigned(const char *msg, int len, __u32 *buf, int num)
+> >  	pad = (__u32)len | ((__u32)len << 8);
+> >  	pad |= pad << 16;
+> >  
+> > -	val = pad;
+> >  	if (len > num*4)
+> >  		len = num * 4;
+> > -	for (i = 0; i < len; i++) {
+> > -		val = ((int) ucp[i]) + (val << 8);
+> > -		if ((i % 4) == 3) {
+> > -			*buf++ = val;
+> > -			val = pad;
+> > -			num--;
+> > -		}
+> > +
+> > +	while (len >= 4) {
+> > +		val = ((int)ucp[0] << 24) | ((int)ucp[1] << 16) |
+> > +				((int)ucp[2] << 8) | (int)ucp[3];
+> 
+> Isn't that get_misaligned_be32() ?
+> 
+> 	David 
+>
+> > +		*buf++ = val;
+> > +		ucp += 4;
+> > +		len -= 4;
+> > +		num--;
+> >  	}
+> > +
+> > +	val = pad;
+> > +
+> > +	for (i = 0; i < len; i++)
+> > +		val = (int)ucp[i] + (val << 8);
+> > +
+> >  	if (--num >= 0)
+> >  		*buf++ = val;
+> > +
+> >  	while (--num >= 0)
+> >  		*buf++ = pad;
+> > +
+> >  }
+> >  
+> >  /*
+> 
 
