@@ -1,65 +1,65 @@
-Return-Path: <linux-ext4+bounces-11880-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11884-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31470C65EB1
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Nov 2025 20:18:24 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97E56C65EFC
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Nov 2025 20:21:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 02CE5364B00
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Nov 2025 19:15:36 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 09FEF4F1F69
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Nov 2025 19:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE52338596;
-	Mon, 17 Nov 2025 19:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C7B33C530;
+	Mon, 17 Nov 2025 19:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="NiTxrsgY"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="I8XmeTTz"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8512F3370EC
-	for <linux-ext4@vger.kernel.org>; Mon, 17 Nov 2025 19:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08CA3093AE
+	for <linux-ext4@vger.kernel.org>; Mon, 17 Nov 2025 19:16:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763406854; cv=none; b=oaZsk7kc2SGSRiqKSnJKxGdyNGhME5YzD6Y6GzQir+4wpuoKdrbwa21P81Zirh6VEDp3cql8G7U/FwjqgILlU800TzQMGsfXO27q+WEw7vnIcXFz0JhF6cBsKaxkrDmmojXtc8mg3KkUZqRWa1Tgs3SOUEs26wl9xJd3KJO3VBo=
+	t=1763406985; cv=none; b=t08ZJX5zKMiDaT0RqvSlzxS/dQNwfWp+yqVcqX9bDSuHD9r5jygQV++VFG1eb3LxxGLHslkEy6ISfJhLL0j9ghmhvFL3NT6kKrpCKP/7q2jobKm94ZeaR68huO/v9FI/DMZYWil6PBDRM1ExpFLZhOCtNeyar5qw1WLHaQ2Bv60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763406854; c=relaxed/simple;
-	bh=/raFckIchGzzNugZVoBfkWiC70cjjTYZ8iT+OguuEJQ=;
+	s=arc-20240116; t=1763406985; c=relaxed/simple;
+	bh=rbJzXKItKYr+U5o4o4OscBnQtNIZzlJEJXtz7E9/Z9E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q2ZI+PpnYBJkJ7JSglDZ1jPh45ITvShqcsb/S3Ju9Nf8SGkuZHoHUFGXFJ6DxeVPSuBliWy8SdMaOdPwmVPvEmGni1ZMkhXgGZQAzsWA6LeVP4amJUuaLQc6V3zptZA8r+jWXzsul7DR6tXj+S3Pa6KwhPzSkt3qEdYVflXPbOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=NiTxrsgY; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=oiasYhCex2fpp/XgNc03s45EZhO3ac0aNxClpzLqM+DClJu/b0BEnIp0K0xcoQ81UVCmHQi1v3lhly/AjJt7/2T+9pECclYCjgMOxfwH7YmukH6FKtLgZSJh4wli9CzFgFq3jlFThjb75kc1yx0+rT6zMxRDTVMqTp2at8wQPPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=I8XmeTTz; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-114-69.bstnma.fios.verizon.net [173.48.114.69])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5AHJDoIb020572
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5AHJDoSK020573
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Mon, 17 Nov 2025 14:13:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1763406834; bh=4sPsdubBU31q4wx8PUp1SERWhUxxXgN/q/I3QMN4Go8=;
+	t=1763406833; bh=kSvqqUPl7yymxqG13UPEos8QgcCE/m0fKfgNjTXmHno=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=NiTxrsgY3Jriv7AnQiIZqISfO6PGHip8tDJn2SzeQ/l6n+tmx5lmcnxjp/v9G0ayz
-	 RueTr1Bwj6rAXEN/5HSK/h1oI8rFp5BLBYQDafZ5645Ouejv7df7rg3BSy98b2oenk
-	 I8SF1rKzzCjrq49e8bYfKvyu/FXTD1sBUyMymMfeDIKMeQ5dzU2HnFEhOTfp28GzBX
-	 /V90sxAPW8rk3z9CYPTfztCJmcBXG7Hh1nkLP053Lnr7pmmZD/t6z9+g1TfTHZAIXJ
-	 Fxq3y8gtvgznxc9Jrl7WxgEQumxzzU5MajetbSIlG5aDiB6lC73mAsw427D5UURhV0
-	 qIsiqs6xyjLKQ==
+	b=I8XmeTTzPDUgk9nUO8xIxg5D5G4qzB4sjelJgQlzD5M7VG6wjq/yjgDvp+RCLej7R
+	 bpXZiel+XISW5FTjMpnUwWq9FbjIsiVBFRUKDFgpgpeeO0+aLofSoR0tCPtrDNBj9u
+	 kUZIa3q1115ENhkQiN7IIIV56vXbSNVfr0lDjc3CpK5yvB3pwTqm/MXtR0vhU8aA0O
+	 TmJe/2SBlnVO5KaWKu/tQb17kD75TetRnDXbwWjUMOcn/d1ExoO2oVfBzC9dncRrsk
+	 R9VuwH/MN99XtXpkANf4eb2O0RPtGdExahljHDq3Bncx9d2GLW8wo2QOUUG1pjcY0S
+	 ZC41ONAbnWZ1A==
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 401072E00DC; Mon, 17 Nov 2025 14:13:50 -0500 (EST)
+	id 42FB02E00DD; Mon, 17 Nov 2025 14:13:50 -0500 (EST)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Karina Yankevich <k.yankevich@omp.ru>
+To: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        Fedor Pchelkin <pchelkin@ispras.ru>
 Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bhupesh <bhupesh@igalia.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-patches@linuxtesting.org,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: Re: [PATCH] ext4: xattr: fix null pointer deref in ext4_raw_inode()
-Date: Mon, 17 Nov 2025 14:13:33 -0500
-Message-ID: <176340680641.138575.14674529109795333702.b4-ty@mit.edu>
+        "Darrick J. Wong" <djwong@kernel.org>, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] ext4: fix string copying in parse_apply_sb_mount_options()
+Date: Mon, 17 Nov 2025 14:13:34 -0500
+Message-ID: <176340680644.138575.9603909521172863181.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251022093253.3546296-1-k.yankevich@omp.ru>
-References: <20251022093253.3546296-1-k.yankevich@omp.ru>
+In-Reply-To: <20251101160430.222297-1-pchelkin@ispras.ru>
+References: <20251101160430.222297-1-pchelkin@ispras.ru>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -70,20 +70,46 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Wed, 22 Oct 2025 12:32:53 +0300, Karina Yankevich wrote:
-> If ext4_get_inode_loc() fails (e.g. if it returns -EFSCORRUPTED),
-> iloc.bh will remain set to NULL. Since ext4_xattr_inode_dec_ref_all()
-> lacks error checking, this will lead to a null pointer dereference
-> in ext4_raw_inode(), called right after ext4_get_inode_loc().
+On Sat, 01 Nov 2025 19:04:28 +0300, Fedor Pchelkin wrote:
+> strscpy_pad() can't be used to copy a non-NUL-term string into a NUL-term
+> string of possibly bigger size.  Commit 0efc5990bca5 ("string.h: Introduce
+> memtostr() and memtostr_pad()") provides additional information in that
+> regard.  So if this happens, the following warning is observed:
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> strnlen: detected buffer overflow: 65 byte read of buffer size 64
+> WARNING: CPU: 0 PID: 28655 at lib/string_helpers.c:1032 __fortify_report+0x96/0xc0 lib/string_helpers.c:1032
+> Modules linked in:
+> CPU: 0 UID: 0 PID: 28655 Comm: syz-executor.3 Not tainted 6.12.54-syzkaller-00144-g5f0270f1ba00 #0
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+> RIP: 0010:__fortify_report+0x96/0xc0 lib/string_helpers.c:1032
+> Call Trace:
+>  <TASK>
+>  __fortify_panic+0x1f/0x30 lib/string_helpers.c:1039
+>  strnlen include/linux/fortify-string.h:235 [inline]
+>  sized_strscpy include/linux/fortify-string.h:309 [inline]
+>  parse_apply_sb_mount_options fs/ext4/super.c:2504 [inline]
+>  __ext4_fill_super fs/ext4/super.c:5261 [inline]
+>  ext4_fill_super+0x3c35/0xad00 fs/ext4/super.c:5706
+>  get_tree_bdev_flags+0x387/0x620 fs/super.c:1636
+>  vfs_get_tree+0x93/0x380 fs/super.c:1814
+>  do_new_mount fs/namespace.c:3553 [inline]
+>  path_mount+0x6ae/0x1f70 fs/namespace.c:3880
+>  do_mount fs/namespace.c:3893 [inline]
+>  __do_sys_mount fs/namespace.c:4103 [inline]
+>  __se_sys_mount fs/namespace.c:4080 [inline]
+>  __x64_sys_mount+0x280/0x300 fs/namespace.c:4080
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0x64/0x140 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x76/0x7e
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: xattr: fix null pointer deref in ext4_raw_inode()
-      commit: b97cb7d6a051aa6ebd57906df0e26e9e36c26d14
+[1/2] ext4: fix string copying in parse_apply_sb_mount_options()
+      commit: c517b381de9490b910ab451c2177aa32064678ad
+[2/2] ext4: check if mount_opts is NUL-terminated in ext4_ioctl_set_tune_sb()
+      commit: 687524bafd4e86cfa783857f8045460f4caee921
 
 Best regards,
 -- 
