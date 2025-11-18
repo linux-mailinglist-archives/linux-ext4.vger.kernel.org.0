@@ -1,68 +1,60 @@
-Return-Path: <linux-ext4+bounces-11897-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11898-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B587C67B6A
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Nov 2025 07:23:35 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B46C695CD
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Nov 2025 13:26:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EDDCF4E4B25
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Nov 2025 06:23:33 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0CC3E34F67A
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Nov 2025 12:26:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F73231A32;
-	Tue, 18 Nov 2025 06:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464BD354AD5;
+	Tue, 18 Nov 2025 12:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rG7bh+AR"
+	dkim=pass (1024-bit key) header.d=h-partners.com header.i=@h-partners.com header.b="XGHNfAeQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BEDF2D9787;
-	Tue, 18 Nov 2025 06:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECC5A351FA9
+	for <linux-ext4@vger.kernel.org>; Tue, 18 Nov 2025 12:25:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763446982; cv=none; b=oOmR7Smb9+vHJGabii2S53sQLRQiYJpaIXnH7IrKdcLKmzgB/f04O/14Ohx865ihKPGUCDq2SKErm87g22zzM8p19uRf5O/pobC8xwD5z7TPPfY1F58Aj8iWlWJnKCbLJBh8piJr+JwCC3FqFd0S1VtRtJjtZrta8r9rHo0RsqM=
+	t=1763468743; cv=none; b=spcrPALsk2S3S1KWbztJSqHPCfe78kr3YRA6nBotvFDqNj/a1dRx5L1jPHlLKDk4ppfmsAd8xNR3dGwhjz3BnSt28MB3jcxzamUPsDxHPzgIBX3iIc1Qk7O58WytFpiP/5msAgRG7giT9rE3KOWH1hrMk7WPrX7TMS+wnaaOnLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763446982; c=relaxed/simple;
-	bh=DRUg08tPNIbEXSFUWcxJlSLxrGKsbEQwv4xqnlsG6gI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Lpmv4fr6IvkYWUsEWu8e3l6MHOgrKljFOmVW2yrGSmCNk9o84Iky/t+EeQ2iekEoCLSPI7N6UUCDdhA/zGt2DddKtJIQFI3pU214MyStNVY5AjE9ACgXTA31ZENEjl8PVbeP7WcYVVDiQgQYjx5Lk0Xdib9HLbly8KcnkIMX+wM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rG7bh+AR; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=maKopu2ueksKXHtq1fc6D/pIVzIQjjOXmEvWcRyAhDQ=; b=rG7bh+ARUqJdOqoyrjC/caIkr3
-	zZteJG5gaJIXz8GFA0EXypEhTWiAQQ7eMClmcognNt2wwpLAfmNh8PP0ePK6nRoJWxDpUrPvV5p6/
-	FpYzw+rpQDSPMcLhQKxaIgVwqUIJROVcpY6Lg2dQ1o0wUT93P9KHVdRXFLCRFzg2CmxhDtS8a/fCp
-	yygaSAhL5LCdxZQ/1PXF6TXdf7c56ME6fUu1J51jm3ZTbRQa4YntPWNeA2J8rteE2TXR7CRk58EBB
-	SGK4eSyxUbnhMmumpQAakxdqFHw4Hdg59urW8c4pbEOtP4OGtsMzST82bZeUe9aZVi5t/14728de6
-	fLdlvhiw==;
-Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLF7E-0000000HUS0-1oBS;
-	Tue, 18 Nov 2025 06:23:00 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Chao Yu <chao@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	linux-fscrypt@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH 11/11] fscrypt: pass a real sector_t to fscrypt_zeroout_range
-Date: Tue, 18 Nov 2025 07:21:54 +0100
-Message-ID: <20251118062159.2358085-12-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251118062159.2358085-1-hch@lst.de>
-References: <20251118062159.2358085-1-hch@lst.de>
+	s=arc-20240116; t=1763468743; c=relaxed/simple;
+	bh=ZaNLiTh/GqsdJCFK6eu3efrblz4AY3DcPgu0ep22LVM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HhZVc6iqfmaoEQj4zFBRYFLHbwSLj/U+5MUC0NdF2UB8nY6AVojsDjQ3umo+s0J0l0+AcIHVPtEs+DLFHApR9gB7qKfZZKzKiG3OOH3LxHY8GfpviO7fpFskR8SAVbFQ38kakPcdNgMc43rsce7Wqm1CZB6TjfzWY27mGeN5o3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=h-partners.com; dkim=pass (1024-bit key) header.d=h-partners.com header.i=@h-partners.com header.b=XGHNfAeQ; arc=none smtp.client-ip=113.46.200.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h-partners.com
+dkim-signature: v=1; a=rsa-sha256; d=h-partners.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=+r50mf+UUNhdQKSspCg5wup43q6API+ISZhPTaskJNc=;
+	b=XGHNfAeQ63FJFKoTVHjFjkWgdXw6da4jtG/En1AKYRXjN19sxZrqdVnUddycG+k92bcsbg3ly
+	GbSlKNWZi2aVcpVTgVDUlkqSe711EHGRhIQRFtqx/hiu9egMWAoLltgPINU9917er3cgP6pdpID
+	cbEChM+5zr1/mYx9sWjdTr4=
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4d9kKz72CLzcZyZ;
+	Tue, 18 Nov 2025 20:23:35 +0800 (CST)
+Received: from kwepemj500016.china.huawei.com (unknown [7.202.194.46])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9347F14027A;
+	Tue, 18 Nov 2025 20:25:36 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by kwepemj500016.china.huawei.com
+ (7.202.194.46) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 18 Nov
+ 2025 20:25:35 +0800
+From: Wu Guanghao <wuguanghao3@huawei.com>
+To: <tytso@mit.edu>
+CC: <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+	<yangyun50@huawei.com>, <wuguanghao3@huawei.com>
+Subject: [PATCH 0/2] e2fsprogs: fix memory leaks detected by ASAN
+Date: Tue, 18 Nov 2025 21:25:59 +0800
+Message-ID: <20251118132601.2756185-1-wuguanghao3@huawei.com>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -70,102 +62,19 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
+ kwepemj500016.china.huawei.com (7.202.194.46)
 
-While the pblk argument to fscrypt_zeroout_range is declared as a
-sector_t, it actually is interpreted as a logical block size unit, which
-is highly unusual.  Switch to passing the 512 byte units that sector_t is
-defined for.
+Wu Guanghao (2):
+  fsck: fix memory leak of inst->type
+  resize: fix memory leak when exiting normally
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/crypto/bio.c         | 6 ++----
- fs/ext4/inode.c         | 3 ++-
- fs/f2fs/file.c          | 2 +-
- include/linux/fscrypt.h | 4 ++--
- 4 files changed, 7 insertions(+), 8 deletions(-)
+ misc/fsck.c   | 1 +
+ resize/main.c | 2 ++
+ 2 files changed, 3 insertions(+)
 
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index 4e9893664c0f..63bb53aeac4a 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -114,7 +114,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
-  * fscrypt_zeroout_range() - zero out a range of blocks in an encrypted file
-  * @inode: the file's inode
-  * @pos: the first file logical offset (in bytes) to zero out
-- * @pblk: the first filesystem physical block to zero out
-+ * @sector: the first sector to zero out
-  * @len: bytes to zero out
-  *
-  * Zero out filesystem blocks in an encrypted regular file on-disk, i.e. write
-@@ -128,7 +128,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
-  * Return: 0 on success; -errno on failure.
-  */
- int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--			  sector_t pblk, unsigned int len)
-+			  sector_t sector, unsigned int len)
- {
- 	const struct fscrypt_inode_info *ci = fscrypt_get_inode_info_raw(inode);
- 	const unsigned int du_bits = ci->ci_data_unit_bits;
-@@ -137,8 +137,6 @@ int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
- 	const unsigned int du_per_page = 1U << du_per_page_bits;
- 	u64 du_index = pos >> du_bits;
- 	u64 du_remaining = len >> du_bits;
--	loff_t pos = (loff_t)lblk << inode->i_blkbits;
--	sector_t sector = pblk << (inode->i_blkbits - SECTOR_SHIFT);
- 	struct page *pages[16]; /* write up to 16 pages at a time */
- 	unsigned int nr_pages;
- 	unsigned int i;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 3743260b70d4..d8a845da2881 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -403,7 +403,8 @@ int ext4_issue_zeroout(struct inode *inode, ext4_lblk_t lblk, ext4_fsblk_t pblk,
- 
- 	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode))
- 		return fscrypt_zeroout_range(inode,
--				(loff_t)lblk << inode->i_blkbits, pblk,
-+				(loff_t)lblk << inode->i_blkbits,
-+				pblk << (inode->i_blkbits - SECTOR_SHIFT),
- 				len << inode->i_blkbits);
- 
- 	ret = sb_issue_zeroout(inode->i_sb, pblk, len, GFP_NOFS);
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 45ec6f83fcda..315816ac07be 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -4143,7 +4143,7 @@ static int f2fs_secure_erase(struct block_device *bdev, struct inode *inode,
- 	if (!ret && (flags & F2FS_TRIM_FILE_ZEROOUT)) {
- 		if (IS_ENCRYPTED(inode))
- 			ret = fscrypt_zeroout_range(inode,
--					(loff_t)off << inode->i_blkbits, block,
-+					(loff_t)off << inode->i_blkbits, sector,
- 					len << inode->i_blkbits);
- 		else
- 			ret = blkdev_issue_zeroout(bdev, sector, nr_sects,
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 065f909ebda2..11464bf0a241 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -451,7 +451,7 @@ u64 fscrypt_fname_siphash(const struct inode *dir, const struct qstr *name);
- /* bio.c */
- bool fscrypt_decrypt_bio(struct bio *bio);
- int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--			  sector_t pblk, unsigned int len);
-+			  sector_t sector, unsigned int len);
- 
- /* hooks.c */
- int fscrypt_file_open(struct inode *inode, struct file *filp);
-@@ -756,7 +756,7 @@ static inline bool fscrypt_decrypt_bio(struct bio *bio)
- }
- 
- static inline int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--					sector_t pblk, unsigned int len)
-+					sector_t sector, unsigned int len)
- {
- 	return -EOPNOTSUPP;
- }
 -- 
-2.47.3
+2.27.0
 
 
