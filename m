@@ -1,139 +1,189 @@
-Return-Path: <linux-ext4+bounces-11916-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11917-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 550F5C6F575
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Nov 2025 15:39:35 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232FEC6F635
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Nov 2025 15:45:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 882122F19B
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Nov 2025 14:34:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id E0B5E2EFB4
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Nov 2025 14:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE93B35C187;
-	Wed, 19 Nov 2025 14:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05DC6366DA7;
+	Wed, 19 Nov 2025 14:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LDZ5Zp28"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nBP5qgac"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B8827A442
-	for <linux-ext4@vger.kernel.org>; Wed, 19 Nov 2025 14:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29EFA26CE35;
+	Wed, 19 Nov 2025 14:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763562739; cv=none; b=jQu8vE4cnWwLGYPcrX8VxKnAkBbmSzdev6/HWRj9QKEUpD4zPva29/YG1S7I5LDU6o8IZ0Us72BFPsh3A3nrx5d4pQGFnViZ71ww8JXtcMrv2kUoOd5EhYfMQYJmJLgDQl3K+8tVUrFC2PNR8ZFlPxaAk5NeIKbnM1dnVP79cnE=
+	t=1763563064; cv=none; b=MEb1VyNN+3zwooImA2UHzlcJhIzXxLdj1zEJvmbdyCcagczvtr25p7BGevQdAI0Etl7Qk3iN9+2C87k3LovicKyKQKPir/R5ofSjztCwGC7zWPfu0nFReb3ux63YmB8iNgUbOcRB4bIbIyn3y3a8cgxqGjWT+XoyY78F79p81ZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763562739; c=relaxed/simple;
-	bh=rKto9SRu25FK3OZzqAfW5fo67ECEjbM1vEpx/2n+f18=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hzg89GnXTHCZTzX/xzGCOqUF4WwQekH6UVkvtaJZlzoB8uVHfa6bUyHiGBFZhdjwWxCUh7Pa7G/DmjvBi/8UXOV9egiBzw+ywHGcO+i8HFNsyBA43pkFpJMCHxJLC2IDzyIbXb8hv8NxhzSEWbofU2Uy9HT2kbh4uzBXFgF5+yA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LDZ5Zp28; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-882475d8851so71771046d6.2
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Nov 2025 06:32:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763562736; x=1764167536; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8q+znNodto0M98KR2R7NvRlXozxhYBImnhJeUCTUfOM=;
-        b=LDZ5Zp28D9pg6OITdqZINoD6vpc3cnXfo8FCVqi/NJex6lFMD0Pe8cMgLWwOlGDLJt
-         BC1fJptCcwbzvsz3I8VjRcdDDi6KZlR4Dag3nc79yCbDbViqIX9RJ32gmUhd8AdyFaUY
-         /tbBwqIPkCi68Fjua+z4UrHIZvyRYTXBCAnrjiULgaXH3wZqmev2tiOFeORZzQUIGffg
-         AZvPbXGUnBIAapi4BNDXPt12wzN82NLhZu6+0IBf5iQy0/CBtjzqo0g/4r4dgR8MAWfH
-         3xDxmuvdxju9zNq3hu3w/8lQRUSWOQHYqhQB8/pPwpOaOc1ef+zYHreqvmSzN4kWEFB5
-         EDZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763562736; x=1764167536;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8q+znNodto0M98KR2R7NvRlXozxhYBImnhJeUCTUfOM=;
-        b=uNDOaLiGxNEuvAt2mCtyNxfYFljf1hl+OT9VkDjefIZF2MAtodfVqwpPbi03IvMLHG
-         1SIwWdlvGqgv7php0R99F0Gh80lTxELEp35gnFKZ/+9Z8BjqMDL7+1QWNK3Bhx2oW+zc
-         pOXQ0OU1UuJaXipjZneaAn1pZ4C9UhEkeLBnYsnjN8pHMFVklaNuUHSCkvCOVEZbLgNf
-         RPy460U2xUffEafO1xIXlcuU/8bedAUQyoGRc6Xay1ZWudxlyiuE/Gzk1CzdQaorpeyd
-         RrLrWycfIL1CzgLjRrbR7U3w9s7RS0+w1KPqQUIOHox8rKQVYRG2POpfM5xhPHV8DdHe
-         JjTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVrGNctAkyEuDoL8FWYoEcY79FxfHr9fyuFGCmP4kmRAXXcY+M1jG7q4p0LU80k50yyW4bJm+MOYYt6@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywe8n1CBkqgpyFMrKdoqCryN3ja3yPp+kJgLIDdCDu5o21XX3Vs
-	vjAGPdCoVU9KSbwi/C34uVGJTqwv5sQTpdMwBCO9L8HVuEe0wzU/FE1BbbCL0q5w
-X-Gm-Gg: ASbGncutYCamFT6bwhNIfby9ShjFE/8o9e5DS7WGG5U4WzRHqjdqbn3V9b3RnYudrEr
-	0Gu3b8zaF8cS6VJYbtQwwYc36cxDr05tRQaBDcfHwFY7oFvrmpL8v9p0J3I5Gv6a92tOQCnOPsc
-	DUja6ylErPDikdMZKo1/dS9oelvhiQWB4laIBQhiVuBdqVK2j40hKKQOelnrQaGPOYQQx2wPduX
-	BAALhjHWaEbdFEi7djTrUB3LHS+IhZ3EASoMOCDb0XDBiCBK38ZzCum8NyXtivmh1ufULaWC0yT
-	ZmXUncx0Zxh1vggS0UwKtsVSloYZ9UUksDYV7kz73WxcRT22pyfi6vQzMgMHoUILv4w0y/WUqAZ
-	W2HNN9y1tuECmJwYVMoq+ceLdfo/wfeTZhAtkjkW/Zhc5ZKCfZDMr0c/JKuMn0qillpzrxkFroj
-	PDXafux2A7xEvGFzB2OTHymfnmCn1GqYUj+J1PR+LBV8vQDS3G7sWrlw==
-X-Google-Smtp-Source: AGHT+IGNwVHZG6eQtwltPkgeDUi2dIyGh2VvkiqNs3dYVp85iL+oe1f8oZwXdAoI/FJovvVWmP2TTQ==
-X-Received: by 2002:a05:6214:d0f:b0:880:278d:d4aa with SMTP id 6a1803df08f44-8845fc3e0c3mr36773686d6.7.1763562736083;
-        Wed, 19 Nov 2025 06:32:16 -0800 (PST)
-Received: from daniel-desktop3.localnet ([204.48.77.252])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-882863923fcsm134305136d6.25.2025.11.19.06.32.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Nov 2025 06:32:15 -0800 (PST)
-From: Daniel Tang <danielzgtg.opensource@gmail.com>
-To: linux-doc@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- Eric Biggers <ebiggers@google.com>,
- Gabriel Krisman Bertazi <krisman@collabora.co.uk>,
- "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: [PATCH] Documentation: ext4: Document casefold and encrypt flags
-Date: Wed, 19 Nov 2025 09:32:13 -0500
-Message-ID: <4506189.9SDvczpPoe@daniel-desktop3>
+	s=arc-20240116; t=1763563064; c=relaxed/simple;
+	bh=XA0GeBzOpYEaSWCWCd+wnDlU6Fk5J/oBFNuaUBe2OAU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C8T4hiOCvJo/H+Wu+A6wh1wtVdlLYdueGrf7T2SeECN6RWlqai7gTb/h/ginYBLeNmcUDjI8TEPai2RRp7S+wOreqh+unTamMtNDWIOwjLtGZtTi35v4mQWSCOmAkkkS7LvxQhO2jeDYu2fkFUP1lF+557wPgV7EGnj1yDg+tVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nBP5qgac; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=jrEBjc2npjUKEbY4i9jofzcj/5yPuOiFOP9lZOX0tsI=; b=nBP5qgacID7pPb1N+57YvHaH6U
+	G7JzO5pEUGdhuUMMNn3k9NaEbTv68dj0hY9UW4pHZq6L+RoVGX93qIlWtLYoQytGKMPvLJ/D1KqKX
+	GV6hrdcPub9oX2YzpcjTtacFWku+OtVVTd6+pFYjSu6527+53NKY32Lj/L974tmHv3ScDp3gXp1L+
+	iFJ2wJM/Lmo71iZAxzafzKq22ZOt8sC31Kd10ep+n2MvqtEeikI1sljZ8uMGCqsNpyKZSf9jdYI8B
+	dZo+n/E+UO2Xtx516smblcWCers9IJLf4xYNhwJApoxEs2EHlQuoj0F7yrGXeee4kL13PJKFJYviX
+	pvBttZDA==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vLjJ8-0000000HDmA-0XUa;
+	Wed, 19 Nov 2025 14:37:18 +0000
+Date: Wed, 19 Nov 2025 14:37:17 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Byungchul Park <byungchul@sk.com>
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+	will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+	joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+	duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+	tytso@mit.edu, david@fromorbit.com, amir73il@gmail.com,
+	gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
+	akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
+	hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
+	jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+	ngupta@vflare.org, linux-block@vger.kernel.org,
+	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
+	djwong@kernel.org, dri-devel@lists.freedesktop.org,
+	rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+	hamohammed.sa@gmail.com, harry.yoo@oracle.com,
+	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
+	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com,
+	yeoreum.yun@arm.com, netdev@vger.kernel.org,
+	matthew.brost@intel.com, her0gyugyu@gmail.com, corbet@lwn.net,
+	catalin.marinas@arm.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, luto@kernel.org,
+	sumit.semwal@linaro.org, gustavo@padovan.org,
+	christian.koenig@amd.com, andi.shyti@kernel.org, arnd@arndb.de,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+	rppt@kernel.org, surenb@google.com, mcgrof@kernel.org,
+	petr.pavlu@suse.com, da.gomez@kernel.org, samitolvanen@google.com,
+	paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+	chuck.lever@oracle.com, neil@brown.name, okorniev@redhat.com,
+	Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
+	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
+	clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
+	kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
+	broonie@kernel.org, kevin.brodsky@arm.com, dwmw@amazon.co.uk,
+	shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
+	yuzhao@google.com, baolin.wang@linux.alibaba.com,
+	usamaarif642@gmail.com, joel.granados@kernel.org,
+	richard.weiyang@gmail.com, geert+renesas@glider.be,
+	tim.c.chen@linux.intel.com, linux@treblig.org,
+	alexander.shishkin@linux.intel.com, lillian@star-ark.net,
+	chenhuacai@kernel.org, francesco@valla.it,
+	guoweikang.kernel@gmail.com, link@vivo.com, jpoimboe@kernel.org,
+	masahiroy@kernel.org, brauner@kernel.org,
+	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com,
+	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
+	rcu@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH v17 44/47] dept: introduce APIs to set page usage and use
+ subclasses_evt for the usage
+Message-ID: <aR3WHf9QZ_dizNun@casper.infradead.org>
+References: <20251002081247.51255-1-byungchul@sk.com>
+ <20251002081247.51255-45-byungchul@sk.com>
+ <20251119105312.GA11582@system.software.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251119105312.GA11582@system.software.com>
 
-Based on ext4(5) and fs/ext4/ext4.h.
+On Wed, Nov 19, 2025 at 07:53:12PM +0900, Byungchul Park wrote:
+> On Thu, Oct 02, 2025 at 05:12:44PM +0900, Byungchul Park wrote:
+> > False positive reports have been observed since dept works with the
+> > assumption that all the pages have the same dept class, but the class
+> > should be split since the problematic call paths are different depending
+> > on what the page is used for.
+> > 
+> > At least, ones in block device's address_space and ones in regular
+> > file's address_space have exclusively different usages.
+> > 
+> > Thus, define usage candidates like:
+> > 
+> >    DEPT_PAGE_REGFILE_CACHE /* page in regular file's address_space */
+> >    DEPT_PAGE_BDEV_CACHE    /* page in block device's address_space */
+> >    DEPT_PAGE_DEFAULT       /* the others */
+> 
+> 1. I'd like to annotate a page to DEPT_PAGE_REGFILE_CACHE when the page
+>    starts to be associated with a page cache for fs data.
+> 
+> 2. And I'd like to annotate a page to DEPT_PAGE_BDEV_CACHE when the page
+>    starts to be associated with meta data of fs e.g. super block.
+> 
+> 3. Lastly, I'd like to reset the annotated value if any, that has been
+>    set in the page, when the page ends the assoication with either page
+>    cache or meta block of fs e.g. freeing the page.
+> 
+> Can anyone suggest good places in code for the annotation 1, 2, 3?  It'd
+> be totally appreciated. :-)
 
-For INCOMPAT_ENCRYPT, it's possible to create a new filesystem with that
-flag without creating any encrypted inodes. ext4(5) says it adds
-"support" but doesn't say whether anything's actually present like
-COMPAT_RESIZE_INODE does.
+I don't think it makes sense to track lock state in the page (nor
+folio).  Partly bcause there's just so many of them, but also because
+the locking rules don't really apply to individual folios so much as
+they do to the mappings (or anon_vmas) that contain folios.
 
-Signed-off-by: Daniel Tang <danielzgtg.opensource@gmail.com>
+If you're looking to find deadlock scenarios, I think it makes more
+sense to track all folio locks in a given mapping as the same lock
+type rather than track each folio's lock status.
+
+For example, let's suppose we did something like this in the
+page fault path:
+
+Look up and lock a folio (we need folios locked to insert them into
+the page tables to avoid a race with truncate)
+Try to allocate a page table
+Go into reclaim, attempt to reclaim a folio from this mapping
+
+We ought to detect that as a potential deadlock, regardless of which
+folio in the mapping we attempt to reclaim.  So can we track folio
+locking at the mapping/anon_vma level instead?
+
 ---
- Documentation/filesystems/ext4/inodes.rst | 2 ++
- Documentation/filesystems/ext4/super.rst  | 4 +++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/filesystems/ext4/inodes.rst b/Documentation/filesystems/ext4/inodes.rst
-index cfc6c1659931..55cd5c380e92 100644
---- a/Documentation/filesystems/ext4/inodes.rst
-+++ b/Documentation/filesystems/ext4/inodes.rst
-@@ -297,6 +297,8 @@ The ``i_flags`` field is a combination of these values:
-      - Inode has inline data (EXT4_INLINE_DATA_FL).
-    * - 0x20000000
-      - Create children with the same project ID (EXT4_PROJINHERIT_FL).
-+   * - 0x40000000
-+     - Use case-insensitive lookups for directory contents (EXT4_CASEFOLD_FL).
-    * - 0x80000000
-      - Reserved for ext4 library (EXT4_RESERVED_FL).
-    * -
-diff --git a/Documentation/filesystems/ext4/super.rst b/Documentation/filesystems/ext4/super.rst
-index 1b240661bfa3..9a59cded9bd7 100644
---- a/Documentation/filesystems/ext4/super.rst
-+++ b/Documentation/filesystems/ext4/super.rst
-@@ -671,7 +671,9 @@ following:
-    * - 0x8000
-      - Data in inode (INCOMPAT_INLINE_DATA).
-    * - 0x10000
--     - Encrypted inodes are present on the filesystem. (INCOMPAT_ENCRYPT).
-+     - Encrypted inodes can be present. (INCOMPAT_ENCRYPT).
-+   * - 0x20000
-+     - Directories can be marked case-insensitive. (INCOMPAT_CASEFOLD).
- 
- .. _super_rocompat:
- 
--- 
-2.51.0
+My current understanding of folio locking rules:
 
+If you hold a lock on folio A, you can take a lock on folio B if:
 
+1. A->mapping == B->mapping and A->index < B->index
+   (for example writeback; we take locks on all folios to be written
+    back in order)
+2. !S_ISBLK(A->mapping->host) and S_ISBLK(B->mapping->host)
+3. S_ISREG(A->mapping->host) and S_ISREG(B->mapping->host) with
+   inode_lock() held on both and A->index < B->index
+   (the remap_range code)
 
 
