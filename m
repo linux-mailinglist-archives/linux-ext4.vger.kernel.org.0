@@ -1,161 +1,149 @@
-Return-Path: <linux-ext4+bounces-11944-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11945-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98AACC756EE
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 17:42:37 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26B95C75896
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 18:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id D07DD2B513
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 16:41:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6EEEF4E2164
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 16:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAFA3590A9;
-	Thu, 20 Nov 2025 16:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDAA033D6D2;
+	Thu, 20 Nov 2025 16:58:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ljfSpvoe"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 889EC36828D
-	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 16:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E300333EAE5
+	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 16:58:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763656894; cv=none; b=Nlfo/2ESjq6bF6qcJBz7fmstqpIqN8dNJ0Q/OGBkOB20FHajnAPwu6sKJaRnc4egZQlC9eYitecNCzX8GHuMQb2vgCK8/FRKku8mDWsfDWj3apmbxCA0/iysuwx0ydJwpf5SVvxL3qTI9NcBedSev99lgu7VfbsEIBQqo7bLJc4=
+	t=1763657909; cv=none; b=uiE69aivzfr2q5UWq63QRPx/k+XT5K0MhLDacRY/DHLBrgD9rbGiI42QkwW37z0MML8NxPahXmND5zozWzys26wH+T+/9VF2u1uxDwW4yja6dtfsB/l0lnrYpsiCb/LK5o554VQ9e8EI4uom4/AHkPpVw2x2C/S4Nzbkz9TJpDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763656894; c=relaxed/simple;
-	bh=XyGpul2OWvhI+rCGkTNeYwTat2pe/iJLCkf4H5bLkr0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ByCDi8H1ymrWN38BOmCGIT5SyqwHE9XTSemcrdyZ5kteg6LndKw87+Bkza8pccXdPX1W1GX4xqhwCvV8P7uMh2yvmUQxbnaXUchmt3o8a/nqOeO/yQw7hxLvBYZcOmAFduGAInm0/7Oiq8xOhYVA1S1M4IQXtdHSZAZwgg2Scj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-4330ead8432so13368875ab.0
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 08:41:32 -0800 (PST)
+	s=arc-20240116; t=1763657909; c=relaxed/simple;
+	bh=WFzUcNhfWCsgFc0gJ5dxP4YdAHlkxA9RtbOQ+OA7tsg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m1jhtitRsSjdTE4cEdaqAyjr/LKRuJemggDGKshu8stJNL67byVGNT2HNyM2jxxQtwdWVD9hOe8yJeBYVJB0uWzhKWusHUgmKojVkhwu53Q1qlxBADcT5Bj27ADH85+pZ+rFLNvKXGosbudZndlRsXvlN8a4BwvE9CBaQvlP8cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ljfSpvoe; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-297f35be2ffso17087185ad.2
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 08:58:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763657907; x=1764262707; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pAUx4lPAAt5hhocIlS3eO4JgrnznXmHn7pMUp71lriA=;
+        b=ljfSpvoe0N3NQ8erW40poK901HjpCCTGcn8R5o6kBMJFFETqN+jfrgFJ9rtxLQ6RJD
+         uTb6E9AOnoT0JWpm5HZVzD9uU5QZs9FI4nJa1ONfqhgzHO++WEtxh4TyGvLRG1i+c+Gm
+         wI1XKyv4WTrQHTSzELx56/BG0Dj5MqJiEF2e1ukEV/buQPEYWUcEZ0/myC/+U6kKV+61
+         duJHiLqz9HdReM+m9iyHeslDzwfyQhNEurRqFIYG+lEF8wNUzSiyqqsIOOtf/gIZYq0Y
+         0gZlN4DsH2fcMDGPlWUc9t9ef5xJcK8+1twIUNBFoAyd4yFB8HQLX+8k/NJI1Mbcp3EV
+         UykQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763656891; x=1764261691;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y7iRowFGRjjOjAPTye6nCdxrnXCPwf6zOpBlOyrSH6Y=;
-        b=P8YV8/m3UbVvP+tbrXyrZqDHa3Dox8PzvIyOArNKgLHFvhBeEXO2CrrfMeKEVmCgn/
-         RQMTH9Ns2A81PESV/Sy39/ppf4EVNuGTZrv9erZi5ygC1sm5QFpNZRsCZQtqm372CR60
-         fP688G6GwT2rnA7Tn35i3HSEUXfcuoBDgK4MVycwfPPOamCUxo3QcoF9+H1vkaDUnKC+
-         r2i6hFo74F79p4OfmxUR1O5XUObIifBqHoW+HwqcVZtc6G6Wn6gRP7p1X8tDDCdhOD23
-         jCQTyODYcwq0NpGjl6CC3DHLgojqaASB4dVb7i3TsOQGRU7WqNkF6qjmYqBLBVjTnZNC
-         AK6w==
-X-Forwarded-Encrypted: i=1; AJvYcCWR8Lp5swSW4ecCN4on/KMqElEsXSXo7DxfOMd3BJzchIBJUu1BItpfW+98hKbHwh4wED1Ih1RIKbUV@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxy96L5BtgT9IvrB+h6sl5wUgO3oSgp7x+r6XxX5tWXlpyKShp9
-	L+dbqD48jCKg0g/np7M0BL3BuLgyD912kC3EdQ+x7/84h4a14ZeMuaOKB0gkMuxFaIJO+Mk2dXF
-	A5ViaQ0h5a8f4V67jjZNLg1CF8ndpGoApcxUBmQVT+zdszLWNyWyfLSBT1dc=
-X-Google-Smtp-Source: AGHT+IHomvNmuHjgaEEmUek0xiXlaU4iCMkSx4FQrkEX2c0/bL9WA4OeZT3a6ENP0aquXhKZqb1EkyKpSBLYaq23iYJvj5sdZ+ME
+        d=1e100.net; s=20230601; t=1763657907; x=1764262707;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pAUx4lPAAt5hhocIlS3eO4JgrnznXmHn7pMUp71lriA=;
+        b=rx3bSOSsSJvGohCllFSYmTy6memsw2mbngCrUcE10oXC1VJTbe+jgFy2uX+YLBzMUn
+         0MHDW9aCtUW1Hq2YF33OHnW9D1djIOJv2gAa7aosAs+69hCDDOsDl0W6dqa7Rxx1PJir
+         5TAUHvSMstxUDl4tUPx8AX904razVp3wCZAhlL0I8eEsiutVbPJRJiFHf8ofocWlzMRE
+         TonulBoQc8EnTOFGxwfr4She38pNNteY2XZxpKjjhwaAmyS3q6PMoNqed7Ig28FzXjjx
+         d8bsJPHIqO0ezSfy3cYpj2Ww+yFjX8Mjvy5JXCkGvkO2w4h3h9UtyOcao6HTkxR5aZiZ
+         KyoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU1DWoWGiteNtkCF5TwZtAczzumkYgJmCkoyw8SrKDVraNZWzt9lTdGkOVAHQBxvnjbQes9y4ujuJSt@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTQ4DNNxqa7I8xISEIcRugACRs6St1mbwKbdXHQDqxGcnoa6RE
+	NvrhUAw8TdEp3Sw5qcMTZImoNVq7P8Ix8SUVyLJUkl/Q/eSwYOX1QD+D
+X-Gm-Gg: ASbGncsLsDZdrmVvIbYykxaaXn8R+ZY20n/OTk/yKAfSpqynavBsCOwuxsxOgKdPqBZ
+	RkMW8aMJxjv56lLgIMWiLYrTbOA3M/g2rEUkGnez/DCcOXbwyfMuNvaUtSmYKiPNDLXq0+Kk5bL
+	QCQ0vJNf6Mn99CMST1jkPsSlxtY4iqgTtgAgo0Dl1t0oeb4XKnMyOTQO28hw4lLJqmUgZcujAPA
+	R8LTHITaRyIxo7bTSSzoMsDDge6K8+J1kFg7y5Q8WDgMR4KzyMBxWbTo7nceSuBOP+iIppLd2Dl
+	oh3QboJLwLqDsaifCMDRfMGr4vVW/p+BfNNXtHX6HhSHn79G0sdM+G0SIZ53n/IIoF8vcSrGbiJ
+	K8KySWVkVFbpOTZ11AHRwftPa01oZqKBKjYATT+PbF5bxaq6Ye3e2VnmzH5qRv6DT2cTDFs1Lvu
+	dn68xX99yl3FV51SM4piH1BnYA
+X-Google-Smtp-Source: AGHT+IFVjZ8EjTx36K9+Rzy4uZeI4ftPjrsBQ93SSXpRihhu3ckrFsUsfnJvIRLZA67Vz2mAIT3qHA==
+X-Received: by 2002:a17:902:db09:b0:298:595d:3d3a with SMTP id d9443c01a7336-29b5b11bed8mr45616265ad.50.1763657907052;
+        Thu, 20 Nov 2025 08:58:27 -0800 (PST)
+Received: from google.com ([2402:7500:499:ceaa:a749:91bb:2939:6694])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29b5b274d39sm31879535ad.77.2025.11.20.08.58.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Nov 2025 08:58:26 -0800 (PST)
+Date: Fri, 21 Nov 2025 00:58:23 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Theodore Tso <tytso@mit.edu>
+Cc: David Laight <david.laight.linux@gmail.com>,
+	Guan-Chun Wu <409411716@gms.tku.edu.tw>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: improve str2hashbuf by processing 4-byte chunks
+Message-ID: <aR9Ir6fdzD5_0Pkn@google.com>
+References: <20251116130105.1988020-1-409411716@gms.tku.edu.tw>
+ <20251116193513.0f90712a@pumpkin>
+ <20251120155816.GB13687@macsyma-3.local>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3789:b0:433:29a9:32db with SMTP id
- e9e14a558f8ab-435a9073140mr31086985ab.24.1763656891668; Thu, 20 Nov 2025
- 08:41:31 -0800 (PST)
-Date: Thu, 20 Nov 2025 08:41:31 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <691f44bb.a70a0220.2ea503.0032.GAE@google.com>
-Subject: [syzbot] [ext4?] WARNING in __folio_mark_dirty (3)
-From: syzbot <syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251120155816.GB13687@macsyma-3.local>
 
-Hello,
+Hi Ted,
 
-syzbot found the following issue on:
+On Thu, Nov 20, 2025 at 10:58:16AM -0500, Theodore Tso wrote:
+> On Sun, Nov 16, 2025 at 07:35:13PM +0000, David Laight wrote:
+> > 
+> > The (int) casts are unnecessary (throughout), 'char' is always promoted to
+> > 'signed int' before any arithmetic.
+> 
+> nit: in this case the casts aren't necessary, but your comment is not
+> correct in general, so I just wanted to make sure it's corrected in
+> case someone later looks at the mail archive.
+> 
+> "char" is not always signed.  It can be signed or unsigned; the C
+> specification allows either.  In this particular case, scp is a
+> "signed char", not "char".
+> 
+> Secondly, it's not that a promotion happens before "any" arithmetic.
+> If we add two 8-bit values together, promotion doesn't happen.  In
+> this case, we are adding a signed char to an int, so the promotion
+> will happen.
+> 
+I believe David was referring to the C11 spec 6.3.1.1:
 
-HEAD commit:    23cb64fb7625 Merge tag 'soc-fixes-6.18-3' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1287997c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=38a0c4cddc846161
-dashboard link: https://syzkaller.appspot.com/bug?extid=b0a0670332b6b3230a0a
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172cd658580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15378484580000
+If an int can represent all values of the original type (as restricted
+by the width, for a bit-field), the value is converted to an int;
+otherwise, it is converted to an unsigned int. These are called the
+integer promotions. All other types are unchanged by the integer
+promotions.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a14ebce6c664/disk-23cb64fb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7703c3032e2f/vmlinux-23cb64fb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a16c5b94924d/bzImage-23cb64fb.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/4fa9525269b6/mount_0.gz
-  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=11d42a12580000)
+The spec explicitly mentions char + char in 5.1.2.3 example:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com
+EXAMPLE 2 In executing the fragment
+char c1, c2;
+/* ... */
+c1 = c1 + c2;
+the ‘‘integer promotions’’ require that the abstract machine promote
+the value of each variable to int size and then add the two ints and
+truncate the sum. Provided the addition of two chars can be done
+without overflow, or with overflow wrapping silently to produce the
+correct result, the actual execution need only produce the same result,
+possibly omitting the promotions.
 
-EXT4-fs error (device loop0): ext4_ext_remove_space:2955: inode #15: comm syz.0.51: pblk 0 bad header/extent: invalid extent entries - magic f30a, entries 2, max 4(4), depth 0(0)
-EXT4-fs error (device loop0) in ext4_setattr:6050: Corrupt filesystem
-EXT4-fs error (device loop0): ext4_validate_block_bitmap:441: comm syz.0.51: bg 0: block 112: padding at end of block bitmap is not set
-EXT4-fs error (device loop0): ext4_map_blocks:778: inode #15: block 3: comm syz.0.51: lblock 3 mapped to illegal pblock 3 (length 1)
-EXT4-fs error (device loop0): ext4_ext_remove_space:2955: inode #15: comm syz.0.51: pblk 0 bad header/extent: invalid extent entries - magic f30a, entries 2, max 4(4), depth 0(0)
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 6107 at mm/page-writeback.c:2716 __folio_mark_dirty+0x1fb/0xe20 mm/page-writeback.c:2716
-Modules linked in:
-CPU: 0 UID: 0 PID: 6107 Comm: syz.0.51 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
-RIP: 0010:__folio_mark_dirty+0x1fb/0xe20 mm/page-writeback.c:2716
-Code: 3c 38 00 74 08 48 89 df e8 52 a7 26 00 4c 8b 33 4c 89 f6 48 83 e6 08 31 ff e8 d1 ed c4 ff 49 83 e6 08 75 1c e8 66 e8 c4 ff 90 <0f> 0b 90 eb 16 e8 5b e8 c4 ff e9 7e 07 00 00 e8 51 e8 c4 ff eb 05
-RSP: 0018:ffffc90003a079d0 EFLAGS: 00010293
-RAX: ffffffff81f9c4ea RBX: ffffea0001213400 RCX: ffff888025260000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: dffffc0000000000 R11: fffff94000242681 R12: ffff8880416cb4f0
-R13: ffff8880416cb4e8 R14: 0000000000000000 R15: dffffc0000000000
-FS:  0000555587ebe500(0000) GS:ffff888126df7000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000200000000440 CR3: 000000002e288000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- block_dirty_folio+0x17a/0x1d0 fs/buffer.c:754
- fault_dirty_shared_page+0x103/0x570 mm/memory.c:3519
- wp_page_shared mm/memory.c:3906 [inline]
- do_wp_page+0x263e/0x4930 mm/memory.c:4109
- handle_pte_fault mm/memory.c:6211 [inline]
- __handle_mm_fault mm/memory.c:6336 [inline]
- handle_mm_fault+0x97c/0x3400 mm/memory.c:6505
- do_user_addr_fault+0xa7c/0x1380 arch/x86/mm/fault.c:1336
- handle_page_fault arch/x86/mm/fault.c:1476 [inline]
- exc_page_fault+0x82/0x100 arch/x86/mm/fault.c:1532
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
-RIP: 0033:0x7f385fe87398
-Code: fc 89 37 c3 c5 fa 6f 06 c5 fa 6f 4c 16 f0 c5 fa 7f 07 c5 fa 7f 4c 17 f0 c3 66 0f 1f 84 00 00 00 00 00 48 8b 4c 16 f8 48 8b 36 <48> 89 37 48 89 4c 17 f8 c3 c5 fe 6f 54 16 e0 c5 fe 6f 5c 16 c0 c5
-RSP: 002b:00007ffd3b8738f8 EFLAGS: 00010246
-RAX: 0000200000000440 RBX: 0000000000000004 RCX: 0030656c69662f2e
-RDX: 0000000000000008 RSI: 0030656c69662f2e RDI: 0000200000000440
-RBP: 0000000000000000 R08: 0000001b2d820000 R09: 0000000000000001
-R10: 0000000000000001 R11: 0000000000000009 R12: 00007f3860115fac
-R13: 00007f3860115fa0 R14: fffffffffffffffe R15: 0000000000000004
- </TASK>
+So IIUC conceptually the promotion happens, even if the compiler
+optimizes it out in the actual execution.
 
+Link: https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Regards,
+Kuan-Wei
 
