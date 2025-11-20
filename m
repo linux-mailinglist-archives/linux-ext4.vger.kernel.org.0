@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-11934-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11935-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F58C72631
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 07:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42178C727EE
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 08:04:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 45E894E5B24
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 06:48:58 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C321B4E7C27
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 06:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31DD52F1FC9;
-	Thu, 20 Nov 2025 06:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C362F5A14;
+	Thu, 20 Nov 2025 06:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f9juYdY4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n6HrayT2"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15992E92B3
-	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 06:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9C52EBDCD
+	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 06:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763621329; cv=none; b=IbWeCok6bEutgKbjx7edznHz5vaZAlv98RCrB7WnhhhKf7bSWHZ7U9keOvOXsTuZ+xCbKWIxFvVlN0Hw4aqAX7vUD9WDpP8YyHSdrgodXXozRBg1jXAjFnxyNUFqj1xew/0UoBagsWKYSeHItcw4L5Od5FhmNjAKU6tF6nKezW8=
+	t=1763621539; cv=none; b=S3Yr6TIuY5/jVc95e0KD74CnqtIJYrBwlUprRW3MHasJT65zKKgCQBCOrmXvR94em1eJavBGnbIbYbGIxlJnDyy7qtiDna2gLzjtw7ImodJb1ALxvYGIKwPASb5N0rHjyvttj0KoL968cLKTiR3z5pIBivWVySs0xUA4sOlZ7KU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763621329; c=relaxed/simple;
-	bh=yUjR4YUgHfPFLJVJYilYBm/T/k6WOAMCTzbhrsTIyLE=;
+	s=arc-20240116; t=1763621539; c=relaxed/simple;
+	bh=mKyuYXclVNKpbsEcL8c26XvPOCQg5DVFB6A9iJdPqH8=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Ur1K4etYdE0e3OWhIKKoWgPvYVGD1XjPHozk5hRQBrSCRZZK2zAhEcioAkieA9gEhET3Z2IISzhpOkR8OqXRStkhEZkdhk/8FhmsLT2ThJvuMU3l5oZA8z1T8XJmD1LQQ+sj3m1qBesV1GzXvzPuH3ooFOpkh30iGu4ud9cafjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f9juYdY4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2635EC16AAE
-	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 06:48:48 +0000 (UTC)
+	 Content-Type:MIME-Version; b=nFFIQ3I5fy2iHC+KCWO3qE1LcQteFbFwGwZtoeNRtFRZzA3fF0DDMVVwu8rwJGoELl90xjOgh/hSr7aKOsZApPaLrx3X54+K7VF2XvnQ2BPiTo6zv40QhVb5KM1YwOYpPeU/xQ20+2R7VMU/Ih+2ShdV8VNSJUE//SinKeRueOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n6HrayT2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C1D7EC19421
+	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 06:52:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763621328;
-	bh=yUjR4YUgHfPFLJVJYilYBm/T/k6WOAMCTzbhrsTIyLE=;
+	s=k20201202; t=1763621538;
+	bh=mKyuYXclVNKpbsEcL8c26XvPOCQg5DVFB6A9iJdPqH8=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=f9juYdY4dZY/HnbwEvOLv9w+oqzotNVn/oS2rzZyVf4F8ZvCyprZqRPbV4Ri52ZWm
-	 Tyz9V9NZayjcEG26rj4OV+bI33CUYHn4dALwC6l+f5PMqFs6JFAnWiINkER9mnz+0j
-	 BgNU/Pjqkns3sD2d1SQWVnaVmXqqexNDpzkynXOJ/sCNi/4k3M9XfmDvJduyMdCHAD
-	 P01TtBm1nZKnI7Xi8+n54WtWuukOFpafJyb+SbvwQ57MAAfGPH6blKWOp9jNIqaBMv
-	 W4CRXiaIKym6FUb1C9o7Ll77WWVoG9EpoidEmddvwKgzWiKjD57pJgxxIBw2l/2Kr7
-	 uSpg+CzC3s7fw==
+	b=n6HrayT2D0pdc2LnwKAdrQpIQ4PyWFbAI27H5fOJkjt1ou/0Se3o7Ysjce43/vpWi
+	 30+IOk5ZI8a+Zac39QsdQnOuU4ZKtw257L76IowH2uzIGB12NvaDkSZPYxPYE3K6Vf
+	 l6p+Y/dCbvcBHWz1euGsYSiKG3MZwYg3Fs5O9YxCUHKnozIlDlku+/+lq9FgooMoCP
+	 yTyhbNYKTtVbDHQ/hKWwFCCQ7wXXHKKeJOsMXbn1+ohPVAnJT3XtQ3A/je83z3CJuj
+	 +XNEBlxFBhCI++aPm9XlYQ05uxhiYb9AepA+mocDQxxKmSJqaT9ON+9nrUXqCLV7AI
+	 r/EAew/ZYgFTQ==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 1A16AC4160E; Thu, 20 Nov 2025 06:48:48 +0000 (UTC)
+	id AEB53C41612; Thu, 20 Nov 2025 06:52:18 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 220594] Online defragmentation has broken in 6.16
-Date: Thu, 20 Nov 2025 06:48:47 +0000
+Date: Thu, 20 Nov 2025 06:52:18 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -62,7 +62,7 @@ X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
 X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-220594-13602-T0C29jzqNj@https.bugzilla.kernel.org/>
+Message-ID: <bug-220594-13602-B787bQ83UU@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-220594-13602@https.bugzilla.kernel.org/>
 References: <bug-220594-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -78,68 +78,88 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D220594
 
---- Comment #9 from Artem S. Tashkinov (aros@gmx.com) ---
-Sadly it's still broken in 6.17:
+--- Comment #10 from Artem S. Tashkinov (aros@gmx.com) ---
+openat(AT_FDCWD, "/home/birdie/.config/google-chrome/Default/Sync
+Data/LevelDB/000435.log", O_RDWR) =3D 3
+ioctl(3, FS_IOC_FIEMAP, {fm_start=3D0, fm_length=3D18446744073709551615,
+fm_flags=3DFIEMAP_FLAG_SYNC, fm_extent_count=3D512} =3D> {fm_flags=3DFIEMAP=
+_FLAG_SYNC,
+fm_mapped_extents=3D4, ...}) =3D 0
+fstatfs(3, {f_type=3DEXT2_SUPER_MAGIC, f_bsize=3D4096, f_blocks=3D6177397,
+f_bfree=3D4170566, f_bavail=3D3852103, f_files=3D1572864, f_ffree=3D1433202,
+f_fsid=3D{val=3D[0xbbd03838, 0xb062f9ed]}, f_namelen=3D255, f_frsize=3D4096,
+f_flags=3DST_VALID|ST_NOATIME}) =3D 0
+fcntl(3, F_GETLK, {l_type=3DF_UNLCK, l_whence=3DSEEK_SET, l_start=3D0, l_le=
+n=3D0,
+l_pid=3D0}) =3D 0
+fsync(3)                                =3D 0
+openat(AT_FDCWD, "/home/birdie/.config/google-chrome/Default/Sync
+Data/LevelDB/000435.log.defrag", O_WRONLY|O_CREAT|O_EXCL, 0400) =3D 4
+unlink("/home/birdie/.config/google-chrome/Default/Sync
+Data/LevelDB/000435.log.defrag") =3D 0
+fallocate(4, 0, 0, 139264)              =3D 0
+ioctl(4, FS_IOC_FIEMAP, {fm_start=3D0, fm_length=3D18446744073709551615,
+fm_flags=3DFIEMAP_FLAG_SYNC, fm_extent_count=3D512} =3D> {fm_flags=3DFIEMAP=
+_FLAG_SYNC,
+fm_mapped_extents=3D1, ...}) =3D 0
+[1/1]/home/birdie/.config/google-chrome/Default/Sync Data/LevelDB/000435.lo=
+g:=20=20
+  0%) =3D 97
+mmap(NULL, 139264, PROT_READ, MAP_SHARED, 3, 0) =3D 0x7f5541c99000
+mincore(0x7f5541c99000, 139264, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, =
+1,
+1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, ...]) =3D 0
+munmap(0x7f5541c99000, 139264)          =3D 0
+ioctl(3, EXT4_IOC_MOVE_EXT, 0x7ffd6bb8ac40) =3D -1 EBUSY (Device or resource
+busy)
+sync_file_range(3, 0, 139264,
+SYNC_FILE_RANGE_WAIT_BEFORE|SYNC_FILE_RANGE_WRITE|SYNC_FILE_RANGE_WAIT_AFTE=
+R) =3D
+0
+fadvise64(3, 0, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 4096, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 8192, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 12288, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 16384, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 20480, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 24576, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 28672, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 32768, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 36864, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 40960, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 45056, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 49152, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 53248, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 57344, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 61440, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 65536, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 69632, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 73728, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 77824, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 81920, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 86016, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 90112, 4096, POSIX_FADV_DONTNEED) =3D 0
+fadvise64(3, 94208, 4096, POSIX_FADV_DONTNEED) =3D 0
+write(1, "\n", 1
+)                       =3D 1
+write(2, "\tFailed to defrag with EXT4_IOC_"..., 62     Failed to defrag wi=
+th
+EXT4_IOC_MOVE_EXT ioctl:Success   [ NG ]
+) =3D 62
+ioctl(3, FS_IOC_FIEMAP, {fm_start=3D0, fm_length=3D18446744073709551615,
+fm_flags=3DFIEMAP_FLAG_SYNC, fm_extent_count=3D0} =3D> {fm_flags=3DFIEMAP_F=
+LAG_SYNC,
+fm_mapped_extents=3D4, ...}) =3D 0
 
-ext4 defragmentation for ./birdie/.config/google-chrome/Default/Sync
-Data/LevelDB/000435.log
-        Failed to defrag with EXT4_IOC_MOVE_EXT ioctl:Success   [ NG ]
 
-ls -la /home/birdie/.config/google/Default/Sync Data/LevelDB/000435.log
 
--rw-------. 1 birdie birdie 139150 Nov 19 10:22
-'/home/birdie/.config/google-chrome/Default/Sync Data/LevelDB/000435.log'
+Device or resource busy? Why? Chrome is not open.
 
-A small file that is not getting defragmented and I have literally five doz=
-ens
-of them.
+ps ax | grep -i chrome
+ 967139 pts/1    S+     0:00 grep --color=3Dauto -i chrome
 
-And I have plenty of free space.
 
-Filesystem volume name:=20=20=20
-Last mounted on:          /
-Filesystem UUID:=20=20=20=20=20=20=20=20=20=20
-Filesystem magic number:  0xEF53
-Filesystem revision #:    1 (dynamic)
-Filesystem features:      ext_attr resize_inode dir_index filetype extent
-flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
-Filesystem flags:         signed_directory_hash=20
-Default mount options:    user_xattr acl
-Filesystem state:         not clean
-Errors behavior:          Continue
-Filesystem OS type:       Linux
-Inode count:              1572864
-Block count:              6287360
-Reserved block count:     314367
-Overhead clusters:        109963
-Free blocks:              4126491
-Free inodes:              1428171
-First block:              0
-Block size:               4096
-Fragment size:            4096
-Reserved GDT blocks:      1022
-Blocks per group:         32768
-Fragments per group:      32768
-Inodes per group:         8192
-Inode blocks per group:   512
-Flex block group size:    16
-Filesystem created:=20=20=20=20=20=20=20
-Last mount time:=20=20=20=20=20=20=20=20=20=20
-Last write time:=20=20=20=20=20=20=20=20=20=20
-Mount count:=20=20=20=20=20=20=20=20=20=20=20=20=20=20
-Maximum mount count:      -1
-Last checked:=20=20=20=20=20=20=20=20=20=20=20=20=20
-Check interval:           0 (<none>)
-Lifetime writes:=20=20=20=20=20=20=20=20=20=20
-Reserved blocks uid:      0 (user root)
-Reserved blocks gid:      0 (group root)
-First inode:              11
-Inode size:               256
-Required extra isize:     28
-Desired extra isize:      28
-Default directory hash:   half_md4
-Directory Hash Seed:=20=20=20=20=20=20
-Journal backup:           inode blocks
+Online defragmentation in both 6.16 and 6.17 is broken.
 
 --=20
 You may reply to this email to add a comment.
