@@ -1,140 +1,178 @@
-Return-Path: <linux-ext4+bounces-11940-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11941-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34AC6C747A5
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 15:14:25 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD882C74B20
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 15:59:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EED8C4F73EE
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 14:04:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D1A74356FE1
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 14:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37CEC33DEEE;
-	Thu, 20 Nov 2025 14:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D62534A3B0;
+	Thu, 20 Nov 2025 14:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Nlop4bDN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDA3292B4B;
-	Thu, 20 Nov 2025 14:04:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99EF8341072
+	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 14:52:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763647485; cv=none; b=cTszvHDSCwlfcsgfHSaZYhPB3JR0sEi5e8HEhQ3XtMVwHiAE+e5ljlsg2Xbu5uXZA1EIdaE2Lp97Zr6FnCbkuPcb99BXk6/7pcTNPtA46hJ1gsohrOLk7uz911NhJ3dPtXiQuK8aMxEOarcz39J4hddq4DLktP9t568H+sla1iA=
+	t=1763650373; cv=none; b=m9IPGVA33Tq0IZWmGjnAnzIoGeA1i0Gkz7Ik7VyxHlvXJor56AkKX0gIdn0bS/O/mCOZOmsyrDsIL78HSVeF0BAu25oip04AcskpPGzuQ8url1pLXstog6qXhP/zLlXti9iF2hUBQ4nkZ/yyeOMeumTjH0Klwi5c/O9GgvoY7lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763647485; c=relaxed/simple;
-	bh=4zyREGKcISJB9fG6DLLYGachBcrX8cG98nVCAXn7Qh4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=DHvd/Ba5ykvAYX8aV3hDM1hN/oH8RX52Ro3dSK4kiB/4JoO8qCoCN5NXE3DUrDFwvx2JXTXoKqr9pdlxIL+kreRupuSUgFD1bMyLjD9jw64uq21dNTzUBLohhTdn1+pBlrIlfyZj5uaTgIzRbo2SP0jy++FgrE39wn4zXBDHZtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dC0Sr4lGzzYQv0n;
-	Thu, 20 Nov 2025 22:03:56 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 9636D1A16C0;
-	Thu, 20 Nov 2025 22:04:38 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.50.87.129])
-	by APP2 (Coremail) with SMTP id Syh0CgB31Hr0Hx9p_4amBQ--.47572S4;
-	Thu, 20 Nov 2025 22:04:36 +0800 (CST)
-From: libaokun@huaweicloud.com
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	libaokun1@huawei.com,
-	libaokun@huaweicloud.com
-Subject: [PATCH e2fsprogs v3] libext2fs: fix orphan file size > kernel limit with large blocksize
-Date: Thu, 20 Nov 2025 21:55:14 +0800
-Message-Id: <20251120135514.3013973-1-libaokun@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1763650373; c=relaxed/simple;
+	bh=fJNbQYu7PoiJLsEPpjUYNqAPI6k2geFEJacIKnsv5a4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=UkdubQzG2VaGuHvXpLgtalU49Xncz4ibTWyjrA7C/9tPCswuwEGMTWwTG/HgGRIyHNkJlbhw94uKyWsn4ZU0c3NhE6By5rnvITrVKSeJ0dUIdaNYEBQvntXoll+uGDStPb9tnpl0sFNyVv3mRhKNvEoS/FjQgGoTxvwrYmIJ8jM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Nlop4bDN; arc=none smtp.client-ip=209.85.166.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-43379251ff9so9582815ab.1
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 06:52:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1763650367; x=1764255167; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mIp1emodWmrQX+c6TjoXmEBGWcecINECr9nK+dGHBUw=;
+        b=Nlop4bDNIOkjuo0pMhzaqc0ODrEsmRo7XtLqwhp00uyFASxw+sbIvvfDKg63/0WNIr
+         Irgw7i1L5c7f3KspyZuRfY76O51HffIuodvQy5ZIcDN4No7WwIxUOGZ9dpes/M6K+nsd
+         SNLzENdMcdkRpJUmuFjuM9BMlGaR61DPmsUMatu7aVJzbpi7Z/RO6GbliOgOscpBha8S
+         DnzFtV5phPRpPEJgf98WlMFKyzL6CdLykV3ZnkTgBAq3ZRb9M24771+6fglXYKmcEHuj
+         JwzMwrRMP1iOEu/PZF6XSo/nxjqLzdvmfaif9TGvKGR4YXIy2m1LIpokuAZvSHGS7C+s
+         olCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763650367; x=1764255167;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=mIp1emodWmrQX+c6TjoXmEBGWcecINECr9nK+dGHBUw=;
+        b=WhTeQJCGdAgNfD3UPzOaQTEDH+k1/jJQyILSVzvWrfWOsI0/Yhc+7h290KolXEhr0Z
+         fV2adppQo46QfxfSyh/JU2lUxyaaZ8NXKjtiwJyYOfPUTSkJv+i6C0hAFQ2liDxwoDog
+         gNaM2XL/DmzpSm0vix2975kzJnCvjZqq7Te29eby8TGtQQyUTp0ZUnABTxqjkkGD/dJk
+         tbE2tyDJ/7Z9jpADKlW7HQFmlyWubYDfla1Q/MOKjByRvwuYA6BAX/bKYGZCOOyQGtee
+         UBqlNjNt3qiLcnqqNtPN2kf6WwNlj/lMkL6aFqnbz9+MUqWD0FZZfOQb7WI6a+SrLJOm
+         KThg==
+X-Forwarded-Encrypted: i=1; AJvYcCXRyOiqCrk2uO4r7H4baRfN8UjImVThwUvm4miwLEdzRjOQd4UCyUTjJ6PDuz1kK6gwwI1YdRQQFD4n@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLYP28Th1WOTZnH+k1hAwRFOS0cdsYgd/D5sTZMlq+Kf2PuZv6
+	dsTHS5XfUYOJw7DH/S4FMPToryVKZRqoq0+bzIFD6prKVOmYEyWVTdPmwjuccLz0L/Smb24Uh4+
+	jcbfIx8Q=
+X-Gm-Gg: ASbGncvmhg5lWb6S9DlFvV3pbxpSGFeOQKgL5JxPqLQcQvTcRzP6IjBaBpCSVreXYxM
+	jTdTEkBZA2jcU46oOUCpDdQY66MJB0UFm0hovvwFSyEPtDMosX35m8TYCMyQhguYTLjXxgagtT7
+	VfEC7sJJljLtZWpHG7m16XluIiQSIGdpEJvdJ/Jr6K8Vp9Igw9YcAueTqXYTTVumFI4qTE4laAQ
+	FcDnKfCUTowSxi6xfgoUb0NGrFras29E+S+V4eSMfD+JxBFA4nLaj2+xcVwVSFdCkwnSCRxCm6F
+	jxZk7R+5Uqc+mOP0izg0M/Y9jKzV4H7ueUwGqIFchdgGlRdrBxj5GzJtYxH4jEOESOnK+J9a4+n
+	ymg7qMJPTYDfd2z+QqAkYXFh/zjKSkwh8Ol8r8R2P1DmQa93hJ8P+JJ8ysyuD+N/hbvGtkqcB8G
+	2BSg==
+X-Google-Smtp-Source: AGHT+IEmRlVKCe07qbgo1t2w3uFpBKsqx62crTftDC+8sZ0oUBIrcGL53VTRakva//fmnWvcfQrQww==
+X-Received: by 2002:a05:6e02:1c01:b0:433:1d5a:5157 with SMTP id e9e14a558f8ab-435aa88e822mr21434775ab.6.1763650367018;
+        Thu, 20 Nov 2025 06:52:47 -0800 (PST)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-5b954b207d7sm1008611173.33.2025.11.20.06.52.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Nov 2025 06:52:46 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-kernel@vger.kernel.org, david.laight.linux@gmail.com
+Cc: Alan Stern <stern@rowland.harvard.edu>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Alexei Starovoitov <ast@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, 
+ Andreas Dilger <adilger.kernel@dilger.ca>, Andrew Lunn <andrew@lunn.ch>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+ Ard Biesheuvel <ardb@kernel.org>, 
+ Arnaldo Carvalho de Melo <acme@kernel.org>, 
+ Bjorn Helgaas <bhelgaas@google.com>, Borislav Petkov <bp@alien8.de>, 
+ Christian Brauner <brauner@kernel.org>, 
+ =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+ Christoph Hellwig <hch@lst.de>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Dan Williams <dan.j.williams@intel.com>, 
+ Dave Hansen <dave.hansen@linux.intel.com>, 
+ Dave Jiang <dave.jiang@intel.com>, David Ahern <dsahern@kernel.org>, 
+ Davidlohr Bueso <dave@stgolabs.net>, 
+ "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Herbert Xu <herbert@gondor.apana.org.au>, Ingo Molnar <mingo@redhat.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Jakub Sitnicki <jakub@cloudflare.com>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Jarkko Sakkinen <jarkko@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
+ Jiri Slaby <jirislaby@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ John Allen <john.allen@amd.com>, 
+ Jonathan Cameron <jonathan.cameron@huawei.com>, 
+ Juergen Gross <jgross@suse.com>, Kees Cook <kees@kernel.org>, 
+ KP Singh <kpsingh@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>, 
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+ Mika Westerberg <westeri@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+ Miklos Szeredi <miklos@szeredi.hu>, Namhyung Kim <namhyung@kernel.org>, 
+ Neal Cardwell <ncardwell@google.com>, nic_swsd@realtek.com, 
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+ Olivia Mackall <olivia@selenic.com>, Paolo Abeni <pabeni@redhat.com>, 
+ Paolo Bonzini <pbonzini@redhat.com>, Peter Huewe <peterhuewe@gmx.de>, 
+ Peter Zijlstra <peterz@infradead.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Sean Christopherson <seanjc@google.com>, 
+ Srinivas Kandagatla <srini@kernel.org>, 
+ Stefano Stabellini <sstabellini@kernel.org>, 
+ Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>, 
+ Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>, 
+ Tom Lendacky <thomas.lendacky@amd.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, x86@kernel.org, 
+ Yury Norov <yury.norov@gmail.com>, amd-gfx@lists.freedesktop.org, 
+ bpf@vger.kernel.org, cgroups@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, io-uring@vger.kernel.org, 
+ kvm@vger.kernel.org, linux-acpi@vger.kernel.org, 
+ linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, 
+ linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org, 
+ linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org, 
+ linux-integrity@vger.kernel.org, linux-mm@kvack.org, 
+ linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, 
+ linux-perf-users@vger.kernel.org, linux-scsi@vger.kernel.org, 
+ linux-serial@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+ linux-usb@vger.kernel.org, mptcp@lists.linux.dev, netdev@vger.kernel.org, 
+ usb-storage@lists.one-eyed-alien.net, David Hildenbrand <david@kernel.org>
+In-Reply-To: <20251119224140.8616-1-david.laight.linux@gmail.com>
+References: <20251119224140.8616-1-david.laight.linux@gmail.com>
+Subject: Re: (subset) [PATCH 00/44] Change a lot of min_t() that might mask
+ high bits
+Message-Id: <176365036384.566630.2992984118137417732.b4-ty@kernel.dk>
+Date: Thu, 20 Nov 2025 07:52:43 -0700
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgB31Hr0Hx9p_4amBQ--.47572S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF1UAr1xCFyxCFyrZFyxKrg_yoW8Cry5pF
-	W5J3s8G3Wj9Fy8W3Z2ya17try8GwnYyw1UXw1qv34FgFy5trn3Krsxt34YgFWDtr97A3y0
-	9FsrZryUtFyqqaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4AY6r
-	1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0
-	F24lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-	0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-	17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-	C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-	6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-	73UjIFyTuYvjfUosqWUUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQASBWkejhg-VAAAsc
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.3
 
-From: Baokun Li <libaokun1@huawei.com>
 
-Kernel commit 0a6ce20c1564 ("ext4: verify orphan file size is not too big")
-limits the maximum supported orphan file size to 8 << 20.
+On Wed, 19 Nov 2025 22:40:56 +0000, david.laight.linux@gmail.com wrote:
+> It in not uncommon for code to use min_t(uint, a, b) when one of a or b
+> is 64bit and can have a value that is larger than 2^32;
+> This is particularly prevelant with:
+> 	uint_var = min_t(uint, uint_var, uint64_expression);
+> 
+> Casts to u8 and u16 are very likely to discard significant bits.
+> 
+> [...]
 
-However, in e2fsprogs, the orphan file size is set to 32–512 filesystem
-blocks when creating a filesystem.
+Applied, thanks!
 
-With 64k block size, formatting an ext4 fs >32G gives an orphan file bigger
-than the kernel allows, so mount prints an error and fails:
+[12/44] block: use min() instead of min_t()
+        commit: 9420e720ad192c53c8d2803c5a2313b2d586adbd
 
-    EXT4-fs (vdb): orphan file too big: 8650752
-    EXT4-fs (vdb): mount failed
-
-Thus, orphan file size is capped at 512 filesystem blocks in both e2fsprogs
-and the kernel.
-
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-v1->v2:
- * Revert the changes in ext2fs_default_orphan_file_blocks()
-
-v2->v3:
- * Aligning with the old default of 512 filesystem blocks for
-   max orphan file size allows existing 64KB block filesystems
-   (created under 64KB page size) to mount without error.
-
-v1: https://lore.kernel.org/r/20251112122157.1990595-1-libaokun@huaweicloud.com
-v2: https://lore.kernel.org/r/20251113090122.2385797-1-libaokun@huaweicloud.com
-
- lib/ext2fs/orphan.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/lib/ext2fs/orphan.c b/lib/ext2fs/orphan.c
-index 14ac3569..0f1889cb 100644
---- a/lib/ext2fs/orphan.c
-+++ b/lib/ext2fs/orphan.c
-@@ -15,6 +15,8 @@
- #include "ext2_fs.h"
- #include "ext2fsP.h"
- 
-+#define EXT4_MAX_ORPHAN_FILE_BLOCKS 512
-+
- errcode_t ext2fs_truncate_orphan_file(ext2_filsys fs)
- {
- 	struct ext2_inode inode;
-@@ -129,6 +131,9 @@ errcode_t ext2fs_create_orphan_file(ext2_filsys fs, blk_t num_blocks)
- 	struct ext4_orphan_block_tail *ob_tail;
- 	time_t now;
- 
-+	if (num_blocks > EXT4_MAX_ORPHAN_FILE_BLOCKS)
-+		num_blocks = EXT4_MAX_ORPHAN_FILE_BLOCKS;
-+
- 	if (ino) {
- 		err = ext2fs_read_inode(fs, ino, &inode);
- 		if (err)
+Best regards,
 -- 
-2.46.1
+Jens Axboe
+
+
 
 
