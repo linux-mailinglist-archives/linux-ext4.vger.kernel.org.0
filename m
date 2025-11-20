@@ -1,82 +1,82 @@
-Return-Path: <linux-ext4+bounces-11925-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11926-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B825DC71A83
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 02:10:34 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52983C71AB3
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 02:14:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id 6F1C72A41E
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 01:10:33 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3FB4E34A611
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 01:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B37023D28B;
-	Thu, 20 Nov 2025 01:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E87B223D2B2;
+	Thu, 20 Nov 2025 01:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZyKfH2IW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TogimRC7"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yx1-f45.google.com (mail-yx1-f45.google.com [74.125.224.45])
+Received: from mail-yx1-f52.google.com (mail-yx1-f52.google.com [74.125.224.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2787178372
-	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 01:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014C11E51EB
+	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 01:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763601027; cv=none; b=apdbIrseJ1h2CkU711ehqrdqoPOcAT+icNpSMLntTtxSiPcX1GPx5riP6ahF5/obbQzo0yuDndIQ40ish1UaXVPBytA6HUyLgtiRGlUVm2/KUFRvBMxR/QSRykbr4wltTGvCwneDh1YdYXOc3Wy+P/10kT/ocTnookhNW0rL9FY=
+	t=1763601247; cv=none; b=hjpliwU5ZAfgRX06SfWtp4lba3MX+sQtDgXsHMWdnGsjqhlimCF8BVfp36nxboV8NBlNW/RKvGil97bx1/hfi4QIeuDl3C5PHZZzzVceonN6uyGsLuND9R2kT0hRW12gBEQF+GigyhK5QDj9Xdtcy62B/N3iOSJEjwehyP+FtVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763601027; c=relaxed/simple;
-	bh=AagjkzoAXk8/NgFgBGBdDQ6FH6q/TjeFv07vIObom44=;
+	s=arc-20240116; t=1763601247; c=relaxed/simple;
+	bh=R2oeUj+XCK/qDmDhvTPx7y9pMMLoh9e2ens1YM4Oi0c=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NX5msUL90q2DTxiJEWZK2tgn+MPJXWGKB+tKLXGG2uLxkCFjlidaoOSQ89GJOi+CzXUXporDuEfP812aSB2X/XS/ymce8eRb86lSWdagCjThF9IHtChPSkwpiZw1sQ6FBRfm2PUcZh9wwzMt/YUkmb3R2pRIA84034PvmsR3fss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZyKfH2IW; arc=none smtp.client-ip=74.125.224.45
+	 In-Reply-To:Content-Type; b=KRvVfk/2GlE+4RaHa/Iun5gcSzNM9xI4zggZPJ6fXXzU1v3cHPZmJnqXFVNaBU6Zg5M5KUmS9QhXEfXe/kPJyovDbxPH0VDAwbApFujx/UCy949BrYOBSlf+2PBs50bRr2IIlAGwIaXIdMQtJmaCx+h5dMUmjqLnh6dRJGCz8ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TogimRC7; arc=none smtp.client-ip=74.125.224.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f45.google.com with SMTP id 956f58d0204a3-640d4f2f13dso305388d50.1
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Nov 2025 17:10:25 -0800 (PST)
+Received: by mail-yx1-f52.google.com with SMTP id 956f58d0204a3-640c9c85255so330136d50.3
+        for <linux-ext4@vger.kernel.org>; Wed, 19 Nov 2025 17:14:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763601025; x=1764205825; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763601244; x=1764206044; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:content-language:references:cc:to
          :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=4TN9WlxM7bEYhdovOZdXK5qjiJkEcDO7wUY7EQtQg7s=;
-        b=ZyKfH2IWYoGtZ6E0/iCtKW+BgsZhjAeTqQ6Pf1df4Jl87zcA0YVI4RuPH59nqgngub
-         XwaGqeJ9btfkSCbHvcXUiHVYogXmaG15Gp9fRJfwY4SrRO23eBrZjoFkDvRDrBKxacPa
-         EkYqluiqBw01P31Mh82OPhf3VywsZy9x+FC5yaZsGynk2/A1BsawIpg9n0m0feNrDGx7
-         oWPrrD508p+OGWbtaEQ0eouLu49c68iZQHWKgdqkr4z3nbGt38j8yR8atZWsUWImiiuH
-         0aTIwfiErofhgTgMKD9vo/V0Qg1HtEMkWRXEhEquNENIyoG8mXT8HNTRFZIXA5Lj260z
-         w13w==
+        bh=Ro2AwnsY3kiJtRK951GxMdh5YAEEI9kh2YXs/PHq0is=;
+        b=TogimRC7pU5917VNG66b750xuuT/19GmOz8TZuTSj5xgy7WnCclNscTKFjXA+WARNT
+         WtAWsgCbWTwMW3oMPc/3GZxRtEf8qkl/2NLe00MUv9bcpassvlwSJg6dFWpidbyiaxDL
+         vCvpu8Pqgj3ajahjwRNEg970jIcEiNePyPNtiOIGDQku72c8SOvooqCLaR4L75hhb4Ax
+         hO/YlYcw+dKEeZLv0cQRlwk/eympZZR+MOSM6WEc1/3UBZxWeOlWpCmLc5vHpHFV9AjC
+         JRYEyPvt0eHBesplPU3q1Jno98AuGMaylJgBOPUukoQSnJx7DVI8YvcrAAOnI21isxAG
+         6eKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763601025; x=1764205825;
+        d=1e100.net; s=20230601; t=1763601244; x=1764206044;
         h=in-reply-to:autocrypt:from:content-language:references:cc:to
          :subject:user-agent:mime-version:date:message-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4TN9WlxM7bEYhdovOZdXK5qjiJkEcDO7wUY7EQtQg7s=;
-        b=Kh4ac2HthTBedw5R7NbIo7xoLN21BvzTK1BYIYxNWNicw3zseh/iDbbMa1xjJnz7JH
-         KwdavAY9VkJIn2tUSva8ExFbn9cjx04oq/83XK2PTlCZDsAr6ZbANwQjgCGapdPkjHBX
-         ww21EMyk7lEWicdP6Z0X7wA+5fd/S7BCnykPNyyjyCo4605STyd/Zxz0tlP9aZ5LWX/A
-         BqkYODr3dNYy/baY3T2jx5c3ygwrzmZjHhDEkxs9WqcAsVM4JtKvG74fR3Q+x95fKDKl
-         a/HtfodO9bQq4u7+hRmUYprXjUqH01gvTruH3x+oEp4TiU42cJw+MZ/PNOASBnFSM+Hs
-         QBuA==
-X-Forwarded-Encrypted: i=1; AJvYcCXfMYIQWnw10coHJmV7A/VliKOPMxikMNBp7RlIgVN7d8Jy3hWtPaBdnHio+EHHLyEhezhq/DuFtxwd@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7NYU+vIIcI/qejyLxscWlBO5dfBopSav5UPy3Xub9g8TyllfQ
-	dtIMaUvwr14PiBKP3xq/jmC94hBKC9JFKh35vqwr2o79Z+3MWN5iCmFHwnhQzI/z
-X-Gm-Gg: ASbGnctFzC+qzjjYIomM+rWWkPbsQiBpH8AQZSUpDWTmybdC1pLCjkJZvRKFKALDFAN
-	GsPTppkEQ4+khaUcfrl5j7yz4m64DTP+OwaiJTkW3NAGDYD+4upRPHOmJ4vKbyB1MpV73infd+R
-	cjj8HdO+D04S4UsuQfcYKm188gkW/ibzNF/TtAYkrv8anbigfg3WcLN5Y4wR910Dm1zORoptPLv
-	I0r9J/BH8fbbxdLoSjwmHytBSEQGYYRJjZ7j34nHeHbXedtA85SilaD63lSnIFl64Dnbhp3dAl9
-	0oG63rQmXsiMzm5Ll3P7eioHFDWCpMf5tnUp3OEalRzC2vx0Iab1f7o6iK2aLuGCzk1At63LPez
-	oNUG2gtqWY0f3b3grUSWCB41piY3yScWwpN2mjPXepjHbuP/LLmcyF7AiwDefcD+PJNL1t6EN+u
-	XR3cdyaFGU+vAJtKLfaAmKORSkd0o8pPKMYJxyb7q4OWhQfMiiP/La6TdGjMHdK4CJKVprFNRoG
-	JuKEtROUWSX2WbzFibZVRRpbcX+K7678mKZVA==
-X-Google-Smtp-Source: AGHT+IGQ8ljlFgaIQ8fqCKhYqANuvQVeoGitfzglNxi5dCSgv+OYhOYNNFR1D71mL+SWjWaT3VejIQ==
-X-Received: by 2002:a05:690e:16a1:b0:63f:ad90:ad45 with SMTP id 956f58d0204a3-642f778d6femr1012066d50.1.1763601024388;
-        Wed, 19 Nov 2025 17:10:24 -0800 (PST)
+        bh=Ro2AwnsY3kiJtRK951GxMdh5YAEEI9kh2YXs/PHq0is=;
+        b=ny/dhf4SHR8AoVkIoIasaPenXncr5oZTHPkyeLtqt1IUUDnXGBKwSXyJdNHWmIkg3/
+         UXMlWFyqPOhwnpcFbFAWJz7glNtD7GIRfw0JUoCjDy11cj1fFqm/VRCCDJvtGvFJ4BTE
+         cts4uRiMl8mEfZfv6IUlphzJf+j4v3B+j4O8pnK/EqM45blBaPQ2Z17rdWsRXGdlJ/Q/
+         e7zxpgccF+v1jFhae1iIhC2Xb8Wv0XDnK5yeVII8kWHX3WPwmgdO2o3mNpHNNN9nkt2B
+         I2zq+TK7XDF3ar9gz2PrN1d6M3mPfDpt/TxZcGA0aMj+Z6X8gJLJR2ON2VPfjeYlF2sI
+         0Jlg==
+X-Forwarded-Encrypted: i=1; AJvYcCU+1vRQbmaWbxqfgm/+SIZeeiRg4pieSupl69WdHrSIN3hFJPUJzOQpGyE1A+rUVxZQieuvkELRfdFy@vger.kernel.org
+X-Gm-Message-State: AOJu0YwiDFM4beoNyHfsA0wsrBndFIvaDMNKMxDPZuhKKicDpdrcZfzH
+	JUnA6I34SLZHVN1JDmkfPXa8D1DTnuhR7aBIdhS0nwFzuAUS5OYYTzAQ
+X-Gm-Gg: ASbGncunG1xiEQ70Bj9NxMSoleCKmaDWRfF9byZOIrsNnAjDoEgw3zoiBQnueyhdAZm
+	7VmGN9hwcUblG+5c+4JX0VlPb8NdVzmmPOFq/lFtgSRb7J4A7SjX7w18r0sOB9JxevAeBla4ebN
+	xxQLVTDRMONBpAUEzWS4wNikvVrV+iJ83kJjy7yxUG4/yNOzQDbvM7y4ng+R6BJU5KqcS9h3ISZ
+	XSN49hYK0GsvAv5jtjXXeLwH68y1aRausa2RKh1utsdrR5a4lcIdtYvvUJGgr4dshtjhDJsb1kH
+	s4PyImROypLSFwSCMHPu6EIyG/7wnNbnQz5UPVnwU3k7kbe+ciEslhOmb2uHALWr1ZPgobtgl2x
+	Gqiqv69R4eYuyOOP+Bwz/vYqBbyjKIfCTOBofh77eyZFSVY5RVAG0kW3b8mfGlLiklAibCNV2S/
+	Qf9oEvaZpkXjzYLgRo3nD+F3qzYWKQUnxzKk/6GriYpvscB/zv2Tzlu3mOtqhevO3V7x2sQLLsO
+	67oLktFg6eiH4ReCeYplgFCXr8jeyG9CfE2Iw==
+X-Google-Smtp-Source: AGHT+IFBkTSnOMY1aUwHrDu91DTar4Wa0pNYHHLOZSESqxNDY82w7k7J4UK+N6tO4y4UVOE3OUwocw==
+X-Received: by 2002:a05:690e:130e:b0:63f:b4ee:792c with SMTP id 956f58d0204a3-642f77f8b4bmr1029755d50.19.1763601243575;
+        Wed, 19 Nov 2025 17:14:03 -0800 (PST)
 Received: from [10.138.34.110] (h96-60-249-169.cncrtn.broadband.dynamic.tds.net. [96.60.249.169])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-642f7048d7esm375063d50.4.2025.11.19.17.10.23
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-78a799405f8sm3321927b3.42.2025.11.19.17.14.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Nov 2025 17:10:23 -0800 (PST)
-Message-ID: <aaf98238-e8f6-472d-bfb9-7f8ddbab8e02@gmail.com>
-Date: Wed, 19 Nov 2025 20:10:19 -0500
+        Wed, 19 Nov 2025 17:14:02 -0800 (PST)
+Message-ID: <39d281ba-1ee4-49ae-9aae-e2bd65342e3f@gmail.com>
+Date: Wed, 19 Nov 2025 20:13:58 -0500
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -96,6 +96,7 @@ References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
  <d0a122b8-3b25-44e6-8c60-538c81b35228@gmail.com>
  <20251119180449.GS196358@frogsfrogsfrogs>
  <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
+ <1be4cb25-50e2-46fa-ba86-d6342e997e63@linux.alibaba.com>
 Content-Language: en-US
 From: Demi Marie Obenour <demiobenour@gmail.com>
 Autocrypt: addr=demiobenour@gmail.com; keydata=
@@ -141,14 +142,14 @@ Autocrypt: addr=demiobenour@gmail.com; keydata=
  vUSQHSrmfOzX3cV4yfmjM5lewgSstoxGyTx2M8enslgdXhPthZlDnTnOT+C+OTsh8+m5tos8
  HQjaPM01MKBiAqdPgksm1wu2DrrwUi6ChRVTUBcj6+/9IJ81H2P2gJk3Ls3AVIxIffLoY34E
  +MYSfkEjBz0E8CLOcAw7JIwAaeBT
-In-Reply-To: <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
+In-Reply-To: <1be4cb25-50e2-46fa-ba86-d6342e997e63@linux.alibaba.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="------------u4y7Z4Hxdq0nvazIG660CKHU"
+ boundary="------------Sm2qTEvY1lYhiLWXqYKC12fe"
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------u4y7Z4Hxdq0nvazIG660CKHU
-Content-Type: multipart/mixed; boundary="------------4bo0nskHQ08B9HKd7s0YguKR";
+--------------Sm2qTEvY1lYhiLWXqYKC12fe
+Content-Type: multipart/mixed; boundary="------------YD9g1t557jS98JGC63a0p9N2";
  protected-headers="v1"
 From: Demi Marie Obenour <demiobenour@gmail.com>
 To: Gao Xiang <hsiangkao@linux.alibaba.com>,
@@ -157,91 +158,102 @@ Cc: bernd@bsbernd.com, joannelkoong@gmail.com, linux-ext4@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, miklos@szeredi.hu, neal@gompa.dev,
  linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
  zfs-devel@list.zfsonlinux.org
-Message-ID: <aaf98238-e8f6-472d-bfb9-7f8ddbab8e02@gmail.com>
+Message-ID: <39d281ba-1ee4-49ae-9aae-e2bd65342e3f@gmail.com>
 Subject: Re: [PATCHSET v6 4/8] fuse: allow servers to use iomap for better
  file IO performance
 References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
  <d0a122b8-3b25-44e6-8c60-538c81b35228@gmail.com>
  <20251119180449.GS196358@frogsfrogsfrogs>
  <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
-In-Reply-To: <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
+ <1be4cb25-50e2-46fa-ba86-d6342e997e63@linux.alibaba.com>
+In-Reply-To: <1be4cb25-50e2-46fa-ba86-d6342e997e63@linux.alibaba.com>
 
---------------4bo0nskHQ08B9HKd7s0YguKR
-Content-Type: multipart/mixed; boundary="------------ryUl7YI5BrtmXg85hUqSfXT0"
+--------------YD9g1t557jS98JGC63a0p9N2
+Content-Type: multipart/mixed; boundary="------------hjHbB7qRf0ZdQUsi6lUyJaFo"
 
---------------ryUl7YI5BrtmXg85hUqSfXT0
+--------------hjHbB7qRf0ZdQUsi6lUyJaFo
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 11/19/25 16:00, Gao Xiang wrote:
->=20
->=20
-> On 2025/11/20 02:04, Darrick J. Wong wrote:
->> On Wed, Nov 19, 2025 at 04:19:36AM -0500, Demi Marie Obenour wrote:
->>>> By keeping the I/O path mostly within the kernel, we can dramaticall=
-y
->>>> increase the speed of disk-based filesystems.
+On 11/19/25 16:51, Gao Xiang wrote:
+> On 2025/11/20 05:00, Gao Xiang wrote:
+>> On 2025/11/20 02:04, Darrick J. Wong wrote:
+>>> On Wed, Nov 19, 2025 at 04:19:36AM -0500, Demi Marie Obenour wrote:
+>>>>> By keeping the I/O path mostly within the kernel, we can dramatical=
+ly
+>>>>> increase the speed of disk-based filesystems.
+>>>>
+>>>> ZFS, BTRFS, and bcachefs all support compression, checksumming,
+>>>> and RAID.=C2=A0 ZFS and bcachefs also support encryption, and f2fs a=
+nd
+>>>> ext4 support fscrypt.
+>>>>
+>>>> Will this patchset be able to improve FUSE implementations of these
+>>>> filesystems?=C2=A0 I'd rather not be in the situation where one can =
+have
+>>>> a FUSE filesystem that is fast, but only if it doesn't support moder=
+n
+>>>> data integrity or security features.
 >>>
->>> ZFS, BTRFS, and bcachefs all support compression, checksumming,
->>> and RAID.  ZFS and bcachefs also support encryption, and f2fs and
->>> ext4 support fscrypt.
+>>> Not on its own, no.
 >>>
->>> Will this patchset be able to improve FUSE implementations of these
->>> filesystems?  I'd rather not be in the situation where one can have
->>> a FUSE filesystem that is fast, but only if it doesn't support modern=
-
->>> data integrity or security features.
->>
->> Not on its own, no.
->>
->>> I'm not a filesystem developer, but here are some ideas (that you
->>> can take or leave):
+>>>> I'm not a filesystem developer, but here are some ideas (that you
+>>>> can take or leave):
+>>>>
+>>>> 1. Keep the compression, checksumming, and/or encryption in-kernel,
+>>>> =C2=A0=C2=A0=C2=A0 and have userspace tell the kernel what algorithm=
+ and/or encryption
+>>>> =C2=A0=C2=A0=C2=A0 key to use.=C2=A0 These algorithms are generally =
+well-known and secure
+>>>> =C2=A0=C2=A0=C2=A0 against malicious input.=C2=A0 It might be necess=
+ary to make an extra
+>>>> =C2=A0=C2=A0=C2=A0 data copy, but ideally that copy could just stay =
+within the
+>>>> =C2=A0=C2=A0=C2=A0 CPU caches.
 >>>
->>> 1. Keep the compression, checksumming, and/or encryption in-kernel,
->>>     and have userspace tell the kernel what algorithm and/or encrypti=
-on
->>>     key to use.  These algorithms are generally well-known and secure=
-
->>>     against malicious input.  It might be necessary to make an extra
->>>     data copy, but ideally that copy could just stay within the
->>>     CPU caches.
+>>> I think this is easily doable for fscrypt and compression since (IIRC=
+)
+>>> the kernel filesystems already know how to transform data for I/O, an=
+d
+>>> nowadays iomap allows hooking of bios before submission and/or after
+>>> endio.=C2=A0 Obviously you'd have to store encryption keys in the ker=
+nel
+>>> somewhere.
 >>
->> I think this is easily doable for fscrypt and compression since (IIRC)=
-
->> the kernel filesystems already know how to transform data for I/O, and=
-
->> nowadays iomap allows hooking of bios before submission and/or after
->> endio.  Obviously you'd have to store encryption keys in the kernel
->> somewhere.
+>> I think it depends, since (this way) it tries to reuse some of the
+>> existing kernel filesystem implementations (and assuming the code is
+>> safe), so at least it still needs to load a dedicated kernel module
+>> for such usage at least.
+>>
+>> I think it's not an issue for userspace ext4 of course (because ext4
+>> and fscrypt is almost builtin for all kernels), but for out-of-tree
+>> fses even pure userspace fses, I'm not sure it's doable to load the
+>> module in a container context.
 >=20
-> I think it depends, since (this way) it tries to reuse some of the
-> existing kernel filesystem implementations (and assuming the code is
-> safe), so at least it still needs to load a dedicated kernel module
-> for such usage at least.
-
-My hope is that these modules could be generic library code.
-Compression, checksumming, and encryption algorithms aren't specific
-to any particular filesystem, and the kernel might well be using them
-already for other purposes.
-
-Of course, it's still the host admin's job to make sure the relevant
-modules are loaded, unless they are autoloaded.
-
-> I think it's not an issue for userspace ext4 of course (because ext4
-> and fscrypt is almost builtin for all kernels), but for out-of-tree
-> fses even pure userspace fses, I'm not sure it's doable to load the
-> module in a container context.
+> Two examples for reference:
 >=20
-> Maybe eBPF is useful for this area, but it's still not quite
-> flexible compared to native kernel filesystems.
+>   - For compression, in-tree f2fs already has a compression header
+>     in data of each compressed extent:
+>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
+tree/fs/f2fs/f2fs.h?h=3Dv6.17#n1497
 >=20
-> Thanks,
-> Gao Xiang
-Thank you for the feedback!
+>     while other fs may store additional metadata in extent metadata
+>     or other place.
+
+Extent metadata shouldn't be a problem, as that is already available
+during reads and written asynchronously for writes.  The headers are
+awkward, though, and might need some special-casing.
+>   - gocryptfs (a pure userspace FUSE fs) uses a different format
+>     from fscrypt (encrypted data seems even unaligned on disk):
+>     https://github.com/rfjakob/gocryptfs/blob/master/Documentation/file=
+-format.md
+
+This is probably an anti-pattern in general, as I expect it precludes
+the use of inline encryption hardware via blk-crypto.
 --=20
 Sincerely,
 Demi Marie Obenour (she/her/hers)
---------------ryUl7YI5BrtmXg85hUqSfXT0
+--------------hjHbB7qRf0ZdQUsi6lUyJaFo
 Content-Type: application/pgp-keys; name="OpenPGP_0xB288B55FFF9C22C1.asc"
 Content-Disposition: attachment; filename="OpenPGP_0xB288B55FFF9C22C1.asc"
 Content-Description: OpenPGP public key
@@ -361,31 +373,31 @@ EtJuZYM5blWncBOJCoWMnBEcTEo/viU3GgcVRw=3D=3D
 =3Dx94R
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------ryUl7YI5BrtmXg85hUqSfXT0--
+--------------hjHbB7qRf0ZdQUsi6lUyJaFo--
 
---------------4bo0nskHQ08B9HKd7s0YguKR--
+--------------YD9g1t557jS98JGC63a0p9N2--
 
---------------u4y7Z4Hxdq0nvazIG660CKHU
+--------------Sm2qTEvY1lYhiLWXqYKC12fe
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmkeanwACgkQszaHOrMp
-8lPrOQ/+P9fdog3wM9BEc4VYbEhDjEmiXEN034RUt2jTN5HPfqISR2/hgIgppcb2
-dYcKjcB1Wp0vqPYouLMrt0J5f6XCJ8PkcLLwsr7sQ9gwJKZyr4r+yPmEnHZnQpB+
-9sgH5Q/SDPkUxTpaeYi8aBwDn6mgc6GDg3/8XqOz24He6sFaGXd0mUHrg+zXhVbh
-H8YFTCrBWNTFt1uXaQWJkhZ8mISV6jZkbwAIjVz29mhZlnKtHJuT7Lc5k0t1XG8P
-WXvQl1xds58l2MjunuGCbTPtBRDJOilXEqVj1ZshtscT3+jTjWTj5UzOLsdofl7q
-RNgCIZkSVsXIFSqeMVriC3hl47z9+DpdJglgTEJrLNo8whqPq0l4IsnzhHSAD01m
-gx8vk3ZCNnAHVnM9VsPzFtGvwNdBj9l1BfF1HrQI3ZvTdHHu4ABEdO1jDeQ6xJN7
-Y67BQXYVbkL4KPRthJssygIjBpgJ8Fytfa1uos+Q7gXsul4eMOrVqBxG392xZ4TB
-aYEtqwzTQ2V6ZowQyMMXxX6eLxs1ENopTNEHS0dkdyeQF8iV5V1e5L92x+DDZU7D
-C1VI/amVcoGS3L5Zr3pR/Uz9Jsm9BncAU6T1vRH2LC6ft04wnsgQTYySFFQkX2fk
-qqhUlTPBGTK8UJB3m9i05DJhUAph+tbbESuQVSMZYXZc5O5KAEE=
-=iARO
+iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmkea1cACgkQszaHOrMp
+8lMI/BAAknBtqQyrMPuYMJpOR2euIUjnWRHMefwU60jYX7UOpQWCox4EIezlLds7
+nqRoSwcoEu0gFbz1DK0aeP0dAwRhLIjL0BLlXVNVPJR3odmxBPJaYuXLeX//GZUa
+8OswK53j2dsqZSJpcLPf/rdFlmdnXUMIUXbVTNiFdgh51fx44ih0B7c2oS841QUn
+uq9f6/Y6jVI2wH92jV2M8VeiohYxuJj5Giyo1vQeYfYekm6QrxqMz2xCvgjK64Wq
+kLnkThL3sv841hCAn5nvA5hg1WmKhmfO5FJ7dsUEjgzLOBvObTwu9Qrt5YiULqcA
+DjD3GrpwkSDHvPnLgSxXvd8EK0FuDiYT/179lvzjD/hIkYkCcWxaoD4aeMQSlqBG
+g3S9RonDx2oScoQxP9Xdxk4HqdylPSxvISrzmOBhjqoVjXSuzrcyGMW0B/uvbFFD
+k/CWZb596r6JX8PAMzWmBh4ZVhmPRsJEY+NeM+7Qm1BWXtuF3sFR7PUXkXJ9zJQJ
+RO3kupHKNH4VWQQ8PPLMePuMD0fVtDx0Rdw3KzVvGis/4mpFk5M35+zncZcSRlFB
+7iGitzqQjka93DU6vR+p31tSw0wtBYyoqDQOf/mimkjS01kJZD9/9vy0YydFqbXR
+UsYMFjGbapd2e/Utkc8bzaj4CcU3kutuHSCeb0cYx9H7WzO8t1w=
+=w/Mu
 -----END PGP SIGNATURE-----
 
---------------u4y7Z4Hxdq0nvazIG660CKHU--
+--------------Sm2qTEvY1lYhiLWXqYKC12fe--
 
