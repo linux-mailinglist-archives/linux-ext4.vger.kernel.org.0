@@ -1,205 +1,120 @@
-Return-Path: <linux-ext4+bounces-11927-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11928-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4060C71ACF
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 02:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4C2DC71B84
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 02:49:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 617F64E32C8
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 01:21:36 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3C5664E4C38
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 01:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A53023D7E6;
-	Thu, 20 Nov 2025 01:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E76926E70E;
+	Thu, 20 Nov 2025 01:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="X9PjzlxR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uF2z7xSs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C02431DE8AE;
-	Thu, 20 Nov 2025 01:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F05816EB42;
+	Thu, 20 Nov 2025 01:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763601691; cv=none; b=HEZt33WkC/mxxsrrstEoc4coLzmAj7HqBIa/deHQ9ekRADOnD9h6oc2i/r36pErY+0DTWFF46YKv+LxPhWXCM3AmsEjEV+MvG3ZRKFGx4j2YAtl51XVEVxh2DF7gv2jVMF6WUXzh23GS/9Vi1+DldoY29oNTux5+maaJTa89CS4=
+	t=1763603259; cv=none; b=LehxLUdygbahBDgmM6n5WKLwmWaaFf9RQCIqQl/qgs2FG5m4isINVZgc+kLIMe0fLrbzyB7ytxDo9p+6iljFwa9nzhm8E8sTPonJt7PR5SgkmRLxv8aL1eiKt4NuVQYW+Yr6g3fvw6SDUo3r+ctpDePa5hzfAdvYg0zmpUaut44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763601691; c=relaxed/simple;
-	bh=i4wxgjtKrhIGUq1NanlDCU86AlRZgyMavb9FCRKldVE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=FQlBdzGYWpLy5/i7C2BYjaS/6GQVkdEc/TnUrN8XyfhzsXkSvVZESmpd0rbigo19NEXTTDaCqQBFZ+i+HEaMFqO65C1TZgaqV3Igq8gUN9KzTiafQlOOMOgKKdjCip2mUfn3JXhpM4k4mW0d/agYV2l5PXJHBI0cdQypWmpXo00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=X9PjzlxR; arc=none smtp.client-ip=113.46.200.227
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=CxjUVIcD25U44jI58/lzCsIjg0A1Iaqvili4aT6WUXI=;
-	b=X9PjzlxRsZ10KV8qrPgal2nX+zn1MXl5hPfPl0OoOu63Uxvh63+z+ThgVanBK4Z/C7oNMyXgB
-	mjRa914Wc+DPOhOQbWLAVOj+o6yGFne9YD1hX9qw1fvvS8wYn41dcKHAL70VjN7lWLHA+ElaFdz
-	jmAsSrZ+8lWmSjFDQIS644U=
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dBgWM0D9lznTV8;
-	Thu, 20 Nov 2025 09:19:59 +0800 (CST)
-Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2F7FD1A016C;
-	Thu, 20 Nov 2025 09:21:26 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
- (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 20 Nov
- 2025 09:21:24 +0800
-Message-ID: <ce363839-18af-4372-b7c2-e08cb053e403@huawei.com>
-Date: Thu, 20 Nov 2025 09:21:23 +0800
+	s=arc-20240116; t=1763603259; c=relaxed/simple;
+	bh=Qz0Kt9BVZotF+W8b8C03wV9uEpjzU2IZVkSaOcZVd50=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AvH6jxCmb00Tu1pC9E68hK/IG2HkCQ2rUi3fteRS7RVCxd98MBVlgnbfgacz7Bq+11mxmr99AHS127RFH9nx6yI1texBxvKKBN1LoiUA+0YwLVTYlGXrBHoll7rtuLyDG5WYzWYIYohdSn8tVnM9wZ6SCws3KeZBQ74dXRwQNSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uF2z7xSs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFC38C113D0;
+	Thu, 20 Nov 2025 01:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763603258;
+	bh=Qz0Kt9BVZotF+W8b8C03wV9uEpjzU2IZVkSaOcZVd50=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uF2z7xSsJBEF2o7jOCGEA8BICVnf2Ll7GN/YdEoLbs8PaQeAHioKS/o3SZ7QSxsKt
+	 vFnjbh6TICH8PLye1zHlHKdpzDE5Fm345e4L/w0hg/fEJ7Itp2slYgup6C6JZwwIym
+	 LLCi+QyeEmLY48F4L7ZzcbTStdyHeEENY8Hfnp0DqQrXSF5r2MrZk7t4OMHkvbN7PR
+	 8Qcsuc8hp1q4+vdSlLZQjWoYyrPh5U9WhuFsg9TNqdi8dNwuUtBQRxPyNJujXI9VwL
+	 mc5s7M6miwKRs2zV2Elwkq7lUfoGg+X1KHfkkxDDXD+SynQUk6oIGjhckD0gmUEmi4
+	 nBJOVjtHwyLhA==
+Date: Wed, 19 Nov 2025 17:47:34 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: david.laight.linux@gmail.com
+Cc: linux-kernel@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Alexei Starovoitov
+ <ast@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Andrew Lunn <andrew@lunn.ch>, Andrew Morton
+ <akpm@linux-foundation.org>, Andrii Nakryiko <andrii@kernel.org>, Andy
+ Shevchenko <andriy.shevchenko@linux.intel.com>, Ard Biesheuvel
+ <ardb@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Bjorn
+ Helgaas <bhelgaas@google.com>, Borislav Petkov <bp@alien8.de>, Christian
+ Brauner <brauner@kernel.org>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Christoph Hellwig <hch@lst.de>, Daniel Borkmann
+ <daniel@iogearbox.net>, Dan Williams <dan.j.williams@intel.com>, Dave
+ Hansen <dave.hansen@linux.intel.com>, Dave Jiang <dave.jiang@intel.com>,
+ David Ahern <dsahern@kernel.org>, David Hildenbrand <david@redhat.com>,
+ Davidlohr Bueso <dave@stgolabs.net>, "David S. Miller"
+ <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Eric Dumazet
+ <edumazet@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Ingo Molnar <mingo@redhat.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>, "James E.J. Bottomley"
+ <James.Bottomley@HansenPartnership.com>, Jarkko Sakkinen
+ <jarkko@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>, Jens Axboe
+ <axboe@kernel.dk>, Jiri Slaby <jirislaby@kernel.org>, Johannes Weiner
+ <hannes@cmpxchg.org>, John Allen <john.allen@amd.com>, Jonathan Cameron
+ <jonathan.cameron@huawei.com>, Juergen Gross <jgross@suse.com>, Kees Cook
+ <kees@kernel.org>, KP Singh <kpsingh@kernel.org>, Linus Walleij
+ <linus.walleij@linaro.org>, "Martin K. Petersen"
+ <martin.petersen@oracle.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Mika Westerberg <westeri@kernel.org>, Mike Rapoport
+ <rppt@kernel.org>, Miklos Szeredi <miklos@szeredi.hu>, Namhyung Kim
+ <namhyung@kernel.org>, Neal Cardwell <ncardwell@google.com>,
+ nic_swsd@realtek.com, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Olivia
+ Mackall <olivia@selenic.com>, Paolo Abeni <pabeni@redhat.com>, Paolo
+ Bonzini <pbonzini@redhat.com>, Peter Huewe <peterhuewe@gmx.de>, Peter
+ Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Sean Christopherson <seanjc@google.com>, Srinivas Kandagatla
+ <srini@kernel.org>, Stefano Stabellini <sstabellini@kernel.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>, "Theodore Ts'o"
+ <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>, Tom Lendacky
+ <thomas.lendacky@amd.com>, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>, x86@kernel.org, Yury Norov
+ <yury.norov@gmail.com>, amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
+ cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ io-uring@vger.kernel.org, kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-integrity@vger.kernel.org, linux-mm@kvack.org,
+ linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org, mptcp@lists.linux.dev, netdev@vger.kernel.org,
+ usb-storage@lists.one-eyed-alien.net
+Subject: Re: [PATCH 00/44] Change a lot of min_t() that might mask high bits
+Message-ID: <20251119174734.5cba3f95@kernel.org>
+In-Reply-To: <20251119224140.8616-1-david.laight.linux@gmail.com>
+References: <20251119224140.8616-1-david.laight.linux@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 21/24] ext4: make data=journal support large block size
-To: Dan Carpenter <dan.carpenter@linaro.org>
-CC: <oe-kbuild@lists.linux.dev>, <libaokun@huaweicloud.com>,
-	<linux-ext4@vger.kernel.org>, <lkp@intel.com>,
-	<oe-kbuild-all@lists.linux.dev>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<jack@suse.cz>, <linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
-	<mcgrof@kernel.org>, <ebiggers@kernel.org>, <willy@infradead.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-	Baokun Li <libaokun1@huawei.com>
-References: <202511161433.qI6uGU0m-lkp@intel.com>
-Content-Language: en-GB
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <202511161433.qI6uGU0m-lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- dggpemf500013.china.huawei.com (7.185.36.188)
 
-On 2025-11-19 20:41, Dan Carpenter wrote:
-> Hi,
->
-> kernel test robot noticed the following build warnings:
->
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/libaokun-huaweicloud-com/ext4-remove-page-offset-calculation-in-ext4_block_zero_page_range/20251111-224944
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-> patch link:    https://lore.kernel.org/r/20251111142634.3301616-22-libaokun%40huaweicloud.com
-> patch subject: [PATCH v3 21/24] ext4: make data=journal support large block size
-> config: arm64-randconfig-r071-20251114 (https://download.01.org/0day-ci/archive/20251116/202511161433.qI6uGU0m-lkp@intel.com/config)
-> compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 0bba1e76581bad04e7d7f09f5115ae5e2989e0d9)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> | Closes: https://lore.kernel.org/r/202511161433.qI6uGU0m-lkp@intel.com/
->
-> New smatch warnings:
-> fs/ext4/inode.c:6612 ext4_change_inode_journal_flag() warn: inconsistent returns '&inode->i_mapping->invalidate_lock'.
->
-> vim +6612 fs/ext4/inode.c
->
-> 617ba13b31fbf5 Mingming Cao       2006-10-11  6527  int ext4_change_inode_journal_flag(struct inode *inode, int val)
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6528  {
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6529  	journal_t *journal;
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6530  	handle_t *handle;
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6531  	int err;
-> 00d873c17e29cc Jan Kara           2023-05-04  6532  	int alloc_ctx;
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6533  
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6534  	/*
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6535  	 * We have to be very careful here: changing a data block's
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6536  	 * journaling status dynamically is dangerous.  If we write a
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6537  	 * data block to the journal, change the status and then delete
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6538  	 * that block, we risk forgetting to revoke the old log record
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6539  	 * from the journal and so a subsequent replay can corrupt data.
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6540  	 * So, first we make sure that the journal is empty and that
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6541  	 * nobody is changing anything.
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6542  	 */
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6543  
-> 617ba13b31fbf5 Mingming Cao       2006-10-11  6544  	journal = EXT4_JOURNAL(inode);
-> 0390131ba84fd3 Frank Mayhar       2009-01-07  6545  	if (!journal)
-> 0390131ba84fd3 Frank Mayhar       2009-01-07  6546  		return 0;
-> d699594dc151c6 Dave Hansen        2007-07-18  6547  	if (is_journal_aborted(journal))
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6548  		return -EROFS;
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6549  
-> 17335dcc471199 Dmitry Monakhov    2012-09-29  6550  	/* Wait for all existing dio workers */
-> 17335dcc471199 Dmitry Monakhov    2012-09-29  6551  	inode_dio_wait(inode);
-> 17335dcc471199 Dmitry Monakhov    2012-09-29  6552  
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6553  	/*
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6554  	 * Before flushing the journal and switching inode's aops, we have
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6555  	 * to flush all dirty data the inode has. There can be outstanding
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6556  	 * delayed allocations, there can be unwritten extents created by
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6557  	 * fallocate or buffered writes in dioread_nolock mode covered by
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6558  	 * dirty data which can be converted only after flushing the dirty
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6559  	 * data (and journalled aops don't know how to handle these cases).
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6560  	 */
-> d4f5258eae7b38 Jan Kara           2021-02-04  6561  	filemap_invalidate_lock(inode->i_mapping);
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6562  	err = filemap_write_and_wait(inode->i_mapping);
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6563  	if (err < 0) {
-> d4f5258eae7b38 Jan Kara           2021-02-04  6564  		filemap_invalidate_unlock(inode->i_mapping);
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6565  		return err;
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6566  	}
-> f893fb965834e9 Baokun Li          2025-11-11  6567  	/* Before switch the inode journalling mode evict all the page cache. */
-> f893fb965834e9 Baokun Li          2025-11-11  6568  	truncate_pagecache(inode, 0);
-> 4c54659269ecb7 Daeho Jeong        2016-04-25  6569  
-> 00d873c17e29cc Jan Kara           2023-05-04  6570  	alloc_ctx = ext4_writepages_down_write(inode->i_sb);
-> dab291af8d6307 Mingming Cao       2006-10-11  6571  	jbd2_journal_lock_updates(journal);
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6572  
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6573  	/*
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6574  	 * OK, there are no updates running now, and all cached data is
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6575  	 * synced to disk.  We are now in a completely consistent state
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6576  	 * which doesn't have anything in the journal, and we know that
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6577  	 * no filesystem updates are running, so it is safe to modify
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6578  	 * the inode's in-core data-journaling state flag now.
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6579  	 */
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6580  
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6581  	if (val)
-> 12e9b892002d9a Dmitry Monakhov    2010-05-16  6582  		ext4_set_inode_flag(inode, EXT4_INODE_JOURNAL_DATA);
-> 5872ddaaf05bf2 Yongqiang Yang     2011-12-28  6583  	else {
-> 01d5d96542fd4e Leah Rumancik      2021-05-18  6584  		err = jbd2_journal_flush(journal, 0);
-> 4f879ca687a5f2 Jan Kara           2014-10-30  6585  		if (err < 0) {
-> 4f879ca687a5f2 Jan Kara           2014-10-30  6586  			jbd2_journal_unlock_updates(journal);
-> 00d873c17e29cc Jan Kara           2023-05-04  6587  			ext4_writepages_up_write(inode->i_sb, alloc_ctx);
-> 4f879ca687a5f2 Jan Kara           2014-10-30  6588  			return err;
->
-> filemap_invalidate_unlock(inode->i_mapping) before returning?
+On Wed, 19 Nov 2025 22:40:56 +0000 david.laight.linux@gmail.com wrote:
+> I've had to trim the 124 maintainers/lists that get_maintainer.pl finds
+> from 124 to under 100 to be able to send the cover letter.
+> The individual patches only go to the addresses found for the associated files.
+> That reduces the number of emails to a less unsane number.
 
-Oops! You nailed it. My bad, I totally forgot that unlock here, which
-definitely left the lock unbalanced. I'll get that fixed up in v3.
-
-Thanks a ton for doing the testing!
-
-
-Cheers,
-Baokun
-
->
-> 4f879ca687a5f2 Jan Kara           2014-10-30  6589  		}
-> 12e9b892002d9a Dmitry Monakhov    2010-05-16  6590  		ext4_clear_inode_flag(inode, EXT4_INODE_JOURNAL_DATA);
-> 5872ddaaf05bf2 Yongqiang Yang     2011-12-28  6591  	}
-> 617ba13b31fbf5 Mingming Cao       2006-10-11  6592  	ext4_set_aops(inode);
-> f893fb965834e9 Baokun Li          2025-11-11  6593  	ext4_set_inode_mapping_order(inode);
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6594  
-> dab291af8d6307 Mingming Cao       2006-10-11  6595  	jbd2_journal_unlock_updates(journal);
-> 00d873c17e29cc Jan Kara           2023-05-04  6596  	ext4_writepages_up_write(inode->i_sb, alloc_ctx);
-> d4f5258eae7b38 Jan Kara           2021-02-04  6597  	filemap_invalidate_unlock(inode->i_mapping);
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6598  
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6599  	/* Finally we can mark the inode as dirty. */
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6600  
-> 9924a92a8c2175 Theodore Ts'o      2013-02-08  6601  	handle = ext4_journal_start(inode, EXT4_HT_INODE, 1);
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6602  	if (IS_ERR(handle))
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6603  		return PTR_ERR(handle);
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6604  
-> aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  6605  	ext4_fc_mark_ineligible(inode->i_sb,
-> e85c81ba8859a4 Xin Yin            2022-01-17  6606  		EXT4_FC_REASON_JOURNAL_FLAG_CHANGE, handle);
-> 617ba13b31fbf5 Mingming Cao       2006-10-11  6607  	err = ext4_mark_inode_dirty(handle, inode);
-> 0390131ba84fd3 Frank Mayhar       2009-01-07  6608  	ext4_handle_sync(handle);
-> 617ba13b31fbf5 Mingming Cao       2006-10-11  6609  	ext4_journal_stop(handle);
-> 617ba13b31fbf5 Mingming Cao       2006-10-11  6610  	ext4_std_error(inode->i_sb, err);
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6611  
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11 @6612  	return err;
-> ac27a0ec112a08 Dave Kleikamp      2006-10-11  6613  }
->
-
+Please split the networking (9?) patches out to a separate series.
+It will help you with the CC list, and help us to get this applied..
 
