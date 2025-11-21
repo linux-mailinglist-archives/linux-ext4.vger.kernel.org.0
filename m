@@ -1,55 +1,55 @@
-Return-Path: <linux-ext4+bounces-11997-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11998-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3839BC7AD15
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 17:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A19ACC7AD72
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 17:28:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E294C3A157B
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 16:23:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64D7B3A1F16
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 16:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85E926B76A;
-	Fri, 21 Nov 2025 16:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707D52D8DAF;
+	Fri, 21 Nov 2025 16:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LKR7OR48"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bC0+/Z+M"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4981CEADB
-	for <linux-ext4@vger.kernel.org>; Fri, 21 Nov 2025 16:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1A046BF;
+	Fri, 21 Nov 2025 16:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763742183; cv=none; b=Yh47NCfcRST0JUC0h/CIb3vMnaxUf2NekLClW6w0FyYOQdwzn2Fi78DEOQIeJZn7zkB/cFQ3cEpfH7ZS19fxqCyJXDn4E+AQi37m8HQXxT1MeLZkqWR0CXA2Kq/+0beSAwVKIHaqGuQUYVcHxI+eZ6rGKR1//VTbylimudhi0Ew=
+	t=1763742453; cv=none; b=tfK+UVJBoEcup9FeSvEpYcnDCVtag8sJnKycVft3MwpVq8assm4kkDQWyWv5W+2UjVj2HnmTUejOS1z1WX6tLTc8/m467pjvbmKnUiGcSxZ88R41nTtUZtjwUmMW/mOZi9xsU6oDn38nIPH4Vkc6a2AjbnlBUPAhEJtOTHnq7FA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763742183; c=relaxed/simple;
-	bh=CXs+K1Dsa+/5D4FjlhMaI8tfAN0TTv7nM7MqPIT7D60=;
+	s=arc-20240116; t=1763742453; c=relaxed/simple;
+	bh=RmyRHzEPNsCf81/CdlaPY5Ck62FomO+Wkvot0oO0e08=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pgUd+eYoDWG2wK8YyhxhL6WQuxn/kpkgSfYZiuyEn3JydUZHWxx8v9u2RpFPNZTl0aSrX04BLYPkMm/9liiXLN6sw/A/fGXITAFRbJ3379CM4++FlnH+bZmbr46973m7nDVTaSGIQrBpX5vgKJ1jogvZgQluiugzG2YdTyQZhzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LKR7OR48; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB02DC4CEF1;
-	Fri, 21 Nov 2025 16:23:01 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=kTa2zbgKPgp767GGHqYS3BG4cdMVX4YDQzKyX+9qNonm4RMLkLLfzRhPr6UHgptvz1f30YSybK2aY6LRG42sLM7XIbfOl1M5jgRVXwReqDEJYBYbJo3OncJGgTSppAnaeEJq8mm/HefD4gL3fA/nNuKfr3kQz7kQs0FaysrcdDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bC0+/Z+M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDFFAC4CEF1;
+	Fri, 21 Nov 2025 16:27:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763742181;
-	bh=CXs+K1Dsa+/5D4FjlhMaI8tfAN0TTv7nM7MqPIT7D60=;
+	s=k20201202; t=1763742452;
+	bh=RmyRHzEPNsCf81/CdlaPY5Ck62FomO+Wkvot0oO0e08=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LKR7OR482TjiVDZHv/lfm66DKEEIHcjifbYthApm7gW+1/+ShwhJTrUDnaj3dY9vG
-	 Os6B7BLOY5coknhU9u77AC3RxB6LwYsYbT2592hf4hcmJlUFDHUfu7Ym4gkuLIHjr8
-	 cpGGbkkJZoULBF/FwwOtb4Ovw5mqzrDVwwBmuaYYCawsOvYKutz1D9Y7LoI80Wt3aG
-	 fmXvNRRoiDPhkxJbYNFnUQEqG0+2iYphlV7IGih/R93afGK6r6JBE2ovOEiNZc6X0K
-	 C621Xrl01waHQOZ1sCRVrQem8QaBDT3IK+RQrwIcQ+E8ojsxKReQHa3Nd8JM1vifCN
-	 QKsmeF2NgsOLg==
-Date: Fri, 21 Nov 2025 08:23:01 -0800
+	b=bC0+/Z+MUq7EALsTjy/RNEKZJ7/atv3ij3Lrh79PO2KwGcEcOu8aL3mXeLuEYKoNc
+	 K04TqhyMAHgk8l7GGIMXqOMhhjjxyNSrSp99axlG2x7zZ8tMyqZcr/LPwpaqPDF4Kv
+	 Ah9dVDsFJTwegh3W4h5D1LShfqAIhmI9gfvjQ6Mt2V6kIswhOEqhjaX9j5TnLb+ftk
+	 V/zhqHpvZfeR+qY21UKQNe7DBnziymKRXq/I9rsLw98gYqvHrzQOhz4dpNjs1lyl/s
+	 fQJCVqaNDq9usW7P42Tu5LCBKpQLCHCCcXXAdEX6pWX5lMsDFWKusqpw8+25MgkXau
+	 k7x7YugGerxzQ==
+Date: Fri, 21 Nov 2025 08:27:32 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: Wu Guanghao <wuguanghao3@huawei.com>
-Cc: tytso@mit.edu, linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
-	yangyun50@huawei.com
-Subject: Re: [PATCH v2 1/2] fsck: fix memory leak of inst->type
-Message-ID: <20251121162301.GT196358@frogsfrogsfrogs>
-References: <20251121033612.2423536-1-wuguanghao3@huawei.com>
- <20251121033612.2423536-2-wuguanghao3@huawei.com>
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: check folio uptodate state in ext4_page_mkwrite()
+Message-ID: <20251121162732.GU196358@frogsfrogsfrogs>
+References: <20251121131305.332698-1-kartikey406@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -58,37 +58,77 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251121033612.2423536-2-wuguanghao3@huawei.com>
+In-Reply-To: <20251121131305.332698-1-kartikey406@gmail.com>
 
-On Fri, Nov 21, 2025 at 11:36:11AM +0800, Wu Guanghao wrote:
-> The function free_instance() does not release i->type, resulting in a
-> memory leak.
+On Fri, Nov 21, 2025 at 06:43:05PM +0530, Deepanshu Kartikey wrote:
+> When a write fault occurs on a memory-mapped ext4 file, ext4_page_mkwrite()
+> is called to prepare the folio for writing. However, if the folio could
+> not be read successfully due to filesystem corruption or I/O errors, it
+> will not be marked uptodate.
 > 
-> Signed-off-by: Wu Guanghao <wuguanghao3@huawei.com>
+> Attempting to write to a non-uptodate folio is problematic because:
+> 1. We don't have valid data from the backing store to preserve
+> 2. A subsequent writeback could write uninitialized data to disk
+> 3. It triggers a warning in __folio_mark_dirty():
+>    WARN_ON_ONCE(warn && !folio_test_uptodate(folio))
+> This issue can be reproduced by:
+> 1. Creating a corrupted ext4 filesystem with invalid extent entries
+> 2. Memory-mapping a file on that filesystem
+> 3. Attempting to write to the mapped region
+> 
+> The sequence of events is:
+> - User accesses mmap region -> page fault
+> - ext4_filemap_fault() -> ext4_map_blocks() detects corruption
 
-Looks good!
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+    ^^^^^^^^^^^^^^^^^^ what function is this?
+
+$ grep ext4_filemap_fault fs/ext4/
+$
+
+> - Returns error, folio allocated but NOT marked uptodate
+> - User writes to same region -> ext4_page_mkwrite() called
+> - Without check: folio marked dirty -> WARNING
+> - With check: return VM_FAULT_SIGBUS immediately
+
+Doesn't filemap_fault bring the contents into the folio and return
+VM_FAULT_SIGBUS if that fails?
 
 --D
 
-> ---
->  misc/fsck.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/misc/fsck.c b/misc/fsck.c
-> index 64d0e7c0..a06f2668 100644
-> --- a/misc/fsck.c
-> +++ b/misc/fsck.c
-> @@ -235,6 +235,7 @@ static void parse_escape(char *word)
->  static void free_instance(struct fsck_instance *i)
->  {
->  	free(i->prog);
-> +	free(i->type);
->  	free(i->device);
->  	free(i->base_device);
->  	free(i);
+> Fix this by checking folio_test_uptodate() early in ext4_page_mkwrite(),
+> before any code paths (delalloc, journal data, or normal). This ensures
+> all paths are protected. If the folio is not uptodate, unlock it and
+> return VM_FAULT_SIGBUS to signal the error to userspace.
+> 
+> Reported-by: syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=b0a0670332b6b3230a0a
+> Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
+> ---
+>  fs/ext4/inode.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index e99306a8f47c..18a029362c1f 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -6688,6 +6688,14 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>  	if (err)
+>  		goto out_ret;
+>  
+> +	folio_lock(folio);
+> +	if (!folio_test_uptodate(folio)) {
+> +		folio_unlock(folio);
+> +		ret = VM_FAULT_SIGBUS;
+> +		goto out;
+> +	}
+> +	folio_unlock(folio);
+> +
+>  	/*
+>  	 * On data journalling we skip straight to the transaction handle:
+>  	 * there's no delalloc; page truncated will be checked later; the
 > -- 
-> 2.27.0
+> 2.43.0
 > 
 > 
 
