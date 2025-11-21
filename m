@@ -1,184 +1,115 @@
-Return-Path: <linux-ext4+bounces-11947-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11948-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9370C76C38
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 01:24:12 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58BB0C76E7B
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 03:00:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 73A2D35E985
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 00:22:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTPS id D4CA428BC4
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 02:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932DB24E4AF;
-	Fri, 21 Nov 2025 00:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F8B27AC3A;
+	Fri, 21 Nov 2025 01:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eLsHGPYA"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="oO7FkeeE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout05.his.huawei.com (canpmsgout05.his.huawei.com [113.46.200.220])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174D422A4F1
-	for <linux-ext4@vger.kernel.org>; Fri, 21 Nov 2025 00:22:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7AB24DD17;
+	Fri, 21 Nov 2025 01:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763684565; cv=none; b=VVgx9cJ70R46ob4QFdamIa2Zfsq5VTcb3w1qAMWIxE1CPTeYk3c/iaP+1uZuJ5cNVz8zJP/2LRzKs9znqHxd2J0FfqDKL2EFd0MTAvEgB/Q5wFyGRGwpuEbhYdvZHYM1FYN52dZ9gyDu2FBu86Me4zS6p/kannsKJSyttGevY3I=
+	t=1763690365; cv=none; b=tQ/p/15SmbKc0HnFnpBGWKEMK6Lp8bTuigQpultDgXS2wFeY59n6Fqk/Z5nCwBgQAabNcGJBWzdCiJ03r6L3AIAnEwGhdUNjO5BawdLrg5CE3NSXWsn6ZHXyFdztbhaO3OalIe+rKYpRkzLvLf7eF6b1k9BItXVsf8SlwLiKquk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763684565; c=relaxed/simple;
-	bh=rom/AwKjWUnt+Gj6Y8kFDA1w9rDZCmrd55mGQuNpbgY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Oxs22MnaAbb5aeDNO3/PUkFB0q7bbz6/edbj+/l5hXsT12E+i1kPAle86jrXB6K0kDCH8Zi1T/91d8ifZAqMwhqL5zqHKeUrTtyxqDavtEIll6/kMnANIccR9/6Aq48rh0ijvu6EVI/3TN+y2mc/R8cjkz4fdTS+5QoM2g7NDkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eLsHGPYA; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b725ead5800so191139566b.1
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 16:22:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763684562; x=1764289362; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L5eibNO90Ald5K87n6GVEVhxh4o5x1NRdi3fUbNI3Ks=;
-        b=eLsHGPYAo8l43wx6e/Z0D9my5/pwyJxn9lWhF+myyO7m8KfGAElJxf+ZicvdRZWeb7
-         pt3gRdHq9Xz8bEBts5oXaF6DtfmdW8QUhNNqqmrkkIVjAZXnQqdR0mugO16CYWalaYm4
-         M6qvkc3CnZvidxSv/ujRhPhb3gRypwgEy+C+KdjWd7K5xqQAf+laCcOfiRPeFwARXP5G
-         6RU+bIcFSzXipsgyGY3aT6gn1DqC9EuB3qYa5OEM8Uw7+OQfw28EayDcPa1SM8aEi7Or
-         k+LrpERMi0VOXh10/pqPO31umpQp1SzD2npmx6zU14lVWaoMSXUyQXTUV1myEU4BTIVe
-         adKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763684562; x=1764289362;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L5eibNO90Ald5K87n6GVEVhxh4o5x1NRdi3fUbNI3Ks=;
-        b=w7rhqTyWXTanLLiyF9alsVLLswxNbZXr1R/ztMS29dxQg0LyNEtEiejCNlXMqvQK4B
-         n0zn3HRZugWkTtnfYJpO2ALxwphBtQu0SI1ddIIQ2j1G/wGs/ulTt4VHOIoaNrtUTHAC
-         J1h1JeSilY9lq6zYEulqczRiqHsRvx7b9MOJHOsngX5k4sVrov0/HyrhdYzjR67TZVY4
-         rsjxVN4fpcp04kRw3NFW/VeRaaG8/9EOfpKdZJNVofb9+u7bbKq4OiR7m/9g54nKL7fs
-         tHBxj73gPbGk8vyEh0zt9GoKwf1HL9AkjD0y1HDuwHvukotXar+CxljQ9itJ5Mb5SEE4
-         SCTQ==
-X-Gm-Message-State: AOJu0YwzwgHo5f+VU/ETp3sbULuolWQgqHsFzsxhSWhHaGLX/qMvkrF+
-	pt11LcXVED0guzRCQ3BrsWFuew5Mbk2hN6xWjIRLRL8knQ4Vpkjdqtu6
-X-Gm-Gg: ASbGnctaUWPpvnUd4ORcYjKwHaTz/NVXH2yc2JemRNyCwLWM3BNZ3srewpvGoPkD/zY
-	VMvcGFo/ojYFy5XbQ4Nv5BhHgWGwJmcTJVIisE0wnV5R+F9fXl7hf6tV/Vba6Zjjwsp1GmeuEO/
-	PXpKpu/BX01PMoljqzRI9iYc9MV+60A/BOIySjCBddo7/xEOEuTSh+b2D8pBP88H/OSQqEzSYES
-	lsDfL555ChnhLeSBo+5FGnlHGK/B0cJcqtj8PyboHg6FP0NK7l4ODVzYjnispE9IdI35hlm9HUk
-	uTmGx9C6eiDhCxtqvVlHUYz8HL1Na7R0/eCc241CCYAfAoBMUo7DhPCtzIkfOE0lESA3WnKu5/I
-	O2J6FyD/gErbOLNqPtm6IMEhsbjRNm1F2587NVWmvH2vCo4kDKzHEf6kxwmTp4KiVXOmyPE8Eqj
-	Gy3RWmea9UW6Y=
-X-Google-Smtp-Source: AGHT+IFUFHpAifxZcReeziSuOwRDZUEv66W2Z4nfjWxiQbaXSc3qoEN/J/SAU6TFywHoHAyBWMWpHg==
-X-Received: by 2002:a17:906:4fc7:b0:b73:42df:27a with SMTP id a640c23a62f3a-b767151b071mr22897166b.1.1763684562161;
-        Thu, 20 Nov 2025 16:22:42 -0800 (PST)
-Received: from eray-kasa.. ([2a02:4e0:2d18:6ce:7ff1:1161:673b:41e5])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b7654d502cfsm322788966b.19.2025.11.20.16.22.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Nov 2025 16:22:41 -0800 (PST)
-From: Ahmet Eray Karadag <eraykrdg1@gmail.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	david.hunter.linux@gmail.com,
-	skhan@linuxfoundation.org,
-	Ahmet Eray Karadag <eraykrdg1@gmail.com>,
-	syzbot+ee60e584b5c6bb229126@syzkaller.appspotmail.com,
-	Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-Subject: [PATCH] ext4: fix unaligned preallocation with bigalloc
-Date: Fri, 21 Nov 2025 03:22:10 +0300
-Message-ID: <20251121002209.416949-2-eraykrdg1@gmail.com>
+	s=arc-20240116; t=1763690365; c=relaxed/simple;
+	bh=GIp0009+sUVrkjvzUUTzbgJHB8S8wPYfh9xGIoGtLHY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aIULNBGyrS348q1HMZfvsZMd7IHN1FZBWOmKlIU3lnQxGCgR7qCuJktQDa2Ljd3l3eaL3UHXbBmPt8wwMK67ntys2yvpr6BPvsON5DbjXnHnO4QOQ7vcRlHLvmIPZLa6e2EFJqWZkUP0ONpFuQYm36RPd9cZrctZ2bp2VtdHOts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=oO7FkeeE; arc=none smtp.client-ip=113.46.200.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=8IxzA0xrDRDuCux7I/75OlQIhFWCZrW9huNpmM6c2T4=;
+	b=oO7FkeeEM51Lb0MdKyJBUbM6TX/LcMbaZV5EhyhjfHqfclk+U4zfapIHF0azYgBWx4ArKTKFx
+	t1YMU4B8OtTLHcwOMOGbTPmPOiUaxsDtrg1EantBTQm5YrxNot4nuuWzXt+yXisLgrQyNykC0+Z
+	YNOxmRW6pQM+62Tv2PpG1v0=
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4dCJJf6xhjz12Lhq;
+	Fri, 21 Nov 2025 09:57:54 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id A0BBB18048B;
+	Fri, 21 Nov 2025 09:59:21 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 21 Nov
+ 2025 09:59:20 +0800
+Message-ID: <e588e7d9-54bb-4fa2-ab31-1381dc5a3987@huawei.com>
+Date: Fri, 21 Nov 2025 09:59:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 21/24] ext4: make data=journal support large block size
+Content-Language: en-GB
+To: Theodore Tso <tytso@mit.edu>
+CC: Dan Carpenter <dan.carpenter@linaro.org>, <oe-kbuild@lists.linux.dev>,
+	<libaokun@huaweicloud.com>, <linux-ext4@vger.kernel.org>, <lkp@intel.com>,
+	<oe-kbuild-all@lists.linux.dev>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<linux-kernel@vger.kernel.org>, <kernel@pankajraghav.com>,
+	<mcgrof@kernel.org>, <ebiggers@kernel.org>, <willy@infradead.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+	Baokun Li <libaokun1@huawei.com>
+References: <202511161433.qI6uGU0m-lkp@intel.com>
+ <ce363839-18af-4372-b7c2-e08cb053e403@huawei.com>
+ <20251120154104.GA13687@macsyma-3.local>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20251120154104.GA13687@macsyma-3.local>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-Syzkaller reported a use-after-free in ext4_find_extent() when using
-bigalloc. The crash occurs during the extent tree traversal when the
-system tries to access a freed extent path.
+On 2025-11-20 23:41, Theodore Tso wrote:
+> On Thu, Nov 20, 2025 at 09:21:23AM +0800, Baokun Li wrote:
+>> Oops! You nailed it. My bad, I totally forgot that unlock here, which
+>> definitely left the lock unbalanced. I'll get that fixed up in v3.
+> I think you meant v4 (since the current patch series are v3 :-). 
 
-The root cause is related to how the multi-block allocator (mballoc)
-handles alignment in bigalloc filesystems (s_cluster_ratio > 1).
-When a request for a block is made, mballoc might return a goal start
-block that is not aligned to the cluster boundary (e.g., block 1 instead
-of 0) because the cluster start is busy.
+Haha, yes, , I messed up the version number. 😅
 
-Previously, ext4_mb_new_inode_pa() and ext4_mb_new_group_pa() did not
-strictly enforce cluster alignment or handle collisions where aligning
-down would overlap with busy space. This resulted in the creation of
-Preallocation (PA) extents that started in the middle of a cluster.
-This misalignment causes metadata inconsistency between the physical
-allocation (bitmap) and the logical extent tree, eventually leading to
-a use-after-free during inode eviction or truncation.
+>  When
+> do you think you might be able to get the next version of this patch
+> series ready?  I think we're almost ready to land this feature!
+>
+>        	       	       	     	    	     - Ted
+>
+Yep, the current tests look clean! Good news on the dependencies too:
+[1] and [2] are already merged to next.
 
-This patch fixes the issue by enforcing strict cluster alignment for
-both inode and group preallocations.
+[1]:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=ee040cbd6e48
+[2]:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=50b2a4f19b22
 
-Using AC_STATUS_BREAK ensures that we do not manually free the PA
-(avoiding double-free bugs in the caller's cleanup path) and allows
-the allocator to find a more suitable block group.
+I'll be sending out v4 today to fix the issue Dan mentioned, and then
+I think this feature is ready to land! 
 
-Tested with kvm-xfstests -c bigalloc_4k -g quick, no regressions found.
+[P.S.: I noticed Christoph Hellwig and Eric Biggers are cleaning up the
+ fscrypt API. That might clear the way for us to ditch the "no fscrypt
+ support for ext4 LBS" restriction later on. I'm also looking into
+ speeding up large block checksums. But I think these extra features and
+ improvements can evolve independently from the work we’re doing now.]
 
-Reported-by: syzbot+ee60e584b5c6bb229126@syzkaller.appspotmail.com
-Fixes: https://syzkaller.appspot.com/bug?extid=ee60e584b5c6bb229126
-Co-developed-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-Signed-off-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-Signed-off-by: Ahmet Eray Karadag <eraykrdg1@gmail.com>
----
- fs/ext4/mballoc.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 9087183602e4..549d6cf58f3c 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5291,6 +5291,21 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 
- 		ex.fe_logical = ac->ac_o_ex.fe_logical;
- adjust_bex:
-+		if (sbi->s_cluster_ratio > 1) {
-+			loff_t mask = ~(sbi->s_cluster_ratio - 1);
-+			loff_t aligned_start = ex.fe_logical & mask;
-+
-+			if (aligned_start < ac->ac_g_ex.fe_logical) {
-+				ac->ac_status = AC_STATUS_BREAK;
-+				return;
-+			}
-+
-+			ex.fe_len += (ex.fe_logical - aligned_start);
-+			ex.fe_logical = aligned_start;
-+
-+			if (ex.fe_logical + ex.fe_len > orig_goal_end)
-+				ex.fe_len = orig_goal_end - ex.fe_logical;
-+		}
- 		ac->ac_b_ex.fe_logical = ex.fe_logical;
- 
- 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
-@@ -5336,6 +5351,7 @@ static noinline_for_stack void
- ext4_mb_new_group_pa(struct ext4_allocation_context *ac)
- {
- 	struct super_block *sb = ac->ac_sb;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_locality_group *lg;
- 	struct ext4_prealloc_space *pa;
- 	struct ext4_group_info *grp;
-@@ -5347,7 +5363,15 @@ ext4_mb_new_group_pa(struct ext4_allocation_context *ac)
- 	BUG_ON(ac->ac_pa == NULL);
- 
- 	pa = ac->ac_pa;
-+	if (sbi->s_cluster_ratio > 1) {
-+		loff_t mask = ~(sbi->s_cluster_ratio - 1);
-+		loff_t pstart = ext4_grp_offs_to_block(sb, &ac->ac_b_ex);
- 
-+		if ((pstart & mask) < pstart) {
-+			ac->ac_status = AC_STATUS_BREAK;
-+			return;
-+		}
-+	}
- 	pa->pa_pstart = ext4_grp_offs_to_block(sb, &ac->ac_b_ex);
- 	pa->pa_lstart = pa->pa_pstart;
- 	pa->pa_len = ac->ac_b_ex.fe_len;
--- 
-2.43.0
+Cheers,
+Baokun
 
 
