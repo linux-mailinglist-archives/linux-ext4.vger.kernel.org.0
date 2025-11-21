@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-11987-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11990-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DDC0C781FB
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 10:21:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 471D0C781CB
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 10:19:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 705E84EA46F
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 09:19:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 6ACDA32584
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 09:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80DAE344036;
-	Fri, 21 Nov 2025 09:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5C13451D5;
+	Fri, 21 Nov 2025 09:17:10 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB1721420B;
-	Fri, 21 Nov 2025 09:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F27D303CA1;
+	Fri, 21 Nov 2025 09:16:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763716621; cv=none; b=MfuShXgtdyzjSuobXVwXXaEppmuZE2gGgHKyOGBWFKg7IRSDjJjy721Y8pLQLKyRTd3YZ+GXun3+HRwnQ3RXBoUzE7hWtbCxamIZbNGHwlornQKK1aKgBUEN/lFXDwVrNmXhfV1OTnHw53S9sf29dL5x5HKZRC7WQBp0u3LQHSM=
+	t=1763716623; cv=none; b=urenZVuMNh3jo/TICX7hV/UpdQjyf9+/EdkBnOzDswh+WNIHUnaCp4++rAfFoh++xdACVq11n0udY1X4DRkSbXhse7QNS1rA9VZBxwzNJf23OlXoIn0MmiA99V0rjhBN8j7lBaTqfNMQyJjp3ir2h+kpT8HJdYNDkQUsj2WcP40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763716621; c=relaxed/simple;
-	bh=rpuopjqN2hrjVl7dOeHpWVRyWqrq7RuGyaPKP4JZg1U=;
+	s=arc-20240116; t=1763716623; c=relaxed/simple;
+	bh=aF+DbgPYapqeQ+9Sv3+u8mH464IRHeCbCP54ohxIjj0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Jg6oQp276SEui3Zssu3/zbL/v2DRZmPRWnqIyGFzfnNhz21NrijD9wGBHpgs2QDitk6tHruoz0923n4Z+0ce74xrY0y7JYGkanQbuJfQTdEdk9O3zwk7r1jCvn5FhlVQvV1bf2P75r/n7PZgkEMUo08azQGr0LpQrS4DSDfVfSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=AWhp7PiELtNVHiwQR1LJUUmEmsUAKhu/vws0DvdOiocqul64digC/yA9FWgflOJJYDU8bu8dW7G15sSI9kS2Cx3NefKSjvVlVkXNq7sdow5HsUqeCQOT6Om7MJWrI7jqjOBp+mgLV45lV6ojlQV2uq54/8KT0MUeNLsIt0mJg6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dCV286v3fzYQvHn;
-	Fri, 21 Nov 2025 17:16:00 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dCV2P2X08zKHMwX;
+	Fri, 21 Nov 2025 17:16:13 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 3D0FF1A1B38;
+	by mail.maildlp.com (Postfix) with ESMTP id 4F5921A0FC0;
 	Fri, 21 Nov 2025 17:16:44 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.50.87.129])
-	by APP2 (Coremail) with SMTP id Syh0CgBHpXv4LSBpaLMDBg--.2072S27;
-	Fri, 21 Nov 2025 17:16:43 +0800 (CST)
+	by APP2 (Coremail) with SMTP id Syh0CgBHpXv4LSBpaLMDBg--.2072S28;
+	Fri, 21 Nov 2025 17:16:44 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
@@ -52,10 +52,11 @@ Cc: tytso@mit.edu,
 	yangerkun@huawei.com,
 	chengzhihao1@huawei.com,
 	libaokun1@huawei.com,
-	libaokun@huaweicloud.com
-Subject: [PATCH v4 23/24] ext4: add checks for large folio incompatibilities when BS > PS
-Date: Fri, 21 Nov 2025 17:06:53 +0800
-Message-Id: <20251121090654.631996-24-libaokun@huaweicloud.com>
+	libaokun@huaweicloud.com,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: [PATCH v4 24/24] ext4: enable block size larger than page size
+Date: Fri, 21 Nov 2025 17:06:54 +0800
+Message-Id: <20251121090654.631996-25-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20251121090654.631996-1-libaokun@huaweicloud.com>
 References: <20251121090654.631996-1-libaokun@huaweicloud.com>
@@ -66,10 +67,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBHpXv4LSBpaLMDBg--.2072S27
-X-Coremail-Antispam: 1UD129KBjvJXoW3XF4fAw4fXF4fCFWkur45Jrb_yoW7XF15pF
-	W3Cr1fZrW8Zr97Wws7tanrXr1Ykay8tayUJ3yxu3W7J345t34IyFW0vF1ayFyUtrW8Xryx
-	Xa1Utry29wnrGFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgBHpXv4LSBpaLMDBg--.2072S28
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr4fAryUXrWUtF1DZFWUurg_yoW5WrWxp3
+	WrGFy8Ar15WFyUua9rWFsF9as3Gw1v9FyUXr90gw1UZFZrX34xKrn7tFy5XFyjqrZ3uFWf
+	XF1vyryayr43uaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUQa14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -84,162 +85,77 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3XF4fAw4fXF4fCFWkur45Jrb_yoW7XF15pF
 	x2IY67AKxVW5JVW7JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw2
 	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
 	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdsqAUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgATBWkf34sfGgADsw
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQATBWkf35kfHAAAsk
 
 From: Baokun Li <libaokun1@huawei.com>
 
-Supporting a block size greater than the page size (BS > PS) requires
-support for large folios. However, several features (e.g., encrypt)
-do not yet support large folios.
+Since block device (See commit 3c20917120ce ("block/bdev: enable large
+folio support for large logical block sizes")) and page cache (See commit
+ab95d23bab220ef8 ("filemap: allocate mapping_min_order folios in the page
+cache")) has the ability to have a minimum order when allocating folio,
+and ext4 has supported large folio in commit 7ac67301e82f ("ext4: enable
+large folio for regular file"), now add support for block_size > PAGE_SIZE
+in ext4.
 
-To prevent conflicts, this patch adds checks at mount time to prohibit
-these features from being used when BS > PS. Since these features cannot
-be changed on remount, there is no need to check on remount.
+set_blocksize() -> bdev_validate_blocksize() already validates the block
+size, so ext4_load_super() does not need to perform additional checks.
+Here we only need to add the FS_LBS bit to fs_flags.
 
-This patch adds s_max_folio_order, initialized during mount according to
-filesystem features and mount options. If s_max_folio_order is 0, large
-folios are disabled.
+In addition, block sizes larger than the page size are currently supported
+only when CONFIG_TRANSPARENT_HUGEPAGE is enabled. To make this explicit,
+a blocksize_gt_pagesize entry has been added under /sys/fs/ext4/feature/,
+indicating whether bs > ps is supported. This allows mke2fs to check the
+interface and determine whether a warning should be issued when formatting
+a filesystem with block size larger than the page size.
 
-With this in place, ext4_set_inode_mapping_order() can be simplified by
-checking s_max_folio_order, avoiding redundant checks.
-
+Suggested-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
 ---
- fs/ext4/ext4.h  |  4 +++-
- fs/ext4/inode.c | 38 ++++++++++----------------------------
- fs/ext4/super.c | 39 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 52 insertions(+), 29 deletions(-)
+ fs/ext4/super.c | 3 ++-
+ fs/ext4/sysfs.c | 6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 4bc0b2b7288a..79dc231d6e22 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1696,7 +1696,9 @@ struct ext4_sb_info {
- 	unsigned long s_last_trim_minblks;
- 
- 	/* minimum folio order of a page cache allocation */
--	unsigned int s_min_folio_order;
-+	u16 s_min_folio_order;
-+	/* supported maximum folio order, 0 means not supported */
-+	u16 s_max_folio_order;
- 
- 	/* Precomputed FS UUID checksum for seeding other checksums */
- 	__u32 s_csum_seed;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index d2fa3471f59a..61b803a79756 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5146,41 +5146,23 @@ static int check_igot_inode(struct inode *inode, ext4_iget_flags flags,
- 	return -EFSCORRUPTED;
- }
- 
--static bool ext4_should_enable_large_folio(struct inode *inode)
-+void ext4_set_inode_mapping_order(struct inode *inode)
- {
- 	struct super_block *sb = inode->i_sb;
-+	u16 min_order, max_order;
- 
--	if (!S_ISREG(inode->i_mode))
--		return false;
--	if (ext4_has_feature_encrypt(sb))
--		return false;
--
--	return true;
--}
--
--/*
-- * Limit the maximum folio order to 2048 blocks to prevent overestimation
-- * of reserve handle credits during the folio writeback in environments
-- * where the PAGE_SIZE exceeds 4KB.
-- */
--#define EXT4_MAX_PAGECACHE_ORDER(i)		\
--		umin(MAX_PAGECACHE_ORDER, (11 + (i)->i_blkbits - PAGE_SHIFT))
--void ext4_set_inode_mapping_order(struct inode *inode)
--{
--	u32 max_order;
-+	max_order = EXT4_SB(sb)->s_max_folio_order;
-+	if (!max_order)
-+		return;
- 
--	if (!ext4_should_enable_large_folio(inode))
-+	min_order = EXT4_SB(sb)->s_min_folio_order;
-+	if (!min_order && !S_ISREG(inode->i_mode))
- 		return;
- 
--	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
--	    ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
--		max_order = EXT4_SB(inode->i_sb)->s_min_folio_order;
--	else
--		max_order = EXT4_MAX_PAGECACHE_ORDER(inode);
-+	if (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
-+		max_order = min_order;
- 
--	mapping_set_folio_order_range(inode->i_mapping,
--				      EXT4_SB(inode->i_sb)->s_min_folio_order,
--				      max_order);
-+	mapping_set_folio_order_range(inode->i_mapping, min_order, max_order);
- }
- 
- struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 998ddce49093..3d03a6eb0ea0 100644
+index 3d03a6eb0ea0..87205660c5d0 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -5042,6 +5042,41 @@ static const char *ext4_has_journal_option(struct super_block *sb)
- 	return NULL;
- }
+@@ -7453,7 +7453,8 @@ static struct file_system_type ext4_fs_type = {
+ 	.init_fs_context	= ext4_init_fs_context,
+ 	.parameters		= ext4_param_specs,
+ 	.kill_sb		= ext4_kill_sb,
+-	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME,
++	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME |
++				  FS_LBS,
+ };
+ MODULE_ALIAS_FS("ext4");
  
-+/*
-+ * Limit the maximum folio order to 2048 blocks to prevent overestimation
-+ * of reserve handle credits during the folio writeback in environments
-+ * where the PAGE_SIZE exceeds 4KB.
-+ */
-+#define EXT4_MAX_PAGECACHE_ORDER(sb)		\
-+		umin(MAX_PAGECACHE_ORDER, (11 + (sb)->s_blocksize_bits - PAGE_SHIFT))
-+static void ext4_set_max_mapping_order(struct super_block *sb)
-+{
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+
-+	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)
-+		sbi->s_max_folio_order = sbi->s_min_folio_order;
-+	else
-+		sbi->s_max_folio_order = EXT4_MAX_PAGECACHE_ORDER(sb);
-+}
-+
-+static int ext4_check_large_folio(struct super_block *sb)
-+{
-+	const char *err_str = NULL;
-+
-+	if (ext4_has_feature_encrypt(sb))
-+		err_str = "encrypt";
-+
-+	if (!err_str) {
-+		ext4_set_max_mapping_order(sb);
-+	} else if (sb->s_blocksize > PAGE_SIZE) {
-+		ext4_msg(sb, KERN_ERR, "bs(%lu) > ps(%lu) unsupported for %s",
-+			 sb->s_blocksize, PAGE_SIZE, err_str);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int ext4_load_super(struct super_block *sb, ext4_fsblk_t *lsb,
- 			   int silent)
- {
-@@ -5318,6 +5353,10 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 987bd00f916a..0018e09b867e 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -332,6 +332,9 @@ EXT4_ATTR_FEATURE(fast_commit);
+ #if IS_ENABLED(CONFIG_UNICODE) && defined(CONFIG_FS_ENCRYPTION)
+ EXT4_ATTR_FEATURE(encrypted_casefold);
+ #endif
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++EXT4_ATTR_FEATURE(blocksize_gt_pagesize);
++#endif
  
- 	ext4_apply_options(fc, sb);
- 
-+	err = ext4_check_large_folio(sb);
-+	if (err < 0)
-+		goto failed_mount;
-+
- 	err = ext4_encoding_init(sb, es);
- 	if (err)
- 		goto failed_mount;
+ static struct attribute *ext4_feat_attrs[] = {
+ 	ATTR_LIST(lazy_itable_init),
+@@ -351,6 +354,9 @@ static struct attribute *ext4_feat_attrs[] = {
+ 	ATTR_LIST(fast_commit),
+ #if IS_ENABLED(CONFIG_UNICODE) && defined(CONFIG_FS_ENCRYPTION)
+ 	ATTR_LIST(encrypted_casefold),
++#endif
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	ATTR_LIST(blocksize_gt_pagesize),
+ #endif
+ 	NULL,
+ };
 -- 
 2.46.1
 
