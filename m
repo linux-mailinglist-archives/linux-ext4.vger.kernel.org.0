@@ -1,162 +1,174 @@
-Return-Path: <linux-ext4+bounces-11990-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11966-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 471D0C781CB
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 10:19:49 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 154C4C78137
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 10:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id 6ACDA32584
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 09:19:30 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTPS id 7E2D12C7DD
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 09:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5C13451D5;
-	Fri, 21 Nov 2025 09:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E0A33F378;
+	Fri, 21 Nov 2025 09:14:03 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F27D303CA1;
-	Fri, 21 Nov 2025 09:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702E22BD001
+	for <linux-ext4@vger.kernel.org>; Fri, 21 Nov 2025 09:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763716623; cv=none; b=urenZVuMNh3jo/TICX7hV/UpdQjyf9+/EdkBnOzDswh+WNIHUnaCp4++rAfFoh++xdACVq11n0udY1X4DRkSbXhse7QNS1rA9VZBxwzNJf23OlXoIn0MmiA99V0rjhBN8j7lBaTqfNMQyJjp3ir2h+kpT8HJdYNDkQUsj2WcP40=
+	t=1763716443; cv=none; b=XtVkpAh/c+A+Zf1LHJmCpehpZHTgzto/rZrOedpCHNf2diIkTGIITsxn9u79FWUUNt1waE355sJRBzkLWjHxu/CL3rL7yxxzNIu8sQseJAyhN8gECxlpXe3YpwJoHo7tL/sVjCku2Yh0Rwm4O1XXaizKmpgNGHRdBDEvKmP9BBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763716623; c=relaxed/simple;
-	bh=aF+DbgPYapqeQ+9Sv3+u8mH464IRHeCbCP54ohxIjj0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AWhp7PiELtNVHiwQR1LJUUmEmsUAKhu/vws0DvdOiocqul64digC/yA9FWgflOJJYDU8bu8dW7G15sSI9kS2Cx3NefKSjvVlVkXNq7sdow5HsUqeCQOT6Om7MJWrI7jqjOBp+mgLV45lV6ojlQV2uq54/8KT0MUeNLsIt0mJg6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dCV2P2X08zKHMwX;
-	Fri, 21 Nov 2025 17:16:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 4F5921A0FC0;
-	Fri, 21 Nov 2025 17:16:44 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.50.87.129])
-	by APP2 (Coremail) with SMTP id Syh0CgBHpXv4LSBpaLMDBg--.2072S28;
-	Fri, 21 Nov 2025 17:16:44 +0800 (CST)
-From: libaokun@huaweicloud.com
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	kernel@pankajraghav.com,
-	mcgrof@kernel.org,
-	ebiggers@kernel.org,
-	willy@infradead.org,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	chengzhihao1@huawei.com,
-	libaokun1@huawei.com,
-	libaokun@huaweicloud.com,
-	Pankaj Raghav <p.raghav@samsung.com>
-Subject: [PATCH v4 24/24] ext4: enable block size larger than page size
-Date: Fri, 21 Nov 2025 17:06:54 +0800
-Message-Id: <20251121090654.631996-25-libaokun@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20251121090654.631996-1-libaokun@huaweicloud.com>
-References: <20251121090654.631996-1-libaokun@huaweicloud.com>
+	s=arc-20240116; t=1763716443; c=relaxed/simple;
+	bh=Jc2DqQ/fP8BK3WMoG3tuD7oT46LSQbdlO8kprYWRsUs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=UQXUS8+QRvCFtbnFM326BdGIBadMg8Q2HVWQ/WT7WcXOBygC+0PA6B1t1aOxgNxMKpCQD38qxzHVhgcehv/6iDUL9wtI8QLi/BBYrb0VYVcQaiYsamieh68+WYQJlL4ANaaT/R/0L9+JoutaDDxWwZxed1sa2YKJOfmR8WoTOx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-945c705df24so296484839f.0
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Nov 2025 01:14:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763716440; x=1764321240;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vaU7b1tPnAy9MbStdPZMM0LGfXCMkPH3WaOdRjKt+hs=;
+        b=VcgM+t05pEv9wvjeh7TLynYBmoA8Ggtl3vDFp9TmEIlAlaU5MzuBh4a9v5BaTkNg/D
+         3dVhOcSmZFzlCSmcDbqM5NK2Kf3Jb6jtsHZXE7XZ5/O2tjcgW6CyUHxE0096kcJRcE1N
+         qdVmjOPT1pshu9xqzjlpECsgV5nCoPD056V3T0g79mrdhEIxcRzbknxKOdSw6fdbVUzs
+         GoVTJtfbTbfjkQFr9xmcbz0PkPogtgNuBL3p5l+Pp9MBIao1isjntCH+dy/k1vd06buN
+         Cwu/dnu3ZPsC2W7EmOfkT0/+HHplAwYAibYNsP3z90OOyiJV6/8/aPnKespkgDkjGdgp
+         r9CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWFnx+lTeRfPd491IqmzSLJhYAFneiDeOmRwwasm4sL5JLjbaOPjUelQsnqSdHjtJAbIXsj0MwIQg/p@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzo7YnhKUxvHMvyqABQyKmpQRIQrHq3IuHxgZunnRkS+j2afzQV
+	X0g/iJnO9TNcurMCdlHix2eLRyBRY3s913IILpulGNxDSJmtxfGPlQnIwenhBw1U1DCRB/bqP8A
+	NW15e2IbdPjuS0kjRczKOnJjuP6DHUSUbDDdUj/Ev51ZOmwCrl+ncoEZ4X8k=
+X-Google-Smtp-Source: AGHT+IFkkL80B3Q5Vrbgw3AmsqESm7/didpzZgdBjDKGxCVoYouEQfQZKWZ4yk0DY9khMYFu82Gv5R1iSm6itsrelpJ1FgSgppR0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBHpXv4LSBpaLMDBg--.2072S28
-X-Coremail-Antispam: 1UD129KBjvJXoWxAr4fAryUXrWUtF1DZFWUurg_yoW5WrWxp3
-	WrGFy8Ar15WFyUua9rWFsF9as3Gw1v9FyUXr90gw1UZFZrX34xKrn7tFy5XFyjqrZ3uFWf
-	XF1vyryayr43uaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUQa14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr0_
-	Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8c
-	xan2IY04v7M4kE6xkIj40Ew7xC0wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxG
-	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-	vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
-	x2IY67AKxVW5JVW7JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdsqAUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQATBWkf35kfHAAAsk
+X-Received: by 2002:a05:6e02:2145:b0:433:7929:e7a8 with SMTP id
+ e9e14a558f8ab-435aa8d0f3amr41238845ab.12.1763716440667; Fri, 21 Nov 2025
+ 01:14:00 -0800 (PST)
+Date: Fri, 21 Nov 2025 01:14:00 -0800
+In-Reply-To: <20251121002209.416949-2-eraykrdg1@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69202d58.a70a0220.2ea503.004a.GAE@google.com>
+Subject: [syzbot ci] Re: ext4: fix unaligned preallocation with bigalloc
+From: syzbot ci <syzbot+cib6a48fc441f958bd@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, albinbabuvarghese20@gmail.com, 
+	david.hunter.linux@gmail.com, eraykrdg1@gmail.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, 
+	syzbot@syzkaller.appspotmail.com, tytso@mit.edu
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Baokun Li <libaokun1@huawei.com>
+syzbot ci has tested the following series
 
-Since block device (See commit 3c20917120ce ("block/bdev: enable large
-folio support for large logical block sizes")) and page cache (See commit
-ab95d23bab220ef8 ("filemap: allocate mapping_min_order folios in the page
-cache")) has the ability to have a minimum order when allocating folio,
-and ext4 has supported large folio in commit 7ac67301e82f ("ext4: enable
-large folio for regular file"), now add support for block_size > PAGE_SIZE
-in ext4.
+[v1] ext4: fix unaligned preallocation with bigalloc
+https://lore.kernel.org/all/20251121002209.416949-2-eraykrdg1@gmail.com
+* [PATCH] ext4: fix unaligned preallocation with bigalloc
 
-set_blocksize() -> bdev_validate_blocksize() already validates the block
-size, so ext4_load_super() does not need to perform additional checks.
-Here we only need to add the FS_LBS bit to fs_flags.
+and found the following issue:
+kernel BUG in ext4_mb_new_inode_pa
 
-In addition, block sizes larger than the page size are currently supported
-only when CONFIG_TRANSPARENT_HUGEPAGE is enabled. To make this explicit,
-a blocksize_gt_pagesize entry has been added under /sys/fs/ext4/feature/,
-indicating whether bs > ps is supported. This allows mke2fs to check the
-interface and determine whether a warning should be issued when formatting
-a filesystem with block size larger than the page size.
+Full report is available here:
+https://ci.syzbot.org/series/5fbb06a2-0d5c-4936-94b6-d73abad55373
 
-Suggested-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
+***
+
+kernel BUG in ext4_mb_new_inode_pa
+
+tree:      torvalds
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux
+base:      23cb64fb76257309e396ea4cec8396d4a1dbae68
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/3beb0e0f-6449-481d-8a5c-870149d28caf/config
+C repro:   https://ci.syzbot.org/findings/891b93f7-ef7e-4890-8c4b-ed438fa3fa28/c_repro
+syz repro: https://ci.syzbot.org/findings/891b93f7-ef7e-4890-8c4b-ed438fa3fa28/syz_repro
+
+loop0: detected capacity change from 0 to 1024
+EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: none.
+------------[ cut here ]------------
+kernel BUG at fs/ext4/mballoc.c:5312!
+Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
+CPU: 0 UID: 0 PID: 5990 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:ext4_mb_new_inode_pa+0x144e/0x1520 fs/ext4/mballoc.c:5312
+Code: 5d 04 00 eb 2c e8 42 d8 43 ff 90 0f 0b e8 3a d8 43 ff 90 0f 0b e8 32 d8 43 ff eb 3c e8 2b d8 43 ff 90 0f 0b e8 23 d8 43 ff 90 <0f> 0b e8 1b d8 43 ff 31 f6 65 ff 0d 82 24 f2 0f 0f 94 c3 40 0f 94
+RSP: 0018:ffffc900037c6a88 EFLAGS: 00010293
+RAX: ffffffff827c2b9d RBX: 0000000000000201 RCX: ffff8881ba628000
+RDX: 0000000000000000 RSI: 0000000000000201 RDI: 0000000000000210
+RBP: 0000000000000190 R08: ffffea000418ec37 R09: 1ffffd4000831d86
+R10: dffffc0000000000 R11: fffff94000831d87 R12: 0000000000000004
+R13: ffff88801b03f2b8 R14: dffffc0000000000 R15: 0000000000000210
+FS:  0000555557696500(0000) GS:ffff88818eb3b000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2f863fff CR3: 000000016b520000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ ext4_mb_try_best_found+0x33e/0x440 fs/ext4/mballoc.c:2389
+ ext4_mb_regular_allocator+0x9fa/0x2970 fs/ext4/mballoc.c:3040
+ ext4_mb_new_blocks+0xd11/0x4720 fs/ext4/mballoc.c:6319
+ ext4_ext_map_blocks+0x161a/0x6ac0 fs/ext4/extents.c:4383
+ ext4_map_create_blocks fs/ext4/inode.c:609 [inline]
+ ext4_map_blocks+0x860/0x1740 fs/ext4/inode.c:811
+ _ext4_get_block+0x200/0x4c0 fs/ext4/inode.c:910
+ ext4_get_block_unwritten+0x2e/0x100 fs/ext4/inode.c:943
+ ext4_block_write_begin+0x993/0x1710 fs/ext4/inode.c:1198
+ ext4_write_begin+0xc04/0x19a0 fs/ext4/ext4_jbd2.h:-1
+ ext4_da_write_begin+0x445/0xda0 fs/ext4/inode.c:3129
+ generic_perform_write+0x2c5/0x900 mm/filemap.c:4254
+ ext4_buffered_write_iter+0xce/0x3a0 fs/ext4/file.c:299
+ ext4_file_write_iter+0x298/0x1bc0 fs/ext4/file.c:-1
+ new_sync_write fs/read_write.c:593 [inline]
+ vfs_write+0x5c9/0xb30 fs/read_write.c:686
+ ksys_pwrite64 fs/read_write.c:793 [inline]
+ __do_sys_pwrite64 fs/read_write.c:801 [inline]
+ __se_sys_pwrite64 fs/read_write.c:798 [inline]
+ __x64_sys_pwrite64+0x193/0x220 fs/read_write.c:798
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f3f2c38f6c9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff15880d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+RAX: ffffffffffffffda RBX: 00007f3f2c5e5fa0 RCX: 00007f3f2c38f6c9
+RDX: 0000000000000001 RSI: 00002000000005c0 RDI: 0000000000000004
+RBP: 00007f3f2c411f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 000000000004fed0 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f3f2c5e5fa0 R14: 00007f3f2c5e5fa0 R15: 0000000000000004
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_mb_new_inode_pa+0x144e/0x1520 fs/ext4/mballoc.c:5312
+Code: 5d 04 00 eb 2c e8 42 d8 43 ff 90 0f 0b e8 3a d8 43 ff 90 0f 0b e8 32 d8 43 ff eb 3c e8 2b d8 43 ff 90 0f 0b e8 23 d8 43 ff 90 <0f> 0b e8 1b d8 43 ff 31 f6 65 ff 0d 82 24 f2 0f 0f 94 c3 40 0f 94
+RSP: 0018:ffffc900037c6a88 EFLAGS: 00010293
+RAX: ffffffff827c2b9d RBX: 0000000000000201 RCX: ffff8881ba628000
+RDX: 0000000000000000 RSI: 0000000000000201 RDI: 0000000000000210
+RBP: 0000000000000190 R08: ffffea000418ec37 R09: 1ffffd4000831d86
+R10: dffffc0000000000 R11: fffff94000831d87 R12: 0000000000000004
+R13: ffff88801b03f2b8 R14: dffffc0000000000 R15: 0000000000000210
+FS:  0000555557696500(0000) GS:ffff88818eb3b000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2f863fff CR3: 000000016b520000 CR4: 00000000000006f0
+
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
 ---
- fs/ext4/super.c | 3 ++-
- fs/ext4/sysfs.c | 6 ++++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 3d03a6eb0ea0..87205660c5d0 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -7453,7 +7453,8 @@ static struct file_system_type ext4_fs_type = {
- 	.init_fs_context	= ext4_init_fs_context,
- 	.parameters		= ext4_param_specs,
- 	.kill_sb		= ext4_kill_sb,
--	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME,
-+	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME |
-+				  FS_LBS,
- };
- MODULE_ALIAS_FS("ext4");
- 
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 987bd00f916a..0018e09b867e 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -332,6 +332,9 @@ EXT4_ATTR_FEATURE(fast_commit);
- #if IS_ENABLED(CONFIG_UNICODE) && defined(CONFIG_FS_ENCRYPTION)
- EXT4_ATTR_FEATURE(encrypted_casefold);
- #endif
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+EXT4_ATTR_FEATURE(blocksize_gt_pagesize);
-+#endif
- 
- static struct attribute *ext4_feat_attrs[] = {
- 	ATTR_LIST(lazy_itable_init),
-@@ -351,6 +354,9 @@ static struct attribute *ext4_feat_attrs[] = {
- 	ATTR_LIST(fast_commit),
- #if IS_ENABLED(CONFIG_UNICODE) && defined(CONFIG_FS_ENCRYPTION)
- 	ATTR_LIST(encrypted_casefold),
-+#endif
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	ATTR_LIST(blocksize_gt_pagesize),
- #endif
- 	NULL,
- };
--- 
-2.46.1
-
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
