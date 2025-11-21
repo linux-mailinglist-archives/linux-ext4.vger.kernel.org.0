@@ -1,198 +1,184 @@
-Return-Path: <linux-ext4+bounces-11946-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-11947-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5074FC75EAC
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 19:27:19 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9370C76C38
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 01:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id D40032A9E7
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Nov 2025 18:27:17 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 73A2D35E985
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Nov 2025 00:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E8A33D6E6;
-	Thu, 20 Nov 2025 18:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932DB24E4AF;
+	Fri, 21 Nov 2025 00:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KmMpqIv8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eLsHGPYA"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CB8277CAB
-	for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 18:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174D422A4F1
+	for <linux-ext4@vger.kernel.org>; Fri, 21 Nov 2025 00:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763663233; cv=none; b=t7GjjKMqGhk3bJv0uG4FS1QK1FQSTIJGAueVQOwTLsyXywgGYwztiBOPXkWmAHFctuWNbK8V/Hggbxq13C0XeXds7tGETQv4A96WxxK4RMfuMC1muUCdJqrjyo/Hi3EIksV1LqS/QzsDkusDcfLh9fARRTxnh4eoWrhZQXlJ2uQ=
+	t=1763684565; cv=none; b=VVgx9cJ70R46ob4QFdamIa2Zfsq5VTcb3w1qAMWIxE1CPTeYk3c/iaP+1uZuJ5cNVz8zJP/2LRzKs9znqHxd2J0FfqDKL2EFd0MTAvEgB/Q5wFyGRGwpuEbhYdvZHYM1FYN52dZ9gyDu2FBu86Me4zS6p/kannsKJSyttGevY3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763663233; c=relaxed/simple;
-	bh=3mFOMEzr5wqaR4NhAtveDLmt2cDUPWO73J6j8mhB9Cc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PtWnzsqTnROlNrpM3tl4oFXl/wlqWR3cXTKaK+bNR8/Yo9+WG3JnwTH0jh/zwGs3cK1MRVjuOGuY+SLCYduwWAzvxLKEqVg51e3b1gNRQ5OThaSo+wivuHPnhFuxUY1ZyudzBPtgzfSar/qSjL6x833aeEEUTu1p7j7vhGiUJ2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KmMpqIv8; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1763684565; c=relaxed/simple;
+	bh=rom/AwKjWUnt+Gj6Y8kFDA1w9rDZCmrd55mGQuNpbgY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Oxs22MnaAbb5aeDNO3/PUkFB0q7bbz6/edbj+/l5hXsT12E+i1kPAle86jrXB6K0kDCH8Zi1T/91d8ifZAqMwhqL5zqHKeUrTtyxqDavtEIll6/kMnANIccR9/6Aq48rh0ijvu6EVI/3TN+y2mc/R8cjkz4fdTS+5QoM2g7NDkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eLsHGPYA; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-477ba2c1ca2so10595505e9.2
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 10:27:11 -0800 (PST)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b725ead5800so191139566b.1
+        for <linux-ext4@vger.kernel.org>; Thu, 20 Nov 2025 16:22:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763663230; x=1764268030; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v8fJtuCapvhL71if6qUwtqOoOt+BwZG7dFYeJXfQ/kU=;
-        b=KmMpqIv8dUD0ltvfeY/83GyYAQvuiOUxALjU+IhNqFTo1/f9AE+uqIVROoYJvSzf0p
-         Jf8I/h5vYFD3gnw7fgGcrJqKlHgC9pSaowWnQL0hnmsCNi/2+7lvRsuxN3NIxkfitTs2
-         t0mR1LZcN/1IavSRmb9VEtmjyajKa5+n4vM/+JmhoBeHJ4DnvyKP54iFpAMMwY0j6H90
-         EGi94CM7AqmEToUwpGIvB3DDQZTa9Z6ZTdPJZjjUnuvTr3rEC1WUOv8RXMYTNKs9hm9k
-         LVzSpeCfK6onldVGLd4a735f7AJ/w/UfchpviudxNLpUstu/yi0l/pdyRnewXRMcxB6z
-         SftA==
+        d=gmail.com; s=20230601; t=1763684562; x=1764289362; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L5eibNO90Ald5K87n6GVEVhxh4o5x1NRdi3fUbNI3Ks=;
+        b=eLsHGPYAo8l43wx6e/Z0D9my5/pwyJxn9lWhF+myyO7m8KfGAElJxf+ZicvdRZWeb7
+         pt3gRdHq9Xz8bEBts5oXaF6DtfmdW8QUhNNqqmrkkIVjAZXnQqdR0mugO16CYWalaYm4
+         M6qvkc3CnZvidxSv/ujRhPhb3gRypwgEy+C+KdjWd7K5xqQAf+laCcOfiRPeFwARXP5G
+         6RU+bIcFSzXipsgyGY3aT6gn1DqC9EuB3qYa5OEM8Uw7+OQfw28EayDcPa1SM8aEi7Or
+         k+LrpERMi0VOXh10/pqPO31umpQp1SzD2npmx6zU14lVWaoMSXUyQXTUV1myEU4BTIVe
+         adKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763663230; x=1764268030;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=v8fJtuCapvhL71if6qUwtqOoOt+BwZG7dFYeJXfQ/kU=;
-        b=sIomMoWolPbHlD89cQhM89Ey14IXx7pAuP4JPNEsh181J248glkH//5Y6KZw7S9tsW
-         JarEgWIk+GoUeCVWK9YWExEJClbwd0nqpy61QKt1NjPSrMYDnDlMsKzw4cCN8jOHPyJd
-         ylaeUZti+K97XZZ6IQw2Vf/e3GWuj1AfEUHh+pieLryMqo2Z7Zf+4qoRb4Z9+87mP9rY
-         wwb6Dx1n4r+RVP1kBk3XulsatcuqkznMw5nXTLxfXv9Wn5lCzS367UxbcxpQ9vxvQkTJ
-         2Bfvpsqj3Y4qybfHFsOnt9K9C37+RHo9r4xpbXNcH2KuijhIYRzb0kjfyfTaCRm1Fe7T
-         SILw==
-X-Forwarded-Encrypted: i=1; AJvYcCWxjdG0GLaZ8mfIt370QjDxwpzqWmFhttIvdj3ltiNsPOyXSy21VILx99vTOmUInGfz16NPvQJoR78c@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAjvOi7hxS7DTtThR213TETlgqkq2/KD/+3hZmh9Mof+MwBDUO
-	qJ0t/4e2uH36rCEYwohHAPPDnOo5k5IsiosQzCr+tcrKMCVAF/PbLg2G
-X-Gm-Gg: ASbGnctZfuALqZxEBSYobFCL4mJqiHWyAW1edaOuha0i2ekW6FVdTFLpRElzHxYoZHS
-	L+umP0goS1K02oKvT7fg5PHph13YOEu61YKEj+4z3O1x75cJHZ9sKj+TDSRCHl5EHCfXXLaCrXr
-	laHezVcwh/FMXeD0ktCIX0gvqVj4DFefIPh9hjpogI4lCuQD+r29NOv/p6FoFNuukD7TNafYOJc
-	JBU0LhbVle6GtoaLPkiUCPj0B3nxHaqGCPRj/7W7+iRTgeUddwd5zYyBcwELlsof2hpvRvkS5Ko
-	bzaMTVGztyk+kjyb3yPoRx4kCTQrzkmBqBbQUW0d/1kT5s4C1E+ZERpuDCl47VlTXV+j8VTB6Jm
-	LTZTBKL5ZIxS8UPzIpmJJynEtjbZX3wj9DqElmEk86Ue3AKspfQeKmsWE9Dzxg+hr4RfG0G4ZWU
-	VwKS9Hbk36zxBoH/BqeMXeIIsbKfwH71fYlzKs1K0TwdT/8VBkZyT9
-X-Google-Smtp-Source: AGHT+IF/VJ6EtSI84/riBNr2CPA5rd9zxWi3pGW4+BUaR0EHv1CSP4BA7oyKWRxgRSMLvThhRobH5Q==
-X-Received: by 2002:a05:600c:474a:b0:477:a246:8398 with SMTP id 5b1f17b1804b1-477b8954699mr49047475e9.2.1763663229701;
-        Thu, 20 Nov 2025 10:27:09 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477bf36d1fasm2110145e9.7.2025.11.20.10.27.09
+        d=1e100.net; s=20230601; t=1763684562; x=1764289362;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L5eibNO90Ald5K87n6GVEVhxh4o5x1NRdi3fUbNI3Ks=;
+        b=w7rhqTyWXTanLLiyF9alsVLLswxNbZXr1R/ztMS29dxQg0LyNEtEiejCNlXMqvQK4B
+         n0zn3HRZugWkTtnfYJpO2ALxwphBtQu0SI1ddIIQ2j1G/wGs/ulTt4VHOIoaNrtUTHAC
+         J1h1JeSilY9lq6zYEulqczRiqHsRvx7b9MOJHOsngX5k4sVrov0/HyrhdYzjR67TZVY4
+         rsjxVN4fpcp04kRw3NFW/VeRaaG8/9EOfpKdZJNVofb9+u7bbKq4OiR7m/9g54nKL7fs
+         tHBxj73gPbGk8vyEh0zt9GoKwf1HL9AkjD0y1HDuwHvukotXar+CxljQ9itJ5Mb5SEE4
+         SCTQ==
+X-Gm-Message-State: AOJu0YwzwgHo5f+VU/ETp3sbULuolWQgqHsFzsxhSWhHaGLX/qMvkrF+
+	pt11LcXVED0guzRCQ3BrsWFuew5Mbk2hN6xWjIRLRL8knQ4Vpkjdqtu6
+X-Gm-Gg: ASbGnctaUWPpvnUd4ORcYjKwHaTz/NVXH2yc2JemRNyCwLWM3BNZ3srewpvGoPkD/zY
+	VMvcGFo/ojYFy5XbQ4Nv5BhHgWGwJmcTJVIisE0wnV5R+F9fXl7hf6tV/Vba6Zjjwsp1GmeuEO/
+	PXpKpu/BX01PMoljqzRI9iYc9MV+60A/BOIySjCBddo7/xEOEuTSh+b2D8pBP88H/OSQqEzSYES
+	lsDfL555ChnhLeSBo+5FGnlHGK/B0cJcqtj8PyboHg6FP0NK7l4ODVzYjnispE9IdI35hlm9HUk
+	uTmGx9C6eiDhCxtqvVlHUYz8HL1Na7R0/eCc241CCYAfAoBMUo7DhPCtzIkfOE0lESA3WnKu5/I
+	O2J6FyD/gErbOLNqPtm6IMEhsbjRNm1F2587NVWmvH2vCo4kDKzHEf6kxwmTp4KiVXOmyPE8Eqj
+	Gy3RWmea9UW6Y=
+X-Google-Smtp-Source: AGHT+IFUFHpAifxZcReeziSuOwRDZUEv66W2Z4nfjWxiQbaXSc3qoEN/J/SAU6TFywHoHAyBWMWpHg==
+X-Received: by 2002:a17:906:4fc7:b0:b73:42df:27a with SMTP id a640c23a62f3a-b767151b071mr22897166b.1.1763684562161;
+        Thu, 20 Nov 2025 16:22:42 -0800 (PST)
+Received: from eray-kasa.. ([2a02:4e0:2d18:6ce:7ff1:1161:673b:41e5])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b7654d502cfsm322788966b.19.2025.11.20.16.22.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Nov 2025 10:27:09 -0800 (PST)
-Date: Thu, 20 Nov 2025 18:27:07 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: Theodore Tso <tytso@mit.edu>, Guan-Chun Wu <409411716@gms.tku.edu.tw>,
- Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: improve str2hashbuf by processing 4-byte chunks
-Message-ID: <20251120182707.42c225f5@pumpkin>
-In-Reply-To: <aR9Ir6fdzD5_0Pkn@google.com>
-References: <20251116130105.1988020-1-409411716@gms.tku.edu.tw>
-	<20251116193513.0f90712a@pumpkin>
-	<20251120155816.GB13687@macsyma-3.local>
-	<aR9Ir6fdzD5_0Pkn@google.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        Thu, 20 Nov 2025 16:22:41 -0800 (PST)
+From: Ahmet Eray Karadag <eraykrdg1@gmail.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	david.hunter.linux@gmail.com,
+	skhan@linuxfoundation.org,
+	Ahmet Eray Karadag <eraykrdg1@gmail.com>,
+	syzbot+ee60e584b5c6bb229126@syzkaller.appspotmail.com,
+	Albin Babu Varghese <albinbabuvarghese20@gmail.com>
+Subject: [PATCH] ext4: fix unaligned preallocation with bigalloc
+Date: Fri, 21 Nov 2025 03:22:10 +0300
+Message-ID: <20251121002209.416949-2-eraykrdg1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, 21 Nov 2025 00:58:23 +0800
-Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+Syzkaller reported a use-after-free in ext4_find_extent() when using
+bigalloc. The crash occurs during the extent tree traversal when the
+system tries to access a freed extent path.
 
-> Hi Ted,
->=20
-> On Thu, Nov 20, 2025 at 10:58:16AM -0500, Theodore Tso wrote:
-> > On Sun, Nov 16, 2025 at 07:35:13PM +0000, David Laight wrote: =20
-> > >=20
-> > > The (int) casts are unnecessary (throughout), 'char' is always promot=
-ed to
-> > > 'signed int' before any arithmetic. =20
-> >=20
-> > nit: in this case the casts aren't necessary, but your comment is not
-> > correct in general, so I just wanted to make sure it's corrected in
-> > case someone later looks at the mail archive.
-> >=20
-> > "char" is not always signed.  It can be signed or unsigned; the C
-> > specification allows either.  In this particular case, scp is a
-> > "signed char", not "char".
+The root cause is related to how the multi-block allocator (mballoc)
+handles alignment in bigalloc filesystems (s_cluster_ratio > 1).
+When a request for a block is made, mballoc might return a goal start
+block that is not aligned to the cluster boundary (e.g., block 1 instead
+of 0) because the cluster start is busy.
 
-It doesn't matter - as pointed out below.
-Both 'signed char' and 'unsigned char' are promoted to 'signed int'
-before ANY operation.
-Well unless sizeof(char) =3D=3D sizeof(int) when 'unsigned char' is
-promoted to 'unsigned int' - which is technically valid and was
-true for the C compiler for an old DSP (everything was 32bits).
+Previously, ext4_mb_new_inode_pa() and ext4_mb_new_group_pa() did not
+strictly enforce cluster alignment or handle collisions where aligning
+down would overlap with busy space. This resulted in the creation of
+Preallocation (PA) extents that started in the middle of a cluster.
+This misalignment causes metadata inconsistency between the physical
+allocation (bitmap) and the logical extent tree, eventually leading to
+a use-after-free during inode eviction or truncation.
 
-This is one difference between K&R C and ANSI C - K&R promoted
-'unsigned char' to 'unsigned int'.
-So there was always the chance that compiling in ANSI mode would
-break working code.
+This patch fixes the issue by enforcing strict cluster alignment for
+both inode and group preallocations.
 
-> >=20
-> > Secondly, it's not that a promotion happens before "any" arithmetic.
-> > If we add two 8-bit values together, promotion doesn't happen.  In
-> > this case, we are adding a signed char to an int, so the promotion
-> > will happen.
-> >  =20
-> I believe David was referring to the C11 spec 6.3.1.1:
->=20
-> If an int can represent all values of the original type (as restricted
-> by the width, for a bit-field), the value is converted to an int;
-> otherwise, it is converted to an unsigned int. These are called the
-> integer promotions. All other types are unchanged by the integer
-> promotions.
->=20
-> The spec explicitly mentions char + char in 5.1.2.3 example:
->=20
-> EXAMPLE 2 In executing the fragment
-> char c1, c2;
-> /* ... */
-> c1 =3D c1 + c2;
-> the =E2=80=98=E2=80=98integer promotions=E2=80=99=E2=80=99 require that t=
-he abstract machine promote
-> the value of each variable to int size and then add the two ints and
-> truncate the sum. Provided the addition of two chars can be done
-> without overflow, or with overflow wrapping silently to produce the
-> correct result, the actual execution need only produce the same result,
-> possibly omitting the promotions.
+Using AC_STATUS_BREAK ensures that we do not manually free the PA
+(avoiding double-free bugs in the caller's cleanup path) and allows
+the allocator to find a more suitable block group.
 
-So with:
-	char c1, c2;
-	int i1, i2, i3;
-	...
-	i1 =3D c1 + c2;
-	i2 =3D (int)c1 + (int)c2;
-	i3 =3D (unsigned int)c1 + (unsigned int)c2;
-the values of i1, i2 and i3 are all the same (on a 2s compliment cpu for i3)
-regardless of whether char is signed or unsigned (they do depend on
-the signedness of char).
+Tested with kvm-xfstests -c bigalloc_4k -g quick, no regressions found.
 
->=20
-> So IIUC conceptually the promotion happens, even if the compiler
-> optimizes it out in the actual execution.
+Reported-by: syzbot+ee60e584b5c6bb229126@syzkaller.appspotmail.com
+Fixes: https://syzkaller.appspot.com/bug?extid=ee60e584b5c6bb229126
+Co-developed-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
+Signed-off-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
+Signed-off-by: Ahmet Eray Karadag <eraykrdg1@gmail.com>
+---
+ fs/ext4/mballoc.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-Any it is pretty much only x86 and m68k that have instructions for
-byte arithmetic.
-So for everything else if you assign the result of an arithmetic
-operation to a char/short local variable (which is hopefully in
-a register rather than on stack) the compiler has to add extra
-instructions to mask the value back to 8 (or 16) bits and likely
-keep sign extending it as well.
-
-People also forget that the type of 'cond ? c1 : c2' is also 'int'.
-
-Part of it is historic, the pdp11 is a 16bit cpu with byte-addressable
-memory and sign-extending byte memory reads (which is probably why char
-defaults to signed).
-
-	David
-
-
->=20
-> Link: https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf
->=20
-> Regards,
-> Kuan-Wei
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 9087183602e4..549d6cf58f3c 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5291,6 +5291,21 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+ 
+ 		ex.fe_logical = ac->ac_o_ex.fe_logical;
+ adjust_bex:
++		if (sbi->s_cluster_ratio > 1) {
++			loff_t mask = ~(sbi->s_cluster_ratio - 1);
++			loff_t aligned_start = ex.fe_logical & mask;
++
++			if (aligned_start < ac->ac_g_ex.fe_logical) {
++				ac->ac_status = AC_STATUS_BREAK;
++				return;
++			}
++
++			ex.fe_len += (ex.fe_logical - aligned_start);
++			ex.fe_logical = aligned_start;
++
++			if (ex.fe_logical + ex.fe_len > orig_goal_end)
++				ex.fe_len = orig_goal_end - ex.fe_logical;
++		}
+ 		ac->ac_b_ex.fe_logical = ex.fe_logical;
+ 
+ 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
+@@ -5336,6 +5351,7 @@ static noinline_for_stack void
+ ext4_mb_new_group_pa(struct ext4_allocation_context *ac)
+ {
+ 	struct super_block *sb = ac->ac_sb;
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct ext4_locality_group *lg;
+ 	struct ext4_prealloc_space *pa;
+ 	struct ext4_group_info *grp;
+@@ -5347,7 +5363,15 @@ ext4_mb_new_group_pa(struct ext4_allocation_context *ac)
+ 	BUG_ON(ac->ac_pa == NULL);
+ 
+ 	pa = ac->ac_pa;
++	if (sbi->s_cluster_ratio > 1) {
++		loff_t mask = ~(sbi->s_cluster_ratio - 1);
++		loff_t pstart = ext4_grp_offs_to_block(sb, &ac->ac_b_ex);
+ 
++		if ((pstart & mask) < pstart) {
++			ac->ac_status = AC_STATUS_BREAK;
++			return;
++		}
++	}
+ 	pa->pa_pstart = ext4_grp_offs_to_block(sb, &ac->ac_b_ex);
+ 	pa->pa_lstart = pa->pa_pstart;
+ 	pa->pa_len = ac->ac_b_ex.fe_len;
+-- 
+2.43.0
 
 
