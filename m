@@ -1,93 +1,89 @@
-Return-Path: <linux-ext4+bounces-12005-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12006-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0DBC7C35F
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 03:49:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 653ACC7C653
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 05:40:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8223935DB36
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 02:49:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97FCA3A7ADD
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 04:40:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04EBC264612;
-	Sat, 22 Nov 2025 02:49:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53FD2741B6;
+	Sat, 22 Nov 2025 04:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XAFfPZmT"
+	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="2sbMIj/0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86FC2135AD
-	for <linux-ext4@vger.kernel.org>; Sat, 22 Nov 2025 02:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAD4246781
+	for <linux-ext4@vger.kernel.org>; Sat, 22 Nov 2025 04:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763779783; cv=none; b=LCLDm5YUkt7ybsI2BthY8/0SNz+/csuudk87WnG4rHQBUlF7odCD5Z1Ru+ju1wV0EyhaNLi7maY82Rg75eCCkyAkZcBxOl7zOczaaUkJcj2OVrWeqEVETEMa8THU6HJJzh4+i/emifRq4s3XpZzxVQaTAHPFHh/yqG7ir0QQbN8=
+	t=1763786383; cv=none; b=myNEfdHwi5F+8J1aSsfuNDYAFTtYXdb6poFac/u++17OgRxgVyAXrsWknKoQTWM1z9qMJuP7+6PK0Bp0hXvUPjRqbURJSdb6Hsy0Fhg8kbBiB7UHZksa/9cQVkPDvz4XMhbuiS3X7q7uv0D+FoTHtmYAg61Hi8DSXYMuHq6G61Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763779783; c=relaxed/simple;
-	bh=sa6mcig//Mcew/EeLoyFl/4GJB8qLX2slgNI2llnzD4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dLDwaqRFwSMSuTZFfWpl0P9UvBw3s+r7q9eN/ZYRysM1lmvwwh3A4YS6Zhj/u4cp9LGt9EPXRA9GseQCR1FZsGZLL1+/003D605/lRXDW/61UI2Hd8HqnF4oSlJu+K2OUyyEB0Q9r3miYrQWg9GnfBwzSKAeLP8XmzQwAqIPbOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XAFfPZmT; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-64320b9bb4bso4331197a12.0
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Nov 2025 18:49:41 -0800 (PST)
+	s=arc-20240116; t=1763786383; c=relaxed/simple;
+	bh=0PJHlRdDNHgFhKZLahfMtcd2ubwxvw8Pv/LLSCLsO4w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AbjNvaR+Dl2amSzOWdOJLD7luBaFULKOVGz6HAKhL0V68CPal86RcutW/RmcLcA0s8+/tB50GDLP51KYVxggYhS6v+7o0auDSweRVh+n4oa67KylX5YLYu4Ix7NoK1ovsnjfuOMs4v96vZasDQlJJj70Gh/elOjOhK0GUhlG4GY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=2sbMIj/0; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7b9c17dd591so2293678b3a.3
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Nov 2025 20:39:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763779780; x=1764384580; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KnHYS7bdbqInDphgttN+cPizyxQKoLAz9iQUAbHEgu8=;
-        b=XAFfPZmTTDFeG0moayZIWI+/YP+fDNXptDQBN72YopmCWaKT6I8VKs6qHwNyOHDXa8
-         Jbe6oe/7eCPSJHJgsstQc8MNId25jjUXjrz3Hiy+VtRIZ5rORTxpNHa1y0/UyUekHywT
-         MCK1ipO4E+YnX2zb2W+4hgK1mtse0QihyBgpL2z98QCvSj5JpNYkQmfL+H31lRzL9LvV
-         x4d9u/cJvj+hJTFJKgubXO/zG1w3SnfrznCVuklURH5DA50YwSN0sUe6wBVOW3hBQGjU
-         6FgJre0bZDE2bquaoW1lUvZt1BKoabqAlcf9AdLjD0XKq3KLJ1y9Xp07fGpfI6ZnTCG2
-         r1Sw==
+        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1763786379; x=1764391179; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=c7C3mqrCsMVwpowQpUu7S+e5Gpr1AgruIqWh0f/HNmo=;
+        b=2sbMIj/0XKlcFvp9NmCgb2raj/fIhZbZMbP3Yh/PIq8f34bmOZ00iLhpBRe7q9ovwz
+         vRuSrmGSPdVJ0wVqQ10IVWXMzyL0HghSZwm/iAG/bukH58TZVkgK2e7Ryk/3rV351xeh
+         WUf4Vb7pwH2CcMKaKqlcqEyoL5O0Z1pOTYWnz/G7lEO/XjoTw1n+r6B+KAi/04oi0pbc
+         yfJr27yD7a0CAcW6Zj49gfV3kvxJrD1NxcUnAhuqed/SJhqmoPBEtURZFTLuEj1O5faj
+         SsQMEOP0xP9ZjwPOBPCyusQ05v5hbovQ3gnAUM6sQLtXdX2L2CFGR7yiLnoLtjd67fmH
+         yj5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763779780; x=1764384580;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=KnHYS7bdbqInDphgttN+cPizyxQKoLAz9iQUAbHEgu8=;
-        b=sRs51Sjv+kl1Nt62le9CZoaCM7oJR8o+BylmHeY50wy9zidCVoqwE/qS1UbWyirP8j
-         mNNPCITd3x3+8a5z+Ou3zBRSq7ygpaVea/GpaFd9pCumUyRYj4cu2IOVUY8/XNPnhTiL
-         hBezZ17/iNTnupv87ZMQaJPCmg0gVjsy2RrH8WLfJwfkozWXixXaJh3h4LqXalXLF6Pw
-         P1MbMtnj6zX98k96wn2qWjcNiFE7tGLkQjRoMzBugVHCe//4x5GqgAcmO17so93yQRi3
-         2GM6iXf03J8QtuXSx33n520eP0JYWcoEZDTmEN8H4lj5sdP6PJwYxMGi7GwluJ6Sf7JZ
-         U//A==
-X-Gm-Message-State: AOJu0YyhWS4hl1y2TrRfUFgRCViE+CO1/kRKdQi9eoSLaMDkt9ol9WxG
-	A9iSld8pKu31j1sI05AJmiitZLXT90sKvFj1tro3zgN+7H9kMpI0Nlzs
-X-Gm-Gg: ASbGncvCsib3wq2gotyjrb1zmwlEUBVndMJrXjp+6c9QpelCyokhM2eufFMGhGfI/ti
-	3CpUTR8BAZmZs2qXVD5CtAXt5ETVTZqyDjyCJs/CXKjFJ1SLLUcaxcIJ3rjdmWbThI6BT1wquX+
-	WJpO04l87P7bUls2tSVDUAmLWNN1di08alJuUhib0u5u5acmW434ZMFbRUdql5nlAzLAeQxKjNW
-	F8bqd2hcev4YzA5WyTup18+tj4lapv6spzkjdcFX3fzoTp6+dFUPrZKxGFMP6+WoQt6ok7pWj2P
-	zmQoPg2UmGMnuBsk2D1E3UKXL6n6HGHsLq8I1DQIUqf7CunwWWdGw50MqKES8EycBbL9uCZ8XUH
-	zs9iCglhZjRwllqIJ5Ocg7Zag0p29IZn1z5eefSpY9sdHz7as4LISbaavF1vPrq2VgeU6f5N3ZH
-	Df/4qOgO06LA4w
-X-Google-Smtp-Source: AGHT+IFsP8W53rvT11Kbkp3Q1NBm6rQma1a4c0VWOCZYCdxPAkvafeClv3FEkEEKh622Y3fsOcqKZw==
-X-Received: by 2002:a05:6402:42c7:b0:640:b07c:5704 with SMTP id 4fb4d7f45d1cf-645550f2186mr4469181a12.15.1763779779940;
-        Fri, 21 Nov 2025 18:49:39 -0800 (PST)
-Received: from eray-kasa.. ([2a02:4e0:2d15:1b7a:7e69:bd3d:4508:8aee])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-645363aca03sm6307532a12.3.2025.11.21.18.49.38
+        d=1e100.net; s=20230601; t=1763786379; x=1764391179;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c7C3mqrCsMVwpowQpUu7S+e5Gpr1AgruIqWh0f/HNmo=;
+        b=SVa8IoI9k3AlzgRWlMoopI8F4PSbF27UwEIkZQqw9fqTEC3wD3AAhEv6+/deRGJuAE
+         jgYb7FyEDSGlHaP96eWWgEZZfTCneGI12NY13+skj9lEdjmIgXoD3YT5yP/KF4k5fDHf
+         a6s4RHJmogCF+OUT3OdqZrH2m1VrJgfHEmG2E4YugAB2swdKSz1/R1if2TIRjvQRa9QX
+         C5ALylM1yb8b6yDI9YUqoR3fztGAosKXP+O83xcoq6qBEkIIf7aVdupD8/xC1tjM4n44
+         8ZrowutoXc9NjsQnXcK88nmHQOt5ekjUo+7vDDtH6htD8hDtzEzJp61Ux3DukL78aVcU
+         JaeA==
+X-Gm-Message-State: AOJu0YzBg7lZWFDwxJbufvWWuIN5auwNqiU1G5WwJNZ8g+CCjI6C5UyK
+	9v9/b+HkqZ7jqjS+VuVwcmNghqITdR2y3tYpwl2bNsfgvr0/PIpujj+PJLaGUgZ93wKDHCB6CqQ
+	BgQYF5LA=
+X-Gm-Gg: ASbGnctIS6HpaybTGQARB8wgsRHlYEECut2xdqYA/UZsjRh8kIMwC7a6ed/Vxs3uKFW
+	0l20qmBeh4rDWeqdwxmxSYSWBk8PBtiBeNR8dsYLwQZdK7wQQOQNatelWAGqhvDWvfcVkNYb7lQ
+	Y4g5u3K1CiY2LjhTx3JyV2jWvH98suiL3K1Wxg5FyvJIZDe1AwNWHYZmzO7cLY9tmkIfAgAZ8Jf
+	YLICyLWE13NnFEINJ4/qTq3uBooV5T8PEVJ7fmPAlO97G9d7YSqHkQR9hu5lqTG7cApu93q9oGW
+	QQ9zCdkmoqcHTEGaRF/fvERxbEAFIRx79ksdteTzdicm2JMTeycmK0+LLW+M8graA8FUR1tX12M
+	b5BNhmM1ePA+N7VBFfiHpzOjGBTV8AM89NGT9RNNYD/9TlRq1Ln7/lAhDcL8LJw+YNOD4WtH7yO
+	NHOmP1ANAe3LH/zmXKkEyFysG/FwDKyXSbJg==
+X-Google-Smtp-Source: AGHT+IFjRdWdT+ZczsEHOR0lZAgSTTpkYWA9lKk0ziJQeV3FWTigkgKWYKSTUFKFttAN59yjmKKKaA==
+X-Received: by 2002:a05:6a00:8d6:b0:7b9:7f18:c716 with SMTP id d2e1a72fcca58-7c58c2a7c48mr4545485b3a.1.1763786378738;
+        Fri, 21 Nov 2025 20:39:38 -0800 (PST)
+Received: from wu-Pro-E500-G6-WS720T.. ([2001:288:7001:2703:f19:917c:589d:681d])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3f0b63dbcsm7618838b3a.50.2025.11.21.20.39.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Nov 2025 18:49:39 -0800 (PST)
-From: Ahmet Eray Karadag <eraykrdg1@gmail.com>
+        Fri, 21 Nov 2025 20:39:38 -0800 (PST)
+From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
 To: tytso@mit.edu,
 	adilger.kernel@dilger.ca
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	david.hunter.linux@gmail.com,
-	skhan@linuxfoundation.org,
-	Ahmet Eray Karadag <eraykrdg1@gmail.com>,
-	syzbot+ee60e584b5c6bb229126@syzkaller.appspotmail.com,
-	Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-Subject: [PATCH v2] ext4: fix unaligned preallocation with bigalloc
-Date: Sat, 22 Nov 2025 05:45:56 +0300
-Message-ID: <20251122024555.140798-2-eraykrdg1@gmail.com>
-In-Reply-To: <20251121002209.416949-2-eraykrdg1@gmail.com>
-References: <20251121002209.416949-2-eraykrdg1@gmail.com>
+	visitorckw@gmail.com,
+	david.laight.linux@gmail.com,
+	Guan-Chun Wu <409411716@gms.tku.edu.tw>
+Subject: [PATCH v2] ext4: improve str2hashbuf by processing 4-byte chunks and removing function pointers
+Date: Sat, 22 Nov 2025 12:39:29 +0800
+Message-Id: <20251122043929.1908643-1-409411716@gms.tku.edu.tw>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -96,98 +92,173 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Syzkaller reported a use-after-free in ext4_find_extent() when using
-bigalloc. The crash occurs during the extent tree traversal when the
-system tries to access a freed extent path.
+The original byte-by-byte implementation with modulo checks is less
+efficient. Refactor str2hashbuf_unsigned() and str2hashbuf_signed()
+to process input in explicit 4-byte chunks instead of using a
+modulus-based loop to emit words byte by byte.
 
-The root cause is related to how the multi-block allocator (mballoc)
-handles alignment in bigalloc filesystems (s_cluster_ratio > 1).
-When a request for a block is made, mballoc might return a goal start
-block that is not aligned to the cluster boundary (e.g., block 1 instead
-of 0) because the cluster start is busy.
+Additionally, the use of function pointers for selecting the appropriate
+str2hashbuf implementation has been removed. Instead, the functions are
+directly invoked based on the hash type, eliminating the overhead of
+dynamic function calls.
 
-Previously, ext4_mb_new_inode_pa() and ext4_mb_new_group_pa() did not
-strictly enforce cluster alignment or handle collisions where aligning
-down would overlap with busy space. This resulted in the creation of
-Preallocation (PA) extents that started in the middle of a cluster.
-This misalignment causes metadata inconsistency between the physical
-allocation (bitmap) and the logical extent tree, eventually leading to
-a use-after-free during inode eviction or truncation.
+Performance test (x86_64, Intel Core i7-10700 @ 2.90GHz, average over 10000
+runs, using kernel module for testing):
 
-This patch fixes the issue by enforcing strict cluster alignment for
-both inode and group preallocations.
+    len | orig_s | new_s | orig_u | new_u
+    ----+--------+-------+--------+-------
+      1 |   70   |   71  |   63   |   63
+      8 |   68   |   64  |   64   |   62
+     32 |   75   |   70  |   75   |   63
+     64 |   96   |   71  |  100   |   68
+    255 |  192   |  108  |  187   |   84
 
-Using AC_STATUS_BREAK ensures that we do not manually free the PA
-(avoiding double-free bugs in the caller's cleanup path) and allows
-the allocator to find a more suitable block group.
+This change improves performance, especially for larger input sizes.
 
-Tested with kvm-xfstests -c bigalloc_4k -g auto, no regressions found.
-
-Reported-by: syzbot+ee60e584b5c6bb229126@syzkaller.appspotmail.com
-Fixes: https://syzkaller.appspot.com/bug?extid=ee60e584b5c6bb229126
-Co-developed-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-Signed-off-by: Albin Babu Varghese <albinbabuvarghese20@gmail.com>
-Signed-off-by: Ahmet Eray Karadag <eraykrdg1@gmail.com>
+Signed-off-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
 ---
-v2:
- - Removed incorrect logic that was adding block offset to cluster length
-   (fe_len), which caused unit mismatch between clusters and blocks.
+v1 -> v2:
+- Drop redundant (int) casts.
+- Replace indirect calls with simple conditionals.
+- Use get_unaligned_be32() instead of manual byte extraction.
+- Link to v1: https://lore.kernel.org/lkml/20251116130105.1988020-1-409411716@gms.tku.edu.tw/
 ---
- fs/ext4/mballoc.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ fs/ext4/hash.c | 64 +++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 42 insertions(+), 22 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 9087183602e4..fefa3cc6adf8 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5291,6 +5291,22 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+diff --git a/fs/ext4/hash.c b/fs/ext4/hash.c
+index 33cd5b6b02d5..97b7a3b0603e 100644
+--- a/fs/ext4/hash.c
++++ b/fs/ext4/hash.c
+@@ -9,6 +9,7 @@
+ #include <linux/unicode.h>
+ #include <linux/compiler.h>
+ #include <linux/bitops.h>
++#include <linux/unaligned.h>
+ #include "ext4.h"
  
- 		ex.fe_logical = ac->ac_o_ex.fe_logical;
- adjust_bex:
-+		if (sbi->s_cluster_ratio > 1) {
-+			loff_t mask = ~(sbi->s_cluster_ratio - 1);
-+			loff_t aligned_start = ex.fe_logical & mask;
+ #define DELTA 0x9E3779B9
+@@ -141,21 +142,28 @@ static void str2hashbuf_signed(const char *msg, int len, __u32 *buf, int num)
+ 	pad = (__u32)len | ((__u32)len << 8);
+ 	pad |= pad << 16;
+ 
+-	val = pad;
+ 	if (len > num*4)
+ 		len = num * 4;
+-	for (i = 0; i < len; i++) {
+-		val = ((int) scp[i]) + (val << 8);
+-		if ((i % 4) == 3) {
+-			*buf++ = val;
+-			val = pad;
+-			num--;
+-		}
 +
-+			if (aligned_start < ac->ac_g_ex.fe_logical) {
-+				ac->ac_status = AC_STATUS_BREAK;
-+				return;
-+			}
++	while (len >= 4) {
++		val = (scp[0] << 24) + (scp[1] << 16) + (scp[2] << 8) + scp[3];
++		*buf++ = val;
++		scp += 4;
++		len -= 4;
++		num--;
+ 	}
 +
-+			ex.fe_logical = aligned_start;
++	val = pad;
 +
-+			if (extent_logical_end(sbi, &ex) > orig_goal_end) {
-+				ac->ac_status = AC_STATUS_BREAK;
-+				return;
-+			}
-+		}
- 		ac->ac_b_ex.fe_logical = ex.fe_logical;
++	for (i = 0; i < len; i++)
++		val = scp[i] + (val << 8);
++
+ 	if (--num >= 0)
+ 		*buf++ = val;
++
+ 	while (--num >= 0)
+ 		*buf++ = pad;
++
+ }
  
- 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
-@@ -5336,6 +5352,7 @@ static noinline_for_stack void
- ext4_mb_new_group_pa(struct ext4_allocation_context *ac)
- {
- 	struct super_block *sb = ac->ac_sb;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_locality_group *lg;
- 	struct ext4_prealloc_space *pa;
- 	struct ext4_group_info *grp;
-@@ -5347,7 +5364,15 @@ ext4_mb_new_group_pa(struct ext4_allocation_context *ac)
- 	BUG_ON(ac->ac_pa == NULL);
+ static void str2hashbuf_unsigned(const char *msg, int len, __u32 *buf, int num)
+@@ -167,21 +175,28 @@ static void str2hashbuf_unsigned(const char *msg, int len, __u32 *buf, int num)
+ 	pad = (__u32)len | ((__u32)len << 8);
+ 	pad |= pad << 16;
  
- 	pa = ac->ac_pa;
-+	if (sbi->s_cluster_ratio > 1) {
-+		loff_t mask = ~(sbi->s_cluster_ratio - 1);
-+		loff_t pstart = ext4_grp_offs_to_block(sb, &ac->ac_b_ex);
+-	val = pad;
+ 	if (len > num*4)
+ 		len = num * 4;
+-	for (i = 0; i < len; i++) {
+-		val = ((int) ucp[i]) + (val << 8);
+-		if ((i % 4) == 3) {
+-			*buf++ = val;
+-			val = pad;
+-			num--;
+-		}
++
++	while (len >= 4) {
++		val = get_unaligned_be32(ucp);
++		*buf++ = val;
++		ucp += 4;
++		len -= 4;
++		num--;
+ 	}
++
++	val = pad;
++
++	for (i = 0; i < len; i++)
++		val = ucp[i] + (val << 8);
++
+ 	if (--num >= 0)
+ 		*buf++ = val;
++
+ 	while (--num >= 0)
+ 		*buf++ = pad;
++
+ }
  
-+		if ((pstart & mask) < pstart) {
-+			ac->ac_status = AC_STATUS_BREAK;
-+			return;
-+		}
-+	}
- 	pa->pa_pstart = ext4_grp_offs_to_block(sb, &ac->ac_b_ex);
- 	pa->pa_lstart = pa->pa_pstart;
- 	pa->pa_len = ac->ac_b_ex.fe_len;
+ /*
+@@ -205,8 +220,7 @@ static int __ext4fs_dirhash(const struct inode *dir, const char *name, int len,
+ 	const char	*p;
+ 	int		i;
+ 	__u32		in[8], buf[4];
+-	void		(*str2hashbuf)(const char *, int, __u32 *, int) =
+-				str2hashbuf_signed;
++	bool use_unsigned = false;
+ 
+ 	/* Initialize the default seed for the hash checksum functions */
+ 	buf[0] = 0x67452301;
+@@ -232,12 +246,15 @@ static int __ext4fs_dirhash(const struct inode *dir, const char *name, int len,
+ 		hash = dx_hack_hash_signed(name, len);
+ 		break;
+ 	case DX_HASH_HALF_MD4_UNSIGNED:
+-		str2hashbuf = str2hashbuf_unsigned;
++		use_unsigned = true;
+ 		fallthrough;
+ 	case DX_HASH_HALF_MD4:
+ 		p = name;
+ 		while (len > 0) {
+-			(*str2hashbuf)(p, len, in, 8);
++			if (use_unsigned)
++				str2hashbuf_unsigned(p, len, in, 8);
++			else
++				str2hashbuf_signed(p, len, in, 8);
+ 			half_md4_transform(buf, in);
+ 			len -= 32;
+ 			p += 32;
+@@ -246,12 +263,15 @@ static int __ext4fs_dirhash(const struct inode *dir, const char *name, int len,
+ 		hash = buf[1];
+ 		break;
+ 	case DX_HASH_TEA_UNSIGNED:
+-		str2hashbuf = str2hashbuf_unsigned;
++		use_unsigned = true;
+ 		fallthrough;
+ 	case DX_HASH_TEA:
+ 		p = name;
+ 		while (len > 0) {
+-			(*str2hashbuf)(p, len, in, 4);
++			if (use_unsigned)
++				str2hashbuf_unsigned(p, len, in, 4);
++			else
++				str2hashbuf_signed(p, len, in, 4);
+ 			TEA_transform(buf, in);
+ 			len -= 16;
+ 			p += 16;
 -- 
-2.43.0
+2.34.1
 
 
