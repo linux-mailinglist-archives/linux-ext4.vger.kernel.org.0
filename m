@@ -1,264 +1,233 @@
-Return-Path: <linux-ext4+bounces-12006-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12007-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 653ACC7C653
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 05:40:05 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A0EC7CAFA
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 09:55:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97FCA3A7ADD
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 04:40:03 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 78CF74E38C0
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 08:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53FD2741B6;
-	Sat, 22 Nov 2025 04:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b="2sbMIj/0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2402228853A;
+	Sat, 22 Nov 2025 08:55:34 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAD4246781
-	for <linux-ext4@vger.kernel.org>; Sat, 22 Nov 2025 04:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6651AA7A6
+	for <linux-ext4@vger.kernel.org>; Sat, 22 Nov 2025 08:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763786383; cv=none; b=myNEfdHwi5F+8J1aSsfuNDYAFTtYXdb6poFac/u++17OgRxgVyAXrsWknKoQTWM1z9qMJuP7+6PK0Bp0hXvUPjRqbURJSdb6Hsy0Fhg8kbBiB7UHZksa/9cQVkPDvz4XMhbuiS3X7q7uv0D+FoTHtmYAg61Hi8DSXYMuHq6G61Q=
+	t=1763801733; cv=none; b=dEOnb0pLBXRhq+VxtkbxibJKijIlGufuc10hS5AJG5+NvuqFzTPv4x+3nF02zQDQymfYzb1Ys7CGR0RefGJS/qKtNHRfcF4ZcoBrKfsO1yNSAC3HnEe9yPWwBxo7vojPB45ylIhHeNLSxti1r1/fCKthOMbhq/qwn00sAuy7ywQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763786383; c=relaxed/simple;
-	bh=0PJHlRdDNHgFhKZLahfMtcd2ubwxvw8Pv/LLSCLsO4w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AbjNvaR+Dl2amSzOWdOJLD7luBaFULKOVGz6HAKhL0V68CPal86RcutW/RmcLcA0s8+/tB50GDLP51KYVxggYhS6v+7o0auDSweRVh+n4oa67KylX5YLYu4Ix7NoK1ovsnjfuOMs4v96vZasDQlJJj70Gh/elOjOhK0GUhlG4GY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw; spf=pass smtp.mailfrom=gms.tku.edu.tw; dkim=pass (2048-bit key) header.d=gms-tku-edu-tw.20230601.gappssmtp.com header.i=@gms-tku-edu-tw.20230601.gappssmtp.com header.b=2sbMIj/0; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gms.tku.edu.tw
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gms.tku.edu.tw
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7b9c17dd591so2293678b3a.3
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Nov 2025 20:39:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gms-tku-edu-tw.20230601.gappssmtp.com; s=20230601; t=1763786379; x=1764391179; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=c7C3mqrCsMVwpowQpUu7S+e5Gpr1AgruIqWh0f/HNmo=;
-        b=2sbMIj/0XKlcFvp9NmCgb2raj/fIhZbZMbP3Yh/PIq8f34bmOZ00iLhpBRe7q9ovwz
-         vRuSrmGSPdVJ0wVqQ10IVWXMzyL0HghSZwm/iAG/bukH58TZVkgK2e7Ryk/3rV351xeh
-         WUf4Vb7pwH2CcMKaKqlcqEyoL5O0Z1pOTYWnz/G7lEO/XjoTw1n+r6B+KAi/04oi0pbc
-         yfJr27yD7a0CAcW6Zj49gfV3kvxJrD1NxcUnAhuqed/SJhqmoPBEtURZFTLuEj1O5faj
-         SsQMEOP0xP9ZjwPOBPCyusQ05v5hbovQ3gnAUM6sQLtXdX2L2CFGR7yiLnoLtjd67fmH
-         yj5A==
+	s=arc-20240116; t=1763801733; c=relaxed/simple;
+	bh=gkxQaAfUYdFWUJSbQ+mHao+heZsRwxrKiPISTQaDZQM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=qxRD/IpQxcGRWo7KZTfckX2z5bWryRMCQZsB87G3T3gRD87sRWY8sjm7kY4yG8jpJnwybLnIMrWeRMfM47Co91xWhqj7gjzBXpr2+M+Ky6zrr0vNEWAB9n1eITitrw7UfKcoHm3Rten72Izbtvzfzltb8jE1NwujqHkrYMDdd/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-43373c85296so24946495ab.2
+        for <linux-ext4@vger.kernel.org>; Sat, 22 Nov 2025 00:55:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763786379; x=1764391179;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c7C3mqrCsMVwpowQpUu7S+e5Gpr1AgruIqWh0f/HNmo=;
-        b=SVa8IoI9k3AlzgRWlMoopI8F4PSbF27UwEIkZQqw9fqTEC3wD3AAhEv6+/deRGJuAE
-         jgYb7FyEDSGlHaP96eWWgEZZfTCneGI12NY13+skj9lEdjmIgXoD3YT5yP/KF4k5fDHf
-         a6s4RHJmogCF+OUT3OdqZrH2m1VrJgfHEmG2E4YugAB2swdKSz1/R1if2TIRjvQRa9QX
-         C5ALylM1yb8b6yDI9YUqoR3fztGAosKXP+O83xcoq6qBEkIIf7aVdupD8/xC1tjM4n44
-         8ZrowutoXc9NjsQnXcK88nmHQOt5ekjUo+7vDDtH6htD8hDtzEzJp61Ux3DukL78aVcU
-         JaeA==
-X-Gm-Message-State: AOJu0YzBg7lZWFDwxJbufvWWuIN5auwNqiU1G5WwJNZ8g+CCjI6C5UyK
-	9v9/b+HkqZ7jqjS+VuVwcmNghqITdR2y3tYpwl2bNsfgvr0/PIpujj+PJLaGUgZ93wKDHCB6CqQ
-	BgQYF5LA=
-X-Gm-Gg: ASbGnctIS6HpaybTGQARB8wgsRHlYEECut2xdqYA/UZsjRh8kIMwC7a6ed/Vxs3uKFW
-	0l20qmBeh4rDWeqdwxmxSYSWBk8PBtiBeNR8dsYLwQZdK7wQQOQNatelWAGqhvDWvfcVkNYb7lQ
-	Y4g5u3K1CiY2LjhTx3JyV2jWvH98suiL3K1Wxg5FyvJIZDe1AwNWHYZmzO7cLY9tmkIfAgAZ8Jf
-	YLICyLWE13NnFEINJ4/qTq3uBooV5T8PEVJ7fmPAlO97G9d7YSqHkQR9hu5lqTG7cApu93q9oGW
-	QQ9zCdkmoqcHTEGaRF/fvERxbEAFIRx79ksdteTzdicm2JMTeycmK0+LLW+M8graA8FUR1tX12M
-	b5BNhmM1ePA+N7VBFfiHpzOjGBTV8AM89NGT9RNNYD/9TlRq1Ln7/lAhDcL8LJw+YNOD4WtH7yO
-	NHOmP1ANAe3LH/zmXKkEyFysG/FwDKyXSbJg==
-X-Google-Smtp-Source: AGHT+IFjRdWdT+ZczsEHOR0lZAgSTTpkYWA9lKk0ziJQeV3FWTigkgKWYKSTUFKFttAN59yjmKKKaA==
-X-Received: by 2002:a05:6a00:8d6:b0:7b9:7f18:c716 with SMTP id d2e1a72fcca58-7c58c2a7c48mr4545485b3a.1.1763786378738;
-        Fri, 21 Nov 2025 20:39:38 -0800 (PST)
-Received: from wu-Pro-E500-G6-WS720T.. ([2001:288:7001:2703:f19:917c:589d:681d])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3f0b63dbcsm7618838b3a.50.2025.11.21.20.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Nov 2025 20:39:38 -0800 (PST)
-From: Guan-Chun Wu <409411716@gms.tku.edu.tw>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	visitorckw@gmail.com,
-	david.laight.linux@gmail.com,
-	Guan-Chun Wu <409411716@gms.tku.edu.tw>
-Subject: [PATCH v2] ext4: improve str2hashbuf by processing 4-byte chunks and removing function pointers
-Date: Sat, 22 Nov 2025 12:39:29 +0800
-Message-Id: <20251122043929.1908643-1-409411716@gms.tku.edu.tw>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1763801731; x=1764406531;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BXwn3UJidjRpWML7XVWo01nngggTnHLrtf/eXHKD0n8=;
+        b=HyCzVxyP7+VRBLQo9ZZ1tSDvtIhIAMSahSIy9XH8O2ofhv3fFXd9cSBob0AmhT2iO2
+         DbjG/uyDv4SryYLFcmFxM4cHQoqcRSTScCU3PlaV2Y6iKhaE4lnopzIwsGY9RYblsn2M
+         T6+POZwM6wYTei2C76NoJlNdIaicD/M1B6MO0EPwfn8XvyL+DxUHpSH6Opf0D7J5rVpr
+         V/AwBFMqRmAKU9pQhIoDOIV66eb3Yq/xdsv8vViQeNH7+fP7jXEHOiEJqnT4pCSLMGA6
+         9vuFJ1b+EpvlkVXpME5LgYThji99G9rP3obR1eR44ax0i5IJZ8ZmyJwPgmGYnHtXTjIB
+         78tA==
+X-Forwarded-Encrypted: i=1; AJvYcCUwfgGhh+sM1ekdDieMt890+tAGsvsz5meOSDgFrL1it2iqg/t+RzA3QRum6bL7cEuyugxAIk0VP4qJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+0Z2BLely/8od1aNZUb/7eDfgl4aXLNQPtN6l9nOoenDChFpb
+	xL9F5Ph1Dk8bvoQTDMeiliPRAYtRY0OE2qu6WmwTFz8wuDagQj1Jx+rYYTDtS8r77OVk2PAtK8k
+	dzC+Zsjr4VWnAjdnN+e30QVZ63PcD22/LAruZgVfgqMciyoS46W0P86M+LuY=
+X-Google-Smtp-Source: AGHT+IH6yKfeDiSQ0+vnvDlJ1lxGh7RHL53kJYoEQvdKF4QFA9zMfkQtZiJdknTtjj2oDaEwioQzrFiz9hqTc7tZ+nXaLakxGGbz
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:2190:b0:433:5b75:64cf with SMTP id
+ e9e14a558f8ab-435b8e5cbb2mr44718635ab.21.1763801731070; Sat, 22 Nov 2025
+ 00:55:31 -0800 (PST)
+Date: Sat, 22 Nov 2025 00:55:31 -0800
+In-Reply-To: <20251122024555.140798-2-eraykrdg1@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69217a83.a70a0220.d98e3.0056.GAE@google.com>
+Subject: [syzbot ci] Re: ext4: fix unaligned preallocation with bigalloc
+From: syzbot ci <syzbot+ci862263647b1e3a00@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, albinbabuvarghese20@gmail.com, 
+	david.hunter.linux@gmail.com, eraykrdg1@gmail.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, 
+	syzbot@syzkaller.appspotmail.com, tytso@mit.edu
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The original byte-by-byte implementation with modulo checks is less
-efficient. Refactor str2hashbuf_unsigned() and str2hashbuf_signed()
-to process input in explicit 4-byte chunks instead of using a
-modulus-based loop to emit words byte by byte.
+syzbot ci has tested the following series
 
-Additionally, the use of function pointers for selecting the appropriate
-str2hashbuf implementation has been removed. Instead, the functions are
-directly invoked based on the hash type, eliminating the overhead of
-dynamic function calls.
+[v2] ext4: fix unaligned preallocation with bigalloc
+https://lore.kernel.org/all/20251122024555.140798-2-eraykrdg1@gmail.com
+* [PATCH v2] ext4: fix unaligned preallocation with bigalloc
 
-Performance test (x86_64, Intel Core i7-10700 @ 2.90GHz, average over 10000
-runs, using kernel module for testing):
+and found the following issues:
+* WARNING in ext4_mb_complex_scan_group
+* WARNING in mb_update_avg_fragment_size
 
-    len | orig_s | new_s | orig_u | new_u
-    ----+--------+-------+--------+-------
-      1 |   70   |   71  |   63   |   63
-      8 |   68   |   64  |   64   |   62
-     32 |   75   |   70  |   75   |   63
-     64 |   96   |   71  |  100   |   68
-    255 |  192   |  108  |  187   |   84
+Full report is available here:
+https://ci.syzbot.org/series/ba644d0c-b0cd-47e5-aac4-5bc33f8d2823
 
-This change improves performance, especially for larger input sizes.
+***
 
-Signed-off-by: Guan-Chun Wu <409411716@gms.tku.edu.tw>
+WARNING in ext4_mb_complex_scan_group
+
+tree:      torvalds
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux
+base:      23cb64fb76257309e396ea4cec8396d4a1dbae68
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/3d0f1523-91b4-4aa0-b4ec-0f13803a4e4e/config
+C repro:   https://ci.syzbot.org/findings/d24ca945-6ee1-4b64-827e-93a61ab96735/c_repro
+syz repro: https://ci.syzbot.org/findings/d24ca945-6ee1-4b64-827e-93a61ab96735/syz_repro
+
+EXT4-fs: Ignoring removed bh option
+EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: writeback.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5962 at fs/ext4/mballoc.c:2531 ext4_mb_complex_scan_group+0xd64/0xf30 fs/ext4/mballoc.c:2531
+Modules linked in:
+CPU: 1 UID: 0 PID: 5962 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:ext4_mb_complex_scan_group+0xd64/0xf30 fs/ext4/mballoc.c:2531
+Code: 81 c4 c8 00 00 00 5b 41 5c 41 5d 41 5e 41 5f 5d e9 01 f8 cc 08 cc e8 1b 97 43 ff 90 0f 0b 90 e9 3d fe ff ff e8 0d 97 43 ff 90 <0f> 0b 65 48 8b 05 62 e3 f1 0f 48 3b 84 24 c0 00 00 00 75 20 90 eb
+RSP: 0018:ffffc90003c069c8 EFLAGS: 00010293
+RAX: ffffffff827c6cb3 RBX: 00000000fffffff8 RCX: ffff888114d61d00
+RDX: 0000000000000000 RSI: 00000000fffffff8 RDI: 0000000000000001
+RBP: ffff88816ef5b000 R08: ffff888114d61d00 R09: 0000000000000005
+R10: 0000000000000004 R11: 0000000000000000 R12: ffff888166fec000
+R13: ffff888166fec638 R14: ffff8881b7ac0000 R15: dffffc0000000000
+FS:  0000555585e78500(0000) GS:ffff8882a9f3b000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2ec63fff CR3: 000000011407a000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ __ext4_mb_scan_group fs/ext4/mballoc.c:2664 [inline]
+ ext4_mb_scan_group+0x116e/0x18e0 fs/ext4/mballoc.c:2955
+ ext4_mb_scan_groups_linear+0xe8/0x360 fs/ext4/mballoc.c:1146
+ ext4_mb_scan_groups fs/ext4/mballoc.c:1180 [inline]
+ ext4_mb_regular_allocator+0x90e/0x2970 fs/ext4/mballoc.c:3026
+ ext4_mb_new_blocks+0xd11/0x4720 fs/ext4/mballoc.c:6320
+ ext4_ext_map_blocks+0x161a/0x6ac0 fs/ext4/extents.c:4383
+ ext4_map_create_blocks fs/ext4/inode.c:609 [inline]
+ ext4_map_blocks+0x860/0x1740 fs/ext4/inode.c:811
+ _ext4_get_block+0x200/0x4c0 fs/ext4/inode.c:910
+ ext4_get_block_unwritten+0x2e/0x100 fs/ext4/inode.c:943
+ ext4_block_write_begin+0x993/0x1710 fs/ext4/inode.c:1198
+ ext4_write_begin+0xc04/0x19a0 fs/ext4/ext4_jbd2.h:-1
+ ext4_da_write_begin+0x445/0xda0 fs/ext4/inode.c:3129
+ generic_perform_write+0x2c5/0x900 mm/filemap.c:4254
+ ext4_buffered_write_iter+0xce/0x3a0 fs/ext4/file.c:299
+ ext4_file_write_iter+0x298/0x1bc0 fs/ext4/file.c:-1
+ new_sync_write fs/read_write.c:593 [inline]
+ vfs_write+0x5c9/0xb30 fs/read_write.c:686
+ ksys_write+0x145/0x250 fs/read_write.c:738
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f3f93f8f749
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff83277a88 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f3f941e5fa0 RCX: 00007f3f93f8f749
+RDX: 0000000000001006 RSI: 0000200000000940 RDI: 0000000000000005
+RBP: 00007f3f94013f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f3f941e5fa0 R14: 00007f3f941e5fa0 R15: 0000000000000003
+ </TASK>
+
+
+***
+
+WARNING in mb_update_avg_fragment_size
+
+tree:      torvalds
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux
+base:      23cb64fb76257309e396ea4cec8396d4a1dbae68
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/3d0f1523-91b4-4aa0-b4ec-0f13803a4e4e/config
+C repro:   https://ci.syzbot.org/findings/4f77b4c9-f795-4c41-ad77-5c5a174be3a1/c_repro
+syz repro: https://ci.syzbot.org/findings/4f77b4c9-f795-4c41-ad77-5c5a174be3a1/syz_repro
+
+EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: writeback.
+EXT4-fs: Ignoring removed orlov option
+EXT4-fs (loop0): can't enable nombcache during remount
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5969 at fs/ext4/mballoc.c:839 mb_avg_fragment_size_order fs/ext4/mballoc.c:839 [inline]
+WARNING: CPU: 1 PID: 5969 at fs/ext4/mballoc.c:839 mb_update_avg_fragment_size+0x304/0x450 fs/ext4/mballoc.c:856
+Modules linked in:
+CPU: 1 UID: 0 PID: 5969 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:mb_avg_fragment_size_order fs/ext4/mballoc.c:839 [inline]
+RIP: 0010:mb_update_avg_fragment_size+0x304/0x450 fs/ext4/mballoc.c:856
+Code: 5d 41 5e 41 5f 5d e9 1b 6a cd 08 e8 96 57 44 ff 48 83 c4 28 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc cc e8 7d 57 44 ff 90 <0f> 0b 90 48 bb 00 00 00 00 00 fc ff df 41 0f b6 44 1d 00 84 c0 0f
+RSP: 0018:ffffc90003a56f48 EFLAGS: 00010293
+RAX: ffffffff827bac43 RBX: 000000000000000d RCX: ffff8881037ad700
+RDX: 0000000000000000 RSI: 000000000000000c RDI: 000000000000001e
+RBP: 000000000000001e R08: ffff8881a9014007 R09: 1ffff11035202800
+R10: dffffc0000000000 R11: ffffed1035202801 R12: ffff88810b77e014
+R13: 1ffff110216efc02 R14: 000000000000001f R15: 000000000000000c
+FS:  000055557ed08500(0000) GS:ffff8882a9f3b000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9c75c3f000 CR3: 0000000112a5a000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ mb_mark_used+0xfd8/0x12f0 fs/ext4/mballoc.c:2195
+ ext4_mb_use_best_found+0x192/0x7e0 fs/ext4/mballoc.c:2216
+ ext4_mb_check_limits fs/ext4/mballoc.c:2280 [inline]
+ ext4_mb_complex_scan_group+0xd27/0xf30 fs/ext4/mballoc.c:2596
+ __ext4_mb_scan_group fs/ext4/mballoc.c:2664 [inline]
+ ext4_mb_scan_group+0x116e/0x18e0 fs/ext4/mballoc.c:2955
+ ext4_mb_scan_groups_linear+0xe8/0x360 fs/ext4/mballoc.c:1146
+ ext4_mb_scan_groups fs/ext4/mballoc.c:1180 [inline]
+ ext4_mb_regular_allocator+0x90e/0x2970 fs/ext4/mballoc.c:3026
+ ext4_mb_new_blocks+0xd11/0x4720 fs/ext4/mballoc.c:6320
+ ext4_ext_map_blocks+0x161a/0x6ac0 fs/ext4/extents.c:4383
+ ext4_map_create_blocks fs/ext4/inode.c:609 [inline]
+ ext4_map_blocks+0x860/0x1740 fs/ext4/inode.c:811
+ ext4_convert_inline_data_nolock+0x249/0x970 fs/ext4/inline.c:1112
+ ext4_convert_inline_data+0x4b3/0x5e0 fs/ext4/inline.c:1976
+ ext4_fallocate+0x1e2/0x3d0 fs/ext4/extents.c:4793
+ vfs_fallocate+0x669/0x7e0 fs/open.c:342
+ ksys_fallocate fs/open.c:366 [inline]
+ __do_sys_fallocate fs/open.c:371 [inline]
+ __se_sys_fallocate fs/open.c:369 [inline]
+ __x64_sys_fallocate+0xc0/0x110 fs/open.c:369
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f9c7eb8f749
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd1029f7c8 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+RAX: ffffffffffffffda RBX: 00007f9c7ede5fa0 RCX: 00007f9c7eb8f749
+RDX: 0000000000004003 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 00007f9c7ec13f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000010000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f9c7ede5fa0 R14: 00007f9c7ede5fa0 R15: 0000000000000004
+ </TASK>
+
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
 ---
-v1 -> v2:
-- Drop redundant (int) casts.
-- Replace indirect calls with simple conditionals.
-- Use get_unaligned_be32() instead of manual byte extraction.
-- Link to v1: https://lore.kernel.org/lkml/20251116130105.1988020-1-409411716@gms.tku.edu.tw/
----
- fs/ext4/hash.c | 64 +++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 42 insertions(+), 22 deletions(-)
-
-diff --git a/fs/ext4/hash.c b/fs/ext4/hash.c
-index 33cd5b6b02d5..97b7a3b0603e 100644
---- a/fs/ext4/hash.c
-+++ b/fs/ext4/hash.c
-@@ -9,6 +9,7 @@
- #include <linux/unicode.h>
- #include <linux/compiler.h>
- #include <linux/bitops.h>
-+#include <linux/unaligned.h>
- #include "ext4.h"
- 
- #define DELTA 0x9E3779B9
-@@ -141,21 +142,28 @@ static void str2hashbuf_signed(const char *msg, int len, __u32 *buf, int num)
- 	pad = (__u32)len | ((__u32)len << 8);
- 	pad |= pad << 16;
- 
--	val = pad;
- 	if (len > num*4)
- 		len = num * 4;
--	for (i = 0; i < len; i++) {
--		val = ((int) scp[i]) + (val << 8);
--		if ((i % 4) == 3) {
--			*buf++ = val;
--			val = pad;
--			num--;
--		}
-+
-+	while (len >= 4) {
-+		val = (scp[0] << 24) + (scp[1] << 16) + (scp[2] << 8) + scp[3];
-+		*buf++ = val;
-+		scp += 4;
-+		len -= 4;
-+		num--;
- 	}
-+
-+	val = pad;
-+
-+	for (i = 0; i < len; i++)
-+		val = scp[i] + (val << 8);
-+
- 	if (--num >= 0)
- 		*buf++ = val;
-+
- 	while (--num >= 0)
- 		*buf++ = pad;
-+
- }
- 
- static void str2hashbuf_unsigned(const char *msg, int len, __u32 *buf, int num)
-@@ -167,21 +175,28 @@ static void str2hashbuf_unsigned(const char *msg, int len, __u32 *buf, int num)
- 	pad = (__u32)len | ((__u32)len << 8);
- 	pad |= pad << 16;
- 
--	val = pad;
- 	if (len > num*4)
- 		len = num * 4;
--	for (i = 0; i < len; i++) {
--		val = ((int) ucp[i]) + (val << 8);
--		if ((i % 4) == 3) {
--			*buf++ = val;
--			val = pad;
--			num--;
--		}
-+
-+	while (len >= 4) {
-+		val = get_unaligned_be32(ucp);
-+		*buf++ = val;
-+		ucp += 4;
-+		len -= 4;
-+		num--;
- 	}
-+
-+	val = pad;
-+
-+	for (i = 0; i < len; i++)
-+		val = ucp[i] + (val << 8);
-+
- 	if (--num >= 0)
- 		*buf++ = val;
-+
- 	while (--num >= 0)
- 		*buf++ = pad;
-+
- }
- 
- /*
-@@ -205,8 +220,7 @@ static int __ext4fs_dirhash(const struct inode *dir, const char *name, int len,
- 	const char	*p;
- 	int		i;
- 	__u32		in[8], buf[4];
--	void		(*str2hashbuf)(const char *, int, __u32 *, int) =
--				str2hashbuf_signed;
-+	bool use_unsigned = false;
- 
- 	/* Initialize the default seed for the hash checksum functions */
- 	buf[0] = 0x67452301;
-@@ -232,12 +246,15 @@ static int __ext4fs_dirhash(const struct inode *dir, const char *name, int len,
- 		hash = dx_hack_hash_signed(name, len);
- 		break;
- 	case DX_HASH_HALF_MD4_UNSIGNED:
--		str2hashbuf = str2hashbuf_unsigned;
-+		use_unsigned = true;
- 		fallthrough;
- 	case DX_HASH_HALF_MD4:
- 		p = name;
- 		while (len > 0) {
--			(*str2hashbuf)(p, len, in, 8);
-+			if (use_unsigned)
-+				str2hashbuf_unsigned(p, len, in, 8);
-+			else
-+				str2hashbuf_signed(p, len, in, 8);
- 			half_md4_transform(buf, in);
- 			len -= 32;
- 			p += 32;
-@@ -246,12 +263,15 @@ static int __ext4fs_dirhash(const struct inode *dir, const char *name, int len,
- 		hash = buf[1];
- 		break;
- 	case DX_HASH_TEA_UNSIGNED:
--		str2hashbuf = str2hashbuf_unsigned;
-+		use_unsigned = true;
- 		fallthrough;
- 	case DX_HASH_TEA:
- 		p = name;
- 		while (len > 0) {
--			(*str2hashbuf)(p, len, in, 4);
-+			if (use_unsigned)
-+				str2hashbuf_unsigned(p, len, in, 4);
-+			else
-+				str2hashbuf_signed(p, len, in, 4);
- 			TEA_transform(buf, in);
- 			len -= 16;
- 			p += 16;
--- 
-2.34.1
-
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
