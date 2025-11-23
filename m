@@ -1,61 +1,90 @@
-Return-Path: <linux-ext4+bounces-12010-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12011-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3538C7D57A
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 19:30:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 249FCC7DFD2
+	for <lists+linux-ext4@lfdr.de>; Sun, 23 Nov 2025 11:56:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6E09234D30D
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Nov 2025 18:29:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E4FA3AA959
+	for <lists+linux-ext4@lfdr.de>; Sun, 23 Nov 2025 10:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5526428B4F0;
-	Sat, 22 Nov 2025 18:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C552BEC52;
+	Sun, 23 Nov 2025 10:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pHFRdYqO"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PmXgvW47"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE46A217F36;
-	Sat, 22 Nov 2025 18:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DEE51FE44B;
+	Sun, 23 Nov 2025 10:56:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763836169; cv=none; b=cDGCQ2696T2tDbACZ8FImgHcLMnt6ylvmaewKaYV1PAgcKhkY4mS7jtUO4IR8w/SkcWbHrmdSshghN8NahBoWI85jkZt3jW9IG2wQp8ZKwDy8aogdUzr7FQ/q8+Cb2avyGeIrgXVy50cPCR4H9mB5fe2OucV+ZGfkTaLSnv/PTk=
+	t=1763895397; cv=none; b=q2TV1fzpBTpsXMrxzWNIWqoyVfXrqKWMEsqQZh+dCbeFNGPm5VDIZSpZOffrk/pWWO49KyuvBJjK+gsvnFefubUhQ3YBeZP5qe+8QqL+qeLTsENQgL5j4ZYtFcsur1GyzWs+OO1v43rvCo2XZhOVkCmU/y+Pfu22j99OBpfc9MU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763836169; c=relaxed/simple;
-	bh=8xw7rhH6O9SdjYiT0aP0fzTrgTnB7q3imFTDnslqKkg=;
+	s=arc-20240116; t=1763895397; c=relaxed/simple;
+	bh=GkSzqgsTYXp1zNpvNbNUQMDQNihfpJFOf3yV20EHI84=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tMg/H6tEhEnn2WXHcxbh1aoAAvlfZxur9c/DFXLwlF00Mu1KJnYxo1jz2kZAxML4nff4OkQybHx96RhNS5jSkUpNlrdI+mprNjIl2Jrq/MrOVo9CSXGAaLwoWMrsg4r/0OAudseR0rhGIqGOpdErTcNwiK6FVEA9EJBA2c/9wTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pHFRdYqO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E29B5C4CEF5;
-	Sat, 22 Nov 2025 18:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763836168;
-	bh=8xw7rhH6O9SdjYiT0aP0fzTrgTnB7q3imFTDnslqKkg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pHFRdYqOPaQX70zmfnjBGRk3tGDlaAS2Jsb7U1vVsHowf+qQ2S/cXKybSueG1RSBe
-	 khJ2DDVb4v1G/nHgmkDibOsm8EcRQMfHDiM/PONLXco8bieclt85EWjtezvmpUop49
-	 tAmJNsVrerfklQpFkfZ35arZjm3eOxTm/nUh5EbkluMhEfWAhTb4kNwt9V5vQxd7tk
-	 o3goh49Axy0FLzNQ6gBSYH0t28ml89l1Q47HdOD9xT22oIGVjV+NlEanAdLF0fAyaf
-	 TAoz3S5eLQ6OkJCdVBQ5cT4ooEYsBYzDS3JeDNnkWQO5NLI4KGv5WyRt+y/9l5iDbO
-	 bkyjmhWiOkqvA==
-Date: Sat, 22 Nov 2025 10:29:26 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Chao Yu <chao@kernel.org>, Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 10/11] fscrypt: pass a byte length to
- fscrypt_zeroout_range
-Message-ID: <20251122182926.GC1626@quark>
-References: <20251118062159.2358085-1-hch@lst.de>
- <20251118062159.2358085-11-hch@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LE+GtWmv6otda3vltstpz9XK+VfT5GZxCm+fzWp5Yh/m7FUC4q/EKiY1zlRNQ24MKUWstSXtdit3LT+Nw49LukMXCk433LyYGFTriOJG5ZASCbn5Mc27IV115iD6/oYlHT6qwlveWwFDz2RSJPJ5jWfTq033IEyNPrSqg/alxY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=PmXgvW47; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AMANdWZ032079;
+	Sun, 23 Nov 2025 10:56:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=MQHzhJofqd5Te675fl9syEPKLO0Oga
+	kW917OTuVZ0nQ=; b=PmXgvW47Pn1HNQZEywQxSaPdtpMRIpp8GxEuX9rM4sYkvk
+	w7cLtOeMMEV+zZ2OBUBTF9AGF0Lf8z4GdiMHh8zUYk7rlqg38TYsv4MtjP6T7+CA
+	laLRtQfkwOYF645lllkFp8GL8YqJhmhSrEwdpdGYPy9wdqy2EnNGa6hTWuYjoIoe
+	3umRLhpZpXzVcKCXFCHVpPKsHSfryvzcese2Jv6rXZhIjuKbCcjUnjWrRJy4JT0W
+	g8ZKBycSvhTMqNbX0vBKHYGRmnNUPwIevatYfwnvr9nMeL9/ll6ZFrKgIth9HObA
+	NOy7sZ/UGBEsdm0MlfBHu8oMm1EBuNNU/gbFyHZw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ak4u1kw01-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 23 Nov 2025 10:56:14 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5ANAuD3D007994;
+	Sun, 23 Nov 2025 10:56:13 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ak4u1kvyw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 23 Nov 2025 10:56:13 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AN7bHQW014527;
+	Sun, 23 Nov 2025 10:56:13 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4akrgmsdbp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 23 Nov 2025 10:56:12 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5ANAuBrD41877940
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 23 Nov 2025 10:56:11 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 030AF20043;
+	Sun, 23 Nov 2025 10:56:11 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 54AD220040;
+	Sun, 23 Nov 2025 10:56:08 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.217.98])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Sun, 23 Nov 2025 10:56:08 +0000 (GMT)
+Date: Sun, 23 Nov 2025 16:25:51 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jack@suse.cz, yi.zhang@huawei.com, yizhang089@gmail.com,
+        libaokun1@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v2 00/13] ext4: replace ext4_es_insert_extent() when
+ caching on-disk extents
+Message-ID: <aSLoN-oEqS-OpLKE@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,46 +93,108 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251118062159.2358085-11-hch@lst.de>
+In-Reply-To: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTIyMDAyMSBTYWx0ZWRfX69xyYtqE/MMy
+ +QPv01V7kyD6MBDLP9PtY7Rj+Oxjxz5biuYIJCdMtyVzMo67QuLh3hmCNN3JYV9zt40iEkTAMNA
+ kUGaM0L0tVGLfGlagdMGNikDabU2jL1y+d68HU2aZvry+5943ZAff1gaQfm314VyYoYVmRMYlHo
+ OPT3EJ6kr3dY7aHhEhHeO0+Zrb6mKvbbhedd2vT8Z20EO3IromOVhcXn3z1MOVrOpyQiaCTwBgP
+ eaoRZzed+fZd1StIkQLotuiMxwcQD9HaxAP6WebtO0poViMN2hxsepeC/85o2gidn3Q/XtgQ9vn
+ gUCyge7lh3TfYmijF4ai1QVctZpjh/pj1UCwlxkKoCi4ivYfPYlWq5Xcl3c6Qhq4veCw/7lYHdz
+ XO9MyBbypPOatQAQwEj20Caw3ShtVg==
+X-Authority-Analysis: v=2.4 cv=SuidKfO0 c=1 sm=1 tr=0 ts=6922e84e cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=kj9zAlcOel0A:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VwQbUJbxAAAA:8 a=AiHppB-aAAAA:8 a=_SqwtH-sqpylD6Pudx8A:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-ORIG-GUID: 8HxBmSJ2rkYvFFWNWYnGb1rl8SRrpyA6
+X-Proofpoint-GUID: NcbcQtEc6iaBpxvvstFUbqHYnoE0M-aI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-23_04,2025-11-21_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 adultscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
+ definitions=main-2511220021
 
-On Tue, Nov 18, 2025 at 07:21:53AM +0100, Christoph Hellwig wrote:
-> Range lengths are usually expressed as bytes in the VFS, switch
-> fscrypt_zeroout_range to this convention.
+On Fri, Nov 21, 2025 at 02:07:58PM +0800, Zhang Yi wrote:
+> Changes since v1:
+>  - Rebase the codes based on the latest linux-next 20251120.
+>  - Add patches 01-05, fix two stale data problems caused by
+
+Hi Zhang, thanks for the patches.
+
+I've always felt uncomfortable with the ZEROOUT code here because it
+seems to have many such bugs as you pointed out in the series. Its very
+fragile and the bugs are easy to miss behind all the data valid and
+split flags mess. 
+
+As per my understanding, ZEROOUT logic seems to be a special best-effort
+try to make the split/convert operation "work" when dealing with
+transient errors like ENOSPC etc. I was just wondering if it makes sense
+to just get rid of the whole ZEROOUT logic completely and just reset the
+extent to orig state if there is any error. This allows us to get rid of
+DATA_VALID* flags as well and makes the whole ext4_split_convert_extents() 
+slightly less messy.
+
+Maybe we can have a retry loop at the top level caller if we want to try
+again for say ENOSPC or ENOMEM. 
+
+Would love to hear your thoughts on it.
+
+Thanks,
+Ojaswin
+
+>    EXT4_EXT_MAY_ZEROOUT when splitting extent.
+>  - Add patches 06-07, fix two stale extent status entries problems also
+>    caused by splitting extent.
+>  - Modify patches 08-10, extend __es_remove_extent() and
+>    ext4_es_cache_extent() to allow them to overwrite existing extents of
+>    the same status when caching on-disk extents, while also checking
+>    extents of different stauts and raising alarms to prevent misuse.
+>  - Add patch 13 to clear the usage of ext4_es_insert_extent(), and
+>    remove the TODO comment in it.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/crypto/bio.c | 6 +++---
->  fs/ext4/inode.c | 3 ++-
->  fs/f2fs/file.c  | 2 +-
->  3 files changed, 6 insertions(+), 5 deletions(-)
+> v1: https://lore.kernel.org/linux-ext4/20251031062905.4135909-1-yi.zhang@huaweicloud.com/
 > 
-> diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-> index 235dd1c3d443..4e9893664c0f 100644
-> --- a/fs/crypto/bio.c
-> +++ b/fs/crypto/bio.c
-> @@ -115,7 +115,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
->   * @inode: the file's inode
->   * @pos: the first file logical offset (in bytes) to zero out
->   * @pblk: the first filesystem physical block to zero out
-> - * @len: number of blocks to zero out
-> + * @len: bytes to zero out
-[...]
-> int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,                 
->                           sector_t sector, unsigned int len)
-
-The type of 'len' is still unsigned int, so this reduces the maximum
-length accepted by fscrypt_zeroout_range() from UINT32_MAX blocks to
-UINT32_MAX bytes.  Is that really okay?
-
-Both ext4 and f2fs call this from functions where they have the length
-as a u32 number of logical blocks.  And of course both filesystems
-support files longer than UINT32_MAX bytes.  So it's not clear to me.
-ext4 extents have a smaller size limit, so maybe at least ext4 is okay.
-But different extents can be contiguous and operated on together.  So
-we'd have to check the callers of the callers, etc.
-
-It would be safer to change the type to u64 and have the callers do
-(u64)len_in_blocks << blockbits.
-
-- Eric
+> Original Description
+> 
+> This series addresses the optimization that Jan pointed out [1]
+> regarding the introduction of a sequence number to
+> ext4_es_insert_extent(). The proposal is to replace all instances where
+> the cache of on-disk extents is updated by using ext4_es_cache_extent()
+> instead of ext4_es_insert_extent(). This change can prevent excessive
+> cache invalidations caused by unnecessarily increasing the extent
+> sequence number when reading from the on-disk extent tree.
+> 
+> [1] https://lore.kernel.org/linux-ext4/ympvfypw3222g2k4xzd5pba4zhkz5jihw4td67iixvrqhuu43y@wse63ntv4s6u/
+> 
+> Cheers,
+> Yi.
+> 
+> Zhang Yi (13):
+>   ext4: cleanup zeroout in ext4_split_extent_at()
+>   ext4: subdivide EXT4_EXT_DATA_VALID1
+>   ext4: don't zero the entire extent if EXT4_EXT_DATA_PARTIAL_VALID1
+>   ext4: don't set EXT4_GET_BLOCKS_CONVERT when splitting before
+>     submitting I/O
+>   ext4: correct the mapping status if the extent has been zeroed
+>   ext4: don't cache extent during splitting extent
+>   ext4: drop extent cache before splitting extent
+>   ext4: cleanup useless out tag in __es_remove_extent()
+>   ext4: make __es_remove_extent() check extent status
+>   ext4: make ext4_es_cache_extent() support overwrite existing extents
+>   ext4: adjust the debug info in ext4_es_cache_extent()
+>   ext4: replace ext4_es_insert_extent() when caching on-disk extents
+>   ext4: drop the TODO comment in ext4_es_insert_extent()
+> 
+>  fs/ext4/extents.c        | 127 +++++++++++++++++++++++----------------
+>  fs/ext4/extents_status.c | 121 ++++++++++++++++++++++++++++---------
+>  fs/ext4/inode.c          |  18 +++---
+>  3 files changed, 176 insertions(+), 90 deletions(-)
+> 
+> -- 
+> 2.46.1
+> 
 
