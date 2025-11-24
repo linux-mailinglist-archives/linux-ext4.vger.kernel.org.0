@@ -1,75 +1,88 @@
-Return-Path: <linux-ext4+bounces-12023-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12022-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBDD9C8198A
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 17:35:40 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA78AC81984
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 17:35:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B8BB6348A3E
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 16:33:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E99224E6A85
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 16:33:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F31298987;
-	Mon, 24 Nov 2025 16:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1861A285;
+	Mon, 24 Nov 2025 16:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="LLRjImyG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rkcbpele"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04AD229B224
-	for <linux-ext4@vger.kernel.org>; Mon, 24 Nov 2025 16:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FDE122A4FC
+	for <linux-ext4@vger.kernel.org>; Mon, 24 Nov 2025 16:33:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764002008; cv=none; b=ojRjwyPP+HOVTI38SksLGwZYXnAZMngThPi4kdZeOD4jJUrRscXtn+owClc4YbBSgpanKNyOjmlCUR+JRSY//FgJiYxyro3giLLNDaQWqS6pI47Sm/KnhOfG5C4PpSyjZ0likPvuqaq8GVa2nK7Cbt+ZIjYCSKFQGmAbLWUbwqA=
+	t=1764002004; cv=none; b=I6YSFU2MPag+7NZPLWXGN0JB8YnKRTZUKJoUpj7PU9M7Y0D/qS1vgZevIzZHsglPiuJ99cGG5WajWsThhhHaNiZ5eSVpfLgUn8t0qRWgF8vsLIbzs+Nn2YUQqdAWwUWYU3L04kKQKmypSjXIK0MFWGzpSbTnynzeT0Ykz7j1X/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764002008; c=relaxed/simple;
-	bh=fBR70J8ZDIQTNKG061mrIqt0O0KlihpAPqI+7mFnRUM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kRMOwzKkhw63XQViJ98NYxMUbgI6z7MyZg0yyyA0mp7z8hj/NhASQ6qrYN8g3brpVOlAHUnOWljuHJs+segVRbUfJnzu+4Z9bL81Mfn8heCwuWsNM3Dm4e5qIdIrvg3TI5NQsZNBZSoaE657h5UZ2eHUjoTNihMiBBKY2XKpe3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=LLRjImyG; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org (c-73-9-28-129.hsd1.il.comcast.net [73.9.28.129])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5AOGXHDX020207
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 24 Nov 2025 11:33:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1764001999; bh=bx9+ePl+sWfSpPpukOHtpr+fvog/AJhv2asBBgF3oys=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=LLRjImyGSjcU7j5lurP6lVa+WdgAO9jWbHWk+nF86p+RQP7V59dEBz4DQZ3NV7Ekq
-	 7uToJq8u9ePt9ogHFPqMZ/jpA7VtX9LaM/Vj5Zm/WDVbNoxWEnhmGjws8ieYq7DegM
-	 tPdo17eUOUZyirgzj1zKnwEC05ucQSj7GKKb5mSXKFmsORvUtvJIN+iy7QhsiP2dG7
-	 fWSnYr5KNEBGqMvvtaFL5YZhaDFBLT0Nohubmc1a30K0zKyvHebC2CBGs8IXb1HIMc
-	 So1JrhpVeME907Jdvcift9/Q3kFEjg34/N5msBia/zittWq/yKHo8VnQUay4zvgH0V
-	 Erc2z9iKC3q4g==
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id 5C9184C81571; Mon, 24 Nov 2025 10:33:17 -0600 (CST)
-Date: Mon, 24 Nov 2025 10:33:17 -0600
-From: "Theodore Tso" <tytso@mit.edu>
-To: bugzilla-daemon@kernel.org
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: [Bug 220594] Online defragmentation has broken in 6.16
-Message-ID: <20251124163317.GG13687@macsyma-3.local>
+	s=arc-20240116; t=1764002004; c=relaxed/simple;
+	bh=JHTZ18mfj25ucyRZdAE9G7LT2RgarVyZiOwTz5LfXrQ=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=gCW6aY0hRKwdQiZn2OkyvmAsf60HL1cmtdNAO106keNvUD5tQTR6O7zsvilCLy4L5b09xGglyE8m7uRIw41oHJOc0jbPGA8huuEISY0pJPFfMaaPCQ9ak3SFQNqjxQ2igYU1jm9OKfwCo9FIQhssGcL1VMormrlckJUQlxIXefs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rkcbpele; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9A993C19421
+	for <linux-ext4@vger.kernel.org>; Mon, 24 Nov 2025 16:33:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764002003;
+	bh=JHTZ18mfj25ucyRZdAE9G7LT2RgarVyZiOwTz5LfXrQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=RkcbpeleW3ov+hIVjB3/VuTEZzrF+zy+MQrlUahEyLvXezBp9Xa5eQ9MzRahilsnl
+	 nbNK4ErMXfhDrcDDIeTvf6bY94f7hEU75Cc4Y3PhD1MDl6rteHNme7ZJIBWhlRoItB
+	 TI5P3I7+Ai3KBv4wfI89B5YMlUUJOAedZe81nfnf87bCHSwra0oGfCr/yGZW/18MIi
+	 QWEUpX+LNI5MjHmBVA41IifjlbayB0HPErOarvz0dSXOJyq6+aUWUcGkBsNIDN+uwb
+	 vcJvx7zCBUUMRJXfc4FPFS7eKnhftte5GfisXmJaNEmhhc9Z9coBrdtg91JOHkZ/70
+	 3BbUI+NKB/b2A==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 91043C53BC5; Mon, 24 Nov 2025 16:33:23 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 220594] Online defragmentation has broken in 6.16
+Date: Mon, 24 Nov 2025 16:33:23 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: low
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: REOPENED
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-220594-13602-Z3beIa2CkE@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-220594-13602@https.bugzilla.kernel.org/>
 References: <bug-220594-13602@https.bugzilla.kernel.org/>
- <bug-220594-13602-a5cboOdpR3@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bug-220594-13602-a5cboOdpR3@https.bugzilla.kernel.org/>
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D220594
+
+--- Comment #13 from Theodore Tso (tytso@mit.edu) ---
 On Mon, Nov 24, 2025 at 04:13:27PM +0000, bugzilla-daemon@kernel.org wrote:
 > > And for the files that were failing, if you unmount the file system
 > > and remount it, can you then defrag the file in question?  If the
-> 
+>=20
 > No. Tried that thrice.
 
 Can you try that again, and verify using strace that you get the same
@@ -86,8 +99,8 @@ what is going on --- since again, I still haven't been able to
 reprdouce it on my systems.
 
 > > What this means is that if the file has pages which need to be written
-> > out to the final location on disk (e.g., if you are in data=journal
-> 
+> > out to the final location on disk (e.g., if you are in data=3Djournal
+>=20
 > Journalling is disabled on all my ext4 partitions.
 
 So you are running a file system with ^has_journal?  Can you send me a
@@ -128,5 +141,11 @@ a high priority issue for you?
 
 Thanks,
 
-					- Ted
+                                        - Ted
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
