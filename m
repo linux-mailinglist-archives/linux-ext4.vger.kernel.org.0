@@ -1,126 +1,92 @@
-Return-Path: <linux-ext4+bounces-12015-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12016-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93016C7FC63
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 10:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92DA9C80976
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 13:53:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id DE6EB3476B5
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 09:56:17 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id DFB143447C6
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 12:52:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30CC2FBE02;
-	Mon, 24 Nov 2025 09:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EBD43019D8;
+	Mon, 24 Nov 2025 12:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="P87gnIuA"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aEAYMrWs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C901424B28;
-	Mon, 24 Nov 2025 09:54:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B38B3019B5;
+	Mon, 24 Nov 2025 12:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763978079; cv=none; b=OrhBTwl6BMqS8pYcfarqR9HGAhSeI26vREWeXj7sBtD3362M7aMbqTWKdvA+MacwqTfvv60xSfYJrLX5R7ZY13HB4AG4msj+1X0S9R+Z/MP740gcweSDj6N1kvAhRDqqwqzdmvUcPjbfzOSF6WcoccepgvIZ1DE8k4B1kYcckKQ=
+	t=1763988670; cv=none; b=drh0+JuQWSNpaLpF2dVf31S+U1sR0ipkUSo9xx3cP7vJVWgsCFWabnUDQ7/200QOaMaxVh/YMb377f1eCgchAzaaQCLWwxMud3GAojoPVlq52f9kHpkrbq3okcb24HFB6mtHH+w6fT2cGhFzy7KXFHsvjUV/i5E+vaaiD/Wqids=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763978079; c=relaxed/simple;
-	bh=zgUegguLz9fnh3Kc5FyiFvVdDbDa4+bOp5Www3PDcuc=;
+	s=arc-20240116; t=1763988670; c=relaxed/simple;
+	bh=CfAy31q2lb+iACwJS3ZNEhHvdH0Ckqb0R7qTYoKELLU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ctY5ec1pVMPgAQziivIuyNMUNBBzBLjHqXG57D/iuzXjRNcJdrcJjU9kdacC12pvOLum/X7GMW/2XgVUnWfvsJJolpF2qFqE3iXEuv3DrL1T+h/W/fWPLtntbF/kEBoAZhmjDER1oIdcu/C7H+zIkeFDv76zc8PF6r9/vuR0yyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=P87gnIuA; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=B05uJapQfRMGohKkgF1xNVyERBHmagh8Bd3xg1q2NeI=; 
-	b=P87gnIuANW/TJp73uiT1mmsGlTWnBuH0H7vh23lNqSWq4OBDSGmsQEtkmAFMHotC7U4wL6z8BsM
-	xZhrA2DnJ6Byz1eNq9hCgsl0YlQqjChTspvActJHQABJusXSSyN3NViM7BAWMow9uYLi6/azgr/1S
-	bPNPkqeI4K++8lXngyxVPKygWdoefLDaHUV8R9vP4h+Voyby/LgDfyG/U2ZiZD9XFH7HpGmBTtoYh
-	gxxkqEEHWY1my7y2fTHFr9TydDJrVMgiVb3KBgJmEGPf57jfBn092eZeVh0rkWj5FfVDm/r5gwJdx
-	bl004005PGTqWH4a9OI+Nq6nG2BqQ4oMU7WA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vNTCh-005XNj-0w;
-	Mon, 24 Nov 2025 17:49:52 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 24 Nov 2025 17:49:51 +0800
-Date: Mon, 24 Nov 2025 17:49:51 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: david.laight.linux@gmail.com
-Cc: linux-kernel@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, Borislav Petkov <bp@alien8.de>,
-	Christian Brauner <brauner@kernel.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, David Ahern <dsahern@kernel.org>,
-	David Hildenbrand <david@redhat.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dennis Zhou <dennis@kernel.org>, Eric Dumazet <edumazet@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Jens Axboe <axboe@kernel.dk>, Jiri Slaby <jirislaby@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	John Allen <john.allen@amd.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Juergen Gross <jgross@suse.com>, Kees Cook <kees@kernel.org>,
-	KP Singh <kpsingh@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Mika Westerberg <westeri@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>, Miklos Szeredi <miklos@szeredi.hu>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Neal Cardwell <ncardwell@google.com>, nic_swsd@realtek.com,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Olivia Mackall <olivia@selenic.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Peter Huewe <peterhuewe@gmx.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Srinivas Kandagatla <srini@kernel.org>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, x86@kernel.org,
-	Yury Norov <yury.norov@gmail.com>, amd-gfx@lists.freedesktop.org,
-	bpf@vger.kernel.org, cgroups@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, io-uring@vger.kernel.org,
-	kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-integrity@vger.kernel.org, linux-mm@kvack.org,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org, mptcp@lists.linux.dev,
-	netdev@vger.kernel.org, usb-storage@lists.one-eyed-alien.net
-Subject: Re: [PATCH 00/44] Change a lot of min_t() that might mask high bits
-Message-ID: <aSQqP6nlqGYOGqcJ@gondor.apana.org.au>
-References: <20251119224140.8616-1-david.laight.linux@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MXXBjJQDbvtKLuqTVUTmpE+cJK38pLMGZV4N/4AEI9U9iiv+gml6GHU1tAEzALjDNXmacKX+Y5km2+hXLCOHfF3zCf/9Ixsz132kP8CUiEBMYOt6xzTOEQFqybrUN0NMgZkqvUwkkWbWuLaOlXzMsUilF3WdWNQpKsyjokP4u9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aEAYMrWs; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5ANNhDJK019444;
+	Mon, 24 Nov 2025 12:50:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=c+TqOEGJci1sFytT3AS+LBkgx8Akvv
+	csadiuWVoN2aY=; b=aEAYMrWsFUar/hZFqWgCz3ECdrpfVCt4SatQeJGnBrb+O/
+	NnzJbeahsPHMKROaOs/DLnFIOE9RP8ZpvYcsJekOPHeeBvVi3WbVgpUhL76CSrjs
+	lVdAwCN5nY5ayRE08TAOm3LnPdxS97YIu3NSj8M3c5iGBvuBrCzTBOyA8m/0OeGe
+	aFp/qiq4ightdzcCRR7nwpomHnbRxk98rK0K1jVvIqIhYHtjpgA5E8axgl8oOtLU
+	U4k9R3BM94S0+rcfCEhhxY8DPUw1XrDepTZQIi9k7lPpwlar+vJCnaKP3b5pQfFE
+	U29NxDb38w68mNME6wUiQ2VifnICWuAyfTh/fXLQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ak3kjqr4r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 24 Nov 2025 12:50:50 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5AOCiM4R022608;
+	Mon, 24 Nov 2025 12:50:50 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ak3kjqr4n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 24 Nov 2025 12:50:50 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AOAtgSp014527;
+	Mon, 24 Nov 2025 12:50:49 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4akrgmx05m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 24 Nov 2025 12:50:49 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5AOColJb35258794
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 24 Nov 2025 12:50:47 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6CCC020043;
+	Mon, 24 Nov 2025 12:50:47 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B0C4E20040;
+	Mon, 24 Nov 2025 12:50:44 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.21.135])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 24 Nov 2025 12:50:44 +0000 (GMT)
+Date: Mon, 24 Nov 2025 18:20:42 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jack@suse.cz, yi.zhang@huawei.com, yizhang089@gmail.com,
+        libaokun1@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v2 00/13] ext4: replace ext4_es_insert_extent() when
+ caching on-disk extents
+Message-ID: <aSRUohHsq3MsiGv0@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
+ <aSLoN-oEqS-OpLKE@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <9cef3b97-083e-48e6-aced-3e250df364e3@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -129,181 +95,185 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251119224140.8616-1-david.laight.linux@gmail.com>
+In-Reply-To: <9cef3b97-083e-48e6-aced-3e250df364e3@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GEdzfgLqv5az0qPyuFk4N3bRRbkDuL7U
+X-Authority-Analysis: v=2.4 cv=frbRpV4f c=1 sm=1 tr=0 ts=692454aa cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=kj9zAlcOel0A:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VwQbUJbxAAAA:8 a=AiHppB-aAAAA:8 a=Flq6I1naRifewFLxwkEA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-ORIG-GUID: OTDfnSE0a6zmfgxr8oavHBCxhkFDvhZl
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTIyMDAwOCBTYWx0ZWRfX42XfYweSJfPl
+ GP32UGXbr5H0Bd786dZbufFD++WTjI3ltd2W0Kg/zuitzDmjL6wd2kHpa8gKY9mZE64TMZ64ly4
+ CG7Gqal0T/lJ7iOPmTBsr2VVRROOpQiURNoWLuGUQxfqW/hS0jSLLpgijxfIG3+y11KzdPDqlmC
+ UbqjXkWKP4x+7CLg0iJLlkZyebtryEjhoVowAPXSbXT/YYT9Z4v6xIsWODBU1Frq7WiV6io1jWB
+ hISd1UuM16HSA5P7mLqSy++YMIERgWDKgFAZ0L9bJ3358ykgVhq91T4gJiXWevikRxtoNqd6CXo
+ oVMQXnvc/2lVXLdllpmn5tOkbo+bnAruv8BT9S7iDDaspQ58tuI/a3cCwlzA+rxxKXkm3/NqbXK
+ 2PkmK2cM4644BcEqjpqw/qHZ7Iw5/Q==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-24_05,2025-11-21_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 suspectscore=0 clxscore=1011 spamscore=0 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 priorityscore=1501 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511220008
 
-On Wed, Nov 19, 2025 at 10:40:56PM +0000, david.laight.linux@gmail.com wrote:
-> From: David Laight <david.laight.linux@gmail.com>
+On Mon, Nov 24, 2025 at 01:04:04PM +0800, Zhang Yi wrote:
+> Hi, Ojaswin!
 > 
-> It in not uncommon for code to use min_t(uint, a, b) when one of a or b
-> is 64bit and can have a value that is larger than 2^32;
-> This is particularly prevelant with:
-> 	uint_var = min_t(uint, uint_var, uint64_expression);
+> On 11/23/2025 6:55 PM, Ojaswin Mujoo wrote:
+> > On Fri, Nov 21, 2025 at 02:07:58PM +0800, Zhang Yi wrote:
+> >> Changes since v1:
+> >>  - Rebase the codes based on the latest linux-next 20251120.
+> >>  - Add patches 01-05, fix two stale data problems caused by
+> > 
+> > Hi Zhang, thanks for the patches.
+> > 
 > 
-> Casts to u8 and u16 are very likely to discard significant bits.
+> Thank you for take time to look at this series.
 > 
-> These can be detected at compile time by changing min_t(), for example:
-> #define CHECK_SIZE(fn, type, val) \
-> 	BUILD_BUG_ON_MSG(sizeof (val) > sizeof (type) && \
-> 		!statically_true(((val) >> 8 * (sizeof (type) - 1)) < 256), \
-> 		fn "() significant bits of '" #val "' may be discarded")
+> > I've always felt uncomfortable with the ZEROOUT code here because it
+> > seems to have many such bugs as you pointed out in the series. Its very
+> > fragile and the bugs are easy to miss behind all the data valid and
+> > split flags mess. 
+> > 
 > 
-> #define min_t(type, x, y) ({ \
-> 	CHECK_SIZE("min_t", type, x); \
-> 	CHECK_SIZE("min_t", type, y); \
-> 	__cmp_once(min, type, x, y); })
+> Yes, I agree with you. The implementation of EXT4_EXT_MAY_ZEROOUT has
+> significantly increased the complexity of split extents and the
+> potential for bugs.
 > 
-> (and similar changes to max_t() and clamp_t().)
+> > As per my understanding, ZEROOUT logic seems to be a special best-effort
+> > try to make the split/convert operation "work" when dealing with
+> > transient errors like ENOSPC etc. I was just wondering if it makes sense
+> > to just get rid of the whole ZEROOUT logic completely and just reset the
+> > extent to orig state if there is any error. This allows us to get rid of
+> > DATA_VALID* flags as well and makes the whole ext4_split_convert_extents() 
+> > slightly less messy.
+> > 
+> > Maybe we can have a retry loop at the top level caller if we want to try
+> > again for say ENOSPC or ENOMEM. 
+> > 
+> > Would love to hear your thoughts on it.
+> > 
 > 
-> This shows up some real bugs, some unlikely bugs and some false positives.
-> In most cases both arguments are unsigned type (just different ones)
-> and min_t() can just be replaced by min().
+> I think this is a direction worth exploring. However, what I am
+> currently considering is that we need to address this scenario of
+> splitting extent during the I/O completion. Although the ZEROOUT logic
+> is fragile and has many issues recently, it currently serves as a
+> fallback solution for handling ENOSPC errors that arise when splitting
+> extents during I/O completion. It ensures that I/O operations do not
+> fail due to insufficient extent blocks.
 > 
-> The patches are all independant and are most of the ones needed to
-> get the x86-64 kernel I build to compile.
-> I've not tried building an allyesconfig or allmodconfig kernel.
-> I've also not included the patch to minmax.h itself.
+> Please see ext4_convert_unwritten_extents_endio(). Although we have made
+> our best effort to tried to split extents using
+> EXT4_GET_BLOCKS_IO_CREATE_EXT before issuing I/Os, we still have not
+> covered all scenarios. Moreover, after converting the buffered I/O path
+> to the iomap infrastructure in the future, we may need to split extents
+> during the I/O completion worker[1].
 > 
-> I've tried to put the patches that actually fix things first.
-> The last one is 0009.
+> In most block allocation processes, we already have a retry loop to deal
+> with ENOSPC or ENOMEM, such as ext4_should_retry_alloc(). However, it
+> doesn't seem appropriate to place this logic into the I/O completion
+> handling process (I haven't thought this solution through deeply yet,
+> but I'm afraid it could introduce potential deadlock risks due to its
+> involvement with journal operations), and we can't just simply try again.
+> If we remove the ZEROOUT logic, we may lose our last line of defense
+> during the I/O completion.
 > 
-> I gave up on fixing sched/fair.c - it is too broken for a single patch!
-> The patch for net/ipv4/tcp.c is also absent because do_tcp_getsockopt()
-> needs multiple/larger changes to make it 'sane'.
+> Currently, I am considering whether it is possible to completely remove
+> EXT4_GET_BLOCKS_IO_CREATE_EXT so that extents are not split before
+> submitting I/Os; instead, all splitting would be performed when
+> converting extents to written after the I/O completes. Based on my patch,
+> "ext4: use reserved metadata blocks when splitting extent on endio"[2],
+> and the ZEROOUT logic, this approach appears feasible, and xfstest-bld
+> shows no regressions.
 > 
-> I've had to trim the 124 maintainers/lists that get_maintainer.pl finds
-> from 124 to under 100 to be able to send the cover letter.
-> The individual patches only go to the addresses found for the associated files.
-> That reduces the number of emails to a less unsane number.
-> 
-> David Laight (44):
->   x86/asm/bitops: Change the return type of variable__ffs() to unsigned
->     int
->   ext4: Fix saturation of 64bit inode times for old filesystems
->   perf: Fix branch stack callchain limit
->   io_uring/net: Change some dubious min_t()
->   ipc/msg: Fix saturation of percpu counts in msgctl_info()
->   bpf: Verifier, remove some unusual uses of min_t() and max_t()
->   net/core/flow_dissector: Fix cap of __skb_flow_dissect() return value.
->   net: ethtool: Use min3() instead of nested min_t(u16,...)
->   ipv6: __ip6_append_data() don't abuse max_t() casts
->   x86/crypto: ctr_crypt() use min() instead of min_t()
->   arch/x96/kvm: use min() instead of min_t()
->   block: use min() instead of min_t()
->   drivers/acpi: use min() instead of min_t()
->   drivers/char/hw_random: use min3() instead of nested min_t()
->   drivers/char/tpm: use min() instead of min_t()
->   drivers/crypto/ccp: use min() instead of min_t()
->   drivers/cxl: use min() instead of min_t()
->   drivers/gpio: use min() instead of min_t()
->   drivers/gpu/drm/amd: use min() instead of min_t()
->   drivers/i2c/busses: use min() instead of min_t()
->   drivers/net/ethernet/realtek: use min() instead of min_t()
->   drivers/nvme: use min() instead of min_t()
->   arch/x86/mm: use min() instead of min_t()
->   drivers/nvmem: use min() instead of min_t()
->   drivers/pci: use min() instead of min_t()
->   drivers/scsi: use min() instead of min_t()
->   drivers/tty/vt: use umin() instead of min_t(u16, ...) for row/col
->     limits
->   drivers/usb/storage: use min() instead of min_t()
->   drivers/xen: use min() instead of min_t()
->   fs: use min() or umin() instead of min_t()
->   block: bvec.h: use min() instead of min_t()
->   nodemask: use min() instead of min_t()
->   ipc: use min() instead of min_t()
->   bpf: use min() instead of min_t()
->   bpf_trace: use min() instead of min_t()
->   lib/bucket_locks: use min() instead of min_t()
->   lib/crypto/mpi: use min() instead of min_t()
->   lib/dynamic_queue_limits: use max() instead of max_t()
->   mm: use min() instead of min_t()
->   net: Don't pass bitfields to max_t()
->   net/core: Change loop conditions so min() can be used
->   net: use min() instead of min_t()
->   net/netlink: Use umin() to avoid min_t(int, ...) discarding high bits
->   net/mptcp: Change some dubious min_t(int, ...) to min()
-> 
->  arch/x86/crypto/aesni-intel_glue.c            |  3 +-
->  arch/x86/include/asm/bitops.h                 | 18 +++++-------
->  arch/x86/kvm/emulate.c                        |  3 +-
->  arch/x86/kvm/lapic.c                          |  2 +-
->  arch/x86/kvm/mmu/mmu.c                        |  2 +-
->  arch/x86/mm/pat/set_memory.c                  | 12 ++++----
->  block/blk-iocost.c                            |  6 ++--
->  block/blk-settings.c                          |  2 +-
->  block/partitions/efi.c                        |  3 +-
->  drivers/acpi/property.c                       |  2 +-
->  drivers/char/hw_random/core.c                 |  2 +-
->  drivers/char/tpm/tpm1-cmd.c                   |  2 +-
->  drivers/char/tpm/tpm_tis_core.c               |  4 +--
->  drivers/crypto/ccp/ccp-dev.c                  |  2 +-
->  drivers/cxl/core/mbox.c                       |  2 +-
->  drivers/gpio/gpiolib-acpi-core.c              |  2 +-
->  .../gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c  |  4 +--
->  drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c        |  2 +-
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  2 +-
->  drivers/i2c/busses/i2c-designware-master.c    |  2 +-
->  drivers/net/ethernet/realtek/r8169_main.c     |  3 +-
->  drivers/nvme/host/pci.c                       |  3 +-
->  drivers/nvme/host/zns.c                       |  3 +-
->  drivers/nvmem/core.c                          |  2 +-
->  drivers/pci/probe.c                           |  3 +-
->  drivers/scsi/hosts.c                          |  2 +-
->  drivers/tty/vt/selection.c                    |  9 +++---
->  drivers/usb/storage/protocol.c                |  3 +-
->  drivers/xen/grant-table.c                     |  2 +-
->  fs/buffer.c                                   |  2 +-
->  fs/exec.c                                     |  2 +-
->  fs/ext4/ext4.h                                |  2 +-
->  fs/ext4/mballoc.c                             |  3 +-
->  fs/ext4/resize.c                              |  2 +-
->  fs/ext4/super.c                               |  2 +-
->  fs/fat/dir.c                                  |  4 +--
->  fs/fat/file.c                                 |  3 +-
->  fs/fuse/dev.c                                 |  2 +-
->  fs/fuse/file.c                                |  8 ++---
->  fs/splice.c                                   |  2 +-
->  include/linux/bvec.h                          |  3 +-
->  include/linux/nodemask.h                      |  9 +++---
->  include/linux/perf_event.h                    |  2 +-
->  include/net/tcp_ecn.h                         |  5 ++--
->  io_uring/net.c                                |  6 ++--
->  ipc/mqueue.c                                  |  4 +--
->  ipc/msg.c                                     |  6 ++--
->  kernel/bpf/core.c                             |  4 +--
->  kernel/bpf/log.c                              |  2 +-
->  kernel/bpf/verifier.c                         | 29 +++++++------------
->  kernel/trace/bpf_trace.c                      |  2 +-
->  lib/bucket_locks.c                            |  2 +-
->  lib/crypto/mpi/mpicoder.c                     |  2 +-
->  lib/dynamic_queue_limits.c                    |  2 +-
->  mm/gup.c                                      |  4 +--
->  mm/memblock.c                                 |  2 +-
->  mm/memory.c                                   |  2 +-
->  mm/percpu.c                                   |  2 +-
->  mm/truncate.c                                 |  3 +-
->  mm/vmscan.c                                   |  2 +-
->  net/core/datagram.c                           |  6 ++--
->  net/core/flow_dissector.c                     |  7 ++---
->  net/core/net-sysfs.c                          |  3 +-
->  net/core/skmsg.c                              |  4 +--
->  net/ethtool/cmis_cdb.c                        |  7 ++---
->  net/ipv4/fib_trie.c                           |  2 +-
->  net/ipv4/tcp_input.c                          |  4 +--
->  net/ipv4/tcp_output.c                         |  5 ++--
->  net/ipv4/tcp_timer.c                          |  4 +--
->  net/ipv6/addrconf.c                           |  8 ++---
->  net/ipv6/ip6_output.c                         |  7 +++--
->  net/ipv6/ndisc.c                              |  5 ++--
->  net/mptcp/protocol.c                          |  8 ++---
->  net/netlink/genetlink.c                       |  9 +++---
->  net/packet/af_packet.c                        |  2 +-
->  net/unix/af_unix.c                            |  4 +--
->  76 files changed, 141 insertions(+), 176 deletions(-)
+> So I think the ZEROOUT logic remains somewhat useful until we find better
+> solution(e.g., making more precise reservations for metadata). Perhaps we
+> can refactor both the split extent and ZEROOUT logic to make them more
+> concise.
 
-Patches 10,14,16,37 applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Hi Yi,
+
+Okay it makese sense to keep the zeroout if iomap path is planning to
+shift the extent splitting to endio. Plus, I agree based on the comments
+in the ext4_convert_unwritte_extents_endio() that we might even today
+need to split in endio (although i cant recall when this happens) which
+would need a zeroout fallback.
+
+And yes, I think refactoring the whole logic to be less confusing would
+be better. I had an older unposted untested patch cleaning up some of
+this, I was looking at it again today and there seems to be a lot of
+cleanups we can do here but that becomes out of scope of this patchset I
+believe.
+
+Sure then, lets keep it as it is for now. I'll review the changes you
+made and later I can post a patch refactoring this area.
+
+Regards,
+ojaswin
+
+> 
+> [1] https://lore.kernel.org/linux-ext4/20241022111059.2566137-18-yi.zhang@huaweicloud.com/
+> [2] https://lore.kernel.org/linux-ext4/20241022111059.2566137-12-yi.zhang@huaweicloud.com/
+> 
+> Cheers,
+> Yi.
+> 
+> > Thanks,
+> > Ojaswin
+> > 
+> >>    EXT4_EXT_MAY_ZEROOUT when splitting extent.
+> >>  - Add patches 06-07, fix two stale extent status entries problems also
+> >>    caused by splitting extent.
+> >>  - Modify patches 08-10, extend __es_remove_extent() and
+> >>    ext4_es_cache_extent() to allow them to overwrite existing extents of
+> >>    the same status when caching on-disk extents, while also checking
+> >>    extents of different stauts and raising alarms to prevent misuse.
+> >>  - Add patch 13 to clear the usage of ext4_es_insert_extent(), and
+> >>    remove the TODO comment in it.
+> >>
+> >> v1: https://lore.kernel.org/linux-ext4/20251031062905.4135909-1-yi.zhang@huaweicloud.com/
+> >>
+> >> Original Description
+> >>
+> >> This series addresses the optimization that Jan pointed out [1]
+> >> regarding the introduction of a sequence number to
+> >> ext4_es_insert_extent(). The proposal is to replace all instances where
+> >> the cache of on-disk extents is updated by using ext4_es_cache_extent()
+> >> instead of ext4_es_insert_extent(). This change can prevent excessive
+> >> cache invalidations caused by unnecessarily increasing the extent
+> >> sequence number when reading from the on-disk extent tree.
+> >>
+> >> [1] https://lore.kernel.org/linux-ext4/ympvfypw3222g2k4xzd5pba4zhkz5jihw4td67iixvrqhuu43y@wse63ntv4s6u/
+> >>
+> >> Cheers,
+> >> Yi.
+> >>
+> >> Zhang Yi (13):
+> >>   ext4: cleanup zeroout in ext4_split_extent_at()
+> >>   ext4: subdivide EXT4_EXT_DATA_VALID1
+> >>   ext4: don't zero the entire extent if EXT4_EXT_DATA_PARTIAL_VALID1
+> >>   ext4: don't set EXT4_GET_BLOCKS_CONVERT when splitting before
+> >>     submitting I/O
+> >>   ext4: correct the mapping status if the extent has been zeroed
+> >>   ext4: don't cache extent during splitting extent
+> >>   ext4: drop extent cache before splitting extent
+> >>   ext4: cleanup useless out tag in __es_remove_extent()
+> >>   ext4: make __es_remove_extent() check extent status
+> >>   ext4: make ext4_es_cache_extent() support overwrite existing extents
+> >>   ext4: adjust the debug info in ext4_es_cache_extent()
+> >>   ext4: replace ext4_es_insert_extent() when caching on-disk extents
+> >>   ext4: drop the TODO comment in ext4_es_insert_extent()
+> >>
+> >>  fs/ext4/extents.c        | 127 +++++++++++++++++++++++----------------
+> >>  fs/ext4/extents_status.c | 121 ++++++++++++++++++++++++++++---------
+> >>  fs/ext4/inode.c          |  18 +++---
+> >>  3 files changed, 176 insertions(+), 90 deletions(-)
+> >>
+> >> -- 
+> >> 2.46.1
+> >>
+> 
 
