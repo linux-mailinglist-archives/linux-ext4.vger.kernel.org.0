@@ -1,71 +1,84 @@
-Return-Path: <linux-ext4+bounces-12014-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12013-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD4F6C7EFC9
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 06:16:13 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id B19E9C7EFC6
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 06:16:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 537F4346211
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 05:16:13 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 28A4C346195
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Nov 2025 05:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0CA221265;
-	Mon, 24 Nov 2025 05:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE5C221265;
+	Mon, 24 Nov 2025 05:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="bVhxvM5s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VkKP1rcd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEB2632
-	for <linux-ext4@vger.kernel.org>; Mon, 24 Nov 2025 05:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2E4632
+	for <linux-ext4@vger.kernel.org>; Mon, 24 Nov 2025 05:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763961370; cv=none; b=PgRPaP6JzFoKhoXvz5YL6mrwHpoxX0IzjXwfzfuHws8L9YYJLsGnko4vTLK7jIkoud/tjxplJDCT9gLhf8MVdBcmlFeJVfhj7BZ6KpnFxgOGpG//290PZOn2ZohYVZiYXpFfhmRajkkPtMaYH5rbTX67ZTqOunpX5ikyBhJ3sOk=
+	t=1763961357; cv=none; b=lurwIbZ9G2J5qAX19zHVjFCJ8+36KyU+em++EvrqisQEB4uuPeXfBh8+hkCBgxZ3QUF692Fi0Wv8SALhjt6yCEyTdHfwsAHeB0kupkPBVruIUTqLNpUyL0FR5MM0sXf0Gwk2xUsAX7W3Vh0AY2dc4NrUUB2zl0Zwu/N3Ir9d+go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763961370; c=relaxed/simple;
-	bh=JuhI8zutonQk+2jYhvpGTaoEW45lT1z+fDhR5ru1Az0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rJRt9EAfdB2x6aCf7nH+/CiM3nh6+o00XmRqsyG8keBl0LA0sEQJXld6TYCxDzWh5nvTcJeiIa0tRy7sPuwLdXntAVQFeQ384EythHWjnXdgHVvZApqvqF3WgSoFWeSf/ZNY50bOOfE6Onbqr6FAkHgDe0LXb/i41WHkJzDIAlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=bVhxvM5s; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org (c-73-9-28-129.hsd1.il.comcast.net [73.9.28.129])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5AO5FkJI001224
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 24 Nov 2025 00:15:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1763961348; bh=5u3Jr1vbgqW1IxAJ4OVwDPfv/7w1BkadI3jFSMCQzfQ=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=bVhxvM5sHa9mMm2m7wTgHZqbMUvt++Rhs8N56ULOoNoKHlTY7urCO7W/E+rWoToZ8
-	 wO8v4Sqe6MRiyEKZWIT1uWhFdJma4xdSFse6MGyfWvHIYY7ugzxFtMIw4vJvcvIVmS
-	 dgdedQLlpoUhGfSzvO9obMpYN7d6XDB4fL/8yuR4bcFpi+uZtr4zL2a94G7CX+r5sB
-	 Eg6eNJts3Lqkm0C9RUcZ3SGpSGOmCDUF88UrXE2dvFOmSYrkyLW14xi0+QWNpiCopD
-	 oAwX7uu7eXrhpsCTsZmDCMCs0WPAEsiAgvkpDtmggpdPn8hp3jnWIWK/JneXD67AYA
-	 bKV+MQMNoYi/g==
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id B247B4C6E652; Sun, 23 Nov 2025 23:15:45 -0600 (CST)
-Date: Sun, 23 Nov 2025 23:15:45 -0600
-From: "Theodore Tso" <tytso@mit.edu>
-To: bugzilla-daemon@kernel.org
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: [Bug 220594] Online defragmentation has broken in 6.16
-Message-ID: <20251124051545.GE13687@macsyma-3.local>
+	s=arc-20240116; t=1763961357; c=relaxed/simple;
+	bh=UPqESuE0c+HX2VVgCkVeHaopCa5VBCQV/2Lk3GfW7yU=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cmhbXgI7vj62X5eBlfozmg3XnHUsBFrENXLEaD6jnRJJL4BsRuFn0keDzDltZu3XKGaql0ka7RQ3VwXX5TArgJI26trtWZxUlXxRnpr5/MuYTJAb7/5Pfk0d4ufoMWlgIf8f4LUHSsIsstV542acQUtlj7oBt8eD4mRe0FamKgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VkKP1rcd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 85AD4C116C6
+	for <linux-ext4@vger.kernel.org>; Mon, 24 Nov 2025 05:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763961357;
+	bh=UPqESuE0c+HX2VVgCkVeHaopCa5VBCQV/2Lk3GfW7yU=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=VkKP1rcdAmUUF+zLWGvAzlPDbuP7+QPeQ+BOKJ2RQxnGgCbv09Z/YzLsp2QTMW66r
+	 5bF9MBMWjCGQ13zLoCQ7/Ecf/74FWZOUVFszfPBBUbgb0dDqU8NQo+TymiUzbZIudP
+	 xrdLqyeMOHy9InvbryMe3pD4Dw424oKXC2b2FiyBhgU0l4iR8b/aVUMtujUute0X3H
+	 JwjLTNUVPaqz/Lqh0n/dUHDlyAqrwj/u6l8eTBxApeS/jVofGPVBq2wdMUF/eHZxi2
+	 dLQqN3nJ9j6VlefTstILxApeUSLTMJY907M8jRbwJaAmU28xYIMWFJi3ig1qwCyRgt
+	 CaokoBn5t5zqg==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 7690AC53BC5; Mon, 24 Nov 2025 05:15:57 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 220594] Online defragmentation has broken in 6.16
+Date: Mon, 24 Nov 2025 05:15:57 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: low
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: REOPENED
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-220594-13602-ebvxZxFkrn@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-220594-13602@https.bugzilla.kernel.org/>
 References: <bug-220594-13602@https.bugzilla.kernel.org/>
- <bug-220594-13602-T0C29jzqNj@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bug-220594-13602-T0C29jzqNj@https.bugzilla.kernel.org/>
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D220594
+
+--- Comment #11 from Theodore Tso (tytso@mit.edu) ---
 So it's not that all files can't be defragged; just *some* files.  Is
 that correct?
 
@@ -93,7 +106,7 @@ ioctl is here:
 
                 if (!filemap_release_folio(folio[0], 0) ||
                     !filemap_release_folio(folio[1], 0)) {
-                        *err = -EBUSY;
+                        *err =3D -EBUSY;
                         goto drop_data_sem;
                 }
 
@@ -101,22 +114,22 @@ ioctl is here:
 
 static bool ext4_release_folio(struct folio *folio, gfp_t wait)
 {
-	struct inode *inode = folio->mapping->host;
-	journal_t *journal = EXT4_JOURNAL(inode);
+        struct inode *inode =3D folio->mapping->host;
+        journal_t *journal =3D EXT4_JOURNAL(inode);
 
-	trace_ext4_release_folio(inode, folio);
+        trace_ext4_release_folio(inode, folio);
 
-	/* Page has dirty journalled data -> cannot release */
-	if (folio_test_checked(folio))
-		return false;
-	if (journal)
-		return jbd2_journal_try_to_free_buffers(journal, folio);
-	else
-		return try_to_free_buffers(folio);
+        /* Page has dirty journalled data -> cannot release */
+        if (folio_test_checked(folio))
+                return false;
+        if (journal)
+                return jbd2_journal_try_to_free_buffers(journal, folio);
+        else
+                return try_to_free_buffers(folio);
 }
 
 What this means is that if the file has pages which need to be written
-out to the final location on disk (e.g., if you are in data=journal
+out to the final location on disk (e.g., if you are in data=3Djournal
 mode, and the modified file may have been written or scheduled to be
 written to the journal, but not *yet* to the final location on disk,
 or you are using delayed allocation and the file was just recently
@@ -146,5 +159,11 @@ would have allowed you (and me) to waste a lot less time.
 
 Cheers,
 
-					- Ted
+                                        - Ted
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
