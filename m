@@ -1,45 +1,55 @@
-Return-Path: <linux-ext4+bounces-12032-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12033-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE8ACC88655
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Nov 2025 08:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F959C88E20
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Nov 2025 10:13:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2F78D4E41A5
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Nov 2025 07:20:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 422E24E1F2D
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Nov 2025 09:13:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B372BD5BD;
-	Wed, 26 Nov 2025 07:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94273090E0;
+	Wed, 26 Nov 2025 09:12:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="gG1GeleT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A0C1EDA2C
-	for <linux-ext4@vger.kernel.org>; Wed, 26 Nov 2025 07:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD436285071;
+	Wed, 26 Nov 2025 09:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764141601; cv=none; b=M/58V38DiAG6ys3Wcj8mO4DBIGSStsCvwWFztSDRmCrmNd9nldCcQvSGsp0/r1kxI/cUjiPJ+aJfw75RtknJgLefWIbBHSwYLPzxDRT0IlVoenH+vjnN7brVSwhQi6caPGoAO80G/Vhxpe57V/9YF4N1aEOYhCVM8JjqFl7AjT8=
+	t=1764148377; cv=none; b=BvK5Dq3V+crgL5ZAeYNkuTgbDTZjfD7a7K4kAs3S0mEkk/Z7ZfZ9BQsvP72vjnfVFUkjJ3nBWeUJmsV9pxBYb8keGQK8V5d8b5Qgt4M+CUcHAOKui7IVX1H+2ZstuHpt46no5Fc5fc7+/Yqv38QB/E3cZYe5xbMdBhiOd4yzq7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764141601; c=relaxed/simple;
-	bh=6f2AOX2VdbHYO2O8NRhOK2MOF72YBxMGNIs2hzVXw+s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fUjhsJP++z88U1BV1I449cZpfjtOCva0chYoSsn2ZQxynEdPb8aQKuIpuv2rwDdOSjqyqLFeo1YVMJzbg/Q4OCt+SDUulEkDvatvl44Nhyax0TFUGZ9LSTlS6YQdhRvfE9wxM6Xg96+vKzzkvFZwVQha83Wa2GA/u0hQCvvi4Ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dGWC728pxzKHMl0
-	for <linux-ext4@vger.kernel.org>; Wed, 26 Nov 2025 15:19:15 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id B21611A089F
-	for <linux-ext4@vger.kernel.org>; Wed, 26 Nov 2025 15:19:53 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP2 (Coremail) with SMTP id Syh0CgB31HoWqiZpQok+CA--.62394S3;
-	Wed, 26 Nov 2025 15:19:52 +0800 (CST)
-Message-ID: <007c67b2-9922-4ea8-953f-eb1be5715baf@huaweicloud.com>
-Date: Wed, 26 Nov 2025 15:19:50 +0800
+	s=arc-20240116; t=1764148377; c=relaxed/simple;
+	bh=nFyMVsSufAE1y6HRQ7xEm7tSUQ9PcLP7necJjbtfNxo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SvhzqnRvkdETqhFIU1cFZzVAD3Ku7lRu6/EHU8TO5eVATPGdtcS01G1OtahO8mKeyMG/xklxoXTO1fVwAsDA1ast5yeN/UKHmDD9WYkP5hN457Ka3cCzS/JVORqEaqbsIJAyz3FhlTnXPLFzjJ3+2FZ37d/P0XgSoIT+T9tFySE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=gG1GeleT; arc=none smtp.client-ip=113.46.200.227
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=pK7iG/jT1pm79YRG1GvueV8H6gnyb9LCDKdVlOgfXnM=;
+	b=gG1GeleTqTWcvH02918cIxdzys1PeGSDDw5ol4uEQ2omRl2JUl6NRG2vj06SdziEU4wkpPv+P
+	N6ldwSmb+BQXu1k1v0kCKnBwhW0KZgrmFXmJvcOzZEVK/OlR+lHbQ1XNotS8IeeF7CLHRrutCwd
+	FP+deOBQ58OWTUIjZzHJgi0=
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dGYhb1qsPznTWk;
+	Wed, 26 Nov 2025 17:11:27 +0800 (CST)
+Received: from kwepemr100006.china.huawei.com (unknown [7.202.194.218])
+	by mail.maildlp.com (Postfix) with ESMTPS id D455218001B;
+	Wed, 26 Nov 2025 17:12:50 +0800 (CST)
+Received: from [10.174.179.92] (10.174.179.92) by
+ kwepemr100006.china.huawei.com (7.202.194.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Wed, 26 Nov 2025 17:12:50 +0800
+Message-ID: <7ebbd365-702c-4491-86c6-23c6242ba80d@huawei.com>
+Date: Wed, 26 Nov 2025 17:12:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,72 +57,49 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: Mark inodes without acls in __ext4_iget()
-To: Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org, Mateusz Guzik <mjguzik@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>
-References: <20251125101340.24276-2-jack@suse.cz>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20251125101340.24276-2-jack@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgB31HoWqiZpQok+CA--.62394S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyfWw1rtry3trWDKw43Awb_yoW8XF4rpF
-	Z3WFy8Gw4IgFy8C3WxKr17Z34Yga18Wr47WrZrAw4UWFW5uryI9r1aqrW5XF1jyrWkGayS
-	qF4jkw1q9a15G37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU7IJmUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Subject: Re: [PATCH 2/2] ext4: improve integrity checking in __mb_check_buddy
+ by enhancing order-0 validation
+To: Theodore Tso <tytso@mit.edu>
+CC: Jan Kara <jack@suse.cz>, <linux-ext4@vger.kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <yangerkun@huawei.com>,
+	<yi.zhang@huawei.com>, <libaokun1@huawei.com>, <chengzhihao1@huawei.com>
+References: <20251105074250.3517687-1-sunyongjian@huaweicloud.com>
+ <20251105074250.3517687-3-sunyongjian@huaweicloud.com>
+ <6mjxlmvxs4p7k3rgs2cx3ny5u3o5tuikzpxxuqepq5yv6xcxk3@nvmzrpu2ooel>
+ <2d7f50d1-36f0-452c-9bbe-4baaf7da34ce@huawei.com>
+ <20251125214739.GA59583@mac.lan>
+From: Sun Yongjian <sunyongjian1@huawei.com>
+In-Reply-To: <20251125214739.GA59583@mac.lan>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemr100006.china.huawei.com (7.202.194.218)
 
-On 11/25/2025 6:13 PM, Jan Kara wrote:
-> Mark inodes without acls with cache_no_acl() in __ext4_iget() so that
-> path lookup can run in RCU mode from the start. This is interesting in
-> particular for the case where the file owner does the lookup because in
-> that case end up constantly hitting the slow path otherwise. We drop out
-> from the fast path (because ACL state is unknown) but never end up calling
-> check_acl() to cache ACL state.
+
+
+在 2025/11/26 5:47, Theodore Tso 写道:
+> On Thu, Nov 06, 2025 at 10:59:22AM +0800, Sun Yongjian wrote:
+>>
+>> Thanks a lot for pointing out the logical flaw! Yes, you’re right—if order-0
+>> bit pair is clear, then without a single 0 showing up at any higher order
+>> we’ll never enter the `if` branch to run `MB_CHECK_ASSERT`. The code you
+>> proposed is indeed a better, more elegant implementation!
 > 
-> The problem was originally analyzed by Linus and fix tested by Matheusz,
-> I'm just putting it into mergeable form :).
+> Were you planning on sending a revised version of this patch set with
+> the suggested change?
 > 
-> Link: https://lore.kernel.org/all/CAHk-=whSzc75TLLPWskV0xuaHR4tpWBr=LduqhcCFr4kCmme_w@mail.gmail.com
-> Reported-by: Mateusz Guzik <mjguzik@gmail.com>
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Jan Kara <jack@suse.cz>
-
-This makes sense to me.
-
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-
-> ---
->  fs/ext4/inode.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Thanks,
 > 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index e99306a8f47c..2b68d0651652 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5521,7 +5521,9 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
->  	if (ret)
->  		goto bad_inode;
->  	brelse(iloc.bh);
-> -
-> +	/* Initialize the "no ACL's" state for the simple cases */
-> +	if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_file_acl)
-> +		cache_no_acl(inode);
->  	unlock_new_inode(inode);
->  	return inode;
->  
+> 						- Ted
+> 
 
+Hi Ted!
+
+Thank you for the reminder. Yes, I've already sent the revised version 
+with the suggested changes, you might have missed this email 🙂
+
+https://lore.kernel.org/all/20251106060614.631382-1-sunyongjian@huaweicloud.com/
+
+Cheers,
+Yongjian
 
