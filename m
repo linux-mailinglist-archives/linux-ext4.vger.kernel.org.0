@@ -1,257 +1,277 @@
-Return-Path: <linux-ext4+bounces-12052-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12053-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCC51C8E8A5
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Nov 2025 14:43:56 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88A2EC90523
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 00:05:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD8473B233C
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Nov 2025 13:42:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 63B734E0F10
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Nov 2025 23:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603872882D0;
-	Thu, 27 Nov 2025 13:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6932E313295;
+	Thu, 27 Nov 2025 23:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Yg+7Sr38";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="q7Y6jXw9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="L3NlCFbo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8l5kt0Cq"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BTECdOHn"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A4728751D
-	for <linux-ext4@vger.kernel.org>; Thu, 27 Nov 2025 13:41:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420222417F0
+	for <linux-ext4@vger.kernel.org>; Thu, 27 Nov 2025 23:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764250918; cv=none; b=L/7wZPDCWt+YJbcpHYgxfVDuB8Onmlgfx/7QI+VURCj1jtr93XA0tmbAAk/SDz9qsSf5zzNoS9YteQ9yjbcrsKdHp31R1fHWq2EzuBbAKzC+SpED9EwuBtZW6ZzUEiXPIkci9wQYHZtCxt8HUREgUbY/K+oR/DDQnn/oHtXgcvE=
+	t=1764284698; cv=none; b=qr2xfn5ddkhDeUdfG+a0wGGE3KwxKPEK0AmgqSSSQD2no4IoJtHXnfUHsY4Tkd0QbKB61KoLmL+UY4Npx137Zi0G6UEZurGgCz96LgX9suPWh9NO8eXh1AtCAPN/HwgDDqevalER2jbozp/E76Fo7SFws9CE3phFx93ToKStUQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764250918; c=relaxed/simple;
-	bh=MV0BHOeJD1L99W9asreQpa3ve7FjZn3Vylmvo2Ruwy8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MWfQtBIU2R16IR6fyk3HifJow6rmBWXcyjwUz2TN/7yO08OBy2so2L+gK58W08goQ/uDk+SzEQo+6+D5wt81JINC4hv2YuzEMJGu+V4x5g7+aMawMgu8plVzAJj8OJs2WCeEetTQqgFDd19d3jopjF65/iuTb35Kqy4tMx5sMpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Yg+7Sr38; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=q7Y6jXw9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=L3NlCFbo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8l5kt0Cq; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DDE733375B;
-	Thu, 27 Nov 2025 13:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1764250913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RWTy6t6wvXbyh+PU3U976/oTq3zWWZcLnVQY8EQMt7g=;
-	b=Yg+7Sr38INtU8YEl9cQqwWnfeGVaTEaokPG/3qBfloVpQ2IXxyFrkJ38ZxtX43dFBLxUKj
-	rwYeN/NR+bZCS/bw5hn6D4fQgqhTbdVZ5ID2rXSUDqZxyy1zmEqHjdMCXlekOlO0x7qwTl
-	FKroev8CPQZcqlH+MqvvWWMjTDr8uwk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1764250913;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RWTy6t6wvXbyh+PU3U976/oTq3zWWZcLnVQY8EQMt7g=;
-	b=q7Y6jXw9HXC3u30gFuDYLb3u1055Ub8808itChpGW3a2Kbpy36K8+jmoJr0U4nmpPo/nzJ
-	Wt0wGLqvqv1NLrBg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=L3NlCFbo;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8l5kt0Cq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1764250912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RWTy6t6wvXbyh+PU3U976/oTq3zWWZcLnVQY8EQMt7g=;
-	b=L3NlCFbocKqP3h+719e5YR8TdMZg9gA+5yQ9Ymzni6zzTtQ1uLqOMtGb5jBwHUyo/zwjxD
-	lAa1jSx1BpixC5qhHOvG8XNpmTdFKFKkKDmJqiLqDAxu8luLNK3uF8pIS41BQuUHX/wf9d
-	Ns0GEroIYI8nxIQnKnLPOUau4e71XIA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1764250912;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RWTy6t6wvXbyh+PU3U976/oTq3zWWZcLnVQY8EQMt7g=;
-	b=8l5kt0CqgavzA7YL9ADXla8JR0voVMTGhAuUSd9sXH/tFIgBlNl7NkJp0xWK4NAQh+syPA
-	3naSFKOd7aSk+WBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C601A3EA63;
-	Thu, 27 Nov 2025 13:41:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id h+1QMCBVKGkSWwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 27 Nov 2025 13:41:52 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 33C0CA0C94; Thu, 27 Nov 2025 14:41:52 +0100 (CET)
-Date: Thu, 27 Nov 2025 14:41:52 +0100
-From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, 
-	yi.zhang@huawei.com, yizhang089@gmail.com, libaokun1@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v2 03/13] ext4: don't zero the entire extent if
- EXT4_EXT_DATA_PARTIAL_VALID1
-Message-ID: <yro4hwpttmy6e2zspvwjfdbpej6qvhlqjvlr5kp3nwffqgcnfd@z6qual55zhfq>
-References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
- <20251121060811.1685783-4-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1764284698; c=relaxed/simple;
+	bh=TufQxA+3d7nzC3UOoxIMYp6veaWZ1z+jSkHXDHhpnoQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=YO8kcah3JFrMTromfcXEH/NyD1vlUE/UTPqqYhT+rmNGzDaXW66XAIUOfLDkAQa0A67zw9FvAyuvCoO1n98O1cj67k8cRDYi3hTGyRbOBplv34mGNRRC1rNaouHSuV/+FKjoiQJ5XG0fCYKvv11LbXrD93ih9pMODezCkmYzSxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BTECdOHn; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1764284697; x=1795820697;
+  h=date:from:to:cc:subject:message-id;
+  bh=TufQxA+3d7nzC3UOoxIMYp6veaWZ1z+jSkHXDHhpnoQ=;
+  b=BTECdOHnx/JidwwKsuGnGprL2qY46//8WrPSfMjIv6RdmgAUsdgLq8Qp
+   bN5VSIOAsAzUaqJIlgdhJVUUOFlRzFNlDdUILrVT3Wk1mRRfPS31yFqy+
+   u/6UsMnhC+xyjO7aG4HIZRDVaNw6M4HgvgaAZ8sfk7CYjZ6JcIhVdcbsp
+   7oTN91WIdPWq2hgvm+6blLKgrLjuv094h5P8BG2iGSVJwh17NSdSitpqi
+   aRfMJuSZKxOTtlPuKOtxDKubuhbSjkXIhE+NkusbIB5Ep1hiTvaasJ3zT
+   SzKBFXMnxkJntTGiQUcgX3PjHzfBvdvcoi9GgIQ/5ocMas9bPljk/sR0U
+   A==;
+X-CSE-ConnectionGUID: yNzzN2nxRlKSFLv14YCrrg==
+X-CSE-MsgGUID: cGl4YSMXSHCPvydFZiW82Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11626"; a="77014517"
+X-IronPort-AV: E=Sophos;i="6.20,232,1758610800"; 
+   d="scan'208";a="77014517"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2025 15:04:45 -0800
+X-CSE-ConnectionGUID: pLpUB/gdRzSWPiyxIQjdag==
+X-CSE-MsgGUID: 2agrwza5RgC+Pmp/eJxVtw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,232,1758610800"; 
+   d="scan'208";a="197804746"
+Received: from lkp-server01.sh.intel.com (HELO 4664bbef4914) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 27 Nov 2025 15:04:43 -0800
+Received: from kbuild by 4664bbef4914 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vOl2X-000000005p3-0zKb;
+	Thu, 27 Nov 2025 23:04:41 +0000
+Date: Fri, 28 Nov 2025 07:03:44 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 690243606a4fc1ad6b877e0157cce05767ce5be6
+Message-ID: <202511280739.qYSuXMwy-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251121060811.1685783-4-yi.zhang@huaweicloud.com>
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,huawei.com,gmail.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Level: 
-X-Spam-Score: -4.01
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: DDE733375B
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
 
-On Fri 21-11-25 14:08:01, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> When allocating initialized blocks from a large unwritten extent, or
-> when splitting an unwritten extent during end I/O and converting it to
-> initialized, there is currently a potential issue of stale data if the
-> extent needs to be split in the middle.
-> 
->        0  A      B  N
->        [UUUUUUUUUUUU]    U: unwritten extent
->        [--DDDDDDDD--]    D: valid data
->           |<-  ->| ----> this range needs to be initialized
-> 
-> ext4_split_extent() first try to split this extent at B with
-> EXT4_EXT_DATA_ENTIRE_VALID1 and EXT4_EXT_MAY_ZEROOUT flag set, but
-> ext4_split_extent_at() failed to split this extent due to temporary lack
-> of space. It zeroout B to N and mark the entire extent from 0 to N
-> as written.
-> 
->        0  A      B  N
->        [WWWWWWWWWWWW]    W: written extent
->        [SSDDDDDDDDZZ]    Z: zeroed, S: stale data
-> 
-> ext4_split_extent() then try to split this extent at A with
-> EXT4_EXT_DATA_VALID2 flag set. This time, it split successfully and left
-> a stale written extent from 0 to A.
-> 
->        0  A      B   N
->        [WW|WWWWWWWWWW]
->        [SS|DDDDDDDDZZ]
-> 
-> Fix this by pass EXT4_EXT_DATA_PARTIAL_VALID1 to ext4_split_extent_at()
-> when splitting at B, don't convert the entire extent to written and left
-> it as unwritten after zeroing out B to N. The remaining work is just
-> like the standard two-part split. ext4_split_extent() will pass the
-> EXT4_EXT_DATA_VALID2 flag when it calls ext4_split_extent_at() for the
-> second time, allowing it to properly handle the split. If the split is
-> successful, it will keep extent from 0 to A as unwritten.
-> 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 690243606a4fc1ad6b877e0157cce05767ce5be6  ext4: mark inodes without acls in __ext4_iget()
 
-Good catch on the data exposure issue! First I'd like to discuss whether
-there isn't a way to fix these problems in a way that doesn't make the
-already complex code even more complex. My observation is that
-EXT4_EXT_MAY_ZEROOUT is only set in ext4_ext_convert_to_initialized() and
-in ext4_split_convert_extents() which both call ext4_split_extent(). The
-actual extent zeroing happens in ext4_split_extent_at() and in
-ext4_ext_convert_to_initialized(). I think the code would be much clearer
-if we just centralized all the zeroing in ext4_split_extent(). At that
-place the situation is actually pretty simple:
+elapsed time: 1466m
 
-1) 'ex' is unwritten, 'map' describes part with already written data which
-we want to convert to initialized (generally IO completion situation) => we
-can zero out boundaries if they are smaller than max_zeroout or if extent
-split fails.
+configs tested: 184
+configs skipped: 0
 
-2) 'ex' is unwritten, 'map' describes part we are preparing for write (IO
-submission) => the split is opportunistic here, if we cannot split due to
-ENOSPC, just go on and deal with it at IO completion time. No zeroing
-needed.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-3) 'ex' is written, 'map' describes part that should be converted to
-unwritten => we can zero out the 'map' part if smaller than max_zeroout or
-if extent split fails.
+tested configs:
+alpha                             allnoconfig    gcc-15.1.0
+alpha                            allyesconfig    clang-19
+alpha                               defconfig    gcc-15.1.0
+arc                              allmodconfig    clang-19
+arc                               allnoconfig    gcc-15.1.0
+arc                              allyesconfig    clang-19
+arc                                 defconfig    gcc-15.1.0
+arc                   randconfig-001-20251127    gcc-15.1.0
+arc                   randconfig-001-20251128    gcc-8.5.0
+arc                   randconfig-002-20251127    gcc-8.5.0
+arc                   randconfig-002-20251128    gcc-8.5.0
+arm                               allnoconfig    clang-22
+arm                               allnoconfig    gcc-15.1.0
+arm                                 defconfig    gcc-15.1.0
+arm                   randconfig-001-20251127    clang-22
+arm                   randconfig-001-20251128    gcc-8.5.0
+arm                   randconfig-002-20251127    clang-22
+arm                   randconfig-002-20251128    gcc-8.5.0
+arm                   randconfig-003-20251127    clang-22
+arm                   randconfig-003-20251128    gcc-8.5.0
+arm                   randconfig-004-20251127    gcc-10.5.0
+arm                   randconfig-004-20251128    gcc-8.5.0
+arm64                             allnoconfig    gcc-15.1.0
+arm64                               defconfig    gcc-15.1.0
+arm64                 randconfig-001-20251128    gcc-15.1.0
+arm64                 randconfig-002-20251128    gcc-15.1.0
+arm64                 randconfig-003-20251128    gcc-15.1.0
+arm64                 randconfig-004-20251128    gcc-15.1.0
+csky                             allmodconfig    gcc-15.1.0
+csky                              allnoconfig    gcc-15.1.0
+csky                                defconfig    gcc-15.1.0
+csky                  randconfig-001-20251128    gcc-15.1.0
+csky                  randconfig-002-20251128    gcc-15.1.0
+hexagon                          allmodconfig    clang-19
+hexagon                           allnoconfig    clang-22
+hexagon                           allnoconfig    gcc-15.1.0
+hexagon                             defconfig    gcc-15.1.0
+hexagon               randconfig-001-20251127    clang-22
+hexagon               randconfig-001-20251128    clang-22
+hexagon               randconfig-002-20251127    clang-18
+hexagon               randconfig-002-20251128    clang-22
+i386                              allnoconfig    gcc-14
+i386                              allnoconfig    gcc-15.1.0
+i386        buildonly-randconfig-001-20251128    gcc-13
+i386        buildonly-randconfig-002-20251128    gcc-13
+i386        buildonly-randconfig-003-20251128    gcc-13
+i386        buildonly-randconfig-004-20251128    gcc-13
+i386        buildonly-randconfig-005-20251128    gcc-13
+i386        buildonly-randconfig-006-20251128    gcc-13
+i386                                defconfig    gcc-15.1.0
+i386                  randconfig-011-20251128    gcc-14
+i386                  randconfig-012-20251128    gcc-14
+i386                  randconfig-013-20251128    gcc-14
+i386                  randconfig-014-20251128    gcc-14
+i386                  randconfig-015-20251128    gcc-14
+i386                  randconfig-016-20251128    gcc-14
+i386                  randconfig-017-20251128    gcc-14
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-22
+loongarch                         allnoconfig    gcc-15.1.0
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20251127    clang-22
+loongarch             randconfig-001-20251128    clang-22
+loongarch             randconfig-002-20251127    gcc-15.1.0
+loongarch             randconfig-002-20251128    clang-22
+m68k                             allmodconfig    clang-19
+m68k                              allnoconfig    gcc-15.1.0
+m68k                             allyesconfig    clang-19
+m68k                                defconfig    clang-19
+microblaze                        allnoconfig    gcc-15.1.0
+microblaze                       allyesconfig    gcc-15.1.0
+microblaze                          defconfig    clang-19
+mips                             allmodconfig    gcc-15.1.0
+mips                              allnoconfig    gcc-15.1.0
+mips                             allyesconfig    gcc-15.1.0
+mips                      loongson1_defconfig    clang-18
+mips                          rb532_defconfig    clang-18
+nios2                            allmodconfig    clang-22
+nios2                             allnoconfig    clang-22
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    clang-19
+nios2                 randconfig-001-20251127    gcc-8.5.0
+nios2                 randconfig-001-20251128    clang-22
+nios2                 randconfig-002-20251127    gcc-11.5.0
+nios2                 randconfig-002-20251128    clang-22
+openrisc                         allmodconfig    clang-22
+openrisc                          allnoconfig    clang-22
+openrisc                          allnoconfig    gcc-15.1.0
+openrisc                            defconfig    gcc-15.1.0
+parisc                           allmodconfig    gcc-15.1.0
+parisc                            allnoconfig    clang-22
+parisc                            allnoconfig    gcc-15.1.0
+parisc                           allyesconfig    gcc-15.1.0
+parisc                              defconfig    gcc-15.1.0
+parisc                randconfig-001-20251127    gcc-8.5.0
+parisc                randconfig-001-20251128    clang-22
+parisc                randconfig-002-20251127    gcc-15.1.0
+parisc                randconfig-002-20251128    clang-22
+parisc64                            defconfig    clang-19
+powerpc                    adder875_defconfig    clang-18
+powerpc                          allmodconfig    gcc-15.1.0
+powerpc                           allnoconfig    clang-22
+powerpc                           allnoconfig    gcc-15.1.0
+powerpc                      arches_defconfig    clang-18
+powerpc                      pcm030_defconfig    clang-18
+powerpc               randconfig-001-20251127    clang-22
+powerpc               randconfig-001-20251128    clang-22
+powerpc               randconfig-002-20251127    gcc-13.4.0
+powerpc               randconfig-002-20251128    clang-22
+powerpc                         wii_defconfig    clang-18
+powerpc64             randconfig-001-20251127    clang-20
+powerpc64             randconfig-001-20251128    clang-22
+powerpc64             randconfig-002-20251127    gcc-14.3.0
+powerpc64             randconfig-002-20251128    clang-22
+riscv                             allnoconfig    clang-22
+riscv                             allnoconfig    gcc-15.1.0
+riscv                               defconfig    gcc-15.1.0
+riscv                 randconfig-001-20251127    gcc-12.5.0
+riscv                 randconfig-001-20251128    gcc-15.1.0
+riscv                 randconfig-002-20251127    clang-22
+riscv                 randconfig-002-20251128    gcc-15.1.0
+s390                             alldefconfig    clang-18
+s390                             allmodconfig    gcc-15.1.0
+s390                              allnoconfig    clang-22
+s390                             allyesconfig    gcc-15.1.0
+s390                                defconfig    gcc-15.1.0
+s390                  randconfig-001-20251127    gcc-11.5.0
+s390                  randconfig-001-20251128    gcc-15.1.0
+s390                  randconfig-002-20251127    clang-22
+s390                  randconfig-002-20251128    gcc-15.1.0
+sh                               allmodconfig    gcc-15.1.0
+sh                                allnoconfig    clang-22
+sh                                allnoconfig    gcc-15.1.0
+sh                               allyesconfig    gcc-15.1.0
+sh                                  defconfig    gcc-14
+sh                    randconfig-001-20251127    gcc-15.1.0
+sh                    randconfig-001-20251128    gcc-15.1.0
+sh                    randconfig-002-20251127    gcc-12.5.0
+sh                    randconfig-002-20251128    gcc-15.1.0
+sh                          sdk7780_defconfig    clang-18
+sparc                             allnoconfig    clang-22
+sparc                             allnoconfig    gcc-15.1.0
+sparc                               defconfig    gcc-15.1.0
+sparc                 randconfig-001-20251128    clang-22
+sparc                 randconfig-002-20251128    clang-22
+sparc64                          allmodconfig    clang-22
+sparc64                             defconfig    gcc-14
+sparc64               randconfig-001-20251128    clang-22
+sparc64               randconfig-002-20251128    clang-22
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-22
+um                               allyesconfig    clang-19
+um                                  defconfig    gcc-14
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20251128    clang-22
+um                    randconfig-002-20251128    clang-22
+um                           x86_64_defconfig    gcc-14
+x86_64                            allnoconfig    clang-20
+x86_64                            allnoconfig    clang-22
+x86_64      buildonly-randconfig-001-20251128    clang-20
+x86_64      buildonly-randconfig-002-20251128    clang-20
+x86_64      buildonly-randconfig-003-20251128    clang-20
+x86_64      buildonly-randconfig-004-20251128    clang-20
+x86_64      buildonly-randconfig-005-20251128    clang-20
+x86_64      buildonly-randconfig-006-20251128    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-20
+x86_64                randconfig-001-20251128    gcc-14
+x86_64                randconfig-002-20251128    gcc-14
+x86_64                randconfig-003-20251128    gcc-14
+x86_64                randconfig-004-20251128    gcc-14
+x86_64                randconfig-005-20251128    gcc-14
+x86_64                randconfig-006-20251128    gcc-14
+x86_64                               rhel-9.4    clang-20
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-20
+x86_64                    rhel-9.4-kselftests    clang-20
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+xtensa                            allnoconfig    clang-22
+xtensa                            allnoconfig    gcc-15.1.0
+xtensa                           allyesconfig    clang-22
+xtensa                randconfig-001-20251128    clang-22
+xtensa                randconfig-002-20251128    clang-22
 
-This should all result in a relatively straightforward code where we can
-distinguish the three cases based on 'ex' and passed flags, we should be
-able to drop the 'EXT4_EXT_DATA_VALID*' flags and logic (possibly we could
-drop the 'split_flag' argument of ext4_split_extent() altogether), and fix
-the data exposure issues at the same time. What do you think? Am I missing
-some case?
-
-								Honza
-
-> ---
->  fs/ext4/extents.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index f7aa497e5d6c..cafe66cb562f 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3294,6 +3294,13 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
->  		err = ext4_ext_zeroout(inode, &zero_ex);
->  		if (err)
->  			goto fix_extent_len;
-> +		/*
-> +		 * The first half contains partially valid data, the splitting
-> +		 * of this extent has not been completed, fix extent length
-> +		 * and ext4_split_extent() split will the first half again.
-> +		 */
-> +		if (split_flag & EXT4_EXT_DATA_PARTIAL_VALID1)
-> +			goto fix_extent_len;
->  
->  		/* update the extent length and mark as initialized */
->  		ex->ee_len = cpu_to_le16(ee_len);
-> @@ -3364,7 +3371,9 @@ static struct ext4_ext_path *ext4_split_extent(handle_t *handle,
->  			split_flag1 |= EXT4_EXT_MARK_UNWRIT1 |
->  				       EXT4_EXT_MARK_UNWRIT2;
->  		if (split_flag & EXT4_EXT_DATA_VALID2)
-> -			split_flag1 |= EXT4_EXT_DATA_ENTIRE_VALID1;
-> +			split_flag1 |= map->m_lblk > ee_block ?
-> +				       EXT4_EXT_DATA_PARTIAL_VALID1 :
-> +				       EXT4_EXT_DATA_ENTIRE_VALID1;
->  		path = ext4_split_extent_at(handle, inode, path,
->  				map->m_lblk + map->m_len, split_flag1, flags1);
->  		if (IS_ERR(path))
-> -- 
-> 2.46.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
