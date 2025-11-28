@@ -1,169 +1,193 @@
-Return-Path: <linux-ext4+bounces-12057-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12058-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55064C90D60
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 05:37:50 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E312AC90DB1
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 05:56:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CE0E44E1F19
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 04:37:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8D2CC34C1BB
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 04:56:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF6E283FDD;
-	Fri, 28 Nov 2025 04:37:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11CCF3A1DB;
+	Fri, 28 Nov 2025 04:56:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M7ZK5dQ6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41F523FC54;
-	Fri, 28 Nov 2025 04:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581772F85B
+	for <linux-ext4@vger.kernel.org>; Fri, 28 Nov 2025 04:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764304661; cv=none; b=maDAz8+AGuIj9+ZTrQ2Pdb8sMEJiAVGuVLPiBbfszmvST76B+O9pmePEm+gmF3HMCmEXavOtelMptGx8TTYEh4DxStqQVpMrwkGInpOqZActEurtl9fABzZbQTVi3iWKK2uFJnX8tozd9eSEAJkCggdR8nGbSdbweN8dhtyH3i8=
+	t=1764305760; cv=none; b=Ih8QGKzRDUQhHAcfT593NYRlUI1jAH53Iy48ATW/GepejlU/mBTVtWJLw7YGnZq2hk52SGDylCj8K/Yc3Zz84bJCciAMqfn4yNRrqXWhiRcMX3ogM+AdkCmyBLOXwGojpEJ0qINqXooUThUAQQGebMY7Ba0Nn7iY4znqy7YeXhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764304661; c=relaxed/simple;
-	bh=DUu94xoWkd0dJmcKHRRWZcxzmUg1M/vuXxP1BqNy6cI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r7hY90cl8iosSiHU8Qivkax+FJTuIeWA04ljT1kH/YQDzO6J6BBKGffB/YlZUJmn5cNpT/nObP9PkkA9HOTSQevQeCi8DU0kHlAle6oYJewgDzsPKPOVuMOtF8ZyyDKery5yRXVkwMg7ggUP3ciRiCKouPmezF1msdN/+CM1PoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dHgVd1pXPzYQtsB;
-	Fri, 28 Nov 2025 12:36:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id E39841A0359;
-	Fri, 28 Nov 2025 12:37:35 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP2 (Coremail) with SMTP id Syh0CgA3lHoNJylpAv0YCQ--.15906S3;
-	Fri, 28 Nov 2025 12:37:35 +0800 (CST)
-Message-ID: <bb5b9323-d7ea-467b-a59f-ef6e415e766a@huaweicloud.com>
-Date: Fri, 28 Nov 2025 12:37:33 +0800
+	s=arc-20240116; t=1764305760; c=relaxed/simple;
+	bh=0otHY3B4NgUXT/SFqLpW0jckrqPkDrjOcIU6LDG3dS4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Cce8YbG10SKvMNgLvBaCXsE1e9xkHW7UdY5zrXjjGlY5jaxClm6mosEgPSypUGeixwdR5FDe2cOjMNcgwA7QFgA5KNWdZEXlw43Oe/W0aEfaQJsEOe+QIb98Lop6daWl2e1IlFPEmM23h4bjeJvXN0Ml+UefDaB/Jo4oKbqZIo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M7ZK5dQ6; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1764305759; x=1795841759;
+  h=date:from:to:cc:subject:message-id;
+  bh=0otHY3B4NgUXT/SFqLpW0jckrqPkDrjOcIU6LDG3dS4=;
+  b=M7ZK5dQ6hozjV7B+oeKwS8L0fi+TBu0xS56H70D+sNs2vjcg25R051pD
+   jtUmviQ95zYwmRG2jlp2ITYVOkkq0Kk9YC3QMP5nny93/ZXfP5PYgy5sq
+   6bXqXjBpy00RFAsxy9ilRZwe6o/Oo72ZhQ42XRRRdMDKTl8/1qzVDsY1d
+   tYqW8scFydXLxAjvKXUuwmprDYgad9/GeaTVbtiIYdwXidVQrH2y3p5ao
+   9x8NPz3g31UCLpbM4U+wVcaewVXUdW4ygYGE/EtxC3aBH9XHPTHag0cd3
+   G9HYU7WMcVCB6MYfzjatoHWySoW7IaVWr6oSF8OyARyLVYITdpCO2DCNq
+   A==;
+X-CSE-ConnectionGUID: 0fH0xnsHR+G/CjM52MWQ2g==
+X-CSE-MsgGUID: BtOk9Gq/RvKbrbt9rZ0oiA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11626"; a="66053779"
+X-IronPort-AV: E=Sophos;i="6.20,232,1758610800"; 
+   d="scan'208";a="66053779"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2025 20:55:58 -0800
+X-CSE-ConnectionGUID: rXzJAaTATK2/9ABwBHQDFA==
+X-CSE-MsgGUID: hUMCjHofQzGBwmNUk/2/kQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,232,1758610800"; 
+   d="scan'208";a="198488151"
+Received: from lkp-server01.sh.intel.com (HELO 4664bbef4914) ([10.239.97.150])
+  by orviesa005.jf.intel.com with ESMTP; 27 Nov 2025 20:55:57 -0800
+Received: from kbuild by 4664bbef4914 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vOqWQ-00000000637-2Klh;
+	Fri, 28 Nov 2025 04:55:54 +0000
+Date: Fri, 28 Nov 2025 12:55:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:test] BUILD SUCCESS
+ 80cf63ab03b2f77cbf1218344e14391096289f4e
+Message-ID: <202511281233.h6N4FVqW-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/13] ext4: replace ext4_es_insert_extent() when
- caching on-disk extents
-To: Jan Kara <jack@suse.cz>
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, yi.zhang@huawei.com, yizhang089@gmail.com,
- libaokun1@huawei.com, yangerkun@huawei.com
-References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
- <aSLoN-oEqS-OpLKE@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <9cef3b97-083e-48e6-aced-3e250df364e3@huaweicloud.com>
- <yfekmxz7biiuvairgen2pw6laccs4qvblt56uxmqenyckt2pp6@rfagttgqpdfr>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <yfekmxz7biiuvairgen2pw6laccs4qvblt56uxmqenyckt2pp6@rfagttgqpdfr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgA3lHoNJylpAv0YCQ--.15906S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw17ur4fWrW5uw47JFW3GFg_yoWrJFW5pr
-	ZIkayYkw4kCa4vvr92yF42qw48tayfGrZrCryFqrWUAayDX3sFqrW5Kw4j9a4j9rn5Kw42
-	vrWUK3sxC3Wjy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 11/27/2025 8:24 PM, Jan Kara wrote:
-> Hi Yi!
-> 
-> On Mon 24-11-25 13:04:04, Zhang Yi wrote:
->> On 11/23/2025 6:55 PM, Ojaswin Mujoo wrote:
->>> On Fri, Nov 21, 2025 at 02:07:58PM +0800, Zhang Yi wrote:
->>>> Changes since v1:
->>>>  - Rebase the codes based on the latest linux-next 20251120.
->>>>  - Add patches 01-05, fix two stale data problems caused by
->>>
->>> Hi Zhang, thanks for the patches.
->>>
->>
->> Thank you for take time to look at this series.
->>
->>> I've always felt uncomfortable with the ZEROOUT code here because it
->>> seems to have many such bugs as you pointed out in the series. Its very
->>> fragile and the bugs are easy to miss behind all the data valid and
->>> split flags mess. 
->>>
->>
->> Yes, I agree with you. The implementation of EXT4_EXT_MAY_ZEROOUT has
->> significantly increased the complexity of split extents and the
->> potential for bugs.
-> 
-> Yep, that code is complex and prone to bugs.
-> 
->>> As per my understanding, ZEROOUT logic seems to be a special best-effort
->>> try to make the split/convert operation "work" when dealing with
->>> transient errors like ENOSPC etc. I was just wondering if it makes sense
->>> to just get rid of the whole ZEROOUT logic completely and just reset the
->>> extent to orig state if there is any error. This allows us to get rid of
->>> DATA_VALID* flags as well and makes the whole ext4_split_convert_extents() 
->>> slightly less messy.
->>>
->>> Maybe we can have a retry loop at the top level caller if we want to try
->>> again for say ENOSPC or ENOMEM. 
->>>
->>> Would love to hear your thoughts on it.
->>
->> I think this is a direction worth exploring. However, what I am
->> currently considering is that we need to address this scenario of
->> splitting extent during the I/O completion. Although the ZEROOUT logic
->> is fragile and has many issues recently, it currently serves as a
->> fallback solution for handling ENOSPC errors that arise when splitting
->> extents during I/O completion. It ensures that I/O operations do not
->> fail due to insufficient extent blocks.
-> 
-> Also partial extent zeroout offers a good performance win when the
-> portion needing zeroout is small (we can save extent splitting). And I
-> agree it is a good safety net for ENOSPC issues - otherwise there's no
-> guarantee page writeback can finish without hitting ENOSPC. We do have
-> reserved blocks for these cases but the pool is limited so you can still
-> run out of blocks if you try hard enough.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git test
+branch HEAD: 80cf63ab03b2f77cbf1218344e14391096289f4e  fs: Add uoff_t
 
-Yes, Indeed!
+elapsed time: 1818m
 
-> 
->> Please see ext4_convert_unwritten_extents_endio(). Although we have made
->> our best effort to tried to split extents using
->> EXT4_GET_BLOCKS_IO_CREATE_EXT before issuing I/Os, we still have not
->> covered all scenarios. Moreover, after converting the buffered I/O path
->> to the iomap infrastructure in the future, we may need to split extents
->> during the I/O completion worker[1].
-> 
-> Yes, this might be worth exploring. The advantage of doing extent splitting
-> in advance is that on IO submission you have the opportunity of restarting
-> the transaction on ENOSPC to possibly release some blocks. This is not
-> easily doable e.g. on writeback completion so the pressure on the pool of
-> reserved blocks is going to be more common (previously you needed reserved
-> blocks only when writeback was racing with fallocate or similar, now you
-> may need them each time you write in the middle of unwritten extent). So I
-> think the change will need some testing whether it isn't too easy to hit
-> ENOSPC conditions on IO completion without EXT4_GET_BLOCKS_IO_CREATE_EXT.
-> But otherwise it's always nice to remove code :)
->  
-> 								Honza
+configs tested: 100
+configs skipped: 2
 
-Yes, we need to be very careful about this, I have written a POC patch and
-am currently conducting related tests. I hope it works.  :-)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Yi.
+tested configs:
+alpha                             allnoconfig    gcc-15.1.0
+arc                               allnoconfig    gcc-15.1.0
+arc                   randconfig-001-20251127    gcc-15.1.0
+arc                   randconfig-002-20251127    gcc-8.5.0
+arm                               allnoconfig    clang-22
+arm                   randconfig-001-20251127    clang-22
+arm                   randconfig-002-20251127    clang-22
+arm                   randconfig-003-20251127    clang-22
+arm                   randconfig-004-20251127    gcc-10.5.0
+arm64                             allnoconfig    gcc-15.1.0
+arm64                 randconfig-001-20251128    clang-22
+arm64                 randconfig-002-20251128    clang-20
+arm64                 randconfig-003-20251128    clang-22
+arm64                 randconfig-004-20251128    gcc-10.5.0
+csky                              allnoconfig    gcc-15.1.0
+csky                  randconfig-001-20251128    gcc-15.1.0
+csky                  randconfig-002-20251128    gcc-12.5.0
+hexagon                           allnoconfig    clang-22
+hexagon               randconfig-001-20251127    clang-22
+hexagon               randconfig-002-20251127    clang-18
+i386                              allnoconfig    gcc-14
+i386        buildonly-randconfig-001-20251128    gcc-14
+i386        buildonly-randconfig-002-20251128    clang-20
+i386        buildonly-randconfig-003-20251128    clang-20
+i386        buildonly-randconfig-004-20251128    clang-20
+i386        buildonly-randconfig-005-20251128    gcc-13
+i386        buildonly-randconfig-006-20251128    clang-20
+i386                  randconfig-001-20251128    clang-20
+i386                  randconfig-002-20251128    clang-20
+i386                  randconfig-003-20251128    clang-20
+i386                  randconfig-011-20251128    gcc-12
+i386                  randconfig-012-20251128    gcc-14
+i386                  randconfig-014-20251128    clang-20
+loongarch                         allnoconfig    clang-22
+loongarch                           defconfig    clang-19
+m68k                              allnoconfig    gcc-15.1.0
+m68k                                defconfig    gcc-15.1.0
+microblaze                        allnoconfig    gcc-15.1.0
+microblaze                          defconfig    gcc-15.1.0
+mips                              allnoconfig    gcc-15.1.0
+mips                          rb532_defconfig    clang-18
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    gcc-11.5.0
+nios2                 randconfig-001-20251127    gcc-8.5.0
+nios2                 randconfig-002-20251127    gcc-11.5.0
+openrisc                          allnoconfig    gcc-15.1.0
+openrisc                            defconfig    gcc-15.1.0
+parisc                            allnoconfig    gcc-15.1.0
+parisc                              defconfig    gcc-15.1.0
+parisc                randconfig-001-20251127    gcc-8.5.0
+parisc                randconfig-002-20251127    gcc-15.1.0
+parisc64                            defconfig    gcc-15.1.0
+powerpc                    adder875_defconfig    gcc-15.1.0
+powerpc                           allnoconfig    gcc-15.1.0
+powerpc                      arches_defconfig    gcc-15.1.0
+powerpc                      pcm030_defconfig    clang-22
+powerpc               randconfig-001-20251127    clang-22
+powerpc               randconfig-002-20251127    gcc-13.4.0
+powerpc                         wii_defconfig    gcc-15.1.0
+powerpc64             randconfig-001-20251127    clang-20
+powerpc64             randconfig-002-20251127    gcc-14.3.0
+riscv                             allnoconfig    gcc-15.1.0
+riscv                               defconfig    clang-22
+riscv                 randconfig-001-20251127    gcc-12.5.0
+s390                             alldefconfig    gcc-15.1.0
+s390                              allnoconfig    clang-22
+s390                                defconfig    clang-22
+s390                  randconfig-001-20251127    gcc-11.5.0
+sh                                allnoconfig    gcc-15.1.0
+sh                                  defconfig    gcc-15.1.0
+sh                          sdk7780_defconfig    gcc-15.1.0
+sparc                             allnoconfig    gcc-15.1.0
+sparc                               defconfig    gcc-15.1.0
+sparc                 randconfig-001-20251127    gcc-13.4.0
+sparc                 randconfig-002-20251127    gcc-11.5.0
+sparc64                             defconfig    clang-20
+sparc64               randconfig-001-20251127    gcc-15.1.0
+sparc64               randconfig-002-20251127    clang-20
+um                                allnoconfig    clang-22
+um                                  defconfig    clang-22
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20251127    gcc-14
+um                    randconfig-002-20251127    clang-22
+um                           x86_64_defconfig    clang-22
+x86_64                            allnoconfig    clang-20
+x86_64      buildonly-randconfig-001-20251128    clang-20
+x86_64      buildonly-randconfig-002-20251128    gcc-14
+x86_64      buildonly-randconfig-003-20251128    gcc-14
+x86_64      buildonly-randconfig-004-20251128    gcc-14
+x86_64      buildonly-randconfig-005-20251128    clang-20
+x86_64      buildonly-randconfig-006-20251128    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                randconfig-071-20251128    clang-20
+x86_64                randconfig-072-20251128    gcc-14
+x86_64                randconfig-073-20251128    clang-20
+x86_64                randconfig-074-20251128    gcc-14
+x86_64                randconfig-075-20251128    gcc-14
+xtensa                            allnoconfig    gcc-15.1.0
+xtensa                randconfig-001-20251127    gcc-11.5.0
+xtensa                randconfig-002-20251127    gcc-10.5.0
 
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
