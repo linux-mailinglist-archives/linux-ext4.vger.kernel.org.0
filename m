@@ -1,45 +1,45 @@
-Return-Path: <linux-ext4+bounces-12056-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12057-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9247BC90CB7
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 04:46:06 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55064C90D60
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 05:37:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C123A34F554
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 03:46:05 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CE0E44E1F19
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 04:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D55E2255F31;
-	Fri, 28 Nov 2025 03:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF6E283FDD;
+	Fri, 28 Nov 2025 04:37:42 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92A91D8E01;
-	Fri, 28 Nov 2025 03:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41F523FC54;
+	Fri, 28 Nov 2025 04:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764301559; cv=none; b=h+7nJRA1fqXZKTz1cAs4xx7ZeR4dL6GWQoqPOjAyJ/X4k0WUbDCM0nX5bId5xTtyXu2dWEai4Hg5S/BJtxR3qPmme51da9lmjigKA9ITcfWBARsayB5STag+w4JVZKppwi2CMFMNHIq4rgq10z4t+knzD2oY/+t5c3NrlAKU+4g=
+	t=1764304661; cv=none; b=maDAz8+AGuIj9+ZTrQ2Pdb8sMEJiAVGuVLPiBbfszmvST76B+O9pmePEm+gmF3HMCmEXavOtelMptGx8TTYEh4DxStqQVpMrwkGInpOqZActEurtl9fABzZbQTVi3iWKK2uFJnX8tozd9eSEAJkCggdR8nGbSdbweN8dhtyH3i8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764301559; c=relaxed/simple;
-	bh=FZUuv7H6pce1VCr95JK0HcPzQSX2WJpzLVjAhxC4E2c=;
+	s=arc-20240116; t=1764304661; c=relaxed/simple;
+	bh=DUu94xoWkd0dJmcKHRRWZcxzmUg1M/vuXxP1BqNy6cI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ACaYbC2cEjUF5v7vMUJ8Je6JLNfn6M7kGx3lbIhBygWnXcRUy4ctbPUQmN6eX8h/0vHn0dNUwR4nVBI0gazhQ8RXtOtRbupnzrCcxwx/LdEjnPeVPtDSLUdhgD/pC3RJPs/6rstTCXQPr8LMgaQzJfseM0wKFoQjaXy47KM/mVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=r7hY90cl8iosSiHU8Qivkax+FJTuIeWA04ljT1kH/YQDzO6J6BBKGffB/YlZUJmn5cNpT/nObP9PkkA9HOTSQevQeCi8DU0kHlAle6oYJewgDzsPKPOVuMOtF8ZyyDKery5yRXVkwMg7ggUP3ciRiCKouPmezF1msdN/+CM1PoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dHfLy3vy4zYQtLW;
-	Fri, 28 Nov 2025 11:44:58 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dHgVd1pXPzYQtsB;
+	Fri, 28 Nov 2025 12:36:41 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 2BC411A07BB;
-	Fri, 28 Nov 2025 11:45:53 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id E39841A0359;
+	Fri, 28 Nov 2025 12:37:35 +0800 (CST)
 Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP2 (Coremail) with SMTP id Syh0CgB31HrvGilp3eEUCQ--.36832S3;
-	Fri, 28 Nov 2025 11:45:52 +0800 (CST)
-Message-ID: <2713db6e-ff43-4583-b328-412e38f3d7bf@huaweicloud.com>
-Date: Fri, 28 Nov 2025 11:45:51 +0800
+	by APP2 (Coremail) with SMTP id Syh0CgA3lHoNJylpAv0YCQ--.15906S3;
+	Fri, 28 Nov 2025 12:37:35 +0800 (CST)
+Message-ID: <bb5b9323-d7ea-467b-a59f-ef6e415e766a@huaweicloud.com>
+Date: Fri, 28 Nov 2025 12:37:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,25 +47,26 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/13] ext4: don't zero the entire extent if
- EXT4_EXT_DATA_PARTIAL_VALID1
+Subject: Re: [PATCH v2 00/13] ext4: replace ext4_es_insert_extent() when
+ caching on-disk extents
 To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- yi.zhang@huawei.com, yizhang089@gmail.com, libaokun1@huawei.com,
- yangerkun@huawei.com
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
+ adilger.kernel@dilger.ca, yi.zhang@huawei.com, yizhang089@gmail.com,
+ libaokun1@huawei.com, yangerkun@huawei.com
 References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
- <20251121060811.1685783-4-yi.zhang@huaweicloud.com>
- <yro4hwpttmy6e2zspvwjfdbpej6qvhlqjvlr5kp3nwffqgcnfd@z6qual55zhfq>
+ <aSLoN-oEqS-OpLKE@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <9cef3b97-083e-48e6-aced-3e250df364e3@huaweicloud.com>
+ <yfekmxz7biiuvairgen2pw6laccs4qvblt56uxmqenyckt2pp6@rfagttgqpdfr>
 Content-Language: en-US
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <yro4hwpttmy6e2zspvwjfdbpej6qvhlqjvlr5kp3nwffqgcnfd@z6qual55zhfq>
+In-Reply-To: <yfekmxz7biiuvairgen2pw6laccs4qvblt56uxmqenyckt2pp6@rfagttgqpdfr>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgB31HrvGilp3eEUCQ--.36832S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jw4rtw4kJr47uw18WF4DJwb_yoWxJFWrpr
-	4S93W8Kr4Dt34v934xZF4qvrn09w1rWrW7CryrGrn0ya4DWry2gFWfta1YqFyFgr48ZF1j
-	vr40yr98G3Z8uaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgA3lHoNJylpAv0YCQ--.15906S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw17ur4fWrW5uw47JFW3GFg_yoWrJFW5pr
+	ZIkayYkw4kCa4vvr92yF42qw48tayfGrZrCryFqrWUAayDX3sFqrW5Kw4j9a4j9rn5Kw42
+	vrWUK3sxC3Wjy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
@@ -76,160 +77,93 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3Jw4rtw4kJr47uw18WF4DJwb_yoWxJFWrpr
 	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
 	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
 	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
 	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
 	7KsUUUUUU==
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 11/27/2025 9:41 PM, Jan Kara wrote:
-> On Fri 21-11-25 14:08:01, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> When allocating initialized blocks from a large unwritten extent, or
->> when splitting an unwritten extent during end I/O and converting it to
->> initialized, there is currently a potential issue of stale data if the
->> extent needs to be split in the middle.
->>
->>        0  A      B  N
->>        [UUUUUUUUUUUU]    U: unwritten extent
->>        [--DDDDDDDD--]    D: valid data
->>           |<-  ->| ----> this range needs to be initialized
->>
->> ext4_split_extent() first try to split this extent at B with
->> EXT4_EXT_DATA_ENTIRE_VALID1 and EXT4_EXT_MAY_ZEROOUT flag set, but
->> ext4_split_extent_at() failed to split this extent due to temporary lack
->> of space. It zeroout B to N and mark the entire extent from 0 to N
->> as written.
->>
->>        0  A      B  N
->>        [WWWWWWWWWWWW]    W: written extent
->>        [SSDDDDDDDDZZ]    Z: zeroed, S: stale data
->>
->> ext4_split_extent() then try to split this extent at A with
->> EXT4_EXT_DATA_VALID2 flag set. This time, it split successfully and left
->> a stale written extent from 0 to A.
->>
->>        0  A      B   N
->>        [WW|WWWWWWWWWW]
->>        [SS|DDDDDDDDZZ]
->>
->> Fix this by pass EXT4_EXT_DATA_PARTIAL_VALID1 to ext4_split_extent_at()
->> when splitting at B, don't convert the entire extent to written and left
->> it as unwritten after zeroing out B to N. The remaining work is just
->> like the standard two-part split. ext4_split_extent() will pass the
->> EXT4_EXT_DATA_VALID2 flag when it calls ext4_split_extent_at() for the
->> second time, allowing it to properly handle the split. If the split is
->> successful, it will keep extent from 0 to A as unwritten.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+On 11/27/2025 8:24 PM, Jan Kara wrote:
+> Hi Yi!
 > 
-> Good catch on the data exposure issue! First I'd like to discuss whether
-> there isn't a way to fix these problems in a way that doesn't make the
-> already complex code even more complex. My observation is that
-> EXT4_EXT_MAY_ZEROOUT is only set in ext4_ext_convert_to_initialized() and
-> in ext4_split_convert_extents() which both call ext4_split_extent(). The
-> actual extent zeroing happens in ext4_split_extent_at() and in
-> ext4_ext_convert_to_initialized().
-
-Yes.
-
-> I think the code would be much clearer
-> if we just centralized all the zeroing in ext4_split_extent(). At that
-> place the situation is actually pretty simple:
-
-Thank you for your suggestion!
-
+> On Mon 24-11-25 13:04:04, Zhang Yi wrote:
+>> On 11/23/2025 6:55 PM, Ojaswin Mujoo wrote:
+>>> On Fri, Nov 21, 2025 at 02:07:58PM +0800, Zhang Yi wrote:
+>>>> Changes since v1:
+>>>>  - Rebase the codes based on the latest linux-next 20251120.
+>>>>  - Add patches 01-05, fix two stale data problems caused by
+>>>
+>>> Hi Zhang, thanks for the patches.
+>>>
+>>
+>> Thank you for take time to look at this series.
+>>
+>>> I've always felt uncomfortable with the ZEROOUT code here because it
+>>> seems to have many such bugs as you pointed out in the series. Its very
+>>> fragile and the bugs are easy to miss behind all the data valid and
+>>> split flags mess. 
+>>>
+>>
+>> Yes, I agree with you. The implementation of EXT4_EXT_MAY_ZEROOUT has
+>> significantly increased the complexity of split extents and the
+>> potential for bugs.
 > 
-> 1) 'ex' is unwritten, 'map' describes part with already written data which
-> we want to convert to initialized (generally IO completion situation) => we
-> can zero out boundaries if they are smaller than max_zeroout or if extent
-> split fails.
+> Yep, that code is complex and prone to bugs.
 > 
+>>> As per my understanding, ZEROOUT logic seems to be a special best-effort
+>>> try to make the split/convert operation "work" when dealing with
+>>> transient errors like ENOSPC etc. I was just wondering if it makes sense
+>>> to just get rid of the whole ZEROOUT logic completely and just reset the
+>>> extent to orig state if there is any error. This allows us to get rid of
+>>> DATA_VALID* flags as well and makes the whole ext4_split_convert_extents() 
+>>> slightly less messy.
+>>>
+>>> Maybe we can have a retry loop at the top level caller if we want to try
+>>> again for say ENOSPC or ENOMEM. 
+>>>
+>>> Would love to hear your thoughts on it.
+>>
+>> I think this is a direction worth exploring. However, what I am
+>> currently considering is that we need to address this scenario of
+>> splitting extent during the I/O completion. Although the ZEROOUT logic
+>> is fragile and has many issues recently, it currently serves as a
+>> fallback solution for handling ENOSPC errors that arise when splitting
+>> extents during I/O completion. It ensures that I/O operations do not
+>> fail due to insufficient extent blocks.
+> 
+> Also partial extent zeroout offers a good performance win when the
+> portion needing zeroout is small (we can save extent splitting). And I
+> agree it is a good safety net for ENOSPC issues - otherwise there's no
+> guarantee page writeback can finish without hitting ENOSPC. We do have
+> reserved blocks for these cases but the pool is limited so you can still
+> run out of blocks if you try hard enough.
 
-Yes. Agree.
-
-> 2) 'ex' is unwritten, 'map' describes part we are preparing for write (IO
-> submission) => the split is opportunistic here, if we cannot split due to
-> ENOSPC, just go on and deal with it at IO completion time. No zeroing
-> needed.
-
-Yes. At the same time, if we can indeed move the entire split unwritten
-operation to be handled after I/O completion in the future, it would also be
-more convenient to remove this segment of logic.
+Yes, Indeed!
 
 > 
-> 3) 'ex' is written, 'map' describes part that should be converted to
-> unwritten => we can zero out the 'map' part if smaller than max_zeroout or
-> if extent split fails.
-
-This makes sense to me! This case it originates from the fallocate with Zero
-Range operation. Currently, the zero-out operation will not be performed if
-the split operation fails, instead, it immediately returns a failure.
-
-I agree with you that we can do zero out if the 'map' part smaller than
-max_zeroout instead of split extents. However, if the 'map' part is bigger
-than max_zeroout and if extent split fails, I don't think zero out is a good
-idea, Because it might cause zero-range calls to take a long time to execute.
-Although fallocate doesn't explicitly specify how ZERO_RANGE should be
-implemented, users expect it to be very fast. Therefore, in this case, if the
-split fails, it would be better to simply return an error, leave things as
-they are. What do you think?
-
+>> Please see ext4_convert_unwritten_extents_endio(). Although we have made
+>> our best effort to tried to split extents using
+>> EXT4_GET_BLOCKS_IO_CREATE_EXT before issuing I/Os, we still have not
+>> covered all scenarios. Moreover, after converting the buffered I/O path
+>> to the iomap infrastructure in the future, we may need to split extents
+>> during the I/O completion worker[1].
 > 
-> This should all result in a relatively straightforward code where we can
-> distinguish the three cases based on 'ex' and passed flags, we should be
-> able to drop the 'EXT4_EXT_DATA_VALID*' flags and logic (possibly we could
-> drop the 'split_flag' argument of ext4_split_extent() altogether), and fix
-> the data exposure issues at the same time. What do you think? Am I missing
-> some case?
-> 
-
-Indeed, I think the overall solution is a nice cleanup idea. :-)
-But this would involve a significant amount of refactoring and logical changes.
-Could we first merge the current set of patches(it could be more easier to
-backport to the early LTS version), and then I can start a new series to
-address this optimization?
-
-Cheers,
-Yi.
-
+> Yes, this might be worth exploring. The advantage of doing extent splitting
+> in advance is that on IO submission you have the opportunity of restarting
+> the transaction on ENOSPC to possibly release some blocks. This is not
+> easily doable e.g. on writeback completion so the pressure on the pool of
+> reserved blocks is going to be more common (previously you needed reserved
+> blocks only when writeback was racing with fallocate or similar, now you
+> may need them each time you write in the middle of unwritten extent). So I
+> think the change will need some testing whether it isn't too easy to hit
+> ENOSPC conditions on IO completion without EXT4_GET_BLOCKS_IO_CREATE_EXT.
+> But otherwise it's always nice to remove code :)
+>  
 > 								Honza
-> 
->> ---
->>  fs/ext4/extents.c | 11 ++++++++++-
->>  1 file changed, 10 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index f7aa497e5d6c..cafe66cb562f 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -3294,6 +3294,13 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
->>  		err = ext4_ext_zeroout(inode, &zero_ex);
->>  		if (err)
->>  			goto fix_extent_len;
->> +		/*
->> +		 * The first half contains partially valid data, the splitting
->> +		 * of this extent has not been completed, fix extent length
->> +		 * and ext4_split_extent() split will the first half again.
->> +		 */
->> +		if (split_flag & EXT4_EXT_DATA_PARTIAL_VALID1)
->> +			goto fix_extent_len;
->>  
->>  		/* update the extent length and mark as initialized */
->>  		ex->ee_len = cpu_to_le16(ee_len);
->> @@ -3364,7 +3371,9 @@ static struct ext4_ext_path *ext4_split_extent(handle_t *handle,
->>  			split_flag1 |= EXT4_EXT_MARK_UNWRIT1 |
->>  				       EXT4_EXT_MARK_UNWRIT2;
->>  		if (split_flag & EXT4_EXT_DATA_VALID2)
->> -			split_flag1 |= EXT4_EXT_DATA_ENTIRE_VALID1;
->> +			split_flag1 |= map->m_lblk > ee_block ?
->> +				       EXT4_EXT_DATA_PARTIAL_VALID1 :
->> +				       EXT4_EXT_DATA_ENTIRE_VALID1;
->>  		path = ext4_split_extent_at(handle, inode, path,
->>  				map->m_lblk + map->m_len, split_flag1, flags1);
->>  		if (IS_ERR(path))
->> -- 
->> 2.46.1
->>
+
+Yes, we need to be very careful about this, I have written a POC patch and
+am currently conducting related tests. I hope it works.  :-)
+
+Thanks,
+Yi.
 
 
