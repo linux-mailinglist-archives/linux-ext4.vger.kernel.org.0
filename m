@@ -1,106 +1,105 @@
-Return-Path: <linux-ext4+bounces-12063-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12064-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7835FC91BCC
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 11:59:03 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE518C91C51
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 12:15:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 740D634D624
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 10:59:02 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7E1234E41FE
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 11:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C4930CDB0;
-	Fri, 28 Nov 2025 10:58:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57EF42D9EE4;
+	Fri, 28 Nov 2025 11:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="X8XMEsbO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="K4Op5za9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UcrnwgZc";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CfCpXfUn"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="COknjECa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="teTayLxp";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="COknjECa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="teTayLxp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C95309EEE
-	for <linux-ext4@vger.kernel.org>; Fri, 28 Nov 2025 10:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74BE30E0C6
+	for <linux-ext4@vger.kernel.org>; Fri, 28 Nov 2025 11:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764327534; cv=none; b=tjMS6O087MaOrtHkWLTHhq/4uvYrDgRc7SS45D/wpdc43ITnQ+r6LnilZjF4s92KVwyTglCNu0wGHGb6JWWNEX6Y/aZxU7h3zv2YLMEPeZnng/I1ok16p2j/N93/TDy4k8mYeiYEoKI46wkoAmqo+vx44sMs6TbClEvgLlhCoGY=
+	t=1764328508; cv=none; b=p899yZ3w1/XtL0Y7UgAGdGYqepdY2WnfMJTpYFbQFFwASjulkgUZyCLpLWP4u+Pw1FxBUrqw7oiY2Dj6p+CXVUNubw9d0FurGi598JHOzOSjZ8Euqwo+jhMv2bwN9+UcPAniEOpmrw4L1o8nmn9Y782zr0qhnUZlS97j/UPv98c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764327534; c=relaxed/simple;
-	bh=SvnK5XQnMGY/Xm+9kDL5K2+BVNhGugSE82rzNQ/7pNY=;
+	s=arc-20240116; t=1764328508; c=relaxed/simple;
+	bh=YoZ3V45j6g9Ht6vZa6SWxo5kh/Xvp6DsJmhkRbDNcW8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DJD1bRXvujDho59XG+O45/5i+652rYoi0yENJ72ojP7RLFxcVpobjy2uPlJFx4w6vCdPMWubJIQQqyUZDj2zaGArhyC1UnisgT5ygu0YS0F/msH7zeHJsQNeTX6y+gzsa9r4ZpXZzmOGnQkW7cgJ4tfQxYUflnZf2NZAvdSBprk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=X8XMEsbO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=K4Op5za9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UcrnwgZc; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CfCpXfUn; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=XGE8aBKMZkDROGEGTcK4sD1Dsxsu+mpcHkiN3CAr26tuEA8QX8XVyTuOsgk55mgPEHzuxrPM0QSxwXFf7ms9odN0nG7PxrX/kclxPKN1VLlLWbNXvxiQsPhx7YmjKhYOopJAWCDj6gFVMlHlRS3B2mdavx0ejOpNwW56pvuO5WY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=COknjECa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=teTayLxp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=COknjECa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=teTayLxp; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 585CF221D3;
-	Fri, 28 Nov 2025 10:58:48 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 038595BD2E;
+	Fri, 28 Nov 2025 11:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1764327529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1764328505; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=orTQmRLZwcrDEvwB9Xx8RqsI9hVqZBrpkc5wch7XSFo=;
-	b=X8XMEsbOn8pZbWVsi0MLN1vNosdh3FW5JQMURp9k8alaeDHkhFMWrjPmVw4K/78+dR2zn6
-	rI3wBIIyan/+lrqeq80ZJIVe5K9IUwOpi9dMwtSWj5h4OJQT3gavp2Awj8ClmGOwtl72+A
-	Q5KytCKZQ+geDoZu/4Vg0qyUa+gIzbQ=
+	bh=+YjbZZKXvhot5amM6eYaTdzmGNaRHVpJZ/gN2gho08M=;
+	b=COknjECaSkXVNVGCAjzjejHz+30U+DJgOfsOaBWZeKThJPkvQg+kminFnMOAkR3ywvxG3D
+	wH5NhAHl0D2hqswZlHYne6XyEdUjvjqC7D7ASFmWvMVsttPxOpR8SwkzK3aPdnDZyzc/96
+	6GgnhzBy2RGrL9LanVtqHi/nhlR4V5g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1764327529;
+	s=susede2_ed25519; t=1764328505;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=orTQmRLZwcrDEvwB9Xx8RqsI9hVqZBrpkc5wch7XSFo=;
-	b=K4Op5za9rhyheViAteLiWl6DoI7/+iADSDn0AZ8hBp6ruuZwH9iFr/ad4NLJbFLqNAVgHI
-	yvwqh05aAc/txFAQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UcrnwgZc;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=CfCpXfUn
+	bh=+YjbZZKXvhot5amM6eYaTdzmGNaRHVpJZ/gN2gho08M=;
+	b=teTayLxpAA9kuIhodKmj9U7EN0tXwyhdtoQY0dO/UiRJvIA/Fuk+B+Kaf0Pf34dtW8QwzV
+	bNLgD97gwnxZYzAw==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1764327528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1764328505; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=orTQmRLZwcrDEvwB9Xx8RqsI9hVqZBrpkc5wch7XSFo=;
-	b=UcrnwgZcRbLM3WcRHizVj2Q8nUpM95ZSbhImYqbuhe9lrIOHsOyN9nOvKee0zE3ZIcZ2NW
-	Dn8KJUdoWBO7KO+sZeYNGmNsv/NoIHIwoU6qJTDkx6ZRW4PRBB/4junxaeKIxjntYqDmCk
-	NTb252o7tO1nDQjADcBP03u8QtEB93k=
+	bh=+YjbZZKXvhot5amM6eYaTdzmGNaRHVpJZ/gN2gho08M=;
+	b=COknjECaSkXVNVGCAjzjejHz+30U+DJgOfsOaBWZeKThJPkvQg+kminFnMOAkR3ywvxG3D
+	wH5NhAHl0D2hqswZlHYne6XyEdUjvjqC7D7ASFmWvMVsttPxOpR8SwkzK3aPdnDZyzc/96
+	6GgnhzBy2RGrL9LanVtqHi/nhlR4V5g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1764327528;
+	s=susede2_ed25519; t=1764328505;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=orTQmRLZwcrDEvwB9Xx8RqsI9hVqZBrpkc5wch7XSFo=;
-	b=CfCpXfUnocWJnBQ8TxZDl/yyWC0wEyF1SLXhLxmKGkQLmGYz1uvxkHn12Ka4/otMC4IXNC
-	NUFC0thk7ZPyvyAg==
+	bh=+YjbZZKXvhot5amM6eYaTdzmGNaRHVpJZ/gN2gho08M=;
+	b=teTayLxpAA9kuIhodKmj9U7EN0tXwyhdtoQY0dO/UiRJvIA/Fuk+B+Kaf0Pf34dtW8QwzV
+	bNLgD97gwnxZYzAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 472063EA63;
-	Fri, 28 Nov 2025 10:58:48 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E3C8B3EA63;
+	Fri, 28 Nov 2025 11:15:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id PEf9EGiAKWnUFQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 28 Nov 2025 10:58:48 +0000
+	id 88ORNziEKWnwJAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 28 Nov 2025 11:15:04 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E53FDA08F1; Fri, 28 Nov 2025 11:58:47 +0100 (CET)
-Date: Fri, 28 Nov 2025 11:58:47 +0100
+	id 99732A08F1; Fri, 28 Nov 2025 12:14:56 +0100 (CET)
+Date: Fri, 28 Nov 2025 12:14:56 +0100
 From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu, 
-	adilger.kernel@dilger.ca, yi.zhang@huawei.com, yizhang089@gmail.com, libaokun1@huawei.com, 
-	yangerkun@huawei.com
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: Jan Kara <jack@suse.cz>, Zhang Yi <yi.zhang@huaweicloud.com>, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	tytso@mit.edu, adilger.kernel@dilger.ca, yi.zhang@huawei.com, 
+	yizhang089@gmail.com, libaokun1@huawei.com, yangerkun@huawei.com
 Subject: Re: [PATCH v2 03/13] ext4: don't zero the entire extent if
  EXT4_EXT_DATA_PARTIAL_VALID1
-Message-ID: <ihvyl3ayookm5b2tcjz63tfhdobn64lbzudiv7w3hezs6ykzyd@p2euigrkhmxm>
+Message-ID: <i3voptrv4rm3q3by7gksrgmgy2n5flchuveugjll5cchustm4z@qvixahynpize>
 References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
  <20251121060811.1685783-4-yi.zhang@huaweicloud.com>
  <yro4hwpttmy6e2zspvwjfdbpej6qvhlqjvlr5kp3nwffqgcnfd@z6qual55zhfq>
- <2713db6e-ff43-4583-b328-412e38f3d7bf@huaweicloud.com>
+ <aSlPFohdm8IfB7r7@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -109,103 +108,114 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2713db6e-ff43-4583-b328-412e38f3d7bf@huaweicloud.com>
-X-Spamd-Result: default: False [-4.01 / 50.00];
+In-Reply-To: <aSlPFohdm8IfB7r7@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,mit.edu,dilger.ca,huawei.com,gmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	RCVD_COUNT_THREE(0.00)[3];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,huaweicloud.com,vger.kernel.org,mit.edu,dilger.ca,huawei.com,gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
 X-Spam-Level: 
-X-Spam-Score: -4.01
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 585CF221D3
-X-Rspamd-Action: no action
+X-Spam-Score: -3.80
 X-Spam-Flag: NO
 
-On Fri 28-11-25 11:45:51, Zhang Yi wrote:
-> On 11/27/2025 9:41 PM, Jan Kara wrote:
-> > I think the code would be much clearer
+On Fri 28-11-25 12:58:22, Ojaswin Mujoo wrote:
+> On Thu, Nov 27, 2025 at 02:41:52PM +0100, Jan Kara wrote:
+> > Good catch on the data exposure issue! First I'd like to discuss whether
+> > there isn't a way to fix these problems in a way that doesn't make the
+> > already complex code even more complex. My observation is that
+> > EXT4_EXT_MAY_ZEROOUT is only set in ext4_ext_convert_to_initialized() and
+> > in ext4_split_convert_extents() which both call ext4_split_extent(). The
+> > actual extent zeroing happens in ext4_split_extent_at() and in
+> > ext4_ext_convert_to_initialized(). I think the code would be much clearer
 > > if we just centralized all the zeroing in ext4_split_extent(). At that
 > > place the situation is actually pretty simple:
 > 
-> Thank you for your suggestion!
+> This is exactly what I was playing with in my local tree to refactor this
+> particular part of code :). I agree that ext4_split_extent() is a much
+> better place to do the zeroout and it looks much cleaner but I agree
+> with Yi that it might be better to do it after fixing the stale
+> exposures so backports are straight forward. 
+> 
+> Am I correct in understanding that you are suggesting to zeroout
+> proactively if we are below max_zeroout before even trying to extent
+> split (which seems be done in ext4_ext_convert_to_initialized() as well)?
+
+Yes. I was suggesting to effectively keep the behavior from
+ext4_ext_convert_to_initialized().
+
+> In this case, I have 2 concerns:
 > 
 > > 
 > > 1) 'ex' is unwritten, 'map' describes part with already written data which
 > > we want to convert to initialized (generally IO completion situation) => we
 > > can zero out boundaries if they are smaller than max_zeroout or if extent
 > > split fails.
-> > 
 > 
-> Yes. Agree.
-> 
+> Firstly, I know you mentioned in another email that zeroout of small ranges
+> gives us a performance win but is it really faster on average than
+> extent manipulation?
+
+I guess it depends on the storage and the details of the extent tree. But
+it definitely does help in cases like when you have large unwritten extent
+and then start writing randomly 4k blocks into it because this zeroout
+logic effectively limits the fragmentation of the extent tree. Overall
+sequentially writing a few blocks more of zeros is very cheap practically
+with any storage while fragmenting the extent tree becomes expensive rather
+quickly (you generally get deeper extent tree due to smaller extents etc.).
+
+> For example, for case 1 where both zeroout and splitting need
+> journalling, I understand that splitting has high journal overhead in worst case,
+> where tree might grow, but more often than not we would be manipulating
+> within the same leaf so journalling only 1 bh (same as zeroout). In which case
+> seems like zeroout might be slower no matter how fast the IO can be
+> done. So proactive zeroout might be for beneficial for case 3 than case
+> 1.
+
+I agree that initially while the split extents still fit into the same leaf
+block, zero out is likely to be somewhat slower but over the longer term
+the gains from less extent fragmentation win.
+
 > > 2) 'ex' is unwritten, 'map' describes part we are preparing for write (IO
 > > submission) => the split is opportunistic here, if we cannot split due to
 > > ENOSPC, just go on and deal with it at IO completion time. No zeroing
 > > needed.
-> 
-> Yes. At the same time, if we can indeed move the entire split unwritten
-> operation to be handled after I/O completion in the future, it would also be
-> more convenient to remove this segment of logic.
-
-Yes.
-
+> > 
 > > 3) 'ex' is written, 'map' describes part that should be converted to
 > > unwritten => we can zero out the 'map' part if smaller than max_zeroout or
 > > if extent split fails.
 > 
-> This makes sense to me! This case it originates from the fallocate with Zero
-> Range operation. Currently, the zero-out operation will not be performed if
-> the split operation fails, instead, it immediately returns a failure.
-> 
-> I agree with you that we can do zero out if the 'map' part smaller than
-> max_zeroout instead of split extents. However, if the 'map' part is bigger
-> than max_zeroout and if extent split fails, I don't think zero out is a good
-> idea, Because it might cause zero-range calls to take a long time to execute.
-> Although fallocate doesn't explicitly specify how ZERO_RANGE should be
-> implemented, users expect it to be very fast. Therefore, in this case, if the
-> split fails, it would be better to simply return an error, leave things as
-> they are. What do you think?
+> Proactive zeroout before trying split does seem benficial to help us
+> avoid journal overhead for split. However, judging from
+> ext4_ext_convert_to_initialized(), max zeroout comes from
+> sbi->s_extent_max_zeroout_kb which is hardcoded to 32 irrespective of
+> the IO device, so that means theres a chance a zeroout might be pretty
+> slow if say we are doing it on a device than doesn't support accelerated
+> zeroout operations. Maybe we need to be more intelligent in setting
+> s_extent_max_zeroout_kb?
 
-True. Just returning the error is a good option in this case.
-
-> > This should all result in a relatively straightforward code where we can
-> > distinguish the three cases based on 'ex' and passed flags, we should be
-> > able to drop the 'EXT4_EXT_DATA_VALID*' flags and logic (possibly we could
-> > drop the 'split_flag' argument of ext4_split_extent() altogether), and fix
-> > the data exposure issues at the same time. What do you think? Am I missing
-> > some case?
-> 
-> Indeed, I think the overall solution is a nice cleanup idea. :-)
-> But this would involve a significant amount of refactoring and logical changes.
-> Could we first merge the current set of patches(it could be more easier to
-> backport to the early LTS version), and then I can start a new series to
-> address this optimization?
-
-I agree the changes are rather intrusive and the code is complex. Since you
-have direct fixes already written, let's merge them first and cleanup
-afterwards as you suggest.
+You can also tune the value in sysfs. I'm not 100% sure how the kernel
+could do a better guess. Also I think 32k works mostly because it is small
+enough to be cheap to write but already large enough to noticeably reduce
+fragmentation for some pathological workloads (you can easily get 1/4 of
+the extents than without this logic). But I'm open to ideas if you have
+some.
 
 								Honza
 -- 
