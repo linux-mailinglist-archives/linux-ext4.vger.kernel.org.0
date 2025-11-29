@@ -1,112 +1,124 @@
-Return-Path: <linux-ext4+bounces-12068-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12069-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB5CC932F0
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 22:21:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9924C9360C
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 02:32:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2B11334BDAA
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Nov 2025 21:21:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E34FC3A990D
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 01:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7F7E2DAFCB;
-	Fri, 28 Nov 2025 21:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB0A1D47B4;
+	Sat, 29 Nov 2025 01:32:36 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7FE284889
-	for <linux-ext4@vger.kernel.org>; Fri, 28 Nov 2025 21:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3B6182B7;
+	Sat, 29 Nov 2025 01:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764364891; cv=none; b=hZ28yjVzCxC9KSdJpykGQY2X+rhK0bpaQYYusJk4S5ncjII7e162IYpkjBCxHvHcAKDQsO8ppnSFTOZYtE/gAgZ/CFQ+dXmAC0UThzOIHN2WnXGQ4SMbUzLeE6OQK8bOM/RsNKc59iUuVhbQ/O6p4Zvgts8vxL26DT1PwXrPdQg=
+	t=1764379956; cv=none; b=qW5qrwkoN86R16DmeFdgCn75VE+fbwuMm6JObRuIflOhbtyONuuLZyWFQZKEbc8hXJmEJwtnU2+rEbeLCEkD8yTXN1LTxHga/vZ58XuwGWb6bjz5zT/L3H8BkwV35zLIHqDhWt4c+Vy4rq+fKQ3jyhw0tfEM/w8YkSToq6zsTs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764364891; c=relaxed/simple;
-	bh=kNzJXuBIGFooK7Srky3cc5zgWDVrNxYsqF8D/wyj1Lo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=p0WiGbRRQvwK1XkF5GwB/Wxu45xbGKCPdJVLVjlj3h03dmlMSGsPudE+lFUUfY4lwgY3XZdG3RLxWWo+jj4Mzw4qaBxh+Rgl2bGvl1cRCqd0OVVT8UJvX/kqdzn2yqPZfTjNJsZ8V92Au+Egbd2gzbFs+kXsXH33YNjki31Qf3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-43376637642so16162575ab.2
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Nov 2025 13:21:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764364889; x=1764969689;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y8j/ocDaSnqoVH1Ds2ZGTi/QVUG+TcDyQCcs6zoz1V0=;
-        b=AbiMw6Su2Dxqnfst8kQrWlT4pWwcSDkiMxBB2w5BZF7ieRlf4wAmoaLk3nTG+G0F3m
-         odX2gqBWg2uG5zzkv0/izAz97G2Zvpyw8fkO2Fqkn6cshfyF3YbG3oahEMgWe3AOtwzi
-         HZluoskhFNtEGK/PN6AgHY1kfw7gHW4eCbdEvg1OOs0uK95xKv+5vz79iOdqtJ4iRkg/
-         tm4ExCMOpndPqdDO5wK/1RJG6VTN1GkxiVC5cCvey3B2KP7vRZAzwPWVoSUk3ATswrWh
-         a2uM+Ro+IKr9NVW7ldJOpDoqVZ49ahhZRynSmRY65zvGJR9Xdj+w1Aahmcs1+DPH4YwF
-         l2jw==
-X-Gm-Message-State: AOJu0YzX380iHtdDIyq4gbukYENsC3MF8GkjR9lm1c133YNKbhUr7IwH
-	y1x9UIkB+rd2LKXrMWkBQfOOGoWs1+JxKeBYCeV+8ecCDAY5eO4YoBsw13/V3kF/HNJJYIt586g
-	LYI1IgBcMJ8YtR8aWjh5H/juM11Uk2DgCm9xwQb4X20ONHJZxnVhPXA1rt+0=
-X-Google-Smtp-Source: AGHT+IHx2Dxl7NXiBixcP7I/5nBWSLW5R4Na9iWp4P+k39VeJlOyxKki4Ra27zAx1vJKwfK42LLIvgsnHH8m1gY7f6dJ1SRhQ++n
+	s=arc-20240116; t=1764379956; c=relaxed/simple;
+	bh=Gr/qED2MiqIBmBbu5xmiUz+E93dJowUD0NQlY5cfWvY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ctuYS4t5fSwQe0pXMhkIHr35CYIph6yWAyORRnayN4a8yyYfOvCnHnVTVyLgv3jIUemt2mMfqrSmRg85NUzCN8qPRLUqMguY8g4g0KLt1yILzqsOjYcSab/eHWGs2XsI2kqMoStOXhD24hCAxpi3Qs85T+i/vtca+lIocKPWma8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dJCLq2ZvPzKHMJr;
+	Sat, 29 Nov 2025 09:31:47 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id EF7EE1A13B2;
+	Sat, 29 Nov 2025 09:32:29 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP2 (Coremail) with SMTP id Syh0CgAHZXsqTSppiaV+CQ--.54014S3;
+	Sat, 29 Nov 2025 09:32:27 +0800 (CST)
+Message-ID: <58148859-dad6-4a1a-82ef-2a6099e2464d@huaweicloud.com>
+Date: Sat, 29 Nov 2025 09:32:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12c9:b0:434:96ea:ff51 with SMTP id
- e9e14a558f8ab-435b98d7a3emr259763645ab.34.1764364889214; Fri, 28 Nov 2025
- 13:21:29 -0800 (PST)
-Date: Fri, 28 Nov 2025 13:21:29 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <692a1259.a70a0220.d98e3.014d.GAE@google.com>
-Subject: [syzbot] Monthly ext4 report (Nov 2025)
-From: syzbot <syzbot+list3f074455b722999fe7b1@syzkaller.appspotmail.com>
-To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/13] ext4: replace ext4_es_insert_extent() when
+ caching on-disk extents
+To: Theodore Tso <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+ yi.zhang@huawei.com, yizhang089@gmail.com, libaokun1@huawei.com,
+ yangerkun@huawei.com
+References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
+ <20251128164959.GC4102@macsyma-3.local>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20251128164959.GC4102@macsyma-3.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgAHZXsqTSppiaV+CQ--.54014S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw1rGw45Zr4xGry7AF18Zrb_yoW8GF18pr
+	Wag345Kr4kXrWUAayfZrWUZFn0vwn5Cr9xG3Z3Grnxuws0ga4IgryF93yj9F1Ut395Ga12
+	gF129rnY9w4UZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Hello ext4 maintainers/developers,
+Hi, Ted!
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+On 11/29/2025 12:49 AM, Theodore Tso wrote:
+> Thanks to Jan and Ojaswin for their comments and reviews on this patch set.
+> 
+> As you may have noticed this version of the patchset is currently in
+> the ext4.git tree, and has shown up in linux-next.
 
-During the period, 6 new issues were detected and 0 were fixed.
-In total, 51 issues are still open and 163 have already been fixed.
+The ext4.git tree[1] shows that only the first three patches from this
+v2 version have been merged, possibly because the fourth patch conflicted
+with ErKun's patch[2]. I've written a new version locally, adding two fix
+patches for the three merged patches, and then rebase the subsequent
+patches and modify them directly. I can send them out after texting.
+Is this okay?
 
-Some of the still happening issues:
+Thanks,
+Yi.
 
-Ref  Crashes Repro Title
-<1>  4656    Yes   KASAN: out-of-bounds Read in ext4_xattr_set_entry
-                   https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
-<2>  2848    Yes   kernel BUG in ext4_do_writepages
-                   https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-<3>  2818    Yes   INFO: task hung in sync_inodes_sb (5)
-                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-<4>  2141    Yes   INFO: task hung in jbd2_journal_commit_transaction (5)
-                   https://syzkaller.appspot.com/bug?extid=3071bdd0a9953bc0d177
-<5>  1317    Yes   possible deadlock in ext4_writepages (2)
-                   https://syzkaller.appspot.com/bug?extid=eb5b4ef634a018917f3c
-<6>  1083    Yes   WARNING in ext4_xattr_inode_update_ref (2)
-                   https://syzkaller.appspot.com/bug?extid=76916a45d2294b551fd9
-<7>  989     Yes   WARNING in ext4_xattr_inode_lookup_create
-                   https://syzkaller.appspot.com/bug?extid=fe42a669c87e4a980051
-<8>  635     No    KCSAN: data-race in generic_buffers_fsync_noflush / writeback_single_inode (3)
-                   https://syzkaller.appspot.com/bug?extid=35257a2200785ea628f5
-<9>  448     Yes   INFO: task hung in do_get_write_access (3)
-                   https://syzkaller.appspot.com/bug?extid=e7c786ece54bad9d1e43
-<10> 277     Yes   INFO: task hung in do_renameat2 (2)
-                   https://syzkaller.appspot.com/bug?extid=39a12f7473ed8066d2ca
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/log/?h=dev
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=dac092195b6a35bc7c9f11e2884cfecb1b25e20c
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> Given that we have some suggested changes, there are a couple of ways
+> we can handle this:
+> 
+> 1) Zhang Yi could produce a new version of the patch set, and I'll
+> replace the v2 version of the patch set currently in the ext4.git tree
+> with a newer version.
+> 
+> 2) We could append fix-up patches to the ext4.git tree to reflect
+> those changes.
+> 
+> 3) I could drop the patch set entirely and we apply a later version
+> of the patch series after the merge window.
+> 
+> What are folks' preferences?
+> 
+> Thanks,
+> 
+> 						- Ted
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
 
