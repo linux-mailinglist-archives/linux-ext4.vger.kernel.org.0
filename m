@@ -1,126 +1,211 @@
-Return-Path: <linux-ext4+bounces-12079-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12089-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BDC1C93C4E
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 11:37:50 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2DF0C945D1
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 18:35:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C724F3A4E2D
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 10:37:06 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2A04D3471E3
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 17:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C4028B4FA;
-	Sat, 29 Nov 2025 10:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3D230FC1C;
+	Sat, 29 Nov 2025 17:35:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="iNUdtGlA"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A10285CBC;
-	Sat, 29 Nov 2025 10:35:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C18020F067;
+	Sat, 29 Nov 2025 17:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764412539; cv=none; b=Aie9IW9cBFM+MGfsIoxeNlJ5bGavDLoOAHmldCx6t3H5GKxYFdjb6A78HzCvxs+dyhZejhqmI1TKQ+P1nfy+oZH+WV/VnaE/Vr1opczwtGSufW/oX9YCoipGsQKTNjpb+S9wAcAhaI2LFSEfu0Xp+bfmWOCk2x0psWxb6lal/OY=
+	t=1764437720; cv=none; b=Eh69NhFykXKGS9wsLr/goIVRZR4x+s2IYrwFoiNhQK0WVy+6c4/9Ul6Odf756wbL1owHyV1WXs6rF5hw6h/yaObkWA6xHL3e46uF+5mQAgFXAypNVxFWRtxu43icH9wlwdF7QANgG7NfQsrljirU9tDswrdrKGV25hLVxtfrcOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764412539; c=relaxed/simple;
-	bh=9kWre2nZJcsb8KlJ5MGjDaPeHGKcZypCKa5U4lhaVMM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UzYIkCe9u/kzI0CHTT/2rG7xVobS4HUbEM24fYxzkOQ2K3WP/ikSydhBdpzrz3xTyKpYqF8gdB3W8IGXgtiQk4JNH+CQqdHJ4siw5gWZbAEFqt9nEJfUfm7jmQwq5GefEbiVH1omeIpctncXKkmc/vZoUYevcwKaPiOA6/QHiVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dJRP645wSzYQtpm;
-	Sat, 29 Nov 2025 18:34:34 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 557981A07C0;
-	Sat, 29 Nov 2025 18:35:31 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.50.85.155])
-	by APP2 (Coremail) with SMTP id Syh0CgAnhXtfzCpp_56qCQ--.62661S18;
-	Sat, 29 Nov 2025 18:35:31 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ojaswin@linux.ibm.com,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	yizhang089@gmail.com,
-	libaokun1@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH v3 14/14] ext4: drop the TODO comment in ext4_es_insert_extent()
-Date: Sat, 29 Nov 2025 18:32:46 +0800
-Message-ID: <20251129103247.686136-15-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20251129103247.686136-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1764437720; c=relaxed/simple;
+	bh=pXD6nrW8Ad2l1MosS0Zp8E0uNalZTDZ0RARbAngFbhU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KnyA882MoP/aFXXp2nFlliZ2csprkAcS1MxfVFuINbwf51ZeMnCxeJb2eYayLPCrp4VMCTEXmVK2PqyDGdA9X3lZUICOvYdYPRpL9n8/XI+Ig41A8qNYbOb3HamTxqBYx5pwkfXCO/OuKAMnzxemr+Kelyq6kigD47Q094Mx7kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=iNUdtGlA; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AT6FVXY005056;
+	Sat, 29 Nov 2025 17:34:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=QpWuELSXAKSWhIxSjZxxU7A7VFDRp1
+	wb/s5PUXN0EJ4=; b=iNUdtGlAH7Q205KThNEhX8boAc+ux53uRSLqVMJoFxjbX2
+	4DxWD58yMyiYE+g7RIVkgc4DwvVV+1IXOoBw5iIJ4MX7lv5Usfp//YzaQ1TrzdA0
+	23UDS2DZnqR2HBox6sMn5T6jtCS2lGDEpll5GnAOO2CPY9+erY3tcJ1RlKvwxKah
+	6xm303nytVgPdZjd2N2VyFwq8D6DVgTIphmPxUIILd1chMPVb5lOv4gEFiFBdYyp
+	YBIYcu8TtH++SqxjXJ3pPfNooia8512HUeRx+6I1JrT7EOSv54jwXCoayNFivCAW
+	PaZBsXDe0gbjC6ZWmAuTWa5zi/yMaXPsfxasQlwA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqp8phjc4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 29 Nov 2025 17:34:57 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5ATHYu7Z032110;
+	Sat, 29 Nov 2025 17:34:56 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqp8phjc2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 29 Nov 2025 17:34:56 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5ATF2G45000850;
+	Sat, 29 Nov 2025 17:34:55 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4akqvyhykv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 29 Nov 2025 17:34:55 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5ATHYrsQ51315104
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 29 Nov 2025 17:34:53 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8FBB120043;
+	Sat, 29 Nov 2025 17:34:53 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0855720040;
+	Sat, 29 Nov 2025 17:34:51 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.29.41])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Sat, 29 Nov 2025 17:34:50 +0000 (GMT)
+Date: Sat, 29 Nov 2025 23:03:43 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jack@suse.cz, yi.zhang@huawei.com, yizhang089@gmail.com,
+        libaokun1@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v3 06/14] ext4: drop extent cache after doing
+ PARTIAL_VALID1 zeroout
+Message-ID: <aSsud_c9UtP3Xcmm@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
 References: <20251129103247.686136-1-yi.zhang@huaweicloud.com>
+ <20251129103247.686136-7-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAnhXtfzCpp_56qCQ--.62661S18
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF4kXw45Gr4kKF4kXw1rXrb_yoW8Jw4kpr
-	nxCw18Jr4fXa1vkayxGF4UXryfKaykGrW7GrZ7Kw1fKFW5JryS9F1qyFWYvFyfWrWxJrW5
-	ZF40kw1UWa1UJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
-	4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBI
-	daVFxhVjvjDU0xZFpf9x0JUWMKtUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251129103247.686136-7-yi.zhang@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTI5MDAwMCBTYWx0ZWRfX9fDY1Jc+OlME
+ Br4S7QvtEXpjUCSWmFUOYmUz0BcvTbU4yFmdx9FTk5c7k6V/ghXfroCO90dYx1PrzPoy2h9r74M
+ zHhJQjmU2lCafRPf0tLmYyaQ0ivF5r9Bwy9pFGepKoLdnXMkm8YwtZIyRI3rHO8B7bQpZ4P16gP
+ yiwB8C+mfNp1hRch6jpU+HMklNy9w8yybGrDEwaZyZmmsGWRdL+2qkcAnZ7kYb37sudIm9VEUdV
+ nfh/QDzUI/elXE72jrR2RcEoesu4RNi2lMoGl26hfxaePfJ23kwNteuWEO8EjzAnH/2/BxadfPO
+ YFyD3i1QyMrCt/WgDI5wyu7k93XDx7xdIDKBxemqb6OZ7kY9n+ZAgEPgOh1QJIQMaLRg8liGmD/
+ 84zXGnL4i0J0/JFO9NLfG240QTXAZQ==
+X-Authority-Analysis: v=2.4 cv=dIerWeZb c=1 sm=1 tr=0 ts=692b2ec1 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=kj9zAlcOel0A:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=i0EeH86SAAAA:8 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=VxLEsmLLjGsxDua8HicA:9
+ a=CjuIK1q_8ugA:10
+X-Proofpoint-ORIG-GUID: yM2_7dlMr4HsLIlkHPRWwEsSdrx8TVFe
+X-Proofpoint-GUID: EdquWRUJcXCDLcZ1QEKSO4I5axie_U4n
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-28_08,2025-11-27_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 bulkscore=0 impostorscore=0
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
+ definitions=main-2511290000
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Sat, Nov 29, 2025 at 06:32:38PM +0800, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> When splitting an unwritten extent in the middle and converting it to
+> initialized in ext4_split_extent() with the EXT4_EXT_MAY_ZEROOUT and
+> EXT4_EXT_DATA_VALID2 flags set, it could leave a stale unwritten extent.
+> 
+> Assume we have an unwritten file and buffered write in the middle of it
+> without dioread_nolock enabled, it will allocate blocks as written
+> extent.
+> 
+>        0  A      B  N
+>        [UUUUUUUUUUUU] on-disk extent      U: unwritten extent
+>        [UUUUUUUUUUUU] extent status tree
+>        [--DDDDDDDD--]                     D: valid data
+>           |<-  ->| ----> this range needs to be initialized
+> 
+> ext4_split_extent() first try to split this extent at B with
+> EXT4_EXT_DATA_PARTIAL_VALID1 and EXT4_EXT_MAY_ZEROOUT flag set, but
+> ext4_split_extent_at() failed to split this extent due to temporary lack
+> of space. It zeroout B to N and leave the entire extent as unwritten.
+> 
+>        0  A      B  N
+>        [UUUUUUUUUUUU] on-disk extent
+>        [UUUUUUUUUUUU] extent status tree
+>        [--DDDDDDDDZZ]                     Z: zeroed data
+> 
+> ext4_split_extent() then try to split this extent at A with
+> EXT4_EXT_DATA_VALID2 flag set. This time, it split successfully and
+> leave an written extent from A to N.
+> 
+>        0  A      B  N
+>        [UUWWWWWWWWWW] on-disk extent      W: written extent
+>        [UUUUUUUUUUUU] extent status tree
+>        [--DDDDDDDDZZ]
+> 
+> Finally ext4_map_create_blocks() only insert extent A to B to the extent
+> status tree, and leave an stale unwritten extent in the status tree.
+> 
+>        0  A      B  N
+>        [UUWWWWWWWWWW] on-disk extent      W: written extent
+>        [UUWWWWWWWWUU] extent status tree
+>        [--DDDDDDDDZZ]
+> 
+> Fix this issue by always cached extent status entry after zeroing out
+> the second part.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> Reviewed-by: Baokun Li <libaokun1@huawei.com>
+> Cc: stable@kernel.org
 
-Now we have ext4_es_cache_extent() to cache on-disk extents instead of
-ext4_es_insert_extent(), so drop the TODO comment.
+Okay so now we only drop the part that would have become stale. Looks
+good to me.
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Baokun Li <libaokun1@huawei.com>
----
- fs/ext4/extents_status.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-index 0529c603ee88..fc83e7e2ca9e 100644
---- a/fs/ext4/extents_status.c
-+++ b/fs/ext4/extents_status.c
-@@ -898,7 +898,8 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes,
- 
- /*
-  * ext4_es_insert_extent() adds information to an inode's extent
-- * status tree.
-+ * status tree. This interface is used for modifying extents. To cache
-+ * on-disk extents, use ext4_es_cache_extent() instead.
-  */
- void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
- 			   ext4_lblk_t len, ext4_fsblk_t pblk,
-@@ -977,10 +978,6 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
- 		}
- 		pending = err3;
- 	}
--	/*
--	 * TODO: For cache on-disk extents, there is no need to increment
--	 * the sequence counter, this requires future optimization.
--	 */
- 	ext4_es_inc_seq(inode);
- error:
- 	write_unlock(&EXT4_I(inode)->i_es_lock);
--- 
-2.46.1
+Regards,
+ojaswin
 
+> ---
+>  fs/ext4/extents.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index be9fd2ab8667..1094e4923451 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -3319,8 +3319,16 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
+>  			 * extent length and ext4_split_extent() split will the
+>  			 * first half again.
+>  			 */
+> -			if (split_flag & EXT4_EXT_DATA_PARTIAL_VALID1)
+> +			if (split_flag & EXT4_EXT_DATA_PARTIAL_VALID1) {
+> +				/*
+> +				 * Drop extent cache to prevent stale unwritten
+> +				 * extents remaining after zeroing out.
+> +				 */
+> +				ext4_es_remove_extent(inode,
+> +					le32_to_cpu(zero_ex.ee_block),
+> +					ext4_ext_get_actual_len(&zero_ex));
+>  				goto fix_extent_len;
+> +			}
+>  
+>  			/* update the extent length and mark as initialized */
+>  			ex->ee_len = cpu_to_le16(ee_len);
+> -- 
+> 2.46.1
+> 
 
