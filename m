@@ -1,138 +1,112 @@
-Return-Path: <linux-ext4+bounces-12070-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12071-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D031FC93624
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 02:36:22 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75AD1C93787
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 04:52:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F16E3A9BA2
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 01:36:18 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 79CB34E185C
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 03:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2FEE1C8626;
-	Sat, 29 Nov 2025 01:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AC01A2C04;
+	Sat, 29 Nov 2025 03:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="f2/hI8DR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C99E818FDAF;
-	Sat, 29 Nov 2025 01:36:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E63E19EED3
+	for <linux-ext4@vger.kernel.org>; Sat, 29 Nov 2025 03:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764380174; cv=none; b=bBUGh5YLwiqrbDo8hWOKPJtEFh+M6eD0yHxxUmlCSwmdOeHas/YlQT3FmX75bacGnTmjRoVfBXCpa7YWE1DhH8PQoFaO4pr+zrsNHIeIMlD6wQuxtVZpRk5GG08lBqu/sFGu3shJRB6kq1VmXn5BNgnBi79BuURTmiHs7HUBsm4=
+	t=1764388355; cv=none; b=mnpGx0YVzt4OTa50s7ns9fccihyPkpWedN1r8aGQtcbWW92Iz3kHEw2enraiAwQUFGQ+B6OTGLXcG8DBX/v0LmP1BqOQNMes2Z13ehnKv5wJRusqFvUSSqEYystV+hNHQ+G8L+99vt5sMW8+W2mRecRADnxNaWUR/qONyL8iKZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764380174; c=relaxed/simple;
-	bh=JNGqFiRS28H3+0kZUOEA8ypYM8buy6tlWlVadSlYe+o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IhtEu7+aD0oURYr99ZWfvHTtbQzLD0UU2OVjFx7n0yuXjF7YbAe8OpzlqTmZKpdBfvNWKJd//NYJ3CfaK/4DsOg07e2VB/YOczuZXN9JKliLCCAdp6uauumAJeTpBkM+VWMGqvOIXNYbrmEAIb/KqHPEPqKqYiQ2k9C8xVZ/Nws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dJCR25Mh7zKHLtb;
-	Sat, 29 Nov 2025 09:35:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 5A5661A07BB;
-	Sat, 29 Nov 2025 09:36:09 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP2 (Coremail) with SMTP id Syh0CgBnw3kITippzPJ+CQ--.33388S3;
-	Sat, 29 Nov 2025 09:36:09 +0800 (CST)
-Message-ID: <b42dd2b9-f04e-4c0c-9fb1-5a46fb450e5e@huaweicloud.com>
-Date: Sat, 29 Nov 2025 09:36:08 +0800
+	s=arc-20240116; t=1764388355; c=relaxed/simple;
+	bh=GgxZY+zGjHqMIJL9xK0fwb/wL9caL1WVLmEJSeIIQGw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oBCeDfk4sf7EbdtbTjmbQ7zD0cYUusp9x5u6h2TooCbDRzUToaqv9fl2zavciHooOOyOPdCxbB3USDcJ7Xk9pXFGFAD3iYkYuv6EQVrXTFZbbqEMUpDgk2AkqOrHn/6iU2f5p/VjpVVucccHhN7Kc2OXKXPTB+A2GGSA5Jxd+dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=f2/hI8DR; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org ([12.187.214.164])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5AT3q06j017072
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 28 Nov 2025 22:52:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1764388324; bh=qkdEq0YlotXHeAiLMDJxrdCiBWvZyfhbAXNUmcPs01w=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=f2/hI8DRtT7gAXi/RxaRbbeopRpo2fVLXLp677KFRhUpXBHcH1OhbTWj5V1izJkqH
+	 6uICBn36VF/gRx8UlaY1/HF/N6P6zKpQUfQMav3+ai501lKXhGvonBEul3xFO456hr
+	 cYVRxE4IIGbnhyuJ2tzK+O5zPGsLUMwRz1M+T3bref7kkcE0fPFe49LZiW3Q2SH7OA
+	 r8I8QjMfNPA5VzjGMMnlYhCIobOYQPR/GfS+f3arxYFQg2UejQcCwRiDfGQi8F/Wr/
+	 7lh/MDTPhgiDewSKLP4DTS9u7uC26tj5k5rPXZzLR2f3cMCL/YR7m2TlIVMiAnd/Ds
+	 MkptGFbsUXXpw==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 7397A4D578F0; Fri, 28 Nov 2025 21:52:00 -0600 (CST)
+Date: Fri, 28 Nov 2025 21:52:00 -0600
+From: "Theodore Tso" <tytso@mit.edu>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, yizhang089@gmail.com, libaokun1@huawei.com,
+        yangerkun@huawei.com
+Subject: Re: [PATCH v2 00/13] ext4: replace ext4_es_insert_extent() when
+ caching on-disk extents
+Message-ID: <20251129035200.GA64725@macsyma.local>
+References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
+ <20251128164959.GC4102@macsyma-3.local>
+ <58148859-dad6-4a1a-82ef-2a6099e2464d@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 07/13] ext4: drop extent cache before splitting extent
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- jack@suse.cz, yi.zhang@huawei.com, yizhang089@gmail.com,
- libaokun1@huawei.com, yangerkun@huawei.com
-References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
- <20251121060811.1685783-8-yi.zhang@huaweicloud.com>
- <aSbxjVypU3vdOUmK@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <8680efcd-dc84-4b4e-ab75-216de959ec88@huaweicloud.com>
- <aSlaeSGfjlZbY3hB@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <aSlaeSGfjlZbY3hB@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgBnw3kITippzPJ+CQ--.33388S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFyDGFyDGw4xGw43tryxZrb_yoW8Wry3pr
-	W3GF18KrW8Aw1jk3s2vw4jqr92ka4rKr47ury5Kw1YyF9FgryYgF17ta1rCFyFgr48Xw1a
-	vF48K34fuasxC3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUb
-	mii3UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <58148859-dad6-4a1a-82ef-2a6099e2464d@huaweicloud.com>
 
-On 11/28/2025 4:16 PM, Ojaswin Mujoo wrote:
-> On Thu, Nov 27, 2025 at 03:27:26PM +0800, Zhang Yi wrote:
->> On 11/26/2025 8:24 PM, Ojaswin Mujoo wrote:
->>> On Fri, Nov 21, 2025 at 02:08:05PM +0800, Zhang Yi wrote:
->>>> From: Zhang Yi <yi.zhang@huawei.com>
->>>>
-[...]
->>>>
->>>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->>>> index 2b5aec3f8882..9bb80af4b5cf 100644
->>>> --- a/fs/ext4/extents.c
->>>> +++ b/fs/ext4/extents.c
->>>> @@ -3367,6 +3367,12 @@ static struct ext4_ext_path *ext4_split_extent(handle_t *handle,
->>>>  	ee_len = ext4_ext_get_actual_len(ex);
->>>>  	unwritten = ext4_ext_is_unwritten(ex);
->>>>  
->>>> +	/*
->>>> +	 * Drop extent cache to prevent stale unwritten extents remaining
->>>> +	 * after zeroing out.
->>>> +	 */
->>>> +	ext4_es_remove_extent(inode, ee_block, ee_len);
->>>> +
+On Sat, Nov 29, 2025 at 09:32:25AM +0800, Zhang Yi wrote:
 > 
-> Okay this makes sense, there are many different combinations of how the
-> on disk extents might turn out and if will become complicated to keep
-> the es in sync to those, so this seems simpler.
-> 
-> There might be a small performance penalty of dropping the es here tho
-> but idk if it's anything measurable. As a middle ground do you think it
-> makes more sense to drop the es cache in ext4_split_extent_at() instead,
-> when we know we are about to go for zeroout. Since the default non
-> zeroout path seems to be okay?
-> 
-> Regards,
-> ojaswin
-> 
-> 
+> The ext4.git tree[1] shows that only the first three patches from this
+> v2 version have been merged, possibly because the fourth patch conflicted
+> with ErKun's patch[2].
 
-Yes, this makes sense to me! I will move it to ext4_split_extent_at()
-in my next iteration.
+Yeah, oops.  Sorry about that.  I think I had checked some other
+branch via a git reset --hard, and forgot that I had accidentally
+aborted the git am after the patch conflict.
 
-Thanks,
-Yi.
+I've rearranged the dev brach so that those first three patches are
+not at the tip of the dev branch.  So if you want to grab the dev
+branch, and then rebase your new series on top of commit 91ef18b567da,
+you can do that.
 
-> 
->>>>  	/* Do not cache extents that are in the process of being modified. */
->>>>  	flags |= EXT4_EX_NOCACHE;
->>>>  
->>>> -- 
->>>> 2.46.1
->>>>
->>
+* 1e366d088866 - (HEAD -> dev, ext4/dev) ext4: don't zero the entire extent if EXT4_EXT_DATA_PARTIAL_VALID1 (10 minutes ago)
+* 6afae3414127 - ext4: subdivide EXT4_EXT_DATA_VALID1 (10 minutes ago)
+* a4e2cc74a11b - ext4: cleanup zeroout in ext4_split_extent_at() (10 minutes ago)
+* 91ef18b567da - ext4: mark inodes without acls in __ext4_iget() (10 minutes ago)
 
+Note that the merge window opens on this coming Sunday, but a good
+number of these patches are bug fixes (and not in the sense of adding
+a new feature :-), so I'd prefer to land them this cycle if possible.
+
+> I've written a new version locally, adding two fix
+> patches for the three merged patches, and then rebase the subsequent
+> patches and modify them directly. I can send them out after texting.
+> Is this okay?
+
+Why don't you modify your series so it applies on top of 91ef18b567da,
+so we don't hace to have the fixup patches, and I may just simply push
+everything up to 91ef18b567da to Linus, and we can then just apply the
+next version of your series on top of that commit, and I'll push it to
+Linus right after -rc1.
+
+Does that seem workable to you?
+
+							- Ted
 
