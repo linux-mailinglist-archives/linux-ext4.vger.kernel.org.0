@@ -1,130 +1,323 @@
-Return-Path: <linux-ext4+bounces-12072-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12073-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7166CC93830
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 05:44:40 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AEFCC93A0C
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 09:52:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0A6A2348750
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 04:44:40 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5AB0A347A4E
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 08:52:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D4D238C1A;
-	Sat, 29 Nov 2025 04:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06E22652B6;
+	Sat, 29 Nov 2025 08:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JLuVt6iO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2D4224AF1;
-	Sat, 29 Nov 2025 04:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD9D182B7;
+	Sat, 29 Nov 2025 08:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764391473; cv=none; b=g5nr3Tc/ueI1SMMjF0nYv88DQOl8pGaL6PwwWf5fOwwl56vfwDLMK97NfKccajirfy+4h0Szz7+GQV9yINEwtxVrUC4WsF7909ICE6GV6H9JZIGTJtY7IW76UOkW+U0lXFNU3DEyw+GVjYM0rvubfJLhayh5SjNSR0EWd1pxF2Y=
+	t=1764406367; cv=none; b=LF5zc9D0IZrlQoa+vDNLd16FBkSTyHku3bHVJwW4nP3a5m2BKz6spf0okZwNO2mZsW3Hbat7yYWGBqT0xO4NxKh0X1RQDRT5dyDVidbTIHzLoKmdn3TnGo94hVqsm7yuQHypqn8rC+/56uzUBGP3Gq83iQBA48lWv7ZhpeQ78gU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764391473; c=relaxed/simple;
-	bh=W8LbG6q/KwkBXbh7jO8qD93PYsCDQq5eZ5gwqrxk/W4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LaXknqbxnWflii21FJODc+0norLK7+6FWeaSPfChCtvdvKIf2eNtGjl/X+SscmM9WRuYRdD9C33qStTDcVzWpq49ZQHOEelz/1sQNS3XBMh7aG/chZ6B9mdKrQN2hdlox3y+aVU8KNc54lXfDHTrjED6NvxmcLTT3mGDgOv+nTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dJHc22qXSzYQtpp;
-	Sat, 29 Nov 2025 12:43:30 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id BB9091A07C0;
-	Sat, 29 Nov 2025 12:44:26 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP2 (Coremail) with SMTP id Syh0CgB31Hooeipp_TOOCQ--.57179S3;
-	Sat, 29 Nov 2025 12:44:26 +0800 (CST)
-Message-ID: <940f2001-ded4-4ecf-b1f0-a424b2983167@huaweicloud.com>
-Date: Sat, 29 Nov 2025 12:44:24 +0800
+	s=arc-20240116; t=1764406367; c=relaxed/simple;
+	bh=nClj+COov/1I3RkkROa9pm1axrzdz/bY6YWa+/IukA8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rvSn4XPyKKs3/VMJt0cHvJoD9g1QV4v0M9Wjbcwsv+O97KAn4Zu9hLsz+vwNYF7S36xxTm8iWllTNECT+brIsE1T68eHAHmyzu3bk2vSQ1xM3O5BGBRaEFieQnfsw4uTJ8B4fEqb2XYjWWbFi4K5Hy1iZWggtGDGkpm948kbmJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=JLuVt6iO; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AT30wYi025909;
+	Sat, 29 Nov 2025 08:52:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=bnlU2AcrMXhNFa2XzEjbaRwqVOpAW1
+	F/0H3rZhlC3so=; b=JLuVt6iOaFwzhArYl6OCU3fWPHcYDqwyeWDD3HHQHgepLq
+	WQf7dgHFjxed1VIvCjIZXst8vAd3HXVkVw8CneH0xj1HJy0U/hl+Qm/1CecB+F3r
+	EyvRiplNbZvhoGXH6McaWXnWjqKJkQLvfEDOuOkEyimA5nDpYV1UPLzht51euu5u
+	BPfDfzR7+Y1YYes56Y71CeyCIkpUYo2BAW6gDUpx/EtpsJpsL4M7qIs+rk1YUlA+
+	KBmVCO9q+87U1/i8g3nCW/XWkRJvixLbcvwNgmYP9vI7cfhgVJC3g616jjM5Es/6
+	gymk/CEUddcEgFdOlpUvQjaqvbSRVqDI59zwZ3dw==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqrj98h25-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 29 Nov 2025 08:52:41 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AT4A38g025075;
+	Sat, 29 Nov 2025 08:52:40 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4akt720am5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 29 Nov 2025 08:52:40 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5AT8qcgC29491662
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 29 Nov 2025 08:52:38 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 63CB620043;
+	Sat, 29 Nov 2025 08:52:38 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0AC4120040;
+	Sat, 29 Nov 2025 08:52:37 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.27.95])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Sat, 29 Nov 2025 08:52:36 +0000 (GMT)
+Date: Sat, 29 Nov 2025 14:22:11 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: zlang@redhat.com, fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 2/7] generic/778: fix severe performance problems
+Message-ID: <aSq0OzvJHT1yOdvF@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <176279908967.605950.2192923313361120314.stgit@frogsfrogsfrogs>
+ <176279909041.605950.16815410156483574567.stgit@frogsfrogsfrogs>
+ <aRXGyR9kj0kPirIE@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ <20251115023251.GI196366@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/13] ext4: replace ext4_es_insert_extent() when
- caching on-disk extents
-To: Theodore Tso <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
- yi.zhang@huawei.com, yizhang089@gmail.com, libaokun1@huawei.com,
- yangerkun@huawei.com
-References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
- <20251128164959.GC4102@macsyma-3.local>
- <58148859-dad6-4a1a-82ef-2a6099e2464d@huaweicloud.com>
- <20251129035200.GA64725@macsyma.local>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20251129035200.GA64725@macsyma.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgB31Hooeipp_TOOCQ--.57179S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr48KF4rZFW5ury8CFW7Arb_yoW8Cw18pa
-	yagFyY9ws8JrWkAr4xZr18GF4Sy3Wftr98uw1xWr1kA3W5uryxKr4Igw4j93W7Gw4fur4a
-	9F4Yyryvk3WDC37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251115023251.GI196366@frogsfrogsfrogs>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: qvdmZ9j3zLAReX0Hoq45uP7kJLEtnqlE
+X-Proofpoint-ORIG-GUID: qvdmZ9j3zLAReX0Hoq45uP7kJLEtnqlE
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTI5MDAyMCBTYWx0ZWRfX9l64Fy6fCbeV
+ gynz0Gv0nr8s80Win6Ni34P5R5E+kj+5z3QVKu+tQoof2/a/02I+NrOQqToCCZowrIDCG1bbfpa
+ tvrsS7VIIlcEZYsmLqhCIKmsSZFg9BgT9CnRxD3n97r901E2aq4exY/46QjdXKI+IYkfzliha4r
+ cmgAjUNOpp9MNJb7618HQ01iaImHpV0JEzi9KweJweqjpeW8hfoGP+Tm9+fMnsJloQPO+TuLn3K
+ Mxa3/DhN7iLy+Y2/39BMWBGvE3YTMfaLOXrTug9vWAhgkeWHTrUTJOGKD0qIQGIfFBzr6w5z7HD
+ GuqJEO0lwnHyL5goe6xc5VYUrbKjLQKOkmuPLcBR2GYgIFJM72Wji1i1RVEVv+be1DoqQlVabXK
+ Kzuf5EMC72JdpbEehAEcwDFfEKalaw==
+X-Authority-Analysis: v=2.4 cv=dYGNHHXe c=1 sm=1 tr=0 ts=692ab459 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=kj9zAlcOel0A:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VwQbUJbxAAAA:8 a=fXYFMPuYrlktsdxoAhkA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-28_08,2025-11-27_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 spamscore=0 suspectscore=0 clxscore=1015 adultscore=0
+ lowpriorityscore=0 bulkscore=0 phishscore=0 priorityscore=1501
+ impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
+ definitions=main-2511290020
 
-On 11/29/2025 11:52 AM, Theodore Tso wrote:
-> On Sat, Nov 29, 2025 at 09:32:25AM +0800, Zhang Yi wrote:
->>
->> The ext4.git tree[1] shows that only the first three patches from this
->> v2 version have been merged, possibly because the fourth patch conflicted
->> with ErKun's patch[2].
-> 
-> Yeah, oops.  Sorry about that.  I think I had checked some other
-> branch via a git reset --hard, and forgot that I had accidentally
-> aborted the git am after the patch conflict.
-> 
-> I've rearranged the dev brach so that those first three patches are
-> not at the tip of the dev branch.  So if you want to grab the dev
-> branch, and then rebase your new series on top of commit 91ef18b567da,
-> you can do that.
-> 
-> * 1e366d088866 - (HEAD -> dev, ext4/dev) ext4: don't zero the entire extent if EXT4_EXT_DATA_PARTIAL_VALID1 (10 minutes ago)
-> * 6afae3414127 - ext4: subdivide EXT4_EXT_DATA_VALID1 (10 minutes ago)
-> * a4e2cc74a11b - ext4: cleanup zeroout in ext4_split_extent_at() (10 minutes ago)
-> * 91ef18b567da - ext4: mark inodes without acls in __ext4_iget() (10 minutes ago)
-> 
-> Note that the merge window opens on this coming Sunday, but a good
-> number of these patches are bug fixes (and not in the sense of adding
-> a new feature :-), so I'd prefer to land them this cycle if possible.
-> 
->> I've written a new version locally, adding two fix
->> patches for the three merged patches, and then rebase the subsequent
->> patches and modify them directly. I can send them out after texting.
->> Is this okay?
-> 
-> Why don't you modify your series so it applies on top of 91ef18b567da,
-> so we don't hace to have the fixup patches, and I may just simply push
-> everything up to 91ef18b567da to Linus, and we can then just apply the
-> next version of your series on top of that commit, and I'll push it to
-> Linus right after -rc1.
-> 
-> Does that seem workable to you?
-> 
-> 							- Ted
+On Fri, Nov 14, 2025 at 06:32:51PM -0800, Darrick J. Wong wrote:
+> On Thu, Nov 13, 2025 at 05:23:45PM +0530, Ojaswin Mujoo wrote:
+> > On Mon, Nov 10, 2025 at 10:26:32AM -0800, Darrick J. Wong wrote:
+> > > From: Darrick J. Wong <djwong@kernel.org>
+> > > 
+> > > This test takes 4800s to run, which is horrible.  AFAICT it starts out
+> > > by timing how much can be written atomically to a new file in 0.2
+> > > seconds, then scales up the file size by 3x.  On not very fast storage,
+> > 
+> > Hi Darrick,
 
-Sure, I will rebase my series on top of 91ef18b567da and send out today.
+(Sorry I missed this email somehow)
 
-Cheers,
-Yi.
+> > 
+> > So 250MB in 0.2s is like 1.2GBps which seems pretty fast. Did you mean
+> > "On fast storage ..." ?
+> 
+> No, I have even faster storage. ;)
 
+:O
+
+So that means on an even faster storage this problem would be even more
+visible because our file size would be >250MB
+
+> 
+> > > this can result in file_size being set to ~250MB on a 4k fsblock
+> > > filesystem.  That's about 64,000 blocks.
+> > > 
+> > > The next thing this test does is try to create a file of that size
+> > > (250MB) of alternating written and unwritten blocks.  For some reason,
+> > > it sets up this file by invoking xfs_io 64,000 times to write small
+> > > amounts of data, which takes 3+ minutes on the author's system because
+> > > exec overhead is pretty high when you do that.
+> > 
+> > > 
+> > > As a result, one loop through the test takes almost 4 minutes.  The test
+> > > loops 20 times, so it runs for 80 minutes(!!) which is a really long
+> > > time.
+> > > 
+> > > So the first thing we do is observe that the giant slow loop is being
+> > > run as a single thread on an empty filesystem.  Most of the time the
+> > > allocator generates a mostly physically contiguous file.  We could
+> > > fallocate the whole file instead of fallocating one block every other
+> > > time through the loop.  This halves the setup time.
+> > > 
+> > > Next, we can also stuff the remaining pwrite commands into a bash array
+> > > and only invoke xfs_io once every 128x through the loop.  This amortizes
+> > > the xfs_io startup time, which reduces the test loop runtime to about 20
+> > > seconds.
+> > 
+> > Oh right, this is very bad. Weirdly I never noticed the test taking such
+> > a huge time while testing on scsi_debug and also on an enterprise SSD.
+> 
+> It doesn't help that xfs supports much larger awu_max than (say) ext4.
+
+I did test on xfs as well. But yea maybe my SSD is just not fast enough.
+
+> 
+> > Thanks for fixing this up though, I will start using maybe dm-delay
+> > while stressing the tests in the future to avoid such issues.
+> 
+> fork() is a bit expensive.
+> 
+> > > 
+> > > Finally, replace the 20x loop with a _soak_loop_running 5x loop because
+> > > 5 seems like enough.  Anyone who wants more can set TIME_FACTOR or
+> > > SOAK_DURATION to get more intensive testing.  On my system this cuts the
+> > > runtime to 75 seconds.
+> > 
+> > So about the loops, we were running a modified version of this test,
+> > which used non atomic writes, to confirm if we are able to catch torn
+> > writes this way. We noticed that it sometimes took 10+ loops to observe
+> > the torn write. Hence we kept iters=20. Since catching a torn write is
+> > critical for working of atomic writes, I think it might make sense to
+> > leave it at 20. If we feel this is a very high value, we can perhaps
+> > remove -g auto and keep -g stress -g atomicwrites so only people who
+> > explicitly want to stress atomic writes will run it.
+> 
+> In that case we ought to limit the awu_max that we feed to the test
+> because otherwise it starts running a lot of IO.
+
+Yes I think that makes sense. Right now we get awu_max of 4M on xfs that
+means we always end up only testing software atomic writes.  Maybe we
+can instead cap awu_max at 64K or something. This way, we can test both
+hw atomic writes (when device supports it) and sw atomic writes (when it
+doesn't)
+
+Regards,
+ojaswin
+
+> 
+> --D
+> 
+> > > 
+> > > Cc: <fstests@vger.kernel.org> # v2025.10.20
+> > > Fixes: ca954527ff9d97 ("generic: Add sudden shutdown tests for multi block atomic writes")
+> > > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+> > > ---
+> > >  tests/generic/778 |   59 ++++++++++++++++++++++++++++++++++++-----------------
+> > >  1 file changed, 40 insertions(+), 19 deletions(-)
+> > > 
+> > > 
+> > > diff --git a/tests/generic/778 b/tests/generic/778
+> > > index 8cb1d8d4cad45d..7cfabc3a47a521 100755
+> > > --- a/tests/generic/778
+> > > +++ b/tests/generic/778
+> > > @@ -42,22 +42,28 @@ atomic_write_loop() {
+> > >  		# Due to sudden shutdown this can produce errors so just
+> > >  		# redirect them to seqres.full
+> > >  		$XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $size $off $size" >> /dev/null 2>>$seqres.full
+> > > -		echo "Written to offset: $off" >> $tmp.aw
+> > > -		off=$((off + $size))
+> > > +		echo "Written to offset: $((off + size))" >> $tmp.aw
+> > > +		off=$((off + size))
+> > >  	done
+> > >  }
+> > >  
+> > >  start_atomic_write_and_shutdown() {
+> > >  	atomic_write_loop &
+> > >  	awloop_pid=$!
+> > > +	local max_loops=100
+> > >  
+> > >  	local i=0
+> > > -	# Wait for at least first write to be recorded or 10s
+> > > -	while [ ! -f "$tmp.aw" -a $i -le 50 ]; do i=$((i + 1)); sleep 0.2; done
+> > > +	# Wait for at least first write to be recorded or too much time passes
+> > > +	while [ ! -f "$tmp.aw" -a $i -le $max_loops ]; do
+> > > +		i=$((i + 1))
+> > > +		sleep 0.2
+> > > +	done
+> > >  
+> > > -	if [[ $i -gt 50 ]]
+> > > +	cat $tmp.aw >> $seqres.full
+> > > +
+> > > +	if [[ $i -gt $max_loops ]]
+> > >  	then
+> > > -		_fail "atomic write process took too long to start"
+> > > +		_notrun "atomic write process took too long to start"
+> > >  	fi
+> > >  
+> > >  	echo >> $seqres.full
+> > > @@ -113,21 +119,34 @@ create_mixed_mappings() {
+> > >  	local off=0
+> > >  	local operations=("W" "U")
+> > >  
+> > > +	test $size_bytes -eq 0 && return
+> > > +
+> > > +	# fallocate the whole file once because preallocating single blocks
+> > > +	# with individual xfs_io invocations is really slow and the allocator
+> > > +	# usually gives out consecutive blocks anyway
+> > > +	$XFS_IO_PROG -f -c "falloc 0 $size_bytes" $file
+> > > +
+> > > +	local cmds=()
+> > >  	for ((i=0; i<$((size_bytes / blksz )); i++)); do
+> > > -		index=$(($i % ${#operations[@]}))
+> > > -		map="${operations[$index]}"
+> > > +		if (( i % 2 == 0 )); then
+> > > +			cmds+=(-c "pwrite -b $blksz $off $blksz")
+> > > +		fi
+> > > +
+> > > +		# batch the write commands into larger xfs_io invocations to
+> > > +		# amortize the fork overhead
+> > > +		if [ "${#cmds[@]}" -ge 128 ]; then
+> > > +			$XFS_IO_PROG "${cmds[@]}" "$file" >> /dev/null
+> > > +			cmds=()
+> > > +		fi
+> > >  
+> > > -		case "$map" in
+> > > -		    "W")
+> > > -			$XFS_IO_PROG -fc "pwrite -b $blksz $off $blksz" $file  >> /dev/null
+> > > -			;;
+> > > -		    "U")
+> > > -			$XFS_IO_PROG -fc "falloc $off $blksz" $file >> /dev/null
+> > > -			;;
+> > > -		esac
+> > >  		off=$((off + blksz))
+> > >  	done
+> > >  
+> > > +	if [ "${#cmds[@]}" -gt 0 ]; then
+> > > +		$XFS_IO_PROG "${cmds[@]}" "$file" >> /dev/null
+> > > +		cmds=()
+> > > +	fi
+> > > +
+> > >  	sync $file
+> > >  }
+> > >  
+> > > @@ -336,9 +355,9 @@ echo >> $seqres.full
+> > >  echo "# Populating expected data buffers" >> $seqres.full
+> > >  populate_expected_data
+> > >  
+> > > -# Loop 20 times to shake out any races due to shutdown
+> > > -for ((iter=0; iter<20; iter++))
+> > > -do
+> > > +# Loop to shake out any races due to shutdown
+> > > +iter=0
+> > > +while _soak_loop_running $TIME_FACTOR; do
+> > >  	echo >> $seqres.full
+> > >  	echo "------ Iteration $iter ------" >> $seqres.full
+> > >  
+> > > @@ -361,6 +380,8 @@ do
+> > >  	echo >> $seqres.full
+> > >  	echo "# Starting shutdown torn write test for append atomic writes" >> $seqres.full
+> > >  	test_append_torn_write
+> > > +
+> > > +	iter=$((iter + 1))
+> > >  done
+> > >  
+> > >  echo "Silence is golden"
+> > > 
+> > 
 
