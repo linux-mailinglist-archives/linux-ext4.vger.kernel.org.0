@@ -1,272 +1,188 @@
-Return-Path: <linux-ext4+bounces-12091-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12092-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62713C94692
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 19:42:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBEEC94A6F
+	for <lists+linux-ext4@lfdr.de>; Sun, 30 Nov 2025 03:06:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 483894E180A
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Nov 2025 18:42:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E98D3A65E1
+	for <lists+linux-ext4@lfdr.de>; Sun, 30 Nov 2025 02:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3E524886E;
-	Sat, 29 Nov 2025 18:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A931E5714;
+	Sun, 30 Nov 2025 02:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZTlmn01d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dwEzFh18"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670D72459ED;
-	Sat, 29 Nov 2025 18:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2399017D6
+	for <linux-ext4@vger.kernel.org>; Sun, 30 Nov 2025 02:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764441731; cv=none; b=AN/WXJ9agUC9ssmFwg5O5M/jnKRkFvnTtQv7bgaIqNa6XWkwhB3dAxd5Hy1IB29+SI5eYEPOKsgaDifhM3TbmekW6z8Wner2joS2b0HXWDiV2+11MB2wTpGUlt61zrfkHpPUQ2X7P92FHUqWLWJsk1shubzUxNK+yFd+TcFUqkk=
+	t=1764468405; cv=none; b=YgUpShBwNZb1IcsoNRnaag76WZUGLRbdB4ZpKrPUs8l0gSXQhIWKasqvE0Mq4fzcfEGbtWp13D0jUAhk970Nwb9Dl0TUGzwcscQn03o5kyijJHyQVLImICK3lpvn8B+Mn9mwdXJaccn2uSccgis12WDejk70hXFGJf3p9r7G6vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764441731; c=relaxed/simple;
-	bh=v+V8/03RTax7Gno4hr3fhmSCKyT3N2ruKD8KekdsZxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pdMVMoCtJJhKf9a9mklFj5o9UHNjYZzGhqTS66QFnkuiOrkPpgCzVyrTtsjqKdiXZcJIOEvih9pc88aD94PqO1CCEWHxMczhKe9pnHfdNWnmbKpMOJ1tKfz21SENvDJXTs1KKCZZYeHotgFHSj+DpRWX8IhNOv3q7tk/GEQeid8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ZTlmn01d; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AT2uQUV021827;
-	Sat, 29 Nov 2025 18:41:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=DXUFpa
-	F6G4o6yt2etVBBgciPhN4r2Y9+zGIUHZe5hlg=; b=ZTlmn01dfmMEE3RkG4MfCP
-	JbrOkVGzdq+YbvMepPKycnnWsi+smV++u5zCuQ07SGkgyPxPa8bjemh/XAwTs1fO
-	d06+GQZeWKDEzY9y30UrH5NGsPsz3QK2pddj7dCyQR9KWjgeZFuKrIXiRQfM0BFX
-	dItTv3n0jqF799w4VoSCeAeMokTNm+lUax8ZPxTba774Og4Wzsxap2KYrLLSvNr3
-	8KD2oJiN0aCc4nKpG7z0oh6Iao3EeNwkI0b0z+BDs6jQWE5sxlH2pHKkcEQ9spk6
-	gSpcTxQJnYOc4wJgQsqo4XaNNmZwx1XtiXSr352OgvzM9e9gNxXhS05T90RXBX9A
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqrg51fds-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 29 Nov 2025 18:41:44 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5ATIfiib018608;
-	Sat, 29 Nov 2025 18:41:44 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqrg51fdq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 29 Nov 2025 18:41:44 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5ATEZkT1000861;
-	Sat, 29 Nov 2025 18:41:43 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4akqvyj601-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 29 Nov 2025 18:41:43 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5ATIffhT24445206
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 29 Nov 2025 18:41:41 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A089020040;
-	Sat, 29 Nov 2025 18:41:41 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 347442004B;
-	Sat, 29 Nov 2025 18:41:39 +0000 (GMT)
-Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.29.41])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Sat, 29 Nov 2025 18:41:39 +0000 (GMT)
-Date: Sun, 30 Nov 2025 00:11:36 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Andreas Dilger <adilger@dilger.ca>
-Cc: Jan Kara <jack@suse.cz>, Zhang Yi <yi.zhang@huaweicloud.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tytso@mit.edu, yi.zhang@huawei.com,
-        yizhang089@gmail.com, libaokun1@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v2 03/13] ext4: don't zero the entire extent if
- EXT4_EXT_DATA_PARTIAL_VALID1
-Message-ID: <aSs-YExXqLQ0k49M@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-References: <20251121060811.1685783-1-yi.zhang@huaweicloud.com>
- <20251121060811.1685783-4-yi.zhang@huaweicloud.com>
- <yro4hwpttmy6e2zspvwjfdbpej6qvhlqjvlr5kp3nwffqgcnfd@z6qual55zhfq>
- <aSlPFohdm8IfB7r7@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <i3voptrv4rm3q3by7gksrgmgy2n5flchuveugjll5cchustm4z@qvixahynpize>
- <DDB4CC13-C509-478E-81C3-F37240016A69@dilger.ca>
+	s=arc-20240116; t=1764468405; c=relaxed/simple;
+	bh=pbj+rRLfLR8bW1T20lBIAoyi5CAdOA3DkKJMLqQv55g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TO0qZ3txbT8MHmmCVZ5VSm0JABA6pCYwrOYv21RD1TTlvuSFZ+apExDMkqnbDVx1ALfP3shf3QGvkaovsIVML/k8KSRZBKDMGloChT1klyH+hZVkuKEVvdh8AMWiSXDhVi+qkyeTO4gK31ZjpBI35zm4m2ZMd+HbqWt38QRJIqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dwEzFh18; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-78a712cfbc0so30164707b3.1
+        for <linux-ext4@vger.kernel.org>; Sat, 29 Nov 2025 18:06:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764468403; x=1765073203; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ipl5emlqkpqZxw8JYKKulTN6SGyULg2ei+Ak+Y1p1dw=;
+        b=dwEzFh18eZNkP/b8GsRcYToJr6EjjT/qduLhPazHcCY5na9vLHBm6ua0HLi8Lviu/Y
+         LSfuejd+vFEU5JWtF++I8HP3aH2Kd6eL8x2Yqo2vZ2XGO9PWdHO0spmAcMV4E9F81aJo
+         S8ZpZTp1sCcv19LHNgh+FmsluuKpX+DOnKscyrN6AFu20UQUk/2SDPpltTYLB0jKnQAg
+         NMlJzJq3w1xCRVckndRORFKiHfq/bSEx7BRC0HjA1D+ARHJmK6+vP6h3MEicni/QK5sz
+         jlOK8slG582ZyFfipizotM7f4Ppw7z9xzhDytdVPM6FhttNAbsDDhUaUUanEFmMSIWCH
+         twPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764468403; x=1765073203;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ipl5emlqkpqZxw8JYKKulTN6SGyULg2ei+Ak+Y1p1dw=;
+        b=IaRJok4AkwfwC7Pg/KyVmLF+oPh875iUs6damUKJIMz26RNaIrGlDGvDLpEhUrRdn4
+         Zarm4OutYTSuHbpjyVZigAlQI0R+gW8X59kPObin4T2uE5wDY2JwRkSnBn+ZZ/DKERuM
+         GM+QOC2yd0ZcFoF3R3Io0qgayPW7xH45uv47GhaK41gtOU3LNNKjOaEiQL5ZjMdn2ALP
+         PHY/cCRLjEVXF9CFgFjdfCjp/i16uRa2+0BuL09iEamthrakM0hE/kvP8/OIvTDMarHB
+         kTN4ykSpcEMpK5JEWQLUrZbBCfZPjj7Fe0J4yQKkmGQBEcN8P4QOsjumeCvPcpoD3djZ
+         sBLQ==
+X-Gm-Message-State: AOJu0YxUIe2YA2D0OhqP4vpFMfUGlRtgp+GJzQhGhHnivFfGurLKdc1C
+	XWtKDpY7mpq9mWl0TTOl0HNz7PPuUqicdPNbq/SOFO6hGCn6Rb8CRAGy6rQZfJiA4IQCbf6afu1
+	LhmtHkArEDGcfmolA2ks+6w2Xx6w4zlo=
+X-Gm-Gg: ASbGncvhYsGBOSXg+J/TVs5raiauM23nPGlTUi0egtJrT4yLiixMGqrb7P8LTEebwL2
+	GW9SgfrJaS3dwYLagvPA1SkL7XBIg7Mnjju2muy2zBJpp+Hvmv2cxnKVEAxOL7WZF+vO/a0mYv+
+	Eebi4zMcMhWjQLKVzlXBBjNTVQjPyo56FNy3JSAthM86v0LlolFrL96WdtIsmhrnzJkdyabqc+q
+	wbJaQnjqp8m1+j9HjpGUHjJWgBQ/q8G1+I3gW7E9MK08nWBDxw2hRiQhjW9rAt/B4o0kxfxaL1Z
+	r1NPI3f8j5MoCUSPKiKPTnVBVIxk
+X-Google-Smtp-Source: AGHT+IEH1uX6WMU3kUH4mvlsuglEM5Qc8G72cEUvjOHSdtouc9feaY1P/YZYxCsf4xCq9E/fOJAnEDARngRQGbdWZfE=
+X-Received: by 2002:a05:690c:7448:b0:783:6f68:2a05 with SMTP id
+ 00721157ae682-78a8b47ad1cmr288567987b3.14.1764468403033; Sat, 29 Nov 2025
+ 18:06:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DDB4CC13-C509-478E-81C3-F37240016A69@dilger.ca>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5_ZbgcuVYMdjWIFU1OS3T9vb1o6XwJM4
-X-Authority-Analysis: v=2.4 cv=Ir0Tsb/g c=1 sm=1 tr=0 ts=692b3e69 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=D-dcYy2LwJFk0zEjfIsA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTI5MDAyMCBTYWx0ZWRfX2MIgFBtYcepg
- h+Q51zkH24dJFG4mQ6cl7QKATSdqTPDKoPzaPZEEysBlvEaf5EW+OXHO8pw26ezMJS5vQo+U9bT
- W1ngkvXnvLs74Bzvhjgx76PtSV0u9DqTptMHcdbr7sCEpLj//jOVo2jzDTd3ZyC3KFxn/bfhdbg
- /TmWeJ5U//nPCyZCMItbwDf47Vu1RXL8jHIZeCLgglhENequ5XTu42x3ZmvQDCJQFDuiwpYt4l7
- ELDQs5TZqRPy41r4X5oA0jFjME0ZUSbOVQgOBqJY8gWwpxLMgTEmpbjNL7bg2oN3QK8vkBNdTTo
- DXFyi9f8FC7RrFnMYjKKTUXV61+2dKW5UcgkFeRr3Kcv22E5CHc5a+mxlUKq0GOATAe9PwkpalW
- ZEAGYTSzH+zyglWKHxEgvavYnm2eqg==
-X-Proofpoint-GUID: bcWkEPtvpD1VZDpPaQEA-IuX2HPDgNWj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-28_08,2025-11-27_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 adultscore=0 impostorscore=0 clxscore=1011 priorityscore=1501
- bulkscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511290020
+References: <20251122015742.362444-1-kartikey406@gmail.com>
+In-Reply-To: <20251122015742.362444-1-kartikey406@gmail.com>
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+Date: Sun, 30 Nov 2025 07:36:31 +0530
+X-Gm-Features: AWmQ_bmLke6W5ZUTStGQRzS150c6VYFmzdOFM_3eNZDz4w7fUGtSvxo4eyNSNDE
+Message-ID: <CADhLXY5k9nmFGRLLxguWB9sQ4_B6-Cxu=xHs71c5kCEyj49Vuw@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: check folio uptodate state in ext4_page_mkwrite()
+To: tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 28, 2025 at 12:52:30PM -0700, Andreas Dilger wrote:
-> 
-> 
-> > On Nov 28, 2025, at 4:14 AM, Jan Kara <jack@suse.cz> wrote:
-> > 
-> > On Fri 28-11-25 12:58:22, Ojaswin Mujoo wrote:
-> >> On Thu, Nov 27, 2025 at 02:41:52PM +0100, Jan Kara wrote:
-> >>> Good catch on the data exposure issue! First I'd like to discuss whether
-> >>> there isn't a way to fix these problems in a way that doesn't make the
-> >>> already complex code even more complex. My observation is that
-> >>> EXT4_EXT_MAY_ZEROOUT is only set in ext4_ext_convert_to_initialized() and
-> >>> in ext4_split_convert_extents() which both call ext4_split_extent(). The
-> >>> actual extent zeroing happens in ext4_split_extent_at() and in
-> >>> ext4_ext_convert_to_initialized(). I think the code would be much clearer
-> >>> if we just centralized all the zeroing in ext4_split_extent(). At that
-> >>> place the situation is actually pretty simple:
-> >> 
-> >> This is exactly what I was playing with in my local tree to refactor this
-> >> particular part of code :). I agree that ext4_split_extent() is a much
-> >> better place to do the zeroout and it looks much cleaner but I agree
-> >> with Yi that it might be better to do it after fixing the stale
-> >> exposures so backports are straight forward. 
-> >> 
-> >> Am I correct in understanding that you are suggesting to zeroout
-> >> proactively if we are below max_zeroout before even trying to extent
-> >> split (which seems be done in ext4_ext_convert_to_initialized() as well)?
-> > 
-> > Yes. I was suggesting to effectively keep the behavior from
-> > ext4_ext_convert_to_initialized().
-> > 
-> >> In this case, I have 2 concerns:
-> >> 
-> >>> 
-> >>> 1) 'ex' is unwritten, 'map' describes part with already written data which
-> >>> we want to convert to initialized (generally IO completion situation) => we
-> >>> can zero out boundaries if they are smaller than max_zeroout or if extent
-> >>> split fails.
-> >> 
-> >> Firstly, I know you mentioned in another email that zeroout of small ranges
-> >> gives us a performance win but is it really faster on average than
-> >> extent manipulation?
-> > 
-> > I guess it depends on the storage and the details of the extent tree. But
-> > it definitely does help in cases like when you have large unwritten extent
-> > and then start writing randomly 4k blocks into it because this zeroout
-> > logic effectively limits the fragmentation of the extent tree. Overall
-> > sequentially writing a few blocks more of zeros is very cheap practically
-> > with any storage while fragmenting the extent tree becomes expensive rather
-> > quickly (you generally get deeper extent tree due to smaller extents etc.).
-> 
-> The zeroout logic is not primarily an issue with the extent tree complexity.
-> I agree with Ojaswin that in the common case the extent split would not
-> cause a new index block to be written, though it can become unwieldy in the
-> extreme case.
-> 
-> As Jan wrote, the main performance win is to avoid writing a bunch of
-> small discontiguous blocks.  For HDD *and* flash, the overhead of writing
-> several separate small blocks is much higher than writing a single 32KiB
-> or 64KiB block to the storage.  Multiple separate blocks means more items
-> in the queue and submitted to storage, separate seeks on an HDD and/or read-
-> modify-write on a RAID controller, or erase blocks on a flash device.
+On Sat, Nov 22, 2025 at 7:27=E2=80=AFAM Deepanshu Kartikey
+<kartikey406@gmail.com> wrote:
+>
+> When delayed block allocation fails due to filesystem corruption,
+> ext4's writeback error handling invalidates affected folios by calling
+> mpage_release_unused_pages() with invalidate=3Dtrue, which explicitly
+> clears the uptodate flag:
+>
+>     static void mpage_release_unused_pages(..., bool invalidate)
+>     {
+>         ...
+>         if (invalidate) {
+>             block_invalidate_folio(folio, 0, folio_size(folio));
+>             folio_clear_uptodate(folio);
+>         }
+>     }
+>
+> If ext4_page_mkwrite() is subsequently called on such a non-uptodate
+> folio, it can proceed to mark the folio dirty without checking its
+> state. This triggers a warning in __folio_mark_dirty():
+>
+>     WARNING: CPU: 0 PID: 5 at mm/page-writeback.c:2960
+>     __folio_mark_dirty+0x578/0x880
+>
+>     Call Trace:
+>      fault_dirty_shared_page+0x16e/0x2d0
+>      do_wp_page+0x38b/0xd20
+>      handle_pte_fault+0x1da/0x450
+>      __handle_mm_fault+0x652/0x13b0
+>      handle_mm_fault+0x22a/0x6f0
+>      do_user_addr_fault+0x200/0x8a0
+>      exc_page_fault+0x81/0x1b0
+>
+> This scenario occurs when:
+> 1. A write with delayed allocation marks a folio dirty (uptodate=3D1)
+> 2. Writeback attempts block allocation but detects filesystem corruption
+> 3. Error handling calls mpage_release_unused_pages(invalidate=3Dtrue),
+>    which clears the uptodate flag via folio_clear_uptodate()
+> 4. A subsequent ftruncate() triggers ext4_truncate()
+> 5. ext4_block_truncate_page() attempts to zero the page tail
+> 6. This triggers a write fault on the mmap'd page
+> 7. ext4_page_mkwrite() is called with the non-uptodate folio
+> 8. Without checking uptodate, it proceeds to mark the folio dirty
+> 9. __folio_mark_dirty() triggers: WARN_ON_ONCE(!folio_test_uptodate())
+>
+> Fix this by checking folio_test_uptodate() early in ext4_page_mkwrite()
+> and returning VM_FAULT_SIGBUS if the folio is not uptodate. This prevents
+> attempting to write to invalidated folios and properly signals the error
+> to userspace.
+>
+> The check is placed early, before the delalloc/journal/normal code paths,
+> as none of these paths should proceed with a non-uptodate folio.
+>
+> Reported-by: syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com
+> Tested-by: syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3Db0a0670332b6b3230a0a
+> Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
+> ---
+>  fs/ext4/inode.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index e99306a8f47c..18a029362c1f 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -6688,6 +6688,14 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>         if (err)
+>                 goto out_ret;
+>
+> +       folio_lock(folio);
+> +       if (!folio_test_uptodate(folio)) {
+> +               folio_unlock(folio);
+> +               ret =3D VM_FAULT_SIGBUS;
+> +               goto out;
+> +       }
+> +       folio_unlock(folio);
+> +
+>         /*
+>          * On data journalling we skip straight to the transaction handle=
+:
+>          * there's no delalloc; page truncated will be checked later; the
+> --
+> 2.43.0
+>
 
-Okay makes sense, so basically zeroout helps in the long run by reducing
-fragmentation.
+Hi Ted and ext4 maintainers,
 
-> 
-> It also defers the conversion of those unwritten extents to a later time,
-> when they would need to be processed again anyway if the blocks were written.
-> 
-> I was also considering whether the unwritten blocks would save on reads,
-> but I suspect that would not be the case either.  Doing sequential reads
-> would need to submit multiple small reads to the device and then zeroout
-> the unwritten blocks instead of a single 32KiB or 64KiB read (which is
-> basically free once the request is processed.
-> 
-> > 
-> >> For example, for case 1 where both zeroout and splitting need
-> >> journalling, I understand that splitting has high journal overhead in
-> >> worst case, where tree might grow, but more often than not we would be
-> >> manipulating within the same leaf so journalling only 1 bh (same as
-> >> zeroout). In which case seems like zeroout might be slower no matter
-> >> how fast the IO can be done. So proactive zeroout might be for beneficial
-> >> for case 3 than case 1.
-> > 
-> > I agree that initially while the split extents still fit into the same leaf
-> > block, zero out is likely to be somewhat slower but over the longer term
-> > the gains from less extent fragmentation win.
-> 
-> I doubt that writing a single contiguous 32KiB chunk is ever going to be
-> slower than writing 2 or 3 separate 4KiB chunks to the storage.  _Maybe_
-> if it was NVRAM, but I don't think that would be the common case?
-> 
-> >>> 2) 'ex' is unwritten, 'map' describes part we are preparing for write (IO
-> >>> submission) => the split is opportunistic here, if we cannot split due to
-> >>> ENOSPC, just go on and deal with it at IO completion time. No zeroing
-> >>> needed.
-> >>> 
-> >>> 3) 'ex' is written, 'map' describes part that should be converted to
-> >>> unwritten => we can zero out the 'map' part if smaller than max_zeroout or
-> >>> if extent split fails.
-> >> 
-> >> Proactive zeroout before trying split does seem benficial to help us
-> >> avoid journal overhead for split. However, judging from
-> >> ext4_ext_convert_to_initialized(), max zeroout comes from
-> >> sbi->s_extent_max_zeroout_kb which is hardcoded to 32 irrespective of
-> >> the IO device, so that means theres a chance a zeroout might be pretty
-> >> slow if say we are doing it on a device than doesn't support accelerated
-> >> zeroout operations. Maybe we need to be more intelligent in setting
-> >> s_extent_max_zeroout_kb?
-> > 
-> > You can also tune the value in sysfs. I'm not 100% sure how the kernel
-> > could do a better guess. Also I think 32k works mostly because it is small
-> > enough to be cheap to write but already large enough to noticeably reduce
-> > fragmentation for some pathological workloads (you can easily get 1/4 of
-> > the extents than without this logic). But I'm open to ideas if you have
-> > some.
-> 
-> Aligning this size with the flash erase block size might be a win?
-> It may be that 32KiB is still large enough today (I've heard of 16KiB
-> sector flash devices arriving soon, and IIRC 64KiB sectors are the
-> norm for HDDs if anyone still cares).  Having this tuned automatically
-> by the physical device characteristics (like max(32KiB, sector size) or
-> similar if the flash erase block size is available somehow in the kernel)
-> would future proof this as device sizes continue to grow.
+I wanted to follow up on this patch submitted a week ago. This fixes
+a syzbot-reported WARNING in __folio_mark_dirty() that occurs when
+ext4_page_mkwrite() is called with a non-uptodate folio after delayed
+allocation writeback failure.
 
-okay so do you think it makes sense to consider the
-max_write_zeroes_sectors() value of the underlying device. Enterprise
-NVMEs and SCSI disks can utilize WRITE_ZEROES or WRITE_SAME which can
-allow us to potentially zeroout much larger ranges with minimal overhead
-of data movement. Maybe we can leverage these to zeroout more
-aggressively without much of a performance penalty.
+Please let me know if there's any feedback or if I should make any
+changes.
 
-Let me try to see if i can find a disk and try a POC for this.
-
-Regards,
-ojaswin
-
-> 
-> 
-> Cheers, Andreas
-> 
-> 
-> 
-> 
-> 
+Thanks,
+Deepanshu
 
