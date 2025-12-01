@@ -1,260 +1,332 @@
-Return-Path: <linux-ext4+bounces-12111-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12112-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30DC1C992A2
-	for <lists+linux-ext4@lfdr.de>; Mon, 01 Dec 2025 22:24:45 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BE55C997F7
+	for <lists+linux-ext4@lfdr.de>; Tue, 02 Dec 2025 00:01:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DDB784E2145
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Dec 2025 21:24:43 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0053134233D
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Dec 2025 23:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1602127B34D;
-	Mon,  1 Dec 2025 21:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B3C2BE05F;
+	Mon,  1 Dec 2025 22:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KENSntoO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e4W7FtYK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6C32773D9
-	for <linux-ext4@vger.kernel.org>; Mon,  1 Dec 2025 21:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D86292B4B;
+	Mon,  1 Dec 2025 22:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764624280; cv=none; b=H2+MLnmkDMcr5NbBjUEvH/D2QW+GBewgct9Jgt2uImw/s+CizTME9iHTwQDiUJzDzbc+M6VqFwO6WSV6bg0GGDDtXaEv3fOR5yjt1NocevtM3pCeBoL/qv2oInznWjH52u4IC+O/AlbfJTAUPFPJXg5qmVf37di3v6x9G/nydwA=
+	t=1764629965; cv=none; b=eGLpHj0DDZSzjrnbDHiPJDcJ8ZF372ABBgbaBO4HdG+rMqLQxOxjxxb0d4g08lgMBntKaniDUfZvNQCdB5wMfgSotLmaYQPSOuPvB/lqzPA0M2yHK0IFU9BvcGh5LNdH+Hn5WHkmNBeMXmXz6XZ1OWeiE0QfaFFLZCXhyX66mvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764624280; c=relaxed/simple;
-	bh=2C6mHWw/PUMi48RRknGDZvul8GB+veOXInnvu7koXEQ=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=fZfq50td8BSpsCUN1kzorfDHpUFrzfTJieZK2ZKS8r56qbCAil9aKy8GjEKttwXcWqGRVbs8b8SN3N6U+zXH3lpaSnmIiEKGg1qCmz63EZyw6UFLe9L0PfjJGjQ8I3HYR3kZllHEqOlNYvTjQWIW7mabgbun70z0F0glZSISMjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KENSntoO; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1764624278; x=1796160278;
-  h=date:from:to:cc:subject:message-id;
-  bh=2C6mHWw/PUMi48RRknGDZvul8GB+veOXInnvu7koXEQ=;
-  b=KENSntoO7hCUnLDbbeTqkrshymteWRBR+RZhcSKuX8MOnoV9sFDLk6Mz
-   ue744WX69DIY8r7TneEN5g0UPWgcFHZuShpQ3KuV9zlNl2Jrr0InBazto
-   UXT+75YebpSnUhKSvUQC999Z6MV99X9SSg+kwORull+FQY9vGWtp+Irjq
-   4cdjlaYpGS1y+JVdx3MA8OoqO18lGuqQuz2qWlUF7K5PATPoVn6Lx+OSm
-   lASaSy/MUP5NpNSd9+BkYNBdYCRTsVa1+5Pu3iGLlvyIiPgusNymfLR4W
-   PaMBZSH977hSvZ8raXxulCEoLdkOWItXGqnNqnuPtOdN+AEm+ALg0Yt5Z
-   A==;
-X-CSE-ConnectionGUID: Le+6jxNJS463k3Liz7ranQ==
-X-CSE-MsgGUID: eCJ5jMJqQ6u4WypFg2joOw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11630"; a="70436158"
-X-IronPort-AV: E=Sophos;i="6.20,241,1758610800"; 
-   d="scan'208";a="70436158"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2025 13:24:38 -0800
-X-CSE-ConnectionGUID: ofR7oR4lSEi0+wiuvyUr3A==
-X-CSE-MsgGUID: kZ1vguJ3SCOvXOQYC//KaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.20,241,1758610800"; 
-   d="scan'208";a="231492329"
-Received: from lkp-server01.sh.intel.com (HELO 4664bbef4914) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 01 Dec 2025 13:24:37 -0800
-Received: from kbuild by 4664bbef4914 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vQBNq-0000000099t-1iOZ;
-	Mon, 01 Dec 2025 21:24:34 +0000
-Date: Tue, 02 Dec 2025 05:23:38 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:test] BUILD SUCCESS
- 78fd3495ca503125d64c20e8708d23c451e7ff77
-Message-ID: <202512020532.9mZ6kWQu-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1764629965; c=relaxed/simple;
+	bh=kuXP4O/MyRwYbglg8oo+/Dmlqqm22FmToSbOO1/POMI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fEBJeF/1HJfrH4EEVpQvhEQH2twqGuRr7EASkv3s0/yC0V2t9mfX6mYfZ1bfF7JXH7tUMtmoxj/rE9YAav4G/EGnYy4boDqcg6AZQtcY1NkbjdvLEBa4Ii53UE+ZhsrckInG+Z5lg/mdgaNC478qLbOwk3Hv1KGO9z4p2n/QEVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e4W7FtYK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56370C4CEF1;
+	Mon,  1 Dec 2025 22:59:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764629965;
+	bh=kuXP4O/MyRwYbglg8oo+/Dmlqqm22FmToSbOO1/POMI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e4W7FtYKYSbM7oAVBIgHtRfIJaGzVwtN94Lzps9MPw9QduxFjMFXtpcLcvS8EfzOA
+	 UQBH2TRaAxRfrXMoRE7/XOhwlgf9Ie27Q7HZbGMIlEorCEiCdSnbefvMToKfPa+Sxs
+	 FRF5dJ1hEez3jDahaBtiYY3lmbh2Cu4JrklN8YCD5tKEOkqeL2BLOQ8MupC3EL3tFt
+	 S/zqLiF6Oy24498hogBSsOaaIo6Qop4g6ra25hgxqKcD+6aSsa8PctMY5Xn6LbTOKB
+	 ltKn8Ql/ARQfO73RPjqwN36Jx/bK0H9N5HvhtGXMZ1Fma565fciIXj14Xaw+FRrXl+
+	 vhfy+ChsrYjkg==
+Date: Mon, 1 Dec 2025 14:59:24 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Su Yue <glass.su@suse.com>
+Cc: fstests@vger.kernel.org, l@damenly.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] generic: use _qmount_option and _qmount
+Message-ID: <20251201225924.GA89454@frogsfrogsfrogs>
+References: <20251124132004.23965-1-glass.su@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251124132004.23965-1-glass.su@suse.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git test
-branch HEAD: 78fd3495ca503125d64c20e8708d23c451e7ff77  Merge branch 'fs-next' of ../linux into test
+On Mon, Nov 24, 2025 at 09:20:04PM +0800, Su Yue wrote:
+> Many generic tests call `_scratch_mount -o usrquota` then
+> chmod 777, quotacheck and quotaon.
 
-elapsed time: 1107m
+What does the chmod 777 do, in relation to the quota{check,on} programs?
+Is it necessary for the root dir to be world writable (and executable!)
+for quota tools to work?
 
-configs tested: 167
-configs skipped: 2
+> It can be simpilfied to _qmount_option and _qmount. The later
+> function already calls quotacheck, quota and chmod.
+> 
+> Convertaions can save a few lines. tests/generic/380 is an exception
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+"Conversions" ?
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-alpha                               defconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                                 defconfig    gcc-15.1.0
-arc                   randconfig-001-20251201    gcc-13.4.0
-arc                   randconfig-002-20251201    gcc-13.4.0
-arm                               allnoconfig    clang-22
-arm                              allyesconfig    gcc-15.1.0
-arm                       aspeed_g4_defconfig    clang-22
-arm                                 defconfig    clang-22
-arm                   randconfig-001-20251201    clang-22
-arm                   randconfig-002-20251201    gcc-8.5.0
-arm                   randconfig-003-20251201    clang-20
-arm                   randconfig-004-20251201    gcc-15.1.0
-arm64                            alldefconfig    gcc-15.1.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.1.0
-arm64                               defconfig    gcc-15.1.0
-arm64                 randconfig-001-20251201    gcc-8.5.0
-arm64                 randconfig-002-20251201    clang-22
-arm64                 randconfig-003-20251201    clang-18
-arm64                 randconfig-004-20251201    gcc-14.3.0
-csky                             allmodconfig    gcc-15.1.0
-csky                              allnoconfig    gcc-15.1.0
-csky                                defconfig    gcc-15.1.0
-csky                  randconfig-001-20251201    gcc-15.1.0
-csky                  randconfig-002-20251201    gcc-14.3.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-22
-hexagon                             defconfig    clang-22
-hexagon               randconfig-001-20251201    clang-22
-hexagon               randconfig-002-20251201    clang-22
-i386                             allmodconfig    gcc-14
-i386                              allnoconfig    gcc-14
-i386                             allyesconfig    gcc-14
-i386        buildonly-randconfig-001-20251201    clang-20
-i386        buildonly-randconfig-002-20251201    clang-20
-i386        buildonly-randconfig-003-20251201    clang-20
-i386        buildonly-randconfig-004-20251201    clang-20
-i386        buildonly-randconfig-005-20251201    clang-20
-i386        buildonly-randconfig-006-20251201    gcc-14
-i386                                defconfig    clang-20
-i386                  randconfig-001-20251201    gcc-14
-i386                  randconfig-002-20251201    clang-20
-i386                  randconfig-003-20251201    clang-20
-i386                  randconfig-004-20251201    clang-20
-i386                  randconfig-005-20251201    gcc-14
-i386                  randconfig-006-20251201    gcc-14
-i386                  randconfig-007-20251201    clang-20
-i386                  randconfig-011-20251201    clang-20
-i386                  randconfig-012-20251201    gcc-14
-i386                  randconfig-013-20251201    clang-20
-i386                  randconfig-014-20251201    gcc-14
-i386                  randconfig-015-20251201    gcc-14
-i386                  randconfig-016-20251201    gcc-14
-i386                  randconfig-017-20251201    gcc-14
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-22
-loongarch                           defconfig    clang-19
-loongarch             randconfig-001-20251201    gcc-15.1.0
-loongarch             randconfig-002-20251201    clang-18
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                         apollo_defconfig    gcc-15.1.0
-m68k                                defconfig    gcc-15.1.0
-m68k                        m5307c3_defconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                             allmodconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-mips                             allyesconfig    gcc-15.1.0
-mips                        bcm47xx_defconfig    clang-18
-mips                           ci20_defconfig    clang-22
-nios2                            allmodconfig    gcc-11.5.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20251201    gcc-8.5.0
-nios2                 randconfig-002-20251201    gcc-8.5.0
-openrisc                         allmodconfig    gcc-15.1.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20251201    gcc-13.4.0
-parisc                randconfig-002-20251201    gcc-15.1.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                          allmodconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc               randconfig-001-20251201    gcc-13.4.0
-powerpc               randconfig-002-20251201    gcc-10.5.0
-powerpc                     tqm8548_defconfig    clang-22
-powerpc64             randconfig-001-20251201    gcc-14.3.0
-powerpc64             randconfig-002-20251201    gcc-13.4.0
-riscv                            allmodconfig    clang-22
-riscv                             allnoconfig    gcc-15.1.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-22
-riscv                 randconfig-001-20251201    clang-22
-riscv                 randconfig-002-20251201    gcc-8.5.0
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-22
-s390                             allyesconfig    gcc-15.1.0
-s390                                defconfig    clang-22
-s390                  randconfig-001-20251201    clang-22
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                         ap325rxa_defconfig    gcc-15.1.0
-sh                                  defconfig    gcc-15.1.0
-sh                    randconfig-001-20251201    gcc-12.5.0
-sh                    randconfig-002-20251201    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20251201    gcc-8.5.0
-sparc                 randconfig-002-20251201    gcc-14.3.0
-sparc64                          allmodconfig    clang-22
-sparc64                             defconfig    clang-20
-sparc64               randconfig-001-20251201    clang-22
-sparc64               randconfig-002-20251201    gcc-14.3.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-22
-um                               allyesconfig    gcc-14
-um                                  defconfig    clang-22
-um                             i386_defconfig    gcc-14
-um                    randconfig-001-20251201    gcc-14
-um                    randconfig-002-20251201    gcc-14
-um                           x86_64_defconfig    clang-22
-x86_64                           allmodconfig    clang-20
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20251201    clang-20
-x86_64      buildonly-randconfig-002-20251201    clang-20
-x86_64      buildonly-randconfig-003-20251201    gcc-14
-x86_64      buildonly-randconfig-004-20251201    gcc-14
-x86_64      buildonly-randconfig-005-20251201    gcc-14
-x86_64      buildonly-randconfig-006-20251201    gcc-12
-x86_64                              defconfig    gcc-14
-x86_64                randconfig-001-20251201    gcc-14
-x86_64                randconfig-002-20251201    clang-20
-x86_64                randconfig-003-20251201    clang-20
-x86_64                randconfig-004-20251201    clang-20
-x86_64                randconfig-005-20251201    clang-20
-x86_64                randconfig-006-20251201    clang-20
-x86_64                randconfig-011-20251201    clang-20
-x86_64                randconfig-012-20251201    gcc-14
-x86_64                randconfig-013-20251201    gcc-14
-x86_64                randconfig-014-20251201    gcc-14
-x86_64                randconfig-015-20251201    clang-20
-x86_64                randconfig-016-20251201    clang-20
-x86_64                randconfig-071-20251201    gcc-12
-x86_64                randconfig-072-20251201    gcc-14
-x86_64                randconfig-073-20251201    gcc-14
-x86_64                randconfig-074-20251201    gcc-14
-x86_64                randconfig-075-20251201    gcc-12
-x86_64                randconfig-076-20251201    clang-20
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                           allyesconfig    gcc-15.1.0
-xtensa                randconfig-001-20251201    gcc-9.5.0
-xtensa                randconfig-002-20251201    gcc-12.5.0
+--D
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> because it tests chown.
+> 
+> Signed-off-by: Su Yue <glass.su@suse.com>
+> ---
+>  tests/generic/082 |  9 ++-------
+>  tests/generic/219 | 11 ++++-------
+>  tests/generic/230 | 11 ++++++-----
+>  tests/generic/231 |  6 ++----
+>  tests/generic/232 |  6 ++----
+>  tests/generic/233 |  6 ++----
+>  tests/generic/234 |  5 ++---
+>  tests/generic/235 |  5 ++---
+>  tests/generic/244 |  1 -
+>  tests/generic/270 |  6 ++----
+>  tests/generic/280 |  5 ++---
+>  tests/generic/400 |  2 +-
+>  12 files changed, 27 insertions(+), 46 deletions(-)
+> 
+> diff --git a/tests/generic/082 b/tests/generic/082
+> index f078ef2ffff9..6bb9cf2a22ae 100755
+> --- a/tests/generic/082
+> +++ b/tests/generic/082
+> @@ -23,13 +23,8 @@ _require_scratch
+>  _require_quota
+>  
+>  _scratch_mkfs >>$seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -
+> -# xfs doesn't need these setups and quotacheck even fails on xfs, so just
+> -# redirect the output to $seqres.full for debug purpose and ignore the results,
+> -# as we check the quota status later anyway.
+> -quotacheck -ug $SCRATCH_MNT >>$seqres.full 2>&1
+> -quotaon $SCRATCH_MNT >>$seqres.full 2>&1
+> +_qmount_option 'usrquota,grpquota'
+> +_qmount "usrquota,grpquota"
+>  
+>  # first remount ro with a bad option, a failed remount ro should not disable
+>  # quota, but currently xfs doesn't fail in this case, the unknown option is
+> diff --git a/tests/generic/219 b/tests/generic/219
+> index 642823859886..a2eb0b20f408 100755
+> --- a/tests/generic/219
+> +++ b/tests/generic/219
+> @@ -91,25 +91,22 @@ test_accounting()
+>  
+>  _scratch_unmount 2>/dev/null
+>  _scratch_mkfs >> $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  _force_vfs_quota_testing $SCRATCH_MNT
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon $SCRATCH_MNT 2>/dev/null
+>  _scratch_unmount
+>  
+>  echo; echo "### test user accounting"
+> -export MOUNT_OPTIONS="-o usrquota"
+> +_qmount_option "usrquota"
+>  _qmount
+> -quotaon $SCRATCH_MNT 2>/dev/null
+>  type=u
+>  test_files
+>  test_accounting
+>  _scratch_unmount 2>/dev/null
+>  
+>  echo; echo "### test group accounting"
+> -export MOUNT_OPTIONS="-o grpquota"
+> +_qmount_option "grpquota"
+>  _qmount
+> -quotaon $SCRATCH_MNT 2>/dev/null
+>  type=g
+>  test_files
+>  test_accounting
+> diff --git a/tests/generic/230 b/tests/generic/230
+> index a8caf5a808c3..0a680dbc874b 100755
+> --- a/tests/generic/230
+> +++ b/tests/generic/230
+> @@ -99,7 +99,8 @@ grace=2
+>  _qmount_option 'defaults'
+>  
+>  _scratch_mkfs >> $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  _force_vfs_quota_testing $SCRATCH_MNT
+>  BLOCK_SIZE=$(_get_file_block_size $SCRATCH_MNT)
+>  quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> @@ -113,8 +114,8 @@ setquota -g -t $grace $grace $SCRATCH_MNT
+>  _scratch_unmount
+>  
+>  echo; echo "### test user limit enforcement"
+> -_scratch_mount "-o usrquota"
+> -quotaon $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota"
+> +_qmount
+>  type=u
+>  test_files
+>  test_enforcement
+> @@ -122,8 +123,8 @@ cleanup_files
+>  _scratch_unmount 2>/dev/null
+>  
+>  echo; echo "### test group limit enforcement"
+> -_scratch_mount "-o grpquota"
+> -quotaon $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "grpquota"
+> +_qmount
+>  type=g
+>  test_files
+>  test_enforcement
+> diff --git a/tests/generic/231 b/tests/generic/231
+> index ce7e62ea1886..02910523d0b5 100755
+> --- a/tests/generic/231
+> +++ b/tests/generic/231
+> @@ -47,10 +47,8 @@ _require_quota
+>  _require_user
+>  
+>  _scratch_mkfs >> $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -chmod 777 $SCRATCH_MNT
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  
+>  if ! _fsx 1; then
+>  	_scratch_unmount 2>/dev/null
+> diff --git a/tests/generic/232 b/tests/generic/232
+> index c903a5619045..21375809d299 100755
+> --- a/tests/generic/232
+> +++ b/tests/generic/232
+> @@ -44,10 +44,8 @@ _require_scratch
+>  _require_quota
+>  
+>  _scratch_mkfs > $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -chmod 777 $SCRATCH_MNT
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  
+>  _fsstress
+>  _check_quota_usage
+> diff --git a/tests/generic/233 b/tests/generic/233
+> index 3fc1b63abb24..4606f3bde2ab 100755
+> --- a/tests/generic/233
+> +++ b/tests/generic/233
+> @@ -59,10 +59,8 @@ _require_quota
+>  _require_user
+>  
+>  _scratch_mkfs > $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -chmod 777 $SCRATCH_MNT
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  setquota -u $qa_user 32000 32000 1000 1000 $SCRATCH_MNT 2>/dev/null
+>  
+>  _fsstress
+> diff --git a/tests/generic/234 b/tests/generic/234
+> index 4b25fc6507cc..2c596492a3e0 100755
+> --- a/tests/generic/234
+> +++ b/tests/generic/234
+> @@ -66,9 +66,8 @@ _require_quota
+>  
+>  
+>  _scratch_mkfs >> $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  test_setting
+>  _scratch_unmount
+>  
+> diff --git a/tests/generic/235 b/tests/generic/235
+> index 037c29e806db..7a616650fc8f 100755
+> --- a/tests/generic/235
+> +++ b/tests/generic/235
+> @@ -25,9 +25,8 @@ do_repquota()
+>  
+>  
+>  _scratch_mkfs >> $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  
+>  touch $SCRATCH_MNT/testfile
+>  chown $qa_user:$qa_user $SCRATCH_MNT/testfile
+> diff --git a/tests/generic/244 b/tests/generic/244
+> index b68035129c82..989bb4f5385e 100755
+> --- a/tests/generic/244
+> +++ b/tests/generic/244
+> @@ -66,7 +66,6 @@ done
+>  # remount just for kicks, make sure we get it off disk
+>  _scratch_unmount
+>  _qmount
+> -quotaon $SCRATCH_MNT 2>/dev/null
+>  
+>  # Read them back by iterating based on quotas returned.
+>  # This should match what we set, even if we don't directly
+> diff --git a/tests/generic/270 b/tests/generic/270
+> index c3d5127a0b51..9ac829a7379f 100755
+> --- a/tests/generic/270
+> +++ b/tests/generic/270
+> @@ -62,10 +62,8 @@ _require_command "$SETCAP_PROG" setcap
+>  _require_attrs security
+>  
+>  _scratch_mkfs_sized $((512 * 1024 * 1024)) >> $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -chmod 777 $SCRATCH_MNT
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  
+>  if ! _workout; then
+>  	_scratch_unmount 2>/dev/null
+> diff --git a/tests/generic/280 b/tests/generic/280
+> index 3108fd23fb70..fae0a02145cf 100755
+> --- a/tests/generic/280
+> +++ b/tests/generic/280
+> @@ -34,9 +34,8 @@ _require_freeze
+>  
+>  _scratch_unmount 2>/dev/null
+>  _scratch_mkfs >> $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  xfs_freeze -f $SCRATCH_MNT
+>  setquota -u root 1 2 3 4 $SCRATCH_MNT &
+>  pid=$!
+> diff --git a/tests/generic/400 b/tests/generic/400
+> index 77970da69a41..ef27c254167c 100755
+> --- a/tests/generic/400
+> +++ b/tests/generic/400
+> @@ -22,7 +22,7 @@ _require_scratch
+>  
+>  _scratch_mkfs >> $seqres.full 2>&1
+>  
+> -MOUNT_OPTIONS="-o usrquota,grpquota"
+> +_qmount_option "usrquota,grpquota"
+>  _qmount
+>  _require_getnextquota
+>  
+> -- 
+> 2.48.1
+> 
+> 
 
