@@ -1,281 +1,118 @@
-Return-Path: <linux-ext4+bounces-12114-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12115-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C059C99921
-	for <lists+linux-ext4@lfdr.de>; Tue, 02 Dec 2025 00:19:14 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84830C9995A
+	for <lists+linux-ext4@lfdr.de>; Tue, 02 Dec 2025 00:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4FC93A4C21
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Dec 2025 23:19:12 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 40F67345E0F
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Dec 2025 23:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002B12405EC;
-	Mon,  1 Dec 2025 23:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F1129D281;
+	Mon,  1 Dec 2025 23:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N45ei3VV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gtsnt20a"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA6A1EC018;
-	Mon,  1 Dec 2025 23:19:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC2829C343;
+	Mon,  1 Dec 2025 23:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764631149; cv=none; b=AoozK+FdbSMP48yr1MkIGdR0l/3PRC520m68rPTgLLFeAKwmKZ+QAFLcxcUlTJdNJ2vAPW6GToSjnCUs/fo/A7QPnMyyTvbOo/Yq5/Hr4tiBI0CXaXsU2KXU9ngbDUYeRgKa6Efh7gPL3qZZ6/7IIK+Lhuj5KQqp7ZuwRCZMs7Y=
+	t=1764631553; cv=none; b=VxMU1J9Bsjt/6FVW+2ciANAQ5XY3vD1r6fr8uoObTOydW4JtSP2+vL86ar2hgHpkOArC+7G9BiZ1XhoxPz6DBjFtRaaNatSVQsE+NmxoN96WtV0SIgVACi4ytPN4+XosIotR8CAe33mXf2wodOKRl8VhUmmVVQwk/aO7Nh+dngE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764631149; c=relaxed/simple;
-	bh=dtMrUXNxRCHnOITTxiySAUQ4R7CMv6ajZWrI69zuxKQ=;
+	s=arc-20240116; t=1764631553; c=relaxed/simple;
+	bh=xGkROoIvoUcJWUknA264dG6FlmozswxekDwDGbxLWJg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O5cEbmH45DyDbfVpaBoZZMwsNW2iCXTLJ82tAnkL9YZuTS8wvxfejbdXvddISgJ87Lkr88FVzsfV2T3RR7baUUJQuvvorX8GuJzety1A631eDJXbTyb+NKUyjqDYN+nRAQcYqGQN8BYR1hp3i6YkJXN/Q3uQPgV+PHFgb7ITjQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N45ei3VV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13285C4CEF1;
-	Mon,  1 Dec 2025 23:19:09 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=j1Lk+65ZFmU9/+8KjvAMNe6FatD3fja3AhHNfb/nNfpoXaTObqaSr3z6J/esGhzaBT35HI2o3NcH+sEniUzK+te3usH0GHQAyYcFoMF19Ad6aggHNklKdN1ChSk1k+MsJ6vy6kTMgyyUXqOSS5bh1WSebgIxcd9WbTtqZI7cCyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gtsnt20a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46FDEC4CEF1;
+	Mon,  1 Dec 2025 23:25:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764631149;
-	bh=dtMrUXNxRCHnOITTxiySAUQ4R7CMv6ajZWrI69zuxKQ=;
+	s=k20201202; t=1764631553;
+	bh=xGkROoIvoUcJWUknA264dG6FlmozswxekDwDGbxLWJg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=N45ei3VVbXn2412SjbYZP0y+VVvT5akCYQz7w8f/EE9FqI46hsx6UNTqQrw1Ls9oA
-	 /8HwZrf7+fhu0H+jaP0gZnlPx0Vk7v9hFkDsjtBOQgDrWneHdylU5isviVXDwHjw2f
-	 AYLoJjwubViPvxO58KVz6+JeWXBdMbyUtYDYNNih74d+3Di6tyIA2u5gz5cwqKvY3O
-	 ICpasnlngdOdHE9TA3Xrssk1BWjRB4WdT//HoaIMC8Dg3jH/rAIqoSMlHQqAtxdgOa
-	 UMk062scgBdyZw4TDetVlRhu3R3wFfcLGHqlv71b5g1sHzYUafqhmHfwu73Cl2Oksw
-	 xSma95NqudMAg==
-Date: Mon, 1 Dec 2025 15:19:08 -0800
+	b=Gtsnt20a4uTHdyFHBCwsW8q8+HV1Uy2jSROfwK9FOxrdv49KqwtEyxpPl0L6MeTF9
+	 S41PxS3AJvv06gnnTs7aHCWU9Wz9r3NhPuC3FlWo7UW7+kxMS974Lsccj5pGJClMSa
+	 DqElBYqy9sGkxxckrLUYtZ+V0/HHe0hBtTw3SBPvW1rtvSKxsFG9en0VCCEJPKN5W0
+	 K089JoqGXtqMUeesiz+h1ONJBdEXzQcDPeohopKRFdQOGyVdgQuce+sX0jO7gBWYMK
+	 tzFZRsPUKR2mA2DItjWYCcmSdjBFNRDSX3hL6CuJT6AfZs8ZOfzZE4VE0EXnsrNrE3
+	 1TA/bVvo6KKVQ==
+Date: Mon, 1 Dec 2025 15:25:52 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: zlang@redhat.com, fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 2/7] generic/778: fix severe performance problems
-Message-ID: <20251201231908.GB89492@frogsfrogsfrogs>
-References: <176279908967.605950.2192923313361120314.stgit@frogsfrogsfrogs>
- <176279909041.605950.16815410156483574567.stgit@frogsfrogsfrogs>
- <aRXGyR9kj0kPirIE@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <20251115023251.GI196366@frogsfrogsfrogs>
- <aSq0OzvJHT1yOdvF@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+To: Andreas Dilger <adilger@dilger.ca>
+Cc: Theodore Tso <tytso@mit.edu>,
+	syzbot <syzbot+bb2455d02bda0b5701e3@syzkaller.appspotmail.com>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [ext4?] possible deadlock in ext4_destroy_inline_data
+ (2)
+Message-ID: <20251201232552.GA89435@frogsfrogsfrogs>
+References: <690bcad7.050a0220.baf87.0076.GAE@google.com>
+ <20251201161648.GA52186@macsyma.lan>
+ <2ED9BD8E-9A4D-4800-8633-9FEAD464049D@dilger.ca>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aSq0OzvJHT1yOdvF@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2ED9BD8E-9A4D-4800-8633-9FEAD464049D@dilger.ca>
 
-On Sat, Nov 29, 2025 at 02:22:11PM +0530, Ojaswin Mujoo wrote:
-> On Fri, Nov 14, 2025 at 06:32:51PM -0800, Darrick J. Wong wrote:
-> > On Thu, Nov 13, 2025 at 05:23:45PM +0530, Ojaswin Mujoo wrote:
-> > > On Mon, Nov 10, 2025 at 10:26:32AM -0800, Darrick J. Wong wrote:
-> > > > From: Darrick J. Wong <djwong@kernel.org>
-> > > > 
-> > > > This test takes 4800s to run, which is horrible.  AFAICT it starts out
-> > > > by timing how much can be written atomically to a new file in 0.2
-> > > > seconds, then scales up the file size by 3x.  On not very fast storage,
-> > > 
-> > > Hi Darrick,
-> 
-> (Sorry I missed this email somehow)
-> 
-> > > 
-> > > So 250MB in 0.2s is like 1.2GBps which seems pretty fast. Did you mean
-> > > "On fast storage ..." ?
+On Mon, Dec 01, 2025 at 04:17:02PM -0700, Andreas Dilger wrote:
+> On Dec 1, 2025, at 9:16 AM, Theodore Tso <tytso@mit.edu> wrote:
 > > 
-> > No, I have even faster storage. ;)
+> > That being said, we probably should just not try to expand the inode's
+> > extra size while evicting the inode.  In practice we don't actually do
+> > this since we haven't expanded the inode's extra size space in over a
+> > decade, and so this only happens in a debugging mount option that
+> > syzbot helpfully uses, and not in real life.
 > 
-> :O
-> 
-> So that means on an even faster storage this problem would be even more
-> visible because our file size would be >250MB
-> 
-> > 
-> > > > this can result in file_size being set to ~250MB on a 4k fsblock
-> > > > filesystem.  That's about 64,000 blocks.
-> > > > 
-> > > > The next thing this test does is try to create a file of that size
-> > > > (250MB) of alternating written and unwritten blocks.  For some reason,
-> > > > it sets up this file by invoking xfs_io 64,000 times to write small
-> > > > amounts of data, which takes 3+ minutes on the author's system because
-> > > > exec overhead is pretty high when you do that.
-> > > 
-> > > > 
-> > > > As a result, one loop through the test takes almost 4 minutes.  The test
-> > > > loops 20 times, so it runs for 80 minutes(!!) which is a really long
-> > > > time.
-> > > > 
-> > > > So the first thing we do is observe that the giant slow loop is being
-> > > > run as a single thread on an empty filesystem.  Most of the time the
-> > > > allocator generates a mostly physically contiguous file.  We could
-> > > > fallocate the whole file instead of fallocating one block every other
-> > > > time through the loop.  This halves the setup time.
-> > > > 
-> > > > Next, we can also stuff the remaining pwrite commands into a bash array
-> > > > and only invoke xfs_io once every 128x through the loop.  This amortizes
-> > > > the xfs_io startup time, which reduces the test loop runtime to about 20
-> > > > seconds.
-> > > 
-> > > Oh right, this is very bad. Weirdly I never noticed the test taking such
-> > > a huge time while testing on scsi_debug and also on an enterprise SSD.
-> > 
-> > It doesn't help that xfs supports much larger awu_max than (say) ext4.
-> 
-> I did test on xfs as well. But yea maybe my SSD is just not fast enough.
-> 
-> > 
-> > > Thanks for fixing this up though, I will start using maybe dm-delay
-> > > while stressing the tests in the future to avoid such issues.
-> > 
-> > fork() is a bit expensive.
-> > 
-> > > > 
-> > > > Finally, replace the 20x loop with a _soak_loop_running 5x loop because
-> > > > 5 seems like enough.  Anyone who wants more can set TIME_FACTOR or
-> > > > SOAK_DURATION to get more intensive testing.  On my system this cuts the
-> > > > runtime to 75 seconds.
-> > > 
-> > > So about the loops, we were running a modified version of this test,
-> > > which used non atomic writes, to confirm if we are able to catch torn
-> > > writes this way. We noticed that it sometimes took 10+ loops to observe
-> > > the torn write. Hence we kept iters=20. Since catching a torn write is
-> > > critical for working of atomic writes, I think it might make sense to
-> > > leave it at 20. If we feel this is a very high value, we can perhaps
-> > > remove -g auto and keep -g stress -g atomicwrites so only people who
-> > > explicitly want to stress atomic writes will run it.
-> > 
-> > In that case we ought to limit the awu_max that we feed to the test
-> > because otherwise it starts running a lot of IO.
-> 
-> Yes I think that makes sense. Right now we get awu_max of 4M on xfs that
-> means we always end up only testing software atomic writes.  Maybe we
-> can instead cap awu_max at 64K or something. This way, we can test both
-> hw atomic writes (when device supports it) and sw atomic writes (when it
-> doesn't)
+> I think we would regret removing this if/when we *do* expand the inode
+> size.  We used this functionality to upgrade filesystems online when
+> i_projid was first added and users suddenly wanted to use project quotas.
+> If we need some new inode field in the future it will be good to have it.
 
-Yeah, capping the testing block size sounds like a good idea.  What do
-you think about using min(awu_max_opt * 2, awu_max) ?
+Or expand extra_isize only when someone tries to set an inode field that
+actually requires it?  e.g. whenever setting the project id?
 
 --D
 
-> Regards,
-> ojaswin
+> > Also, there's no real point in doing this on the evict path,
+> > especially if the inode is about to be released as part of the
+> > eviction.
 > 
-> > 
-> > --D
-> > 
-> > > > 
-> > > > Cc: <fstests@vger.kernel.org> # v2025.10.20
-> > > > Fixes: ca954527ff9d97 ("generic: Add sudden shutdown tests for multi block atomic writes")
-> > > > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> > > > ---
-> > > >  tests/generic/778 |   59 ++++++++++++++++++++++++++++++++++++-----------------
-> > > >  1 file changed, 40 insertions(+), 19 deletions(-)
-> > > > 
-> > > > 
-> > > > diff --git a/tests/generic/778 b/tests/generic/778
-> > > > index 8cb1d8d4cad45d..7cfabc3a47a521 100755
-> > > > --- a/tests/generic/778
-> > > > +++ b/tests/generic/778
-> > > > @@ -42,22 +42,28 @@ atomic_write_loop() {
-> > > >  		# Due to sudden shutdown this can produce errors so just
-> > > >  		# redirect them to seqres.full
-> > > >  		$XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $size $off $size" >> /dev/null 2>>$seqres.full
-> > > > -		echo "Written to offset: $off" >> $tmp.aw
-> > > > -		off=$((off + $size))
-> > > > +		echo "Written to offset: $((off + size))" >> $tmp.aw
-> > > > +		off=$((off + size))
-> > > >  	done
-> > > >  }
-> > > >  
-> > > >  start_atomic_write_and_shutdown() {
-> > > >  	atomic_write_loop &
-> > > >  	awloop_pid=$!
-> > > > +	local max_loops=100
-> > > >  
-> > > >  	local i=0
-> > > > -	# Wait for at least first write to be recorded or 10s
-> > > > -	while [ ! -f "$tmp.aw" -a $i -le 50 ]; do i=$((i + 1)); sleep 0.2; done
-> > > > +	# Wait for at least first write to be recorded or too much time passes
-> > > > +	while [ ! -f "$tmp.aw" -a $i -le $max_loops ]; do
-> > > > +		i=$((i + 1))
-> > > > +		sleep 0.2
-> > > > +	done
-> > > >  
-> > > > -	if [[ $i -gt 50 ]]
-> > > > +	cat $tmp.aw >> $seqres.full
-> > > > +
-> > > > +	if [[ $i -gt $max_loops ]]
-> > > >  	then
-> > > > -		_fail "atomic write process took too long to start"
-> > > > +		_notrun "atomic write process took too long to start"
-> > > >  	fi
-> > > >  
-> > > >  	echo >> $seqres.full
-> > > > @@ -113,21 +119,34 @@ create_mixed_mappings() {
-> > > >  	local off=0
-> > > >  	local operations=("W" "U")
-> > > >  
-> > > > +	test $size_bytes -eq 0 && return
-> > > > +
-> > > > +	# fallocate the whole file once because preallocating single blocks
-> > > > +	# with individual xfs_io invocations is really slow and the allocator
-> > > > +	# usually gives out consecutive blocks anyway
-> > > > +	$XFS_IO_PROG -f -c "falloc 0 $size_bytes" $file
-> > > > +
-> > > > +	local cmds=()
-> > > >  	for ((i=0; i<$((size_bytes / blksz )); i++)); do
-> > > > -		index=$(($i % ${#operations[@]}))
-> > > > -		map="${operations[$index]}"
-> > > > +		if (( i % 2 == 0 )); then
-> > > > +			cmds+=(-c "pwrite -b $blksz $off $blksz")
-> > > > +		fi
-> > > > +
-> > > > +		# batch the write commands into larger xfs_io invocations to
-> > > > +		# amortize the fork overhead
-> > > > +		if [ "${#cmds[@]}" -ge 128 ]; then
-> > > > +			$XFS_IO_PROG "${cmds[@]}" "$file" >> /dev/null
-> > > > +			cmds=()
-> > > > +		fi
-> > > >  
-> > > > -		case "$map" in
-> > > > -		    "W")
-> > > > -			$XFS_IO_PROG -fc "pwrite -b $blksz $off $blksz" $file  >> /dev/null
-> > > > -			;;
-> > > > -		    "U")
-> > > > -			$XFS_IO_PROG -fc "falloc $off $blksz" $file >> /dev/null
-> > > > -			;;
-> > > > -		esac
-> > > >  		off=$((off + blksz))
-> > > >  	done
-> > > >  
-> > > > +	if [ "${#cmds[@]}" -gt 0 ]; then
-> > > > +		$XFS_IO_PROG "${cmds[@]}" "$file" >> /dev/null
-> > > > +		cmds=()
-> > > > +	fi
-> > > > +
-> > > >  	sync $file
-> > > >  }
-> > > >  
-> > > > @@ -336,9 +355,9 @@ echo >> $seqres.full
-> > > >  echo "# Populating expected data buffers" >> $seqres.full
-> > > >  populate_expected_data
-> > > >  
-> > > > -# Loop 20 times to shake out any races due to shutdown
-> > > > -for ((iter=0; iter<20; iter++))
-> > > > -do
-> > > > +# Loop to shake out any races due to shutdown
-> > > > +iter=0
-> > > > +while _soak_loop_running $TIME_FACTOR; do
-> > > >  	echo >> $seqres.full
-> > > >  	echo "------ Iteration $iter ------" >> $seqres.full
-> > > >  
-> > > > @@ -361,6 +380,8 @@ do
-> > > >  	echo >> $seqres.full
-> > > >  	echo "# Starting shutdown torn write test for append atomic writes" >> $seqres.full
-> > > >  	test_append_torn_write
-> > > > +
-> > > > +	iter=$((iter + 1))
-> > > >  done
-> > > >  
-> > > >  echo "Silence is golden"
-> > > > 
-> > > 
+> This could check in ext4_orphan_cleanup()->ext4_evict_inode() path
+> that this is orphan cleanup with EXT4_ORPHAN_FS and skip the expansion?
+> As you write, it doesn't make sense to do that when the file is being
+> deleted anyway.  Something like the following, which adds unlikely() to
+> that branch since it may happen only once or never in the lifetime of
+> any inode:
+> 
+> Cheers, Andreas
+> ---
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index e99306a8f47c..ae48748decc5 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -6481,7 +6490,8 @@ int __ext4_mark_inode_dirty(handle_t *handle,
+>  	if (err)
+>  		goto out;
+> -	if (EXT4_I(inode)->i_extra_isize < sbi->s_want_extra_isize)
+> +	if (unlikely(EXT4_I(inode)->i_extra_isize < sbi->s_want_extra_isize &&
+> +		     !(sbi->s_mount_state & EXT4_ORPHAN_FS)))
+>  		ext4_try_to_expand_extra_isize(inode, sbi->s_want_extra_isize,
+>  					       iloc, handle);
+> 
+> 
+> 
+> 
+> 
+> 
 
