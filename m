@@ -1,100 +1,93 @@
-Return-Path: <linux-ext4+bounces-12116-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12118-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E057C99B72
-	for <lists+linux-ext4@lfdr.de>; Tue, 02 Dec 2025 02:15:43 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 357F5C99CED
+	for <lists+linux-ext4@lfdr.de>; Tue, 02 Dec 2025 02:58:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFDB53A479C
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Dec 2025 01:15:40 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 99700345F58
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Dec 2025 01:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773FE1A9F83;
-	Tue,  2 Dec 2025 01:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CF01F151C;
+	Tue,  2 Dec 2025 01:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="G/Lx0Fxp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0846779CF;
-	Tue,  2 Dec 2025 01:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A6913C3F2
+	for <linux-ext4@vger.kernel.org>; Tue,  2 Dec 2025 01:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764638136; cv=none; b=M4DQAvsg0As25yZnHwZ8jyAhzK7AGRZkVwnZty5fU9nK9UTqnfZYFcMVgf05kLP1C8EiNPIn0am2dcozn7WvkYfO503E2xn5ka0TcHcpNeScwvX8lW426C+s2w8rVcTmf47kwNon/RotYrrKcIDk6JfmdhHSrCbie5IA57MBEKE=
+	t=1764640674; cv=none; b=nGouTvfrljm1DGisVhw5mGcb86xa4lBbFPxB2x7dYJci0vqUSUHxEdrzVFCNTCeTMWtdUlswmUQXrvmGMvq0LnCfWmhiJlZV+b0/4JxDnJnpXy9kTLd74bzfDU3SxuxF4kkOdDeFPVO08gEzbANZTO4r9Sf1KDleksk4jJ/e704=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764638136; c=relaxed/simple;
-	bh=27YmfSAf6ihD8Vwk8T//YvYVhcdQkw1zLlYlcmFuBGE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cSB7vsBGZk/PHf7md9iMA8DHyMjrWDTnGYif9kolshrYLEqvj8YyK9DJ79vdqOWu8MXTs0nmEa6Ex0+DACyDmmuLOFCLUkkWOGGOCQfLMTlRKMaI2QzH9t+JT/BuiUvFwYY6ZZXxDtt/tqU9u2+R3FBmD/lEgMNV00kibI2M6dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dL2rf5rT4zYQtdy;
-	Tue,  2 Dec 2025 09:15:30 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id AF0811A1719;
-	Tue,  2 Dec 2025 09:15:31 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP2 (Coremail) with SMTP id Syh0CgAX+FGxPS5pG2YpAQ--.13757S3;
-	Tue, 02 Dec 2025 09:15:31 +0800 (CST)
-Message-ID: <b17bf8ae-7592-4c2f-a13c-de6199ca65ce@huaweicloud.com>
-Date: Tue, 2 Dec 2025 09:15:29 +0800
+	s=arc-20240116; t=1764640674; c=relaxed/simple;
+	bh=mqaHqQaiFn1wRlawhn6IUWPYZl1qXq0kGxYLJQ5lcCg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hdSVYx3hpH+LjdVPLP+Qw+VmHV/rLMA72hMgUmbL+LBjgxK9zJarhlMCVZbco7hE1k63J50o4P23ewktafy4+I0Klrsr6XMX1kNuvhGZKISOgOr+PKi6bJNb4auN+l94e39vptyjAheKqIjsheNsqShKPDrn5DwEzTqA6BLBCS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=G/Lx0Fxp; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (pool-173-48-121-67.bstnma.fios.verizon.net [173.48.121.67])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5B21vgh6022593
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 1 Dec 2025 20:57:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1764640664; bh=STLtTF+2w5BMvVK/ftSkXYTK9a1ytwNk03bWu7KfjLw=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=G/Lx0FxpxIsiYSf82Do4cMjr28HDOVL8Sw3Z21UWSbPeq2G5j/zTPwz6XO0wPon49
+	 8A+DueVHruFTOaR/CfnBuj6GtwJyC/4BRmbWfSE2kD6hzNUCkl0Ah7O8NuO8ooIG9J
+	 /VjMlC7r32cgUYXxs8axb9yL5Npp4CYQzCYbD+Lh6QEhswm3qNGxaGk2Z5uTdYQMKc
+	 MFyDWok5El2h7oLoeWfaAOdtg8+aK0zrsYTsnzxlnkFJ5crrAVWbah8eFKWSVEu+ZS
+	 Zo0EGEAfPGkgu/uh5yl01+EPesuprrXhRfZW6DU5g3e95mn0yEV5Am4MkOZscqCNdP
+	 CM/wn/8FFP40A==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 3BD894DBF359; Mon,  1 Dec 2025 20:56:42 -0500 (EST)
+Date: Mon, 1 Dec 2025 20:56:42 -0500
+From: "Theodore Tso" <tytso@mit.edu>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Andreas Dilger <adilger@dilger.ca>,
+        syzbot <syzbot+bb2455d02bda0b5701e3@syzkaller.appspotmail.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [ext4?] possible deadlock in ext4_destroy_inline_data
+ (2)
+Message-ID: <20251202015642.GB29113@macsyma.lan>
+References: <690bcad7.050a0220.baf87.0076.GAE@google.com>
+ <20251201161648.GA52186@macsyma.lan>
+ <2ED9BD8E-9A4D-4800-8633-9FEAD464049D@dilger.ca>
+ <20251201232552.GA89435@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/14] ext4: replace ext4_es_insert_extent() when
- caching on-disk extents
-To: Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- adilger.kernel@dilger.ca, jack@suse.cz, ojaswin@linux.ibm.com,
- yi.zhang@huawei.com, yizhang089@gmail.com, libaokun1@huawei.com,
- yangerkun@huawei.com
-References: <20251129103247.686136-1-yi.zhang@huaweicloud.com>
- <176455640539.1349182.13217688668593418002.b4-ty@mit.edu>
- <20251201164244.GB52186@macsyma.lan>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20251201164244.GB52186@macsyma.lan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgAX+FGxPS5pG2YpAQ--.13757S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYV7kC6x804xWl14x267AKxVW8JVW5JwAF
-	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
-	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
-	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
-	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
-	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
-	c2xKxwCF04k20xvY0x0EwIxGrwCF54CYxVCY1x0262kKe7AKxVWUtVW8ZwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251201232552.GA89435@frogsfrogsfrogs>
 
-On 12/2/2025 12:42 AM, Theodore Tso wrote:
-> On Mon, Dec 01, 2025 at 11:23:50AM -0500, Theodore Ts'o wrote:
->> Applied, thanks!
+On Mon, Dec 01, 2025 at 03:25:52PM -0800, Darrick J. Wong wrote:
 > 
-> n.b.  This is on the dev branch, but I plan to not include it in the initial
-> pull request to Linus, so it can get a bit more soak testing.  I'll
-> send to Linus after -rc1.
-> 
-> 					- Ted
+> Or expand extra_isize only when someone tries to set an inode field that
+> actually requires it?  e.g. whenever setting the project id?
 
-Sure, thank you. It would be better to do more testing. Please let me
-know if there is any regression. :-)
+Or when adding/removing/changing an extended attribute, especially one
+stored in the inode table, since that's when we need to make sure
+we've left room the expanded inode.
 
-Thanks,
-Yi.
+Certainly if all we are doing is, say, updating the atime, trying to
+move out an extended attribute to make room for an inode field that
+might never get used is kind of a waste.
 
+We just haven't really focused on this much, since we haven't needed
+to expand the inode in many years.  But if someone wants to work on
+it, that would be great!
 
-
+					- Ted
 
