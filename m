@@ -1,191 +1,186 @@
-Return-Path: <linux-ext4+bounces-12139-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12140-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEA83C9EAE4
-	for <lists+linux-ext4@lfdr.de>; Wed, 03 Dec 2025 11:19:25 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74AB7C9EBFC
+	for <lists+linux-ext4@lfdr.de>; Wed, 03 Dec 2025 11:40:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 30EDA4E03D8
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Dec 2025 10:19:22 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 41B974E05AB
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Dec 2025 10:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47DF2E9EC6;
-	Wed,  3 Dec 2025 10:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B802EFD9B;
+	Wed,  3 Dec 2025 10:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sia1MYIL"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kZcSv7nJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cSghaU4V";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kZcSv7nJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cSghaU4V"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119562DE707;
-	Wed,  3 Dec 2025 10:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 077B32EF654
+	for <linux-ext4@vger.kernel.org>; Wed,  3 Dec 2025 10:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764757151; cv=none; b=l1y/iSY3P6bBKvJmq7rfGniKBLZ/N+ITjeHc/tYquDWUGvNErSeQ+Nx1uktYZhMQwK9KJaKYAVzIDIwpFWKsOCDR5OQt2vxS1pXHKllevKb46ByutDXSV7CIX1ds0M4LfkzWbsbeKqWsSV42pR80nsIwvB1HEA7q5/RDEwFV3CY=
+	t=1764758411; cv=none; b=MONc75rpwAcXVyEsUEX6G9rBRzq+Q67+IKm2Cb/by15NO3KheahxzQ724rEpKWn4XCJP591pKNC+GVX5SQaBm9ERAlBBeDLG7aLynMI/4LvB/smFcX+HtY4X8F47RZ1tc0KZnJ6psbnyxdng2BIveJkufJfstQVf/5nBjnvHSWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764757151; c=relaxed/simple;
-	bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MzVrCaPOfJSbHnu5034+sN/igCQpAT0+eqawrc2CmK2pAHRA2QjXw7hUydE514Q7CmplIfKVrvREVZ5mESHganvctY0wvUSStpd4q0tj2K2UR/RW+qDVmiF3IJKZIDMao2imUe8JmnRcJWDHCn1/lUgf8DoAhemIKTQ1oTsaR84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sia1MYIL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25361C113D0;
-	Wed,  3 Dec 2025 10:18:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764757150;
-	bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Sia1MYILwN3OHyU8vJVbFzEbPmh+E9Rkdc13NmENJiNAQwujMzrx7aLJDYQwnRJH2
-	 icv0Cs7+2DiJlUtJrJ3jFjsxz5e5SC+H4b4cDPm/4/s+aTZepyO4AvrHMcRjPs8po7
-	 P0lAluHlqilBXk1Sh/B/XN0TZMdipTL7EolZ0FehsZ8XGO0/aidHMHK8ayQiiiT5TA
-	 U6OOgYna9Ec2DgYD68Hcv9/StfMLZVIApf1YAZumWdYivMJy+S1b4NF19fKc5R60wD
-	 vv/cJLS0nI7ttPeXB8OyKOFM1iSYjxfn/4avfs6o2Xu7czGUpIFQziUIbMv79dw+WM
-	 YExRE41C2xh0g==
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	NeilBrown <neilb@ownmail.net>,
-	linux-kernel@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	linux-afs@lists.infradead.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	ecryptfs@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	gfs2@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-mm@kvack.org,
-	linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org,
-	ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-xfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	NeilBrown <neil@brown.name>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-	Chris Mason <clm@fb.com>,
-	Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>,
-	coda@cs.cmu.edu,
-	Tyler Hicks <code@tyhicks.com>,
-	Jeremy Kerr <jk@ozlabs.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Yuezhang Mo <yuezhang.mo@sony.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Yangtao Li <frank.li@vivo.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>,
-	Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Bob Copeland <me@bobcopeland.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Hans de Goede <hansg@kernel.org>,
-	Carlos Maiolino <cem@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	David Hildenbrand <david@kernel.org>
-Subject: Re: [PATCH RESEND v3] vfs: remove the excl argument from the ->create() inode_operation
-Date: Wed,  3 Dec 2025 11:18:32 +0100
-Message-ID: <20251203-sechzehn-lethargisch-cd739d4ff49a@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251201-create-excl-v3-1-8933a444b046@kernel.org>
-References: <20251201-create-excl-v3-1-8933a444b046@kernel.org>
+	s=arc-20240116; t=1764758411; c=relaxed/simple;
+	bh=TLA3ZgySSI+WOmWHuJ5MQ3GExiYPcg8oW5dtCoIpdKE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XRLV2JX3dsp0Lpq8HfflI6JipqfYJzXVOLKVNxcUajnPRwn1gobCJZcFlv1fijHqyNJsa+IWccokEEvFzJgzsV3PS0xlJLD9BoAiNuATrF4PbCCBYx4UUgp7qOAC2gS6riA2KVSmq2cA1svGQZewipZ7qKp2xgKg8QZU9qpsnk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kZcSv7nJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cSghaU4V; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kZcSv7nJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cSghaU4V; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 439295BD86;
+	Wed,  3 Dec 2025 10:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1764758407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Aeqv3mXdGHw59QMf+JsFj1Fw+imTM7+0tHMVkaT9xto=;
+	b=kZcSv7nJRsHKdQlx1W1RGv08YXRRTQDhfvEctDX9WmD1GU4+BLFu85mwi1nHdxgzy1g+7Z
+	YNnU9YznJTIQJ8fhZr8whnRms2qlbcqeN+dVXblBsmauek0glBp4FHWXlF4nNHU46d5xuc
+	tUuPM39qrCqRdZbLHJp8u9inigadOCY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1764758407;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Aeqv3mXdGHw59QMf+JsFj1Fw+imTM7+0tHMVkaT9xto=;
+	b=cSghaU4VyvWSdUHKevUgcBHnHtUghpB+RpL3keFWmPfSHR+EmGo5h3IwhehwRFAYyZU6ok
+	QfDV1nkBW1FnjrAQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1764758407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Aeqv3mXdGHw59QMf+JsFj1Fw+imTM7+0tHMVkaT9xto=;
+	b=kZcSv7nJRsHKdQlx1W1RGv08YXRRTQDhfvEctDX9WmD1GU4+BLFu85mwi1nHdxgzy1g+7Z
+	YNnU9YznJTIQJ8fhZr8whnRms2qlbcqeN+dVXblBsmauek0glBp4FHWXlF4nNHU46d5xuc
+	tUuPM39qrCqRdZbLHJp8u9inigadOCY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1764758407;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Aeqv3mXdGHw59QMf+JsFj1Fw+imTM7+0tHMVkaT9xto=;
+	b=cSghaU4VyvWSdUHKevUgcBHnHtUghpB+RpL3keFWmPfSHR+EmGo5h3IwhehwRFAYyZU6ok
+	QfDV1nkBW1FnjrAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2DF1E3EA63;
+	Wed,  3 Dec 2025 10:40:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id aHwrC4cTMGmTUAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 03 Dec 2025 10:40:07 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id DE5C7A09B4; Wed,  3 Dec 2025 11:40:06 +0100 (CET)
+Date: Wed, 3 Dec 2025 11:40:06 +0100
+From: Jan Kara <jack@suse.cz>
+To: Vivek BalachandharTN <vivek.balachandhar@gmail.com>
+Cc: jack@suse.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext2: factor out ext2_fill_super() teardown path
+Message-ID: <herlaqmrxfzbh2yqumcquf4ex7qxz5sk47uswmwucdg3pmryez@bvyyavacx5rq>
+References: <20251203045048.2463502-1-vivek.balachandhar@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1370; i=brauner@kernel.org; h=from:subject:message-id; bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQa8NXdfyOWEe7C1j7j3H39MtmOfckhfYU3uPbO3GJ5W X9idSdfRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwER6JjEyXElxiNLjXsTcG/zF veHQZtE3X3LuXMnZx/2vIaPja/5RBYb/9Vo7JnHefOS2MX2Dr5zm5id7fnmJz3GXVk7n4Wu5Kpf KBAA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251203045048.2463502-1-vivek.balachandhar@gmail.com>
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-On Mon, 01 Dec 2025 08:11:42 -0500, Jeff Layton wrote:
-> With three exceptions, ->create() methods provided by filesystems ignore
-> the "excl" flag.  Those exception are NFS, GFS2 and vboxsf which all also
-> provide ->atomic_open.
+On Wed 03-12-25 04:50:48, Vivek BalachandharTN wrote:
+> The error path at the end of ext2_fill_super() open-codes the final
+> teardown of the ext2_sb_info structure and associated resources.
+> Centralize this into a small helper to make the control flow a bit
+> clearer and avoid repeating the same cleanup sequence in multiple
+> labels.
 > 
-> Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
-> the "excl" argument to the ->create() inode_operation is always set to
-> true in vfs_create(). The ->create() call in lookup_open() sets it
-> according to the O_EXCL open flag, but is never called if the filesystem
-> provides ->atomic_open().
+> Behavior is unchanged.
 > 
-> [...]
+> Signed-off-by: Vivek BalachandharTN <vivek.balachandhar@gmail.com>
 
-Applied to the vfs-6.20.mkdir branch of the vfs/vfs.git tree.
-Patches in the vfs-6.20.mkdir branch should appear in linux-next soon.
+This is pointless - no point in factoring out helper when it has a single
+call site. Also your patch is broken in several ways (both in correctness
+and style). Please be more thoughtful when submitting patches.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+								Honza
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.20.mkdir
-
-[1/1] vfs: remove the excl argument from the ->create() inode_operation
-      https://git.kernel.org/vfs/vfs/c/7d91315b4335
+> +static void ext2_free_sbi(struct super_block *sb,
+> +			  struct ext2_sb_info *sbi,
+> +			  struct buffer_head *bh)
+> +{
+> +	if (bh)
+> +		brelse(bh);
+> +
+> +	fs_put_dax(sbi->s_daxdev, NULL);
+> +	sb->s_fs_info = NULL;
+> +	kfree(sbi->s_blockgroup_lock);
+> +	kfree(sbi);
+> +}
+> +
+>  static int ext2_fill_super(struct super_block *sb, struct fs_context *fc)
+>  {
+>  	struct ext2_fs_context *ctx = fc->fs_private;
+> @@ -1251,12 +1264,8 @@ static int ext2_fill_super(struct super_block *sb, struct fs_context *fc)
+>  	kvfree(sbi->s_group_desc);
+>  	kfree(sbi->s_debts);
+>  failed_mount:
+> -	brelse(bh);
+>  failed_sbi:
+> -	fs_put_dax(sbi->s_daxdev, NULL);
+> -	sb->s_fs_info = NULL;
+> -	kfree(sbi->s_blockgroup_lock);
+> -	kfree(sbi);
+> +	ext2_free_sbi(sb, sbi, bh);
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.34.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
